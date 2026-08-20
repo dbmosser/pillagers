@@ -1,2 +1,2 @@
-exports/
 *.log
+node_modules/
