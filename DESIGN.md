@@ -1,0 +1,62 @@
+# DARK RAIDERS Design Bible
+Prepared: August 20, 2026. Revised: August 20, 2026 (v0.6).
+
+Single source of truth for the game's design intent. Add this file plus the latest `dark_raiders.html` to a Claude Project so every new conversation starts with full context. Update the changelog each version.
+
+## 1. Pillars
+1. **ARC Raiders' loop, 3/4 view.** Deploy, loot under pressure, decide when to leave, extract or lose it. Tension comes from the timer, the noise system, and what you are carrying.
+2. **Information is the game.** Vision cone, fog, noise pings, scan cones, the snitch. You fight what you know more than what you see.
+3. **Death costs, but does not zero you.** Safe pocket, stash, rep, and contracts persist. A death should sting and teach, not erase.
+4. **Operators versus machines.** Raiders (the player and AI raiders) are human operators. The machines are industrial robots with readable patterns: the sentry patrols with a visible scan cone, the crawler rushes, the snitch drone flees and marks. AI raiders behave like players: loot, fight, run for the same extract you want.
+
+## 2. Core loop
+Kennel hub (sell, craft, buy, take contracts, tune) -> Deploy -> Loot and fight -> Extract before the timer -> Bank haul, claim contracts, upgrade -> repeat. Death loses carried loot minus the safe pocket, and the equipped weapon.
+
+## 3. Presentation (v0.8)
+StarCraft-style 3/4 2D view over the unchanged simulation. Flat baked ground, walls with raised top faces (26px buildings, 14px cover) and shaded front faces, everything drawn in one y-sorted painter's pass so characters walk behind walls and peek over low cover. Characters are upright pixel sprites with feet at their world position: human operators with visors, walk cycles, true-angle gun rotation, and backpacks that swell with loot; treaded sentries with glowing state-colored eyes and wall-clipped scan cones on the ground; four-legged crawlers; hovering diamond snitch drones with blinking beacons. Cursor aiming: the mouse is the reticle, WASD moves on world axes, right mouse steadies aim (60 percent spread, slower movement, camera leans further toward the cursor). Camera follows the player with cursor lean and screen shake. Atmosphere: dynamic lights punched through a darkness overlay with warm glows and flicker, muzzle light splashes, vision-cone fog of war with rear ambient awareness, decals, shell casings, and an extract beacon light shaft. No dependencies: fully offline, no WebGL needed.
+
+## 4. Systems
+- **Vision:** recursive raycast visibility polygon; forward cone (CFG.coneDeg wide, CFG.viewFar deep) plus all-around awareness (CFG.ambient). Smoke clouds add temporary occluder segments.
+- **Sector map:** hold M for the full map: all walls, buildings tinted by district, all three extract rings with the active beacon highlighted, and your position. Hostile positions are never shown.
+- **Noise:** every loud act emits a ping (radius scaled by CFG.noiseMult) that pulls enemies to the point of origin. Crouch is near-silent, sprint is loud.
+- **Enemies:** Sentry (ranged treaded patroller, visible scan cone), Crawler (melee rusher), Snitch (never attacks: flees, marks your live position with hostile pings every 1.5s, converging everything on you; kill it or break line of sight for 3s), AI Raiders (operators that loot, fight, extract; drop their bags on death).
+- **Dodge roll:** Space performs a Dark Souls style roll in your movement direction (facing if standing still): 0.38s tuck at high speed with 0.3s of invulnerability frames, costs 25 stamina, 0.85s cooldown, makes a small noise. No shooting or throwing mid-roll.
+- **Field weapons:** guns spawn as loot in lockers, safes, and bodies, and every AI raider drops their own gun on death. Picking up a strictly better gun auto-equips it (half a magazine loaded) and moves your old one into your bag; extract to bank guns into your armory, and the safe pocket can save a carried gun from death. Ammo is a shared reserve pool. Starting reserve is 2 magazines, so scavenged ammo matters.
+- **Downed state:** at 0 HP you go down instead of dying: crawl at 30 speed, bleed out over CFG.downTime, one self-revive per raid with F plus a medical item (back at 40 HP, 2s invulnerable). Getting shot while down cuts 3s off the bleed-out clock. Machines ignore a downed player; raiders finish the job.
+- **Throwables:** smoke (blocks all sight lines through it, 12s), decoy (fake noise pings for 6s), frag (95 radius, friendly-fire on you). Q cycles, G throws toward cursor, max range 270. Pouch auto-loads up to 2 of each from stash on deploy; unused come home on extract.
+- **Safe pocket:** your CFG.safeSlots highest-value bag items survive death to stash. Marked with a diamond in the Tab bag view.
+- **Economy:** sell salvage for credits and rep; rep gates shop stock (frag 600, plate 800, SMG 1000, pack tier 3 at 1500, rifle 2500, DMR 5000). Backpack tiers cap carry weight at 40/60/80.
+- **Crafting:** Workshop turns junk into Component Kits (3 scrap + 2 wire), and components into ammo, armor, medkits, and all three throwables.
+- **Contracts:** three procedural contracts (kill X, search container type, search in district, extract carrying item, extract with haul value). Claim pays credits plus rep, then rerolls.
+- **Tuning console:** backquote key or hub button. 19 live sliders over every tunable, presets A (Shadow: darker, slower, richer), B (Baseline), C (Surge: brighter, faster, deadlier). Copy config exports the JSON for Claude.
+- **Bot sim:** hub button runs CFG.simRaids headless raids with a bot playing the player role, and reports extract rate, death causes, timer expiry, average haul, first-contact timing. Healthy extract-rate band: 35 to 60 percent.
+- **Flight recorder:** full per-run telemetry, feeling tags, pause notes, Export for Claude (includes active config and last sim).
+
+## 5. Config reference (DEF values)
+coneDeg 100, viewFar 440, ambient 100, raidSec 300, pSpeed 158, extractTime 6, nSentry 7, nCrawler 9, nRaider 3, nSnitch 2, eDmg 1.35 (multiplier on damage the player takes), eHp 1, lootMult 1, contDens 1, noiseMult 1, safeSlots 2, downTime 12, simGreed 26 (bag weight at which the sim bot heads for extract), simRaids 30. Spawn counts, eHp, contDens, raidSec apply next raid; everything else is live.
+
+## 6. Changelog
+- **v0.1:** core loop: procedural map, cone vision and fog, noise pings, sentries and crawlers, 3 AI raiders, containers and loot, weight, weapons, extraction, timer, stash, shop, persistence.
+- **v0.2:** visual overhaul: four districts with palettes, baked ground detail, dynamic lights, redesigned entities, screen shake, tracers, casings, decals, sector map.
+- **v0.3:** flight recorder: per-run telemetry, pause notes, feeling tags, aggregate stats, Export for Claude.
+- **v0.4:** tuning console with presets, headless bot sim, snitch, throwables, downed state with self-revive, safe pocket, crafting, contracts, vendor rep gates, backpack tiers, alert markers, configurable everything. Fixes: enemy damage double-scaling, bullets versus downed player, auto-loaded ammo.
+- **v0.5:** renamed to Bark Raiders. 3/4 StarCraft-style presentation: y-sorted painter's rendering, walls with raised top faces and shaded front faces, all characters redrawn as upright sprites. Player and AI raiders are bipedal anthropomorphic dogs (walk cycles, wagging tails, aimed guns, loot-swollen backpacks); machines redesigned as canine robots (mastiff sentry, robo-pup crawler, eared snitch drone). Simulation untouched.
+
+- **v0.6 (first playtest response):** dodge roll with i-frames; field weapons as loot with auto-equip upgrades and armory banking; ammo economy rebuilt (2-mag start, heavier ammo drops, sentries drop ammo, raiders drop their guns); enemies faster and deadlier across the board (speeds, damage, fire cadence, eDmg baseline 1.35); full sector map without hostile positions; bag is now a TAB or I toggle; persistent one-line key legend on the HUD. Saved tuning configs from v0.5 are reset once so the new combat baseline takes effect.
+- **v0.7:** renamed to Dark Raiders, dog theme removed (same save key, progress carries over). Experimental third-person 3D with three.js: pointer-lock mouse look, ADS, shoulder camera. Superseded same day.
+- **v0.8:** third person scrapped on playtest verdict; returned to the 3/4 StarCraft-style 2D view, rebuilt de-dogged: human operator sprites, industrial machines, y-sorted walls with top and front faces, vision-cone fog, dynamic lighting overlay, sentry ground cones, cursor aiming restored. Kept from v0.7: right-mouse steady aim (tighter spread, slower move, longer camera lean). three.js dependency removed, so the game runs fully offline again. Simulation, recorder, tuning console, and bot sim untouched throughout.
+
+## 7. Backlog (not built, in rough priority)
+Weapon rarity tiers (deferred: save-schema risk), weather and time-of-day conditions, location-based quest chains, vendor personalities, gear condition and repair, more machine types (Rocketeer analog: arcing projectiles; Bastion analog: shielded), hideout upgrades, multiple maps, keyed rooms, proximity events, operator cosmetics, co-op (hard wall: requires real netcode and an engine move to Godot).
+
+## 8. Telemetry protocol
+1. Daniel plays at least 3 runs, tags feelings, notes anything mid-run via pause.
+2. Optionally runs the bot sim after any tuning-console changes.
+3. Hits Export for Claude, pastes the block into chat.
+4. Claude reads tags plus numbers plus config, proposes one batch of tuning changes with reasons, ships the updated file. One batch per cycle; no speculative changes without data.
+
+## 9. Session protocol for a Claude Project
+Project knowledge should contain: this file, the latest dark_raiders.html, and the most recent recorder export. Each new session: state the version, paste new exports, ask for the next build. Claude overwrites the game file in place and re-presents it; no version sprawl.
+
+## 10. Known limits
+Game feel cannot be specified in text; Daniel's playtests are the only feel signal. The bot sim measures balance, not fun. Netcode and true co-op are out of scope for the HTML prototype. Storage key remains `salvagerun:profile` from before the rename so existing progress carries over; do not change it without a migration. As of v0.6 the game saves to the claude.ai artifact storage API when present and falls back to browser localStorage when opened as a local file, so local play in Claude Code workflows keeps its save. The two stores do not sync with each other. As of v0.8 the game has no external dependencies and runs fully offline in any modern browser.
