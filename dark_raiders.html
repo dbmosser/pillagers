@@ -251,7 +251,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.51';
+var VER='0.52';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -273,8 +273,15 @@ var WEAPONS={
   pistol:{id:'pistol',name:'Scav Pistol',dmg:19,rof:290,spread:.055,mag:12,reload:1400,rng:420,auto:false,noise:330,tint:'#ffd48a'},
   smg:{id:'smg',name:'Compact SMG',dmg:12,rof:88,spread:.115,mag:30,reload:1850,rng:360,auto:true,noise:300,tint:'#ffe0a0'},
   rifle:{id:'rifle',name:'Auto Rifle',dmg:23,rof:132,spread:.070,mag:25,reload:2050,rng:520,auto:true,noise:420,tint:'#ffcf7a'},
-  dmr:{id:'dmr',name:'Marksman Rifle',dmg:48,rof:680,spread:.016,mag:8,reload:2300,rng:760,auto:false,noise:520,tint:'#fff0c0'}
+  dmr:{id:'dmr',name:'Marksman Rifle',dmg:48,rof:680,spread:.016,mag:8,reload:2300,rng:760,auto:false,noise:520,tint:'#fff0c0'},
+  // Four issued starters, one rolled at random on every deploy. Tuned at or just
+  // under the Scav Pistol and Compact SMG so the shop and loot guns stay upgrades.
+  ferro:{id:'ferro',name:'Ferro',dmg:17,rof:240,spread:.048,mag:14,reload:1300,rng:400,auto:false,noise:320,tint:'#ffd9a8',starter:1},
+  kettle:{id:'kettle',name:'Kettle',dmg:11,rof:80,spread:.130,mag:28,reload:1750,rng:330,auto:true,noise:300,tint:'#ffe6b8',starter:1},
+  stitcher:{id:'stitcher',name:'Stitcher',dmg:20,rof:150,spread:.085,mag:22,reload:1950,rng:470,auto:true,noise:400,tint:'#ffd18a',starter:1},
+  hullcracker:{id:'hullcracker',name:'Hullcracker',dmg:9,pellets:5,rof:780,spread:.200,mag:6,reload:2200,rng:210,auto:false,noise:470,tint:'#ffc98a',starter:1}
 };
+var STARTERS=['ferro','kettle','stitcher','hullcracker'];
 var ITEMS={
   scrap:{name:'Scrap Metal',val:25,wt:1,r:'common',c:'#8d9199'},
   wire:{name:'Copper Wire',val:45,wt:1,r:'common',c:'#c9703f'},
@@ -860,8 +867,14 @@ function buildRaid(sim){
   // Undercroft issues a loaner sidearm; you still lost the good gun, and the
   // loaner goes with it if you die again. Deploying with bare hands was a
   // death spiral: one run ended in 14 seconds with three melee swings.
-  var wep=WEAPONS[P.equipped]||WEAPONS.fists;
-  if(wep.id==='fists'&&(!P.weapons||!P.weapons.length)) wep=WEAPONS.pistol;
+  // Primary: whatever you have deliberately equipped from the armoury, otherwise
+  // one of the four issued starters rolled fresh for this raid.
+  var wep=WEAPONS[P.equipped];
+  if(!wep||wep.id==='fists'||!P.weapons||P.weapons.indexOf(P.equipped)<0)
+    wep=WEAPONS[pick(STARTERS)];
+  // Secondary: the Scav Pistol, always. Swap to it with X. It is issued kit, so
+  // it is never taken from the armoury and never lost from it.
+  var sec=WEAPONS.pistol;
   // Never drop the operator into a flooded tile. Water defeats crouch and halves
   // your speed, so a wet spawn means announcing yourself from second zero with
   // nothing you can do about it. Measured at 4.75% of maps before this.
@@ -928,7 +941,7 @@ function buildRaid(sim){
   for(i=0;i<CFG.nRaider;i++){ var s3=far(freeSpot(map,30),700); ents.push(mkRaider(s3.x,s3.y)); }
   var g={sim:!!sim,map:map,ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:CFG.raidSec,paused:false,
     player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,armor:0,face:0,wep:wep,
-      ammo:wep.mag,reserve:wep.mag*2,reloading:0,lastShot:-9999,stam:100,
+      ammo:wep.mag,reserve:wep.mag*2,sec:sec,secAmmo:sec.mag,reloading:0,lastShot:-9999,stam:100,
       bob:0,recoil:0,hitFlash:0,downed:false,downT:0,revived:false,iv:0,pendKiller:null,
       roll:0,rollCd:0,rollDir:{x:1,y:0},ads:false},
     bag:[],pouch:{smoke:0,decoy:0,frag:0},tsel:0,
@@ -1015,9 +1028,23 @@ window.addEventListener('keydown',function(e){
   }
   if(state!=='raid') return;
   keys[e.code]=true;
-  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','ControlLeft','ShiftLeft'].indexOf(e.code)>=0) e.preventDefault();
+  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyX','ControlLeft','ShiftLeft'].indexOf(e.code)>=0) e.preventDefault();
   if((e.code==='Escape'||e.code==='KeyP')&&G&&!G.over) togglePauseBox(true);
   if(e.code==='KeyH'&&G&&!e.repeat) G.legendOn=!G.legendOn;
+  // X swaps primary and secondary. Each keeps its own loaded magazine; the
+  // reserve pool is shared, so swapping is not a way to dodge running dry.
+  if(e.code==='KeyX'&&G&&!G.over&&!G.paused&&!e.repeat){
+    var pp=G.player;
+    if(pp.sec&&!pp.downed&&pp.roll<=0){
+      var ow=pp.wep,oa=pp.ammo;
+      pp.wep=pp.sec; pp.ammo=pp.secAmmo;
+      pp.sec=ow; pp.secAmmo=oa;
+      pp.reloading=0; pp.fired=true; pp.lastShot=G.t*1000;
+      G.tel.weapon=pp.wep.name;
+      say(pp.wep.name+' up');
+      blip('pick');
+    }
+  }
   if(e.code==='KeyQ'&&G&&!G.over&&!e.repeat) cycleThrow();
   if(e.code==='KeyG'&&G&&!G.over&&!G.paused&&!e.repeat) doThrow();
   if(e.code==='Space'&&G&&!G.over&&!G.paused&&!e.repeat) tryRoll();
@@ -1212,11 +1239,17 @@ function damagePlayer(amt,src){
 }
 function fireWeapon(sh,wep,tx,ty,fromPlayer){
   var spx=wep.spread*(fromPlayer&&G.player.ads?0.4:1);
-  var ang=Math.atan2(ty-sh.y,tx-sh.x)+rnd(-spx,spx);
-  var dmg=wep.dmg;
-  G.bullets.push({x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17,
-    vx:Math.cos(ang)*1180,vy:Math.sin(ang)*1180,dmg:dmg,
-    life:wep.rng/1180,player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a'});
+  var base=Math.atan2(ty-sh.y,tx-sh.x);
+  // A shotgun throws a handful of pellets on one trigger pull. Everything else
+  // fires a single round, which is pellets of 1.
+  var shots=wep.pellets||1;
+  for(var pel=0;pel<shots;pel++){
+    var ang=base+rnd(-spx,spx);
+    G.bullets.push({x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17,
+      vx:Math.cos(ang)*1180,vy:Math.sin(ang)*1180,dmg:wep.dmg,
+      life:wep.rng/1180,player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a'});
+  }
+  var ang=base;
   var melee=wep.mag===0;
   ping(sh.x,sh.y,wep.noise,!fromPlayer);
   blip(melee?'hit':'shot',fromPlayer?0:dist(G.player,sh));
@@ -1224,7 +1257,9 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
     sh.muzzle=.06;
     flash(sh.x+Math.cos(ang)*20,sh.y+Math.sin(ang)*20,wep.dmg>40?155:108,wep.tint||'#ffc27a',.11);
   }
-  if(fromPlayer){ G.player.recoil=1; G.player.combatT=0; G.tel.shots++; G.shake=Math.max(G.shake,wep.dmg>40?4.5:2.2); }
+  // count every pellet as a shot, or a shotgun blast reads as one shot with five
+  // hits and accuracy climbs past 100 percent
+  if(fromPlayer){ G.player.recoil=1; G.player.combatT=0; G.tel.shots+=shots; G.shake=Math.max(G.shake,wep.dmg>40?4.5:2.2); }
   if(!G.sim&&!melee){
     var sa=ang-1.5+rnd(-.3,.3);
     G.shells.push({x:sh.x,y:sh.y,vx:Math.cos(sa)*rnd(60,130),vy:Math.sin(sa)*rnd(60,130),t:0,life:rnd(.5,.9),rot:rnd(0,6)});
@@ -2769,12 +2804,17 @@ function drawHUD(){
     ctx.fillStyle=p.ammo===0?'#ff4d3d':'#cdd6dd';
     ctx.fillText(p.ammo+' / '+p.reserve,W-16,by-14);
   }
+  // the sidearm waiting on X, so the second gun is not a secret
+  if(p.sec){
+    ctx.font='9.5px "Roboto Mono", monospace'; ctx.fillStyle='#7d8894';
+    ctx.fillText('[X] '+p.sec.name+'  '+p.secAmmo,W-16,by-52);
+  }
   ctx.font='9.5px "Roboto Mono", monospace'; ctx.fillStyle='#8a96a1';
   ctx.fillText('CARRY '+bagWeight()+' / '+PACKCAP[P.pack]+'  ('+G.bag.length+' items)',W-16,by);
   // standing cue: the bag was findable only from a dim 14-item legend line
   if(!G.bagOpen){
     ctx.font='700 10px "Oxanium", sans-serif'; ctx.fillStyle='#ffb02e';
-    ctx.fillText('TAB  INVENTORY',W-16,by-52);
+    ctx.fillText('TAB  INVENTORY',W-16,by-68);
   }
   var pl2=[],tsn=THROWKEYS[G.tsel];
   for(i=0;i<3;i++){
@@ -2833,12 +2873,12 @@ function safeSet(){
 // have left him hunting, so the panel states the keyless rules as well.
 var LEGEND=[
   ['MOVE',[['WASD','move'],['SHIFT','sprint'],['CTRL','crouch, near silent'],['SPACE','dodge roll']]],
-  ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','steady aim'],['R','reload']]],
+  ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','steady aim'],['R','reload'],['X','swap weapon']]],
   ['GEAR',[['Q','cycle throwable'],['G','throw it'],['F','use medical'],['TAB','inventory']]],
   ['WORLD',[['E','search / call beacon'],['M','hold for map'],['H','hide this list'],['P','pause']]]
 ];
 var GEARRULES=[
-  ['WEAPONS','no swap key. A better gun auto-equips on pickup.'],
+  ['WEAPONS','X swaps primary and sidearm. A better gun auto-equips on pickup.'],
   ['','Change loadout at the Undercroft armory before deploying.'],
   ['ARMOUR','no equip key. Plates apply on pickup until armour is full.'],
   ['THROWS','2 of each auto-load from stash. Q cycles, G throws.'],
