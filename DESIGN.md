@@ -227,3 +227,14 @@ This file has been edited by scripted splice around twenty-five times, so its st
 Spawn distance had been audited but never measured at scale. Across 150 maps and 3,150 spawns: **not one enemy of any kind spawned closer to the operator than its minimum, and the closest any ever got was exactly its threshold.** Sentry 520, crawler 460, snitch 420, raider 700, all held, average distance around 1,200.
 
 One wart worth tidying whenever the file is next open for a real reason, not on its own: the sentry spawn line uses an inline closure and `apply` where its three sibling lines use a plain temporary. Same behaviour, confirmed by the measurement above, but it reads unlike the code around it.
+
+### Does the game play the same on a 144Hz monitor? (v0.67 tick, nothing built)
+Never checked, and it matters because anything changing per frame rather than per second would make the game run at a different speed depending on the screen. Measured on one fixed map with no terrain effects, over the same wall-clock time, at 30, 60, 144 and 240 frames a second.
+
+**Movement, sprinting, stamina drain and the raid clock are identical to the decimal at every rate.** 604.5 units walked in four seconds at all four, 734.5 sprinting with the same 22 stamina left, the clock spending exactly 4 seconds. Regeneration lands within one hit point across the range, which is the three-second accumulator crossing its boundary at a slightly different moment, not a rate dependence.
+
+**Rate of fire is the one thing that varies, and it is inherent rather than a defect.** A shot can only leave on a frame boundary, so the real interval is the weapon's rate rounded up to the next frame. A 120ms weapon fires every 133ms at both 30 and 60Hz, every 125ms at 144, and every 121 at 240. Over four seconds that is **30 shots at 60Hz against 34 at 240, so about 13 percent more damage a second on a high-refresh screen.** Framing it the other way is more accurate: high refresh delivers the stated rate, low refresh rounds it down.
+
+Not built. The usual fix, advancing the shot clock by the weapon's interval rather than snapping it to the current frame, trades this for a burst of catch-up shots after any stutter, which feels worse than a slightly slow gun. Frame-gated firing is normal and the effect is modest.
+
+**One thing this does confirm:** the weapon damage comparison that found the Compact SMG weaker than the Stitcher was measured at 60Hz, and the quantisation shifts every weapon by the same proportion, so that ranking is unaffected by refresh rate.
