@@ -245,7 +245,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.16';
+var VER='0.17';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,simGreed:26,simRaids:30};
@@ -724,17 +724,17 @@ function mkName(pre,letters){
   return pre+' '+pick(letters)+'-'+ri(10,99);
 }
 function mkSentry(x,y){
-  return {kind:'sentry',x:x,y:y,r:16,hp:Math.round(80*CFG.eHp),maxhp:Math.round(80*CFG.eHp),
+  return {kind:'sentry',x:x,y:y,r:22,hp:Math.round(80*CFG.eHp),maxhp:Math.round(80*CFG.eHp),
     name:mkName('SENTRY',['K','R','V','T']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:70,dmg:14,rng:340,cone:.62,hitT:0};
 }
 function mkCrawler(x,y){
-  return {kind:'crawler',x:x,y:y,r:11,hp:Math.round(34*CFG.eHp),maxhp:Math.round(34*CFG.eHp),
+  return {kind:'crawler',x:x,y:y,r:15,hp:Math.round(34*CFG.eHp),maxhp:Math.round(34*CFG.eHp),
     name:mkName('CRAWLER',['A','C','H','M']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:150,dmg:20,rng:26,cone:1.5,hitT:0,legs:rnd(0,6.28)};
 }
 function mkSnitch(x,y){
-  return {kind:'snitch',x:x,y:y,r:9,hp:Math.round(26*CFG.eHp),maxhp:Math.round(26*CFG.eHp),
+  return {kind:'snitch',x:x,y:y,r:11,hp:Math.round(26*CFG.eHp),maxhp:Math.round(26*CFG.eHp),
     name:mkName('SNITCH',['E','N','S']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:170,dmg:0,rng:380,cone:1.2,hitT:0,lost:0};
 }
@@ -1768,60 +1768,121 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv){
   }
   wc.restore();
 }
+// Every machine sprite is drawn from a scale derived off its collision radius,
+// so visual bulk and the simulation can never drift apart.
+var SENTRY_R0=22,CRAWLER_R0=15,SNITCH_R0=11;
+function spriteTop(e){
+  if(e.kind==='sentry') return 46*(e.r/SENTRY_R0);
+  if(e.kind==='crawler') return 24*(e.r/CRAWLER_R0);
+  if(e.kind==='snitch') return 34*(e.r/SNITCH_R0);
+  return 34;
+}
 function drawSentryS(e){
-  var fl=Math.cos(e.face)<0?-1:1;
-  shadowE(e.x,e.y+1,15,5,.42);
-  wc.fillStyle='#242a31';
-  wc.fillRect(e.x-13,e.y-6,26,6); wc.fillRect(e.x-13,e.y-11,26,2);
-  wc.fillStyle='#4b535d'; wc.fillRect(e.x-11,e.y-24,22,15);
-  wc.fillStyle='#657180'; wc.fillRect(e.x-11,e.y-26,22,3);
-  wc.fillStyle='#3d454f'; wc.fillRect(e.x+fl*6-5,e.y-33,10,8);
-  var ec=e.state==='chase'?'#ff3a2a':(e.state==='investigate'?'#ffd25c':'#ffb02e');
+  var S=e.r/SENTRY_R0,fl=Math.cos(e.face)<0?-1:1;
+  var hunting=e.state==='chase',alerted=hunting||e.state==='investigate';
+  var churn=Math.sin((e.step||0)*3)*1.4*S;
+  shadowE(e.x,e.y+2,20*S,7*S,.46);
+  // tread base
+  wc.fillStyle='#1b2027';
+  wc.fillRect(e.x-18*S,e.y-11*S,36*S,11*S);
+  wc.fillStyle='#2b333c';
+  for(var t=0;t<5;t++) wc.fillRect(e.x-17*S+t*7*S+churn,e.y-10*S,4*S,9*S);
+  wc.fillStyle='#39424d'; wc.fillRect(e.x-18*S,e.y-13*S,36*S,3*S);
+  // hull
+  wc.fillStyle='#4b535d'; wc.fillRect(e.x-15*S,e.y-33*S,30*S,21*S);
+  wc.fillStyle='#3a424b'; wc.fillRect(e.x-15*S,e.y-33*S,30*S,5*S);
+  wc.fillStyle='#5d6773'; wc.fillRect(e.x-15*S,e.y-35*S,30*S,3*S);
+  // hazard stripe so it reads as industrial even in the dark
+  wc.fillStyle=alerted?'#8a3a22':'#6a5a28';
+  wc.fillRect(e.x-15*S,e.y-22*S,30*S,3*S);
+  // shoulder armour on the gun side
+  wc.fillStyle='#39414b'; wc.fillRect(e.x+fl*9*S-7*S,e.y-31*S,14*S,10*S);
+  // sensor head
+  wc.fillStyle='#333b45'; wc.fillRect(e.x+fl*7*S-8*S,e.y-46*S,16*S,12*S);
+  wc.fillStyle='#4a535e'; wc.fillRect(e.x+fl*7*S-8*S,e.y-46*S,16*S,2.5*S);
+  var ec=hunting?'#ff3a2a':(e.state==='investigate'?'#ffd25c':'#ffb02e');
   wc.globalCompositeOperation='lighter';
   wc.fillStyle=ec;
-  wc.beginPath(); wc.arc(e.x+fl*10,e.y-29,2.6,0,6.2832); wc.fill();
+  // eye plus a halo that swells while hunting
+  var pulse=hunting?(1+Math.sin(G.t*9)*.25):1;
+  wc.globalAlpha=.30;
+  wc.beginPath(); wc.arc(e.x+fl*12*S,e.y-40*S,7*S*pulse,0,6.2832); wc.fill();
+  wc.globalAlpha=1;
+  wc.beginPath(); wc.arc(e.x+fl*12*S,e.y-40*S,3.4*S,0,6.2832); wc.fill();
   wc.globalCompositeOperation='source-over';
-  wc.save(); wc.translate(e.x,e.y-18); wc.rotate(e.face);
-  wc.fillStyle='#333b45'; wc.fillRect(4,-2,15,4);
+  // gun
+  wc.save(); wc.translate(e.x,e.y-25*S); wc.rotate(e.face);
+  wc.fillStyle='#2b323b'; wc.fillRect(2*S,-4*S,10*S,8*S);
+  wc.fillStyle='#333b45'; wc.fillRect(10*S,-2.6*S,18*S,5.2*S);
+  wc.fillStyle='#242a31'; wc.fillRect(26*S,-3.4*S,4*S,6.8*S);
   if(e.muzzle>0){
     wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,194,122,.95)';
-    wc.beginPath(); wc.arc(21,0,5,0,6.2832); wc.fill();
+    wc.beginPath(); wc.arc(31*S,0,7*S,0,6.2832); wc.fill();
     wc.globalCompositeOperation='source-over';
   }
   wc.restore();
 }
 function drawCrawlerS(e){
-  shadowE(e.x,e.y+1,11,4,.4);
-  wc.fillStyle='#6e2416';
-  for(var j=0;j<4;j++){
-    var lx=e.x-7+(j%2)*14,sw=Math.sin(e.legs+j*1.7)*3;
-    wc.fillRect(lx-1,(j<2?e.y-2:e.y-3)+0,2.6,6);
-    wc.fillRect(lx-1+sw,e.y-8,2.6,6);
+  var S=e.r/CRAWLER_R0,fl=Math.cos(e.face)<0?-1:1;
+  var hunting=e.state==='chase';
+  // it hunkers and stretches forward when it commits to a rush
+  var lunge=hunting?1.18:1;
+  shadowE(e.x,e.y+1,15*S,5*S,.44);
+  wc.fillStyle='#5a1c11';
+  for(var j=0;j<6;j++){
+    var side=j%2?1:-1,rank=Math.floor(j/2);
+    var lx=e.x+side*(9*S+rank*1.5*S);
+    var sw=Math.sin(e.legs+j*1.05)*4.5*S*lunge;
+    // lower joint planted, upper joint scuttling
+    wc.fillRect(lx-1.6*S,e.y-3*S-rank*1.5*S,3.2*S,8*S);
+    wc.fillRect(lx-1.6*S+sw,e.y-11*S-rank*1.5*S,3.2*S,8*S);
   }
-  wc.fillStyle='#c04a2e'; wc.fillRect(e.x-9,e.y-13,18,7);
-  wc.fillStyle='#a83c24';
-  var fl=Math.cos(e.face)<0?-1:1;
-  wc.fillRect(e.x+fl*8-3.5,e.y-14,7,6.5);
+  // carapace
+  wc.fillStyle='#a83c24'; wc.fillRect(e.x-13*S,e.y-19*S,26*S,11*S);
+  wc.fillStyle='#c04a2e'; wc.fillRect(e.x-13*S,e.y-19*S,26*S,4*S);
+  wc.fillStyle='#7d2a18'; wc.fillRect(e.x-13*S,e.y-9.5*S,26*S,2*S);
+  // head and mandibles
+  wc.fillStyle='#8e3220';
+  wc.fillRect(e.x+fl*12*S-6*S,e.y-21*S*lunge,12*S,9*S);
+  wc.fillStyle='#5a1c11';
+  wc.fillRect(e.x+fl*17*S-2*S,e.y-20*S*lunge,5*S,2.4*S);
+  wc.fillRect(e.x+fl*17*S-2*S,e.y-15*S*lunge,5*S,2.4*S);
   wc.globalCompositeOperation='lighter';
-  wc.fillStyle=e.state==='chase'?'#ff5a3a':'#ffe08a';
-  wc.beginPath(); wc.arc(e.x+fl*11,e.y-11,1.8,0,6.2832); wc.fill();
+  wc.fillStyle=hunting?'#ff5a3a':'#ffe08a';
+  var cp=hunting?(1+Math.sin(G.t*14)*.3):1;
+  wc.globalAlpha=.28;
+  wc.beginPath(); wc.arc(e.x+fl*15*S,e.y-17*S*lunge,6*S*cp,0,6.2832); wc.fill();
+  wc.globalAlpha=1;
+  wc.beginPath(); wc.arc(e.x+fl*15*S,e.y-17*S*lunge,2.4*S,0,6.2832); wc.fill();
   wc.globalCompositeOperation='source-over';
 }
 function drawSnitchS(e){
-  var hov=16+Math.sin(G.t*6+e.x*.1)*4;
-  shadowE(e.x,e.y+1,6,2.5,.3);
-  var cy=e.y-hov;
-  wc.save(); wc.translate(e.x,cy-6); wc.rotate(.785+G.t*1.2);
-  wc.fillStyle='#5a6470'; wc.fillRect(-6,-6,12,12);
-  wc.strokeStyle='#8a97a4'; wc.lineWidth=1.2; wc.strokeRect(-6,-6,12,12);
-  wc.restore();
+  var S=e.r/SNITCH_R0;
   var al=e.state==='alarm';
+  var hov=(17+Math.sin(G.t*6+e.x*.1)*4)*S;
+  shadowE(e.x,e.y+1,8*S,3*S,.32);
+  var cy=e.y-hov;
+  // rotor blur, faster when it is running its mouth
+  wc.globalCompositeOperation='lighter';
+  wc.strokeStyle=al?'rgba(255,120,90,.30)':'rgba(150,175,200,.22)';
+  wc.lineWidth=1.4*S;
+  var rr=13*S+Math.sin(G.t*(al?26:15))*1.5*S;
+  wc.beginPath(); wc.ellipse(e.x,cy-9*S,rr,4*S,0,0,6.2832); wc.stroke();
+  wc.globalCompositeOperation='source-over';
+  wc.save(); wc.translate(e.x,cy-7*S); wc.rotate(.785+G.t*1.2);
+  wc.fillStyle='#5a6470'; wc.fillRect(-8*S,-8*S,16*S,16*S);
+  wc.fillStyle='#414a55'; wc.fillRect(-8*S,-8*S,16*S,5*S);
+  wc.strokeStyle='#8a97a4'; wc.lineWidth=1.3*S; wc.strokeRect(-8*S,-8*S,16*S,16*S);
+  wc.restore();
   var on=al?(Math.sin(G.t*16)>0):(Math.sin(G.t*4)>-.4);
   if(on){
     wc.globalCompositeOperation='lighter';
     wc.fillStyle=al?'#ff3a2a':'#ffb02e';
-    wc.beginPath(); wc.arc(e.x,cy-15,2.4,0,6.2832); wc.fill();
+    wc.globalAlpha=.32;
+    wc.beginPath(); wc.arc(e.x,cy-19*S,7*S,0,6.2832); wc.fill();
+    wc.globalAlpha=1;
+    wc.beginPath(); wc.arc(e.x,cy-19*S,3*S,0,6.2832); wc.fill();
     wc.globalCompositeOperation='source-over';
   }
 }
@@ -2000,7 +2061,7 @@ function render2D(dt){
   for(i=0;i<VIS.length;i++){
     var ne=VIS[i];
     if(!ne.name) continue;
-    var lift=ne.kind==='snitch'?40:(ne.kind==='crawler'?20:34);
+    var lift=spriteTop(ne)+8;
     var hostile=ne.kind==='raider';
     wc.font='700 9px "Oxanium", sans-serif';
     var tw=wc.measureText(ne.name).width;
