@@ -247,7 +247,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.37';
+var VER='0.38';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -2742,7 +2742,9 @@ function drawNoiseMarkers(){
     var off=(s.x<pad||s.x>W-pad||s.y<pad||s.y>H-pad);
     if(!off) continue;
     var dp=dist(p,pn);
-    var a=(1-pn.t/pn.life)*clamp(1-dp/(pn.s*2.2),0,1);
+    // same falloff as the in-world ring: what you hear must not depend on where
+    // the camera happens to be pointing
+    var a=(1-pn.t/pn.life)*clamp(1-dp/(pn.s*1.5),0,1);
     if(a<=0.02) continue;
     var ang=Math.atan2(pn.y-p.y,pn.x-p.x);
     var cx=W/2,cy=H/2,rx=(W/2-pad),ry=(H/2-pad);
