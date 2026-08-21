@@ -255,7 +255,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.71';
+var VER='0.72';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -543,6 +543,27 @@ function makeBuilding(x,y,w,h,out,d){
     seg(mx,y+t,t,g2-(y+t)); seg(mx,g2+72,t,(y+h-t)-(g2+72));
   }
 }
+// A coarse walkability grid for route finding. Flat top-down, same coordinate
+// space as every other simulation query, built once per map alongside the walls.
+// Cells are marked by testing their centre against walls grown by a body radius,
+// rather than by blocking every cell a wall touches: the second is tidier but
+// closes 64 unit doorways at this resolution, and a route finder that thinks
+// every door is bricked up is worse than none.
+var NAVC=16,NAVPAD=12;
+function buildNav(walls){
+  var gw=Math.ceil(WORLD_W/NAVC),gh=Math.ceil(WORLD_H/NAVC);
+  var blk=new Uint8Array(gw*gh);
+  for(var i=0;i<walls.length;i++){
+    var w=walls[i];
+    var x0=Math.max(0,Math.floor((w.x-NAVPAD)/NAVC)),x1=Math.min(gw-1,Math.ceil((w.x+w.w+NAVPAD)/NAVC));
+    var y0=Math.max(0,Math.floor((w.y-NAVPAD)/NAVC)),y1=Math.min(gh-1,Math.ceil((w.y+w.h+NAVPAD)/NAVC));
+    for(var y=y0;y<=y1;y++)for(var x=x0;x<=x1;x++){
+      var cx=x*NAVC+NAVC*.5,cy=y*NAVC+NAVC*.5;
+      if(cx>w.x-NAVPAD&&cx<w.x+w.w+NAVPAD&&cy>w.y-NAVPAD&&cy<w.y+w.h+NAVPAD) blk[y*gw+x]=1;
+    }
+  }
+  return {w:gw,h:gh,c:NAVC,blk:blk,run:0};
+}
 function buildMap(){
   var walls=[],b=40;
   walls.push({x:0,y:0,w:WORLD_W,h:b,d:1});
@@ -616,7 +637,7 @@ function buildMap(){
     segs.push({x1:w2.x+w2.w,y1:w2.y+w2.h,x2:w2.x,y2:w2.y+w2.h});
     segs.push({x1:w2.x,y1:w2.y+w2.h,x2:w2.x,y2:w2.y});
   }
-  return {walls:walls,segs:segs,buildings:buildings,water:water,cw:cw,ch:ch,cols:cols,rows:rows};
+  return {walls:walls,segs:segs,buildings:buildings,water:water,cw:cw,ch:ch,cols:cols,rows:rows,nav:buildNav(walls)};
 }
 // Day is a look, not a difficulty. Vision cone, awareness radius, enemy ranges
 // and every other tunable are identical in both conditions, so choosing daylight
@@ -853,6 +874,10 @@ function smokeSegs(){
 }
 function refreshVseg(){
   G.vseg=G.smokes.length?G.map.segs.concat(smokeSegs()):G.map.segs;
+  // Route searches are rationed one per frame. This is the only call the live
+  // loop and the sim step both make exactly once a frame, and it runs before
+  // anything moves in either, which is what the ration needs.
+  G.navBudget=1;
 }
 
 // ================================================================ raid build
@@ -1639,7 +1664,7 @@ function updateBot(dt){
   // leave enough clock to walk there AND sit through the whole inbound wait
   } else if(bagWeight()>=CFG.simGreed||bagWeight()>=cap||G.timeLeft<CFG.extractWait+120||(p.ammo+p.reserve)<=0){
     var z=G.active;
-    seekPoint(p,z.x,z.y,CFG.pSpeed*.95,dt); moved=true;
+    navSeek(p,z.x,z.y,CFG.pSpeed*.95,dt); moved=true;
     p.face=Math.atan2(z.y-p.y,z.x-p.x);
   } else {
     if(!p.goal||p.goal.opened||p.goal.skip){
@@ -1656,7 +1681,7 @@ function updateBot(dt){
         p.searchT=(p.searchT||0)+dt;
         if(p.searchT>=p.goal.time){ openContainer(p.goal); p.searchT=0; p.goal=null; }
       } else {
-        seekPoint(p,p.goal.x,p.goal.y,CFG.pSpeed*.9,dt); moved=true;
+        navSeek(p,p.goal.x,p.goal.y,CFG.pSpeed*.9,dt); moved=true;
         p.seekT=(p.seekT||0)+dt;
         p.face=Math.atan2(p.goal.y-p.y,p.goal.x-p.x);
         p.searchT=0;
@@ -1754,6 +1779,122 @@ function seekPoint(e,tx,ty,spd,dt){
       if(e.slideFlip){ e.slideDir=-e.slideDir; e.slideFlip=false; }
     }
   } else e.stallT=0;
+}
+// A* over the walkability grid. Scratch arrays live on the nav object and are
+// stamped with a run number instead of being cleared, so repeated queries cost
+// no allocation. Returns world points, or null if there is no route.
+function navPath(nav,sx,sy,tx,ty){
+  var gw=nav.w,gh=nav.h,n=gw*gh;
+  if(!nav.g){
+    nav.g=new Float32Array(n); nav.from=new Int32Array(n);
+    nav.seen=new Int32Array(n); nav.shut=new Int32Array(n);
+    nav.hn=new Int32Array(n); nav.hp=new Float32Array(n);
+  }
+  var run=++nav.run;
+  function cell(x,y){ return Math.min(gh-1,Math.max(0,y))*gw+Math.min(gw-1,Math.max(0,x)); }
+  // A body standing half inside a wall still has to be given somewhere to start,
+  // so slide to the nearest open cell rather than refusing the query.
+  function nearestOpen(ci){
+    if(!nav.blk[ci]) return ci;
+    var cy=(ci/gw)|0,cx=ci%gw;
+    for(var r=1;r<=6;r++)for(var dy=-r;dy<=r;dy++)for(var dx=-r;dx<=r;dx++){
+      if(Math.abs(dx)!==r&&Math.abs(dy)!==r) continue;
+      var x2=cx+dx,y2=cy+dy;
+      if(x2<0||y2<0||x2>=gw||y2>=gh) continue;
+      if(!nav.blk[y2*gw+x2]) return y2*gw+x2;
+    }
+    return -1;
+  }
+  var start=nearestOpen(cell(Math.floor(sx/NAVC),Math.floor(sy/NAVC)));
+  var goal=nearestOpen(cell(Math.floor(tx/NAVC),Math.floor(ty/NAVC)));
+  if(start<0||goal<0) return null;
+  if(start===goal) return [{x:tx,y:ty}];
+  var gx=goal%gw,gy=(goal/gw)|0;
+  function h(i){
+    var dx=Math.abs(i%gw-gx),dy=Math.abs((i/gw|0)-gy);
+    return (dx>dy?dx-dy:dy-dx)+1.41421*(dx>dy?dy:dx);
+  }
+  var hn=nav.hn,hp=nav.hp,hs=0;
+  function push(i,pr){
+    var c=hs++; hn[c]=i; hp[c]=pr;
+    while(c>0){ var pa=(c-1)>>1; if(hp[pa]<=hp[c]) break;
+      var ti=hn[pa]; hn[pa]=hn[c]; hn[c]=ti; var tp=hp[pa]; hp[pa]=hp[c]; hp[c]=tp; c=pa; }
+  }
+  function pop(){
+    var top=hn[0]; hs--;
+    if(hs>0){ hn[0]=hn[hs]; hp[0]=hp[hs];
+      var c=0;
+      for(;;){ var l=c*2+1,r=l+1,m=c;
+        if(l<hs&&hp[l]<hp[m]) m=l;
+        if(r<hs&&hp[r]<hp[m]) m=r;
+        if(m===c) break;
+        var ti=hn[m]; hn[m]=hn[c]; hn[c]=ti; var tp=hp[m]; hp[m]=hp[c]; hp[c]=tp; c=m; }
+    }
+    return top;
+  }
+  nav.g[start]=0; nav.seen[start]=run; nav.from[start]=-1; push(start,h(start));
+  var guard=0,cap=26000,found=false;
+  while(hs>0&&guard++<cap){
+    var cur=pop();
+    if(nav.shut[cur]===run) continue;
+    nav.shut[cur]=run;
+    if(cur===goal){ found=true; break; }
+    var cx2=cur%gw,cy2=(cur/gw)|0,gc=nav.g[cur];
+    for(var dy2=-1;dy2<=1;dy2++)for(var dx2=-1;dx2<=1;dx2++){
+      if(!dx2&&!dy2) continue;
+      var nx=cx2+dx2,ny=cy2+dy2;
+      if(nx<0||ny<0||nx>=gw||ny>=gh) continue;
+      var ni=ny*gw+nx;
+      if(nav.blk[ni]) continue;
+      // No slipping through the corner where two walls meet diagonally.
+      if(dx2&&dy2&&(nav.blk[cy2*gw+nx]||nav.blk[ny*gw+cx2])) continue;
+      var ng=gc+((dx2&&dy2)?1.41421:1);
+      if(nav.seen[ni]===run&&ng>=nav.g[ni]) continue;
+      nav.seen[ni]=run; nav.g[ni]=ng; nav.from[ni]=cur;
+      push(ni,ng+h(ni));
+    }
+  }
+  if(!found) return null;
+  var cells=[],c2=goal;
+  while(c2>=0){ cells.push(c2); c2=nav.from[c2]; }
+  cells.reverse();
+  // Pull the string tight: the grid route staircases, so keep only the corners
+  // that a straight walk cannot see past. What is left reads as walking, not as
+  // following a grid.
+  var pts=[],i2=0;
+  function pt(ci){ return {x:(ci%gw)*NAVC+NAVC*.5,y:((ci/gw)|0)*NAVC+NAVC*.5}; }
+  while(i2<cells.length-1){
+    var j=cells.length-1;
+    for(;j>i2+1;j--){
+      var a=pt(cells[i2]),b2=pt(cells[j]);
+      if(losClear(a.x,a.y,b2.x,b2.y,G.map.segs)) break;
+    }
+    pts.push(pt(cells[j])); i2=j;
+  }
+  pts.push({x:tx,y:ty});
+  return pts;
+}
+// Steer along a route, falling back to the local wall hug for the last stretch
+// and for anything already in plain sight.
+function navSeek(e,tx,ty,spd,dt){
+  var d=dist(e,{x:tx,y:ty});
+  if(d<200||losClear(e.x,e.y,tx,ty,G.map.segs)){ e.path=null; seekPoint(e,tx,ty,spd,dt); return; }
+  e.pathT=(e.pathT||0)-dt;
+  var stale=!e.path||e.pathT<=0||!e.pathGoal||dist({x:tx,y:ty},e.pathGoal)>140;
+  // Strict budget, including for a body that has no route at all. A search that
+  // finds nothing is the most expensive one there is, so retrying it every frame
+  // is the trap here; the timer below makes it wait its turn like everyone else.
+  if(stale&&G.navBudget>0){
+    G.navBudget--;
+    e.path=navPath(G.map.nav,e.x,e.y,tx,ty);
+    // Spread the refresh so bodies that started together do not all come due on
+    // the same frame for the rest of the raid.
+    e.pathI=0; e.pathT=2.6+Math.random()*1.2; e.pathGoal={x:tx,y:ty};
+  }
+  if(!e.path||!e.path.length){ seekPoint(e,tx,ty,spd,dt); return; }
+  while(e.pathI<e.path.length-1&&dist(e,e.path[e.pathI])<30) e.pathI++;
+  var wp=e.path[e.pathI];
+  seekPoint(e,wp.x,wp.y,spd,dt);
 }
 // Movement is resolved by pushing out of anything overlapped afterwards, so a
 // step big enough to land a body past the middle of a thin wall gets ejected out
@@ -1873,7 +2014,7 @@ function updateEnts(dt){
       if(!sees&&e.alert<=0) e.state=e.kind==='raider'?'loot':'investigate';
     }
     else if(e.state==='investigate'){
-      seekPoint(e,e.tx,e.ty,e.spd*.75,dt); want=Math.atan2(e.ty-e.y,e.tx-e.x);
+      navSeek(e,e.tx,e.ty,e.spd*.75,dt); want=Math.atan2(e.ty-e.y,e.tx-e.x);
       if(dist(e,{x:e.tx,y:e.ty})<34){ e.state=e.kind==='raider'?'loot':'patrol'; e.cd=rnd(.5,1.6); }
     }
     else if(e.state==='loot'&&e.kind==='raider'){
@@ -1888,7 +2029,7 @@ function updateEnts(dt){
         e.goalT=0; e.goalD=e.goal?dist(e,e.goal):0;
       }
       if(e.goal){
-        seekPoint(e,e.goal.x,e.goal.y,e.spd,dt); want=Math.atan2(e.goal.y-e.y,e.goal.x-e.x);
+        navSeek(e,e.goal.x,e.goal.y,e.spd,dt); want=Math.atan2(e.goal.y-e.y,e.goal.x-e.x);
         // Give up on a container we are making no headway toward, the same way the
         // sim bot already does. There is no pathfinding, so a raider that locks
         // onto something behind a wall otherwise grinds there for the whole raid.
@@ -1913,7 +2054,7 @@ function updateEnts(dt){
     }
     else if(e.state==='extract'&&e.kind==='raider'){
       var z=G.active;
-      seekPoint(e,z.x,z.y,e.spd*1.1,dt); want=Math.atan2(z.y-e.y,z.x-e.x);
+      navSeek(e,z.x,z.y,e.spd*1.1,dt); want=Math.atan2(z.y-e.y,z.x-e.x);
       if(dist(e,z)<z.r){
         e.extracting+=dt;
         if(e.extracting>5){
