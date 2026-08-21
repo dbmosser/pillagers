@@ -249,7 +249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.48';
+var VER='0.49';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -925,7 +925,7 @@ function buildRaid(sim){
     containers:containers,ents:ents,bullets:[],pings:[],puffs:[],
     decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],labels:[],flashes:[],hitMark:null,
     zones:zones,active:active,beaconT:null,searching:null,searchT:0,
-    explored:{},msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,legendOn:true,yaw:0,pitch:.14,sprinting:false,
+    msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,legendOn:true,sprinting:false,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
       kills:{sentry:0,crawler:0,raider:0,snitch:0},
       dmg:{sentry:0,crawler:0,raider:0,snitch:0,other:0},
