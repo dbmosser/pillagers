@@ -255,7 +255,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.74';
+var VER='0.75';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -549,8 +549,11 @@ function makeBuilding(x,y,w,h,out,d){
 // rather than by blocking every cell a wall touches: the second is tidier but
 // closes 64 unit doorways at this resolution, and a route finder that thinks
 // every door is bricked up is worse than none.
-var NAVC=16,NAVPAD=12;
-function buildNav(walls){
+// Pad is the body radius the route is cleared for. Bodies here run 11 to 22,
+// so this is deliberately measured rather than assumed: see the v0.75 note.
+var NAVC=16,NAVPADD=12;
+function buildNav(walls,pad){
+  var NAVPAD=pad===undefined?NAVPADD:pad;
   var gw=Math.ceil(WORLD_W/NAVC),gh=Math.ceil(WORLD_H/NAVC);
   var blk=new Uint8Array(gw*gh);
   for(var i=0;i<walls.length;i++){
@@ -1892,8 +1895,12 @@ function navPath(nav,sx,sy,tx,ty){
 // Steer along a route, falling back to the local wall hug for the last stretch
 // and for anything already in plain sight.
 function navSeek(e,tx,ty,spd,dt){
-  var d=dist(e,{x:tx,y:ty});
-  if(d<200||losClear(e.x,e.y,tx,ty,G.map.segs)){ e.path=null; e.pathFail=false; seekPoint(e,tx,ty,spd,dt); return; }
+  // Steer straight only when the target is actually in sight. This used to also
+  // bail out whenever the target was within 200 units, which threw the route
+  // away exactly where it was needed most: the last stretch to a container
+  // inside a building is short and has a wall across it, so the body arrived at
+  // the doorway, dropped back to feeling along the wall, and never got in.
+  if(losClear(e.x,e.y,tx,ty,G.map.segs)){ e.path=null; e.pathFail=false; seekPoint(e,tx,ty,spd,dt); return; }
   e.pathT=(e.pathT||0)-dt;
   var stale=!e.path||e.pathT<=0||!e.pathGoal||dist({x:tx,y:ty},e.pathGoal)>140;
   // Strict budget, including for a body that has no route at all. A search that
