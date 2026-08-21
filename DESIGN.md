@@ -220,3 +220,10 @@ The reachability sweep left one thing open: a single building in 345 looked seal
 **2,717 buildings across 320 maps. Every one enterable. Nothing skipped.**
 
 So there are no sealed buildings, and the earlier one-in-345 was the same kind of resolution artefact as the 0.6 percent figure that dissolved when it was refined. Building layout has no tunable, so this covers every case the generator can produce. Do not reopen this without a concrete case from a real session.
+
+### File integrity and spawn distances (v0.67 tick, nothing built)
+This file has been edited by scripted splice around twenty-five times, so its structural health is worth checking rather than assuming. **No duplicate function or variable definitions, no fixture hooks left behind, no console or debugger statements, no unused top-level variables.** 130 functions, 3,966 lines. The editing method has not corrupted anything.
+
+Spawn distance had been audited but never measured at scale. Across 150 maps and 3,150 spawns: **not one enemy of any kind spawned closer to the operator than its minimum, and the closest any ever got was exactly its threshold.** Sentry 520, crawler 460, snitch 420, raider 700, all held, average distance around 1,200.
+
+One wart worth tidying whenever the file is next open for a real reason, not on its own: the sentry spawn line uses an inline closure and `apply` where its three sibling lines use a plain temporary. Same behaviour, confirmed by the measurement above, but it reads unlike the code around it.
