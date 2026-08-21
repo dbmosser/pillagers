@@ -247,7 +247,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.34';
+var VER='0.35';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -890,7 +890,7 @@ function buildRaid(sim){
       roll:0,rollCd:0,rollDir:{x:1,y:0},ads:false},
     bag:[],pouch:{smoke:0,decoy:0,frag:0},tsel:0,
     containers:containers,ents:ents,bullets:[],pings:[],puffs:[],
-    decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],labels:[],flashes:[],
+    decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],labels:[],flashes:[],hitMark:null,
     zones:zones,active:active,beaconT:null,searching:null,searchT:0,
     explored:{},msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,legendOn:true,yaw:0,pitch:.14,sprinting:false,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
@@ -1655,6 +1655,9 @@ function updateBullets(dt){
             if(en.kind!=='snitch'){ en.alert=2.6; en.state='chase'; en.tx=p.x; en.ty=p.y; }
             else { en.state='alarm'; }
             G.tel.hits++;
+            // Hit feedback at the reticle. The sprite flash and spark happen out
+            // in the dark at range, so a landed shot could read as a miss.
+            G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
             spark(b.x,b.y,en.kind==='raider'?'#e0483a':'#ffc25c',9,220);
             blip('hit',dist(p,en)); hit=true; break;
           }
@@ -2542,6 +2545,19 @@ function drawHUD(){
     ctx.moveTo(rx0,ry0+gap); ctx.lineTo(rx0,ry0+gap+len);
     ctx.stroke();
     ctx.fillStyle='rgba(230,240,246,.9)'; ctx.fillRect(rx0-1,ry0-1,2,2);
+    // hitmarker: four diagonal ticks, wider and amber when the target dropped
+    if(G.hitMark){
+      var hm=G.hitMark,hk=clamp(1-hm.t/hm.life,0,1);
+      var hIn=(hm.kill?7:5)+(1-hk)*(hm.kill?7:4),hOut=hIn+(hm.kill?7:5);
+      ctx.strokeStyle=hm.kill?'rgba(255,176,46,'+(hk*.95)+')':'rgba(240,248,252,'+(hk*.9)+')';
+      ctx.lineWidth=hm.kill?2.4:1.8;
+      ctx.beginPath();
+      ctx.moveTo(rx0-hOut,ry0-hOut); ctx.lineTo(rx0-hIn,ry0-hIn);
+      ctx.moveTo(rx0+hIn,ry0-hIn);   ctx.lineTo(rx0+hOut,ry0-hOut);
+      ctx.moveTo(rx0-hOut,ry0+hOut); ctx.lineTo(rx0-hIn,ry0+hIn);
+      ctx.moveTo(rx0+hIn,ry0+hIn);   ctx.lineTo(rx0+hOut,ry0+hOut);
+      ctx.stroke();
+    }
   }
   // timer + compass
   ctx.font='700 20px "Oxanium", sans-serif'; ctx.textAlign='center';
@@ -3194,6 +3210,7 @@ function loop(ts){
       for(i=G.puffs.length-1;i>=0;i--){ G.puffs[i].t+=dt; if(G.puffs[i].t>G.puffs[i].life) G.puffs.splice(i,1); }
       for(i=G.labels.length-1;i>=0;i--){ G.labels[i].t+=dt; if(G.labels[i].t>G.labels[i].life) G.labels.splice(i,1); }
       for(i=G.flashes.length-1;i>=0;i--){ G.flashes[i].t+=dt; if(G.flashes[i].t>G.flashes[i].life) G.flashes.splice(i,1); }
+      if(G.hitMark){ G.hitMark.t+=dt; if(G.hitMark.t>G.hitMark.life) G.hitMark=null; }
       for(i=G.sparks.length-1;i>=0;i--){
         var sp=G.sparks[i]; sp.t+=dt; sp.x+=sp.vx*dt; sp.y+=sp.vy*dt;
         sp.vx*=.92; sp.vy*=.92;
