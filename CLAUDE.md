@@ -1,7 +1,9 @@
 # CLAUDE.md - Dark Raiders
 
 ## What this project is
-Dark Raiders: a single-file HTML5 extraction shooter. The entire game is `dark_raiders.html` (3/4 StarCraft-style 2D canvas renderer over a top-down simulation). Current version: v0.8. `DESIGN.md` is the source of truth: pillars, systems, config reference, changelog, telemetry protocol, known limits. Read it at the start of every session before touching anything.
+**Scope boundary: this project is the 2.5D StarCraft-view version, and only that.** Daniel runs three separate Claude projects for Dark Raiders: this one keeps the 3/4 top-down view, and two others are complete, independent rewrites as a first-person shooter and a third-person shooter. Those are separate instances of the game with no shared assets or code. Do not convert the renderer here, do not add WebGL or a raycaster, and do not port work in from the other two. If you find first-person, third-person, raycaster or 3D code in this working tree, it arrived by mistake from another project: park it on a branch, restore the canonical file, and tell Daniel rather than building on it.
+
+Dark Raiders: a single-file HTML5 extraction shooter. The entire game is `dark_raiders.html` (3/4 StarCraft-style 2D canvas renderer over a top-down simulation). Current version: v0.28. `DESIGN.md` is the source of truth: pillars, systems, config reference, changelog, telemetry protocol, known limits. Read it at the start of every session before touching anything.
 
 ## Who you are working with
 Daniel is the designer and playtester, not a coder. Never ask him to edit code, run commands, or debug. Ship finished builds; he plays them by opening `dark_raiders.html` in his browser.
