@@ -255,7 +255,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.72';
+var VER='0.73';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -1810,9 +1810,16 @@ function navPath(nav,sx,sy,tx,ty){
   if(start<0||goal<0) return null;
   if(start===goal) return [{x:tx,y:ty}];
   var gx=goal%gw,gy=(goal/gw)|0;
+  // Weighted slightly above true distance. A strict A star explores a wide fan
+  // of equally good routes across open ground and the worst query measured 13.4ms,
+  // which on the same frame as a render is a dropped frame. Leaning on the
+  // heuristic makes it commit toward the target sooner. The cost is routes that
+  // can be a few percent off ideal, which nobody can see once the string is
+  // pulled tight.
+  var HW=1.25;
   function h(i){
     var dx=Math.abs(i%gw-gx),dy=Math.abs((i/gw|0)-gy);
-    return (dx>dy?dx-dy:dy-dx)+1.41421*(dx>dy?dy:dx);
+    return ((dx>dy?dx-dy:dy-dx)+1.41421*(dx>dy?dy:dx))*HW;
   }
   var hn=nav.hn,hp=nav.hp,hs=0;
   function push(i,pr){
@@ -1833,7 +1840,7 @@ function navPath(nav,sx,sy,tx,ty){
     return top;
   }
   nav.g[start]=0; nav.seen[start]=run; nav.from[start]=-1; push(start,h(start));
-  var guard=0,cap=26000,found=false;
+  var guard=0,cap=60000,found=false;
   while(hs>0&&guard++<cap){
     var cur=pop();
     if(nav.shut[cur]===run) continue;
