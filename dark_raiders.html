@@ -249,7 +249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.46';
+var VER='0.47';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -2394,7 +2394,6 @@ function render2D(dt){
     }
   }
   // nameplates over anything you can currently see
-  wc.textAlign='center';
   for(i=0;i<VIS.length;i++){
     var ne=VIS[i];
     if(!ne.name) continue;
@@ -2672,6 +2671,28 @@ function drawHUD(){
     ctx.fillStyle='rgba(205,214,221,'+clamp(G.msgT,0,1)+')';
     ctx.fillText(G.msg,16,26);
   }
+  // Extraction ring labels, drawn on the HUD above the fog. Three unexplained
+  // circles on the ground was a real complaint; they say what they are now, and
+  // where your extraction is was never secret information anyway.
+  ctx.textAlign='center';
+  for(i=0;i<G.zones.length;i++){
+    var zz2=G.zones[i],za=zz2===G.active;
+    var zs=w2s(zz2.x,zz2.r+18,zz2.y);
+    if(!zs||zs.x<-90||zs.x>W+90||zs.y<-40||zs.y>H+40) continue;
+    var zlab=za?'EXTRACTION':'EXTRACTION - COLD';
+    ctx.font='700 11px "Oxanium", sans-serif';
+    var zwid=ctx.measureText(zlab).width;
+    ctx.fillStyle='rgba(6,9,13,.78)';
+    ctx.fillRect(zs.x-zwid/2-6,zs.y-11,zwid+12,15);
+    ctx.fillStyle=za?'#35d6c8':'rgba(168,180,193,.95)';
+    ctx.fillText(zlab,zs.x,zs.y);
+    if(!za){
+      ctx.font='9px "Roboto Mono", monospace';
+      ctx.fillStyle='rgba(168,180,193,.7)';
+      ctx.fillText('no beacon here',zs.x,zs.y+13);
+    }
+  }
+  ctx.textAlign='left';
   // projected world labels
   var nc2=G.nearContainer;
   if(nc2&&!G.searching&&!p.downed){
@@ -2795,7 +2816,9 @@ var GEARRULES=[
   ['','Change loadout at the Undercroft armory before deploying.'],
   ['ARMOUR','no equip key. Plates apply on pickup until armour is full.'],
   ['THROWS','2 of each auto-load from stash. Q cycles, G throws.'],
-  ['WATER','slows you and is loud. Crouch does not quiet a splash.']
+  ['WATER','slows you and is loud. Crouch does not quiet a splash.'],
+  ['RINGS','Teal ring is your extraction. Grey rings are cold.'],
+  ['SOUND','Expanding rings are noise. White is yours, red is theirs.']
 ];
 // A hostile ping outside the viewport painted exactly zero pixels, measured. So
 // sound you cannot see now gets a chevron on the screen edge pointing at it.
@@ -2972,6 +2995,10 @@ function drawMapOverlay(){
     ctx.strokeStyle=act?'#35d6c8':'rgba(120,135,148,.4)'; ctx.lineWidth=act?2:1;
     ctx.beginPath(); ctx.arc(ox+zz.x*sc,oy+zz.y*sc,zz.r*sc+3,0,6.2832); ctx.stroke();
     if(act){ ctx.fillStyle='#35d6c8'; ctx.beginPath(); ctx.arc(ox+zz.x*sc,oy+zz.y*sc,3,0,6.2832); ctx.fill(); }
+    ctx.textAlign='center'; ctx.font='700 9px "Oxanium", sans-serif';
+    ctx.fillStyle=act?'#35d6c8':'rgba(150,164,178,.75)';
+    ctx.fillText(act?'EXTRACTION':'COLD',ox+zz.x*sc,oy+zz.y*sc+zz.r*sc+16);
+    ctx.textAlign='left';
   }
   ctx.fillStyle='#ffd25c';
   ctx.beginPath(); ctx.arc(ox+p.x*sc,oy+p.y*sc,4,0,6.2832); ctx.fill();
