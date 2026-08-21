@@ -249,7 +249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.42';
+var VER='0.43';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -929,18 +929,41 @@ function buildRaid(sim){
   if(sim){
     g.bag=['bandage','bandage'];
   } else {
-    var taken=0,tcount={smoke:0,decoy:0,frag:0};
+    var taken=0,SLOTS=3,tcount={smoke:0,decoy:0,frag:0};
     for(var k=P.stash.length-1;k>=0;k--){
       var it=ITEMS[P.stash[k]];
       if(!it) continue;
-      if(it.use==='throw'&&tcount[it.tk]<2){ g.pouch[it.tk]++; tcount[it.tk]++; P.stash.splice(k,1); continue; }
-      if(taken<3&&(it.use==='heal'||it.use==='ammo'||it.use==='armor')){
-        if(it.use==='armor') g.player.armor=Math.min(ARMOR_MAX,g.player.armor+it.amt);
-        else if(it.use==='ammo') g.player.reserve+=it.amt;
-        else g.bag.push(P.stash[k]);
-        P.stash.splice(k,1); taken++;
-      }
+      if(it.use==='throw'&&tcount[it.tk]<2){ g.pouch[it.tk]++; tcount[it.tk]++; P.stash.splice(k,1); }
     }
+    // The three kit slots used to be filled by walking the stash backwards, so
+    // whichever items happened to sit at the end won. The same stash could send
+    // you out with 55 armour or with none. Now it goes by category, in the order
+    // that actually keeps you alive: armour, then ammo, then medical. Armour and
+    // ammo are spent the moment you land so take the biggest; medical is carried,
+    // and you lose what you carry when you die, so take the smallest.
+    function takeBest(use,wantBigger){
+      if(taken>=SLOTS) return false;
+      if(use==='armor'&&g.player.armor>=ARMOR_MAX) return false;
+      var bi=-1,bv=0;
+      for(var i=0;i<P.stash.length;i++){
+        var t=ITEMS[P.stash[i]];
+        if(!t||t.use!==use) continue;
+        var v=t.amt||0;
+        if(bi<0||(wantBigger?v>bv:v<bv)){ bi=i; bv=v; }
+      }
+      if(bi<0) return false;
+      var key=P.stash[bi],itm=ITEMS[key];
+      // do not burn a whole plate for a few points of headroom
+      if(use==='armor'&&(ARMOR_MAX-g.player.armor)<itm.amt*0.5) return false;
+      if(use==='armor') g.player.armor=Math.min(ARMOR_MAX,g.player.armor+itm.amt);
+      else if(use==='ammo') g.player.reserve+=itm.amt;
+      else g.bag.push(key);
+      P.stash.splice(bi,1); taken++;
+      return true;
+    }
+    takeBest('armor',true); takeBest('ammo',true); takeBest('heal',false);
+    // a missing category leaves a slot free, so fill it with whatever is left
+    while(taken<SLOTS&&(takeBest('heal',false)||takeBest('ammo',true)||takeBest('armor',true)));
   }
   return g;
 }
