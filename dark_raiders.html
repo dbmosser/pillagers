@@ -251,7 +251,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.57';
+var VER='0.58';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -1109,8 +1109,28 @@ function doThrow(){
   var wx=mouse.x+(G.camX===undefined?p.x-W/2:G.camX),wy=mouse.y+(G.camY===undefined?p.y-H*.54:G.camY);
   var dx=wx-p.x,dy=wy-p.y,d=Math.sqrt(dx*dx+dy*dy);
   var rngT=Math.min(d,270);
-  var tx=p.x+(d>1?dx/d:1)*rngT,ty=p.y+(d>1?dy/d:0)*rngT;
+  var ux=(d>1?dx/d:1),uy=(d>1?dy/d:0);
+  // A thrown object used to be slid straight from hand to target with no wall
+  // test at all, so a frag reached into a room you had never seen and killed
+  // what was in it. Measured before this: from open ground about one in seven
+  // enemies inside throwing range had no line of sight to you, and from a
+  // container inside a building about half did. There is no height in this
+  // simulation, every wall stops sight and gunfire outright, and nothing on the
+  // map throws anything back, so lobbing over cover was a player-only way
+  // through the one rule the game is built on. The throw now stops at the first
+  // wall in its path, a short way off the face so it detonates against cover
+  // rather than inside it.
+  var wt=rayHit(p.x,p.y,ux,uy,G.map.segs,rngT),blocked=wt<rngT;
+  // Never behind the thrower: the standoff shrinks when the wall is close, so a
+  // throw into cover you are hugging still lands in front of you.
+  if(blocked) rngT=Math.max(wt*0.6,wt-12);
+  var tx=p.x+ux*rngT,ty=p.y+uy*rngT;
   G.throws.push({x:p.x,y:p.y,sx:p.x,sy:p.y,tx:tx,ty:ty,t:0,dur:Math.max(.25,rngT/430),kind:tk});
+  // A frag stopped by cover you are stood against lands inside its own blast.
+  // That is a fair mistake to make, but only if you are told you made it: the
+  // fuse is 1.1s and you can clear the radius, so the call goes out the instant
+  // it leaves your hand rather than when it goes off.
+  if(blocked&&rngT<110) say(tk==='frag'?'It hit cover. MOVE.':'It hit cover, dropped short.');
   ping(p.x,p.y,90,false);
 }
 function activateThrow(th){
