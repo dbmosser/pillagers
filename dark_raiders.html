@@ -245,7 +245,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.26';
+var VER='0.27';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.35,simGreed:26,simRaids:30};
@@ -2040,11 +2040,14 @@ function render2D(dt){
   var sk=G.shake>0?G.shake*.7:0;
   var ox=Math.round(camX+rnd(-sk,sk)),oy=Math.round(camY+rnd(-sk,sk));
   VX=ox; VY=oy;
-  // visible-to-player list for HUD labels
+  // Who the player can actually see this frame. Everything about an entity,
+  // sprite included, keys off this: the fog is only 93% opaque, so anything
+  // drawn unconditionally shows faintly through walls.
   VIS.length=0;
   for(i=0;i<G.ents.length;i++){
     var ev=G.ents[i];
-    if(canSee(p.x,p.y,p.face,ev.x,ev.y,G.vseg)) VIS.push(ev);
+    ev.seen=canSee(p.x,p.y,p.face,ev.x,ev.y,G.vseg);
+    if(ev.seen) VIS.push(ev);
   }
   wc.fillStyle='#04060a'; wc.fillRect(0,0,W,H);
   wc.save(); wc.translate(-ox,-oy);
@@ -2141,6 +2144,7 @@ function render2D(dt){
   }
   for(i=0;i<G.ents.length;i++){
     var e=G.ents[i];
+    if(!e.seen) continue;
     if(e.x<ox-60||e.x>ox+W+60||e.y<oy-80||e.y>oy+H+80) continue;
     DR.push({k:e.y,e:e});
   }
