@@ -183,6 +183,11 @@ Recommendation is 1: the shop should reward spending, and no existing gear gets 
 
 ## 12. Checked and healthy, no action needed
 
+- **Smoke still blocks sight after the v0.78 visibility optimisation (v0.79 tick, no code change).** This was the real regression risk from that change, since it filters wall segments and smoke works by adding temporary ones. In the open the fan reaches exactly 620, matching `viewFar`, and an enemy at 300 units is visible; drop smoke at 150 and the fan cuts to 77 and that same enemy is not visible. Both the fan and `canSee` agree.
+- **The dodge roll cannot clip through walls at the current density.** This broke at v0.56 and the map has since gained two and a half times more walls, so it was worth re-testing rather than trusting the old fix. 800 rolls straight into thin walls, from all four sides, at both the normal frame rate and the worst one the game allows: zero pass throughs.
+- **A save from before this whole rebuild survives loading.** Four shapes tested, all booting with credits and progress intact and the raid timer correctly taking the new 600s default: a typical v0.67 save, an ancient one with no config version at all, one holding items and weapons that no longer exist, and one with outright wrong types throughout (stash as a string, weapons null, equipped as a number, an invalid condition). The retired entries are filtered out and the equipped weapon falls back safely rather than throwing.
+- Bullets cannot tunnel walls by construction: each round is swept against the wall segments before it moves and its travel is clamped to the hit, so speed cannot outrun the test.
+
 - **The path Daniel actually plays, verified end to end for the first time since the v0.70 to v0.79 rebuild (v0.79 tick, no code change).** Everything through that rebuild was checked through the bot, which runs a different code path from a human at the controls. A raid was driven through the live player path instead, with synthetic key presses doing the walking: reach the ring, press the extract key, sit through the inbound wait, raid ends. Three of five completed cleanly and the timing is exactly right, beacon called at 24s ending at 49s, called at 21 ending at 46, called at 37 ending at 62, against a 25 second inbound wait. Movement, collision, the beacon call, the wait and the extraction all work.
 - The two that did not finish were the test harness, not the game, and were checked rather than assumed: one sat frozen for 6,991 straight frames with a movement key held, wedged against geometry, and two walked 7,700 units without ever freezing while circling a waypoint. The harness steers by pressing keys at a target with no unstick behaviour, which is the very failure the game's own bodies have `seekPoint` to avoid.
 - **Run log growth is not a risk.** A real log row measures 569 characters and the browser accepted 12 million characters without complaint, which is thousands of raids of headroom. The log is never trimmed and the storage write swallows failures silently, which would be serious if the limit were reachable, but it is not. Recorded so it is not re-investigated.
@@ -266,6 +271,7 @@ The v0.68 mistake was assuming a setting was the player's when it was shared. Ra
 - **Genuinely shared, and correctly so:** `noiseMult`. It scales every noise radius in `ping`, his own footsteps as well as every machine's. That is coherent as a "how loud is the world" control and no claim has ever been made otherwise, but it is the one remaining setting where changing it for one side changes it for both.
 
 So the v0.69 correction was complete: awareness was the only leak. One process note, since the same trap caught me twice in this tick: creating an enemy to measure it gives a **randomly armed** raider each time, so any before-and-after comparison must build the subject once and re-measure that same object.
+
 
 
 
