@@ -251,7 +251,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.56';
+var VER='0.57';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -2417,7 +2417,13 @@ function render2D(dt){
   for(i=0;i<G.ents.length;i++){
     var sc=G.ents[i];
     if(sc.kind!=='sentry') continue;
-    var pol=conePoly(sc.x,sc.y,sc.face,sc.cone,sc.rng,G.map.segs,18);
+    // Draw the reach the simulation actually uses. A sentry that has heard
+    // anything gets 35 percent more range, and the cone used to keep showing the
+    // patrol figure, so it detected you from ground it had never marked.
+    // Measured: 22 of 97 sentry acquisitions came from inside the cone angle but
+    // beyond the drawn range. The cone now grows when it is alert, which is a
+    // tell rather than a surprise.
+    var pol=conePoly(sc.x,sc.y,sc.face,sc.cone,sc.rng*(sc.alert>0?1.35:1),G.map.segs,18);
     wc.fillStyle=sc.state==='chase'?'rgba(255,60,40,.13)':'rgba(255,140,60,.07)';
     wc.beginPath(); wc.moveTo(pol[0].x,pol[0].y);
     for(j=1;j<pol.length;j++) wc.lineTo(pol[j].x,pol[j].y);
