@@ -245,7 +245,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.20';
+var VER='0.21';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.35,simGreed:26,simRaids:30};
@@ -1756,6 +1756,14 @@ function resize(){
 }
 window.addEventListener('resize',resize);
 function w2s(x,h,z){ return {x:x-VX,y:z-VY-h}; }
+// Keep the camera inside the world, but centre the world when the viewport is
+// larger than it. A plain clamp inverts its own bounds on wide displays and the
+// camera then snaps between the two limits instead of following the player.
+function camClamp(v,span,world){
+  var lo=-80,hi=world-span+80;
+  if(hi<lo) return (world-span)/2;
+  return v<lo?lo:(v>hi?hi:v);
+}
 function shadowE(x,y,rx,ry,a){
   wc.fillStyle='rgba(0,0,0,'+a+')';
   wc.beginPath(); wc.ellipse(x,y,rx,ry,0,0,6.2832); wc.fill();
@@ -2009,7 +2017,7 @@ function render2D(dt){
   var tx=p.x+(mouse.x-W/2)*lean-W/2,ty=p.y+(mouse.y-H/2)*lean-H*.54;
   if(G.camX===undefined){ camX=tx; camY=ty; }
   camX+=(tx-camX)*Math.min(1,dt*9); camY+=(ty-camY)*Math.min(1,dt*9);
-  camX=clamp(camX,-80,WORLD_W-W+80); camY=clamp(camY,-80,WORLD_H-H+80);
+  camX=camClamp(camX,W,WORLD_W); camY=camClamp(camY,H,WORLD_H);
   G.camX=camX; G.camY=camY;
   var sk=G.shake>0?G.shake*.7:0;
   var ox=Math.round(camX+rnd(-sk,sk)),oy=Math.round(camY+rnd(-sk,sk));
