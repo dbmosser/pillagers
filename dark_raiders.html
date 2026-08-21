@@ -245,7 +245,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.17';
+var VER='0.18';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,simGreed:26,simRaids:30};
@@ -1181,13 +1181,13 @@ function updatePlayer(dt){
 
   if(mg>0){
     var ox=p.x,oy=p.y;
-    p.x+=(mx/mg)*spd*dt; p.y+=(my/mg)*spd*dt; p.bob+=dt*(sprint?15:9);
+    p.x+=(mx/mg)*spd*dt; p.y+=(my/mg)*spd*dt; p.bob+=dt*(sprint?15:9); p.moving=true;
     p.noiseAcc=(p.noiseAcc||0)+dt;
     var iv=crouch?99:(sprint?.38:.72);
     if(p.noiseAcc>iv){ p.noiseAcc=0; ping(p.x,p.y,sprint?250:110,false); }
     collide(p,G.map.walls);
     T.distance+=dist({x:ox,y:oy},p);
-  } else { p.noiseAcc=0; T.tStill+=dt; collide(p,G.map.walls); }
+  } else { p.noiseAcc=0; p.moving=false; p.bob+=dt*1.2; T.tStill+=dt; collide(p,G.map.walls); }
   if(crouch) T.tCrouch+=dt;
   if(sprint) T.tSprint+=dt;
 
@@ -1254,6 +1254,7 @@ function updatePlayer(dt){
 // ================================================================ bot player (headless sim)
 function updateBot(dt){
   var p=G.player,T=G.tel;
+  p.moving=false;
   if(p.iv>0) p.iv-=dt;
   if(p.downed){
     if(!p.revived&&findHeal()>=0){ selfRevive(); }
@@ -1335,7 +1336,7 @@ function moveToward(e,tx,ty,spd,dt){
   e.x=e.x+(dx/d)*spd*dt; collide(e,G.map.walls);
   if(Math.abs(e.x-ox)<.05&&Math.abs(dx)>2) e.x=ox;
   e.y=e.y+(dy/d)*spd*dt; collide(e,G.map.walls);
-  e.step=(e.step||0)+spd*dt*.05;
+  e.step=(e.step||0)+spd*dt*.05; e.moving=true;
 }
 
 // ================================================================ enemies
@@ -1343,6 +1344,7 @@ function updateEnts(dt){
   var p=G.player,T=G.tel;
   for(var i=G.ents.length-1;i>=0;i--){
     var e=G.ents[i];
+    e.moving=false;
     if(e.hitT>0) e.hitT-=dt;
     if(e.muzzle>0) e.muzzle-=dt;
     if(e.kind==='crawler') e.legs+=dt*14;
@@ -1721,7 +1723,7 @@ function shadowE(x,y,rx,ry,a){
   wc.fillStyle='rgba(0,0,0,'+a+')';
   wc.beginPath(); wc.ellipse(x,y,rx,ry,0,0,6.2832); wc.fill();
 }
-function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv){
+function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var fl=Math.cos(face)<0?-1:1;
   shadowE(x,y+1,10,4,.38);
   if(mode==='down'){
@@ -1737,36 +1739,90 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv){
     wc.beginPath(); wc.arc(x,y-8,8,ph,ph+3.6); wc.stroke();
     return;
   }
+  st=st||{};
   var lift=mode==='crouch'?5:0;
-  var s=Math.sin(ph)*2.4;
+  var moving=!!st.moving,sprint=!!st.sprint,ads=!!st.ads,rl=st.rl||0;
+
+  // Walk cycle. Each leg swings along screen x and lifts on its forward half,
+  // so it reads as a stride from any facing instead of the old vertical bob.
+  var amp=moving?(sprint?4.2:2.9):0;
+  var swing=Math.sin(ph)*amp,swing2=-swing;
+  var liftA=moving?Math.max(0,Math.sin(ph))*(sprint?3.4:2.2):0;
+  var liftB=moving?Math.max(0,-Math.sin(ph))*(sprint?3.4:2.2):0;
+  // torso rises on each footfall, breathes slowly when still
+  var bobY=moving?Math.abs(Math.sin(ph))*1.5:Math.sin(ph*.35)*.5;
+  var leanX=sprint?fl*1.6:(moving?fl*.7:0);
+  var ty=y-bobY+lift;
+
+  wc.fillStyle='#2a323b';
+  // back leg then front leg, each thigh plus boot
+  wc.fillRect(x-5+swing2*.5,ty-10,4,7-liftB*.5);
+  wc.fillRect(x-5.4+swing2,ty-4-liftB,4.8,4);
   wc.fillStyle='#343d47';
-  wc.fillRect(x-5,y-10+lift+Math.max(0,s),4,10-lift-Math.max(0,s));
-  wc.fillRect(x+1,y-10+lift+Math.max(0,-s),4,10-lift-Math.max(0,-s));
+  wc.fillRect(x+1+swing*.5,ty-10,4,7-liftA*.5);
+  wc.fillRect(x+.6+swing,ty-4-liftA,4.8,4);
+
   var pw=6+pk*5;
   wc.fillStyle='#5c4a34';
-  wc.fillRect(x-fl*9-pw/2,y-25+lift,pw,11);
+  wc.fillRect(x-fl*9-pw/2+leanX,ty-25,pw,11);
   wc.fillStyle=iv>0?'#2a6a5e':coat;
-  wc.fillRect(x-6.5,y-26+lift,13,16);
+  wc.fillRect(x-6.5+leanX,ty-26,13,16);
+  // chest rig, and a hit shimmer when recently hurt
   wc.fillStyle='rgba(16,21,27,.85)';
-  wc.fillRect(x-6.5,y-21+lift,13,2.4);
+  wc.fillRect(x-6.5+leanX,ty-21,13,2.4);
+  if(st.hurt>0){
+    wc.globalCompositeOperation='lighter';
+    wc.fillStyle='rgba(255,70,56,'+clamp(st.hurt*2,0,.8)+')';
+    wc.fillRect(x-6.5+leanX,ty-26,13,16);
+    wc.globalCompositeOperation='source-over';
+  }
   wc.fillStyle='#c8b49a';
-  wc.fillRect(x-4,y-34+lift,8,8);
+  wc.fillRect(x-4+leanX,ty-34,8,8);
   wc.fillStyle='#0d1218';
-  wc.fillRect(fl>0?x:x-4,y-32.5+lift,4,3.4);
+  wc.fillRect((fl>0?x:x-4)+leanX,ty-32.5,4,3.4);
   wc.fillStyle='#39d6c8';
-  wc.fillRect(fl>0?x+1:x-3,y-31.6+lift,2,1.2);
-  wc.save(); wc.translate(x,y-20+lift); wc.rotate(face);
-  wc.fillStyle='#2c333c'; wc.fillRect(2,-1.6,13,3.2);
-  wc.fillStyle='#5c6773'; wc.fillRect(12,-1,6,2);
-  wc.fillStyle=coat; wc.fillRect(1,-2.4,6,4.8);
+  wc.fillRect((fl>0?x+1:x-3)+leanX,ty-31.6,2,1.2);
+
+  // ---- arms and weapon, rotated to the aim direction
+  // reload drops the muzzle and works the magazine; ADS pulls it tight to the shoulder
+  var drop=0,reach=0;
+  if(rl>0){
+    if(rl<.35) drop=(rl/.35)*.55;
+    else if(rl<.78){ drop=.55; reach=(rl-.35)/.43; }
+    else drop=.55*(1-(rl-.78)/.22);
+  }
+  var gunY=ty-20+(ads?-1:0);
+  wc.save(); wc.translate(x+leanX,gunY); wc.rotate(face+fl*drop);
+  var ext=ads?2.5:(sprint&&!rl?-3:0);
+  wc.fillStyle='#2c333c'; wc.fillRect(2+ext,-1.6,13,3.2);
+  wc.fillStyle='#5c6773'; wc.fillRect(12+ext,-1,6,2);
+  wc.fillStyle=coat; wc.fillRect(1+ext,-2.4,6,4.8);
+  // support hand: rides the handguard, or feeds a magazine mid-reload
+  if(rl>0&&reach>0){
+    wc.fillStyle='#c8b49a';
+    wc.fillRect(6+ext,1.4+(1-reach)*7,3.2,3.2);
+    wc.fillStyle='#3c4650';
+    wc.fillRect(6.2+ext,3.4+(1-reach)*7,2.8,4.4);
+  } else if(!sprint){
+    wc.fillStyle='#c8b49a'; wc.fillRect(9+ext,-1.6,3,3.2);
+  }
   if(muzzle>0){
     wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,212,138,.95)';
-    wc.beginPath(); wc.arc(19,0,4.5,0,6.2832); wc.fill();
-    wc.fillRect(15,-1,10,2);
+    wc.beginPath(); wc.arc(19+ext,0,4.5,0,6.2832); wc.fill();
+    wc.fillRect(15+ext,-1,10,2);
     wc.globalCompositeOperation='source-over';
   }
   wc.restore();
+  // spent magazine tumbling away at the start of the reload
+  if(rl>0&&rl<.4){
+    var mg=rl/.4;
+    wc.globalAlpha=clamp(1-mg,0,1);
+    wc.fillStyle='#3c4650';
+    wc.save(); wc.translate(x+leanX+fl*7,ty-16+mg*16); wc.rotate(mg*4.2);
+    wc.fillRect(-1.4,-3,2.8,6); wc.restore();
+    wc.globalAlpha=1;
+  }
 }
 // Every machine sprite is drawn from a scale derived off its collision radius,
 // so visual bulk and the simulation can never drift apart.
@@ -2046,14 +2102,17 @@ function render2D(dt){
     } else if(it.pl){
       var pmode=p.downed?'down':(p.roll>0?'roll':(crouchP?'crouch':''));
       drawOp(p.x,p.y,p.face,p.roll>0?(1-p.roll/.38)*12.6:p.bob,'#8fa3b5',
-        clamp(bagWeight()/PACKCAP[P.pack],0,1),p.muzzle,pmode,p.iv);
+        clamp(bagWeight()/PACKCAP[P.pack],0,1),p.muzzle,pmode,p.iv,
+        {moving:!!p.moving,sprint:!!G.sprinting,ads:!!p.ads,hurt:p.hitFlash,
+         rl:(p.reloading>0&&p.wep.reload)?clamp(1-p.reloading/p.wep.reload,0,1):0});
     } else {
       var e2=it.e;
       if(e2.kind==='sentry') drawSentryS(e2);
       else if(e2.kind==='crawler') drawCrawlerS(e2);
       else if(e2.kind==='snitch') drawSnitchS(e2);
       else drawOp(e2.x,e2.y,e2.face,(e2.step||0)*4,e2.coat,
-        clamp(e2.bag.length/7,0,1),e2.muzzle,'',0);
+        clamp(e2.bag.length/7,0,1),e2.muzzle,'',0,
+        {moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT});
     }
   }
   // nameplates over anything you can currently see
