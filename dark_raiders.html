@@ -245,7 +245,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.18';
+var VER='0.19';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,simGreed:26,simRaids:30};
@@ -555,6 +555,20 @@ function bakeGround(map){
     c.fillStyle='rgba(0,0,0,'+rnd(.04,.13)+')';
     c.beginPath(); c.ellipse(x,y,s,s*rnd(.4,.9),rnd(0,3),0,6.2832); c.fill();
   }
+  // contact shadow where every wall meets the ground, baked once so it is free
+  // per frame. Gives the raised faces something to sit in instead of floating.
+  for(i=0;i<map.walls.length;i++){
+    var wc0=map.walls[i],sp=wc0.w<=60&&wc0.h<=60?9:15;
+    var sg=c.createLinearGradient(0,wc0.y+wc0.h,0,wc0.y+wc0.h+sp);
+    sg.addColorStop(0,'rgba(0,0,0,.42)'); sg.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=sg; c.fillRect(wc0.x-sp*.4,wc0.y+wc0.h,wc0.w+sp*.8,sp);
+    var sl=c.createLinearGradient(wc0.x-sp*.7,0,wc0.x,0);
+    sl.addColorStop(0,'rgba(0,0,0,0)'); sl.addColorStop(1,'rgba(0,0,0,.26)');
+    c.fillStyle=sl; c.fillRect(wc0.x-sp*.7,wc0.y,sp*.7,wc0.h+sp*.5);
+    var sr=c.createLinearGradient(wc0.x+wc0.w,0,wc0.x+wc0.w+sp*.7,0);
+    sr.addColorStop(0,'rgba(0,0,0,.26)'); sr.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=sr; c.fillRect(wc0.x+wc0.w,wc0.y,sp*.7,wc0.h+sp*.5);
+  }
   for(i=0;i<180;i++){
     var x2=rnd(40,WORLD_W-40),y2=rnd(40,WORLD_H-40);
     c.strokeStyle='rgba(0,0,0,'+rnd(.10,.26)+')'; c.lineWidth=rnd(.8,2.2);
@@ -809,7 +823,7 @@ function buildRaid(sim){
       roll:0,rollCd:0,rollDir:{x:1,y:0},ads:false},
     bag:[],pouch:{smoke:0,decoy:0,frag:0},tsel:0,
     containers:containers,ents:ents,bullets:[],pings:[],puffs:[],
-    decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],labels:[],
+    decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],labels:[],flashes:[],
     zones:zones,active:active,beaconT:null,searching:null,searchT:0,
     explored:{},msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,yaw:0,pitch:.14,sprinting:false,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
@@ -930,6 +944,7 @@ function explodeFrag(f){
   if(!G.sim){ spark(f.x,f.y,'#ffcf7a',34,340); decal(f.x,f.y,'#141210',rnd(20,30));
     G.puffs.push({x:f.x,y:f.y,t:0,life:.6,c:'#ffb267',r:52}); }
   G.shake=Math.max(G.shake,9);
+  flash(f.x,f.y,310,'#ffb267',.45);
   ping(f.x,f.y,560,false);
   var dp=dist(p,f);
   if(dp<R&&losClear(f.x,f.y,p.x,p.y,G.map.segs)) damagePlayer(60*(1-dp/R)+12,'other');
@@ -983,6 +998,13 @@ function spark(x,y,col,n,spread){
       t:0,life:rnd(.2,.5),c:col});
   }
 }
+// Short-lived light sources. Muzzle flashes, explosions and the beacon all punch
+// real holes in the darkness overlay instead of only tinting the sprite.
+function flash(x,y,r,col,life){
+  if(G.sim) return;
+  G.flashes.push({x:x,y:y,r:r,c:col||'#ffc27a',t:0,life:life||.14});
+  if(G.flashes.length>60) G.flashes.shift();
+}
 // World-anchored text that rises and fades. Used for loot pickups and kill
 // confirmations so both read at the point they happened, not just on the HUD.
 function label(x,y,txt,col,delay,big){
@@ -1030,7 +1052,10 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
   var melee=wep.mag===0;
   ping(sh.x,sh.y,wep.noise,!fromPlayer);
   blip(melee?'hit':'shot',fromPlayer?0:dist(G.player,sh));
-  if(!melee) sh.muzzle=.06;
+  if(!melee){
+    sh.muzzle=.06;
+    flash(sh.x+Math.cos(ang)*20,sh.y+Math.sin(ang)*20,wep.dmg>40?155:108,wep.tint||'#ffc27a',.11);
+  }
   if(fromPlayer){ G.player.recoil=1; G.player.combatT=0; G.tel.shots++; G.shake=Math.max(G.shake,wep.dmg>40?4.5:2.2); }
   if(!G.sim&&!melee){
     var sa=ang-1.5+rnd(-.3,.3);
@@ -2223,6 +2248,37 @@ function render2D(dt){
   pgr.addColorStop(0,'rgba(0,0,0,.5)'); pgr.addColorStop(1,'rgba(0,0,0,0)');
   lx2.fillStyle=pgr;
   lx2.beginPath(); lx2.arc(p.x-ox,p.y-oy,100,0,6.2832); lx2.fill();
+  // transient sources: gunfire and explosions genuinely light the ground
+  for(i=0;i<G.flashes.length;i++){
+    var F=G.flashes[i],fr=1-F.t/F.life;
+    if(fr<=0) continue;
+    var fsx=F.x-ox,fsy=F.y-oy,frr=F.r*(F.life>.3?(.35+.65*(1-fr)):1);
+    if(fsx<-frr||fsx>W+frr||fsy<-frr||fsy>H+frr) continue;
+    var fg=lx2.createRadialGradient(fsx,fsy,0,fsx,fsy,frr);
+    fg.addColorStop(0,'rgba(0,0,0,'+(.9*fr)+')'); fg.addColorStop(1,'rgba(0,0,0,0)');
+    lx2.fillStyle=fg;
+    lx2.beginPath(); lx2.arc(fsx,fsy,frr,0,6.2832); lx2.fill();
+  }
+  // a machine that has locked on lights its own patch of ground
+  for(i=0;i<G.ents.length;i++){
+    var EL=G.ents[i];
+    if(EL.state!=='chase'&&EL.state!=='alarm') continue;
+    var ex=EL.x-ox,ey=EL.y-oy;
+    if(ex<-90||ex>W+90||ey<-90||ey>H+90) continue;
+    var er=EL.kind==='sentry'?76:(EL.kind==='crawler'?54:44);
+    var eg=lx2.createRadialGradient(ex,ey,0,ex,ey,er);
+    eg.addColorStop(0,'rgba(0,0,0,.34)'); eg.addColorStop(1,'rgba(0,0,0,0)');
+    lx2.fillStyle=eg;
+    lx2.beginPath(); lx2.arc(ex,ey,er,0,6.2832); lx2.fill();
+  }
+  // the beacon itself, brighter as it comes in
+  var bsx=az.x-ox,bsy=az.y-oy,brr=inb?(90+120*urg):70;
+  if(bsx>-brr&&bsx<W+brr&&bsy>-brr&&bsy<H+brr){
+    var bg=lx2.createRadialGradient(bsx,bsy,0,bsx,bsy,brr);
+    bg.addColorStop(0,'rgba(0,0,0,'+(inb?.62:.30)+')'); bg.addColorStop(1,'rgba(0,0,0,0)');
+    lx2.fillStyle=bg;
+    lx2.beginPath(); lx2.arc(bsx,bsy,brr,0,6.2832); lx2.fill();
+  }
   wc.drawImage(litC,0,0);
   // warm glows
   wc.globalCompositeOperation='lighter';
@@ -2234,9 +2290,28 @@ function render2D(dt){
     wc.globalAlpha=.10*fk2; wc.fillStyle=L2.c;
     wc.beginPath(); wc.arc(gx,gy,L2.r*.3,0,6.2832); wc.fill();
   }
-  if(p.muzzle>0){
-    wc.globalAlpha=.3; wc.fillStyle='#ffc27a';
-    wc.beginPath(); wc.arc(p.x-ox,p.y-oy,70,0,6.2832); wc.fill();
+  // coloured bloom for every transient source, not just the player's muzzle
+  for(i=0;i<G.flashes.length;i++){
+    var F2=G.flashes[i],f2=1-F2.t/F2.life;
+    if(f2<=0) continue;
+    var gx2=F2.x-ox,gy2=F2.y-oy,gr2=F2.r*.42*(F2.life>.3?(.4+.6*(1-f2)):1);
+    if(gx2<-gr2||gx2>W+gr2||gy2<-gr2||gy2>H+gr2) continue;
+    wc.globalAlpha=.30*f2; wc.fillStyle=F2.c;
+    wc.beginPath(); wc.arc(gx2,gy2,gr2,0,6.2832); wc.fill();
+  }
+  // hunting machines bleed their eye colour into the air
+  for(i=0;i<G.ents.length;i++){
+    var EG=G.ents[i];
+    if(EG.state!=='chase'&&EG.state!=='alarm') continue;
+    var ux=EG.x-ox,uy=EG.y-oy;
+    if(ux<-60||ux>W+60||uy<-60||uy>H+60) continue;
+    wc.globalAlpha=.13+.05*Math.sin(G.t*9);
+    wc.fillStyle=EG.kind==='raider'?'#ff8a6a':'#ff4a32';
+    wc.beginPath(); wc.arc(ux,uy-18,EG.kind==='sentry'?30:22,0,6.2832); wc.fill();
+  }
+  if(inb){
+    wc.globalAlpha=.10+.16*urg; wc.fillStyle='#35d6c8';
+    wc.beginPath(); wc.arc(az.x-ox,az.y-oy,60+70*urg,0,6.2832); wc.fill();
   }
   wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
   // vision fog
@@ -2625,6 +2700,7 @@ function loop(ts){
       for(i=G.pings.length-1;i>=0;i--){ G.pings[i].t+=dt; if(G.pings[i].t>G.pings[i].life) G.pings.splice(i,1); }
       for(i=G.puffs.length-1;i>=0;i--){ G.puffs[i].t+=dt; if(G.puffs[i].t>G.puffs[i].life) G.puffs.splice(i,1); }
       for(i=G.labels.length-1;i>=0;i--){ G.labels[i].t+=dt; if(G.labels[i].t>G.labels[i].life) G.labels.splice(i,1); }
+      for(i=G.flashes.length-1;i>=0;i--){ G.flashes[i].t+=dt; if(G.flashes[i].t>G.flashes[i].life) G.flashes.splice(i,1); }
       for(i=G.sparks.length-1;i>=0;i--){
         var sp=G.sparks[i]; sp.t+=dt; sp.x+=sp.vx*dt; sp.y+=sp.vy*dt;
         sp.vx*=.92; sp.vy*=.92;
