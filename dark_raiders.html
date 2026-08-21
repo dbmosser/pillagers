@@ -251,7 +251,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.65';
+var VER='0.66';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -3876,21 +3876,31 @@ function downloadExport(){
     P.lastReport='downloaded';
   }catch(e){ P.lastReport='failed'; }
 }
+// If the drop is not listening the run has to reach him some other way, and the
+// old code just gave up quietly: it set a status nobody reads and the run went
+// nowhere. That matters because the collector is only reachable over the local
+// server, and he opens the game by double-clicking the file, which is a
+// different address. Whether that works is untested here and cannot be tested
+// from this pane, so the reporting is now built to survive it either way.
+// One saved file per sitting, not one per run: buildExport writes the whole log,
+// so a single file carries every raid he has played.
+var droppedThisSession=false;
 function autoExport(){
   if(P.autoExport===false) return;
   var body=buildExport();
+  function fallback(){
+    if(P.autoDownload||!droppedThisSession){ droppedThisSession=true; downloadExport(); }
+    else P.lastReport='no drop';
+    saveProfile(); syncAutoEx();
+  }
   try{
     fetch(DROP,{method:'POST',headers:{'Content-Type':'text/plain'},body:body})
       .then(function(r){
         if(r&&r.ok){ P.lastReport='saved'; saveProfile(); syncAutoEx(); }
-        else if(P.autoDownload) downloadExport();
-        else { P.lastReport='no drop'; saveProfile(); syncAutoEx(); }
+        else fallback();
       })
-      .catch(function(){
-        if(P.autoDownload) downloadExport();
-        else { P.lastReport='no drop'; saveProfile(); syncAutoEx(); }
-      });
-  }catch(e){ if(P.autoDownload) downloadExport(); }
+      .catch(fallback);
+  }catch(e){ fallback(); }
 }
 document.getElementById('oc_btn').onclick=function(){
   if(pendingRun){
@@ -3910,9 +3920,13 @@ function syncAutoEx(){
   var b=document.getElementById('autoexbtn');
   if(!b) return;
   if(!P.autoExport){ b.textContent='Auto-report: OFF'; return; }
-  var st=P.lastReport==='saved'?'saved'
-        :(P.lastReport==='downloaded'?'downloaded'
-        :(P.lastReport==='no drop'?'not saved':''));
+  // "not saved" read like a shrug. If the report did not reach the drop he needs
+  // to know it went to Downloads instead, because that is the copy that has to
+  // be handed over.
+  var st=P.lastReport==='saved'?'sent'
+        :(P.lastReport==='downloaded'?'saved to Downloads'
+        :(P.lastReport==='no drop'?'in Downloads already'
+        :(P.lastReport==='failed'?'COULD NOT SAVE':'')));
   b.textContent='Auto-report: ON'+(st?'  ('+st+')':'');
 }
 document.getElementById('autoexbtn').onclick=function(){
