@@ -247,7 +247,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.33';
+var VER='0.34';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -516,6 +516,28 @@ function buildMap(){
       if(px<bb.x+bb.w+30&&px+s>bb.x-30&&py<bb.y+bb.h+30&&py+s>bb.y-30){ok=0;break;}}
     if(ok) walls.push({x:px,y:py,w:s,h:s,d:ri(0,3)});
   }
+  // Flooded ground. Rules, chosen and stated: water never blocks movement or
+  // sight, it slows you and it is loud. That makes it the anti-crouch: the one
+  // place where sneaking is not an option, so crossing is a real commitment
+  // rather than another wall. It applies to machines and raiders identically.
+  var water=[];
+  // Keep trying, shrinking the pool as attempts run out, so a map is never
+  // silently without water. Measured 20% of maps empty before this.
+  var wantPools=ri(3,4);
+  for(var wtry=0;wtry<48&&water.length<wantPools;wtry++){
+    var shrink=1-Math.min(0.55,wtry*0.014);
+    var ww=rnd(150,420)*shrink,wh=rnd(120,300)*shrink;
+    var wx3=rnd(90,WORLD_W-90-ww),wy3=rnd(90,WORLD_H-90-wh),wok=1;
+    for(var wb=0;wb<buildings.length;wb++){
+      var bb2=buildings[wb];
+      if(wx3<bb2.x+bb2.w+20&&wx3+ww>bb2.x-20&&wy3<bb2.y+bb2.h+20&&wy3+wh>bb2.y-20){ wok=0; break; }
+    }
+    if(wok) for(var wo=0;wo<water.length;wo++){
+      var op=water[wo];
+      if(wx3<op.x+op.w&&wx3+ww>op.x&&wy3<op.y+op.h&&wy3+wh>op.y){ wok=0; break; }
+    }
+    if(wok) water.push({x:wx3,y:wy3,w:ww,h:wh});
+  }
   for(var k=0;k<walls.length;k++){
     var wl=walls[k]; wl.streaks=[];
     var n=Math.min(5,Math.floor((wl.w*wl.h)/5200));
@@ -528,7 +550,7 @@ function buildMap(){
     segs.push({x1:w2.x+w2.w,y1:w2.y+w2.h,x2:w2.x,y2:w2.y+w2.h});
     segs.push({x1:w2.x,y1:w2.y+w2.h,x2:w2.x,y2:w2.y});
   }
-  return {walls:walls,segs:segs,buildings:buildings,cw:cw,ch:ch};
+  return {walls:walls,segs:segs,buildings:buildings,water:water,cw:cw,ch:ch};
 }
 // Day is a look, not a difficulty. Vision cone, awareness radius, enemy ranges
 // and every other tunable are identical in both conditions, so choosing daylight
@@ -578,6 +600,19 @@ function bakeGround(map){
   }
   // contact shadow where every wall meets the ground, baked once so it is free
   // per frame. Gives the raised faces something to sit in instead of floating.
+  // flooded ground, baked with the rest of the floor
+  for(i=0;i<(map.water||[]).length;i++){
+    var q=map.water[i];
+    c.fillStyle=isDay()?'#4a6d78':'#101c22';
+    c.fillRect(q.x,q.y,q.w,q.h);
+    c.fillStyle=isDay()?'rgba(150,200,215,.16)':'rgba(90,150,180,.10)';
+    for(j=0;j<Math.floor(q.w*q.h/2600);j++){
+      var rx3=rnd(q.x,q.x+q.w),ry3=rnd(q.y,q.y+q.h);
+      c.fillRect(rx3,ry3,rnd(6,26),1.2);
+    }
+    c.strokeStyle=isDay()?'rgba(30,60,70,.5)':'rgba(0,0,0,.45)';
+    c.lineWidth=2; c.strokeRect(q.x+1,q.y+1,q.w-2,q.h-2);
+  }
   for(i=0;i<map.walls.length;i++){
     var wc0=map.walls[i],sp=wc0.w<=60&&wc0.h<=60?9:15;
     var sg=c.createLinearGradient(0,wc0.y+wc0.h,0,wc0.y+wc0.h+sp);
@@ -706,6 +741,17 @@ function canSee(px,py,face,tx,ty,segs,far,cone){
   var lim=Math.abs(angDiff(Math.atan2(dy,dx),face))<=chh?(far||CFG.viewFar):CFG.ambient;
   if(d>lim) return false;
   return losClear(px,py,tx,ty,segs);
+}
+// Water is walkable and transparent, so it needs no collision segments and no
+// occluders. It only ever answers one question: are you standing in it.
+function inWater(x,y){
+  if(!G||!G.map||!G.map.water) return false;
+  var w=G.map.water;
+  for(var i=0;i<w.length;i++){
+    var q=w[i];
+    if(x>q.x&&x<q.x+q.w&&y>q.y&&y<q.y+q.h) return true;
+  }
+  return false;
 }
 function collide(e,walls){
   var r=e.r;
@@ -1248,7 +1294,11 @@ function updatePlayer(dt){
   G.sprinting=sprint;
   var cap=PACKCAP[P.pack];
   var load=clamp(1-bagWeight()/(cap*1.15),.55,1);
+  var wading=inWater(p.x,p.y);
+  if(wading) sprint=false;
+  G.sprinting=sprint;
   var spd=CFG.pSpeed*load; if(crouch) spd*=.52; if(sprint) spd*=1.62;
+  if(wading) spd*=.55;
   if(p.ads) spd*=.62;
   if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam+15*dt);
 
@@ -1256,8 +1306,9 @@ function updatePlayer(dt){
     var ox=p.x,oy=p.y;
     p.x+=(mx/mg)*spd*dt; p.y+=(my/mg)*spd*dt; p.bob+=dt*(sprint?15:9); p.moving=true;
     p.noiseAcc=(p.noiseAcc||0)+dt;
-    var iv=crouch?99:(sprint?.38:.72);
-    if(p.noiseAcc>iv){ p.noiseAcc=0; ping(p.x,p.y,sprint?250:110,false); }
+    // wading defeats crouch entirely: splashing is loud whatever you do
+    var iv=wading?.30:(crouch?99:(sprint?.38:.72));
+    if(p.noiseAcc>iv){ p.noiseAcc=0; ping(p.x,p.y,wading?290:(sprint?250:110),false); }
     collide(p,G.map.walls);
     T.distance+=dist({x:ox,y:oy},p);
   } else { p.noiseAcc=0; p.moving=false; p.bob+=dt*1.2; T.tStill+=dt; collide(p,G.map.walls); }
@@ -1406,6 +1457,7 @@ function moveToward(e,tx,ty,spd,dt){
   var dx=tx-e.x,dy=ty-e.y,d=Math.sqrt(dx*dx+dy*dy);
   if(d<1) return;
   var ox=e.x;
+  if(inWater(e.x,e.y)) spd*=.55;
   e.x=e.x+(dx/d)*spd*dt; collide(e,G.map.walls);
   if(Math.abs(e.x-ox)<.05&&Math.abs(dx)>2) e.x=ox;
   e.y=e.y+(dy/d)*spd*dt; collide(e,G.map.walls);
@@ -1569,7 +1621,9 @@ function updateEnts(dt){
         e.stepAcc=(e.stepAcc||0)+dt;
         // no point spawning a cue for a machine walking on the far side of the
         // map: the ring would be invisible anyway and it is pure churn
-        if(e.stepAcc>=NP[0]&&dist(e,p)<NP[1]*2.4){ e.stepAcc=0; ping(e.x,e.y,NP[1],true,true); }
+        var wet=inWater(e.x,e.y);
+        var iv2=wet?NP[0]*0.6:NP[0], amp=wet?NP[1]*1.7:NP[1];
+        if(e.stepAcc>=iv2&&dist(e,p)<amp*2.4){ e.stepAcc=0; ping(e.x,e.y,amp,true,true); }
       }
     }
     e.face+=clamp(angDiff(want,e.face),-5.5*dt,5.5*dt);
@@ -2102,6 +2156,19 @@ function render2D(dt){
   wc.fillStyle=isDay()?'#6b727c':'#04060a'; wc.fillRect(0,0,W,H);
   wc.save(); wc.translate(-ox,-oy);
   wc.drawImage(G.ground,0,0);
+  // shimmer, drawn over the baked floor but under everything else
+  for(i=0;i<(G.map.water||[]).length;i++){
+    var wq2=G.map.water[i];
+    if(wq2.x>ox+W+40||wq2.x+wq2.w<ox-40||wq2.y>oy+H+40||wq2.y+wq2.h<oy-40) continue;
+    wc.globalCompositeOperation='lighter';
+    wc.fillStyle=isDay()?'rgba(190,225,240,.05)':'rgba(80,150,190,.045)';
+    for(j=0;j<5;j++){
+      var ph2=G.t*.5+j*1.3+wq2.x*.01;
+      var yy=wq2.y+((ph2%1)*wq2.h);
+      wc.fillRect(wq2.x,yy,wq2.w,2.5);
+    }
+    wc.globalCompositeOperation='source-over';
+  }
   // decals + shells
   for(i=0;i<G.decals.length;i++){
     var dc=G.decals[i];
@@ -2621,7 +2688,8 @@ var GEARRULES=[
   ['WEAPONS','no swap key. A better gun auto-equips on pickup.'],
   ['','Change loadout at the Undercroft armory before deploying.'],
   ['ARMOUR','no equip key. Plates apply themselves on pickup.'],
-  ['THROWS','2 of each auto-load from stash. Q cycles, G throws.']
+  ['THROWS','2 of each auto-load from stash. Q cycles, G throws.'],
+  ['WATER','slows you and is loud. Crouch does not quiet a splash.']
 ];
 // A hostile ping outside the viewport painted exactly zero pixels, measured. So
 // sound you cannot see now gets a chevron on the screen edge pointing at it.
@@ -2780,6 +2848,11 @@ function drawMapOverlay(){
     var b=G.map.buildings[i];
     ctx.fillStyle=hexA(DISTRICTS[b.d].wallTop,.15);
     ctx.fillRect(ox+b.x*sc,oy+b.y*sc,b.w*sc,b.h*sc);
+  }
+  for(i=0;i<(G.map.water||[]).length;i++){
+    var wq3=G.map.water[i];
+    ctx.fillStyle='rgba(70,130,165,.45)';
+    ctx.fillRect(ox+wq3.x*sc,oy+wq3.y*sc,wq3.w*sc,wq3.h*sc);
   }
   ctx.fillStyle='#46525f';
   for(i=0;i<G.map.walls.length;i++){
