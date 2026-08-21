@@ -255,7 +255,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.78';
+var VER='0.79';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -4181,19 +4181,27 @@ function downloadExport(){
 // from this pane, so the reporting is now built to survive it either way.
 // One saved file per sitting, not one per run: buildExport writes the whole log,
 // so a single file carries every raid he has played.
-var droppedThisSession=false;
+var droppedThisSession=false,savedAtRun=-1;
 function autoExport(){
   if(P.autoExport===false) return;
   var body=buildExport();
   function fallback(){
-    if(P.autoDownload||!droppedThisSession){ droppedThisSession=true; downloadExport(); }
-    else P.lastReport='no drop';
+    // Save again once raids pile up. This used to save exactly once per sitting
+    // and never again, and because the file is written at the moment of saving,
+    // the only copy he ever handed over held his first raid and nothing after
+    // it. Measured by driving this path with the drop unreachable: six raids
+    // played, one file saved, five silently lost. The whole log goes into every
+    // save, so saving on every second raid means at most one is ever waiting,
+    // at half the save prompts of saving on every one.
+    if(P.autoDownload||!droppedThisSession||P.runs-savedAtRun>=2){
+      droppedThisSession=true; savedAtRun=P.runs; downloadExport();
+    } else P.lastReport='no drop';
     saveProfile(); syncAutoEx();
   }
   try{
     fetch(DROP,{method:'POST',headers:{'Content-Type':'text/plain'},body:body})
       .then(function(r){
-        if(r&&r.ok){ P.lastReport='saved'; saveProfile(); syncAutoEx(); }
+        if(r&&r.ok){ P.lastReport='saved'; savedAtRun=P.runs; saveProfile(); syncAutoEx(); }
         else fallback();
       })
       .catch(fallback);
@@ -4222,7 +4230,9 @@ function syncAutoEx(){
   // be handed over.
   var st=P.lastReport==='saved'?'sent'
         :(P.lastReport==='downloaded'?'saved to Downloads'
-        :(P.lastReport==='no drop'?'in Downloads already'
+        // "in Downloads already" was a lie: that state means this raid was not
+        // saved anywhere. Say what is actually true, and how many are waiting.
+        :(P.lastReport==='no drop'?(Math.max(0,P.runs-savedAtRun)+' raid'+(P.runs-savedAtRun===1?'':'s')+' not saved yet')
         :(P.lastReport==='failed'?'COULD NOT SAVE':'')));
   b.textContent='Auto-report: ON'+(st?'  ('+st+')':'');
 }
