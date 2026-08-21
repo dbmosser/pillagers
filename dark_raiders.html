@@ -251,7 +251,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.64';
+var VER='0.65';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -3066,10 +3066,19 @@ function drawNoiseMarkers(){
     var a=(1-pn.t/pn.life)*clamp(1-dp/(pn.s*1.5),0,1);
     if(a<=0.02) continue;
     var ang=Math.atan2(pn.y-p.y,pn.x-p.x);
-    var cx=W/2,cy=H/2,rx=(W/2-pad),ry=(H/2-pad);
-    var ca=Math.cos(ang),sa=Math.sin(ang);
-    var t=Math.min(Math.abs(rx/(ca||1e-6)),Math.abs(ry/(sa||1e-6)));
-    var mx=cx+ca*t,my=cy+sa*t;
+    // Put the marker where the line from the operator to the noise leaves the
+    // screen, not where a line from the middle of the screen would. The camera
+    // does not sit on him: he rides 54% down the view and it leans toward the
+    // cursor, so measuring the bearing from him and then drawing it from the
+    // centre pointed the cue somewhere he is not. Measured: 3 degrees out with
+    // the cursor centred, but 12.5 on average and 22.4 at worst with the cursor
+    // in a corner while aiming, which is exactly when he needs it.
+    var ps=w2s(p.x,0,p.y);
+    var ca=Math.cos(ang),sa=Math.sin(ang),tt=1e9;
+    if(ca>1e-6) tt=Math.min(tt,(W-pad-ps.x)/ca); else if(ca<-1e-6) tt=Math.min(tt,(pad-ps.x)/ca);
+    if(sa>1e-6) tt=Math.min(tt,(H-pad-ps.y)/sa); else if(sa<-1e-6) tt=Math.min(tt,(pad-ps.y)/sa);
+    if(!(tt>0&&tt<1e9)) tt=0;
+    var mx=ps.x+ca*tt,my=ps.y+sa*tt;
     ctx.save();
     ctx.translate(mx,my); ctx.rotate(ang);
     var sz=6+Math.min(pn.s,600)/110;
