@@ -213,3 +213,10 @@ That claim has sat in section 4 since daylight was added and had never been test
 Tested at 320, 400, 500, 610, 900, 1280, 1920, 2560 and 3440 wide, each with a full bag, a full pouch, a beacon inbound, and the inventory panel and sector map opened: **no errors, camera and view always finite, the operator always on screen, and zero HUD elements drawn outside the canvas at any width.** Resizing back and forth mid-raid is fine too.
 
 Height only bites below **420**, where the key legend runs off the bottom, 31 elements adrift at 380 tall. That cannot happen today because the 720 is fixed in CSS, but **if anyone ever makes the play area responsive in height, the legend is the thing that breaks first.** An earlier pass in this tick reported a break at 360x280 and that was a shape the game cannot take; do not chase it.
+
+### The sealed-building loose end is closed (v0.67 tick, nothing built)
+The reachability sweep left one thing open: a single building in 345 looked sealed at fine resolution, 120 more maps failed to reproduce it, and I could not say whether it was real or another artefact of my own grid. Settled now with a method cheap enough to run at scale: instead of flood filling a whole map, run a fine 2-unit fill confined to each building plus a 60-unit margin, started from outside, and see whether it reaches the interior. Eight candidate start points around the outside so a blocked corner never skips a test.
+
+**2,717 buildings across 320 maps. Every one enterable. Nothing skipped.**
+
+So there are no sealed buildings, and the earlier one-in-345 was the same kind of resolution artefact as the 0.6 percent figure that dissolved when it was refined. Building layout has no tunable, so this covers every case the generator can produce. Do not reopen this without a concrete case from a real session.
