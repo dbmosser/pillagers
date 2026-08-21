@@ -181,6 +181,14 @@ Recommendation is 1: the shop should reward spending, and no existing gear gets 
 
 - **v0.67 (readability, the panel he asked for):** Every line of the gear rules ran past the right edge of its own box. The controls panel is a fixed 222 wide and the rule text starts 52 in, leaving about 160 for the words, but all seven lines needed 245 to 392. Measured with the real font rather than eyeballed, they overflowed by **83 to 164 pixels each**, so the rules he specifically asked for spilled out of the panel and over the world behind it. Rendered proof rather than string arithmetic: with the panel open, **2,541 pixels of text sat outside the border before, and 5 after**, the five being antialiasing on the border stroke itself. Every rule is now inside its box with room to spare, split onto a second row where a rule needed the words, and no fact was dropped. The panel grows from 363 to 418 tall and still sits comfortably on screen, top edge at 286 of 720. THROWS also gained the rule that went missing when charges started stopping at walls at v0.58: "They stop at cover, not over." That is the behaviour most likely to read as a bug the first time a frag lands short, and the standing rules panel is where he would look for it. Sim 13 percent on the default Scav Pistol, console clean; this is HUD text only and touches no simulation value.
 
+## Negative result: the residual route-finding failures do not have the cause I thought (v0.79 tick, change written then reverted)
+
+Route finding was shipped at v0.72 with roughly one journey in seven never arriving, and that was recorded as unexplained. Traced properly this tick, and the traces do show a real mechanism: bodies walking 6,000 units while parked at the same distance from the target for the entire run, with sight to the target clear the whole time. Sight is not passage. A 40 unit slot between two buildings passes a ray but not a sentry, which is 44 across, and because sight stays clear the straight line shortcut never hands back to routing, so the body jams there forever.
+
+So a fix was written: sight buys the shortcut only while it is still making ground, and once progress stops the body routes around regardless of what it can see. **Measured on 150 identical journeys on a seeded map, it changed nothing:** 79/89/92 percent arrival at 45/90/140 seconds before, 80/89/92 after. Within noise on every limit. The compound idea, that wider route clearance would only pay off once routing actually engaged, could not even be measured: at clearance 26 enough of the map becomes unroutable that the run bogs down in fruitless searches, which is its own answer.
+
+The change was reverted rather than shipped. It added state and a branch to the most exercised movement function in the game and bought nothing measurable. Recorded here so a future tick does not rediscover the same appealing mechanism and reach for the same fix. What remains true: arrival is 92 percent given the time a real raid allows, the mechanism above is genuinely visible in traces, and it is apparently not what governs the failures.
+
 ## 12. Checked and healthy, no action needed
 
 - **Smoke still blocks sight after the v0.78 visibility optimisation (v0.79 tick, no code change).** This was the real regression risk from that change, since it filters wall segments and smoke works by adding temporary ones. In the open the fan reaches exactly 620, matching `viewFar`, and an enemy at 300 units is visible; drop smoke at 150 and the fan cuts to 77 and that same enemy is not visible. Both the fan and `canSee` agree.
@@ -271,6 +279,7 @@ The v0.68 mistake was assuming a setting was the player's when it was shared. Ra
 - **Genuinely shared, and correctly so:** `noiseMult`. It scales every noise radius in `ping`, his own footsteps as well as every machine's. That is coherent as a "how loud is the world" control and no claim has ever been made otherwise, but it is the one remaining setting where changing it for one side changes it for both.
 
 So the v0.69 correction was complete: awareness was the only leak. One process note, since the same trap caught me twice in this tick: creating an enemy to measure it gives a **randomly armed** raider each time, so any before-and-after comparison must build the subject once and re-measure that same object.
+
 
 
 
