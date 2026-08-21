@@ -255,7 +255,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.73';
+var VER='0.74';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -1674,6 +1674,9 @@ function updateBot(dt){
         var dd=dist(p,ct); if(dd<bd){ bd=dd; p.goal=ct; }
       }
       p.goalD=undefined; p.seekT=0;
+      // A fresh target starts with a clean slate, or it inherits the last one's
+      // failure and gets dropped before it has been tried.
+      p.noRouteT=0; p.stuckT=0; p.pathFail=false; p.path=null;
     }
     if(p.goal){
       var gd=dist(p,p.goal);
@@ -1705,8 +1708,13 @@ function updateBot(dt){
     p.goalT=0;
     if(p.goal&&(p.seekT||0)>=1.8){
       var gdNow=dist(p,p.goal);
-      if(p.goalD!==undefined&&gdNow>p.goalD-14){ p.goal.skip=true; p.goal=null; p.goalD=undefined; }
-      else p.goalD=gdNow;
+      // Same correction as the raiders: a route that goes round a building
+      // increases straight line distance on purpose, so that test now only
+      // fires as a long backstop. No route at all is the real answer.
+      p.noRouteT=p.pathFail?(p.noRouteT||0)+2.5:0;
+      if(p.noRouteT>=5||(p.goalD!==undefined&&(p.stuckT=(p.stuckT||0)+2.5)>=12.5&&gdNow>p.goalD-14)){
+        p.goal.skip=true; p.goal=null; p.goalD=undefined; p.noRouteT=0; p.stuckT=0;
+      } else if(p.goalD===undefined||gdNow<p.goalD-14){ p.goalD=gdNow; p.stuckT=0; }
     }
     p.seekT=0;
   }
@@ -1885,7 +1893,7 @@ function navPath(nav,sx,sy,tx,ty){
 // and for anything already in plain sight.
 function navSeek(e,tx,ty,spd,dt){
   var d=dist(e,{x:tx,y:ty});
-  if(d<200||losClear(e.x,e.y,tx,ty,G.map.segs)){ e.path=null; seekPoint(e,tx,ty,spd,dt); return; }
+  if(d<200||losClear(e.x,e.y,tx,ty,G.map.segs)){ e.path=null; e.pathFail=false; seekPoint(e,tx,ty,spd,dt); return; }
   e.pathT=(e.pathT||0)-dt;
   var stale=!e.path||e.pathT<=0||!e.pathGoal||dist({x:tx,y:ty},e.pathGoal)>140;
   // Strict budget, including for a body that has no route at all. A search that
@@ -1894,6 +1902,9 @@ function navSeek(e,tx,ty,spd,dt){
   if(stale&&G.navBudget>0){
     G.navBudget--;
     e.path=navPath(G.map.nav,e.x,e.y,tx,ty);
+    // Whether a route exists is now a question with an exact answer, and the
+    // give up rules read this instead of guessing from straight line distance.
+    e.pathFail=!e.path;
     // Spread the refresh so bodies that started together do not all come due on
     // the same frame for the rest of the raid.
     e.pathI=0; e.pathT=2.6+Math.random()*1.2; e.pathGoal={x:tx,y:ty};
@@ -2034,20 +2045,28 @@ function updateEnts(dt){
         }
         if(!e.goal||e.bag.length>=7) e.state='extract';
         e.goalT=0; e.goalD=e.goal?dist(e,e.goal):0;
+        e.pathFail=false; e.path=null;   // clean slate per target, as with the bot
       }
       if(e.goal){
         navSeek(e,e.goal.x,e.goal.y,e.spd,dt); want=Math.atan2(e.goal.y-e.y,e.goal.x-e.x);
-        // Give up on a container we are making no headway toward, the same way the
-        // sim bot already does. There is no pathfinding, so a raider that locks
-        // onto something behind a wall otherwise grinds there for the whole raid.
+        // Give up on a container we genuinely cannot reach. This used to ask
+        // whether straight line distance had improved in the last 3 seconds,
+        // which was the best available answer when there was no route finding.
+        // It is the wrong question now: walking round a 400 unit building moves
+        // you away from the target for several seconds by that measure, so
+        // raiders were abandoning loot they were on their way to. Measured 2.1
+        // wrongly dropped containers per raider per raid, and a body that
+        // detours and then turns away from its target looks broken. Unreachable
+        // now means the route finder says there is no route; the distance test
+        // survives only as a long backstop for a body wedged on scenery.
         e.goalT=(e.goalT||0)+dt;
         if(e.goalT>3){
           var gd2=dist(e,e.goal);
-          if(gd2>e.goalD-14){
+          if(e.pathFail||(e.goalT>12&&gd2>e.goalD-14)){
             if(!e.skips) e.skips=[];
             e.skips.push(e.goal);
             e.goal=null; e.lootT=0;
-          } else { e.goalD=gd2; e.goalT=0; }
+          } else if(gd2<e.goalD-14){ e.goalD=gd2; e.goalT=0; }
         }
         if(e.goal&&dist(e,e.goal)<30){
           e.lootT=(e.lootT||0)+dt;
