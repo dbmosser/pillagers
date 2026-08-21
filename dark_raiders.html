@@ -251,7 +251,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.66';
+var VER='0.67';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -3039,14 +3039,26 @@ var LEGEND=[
   ['GEAR',[['Q','cycle throwable'],['G','throw it'],['F','use medical'],['TAB','inventory']]],
   ['WORLD',[['E','search / call beacon'],['M','hold for map'],['H','hide this list'],['P','pause']]]
 ];
+// Every line here used to run past the right edge of its own panel, by 83 to 164
+// pixels on a box only 222 wide, so the rules he asked for spilled out of their
+// box onto the world behind. Measured with the real font rather than guessed.
+// Each line is now inside the border with room to spare, split across two rows
+// where a rule needed the words. THROWS gained the one rule that went missing
+// when charges started stopping at walls, which is the behaviour most likely to
+// look like a bug the first time a frag lands short.
 var GEARRULES=[
-  ['WEAPONS','X swaps primary and sidearm. A better gun auto-equips on pickup.'],
-  ['','Change loadout at the Undercroft armory before deploying.'],
-  ['ARMOUR','no equip key. Plates apply on pickup until armour is full.'],
-  ['THROWS','2 of each auto-load from stash. Q cycles, G throws.'],
-  ['WATER','slows you and is loud. Crouch does not quiet a splash.'],
-  ['RINGS','Teal ring is your extraction. Grey rings are cold.'],
-  ['SOUND','Expanding rings are noise. White is yours, red is theirs.']
+  ['WEAPONS','X swaps primary/sidearm.'],
+  ['','A better gun auto-equips.'],
+  ['','Set loadout in the armory.'],
+  ['ARMOUR','No equip key. Plates apply'],
+  ['','on pickup until armour is full.'],
+  ['THROWS','2 of each load from stash.'],
+  ['','Q cycles, G throws.'],
+  ['','They stop at cover, not over.'],
+  ['WATER','Slows you and is loud.'],
+  ['','Crouch will not quiet a splash.'],
+  ['RINGS','Teal ring is live. Grey cold.'],
+  ['SOUND','White rings you, red them.']
 ];
 // A hostile ping outside the viewport painted exactly zero pixels, measured. So
 // sound you cannot see now gets a chevron on the screen edge pointing at it.
