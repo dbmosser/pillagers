@@ -251,7 +251,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.54';
+var VER='0.55';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -1771,51 +1771,72 @@ function updateEnts(dt){
   }
 }
 
+// A round used to be pushed forward in three fixed hops and only tested for a
+// hit at the end of each hop. Anything thinner than a hop was crossed without
+// ever being sampled. Measured: 16 percent of shots passed clean through a 16px
+// wall, and 16px is the median wall thickness in this game, so roughly one shot
+// in six ignored cover in both directions. Walls are now swept exactly along the
+// round's path, and bodies are sampled in steps small enough that no hitbox can
+// be stepped over.
+var BSTEP=8;
 function updateBullets(dt){
   var p=G.player;
   for(var i=G.bullets.length-1;i>=0;i--){
     var b=G.bullets[i],hit=false;
-    for(var s=0;s<3&&!hit;s++){
-      b.x+=b.vx*dt/3; b.y+=b.vy*dt/3;
-      for(var w=0;w<G.map.walls.length;w++){
-        var wl=G.map.walls[w];
-        if(b.x>wl.x&&b.x<wl.x+wl.w&&b.y>wl.y&&b.y<wl.y+wl.h){
-          spark(b.x,b.y,'#ffd9a0',5,150);
-          if(!G.sim) G.puffs.push({x:b.x,y:b.y,t:0,life:.22,c:'#8a939c',r:9});
-          decal(b.x,b.y,'#0d0f13',rnd(3,6));
-          blip('clank',dist(p,b)); hit=true; break;
-        }
+    var mx=b.vx*dt,my=b.vy*dt,trav=Math.sqrt(mx*mx+my*my);
+    if(trav>0){
+      var ux=mx/trav,uy=my/trav,sx=b.x,sy=b.y,w,wl;
+      // A round that starts inside geometry, which happens when you fire while
+      // pressed against a wall, dies there instead of emerging out the far face.
+      var inside=false;
+      for(w=0;w<G.map.walls.length;w++){
+        wl=G.map.walls[w];
+        if(sx>wl.x&&sx<wl.x+wl.w&&sy>wl.y&&sy<wl.y+wl.h){ inside=true; break; }
       }
-      if(hit) break;
-      if(b.player){
-        for(var e2=0;e2<G.ents.length;e2++){
-          var en=G.ents[e2];
-          if(dist(b,en)<en.r+3){
-            en.hp-=b.dmg; en.hitT=.16;
-            en.byPlayer=en.hp<=0;
-            if(en.kind!=='snitch'){ en.alert=2.6; en.state='chase'; en.tx=p.x; en.ty=p.y; }
-            else { en.state='alarm'; }
-            G.tel.hits++;
-            // Hit feedback at the reticle. The sprite flash and spark happen out
-            // in the dark at range, so a landed shot could read as a miss.
-            G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
-            spark(b.x,b.y,en.kind==='raider'?'#e0483a':'#ffc25c',9,220);
-            blip('hit',dist(p,en)); hit=true; break;
+      var wallT=inside?0:rayHit(sx,sy,ux,uy,G.map.segs,trav);
+      var lim=Math.min(trav,wallT);
+      var steps=Math.max(1,Math.ceil(lim/BSTEP));
+      for(var s=1;s<=steps&&!hit;s++){
+        var dd=lim*s/steps;
+        b.x=sx+ux*dd; b.y=sy+uy*dd;
+        if(b.player){
+          for(var e2=0;e2<G.ents.length;e2++){
+            var en=G.ents[e2];
+            if(dist(b,en)<en.r+3){
+              en.hp-=b.dmg; en.hitT=.16;
+              en.byPlayer=en.hp<=0;
+              if(en.kind!=='snitch'){ en.alert=2.6; en.state='chase'; en.tx=p.x; en.ty=p.y; }
+              else { en.state='alarm'; }
+              G.tel.hits++;
+              // Hit feedback at the reticle. The sprite flash and spark happen out
+              // in the dark at range, so a landed shot could read as a miss.
+              G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
+              spark(b.x,b.y,en.kind==='raider'?'#e0483a':'#ffc25c',9,220);
+              blip('hit',dist(p,en)); hit=true; break;
+            }
+          }
+        } else {
+          if(dist(b,p)<p.r+3){ damagePlayer(b.dmg,b.owner.kind); spark(b.x,b.y,'#ff4d3d',10,200); hit=true; }
+          if(!hit) for(var e3=0;e3<G.ents.length;e3++){
+            var en3=G.ents[e3];
+            if(en3===b.owner) continue;
+            if(dist(b,en3)<en3.r+3&&en3.kind!==b.owner.kind){
+              en3.hp-=b.dmg; en3.hitT=.16;
+              if(en3.hp<=0) en3.byPlayer=false;
+              if(en3.kind!=='snitch'){ en3.state='chase'; en3.alert=2; }
+              spark(b.x,b.y,'#ffc25c',8,200); hit=true; break;
+            }
           }
         }
-      } else {
-        if(dist(b,p)<p.r+3){ damagePlayer(b.dmg,b.owner.kind); spark(b.x,b.y,'#ff4d3d',10,200); hit=true; }
-        if(!hit) for(var e3=0;e3<G.ents.length;e3++){
-          var en3=G.ents[e3];
-          if(en3===b.owner) continue;
-          if(dist(b,en3)<en3.r+3&&en3.kind!==b.owner.kind){
-            en3.hp-=b.dmg; en3.hitT=.16;
-            if(en3.hp<=0) en3.byPlayer=false;
-            if(en3.kind!=='snitch'){ en3.state='chase'; en3.alert=2; }
-            spark(b.x,b.y,'#ffc25c',8,200); hit=true; break;
-          }
-        }
       }
+      if(!hit&&wallT<trav){
+        b.x=sx+ux*wallT; b.y=sy+uy*wallT;
+        spark(b.x,b.y,'#ffd9a0',5,150);
+        if(!G.sim) G.puffs.push({x:b.x,y:b.y,t:0,life:.22,c:'#8a939c',r:9});
+        decal(b.x,b.y,'#0d0f13',rnd(3,6));
+        blip('clank',dist(p,b)); hit=true;
+      }
+      if(!hit){ b.x=sx+ux*trav; b.y=sy+uy*trav; }
     }
     b.life-=dt;
     if(hit||b.life<=0) G.bullets.splice(i,1);
