@@ -247,7 +247,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.38';
+var VER='0.39';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -2516,9 +2516,11 @@ function render2D(dt){
   fx2.globalCompositeOperation='source-over';
   fx2.clearRect(0,0,W,H);
   // fog stays strong: it is the fog of war, not a mood filter. Only eased a little.
-  // fog of war is attention, not darkness, so it stays in daylight; it just
-  // reads as pale haze instead of black
-  fx2.fillStyle=isDay()?('rgba(126,134,146,'+clamp(.90-(BR-1)*.09,.74,.94)+')')
+  // Fog of war is attention, not darkness, but it must always read DARKER than
+  // what you can see or the cone stops being legible. A pale haze made daylight
+  // fog brighter than the lit ground, so unseen space looked more visible than
+  // seen space. Daylight now dims and desaturates instead, like distance haze.
+  fx2.fillStyle=isDay()?('rgba(28,33,41,'+clamp(.88-(BR-1)*.09,.72,.93)+')')
                        :('rgba(4,7,12,'+clamp(.93-(BR-1)*.09,.78,.96)+')');
   fx2.fillRect(0,0,W,H);
   fx2.globalCompositeOperation='destination-out';
