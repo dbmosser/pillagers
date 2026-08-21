@@ -251,7 +251,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.63';
+var VER='0.64';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -391,13 +391,17 @@ function loadProfile(){
 function ensureContracts(){ while(P.contracts.length<3) P.contracts.push(genContract()); }
 
 // ================================================================ contracts
+// "sentrys" and "snitchs" are not words, and a contract board is the one place
+// in the game he reads a full sentence. There are four unit names and they never
+// change, so spell the plurals rather than bolting an s on the end.
+var UNITPLURAL={sentry:'sentries',crawler:'crawlers',raider:'raiders',snitch:'snitches'};
 function genContract(){
   var roll=Math.random();
   if(roll<.3){
     var tgt=pick(['sentry','crawler','raider','snitch']);
     var n=tgt==='raider'?2:(tgt==='snitch'?2:ri(3,6));
     var per={sentry:150,crawler:90,raider:260,snitch:200}[tgt];
-    return {type:'kill',tgt:tgt,n:n,prog:0,reward:n*per,desc:'Destroy '+n+' '+tgt+(n>1?'s':'')};
+    return {type:'kill',tgt:tgt,n:n,prog:0,reward:n*per,desc:'Destroy '+n+' '+(n>1?UNITPLURAL[tgt]:tgt)};
   } else if(roll<.55){
     var ct=pick(['safe','locker','crate']);
     var n2=ct==='safe'?2:ri(3,5);
