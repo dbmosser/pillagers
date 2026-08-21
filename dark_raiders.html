@@ -117,7 +117,7 @@
   <h3>RUN PAUSED</h3>
   <div style="font-size:10px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.7">
     MOUSE aim &nbsp; LMB fire &nbsp; RMB steady aim &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT sprint &nbsp; CTRL crouch<br>
-    E search &nbsp; R reload &nbsp; F heal/revive &nbsp; Q/G throw &nbsp; TAB bag &nbsp; M map &nbsp; ` tuning &nbsp; P/ESC pause
+    E search / call beacon &nbsp; R reload &nbsp; F heal/revive &nbsp; Q/G throw &nbsp; TAB bag &nbsp; M map &nbsp; ` tuning &nbsp; P/ESC pause
   </div>
   <div style="font-size:10px;color:var(--ash)">Note anything that just felt wrong. It goes in the recorder.</div>
   <textarea id="pausenote" rows="3" style="max-width:520px" placeholder="e.g. the snitch marked me through a wall, felt unfair"></textarea>
@@ -245,14 +245,14 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.12';
-var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractTime:6,
+var VER='0.13';
+var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,simGreed:26,simRaids:30};
 var PRESETS={
   A:{coneDeg:88,viewFar:390,ambient:85,raidSec:360,nCrawler:11,nSentry:6,lootMult:1.2,noiseMult:1.15},
   B:{},
-  C:{coneDeg:116,viewFar:500,ambient:115,raidSec:240,pSpeed:172,eDmg:1.6,nSentry:8,extractTime:5}
+  C:{coneDeg:116,viewFar:500,ambient:115,raidSec:240,pSpeed:172,eDmg:1.6,nSentry:8,extractWait:18}
 };
 var CFG={};
 function cloneObj(o){ var r={},k; for(k in o) r[k]=o[k]; return r; }
@@ -791,7 +791,7 @@ function buildRaid(sim){
     bag:[],pouch:{smoke:0,decoy:0,frag:0},tsel:0,
     containers:containers,ents:ents,bullets:[],pings:[],puffs:[],
     decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],
-    zones:zones,active:active,extractT:0,searching:null,searchT:0,
+    zones:zones,active:active,beaconT:null,searching:null,searchT:0,
     explored:{},msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,yaw:0,pitch:.14,sprinting:false,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
       kills:{sentry:0,crawler:0,raider:0,snitch:0},
@@ -800,7 +800,7 @@ function buildRaid(sim){
       firstContact:null,firstLoot:null,distance:0,
       tCrouch:0,tSprint:0,tStill:0,tLit:0,
       closestExtract:1e9,deathKiller:null,deathDistExtract:null,
-      raidersExtracted:0,notes:[],thr:{smoke:0,decoy:0,frag:0}}};
+      raidersExtracted:0,beaconCalls:0,beaconMissed:0,notes:[],thr:{smoke:0,decoy:0,frag:0}}};
   g.vseg=map.segs;
   if(sim){
     g.bag=['bandage','bandage'];
@@ -1043,10 +1043,27 @@ function openContainer(ct){
     blip('pick'); ping(p.x,p.y,90,false);
   }
 }
-function tryExtractTick(dt){
-  var p=G.player,z=G.active;
-  if(dist(p,z)<z.r){ G.extractT+=dt; if(G.extractT>=CFG.extractTime) endRaid('extract'); }
-  else if(G.extractT>0) G.extractT=Math.max(0,G.extractT-dt*2);
+// Three-phase extract: call it in from inside the ring, survive the inbound wait
+// anywhere you like, then be standing in the ring when it lands.
+function tryExtractTick(dt,wantCall){
+  var p=G.player,z=G.active,T=G.tel,inside=dist(p,z)<z.r;
+  if(G.beaconT===null){
+    if(inside&&wantCall){
+      G.beaconT=CFG.extractWait;
+      T.beaconCalls=(T.beaconCalls||0)+1;
+      ping(z.x,z.y,700,true);
+      blip('alarm');
+      say('Beacon inbound, '+Math.round(CFG.extractWait)+'s. Be standing in the ring when it lands.');
+    }
+    return;
+  }
+  G.beaconT-=dt;
+  if(G.beaconT>0) return;
+  if(inside){ endRaid('extract'); return; }
+  G.beaconT=null;
+  T.beaconMissed=(T.beaconMissed||0)+1;
+  blip('clank');
+  say('Beacon left without you. Get back in the ring and call it again.');
 }
 function tickDowned(dt){
   var p=G.player;
@@ -1184,7 +1201,8 @@ function updatePlayer(dt){
     }
   } else { G.searching=null; G.searchT=0; }
 
-  tryExtractTick(dt);
+  // E calls the beacon, but a container underfoot wins the keypress
+  tryExtractTick(dt,!!keys['KeyE']&&!near);
 }
 
 // ================================================================ bot player (headless sim)
@@ -1259,7 +1277,7 @@ function updateBot(dt){
     if(dist(p,p.lastPos)<6&&p.goal){ p.goal.skip=true; p.goal=null; }
     p.lastPos={x:p.x,y:p.y,t:0};
   }
-  tryExtractTick(dt);
+  tryExtractTick(dt,true);
 }
 
 function moveToward(e,tx,ty,spd,dt){
@@ -1469,7 +1487,8 @@ function endRaid(how){
     G.simResult={outcome:how,dur:Math.round(CFG.raidSec-G.timeLeft),haul:haul,items:G.bag.length,
       containers:T.containers,killer:T.deathKiller,firstContact:T.firstContact===null?null:Math.round(T.firstContact),
       shots:T.shots,hits:T.hits,kills:T.kills,closest:Math.round(T.closestExtract),
-      downs:T.downs,revives:T.revives,raidersExt:T.raidersExtracted};
+      downs:T.downs,revives:T.revives,raidersExt:T.raidersExtracted,
+      beaconCalls:T.beaconCalls,beaconMissed:T.beaconMissed};
     return;
   }
 
@@ -1525,13 +1544,14 @@ function endRaid(how){
     haul:haul,items:G.bag.length,containers:T.containers,
     shots:T.shots,hits:T.hits,acc:acc,reloads:T.reloads,heals:T.heals,
     downs:T.downs,revives:T.revives,thr:T.thr,marked:T.marked||0,
+    beaconCalls:T.beaconCalls,beaconMissed:T.beaconMissed,
     kills:T.kills,dmg:T.dmg,rar:T.rar,
     firstContact:T.firstContact===null?null:Math.round(T.firstContact),
     firstLoot:T.firstLoot===null?null:Math.round(T.firstLoot),
     dist:Math.round(T.distance),
     crouch:Math.round(T.tCrouch),sprint:Math.round(T.tSprint),
     still:Math.round(T.tStill),litPct:Math.round(T.tLit/Math.max(1,CFG.raidSec-G.timeLeft)*100),
-    closestExtract:Math.round(T.closestExtract),
+    closestExtract:T.closestExtract>=1e9?null:Math.round(T.closestExtract),
     deathKiller:T.deathKiller,deathDistExtract:T.deathDistExtract,
     raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
     inRunNotes:T.notes.slice(),tags:[],note:''
@@ -1593,10 +1613,11 @@ function runSim(){
 }
 function finishSim(res){
   var n=res.length,ext=0,dead=0,timerD=0,haulS=0,durS=0,contS=0,fcS=0,fcN=0,
-      closeS=0,closeN=0,downs=0,revs=0,rExt=0,accS=0,accN=0,killers={},i;
+      closeS=0,closeN=0,downs=0,revs=0,rExt=0,accS=0,accN=0,killers={},bCall=0,bMiss=0,i;
   for(i=0;i<n;i++){
     var r=res[i];
     durS+=r.dur; contS+=r.containers; downs+=r.downs; revs+=r.revives; rExt+=r.raidersExt;
+    bCall+=r.beaconCalls||0; bMiss+=r.beaconMissed||0;
     if(r.outcome==='extract'){ ext++; haulS+=r.haul; }
     else { dead++;
       killers[r.killer]=(killers[r.killer]||0)+1;
@@ -1618,6 +1639,7 @@ function finishSim(res){
   if(timerD) L.push('Timer expiry deaths: '+timerD+' ('+Math.round(timerD/n*100)+'% of raids). If high, the map is too big for the clock.');
   if(closeN) L.push('Avg distance from extract at death: '+Math.round(closeS/closeN)+'m (closest approach)');
   L.push('Downs: '+downs+'  |  Self-revives: '+revs+'  |  AI raiders extracted: '+rExt);
+  L.push('Beacon calls: '+bCall+'  |  Missed landings (not in the ring): '+bMiss);
   L.push('');
   L.push('Reading guide: extract rate 35-60% is a healthy tension band for this genre.');
   L.push('Below 20%: too lethal or timer too short. Above 75%: threats are not landing.');
@@ -1962,12 +1984,16 @@ function render2D(dt){
     }
   }
   // active extract light shaft
-  var az=G.active;
+  var az=G.active,inb=G.beaconT!==null;
   wc.globalCompositeOperation='lighter';
+  // inbound beacon burns brighter and pulses faster the closer it gets
+  var urg=inb?1-Math.max(0,G.beaconT)/Math.max(1,CFG.extractWait):0;
+  var shHi=inb?(.30+.34*urg):.14, shPu=inb?(.10*Math.sin(G.t*(5+9*urg))):(.06*Math.sin(G.t*2.4));
+  var shW=inb?(7+9*urg):7;
   var shft=wc.createLinearGradient(0,az.y-150,0,az.y);
   shft.addColorStop(0,'rgba(53,214,200,0)');
-  shft.addColorStop(1,'rgba(53,214,200,'+(.14+.06*Math.sin(G.t*2.4))+')');
-  wc.fillStyle=shft; wc.fillRect(az.x-7,az.y-150,14,150);
+  shft.addColorStop(1,'rgba(53,214,200,'+Math.max(0,shHi+shPu)+')');
+  wc.fillStyle=shft; wc.fillRect(az.x-shW,az.y-150,shW*2,150);
   wc.globalCompositeOperation='source-over';
   wc.restore();
   // lighting overlay
@@ -2158,10 +2184,20 @@ function drawHUD(){
   ctx.fillText('Q/G  '+pl2.join('  '),W-16,by+11);
   if(T.notes.length){ ctx.fillStyle='#6b7783'; ctx.fillText(T.notes.length+' note'+(T.notes.length>1?'s':'')+' logged',W-16,26); }
   ctx.textAlign='left';
-  if(G.extractT>0&&!G.over){
+  if(G.beaconT!==null&&!G.over){
+    var inRing=dist(p,G.active)<G.active.r;
     ctx.font='700 13px "Oxanium", sans-serif'; ctx.textAlign='center';
-    ctx.fillStyle='#35d6c8'; ctx.fillText('EXTRACTING',W/2,H-70);
-    bar(W/2-90,H-62,180,9,G.extractT/CFG.extractTime,'#35d6c8');
+    ctx.fillStyle=inRing?'#35d6c8':'#ffb02e';
+    ctx.fillText('BEACON INBOUND  '+Math.ceil(G.beaconT)+'s',W/2,H-70);
+    bar(W/2-90,H-62,180,9,1-G.beaconT/CFG.extractWait,inRing?'#35d6c8':'#ffb02e');
+    if(!inRing){
+      ctx.font='10px "Roboto Mono", monospace'; ctx.fillStyle='#ffb02e';
+      ctx.fillText('GET TO THE RING',W/2,H-46);
+    }
+    ctx.textAlign='left';
+  } else if(!G.over&&dist(p,G.active)<G.active.r){
+    ctx.font='700 13px "Oxanium", sans-serif'; ctx.textAlign='center';
+    ctx.fillStyle='#35d6c8'; ctx.fillText('HOLD E TO CALL THE BEACON',W/2,H-70);
     ctx.textAlign='left';
   }
   if(p.downed){
@@ -2178,7 +2214,7 @@ function drawHUD(){
   if(!p.downed){
     ctx.font='9px "Roboto Mono", monospace'; ctx.textAlign='center';
     ctx.fillStyle='rgba(140,152,163,.8)';
-    ctx.fillText('MOUSE AIM \u00b7 LMB FIRE \u00b7 RMB STEADY \u00b7 WASD MOVE \u00b7 SPACE ROLL \u00b7 SHIFT SPRINT \u00b7 CTRL SNEAK \u00b7 E SEARCH \u00b7 R RELOAD \u00b7 F HEAL \u00b7 Q/G THROW \u00b7 TAB BAG \u00b7 M MAP \u00b7 ` TUNE',W/2,H-8);
+    ctx.fillText('MOUSE AIM \u00b7 LMB FIRE \u00b7 RMB STEADY \u00b7 WASD MOVE \u00b7 SPACE ROLL \u00b7 SHIFT SPRINT \u00b7 CTRL SNEAK \u00b7 E SEARCH/BEACON \u00b7 R RELOAD \u00b7 F HEAL \u00b7 Q/G THROW \u00b7 TAB BAG \u00b7 M MAP \u00b7 ` TUNE',W/2,H-8);
     ctx.textAlign='left';
   }
   if(G.bagOpen) drawBag();
@@ -2254,7 +2290,7 @@ var SLIDERS=[
   ['ambient','Awareness radius',50,180,5,1],
   ['pSpeed','Move speed',110,220,2,1],
   ['raidSec','Raid timer (s)',120,600,15,0],
-  ['extractTime','Extract hold (s)',3,12,1,1],
+  ['extractWait','Extract inbound wait (s)',8,60,1,1],
   ['nSentry','Sentries',0,14,1,0],
   ['nCrawler','Crawlers',0,18,1,0],
   ['nRaider','AI raiders',0,6,1,0],
@@ -2470,10 +2506,11 @@ function buildExport(){
       'c items:'+r.items+' cont:'+r.containers+' shots:'+r.shots+' acc:'+r.acc+'%'+
       ' kills:'+kills+' heals:'+r.heals+' downs:'+(r.downs||0)+' rev:'+(r.revives||0)+
       ' marked:'+(r.marked||0)+
+      ' beacon:'+(r.beaconCalls||0)+'called/'+(r.beaconMissed||0)+'missed'+
       ' firstContact:'+(r.firstContact===null?'none':r.firstContact+'s')+
       ' firstLoot:'+(r.firstLoot===null?'none':r.firstLoot+'s')+
       ' moved:'+r.dist+' crouch:'+r.crouch+'s sprint:'+r.sprint+'s lit:'+r.litPct+'%'+
-      ' closestExt:'+r.closestExtract;
+      ' closestExt:'+(r.closestExtract===null?'none':r.closestExtract);
     if(r.thr&&(r.thr.smoke||r.thr.decoy||r.thr.frag))
       line+=' thrown:'+r.thr.smoke+'sm/'+r.thr.decoy+'dc/'+r.thr.frag+'fr';
     if(r.outcome==='dead') line+=' killer:'+r.deathKiller+' diedAt:'+r.deathDistExtract+'m';
