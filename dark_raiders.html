@@ -245,14 +245,14 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.19';
+var VER='0.20';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
-  noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,simGreed:26,simRaids:30};
+  noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.35,simGreed:26,simRaids:30};
 var PRESETS={
-  A:{coneDeg:88,viewFar:390,ambient:85,raidSec:360,nCrawler:11,nSentry:6,lootMult:1.2,noiseMult:1.15},
+  A:{coneDeg:88,viewFar:390,ambient:85,raidSec:360,nCrawler:11,nSentry:6,lootMult:1.2,noiseMult:1.15,bright:1.05},
   B:{},
-  C:{coneDeg:116,viewFar:500,ambient:115,raidSec:240,pSpeed:172,eDmg:1.6,nSentry:8,extractWait:18}
+  C:{coneDeg:116,viewFar:500,ambient:115,raidSec:240,pSpeed:172,eDmg:1.6,nSentry:8,extractWait:18,bright:1.75}
 };
 var CFG={};
 function cloneObj(o){ var r={},k; for(k in o) r[k]=o[k]; return r; }
@@ -1009,7 +1009,19 @@ function flash(x,y,r,col,life){
 // confirmations so both read at the point they happened, not just on the HUD.
 function label(x,y,txt,col,delay,big){
   if(G.sim) return;
-  G.labels.push({x:x,y:y,txt:txt,c:col||'#cdd6dd',t:-(delay||0),life:1.7,big:!!big});
+  // Push off any live label that would land on top of this one. Without this a
+  // container holding three items stacks all three lines in the same spot.
+  var row=0,tries=0;
+  while(tries++<12){
+    var clash=false,ny=y-row*13;
+    for(var i=0;i<G.labels.length;i++){
+      var o=G.labels[i];
+      if(Math.abs(o.x-x)<100&&Math.abs(o.y-ny)<12){ clash=true; break; }
+    }
+    if(!clash) break;
+    row++;
+  }
+  G.labels.push({x:x,y:y-row*13,txt:txt,c:col||'#cdd6dd',t:-(delay||0),life:1.9,big:!!big});
   if(G.labels.length>40) G.labels.shift();
 }
 function decal(x,y,col,size){
@@ -1072,10 +1084,10 @@ function openContainer(ct){
   for(var l=0;l<ct.loot.length;l++){
     var key=ct.loot[l],itm=ITEMS[key];
     T.items++; T.rar[itm.r]++;
-    // one rising line per item, staggered, so the haul is readable at the container
-    label(ct.x+rnd(-10,10),ct.y,
+    // one line per item; label() stacks them into a column so they never overlap
+    label(ct.x,ct.y-10,
       itm.name+(itm.use==='ammo'?' +'+itm.amt+' ammo':(itm.use==='armor'&&p.armor<20?' +'+itm.amt+' armor':' '+ival(key)+'c')),
-      RCOL[itm.r],l*0.14,itm.r==='rare'||itm.r==='elite');
+      RCOL[itm.r],0,itm.r==='rare'||itm.r==='elite');
     if(itm.use==='ammo') p.reserve+=itm.amt;
     else if(itm.use==='armor'&&p.armor<20) p.armor+=itm.amt;
     else if(itm.use==='throw') G.pouch[itm.tk]++;
@@ -2231,7 +2243,9 @@ function render2D(dt){
   // lighting overlay
   lx2.globalCompositeOperation='source-over';
   lx2.clearRect(0,0,W,H);
-  lx2.fillStyle='rgba(3,6,14,.52)'; lx2.fillRect(0,0,W,H);
+  // CFG.bright lifts everything you can actually see. 1.0 is the old v0.19 look.
+  var BR=CFG.bright||1;
+  lx2.fillStyle='rgba(3,6,14,'+clamp(.52/BR,.05,.82)+')'; lx2.fillRect(0,0,W,H);
   lx2.globalCompositeOperation='destination-out';
   for(i=0;i<G.lights.length;i++){
     var L=G.lights[i];
@@ -2244,10 +2258,11 @@ function render2D(dt){
     lx2.fillStyle=gr;
     lx2.beginPath(); lx2.arc(lsx,lsy,L.r*fk,0,6.2832); lx2.fill();
   }
-  var pgr=lx2.createRadialGradient(p.x-ox,p.y-oy,0,p.x-ox,p.y-oy,100);
-  pgr.addColorStop(0,'rgba(0,0,0,.5)'); pgr.addColorStop(1,'rgba(0,0,0,0)');
+  var plr=100*Math.min(1.5,BR);
+  var pgr=lx2.createRadialGradient(p.x-ox,p.y-oy,0,p.x-ox,p.y-oy,plr);
+  pgr.addColorStop(0,'rgba(0,0,0,'+clamp(.5*BR,.3,.9)+')'); pgr.addColorStop(1,'rgba(0,0,0,0)');
   lx2.fillStyle=pgr;
-  lx2.beginPath(); lx2.arc(p.x-ox,p.y-oy,100,0,6.2832); lx2.fill();
+  lx2.beginPath(); lx2.arc(p.x-ox,p.y-oy,plr,0,6.2832); lx2.fill();
   // transient sources: gunfire and explosions genuinely light the ground
   for(i=0;i<G.flashes.length;i++){
     var F=G.flashes[i],fr=1-F.t/F.life;
@@ -2317,7 +2332,8 @@ function render2D(dt){
   // vision fog
   fx2.globalCompositeOperation='source-over';
   fx2.clearRect(0,0,W,H);
-  fx2.fillStyle='rgba(4,7,12,.93)'; fx2.fillRect(0,0,W,H);
+  // fog stays strong: it is the fog of war, not a mood filter. Only eased a little.
+  fx2.fillStyle='rgba(4,7,12,'+clamp(.93-(BR-1)*.09,.78,.96)+')'; fx2.fillRect(0,0,W,H);
   fx2.globalCompositeOperation='destination-out';
   var pol2=buildVisPoly(p.x,p.y,p.face,G.vseg);
   var psx=p.x-ox,psy=p.y-oy;
@@ -2328,7 +2344,7 @@ function render2D(dt){
   for(i=1;i<pol2.length;i++) fx2.lineTo(pol2[i].x-ox,pol2[i].y-oy);
   fx2.closePath(); fx2.fill();
   var ag=fx2.createRadialGradient(psx,psy,0,psx,psy,CFG.ambient);
-  ag.addColorStop(0,'rgba(0,0,0,.85)'); ag.addColorStop(1,'rgba(0,0,0,0)');
+  ag.addColorStop(0,'rgba(0,0,0,'+clamp(.85*BR,.6,.99)+')'); ag.addColorStop(1,'rgba(0,0,0,0)');
   fx2.fillStyle=ag;
   fx2.beginPath(); fx2.arc(psx,psy,CFG.ambient,0,6.2832); fx2.fill();
   wc.drawImage(fogC,0,0);
@@ -2637,6 +2653,7 @@ var SLIDERS=[
   ['noiseMult','Noise radius x',0.5,2,0.05,1],
   ['safeSlots','Safe pocket slots',0,5,1,1],
   ['downTime','Downed bleed-out (s)',5,25,1,1],
+  ['bright','Brightness',0.6,2.2,0.05,1],
   ['regenDelay','Regen starts after (s)',0,40,1,1],
   ['regenSec','Regen seconds per HP',1,12,0.5,1],
   ['simGreed','Sim bot greed (bag wt)',10,60,2,1],
