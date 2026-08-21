@@ -1,0 +1,28 @@
+=== DARK RAIDERS v0.28 FLIGHT RECORDER ===
+Profile: 1 runs, 0 extracted, 1 died, best haul 0c, credits 900, rep 0, pack T1
+Active config [C]: {"coneDeg":116,"viewFar":500,"ambient":115,"raidSec":240,"pSpeed":172,"extractWait":18,"nSentry":8,"nCrawler":9,"nRaider":3,"nSnitch":2,"eDmg":1.6,"eHp":1,"lootMult":1,"contDens":1,"noiseMult":1,"safeSlots":2,"downTime":12,"regenDelay":10,"regenSec":3,"bright":1.75,"simGreed":26,"simRaids":30,"preset":"C"}
+
+FEELING TAGS (all runs): Too dark x1, Too hard x1, Shooting felt weak x1, AI unfair x1
+
+--- RUNS (oldest first) ---
+#1 DEAD [C] wep:Scav Pistol dur:18s haul:0c items:0 cont:0 shots:12 acc:58% kills:1s/1c/0r/0sn heals:0 downs:1 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:13s firstLoot:none moved:1638 crouch:0s sprint:0s lit:21% closestExt:1715 killer:raider diedAt:2094m
+   tags: Too dark, Too hard, Shooting felt weak, AI unfair
+   note: Kestral unfair
+
+--- LAST BOT SIM ---
+(run as of profile run count 0, config: {"coneDeg":100,"viewFar":440,"ambient":100,"raidSec":300,"pSpeed":158,"extractWait":25,"nSentry":7,"nCrawler":9,"nRaider":3,"nSnitch":2,"eDmg":1.35,"eHp":1,"lootMult":1,"contDens":1,"noiseMult":1,"safeSlots":2,"downTime":12,"regenDelay":10,"regenSec":3,"bright":1.35,"simGreed":26,"simRaids":30,"preset":"B"})
+BOT SIM: 30 raids against config [B]
+Extract rate: 20%  (6 extracted, 24 died)
+Avg haul when extracting: 2241c
+Avg raid length: 62s of 300s  |  Avg containers: 7.5
+Avg first enemy contact: 23s  (2 raids with no contact)
+Bot accuracy: 38%
+Death causes: crawler x16, raider x6, sentry x2
+Avg distance from extract at death: 759m (closest approach)
+Downs: 24  |  Self-revives: 0  |  AI raiders extracted: 35
+Beacon calls: 16  |  Missed landings (not in the ring): 1
+
+Reading guide: extract rate 35-60% is a healthy tension band for this genre.
+Below 20%: too lethal or timer too short. Above 75%: threats are not landing.
+
+=== END RECORDER ===

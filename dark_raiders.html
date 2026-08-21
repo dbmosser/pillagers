@@ -246,7 +246,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.30';
+var VER='0.31';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -826,7 +826,7 @@ function buildRaid(sim){
     containers:containers,ents:ents,bullets:[],pings:[],puffs:[],
     decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],labels:[],flashes:[],
     zones:zones,active:active,beaconT:null,searching:null,searchT:0,
-    explored:{},msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,yaw:0,pitch:.14,sprinting:false,
+    explored:{},msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,legendOn:true,yaw:0,pitch:.14,sprinting:false,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
       kills:{sentry:0,crawler:0,raider:0,snitch:0},
       dmg:{sentry:0,crawler:0,raider:0,snitch:0,other:0},
@@ -876,8 +876,9 @@ window.addEventListener('keydown',function(e){
   }
   if(state!=='raid') return;
   keys[e.code]=true;
-  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','ControlLeft','ShiftLeft'].indexOf(e.code)>=0) e.preventDefault();
+  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','ControlLeft','ShiftLeft'].indexOf(e.code)>=0) e.preventDefault();
   if((e.code==='Escape'||e.code==='KeyP')&&G&&!G.over) togglePauseBox(true);
+  if(e.code==='KeyH'&&G&&!e.repeat) G.legendOn=!G.legendOn;
   if(e.code==='KeyQ'&&G&&!G.over&&!e.repeat) cycleThrow();
   if(e.code==='KeyG'&&G&&!G.over&&!G.paused&&!e.repeat) doThrow();
   if(e.code==='Space'&&G&&!G.over&&!G.paused&&!e.repeat) tryRoll();
@@ -2544,10 +2545,7 @@ function drawHUD(){
     ctx.textAlign='left';
   }
   if(!p.downed){
-    ctx.font='9px "Roboto Mono", monospace'; ctx.textAlign='center';
-    ctx.fillStyle='rgba(140,152,163,.8)';
-    ctx.fillText('MOUSE AIM \u00b7 LMB FIRE \u00b7 RMB STEADY \u00b7 WASD MOVE \u00b7 SPACE ROLL \u00b7 SHIFT SPRINT \u00b7 CTRL SNEAK \u00b7 E SEARCH/BEACON \u00b7 R RELOAD \u00b7 F HEAL \u00b7 Q/G THROW \u00b7 TAB BAG \u00b7 M MAP \u00b7 ` TUNE',W/2,H-8);
-    ctx.textAlign='left';
+    drawLegend();
   }
   if(G.bagOpen) drawBag();
   if(keys['KeyM']) drawMapOverlay();
@@ -2561,6 +2559,62 @@ function safeSet(){
   return s;
 }
 // Full inventory: what you are holding, what is on your body, what is in the bag.
+// He could not find how to change weapons, use explosives or equip armour. Two
+// of those three have no key at all: they are automatic. A key list alone would
+// have left him hunting, so the panel states the keyless rules as well.
+var LEGEND=[
+  ['MOVE',[['WASD','move'],['SHIFT','sprint'],['CTRL','crouch, near silent'],['SPACE','dodge roll']]],
+  ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','steady aim'],['R','reload']]],
+  ['GEAR',[['Q','cycle throwable'],['G','throw it'],['F','use medical'],['TAB','inventory']]],
+  ['WORLD',[['E','search / call beacon'],['M','hold for map'],['H','hide this list'],['P','pause']]]
+];
+var GEARRULES=[
+  ['WEAPONS','no swap key. A better gun auto-equips on pickup.'],
+  ['','Change loadout at the Undercroft armory before deploying.'],
+  ['ARMOUR','no equip key. Plates apply themselves on pickup.'],
+  ['THROWS','2 of each auto-load from stash. Q cycles, G throws.']
+];
+function drawLegend(){
+  var MONO='9px "Roboto Mono", monospace';
+  if(!G.legendOn){
+    ctx.font=MONO; ctx.fillStyle='rgba(140,152,163,.55)';
+    ctx.fillText('H  controls',14,H-14);
+    return;
+  }
+  var x=14,i,j,rows=0;
+  for(i=0;i<LEGEND.length;i++) rows+=1+LEGEND[i][1].length;
+  var boxH=rows*12+GEARRULES.length*11+34;
+  var top=H-16-boxH;
+  ctx.fillStyle='rgba(6,9,13,.74)'; ctx.fillRect(x-8,top-6,222,boxH+10);
+  ctx.strokeStyle='rgba(58,69,82,.9)'; ctx.lineWidth=1;
+  ctx.strokeRect(x-7.5,top-5.5,221,boxH+9);
+  var cy=top+6;
+  for(i=0;i<LEGEND.length;i++){
+    ctx.font='700 9px "Oxanium", sans-serif'; ctx.fillStyle='#ffb02e';
+    ctx.fillText(LEGEND[i][0],x,cy); cy+=12;
+    for(j=0;j<LEGEND[i][1].length;j++){
+      var k=LEGEND[i][1][j];
+      ctx.font='700 9px "Roboto Mono", monospace'; ctx.fillStyle='#cdd6dd';
+      ctx.fillText(k[0],x+6,cy);
+      ctx.font=MONO; ctx.fillStyle='#8a96a1';
+      ctx.fillText(k[1],x+64,cy);
+      cy+=12;
+    }
+  }
+  cy+=6;
+  ctx.strokeStyle='rgba(58,69,82,.8)';
+  ctx.beginPath(); ctx.moveTo(x,cy-9); ctx.lineTo(x+200,cy-9); ctx.stroke();
+  for(i=0;i<GEARRULES.length;i++){
+    var gr=GEARRULES[i];
+    if(gr[0]){
+      ctx.font='700 8.5px "Oxanium", sans-serif'; ctx.fillStyle='#7fc4a0';
+      ctx.fillText(gr[0],x,cy);
+    }
+    ctx.font='8.5px "Roboto Mono", monospace'; ctx.fillStyle='#8a96a1';
+    ctx.fillText(gr[1],x+(gr[0]?52:6),cy);
+    cy+=11;
+  }
+}
 function drawBag(){
   var p=G.player,PW=270,x=W-PW-12,y=48,i;
   var maxRows=Math.max(3,Math.floor((H-260)/16));
@@ -2609,6 +2663,9 @@ function drawBag(){
   cy+=20;
   ctx.font='9px "Roboto Mono", monospace'; ctx.fillStyle='#6b7783';
   ctx.fillText('BAG  '+bagWeight()+'/'+PACKCAP[P.pack]+'wt',x+11,cy);
+  ctx.textAlign='right';
+  ctx.fillStyle='#7fc4a0'; ctx.fillText('better guns auto-equip',x+PW-11,cy-13);
+  ctx.textAlign='left';
   ctx.textAlign='right'; ctx.fillText('\u25c6 = kept on death',x+PW-11,cy); ctx.textAlign='left';
   cy+=6;
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
