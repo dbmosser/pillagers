@@ -231,6 +231,7 @@
     <button class="deploy ghost" id="deploy" style="flex:1">DEPLOY</button>
     <button class="deploy ghost" id="shopbtn" style="flex:1">REQUISITION</button>
     <button class="deploy ghost" id="workbtn" style="flex:1">WORKSHOP</button>
+    <button class="deploy ghost" id="condbtn" style="flex:1">CONDITIONS</button>
     <button class="deploy ghost" id="tunebtn" style="flex:1">TUNING</button>
   </div>
 </div>
@@ -246,7 +247,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.32';
+var VER='0.33';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -331,7 +332,7 @@ var THROWKEYS=['smoke','decoy','frag'];
 
 // ================================================================ profile
 var P={credits:900,stash:[],weapons:['pistol'],equipped:'pistol',runs:0,ext:0,died:0,best:0,
-  log:[],pack:0,rep:0,contracts:[],cfg:null,lastSim:null,autoExport:true};
+  log:[],pack:0,rep:0,contracts:[],cfg:null,lastSim:null,autoExport:true,cond:'night'};
 var SKEY='salvagerun:profile';
 function storeSet(v){
   try{
@@ -356,6 +357,7 @@ function loadProfile(){
         if(d&&typeof d.credits==='number'){ P=d;
           if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0;
           if(!P.rep)P.rep=0; if(P.autoExport===undefined)P.autoExport=true;
+          if(P.cond!=='day'&&P.cond!=='night') P.cond='night';
           if(P.cfgv===2&&P.cfg){ applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; }
           else P.cfg=null;
         } }
@@ -528,15 +530,33 @@ function buildMap(){
   }
   return {walls:walls,segs:segs,buildings:buildings,cw:cw,ch:ch};
 }
+// Day is a look, not a difficulty. Vision cone, awareness radius, enemy ranges
+// and every other tunable are identical in both conditions, so choosing daylight
+// is a preference and not an easier game. It is stored on the profile.
+function isDay(){ return P.cond==='day'; }
+function litHex(hex,amt,warm){
+  var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  r=Math.round(r+(255-r)*amt*(warm?1.05:1));
+  g=Math.round(g+(255-g)*amt);
+  b=Math.round(b+(255-b)*amt*(warm?0.86:1));
+  r=clamp(r,0,255); g=clamp(g,0,255); b=clamp(b,0,255);
+  return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
+}
+// district palette, lightened and warmed under an overcast noon
+function dcol(d,key){
+  var c=DISTRICTS[d===undefined?3:d][key];
+  return isDay()?litHex(c,key==='wallTop'?0.46:0.38,true):c;
+}
 function bakeGround(map){
   var g=document.createElement('canvas'); g.width=WORLD_W; g.height=WORLD_H;
   var c=g.getContext('2d'),i,j,k;
-  c.fillStyle='#12161c'; c.fillRect(0,0,WORLD_W,WORLD_H);
+  c.fillStyle=isDay()?'#3f444b':'#12161c'; c.fillRect(0,0,WORLD_W,WORLD_H);
   for(i=0;i<map.buildings.length;i++){
     var b=map.buildings[i],D=DISTRICTS[b.d];
     var cx=b.x+b.w/2,cy=b.y+b.h/2,rad=Math.max(b.w,b.h)*1.5;
     var gr=c.createRadialGradient(cx,cy,20,cx,cy,rad);
-    gr.addColorStop(0,D.floor); gr.addColorStop(.55,D.floor); gr.addColorStop(1,'rgba(18,22,28,0)');
+    var df=isDay()?litHex(D.floor,0.40,true):D.floor;
+    gr.addColorStop(0,df); gr.addColorStop(.55,df); gr.addColorStop(1,isDay()?'rgba(63,68,75,0)':'rgba(18,22,28,0)');
     c.fillStyle=gr; c.beginPath(); c.arc(cx,cy,rad,0,6.2832); c.fill();
   }
   c.fillStyle='#191d23';
@@ -2079,7 +2099,7 @@ function render2D(dt){
     ev.seen=canSee(p.x,p.y,p.face,ev.x,ev.y,G.vseg);
     if(ev.seen) VIS.push(ev);
   }
-  wc.fillStyle='#04060a'; wc.fillRect(0,0,W,H);
+  wc.fillStyle=isDay()?'#6b727c':'#04060a'; wc.fillRect(0,0,W,H);
   wc.save(); wc.translate(-ox,-oy);
   wc.drawImage(G.ground,0,0);
   // decals + shells
@@ -2189,11 +2209,11 @@ function render2D(dt){
     if(it.w){
       var wl2=it.w,d3=wl2.d===undefined?3:wl2.d;
       var LIFT=(wl2.w<=60&&wl2.h<=60)?14:26;
-      wc.fillStyle=DISTRICTS[d3].wall;
+      wc.fillStyle=dcol(d3,'wall');
       wc.fillRect(wl2.x,wl2.y+wl2.h-LIFT,wl2.w,LIFT);
       wc.fillStyle='rgba(0,0,0,.22)';
       wc.fillRect(wl2.x,wl2.y+wl2.h-LIFT,wl2.w,LIFT);
-      wc.fillStyle=DISTRICTS[d3].wallTop;
+      wc.fillStyle=dcol(d3,'wallTop');
       wc.fillRect(wl2.x,wl2.y-LIFT,wl2.w,wl2.h);
       wc.strokeStyle='rgba(255,255,255,.05)'; wc.lineWidth=1;
       wc.strokeRect(wl2.x+.5,wl2.y-LIFT+.5,wl2.w-1,wl2.h-1);
@@ -2311,7 +2331,10 @@ function render2D(dt){
   lx2.clearRect(0,0,W,H);
   // CFG.bright lifts everything you can actually see. 1.0 is the old v0.19 look.
   var BR=CFG.bright||1;
-  lx2.fillStyle='rgba(3,6,14,'+clamp(.52/BR,.05,.82)+')'; lx2.fillRect(0,0,W,H);
+  // at noon there is barely a shadow layer to punch lamps through
+  lx2.fillStyle=isDay()?('rgba(28,32,40,'+clamp(.13/BR,.02,.2)+')')
+                       :('rgba(3,6,14,'+clamp(.52/BR,.05,.82)+')');
+  lx2.fillRect(0,0,W,H);
   lx2.globalCompositeOperation='destination-out';
   for(i=0;i<G.lights.length;i++){
     var L=G.lights[i];
@@ -2370,7 +2393,7 @@ function render2D(dt){
     var gx=L2.x-ox,gy=L2.y-oy;
     if(gx<-80||gx>W+80||gy<-80||gy>H+80) continue;
     var fk2=L2.fl?(.72+.28*Math.sin(G.t*11+L2.f)):1;
-    wc.globalAlpha=.10*fk2; wc.fillStyle=L2.c;
+    wc.globalAlpha=(isDay()?.03:.10)*fk2; wc.fillStyle=L2.c;
     wc.beginPath(); wc.arc(gx,gy,L2.r*.3,0,6.2832); wc.fill();
   }
   // coloured bloom for every transient source, not just the player's muzzle
@@ -2401,7 +2424,11 @@ function render2D(dt){
   fx2.globalCompositeOperation='source-over';
   fx2.clearRect(0,0,W,H);
   // fog stays strong: it is the fog of war, not a mood filter. Only eased a little.
-  fx2.fillStyle='rgba(4,7,12,'+clamp(.93-(BR-1)*.09,.78,.96)+')'; fx2.fillRect(0,0,W,H);
+  // fog of war is attention, not darkness, so it stays in daylight; it just
+  // reads as pale haze instead of black
+  fx2.fillStyle=isDay()?('rgba(126,134,146,'+clamp(.90-(BR-1)*.09,.74,.94)+')')
+                       :('rgba(4,7,12,'+clamp(.93-(BR-1)*.09,.78,.96)+')');
+  fx2.fillRect(0,0,W,H);
   fx2.globalCompositeOperation='destination-out';
   var pol2=buildVisPoly(p.x,p.y,p.face,G.vseg);
   var psx=p.x-ox,psy=p.y-oy;
@@ -3348,6 +3375,16 @@ document.getElementById('shopbtn').onclick=function(){ renderShop(); document.ge
 document.getElementById('closeshop').onclick=function(){ document.getElementById('shopmodal').classList.remove('on'); renderHub(); };
 document.getElementById('workbtn').onclick=function(){ renderWork(); document.getElementById('workmodal').classList.add('on'); };
 document.getElementById('closework').onclick=function(){ document.getElementById('workmodal').classList.remove('on'); renderHub(); };
+function syncCond(){
+  var b=document.getElementById('condbtn');
+  if(b) b.textContent=isDay()?'CONDITIONS: DAY':'CONDITIONS: NIGHT';
+}
+document.getElementById('condbtn').onclick=function(){
+  P.cond=isDay()?'night':'day';
+  saveProfile(); syncCond();
+  // the ground is baked once per raid, so the next deploy picks up the palette
+  hubGround=null;
+};
 document.getElementById('tunebtn').onclick=function(){ toggleTune(true); };
 document.getElementById('closetune').onclick=function(){ toggleTune(false); };
 document.getElementById('preA').onclick=function(){ applyPreset('A'); };
@@ -3433,6 +3470,7 @@ resize();
 loadProfile().then(function(){
   ensureContracts();
   saveProfile();
+  syncCond();
   syncAutoEx();
   showScreen('hub');
 });
