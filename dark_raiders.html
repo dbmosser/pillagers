@@ -221,6 +221,7 @@
           <button id="exportbtn" style="flex:1">Export for Claude</button>
           <button id="simbtn" style="flex:1">Run bot sim</button>
         </div>
+        <div style="padding:0 12px 7px"><button id="autoexbtn" style="width:100%;font-size:9.5px">Auto-export: ON</button></div>
         <div id="simprog" style="font-size:9.5px;color:var(--ash);padding:0 12px 7px;display:none"></div>
       </div>
     </div>
@@ -244,7 +245,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.11';
+var VER='0.12';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractTime:6,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,simGreed:26,simRaids:30};
@@ -329,7 +330,7 @@ var THROWKEYS=['smoke','decoy','frag'];
 
 // ================================================================ profile
 var P={credits:900,stash:[],weapons:['pistol'],equipped:'pistol',runs:0,ext:0,died:0,best:0,
-  log:[],pack:0,rep:0,contracts:[],cfg:null,lastSim:null};
+  log:[],pack:0,rep:0,contracts:[],cfg:null,lastSim:null,autoExport:true};
 var SKEY='salvagerun:profile';
 function storeSet(v){
   try{
@@ -353,7 +354,7 @@ function loadProfile(){
       if(r&&r.value){ var d=JSON.parse(r.value);
         if(d&&typeof d.credits==='number'){ P=d;
           if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0;
-          if(!P.rep)P.rep=0;
+          if(!P.rep)P.rep=0; if(P.autoExport===undefined)P.autoExport=true;
           if(P.cfgv===2&&P.cfg){ applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; }
           else P.cfg=null;
         } }
@@ -2597,6 +2598,19 @@ document.getElementById('abandonbtn').onclick=function(){
   togglePauseBox(false);
   if(G&&!G.over) endRaid('abandon');
 };
+// Drops the full recorder to the browser's download folder after every run so the
+// export never has to be copied by hand. Silent, best effort, never blocks the UI.
+function autoExport(){
+  if(!P.autoExport) return;
+  try{
+    var blob=new Blob([buildExport()],{type:'text/plain'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url; a.download='dark_raiders_run'+P.runs+'.txt';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); },800);
+  }catch(e){}
+}
 document.getElementById('oc_btn').onclick=function(){
   if(pendingRun){
     pendingRun.tags=selTags.slice();
@@ -2605,10 +2619,17 @@ document.getElementById('oc_btn').onclick=function(){
     if(P.log.length>60) P.log.shift();
     pendingRun=null;
     saveProfile();
+    autoExport();
   }
   document.getElementById('outcome').classList.remove('on');
   G=null; keys={};
   showScreen('hub');
+};
+function syncAutoEx(){
+  document.getElementById('autoexbtn').textContent='Auto-export: '+(P.autoExport?'ON':'OFF');
+}
+document.getElementById('autoexbtn').onclick=function(){
+  P.autoExport=!P.autoExport; saveProfile(); syncAutoEx();
 };
 document.getElementById('exportbtn').onclick=function(){
   document.getElementById('exporttext').value=buildExport();
@@ -2634,6 +2655,7 @@ resize();
 loadProfile().then(function(){
   ensureContracts();
   saveProfile();
+  syncAutoEx();
   renderHub();
 });
 requestAnimationFrame(function(ts){ lastTs=ts; requestAnimationFrame(loop); });
