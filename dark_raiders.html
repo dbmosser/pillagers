@@ -242,12 +242,14 @@
 var W=0,H=0,DPR=1;
 var WORLD_W=2600,WORLD_H=2000;
 var PACKCAP=[40,60,80];
+// Armour ceiling. Matches the HUD bar's scale, so the bar can never overflow.
+var ARMOR_MAX=60;
 
 var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.41';
+var VER='0.42';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -933,7 +935,7 @@ function buildRaid(sim){
       if(!it) continue;
       if(it.use==='throw'&&tcount[it.tk]<2){ g.pouch[it.tk]++; tcount[it.tk]++; P.stash.splice(k,1); continue; }
       if(taken<3&&(it.use==='heal'||it.use==='ammo'||it.use==='armor')){
-        if(it.use==='armor') g.player.armor=it.amt;
+        if(it.use==='armor') g.player.armor=Math.min(ARMOR_MAX,g.player.armor+it.amt);
         else if(it.use==='ammo') g.player.reserve+=it.amt;
         else g.bag.push(P.stash[k]);
         P.stash.splice(k,1); taken++;
@@ -1204,10 +1206,14 @@ function openContainer(ct){
     T.items++; T.rar[itm.r]++;
     // one line per item; label() stacks them into a column so they never overlap
     label(ct.x,ct.y-10,
-      itm.name+(itm.use==='ammo'?' +'+itm.amt+' ammo':(itm.use==='armor'&&p.armor<20?' +'+itm.amt+' armor':' '+ival(key)+'c')),
+      itm.name+(itm.use==='ammo'?' +'+itm.amt+' ammo':(itm.use==='armor'&&p.armor<ARMOR_MAX?' +'+Math.round(Math.min(ARMOR_MAX-p.armor,itm.amt))+' armor':' '+ival(key)+'c')),
       RCOL[itm.r],0,itm.r==='rare'||itm.r==='elite');
     if(itm.use==='ammo') p.reserve+=itm.amt;
-    else if(itm.use==='armor'&&p.armor<20) p.armor+=itm.amt;
+    // A plate is worth 55 but only applied below 20 armour, so deploying with a
+    // plate from stash put you at 55 and made every plate you then found dead
+    // weight you could never use, flatly contradicting the legend. Plates now
+    // apply until armour is actually full.
+    else if(itm.use==='armor'&&p.armor<ARMOR_MAX) p.armor=Math.min(ARMOR_MAX,p.armor+itm.amt);
     else if(itm.use==='throw') G.pouch[itm.tk]++;
     else if(itm.use==='gun'){
       var TIER={fists:0,pistol:1,smg:2,rifle:3,dmr:4};
@@ -2661,7 +2667,7 @@ function drawHUD(){
   ctx.font='9px "Roboto Mono", monospace'; ctx.fillStyle='#8a96a1';
   ctx.fillText('HP '+Math.round(p.hp),20,by-3);
   if(p.armor>0){
-    bar(16,by-16,150,5,p.armor/60,'#5aa9e6');
+    bar(16,by-16,150,5,p.armor/ARMOR_MAX,'#5aa9e6');
     ctx.fillText('ARMOR '+Math.round(p.armor),90,by-3);
   }
   bar(16,by+9,150,4,p.stam/100,'#8fb5c8');
@@ -2746,7 +2752,7 @@ var LEGEND=[
 var GEARRULES=[
   ['WEAPONS','no swap key. A better gun auto-equips on pickup.'],
   ['','Change loadout at the Undercroft armory before deploying.'],
-  ['ARMOUR','no equip key. Plates apply themselves on pickup.'],
+  ['ARMOUR','no equip key. Plates apply on pickup until armour is full.'],
   ['THROWS','2 of each auto-load from stash. Q cycles, G throws.'],
   ['WATER','slows you and is loud. Crouch does not quiet a splash.']
 ];
