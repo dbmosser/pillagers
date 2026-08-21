@@ -251,7 +251,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.52';
+var VER='0.53';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -1300,11 +1300,18 @@ function openContainer(ct){
     else if(itm.use==='armor'&&p.armor<ARMOR_MAX) p.armor=Math.min(ARMOR_MAX,p.armor+itm.amt);
     else if(itm.use==='throw') G.pouch[itm.tk]++;
     else if(itm.use==='gun'){
-      var TIER={fists:0,pistol:1,smg:2,rifle:3,dmr:4};
-      if(TIER[itm.gk]>TIER[p.wep.id]){
+      // The four issued starters have to rank here too. Without them the lookup
+      // came back undefined, every comparison was false, and a looted Marksman
+      // Rifle would sit unusable in the bag while you kept the starter, which
+      // broke the upgrade mechanic for every raid once starters became standard.
+      var TIER={fists:0,ferro:1,pistol:1,kettle:2,hullcracker:2,smg:2,stitcher:2,rifle:3,dmr:4};
+      if((TIER[itm.gk]||0)>(TIER[p.wep.id]||0)){
         if(p.wep.id!=='fists'){
-          G.bag.push('gun_'+p.wep.id);
-          if(!G.sim){ var oi=P.weapons.indexOf(p.wep.id); if(oi>=0) P.weapons.splice(oi,1); }
+          // a starter is issued kit with no item to bank, so it is simply left behind
+          if(ITEMS['gun_'+p.wep.id]){
+            G.bag.push('gun_'+p.wep.id);
+            if(!G.sim){ var oi=P.weapons.indexOf(p.wep.id); if(oi>=0) P.weapons.splice(oi,1); }
+          }
         }
         p.wep=WEAPONS[itm.gk]; p.ammo=Math.ceil(p.wep.mag/2);
         G.tel.weapon=p.wep.name;
