@@ -246,7 +246,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.31';
+var VER='0.32';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -987,10 +987,17 @@ function updateThrowables(dt){
 
 // ================================================================ sim core helpers
 function say(m){ if(G&&!G.sim){G.msg=m;G.msgT=3.2;} }
-function ping(x,y,s,h){
+// `quiet` marks a noise that the player should see but that must not drive the
+// AI. Enemy footsteps use it; without that flag every machine would hear every
+// other machine walking and the whole map would cascade into permanent alert.
+function ping(x,y,s,h,quiet){
   if(!G) return;
   s*=CFG.noiseMult;
-  if(!G.sim) G.pings.push({x:x,y:y,t:0,life:1.1,s:s,h:!!h});
+  if(!G.sim){
+    G.pings.push({x:x,y:y,t:0,life:1.1,s:s,h:!!h});
+    if(G.pings.length>140) G.pings.shift();
+  }
+  if(quiet) return;
   for(var i=0;i<G.ents.length;i++){
     var e=G.ents[i];
     if(dist(e,{x:x,y:y})<s){
@@ -1534,6 +1541,17 @@ function updateEnts(dt){
       if(dist(e,{x:e.tx,y:e.ty})<30) e.cd=0;
     }
     if(e.cd>0) e.cd-=dt;
+    // Enemies were silent except when firing, so there was nothing for a noise
+    // indicator to show. Footsteps are player-facing only (quiet=true).
+    if(e.moving&&e.kind!=='snitch'){
+      var NP={crawler:[0.34,150],sentry:[0.55,190],raider:[0.50,130]}[e.kind];
+      if(NP){
+        e.stepAcc=(e.stepAcc||0)+dt;
+        // no point spawning a cue for a machine walking on the far side of the
+        // map: the ring would be invisible anyway and it is pure churn
+        if(e.stepAcc>=NP[0]&&dist(e,p)<NP[1]*2.4){ e.stepAcc=0; ping(e.x,e.y,NP[1],true,true); }
+      }
+    }
     e.face+=clamp(angDiff(want,e.face),-5.5*dt,5.5*dt);
     collide(e,G.map.walls);
   }
@@ -2109,9 +2127,12 @@ function render2D(dt){
     var pn=G.pings[i],dp=dist(p,pn);
     var a3=(1-pn.t/pn.life)*clamp(1-dp/(pn.s*1.5),0,1);
     if(a3<=0) continue;
-    wc.strokeStyle=pn.h?'rgba(255,77,61,'+(a3*.8)+')':'rgba(190,204,218,'+(a3*.3)+')';
+    wc.strokeStyle=pn.h?'rgba(255,90,70,'+(a3*.95)+')':'rgba(190,204,218,'+(a3*.32)+')';
     wc.lineWidth=1.6;
-    wc.beginPath(); wc.arc(pn.x,pn.y,8+(pn.t/pn.life)*48,0,6.2832); wc.stroke();
+    // radius grows with how loud it was, so a footstep and a detonation differ
+    var pr=8+(pn.t/pn.life)*Math.min(pn.s*0.42,130);
+    wc.lineWidth=pn.h?2.2:1.6;
+    wc.beginPath(); wc.arc(pn.x,pn.y,pr,0,6.2832); wc.stroke();
   }
   // marked ring
   if(G.marked>0){
@@ -2545,6 +2566,7 @@ function drawHUD(){
     ctx.textAlign='left';
   }
   if(!p.downed){
+    drawNoiseMarkers();
     drawLegend();
   }
   if(G.bagOpen) drawBag();
@@ -2574,6 +2596,36 @@ var GEARRULES=[
   ['ARMOUR','no equip key. Plates apply themselves on pickup.'],
   ['THROWS','2 of each auto-load from stash. Q cycles, G throws.']
 ];
+// A hostile ping outside the viewport painted exactly zero pixels, measured. So
+// sound you cannot see now gets a chevron on the screen edge pointing at it.
+function drawNoiseMarkers(){
+  var p=G.player,i;
+  for(i=0;i<G.pings.length;i++){
+    var pn=G.pings[i];
+    if(!pn.h) continue;
+    var s=w2s(pn.x,0,pn.y);
+    if(!s) continue;
+    var pad=26;
+    var off=(s.x<pad||s.x>W-pad||s.y<pad||s.y>H-pad);
+    if(!off) continue;
+    var dp=dist(p,pn);
+    var a=(1-pn.t/pn.life)*clamp(1-dp/(pn.s*2.2),0,1);
+    if(a<=0.02) continue;
+    var ang=Math.atan2(pn.y-p.y,pn.x-p.x);
+    var cx=W/2,cy=H/2,rx=(W/2-pad),ry=(H/2-pad);
+    var ca=Math.cos(ang),sa=Math.sin(ang);
+    var t=Math.min(Math.abs(rx/(ca||1e-6)),Math.abs(ry/(sa||1e-6)));
+    var mx=cx+ca*t,my=cy+sa*t;
+    ctx.save();
+    ctx.translate(mx,my); ctx.rotate(ang);
+    var sz=6+Math.min(pn.s,600)/110;
+    ctx.fillStyle='rgba(255,90,70,'+(a*0.95)+')';
+    ctx.beginPath();
+    ctx.moveTo(sz,0); ctx.lineTo(-sz*0.7,sz*0.75); ctx.lineTo(-sz*0.7,-sz*0.75);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+}
 function drawLegend(){
   var MONO='9px "Roboto Mono", monospace';
   if(!G.legendOn){
