@@ -1,0 +1,73 @@
+=== DARK RAIDERS v0.43 FLIGHT RECORDER ===
+Profile: 51 runs, 0 extracted, 3 died, best haul 0c, credits 900, rep 0, pack T1
+Active config [B]: {"coneDeg":100,"viewFar":440,"ambient":100,"raidSec":300,"pSpeed":158,"extractWait":25,"nSentry":7,"nCrawler":9,"nRaider":3,"nSnitch":2,"eDmg":1.35,"eHp":1,"lootMult":1,"contDens":1,"noiseMult":1,"safeSlots":2,"downTime":12,"regenDelay":10,"regenSec":3,"bright":1.7,"simGreed":26,"simRaids":30,"preset":"B"}
+
+--- RUNS (oldest first) ---
+#1 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#2 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#3 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#4 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#5 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#6 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#7 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#8 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#9 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#10 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#11 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#12 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#13 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#14 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#15 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#16 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#17 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#18 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#19 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#20 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#21 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#22 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#23 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#24 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#25 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#26 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#27 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#28 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#29 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#30 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#31 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#32 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#33 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#34 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#35 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#36 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#37 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#38 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#39 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#40 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#41 DEAD [B] wep:Scav Pistol dur:0s haul:2150c items:5 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none killer:test diedAt:903m
+#44 ABANDON [B] wep:Scav Pistol dur:0s haul:60c items:1 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#45 ABANDON [B] wep:Scav Pistol dur:0s haul:180c items:3 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#46 ABANDON [B] wep:Scav Pistol dur:0s haul:180c items:3 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#47 ABANDON [B] wep:Scav Pistol dur:0s haul:60c items:1 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#48 ABANDON [B] wep:Scav Pistol dur:0s haul:60c items:1 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#49 ABANDON [B] wep:Scav Pistol dur:0s haul:60c items:1 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#50 ABANDON [B] wep:Scav Pistol dur:0s haul:180c items:3 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#51 ABANDON [B] wep:Scav Pistol dur:0s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+
+--- LAST BOT SIM ---
+(run as of profile run count 43, config: {"coneDeg":100,"viewFar":440,"ambient":100,"raidSec":300,"pSpeed":158,"extractWait":25,"nSentry":7,"nCrawler":9,"nRaider":3,"nSnitch":2,"eDmg":1.35,"eHp":1,"lootMult":1,"contDens":1,"noiseMult":1,"safeSlots":2,"downTime":12,"regenDelay":10,"regenSec":3,"bright":1.7,"simGreed":26,"simRaids":30,"preset":"B"})
+BOT SIM: 30 raids against config [B]
+Extract rate: 27%  (8 extracted, 22 died)
+Avg haul when extracting: 2012c
+Avg raid length: 84s of 300s  |  Avg containers: 10.2
+Avg first enemy contact: 25s  (2 raids with no contact)
+Bot accuracy: 45%
+Death causes: crawler x14, sentry x4, timer x2, raider x2
+Timer expiry deaths: 2 (7% of raids). If high, the map is too big for the clock.
+Avg distance from extract at death: 603m (closest approach)
+Downs: 23  |  Self-revives: 3  |  AI raiders extracted: 21
+Beacon calls: 13  |  Missed landings (not in the ring): 0
+
+Reading guide: extract rate 35-60% is a healthy tension band for this genre.
+Below 20%: too lethal or timer too short. Above 75%: threats are not landing.
+
+=== END RECORDER ===

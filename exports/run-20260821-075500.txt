@@ -1,0 +1,26 @@
+﻿=== DARK RAIDERS v0.45 FLIGHT RECORDER ===
+Profile: 3 runs, 0 extracted, 0 died, best haul 0c, credits 900, rep 0, pack T1
+Active config [B]: {"coneDeg":100,"viewFar":440,"ambient":100,"raidSec":300,"pSpeed":158,"extractWait":25,"nSentry":7,"nCrawler":9,"nRaider":3,"nSnitch":2,"eDmg":1.35,"eHp":1,"lootMult":1,"contDens":1,"noiseMult":1,"safeSlots":2,"downTime":12,"regenDelay":10,"regenSec":3,"bright":1.7,"simGreed":26,"simRaids":30,"preset":"B"}
+
+--- RUNS (oldest first) ---
+#1 ABANDON [B] wep:Scav Pistol dur:20s haul:0c items:0 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:400 crouch:0s sprint:0s lit:0% closestExt:none
+#2 ABANDON [B] wep:Scav Pistol dur:30s haul:0c items:0 cont:2 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+#3 ABANDON [B] wep:Scav Pistol dur:10s haul:0c items:0 cont:0 shots:3 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none
+
+--- LAST BOT SIM ---
+(run as of profile run count 1, config: {"coneDeg":100,"viewFar":440,"ambient":100,"raidSec":300,"pSpeed":158,"extractWait":25,"nSentry":7,"nCrawler":9,"nRaider":3,"nSnitch":2,"eDmg":1.35,"eHp":1,"lootMult":1,"contDens":1,"noiseMult":1,"safeSlots":2,"downTime":12,"regenDelay":10,"regenSec":3,"bright":1.7,"simGreed":26,"simRaids":30,"preset":"B"})
+BOT SIM: 30 raids against config [B]
+Extract rate: 17%  (5 extracted, 25 died)
+Avg haul when extracting: 1778c
+Avg raid length: 62s of 300s  |  Avg containers: 7.5
+Avg first enemy contact: 24s  (2 raids with no contact)
+Bot accuracy: 31%
+Death causes: crawler x16, raider x7, sentry x2
+Avg distance from extract at death: 680m (closest approach)
+Downs: 27  |  Self-revives: 2  |  AI raiders extracted: 24
+Beacon calls: 9  |  Missed landings (not in the ring): 0
+
+Reading guide: extract rate 35-60% is a healthy tension band for this genre.
+Below 20%: too lethal or timer too short. Above 75%: threats are not landing.
+
+=== END RECORDER ===
