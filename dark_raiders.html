@@ -245,7 +245,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.21';
+var VER='0.22';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.35,simGreed:26,simRaids:30};
@@ -2834,6 +2834,13 @@ function renderHub(){
   for(var k2 in killers) if(killers[k2]>bn){bn=killers[k2];bk=k2;}
   document.getElementById('s_killer').textContent=bk?bk+' (x'+bn+')':'--';
 }
+// Run notes are free text Daniel types, and they land in innerHTML below. Without
+// escaping, an ordinary note like "sentry hp <sentry cap> needs work" loses the
+// bracketed part, and an unclosed bracket swallows the rest of the line.
+function escHtml(t){
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 function fmtRun(r){
   var d=document.createElement('div'); d.className='runline';
   var o=document.createElement('div');
@@ -2843,9 +2850,9 @@ function fmtRun(r){
   var kills=r.kills?(r.kills.sentry+r.kills.crawler+r.kills.raider+(r.kills.snitch||0)):0;
   var s='#'+r.n+' ['+(r.preset||'?')+'] '+r.haul+'c &middot; '+r.dur+'s &middot; '+kills+'k &middot; '+r.acc+'%';
   if(r.downs) s+=' &middot; downs '+r.downs;
-  if(r.outcome==='dead'&&r.deathKiller) s+=' &middot; by '+r.deathKiller;
-  if(r.tags&&r.tags.length) s+='<br><span style="color:var(--amber)">'+r.tags.join(', ')+'</span>';
-  if(r.note) s+='<br><span style="color:var(--ash)">&ldquo;'+r.note+'&rdquo;</span>';
+  if(r.outcome==='dead'&&r.deathKiller) s+=' &middot; by '+escHtml(r.deathKiller);
+  if(r.tags&&r.tags.length) s+='<br><span style="color:var(--amber)">'+escHtml(r.tags.join(', '))+'</span>';
+  if(r.note) s+='<br><span style="color:var(--ash)">&ldquo;'+escHtml(r.note)+'&rdquo;</span>';
   body.innerHTML=s;
   d.appendChild(o); d.appendChild(body);
   return d;
