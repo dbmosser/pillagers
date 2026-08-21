@@ -245,7 +245,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.24';
+var VER='0.25';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.35,simGreed:26,simRaids:30};
@@ -2299,9 +2299,11 @@ function render2D(dt){
     lx2.fillStyle=fg;
     lx2.beginPath(); lx2.arc(fsx,fsy,frr,0,6.2832); lx2.fill();
   }
-  // a machine that has locked on lights its own patch of ground
-  for(i=0;i<G.ents.length;i++){
-    var EL=G.ents[i];
+  // A machine that has locked on lights its own patch of ground. VIS, not
+  // G.ents: lighting an unseen enemy draws its position straight through the
+  // fog, and hostile positions are never shown.
+  for(i=0;i<VIS.length;i++){
+    var EL=VIS[i];
     if(EL.state!=='chase'&&EL.state!=='alarm') continue;
     var ex=EL.x-ox,ey=EL.y-oy;
     if(ex<-90||ex>W+90||ey<-90||ey>H+90) continue;
@@ -2339,9 +2341,9 @@ function render2D(dt){
     wc.globalAlpha=.30*f2; wc.fillStyle=F2.c;
     wc.beginPath(); wc.arc(gx2,gy2,gr2,0,6.2832); wc.fill();
   }
-  // hunting machines bleed their eye colour into the air
-  for(i=0;i<G.ents.length;i++){
-    var EG=G.ents[i];
+  // hunting machines bleed their eye colour into the air, but only ones you can see
+  for(i=0;i<VIS.length;i++){
+    var EG=VIS[i];
     if(EG.state!=='chase'&&EG.state!=='alarm') continue;
     var ux=EG.x-ox,uy=EG.y-oy;
     if(ux<-60||ux>W+60||uy<-60||uy>H+60) continue;
