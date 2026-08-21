@@ -192,3 +192,8 @@ In the picture it is almost nothing. Built the worst arrangement I could: a lamp
 Not built, for two reasons beyond the size of it. Doing it properly means precomputing a visibility polygon per lamp at map build and clipping the gradient to it, which is real rendering work for a faint smudge. And it would make the streets darker, which is the one thing he has actually complained about ("game is too dark overall", v0.29 era). If he ever says light is leaking out of buildings, this is the cause and the fix is understood.
 
 Worth knowing while reading the recorder: the "lit %" figure it reports **does** test line of sight to the lamp, so that number is honest even though the visuals are not.
+
+### Saved progress checked at scale (v0.67 tick, no game code changed)
+`storeSet` swallows every error without a word, so a failed save would cost a whole session with nothing said. Worth knowing how close that is to happening. A maximally loaded profile, the recorder full at its 60-run cap with notes and tags on every entry, 3,000 items hoarded in the stash, and a saved bot report, comes to **73,496 bytes against a browser allowance of roughly five million. That is 68 times more room than it needs.** Running out is not a real failure mode, so the silent catch stays as it is. Proved the round trip at that size too: written bytes match memory exactly, and it reads back with all 3,000 stash items, all 60 runs, the per-run notes, the feeling tags and the mid-raid notes intact.
+
+Also stopped `CLAUDE.md` restating the version number. It said v0.28 while the game was at v0.66, which would mislead any session that trusted it, and it will drift again the moment it is bumped by hand. It now points at `var VER` and the changelog instead.
