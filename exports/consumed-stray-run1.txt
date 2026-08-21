@@ -1,0 +1,14 @@
+=== DARK RAIDERS v0.27 FLIGHT RECORDER ===
+Profile: 1 runs, 0 extracted, 1 died, best haul 0c, credits 900, rep 0, pack T1
+Active config [B]: {"coneDeg":100,"viewFar":440,"ambient":100,"raidSec":300,"pSpeed":158,"extractWait":25,"nSentry":7,"nCrawler":9,"nRaider":3,"nSnitch":2,"eDmg":1.35,"eHp":1,"lootMult":1,"contDens":1,"noiseMult":1,"safeSlots":2,"downTime":12,"regenDelay":10,"regenSec":3,"bright":1.35,"simGreed":26,"simRaids":30,"preset":"B"}
+
+FEELING TAGS (all runs): Too dark x1
+
+--- RUNS (oldest first) ---
+#1 DEAD [B] wep:Scav Pistol dur:128s haul:635c items:4 cont:3 shots:36 acc:50% kills:2s/3c/0r/0sn heals:0 downs:1 rev:0 marked:1 beacon:0called/0missed regen:3hp firstContact:30s firstLoot:19s moved:7773 crouch:0s sprint:1s lit:23% closestExt:258 thrown:0sm/1dc/0fr killer:crawler diedAt:36m aiExtracted:1
+   tags: Too dark
+   note: should be able to extract when downed somehow
+   in-run note @79s: i never find heals, explosives or guns as loot.  I need a clear indicator of what I have that i can use eg heals explosives, other guns.
+   in-run note @93s: I want to click sprint and just sprint until i'm done sprinting, i don't want to hold shift.
+
+=== END RECORDER ===

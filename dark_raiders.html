@@ -247,7 +247,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.36';
+var VER='0.37';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -744,14 +744,17 @@ function canSee(px,py,face,tx,ty,segs,far,cone){
 }
 // Water is walkable and transparent, so it needs no collision segments and no
 // occluders. It only ever answers one question: are you standing in it.
-function inWater(x,y){
-  if(!G||!G.map||!G.map.water) return false;
-  var w=G.map.water;
+function inWaterMap(map,x,y){
+  var w=(map&&map.water)||[];
   for(var i=0;i<w.length;i++){
     var q=w[i];
     if(x>q.x&&x<q.x+q.w&&y>q.y&&y<q.y+q.h) return true;
   }
   return false;
+}
+function inWater(x,y){
+  if(!G||!G.map) return false;
+  return inWaterMap(G.map,x,y);
 }
 function collide(e,walls){
   var r=e.r;
@@ -838,7 +841,11 @@ function buildRaid(sim){
   // death spiral: one run ended in 14 seconds with three melee swings.
   var wep=WEAPONS[P.equipped]||WEAPONS.fists;
   if(wep.id==='fists'&&(!P.weapons||!P.weapons.length)) wep=WEAPONS.pistol;
+  // Never drop the operator into a flooded tile. Water defeats crouch and halves
+  // your speed, so a wet spawn means announcing yourself from second zero with
+  // nothing you can do about it. Measured at 4.75% of maps before this.
   var start=freeSpot(map,40),i,t;
+  for(t=0;t<40&&inWaterMap(map,start.x,start.y);t++) start=freeSpot(map,40);
   // Three extracts, each far from spawn and far from each other. Without the
   // separation rule two r=78 rings overlap on roughly 3% of placements, which
   // reads as a rendering fault on the sector map.
