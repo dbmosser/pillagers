@@ -245,10 +245,10 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.15';
+var VER='0.16';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
-  noiseMult:1,safeSlots:2,downTime:12,simGreed:26,simRaids:30};
+  noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,simGreed:26,simRaids:30};
 var PRESETS={
   A:{coneDeg:88,viewFar:390,ambient:85,raidSec:360,nCrawler:11,nSentry:6,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -718,16 +718,24 @@ function mkContainer(x,y,type,d){
   }
   return {x:x,y:y,r:15,type:type,d:(d===undefined?-1:d),loot:loot,opened:false,time:times[type],best:best,rot:rnd(-.25,.25)};
 }
+// Machines get stencilled unit designations so they read as specific things on
+// the field, the way the AI raiders already do with their callsigns.
+function mkName(pre,letters){
+  return pre+' '+pick(letters)+'-'+ri(10,99);
+}
 function mkSentry(x,y){
   return {kind:'sentry',x:x,y:y,r:16,hp:Math.round(80*CFG.eHp),maxhp:Math.round(80*CFG.eHp),
+    name:mkName('SENTRY',['K','R','V','T']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:70,dmg:14,rng:340,cone:.62,hitT:0};
 }
 function mkCrawler(x,y){
   return {kind:'crawler',x:x,y:y,r:11,hp:Math.round(34*CFG.eHp),maxhp:Math.round(34*CFG.eHp),
+    name:mkName('CRAWLER',['A','C','H','M']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:150,dmg:20,rng:26,cone:1.5,hitT:0,legs:rnd(0,6.28)};
 }
 function mkSnitch(x,y){
   return {kind:'snitch',x:x,y:y,r:9,hp:Math.round(26*CFG.eHp),maxhp:Math.round(26*CFG.eHp),
+    name:mkName('SNITCH',['E','N','S']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:170,dmg:0,rng:380,cone:1.2,hitT:0,lost:0};
 }
 function mkRaider(x,y){
@@ -801,7 +809,7 @@ function buildRaid(sim){
       roll:0,rollCd:0,rollDir:{x:1,y:0},ads:false},
     bag:[],pouch:{smoke:0,decoy:0,frag:0},tsel:0,
     containers:containers,ents:ents,bullets:[],pings:[],puffs:[],
-    decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],
+    decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],labels:[],
     zones:zones,active:active,beaconT:null,searching:null,searchT:0,
     explored:{},msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,yaw:0,pitch:.14,sprinting:false,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
@@ -834,7 +842,7 @@ function buildRaid(sim){
 function startRaid(){
   G=buildRaid(false);
   showScreen('raid');
-  say('Surface contact. Find the beacon.');
+  say('Surface contact. TAB for inventory, E to search, M for the map.');
 }
 
 // ================================================================ input
@@ -975,6 +983,13 @@ function spark(x,y,col,n,spread){
       t:0,life:rnd(.2,.5),c:col});
   }
 }
+// World-anchored text that rises and fades. Used for loot pickups and kill
+// confirmations so both read at the point they happened, not just on the HUD.
+function label(x,y,txt,col,delay,big){
+  if(G.sim) return;
+  G.labels.push({x:x,y:y,txt:txt,c:col||'#cdd6dd',t:-(delay||0),life:1.7,big:!!big});
+  if(G.labels.length>40) G.labels.shift();
+}
 function decal(x,y,col,size){
   if(G.sim) return;
   G.decals.push({x:x,y:y,c:col,s:size,a:rnd(.35,.65),rot:rnd(0,3)});
@@ -989,6 +1004,7 @@ function killPlayer(src){
 function damagePlayer(amt,src){
   var p=G.player;
   if(p.iv>0) return;
+  p.combatT=0;
   G.tel.dmg[src]=(G.tel.dmg[src]||0)+amt;
   if(p.downed){
     p.downT-=3; blip('hit');
@@ -1015,7 +1031,7 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
   ping(sh.x,sh.y,wep.noise,!fromPlayer);
   blip(melee?'hit':'shot',fromPlayer?0:dist(G.player,sh));
   if(!melee) sh.muzzle=.06;
-  if(fromPlayer){ G.player.recoil=1; G.tel.shots++; G.shake=Math.max(G.shake,wep.dmg>40?4.5:2.2); }
+  if(fromPlayer){ G.player.recoil=1; G.player.combatT=0; G.tel.shots++; G.shake=Math.max(G.shake,wep.dmg>40?4.5:2.2); }
   if(!G.sim&&!melee){
     var sa=ang-1.5+rnd(-.3,.3);
     G.shells.push({x:sh.x,y:sh.y,vx:Math.cos(sa)*rnd(60,130),vy:Math.sin(sa)*rnd(60,130),t:0,life:rnd(.5,.9),rot:rnd(0,6)});
@@ -1031,6 +1047,10 @@ function openContainer(ct){
   for(var l=0;l<ct.loot.length;l++){
     var key=ct.loot[l],itm=ITEMS[key];
     T.items++; T.rar[itm.r]++;
+    // one rising line per item, staggered, so the haul is readable at the container
+    label(ct.x+rnd(-10,10),ct.y,
+      itm.name+(itm.use==='ammo'?' +'+itm.amt+' ammo':(itm.use==='armor'&&p.armor<20?' +'+itm.amt+' armor':' '+ival(key)+'c')),
+      RCOL[itm.r],l*0.14,itm.r==='rare'||itm.r==='elite');
     if(itm.use==='ammo') p.reserve+=itm.amt;
     else if(itm.use==='armor'&&p.armor<20) p.armor+=itm.amt;
     else if(itm.use==='throw') G.pouch[itm.tk]++;
@@ -1056,6 +1076,18 @@ function openContainer(ct){
 }
 // Three-phase extract: call it in from inside the ring, survive the inbound wait
 // anywhere you like, then be standing in the ring when it lands.
+// Out of combat, integrity creeps back. Any shot fired or taken resets the clock.
+function tickRegen(dt){
+  var p=G.player;
+  p.combatT=(p.combatT||0)+dt;
+  if(p.downed||p.hp>=p.maxhp||p.combatT<CFG.regenDelay){ p.regenAcc=0; return; }
+  p.regenAcc=(p.regenAcc||0)+dt;
+  while(p.regenAcc>=CFG.regenSec&&p.hp<p.maxhp){
+    p.regenAcc-=CFG.regenSec;
+    p.hp=Math.min(p.maxhp,p.hp+1);
+    G.tel.regen=(G.tel.regen||0)+1;
+  }
+}
 function tryExtractTick(dt,wantCall){
   var p=G.player,z=G.active,T=G.tel,inside=dist(p,z)<z.r;
   if(G.beaconT===null){
@@ -1215,6 +1247,7 @@ function updatePlayer(dt){
   } else { G.searching=null; G.searchT=0; }
 
   // E calls the beacon, but a container underfoot wins the keypress
+  tickRegen(dt);
   tryExtractTick(dt,!!keys['KeyE']&&!near);
 }
 
@@ -1291,6 +1324,7 @@ function updateBot(dt){
     if(dist(p,p.lastPos)<6&&p.goal){ p.goal.skip=true; p.goal=null; }
     p.lastPos={x:p.x,y:p.y,t:0};
   }
+  tickRegen(dt);
   tryExtractTick(dt,true);
 }
 
@@ -1327,6 +1361,7 @@ function updateEnts(dt){
         var c3=mkContainer(e.x,e.y,'crate'); c3.loot=[pick(['board','optic','comp'])]; c3.time=.7;
         G.containers.push(c3);
       }
+      label(e.x,e.y-16,(e.name||e.kind.toUpperCase())+' DOWN',e.kind==='raider'?'#e0483a':'#ffb02e',0,true);
       if(e.kind!=='raider') decal(e.x,e.y,'#241a10',rnd(14,22));
       spark(e.x,e.y,e.kind==='raider'?'#c8452f':'#ffb02e',22,300);
       if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:e.kind==='raider'?'#c8452f':'#ffb02e',r:26});
@@ -1558,7 +1593,7 @@ function endRaid(how){
     haul:haul,items:G.bag.length,containers:T.containers,
     shots:T.shots,hits:T.hits,acc:acc,reloads:T.reloads,heals:T.heals,
     downs:T.downs,revives:T.revives,thr:T.thr,marked:T.marked||0,
-    beaconCalls:T.beaconCalls,beaconMissed:T.beaconMissed,
+    beaconCalls:T.beaconCalls,beaconMissed:T.beaconMissed,regen:T.regen||0,
     kills:T.kills,dmg:T.dmg,rar:T.rar,
     firstContact:T.firstContact===null?null:Math.round(T.firstContact),
     firstLoot:T.firstLoot===null?null:Math.round(T.firstLoot),
@@ -1960,6 +1995,44 @@ function render2D(dt){
         clamp(e2.bag.length/7,0,1),e2.muzzle,'',0);
     }
   }
+  // nameplates over anything you can currently see
+  wc.textAlign='center';
+  for(i=0;i<VIS.length;i++){
+    var ne=VIS[i];
+    if(!ne.name) continue;
+    var lift=ne.kind==='snitch'?40:(ne.kind==='crawler'?20:34);
+    var hostile=ne.kind==='raider';
+    wc.font='700 9px "Oxanium", sans-serif';
+    var tw=wc.measureText(ne.name).width;
+    wc.fillStyle='rgba(6,9,13,.62)';
+    wc.fillRect(ne.x-tw/2-4,ne.y-lift-9,tw+8,12);
+    wc.fillStyle=ne.state==='chase'||ne.state==='alarm'
+      ? (hostile?'#ff6b5a':'#ff9a3c')
+      : (hostile?'#e0a89e':'#9aa6b2');
+    wc.fillText(ne.name,ne.x,ne.y-lift);
+    // health pip so a wounded target reads at a glance
+    if(ne.hp<ne.maxhp){
+      var fw=clamp(ne.hp/ne.maxhp,0,1);
+      wc.fillStyle='rgba(0,0,0,.55)'; wc.fillRect(ne.x-tw/2-4,ne.y-lift+4,tw+8,2);
+      wc.fillStyle=hostile?'#e0483a':'#ffb02e'; wc.fillRect(ne.x-tw/2-4,ne.y-lift+4,(tw+8)*fw,2);
+    }
+  }
+  // floating labels: loot found, targets down
+  for(i=0;i<G.labels.length;i++){
+    var lb=G.labels[i];
+    if(lb.t<0) continue;
+    var la=clamp(1-lb.t/lb.life,0,1);
+    var rise=Math.min(lb.t,lb.life)*26;
+    wc.globalAlpha=la;
+    wc.font=(lb.big?'700 11px':'700 10px')+' "Oxanium", sans-serif';
+    wc.fillStyle='rgba(6,9,13,.55)';
+    var lw=wc.measureText(lb.txt).width;
+    wc.fillRect(lb.x-lw/2-4,lb.y-rise-10,lw+8,13);
+    wc.fillStyle=lb.c;
+    wc.fillText(lb.txt,lb.x,lb.y-rise);
+    wc.globalAlpha=1;
+  }
+  wc.textAlign='left';
   // air pass: bullets, sparks, puffs, throws, smoke
   wc.globalCompositeOperation='lighter';
   for(i=0;i<G.bullets.length;i++){
@@ -2189,6 +2262,11 @@ function drawHUD(){
   }
   ctx.font='9.5px "Roboto Mono", monospace'; ctx.fillStyle='#8a96a1';
   ctx.fillText('CARRY '+bagWeight()+' / '+PACKCAP[P.pack]+'  ('+G.bag.length+' items)',W-16,by);
+  // standing cue: the bag was findable only from a dim 14-item legend line
+  if(!G.bagOpen){
+    ctx.font='700 10px "Oxanium", sans-serif'; ctx.fillStyle='#ffb02e';
+    ctx.fillText('TAB  INVENTORY',W-16,by-52);
+  }
   var pl2=[],tsn=THROWKEYS[G.tsel];
   for(i=0;i<3;i++){
     var tkk=THROWKEYS[i],lbl=tkk.toUpperCase().slice(0,3)+' x'+G.pouch[tkk];
@@ -2242,27 +2320,75 @@ function safeSet(){
   for(i=0;i<n;i++) s[idx[i]]=1;
   return s;
 }
+// Full inventory: what you are holding, what is on your body, what is in the bag.
 function drawBag(){
-  var x=W-262,y=54,i;
-  ctx.fillStyle='rgba(6,9,13,.94)'; ctx.fillRect(x,y,246,Math.min(H-120,66+G.bag.length*17));
-  ctx.strokeStyle='#2a323d'; ctx.strokeRect(x+.5,y+.5,245,Math.min(H-121,65+G.bag.length*17));
-  ctx.font='700 11px "Oxanium", sans-serif'; ctx.fillStyle='#ffb02e';
-  ctx.fillText('BAG - '+bagWeight()+'/'+PACKCAP[P.pack]+'wt  (TAB or I to close)',x+10,y+18);
+  var p=G.player,PW=270,x=W-PW-12,y=48,i;
+  var maxRows=Math.max(3,Math.floor((H-260)/16));
+  var rows=Math.min(G.bag.length,maxRows);
+  var hh=150+Math.max(1,rows)*16+(G.bag.length>maxRows?16:0);
+  hh=Math.min(hh,H-70);
+  ctx.fillStyle='rgba(6,9,13,.96)'; ctx.fillRect(x,y,PW,hh);
+  ctx.strokeStyle='#3a4552'; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,PW-1,hh-1);
+
+  var cy=y+19;
+  ctx.font='700 12px "Oxanium", sans-serif'; ctx.fillStyle='#ffb02e';
+  ctx.fillText('INVENTORY',x+11,cy);
+  ctx.font='9px "Roboto Mono", monospace'; ctx.fillStyle='#6b7783'; ctx.textAlign='right';
+  ctx.fillText('TAB or I to close',x+PW-11,cy); ctx.textAlign='left';
+  cy+=8;
+  ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
+
+  // equipped
+  cy+=16;
   ctx.font='9px "Roboto Mono", monospace'; ctx.fillStyle='#6b7783';
-  ctx.fillText('diamond = safe pocket (kept on death)',x+10,y+31);
+  ctx.fillText('EQUIPPED',x+11,cy);
+  cy+=15;
+  ctx.font='700 12px "Oxanium", sans-serif'; ctx.fillStyle='#cdd6dd';
+  ctx.fillText(p.wep.name,x+11,cy);
+  ctx.font='10px "Roboto Mono", monospace'; ctx.textAlign='right';
+  ctx.fillStyle=p.wep.mag===0?'#8a96a1':(p.ammo===0?'#ff4d3d':'#ffb02e');
+  ctx.fillText(p.wep.mag===0?'MELEE':(p.ammo+' / '+p.reserve),x+PW-11,cy);
+  ctx.textAlign='left';
+  cy+=14;
+  ctx.font='9px "Roboto Mono", monospace'; ctx.fillStyle='#6b7783';
+  ctx.fillText('DMG '+p.wep.dmg+'  RANGE '+p.wep.rng+'  '+(p.wep.auto?'AUTO':'SEMI')+
+    (p.wep.mag?('  MAG '+p.wep.mag):''),x+11,cy);
+
+  // body
+  cy+=18;
+  ctx.fillStyle='#6b7783'; ctx.fillText('BODY',x+11,cy);
+  cy+=14;
+  ctx.font='10px "Roboto Mono", monospace'; ctx.fillStyle='#cdd6dd';
+  ctx.fillText('Integrity '+Math.round(p.hp)+'/'+p.maxhp+'    Armor '+Math.round(p.armor),x+11,cy);
+  cy+=14;
+  var pl=[];
+  for(i=0;i<THROWKEYS.length;i++) pl.push(THROWKEYS[i].toUpperCase().slice(0,3)+' x'+G.pouch[THROWKEYS[i]]);
+  ctx.fillStyle='#8a96a1'; ctx.fillText('Pouch  '+pl.join('   '),x+11,cy);
+
+  // bag
+  cy+=20;
+  ctx.font='9px "Roboto Mono", monospace'; ctx.fillStyle='#6b7783';
+  ctx.fillText('BAG  '+bagWeight()+'/'+PACKCAP[P.pack]+'wt',x+11,cy);
+  ctx.textAlign='right'; ctx.fillText('\u25c6 = kept on death',x+PW-11,cy); ctx.textAlign='left';
+  cy+=6;
+  ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
+  cy+=14;
   var prot=safeSet();
   ctx.font='10px "Roboto Mono", monospace';
-  var maxRows=Math.floor((H-190)/17);
-  for(i=0;i<G.bag.length&&i<maxRows;i++){
+  for(i=0;i<rows;i++){
     var it=ITEMS[G.bag[i]];
-    ctx.fillStyle=RCOL[it.r];
-    ctx.fillText((prot[i]?'\u25c6 ':'  ')+it.name,x+10,y+48+i*17);
+    if(!it) continue;
+    ctx.fillStyle=RCOL[it.r]||'#cdd6dd';
+    ctx.fillText((prot[i]?'\u25c6 ':'  ')+it.name,x+11,cy+i*16);
     ctx.textAlign='right'; ctx.fillStyle='#ffb02e';
-    ctx.fillText(ival(G.bag[i])+'c',x+236,y+48+i*17);
+    ctx.fillText(ival(G.bag[i])+'c',x+PW-11,cy+i*16);
     ctx.textAlign='left';
   }
-  if(G.bag.length>maxRows){ ctx.fillStyle='#6b7783'; ctx.fillText('+'+(G.bag.length-maxRows)+' more',x+10,y+48+maxRows*17); }
-  if(!G.bag.length){ ctx.fillStyle='#6b7783'; ctx.fillText('Empty. Go find something.',x+10,y+48); }
+  if(G.bag.length>maxRows){
+    ctx.fillStyle='#6b7783';
+    ctx.fillText('+'+(G.bag.length-maxRows)+' more',x+11,cy+maxRows*16);
+  }
+  if(!G.bag.length){ ctx.fillStyle='#6b7783'; ctx.fillText('Empty. Go find something.',x+11,cy); }
 }
 function drawMapOverlay(){
   var p=G.player,i;
@@ -2316,6 +2442,8 @@ var SLIDERS=[
   ['noiseMult','Noise radius x',0.5,2,0.05,1],
   ['safeSlots','Safe pocket slots',0,5,1,1],
   ['downTime','Downed bleed-out (s)',5,25,1,1],
+  ['regenDelay','Regen starts after (s)',0,40,1,1],
+  ['regenSec','Regen seconds per HP',1,12,0.5,1],
   ['simGreed','Sim bot greed (bag wt)',10,60,2,1],
   ['simRaids','Sim raid count',10,80,5,1]
 ];
@@ -2376,6 +2504,7 @@ function loop(ts){
       var i;
       for(i=G.pings.length-1;i>=0;i--){ G.pings[i].t+=dt; if(G.pings[i].t>G.pings[i].life) G.pings.splice(i,1); }
       for(i=G.puffs.length-1;i>=0;i--){ G.puffs[i].t+=dt; if(G.puffs[i].t>G.puffs[i].life) G.puffs.splice(i,1); }
+      for(i=G.labels.length-1;i>=0;i--){ G.labels[i].t+=dt; if(G.labels[i].t>G.labels[i].life) G.labels.splice(i,1); }
       for(i=G.sparks.length-1;i>=0;i--){
         var sp=G.sparks[i]; sp.t+=dt; sp.x+=sp.vx*dt; sp.y+=sp.vy*dt;
         sp.vx*=.92; sp.vy*=.92;
@@ -2521,6 +2650,7 @@ function buildExport(){
       ' kills:'+kills+' heals:'+r.heals+' downs:'+(r.downs||0)+' rev:'+(r.revives||0)+
       ' marked:'+(r.marked||0)+
       ' beacon:'+(r.beaconCalls||0)+'called/'+(r.beaconMissed||0)+'missed'+
+      ' regen:'+(r.regen||0)+'hp'+
       ' firstContact:'+(r.firstContact===null?'none':r.firstContact+'s')+
       ' firstLoot:'+(r.firstLoot===null?'none':r.firstLoot+'s')+
       ' moved:'+r.dist+' crouch:'+r.crouch+'s sprint:'+r.sprint+'s lit:'+r.litPct+'%'+
