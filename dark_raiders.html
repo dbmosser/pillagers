@@ -251,7 +251,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.58';
+var VER='0.59';
 var DEF={coneDeg:100,viewFar:440,ambient:100,raidSec:300,pSpeed:158,extractWait:25,
   nSentry:7,nCrawler:9,nRaider:3,nSnitch:2,eDmg:1.35,eHp:1,lootMult:1,contDens:1,
   noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
@@ -821,17 +821,25 @@ function refreshVseg(){
 }
 
 // ================================================================ raid build
-function mkContainer(x,y,type,d){
-  var times={crate:1.4,locker:2.2,safe:3.4,body:1.0};
-  var counts={crate:[1,2],locker:[1,3],safe:[2,3],body:[1,2]};
-  var c=counts[type],loot=[],n=ri(c[0],c[1]);
-  for(var i=0;i<n;i++) loot.push(rollTable(LOOT[type]));
+// The coloured pip over an unlooted container is the best rarity inside it, and
+// it is what you read across a room to decide whether the trip is worth it. Any
+// code that replaces a container's contents has to recompute it, so both live
+// here rather than being open-coded at each site.
+function bestRarity(loot){
   var best='common';
   for(var j=0;j<loot.length;j++){
     var r=ITEMS[loot[j]].r;
     if(r==='elite'||(r==='rare'&&best!=='elite')||(r==='uncommon'&&best==='common')) best=r;
   }
-  return {x:x,y:y,r:15,type:type,d:(d===undefined?-1:d),loot:loot,opened:false,time:times[type],best:best,rot:rnd(-.25,.25)};
+  return best;
+}
+function setLoot(c,loot){ c.loot=loot; c.best=bestRarity(loot); return c; }
+function mkContainer(x,y,type,d){
+  var times={crate:1.4,locker:2.2,safe:3.4,body:1.0};
+  var counts={crate:[1,2],locker:[1,3],safe:[2,3],body:[1,2]};
+  var c=counts[type],loot=[],n=ri(c[0],c[1]);
+  for(var i=0;i<n;i++) loot.push(rollTable(LOOT[type]));
+  return {x:x,y:y,r:15,type:type,d:(d===undefined?-1:d),loot:loot,opened:false,time:times[type],best:bestRarity(loot),rot:rnd(-.25,.25)};
 }
 // Machines get stencilled unit designations so they read as specific things on
 // the field, the way the AI raiders already do with their callsigns.
@@ -1648,14 +1656,14 @@ function updateEnts(dt){
       // Last hit wins, exactly as the flag was set at the killing blow.
       if(e.byPlayer){ T.kills[e.kind]++; contractKill(e.kind); }
       if(e.kind==='raider'&&e.bag.length){
-        var c=mkContainer(e.x,e.y,'body'); c.loot=e.bag.slice(); G.containers.push(c);
+        var c=setLoot(mkContainer(e.x,e.y,'body'),e.bag.slice()); G.containers.push(c);
         decal(e.x,e.y,'#6e1c15',rnd(16,26));
       } else if(e.kind!=='snitch'&&Math.random()<.55){
         var c2=mkContainer(e.x,e.y,'crate');
-        c2.loot=[e.kind==='sentry'?pick(['servo','board','ammobox','ammobox','cell']):pick(['scrap','wire','cell','ammobox'])];
+        setLoot(c2,[e.kind==='sentry'?pick(['servo','board','ammobox','ammobox','cell']):pick(['scrap','wire','cell','ammobox'])]);
         c2.time=.8; G.containers.push(c2);
       } else if(e.kind==='snitch'){
-        var c3=mkContainer(e.x,e.y,'crate'); c3.loot=[pick(['board','optic','comp'])]; c3.time=.7;
+        var c3=setLoot(mkContainer(e.x,e.y,'crate'),[pick(['board','optic','comp'])]); c3.time=.7;
         G.containers.push(c3);
       }
       // Only announce a kill you could actually witness. Machines and raiders
