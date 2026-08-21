@@ -255,7 +255,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.70';
+var VER='0.71';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -578,9 +578,20 @@ function buildMap(){
   var water=[];
   // Keep trying, shrinking the pool as attempts run out, so a map is never
   // silently without water. Measured 20% of maps empty before this.
-  var wantPools=ri(6,9);
-  for(var wtry=0;wtry<48&&water.length<wantPools;wtry++){
-    var shrink=1-Math.min(0.55,wtry*0.014);
+  // Pool count is per area, not per map, for the same reason the district grid
+  // is: 6 to 9 pools was tuned on a 2600x2000 world and left water four times
+  // rarer once the map grew. Attempts scale with it or the shrink ramp runs out
+  // before the quota is met.
+  var wantPools=Math.round(ri(6,9)*AREA);
+  var wAttempts=Math.round(48*AREA);
+  for(var wtry=0;wtry<wAttempts&&water.length<wantPools;wtry++){
+    // The ramp has to measure how far through the attempts we are, not how many
+    // have been spent. Keyed to the raw count it hit full shrink at attempt 39
+    // regardless of the budget, so on a bigger map every pool after the first
+    // few came out at 45 percent size and coverage stayed a quarter of the old
+    // map even with the count fixed. The 0.672 reproduces the original ramp
+    // exactly at the old 48 attempt budget.
+    var shrink=1-Math.min(0.55,(wtry/wAttempts)*0.672);
     var ww=rnd(150,420)*shrink,wh=rnd(120,300)*shrink;
     var wx3=rnd(90,WORLD_W-90-ww),wy3=rnd(90,WORLD_H-90-wh),wok=1;
     for(var wb=0;wb<buildings.length;wb++){
@@ -943,7 +954,10 @@ function buildRaid(sim){
       containers.push(mkContainer(sp.x,sp.y,rl<.52?'crate':(rl<.86?'locker':'safe'),map.buildings[b].d));
     }
   }
-  var no=Math.max(2,Math.round(18*CFG.contDens));
+  // Loot left in the open scales with the ground there is to search. The 18 was
+  // tuned on the old map; as a flat count it made outdoor searching pointless
+  // on a world four times the size.
+  var no=Math.max(2,Math.round(18*AREA*CFG.contDens));
   for(i=0;i<no;i++){ var sp2=freeSpot(map,30); containers.push(mkContainer(sp2.x,sp2.y,Math.random()<.7?'crate':'body')); }
   var lights=[];
   if(!sim){
@@ -954,7 +968,10 @@ function buildRaid(sim){
         lights.push({x:lp.x,y:lp.y,r:rnd(130,210),c:D.light,i:rnd(.30,.52),f:rnd(0,9),fl:Math.random()<.35});
       }
     }
-    for(i=0;i<28;i++){
+    // Street lighting is per area too. Building lights already follow the
+    // district grid, so leaving this at a flat 28 made the open ground between
+    // blocks progressively darker as the map grew.
+    for(i=0;i<Math.round(28*AREA);i++){
       var lp2=freeSpot(map,26);
       lights.push({x:lp2.x,y:lp2.y,r:rnd(110,175),c:pick(['#ffbe6a','#9fd8ff','#ffd9a0']),i:rnd(.22,.40),f:rnd(0,9),fl:Math.random()<.45});
     }
@@ -1688,20 +1705,53 @@ function seekPoint(e,tx,ty,spd,dt){
   // is a wart I put in with the sidestep itself. A step is as close as anything
   // can get, so stop when the remaining gap is smaller than one.
   if(dist(e,{x:tx,y:ty})<spd*dt*1.2){ e.stallT=0; e.slideT=0; return; }
+  // Sidestepping for a fixed 1.1s and then flipping direction is what this used
+  // to do, and it cannot get around anything longer than the sidestep: in a
+  // corner it just alternates and stays put. Traced on the v0.70 map, a bot that
+  // decided to extract at 3683 units out covered 125 units in the next 270
+  // seconds. That was always latent, but quadrupling the buildings gave it four
+  // times the concave geometry to catch on, and it stalls the AI raider
+  // extraction race as well as the sim, since both steer through here.
+  // Now it commits: pick the more open side once, hug it, and only go back to
+  // heading straight at the target when the way is actually clear AND we are
+  // closer than we were when we started hugging. That last clause is what stops
+  // it from looping around the same block forever.
+  var d0=dist(e,{x:tx,y:ty});
   if(e.slideT>0){
     e.slideT-=dt;
-    var sa=Math.atan2(ty-e.y,tx-e.x)+(e.slideDir||1)*1.5708;
-    moveToward(e,e.x+Math.cos(sa)*90,e.y+Math.sin(sa)*90,spd,dt);
-    return;
+    // Leave the wall when the way immediately ahead is open, not when the whole
+    // line to the target is. Asking for clear sight to a target 1800 units away
+    // across a city is asking for something that almost never happens, so the
+    // first version hugged until the timer ran out every time and never
+    // converged. A clear corridor plus being closer than we were is enough.
+    var la=Math.atan2(ty-e.y,tx-e.x),probe=Math.min(d0,170);
+    if(rayHit(e.x,e.y,Math.cos(la),Math.sin(la),G.map.segs,probe)>=probe-1&&d0<(e.slideD||1e9)-4){ e.slideT=0; e.slideFlip=false; }
+    else{
+      if(e.slideT<=0) e.slideFlip=true;   // timed out, so try the other way round next time
+      var sa=Math.atan2(ty-e.y,tx-e.x)+(e.slideDir||1)*1.5708;
+      var bx=e.x,by=e.y;
+      moveToward(e,e.x+Math.cos(sa)*90,e.y+Math.sin(sa)*90,spd,dt);
+      // Hugging that moves nothing means the corner turns the other way.
+      if(Math.abs(e.x-bx)<.05&&Math.abs(e.y-by)<.05){
+        e.hugStuck=(e.hugStuck||0)+dt;
+        if(e.hugStuck>0.4){ e.hugStuck=0; e.slideDir=-(e.slideDir||1); }
+      } else e.hugStuck=0;
+      return;
+    }
   }
-  var d0=dist(e,{x:tx,y:ty});
   moveToward(e,tx,ty,spd,dt);
   var gained=d0-dist(e,{x:tx,y:ty});
   if(gained<spd*dt*0.3){
     e.stallT=(e.stallT||0)+dt;
-    if(e.stallT>0.7){
-      e.stallT=0; e.slideT=1.1;
-      e.slideDir=e.slideDir?-e.slideDir:(Math.random()<.5?1:-1);
+    if(e.stallT>0.5){
+      e.stallT=0; e.slideT=7; e.slideD=d0; e.hugStuck=0;
+      // Choose the side with more room rather than a coin flip, so the detour
+      // is usually the short way round the building instead of the long way.
+      var ga=Math.atan2(ty-e.y,tx-e.x);
+      var lft=rayHit(e.x,e.y,Math.cos(ga-1.5708),Math.sin(ga-1.5708),G.map.segs,420);
+      var rgt=rayHit(e.x,e.y,Math.cos(ga+1.5708),Math.sin(ga+1.5708),G.map.segs,420);
+      e.slideDir=lft>rgt?-1:1;
+      if(e.slideFlip){ e.slideDir=-e.slideDir; e.slideFlip=false; }
     }
   } else e.stallT=0;
 }
