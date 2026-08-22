@@ -311,7 +311,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.03';
+var VER='1.04';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -956,6 +956,23 @@ function AMBR(){ return CFG.ambient*(0.6+0.4*wx().view); }
 // "the one with the cargo yard" instead of another field of boxes.
 var LANDMARKS=[
   {
+    // His note, verbatim: "needs ... town centers". Guaranteed on every map,
+    // not pooled: a town has a centre or it reads as a warehouse district.
+    id:'townsq', name:'TOWN SQUARE', loot:'bulk', dens:1.6,
+    build:function(x,y,w,h,put,d){
+      var cx=x+w/2,cy=y+h/2;
+      // the monument: a stepped centrepiece you can circle but not cross
+      put(cx-34,cy-26,68,52,d);
+      // market stalls around the edge, each a slab with a gap beside it, so the
+      // square is busy at the rim and open in the middle like a real one
+      var st=[[x+24,y+18],[x+w-92,y+18],[x+24,y+h-52],[x+w-92,y+h-52],
+              [cx-34,y+12],[cx-34,y+h-40]];
+      for(var i=0;i<st.length;i++) put(st[i][0],st[i][1],68,26,d);
+      // two benches flanking the monument
+      put(cx-70,cy-6,22,12,d); put(cx+48,cy-6,22,12,d);
+    }
+  },
+  {
     id:'tower', name:'COLLAPSED TOWER', loot:'rare', dens:0.7,
     build:function(x,y,w,h,put,d){
       // a broken ring with the north face fallen in, and rubble inside
@@ -1050,6 +1067,9 @@ function buildMap(){
   var landmarks=[],lmAt={};
   var pool=LANDMARKS.slice();
   for(var sh=pool.length-1;sh>0;sh--){ var sj=ri(0,sh); var tmp=pool[sh]; pool[sh]=pool[sj]; pool[sj]=tmp; }
+  // The town square is guaranteed, the other two rotate. Find it wherever the
+  // shuffle put it and swap it into the picked range.
+  for(var tq=0;tq<pool.length;tq++) if(pool[tq].id==='townsq'&&tq>2){ var tt2=pool[0]; pool[0]=pool[tq]; pool[tq]=tt2; break; }
   var wantLM=Math.min(3,pool.length);
   for(var li=0;li<wantLM;li++){
     var lr,lc,tries=0;
@@ -1115,8 +1135,48 @@ function buildMap(){
     var c3=clamp(Math.floor((wx2-80)/cw),0,cols-1),r3=clamp(Math.floor((wy2-80)/ch),0,rows-1);
     return cellDistrict(r3,c3);
   }
+  // WOODS. His note: "needs ... woods". Two or three cells carry a grove
+  // instead of a building: organic cover, thin sight lines, no loot density.
+  // Trees are small colliders tagged tree so the draw pass renders trunks and
+  // canopies rather than crates, and the ground bake lays turf under them.
+  var woodsAt={},woodsList=[];
+  var nWoods=ri(2,3);
+  for(var wt2=0;wt2<nWoods;wt2++){
+    var wr,wc2,wtry=0;
+    do{ wr=ri(0,rows-1); wc2=ri(0,cols-1); wtry++; }
+    while((lmAt[wr+','+wc2]||woodsAt[wr+','+wc2]||(wr===1&&wc2===1))&&wtry<60);
+    woodsAt[wr+','+wc2]=1; woodsList.push({r:wr,c:wc2});
+  }
+  // BIG BUILDINGS. His note: "big buildings". Two structures each claim a pair
+  // of adjacent cells, so some blocks are genuinely twice the length of others,
+  // which is also the direct answer to "every block is the same length".
+  var bigAt={},bigPairs=[];
+  for(var bb2=0;bb2<2;bb2++){
+    var br,bc,horiz,btry=0,ok2=false;
+    while(btry<80&&!ok2){
+      btry++;
+      br=ri(0,rows-1); bc=ri(0,cols-1); horiz=Math.random()<.5;
+      var br2=horiz?br:br+1,bc2=horiz?bc+1:bc;
+      if(br2>=rows||bc2>=cols) continue;
+      var k1=br+','+bc,k2=br2+','+bc2;
+      if(lmAt[k1]||lmAt[k2]||woodsAt[k1]||woodsAt[k2]||bigAt[k1]||bigAt[k2]) continue;
+      if((br===1&&bc===1)||(br2===1&&bc2===1)) continue;
+      bigAt[k1]=1; bigAt[k2]=1;
+      bigPairs.push({r:br,c:bc,r2:br2,c2:bc2,horiz:horiz});
+      ok2=true;
+    }
+  }
+  for(var bp=0;bp<bigPairs.length;bp++){
+    var BP=bigPairs[bp];
+    var bx0=80+BP.c*cw+30,by0=80+BP.r*ch+30;
+    var bw2=(BP.horiz?2:1)*cw-70,bh2=(BP.horiz?1:2)*ch-70;
+    var bd2=cellDistrict(BP.r,BP.c);
+    var bplan2=makeBuilding(bx0,by0,bw2,bh2,walls,bd2,buildings.length);
+    buildings.push({x:bx0,y:by0,w:bw2,h:bh2,d:bd2,tag:ri(11,99),plan:bplan2,big:1});
+  }
   for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){
     if(lmAt[r+','+c]) continue;
+    if(woodsAt[r+','+c]||bigAt[r+','+c]) continue;
     if(r===1&&c===1&&Math.random()<.5) continue;
     var d=cellDistrict(r,c);
     var bw=rnd(255,Math.min(400,cw-90)),bh=rnd(205,Math.min(330,ch-90));
@@ -1141,10 +1201,24 @@ function buildMap(){
     landmarks.push({id:LM.id,name:LM.name,x:mx0,y:my0,w:mw,h:mh,d:ld,
       loot:LM.loot,dens:LM.dens,water:!!LM.water});
   }
+  for(var wl3=0;wl3<woodsList.length;wl3++){
+    var WD=woodsList[wl3];
+    var wx0=80+WD.c*cw,wy0=80+WD.r*ch;
+    var nT=ri(14,20);
+    for(var ti=0;ti<nT;ti++){
+      var ts=rnd(10,16);
+      var tx2=wx0+rnd(30,cw-30-ts),ty2=wy0+rnd(30,ch-30-ts);
+      walls.push({x:tx2,y:ty2,w:ts,h:ts,d:2,tree:1,canopy:rnd(22,34)});
+    }
+    woodsList[wl3]={r:WD.r,c:WD.c,x:wx0,y:wy0,w:cw,h:ch};
+  }
   for(var i=0;i<Math.round(36*AREA*0.7);i++){
     var s=rnd(30,54),px=rnd(80,WORLD_W-80-s),py=rnd(80,WORLD_H-80-s),ok=1;
     for(var j=0;j<buildings.length;j++){var bb=buildings[j];
       if(px<bb.x+bb.w+30&&px+s>bb.x-30&&py<bb.y+bb.h+30&&py+s>bb.y-30){ok=0;break;}}
+    // no concrete slabs in the middle of a grove
+    if(ok) for(var wq2=0;wq2<woodsList.length;wq2++){ var WM=woodsList[wq2];
+      if(px+s>WM.x&&px<WM.x+WM.w&&py+s>WM.y&&py<WM.y+WM.h){ ok=0; break; } }
     if(ok) walls.push({x:px,y:py,w:s,h:s,d:districtAt(px+s/2,py+s/2)});
   }
   // Flooded ground. Rules, chosen and stated: water never blocks movement or
@@ -1204,7 +1278,7 @@ function buildMap(){
     segs.push({x1:w2.x,y1:w2.y+w2.h,x2:w2.x,y2:w2.y});
   }
   return {walls:walls,segs:segs,buildings:buildings,water:water,cw:cw,ch:ch,cols:cols,rows:rows,
-    landmarks:landmarks,zones:zseeds,districtAt:districtAt,nav:mapNav};
+    landmarks:landmarks,zones:zseeds,districtAt:districtAt,woods:woodsList,bigPairs:bigPairs,nav:mapNav};
 }
 // Day is a look, not a difficulty. Vision cone, awareness radius, enemy ranges
 // and every other tunable are identical in both conditions, so choosing daylight
@@ -1283,14 +1357,56 @@ function bakeGround(map){
   // Day/night is consulted in only three places in this whole bake, so the roads
   // were hardcoded to a night value and stayed dark at noon, reading as trenches
   // cut through a lit city.
+  // Roads are drawn per cell edge now, not as full length lines, and they skip
+  // woods and the shared spine of a two cell building. That is what breaks
+  // "every block is the same length": some blocks merge, some stop at a grove.
+  function woodsCell(r2,c2){
+    for(var wq=0;wq<(map.woods||[]).length;wq++) if(map.woods[wq].r===r2&&map.woods[wq].c===c2) return true;
+    return false;
+  }
+  function bigSpine(hORv,r2,c2){
+    for(var bq=0;bq<(map.bigPairs||[]).length;bq++){
+      var B=map.bigPairs[bq];
+      if(B.horiz&&hORv==='v'&&B.r===r2&&B.c+1===c2) return true;
+      if(!B.horiz&&hORv==='h'&&B.r+1===r2&&B.c===c2) return true;
+    }
+    return false;
+  }
   c.fillStyle=isDay()?'#857C6F':'#221a26';
-  for(i=1;i<map.rows;i++) c.fillRect(40,80+i*map.ch-42,WORLD_W-80,66);
-  for(i=1;i<map.cols;i++) c.fillRect(80+i*map.cw-42,40,66,WORLD_H-80);
+  for(i=1;i<map.rows;i++)for(j=0;j<map.cols;j++){
+    if(woodsCell(i-1,j)||woodsCell(i,j)||bigSpine('h',i,j)) continue;
+    c.fillRect(80+j*map.cw-40,80+i*map.ch-42,map.cw+80,66);
+  }
+  for(i=1;i<map.cols;i++)for(j=0;j<map.rows;j++){
+    if(woodsCell(j,i-1)||woodsCell(j,i)||bigSpine('v',j,i)) continue;
+    c.fillRect(80+i*map.cw-42,80+j*map.ch-40,66,map.ch+80);
+  }
   c.fillStyle='rgba(200,180,120,.20)';
-  for(i=1;i<map.rows;i++){ var ry2=80+i*map.ch-3;
-    for(j=60;j<WORLD_W-60;j+=64) c.fillRect(j,ry2,32,5); }
-  for(i=1;i<map.cols;i++){ var rx2=80+i*map.cw-3;
-    for(k=60;k<WORLD_H-60;k+=64) c.fillRect(rx2,k,5,32); }
+  for(i=1;i<map.rows;i++)for(j=0;j<map.cols;j++){
+    if(woodsCell(i-1,j)||woodsCell(i,j)||bigSpine('h',i,j)) continue;
+    var ry2=80+i*map.ch-3;
+    for(k=0;k<map.cw-40;k+=64) c.fillRect(80+j*map.cw+k,ry2,32,5);
+  }
+  for(i=1;i<map.cols;i++)for(j=0;j<map.rows;j++){
+    if(woodsCell(j,i-1)||woodsCell(j,i)||bigSpine('v',j,i)) continue;
+    var rx2=80+i*map.cw-3;
+    for(k=0;k<map.ch-40;k+=64) c.fillRect(rx2,80+j*map.ch+k,5,32);
+  }
+  // turf under the woods: layered organic blotches, darker at the rim
+  for(i=0;i<(map.woods||[]).length;i++){
+    var WW=map.woods[i];
+    c.fillStyle=isDay()?'#6E8A52':'#16240f';
+    c.fillRect(WW.x+6,WW.y+6,WW.w-12,WW.h-12);
+    for(j=0;j<26;j++){
+      c.fillStyle='rgba(40,70,30,'+rnd(.10,.24)+')';
+      var gx2=WW.x+rnd(20,WW.w-20),gy2=WW.y+rnd(20,WW.h-20),gs2=rnd(18,64);
+      c.beginPath(); c.ellipse(gx2,gy2,gs2,gs2*rnd(.5,.9),rnd(0,3),0,6.2832); c.fill();
+    }
+    for(j=0;j<40;j++){
+      c.fillStyle='rgba(150,190,90,'+rnd(.06,.16)+')';
+      c.fillRect(WW.x+rnd(10,WW.w-12),WW.y+rnd(10,WW.h-12),rnd(2,5),rnd(2,5));
+    }
+  }
   for(i=0;i<Math.round(520*AREA);i++){
     var x=rnd(40,WORLD_W-40),y=rnd(40,WORLD_H-40),s=rnd(14,64);
     c.fillStyle='rgba(0,0,0,'+rnd(.04,.13)+')';
@@ -4184,6 +4300,24 @@ function render2D(dt){
         // a dead lamp still hangs there, which is most of what a blackout means
         wc.fillStyle='#1b1a22'; wc.fillRect(lhx-5,lhy+1,10,3);
       }
+    } else if(it.w&&it.w.tree){
+      // A tree, not a crate: trunk at the collider, canopy floating above it,
+      // swaying slightly. The collider square is the trunk footprint, so what
+      // blocks you and what you see agree exactly.
+      var TR=it.w,tcx=TR.x+TR.w/2,tby=TR.y+TR.h;
+      var swayT=Math.sin(G.t*0.9+tcx*0.013)*2.2;
+      shadowE(tcx+3,tby+1,TR.canopy*.8,TR.canopy*.30,.30);
+      wc.fillStyle='#4a3620';
+      wc.fillRect(tcx-TR.w*.32,tby-26,TR.w*.64,26);
+      wc.fillStyle='#2e2114';
+      wc.fillRect(tcx-TR.w*.32,tby-26,TR.w*.2,26);
+      var canY=tby-30,cr2=TR.canopy;
+      wc.fillStyle=isDay()?'#3f5c2c':'#1c2a14';
+      wc.beginPath(); wc.arc(tcx+swayT,canY-cr2*.35,cr2,0,6.2832); wc.fill();
+      wc.fillStyle=isDay()?'#557a3a':'#26361c';
+      wc.beginPath(); wc.arc(tcx+swayT-cr2*.25,canY-cr2*.5,cr2*.72,0,6.2832); wc.fill();
+      wc.fillStyle=isDay()?'#6f9a4c':'#31452a';
+      wc.beginPath(); wc.arc(tcx+swayT-cr2*.35,canY-cr2*.62,cr2*.45,0,6.2832); wc.fill();
     } else if(it.w){
       var wl2=it.w,d3=wl2.d===undefined?3:wl2.d;
       var LIFT=(wl2.w<=60&&wl2.h<=60)?14:26;
@@ -5504,8 +5638,8 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','Map atmosphere: big buildings, woods, a town center (your note)'],
-  ['DONE','Encampments: defended safes, marked in red on your map'],
+  ['NOW','Character redesign: big heads, faces, scary enemies'],
+  ['DONE','Map atmosphere: woods, town square, two-block buildings'],
   ['NEXT','Big-head characters with faces; scary enemy redesign'],
   ['NEXT','Guns as the loot that matters: field weapons worth switching to'],
   ['NEXT','Hub shrink: every station within a few steps'],
