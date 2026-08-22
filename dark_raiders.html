@@ -380,7 +380,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.43';
+var VER='1.44';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -654,7 +654,7 @@ function ensureContracts(){
 // "sentrys" and "snitchs" are not words, and a contract board is the one place
 // in the game he reads a full sentence. There are four unit names and they never
 // change, so spell the plurals rather than bolting an s on the end.
-var UNITPLURAL={sentry:'sentries',crawler:'crawlers',raider:'raiders',snitch:'snitches'};
+var UNITPLURAL={sentry:'sentries',crawler:'crawlers',raider:'raiders',snitch:'snitches',listener:'listeners'};
 // SPEC 16: contracts that pay in GEAR, not only credits. A board that hands out
 // money and nothing else is a slower version of selling loot, and it made the
 // whole feature something you completed by accident rather than something you
@@ -903,10 +903,24 @@ function tickPlayerSteps(dt){
   var crouch=!!(keys['ControlLeft']||keys['ControlRight']);
   // Distance is the volume control here, so a crouched step is played as though
   // it happened further away. Same generator, quieter result.
-  var bsh=G.pBush;
-  blip('foot',crouch?540:(G.sprinting?0:180),0,bsh?'leaf':surfAt(p.x,p.y));
-  // Sprinting through undergrowth announces you. The bush is not a cloak, it is
-  // a thing you have to move through carefully, which is the decision.
+  var bsh=G.pBush,surf=bsh?'leaf':surfAt(p.x,p.y);
+  blip('foot',crouch?540:(G.sprinting?0:180),0,surf);
+  // YOUR FOOTSTEPS MAKE A NOISE IN THE WORLD, not only in your ears. Found while
+  // testing the Listener: the player's steps produced audio and nothing else, so
+  // walking was mechanically silent and the whole stealth layer was decoration.
+  // Radius comes from stance and from what you are walking on; the rig
+  // multiplier is applied inside ping().
+  // It is sent QUIET, so ordinary patrols still ignore footsteps exactly as they
+  // always have and no balance moves. The Listener hears it anyway, because it
+  // is checked before the quiet gate. That is what makes it the only thing on
+  // the map that punishes moving badly.
+  var stepR=G.sprinting?300:(crouch?72:170);
+  if(surf==='water') stepR*=1.55;
+  else if(surf==='metal') stepR*=1.30;
+  else if(surf==='leaf') stepR*=1.20;
+  ping(p.x,p.y,stepR,false,true,'player','move');
+  // Sprinting through undergrowth announces you to EVERYTHING. The bush is not a
+  // cloak, it is a thing you have to move through carefully.
   if(bsh&&G.sprinting) ping(p.x,p.y,320,false,false,'player','move');
   PSTEP=G.sprinting?0.31:(crouch?0.64:0.45);
 }
@@ -2803,6 +2817,54 @@ function mkCrawler(x,y){
     name:mkName('CRAWLER',['A','C','H','M']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:150,dmg:20,rng:26,cone:1.5,hitT:0,legs:rnd(0,6.28)};
 }
+// ============================================================ THE LISTENER
+// A fourth machine, and the brief was FRIGHTENING rather than tough. More health
+// is not frightening; it is arithmetic. What is frightening is a thing you
+// cannot see coming and cannot fight on equal terms, that you brought on
+// yourself.
+// THE LISTENER IS BLIND. It has no vision cone at all and it never patrols. It
+// stands dormant and dark, easily mistaken for scrap, until it HEARS something,
+// and then it comes straight at the noise, fast, and it hits very hard. Go quiet
+// and it arrives where the sound was, mills about, and eventually settles again.
+// This makes the entire noise system load bearing at last: crouching, standing
+// still, staying off metal and out of water, not sprinting through undergrowth,
+// and the 34 percent noise penalty on the Breacher Plate all stop being flavour
+// the moment one of these wakes up.
+var LISTEN_R=760;
+function mkListener(x,y){
+  return {kind:'listener',x:x,y:y,r:14,
+    hp:Math.round(120*CFG.eHp*seasonHp()),maxhp:Math.round(120*CFG.eHp*seasonHp()),
+    name:mkName('LISTENER',['V','X','K','N']),
+    face:rnd(0,6.28),state:'dormant',tx:x,ty:y,homeX:x,homeY:y,
+    cd:0,alert:0,spd:196,dmg:34,rng:26,cone:0,hitT:0,
+    heardX:0,heardY:0,millT:0,wakeT:0,legs:rnd(0,6.28)};
+}
+// Called from ping(). Everything that makes a sound in this world goes through
+// there, so this is the one place it needs to hook.
+var LISTEN_BUSY=false;
+function listenersHear(x,y,s,fromPlayer){
+  if(!G||!G.ents||LISTEN_BUSY) return;
+  LISTEN_BUSY=true;
+  try{ listenersHearInner(x,y,s,fromPlayer); } finally { LISTEN_BUSY=false; }
+}
+function listenersHearInner(x,y,s,fromPlayer){
+  for(var i=0;i<G.ents.length;i++){
+    var e=G.ents[i];
+    if(e.kind!=='listener') continue;
+    var d=dist(e,{x:x,y:y});
+    if(d>Math.min(s*1.35,LISTEN_R)) continue;
+    e.heardX=x; e.heardY=y;
+    e.millT=0;
+    if(e.state==='dormant'){
+      e.state='hunt'; e.wakeT=0.9;
+      if(!G.sim){
+        sfx('alarm',e.x,e.y);
+        ping(e.x,e.y,300,true,true,'robot','fire');
+        if(fromPlayer&&dist(G.player,e)<900) say('Something woke up.');
+      }
+    } else e.state='hunt';
+  }
+}
 // THE WARDEN. His answer to "is one big scary enemy per raid appealing": "YES
 // BUT IT SHOULD MOVE SLOWLY SO YOU CAN CHOOSE NOT TO ENGAGE." So it is the
 // slowest thing on the field at 36 against the player's 158, visible and named
@@ -3203,6 +3265,10 @@ function buildRaid(sim){
   for(i=0;i<N_SENTRY;i++){ var s1=far(freeSpot(map,30),880); ents.push(mkSentry(s1.x,s1.y)); }
   for(i=0;i<N_CRAWLER;i++){ var s2=far(freeSpot(map,26),780); ents.push(mkCrawler(s2.x,s2.y)); }
   for(i=0;i<N_SNITCH;i++){ var s4=far(freeSpot(map,26),720); ents.push(mkSnitch(s4.x,s4.y)); }
+  // Two per map at the reference size. Any more and the map stops having quiet
+  // in it, which is the thing they exist to threaten.
+  var N_LISTEN=nOf(2);
+  for(i=0;i<N_LISTEN;i++){ var s5=far(freeSpot(map,26),1000); ents.push(mkListener(s5.x,s5.y)); }
   // Each raid draws distinct identities, so you never meet two of the same name.
   var idPool=IDENTITIES.slice();
   for(var ip=idPool.length-1;ip>0;ip--){ var jp=ri(0,ip),tp=idPool[ip]; idPool[ip]=idPool[jp]; idPool[jp]=tp; }
@@ -3323,7 +3389,7 @@ function buildRaid(sim){
     lightning:0,rainT:0,inLandmark:null,inZone:undefined,hot:0,
     msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,legendOn:true,sprinting:false,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
-      kills:{sentry:0,crawler:0,raider:0,snitch:0,warden:0},
+      kills:{sentry:0,crawler:0,raider:0,snitch:0,warden:0,listener:0},
       dmg:{sentry:0,crawler:0,raider:0,snitch:0,other:0},
       containers:0,items:0,rar:{common:0,uncommon:0,rare:0,elite:0},
       firstContact:null,firstLoot:null,distance:0,
@@ -3850,9 +3916,13 @@ function ping(x,y,s,h,quiet,src,typ){
       if(G.pings.length>140) G.pings.shift();
     }
   }
+  // A Listener hears EVERYTHING, including the noises the rest of the map is
+  // allowed to ignore. quiet only means "do not alert the ordinary patrols".
+  listenersHear(x,y,s,src==='player');
   if(quiet) return;
   for(var i=0;i<G.ents.length;i++){
     var e=G.ents[i];
+    if(e.kind==='listener') continue;             // it does not take orders from noise twice
     if(dist(e,{x:x,y:y})<s){
       e.alert=Math.max(e.alert,1);
       if(e.state==='patrol'||e.state==='loot'){ e.state='investigate'; e.tx=x; e.ty=y; }
@@ -5075,6 +5145,11 @@ function updateEnts(dt){
       } else if(e.kind==='raider'&&e.bag.length){
         var c=setLoot(mkContainer(e.x,e.y,'body'),e.bag.slice()); G.containers.push(c);
         decal(e.x,e.y,'#6e1c15',rnd(16,26));
+      } else if(e.kind==='listener'){
+        var cl2=setLoot(mkContainer(e.x,e.y,'cache'),
+          [pick(['core','titan','coil']),pick(['optic','servo','board']),'cell']);
+        cl2.time=1.3; G.containers.push(cl2);
+        if(!G.sim) say(e.name+' has stopped listening.');
       } else if(e.kind!=='snitch'&&Math.random()<.55){
         var c2=mkContainer(e.x,e.y,'crate');
         setLoot(c2,[e.kind==='sentry'?pick(['servo','board','ammobox','ammobox','cell']):pick(['scrap','wire','cell','ammobox'])]);
@@ -5121,6 +5196,36 @@ function updateEnts(dt){
         e.hailed=1;
         say(pedOpen()?'A trader waves you over.':'The trader turns his back on you.');
       }
+      continue;
+    }
+    // THE LISTENER. No sight check at all: it never calls canSee, so nothing
+    // about light, cones, crouching or bushes can help you here. Only silence.
+    if(e.kind==='listener'){
+      e.legs+=dt*10;
+      if(e.wakeT>0){
+        // A beat between hearing you and moving, so the scream lands before the
+        // charge does and you get one moment to decide.
+        e.wakeT-=dt; e.moving=false;
+        e.face+=clamp(angDiff(Math.atan2(e.heardY-e.y,e.heardX-e.x),e.face),-5*dt,5*dt);
+        collide(e,G.map.walls); continue;
+      }
+      if(e.state==='hunt'){
+        navSeek(e,e.heardX,e.heardY,e.spd,dt);
+        e.face+=clamp(angDiff(Math.atan2(e.heardY-e.y,e.heardX-e.x),e.face),-6*dt,6*dt);
+        var ld=dist(e,p);
+        if(ld<e.rng&&e.cd<=0&&!p.downed){ damagePlayer(e.dmg,'listener',e.name); e.cd=0.85; }
+        if(dist(e,{x:e.heardX,y:e.heardY})<40){
+          // Arrived at the sound and there is nothing here. It waits, and any
+          // new noise inside this window puts it straight back on you.
+          e.millT+=dt;
+          if(e.millT>7){ e.state='dormant'; e.millT=0; }
+        }
+      } else {
+        e.moving=false;
+        e.millT=0;
+      }
+      if(e.cd>0) e.cd-=dt;
+      collide(e,G.map.walls);
       continue;
     }
     if(e.alert>0) e.alert-=dt*.5;
@@ -6413,6 +6518,52 @@ function drawPeddlerS(e){
   wc.fillStyle='#ffd76a'; wc.fillRect(e.x+25,e.y-34,6,8);
   wc.fillStyle='#fff3c8'; wc.fillRect(e.x+27,e.y-32,2,4);
 }
+function drawListenerS(e){
+  // Nothing else on this map is this shape. Tall, thin, no face, arms too long,
+  // and a wide dish where a head should be. Dormant it is nearly black and
+  // hunched, so at a glance it is a bit of standing scrap; awake it straightens
+  // up, which is the moment you are meant to feel.
+  var dorm=(e.state==='dormant'),wk=dorm?0:1;
+  var h=dorm?26:40, sway=Math.sin(e.legs*0.6)*(dorm?0.6:2.2);
+  shadowE(e.x,e.y+1,10,4,.40);
+  var body=dorm?'#1d2028':'#3b4250', edge=dorm?'#2a2f38':'#5d6878';
+  // legs
+  wc.fillStyle=INK;
+  rrF(e.x-5.5,e.y-h*0.46,4.6,h*0.46,1.6);
+  rrF(e.x+1.1,e.y-h*0.46,4.6,h*0.46,1.6);
+  wc.fillStyle=body;
+  rrF(e.x-4.9,e.y-h*0.44,3.4,h*0.43,1.2);
+  rrF(e.x+1.6,e.y-h*0.44,3.4,h*0.43,1.2);
+  // torso, narrow
+  wc.fillStyle=INK; rrF(e.x-5.6+sway*.3,e.y-h,11.2,h*0.58,3);
+  wc.fillStyle=body; rrF(e.x-4.8+sway*.3,e.y-h+0.8,9.6,h*0.56,2.6);
+  wc.fillStyle=edge; wc.fillRect(e.x-4.4+sway*.3,e.y-h+1,8.8,1.8);
+  // long arms
+  wc.fillStyle=INK;
+  rrF(e.x-8.6+sway,e.y-h+2,3.4,h*0.62,1.4);
+  rrF(e.x+5.2+sway,e.y-h+2,3.4,h*0.62,1.4);
+  wc.fillStyle=body;
+  rrF(e.x-8.1+sway,e.y-h+2.6,2.4,h*0.58,1.1);
+  rrF(e.x+5.7+sway,e.y-h+2.6,2.4,h*0.58,1.1);
+  // the dish. No eyes: it is not looking at you.
+  var hy=e.y-h-(dorm?2:7);
+  wc.fillStyle=INK;
+  wc.beginPath(); wc.ellipse(e.x+sway*1.2,hy,9.4,6.2,0,0,6.2832); wc.fill();
+  wc.fillStyle=dorm?'#242833':'#4a5364';
+  wc.beginPath(); wc.ellipse(e.x+sway*1.2,hy,8.2,5.2,0,0,6.2832); wc.fill();
+  wc.fillStyle=dorm?'#1a1d25':'#2b3240';
+  wc.beginPath(); wc.ellipse(e.x+sway*1.2,hy+0.6,5.2,3.2,0,0,6.2832); wc.fill();
+  if(!dorm){
+    var pl=0.55+0.45*Math.sin((G?G.t:0)*7);
+    wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.5*pl;
+    var lg=wc.createRadialGradient(e.x+sway*1.2,hy,1,e.x+sway*1.2,hy,26);
+    lg.addColorStop(0,'#ff5a4a'); lg.addColorStop(1,'rgba(0,0,0,0)');
+    wc.fillStyle=lg; wc.beginPath(); wc.arc(e.x+sway*1.2,hy,26,0,6.2832); wc.fill();
+    wc.restore();
+    wc.fillStyle='#ff5a4a';
+    wc.fillRect(e.x-1.4+sway*1.2,hy-1.2,2.8,2.4);
+  }
+}
 function drawSnitchS(e){
   var S=e.r/SNITCH_R0;
   var al=e.state==='alarm';
@@ -6875,6 +7026,7 @@ function render2D(dt){
       else if(e2.kind==='sentry') drawSentryS(e2);
       else if(e2.kind==='crawler') drawCrawlerS(e2);
       else if(e2.kind==='snitch') drawSnitchS(e2);
+      else if(e2.kind==='listener') drawListenerS(e2);
       else if(e2.kind==='peddler') drawPeddlerS(e2);
       else if(e2.kind==='stray'){
         // Crouched and drab. He is not posed like anything else on the map,
@@ -6933,6 +7085,7 @@ function render2D(dt){
     var lift=spriteTop(ne)+8;
     var hostile=ne.kind==='raider';
     // a raider bolting for the beacon is worth calling out: it is a race now
+    if(ne.kind==='listener'&&ne.state==='dormant') continue;
     if(ne.kind==='stray') ne._plateTag=ne.helped?' [SAFE]':('  NEEDS '+ITEMS[ne.want].name.toUpperCase());
     else if(ne.kind==='raider'&&ne.friendlyPC) ne._plateTag=' [FRIENDLY]';
     else if(ne.kind==='raider'&&ne.parley>0&&ne.hostile) ne._plateTag=' [LISTENING]';
@@ -8632,10 +8785,10 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','A fourth machine, built to be frightening rather than tough'],
+  ['NOW','Loot that can spike, so a run can pay out of all proportion'],
+  ['DONE','THE LISTENER: blind, dormant, and it hunts the noise you make'],
   ['DONE','Your body stays where you fell, and you can go back for it'],
   ['DONE','The Stray: a survivor who tells you where a cache is'],
-  ['NEXT','Loot that can spike, so a run can pay out of all proportion'],
   ['LATER','Weather that turns while you are still out there'],
   ['LATER','Two raiders, one raid'],
   ['DONE','Scopes that extend what you can SEE, not just what you can hit'],
