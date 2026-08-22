@@ -311,7 +311,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.10';
+var VER='1.11';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -623,11 +623,11 @@ function earsOf(wx,wy){
 }
 // One-shot at a world position. Falls back to the flat centred behaviour if the
 // browser has no stereo panner.
-function sfx(type,wx,wy){
+function sfx(type,wx,wy,wid){
   if(G&&G.sim) return;
   var a=ac(); if(!a) return;
   var e=earsOf(wx,wy);
-  blip(type,e.d,e.pan);
+  blip(type,e.d,e.pan,wid);
 }
 // An ambient bed, so silence has a floor for a noise to cut through. Two detuned
 // low oscillators plus filtered noise, all running continuously and only ever
@@ -649,13 +649,24 @@ function ambience(){
   for(var i=0;i<nd.length;i++) nd[i]=(Math.random()*2-1)*.35;
   var ns=a.createBufferSource(); ns.buffer=n; ns.loop=true;
   var ng=a.createGain(); ng.gain.value=.30; ns.connect(ng); ng.connect(lp);
-  try{ o1.start(); o2.start(); ns.start(); }catch(e){}
-  AMB={g:g,lp:lp,o1:o1,o2:o2,base:54};
+  // Weather layer: its own noise voice ABOVE the lowpass, brighter than room
+  // tone, so rain reads as rain and not as more rumble. Gain driven per frame.
+  var wn=a.createBufferSource(); wn.buffer=n; wn.loop=true; wn.playbackRate.value=1.7;
+  var wf=a.createBiquadFilter(); wf.type='bandpass'; wf.frequency.value=2600; wf.Q.value=.6;
+  var wg=a.createGain(); wg.gain.value=0;
+  wn.connect(wf); wf.connect(wg); wg.connect(out);
+  // Dread layer: a very low sine that rises as the Warden closes. Horror is a
+  // frequency you feel before you place it.
+  var dr=a.createOscillator(); dr.type='sine'; dr.frequency.value=36;
+  var dg=a.createGain(); dg.gain.value=0;
+  dr.connect(dg); dg.connect(out);
+  try{ o1.start(); o2.start(); ns.start(); wn.start(); dr.start(); }catch(e){}
+  AMB={g:g,lp:lp,o1:o1,o2:o2,base:54,wg:wg,dg:dg};
   return AMB;
 }
 // Called once a frame. threat is 0 when nothing is near and 1 when something is
 // on top of you, and it drives the whole bed.
-function tickAmbience(dt,threat,alive){
+function tickAmbience(dt,threat,alive,dread){
   var A=ambience(); if(!A) return;
   var a=ac(); if(!a) return;
   var target=alive?(0.16+0.30*threat):0;
@@ -665,6 +676,11 @@ function tickAmbience(dt,threat,alive){
     A.lp.frequency.setTargetAtTime(200+900*threat,t,0.5);
     A.o1.frequency.setTargetAtTime(A.base*(1+0.16*threat),t,0.8);
     A.o2.frequency.setTargetAtTime(A.base*1.5*(1+0.16*threat),t,0.8);
+    if(A.wg){
+      var wxr=(typeof wx==='function'&&wx())?wx().rain||0:0;
+      A.wg.gain.setTargetAtTime(alive?wxr*0.045:0,t,1.2);
+    }
+    if(A.dg) A.dg.gain.setTargetAtTime(alive?(dread||0)*0.22:0,t,0.6);
   }catch(e){}
 }
 // Footsteps for things you cannot see. This is the whole point of the pass: a
@@ -708,12 +724,36 @@ function blip(type,d,pan){
     pn.connect(OUT); OUT=pn;
   }
     if(type==='shot'){
-    var b=a.createBuffer(1,2600,a.sampleRate),c=b.getChannelData(0);
-    for(var i=0;i<2600;i++) c[i]=(Math.random()*2-1)*Math.pow(1-i/2600,3.2);
+    // Weapon voices. One generator, one table: every family gets its own
+    // length, brightness and weight, so a distant fight tells you WHAT is
+    // firing before you see it. Defaults reproduce the old rifle crack exactly.
+    var FV={
+      pistol:{len:1700,lp:2600,g:.13,decay:3.6},
+      ferro:{len:1700,lp:2400,g:.13,decay:3.6},
+      smg:{len:1500,lp:2100,g:.11,decay:4.0},
+      kettle:{len:1500,lp:2000,g:.11,decay:4.0},
+      stitcher:{len:1900,lp:2200,g:.12,decay:3.8},
+      carbine:{len:2000,lp:2300,g:.13,decay:3.6},
+      rifle:{len:2600,lp:0,g:.16,decay:3.2},
+      dmr:{len:5200,lp:1400,g:.20,decay:2.4,thump:1},
+      shotgun:{len:4200,lp:900,g:.22,decay:2.2,thump:1},
+      hullcracker:{len:4200,lp:950,g:.20,decay:2.2,thump:1},
+      lmg:{len:2400,lp:1500,g:.15,decay:2.9}
+    };
+    var V=FV[arguments[3]]||FV.rifle;
+    var b=a.createBuffer(1,V.len,a.sampleRate),c=b.getChannelData(0);
+    for(var i=0;i<V.len;i++) c[i]=(Math.random()*2-1)*Math.pow(1-i/V.len,V.decay);
     var s=a.createBufferSource(); s.buffer=b;
-    var f=a.createBiquadFilter(); f.type='lowpass'; f.frequency.value=650+1900*vol;
-    var g=a.createGain(); g.gain.value=.16*vol;
+    var f=a.createBiquadFilter(); f.type='lowpass';
+    f.frequency.value=V.lp||(650+1900*vol);
+    var g=a.createGain(); g.gain.value=V.g*vol;
     s.connect(f); f.connect(g); g.connect(OUT); s.start(t);
+    if(V.thump){
+      var to=a.createOscillator(),tg=a.createGain();
+      to.type='sine'; to.frequency.setValueAtTime(120,t); to.frequency.exponentialRampToValueAtTime(45,t+.12);
+      tg.gain.setValueAtTime(.14*vol,t); tg.gain.exponentialRampToValueAtTime(.001,t+.16);
+      to.connect(tg); tg.connect(OUT); to.start(t); to.stop(t+.18);
+    }
   } else if(type==='boom'){
     var b2=a.createBuffer(1,8000,a.sampleRate),c2=b2.getChannelData(0);
     for(var i2=0;i2<8000;i2++) c2[i2]=(Math.random()*2-1)*Math.pow(1-i2/8000,2.1);
@@ -2457,8 +2497,8 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
   // Your own weapon stays centred because it is in your hands. Everyone else's
   // is placed, which is what turns a distant firefight into a direction rather
   // than an event.
-  if(fromPlayer) blip(melee?'hit':'shot',0);
-  else sfx(melee?'hit':'shot',sh.x,sh.y);
+  if(fromPlayer) blip(melee?'hit':'shot',0,undefined,wep.id);
+  else sfx(melee?'hit':'shot',sh.x,sh.y,wep.id);
   if(!melee){
     sh.muzzle=.06;
     flash(sh.x+Math.cos(ang)*20,sh.y+Math.sin(ang)*20,wep.dmg>40?155:108,wep.tint||'#ffc27a',.11);
@@ -5760,7 +5800,14 @@ function loop(ts){
         var ad=dist(pp,ae);
         if(ad<760) th=Math.max(th,1-ad/760);
       }
-      tickAmbience(dt,th,!pp.downed);
+      // Warden proximity feeds the dread layer: it starts being audible around
+      // 700 out, well before the tread, so the room feels wrong first.
+      var wdread=0;
+      for(var wdi=0;wdi<G.ents.length;wdi++){
+        var wde=G.ents[wdi];
+        if(wde.kind==='warden'){ var wdd=dist(pp,wde); if(wdd<700) wdread=Math.max(wdread,1-wdd/700); }
+      }
+      tickAmbience(dt,th,!pp.downed,wdread);
       tickEnemyAudio(dt);
       // Name the place as you enter it, once. Without this the landmarks are
       // distinctive geometry you never learn the name of, and naming is most of
