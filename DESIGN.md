@@ -437,6 +437,8 @@ Three things, none of which should be built without him saying so.
   - **Three new families with genuinely different fire patterns**: Burst Carbine (three rounds per trigger pull, echoed at 70ms so the burst finishes even if you release), Riot Scattergun (six pellets, tighter than the starter Hullcracker), Support MG (60 round box, brutal 3.4s reload). Seeded through lockers, safes and caches.
   - Burst echoes ride the throwables list with three guards so grenade code and the throw renderer skip them; verified 1 immediate round, 2 echoes queued, 3 bullets total, zero leftovers.
   - Verified: base weapon table unmutated after rolls, distribution correct, hub and raid frames clean, no console errors. Sim 2/5, killers warden and sentries, in line with the hard band.
+- **v1.09 (hub shrunk):** His answers: "WAY TOO BIG", stations "right next to each other". The Undercroft went from 1180x760 to 700x470. All five stations sit in a ring around the spawn, the farthest 252 units away, about two seconds of walking, and everything is on one screen at once. Interior piers, counters and lights retightened to the new footprint.
+  - Verified: every station acquires interaction from adjacent standing position (5 of 5), no station clips a wall, hub and raid frames clean, screenshot confirms the one-screen read, no console errors. Sim 1/4 quick check, no hangs, raid untouched by the change.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

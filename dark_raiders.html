@@ -311,7 +311,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.08';
+var VER='1.09';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -5443,24 +5443,27 @@ function applyPreset(k){
 // The hub is a place you stand in, not a menu. Hand-authored interior, walked
 // with the same movement, collision and sprite code the surface uses. No timer,
 // no fog, no machines. Stations open the modals that already exist.
-var HUBW=1180,HUBH=760,HB=null,hubGround=null;
+// His answers: the hub "HAS THE POTENTIAL TO BE GOOD BUT ITS WAY TOO BIG", and
+// stations should be "right next to each other". Shrunk 1180x760 to 700x470:
+// every station is now within about two seconds of the spawn point and all
+// five are on screen at once at default zoom.
+var HUBW=700,HUBH=470,HB=null,hubGround=null;
 function hubWall(o,x,y,w,h,d){ o.push({x:x,y:y,w:w,h:h,d:d===undefined?0:d}); }
 function buildHub(){
   var w=[],T=20;
   // outer shell
   hubWall(w,0,0,HUBW,T,0); hubWall(w,0,HUBH-T,HUBW,T,0);
   hubWall(w,0,0,T,HUBH,0); hubWall(w,HUBW-T,0,T,HUBH,0);
-  // two piers framing the central concourse
-  hubWall(w,300,150,T,180,1); hubWall(w,860,150,T,180,1);
-  hubWall(w,300,470,T,170,1); hubWall(w,860,470,T,170,1);
-  // requisition counter, left alcove
-  hubWall(w,60,250,150,T,3);
-  // workshop bench, right alcove
-  hubWall(w,970,250,150,T,2);
+  // two short piers framing the concourse
+  hubWall(w,190,110,T,90,1); hubWall(w,490,110,T,90,1);
+  // requisition counter, left
+  hubWall(w,40,205,90,T,3);
+  // workshop bench, right
+  hubWall(w,570,205,90,T,2);
   // lift housing at the top
-  hubWall(w,500,60,T,110,1); hubWall(w,660,60,T,110,1);
+  hubWall(w,290,40,T,70,1); hubWall(w,390,40,T,70,1);
   // terminal plinth, bottom centre
-  hubWall(w,520,620,140,T,1);
+  hubWall(w,300,385,100,T,1);
   var segs=[];
   for(var i=0;i<w.length;i++){ var q=w[i];
     segs.push({x1:q.x,y1:q.y,x2:q.x+q.w,y2:q.y});
@@ -5469,23 +5472,23 @@ function buildHub(){
     segs.push({x1:q.x,y1:q.y+q.h,x2:q.x,y2:q.y});
   }
   var stations=[
-    {id:'lift',x:590,y:150,r:52,label:'DEPLOY LIFT',sub:'to the surface',c:'#35d6c8',
+    {id:'lift',x:350,y:105,r:48,label:'DEPLOY LIFT',sub:'to the surface',c:'#35d6c8',
      act:function(){ ac(); startRaid(); }},
-    {id:'req',x:135,y:300,r:46,label:'REQUISITION',sub:'buy gear',c:'#ffb02e',
+    {id:'req',x:110,y:255,r:44,label:'REQUISITION',sub:'buy gear',c:'#ffb02e',
      act:function(){ renderShop(); document.getElementById('shopmodal').classList.add('on'); }},
-    {id:'work',x:1045,y:300,r:46,label:'WORKSHOP',sub:'craft from junk',c:'#7fc4a0',
+    {id:'work',x:590,y:255,r:44,label:'WORKSHOP',sub:'craft from junk',c:'#7fc4a0',
      act:function(){ renderWork(); document.getElementById('workmodal').classList.add('on'); }},
-    {id:'term',x:590,y:600,r:50,label:'OPERATOR TERMINAL',sub:'stash, loadout, contracts, recorder',c:'#5aa9e6',
+    {id:'term',x:350,y:365,r:46,label:'OPERATOR TERMINAL',sub:'stash, loadout, contracts, recorder',c:'#5aa9e6',
      act:function(){ renderHub(); document.getElementById('hub').classList.add('on'); }},
-    {id:'tune',x:1045,y:600,r:44,label:'TUNING CONSOLE',sub:'sliders and bot sim',c:'#d08ce8',
+    {id:'tune',x:560,y:390,r:40,label:'TUNING CONSOLE',sub:'sliders and bot sim',c:'#d08ce8',
      act:function(){ toggleTune(true); }}
   ];
   var lights=[];
   for(var s=0;s<stations.length;s++)
     lights.push({x:stations[s].x,y:stations[s].y-10,r:190,c:stations[s].c,i:.34,f:s*1.7,fl:false});
-  lights.push({x:590,y:380,r:300,c:'#ffc878',i:.30,f:0,fl:false});
-  lights.push({x:250,y:560,r:170,c:'#ffc878',i:.20,f:2.2,fl:true});
-  lights.push({x:930,y:560,r:170,c:'#ffc878',i:.20,f:4.4,fl:true});
+  lights.push({x:350,y:240,r:240,c:'#ffc878',i:.30,f:0,fl:false});
+  lights.push({x:140,y:390,r:130,c:'#ffc878',i:.20,f:2.2,fl:true});
+  lights.push({x:560,y:120,r:130,c:'#ffc878',i:.20,f:4.4,fl:true});
   return {walls:w,segs:segs,stations:stations,lights:lights,
     player:{x:590,y:400,r:11,face:-1.5708,bob:0,moving:false},
     near:null,t:0,eLock:false};
@@ -5685,7 +5688,7 @@ function showScreen(s){
   if(s==='hub'){
     if(!HB) HB=buildHub();
     if(!hubGround) hubGround=bakeHubGround();
-    HB.player.x=590; HB.player.y=430; HB.player.face=-1.5708;
+    HB.player.x=350; HB.player.y=250; HB.player.face=-1.5708;
     HB.near=null; HB.eLock=true; keys={};
     renderHub();
   }
@@ -5787,13 +5790,13 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','Hub shrink: every station within a few steps'],
+  ['NOW','Footprints, casings, litter that persists'],
+  ['DONE','Hub shrunk: five stations, one screen'],
   ['DONE','Guns roll a condition: Worn to Pristine, 3 new families'],
   ['DONE','Character redesign: faces that look where you aim'],
   ['NEXT','Big-head characters with faces; scary enemy redesign'],
   ['NEXT','Hub shrink: every station within a few steps'],
   ['NEXT','Time of day variance; night as a special raid later'],
-  ['LATER','Footprints, shell casings, litter that persists'],
   ['LATER','Sound pass two: layered ambience, weapon voices']
 ];
 var BUILDS=[];   // filled from builds/index.json at boot; empty list hides nothing but options
