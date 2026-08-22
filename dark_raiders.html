@@ -205,6 +205,22 @@
   </div>
 </div>
 
+<div class="modal" id="seasonmodal">
+  <h3 id="seasonhead">Season 1</h3>
+  <div class="msub">Ten tiers. Every raid feeds it, and a raid you die on still pays half, because a run you learned something from is not worth nothing. Finish the track and the world moves up a tier: loot is worth more and everything out there is harder.</div>
+  <div id="seasonbar" style="height:16px;border:1px solid var(--steel-hi);background:rgba(0,0,0,.35);margin:6px 0 10px 0;position:relative">
+    <div id="seasonfill" style="height:100%;width:0%;background:linear-gradient(90deg,#ffb02e,#ffd76a)"></div>
+    <div id="seasontext" style="position:absolute;inset:0;text-align:center;font-size:11px;line-height:16px;color:#120e0c;font-weight:700"></div>
+  </div>
+  <div class="plist" id="seasonlist" style="border:1px solid var(--steel-hi);max-height:300px;overflow:auto"></div>
+  <h3 style="margin-top:14px">What I am building next</h3>
+  <div class="msub">In order. This is the actual queue, not a wish list.</div>
+  <div class="plist" id="roadmaplist" style="border:1px solid var(--steel-hi)"></div>
+  <div style="display:flex;gap:8px;margin-top:10px">
+    <button id="closeseason" style="padding:8px 20px">Leave</button>
+  </div>
+</div>
+
 <div class="modal" id="mercmodal">
   <h3>The Hiring Bench</h3>
   <div class="msub">One raider, one run, paid up front. He loots for himself and you take ten percent of what he carries out. If he dies you owe his family, and that is not optional.</div>
@@ -343,7 +359,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.34';
+var VER='1.35';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -360,7 +376,7 @@ function cloneObj(o){ var r={},k; for(k in o) r[k]=o[k]; return r; }
 function applyCfg(base,over){ CFG=cloneObj(base); if(over){ for(var k in over) if(k in DEF) CFG[k]=over[k]; } }
 applyCfg(DEF,null); CFG.preset='B';
 function CH(){ return CFG.coneDeg*Math.PI/360; }
-function ival(k){ return Math.round((ITEMS[k]?ITEMS[k].val:0)*CFG.lootMult); }
+function ival(k){ return Math.round((ITEMS[k]?ITEMS[k].val:0)*CFG.lootMult*seasonLoot()); }
 
 // ================================================================ data
 var WEAPONS={
@@ -2334,12 +2350,12 @@ function mkName(pre,letters){
   return pre+' '+pick(letters)+'-'+ri(10,99);
 }
 function mkSentry(x,y){
-  return {kind:'sentry',x:x,y:y,r:22,hp:Math.round(150*CFG.eHp),maxhp:Math.round(150*CFG.eHp),
+  return {kind:'sentry',x:x,y:y,r:22,hp:Math.round(150*CFG.eHp*seasonHp()),maxhp:Math.round(150*CFG.eHp*seasonHp()),
     name:mkName('SENTRY',['K','R','V','T']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:70,dmg:14,rng:340,cone:.62,hitT:0};
 }
 function mkCrawler(x,y){
-  return {kind:'crawler',x:x,y:y,r:15,hp:Math.round(52*CFG.eHp),maxhp:Math.round(52*CFG.eHp),
+  return {kind:'crawler',x:x,y:y,r:15,hp:Math.round(52*CFG.eHp*seasonHp()),maxhp:Math.round(52*CFG.eHp*seasonHp()),
     name:mkName('CRAWLER',['A','C','H','M']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:150,dmg:20,rng:26,cone:1.5,hitT:0,legs:rnd(0,6.28)};
 }
@@ -2353,12 +2369,12 @@ function mkCrawler(x,y){
 // in the game. That is his "guarded loot different from the jackpot" in one
 // body: caches are free if you walk there, the Warden is a fight you elect.
 function mkWarden(x,y){
-  return {kind:'warden',x:x,y:y,r:30,hp:Math.round(620*CFG.eHp),maxhp:Math.round(620*CFG.eHp),
+  return {kind:'warden',x:x,y:y,r:30,hp:Math.round(620*CFG.eHp*seasonHp()),maxhp:Math.round(620*CFG.eHp*seasonHp()),
     name:mkName('WARDEN',['X','Z','Q']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:36,dmg:30,rng:430,cone:1.15,hitT:0,seenYou:false};
 }
 function mkSnitch(x,y){
-  return {kind:'snitch',x:x,y:y,r:11,hp:Math.round(26*CFG.eHp),maxhp:Math.round(26*CFG.eHp),
+  return {kind:'snitch',x:x,y:y,r:11,hp:Math.round(26*CFG.eHp*seasonHp()),maxhp:Math.round(26*CFG.eHp*seasonHp()),
     name:mkName('SNITCH',['E','N','S']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:170,dmg:0,rng:380,cone:1.2,hitT:0,lost:0};
 }
@@ -2389,7 +2405,7 @@ function mkRaider(x,y,forceId){
   var wk=pick(['pistol','smg','pistol','rifle']);
   var ident=forceId||pick(IDENTITIES);
   var rec=(G&&G.sim)?{kills:0,deaths:0,met:0,standing:0}:idRec(ident.id);
-  var r={kind:'raider',x:x,y:y,r:11,hp:Math.round(78*CFG.eHp),maxhp:Math.round(78*CFG.eHp),react:rnd(.38,.62),
+  var r={kind:'raider',x:x,y:y,r:11,hp:Math.round(78*CFG.eHp*seasonHp()),maxhp:Math.round(78*CFG.eHp*seasonHp()),react:rnd(.38,.62),
     face:rnd(0,6.28),state:'loot',tx:x,ty:y,cd:0,alert:0,spd:122,wep:WEAPONS[wk],dmg:WEAPONS[wk].dmg,
     rng:WEAPONS[wk].rng*.72,cone:.8,bag:[],goal:null,skips:[],goalT:0,goalD:0,extracting:0,hitT:0,step:0,
     coat:ident.coat, ident:ident.id, name:ident.tag,
@@ -4877,10 +4893,90 @@ var pendingRun=null,selTags=[];
 // No stat inflation anywhere: power comes from gear and competence, and these
 // are prestige only. Experience counts time invested; Extraction Proficiency
 // weighs how much value you actually get OUT, so dying loaded hurts it.
+// ================================================================ the season
+// He named SEASONS OR TIERS as the structure he wants, and the game had no
+// spine at all: every raid was worth exactly the same as the one before it and
+// nothing accumulated except a credit balance. A season is the long arc under
+// the short one. Ten tiers, every raid feeds it, and finishing it moves the
+// WORLD up rather than just the player, so the next season is richer and harder
+// instead of being the same game with a bigger number attached.
+var SEASON_TIERS=[
+  {sp:300,  kind:'credits', v:1500, label:'1,500 credits'},
+  {sp:700,  kind:'rep',     v:400,  label:'400 reputation, which opens the Quartermaster faster'},
+  {sp:1200, kind:'wep',     v:'carbine'},
+  {sp:1800, kind:'kit',     v:['medkit','medkit','plate','plate'], label:'2 medkits and 2 armour plates to the stash'},
+  {sp:2500, kind:'credits', v:3000, label:'3,000 credits'},
+  {sp:3300, kind:'wep',     v:'shotgun'},
+  {sp:4200, kind:'standing',v:2,    label:'Every raider out there thinks better of you'},
+  {sp:5200, kind:'credits', v:6000, label:'6,000 credits'},
+  {sp:6300, kind:'wep',     v:'dmr'},
+  {sp:7500, kind:'season',  v:10000,label:'10,000 credits, and the world moves up a tier'}
+];
+
+function seasonNo(){ return (P&&P.season)||1; }
+function worldTier(){ return clamp((P&&P.worldTier)||0,0,5); }
+// The world tier is a multiplier on top of his tuning sliders rather than a
+// rewrite of them, so the Tuning Console still says what he set it to.
+function seasonLoot(){ return 1+0.08*worldTier(); }
+function seasonHp(){ return 1+0.06*worldTier(); }
+function spForRun(rec){
+  var sp=0,K=rec.kills||{};
+  if(rec.outcome==='extract') sp+=90;
+  sp+=Math.round(((rec.haul||0)/1000)*35);
+  sp+=(rec.containers||0)*3;
+  sp+=(K.sentry||0)*6+(K.crawler||0)*4+(K.raider||0)*15+(K.snitch||0)*8+(K.warden||0)*60;
+  sp+=(rec.doorsOpened||0)*40;
+  sp+=(rec.caches||0)*15;
+  // A raid you died on still pays half. Losing should hurt in gear and credits,
+  // which it already does, not by erasing the fact that the run happened.
+  if(rec.outcome==='dead') sp=Math.round(sp*0.5);
+  else if(rec.outcome==='abandon') sp=Math.round(sp*0.25);
+  return Math.max(0,sp);
+}
+function seasonClaimed(){ if(!Array.isArray(P.spClaimed)) P.spClaimed=[]; return P.spClaimed; }
+function seasonReady(){
+  var cl=seasonClaimed(),n=0;
+  for(var i=0;i<SEASON_TIERS.length;i++)
+    if((P.sp||0)>=SEASON_TIERS[i].sp&&cl.indexOf(i)<0) n++;
+  return n;
+}
+function tierLabel(T){
+  if(T.kind==='wep') return WEAPONS[T.v].name+' to the armoury';
+  return T.label||'';
+}
+function claimTier(ix){
+  var T=SEASON_TIERS[ix]; if(!T) return null;
+  var cl=seasonClaimed();
+  if(cl.indexOf(ix)>=0) return null;
+  if((P.sp||0)<T.sp) return null;
+  cl.push(ix);
+  var msg='';
+  if(T.kind==='credits'||T.kind==='season'){ P.credits+=T.v; msg='+'+T.v.toLocaleString()+'c'; }
+  if(T.kind==='rep'){ P.rep+=T.v; msg='+'+T.v+' rep'; }
+  if(T.kind==='wep'){
+    if(P.weapons.indexOf(T.v)<0) P.weapons.push(T.v);
+    msg=WEAPONS[T.v].name+' in the armoury';
+  }
+  if(T.kind==='kit'){ for(var i=0;i<T.v.length;i++) P.stash.push(T.v[i]); msg='kit to the stash'; }
+  if(T.kind==='standing'){
+    for(var j=0;j<IDENTITIES.length;j++){ var r=idRec(IDENTITIES[j].id); r.standing=(r.standing||0)+T.v; }
+    msg='standing up with all ten';
+  }
+  if(T.kind==='season'){
+    // The whole point of tiers: the WORLD moves, not a number on your profile.
+    P.season=seasonNo()+1;
+    P.worldTier=worldTier()+1;
+    P.sp=0; P.spClaimed=[];
+    msg+='. Season '+P.season+' begins, and the world is harder and worth more.';
+  }
+  saveProfile();
+  return msg;
+}
 function xpForRun(rec){
   return 40 + Math.round((rec.containers||0)*4) + Math.round((rec.dist||0)/900);
 }
 function addProgress(rec){
+  P.sp=(P.sp||0)+spForRun(rec);
   P.xp=(P.xp||0)+xpForRun(rec);
   P.xpLevel=1+Math.floor(Math.sqrt((P.xp||0)/220));
   // Proficiency: banked value counts, value lost on death counts AGAINST.
@@ -4971,6 +5067,18 @@ function endRaid(how){
   // Money taken at the stall was banked when the deal closed, so it is reported
   // rather than paid here. Saying so matters: on a death screen it is the one
   // line that is still good news.
+  // Say what the run bought you on the long track, win or lose. A season you
+  // cannot see moving is not a season.
+  (function(){
+    var gained=spForRun({outcome:how,haul:haul,containers:T.containers,kills:T.kills,
+      doorsOpened:T.doorsOpened||0,caches:T.cachesOpened||0});
+    if(gained>0){
+      var cap=SEASON_TIERS[SEASON_TIERS.length-1].sp;
+      lines.push('<span style="color:var(--amber)">Season '+seasonNo()+': +'+gained+
+        ' progress'+(how==='dead'?' (half, for dying)':(how==='abandon'?' (a quarter, for backing out)':''))+
+        '. '+Math.min(cap,(P.sp||0)+gained).toLocaleString()+' of '+cap.toLocaleString()+'.</span>');
+    }
+  })();
   if(G.pedSold){
     lines.push('<span style="color:var(--coolant)">Sold at the stall for '+G.pedSold.toLocaleString()+'c, already banked.</span>');
   }
@@ -7201,6 +7309,8 @@ function buildHub(){
      act:function(){ renderCrate(); document.getElementById('cratemodal').classList.add('on'); }},
     {id:'term',x:350,y:365,r:46,label:'OPERATOR TERMINAL',sub:'stash, loadout, contracts, recorder',c:'#5aa9e6',
      act:function(){ renderHub(); document.getElementById('hub').classList.add('on'); }},
+    {id:'season',x:140,y:390,r:44,label:'SEASON BOARD',sub:'the long track, and what is coming',c:'#ffd76a',vendor:1,
+     act:function(){ renderSeason(); document.getElementById('seasonmodal').classList.add('on'); }},
     {id:'tune',x:560,y:390,r:40,label:'TUNING CONSOLE',sub:'sliders and bot sim',c:'#d08ce8',
      act:function(){ toggleTune(true); }}
   ];
@@ -7587,14 +7697,18 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','Footprints, casings, litter that persists'],
-  ['DONE','Hub shrunk: five stations, one screen'],
-  ['DONE','Guns roll a condition: Worn to Pristine, 3 new families'],
-  ['DONE','Character redesign: faces that look where you aim'],
-  ['NEXT','Big-head characters with faces; scary enemy redesign'],
-  ['NEXT','Hub shrink: every station within a few steps'],
-  ['NEXT','Time of day variance; night as a special raid later'],
-  ['LATER','Sound pass two: layered ambience, weapon voices']
+  ['NOW','Seasons: ten tiers, and finishing one moves the whole world up'],
+  ['DONE','COLD STORAGE, a third map built with no open ground in it'],
+  ['DONE','Room acoustics, your own footsteps, and a stinger when something sees you'],
+  ['DONE','The Peddler: sell your bag mid raid at half price, banked instantly'],
+  ['DONE','The Mercenary: hire one of the ten for a single run'],
+  ['NEXT','Bushes you can actually hide in, without needing a wall'],
+  ['NEXT','Emotes, so a passive raider can be talked to instead of only shot'],
+  ['NEXT','Contracts that pay in gear rather than only credits'],
+  ['LATER','Armour in three tiers, readable on the silhouette'],
+  ['LATER','Weak points on the big machines'],
+  ['LATER','Scopes that see further, not just hit harder'],
+  ['LATER','Two raiders, one raid']
 ];
 var BUILDS=[];   // filled from builds/index.json at boot; empty list hides nothing but options
 function renderRoadmap(){
@@ -7675,6 +7789,52 @@ function mercCost(id){
   // hire per point of notoriety, and it compounds with a bad reputation.
   var risk=1+0.15*(P.notoriety||0);
   return Math.round(MERC_BASE*(1-disc)*risk);
+}
+function renderSeason(){
+  var head=document.getElementById('seasonhead');
+  head.textContent='Season '+seasonNo()+(worldTier()?('   world tier '+worldTier()+': loot x'+seasonLoot().toFixed(2)+', enemies x'+seasonHp().toFixed(2)):'');
+  var cap=SEASON_TIERS[SEASON_TIERS.length-1].sp,sp=P.sp||0;
+  document.getElementById('seasonfill').style.width=clamp(100*sp/cap,0,100)+'%';
+  document.getElementById('seasontext').textContent=sp.toLocaleString()+' / '+cap.toLocaleString();
+  var el=document.getElementById('seasonlist'); el.innerHTML='';
+  var cl=seasonClaimed();
+  SEASON_TIERS.forEach(function(T,ix){
+    var row=document.createElement('div'); row.className='row';
+    var got=cl.indexOf(ix)>=0,ready=!got&&sp>=T.sp;
+    var nm=document.createElement('div'); nm.className='nm';
+    nm.textContent=(ix+1)+'.  '+tierLabel(T);
+    if(got) nm.style.color='var(--ash)';
+    else if(!ready) nm.style.color='var(--ash)';
+    var vl=document.createElement('div'); vl.className='vl';
+    vl.textContent=got?'claimed':(ready?'ready':(T.sp-sp).toLocaleString()+' to go');
+    if(ready) vl.style.color='#ffd76a';
+    var b=document.createElement('button');
+    if(got){ b.textContent='Claimed'; b.disabled=true; }
+    else if(!ready){ b.textContent=T.sp.toLocaleString(); b.disabled=true; }
+    else {
+      b.textContent='Claim';
+      b.onclick=function(){
+        var m=claimTier(ix);
+        if(m) say2('Tier '+(ix+1)+': '+m);
+        renderSeason(); renderHub();
+      };
+    }
+    row.appendChild(nm); row.appendChild(vl); row.appendChild(b);
+    el.appendChild(row);
+  });
+  var rm=document.getElementById('roadmaplist'); rm.innerHTML='';
+  ROADMAP.forEach(function(R){
+    if(R[0]==='DONE') return;              // the board is what is coming, not a receipt
+    var row=document.createElement('div'); row.className='row';
+    var tg=document.createElement('div');
+    tg.style.cssText='min-width:52px;font-weight:700;color:'+
+      (R[0]==='NOW'?'var(--coolant)':(R[0]==='NEXT'?'var(--amber)':'var(--ash)'));
+    tg.textContent=R[0];
+    var nm=document.createElement('div'); nm.className='nm';
+    nm.style.whiteSpace='normal'; nm.textContent=R[1];
+    row.appendChild(tg); row.appendChild(nm);
+    rm.appendChild(row);
+  });
 }
 function renderMerc(){
   var el=document.getElementById('merclist'),h='';
@@ -8004,6 +8164,9 @@ document.getElementById('sellall').onclick=function(){
 document.getElementById('shopbtn').onclick=function(){ renderShop(); document.getElementById('shopmodal').classList.add('on'); };
 document.getElementById('mercclear').onclick=function(){
   P.merc=null; saveProfile(); renderMerc(); renderHub();
+};
+document.getElementById('closeseason').onclick=function(){
+  document.getElementById('seasonmodal').classList.remove('on');
 };
 document.getElementById('closemerc').onclick=function(){
   document.getElementById('mercmodal').classList.remove('on');
