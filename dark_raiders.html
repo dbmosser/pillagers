@@ -2,8 +2,14 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;800&family=Roboto+Mono:wght@400;500;700&display=swap');
   #root {
-    --void:#05070a; --steel:#1b2129; --steel-hi:#2a323d; --ash:#6b7783;
-    --bone:#cdd6dd; --amber:#ffb02e; --rust:#c8452f; --coolant:#35d6c8; --hazard:#ff4d3d;
+    /* Chrono Trigger window palette. --steel was defined and referenced nowhere
+       in the entire file, so it is a free slot and becomes the mid-blue inner
+       border of the classic double-framed window. --steel-hi flipping from dark
+       grey to light periwinkle is the loudest single change here: every panel
+       edge goes from invisible to a proper frame. */
+    --void:#0a0d1c; --steel:#2f4394; --steel-hi:#7f92d8; --ash:#9aa8d0;
+    --bone:#eef2ff; --amber:#ffc04a; --rust:#d8543a; --coolant:#4de3d0; --hazard:#ff5a4a;
+    --win-top:#1c2a63; --win-bot:#101a42;
     background:var(--void); color:var(--bone); font-family:'Roboto Mono',monospace;
     position:relative; width:100%; height:720px; overflow:hidden;
     border:1px solid var(--steel-hi); user-select:none;
@@ -13,21 +19,24 @@
   #hcv { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:5; }
   .screen { position:absolute; inset:0; z-index:10;
     background:
-      radial-gradient(1100px 500px at 20% -10%, rgba(255,176,46,.07), transparent 60%),
-      radial-gradient(900px 600px at 90% 110%, rgba(53,214,200,.06), transparent 60%),
-      linear-gradient(165deg,#070a0e 0%,#0d1218 55%,#06090d 100%);
+      radial-gradient(1100px 500px at 20% -10%, rgba(255,192,74,.09), transparent 60%),
+      radial-gradient(900px 600px at 90% 110%, rgba(77,227,208,.05), transparent 60%),
+      linear-gradient(165deg,#131c46 0%,#0d1435 55%,#090f28 100%);
     display:none; flex-direction:column; padding:18px 22px; overflow:hidden; }
   .screen.on { display:flex; }
-  .screen::before { content:''; position:absolute; inset:0; pointer-events:none;
-    background:repeating-linear-gradient(0deg,rgba(255,255,255,.014) 0 1px,transparent 1px 3px); }
+  /* the CRT scanline overlay is gone: it is the loudest terminal signal in the
+     file and has no equivalent in the look being aimed at */
   .brand { font-family:'Oxanium',sans-serif; font-weight:800; font-size:13px;
     letter-spacing:.42em; color:var(--amber); text-transform:uppercase; }
   .brand span { color:var(--ash); }
   .hubgrid { display:grid; grid-template-columns:1.05fr 1fr 1fr; gap:14px; flex:1; min-height:0; margin-top:12px; }
-  .panel { border:1px solid var(--steel-hi);
-    background:linear-gradient(180deg,rgba(18,24,31,.9),rgba(10,13,18,.85));
+  .panel { border:2px solid var(--steel-hi); border-radius:5px;
+    background:linear-gradient(180deg,var(--win-top),var(--win-bot));
+    box-shadow:inset 0 0 0 2px var(--steel), 0 2px 0 rgba(0,0,0,.5);
     display:flex; flex-direction:column; min-height:0; position:relative; }
-  .panel::after { content:''; position:absolute; top:0; left:0; width:22px; height:2px; background:var(--amber); }
+  /* the inner hairline of the double frame, replacing the amber corner tick */
+  .panel::after { content:''; position:absolute; inset:3px; pointer-events:none;
+    border:1px solid rgba(127,146,216,.22); border-radius:3px; }
   .panel h2 { font-family:'Oxanium',sans-serif; font-size:10px; font-weight:700;
     letter-spacing:.28em; text-transform:uppercase; color:var(--ash);
     margin:0; padding:10px 12px; border-bottom:1px solid var(--steel-hi);
@@ -42,7 +51,7 @@
   .row .nm { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .row .vl { color:var(--amber); font-size:10.5px; }
   .swatch { width:3px; height:13px; border-radius:1px; flex:none; }
-  .r-common{color:#b9c4cd;} .r-uncommon{color:#7fc4a0;} .r-rare{color:#5aa9e6;} .r-elite{color:#d08ce8;}
+  .r-common{color:#cfd8ef;} .r-uncommon{color:#7fc4a0;} .r-rare{color:#7cc4ff;} .r-elite{color:#d08ce8;}
   button { font-family:'Roboto Mono',monospace; background:transparent;
     border:1px solid var(--steel-hi); color:var(--bone); padding:5px 9px; font-size:10px;
     letter-spacing:.06em; cursor:pointer; text-transform:uppercase; transition:all .12s; }
@@ -50,9 +59,9 @@
   button:disabled{ opacity:.3; cursor:not-allowed; }
   button:focus-visible{ outline:2px solid var(--coolant); outline-offset:1px; }
   .deploy { padding:12px; font-family:'Oxanium',sans-serif; font-weight:800;
-    font-size:13px; letter-spacing:.3em; border:1px solid var(--amber);
-    color:var(--void); background:linear-gradient(180deg,#ffc14f,#ffb02e); }
-  .deploy:hover{ background:linear-gradient(180deg,#ffd27a,#ffbe52); border-color:#ffd27a; color:var(--void); }
+    font-size:13px; letter-spacing:.3em; border:2px solid #ffe9b0; border-radius:4px;
+    color:#2a1a06; background:linear-gradient(180deg,#ffd980,#f0a02a); }
+  .deploy:hover{ background:linear-gradient(180deg,#ffe4a0,#ffbe52); border-color:#fff0c8; color:#2a1a06; }
   .ghost { background:transparent; color:var(--amber); }
   .ghost:hover{ background:rgba(255,176,46,.08); }
   .stat { display:flex; justify-content:space-between; padding:4px 12px; font-size:10.5px; }
@@ -63,8 +72,16 @@
   .toprow{ display:flex; justify-content:space-between; align-items:flex-end; }
   .credits{ font-family:'Oxanium',sans-serif; font-weight:800; font-size:22px; color:var(--amber); text-align:right; }
   .credits small{ font-size:9px; color:var(--ash); letter-spacing:.28em; display:block; font-weight:400; }
-  .outcome{ position:absolute; inset:0; background:rgba(5,7,10,.96);
+  /* All three overlays were a flat black wash with content floating loose on it
+     and no frame at all, which is the least like the look being aimed at that
+     anything in the file could be. Each now gets a proper framed window. */
+  .outcome::before,.pausebox::before,.modal::before{
+    content:''; position:absolute; z-index:-1; border-radius:6px;
+    background:linear-gradient(180deg,var(--win-top),var(--win-bot));
+    border:2px solid var(--steel-hi); box-shadow:inset 0 0 0 2px var(--steel); }
+  .outcome{ position:absolute; inset:0; background:rgba(8,12,32,.92);
     display:none; flex-direction:column; align-items:center; justify-content:center; z-index:40; }
+  .outcome::before{ inset:56px 84px; }
   .outcome.on{ display:flex; }
   .outcome h1{ font-family:'Oxanium',sans-serif; font-weight:800; font-size:42px;
     letter-spacing:.2em; margin:0; text-transform:uppercase; }
@@ -81,13 +98,15 @@
     border:1px solid var(--steel-hi); color:var(--bone); padding:8px; width:100%; resize:none;
     outline:none; line-height:1.5; }
   textarea:focus{ border-color:var(--amber); }
-  .pausebox{ position:absolute; inset:0; background:rgba(5,7,10,.9); z-index:35;
+  .pausebox{ position:absolute; inset:0; background:rgba(8,12,32,.9); z-index:35;
     display:none; flex-direction:column; align-items:center; justify-content:center; gap:11px; }
+  .pausebox::before{ inset:60px 90px; }
   .pausebox.on{ display:flex; }
   .pausebox h3{ font-family:'Oxanium',sans-serif; font-weight:800; font-size:24px;
     letter-spacing:.24em; margin:0; color:var(--bone); }
-  .modal{ position:absolute; inset:0; background:rgba(5,7,10,.96); z-index:60;
+  .modal{ position:absolute; inset:0; background:rgba(8,12,32,.92); z-index:60;
     display:none; flex-direction:column; padding:22px; }
+  .modal::before{ inset:14px; }
   .modal.on{ display:flex; }
   .modal h3{ font-family:'Oxanium',sans-serif; font-weight:800; font-size:14px;
     letter-spacing:.24em; margin:0 0 4px; color:var(--amber); text-transform:uppercase; }
@@ -100,7 +119,7 @@
   .trow label{ color:var(--ash); }
   .trow .tv{ color:var(--amber); text-align:right; }
   .trow .nx{ color:var(--steel-hi); font-size:8.5px; margin-left:5px; }
-  input[type=range]{ width:100%; accent-color:#ffb02e; background:transparent; }
+  input[type=range]{ width:100%; accent-color:#ffc04a; background:transparent; }
   .crow{ padding:6px 12px; border-bottom:1px solid rgba(42,50,61,.35); font-size:10.5px; }
   .crow .cd{ color:var(--bone); }
   .crow .cp{ color:var(--ash); font-size:9.5px; margin-top:2px; display:flex; justify-content:space-between; align-items:center; }
@@ -255,7 +274,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.83';
+var VER='0.84';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -315,7 +334,10 @@ var ITEMS={
   decoy:{name:'Decoy Beacon',val:80,wt:1,r:'common',c:'#e0c060',use:'throw',tk:'decoy'},
   frag:{name:'Frag Charge',val:180,wt:1,r:'uncommon',c:'#e07040',use:'throw',tk:'frag'}
 };
-var RCOL={common:'#b9c4cd',uncommon:'#7fc4a0',rare:'#5aa9e6',elite:'#d08ce8'};
+// Mirrored by the .r-* CSS rules; the two have nothing keeping them in sync, so
+// they must always be edited together. Rare moved because #5aa9e6 on a navy
+// panel was a real contrast failure, and rare items are what the stash is for.
+var RCOL={common:'#cfd8ef',uncommon:'#7fc4a0',rare:'#7cc4ff',elite:'#d08ce8'};
 var SHOP=[
   {k:'bandage',kind:'item',price:110,rep:0},{k:'medkit',kind:'item',price:390,rep:0},
   {k:'ammobox',kind:'item',price:170,rep:0},{k:'smoke',kind:'item',price:150,rep:0},
@@ -332,10 +354,15 @@ var LOOT={
   body:[['bandage',18],['ammobox',22],['scrap',12],['medkit',10],['board',8],['cell',8],['plate',6],['gun_pistol',6],['gun_smg',2],['frag',4],['smoke',4],['core',3]]
 };
 var DISTRICTS=[
-  {name:'RUST YARD',floor:'#2a1e16',accent:'#3d2a1a',wall:'#4a3323',wallTop:'#6b4a31',light:'#ff9a3c'},
-  {name:'FOUNDRY',floor:'#181f28',accent:'#232f3d',wall:'#2c3a48',wallTop:'#43596d',light:'#8fd0ff'},
-  {name:'GREENBELT',floor:'#182619',accent:'#233821',wall:'#2b3a2b',wallTop:'#44603f',light:'#b8e06a'},
-  {name:'BLOCKHOUSE',floor:'#1d2026',accent:'#282d35',wall:'#333941',wallTop:'#4e5866',light:'#ffc98a'}
+  // Four genuine hue families at Chrono Trigger saturation. Three of the four
+  // floors used to be near-identical greys, so the districts did no visual work
+  // at all: you could not tell where you were. wall and wallTop are authored as
+  // a real two-step pair, which only separates because the flat black wash that
+  // used to multiply every front face by 0.78 is gone from the wall pass.
+  {name:'RUST YARD',floor:'#3a2418',accent:'#52301c',wall:'#6e4526',wallTop:'#a06a3a',light:'#ff9a4a'},
+  {name:'FOUNDRY',floor:'#1a2436',accent:'#24344e',wall:'#354a68',wallTop:'#5c7ea6',light:'#7ec8f0'},
+  {name:'GREENBELT',floor:'#1c2e1c',accent:'#2a4426',wall:'#3c5c34',wallTop:'#6a9450',light:'#c2e86a'},
+  {name:'BLOCKHOUSE',floor:'#262232',accent:'#322e42',wall:'#474258',wallTop:'#6f6a86',light:'#ffcf96'}
 ];
 var TAGS=['Too dark','Not dark enough','Too easy','Too hard','Shooting felt weak','Shooting felt good',
   'Loot boring','Loot exciting','Got lost','Timer too short','Timer too long','AI too dumb','AI unfair',
@@ -523,6 +550,19 @@ function dist(a,b){var dx=a.x-b.x,dy=a.y-b.y;return Math.sqrt(dx*dx+dy*dy);}
 function angDiff(a,b){var d=a-b;while(d>Math.PI)d-=6.283185;while(d<-Math.PI)d+=6.283185;return d;}
 function rollTable(t){var s=0,i;for(i=0;i<t.length;i++)s+=t[i][1];var r=Math.random()*s;
   for(i=0;i<t.length;i++){r-=t[i][1];if(r<=0)return t[i][0];}return t[0][0];}
+// One shared contour colour for every body on the map. Warm near-black rather
+// than pure black, so an outline carries the local hue instead of punching a
+// hole in it. The whole Chrono Trigger sprite read rests on the fact that every
+// form is wrapped in a hard dark line; nothing in this game had one before.
+var INK='#120e0c';
+// roundRect appears nowhere else in this file, so it is genuinely new API
+// surface and an unguarded call would throw inside the draw loop and black
+// screen the game. The feature test degrades to the old square silhouette.
+var HAS_RR=!!(window.CanvasRenderingContext2D&&CanvasRenderingContext2D.prototype.roundRect);
+function rrF(x,y,w,h,r){
+  if(!HAS_RR){ wc.fillRect(x,y,w,h); return; }
+  wc.beginPath(); wc.roundRect(x,y,w,h,r); wc.fill();
+}
 function hexA(hex,a){
   var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
   return 'rgba('+r+','+g+','+b+','+a+')';
@@ -654,6 +694,21 @@ function litHex(hex,amt,warm){
   r=clamp(r,0,255); g=clamp(g,0,255); b=clamp(b,0,255);
   return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
 }
+// The counterpart litHex never had, so a dark shade step could not be authored
+// from a base colour at all. Note the INVERTED warm bias: darkening removes more
+// blue than red, so shadows fall warm brown rather than cold grey, which is the
+// exact mirror of the lightening above and is most of the era's feel. Memoised
+// because sprites ask for the same few shades every frame.
+var _shade={};
+function darkHex(hex,amt){
+  var k=hex+'|'+amt,v=_shade[k];
+  if(v) return v;
+  var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  r=clamp(Math.round(r*(1-amt*0.94)),0,255);
+  g=clamp(Math.round(g*(1-amt)),0,255);
+  b=clamp(Math.round(b*(1-amt*1.06)),0,255);
+  return _shade[k]='#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
+}
 // district palette, lightened and warmed under an overcast noon
 function dcol(d,key){
   var c=DISTRICTS[d===undefined?3:d][key];
@@ -671,7 +726,10 @@ function bakeGround(map){
     gr.addColorStop(0,df); gr.addColorStop(.55,df); gr.addColorStop(1,isDay()?'rgba(63,68,75,0)':'rgba(18,22,28,0)');
     c.fillStyle=gr; c.beginPath(); c.arc(cx,cy,rad,0,6.2832); c.fill();
   }
-  c.fillStyle='#191d23';
+  // Day/night is consulted in only three places in this whole bake, so the roads
+  // were hardcoded to a night value and stayed dark at noon, reading as trenches
+  // cut through a lit city.
+  c.fillStyle=isDay()?'#5a5048':'#221a26';
   for(i=1;i<map.rows;i++) c.fillRect(40,80+i*map.ch-42,WORLD_W-80,66);
   for(i=1;i<map.cols;i++) c.fillRect(80+i*map.cw-42,40,66,WORLD_H-80);
   c.fillStyle='rgba(200,180,120,.20)';
@@ -741,7 +799,10 @@ function bakeGround(map){
   for(i=0;i<map.buildings.length;i++){
     var b3=map.buildings[i],D3=DISTRICTS[b3.d];
     c.fillStyle='rgba(0,0,0,.30)'; c.fillRect(b3.x,b3.y,b3.w,b3.h);
-    c.fillStyle=D3.accent; c.globalAlpha=.55; c.fillRect(b3.x+8,b3.y+8,b3.w-16,b3.h-16); c.globalAlpha=1;
+    // same fault as the roads: building interiors stayed night-dark while the
+    // world outside them lightened
+    c.fillStyle=isDay()?litHex(D3.accent,0.40,true):D3.accent;
+    c.globalAlpha=.55; c.fillRect(b3.x+8,b3.y+8,b3.w-16,b3.h-16); c.globalAlpha=1;
     c.strokeStyle='rgba(0,0,0,.28)'; c.lineWidth=1;
     for(j=b3.x+8;j<b3.x+b3.w-8;j+=46){ c.beginPath(); c.moveTo(j,b3.y+8); c.lineTo(j,b3.y+b3.h-8); c.stroke(); }
     for(k=b3.y+8;k<b3.y+b3.h-8;k+=46){ c.beginPath(); c.moveTo(b3.x+8,k); c.lineTo(b3.x+b3.w-8,k); c.stroke(); }
@@ -2488,15 +2549,22 @@ function shadowE(x,y,rx,ry,a){
 function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var fl=Math.cos(face)<0?-1:1;
   shadowE(x,y+1,10,4,.38);
+  // Both of these return before the body is drawn, so without their own contour
+  // the operator visibly loses its outline the instant it dives or goes down,
+  // which is exactly when it most needs to read.
   if(mode==='down'){
+    wc.fillStyle=INK; rrF(x-13,y-8,24,8,3);
     wc.fillStyle=coat; wc.fillRect(x-12,y-7,22,6);
-    wc.fillStyle='#c8b49a'; wc.fillRect(x+10*fl-3,y-8,6,6);
+    wc.fillStyle='#d2ab86'; wc.fillRect(x+10*fl-3,y-8,6,6);
     wc.fillStyle='#5c4a34'; wc.fillRect(x-6,y-11,10,4);
     return;
   }
   if(mode==='roll'){
     wc.fillStyle=coat;
     wc.beginPath(); wc.arc(x,y-8,8,0,6.2832); wc.fill();
+    // ink the ball on the path already built: one extra stroke, and a contoured
+    // disc is about as on-style a form as this game can produce
+    wc.strokeStyle=INK; wc.lineWidth=1.6; wc.stroke();
     wc.strokeStyle='rgba(230,240,246,.5)'; wc.lineWidth=1.5;
     wc.beginPath(); wc.arc(x,y-8,8,ph,ph+3.6); wc.stroke();
     return;
@@ -2516,34 +2584,55 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var leanX=sprint?fl*1.6:(moving?fl*.7:0);
   var ty=y-bobY+lift;
 
-  wc.fillStyle='#2a323b';
-  // back leg then front leg, each thigh plus boot
-  wc.fillRect(x-5+swing2*.5,ty-10,4,7-liftB*.5);
-  wc.fillRect(x-5.4+swing2,ty-4-liftB,4.8,4);
-  wc.fillStyle='#343d47';
-  wc.fillRect(x+1+swing*.5,ty-10,4,7-liftA*.5);
-  wc.fillRect(x+.6+swing,ty-4-liftA,4.8,4);
+  // Toriyama proportions, redistributed inside the SAME 34px envelope so the
+  // nameplate and offscreen marker layouts are untouched. Head goes 8x8 to
+  // 12x10, from 23 percent of the figure and narrower than its own shoulders, to
+  // 31 percent and shoulder-width. Boots go 4.8 to 6.2 wide. Big head, big feet,
+  // short torso is literally the formula. The coat ramp is derived once from the
+  // coat parameter, so all six raider coats get a correct three-step shade for
+  // free, and computing cc first keeps the invulnerable override working across
+  // every band instead of leaving a seam.
+  var cc=iv>0?'#2a6a5e':coat,cLo=darkHex(cc,.42),cHi=litHex(cc,.20,true);
+  // Each leg gets its own ink plate, and the boots keep a real gap between them.
+  // Drawn as one flush block they read as a single slab, which is the one place
+  // the contour treatment fell down. Boot soles still land exactly on ty.
+  wc.fillStyle=INK;
+  rrF(x-6.9+swing2*.5,ty-11.6,5.8,7.9-liftB*.5,1.5);
+  rrF(x-7.1+swing2,ty-5.1-liftB,6.6,5.1,1.5);
+  rrF(x+1.1+swing*.5,ty-11.6,5.8,7.9-liftA*.5,1.5);
+  rrF(x+.5+swing,ty-5.1-liftA,6.6,5.1,1.5);
+  wc.fillStyle='#191f26';
+  rrF(x-6.3+swing2*.5,ty-11,4.6,7.5-liftB*.5,1);
+  rrF(x-6.5+swing2,ty-4.5-liftB,5.4,4.5,1);
+  wc.fillStyle='#232a32';
+  rrF(x+1.7+swing*.5,ty-11,4.6,7.5-liftA*.5,1);
+  rrF(x+1.1+swing,ty-4.5-liftA,5.4,4.5,1);
 
   var pw=6+pk*5;
-  wc.fillStyle='#5c4a34';
-  wc.fillRect(x-fl*9-pw/2+leanX,ty-25,pw,11);
-  wc.fillStyle=iv>0?'#2a6a5e':coat;
-  wc.fillRect(x-6.5+leanX,ty-26,13,16);
+  wc.fillStyle=INK; rrF(x-fl*9-pw/2+leanX-1,ty-22,pw+2,11,3);
+  wc.fillStyle='#5c4a34'; rrF(x-fl*9-pw/2+leanX,ty-21,pw,9,2);
+  wc.fillStyle=INK; rrF(x-7.5+leanX,ty-23,15,13,4);
+  wc.fillStyle=cc; rrF(x-6.5+leanX,ty-22,13,11,3);
+  wc.fillStyle=cHi; wc.fillRect(x-5.7+leanX,ty-22,11.4,3);
+  wc.fillStyle=cLo; wc.fillRect(x-5.7+leanX,ty-13.4,11.4,2.4);
   // chest rig, and a hit shimmer when recently hurt
   wc.fillStyle='rgba(16,21,27,.85)';
-  wc.fillRect(x-6.5+leanX,ty-21,13,2.4);
+  wc.fillRect(x-6.5+leanX,ty-18,13,2.4);
   if(st.hurt>0){
     wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,70,56,'+clamp(st.hurt*2,0,.8)+')';
-    wc.fillRect(x-6.5+leanX,ty-26,13,16);
+    // must match the NEW torso box, or a hit paints a bright rectangle in the air
+    wc.fillRect(x-6.5+leanX,ty-22,13,11);
     wc.globalCompositeOperation='source-over';
   }
-  wc.fillStyle='#c8b49a';
-  wc.fillRect(x-4+leanX,ty-34,8,8);
+  wc.fillStyle=INK; rrF(x-7+leanX,ty-34,14,12,5);
+  wc.fillStyle='#d2ab86'; rrF(x-6+leanX,ty-33,12,10,4);
+  wc.fillStyle=cLo; rrF(x-6+leanX,ty-33,12,4.2,4);
+  wc.fillStyle='#97785b'; wc.fillRect(x-5.2+leanX,ty-25,10.4,2);
   wc.fillStyle='#0d1218';
-  wc.fillRect((fl>0?x:x-4)+leanX,ty-32.5,4,3.4);
-  wc.fillStyle='#39d6c8';
-  wc.fillRect((fl>0?x+1:x-3)+leanX,ty-31.6,2,1.2);
+  wc.fillRect((fl>0?x-.5:x-4)+leanX,ty-28.5,4.5,3);
+  wc.fillStyle='#35d6c8';
+  wc.fillRect((fl>0?x+.6:x-2.9)+leanX,ty-27.6,2.2,1.2);
 
   // ---- arms and weapon, rotated to the aim direction
   // reload drops the muzzle and works the magazine; ADS pulls it tight to the shoulder
@@ -2689,9 +2778,13 @@ function drawSnitchS(e){
   wc.beginPath(); wc.ellipse(e.x,cy-9*S,rr,4*S,0,0,6.2832); wc.stroke();
   wc.globalCompositeOperation='source-over';
   wc.save(); wc.translate(e.x,cy-7*S); wc.rotate(.785+G.t*1.2);
-  wc.fillStyle='#5a6470'; wc.fillRect(-8*S,-8*S,16*S,16*S);
-  wc.fillStyle='#414a55'; wc.fillRect(-8*S,-8*S,16*S,5*S);
-  wc.strokeStyle='#8a97a4'; wc.lineWidth=1.3*S; wc.strokeRect(-8*S,-8*S,16*S,16*S);
+  // Ink plate, body, shade band, light top lip. The light outline this used to
+  // carry is what made it visible at night at all, so it keeps a bright lip
+  // rather than going to pure contour like everything else.
+  wc.fillStyle=INK; wc.fillRect(-9.4*S,-9.4*S,18.8*S,18.8*S);
+  wc.fillStyle='#6b7684'; wc.fillRect(-8*S,-8*S,16*S,16*S);
+  wc.fillStyle='#4d5765'; wc.fillRect(-8*S,-8*S,16*S,5*S);
+  wc.fillStyle='#9fb0c2'; wc.fillRect(-8*S,-8*S,16*S,1.4*S);
   wc.restore();
   var on=al?(Math.sin(G.t*16)>0):(Math.sin(G.t*4)>-.4);
   if(on){
@@ -2706,17 +2799,24 @@ function drawSnitchS(e){
 }
 function drawContS(ct){
   var w,lift,d2,cF,cT;
-  if(ct.type==='crate'){ w=16;lift=9;d2=8;cF='#5a4224';cT='#8a6a3a'; }
-  else if(ct.type==='locker'){ w=12;lift=20;d2=6;cF='#2c3f4c';cT='#4a6a80'; }
-  else if(ct.type==='safe'){ w=16;lift=13;d2=8;cF='#33273e';cT='#5a4670'; }
-  else { w=20;lift=3;d2=6;cF='#3a2f22';cT='#57462f'; }
+  var cL;
+  // Front faces darkened one step and a third, light lip added on the top face.
+  // Two tones read as two rectangles; three read as a lit object, and the wider
+  // gap survives the night composite crushing them together.
+  if(ct.type==='crate'){ w=16;lift=9;d2=8;cF='#4e3a1e';cT='#8a6a3a';cL='#ab8a55'; }
+  else if(ct.type==='locker'){ w=12;lift=20;d2=6;cF='#24333e';cT='#4a6a80';cL='#6a8ea6'; }
+  else if(ct.type==='safe'){ w=16;lift=13;d2=8;cF='#2a1f33';cT='#5a4670';cL='#7c6796'; }
+  else { w=20;lift=3;d2=6;cF='#302719';cT='#57462f';cL='#756042'; }
   var dim=ct.opened?.45:1;
   wc.globalAlpha=dim;
   shadowE(ct.x,ct.y+1,w*.62,3.5,.35);
+  // Opaque ink plate instead of the 35 percent stroke this used to carry, which
+  // was the only outline anywhere in the game. All of it stays inside the dim
+  // window so an opened container still fades as one whole object.
+  wc.fillStyle=INK; wc.fillRect(ct.x-w/2-1,ct.y-lift-d2-1,w+2,lift+d2+2);
   wc.fillStyle=cF; wc.fillRect(ct.x-w/2,ct.y-lift,w,lift);
-  wc.fillStyle=cT; wc.fillRect(ct.x-w/2,ct.y-lift-d2,w,d2);
-  wc.strokeStyle='rgba(0,0,0,.35)'; wc.lineWidth=1;
-  wc.strokeRect(ct.x-w/2+.5,ct.y-lift-d2+.5,w-1,lift+d2-1);
+  wc.fillStyle=cT; rrF(ct.x-w/2,ct.y-lift-d2,w,d2,2);
+  wc.fillStyle=cL; wc.fillRect(ct.x-w/2+1,ct.y-lift-d2,w-2,1.2);
   wc.globalAlpha=1;
   if(!ct.opened){
     var pu=.5+.35*Math.sin(G.t*3+ct.x*.05);
@@ -2748,7 +2848,9 @@ function render2D(dt){
     ev.seen=canSee(p.x,p.y,p.face,ev.x,ev.y,G.vseg);
     if(ev.seen) VIS.push(ev);
   }
-  wc.fillStyle=isDay()?'#6b727c':'#04060a'; wc.fillRect(0,0,W,H);
+  // Matched to the fog family so the letterbox edge is not a second, different
+  // black sitting next to the navy.
+  wc.fillStyle=isDay()?'#8a8072':'#060820'; wc.fillRect(0,0,W,H);
   wc.save(); wc.translate(-ox,-oy);
   // Hand over only the piece of the baked floor that is actually on screen. The
   // whole bake is 5200x4000, about 21 million pixels, and at most a screenful of
@@ -2894,14 +2996,22 @@ function render2D(dt){
     if(it.w){
       var wl2=it.w,d3=wl2.d===undefined?3:wl2.d;
       var LIFT=(wl2.w<=60&&wl2.h<=60)?14:26;
+      // The flat black wash that used to sit over every front face is gone. It
+      // multiplied the district colour by 0.78 always, so the wall never was the
+      // authored colour and any deliberate step between front and top collapsed
+      // toward grey. Without it the two-step pair in DISTRICTS actually reads.
       wc.fillStyle=dcol(d3,'wall');
-      wc.fillRect(wl2.x,wl2.y+wl2.h-LIFT,wl2.w,LIFT);
-      wc.fillStyle='rgba(0,0,0,.22)';
       wc.fillRect(wl2.x,wl2.y+wl2.h-LIFT,wl2.w,LIFT);
       wc.fillStyle=dcol(d3,'wallTop');
       wc.fillRect(wl2.x,wl2.y-LIFT,wl2.w,wl2.h);
-      wc.strokeStyle='rgba(255,255,255,.05)'; wc.lineWidth=1;
-      wc.strokeRect(wl2.x+.5,wl2.y-LIFT+.5,wl2.w-1,wl2.h-1);
+      // Warm top lip and two ink creases instead of a cold white outline. Two
+      // 1px fills rather than a strokeRect on purpose: a full rectangle draws
+      // visible vertical seams where wall segments of one building abut.
+      wc.fillStyle='rgba(232,214,186,.10)';
+      wc.fillRect(wl2.x,wl2.y-LIFT,wl2.w,1.2);
+      wc.fillStyle='rgba(18,14,12,.55)';
+      wc.fillRect(wl2.x,wl2.y+wl2.h-LIFT,wl2.w,1);
+      wc.fillRect(wl2.x,wl2.y+wl2.h-1,wl2.w,1);
     } else if(it.c){
       drawContS(it.c);
     } else if(it.pl){
@@ -3016,8 +3126,14 @@ function render2D(dt){
   // CFG.bright lifts everything you can actually see. 1.0 is the old v0.19 look.
   var BR=CFG.bright||1;
   // at noon there is barely a shadow layer to punch lamps through
-  lx2.fillStyle=isDay()?('rgba(28,32,40,'+clamp(.13/BR,.02,.2)+')')
-                       :('rgba(3,6,14,'+clamp(.52/BR,.05,.82)+')');
+  // Chrono Trigger recolour, v0.84. The rule everywhere in this pass is HOLD
+  // LUMINANCE, MOVE HUE: darkness becomes deep indigo rather than neutral black,
+  // but never gets brighter, because the darkness is the stealth budget. Every
+  // alpha expression below is byte for byte what it was, and the result was
+  // measured rather than trusted, which is how the first attempt at these values
+  // was caught making the hidden 92 percent of the screen 44 percent brighter.
+  lx2.fillStyle=isDay()?('rgba(22,28,54,'+clamp(.13/BR,.02,.2)+')')
+                       :('rgba(7,7,26,'+clamp(.52/BR,.05,.82)+')');
   lx2.fillRect(0,0,W,H);
   lx2.globalCompositeOperation='destination-out';
   for(i=0;i<G.lights.length;i++){
@@ -3072,13 +3188,30 @@ function render2D(dt){
   wc.drawImage(litC,0,0);
   // warm glows
   wc.globalCompositeOperation='lighter';
+  // Nothing in Chrono Trigger is ever pure black; its darks are violet, not
+  // absence. Additive is the right operator for lifting blacks, where soft-light
+  // and overlay both collapse to nothing on dark pixels. This sits before the
+  // fog blit, so it grades the world you can see and a fogged pixel receives
+  // only about a tenth of it. The explicit alpha reset is required: the additive
+  // block below leaves globalAlpha dirty.
+  wc.globalAlpha=1;
+  wc.fillStyle=isDay()?'#0d0904':'#05030b';
+  wc.fillRect(0,0,W,H);
   for(i=0;i<G.lights.length;i++){
     var L2=G.lights[i];
     var gx=L2.x-ox,gy=L2.y-oy;
     if(gx<-80||gx>W+80||gy<-80||gy>H+80) continue;
     var fk2=L2.fl?(.72+.28*Math.sin(G.t*11+L2.f)):1;
-    wc.globalAlpha=(isDay()?.03:.10)*fk2; wc.fillStyle=L2.c;
-    wc.beginPath(); wc.arc(gx,gy,L2.r*.3,0,6.2832); wc.fill();
+    // Two flat concentric discs rather than one, because a lamp pool in this
+    // era is stepped, not a smooth falloff. This is also the only place in the
+    // whole game a lamp's own colour ever reaches the screen: the erase pass
+    // that carves light out of the darkness sheet is colourless, so the district
+    // light column was very nearly decorative before this.
+    wc.fillStyle=L2.c;
+    wc.globalAlpha=(isDay()?.05:.20)*fk2;
+    wc.beginPath(); wc.arc(gx,gy,L2.r*.20,0,6.2832); wc.fill();
+    wc.globalAlpha=(isDay()?.025:.10)*fk2;
+    wc.beginPath(); wc.arc(gx,gy,L2.r*.42,0,6.2832); wc.fill();
   }
   // coloured bloom for every transient source, not just the player's muzzle
   for(i=0;i<G.flashes.length;i++){
@@ -3112,8 +3245,13 @@ function render2D(dt){
   // what you can see or the cone stops being legible. A pale haze made daylight
   // fog brighter than the lit ground, so unseen space looked more visible than
   // seen space. Daylight now dims and desaturates instead, like distance haze.
-  fx2.fillStyle=isDay()?('rgba(28,33,41,'+clamp(.88-(BR-1)*.09,.72,.93)+')')
-                       :('rgba(4,7,12,'+clamp(.93-(BR-1)*.09,.78,.96)+')');
+  // Recoloured to navy at v0.84 under the hold-luminance rule. Night goes
+  // rgb(4,7,12) to rgb(5,6,26): relative luminance 6.7 down to 6.5, so the
+  // unseen 70 percent of the screen is fractionally DARKER than before while
+  // reading as deep indigo. Day becomes warm dust at 32.9 against 32.5. The two
+  // clamp expressions are the stealth budget and are untouched.
+  fx2.fillStyle=isDay()?('rgba(40,30,25,'+clamp(.88-(BR-1)*.09,.72,.93)+')')
+                       :('rgba(3,5,23,'+clamp(.93-(BR-1)*.09,.78,.96)+')');
   fx2.fillRect(0,0,W,H);
   fx2.globalCompositeOperation='destination-out';
   var pol2=buildVisPoly(p.x,p.y,p.face,G.vseg);
@@ -3665,9 +3803,9 @@ function buildHub(){
   var lights=[];
   for(var s=0;s<stations.length;s++)
     lights.push({x:stations[s].x,y:stations[s].y-10,r:190,c:stations[s].c,i:.34,f:s*1.7,fl:false});
-  lights.push({x:590,y:380,r:300,c:'#ffbe6a',i:.30,f:0,fl:false});
-  lights.push({x:250,y:560,r:170,c:'#ffbe6a',i:.20,f:2.2,fl:true});
-  lights.push({x:930,y:560,r:170,c:'#ffbe6a',i:.20,f:4.4,fl:true});
+  lights.push({x:590,y:380,r:300,c:'#ffc878',i:.30,f:0,fl:false});
+  lights.push({x:250,y:560,r:170,c:'#ffc878',i:.20,f:2.2,fl:true});
+  lights.push({x:930,y:560,r:170,c:'#ffc878',i:.20,f:4.4,fl:true});
   return {walls:w,segs:segs,stations:stations,lights:lights,
     player:{x:590,y:400,r:11,face:-1.5708,bob:0,moving:false},
     near:null,t:0,eLock:false};
@@ -3675,9 +3813,9 @@ function buildHub(){
 function bakeHubGround(){
   var g=document.createElement('canvas'); g.width=HUBW; g.height=HUBH;
   var c=g.getContext('2d'),i;
-  c.fillStyle='#171b21'; c.fillRect(0,0,HUBW,HUBH);
+  c.fillStyle='#141a34'; c.fillRect(0,0,HUBW,HUBH);
   var gr=c.createRadialGradient(590,380,40,590,380,520);
-  gr.addColorStop(0,'#2a2119'); gr.addColorStop(1,'rgba(23,27,33,0)');
+  gr.addColorStop(0,'#3a2a18'); gr.addColorStop(1,'rgba(20,26,52,0)');
   c.fillStyle=gr; c.fillRect(0,0,HUBW,HUBH);
   // plated floor
   c.strokeStyle='rgba(0,0,0,.26)'; c.lineWidth=1;
@@ -3765,11 +3903,16 @@ function drawHubWorld(dt){
     var it=DR[i];
     if(it.w){
       var q=it.w,d3=q.d,L=(q.w<=60&&q.h<=60)?14:26;
+      // The hub duplicates the raid wall renderer verbatim rather than sharing
+      // it, so it needs the same treatment or the Undercroft becomes the one
+      // room in the game with no contours, in the only scene with no fog and the
+      // one where the player spends longest just looking at the geometry.
       wc.fillStyle=DISTRICTS[d3].wall; wc.fillRect(q.x,q.y+q.h-L,q.w,L);
-      wc.fillStyle='rgba(0,0,0,.22)'; wc.fillRect(q.x,q.y+q.h-L,q.w,L);
       wc.fillStyle=DISTRICTS[d3].wallTop; wc.fillRect(q.x,q.y-L,q.w,q.h);
-      wc.strokeStyle='rgba(255,255,255,.05)'; wc.lineWidth=1;
-      wc.strokeRect(q.x+.5,q.y-L+.5,q.w-1,q.h-1);
+      wc.fillStyle='rgba(232,214,186,.10)'; wc.fillRect(q.x,q.y-L,q.w,1.2);
+      wc.fillStyle='rgba(18,14,12,.55)';
+      wc.fillRect(q.x,q.y+q.h-L,q.w,1);
+      wc.fillRect(q.x,q.y+q.h-1,q.w,1);
     } else if(it.s){
       var s2=it.s,pulse=.6+.4*Math.sin(HB.t*2.2+s2.x*.01);
       shadowE(s2.x,s2.y+2,13,5,.4);
@@ -3800,7 +3943,7 @@ function drawHubWorld(dt){
   // warm light overlay, no fog: this is home
   lx2.globalCompositeOperation='source-over';
   lx2.clearRect(0,0,W,H);
-  lx2.fillStyle='rgba(4,7,13,'+clamp(.40/(CFG.bright||1),.05,.7)+')';
+  lx2.fillStyle='rgba(14,12,36,'+clamp(.40/(CFG.bright||1),.05,.7)+')';
   lx2.fillRect(0,0,W,H);
   lx2.globalCompositeOperation='destination-out';
   for(i=0;i<HB.lights.length;i++){
