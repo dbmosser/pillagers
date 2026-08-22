@@ -293,7 +293,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.96';
+var VER='0.97';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -715,18 +715,139 @@ function hexA(hex,a){
 
 // ================================================================ map
 var G=null;
-function makeBuilding(x,y,w,h,out,d){
+// Guarantee, not a hope: no building may contain a walkable pocket you cannot
+// walk to. Six interior plans were reasoned through by hand and three of them
+// still produced sealed rooms, because a partition doorway can be plugged by
+// another partition meeting it end on. Measured before this pass: lsplit sealed
+// a room in 9.8% of the buildings that used it, cells in 1.7%, spine in 1.6%.
+// A sealed room is invisible in play and indistinguishable from solid wall, so
+// it would have shipped as "some buildings just have less inside them".
+//
+// Rather than special case each plan and re-derive the argument every time a
+// new plan is added, this floods the finished nav grid once and strips the
+// interior partitions of any building that failed. The building falls back to
+// an open floor, which is always walkable. Costs one extra nav build on the
+// maps that need it and nothing on the maps that do not.
+function repairInteriors(walls,buildings){
+  var nav=buildNav(walls);
+  var gw=nav.w,gh=nav.h,C=nav.c,blk=nav.blk;
+  // Seed from the largest open area rather than a random spot, so the fill is
+  // measuring "reachable from the street" and not "reachable from wherever we
+  // happened to land".
+  var seen=new Uint8Array(gw*gh),st=[],seeded=false;
+  for(var sy=1;sy<gh-1&&!seeded;sy++)for(var sx=1;sx<gw-1;sx++){
+    if(!blk[sy*gw+sx]){ st.push(sy*gw+sx); seen[sy*gw+sx]=1; seeded=true; break; }
+  }
+  while(st.length){
+    var cur=st.pop(),cy=(cur/gw)|0,cx=cur%gw;
+    if(cx>0&&!seen[cur-1]&&!blk[cur-1]){ seen[cur-1]=1; st.push(cur-1); }
+    if(cx<gw-1&&!seen[cur+1]&&!blk[cur+1]){ seen[cur+1]=1; st.push(cur+1); }
+    if(cy>0&&!seen[cur-gw]&&!blk[cur-gw]){ seen[cur-gw]=1; st.push(cur-gw); }
+    if(cy<gh-1&&!seen[cur+gw]&&!blk[cur+gw]){ seen[cur+gw]=1; st.push(cur+gw); }
+  }
+  var bad={},any=false;
+  for(var bi=0;bi<buildings.length;bi++){
+    var b=buildings[bi],sealed=0;
+    var gx0=Math.max(0,Math.floor(b.x/C)),gx1=Math.min(gw-1,Math.ceil((b.x+b.w)/C));
+    var gy0=Math.max(0,Math.floor(b.y/C)),gy1=Math.min(gh-1,Math.ceil((b.y+b.h)/C));
+    for(var y=gy0;y<=gy1;y++)for(var x=gx0;x<=gx1;x++){
+      var i2=y*gw+x;
+      if(!blk[i2]&&!seen[i2]) sealed++;
+    }
+    // A stray cell or two is grid quantisation at a corner, not a room.
+    if(sealed>3){ bad[bi]=1; any=true; b.plan='open'; b.repaired=1; }
+  }
+  if(!any) return nav;
+  for(var wi=walls.length-1;wi>=0;wi--) if(walls[wi].ib!==undefined&&bad[walls[wi].ib]) walls.splice(wi,1);
+  return buildNav(walls);
+}
+function makeBuilding(x,y,w,h,out,d,bid){
   var t=16,gap=64;
-  function seg(a,b,c,e){out.push({x:a,y:b,w:c,h:e,d:d});}
+  // Shell walls stay untagged. Interior partitions carry the building id so the
+  // repair pass below can strip exactly one building's interior and nothing else.
+  var shell=true;
+  function seg(a,b,c,e){out.push(shell?{x:a,y:b,w:c,h:e,d:d}:{x:a,y:b,w:c,h:e,d:d,ib:bid});}
   var doors={}; doors[ri(0,3)]=1; doors[ri(0,3)]=1;
   if(doors[0]){var a1=x+rnd(30,w-30-gap);seg(x,y,a1-x,t);seg(a1+gap,y,x+w-(a1+gap),t);} else seg(x,y,w,t);
   if(doors[1]){var a2=x+rnd(30,w-30-gap);seg(x,y+h-t,a2-x,t);seg(a2+gap,y+h-t,x+w-(a2+gap),t);} else seg(x,y+h-t,w,t);
   if(doors[2]){var a3=y+rnd(30,h-30-gap);seg(x,y,t,a3-y);seg(x,a3+gap,t,y+h-(a3+gap));} else seg(x,y,t,h);
   if(doors[3]){var a4=y+rnd(30,h-30-gap);seg(x+w-t,y,t,a4-y);seg(x+w-t,a4+gap,t,y+h-(a4+gap));} else seg(x+w-t,y,t,h);
-  if(w>300&&Math.random()<.7){
-    var mx=x+w*rnd(.4,.6),g2=y+rnd(40,h-40-72);
-    seg(mx,y+t,t,g2-(y+t)); seg(mx,g2+72,t,(y+h-t)-(g2+72));
+  // Real interiors. Every building in the game used to be the same object: a
+  // box, plus one central divider if it was wide enough. Landmarks gave the map
+  // places to recognise and districts gave it territory, but the ordinary
+  // buildings between them were still one shape repeated a hundred times, which
+  // is the last piece of "maps feel samey" and the reason going inside one was
+  // never interesting.
+  //
+  // Six plans. Each is chosen for what it does to sight lines, because that is
+  // what an interior means in a game where being seen is the danger.
+  // The hard rule every plan obeys: no enclosed space without a way in. A
+  // sealed room is a loot pocket you can never open, so partitions always carry
+  // a gap and the pinwheel is built as spokes that never touch the outer wall.
+  shell=false;
+  var ix=x+t,iy=y+t,iw=w-2*t,ih=h-2*t;
+  var DOOR=68;                                  // wider than the 64 unit outer
+                                                // doors so nav never reads an
+                                                // interior door as bricked up
+  var plans=['open','spine','core','pinwheel','cells','lsplit'];
+  // Small footprints only get the plans that still leave room to walk.
+  if(iw<250||ih<200) plans=['open','open','cells','lsplit'];
+  var plan=plans[ri(0,plans.length-1)];
+  if(plan==='spine'){
+    // A corridor you must commit to, with rooms opening off both sides. Long
+    // sight line down the middle, none at all across it.
+    var cw2=Math.max(76,Math.min(96,ih*0.3));
+    var cy0=iy+(ih-cw2)/2;
+    var s1=ix+rnd(50,iw*0.45),s2=ix+rnd(iw*0.55,iw-50-DOOR);
+    seg(ix,cy0,s1-ix,t); seg(s1+DOOR,cy0,(ix+iw)-(s1+DOOR),t);
+    seg(ix,cy0+cw2-t,s2-ix,t); seg(s2+DOOR,cy0+cw2-t,(ix+iw)-(s2+DOOR),t);
+  } else if(plan==='core'){
+    // A strongroom: a sealed inner box with exactly one way in. The single most
+    // valuable shape in the game, because entering it is a choice you can be
+    // caught making.
+    var kw=Math.max(90,iw*rnd(.36,.46)),kh=Math.max(80,ih*rnd(.36,.48));
+    var kx=ix+(iw-kw)/2+rnd(-iw*.08,iw*.08),ky=iy+(ih-kh)/2+rnd(-ih*.08,ih*.08);
+    var side=ri(0,3),dp;
+    if(side===0){ dp=kx+rnd(8,Math.max(9,kw-8-DOOR)); seg(kx,ky,dp-kx,t); seg(dp+DOOR,ky,kx+kw-(dp+DOOR),t); }
+    else seg(kx,ky,kw,t);
+    if(side===1){ dp=kx+rnd(8,Math.max(9,kw-8-DOOR)); seg(kx,ky+kh-t,dp-kx,t); seg(dp+DOOR,ky+kh-t,kx+kw-(dp+DOOR),t); }
+    else seg(kx,ky+kh-t,kw,t);
+    if(side===2){ dp=ky+rnd(8,Math.max(9,kh-8-DOOR)); seg(kx,ky,t,dp-ky); seg(kx,dp+DOOR,t,ky+kh-(dp+DOOR)); }
+    else seg(kx,ky,t,kh);
+    if(side===3){ dp=ky+rnd(8,Math.max(9,kh-8-DOOR)); seg(kx+kw-t,ky,t,dp-ky); seg(kx+kw-t,dp+DOOR,t,ky+kh-(dp+DOOR)); }
+    else seg(kx+kw-t,ky,t,kh);
+  } else if(plan==='pinwheel'){
+    // Four spokes from the middle that stop short of the walls, so the outer
+    // ring always connects the whole floor and nothing can be sealed off. Kills
+    // every diagonal sight line while staying fully walkable.
+    var mx2=ix+iw/2,my2=iy+ih/2;
+    var sx=Math.max(30,iw*0.28),sy=Math.max(28,ih*0.28);
+    seg(mx2-t/2,my2-sy,t,sy);        seg(mx2-t/2,my2,t,sy);
+    seg(mx2-sx,my2-t/2,sx,t);        seg(mx2,my2-t/2,sx,t);
+  } else if(plan==='cells'){
+    // Alcoves along one wall. Open on one side by construction, so they are
+    // always reachable, and each is a place something can be standing.
+    var vert=Math.random()<.5, n=ri(2,3);
+    for(var ci=1;ci<=n;ci++){
+      if(vert){
+        var px2=ix+iw*ci/(n+1);
+        var dep=ih*rnd(.28,.42);
+        seg(px2,Math.random()<.5?iy:(iy+ih-dep),t,dep);
+      } else {
+        var py2=iy+ih*ci/(n+1);
+        var dep2=iw*rnd(.28,.42);
+        seg(Math.random()<.5?ix:(ix+iw-dep2),py2,dep2,t);
+      }
+    }
+  } else if(plan==='lsplit'){
+    // Two rooms in an L with staggered openings, so standing in one tells you
+    // nothing about the other.
+    var vx=ix+iw*rnd(.38,.62),gy2=iy+rnd(20,Math.max(21,ih-20-DOOR));
+    seg(vx,iy,t,gy2-iy); seg(vx,gy2+DOOR,t,(iy+ih)-(gy2+DOOR));
+    var hy=iy+ih*rnd(.38,.62),gx2=vx+rnd(20,Math.max(21,(ix+iw)-vx-20-DOOR));
+    seg(vx,hy,gx2-vx,t); seg(gx2+DOOR,hy,(ix+iw)-(gx2+DOOR),t);
   }
+  return plan;
 }
 // A coarse walkability grid for route finding. Flat top-down, same coordinate
 // space as every other simulation query, built once per map alongside the walls.
@@ -951,8 +1072,8 @@ function buildMap(){
     var d=cellDistrict(r,c);
     var bw=rnd(255,Math.min(400,cw-90)),bh=rnd(205,Math.min(330,ch-90));
     var bx=80+c*cw+rnd(20,cw-bw-20),by=80+r*ch+rnd(20,ch-bh-20);
-    buildings.push({x:bx,y:by,w:bw,h:bh,d:d,tag:ri(11,99)});
-    makeBuilding(bx,by,bw,bh,walls,d);
+    var bplan=makeBuilding(bx,by,bw,bh,walls,d,buildings.length);
+    buildings.push({x:bx,y:by,w:bw,h:bh,d:d,tag:ri(11,99),plan:bplan});
   }
   // Build the reserved landmarks. Each gets its whole cell with a margin, and
   // records its footprint so loot, the sector map and the "you have arrived"
@@ -1017,6 +1138,10 @@ function buildMap(){
     }
     if(wok) water.push({x:wx3,y:wy3,w:ww,h:wh});
   }
+  // Must run BEFORE the streaks and the sight segment list are built. The repair
+  // removes walls, and segs is a snapshot: repairing after it is built leaves
+  // sight blocked by geometry that is no longer there.
+  var mapNav=repairInteriors(walls,buildings);
   for(var k=0;k<walls.length;k++){
     var wl=walls[k]; wl.streaks=[];
     var n=Math.min(5,Math.floor((wl.w*wl.h)/5200));
@@ -1030,7 +1155,7 @@ function buildMap(){
     segs.push({x1:w2.x,y1:w2.y+w2.h,x2:w2.x,y2:w2.y});
   }
   return {walls:walls,segs:segs,buildings:buildings,water:water,cw:cw,ch:ch,cols:cols,rows:rows,
-    landmarks:landmarks,zones:zseeds,districtAt:districtAt,nav:buildNav(walls)};
+    landmarks:landmarks,zones:zseeds,districtAt:districtAt,nav:mapNav};
 }
 // Day is a look, not a difficulty. Vision cone, awareness radius, enemy ranges
 // and every other tunable are identical in both conditions, so choosing daylight
@@ -1603,15 +1728,21 @@ window.addEventListener('keydown',function(e){
     say('Autoloot '+(P.autoloot?'ON: a full bag sheds its worst':'OFF: a full bag refuses'));
   }
   // zoom: works in the raid and in the hub, and on both the main and numpad keys
-  if(e.code==='Equal'||e.code==='NumpadAdd') setZoom(ZOOM()+0.15);
-  if(e.code==='Minus'||e.code==='NumpadSubtract') setZoom(ZOOM()-0.15);
-  if(e.code==='Digit0'||e.code==='Numpad0') setZoom(1);
+  if(e.code==='Equal'||e.code==='NumpadAdd'){ setZoom(zoomTarget()*1.15); if(G&&!G.over) say('Zoom '+Math.round(ZT*100)+'%'); }
+  if(e.code==='Minus'||e.code==='NumpadSubtract'){ setZoom(zoomTarget()/1.15); if(G&&!G.over) say('Zoom '+Math.round(ZT*100)+'%'); }
+  if(e.code==='Digit0'||e.code==='Numpad0'){ setZoom(1); if(G&&!G.over) say('Zoom 100%'); }
 });
 // mouse wheel zooms too, which is what anyone will try first
 cv.addEventListener('wheel',function(e){
   if(!G||G.over) return;
   e.preventDefault();
-  setZoom(ZOOM()+(e.deltaY<0?0.12:-0.12));
+  // Normalise the three delta modes browsers use, or the same gesture zooms at
+  // three different speeds depending on the device. Then step geometrically off
+  // the TARGET, not the eased current value, so spinning fast accumulates
+  // cleanly instead of fighting the easing.
+  var dy=e.deltaY;
+  if(e.deltaMode===1) dy*=16; else if(e.deltaMode===2) dy*=100;
+  setZoom(zoomTarget()*Math.exp(-clamp(dy,-140,140)*0.0015));
 },{passive:false});
 window.addEventListener('keyup',function(e){ keys[e.code]=false; });
 cv.addEventListener('click',function(){ ac(); });
@@ -1644,9 +1775,20 @@ function cycleThrow(){
   }
   say('No throwables');
 }
+// His playtest, 2026-08-22: "the roll, it rolls too far, and it should take a
+// lot of stamina to do it." Both, as one change, because they are the same
+// point: the roll was a travel move that happened to grant invulnerability, so
+// it was strictly better than sprinting and there was no reason not to spam it.
+// Now it is a dodge you pay for. 320 a second over 0.38s covers 122 units
+// against the old 167, only just ahead of a 256 sprint, so distance is no
+// longer the reason to press it. The invulnerability window is untouched at
+// 0.30s, since that is the part he did not complain about and the part that
+// makes it a defensive tool. At 45 stamina you get two from full and then you
+// are walking, and rolling now competes with sprinting for the same pool.
+var ROLLSPD=320,ROLLSTAM=45;
 function tryRoll(){
   var p=G.player;
-  if(p.downed||p.roll>0||p.rollCd>0||p.stam<25) return;
+  if(p.downed||p.roll>0||p.rollCd>0||p.stam<ROLLSTAM) return;
   var mx=0,my=0;
   if(keys['KeyW']||keys['ArrowUp'])my-=1;
   if(keys['KeyS']||keys['ArrowDown'])my+=1;
@@ -1655,7 +1797,7 @@ function tryRoll(){
   var mg=Math.sqrt(mx*mx+my*my);
   if(mg>0) p.rollDir={x:mx/mg,y:my/mg};
   else p.rollDir={x:Math.cos(p.face),y:Math.sin(p.face)};
-  p.roll=.38; p.rollCd=.85; p.iv=Math.max(p.iv,.30); p.stam-=25;
+  p.roll=.38; p.rollCd=.85; p.iv=Math.max(p.iv,.30); p.stam-=ROLLSTAM;
   ping(p.x,p.y,80,false); blip('clank');
 }
 function doThrow(){
@@ -2085,13 +2227,13 @@ function updatePlayer(dt){
   if(p.rollCd>0) p.rollCd-=dt;
   if(p.roll>0){
     p.roll-=dt;
-    // A roll covers 440 a second against a sprint of 256. Moved in one hop it
+    // A roll covers ROLLSPD a second against a sprint of 256. Moved in one hop it
     // could land the operator centre past the middle of a thin wall, and the
     // push-out then ejected him out the far face. Measured: a roll passed through
     // every wall under 22 units thick, 100 percent of the time, and the median
     // wall in this game is 16. Slice it so a roll never covers more ground
     // between collision tests than a walk does.
-    var rox=p.x,roy=p.y,rd=440*dt,rsl=Math.max(1,Math.ceil(rd/8));
+    var rox=p.x,roy=p.y,rd=ROLLSPD*dt,rsl=Math.max(1,Math.ceil(rd/8));
     for(var rs=0;rs<rsl;rs++){
       p.x+=p.rollDir.x*rd/rsl; p.y+=p.rollDir.y*rd/rsl;
       collide(p,G.map.walls);
@@ -3037,11 +3179,36 @@ function w2s(x,h,z){ var q=ZOOM(); return {x:(x-VX)*q,y:(z-VY)*q-h}; }
 // a comfort setting rather than a per-raid choice. 1 is the framing every build
 // before this shipped with.
 var ZMIN=0.65,ZMAX=2.0;
-function ZOOM(){ return clamp(P.zoom||1,ZMIN,ZMAX); }
-function setZoom(z){
-  P.zoom=clamp(+z.toFixed(3),ZMIN,ZMAX);
-  saveProfile();
-  if(G&&!G.over) say('Zoom '+Math.round(P.zoom*100)+'%');
+// Wheel zoom was three separate problems wearing one coat, all of which read as
+// "not fluid":
+//   1. Every notch snapped. setZoom wrote straight to the value the renderer
+//      reads, so zooming was a staircase with no motion between steps.
+//   2. The step was additive. +0.12 is an 18% change at 0.65 and a 6% change at
+//      2.0, so the same flick of the wheel felt violent zoomed out and stuck
+//      zoomed in. Zoom is geometric by nature and has to step geometrically.
+//   3. It wrote the profile to localStorage on every single event. A wheel spin
+//      fires many events a second and each one stringified the whole profile
+//      and hit disk on the main thread, so the actual frames stalled while you
+//      were zooming. That is the jank you could feel.
+// ZT is the target the input sets, ZC is the eased value the renderer reads.
+var ZT=1,ZC=1,zoomSaveT=0;
+function ZOOM(){ return ZC; }
+function zoomTarget(){ return ZT; }
+function setZoom(z,instant){
+  ZT=clamp(z,ZMIN,ZMAX);
+  P.zoom=+ZT.toFixed(3);
+  if(instant){ ZC=ZT; }
+  zoomSaveT=0.55;                 // debounced: one write once the wheel stops
+}
+function tickZoom(dt){
+  if(ZC!==ZT){
+    // Frame rate independent easing, so it settles at the same speed at 30fps
+    // and 144fps rather than being tied to how often this happens to run.
+    var k=1-Math.pow(1e-9,dt);   // ~0.27s to settle a notch: smooth, not floaty
+    ZC+=(ZT-ZC)*k;
+    if(Math.abs(ZT-ZC)<0.0006) ZC=ZT;
+  }
+  if(zoomSaveT>0){ zoomSaveT-=dt; if(zoomSaveT<=0) saveProfile(); }
 }
 function camClamp(v,span,world){
   var lo=-80,hi=world-span+80;
@@ -3499,12 +3666,47 @@ function render2D(dt){
     if(e.x<ox-60||e.x>ox+VW+60||e.y<oy-80||e.y>oy+VH+80) continue;
     DR.push({k:e.y,e:e});
   }
+  // His playtest, 2026-08-22: "i still don't understand why there are gold
+  // circles everywhere, are they supposed to be lights?" Yes, and that question
+  // is the bug report. The light pass painted a pool of the lamp's own colour on
+  // the ground and nothing ever drew the lamp, so the game was full of glowing
+  // discs with no cause. A light with no visible source does not read as light,
+  // it reads as an abstract marker.
+  // Hung rather than posted, because these sit on spots the player can walk
+  // through: a floor standing lamp you can walk straight through is a worse lie
+  // than no lamp at all.
+  for(i=0;i<G.lights.length;i++){
+    var LF=G.lights[i];
+    if(LF.x<ox-40||LF.x>ox+VW+40||LF.y<oy-70||LF.y>oy+VH+70) continue;
+    DR.push({k:LF.y,lm:LF});
+  }
   DR.push({k:p.y,pl:1});
   DR.sort(function(a,b){return a.k-b.k;});
   var crouchP=keys['ControlLeft']||keys['ControlRight'];
   for(i=0;i<DR.length;i++){
     var it=DR[i];
-    if(it.w){
+    if(it.lm){
+      var LG=it.lm;
+      var lfk=(LG.fl?(.72+.28*Math.sin(G.t*11+LG.f)):1)*wx().lights;
+      var lhx=LG.x,lhy=LG.y-34;
+      // bracket down from above, then the housing, then the lit element
+      wc.fillStyle='rgba(20,18,26,.85)';
+      wc.fillRect(lhx-1,lhy-14,2,14);
+      wc.fillStyle='#2a2733'; wc.fillRect(lhx-7,lhy-2,14,5);
+      wc.fillStyle='#141220'; wc.fillRect(lhx-8,lhy+3,16,2);
+      if(lfk>0.02){
+        wc.fillStyle=LG.c; wc.globalAlpha=0.85*lfk;
+        wc.fillRect(lhx-5,lhy+1,10,3);
+        wc.globalCompositeOperation='lighter';
+        wc.globalAlpha=0.5*lfk;
+        wc.beginPath(); wc.arc(lhx,lhy+2,7,0,6.2832); wc.fill();
+        wc.globalCompositeOperation='source-over';
+        wc.globalAlpha=1;
+      } else {
+        // a dead lamp still hangs there, which is most of what a blackout means
+        wc.fillStyle='#1b1a22'; wc.fillRect(lhx-5,lhy+1,10,3);
+      }
+    } else if(it.w){
       var wl2=it.w,d3=wl2.d===undefined?3:wl2.d;
       var LIFT=(wl2.w<=60&&wl2.h<=60)?14:26;
       // The flat black wash that used to sit over every front face is gone. It
@@ -4556,6 +4758,20 @@ function drawHubWorld(dt){
   var DR=[];
   for(i=0;i<HB.walls.length;i++) DR.push({k:HB.walls[i].y+HB.walls[i].h,w:HB.walls[i]});
   for(i=0;i<HB.stations.length;i++) DR.push({k:HB.stations[i].y,s:HB.stations[i]});
+  // His playtest, 2026-08-22: "i still don't understand why there are gold
+  // circles everywhere, are they supposed to be lights?" Yes, and that question
+  // is the bug report. The light pass painted a pool of the lamp's own colour on
+  // the ground and nothing ever drew the lamp, so the game was full of glowing
+  // discs with no cause. A light with no visible source does not read as light,
+  // it reads as an abstract marker.
+  // Hung rather than posted, because these sit on spots the player can walk
+  // through: a floor standing lamp you can walk straight through is a worse lie
+  // than no lamp at all.
+  for(i=0;i<G.lights.length;i++){
+    var LF=G.lights[i];
+    if(LF.x<ox-40||LF.x>ox+VW+40||LF.y<oy-70||LF.y>oy+VH+70) continue;
+    DR.push({k:LF.y,lm:LF});
+  }
   DR.push({k:p.y,pl:1});
   DR.sort(function(a,b){return a.k-b.k;});
   for(i=0;i<DR.length;i++){
@@ -4663,6 +4879,9 @@ function showScreen(s){
 function loop(ts){
   requestAnimationFrame(loop);
   var dt=Math.min((ts-lastTs)/1000,.05); lastTs=ts;
+  // Ahead of every early return below, so zoom keeps easing in the hub, while
+  // paused and on the death screen instead of freezing part way through a step.
+  tickZoom(dt);
   if(state==='hub'){
     if(HB&&wc&&W>0){ updateHubWorld(dt); drawHubWorld(dt); }
     return;
@@ -5154,6 +5373,9 @@ document.getElementById('wipelog').onclick=function(){
 document.getElementById('verlabel').textContent='v'+VER;
 resize();
 loadProfile().then(function(){
+  // Seed both the target and the eased value from the saved profile, or the
+  // first frame after loading eases from 1 to the saved zoom for no reason.
+  ZT=ZC=clamp(P.zoom||1,ZMIN,ZMAX);
   ensureContracts();
   saveProfile();
   syncCond();
