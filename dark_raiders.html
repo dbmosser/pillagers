@@ -293,7 +293,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.91';
+var VER='0.92';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -517,46 +517,172 @@ function ac(){
   if(AC&&AC.state==='suspended'&&AC.resume){ try{ AC.resume(); }catch(e){} }
   return AC||null;
 }
-function blip(type,d){
+// Everything used to arrive dead centre, so a shot in the dark told you it had
+// happened but not where. In a game built on not being able to see, that is the
+// single largest thing sound can give you. BUS is the shared output; SFX routes
+// a one-shot through a panner placed by world position.
+var BUS=null,PAN_OK=true;
+function bus(){
+  var a=ac(); if(!a) return null;
+  if(!BUS){
+    BUS=a.createGain(); BUS.gain.value=1;
+    BUS.connect(a.destination);
+    PAN_OK=!!a.createStereoPanner;
+  }
+  return BUS;
+}
+// Where a world point sits relative to the operator: how far, and how far off to
+// the side. Pan is taken from screen x so it matches what he is looking at.
+function earsOf(wx,wy){
+  if(!G||!G.player) return {d:0,pan:0};
+  var p=G.player;
+  var dx=wx-p.x,dy=wy-p.y;
+  var d=Math.sqrt(dx*dx+dy*dy);
+  return {d:d,pan:clamp(dx/520,-1,1)};
+}
+// One-shot at a world position. Falls back to the flat centred behaviour if the
+// browser has no stereo panner.
+function sfx(type,wx,wy){
+  if(G&&G.sim) return;
+  var a=ac(); if(!a) return;
+  var e=earsOf(wx,wy);
+  blip(type,e.d,e.pan);
+}
+// An ambient bed, so silence has a floor for a noise to cut through. Two detuned
+// low oscillators plus filtered noise, all running continuously and only ever
+// changed by gain, which costs nothing per frame. The filter opens and the pitch
+// lifts as something gets close to you, so the room itself tells you a machine
+// is hunting before you can see it.
+var AMB=null;
+function ambience(){
+  var a=ac(); if(!a||AMB) return AMB;
+  var out=bus(); if(!out) return null;
+  var g=a.createGain(); g.gain.value=0; g.connect(out);
+  var lp=a.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=220; lp.Q.value=.7;
+  lp.connect(g);
+  var o1=a.createOscillator(); o1.type='sine'; o1.frequency.value=54;
+  var o2=a.createOscillator(); o2.type='sine'; o2.frequency.value=81.5;
+  var og=a.createGain(); og.gain.value=.5; o1.connect(og); o2.connect(og); og.connect(lp);
+  // a few seconds of noise on a loop, for wind and room tone
+  var n=a.createBuffer(1,a.sampleRate*3,a.sampleRate),nd=n.getChannelData(0);
+  for(var i=0;i<nd.length;i++) nd[i]=(Math.random()*2-1)*.35;
+  var ns=a.createBufferSource(); ns.buffer=n; ns.loop=true;
+  var ng=a.createGain(); ng.gain.value=.30; ns.connect(ng); ng.connect(lp);
+  try{ o1.start(); o2.start(); ns.start(); }catch(e){}
+  AMB={g:g,lp:lp,o1:o1,o2:o2,base:54};
+  return AMB;
+}
+// Called once a frame. threat is 0 when nothing is near and 1 when something is
+// on top of you, and it drives the whole bed.
+function tickAmbience(dt,threat,alive){
+  var A=ambience(); if(!A) return;
+  var a=ac(); if(!a) return;
+  var target=alive?(0.16+0.30*threat):0;
+  var t=a.currentTime;
+  try{
+    A.g.gain.setTargetAtTime(target,t,0.45);
+    A.lp.frequency.setTargetAtTime(200+900*threat,t,0.5);
+    A.o1.frequency.setTargetAtTime(A.base*(1+0.16*threat),t,0.8);
+    A.o2.frequency.setTargetAtTime(A.base*1.5*(1+0.16*threat),t,0.8);
+  }catch(e){}
+}
+// Footsteps for things you cannot see. This is the whole point of the pass: a
+// machine crossing a room two walls away should be audible and placed, so the
+// fog stops being simply an absence and starts being a thing you listen to.
+// Rate limited hard, because a raid can have three dozen bodies moving at once.
+var STEP_T=0,HEART=0;
+function tickEnemyAudio(dt){
+  if(!G||G.sim||G.over) return;
+  var a=ac(); if(!a) return;
+  STEP_T-=dt;
+  if(STEP_T>0) return;
+  var p=G.player,best=null,bd=1e9;
+  for(var i=0;i<G.ents.length;i++){
+    var e=G.ents[i];
+    if(!e.moving) continue;
+    if(e.kind==='snitch') continue;          // it hovers, it has its own noise
+    var d=dist(p,e);
+    if(d>620) continue;
+    if(d<bd){ bd=d; best=e; }
+  }
+  if(!best) { STEP_T=0.20; return; }
+  var ear=earsOf(best.x,best.y);
+  // heavier things step slower and lower
+  var heavy=best.kind==='sentry';
+  blip(heavy?'stepHeavy':'step',ear.d*1.35,ear.pan);
+  STEP_T=(heavy?0.62:0.44)*(best.state==='chase'?0.72:1);
+}
+function blip(type,d,pan){
   if(G&&G.sim) return;
   var a=ac(); if(!a) return;
   var vol=d===undefined?1:Math.max(0,1-d/900); if(vol<=.02) return;
   var t=a.currentTime;
-  if(type==='shot'){
+  // Every generator below connects to OUT instead of the destination, so adding
+  // a pan node here places all of them at once. Callers that pass no pan keep
+  // exactly the centred behaviour they had.
+  var OUT=bus()||a.destination;
+  if(pan!==undefined&&PAN_OK){
+    var pn=a.createStereoPanner();
+    pn.pan.value=clamp(pan,-1,1);
+    pn.connect(OUT); OUT=pn;
+  }
+    if(type==='shot'){
     var b=a.createBuffer(1,2600,a.sampleRate),c=b.getChannelData(0);
     for(var i=0;i<2600;i++) c[i]=(Math.random()*2-1)*Math.pow(1-i/2600,3.2);
     var s=a.createBufferSource(); s.buffer=b;
     var f=a.createBiquadFilter(); f.type='lowpass'; f.frequency.value=650+1900*vol;
     var g=a.createGain(); g.gain.value=.16*vol;
-    s.connect(f); f.connect(g); g.connect(a.destination); s.start(t);
+    s.connect(f); f.connect(g); g.connect(OUT); s.start(t);
   } else if(type==='boom'){
     var b2=a.createBuffer(1,8000,a.sampleRate),c2=b2.getChannelData(0);
     for(var i2=0;i2<8000;i2++) c2[i2]=(Math.random()*2-1)*Math.pow(1-i2/8000,2.1);
     var s2=a.createBufferSource(); s2.buffer=b2;
     var f2=a.createBiquadFilter(); f2.type='lowpass'; f2.frequency.value=380;
     var g2=a.createGain(); g2.gain.value=.3*vol;
-    s2.connect(f2); f2.connect(g2); g2.connect(a.destination); s2.start(t);
+    s2.connect(f2); f2.connect(g2); g2.connect(OUT); s2.start(t);
   } else if(type==='hit'){
     var o=a.createOscillator(),g3=a.createGain();
     o.type='square'; o.frequency.setValueAtTime(240,t); o.frequency.exponentialRampToValueAtTime(70,t+.09);
     g3.gain.setValueAtTime(.1*vol,t); g3.gain.exponentialRampToValueAtTime(.001,t+.1);
-    o.connect(g3); g3.connect(a.destination); o.start(t); o.stop(t+.11);
+    o.connect(g3); g3.connect(OUT); o.start(t); o.stop(t+.11);
   } else if(type==='pick'){
     var o2=a.createOscillator(),g4=a.createGain();
     o2.type='sine'; o2.frequency.setValueAtTime(660,t); o2.frequency.exponentialRampToValueAtTime(1180,t+.09);
     g4.gain.setValueAtTime(.07,t); g4.gain.exponentialRampToValueAtTime(.001,t+.12);
-    o2.connect(g4); g4.connect(a.destination); o2.start(t); o2.stop(t+.13);
+    o2.connect(g4); g4.connect(OUT); o2.start(t); o2.stop(t+.13);
   } else if(type==='alarm'){
     var o3=a.createOscillator(),g5=a.createGain();
     o3.type='sawtooth'; o3.frequency.setValueAtTime(920,t); o3.frequency.setValueAtTime(660,t+.09);
     o3.frequency.setValueAtTime(920,t+.18);
     g5.gain.setValueAtTime(.06*vol,t); g5.gain.exponentialRampToValueAtTime(.001,t+.3);
-    o3.connect(g5); g5.connect(a.destination); o3.start(t); o3.stop(t+.31);
+    o3.connect(g5); g5.connect(OUT); o3.start(t); o3.stop(t+.31);
+  } else if(type==='step'||type==='stepHeavy'){
+    // a short filtered noise thud: scuff for a body, a lower clank for a machine
+    var hv=type==='stepHeavy',ln=hv?1800:900;
+    var bs=a.createBuffer(1,ln,a.sampleRate),cs=bs.getChannelData(0);
+    for(var is=0;is<ln;is++) cs[is]=(Math.random()*2-1)*Math.pow(1-is/ln,hv?2.4:3.6);
+    var ss=a.createBufferSource(); ss.buffer=bs;
+    var fs=a.createBiquadFilter(); fs.type='lowpass';
+    fs.frequency.value=hv?260:520; fs.Q.value=hv?3.2:1.1;
+    var gs=a.createGain(); gs.gain.value=(hv?.085:.05)*vol;
+    ss.connect(fs); fs.connect(gs); gs.connect(OUT); ss.start(t);
+    if(hv){
+      var oh=a.createOscillator(),gh=a.createGain();
+      oh.type='sine'; oh.frequency.setValueAtTime(96,t); oh.frequency.exponentialRampToValueAtTime(48,t+.10);
+      gh.gain.setValueAtTime(.05*vol,t); gh.gain.exponentialRampToValueAtTime(.001,t+.12);
+      oh.connect(gh); gh.connect(OUT); oh.start(t); oh.stop(t+.13);
+    }
+  } else if(type==='heart'){
+    var ob=a.createOscillator(),gb=a.createGain();
+    ob.type='sine'; ob.frequency.setValueAtTime(62,t); ob.frequency.exponentialRampToValueAtTime(38,t+.14);
+    gb.gain.setValueAtTime(.001,t); gb.gain.linearRampToValueAtTime(.11*vol,t+.02);
+    gb.gain.exponentialRampToValueAtTime(.001,t+.20);
+    ob.connect(gb); gb.connect(OUT); ob.start(t); ob.stop(t+.22);
   } else if(type==='clank'){
     var o4=a.createOscillator(),g6=a.createGain();
     o4.type='triangle'; o4.frequency.setValueAtTime(900+Math.random()*400,t);
     g6.gain.setValueAtTime(.03*vol,t); g6.gain.exponentialRampToValueAtTime(.001,t+.08);
-    o4.connect(g6); g6.connect(a.destination); o4.start(t); o4.stop(t+.09);
+    o4.connect(g6); g6.connect(OUT); o4.start(t); o4.stop(t+.09);
   }
 }
 
@@ -1338,13 +1464,13 @@ function doThrow(){
   ping(p.x,p.y,90,false);
 }
 function activateThrow(th){
-  if(th.kind==='smoke'){ G.smokes.push({x:th.tx,y:th.ty,r:82,t:0,life:12}); blip('clank',dist(G.player,th)); }
-  else if(th.kind==='decoy'){ G.decoys.push({x:th.tx,y:th.ty,t:0,life:6,acc:.7}); blip('clank',dist(G.player,th)); }
+  if(th.kind==='smoke'){ G.smokes.push({x:th.tx,y:th.ty,r:82,t:0,life:12}); sfx("clank",th.tx,th.ty); }
+  else if(th.kind==='decoy'){ G.decoys.push({x:th.tx,y:th.ty,t:0,life:6,acc:.7}); sfx("clank",th.tx,th.ty); }
   else if(th.kind==='frag'){ G.frags.push({x:th.tx,y:th.ty,t:0,fuse:1.1}); }
 }
 function explodeFrag(f){
   var p=G.player,R=95,i;
-  blip('boom',dist(p,f));
+  sfx("boom",f.x,f.y);
   if(!G.sim){ spark(f.x,f.y,'#ffcf7a',34,340); decal(f.x,f.y,'#141210',rnd(20,30));
     G.puffs.push({x:f.x,y:f.y,t:0,life:.6,c:'#ffb267',r:52}); }
   G.shake=Math.max(G.shake,9);
@@ -1481,7 +1607,11 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
   var ang=base;
   var melee=wep.mag===0;
   ping(sh.x,sh.y,wep.noise,!fromPlayer);
-  blip(melee?'hit':'shot',fromPlayer?0:dist(G.player,sh));
+  // Your own weapon stays centred because it is in your hands. Everyone else's
+  // is placed, which is what turns a distant firefight into a direction rather
+  // than an event.
+  if(fromPlayer) blip(melee?'hit':'shot',0);
+  else sfx(melee?'hit':'shot',sh.x,sh.y);
   if(!melee){
     sh.muzzle=.06;
     flash(sh.x+Math.cos(ang)*20,sh.y+Math.sin(ang)*20,wep.dmg>40?155:108,wep.tint||'#ffc27a',.11);
@@ -2204,7 +2334,7 @@ function updateEnts(dt){
         else { wantS=Math.atan2(p.y-e.y,p.x-e.x)+1.4; moveToward(e,e.x+Math.cos(wantS)*60,e.y+Math.sin(wantS)*60,e.spd*.6,dt); }
         e.cd-=dt;
         if(e.cd<=0&&sees){
-          e.cd=1.5; blip('alarm',dist(p,e));
+          e.cd=1.5; sfx("alarm",e.x,e.y);
           ping(p.x,p.y,620,true);
           G.marked=2.2; T.marked=(T.marked||0)+1;
         }
@@ -2369,7 +2499,7 @@ function updateBullets(dt){
               // in the dark at range, so a landed shot could read as a miss.
               G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
               spark(b.x,b.y,en.kind==='raider'?'#e0483a':'#ffc25c',9,220);
-              blip('hit',dist(p,en)); hit=true; break;
+              sfx("hit",en.x,en.y); hit=true; break;
             }
           }
         } else {
@@ -2391,7 +2521,7 @@ function updateBullets(dt){
         spark(b.x,b.y,'#ffd9a0',5,150);
         if(!G.sim) G.puffs.push({x:b.x,y:b.y,t:0,life:.22,c:'#8a939c',r:9});
         decal(b.x,b.y,'#0d0f13',rnd(3,6));
-        blip('clank',dist(p,b)); hit=true;
+        sfx("clank",b.x,b.y); hit=true;
       }
       if(!hit){ b.x=sx+ux*trav; b.y=sy+uy*trav; }
     }
@@ -4208,6 +4338,23 @@ function loop(ts){
       if(G.shake>0) G.shake=Math.max(0,G.shake-dt*26);
       if(G.msgT>0) G.msgT-=dt;
       if(G.marked>0) G.marked-=dt;
+      // Sound. Threat is the nearest hunting body, so the room tightens before
+      // you see anything, and a heartbeat comes up as integrity falls.
+      var th=0,pp=G.player;
+      for(var ai=0;ai<G.ents.length;ai++){
+        var ae=G.ents[ai];
+        if(ae.state!=='chase'&&ae.state!=='alarm'&&ae.alert<=0) continue;
+        var ad=dist(pp,ae);
+        if(ad<760) th=Math.max(th,1-ad/760);
+      }
+      tickAmbience(dt,th,!pp.downed);
+      tickEnemyAudio(dt);
+      HEART-=dt;
+      if(HEART<=0&&(pp.hp<45||pp.downed)){
+        var frac=pp.downed?1:1-(pp.hp/45);
+        blip('heart',0);
+        HEART=pp.downed?0.52:(1.05-0.45*frac);
+      }
       var i;
       for(i=G.pings.length-1;i>=0;i--){ G.pings[i].t+=dt; if(G.pings[i].t>G.pings[i].life) G.pings.splice(i,1); }
       for(i=G.puffs.length-1;i>=0;i--){ G.puffs[i].t+=dt; if(G.puffs[i].t>G.puffs[i].life) G.puffs.splice(i,1); }

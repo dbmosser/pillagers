@@ -325,6 +325,12 @@ Three things, none of which should be built without him saying so.
   - **The carry limit turned out to be softer than it looks**, which is worth recording: it gates STARTING a search, not the pickup itself, so a single container can push you well past capacity. That is why his 30-item run was possible. Autoloot hooks exactly that gate, which is the right place.
   - One layout fault found by looking, twice: the new control hint printed over the last rows of the item list. A fixed reserve of 22 pixels was still not enough, so the hint is now positioned from the measured end of the list rather than from the panel height.
   - Sim unchanged at 6/6 with no hangs, frame script 2.7ms of a 16.7ms budget.
+- **v0.92 (sound, his named biggest gap):** He said the main thing stopping the game being frightening is sound, and approved building it even though I cannot hear a note of it. There WAS sound already, six one-shots for gunfire, hits, pickups and alarms, which is why "there is almost none" needed unpacking: everything arrived dead centre, so a shot in the dark told you it had happened but not where, and there was no floor of noise for anything to cut through.
+  - **Everything is placed now.** A shared bus with a stereo panner, and a helper that turns a world position into distance and pan. Every existing sound was moved onto it: enemy gunfire, explosions, ricochets, alarms, thrown gear. Your own weapon deliberately stays centred, because it is in your hands. In a game built on not being able to see, direction is the largest single thing sound can give back.
+  - **Footsteps for things you cannot see.** The nearest moving body within earshot emits a placed footstep, machines lower and slower than bodies, faster when hunting. This is the point of the whole pass: the fog stops being an absence and becomes something you listen to.
+  - **An ambient bed** of two detuned low oscillators and filtered noise, running continuously and only ever changed by gain, so it costs nothing per frame. Its filter opens and its pitch lifts as something hunting gets closer, so the room tightens before you can see why. A heartbeat comes in under 45 integrity and speeds up as it falls, and again while downed.
+  - **What I verified, since I cannot hear it.** The graph builds and stereo is supported. The ambience creates ZERO new audio nodes across 300 frames, so it is genuine steady state rather than a per-frame leak, which is the failure mode that would kill the tab. Panning reads -0.77 left, +0.77 right, 0.00 dead ahead. A moving enemy 200 units away produces about five footsteps in three seconds; the same enemy 3000 units away produces exactly zero nodes, so distance culling works. Audio costs under 0.005ms a frame and total script time is unchanged at 2.8ms of a 16.7ms budget. Sim unaffected and silent, as it must be for a 30 raid batch.
+  - **What I cannot verify: whether any of it sounds good.** Levels, pitch, whether the heartbeat is tense or annoying, whether the footsteps read as menace or as noise. That is entirely his call and the loop is slow: he listens, he tells me, I adjust blind.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
@@ -333,6 +339,7 @@ The v0.68 mistake was assuming a setting was the player's when it was shared. Ra
 - **Genuinely shared, and correctly so:** `noiseMult`. It scales every noise radius in `ping`, his own footsteps as well as every machine's. That is coherent as a "how loud is the world" control and no claim has ever been made otherwise, but it is the one remaining setting where changing it for one side changes it for both.
 
 So the v0.69 correction was complete: awareness was the only leak. One process note, since the same trap caught me twice in this tick: creating an enemy to measure it gives a **randomly armed** raider each time, so any before-and-after comparison must build the subject once and re-measure that same object.
+
 
 
 
