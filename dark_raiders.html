@@ -311,12 +311,12 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.05';
+var VER='1.06';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
-  nSentry:15,nCrawler:17,nRaider:4,nSnitch:4,eDmg:1.2,eHp:1,lootMult:1,contDens:1,
+  nSentry:17,nCrawler:20,nRaider:6,nSnitch:4,eDmg:1.2,eHp:1,lootMult:1,contDens:1,
   eAmbient:100,noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
@@ -457,7 +457,7 @@ function storeGet(){
     return Promise.resolve(v===null?null:{key:SKEY,value:v});
   }catch(e2){ return Promise.resolve(null); }
 }
-function saveProfile(){ P.cfg=CFG; P.cfgv=5; storeSet(JSON.stringify(P)); }
+function saveProfile(){ P.cfg=CFG; P.cfgv=6; storeSet(JSON.stringify(P)); }
 function loadProfile(){
   try{
     return storeGet().then(function(r){
@@ -490,7 +490,7 @@ function loadProfile(){
           // cfgv 5: the v1.03 tuning batch must actually reach a saved profile.
           // Old pinned sliders are dropped exactly as the v0.68 migration did;
           // credits, stash, armoury and the recorder are untouched.
-          if(P.cfgv===5&&P.cfg){ applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; }
+          if(P.cfgv===6&&P.cfg){ applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; }
           else P.cfg=null;
         } }
     }).catch(function(){});
@@ -2538,7 +2538,7 @@ function tryExtractTick(dt,wantCall){
   var p=G.player,z=G.active,T=G.tel,inside=dist(p,z)<z.r;
   if(G.beaconT===null){
     if(inside&&wantCall){
-      G.beaconT=CFG.extractWait; G.shipHold=null;
+      G.beaconT=CFG.extractWait; G.shipHold=null; G.siegeSpawned=0; G.siegeSpawnT=0;
       T.beaconCalls=(T.beaconCalls||0)+1;
       // Calling the ship is the loudest thing you do all raid, and it should be
       // the moment the raid turns. His own playtest tagged extraction "too
@@ -2566,6 +2566,24 @@ function tryExtractTick(dt,wantCall){
   // the scent is pulled back and the pressure builds instead of arriving once
   // and fading. Every two seconds, quiet enough that it is the beacon being
   // heard rather than you.
+  // Run #6, his third "Extract too easy", with 75 percent accuracy and a calm
+  // single call. The pull alone is not pressure for a player who can shoot, so
+  // the call now summons ARRIVALS as well: one machine drops at the map edge
+  // every 8 seconds while the beacon runs or the ship holds, capped at six per
+  // call. The longer you take to board, the worse the ring gets, which is what
+  // makes the 30 second hold a real decision instead of a wider door.
+  G.siegeSpawnT=(G.siegeSpawnT||0)+dt;
+  G.siegeSpawned=G.siegeSpawned||0;
+  if(G.siegeSpawnT>=8&&G.siegeSpawned<6){
+    G.siegeSpawnT=0; G.siegeSpawned++;
+    var ss2=null,st2=0;
+    do{ ss2=freeSpot(G.map,30); st2++; }while(dist(ss2,p)<700&&st2<40);
+    if(dist(ss2,p)>=700){
+      var nm=Math.random()<.5?mkSentry(ss2.x,ss2.y):mkCrawler(ss2.x,ss2.y);
+      nm.alert=3; nm.state='investigate'; nm.tx=z.x+rnd(-60,60); nm.ty=z.y+rnd(-60,60);
+      G.ents.push(nm);
+    }
+  }
   G.siege=(G.siege||0)+dt;
   if(G.siege>=2){
     G.siege=0;
@@ -3134,9 +3152,9 @@ function updateEnts(dt){
   // one every 40 to 70 seconds after the three minute mark, only while the
   // machine count is below where the raid started. The player is never spawned
   // on: arrivals land at least 800 out.
-  G.reinfT=(G.reinfT===undefined?rnd(40,70):G.reinfT)-dt;
-  if(G.t>150&&G.reinfT<=0){
-    G.reinfT=rnd(40,70);
+  G.reinfT=(G.reinfT===undefined?rnd(30,50):G.reinfT)-dt;
+  if(G.t>120&&G.reinfT<=0){
+    G.reinfT=rnd(30,50);
     var mc=0;
     for(var rc2=0;rc2<G.ents.length;rc2++){ var rk=G.ents[rc2].kind; if(rk==='sentry'||rk==='crawler') mc++; }
     if(mc<CFG.nSentry+CFG.nCrawler){

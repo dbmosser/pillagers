@@ -420,6 +420,13 @@ Three things, none of which should be built without him saying so.
   - **Probed end to end**: call, land with the player outside, hold starts at 29s and counts, walking in mid hold extracts; letting it expire records exactly one miss and a recall works; a downed call inside the ring ends with the crew hauling him aboard; a raid culled by 10 machines replenishes to 32 within 150s. Hub and raid frames clean, no console errors.
   - **Sim: 6/12 across two batches, 50 percent, killers sentry 5 crawler 1, zero beacon misses for the bot now, no hangs.** In band.
   - His runs were on v1.01, so he has not yet felt the v1.03 tuning (eDmg 1.2, more patrols) or v1.04 maps; the "not enough enemies" complaint is half answered by those already, and the trickle finishes it.
+- **v1.06 (run #6, on the new tuning, and he still cruised):** 75 percent accuracy, 13 kills, one calm beacon call, tags "Extract too easy" for the third time and "not enough enemies on map". One batch:
+  - nSentry 17, nCrawler 20, nRaider 6: third consecutive "not enough enemies", now with the v1.03 counts demonstrably insufficient.
+  - The beacon summons ARRIVALS, not just attention: one machine drops at the map edge every 8 seconds while the beacon runs or the ship holds, capped at six per call, aimed at the ring. The pull alone is not pressure for a player who shoots 75 percent, and this is what makes the 30 second hold a decision rather than a wider door.
+  - Trickle reinforcements start at 120s and land every 30 to 50 seconds.
+  - cfgv 6, so his pinned save receives all of it.
+  - **Stated plainly: the bot is now below the band, 3/12 extract, 25 percent, sentries the killer.** That is deliberate. The band was calibrated when he found the game too easy, and he outplays the bot by a wide margin (his last run would have been a bot death several times over). If his next runs tag "Too hard", the counts come back down; feel is his call.
+  - Probes: 6 siege arrivals per call confirmed, config reaches the profile as cfgv 6, hub and raid frames clean, no console errors.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
