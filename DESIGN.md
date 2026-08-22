@@ -663,6 +663,18 @@ Three things, none of which should be built without him saying so.
   - **Verified end to end:** approaching without the item asks and does nothing, handing it over consumes exactly that item and pays, a second handover is refused, the cache appears on the sector map, the summary line reads back the exact amount banked, and every frame, HUD and map pass is clean on all three maps.
   - Sim 12 raids: 50 percent extract, 0 hangs, average haul 3,434, killers crawler 3 / sentry 2 / raider 1. The bot has no idea he exists, so this only checks that nothing broke.
   - Browser parse substituted for `node --check`. **Not verified: whether he is findable often enough to matter.** He is hidden on purpose and he is randomly placed above a 900 unit floor, so on a big map you may go several raids without meeting one. If he turns out to be a thing you hear about but never see, the floor is the number to move.
+- **v1.43 (your body is still out there):** He asked for losing a raid to be A REAL GUT PUNCH. It already cost the bag, the guns and the rig, but a loss that is only subtraction is a number going down: you read the list, you sigh, you deploy again.
+  - **Everything you were carrying now stays exactly where you fell**, on that map, and you can go and get it. That turns the worst moment in the game into the setup for the most tense run you will play, because the spot you died in is by definition somewhere that kills people. It is marked on your sector map from the moment you deploy and it glows in the world, because the point is that you can plan a route to it.
+  - **Three rules stop it being a free refund.**
+    - **ONE body at a time.** Die again and the old one is gone, with a line on the summary saying so. Recovery is a commitment, not something you get to later.
+    - **IT ROTS.** Three raids, and scavengers take a quarter of what is left every raid you leave it out there, highest value first. Measured: 8 items became 6, then 4, then nothing.
+    - **The clock only runs while you are raiding**, so it cannot rot away while you sit in the Undercroft, and it only appears on the map it happened on.
+  - **The rig comes back too.** Recovering the body re-equips the armour you died in and puts it back in your inventory, which matters now that a Breacher Plate is 7,800 credits.
+  - **A defect of my own design, found by probing.** Dying while carrying nothing was silently destroying a body that held a Reactor Core, with nothing on the summary saying it had happened. The one-body rule is meant to make recovery urgent, not to punish a bad deploy twice. A death with nothing worth leaving now keeps the old body and says so.
+  - **Verified end to end:** the body records at the exact death coordinates on the correct map, does not appear on other maps, ages and rots on schedule, draws in the world and on the sector map, and recovering it returns the items through the normal container path with the usual capacity rules plus the rig re-equipped and the record cleared. The Undercroft carries a standing line telling you where it is and how long it has left.
+  - Sim 14 raids: 50 percent extract, 0 hangs, average haul 3,690. The sim never leaves a body, and it was checked that it cannot: the profile was clean after every batch.
+  - Browser parse substituted for `node --check`. **Not verified: whether three raids is the right window**, and whether losing a quarter a raid is cruel or about right. This is the mechanic most likely to need a number moved after one real playthrough, and the honest answer is that it needs him to actually lose something he cared about.
+
 
 
 
