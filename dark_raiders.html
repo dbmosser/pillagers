@@ -380,7 +380,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.46';
+var VER='1.47';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -1021,6 +1021,54 @@ function tickEnemyAudio(dt){
   blip(heavy?'stepHeavy':'step',ear.d*1.35,ear.pan);
   STEP_T=(heavy?0.62:0.44)*(best.state==='chase'?0.72:1);
 }
+// =================================================== MACHINE VOICES
+// Sound is the gap he named, and the specific hole was that every machine on the
+// map sounded the same. In a game whose whole premise is limited sight, being
+// able to tell WHAT is out there by ear is not decoration, it is the primary
+// information channel: a servo sweep two rooms away and a skitter two rooms away
+// are completely different decisions, and until now they were the same noise.
+// Each kind gets an idle voice on its own interval, panned and attenuated by
+// position, and each one CHANGES when the thing goes from patrolling to hunting,
+// so the moment you are noticed is audible without looking at anything.
+var VOICE={
+  sentry:  {v:'servo',   idle:[2.2,3.6], hunt:[1.1,1.7], far:700},
+  crawler: {v:'skitter', idle:[1.5,2.8], hunt:[0.5,0.9], far:600},
+  snitch:  {v:'drone',   idle:[1.8,2.6], hunt:[0.7,1.1], far:640},
+  warden:  {v:'hydraul', idle:[2.6,3.8], hunt:[1.6,2.3], far:900},
+  listener:{v:'dish',    idle:[3.4,5.2], hunt:[0.8,1.2], far:820}
+};
+var VOICE_BUDGET=0;
+function tickMachineVoices(dt){
+  if(!G||G.sim||G.over) return;
+  if(!ac()) return;
+  var p=G.player;
+  // A hard ceiling on voices per second. Fifty bodies each politely waiting
+  // their turn still adds up to a wall of noise, and a wall of noise carries no
+  // information at all, which would defeat the entire point of doing this.
+  VOICE_BUDGET=Math.min(6,VOICE_BUDGET+dt*7);
+  for(var i=0;i<G.ents.length;i++){
+    var e=G.ents[i],V=VOICE[e.kind];
+    if(!V) continue;
+    e.vT=(e.vT===undefined)?rnd(0,V.idle[1]):e.vT-dt;
+    if(e.vT>0) continue;
+    var d=dist(p,e);
+    var hunting=(e.state==='chase'||e.state==='alarm'||e.state==='hunt'||e.alert>0.8);
+    // A dormant Listener is the one thing that stays almost silent, because the
+    // whole point of it is that you walk into it. Almost, not entirely: a very
+    // faint dish creak is the reward for moving carefully.
+    var rng=V.far*(e.kind==='listener'&&e.state==='dormant'?0.34:1);
+    var win=hunting?V.hunt:V.idle;
+    e.vT=rnd(win[0],win[1]);
+    if(d>rng) continue;
+    if(VOICE_BUDGET<1) continue;
+    VOICE_BUDGET--;
+    var ear=earsOf(e.x,e.y);
+    // Occlusion matters more for a voice than for a gunshot: a machine behind a
+    // wall should sound like it is behind a wall, or the ear cannot place it.
+    var occ=losClear(p.x,p.y,e.x,e.y,G.map.segs)?1:1.9;
+    blip(V.v,ear.d*occ,ear.pan,hunting?1:0);
+  }
+}
 function blip(type,d,pan){
   if(G&&G.sim) return;
   var a=ac(); if(!a) return;
@@ -1117,6 +1165,97 @@ function blip(type,d,pan){
     gb.gain.setValueAtTime(.001,t); gb.gain.linearRampToValueAtTime(.11*vol,t+.02);
     gb.gain.exponentialRampToValueAtTime(.001,t+.20);
     ob.connect(gb); gb.connect(OUT); ob.start(t); ob.stop(t+.22);
+  } else if(type==='servo'){
+    // A servo sweep: a filtered tone that slides across, with a mechanical tick
+    // at the end of the travel. Hunting, it sweeps faster and higher.
+    var hn=arguments[3]?1:0;
+    var so=a.createOscillator(),sg=a.createGain(),sf=a.createBiquadFilter();
+    so.type='sawtooth';
+    var f0=hn?300:190,f1=hn?520:260;
+    so.frequency.setValueAtTime(f0,t);
+    so.frequency.linearRampToValueAtTime(f1,t+(hn?0.26:0.42));
+    sf.type='bandpass'; sf.frequency.value=hn?900:620; sf.Q.value=6;
+    sg.gain.setValueAtTime(.001,t);
+    sg.gain.linearRampToValueAtTime((hn?.055:.038)*vol,t+.05);
+    sg.gain.exponentialRampToValueAtTime(.001,t+(hn?.30:.48));
+    so.connect(sf); sf.connect(sg); sg.connect(OUT);
+    so.start(t); so.stop(t+(hn?.32:.50));
+    var tk=a.createOscillator(),tg2=a.createGain();
+    tk.type='square'; tk.frequency.setValueAtTime(hn?1500:1080,t+(hn?.26:.42));
+    tg2.gain.setValueAtTime(.02*vol,t+(hn?.26:.42));
+    tg2.gain.exponentialRampToValueAtTime(.001,t+(hn?.32:.48));
+    tk.connect(tg2); tg2.connect(OUT); tk.start(t+(hn?.26:.42)); tk.stop(t+(hn?.34:.50));
+  } else if(type==='skitter'){
+    // Chitin on concrete: a burst of short irregular clicks. Hunting, the burst
+    // is longer and faster, which is the sound of it having decided.
+    var hn2=arguments[3]?1:0;
+    var nCl=hn2?ri(5,8):ri(2,4);
+    for(var ci2=0;ci2<nCl;ci2++){
+      var ct2=t+ci2*(hn2?0.035:0.062)+Math.random()*0.018;
+      var cb=a.createBuffer(1,340,a.sampleRate),cc2=cb.getChannelData(0);
+      for(var cj=0;cj<340;cj++) cc2[cj]=(Math.random()*2-1)*Math.pow(1-cj/340,5.5);
+      var cs2=a.createBufferSource(); cs2.buffer=cb;
+      var cf2=a.createBiquadFilter(); cf2.type='highpass'; cf2.frequency.value=hn2?2400:1700;
+      var cg2=a.createGain(); cg2.gain.value=(hn2?.05:.034)*vol;
+      cs2.connect(cf2); cf2.connect(cg2); cg2.connect(OUT); cs2.start(ct2);
+    }
+  } else if(type==='drone'){
+    // The hovering thing: a thin two tone whine with a beacon blip on top.
+    var hn3=arguments[3]?1:0;
+    var d1=a.createOscillator(),d2=a.createOscillator(),dg2=a.createGain();
+    d1.type='triangle'; d2.type='triangle';
+    d1.frequency.value=hn3?880:660; d2.frequency.value=(hn3?880:660)*1.007;
+    dg2.gain.setValueAtTime(.001,t);
+    dg2.gain.linearRampToValueAtTime((hn3?.030:.020)*vol,t+.10);
+    dg2.gain.exponentialRampToValueAtTime(.001,t+(hn3?.42:.62));
+    d1.connect(dg2); d2.connect(dg2); dg2.connect(OUT);
+    d1.start(t); d2.start(t); d1.stop(t+.64); d2.stop(t+.64);
+    if(hn3){
+      var bo2=a.createOscillator(),bg2=a.createGain();
+      bo2.type='square'; bo2.frequency.setValueAtTime(2200,t);
+      bg2.gain.setValueAtTime(.022*vol,t); bg2.gain.exponentialRampToValueAtTime(.001,t+.07);
+      bo2.connect(bg2); bg2.connect(OUT); bo2.start(t); bo2.stop(t+.08);
+    }
+  } else if(type==='hydraul'){
+    // Something very large adjusting its weight: a hiss with a low thump under
+    // it. This is the Warden telling you where it is through two walls.
+    var hn4=arguments[3]?1:0;
+    var hl=hn4?5200:7200;
+    var hb=a.createBuffer(1,hl,a.sampleRate),hc=hb.getChannelData(0);
+    for(var hi=0;hi<hl;hi++) hc[hi]=(Math.random()*2-1)*Math.pow(1-hi/hl,1.6);
+    var hs=a.createBufferSource(); hs.buffer=hb;
+    var hf=a.createBiquadFilter(); hf.type='bandpass'; hf.frequency.value=1500; hf.Q.value=.8;
+    var hg2=a.createGain(); hg2.gain.value=(hn4?.055:.040)*vol;
+    hs.connect(hf); hf.connect(hg2); hg2.connect(OUT); hs.start(t);
+    var ho=a.createOscillator(),hog=a.createGain();
+    ho.type='sine'; ho.frequency.setValueAtTime(64,t);
+    ho.frequency.exponentialRampToValueAtTime(34,t+.22);
+    hog.gain.setValueAtTime((hn4?.075:.055)*vol,t);
+    hog.gain.exponentialRampToValueAtTime(.001,t+.26);
+    ho.connect(hog); hog.connect(OUT); ho.start(t); ho.stop(t+.28);
+  } else if(type==='dish'){
+    // Dormant: a dry creak, easy to miss and the only warning you get.
+    // Hunting: the same mechanism at speed, which is a shriek.
+    var hn5=arguments[3]?1:0;
+    if(hn5){
+      var so2=a.createOscillator(),sg3=a.createGain(),sf3=a.createBiquadFilter();
+      so2.type='sawtooth';
+      so2.frequency.setValueAtTime(420,t);
+      so2.frequency.exponentialRampToValueAtTime(1400,t+.34);
+      sf3.type='bandpass'; sf3.frequency.value=1800; sf3.Q.value=4;
+      sg3.gain.setValueAtTime(.001,t);
+      sg3.gain.linearRampToValueAtTime(.075*vol,t+.06);
+      sg3.gain.exponentialRampToValueAtTime(.001,t+.40);
+      so2.connect(sf3); sf3.connect(sg3); sg3.connect(OUT); so2.start(t); so2.stop(t+.42);
+    } else {
+      var kl=2600;
+      var kb=a.createBuffer(1,kl,a.sampleRate),kc=kb.getChannelData(0);
+      for(var ki=0;ki<kl;ki++) kc[ki]=(Math.random()*2-1)*Math.pow(1-ki/kl,2.2)*(0.4+0.6*Math.sin(ki*0.011));
+      var ks=a.createBufferSource(); ks.buffer=kb;
+      var kf=a.createBiquadFilter(); kf.type='bandpass'; kf.frequency.value=760; kf.Q.value=9;
+      var kg=a.createGain(); kg.gain.value=.030*vol;
+      ks.connect(kf); kf.connect(kg); kg.connect(OUT); ks.start(t);
+    }
   } else if(type==='foot'){
     // Five surfaces, one generator: length, brightness and resonance are the
     // whole difference between gravel, boards, plate steel, leaf litter and
@@ -8878,6 +9017,7 @@ function loop(ts){
       }
       tickAmbience(dt,th,!pp.downed,wdread);
       tickEnemyAudio(dt);
+      tickMachineVoices(dt);
       tickVerb(dt);
       tickPlayerSteps(dt);
       wxTick(dt);
@@ -8982,8 +9122,8 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','Sound pass three: the machines get voices you can tell apart'],
-  ['NEXT','A raid modifier you opt into for better pay'],
+  ['NOW','A raid modifier you opt into for better pay'],
+  ['DONE','Machine voices: tell a Sentry from a Crawler with your eyes shut'],
   ['DONE','Weather that turns while you are still out there'],
   ['DONE','Windfalls and the ARC Strongbox: greed sets the odds'],
   ['DONE','THE LISTENER: blind, dormant, and it hunts the noise you make'],
