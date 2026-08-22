@@ -350,8 +350,29 @@ var AREA=(WORLD_W*WORLD_H)/(2600*2000);   // scale decorative counts off the old
 // pure friction with nothing on the other side of it. The three pack tiers stay
 // in the data so the armoury still reads, they are just no longer a wall.
 var PACKCAP=[99999,99999,99999];
-// Armour ceiling. Matches the HUD bar's scale, so the bar can never overflow.
+// SPEC 9.7: ARMOUR IN THREE TIERS, READABLE ON THE SILHOUETTE. One flat armour
+// pool topped up by plates was a health bar with an extra name. Three rigs is a
+// decision you make in the Undercroft and then live with for a whole raid:
+// every point of protection is paid for in speed and in noise, and the heavy
+// rig is a bet that you will not need to run.
+// Losing it on death is the point. It is the same rule the guns already live
+// under and it is what makes wearing the Breacher Plate a greed decision rather
+// than an obvious upgrade.
+var ARMORS=[
+  {id:'none',   name:'No Rig',         cap:0,   spd:1.00, noise:1.00, bulk:0, absorb:0.00},
+  {id:'light',  name:'Scav Rig',       cap:35,  spd:1.00, noise:1.02, bulk:1, absorb:0.50},
+  {id:'medium', name:'Plated Vest',    cap:70,  spd:0.94, noise:1.16, bulk:2, absorb:0.58},
+  {id:'heavy',  name:'Breacher Plate', cap:120, spd:0.86, noise:1.34, bulk:3, absorb:0.66}
+];
+function armorById(id){
+  for(var i=0;i<ARMORS.length;i++) if(ARMORS[i].id===id) return ARMORS[i];
+  return ARMORS[0];
+}
+function myRig(){ return armorById((P&&P.rig)||'none'); }
+// The old flat ceiling is now whatever rig you walked in wearing, so the HUD bar
+// scales to the rig instead of to a constant that no longer means anything.
 var ARMOR_MAX=60;
+function armorCap(){ return (G&&G.player&&G.player.armorCap!==undefined)?G.player.armorCap:ARMOR_MAX; }
 // Medical the Undercroft always issues, so a bad run cannot leave you with none.
 var ISSUED_HEALS=2;
 
@@ -359,7 +380,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.38';
+var VER='1.39';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -480,6 +501,9 @@ var SHOP=[
   {k:'ammobox',kind:'item',price:170,rep:0},{k:'smoke',kind:'item',price:150,rep:0},
   {k:'decoy',kind:'item',price:100,rep:0},{k:'frag',kind:'item',price:280,rep:600},
   {k:'plate',kind:'item',price:620,rep:800},
+  {kind:'rig',k:'light',price:900,rep:0},
+  {kind:'rig',k:'medium',price:3200,rep:1200},
+  {kind:'rig',k:'heavy',price:7800,rep:3500},
   {kind:'pack',lvl:1,price:450,rep:0},{kind:'pack',lvl:2,price:1300,rep:1500},
   {k:'pistol',kind:'wep',price:600,rep:0},{k:'smg',kind:'wep',price:2200,rep:1000},
   {k:'rifle',kind:'wep',price:3800,rep:2500},{k:'dmr',kind:'wep',price:4500,rep:5000}
@@ -2686,6 +2710,12 @@ function mkRaider(x,y,forceId){
     // until provoked. Everyone else sits in between.
     grudge:rec.kills>0, standing:rec.standing,
     hostile:(rec.kills>0)?true:(rec.standing>0?false:(Math.random()<0.55))};
+  // A raider you can read before you commit. Better standing and grudge raiders
+  // are the ones who have been out here long enough to be wearing something.
+  var rrl=Math.random();
+  r.rig=rrl<0.44?'none':(rrl<0.80?'light':(rrl<0.95?'medium':'heavy'));
+  var RRG=armorById(r.rig);
+  r.armor=RRG.cap*0.7; r.armorCap=RRG.cap; r.bulk=RRG.bulk;
   r.bag.push('gun_'+wk);
   for(var i=0;i<ri(1,3);i++) r.bag.push(rollTable(LOOT.crate));
   return r;
@@ -3032,7 +3062,15 @@ function buildRaid(sim){
     }
   }
   var g={sim:!!sim,nMach:N_SENTRY+N_CRAWLER,map:map,ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:CFG.raidSec,paused:false,
-    player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,armor:0,face:0,wep:wep,
+    player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,
+      // The sim wears a FIXED Scav Rig rather than whatever he happens to have
+      // equipped. Raiders now carry armour, so a bare sim player was measuring a
+      // game nobody plays: it dropped from 64 percent extract to 20 in one
+      // build. A constant baseline also keeps the numbers comparable across
+      // builds, which is the whole point of having a sim at all.
+      armor:(sim?armorById('light').cap:myRig().cap),
+      armorCap:(sim?Math.max(ARMOR_MAX,armorById('light').cap):Math.max(ARMOR_MAX,myRig().cap)),
+      rig:(sim?'light':((P&&P.rig)||'none')),face:0,wep:wep,
       ammo:wep.mag,reserve:wep.mag*2,sec:sec,secAmmo:sec.mag,reloading:0,lastShot:-9999,stam:100,
       wepIssued:wepIssued,secIssued:true,wepFromArmory:!wepIssued,secFromArmory:false,
       bob:0,recoil:0,hitFlash:0,downed:false,downT:0,revived:false,iv:0,pendKiller:null,
@@ -3073,7 +3111,7 @@ function buildRaid(sim){
     // and you lose what you carry when you die, so take the smallest.
     function takeBest(use,wantBigger){
       if(taken>=SLOTS) return false;
-      if(use==='armor'&&g.player.armor>=ARMOR_MAX) return false;
+      if(use==='armor'&&g.player.armor>=(g.player.armorCap||ARMOR_MAX)) return false;
       var bi=-1,bv=0;
       for(var i=0;i<P.stash.length;i++){
         var t=ITEMS[P.stash[i]];
@@ -3084,8 +3122,8 @@ function buildRaid(sim){
       if(bi<0) return false;
       var key=P.stash[bi],itm=ITEMS[key];
       // do not burn a whole plate for a few points of headroom
-      if(use==='armor'&&(ARMOR_MAX-g.player.armor)<itm.amt*0.5) return false;
-      if(use==='armor') g.player.armor=Math.min(ARMOR_MAX,g.player.armor+itm.amt);
+      if(use==='armor'&&((g.player.armorCap||ARMOR_MAX)-g.player.armor)<itm.amt*0.5) return false;
+      if(use==='armor') g.player.armor=Math.min(g.player.armorCap||ARMOR_MAX,g.player.armor+itm.amt);
       else if(use==='ammo') g.player.reserve+=itm.amt;
       else g.bag.push(key);
       P.stash.splice(bi,1); taken++;
@@ -3103,7 +3141,7 @@ function buildRaid(sim){
       var DEV=['medkit','medkit','plate','plate','ammobox','ammobox'];
       for(var dk=0;dk<DEV.length;dk++){
         var di=ITEMS[DEV[dk]];
-        if(di.use==='armor') g.player.armor=Math.min(ARMOR_MAX,g.player.armor+di.amt);
+        if(di.use==='armor') g.player.armor=Math.min(g.player.armorCap||ARMOR_MAX,g.player.armor+di.amt);
         else if(di.use==='ammo') g.player.reserve+=di.amt;
         else g.bag.push(DEV[dk]);
       }
@@ -3561,6 +3599,9 @@ var SNDCOL={
 function ping(x,y,s,h,quiet,src,typ){
   if(!G) return;
   s*=CFG.noiseMult*wx().noise;
+  // A plate carrier rattles. Every noise YOU make carries further in a heavier
+  // rig, which is the other half of what you are buying with the protection.
+  if(src==='player'&&G.player) s*=armorById(G.player.rig).noise;
   if(!G.sim){
     var pp=G.player;
     var d0=dist(pp,{x:x,y:y});
@@ -3645,7 +3686,10 @@ function damagePlayer(amt,src,srcName){
     return;
   }
   amt*=CFG.eDmg;
-  if(p.armor>0){ var ab=Math.min(p.armor,amt*.55); p.armor-=ab; amt-=ab; }
+  if(p.armor>0){
+    var soak=armorById(p.rig).absorb||0.55;
+    var ab=Math.min(p.armor,amt*soak); p.armor-=ab; amt-=ab;
+  }
   p.hp-=amt; p.hitFlash=.28; G.shake=Math.max(G.shake,5);
   blip('hit'); decal(p.x+rnd(-10,10),p.y+rnd(-10,10),'#7a1a14',rnd(6,13));
   if(p.hp<=0){
@@ -3787,14 +3831,14 @@ function openContainer(ct){
     T.items++; T.rar[itm.r]++;
     // one line per item; label() stacks them into a column so they never overlap
     label(ct.x,ct.y-10,
-      itm.name+(itm.use==='ammo'?' +'+itm.amt+' ammo':(itm.use==='armor'&&p.armor<ARMOR_MAX?' +'+Math.round(Math.min(ARMOR_MAX-p.armor,itm.amt))+' armor':' '+ival(key)+'c')),
+      itm.name+(itm.use==='ammo'?' +'+itm.amt+' ammo':(itm.use==='armor'&&p.armor<armorCap()?' +'+Math.round(Math.min(armorCap()-p.armor,itm.amt))+' armor':' '+ival(key)+'c')),
       RCOL[itm.r],0,itm.r==='rare'||itm.r==='elite');
     if(itm.use==='ammo') p.reserve+=itm.amt;   // SPEC 6.4: one universal pool
     // A plate is worth 55 but only applied below 20 armour, so deploying with a
     // plate from stash put you at 55 and made every plate you then found dead
     // weight you could never use, flatly contradicting the legend. Plates now
     // apply until armour is actually full.
-    else if(itm.use==='armor'&&p.armor<ARMOR_MAX) p.armor=Math.min(ARMOR_MAX,p.armor+itm.amt);
+    else if(itm.use==='armor'&&p.armor<armorCap()) p.armor=Math.min(armorCap(),p.armor+itm.amt);
     else if(itm.use==='throw') G.pouch[itm.tk]++;
     else if(itm.use==='gun'){
       // The four issued starters have to rank here too. Without them the lookup
@@ -4171,7 +4215,7 @@ function updatePlayer(dt){
   var wading=inWater(p.x,p.y);
   if(wading) sprint=false;
   G.sprinting=sprint;
-  var spd=CFG.pSpeed*load; if(crouch) spd*=.52; if(sprint) spd*=1.62;
+  var spd=CFG.pSpeed*load*armorById(p.rig).spd; if(crouch) spd*=.52; if(sprint) spd*=1.62;
   if(wading) spd*=.55;
   if(p.ads) spd*=.62;
   if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam+15*dt);
@@ -5156,7 +5200,12 @@ function updateBullets(dt){
           for(var e2=0;e2<G.ents.length;e2++){
             var en=G.ents[e2];
             if(dist(b,en)<en.r+3){
-              en.hp-=b.dmg; en.hitT=.16;
+              var edmg=b.dmg;
+              if(en.armor>0){
+                var esk=armorById(en.rig).absorb||0;
+                var eab=Math.min(en.armor,edmg*esk); en.armor-=eab; edmg-=eab;
+              }
+              en.hp-=edmg; en.hitT=.16;
               en.byPlayer=en.hp<=0;
               if(en.kind!=='snitch'){ en.alert=2.6; en.state='chase'; en.tx=p.x; en.ty=p.y; }
               else { en.state='alarm'; }
@@ -5393,6 +5442,16 @@ function endRaid(how){
   }
   if(G.pedBought){
     lines.push('<span style="color:var(--ash)">Spent '+G.pedBought.toLocaleString()+'c at the stall.</span>');
+  }
+  // SPEC 9.7: the rig goes with everything else you were carrying. It is the
+  // same rule the guns live under and it is what makes the Breacher Plate a bet
+  // rather than a free upgrade.
+  if(how==='dead'&&P.rig&&P.rig!=='none'){
+    var lostRig=armorById(P.rig);
+    P.rigs=(P.rigs||[]).filter(function(r){ return r!==P.rig; });
+    P.rig=(P.rigs.length?P.rigs[P.rigs.length-1]:'none');
+    lines.push('<span style="color:var(--rust)">'+lostRig.name+' is gone.'+
+      (P.rig==='none'?' You walk out of here in a shirt.':(' Falling back to the '+myRig().name+'.'))+'</span>');
   }
   if(how==='extract'){
     P.ext++;
@@ -5732,6 +5791,32 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // chest rig, and a hit shimmer when recently hurt
   wc.fillStyle='rgba(16,21,27,.85)';
   wc.fillRect(x-6.5+leanX,ty-18,13,2.4);
+  // SPEC 9.7: the rig has to be READABLE. Armour is drawn in a cool steel ramp
+  // rather than in the coat colour, so it reads as armour on all six raider
+  // coats and on the operator, and each tier is a different silhouette rather
+  // than a different shade: plate, then pauldrons, then a collar and a ridge.
+  // This is how you decide whether to shoot the man in the road.
+  if(st.bulk>0){
+    var bk=st.bulk,bw2=13+bk*3.2,bx2=x+leanX-bw2/2;
+    var aHi='#a6bacb',aMid='#71879a',aLo='#3f505d';
+    wc.fillStyle=INK; rrF(bx2-1,ty-20.5,bw2+2,10.2,2.6);
+    wc.fillStyle=aMid; rrF(bx2,ty-19.6,bw2,8.4,2);
+    wc.fillStyle=aHi; wc.fillRect(bx2+1,ty-19.6,bw2-2,2);
+    wc.fillStyle=aLo; wc.fillRect(bx2+1,ty-13.2,bw2-2,1.8);
+    if(bk>=2){
+      wc.fillStyle=INK;
+      rrF(bx2-3.6,ty-22.6,6,6.4,2.2); rrF(bx2+bw2-2.4,ty-22.6,6,6.4,2.2);
+      wc.fillStyle=aMid;
+      rrF(bx2-3,ty-22,4.8,5.6,1.8); rrF(bx2+bw2-1.8,ty-22,4.8,5.6,1.8);
+      wc.fillStyle=aHi;
+      wc.fillRect(bx2-2.6,ty-22,4,1.6); wc.fillRect(bx2+bw2-1.4,ty-22,4,1.6);
+    }
+    if(bk>=3){
+      wc.fillStyle=INK; rrF(x+leanX-6,ty-25,12,4,1.8);
+      wc.fillStyle=aHi; rrF(x+leanX-5.4,ty-24.6,10.8,3,1.5);
+      wc.fillStyle=aLo; wc.fillRect(x+leanX-1.1,ty-19,2.2,7.4);
+    }
+  }
   if(st.hurt>0){
     wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,70,56,'+clamp(st.hurt*2,0,.8)+')';
@@ -6439,7 +6524,7 @@ function render2D(dt){
       var pmode=p.downed?'down':(p.roll>0?'roll':(crouchP?'crouch':''));
       drawOp(p.x,p.y,p.face,p.roll>0?(1-p.roll/.38)*12.6:p.bob,'#8fa3b5',
         clamp(bagWeight()/PACKCAP[P.pack],0,1),p.muzzle,(G.crowbarUp>0?'bar':pmode),p.iv,
-        {moving:!!p.moving,sprint:!!G.sprinting,ads:!!p.ads,hurt:p.hitFlash,
+        {moving:!!p.moving,sprint:!!G.sprinting,ads:!!p.ads,hurt:p.hitFlash,bulk:armorById(p.rig).bulk,
          rl:(p.reloading>0&&p.wep.reload)?clamp(1-p.reloading/p.wep.reload,0,1):0});
       if(pLift>0) wc.restore();
     } else {
@@ -6453,7 +6538,7 @@ function render2D(dt){
       else if(e2.kind==='peddler') drawPeddlerS(e2);
       else drawOp(e2.x,e2.y,e2.face,(e2.step||0)*4,e2.coat,
         clamp(e2.bag.length/7,0,1),e2.muzzle,'',0,
-        {moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT});
+        {moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT,bulk:e2.bulk||0});
       if(eLift>0) wc.restore();
     }
     }catch(drErr){
@@ -7042,7 +7127,7 @@ function drawHUD(){
   ctx.font=FS('700 12px "Rubik",sans-serif'); ctx.fillStyle='#FFF6DC';
   ctx.fillText('HP  '+Math.round(p.hp),24,by+14);
   if(p.armor>0){
-    bar(16,by-22,280,11,p.armor/ARMOR_MAX,'#5aa9e6');
+    bar(16,by-22,280,11,p.armor/armorCap(),'#5aa9e6');
     ctx.font=FS('700 9px "Rubik",sans-serif');
     ctx.fillText('ARMOR  '+Math.round(p.armor),24,by-13);
   }
@@ -8116,7 +8201,8 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','Armour in three tiers, readable on the silhouette'],
+  ['NOW','Weak points on the big machines'],
+  ['DONE','Armour in three tiers, readable on the silhouette'],
   ['DONE','Contracts that pay in gear, in three tiers, not only credits'],
   ['DONE','Emotes and parley: hail a raider instead of shooting him'],
   ['DONE','Bushes you can hide in, and raiders who hide in them too'],
@@ -8125,7 +8211,6 @@ var ROADMAP=[
   ['DONE','Room acoustics, your own footsteps, and a stinger when something sees you'],
   ['DONE','The Peddler: sell your bag mid raid at half price, banked instantly'],
   ['DONE','The Mercenary: hire one of the ten for a single run'],
-  ['LATER','Weak points on the big machines'],
   ['LATER','Scopes that see further, not just hit harder'],
   ['LATER','Two raiders, one raid']
 ];
@@ -8513,14 +8598,27 @@ function renderShop(){
     var nm=document.createElement('div'); nm.className='nm';
     var locked=P.rep<o.rep;
     var owned=false,label='';
-    if(o.kind==='wep'){ label=WEAPONS[o.k].name; owned=P.weapons.indexOf(o.k)>=0; }
+    if(o.kind==='rig'){
+      var RG=armorById(o.k);
+      label=RG.name+'  ('+RG.cap+' armour, '+Math.round((1-RG.spd)*100)+'% slower, '+
+        Math.round((RG.noise-1)*100)+'% louder)';
+      owned=(P.rigs||[]).indexOf(o.k)>=0;
+    }
+    else if(o.kind==='wep'){ label=WEAPONS[o.k].name; owned=P.weapons.indexOf(o.k)>=0; }
     else if(o.kind==='pack'){ label='Backpack Tier '+(o.lvl+1)+' ('+PACKCAP[o.lvl]+'wt)'; owned=P.pack>=o.lvl; }
     else label=ITEMS[o.k].name;
     nm.textContent=label+(locked?'  [REP '+o.rep+']':'');
     if(locked) nm.style.color='var(--ash)';
     var vl=document.createElement('div'); vl.className='vl'; vl.textContent=o.price.toLocaleString()+'c';
     var b=document.createElement('button');
-    if(owned){ b.textContent='Owned'; b.disabled=true; }
+    if(owned&&o.kind==='rig'){
+      if(P.rig===o.k){ b.textContent='Worn'; b.disabled=true; }
+      else { b.textContent='Wear'; b.onclick=function(){
+        if((P.rigs||[]).indexOf(o.k)<0) return;
+        P.rig=o.k; saveProfile(); renderShop(); renderHub();
+      }; }
+    }
+    else if(owned){ b.textContent='Owned'; b.disabled=true; }
     else {
       b.textContent='Buy';
       b.disabled=locked||P.credits<o.price||(o.kind==='pack'&&P.pack!==o.lvl-1);
@@ -8538,9 +8636,11 @@ function renderShop(){
         if(P.rep<o.rep) return;
         if(o.kind==='pack'&&P.pack!==o.lvl-1) return;
         if(o.kind==='wep'&&P.weapons.indexOf(o.k)>=0) return;
+        if(o.kind==='rig'&&(P.rigs||[]).indexOf(o.k)>=0) return;
         P.credits-=o.price;
         if(o.kind==='wep'){ P.weapons.push(o.k); P.equipped=o.k; }
         else if(o.kind==='pack'){ P.pack=o.lvl; }
+        else if(o.kind==='rig'){ P.rigs=P.rigs||[]; P.rigs.push(o.k); P.rig=o.k; }
         else P.stash.push(o.k);
         saveProfile(); renderShop(); renderHub();
       };
