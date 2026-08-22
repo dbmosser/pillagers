@@ -454,6 +454,10 @@ Three things, none of which should be built without him saying so.
   - **Meters at combat size.** His answers, verbatim: "HUD BIGGER" and the health bar "NEEDS TO BE LARGER". Health went 150x10 to 280x18 with the number inside the bar where the eye already is; armour 280x11 above it, stamina 280x8 below.
   - **Dropped items say their name.** His #23. A single item crate you dropped yourself shows its item name in rarity colour when you stand near it, so re-collecting is not a memory test. Unsearched world containers stay mystery boxes on purpose: his own answer was that you must search to find.
   - Verified: drop flagged and named at the crate, meters render at the new sizes in a staged shot (HP 62 readable inside the bar), hub and raid frames clean, no console errors, profile intact.
+- **v1.13 (time of day):** His answer: "MAKE IT VARY BASED ON TIME OF DAY". Five times rolled once per raid like weather: DAWN (violet pink, lamps still fighting the light), MORNING (cool green), NOON, GOLDEN HOUR (strong amber, everything glows), DUSK (muted violet, lamps fully on). Every one is DAYLIGHT: measured mean lightness runs 33 to 41 percent across all five, so the variance is colour temperature and lamp behaviour, never visibility, because the last thing he asked of darkness was to remove it.
+  - The first cut measured near invisible (dawn and golden differed by 6 RGB points, drowned by per map palette variance), so the casts were tripled and re-measured: golden now reads strongly warm at 128/100/76 against morning's cool 100/104/75.
+  - Lamps scale with the hour in all three light passes, dusk announces itself when the weather is clear, and the sector map shows the hour beside the weather.
+  - Verified: all five times roll and render, lightness bounded, hub and raid frames clean, sector map clean, sim 3/4 with no hangs, no console errors.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

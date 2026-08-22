@@ -311,7 +311,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.12';
+var VER='1.13';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -1012,6 +1012,23 @@ var WEATHER=[
    line:'Storm. The lightning will show you to everything out there.'}
 ];
 function wx(){ return (G&&G.wx)||WEATHER[0]; }
+// Time of day. His answer to "full bright or overcast": "MAKE IT VARY BASED ON
+// TIME OF DAY". Rolled once per raid like weather. Every entry is DAYLIGHT: the
+// variance is colour temperature and whether the lamps are worth anything, not
+// visibility, because the last thing he asked of darkness was to remove it.
+// add is an additive cast, dim a gentle neutral shade, lights the lamp factor.
+// First cut of these values measured near-invisible: dawn and golden differed
+// by 6 RGB points because the additive casts sat under the per-map palette
+// variance. Tripled. The rule stands: hue moves a lot, lightness barely at all.
+var TODS=[
+  {id:'dawn',name:'DAWN',add:'#4a1a55',addA:.26,dim:'rgba(30,20,50,0.10)',lights:0.7,line:'Dawn. The lamps are still fighting the light.'},
+  {id:'morning',name:'MORNING',add:'#10360e',addA:.16,dim:null,lights:0.3,line:'Morning. Clean light, long day.'},
+  {id:'noon',name:'NOON',add:'#26260a',addA:.10,dim:null,lights:0.3,line:null},
+  {id:'golden',name:'GOLDEN HOUR',add:'#5c2c06',addA:.30,dim:null,lights:0.45,line:'Golden hour. Everything glows, including you.'},
+  {id:'dusk',name:'DUSK',add:'#42125c',addA:.24,dim:'rgba(18,10,36,0.18)',lights:1,line:'Dusk. The lamps are coming on.'}
+];
+function tod(){ return (G&&G.tod)||TODS[2]; }
+function pickTod(){ return TODS[ri(0,TODS.length-1)]; }
 function pickWeather(){
   var id=rollTable([['clear',34],['rain',22],['fog',18],['blackout',13],['storm',13]]);
   for(var i=0;i<WEATHER.length;i++) if(WEATHER[i].id===id) return WEATHER[i];
@@ -1944,6 +1961,7 @@ function buildRaid(sim){
     // Weather is rolled once per raid. Clear is weighted heaviest so the unusual
     // conditions stay unusual and keep their impact.
     wx:pickWeather(),
+    tod:pickTod(),
     lightning:0,rainT:0,inLandmark:null,inZone:undefined,
     msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,legendOn:true,sprinting:false,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
@@ -2008,7 +2026,7 @@ function startRaid(){
   // Lead with the weather, because it is a condition you plan around rather
   // than decoration, and the controls line is the same every single raid.
   say(G.wx.id==='clear'
-    ? 'Surface contact. TAB for inventory, E to search, M for the map.'
+    ? (G.tod&&G.tod.line?G.tod.line:'Surface contact. TAB for inventory, E to search, M for the map.')
     : G.wx.line);
 }
 
@@ -4501,7 +4519,7 @@ function render2D(dt){
     try{
     if(it.lm){
       var LG=it.lm;
-      var lfk=(LG.fl?(.72+.28*Math.sin(G.t*11+LG.f)):1)*wx().lights;
+      var lfk=(LG.fl?(.72+.28*Math.sin(G.t*11+LG.f)):1)*wx().lights*(isDay()?tod().lights:1);
       var lhx=LG.x,lhy=LG.y-34;
       // bracket down from above, then the housing, then the lit element
       wc.fillStyle='rgba(20,18,26,.85)';
@@ -4706,7 +4724,7 @@ function render2D(dt){
     // A blackout kills the lamps outright and fog dims them, which is most of
     // why those two conditions feel different to walk through.
     var fk=L.fl?(.72+.28*Math.sin(G.t*11+L.f)*Math.sin(G.t*3.1+L.f*2)):1;
-    fk*=wx().lights;
+    fk*=wx().lights*(isDay()?tod().lights:1);
     if(fk<=0.02) continue;
     var gr=lx2.createRadialGradient(lsx,lsy,0,lsx,lsy,L.r*fk);
     gr.addColorStop(0,'rgba(0,0,0,'+(.85*L.i)+')');
@@ -4766,6 +4784,23 @@ function render2D(dt){
   wc.globalAlpha=1;
   wc.fillStyle=isDay()?'#0d0904':'#05030b';
   wc.fillRect(0,0,W,H);
+  // Time of day: an additive colour cast, then an optional gentle neutral
+  // shade. Still inside the additive block for the cast, so dawn pink and
+  // golden amber lift rather than muddy.
+  var TD=tod();
+  if(isDay()&&TD.add){
+    wc.globalAlpha=TD.addA;
+    wc.fillStyle=TD.add;
+    wc.fillRect(0,0,W,H);
+    wc.globalAlpha=1;
+  }
+  if(isDay()&&TD.dim){
+    // the shade needs normal compositing or it would brighten instead
+    var prevOp=wc.globalCompositeOperation;
+    wc.globalCompositeOperation='source-over';
+    wc.fillStyle=TD.dim; wc.fillRect(0,0,W,H);
+    wc.globalCompositeOperation=prevOp;
+  }
   // The lift above is a full screen wash and stays in screen space. Everything
   // below it is positioned in the world, so it takes the world transform.
   wc.save(); wc.scale(Z,Z); wc.translate(-ox,-oy);
@@ -4773,7 +4808,7 @@ function render2D(dt){
     var L2=G.lights[i];
     var gx=L2.x,gy=L2.y;
     if(gx<ox-80||gx>ox+VW+80||gy<oy-80||gy>oy+VH+80) continue;
-    var fk2=(L2.fl?(.72+.28*Math.sin(G.t*11+L2.f)):1)*wx().lights;
+    var fk2=(L2.fl?(.72+.28*Math.sin(G.t*11+L2.f)):1)*wx().lights*(isDay()?tod().lights:1);
     if(fk2<=0.02) continue;
     // Two flat concentric discs rather than one, because a lamp pool in this
     // era is stepped, not a smooth falloff. This is also the only place in the
@@ -5366,7 +5401,7 @@ function drawMapOverlay(){
   // conditions belong on the map, since they change how far you can see
   ctx.textAlign='right';
   ctx.fillStyle=wx().id==='clear'?'#9aa8d0':'#4de3d0';
-  ctx.fillText(wx().name,ox+WORLD_W*sc,oy-10);
+  ctx.fillText(tod().name+'  '+wx().name,ox+WORLD_W*sc,oy-10);
   ctx.textAlign='left';
   for(i=0;i<G.map.buildings.length;i++){
     var b=G.map.buildings[i];
