@@ -284,7 +284,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.87';
+var VER='0.88';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -3675,13 +3675,23 @@ function drawBag(){
 }
 function drawMapOverlay(){
   var p=G.player,i;
-  ctx.fillStyle='rgba(4,6,10,.93)'; ctx.fillRect(0,0,W,H);
+  // The sector map was the last full screen surface still wearing the old grey
+  // and near-black palette: the district fills already came through because they
+  // read DISTRICTS directly, but every piece of the map's own chrome was left
+  // behind by the v0.84 recolour, so holding M dropped you out of a navy and
+  // amber game into a grey one.
+  ctx.fillStyle='rgba(9,12,34,.94)'; ctx.fillRect(0,0,W,H);
   var pad=70,sc=Math.min((W-pad*2)/WORLD_W,(H-pad*2)/WORLD_H);
   var ox=(W-WORLD_W*sc)/2,oy=(H-WORLD_H*sc)/2;
-  ctx.strokeStyle='#2a323d'; ctx.strokeRect(ox,oy,WORLD_W*sc,WORLD_H*sc);
-  ctx.font='700 11px "Oxanium", sans-serif'; ctx.fillStyle='#ffb02e';
+  // double frame, matching the windows in the terminal
+  ctx.strokeStyle='#2f4394'; ctx.lineWidth=3;
+  ctx.strokeRect(ox-3,oy-3,WORLD_W*sc+6,WORLD_H*sc+6);
+  ctx.strokeStyle='#7f92d8'; ctx.lineWidth=1.5;
+  ctx.strokeRect(ox,oy,WORLD_W*sc,WORLD_H*sc);
+  ctx.lineWidth=1;
+  ctx.font='700 11px "Oxanium", sans-serif'; ctx.fillStyle='#ffc04a';
   ctx.fillText('SECTOR MAP',ox,oy-10);
-  ctx.font='9px "Roboto Mono", monospace'; ctx.fillStyle='#6b7783';
+  ctx.font='9px "Roboto Mono", monospace'; ctx.fillStyle='#9aa8d0';
   ctx.fillText('hostile positions unknown',ox+110,oy-10);
   for(i=0;i<G.map.buildings.length;i++){
     var b=G.map.buildings[i];
@@ -3690,27 +3700,31 @@ function drawMapOverlay(){
   }
   for(i=0;i<(G.map.water||[]).length;i++){
     var wq3=G.map.water[i];
-    ctx.fillStyle='rgba(70,130,165,.45)';
+    ctx.fillStyle='rgba(92,168,196,.50)';
     ctx.fillRect(ox+wq3.x*sc,oy+wq3.y*sc,wq3.w*sc,wq3.h*sc);
   }
-  ctx.fillStyle='#46525f';
+  ctx.fillStyle='#5f74b8';
   for(i=0;i<G.map.walls.length;i++){
     var wl=G.map.walls[i];
     ctx.fillRect(ox+wl.x*sc,oy+wl.y*sc,Math.max(1,wl.w*sc),Math.max(1,wl.h*sc));
   }
   for(i=0;i<G.zones.length;i++){
     var zz=G.zones[i],act=zz===G.active;
-    ctx.strokeStyle=act?'#35d6c8':'rgba(120,135,148,.4)'; ctx.lineWidth=act?2:1;
+    ctx.strokeStyle=act?'#4de3d0':'rgba(127,146,216,.42)'; ctx.lineWidth=act?2:1;
     ctx.beginPath(); ctx.arc(ox+zz.x*sc,oy+zz.y*sc,zz.r*sc+3,0,6.2832); ctx.stroke();
-    if(act){ ctx.fillStyle='#35d6c8'; ctx.beginPath(); ctx.arc(ox+zz.x*sc,oy+zz.y*sc,3,0,6.2832); ctx.fill(); }
+    if(act){ ctx.fillStyle='#4de3d0'; ctx.beginPath(); ctx.arc(ox+zz.x*sc,oy+zz.y*sc,3,0,6.2832); ctx.fill(); }
     ctx.textAlign='center'; ctx.font='700 9px "Oxanium", sans-serif';
-    ctx.fillStyle=act?'#35d6c8':'rgba(150,164,178,.75)';
+    ctx.fillStyle=act?'#4de3d0':'rgba(154,168,208,.80)';
     ctx.fillText(act?'EXTRACTION':'COLD',ox+zz.x*sc,oy+zz.y*sc+zz.r*sc+16);
     ctx.textAlign='left';
   }
-  ctx.fillStyle='#ffd25c';
+  // your own marker, ringed in ink so a gold dot never disappears into a gold
+  // district block
+  ctx.fillStyle='#120e0c';
+  ctx.beginPath(); ctx.arc(ox+p.x*sc,oy+p.y*sc,5.6,0,6.2832); ctx.fill();
+  ctx.fillStyle='#ffc04a';
   ctx.beginPath(); ctx.arc(ox+p.x*sc,oy+p.y*sc,4,0,6.2832); ctx.fill();
-  ctx.strokeStyle='rgba(255,210,92,.6)'; ctx.lineWidth=1.5;
+  ctx.strokeStyle='rgba(255,192,74,.65)'; ctx.lineWidth=1.5;
   ctx.beginPath(); ctx.moveTo(ox+p.x*sc,oy+p.y*sc);
   ctx.lineTo(ox+p.x*sc+Math.cos(p.face)*11,oy+p.y*sc+Math.sin(p.face)*11); ctx.stroke();
 }
