@@ -380,7 +380,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.44';
+var VER='1.45';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -2783,6 +2783,61 @@ function refreshVseg(){
 // it is what you read across a room to decide whether the trip is worth it. Any
 // code that replaces a container's contents has to recompute it, so both live
 // here rather than being open-coded at each site.
+// ================================================== WINDFALLS AND THE STRONGBOX
+// "ITS BORING. I JUST FIND JUNK" and "I SHOULD FIND TOP TIER LOOT EVERY RUN".
+// Raising the drop rates would only move where the floor is: within three raids
+// the new good stuff is the new junk, because a constant is not exciting no
+// matter how large it is.
+// What makes loot exciting is VARIANCE YOU CAUSED. A windfall is a second item
+// on top of whatever a container was already going to give you, and the odds are
+// not flat: they rise the further you are from a way out, the longer you have
+// been on the surface, and the closer you are to something that can kill you.
+// That is the greed pillar expressed as a probability instead of a lecture.
+// A windfall on an ordinary crate is usually superb and occasionally merely
+// very good, which is what makes opening the next one worth doing.
+var WINDFALL=['blackbox','reactor','codex','bloom','relay','wcore','titan','coil','ledger'];
+// The Strongbox pays ELITE ONLY. Nine seconds pinned in place, screaming loud
+// enough to reach a district, is not worth three rare items: the first build of
+// this rolled a Coil and a Payroll Ledger into it and that is a bad dare.
+var WINDFALL_ELITE=['blackbox','reactor','codex','bloom','relay','wcore'];
+function windfallOdds(x,y){
+  if(!G||!G.zones) return 0;
+  var odds=0.04;
+  // How far is the nearest way out? Deep in the map is worth more.
+  var near=1e9;
+  for(var i=0;i<G.zones.length;i++){
+    var d=dist({x:x,y:y},G.zones[i]);
+    if(d<near) near=d;
+  }
+  odds+=clamp(near/2600,0,1)*0.10;
+  // How long have you been out? Past four minutes the map starts paying you for
+  // the nerve, which is the other half of the extract-too-easy answer.
+  var out=CFG.raidSec-G.timeLeft;
+  odds+=clamp((out-240)/420,0,1)*0.08;
+  // And is anything near enough to kill you for it?
+  var danger=0;
+  for(var e2=0;e2<G.ents.length;e2++){
+    var E=G.ents[e2];
+    if(E.kind==='raider'||E.kind==='peddler'||E.kind==='stray') continue;
+    if(dist({x:x,y:y},E)<340){ danger=1; break; }
+  }
+  if(danger) odds+=0.06;
+  return clamp(odds,0,0.28);
+}
+// THE ARC STRONGBOX. One per raid, in the worst place on the map, and it takes
+// nine seconds to crack while screaming the whole time. It is the discrete
+// version of the same idea: a set piece you can choose to be greedy about.
+function mkStrongbox(x,y){
+  // Three DIFFERENT things. A probe rolled three Sealed Codices, which reads as
+  // a stack rather than a haul and wastes the one moment in the raid that is
+  // supposed to feel like opening a vault.
+  var pool=WINDFALL_ELITE.slice(),loot=[];
+  for(var i=0;i<3&&pool.length;i++) loot.push(pool.splice(ri(0,pool.length-1),1)[0]);
+  var c=mkContainer(x,y,'cache');
+  setLoot(c,loot);
+  c.cache=1; c.strong=1; c.time=9.0; c.tag='ARC STRONGBOX';
+  return c;
+}
 function bestRarity(loot){
   var best='common';
   for(var j=0;j<loot.length;j++){
@@ -3351,6 +3406,33 @@ function buildRaid(sim){
       var gs=mkSentry(CP.x+rnd(-140,140),CP.y+rnd(-140,140)); gs.camp=CP; ents.push(gs);
       var gcw=mkCrawler(CP.x+rnd(-120,120),CP.y+rnd(-120,120)); gcw.camp=CP; ents.push(gcw);
     }
+  }
+  // THE STRONGBOX goes wherever is most dangerous: inside a locked room if the
+  // map has one, otherwise in an encampment, otherwise as far from any way out
+  // as the map allows. Never anywhere convenient.
+  if(!sim){
+    var sbSpot=null;
+    var lkr=map.locked||[];
+    if(lkr.length){
+      var LR2=lkr[ri(0,lkr.length-1)];
+      sbSpot=spotIn(map,{x:LR2.x+20,y:LR2.y+20,w:LR2.w-40,h:LR2.h-40},16);
+    }
+    if(!sbSpot&&camps.length){
+      var CP2=camps[ri(0,camps.length-1)];
+      for(var sb=0;sb<40&&!sbSpot;sb++){
+        var sx2=CP2.x+rnd(-120,120),sy2=CP2.y+rnd(-120,120);
+        if(spotFree(map,sx2,sy2,22)) sbSpot={x:sx2,y:sy2};
+      }
+    }
+    if(!sbSpot){
+      var bestD=-1;
+      for(var sf=0;sf<60;sf++){
+        var cand2=freeSpot(map,24),dd2=1e9;
+        for(var ez=0;ez<map.extracts.length;ez++) dd2=Math.min(dd2,dist(cand2,map.extracts[ez]));
+        if(dd2>bestD){ bestD=dd2; sbSpot=cand2; }
+      }
+    }
+    if(sbSpot) containers.push(mkStrongbox(sbSpot.x,sbSpot.y));
   }
   // YOUR BODY. Placed before the run object exists so it is simply another
   // container: nothing else in the raid needs to know it is special.
@@ -4128,11 +4210,28 @@ function openContainer(ct){
   // Instrumentation for every system shipped since v1.00, so his exports carry
   // signal on the new content instead of leaving me to tune it blind.
   if(ct.cache) T.cachesOpened=(T.cachesOpened||0)+1;
+  if(ct.strong) T.strongbox=(T.strongbox||0)+1;
   if(ct.type==='safe'&&G.camps){
     for(var cq2=0;cq2<G.camps.length;cq2++)
       if(dist(ct,G.camps[cq2])<150){ T.campSafes=(T.campSafes||0)+1; break; }
   }
   contractOpen(ct);
+  // The windfall is rolled at the moment of opening, not at map build, because
+  // half its inputs are things about YOU: how long you have been out here and
+  // what is standing near you right now.
+  if(!ct.strong&&!ct.dropped&&!ct.mine&&!G.sim){
+    var wo=windfallOdds(ct.x,ct.y);
+    if(Math.random()<wo){
+      var wk=pick(WINDFALL);
+      ct.loot=ct.loot.concat([wk]);
+      ct.windfall=1;
+      T.windfalls=(T.windfalls||0)+1;
+      say('There is something under it.');
+      label(ct.x,ct.y-30,'WINDFALL','#ffd76a',0,true);
+      spark(ct.x,ct.y,'#ffd76a',30,320);
+      sfx('charge',ct.x,ct.y);
+    }
+  }
   for(var l=0;l<ct.loot.length;l++){
     var key=ct.loot[l],itm=ITEMS[key];
     T.items++; T.rar[itm.r]++;
@@ -4694,7 +4793,14 @@ function updatePlayer(dt){
       // SPEC 10.1: container opening is audible and shows on the visualizer,
       // which is what makes an emptied crate a warning to whoever hears it.
       near.noiseAcc=(near.noiseAcc||0)+dt;
-      if(near.noiseAcc>0.5){ near.noiseAcc=0; ping(near.x,near.y,180,false,false,'player','move'); }
+      if(near.noiseAcc>0.5){
+        near.noiseAcc=0;
+        // A strongbox howls while it is being cut. Nine seconds of that reaches
+        // most of a district and every Listener on the map, which is the price
+        // of the three elite items inside it.
+        ping(near.x,near.y,near.strong?560:180,false,false,'player','move');
+        if(near.strong&&!G.sim) sfx('alarm',near.x,near.y);
+      }
       if(near.prog>=near.time){
         if(near.mine&&!near.opened) bodyRecover(near);
         openContainer(near); G.searching=null; G.searchT=0; near.prog=0;
@@ -5967,7 +6073,7 @@ function endRaid(how){
     n:P.runs,outcome:how,weapon:T.weapon,preset:CFG.preset||'custom',
     drawErr:T.drawErr||null,
     wx:(G.wx&&G.wx.id)||'clear',tod:(G.tod&&G.tod.id)||'noon',
-    caches:T.cachesOpened||0,campSafes:T.campSafes||0,wardenMet:T.wardenMet||0,doorsOpened:T.doorsOpened||0,
+    caches:T.cachesOpened||0,windfalls:T.windfalls||0,strongbox:T.strongbox||0,campSafes:T.campSafes||0,wardenMet:T.wardenMet||0,doorsOpened:T.doorsOpened||0,
     gunsEq:T.gunsEquipped||0,bestQ:T.bestQ||0,holdExtract:T.holdExtract||0,diedInSiege:T.diedInSiege||0,
     dur:Math.round(CFG.raidSec-G.timeLeft),
     haul:haul,items:G.bag.length,containers:T.containers,
@@ -6673,6 +6779,18 @@ function drawContS(ct){
       wc.font=FS('700 12px "Titan One","Rubik",sans-serif'); wc.textAlign='center';
       wc.fillStyle=INK; wc.fillText('ARC CACHE',ct.x+1,ct.y-lift-d2-25);
       wc.fillStyle='#e6b4ff'; wc.fillText('ARC CACHE',ct.x,ct.y-lift-d2-26);
+      wc.textAlign='left';
+    }
+    if(ct.strong&&!ct.opened){
+      var spl=0.5+0.5*Math.sin(G.t*2.2);
+      wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.34*spl;
+      var sgr2=wc.createRadialGradient(ct.x,ct.y-lift,2,ct.x,ct.y-lift,62);
+      sgr2.addColorStop(0,'#ffd76a'); sgr2.addColorStop(1,'rgba(0,0,0,0)');
+      wc.fillStyle=sgr2; wc.beginPath(); wc.arc(ct.x,ct.y-lift,62,0,6.2832); wc.fill();
+      wc.restore();
+      wc.textAlign='center'; wc.font=FS('700 10px "Titan One","Rubik",sans-serif');
+      wc.fillStyle=INK; wc.fillText('ARC STRONGBOX',ct.x+1,ct.y-lift-d2-25);
+      wc.fillStyle='#ffd76a'; wc.fillText('ARC STRONGBOX',ct.x,ct.y-lift-d2-26);
       wc.textAlign='left';
     }
     if(ct.mine&&!ct.opened){
@@ -8211,6 +8329,22 @@ function drawMapOverlay(){
     ctx.fillText(LM2.name,ox+(LM2.x+LM2.w/2)*sc,oy+(LM2.y+LM2.h/2)*sc+3);
     ctx.textAlign='left';
   }
+  // THE STRONGBOX. Marked from the start: it is not a secret, it is a dare.
+  for(i=0;i<G.containers.length;i++){
+    var sbm=G.containers[i];
+    if(!sbm.strong||sbm.opened) continue;
+    var sbx=ox+sbm.x*sc,sby=oy+sbm.y*sc;
+    ctx.strokeStyle='#ffd76a'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(sbx,sby,10,0,6.2832); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(sbx-14,sby); ctx.lineTo(sbx-10,sby);
+    ctx.moveTo(sbx+10,sby); ctx.lineTo(sbx+14,sby);
+    ctx.moveTo(sbx,sby-14); ctx.lineTo(sbx,sby-10);
+    ctx.moveTo(sbx,sby+10); ctx.lineTo(sbx,sby+14); ctx.stroke();
+    ctx.fillStyle='#ffd76a';
+    ctx.beginPath(); ctx.arc(sbx,sby,3.6,0,6.2832); ctx.fill();
+    ctx.textAlign='center'; ctx.font=FS('700 9px "Titan One","Rubik",sans-serif');
+    ctx.fillText('STRONGBOX',sbx,sby-15); ctx.textAlign='left';
+  }
   // YOUR BODY. Marked from the moment you deploy, because the entire point is
   // that you can plan a route to it.
   for(i=0;i<G.containers.length;i++){
@@ -8785,11 +8919,11 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','Loot that can spike, so a run can pay out of all proportion'],
+  ['NOW','Weather that turns while you are still out there'],
+  ['DONE','Windfalls and the ARC Strongbox: greed sets the odds'],
   ['DONE','THE LISTENER: blind, dormant, and it hunts the noise you make'],
   ['DONE','Your body stays where you fell, and you can go back for it'],
   ['DONE','The Stray: a survivor who tells you where a cache is'],
-  ['LATER','Weather that turns while you are still out there'],
   ['LATER','Two raiders, one raid'],
   ['DONE','Scopes that extend what you can SEE, not just what you can hit'],
   ['DONE','Weak points: the vent is on its back, so you have to flank'],
