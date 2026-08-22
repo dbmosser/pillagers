@@ -263,6 +263,13 @@
         </div>
         <div style="padding:0 12px 7px"><button id="autoexbtn" style="width:100%;font-size:9.5px">Auto-export: ON</button></div>
         <div id="simprog" style="font-size:9.5px;color:var(--ash);padding:0 12px 7px;display:none"></div>
+      <h2 style="border-top:1px solid var(--steel-hi)">Roadmap</h2>
+      <div class="plist" id="roadmap"></div>
+      <h2 style="border-top:1px solid var(--steel-hi)">Play an older build</h2>
+      <div style="display:flex;gap:6px;padding:0 12px 10px">
+        <select id="buildsel" style="flex:1;background:rgba(9,14,40,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:'Rubik',sans-serif;font-size:12px;padding:6px"></select>
+        <button id="buildgo" style="padding:6px 14px">OPEN</button>
+      </div>
       </div>
     </div>
   </div>
@@ -304,7 +311,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.01';
+var VER='1.02';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -1670,6 +1677,25 @@ function buildRaid(sim){
     placeCache(LX.x+LX.w/2,LX.y+LX.h/2,LX.name);
   }
   while(caches.length<3) placeCache(WORLD_W*Math.random(),WORLD_H*Math.random(),'ARC CACHE');
+  // ENCAMPMENTS. His spec: "encampments with a bunch of high tier loot and
+  // surrounded by enemies", explicitly different from the jackpot caches. A
+  // cache is free money if you walk there; an encampment is a defended position.
+  // Two per raid, each 4 safes in a tight cluster with a stationed guard detail
+  // whose patrol is tethered to the camp, so the guards are always THERE, not
+  // wandered off. Marked on the sector map in red: advertised danger is a choice,
+  // ambush danger is a mugging.
+  var camps=[];
+  for(var ec=0;ec<2;ec++){
+    var cs=null,tries2=0;
+    do{ cs=freeSpot(map,44); tries2++; }
+    while(tries2<80&&(dist(cs,start)<900||dist(cs,active)<500||(camps[0]&&dist(cs,camps[0])<1100)));
+    camps.push({x:cs.x,y:cs.y});
+    for(var ci2=0;ci2<4;ci2++){
+      var ca=6.2832*ci2/4+rnd(-.4,.4),cr=rnd(30,80);
+      var cc2=mkContainer(cs.x+Math.cos(ca)*cr,cs.y+Math.sin(ca)*cr,'safe',map.districtAt?map.districtAt(cs.x,cs.y):-1);
+      containers.push(cc2);
+    }
+  }
   var lights=[];
   if(!sim){
     for(i=0;i<map.buildings.length;i++){
@@ -1707,6 +1733,13 @@ function buildRaid(sim){
   for(i=0;i<CFG.nSnitch;i++){ var s4=far(freeSpot(map,26),720); ents.push(mkSnitch(s4.x,s4.y)); }
   for(i=0;i<CFG.nRaider;i++){ var s3=far(freeSpot(map,30),1190); ents.push(mkRaider(s3.x,s3.y)); }
   var sw=far(freeSpot(map,44),1400); ents.push(mkWarden(sw.x,sw.y));
+  for(var gc=0;gc<camps.length;gc++){
+    var CP=camps[gc];
+    for(var gi=0;gi<2;gi++){
+      var gs=mkSentry(CP.x+rnd(-140,140),CP.y+rnd(-140,140)); gs.camp=CP; ents.push(gs);
+      var gcw=mkCrawler(CP.x+rnd(-120,120),CP.y+rnd(-120,120)); gcw.camp=CP; ents.push(gcw);
+    }
+  }
   var g={sim:!!sim,map:map,ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:CFG.raidSec,paused:false,
     player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,armor:0,face:0,wep:wep,
       ammo:wep.mag,reserve:wep.mag*2,sec:sec,secAmmo:sec.mag,reloading:0,lastShot:-9999,stam:100,
@@ -1716,7 +1749,7 @@ function buildRaid(sim){
     bag:[],pouch:{smoke:0,decoy:0,frag:0},tsel:0,
     containers:containers,ents:ents,bullets:[],pings:[],puffs:[],
     decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],labels:[],flashes:[],hitMark:null,
-    zones:zones,active:active,beaconT:null,searching:null,searchT:0,
+    zones:zones,active:active,camps:camps,beaconT:null,searching:null,searchT:0,
     // Weather is rolled once per raid. Clear is weighted heaviest so the unusual
     // conditions stay unusual and keep their impact.
     wx:pickWeather(),
@@ -3203,7 +3236,13 @@ function updateEnts(dt){
     }
     else {
       // cd is decremented once per frame below; do not tick it here as well
-      if(e.cd<=0){ var sp=freeSpot(G.map,24); e.tx=sp.x; e.ty=sp.y; e.cd=rnd(3,7); }
+      if(e.cd<=0){
+        // Camp guards patrol their post, not the map. Their whole job is to be
+        // between you and the safes when you arrive.
+        if(e.camp){ var ga2=rnd(0,6.2832),gr2=rnd(40,240); e.tx=e.camp.x+Math.cos(ga2)*gr2; e.ty=e.camp.y+Math.sin(ga2)*gr2; }
+        else { var sp=freeSpot(G.map,24); e.tx=sp.x; e.ty=sp.y; }
+        e.cd=rnd(3,7);
+      }
       moveToward(e,e.tx,e.ty,e.spd*.45,dt); want=Math.atan2(e.ty-e.y,e.tx-e.x);
       if(dist(e,{x:e.tx,y:e.ty})<30) e.cd=0;
     }
@@ -4988,6 +5027,20 @@ function drawMapOverlay(){
     ctx.fillText(CQ.opened?'LOOTED':'CACHE',qx,qy-15);
     ctx.textAlign='left'; ctx.globalAlpha=1;
   }
+  // Encampments in red: advertised danger. You are told where the fight is and
+  // what it pays, and choosing it is the risk half of risk versus greed.
+  for(i=0;i<(G.camps||[]).length;i++){
+    var CM=G.camps[i];
+    var cqx=ox+CM.x*sc,cqy=oy+CM.y*sc;
+    ctx.strokeStyle='#ff5040'; ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(cqx,cqy-9); ctx.lineTo(cqx+9,cqy); ctx.lineTo(cqx,cqy+9); ctx.lineTo(cqx-9,cqy); ctx.closePath();
+    ctx.stroke();
+    ctx.fillStyle='#ff8a76';
+    ctx.font=FS('700 10px "Titan One","Rubik",sans-serif'); ctx.textAlign='center';
+    ctx.fillText('ENCAMPMENT',cqx,cqy-14);
+    ctx.textAlign='left';
+  }
   // Landmarks are what the map is navigated BY, so they are labelled and boxed
   // rather than left as anonymous geometry.
   var lms=(G.map.landmarks||[]);
@@ -5429,6 +5482,44 @@ function stashCounts(){
   for(i=0;i<P.stash.length;i++) c[P.stash[i]]=(c[P.stash[i]]||0)+1;
   return c;
 }
+// The roadmap lives in the game because he asked for it there. I edit this list
+// every build; DONE items rotate off as new ones land.
+var ROADMAP=[
+  ['NOW','Encampments: defended safes, marked in red on your map'],
+  ['NEXT','Big-head characters with faces; scary enemy redesign'],
+  ['NEXT','Guns as the loot that matters: field weapons worth switching to'],
+  ['NEXT','Hub shrink: every station within a few steps'],
+  ['NEXT','Time of day variance; night as a special raid later'],
+  ['LATER','Footprints, shell casings, litter that persists'],
+  ['LATER','Sound pass two: layered ambience, weapon voices']
+];
+var BUILDS=[];   // filled from builds/index.json at boot; empty list hides nothing but options
+function renderRoadmap(){
+  var el=document.getElementById('roadmap');
+  if(!el) return;
+  var h='';
+  for(var i=0;i<ROADMAP.length;i++){
+    var tag=ROADMAP[i][0];
+    var col=tag==='NOW'?'var(--coolant)':(tag==='NEXT'?'var(--amber)':'var(--ash)');
+    h+='<div class="row"><span style="color:'+col+';font-weight:700;min-width:44px">'+tag+'</span><span class="nm" style="white-space:normal">'+ROADMAP[i][1]+'</span></div>';
+  }
+  el.innerHTML=h;
+}
+function initBuildPicker(){
+  var sel=document.getElementById('buildsel'),go=document.getElementById('buildgo');
+  if(!sel||!go) return;
+  fetch('builds/index.json').then(function(r){ return r.json(); }).then(function(list){
+    BUILDS=list;
+    sel.innerHTML=list.map(function(b){ return '<option value="'+b.file+'">'+b.ver+'  '+b.note+'</option>'; }).join('');
+  }).catch(function(){
+    sel.innerHTML='<option>no archive found</option>'; go.disabled=true;
+  });
+  go.onclick=function(){
+    if(!sel.value||go.disabled) return;
+    // A new tab, so the current build he is playing stays open.
+    window.open('builds/'+sel.value,'_blank');
+  };
+}
 function renderHub(){
   var i;
   document.getElementById('credits').innerHTML=P.credits.toLocaleString()+'<small>CREDITS</small>';
@@ -5840,6 +5931,8 @@ loadProfile().then(function(){
   saveProfile();
   syncCond();
   syncAutoEx();
+  renderRoadmap();
+  initBuildPicker();
   showScreen('hub');
 });
 requestAnimationFrame(function(ts){ lastTs=ts; requestAnimationFrame(loop); });

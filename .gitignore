@@ -1,3 +1,4 @@
 *.log
 node_modules/
 dark_raiders_run*.txt
+builds/
