@@ -427,6 +427,11 @@ Three things, none of which should be built without him saying so.
   - cfgv 6, so his pinned save receives all of it.
   - **Stated plainly: the bot is now below the band, 3/12 extract, 25 percent, sentries the killer.** That is deliberate. The band was calibrated when he found the game too easy, and he outplays the bot by a wide margin (his last run would have been a bot death several times over). If his next runs tag "Too hard", the counts come back down; feel is his call.
   - Probes: 6 siege arrivals per call confirmed, config reaches the profile as cfgv 6, hub and raid frames clean, no console errors.
+- **v1.07 (faces):** The character redesign from his answers: visible faces, further toward big headed Toriyama.
+  - **The operator and every raider have a face now**: whites, pupils, a specular glint, a small mouth that pulls into a grimace when hurt. The pupils track the aim direction, so the figure looks where you look, which makes it feel inhabited at zero animation cost. Head grew from 12x10 to 15x13, about 38 percent of the figure, and the anonymous visor strip is gone. Raiders share the same construction, so the rival crews are people too.
+  - **Crawlers got an eye cluster**: three unblinking points on the head that all face you, dim amber on patrol, pulsing red on the rush. Scary is specificity, not a colour swap.
+  - Nameplates lifted to clear the taller heads.
+  - Verified: hub and raid frames clean, staged lineup screenshot confirms both faces read at zoom and the pupils track, no console errors. Sim 1/4 quick batch, killers sentry and raider, consistent with the deliberately hard v1.06 band. What a face FEELS like at his zoom level in motion is his call at the screen.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

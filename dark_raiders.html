@@ -311,7 +311,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.06';
+var VER='1.07';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -3881,14 +3881,31 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.fillRect(x-6.5+leanX,ty-22,13,11);
     wc.globalCompositeOperation='source-over';
   }
-  wc.fillStyle=INK; rrF(x-7+leanX,ty-34,14,12,5);
-  wc.fillStyle='#d2ab86'; rrF(x-6+leanX,ty-33,12,10,4);
-  wc.fillStyle=cLo; rrF(x-6+leanX,ty-33,12,4.2,4);
-  wc.fillStyle='#97785b'; wc.fillRect(x-5.2+leanX,ty-25,10.4,2);
-  wc.fillStyle='#0d1218';
-  wc.fillRect((fl>0?x-.5:x-4)+leanX,ty-28.5,4.5,3);
-  wc.fillStyle='#35d6c8';
-  wc.fillRect((fl>0?x+.6:x-2.9)+leanX,ty-27.6,2.2,1.2);
+  // The head, pushed further toward Toriyama per his answer and given an actual
+  // FACE per his answer: eyes with pupils that track the aim direction. A face
+  // is most of what makes a figure a character rather than a unit, and the
+  // pupils moving with the mouse makes the operator feel inhabited at zero
+  // animation cost. Head grew from 12x10 to 15x13, about 38 percent of the
+  // figure, and the old anonymous visor strip is gone.
+  var hx2=x+leanX;
+  wc.fillStyle=INK; rrF(hx2-8.5,ty-38,17,15,6);
+  wc.fillStyle='#e0b98e'; rrF(hx2-7.5,ty-37,15,13,5);
+  wc.fillStyle=cLo; rrF(hx2-7.5,ty-37,15,4.6,5);
+  // eyes: whites, pupils toward the aim, one specular dot each
+  var pupX=Math.cos(face)*1.4,pupY=Math.sin(face)*0.9;
+  wc.fillStyle='#FFF6DC';
+  wc.beginPath(); wc.ellipse(hx2-3.4,ty-29.5,2.5,3,0,0,6.2832); wc.fill();
+  wc.beginPath(); wc.ellipse(hx2+3.4,ty-29.5,2.5,3,0,0,6.2832); wc.fill();
+  wc.fillStyle=INK;
+  wc.beginPath(); wc.arc(hx2-3.4+pupX,ty-29.3+pupY,1.25,0,6.2832); wc.fill();
+  wc.beginPath(); wc.arc(hx2+3.4+pupX,ty-29.3+pupY,1.25,0,6.2832); wc.fill();
+  wc.fillStyle='#FFF6DC';
+  wc.fillRect(hx2-4.1+pupX,ty-30.2+pupY,0.8,0.8);
+  wc.fillRect(hx2+2.7+pupX,ty-30.2+pupY,0.8,0.8);
+  // a small mouth, hurt pulls it into a grimace
+  wc.fillStyle='#8a5c46';
+  if(st.hurt>0) wc.fillRect(hx2-2,ty-25.6,4,1.6);
+  else wc.fillRect(hx2-1.5,ty-25.2,3,1);
 
   // ---- arms and weapon, rotated to the aim direction
   // reload drops the muzzle and works the magazine; ADS pulls it tight to the shoulder
@@ -3939,7 +3956,7 @@ function spriteTop(e){
   if(e.kind==='crawler') return 24*(e.r/CRAWLER_R0);
   if(e.kind==='snitch') return 34*(e.r/SNITCH_R0);
   if(e.kind==='warden') return 52;
-  return 34;
+  return 40;   // humans grew a real head at v1.07
 }
 // The Warden: drawn half again taller than anything else on the field, one
 // slitted eye, scary rather than cute, per his answer. Same three-value
@@ -4056,7 +4073,17 @@ function drawCrawlerS(e){
   wc.fillStyle='#5a1c11';
   wc.fillRect(e.x+fl*17*S-2*S,e.y-20*S*lunge,5*S,2.4*S);
   wc.fillRect(e.x+fl*17*S-2*S,e.y-15*S*lunge,5*S,2.4*S);
+  // eye cluster: three unblinking points, brighter and pulsing on the rush.
+  // Scary is specificity: a thing with six legs and three eyes that all look AT
+  // you reads as predatory in a way a colour swap never will.
   wc.globalCompositeOperation='lighter';
+  wc.fillStyle=hunting?'#ff3b30':'#ffb02e';
+  var eyA=hunting?(.85+.15*Math.sin(G.t*16)):.5;
+  wc.globalAlpha=eyA;
+  var ehx=e.x+fl*13*S,ehy=e.y-18*S*lunge;
+  wc.beginPath(); wc.arc(ehx,ehy,1.6*S,0,6.2832); wc.fill();
+  wc.beginPath(); wc.arc(ehx+fl*3*S,ehy+2.2*S,1.2*S,0,6.2832); wc.fill();
+  wc.beginPath(); wc.arc(ehx-fl*2.5*S,ehy+2.6*S,1.1*S,0,6.2832); wc.fill();
   wc.fillStyle=hunting?'#ff5a3a':'#ffe08a';
   var cp=hunting?(1+Math.sin(G.t*14)*.3):1;
   wc.globalAlpha=.28;
