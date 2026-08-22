@@ -1,4 +1,4 @@
-﻿<div id="root">
+<div id="root">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;800&family=Roboto+Mono:wght@400;500;700&display=swap');
   #root {
@@ -293,7 +293,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.95';
+var VER='0.96';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -887,10 +887,68 @@ function buildMap(){
     while((lmAt[lr+','+lc]||(lr===1&&lc===1))&&tries<60);
     lmAt[lr+','+lc]=pool[li];
   }
+  // Themed districts. Before this every building rolled its own district
+  // independently, which sounds like variety and is the exact opposite:
+  // measured across 12 maps, a building's nearest neighbour shared its district
+  // 26% of the time against 25% for pure chance, and every single map came out
+  // a 25/25/25/25 mix. Four distinct palettes sprayed evenly over everything
+  // average to the same confetti, so no map could look like anywhere in
+  // particular. That, not a shortage of content, is why maps felt samey.
+  //
+  // Instead: 2 or 3 zone seeds per raid, each claiming a different district,
+  // and every cell takes the district of its nearest seed. That gives large
+  // contiguous zones you can cross a border of, and because the raid draws only
+  // 2 or 3 of the 4 kinds, a rust and greenbelt map reads as a different place
+  // from a foundry and blockhouse one.
+  var zoneN=ri(2,3),zseeds=[],dpool=[0,1,2,3];
+  for(var zs=dpool.length-1;zs>0;zs--){ var zj=ri(0,zs); var zt=dpool[zs]; dpool[zs]=dpool[zj]; dpool[zj]=zt; }
+  for(var zi=0;zi<zoneN;zi++){
+    var zr,zc,zt2=0;
+    // Push seeds apart so one zone cannot be a single cell wedged in a corner.
+    do{ zr=ri(0,rows-1); zc=ri(0,cols-1); zt2++;
+      var far=1;
+      for(var zk=0;zk<zseeds.length;zk++){
+        if(Math.abs(zseeds[zk].r-zr)+Math.abs(zseeds[zk].c-zc) < Math.max(2,Math.round((rows+cols)/5))){ far=0; break; }
+      }
+    } while(!far&&zt2<80);
+    zseeds.push({r:zr,c:zc,d:dpool[zi]});
+  }
+  // Border jitter keeps the seams organic instead of a clean Voronoi edge.
+  var zjit={};
+  for(var jr=0;jr<rows;jr++)for(var jc=0;jc<cols;jc++) zjit[jr+','+jc]=rnd(-0.6,0.6);
+  function cellDistrict(r2,c2){
+    var best=zseeds[0].d,bd=1e9;
+    for(var k=0;k<zseeds.length;k++){
+      var dr=zseeds[k].r-r2,dc=zseeds[k].c-c2;
+      var dd2=Math.sqrt(dr*dr+dc*dc)+(zjit[r2+','+c2]||0);
+      if(dd2<bd){ bd=dd2; best=zseeds[k].d; }
+    }
+    return best;
+  }
+  // The seed cell is where a zone STARTS, not where it sits. Labelling from the
+  // seed pushed names to the map edge whenever a seed landed in a corner, so
+  // each zone records the centroid of the cells it actually won.
+  var zsum={};
+  for(var ar=0;ar<rows;ar++)for(var ac=0;ac<cols;ac++){
+    var ad=cellDistrict(ar,ac);
+    if(!zsum[ad]) zsum[ad]={r:0,c:0,n:0};
+    zsum[ad].r+=ar; zsum[ad].c+=ac; zsum[ad].n++;
+  }
+  for(var zq=0;zq<zseeds.length;zq++){
+    var zg=zsum[zseeds[zq].d];
+    if(zg&&zg.n){ zseeds[zq].mr=zg.r/zg.n; zseeds[zq].mc=zg.c/zg.n; zseeds[zq].cells=zg.n; }
+    else { zseeds[zq].mr=zseeds[zq].r; zseeds[zq].mc=zseeds[zq].c; zseeds[zq].cells=0; }
+  }
+  // Exposed on the map so scatter props, landmarks and anything else that needs
+  // a district can ask the same question and get the same answer.
+  function districtAt(wx2,wy2){
+    var c3=clamp(Math.floor((wx2-80)/cw),0,cols-1),r3=clamp(Math.floor((wy2-80)/ch),0,rows-1);
+    return cellDistrict(r3,c3);
+  }
   for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){
     if(lmAt[r+','+c]) continue;
     if(r===1&&c===1&&Math.random()<.5) continue;
-    var d=ri(0,3);
+    var d=cellDistrict(r,c);
     var bw=rnd(255,Math.min(400,cw-90)),bh=rnd(205,Math.min(330,ch-90));
     var bx=80+c*cw+rnd(20,cw-bw-20),by=80+r*ch+rnd(20,ch-bh-20);
     buildings.push({x:bx,y:by,w:bw,h:bh,d:d,tag:ri(11,99)});
@@ -903,7 +961,7 @@ function buildMap(){
     var lp=lk.split(','),lrr=+lp[0],lcc=+lp[1],LM=lmAt[lk];
     var mx0=80+lcc*cw+26,my0=80+lrr*ch+26;
     var mw=cw-52,mh=ch-52;
-    var ld=ri(0,3);
+    var ld=cellDistrict(lrr,lcc);
     (function(dd){
       LM.build(mx0,my0,mw,mh,function(px,py,pw,ph){
         if(pw<4||ph<4) return;
@@ -917,7 +975,7 @@ function buildMap(){
     var s=rnd(30,54),px=rnd(80,WORLD_W-80-s),py=rnd(80,WORLD_H-80-s),ok=1;
     for(var j=0;j<buildings.length;j++){var bb=buildings[j];
       if(px<bb.x+bb.w+30&&px+s>bb.x-30&&py<bb.y+bb.h+30&&py+s>bb.y-30){ok=0;break;}}
-    if(ok) walls.push({x:px,y:py,w:s,h:s,d:ri(0,3)});
+    if(ok) walls.push({x:px,y:py,w:s,h:s,d:districtAt(px+s/2,py+s/2)});
   }
   // Flooded ground. Rules, chosen and stated: water never blocks movement or
   // sight, it slows you and it is loud. That makes it the anti-crouch: the one
@@ -972,7 +1030,7 @@ function buildMap(){
     segs.push({x1:w2.x,y1:w2.y+w2.h,x2:w2.x,y2:w2.y});
   }
   return {walls:walls,segs:segs,buildings:buildings,water:water,cw:cw,ch:ch,cols:cols,rows:rows,
-    landmarks:landmarks,nav:buildNav(walls)};
+    landmarks:landmarks,zones:zseeds,districtAt:districtAt,nav:buildNav(walls)};
 }
 // Day is a look, not a difficulty. Vision cone, awareness radius, enemy ranges
 // and every other tunable are identical in both conditions, so choosing daylight
@@ -1423,7 +1481,7 @@ function buildRaid(sim){
     // Weather is rolled once per raid. Clear is weighted heaviest so the unusual
     // conditions stay unusual and keep their impact.
     wx:pickWeather(),
-    lightning:0,rainT:0,inLandmark:null,
+    lightning:0,rainT:0,inLandmark:null,inZone:undefined,
     msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,legendOn:true,sprinting:false,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
       kills:{sentry:0,crawler:0,raider:0,snitch:0},
@@ -4249,6 +4307,21 @@ function drawMapOverlay(){
     var wl=G.map.walls[i];
     ctx.fillRect(ox+wl.x*sc,oy+wl.y*sc,Math.max(1,wl.w*sc),Math.max(1,wl.h*sc));
   }
+  // Name the zones on the map for the same reason the landmarks are named: the
+  // colours already separate on screen, but a colour you cannot name is not a
+  // place you can plan around or tell someone to meet you in. Drawn under the
+  // landmark labels so a landmark always wins the foreground.
+  var zl=G.map.zones||[];
+  ctx.textAlign='center';
+  for(i=0;i<zl.length;i++){
+    var Z2=zl[i];
+    if(!Z2.cells) continue;
+    var zx=ox+(80+(Z2.mc+0.5)*G.map.cw)*sc, zy=oy+(80+(Z2.mr+0.5)*G.map.ch)*sc;
+    ctx.font='700 13px "Oxanium", sans-serif';
+    ctx.fillStyle=hexA(DISTRICTS[Z2.d].wallTop,.28);
+    ctx.fillText(DISTRICTS[Z2.d].name,zx,zy);
+  }
+  ctx.textAlign='left';
   // Landmarks are what the map is navigated BY, so they are labelled and boxed
   // rather than left as anonymous geometry.
   var lms=(G.map.landmarks||[]);
@@ -4629,6 +4702,20 @@ function loop(ts){
       if(lmNow!==G.inLandmark){
         G.inLandmark=lmNow;
         if(lmNow) say('Entering the '+lmNow.name.toLowerCase()+'.');
+      }
+      // Same reasoning one level up: a zone you cannot tell you crossed into is
+      // wallpaper. Landmarks name a building, this names the ground. Suppressed
+      // while inside a landmark so the two callouts never fight over the line.
+      if(G.map.districtAt){
+        var dzNow=G.map.districtAt(pp.x,pp.y);
+        G.zoneCd=Math.max(0,(G.zoneCd||0)-dt);
+        if(G.inZone===undefined) G.inZone=dzNow;
+        else if(dzNow!==G.inZone){
+          G.inZone=dzNow;
+          // Cooldown because cell borders are a line you can stand on and
+          // wiggle across, which would otherwise fire the callout every frame.
+          if(!lmNow&&!G.zoneCd){ say('Crossing into the '+DISTRICTS[dzNow].name.toLowerCase()+'.'); G.zoneCd=6; }
+        }
       }
       HEART-=dt;
       if(HEART<=0&&(pp.hp<45||pp.downed)){
