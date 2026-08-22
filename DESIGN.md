@@ -318,6 +318,13 @@ Three things, none of which should be built without him saying so.
   - **Also shipped: camera zoom**, which he asked for. Mouse wheel, or plus and minus, or 0 to reset, from 65 to 200 percent, stored on the profile so it persists. The hard part was not the scale: the light and fog layers are separate offscreen canvases that were converting world positions to screen by hand, so they needed the same transform or the lighting would slide off the ground as you zoomed. Verified at 70, 100 and 180 percent that the lit pool still lands exactly on the player and that cone, fog, sprites and nameplates all stay locked together.
   - Measured after: enemy contact in 5 of 6 sim raids against effectively none before, 36 enemies per raid, no pathing hangs, frame script 2.8ms of a 16.7ms budget.
   - **Not addressed yet: "Loot boring."** That is the same complaint as "maps feel samey" and it needs content rather than tuning: landmarks, themed districts, real interiors. Next.
+- **v0.91 (dropping and autoloot, the two features he asked for by name):** Both were specced two builds ago and neither had been built. Delivered together because they are the same system.
+  - **Manual drop.** The inventory now has a selection: up and down move a highlight, Z drops the selected item. The arrows double as movement keys, so while the bag is open they select instead and WASD still walks, which means sorting does not root you in place with hunting enemies about. A dropped item lands as a fast-to-search pile at your feet rather than being destroyed, so it is a decision you can walk back. The list scrolls to keep the highlight visible, which matters because a full bag is longer than the panel.
+  - **Autoloot.** Toggled with C, off by default, stored on the profile. When the bag is full it sheds the worst thing rather than refusing you. Worst means lowest value per unit of weight, not lowest price, so a heavy cheap thing goes before a light cheap thing. It never sheds rare or elite, so it cannot throw away the run; a bag of nothing but rares still refuses, which is his stated guard working.
+  - **Verified against his spec, three cases.** Grossly overloaded: 100 weight down to 54 against a cap of 55, 35 items shed, every one recoverable on the ground, no rare or elite lost. Barely over: sheds exactly 3 and stops. Bag of nothing but rares: sheds 0 and refuses, as specified.
+  - **The carry limit turned out to be softer than it looks**, which is worth recording: it gates STARTING a search, not the pickup itself, so a single container can push you well past capacity. That is why his 30-item run was possible. Autoloot hooks exactly that gate, which is the right place.
+  - One layout fault found by looking, twice: the new control hint printed over the last rows of the item list. A fixed reserve of 22 pixels was still not enough, so the hint is now positioned from the measured end of the list rather than from the panel height.
+  - Sim unchanged at 6/6 with no hangs, frame script 2.7ms of a 16.7ms budget.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
@@ -326,6 +333,7 @@ The v0.68 mistake was assuming a setting was the player's when it was shared. Ra
 - **Genuinely shared, and correctly so:** `noiseMult`. It scales every noise radius in `ping`, his own footsteps as well as every machine's. That is coherent as a "how loud is the world" control and no claim has ever been made otherwise, but it is the one remaining setting where changing it for one side changes it for both.
 
 So the v0.69 correction was complete: awareness was the only leak. One process note, since the same trap caught me twice in this tick: creating an enemy to measure it gives a **randomly armed** raider each time, so any before-and-after comparison must build the subject once and re-measure that same object.
+
 
 
 
