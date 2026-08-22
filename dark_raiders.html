@@ -312,7 +312,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.16';
+var VER='1.17';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -2496,6 +2496,7 @@ function killPlayer(src){
   var p=G.player;
   p.hp=0; p.downed=false;
   G.tel.deathKiller=p.pendKiller||src||'other';
+  if(G.beaconT!==null) G.tel.diedInSiege=1;
   // The gut punch is a beat, not a cut. A second and a half of slow motion and
   // a closing red field before the ledger of what you lost. Sim skips it.
   if(G.sim){ endRaid('dead'); return; }
@@ -2644,6 +2645,13 @@ function openContainer(ct){
   var p=G.player,T=G.tel;
   ct.opened=true; T.containers++;
   if(T.firstLoot===null) T.firstLoot=G.t;
+  // Instrumentation for every system shipped since v1.00, so his exports carry
+  // signal on the new content instead of leaving me to tune it blind.
+  if(ct.cache) T.cachesOpened=(T.cachesOpened||0)+1;
+  if(ct.type==='safe'&&G.camps){
+    for(var cq2=0;cq2<G.camps.length;cq2++)
+      if(dist(ct,G.camps[cq2])<150){ T.campSafes=(T.campSafes||0)+1; break; }
+  }
   contractOpen(ct);
   for(var l=0;l<ct.loot.length;l++){
     var key=ct.loot[l],itm=ITEMS[key];
@@ -2689,6 +2697,8 @@ function openContainer(ct){
             }
           }
         }
+        T.gunsEquipped=(T.gunsEquipped||0)+1;
+        if((found.qRank||1)>(T.bestQ||0)) T.bestQ=found.qRank||1;
         var oldDmg=p.wep.dmg||0;
         p.wep=found; p.ammo=Math.ceil(p.wep.mag/2); p.wepIssued=false; p.wepFromArmory=false;
         G.tel.weapon=p.wep.name;
@@ -2784,7 +2794,7 @@ function tryExtractTick(dt,wantCall){
     }
   }
   if(G.beaconT>0) return;
-  if(inside){ endRaid('extract'); return; }
+  if(inside){ if(G.shipHold!==undefined&&G.shipHold!==null) T.holdExtract=1; endRaid('extract'); return; }
   // His death, run #4, in his words: "once i call the beacon and it arrivs i
   // should have 30 seconds t get back into the circle". The ship used to leave
   // the instant it landed unless you were already standing in it, which turned
@@ -3851,6 +3861,9 @@ function endRaid(how){
   pendingRun={
     n:P.runs,outcome:how,weapon:T.weapon,preset:CFG.preset||'custom',
     drawErr:T.drawErr||null,
+    wx:(G.wx&&G.wx.id)||'clear',tod:(G.tod&&G.tod.id)||'noon',
+    caches:T.cachesOpened||0,campSafes:T.campSafes||0,wardenMet:T.wardenMet||0,
+    gunsEq:T.gunsEquipped||0,bestQ:T.bestQ||0,holdExtract:T.holdExtract||0,diedInSiege:T.diedInSiege||0,
     dur:Math.round(CFG.raidSec-G.timeLeft),
     haul:haul,items:G.bag.length,containers:T.containers,
     shots:T.shots,hits:T.hits,acc:acc,reloads:T.reloads,heals:T.heals,
@@ -5960,7 +5973,7 @@ function loop(ts){
       var wdread=0;
       for(var wdi=0;wdi<G.ents.length;wdi++){
         var wde=G.ents[wdi];
-        if(wde.kind==='warden'){ var wdd=dist(pp,wde); if(wdd<700) wdread=Math.max(wdread,1-wdd/700); }
+        if(wde.kind==='warden'){ var wdd=dist(pp,wde); if(wdd<700){ wdread=Math.max(wdread,1-wdd/700); G.tel.wardenMet=1; } }
       }
       tickAmbience(dt,th,!pp.downed,wdread);
       tickEnemyAudio(dt);
@@ -6215,6 +6228,13 @@ function buildExport(){
     if(r.outcome==='dead') line+=' killer:'+r.deathKiller+' diedAt:'+r.deathDistExtract+'m';
     if(r.raidersExtracted) line+=' aiExtracted:'+r.raidersExtracted;
     if(r.drawErr) line+=' DRAWERR:'+r.drawErr;
+    if(r.wx) line+=' wx:'+r.wx+'/'+(r.tod||'noon');
+    if(r.caches) line+=' caches:'+r.caches;
+    if(r.campSafes) line+=' campSafes:'+r.campSafes;
+    if(r.wardenMet) line+=' wardenMet:1';
+    if(r.gunsEq) line+=' gunsEq:'+r.gunsEq+(r.bestQ>=3?'(PRISTINE)':(r.bestQ===2?'(tuned)':''));
+    if(r.holdExtract) line+=' viaHold:1';
+    if(r.diedInSiege) line+=' diedInSiege:1';
     L.push(line);
     if(r.tags&&r.tags.length) L.push('   tags: '+r.tags.join(', '));
     if(r.note) L.push('   note: '+r.note);
