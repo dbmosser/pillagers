@@ -313,7 +313,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.24';
+var VER='1.25';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -1874,13 +1874,42 @@ function mkSnitch(x,y){
     name:mkName('SNITCH',['E','N','S']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:170,dmg:0,rng:380,cone:1.2,hitT:0,lost:0};
 }
-function mkRaider(x,y){
+// SPEC 8.5: a persistent roster of TEN named identities. Absurd gamer tags,
+// deliberately. They remember across runs in both directions: kill one and it
+// is shoot on sight forever after, leave one alone or spare it and it warms up.
+// Killed identities return in later runs as the same identity, which is arcadey
+// and keeps the roster stable. Gear is rolled fresh each run, so an old rival
+// might show up dangerous or harmless.
+var IDENTITIES=[
+  {id:'beef',  tag:'xX_BeefStuffer69_Xx', coat:'#a8443a'},
+  {id:'prone', tag:'ProneBone_42',        coat:'#8a5a2e'},
+  {id:'gamer', tag:'ur_mom_GAMING',       coat:'#3f6b5e'},
+  {id:'noscp', tag:'420_NoScope_Nate',    coat:'#6a4c7a'},
+  {id:'sigma', tag:'SigmaGrindsetTom',    coat:'#4a5b7d'},
+  {id:'lootg', tag:'LootGoblin_Prime',    coat:'#7a6a3a'},
+  {id:'wifi',  tag:'FBI_Surveillance_Van',coat:'#5a7a6a'},
+  {id:'crouch',tag:'CrouchSpammer',       coat:'#8a4a6a'},
+  {id:'nan',   tag:'ur_dad_left_4_milk',  coat:'#4a6a8a'},
+  {id:'lag',   tag:'LagSwitch_Larry',     coat:'#8a6a4a'}
+];
+function idRec(id){
+  P.rivals=P.rivals||{};
+  if(!P.rivals[id]) P.rivals[id]={kills:0,deaths:0,met:0,standing:0};
+  return P.rivals[id];
+}
+function mkRaider(x,y,forceId){
   var wk=pick(['pistol','smg','pistol','rifle']);
+  var ident=forceId||pick(IDENTITIES);
+  var rec=(G&&G.sim)?{kills:0,deaths:0,met:0,standing:0}:idRec(ident.id);
   var r={kind:'raider',x:x,y:y,r:11,hp:Math.round(78*CFG.eHp),maxhp:Math.round(78*CFG.eHp),react:rnd(.38,.62),
     face:rnd(0,6.28),state:'loot',tx:x,ty:y,cd:0,alert:0,spd:122,wep:WEAPONS[wk],dmg:WEAPONS[wk].dmg,
     rng:WEAPONS[wk].rng*.72,cone:.8,bag:[],goal:null,skips:[],goalT:0,goalD:0,extracting:0,hitT:0,step:0,
-    coat:pick(['#a8443a','#8a5a2e','#3f6b5e','#6a4c7a','#4a5b7d']),
-    name:pick(['DRIFTER','MAGPIE','HOLLOW','TALLY','RASP','COYOTE','VESPER','KESTREL'])};
+    coat:ident.coat, ident:ident.id, name:ident.tag,
+    // SPEC 8.4: varying hostility. A raider you have killed before is shoot on
+    // sight with no negotiation; one you have good standing with is passive
+    // until provoked. Everyone else sits in between.
+    grudge:rec.kills>0, standing:rec.standing,
+    hostile:(rec.kills>0)?true:(rec.standing>0?false:(Math.random()<0.55))};
   r.bag.push('gun_'+wk);
   for(var i=0;i<ri(1,3);i++) r.bag.push(rollTable(LOOT.crate));
   return r;
@@ -2069,7 +2098,13 @@ function buildRaid(sim){
   for(i=0;i<CFG.nSentry;i++){ var s1=far(freeSpot(map,30),880); ents.push(mkSentry(s1.x,s1.y)); }
   for(i=0;i<CFG.nCrawler;i++){ var s2=far(freeSpot(map,26),780); ents.push(mkCrawler(s2.x,s2.y)); }
   for(i=0;i<CFG.nSnitch;i++){ var s4=far(freeSpot(map,26),720); ents.push(mkSnitch(s4.x,s4.y)); }
-  for(i=0;i<CFG.nRaider;i++){ var s3=far(freeSpot(map,30),1190); ents.push(mkRaider(s3.x,s3.y)); }
+  // Each raid draws distinct identities, so you never meet two of the same name.
+  var idPool=IDENTITIES.slice();
+  for(var ip=idPool.length-1;ip>0;ip--){ var jp=ri(0,ip),tp=idPool[ip]; idPool[ip]=idPool[jp]; idPool[jp]=tp; }
+  for(i=0;i<CFG.nRaider;i++){
+    var s3=far(freeSpot(map,30),1190);
+    ents.push(mkRaider(s3.x,s3.y,idPool[i%idPool.length]));
+  }
   var sw=far(freeSpot(map,44),1400); ents.push(mkWarden(sw.x,sw.y));
   for(var gc=0;gc<camps.length;gc++){
     var CP=camps[gc];
@@ -3627,7 +3662,17 @@ function updateEnts(dt){
       // map to the player inflated both contract progress and the kill counts
       // in the recorder, which is the data tuning decisions are made from.
       // Last hit wins, exactly as the flag was set at the killing blow.
-      if(e.byPlayer){ T.kills[e.kind]++; contractKill(e.kind); }
+      if(e.byPlayer){
+        T.kills[e.kind]++; contractKill(e.kind);
+        // SPEC 8.5 and 5.8: the rivalry ledger. Killing an identity is a
+        // permanent grudge; it will be shoot on sight every run from now on.
+        if(e.kind==='raider'&&e.ident&&!G.sim){
+          var rr2=idRec(e.ident);
+          rr2.kills++; rr2.standing=Math.min(rr2.standing-2,-1); rr2.met++;
+          saveProfile();
+          say(e.name+' will remember that.');
+        }
+      }
       if(e.kind==='warden'){
         var cw=setLoot(mkContainer(e.x,e.y,'cache'),['wcore',pick(['reactor','codex','bloom']),pick(['titan','core','coil'])]);
         cw.cache=1; cw.time=2.0; G.containers.push(cw);
@@ -3696,27 +3741,51 @@ function updateEnts(dt){
       collide(e,G.map.walls);
       continue;
     }
-    // ---- snitch: marks you instead of fighting
+    // ---- snitch. SPEC 8.3: on spotting you it begins a 3 to 4 second AUDIBLE
+    // alarm windup. Kill it inside that window and nothing is called. If it
+    // finishes, reinforcements converge on WHERE YOU WERE WHEN THE ALARM
+    // STARTED, so moving immediately is the other counterplay. It flees while
+    // alarming but not fast enough to be unkillable, and a 1v1 should be
+    // winnable most of the time: the danger is a snitch spotting you when other
+    // machines are already close.
     if(e.kind==='snitch'){
-      if(sees){ e.state='alarm'; e.lost=0; }
+      if(sees&&e.state!=='alarm'){
+        e.state='alarm'; e.lost=0;
+        e.wind=rnd(3,4);
+        e.markX=p.x; e.markY=p.y;      // the position that gets called in
+        sfx('alarm',e.x,e.y);
+        say('A snitch has you. Kill it or move.');
+      }
       var wantS=e.face;
       if(e.state==='alarm'){
         var ds=dist(e,p);
-        if(!sees){ e.lost+=dt; if(e.lost>3){ e.state='patrol'; e.cd=0; } }
-        if(ds<230){ wantS=Math.atan2(e.y-p.y,e.x-p.x); moveToward(e,e.x+Math.cos(wantS)*80,e.y+Math.sin(wantS)*80,e.spd,dt); }
+        if(!sees){ e.lost+=dt; if(e.lost>3){ e.state='patrol'; e.cd=0; e.wind=null; } }
+        // flees, but at a speed a competent player can close or shoot
+        if(ds<300){ wantS=Math.atan2(e.y-p.y,e.x-p.x); moveToward(e,e.x+Math.cos(wantS)*80,e.y+Math.sin(wantS)*80,e.spd*.92,dt); }
         else { wantS=Math.atan2(p.y-e.y,p.x-e.x)+1.4; moveToward(e,e.x+Math.cos(wantS)*60,e.y+Math.sin(wantS)*60,e.spd*.6,dt); }
-        e.cd-=dt;
-        if(e.cd<=0&&sees){
-          e.cd=1.5; sfx("alarm",e.x,e.y);
-          ping(p.x,p.y,620,true);
+        e.wind-=dt;
+        // the windup is audible the whole way, rising
+        e.windAcc=(e.windAcc||0)+dt;
+        if(e.windAcc>0.45){ e.windAcc=0; sfx('charge',e.x,e.y); }
+        if(e.wind<=0){
+          e.wind=null; e.state='patrol'; e.cd=rnd(4,7);
+          sfx('alarm',e.x,e.y);
+          ping(e.markX,e.markY,620,true);
           G.marked=2.2; T.marked=(T.marked||0)+1;
-          // The mark now actually summons. Machines within 900 get your marked
-          // position and come looking; raiders ignore it, it is not their fight.
+          say('Alarm went out. They are coming to where you were.');
+          // Reinforcements converge on the MARKED position, not your current
+          // one, which is what makes repositioning the counterplay.
           for(var sb=0;sb<G.ents.length;sb++){
             var eb=G.ents[sb];
-            if(eb===e||eb.kind==='raider'||eb.kind==='snitch') continue;
-            if(dist(eb,p)>900) continue;
-            if(eb.state!=='chase'){ eb.state='investigate'; eb.tx=p.x+rnd(-30,30); eb.ty=p.y+rnd(-30,30); eb.alert=Math.max(eb.alert,2.5); }
+            if(eb===e||eb.kind==='snitch') continue;
+            if(dist(eb,{x:e.markX,y:e.markY})>900) continue;
+            // SPEC 8.3: raiders hear it too and know something is happening
+            // there. They come looking for a distracted target.
+            if(eb.state!=='chase'){
+              eb.state='investigate';
+              eb.tx=e.markX+rnd(-40,40); eb.ty=e.markY+rnd(-40,40);
+              eb.alert=Math.max(eb.alert,2.5);
+            }
           }
         }
       } else {
@@ -3738,6 +3807,26 @@ function updateEnts(dt){
       if(!G.sim&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)) label(e.x,e.y-18,e.name+' IS RUNNING','#ffd25c',0,true);
     }
     if(sees){
+      // SPEC 8.4: hostility varies. A passive raider that has not been provoked
+      // watches you rather than opening fire, and only turns when you crowd it
+      // or shoot it. One you have killed before never gives you that grace.
+      if(e.kind==='raider'&&!e.hostile){
+        var pd2=dist(e,p);
+        if(pd2<180||e.hitT>0){
+          e.hostile=true;
+          if(!G.sim) say(e.name+' does not like that.');
+        } else {
+          if(!e.metSaid&&!G.sim){
+            e.metSaid=1;
+            say(e.name+(e.standing>0?' nods at you.':' is watching you.'));
+          }
+          e.alert=Math.max(e.alert,1.2);
+          e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-3*dt,3*dt);
+          collide(e,G.map.walls);
+          if(e.cd>0) e.cd-=dt;
+          continue;
+        }
+      }
       // Raiders get a beat to react before their first shot. Without it they
       // acquire and fire in the same frame, which is what read as unfair.
       if(e.kind==='raider'&&e.state!=='chase') e.cd=Math.max(e.cd,e.react||0.5);
@@ -4605,6 +4694,24 @@ function drawSnitchS(e){
   var hov=(17+Math.sin(G.t*6+e.x*.1)*4)*S;
   shadowE(e.x,e.y+1,8*S,3*S,.32);
   var cy=e.y-hov;
+  // SPEC 8.3: visually distinctive at a distance so it can be identified and
+  // prioritised. A winding snitch throws an expanding red alarm ring and a
+  // filling countdown arc, so from across the map you can see one is calling
+  // and how long you have left to stop it.
+  if(al&&e.wind!==undefined&&e.wind!==null){
+    var wf=1-clamp(e.wind/4,0,1);
+    wc.globalCompositeOperation='lighter';
+    var pulse=(G.t*2)%1;
+    wc.strokeStyle='rgba(255,59,48,'+(0.5*(1-pulse))+')'; wc.lineWidth=2.5*S;
+    wc.beginPath(); wc.arc(e.x,cy,(16+44*pulse)*S,0,6.2832); wc.stroke();
+    wc.strokeStyle='#ff3b30'; wc.lineWidth=3*S;
+    wc.beginPath(); wc.arc(e.x,cy,22*S,-1.5708,-1.5708+6.2832*wf); wc.stroke();
+    wc.globalCompositeOperation='source-over';
+    wc.font=FS('700 10px "Titan One","Rubik",sans-serif'); wc.textAlign='center';
+    wc.fillStyle=INK; wc.fillText('ALARM',e.x+1,cy-30*S+1);
+    wc.fillStyle='#ff5040'; wc.fillText('ALARM',e.x,cy-30*S);
+    wc.textAlign='left';
+  }
   // rotor blur, faster when it is running its mouth
   wc.globalCompositeOperation='lighter';
   wc.strokeStyle=al?'rgba(255,120,90,.30)':'rgba(150,175,200,.22)';
@@ -4993,10 +5100,14 @@ function render2D(dt){
     var ph2=Math.ceil(parseFloat(wc.font)*1.35);
     wc.fillStyle='rgba(6,9,13,.62)';
     wc.fillRect(ne.x-tw/2-4,ne.y-lift-ph2+3,tw+8,ph2);
+    // SPEC 8.4: a visible hostility indicator per raider, so the situation is
+    // readable before you commit. Grudge red, passive green, everyone else dim.
     wc.fillStyle=ne.state==='extract'?'#35d6c8'
+      :(ne.kind==='raider'&&ne.grudge?'#ff3b30'
+      :(ne.kind==='raider'&&!ne.hostile?'#7fc4a0'
       :(ne.state==='chase'||ne.state==='alarm'
         ? (hostile?'#ff6b5a':'#ff9a3c')
-        : (hostile?'#e0a89e':'#9aa6b2'));
+        : (hostile?'#e0a89e':'#9aa6b2'))));
     wc.fillText(plate,ne.x,ne.y-lift);
     // health pip so a wounded target reads at a glance
     if(ne.hp<ne.maxhp){
