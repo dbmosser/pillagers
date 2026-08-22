@@ -333,7 +333,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.29';
+var VER='1.30';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -417,6 +417,12 @@ var ITEMS={
   // be lucky about.
   reactor:{name:'ARC Reactor Core',val:2600,wt:4,r:'elite',c:'#e08cff'},
   wcore:{name:'Warden Core',val:3800,wt:5,r:'elite',c:'#ffd76a'},
+  // SPEC 7.6: keys. Single use, they say what they open, sellable if you will
+  // never use one, and they can be extracted and brought back for a targeted raid.
+  key_dam_turbine:{name:'Turbine Room Key',val:600,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'dam_turbine'},
+  key_dam_vault:{name:'Substation Vault Key',val:700,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'dam_vault'},
+  key_bc_cellar:{name:'Sealed Cellar Key',val:600,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'bc_cellar'},
+  key_bc_depot:{name:'Garage Depot Key',val:700,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'bc_depot'},
   codex:{name:'Sealed Codex',val:2200,wt:2,r:'elite',c:'#d89cff'},
   bloom:{name:'Bloom Sample',val:3100,wt:2,r:'elite',c:'#ff9ce8'},
   relay:{name:'Orbital Relay',val:1700,wt:4,r:'elite',c:'#c090ff'},
@@ -453,12 +459,12 @@ var SHOP=[
 var LOOT={
   crate:[['scrap',32],['wire',22],['cell',13],['bandage',11],['ammobox',15],['board',5],['comp',3],['optic',2]],
   locker:[['wire',15],['cell',13],['board',15],['optic',11],['bandage',7],['ammobox',13],['plate',7],['servo',6],['smoke',4],['decoy',3],['gun_pistol',4],['gun_smg',2],['gun_carbine',2],['core',2]],
-  safe:[['core',20],['titan',14],['optic',11],['servo',10],['board',9],['plate',7],['medkit',7],['comp',6],['frag',5],['gun_rifle',5],['gun_shotgun',4],['gun_lmg',3],['gun_dmr',2],['blackbox',2]],
+  safe:[['core',20],['titan',14],['optic',11],['servo',10],['board',9],['plate',7],['medkit',7],['comp',6],['frag',5],['gun_rifle',5],['gun_shotgun',4],['gun_lmg',3],['gun_dmr',2],['blackbox',2],['KEY',4]],
   body:[['bandage',18],['ammobox',22],['scrap',12],['medkit',10],['board',8],['cell',8],['plate',6],['gun_pistol',6],['gun_smg',2],['frag',4],['smoke',4],['core',3]],
   // Caches hold no junk at all. Every entry here is rare or elite, so opening one
   // is always worth the 4.6 seconds it pins you in place.
   cache:[['blackbox',12],['reactor',10],['codex',10],['bloom',7],['relay',11],
-         ['titan',14],['core',12],['ledger',10],['coil',10],['gun_dmr',8],['gun_rifle',7],['gun_lmg',6],['gun_shotgun',5],['medkit',6]]
+         ['titan',14],['core',12],['ledger',10],['coil',10],['gun_dmr',8],['gun_rifle',7],['gun_lmg',6],['gun_shotgun',5],['medkit',6],['KEY',7]]
 };
 var DISTRICTS=[
   // Four genuine hue families at Chrono Trigger saturation. Three of the four
@@ -843,6 +849,14 @@ function pick(a){return a[Math.floor(Math.random()*a.length)];}
 function clamp(v,a,b){return v<a?a:(v>b?b:v);}
 function dist(a,b){var dx=a.x-b.x,dy=a.y-b.y;return Math.sqrt(dx*dx+dy*dy);}
 function angDiff(a,b){var d=a-b;while(d>Math.PI)d-=6.283185;while(d<-Math.PI)d+=6.283185;return d;}
+// The loot tables carry a KEY placeholder rather than specific key ids, because
+// which keys exist depends on which map is loaded. Resolved at draw time.
+function resolveKey(){
+  var mi=clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1);
+  var L=FIXED_MAPS[mi].locked||[];
+  if(!L.length) return 'scrap';
+  return 'key_'+L[ri(0,L.length-1)].id;
+}
 function rollTable(t){var s=0,i;for(i=0;i<t.length;i++)s+=t[i][1];var r=Math.random()*s;
   for(i=0;i<t.length;i++){r-=t[i][1];if(r<=0)return t[i][0];}return t[0][0];}
 // One shared contour colour for every body on the map. Warm near-black rather
@@ -1311,6 +1325,12 @@ var FIXED_MAPS=[
     {x:1860,y:1540,w:150,h:120},
     {x:2880,y:2180,w:150,h:120}
   ],
+  // SPEC 7.6: locked rooms. High tier loot behind a door that needs a specific
+  // single use key. Shown on the in run map so the route can be planned.
+  locked:[
+    {id:'dam_turbine', name:'TURBINE ROOM', x:2340,y:360, w:220,h:220},
+    {id:'dam_vault',   name:'SUBSTATION VAULT', x:4380,y:1920, w:220,h:220}
+  ],
   landmarks:[
     {id:'dam_house', name:'POWERHOUSE',  x:2180,y:300, w:840,h:340, loot:'rare',   dens:1.8},
     {id:'dam_sub',   name:'SUBSTATION',  x:3400,y:1060,w:1560,h:660,loot:'ammo',   dens:1.2},
@@ -1396,6 +1416,10 @@ var FIXED_MAPS=[
   ramps:[
     {x:2160,y:1180,w:150,h:130},
     {x:2160,y:3160,w:150,h:130}
+  ],
+  locked:[
+    {id:'bc_cellar', name:'SEALED CELLAR', x:2080,y:2080, w:220,h:220},
+    {id:'bc_depot',  name:'GARAGE DEPOT',  x:3540,y:3600, w:220,h:220}
   ],
   landmarks:[
     {id:'bc_yard',  name:'THE COURTYARD', x:1300,y:1300,w:2000,h:2000,loot:'bulk',   dens:0.5},
@@ -1491,6 +1515,23 @@ function buildFixedMap(def){
     edgeSpan(PL.x,PL.y,t2,PL.h,i);
     edgeSpan(PL.x+PL.w-t2,PL.y,t2,PL.h,i);
   }
+  // SPEC 7.6: locked rooms. Four walls, no gap. The door is a wall segment that
+  // is REMOVED when the matching key is spent, which is the whole mechanism:
+  // no key means no route, and the nav grid rebuilds when it opens.
+  var lockedRooms=[];
+  for(i=0;i<(def.locked||[]).length;i++){
+    var LK=def.locked[i],lt=16;
+    var doorW=70,doorX=LK.x+(LK.w-doorW)/2;
+    walls.push({x:LK.x,y:LK.y,w:LK.w,h:lt,d:3,lockWall:LK.id});
+    walls.push({x:LK.x,y:LK.y+LK.h-lt,w:doorX-LK.x,h:lt,d:3,lockWall:LK.id});
+    walls.push({x:doorX+doorW,y:LK.y+LK.h-lt,w:LK.x+LK.w-(doorX+doorW),h:lt,d:3,lockWall:LK.id});
+    walls.push({x:LK.x,y:LK.y,w:lt,h:LK.h,d:3,lockWall:LK.id});
+    walls.push({x:LK.x+LK.w-lt,y:LK.y,w:lt,h:LK.h,d:3,lockWall:LK.id});
+    // the door itself, tagged so it can be removed on unlock
+    walls.push({x:doorX,y:LK.y+LK.h-lt,w:doorW,h:lt,d:3,door:LK.id});
+    lockedRooms.push({id:LK.id,name:LK.name,x:LK.x,y:LK.y,w:LK.w,h:LK.h,
+      doorX:doorX+doorW/2,doorY:LK.y+LK.h-lt/2,open:false});
+  }
   function platAt(wx2,wy2){
     for(var q=0;q<plats.length;q++){ var Q=plats[q];
       if(wx2>=Q.x&&wx2<Q.x+Q.w&&wy2>=Q.y&&wy2<Q.y+Q.h) return Q; }
@@ -1553,7 +1594,7 @@ function buildFixedMap(def){
   }
   return {fixed:def.id,name:def.name,walls:walls,segs:segs,buildings:buildings,water:water,
     cw:WORLD_W/8,ch:WORLD_H/8,cols:8,rows:8,
-    landmarks:landmarks,zones:zseeds,districtAt:districtAt,zoneAt:zoneAt,woods:woodsList,bigPairs:[],plats:plats,ramps:ramps,platAt:platAt,liftAt:liftAt,
+    landmarks:landmarks,zones:zseeds,districtAt:districtAt,zoneAt:zoneAt,woods:woodsList,bigPairs:[],plats:plats,ramps:ramps,platAt:platAt,liftAt:liftAt,locked:lockedRooms,
     spawns:def.spawns,extracts:def.extracts,nav:mapNav};
 }
 // SPEC 4.1: the procedural map generator that lived here is DELETED, along with
@@ -1989,7 +2030,10 @@ function mkContainer(x,y,type,d){
   var times={crate:1.4,locker:2.2,safe:3.4,body:1.0,cache:4.6};
   var counts={crate:[1,2],locker:[1,3],safe:[2,3],body:[1,2],cache:[2,3]};
   var c=counts[type],loot=[],n=ri(c[0],c[1]);
-  for(var i=0;i<n;i++) loot.push(rollTable(LOOT[type]));
+  for(var i=0;i<n;i++){
+    var lk=rollTable(LOOT[type]);
+    loot.push(lk==='KEY'?resolveKey():lk);
+  }
   return {x:x,y:y,r:15,type:type,d:(d===undefined?-1:d),loot:loot,opened:false,time:times[type],best:bestRarity(loot),rot:rnd(-.25,.25)};
 }
 // Machines get stencilled unit designations so they read as specific things on
@@ -2095,7 +2139,40 @@ function buildRaid(sim){
   // blocked spawn is a raid that starts stuck. Verified per map in testing, but
   // guarded here so an authoring slip can never ship as an unplayable run.
   if(!spotFree(map,start.x,start.y,22)){
-    var near=null,nd=1e9;
+    // SPEC 7.6: spend a key at its door. Single use, and the key names its door
+  // so there is no hunting. Removing the door wall rebuilds the nav grid, which
+  // is what actually opens the route for you and for everything else.
+  var doorNear=null;
+  for(var lk2=0;lk2<(G.map.locked||[]).length;lk2++){
+    var LKR=G.map.locked[lk2];
+    if(LKR.open) continue;
+    if(dist(p,{x:LKR.doorX,y:LKR.doorY})<52){ doorNear=LKR; break; }
+  }
+  G.nearDoor=doorNear;
+  if(doorNear&&keys['KeyE']){
+    var ki=-1;
+    for(var kb=0;kb<G.bag.length;kb++){
+      var kit=ITEMS[G.bag[kb]];
+      if(kit&&kit.use==='key'&&kit.door===doorNear.id){ ki=kb; break; }
+    }
+    if(ki>=0){
+      G.bag.splice(ki,1);
+      doorNear.open=true;
+      for(var dw=G.map.walls.length-1;dw>=0;dw--)
+        if(G.map.walls[dw].door===doorNear.id) G.map.walls.splice(dw,1);
+      G.map.segs=[];
+      for(var sg=0;sg<G.map.walls.length;sg++){ var sw=G.map.walls[sg];
+        G.map.segs.push({x1:sw.x,y1:sw.y,x2:sw.x+sw.w,y2:sw.y});
+        G.map.segs.push({x1:sw.x+sw.w,y1:sw.y,x2:sw.x+sw.w,y2:sw.y+sw.h});
+        G.map.segs.push({x1:sw.x+sw.w,y1:sw.y+sw.h,x2:sw.x,y2:sw.y+sw.h});
+        G.map.segs.push({x1:sw.x,y1:sw.y+sw.h,x2:sw.x,y2:sw.y});
+      }
+      G.map.nav=buildNav(G.map.walls);
+      G.tel.doorsOpened=(G.tel.doorsOpened||0)+1;
+      say(doorNear.name+' is open.'); blip('pick'); ping(p.x,p.y,340,false,false,'player','move');
+    }
+  }
+  var near=null,nd=1e9;
     for(var gt=0;gt<300;gt++){
       var c4=freeSpot(map,26);
       var d4=dist(c4,start);
@@ -2190,6 +2267,18 @@ function buildRaid(sim){
   // whose patrol is tethered to the camp, so the guards are always THERE, not
   // wandered off. Marked on the sector map in red: advertised danger is a choice,
   // ambush danger is a mugging.
+  // SPEC 7.6: locked rooms contain high tier loot. That is the whole reason to
+  // spend a key rather than sell it.
+  for(var lr=0;lr<(map.locked||[]).length;lr++){
+    var LR=map.locked[lr];
+    for(var lc3=0;lc3<3;lc3++){
+      var lsp=spotIn(map,{x:LR.x+20,y:LR.y+20,w:LR.w-40,h:LR.h-40},18);
+      if(!lsp) continue;
+      var lcc=mkContainer(lsp.x,lsp.y,'cache',3);
+      lcc.cache=1; lcc.inLocked=LR.id;
+      containers.push(lcc);
+    }
+  }
   var camps=[];
   for(var ec=0;ec<2;ec++){
     var cs=null,tries2=0;
@@ -3451,6 +3540,39 @@ function updatePlayer(dt){
   }
   if(!keys['KeyF']) p.healLock=false;
 
+  // SPEC 7.6: spend a key at its door. Single use, and the key names its door
+  // so there is no hunting. Removing the door wall rebuilds the nav grid, which
+  // is what actually opens the route for you and for everything else.
+  var doorNear=null;
+  for(var lk2=0;lk2<(G.map.locked||[]).length;lk2++){
+    var LKR=G.map.locked[lk2];
+    if(LKR.open) continue;
+    if(dist(p,{x:LKR.doorX,y:LKR.doorY})<52){ doorNear=LKR; break; }
+  }
+  G.nearDoor=doorNear;
+  if(doorNear&&keys['KeyE']){
+    var ki=-1;
+    for(var kb=0;kb<G.bag.length;kb++){
+      var kit=ITEMS[G.bag[kb]];
+      if(kit&&kit.use==='key'&&kit.door===doorNear.id){ ki=kb; break; }
+    }
+    if(ki>=0){
+      G.bag.splice(ki,1);
+      doorNear.open=true;
+      for(var dw=G.map.walls.length-1;dw>=0;dw--)
+        if(G.map.walls[dw].door===doorNear.id) G.map.walls.splice(dw,1);
+      G.map.segs=[];
+      for(var sg=0;sg<G.map.walls.length;sg++){ var sw=G.map.walls[sg];
+        G.map.segs.push({x1:sw.x,y1:sw.y,x2:sw.x+sw.w,y2:sw.y});
+        G.map.segs.push({x1:sw.x+sw.w,y1:sw.y,x2:sw.x+sw.w,y2:sw.y+sw.h});
+        G.map.segs.push({x1:sw.x+sw.w,y1:sw.y+sw.h,x2:sw.x,y2:sw.y+sw.h});
+        G.map.segs.push({x1:sw.x,y1:sw.y+sw.h,x2:sw.x,y2:sw.y});
+      }
+      G.map.nav=buildNav(G.map.walls);
+      G.tel.doorsOpened=(G.tel.doorsOpened||0)+1;
+      say(doorNear.name+' is open.'); blip('pick'); ping(p.x,p.y,340,false,false,'player','move');
+    }
+  }
   var near=null,nd=1e9;
   for(var c=0;c<G.containers.length;c++){
     var ct=G.containers[c]; if(ct.opened) continue;
@@ -4284,6 +4406,23 @@ function updateBullets(dt){
 
 // ================================================================ end of run
 var pendingRun=null,selTags=[];
+// SPEC 17: two progression tracks, and NEITHER makes the character stronger.
+// No stat inflation anywhere: power comes from gear and competence, and these
+// are prestige only. Experience counts time invested; Extraction Proficiency
+// weighs how much value you actually get OUT, so dying loaded hurts it.
+function xpForRun(rec){
+  return 40 + Math.round((rec.containers||0)*4) + Math.round((rec.dist||0)/900);
+}
+function addProgress(rec){
+  P.xp=(P.xp||0)+xpForRun(rec);
+  P.xpLevel=1+Math.floor(Math.sqrt((P.xp||0)/220));
+  // Proficiency: banked value counts, value lost on death counts AGAINST.
+  P.profRaw=P.profRaw||0;
+  if(rec.outcome==='extract') P.profRaw+=(rec.haul||0);
+  else if(rec.outcome==='dead') P.profRaw-=Math.round((rec.haul||0)*0.6);
+  if(P.profRaw<0) P.profRaw=0;
+  P.prof=Math.round(P.profRaw/1000);
+}
 function bankItem(k){
   var it=ITEMS[k];
   if(it&&it.use==='gun'&&P.weapons.indexOf(it.gk)<0){
@@ -4412,7 +4551,7 @@ function endRaid(how){
     n:P.runs,outcome:how,weapon:T.weapon,preset:CFG.preset||'custom',
     drawErr:T.drawErr||null,
     wx:(G.wx&&G.wx.id)||'clear',tod:(G.tod&&G.tod.id)||'noon',
-    caches:T.cachesOpened||0,campSafes:T.campSafes||0,wardenMet:T.wardenMet||0,
+    caches:T.cachesOpened||0,campSafes:T.campSafes||0,wardenMet:T.wardenMet||0,doorsOpened:T.doorsOpened||0,
     gunsEq:T.gunsEquipped||0,bestQ:T.bestQ||0,holdExtract:T.holdExtract||0,diedInSiege:T.diedInSiege||0,
     dur:Math.round(CFG.raidSec-G.timeLeft),
     haul:haul,items:G.bag.length,containers:T.containers,
@@ -4438,6 +4577,9 @@ function endRaid(how){
     var kn=(T.lastHitName&&T.deathKiller!=='timer')?T.lastHitName:String(T.deathKiller||'unknown').toUpperCase();
     s.textContent='KILLED BY '+kn+(T.deathDistExtract?',  '+T.deathDistExtract+'M FROM EXTRACTION':''); }
   else { t.textContent='ABANDONED'; t.style.color='var(--ash)'; s.textContent='RUN TERMINATED'; }
+  // SPEC 5.7 and 17: both tracks are visible on the post run summary.
+  lines.push('<span style="color:var(--ash)">LEVEL '+(P.xpLevel||1)+
+    '   PROFICIENCY '+(P.prof||0)+'</span>');
   document.getElementById('oc_manifest').innerHTML=lines.join('<br>');
   selTags=[]; buildTags();
   document.getElementById('oc_note').value='';
@@ -5746,6 +5888,18 @@ function drawHUD(){
   }
   ctx.textAlign='left';
   // projected world labels
+  if(G.nearDoor){
+    var dsc=w2s(G.nearDoor.doorX,26,G.nearDoor.doorY);
+    if(dsc){
+      var haveKey=false;
+      for(var hk=0;hk<G.bag.length;hk++){ var hki=ITEMS[G.bag[hk]];
+        if(hki&&hki.use==='key'&&hki.door===G.nearDoor.id){ haveKey=true; break; } }
+      ctx.font=FS('10px "Rubik",sans-serif'); ctx.textAlign='center';
+      ctx.fillStyle=haveKey?'#7fc4a0':'#ff8a76';
+      ctx.fillText(haveKey?('[E] UNLOCK '+G.nearDoor.name):(G.nearDoor.name+' - LOCKED'),dsc.x,dsc.y);
+      ctx.textAlign='left';
+    }
+  }
   var nc2=G.nearContainer;
   if(nc2&&!G.searching&&!p.downed){
     var s=w2s(nc2.x,26,nc2.y);
@@ -6250,6 +6404,19 @@ function drawMapOverlay(){
     ctx.fillText(Z2.name||DISTRICTS[Z2.d].name,zx,zy);
   }
   ctx.textAlign='left';
+  // SPEC 7.6 and 11.1: locked rooms display on the map so the route can be
+  // planned, and they show whether you have already opened them.
+  for(i=0;i<(G.map.locked||[]).length;i++){
+    var LM3=G.map.locked[i];
+    var lx3=ox+LM3.x*sc,ly3=oy+LM3.y*sc;
+    ctx.strokeStyle=LM3.open?'rgba(127,196,160,.8)':'#ffd76a';
+    ctx.lineWidth=2;
+    ctx.strokeRect(lx3,ly3,LM3.w*sc,LM3.h*sc);
+    ctx.font=FS('700 10px "Titan One","Rubik",sans-serif'); ctx.textAlign='center';
+    ctx.fillStyle=LM3.open?'#7fc4a0':'#ffd76a';
+    ctx.fillText(LM3.open?'OPEN':('LOCKED'),lx3+LM3.w*sc/2,ly3-6);
+    ctx.textAlign='left';
+  }
   // SPEC 4.5: manholes on the sector map, so the fixed spawn set is learnable.
   for(i=0;i<(G.map.spawns||[]).length;i++){
     var SM=G.map.spawns[i];
@@ -6615,7 +6782,8 @@ function drawHubHUD(ox,oy){
   ctx.fillText('THE UNDERCROFT',16,28);
   ctx.font=FS('9.5px "Rubik",sans-serif'); ctx.fillStyle='#8a96a1';
   ctx.fillText(P.credits.toLocaleString()+'c  ·  REP '+P.rep.toLocaleString()+
-    '  ·  '+P.stash.length+' in stash  ·  '+P.runs+' runs',16,44);
+    '  ·  '+P.stash.length+' in stash  ·  '+P.runs+' runs  ·  LVL '+(P.xpLevel||1)+
+    '  ·  PROF '+(P.prof||0),16,44);
   if(HUBSAY_T>0){
     ctx.textAlign='center';
     ctx.font=FS('12px "Rubik",sans-serif');
@@ -6847,7 +7015,7 @@ var GAMBLE_POOL=[
   ['optic',7],['plate',6],['servo',6],['comp',6],['medkit',5],['smoke',4],['decoy',3],['frag',3],
   ['core',4],['coil',3],['ledger',3],['titan',3],
   ['gun_pistol',4],['gun_smg',3],['gun_carbine',2],['gun_shotgun',2],['gun_rifle',2],['gun_lmg',1],['gun_dmr',1],
-  ['blackbox',1],['relay',1],['codex',1],['reactor',1],['bloom',1]
+  ['blackbox',1],['relay',1],['codex',1],['reactor',1],['bloom',1],['KEY',3]
 ];
 // SPEC 3.1: vendors you actually talk to, not interaction prompts on crates.
 // One line each, rotating, so the Undercroft has people in it.
@@ -7053,6 +7221,7 @@ function buildExport(){
     if(r.gunsEq) line+=' gunsEq:'+r.gunsEq+(r.bestQ>=3?'(PRISTINE)':(r.bestQ===2?'(tuned)':''));
     if(r.holdExtract) line+=' viaHold:1';
     if(r.diedInSiege) line+=' diedInSiege:1';
+    if(r.doorsOpened) line+=' doors:'+r.doorsOpened;
     L.push(line);
     if(r.tags&&r.tags.length) L.push('   tags: '+r.tags.join(', '));
     if(r.note) L.push('   note: '+r.note);
@@ -7169,7 +7338,7 @@ document.getElementById('shopbtn').onclick=function(){ renderShop(); document.ge
 document.getElementById('gamblebtn').onclick=function(){
   if(P.credits<GAMBLE_PRICE) return;
   P.credits-=GAMBLE_PRICE;
-  var key=rollTable(GAMBLE_POOL);
+  var key=rollTable(GAMBLE_POOL); if(key==='KEY') key=resolveKey();
   P.stash.push(key);
   P.gambleLog=P.gambleLog||[]; P.gambleLog.push(key);
   if(P.gambleLog.length>40) P.gambleLog.shift();
@@ -7282,6 +7451,7 @@ document.getElementById('oc_btn').onclick=function(){
   if(pendingRun){
     pendingRun.tags=selTags.slice();
     pendingRun.note=document.getElementById('oc_note').value.trim();
+    addProgress(pendingRun);
     P.log.push(pendingRun);
     if(P.log.length>60) P.log.shift();
     pendingRun=null;
