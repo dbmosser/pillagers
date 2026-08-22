@@ -293,7 +293,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.98';
+var VER='0.99';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -4922,20 +4922,8 @@ function drawHubWorld(dt){
   var DR=[];
   for(i=0;i<HB.walls.length;i++) DR.push({k:HB.walls[i].y+HB.walls[i].h,w:HB.walls[i]});
   for(i=0;i<HB.stations.length;i++) DR.push({k:HB.stations[i].y,s:HB.stations[i]});
-  // His playtest, 2026-08-22: "i still don't understand why there are gold
-  // circles everywhere, are they supposed to be lights?" Yes, and that question
-  // is the bug report. The light pass painted a pool of the lamp's own colour on
-  // the ground and nothing ever drew the lamp, so the game was full of glowing
-  // discs with no cause. A light with no visible source does not read as light,
-  // it reads as an abstract marker.
-  // Hung rather than posted, because these sit on spots the player can walk
-  // through: a floor standing lamp you can walk straight through is a worse lie
-  // than no lamp at all.
-  for(i=0;i<G.lights.length;i++){
-    var LF=G.lights[i];
-    if(LF.x<ox-40||LF.x>ox+VW+40||LF.y<oy-70||LF.y>oy+VH+70) continue;
-    DR.push({k:LF.y,lm:LF});
-  }
+  // No lamp fixtures here. The hub is a lit interior and HB has its own light
+  // list; the raid's lamp pass reads G.lights and G is null on this screen.
   DR.push({k:p.y,pl:1});
   DR.sort(function(a,b){return a.k-b.k;});
   for(i=0;i<DR.length;i++){
