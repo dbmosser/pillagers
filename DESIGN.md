@@ -336,6 +336,12 @@ Three things, none of which should be built without him saying so.
   - **They are worth visiting**, or they would be scenery: each stocks containers matching what its name promises, at its own density, so going somewhere specific beats searching the nearest box.
   - **Verified across 10 generated maps:** exactly 3 landmarks each, all five kinds appearing across the sample, zero overlaps with ordinary buildings, and all 30 interiors had a reachable walkable spot, which matters because a landmark you cannot enter is a wall. Sim: contact in 5 of 6 raids, no pathing hangs, 263 containers, frame script 2.5ms of a 16.7ms budget.
   - Still open from the same complaint: themed districts per raid, deeper interiors, and weather. Landmarks were the largest single piece and the one that gives the map a memory.
+- **v0.94 (weather, the other half of "maps feel samey"):** Landmarks stopped the map being anonymous; weather stops the same ground playing the same way twice. Five conditions rolled once per raid, and every one of them is a tactical condition rather than a filter over the top, because each changes how far you see and how far you are heard.
+  - **Measured effects, straight out of the build.** Against a base of 620 sight and a 300 unit noise ping: CLEAR 620 sight, 300 noise, lamps full. RAIN 540 sight, 180 noise, lamps full. FOG BANK 360 sight, 300 noise, lamps at 85 percent. BLACKOUT 620 sight, 300 noise, every lamp dead. STORM 480 sight, 144 noise, lamps at 55 percent, plus lightning.
+  - **Rain is the interesting one** because it cuts noise BOTH ways: it hides your footsteps and it hides theirs, which is a genuine trade rather than a straight buff. Fog is the opposite, a straight loss of information for both sides. Blackout leaves your sight intact and takes away every landmark of light you were navigating by. Lightning in a storm briefly lights the whole street, which shows you the map and shows you to anything looking.
+  - Every vision query was moved onto two helpers so sight moves as one thing; the previous arrangement had five separate reads of `CFG.viewFar` and any of them could have quietly ignored the weather.
+  - Announced in the opening line of the raid instead of the controls reminder, which was identical every single time, and named on the sector map since it changes how far you can see.
+  - **Verified:** 400 rolls give 34/22/21/12/11 percent against an intended 34/22/18/13/13, so the weighting works and clear stays commonest. Storm is the heaviest frame, with rain, lightning and dimmed lamps at once: 3.1ms of a 16.7ms budget, 95th percentile render 2.0ms. Rain is a fixed 170 screen space strokes regardless of zoom or map size. Sim unaffected, 6/6 with contact in all six and no hangs.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
@@ -344,6 +350,7 @@ The v0.68 mistake was assuming a setting was the player's when it was shared. Ra
 - **Genuinely shared, and correctly so:** `noiseMult`. It scales every noise radius in `ping`, his own footsteps as well as every machine's. That is coherent as a "how loud is the world" control and no claim has ever been made otherwise, but it is the one remaining setting where changing it for one side changes it for both.
 
 So the v0.69 correction was complete: awareness was the only leak. One process note, since the same trap caught me twice in this tick: creating an enemy to measure it gives a **randomly armed** raider each time, so any before-and-after comparison must build the subject once and re-measure that same object.
+
 
 
 
