@@ -359,7 +359,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.35';
+var VER='1.36';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -761,7 +761,11 @@ function tickPlayerSteps(dt){
   var crouch=!!(keys['ControlLeft']||keys['ControlRight']);
   // Distance is the volume control here, so a crouched step is played as though
   // it happened further away. Same generator, quieter result.
-  blip('foot',crouch?540:(G.sprinting?0:180),0,surfAt(p.x,p.y));
+  var bsh=G.pBush;
+  blip('foot',crouch?540:(G.sprinting?0:180),0,bsh?'leaf':surfAt(p.x,p.y));
+  // Sprinting through undergrowth announces you. The bush is not a cloak, it is
+  // a thing you have to move through carefully, which is the decision.
+  if(bsh&&G.sprinting) ping(p.x,p.y,320,false,false,'player','move');
   PSTEP=G.sprinting?0.31:(crouch?0.64:0.45);
 }
 // Where a world point sits relative to the operator: how far, and how far off to
@@ -1727,6 +1731,14 @@ function buildFixedMap(def){
     var pl=makeBuilding(B.x,B.y,B.w,B.h,walls,B.d,buildings.length,B.plan);
     buildings.push({x:B.x,y:B.y,w:B.w,h:B.h,d:B.d,tag:ri(11,99),plan:pl,big:B.big||0});
   }
+  // CONCEALMENT. Cover stops a bullet; concealment only stops a look, and the
+  // game had no way to be hidden that was not also a wall. Bushes do not block
+  // movement, bullets or line of sight for anyone else: the ONLY thing they do
+  // is make a body standing in one harder to notice. That is the difference
+  // between hiding and taking cover, and it is what lets you break contact in
+  // the open, which is the single most frightening thing a raid can ask of you.
+  var bushes=[];
+
   // groves: same tree colliders the procedural woods used
   var woodsList=[];
   for(i=0;i<(def.woods||[]).length;i++){
@@ -1810,6 +1822,41 @@ function buildFixedMap(def){
     lockedRooms.push({id:LK.id,name:LK.name,x:LK.x,y:LK.y,w:LK.w,h:LK.h,
       doorX:doorX+doorW/2,doorY:LK.y+LK.h-lt/2,open:false});
   }
+  // CONCEALMENT, grown last so it is tested against the FINISHED wall list:
+  // trees, platform perimeters and locked room shells are all pushed above this
+  // line, and a bush placed before them can end up sitting on one.
+  function bushFree(bx,by,br){
+    for(var q=0;q<walls.length;q++){
+      var W2=walls[q];
+      if(bx>W2.x-br&&bx<W2.x+W2.w+br&&by>W2.y-br&&by<W2.y+W2.h+br) return false;
+    }
+    for(var q2=0;q2<buildings.length;q2++){
+      var B2=buildings[q2];
+      // never indoors: a bush inside a shed reads as a mistake, and it hides you
+      // in the one place you were hidden already
+      if(bx>B2.x-16&&bx<B2.x+B2.w+16&&by>B2.y-16&&by<B2.y+B2.h+16) return false;
+    }
+    return true;
+  }
+  // Undergrowth in every grove, because a wood that is only trunks is not
+  // somewhere you can hide, it is a room with pillars.
+  for(i=0;i<woodsList.length;i++){
+    var WB=woodsList[i],nB=Math.round((WB.w*WB.h)/24000);
+    for(var bi=0;bi<nB;bi++){
+      var bx1=WB.x+rnd(30,Math.max(31,WB.w-30)),by1=WB.y+rnd(30,Math.max(31,WB.h-30));
+      if(bushFree(bx1,by1,10)) bushes.push({x:bx1,y:by1,r:rnd(30,46),s:rnd(0,6.28)});
+    }
+  }
+  // Then scattered cover out in the open, which is where breaking contact is
+  // actually hard. Enough to matter, few enough that finding one is a decision.
+  // Additive over the grove undergrowth, so a wood stays thick and the open
+  // ground still gets its own scattering. Measured at 26 per unit area the open
+  // was 2.6 percent concealing, which is not "find a bush", it is "get lucky".
+  var wantB=bushes.length+Math.round(42*AREA),tries=0;
+  while(bushes.length<wantB&&tries++<wantB*40){
+    var bx2=rnd(90,WORLD_W-90),by2=rnd(90,WORLD_H-90);
+    if(bushFree(bx2,by2,12)) bushes.push({x:bx2,y:by2,r:rnd(28,44),s:rnd(0,6.28)});
+  }
   function platAt(wx2,wy2){
     for(var q=0;q<plats.length;q++){ var Q=plats[q];
       if(wx2>=Q.x&&wx2<Q.x+Q.w&&wy2>=Q.y&&wy2<Q.y+Q.h) return Q; }
@@ -1872,7 +1919,7 @@ function buildFixedMap(def){
   }
   return {fixed:def.id,name:def.name,walls:walls,segs:segs,buildings:buildings,water:water,
     cw:WORLD_W/8,ch:WORLD_H/8,cols:8,rows:8,
-    landmarks:landmarks,zones:zseeds,districtAt:districtAt,zoneAt:zoneAt,woods:woodsList,bigPairs:[],plats:plats,ramps:ramps,platAt:platAt,liftAt:liftAt,locked:lockedRooms,
+    bushes:bushes,landmarks:landmarks,zones:zseeds,districtAt:districtAt,zoneAt:zoneAt,woods:woodsList,bigPairs:[],plats:plats,ramps:ramps,platAt:platAt,liftAt:liftAt,locked:lockedRooms,
     spawns:def.spawns,extracts:def.extracts,nav:mapNav};
 }
 // SPEC 4.1: the procedural map generator that lived here is DELETED, along with
@@ -2257,6 +2304,27 @@ function canSee(px,py,face,tx,ty,segs,far,cone,amb){
 }
 // Water is walkable and transparent, so it needs no collision segments and no
 // occluders. It only ever answers one question: are you standing in it.
+function bushAtMap(map,x,y){
+  var b=(map&&map.bushes)||[];
+  for(var i=0;i<b.length;i++){
+    var q=b[i],dx=x-q.x,dy=y-q.y;
+    if(dx*dx+dy*dy<q.r*q.r) return q;
+  }
+  return null;
+}
+function inBush(x,y){ return (G&&G.map)?bushAtMap(G.map,x,y):null; }
+// How hard a body standing here is to notice, as a multiplier on the range at
+// which it can be seen. 1 is fully exposed.
+// Crouching ALREADY hides you past 170 anywhere, so the point of a bush is the
+// two things crouch cannot do: hide you while you are standing, and hide you
+// while you are moving. Sprinting through one hides nothing at all and makes a
+// noise, because crashing through undergrowth is not stealth.
+function concealAt(x,y,moving,sprinting,crouched){
+  if(!inBush(x,y)) return 1;
+  if(sprinting) return 1;
+  if(crouched) return moving?0.22:0.10;
+  return moving?0.62:0.40;
+}
 function inWaterMap(map,x,y){
   var w=(map&&map.water)||[];
   var wet=false;
@@ -3915,6 +3983,10 @@ function updatePlayer(dt){
     T.distance+=dist({x:ox,y:oy},p);
   } else { p.noiseAcc=0; p.moving=false; p.bob+=dt*1.2; T.tStill+=dt; collide(p,G.map.walls); }
   if(crouch) T.tCrouch+=dt;
+  // Once per frame, not once per enemy: 57 bodies each scanning the bush list
+  // would be the same answer computed 57 times.
+  G.pBush=inBush(p.x,p.y);
+  G.pConceal=concealAt(p.x,p.y,!!p.moving,!!G.sprinting,crouch);
   if(sprint) T.tSprint+=dt;
 
   for(var li=0;li<G.lights.length;li++){
@@ -4059,6 +4131,10 @@ function updatePlayer(dt){
 function updateBot(dt){
   var p=G.player,T=G.tel;
   p.moving=false;
+  // The bot never crouches, so this measures exactly the standing half of the
+  // mechanic, which is the half bushes were added to provide.
+  G.pBush=inBush(p.x,p.y);
+  G.pConceal=concealAt(p.x,p.y,!!p.moving,false,false);
   if(p.iv>0) p.iv-=dt;
   if(p.downed){
     if(!p.revived&&findHeal()>=0){ selfRevive(); }
@@ -4505,7 +4581,8 @@ function updateEnts(dt){
     }
     if(e.alert>0) e.alert-=dt*.5;
 
-    var sees=canSee(e.x,e.y,e.face,p.x,p.y,G.vseg,e.rng*(e.alert>0?1.35:1),e.cone,CFG.eAmbient);
+    var pcon=(G.pConceal===undefined)?1:G.pConceal;
+    var sees=canSee(e.x,e.y,e.face,p.x,p.y,G.vseg,e.rng*(e.alert>0?1.35:1)*pcon,e.cone,CFG.eAmbient*pcon);
     if(sees&&!G.sim&&(keys['ControlLeft']||keys['ControlRight'])&&dist(e,p)>170) sees=false;
     if(sees&&p.downed&&e.kind!=='raider') sees=false;
 
@@ -5827,7 +5904,15 @@ function render2D(dt){
   VIS.length=0;
   for(i=0;i<G.ents.length;i++){
     var ev=G.ents[i];
-    ev.seen=canSee(p.x,p.y,p.face,ev.x,ev.y,G.vseg);
+    // The half that makes a treeline frightening: a raider standing still in a
+    // bush is genuinely hard to pick out, so a line of undergrowth is somewhere
+    // an ambush can come from rather than scenery. Machines do not hide and the
+    // Peddler does not want to be missed, so neither gets it.
+    var evc=1;
+    if(ev.kind==='raider'&&!ev.merc)
+      evc=concealAt(ev.x,ev.y,!!ev.moving,ev.state==='extract',false);
+    ev.seen=(evc>=1)?canSee(p.x,p.y,p.face,ev.x,ev.y,G.vseg)
+                    :canSee(p.x,p.y,p.face,ev.x,ev.y,G.vseg,VF()*evc,undefined,AMBR()*evc);
     if(ev.seen) VIS.push(ev);
   }
   // Matched to the fog family so the letterbox edge is not a second, different
@@ -5982,6 +6067,14 @@ function render2D(dt){
     if(e.x<ox-60||e.x>ox+VW+60||e.y<oy-80||e.y>oy+VH+80) continue;
     DR.push({k:e.y-((G&&G.map&&G.map.liftAt)?G.map.liftAt(e.x,e.y)*0.5:0),e:e});
   }
+  // Bushes sort a little BELOW their centre so a body standing in one is drawn
+  // first and the foliage closes over it. That is the whole read: you can see
+  // that you are inside the thing that is hiding you.
+  for(i=0;i<(G.map.bushes||[]).length;i++){
+    var bu=G.map.bushes[i];
+    if(bu.x<ox-90||bu.x>ox+VW+90||bu.y<oy-90||bu.y>oy+VH+90) continue;
+    DR.push({k:bu.y+bu.r*0.5,b:bu});
+  }
   // His playtest, 2026-08-22: "i still don't understand why there are gold
   // circles everywhere, are they supposed to be lights?" Yes, and that question
   // is the bug report. The light pass painted a pool of the lamp's own colour on
@@ -6030,6 +6123,24 @@ function render2D(dt){
         // a dead lamp still hangs there, which is most of what a blackout means
         wc.fillStyle='#1b1a22'; wc.fillRect(lhx-5,lhy+1,10,3);
       }
+    } else if(it.b){
+      var BU=it.b,bsw=Math.sin(G.t*0.8+BU.s)*1.6,blf=BU.r*0.55;
+      // The bush YOU are standing in draws through, because in a dense grove the
+      // foliage closed over the operator completely and you could not see your
+      // own body. Verified by capture. Everyone else's cover stays solid.
+      var bmine=(BU===G.pBush);
+      if(bmine) wc.globalAlpha=0.52;
+      shadowE(BU.x+2,BU.y+BU.r*0.26,BU.r*0.88,BU.r*0.28,.28);
+      wc.fillStyle=isDay()?'#2f4a22':'#16220f';
+      wc.beginPath(); wc.ellipse(BU.x,BU.y,BU.r*0.96,BU.r*0.50,0,0,6.2832); wc.fill();
+      wc.fillStyle=isDay()?'#41652c':'#1d2c14';
+      wc.beginPath(); wc.arc(BU.x-BU.r*0.34+bsw,BU.y-blf*0.50,BU.r*0.52,0,6.2832); wc.fill();
+      wc.beginPath(); wc.arc(BU.x+BU.r*0.30+bsw,BU.y-blf*0.42,BU.r*0.48,0,6.2832); wc.fill();
+      wc.fillStyle=isDay()?'#5d8a3c':'#26361c';
+      wc.beginPath(); wc.arc(BU.x+bsw*1.2,BU.y-blf*0.78,BU.r*0.54,0,6.2832); wc.fill();
+      wc.fillStyle=isDay()?'#7aa84e':'#31452a';
+      wc.beginPath(); wc.arc(BU.x-BU.r*0.16+bsw*1.3,BU.y-blf*0.96,BU.r*0.32,0,6.2832); wc.fill();
+      if(bmine) wc.globalAlpha=1;
     } else if(it.w&&it.w.tree){
       // A tree, not a crate: trunk at the collider, canopy floating above it,
       // swaying slightly. The collider square is the trunk footprint, so what
@@ -6648,6 +6759,16 @@ function drawHUD(){
   // 280x18 with the number inside the bar itself where your eye already is,
   // and armour and stamina scaled with it.
   var by=H-34;
+  // A hiding mechanic you cannot tell is working is just an inconsistent enemy.
+  if(G.pBush){
+    var cc=G.pConceal===undefined?1:G.pConceal;
+    var clab=cc<=0.15?'HIDDEN':(cc<=0.30?'WELL HIDDEN':(cc<=0.45?'CONCEALED':(cc<1?'PARTLY HIDDEN':'CRASHING THROUGH')));
+    var ccol=cc<=0.30?'#7fc4a0':(cc<1?'#ffc04a':'#e0483a');
+    ctx.font=FS('700 12px "Titan One","Rubik",sans-serif');
+    var cw2=ctx.measureText(clab).width;
+    ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(14,by-LH(62),cw2+16,LH(20));
+    ctx.fillStyle=ccol; ctx.fillText(clab,22,by-LH(48));
+  }
   bar(16,by,280,18,p.hp/p.maxhp,p.hp>50?'#5fae6f':(p.hp>25?'#d0a13c':'#c8452f'));
   ctx.font=FS('700 12px "Rubik",sans-serif'); ctx.fillStyle='#FFF6DC';
   ctx.fillText('HP  '+Math.round(p.hp),24,by+14);
@@ -7697,13 +7818,13 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','Seasons: ten tiers, and finishing one moves the whole world up'],
+  ['NOW','Emotes, so a passive raider can be talked to instead of only shot'],
+  ['DONE','Bushes you can hide in, and raiders who hide in them too'],
+  ['DONE','Seasons: ten tiers, and finishing one moves the whole world up'],
   ['DONE','COLD STORAGE, a third map built with no open ground in it'],
   ['DONE','Room acoustics, your own footsteps, and a stinger when something sees you'],
   ['DONE','The Peddler: sell your bag mid raid at half price, banked instantly'],
   ['DONE','The Mercenary: hire one of the ten for a single run'],
-  ['NEXT','Bushes you can actually hide in, without needing a wall'],
-  ['NEXT','Emotes, so a passive raider can be talked to instead of only shot'],
   ['NEXT','Contracts that pay in gear rather than only credits'],
   ['LATER','Armour in three tiers, readable on the silhouette'],
   ['LATER','Weak points on the big machines'],
