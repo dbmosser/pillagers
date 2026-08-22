@@ -504,6 +504,13 @@ Three things, none of which should be built without him saying so.
   - **Spec 5.3 closure.** Points close progressively on the raid clock, announced two minutes ahead, and **a point already pulled completes its full sequence past its own cutoff**. Verified: 3 open at 10:00, 2 at 6:00, 1 at 4:00, and a point pulled three seconds before its cutoff was still live and counting fourteen seconds later. Which point draws which closure time is shuffled per run, so the map stays fixed while the pressure pattern does not.
   - The siege, the arrivals and the hold all moved onto the per-point clock with them.
   - Verified: full sequence, closure timeline, lock-in past cutoff, frames and sector map clean, sim 3/5 with 4 calls and 0 missed beacons, no hangs, no console errors.
+- **v1.23 (the unified hotbar):** Spec 6.1 and defect 9. The two guns plus a throwable button plus a heal key are gone; guns, throwables, medical and the crowbar now occupy seven equal slots.
+  - **1 to 7 selects, G uses what is selected.** Only one thing is in hand at a time, which is the deliberate feel change: choosing what to hold becomes a decision under pressure rather than three always available buttons.
+  - **Slots are computed from live state every frame** rather than stored, so a pickup or a spend shows immediately and there is no second copy of the truth to drift out of sync.
+  - **Drawn icons, not text**, per the spec's readability requirement: gun silhouette, throwable with a pin, medical cross, crowbar, each with its count and slot number, centred at the bottom of the screen. Selecting a gun slot still routes through the existing X swap so the old muscle memory keeps working.
+  - Key legend, gear rules and the pad legend all rewritten to the hotbar model, and the old duplicate throwable readout removed from the corner.
+  - **Verified:** all seven slots select, selecting a throwable slot syncs the throw selection, G spends a throwable (2 to 1) and heals through the same key (50 to 78 hp, one item consumed), frames and sector map clean, no console errors.
+  - **Sim 2/10 across two batches, every death a sentry.** I checked whether the new two stage pull was the cause rather than assuming: on an empty map the bot completes both pulls and extracts in 60 seconds, so the sequence is sound and the deaths are the spec's much tankier sentries (150hp against the old 80) doing exactly what the spec asked. His runs decide whether that lands.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

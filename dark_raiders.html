@@ -312,7 +312,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.22';
+var VER='1.23';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -2232,7 +2232,7 @@ function buildRaid(sim){
     // conditions stay unusual and keep their impact.
     wx:pickWeather(),
     tod:pickTod(),
-    lightning:0,rainT:0,inLandmark:null,inZone:undefined,
+    lightning:0,rainT:0,inLandmark:null,inZone:undefined,hot:0,
     msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,legendOn:true,sprinting:false,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
       kills:{sentry:0,crawler:0,raider:0,snitch:0,warden:0},
@@ -2340,8 +2340,13 @@ function raidKey(code,repeat,ev){
       blip('pick');
     }
   }
+  // SPEC 6.1: 1 to 7 select a hotbar slot, and G acts with whatever is selected.
+  if(G&&!G.over&&!repeat&&code.indexOf('Digit')===0){
+    var dn=parseInt(code.slice(5),10);
+    if(dn>=1&&dn<=9){ setHot(dn-1); if(ev) ev.preventDefault(); }
+  }
   if(code==='KeyQ'&&G&&!G.over&&!repeat) cycleThrow();
-  if(code==='KeyG'&&G&&!G.over&&!G.paused&&!repeat) doThrow();
+  if(code==='KeyG'&&G&&!G.over&&!G.paused&&!repeat) useHot();
   if(code==='Space'&&G&&!G.over&&!G.paused&&!repeat) tryRoll();
   if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){ G.bagOpen=!G.bagOpen; G.bagSel=0; }
   // Bag browsing. The arrows double as movement keys, so while the bag is open
@@ -2908,7 +2913,7 @@ function openContainer(ct){
     label(ct.x,ct.y-10,
       itm.name+(itm.use==='ammo'?' +'+itm.amt+' ammo':(itm.use==='armor'&&p.armor<ARMOR_MAX?' +'+Math.round(Math.min(ARMOR_MAX-p.armor,itm.amt))+' armor':' '+ival(key)+'c')),
       RCOL[itm.r],0,itm.r==='rare'||itm.r==='elite');
-    if(itm.use==='ammo') p.reserve+=itm.amt;
+    if(itm.use==='ammo') p.reserve+=itm.amt;   // SPEC 6.4: one universal pool
     // A plate is worth 55 but only applied below 20 armour, so deploying with a
     // plate from stash put you at 55 and made every plate you then found dead
     // weight you could never use, flatly contradicting the legend. Plates now
@@ -2978,6 +2983,61 @@ function tickRegen(dt){
     p.hp=Math.min(p.maxhp,p.hp+1);
     G.tel.regen=(G.tel.regen||0)+1;
   }
+}
+// ================================================================ hotbar
+// SPEC 6.1: a unified hotbar. Guns, heals, throwables and the crowbar all
+// occupy equal slots, you SELECT a slot and then act with it, and only one item
+// is in hand at a time. This is a deliberate feel change: item selection
+// becomes a decision under pressure rather than three separate always-available
+// buttons. Slots are computed from live state each frame rather than stored, so
+// picking something up or spending it is reflected immediately and there is no
+// second copy of the truth to drift.
+function hotbarSlots(){
+  var p=G.player,out=[];
+  out.push({k:'wep',name:p.wep.name,kind:'gun',
+    count:(p.wep.mag===0?null:p.ammo),c:p.wep.tint||'#ffd48a'});
+  if(p.sec) out.push({k:'sec',name:p.sec.name,kind:'gun',
+    count:(p.sec.mag===0?null:p.secAmmo),c:p.sec.tint||'#ffd48a'});
+  for(var i=0;i<THROWKEYS.length;i++){
+    var tk=THROWKEYS[i];
+    out.push({k:'throw:'+tk,name:ITEMS[tk].name,kind:'throw',
+      count:G.pouch[tk]||0,c:ITEMS[tk].c});
+  }
+  var hi=findHeal();
+  out.push({k:'heal',name:hi>=0?ITEMS[G.bag[hi]].name:'Medical',kind:'heal',
+    count:countHeals(),c:'#6fe0a0'});
+  out.push({k:'bar',name:'Crowbar',kind:'tool',count:null,c:'#9aa8b2'});
+  return out;
+}
+function countHeals(){
+  var n=0;
+  for(var i=0;i<G.bag.length;i++){ var it=ITEMS[G.bag[i]]; if(it&&it.use==='heal') n++; }
+  return n;
+}
+function hotSel(){ return clamp(G.hot||0,0,hotbarSlots().length-1); }
+function setHot(i){
+  var sl=hotbarSlots();
+  i=clamp(i,0,sl.length-1);
+  if(i===G.hot) return;
+  G.hot=i;
+  var s2=sl[i];
+  // Selecting a gun slot puts it in hand. The X swap still exists and simply
+  // moves the selection, so the old muscle memory keeps working.
+  if(s2.k==='sec'&&G.player.sec) raidKey('KeyX',false,null);
+  else if(s2.k==='wep'&&G.player.wepIssued===undefined){}
+  if(s2.kind==='throw'){
+    var tk2=s2.k.split(':')[1],ix=THROWKEYS.indexOf(tk2);
+    if(ix>=0) G.tsel=ix;
+  }
+  say(s2.name+(s2.count!==null&&s2.count!==undefined?'  x'+s2.count:''));
+  blip('pick');
+}
+// One action key drives whatever is selected, which is the point of the hotbar.
+function useHot(){
+  var sl=hotbarSlots(),s2=sl[hotSel()];
+  if(!s2) return;
+  if(s2.kind==='throw') doThrow();
+  else if(s2.kind==='heal') raidKey('KeyF',false,null);
 }
 function tryExtractTick(dt,wantCall){
   // SPEC 5.2 and 5.3. Extraction is a TWO STAGE pull at any point that is still
@@ -5516,6 +5576,51 @@ function drawHUD(){
     ctx.fillStyle='#ff5040'; ctx.fillText('YOU DIED',W/2,H*0.42);
     ctx.globalAlpha=1; ctx.textAlign='left';
   }
+  // SPEC 6.1 and 11: the hotbar, centred at the bottom where the eye goes under
+  // pressure. Icons are drawn, not text: a gun silhouette, a throwable sphere, a
+  // cross for medical, a bar for the crowbar, so a slot reads at a glance.
+  (function(){
+    var sl=hotbarSlots(),sel=hotSel();
+    var bw=LH(46),gap=LH(5),tw2=sl.length*bw+(sl.length-1)*gap;
+    var hx=Math.round(W/2-tw2/2),hy=H-LH(58);
+    for(var q=0;q<sl.length;q++){
+      var S=sl[q],bx=hx+q*(bw+gap),on=q===sel;
+      var empty=(S.count===0);
+      ctx.fillStyle=on?'rgba(38,32,20,.94)':'rgba(18,15,24,.80)';
+      ctx.fillRect(bx,hy,bw,bw);
+      ctx.strokeStyle=on?'#ffc04a':'rgba(140,152,163,.35)';
+      ctx.lineWidth=on?2:1;
+      ctx.strokeRect(bx+.5,hy+.5,bw-1,bw-1);
+      var cx2=bx+bw/2,cy2=hy+bw*0.45;
+      ctx.globalAlpha=empty?.28:1;
+      ctx.fillStyle=S.c;
+      if(S.kind==='gun'){
+        ctx.fillRect(cx2-bw*0.28,cy2-bw*0.05,bw*0.46,bw*0.11);
+        ctx.fillRect(cx2+bw*0.10,cy2-bw*0.13,bw*0.10,bw*0.09);
+        ctx.fillRect(cx2-bw*0.20,cy2+bw*0.06,bw*0.09,bw*0.14);
+      } else if(S.kind==='throw'){
+        ctx.beginPath(); ctx.arc(cx2,cy2,bw*0.17,0,6.2832); ctx.fill();
+        ctx.fillRect(cx2-bw*0.03,cy2-bw*0.28,bw*0.06,bw*0.10);
+      } else if(S.kind==='heal'){
+        ctx.fillRect(cx2-bw*0.06,cy2-bw*0.18,bw*0.12,bw*0.36);
+        ctx.fillRect(cx2-bw*0.18,cy2-bw*0.06,bw*0.36,bw*0.12);
+      } else {
+        ctx.fillRect(cx2-bw*0.05,cy2-bw*0.20,bw*0.10,bw*0.34);
+        ctx.fillRect(cx2-bw*0.16,cy2-bw*0.22,bw*0.22,bw*0.09);
+      }
+      ctx.globalAlpha=1;
+      ctx.font=FS('700 8px "Rubik",sans-serif'); ctx.fillStyle='rgba(160,172,184,.8)';
+      ctx.fillText(String(q+1),bx+LH(4),hy+LH(11));
+      if(S.count!==null&&S.count!==undefined){
+        ctx.font=FS('700 9px "Rubik",sans-serif');
+        ctx.fillStyle=empty?'#7a5040':'#FFF6DC';
+        ctx.textAlign='right'; ctx.fillText(String(S.count),bx+bw-LH(4),hy+bw-LH(5)); ctx.textAlign='left';
+      }
+    }
+    ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#8a96a1'; ctx.textAlign='center';
+    ctx.fillText(sl[sel].name+'   [G] use',W/2,hy-LH(6));
+    ctx.textAlign='left';
+  })();
   // Bars, at a size you can read in a firefight. His answers, twice: the HUD
   // should be BIGGER and the health bar "NEEDS TO BE LARGER". 150x10 grew to
   // 280x18 with the number inside the bar itself where your eye already is,
@@ -5558,7 +5663,8 @@ function drawHUD(){
     pl2.push(tkk===tsn?'['+lbl+']':lbl);
   }
   ctx.fillStyle='#a5b1bc';
-  ctx.fillText('Q/G  '+pl2.join('  '),W-16,by+11);
+  // throwable counts live on the hotbar now, not as a second readout
+
   if(T.notes.length){ ctx.fillStyle='#6b7783'; ctx.fillText(T.notes.length+' note'+(T.notes.length>1?'s':'')+' logged',W-16,26); }
   ctx.textAlign='left';
   if(G.beaconT!==null&&!G.over){
@@ -5626,7 +5732,7 @@ function safeSet(){
 var LEGEND=[
   ['MOVE',[['WASD','move'],['SHIFT','sprint'],['CTRL','crouch, near silent'],['SPACE','dodge roll']]],
   ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','steady aim'],['R','reload'],['X','swap weapon']]],
-  ['GEAR',[['Q','cycle throwable'],['G','throw it'],['F','use medical'],['TAB','inventory']]],
+  ['GEAR',[['1-7','select hotbar slot'],['G','use selected'],['X','swap gun'],['TAB','inventory']]],
   ['WORLD',[['E','search / call beacon'],['M','hold for map'],['H','hide this list'],['P','pause']]]
 ];
 // Shown in place of the keyboard list once a pad is actually connected, because
@@ -5634,7 +5740,7 @@ var LEGEND=[
 var LEGEND_PAD=[
   ['MOVE',[['L STICK','move, analog'],['LS CLICK','sprint'],['RS CLICK','crouch'],['B','dodge roll']]],
   ['FIGHT',[['R STICK','aim'],['RT','fire'],['LT','steady aim'],['X','reload'],['Y','swap weapon']]],
-  ['GEAR',[['LB','cycle throwable'],['RB','throw it'],['DPAD DN','use medical'],['VIEW','inventory']]],
+  ['GEAR',[['LB/RB','change slot'],['RB','use selected'],['Y','swap gun'],['VIEW','inventory']]],
   ['WORLD',[['A','search / call beacon'],['DPAD UP','hold for map'],['DPAD L/R','drop / autoloot'],['MENU','pause']]]
 ];
 // Every line here used to run past the right edge of its own panel, by 83 to 164
@@ -5650,9 +5756,8 @@ var GEARRULES=[
   ['','Set loadout in the armory.'],
   ['ARMOUR','No equip key. Plates apply'],
   ['','on pickup until armour is full.'],
-  ['THROWS','2 of each load from stash.'],
-  ['',function(){ return (PAD&&PAD.on)?'LB cycles, RB throws.':'Q cycles, G throws.'; }],
-  ['','They stop at cover, not over.'],
+  ['HOTBAR','1-7 selects, G uses it.'],
+  ['','Only one item in hand.'],
   ['WATER','Slows you and is loud.'],
   ['','Crouch will not quiet a splash.'],
   ['RINGS','Teal ring is live. Grey cold.'],
