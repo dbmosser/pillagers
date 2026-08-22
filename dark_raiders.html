@@ -380,7 +380,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.39';
+var VER='1.40';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -2525,6 +2525,51 @@ function doEmote(ix){
     }
   }
   if(E.k==='hail'&&!reached) say('Nobody in earshot.');
+}
+// ====================================================== WEAK POINTS
+// SPEC 8.7. A Sentry was 150 health and a Warden was 620, and the only tactic
+// either of them asked for was "have enough bullets". A weak point turns a
+// health bar into a place you have to GET TO: the vent is on its back, so the
+// only way to use it is to be behind a machine that is hunting you, which is
+// the exact opposite of what your nerve is telling you to do.
+// Angles are offsets from the machine's own facing, so the openings turn as it
+// turns and flanking is a real manoeuvre rather than a stat check.
+var WEAKPTS={
+  sentry:[
+    {id:'vent', name:'VENT',  ang:Math.PI, rf:0.62, rad:8,  mult:3.4, eff:'overheat', c:'#ff8a3c'},
+    {id:'optic',name:'OPTIC', ang:0,       rf:0.58, rad:6,  mult:2.0, eff:'blind',    c:'#6fd8ff'}
+  ],
+  warden:[
+    {id:'seam', name:'CORE SEAM', ang:Math.PI, rf:0.58, rad:11, mult:3.0, eff:'overheat', c:'#ffd76a'},
+    {id:'optic',name:'OPTIC',     ang:0,       rf:0.62, rad:7,  mult:1.8, eff:'blind',    c:'#6fd8ff'}
+  ]
+};
+function weakOf(e){ return WEAKPTS[e.kind]||null; }
+function weakPos(e,W){
+  var a=e.face+W.ang;
+  return {x:e.x+Math.cos(a)*e.r*W.rf, y:e.y+Math.sin(a)*e.r*W.rf};
+}
+// Which weak point, if any, a round at this point struck. Nearest wins, so two
+// openings that overlap on a small body cannot both pay out on one bullet.
+function weakHit(e,bx,by){
+  var L=weakOf(e); if(!L) return null;
+  var best=null,bd=1e9;
+  for(var i=0;i<L.length;i++){
+    var W=L[i],pt=weakPos(e,W);
+    var dx=bx-pt.x,dy=by-pt.y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<=W.rad&&d<bd){ bd=d; best=W; }
+  }
+  return best;
+}
+function applyWeak(e,W){
+  if(W.eff==='overheat'){
+    // It stops dead and cannot shoot while it vents. That is the reward: you
+    // made the window, now you are standing behind it with a free four seconds.
+    e.overheat=Math.max(e.overheat||0,4.0);
+    e.cd=Math.max(e.cd||0,1.2);
+  } else if(W.eff==='blind'){
+    e.blind=Math.max(e.blind||0,5.0);
+  }
 }
 function bushAtMap(map,x,y){
   var b=(map&&map.bushes)||[];
@@ -4843,9 +4888,22 @@ function updateEnts(dt){
       continue;
     }
     if(e.alert>0) e.alert-=dt*.5;
+    // A vented machine is rooted and harmless while it cools, and a blinded one
+    // is still coming but cannot pick you out at range. Both are on timers you
+    // can watch, because a window you cannot see is not a window.
+    if(e.overheat>0){
+      e.overheat-=dt; e.cd=Math.max(e.cd||0,0.35);
+      e.moving=false;
+      if(!G.sim&&Math.random()<dt*9)
+        G.puffs.push({x:e.x+rnd(-e.r*.5,e.r*.5),y:e.y-e.r*.4,t:0,life:.8,c:'#c8d4dc',r:e.r*.55});
+      collide(e,G.map.walls);
+      continue;                       // no sight, no move, no shot, for four seconds
+    }
+    if(e.blind>0) e.blind-=dt;
 
     var pcon=(G.pConceal===undefined)?1:G.pConceal;
-    var sees=canSee(e.x,e.y,e.face,p.x,p.y,G.vseg,e.rng*(e.alert>0?1.35:1)*pcon,e.cone,CFG.eAmbient*pcon);
+    var wkSight=(e.blind>0)?0.32:1;
+    var sees=canSee(e.x,e.y,e.face,p.x,p.y,G.vseg,e.rng*(e.alert>0?1.35:1)*pcon*wkSight,e.cone,CFG.eAmbient*pcon*wkSight);
     if(sees&&!G.sim&&(keys['ControlLeft']||keys['ControlRight'])&&dist(e,p)>170) sees=false;
     if(sees&&p.downed&&e.kind!=='raider') sees=false;
 
@@ -5201,7 +5259,20 @@ function updateBullets(dt){
             var en=G.ents[e2];
             if(dist(b,en)<en.r+3){
               var edmg=b.dmg;
-              if(en.armor>0){
+              // SPEC 8.7: a weak point is checked BEFORE armour, because it is
+              // the gap in the armour. Nothing soaks a round through the vent.
+              var WK=weakHit(en,b.x,b.y);
+              if(WK){
+                edmg*=WK.mult;
+                applyWeak(en,WK);
+                if(!G.sim){
+                  label(en.x,en.y-Math.round(en.r*1.3),WK.name+'  x'+WK.mult,WK.c,0,true);
+                  spark(b.x,b.y,WK.c,26,340);
+                  sfx('clank',b.x,b.y);
+                  G.tel.weakHits=(G.tel.weakHits||0)+1;
+                  G.hitMark={t:0,life:.5,kill:false,weak:true};
+                }
+              } else if(en.armor>0){
                 var esk=armorById(en.rig).absorb||0;
                 var eab=Math.min(en.armor,edmg*esk); en.armor-=eab; edmg-=eab;
               }
@@ -6536,6 +6607,29 @@ function render2D(dt){
       else if(e2.kind==='crawler') drawCrawlerS(e2);
       else if(e2.kind==='snitch') drawSnitchS(e2);
       else if(e2.kind==='peddler') drawPeddlerS(e2);
+      // SPEC 8.7: the openings have to be VISIBLE or they are a secret, and a
+      // secret is not a tactic. Drawn on top of the body, pulsing, in their own
+      // colour: hot orange for the vent, cold blue for the optic. They ride the
+      // machine's facing, so watching one turn is watching the shot open and
+      // close.
+      var WL=weakOf(e2);
+      if(WL) for(var wk=0;wk<WL.length;wk++){
+        var WW=WL[wk],wpt=weakPos(e2,WW);
+        var hot=(WW.eff==='overheat'&&e2.overheat>0);
+        var pls=hot?1:(0.62+0.38*Math.sin(G.t*3.1+wk*2.1+e2.x*0.01));
+        wc.save(); wc.globalCompositeOperation='lighter';
+        var wg=wc.createRadialGradient(wpt.x,wpt.y,1,wpt.x,wpt.y,WW.rad*2.4);
+        wg.addColorStop(0,WW.c); wg.addColorStop(1,'rgba(0,0,0,0)');
+        wc.globalAlpha=(hot?0.85:0.42)*pls;
+        wc.fillStyle=wg;
+        wc.beginPath(); wc.arc(wpt.x,wpt.y,WW.rad*2.4,0,6.2832); wc.fill();
+        wc.restore();
+        wc.fillStyle='rgba(10,8,12,.75)';
+        wc.beginPath(); wc.arc(wpt.x,wpt.y,WW.rad*0.62,0,6.2832); wc.fill();
+        wc.fillStyle=WW.c; wc.globalAlpha=hot?1:0.80;
+        wc.beginPath(); wc.arc(wpt.x,wpt.y,WW.rad*0.40,0,6.2832); wc.fill();
+        wc.globalAlpha=1;
+      }
       else drawOp(e2.x,e2.y,e2.face,(e2.step||0)*4,e2.coat,
         clamp(e2.bag.length/7,0,1),e2.muzzle,'',0,
         {moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT,bulk:e2.bulk||0});
@@ -8201,7 +8295,8 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','Weak points on the big machines'],
+  ['NOW','Scopes that see further, not just hit harder'],
+  ['DONE','Weak points: the vent is on its back, so you have to flank'],
   ['DONE','Armour in three tiers, readable on the silhouette'],
   ['DONE','Contracts that pay in gear, in three tiers, not only credits'],
   ['DONE','Emotes and parley: hail a raider instead of shooting him'],
@@ -8211,7 +8306,6 @@ var ROADMAP=[
   ['DONE','Room acoustics, your own footsteps, and a stinger when something sees you'],
   ['DONE','The Peddler: sell your bag mid raid at half price, banked instantly'],
   ['DONE','The Mercenary: hire one of the ten for a single run'],
-  ['LATER','Scopes that see further, not just hit harder'],
   ['LATER','Two raiders, one raid']
 ];
 var BUILDS=[];   // filled from builds/index.json at boot; empty list hides nothing but options
