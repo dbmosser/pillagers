@@ -293,7 +293,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.92';
+var VER='0.93';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -752,6 +752,86 @@ function buildNav(walls,pad){
   }
   return {w:gw,h:gh,c:NAVC,blk:blk,run:0};
 }
+// Hand authored places. His top complaint is that maps feel samey, and the fix
+// is not more procedural variation, it is somewhere you RECOGNISE. Each of these
+// takes a whole district cell, has geometry nothing else in the game produces,
+// its own loot character and its own name on the sector map, so a raid can be
+// "the one with the cargo yard" instead of another field of boxes.
+var LANDMARKS=[
+  {
+    id:'tower', name:'COLLAPSED TOWER', loot:'rare', dens:0.7,
+    build:function(x,y,w,h,put,d){
+      // a broken ring with the north face fallen in, and rubble inside
+      var t=22,cx=x+w/2,cy=y+h/2,rw=Math.min(w,h)*0.86,r2=rw/2;
+      put(cx-r2,cy-r2,rw*0.34,t,d); put(cx+r2-rw*0.34,cy-r2,rw*0.34,t,d);
+      put(cx-r2,cy+r2-t,rw,t,d);
+      put(cx-r2,cy-r2,t,rw,d); put(cx+r2-t,cy-r2,t,rw,d);
+      for(var i=0;i<7;i++){
+        var s=rnd(26,64);
+        put(cx+rnd(-r2*0.55,r2*0.55),cy+rnd(-r2*0.5,r2*0.5),s,s*rnd(.5,1),d);
+      }
+      // a leaning slab outside, so you see it before you reach it
+      put(cx-r2-70,cy-30,58,20,d);
+    }
+  },
+  {
+    id:'yard', name:'CARGO YARD', loot:'bulk', dens:2.2,
+    build:function(x,y,w,h,put,d){
+      // parallel container rows: a maze of straight corridors, unlike anything
+      // else on the map, and the corridors are what make it read as a place
+      var rows=4,gap=h/(rows+1);
+      for(var r=0;r<rows;r++){
+        var yy=y+gap*(r+0.6),n=ri(3,5),cw2=(w-60)/n;
+        for(var c=0;c<n;c++){
+          if(Math.random()<0.22) continue;
+          put(x+30+c*cw2,yy,cw2*rnd(.62,.86),30,d);
+        }
+      }
+    }
+  },
+  {
+    id:'checkpoint', name:'CHECKPOINT', loot:'ammo', dens:1.2,
+    build:function(x,y,w,h,put,d){
+      // a barricade line with one gap, plus flanking blocks: pure cover fight
+      var my=y+h/2,gapAt=x+rnd(w*0.28,w*0.62),gw=90;
+      put(x+20,my-16,gapAt-(x+20),26,d);
+      put(gapAt+gw,my-16,(x+w-20)-(gapAt+gw),26,d);
+      for(var i=0;i<5;i++) put(x+rnd(30,w-70),y+rnd(30,h-70),rnd(34,58),rnd(28,44),d);
+      put(gapAt-34,my-90,26,60,d); put(gapAt+gw+8,my+34,26,60,d);
+    }
+  },
+  {
+    id:'clinic', name:'RELIEF STATION', loot:'medical', dens:1.5,
+    build:function(x,y,w,h,put,d){
+      // a real interior: outer shell with two doors and internal room dividers,
+      // which is the closest this map gets to a building worth entering
+      var t=18,bw=w*0.82,bh=h*0.78,bx=x+(w-bw)/2,by=y+(h-bh)/2;
+      var dr=bx+rnd(bw*0.3,bw*0.6);
+      put(bx,by,dr-bx,t,d); put(dr+80,by,bx+bw-(dr+80),t,d);
+      put(bx,by+bh-t,bw,t,d);
+      var dr2=by+rnd(bh*0.3,bh*0.55);
+      put(bx,by,t,dr2-by,d); put(bx,dr2+76,t,by+bh-(dr2+76),d);
+      put(bx+bw-t,by,t,bh,d);
+      // internal partitions with staggered openings, so it is rooms not a box
+      var mx=bx+bw*0.45;
+      put(mx,by+t,t,bh*0.34,d); put(mx,by+bh*0.56,t,bh*0.44-t,d);
+      put(mx+t,by+bh*0.5,bw*0.4,t,d);
+    }
+  },
+  {
+    id:'plaza', name:'FLOODED PLAZA', loot:'bulk', dens:1.0, water:true,
+    build:function(x,y,w,h,put,d){
+      // deliberately open, with pillars. The danger here is that crossing it is
+      // loud and there is nothing to hide behind.
+      for(var i=0;i<8;i++){
+        var s=rnd(24,38);
+        put(x+rnd(40,w-60),y+rnd(40,h-60),s,s,d);
+      }
+      put(x+20,y+20,w*0.3,20,d);
+      put(x+w-20-w*0.3,y+h-40,w*0.3,20,d);
+    }
+  }
+];
 function buildMap(){
   var walls=[],b=40;
   walls.push({x:0,y:0,w:WORLD_W,h:b,d:1});
@@ -766,13 +846,45 @@ function buildMap(){
   // 2600x2000 size, so this restores the tuned density rather than inventing one.
   var buildings=[],cols=Math.max(4,Math.round(WORLD_W/650)),rows=Math.max(4,Math.round(WORLD_H/500));
   var cw=(WORLD_W-160)/cols,ch=(WORLD_H-160)/rows;
+  // Reserve cells for landmarks before any ordinary building is placed, so a
+  // landmark owns a whole district cell and reads as a place rather than as one
+  // more box. Three per raid out of five kinds, so no two raids are alike and
+  // any given raid still has room for ordinary streets between them.
+  var landmarks=[],lmAt={};
+  var pool=LANDMARKS.slice();
+  for(var sh=pool.length-1;sh>0;sh--){ var sj=ri(0,sh); var tmp=pool[sh]; pool[sh]=pool[sj]; pool[sj]=tmp; }
+  var wantLM=Math.min(3,pool.length);
+  for(var li=0;li<wantLM;li++){
+    var lr,lc,tries=0;
+    do{ lr=ri(0,rows-1); lc=ri(0,cols-1); tries++; }
+    while((lmAt[lr+','+lc]||(lr===1&&lc===1))&&tries<60);
+    lmAt[lr+','+lc]=pool[li];
+  }
   for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){
+    if(lmAt[r+','+c]) continue;
     if(r===1&&c===1&&Math.random()<.5) continue;
     var d=ri(0,3);
     var bw=rnd(255,Math.min(400,cw-90)),bh=rnd(205,Math.min(330,ch-90));
     var bx=80+c*cw+rnd(20,cw-bw-20),by=80+r*ch+rnd(20,ch-bh-20);
     buildings.push({x:bx,y:by,w:bw,h:bh,d:d,tag:ri(11,99)});
     makeBuilding(bx,by,bw,bh,walls,d);
+  }
+  // Build the reserved landmarks. Each gets its whole cell with a margin, and
+  // records its footprint so loot, the sector map and the "you have arrived"
+  // callout can all key off it.
+  for(var lk in lmAt){
+    var lp=lk.split(','),lrr=+lp[0],lcc=+lp[1],LM=lmAt[lk];
+    var mx0=80+lcc*cw+26,my0=80+lrr*ch+26;
+    var mw=cw-52,mh=ch-52;
+    var ld=ri(0,3);
+    (function(dd){
+      LM.build(mx0,my0,mw,mh,function(px,py,pw,ph){
+        if(pw<4||ph<4) return;
+        walls.push({x:px,y:py,w:Math.max(6,pw),h:Math.max(6,ph),d:dd});
+      },dd);
+    })(ld);
+    landmarks.push({id:LM.id,name:LM.name,x:mx0,y:my0,w:mw,h:mh,d:ld,
+      loot:LM.loot,dens:LM.dens,water:!!LM.water});
   }
   for(var i=0;i<Math.round(36*AREA*0.7);i++){
     var s=rnd(30,54),px=rnd(80,WORLD_W-80-s),py=rnd(80,WORLD_H-80-s),ok=1;
@@ -791,6 +903,13 @@ function buildMap(){
   // is: 6 to 9 pools was tuned on a 2600x2000 world and left water four times
   // rarer once the map grew. Attempts scale with it or the shrink ramp runs out
   // before the quota is met.
+  // A landmark that is meant to be flooded gets its water first, so it is
+  // guaranteed rather than left to the random pool placement below.
+  for(var lw=0;lw<landmarks.length;lw++){
+    var LW=landmarks[lw];
+    if(!LW.water) continue;
+    water.push({x:LW.x+28,y:LW.y+LW.h*0.30,w:LW.w-56,h:LW.h*0.46});
+  }
   var wantPools=Math.round(ri(6,9)*AREA);
   var wAttempts=Math.round(48*AREA);
   for(var wtry=0;wtry<wAttempts&&water.length<wantPools;wtry++){
@@ -825,7 +944,8 @@ function buildMap(){
     segs.push({x1:w2.x+w2.w,y1:w2.y+w2.h,x2:w2.x,y2:w2.y+w2.h});
     segs.push({x1:w2.x,y1:w2.y+w2.h,x2:w2.x,y2:w2.y});
   }
-  return {walls:walls,segs:segs,buildings:buildings,water:water,cw:cw,ch:ch,cols:cols,rows:rows,nav:buildNav(walls)};
+  return {walls:walls,segs:segs,buildings:buildings,water:water,cw:cw,ch:ch,cols:cols,rows:rows,
+    landmarks:landmarks,nav:buildNav(walls)};
 }
 // Day is a look, not a difficulty. Vision cone, awareness radius, enemy ranges
 // and every other tunable are identical in both conditions, so choosing daylight
@@ -1210,6 +1330,21 @@ function buildRaid(sim){
   // Loot left in the open scales with the ground there is to search. The 18 was
   // tuned on the old map; as a flat count it made outdoor searching pointless
   // on a world four times the size.
+  // Landmark loot. Going somewhere specific has to be worth more than searching
+  // the nearest box, or a landmark is just scenery. Each kind stocks what its
+  // name promises, and the tower is deliberately thin but valuable.
+  var LMTABLE={rare:'safe',medical:'body',ammo:'body',bulk:'crate'};
+  for(var lc2=0;lc2<map.landmarks.length;lc2++){
+    var LC=map.landmarks[lc2];
+    var nlm=Math.max(1,Math.round(ri(3,6)*LC.dens*CFG.contDens));
+    for(var q2=0;q2<nlm;q2++){
+      var sp3=spotIn(map,{x:LC.x,y:LC.y,w:LC.w,h:LC.h},30);
+      if(!sp3) continue;
+      var tt=LMTABLE[LC.loot]||'crate';
+      var cc3=mkContainer(sp3.x,sp3.y,tt==='safe'?'safe':(tt==='body'?'locker':'crate'),LC.d);
+      containers.push(cc3);
+    }
+  }
   var no=Math.max(2,Math.round(18*AREA*CFG.contDens));
   for(i=0;i<no;i++){ var sp2=freeSpot(map,30); containers.push(mkContainer(sp2.x,sp2.y,Math.random()<.7?'crate':'body')); }
   var lights=[];
@@ -3994,6 +4129,20 @@ function drawMapOverlay(){
     var wl=G.map.walls[i];
     ctx.fillRect(ox+wl.x*sc,oy+wl.y*sc,Math.max(1,wl.w*sc),Math.max(1,wl.h*sc));
   }
+  // Landmarks are what the map is navigated BY, so they are labelled and boxed
+  // rather than left as anonymous geometry.
+  var lms=(G.map.landmarks||[]);
+  for(i=0;i<lms.length;i++){
+    var LM2=lms[i];
+    ctx.strokeStyle='rgba(255,192,74,.55)'; ctx.lineWidth=1;
+    ctx.strokeRect(ox+LM2.x*sc,oy+LM2.y*sc,LM2.w*sc,LM2.h*sc);
+    ctx.fillStyle='rgba(255,192,74,.07)';
+    ctx.fillRect(ox+LM2.x*sc,oy+LM2.y*sc,LM2.w*sc,LM2.h*sc);
+    ctx.textAlign='center'; ctx.font='700 8px "Oxanium", sans-serif';
+    ctx.fillStyle='#ffc04a';
+    ctx.fillText(LM2.name,ox+(LM2.x+LM2.w/2)*sc,oy+(LM2.y+LM2.h/2)*sc+3);
+    ctx.textAlign='left';
+  }
   for(i=0;i<G.zones.length;i++){
     var zz=G.zones[i],act=zz===G.active;
     ctx.strokeStyle=act?'#4de3d0':'rgba(127,146,216,.42)'; ctx.lineWidth=act?2:1;
@@ -4349,6 +4498,18 @@ function loop(ts){
       }
       tickAmbience(dt,th,!pp.downed);
       tickEnemyAudio(dt);
+      // Name the place as you enter it, once. Without this the landmarks are
+      // distinctive geometry you never learn the name of, and naming is most of
+      // what turns a location into somewhere you can remember and go back to.
+      var lmNow=null,lmList=G.map.landmarks||[];
+      for(var lmi=0;lmi<lmList.length;lmi++){
+        var LZ=lmList[lmi];
+        if(pp.x>LZ.x&&pp.x<LZ.x+LZ.w&&pp.y>LZ.y&&pp.y<LZ.y+LZ.h){ lmNow=LZ; break; }
+      }
+      if(lmNow!==G.inLandmark){
+        G.inLandmark=lmNow;
+        if(lmNow) say('Entering the '+lmNow.name.toLowerCase()+'.');
+      }
       HEART-=dt;
       if(HEART<=0&&(pp.hp<45||pp.downed)){
         var frac=pp.downed?1:1-(pp.hp/45);
