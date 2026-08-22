@@ -343,7 +343,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.31';
+var VER='1.32';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -2120,6 +2120,72 @@ function mkRaider(x,y,forceId){
   for(var i=0;i<ri(1,3);i++) r.bag.push(rollTable(LOOT.crate));
   return r;
 }
+// ============================================================== THE PEDDLER
+// Asked what the world was missing, his answer was NEUTRAL CHARACTERS. This is
+// the first one. He stands at a landmark behind a folding table with a lantern
+// burning, he does not fight, and he is the only place inside a raid where loot
+// turns into money without you surviving the trip home.
+// The design is the pillar stated plainly: RISK VERSUS GREED. He pays 55 percent
+// and he pays INSTANTLY, banked the moment the deal closes, so it is yours even
+// if you are killed thirty seconds later. The bag on your back is worth full
+// price and can be taken from you. His offer is worth half and cannot.
+var PEDDLER_BUY=0.55;
+var PED_STOCK=['medkit','medkit','plate','ammobox','bandage','gun_smg','gun_carbine','gun_shotgun','comp','optic','titan'];
+function pedPrice(k){ return Math.round(ival(k)*1.9); }
+// He closes his stall to you once you have killed one of him. Notoriety is
+// permanent and it is meant to be: shooting the unarmed man is the greediest
+// move available and it should cost something that money cannot fix quickly.
+function pedOpen(){ return (P.notoriety||0)<2; }
+function mkPeddler(x,y,map){
+  var pool=PED_STOCK.slice(),stock=[],q,ik;
+  // A key to a door on THIS map is the offer worth crossing the sector for.
+  var kcand=[],lk=(map&&map.locked)||[];
+  for(q=0;q<lk.length;q++) for(ik in ITEMS)
+    if(ITEMS[ik].use==='key'&&ITEMS[ik].door===lk[q].id) kcand.push(ik);
+  if(kcand.length&&Math.random()<0.6){
+    var kk=pick(kcand); stock.push({k:kk,price:pedPrice(kk),sold:false});
+  }
+  while(stock.length<3&&pool.length){
+    var ix=ri(0,pool.length-1),k2=pool.splice(ix,1)[0];
+    stock.push({k:k2,price:pedPrice(k2),sold:false});
+  }
+  return {kind:'peddler',x:x,y:y,r:12,hp:150,maxhp:150,face:1.57,
+    coat:'#d8a13a',name:'THE PEDDLER',neutral:1,stock:stock,bag:[],
+    state:'idle',tx:x,ty:y,cd:0,alert:0,spd:0,dmg:0,rng:0,cone:0,
+    hitT:0,step:0,hailed:0,traded:0,goal:null,skips:[],goalT:0,goalD:0,extracting:0};
+}
+function pedSellAll(){
+  if(!G||!G.trade) return;
+  var i,tot=0,n=0,kept=[];
+  for(i=0;i<G.bag.length;i++){
+    var k=G.bag[i];
+    // He will not buy a key. Selling him the way into the vault you are standing
+    // next to is not a trade, it is a mistake with a confirmation button.
+    if(ITEMS[k]&&ITEMS[k].use==='key'){ kept.push(k); continue; }
+    tot+=Math.round(ival(k)*PEDDLER_BUY); n++;
+  }
+  if(!n){ say('Nothing in your bag he wants.'); return; }
+  G.bag=kept;
+  P.credits+=tot; saveProfile();
+  G.pedSold=(G.pedSold||0)+tot;
+  if(G.tel) G.tel.pedSold=G.pedSold;
+  G.trade.traded=1;
+  say('Sold '+n+' for '+tot.toLocaleString()+'c. Banked, whatever happens next.');
+  blip('pick'); ping(G.trade.x,G.trade.y,190,false,false,'player','move');
+}
+function pedBuy(ix){
+  if(!G||!G.trade) return;
+  var st=G.trade.stock[ix];
+  if(!st||st.sold) return;
+  if((P.credits||0)<st.price){ say('You cannot cover '+st.price.toLocaleString()+'c.'); return; }
+  var cap=PACKCAP[P.pack],wt=(ITEMS[st.k]?ITEMS[st.k].wt:1);
+  if(bagWeight()+wt>cap){ say('No room in the bag for that.'); return; }
+  P.credits-=st.price; saveProfile();
+  st.sold=true; G.bag.push(st.k); G.trade.traded=1;
+  G.pedBought=(G.pedBought||0)+st.price;
+  say('Bought '+ITEMS[st.k].name+' for '+st.price.toLocaleString()+'c.');
+  blip('pick');
+}
 function buildRaid(sim){
   // SPEC 4.1: fixed hand designed maps only. The procedural generator is gone.
   var mapIx=clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1);
@@ -2149,40 +2215,7 @@ function buildRaid(sim){
   // blocked spawn is a raid that starts stuck. Verified per map in testing, but
   // guarded here so an authoring slip can never ship as an unplayable run.
   if(!spotFree(map,start.x,start.y,22)){
-    // SPEC 7.6: spend a key at its door. Single use, and the key names its door
-  // so there is no hunting. Removing the door wall rebuilds the nav grid, which
-  // is what actually opens the route for you and for everything else.
-  var doorNear=null;
-  for(var lk2=0;lk2<(G.map.locked||[]).length;lk2++){
-    var LKR=G.map.locked[lk2];
-    if(LKR.open) continue;
-    if(dist(p,{x:LKR.doorX,y:LKR.doorY})<52){ doorNear=LKR; break; }
-  }
-  G.nearDoor=doorNear;
-  if(doorNear&&keys['KeyE']){
-    var ki=-1;
-    for(var kb=0;kb<G.bag.length;kb++){
-      var kit=ITEMS[G.bag[kb]];
-      if(kit&&kit.use==='key'&&kit.door===doorNear.id){ ki=kb; break; }
-    }
-    if(ki>=0){
-      G.bag.splice(ki,1);
-      doorNear.open=true;
-      for(var dw=G.map.walls.length-1;dw>=0;dw--)
-        if(G.map.walls[dw].door===doorNear.id) G.map.walls.splice(dw,1);
-      G.map.segs=[];
-      for(var sg=0;sg<G.map.walls.length;sg++){ var sw=G.map.walls[sg];
-        G.map.segs.push({x1:sw.x,y1:sw.y,x2:sw.x+sw.w,y2:sw.y});
-        G.map.segs.push({x1:sw.x+sw.w,y1:sw.y,x2:sw.x+sw.w,y2:sw.y+sw.h});
-        G.map.segs.push({x1:sw.x+sw.w,y1:sw.y+sw.h,x2:sw.x,y2:sw.y+sw.h});
-        G.map.segs.push({x1:sw.x,y1:sw.y+sw.h,x2:sw.x,y2:sw.y});
-      }
-      G.map.nav=buildNav(G.map.walls);
-      G.tel.doorsOpened=(G.tel.doorsOpened||0)+1;
-      say(doorNear.name+' is open.'); blip('pick'); ping(p.x,p.y,340,false,false,'player','move');
-    }
-  }
-  var near=null,nd=1e9;
+    var near=null,nd=1e9;
     for(var gt=0;gt<300;gt++){
       var c4=freeSpot(map,26);
       var d4=dist(c4,start);
@@ -2382,6 +2415,32 @@ function buildRaid(sim){
       ents.push(M2);
     }
   }
+  // One Peddler per raid, parked at whichever landmark sits about 1700 out from
+  // the drop: far enough that reaching him is a decision, near enough that the
+  // decision is live. Never in the sim. The bot has no trade logic, so a neutral
+  // body in the crowd would only muddy the balance numbers the sim exists for.
+  if(!sim){
+    var lmp=map.landmarks||[],pbest=null,pbd=1e9;
+    for(var lp=0;lp<lmp.length;lp++){
+      var LP=lmp[lp],lcxx=LP.x+LP.w/2,lcyy=LP.y+LP.h/2;
+      var lsc=Math.abs(dist({x:lcxx,y:lcyy},start)-1700);
+      if(lsc<pbd){ pbd=lsc; pbest={x:lcxx,y:lcyy}; }
+    }
+    if(!pbest) pbest=freeSpot(map,30);
+    // Same ring search the mercenary needed. freeSpot samples the WHOLE map, so
+    // asking it for a spot near a landmark is asking it to get lucky.
+    var psp=null;
+    for(var pr=40;pr<=560&&!psp;pr+=40){
+      for(var pa=0;pa<16&&!psp;pa++){
+        var pang=pa*Math.PI/8;
+        var pxx=pbest.x+Math.cos(pang)*pr,pyy=pbest.y+Math.sin(pang)*pr;
+        if(pxx<90||pyy<90||pxx>WORLD_W-90||pyy>WORLD_H-90) continue;
+        if(spotFree(map,pxx,pyy,32)) psp={x:pxx,y:pyy};
+      }
+    }
+    if(!psp) psp=freeSpot(map,32);
+    ents.push(mkPeddler(psp.x,psp.y,map));
+  }
   for(var gc=0;gc<camps.length;gc++){
     var CP=camps[gc];
     for(var gi=0;gi<2;gi++){
@@ -2508,6 +2567,18 @@ window.addEventListener('keydown',function(e){
 // when the caller is not a real key press and there is nothing to preventDefault.
 function raidKey(code,repeat,ev){
   keys[code]=true;
+  // The open stall owns the number row, so buying never also swaps your hotbar
+  // slot out from under you.
+  if(G&&!G.over&&G.trade){
+    if(ev) ev.preventDefault();
+    if(code==='Escape'||code==='KeyE'||code==='Tab'||code==='KeyI'){ G.trade=null; G.pedLock=1; return; }
+    if(code.indexOf('Digit')===0&&!repeat){
+      var td=parseInt(code.slice(5),10);
+      if(td===1) pedSellAll(); else if(td>=2&&td<=4) pedBuy(td-2);
+      return;
+    }
+    if(code==='KeyG'||code==='Space'||code==='KeyQ'||code==='KeyC') return;
+  }
   if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyX','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
   if((code==='Escape'||code==='KeyP')&&G&&!G.over) togglePauseBox(true);
   if(code==='KeyH'&&G&&!repeat) G.legendOn=!G.legendOn;
@@ -3608,6 +3679,23 @@ function updatePlayer(dt){
       say(doorNear.name+' is open.'); blip('pick'); ping(p.x,p.y,340,false,false,'player','move');
     }
   }
+  // The stall. While it is open E belongs to the panel and not to a crate under
+  // your feet, and walking away closes it: you are never trapped in a menu with
+  // something coming toward you.
+  var ped=null;
+  for(var pe=0;pe<G.ents.length;pe++){
+    var PE=G.ents[pe];
+    if(PE.kind==='peddler'&&dist(p,PE)<74){ ped=PE; break; }
+  }
+  G.nearPed=ped;
+  if(G.trade&&(!ped||p.downed||G.trade.hp<=0)) G.trade=null;
+  if(ped&&!G.trade&&keys['KeyE']&&!G.pedLock){
+    G.pedLock=1;
+    if(!pedOpen()) say('He has heard what you did to the last one. No deal.');
+    else { G.trade=ped; blip('pick'); }
+  }
+  if(!keys['KeyE']) G.pedLock=0;
+  if(G.trade){ tickRegen(dt); return; }
   var near=null,nd=1e9;
   for(var c=0;c<G.containers.length;c++){
     var ct=G.containers[c]; if(ct.opened) continue;
@@ -4023,6 +4111,27 @@ function updateEnts(dt){
     if(e.kind==='crawler') e.legs+=dt*14;
 
     if(e.hp<=0){
+      // Killing the Peddler is allowed, and it is meant to be tempting: he is
+      // standing over stock and he cannot shoot back. The price is NOTORIETY.
+      // It is permanent, it closes every stall to you at two, and it makes every
+      // mercenary charge more for the risk of standing next to you.
+      if(e.kind==='peddler'){
+        var pdrop=[];
+        for(var ps=0;ps<e.stock.length;ps++) if(!e.stock[ps].sold) pdrop.push(e.stock[ps].k);
+        pdrop.push(pick(['core','titan','ledger'])); pdrop.push('cell');
+        var cpd=setLoot(mkContainer(e.x,e.y,'cache'),pdrop);
+        cpd.cache=1; cpd.time=1.4; G.containers.push(cpd);
+        if(!G.sim){
+          P.notoriety=(P.notoriety||0)+1; saveProfile();
+          if(G.tel) G.tel.pedKilled=1;
+          say('The Peddler is dead. Word gets around. Notoriety '+P.notoriety+'.');
+          label(e.x,e.y-18,'NOTORIETY +'+P.notoriety,'#ff6b5a',0,true);
+        }
+        decal(e.x,e.y,'#6e1c15',rnd(18,28));
+        spark(e.x,e.y,'#d8a13a',24,300);
+        if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:'#d8a13a',r:26});
+        G.ents.splice(i,1); continue;
+      }
       // Machines and raiders shoot each other, so crediting every death on the
       // map to the player inflated both contract progress and the kill counts
       // in the recorder, which is the data tuning decisions are made from.
@@ -4070,6 +4179,18 @@ function updateEnts(dt){
       spark(e.x,e.y,e.kind==='raider'?'#c8452f':'#ffb02e',22,300);
       if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:e.kind==='raider'?'#c8452f':'#ffb02e',r:26});
       G.ents.splice(i,1); continue;
+    }
+    // The Peddler runs no AI whatsoever. He holds his ground, turns to face you,
+    // and hails you once when you are near enough to deal. Nothing else about
+    // him ticks, which is exactly why he can never become a movement bug.
+    if(e.kind==='peddler'){
+      var pdd=dist(e,p);
+      if(pdd<440) e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.4*dt,2.4*dt);
+      if(!e.hailed&&pdd<240&&!G.sim&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)){
+        e.hailed=1;
+        say(pedOpen()?'A trader waves you over.':'The trader turns his back on you.');
+      }
+      continue;
     }
     if(e.alert>0) e.alert-=dt*.5;
 
@@ -4548,8 +4669,24 @@ function endRaid(how){
     }
     P.merc=null;
   }
+  // Money taken at the stall was banked when the deal closed, so it is reported
+  // rather than paid here. Saying so matters: on a death screen it is the one
+  // line that is still good news.
+  if(G.pedSold){
+    lines.push('<span style="color:var(--coolant)">Sold at the stall for '+G.pedSold.toLocaleString()+'c, already banked.</span>');
+  }
+  if(G.pedBought){
+    lines.push('<span style="color:var(--ash)">Spent '+G.pedBought.toLocaleString()+'c at the stall.</span>');
+  }
   if(how==='extract'){
     P.ext++;
+    // Notoriety fades, slowly. Four clean extractions and one stall opens to you
+    // again. It never fades from doing nothing: you have to keep working.
+    if((P.notoriety||0)>0){
+      P.notExt=(P.notExt||0)+1;
+      if(P.notExt>=4){ P.notExt=0; P.notoriety--;
+        lines.push('<span style="color:var(--ash)">The traders are starting to forget. Notoriety '+P.notoriety+'.</span>'); }
+    }
     contractExtract(G.bag,haul);
     for(i=0;i<G.bag.length;i++){ var bm=bankItem(G.bag[i]); if(bm) lines.push(bm); }
     // Both hands count. Extracting with the sidearm up used to throw away the
@@ -5120,6 +5257,33 @@ function drawCrawlerS(e){
   wc.beginPath(); wc.arc(e.x+fl*15*S,e.y-17*S*lunge,2.4*S,0,6.2832); wc.fill();
   wc.globalCompositeOperation='source-over';
 }
+function drawPeddlerS(e){
+  // A stall, not a man standing in a field: table, stock on the table, and the
+  // lantern that makes him the one warm thing in the sector.
+  wc.fillStyle='rgba(10,8,6,.34)';
+  wc.beginPath(); wc.ellipse(e.x,e.y+5,28,10,0,0,6.2832); wc.fill();
+  drawOp(e.x,e.y-15,e.face,(e.step||0)*3,e.coat,0.3,0,'',0,
+    {moving:false,sprint:false,ads:false,hurt:e.hitT});
+  wc.fillStyle='#7a5f40'; wc.fillRect(e.x-25,e.y-7,50,6);
+  wc.fillStyle='#5a4530'; wc.fillRect(e.x-25,e.y-1,50,6);
+  wc.fillStyle='#3a2c1e'; wc.fillRect(e.x-23,e.y+5,4,9); wc.fillRect(e.x+19,e.y+5,4,9);
+  for(var q=0;q<3;q++){
+    var S=e.stock&&e.stock[q]; if(!S) continue;
+    wc.fillStyle=S.sold?'#3a3630':((ITEMS[S.k]&&ITEMS[S.k].c)||'#c9b458');
+    wc.fillRect(e.x-19+q*13,e.y-15,9,8);
+    wc.fillStyle='rgba(18,14,12,.5)'; wc.fillRect(e.x-19+q*13,e.y-8,9,1);
+  }
+  var lp=0.74+0.26*Math.sin((G?G.t:0)*2.2);
+  wc.save(); wc.globalCompositeOperation='lighter';
+  var gr=wc.createRadialGradient(e.x+28,e.y-30,2,e.x+28,e.y-30,66);
+  gr.addColorStop(0,'rgba(255,196,90,'+(0.40*lp).toFixed(3)+')');
+  gr.addColorStop(1,'rgba(255,196,90,0)');
+  wc.fillStyle=gr; wc.beginPath(); wc.arc(e.x+28,e.y-30,66,0,6.2832); wc.fill();
+  wc.restore();
+  wc.fillStyle='#3a2c1e'; wc.fillRect(e.x+27,e.y-24,2,24);
+  wc.fillStyle='#ffd76a'; wc.fillRect(e.x+25,e.y-34,6,8);
+  wc.fillStyle='#fff3c8'; wc.fillRect(e.x+27,e.y-32,2,4);
+}
 function drawSnitchS(e){
   var S=e.r/SNITCH_R0;
   var al=e.state==='alarm';
@@ -5536,6 +5700,7 @@ function render2D(dt){
       else if(e2.kind==='sentry') drawSentryS(e2);
       else if(e2.kind==='crawler') drawCrawlerS(e2);
       else if(e2.kind==='snitch') drawSnitchS(e2);
+      else if(e2.kind==='peddler') drawPeddlerS(e2);
       else drawOp(e2.x,e2.y,e2.face,(e2.step||0)*4,e2.coat,
         clamp(e2.bag.length/7,0,1),e2.muzzle,'',0,
         {moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT});
@@ -5556,7 +5721,9 @@ function render2D(dt){
     var lift=spriteTop(ne)+8;
     var hostile=ne.kind==='raider';
     // a raider bolting for the beacon is worth calling out: it is a race now
-    var plate=ne.name+(ne.state==='extract'?' [RUNNING]':'');
+    var plate=ne.kind==='peddler'
+      ? (pedOpen()?(G.nearPed===ne?'THE PEDDLER  [E] DEAL':'THE PEDDLER'):'THE PEDDLER  [CLOSED]')
+      : ne.name+(ne.state==='extract'?' [RUNNING]':'');
     wc.font=FS('700 9px "Titan One","Rubik",sans-serif');
     var tw=wc.measureText(plate).width;
     // Plate height follows the actual rendered font, or the scaled-up text
@@ -5566,6 +5733,7 @@ function render2D(dt){
     wc.fillRect(ne.x-tw/2-4,ne.y-lift-ph2+3,tw+8,ph2);
     // SPEC 8.4: a visible hostility indicator per raider, so the situation is
     // readable before you commit. Grudge red, passive green, everyone else dim.
+    if(ne.kind==='peddler'){ wc.fillStyle=pedOpen()?'#ffc04a':'#8a5a4a'; } else
     wc.fillStyle=ne.state==='extract'?'#35d6c8'
       :(ne.kind==='raider'&&ne.grudge?'#ff3b30'
       :(ne.kind==='raider'&&!ne.hostile?'#7fc4a0'
@@ -6162,6 +6330,7 @@ function drawHUD(){
     drawLegend();
   }
   if(G.bagOpen) drawBag();
+  if(G.trade) drawTrade();
   if(keys['KeyM']) drawMapOverlay();
 }
 function safeSet(){
@@ -6320,6 +6489,56 @@ function drawLegend(){
     ctx.fillText(SOUNDKEY[i][1],x+LH(18),cy);
     cy+=LH(10);
   }
+}
+// Centred and large on purpose. This is the one moment in a raid where you
+// choose between money you can keep and money you might keep, and that deserves
+// to stop the eye rather than sit in a corner.
+function drawTrade(){
+  var T=G.trade,PW=LH(340),PH=LH(238),x=Math.round(W/2-PW/2),y=Math.round(H/2-PH/2);
+  ctx.fillStyle='rgba(6,9,13,.97)'; ctx.fillRect(x,y,PW,PH);
+  ctx.strokeStyle='#d8a13a'; ctx.lineWidth=2; ctx.strokeRect(x+1,y+1,PW-2,PH-2);
+  var cy=y+LH(23),i;
+  ctx.font=FS('700 14px "Titan One","Rubik",sans-serif'); ctx.fillStyle='#ffc04a';
+  ctx.fillText('THE PEDDLER',x+14,cy);
+  ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#6b7783'; ctx.textAlign='right';
+  ctx.fillText('[E] walk away',x+PW-14,cy); ctx.textAlign='left';
+  cy+=LH(9);
+  ctx.strokeStyle='#3a3222'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(x+14,cy); ctx.lineTo(x+PW-14,cy); ctx.stroke();
+  var tot=0,n=0;
+  for(i=0;i<G.bag.length;i++){
+    var k=G.bag[i]; if(ITEMS[k]&&ITEMS[k].use==='key') continue;
+    tot+=Math.round(ival(k)*PEDDLER_BUY); n++;
+  }
+  cy+=LH(21);
+  ctx.font=FS('700 12px "Titan One","Rubik",sans-serif'); ctx.fillStyle=n?'#7fc4a0':'#4d5762';
+  ctx.fillText('[1]  SELL BAG  ('+n+')',x+14,cy);
+  ctx.textAlign='right'; ctx.fillStyle=n?'#ffc04a':'#4d5762';
+  ctx.fillText('+'+tot.toLocaleString()+'c',x+PW-14,cy); ctx.textAlign='left';
+  cy+=LH(15);
+  ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#8a96a1';
+  ctx.fillText('55% of value, paid now. Yours even if you die out there.',x+14,cy);
+  cy+=LH(17);
+  ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+14,cy); ctx.lineTo(x+PW-14,cy); ctx.stroke();
+  cy+=LH(18);
+  ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#6b7783';
+  ctx.fillText('HIS STOCK',x+14,cy);
+  ctx.textAlign='right'; ctx.fillStyle='#cdd6dd';
+  ctx.fillText('you hold '+(P.credits||0).toLocaleString()+'c',x+PW-14,cy); ctx.textAlign='left';
+  for(i=0;i<T.stock.length;i++){
+    var S=T.stock[i],IT=ITEMS[S.k]||{name:'?',c:'#888'};
+    cy+=LH(20);
+    var can=!S.sold&&(P.credits||0)>=S.price;
+    ctx.font=FS('700 11px "Titan One","Rubik",sans-serif');
+    ctx.fillStyle=S.sold?'#4d5762':(can?IT.c:'#8a5a4a');
+    ctx.fillText('['+(i+2)+']  '+(S.sold?'sold':IT.name),x+14,cy);
+    ctx.textAlign='right';
+    ctx.fillStyle=S.sold?'#4d5762':(can?'#ffc04a':'#8a5a4a');
+    ctx.fillText(S.sold?'gone':(S.price.toLocaleString()+'c'),x+PW-14,cy);
+    ctx.textAlign='left';
+  }
+  ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#6b7783';
+  ctx.fillText('He is unarmed. Shooting him has a price.',x+14,y+PH-LH(13));
 }
 function drawBag(){
   var p=G.player,PW=LH(270),x=W-PW-12,y=48,i;
@@ -6539,6 +6758,19 @@ function drawMapOverlay(){
     ctx.textAlign='center'; ctx.font=FS('700 8px "Titan One","Rubik",sans-serif');
     ctx.fillStyle='#ffc04a';
     ctx.fillText(LM2.name,ox+(LM2.x+LM2.w/2)*sc,oy+(LM2.y+LM2.h/2)*sc+3);
+    ctx.textAlign='left';
+  }
+  // The Peddler is marked. Half your bag is worth walking to him for, and a
+  // trade you never found is not a decision, it is a secret.
+  for(i=0;i<G.ents.length;i++){
+    var pdm=G.ents[i]; if(pdm.kind!=='peddler') continue;
+    var pmx=ox+pdm.x*sc,pmy=oy+pdm.y*sc;
+    ctx.fillStyle='#120e0c'; ctx.beginPath(); ctx.arc(pmx,pmy,6.4,0,6.2832); ctx.fill();
+    ctx.fillStyle=pedOpen()?'#ffd76a':'#8a5a4a';
+    ctx.beginPath(); ctx.arc(pmx,pmy,4.4,0,6.2832); ctx.fill();
+    ctx.textAlign='center'; ctx.font=FS('700 9px "Titan One","Rubik",sans-serif');
+    ctx.fillStyle=pedOpen()?'#ffd76a':'#8a5a4a';
+    ctx.fillText(pedOpen()?'TRADER':'TRADER (CLOSED)',pmx,pmy-11);
     ctx.textAlign='left';
   }
   for(i=0;i<G.zones.length;i++){
@@ -7121,7 +7353,10 @@ function mercCost(id){
   // good standing makes him cheaper, a grudge makes him refuse outright
   if(rec.kills>0) return null;
   var disc=clamp(rec.standing*0.08,0,0.4);
-  return Math.round(MERC_BASE*(1-disc));
+  // Nobody works cheap for a man who shoots unarmed traders. 15 percent on the
+  // hire per point of notoriety, and it compounds with a bad reputation.
+  var risk=1+0.15*(P.notoriety||0);
+  return Math.round(MERC_BASE*(1-disc)*risk);
 }
 function renderMerc(){
   var el=document.getElementById('merclist'),h='';
