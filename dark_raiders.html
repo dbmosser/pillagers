@@ -380,7 +380,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.45';
+var VER='1.46';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -1447,7 +1447,56 @@ var WEATHER=[
   {id:'storm',name:'STORM',view:0.80,noise:0.48,lights:0.55,rain:2,lightning:true,
    line:'Storm. The lightning will show you to everything out there.'}
 ];
-function wx(){ return (G&&G.wx)||WEATHER[0]; }
+// WEATHER THAT TURNS. It was rolled once at the drop and then it was a fact
+// about the raid, which meant it was a difficulty modifier you read on the
+// loading line and then forgot. A raid where the conditions change is a raid
+// where the plan you made stops being the plan you are in, and that is worth
+// more to the feel of the place than a fifth weather type would be.
+// wx() therefore has to be able to return a state that is halfway between two
+// entries, because every vision, noise and lighting query in the game reads it
+// live and a snap would be a jump cut.
+var WXBLEND={id:'turning',name:'TURNING',view:1,noise:1,lights:1,rain:0,line:null};
+function wxMix(a,b,t){
+  WXBLEND.view=a.view+(b.view-a.view)*t;
+  WXBLEND.noise=a.noise+(b.noise-a.noise)*t;
+  WXBLEND.lights=a.lights+(b.lights-a.lights)*t;
+  WXBLEND.rain=a.rain+(b.rain-a.rain)*t;
+  WXBLEND.lightning=(t<0.5?a.lightning:b.lightning);
+  WXBLEND.id=(t<0.5?a.id:b.id);
+  WXBLEND.name=(t<0.5?a.name:b.name);
+  return WXBLEND;
+}
+function wx(){
+  if(!G||!G.wx) return WEATHER[0];
+  if(G.wxNext&&G.wxT<1) return wxMix(G.wx,G.wxNext,G.wxT);
+  return G.wx;
+}
+// A turn is announced when it STARTS, not when it finishes, so the line arrives
+// while there is still time to do something about it.
+var WX_TURN=14;          // seconds to cross from one state to the other
+function wxTick(dt){
+  if(!G||G.over) return;
+  if(G.wxNext){
+    G.wxT=Math.min(1,G.wxT+dt/WX_TURN);
+    if(G.wxT>=1){ G.wx=G.wxNext; G.wxNext=null; G.wxT=0; }
+    return;
+  }
+  if(G.wxTurnsLeft<=0) return;
+  G.wxAt-=dt;
+  if(G.wxAt>0) return;
+  var nw=pickWeather(),guard=0;
+  while(nw.id===G.wx.id&&guard++<12) nw=pickWeather();
+  if(nw.id===G.wx.id) return;
+  G.wxNext=nw; G.wxT=0;
+  G.wxTurnsLeft--;
+  G.wxTurned=(G.wxTurned||0)+1;
+  // Next turn, if there is one, lands somewhere in the back half.
+  G.wxAt=rnd(120,220);
+  if(!G.sim){
+    say('The weather is turning. '+nw.line);
+    sfx('charge',G.player.x,G.player.y);
+  }
+}
 // Time of day. His answer to "full bright or overcast": "MAKE IT VARY BASED ON
 // TIME OF DAY". Rolled once per raid like weather. Every entry is DAYLIGHT: the
 // variance is colour temperature and whether the lamps are worth anything, not
@@ -3467,6 +3516,16 @@ function buildRaid(sim){
     // Weather is rolled once per raid. Clear is weighted heaviest so the unusual
     // conditions stay unusual and keep their impact.
     wx:pickWeather(),
+    // One turn in most raids, two in some, never in the first ninety seconds so
+    // the conditions you deployed into are the conditions you get to plan with.
+    wxNext:null,wxT:0,
+    wxTurnsLeft:(Math.random()<0.30?2:1),
+    // Measured at rnd(110, 330): the median turn landed at 236 seconds and the
+    // median sim raid ended at 174, so three raids in four never saw the sky
+    // move at all. A feature you only meet on a long run is a feature most runs
+    // do not have. Pulled forward, keeping a floor so the conditions you
+    // deployed into are still the conditions you get to plan with.
+    wxAt:rnd(85,Math.max(120,CFG.raidSec*0.35)),
     tod:pickTod(),
     lightning:0,rainT:0,inLandmark:null,inZone:undefined,hot:0,
     msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,legendOn:true,sprinting:false,
@@ -6072,7 +6131,7 @@ function endRaid(how){
   pendingRun={
     n:P.runs,outcome:how,weapon:T.weapon,preset:CFG.preset||'custom',
     drawErr:T.drawErr||null,
-    wx:(G.wx&&G.wx.id)||'clear',tod:(G.tod&&G.tod.id)||'noon',
+    wx:(G.wx&&G.wx.id)||'clear',wxTurns:G.wxTurned||0,tod:(G.tod&&G.tod.id)||'noon',
     caches:T.cachesOpened||0,windfalls:T.windfalls||0,strongbox:T.strongbox||0,campSafes:T.campSafes||0,wardenMet:T.wardenMet||0,doorsOpened:T.doorsOpened||0,
     gunsEq:T.gunsEquipped||0,bestQ:T.bestQ||0,holdExtract:T.holdExtract||0,diedInSiege:T.diedInSiege||0,
     dur:Math.round(CFG.raidSec-G.timeLeft),
@@ -6123,6 +6182,7 @@ function buildTags(){
 // ================================================================ headless sim runner
 var simRunning=false;
 function simStep(dt){
+  wxTick(dt);
   G.t+=dt; G.timeLeft-=dt;
   if(G.timeLeft<=0){ G.timeLeft=0; G.tel.deathKiller='timer'; G.player.pendKiller='timer'; endRaid('dead'); return; }
   refreshVseg();
@@ -8231,7 +8291,9 @@ function drawMapOverlay(){
   // conditions belong on the map, since they change how far you can see
   ctx.textAlign='right';
   ctx.fillStyle=wx().id==='clear'?'#9aa8d0':'#4de3d0';
-  ctx.fillText(tod().name+'  '+wx().name,ox+WORLD_W*sc,oy-10);
+  ctx.fillText(tod().name+'  '+wx().name+
+    (G.wxNext?('  \u2192 '+G.wxNext.name+'  '+Math.round(G.wxT*100)+'%'):''),
+    ox+WORLD_W*sc,oy-10);
   ctx.textAlign='left';
   for(i=0;i<G.map.buildings.length;i++){
     var b=G.map.buildings[i];
@@ -8818,6 +8880,7 @@ function loop(ts){
       tickEnemyAudio(dt);
       tickVerb(dt);
       tickPlayerSteps(dt);
+      wxTick(dt);
       G.seenT=Math.max(0,(G.seenT||0)-dt);
       G.emoteCd=Math.max(0,(G.emoteCd||0)-dt);
       if(G.bubbles) for(var bi2=G.bubbles.length-1;bi2>=0;bi2--){
@@ -8919,7 +8982,9 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','Weather that turns while you are still out there'],
+  ['NOW','Sound pass three: the machines get voices you can tell apart'],
+  ['NEXT','A raid modifier you opt into for better pay'],
+  ['DONE','Weather that turns while you are still out there'],
   ['DONE','Windfalls and the ARC Strongbox: greed sets the odds'],
   ['DONE','THE LISTENER: blind, dormant, and it hunts the noise you make'],
   ['DONE','Your body stays where you fell, and you can go back for it'],

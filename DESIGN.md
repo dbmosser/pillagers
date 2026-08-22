@@ -694,6 +694,15 @@ Three things, none of which should be built without him saying so.
   - Windfalls and Strongbox opens are both in the flight recorder now, so the next tuning pass on this has data instead of my guess.
   - Sim 14 raids: 50 percent extract, 0 hangs, average haul 3,076. The bot loots whatever is nearest and leaves early, so it collects the 4 percent end of this curve almost exclusively, which is exactly why the sim haul did not move.
   - Browser parse substituted for `node --check`. **Not verified: whether the floor is high enough.** 4 percent beside the beacon is deliberately meagre, so a cautious raid still finds junk. That is the intent, but if his complaint is that EVERY run feels poor rather than that safe runs feel poor, the base rate is the number to raise.
+- **v1.46 (weather that turns while you are still out there):** The conditions were rolled once at the drop and then they were a fact about the raid, which made weather a difficulty modifier you read on the loading line and forgot. A raid where the sky changes is a raid where the plan you made stops being the plan you are in, and that does more for how the place feels than a sixth weather type would.
+  - **It crosses rather than snaps.** Every vision, noise and lighting query in the game reads the weather live, so a hard cut would be a jump cut. A turn takes fourteen seconds and everything moves together across it. Measured on a FOG to STORM turn: view went 0.60 to 0.80, noise 1.0 to 0.48, lamps 0.85 to 0.55, and the operator's actual sight distance travelled from 388 units to 496 continuously, one frame at a time.
+  - **Announced when it starts, not when it finishes**, so the line arrives while there is still time to do something about it. The sector map shows the crossing and its percentage, so you can see how long you have before the fog is fully in.
+  - Most raids get one turn, about three in ten get two, and it never turns into the weather it already is: verified over 300 forced turns, zero same-state transitions and all twenty possible pairs seen.
+  - **A defect found by measuring rather than by playing.** The first cut booked the turn between 110 and 330 seconds, median 236. The median sim raid ends at 174. Three raids in four therefore never saw the sky move at all, which makes it a feature that exists mainly in the changelog. Pulled forward to between 86 and 208, median 145, keeping a floor so the conditions you deployed into are still the conditions you get to plan with. Re-measured: the sky now turns in **4 of 6** sim raids instead of 1 of 6.
+  - The sim runs under the same sky, so its numbers keep meaning what they meant, and whether a turn happened is in the flight recorder.
+  - Sim 14 raids: 36 percent extract, 0 hangs, average haul 3,236, killers sentry 8 and crawler 1. Inside the band and inside this sim's noise.
+  - Browser parse substituted for `node --check`. **Not verified: whether a fog bank rolling in mid raid reads as dramatic or as the game getting harder for no reason.** The announcement and the map percentage are there to make it read as an event rather than a nerf, but that is a feel question.
+
 
 
 
