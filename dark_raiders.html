@@ -343,7 +343,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.32';
+var VER='1.33';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -648,8 +648,103 @@ function bus(){
     BUS=a.createGain(); BUS.gain.value=1;
     BUS.connect(a.destination);
     PAN_OK=!!a.createStereoPanner;
+    // Everything the game plays is now also sent to a reverb whose size is the
+    // room you are standing in. See verb() below.
+    var R=verb(); if(R) BUS.connect(R.send);
   }
   return BUS;
+}
+// ---------------------------------------------------------------- the room
+// His top complaint about the world was that it feels SAMEY, and the answer to
+// that is not only more geometry, it is that the geometry should be audible. A
+// shed and a treeline and an open street are three different acoustics, and a
+// player hears the difference long before they can name it.
+// No impulse responses and no files: four parallel comb delays with their own
+// feedback and damping, which is a small Schroeder reverb. Send level, feedback
+// and damping are all driven per frame from where the operator is standing, so
+// walking through a doorway audibly closes the room around you.
+var REV=null;
+function verb(){
+  var a=ac(); if(!a) return null;
+  if(REV) return REV;
+  var send=a.createGain(); send.gain.value=0;
+  var pre=a.createDelay(0.25); pre.delayTime.value=0.011;
+  send.connect(pre);
+  // Fixed wet trim so the four combs summing together can never run away; the
+  // per frame movement all happens on send, feedback and damping instead.
+  var wet=a.createGain(); wet.gain.value=0.30;
+  var taps=[0.0297,0.0371,0.0411,0.0437],cells=[];
+  for(var i=0;i<taps.length;i++){
+    var d=a.createDelay(0.5); d.delayTime.value=taps[i];
+    var lp=a.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=3200;
+    var fb=a.createGain(); fb.gain.value=0.62;
+    pre.connect(d); d.connect(lp); lp.connect(fb); fb.connect(d);
+    d.connect(wet);
+    cells.push({d:d,lp:lp,fb:fb});
+  }
+  wet.connect(a.destination);
+  REV={send:send,wet:wet,pre:pre,cells:cells};
+  return REV;
+}
+// The acoustic of a world point. Ordered most enclosed first, because a locked
+// room inside a building is both and should read as the vault, not the shed.
+function spaceAt(x,y){
+  if(!G||!G.map) return {wet:0.34,damp:2000,fb:0.80,n:'undercroft'};
+  var m=G.map,i;
+  for(i=0;i<(m.locked||[]).length;i++){ var L=m.locked[i];
+    if(!L.open&&x>L.x&&x<L.x+L.w&&y>L.y&&y<L.y+L.h) return {wet:0.62,damp:1400,fb:0.86,n:'vault'}; }
+  for(i=0;i<(m.buildings||[]).length;i++){ var B=m.buildings[i];
+    if(x>B.x&&x<B.x+B.w&&y>B.y&&y<B.y+B.h) return {wet:0.44,damp:2100,fb:0.80,n:'inside'}; }
+  for(i=0;i<(m.woods||[]).length;i++){ var W=m.woods[i];
+    if(x>W.x&&x<W.x+W.w&&y>W.y&&y<W.y+W.h) return {wet:0.07,damp:700,fb:0.40,n:'woods'}; }
+  if(inWater(x,y)) return {wet:0.26,damp:5200,fb:0.60,n:'water'};
+  return {wet:0.15,damp:4600,fb:0.56,n:'open'};
+}
+var SPACE_N='open';
+function tickVerb(dt){
+  var R=verb(); if(!R) return;
+  var a=ac(); if(!a) return;
+  var pp=(G&&G.player)?G.player:null;
+  var S=pp?spaceAt(pp.x,pp.y):spaceAt(0,0);
+  SPACE_N=S.n;
+  var t=a.currentTime;
+  try{
+    R.send.gain.setTargetAtTime(S.wet,t,0.5);
+    for(var i=0;i<R.cells.length;i++){
+      R.cells[i].fb.gain.setTargetAtTime(S.fb,t,0.7);
+      R.cells[i].lp.frequency.setTargetAtTime(S.damp,t,0.7);
+    }
+  }catch(e){}
+}
+// What you are walking ON. Same ordering logic, and the reason it is separate
+// from spaceAt is that a catwalk over a shed is metal underfoot but the room
+// around you is still the shed.
+function surfAt(x,y){
+  if(!G||!G.map) return 'stone';
+  if(inWater(x,y)) return 'water';
+  var m=G.map,i;
+  for(i=0;i<(m.woods||[]).length;i++){ var W=m.woods[i];
+    if(x>W.x&&x<W.x+W.w&&y>W.y&&y<W.y+W.h) return 'leaf'; }
+  if(m.platAt&&m.platAt(x,y)) return 'metal';
+  for(i=0;i<(m.buildings||[]).length;i++){ var B=m.buildings[i];
+    if(x>B.x&&x<B.x+B.w&&y>B.y&&y<B.y+B.h) return 'wood'; }
+  return 'stone';
+}
+// You could hear every machine on the map walking and could not hear yourself,
+// which is backwards: your own footsteps are the thing that tells you you are
+// making noise, and crouching is meaningless if it does not sound quieter.
+var PSTEP=0;
+function tickPlayerSteps(dt){
+  if(!G||G.sim||G.over) return;
+  var p=G.player;
+  PSTEP-=dt;
+  if(!p.moving||p.downed||p.roll>0){ if(PSTEP<0) PSTEP=0; return; }
+  if(PSTEP>0) return;
+  var crouch=!!(keys['ControlLeft']||keys['ControlRight']);
+  // Distance is the volume control here, so a crouched step is played as though
+  // it happened further away. Same generator, quieter result.
+  blip('foot',crouch?540:(G.sprinting?0:180),0,surfAt(p.x,p.y));
+  PSTEP=G.sprinting?0.31:(crouch?0.64:0.45);
 }
 // Where a world point sits relative to the operator: how far, and how far off to
 // the side. Pan is taken from screen x so it matches what he is looking at.
@@ -844,6 +939,57 @@ function blip(type,d,pan){
     gb.gain.setValueAtTime(.001,t); gb.gain.linearRampToValueAtTime(.11*vol,t+.02);
     gb.gain.exponentialRampToValueAtTime(.001,t+.20);
     ob.connect(gb); gb.connect(OUT); ob.start(t); ob.stop(t+.22);
+  } else if(type==='foot'){
+    // Five surfaces, one generator: length, brightness and resonance are the
+    // whole difference between gravel, boards, plate steel, leaf litter and
+    // standing water. Water and leaves are the loud ones on purpose, because
+    // they are the two surfaces that should make you think twice about crossing.
+    var SF={
+      stone:{len:1100,lp:900, q:1.0,g:.055,dec:3.4},
+      wood: {len:1500,lp:520, q:2.8,g:.060,dec:2.8,body:150},
+      metal:{len:1900,lp:2600,q:5.0,g:.055,dec:3.0,ring:1},
+      leaf: {len:2800,lp:5400,q:0.6,g:.042,dec:1.7},
+      water:{len:3200,lp:3400,q:0.5,g:.075,dec:1.5}
+    };
+    var F=SF[arguments[3]]||SF.stone;
+    var bf=a.createBuffer(1,F.len,a.sampleRate),cf=bf.getChannelData(0);
+    for(var iF=0;iF<F.len;iF++) cf[iF]=(Math.random()*2-1)*Math.pow(1-iF/F.len,F.dec);
+    var sfS=a.createBufferSource(); sfS.buffer=bf;
+    var ff=a.createBiquadFilter(); ff.type='lowpass';
+    ff.frequency.value=F.lp; ff.Q.value=F.q;
+    var gf=a.createGain(); gf.gain.value=F.g*vol;
+    sfS.connect(ff); ff.connect(gf); gf.connect(OUT); sfS.start(t);
+    if(F.body){
+      var bo=a.createOscillator(),bg=a.createGain();
+      bo.type='sine'; bo.frequency.setValueAtTime(F.body,t);
+      bo.frequency.exponentialRampToValueAtTime(F.body*0.55,t+.09);
+      bg.gain.setValueAtTime(.035*vol,t); bg.gain.exponentialRampToValueAtTime(.001,t+.11);
+      bo.connect(bg); bg.connect(OUT); bo.start(t); bo.stop(t+.12);
+    }
+    if(F.ring){
+      var ro=a.createOscillator(),rg=a.createGain();
+      ro.type='triangle'; ro.frequency.setValueAtTime(1240+Math.random()*260,t);
+      rg.gain.setValueAtTime(.020*vol,t); rg.gain.exponentialRampToValueAtTime(.001,t+.22);
+      ro.connect(rg); rg.connect(OUT); ro.start(t); ro.stop(t+.23);
+    }
+  } else if(type==='seen'){
+    // The moment something acquires you. He asked for TENSE AND FRIGHTENING and
+    // this is the cheapest honest way to get it: a low swell you feel in the
+    // chest under a thin descending shiver, so the reaction lands before you
+    // have worked out what is looking at you.
+    var sv=a.createOscillator(),sg2=a.createGain(),sfl=a.createBiquadFilter();
+    sv.type='sawtooth';
+    sv.frequency.setValueAtTime(58,t); sv.frequency.exponentialRampToValueAtTime(41,t+.55);
+    sfl.type='lowpass';
+    sfl.frequency.setValueAtTime(200,t); sfl.frequency.exponentialRampToValueAtTime(88,t+.55);
+    sg2.gain.setValueAtTime(.001,t); sg2.gain.linearRampToValueAtTime(.115*vol,t+.07);
+    sg2.gain.exponentialRampToValueAtTime(.001,t+.62);
+    sv.connect(sfl); sfl.connect(sg2); sg2.connect(OUT); sv.start(t); sv.stop(t+.64);
+    var sh=a.createOscillator(),shg=a.createGain();
+    sh.type='triangle';
+    sh.frequency.setValueAtTime(1580,t); sh.frequency.exponentialRampToValueAtTime(520,t+.34);
+    shg.gain.setValueAtTime(.030*vol,t); shg.gain.exponentialRampToValueAtTime(.001,t+.36);
+    sh.connect(shg); shg.connect(OUT); sh.start(t); sh.stop(t+.38);
   } else if(type==='clank'){
     var o4=a.createOscillator(),g6=a.createGain();
     o4.type='triangle'; o4.frequency.setValueAtTime(900+Math.random()*400,t);
@@ -1805,6 +1951,22 @@ function bakeGround(map){
     c.strokeStyle=isDay()?'rgba(30,60,70,.5)':'rgba(0,0,0,.45)';
     c.lineWidth=2; c.strokeRect(q.x+1,q.y+1,q.w-2,q.h-2);
   }
+  // A BUILDING HAS A FLOOR, and it has to LOOK like one. The dam POWERHOUSE is
+  // authored inside the reservoir rectangle, so the water pass was painting its
+  // interior, ripples and all, the same blue as the open reservoir. Repainted
+  // after the whole water pass so no ripple or shoreline stroke survives on it,
+  // which is the visual half of the same fix inWaterMap makes mechanically.
+  for(i=0;i<map.buildings.length;i++){
+    var BW=map.buildings[i],wetB=false;
+    for(j=0;j<(map.water||[]).length;j++){
+      var QW=map.water[j];
+      if(BW.x<QW.x+QW.w&&BW.x+BW.w>QW.x&&BW.y<QW.y+QW.h&&BW.y+BW.h>QW.y){ wetB=true; break; }
+    }
+    if(!wetB) continue;
+    var DW=DISTRICTS[BW.d];
+    c.fillStyle=isDay()?DW.floor:darkHex(DW.floor,0.55);
+    c.fillRect(BW.x,BW.y,BW.w,BW.h);
+  }
   // contact shadow where every wall meets the ground, baked once so it is free
   // per frame. Gives the raised faces something to sit in instead of floating.
   for(i=0;i<map.walls.length;i++){
@@ -1975,11 +2137,25 @@ function canSee(px,py,face,tx,ty,segs,far,cone,amb){
 // occluders. It only ever answers one question: are you standing in it.
 function inWaterMap(map,x,y){
   var w=(map&&map.water)||[];
+  var wet=false;
   for(var i=0;i<w.length;i++){
     var q=w[i];
-    if(x>q.x&&x<q.x+q.w&&y>q.y&&y<q.y+q.h) return true;
+    if(x>q.x&&x<q.x+q.w&&y>q.y&&y<q.y+q.h){ wet=true; break; }
   }
-  return false;
+  if(!wet) return false;
+  // A BUILDING HAS A FLOOR. Found by probing the new surface audio: the dam's
+  // POWERHOUSE is authored at 2180,300 and the reservoir rect spans 120,120 by
+  // 4960x520, so the powerhouse sits entirely inside the water. That silently
+  // made the map's single highest value locked room, the TURBINE ROOM vault,
+  // half speed and crouch defeating with nothing in the world saying so: you
+  // spend a key to get into the one place you cannot move or hide in. That was
+  // never a decision, it was two rectangles overlapping.
+  var b=(map&&map.buildings)||[];
+  for(var j=0;j<b.length;j++){
+    var B=b[j];
+    if(x>B.x&&x<B.x+B.w&&y>B.y&&y<B.y+B.h) return false;
+  }
+  return true;
 }
 function inWater(x,y){
   if(!G||!G.map) return false;
@@ -4329,6 +4505,10 @@ function updateEnts(dt){
       // acquire and fire in the same frame, which is what read as unfair.
       if(e.kind==='raider'&&e.state!=='chase') e.cd=Math.max(e.cd,e.react||0.5);
       if(e.state!=='chase'&&T.firstContact===null) T.firstContact=G.t;
+      // The stinger, once, on the transition into being hunted. Rate limited to
+      // one in five seconds so a room of machines turning at once is one shock
+      // rather than a wall of them, and placed at the thing that saw you.
+      if(e.state!=='chase'&&!G.sim&&(G.seenT||0)<=0){ G.seenT=5.0; sfx('seen',e.x,e.y); }
       e.state='chase'; e.alert=2.4; e.tx=p.x; e.ty=p.y;
     }
     var want=e.face;
@@ -6956,6 +7136,10 @@ function updateHubWorld(dt){
   if(HUBSAY_T>0) HUBSAY_T-=dt;   // the draw pass has no dt, the update does
   var p=HB.player;
   HB.t+=dt;
+  // G is null down here, so spaceAt returns the Undercroft: a long, dark, low
+  // ceilinged room. It is the first acoustic he hears and it should not be the
+  // same nothing the old build had everywhere.
+  tickVerb(dt);
   if(hubModalOpen()){ p.moving=false; HB.near=null; return; }
   var mx=0,my=0,ana=1;
   if(keys['KeyW']||keys['ArrowUp'])my-=1;
@@ -7186,6 +7370,9 @@ function loop(ts){
       }
       tickAmbience(dt,th,!pp.downed,wdread);
       tickEnemyAudio(dt);
+      tickVerb(dt);
+      tickPlayerSteps(dt);
+      G.seenT=Math.max(0,(G.seenT||0)-dt);
       // Name the place as you enter it, once. Without this the landmarks are
       // distinctive geometry you never learn the name of, and naming is most of
       // what turns a location into somewhere you can remember and go back to.
@@ -7226,9 +7413,21 @@ function loop(ts){
           }
         }
       }
+      // The heartbeat used to key on health alone, so being hunted at full
+      // health was silent and bleeding out alone in an empty street was loud.
+      // Danger is now either one: hurt, OR something actually chasing you and
+      // close. Whichever is worse sets the rate.
+      var chaseNear=0;
+      for(var ci=0;ci<G.ents.length;ci++){
+        var ce=G.ents[ci];
+        if(ce.state!=='chase') continue;
+        var cd2=dist(pp,ce);
+        if(cd2<430) chaseNear=Math.max(chaseNear,1-cd2/430);
+      }
       HEART-=dt;
-      if(HEART<=0&&(pp.hp<45||pp.downed)){
-        var frac=pp.downed?1:1-(pp.hp/45);
+      if(HEART<=0&&(pp.hp<45||pp.downed||chaseNear>0.25)){
+        var hurtF=pp.downed?1:clamp(1-(pp.hp/45),0,1);
+        var frac=Math.max(hurtF,chaseNear);
         blip('heart',0);
         HEART=pp.downed?0.52:(1.05-0.45*frac);
       }
