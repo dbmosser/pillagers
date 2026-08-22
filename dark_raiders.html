@@ -359,12 +359,12 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.36';
+var VER='1.37';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
-  nSentry:17,nCrawler:20,nRaider:6,nSnitch:4,eDmg:1.2,eHp:1,lootMult:1,contDens:1,
+  nSentry:17,nCrawler:20,nRaider:6,nSnitch:4,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,
   eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
@@ -2304,6 +2304,113 @@ function canSee(px,py,face,tx,ty,segs,far,cone,amb){
 }
 // Water is walkable and transparent, so it needs no collision segments and no
 // occluders. It only ever answers one question: are you standing in it.
+// ============================================================ PARLEY
+// Every human in this world was a target. There are ten named identities with a
+// standing ledger, a hostility model that already lets a raider be passive, and
+// no way at all to USE any of it: you could shoot someone or you could walk
+// away. Emotes are the missing verb.
+// The one that matters is HAIL. It is not decoration: a passive raider hailed
+// twice with your weapon down becomes friendly for the rest of the raid, waves
+// back, hands you something out of his bag, and remembers it. A HOSTILE raider
+// can be talked down the same way if he has not shot at you recently and you
+// are not closing on him. A raider you have KILLED before never listens, which
+// is the whole point of the grudge.
+var EMOTES=[
+  {k:'hail',  name:'HAIL',       glyph:'wave',  say:'You raise a hand.'},
+  {k:'stand', name:'STAND DOWN', glyph:'palm',  say:'You lower your weapon.'},
+  {k:'point', name:'POINT',      glyph:'point', say:'You point.'},
+  {k:'thanks',name:'THANKS',     glyph:'nod',   say:'You nod.'}
+];
+// You cannot talk to someone down a barrel. Firing recently, or aiming, means
+// the hail does not count as one.
+function weaponDown(){
+  var p=G.player;
+  return !p.ads && (G.t*1000-(p.lastShot||-9999))>2600;
+}
+function emoteBubble(x,y,glyph,col,life){
+  if(!G||G.sim) return;
+  G.bubbles=G.bubbles||[];
+  G.bubbles.push({x:x,y:y,g:glyph,c:col||'#FFF6DC',t:0,life:life||1.8});
+  if(G.bubbles.length>40) G.bubbles.shift();
+}
+function doEmote(ix){
+  if(!G||G.over||G.sim) return;
+  var E=EMOTES[ix]; if(!E) return;
+  var p=G.player;
+  if(p.downed||p.roll>0) return;
+  if((G.emoteCd||0)>0) return;
+  G.emoteCd=0.9;
+  G.emoteBar=false;
+  emoteBubble(p.x,p.y,E.glyph,'#FFF6DC',1.6);
+  say(E.say);
+  // A hail is a shout. It carries, and it carries to things that are not people.
+  ping(p.x,p.y,E.k==='hail'?300:150,false,false,'player','move');
+  blip('pick',260);
+  if(E.k!=='hail'&&E.k!=='stand') return;
+  var down=weaponDown();
+  if(!down){
+    if(E.k==='hail') say('Nobody parleys with a raised gun.');
+    return;
+  }
+  var reached=0;
+  for(var i=0;i<G.ents.length;i++){
+    var e=G.ents[i];
+    if(e.kind!=='raider'||e.merc||e.friendlyPC) continue;
+    var d=dist(p,e);
+    if(d>460) continue;
+    if(!losClear(p.x,p.y,e.x,e.y,G.map.segs)) continue;
+    reached++;
+    if(e.grudge){
+      if(!e.grudgeSaid){ e.grudgeSaid=1; say(e.name+' has not forgotten. He is not listening.'); }
+      emoteBubble(e.x,e.y,'no','#ff3b30',1.6);
+      continue;
+    }
+    // A hostile raider will hear you out only if he is not mid fight with you
+    // and you are not closing the distance on him.
+    if(e.hostile){
+      if(e.hitT>0||d<190){ emoteBubble(e.x,e.y,'no','#ff6b5a',1.4); continue; }
+      e.parley=(e.parley||0)+1;
+      emoteBubble(e.x,e.y,'think','#ffc04a',1.6);
+      // Standing you have already earned makes him quicker to believe you; a
+      // reputation for shooting traders makes him slower.
+      var need=2+clamp(Math.round((P.notoriety||0)),0,3)-clamp(Math.round((e.standing||0)/2),0,1);
+      if(e.parley>=need){
+        e.hostile=false; e.parley=0;
+        e.state='loot'; e.alert=0;
+        say(e.name+' lowers his gun.');
+        emoteBubble(e.x,e.y,'wave','#7fc4a0',2.0);
+      }
+      continue;
+    }
+    // Passive. Two hails and he is with you for the rest of the run.
+    e.trust=(e.trust||0)+1;
+    emoteBubble(e.x,e.y,e.trust>=2?'wave':'think',e.trust>=2?'#7fc4a0':'#cdd6dd',1.8);
+    if(e.trust>=2&&!e.friendlyPC){
+      e.friendlyPC=1;
+      e.hostile=false;
+      say(e.name+' waves back.');
+      // He gives you something out of his own bag. It is not much and it is not
+      // nothing, and it is the first time in this game that a stranger has been
+      // worth more alive.
+      if(e.bag.length&&!G.sim){
+        var gi=ri(0,e.bag.length-1),gk=e.bag[gi];
+        if(ITEMS[gk]&&ITEMS[gk].use!=='gun'){
+          e.bag.splice(gi,1);
+          var gc=setLoot(mkContainer(e.x+rnd(-16,16),e.y+rnd(10,22),'crate'),[gk]);
+          gc.time=0.5; gc.gift=1; G.containers.push(gc);
+          label(e.x,e.y-20,'GIFT: '+ITEMS[gk].name,'#7fc4a0',0,true);
+        }
+      }
+      if(!G.sim){
+        var rr=idRec(e.ident);
+        rr.standing=(rr.standing||0)+1; rr.met++;
+        G.tel.parleys=(G.tel.parleys||0)+1;
+        saveProfile();
+      }
+    }
+  }
+  if(E.k==='hail'&&!reached) say('Nobody in earshot.');
+}
 function bushAtMap(map,x,y){
   var b=(map&&map.bushes)||[];
   for(var i=0;i<b.length;i++){
@@ -2322,8 +2429,14 @@ function inBush(x,y){ return (G&&G.map)?bushAtMap(G.map,x,y):null; }
 function concealAt(x,y,moving,sprinting,crouched){
   if(!inBush(x,y)) return 1;
   if(sprinting) return 1;
-  if(crouched) return moving?0.22:0.10;
-  return moving?0.62:0.40;
+  var raw=crouched?(moving?0.22:0.10):(moving?0.62:0.40);
+  // One dial over the whole mechanic, because the bot sim jumped from 40 to 56
+  // to 64 percent extract across the two builds after bushes landed and his own
+  // playtest already said extraction was TOO EASY. At 1 the bush works as
+  // authored; at 0 it does nothing; anything between scales the benefit. This
+  // exists so the question can be measured rather than argued.
+  var pw=(CFG.concealPow===undefined)?1:CFG.concealPow;
+  return 1-(1-raw)*clamp(pw,0,1);
 }
 function inWaterMap(map,x,y){
   var w=(map&&map.water)||[];
@@ -2946,6 +3059,21 @@ window.addEventListener('keydown',function(e){
 // when the caller is not a real key press and there is nothing to preventDefault.
 function raidKey(code,repeat,ev){
   keys[code]=true;
+  // The emote bar owns the number row while it is up, same rule as the stall.
+  if(G&&!G.over&&!G.trade&&G.emoteBar){
+    if(code==='KeyV'||code==='Escape'){ if(ev) ev.preventDefault(); G.emoteBar=false; return; }
+    if(code.indexOf('Digit')===0&&!repeat){
+      if(ev) ev.preventDefault();
+      var en=parseInt(code.slice(5),10);
+      if(en>=1&&en<=EMOTES.length) doEmote(en-1);
+      return;
+    }
+  }
+  if(code==='KeyV'&&G&&!G.over&&!G.paused&&!G.trade&&!repeat){
+    if(ev) ev.preventDefault();
+    G.emoteBar=!G.emoteBar;
+    return;
+  }
   // The open stall owns the number row, so buying never also swaps your hotbar
   // slot out from under you.
   if(G&&!G.over&&G.trade){
@@ -2958,7 +3086,7 @@ function raidKey(code,repeat,ev){
     }
     if(code==='KeyG'||code==='Space'||code==='KeyQ'||code==='KeyC') return;
   }
-  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyX','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
+  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyX','KeyV','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
   if((code==='Escape'||code==='KeyP')&&G&&!G.over) togglePauseBox(true);
   if(code==='KeyH'&&G&&!repeat) G.legendOn=!G.legendOn;
   // X swaps primary and secondary. Each keeps its own loaded magazine; the
@@ -4696,9 +4824,22 @@ function updateEnts(dt){
         e.hostile=false;
         e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-3*dt,3*dt);
       }
+      // Parleyed, and it holds. Crowding him no longer flips him, which is the
+      // entire value of having talked to him in the first place.
+      if(e.kind==='raider'&&e.friendlyPC&&!e.hostile){
+        e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-3*dt,3*dt);
+        if(e.hitT>0){
+          // Shooting a man who waved at you ends it, permanently.
+          e.friendlyPC=0; e.hostile=true; e.grudge=true;
+          if(!G.sim){
+            var rb=idRec(e.ident); rb.standing=Math.min((rb.standing||0)-3,-1); saveProfile();
+            say(e.name+' trusted you.');
+          }
+        }
+      }
       if(e.kind==='raider'&&!e.hostile){
         var pd2=dist(e,p);
-        if(!e.merc&&(pd2<180||e.hitT>0)){
+        if(!e.merc&&!e.friendlyPC&&(pd2<180||e.hitT>0)){
           e.hostile=true;
           if(!G.sim) say(e.name+' does not like that.');
         } else {
@@ -6239,9 +6380,12 @@ function render2D(dt){
     var lift=spriteTop(ne)+8;
     var hostile=ne.kind==='raider';
     // a raider bolting for the beacon is worth calling out: it is a race now
+    if(ne.kind==='raider'&&ne.friendlyPC) ne._plateTag=' [FRIENDLY]';
+    else if(ne.kind==='raider'&&ne.parley>0&&ne.hostile) ne._plateTag=' [LISTENING]';
+    else ne._plateTag='';
     var plate=ne.kind==='peddler'
       ? (pedOpen()?(G.nearPed===ne?'THE PEDDLER  [E] DEAL':'THE PEDDLER'):'THE PEDDLER  [CLOSED]')
-      : ne.name+(ne.state==='extract'?' [RUNNING]':'');
+      : ne.name+(ne.state==='extract'?' [RUNNING]':(ne._plateTag||''));
     wc.font=FS('700 9px "Titan One","Rubik",sans-serif');
     var tw=wc.measureText(plate).width;
     // Plate height follows the actual rendered font, or the scaled-up text
@@ -6265,6 +6409,40 @@ function render2D(dt){
       wc.fillStyle='rgba(0,0,0,.55)'; wc.fillRect(ne.x-tw/2-4,ne.y-lift+5,tw+8,3);
       wc.fillStyle=hostile?'#e0483a':'#ffb02e'; wc.fillRect(ne.x-tw/2-4,ne.y-lift+5,(tw+8)*fw,3);
     }
+  }
+  // Emote bubbles. A parley you cannot see happening is a dice roll, so every
+  // hail, refusal and wave back gets a mark over the head that sent it.
+  if(G.bubbles) for(i=0;i<G.bubbles.length;i++){
+    var BB=G.bubbles[i];
+    var ba=clamp(1-BB.t/BB.life,0,1),brise=Math.min(BB.t,BB.life)*14;
+    var bx=BB.x,by=BB.y-34-brise,br=11;
+    wc.globalAlpha=ba;
+    wc.fillStyle='rgba(8,11,16,.82)';
+    wc.beginPath(); wc.arc(bx,by,br,0,6.2832); wc.fill();
+    wc.beginPath(); wc.moveTo(bx-4,by+br-2); wc.lineTo(bx+2,by+br+6); wc.lineTo(bx+4,by+br-3); wc.fill();
+    wc.strokeStyle=BB.c; wc.lineWidth=1.4;
+    wc.beginPath(); wc.arc(bx,by,br,0,6.2832); wc.stroke();
+    wc.strokeStyle=BB.c; wc.fillStyle=BB.c; wc.lineWidth=1.8;
+    if(BB.g==='wave'){
+      wc.beginPath(); wc.moveTo(bx-4,by+5); wc.lineTo(bx-1,by-2); wc.lineTo(bx+3,by-5); wc.stroke();
+      wc.beginPath(); wc.arc(bx+3,by-5,2.2,0,6.2832); wc.fill();
+    } else if(BB.g==='palm'){
+      wc.beginPath(); wc.moveTo(bx-5,by+4); wc.lineTo(bx-5,by-3); wc.stroke();
+      wc.beginPath(); wc.moveTo(bx-1,by+4); wc.lineTo(bx-1,by-5); wc.stroke();
+      wc.beginPath(); wc.moveTo(bx+3,by+4); wc.lineTo(bx+3,by-3); wc.stroke();
+    } else if(BB.g==='point'){
+      wc.beginPath(); wc.moveTo(bx-5,by+3); wc.lineTo(bx+5,by-3); wc.stroke();
+      wc.beginPath(); wc.moveTo(bx+5,by-3); wc.lineTo(bx+1,by-3); wc.lineTo(bx+5,by+1); wc.fill();
+    } else if(BB.g==='nod'){
+      wc.beginPath(); wc.moveTo(bx-5,by-1); wc.lineTo(bx-1,by+4); wc.lineTo(bx+5,by-5); wc.stroke();
+    } else if(BB.g==='no'){
+      wc.beginPath(); wc.moveTo(bx-4,by-4); wc.lineTo(bx+4,by+4); wc.stroke();
+      wc.beginPath(); wc.moveTo(bx+4,by-4); wc.lineTo(bx-4,by+4); wc.stroke();
+    } else {
+      wc.beginPath(); wc.arc(bx,by-1,3.4,0,6.2832); wc.stroke();
+      wc.beginPath(); wc.arc(bx,by+5,1.3,0,6.2832); wc.fill();
+    }
+    wc.globalAlpha=1;
   }
   // floating labels: loot found, targets down
   for(i=0;i<G.labels.length;i++){
@@ -6751,7 +6929,7 @@ function drawHUD(){
       }
     }
     ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#8a96a1'; ctx.textAlign='center';
-    ctx.fillText(sl[sel].name+'   [G] use',W/2,hy-LH(6));
+    ctx.fillText(sl[sel].name+'   [G] use    [V] signal',W/2,hy-LH(6));
     ctx.textAlign='left';
   })();
   // Bars, at a size you can read in a firefight. His answers, twice: the HUD
@@ -6859,6 +7037,29 @@ function drawHUD(){
   }
   if(G.bagOpen) drawBag();
   if(G.trade) drawTrade();
+  // The emote bar. Deliberately a strip and not a wheel: a wheel wants a mouse
+  // you are already using to aim, and this has to be usable while something is
+  // walking toward you.
+  if(G.emoteBar&&!G.trade){
+    var ebw=LH(112),ebh=LH(30),egap=LH(6);
+    var etw=EMOTES.length*ebw+(EMOTES.length-1)*egap;
+    var ex0=Math.round(W/2-etw/2),ey0=H-LH(112);
+    ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#8a96a1'; ctx.textAlign='center';
+    ctx.fillText(weaponDown()?'weapon down, they will listen':'lower your weapon first, or it is just noise',
+      W/2,ey0-LH(8));
+    ctx.textAlign='left';
+    for(var eq=0;eq<EMOTES.length;eq++){
+      var EE=EMOTES[eq],ebx=ex0+eq*(ebw+egap);
+      ctx.fillStyle='rgba(18,15,24,.90)'; ctx.fillRect(ebx,ey0,ebw,ebh);
+      ctx.strokeStyle=(EE.k==='hail'&&weaponDown())?'#7fc4a0':'rgba(140,152,163,.42)';
+      ctx.lineWidth=1; ctx.strokeRect(ebx+.5,ey0+.5,ebw-1,ebh-1);
+      ctx.font=FS('700 8px "Rubik",sans-serif'); ctx.fillStyle='rgba(160,172,184,.85)';
+      ctx.fillText(String(eq+1),ebx+LH(6),ey0+LH(12));
+      ctx.font=FS('700 11px "Titan One","Rubik",sans-serif');
+      ctx.fillStyle=(EE.k==='hail')?'#ffc04a':'#cdd6dd';
+      ctx.textAlign='center'; ctx.fillText(EE.name,ebx+ebw/2,ey0+LH(20)); ctx.textAlign='left';
+    }
+  }
   if(keys['KeyM']) drawMapOverlay();
 }
 function safeSet(){
@@ -7338,6 +7539,7 @@ var SLIDERS=[
   ['eDmg','Enemy damage x',0.5,2,0.05,1],
   ['eHp','Enemy health x',0.5,2,0.05,0],
   ['lootMult','Loot value x',0.5,2,0.05,1],
+  ['concealPow','Bush concealment',0,1,0.05,1],
   ['contDens','Container density x',0.5,2,0.1,0],
   ['noiseMult','Noise radius x',0.5,2,0.05,1],
   ['safeSlots','Safe pocket slots',0,5,1,1],
@@ -7723,6 +7925,11 @@ function loop(ts){
       tickVerb(dt);
       tickPlayerSteps(dt);
       G.seenT=Math.max(0,(G.seenT||0)-dt);
+      G.emoteCd=Math.max(0,(G.emoteCd||0)-dt);
+      if(G.bubbles) for(var bi2=G.bubbles.length-1;bi2>=0;bi2--){
+        G.bubbles[bi2].t+=dt;
+        if(G.bubbles[bi2].t>G.bubbles[bi2].life) G.bubbles.splice(bi2,1);
+      }
       // Name the place as you enter it, once. Without this the landmarks are
       // distinctive geometry you never learn the name of, and naming is most of
       // what turns a location into somewhere you can remember and go back to.
@@ -7818,14 +8025,14 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','Emotes, so a passive raider can be talked to instead of only shot'],
+  ['NOW','Contracts that pay in gear rather than only credits'],
+  ['DONE','Emotes and parley: hail a raider instead of shooting him'],
   ['DONE','Bushes you can hide in, and raiders who hide in them too'],
   ['DONE','Seasons: ten tiers, and finishing one moves the whole world up'],
   ['DONE','COLD STORAGE, a third map built with no open ground in it'],
   ['DONE','Room acoustics, your own footsteps, and a stinger when something sees you'],
   ['DONE','The Peddler: sell your bag mid raid at half price, banked instantly'],
   ['DONE','The Mercenary: hire one of the ten for a single run'],
-  ['NEXT','Contracts that pay in gear rather than only credits'],
   ['LATER','Armour in three tiers, readable on the silhouette'],
   ['LATER','Weak points on the big machines'],
   ['LATER','Scopes that see further, not just hit harder'],
