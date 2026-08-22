@@ -255,7 +255,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.81';
+var VER='0.82';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -1520,7 +1520,17 @@ function updatePlayer(dt){
     if(keys['KeyA']||keys['ArrowLeft'])mx0-=1;
     if(keys['KeyD']||keys['ArrowRight'])mx0+=1;
     var mg0=Math.sqrt(mx0*mx0+my0*my0);
+    var dox=p.x,doy=p.y;
     if(mg0>0){ p.x+=(mx0/mg0)*30*dt; p.y+=(my0/mg0)*30*dt; collide(p,G.map.walls); }
+    // A crawl is still ground covered, and crawling for the ring while bleeding
+    // out is exactly the moment worth measuring. This branch returns before the
+    // recorder is touched, so a player who died 40 units short of extraction was
+    // filed as never having moved and never having got closer: measured, crawled
+    // 38 units nearer and the record still read the distance from where the
+    // crawl started. Both figures feed the death reports these builds are tuned
+    // from, so they have to count the crawl.
+    T.distance+=dist({x:dox,y:doy},p);
+    T.closestExtract=Math.min(T.closestExtract,dist(p,G.active));
     if(keys['KeyF']&&!p.healLock){ p.healLock=true; selfRevive(); }
     if(!keys['KeyF']) p.healLock=false;
     return;
