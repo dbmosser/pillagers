@@ -524,6 +524,12 @@ Three things, none of which should be built without him saying so.
   - **They remember, permanently.** Killing one records a grudge on the profile and it is shoot on sight from then on. Verified end to end: killed an identity, then found the same one hostile with the grudge flag set in a later raid.
   - **Varying hostility with a visible indicator.** Roughly half start passive; a passive raider watches you rather than opening fire, and turns only if you crowd it or shoot it. Measured: zero shots fired at 320 units over four seconds, flipped hostile at 160. Nameplates read the relationship at a glance: red for a grudge, green for passive, dim otherwise.
   - Verified: alarm timings and cancellation, identity uniqueness and grudge persistence, both hostility triggers, alarm visuals draw clean, sim 2/5 with no hangs, no console errors.
+- **v1.26 (looting is a commitment you can break):** Spec 7.4.
+  - **Progress persists on the container, not on you.** Start a cache, hear something, walk away and deal with it, come back and resume exactly where you left off. Measured: 2.3 seconds banked on a 4.6 second cache, kept intact across walking 900 units away and four seconds of doing something else, then finished in 2.33 more. That is what turns hearing footsteps into a real decision instead of a wasted commitment.
+  - **The crowbar is in your hands while you work**, contextually rather than as a hotbar chore, and it is DRAWN: the gun leaves your hands and a pry bar replaces it. The cost of looting has to be visible or it is not a cost, and it means you can be caught holding it.
+  - **Opened containers stay visibly opened for the rest of the run**: hollow interior, lid tipped back against the far side. An emptied container is evidence a raider has been here, which is information the map keeps for you.
+  - **Partial progress is drawn on the container itself** in its rarity colour, so a half opened crate you abandoned is legible from across the room and worth walking back to.
+  - Verified: resume timing, crowbar in hand during work, all three container states drawing together in one staged frame, sim 2/5 with 12 containers opened per raid and no hangs, no console errors.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

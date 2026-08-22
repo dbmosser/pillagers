@@ -313,7 +313,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.25';
+var VER='1.26';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -3099,6 +3099,7 @@ function updatePlayer(dt){
   var cxa=(G.camX===undefined?p.x-W/(2*pz):G.camX),cya=(G.camY===undefined?p.y-H/pz*.54:G.camY);
   p.face=Math.atan2(mouse.y/pz+cya-p.y,mouse.x/pz+cxa-p.x);
   if(p.hitFlash>0) p.hitFlash-=dt;
+  if(G.crowbarUp>0) G.crowbarUp-=dt;
   if(p.recoil>0) p.recoil-=dt*7;
   if(p.muzzle>0) p.muzzle-=dt;
   if(p.iv>0) p.iv-=dt;
@@ -3280,11 +3281,26 @@ function updatePlayer(dt){
       G.searching=null; G.searchT=0;
     }
     else {
-      if(G.searching!==near){ G.searching=near; G.searchT=0; }
-      G.searchT+=dt;
-      if(G.searchT>=near.time){ openContainer(near); G.searching=null; G.searchT=0; }
+      // SPEC 7.4: PROGRESS PERSISTS. Coming back to a container you started
+      // resumes where you left off, so breaking off to deal with a noise is a
+      // real decision rather than a wasted commitment. Progress lives on the
+      // container, not on the player, which is what makes it survive walking
+      // away, fighting, and coming back.
+      if(G.searching!==near){
+        G.searching=near;
+        if(!G.sim&&(near.prog||0)>0) say('Resuming, '+Math.round(100*near.prog/near.time)+'% done.');
+      }
+      near.prog=(near.prog||0)+dt;
+      G.searchT=near.prog;
+      // SPEC 7.4: the crowbar is IN YOUR HANDS while you work, contextually,
+      // not as a hotbar chore. That is the cost: you can be caught holding it.
+      if(!G.sim) G.crowbarUp=0.25;
+      if(near.prog>=near.time){ openContainer(near); G.searching=null; G.searchT=0; near.prog=0; }
     }
-  } else { G.searching=null; G.searchT=0; }
+  } else {
+    // Cancelled: the container keeps its progress, you just stop working it.
+    G.searching=null; G.searchT=0;
+  }
 
   // E calls the beacon, but a container underfoot wins the keypress
   tickRegen(dt);
@@ -4501,6 +4517,15 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var gunY=ty-20+(ads?-1:0);
   wc.save(); wc.translate(x+leanX,gunY); wc.rotate(face+fl*drop);
   var ext=ads?2.5:(sprint&&!rl?-3:0);
+  // SPEC 7.4: while you are working a container the crowbar is in your hands
+  // and the gun is not. That is the whole cost of looting: you can be caught
+  // holding a pry bar, and it has to be VISIBLE or the cost is invisible.
+  if(mode==='bar'){
+    wc.fillStyle='#3a4048'; wc.fillRect(1+ext,-1.4,15,2.8);
+    wc.fillStyle='#9aa8b2'; wc.fillRect(2+ext,-1.0,13,1.4);
+    wc.fillStyle='#5c6773'; wc.fillRect(13+ext,-3.4,3.6,3.0);
+    wc.restore();
+  } else {
   wc.fillStyle='#2c333c'; wc.fillRect(2+ext,-1.6,13,3.2);
   wc.fillStyle='#5c6773'; wc.fillRect(12+ext,-1,6,2);
   wc.fillStyle=coat; wc.fillRect(1+ext,-2.4,6,4.8);
@@ -4521,6 +4546,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.globalCompositeOperation='source-over';
   }
   wc.restore();
+  }
   // spent magazine tumbling away at the start of the reload
   if(rl>0&&rl<.4){
     var mg=rl/.4;
@@ -4752,7 +4778,10 @@ function drawContS(ct){
   // purpose: it is the one thing every raid guarantees, so it has to be findable.
   else if(ct.type==='cache'){ w=26;lift=19;d2=11;cF='#3a2050';cT='#8f4fc0';cL='#e0a0ff'; }
   else { w=20;lift=3;d2=6;cF='#302719';cT='#57462f';cL='#756042'; }
-  var dim=ct.opened?.45:1;
+  // SPEC 7.4: an opened container stays VISIBLY opened for the rest of the run,
+  // because an emptied container is evidence a raider has been here. It reads
+  // as looted rather than merely faded: lid thrown back, contents gone.
+  var dim=ct.opened?.62:1;
   wc.globalAlpha=dim;
   shadowE(ct.x,ct.y+1,w*.62,3.5,.35);
   // Opaque ink plate instead of the 35 percent stroke this used to carry, which
@@ -4760,9 +4789,25 @@ function drawContS(ct){
   // window so an opened container still fades as one whole object.
   wc.fillStyle=INK; wc.fillRect(ct.x-w/2-1,ct.y-lift-d2-1,w+2,lift+d2+2);
   wc.fillStyle=cF; wc.fillRect(ct.x-w/2,ct.y-lift,w,lift);
-  wc.fillStyle=cT; rrF(ct.x-w/2,ct.y-lift-d2,w,d2,2);
-  wc.fillStyle=cL; wc.fillRect(ct.x-w/2+1,ct.y-lift-d2,w-2,1.2);
+  if(ct.opened){
+    // hollow interior and a lid tipped back against the far side
+    wc.fillStyle='#141019'; rrF(ct.x-w/2,ct.y-lift-d2,w,d2,2);
+    wc.fillStyle=cT; wc.fillRect(ct.x-w/2-2,ct.y-lift-d2-5,w+4,3);
+    wc.fillStyle=cL; wc.fillRect(ct.x-w/2-2,ct.y-lift-d2-5,w+4,1);
+  } else {
+    wc.fillStyle=cT; rrF(ct.x-w/2,ct.y-lift-d2,w,d2,2);
+    wc.fillStyle=cL; wc.fillRect(ct.x-w/2+1,ct.y-lift-d2,w-2,1.2);
+  }
   wc.globalAlpha=1;
+  // SPEC 7.4: partial progress is shown ON the container, so a half opened
+  // crate you left behind is legible from across the room and worth returning to.
+  if(!ct.opened&&(ct.prog||0)>0){
+    var pf2=clamp(ct.prog/ct.time,0,1);
+    wc.fillStyle='rgba(10,8,14,.75)';
+    wc.fillRect(ct.x-w/2,ct.y-lift-d2-9,w,3);
+    wc.fillStyle=RCOL[ct.best]||'#ffc04a';
+    wc.fillRect(ct.x-w/2,ct.y-lift-d2-9,w*pf2,3);
+  }
   if(!ct.opened){
     var pu=.5+.35*Math.sin(G.t*3+ct.x*.05);
     wc.globalCompositeOperation='lighter';
@@ -5064,7 +5109,7 @@ function render2D(dt){
     } else if(it.pl){
       var pmode=p.downed?'down':(p.roll>0?'roll':(crouchP?'crouch':''));
       drawOp(p.x,p.y,p.face,p.roll>0?(1-p.roll/.38)*12.6:p.bob,'#8fa3b5',
-        clamp(bagWeight()/PACKCAP[P.pack],0,1),p.muzzle,pmode,p.iv,
+        clamp(bagWeight()/PACKCAP[P.pack],0,1),p.muzzle,(G.crowbarUp>0?'bar':pmode),p.iv,
         {moving:!!p.moving,sprint:!!G.sprinting,ads:!!p.ads,hurt:p.hitFlash,
          rl:(p.reloading>0&&p.wep.reload)?clamp(1-p.reloading/p.wep.reload,0,1):0});
     } else {
