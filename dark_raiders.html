@@ -313,7 +313,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.27';
+var VER='1.28';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -2611,7 +2611,7 @@ function tryRoll(){
   if(mg>0) p.rollDir={x:mx/mg,y:my/mg};
   else p.rollDir={x:Math.cos(p.face),y:Math.sin(p.face)};
   p.roll=.38; p.rollCd=.85; p.iv=Math.max(p.iv,.30); p.stam-=ROLLSTAM;
-  ping(p.x,p.y,80,false); blip('clank');
+  ping(p.x,p.y,80,false,false,'player','move'); blip('clank');
 }
 function doThrow(){
   var p=G.player;
@@ -2644,7 +2644,7 @@ function doThrow(){
   // fuse is 1.1s and you can clear the radius, so the call goes out the instant
   // it leaves your hand rather than when it goes off.
   if(blocked&&rngT<110) say(tk==='frag'?'It hit cover. MOVE.':'It hit cover, dropped short.');
-  ping(p.x,p.y,90,false);
+  ping(p.x,p.y,90,false,false,'player','move');
 }
 function activateThrow(th){
   if(th.kind==='smoke'){ G.smokes.push({x:th.tx,y:th.ty,r:82,t:0,life:12}); sfx("clank",th.tx,th.ty); }
@@ -2658,7 +2658,7 @@ function explodeFrag(f){
     G.puffs.push({x:f.x,y:f.y,t:0,life:.6,c:'#ffb267',r:52}); }
   G.shake=Math.max(G.shake,9);
   flash(f.x,f.y,310,'#ffb267',.45);
-  ping(f.x,f.y,560,false);
+  ping(f.x,f.y,560,false,false,'env','fire');
   var dp=dist(p,f);
   if(dp<R&&losClear(f.x,f.y,p.x,p.y,G.map.segs)) damagePlayer(60*(1-dp/R)+12,'other');
   for(i=G.ents.length-1;i>=0;i--){
@@ -2703,7 +2703,7 @@ function updateThrowables(dt){
   for(i=G.smokes.length-1;i>=0;i--){ G.smokes[i].t+=dt; if(G.smokes[i].t>G.smokes[i].life) G.smokes.splice(i,1); }
   for(i=G.decoys.length-1;i>=0;i--){
     var dc=G.decoys[i]; dc.t+=dt; dc.acc+=dt;
-    if(dc.acc>=.8){ dc.acc=0; ping(dc.x,dc.y,420,false); }
+    if(dc.acc>=.8){ dc.acc=0; ping(dc.x,dc.y,420,false,false,'env','move'); }
     if(dc.t>dc.life) G.decoys.splice(i,1);
   }
   for(i=G.frags.length-1;i>=0;i--){
@@ -2717,12 +2717,33 @@ function say(m){ if(G&&!G.sim){G.msg=m;G.msgT=3.2;} }
 // `quiet` marks a noise that the player should see but that must not drive the
 // AI. Enemy footsteps use it; without that flag every machine would hear every
 // other machine walking and the whole map would cascade into permanent alert.
-function ping(x,y,s,h,quiet){
+// SPEC 10.3: the sound visualizer has a colour language. SOURCE picks the hue
+// family and TYPE picks the shade: red family is robots, orange family is third
+// party raiders, white is you, yellow is environmental. Light shade for movement
+// and looting, dark shade for gunfire.
+// SPEC 10.2: walls muffle sound. An occluded ping is quieter and DIMMER, so
+// hiding behind concrete actually works and the visualizer tells you it worked.
+// SPEC 10.3 range cutoff: beyond earshot a sound does not appear at all, because
+// the visualizer must mirror what you would actually hear and nothing more.
+var SNDCOL={
+  robot:  {move:'#ff8a80', fire:'#c62828'},
+  raider: {move:'#ffb74d', fire:'#e65100'},
+  player: {move:'#FFF6DC', fire:'#FFF6DC'},
+  env:    {move:'#ffd54f', fire:'#ffd54f'}
+};
+function ping(x,y,s,h,quiet,src,typ){
   if(!G) return;
   s*=CFG.noiseMult*wx().noise;
   if(!G.sim){
-    G.pings.push({x:x,y:y,t:0,life:1.1,s:s,h:!!h});
-    if(G.pings.length>140) G.pings.shift();
+    var pp=G.player;
+    var d0=dist(pp,{x:x,y:y});
+    // Range cutoff: silence is silence.
+    if(d0<=s*1.5){
+      var occ=losClear(pp.x,pp.y,x,y,G.map.segs)?1:0.42;
+      G.pings.push({x:x,y:y,t:0,life:1.1,s:s,h:!!h,
+        src:src||(h?'robot':'player'),typ:typ||'move',occ:occ});
+      if(G.pings.length>140) G.pings.shift();
+    }
   }
   if(quiet) return;
   for(var i=0;i<G.ents.length;i++){
@@ -2827,7 +2848,8 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
   }
   var ang=base;
   var melee=wep.mag===0;
-  ping(sh.x,sh.y,wep.noise,!fromPlayer);
+  ping(sh.x,sh.y,wep.noise,!fromPlayer,false,
+    fromPlayer?'player':(sh.kind==='raider'?'raider':'robot'),'fire');
   // Your own weapon stays centred because it is in your hands. Everyone else's
   // is placed, which is what turns a distant firefight into a direction rather
   // than an event.
@@ -2994,7 +3016,7 @@ function openContainer(ct){
   }
   if(!G.sim){
     say('Found: '+ct.loot.map(function(k){return ITEMS[k].name;}).join(', '));
-    blip('pick'); ping(p.x,p.y,90,false);
+    blip('pick'); ping(p.x,p.y,90,false,false,'player','move');
   }
 }
 // Three-phase extract: call it in from inside the ring, survive the inbound wait
@@ -3104,7 +3126,7 @@ function tryExtractTick(dt,wantCall){
       // easy": he pressed a key and stood in a circle for 25 quiet seconds with
       // a full bag. Everything that can hear it now comes, which is what makes
       // the last stretch the price of the haul rather than a formality.
-      ping(z.x,z.y,700,true);
+      ping(z.x,z.y,700,true,false,'env','fire');
       G.siege=0;
       for(var si=0;si<G.ents.length;si++){
         var se=G.ents[si];
@@ -3157,7 +3179,7 @@ function tickExtractPoints(dt){
   G.siege=(G.siege||0)+dt;
   if(G.siege>=2){
     G.siege=0;
-    ping(z.x,z.y,1200,true);
+    ping(z.x,z.y,1200,true,false,'env','fire');
     for(var bi=0;bi<G.ents.length;bi++){
       var be=G.ents[bi];
       if(dist(be,z)>1500) continue;
@@ -3333,7 +3355,7 @@ function updatePlayer(dt){
     p.noiseAcc=(p.noiseAcc||0)+dt;
     // wading defeats crouch entirely: splashing is loud whatever you do
     var iv=wading?.30:(crouch?99:(sprint?.38:.72));
-    if(p.noiseAcc>iv){ p.noiseAcc=0; ping(p.x,p.y,wading?290:(sprint?250:110),false); }
+    if(p.noiseAcc>iv){ p.noiseAcc=0; ping(p.x,p.y,wading?290:(sprint?250:110),false,false,'player','move'); }
     // Footprints. Wet boots leave a dark trail for a while after leaving water,
     // dry boots a faint scuff; either way the ground remembers where you went,
     // which is his litter answer and also free navigation memory.
@@ -3427,6 +3449,10 @@ function updatePlayer(dt){
       // SPEC 7.4: the crowbar is IN YOUR HANDS while you work, contextually,
       // not as a hotbar chore. That is the cost: you can be caught holding it.
       if(!G.sim) G.crowbarUp=0.25;
+      // SPEC 10.1: container opening is audible and shows on the visualizer,
+      // which is what makes an emptied crate a warning to whoever hears it.
+      near.noiseAcc=(near.noiseAcc||0)+dt;
+      if(near.noiseAcc>0.5){ near.noiseAcc=0; ping(near.x,near.y,180,false,false,'player','move'); }
       if(near.prog>=near.time){ openContainer(near); G.searching=null; G.searchT=0; near.prog=0; }
     }
   } else {
@@ -3517,7 +3543,7 @@ function updateBot(dt){
       }
     }
   }
-  if(moved&&p.noiseAcc>.6){ p.noiseAcc=0; ping(p.x,p.y,140,false); }
+  if(moved&&p.noiseAcc>.6){ p.noiseAcc=0; ping(p.x,p.y,140,false,false,'player','move'); }
   // Give up on a container the bot cannot get to, on two conditions, both of
   // which had to be learned the hard way. It has to be progress and not motion:
   // the original check asked whether the bot had moved at all, and that stopped
@@ -3884,7 +3910,7 @@ function updateEnts(dt){
       if(e.cd>0) e.cd-=dt;
       // heavy tread you can hear and see coming
       e.stepAcc=(e.stepAcc||0)+dt;
-      if(e.stepAcc>0.9&&e.moving){ e.stepAcc=0; ping(e.x,e.y,320,true,true); if(dist(e,p)<700) sfx('clank',e.x,e.y); }
+      if(e.stepAcc>0.9&&e.moving){ e.stepAcc=0; ping(e.x,e.y,320,true,true,'robot','move'); if(dist(e,p)<700) sfx('clank',e.x,e.y); }
       e.face+=clamp(angDiff(wantW,e.face),-2.2*dt,2.2*dt);
       collide(e,G.map.walls);
       continue;
@@ -3918,7 +3944,7 @@ function updateEnts(dt){
         if(e.wind<=0){
           e.wind=null; e.state='patrol'; e.cd=rnd(4,7);
           sfx('alarm',e.x,e.y);
-          ping(e.markX,e.markY,620,true);
+          ping(e.markX,e.markY,620,true,false,'robot','fire');
           G.marked=2.2; T.marked=(T.marked||0)+1;
           say('Alarm went out. They are coming to where you were.');
           // Reinforcements converge on the MARKED position, not your current
@@ -4101,7 +4127,7 @@ function updateEnts(dt){
           if(e.lootT>2){
             e.goal.opened=true;
             for(var q=0;q<e.goal.loot.length;q++) e.bag.push(e.goal.loot[q]);
-            e.lootT=0; e.goal=null; ping(e.x,e.y,80,true);
+            e.lootT=0; e.goal=null; ping(e.x,e.y,80,true,false,'raider','move');
           }
         }
       }
@@ -4141,7 +4167,8 @@ function updateEnts(dt){
         // map: the ring would be invisible anyway and it is pure churn
         var wet=inWater(e.x,e.y);
         var iv2=wet?NP[0]*0.6:NP[0], amp=wet?NP[1]*1.7:NP[1];
-        if(e.stepAcc>=iv2&&dist(e,p)<amp*2.4){ e.stepAcc=0; ping(e.x,e.y,amp,true,true); }
+        if(e.stepAcc>=iv2&&dist(e,p)<amp*2.4){ e.stepAcc=0;
+          ping(e.x,e.y,amp,true,true,e.kind==='raider'?'raider':'robot','move'); }
       }
     }
     e.face+=clamp(angDiff(want,e.face),-5.5*dt,5.5*dt);
@@ -5077,13 +5104,17 @@ function render2D(dt){
   // noise pings
   for(i=0;i<G.pings.length;i++){
     var pn=G.pings[i],dp=dist(p,pn);
-    var a3=(1-pn.t/pn.life)*clamp(1-dp/(pn.s*1.5),0,1);
-    if(a3<=0) continue;
-    wc.strokeStyle=pn.h?'rgba(255,90,70,'+(a3*.95)+')':'rgba(190,204,218,'+(a3*.32)+')';
-    wc.lineWidth=1.6;
-    // radius grows with how loud it was, so a footstep and a detonation differ
-    var pr=8+(pn.t/pn.life)*Math.min(pn.s*0.42,130);
-    wc.lineWidth=pn.h?2.2:1.6;
+    // Distance encoding: a faint small mark is far off, a large bright one is
+    // immediate. Occlusion multiplies straight into both.
+    var near=clamp(1-dp/(pn.s*1.5),0,1);
+    var a3=(1-pn.t/pn.life)*near*(pn.occ===undefined?1:pn.occ);
+    if(a3<=0.01) continue;
+    var fam=SNDCOL[pn.src||'player']||SNDCOL.player;
+    var col=fam[pn.typ==='fire'?'fire':'move'];
+    var isFire=pn.typ==='fire';
+    wc.strokeStyle=hexA(col,a3*(isFire?0.95:0.55));
+    wc.lineWidth=(isFire?2.6:1.6)*(0.6+0.4*near);
+    var pr=8+(pn.t/pn.life)*Math.min(pn.s*0.42,130)*(pn.occ===undefined?1:pn.occ);
     wc.beginPath(); wc.arc(pn.x,pn.y,pr,0,6.2832); wc.stroke();
   }
   // marked ring
@@ -5892,6 +5923,12 @@ var LEGEND=[
   ['GEAR',[['1-7','select hotbar slot'],['G','use selected'],['X','swap gun'],['TAB','inventory']]],
   ['WORLD',[['E','search / call beacon'],['M','hold for map'],['H','hide this list'],['P','pause']]]
 ];
+// SPEC 10.3: the colour language has to be learnable, so it is stated.
+var SOUNDKEY=[
+  ['#ff8a80','robot moving'],['#c62828','robot firing'],
+  ['#ffb74d','raider moving'],['#e65100','raider firing'],
+  ['#FFF6DC','you'],['#ffd54f','environment']
+];
 // Shown in place of the keyboard list once a pad is actually connected, because
 // a controller player reading key names has to translate every line.
 var LEGEND_PAD=[
@@ -5917,8 +5954,7 @@ var GEARRULES=[
   ['','Only one item in hand.'],
   ['WATER','Slows you and is loud.'],
   ['','Crouch will not quiet a splash.'],
-  ['RINGS','Teal ring is live. Grey cold.'],
-  ['SOUND','White rings you, red them.']
+  ['RINGS','Teal ring is live. Grey cold.']
 ];
 // A hostile ping outside the viewport painted exactly zero pixels, measured. So
 // sound you cannot see now gets a chevron on the screen edge pointing at it.
@@ -5971,7 +6007,7 @@ function drawLegend(){
   var x=14,i,j,rows=0;
   var LEG=(PAD&&PAD.on)?LEGEND_PAD:LEGEND;
   for(i=0;i<LEG.length;i++) rows+=1+LEG[i][1].length;
-  var boxH=rows*LH(12)+GEARRULES.length*LH(11)+LH(34);
+  var boxH=rows*LH(12)+GEARRULES.length*LH(11)+SOUNDKEY.length*LH(10)+LH(34)+LH(15);
   // Stop above the meters instead of on top of them. This box bottomed out 12px
   // from the screen edge while the armour, health and stamina bars occupy from
   // 42px to 13px from that same edge, and the legend is drawn after them, so it
@@ -6013,6 +6049,17 @@ function drawLegend(){
     // a rule may be a function when its wording depends on the input device
     ctx.fillText(typeof gr[1]==='function'?gr[1]():gr[1],x+(gr[0]?LH(68):LH(6)),cy);
     cy+=LH(11);
+  }
+  // sound key: the visualizer's colour language, stated so it can be learned
+  cy+=LH(4);
+  ctx.font=FS('700 8.5px "Oxanium", sans-serif'); ctx.fillStyle='#7fc4a0';
+  ctx.fillText('SOUND',x,cy); cy+=LH(11);
+  for(i=0;i<SOUNDKEY.length;i++){
+    ctx.fillStyle=SOUNDKEY[i][0];
+    ctx.fillRect(x+LH(4),cy-LH(6),LH(8),LH(6));
+    ctx.font=FS('8.5px "Rubik",sans-serif'); ctx.fillStyle='#8a96a1';
+    ctx.fillText(SOUNDKEY[i][1],x+LH(18),cy);
+    cy+=LH(10);
   }
 }
 function drawBag(){
