@@ -439,6 +439,12 @@ Three things, none of which should be built without him saying so.
   - Verified: base weapon table unmutated after rolls, distribution correct, hub and raid frames clean, no console errors. Sim 2/5, killers warden and sentries, in line with the hard band.
 - **v1.09 (hub shrunk):** His answers: "WAY TOO BIG", stations "right next to each other". The Undercroft went from 1180x760 to 700x470. All five stations sit in a ring around the spawn, the farthest 252 units away, about two seconds of walking, and everything is on one screen at once. Interior piers, counters and lights retightened to the new footprint.
   - Verified: every station acquires interaction from adjacent standing position (5 of 5), no station clips a wall, hub and raid frames clean, screenshot confirms the one-screen read, no console errors. Sim 1/4 quick check, no hangs, raid untouched by the change.
+- **v1.10 (the ground remembers):** His yes to footprints, casings and litter that persists.
+  - **Casings persist for the whole raid.** Brass used to vanish 3 seconds after it landed; settled shells now stop simulating entirely and stay, capped at 300, so a firefight is legible on the floor when you walk back through it. Settled shells cost nothing per frame.
+  - **Footprints.** A boot mark every 0.34s of walking (0.22 sprinting), alternating sides, oriented along travel. Wet boots after water leave a dark trail for 6 seconds, which makes crossing water a tracking decision as well as a noise one. Faint scuffs otherwise.
+  - **Search litter.** Two or three bits of discarded packing hit the ground beside every container you rifle, and they stay: a looted district looks looted, which is information as well as texture.
+  - Decal pool unified at 420 with boot, junk and blood drawn as distinct shapes.
+  - Verified: 8 prints in 3 seconds of walking (matches the interval), 12 casings persisted, 2 junk pieces per search, container opens normally, hub and raid frames clean, ~6.4ms average frame with 300 settled shells on the ground, no console errors. The shell settle flag runs in the rAF effects block the fixture cannot drive, so settling itself is verified by construction rather than probe; the pane suspends rAF and his browser does not.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
