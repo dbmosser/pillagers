@@ -312,7 +312,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.14';
+var VER='1.15';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -569,6 +569,7 @@ function contractKill(kind){
 }
 function contractOpen(ct){
   if(G&&G.sim) return;
+  if(ct&&ct.dropped) return;   // audit: searching your own discard farmed contracts
   for(var i=0;i<P.contracts.length;i++){
     var c=P.contracts[i];
     if(c.type==='open'&&c.ct===ct.type&&c.prog<c.n) c.prog++;
@@ -888,7 +889,8 @@ function makeBuilding(x,y,w,h,out,d,bid){
   // Shell walls stay untagged. Interior partitions carry the building id so the
   // repair pass below can strip exactly one building's interior and nothing else.
   var shell=true;
-  function seg(a,b,c,e){out.push(shell?{x:a,y:b,w:c,h:e,d:d}:{x:a,y:b,w:c,h:e,d:d,ib:bid});}
+  // degenerate spans (audit: lsplit could emit a negative width) are dropped
+  function seg(a,b,c,e){ if(c<3||e<3) return; out.push(shell?{x:a,y:b,w:c,h:e,d:d}:{x:a,y:b,w:c,h:e,d:d,ib:bid}); }
   var doors={}; doors[ri(0,3)]=1; doors[ri(0,3)]=1;
   if(doors[0]){var a1=x+rnd(30,w-30-gap);seg(x,y,a1-x,t);seg(a1+gap,y,x+w-(a1+gap),t);} else seg(x,y,w,t);
   if(doors[1]){var a2=x+rnd(30,w-30-gap);seg(x,y+h-t,a2-x,t);seg(a2+gap,y+h-t,x+w-(a2+gap),t);} else seg(x,y+h-t,w,t);
@@ -1116,10 +1118,16 @@ var LANDMARKS=[
       var dr2=by+rnd(bh*0.3,bh*0.55);
       put(bx,by,t,dr2-by,d); put(bx,dr2+76,t,by+bh-(dr2+76),d);
       put(bx+bw-t,by,t,bh,d);
-      // internal partitions with staggered openings, so it is rooms not a box
+      // Internal partitions with staggered openings, so it is rooms not a box.
+      // Audit measured the old layout sealing the right rooms in 59 percent of
+      // raids: the horizontal divider at bh*0.5 sat exactly inside the vertical
+      // divider's gap (0.34 to 0.56) and plugged the only way through whenever
+      // the top door landed left of centre. The gap is now 0.30 to 0.58 and the
+      // horizontal divider anchors at 0.66, below the gap by construction, with
+      // its own opening kept short of the right wall.
       var mx=bx+bw*0.45;
-      put(mx,by+t,t,bh*0.34,d); put(mx,by+bh*0.56,t,bh*0.44-t,d);
-      put(mx+t,by+bh*0.5,bw*0.4,t,d);
+      put(mx,by+t,t,bh*0.30-t,d); put(mx,by+bh*0.58,t,bh*0.42-t,d);
+      put(mx+t,by+bh*0.66,bw*0.33,t,d);
     }
   },
   {
@@ -1900,8 +1908,21 @@ function buildRaid(sim){
     while(tries2<80&&(dist(cs,start)<900||dist(cs,active)<500||(camps[0]&&dist(cs,camps[0])<1100)));
     camps.push({x:cs.x,y:cs.y});
     for(var ci2=0;ci2<4;ci2++){
-      var ca=6.2832*ci2/4+rnd(-.4,.4),cr=rnd(30,80);
-      var cc2=mkContainer(cs.x+Math.cos(ca)*cr,cs.y+Math.sin(ca)*cr,'safe',map.districtAt?map.districtAt(cs.x,cs.y):-1);
+      // Audit: raw ring offsets buried safes inside walls and the map border.
+      // Each spot is now tested against the walls (and the world edge) and
+      // falls back to a plain free spot rather than shipping embedded.
+      var sx2=null;
+      for(var ct2=0;ct2<30&&!sx2;ct2++){
+        var ca=6.2832*Math.random(),cr=rnd(30,90);
+        var px2=cs.x+Math.cos(ca)*cr,py2=cs.y+Math.sin(ca)*cr;
+        if(px2<70||py2<70||px2>WORLD_W-70||py2>WORLD_H-70) continue;
+        var hit=false;
+        for(var cw2=0;cw2<map.walls.length;cw2++){ var W2=map.walls[cw2];
+          if(px2>W2.x-20&&px2<W2.x+W2.w+20&&py2>W2.y-20&&py2<W2.y+W2.h+20){ hit=true; break; } }
+        if(!hit) sx2={x:px2,y:py2};
+      }
+      if(!sx2) sx2=freeSpot(map,26);
+      var cc2=mkContainer(sx2.x,sx2.y,'safe',map.districtAt?map.districtAt(cs.x,cs.y):-1);
       containers.push(cc2);
     }
   }
@@ -1952,7 +1973,7 @@ function buildRaid(sim){
   var g={sim:!!sim,map:map,ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:CFG.raidSec,paused:false,
     player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,armor:0,face:0,wep:wep,
       ammo:wep.mag,reserve:wep.mag*2,sec:sec,secAmmo:sec.mag,reloading:0,lastShot:-9999,stam:100,
-      wepIssued:wepIssued,secIssued:true,
+      wepIssued:wepIssued,secIssued:true,wepFromArmory:!wepIssued,secFromArmory:false,
       bob:0,recoil:0,hitFlash:0,downed:false,downT:0,revived:false,iv:0,pendKiller:null,
       roll:0,rollCd:0,rollDir:{x:1,y:0},ads:false},
     bag:[],pouch:{smoke:0,decoy:0,frag:0},tsel:0,
@@ -2062,9 +2083,9 @@ function raidKey(code,repeat,ev){
   if(code==='KeyX'&&G&&!G.over&&!G.paused&&!repeat){
     var pp=G.player;
     if(pp.sec&&!pp.downed&&pp.roll<=0){
-      var ow=pp.wep,oa=pp.ammo,oi=pp.wepIssued;
-      pp.wep=pp.sec; pp.ammo=pp.secAmmo; pp.wepIssued=pp.secIssued;
-      pp.sec=ow; pp.secAmmo=oa; pp.secIssued=oi;
+      var ow=pp.wep,oa=pp.ammo,oi=pp.wepIssued,of2=pp.wepFromArmory;
+      pp.wep=pp.sec; pp.ammo=pp.secAmmo; pp.wepIssued=pp.secIssued; pp.wepFromArmory=pp.secFromArmory;
+      pp.sec=ow; pp.secAmmo=oa; pp.secIssued=oi; pp.secFromArmory=of2;
       pp.reloading=0; pp.fired=true; pp.lastShot=G.t*1000;
       G.tel.weapon=pp.wep.name;
       say(pp.wep.name+' up');
@@ -2379,6 +2400,12 @@ function updateThrowables(dt){
       G.throws.splice(beI,1);
       var shOK=BE.sh===G.player?!G.player.downed:(G.ents.indexOf(BE.sh)>=0);
       if(shOK){
+        // Audit: echoes fired free rounds. A player burst now consumes a round
+        // per echo and stops mid burst on an empty magazine, like a real one.
+        if(BE.fromPlayer){
+          if(G.player.ammo<=0) continue;
+          G.player.ammo--;
+        }
         var ew={dmg:BE.wep.dmg,spread:BE.wep.spread,rng:BE.wep.rng,noise:0,tint:BE.wep.tint,_echo:1};
         fireWeapon(BE.sh,ew,BE.tx,BE.ty,BE.fromPlayer);
       }
@@ -2567,6 +2594,11 @@ function autoCull(cap){
     if(w<0) break;
     var key=dropItem(w);
     if(!key) break;
+    // Audit: the shed crate landed inside pickup range, stole the search
+    // target, and the loop re-ate its own discard forever. Auto-shed crates
+    // are ignored by the chooser for 8 seconds and never fire contracts.
+    var shedCt=G.containers[G.containers.length-1];
+    if(shedCt&&shedCt.dropped){ shedCt.auto=1; shedCt.dropT=G.t; }
     shed++;
     if(!G.sim) label(G.player.x,G.player.y-26,'Dropped '+ITEMS[key].name,'#9aa8d0',0,false);
     // Loop guard only. The real stop is running out of things worth dropping;
@@ -2625,19 +2657,33 @@ function openContainer(ct){
       // came back undefined, every comparison was false, and a looted Marksman
       // Rifle would sit unusable in the bag while you kept the starter, which
       // broke the upgrade mechanic for every raid once starters became standard.
-      var found=rollFieldGun(itm.gk);
+      // Audit: dropping a bagged gun and re-searching it rerolled quality until
+      // Pristine. Your own discards come back at plain field grade.
+      var found=ct.dropped?(function(){var g2={};for(var k2 in WEAPONS[itm.gk])g2[k2]=WEAPONS[itm.gk][k2];g2.q='field';g2.qRank=1;return g2;})():rollFieldGun(itm.gk);
       var tierUp=(WTIER[itm.gk]||0)>(WTIER[p.wep.id]||0);
       var condUp=(WTIER[itm.gk]||0)===(WTIER[p.wep.id]||0)&&found.qRank>(p.wep.qRank===undefined?1:p.wep.qRank);
       if(tierUp||condUp){
-        if(p.wep.id!=='fists'){
-          // a starter is issued kit with no item to bank, so it is simply left behind
+        // Audit findings, both breaking. First: this guard used to be "does an
+        // item exist for this gun", which is true for the ISSUED sidearm, so an
+        // X-swapped loaner pistol got banked as sellable loot and the splice
+        // below deleted the armoury pistol that never left base. Issued kit is
+        // now simply left behind, always. Second: the splice assumed whatever
+        // you were holding came from the armoury, but a FIELD-FOUND gun being
+        // swapped out is not the armoury's copy, and splicing by id deleted a
+        // gun that never deployed. Provenance is tracked on the weapon slot,
+        // and every splice is recorded on G.spliced so an ABANDONED raid can
+        // put the armoury back exactly as it was.
+        if(p.wep.id!=='fists'&&!p.wepIssued){
           if(ITEMS['gun_'+p.wep.id]){
             G.bag.push('gun_'+p.wep.id);
-            if(!G.sim){ var oi=P.weapons.indexOf(p.wep.id); if(oi>=0) P.weapons.splice(oi,1); }
+            if(!G.sim&&p.wepFromArmory){
+              var oi=P.weapons.indexOf(p.wep.id);
+              if(oi>=0){ P.weapons.splice(oi,1); (G.spliced=G.spliced||[]).push(p.wep.id); }
+            }
           }
         }
         var oldDmg=p.wep.dmg||0;
-        p.wep=found; p.ammo=Math.ceil(p.wep.mag/2); p.wepIssued=false;
+        p.wep=found; p.ammo=Math.ceil(p.wep.mag/2); p.wepIssued=false; p.wepFromArmory=false;
         G.tel.weapon=p.wep.name;
         if(!G.sim){
           var cmp=oldDmg>0?Math.round((found.dmg*(found.pellets||1)/Math.max(1,oldDmg*(1))-1)*100):0;
@@ -2740,9 +2786,11 @@ function tryExtractTick(dt,wantCall){
   // into the ring at any point during the hold extracts immediately. The siege
   // keeps ringing the whole time, so the hold is a window, not a mercy.
   if(G.shipHold===null||G.shipHold===undefined){
-    G.shipHold=30;
+    // The hold can never promise more than the raid clock has left. Saying
+    // "30 seconds" and then killing him on the timer at 12 is a lie.
+    G.shipHold=Math.min(30,Math.max(3,G.timeLeft-1)); G.shipHoldMax=G.shipHold;
     blip('alarm');
-    say('Dropship is DOWN. It holds 30 seconds. Run.');
+    say('Dropship is DOWN. It holds '+Math.round(G.shipHold)+' seconds. Run.');
   }
   G.shipHold-=dt;
   if(G.shipHold<=0){
@@ -2945,6 +2993,7 @@ function updatePlayer(dt){
   var near=null,nd=1e9;
   for(var c=0;c<G.containers.length;c++){
     var ct=G.containers[c]; if(ct.opened) continue;
+    if(ct.auto&&G.t-ct.dropT<8) continue;   // your own auto-shed discard, cooling
     var d=dist(p,ct); if(d<46&&d<nd){ nd=d; near=ct; }
   }
   G.nearContainer=near;
@@ -3015,6 +3064,7 @@ function updateBot(dt){
   // leave enough clock to walk there AND sit through the whole inbound wait
   } else if(bagWeight()>=CFG.simGreed||bagWeight()>=cap||G.timeLeft<CFG.extractWait+120||(p.ammo+p.reserve)<=0){
     var z=G.active;
+    G.botWantsOut=true;
     navSeek(p,z.x,z.y,CFG.pSpeed*.95,dt); moved=true;
     p.face=Math.atan2(z.y-p.y,z.x-p.x);
   } else {
@@ -3070,7 +3120,12 @@ function updateBot(dt){
     p.seekT=0;
   }
   tickRegen(dt);
-  tryExtractTick(dt,true);
+  // Audit: wantCall was hardwired true, so a bot that merely STRAYED into the
+  // ring while looting called the ship, summoned the siege, wandered off, and
+  // logged a missed beacon. Every balance number since the siege shipped was
+  // polluted by accidental calls. The bot now calls only when its own extract
+  // branch decided to leave.
+  tryExtractTick(dt,!!G.botWantsOut);
 }
 
 // There is no pathfinding here. Walking straight at a point that sits behind a
@@ -3762,6 +3817,12 @@ function endRaid(how){
     }
     if(P.weapons.indexOf(P.equipped)<0) P.equipped=P.weapons.length?P.weapons[0]:'fists';
   } else {
+    // An abandon never resolves the raid, so the armoury must read exactly as
+    // it did before deploy. Every id spliced out at a pickup goes back.
+    if(G.spliced){
+      for(i=0;i<G.spliced.length;i++)
+        if(P.weapons.indexOf(G.spliced[i])<0) P.weapons.push(G.spliced[i]);
+    }
     lines.push('Run abandoned. '+haul.toLocaleString()+'c left behind.');
   }
   var acc=T.shots?Math.round(T.hits/T.shots*100):0;
@@ -4636,7 +4697,7 @@ function render2D(dt){
     var la=clamp(1-lb.t/lb.life,0,1);
     var rise=Math.min(lb.t,lb.life)*26;
     wc.globalAlpha=la;
-    wc.font=(lb.big?'700 11px':'700 10px')+' "Titan One","Rubik",sans-serif';
+    wc.font=FS((lb.big?'700 11px':'700 10px')+' "Titan One","Rubik",sans-serif');
     wc.fillStyle='rgba(6,9,13,.55)';
     var lw=wc.measureText(lb.txt).width;
     wc.fillRect(lb.x-lw/2-4,lb.y-rise-10,lw+8,13);
@@ -5097,7 +5158,7 @@ function drawHUD(){
     var holding=G.beaconT<=0&&G.shipHold!==null&&G.shipHold!==undefined;
     ctx.fillStyle=holding?(inRing?'#35d6c8':'#ff5a4a'):(inRing?'#35d6c8':'#ffb02e');
     ctx.fillText(holding?('SHIP HOLDING  '+Math.max(0,Math.ceil(G.shipHold))+'s'):('BEACON INBOUND  '+Math.ceil(G.beaconT)+'s'),W/2,H-70);
-    bar(W/2-90,H-62,180,9,holding?Math.max(0,G.shipHold/30):(1-G.beaconT/CFG.extractWait),holding?'#ff5a4a':(inRing?'#35d6c8':'#ffb02e'));
+    bar(W/2-90,H-62,180,9,holding?Math.max(0,G.shipHold/(G.shipHoldMax||30)):(1-G.beaconT/CFG.extractWait),holding?'#ff5a4a':(inRing?'#35d6c8':'#ffb02e'));
     if(!inRing){
       ctx.font=FS('10px "Rubik",sans-serif'); ctx.fillStyle='#ffc04a';
       ctx.fillText('GET TO THE RING',W/2,H-46);
@@ -5230,7 +5291,7 @@ function drawNoiseMarkers(){
   }
 }
 function drawLegend(){
-  var MONO='9px "Rubik",sans-serif';
+  var MONO=FS('9px "Rubik",sans-serif');   // audit: bypassed FS, sat below the floor
   if(!G.legendOn){
     ctx.font=MONO; ctx.fillStyle='rgba(140,152,163,.55)';
     ctx.fillText('H  controls',14,H-14);
@@ -5247,7 +5308,10 @@ function drawLegend(){
   // that was the normal state of the screen rather than an edge case.
   // Clamped so a short window loses the bottom of the list rather than the top
   // of it, since the headings are what make the list navigable.
-  var top=Math.max(8,H-LH(52)-boxH);
+  // Audit: the legend painted straight over the enlarged meters whenever the
+  // bottom clamp engaged. The reserve now covers the full meter block (stamina
+  // bottom at H-4 up to the armour label) instead of a pre-v1.12 guess.
+  var top=Math.max(8,H-Math.max(LH(52),96)-boxH);
   var LEGW=LH(222);
   ctx.fillStyle='rgba(18,15,24,.82)'; ctx.fillRect(x-8,top-6,LEGW,boxH+10);
   ctx.strokeStyle='rgba(58,69,82,.9)'; ctx.lineWidth=1;
@@ -5351,19 +5415,19 @@ function drawBag(){
     if(!it) continue;
     if(bi===sel){
       ctx.fillStyle='rgba(127,146,216,.22)';
-      ctx.fillRect(x+7,cy+i*16-10,PW-14,14);
-      ctx.fillStyle='#ffc04a'; ctx.fillText('\u25b8',x+3,cy+i*16);
+      ctx.fillRect(x+7,cy+i*LH(16)-LH(10),PW-14,LH(14));
+      ctx.fillStyle='#ffc04a'; ctx.fillText('\u25b8',x+3,cy+i*LH(16));
     }
     ctx.fillStyle=RCOL[it.r]||'#cdd6dd';
-    ctx.fillText((prot[bi]?'\u25c6 ':'  ')+it.name,x+11,cy+i*16);
+    ctx.fillText((prot[bi]?'\u25c6 ':'  ')+it.name,x+11,cy+i*LH(16));
     ctx.textAlign='right'; ctx.fillStyle='#ffc04a';
-    ctx.fillText(ival(G.bag[bi])+'c',x+PW-11,cy+i*16);
+    ctx.fillText(ival(G.bag[bi])+'c',x+PW-11,cy+i*LH(16));
     ctx.textAlign='left';
   }
-  var listEnd=cy+Math.max(0,rows-1)*16;
+  var listEnd=cy+Math.max(0,rows-1)*LH(16);
   if(G.bag.length>rows){
     ctx.fillStyle='#9aa8d0';
-    listEnd=cy+rows*16;
+    listEnd=cy+rows*LH(16);
     ctx.fillText((sel+1)+' of '+G.bag.length,x+11,listEnd);
   }
   // the two controls this panel now owns, placed below whatever the list ended
