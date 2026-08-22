@@ -458,6 +458,7 @@ Three things, none of which should be built without him saying so.
   - The first cut measured near invisible (dawn and golden differed by 6 RGB points, drowned by per map palette variance), so the casts were tripled and re-measured: golden now reads strongly warm at 128/100/76 against morning's cool 100/104/75.
   - Lamps scale with the hour in all three light passes, dusk announces itself when the weather is clear, and the sector map shows the hour beside the weather.
   - Verified: all five times roll and render, lightness bounded, hub and raid frames clean, sector map clean, sim 3/4 with no hangs, no console errors.
+- **v1.14 (the text size setting existed but had no door):** He answered BOTH to "flat lift or a setting", and the setting shipped at v1.00 as a profile field with a five-step table and NO way to change it. Found while auditing my own recent work. A "Text size" button in the terminal now cycles 100 to 200 percent, saved to the profile, applied live: every canvas string follows on the next frame because the font cache is keyed by scale. Verified: cycles correctly, raid and inventory render clean at 150 percent, resets, no console errors. A wider adversarial audit of v1.00 to v1.13 is running and lands next build.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

@@ -262,6 +262,7 @@
           <button id="simbtn" style="flex:1">Run bot sim</button>
         </div>
         <div style="padding:0 12px 7px"><button id="autoexbtn" style="width:100%;font-size:9.5px">Auto-export: ON</button></div>
+        <div style="padding:0 12px 7px"><button id="textsizebtn" style="width:100%;font-size:9.5px">Text size: 100%</button></div>
         <div id="simprog" style="font-size:9.5px;color:var(--ash);padding:0 12px 7px;display:none"></div>
       <h2 style="border-top:1px solid var(--steel-hi)">Roadmap</h2>
       <div class="plist" id="roadmap"></div>
@@ -311,7 +312,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.13';
+var VER='1.14';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -6342,6 +6343,18 @@ function syncAutoEx(){
         :(P.lastReport==='failed'?'COULD NOT SAVE':'')));
   b.textContent='Auto-report: ON'+(st?'  ('+st+')':'');
 }
+// The text size setting he asked for alongside the flat lift. Cycles the five
+// scales; FS() caches are keyed by scale so every canvas string follows on the
+// next frame, and the raid picks it up live.
+function syncTextSize(){
+  var b=document.getElementById('textsizebtn');
+  if(b) b.textContent='Text size: '+Math.round(uiScale()*100)+'%';
+}
+document.getElementById('textsizebtn').onclick=function(){
+  var cur=UISCALES.indexOf(uiScale());
+  P.uiScale=UISCALES[(cur+1)%UISCALES.length];
+  saveProfile(); syncTextSize();
+};
 document.getElementById('autoexbtn').onclick=function(){
   P.autoExport=!P.autoExport; saveProfile(); syncAutoEx();
 };
@@ -6376,6 +6389,7 @@ loadProfile().then(function(){
   syncAutoEx();
   renderRoadmap();
   initBuildPicker();
+  syncTextSize();
   showScreen('hub');
 });
 requestAnimationFrame(function(ts){ lastTs=ts; requestAnimationFrame(loop); });
