@@ -450,6 +450,10 @@ Three things, none of which should be built without him saying so.
   - **Weather in the bed.** A bandpassed noise voice above the room-tone lowpass whose gain follows the rain amount, so rain sounds like rain rather than more rumble, and a storm is louder than a drizzle. Fades over about a second when weather is meaningless (dead, extracted).
   - **The dread layer.** A 36Hz sine that rises as the Warden closes, audible from about 700 out, well before its tread. Horror is a frequency you feel before you place it. Driven from the same loop that computes threat.
   - Verified structurally, since I cannot hear: all 11 weapon voices and the default build without throwing on a running AudioContext, the weather and dread nodes exist in the bed, frames clean, no console errors, sim 3/4 with no hangs. Whether it sounds GOOD is his verdict at the speakers, and I have said so every time sound ships.
+- **v1.12 (the two HUD answers still outstanding):**
+  - **Meters at combat size.** His answers, verbatim: "HUD BIGGER" and the health bar "NEEDS TO BE LARGER". Health went 150x10 to 280x18 with the number inside the bar where the eye already is; armour 280x11 above it, stamina 280x8 below.
+  - **Dropped items say their name.** His #23. A single item crate you dropped yourself shows its item name in rarity colour when you stand near it, so re-collecting is not a memory test. Unsearched world containers stay mystery boxes on purpose: his own answer was that you must search to find.
+  - Verified: drop flagged and named at the crate, meters render at the new sizes in a staged shot (HP 62 readable inside the bar), hub and raid frames clean, no console errors, profile intact.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
