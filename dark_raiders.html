@@ -263,6 +263,7 @@
         </div>
         <div style="padding:0 12px 7px"><button id="autoexbtn" style="width:100%;font-size:9.5px">Auto-export: ON</button></div>
         <div style="padding:0 12px 7px"><button id="textsizebtn" style="width:100%;font-size:9.5px">Text size: 100%</button></div>
+        <div style="padding:0 12px 7px"><button id="mapbtn" style="width:100%;font-size:9.5px">Map: DAM BATTLEGROUNDS</button></div>
         <div id="simprog" style="font-size:9.5px;color:var(--ash);padding:0 12px 7px;display:none"></div>
       <h2 style="border-top:1px solid var(--steel-hi)">Roadmap</h2>
       <div class="plist" id="roadmap"></div>
@@ -312,7 +313,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.23';
+var VER='1.24';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -1282,12 +1283,87 @@ var FIXED_MAPS=[
     {id:'dam_row',   name:'WORKERS ROW', x:260, y:2600,w:1420,h:840,loot:'medical',dens:1.4}
   ],
   // SPEC 4.5: fixed spawn points, each a closed manhole in the world
+  // Manholes belong in the STREET, not inside a building: a spawn inside a
+  // shed is both wrong for the fiction and blockable by the randomly placed
+  // furniture. Every one of these is outdoors and probe verified clear.
   spawns:[
-    {x:640, y:2260}, {x:1560,y:1420}, {x:4560,y:2180},
-    {x:3720,y:3260}, {x:900, y:3760}, {x:4860,y:1000}
+    {x:640, y:2260}, {x:990, y:1620}, {x:5060,y:2180},
+    {x:3720,y:3260}, {x:900, y:3920}, {x:4860,y:1000}
   ],
   extracts:[
     {x:1000,y:1000}, {x:4700,y:3600}, {x:2640,y:3500}
+  ]
+}
+,
+{
+  // SPEC 4.3: BURIED CITY. Desert ruins. The whole identity is one contrast:
+  // a huge open central courtyard with long sightlines that is genuinely
+  // dangerous to cross, ringed by garages and outbuildings that are tight
+  // close quarters clearing. It has to play nothing like the dam, so there is
+  // no verticality anchor and no water: the tension here is exposure, and the
+  // relief is doorways.
+  id:'buried', name:'BURIED CITY', w:4600, h:4600,
+  zones:[
+    {name:'THE COURTYARD', d:0, x:1300, y:1300, w:2000, h:2000},
+    {name:'NORTH GARAGES', d:3, x:0,    y:0,    w:4600, h:1300},
+    {name:'SOUTH GARAGES', d:3, x:0,    y:3300, w:4600, h:1300},
+    {name:'WEST TERRACES', d:0, x:0,    y:1300, w:1300, h:2000},
+    {name:'EAST TERRACES', d:2, x:3300, y:1300, w:1300, h:2000}
+  ],
+  water:[],
+  // half buried walls jutting into the courtyard: the only cover out there, and
+  // deliberately not enough of it
+  walls:[
+    {x:1700,y:1750,w:420,h:70,d:0}, {x:2600,y:2050,w:70,h:400,d:0},
+    {x:2100,y:2700,w:520,h:70,d:0}, {x:1520,y:2350,w:70,h:360,d:0},
+    {x:2850,y:1560,w:300,h:70,d:0}
+  ],
+  buildings:[
+    // NORTH GARAGES: a row of tight units, doors facing the courtyard
+    {x:180, y:260, w:420,h:380,d:3,plan:'cells'},
+    {x:700, y:260, w:420,h:380,d:3,plan:'lsplit'},
+    {x:1220,y:260, w:420,h:380,d:3,plan:'core'},
+    {x:1740,y:260, w:420,h:380,d:3,plan:'cells'},
+    {x:2260,y:260, w:420,h:380,d:3,plan:'lsplit'},
+    {x:2780,y:260, w:420,h:380,d:3,plan:'cells'},
+    {x:3300,y:260, w:420,h:380,d:3,plan:'core'},
+    {x:3820,y:260, w:420,h:380,d:3,plan:'lsplit'},
+    {x:600, y:800, w:640,h:340,d:3,plan:'spine',big:1},
+    {x:1900,y:800, w:640,h:340,d:3,plan:'pinwheel'},
+    {x:3200,y:800, w:640,h:340,d:3,plan:'spine'},
+    // SOUTH GARAGES: the mirror, staggered so it does not read as a copy
+    {x:340, y:3520,w:420,h:380,d:3,plan:'lsplit'},
+    {x:860, y:3520,w:420,h:380,d:3,plan:'cells'},
+    {x:1380,y:3520,w:420,h:380,d:3,plan:'core'},
+    {x:1900,y:3520,w:420,h:380,d:3,plan:'lsplit'},
+    {x:2420,y:3520,w:420,h:380,d:3,plan:'cells'},
+    {x:2940,y:3520,w:420,h:380,d:3,plan:'lsplit'},
+    {x:3460,y:3520,w:420,h:380,d:3,plan:'core'},
+    {x:900, y:3060,w:640,h:340,d:3,plan:'pinwheel'},
+    {x:2400,y:3060,w:640,h:340,d:3,plan:'spine',big:1},
+    // WEST TERRACES: stepped ruins, broken cover
+    {x:200, y:1500,w:520,h:420,d:0,plan:'open'},
+    {x:200, y:2100,w:520,h:420,d:0,plan:'cells'},
+    {x:200, y:2700,w:520,h:420,d:0,plan:'lsplit'},
+    {x:820, y:1900,w:340,h:800,d:0,plan:'spine'},
+    // EAST TERRACES: greener, overgrown ruin
+    {x:3880,y:1500,w:520,h:420,d:2,plan:'core'},
+    {x:3880,y:2100,w:520,h:420,d:2,plan:'open'},
+    {x:3880,y:2700,w:520,h:420,d:2,plan:'cells'},
+    {x:3440,y:1900,w:340,h:800,d:2,plan:'pinwheel'}
+  ],
+  woods:[ {x:3400,y:2750,w:700,h:520} ],
+  landmarks:[
+    {id:'bc_yard',  name:'THE COURTYARD', x:1300,y:1300,w:2000,h:2000,loot:'bulk',   dens:0.5},
+    {id:'bc_north', name:'NORTH GARAGES', x:180, y:260, w:4060,h:880, loot:'ammo',   dens:1.3},
+    {id:'bc_south', name:'SOUTH GARAGES', x:340, y:3060,w:3540,h:840, loot:'medical',dens:1.3}
+  ],
+  spawns:[
+    {x:1180,y:1620}, {x:3420,y:1620}, {x:1180,y:2980},
+    {x:3420,y:2980}, {x:2300,y:180},  {x:2300,y:4400}
+  ],
+  extracts:[
+    {x:2300,y:2300}, {x:640, y:4260}, {x:4260,y:640}
   ]
 }
 ];
@@ -1356,248 +1432,11 @@ function buildFixedMap(def){
     landmarks:landmarks,zones:zseeds,districtAt:districtAt,zoneAt:zoneAt,woods:woodsList,bigPairs:[],
     spawns:def.spawns,extracts:def.extracts,nav:mapNav};
 }
-function buildMap(){
-  var walls=[],b=40;
-  walls.push({x:0,y:0,w:WORLD_W,h:b,d:1});
-  walls.push({x:0,y:WORLD_H-b,w:WORLD_W,h:b,d:1});
-  walls.push({x:0,y:0,w:b,h:WORLD_H,d:1});
-  walls.push({x:WORLD_W-b,y:0,w:b,h:WORLD_H,d:1});
-  // The district grid has to follow the world, not sit at a fixed 4x4. It was
-  // hardcoded, so quadrupling the map at v0.68 left the same 15 buildings
-  // stretched across four times the ground: cover, interiors and loot all
-  // dropped to a quarter of their tuned density and the map read as empty
-  // field. These divisors reproduce the original 4x4 exactly at the old
-  // 2600x2000 size, so this restores the tuned density rather than inventing one.
-  var buildings=[],cols=Math.max(4,Math.round(WORLD_W/650)),rows=Math.max(4,Math.round(WORLD_H/500));
-  var cw=(WORLD_W-160)/cols,ch=(WORLD_H-160)/rows;
-  // Reserve cells for landmarks before any ordinary building is placed, so a
-  // landmark owns a whole district cell and reads as a place rather than as one
-  // more box. Three per raid out of five kinds, so no two raids are alike and
-  // any given raid still has room for ordinary streets between them.
-  var landmarks=[],lmAt={};
-  var pool=LANDMARKS.slice();
-  for(var sh=pool.length-1;sh>0;sh--){ var sj=ri(0,sh); var tmp=pool[sh]; pool[sh]=pool[sj]; pool[sj]=tmp; }
-  // The town square is guaranteed, the other two rotate. Find it wherever the
-  // shuffle put it and swap it into the picked range.
-  for(var tq=0;tq<pool.length;tq++) if(pool[tq].id==='townsq'&&tq>2){ var tt2=pool[0]; pool[0]=pool[tq]; pool[tq]=tt2; break; }
-  var wantLM=Math.min(3,pool.length);
-  for(var li=0;li<wantLM;li++){
-    var lr,lc,tries=0;
-    do{ lr=ri(0,rows-1); lc=ri(0,cols-1); tries++; }
-    while((lmAt[lr+','+lc]||(lr===1&&lc===1))&&tries<60);
-    lmAt[lr+','+lc]=pool[li];
-  }
-  // Themed districts. Before this every building rolled its own district
-  // independently, which sounds like variety and is the exact opposite:
-  // measured across 12 maps, a building's nearest neighbour shared its district
-  // 26% of the time against 25% for pure chance, and every single map came out
-  // a 25/25/25/25 mix. Four distinct palettes sprayed evenly over everything
-  // average to the same confetti, so no map could look like anywhere in
-  // particular. That, not a shortage of content, is why maps felt samey.
-  //
-  // Instead: 2 or 3 zone seeds per raid, each claiming a different district,
-  // and every cell takes the district of its nearest seed. That gives large
-  // contiguous zones you can cross a border of, and because the raid draws only
-  // 2 or 3 of the 4 kinds, a rust and greenbelt map reads as a different place
-  // from a foundry and blockhouse one.
-  var zoneN=ri(2,3),zseeds=[],dpool=[0,1,2,3];
-  for(var zs=dpool.length-1;zs>0;zs--){ var zj=ri(0,zs); var zt=dpool[zs]; dpool[zs]=dpool[zj]; dpool[zj]=zt; }
-  for(var zi=0;zi<zoneN;zi++){
-    var zr,zc,zt2=0;
-    // Push seeds apart so one zone cannot be a single cell wedged in a corner.
-    do{ zr=ri(0,rows-1); zc=ri(0,cols-1); zt2++;
-      var far=1;
-      for(var zk=0;zk<zseeds.length;zk++){
-        if(Math.abs(zseeds[zk].r-zr)+Math.abs(zseeds[zk].c-zc) < Math.max(2,Math.round((rows+cols)/5))){ far=0; break; }
-      }
-    } while(!far&&zt2<80);
-    zseeds.push({r:zr,c:zc,d:dpool[zi]});
-  }
-  // Border jitter keeps the seams organic instead of a clean Voronoi edge.
-  // Border jitter, corrected. The first version added ONE offset per cell to
-  // every seed's distance, which cancels out of the comparison entirely: the
-  // audit proved the seams were exact Voronoi and the "organic" comment was a
-  // lie. The offset now depends on the (cell, seed) PAIR, deterministically per
-  // raid, so it genuinely bends the border.
-  var zsalt=ri(1,1e9);
-  function zjit2(r2,c2,k){
-    var h=((r2*73856093)^(c2*19349663)^(k*83492791)^zsalt)>>>0;
-    return ((h%1000)/1000-0.5)*1.1;
-  }
-  function cellDistrict(r2,c2){
-    var best=zseeds[0].d,bd=1e9;
-    for(var k=0;k<zseeds.length;k++){
-      var dr=zseeds[k].r-r2,dc=zseeds[k].c-c2;
-      var dd2=Math.sqrt(dr*dr+dc*dc)+zjit2(r2,c2,k);
-      if(dd2<bd){ bd=dd2; best=zseeds[k].d; }
-    }
-    return best;
-  }
-  // The seed cell is where a zone STARTS, not where it sits. Labelling from the
-  // seed pushed names to the map edge whenever a seed landed in a corner, so
-  // each zone records the centroid of the cells it actually won.
-  var zsum={};
-  for(var ar=0;ar<rows;ar++)for(var ac=0;ac<cols;ac++){
-    var ad=cellDistrict(ar,ac);
-    if(!zsum[ad]) zsum[ad]={r:0,c:0,n:0};
-    zsum[ad].r+=ar; zsum[ad].c+=ac; zsum[ad].n++;
-  }
-  for(var zq=0;zq<zseeds.length;zq++){
-    var zg=zsum[zseeds[zq].d];
-    if(zg&&zg.n){ zseeds[zq].mr=zg.r/zg.n; zseeds[zq].mc=zg.c/zg.n; zseeds[zq].cells=zg.n; }
-    else { zseeds[zq].mr=zseeds[zq].r; zseeds[zq].mc=zseeds[zq].c; zseeds[zq].cells=0; }
-  }
-  // Exposed on the map so scatter props, landmarks and anything else that needs
-  // a district can ask the same question and get the same answer.
-  function districtAt(wx2,wy2){
-    var c3=clamp(Math.floor((wx2-80)/cw),0,cols-1),r3=clamp(Math.floor((wy2-80)/ch),0,rows-1);
-    return cellDistrict(r3,c3);
-  }
-  // WOODS. His note: "needs ... woods". Two or three cells carry a grove
-  // instead of a building: organic cover, thin sight lines, no loot density.
-  // Trees are small colliders tagged tree so the draw pass renders trunks and
-  // canopies rather than crates, and the ground bake lays turf under them.
-  var woodsAt={},woodsList=[];
-  var nWoods=ri(2,3);
-  for(var wt2=0;wt2<nWoods;wt2++){
-    var wr,wc2,wtry=0;
-    do{ wr=ri(0,rows-1); wc2=ri(0,cols-1); wtry++; }
-    while((lmAt[wr+','+wc2]||woodsAt[wr+','+wc2]||(wr===1&&wc2===1))&&wtry<60);
-    woodsAt[wr+','+wc2]=1; woodsList.push({r:wr,c:wc2});
-  }
-  // BIG BUILDINGS. His note: "big buildings". Two structures each claim a pair
-  // of adjacent cells, so some blocks are genuinely twice the length of others,
-  // which is also the direct answer to "every block is the same length".
-  var bigAt={},bigPairs=[];
-  for(var bb2=0;bb2<2;bb2++){
-    var br,bc,horiz,btry=0,ok2=false;
-    while(btry<80&&!ok2){
-      btry++;
-      br=ri(0,rows-1); bc=ri(0,cols-1); horiz=Math.random()<.5;
-      var br2=horiz?br:br+1,bc2=horiz?bc+1:bc;
-      if(br2>=rows||bc2>=cols) continue;
-      var k1=br+','+bc,k2=br2+','+bc2;
-      if(lmAt[k1]||lmAt[k2]||woodsAt[k1]||woodsAt[k2]||bigAt[k1]||bigAt[k2]) continue;
-      if((br===1&&bc===1)||(br2===1&&bc2===1)) continue;
-      bigAt[k1]=1; bigAt[k2]=1;
-      bigPairs.push({r:br,c:bc,r2:br2,c2:bc2,horiz:horiz});
-      ok2=true;
-    }
-  }
-  for(var bp=0;bp<bigPairs.length;bp++){
-    var BP=bigPairs[bp];
-    var bx0=80+BP.c*cw+30,by0=80+BP.r*ch+30;
-    var bw2=(BP.horiz?2:1)*cw-70,bh2=(BP.horiz?1:2)*ch-70;
-    var bd2=cellDistrict(BP.r,BP.c);
-    var bplan2=makeBuilding(bx0,by0,bw2,bh2,walls,bd2,buildings.length);
-    buildings.push({x:bx0,y:by0,w:bw2,h:bh2,d:bd2,tag:ri(11,99),plan:bplan2,big:1});
-  }
-  for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){
-    if(lmAt[r+','+c]) continue;
-    if(woodsAt[r+','+c]||bigAt[r+','+c]) continue;
-    if(r===1&&c===1&&Math.random()<.5) continue;
-    var d=cellDistrict(r,c);
-    var bw=rnd(255,Math.min(400,cw-90)),bh=rnd(205,Math.min(330,ch-90));
-    var bx=80+c*cw+rnd(20,cw-bw-20),by=80+r*ch+rnd(20,ch-bh-20);
-    var bplan=makeBuilding(bx,by,bw,bh,walls,d,buildings.length);
-    buildings.push({x:bx,y:by,w:bw,h:bh,d:d,tag:ri(11,99),plan:bplan});
-  }
-  // Build the reserved landmarks. Each gets its whole cell with a margin, and
-  // records its footprint so loot, the sector map and the "you have arrived"
-  // callout can all key off it.
-  for(var lk in lmAt){
-    var lp=lk.split(','),lrr=+lp[0],lcc=+lp[1],LM=lmAt[lk];
-    var mx0=80+lcc*cw+26,my0=80+lrr*ch+26;
-    var mw=cw-52,mh=ch-52;
-    var ld=cellDistrict(lrr,lcc);
-    (function(dd){
-      LM.build(mx0,my0,mw,mh,function(px,py,pw,ph){
-        if(pw<4||ph<4) return;
-        walls.push({x:px,y:py,w:Math.max(6,pw),h:Math.max(6,ph),d:dd});
-      },dd);
-    })(ld);
-    landmarks.push({id:LM.id,name:LM.name,x:mx0,y:my0,w:mw,h:mh,d:ld,
-      loot:LM.loot,dens:LM.dens,water:!!LM.water});
-  }
-  for(var wl3=0;wl3<woodsList.length;wl3++){
-    var WD=woodsList[wl3];
-    var wx0=80+WD.c*cw,wy0=80+WD.r*ch;
-    var nT=ri(14,20);
-    for(var ti=0;ti<nT;ti++){
-      var ts=rnd(10,16);
-      var tx2=wx0+rnd(30,cw-30-ts),ty2=wy0+rnd(30,ch-30-ts);
-      walls.push({x:tx2,y:ty2,w:ts,h:ts,d:2,tree:1,canopy:rnd(22,34)});
-    }
-    woodsList[wl3]={r:WD.r,c:WD.c,x:wx0,y:wy0,w:cw,h:ch};
-  }
-  for(var i=0;i<Math.round(36*AREA*0.7);i++){
-    var s=rnd(30,54),px=rnd(80,WORLD_W-80-s),py=rnd(80,WORLD_H-80-s),ok=1;
-    for(var j=0;j<buildings.length;j++){var bb=buildings[j];
-      if(px<bb.x+bb.w+30&&px+s>bb.x-30&&py<bb.y+bb.h+30&&py+s>bb.y-30){ok=0;break;}}
-    // no concrete slabs in the middle of a grove
-    if(ok) for(var wq2=0;wq2<woodsList.length;wq2++){ var WM=woodsList[wq2];
-      if(px+s>WM.x&&px<WM.x+WM.w&&py+s>WM.y&&py<WM.y+WM.h){ ok=0; break; } }
-    if(ok) walls.push({x:px,y:py,w:s,h:s,d:districtAt(px+s/2,py+s/2)});
-  }
-  // Flooded ground. Rules, chosen and stated: water never blocks movement or
-  // sight, it slows you and it is loud. That makes it the anti-crouch: the one
-  // place where sneaking is not an option, so crossing is a real commitment
-  // rather than another wall. It applies to machines and raiders identically.
-  var water=[];
-  // Keep trying, shrinking the pool as attempts run out, so a map is never
-  // silently without water. Measured 20% of maps empty before this.
-  // Pool count is per area, not per map, for the same reason the district grid
-  // is: 6 to 9 pools was tuned on a 2600x2000 world and left water four times
-  // rarer once the map grew. Attempts scale with it or the shrink ramp runs out
-  // before the quota is met.
-  // A landmark that is meant to be flooded gets its water first, so it is
-  // guaranteed rather than left to the random pool placement below.
-  for(var lw=0;lw<landmarks.length;lw++){
-    var LW=landmarks[lw];
-    if(!LW.water) continue;
-    water.push({x:LW.x+28,y:LW.y+LW.h*0.30,w:LW.w-56,h:LW.h*0.46});
-  }
-  var wantPools=Math.round(ri(6,9)*AREA);
-  var wAttempts=Math.round(48*AREA);
-  for(var wtry=0;wtry<wAttempts&&water.length<wantPools;wtry++){
-    // The ramp has to measure how far through the attempts we are, not how many
-    // have been spent. Keyed to the raw count it hit full shrink at attempt 39
-    // regardless of the budget, so on a bigger map every pool after the first
-    // few came out at 45 percent size and coverage stayed a quarter of the old
-    // map even with the count fixed. The 0.672 reproduces the original ramp
-    // exactly at the old 48 attempt budget.
-    var shrink=1-Math.min(0.55,(wtry/wAttempts)*0.672);
-    var ww=rnd(150,420)*shrink,wh=rnd(120,300)*shrink;
-    var wx3=rnd(90,WORLD_W-90-ww),wy3=rnd(90,WORLD_H-90-wh),wok=1;
-    for(var wb=0;wb<buildings.length;wb++){
-      var bb2=buildings[wb];
-      if(wx3<bb2.x+bb2.w+20&&wx3+ww>bb2.x-20&&wy3<bb2.y+bb2.h+20&&wy3+wh>bb2.y-20){ wok=0; break; }
-    }
-    if(wok) for(var wo=0;wo<water.length;wo++){
-      var op=water[wo];
-      if(wx3<op.x+op.w&&wx3+ww>op.x&&wy3<op.y+op.h&&wy3+wh>op.y){ wok=0; break; }
-    }
-    if(wok) water.push({x:wx3,y:wy3,w:ww,h:wh});
-  }
-  // Must run BEFORE the streaks and the sight segment list are built. The repair
-  // removes walls, and segs is a snapshot: repairing after it is built leaves
-  // sight blocked by geometry that is no longer there.
-  var mapNav=repairInteriors(walls,buildings);
-  for(var k=0;k<walls.length;k++){
-    var wl=walls[k]; wl.streaks=[];
-    var n=Math.min(5,Math.floor((wl.w*wl.h)/5200));
-    for(var q=0;q<n;q++) wl.streaks.push({x:rnd(0,wl.w),y:rnd(0,wl.h),w:rnd(2,7),h:rnd(4,16),a:rnd(.05,.16)});
-  }
-  var segs=[];
-  for(var m=0;m<walls.length;m++){var w2=walls[m];
-    segs.push({x1:w2.x,y1:w2.y,x2:w2.x+w2.w,y2:w2.y});
-    segs.push({x1:w2.x+w2.w,y1:w2.y,x2:w2.x+w2.w,y2:w2.y+w2.h});
-    segs.push({x1:w2.x+w2.w,y1:w2.y+w2.h,x2:w2.x,y2:w2.y+w2.h});
-    segs.push({x1:w2.x,y1:w2.y+w2.h,x2:w2.x,y2:w2.y});
-  }
-  return {walls:walls,segs:segs,buildings:buildings,water:water,cw:cw,ch:ch,cols:cols,rows:rows,
-    landmarks:landmarks,zones:zseeds,districtAt:districtAt,woods:woodsList,bigPairs:bigPairs,nav:mapNav};
-}
+// SPEC 4.1: the procedural map generator that lived here is DELETED, along with
+// its zone seeding, landmark reservation, woods and big building placement and
+// its scatter pass. Both authored maps are in FIXED_MAPS above and nothing
+// generates terrain at runtime any more. Git history holds the old generator if
+// it is ever wanted as reference.
 // Day is a look, not a difficulty. Vision cone, awareness radius, enemy ranges
 // and every other tunable are identical in both conditions, so choosing daylight
 // is a preference and not an easier game. It is stored on the profile.
@@ -1825,6 +1664,15 @@ function bakeGround(map){
   }
   return g;
 }
+// Is a specific point clear of every collider by pad? freeSpot answers "give me
+// somewhere free"; this answers "is THIS free", which is what an authored point
+// needs to be checked against.
+function spotFree(map,x,y,pad){
+  pad=pad||22;
+  for(var i=0;i<map.walls.length;i++){ var w=map.walls[i];
+    if(x>w.x-pad&&x<w.x+w.w+pad&&y>w.y-pad&&y<w.y+w.h+pad) return false; }
+  return true;
+}
 function freeSpot(map,pad){
   pad=pad||22;
   for(var t=0;t<400;t++){
@@ -2038,10 +1886,9 @@ function mkRaider(x,y){
   return r;
 }
 function buildRaid(sim){
-  // SPEC 4.1: fixed hand designed maps only. buildMap and its whole procedural
-  // path stay in the file for now as dead reference and will be deleted once
-  // both authored maps are in; nothing calls it.
-  var map=buildFixedMap(FIXED_MAPS[0]);
+  // SPEC 4.1: fixed hand designed maps only. The procedural generator is gone.
+  var mapIx=clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1);
+  var map=buildFixedMap(FIXED_MAPS[mapIx]);
   // Losing your gun should sting, not zero you. If the armoury is empty the
   // Undercroft issues a loaner sidearm; you still lost the good gun, and the
   // loaner goes with it if you die again. Deploying with bare hands was a
@@ -2063,6 +1910,19 @@ function buildRaid(sim){
   var i,t;
   var spawnPt=map.spawns[ri(0,map.spawns.length-1)];
   var start={x:spawnPt.x,y:spawnPt.y};
+  // A hand placed spawn can land inside geometry as the layout is edited, and a
+  // blocked spawn is a raid that starts stuck. Verified per map in testing, but
+  // guarded here so an authoring slip can never ship as an unplayable run.
+  if(!spotFree(map,start.x,start.y,22)){
+    var near=null,nd=1e9;
+    for(var gt=0;gt<300;gt++){
+      var c4=freeSpot(map,26);
+      var d4=dist(c4,start);
+      if(d4<nd){ nd=d4; near=c4; }
+      if(nd<160) break;
+    }
+    if(near){ start.x=near.x; start.y=near.y; }
+  }
   // SPEC 5.3: every extraction point on the map opens at run start. Closure and
   // the two stage pull are the next build; the points themselves are authored.
   // SPEC 5.3: all points open at run start and close progressively, leaving one.
@@ -6976,6 +6836,14 @@ function syncTextSize(){
   var b=document.getElementById('textsizebtn');
   if(b) b.textContent='Text size: '+Math.round(uiScale()*100)+'%';
 }
+function syncMapBtn(){
+  var b=document.getElementById('mapbtn');
+  if(b) b.textContent='Map: '+FIXED_MAPS[clamp(P.mapIx||0,0,FIXED_MAPS.length-1)].name;
+}
+document.getElementById('mapbtn').onclick=function(){
+  P.mapIx=((P.mapIx||0)+1)%FIXED_MAPS.length;
+  saveProfile(); syncMapBtn();
+};
 document.getElementById('textsizebtn').onclick=function(){
   var cur=UISCALES.indexOf(uiScale());
   P.uiScale=UISCALES[(cur+1)%UISCALES.length];
@@ -7016,6 +6884,7 @@ loadProfile().then(function(){
   renderRoadmap();
   initBuildPicker();
   syncTextSize();
+  syncMapBtn();
   showScreen('hub');
 });
 requestAnimationFrame(function(ts){ lastTs=ts; requestAnimationFrame(loop); });
