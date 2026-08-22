@@ -313,7 +313,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.26';
+var VER='1.27';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -1277,6 +1277,20 @@ var FIXED_MAPS=[
     {x:2960,y:1500,w:200, h:900, d:0, plan:'open'}
   ],
   woods:[ {x:3300,y:2560,w:800,h:700}, {x:4300,y:2900,w:760,h:800} ],
+  // SPEC 4.2 and 4.6: elevated catwalks over the turbine yard. Genuine raised
+  // ground reached by ramps, not decoration. A catwalk gives a long sightline
+  // across the yard and only two ways down, which is the tradeoff.
+  // Catwalks run through the OPEN band between the two shed rows. An earlier
+  // placement crossed a shed and its perimeter cut the interior in half:
+  // measured 407 sealed cells. Platforms must not overlap buildings.
+  plats:[
+    {x:300, y:1540,w:1560,h:120,lift:26,name:'CATWALK'},
+    {x:1980,y:2180,w:900, h:120,lift:26}
+  ],
+  ramps:[
+    {x:1860,y:1540,w:150,h:120},
+    {x:2880,y:2180,w:150,h:120}
+  ],
   landmarks:[
     {id:'dam_house', name:'POWERHOUSE',  x:2180,y:300, w:840,h:340, loot:'rare',   dens:1.8},
     {id:'dam_sub',   name:'SUBSTATION',  x:3400,y:1060,w:1560,h:660,loot:'ammo',   dens:1.2},
@@ -1353,6 +1367,16 @@ var FIXED_MAPS=[
     {x:3440,y:1900,w:340,h:800,d:2,plan:'pinwheel'}
   ],
   woods:[ {x:3400,y:2750,w:700,h:520} ],
+  // A raised terrace on the courtyard rim: the one place with a commanding view
+  // of the crossing, and the one place everyone knows to check.
+  plats:[
+    {x:1400,y:1180,w:760,h:130,lift:24,name:'HIGH TERRACE'},
+    {x:1600,y:3160,w:560,h:130,lift:24,name:'SOUTH WALL'}
+  ],
+  ramps:[
+    {x:2160,y:1180,w:150,h:130},
+    {x:2160,y:3160,w:150,h:130}
+  ],
   landmarks:[
     {id:'bc_yard',  name:'THE COURTYARD', x:1300,y:1300,w:2000,h:2000,loot:'bulk',   dens:0.5},
     {id:'bc_north', name:'NORTH GARAGES', x:180, y:260, w:4060,h:880, loot:'ammo',   dens:1.3},
@@ -1390,6 +1414,86 @@ function buildFixedMap(def){
       walls.push({x:WD.x+rnd(20,WD.w-20-ts),y:WD.y+rnd(20,WD.h-20-ts),w:ts,h:ts,d:2,tree:1,canopy:rnd(22,34)});
     }
     woodsList.push({r:-1,c:-1,x:WD.x,y:WD.y,w:WD.w,h:WD.h});
+  }
+  // SPEC 4.6: REAL ELEVATION, built so the flat simulation stays flat. A
+  // platform's PERIMETER is emitted as ordinary walls with gaps where its ramps
+  // meet it, so collision, line of sight and pathfinding all keep working with
+  // no notion of height at all. Height is purely a render property: standing on
+  // a platform lifts your sprite and your y-sort key. That is the Sea of Stars
+  // trick, layered legible ground rather than a third axis in the simulation,
+  // and it means verticality cannot introduce a class of movement bug.
+  var plats=def.plats||[],ramps=def.ramps||[];
+  function rampOverlaps(ax,ay,aw,ah){
+    // Ramps are authored ABUTTING a platform, not overlapping it, so the test
+    // is inflated by more than the edge thickness. Without this the gap is
+    // never cut and the deck is sealed: measured 0 of 881 deck cells reachable.
+    var pad=20;
+    for(var r2=0;r2<ramps.length;r2++){ var R=ramps[r2];
+      if(ax<R.x+R.w+pad&&ax+aw>R.x-pad&&ay<R.y+R.h+pad&&ay+ah>R.y-pad) return true; }
+    return false;
+  }
+  // Where one platform meets another the shared edge must open too, or an L
+  // shaped catwalk seals its own corner: measured 58 percent of the dam deck
+  // unreachable and no route onto it at all.
+  function platJunction(ax,ay,aw,ah,selfIx){
+    var pad=18;
+    for(var q2=0;q2<plats.length;q2++){
+      if(q2===selfIx) continue;
+      var Q2=plats[q2];
+      if(ax<Q2.x+Q2.w+pad&&ax+aw>Q2.x-pad&&ay<Q2.y+Q2.h+pad&&ay+ah>Q2.y-pad) return true;
+    }
+    return false;
+  }
+  function edgeSpan(ax,ay,aw,ah,selfIx){
+    // split an edge into segments that skip any ramp mouth
+    function openHere(sx2,sy2,sw2,sh2){
+      return rampOverlaps(sx2,sy2,sw2,sh2)||platJunction(sx2,sy2,sw2,sh2,selfIx);
+    }
+    if(!openHere(ax,ay,aw,ah)){ walls.push({x:ax,y:ay,w:aw,h:ah,d:1,ledge:1}); return; }
+    var horiz=aw>=ah,step=10,run=null;
+    var len=horiz?aw:ah;
+    for(var o=0;o<len;o+=step){
+      var sx=horiz?ax+o:ax, sy=horiz?ay:ay+o;
+      var sw=horiz?step:aw, sh=horiz?ah:step;
+      if(openHere(sx,sy,sw,sh)){
+        if(run){ walls.push(run); run=null; }
+      } else {
+        if(run) { if(horiz) run.w+=step; else run.h+=step; }
+        else run={x:sx,y:sy,w:sw,h:sh,d:1,ledge:1};
+      }
+    }
+    if(run) walls.push(run);
+  }
+  for(i=0;i<plats.length;i++){
+    var PL=plats[i],t2=14;
+    edgeSpan(PL.x,PL.y,PL.w,t2,i);
+    edgeSpan(PL.x,PL.y+PL.h-t2,PL.w,t2,i);
+    edgeSpan(PL.x,PL.y,t2,PL.h,i);
+    edgeSpan(PL.x+PL.w-t2,PL.y,t2,PL.h,i);
+  }
+  function platAt(wx2,wy2){
+    for(var q=0;q<plats.length;q++){ var Q=plats[q];
+      if(wx2>=Q.x&&wx2<Q.x+Q.w&&wy2>=Q.y&&wy2<Q.y+Q.h) return Q; }
+    for(q=0;q<ramps.length;q++){ var Rr=ramps[q];
+      if(wx2>=Rr.x&&wx2<Rr.x+Rr.w&&wy2>=Rr.y&&wy2<Rr.y+Rr.h) return {ramp:1,lift:0}; }
+    return null;
+  }
+  // how much a sprite at this point is lifted, ramps interpolating
+  function liftAt(wx2,wy2){
+    var q,Q;
+    for(q=0;q<plats.length;q++){ Q=plats[q];
+      if(wx2>=Q.x&&wx2<Q.x+Q.w&&wy2>=Q.y&&wy2<Q.y+Q.h) return Q.lift||24; }
+    for(q=0;q<ramps.length;q++){ var R=ramps[q];
+      if(wx2>=R.x&&wx2<R.x+R.w&&wy2>=R.y&&wy2<R.y+R.h){
+        // ramps climb along their long axis toward the platform they touch
+        var lift=24;
+        for(var w2=0;w2<plats.length;w2++){ var P2=plats[w2];
+          if(R.x<P2.x+P2.w&&R.x+R.w>P2.x&&R.y<P2.y+P2.h&&R.y+R.h>P2.y){ lift=P2.lift||24; break; } }
+        var f=(R.w>=R.h)?clamp((R.x+R.w-wx2)/R.w,0,1):clamp((R.y+R.h-wy2)/R.h,0,1);
+        return lift*f;
+      }
+    }
+    return 0;
   }
   // zone lookup is a rectangle test now, not a Voronoi
   var zdefs=def.zones;
@@ -1429,7 +1533,7 @@ function buildFixedMap(def){
   }
   return {fixed:def.id,name:def.name,walls:walls,segs:segs,buildings:buildings,water:water,
     cw:WORLD_W/8,ch:WORLD_H/8,cols:8,rows:8,
-    landmarks:landmarks,zones:zseeds,districtAt:districtAt,zoneAt:zoneAt,woods:woodsList,bigPairs:[],
+    landmarks:landmarks,zones:zseeds,districtAt:districtAt,zoneAt:zoneAt,woods:woodsList,bigPairs:[],plats:plats,ramps:ramps,platAt:platAt,liftAt:liftAt,
     spawns:def.spawns,extracts:def.extracts,nav:mapNav};
 }
 // SPEC 4.1: the procedural map generator that lived here is DELETED, along with
@@ -1562,6 +1666,34 @@ function bakeGround(map){
     c.strokeStyle='rgba(20,16,24,.5)'; c.lineWidth=1.4;
     for(var mr2=0;mr2<3;mr2++){
       c.beginPath(); c.ellipse(MH.x,MH.y-1.5,5+mr2*4,3.6+mr2*3,0,0,6.2832); c.stroke();
+    }
+  }
+  // SPEC 4.6: platform decks and ramps baked into the floor. A raised deck is a
+  // lighter surface with a hard contact shadow cast onto the ground below it and
+  // a bright lip along its near edge, which is what makes the height READ in a
+  // three quarter view rather than looking like a differently coloured floor.
+  for(i=0;i<(map.plats||[]).length;i++){
+    var PD=map.plats[i],lf=PD.lift||24;
+    c.fillStyle='rgba(18,14,22,.40)';
+    c.fillRect(PD.x+6,PD.y+lf*0.5,PD.w,PD.h);
+    c.fillStyle=isDay()?'#9a9384':'#2a2732';
+    c.fillRect(PD.x,PD.y,PD.w,PD.h);
+    c.fillStyle=isDay()?'#b3ab99':'#35313d';
+    c.fillRect(PD.x,PD.y,PD.w,4);
+    c.fillStyle='rgba(20,16,24,.35)';
+    c.fillRect(PD.x,PD.y+PD.h-5,PD.w,5);
+    c.fillStyle='rgba(255,246,220,.10)';
+    for(var gk=0;gk<PD.w;gk+=26) c.fillRect(PD.x+gk,PD.y+5,2,PD.h-11);
+  }
+  for(i=0;i<(map.ramps||[]).length;i++){
+    var RP=map.ramps[i];
+    c.fillStyle=isDay()?'#8f8878':'#252230';
+    c.fillRect(RP.x,RP.y,RP.w,RP.h);
+    c.fillStyle='rgba(255,246,220,.12)';
+    var horiz2=RP.w>=RP.h;
+    for(var sk=0;sk<(horiz2?RP.w:RP.h);sk+=12){
+      if(horiz2) c.fillRect(RP.x+sk,RP.y,2,RP.h);
+      else c.fillRect(RP.x,RP.y+sk,RP.w,2);
     }
   }
   // turf under the woods: layered organic blotches, darker at the rim
@@ -4999,7 +5131,7 @@ function render2D(dt){
     var e=G.ents[i];
     if(!e.seen) continue;
     if(e.x<ox-60||e.x>ox+VW+60||e.y<oy-80||e.y>oy+VH+80) continue;
-    DR.push({k:e.y,e:e});
+    DR.push({k:e.y-((G&&G.map&&G.map.liftAt)?G.map.liftAt(e.x,e.y)*0.5:0),e:e});
   }
   // His playtest, 2026-08-22: "i still don't understand why there are gold
   // circles everywhere, are they supposed to be lights?" Yes, and that question
@@ -5015,7 +5147,7 @@ function render2D(dt){
     if(LF.x<ox-40||LF.x>ox+VW+40||LF.y<oy-70||LF.y>oy+VH+70) continue;
     DR.push({k:LF.y,lm:LF});
   }
-  DR.push({k:p.y,pl:1});
+  DR.push({k:p.y-((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y)*0.5:0),pl:1});
   DR.sort(function(a,b){return a.k-b.k;});
   var crouchP=keys['ControlLeft']||keys['ControlRight'];
   // His run #3, v1.01: "character not rendering". He was moving and shooting
@@ -5107,13 +5239,21 @@ function render2D(dt){
     } else if(it.c){
       drawContS(it.c);
     } else if(it.pl){
+      // SPEC 4.6: standing on a deck lifts the sprite by that deck's height.
+      // The y-sort key was computed from the same lift, so a body on the
+      // catwalk sorts correctly against everything around and under it.
+      var pLift=((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y):0);
+      if(pLift>0){ wc.save(); wc.translate(0,-pLift); }
       var pmode=p.downed?'down':(p.roll>0?'roll':(crouchP?'crouch':''));
       drawOp(p.x,p.y,p.face,p.roll>0?(1-p.roll/.38)*12.6:p.bob,'#8fa3b5',
         clamp(bagWeight()/PACKCAP[P.pack],0,1),p.muzzle,(G.crowbarUp>0?'bar':pmode),p.iv,
         {moving:!!p.moving,sprint:!!G.sprinting,ads:!!p.ads,hurt:p.hitFlash,
          rl:(p.reloading>0&&p.wep.reload)?clamp(1-p.reloading/p.wep.reload,0,1):0});
+      if(pLift>0) wc.restore();
     } else {
       var e2=it.e;
+      var eLift=((G&&G.map&&G.map.liftAt)?G.map.liftAt(e2.x,e2.y):0);
+      if(eLift>0){ wc.save(); wc.translate(0,-eLift); }
       if(e2.kind==='warden') drawWardenS(e2);
       else if(e2.kind==='sentry') drawSentryS(e2);
       else if(e2.kind==='crawler') drawCrawlerS(e2);
@@ -5121,6 +5261,7 @@ function render2D(dt){
       else drawOp(e2.x,e2.y,e2.face,(e2.step||0)*4,e2.coat,
         clamp(e2.bag.length/7,0,1),e2.muzzle,'',0,
         {moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT});
+      if(eLift>0) wc.restore();
     }
     }catch(drErr){
       if(!G.drawErr){
@@ -6313,7 +6454,7 @@ function drawHubWorld(dt){
   for(i=0;i<HB.stations.length;i++) DR.push({k:HB.stations[i].y,s:HB.stations[i]});
   // No lamp fixtures here. The hub is a lit interior and HB has its own light
   // list; the raid's lamp pass reads G.lights and G is null on this screen.
-  DR.push({k:p.y,pl:1});
+  DR.push({k:p.y-((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y)*0.5:0),pl:1});
   DR.sort(function(a,b){return a.k-b.k;});
   for(i=0;i<DR.length;i++){
     var it=DR[i];
