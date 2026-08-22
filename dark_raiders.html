@@ -245,7 +245,11 @@
       </div>
     </div>
   </div>
-  <div style="display:flex;gap:8px;margin-top:11px">
+  <!-- Wraps rather than clipping. Six buttons on one nowrap row ran off the
+       edge below about 820px of window width and took TUNING with it, which is
+       the console he adjusts the whole game from, so it was unreachable in a
+       narrow window rather than merely cramped. -->
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:11px">
     <button class="deploy" id="backfloor" style="flex:1.6">&larr; BACK TO THE FLOOR</button>
     <button class="deploy ghost" id="deploy" style="flex:1">DEPLOY</button>
     <button class="deploy ghost" id="shopbtn" style="flex:1">REQUISITION</button>
@@ -274,7 +278,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.84';
+var VER='0.85';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
