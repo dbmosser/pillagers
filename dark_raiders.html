@@ -380,7 +380,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.41';
+var VER='1.42';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -2820,6 +2820,66 @@ function mkPeddler(x,y,map){
     state:'idle',tx:x,ty:y,cd:0,alert:0,spd:0,dmg:0,rng:0,cone:0,
     hitT:0,step:0,hailed:0,traded:0,goal:null,skips:[],goalT:0,goalD:0,extracting:0};
 }
+// ============================================================== THE STRAY
+// The second neutral. The Peddler is a business; the Stray is a person. He is
+// hurt, he is hiding, and he wants one specific thing. He is NOT marked on the
+// map until you find him, which is the difference: the Peddler is an errand you
+// can plan and the Stray is something you stumble into.
+// What he pays with is the interesting part. Not much money: he tells you where
+// an ARC CACHE is. That answers the loot complaint directly, because a cache is
+// pure high tier, and it means the reward for being decent to someone is a
+// reason to go somewhere you were not going.
+// And helping him takes a point of NOTORIETY off you, which is the only way to
+// clear it other than waiting. Shooting traders makes you a problem; pulling a
+// stranger out of a hole makes you less of one.
+var STRAY_WANTS=['medkit','bandage','plate','ammobox','medkit','bandage'];
+function mkStray(x,y){
+  return {kind:'stray',x:x,y:y,r:11,hp:70,maxhp:70,face:rnd(0,6.28),
+    coat:'#7a8a6a',name:'SURVIVOR',neutral:1,bag:[],stock:[],
+    want:pick(STRAY_WANTS),helped:0,found:0,askedT:0,
+    state:'idle',tx:x,ty:y,cd:0,alert:0,spd:0,dmg:0,rng:0,cone:0,
+    hitT:0,step:0,goal:null,skips:[],goalT:0,goalD:0,extracting:0};
+}
+// The payment: the nearest cache he knows about that you have not opened.
+function strayReveal(){
+  var best=null,bd=-1;
+  for(var i=0;i<G.containers.length;i++){
+    var c=G.containers[i];
+    if(!c.cache||c.opened||c.revealed) continue;
+    var d=dist(G.player,c);
+    if(d>bd){ bd=d; best=c; }        // the far one: a reason to go somewhere
+  }
+  return best;
+}
+function strayGive(e){
+  if(!G||G.sim||!e||e.helped) return;
+  var ix=G.bag.indexOf(e.want);
+  if(ix<0){ say('He needs a '+ITEMS[e.want].name.toLowerCase()+'. You have none.'); return; }
+  G.bag.splice(ix,1);
+  e.helped=1; e.want2=null;
+  blip('pick');
+  var c=strayReveal();
+  if(c){
+    c.revealed=1;
+    say('He tells you where a cache is. It is on your map.');
+    label(e.x,e.y-20,'CACHE MARKED','#e6b4ff',0,true);
+  } else {
+    say('He has nothing left to tell you, so he gives you what he has.');
+  }
+  // A little money, banked the way the Peddler banks it: he pays before you
+  // have earned the right to survive the trip.
+  var pay=ri(260,540);
+  P.credits+=pay;
+  G.strayPaid=(G.strayPaid||0)+pay;
+  if(G.tel) G.tel.strayHelped=(G.tel.strayHelped||0)+1;
+  if((P.notoriety||0)>0){
+    P.notoriety--;
+    say('Word of that will travel too. Notoriety '+P.notoriety+'.');
+  }
+  saveProfile();
+  emoteBubble(e.x,e.y,'nod','#7fc4a0',2.0);
+  label(e.x,e.y-34,'+'+pay+'c','#ffc04a',0.35,false);
+}
 function pedSellAll(){
   if(!G||!G.trade) return;
   var i,tot=0,n=0,kept=[];
@@ -3119,6 +3179,23 @@ function buildRaid(sim){
     }
     if(!psp) psp=freeSpot(map,32);
     ents.push(mkPeddler(psp.x,psp.y,map));
+    // The Stray hides INSIDE something, well away from the drop and away from
+    // the Peddler, so finding him is a consequence of searching rather than of
+    // walking the obvious route.
+    var ssp=null;
+    for(var st=0;st<220&&!ssp;st++){
+      var B=map.buildings[ri(0,map.buildings.length-1)];
+      var cand=spotIn(map,B,20);
+      if(!cand) continue;
+      if(dist(cand,start)<900) continue;
+      if(dist(cand,psp)<700) continue;
+      ssp=cand;
+    }
+    if(!ssp) for(var st2=0;st2<160&&!ssp;st2++){
+      var c2=freeSpot(map,26);
+      if(dist(c2,start)>1100&&dist(c2,psp)>700) ssp=c2;
+    }
+    if(ssp) ents.push(mkStray(ssp.x,ssp.y));
   }
   for(var gc=0;gc<camps.length;gc++){
     var CP=camps[gc];
@@ -4399,6 +4476,16 @@ function updatePlayer(dt){
     var PE=G.ents[pe];
     if(PE.kind==='peddler'&&dist(p,PE)<74){ ped=PE; break; }
   }
+  // The Stray takes the same key as everything else, and a crate underfoot does
+  // not steal it: he is checked first because he is the rarer thing.
+  var stray=null;
+  for(var sq=0;sq<G.ents.length;sq++){
+    var SE=G.ents[sq];
+    if(SE.kind==='stray'&&!SE.helped&&dist(p,SE)<70){ stray=SE; break; }
+  }
+  G.nearStray=stray;
+  if(stray&&keys['KeyE']&&!G.strayLock){ G.strayLock=1; strayGive(stray); }
+  if(!keys['KeyE']) G.strayLock=0;
   G.nearPed=ped;
   if(G.trade&&(!ped||p.downed||G.trade.hp<=0)) G.trade=null;
   if(ped&&!G.trade&&keys['KeyE']&&!G.pedLock){
@@ -4831,6 +4918,19 @@ function updateEnts(dt){
       // standing over stock and he cannot shoot back. The price is NOTORIETY.
       // It is permanent, it closes every stall to you at two, and it makes every
       // mercenary charge more for the risk of standing next to you.
+      if(e.kind==='stray'){
+        var sdrop=[e.want,pick(['cell','wire','scrap']),pick(['board','comp'])];
+        var csd=setLoot(mkContainer(e.x,e.y,'body'),sdrop);
+        csd.time=1.0; G.containers.push(csd);
+        if(!G.sim){
+          P.notoriety=(P.notoriety||0)+1; saveProfile();
+          if(G.tel) G.tel.strayKilled=1;
+          say('He was not armed. Notoriety '+P.notoriety+'.');
+          label(e.x,e.y-18,'NOTORIETY +'+P.notoriety,'#ff6b5a',0,true);
+        }
+        decal(e.x,e.y,'#6e1c15',rnd(16,26));
+        G.ents.splice(i,1); continue;
+      }
       if(e.kind==='peddler'){
         var pdrop=[];
         for(var ps=0;ps<e.stock.length;ps++) if(!e.stock[ps].sold) pdrop.push(e.stock[ps].k);
@@ -4899,6 +4999,24 @@ function updateEnts(dt){
     // The Peddler runs no AI whatsoever. He holds his ground, turns to face you,
     // and hails you once when you are near enough to deal. Nothing else about
     // him ticks, which is exactly why he can never become a movement bug.
+    if(e.kind==='stray'){
+      var sdd=dist(e,p);
+      if(sdd<300) e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.2*dt,2.2*dt);
+      if(!e.found&&sdd<190&&!G.sim&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)){
+        e.found=1;
+        say(e.helped?'The survivor is still there.'
+          :('Someone is hiding in here. He needs a '+ITEMS[e.want].name.toLowerCase()+'.'));
+        if(!e.helped) label(e.x,e.y-20,'NEEDS: '+ITEMS[e.want].name.toUpperCase(),'#7fc4a0',0,true);
+        blip('pick',260);
+      }
+      // He asks again, quietly, while you are standing over him.
+      e.askedT=Math.max(0,(e.askedT||0)-dt);
+      if(e.found&&!e.helped&&sdd<80&&e.askedT<=0&&!G.sim){
+        e.askedT=6;
+        emoteBubble(e.x,e.y,'think','#7fc4a0',1.8);
+      }
+      continue;
+    }
     if(e.kind==='peddler'){
       var pdd=dist(e,p);
       if(pdd<440) e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.4*dt,2.4*dt);
@@ -5529,6 +5647,9 @@ function endRaid(how){
         '. '+Math.min(cap,(P.sp||0)+gained).toLocaleString()+' of '+cap.toLocaleString()+'.</span>');
     }
   })();
+  if(G.strayPaid){
+    lines.push('<span style="color:var(--coolant)">The survivor paid you '+G.strayPaid.toLocaleString()+'c, already banked.</span>');
+  }
   if(G.pedSold){
     lines.push('<span style="color:var(--coolant)">Sold at the stall for '+G.pedSold.toLocaleString()+'c, already banked.</span>');
   }
@@ -6628,6 +6749,20 @@ function render2D(dt){
       else if(e2.kind==='crawler') drawCrawlerS(e2);
       else if(e2.kind==='snitch') drawSnitchS(e2);
       else if(e2.kind==='peddler') drawPeddlerS(e2);
+      else if(e2.kind==='stray'){
+        // Crouched and drab. He is not posed like anything else on the map,
+        // which is most of what tells you he is not a threat.
+        drawOp(e2.x,e2.y,e2.face,0,e2.coat,0,0,'crouch',0,
+          {moving:false,sprint:false,ads:false,hurt:e2.hitT,bulk:0});
+        if(!e2.helped){
+          var sp2=0.6+0.4*Math.sin(G.t*2.4+e2.x*0.01);
+          wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.30*sp2;
+          var sgr=wc.createRadialGradient(e2.x,e2.y-14,2,e2.x,e2.y-14,40);
+          sgr.addColorStop(0,'#7fc4a0'); sgr.addColorStop(1,'rgba(0,0,0,0)');
+          wc.fillStyle=sgr; wc.beginPath(); wc.arc(e2.x,e2.y-14,40,0,6.2832); wc.fill();
+          wc.restore();
+        }
+      }
       // SPEC 8.7: the openings have to be VISIBLE or they are a secret, and a
       // secret is not a tactic. Drawn on top of the body, pulsing, in their own
       // colour: hot orange for the vent, cold blue for the optic. They ride the
@@ -6671,7 +6806,8 @@ function render2D(dt){
     var lift=spriteTop(ne)+8;
     var hostile=ne.kind==='raider';
     // a raider bolting for the beacon is worth calling out: it is a race now
-    if(ne.kind==='raider'&&ne.friendlyPC) ne._plateTag=' [FRIENDLY]';
+    if(ne.kind==='stray') ne._plateTag=ne.helped?' [SAFE]':('  NEEDS '+ITEMS[ne.want].name.toUpperCase());
+    else if(ne.kind==='raider'&&ne.friendlyPC) ne._plateTag=' [FRIENDLY]';
     else if(ne.kind==='raider'&&ne.parley>0&&ne.hostile) ne._plateTag=' [LISTENING]';
     else ne._plateTag='';
     var plate=ne.kind==='peddler'
@@ -6686,6 +6822,7 @@ function render2D(dt){
     wc.fillRect(ne.x-tw/2-4,ne.y-lift-ph2+3,tw+8,ph2);
     // SPEC 8.4: a visible hostility indicator per raider, so the situation is
     // readable before you commit. Grudge red, passive green, everyone else dim.
+    if(ne.kind==='stray'){ wc.fillStyle=ne.helped?'#5a9a6a':'#7fc4a0'; } else
     if(ne.kind==='peddler'){ wc.fillStyle=pedOpen()?'#ffc04a':'#8a5a4a'; } else
     wc.fillStyle=ne.state==='extract'?'#35d6c8'
       :(ne.kind==='raider'&&ne.grudge?'#ff3b30'
@@ -7794,6 +7931,30 @@ function drawMapOverlay(){
     ctx.fillText(LM2.name,ox+(LM2.x+LM2.w/2)*sc,oy+(LM2.y+LM2.h/2)*sc+3);
     ctx.textAlign='left';
   }
+  // A cache the Stray told you about. This is his whole payment, so it is drawn
+  // large and named: without it, being decent to him buys nothing you can see.
+  for(i=0;i<G.containers.length;i++){
+    var rc=G.containers[i];
+    if(!rc.revealed||rc.opened) continue;
+    var rmx=ox+rc.x*sc,rmy=oy+rc.y*sc;
+    ctx.strokeStyle='#e6b4ff'; ctx.lineWidth=1.6;
+    ctx.beginPath(); ctx.arc(rmx,rmy,8,0,6.2832); ctx.stroke();
+    ctx.fillStyle='#e6b4ff';
+    ctx.beginPath(); ctx.arc(rmx,rmy,3.4,0,6.2832); ctx.fill();
+    ctx.textAlign='center'; ctx.font=FS('700 9px "Titan One","Rubik",sans-serif');
+    ctx.fillText('CACHE',rmx,rmy-12); ctx.textAlign='left';
+  }
+  // The survivor, but only once you have actually found him. He is hiding.
+  for(i=0;i<G.ents.length;i++){
+    var sm=G.ents[i];
+    if(sm.kind!=='stray'||!sm.found) continue;
+    var smx=ox+sm.x*sc,smy=oy+sm.y*sc;
+    ctx.fillStyle='#120e0c'; ctx.beginPath(); ctx.arc(smx,smy,6,0,6.2832); ctx.fill();
+    ctx.fillStyle=sm.helped?'#5a9a6a':'#7fc4a0';
+    ctx.beginPath(); ctx.arc(smx,smy,4,0,6.2832); ctx.fill();
+    ctx.textAlign='center'; ctx.font=FS('700 9px "Titan One","Rubik",sans-serif');
+    ctx.fillText(sm.helped?'SURVIVOR':'SURVIVOR (NEEDS)',smx,smy-11); ctx.textAlign='left';
+  }
   // The Peddler is marked. Half your bag is worth walking to him for, and a
   // trade you never found is not a decision, it is a secret.
   for(i=0;i<G.ents.length;i++){
@@ -8330,8 +8491,8 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','A survivor out there who needs something, and pays if you bring it'],
-  ['NEXT','Losing a raid should hurt more: a body you can go back for'],
+  ['NOW','Losing a raid should hurt more: a body you can go back for'],
+  ['DONE','The Stray: a survivor who tells you where a cache is'],
   ['NEXT','A fourth machine, built to be frightening rather than tough'],
   ['NEXT','Loot that can spike, so a run can pay out of all proportion'],
   ['LATER','Weather that turns while you are still out there'],
