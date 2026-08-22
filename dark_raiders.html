@@ -205,6 +205,17 @@
   </div>
 </div>
 
+<div class="modal" id="termsmodal">
+  <h3>The Terms</h3>
+  <div class="msub">Sign for worse conditions and ARC pays better. Every one of these is a real handicap, it applies the moment you deploy, and the bonus is paid only if you walk out. Die under your own terms and you have simply made a bad day worse.</div>
+  <div class="plist" id="termslist" style="border:1px solid var(--steel-hi)"></div>
+  <div id="termstotal" style="margin-top:10px;font-weight:700"></div>
+  <div style="display:flex;gap:8px;margin-top:10px">
+    <button id="termsclear" style="padding:8px 20px">Sign nothing</button>
+    <button id="closeterms" style="padding:8px 20px">Leave</button>
+  </div>
+</div>
+
 <div class="modal" id="seasonmodal">
   <h3 id="seasonhead">Season 1</h3>
   <div class="msub">Ten tiers. Every raid feeds it, and a raid you die on still pays half, because a run you learned something from is not worth nothing. Finish the track and the world moves up a tier: loot is worth more and everything out there is harder.</div>
@@ -380,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.47';
+var VER='1.48';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -3095,7 +3106,8 @@ function listenersHearInner(x,y,s,fromPlayer){
     var e=G.ents[i];
     if(e.kind!=='listener') continue;
     var d=dist(e,{x:x,y:y});
-    if(d>Math.min(s*1.35,LISTEN_R)) continue;
+    var reach=LISTEN_R*(hasTerm('silence')?1.5:1);
+    if(d>Math.min(s*1.35*(hasTerm('silence')?1.5:1),reach)) continue;
     e.heardX=x; e.heardY=y;
     e.millT=0;
     if(e.state==='dormant'){
@@ -3461,7 +3473,10 @@ function buildRaid(sim){
     }
   }
   var lights=[];
-  if(!sim){
+  // BLACKOUT PROTOCOL. Not dimmer lamps: no lamps. The term is the whole
+  // difference between a lit street and a dark one.
+  if(!sim&&!hasTerm('blackout'))
+  {
     for(i=0;i<map.buildings.length;i++){
       var bb=map.buildings[i],D=DISTRICTS[bb.d];
       for(var q=0;q<ri(1,2);q++){
@@ -3502,6 +3517,8 @@ function buildRaid(sim){
   // (buried comes out at 1.02) and any new map inherits the dam's density. The
   // difference between maps stays what it should be, which is their SHAPE.
   var den=clamp(AREA/4.0,0.45,1.6);
+  // HEAVY PATROLS is the one term that changes the map rather than the rules.
+  if(!sim&&hasTerm('patrols')) den*=1.40;
   function nOf(n){ return n<=0?0:Math.max(1,Math.round(n*den)); }
   var N_SENTRY=nOf(CFG.nSentry),N_CRAWLER=nOf(CFG.nCrawler),
       N_SNITCH=nOf(CFG.nSnitch),N_RAIDER=nOf(CFG.nRaider);
@@ -3510,14 +3527,18 @@ function buildRaid(sim){
   for(i=0;i<N_SNITCH;i++){ var s4=far(freeSpot(map,26),720); ents.push(mkSnitch(s4.x,s4.y)); }
   // Two per map at the reference size. Any more and the map stops having quiet
   // in it, which is the thing they exist to threaten.
-  var N_LISTEN=nOf(2);
+  var N_LISTEN=nOf(2)+((!sim&&hasTerm('silence'))?1:0);
   for(i=0;i<N_LISTEN;i++){ var s5=far(freeSpot(map,26),1000); ents.push(mkListener(s5.x,s5.y)); }
   // Each raid draws distinct identities, so you never meet two of the same name.
   var idPool=IDENTITIES.slice();
   for(var ip=idPool.length-1;ip>0;ip--){ var jp=ri(0,ip),tp=idPool[ip]; idPool[ip]=idPool[jp]; idPool[jp]=tp; }
   for(i=0;i<N_RAIDER;i++){
     var s3=far(freeSpot(map,30),1190);
-    ents.push(mkRaider(s3.x,s3.y,idPool[i%idPool.length]));
+    var R3=mkRaider(s3.x,s3.y,idPool[i%idPool.length]);
+    // THEY KNOW YOU. No passive raiders, no parley grace, everyone already
+    // looking. It removes an entire tool from your hands for the whole run.
+    if(!sim&&hasTerm('known')){ R3.hostile=true; R3.alert=2.5; R3.grudge=true; }
+    ents.push(R3);
   }
   var sw=far(freeSpot(map,44),1400); ents.push(mkWarden(sw.x,sw.y));
   // SPEC 3.5: the hired mercenary drops in with you. He is a normal raider in
@@ -3634,7 +3655,8 @@ function buildRaid(sim){
       containers.push(bc);
     }
   }
-  var g={sim:!!sim,nMach:N_SENTRY+N_CRAWLER,map:map,ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:CFG.raidSec,paused:false,
+  var termClock=(!sim&&hasTerm('window'))?0.66:1;
+  var g={sim:!!sim,nMach:N_SENTRY+N_CRAWLER,map:map,ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:Math.round(CFG.raidSec*termClock),paused:false,
     player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,
       // The sim wears a FIXED Scav Rig rather than whatever he happens to have
       // equipped. Raiders now carry armour, so a bare sim player was measuring a
@@ -5967,6 +5989,40 @@ var pendingRun=null,selTags=[];
 // No stat inflation anywhere: power comes from gear and competence, and these
 // are prestige only. Experience counts time invested; Extraction Proficiency
 // weighs how much value you actually get OUT, so dying loaded hurts it.
+// ================================================================ THE TERMS
+// He tagged extraction as TOO EASY, and the honest response to that is not for
+// me to quietly turn the difficulty up: it is to let him turn it up himself and
+// be paid for it. That is also the cleanest possible expression of the pillar,
+// because every one of these is a straight trade of safety for money that you
+// make BEFORE you know how the raid is going to go.
+// The bonus is paid only on extraction. Signing for worse conditions and then
+// dying under them is just a worse day, which is what makes it a bet.
+var TERMS=[
+  {id:'blackout',name:'BLACKOUT PROTOCOL',pay:0.25,
+   desc:'Every lamp on the map stays dark.'},
+  {id:'patrols', name:'HEAVY PATROLS',pay:0.30,
+   desc:'Forty percent more machines out there.'},
+  {id:'window',  name:'SHORT WINDOW',pay:0.25,
+   desc:'The dropship leaves on a clock cut by a third.'},
+  {id:'pockets', name:'NO SAFE POCKET',pay:0.35,
+   desc:'Nothing is saved if you die. Not one item.'},
+  {id:'known',   name:'THEY KNOW YOU',pay:0.30,
+   desc:'Every raider out there is hostile and already looking.'},
+  {id:'silence', name:'SILENT RUNNING',pay:0.30,
+   desc:'One more Listener, and they all hear half again as far.'}
+];
+function termsOn(){ if(!Array.isArray(P.terms)) P.terms=[]; return P.terms; }
+function hasTerm(id){ return termsOn().indexOf(id)>=0; }
+function termsPay(){
+  var m=0,t=termsOn();
+  for(var i=0;i<TERMS.length;i++) if(t.indexOf(TERMS[i].id)>=0) m+=TERMS[i].pay;
+  return m;
+}
+function toggleTerm(id){
+  var t=termsOn(),ix=t.indexOf(id);
+  if(ix>=0) t.splice(ix,1); else t.push(id);
+  saveProfile();
+}
 // ================================================================ the season
 // He named SEASONS OR TIERS as the structure he wants, and the game had no
 // spine at all: every raid was worth exactly the same as the one before it and
@@ -5995,6 +6051,7 @@ function seasonLoot(){ return 1+0.08*worldTier(); }
 function seasonHp(){ return 1+0.06*worldTier(); }
 function spForRun(rec){
   var sp=0,K=rec.kills||{};
+  var tmul=1+((rec.outcome==='extract')?(rec.termPay||0):0);
   if(rec.outcome==='extract') sp+=90;
   sp+=Math.round(((rec.haul||0)/1000)*35);
   sp+=(rec.containers||0)*3;
@@ -6003,6 +6060,7 @@ function spForRun(rec){
   sp+=(rec.caches||0)*15;
   // A raid you died on still pays half. Losing should hurt in gear and credits,
   // which it already does, not by erasing the fact that the run happened.
+  sp=Math.round(sp*tmul);
   if(rec.outcome==='dead') sp=Math.round(sp*0.5);
   else if(rec.outcome==='abandon') sp=Math.round(sp*0.25);
   return Math.max(0,sp);
@@ -6144,7 +6202,7 @@ function endRaid(how){
   // Say what the run bought you on the long track, win or lose. A season you
   // cannot see moving is not a season.
   (function(){
-    var gained=spForRun({outcome:how,haul:haul,containers:T.containers,kills:T.kills,
+    var gained=spForRun({outcome:how,haul:haul,containers:T.containers,kills:T.kills,termPay:tPay,
       doorsOpened:T.doorsOpened||0,caches:T.cachesOpened||0});
     if(gained>0){
       var cap=SEASON_TIERS[SEASON_TIERS.length-1].sp;
@@ -6172,6 +6230,21 @@ function endRaid(how){
     P.rig=(P.rigs.length?P.rigs[P.rigs.length-1]:'none');
     lines.push('<span style="color:var(--rust)">'+lostRig.name+' is gone.'+
       (P.rig==='none'?' You walk out of here in a shirt.':(' Falling back to the '+myRig().name+'.'))+'</span>');
+  }
+  // HAZARD PAY. Only on an extraction: signing for worse conditions and then
+  // dying under them is simply a worse day, which is what makes it a bet rather
+  // than a difficulty slider.
+  var tPay=termsPay();
+  if(how==='extract'&&tPay>0){
+    var bonus=Math.round(haul*tPay);
+    P.credits+=bonus;
+    var tn=[];
+    for(var tq=0;tq<TERMS.length;tq++) if(hasTerm(TERMS[tq].id)) tn.push(TERMS[tq].name);
+    lines.push('<span style="color:var(--amber)">Hazard pay +'+Math.round(tPay*100)+
+      '%: '+bonus.toLocaleString()+'c for '+tn.join(', ')+'.</span>');
+  } else if(how==='dead'&&tPay>0){
+    lines.push('<span style="color:var(--rust)">You signed for '+Math.round(tPay*100)+
+      '% and did not come back for it.</span>');
   }
   if(how==='extract'){
     P.ext++;
@@ -6212,7 +6285,7 @@ function endRaid(how){
     var saved=[],idx=[],j;
     for(i=0;i<G.bag.length;i++) idx.push(i);
     idx.sort(function(a,b){ return ival(G.bag[b])-ival(G.bag[a]); });
-    var nSafe=Math.min(Math.round(CFG.safeSlots),idx.length);
+    var nSafe=hasTerm('pockets')?0:Math.min(Math.round(CFG.safeSlots),idx.length);
     for(j=0;j<nSafe;j++){ saved.push(G.bag[idx[j]]); bankItem(G.bag[idx[j]]); }
     var savedVal=0;
     for(j=0;j<saved.length;j++) savedVal+=ival(saved[j]);
@@ -6268,7 +6341,7 @@ function endRaid(how){
     Math.round(CFG.raidSec-G.timeLeft)+'s on surface</span>');
 
   pendingRun={
-    n:P.runs,outcome:how,weapon:T.weapon,preset:CFG.preset||'custom',
+    n:P.runs,outcome:how,weapon:T.weapon,preset:CFG.preset||'custom',termPay:tPay,terms:termsOn().slice(),
     drawErr:T.drawErr||null,
     wx:(G.wx&&G.wx.id)||'clear',wxTurns:G.wxTurned||0,tod:(G.tod&&G.tod.id)||'noon',
     caches:T.cachesOpened||0,windfalls:T.windfalls||0,strongbox:T.strongbox||0,campSafes:T.campSafes||0,wardenMet:T.wardenMet||0,doorsOpened:T.doorsOpened||0,
@@ -7976,6 +8049,16 @@ function drawHUD(){
   // 280x18 with the number inside the bar itself where your eye already is,
   // and armour and stamina scaled with it.
   var by=H-34;
+  // What you signed for, on screen the whole time. A handicap you have
+  // forgotten about reads as the game being broken.
+  (function(){
+    var tp=termsPay(); if(tp<=0) return;
+    ctx.font=FS('700 11px "Titan One","Rubik",sans-serif');
+    var lab='TERMS  +'+Math.round(tp*100)+'%';
+    var tw3=ctx.measureText(lab).width;
+    ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(W-tw3-30,48,tw3+16,LH(20));
+    ctx.fillStyle='#ffc04a'; ctx.fillText(lab,W-tw3-22,48+LH(14));
+  })();
   // A hiding mechanic you cannot tell is working is just an inconsistent enemy.
   if(G.pBush){
     var cc=G.pConceal===undefined?1:G.pConceal;
@@ -8727,6 +8810,8 @@ function buildHub(){
      act:function(){ renderCrate(); document.getElementById('cratemodal').classList.add('on'); }},
     {id:'term',x:350,y:365,r:46,label:'OPERATOR TERMINAL',sub:'stash, loadout, contracts, recorder',c:'#5aa9e6',
      act:function(){ renderHub(); document.getElementById('hub').classList.add('on'); }},
+    {id:'terms',x:200,y:180,r:42,label:'THE TERMS',sub:'sign for worse odds, better pay',c:'#ffb02e',vendor:1,
+     act:function(){ renderTerms(); document.getElementById('termsmodal').classList.add('on'); }},
     {id:'season',x:140,y:390,r:44,label:'SEASON BOARD',sub:'the long track, and what is coming',c:'#ffd76a',vendor:1,
      act:function(){ renderSeason(); document.getElementById('seasonmodal').classList.add('on'); }},
     {id:'tune',x:560,y:390,r:40,label:'TUNING CONSOLE',sub:'sliders and bot sim',c:'#d08ce8',
@@ -9122,14 +9207,15 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','A raid modifier you opt into for better pay'],
+  ['NOW','Two raiders, one raid'],
+  ['NEXT','Machines that work together instead of one at a time'],
+  ['DONE','THE TERMS: sign for worse odds and ARC pays better'],
   ['DONE','Machine voices: tell a Sentry from a Crawler with your eyes shut'],
   ['DONE','Weather that turns while you are still out there'],
   ['DONE','Windfalls and the ARC Strongbox: greed sets the odds'],
   ['DONE','THE LISTENER: blind, dormant, and it hunts the noise you make'],
   ['DONE','Your body stays where you fell, and you can go back for it'],
   ['DONE','The Stray: a survivor who tells you where a cache is'],
-  ['LATER','Two raiders, one raid'],
   ['DONE','Scopes that extend what you can SEE, not just what you can hit'],
   ['DONE','Weak points: the vent is on its back, so you have to flank'],
   ['DONE','Armour in three tiers, readable on the silhouette'],
@@ -9221,6 +9307,30 @@ function mercCost(id){
   // hire per point of notoriety, and it compounds with a bad reputation.
   var risk=1+0.15*(P.notoriety||0);
   return Math.round(MERC_BASE*(1-disc)*risk);
+}
+function renderTerms(){
+  var el=document.getElementById('termslist'); el.innerHTML='';
+  TERMS.forEach(function(T){
+    var on=hasTerm(T.id);
+    var row=document.createElement('div'); row.className='row';
+    var nm=document.createElement('div'); nm.className='nm';
+    nm.innerHTML=T.name+'<div style="font-size:10px;color:var(--ash);font-weight:400">'+T.desc+'</div>';
+    if(!on) nm.style.color='var(--ash)';
+    var vl=document.createElement('div'); vl.className='vl';
+    vl.textContent='+'+Math.round(T.pay*100)+'%';
+    vl.style.color=on?'#ffc04a':'var(--ash)';
+    var b=document.createElement('button');
+    b.textContent=on?'Signed':'Sign';
+    if(on){ b.style.borderColor='#ffc04a'; b.style.color='#ffc04a'; }
+    b.onclick=function(){ toggleTerm(T.id); renderTerms(); renderHub(); };
+    row.appendChild(nm); row.appendChild(vl); row.appendChild(b);
+    el.appendChild(row);
+  });
+  var tp=termsPay();
+  var tt=document.getElementById('termstotal');
+  tt.innerHTML=tp>0
+    ? '<span style="color:#ffc04a">Hazard pay +'+Math.round(tp*100)+'% on anything you carry out.</span>'
+    : '<span style="color:var(--ash)">Nothing signed. Standard terms, standard pay.</span>';
 }
 function renderSeason(){
   var head=document.getElementById('seasonhead');
@@ -9640,6 +9750,12 @@ document.getElementById('sellall').onclick=function(){
 document.getElementById('shopbtn').onclick=function(){ renderShop(); document.getElementById('shopmodal').classList.add('on'); };
 document.getElementById('mercclear').onclick=function(){
   P.merc=null; saveProfile(); renderMerc(); renderHub();
+};
+document.getElementById('closeterms').onclick=function(){
+  document.getElementById('termsmodal').classList.remove('on');
+};
+document.getElementById('termsclear').onclick=function(){
+  P.terms=[]; saveProfile(); renderTerms(); renderHub();
 };
 document.getElementById('closeseason').onclick=function(){
   document.getElementById('seasonmodal').classList.remove('on');

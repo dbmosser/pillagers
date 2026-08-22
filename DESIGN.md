@@ -711,6 +711,21 @@ Three things, none of which should be built without him saying so.
   - Verified: all five voices build their audio graphs without throwing in both idle and hunting forms, the scheduler runs twenty seconds of ticks clean, nothing in earshot produces exactly zero, and frames and HUD are clean.
   - Sim 14 raids: 50 percent extract, 0 hangs, average haul 3,677. Audio does not run in the sim, so this only confirms nothing broke.
   - Browser parse substituted for `node --check`. **What I cannot verify remains the whole point: I have no ears.** Everything measurable says the right voice fires at the right time, at the right rate, from the right place, and stops when it should. Whether a Sentry actually SOUNDS like a Sentry, and whether five machines in a street read as five distinguishable things or as mush, is entirely his to judge. If any one of them is annoying rather than informative, name it and I will rebuild that voice alone.
+- **v1.48 (THE TERMS, so he can turn the difficulty up himself and get paid for it):** He tagged extraction as TOO EASY. The honest response to that is not for me to quietly raise the numbers, it is to hand him the dial and pay him for using it. It is also the cleanest possible statement of the pillar: a straight trade of safety for money, made BEFORE you know how the raid is going to go.
+  - **A new station in the Undercroft.** Six terms, sign as many as you like, and the hazard pay adds up to +175 percent at full stack.
+    - **BLACKOUT PROTOCOL +25%:** every lamp on the map stays dark. Not dimmer, gone: verified, 149 lamps to 0.
+    - **HEAVY PATROLS +30%:** verified, 60 bodies on the map to 80.
+    - **SHORT WINDOW +25%:** verified, the raid clock drops from 600 seconds to 396.
+    - **NO SAFE POCKET +35%:** nothing is saved when you die. Verified, the "Safe pocket held" line disappears entirely.
+    - **THEY KNOW YOU +30%:** every raider hostile and already looking. Verified. This one removes a whole tool from your hands, because there is no parley with someone who has already decided.
+    - **SILENT RUNNING +30%:** an extra Listener, and every Listener hears half again as far.
+  - **The bonus is paid only if you walk out.** Signing for worse conditions and then dying under them is simply a worse day, and the summary says so: "You signed for 55 percent and did not come back for it." Verified both ways: a 4,000 credit haul under +55 percent paid exactly 2,200 on the extraction and nothing at all on the death.
+  - Season progress rides the same multiplier, because the work genuinely was harder.
+  - **What you signed is on screen for the whole raid**, top right, because a handicap you have forgotten about does not read as a handicap, it reads as the game being broken.
+  - **A layout defect caught by probing rather than by looking.** Adding the station pushed the Tuning Console to y=470 in a hub that is 470 tall, sinking half of it into the back wall where it may not have been reachable at all. Every station is now checked for bounds and for overlap: zero of each.
+  - Sim 13 raids at standard terms: 38 percent extract, 0 hangs, average haul 2,838. The sim never signs anything, and it was checked that no term can leak into it.
+  - Browser parse substituted for `node --check`. **Not verified: whether the prices are right.** +35 percent for losing the safe pocket is a guess, and so is the rest of the sheet. The one number I would watch is HEAVY PATROLS, because a third more machines may be worth much more than 30 percent, and if one term is obviously the best buy then the sheet is doing nothing.
+
 
 
 
