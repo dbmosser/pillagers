@@ -343,7 +343,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.33';
+var VER='1.34';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -433,6 +433,8 @@ var ITEMS={
   key_dam_vault:{name:'Substation Vault Key',val:700,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'dam_vault'},
   key_bc_cellar:{name:'Sealed Cellar Key',val:600,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'bc_cellar'},
   key_bc_depot:{name:'Garage Depot Key',val:700,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'bc_depot'},
+  key_cs_freezer:{name:'Blast Freezer Key',val:700,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'cs_freezer'},
+  key_cs_office:{name:'Foreman Office Key',val:600,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'cs_office'},
   codex:{name:'Sealed Codex',val:2200,wt:2,r:'elite',c:'#d89cff'},
   bloom:{name:'Bloom Sample',val:3100,wt:2,r:'elite',c:'#ff9ce8'},
   relay:{name:'Orbital Relay',val:1700,wt:4,r:'elite',c:'#c090ff'},
@@ -1589,6 +1591,110 @@ var FIXED_MAPS=[
   extracts:[
     {x:2300,y:2300}, {x:640, y:4260}, {x:4260,y:640}
   ]
+},
+// ============================================================ COLD STORAGE
+// His top complaint, in his own words, is that the maps feel SAMEY, and with
+// two of them he was right by arithmetic before anything else. This third one
+// is authored against both of the others rather than beside them.
+//   DAM BATTLEGROUNDS is wide horizontal bands split by one long barrier.
+//   BURIED CITY is a symmetrical ring around one enormous open courtyard.
+//   COLD STORAGE has no open ground at all.
+// It is a packing plant: 4200 by 3400, about a third smaller than either of the
+// others, and every part of it is built to cut sight lines. Rows of racking on
+// the packing floor with the aisle gap staggered every row, so you can see down
+// exactly one aisle and never across them. Nine freezer units in a tight three
+// by three grid with eighty unit alleys. Container rows on the scrap line. The
+// enemy counts do not scale with area, so a smaller map is a denser one: you
+// meet things constantly and you almost never see them coming. That is the
+// answer to TENSE AND FRIGHTENING that geometry can give.
+{
+  id:'cold', name:'COLD STORAGE', w:4200, h:3400,
+  zones:[
+    {name:'THE LONG DOCK', d:0, x:0,    y:0,    w:4200, h:800 },
+    {name:'PACKING FLOOR', d:1, x:0,    y:800,  w:2400, h:1600},
+    {name:'CHILL ROW',     d:3, x:2400, y:800,  w:1800, h:1600},
+    {name:'THE SUMP',      d:2, x:0,    y:2400, w:2100, h:1000},
+    {name:'SCRAP LINE',    d:0, x:2100, y:2400, w:2100, h:1000}
+  ],
+  water:[
+    {x:260, y:2760, w:720, h:440}                  // the sump pond
+  ],
+  walls:[
+    // The dock barrier: the plant is fenced off from the loading strip with
+    // three gates, so crossing out of the docks is a decision and an ambush
+    // point rather than a smooth transition.
+    {x:120, y:740, w:820, h:56,d:0}, {x:1120,y:740, w:900, h:56,d:0},
+    {x:2200,y:740, w:820, h:56,d:0}, {x:3200,y:740, w:880, h:56,d:0},
+    // RACKING. Fourteen rows, seven aisles, and the gap in each row is offset
+    // from the one above it, which is the whole trick: a straight run through
+    // the floor does not exist, and standing in an aisle tells you nothing
+    // about the next one.
+    {x:1100,y:980, w:640,h:38,d:1}, {x:1880,y:980, w:440,h:38,d:1},
+    {x:1100,y:1180,w:360,h:38,d:1}, {x:1600,y:1180,w:720,h:38,d:1},
+    {x:1100,y:1380,w:780,h:38,d:1}, {x:2020,y:1380,w:300,h:38,d:1},
+    {x:1100,y:1580,w:300,h:38,d:1}, {x:1540,y:1580,w:780,h:38,d:1},
+    {x:1100,y:1780,w:700,h:38,d:1}, {x:1940,y:1780,w:380,h:38,d:1},
+    {x:1100,y:1980,w:420,h:38,d:1}, {x:1660,y:1980,w:660,h:38,d:1},
+    {x:1100,y:2180,w:820,h:38,d:1}, {x:2060,y:2180,w:260,h:38,d:1},
+    // Container rows on the scrap line: the same idea outdoors and heavier.
+    {x:2240,y:2900,w:700, h:44,d:0}, {x:3120,y:2900,w:900, h:44,d:0},
+    {x:2240,y:3080,w:1000,h:44,d:0}, {x:3420,y:3080,w:600, h:44,d:0},
+    {x:2240,y:3260,w:520, h:44,d:0}, {x:2940,y:3260,w:1080,h:44,d:0}
+  ],
+  buildings:[
+    // THE LONG DOCK: six bays along the top, every one a different interior.
+    {x:180, y:150, w:520,h:420,d:0,plan:'cells'},
+    {x:780, y:150, w:520,h:420,d:0,plan:'spine'},
+    {x:1380,y:150, w:520,h:420,d:0,plan:'lsplit'},
+    {x:1980,y:150, w:520,h:420,d:0,plan:'core'},
+    {x:2580,y:150, w:520,h:420,d:0,plan:'cells'},
+    {x:3180,y:150, w:520,h:420,d:0,plan:'spine'},
+    // PACKING FLOOR: two halls on the west, racking in the open to their east.
+    {x:220, y:900, w:820,h:580,d:1,plan:'spine',big:1},
+    {x:220, y:1720,w:820,h:580,d:1,plan:'pinwheel',big:1},
+    // CHILL ROW: nine units, three by three, eighty unit alleys. The tightest
+    // ground in the game and the only place all four interior plans sit inside
+    // one block, so learning your way around it actually pays.
+    {x:2520,y:900, w:380,h:340,d:3,plan:'cells'},
+    {x:2980,y:900, w:380,h:340,d:3,plan:'core'},
+    {x:3440,y:900, w:380,h:340,d:3,plan:'lsplit'},
+    {x:2520,y:1330,w:380,h:340,d:3,plan:'lsplit'},
+    {x:2980,y:1330,w:380,h:340,d:3,plan:'cells'},
+    {x:3440,y:1330,w:380,h:340,d:3,plan:'core'},
+    {x:2520,y:1760,w:380,h:340,d:3,plan:'core'},
+    {x:2980,y:1760,w:380,h:340,d:3,plan:'spine'},
+    {x:3440,y:1760,w:380,h:340,d:3,plan:'cells'},
+    // THE SUMP: one pump shed above the pond.
+    {x:300, y:2480,w:420,h:220,d:2,plan:'open'},
+    // SCRAP LINE: two sheds among the container rows.
+    {x:2260,y:2520,w:460,h:300,d:0,plan:'cells'},
+    {x:3560,y:2520,w:480,h:300,d:0,plan:'lsplit'}
+  ],
+  woods:[ {x:1120,y:2520,w:820,h:700} ],
+  plats:[
+    {x:700, y:620, w:900,h:110,lift:26,name:'DOCK CATWALK'},
+    {x:2600,y:2160,w:700,h:110,lift:26,name:'CHILL GANTRY'}
+  ],
+  ramps:[
+    {x:550, y:620, w:150,h:110},
+    {x:3300,y:2160,w:150,h:110}
+  ],
+  locked:[
+    {id:'cs_freezer', name:'BLAST FREEZER',   x:3880,y:1200, w:230,h:230},
+    {id:'cs_office',  name:'FOREMAN OFFICE',  x:3820,y:250,  w:230,h:230}
+  ],
+  landmarks:[
+    {id:'cs_dock',  name:'THE LONG DOCK', x:180, y:150, w:3520,h:420, loot:'bulk',   dens:1.2},
+    {id:'cs_chill', name:'CHILL ROW',     x:2520,y:900, w:1300,h:1200,loot:'medical',dens:1.5},
+    {id:'cs_pack',  name:'PACKING FLOOR', x:220, y:900, w:2100,h:1400,loot:'ammo',   dens:1.3}
+  ],
+  spawns:[
+    {x:300, y:680}, {x:2110,y:660}, {x:4000,y:660},
+    {x:1080,y:2350},{x:2180,y:2300},{x:2020,y:3300}
+  ],
+  extracts:[
+    {x:850, y:2520}, {x:4020,y:1750}, {x:1320,y:2340}
+  ]
 }
 ];
 function buildFixedMap(def){
@@ -2555,13 +2661,26 @@ function buildRaid(sim){
   // Minimum distance from the operator at drop, scaled with the doubled map so
   // the spawn is no more crowded than it was. Sentry line rewritten to read like
   // its three siblings; it was using an inline closure and apply for no reason.
-  for(i=0;i<CFG.nSentry;i++){ var s1=far(freeSpot(map,30),880); ents.push(mkSentry(s1.x,s1.y)); }
-  for(i=0;i<CFG.nCrawler;i++){ var s2=far(freeSpot(map,26),780); ents.push(mkCrawler(s2.x,s2.y)); }
-  for(i=0;i<CFG.nSnitch;i++){ var s4=far(freeSpot(map,26),720); ents.push(mkSnitch(s4.x,s4.y)); }
+  // POPULATION SCALES WITH GROUND. The counts in CFG are flat, so they were
+  // really "this many bodies per map" rather than per acre, and adding COLD
+  // STORAGE exposed it: that map is 31 percent smaller than the dam and was
+  // therefore 46 percent denser purely by accident. It ran 6 percent extract in
+  // the sim against the dam's 38, which is not a design decision, it is a
+  // config that never anticipated a second map size.
+  // The dam is the reference at AREA 4.0, so the two existing maps are untouched
+  // (buried comes out at 1.02) and any new map inherits the dam's density. The
+  // difference between maps stays what it should be, which is their SHAPE.
+  var den=clamp(AREA/4.0,0.45,1.6);
+  function nOf(n){ return n<=0?0:Math.max(1,Math.round(n*den)); }
+  var N_SENTRY=nOf(CFG.nSentry),N_CRAWLER=nOf(CFG.nCrawler),
+      N_SNITCH=nOf(CFG.nSnitch),N_RAIDER=nOf(CFG.nRaider);
+  for(i=0;i<N_SENTRY;i++){ var s1=far(freeSpot(map,30),880); ents.push(mkSentry(s1.x,s1.y)); }
+  for(i=0;i<N_CRAWLER;i++){ var s2=far(freeSpot(map,26),780); ents.push(mkCrawler(s2.x,s2.y)); }
+  for(i=0;i<N_SNITCH;i++){ var s4=far(freeSpot(map,26),720); ents.push(mkSnitch(s4.x,s4.y)); }
   // Each raid draws distinct identities, so you never meet two of the same name.
   var idPool=IDENTITIES.slice();
   for(var ip=idPool.length-1;ip>0;ip--){ var jp=ri(0,ip),tp=idPool[ip]; idPool[ip]=idPool[jp]; idPool[jp]=tp; }
-  for(i=0;i<CFG.nRaider;i++){
+  for(i=0;i<N_RAIDER;i++){
     var s3=far(freeSpot(map,30),1190);
     ents.push(mkRaider(s3.x,s3.y,idPool[i%idPool.length]));
   }
@@ -2624,7 +2743,7 @@ function buildRaid(sim){
       var gcw=mkCrawler(CP.x+rnd(-120,120),CP.y+rnd(-120,120)); gcw.camp=CP; ents.push(gcw);
     }
   }
-  var g={sim:!!sim,map:map,ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:CFG.raidSec,paused:false,
+  var g={sim:!!sim,nMach:N_SENTRY+N_CRAWLER,map:map,ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:CFG.raidSec,paused:false,
     player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,armor:0,face:0,wep:wep,
       ammo:wep.mag,reserve:wep.mag*2,sec:sec,secAmmo:sec.mag,reloading:0,lastShot:-9999,stam:100,
       wepIssued:wepIssued,secIssued:true,wepFromArmory:!wepIssued,secFromArmory:false,
@@ -4271,7 +4390,7 @@ function updateEnts(dt){
     G.reinfT=rnd(30,50);
     var mc=0;
     for(var rc2=0;rc2<G.ents.length;rc2++){ var rk=G.ents[rc2].kind; if(rk==='sentry'||rk==='crawler') mc++; }
-    if(mc<CFG.nSentry+CFG.nCrawler){
+    if(mc<(G.nMach===undefined?CFG.nSentry+CFG.nCrawler:G.nMach)){
       var rsp=null,rtry=0;
       do{ rsp=freeSpot(G.map,30); rtry++; }while(dist(rsp,p)<800&&rtry<40);
       if(dist(rsp,p)>=800){
