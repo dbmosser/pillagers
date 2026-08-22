@@ -469,6 +469,11 @@ Three things, none of which should be built without him saying so.
   - **Minors**: the hold no longer promises 30 seconds the raid clock does not have (says the real number, bar scales), camp safes are collision-tested instead of embedded in walls (0 of 806 after), and the last two raw-px strings joined the text scaling.
   - Deferred, stated: the sim bot freezing beacons while downed (sim nuance), and the Voronoi jitter no-op (cosmetic seams). Both logged, neither player-facing.
   - Servers died again mid-tick and serve.ps1 had been replaced on disk with a hardcoded port 8791 copy, likely Daniel's; all four servers restored including his 8791, from a new serve2.ps1 so his file stays as he made it.
+- **v1.16 (the gut punch):** His pillar answer, previously unbuilt: "losing a raid should be A REAL GUT PUNCH". Death was an instant cut to a stats div.
+  - **The death beat.** A second and a half of quarter-speed world with a closing red field and YOU DIED, before any screen. You watch the thing that killed you keep moving. The sim skips it entirely, so balance numbers are untouched.
+  - **The ledger.** The outcome screen lists what you were carrying item by item, in rarity colour, each marked GONE with its value, most valuable first, then the count and the safe pocket. Reading the list one line at a time is the punch; a count never was.
+  - **The killer has a name.** Damage carries the shooter's identity, so the screen says KILLED BY SENTRY K-41, 2938M FROM EXTRACTION rather than "killed by sentry". Timer deaths stay anonymous, correctly.
+  - Verified: beat starts on death and defers the end, ledger itemizes with the safe pocket correctly taking the two most valuable items first, killer line renders with name and distance, beat frame draws clean, sim 3/5 with no hangs and no beat interference, no console errors. Whether the beat FEELS right at the screen is his call, as all feel is.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

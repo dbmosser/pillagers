@@ -312,7 +312,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.15';
+var VER='1.16';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -2496,13 +2496,20 @@ function killPlayer(src){
   var p=G.player;
   p.hp=0; p.downed=false;
   G.tel.deathKiller=p.pendKiller||src||'other';
-  endRaid('dead');
+  // The gut punch is a beat, not a cut. A second and a half of slow motion and
+  // a closing red field before the ledger of what you lost. Sim skips it.
+  if(G.sim){ endRaid('dead'); return; }
+  if(G.deathBeat===undefined||G.deathBeat===null){
+    G.deathBeat=1.5; p.dying=true;
+    blip('boom'); G.shake=Math.max(G.shake,10);
+  }
 }
-function damagePlayer(amt,src){
+function damagePlayer(amt,src,srcName){
   var p=G.player;
   if(p.iv>0) return;
   p.combatT=0;
   G.tel.dmg[src]=(G.tel.dmg[src]||0)+amt;
+  if(srcName) G.tel.lastHitName=srcName;
   if(p.downed){
     p.downT-=3; blip('hit');
     if(p.downT<=0) killPlayer(src);
@@ -3494,7 +3501,7 @@ function updateEnts(dt){
       var d=dist(e,p); want=Math.atan2(p.y-e.y,p.x-e.x);
       if(e.kind==='crawler'){
         if(d>e.rng) navSeek(e,p.x,p.y,e.spd,dt);
-        else if(e.cd<=0&&!p.downed){ damagePlayer(e.dmg,'crawler'); e.cd=.7; }
+        else if(e.cd<=0&&!p.downed){ damagePlayer(e.dmg,'crawler',e.name); e.cd=.7; }
       } else if(e.kind==='raider'){
         // His answers, 2026-08-22: raiders should FLANK, use COVER, and FLEE
         // when hurt. Flanking: each raider commits to a side at first contact
@@ -3688,7 +3695,7 @@ function updateBullets(dt){
             }
           }
         } else {
-          if(dist(b,p)<p.r+3){ damagePlayer(b.dmg,b.owner.kind); spark(b.x,b.y,'#ff4d3d',10,200); hit=true; }
+          if(dist(b,p)<p.r+3){ damagePlayer(b.dmg,b.owner.kind,b.owner.name); spark(b.x,b.y,'#ff4d3d',10,200); hit=true; }
           if(!hit) for(var e3=0;e3<G.ents.length;e3++){
             var en3=G.ents[e3];
             if(en3===b.owner) continue;
@@ -3797,6 +3804,9 @@ function endRaid(how){
   } else if(how==='dead'){
     P.died++;
     T.deathDistExtract=Math.round(dist(G.player,G.active));
+    // The ledger: what you were carrying, by name, in rarity colour, marked
+    // GONE. Reading the list one line at a time is the gut punch; a count
+    // never was.
     var saved=[],idx=[],j;
     for(i=0;i<G.bag.length;i++) idx.push(i);
     idx.sort(function(a,b){ return ival(G.bag[b])-ival(G.bag[a]); });
@@ -3804,7 +3814,15 @@ function endRaid(how){
     for(j=0;j<nSafe;j++){ saved.push(G.bag[idx[j]]); bankItem(G.bag[idx[j]]); }
     var savedVal=0;
     for(j=0;j<saved.length;j++) savedVal+=ival(saved[j]);
-    lines.push((G.bag.length-saved.length)+' items lost, '+(haul-savedVal).toLocaleString()+'c gone');
+    var lostIdx=idx.slice(nSafe),shown=lostIdx.slice(0,7);
+    for(j=0;j<shown.length;j++){
+      var li2=ITEMS[G.bag[shown[j]]];
+      if(!li2) continue;
+      lines.push('<span style="color:'+(RCOL[li2.r]||'#cdd6dd')+'">'+li2.name+'</span>'+
+        '<span style="color:var(--rust)">  '+ival(G.bag[shown[j]]).toLocaleString()+'c  GONE</span>');
+    }
+    if(lostIdx.length>shown.length) lines.push('<span style="color:var(--ash)">and '+(lostIdx.length-shown.length)+' more, all gone</span>');
+    lines.push(lostIdx.length+' items lost, '+(haul-savedVal).toLocaleString()+'c gone');
     if(saved.length) lines.push('Safe pocket held '+saved.length+' item'+(saved.length>1?'s':'')+' ('+savedVal.toLocaleString()+'c)');
     lines.push('You died '+T.deathDistExtract+'m from the beacon');
     // Same rule in reverse: holstering your good gun before dying is not a way to
@@ -3854,7 +3872,8 @@ function endRaid(how){
   var t=document.getElementById('oc_title'),s=document.getElementById('oc_sub');
   if(how==='extract'){ t.textContent='EXTRACTED'; t.style.color='var(--coolant)'; s.textContent='BEACON REACHED'; }
   else if(how==='dead'){ t.textContent='KILLED IN ACTION'; t.style.color='var(--hazard)';
-    s.textContent='KILLED BY '+String(T.deathKiller||'unknown').toUpperCase(); }
+    var kn=(T.lastHitName&&T.deathKiller!=='timer')?T.lastHitName:String(T.deathKiller||'unknown').toUpperCase();
+    s.textContent='KILLED BY '+kn+(T.deathDistExtract?',  '+T.deathDistExtract+'M FROM EXTRACTION':''); }
   else { t.textContent='ABANDONED'; t.style.color='var(--ash)'; s.textContent='RUN TERMINATED'; }
   document.getElementById('oc_manifest').innerHTML=lines.join('<br>');
   selTags=[]; buildTags();
@@ -5107,6 +5126,20 @@ function drawHUD(){
       ctx.fillText(mk[0],sm2.x,sm2.y); ctx.textAlign='left';
     }
   }
+  if(G.deathBeat!==undefined&&G.deathBeat!==null&&G.deathBeat>0){
+    var dbf=1-G.deathBeat/1.5;
+    ctx.fillStyle='rgba(90,8,4,'+(0.15+0.5*dbf)+')';
+    ctx.fillRect(0,0,W,H);
+    var vg=ctx.createRadialGradient(W/2,H/2,H*0.2*(1-dbf*0.5),W/2,H/2,H*0.75);
+    vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(20,0,0,'+(0.4+0.5*dbf)+')');
+    ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
+    ctx.textAlign='center';
+    ctx.font=FS('700 30px "Titan One","Rubik",sans-serif');
+    ctx.globalAlpha=Math.min(1,dbf*2);
+    ctx.fillStyle='#1B1622'; ctx.fillText('YOU DIED',W/2+2,H*0.42+2);
+    ctx.fillStyle='#ff5040'; ctx.fillText('YOU DIED',W/2,H*0.42);
+    ctx.globalAlpha=1; ctx.textAlign='left';
+  }
   // Bars, at a size you can read in a firefight. His answers, twice: the HUD
   // should be BIGGER and the health bar "NEEDS TO BE LARGER". 150x10 grew to
   // 280x18 with the number inside the bar itself where your eye already is,
@@ -5892,7 +5925,16 @@ function loop(ts){
     return;
   }
   if(state!=='raid'||!G||G.sim) return;
-  if(!G.paused&&!G.over){
+  if(!G.paused&&!G.over&&G.deathBeat!==undefined&&G.deathBeat!==null){
+    // the death beat: the world keeps moving underwater-slow, you do not
+    G.deathBeat-=dt;
+    var bdt=dt*0.25;
+    G.t+=bdt;
+    refreshVseg(); updateEnts(bdt); updateBullets(bdt); updateThrowables(bdt);
+    if(G.shake>0) G.shake=Math.max(0,G.shake-dt*26);
+    if(G.deathBeat<=0){ endRaid('dead'); }
+  }
+  else if(!G.paused&&!G.over){
     G.t+=dt; G.timeLeft-=dt;
     if(G.timeLeft<=0){
       G.timeLeft=0; G.tel.deathKiller='timer'; G.player.pendKiller='timer'; endRaid('dead');
