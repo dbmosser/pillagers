@@ -543,6 +543,12 @@ Three things, none of which should be built without him saying so.
   - **Opening a container is audible** and appears on the visualizer every half second of work, which is what makes an emptied crate a warning to whoever is listening.
   - **The language is stated in the legend** as six labelled colour swatches, because a colour code nobody can read is decoration. The old one line SOUND rule it replaces was removed.
   - Verified: far sound suppressed, near sound correctly tagged raider/move, through-wall muffling at 0.42, player gunfire tagged player/fire, legend renders inside its panel on both maps, sim 2/5 with no hangs, 4.15ms frame with 120 live pings on screen, no console errors.
+- **v1.29 (the Undercroft has people in it):** Spec 3, and defect 8's "empty box".
+  - **Vendors are named and they talk.** REQUISITION and WORKSHOP became HOLT, QUARTERMASTER and MERRIT, FITTER, each with rotating lines spoken over the floor when you walk up, so the hub reads as somewhere staffed rather than a row of interaction prompts on crates.
+  - **VESH, THE GAMBLER**, spec 3.3, on the Diablo/Gheed model: unidentified goods at a **flat 450 credits whatever comes out**, unlimited pulls, money the only constraint. Verified the price does not scale with anything: 8 pulls cost exactly 3600, and it still charged 450 with a million credits in the bank. The pool runs from scrap to a Bloom Sample at long odds, 8 distinct results in 8 pulls, everything banked straight to the stash with a running list of what came out. The button disables and refuses to spend when he cannot afford it.
+  - **The DEV CRATE**, spec 3.4: a full test kit opted in or out **per run**, so testing gear never leaks into a raid he did not ask for. Verified both ways: with it on, the raid starts with a Pristine Marksman Rifle, 60 armour, 96 reserve and two of each throwable; with it off, a bare Marksman Rifle and nothing.
+  - A real defect found and fixed inside the tick: the vendor speech decayed its timer inside the hub DRAW pass, which has no dt. Moved to the update pass where dt exists.
+  - Verified: all seven stations reachable from adjacent standing, gambler pricing and refusal, dev kit both states, hub and raid frames clean, sim 3/5 with no hangs, no console errors.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
