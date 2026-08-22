@@ -391,12 +391,12 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.48';
+var VER='1.49';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
-  nSentry:17,nCrawler:20,nRaider:6,nSnitch:4,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,
+  nSentry:17,nCrawler:20,nRaider:6,nSnitch:4,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
   eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
@@ -3071,6 +3071,68 @@ function mkCrawler(x,y){
     name:mkName('CRAWLER',['A','C','H','M']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:150,dmg:20,rng:26,cone:1.5,hitT:0,legs:rnd(0,6.28)};
 }
+// ====================================================== MACHINES THAT COOPERATE
+// Every machine on the map fought its own private battle. Six of them noticing
+// you produced six identical charges along six copies of the same line, which
+// is not six enemies, it is one enemy with six health bars. Worse, it made a
+// crowd LESS frightening than a pair, because a queue is legible and a queue is
+// beatable in a doorway.
+// A contact call gives the group a shape. The first machine to see you shouts,
+// and everyone who hears it takes a ROLE rather than a heading:
+//   PIN   holds at its own effective range and keeps shooting. It does not
+//         close, so backing off does not reset the fight.
+//   FLANK routes to a point ninety degrees off your bearing and comes in from
+//         the side, which is the thing that makes a doorway stop working.
+//   RUSH  goes straight at you. Crawlers always take this: they are the timer
+//         on the whole engagement, and the shape only reads if something is
+//         forcing you to move.
+// Roles expire, so a fight that runs long reshuffles instead of freezing into a
+// diagram you can memorise.
+// A shout carries, but it must not carry across a district. The first cut used
+// 900 units with no cap and every machine in earshot joined: the sim fell from
+// 38 percent extract to 14, because six coordinated machines are not a fight,
+// they are an execution. 620 units and at most four answering keeps the SHAPE,
+// which is the part that was worth building, without turning every contact into
+// the whole neighbourhood. Both numbers are on the Tuning Console.
+var ROLE_T=[6,11];
+function packR(){ return (CFG.packR===undefined)?620:CFG.packR; }
+function packMax(){ return (CFG.packMax===undefined)?4:CFG.packMax; }
+function packCall(caller,px,py){
+  if(!G||!G.ents) return;
+  var flanks=0,joined=0,R=packR(),MX=packMax();
+  for(var i=0;i<G.ents.length;i++){
+    var e=G.ents[i];
+    if(e===caller) continue;
+    if(joined>=MX) break;
+    if(e.kind!=='sentry'&&e.kind!=='crawler'&&e.kind!=='snitch') continue;
+    if(e.state==='chase') continue;                  // already in it
+    if(dist(e,caller)>R) continue;
+    joined++;
+    e.tx=px; e.ty=py;
+    e.alert=Math.max(e.alert,2.6);
+    e.state='chase';
+    e.roleT=rnd(ROLE_T[0],ROLE_T[1]);
+    if(e.kind==='crawler'){ e.role='rush'; }
+    else if(flanks<2&&dist(e,{x:px,y:py})>240){ e.role='flank'; e.flankSide=(flanks?1:-1); flanks++; }
+    else e.role='pin';
+  }
+  caller.role=caller.role||'pin';
+  caller.roleT=caller.roleT||rnd(ROLE_T[0],ROLE_T[1]);
+}
+// When contact is lost, six machines walking to one point is a queue again.
+// Each gets its own slice of a ring around the last sighting instead.
+function packScatter(){
+  if(!G||!G.ents) return;
+  var n=0;
+  for(var i=0;i<G.ents.length;i++){
+    var e=G.ents[i];
+    if(e.state!=='investigate') continue;
+    if(e.scattered) continue;
+    e.scattered=1;
+    var a=(n++)*1.05+rnd(-0.3,0.3),r=rnd(90,240);
+    e.tx+=Math.cos(a)*r; e.ty+=Math.sin(a)*r;
+  }
+}
 // ============================================================ THE LISTENER
 // A fourth machine, and the brief was FRIGHTENING rather than tough. More health
 // is not frightening; it is arithmetic. What is frightening is a thing you
@@ -5718,6 +5780,15 @@ function updateEnts(dt){
       // acquire and fire in the same frame, which is what read as unfair.
       if(e.kind==='raider'&&e.state!=='chase') e.cd=Math.max(e.cd,e.react||0.5);
       if(e.state!=='chase'&&T.firstContact===null) T.firstContact=G.t;
+      // The shout. Only on the transition, and only from things that have a
+      // radio: raiders already have their own flanking and the neutrals have
+      // nobody to call.
+      if(e.state!=='chase'&&(e.kind==='sentry'||e.kind==='crawler'||e.kind==='snitch')){
+        packCall(e,p.x,p.y);
+        e.roleT=rnd(ROLE_T[0],ROLE_T[1]);
+        e.role=(e.kind==='crawler')?'rush':'pin';
+        if(!G.sim&&dist(e,p)<700) sfx('alarm',e.x,e.y);
+      }
       // The stinger, once, on the transition into being hunted. Rate limited to
       // one in five seconds so a room of machines turning at once is one shock
       // rather than a wall of them, and placed at the thing that saw you.
@@ -5753,7 +5824,23 @@ function updateEnts(dt){
           e.cd=(e.wep.rof/1000)*rnd(1.7,2.9);
         }
       } else {
-        if(d>e.rng*.72) navSeek(e,p.x,p.y,e.spd,dt);
+        // ROLE. A pinning machine holds its range and shoots; a flanker walks a
+        // quarter turn around you before it closes; a rusher does what the old
+        // code did for everything. The firing block below is untouched, so a
+        // machine that holds still is not a machine that stops being dangerous.
+        if(e.roleT>0) e.roleT-=dt; else if(e.role){ e.role=null; }
+        if(e.role==='flank'){
+          var pa2=Math.atan2(e.y-p.y,e.x-p.x)+(e.flankSide||1)*1.15;
+          var fx4=p.x+Math.cos(pa2)*e.rng*0.78,fy4=p.y+Math.sin(pa2)*e.rng*0.78;
+          if(dist(e,{x:fx4,y:fy4})>60) navSeek(e,fx4,fy4,e.spd*1.05,dt);
+          else if(d>e.rng*.72) navSeek(e,p.x,p.y,e.spd,dt);
+        } else if(e.role==='pin'){
+          // Holds the line it already has. Steps back if you crowd it, never
+          // forward, so walking away does not drag the whole group with you.
+          if(d<e.rng*.55) moveToward(e,e.x-(p.x-e.x),e.y-(p.y-e.y),e.spd*.6,dt);
+          else if(d>e.rng*1.02) navSeek(e,p.x,p.y,e.spd*.7,dt);
+        }
+        else if(d>e.rng*.72) navSeek(e,p.x,p.y,e.spd,dt);
         else if(d<e.rng*.35) moveToward(e,e.x-(p.x-e.x),e.y-(p.y-e.y),e.spd*.6,dt);
         // Telegraphed fire. A sentry used to hit scanlessly with zero warning,
         // which reads as unfair rather than frightening; horror needs the half
@@ -5774,11 +5861,17 @@ function updateEnts(dt){
           if(!G.sim) sfx('charge',e.x,e.y);
         }
       }
-      if(!sees&&e.alert<=0) e.state=e.kind==='raider'?'loot':'investigate';
+      if(!sees&&e.alert<=0){
+        e.state=e.kind==='raider'?'loot':'investigate';
+        e.role=null; e.scattered=0;
+        if(e.state==='investigate') packScatter();
+      }
     }
     else if(e.state==='investigate'){
       navSeek(e,e.tx,e.ty,e.spd*.75,dt); want=Math.atan2(e.ty-e.y,e.tx-e.x);
-      if(dist(e,{x:e.tx,y:e.ty})<34){ e.state=e.kind==='raider'?'loot':'patrol'; e.cd=rnd(.5,1.6); }
+      if(dist(e,{x:e.tx,y:e.ty})<34){
+        e.state=e.kind==='raider'?'loot':'patrol'; e.cd=rnd(.5,1.6); e.scattered=0;
+      }
     }
     else if(e.state==='loot'&&e.kind==='raider'){
       if(!e.goal||e.goal.opened){
@@ -8718,6 +8811,8 @@ var SLIDERS=[
   ['eHp','Enemy health x',0.5,2,0.05,0],
   ['lootMult','Loot value x',0.5,2,0.05,1],
   ['concealPow','Bush concealment',0,1,0.05,1],
+  ['packR','Contact call radius',0,1200,20,0],
+  ['packMax','Machines that answer a call',0,10,1,0],
   ['contDens','Container density x',0.5,2,0.1,0],
   ['noiseMult','Noise radius x',0.5,2,0.05,1],
   ['safeSlots','Safe pocket slots',0,5,1,1],
@@ -9207,8 +9302,9 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','Two raiders, one raid'],
-  ['NEXT','Machines that work together instead of one at a time'],
+  ['NOW','A reason to go back to a map you already cleared'],
+  ['NEXT','Two raiders, one raid (a big one, not a quick one)'],
+  ['DONE','Machines that answer a call and take roles: pin, flank, rush'],
   ['DONE','THE TERMS: sign for worse odds and ARC pays better'],
   ['DONE','Machine voices: tell a Sentry from a Crawler with your eyes shut'],
   ['DONE','Weather that turns while you are still out there'],

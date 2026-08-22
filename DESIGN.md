@@ -725,6 +725,19 @@ Three things, none of which should be built without him saying so.
   - **A layout defect caught by probing rather than by looking.** Adding the station pushed the Tuning Console to y=470 in a hub that is 470 tall, sinking half of it into the back wall where it may not have been reachable at all. Every station is now checked for bounds and for overlap: zero of each.
   - Sim 13 raids at standard terms: 38 percent extract, 0 hangs, average haul 2,838. The sim never signs anything, and it was checked that no term can leak into it.
   - Browser parse substituted for `node --check`. **Not verified: whether the prices are right.** +35 percent for losing the safe pocket is a guess, and so is the rest of the sheet. The one number I would watch is HEAVY PATROLS, because a third more machines may be worth much more than 30 percent, and if one term is obviously the best buy then the sheet is doing nothing.
+- **v1.49 (machines that work together, and a difficulty spike I had to walk back):** The roadmap's next item was co-op, which is a networking architecture and not a fifteen minute job; pretending otherwise would have meant shipping half of it. Took the item after it instead, and said so.
+  - **The problem: every machine fought its own private battle.** Six of them noticing you produced six identical charges along six copies of the same line, which is not six enemies, it is one enemy with six health bars. Worse, a crowd was LESS frightening than a pair, because a queue is legible and a queue dies in a doorway.
+  - **A contact call now gives the group a shape.** The first machine to see you shouts, and everyone who answers takes a ROLE rather than a heading.
+    - **PIN** holds at its own effective range and keeps shooting. It does not close, so backing off no longer resets the fight.
+    - **FLANK** routes a quarter turn around you and comes in from the side, which is the thing that stops a doorway working.
+    - **RUSH** goes straight in. Crawlers always take this: they are the timer on the engagement, and the shape only reads if something is forcing you to move.
+  - **Measured, from an identical start, over six seconds:** a RUSH sentry closed 300 to 244 and walked 56 units. A PIN sentry **stayed at exactly 300 and walked 0**. A FLANK sentry closed to 146 but **walked 441 units and shifted its bearing 121 degrees to do it**. Three genuinely different behaviours, not three labels.
+  - **Losing you scatters the search.** Six machines walking to one point is a queue again, so each takes its own slice of a ring around the last sighting: mean separation went from 0 to 206 units, every point distinct, and calling it twice does not walk them off the map.
+  - **AND THEN THE SIM FELL OUT OF THE BAND, AND I WALKED IT BACK.** The first cut let every machine within 900 units answer, uncapped. Extract rate went from 38 percent to **14** in one build, which is not tense, it is an execution: six coordinated machines with a pin and a flank do not lose. Cut the shout to 620 units and capped it at four answering. Verified: eight machines in earshot, **four answer**. Re-measured at **50 percent extract over 12 raids**, back in line with the last several builds.
+  - Both numbers are on the Tuning Console as **Contact call radius** and **Machines that answer a call**, because I have now been wrong about this once and he should not need me to be right about it.
+  - Sim 12 raids: 50 percent extract, 0 hangs, average haul 4,008.
+  - Browser parse substituted for `node --check`. **Not verified: whether the shape READS.** The numbers say a pinning machine holds and a flanker walks the long way round. Whether that feels like being outmanoeuvred or just like the enemies being slightly odd is the question, and the specific thing to watch for is whether you ever notice something deliberately coming at you from the side.
+
 
 
 
