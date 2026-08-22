@@ -359,7 +359,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.37';
+var VER='1.38';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -585,35 +585,126 @@ function loadProfile(){
   }catch(e){}
   return Promise.resolve();
 }
-function ensureContracts(){ while(P.contracts.length<3) P.contracts.push(genContract()); }
+function ensureContracts(){
+  while(P.contracts.length<3) P.contracts.push(genContract());
+  // Contracts saved before v1.38 carry no tier and no gear, so they would sit on
+  // his board paying nothing but credits and the whole feature would look broken
+  // for exactly as long as his current three take to finish. Backfilled in
+  // place, keeping their progress: an unfinished job gains a payout rather than
+  // being thrown away and restarted.
+  for(var i=0;i<P.contracts.length;i++){
+    var c=P.contracts[i];
+    if(!c.tier) c.tier='std';
+    if(!c.gear) c.gear=rollGear(c.tier);
+  }
+}
 
 // ================================================================ contracts
 // "sentrys" and "snitchs" are not words, and a contract board is the one place
 // in the game he reads a full sentence. There are four unit names and they never
 // change, so spell the plurals rather than bolting an s on the end.
 var UNITPLURAL={sentry:'sentries',crawler:'crawlers',raider:'raiders',snitch:'snitches'};
+// SPEC 16: contracts that pay in GEAR, not only credits. A board that hands out
+// money and nothing else is a slower version of selling loot, and it made the
+// whole feature something you completed by accident rather than something you
+// went out to do. Every contract now names a physical payout before you commit
+// to it, which is the point: the choice between three contracts is a choice
+// between three pieces of kit.
+var CGEAR={
+  std:[
+    {kind:'stash',ks:['medkit','medkit'],                 label:'2 Medkits'},
+    {kind:'stash',ks:['plate','plate'],                   label:'2 Armour Plates'},
+    {kind:'stash',ks:['smoke','smoke','smoke'],           label:'3 Smoke Canisters'},
+    {kind:'stash',ks:['ammobox','ammobox','ammobox'],     label:'3 Ammo Boxes'},
+    {kind:'stash',ks:['decoy','decoy'],                   label:'2 Decoy Beacons'}
+  ],
+  hard:[
+    {kind:'wep',k:'carbine'},
+    {kind:'wep',k:'shotgun'},
+    {kind:'wep',k:'rifle'},
+    {kind:'stash',ks:['frag','frag','frag'],              label:'3 Frag Charges'},
+    {kind:'stash',ks:['plate','plate','medkit','medkit'], label:'Field kit: 2 plates, 2 medkits'},
+    {kind:'key'}
+  ],
+  elite:[
+    {kind:'wep',k:'dmr'},
+    {kind:'wep',k:'lmg'},
+    {kind:'stash',ks:['bloom'],                           label:'Bloom Sample'},
+    {kind:'stash',ks:['titan','core','coil'],             label:'A crate of rare salvage'},
+    {kind:'stash',ks:['reactor'],                         label:'ARC Reactor Core'}
+  ]
+};
+var CTIER={std:{n:1,r:1,name:'STANDARD',c:'#9aa6b2',w:1},
+           hard:{n:1.6,r:2.3,name:'HARD',c:'#ffc04a',w:2},
+           elite:{n:2.4,r:4.0,name:'ELITE',c:'#e0a0ff',w:3}};
+// Contract standing is its own ledger. Finish work and the board starts
+// offering you work worth taking.
+function cstand(){ return P.cstand||0; }
+function contractTier(){
+  var cs=cstand(),r=Math.random();
+  if(cs>=8&&r<0.25) return 'elite';
+  if(cs>=3&&r<0.50) return 'hard';
+  return 'std';
+}
+// Never offer a weapon already in the armoury: a payout you cannot use is a
+// contract with no reward on it, which is exactly the problem being fixed.
+function rollGear(tier){
+  var pool=(CGEAR[tier]||CGEAR.std).slice();
+  while(pool.length){
+    var g=pool.splice(ri(0,pool.length-1),1)[0];
+    if(g.kind==='wep'&&P.weapons&&P.weapons.indexOf(g.k)>=0) continue;
+    return g;
+  }
+  return pick(CGEAR.std);
+}
+function gearLabel(g){
+  if(!g) return '';
+  if(g.kind==='wep') return WEAPONS[g.k]?WEAPONS[g.k].name:'';
+  if(g.kind==='key') return 'A key to a sealed room';
+  return g.label||'';
+}
+function payGear(g){
+  if(!g) return '';
+  if(g.kind==='wep'){
+    if(P.weapons.indexOf(g.k)<0) P.weapons.push(g.k);
+    return WEAPONS[g.k].name+' to the armoury';
+  }
+  if(g.kind==='key'){
+    var k=resolveKey();
+    P.stash.push(k);
+    return ITEMS[k]?ITEMS[k].name:'a key';
+  }
+  for(var i=0;i<g.ks.length;i++) P.stash.push(g.ks[i]);
+  return g.label;
+}
 function genContract(){
-  var roll=Math.random();
+  var t=contractTier(),M=CTIER[t],roll=Math.random(),c;
+  function up(n){ return Math.max(1,Math.round(n*M.n)); }
   if(roll<.3){
     var tgt=pick(['sentry','crawler','raider','snitch']);
-    var n=tgt==='raider'?2:(tgt==='snitch'?2:ri(3,6));
+    var n=up(tgt==='raider'?2:(tgt==='snitch'?2:ri(3,6)));
     var per={sentry:150,crawler:90,raider:260,snitch:200}[tgt];
-    return {type:'kill',tgt:tgt,n:n,prog:0,reward:n*per,desc:'Destroy '+n+' '+(n>1?UNITPLURAL[tgt]:tgt)};
+    c={type:'kill',tgt:tgt,n:n,prog:0,reward:n*per,desc:'Destroy '+n+' '+(n>1?UNITPLURAL[tgt]:tgt)};
   } else if(roll<.55){
     var ct=pick(['safe','locker','crate']);
-    var n2=ct==='safe'?2:ri(3,5);
+    var n2=up(ct==='safe'?2:ri(3,5));
     var per2={safe:300,locker:140,crate:70}[ct];
-    return {type:'open',ct:ct,n:n2,prog:0,reward:n2*per2,desc:'Search '+n2+' '+(ct==='safe'?'secure cases':ct+'s')};
+    c={type:'open',ct:ct,n:n2,prog:0,reward:n2*per2,desc:'Search '+n2+' '+(ct==='safe'?'secure cases':ct+'s')};
   } else if(roll<.75){
-    var d=ri(0,3),n3=ri(2,4);
-    return {type:'district',d:d,n:n3,prog:0,reward:n3*160,desc:'Search '+n3+' containers in '+DISTRICTS[d].name};
+    var d=ri(0,3),n3=up(ri(2,4));
+    c={type:'district',d:d,n:n3,prog:0,reward:n3*160,desc:'Search '+n3+' containers in '+DISTRICTS[d].name};
   } else if(roll<.9){
     var it=pick(['board','optic','servo','core']);
-    var n4=it==='core'?1:2;
-    return {type:'exItem',item:it,n:n4,prog:0,reward:ITEMS[it].val*n4+250,desc:'Extract carrying '+n4+'x '+ITEMS[it].name};
+    var n4=up(it==='core'?1:2);
+    c={type:'exItem',item:it,n:n4,prog:0,reward:ITEMS[it].val*n4+250,desc:'Extract carrying '+n4+'x '+ITEMS[it].name};
+  } else {
+    var v=Math.round(pick([800,1200,1600])*M.n);
+    c={type:'haul',v:v,n:1,prog:0,reward:Math.round(v*.6),desc:'Extract with a haul worth '+v.toLocaleString()+'c or more'};
   }
-  var v=pick([800,1200,1600]);
-  return {type:'haul',v:v,n:1,prog:0,reward:Math.round(v*.6),desc:'Extract with a haul worth '+v+'c or more'};
+  c.tier=t;
+  c.reward=Math.round(c.reward*M.r);
+  c.gear=rollGear(t);
+  return c;
 }
 function contractKill(kind){
   if(G&&G.sim) return;
@@ -8025,7 +8116,8 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','Contracts that pay in gear rather than only credits'],
+  ['NOW','Armour in three tiers, readable on the silhouette'],
+  ['DONE','Contracts that pay in gear, in three tiers, not only credits'],
   ['DONE','Emotes and parley: hail a raider instead of shooting him'],
   ['DONE','Bushes you can hide in, and raiders who hide in them too'],
   ['DONE','Seasons: ten tiers, and finishing one moves the whole world up'],
@@ -8033,7 +8125,6 @@ var ROADMAP=[
   ['DONE','Room acoustics, your own footsteps, and a stinger when something sees you'],
   ['DONE','The Peddler: sell your bag mid raid at half price, banked instantly'],
   ['DONE','The Mercenary: hire one of the ten for a single run'],
-  ['LATER','Armour in three tiers, readable on the silhouette'],
   ['LATER','Weak points on the big machines'],
   ['LATER','Scopes that see further, not just hit harder'],
   ['LATER','Two raiders, one raid']
@@ -8268,9 +8359,27 @@ function renderHub(){
     wl.appendChild(row);
   });
   var cl=document.getElementById('contracts'); cl.innerHTML='';
+  (function(){
+    var cs=cstand(),nx=cs<3?('HARD work at '+(3-cs)+' more'):(cs<8?('ELITE work at '+(8-cs)+' more'):'every tier open');
+    var h=document.createElement('div'); h.className='hint';
+    h.innerHTML='Contract standing <b>'+cs+'</b> &middot; '+nx;
+    cl.appendChild(h);
+  })();
   P.contracts.forEach(function(c,ci){
     var row=document.createElement('div'); row.className='crow';
     var cd=document.createElement('div'); cd.className='cd'; cd.textContent=c.desc;
+    var TT=CTIER[c.tier]||CTIER.std;
+    var tb=document.createElement('span');
+    tb.textContent=TT.name;
+    tb.style.cssText='color:'+TT.c+';font-weight:700;font-size:9px;letter-spacing:.06em;margin-right:8px';
+    cd.insertBefore(tb,cd.firstChild);
+    var gl=gearLabel(c.gear);
+    if(gl){
+      var gd=document.createElement('div');
+      gd.textContent='Pays: '+gl;
+      gd.style.cssText='color:#7fc4a0;font-size:10px;margin-top:2px';
+      cd.appendChild(gd);
+    }
     var cp=document.createElement('div'); cp.className='cp';
     var st=document.createElement('span');
     st.innerHTML=Math.min(c.prog,c.n)+' / '+c.n+' &middot; <b>'+c.reward.toLocaleString()+'c + rep</b>';
@@ -8285,6 +8394,10 @@ function renderHub(){
         if(c.prog<c.n) return;
         if(P.contracts[ci]!==c) return;
         P.credits+=c.reward; P.rep+=c.reward;
+        var got=payGear(c.gear);
+        var TT2=CTIER[c.tier]||CTIER.std;
+        P.cstand=cstand()+TT2.w;
+        say2('Contract paid: '+c.reward.toLocaleString()+'c'+(got?' and '+got:'')+'.');
         P.contracts[ci]=genContract(); saveProfile(); renderHub();
       };
       cp.appendChild(b);
