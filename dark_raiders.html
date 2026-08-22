@@ -283,7 +283,7 @@ var W=0,H=0,DPR=1;
 // twice the clock to cross it.
 var WORLD_W=5200,WORLD_H=4000;
 var AREA=(WORLD_W*WORLD_H)/(2600*2000);   // scale decorative counts off the old map
-var PACKCAP=[40,60,80];
+var PACKCAP=[55,80,105];
 // Armour ceiling. Matches the HUD bar's scale, so the bar can never overflow.
 var ARMOR_MAX=60;
 // Medical the Undercroft always issues, so a bad run cannot leave you with none.
@@ -293,12 +293,12 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.89';
+var VER='0.90';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
-  nSentry:9,nCrawler:10,nRaider:4,nSnitch:3,eDmg:1,eHp:1,lootMult:1,contDens:1,
+  nSentry:13,nCrawler:15,nRaider:4,nSnitch:4,eDmg:1,eHp:1,lootMult:1,contDens:1,
   eAmbient:100,noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
@@ -416,7 +416,7 @@ function storeGet(){
     return Promise.resolve(v===null?null:{key:SKEY,value:v});
   }catch(e2){ return Promise.resolve(null); }
 }
-function saveProfile(){ P.cfg=CFG; P.cfgv=3; storeSet(JSON.stringify(P)); }
+function saveProfile(){ P.cfg=CFG; P.cfgv=4; storeSet(JSON.stringify(P)); }
 function loadProfile(){
   try{
     return storeGet().then(function(r){
@@ -441,7 +441,7 @@ function loadProfile(){
           // v2 saves are therefore dropped and the new defaults take over. Only
           // the tuning sliders reset; credits, stash, armoury and the recorder are
           // untouched.
-          if(P.cfgv===3&&P.cfg){ applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; }
+          if(P.cfgv===4&&P.cfg){ applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; }
           else P.cfg=null;
         } }
     }).catch(function(){});
@@ -1233,7 +1233,17 @@ window.addEventListener('keydown',function(e){
   if(e.code==='KeyG'&&G&&!G.over&&!G.paused&&!e.repeat) doThrow();
   if(e.code==='Space'&&G&&!G.over&&!G.paused&&!e.repeat) tryRoll();
   if((e.code==='Tab'||e.code==='KeyI')&&G&&!G.over&&!e.repeat) G.bagOpen=!G.bagOpen;
+  // zoom: works in the raid and in the hub, and on both the main and numpad keys
+  if(e.code==='Equal'||e.code==='NumpadAdd') setZoom(ZOOM()+0.15);
+  if(e.code==='Minus'||e.code==='NumpadSubtract') setZoom(ZOOM()-0.15);
+  if(e.code==='Digit0'||e.code==='Numpad0') setZoom(1);
 });
+// mouse wheel zooms too, which is what anyone will try first
+cv.addEventListener('wheel',function(e){
+  if(!G||G.over) return;
+  e.preventDefault();
+  setZoom(ZOOM()+(e.deltaY<0?0.12:-0.12));
+},{passive:false});
 window.addEventListener('keyup',function(e){ keys[e.code]=false; });
 cv.addEventListener('click',function(){ ac(); });
 cv.addEventListener('mousemove',function(e){
@@ -1553,7 +1563,7 @@ function tryExtractTick(dt,wantCall){
       blip('alarm');
       say(G.timeLeft<CFG.extractWait
         ? 'Beacon inbound, '+Math.round(CFG.extractWait)+'s. The raid clock runs out first.'
-        : 'Beacon inbound, '+Math.round(CFG.extractWait)+'s. Be standing in the ring when it lands.');
+        : 'Beacon inbound, '+Math.round(CFG.extractWait)+'s. Be in the ring when it lands, on your feet or not.');
     }
     return;
   }
@@ -1585,8 +1595,12 @@ function selfRevive(){
 // ================================================================ player update
 function updatePlayer(dt){
   var p=G.player,T=G.tel;
-  var cxa=(G.camX===undefined?p.x-W/2:G.camX),cya=(G.camY===undefined?p.y-H*.54:G.camY);
-  p.face=Math.atan2(mouse.y+cya-p.y,mouse.x+cxa-p.x);
+  // Screen to world has to divide by the zoom, or aiming drifts further from
+  // the cursor the further you zoom in and the gun stops pointing where you
+  // are pointing.
+  var pz=ZOOM();
+  var cxa=(G.camX===undefined?p.x-W/(2*pz):G.camX),cya=(G.camY===undefined?p.y-H/pz*.54:G.camY);
+  p.face=Math.atan2(mouse.y/pz+cya-p.y,mouse.x/pz+cxa-p.x);
   if(p.hitFlash>0) p.hitFlash-=dt;
   if(p.recoil>0) p.recoil-=dt*7;
   if(p.muzzle>0) p.muzzle-=dt;
@@ -1613,6 +1627,11 @@ function updatePlayer(dt){
     T.closestExtract=Math.min(T.closestExtract,dist(p,G.active));
     if(keys['KeyF']&&!p.healLock){ p.healLock=true; selfRevive(); }
     if(!keys['KeyF']) p.healLock=false;
+    // The beacon countdown lives in here, so going down used to freeze the
+    // dropship in mid air and the landing could resolve neither way. It now
+    // keeps flying, and if it lands while you are bleeding out inside the ring
+    // your crew drags you aboard. Crawling for the ring is a real last play.
+    tryExtractTick(dt);
     return;
   }
 
@@ -2144,10 +2163,10 @@ function updateEnts(dt){
     if(e.state==='chase'){
       var d=dist(e,p); want=Math.atan2(p.y-e.y,p.x-e.x);
       if(e.kind==='crawler'){
-        if(d>e.rng) moveToward(e,p.x,p.y,e.spd,dt);
+        if(d>e.rng) navSeek(e,p.x,p.y,e.spd,dt);
         else if(e.cd<=0&&!p.downed){ damagePlayer(e.dmg,'crawler'); e.cd=.7; }
       } else {
-        if(d>e.rng*.72) moveToward(e,p.x,p.y,e.spd,dt);
+        if(d>e.rng*.72) navSeek(e,p.x,p.y,e.spd,dt);
         else if(d<e.rng*.35) moveToward(e,e.x-(p.x-e.x),e.y-(p.y-e.y),e.spd*.6,dt);
         if(e.cd<=0&&sees&&d<e.rng){
           var wp=e.kind==='raider'?e.wep:{dmg:e.dmg,spread:.10,rng:e.rng,noise:340,tint:'#ff9a6a'};
@@ -2552,10 +2571,23 @@ function resize(){
   if(!mouse.init){ mouse.x=W/2; mouse.y=H/2; mouse.init=true; }
 }
 window.addEventListener('resize',resize);
-function w2s(x,h,z){ return {x:x-VX,y:z-VY-h}; }
+// World to screen for the HUD layer, which is always drawn unscaled on top.
+// The zoom has to be applied here or every marker, nameplate anchor and search
+// prompt drifts away from the thing it is labelling.
+function w2s(x,h,z){ var q=ZOOM(); return {x:(x-VX)*q,y:(z-VY)*q-h}; }
 // Keep the camera inside the world, but centre the world when the viewport is
 // larger than it. A plain clamp inverts its own bounds on wide displays and the
 // camera then snaps between the two limits instead of following the player.
+// Camera zoom. Stored on the profile so it survives between raids, since it is
+// a comfort setting rather than a per-raid choice. 1 is the framing every build
+// before this shipped with.
+var ZMIN=0.65,ZMAX=2.0;
+function ZOOM(){ return clamp(P.zoom||1,ZMIN,ZMAX); }
+function setZoom(z){
+  P.zoom=clamp(+z.toFixed(3),ZMIN,ZMAX);
+  saveProfile();
+  if(G&&!G.over) say('Zoom '+Math.round(P.zoom*100)+'%');
+}
 function camClamp(v,span,world){
   var lo=-80,hi=world-span+80;
   if(hi<lo) return (world-span)/2;
@@ -2848,12 +2880,17 @@ function drawContS(ct){
 }
 function render2D(dt){
   var p=G.player,i,j;
+  // Zoom. Z is a scale on the world, so the amount of WORLD visible is W/Z by
+  // H/Z, and every cull test, the camera centring and the two offscreen light
+  // and fog layers all have to work in those world units instead of pixels or
+  // the lighting stops lining up with the ground.
+  var Z=ZOOM(),VW=W/Z,VH=H/Z;
   // camera with cursor lean
   var lean=p.ads?.30:.13;
-  var tx=p.x+(mouse.x-W/2)*lean-W/2,ty=p.y+(mouse.y-H/2)*lean-H*.54;
+  var tx=p.x+(mouse.x-W/2)/Z*lean-VW/2,ty=p.y+(mouse.y-H/2)/Z*lean-VH*.54;
   if(G.camX===undefined){ camX=tx; camY=ty; }
   camX+=(tx-camX)*Math.min(1,dt*9); camY+=(ty-camY)*Math.min(1,dt*9);
-  camX=camClamp(camX,W,WORLD_W); camY=camClamp(camY,H,WORLD_H);
+  camX=camClamp(camX,VW,WORLD_W); camY=camClamp(camY,VH,WORLD_H);
   G.camX=camX; G.camY=camY;
   var sk=G.shake>0?G.shake*.7:0;
   var ox=Math.round(camX+rnd(-sk,sk)),oy=Math.round(camY+rnd(-sk,sk));
@@ -2870,7 +2907,7 @@ function render2D(dt){
   // Matched to the fog family so the letterbox edge is not a second, different
   // black sitting next to the navy.
   wc.fillStyle=isDay()?'#8a8072':'#060820'; wc.fillRect(0,0,W,H);
-  wc.save(); wc.translate(-ox,-oy);
+  wc.save(); wc.scale(Z,Z); wc.translate(-ox,-oy);
   // Hand over only the piece of the baked floor that is actually on screen. The
   // whole bake is 5200x4000, about 21 million pixels, and at most a screenful of
   // that can ever be seen; the clip made the result correct but the image was
@@ -2879,12 +2916,12 @@ function render2D(dt){
   // the saving is not measured: this environment can time the script but not the
   // drawing, so this rests on doing less work rather than on a number.
   var gx0=Math.max(0,Math.floor(ox)),gy0=Math.max(0,Math.floor(oy));
-  var gx1=Math.min(G.ground.width,Math.ceil(ox+W)),gy1=Math.min(G.ground.height,Math.ceil(oy+H));
+  var gx1=Math.min(G.ground.width,Math.ceil(ox+VW)),gy1=Math.min(G.ground.height,Math.ceil(oy+VH));
   if(gx1>gx0&&gy1>gy0) wc.drawImage(G.ground,gx0,gy0,gx1-gx0,gy1-gy0,gx0,gy0,gx1-gx0,gy1-gy0);
   // shimmer, drawn over the baked floor but under everything else
   for(i=0;i<(G.map.water||[]).length;i++){
     var wq2=G.map.water[i];
-    if(wq2.x>ox+W+40||wq2.x+wq2.w<ox-40||wq2.y>oy+H+40||wq2.y+wq2.h<oy-40) continue;
+    if(wq2.x>ox+VW+40||wq2.x+wq2.w<ox-40||wq2.y>oy+VH+40||wq2.y+wq2.h<oy-40) continue;
     wc.globalCompositeOperation='lighter';
     wc.fillStyle=isDay()?'rgba(190,225,240,.05)':'rgba(80,150,190,.045)';
     for(j=0;j<5;j++){
@@ -2897,7 +2934,7 @@ function render2D(dt){
   // decals + shells
   for(i=0;i<G.decals.length;i++){
     var dc=G.decals[i];
-    if(dc.x<ox-40||dc.x>ox+W+40||dc.y<oy-40||dc.y>oy+H+40) continue;
+    if(dc.x<ox-40||dc.x>ox+VW+40||dc.y<oy-40||dc.y>oy+VH+40) continue;
     wc.save(); wc.translate(dc.x,dc.y); wc.rotate(dc.rot);
     wc.globalAlpha=dc.a; wc.fillStyle=dc.c;
     wc.beginPath(); wc.ellipse(0,0,dc.s,dc.s*.62,0,0,6.2832); wc.fill();
@@ -2941,7 +2978,7 @@ function render2D(dt){
     // 96 percent of the work was drawing something nobody could see, at 1.1ms a
     // frame. Bounds test uses the alert reach so a cone can never pop in late.
     var reach=sc.rng*(sc.alert>0?1.35:1);
-    if(sc.x+reach<ox||sc.x-reach>ox+W||sc.y+reach<oy||sc.y-reach>oy+H) continue;
+    if(sc.x+reach<ox||sc.x-reach>ox+VW||sc.y+reach<oy||sc.y-reach>oy+VH) continue;
     var pol=conePoly(sc.x,sc.y,sc.face,sc.cone,reach,segsNear(sc.x,sc.y,reach,G.map.segs),18);
     wc.fillStyle=sc.state==='chase'?'rgba(255,60,40,.13)':'rgba(255,140,60,.07)';
     wc.beginPath(); wc.moveTo(pol[0].x,pol[0].y);
@@ -2993,18 +3030,18 @@ function render2D(dt){
   var DR=[];
   for(i=0;i<G.map.walls.length;i++){
     var wl=G.map.walls[i];
-    if(wl.x>ox+W+40||wl.x+wl.w<ox-40||wl.y>oy+H+80||wl.y+wl.h<oy-80) continue;
+    if(wl.x>ox+VW+40||wl.x+wl.w<ox-40||wl.y>oy+VH+80||wl.y+wl.h<oy-80) continue;
     DR.push({k:wl.y+wl.h,w:wl});
   }
   for(i=0;i<G.containers.length;i++){
     var ct=G.containers[i];
-    if(ct.x<ox-40||ct.x>ox+W+40||ct.y<oy-60||ct.y>oy+H+60) continue;
+    if(ct.x<ox-40||ct.x>ox+VW+40||ct.y<oy-60||ct.y>oy+VH+60) continue;
     DR.push({k:ct.y,c:ct});
   }
   for(i=0;i<G.ents.length;i++){
     var e=G.ents[i];
     if(!e.seen) continue;
-    if(e.x<ox-60||e.x>ox+W+60||e.y<oy-80||e.y>oy+H+80) continue;
+    if(e.x<ox-60||e.x>ox+VW+60||e.y<oy-80||e.y>oy+VH+80) continue;
     DR.push({k:e.y,e:e});
   }
   DR.push({k:p.y,pl:1});
@@ -3154,11 +3191,16 @@ function render2D(dt){
   lx2.fillStyle=isDay()?('rgba(22,28,54,'+clamp(.13/BR,.02,.2)+')')
                        :('rgba(7,7,26,'+clamp(.52/BR,.05,.82)+')');
   lx2.fillRect(0,0,W,H);
+  // From here the light layer works in WORLD coordinates, matched to the world
+  // canvas, so every light below uses its own position and radius directly and
+  // stays glued to the ground at any zoom. These layers are sized in CSS pixels
+  // rather than device pixels, so there is no DPR term here.
+  lx2.setTransform(Z,0,0,Z,-ox*Z,-oy*Z);
   lx2.globalCompositeOperation='destination-out';
   for(i=0;i<G.lights.length;i++){
     var L=G.lights[i];
-    var lsx=L.x-ox,lsy=L.y-oy;
-    if(lsx<-L.r||lsx>W+L.r||lsy<-L.r||lsy>H+L.r) continue;
+    var lsx=L.x,lsy=L.y;
+    if(lsx<ox-L.r||lsx>ox+VW+L.r||lsy<oy-L.r||lsy>oy+VH+L.r) continue;
     var fk=L.fl?(.72+.28*Math.sin(G.t*11+L.f)*Math.sin(G.t*3.1+L.f*2)):1;
     var gr=lx2.createRadialGradient(lsx,lsy,0,lsx,lsy,L.r*fk);
     gr.addColorStop(0,'rgba(0,0,0,'+(.85*L.i)+')');
@@ -3167,16 +3209,16 @@ function render2D(dt){
     lx2.beginPath(); lx2.arc(lsx,lsy,L.r*fk,0,6.2832); lx2.fill();
   }
   var plr=100*Math.min(1.5,BR);
-  var pgr=lx2.createRadialGradient(p.x-ox,p.y-oy,0,p.x-ox,p.y-oy,plr);
+  var pgr=lx2.createRadialGradient(p.x,p.y,0,p.x,p.y,plr);
   pgr.addColorStop(0,'rgba(0,0,0,'+clamp(.5*BR,.3,.9)+')'); pgr.addColorStop(1,'rgba(0,0,0,0)');
   lx2.fillStyle=pgr;
-  lx2.beginPath(); lx2.arc(p.x-ox,p.y-oy,plr,0,6.2832); lx2.fill();
+  lx2.beginPath(); lx2.arc(p.x,p.y,plr,0,6.2832); lx2.fill();
   // transient sources: gunfire and explosions genuinely light the ground
   for(i=0;i<G.flashes.length;i++){
     var F=G.flashes[i],fr=1-F.t/F.life;
     if(fr<=0) continue;
-    var fsx=F.x-ox,fsy=F.y-oy,frr=F.r*(F.life>.3?(.35+.65*(1-fr)):1);
-    if(fsx<-frr||fsx>W+frr||fsy<-frr||fsy>H+frr) continue;
+    var fsx=F.x,fsy=F.y,frr=F.r*(F.life>.3?(.35+.65*(1-fr)):1);
+    if(fsx<ox-frr||fsx>ox+VW+frr||fsy<oy-frr||fsy>oy+VH+frr) continue;
     var fg=lx2.createRadialGradient(fsx,fsy,0,fsx,fsy,frr);
     fg.addColorStop(0,'rgba(0,0,0,'+(.9*fr)+')'); fg.addColorStop(1,'rgba(0,0,0,0)');
     lx2.fillStyle=fg;
@@ -3188,8 +3230,8 @@ function render2D(dt){
   for(i=0;i<VIS.length;i++){
     var EL=VIS[i];
     if(EL.state!=='chase'&&EL.state!=='alarm') continue;
-    var ex=EL.x-ox,ey=EL.y-oy;
-    if(ex<-90||ex>W+90||ey<-90||ey>H+90) continue;
+    var ex=EL.x,ey=EL.y;
+    if(ex<ox-90||ex>ox+VW+90||ey<oy-90||ey>oy+VH+90) continue;
     var er=EL.kind==='sentry'?76:(EL.kind==='crawler'?54:44);
     var eg=lx2.createRadialGradient(ex,ey,0,ex,ey,er);
     eg.addColorStop(0,'rgba(0,0,0,.34)'); eg.addColorStop(1,'rgba(0,0,0,0)');
@@ -3197,13 +3239,15 @@ function render2D(dt){
     lx2.beginPath(); lx2.arc(ex,ey,er,0,6.2832); lx2.fill();
   }
   // the beacon itself, brighter as it comes in
-  var bsx=az.x-ox,bsy=az.y-oy,brr=inb?(90+120*urg):70;
-  if(bsx>-brr&&bsx<W+brr&&bsy>-brr&&bsy<H+brr){
+  var bsx=az.x,bsy=az.y,brr=inb?(90+120*urg):70;
+  if(bsx>ox-brr&&bsx<ox+VW+brr&&bsy>oy-brr&&bsy<oy+VH+brr){
     var bg=lx2.createRadialGradient(bsx,bsy,0,bsx,bsy,brr);
     bg.addColorStop(0,'rgba(0,0,0,'+(inb?.62:.30)+')'); bg.addColorStop(1,'rgba(0,0,0,0)');
     lx2.fillStyle=bg;
     lx2.beginPath(); lx2.arc(bsx,bsy,brr,0,6.2832); lx2.fill();
   }
+  // back to screen space to hand the finished layer over
+  lx2.setTransform(1,0,0,1,0,0);
   wc.drawImage(litC,0,0);
   // warm glows
   wc.globalCompositeOperation='lighter';
@@ -3216,10 +3260,13 @@ function render2D(dt){
   wc.globalAlpha=1;
   wc.fillStyle=isDay()?'#0d0904':'#05030b';
   wc.fillRect(0,0,W,H);
+  // The lift above is a full screen wash and stays in screen space. Everything
+  // below it is positioned in the world, so it takes the world transform.
+  wc.save(); wc.scale(Z,Z); wc.translate(-ox,-oy);
   for(i=0;i<G.lights.length;i++){
     var L2=G.lights[i];
-    var gx=L2.x-ox,gy=L2.y-oy;
-    if(gx<-80||gx>W+80||gy<-80||gy>H+80) continue;
+    var gx=L2.x,gy=L2.y;
+    if(gx<ox-80||gx>ox+VW+80||gy<oy-80||gy>oy+VH+80) continue;
     var fk2=L2.fl?(.72+.28*Math.sin(G.t*11+L2.f)):1;
     // Two flat concentric discs rather than one, because a lamp pool in this
     // era is stepped, not a smooth falloff. This is also the only place in the
@@ -3236,8 +3283,8 @@ function render2D(dt){
   for(i=0;i<G.flashes.length;i++){
     var F2=G.flashes[i],f2=1-F2.t/F2.life;
     if(f2<=0) continue;
-    var gx2=F2.x-ox,gy2=F2.y-oy,gr2=F2.r*.42*(F2.life>.3?(.4+.6*(1-f2)):1);
-    if(gx2<-gr2||gx2>W+gr2||gy2<-gr2||gy2>H+gr2) continue;
+    var gx2=F2.x,gy2=F2.y,gr2=F2.r*.42*(F2.life>.3?(.4+.6*(1-f2)):1);
+    if(gx2<ox-gr2||gx2>ox+VW+gr2||gy2<oy-gr2||gy2>oy+VH+gr2) continue;
     wc.globalAlpha=.30*f2; wc.fillStyle=F2.c;
     wc.beginPath(); wc.arc(gx2,gy2,gr2,0,6.2832); wc.fill();
   }
@@ -3245,19 +3292,21 @@ function render2D(dt){
   for(i=0;i<VIS.length;i++){
     var EG=VIS[i];
     if(EG.state!=='chase'&&EG.state!=='alarm') continue;
-    var ux=EG.x-ox,uy=EG.y-oy;
-    if(ux<-60||ux>W+60||uy<-60||uy>H+60) continue;
+    var ux=EG.x,uy=EG.y;
+    if(ux<ox-60||ux>ox+VW+60||uy<oy-60||uy>oy+VH+60) continue;
     wc.globalAlpha=.13+.05*Math.sin(G.t*9);
     wc.fillStyle=EG.kind==='raider'?'#ff8a6a':'#ff4a32';
     wc.beginPath(); wc.arc(ux,uy-18,EG.kind==='sentry'?30:22,0,6.2832); wc.fill();
   }
   if(inb){
     wc.globalAlpha=.10+.16*urg; wc.fillStyle='#35d6c8';
-    wc.beginPath(); wc.arc(az.x-ox,az.y-oy,60+70*urg,0,6.2832); wc.fill();
+    wc.beginPath(); wc.arc(az.x,az.y,60+70*urg,0,6.2832); wc.fill();
   }
+  wc.restore();
   wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
   // vision fog
   fx2.globalCompositeOperation='source-over';
+  fx2.setTransform(1,0,0,1,0,0);
   fx2.clearRect(0,0,W,H);
   // fog stays strong: it is the fog of war, not a mood filter. Only eased a little.
   // Fog of war is attention, not darkness, but it must always read DARKER than
@@ -3272,14 +3321,17 @@ function render2D(dt){
   fx2.fillStyle=isDay()?('rgba(40,30,25,'+clamp(.88-(BR-1)*.09,.72,.93)+')')
                        :('rgba(3,5,23,'+clamp(.93-(BR-1)*.09,.78,.96)+')');
   fx2.fillRect(0,0,W,H);
+  // the fog cutouts are all world shapes, so the fog layer takes the world
+  // transform exactly as the light layer does
+  fx2.setTransform(Z,0,0,Z,-ox*Z,-oy*Z);
   fx2.globalCompositeOperation='destination-out';
   var pol2=buildVisPoly(p.x,p.y,p.face,G.vseg);
-  var psx=p.x-ox,psy=p.y-oy;
+  var psx=p.x,psy=p.y;
   var vg2=fx2.createRadialGradient(psx,psy,CFG.viewFar*.15,psx,psy,CFG.viewFar);
   vg2.addColorStop(0,'rgba(0,0,0,.97)'); vg2.addColorStop(1,'rgba(0,0,0,0)');
   fx2.fillStyle=vg2;
-  fx2.beginPath(); fx2.moveTo(pol2[0].x-ox,pol2[0].y-oy);
-  for(i=1;i<pol2.length;i++) fx2.lineTo(pol2[i].x-ox,pol2[i].y-oy);
+  fx2.beginPath(); fx2.moveTo(pol2[0].x,pol2[0].y);
+  for(i=1;i<pol2.length;i++) fx2.lineTo(pol2[i].x,pol2[i].y);
   fx2.closePath(); fx2.fill();
   var ag=fx2.createRadialGradient(psx,psy,0,psx,psy,CFG.ambient);
   ag.addColorStop(0,'rgba(0,0,0,'+clamp(.85*BR,.6,.99)+')'); ag.addColorStop(1,'rgba(0,0,0,0)');
