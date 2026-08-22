@@ -312,13 +312,13 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.18';
+var VER='1.20';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:17,nCrawler:20,nRaider:6,nSnitch:4,eDmg:1.2,eHp:1,lootMult:1,contDens:1,
-  eAmbient:100,noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -490,7 +490,7 @@ function storeGet(){
     return Promise.resolve(v===null?null:{key:SKEY,value:v});
   }catch(e2){ return Promise.resolve(null); }
 }
-function saveProfile(){ P.cfg=CFG; P.cfgv=6; storeSet(JSON.stringify(P)); }
+function saveProfile(){ P.cfg=CFG; P.cfgv=7; storeSet(JSON.stringify(P)); }
 function loadProfile(){
   try{
     return storeGet().then(function(r){
@@ -523,7 +523,7 @@ function loadProfile(){
           // cfgv 5: the v1.03 tuning batch must actually reach a saved profile.
           // Old pinned sliders are dropped exactly as the v0.68 migration did;
           // credits, stash, armoury and the recorder are untouched.
-          if(P.cfgv===6&&P.cfg){ applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; }
+          if(P.cfgv===7&&P.cfg){ applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; }
           else P.cfg=null;
         } }
     }).catch(function(){});
@@ -857,6 +857,20 @@ var G=null;
 // interior partitions of any building that failed. The building falls back to
 // an open floor, which is always walkable. Costs one extra nav build on the
 // maps that need it and nothing on the maps that do not.
+function floodNav(nav){
+  var gw=nav.w,gh=nav.h,blk=nav.blk;
+  var seen=new Uint8Array(gw*gh),st=[],seeded=false;
+  for(var sy=1;sy<gh-1&&!seeded;sy++)for(var sx=1;sx<gw-1;sx++){
+    if(!blk[sy*gw+sx]){ st.push(sy*gw+sx); seen[sy*gw+sx]=1; seeded=true; break; } }
+  while(st.length){
+    var cur=st.pop(),cy=(cur/gw)|0,cx=cur%gw;
+    if(cx>0&&!seen[cur-1]&&!blk[cur-1]){ seen[cur-1]=1; st.push(cur-1); }
+    if(cx<gw-1&&!seen[cur+1]&&!blk[cur+1]){ seen[cur+1]=1; st.push(cur+1); }
+    if(cy>0&&!seen[cur-gw]&&!blk[cur-gw]){ seen[cur-gw]=1; st.push(cur-gw); }
+    if(cy<gh-1&&!seen[cur+gw]&&!blk[cur+gw]){ seen[cur+gw]=1; st.push(cur+gw); }
+  }
+  return seen;
+}
 function repairInteriors(walls,buildings){
   var nav=buildNav(walls);
   var gw=nav.w,gh=nav.h,C=nav.c,blk=nav.blk;
@@ -884,10 +898,37 @@ function repairInteriors(walls,buildings){
       if(!blk[i2]&&!seen[i2]) sealed++;
     }
     // A stray cell or two is grid quantisation at a corner, not a room.
-    if(sealed>3){ bad[bi]=1; any=true; b.plan='open'; b.repaired=1; }
+    // Threshold 0 now, not 3. Furniture makes small pockets, and a 1 to 3 cell
+    // pocket is still floor a player can see and never reach, and can still hold
+    // a container. The old threshold existed to tolerate grid quantisation at
+    // corners; the layered repair below makes that tolerance unnecessary.
+    if(sealed>0){ bad[bi]=1; any=true; }
   }
   if(!any) return nav;
-  for(var wi=walls.length-1;wi>=0;wi--) if(walls[wi].ib!==undefined&&bad[walls[wi].ib]) walls.splice(wi,1);
+  // LAYERED REPAIR. Furniture is the newest and least important geometry, so it
+  // goes first: strip only the furniture of failing buildings and re-flood. Most
+  // failures are a table against a partition and clear here, which keeps the
+  // authored floor plan intact. Only buildings still sealed after that lose
+  // their partitions and fall back to an open floor.
+  var removed=false;
+  for(var wi=walls.length-1;wi>=0;wi--)
+    if(walls[wi].furn&&walls[wi].ib!==undefined&&bad[walls[wi].ib]){ walls.splice(wi,1); removed=true; }
+  if(removed){
+    nav=buildNav(walls);
+    var seen2=floodNav(nav),bad2={},any2=false;
+    for(var bj=0;bj<buildings.length;bj++){
+      if(!bad[bj]) continue;
+      var b2=buildings[bj],s2=0;
+      var hx0=Math.max(0,Math.floor(b2.x/nav.c)),hx1=Math.min(nav.w-1,Math.ceil((b2.x+b2.w)/nav.c));
+      var hy0=Math.max(0,Math.floor(b2.y/nav.c)),hy1=Math.min(nav.h-1,Math.ceil((b2.y+b2.h)/nav.c));
+      for(var yy=hy0;yy<=hy1;yy++)for(var xx=hx0;xx<=hx1;xx++){
+        var ii=yy*nav.w+xx; if(!nav.blk[ii]&&!seen2[ii]) s2++; }
+      if(s2>0){ bad2[bj]=1; any2=true; b2.plan='open'; b2.repaired=1; }
+    }
+    if(!any2) return nav;
+    bad=bad2;
+  }
+  for(wi=walls.length-1;wi>=0;wi--) if(walls[wi].ib!==undefined&&bad[walls[wi].ib]) walls.splice(wi,1);
   return buildNav(walls);
 }
 function makeBuilding(x,y,w,h,out,d,bid){
@@ -976,6 +1017,23 @@ function makeBuilding(x,y,w,h,out,d,bid){
     seg(vx,iy,t,gy2-iy); seg(vx,gy2+DOOR,t,(iy+ih)-(gy2+DOOR));
     var hy=iy+ih*rnd(.38,.62),gx2=vx+rnd(20,Math.max(21,(ix+iw)-vx-20-DOOR));
     seg(vx,hy,gx2-vx,t); seg(gx2+DOOR,hy,(ix+iw)-(gx2+DOOR),t);
+  }
+  // Furniture. "Graphics need more detail all around": interiors were floors
+  // with dividers and nothing IN them. One to three pieces per building, sized
+  // as real cover, placed away from the walls so doorways stay clear. They are
+  // tagged ib like the partitions, so the sealed-room repair pass strips them
+  // with the rest if a layout ever fails: the walkability guarantee holds.
+  // Margin 52 from every interior wall: with a 12 unit nav pad on each side, a
+  // 34 margin left channels too thin to walk and minted sealed slivers behind
+  // tables (measured 27 cells over 10 maps). At 52 the narrowest channel is
+  // 52-24=28, twice a body.
+  if(iw>180&&ih>150){
+    var nF=ri(1,3);
+    for(var fi2=0;fi2<nF;fi2++){
+      var fw2=rnd(20,34),fh2=rnd(14,26);
+      var fx4=ix+rnd(52,Math.max(53,iw-52-fw2)),fy4=iy+rnd(52,Math.max(53,ih-52-fh2));
+      out.push({x:fx4,y:fy4,w:fw2,h:fh2,d:d,ib:bid,furn:Math.random()<.5?1:2});
+    }
   }
   return plan;
 }
@@ -1208,13 +1266,21 @@ function buildMap(){
     zseeds.push({r:zr,c:zc,d:dpool[zi]});
   }
   // Border jitter keeps the seams organic instead of a clean Voronoi edge.
-  var zjit={};
-  for(var jr=0;jr<rows;jr++)for(var jc=0;jc<cols;jc++) zjit[jr+','+jc]=rnd(-0.6,0.6);
+  // Border jitter, corrected. The first version added ONE offset per cell to
+  // every seed's distance, which cancels out of the comparison entirely: the
+  // audit proved the seams were exact Voronoi and the "organic" comment was a
+  // lie. The offset now depends on the (cell, seed) PAIR, deterministically per
+  // raid, so it genuinely bends the border.
+  var zsalt=ri(1,1e9);
+  function zjit2(r2,c2,k){
+    var h=((r2*73856093)^(c2*19349663)^(k*83492791)^zsalt)>>>0;
+    return ((h%1000)/1000-0.5)*1.1;
+  }
   function cellDistrict(r2,c2){
     var best=zseeds[0].d,bd=1e9;
     for(var k=0;k<zseeds.length;k++){
       var dr=zseeds[k].r-r2,dc=zseeds[k].c-c2;
-      var dd2=Math.sqrt(dr*dr+dc*dc)+(zjit[r2+','+c2]||0);
+      var dd2=Math.sqrt(dr*dr+dc*dc)+zjit2(r2,c2,k);
       if(dd2<bd){ bd=dd2; best=zseeds[k].d; }
     }
     return best;
@@ -1511,10 +1577,15 @@ function bakeGround(map){
       c.fillRect(WW.x+rnd(10,WW.w-12),WW.y+rnd(10,WW.h-12),rnd(2,5),rnd(2,5));
     }
   }
-  for(i=0;i<Math.round(520*AREA);i++){
-    var x=rnd(40,WORLD_W-40),y=rnd(40,WORLD_H-40),s=rnd(14,64);
-    c.fillStyle='rgba(0,0,0,'+rnd(.04,.13)+')';
-    c.beginPath(); c.ellipse(x,y,s,s*rnd(.4,.9),rnd(0,3),0,6.2832); c.fill();
+  // SPEC 4.6 / defect 1: the scattered shadowy ellipses that stood in for hills
+  // are DELETED. They were never verticality, they only muddied the floor, and
+  // real elevation (multi level interiors, ramps, readable platform edges on the
+  // Sea of Stars model) replaces them. Ground grime is now honest surface wear
+  // at a fraction of the coverage, not fake landforms.
+  for(i=0;i<Math.round(120*AREA);i++){
+    var x=rnd(40,WORLD_W-40),y=rnd(40,WORLD_H-40),s=rnd(8,20);
+    c.fillStyle='rgba(40,30,20,'+rnd(.03,.07)+')';
+    c.fillRect(x,y,s,s*rnd(.4,.8));
   }
   // flooded ground, baked with the rest of the floor
   for(i=0;i<(map.water||[]).length;i++){
@@ -1764,12 +1835,12 @@ function mkName(pre,letters){
   return pre+' '+pick(letters)+'-'+ri(10,99);
 }
 function mkSentry(x,y){
-  return {kind:'sentry',x:x,y:y,r:22,hp:Math.round(80*CFG.eHp),maxhp:Math.round(80*CFG.eHp),
+  return {kind:'sentry',x:x,y:y,r:22,hp:Math.round(150*CFG.eHp),maxhp:Math.round(150*CFG.eHp),
     name:mkName('SENTRY',['K','R','V','T']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:70,dmg:14,rng:340,cone:.62,hitT:0};
 }
 function mkCrawler(x,y){
-  return {kind:'crawler',x:x,y:y,r:15,hp:Math.round(34*CFG.eHp),maxhp:Math.round(34*CFG.eHp),
+  return {kind:'crawler',x:x,y:y,r:15,hp:Math.round(52*CFG.eHp),maxhp:Math.round(52*CFG.eHp),
     name:mkName('CRAWLER',['A','C','H','M']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:150,dmg:20,rng:26,cone:1.5,hitT:0,legs:rnd(0,6.28)};
 }
@@ -3050,6 +3121,11 @@ function updateBot(dt){
   if(p.downed){
     if(!p.revived&&findHeal()>=0){ selfRevive(); }
     else if(tickDowned(dt)) return;
+    // Audit: the bot's downed branch froze the beacon state machine, so a bot
+    // bleeding out inside the ring with a ship inbound diverged from the
+    // shipped rules where the crew hauls you aboard. Same tick as the player's
+    // downed branch, wantCall included, so downed calls count in the sim too.
+    tryExtractTick(dt,!!G.botWantsOut);
     return;
   }
   T.closestExtract=Math.min(T.closestExtract,dist(p,G.active));
@@ -4692,6 +4768,24 @@ function render2D(dt){
       wc.beginPath(); wc.arc(tcx+swayT-cr2*.25,canY-cr2*.5,cr2*.72,0,6.2832); wc.fill();
       wc.fillStyle=isDay()?'#6f9a4c':'#31452a';
       wc.beginPath(); wc.arc(tcx+swayT-cr2*.35,canY-cr2*.62,cr2*.45,0,6.2832); wc.fill();
+    } else if(it.w&&it.w.furn){
+      // Furniture: a table (top face on legs) or a shelf unit (tall face with
+      // strata). Same three-value language as everything else.
+      var FN=it.w,fd=FN.d===undefined?3:FN.d;
+      if(FN.furn===1){
+        shadowE(FN.x+FN.w/2,FN.y+FN.h+1,FN.w*.55,4,.3);
+        wc.fillStyle=INK; rrF(FN.x-1,FN.y-9,FN.w+2,FN.h+10,2);
+        wc.fillStyle='#6a4a2e'; wc.fillRect(FN.x,FN.y+FN.h-4,3,4); wc.fillRect(FN.x+FN.w-3,FN.y+FN.h-4,3,4);
+        wc.fillStyle='#8a6a42'; rrF(FN.x,FN.y-8,FN.w,FN.h,2);
+        wc.fillStyle='#a8845a'; wc.fillRect(FN.x+1,FN.y-8,FN.w-2,2);
+      } else {
+        shadowE(FN.x+FN.w/2,FN.y+FN.h+1,FN.w*.55,4,.3);
+        wc.fillStyle=INK; rrF(FN.x-1,FN.y-19,FN.w+2,FN.h+20,2);
+        wc.fillStyle=dcol(fd,'wall'); rrF(FN.x,FN.y-18,FN.w,FN.h+18,2);
+        wc.fillStyle='rgba(20,16,24,.5)';
+        wc.fillRect(FN.x+2,FN.y-12,FN.w-4,2); wc.fillRect(FN.x+2,FN.y-4,FN.w-4,2);
+        wc.fillStyle=dcol(fd,'wallTop'); wc.fillRect(FN.x,FN.y-18,FN.w,2);
+      }
     } else if(it.w){
       var wl2=it.w,d3=wl2.d===undefined?3:wl2.d;
       var LIFT=(wl2.w<=60&&wl2.h<=60)?14:26;
@@ -5991,6 +6085,17 @@ function loop(ts){
   }
   else if(!G.paused&&!G.over){
     G.t+=dt; G.timeLeft-=dt;
+    // SPEC 5.1: warning at 5:00, every minute after, and at 0:30. Timer expiry
+    // is death and full loss, so the clock has to be impossible to lose track of.
+    var tlNow=Math.ceil(G.timeLeft);
+    if(G.lastWarn===undefined) G.lastWarn=-1;
+    if(tlNow!==G.lastWarn){
+      var warned=false;
+      if(tlNow===30){ say('THIRTY SECONDS. The clock kills you.'); warned=true; }
+      else if(tlNow>0&&tlNow<=300&&tlNow%60===0){ say((tlNow/60)+' minute'+(tlNow===60?'':'s')+' left.'); warned=true; }
+      if(warned){ blip('alarm'); }
+      G.lastWarn=tlNow;
+    }
     if(G.timeLeft<=0){
       G.timeLeft=0; G.tel.deathKiller='timer'; G.player.pendKiller='timer'; endRaid('dead');
     } else {

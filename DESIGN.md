@@ -1,3 +1,4 @@
+> **SUPERSEDED, 2026-08-22.** `C:\Users\User1\Desktop\DARK_RAIDERS_SPEC.md` is now the definitive design document and governs wherever it conflicts with anything below. This file is retained as the build history and the record of what was measured and why. New design decisions live in the spec; this remains the changelog.
 # DARK RAIDERS Design Bible
 Prepared: August 20, 2026. Revised: August 20, 2026 (v0.6).
 
@@ -481,6 +482,15 @@ Three things, none of which should be built without him saying so.
 - **v1.18 (telegraphed fire):** Sentries and the Warden used to hit with zero warning, which reads as unfair rather than frightening; horror needs the half second where you KNOW it is coming. Both now charge visibly and audibly before every shot: a red gathering glow at the lens or muzzle plus a rising whine, 0.4s on sentries, 0.7s on the Warden.
   - **The charge time is subtracted from the old cooldowns, so DPS is unchanged**: this adds legibility, not mercy. Measured: sentry cycle 0.60s against the old ~0.55 average (within roll noise), Warden cycle exactly the old 2.4s. First shots land after the full charge, so the glow is always a real warning you can act on: break the sightline during the charge and the shot never comes.
   - Verified with isolated clear-LOS duels for both units (an earlier zero-shot probe was my own staging putting a wall between them, stated for the record), glow frame draws clean, sim 4/5 with no hangs, no console errors. Also consumed one export from the queue that was my own v1.17 verification artefact (0s duration, 0 movement), not his play.
+- **v1.19 to v1.20 (the spec arrives, and its first fixes):** Daniel delivered `DARK_RAIDERS_SPEC.md`, a full design specification that supersedes this document and every prior instruction. It is now the governing document; this file is history and measurement record. It carries an autonomy mandate: do not block, do not keep an open-questions list, decide and move.
+  - **Spec defect 1, done: the shadowy circles are gone.** 520 dark ellipses per map were standing in for hills; they were never verticality and only muddied the floor. Deleted, replaced with a quarter as many honest small grime marks. Real elevation (multi level interiors, ramps, readable platform edges) is the replacement and is queued.
+  - **Spec 6.5: the safe pocket is ONE item**, down from two.
+  - **Spec 8.1 and 8.2: crawlers take 3 hits instead of 2, sentries 7 instead of 4** with a plain Auto Rifle. Config version 7 so his save receives it.
+  - **Spec 5.1: the clock now warns** at five minutes, every minute after, and at thirty seconds, each with an alarm, because timer expiry is death and full loss.
+  - **Spec defect 3 verified, not broken:** the dodge roll stamina cost is applying, measured 45 of 100 per roll.
+  - **v1.19 furniture, and its correction.** Interior furniture (tables and shelving as real cover) shipped alongside, but measured 26 sealed sliver cells across 10 maps: the repair pass tolerated pockets of 3 cells or fewer, and furniture makes exactly that size of pocket. The repair is now LAYERED and its threshold is zero: any sealed cell strips that building's furniture first and re-floods, and only a building still sealed after that loses its authored floor plan. Result across 12 maps: **0 sealed cells with 1036 furniture pieces placed, and only 2 percent of buildings fall back to open**, so the plans survive. Also corrected the district border jitter, which the audit proved was a mathematical no-op, and the sim bot's downed branch, which froze the beacon.
+  - **Sim 1/5 with the tankier enemies**, killers crawler and sentry. That is the spec's intent rather than a regression, and his runs decide the final numbers.
+  - Servers died twice more this tick and were restarted; his link is live.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
