@@ -283,7 +283,12 @@ var W=0,H=0,DPR=1;
 // twice the clock to cross it.
 var WORLD_W=5200,WORLD_H=4000;
 var AREA=(WORLD_W*WORLD_H)/(2600*2000);   // scale decorative counts off the old map
-var PACKCAP=[55,80,105];
+// His playtest, 2026-08-22: "make it where the backpack is unlimited and you can
+// just take it all." Carry weight was the game telling him to leave things
+// behind, and since he also wants no junk in the world, refusing a pickup was
+// pure friction with nothing on the other side of it. The three pack tiers stay
+// in the data so the armoury still reads, they are just no longer a wall.
+var PACKCAP=[99999,99999,99999];
 // Armour ceiling. Matches the HUD bar's scale, so the bar can never overflow.
 var ARMOR_MAX=60;
 // Medical the Undercroft always issues, so a bad run cannot leave you with none.
@@ -293,7 +298,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.99';
+var VER='1.00';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -341,6 +346,17 @@ var ITEMS={
   core:{name:'Data Core',val:520,wt:2,r:'rare',c:'#4f9be6'},
   titan:{name:'Titanium Cell',val:880,wt:3,r:'rare',c:'#6fb6ff'},
   blackbox:{name:'ARC Black Box',val:1900,wt:3,r:'elite',c:'#c77ce8'},
+  // His playtest, 2026-08-22: "ITS BORING. I JUST FIND JUNK." He was right, and
+  // it was not a drop rate problem, it was a CONTENT problem: the entire top of
+  // the loot table was one item at weight 2 in one container type. A rarity tier
+  // with a single member cannot feel like a jackpot because there is nothing to
+  // be lucky about.
+  reactor:{name:'ARC Reactor Core',val:2600,wt:4,r:'elite',c:'#e08cff'},
+  codex:{name:'Sealed Codex',val:2200,wt:2,r:'elite',c:'#d89cff'},
+  bloom:{name:'Bloom Sample',val:3100,wt:2,r:'elite',c:'#ff9ce8'},
+  relay:{name:'Orbital Relay',val:1700,wt:4,r:'elite',c:'#c090ff'},
+  ledger:{name:'ARC Payroll Ledger',val:1400,wt:1,r:'rare',c:'#8fd0ff'},
+  coil:{name:'Induction Coil',val:1050,wt:3,r:'rare',c:'#7cc4ff'},
   bandage:{name:'Bandage',val:60,wt:1,r:'common',c:'#d9d4c8',use:'heal',amt:28},
   medkit:{name:'Medkit',val:210,wt:2,r:'uncommon',c:'#e05c5c',use:'heal',amt:65},
   ammobox:{name:'Ammo Box',val:90,wt:1,r:'common',c:'#c2a35e',use:'ammo',amt:40},
@@ -370,7 +386,11 @@ var LOOT={
   crate:[['scrap',32],['wire',22],['cell',13],['bandage',11],['ammobox',15],['board',5],['comp',3],['optic',2]],
   locker:[['wire',15],['cell',13],['board',15],['optic',11],['bandage',7],['ammobox',13],['plate',7],['servo',6],['smoke',4],['decoy',3],['gun_pistol',4],['gun_smg',2],['core',2]],
   safe:[['core',20],['titan',14],['optic',11],['servo',10],['board',9],['plate',7],['medkit',7],['comp',6],['frag',5],['gun_rifle',5],['gun_smg',4],['gun_dmr',2],['blackbox',2]],
-  body:[['bandage',18],['ammobox',22],['scrap',12],['medkit',10],['board',8],['cell',8],['plate',6],['gun_pistol',6],['gun_smg',2],['frag',4],['smoke',4],['core',3]]
+  body:[['bandage',18],['ammobox',22],['scrap',12],['medkit',10],['board',8],['cell',8],['plate',6],['gun_pistol',6],['gun_smg',2],['frag',4],['smoke',4],['core',3]],
+  // Caches hold no junk at all. Every entry here is rare or elite, so opening one
+  // is always worth the 4.6 seconds it pins you in place.
+  cache:[['blackbox',12],['reactor',10],['codex',10],['bloom',7],['relay',11],
+         ['titan',14],['core',12],['ledger',10],['coil',10],['gun_dmr',8],['gun_rifle',9],['medkit',6]]
 };
 var DISTRICTS=[
   // Four genuine hue families at Chrono Trigger saturation. Three of the four
@@ -378,10 +398,17 @@ var DISTRICTS=[
   // at all: you could not tell where you were. wall and wallTop are authored as
   // a real two-step pair, which only separates because the flat black wash that
   // used to multiply every front face by 0.78 is gone from the wall pass.
-  {name:'RUST YARD',floor:'#3a2418',accent:'#52301c',wall:'#6e4526',wallTop:'#a06a3a',light:'#ff9a4a'},
-  {name:'FOUNDRY',floor:'#1a2436',accent:'#24344e',wall:'#354a68',wallTop:'#5c7ea6',light:'#7ec8f0'},
-  {name:'GREENBELT',floor:'#1c2e1c',accent:'#2a4426',wall:'#3c5c34',wallTop:'#6a9450',light:'#c2e86a'},
-  {name:'BLOCKHOUSE',floor:'#262232',accent:'#322e42',wall:'#474258',wallTop:'#6f6a86',light:'#ffcf96'}
+  // TOYBOX NOON palette, v1.0. The old floors were 12 to 18 percent lightness,
+  // and that single fact was the largest cause of "maps feel samey": at that
+  // value hue does no work at all, so four different districts all read as the
+  // same dark smear. Floors now sit at 43 to 47 percent so their hue is visible,
+  // and the four bands never overlap: floor 42-50, wall face 54-60, wall top
+  // 72-78, actors and loot 80-94. Thirty points of separation between the floor
+  // and anything standing on it, which is what makes a top down scene readable.
+  {name:'RUST YARD',floor:'#8F6A4C',accent:'#D9762E',wall:'#9A8272',wallTop:'#C9B49E',light:'#FFC98A'},
+  {name:'FOUNDRY',floor:'#566E8A',accent:'#3FA9C4',wall:'#6E86A6',wallTop:'#A8BFD8',light:'#BFE6F5'},
+  {name:'GREENBELT',floor:'#74894F',accent:'#8FBF3A',wall:'#7E9070',wallTop:'#B4C79E',light:'#E4F5B0'},
+  {name:'BLOCKHOUSE',floor:'#74628C',accent:'#A97ED0',wall:'#8A7EA0',wallTop:'#C0B4D4',light:'#F0DCFF'}
 ];
 var TAGS=['Too dark','Not dark enough','Too easy','Too hard','Shooting felt weak','Shooting felt good',
   'Loot boring','Loot exciting','Got lost','Timer too short','Timer too long','AI too dumb','AI unfair',
@@ -399,7 +426,7 @@ var THROWKEYS=['smoke','decoy','frag'];
 
 // ================================================================ profile
 var P={credits:900,stash:[],weapons:['pistol'],equipped:'pistol',runs:0,ext:0,died:0,best:0,
-  log:[],pack:0,rep:0,contracts:[],cfg:null,lastSim:null,autoExport:true,autoDownload:false,lastReport:'',cond:'night'};
+  log:[],pack:0,rep:0,contracts:[],cfg:null,lastSim:null,autoExport:true,autoDownload:false,lastReport:'',cond:'day'};
 var SKEY='salvagerun:profile';
 function storeSet(v){
   try{
@@ -424,7 +451,12 @@ function loadProfile(){
         if(d&&typeof d.credits==='number'){ P=d;
           if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0;
           if(!P.rep)P.rep=0; if(P.autoExport===undefined)P.autoExport=true; if(P.autoDownload===undefined)P.autoDownload=false;
-          if(P.cond!=='day'&&P.cond!=='night') P.cond='night';
+          // His playtest, 2026-08-22: "MOSTLY FRUSTRATING, ITS TOO JARRING FOR
+          // SOMEONE NEW TO THIS GENRE. MAKE IT ALWAYS DAYTIME." Day is now the
+          // default and every existing save is migrated to it. Night is still
+          // reachable from the terminal, but nobody starts there.
+          if(P.cond!=='day'&&P.cond!=='night') P.cond='day';
+          if(!P.dayMigrated){ P.cond='day'; P.dayMigrated=1; }
           // Saved config already drops keys the game no longer knows; the stash
           // and armoury never had the same protection. An item retired in a
           // later version would have thrown the moment the hub tried to draw it,
@@ -1174,6 +1206,28 @@ function litHex(hex,amt,warm){
 // blue than red, so shadows fall warm brown rather than cold grey, which is the
 // exact mirror of the lightening above and is most of the era's feel. Memoised
 // because sprites ask for the same few shades every frame.
+// TEXT SCALE. His playtest, three separate times: "ALL TEXT IN THE GAME NEEDS TO
+// BE BIGGER AND MORE PROMINENT", "ITS HARD TO SEE", and when asked to choose
+// between a flat increase and a setting he said BOTH. So: every font string in
+// the game passes through FS(), which applies a floor and a user multiplier.
+// The research brief puts the absolute readable floor at 18px on 1080p and calls
+// every 8, 9, 9.5, 10 and 11px string in this file a bug. They were most of them.
+var UISCALES=[1.0,1.25,1.5,1.75,2.0];
+function uiScale(){ var v=P&&P.uiScale; return (typeof v==='number'&&v>0)?v:1.35; }
+var _fs={};
+function FS(spec){
+  var k=spec+'|'+uiScale(),hit=_fs[k];
+  if(hit) return hit;
+  var out=spec.replace(/([\d.]+)px/,function(m,n){
+    var px=parseFloat(n)*1.55;        // the flat lift he asked for
+    if(px<18) px=18;                  // nothing in the game may ship under this
+    return (Math.round(px*uiScale()*10)/10)+'px';
+  });
+  return _fs[k]=out;
+}
+// Layout metrics have to move with the text or the panels overlap themselves.
+function UIK(){ return 1.55*uiScale(); }
+function LH(px){ return Math.round(px*UIK()); }
 var _shade={};
 function darkHex(hex,amt){
   var k=hex+'|'+amt,v=_shade[k];
@@ -1187,24 +1241,27 @@ function darkHex(hex,amt){
 // district palette, lightened and warmed under an overcast noon
 function dcol(d,key){
   var c=DISTRICTS[d===undefined?3:d][key];
-  return isDay()?litHex(c,key==='wallTop'?0.46:0.38,true):c;
+  // The v1.0 palette is authored AT daylight, so lightening it again blew every
+  // surface toward white and destroyed the four value bands. Day uses it as
+  // written; night darkens from it instead of the reverse.
+  return isDay()?c:darkHex(c,0.42);
 }
 function bakeGround(map){
   var g=document.createElement('canvas'); g.width=WORLD_W; g.height=WORLD_H;
   var c=g.getContext('2d'),i,j,k;
-  c.fillStyle=isDay()?'#3f444b':'#12161c'; c.fillRect(0,0,WORLD_W,WORLD_H);
+  c.fillStyle=isDay()?'#6E6A63':'#12161c'; c.fillRect(0,0,WORLD_W,WORLD_H);
   for(i=0;i<map.buildings.length;i++){
     var b=map.buildings[i],D=DISTRICTS[b.d];
     var cx=b.x+b.w/2,cy=b.y+b.h/2,rad=Math.max(b.w,b.h)*1.5;
     var gr=c.createRadialGradient(cx,cy,20,cx,cy,rad);
-    var df=isDay()?litHex(D.floor,0.40,true):D.floor;
-    gr.addColorStop(0,df); gr.addColorStop(.55,df); gr.addColorStop(1,isDay()?'rgba(63,68,75,0)':'rgba(18,22,28,0)');
+    var df=isDay()?D.floor:darkHex(D.floor,0.55);
+    gr.addColorStop(0,df); gr.addColorStop(.55,df); gr.addColorStop(1,isDay()?'rgba(110,106,99,0)':'rgba(18,22,28,0)');
     c.fillStyle=gr; c.beginPath(); c.arc(cx,cy,rad,0,6.2832); c.fill();
   }
   // Day/night is consulted in only three places in this whole bake, so the roads
   // were hardcoded to a night value and stayed dark at noon, reading as trenches
   // cut through a lit city.
-  c.fillStyle=isDay()?'#5a5048':'#221a26';
+  c.fillStyle=isDay()?'#857C6F':'#221a26';
   for(i=1;i<map.rows;i++) c.fillRect(40,80+i*map.ch-42,WORLD_W-80,66);
   for(i=1;i<map.cols;i++) c.fillRect(80+i*map.cw-42,40,66,WORLD_H-80);
   c.fillStyle='rgba(200,180,120,.20)';
@@ -1220,7 +1277,7 @@ function bakeGround(map){
   // flooded ground, baked with the rest of the floor
   for(i=0;i<(map.water||[]).length;i++){
     var q=map.water[i];
-    c.fillStyle=isDay()?'#4a6d78':'#101c22';
+    c.fillStyle=isDay()?'#5F93A0':'#101c22';
     c.fillRect(q.x,q.y,q.w,q.h);
     c.fillStyle=isDay()?'rgba(150,200,215,.16)':'rgba(90,150,180,.10)';
     for(j=0;j<Math.floor(q.w*q.h/2600);j++){
@@ -1276,7 +1333,7 @@ function bakeGround(map){
     c.fillStyle='rgba(0,0,0,.30)'; c.fillRect(b3.x,b3.y,b3.w,b3.h);
     // same fault as the roads: building interiors stayed night-dark while the
     // world outside them lightened
-    c.fillStyle=isDay()?litHex(D3.accent,0.40,true):D3.accent;
+    c.fillStyle=isDay()?D3.accent:darkHex(D3.accent,0.45);
     c.globalAlpha=.55; c.fillRect(b3.x+8,b3.y+8,b3.w-16,b3.h-16); c.globalAlpha=1;
     c.strokeStyle='rgba(0,0,0,.28)'; c.lineWidth=1;
     for(j=b3.x+8;j<b3.x+b3.w-8;j+=46){ c.beginPath(); c.moveTo(j,b3.y+8); c.lineTo(j,b3.y+b3.h-8); c.stroke(); }
@@ -1453,8 +1510,8 @@ function bestRarity(loot){
 }
 function setLoot(c,loot){ c.loot=loot; c.best=bestRarity(loot); return c; }
 function mkContainer(x,y,type,d){
-  var times={crate:1.4,locker:2.2,safe:3.4,body:1.0};
-  var counts={crate:[1,2],locker:[1,3],safe:[2,3],body:[1,2]};
+  var times={crate:1.4,locker:2.2,safe:3.4,body:1.0,cache:4.6};
+  var counts={crate:[1,2],locker:[1,3],safe:[2,3],body:[1,2],cache:[2,3]};
   var c=counts[type],loot=[],n=ri(c[0],c[1]);
   for(var i=0;i<n;i++) loot.push(rollTable(LOOT[type]));
   return {x:x,y:y,r:15,type:type,d:(d===undefined?-1:d),loot:loot,opened:false,time:times[type],best:bestRarity(loot),rot:rnd(-.25,.25)};
@@ -1557,6 +1614,36 @@ function buildRaid(sim){
   }
   var no=Math.max(2,Math.round(18*AREA*CFG.contDens));
   for(i=0;i<no;i++){ var sp2=freeSpot(map,30); containers.push(mkContainer(sp2.x,sp2.y,Math.random()<.7?'crate':'body')); }
+  // ARC CACHES. His playtest: "I SHOULD FIND TOP TIER LOOT EVERY RUN EVEN IF I
+  // MOVE STRAIGHT TO THE EXTRACT." Pure random drop rates cannot promise that,
+  // so the promise is made structurally instead: three caches are PLACED every
+  // raid, and where they are placed is the risk versus greed decision.
+  //   1 near the extraction, so a straight run out is still a paying run.
+  //   2 out at landmarks, worth more in total but a real detour into the map.
+  // They are marked on the sector map, because a jackpot you never find is the
+  // same as no jackpot, and he says he reads the map often.
+  var caches=[];
+  function placeCache(cx,cy,tag){
+    var sp4=freeSpot(map,34);
+    // Prefer somewhere near the requested point, but never fail to place one.
+    var bestSp=null,bestD=1e9;
+    for(var tries=0;tries<220;tries++){
+      var cand=freeSpot(map,34); if(!cand) continue;
+      var dd=Math.sqrt((cand.x-cx)*(cand.x-cx)+(cand.y-cy)*(cand.y-cy));
+      if(dd<bestD){ bestD=dd; bestSp=cand; }
+      if(bestD<420) break;
+    }
+    var use=bestSp||sp4; if(!use) return;
+    var cc=mkContainer(use.x,use.y,'cache',map.districtAt?map.districtAt(use.x,use.y):-1);
+    cc.cache=1; cc.tag=tag;
+    containers.push(cc); caches.push({x:use.x,y:use.y,tag:tag});
+  }
+  placeCache(active.x,active.y,'NEAR EXTRACT');
+  for(var lcx=0;lcx<map.landmarks.length&&caches.length<3;lcx++){
+    var LX=map.landmarks[lcx];
+    placeCache(LX.x+LX.w/2,LX.y+LX.h/2,LX.name);
+  }
+  while(caches.length<3) placeCache(WORLD_W*Math.random(),WORLD_H*Math.random(),'ARC CACHE');
   var lights=[];
   if(!sim){
     for(i=0;i<map.buildings.length;i++){
@@ -1805,11 +1892,26 @@ function padAxis(v){
   if(a<dz) return 0;
   return Math.sign(v)*((a-dz)/(1-dz));
 }
+// Release every input the pad currently owns. Without this, a pad that dies or
+// is unplugged mid firefight leaves mouse.down true and the gun firing until the
+// reserve is empty, and leaves sprint or crouch latched on forever. Called from
+// every exit out of pollPad and from the disconnect event.
+function padRelease(){
+  if(PAD.held){ for(var c in PAD.held){ if(PAD.held[c]) keys[c]=false; } PAD.held={}; }
+  if(PAD.firing){ mouse.down=false; PAD.firing=0; }
+  if(PAD.adsing){ if(G&&G.player) G.player.ads=false; PAD.adsing=0; }
+  PAD.prev=[];
+}
 function pollPad(){
   if(!navigator.getGamepads) return;
   var gps=navigator.getGamepads(),gp=null;
   for(var i=0;i<gps.length;i++){ if(gps[i]&&gps[i].connected){ gp=gps[i]; break; } }
-  if(!gp){ PAD.on=false; PAD.mx=0; PAD.my=0; return; }
+  if(!gp){ if(PAD.on) padRelease(); PAD.on=false; PAD.mx=0; PAD.my=0; return; }
+  PAD.held=PAD.held||{};
+  function padHold(code,down){
+    if(down){ keys[code]=true; PAD.held[code]=1; }
+    else if(PAD.held[code]){ keys[code]=false; PAD.held[code]=0; }
+  }
   PAD.on=true;
   if(!PAD.announced){
     PAD.announced=true;
@@ -1837,26 +1939,26 @@ function pollPad(){
   }
 
   if(state==='hub'){
-    // The hub only needs to walk and interact, and it reads plain key state.
-    keys['KeyW']=PAD.my<-0.3; keys['KeyS']=PAD.my>0.3;
-    keys['KeyA']=PAD.mx<-0.3; keys['KeyD']=PAD.mx>0.3;
-    var aNow=pressed(0);
-    if(aNow&&!PAD.prev[0]) keys['KeyE']=true; else if(!aNow) keys['KeyE']=false;
+    // This branch used to assign keys['KeyW'] and friends unconditionally, which
+    // is the exact bug the raid path was already fixed for: with a pad merely
+    // connected, every frame wrote WASD and E to false before updateHubWorld
+    // read them, so keyboard movement AND every station interaction died. The
+    // WASD writes also bought nothing, because updateHubWorld already reads the
+    // stick directly. Ownership only, and sprint works here too now.
+    padHold('KeyE',pressed(0));
+    padHold('ShiftLeft',pressed(10));
     for(var b0=0;b0<bt.length;b0++) PAD.prev[b0]=pressed(b0);
     return;
   }
-  if(state!=='raid'||!G) return;
+  // Any other screen: the pad owns nothing, so let go of whatever it was holding
+  // rather than latching it across the transition.
+  if(state!=='raid'||!G){ padRelease(); return; }
 
   // Ownership, not assignment. Writing these unconditionally meant that merely
   // having a pad PLUGGED IN overwrote mouse.down and the held keys to false
   // every frame, so the mouse stopped firing and keyboard sprint stopped
   // working the moment a controller was connected, whether or not it was being
   // used. Caught by test. The pad now only clears what the pad itself set.
-  PAD.held=PAD.held||{};
-  function padHold(code,down){
-    if(down){ keys[code]=true; PAD.held[code]=1; }
-    else if(PAD.held[code]){ keys[code]=false; PAD.held[code]=0; }
-  }
   // triggers: RT fires, LT is steady aim. Both are analog, so a light pull is
   // deliberately still nothing: 0.35 is past the resting travel on a worn pad.
   var rtOn=!G.over&&!G.paused&&trig(7)>0.35;
@@ -1890,7 +1992,7 @@ function pollPad(){
   for(var b2=0;b2<bt.length;b2++) if(PAD.prev[b2]===undefined) PAD.prev[b2]=pressed(b2);
 }
 window.addEventListener('gamepadconnected',function(){ PAD.announced=false; });
-window.addEventListener('gamepaddisconnected',function(){ PAD.on=false; PAD.announced=false; PAD.mx=0; PAD.my=0; PAD.aiming=false; });
+window.addEventListener('gamepaddisconnected',function(){ padRelease(); PAD.on=false; PAD.announced=false; PAD.mx=0; PAD.my=0; PAD.aiming=false; });
 cv.addEventListener('contextmenu',function(e){e.preventDefault();});
 function togglePauseBox(on){
   if(!G||G.over) return;
@@ -3626,6 +3728,9 @@ function drawContS(ct){
   if(ct.type==='crate'){ w=16;lift=9;d2=8;cF='#4e3a1e';cT='#8a6a3a';cL='#ab8a55'; }
   else if(ct.type==='locker'){ w=12;lift=20;d2=6;cF='#24333e';cT='#4a6a80';cL='#6a8ea6'; }
   else if(ct.type==='safe'){ w=16;lift=13;d2=8;cF='#2a1f33';cT='#5a4670';cL='#7c6796'; }
+  // An ARC cache is the biggest, brightest object of its kind in the game on
+  // purpose: it is the one thing every raid guarantees, so it has to be findable.
+  else if(ct.type==='cache'){ w=26;lift=19;d2=11;cF='#3a2050';cT='#8f4fc0';cL='#e0a0ff'; }
   else { w=20;lift=3;d2=6;cF='#302719';cT='#57462f';cL='#756042'; }
   var dim=ct.opened?.45:1;
   wc.globalAlpha=dim;
@@ -3642,9 +3747,19 @@ function drawContS(ct){
     var pu=.5+.35*Math.sin(G.t*3+ct.x*.05);
     wc.globalCompositeOperation='lighter';
     wc.fillStyle=RCOL[ct.best];
-    wc.globalAlpha=.28*pu;
-    wc.beginPath(); wc.arc(ct.x,ct.y-lift-d2-3,6,0,6.2832); wc.fill();
+    wc.globalAlpha=(ct.cache?.55:.28)*pu;
+    wc.beginPath(); wc.arc(ct.x,ct.y-lift-d2-3,ct.cache?15:6,0,6.2832); wc.fill();
+    if(ct.cache){
+      wc.globalAlpha=.30*pu; wc.fillStyle='#e0a0ff';
+      wc.beginPath(); wc.arc(ct.x,ct.y-lift-d2-3,30,0,6.2832); wc.fill();
+    }
     wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+    if(ct.cache){
+      wc.font=FS('700 12px "Oxanium", sans-serif'); wc.textAlign='center';
+      wc.fillStyle=INK; wc.fillText('ARC CACHE',ct.x+1,ct.y-lift-d2-25);
+      wc.fillStyle='#e6b4ff'; wc.fillText('ARC CACHE',ct.x,ct.y-lift-d2-26);
+      wc.textAlign='left';
+    }
   }
 }
 function render2D(dt){
@@ -3898,7 +4013,7 @@ function render2D(dt){
     var hostile=ne.kind==='raider';
     // a raider bolting for the beacon is worth calling out: it is a race now
     var plate=ne.name+(ne.state==='extract'?' [RUNNING]':'');
-    wc.font='700 9px "Oxanium", sans-serif';
+    wc.font=FS('700 9px "Oxanium", sans-serif');
     var tw=wc.measureText(plate).width;
     wc.fillStyle='rgba(6,9,13,.62)';
     wc.fillRect(ne.x-tw/2-4,ne.y-lift-9,tw+8,12);
@@ -4127,7 +4242,11 @@ function render2D(dt){
   // unseen 70 percent of the screen is fractionally DARKER than before while
   // reading as deep indigo. Day becomes warm dust at 32.9 against 32.5. The two
   // clamp expressions are the stealth budget and are untouched.
-  fx2.fillStyle=isDay()?('rgba(40,30,25,'+clamp(.88-(BR-1)*.09,.72,.93)+')')
+  // The stealth budget lives in whether an enemy is DRAWN (gated on e.seen), not
+  // in how dark the fog is, so day fog can be lifted a long way without giving
+  // away a single hostile. It was 72 to 93 percent opaque, which is why he called
+  // daylight jarring: you still could not see the street you were standing in.
+  fx2.fillStyle=isDay()?('rgba(58,46,38,'+clamp(.46-(BR-1)*.06,.30,.54)+')')
                        :('rgba(3,5,23,'+clamp(.93-(BR-1)*.09,.78,.96)+')');
   fx2.fillRect(0,0,W,H);
   // the fog cutouts are all world shapes, so the fog layer takes the world
@@ -4225,25 +4344,25 @@ function drawHUD(){
     }
   }
   // timer + compass
-  ctx.font='700 20px "Oxanium", sans-serif'; ctx.textAlign='center';
+  ctx.font=FS('700 20px "Oxanium", sans-serif'); ctx.textAlign='center';
   var mm=Math.floor(G.timeLeft/60),ss=Math.floor(G.timeLeft%60);
   ctx.fillStyle=G.timeLeft<45?'#ff4d3d':'#cdd6dd';
   ctx.fillText(mm+':'+(ss<10?'0':'')+ss,W/2,30);
   var za=Math.atan2(G.active.y-p.y,G.active.x-p.x),zd=Math.round(dist(p,G.active));
-  ctx.font='10px "Roboto Mono", monospace'; ctx.fillStyle='#35d6c8';
+  ctx.font=FS('10px "Roboto Mono", monospace'); ctx.fillStyle='#35d6c8';
   ctx.fillText('BEACON '+zd+'m',W/2,46);
   ctx.save(); ctx.translate(W/2,60); ctx.rotate(za+Math.PI/2);
   ctx.fillStyle='#35d6c8';
   ctx.beginPath(); ctx.moveTo(0,-8); ctx.lineTo(-5,5); ctx.lineTo(5,5); ctx.closePath(); ctx.fill();
   ctx.restore();
   if(G.marked>0){
-    ctx.font='700 13px "Oxanium", sans-serif';
+    ctx.font=FS('700 13px "Oxanium", sans-serif');
     ctx.fillStyle='rgba(255,60,40,'+(.6+.4*Math.sin(G.t*10))+')';
     ctx.fillText('MARKED - THEY KNOW WHERE YOU ARE',W/2,82);
   }
   ctx.textAlign='left';
   if(G.msgT>0){
-    ctx.font='11px "Roboto Mono", monospace';
+    ctx.font=FS('11px "Roboto Mono", monospace');
     ctx.fillStyle='rgba(205,214,221,'+clamp(G.msgT,0,1)+')';
     ctx.fillText(G.msg,16,26);
   }
@@ -4256,14 +4375,14 @@ function drawHUD(){
     var zs=w2s(zz2.x,zz2.r+18,zz2.y);
     if(!zs||zs.x<-90||zs.x>W+90||zs.y<-40||zs.y>H+40) continue;
     var zlab=za?'EXTRACTION':'EXTRACTION - COLD';
-    ctx.font='700 11px "Oxanium", sans-serif';
+    ctx.font=FS('700 11px "Oxanium", sans-serif');
     var zwid=ctx.measureText(zlab).width;
     ctx.fillStyle='rgba(6,9,13,.78)';
     ctx.fillRect(zs.x-zwid/2-6,zs.y-11,zwid+12,15);
     ctx.fillStyle=za?'#35d6c8':'rgba(168,180,193,.95)';
     ctx.fillText(zlab,zs.x,zs.y);
     if(!za){
-      ctx.font='9px "Roboto Mono", monospace';
+      ctx.font=FS('9px "Roboto Mono", monospace');
       ctx.fillStyle='rgba(168,180,193,.7)';
       ctx.fillText('no beacon here',zs.x,zs.y+13);
     }
@@ -4274,7 +4393,7 @@ function drawHUD(){
   if(nc2&&!G.searching&&!p.downed){
     var s=w2s(nc2.x,26,nc2.y);
     if(s){
-      ctx.font='10px "Roboto Mono", monospace'; ctx.textAlign='center';
+      ctx.font=FS('10px "Roboto Mono", monospace'); ctx.textAlign='center';
       ctx.fillStyle='#ffd25c';
       ctx.fillText('[E] SEARCH '+nc2.type.toUpperCase(),s.x,s.y);
       ctx.textAlign='left';
@@ -4295,14 +4414,14 @@ function drawHUD(){
     var sm2=w2s(e.x,spriteTop(e)+22,e.y);
     if(sm2){
       ctx.fillStyle=mk[1];
-      ctx.font='700 13px "Oxanium", sans-serif'; ctx.textAlign='center';
+      ctx.font=FS('700 13px "Oxanium", sans-serif'); ctx.textAlign='center';
       ctx.fillText(mk[0],sm2.x,sm2.y); ctx.textAlign='left';
     }
   }
   // bars
   var by=H-26;
   bar(16,by,150,10,p.hp/p.maxhp,p.hp>50?'#5fae6f':(p.hp>25?'#d0a13c':'#c8452f'));
-  ctx.font='9px "Roboto Mono", monospace'; ctx.fillStyle='#8a96a1';
+  ctx.font=FS('9px "Roboto Mono", monospace'); ctx.fillStyle='#8a96a1';
   ctx.fillText('HP '+Math.round(p.hp),20,by-3);
   if(p.armor>0){
     bar(16,by-16,150,5,p.armor/ARMOR_MAX,'#5aa9e6');
@@ -4310,9 +4429,9 @@ function drawHUD(){
   }
   bar(16,by+9,150,4,p.stam/100,'#8fb5c8');
   ctx.textAlign='right';
-  ctx.font='700 14px "Oxanium", sans-serif'; ctx.fillStyle='#cdd6dd';
+  ctx.font=FS('700 14px "Oxanium", sans-serif'); ctx.fillStyle='#cdd6dd';
   ctx.fillText(p.wep.name+(p.ads?'  [ADS]':''),W-16,by-34);
-  ctx.font='700 18px "Oxanium", sans-serif';
+  ctx.font=FS('700 18px "Oxanium", sans-serif');
   if(p.wep.mag===0){ ctx.fillStyle='#8a96a1'; ctx.fillText('MELEE',W-16,by-14); }
   else if(p.reloading>0){ ctx.fillStyle='#ffb02e'; ctx.fillText('RELOADING',W-16,by-14); }
   else {
@@ -4321,14 +4440,14 @@ function drawHUD(){
   }
   // the sidearm waiting on X, so the second gun is not a secret
   if(p.sec){
-    ctx.font='9.5px "Roboto Mono", monospace'; ctx.fillStyle='#7d8894';
+    ctx.font=FS('9.5px "Roboto Mono", monospace'); ctx.fillStyle='#7d8894';
     ctx.fillText('[X] '+p.sec.name+'  '+p.secAmmo,W-16,by-52);
   }
-  ctx.font='9.5px "Roboto Mono", monospace'; ctx.fillStyle='#8a96a1';
+  ctx.font=FS('9.5px "Roboto Mono", monospace'); ctx.fillStyle='#8a96a1';
   ctx.fillText('CARRY '+bagWeight()+' / '+PACKCAP[P.pack]+'  ('+G.bag.length+' items)',W-16,by);
   // standing cue: the bag was findable only from a dim 14-item legend line
   if(!G.bagOpen){
-    ctx.font='700 10px "Oxanium", sans-serif'; ctx.fillStyle='#ffb02e';
+    ctx.font=FS('700 10px "Oxanium", sans-serif'); ctx.fillStyle='#ffb02e';
     ctx.fillText('TAB  INVENTORY',W-16,by-68);
   }
   var pl2=[],tsn=THROWKEYS[G.tsel];
@@ -4342,12 +4461,12 @@ function drawHUD(){
   ctx.textAlign='left';
   if(G.beaconT!==null&&!G.over){
     var inRing=dist(p,G.active)<G.active.r;
-    ctx.font='700 13px "Oxanium", sans-serif'; ctx.textAlign='center';
+    ctx.font=FS('700 13px "Oxanium", sans-serif'); ctx.textAlign='center';
     ctx.fillStyle=inRing?'#35d6c8':'#ffb02e';
     ctx.fillText('BEACON INBOUND  '+Math.ceil(G.beaconT)+'s',W/2,H-70);
     bar(W/2-90,H-62,180,9,1-G.beaconT/CFG.extractWait,inRing?'#35d6c8':'#ffb02e');
     if(!inRing){
-      ctx.font='10px "Roboto Mono", monospace'; ctx.fillStyle='#ffc04a';
+      ctx.font=FS('10px "Roboto Mono", monospace'); ctx.fillStyle='#ffc04a';
       ctx.fillText('GET TO THE RING',W/2,H-46);
     } else {
       // count what is actually converging, because a number climbing while you
@@ -4360,23 +4479,23 @@ function drawHUD(){
         }
       }
       if(inbound){
-        ctx.font='700 10px "Roboto Mono", monospace';
+        ctx.font=FS('700 10px "Roboto Mono", monospace');
         ctx.fillStyle=inbound>4?'#ff5a4a':'#ffc04a';
         ctx.fillText(inbound+' converging on the ring',W/2,H-46);
       }
     }
     ctx.textAlign='left';
   } else if(!G.over&&dist(p,G.active)<G.active.r){
-    ctx.font='700 13px "Oxanium", sans-serif'; ctx.textAlign='center';
+    ctx.font=FS('700 13px "Oxanium", sans-serif'); ctx.textAlign='center';
     ctx.fillStyle='#35d6c8'; ctx.fillText('HOLD E TO CALL THE BEACON',W/2,H-70);
     ctx.textAlign='left';
   }
   if(p.downed){
     ctx.fillStyle='rgba(60,8,5,.45)'; ctx.fillRect(0,0,W,H);
-    ctx.font='700 34px "Oxanium", sans-serif'; ctx.textAlign='center';
+    ctx.font=FS('700 34px "Oxanium", sans-serif'); ctx.textAlign='center';
     ctx.fillStyle='#ff4d3d'; ctx.fillText('DOWN',W/2,H/2-34);
     bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
-    ctx.font='11px "Roboto Mono", monospace'; ctx.fillStyle='#e8d5d2';
+    ctx.font=FS('11px "Roboto Mono", monospace'); ctx.fillStyle='#e8d5d2';
     var canRev=!p.revived&&findHeal()>=0;
     ctx.fillText(p.revived?'Auto-injector spent. Crawl or bleed out.':
       (canRev?'[F] SELF-REVIVE (uses medical)':'No medical in bag. Crawl or bleed out.'),W/2,H/2+6);
@@ -4487,7 +4606,7 @@ function drawLegend(){
   var x=14,i,j,rows=0;
   var LEG=(PAD&&PAD.on)?LEGEND_PAD:LEGEND;
   for(i=0;i<LEG.length;i++) rows+=1+LEG[i][1].length;
-  var boxH=rows*12+GEARRULES.length*11+34;
+  var boxH=rows*LH(12)+GEARRULES.length*LH(11)+LH(34);
   // Stop above the meters instead of on top of them. This box bottomed out 12px
   // from the screen edge while the armour, health and stamina bars occupy from
   // 42px to 13px from that same edge, and the legend is drawn after them, so it
@@ -4495,21 +4614,22 @@ function drawLegend(){
   // that was the normal state of the screen rather than an edge case.
   // Clamped so a short window loses the bottom of the list rather than the top
   // of it, since the headings are what make the list navigable.
-  var top=Math.max(8,H-52-boxH);
-  ctx.fillStyle='rgba(6,9,13,.74)'; ctx.fillRect(x-8,top-6,222,boxH+10);
+  var top=Math.max(8,H-LH(52)-boxH);
+  var LEGW=LH(222);
+  ctx.fillStyle='rgba(18,15,24,.82)'; ctx.fillRect(x-8,top-6,LEGW,boxH+10);
   ctx.strokeStyle='rgba(58,69,82,.9)'; ctx.lineWidth=1;
-  ctx.strokeRect(x-7.5,top-5.5,221,boxH+9);
-  var cy=top+6;
+  ctx.strokeRect(x-7.5,top-5.5,LEGW-1,boxH+9);
+  var cy=top+LH(6);
   for(i=0;i<LEG.length;i++){
-    ctx.font='700 9px "Oxanium", sans-serif'; ctx.fillStyle='#ffb02e';
-    ctx.fillText(LEG[i][0],x,cy); cy+=12;
+    ctx.font=FS('700 9px "Oxanium", sans-serif'); ctx.fillStyle='#ffb02e';
+    ctx.fillText(LEG[i][0],x,cy); cy+=LH(12);
     for(j=0;j<LEG[i][1].length;j++){
       var k=LEG[i][1][j];
-      ctx.font='700 9px "Roboto Mono", monospace'; ctx.fillStyle='#cdd6dd';
-      ctx.fillText(k[0],x+6,cy);
+      ctx.font=FS('700 9px "Roboto Mono", monospace'); ctx.fillStyle='#cdd6dd';
+      ctx.fillText(k[0],x+LH(6),cy);
       ctx.font=MONO; ctx.fillStyle='#8a96a1';
-      ctx.fillText(k[1],x+64,cy);
-      cy+=12;
+      ctx.fillText(k[1],x+LH(64),cy);
+      cy+=LH(12);
     }
   }
   cy+=6;
@@ -4518,76 +4638,76 @@ function drawLegend(){
   for(i=0;i<GEARRULES.length;i++){
     var gr=GEARRULES[i];
     if(gr[0]){
-      ctx.font='700 8.5px "Oxanium", sans-serif'; ctx.fillStyle='#7fc4a0';
+      ctx.font=FS('700 8.5px "Oxanium", sans-serif'); ctx.fillStyle='#7fc4a0';
       ctx.fillText(typeof gr[0]==='function'?gr[0]():gr[0],x,cy);
     }
-    ctx.font='8.5px "Roboto Mono", monospace'; ctx.fillStyle='#8a96a1';
+    ctx.font=FS('8.5px "Roboto Mono", monospace'); ctx.fillStyle='#8a96a1';
     // a rule may be a function when its wording depends on the input device
-    ctx.fillText(typeof gr[1]==='function'?gr[1]():gr[1],x+(gr[0]?52:6),cy);
-    cy+=11;
+    ctx.fillText(typeof gr[1]==='function'?gr[1]():gr[1],x+(gr[0]?LH(52):LH(6)),cy);
+    cy+=LH(11);
   }
 }
 function drawBag(){
-  var p=G.player,PW=270,x=W-PW-12,y=48,i;
-  var maxRows=Math.max(3,Math.floor((H-260)/16));
+  var p=G.player,PW=LH(270),x=W-PW-12,y=48,i;
+  var maxRows=Math.max(3,Math.floor((H-LH(260))/LH(16)));
   var rows=Math.min(G.bag.length,maxRows);
   // +40 reserves the control hint row at the bottom. Without the reserve the
   // hint prints straight over the last items in the list; at +22 it still
   // clipped the final row, so the gap is measured from the list end below
   // rather than guessed from the panel height.
-  var hh=150+Math.max(1,rows)*16+(G.bag.length>maxRows?16:0)+40;
+  var hh=LH(150)+Math.max(1,rows)*LH(16)+(G.bag.length>maxRows?LH(16):0)+LH(40);
   hh=Math.min(hh,H-70);
   ctx.fillStyle='rgba(6,9,13,.96)'; ctx.fillRect(x,y,PW,hh);
   ctx.strokeStyle='#3a4552'; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,PW-1,hh-1);
 
-  var cy=y+19;
-  ctx.font='700 12px "Oxanium", sans-serif'; ctx.fillStyle='#ffb02e';
+  var cy=y+LH(19);
+  ctx.font=FS('700 12px "Oxanium", sans-serif'); ctx.fillStyle='#ffb02e';
   ctx.fillText('INVENTORY',x+11,cy);
-  ctx.font='9px "Roboto Mono", monospace'; ctx.fillStyle='#6b7783'; ctx.textAlign='right';
+  ctx.font=FS('9px "Roboto Mono", monospace'); ctx.fillStyle='#6b7783'; ctx.textAlign='right';
   ctx.fillText((PAD&&PAD.on)?'VIEW to close':'TAB or I to close',x+PW-11,cy); ctx.textAlign='left';
-  cy+=8;
+  cy+=LH(8);
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
 
   // equipped
-  cy+=16;
-  ctx.font='9px "Roboto Mono", monospace'; ctx.fillStyle='#6b7783';
+  cy+=LH(16);
+  ctx.font=FS('9px "Roboto Mono", monospace'); ctx.fillStyle='#6b7783';
   ctx.fillText('EQUIPPED',x+11,cy);
-  cy+=15;
-  ctx.font='700 12px "Oxanium", sans-serif'; ctx.fillStyle='#cdd6dd';
+  cy+=LH(15);
+  ctx.font=FS('700 12px "Oxanium", sans-serif'); ctx.fillStyle='#cdd6dd';
   ctx.fillText(p.wep.name,x+11,cy);
-  ctx.font='10px "Roboto Mono", monospace'; ctx.textAlign='right';
+  ctx.font=FS('10px "Roboto Mono", monospace'); ctx.textAlign='right';
   ctx.fillStyle=p.wep.mag===0?'#8a96a1':(p.ammo===0?'#ff4d3d':'#ffb02e');
   ctx.fillText(p.wep.mag===0?'MELEE':(p.ammo+' / '+p.reserve),x+PW-11,cy);
   ctx.textAlign='left';
-  cy+=14;
-  ctx.font='9px "Roboto Mono", monospace'; ctx.fillStyle='#6b7783';
+  cy+=LH(14);
+  ctx.font=FS('9px "Roboto Mono", monospace'); ctx.fillStyle='#6b7783';
   ctx.fillText('DMG '+p.wep.dmg+'  RANGE '+p.wep.rng+'  '+(p.wep.auto?'AUTO':'SEMI')+
     (p.wep.mag?('  MAG '+p.wep.mag):''),x+11,cy);
 
   // body
-  cy+=18;
+  cy+=LH(18);
   ctx.fillStyle='#6b7783'; ctx.fillText('BODY',x+11,cy);
-  cy+=14;
-  ctx.font='10px "Roboto Mono", monospace'; ctx.fillStyle='#cdd6dd';
+  cy+=LH(14);
+  ctx.font=FS('10px "Roboto Mono", monospace'); ctx.fillStyle='#cdd6dd';
   ctx.fillText('Integrity '+Math.round(p.hp)+'/'+p.maxhp+'    Armor '+Math.round(p.armor),x+11,cy);
-  cy+=14;
+  cy+=LH(14);
   var pl=[];
   for(i=0;i<THROWKEYS.length;i++) pl.push(THROWKEYS[i].toUpperCase().slice(0,3)+' x'+G.pouch[THROWKEYS[i]]);
   ctx.fillStyle='#8a96a1'; ctx.fillText('Pouch  '+pl.join('   '),x+11,cy);
 
   // bag
-  cy+=20;
-  ctx.font='9px "Roboto Mono", monospace'; ctx.fillStyle='#6b7783';
+  cy+=LH(20);
+  ctx.font=FS('9px "Roboto Mono", monospace'); ctx.fillStyle='#6b7783';
   ctx.fillText('BAG  '+bagWeight()+'/'+PACKCAP[P.pack]+'wt',x+11,cy);
   ctx.textAlign='right';
   ctx.fillStyle='#7fc4a0'; ctx.fillText('better guns auto-equip',x+PW-11,cy-13);
   ctx.textAlign='left';
   ctx.textAlign='right'; ctx.fillText('\u25c6 = kept on death',x+PW-11,cy); ctx.textAlign='left';
-  cy+=6;
+  cy+=LH(6);
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
-  cy+=14;
+  cy+=LH(14);
   var prot=safeSet();
-  ctx.font='10px "Roboto Mono", monospace';
+  ctx.font=FS('10px "Roboto Mono", monospace');
   // Scroll the window so the highlighted row is always on screen, otherwise a
   // bag longer than the panel has items you can select but never see.
   var sel=clamp(G.bagSel||0,0,Math.max(0,G.bag.length-1));
@@ -4618,7 +4738,7 @@ function drawBag(){
   var hintY=Math.min(listEnd+18,y+hh-8);
   ctx.strokeStyle='#232b35'; ctx.beginPath();
   ctx.moveTo(x+11,hintY-11); ctx.lineTo(x+PW-11,hintY-11); ctx.stroke();
-  ctx.fillStyle='#9aa8d0'; ctx.font='9px "Roboto Mono", monospace';
+  ctx.fillStyle='#9aa8d0'; ctx.font=FS('9px "Roboto Mono", monospace');
   ctx.fillText((PAD&&PAD.on)?'DPAD select   DPAD L drop':'\u2191\u2193 select   Z drop',x+11,hintY);
   ctx.textAlign='right';
   ctx.fillStyle=P.autoloot?'#4de3d0':'#9aa8d0';
@@ -4642,9 +4762,9 @@ function drawMapOverlay(){
   ctx.strokeStyle='#7f92d8'; ctx.lineWidth=1.5;
   ctx.strokeRect(ox,oy,WORLD_W*sc,WORLD_H*sc);
   ctx.lineWidth=1;
-  ctx.font='700 11px "Oxanium", sans-serif'; ctx.fillStyle='#ffc04a';
+  ctx.font=FS('700 11px "Oxanium", sans-serif'); ctx.fillStyle='#ffc04a';
   ctx.fillText('SECTOR MAP',ox,oy-10);
-  ctx.font='9px "Roboto Mono", monospace'; ctx.fillStyle='#9aa8d0';
+  ctx.font=FS('9px "Roboto Mono", monospace'); ctx.fillStyle='#9aa8d0';
   ctx.fillText('hostile positions unknown',ox+110,oy-10);
   // conditions belong on the map, since they change how far you can see
   ctx.textAlign='right';
@@ -4676,11 +4796,29 @@ function drawMapOverlay(){
     var Z2=zl[i];
     if(!Z2.cells) continue;
     var zx=ox+(80+(Z2.mc+0.5)*G.map.cw)*sc, zy=oy+(80+(Z2.mr+0.5)*G.map.ch)*sc;
-    ctx.font='700 13px "Oxanium", sans-serif';
+    ctx.font=FS('700 13px "Oxanium", sans-serif');
     ctx.fillStyle=hexA(DISTRICTS[Z2.d].wallTop,.28);
     ctx.fillText(DISTRICTS[Z2.d].name,zx,zy);
   }
   ctx.textAlign='left';
+  // ARC caches are marked, because a guaranteed jackpot you never find is the
+  // same as no jackpot. Marked whether or not you have been there, so the route
+  // choice is available from the first second of the raid: the near one is on
+  // your way out, the far ones are a decision.
+  for(i=0;i<G.containers.length;i++){
+    var CQ=G.containers[i];
+    if(!CQ.cache) continue;
+    var qx=ox+CQ.x*sc, qy=oy+CQ.y*sc;
+    var qp=.6+.4*Math.sin(G.t*2.6+i);
+    ctx.globalAlpha=CQ.opened?.35:1;
+    ctx.strokeStyle='#e0a0ff'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(qx,qy,9+2*qp,0,6.2832); ctx.stroke();
+    ctx.fillStyle='#e6b4ff';
+    ctx.beginPath(); ctx.arc(qx,qy,3.5,0,6.2832); ctx.fill();
+    ctx.font=FS('700 11px "Oxanium", sans-serif'); ctx.textAlign='center';
+    ctx.fillText(CQ.opened?'LOOTED':'CACHE',qx,qy-15);
+    ctx.textAlign='left'; ctx.globalAlpha=1;
+  }
   // Landmarks are what the map is navigated BY, so they are labelled and boxed
   // rather than left as anonymous geometry.
   var lms=(G.map.landmarks||[]);
@@ -4690,7 +4828,7 @@ function drawMapOverlay(){
     ctx.strokeRect(ox+LM2.x*sc,oy+LM2.y*sc,LM2.w*sc,LM2.h*sc);
     ctx.fillStyle='rgba(255,192,74,.07)';
     ctx.fillRect(ox+LM2.x*sc,oy+LM2.y*sc,LM2.w*sc,LM2.h*sc);
-    ctx.textAlign='center'; ctx.font='700 8px "Oxanium", sans-serif';
+    ctx.textAlign='center'; ctx.font=FS('700 8px "Oxanium", sans-serif');
     ctx.fillStyle='#ffc04a';
     ctx.fillText(LM2.name,ox+(LM2.x+LM2.w/2)*sc,oy+(LM2.y+LM2.h/2)*sc+3);
     ctx.textAlign='left';
@@ -4700,7 +4838,7 @@ function drawMapOverlay(){
     ctx.strokeStyle=act?'#4de3d0':'rgba(127,146,216,.42)'; ctx.lineWidth=act?2:1;
     ctx.beginPath(); ctx.arc(ox+zz.x*sc,oy+zz.y*sc,zz.r*sc+3,0,6.2832); ctx.stroke();
     if(act){ ctx.fillStyle='#4de3d0'; ctx.beginPath(); ctx.arc(ox+zz.x*sc,oy+zz.y*sc,3,0,6.2832); ctx.fill(); }
-    ctx.textAlign='center'; ctx.font='700 9px "Oxanium", sans-serif';
+    ctx.textAlign='center'; ctx.font=FS('700 9px "Oxanium", sans-serif');
     ctx.fillStyle=act?'#4de3d0':'rgba(154,168,208,.80)';
     ctx.fillText(act?'EXTRACTION':'COLD',ox+zz.x*sc,oy+zz.y*sc+zz.r*sc+16);
     ctx.textAlign='left';
@@ -4958,7 +5096,7 @@ function drawHubWorld(dt){
   wc.textAlign='center';
   for(i=0;i<HB.stations.length;i++){
     var s3=HB.stations[i],on=HB.near===s3;
-    wc.font='700 10px "Oxanium", sans-serif';
+    wc.font=FS('700 10px "Oxanium", sans-serif');
     var tw=wc.measureText(s3.label).width;
     wc.fillStyle='rgba(6,9,13,'+(on?.8:.5)+')';
     wc.fillRect(s3.x-tw/2-5,s3.y-56,tw+10,13);
@@ -4995,21 +5133,21 @@ function drawHubWorld(dt){
 function drawHubHUD(ox,oy){
   var p=HB.player;
   ctx.clearRect(0,0,W,H);
-  ctx.font='700 15px "Oxanium", sans-serif'; ctx.fillStyle='#ffb02e';
+  ctx.font=FS('700 15px "Oxanium", sans-serif'); ctx.fillStyle='#ffb02e';
   ctx.fillText('THE UNDERCROFT',16,28);
-  ctx.font='9.5px "Roboto Mono", monospace'; ctx.fillStyle='#8a96a1';
+  ctx.font=FS('9.5px "Roboto Mono", monospace'); ctx.fillStyle='#8a96a1';
   ctx.fillText(P.credits.toLocaleString()+'c  ·  REP '+P.rep.toLocaleString()+
     '  ·  '+P.stash.length+' in stash  ·  '+P.runs+' runs',16,44);
   if(HB.near){
     var s=HB.near;
     ctx.textAlign='center';
-    ctx.font='700 14px "Oxanium", sans-serif'; ctx.fillStyle=s.c;
+    ctx.font=FS('700 14px "Oxanium", sans-serif'); ctx.fillStyle=s.c;
     ctx.fillText('[E]  '+s.label,W/2,H-58);
-    ctx.font='10px "Roboto Mono", monospace'; ctx.fillStyle='#8a96a1';
+    ctx.font=FS('10px "Roboto Mono", monospace'); ctx.fillStyle='#8a96a1';
     ctx.fillText(s.sub,W/2,H-42);
     ctx.textAlign='left';
   }
-  ctx.font='9px "Roboto Mono", monospace'; ctx.fillStyle='rgba(140,152,163,.75)';
+  ctx.font=FS('9px "Roboto Mono", monospace'); ctx.fillStyle='rgba(140,152,163,.75)';
   ctx.textAlign='center';
   ctx.fillText('WASD WALK  ·  SHIFT JOG  ·  E USE STATION',W/2,H-16);
   ctx.textAlign='left';
