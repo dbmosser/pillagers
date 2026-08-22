@@ -1,0 +1,21 @@
+﻿=== DARK RAIDERS v1.01 FLIGHT RECORDER ===
+Profile: 4 runs, 2 extracted, 1 died, best haul 11500c, credits 900, rep 0, pack T1
+Active config [B]: {"coneDeg":130,"viewFar":620,"ambient":150,"raidSec":600,"pSpeed":158,"extractWait":25,"nSentry":13,"nCrawler":15,"nRaider":4,"nSnitch":4,"eDmg":1,"eHp":1,"lootMult":1,"contDens":1,"eAmbient":100,"noiseMult":1,"safeSlots":2,"downTime":12,"regenDelay":10,"regenSec":3,"bright":1.7,"simGreed":26,"simRaids":30,"preset":"B"}
+
+FEELING TAGS (all runs): Extract too easy x2, Too easy x2, Loot boring x1, AI too dumb x1, Ran out of ammo x1, Extract too tense x1
+
+--- RUNS (oldest first) ---
+#1 EXTRACT [B] wep:Auto Rifle dur:309s haul:7115c items:30 cont:16 shots:13 acc:15% kills:0s/1c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:1called/0missed regen:0hp firstContact:none firstLoot:116s moved:11886 crouch:0s sprint:4s lit:42% closestExt:21 aiExtracted:4
+   tags: Extract too easy, Too easy, Loot boring
+   note: looting feels so uninspired, how can we make it more interesting???
+#2 EXTRACT [B] wep:Auto Rifle dur:285s haul:11500c items:22 cont:10 shots:75 acc:37% kills:3s/8c/0r/0sn heals:0 downs:0 rev:0 marked:1 beacon:1called/0missed regen:35hp firstContact:183s firstLoot:85s moved:18605 crouch:0s sprint:10s lit:13% closestExt:8 aiExtracted:4
+   tags: Too easy, AI too dumb, Extract too easy, Ran out of ammo
+#3 ABANDON [B] wep:Auto Rifle dur:25s haul:180c items:3 cont:0 shots:21 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:3784 crouch:0s sprint:8s lit:30% closestExt:2491 aiExtracted:1
+   note: character not rendering
+   in-run note @25s: every block is the smae lengt, map has no atmosphere, needs verticality, hills, woods, town centers, big buildings, etc
+#4 DEAD [B] wep:Auto Rifle dur:396s haul:12875c items:19 cont:15 shots:93 acc:33% kills:2s/9c/0r/2sn heals:0 downs:2 rev:1 marked:0 beacon:3called/2missed regen:0hp firstContact:130s firstLoot:140s moved:20226 crouch:0s sprint:13s lit:9% closestExt:5 killer:sentry diedAt:112m aiExtracted:4
+   tags: Extract too tense
+   note: extract was too hard, once i call the beacon and it arrivs i should have 30 seconds t get back into the circle and use it to extract
+   in-run note @190s: not enough enemies, boring -- looting
+
+=== END RECORDER ===
