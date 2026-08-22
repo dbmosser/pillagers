@@ -1,4 +1,4 @@
-﻿# DARK RAIDERS Design Bible
+# DARK RAIDERS Design Bible
 Prepared: August 20, 2026. Revised: August 20, 2026 (v0.6).
 
 Single source of truth for the game's design intent. Add this file plus the latest `dark_raiders.html` to a Claude Project so every new conversation starts with full context. Update the changelog each version.
@@ -342,6 +342,12 @@ Three things, none of which should be built without him saying so.
   - Every vision query was moved onto two helpers so sight moves as one thing; the previous arrangement had five separate reads of `CFG.viewFar` and any of them could have quietly ignored the weather.
   - Announced in the opening line of the raid instead of the controls reminder, which was identical every single time, and named on the sector map since it changes how far you can see.
   - **Verified:** 400 rolls give 34/22/21/12/11 percent against an intended 34/22/18/13/13, so the weighting works and clear stays commonest. Storm is the heaviest frame, with rain, lightning and dimmed lamps at once: 3.1ms of a 16.7ms budget, 95th percentile render 2.0ms. Rain is a fixed 170 screen space strokes regardless of zoom or map size. Sim unaffected, 6/6 with contact in all six and no hangs.
+- **v0.95 (the extraction siege, against his playtest tag "Extract too easy"):** Extraction was the one moment in the raid with no risk in it. He pressed a key, stood in a circle for 25 quiet seconds with a full bag, and left. That is the exact opposite of what the ending of a greed run should feel like, and it was quietly undercutting the whole risk versus greed pillar: if getting out is free, then filling the bag costs nothing.
+  - **Calling the dropship is now the loudest thing you can do.** The beacon fires a 700 unit ping and hard alerts every enemy within 1500 units, sending each one to a scattered point on the ring. It is not a trickle: measured on a passive player, interest went from 0 enemies before the call to between 3 and 13 after it, with a peak of 4 to 10 bodies inside 420 units of the ring.
+  - **It keeps pulling.** A 900 unit re-ping every 2 seconds during the wait drags back anything that loses the scent, so the back half of the countdown is not a lull. Raiders already leaving with 5 or more items are skipped, because a rival hauling a full bag has somewhere better to be and chasing your beacon would read as scripted rather than greedy.
+  - **The HUD says the number out loud.** Under the countdown bar: "N converging on the ring", amber, red above four. The opening line changed to "Every one of them heard that. Hold the ring." You are told the cost before the timer starts.
+  - **This is where v0.90 dropship haul finally pays.** Going down inside the ring is no longer the end of the run, so the siege is survivable in a way that makes holding worth attempting rather than simply lethal.
+  - **Verified against the risk it was meant to add, not against my intent.** Passive player: 3 of 5 died. The bot, which fights back, across three separate batches: 5/6, 5/6, 5/6 extracted, one death each, and the killers were spread across crawler, raider and sentry rather than one dominant threat. Before this change deaths at extraction were effectively zero. Frame cost 2.7ms of a 16.7ms budget with 36 enemies converging in a storm.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

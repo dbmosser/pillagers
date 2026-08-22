@@ -293,7 +293,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.94';
+var VER='0.95';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -1919,15 +1919,44 @@ function tryExtractTick(dt,wantCall){
     if(inside&&wantCall){
       G.beaconT=CFG.extractWait;
       T.beaconCalls=(T.beaconCalls||0)+1;
+      // Calling the ship is the loudest thing you do all raid, and it should be
+      // the moment the raid turns. His own playtest tagged extraction "too
+      // easy": he pressed a key and stood in a circle for 25 quiet seconds with
+      // a full bag. Everything that can hear it now comes, which is what makes
+      // the last stretch the price of the haul rather than a formality.
       ping(z.x,z.y,700,true);
+      G.siege=0;
+      for(var si=0;si<G.ents.length;si++){
+        var se=G.ents[si];
+        if(dist(se,z)>1500) continue;
+        se.alert=Math.max(se.alert,3);
+        if(se.kind==='raider'&&se.bag&&se.bag.length>=5) continue;  // already leaving with theirs
+        se.state='investigate'; se.tx=z.x+rnd(-40,40); se.ty=z.y+rnd(-40,40);
+      }
       blip('alarm');
       say(G.timeLeft<CFG.extractWait
         ? 'Beacon inbound, '+Math.round(CFG.extractWait)+'s. The raid clock runs out first.'
-        : 'Beacon inbound, '+Math.round(CFG.extractWait)+'s. Be in the ring when it lands, on your feet or not.');
+        : 'Beacon inbound, '+Math.round(CFG.extractWait)+'s. Every one of them heard that. Hold the ring.');
     }
     return;
   }
   G.beaconT-=dt;
+  // The beacon keeps calling while it is inbound, so anything that wanders off
+  // the scent is pulled back and the pressure builds instead of arriving once
+  // and fading. Every two seconds, quiet enough that it is the beacon being
+  // heard rather than you.
+  G.siege=(G.siege||0)+dt;
+  if(G.siege>=2){
+    G.siege=0;
+    ping(z.x,z.y,900,true);
+    for(var bi=0;bi<G.ents.length;bi++){
+      var be=G.ents[bi];
+      if(dist(be,z)>1500) continue;
+      if(be.state==='chase') continue;
+      be.alert=Math.max(be.alert,2.4);
+      if(be.state!=='extract'){ be.state='investigate'; be.tx=z.x+rnd(-50,50); be.ty=z.y+rnd(-50,50); }
+    }
+  }
   if(G.beaconT>0) return;
   if(inside){ endRaid('extract'); return; }
   G.beaconT=null;
@@ -3911,8 +3940,23 @@ function drawHUD(){
     ctx.fillText('BEACON INBOUND  '+Math.ceil(G.beaconT)+'s',W/2,H-70);
     bar(W/2-90,H-62,180,9,1-G.beaconT/CFG.extractWait,inRing?'#35d6c8':'#ffb02e');
     if(!inRing){
-      ctx.font='10px "Roboto Mono", monospace'; ctx.fillStyle='#ffb02e';
+      ctx.font='10px "Roboto Mono", monospace'; ctx.fillStyle='#ffc04a';
       ctx.fillText('GET TO THE RING',W/2,H-46);
+    } else {
+      // count what is actually converging, because a number climbing while you
+      // stand still is the tension the wait was missing
+      var inbound=0;
+      for(var qi=0;qi<G.ents.length;qi++){
+        var qe=G.ents[qi];
+        if(qe.state==='investigate'||qe.state==='chase'||qe.state==='alarm'){
+          if(dist(qe,G.active)<1500) inbound++;
+        }
+      }
+      if(inbound){
+        ctx.font='700 10px "Roboto Mono", monospace';
+        ctx.fillStyle=inbound>4?'#ff5a4a':'#ffc04a';
+        ctx.fillText(inbound+' converging on the ring',W/2,H-46);
+      }
     }
     ctx.textAlign='left';
   } else if(!G.over&&dist(p,G.active)<G.active.r){
