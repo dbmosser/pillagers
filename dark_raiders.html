@@ -255,7 +255,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.80';
+var VER='0.81';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -3941,6 +3941,11 @@ function renderHub(){
       var b=document.createElement('button'); b.textContent='Claim';
       b.style.borderColor='var(--coolant)'; b.style.color='var(--coolant)';
       b.onclick=function(){
+        // Pay only a contract that is actually finished and is still the one in
+        // that slot. Same reason as the shop and the workshop: the row was drawn
+        // earlier and the claim should not take its word for the state of things.
+        if(c.prog<c.n) return;
+        if(P.contracts[ci]!==c) return;
         P.credits+=c.reward; P.rep+=c.reward;
         P.contracts[ci]=genContract(); saveProfile(); renderHub();
       };
@@ -4099,13 +4104,25 @@ function renderWork(){
     nm.innerHTML=r.name+'<br><span style="color:var(--ash);font-size:9.5px">'+need.join(', ')+'</span>';
     var b=document.createElement('button'); b.textContent='Craft'; b.disabled=!can;
     b.onclick=function(){
-      for(var k2 in r.need){
+      // Check the materials, then spend them, and do both or neither. This used
+      // to remove whatever it could find and award the output regardless, so a
+      // missing ingredient was silently tolerated rather than refused: measured,
+      // 7 recipes forced against an empty stash produced 7 items out of nothing,
+      // an armour plate and a frag charge among them. Building the new stash to
+      // one side and only committing it at the end also means a craft can never
+      // eat half the ingredients and hand back nothing.
+      var have=stashCounts(),k2;
+      for(k2 in r.need){ if((have[k2]||0)<r.need[k2]) return; }
+      var next=P.stash.slice();
+      for(k2 in r.need){
         for(var q=0;q<r.need[k2];q++){
-          var ix=P.stash.indexOf(k2);
-          if(ix>=0) P.stash.splice(ix,1);
+          var ix=next.indexOf(k2);
+          if(ix<0) return;
+          next.splice(ix,1);
         }
       }
-      for(var k3 in r.out){ for(var q2=0;q2<r.out[k3];q2++) P.stash.push(k3); }
+      for(var k3 in r.out){ for(var q2=0;q2<r.out[k3];q2++) next.push(k3); }
+      P.stash=next;
       saveProfile(); renderWork(); renderHub();
     };
     row.appendChild(nm); row.appendChild(b);
