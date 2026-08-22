@@ -293,7 +293,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.97';
+var VER='0.98';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -1690,13 +1690,19 @@ window.addEventListener('keydown',function(e){
     return;
   }
   if(state!=='raid') return;
-  keys[e.code]=true;
-  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyX','ControlLeft','ShiftLeft'].indexOf(e.code)>=0) e.preventDefault();
-  if((e.code==='Escape'||e.code==='KeyP')&&G&&!G.over) togglePauseBox(true);
-  if(e.code==='KeyH'&&G&&!e.repeat) G.legendOn=!G.legendOn;
+  raidKey(e.code,e.repeat,e);
+});
+// Every in-raid action lives here rather than inside the keydown listener, so
+// the gamepad can raise the same action without faking DOM events. ev is null
+// when the caller is not a real key press and there is nothing to preventDefault.
+function raidKey(code,repeat,ev){
+  keys[code]=true;
+  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyX','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
+  if((code==='Escape'||code==='KeyP')&&G&&!G.over) togglePauseBox(true);
+  if(code==='KeyH'&&G&&!repeat) G.legendOn=!G.legendOn;
   // X swaps primary and secondary. Each keeps its own loaded magazine; the
   // reserve pool is shared, so swapping is not a way to dodge running dry.
-  if(e.code==='KeyX'&&G&&!G.over&&!G.paused&&!e.repeat){
+  if(code==='KeyX'&&G&&!G.over&&!G.paused&&!repeat){
     var pp=G.player;
     if(pp.sec&&!pp.downed&&pp.roll<=0){
       var ow=pp.wep,oa=pp.ammo,oi=pp.wepIssued;
@@ -1708,30 +1714,30 @@ window.addEventListener('keydown',function(e){
       blip('pick');
     }
   }
-  if(e.code==='KeyQ'&&G&&!G.over&&!e.repeat) cycleThrow();
-  if(e.code==='KeyG'&&G&&!G.over&&!G.paused&&!e.repeat) doThrow();
-  if(e.code==='Space'&&G&&!G.over&&!G.paused&&!e.repeat) tryRoll();
-  if((e.code==='Tab'||e.code==='KeyI')&&G&&!G.over&&!e.repeat){ G.bagOpen=!G.bagOpen; G.bagSel=0; }
+  if(code==='KeyQ'&&G&&!G.over&&!repeat) cycleThrow();
+  if(code==='KeyG'&&G&&!G.over&&!G.paused&&!repeat) doThrow();
+  if(code==='Space'&&G&&!G.over&&!G.paused&&!repeat) tryRoll();
+  if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){ G.bagOpen=!G.bagOpen; G.bagSel=0; }
   // Bag browsing. The arrows double as movement keys, so while the bag is open
   // they select instead and WASD still walks: you can sort without being rooted.
   if(G&&!G.over&&G.bagOpen&&G.bag.length){
-    if(e.code==='ArrowUp'){ G.bagSel=(G.bagSel-1+G.bag.length)%G.bag.length; e.preventDefault(); }
-    if(e.code==='ArrowDown'){ G.bagSel=(G.bagSel+1)%G.bag.length; e.preventDefault(); }
-    if(e.code==='KeyZ'&&!e.repeat){
+    if(code==='ArrowUp'){ G.bagSel=(G.bagSel-1+G.bag.length)%G.bag.length; if(ev) ev.preventDefault(); }
+    if(code==='ArrowDown'){ G.bagSel=(G.bagSel+1)%G.bag.length; if(ev) ev.preventDefault(); }
+    if(code==='KeyZ'&&!repeat){
       var dk=dropItem(clamp(G.bagSel,0,G.bag.length-1));
       if(dk){ say('Dropped '+ITEMS[dk].name); blip('clank'); }
       if(G.bagSel>=G.bag.length) G.bagSel=Math.max(0,G.bag.length-1);
     }
   }
-  if(e.code==='KeyC'&&G&&!G.over&&!e.repeat){
+  if(code==='KeyC'&&G&&!G.over&&!repeat){
     P.autoloot=!P.autoloot; saveProfile();
     say('Autoloot '+(P.autoloot?'ON: a full bag sheds its worst':'OFF: a full bag refuses'));
   }
   // zoom: works in the raid and in the hub, and on both the main and numpad keys
-  if(e.code==='Equal'||e.code==='NumpadAdd'){ setZoom(zoomTarget()*1.15); if(G&&!G.over) say('Zoom '+Math.round(ZT*100)+'%'); }
-  if(e.code==='Minus'||e.code==='NumpadSubtract'){ setZoom(zoomTarget()/1.15); if(G&&!G.over) say('Zoom '+Math.round(ZT*100)+'%'); }
-  if(e.code==='Digit0'||e.code==='Numpad0'){ setZoom(1); if(G&&!G.over) say('Zoom 100%'); }
-});
+  if(code==='Equal'||code==='NumpadAdd'){ setZoom(zoomTarget()*1.15); if(G&&!G.over) say('Zoom '+Math.round(ZT*100)+'%'); }
+  if(code==='Minus'||code==='NumpadSubtract'){ setZoom(zoomTarget()/1.15); if(G&&!G.over) say('Zoom '+Math.round(ZT*100)+'%'); }
+  if(code==='Digit0'||code==='Numpad0'){ setZoom(1); if(G&&!G.over) say('Zoom 100%'); }
+}
 // mouse wheel zooms too, which is what anyone will try first
 cv.addEventListener('wheel',function(e){
   if(!G||G.over) return;
@@ -1758,6 +1764,133 @@ window.addEventListener('mouseup',function(e){
   if(e.button===2){ if(G) G.player.ads=false; }
   if(e.button===0) mouse.down=false;
 });
+// ================================================================ gamepad
+// Xbox controller support. The design decision that makes the rest simple: the
+// right stick drives a VIRTUAL CURSOR rather than setting the aim angle
+// directly. Facing, throw targeting, the camera lean and the crosshair are all
+// derived from the cursor already, so driving the cursor makes every one of
+// them work untouched. Setting the angle instead would have fixed aiming and
+// silently left throws and the camera pointing at wherever the mouse last was.
+var PAD={on:false,idx:-1,aiming:false,mx:0,my:0,prev:[],announced:false};
+// The split below is not cosmetic. The game consumes its actions two different
+// ways and a pad has to respect both: some are raised once on the keydown edge
+// (roll, swap, throw, inventory), and others are POLLED from key state every
+// frame (search, reload, medical). Tapping a polled action sets the key and
+// clears it inside the same frame, so the poll never sees it. Caught by test:
+// mapping search as a tap made reload silently do nothing and would have made
+// looting impossible, since searching a container and calling the dropship are
+// both hold-to-act.
+var PADTAP={
+  1:'Space',      // B      dodge roll
+  3:'KeyX',       // Y      swap weapon
+  4:'KeyQ',       // LB     cycle throwable
+  5:'KeyG',       // RB     throw it
+  8:'Tab',        // View   inventory
+  9:'KeyP',       // Menu   pause
+  14:'KeyZ',      // Dpad left   drop selected
+  15:'KeyC'       // Dpad right  autoloot toggle
+};
+var PADHOLD={
+  0:'KeyE',       // A      search, and hold to call the dropship
+  2:'KeyR',       // X      reload
+  13:'KeyF',      // Dpad down   use medical
+  10:'ShiftLeft', // LS click    sprint
+  11:'ControlLeft'// RS click    crouch
+};
+function padAxis(v){
+  // Radial deadzone with rescaling, so the first millimetre past the deadzone
+  // is a small input and not a jump to 0.22 of full speed.
+  var dz=0.22;
+  var a=Math.abs(v);
+  if(a<dz) return 0;
+  return Math.sign(v)*((a-dz)/(1-dz));
+}
+function pollPad(){
+  if(!navigator.getGamepads) return;
+  var gps=navigator.getGamepads(),gp=null;
+  for(var i=0;i<gps.length;i++){ if(gps[i]&&gps[i].connected){ gp=gps[i]; break; } }
+  if(!gp){ PAD.on=false; PAD.mx=0; PAD.my=0; return; }
+  PAD.on=true;
+  if(!PAD.announced){
+    PAD.announced=true;
+    if(G&&!G.over) say('Controller connected. Left stick moves, right stick aims.');
+  }
+  var ax=gp.axes||[],bt=gp.buttons||[];
+  function pressed(n){ var b=bt[n]; return !!b&&(b.pressed||b.value>0.5); }
+  function trig(n){ var b=bt[n]; return b?(b.value!==undefined?b.value:(b.pressed?1:0)):0; }
+
+  // movement, analog
+  PAD.mx=padAxis(ax[0]||0); PAD.my=padAxis(ax[1]||0);
+  var mgp=Math.sqrt(PAD.mx*PAD.mx+PAD.my*PAD.my);
+  if(mgp>1){ PAD.mx/=mgp; PAD.my/=mgp; }
+
+  // aim, as a virtual cursor placed off the player in the stick direction
+  var rx=padAxis(ax[2]||0),ry=padAxis(ax[3]||0);
+  if(G&&!G.over&&(rx||ry)){
+    PAD.aiming=true;
+    var p=G.player,pz=ZOOM();
+    var cx=(G.camX===undefined?p.x-W/(2*pz):G.camX);
+    var cy=(G.camY===undefined?p.y-H/pz*0.54:G.camY);
+    var psx=(p.x-cx)*pz,psy=(p.y-cy)*pz;
+    var rl=Math.sqrt(rx*rx+ry*ry); if(rl>1){ rx/=rl; ry/=rl; }
+    mouse.x=psx+rx*200*pz; mouse.y=psy+ry*200*pz; mouse.init=true;
+  }
+
+  if(state==='hub'){
+    // The hub only needs to walk and interact, and it reads plain key state.
+    keys['KeyW']=PAD.my<-0.3; keys['KeyS']=PAD.my>0.3;
+    keys['KeyA']=PAD.mx<-0.3; keys['KeyD']=PAD.mx>0.3;
+    var aNow=pressed(0);
+    if(aNow&&!PAD.prev[0]) keys['KeyE']=true; else if(!aNow) keys['KeyE']=false;
+    for(var b0=0;b0<bt.length;b0++) PAD.prev[b0]=pressed(b0);
+    return;
+  }
+  if(state!=='raid'||!G) return;
+
+  // Ownership, not assignment. Writing these unconditionally meant that merely
+  // having a pad PLUGGED IN overwrote mouse.down and the held keys to false
+  // every frame, so the mouse stopped firing and keyboard sprint stopped
+  // working the moment a controller was connected, whether or not it was being
+  // used. Caught by test. The pad now only clears what the pad itself set.
+  PAD.held=PAD.held||{};
+  function padHold(code,down){
+    if(down){ keys[code]=true; PAD.held[code]=1; }
+    else if(PAD.held[code]){ keys[code]=false; PAD.held[code]=0; }
+  }
+  // triggers: RT fires, LT is steady aim. Both are analog, so a light pull is
+  // deliberately still nothing: 0.35 is past the resting travel on a worn pad.
+  var rtOn=!G.over&&!G.paused&&trig(7)>0.35;
+  var ltOn=!G.over&&!G.paused&&trig(6)>0.35;
+  if(rtOn){ mouse.down=true; PAD.firing=1; }
+  else if(PAD.firing){ mouse.down=false; PAD.firing=0; }
+  if(ltOn){ G.player.ads=true; PAD.adsing=1; }
+  else if(PAD.adsing){ G.player.ads=false; PAD.adsing=0; }
+
+  // With the bag open the dpad browses it, the same doubling the arrow keys
+  // already do on the keyboard, so up and down change meaning there.
+  var bagNav=!!G.bagOpen;
+  for(var h in PADHOLD){
+    var hn=+h;
+    // dpad down browses the bag rather than using medical while it is open
+    padHold(PADHOLD[h], pressed(hn)&&!(bagNav&&hn===13));
+  }
+  padHold('KeyM', pressed(12)&&!bagNav);     // dpad up holds the map, matching M
+
+  for(var k in PADTAP){
+    var n=+k,now=pressed(n);
+    if(now&&!PAD.prev[n]){ raidKey(PADTAP[n],false,null); keys[PADTAP[n]]=false; }
+    PAD.prev[n]=now;
+  }
+  if(bagNav){
+    var dU=pressed(12),dD=pressed(13);
+    if(dU&&!PAD.prev[12]){ raidKey('ArrowUp',false,null); keys['ArrowUp']=false; }
+    if(dD&&!PAD.prev[13]){ raidKey('ArrowDown',false,null); keys['ArrowDown']=false; }
+    PAD.prev[12]=dU; PAD.prev[13]=dD;
+  } else { PAD.prev[12]=pressed(12); PAD.prev[13]=pressed(13); }
+  for(var b2=0;b2<bt.length;b2++) if(PAD.prev[b2]===undefined) PAD.prev[b2]=pressed(b2);
+}
+window.addEventListener('gamepadconnected',function(){ PAD.announced=false; });
+window.addEventListener('gamepaddisconnected',function(){ PAD.on=false; PAD.announced=false; PAD.mx=0; PAD.my=0; PAD.aiming=false; });
 cv.addEventListener('contextmenu',function(e){e.preventDefault();});
 function togglePauseBox(on){
   if(!G||G.over) return;
@@ -1789,11 +1922,18 @@ var ROLLSPD=320,ROLLSTAM=45;
 function tryRoll(){
   var p=G.player;
   if(p.downed||p.roll>0||p.rollCd>0||p.stam<ROLLSTAM) return;
-  var mx=0,my=0;
+  var mx=0,my=0,ana=1;
   if(keys['KeyW']||keys['ArrowUp'])my-=1;
   if(keys['KeyS']||keys['ArrowDown'])my+=1;
   if(keys['KeyA']||keys['ArrowLeft'])mx-=1;
   if(keys['KeyD']||keys['ArrowRight'])mx+=1;
+  // The stick wins when it is deflected, and keeps its magnitude. The movement
+  // below normalises the vector, which on its own would turn a half pushed
+  // stick into a full sprint and throw away the only thing analog buys you.
+  if(PAD.on&&(PAD.mx||PAD.my)){
+    mx=PAD.mx; my=PAD.my;
+    ana=Math.min(1,Math.sqrt(mx*mx+my*my));
+  }
   var mg=Math.sqrt(mx*mx+my*my);
   if(mg>0) p.rollDir={x:mx/mg,y:my/mg};
   else p.rollDir={x:Math.cos(p.face),y:Math.sin(p.face)};
@@ -2254,11 +2394,18 @@ function updatePlayer(dt){
     tryExtractTick(dt);
     return;
   }
-  var mx=0,my=0;
+  var mx=0,my=0,ana=1;
   if(keys['KeyW']||keys['ArrowUp'])my-=1;
   if(keys['KeyS']||keys['ArrowDown'])my+=1;
   if(keys['KeyA']||keys['ArrowLeft'])mx-=1;
   if(keys['KeyD']||keys['ArrowRight'])mx+=1;
+  // The stick wins when it is deflected, and keeps its magnitude. The movement
+  // below normalises the vector, which on its own would turn a half pushed
+  // stick into a full sprint and throw away the only thing analog buys you.
+  if(PAD.on&&(PAD.mx||PAD.my)){
+    mx=PAD.mx; my=PAD.my;
+    ana=Math.min(1,Math.sqrt(mx*mx+my*my));
+  }
   var mg=Math.sqrt(mx*mx+my*my);
 
   var crouch=!!(keys['ControlLeft']||keys['ControlRight']);
@@ -2278,7 +2425,7 @@ function updatePlayer(dt){
 
   if(mg>0){
     var ox=p.x,oy=p.y;
-    p.x+=(mx/mg)*spd*dt; p.y+=(my/mg)*spd*dt; p.bob+=dt*(sprint?15:9); p.moving=true;
+    p.x+=(mx/mg)*spd*ana*dt; p.y+=(my/mg)*spd*ana*dt; p.bob+=dt*(sprint?15:9); p.moving=true;
     p.noiseAcc=(p.noiseAcc||0)+dt;
     // wading defeats crouch entirely: splashing is loud whatever you do
     var iv=wading?.30:(crouch?99:(sprint?.38:.72));
@@ -4260,6 +4407,14 @@ var LEGEND=[
   ['GEAR',[['Q','cycle throwable'],['G','throw it'],['F','use medical'],['TAB','inventory']]],
   ['WORLD',[['E','search / call beacon'],['M','hold for map'],['H','hide this list'],['P','pause']]]
 ];
+// Shown in place of the keyboard list once a pad is actually connected, because
+// a controller player reading key names has to translate every line.
+var LEGEND_PAD=[
+  ['MOVE',[['L STICK','move, analog'],['LS CLICK','sprint'],['RS CLICK','crouch'],['B','dodge roll']]],
+  ['FIGHT',[['R STICK','aim'],['RT','fire'],['LT','steady aim'],['X','reload'],['Y','swap weapon']]],
+  ['GEAR',[['LB','cycle throwable'],['RB','throw it'],['DPAD DN','use medical'],['VIEW','inventory']]],
+  ['WORLD',[['A','search / call beacon'],['DPAD UP','hold for map'],['DPAD L/R','drop / autoloot'],['MENU','pause']]]
+];
 // Every line here used to run past the right edge of its own panel, by 83 to 164
 // pixels on a box only 222 wide, so the rules he asked for spilled out of their
 // box onto the world behind. Measured with the real font rather than guessed.
@@ -4268,13 +4423,13 @@ var LEGEND=[
 // when charges started stopping at walls, which is the behaviour most likely to
 // look like a bug the first time a frag lands short.
 var GEARRULES=[
-  ['WEAPONS','X swaps primary/sidearm.'],
+  ['WEAPONS',function(){ return (PAD&&PAD.on)?'Y swaps primary/sidearm.':'X swaps primary/sidearm.'; }],
   ['','A better gun auto-equips.'],
   ['','Set loadout in the armory.'],
   ['ARMOUR','No equip key. Plates apply'],
   ['','on pickup until armour is full.'],
   ['THROWS','2 of each load from stash.'],
-  ['','Q cycles, G throws.'],
+  ['',function(){ return (PAD&&PAD.on)?'LB cycles, RB throws.':'Q cycles, G throws.'; }],
   ['','They stop at cover, not over.'],
   ['WATER','Slows you and is loud.'],
   ['','Crouch will not quiet a splash.'],
@@ -4330,7 +4485,8 @@ function drawLegend(){
     return;
   }
   var x=14,i,j,rows=0;
-  for(i=0;i<LEGEND.length;i++) rows+=1+LEGEND[i][1].length;
+  var LEG=(PAD&&PAD.on)?LEGEND_PAD:LEGEND;
+  for(i=0;i<LEG.length;i++) rows+=1+LEG[i][1].length;
   var boxH=rows*12+GEARRULES.length*11+34;
   // Stop above the meters instead of on top of them. This box bottomed out 12px
   // from the screen edge while the armour, health and stamina bars occupy from
@@ -4344,11 +4500,11 @@ function drawLegend(){
   ctx.strokeStyle='rgba(58,69,82,.9)'; ctx.lineWidth=1;
   ctx.strokeRect(x-7.5,top-5.5,221,boxH+9);
   var cy=top+6;
-  for(i=0;i<LEGEND.length;i++){
+  for(i=0;i<LEG.length;i++){
     ctx.font='700 9px "Oxanium", sans-serif'; ctx.fillStyle='#ffb02e';
-    ctx.fillText(LEGEND[i][0],x,cy); cy+=12;
-    for(j=0;j<LEGEND[i][1].length;j++){
-      var k=LEGEND[i][1][j];
+    ctx.fillText(LEG[i][0],x,cy); cy+=12;
+    for(j=0;j<LEG[i][1].length;j++){
+      var k=LEG[i][1][j];
       ctx.font='700 9px "Roboto Mono", monospace'; ctx.fillStyle='#cdd6dd';
       ctx.fillText(k[0],x+6,cy);
       ctx.font=MONO; ctx.fillStyle='#8a96a1';
@@ -4363,10 +4519,11 @@ function drawLegend(){
     var gr=GEARRULES[i];
     if(gr[0]){
       ctx.font='700 8.5px "Oxanium", sans-serif'; ctx.fillStyle='#7fc4a0';
-      ctx.fillText(gr[0],x,cy);
+      ctx.fillText(typeof gr[0]==='function'?gr[0]():gr[0],x,cy);
     }
     ctx.font='8.5px "Roboto Mono", monospace'; ctx.fillStyle='#8a96a1';
-    ctx.fillText(gr[1],x+(gr[0]?52:6),cy);
+    // a rule may be a function when its wording depends on the input device
+    ctx.fillText(typeof gr[1]==='function'?gr[1]():gr[1],x+(gr[0]?52:6),cy);
     cy+=11;
   }
 }
@@ -4387,7 +4544,7 @@ function drawBag(){
   ctx.font='700 12px "Oxanium", sans-serif'; ctx.fillStyle='#ffb02e';
   ctx.fillText('INVENTORY',x+11,cy);
   ctx.font='9px "Roboto Mono", monospace'; ctx.fillStyle='#6b7783'; ctx.textAlign='right';
-  ctx.fillText('TAB or I to close',x+PW-11,cy); ctx.textAlign='left';
+  ctx.fillText((PAD&&PAD.on)?'VIEW to close':'TAB or I to close',x+PW-11,cy); ctx.textAlign='left';
   cy+=8;
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
 
@@ -4462,10 +4619,10 @@ function drawBag(){
   ctx.strokeStyle='#232b35'; ctx.beginPath();
   ctx.moveTo(x+11,hintY-11); ctx.lineTo(x+PW-11,hintY-11); ctx.stroke();
   ctx.fillStyle='#9aa8d0'; ctx.font='9px "Roboto Mono", monospace';
-  ctx.fillText('\u2191\u2193 select   Z drop',x+11,hintY);
+  ctx.fillText((PAD&&PAD.on)?'DPAD select   DPAD L drop':'\u2191\u2193 select   Z drop',x+11,hintY);
   ctx.textAlign='right';
   ctx.fillStyle=P.autoloot?'#4de3d0':'#9aa8d0';
-  ctx.fillText('C autoloot '+(P.autoloot?'ON':'OFF'),x+PW-11,hintY);
+  ctx.fillText(((PAD&&PAD.on)?'DPAD R autoloot ':'C autoloot ')+(P.autoloot?'ON':'OFF'),x+PW-11,hintY);
   ctx.textAlign='left';
   if(!G.bag.length){ ctx.fillStyle='#6b7783'; ctx.fillText('Empty. Go find something.',x+11,cy); }
 }
@@ -4712,11 +4869,18 @@ function updateHubWorld(dt){
   var p=HB.player;
   HB.t+=dt;
   if(hubModalOpen()){ p.moving=false; HB.near=null; return; }
-  var mx=0,my=0;
+  var mx=0,my=0,ana=1;
   if(keys['KeyW']||keys['ArrowUp'])my-=1;
   if(keys['KeyS']||keys['ArrowDown'])my+=1;
   if(keys['KeyA']||keys['ArrowLeft'])mx-=1;
   if(keys['KeyD']||keys['ArrowRight'])mx+=1;
+  // The stick wins when it is deflected, and keeps its magnitude. The movement
+  // below normalises the vector, which on its own would turn a half pushed
+  // stick into a full sprint and throw away the only thing analog buys you.
+  if(PAD.on&&(PAD.mx||PAD.my)){
+    mx=PAD.mx; my=PAD.my;
+    ana=Math.min(1,Math.sqrt(mx*mx+my*my));
+  }
   var mg=Math.sqrt(mx*mx+my*my);
   p.moving=mg>0;
   if(mg>0){
@@ -4882,6 +5046,7 @@ function loop(ts){
   // Ahead of every early return below, so zoom keeps easing in the hub, while
   // paused and on the death screen instead of freezing part way through a step.
   tickZoom(dt);
+  pollPad();
   if(state==='hub'){
     if(HB&&wc&&W>0){ updateHubWorld(dt); drawHubWorld(dt); }
     return;
