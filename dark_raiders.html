@@ -284,7 +284,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='0.86';
+var VER='0.87';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -3563,7 +3563,14 @@ function drawLegend(){
   var x=14,i,j,rows=0;
   for(i=0;i<LEGEND.length;i++) rows+=1+LEGEND[i][1].length;
   var boxH=rows*12+GEARRULES.length*11+34;
-  var top=H-16-boxH;
+  // Stop above the meters instead of on top of them. This box bottomed out 12px
+  // from the screen edge while the armour, health and stamina bars occupy from
+  // 42px to 13px from that same edge, and the legend is drawn after them, so it
+  // painted its panel straight over all three. The legend is on by default, so
+  // that was the normal state of the screen rather than an edge case.
+  // Clamped so a short window loses the bottom of the list rather than the top
+  // of it, since the headings are what make the list navigable.
+  var top=Math.max(8,H-52-boxH);
   ctx.fillStyle='rgba(6,9,13,.74)'; ctx.fillRect(x-8,top-6,222,boxH+10);
   ctx.strokeStyle='rgba(58,69,82,.9)'; ctx.lineWidth=1;
   ctx.strokeRect(x-7.5,top-5.5,221,boxH+9);
