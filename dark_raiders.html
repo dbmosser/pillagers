@@ -312,7 +312,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.17';
+var VER='1.18';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -773,6 +773,12 @@ function blip(type,d,pan){
     o2.type='sine'; o2.frequency.setValueAtTime(660,t); o2.frequency.exponentialRampToValueAtTime(1180,t+.09);
     g4.gain.setValueAtTime(.07,t); g4.gain.exponentialRampToValueAtTime(.001,t+.12);
     o2.connect(g4); g4.connect(OUT); o2.start(t); o2.stop(t+.13);
+  } else if(type==='charge'){
+    var oc=a.createOscillator(),gc=a.createGain();
+    oc.type='sawtooth';
+    oc.frequency.setValueAtTime(280,t); oc.frequency.exponentialRampToValueAtTime(980,t+.38);
+    gc.gain.setValueAtTime(.045*vol,t); gc.gain.exponentialRampToValueAtTime(.001,t+.42);
+    oc.connect(gc); gc.connect(OUT); oc.start(t); oc.stop(t+.44);
   } else if(type==='alarm'){
     var o3=a.createOscillator(),g5=a.createGain();
     o3.type='sawtooth'; o3.frequency.setValueAtTime(920,t); o3.frequency.setValueAtTime(660,t+.09);
@@ -3441,9 +3447,18 @@ function updateEnts(dt){
         // sprinter, so avoiding it is always a live option.
         navSeek(e,e.tx,e.ty,e.spd,dt); wantW=Math.atan2(e.ty-e.y,e.tx-e.x);
         var dw=dist(e,p);
-        if(sees&&dw<e.rng&&e.cd<=0&&!p.downed){
-          fireWeapon(e,{dmg:e.dmg,spread:.05,rng:e.rng,noise:520,tint:'#ffd76a'},p.x+rnd(-8,8),p.y+rnd(-8,8),false);
-          e.cd=2.4;
+        if(e.windup!==undefined&&e.windup!==null){
+          e.windup-=dt;
+          if(e.windup<=0){
+            e.windup=null;
+            if(sees&&dw<e.rng*1.2&&!p.downed){
+              fireWeapon(e,{dmg:e.dmg,spread:.05,rng:e.rng,noise:520,tint:'#ffd76a'},p.x+rnd(-8,8),p.y+rnd(-8,8),false);
+            }
+            e.cd=1.7;   // 0.7 charge + 1.7 = the old 2.4 cycle
+          }
+        } else if(sees&&dw<e.rng&&e.cd<=0&&!p.downed){
+          e.windup=0.7;
+          if(!G.sim) sfx('charge',e.x,e.y);
         }
       } else {
         if(e.cd<=0){ var wsp=freeSpot(G.map,40); e.tx=wsp.x; e.ty=wsp.y; e.cd=rnd(6,10); }
@@ -3537,9 +3552,23 @@ function updateEnts(dt){
       } else {
         if(d>e.rng*.72) navSeek(e,p.x,p.y,e.spd,dt);
         else if(d<e.rng*.35) moveToward(e,e.x-(p.x-e.x),e.y-(p.y-e.y),e.spd*.6,dt);
-        if(e.cd<=0&&sees&&d<e.rng){
-          fireWeapon(e,{dmg:e.dmg,spread:.10,rng:e.rng,noise:340,tint:'#ff9a6a'},p.x+rnd(-16,16),p.y+rnd(-16,16),false);
-          e.cd=rnd(.35,.75);
+        // Telegraphed fire. A sentry used to hit scanlessly with zero warning,
+        // which reads as unfair rather than frightening; horror needs the half
+        // second where you KNOW it is coming. The 0.4s charge is subtracted
+        // from the old cooldown roll, so the cycle time and therefore the DPS
+        // is unchanged: this adds legibility, not mercy.
+        if(e.windup!==undefined&&e.windup!==null){
+          e.windup-=dt;
+          if(e.windup<=0){
+            e.windup=null;
+            if(sees&&d<e.rng*1.15){
+              fireWeapon(e,{dmg:e.dmg,spread:.10,rng:e.rng,noise:340,tint:'#ff9a6a'},p.x+rnd(-16,16),p.y+rnd(-16,16),false);
+            }
+            e.cd=rnd(0,.35);
+          }
+        } else if(e.cd<=0&&sees&&d<e.rng){
+          e.windup=0.4;
+          if(!G.sim) sfx('charge',e.x,e.y);
         }
       }
       if(!sees&&e.alert<=0) e.state=e.kind==='raider'?'loot':'investigate';
@@ -4243,6 +4272,18 @@ function drawWardenS(e){
     wc.beginPath(); wc.arc(x+fl2*26,y-34,7,0,6.2832); wc.fill();
     wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
   }
+  drawWindupGlow(e,x+fl2*26,y-34);
+}
+function drawWindupGlow(e,gx,gy){
+  if(e.windup===undefined||e.windup===null) return;
+  var wf=1-e.windup/(e.kind==='warden'?0.7:0.4);
+  wc.globalCompositeOperation='lighter';
+  wc.fillStyle='#ff3b30';
+  wc.globalAlpha=.25+.6*wf;
+  wc.beginPath(); wc.arc(gx,gy,3+9*wf,0,6.2832); wc.fill();
+  wc.globalAlpha=.18*wf;
+  wc.beginPath(); wc.arc(gx,gy,12+22*wf,0,6.2832); wc.fill();
+  wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
 }
 function drawSentryS(e){
   var S=e.r/SENTRY_R0,fl=Math.cos(e.face)<0?-1:1;
@@ -4274,6 +4315,7 @@ function drawSentryS(e){
   var pulse=hunting?(1+Math.sin(G.t*9)*.25):1;
   wc.globalAlpha=.30;
   wc.beginPath(); wc.arc(e.x+fl*12*S,e.y-40*S,7*S*pulse,0,6.2832); wc.fill();
+  drawWindupGlow(e,e.x+fl*12*S,e.y-40*S);
   wc.globalAlpha=1;
   wc.beginPath(); wc.arc(e.x+fl*12*S,e.y-40*S,3.4*S,0,6.2832); wc.fill();
   wc.globalCompositeOperation='source-over';
