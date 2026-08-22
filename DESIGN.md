@@ -432,6 +432,11 @@ Three things, none of which should be built without him saying so.
   - **Crawlers got an eye cluster**: three unblinking points on the head that all face you, dim amber on patrol, pulsing red on the rush. Scary is specificity, not a colour swap.
   - Nameplates lifted to clear the taller heads.
   - Verified: hub and raid frames clean, staged lineup screenshot confirms both faces read at zoom and the pupils track, no console errors. Sim 1/4 quick batch, killers sentry and raider, consistent with the deliberately hard v1.06 band. What a face FEELS like at his zoom level in motion is his call at the screen.
+- **v1.08 (guns are the loot now):** His answer on finding a better gun versus valuables: "not even close". Two systems:
+  - **Condition rolls on every field gun.** Worn 33 / Field 42 / Tuned 18 / Pristine 7 percent, measured 32/43/18/7 over 3000 rolls. Pristine is +24 percent damage, 30 percent tighter spread, +25 percent magazine, and the roll happens at pickup so every gun on the ground is a slot machine. A same-tier find in better condition auto-equips with a damage comparison said out loud. Banking stores the bare model, deliberately: a Pristine roll is a reason to fight with it THIS raid, which is the greed half of risk versus greed.
+  - **Three new families with genuinely different fire patterns**: Burst Carbine (three rounds per trigger pull, echoed at 70ms so the burst finishes even if you release), Riot Scattergun (six pellets, tighter than the starter Hullcracker), Support MG (60 round box, brutal 3.4s reload). Seeded through lockers, safes and caches.
+  - Burst echoes ride the throwables list with three guards so grenade code and the throw renderer skip them; verified 1 immediate round, 2 echoes queued, 3 bullets total, zero leftovers.
+  - Verified: base weapon table unmutated after rolls, distribution correct, hub and raid frames clean, no console errors. Sim 2/5, killers warden and sentries, in line with the hard band.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

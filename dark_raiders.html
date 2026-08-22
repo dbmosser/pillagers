@@ -311,7 +311,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.07';
+var VER='1.08';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -342,12 +342,41 @@ var WEAPONS={
   ferro:{id:'ferro',name:'Ferro',dmg:17,rof:240,spread:.048,mag:14,reload:1300,rng:400,auto:false,noise:320,tint:'#ffd9a8',starter:1},
   kettle:{id:'kettle',name:'Kettle',dmg:11,rof:80,spread:.130,mag:28,reload:1750,rng:330,auto:true,noise:300,tint:'#ffe6b8',starter:1},
   stitcher:{id:'stitcher',name:'Stitcher',dmg:20,rof:150,spread:.085,mag:22,reload:1950,rng:470,auto:true,noise:400,tint:'#ffd18a',starter:1},
-  hullcracker:{id:'hullcracker',name:'Hullcracker',dmg:9,pellets:5,rof:780,spread:.200,mag:6,reload:2200,rng:210,auto:false,noise:470,tint:'#ffc98a',starter:1}
+  hullcracker:{id:'hullcracker',name:'Hullcracker',dmg:9,pellets:5,rof:780,spread:.200,mag:6,reload:2200,rng:210,auto:false,noise:470,tint:'#ffc98a',starter:1},
+  // Field families added at v1.08, because his answer to gear versus valuables
+  // was 'not even close'. Three genuinely different fire patterns, not stat dups.
+  carbine:{id:'carbine',name:'Burst Carbine',dmg:17,burst:3,rof:360,spread:.055,mag:24,reload:1900,rng:500,auto:false,noise:400,tint:'#ffd88a'},
+  shotgun:{id:'shotgun',name:'Riot Scattergun',dmg:12,pellets:6,rof:650,spread:.170,mag:7,reload:2400,rng:260,auto:false,noise:500,tint:'#ffbe7a'},
+  lmg:{id:'lmg',name:'Support MG',dmg:16,rof:105,spread:.105,mag:60,reload:3400,rng:540,auto:true,noise:460,tint:'#ffca90'}
 };
 var STARTERS=['ferro','kettle','stitcher','hullcracker'];
 // How guns rank against each other. Used both for auto-equipping a better find
 // in the field and for deciding which of the two carried guns to equip on return.
-var WTIER={fists:0,ferro:1,pistol:1,kettle:2,hullcracker:2,smg:2,stitcher:2,rifle:3,dmr:4};
+var WTIER={fists:0,ferro:1,pistol:1,kettle:2,hullcracker:2,smg:2,stitcher:2,carbine:3,shotgun:3,rifle:3,lmg:4,dmr:4};
+// Field gun quality. Every gun found in the world rolls a condition, so a gun
+// find is a slot machine and not a table lookup: his answer on gear versus
+// valuables was "not even close", and this is what makes two Auto Rifles found
+// a week apart different events. Quality lives on the field instance only.
+// Banking a gun stores the bare model: a Pristine roll is a reason to fight
+// with it NOW, this raid, which is the greed half of risk versus greed.
+var GUNQ=[
+  {q:'worn',    rank:0, w:33, dmg:0.88, spread:1.25, mag:1,    pre:'Worn '},
+  {q:'field',   rank:1, w:42, dmg:1,    spread:1,    mag:1,    pre:''},
+  {q:'tuned',   rank:2, w:18, dmg:1.10, spread:0.82, mag:1,    pre:'Tuned '},
+  {q:'pristine',rank:3, w:7,  dmg:1.24, spread:0.70, mag:1.25, pre:'Pristine '}
+];
+function rollFieldGun(gk){
+  var base=WEAPONS[gk],roll=Math.random()*100,acc=0,Q=GUNQ[1];
+  for(var i=0;i<GUNQ.length;i++){ acc+=GUNQ[i].w; if(roll<acc){ Q=GUNQ[i]; break; } }
+  var g={};
+  for(var k in base) g[k]=base[k];
+  g.dmg=Math.round(base.dmg*Q.dmg*10)/10;
+  g.spread=+(base.spread*Q.spread).toFixed(3);
+  g.mag=Math.round(base.mag*Q.mag);
+  g.name=Q.pre+base.name;
+  g.q=Q.q; g.qRank=Q.rank;
+  return g;
+}
 var ITEMS={
   scrap:{name:'Scrap Metal',val:25,wt:1,r:'common',c:'#8d9199'},
   wire:{name:'Copper Wire',val:45,wt:1,r:'common',c:'#c9703f'},
@@ -379,6 +408,9 @@ var ITEMS={
   gun_smg:{name:'Compact SMG (field)',val:900,wt:4,r:'uncommon',c:'#ffe0a0',use:'gun',gk:'smg'},
   gun_rifle:{name:'Auto Rifle (field)',val:1500,wt:5,r:'rare',c:'#ffcf7a',use:'gun',gk:'rifle'},
   gun_dmr:{name:'Marksman Rifle (field)',val:2000,wt:5,r:'rare',c:'#fff0c0',use:'gun',gk:'dmr'},
+  gun_carbine:{name:'Burst Carbine (field)',val:1100,wt:4,r:'uncommon',c:'#ffd88a',use:'gun',gk:'carbine'},
+  gun_shotgun:{name:'Riot Scattergun (field)',val:1300,wt:5,r:'rare',c:'#ffbe7a',use:'gun',gk:'shotgun'},
+  gun_lmg:{name:'Support MG (field)',val:1900,wt:6,r:'rare',c:'#ffca90',use:'gun',gk:'lmg'},
   smoke:{name:'Smoke Canister',val:110,wt:1,r:'common',c:'#9aa5ad',use:'throw',tk:'smoke'},
   decoy:{name:'Decoy Beacon',val:80,wt:1,r:'common',c:'#e0c060',use:'throw',tk:'decoy'},
   frag:{name:'Frag Charge',val:180,wt:1,r:'uncommon',c:'#e07040',use:'throw',tk:'frag'}
@@ -398,13 +430,13 @@ var SHOP=[
 ];
 var LOOT={
   crate:[['scrap',32],['wire',22],['cell',13],['bandage',11],['ammobox',15],['board',5],['comp',3],['optic',2]],
-  locker:[['wire',15],['cell',13],['board',15],['optic',11],['bandage',7],['ammobox',13],['plate',7],['servo',6],['smoke',4],['decoy',3],['gun_pistol',4],['gun_smg',2],['core',2]],
-  safe:[['core',20],['titan',14],['optic',11],['servo',10],['board',9],['plate',7],['medkit',7],['comp',6],['frag',5],['gun_rifle',5],['gun_smg',4],['gun_dmr',2],['blackbox',2]],
+  locker:[['wire',15],['cell',13],['board',15],['optic',11],['bandage',7],['ammobox',13],['plate',7],['servo',6],['smoke',4],['decoy',3],['gun_pistol',4],['gun_smg',2],['gun_carbine',2],['core',2]],
+  safe:[['core',20],['titan',14],['optic',11],['servo',10],['board',9],['plate',7],['medkit',7],['comp',6],['frag',5],['gun_rifle',5],['gun_shotgun',4],['gun_lmg',3],['gun_dmr',2],['blackbox',2]],
   body:[['bandage',18],['ammobox',22],['scrap',12],['medkit',10],['board',8],['cell',8],['plate',6],['gun_pistol',6],['gun_smg',2],['frag',4],['smoke',4],['core',3]],
   // Caches hold no junk at all. Every entry here is rare or elite, so opening one
   // is always worth the 4.6 seconds it pins you in place.
   cache:[['blackbox',12],['reactor',10],['codex',10],['bloom',7],['relay',11],
-         ['titan',14],['core',12],['ledger',10],['coil',10],['gun_dmr',8],['gun_rifle',9],['medkit',6]]
+         ['titan',14],['core',12],['ledger',10],['coil',10],['gun_dmr',8],['gun_rifle',7],['gun_lmg',6],['gun_shotgun',5],['medkit',6]]
 };
 var DISTRICTS=[
   // Four genuine hue families at Chrono Trigger saturation. Three of the four
@@ -2279,9 +2311,25 @@ function explodeFrag(f){
   }
 }
 function updateThrowables(dt){
+  // burst echoes: the delayed rounds of a burst weapon
+  for(var beI=G.throws.length-1;beI>=0;beI--){
+    var BE=G.throws[beI];
+    if(!BE.burstEcho) continue;
+    BE.t+=dt;
+    if(BE.t>=BE.delay){
+      G.throws.splice(beI,1);
+      var shOK=BE.sh===G.player?!G.player.downed:(G.ents.indexOf(BE.sh)>=0);
+      if(shOK){
+        var ew={dmg:BE.wep.dmg,spread:BE.wep.spread,rng:BE.wep.rng,noise:0,tint:BE.wep.tint,_echo:1};
+        fireWeapon(BE.sh,ew,BE.tx,BE.ty,BE.fromPlayer);
+      }
+    }
+  }
   var i;
   for(i=G.throws.length-1;i>=0;i--){
-    var th=G.throws[i]; th.t+=dt;
+    var th=G.throws[i];
+    if(th.burstEcho) continue;   // handled above; this loop is grenades only
+    th.t+=dt;
     var f=Math.min(1,th.t/th.dur);
     th.x=th.sx+(th.tx-th.sx)*f; th.y=th.sy+(th.ty-th.sy)*f;
     if(f>=1){ activateThrow(th); G.throws.splice(i,1); }
@@ -2395,6 +2443,14 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
       vx:Math.cos(ang)*1180,vy:Math.sin(ang)*1180,dmg:wep.dmg,
       life:wep.rng/1180,player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a'});
   }
+  // A burst weapon fires its extra rounds on a short delay, one per 70ms, each
+  // rolled for spread on its own. Queued as world state so the burst finishes
+  // even if the trigger is released, which is what a burst means.
+  if(wep.burst&&wep.burst>1&&!wep._echo){
+    for(var bu=1;bu<wep.burst;bu++){
+      G.throws.push({burstEcho:1,t:0,delay:bu*0.07,sh:sh,wep:wep,tx:tx,ty:ty,fromPlayer:!!fromPlayer});
+    }
+  }
   var ang=base;
   var melee=wep.mag===0;
   ping(sh.x,sh.y,wep.noise,!fromPlayer);
@@ -2499,7 +2555,10 @@ function openContainer(ct){
       // came back undefined, every comparison was false, and a looted Marksman
       // Rifle would sit unusable in the bag while you kept the starter, which
       // broke the upgrade mechanic for every raid once starters became standard.
-      if((WTIER[itm.gk]||0)>(WTIER[p.wep.id]||0)){
+      var found=rollFieldGun(itm.gk);
+      var tierUp=(WTIER[itm.gk]||0)>(WTIER[p.wep.id]||0);
+      var condUp=(WTIER[itm.gk]||0)===(WTIER[p.wep.id]||0)&&found.qRank>(p.wep.qRank===undefined?1:p.wep.qRank);
+      if(tierUp||condUp){
         if(p.wep.id!=='fists'){
           // a starter is issued kit with no item to bank, so it is simply left behind
           if(ITEMS['gun_'+p.wep.id]){
@@ -2507,9 +2566,14 @@ function openContainer(ct){
             if(!G.sim){ var oi=P.weapons.indexOf(p.wep.id); if(oi>=0) P.weapons.splice(oi,1); }
           }
         }
-        p.wep=WEAPONS[itm.gk]; p.ammo=Math.ceil(p.wep.mag/2); p.wepIssued=false;
+        var oldDmg=p.wep.dmg||0;
+        p.wep=found; p.ammo=Math.ceil(p.wep.mag/2); p.wepIssued=false;
         G.tel.weapon=p.wep.name;
-        if(!G.sim) say(p.wep.name+' picked up and equipped');
+        if(!G.sim){
+          var cmp=oldDmg>0?Math.round((found.dmg*(found.pellets||1)/Math.max(1,oldDmg*(1))-1)*100):0;
+          say(found.name+' equipped'+(cmp>0?', +'+cmp+'% damage':'')+'.');
+          if(found.qRank>=2) blip('pick');
+        }
       } else G.bag.push(key);
     }
     else G.bag.push(key);
@@ -4509,7 +4573,9 @@ function render2D(dt){
   }
   wc.globalAlpha=1;
   for(i=0;i<G.throws.length;i++){
-    var th=G.throws[i],f=Math.min(1,th.t/th.dur);
+    var th=G.throws[i];
+    if(th.burstEcho) continue;   // an echo is a pending gunshot, not a grenade in the air
+    var f=Math.min(1,th.t/th.dur);
     shadowE(th.x,th.y,3,1.5,.3);
     wc.fillStyle=ITEMS[th.kind].c;
     wc.beginPath(); wc.arc(th.x,th.y-6-Math.sin(f*Math.PI)*26,3,0,6.2832); wc.fill();
@@ -5721,10 +5787,10 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','Character redesign: big heads, faces, scary enemies'],
-  ['DONE','Map atmosphere: woods, town square, two-block buildings'],
+  ['NOW','Hub shrink: every station within a few steps'],
+  ['DONE','Guns roll a condition: Worn to Pristine, 3 new families'],
+  ['DONE','Character redesign: faces that look where you aim'],
   ['NEXT','Big-head characters with faces; scary enemy redesign'],
-  ['NEXT','Guns as the loot that matters: field weapons worth switching to'],
   ['NEXT','Hub shrink: every station within a few steps'],
   ['NEXT','Time of day variance; night as a special raid later'],
   ['LATER','Footprints, shell casings, litter that persists'],
