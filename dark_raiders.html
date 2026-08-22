@@ -311,12 +311,12 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.02';
+var VER='1.03';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
-  nSentry:13,nCrawler:15,nRaider:4,nSnitch:4,eDmg:1,eHp:1,lootMult:1,contDens:1,
+  nSentry:15,nCrawler:17,nRaider:4,nSnitch:4,eDmg:1.2,eHp:1,lootMult:1,contDens:1,
   eAmbient:100,noiseMult:1,safeSlots:2,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
@@ -457,7 +457,7 @@ function storeGet(){
     return Promise.resolve(v===null?null:{key:SKEY,value:v});
   }catch(e2){ return Promise.resolve(null); }
 }
-function saveProfile(){ P.cfg=CFG; P.cfgv=4; storeSet(JSON.stringify(P)); }
+function saveProfile(){ P.cfg=CFG; P.cfgv=5; storeSet(JSON.stringify(P)); }
 function loadProfile(){
   try{
     return storeGet().then(function(r){
@@ -487,7 +487,10 @@ function loadProfile(){
           // v2 saves are therefore dropped and the new defaults take over. Only
           // the tuning sliders reset; credits, stash, armoury and the recorder are
           // untouched.
-          if(P.cfgv===4&&P.cfg){ applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; }
+          // cfgv 5: the v1.03 tuning batch must actually reach a saved profile.
+          // Old pinned sliders are dropped exactly as the v0.68 migration did;
+          // credits, stash, armoury and the recorder are untouched.
+          if(P.cfgv===5&&P.cfg){ applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; }
           else P.cfg=null;
         } }
     }).catch(function(){});
@@ -2430,7 +2433,7 @@ function tryExtractTick(dt,wantCall){
       G.siege=0;
       for(var si=0;si<G.ents.length;si++){
         var se=G.ents[si];
-        if(dist(se,z)>1500) continue;
+        if(dist(se,z)>2200) continue;
         se.alert=Math.max(se.alert,3);
         if(se.kind==='raider'&&se.bag&&se.bag.length>=5) continue;  // already leaving with theirs
         se.state='investigate'; se.tx=z.x+rnd(-40,40); se.ty=z.y+rnd(-40,40);
@@ -2450,7 +2453,7 @@ function tryExtractTick(dt,wantCall){
   G.siege=(G.siege||0)+dt;
   if(G.siege>=2){
     G.siege=0;
-    ping(z.x,z.y,900,true);
+    ping(z.x,z.y,1200,true);
     for(var bi=0;bi<G.ents.length;bi++){
       var be=G.ents[bi];
       if(dist(be,z)>1500) continue;
@@ -3448,6 +3451,7 @@ function endRaid(how){
 
   pendingRun={
     n:P.runs,outcome:how,weapon:T.weapon,preset:CFG.preset||'custom',
+    drawErr:T.drawErr||null,
     dur:Math.round(CFG.raidSec-G.timeLeft),
     haul:haul,items:G.bag.length,containers:T.containers,
     shots:T.shots,hits:T.hits,acc:acc,reloads:T.reloads,heals:T.heals,
@@ -4149,8 +4153,16 @@ function render2D(dt){
   DR.push({k:p.y,pl:1});
   DR.sort(function(a,b){return a.k-b.k;});
   var crouchP=keys['ControlLeft']||keys['ControlRight'];
+  // His run #3, v1.01: "character not rendering". He was moving and shooting
+  // with no operator on screen, which is the signature of an entity EARLIER in
+  // the y-sort throwing mid-draw and killing everything after it in the list,
+  // player included. I could not reproduce it, so the loop is armoured instead:
+  // one bad entity now loses that entity for that frame, not the player, and
+  // the first failure is named in the recorder so the next export tells me
+  // exactly what broke rather than "character not rendering".
   for(i=0;i<DR.length;i++){
     var it=DR[i];
+    try{
     if(it.lm){
       var LG=it.lm;
       var lfk=(LG.fl?(.72+.28*Math.sin(G.t*11+LG.f)):1)*wx().lights;
@@ -4208,6 +4220,13 @@ function render2D(dt){
       else drawOp(e2.x,e2.y,e2.face,(e2.step||0)*4,e2.coat,
         clamp(e2.bag.length/7,0,1),e2.muzzle,'',0,
         {moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT});
+    }
+    }catch(drErr){
+      if(!G.drawErr){
+        G.drawErr=(it.pl?'player':(it.e?it.e.kind:(it.w?'wall':(it.lm?'lamp':'container'))))+': '+drErr.message;
+        if(G.tel) G.tel.drawErr=G.drawErr;
+        say('Render fault logged: '+G.drawErr);
+      }
     }
   }
   // nameplates over anything you can currently see
@@ -5485,7 +5504,8 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','Encampments: defended safes, marked in red on your map'],
+  ['NOW','Map atmosphere: big buildings, woods, a town center (your note)'],
+  ['DONE','Encampments: defended safes, marked in red on your map'],
   ['NEXT','Big-head characters with faces; scary enemy redesign'],
   ['NEXT','Guns as the loot that matters: field weapons worth switching to'],
   ['NEXT','Hub shrink: every station within a few steps'],
@@ -5500,7 +5520,7 @@ function renderRoadmap(){
   var h='';
   for(var i=0;i<ROADMAP.length;i++){
     var tag=ROADMAP[i][0];
-    var col=tag==='NOW'?'var(--coolant)':(tag==='NEXT'?'var(--amber)':'var(--ash)');
+    var col=tag==='NOW'?'var(--coolant)':(tag==='NEXT'?'var(--amber)':(tag==='DONE'?'#5a9a6a':'var(--ash)'));
     h+='<div class="row"><span style="color:'+col+';font-weight:700;min-width:44px">'+tag+'</span><span class="nm" style="white-space:normal">'+ROADMAP[i][1]+'</span></div>';
   }
   el.innerHTML=h;
@@ -5665,6 +5685,7 @@ function buildExport(){
       line+=' thrown:'+r.thr.smoke+'sm/'+r.thr.decoy+'dc/'+r.thr.frag+'fr';
     if(r.outcome==='dead') line+=' killer:'+r.deathKiller+' diedAt:'+r.deathDistExtract+'m';
     if(r.raidersExtracted) line+=' aiExtracted:'+r.raidersExtracted;
+    if(r.drawErr) line+=' DRAWERR:'+r.drawErr;
     L.push(line);
     if(r.tags&&r.tags.length) L.push('   tags: '+r.tags.join(', '));
     if(r.note) L.push('   note: '+r.note);
