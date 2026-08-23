@@ -1,0 +1,17 @@
+=== DARK RAIDERS v1.31 FLIGHT RECORDER ===
+Profile: 51 runs, 19 extracted, 19 died, best haul 7160c, credits 900, rep 0, pack T1
+Active config [B]: {"coneDeg":130,"viewFar":620,"ambient":150,"raidSec":600,"pSpeed":158,"extractWait":25,"nSentry":17,"nCrawler":20,"nRaider":6,"nSnitch":4,"eDmg":1.2,"eHp":1,"lootMult":1,"contDens":1,"eAmbient":100,"noiseMult":1,"safeSlots":1,"downTime":12,"regenDelay":10,"regenSec":3,"bright":1.7,"simGreed":26,"simRaids":30,"preset":"B"}
+
+--- RUNS (oldest first) ---
+#40 EXTRACT [B] wep:Worn Marksman Rifle dur:0s haul:2610c items:6 cont:2 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:1called/0missed regen:0hp firstContact:0s firstLoot:0s moved:0 crouch:0s sprint:0s lit:500% closestExt:0 aiExtracted:1 wx:fog/morning caches:1 campSafes:1 gunsEq:1 viaHold:1
+#43 EXTRACT [B] wep:Marksman Rifle dur:0s haul:5500c items:5 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none wx:storm/dusk
+#44 DEAD [B] wep:Marksman Rifle dur:0s haul:8600c items:6 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none killer:sentry diedAt:1106m wx:clear/golden
+#45 EXTRACT [B] wep:Kettle dur:0s haul:5500c items:5 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none wx:blackout/morning
+#46 DEAD [B] wep:Hullcracker dur:0s haul:8600c items:6 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none killer:sentry diedAt:2605m wx:clear/morning
+#47 EXTRACT [B] wep:Hullcracker dur:0s haul:120c items:2 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:2018 wx:fog/morning
+#48 DEAD [B] wep:Kettle dur:0s haul:120c items:2 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:1310 killer:sentry diedAt:1310m wx:storm/morning
+#49 EXTRACT [B] wep:Ferro dur:0s haul:145c items:3 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none wx:rain/morning
+#50 DEAD [B] wep:Stitcher dur:0s haul:145c items:3 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none killer:null diedAt:2605m wx:rain/noon
+#51 EXTRACT [B] wep:Stitcher dur:0s haul:145c items:3 cont:0 shots:0 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:0 crouch:0s sprint:0s lit:0% closestExt:none wx:rain/dawn
+
+=== END RECORDER ===
