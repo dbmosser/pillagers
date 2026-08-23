@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.50';
+var VER='1.51';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -463,6 +463,59 @@ var GUNQ=[
   {q:'tuned',   rank:2, w:18, dmg:1.10, spread:0.82, mag:1,    pre:'Tuned '},
   {q:'pristine',rank:3, w:7,  dmg:1.24, spread:0.70, mag:1.25, pre:'Pristine '}
 ];
+// ================================================================ WEAR
+// Guns already rolled a CONDITION when you found one in the field, and then it
+// was frozen for the rest of that gun's life. Nothing you owned ever changed by
+// being used, so the Marksman Rifle in the armoury was a permanent solved
+// problem: you bought it once and stopped thinking about guns.
+// Wear is the missing half. Every round you fire through an armoury weapon
+// counts, and the count is on the PROFILE, not on the raid, so your favourite
+// gun is the one falling apart. That is the point of it: a weapon you love
+// becomes a running cost, and the question of whether the good gun is worth
+// taking on a routine run becomes a real one.
+var WEARSTEPS=[
+  {at:0,    name:'CLEAN',   spread:1.00, reload:1.00, jam:0,     c:'#7fc4a0'},
+  {at:420,  name:'WORN',    spread:1.12, reload:1.08, jam:0,     c:'#cdd6dd'},
+  {at:950,  name:'FOULED',  spread:1.30, reload:1.22, jam:0.022, c:'#ffc04a'},
+  {at:1600, name:'FAILING', spread:1.50, reload:1.40, jam:0.060, c:'#e0483a'}
+];
+function wearOf(id){ P.wear=P.wear||{}; return P.wear[id]||0; }
+function wearStep(id){
+  var w=wearOf(id),st=WEARSTEPS[0];
+  for(var i=0;i<WEARSTEPS.length;i++) if(w>=WEARSTEPS[i].at) st=WEARSTEPS[i];
+  return st;
+}
+// Only guns you OWN wear. Issued loaners and field pickups are somebody else's
+// problem and already rolled their own condition when you found them.
+function wearable(id){
+  return !!(id&&P.weapons&&P.weapons.indexOf(id)>=0&&id!=='fists');
+}
+function addWear(id,rounds){
+  if(!wearable(id)) return;
+  P.wear=P.wear||{};
+  P.wear[id]=(P.wear[id]||0)+rounds;
+}
+// What a repair costs. Scales with how good the gun is and how far gone it is,
+// and it wants a part as well as money so the workshop stays relevant.
+function repairCost(id){
+  var w=wearOf(id);
+  if(w<=0) return null;
+  var tier=(WTIER[id]||1);
+  return {credits:Math.round(w*0.9*(1+tier*0.35)),
+          part:(w>=950?'servo':'comp'),
+          parts:(w>=1600?2:1)};
+}
+function repairGun(id){
+  var c=repairCost(id); if(!c) return null;
+  if(P.credits<c.credits) return 'credits';
+  var have=0;
+  for(var i=0;i<P.stash.length;i++) if(P.stash[i]===c.part) have++;
+  if(have<c.parts) return 'parts';
+  P.credits-=c.credits;
+  for(var n=0;n<c.parts;n++){ var ix=P.stash.indexOf(c.part); if(ix>=0) P.stash.splice(ix,1); }
+  P.wear[id]=0; saveProfile();
+  return 'ok';
+}
 function rollFieldGun(gk){
   var base=WEAPONS[gk],roll=Math.random()*100,acc=0,Q=GUNQ[1];
   for(var i=0;i<GUNQ.length;i++){ acc+=GUNQ[i].w; if(roll<acc){ Q=GUNQ[i]; break; } }
@@ -3466,7 +3519,20 @@ function buildRaid(sim){
   // death spiral: one run ended in 14 seconds with three melee swings.
   // Primary: whatever you have deliberately equipped from the armoury, otherwise
   // one of the four issued starters rolled fresh for this raid.
+  // The equipped gun is a COPY with its wear baked in, so the base weapon table
+  // is never mutated and a worn Auto Rifle does not quietly make every Auto
+  // Rifle in the game worse.
   var wep=WEAPONS[P.equipped],wepIssued=false;
+  if(wep&&wearable(P.equipped)){
+    var WS=wearStep(P.equipped),wc2={};
+    for(var wk2 in wep) wc2[wk2]=wep[wk2];
+    wc2.spread=+(wep.spread*WS.spread).toFixed(4);
+    wc2.reload=Math.round(wep.reload*WS.reload);
+    wc2.jam=WS.jam;
+    wc2.wearName=WS.name;
+    wc2.name=(WS.at>0?(WS.name.charAt(0)+WS.name.slice(1).toLowerCase()+' '):'')+wep.name;
+    wep=wc2;
+  }
   if(!wep||wep.id==='fists'||!P.weapons||P.weapons.indexOf(P.equipped)<0){
     wep=WEAPONS[pick(STARTERS)]; wepIssued=true;
   }
@@ -3819,7 +3885,7 @@ function buildRaid(sim){
       rig:(sim?'light':((P&&P.rig)||'none')),face:0,wep:wep,
       ammo:wep.mag,reserve:wep.mag*2,sec:sec,secAmmo:sec.mag,reloading:0,lastShot:-9999,stam:100,
       wepIssued:wepIssued,secIssued:true,wepFromArmory:!wepIssued,secFromArmory:false,
-      bob:0,recoil:0,hitFlash:0,downed:false,downT:0,revived:false,iv:0,pendKiller:null,
+      bob:0,recoil:0,hitFlash:0,downed:false,downT:0,revived:false,iv:0,jam:0,pendKiller:null,
       roll:0,rollCd:0,rollDir:{x:1,y:0},ads:false},
     bag:[],pouch:{smoke:0,decoy:0,frag:0},tsel:0,
     containers:containers,ents:ents,bullets:[],pings:[],puffs:[],
@@ -4492,7 +4558,19 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
   }
   // count every pellet as a shot, or a shotgun blast reads as one shot with five
   // hits and accuracy climbs past 100 percent
-  if(fromPlayer){ G.player.recoil=1; G.player.combatT=0; G.tel.shots+=shots; G.shake=Math.max(G.shake,wep.dmg>40?4.5:2.2); }
+  if(fromPlayer){
+    G.player.recoil=1; G.player.combatT=0; G.tel.shots+=shots;
+    G.shake=Math.max(G.shake,wep.dmg>40?4.5:2.2);
+    // Every round through a gun you own is counted on the profile. Pellets count
+    // once: a shotgun blast is one round out of the magazine, not five.
+    if(!G.sim&&!wep._echo){
+      var owned=G.player.wep&&G.player.wep.id;
+      if(owned&&wearable(owned)&&G.player.wep===wep){
+        addWear(owned,1);
+        G.tel.rounds=(G.tel.rounds||0)+1;
+      }
+    }
+  }
   if(!G.sim&&!melee){
     var sa=ang-1.5+rnd(-.3,.3);
     G.shells.push({x:sh.x,y:sh.y,vx:Math.cos(sa)*rnd(60,130),vy:Math.sin(sa)*rnd(60,130),t:0,life:rnd(.5,.9),rot:rnd(0,6)});
@@ -5045,15 +5123,33 @@ function updatePlayer(dt){
   if(keys['KeyR']&&p.reloading<=0&&p.ammo<p.wep.mag&&p.reserve>0){ p.reloading=p.wep.reload; T.reloads++; }
 
   var now=G.t*1000;
-  if(mouse.down&&p.reloading<=0&&now-p.lastShot>p.wep.rof){
+  // A JAM. The felt consequence of neglect: the trigger does nothing, the gun
+  // needs cycling, and you find out in the middle of a fight. Rolled per shot
+  // and only on a gun that is actually fouled, so a maintained weapon never
+  // does this.
+  if(p.jam>0){ p.jam-=dt; if(p.jam<=0&&!G.sim) say('Cleared.'); }
+  if(mouse.down&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){
     if(p.wep.mag===0){
       // magazine-less weapon (fists): swings for free, HUD already labels it MELEE
       if(p.wep.auto||!p.fired){ p.lastShot=now; p.fired=true;
         fireWeapon(p,p.wep,p.x+Math.cos(p.face)*100,p.y+Math.sin(p.face)*100,true); }
     }
     else if(p.ammo>0){
-      if(p.wep.auto||!p.fired){ p.ammo--; p.lastShot=now; p.fired=true;
-        fireWeapon(p,p.wep,p.x+Math.cos(p.face)*100,p.y+Math.sin(p.face)*100,true); }
+      if(p.wep.auto||!p.fired){
+        // The jam roll happens on the trigger pull, before the round leaves, so
+        // a fouled gun costs you the round AND the second it takes to cycle.
+        if(p.wep.jam>0&&Math.random()<p.wep.jam){
+          p.ammo--; p.lastShot=now; p.fired=true; p.jam=0.9;
+          if(!G.sim){
+            say(p.wep.name+' jammed.');
+            blip('clank'); G.shake=Math.max(G.shake,2);
+            G.tel.jams=(G.tel.jams||0)+1;
+          }
+        } else {
+          p.ammo--; p.lastShot=now; p.fired=true;
+          fireWeapon(p,p.wep,p.x+Math.cos(p.face)*100,p.y+Math.sin(p.face)*100,true);
+        }
+      }
     } else { if(!p.fired){ say('Dry. Press R.'); p.fired=true; } p.lastShot=now; }
   }
   if(!mouse.down) p.fired=false;
@@ -6579,7 +6675,7 @@ function endRaid(how){
     n:P.runs,outcome:how,weapon:T.weapon,preset:CFG.preset||'custom',termPay:tPay,terms:termsOn().slice(),
     drawErr:T.drawErr||null,
     wx:(G.wx&&G.wx.id)||'clear',wxTurns:G.wxTurned||0,tod:(G.tod&&G.tod.id)||'noon',
-    caches:T.cachesOpened||0,windfalls:T.windfalls||0,strongbox:T.strongbox||0,campSafes:T.campSafes||0,wardenMet:T.wardenMet||0,doorsOpened:T.doorsOpened||0,
+    caches:T.cachesOpened||0,windfalls:T.windfalls||0,strongbox:T.strongbox||0,rounds:T.rounds||0,jams:T.jams||0,campSafes:T.campSafes||0,wardenMet:T.wardenMet||0,doorsOpened:T.doorsOpened||0,
     gunsEq:T.gunsEquipped||0,bestQ:T.bestQ||0,holdExtract:T.holdExtract||0,diedInSiege:T.diedInSiege||0,
     dur:Math.round(CFG.raidSec-G.timeLeft),
     haul:haul,items:G.bag.length,containers:T.containers,
@@ -8343,9 +8439,17 @@ function drawHUD(){
   bar(16,by+22,280,8,p.stam/100,'#8fb5c8');
   ctx.textAlign='right';
   ctx.font=FS('700 14px "Titan One","Rubik",sans-serif'); ctx.fillStyle='#cdd6dd';
+  if(p.wep.wearName&&p.wep.wearName!=='CLEAN'){
+    var WSC=WEARSTEPS[0];
+    for(var wq=0;wq<WEARSTEPS.length;wq++) if(WEARSTEPS[wq].name===p.wep.wearName) WSC=WEARSTEPS[wq];
+    ctx.font=FS('700 9px "Rubik",sans-serif'); ctx.fillStyle=WSC.c;
+    ctx.fillText(p.wep.wearName,W-16,by-LH(46));
+  }
+  ctx.font=FS('700 14px "Titan One","Rubik",sans-serif'); ctx.fillStyle='#cdd6dd';
   ctx.fillText(p.wep.name+(p.ads?(opticMag()>1?('  '+opticMag().toFixed(2).replace(/0$/,'')+'x SCOPE'):'  [ADS]'):''),W-16,by-LH(34));
   ctx.font=FS('700 18px "Titan One","Rubik",sans-serif');
   if(p.wep.mag===0){ ctx.fillStyle='#8a96a1'; ctx.fillText('MELEE',W-16,by-LH(14)); }
+  else if(p.jam>0){ ctx.fillStyle='#e0483a'; ctx.fillText('JAMMED',W-16,by-LH(14)); }
   else if(p.reloading>0){ ctx.fillStyle='#ffb02e'; ctx.fillText('RELOADING',W-16,by-LH(14)); }
   else {
     ctx.fillStyle=p.ammo===0?'#ff4d3d':'#cdd6dd';
@@ -9486,7 +9590,8 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','Gun condition and repair, so a favourite weapon wears out'],
+  ['NOW','Rebuilding DAM BATTLEGROUNDS: his note, my own design'],
+  ['DONE','Guns wear with use and Merrit services them'],
   ['DONE','THE SEAL: a door too big to cut in one raid, per map'],
   ['NEXT','Two raiders, one raid (a big one, not a quick one)'],
   ['DONE','Machines that answer a call and take roles: pin, flank, rush'],
@@ -9760,6 +9865,15 @@ function renderHub(){
     } else {
       var t=document.createElement('div'); t.className='vl'; t.textContent='EQUIPPED'; row.appendChild(t);
     }
+    (function(){
+      var wv=wearOf(k);
+      if(wv<=0) return;
+      var ST=wearStep(k);
+      var cw=document.createElement('div');
+      cw.style.cssText='color:'+ST.c+';font-size:9.5px;font-weight:700;width:100%';
+      cw.textContent=ST.name+'  '+wv+' rounds'+(ST.jam>0?'  JAMS':'');
+      row.appendChild(cw);
+    })();
     wl.appendChild(row);
   });
   var cl=document.getElementById('contracts'); cl.innerHTML='';
@@ -9985,6 +10099,41 @@ function renderShop(){
 function renderWork(){
   var s=document.getElementById('worklist'); s.innerHTML='';
   var counts=stashCounts();
+  // REPAIRS first, because a gun that jams in a fight is more urgent than a
+  // smoke canister. Only guns with wear on them appear, so this section is
+  // empty until you have actually used something enough to matter.
+  (function(){
+    var any=[];
+    for(var i=0;i<P.weapons.length;i++) if(wearOf(P.weapons[i])>0) any.push(P.weapons[i]);
+    if(!any.length) return;
+    var h=document.createElement('div'); h.className='hint';
+    h.innerHTML='<b>REPAIRS</b>';
+    s.appendChild(h);
+    any.sort(function(a2,b2){ return wearOf(b2)-wearOf(a2); });
+    any.forEach(function(id){
+      var W=WEAPONS[id],ST=wearStep(id),C=repairCost(id);
+      var row=document.createElement('div'); row.className='row';
+      var nm=document.createElement('div'); nm.className='nm';
+      nm.innerHTML=W.name+' <span style="color:'+ST.c+'">'+ST.name+'</span>'+
+        '<br><span style="color:var(--ash);font-size:9.5px">'+wearOf(id)+' rounds &middot; '+
+        C.credits.toLocaleString()+'c + '+C.parts+'x '+ITEMS[C.part].name+
+        ' ('+(counts[C.part]||0)+')</span>';
+      var b=document.createElement('button'); b.textContent='Service';
+      b.disabled=(P.credits<C.credits)||((counts[C.part]||0)<C.parts);
+      b.onclick=function(){
+        var r=repairGun(id);
+        if(r==='ok') say2(W.name+' serviced. Clean again.');
+        else if(r==='credits') say2('Not enough credits for that.');
+        else if(r==='parts') say2('Merrit needs '+C.parts+'x '+ITEMS[C.part].name+'.');
+        renderWork(); renderHub();
+      };
+      row.appendChild(nm); row.appendChild(b);
+      s.appendChild(row);
+    });
+    var h2=document.createElement('div'); h2.className='hint';
+    h2.innerHTML='<b>CRAFTING</b>';
+    s.appendChild(h2);
+  })();
   RECIPES.forEach(function(r){
     var row=document.createElement('div'); row.className='row';
     var nm=document.createElement('div'); nm.className='nm';
