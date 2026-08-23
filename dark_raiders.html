@@ -16,7 +16,7 @@
     --void:#0a0d1c; --steel:#2f4394; --steel-hi:#7f92d8; --ash:#9aa8d0;
     --bone:#eef2ff; --amber:#ffc04a; --rust:#d8543a; --coolant:#4de3d0; --hazard:#ff5a4a;
     --win-top:#1c2a63; --win-bot:#101a42;
-    background:var(--void); color:var(--bone); font-family:'Rubik',sans-serif;
+    background:var(--void); color:var(--bone); font-family:'Rubik',system-ui,sans-serif;
     /* Fit the browser window instead of a fixed 720. Opened in Chrome at a 551
        tall viewport the game ran off the bottom of the page and put the health
        bar, the meters and the whole button row below the fold, behind a
@@ -52,7 +52,7 @@
   /* the inner hairline of the double frame, replacing the amber corner tick */
   .panel::after { content:''; position:absolute; inset:3px; pointer-events:none;
     border:1px solid rgba(127,146,216,.22); border-radius:3px; }
-  .panel h2 { font-family:'Titan One','Rubik',sans-serif; font-size:10px; font-weight:700;
+  .panel h2 { font-family:'Rubik',system-ui,sans-serif; font-size:10px; font-weight:700;
     letter-spacing:.28em; text-transform:uppercase; color:var(--ash);
     margin:0; padding:10px 12px; border-bottom:1px solid var(--steel-hi);
     display:flex; justify-content:space-between; align-items:center; }
@@ -67,13 +67,13 @@
   .row .vl { color:var(--amber); font-size:10.5px; }
   .swatch { width:3px; height:13px; border-radius:1px; flex:none; }
   .r-common{color:#cfd8ef;} .r-uncommon{color:#7fc4a0;} .r-rare{color:#7cc4ff;} .r-elite{color:#d08ce8;}
-  button { font-family:'Rubik',sans-serif; background:transparent;
+  button { font-family:'Rubik',system-ui,sans-serif; background:transparent;
     border:1px solid var(--steel-hi); color:var(--bone); padding:5px 9px; font-size:10px;
     letter-spacing:.06em; cursor:pointer; text-transform:uppercase; transition:all .12s; }
   button:hover:not(:disabled){ border-color:var(--amber); color:var(--amber); background:rgba(255,176,46,.08); }
   button:disabled{ opacity:.3; cursor:not-allowed; }
   button:focus-visible{ outline:2px solid var(--coolant); outline-offset:1px; }
-  .deploy { padding:12px; font-family:'Titan One','Rubik',sans-serif; font-weight:800;
+  .deploy { padding:12px; font-family:'Rubik',system-ui,sans-serif; font-weight:800;
     font-size:13px; letter-spacing:.3em; border:2px solid #ffe9b0; border-radius:4px;
     color:#2a1a06; background:linear-gradient(180deg,#ffd980,#f0a02a); }
   .deploy:hover{ background:linear-gradient(180deg,#ffe4a0,#ffbe52); border-color:#fff0c8; color:#2a1a06; }
@@ -82,10 +82,10 @@
   .stat { display:flex; justify-content:space-between; padding:4px 12px; font-size:10.5px; }
   .stat b{ color:var(--bone); font-weight:500; } .stat span{ color:var(--ash); }
   .equipped{ padding:10px 12px; border-bottom:1px solid var(--steel-hi); background:rgba(53,214,200,.04); }
-  .equipped .wn{ font-family:'Titan One','Rubik',sans-serif; font-weight:700; font-size:15px; color:var(--coolant); }
+  .equipped .wn{ font-family:'Rubik',system-ui,sans-serif; font-weight:700; font-size:15px; color:var(--coolant); }
   .equipped .ws{ font-size:9.5px; color:var(--ash); margin-top:3px; letter-spacing:.05em; }
   .toprow{ display:flex; justify-content:space-between; align-items:flex-end; }
-  .credits{ font-family:'Titan One','Rubik',sans-serif; font-weight:800; font-size:22px; color:var(--amber); text-align:right; }
+  .credits{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:22px; color:var(--amber); text-align:right; }
   .credits small{ font-size:9px; color:var(--ash); letter-spacing:.28em; display:block; font-weight:400; }
   /* All three overlays were a flat black wash with content floating loose on it
      and no frame at all, which is the least like the look being aimed at that
@@ -98,7 +98,7 @@
     display:none; flex-direction:column; align-items:center; justify-content:center; z-index:40; }
   .outcome::before{ inset:56px 84px; }
   .outcome.on{ display:flex; }
-  .outcome h1{ font-family:'Titan One','Rubik',sans-serif; font-weight:800; font-size:42px;
+  .outcome h1{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:42px;
     letter-spacing:.2em; margin:0; text-transform:uppercase; }
   .outcome .sub{ color:var(--ash); font-size:12px; letter-spacing:.18em; margin-bottom:12px; }
   .manifest{ font-size:11.5px; color:var(--bone); text-align:center; line-height:1.7; max-width:470px; }
@@ -112,7 +112,7 @@
   /* Text fields kept the old near-black while everything around them moved to
      navy, so a note box read as a hole punched in the window rather than a
      recessed field in it. Darker than the window, same family as the window. */
-  textarea{ font-family:'Rubik',sans-serif; font-size:11px; background:rgba(9,14,40,.92);
+  textarea{ font-family:'Rubik',system-ui,sans-serif; font-size:11px; background:rgba(9,14,40,.92);
     border:1px solid var(--steel-hi); border-radius:3px;
     box-shadow:inset 0 1px 3px rgba(0,0,0,.45);
     color:var(--bone); padding:8px; width:100%; resize:none;
@@ -122,13 +122,13 @@
     display:none; flex-direction:column; align-items:center; justify-content:center; gap:11px; }
   .pausebox::before{ inset:60px 90px; }
   .pausebox.on{ display:flex; }
-  .pausebox h3{ font-family:'Titan One','Rubik',sans-serif; font-weight:800; font-size:24px;
+  .pausebox h3{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:24px;
     letter-spacing:.24em; margin:0; color:var(--bone); }
   .modal{ position:absolute; inset:0; background:rgba(8,12,32,.92); z-index:60;
     display:none; flex-direction:column; padding:22px; }
   .modal::before{ inset:14px; }
   .modal.on{ display:flex; }
-  .modal h3{ font-family:'Titan One','Rubik',sans-serif; font-weight:800; font-size:14px;
+  .modal h3{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:14px;
     letter-spacing:.24em; margin:0 0 4px; color:var(--amber); text-transform:uppercase; }
   .msub{ font-size:10px; color:var(--ash); margin-bottom:9px; }
   .runline{ display:flex; gap:8px; padding:4px 12px; font-size:10px; border-bottom:1px solid rgba(42,50,61,.3); }
@@ -144,7 +144,7 @@
   .crow .cd{ color:var(--bone); }
   .crow .cp{ color:var(--ash); font-size:9.5px; margin-top:2px; display:flex; justify-content:space-between; align-items:center; }
   .crow .cp b{ color:var(--amber); font-weight:500; }
-  pre.simpre{ font-family:'Rubik',sans-serif; font-size:10.5px; color:var(--bone);
+  pre.simpre{ font-family:'Rubik',system-ui,sans-serif; font-size:10.5px; color:var(--bone);
     background:rgba(9,14,40,.92); border:1px solid var(--steel-hi); border-radius:3px;
     box-shadow:inset 0 1px 3px rgba(0,0,0,.45); padding:10px;
     overflow:auto; flex:1; line-height:1.55; white-space:pre-wrap; margin:0; }
@@ -326,7 +326,7 @@
       <div class="plist" id="roadmap"></div>
       <h2 style="border-top:1px solid var(--steel-hi)">Play an older build</h2>
       <div style="display:flex;gap:6px;padding:0 12px 10px">
-        <select id="buildsel" style="flex:1;background:rgba(9,14,40,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:'Rubik',sans-serif;font-size:12px;padding:6px"></select>
+        <select id="buildsel" style="flex:1;background:rgba(9,14,40,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:'Rubik',system-ui,sans-serif;font-size:12px;padding:6px"></select>
         <button id="buildgo" style="padding:6px 14px">OPEN</button>
       </div>
       </div>
@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.54';
+var VER='1.55';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -1746,9 +1746,9 @@ function wxTick(dt){
 // variance. Tripled. The rule stands: hue moves a lot, lightness barely at all.
 var TODS=[
   {id:'dawn',name:'DAWN',add:'#4a1a55',addA:.26,dim:'rgba(30,20,50,0.10)',lights:0.7,line:'Dawn. The lamps are still fighting the light.'},
-  {id:'morning',name:'MORNING',add:'#10360e',addA:.16,dim:null,lights:0.3,line:'Morning. Clean light, long day.'},
-  {id:'noon',name:'NOON',add:'#26260a',addA:.10,dim:null,lights:0.3,line:null},
-  {id:'golden',name:'GOLDEN HOUR',add:'#5c2c06',addA:.30,dim:null,lights:0.45,line:'Golden hour. Everything glows, including you.'},
+  {id:'morning',name:'MORNING',add:'#10360e',addA:.16,dim:null,lights:0,line:'Morning. Clean light, long day.'},
+  {id:'noon',name:'NOON',add:'#26260a',addA:.10,dim:null,lights:0,line:null},
+  {id:'golden',name:'GOLDEN HOUR',add:'#5c2c06',addA:.30,dim:null,lights:0.25,line:'Golden hour. Everything glows, including you.'},
   {id:'dusk',name:'DUSK',add:'#42125c',addA:.24,dim:'rgba(18,10,36,0.18)',lights:1,line:'Dusk. The lamps are coming on.'}
 ];
 function tod(){ return (G&&G.tod)||TODS[2]; }
@@ -2757,6 +2757,37 @@ var UISCALES=[1.0,1.25,1.5,1.75,2.0];
 var TEXTLIFT=1.3;
 function uiScale(){ var v=P&&P.uiScale; return (typeof v==='number'&&v>0)?v:1.0; }
 var _fs={};
+// ================================================================ TYPE
+// His note, 2026-08-23: "Text still looks like absolute shit, need a complete
+// redo on all text, some of it wayy too bold, some way too skinny, pick a
+// consistent font and apply it across the entire game."
+// He is right, and the cause was not taste, it was a bug plus a mess.
+// THE MESS: the canvas alone mixed THREE families (Titan One, Rubik, and one
+// stray Oxanium), FOURTEEN authored sizes from 8px to 34px, and applied the 700
+// weight at random, so "9px Rubik" and "700 9px Rubik" both existed for the
+// same class of label.
+// THE BUG: FS below clamps anything under 13px UP to exactly 13px, a
+// readability floor added long ago. Every one of 8, 8.5, 9, 9.5, 10, 11 and
+// 12px therefore rendered at the SAME size. The size hierarchy was entirely
+// gone and the only thing left distinguishing one label from another was that
+// random weight and that random family. That is exactly "some too bold, some
+// too skinny": it was never about the boldness, it was that nothing else varied.
+// THE FIX: one family, five sizes, two weights, and every call site names a
+// ROLE rather than a font string. The whole scale now sits at or above the
+// floor, so the steps are real steps.
+// Sizes are authored PRE-lift. FS multiplies by TEXTLIFT (1.3) and then clamps
+// anything still under 13px up to 13, which is the clamp that flattened the old
+// scale. micro is set so 10 x 1.3 lands on EXACTLY 13: the clamp never fires,
+// nothing is distorted, and the smallest text sits precisely where the old
+// small text already sat, so no HUD box overflows. The steps above it are then
+// real steps rather than seven authored sizes all arriving at the same height.
+var TYPE={
+  micro:'600 10px "Rubik",system-ui,sans-serif',  // 13.0 rendered: pips, counters, tags
+  label:'600 12px "Rubik",system-ui,sans-serif',  // 15.6 rendered: world labels, prompts
+  head: '700 15px "Rubik",system-ui,sans-serif',  // 19.5 rendered: callouts
+  title:'800 20px "Rubik",system-ui,sans-serif',  // 26.0 rendered: screen titles
+  huge: '800 30px "Rubik",system-ui,sans-serif'   // 39.0 rendered: the one big number
+};
 function FS(spec){
   var k=spec+'|'+uiScale(),hit=_fs[k];
   if(hit) return hit;
@@ -2818,25 +2849,61 @@ function bakeGround(map){
     }
     return false;
   }
+  // HIS NOTE, 2026-08-23: "Buildings are built OVERTOP a road, makes no sense."
+  // He is right and the cause is historical. This road grid is inherited from
+  // the procedural generator, where buildings were PLACED in the cells the grid
+  // defined, so a road could never run under one. The four maps are hand
+  // authored now and put their buildings wherever the design wants them, and
+  // nothing ever told the roads. So tarmac ran straight under a warehouse.
+  // Roads are laid in short runs now and any run that meets a building, a cliff
+  // face or a collapsed block is simply not laid. A road that stops at a wall
+  // and picks up on the far side reads as a road that was there first.
+  var ROADBLOCK=[];
+  for(i=0;i<map.buildings.length;i++){ var RB=map.buildings[i];
+    ROADBLOCK.push({x:RB.x-10,y:RB.y-10,w:RB.w+20,h:RB.h+20}); }
+  for(i=0;i<map.walls.length;i++){ var RW=map.walls[i];
+    if(RW.furn||RW.wreck||RW.ledge) continue;
+    // big solid masses only: cliff bands, ruins, the things a road detours
+    if(RW.w>=100&&RW.h>=100) ROADBLOCK.push({x:RW.x-10,y:RW.y-10,w:RW.w+20,h:RW.h+20}); }
+  function roadClear(x,y,w,h){
+    for(var q=0;q<ROADBLOCK.length;q++){ var Q=ROADBLOCK[q];
+      if(x<Q.x+Q.w&&x+w>Q.x&&y<Q.y+Q.h&&y+h>Q.y) return false; }
+    return true;
+  }
+  // Lay one bar as a series of short runs, skipping the ones that are blocked.
+  function roadBar(x,y,w,h){
+    var horiz=w>=h,len=horiz?w:h,step=24;
+    for(var o=0;o<len;o+=step){
+      var sw=horiz?Math.min(step,len-o):w, sh=horiz?h:Math.min(step,len-o);
+      var sx=horiz?x+o:x, sy=horiz?y:y+o;
+      if(roadClear(sx,sy,sw,sh)) c.fillRect(sx,sy,sw,sh);
+    }
+  }
   c.fillStyle=isDay()?'#857C6F':'#221a26';
   for(i=1;i<map.rows;i++)for(j=0;j<map.cols;j++){
     if(woodsCell(i-1,j)||woodsCell(i,j)||bigSpine('h',i,j)) continue;
-    c.fillRect(80+j*map.cw-40,80+i*map.ch-42,map.cw+80,66);
+    roadBar(80+j*map.cw-40,80+i*map.ch-42,map.cw+80,66);
   }
   for(i=1;i<map.cols;i++)for(j=0;j<map.rows;j++){
     if(woodsCell(j,i-1)||woodsCell(j,i)||bigSpine('v',j,i)) continue;
-    c.fillRect(80+i*map.cw-42,80+j*map.ch-40,66,map.ch+80);
+    roadBar(80+i*map.cw-42,80+j*map.ch-40,66,map.ch+80);
   }
   c.fillStyle='rgba(200,180,120,.20)';
   for(i=1;i<map.rows;i++)for(j=0;j<map.cols;j++){
     if(woodsCell(i-1,j)||woodsCell(i,j)||bigSpine('h',i,j)) continue;
     var ry2=80+i*map.ch-3;
-    for(k=0;k<map.cw-40;k+=64) c.fillRect(80+j*map.cw+k,ry2,32,5);
+    for(k=0;k<map.cw-40;k+=64){
+      var dx3=80+j*map.cw+k;
+      if(roadClear(dx3,ry2,32,5)) c.fillRect(dx3,ry2,32,5);
+    }
   }
   for(i=1;i<map.cols;i++)for(j=0;j<map.rows;j++){
     if(woodsCell(j,i-1)||woodsCell(j,i)||bigSpine('v',j,i)) continue;
     var rx2=80+i*map.cw-3;
-    for(k=0;k<map.ch-40;k+=64) c.fillRect(rx2,80+j*map.ch+k,5,32);
+    for(k=0;k<map.ch-40;k+=64){
+      var dy3=80+j*map.ch+k;
+      if(roadClear(rx2,dy3,5,32)) c.fillRect(rx2,dy3,5,32);
+    }
   }
   // SPEC 4.5: closed manholes, baked into the floor. Permanent map features
   // that read as where a raider surfaces from the undercroft.
@@ -3895,7 +3962,11 @@ function pedBuy(ix){
 function spawnWild(map){
   var out=[],i,j;
   var scale=(WORLD_W*WORLD_H)/(4200*3200);
-  var flocks=Math.max(4,Math.round(7*scale)),herds=Math.max(3,Math.round(5*scale));
+  // His note, 2026-08-23: "too many animals". Measured at the old rates, 65
+  // animals on the dam, which is a nature documentary rather than an abandoned
+  // quarry. Roughly halved. Wildlife is a tell, and a tell that is everywhere
+  // is not a tell.
+  var flocks=Math.max(2,Math.round(3.5*scale)),herds=Math.max(1,Math.round(2*scale));
   for(i=0;i<flocks;i++){
     var fs=freeSpot(map,40),n=ri(3,6);
     for(j=0;j<n;j++)
@@ -3945,13 +4016,31 @@ function wildTick(dt){
       if(c.x<60||c.x>WORLD_W-60){ c.vx*=-1; c.x=clamp(c.x,60,WORLD_W-60); }
       if(c.y<60||c.y>WORLD_H-60){ c.vy*=-1; c.y=clamp(c.y,60,WORLD_H-60); }
       // A deer will not run through a building. A bird is above them.
+      // His note, 2026-08-23: "deer are stuck in a small area which makes them
+      // spastic." Three faults in one block. It REVERSED the velocity on a wall
+      // hit, which sends the animal straight back at whatever frightened it, so
+      // it bounced between the two forever. It nudged the body by one frame of
+      // the new velocity, which is not enough to clear a wall it is already
+      // inside, so it re-collided and re-reversed every single frame. And a
+      // panicking animal in this game never gave up, so the loop had no exit.
+      // Now it separates out along the shallower axis, SLIDES along the face
+      // instead of rebounding off it, and a deer that hits three times stops
+      // running, which is both cheaper and what a cornered animal actually does.
       if(c.k==='deer'){
         for(var w2=0;w2<G.map.walls.length;w2++){
           var WW=G.map.walls[w2];
-          if(c.x>WW.x-14&&c.x<WW.x+WW.w+14&&c.y>WW.y-14&&c.y<WW.y+WW.h+14){
-            c.vx=-c.vx+rnd(-60,60); c.vy=-c.vy+rnd(-60,60);
-            c.x+=c.vx*dt*2; c.y+=c.vy*dt*2; break;
-          }
+          if(!(c.x>WW.x-14&&c.x<WW.x+WW.w+14&&c.y>WW.y-14&&c.y<WW.y+WW.h+14)) continue;
+          // push out along whichever side it is closest to leaving
+          var pl=c.x-(WW.x-14), pr=(WW.x+WW.w+14)-c.x;
+          var pu=c.y-(WW.y-14), pd=(WW.y+WW.h+14)-c.y;
+          var mn=Math.min(pl,pr,pu,pd);
+          if(mn===pl){ c.x=WW.x-14.5; c.vx=-Math.abs(c.vx)*0.3; }
+          else if(mn===pr){ c.x=WW.x+WW.w+14.5; c.vx=Math.abs(c.vx)*0.3; }
+          else if(mn===pu){ c.y=WW.y-14.5; c.vy=-Math.abs(c.vy)*0.3; }
+          else { c.y=WW.y+WW.h+14.5; c.vy=Math.abs(c.vy)*0.3; }
+          c.bump=(c.bump||0)+1;
+          if(c.bump>=3){ c.life=0; c.bump=0; }
+          break;
         }
       }
       if(c.life<=0){
@@ -3961,6 +4050,11 @@ function wildTick(dt){
           var ns=freeSpot(G.map,40);
           c.x=ns.x; c.y=ns.y; c.hx=ns.x; c.hy=ns.y; c.z=0;
         }
+        // A deer that has run somewhere else now LIVES somewhere else. Without
+        // this its home point stayed where it was born, so it turned round and
+        // walked straight back past the thing it had just fled, which is the
+        // other half of why they looked stuck in one patch of ground.
+        if(c.k==='deer'){ c.hx=c.x; c.hy=c.y; c.bump=0; }
         c.st='idle'; c.vx=0; c.vy=0; c.t=rnd(1.5,4);
       }
     } else {
@@ -4188,9 +4282,34 @@ function buildRaid(sim){
     // Street lighting is per area too. Building lights already follow the
     // district grid, so leaving this at a flat 28 made the open ground between
     // blocks progressively darker as the map grew.
-    for(i=0;i<Math.round(28*AREA);i++){
-      var lp2=freeSpot(map,26);
-      lights.push({x:lp2.x,y:lp2.y,r:rnd(110,175),c:pick(['#ffbe6a','#9fd8ff','#ffd9a0']),i:rnd(.22,.40),f:rnd(0,9),fl:Math.random()<.45});
+    // HIS COMPLAINT, TWICE NOW: "there are still random lights in the sky w no
+    // fixtures OUTSIDE, makes no sense." He is right and this loop is the cause.
+    // It dropped 28 glows per unit area at any free spot on the map, with
+    // nothing making the light: a pool of colour in the middle of open ground.
+    // At v1.53 I drew a HUNG lamp over each one, which fixed the indoor ones and
+    // made the outdoor ones worse, because a lamp hanging from nothing in the
+    // middle of a field is a stranger sight than an unexplained glow.
+    // Outdoor lights are now LAMP POSTS: fewer, standing on the ground on a real
+    // pole, and placed against a wall or building so there is something for the
+    // bracket to be bolted to. `post` tells the renderer to stand it up.
+    var wantL=Math.round(11*AREA),tries2=0;
+    while(lights.length<wantL+map.buildings.length*1.5&&tries2++<wantL*60){
+      var lp2=freeSpot(map,30);
+      // A post belongs beside something. Find the nearest wall within 150 and
+      // sit against it; if there is nothing out here, this is not a place a
+      // lamp would ever have been installed, so skip it.
+      var bestW=null,bestD=150;
+      for(var lw=0;lw<map.walls.length;lw++){
+        var LW=map.walls[lw];
+        if(LW.furn||LW.wreck||LW.ruin) continue;
+        var cxw=clamp(lp2.x,LW.x,LW.x+LW.w),cyw=clamp(lp2.y,LW.y,LW.y+LW.h);
+        var dxw=lp2.x-cxw,dyw=lp2.y-cyw,dw=Math.sqrt(dxw*dxw+dyw*dyw);
+        if(dw<bestD){ bestD=dw; bestW=LW; }
+      }
+      if(!bestW) continue;
+      lights.push({x:lp2.x,y:lp2.y,r:rnd(120,180),
+        c:pick(['#ffbe6a','#ffd9a0','#ffcf8a']),i:rnd(.24,.40),
+        f:rnd(0,9),fl:Math.random()<.30,post:1});
     }
   }
   var ents=[];
@@ -4533,18 +4652,7 @@ function raidKey(code,repeat,ev){
   if(code==='KeyH'&&G&&!repeat) G.legendOn=!G.legendOn;
   // X swaps primary and secondary. Each keeps its own loaded magazine; the
   // reserve pool is shared, so swapping is not a way to dodge running dry.
-  if(code==='KeyX'&&G&&!G.over&&!G.paused&&!repeat){
-    var pp=G.player;
-    if(pp.sec&&!pp.downed&&pp.roll<=0){
-      var ow=pp.wep,oa=pp.ammo,oi=pp.wepIssued,of2=pp.wepFromArmory;
-      pp.wep=pp.sec; pp.ammo=pp.secAmmo; pp.wepIssued=pp.secIssued; pp.wepFromArmory=pp.secFromArmory;
-      pp.sec=ow; pp.secAmmo=oa; pp.secIssued=oi; pp.secFromArmory=of2;
-      pp.reloading=0; pp.fired=true; pp.lastShot=G.t*1000;
-      G.tel.weapon=pp.wep.name;
-      say(pp.wep.name+' up');
-      blip('pick');
-    }
-  }
+  if(code==='KeyX'&&G&&!G.over&&!G.paused&&!repeat) swapGuns();
   // SPEC 6.1: 1 to 7 select a hotbar slot, and G acts with whatever is selected.
   if(G&&!G.over&&!repeat&&code.indexOf('Digit')===0){
     var dn=parseInt(code.slice(5),10);
@@ -5258,12 +5366,47 @@ function tickRegen(dt){
 // buttons. Slots are computed from live state each frame rather than stored, so
 // picking something up or spending it is reflected immediately and there is no
 // second copy of the truth to drift.
+// THE TWO GUN SLOTS. His note, 2026-08-23: "changing weapons is all messed up,
+// especially the first 2." Reproduced from the code exactly.
+// The old hotbar listed slot one as whatever was IN HAND and slot two as
+// whatever was stowed, then implemented "select slot two" by firing the X swap.
+// So the two guns traded places every time you pressed 2: the gun you asked for
+// landed in slot ONE while the highlight sat on slot TWO, which meant the label
+// named one gun and your hands held the other. Pressing 2 again hit the
+// "already selected" early return and did nothing at all, and pressing 1 hit an
+// empty branch that also did nothing, so once you touched slot two you could
+// not get your primary back for the rest of the raid.
+// The slots are FIXED now. Slot one is always the gun you deployed with and
+// slot two is always the other one, whichever happens to be in your hands, and
+// pressing a number puts that specific gun up. `swapped` is the only new state.
+function swapGuns(){
+  var pp=G&&G.player;
+  if(!pp||!pp.sec||pp.downed||pp.roll>0||G.over||G.paused) return false;
+  var ow=pp.wep,oa=pp.ammo,oi=pp.wepIssued,of2=pp.wepFromArmory;
+  pp.wep=pp.sec; pp.ammo=pp.secAmmo; pp.wepIssued=pp.secIssued; pp.wepFromArmory=pp.secFromArmory;
+  pp.sec=ow; pp.secAmmo=oa; pp.secIssued=oi; pp.secFromArmory=of2;
+  pp.reloading=0; pp.fired=true; pp.lastShot=G.t*1000;
+  pp.swapped=!pp.swapped;
+  // The highlight follows the gun, always. Pressing X used to move the gun
+  // without moving the selection, which is the other half of how the hotbar and
+  // your hands ended up disagreeing.
+  G.hot=pp.swapped?1:0;
+  G.tel.weapon=pp.wep.name;
+  say(pp.wep.name+' up');
+  blip('pick');
+  return true;
+}
 function hotbarSlots(){
   var p=G.player,out=[];
-  out.push({k:'wep',name:p.wep.name,kind:'gun',
-    count:(p.wep.mag===0?null:p.ammo),c:p.wep.tint||'#ffd48a'});
-  if(p.sec) out.push({k:'sec',name:p.sec.name,kind:'gun',
-    count:(p.sec.mag===0?null:p.secAmmo),c:p.sec.tint||'#ffd48a'});
+  var sw=!!p.swapped;
+  // A is the gun you deployed with, B is the other one, regardless of which is
+  // currently up. The list order never changes, so the number keys never move.
+  var A =sw?p.sec:p.wep,      Aam=sw?p.secAmmo:p.ammo;
+  var B =sw?p.wep:p.sec,      Bam=sw?p.ammo:p.secAmmo;
+  out.push({k:'gunA',name:A.name,kind:'gun',inHand:!sw,
+    count:(A.mag===0?null:Aam),c:A.tint||'#ffd48a'});
+  if(B) out.push({k:'gunB',name:B.name,kind:'gun',inHand:sw,
+    count:(B.mag===0?null:Bam),c:B.tint||'#ffd48a'});
   for(var i=0;i<THROWKEYS.length;i++){
     var tk=THROWKEYS[i];
     out.push({k:'throw:'+tk,name:ITEMS[tk].name,kind:'throw',
@@ -5287,10 +5430,9 @@ function setHot(i){
   if(i===G.hot) return;
   G.hot=i;
   var s2=sl[i];
-  // Selecting a gun slot puts it in hand. The X swap still exists and simply
-  // moves the selection, so the old muscle memory keeps working.
-  if(s2.k==='sec'&&G.player.sec) raidKey('KeyX',false,null);
-  else if(s2.k==='wep'&&G.player.wepIssued===undefined){}
+  // A gun slot names a SPECIFIC gun, so it swaps only when that gun is not
+  // already up, and it is never a no-op the way the old early return was.
+  if(s2.kind==='gun'&&!s2.inHand) swapGuns();
   if(s2.kind==='throw'){
     var tk2=s2.k.split(':')[1],ix=THROWKEYS.indexOf(tk2);
     if(ix>=0) G.tsel=ix;
@@ -7816,7 +7958,7 @@ function drawSnitchS(e){
     wc.strokeStyle='#ff3b30'; wc.lineWidth=3*S;
     wc.beginPath(); wc.arc(e.x,cy,22*S,-1.5708,-1.5708+6.2832*wf); wc.stroke();
     wc.globalCompositeOperation='source-over';
-    wc.font=FS('700 10px "Titan One","Rubik",sans-serif'); wc.textAlign='center';
+    wc.font=FS(TYPE.label); wc.textAlign='center';
     wc.fillStyle=INK; wc.fillText('ALARM',e.x+1,cy-30*S+1);
     wc.fillStyle='#ff5040'; wc.fillText('ALARM',e.x,cy-30*S);
     wc.textAlign='left';
@@ -7903,7 +8045,7 @@ function drawContS(ct){
     }
     wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
     if(ct.cache){
-      wc.font=FS('700 12px "Titan One","Rubik",sans-serif'); wc.textAlign='center';
+      wc.font=FS(TYPE.head); wc.textAlign='center';
       wc.fillStyle=INK; wc.fillText('ARC CACHE',ct.x+1,ct.y-lift-d2-25);
       wc.fillStyle='#e6b4ff'; wc.fillText('ARC CACHE',ct.x,ct.y-lift-d2-26);
       wc.textAlign='left';
@@ -7918,7 +8060,7 @@ function drawContS(ct){
       sgr2.addColorStop(0,'#ffd76a'); sgr2.addColorStop(1,'rgba(0,0,0,0)');
       wc.fillStyle=sgr2; wc.beginPath(); wc.arc(ct.x,ct.y-lift,62,0,6.2832); wc.fill();
       wc.restore();
-      wc.textAlign='center'; wc.font=FS('700 10px "Titan One","Rubik",sans-serif');
+      wc.textAlign='center'; wc.font=FS(TYPE.label);
       wc.fillStyle=INK; wc.fillText('ARC STRONGBOX',ct.x+1,ct.y-lift-d2-25);
       wc.fillStyle='#ffd76a'; wc.fillText('ARC STRONGBOX',ct.x,ct.y-lift-d2-26);
       wc.textAlign='left';
@@ -7930,7 +8072,7 @@ function drawContS(ct){
       bgr.addColorStop(0,'#35d6c8'); bgr.addColorStop(1,'rgba(0,0,0,0)');
       wc.fillStyle=bgr; wc.beginPath(); wc.arc(ct.x,ct.y-lift,54,0,6.2832); wc.fill();
       wc.restore();
-      wc.textAlign='center'; wc.font=FS('700 10px "Titan One","Rubik",sans-serif');
+      wc.textAlign='center'; wc.font=FS(TYPE.label);
       wc.fillStyle=INK; wc.fillText('YOUR BODY',ct.x+1,ct.y-lift-d2-25);
       wc.fillStyle='#35d6c8'; wc.fillText('YOUR BODY',ct.x,ct.y-lift-d2-26);
       wc.textAlign='left';
@@ -8040,6 +8182,12 @@ function render2D(dt){
   for(i=0;i<G.ents.length;i++){
     var sc=G.ents[i];
     if(sc.kind!=='sentry') continue;
+    // His note, 2026-08-23: "i should not be able to see the red attack views of
+    // enemies unless i am looking at them via line of sight, e.g. fog of war
+    // should block it." This loop walked G.ents rather than the seen list, so a
+    // sentry behind a building painted its cone across ground you had no
+    // business knowing about: free intelligence on every machine on the map.
+    if(!sc.seen) continue;
     // Draw the reach the simulation actually uses. A sentry that has heard
     // anything gets 35 percent more range, and the cone used to keep showing the
     // patrol figure, so it detected you from ground it had never marked.
@@ -8147,9 +8295,16 @@ function render2D(dt){
   }
   // Wildlife sits in the same y-sort as everything else, so a deer walks behind
   // a wall and in front of the road exactly like a person does.
+  // His note, 2026-08-23: "i can see animals through fog of war and shouldn't be
+  // able to." Correct, and it was worse than cosmetic: a deer bolting behind a
+  // building told you something had moved there, which is exactly the tell the
+  // animals are meant to give you only when you can SEE them. Gated on the same
+  // line of sight test the machines use. Cheap, because the viewport cull above
+  // has already cut this to the handful actually on screen.
   if(G.wild) for(i=0;i<G.wild.length;i++){
     var CW=G.wild[i];
     if(CW.x<ox-60||CW.x>ox+VW+60||CW.y<oy-90||CW.y>oy+VH+90) continue;
+    if(!canSee(p.x,p.y,p.face,CW.x,CW.y,G.vseg)) continue;
     DR.push({k:CW.y,cr:CW});
   }
   DR.push({k:p.y-((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y)*0.5:0),pl:1});
@@ -8162,6 +8317,9 @@ function render2D(dt){
   // one bad entity now loses that entity for that frame, not the player, and
   // the first failure is named in the recorder so the next export tells me
   // exactly what broke rather than "character not rendering".
+  // The world transform as it stands before any entity draws, kept so a caught
+  // fault can put it back rather than leaving the rest of the frame shifted.
+  var TBASE=wc.getTransform?wc.getTransform():null;
   for(i=0;i<DR.length;i++){
     var it=DR[i];
     try{
@@ -8222,10 +8380,22 @@ function render2D(dt){
     } else if(it.lm){
       var LG=it.lm;
       var lfk=(LG.fl?(.72+.28*Math.sin(G.t*11+LG.f)):1)*wx().lights*(isDay()?tod().lights:1);
-      var lhx=LG.x,lhy=LG.y-34;
-      // bracket down from above, then the housing, then the lit element
-      wc.fillStyle='rgba(20,18,26,.85)';
-      wc.fillRect(lhx-1,lhy-14,2,14);
+      var lhx=LG.x,lhy=LG.y-(LG.post?52:34);
+      if(LG.post){
+        // A LAMP POST, standing on the ground, because outdoors there is nothing
+        // overhead for a bracket to hang from and a light with no visible cause
+        // is the thing he has now reported twice.
+        shadowE(LG.x,LG.y,7,3,.34);
+        wc.fillStyle=INK; wc.fillRect(lhx-3,lhy+2,6,52);
+        wc.fillStyle='#3a3f47'; wc.fillRect(lhx-2,lhy+2,4,52);
+        wc.fillStyle='#4d545e'; wc.fillRect(lhx-2,lhy+2,1.4,52);
+        wc.fillStyle=INK; wc.fillRect(lhx-6,LG.y-3,12,4);
+        wc.fillStyle='#2f343b'; wc.fillRect(lhx-5,LG.y-3,10,3);
+      } else {
+        // bracket down from above, then the housing, then the lit element
+        wc.fillStyle='rgba(20,18,26,.85)';
+        wc.fillRect(lhx-1,lhy-14,2,14);
+      }
       wc.fillStyle='#2a2733'; wc.fillRect(lhx-7,lhy-2,14,5);
       wc.fillStyle='#141220'; wc.fillRect(lhx-8,lhy+3,16,2);
       if(lfk>0.02){
@@ -8441,6 +8611,23 @@ function render2D(dt){
           wc.restore();
         }
       }
+      // RAIDERS are the one kind with no draw call of their own in the chain
+      // above, so they land here.
+      // HIS RUNS #7 AND #8, 2026-08-23, both logged DRAWERR:crawler. This line
+      // used to be written as the ELSE of the weak point test below, so it
+      // caught every kind that has no weak points: crawler, snitch, listener,
+      // peddler and stray all fell into the RAIDER draw and threw on
+      // `e2.bag.length`, because only a raider carries a bag.
+      // The missing nameplate was the small half of it. The throw also skipped
+      // the wc.restore() that pairs with the deck lift twelve lines up, so on
+      // any map with platforms every entity drawn after the first crawler slid
+      // upward by that deck's height for the rest of the frame. On THE QUARRY,
+      // where the top terrace lifts 132, that is the whole world jumping.
+      else if(e2.kind==='raider')
+        drawOp(e2.x,e2.y,e2.face,(e2.step||0)*4,e2.coat,
+          clamp((e2.bag?e2.bag.length:0)/7,0,1),e2.muzzle,'',0,
+          {moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT,bulk:e2.bulk||0});
+
       // SPEC 8.7: the openings have to be VISIBLE or they are a secret, and a
       // secret is not a tactic. Drawn on top of the body, pulsing, in their own
       // colour: hot orange for the vent, cold blue for the optic. They ride the
@@ -8464,14 +8651,20 @@ function render2D(dt){
         wc.beginPath(); wc.arc(wpt.x,wpt.y,WW.rad*0.40,0,6.2832); wc.fill();
         wc.globalAlpha=1;
       }
-      else drawOp(e2.x,e2.y,e2.face,(e2.step||0)*4,e2.coat,
-        clamp(e2.bag.length/7,0,1),e2.muzzle,'',0,
-        {moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT,bulk:e2.bulk||0});
       if(eLift>0) wc.restore();
     }
     }catch(drErr){
+      // A throw part way through one item can skip the wc.restore() that pairs
+      // with a deck lift, and then EVERY entity drawn after it in that frame is
+      // shifted by that deck's height. The armour was only ever meant to lose
+      // one entity, not to slide the rest of the world. Put the visible state
+      // back before carrying on, whatever the item left behind.
+      try{
+        if(TBASE&&wc.setTransform) wc.setTransform(TBASE);
+        wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+      }catch(rz){}
       if(!G.drawErr){
-        G.drawErr=(it.pl?'player':(it.e?it.e.kind:(it.w?'wall':(it.lm?'lamp':'container'))))+': '+drErr.message;
+        G.drawErr=(it.pl?'player':(it.e?it.e.kind:(it.cr?'critter':(it.w?'wall':(it.lm?'lamp':'container')))))+': '+drErr.message;
         if(G.tel) G.tel.drawErr=G.drawErr;
         say('Render fault logged: '+G.drawErr);
       }
@@ -8492,7 +8685,7 @@ function render2D(dt){
     var plate=ne.kind==='peddler'
       ? (pedOpen()?(G.nearPed===ne?'THE PEDDLER  [E] DEAL':'THE PEDDLER'):'THE PEDDLER  [CLOSED]')
       : ne.name+(ne.state==='extract'?' [RUNNING]':(ne._plateTag||''));
-    wc.font=FS('700 9px "Titan One","Rubik",sans-serif');
+    wc.font=FS(TYPE.micro);
     var tw=wc.measureText(plate).width;
     // Plate height follows the actual rendered font, or the scaled-up text
     // prints over its own box edge and the health pip below it.
@@ -8536,7 +8729,7 @@ function render2D(dt){
     wc.fillStyle=SW.done?'#ffd76a':'#8fd0ff';
     wc.fillRect(swx-20,swy-8-44*pctW,40,2);
     wc.globalAlpha=1;
-    wc.textAlign='center'; wc.font=FS('700 10px "Titan One","Rubik",sans-serif');
+    wc.textAlign='center'; wc.font=FS(TYPE.label);
     wc.fillStyle=INK; wc.fillText(SW.done?'SEAL BROKEN':('THE SEAL  '+Math.round(pctW*100)+'%'),swx+1,swy-59);
     wc.fillStyle=SW.done?'#ffd76a':'#8fd0ff';
     wc.fillText(SW.done?'SEAL BROKEN':('THE SEAL  '+Math.round(pctW*100)+'%'),swx,swy-60);
@@ -8899,16 +9092,47 @@ function drawHUD(){
   // reticle at the cursor
   if(!p.downed&&!G.bagOpen&&!keys['KeyM']){
     var rx0=mouse.x,ry0=mouse.y;
+    // THE RETICLE CARRIES THE GUN'S STATE. His note, 2026-08-23: "when you are
+    // out of ammo, the mouse cursour should indicate same instead of
+    // disappearing." It never changed for anything: empty, reloading and jammed
+    // all drew the same white cross, so the only way to find out the trigger was
+    // dead was to pull it and hear nothing. Your eyes are on the cursor in a
+    // firefight, not on the ammo counter, so that is where the answer belongs.
+    var rState=(p.jam>0)?'jam':(p.reloading>0?'reload':(p.ammo<=0?(p.reserve<=0?'dry':'empty'):''));
+    var rCol=rState==='jam'?'rgba(224,72,58,.98)'
+            :rState==='dry'?'rgba(224,72,58,.95)'
+            :rState==='empty'?'rgba(255,192,74,.95)'
+            :rState==='reload'?'rgba(255,192,74,.85)'
+            :(p.ads?'rgba(255,190,90,.95)':'rgba(230,240,246,.85)');
     var gap=p.ads?3.5:(8+(p.recoil>0?p.recoil*7:0)+(G.sprinting?5:0));
+    if(rState) gap=Math.max(gap,11);
     var len=p.ads?5:7;
-    ctx.strokeStyle=p.ads?'rgba(255,190,90,.95)':'rgba(230,240,246,.85)'; ctx.lineWidth=1.6;
+    ctx.strokeStyle=rCol; ctx.lineWidth=rState?2:1.6;
     ctx.beginPath();
     ctx.moveTo(rx0-gap-len,ry0); ctx.lineTo(rx0-gap,ry0);
     ctx.moveTo(rx0+gap,ry0); ctx.lineTo(rx0+gap+len,ry0);
     ctx.moveTo(rx0,ry0-gap-len); ctx.lineTo(rx0,ry0-gap);
     ctx.moveTo(rx0,ry0+gap); ctx.lineTo(rx0,ry0+gap+len);
     ctx.stroke();
-    ctx.fillStyle='rgba(230,240,246,.9)'; ctx.fillRect(rx0-1,ry0-1,2,2);
+    if(rState==='reload'&&p.wep.reload){
+      // the reload as a ring closing on the cursor, so you know when the gun is
+      // yours again without looking away from the fight
+      ctx.strokeStyle='rgba(255,192,74,.9)'; ctx.lineWidth=2.4;
+      ctx.beginPath();
+      ctx.arc(rx0,ry0,gap+len+4,-1.5708,-1.5708+6.2832*clamp(1-p.reloading/(p.wep.reload/1000),0,1));
+      ctx.stroke();
+    } else if(rState){
+      // a struck-through cross: the shape says "not now" at a glance
+      ctx.strokeStyle=rCol; ctx.lineWidth=2;
+      ctx.beginPath();
+      ctx.moveTo(rx0-gap+2,ry0-gap+2); ctx.lineTo(rx0+gap-2,ry0+gap-2);
+      ctx.stroke();
+      ctx.font=FS(TYPE.micro); ctx.textAlign='center';
+      ctx.fillStyle=rCol;
+      ctx.fillText(rState==='jam'?'JAMMED':(rState==='dry'?'NO AMMO':'EMPTY - R'),rx0,ry0+gap+len+LH(14));
+      ctx.textAlign='left';
+    }
+    ctx.fillStyle=rState?rCol:'rgba(230,240,246,.9)'; ctx.fillRect(rx0-1,ry0-1,2,2);
     // hitmarker: four diagonal ticks, wider and amber when the target dropped
     if(G.hitMark){
       var hm=G.hitMark,hk=clamp(1-hm.t/hm.life,0,1);
@@ -8924,25 +9148,25 @@ function drawHUD(){
     }
   }
   // timer + compass
-  ctx.font=FS('700 20px "Titan One","Rubik",sans-serif'); ctx.textAlign='center';
+  ctx.font=FS(TYPE.title); ctx.textAlign='center';
   var mm=Math.floor(G.timeLeft/60),ss=Math.floor(G.timeLeft%60);
   ctx.fillStyle=G.timeLeft<45?'#ff4d3d':'#cdd6dd';
   ctx.fillText(mm+':'+(ss<10?'0':'')+ss,W/2,30);
   var za=Math.atan2(G.active.y-p.y,G.active.x-p.x),zd=Math.round(dist(p,G.active));
-  ctx.font=FS('10px "Rubik",sans-serif'); ctx.fillStyle='#35d6c8';
+  ctx.font=FS(TYPE.label); ctx.fillStyle='#35d6c8';
   ctx.fillText('BEACON '+zd+'m',W/2,46);
   ctx.save(); ctx.translate(W/2,60); ctx.rotate(za+Math.PI/2);
   ctx.fillStyle='#35d6c8';
   ctx.beginPath(); ctx.moveTo(0,-8); ctx.lineTo(-5,5); ctx.lineTo(5,5); ctx.closePath(); ctx.fill();
   ctx.restore();
   if(G.marked>0){
-    ctx.font=FS('700 13px "Titan One","Rubik",sans-serif');
+    ctx.font=FS(TYPE.head);
     ctx.fillStyle='rgba(255,60,40,'+(.6+.4*Math.sin(G.t*10))+')';
     ctx.fillText('MARKED - THEY KNOW WHERE YOU ARE',W/2,82);
   }
   ctx.textAlign='left';
   if(G.msgT>0){
-    ctx.font=FS('11px "Rubik",sans-serif');
+    ctx.font=FS(TYPE.label);
     ctx.fillStyle='rgba(205,214,221,'+clamp(G.msgT,0,1)+')';
     ctx.fillText(G.msg,16,26);
   }
@@ -8955,14 +9179,14 @@ function drawHUD(){
     var zs=w2s(zz2.x,zz2.r+18,zz2.y);
     if(!zs||zs.x<-90||zs.x>W+90||zs.y<-40||zs.y>H+40) continue;
     var zlab=za?'EXTRACTION - OPEN':'EXTRACTION - CLOSED';
-    ctx.font=FS('700 11px "Titan One","Rubik",sans-serif');
+    ctx.font=FS(TYPE.label);
     var zwid=ctx.measureText(zlab).width;
     ctx.fillStyle='rgba(6,9,13,.78)';
     ctx.fillRect(zs.x-zwid/2-6,zs.y-LH(11),zwid+12,LH(15));
     ctx.fillStyle=za?'#35d6c8':'rgba(168,180,193,.95)';
     ctx.fillText(zlab,zs.x,zs.y);
     if(!za){
-      ctx.font=FS('9px "Rubik",sans-serif');
+      ctx.font=FS(TYPE.micro);
       ctx.fillStyle='rgba(168,180,193,.7)';
       ctx.fillText('this one will not call',zs.x,zs.y+LH(13));
     }
@@ -8975,7 +9199,7 @@ function drawHUD(){
       var haveKey=false;
       for(var hk=0;hk<G.bag.length;hk++){ var hki=ITEMS[G.bag[hk]];
         if(hki&&hki.use==='key'&&hki.door===G.nearDoor.id){ haveKey=true; break; } }
-      ctx.font=FS('10px "Rubik",sans-serif'); ctx.textAlign='center';
+      ctx.font=FS(TYPE.label); ctx.textAlign='center';
       ctx.fillStyle=haveKey?'#7fc4a0':'#ff8a76';
       ctx.fillText(haveKey?('[E] UNLOCK '+G.nearDoor.name):(G.nearDoor.name+' - LOCKED'),dsc.x,dsc.y);
       ctx.textAlign='left';
@@ -8985,7 +9209,7 @@ function drawHUD(){
   if(nc2&&!G.searching&&!p.downed){
     var s=w2s(nc2.x,26,nc2.y);
     if(s){
-      ctx.font=FS('10px "Rubik",sans-serif'); ctx.textAlign='center';
+      ctx.font=FS(TYPE.label); ctx.textAlign='center';
       ctx.fillStyle='#ffd25c';
       ctx.fillText('[E] SEARCH '+nc2.type.toUpperCase(),s.x,s.y);
       // His #23: item names in the world when you are near them. A single-item
@@ -9012,7 +9236,7 @@ function drawHUD(){
   if(padZ&&!p.downed){
     var ps=w2s(padZ.x,26,padZ.y);
     if(ps){
-      ctx.font=FS('10px "Rubik",sans-serif'); ctx.textAlign='center';
+      ctx.font=FS(TYPE.label); ctx.textAlign='center';
       if(!padZ.open){
         ctx.fillStyle='#e0483a';
         ctx.fillText('EXTRACTION CLOSED',ps.x,ps.y);
@@ -9046,7 +9270,7 @@ function drawHUD(){
     var sm2=w2s(e.x,spriteTop(e)+22,e.y);
     if(sm2){
       ctx.fillStyle=mk[1];
-      ctx.font=FS('700 13px "Titan One","Rubik",sans-serif'); ctx.textAlign='center';
+      ctx.font=FS(TYPE.head); ctx.textAlign='center';
       ctx.fillText(mk[0],sm2.x,sm2.y); ctx.textAlign='left';
     }
   }
@@ -9058,7 +9282,7 @@ function drawHUD(){
     vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(20,0,0,'+(0.4+0.5*dbf)+')');
     ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
     ctx.textAlign='center';
-    ctx.font=FS('700 30px "Titan One","Rubik",sans-serif');
+    ctx.font=FS(TYPE.huge);
     ctx.globalAlpha=Math.min(1,dbf*2);
     ctx.fillStyle='#1B1622'; ctx.fillText('YOU DIED',W/2+2,H*0.42+2);
     ctx.fillStyle='#ff5040'; ctx.fillText('YOU DIED',W/2,H*0.42);
@@ -9097,15 +9321,15 @@ function drawHUD(){
         ctx.fillRect(cx2-bw*0.16,cy2-bw*0.22,bw*0.22,bw*0.09);
       }
       ctx.globalAlpha=1;
-      ctx.font=FS('700 8px "Rubik",sans-serif'); ctx.fillStyle='rgba(160,172,184,.8)';
+      ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(160,172,184,.8)';
       ctx.fillText(String(q+1),bx+LH(4),hy+LH(11));
       if(S.count!==null&&S.count!==undefined){
-        ctx.font=FS('700 9px "Rubik",sans-serif');
+        ctx.font=FS(TYPE.micro);
         ctx.fillStyle=empty?'#7a5040':'#FFF6DC';
         ctx.textAlign='right'; ctx.fillText(String(S.count),bx+bw-LH(4),hy+bw-LH(5)); ctx.textAlign='left';
       }
     }
-    ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#8a96a1'; ctx.textAlign='center';
+    ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1'; ctx.textAlign='center';
     ctx.fillText(sl[sel].name+'   [G] use    [V] signal',W/2,hy-LH(6));
     ctx.textAlign='left';
   })();
@@ -9118,7 +9342,7 @@ function drawHUD(){
   // forgotten about reads as the game being broken.
   (function(){
     var tp=termsPay(); if(tp<=0) return;
-    ctx.font=FS('700 11px "Titan One","Rubik",sans-serif');
+    ctx.font=FS(TYPE.label);
     var lab='TERMS  +'+Math.round(tp*100)+'%';
     var tw3=ctx.measureText(lab).width;
     ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(W-tw3-30,48,tw3+16,LH(20));
@@ -9129,31 +9353,31 @@ function drawHUD(){
     var cc=G.pConceal===undefined?1:G.pConceal;
     var clab=cc<=0.15?'HIDDEN':(cc<=0.30?'WELL HIDDEN':(cc<=0.45?'CONCEALED':(cc<1?'PARTLY HIDDEN':'CRASHING THROUGH')));
     var ccol=cc<=0.30?'#7fc4a0':(cc<1?'#ffc04a':'#e0483a');
-    ctx.font=FS('700 12px "Titan One","Rubik",sans-serif');
+    ctx.font=FS(TYPE.head);
     var cw2=ctx.measureText(clab).width;
     ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(14,by-LH(62),cw2+16,LH(20));
     ctx.fillStyle=ccol; ctx.fillText(clab,22,by-LH(48));
   }
   bar(16,by,280,18,p.hp/p.maxhp,p.hp>50?'#5fae6f':(p.hp>25?'#d0a13c':'#c8452f'));
-  ctx.font=FS('700 12px "Rubik",sans-serif'); ctx.fillStyle='#FFF6DC';
+  ctx.font=FS(TYPE.head); ctx.fillStyle='#FFF6DC';
   ctx.fillText('HP  '+Math.round(p.hp),24,by+14);
   if(p.armor>0){
     bar(16,by-22,280,11,p.armor/armorCap(),'#5aa9e6');
-    ctx.font=FS('700 9px "Rubik",sans-serif');
+    ctx.font=FS(TYPE.micro);
     ctx.fillText('ARMOR  '+Math.round(p.armor),24,by-13);
   }
   bar(16,by+22,280,8,p.stam/100,'#8fb5c8');
   ctx.textAlign='right';
-  ctx.font=FS('700 14px "Titan One","Rubik",sans-serif'); ctx.fillStyle='#cdd6dd';
+  ctx.font=FS(TYPE.head); ctx.fillStyle='#cdd6dd';
   if(p.wep.wearName&&p.wep.wearName!=='CLEAN'){
     var WSC=WEARSTEPS[0];
     for(var wq=0;wq<WEARSTEPS.length;wq++) if(WEARSTEPS[wq].name===p.wep.wearName) WSC=WEARSTEPS[wq];
-    ctx.font=FS('700 9px "Rubik",sans-serif'); ctx.fillStyle=WSC.c;
+    ctx.font=FS(TYPE.micro); ctx.fillStyle=WSC.c;
     ctx.fillText(p.wep.wearName,W-16,by-LH(46));
   }
-  ctx.font=FS('700 14px "Titan One","Rubik",sans-serif'); ctx.fillStyle='#cdd6dd';
+  ctx.font=FS(TYPE.head); ctx.fillStyle='#cdd6dd';
   ctx.fillText(p.wep.name+(p.ads?(opticMag()>1?('  '+opticMag().toFixed(2).replace(/0$/,'')+'x SCOPE'):'  [ADS]'):''),W-16,by-LH(34));
-  ctx.font=FS('700 18px "Titan One","Rubik",sans-serif');
+  ctx.font=FS(TYPE.title);
   if(p.wep.mag===0){ ctx.fillStyle='#8a96a1'; ctx.fillText('MELEE',W-16,by-LH(14)); }
   else if(p.jam>0){ ctx.fillStyle='#e0483a'; ctx.fillText('JAMMED',W-16,by-LH(14)); }
   else if(p.reloading>0){ ctx.fillStyle='#ffb02e'; ctx.fillText('RELOADING',W-16,by-LH(14)); }
@@ -9163,14 +9387,14 @@ function drawHUD(){
   }
   // the sidearm waiting on X, so the second gun is not a secret
   if(p.sec){
-    ctx.font=FS('9.5px "Rubik",sans-serif'); ctx.fillStyle='#7d8894';
+    ctx.font=FS(TYPE.micro); ctx.fillStyle='#7d8894';
     ctx.fillText('[X] '+p.sec.name+'  '+p.secAmmo,W-16,by-LH(52));
   }
-  ctx.font=FS('9.5px "Rubik",sans-serif'); ctx.fillStyle='#8a96a1';
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
   ctx.fillText(G.bag.length+' ITEMS  '+bagWeight()+'wt',W-16,by);
   // standing cue: the bag was findable only from a dim 14-item legend line
   if(!G.bagOpen){
-    ctx.font=FS('700 10px "Titan One","Rubik",sans-serif'); ctx.fillStyle='#ffb02e';
+    ctx.font=FS(TYPE.label); ctx.fillStyle='#ffb02e';
     ctx.fillText('TAB  INVENTORY',W-16,by-68);
   }
   var pl2=[],tsn=THROWKEYS[G.tsel];
@@ -9185,13 +9409,13 @@ function drawHUD(){
   ctx.textAlign='left';
   if(G.beaconT!==null&&!G.over){
     var inRing=dist(p,G.active)<G.active.r;
-    ctx.font=FS('700 13px "Titan One","Rubik",sans-serif'); ctx.textAlign='center';
+    ctx.font=FS(TYPE.head); ctx.textAlign='center';
     var holding=G.beaconT<=0&&G.shipHold!==null&&G.shipHold!==undefined;
     ctx.fillStyle=holding?(inRing?'#35d6c8':'#ff5a4a'):(inRing?'#35d6c8':'#ffb02e');
     ctx.fillText(holding?('SHIP HOLDING  '+Math.max(0,Math.ceil(G.shipHold))+'s'):('BEACON INBOUND  '+Math.ceil(G.beaconT)+'s'),W/2,H-70);
     bar(W/2-90,H-62,180,9,holding?Math.max(0,G.shipHold/(G.shipHoldMax||30)):(1-G.beaconT/CFG.extractWait),holding?'#ff5a4a':(inRing?'#35d6c8':'#ffb02e'));
     if(!inRing){
-      ctx.font=FS('10px "Rubik",sans-serif'); ctx.fillStyle='#ffc04a';
+      ctx.font=FS(TYPE.label); ctx.fillStyle='#ffc04a';
       ctx.fillText('GET TO THE RING',W/2,H-46);
     } else {
       // count what is actually converging, because a number climbing while you
@@ -9204,23 +9428,23 @@ function drawHUD(){
         }
       }
       if(inbound){
-        ctx.font=FS('700 10px "Rubik",sans-serif');
+        ctx.font=FS(TYPE.label);
         ctx.fillStyle=inbound>4?'#ff5a4a':'#ffc04a';
         ctx.fillText(inbound+' converging on the ring',W/2,H-46);
       }
     }
     ctx.textAlign='left';
   } else if(!G.over&&dist(p,G.active)<G.active.r){
-    ctx.font=FS('700 13px "Titan One","Rubik",sans-serif'); ctx.textAlign='center';
+    ctx.font=FS(TYPE.head); ctx.textAlign='center';
     ctx.fillStyle='#35d6c8'; ctx.fillText('HOLD E TO CALL THE BEACON',W/2,H-70);
     ctx.textAlign='left';
   }
   if(p.downed){
     ctx.fillStyle='rgba(60,8,5,.45)'; ctx.fillRect(0,0,W,H);
-    ctx.font=FS('700 34px "Titan One","Rubik",sans-serif'); ctx.textAlign='center';
+    ctx.font=FS(TYPE.huge); ctx.textAlign='center';
     ctx.fillStyle='#ff4d3d'; ctx.fillText('DOWN',W/2,H/2-34);
     bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
-    ctx.font=FS('11px "Rubik",sans-serif'); ctx.fillStyle='#e8d5d2';
+    ctx.font=FS(TYPE.label); ctx.fillStyle='#e8d5d2';
     var canRev=!p.revived&&findHeal()>=0;
     ctx.fillText(p.revived?'Auto-injector spent. Crawl or bleed out.':
       (canRev?'[F] SELF-REVIVE (uses medical)':'No medical in bag. Crawl or bleed out.'),W/2,H/2+6);
@@ -9239,7 +9463,7 @@ function drawHUD(){
     var ebw=LH(112),ebh=LH(30),egap=LH(6);
     var etw=EMOTES.length*ebw+(EMOTES.length-1)*egap;
     var ex0=Math.round(W/2-etw/2),ey0=H-LH(112);
-    ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#8a96a1'; ctx.textAlign='center';
+    ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1'; ctx.textAlign='center';
     ctx.fillText(weaponDown()?'weapon down, they will listen':'lower your weapon first, or it is just noise',
       W/2,ey0-LH(8));
     ctx.textAlign='left';
@@ -9248,9 +9472,9 @@ function drawHUD(){
       ctx.fillStyle='rgba(18,15,24,.90)'; ctx.fillRect(ebx,ey0,ebw,ebh);
       ctx.strokeStyle=(EE.k==='hail'&&weaponDown())?'#7fc4a0':'rgba(140,152,163,.42)';
       ctx.lineWidth=1; ctx.strokeRect(ebx+.5,ey0+.5,ebw-1,ebh-1);
-      ctx.font=FS('700 8px "Rubik",sans-serif'); ctx.fillStyle='rgba(160,172,184,.85)';
+      ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(160,172,184,.85)';
       ctx.fillText(String(eq+1),ebx+LH(6),ey0+LH(12));
-      ctx.font=FS('700 11px "Titan One","Rubik",sans-serif');
+      ctx.font=FS(TYPE.label);
       ctx.fillStyle=(EE.k==='hail')?'#ffc04a':'#cdd6dd';
       ctx.textAlign='center'; ctx.fillText(EE.name,ebx+ebw/2,ey0+LH(20)); ctx.textAlign='left';
     }
@@ -9350,7 +9574,7 @@ function drawNoiseMarkers(){
   }
 }
 function drawLegend(){
-  var MONO=FS('9px "Rubik",sans-serif');   // audit: bypassed FS, sat below the floor
+  var MONO=FS(TYPE.micro);   // audit: bypassed FS, sat below the floor
   if(!G.legendOn){
     ctx.font=MONO; ctx.fillStyle='rgba(140,152,163,.55)';
     ctx.fillText('H  controls',14,H-14);
@@ -9377,11 +9601,11 @@ function drawLegend(){
   ctx.strokeRect(x-7.5,top-5.5,LEGW-1,boxH+9);
   var cy=top+LH(6);
   for(i=0;i<LEG.length;i++){
-    ctx.font=FS('700 9px "Titan One","Rubik",sans-serif'); ctx.fillStyle='#ffb02e';
+    ctx.font=FS(TYPE.micro); ctx.fillStyle='#ffb02e';
     ctx.fillText(LEG[i][0],x,cy); cy+=LH(12);
     for(j=0;j<LEG[i][1].length;j++){
       var k=LEG[i][1][j];
-      ctx.font=FS('700 9px "Rubik",sans-serif'); ctx.fillStyle='#cdd6dd';
+      ctx.font=FS(TYPE.micro); ctx.fillStyle='#cdd6dd';
       ctx.fillText(k[0],x+LH(6),cy);
       ctx.font=MONO; ctx.fillStyle='#8a96a1';
       ctx.fillText(k[1],x+LH(64),cy);
@@ -9394,22 +9618,22 @@ function drawLegend(){
   for(i=0;i<GEARRULES.length;i++){
     var gr=GEARRULES[i];
     if(gr[0]){
-      ctx.font=FS('700 8.5px "Titan One","Rubik",sans-serif'); ctx.fillStyle='#7fc4a0';
+      ctx.font=FS(TYPE.micro); ctx.fillStyle='#7fc4a0';
       ctx.fillText(typeof gr[0]==='function'?gr[0]():gr[0],x,cy);
     }
-    ctx.font=FS('8.5px "Rubik",sans-serif'); ctx.fillStyle='#8a96a1';
+    ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
     // a rule may be a function when its wording depends on the input device
     ctx.fillText(typeof gr[1]==='function'?gr[1]():gr[1],x+(gr[0]?LH(68):LH(6)),cy);
     cy+=LH(11);
   }
   // sound key: the visualizer's colour language, stated so it can be learned
   cy+=LH(4);
-  ctx.font=FS('700 8.5px "Oxanium", sans-serif'); ctx.fillStyle='#7fc4a0';
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#7fc4a0';
   ctx.fillText('SOUND',x,cy); cy+=LH(11);
   for(i=0;i<SOUNDKEY.length;i++){
     ctx.fillStyle=SOUNDKEY[i][0];
     ctx.fillRect(x+LH(4),cy-LH(6),LH(8),LH(6));
-    ctx.font=FS('8.5px "Rubik",sans-serif'); ctx.fillStyle='#8a96a1';
+    ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
     ctx.fillText(SOUNDKEY[i][1],x+LH(18),cy);
     cy+=LH(10);
   }
@@ -9422,9 +9646,9 @@ function drawTrade(){
   ctx.fillStyle='rgba(6,9,13,.97)'; ctx.fillRect(x,y,PW,PH);
   ctx.strokeStyle='#d8a13a'; ctx.lineWidth=2; ctx.strokeRect(x+1,y+1,PW-2,PH-2);
   var cy=y+LH(23),i;
-  ctx.font=FS('700 14px "Titan One","Rubik",sans-serif'); ctx.fillStyle='#ffc04a';
+  ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
   ctx.fillText('THE PEDDLER',x+14,cy);
-  ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#6b7783'; ctx.textAlign='right';
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783'; ctx.textAlign='right';
   ctx.fillText('[E] walk away',x+PW-14,cy); ctx.textAlign='left';
   cy+=LH(9);
   ctx.strokeStyle='#3a3222'; ctx.lineWidth=1;
@@ -9435,17 +9659,17 @@ function drawTrade(){
     tot+=Math.round(ival(k)*PEDDLER_BUY); n++;
   }
   cy+=LH(21);
-  ctx.font=FS('700 12px "Titan One","Rubik",sans-serif'); ctx.fillStyle=n?'#7fc4a0':'#4d5762';
+  ctx.font=FS(TYPE.head); ctx.fillStyle=n?'#7fc4a0':'#4d5762';
   ctx.fillText('[1]  SELL BAG  ('+n+')',x+14,cy);
   ctx.textAlign='right'; ctx.fillStyle=n?'#ffc04a':'#4d5762';
   ctx.fillText('+'+tot.toLocaleString()+'c',x+PW-14,cy); ctx.textAlign='left';
   cy+=LH(15);
-  ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#8a96a1';
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
   ctx.fillText('55% of value, paid now. Yours even if you die out there.',x+14,cy);
   cy+=LH(17);
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+14,cy); ctx.lineTo(x+PW-14,cy); ctx.stroke();
   cy+=LH(18);
-  ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#6b7783';
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
   ctx.fillText('HIS STOCK',x+14,cy);
   ctx.textAlign='right'; ctx.fillStyle='#cdd6dd';
   ctx.fillText('you hold '+(P.credits||0).toLocaleString()+'c',x+PW-14,cy); ctx.textAlign='left';
@@ -9453,7 +9677,7 @@ function drawTrade(){
     var S=T.stock[i],IT=ITEMS[S.k]||{name:'?',c:'#888'};
     cy+=LH(20);
     var can=!S.sold&&(P.credits||0)>=S.price;
-    ctx.font=FS('700 11px "Titan One","Rubik",sans-serif');
+    ctx.font=FS(TYPE.label);
     ctx.fillStyle=S.sold?'#4d5762':(can?IT.c:'#8a5a4a');
     ctx.fillText('['+(i+2)+']  '+(S.sold?'sold':IT.name),x+14,cy);
     ctx.textAlign='right';
@@ -9461,7 +9685,7 @@ function drawTrade(){
     ctx.fillText(S.sold?'gone':(S.price.toLocaleString()+'c'),x+PW-14,cy);
     ctx.textAlign='left';
   }
-  ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#6b7783';
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
   ctx.fillText('He is unarmed. Shooting him has a price.',x+14,y+PH-LH(13));
 }
 function drawBag(){
@@ -9478,26 +9702,26 @@ function drawBag(){
   ctx.strokeStyle='#3a4552'; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,PW-1,hh-1);
 
   var cy=y+LH(19);
-  ctx.font=FS('700 12px "Titan One","Rubik",sans-serif'); ctx.fillStyle='#ffb02e';
+  ctx.font=FS(TYPE.head); ctx.fillStyle='#ffb02e';
   ctx.fillText('INVENTORY',x+11,cy);
-  ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#6b7783'; ctx.textAlign='right';
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783'; ctx.textAlign='right';
   ctx.fillText((PAD&&PAD.on)?'VIEW to close':'TAB or I to close',x+PW-11,cy); ctx.textAlign='left';
   cy+=LH(8);
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
 
   // equipped
   cy+=LH(16);
-  ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#6b7783';
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
   ctx.fillText('EQUIPPED',x+11,cy);
   cy+=LH(15);
-  ctx.font=FS('700 12px "Titan One","Rubik",sans-serif'); ctx.fillStyle='#cdd6dd';
+  ctx.font=FS(TYPE.head); ctx.fillStyle='#cdd6dd';
   ctx.fillText(p.wep.name,x+11,cy);
-  ctx.font=FS('10px "Rubik",sans-serif'); ctx.textAlign='right';
+  ctx.font=FS(TYPE.label); ctx.textAlign='right';
   ctx.fillStyle=p.wep.mag===0?'#8a96a1':(p.ammo===0?'#ff4d3d':'#ffb02e');
   ctx.fillText(p.wep.mag===0?'MELEE':(p.ammo+' / '+p.reserve),x+PW-11,cy);
   ctx.textAlign='left';
   cy+=LH(14);
-  ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#6b7783';
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
   ctx.fillText('DMG '+p.wep.dmg+'  RANGE '+p.wep.rng+'  '+(p.wep.auto?'AUTO':'SEMI')+
     (p.wep.mag?('  MAG '+p.wep.mag):''),x+11,cy);
 
@@ -9505,7 +9729,7 @@ function drawBag(){
   cy+=LH(18);
   ctx.fillStyle='#6b7783'; ctx.fillText('BODY',x+11,cy);
   cy+=LH(14);
-  ctx.font=FS('10px "Rubik",sans-serif'); ctx.fillStyle='#cdd6dd';
+  ctx.font=FS(TYPE.label); ctx.fillStyle='#cdd6dd';
   ctx.fillText('Integrity '+Math.round(p.hp)+'/'+p.maxhp+'    Armor '+Math.round(p.armor),x+11,cy);
   cy+=LH(14);
   var pl=[];
@@ -9514,7 +9738,7 @@ function drawBag(){
 
   // bag
   cy+=LH(20);
-  ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#6b7783';
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
   ctx.fillText('BAG  '+bagWeight()+'wt',x+11,cy);
   ctx.textAlign='right';
   ctx.fillStyle='#7fc4a0'; ctx.fillText('better guns auto-equip',x+PW-11,cy-13);
@@ -9524,7 +9748,7 @@ function drawBag(){
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
   cy+=LH(14);
   var prot=safeSet();
-  ctx.font=FS('10px "Rubik",sans-serif');
+  ctx.font=FS(TYPE.label);
   // Scroll the window so the highlighted row is always on screen, otherwise a
   // bag longer than the panel has items you can select but never see.
   var sel=clamp(G.bagSel||0,0,Math.max(0,G.bag.length-1));
@@ -9555,7 +9779,7 @@ function drawBag(){
   var hintY=Math.min(listEnd+18,y+hh-8);
   ctx.strokeStyle='#232b35'; ctx.beginPath();
   ctx.moveTo(x+11,hintY-11); ctx.lineTo(x+PW-11,hintY-11); ctx.stroke();
-  ctx.fillStyle='#9aa8d0'; ctx.font=FS('9px "Rubik",sans-serif');
+  ctx.fillStyle='#9aa8d0'; ctx.font=FS(TYPE.micro);
   ctx.fillText((PAD&&PAD.on)?'DPAD select   DPAD L drop':'\u2191\u2193 select   Z drop',x+11,hintY);
   ctx.textAlign='right';
   ctx.fillStyle=P.autoloot?'#4de3d0':'#9aa8d0';
@@ -9579,9 +9803,9 @@ function drawMapOverlay(){
   ctx.strokeStyle='#7f92d8'; ctx.lineWidth=1.5;
   ctx.strokeRect(ox,oy,WORLD_W*sc,WORLD_H*sc);
   ctx.lineWidth=1;
-  ctx.font=FS('700 11px "Titan One","Rubik",sans-serif'); ctx.fillStyle='#ffc04a';
+  ctx.font=FS(TYPE.label); ctx.fillStyle='#ffc04a';
   ctx.fillText('SECTOR MAP',ox,oy-10);
-  ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='#9aa8d0';
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#9aa8d0';
   ctx.fillText('hostile positions unknown',ox+110,oy-10);
   // conditions belong on the map, since they change how far you can see
   ctx.textAlign='right';
@@ -9615,7 +9839,7 @@ function drawMapOverlay(){
     var Z2=zl[i];
     if(!Z2.cells) continue;
     var zx=ox+(80+(Z2.mc+0.5)*G.map.cw)*sc, zy=oy+(80+(Z2.mr+0.5)*G.map.ch)*sc;
-    ctx.font=FS('700 13px "Titan One","Rubik",sans-serif');
+    ctx.font=FS(TYPE.head);
     ctx.fillStyle=hexA(DISTRICTS[Z2.d].wallTop,.28);
     ctx.fillText(Z2.name||DISTRICTS[Z2.d].name,zx,zy);
   }
@@ -9628,7 +9852,7 @@ function drawMapOverlay(){
     ctx.strokeStyle=LM3.open?'rgba(127,196,160,.8)':'#ffd76a';
     ctx.lineWidth=2;
     ctx.strokeRect(lx3,ly3,LM3.w*sc,LM3.h*sc);
-    ctx.font=FS('700 10px "Titan One","Rubik",sans-serif'); ctx.textAlign='center';
+    ctx.font=FS(TYPE.label); ctx.textAlign='center';
     ctx.fillStyle=LM3.open?'#7fc4a0':'#ffd76a';
     ctx.fillText(LM3.open?'OPEN':('LOCKED'),lx3+LM3.w*sc/2,ly3-6);
     ctx.textAlign='left';
@@ -9654,7 +9878,7 @@ function drawMapOverlay(){
     ctx.beginPath(); ctx.arc(qx,qy,9+2*qp,0,6.2832); ctx.stroke();
     ctx.fillStyle='#e6b4ff';
     ctx.beginPath(); ctx.arc(qx,qy,3.5,0,6.2832); ctx.fill();
-    ctx.font=FS('700 11px "Titan One","Rubik",sans-serif'); ctx.textAlign='center';
+    ctx.font=FS(TYPE.label); ctx.textAlign='center';
     ctx.fillText(CQ.opened?'LOOTED':'CACHE',qx,qy-15);
     ctx.textAlign='left'; ctx.globalAlpha=1;
   }
@@ -9668,7 +9892,7 @@ function drawMapOverlay(){
     ctx.moveTo(cqx,cqy-9); ctx.lineTo(cqx+9,cqy); ctx.lineTo(cqx,cqy+9); ctx.lineTo(cqx-9,cqy); ctx.closePath();
     ctx.stroke();
     ctx.fillStyle='#ff8a76';
-    ctx.font=FS('700 10px "Titan One","Rubik",sans-serif'); ctx.textAlign='center';
+    ctx.font=FS(TYPE.label); ctx.textAlign='center';
     ctx.fillText('ENCAMPMENT',cqx,cqy-14);
     ctx.textAlign='left';
   }
@@ -9681,7 +9905,7 @@ function drawMapOverlay(){
     ctx.strokeRect(ox+LM2.x*sc,oy+LM2.y*sc,LM2.w*sc,LM2.h*sc);
     ctx.fillStyle='rgba(255,192,74,.07)';
     ctx.fillRect(ox+LM2.x*sc,oy+LM2.y*sc,LM2.w*sc,LM2.h*sc);
-    ctx.textAlign='center'; ctx.font=FS('700 8px "Titan One","Rubik",sans-serif');
+    ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
     ctx.fillStyle='#ffc04a';
     ctx.fillText(LM2.name,ox+(LM2.x+LM2.w/2)*sc,oy+(LM2.y+LM2.h/2)*sc+3);
     ctx.textAlign='left';
@@ -9695,7 +9919,7 @@ function drawMapOverlay(){
     ctx.beginPath(); ctx.arc(slx,sly,12,0,6.2832); ctx.stroke();
     ctx.strokeStyle=G.seal.done?'#ffd76a':'#35d6c8'; ctx.lineWidth=3;
     ctx.beginPath(); ctx.arc(slx,sly,12,-1.5708,-1.5708+6.2832*pctM); ctx.stroke();
-    ctx.textAlign='center'; ctx.font=FS('700 9px "Titan One","Rubik",sans-serif');
+    ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
     ctx.fillStyle=G.seal.done?'#ffd76a':'#8fd0ff';
     ctx.fillText(G.seal.done?'SEAL BROKEN':('SEAL '+Math.round(pctM*100)+'%'),slx,sly-16);
     ctx.textAlign='left';
@@ -9713,7 +9937,7 @@ function drawMapOverlay(){
     ctx.moveTo(sbx,sby+10); ctx.lineTo(sbx,sby+14); ctx.stroke();
     ctx.fillStyle='#ffd76a';
     ctx.beginPath(); ctx.arc(sbx,sby,3.6,0,6.2832); ctx.fill();
-    ctx.textAlign='center'; ctx.font=FS('700 9px "Titan One","Rubik",sans-serif');
+    ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
     ctx.fillText('STRONGBOX',sbx,sby-15); ctx.textAlign='left';
   }
   // YOUR BODY. Marked from the moment you deploy, because the entire point is
@@ -9727,7 +9951,7 @@ function drawMapOverlay(){
     ctx.beginPath(); ctx.arc(bmx,bmy,11,0,6.2832); ctx.stroke();
     ctx.fillStyle='#35d6c8';
     ctx.beginPath(); ctx.arc(bmx,bmy,4,0,6.2832); ctx.fill();
-    ctx.textAlign='center'; ctx.font=FS('700 10px "Titan One","Rubik",sans-serif');
+    ctx.textAlign='center'; ctx.font=FS(TYPE.label);
     ctx.fillText('YOUR BODY',bmx,bmy-15); ctx.textAlign='left';
   }
   // A cache the Stray told you about. This is his whole payment, so it is drawn
@@ -9740,7 +9964,7 @@ function drawMapOverlay(){
     ctx.beginPath(); ctx.arc(rmx,rmy,8,0,6.2832); ctx.stroke();
     ctx.fillStyle='#e6b4ff';
     ctx.beginPath(); ctx.arc(rmx,rmy,3.4,0,6.2832); ctx.fill();
-    ctx.textAlign='center'; ctx.font=FS('700 9px "Titan One","Rubik",sans-serif');
+    ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
     ctx.fillText('CACHE',rmx,rmy-12); ctx.textAlign='left';
   }
   // The survivor, but only once you have actually found him. He is hiding.
@@ -9751,7 +9975,7 @@ function drawMapOverlay(){
     ctx.fillStyle='#120e0c'; ctx.beginPath(); ctx.arc(smx,smy,6,0,6.2832); ctx.fill();
     ctx.fillStyle=sm.helped?'#5a9a6a':'#7fc4a0';
     ctx.beginPath(); ctx.arc(smx,smy,4,0,6.2832); ctx.fill();
-    ctx.textAlign='center'; ctx.font=FS('700 9px "Titan One","Rubik",sans-serif');
+    ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
     ctx.fillText(sm.helped?'SURVIVOR':'SURVIVOR (NEEDS)',smx,smy-11); ctx.textAlign='left';
   }
   // The Peddler is marked. Half your bag is worth walking to him for, and a
@@ -9762,7 +9986,7 @@ function drawMapOverlay(){
     ctx.fillStyle='#120e0c'; ctx.beginPath(); ctx.arc(pmx,pmy,6.4,0,6.2832); ctx.fill();
     ctx.fillStyle=pedOpen()?'#ffd76a':'#8a5a4a';
     ctx.beginPath(); ctx.arc(pmx,pmy,4.4,0,6.2832); ctx.fill();
-    ctx.textAlign='center'; ctx.font=FS('700 9px "Titan One","Rubik",sans-serif');
+    ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
     ctx.fillStyle=pedOpen()?'#ffd76a':'#8a5a4a';
     ctx.fillText(pedOpen()?'TRADER':'TRADER (CLOSED)',pmx,pmy-11);
     ctx.textAlign='left';
@@ -9772,7 +9996,7 @@ function drawMapOverlay(){
     ctx.strokeStyle=act?'#4de3d0':'rgba(127,146,216,.42)'; ctx.lineWidth=act?2:1;
     ctx.beginPath(); ctx.arc(ox+zz.x*sc,oy+zz.y*sc,zz.r*sc+3,0,6.2832); ctx.stroke();
     if(act){ ctx.fillStyle='#4de3d0'; ctx.beginPath(); ctx.arc(ox+zz.x*sc,oy+zz.y*sc,3,0,6.2832); ctx.fill(); }
-    ctx.textAlign='center'; ctx.font=FS('700 9px "Titan One","Rubik",sans-serif');
+    ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
     ctx.fillStyle=act?'#4de3d0':'rgba(154,168,208,.80)';
     ctx.fillText(act?'OPEN':'CLOSED',ox+zz.x*sc,oy+zz.y*sc+zz.r*sc+16);
     ctx.textAlign='left';
@@ -10051,7 +10275,7 @@ function drawHubWorld(dt){
   wc.textAlign='center';
   for(i=0;i<HB.stations.length;i++){
     var s3=HB.stations[i],on=HB.near===s3;
-    wc.font=FS('700 10px "Titan One","Rubik",sans-serif');
+    wc.font=FS(TYPE.label);
     var tw=wc.measureText(s3.label).width;
     wc.fillStyle='rgba(6,9,13,'+(on?.8:.5)+')';
     wc.fillRect(s3.x-tw/2-5,s3.y-56,tw+10,13);
@@ -10088,15 +10312,15 @@ function drawHubWorld(dt){
 function drawHubHUD(ox,oy){
   var p=HB.player;
   ctx.clearRect(0,0,W,H);
-  ctx.font=FS('700 15px "Titan One","Rubik",sans-serif'); ctx.fillStyle='#ffb02e';
+  ctx.font=FS(TYPE.head); ctx.fillStyle='#ffb02e';
   ctx.fillText('THE UNDERCROFT',16,28);
-  ctx.font=FS('9.5px "Rubik",sans-serif'); ctx.fillStyle='#8a96a1';
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
   ctx.fillText(P.credits.toLocaleString()+'c  ·  REP '+P.rep.toLocaleString()+
     '  ·  '+P.stash.length+' in stash  ·  '+P.runs+' runs  ·  LVL '+(P.xpLevel||1)+
     '  ·  PROF '+(P.prof||0),16,44);
   if(HUBSAY_T>0){
     ctx.textAlign='center';
-    ctx.font=FS('12px "Rubik",sans-serif');
+    ctx.font=FS(TYPE.head);
     ctx.fillStyle='rgba(255,246,220,'+clamp(HUBSAY_T,0,1)+')';
     ctx.fillText('"'+HUBSAY+'"',W/2,H-92);
     ctx.textAlign='left';
@@ -10104,13 +10328,13 @@ function drawHubHUD(ox,oy){
   if(HB.near){
     var s=HB.near;
     ctx.textAlign='center';
-    ctx.font=FS('700 14px "Titan One","Rubik",sans-serif'); ctx.fillStyle=s.c;
+    ctx.font=FS(TYPE.head); ctx.fillStyle=s.c;
     ctx.fillText('[E]  '+s.label,W/2,H-58);
-    ctx.font=FS('10px "Rubik",sans-serif'); ctx.fillStyle='#8a96a1';
+    ctx.font=FS(TYPE.label); ctx.fillStyle='#8a96a1';
     ctx.fillText(s.sub,W/2,H-42);
     ctx.textAlign='left';
   }
-  ctx.font=FS('9px "Rubik",sans-serif'); ctx.fillStyle='rgba(140,152,163,.75)';
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(140,152,163,.75)';
   ctx.textAlign='center';
   ctx.fillText('WASD WALK  ·  SHIFT JOG  ·  E USE STATION',W/2,H-16);
   ctx.textAlign='left';
