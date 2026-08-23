@@ -126,7 +126,49 @@ window.__simBatch=function(n){
   }
   return {ms:performance.now()-t0,res:res};
 };
+// The recorder is the thing he actually sends back, so it has to be provable that
+// it does not throw. Anything added to buildExport gets checked through this.
+window.__export=function(){ return buildExport(); };
 window.__world=function(){ return {w:WORLD_W,h:WORLD_H}; };
+// Paired A/B. Runs an explicit list of seeds so the SAME raids can be put through
+// two builds and compared pairwise. Unpaired 30v30 comparisons are close to a coin
+// flip; the sign of a paired difference is right about 95 percent of the time at 100
+// seeds. Returns one row per seed so flips can be named, not just counted.
+// HOW TO DRIVE A LONG BATCH FROM A HIDDEN PANE. A batch of 60 raids is about ten
+// minutes of blocking main thread, far past the 30s eval limit, so it has to be
+// chunked. Do NOT chain the chunks with setTimeout: a hidden tab throttles timers
+// to roughly one per minute and the batch crawls. Measured on 2026-08-23: 36 raids
+// in 12 minutes on setTimeout, then 10 raids in 90 seconds after switching to
+// MessageChannel, which Chrome does not throttle. Pattern:
+//   var mc=new MessageChannel();
+//   mc.port1.onmessage=function(){ ...run 3 seeds...; if(more) mc.port2.postMessage(0); };
+//   mc.port2.postMessage(0);
+// Then poll a global from a separate eval. Fronting the tab is not a reliable fix.
+window.__simSeeds=function(seeds){
+  var out=[],i,t0=performance.now();
+  for(i=0;i<seeds.length;i++){
+    pendSeed=seeds[i]>>>0;
+    G=buildRaid(true);
+    var guard=0,cap=Math.round(CFG.raidSec/0.15)+200;
+    while(!G.over&&guard<cap){ simStep(.15); guard++; }
+    if(!G.over){ G.tel.deathKiller='timer'; endRaid('dead'); }
+    var r=G.simResult;
+    out.push({seed:seeds[i]>>>0,o:r.outcome,haul:r.haul,dur:r.dur,killer:r.killer,cont:r.containers,kills:r.kills});
+    G=null;
+  }
+  return {ms:performance.now()-t0,rows:out};
+};
+// Proves the seeding actually works before any conclusion is drawn from it. Runs the
+// same seed twice and reports whether the two raids agree on every recorded field.
+window.__seedCheck=function(seed,reps){
+  var runs=[],i;
+  for(i=0;i<(reps||3);i++) runs.push(__simSeeds([seed]).rows[0]);
+  var a=JSON.stringify(runs[0]),same=1;
+  for(i=1;i<runs.length;i++) if(JSON.stringify(runs[i])!==a) same=0;
+  return {deterministic:!!same,runs:runs};
+};
+window.__seed={set:function(s){ pendSeed=(s>>>0); },cur:function(){ return RSEED; },srand:srand,rr:rr};
+window.__bands=function(rows){ return haulBandLines(rows,'bands'); };
 window.__setZoom=function(z){ setZoom(z,true); return ZOOM(); };
 window.__zoom={set:setZoom,tick:tickZoom,cur:ZOOM,target:zoomTarget,
   min:function(){return ZMIN;},max:function(){return ZMAX;}};
