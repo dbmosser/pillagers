@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.52';
+var VER='1.53';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -1382,6 +1382,17 @@ function blip(type,d,pan){
     sh.frequency.setValueAtTime(1580,t); sh.frequency.exponentialRampToValueAtTime(520,t+.34);
     shg.gain.setValueAtTime(.030*vol,t); shg.gain.exponentialRampToValueAtTime(.001,t+.36);
     sh.connect(shg); shg.connect(OUT); sh.start(t); sh.stop(t+.38);
+  } else if(type==='flap'){
+    // Wingbeats: three short filtered noise slaps, not a tone.
+    for(var fq=0;fq<3;fq++){
+      var fb=a.createBuffer(1,700,a.sampleRate),fd=fb.getChannelData(0);
+      for(var fi=0;fi<700;fi++) fd[fi]=(Math.random()*2-1)*(1-fi/700);
+      var fs2=a.createBufferSource(),ff=a.createBiquadFilter(),fg=a.createGain();
+      fs2.buffer=fb; ff.type='bandpass'; ff.frequency.value=520+fq*140; ff.Q.value=1.1;
+      var ft=t+fq*0.085;
+      fg.gain.setValueAtTime(.055*vol,ft); fg.gain.exponentialRampToValueAtTime(.001,ft+.08);
+      fs2.connect(ff); ff.connect(fg); fg.connect(OUT); fs2.start(ft);
+    }
   } else if(type==='clank'){
     var o4=a.createOscillator(),g6=a.createGain();
     o4.type='triangle'; o4.frequency.setValueAtTime(900+Math.random()*400,t);
@@ -1611,11 +1622,23 @@ function makeBuilding(x,y,w,h,out,d,bid,forcePlan){
   // tables (measured 27 cells over 10 maps). At 52 the narrowest channel is
   // 52-24=28, twice a body.
   if(iw>180&&ih>150){
-    var nF=ri(1,3);
+    var nF=ri(3,6);
     for(var fi2=0;fi2<nF;fi2++){
       var fw2=rnd(20,34),fh2=rnd(14,26);
       var fx4=ix+rnd(52,Math.max(53,iw-52-fw2)),fy4=iy+rnd(52,Math.max(53,ih-52-fh2));
-      out.push({x:fx4,y:fy4,w:fw2,h:fh2,d:d,ib:bid,furn:Math.random()<.5?1:2});
+      var ft=ri(1,7);
+      // 3 counter, 4 kitchen unit: both hug a wall, because a counter in the
+      // middle of a room is a table and reads as one.
+      if(ft===3||ft===4){
+        var horiz=Math.random()<.5;
+        if(horiz){ fw2=rnd(46,88); fh2=13; fy4=(Math.random()<.5?iy+18:iy+ih-18-fh2);
+          fx4=ix+rnd(24,Math.max(25,iw-24-fw2)); }
+        else { fw2=13; fh2=rnd(46,88); fx4=(Math.random()<.5?ix+18:ix+iw-18-fw2);
+          fy4=iy+rnd(24,Math.max(25,ih-24-fh2)); }
+      } else if(ft===5){ fw2=rnd(30,42); fh2=rnd(20,26); }
+      else if(ft===6){ fw2=rnd(34,48); fh2=rnd(15,20); }
+      else if(ft===7){ fw2=rnd(14,20); fh2=rnd(22,30); }
+      out.push({x:fx4,y:fy4,w:fw2,h:fh2,d:d,ib:bid,furn:ft});
     }
   }
   return plan;
@@ -1947,23 +1970,41 @@ var FIXED_MAPS=[
     {x:1020,y:1400,w:360, h:280, d:0, plan:'cells'},
     {x:300, y:1740,w:900, h:300, d:0, plan:'spine', big:1},
     // SWITCHYARD control houses, sitting inside the transformer maze.
-    {x:3200,y:1200,w:280, h:140, d:3, plan:'open'},
-    {x:4620,y:1460,w:300, h:150, d:3, plan:'open'},
-    {x:3400,y:1720,w:320, h:160, d:3, plan:'cells'},
-    {x:4160,y:1980,w:520, h:280, d:3, plan:'lsplit', big:1},
+    {x:3180,y:1235,w:420, h:100, d:3, plan:'open'},
+    {x:4600,y:1495,w:440, h:100, d:3, plan:'open'},
+    {x:3380,y:1755,w:440, h:100, d:3, plan:'open'},
+    {x:4160,y:2020,w:520, h:240, d:3, plan:'lsplit', big:1},
     // THE DROWNED VILLAGE, half in the reservoir at its western edge. Houses
     // standing in water, which the floor rule makes dry inside: shelter you have
     // to wade to.
-    {x:340, y:200, w:300, h:260, d:2, plan:'cells'},
-    {x:740, y:180, w:300, h:280, d:2, plan:'lsplit'},
-    {x:1140,y:230, w:300, h:250, d:2, plan:'core'},
-    {x:540, y:430, w:320, h:170, d:2, plan:'open'},
+    {x:340, y:190, w:300, h:250, d:2, plan:'cells'},
+    {x:740, y:190, w:300, h:250, d:2, plan:'lsplit'},
+    {x:1140,y:190, w:300, h:250, d:2, plan:'core'},
+    {x:1540,y:190, w:300, h:250, d:2, plan:'open'},
     // TAILRACE pump houses below the dam, on the pool's edge.
     {x:2520,y:2300,w:520, h:320, d:0, plan:'core', big:1},
     {x:3180,y:2320,w:420, h:300, d:0, plan:'cells'},
     {x:2600,y:3860,w:480, h:120, d:0, plan:'open'},
     // OUTFLOW sheds at the head of the channels.
-    {x:4060,y:2260,w:760, h:260, d:3, plan:'spine', big:1}
+    {x:4060,y:2330,w:760, h:200, d:3, plan:'spine', big:1},
+    {x:4780,y:2190,w:290, h:300, d:3, plan:'cells'},
+
+    // THE SPILLWAY had no building in it at all. Gate control houses on both
+    // rims, so the canyon is somewhere to be walked rather than only crossed.
+    {x:1200,y:2280,w:300, h:300, d:0, plan:'core'},
+    {x:2230,y:3500,w:290, h:280, d:0, plan:'lsplit'},
+    {x:1180,y:3420,w:320, h:320, d:0, plan:'cells'},
+    // THE DROWNED WOOD had none either. A ranger station and two flooded
+    // cabins in the trees: the one part of this map where an interior is
+    // somewhere you would not have thought to look.
+    {x:420, y:2560,w:360, h:300, d:2, plan:'lsplit'},
+    {x:880, y:2920,w:340, h:300, d:2, plan:'core'},
+    {x:340, y:3400,w:420, h:340, d:2, plan:'cells', big:1},
+    // Two real buildings in the SWITCHYARD, which was almost all transformer
+    // block and barely any inside.
+
+    {x:2760,y:3480,w:420, h:260, d:0, plan:'spine'},
+    {x:4100,y:3810,w:700, h:150, d:3, plan:'cells'}
   ],
   woods:[
     {x:220, y:2320,w:1080,h:760},                  // drowned wood, upper
@@ -1976,11 +2017,14 @@ var FIXED_MAPS=[
   // its interior in half.
   plats:[
     {x:2560,y:2680,w:1000,h:120,lift:26,name:'TAILRACE WALK'},
-    {x:3180,y:1980,w:860, h:120,lift:26,name:'YARD GANTRY'}
+    {x:3180,y:1980,w:860, h:120,lift:26,name:'YARD GANTRY'},
+    {x:1660,y:2960,w:660, h:130,lift:48,name:'SPILLWAY BRIDGE'}
   ],
   ramps:[
     {x:2410,y:2680,w:150,h:120},
-    {x:3980,y:1980,w:150,h:120}
+    {x:3980,y:1980,w:150,h:120},
+    {x:1520,y:2960,w:150,h:130},
+    {x:2320,y:2960,w:150,h:130}
   ],
   locked:[
     {id:'dam_turbine', name:'TURBINE ROOM',     x:2420,y:1140, w:220,h:220},
@@ -1994,12 +2038,12 @@ var FIXED_MAPS=[
     {id:'dam_hall',    name:'TURBINE HALL',     x:1620,y:1060,w:1280,h:1000,loot:'rare',   dens:1.6},
     {id:'dam_yard',    name:'SWITCHYARD',       x:3160,y:1120,w:1900,h:1140,loot:'ammo',   dens:1.2},
     {id:'dam_camp',    name:'CONTRACTOR CAMP',  x:180, y:1060,w:1200,h:980, loot:'medical',dens:1.4},
-    {id:'dam_village', name:'DROWNED VILLAGE',  x:340, y:170, w:1100,h:440, loot:'bulk',   dens:1.5},
+    {id:'dam_village', name:'DROWNED VILLAGE',  x:340, y:170, w:1500,h:300, loot:'bulk',   dens:1.5},
     {id:'dam_tail',    name:'THE TAILRACE',     x:2520,y:2300,w:1080,h:1500,loot:'bulk',   dens:1.1},
     {id:'dam_crest',   name:'THE CREST',        x:120, y:634, w:2600,h:282, loot:'ammo',   dens:0.8}
   ],
   spawns:[
-    {x:820, y:2180}, {x:4880,y:2420}, {x:2760,y:3760},
+    {x:820, y:2180}, {x:4900,y:2700}, {x:3400,y:3900},
     {x:1180,y:1010}, {x:3040,y:1010}, {x:4980,y:1720}
   ],
   extracts:[
@@ -2301,6 +2345,61 @@ function buildFixedMap(def){
     lockedRooms.push({id:LK.id,name:LK.name,x:LK.x,y:LK.y,w:LK.w,h:LK.h,
       doorX:doorX+doorW/2,doorY:LK.y+LK.h-lt/2,open:false});
   }
+  // RUINS: whole buildings that fell in. Emitted as one solid block so nothing
+  // about them is enterable, which is what makes them read as destroyed rather
+  // than as a building the generator forgot to open.
+  var ruins=[],wantR=Math.round(9*AREA);
+  for(var rt=0;rt<wantR*40&&ruins.length<wantR;rt++){
+    var rx3=rnd(160,WORLD_W-360),ry3=rnd(160,WORLD_H-360);
+    var rw3=rnd(150,320),rh3=rnd(130,260);
+    var okR=true,q4;
+    for(q4=0;q4<walls.length;q4++){ var WR=walls[q4];
+      if(rx3<WR.x+WR.w+70&&rx3+rw3>WR.x-70&&ry3<WR.y+WR.h+70&&ry3+rh3>WR.y-70){ okR=false; break; } }
+    if(!okR) continue;
+    for(q4=0;q4<buildings.length;q4++){ var BR=buildings[q4];
+      if(rx3<BR.x+BR.w+70&&rx3+rw3>BR.x-70&&ry3<BR.y+BR.h+70&&ry3+rh3>BR.y-70){ okR=false; break; } }
+    if(!okR) continue;
+    for(q4=0;q4<ruins.length;q4++){ var PR=ruins[q4];
+      if(rx3<PR.x+PR.w+140&&rx3+rw3>PR.x-140&&ry3<PR.y+PR.h+140&&ry3+rh3>PR.y-140){ okR=false; break; } }
+    if(!okR) continue;
+    // never seal a spawn or a way out behind rubble
+    for(q4=0;q4<def.spawns.length;q4++){ var SP4=def.spawns[q4];
+      if(SP4.x>rx3-90&&SP4.x<rx3+rw3+90&&SP4.y>ry3-90&&SP4.y<ry3+rh3+90){ okR=false; break; } }
+    if(!okR) continue;
+    for(q4=0;q4<def.extracts.length;q4++){ var EX4=def.extracts[q4];
+      if(EX4.x>rx3-130&&EX4.x<rx3+rw3+130&&EX4.y>ry3-130&&EX4.y<ry3+rh3+130){ okR=false; break; } }
+    if(!okR) continue;
+    var ru={x:rx3,y:ry3,w:rw3,h:rh3,d:ri(0,3),ruin:1,seed:rnd(0,6.28)};
+    ruins.push(ru); walls.push(ru);
+  }
+  // WRECKED VEHICLES: real cover out in the open, and the strongest single
+  // signal that this place was lived in and then left in a hurry.
+  var wrecks=[],wantW=Math.round(30*AREA);
+  for(var wt=0;wt<wantW*30&&wrecks.length<wantW;wt++){
+    var wx3=rnd(120,WORLD_W-120),wy3=rnd(120,WORLD_H-120);
+    var ww3=rnd(46,62),wh3=rnd(24,30);
+    var okW=true,q3;
+    for(q3=0;q3<walls.length;q3++){ var WW3=walls[q3];
+      if(wx3<WW3.x+WW3.w+26&&wx3+ww3>WW3.x-26&&wy3<WW3.y+WW3.h+26&&wy3+wh3>WW3.y-26){ okW=false; break; } }
+    if(!okW) continue;
+    for(q3=0;q3<buildings.length;q3++){ var BB3=buildings[q3];
+      if(wx3<BB3.x+BB3.w+20&&wx3+ww3>BB3.x-20&&wy3<BB3.y+BB3.h+20&&wy3+wh3>BB3.y-20){ okW=false; break; } }
+    if(!okW) continue;
+    for(q3=0;q3<wrecks.length;q3++){ var PW3=wrecks[q3];
+      if(wx3<PW3.x+PW3.w+40&&wx3+ww3>PW3.x-40&&wy3<PW3.y+PW3.h+40&&wy3+wh3>PW3.y-40){ okW=false; break; } }
+    if(!okW) continue;
+    var wrk={x:wx3,y:wy3,w:ww3,h:wh3,d:1,wreck:1,
+             hue:pick(['#6a4f42','#4b5a63','#5d5347','#3f4a55','#6b5b3e']),
+             rust:rnd(0,1),flip:Math.random()<.5?1:-1};
+    var okX=true;
+    for(q3=0;q3<def.spawns.length;q3++){ var SW=def.spawns[q3];
+      if(SW.x>wx3-60&&SW.x<wx3+ww3+60&&SW.y>wy3-60&&SW.y<wy3+wh3+60){ okX=false; break; } }
+    if(!okX) continue;
+    for(q3=0;q3<def.extracts.length;q3++){ var EW=def.extracts[q3];
+      if(EW.x>wx3-90&&EW.x<wx3+ww3+90&&EW.y>wy3-90&&EW.y<wy3+wh3+90){ okX=false; break; } }
+    if(!okX) continue;
+    wrecks.push(wrk); walls.push(wrk);
+  }
   // CONCEALMENT, grown last so it is tested against the FINISHED wall list:
   // trees, platform perimeters and locked room shells are all pushed above this
   // line, and a bush placed before them can end up sitting on one.
@@ -2384,6 +2483,39 @@ function buildFixedMap(def){
   var water=[];
   for(i=0;i<(def.water||[]).length;i++){ var WQ=def.water[i]; water.push({x:WQ.x,y:WQ.y,w:WQ.w,h:WQ.h}); }
   var mapNav=repairInteriors(walls,buildings);
+  // PROP CONNECTIVITY GUARD. Wrecks and ruins are placed against the finished
+  // wall list, but nothing checked whether they PINCH: a car 50 units wide
+  // dropped in a 70 unit doorway is a wall, and the ground behind it is gone.
+  // Measured before this guard, the dam lost 1,297 cells behind the switchyard,
+  // 2.3 percent of the map, and it moved every raid because the props roll every
+  // raid. So flood the finished grid and pull out any piece of my own litter
+  // that is touching ground you cannot reach. Authored geometry is never cut.
+  for(var gp=0;gp<4;gp++){
+    var seenP=floodNav(mapNav),CP=mapNav.c,lost=[],yP,xP,iP;
+    for(yP=0;yP<mapNav.h;yP++) for(xP=0;xP<mapNav.w;xP++){
+      iP=yP*mapNav.w+xP;
+      if(mapNav.blk[iP]||seenP[iP]) continue;
+      var lx=xP*CP+CP*0.5,ly=yP*CP+CP*0.5,inLock=false;
+      // A locked room is unreachable ON PURPOSE until you spend the key, so its
+      // floor is not evidence of anything.
+      for(var lr=0;lr<lockedRooms.length;lr++){ var LR=lockedRooms[lr];
+        if(lx>LR.x-24&&lx<LR.x+LR.w+24&&ly>LR.y-24&&ly<LR.y+LR.h+24){ inLock=true; break; } }
+      if(!inLock) lost.push(lx,ly);
+    }
+    if(!lost.length) break;
+    var cut=false;
+    for(var wp=walls.length-1;wp>=0;wp--){
+      var PW=walls[wp];
+      if(!PW.wreck&&!PW.ruin) continue;
+      for(var lp=0;lp<lost.length;lp+=2){
+        if(lost[lp]>PW.x-90&&lost[lp]<PW.x+PW.w+90&&lost[lp+1]>PW.y-90&&lost[lp+1]<PW.y+PW.h+90){
+          walls.splice(wp,1); cut=true; break;
+        }
+      }
+    }
+    if(!cut) break;
+    mapNav=buildNav(walls);
+  }
   for(var k=0;k<walls.length;k++){
     var wl=walls[k]; wl.streaks=[];
     var n=Math.min(5,Math.floor((wl.w*wl.h)/5200));
@@ -3566,6 +3698,102 @@ function pedBuy(ix){
   say('Bought '+ITEMS[st.k].name+' for '+st.price.toLocaleString()+'c.');
   blip('pick');
 }
+// ================================================================ WILDLIFE
+// His note, 2026-08-22: the world needs to look old and abandoned. Abandoned
+// does not mean empty, it means everything that lives here now is not us.
+// Birds and deer are ambient, non hostile, and never counted as kills. They
+// also carry information: a flock going up two hundred metres away means
+// something over there moved, and that is worth more than the decoration.
+function spawnWild(map){
+  var out=[],i,j;
+  var scale=(WORLD_W*WORLD_H)/(4200*3200);
+  var flocks=Math.max(4,Math.round(7*scale)),herds=Math.max(3,Math.round(5*scale));
+  for(i=0;i<flocks;i++){
+    var fs=freeSpot(map,40),n=ri(3,6);
+    for(j=0;j<n;j++)
+      out.push({k:'bird',x:fs.x+rnd(-40,40),y:fs.y+rnd(-32,32),
+                vx:0,vy:0,st:'idle',t:rnd(0,3),f:rnd(0,6.28),z:0,life:0,
+                hx:fs.x,hy:fs.y});
+  }
+  for(i=0;i<herds;i++){
+    var hs=freeSpot(map,60),m=ri(1,3);
+    for(j=0;j<m;j++)
+      out.push({k:'deer',x:hs.x+rnd(-70,70),y:hs.y+rnd(-50,50),
+                vx:0,vy:0,st:'idle',t:rnd(0,4),f:rnd(0,6.28),z:0,life:0,
+                face:1,hx:hs.x,hy:hs.y});
+  }
+  return out;
+}
+// One tick for everything alive out there. Deliberately cheap: no pathfinding,
+// no line of sight, no nav grid. A deer that runs into a wall turns and keeps
+// running, which is what a panicking animal looks like anyway.
+function wildTick(dt){
+  if(!G.wild) return;
+  var p=G.player,i,c;
+  for(i=0;i<G.wild.length;i++){
+    c=G.wild[i];
+    c.t-=dt; c.f+=dt*(c.st==='flee'?14:3);
+    // What frightens it: you, a raider, or a round going past. Birds are the
+    // jumpiest thing on the map and deer let you get closer.
+    var trig=0,fear=(c.k==='bird'?190:300);
+    if(dist(p,c)<fear&&!p.downed) trig=1;
+    if(!trig) for(var e2=0;e2<G.ents.length;e2++){ if(dist(G.ents[e2],c)<fear*0.8){ trig=1; break; } }
+    if(!trig) for(var b2=0;b2<G.bullets.length;b2++){
+      var BL=G.bullets[b2],bdx=BL.x-c.x,bdy=BL.y-c.y;
+      if(bdx*bdx+bdy*bdy<260*260){ trig=1; break; }
+    }
+    if(trig&&c.st!=='flee'){
+      c.st='flee'; c.life=(c.k==='bird'?rnd(3.2,5.0):rnd(2.4,4.0));
+      var ax=c.x-p.x,ay=c.y-p.y,al=Math.sqrt(ax*ax+ay*ay)||1;
+      var spd=(c.k==='bird'?rnd(210,290):rnd(240,330));
+      c.vx=ax/al*spd; c.vy=ay/al*spd;
+      if(c.k==='bird'&&!G.sim) blip('flap',dist(p,c));
+    }
+    if(c.st==='flee'){
+      c.life-=dt;
+      c.x+=c.vx*dt; c.y+=c.vy*dt;
+      if(c.k==='bird'){ c.z=Math.min(70,c.z+90*dt); }
+      // Turn at the world edge rather than piling into it.
+      if(c.x<60||c.x>WORLD_W-60){ c.vx*=-1; c.x=clamp(c.x,60,WORLD_W-60); }
+      if(c.y<60||c.y>WORLD_H-60){ c.vy*=-1; c.y=clamp(c.y,60,WORLD_H-60); }
+      // A deer will not run through a building. A bird is above them.
+      if(c.k==='deer'){
+        for(var w2=0;w2<G.map.walls.length;w2++){
+          var WW=G.map.walls[w2];
+          if(c.x>WW.x-14&&c.x<WW.x+WW.w+14&&c.y>WW.y-14&&c.y<WW.y+WW.h+14){
+            c.vx=-c.vx+rnd(-60,60); c.vy=-c.vy+rnd(-60,60);
+            c.x+=c.vx*dt*2; c.y+=c.vy*dt*2; break;
+          }
+        }
+      }
+      if(c.life<=0){
+        if(c.k==='bird'){
+          // Gone. It comes down somewhere else entirely, which keeps the sky
+          // from filling up with the same six birds circling forever.
+          var ns=freeSpot(G.map,40);
+          c.x=ns.x; c.y=ns.y; c.hx=ns.x; c.hy=ns.y; c.z=0;
+        }
+        c.st='idle'; c.vx=0; c.vy=0; c.t=rnd(1.5,4);
+      }
+    } else {
+      // Idling: peck, graze, and drift a short way around the spot it belongs
+      // to, so a flock stays a flock.
+      if(c.t<=0){
+        c.t=rnd(1.4,4.2);
+        var wx2=rnd(-1,1),wy2=rnd(-1,1),wl=Math.sqrt(wx2*wx2+wy2*wy2)||1;
+        var ws=(c.k==='bird'?rnd(8,22):rnd(14,30));
+        c.vx=wx2/wl*ws; c.vy=wy2/wl*ws;
+        if(dist(c,{x:c.hx,y:c.hy})>(c.k==='bird'?90:160)){
+          var bx2=c.hx-c.x,by2=c.hy-c.y,bl=Math.sqrt(bx2*bx2+by2*by2)||1;
+          c.vx=bx2/bl*ws; c.vy=by2/bl*ws;
+        }
+      }
+      c.x+=c.vx*dt; c.y+=c.vy*dt;
+      if(c.z>0) c.z=Math.max(0,c.z-120*dt);
+    }
+    if(c.vx>1) c.face=1; else if(c.vx<-1) c.face=-1;
+  }
+}
 function buildRaid(sim){
   // SPEC 4.1: fixed hand designed maps only. The procedural generator is gone.
   var mapIx=clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1);
@@ -3666,6 +3894,23 @@ function buildRaid(sim){
   }
   var no=Math.max(2,Math.round(18*AREA*CFG.contDens));
   for(i=0;i<no;i++){ var sp2=freeSpot(map,30); containers.push(mkContainer(sp2.x,sp2.y,Math.random()<.7?'crate':'body')); }
+  // Nothing is allowed to lie on an extraction pad: within 46 units a container
+  // eats the E press and the beacon call never runs. Anything already placed
+  // there is pushed out past the ring, keeping the loot and losing the trap.
+  function clearOfPads(list){
+    for(var cp=list.length-1;cp>=0;cp--){
+      var CC=list[cp];
+      for(var zp=0;zp<zones.length;zp++){
+        var ZP=zones[zp],ddx=CC.x-ZP.x,ddy=CC.y-ZP.y;
+        var dd=Math.sqrt(ddx*ddx+ddy*ddy);
+        if(dd>=ZP.r+52) continue;
+        if(dd<1){ ddx=1; ddy=0; dd=1; }
+        CC.x=ZP.x+ddx/dd*(ZP.r+72);
+        CC.y=ZP.y+ddy/dd*(ZP.r+72);
+      }
+    }
+  }
+  clearOfPads(containers);
   // ARC CACHES. His playtest: "I SHOULD FIND TOP TIER LOOT EVERY RUN EVEN IF I
   // MOVE STRAIGHT TO THE EXTRACT." Pure random drop rates cannot promise that,
   // so the promise is made structurally instead: three caches are PLACED every
@@ -3945,7 +4190,8 @@ function buildRaid(sim){
       bob:0,recoil:0,hitFlash:0,downed:false,downT:0,revived:false,iv:0,jam:0,pendKiller:null,
       roll:0,rollCd:0,rollDir:{x:1,y:0},ads:false},
     bag:[],pouch:{smoke:0,decoy:0,frag:0},tsel:0,
-    containers:containers,ents:ents,bullets:[],pings:[],puffs:[],
+    containers:(clearOfPads(containers),containers),ents:ents,bullets:[],pings:[],puffs:[],
+    wild:(sim?[]:spawnWild(map)),
     decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],labels:[],flashes:[],hitMark:null,
     zones:zones,active:active,camps:camps,beaconT:null,searching:null,searchT:0,
     // Weather is rolled once per raid. Clear is weighted heaviest so the unusual
@@ -4895,6 +5141,35 @@ function tryExtractTick(dt,wantCall){
   }
   if(z) z.pullT=null;
   G.active=z||G.active;
+  // A refusal has to say what it is refusing, or it reads as a dead button.
+  if(z&&wantCall&&!z.open){
+    G.extSay=(G.extSay||0)-dt;
+    if(G.extSay<=0){
+      G.extSay=2.5;
+      var openZ=null,openD=1e9;
+      for(var oz=0;oz<G.zones.length;oz++){
+        var OZ=G.zones[oz];
+        if(!OZ.open) continue;
+        var od=dist(p,OZ);
+        if(od<openD){ openD=od; openZ=OZ; }
+      }
+      say(openZ ? ('This point is CLOSED. The open one is '+Math.round(openD)+'m away, marked on your map.')
+                : 'This point is CLOSED.');
+      blip('clank');
+    }
+  }
+  if(z&&z.beaconT!==null&&wantCall&&(z.hold===undefined||z.hold===null)){
+    // Already called and still inbound. Saying so stops the second press
+    // reading as the first one having failed.
+    G.extSay=(G.extSay||0)-dt;
+    if(G.extSay<=0){ G.extSay=2.5; say('Called. Inbound '+Math.ceil(z.beaconT)+'s. Stay alive.'); }
+  }
+  // An abandoned pull decays instead of banking. Walking off at 1.5 seconds and
+  // coming back a minute later should not call the ship instantly.
+  for(var cz=0;cz<G.zones.length;cz++){
+    var CZ=G.zones[cz];
+    if((CZ!==z||!wantCall)&&CZ.callT>0) CZ.callT=Math.max(0,CZ.callT-dt*1.5);
+  }
   if(z&&z.beaconT===null&&z.open&&wantCall){
     // the first pull takes a couple of seconds of standing there
     z.callT=(z.callT||0)+dt;
@@ -5315,7 +5590,11 @@ function updatePlayer(dt){
   if(!keys['KeyE']) G.pedLock=0;
   if(G.trade){ tickRegen(dt); return; }
   var near=null,nd=1e9;
-  for(var c=0;c<G.containers.length;c++){
+  // Standing inside an extraction ring, the BEACON owns E. A crate is never the
+  // more important thing to be doing while you are stood on the way out.
+  var onPad=false;
+  for(var zc=0;zc<G.zones.length;zc++) if(dist(p,G.zones[zc])<G.zones[zc].r){ onPad=true; break; }
+  for(var c=0;c<G.containers.length&&!onPad;c++){
     var ct=G.containers[c]; if(ct.opened) continue;
     if(ct.auto&&G.t-ct.dropT<8) continue;   // your own auto-shed discard, cooling
     var d=dist(p,ct); if(d<46&&d<nd){ nd=d; near=ct; }
@@ -5369,7 +5648,7 @@ function updatePlayer(dt){
 
   // E calls the beacon, but a container underfoot wins the keypress
   tickRegen(dt);
-  tryExtractTick(dt,!!keys['KeyE']&&!near);
+  tryExtractTick(dt,!!keys['KeyE']&&(!near||onPad));
 }
 
 // ================================================================ bot player (headless sim)
@@ -7558,7 +7837,7 @@ function render2D(dt){
   wc.globalAlpha=1;
   // extract zones
   for(i=0;i<G.zones.length;i++){
-    var z=G.zones[i],act=z===G.active;
+    var z=G.zones[i],act=!!z.open;
     wc.strokeStyle=act?'#35d6c8':'rgba(120,135,148,.35)';
     wc.lineWidth=act?3:1.5;
     wc.beginPath(); wc.arc(z.x,z.y,z.r,0,6.2832); wc.stroke();
@@ -7678,6 +7957,13 @@ function render2D(dt){
     if(LF.x<ox-40||LF.x>ox+VW+40||LF.y<oy-70||LF.y>oy+VH+70) continue;
     DR.push({k:LF.y,lm:LF});
   }
+  // Wildlife sits in the same y-sort as everything else, so a deer walks behind
+  // a wall and in front of the road exactly like a person does.
+  if(G.wild) for(i=0;i<G.wild.length;i++){
+    var CW=G.wild[i];
+    if(CW.x<ox-60||CW.x>ox+VW+60||CW.y<oy-90||CW.y>oy+VH+90) continue;
+    DR.push({k:CW.y,cr:CW});
+  }
   DR.push({k:p.y-((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y)*0.5:0),pl:1});
   DR.sort(function(a,b){return a.k-b.k;});
   var crouchP=keys['ControlLeft']||keys['ControlRight'];
@@ -7691,7 +7977,61 @@ function render2D(dt){
   for(i=0;i<DR.length;i++){
     var it=DR[i];
     try{
-    if(it.lm){
+    if(it.cr){
+      var CT=it.cr,cxw=CT.x,cyw=CT.y-CT.z,fl=CT.face||1;
+      if(CT.k==='bird'){
+        shadowE(CT.x,CT.y,3.5,2,.30*(1-CT.z/90));
+        var flap=CT.st==='flee'?Math.sin(CT.f)*5:0;
+        wc.fillStyle=INK;
+        wc.beginPath(); wc.ellipse(cxw,cyw-3,4.2,3,0,0,6.2832); wc.fill();
+        wc.fillStyle='#2e3238';
+        wc.beginPath(); wc.ellipse(cxw,cyw-3.5,3.2,2.2,0,0,6.2832); wc.fill();
+        if(CT.st==='flee'){
+          wc.strokeStyle='#20242a'; wc.lineWidth=1.6; wc.beginPath();
+          wc.moveTo(cxw-2,cyw-4); wc.lineTo(cxw-8,cyw-4-flap);
+          wc.moveTo(cxw+2,cyw-4); wc.lineTo(cxw+8,cyw-4-flap);
+          wc.stroke();
+        } else {
+          // Head down and pecking, which is what says "nothing has spooked it".
+          var pk=Math.sin(CT.f*1.4)>0.72?2:0;
+          wc.fillStyle=INK; wc.fillRect(cxw+fl*3,cyw-5+pk,2,2);
+        }
+      } else {
+        // Deer. Head down grazing, head up and legs out at a gallop, and it is
+        // BIG enough on screen to mistake for a person at the edge of the fog,
+        // which is a feature.
+        shadowE(CT.x,CT.y,11,4.5,.34);
+        var run=CT.st==='flee',gait=Math.sin(CT.f)*(run?5:1.2);
+        wc.strokeStyle=INK; wc.lineWidth=2.2; wc.beginPath();
+        wc.moveTo(cxw-6,cyw-9); wc.lineTo(cxw-6-gait*0.5,cyw);
+        wc.moveTo(cxw+6,cyw-9); wc.lineTo(cxw+6+gait*0.5,cyw);
+        wc.moveTo(cxw-3,cyw-9); wc.lineTo(cxw-3+gait*0.5,cyw);
+        wc.moveTo(cxw+3,cyw-9); wc.lineTo(cxw+3-gait*0.5,cyw);
+        wc.stroke();
+        wc.fillStyle=INK; rrF(cxw-11,cyw-23,22,15,6);
+        wc.fillStyle='#6b563f'; rrF(cxw-10,cyw-22,20,13,5);
+        wc.fillStyle='#7d6749'; rrF(cxw-10,cyw-22,20,5,4);
+        // neck and head: down when grazing, level and forward when running
+        var hy=run?(cyw-30):(cyw-13+Math.sin(CT.f*0.8)*2);
+        var hx=cxw+fl*13;
+        wc.strokeStyle=INK; wc.lineWidth=4.5; wc.beginPath();
+        wc.moveTo(cxw+fl*8,cyw-20); wc.lineTo(hx,hy); wc.stroke();
+        wc.strokeStyle='#6b563f'; wc.lineWidth=2.6; wc.beginPath();
+        wc.moveTo(cxw+fl*8,cyw-20); wc.lineTo(hx,hy); wc.stroke();
+        wc.fillStyle=INK; rrF(hx-3,hy-4,7,7,2.5);
+        wc.fillStyle='#7d6749'; rrF(hx-2.5,hy-3.5,6,6,2);
+        // antlers on some of them, decided by the fixed phase so one deer does
+        // not grow and lose them frame to frame
+        if(CT.f!==undefined&&Math.sin(CT.hx*0.017)>0.15){
+          wc.strokeStyle='#4a3f30'; wc.lineWidth=1.5; wc.beginPath();
+          wc.moveTo(hx,hy-3); wc.lineTo(hx+fl*3,hy-11); wc.lineTo(hx+fl*7,hy-13);
+          wc.moveTo(hx+fl*3,hy-11); wc.lineTo(hx-fl*1,hy-14);
+          wc.stroke();
+        }
+        wc.fillStyle='rgba(232,226,214,.55)';
+        wc.fillRect(cxw-fl*11,cyw-14,4,4);
+      }
+    } else if(it.lm){
       var LG=it.lm;
       var lfk=(LG.fl?(.72+.28*Math.sin(G.t*11+LG.f)):1)*wx().lights*(isDay()?tod().lights:1);
       var lhx=LG.x,lhy=LG.y-34;
@@ -7748,23 +8088,113 @@ function render2D(dt){
       wc.beginPath(); wc.arc(tcx+swayT-cr2*.25,canY-cr2*.5,cr2*.72,0,6.2832); wc.fill();
       wc.fillStyle=isDay()?'#6f9a4c':'#31452a';
       wc.beginPath(); wc.arc(tcx+swayT-cr2*.35,canY-cr2*.62,cr2*.45,0,6.2832); wc.fill();
+    } else if(it.w&&it.w.ruin){
+      var RU=it.w,rw4=RU.w,rh4=RU.h,rx4=RU.x,ry4=RU.y,sd=RU.seed;
+      shadowE(rx4+rw4/2,ry4+rh4-2,rw4*0.55,rh4*0.30,.40);
+      // A collapsed building draws as a broken silhouette, never as a box with a
+      // door, because the whole point is that there is no way into it.
+      var bh=44+18*Math.sin(sd*2.1);
+      wc.fillStyle=INK; rrF(rx4-2,ry4-bh-2,rw4+4,rh4+bh+4,3);
+      wc.fillStyle='#2b2f36'; rrF(rx4,ry4-bh,rw4,rh4+bh,2);
+      // rubble mound spilling across the footprint
+      wc.fillStyle='#3a3f47';
+      for(var rr=0;rr<9;rr++){
+        var t3=(rr+sd)*1.37, mx=rx4+rw4*(0.06+0.88*((Math.sin(t3*3.1)+1)/2));
+        var my=ry4+rh4*(0.30+0.62*((Math.cos(t3*2.3)+1)/2));
+        var ms=8+16*((Math.sin(t3*5.7)+1)/2);
+        wc.fillRect(mx-ms/2,my-ms/2,ms,ms*0.7);
+      }
+      // standing wall stubs: the part of the building that did not fall
+      wc.fillStyle='#454b54';
+      var stubs=3+Math.round(2*((Math.sin(sd*4.4)+1)/2));
+      for(var st=0;st<stubs;st++){
+        var u=(st+0.5)/stubs, sx=rx4+rw4*u-rw4*0.06;
+        var sh=bh*(0.45+0.75*((Math.sin((st+sd)*2.9)+1)/2));
+        wc.fillStyle=INK; wc.fillRect(sx-1,ry4-sh-1,rw4*0.12+2,sh+2);
+        wc.fillStyle='#4d545e'; wc.fillRect(sx,ry4-sh,rw4*0.12,sh);
+        // a blown out window opening, so the stub reads as former building
+        if(sh>34){ wc.fillStyle='#14171b'; wc.fillRect(sx+rw4*0.03,ry4-sh+9,rw4*0.06,10); }
+      }
+      // exposed rebar along the break line
+      wc.strokeStyle='rgba(120,96,70,.55)'; wc.lineWidth=1.4; wc.beginPath();
+      for(var rb=0;rb<5;rb++){
+        var bx=rx4+rw4*(0.12+0.19*rb);
+        wc.moveTo(bx,ry4-6); wc.lineTo(bx+(rb%2?4:-4),ry4-20-6*((rb*7+sd*3)%3));
+      }
+      wc.stroke();
+      wc.fillStyle='rgba(150,80,40,.10)'; rrF(rx4,ry4+rh4*0.45,rw4,rh4*0.55,2);
+    } else if(it.w&&it.w.wreck){
+      var CR=it.w,cw3=CR.w,ch3=CR.h,cx3=CR.x,cy3=CR.y;
+      shadowE(cx3+cw3/2,cy3+ch3-1,cw3*0.52,6,.34);
+      // body, sitting low on dead suspension
+      wc.fillStyle=INK; rrF(cx3-1,cy3-15,cw3+2,ch3+16,5);
+      wc.fillStyle=CR.hue; rrF(cx3,cy3-14,cw3,ch3+13,4.5);
+      // roof and cabin, offset so it reads as a car and not a box
+      wc.fillStyle=darkHex(CR.hue,0.72);
+      rrF(cx3+cw3*0.24,cy3-22,cw3*0.5,14,3);
+      wc.fillStyle=INK; rrF(cx3+cw3*0.26,cy3-21,cw3*0.46,7,2);
+      wc.fillStyle='rgba(120,150,165,.35)'; rrF(cx3+cw3*0.28,cy3-20,cw3*0.42,5,1.5);
+      // rust bloom and a missing panel, so no two look identical
+      wc.fillStyle='rgba(150,80,40,'+(0.18+0.30*CR.rust).toFixed(2)+')';
+      rrF(cx3+cw3*(CR.flip>0?0.06:0.62),cy3-9,cw3*0.30,ch3*0.7,2);
+      wc.fillStyle='rgba(18,14,12,.55)';
+      wc.fillRect(cx3+cw3*(CR.flip>0?0.70:0.14),cy3-6,cw3*0.16,4);
+      // wheels, one always flat
+      wc.fillStyle='#191c21';
+      rrF(cx3+cw3*0.10,cy3+ch3-6,cw3*0.16,6,2);
+      rrF(cx3+cw3*0.72,cy3+ch3-(CR.flip>0?3:6),cw3*0.16,(CR.flip>0?3:6),2);
+      wc.fillStyle=darkHex(CR.hue,0.55); wc.fillRect(cx3+2,cy3-14,cw3-4,1.6);
     } else if(it.w&&it.w.furn){
       // Furniture: a table (top face on legs) or a shelf unit (tall face with
       // strata). Same three-value language as everything else.
       var FN=it.w,fd=FN.d===undefined?3:FN.d;
-      if(FN.furn===1){
-        shadowE(FN.x+FN.w/2,FN.y+FN.h+1,FN.w*.55,4,.3);
+      // Seven pieces now, not two. A room with a counter run, a stove and a bed
+      // in it reads as somewhere people LIVED and then left, which is the whole
+      // of his note: the world should look old and abandoned rather than empty.
+      var F1=FN.furn;
+      shadowE(FN.x+FN.w/2,FN.y+FN.h+1,FN.w*.55,4,.3);
+      if(F1===1){                                   // table
         wc.fillStyle=INK; rrF(FN.x-1,FN.y-9,FN.w+2,FN.h+10,2);
         wc.fillStyle='#6a4a2e'; wc.fillRect(FN.x,FN.y+FN.h-4,3,4); wc.fillRect(FN.x+FN.w-3,FN.y+FN.h-4,3,4);
         wc.fillStyle='#8a6a42'; rrF(FN.x,FN.y-8,FN.w,FN.h,2);
         wc.fillStyle='#a8845a'; wc.fillRect(FN.x+1,FN.y-8,FN.w-2,2);
-      } else {
-        shadowE(FN.x+FN.w/2,FN.y+FN.h+1,FN.w*.55,4,.3);
+      } else if(F1===2){                            // shelving
         wc.fillStyle=INK; rrF(FN.x-1,FN.y-19,FN.w+2,FN.h+20,2);
         wc.fillStyle=dcol(fd,'wall'); rrF(FN.x,FN.y-18,FN.w,FN.h+18,2);
         wc.fillStyle='rgba(20,16,24,.5)';
         wc.fillRect(FN.x+2,FN.y-12,FN.w-4,2); wc.fillRect(FN.x+2,FN.y-4,FN.w-4,2);
         wc.fillStyle=dcol(fd,'wallTop'); wc.fillRect(FN.x,FN.y-18,FN.w,2);
+      } else if(F1===3){                            // counter run, laminate top
+        wc.fillStyle=INK; rrF(FN.x-1,FN.y-13,FN.w+2,FN.h+14,2);
+        wc.fillStyle='#5b5148'; rrF(FN.x,FN.y-12,FN.w,FN.h+11,1.5);
+        wc.fillStyle='#9a9086'; wc.fillRect(FN.x,FN.y-12,FN.w,3.4);
+        wc.fillStyle='rgba(20,16,24,.45)';
+        for(var cq=8;cq<FN.w-6;cq+=17) wc.fillRect(FN.x+cq,FN.y-8,1.4,FN.h+6);
+      } else if(F1===4){                            // kitchen unit with a stove ring
+        wc.fillStyle=INK; rrF(FN.x-1,FN.y-15,FN.w+2,FN.h+16,2);
+        wc.fillStyle='#4e4a52'; rrF(FN.x,FN.y-14,FN.w,FN.h+13,1.5);
+        wc.fillStyle='#8d8894'; wc.fillRect(FN.x,FN.y-14,FN.w,3);
+        wc.fillStyle='#241f28';
+        var kx=FN.x+FN.w/2,ky=FN.y-11;
+        wc.beginPath(); wc.arc(kx,ky,Math.min(5,FN.w*0.2),0,6.2832); wc.fill();
+        wc.fillStyle='rgba(255,160,90,.20)';
+        wc.beginPath(); wc.arc(kx,ky,Math.min(3,FN.w*0.12),0,6.2832); wc.fill();
+      } else if(F1===5){                            // bed, stripped
+        wc.fillStyle=INK; rrF(FN.x-1,FN.y-11,FN.w+2,FN.h+12,3);
+        wc.fillStyle='#5a4636'; rrF(FN.x,FN.y-10,FN.w,FN.h+9,2.5);
+        wc.fillStyle='#b9ae9c'; rrF(FN.x+2,FN.y-9,FN.w-4,FN.h*0.55,2);
+        wc.fillStyle='#8d8272'; wc.fillRect(FN.x+2,FN.y-9,FN.w-4,3);
+      } else if(F1===6){                            // sofa, sagging
+        wc.fillStyle=INK; rrF(FN.x-1,FN.y-14,FN.w+2,FN.h+15,3);
+        wc.fillStyle='#4a5a52'; rrF(FN.x,FN.y-13,FN.w,FN.h+12,2.5);
+        wc.fillStyle='#5f736a'; rrF(FN.x+2,FN.y-13,FN.w-4,5,2);
+        wc.fillStyle='rgba(18,14,12,.35)'; wc.fillRect(FN.x+FN.w/2-1,FN.y-8,2,FN.h+6);
+      } else {                                      // locker bank
+        wc.fillStyle=INK; rrF(FN.x-1,FN.y-25,FN.w+2,FN.h+26,2);
+        wc.fillStyle='#55606b'; rrF(FN.x,FN.y-24,FN.w,FN.h+23,1.5);
+        wc.fillStyle='#78838f'; wc.fillRect(FN.x,FN.y-24,FN.w,2.6);
+        wc.fillStyle='rgba(16,20,26,.6)'; wc.fillRect(FN.x+FN.w*0.5-0.7,FN.y-21,1.4,FN.h+18);
+        wc.fillStyle='#c9b458'; wc.fillRect(FN.x+FN.w*0.5-3.6,FN.y-13,1.8,1.8);
       }
     } else if(it.w){
       var wl2=it.w,d3=wl2.d===undefined?3:wl2.d;
@@ -8333,10 +8763,10 @@ function drawHUD(){
   // where your extraction is was never secret information anyway.
   ctx.textAlign='center';
   for(i=0;i<G.zones.length;i++){
-    var zz2=G.zones[i],za=zz2===G.active;
+    var zz2=G.zones[i],za=!!zz2.open;
     var zs=w2s(zz2.x,zz2.r+18,zz2.y);
     if(!zs||zs.x<-90||zs.x>W+90||zs.y<-40||zs.y>H+40) continue;
-    var zlab=za?'EXTRACTION':'EXTRACTION - COLD';
+    var zlab=za?'EXTRACTION - OPEN':'EXTRACTION - CLOSED';
     ctx.font=FS('700 11px "Titan One","Rubik",sans-serif');
     var zwid=ctx.measureText(zlab).width;
     ctx.fillStyle='rgba(6,9,13,.78)';
@@ -8346,7 +8776,7 @@ function drawHUD(){
     if(!za){
       ctx.font=FS('9px "Rubik",sans-serif');
       ctx.fillStyle='rgba(168,180,193,.7)';
-      ctx.fillText('no beacon here',zs.x,zs.y+LH(13));
+      ctx.fillText('this one will not call',zs.x,zs.y+LH(13));
     }
   }
   ctx.textAlign='left';
@@ -8378,6 +8808,37 @@ function drawHUD(){
         var dit=ITEMS[nc2.loot[0]];
         if(dit){ ctx.fillStyle=RCOL[dit.r]||'#cdd6dd';
           ctx.fillText(dit.name,s.x,s.y+LH(13)); }
+      }
+      ctx.textAlign='left';
+    }
+  }
+  // THE BEACON PROMPT AND ITS PROGRESS BAR. His report was "pushing the thing
+  // to start extraction process isn't working", and this is the largest reason
+  // why: calling takes 1.6 seconds of HELD E and absolutely nothing on screen
+  // said so. A crate gets a labelled prompt and a filling bar; the way out of
+  // the raid got neither, so a tap on E looked like a dead button. Same idiom
+  // as the container now, in the extraction colour.
+  var padZ=null;
+  for(i=0;i<G.zones.length;i++){ var PZ=G.zones[i];
+    if(dist(p,PZ)<PZ.r){ padZ=PZ; break; } }
+  if(padZ&&!p.downed){
+    var ps=w2s(padZ.x,26,padZ.y);
+    if(ps){
+      ctx.font=FS('10px "Rubik",sans-serif'); ctx.textAlign='center';
+      if(!padZ.open){
+        ctx.fillStyle='#e0483a';
+        ctx.fillText('EXTRACTION CLOSED',ps.x,ps.y);
+      } else if(padZ.hold!==undefined&&padZ.hold!==null&&padZ.hold>0){
+        ctx.fillStyle='#7fc4a0';
+        ctx.fillText('[E] BOARD - '+Math.ceil(padZ.hold)+'s',ps.x,ps.y);
+        if(padZ.pullT>0) bar(ps.x-30,ps.y+LH(6),60,6,clamp(padZ.pullT/1.4,0,1),'#7fc4a0');
+      } else if(padZ.beaconT!==null){
+        ctx.fillStyle='#35d6c8';
+        ctx.fillText('INBOUND '+Math.ceil(padZ.beaconT)+'s',ps.x,ps.y);
+      } else {
+        ctx.fillStyle='#35d6c8';
+        ctx.fillText('[E] CALL EXTRACTION',ps.x,ps.y);
+        if(padZ.callT>0) bar(ps.x-30,ps.y+LH(6),60,6,clamp(padZ.callT/1.6,0,1),'#35d6c8');
       }
       ctx.textAlign='left';
     }
@@ -9119,13 +9580,13 @@ function drawMapOverlay(){
     ctx.textAlign='left';
   }
   for(i=0;i<G.zones.length;i++){
-    var zz=G.zones[i],act=zz===G.active;
+    var zz=G.zones[i],act=!!zz.open;
     ctx.strokeStyle=act?'#4de3d0':'rgba(127,146,216,.42)'; ctx.lineWidth=act?2:1;
     ctx.beginPath(); ctx.arc(ox+zz.x*sc,oy+zz.y*sc,zz.r*sc+3,0,6.2832); ctx.stroke();
     if(act){ ctx.fillStyle='#4de3d0'; ctx.beginPath(); ctx.arc(ox+zz.x*sc,oy+zz.y*sc,3,0,6.2832); ctx.fill(); }
     ctx.textAlign='center'; ctx.font=FS('700 9px "Titan One","Rubik",sans-serif');
     ctx.fillStyle=act?'#4de3d0':'rgba(154,168,208,.80)';
-    ctx.fillText(act?'EXTRACTION':'COLD',ox+zz.x*sc,oy+zz.y*sc+zz.r*sc+16);
+    ctx.fillText(act?'OPEN':'CLOSED',ox+zz.x*sc,oy+zz.y*sc+zz.r*sc+16);
     ctx.textAlign='left';
   }
   // your own marker, ringed in ink so a gold dot never disappears into a gold
@@ -9633,6 +10094,7 @@ function loop(ts){
         if(sl.t>sl.life) sl.settled=true;
       }
       if(G.shells.length>300) G.shells.splice(0,G.shells.length-300);
+      wildTick(dt);
     }
   }
   render2D(dt);
@@ -9648,6 +10110,7 @@ function stashCounts(){
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
   ['NOW','A fourth map, and this one built around verticality'],
+  ['DONE','A world that looks lived in and left: wrecks, ruins, kitchens, birds and deer'],
   ['DONE','DAM BATTLEGROUNDS rebuilt: nine zones, seven landmarks, a real crest'],
   ['DONE','Guns wear with use and Merrit services them'],
   ['DONE','THE SEAL: a door too big to cut in one raid, per map'],
