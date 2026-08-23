@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.53';
+var VER='1.54';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -554,6 +554,8 @@ var ITEMS={
   key_bc_depot:{name:'Garage Depot Key',val:700,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'bc_depot'},
   key_cs_freezer:{name:'Blast Freezer Key',val:700,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'cs_freezer'},
   key_cs_office:{name:'Foreman Office Key',val:600,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'cs_office'},
+  key_quarry_mag:{name:'Magazine Key',val:750,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'quarry_mag'},
+  key_quarry_assay:{name:'Assay Office Key',val:650,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'quarry_assay'},
   codex:{name:'Sealed Codex',val:2200,wt:2,r:'elite',c:'#d89cff'},
   bloom:{name:'Bloom Sample',val:3100,wt:2,r:'elite',c:'#ff9ce8'},
   relay:{name:'Orbital Relay',val:1700,wt:4,r:'elite',c:'#c090ff'},
@@ -2238,6 +2240,175 @@ var FIXED_MAPS=[
   extracts:[
     {x:850, y:2520}, {x:4020,y:1750}, {x:1320,y:2340}
   ]
+},
+{
+  id:'quarry', name:'THE QUARRY', w:4600, h:3600,
+  // THE FOURTH MAP, and the roadmap item that had been sitting at NOW since
+  // v1.52: one built around VERTICALITY. The other three are flat ground with a
+  // catwalk or two bolted on, because that is all the elevation system could
+  // express. Two engine fixes shipped with this map make a real tiered world
+  // possible: a height difference between two touching decks is now a CLIFF
+  // rather than a shared edge, and a ramp now spans the two heights it actually
+  // connects instead of diving to the ground and climbing back out.
+  //
+  // The shape: a stepped open pit. Five terraces dropping 132 units from the
+  // rim to the pit floor, and the ONLY way between them is eight haul ramps cut
+  // into the cliffs, two per drop, staggered from one drop to the next. Getting
+  // down means crossing each bench end to end, in the open, under everything
+  // above you.
+  //
+  // The deal the map makes: the crusher pays best and it is at the bottom of
+  // the hole, and two of the three ways out are at the top.
+  //
+  // ONE HARD RULE runs through every coordinate below: no building comes within
+  // 90 units of anything else. A building's doors are rolled onto one or two of
+  // its four walls, so a shed with 46 units of clearance on its north side is a
+  // shed that seals itself the moment the roll puts its only door there.
+  // Measured on the first draft of this map: the screening plant filled its
+  // band and took 145 cells of its own interior with it, and the conveyor bench
+  // came in at 84 percent reachable.
+  zones:[
+    {name:'THE RIM',        d:2, x:0,    y:0,    w:4600, h:660 },
+    {name:'UPPER BENCH',    d:0, x:0,    y:660,  w:2300, h:620 },
+    {name:'THE MAGAZINE',   d:3, x:2300, y:660,  w:2300, h:620 },
+    {name:'CONVEYOR RUN',   d:1, x:0,    y:1280, w:2800, h:620 },
+    {name:'SCREENING PLANT',d:1, x:2800, y:1280, w:1800, h:620 },
+    {name:'LOWER BENCH',    d:0, x:0,    y:1900, w:2400, h:620 },
+    {name:'THE WORKSHOPS',  d:0, x:2400, y:1900, w:2200, h:620 },
+    {name:'THE SUMP',       d:1, x:0,    y:2520, w:2200, h:1080},
+    {name:'THE PIT',        d:1, x:2200, y:2520, w:2400, h:1080}
+  ],
+  // Water collects at the bottom of a pit, which is the one thing every
+  // abandoned quarry has in common. Wading it is slow and loud.
+  water:[
+    {x:340, y:2760,w:1500,h:640},
+    {x:2260,y:3320,w:900, h:220}
+  ],
+  walls:[
+    // THE CLIFF FACES. A solid band across the map at each drop, broken only
+    // where a ramp is cut. These are what make the benches benches: without
+    // them the five terraces are one field with a colour change.
+    // DROP 1, rim to upper bench. Ramps at x 560 and x 3240.
+    {x:120, y:600, w:426, h:120,d:0}, {x:724, y:600, w:2502,h:120,d:0},
+    {x:3404,y:600, w:1076,h:120,d:0},
+    // DROP 2, upper to conveyor. Ramps at 1760 and 4060, both a long way from
+    // drop 1, so you cross the whole upper bench to keep descending.
+    {x:120, y:1220,w:1626,h:120,d:0}, {x:1924,y:1220,w:2122,h:120,d:0},
+    {x:4224,y:1220,w:256, h:120,d:0},
+    // DROP 3, conveyor to lower. Ramps at 420 and 2720.
+    {x:120, y:1840,w:286, h:120,d:0}, {x:584, y:1840,w:2122,h:120,d:0},
+    {x:2884,y:1840,w:1596,h:120,d:0},
+    // DROP 4, lower bench to the pit floor. Ramps at 1280 and 3660.
+    {x:120, y:2460,w:1146,h:120,d:0}, {x:1444,y:2460,w:2202,h:120,d:0},
+    {x:3824,y:2460,w:656, h:120,d:0},
+    // SPOIL HEAPS on the pit floor. The floor is the largest single piece of
+    // open ground on the map and four benches look down into it, so it needs
+    // something to move between or crossing it is not a decision, it is a death.
+    {x:1450,y:2700,w:300,h:70,d:1}, {x:1600,y:3000,w:70, h:280,d:1},
+    {x:2000,y:3140,w:220,h:70,d:1}, {x:3245,y:2620,w:70, h:220,d:1},
+    {x:1400,y:3380,w:360,h:70,d:1}, {x:820, y:3440,w:70, h:100,d:1},
+    {x:4060,y:3320,w:340,h:70,d:1}, {x:4180,y:2660,w:70, h:300,d:1},
+    // STOCKPILE BUNKERS along the benches: low walls you fight around, and the
+    // only cover a bench has that is not a building. Each one sits in a gap wide
+    // enough to leave 90 units on both sides, same rule as the buildings.
+    {x:2520,y:280, w:70, h:240,d:2}, {x:3610,y:280, w:70, h:240,d:2},
+    {x:2700,y:840, w:70, h:260,d:0}, {x:4180,y:840, w:70, h:260,d:0},
+    {x:2700,y:1460,w:70, h:260,d:1}, {x:4240,y:1460,w:70, h:260,d:1},
+    {x:2660,y:2080,w:70, h:260,d:0}, {x:4300,y:2080,w:70, h:260,d:0}
+  ],
+  buildings:[
+    // THE RIM. Where the quarry was administered, and the one part of a quarry
+    // the trees take back first. Every rim building shares a y and a height, so
+    // the whole terrace reads as one graded surface with a street through it.
+    {x:240, y:224,w:420,h:270,d:2,plan:'cells',  big:1},
+    {x:930, y:224,w:300,h:270,d:2,plan:'open'},
+    {x:1720,y:224,w:400,h:270,d:2,plan:'lsplit'},
+    {x:2390,y:224,w:340,h:270,d:2,plan:'core'},
+    {x:3000,y:224,w:480,h:270,d:2,plan:'spine',  big:1},
+    {x:3750,y:224,w:340,h:270,d:2,plan:'cells'},
+    // UPPER BENCH, with the explosives magazine at its east end. This is the
+    // richest thing on the map that is not at the bottom of the pit, and that
+    // is the choice the whole descent is built around: take the easy tier, or
+    // go down for the crusher.
+    {x:240, y:824,w:400,h:290,d:0,plan:'lsplit'},
+    {x:840, y:824,w:340,h:290,d:0,plan:'cells'},
+    {x:1380,y:824,w:460,h:290,d:0,plan:'spine',  big:1},
+    {x:2040,y:824,w:360,h:290,d:0,plan:'open'},
+    {x:2860,y:824,w:520,h:290,d:3,plan:'cells',  big:1},
+    {x:3580,y:824,w:420,h:290,d:3,plan:'core'},
+    // CONVEYOR RUN. The gallery is a 1700 unit covered corridor, the longest
+    // enclosed run in the game, and the only way to cross this bench without
+    // three terraces watching you do it.
+    {x:300, y:1500,w:1700,h:180,d:1,plan:'spine', big:1},
+    {x:2200,y:1444,w:400,h:290,d:1,plan:'lsplit'},
+    {x:2860,y:1444,w:600,h:290,d:1,plan:'core',   big:1},
+    {x:3660,y:1444,w:420,h:290,d:1,plan:'cells'},
+    // LOWER BENCH and THE WORKSHOPS: the machine shops that kept the plant
+    // running, one drop above the floor.
+    {x:240, y:2064,w:420,h:290,d:0,plan:'spine',  big:1},
+    {x:860, y:2064,w:360,h:290,d:0,plan:'lsplit'},
+    {x:1620,y:2064,w:440,h:290,d:0,plan:'cells'},
+    {x:2260,y:2064,w:340,h:290,d:0,plan:'open'},
+    {x:2800,y:2064,w:700,h:290,d:0,plan:'cells',  big:1},
+    {x:3700,y:2064,w:460,h:290,d:0,plan:'core'},
+    // THE PIT FLOOR. The bottom of the hole and everything worth the trip down.
+    {x:2400,y:2700,w:760,h:460,d:1,plan:'core',   big:1},
+    {x:3400,y:2700,w:520,h:380,d:1,plan:'spine',  big:1},
+    {x:3400,y:3260,w:520,h:280,d:1,plan:'cells'},
+    {x:2400,y:3250,w:560,h:200,d:1,plan:'lsplit', big:1},
+    {x:1880,y:2700,w:340,h:280,d:1,plan:'open'},
+    // A pump house standing in the sump, dry inside, which is shelter you have
+    // to wade to and cannot leave quietly.
+    {x:900, y:2900,w:380,h:300,d:1,plan:'cells'},
+    {x:240, y:3140,w:420,h:320,d:1,plan:'core'}
+  ],
+  woods:[
+    {x:4180,y:150, w:290,h:300},
+    {x:4000,y:2620,w:460,h:520}
+  ],
+  // THE BENCHES. Each one is a single terrace spanning the map, and the height
+  // difference between them is what the cliff bands above are made of.
+  plats:[
+    {x:120,y:120, w:4360,h:480,lift:132,name:'THE RIM'},
+    {x:120,y:720, w:4360,h:500,lift:99, name:'UPPER BENCH'},
+    {x:120,y:1340,w:4360,h:500,lift:66, name:'CONVEYOR BENCH'},
+    {x:120,y:1960,w:4360,h:500,lift:33, name:'LOWER BENCH'}
+  ],
+  // THE HAUL RAMPS. Taller than they are wide so the descent runs along their
+  // long axis, and each one overlaps both benches it joins so the cliff opens
+  // on both sides of it.
+  ramps:[
+    {x:560, y:575, w:150,h:170}, {x:3240,y:575, w:150,h:170},
+    {x:1760,y:1195,w:150,h:170}, {x:4060,y:1195,w:150,h:170},
+    {x:420, y:1815,w:150,h:170}, {x:2720,y:1815,w:150,h:170},
+    {x:1280,y:2435,w:150,h:170}, {x:3660,y:2435,w:150,h:170}
+  ],
+  locked:[
+    // Sat 220 tall inside a 258 tall interior, which left 10 units above it and
+    // 28 below: both strips sealed, and the upper bench came in at 94 percent
+    // reachable. Shorter, and flush with the building's own north face so there
+    // is only one gap to keep clear instead of two.
+    {id:'quarry_mag',   name:'THE MAGAZINE', x:2980,y:840, w:220,h:150},
+    {id:'quarry_assay', name:'ASSAY OFFICE', x:2560,y:2820,w:220,h:220}
+  ],
+  landmarks:[
+    {id:'q_office',  name:'RIM OFFICES',     x:240, y:224, w:420, h:270, loot:'medical',dens:1.4},
+    {id:'q_mag',     name:'THE MAGAZINE',    x:2860,y:824, w:520, h:290, loot:'rare',   dens:1.8},
+    {id:'q_gallery', name:'CONVEYOR GALLERY',x:300, y:1444,w:1700,h:290, loot:'bulk',   dens:1.0},
+    {id:'q_screen',  name:'SCREENING PLANT', x:2860,y:1444,w:600, h:290, loot:'ammo',   dens:1.4},
+    {id:'q_shops',   name:'THE WORKSHOPS',   x:2800,y:2064,w:700, h:290, loot:'ammo',   dens:1.3},
+    {id:'q_crusher', name:'THE CRUSHER',     x:2400,y:2700,w:760, h:460, loot:'rare',   dens:1.9},
+    {id:'q_drag',    name:'THE DRAGLINE',    x:3400,y:2700,w:520, h:380, loot:'bulk',   dens:1.2},
+    {id:'q_sump',    name:'THE SUMP',        x:340, y:2760,w:1500,h:640, loot:'bulk',   dens:0.9}
+  ],
+  spawns:[
+    {x:800, y:380}, {x:4280,y:520},  {x:2500,y:1000},
+    {x:2100,y:1580},{x:4230,y:2200}, {x:1900,y:3400}
+  ],
+  // Two of the three ways out are UP.
+  extracts:[
+    {x:1470,y:360}, {x:1420,y:2200}, {x:3180,y:3350}
+  ]
 }
 ];
 function buildFixedMap(def){
@@ -2297,7 +2468,7 @@ function buildFixedMap(def){
     for(var q2=0;q2<plats.length;q2++){
       if(q2===selfIx) continue;
       var Q2=plats[q2];
-      if(ax<Q2.x+Q2.w+pad&&ax+aw>Q2.x-pad&&ay<Q2.y+Q2.h+pad&&ay+ah>Q2.y-pad) return true;
+      if(ax<Q2.x+Q2.w+pad&&ax+aw>Q2.x-pad&&ay<Q2.y+Q2.h+pad&&ay+ah>Q2.y-pad&&Math.abs((plats[selfIx].lift||24)-(Q2.lift||24))<1) return true;
     }
     return false;
   }
@@ -2450,11 +2621,28 @@ function buildFixedMap(def){
     for(q=0;q<ramps.length;q++){ var R=ramps[q];
       if(wx2>=R.x&&wx2<R.x+R.w&&wy2>=R.y&&wy2<R.y+R.h){
         // ramps climb along their long axis toward the platform they touch
-        var lift=24;
+        // Every deck this ramp touches, and which END of the ramp it touches.
+        // A ramp used to interpolate from ZERO to the height of the one deck it
+        // found, so a ramp BETWEEN two decks dived to the ground and climbed back
+        // out. It now spans the two heights it actually connects.
+        var horizR=R.w>=R.h,loEnd=0,hiEnd=0,found=0;
         for(var w2=0;w2<plats.length;w2++){ var P2=plats[w2];
-          if(R.x<P2.x+P2.w&&R.x+R.w>P2.x&&R.y<P2.y+P2.h&&R.y+R.h>P2.y){ lift=P2.lift||24; break; } }
-        var f=(R.w>=R.h)?clamp((R.x+R.w-wx2)/R.w,0,1):clamp((R.y+R.h-wy2)/R.h,0,1);
-        return lift*f;
+          // PAD 24, the same tolerance rampOverlaps uses when it cuts the gap in
+          // the deck edge. The three older maps author their ramps ABUTTING a
+          // platform rather than overlapping it, so a strict test finds nothing
+          // and the ramp reads as flat ground: measured, every catwalk ramp on
+          // BURIED CITY and COLD STORAGE went 0 to 0 and you stepped onto the
+          // deck with a 26 unit pop instead of walking up.
+          if(!(R.x<P2.x+P2.w+24&&R.x+R.w>P2.x-24&&R.y<P2.y+P2.h+24&&R.y+R.h>P2.y-24)) continue;
+          var lf2=P2.lift||24;
+          var pc=horizR?(P2.x+P2.w/2):(P2.y+P2.h/2);
+          var rc=horizR?(R.x+R.w/2):(R.y+R.h/2);
+          if(pc<rc) loEnd=Math.max(loEnd,lf2); else hiEnd=Math.max(hiEnd,lf2);
+          found++;
+        }
+        if(!found) return 0;
+        var t3=horizR?clamp((wx2-R.x)/R.w,0,1):clamp((wy2-R.y)/R.h,0,1);
+        return loEnd+(hiEnd-loEnd)*t3;
       }
     }
     return 0;
@@ -10109,7 +10297,8 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','A fourth map, and this one built around verticality'],
+  ['NOW','Deployment briefings: choose the map knowing what is on it'],
+  ['DONE','THE QUARRY: a fourth map that is five terraces and eight ramps'],
   ['DONE','A world that looks lived in and left: wrecks, ruins, kitchens, birds and deer'],
   ['DONE','DAM BATTLEGROUNDS rebuilt: nine zones, seven landmarks, a real crest'],
   ['DONE','Guns wear with use and Merrit services them'],
