@@ -132,6 +132,9 @@ window.__simBatch=function(n){
 // The recorder is the thing he actually sends back, so it has to be provable that
 // it does not throw. Anything added to buildExport gets checked through this.
 window.__export=function(){ return buildExport(); };
+// The cost of a heavy bag, so the curve can be read off the real function rather than
+// off my arithmetic, and so the loadPen slider can be proven to reach zero.
+window.__load=function(w){ return loadOf(w); };
 window.__world=function(){ return {w:WORLD_W,h:WORLD_H}; };
 // Paired A/B. Runs an explicit list of seeds so the SAME raids can be put through
 // two builds and compared pairwise. Unpaired 30v30 comparisons are close to a coin

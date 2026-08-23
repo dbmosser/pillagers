@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.58';
+var VER='1.59';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -422,7 +422,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:17,nCrawler:20,nRaider:6,nSnitch:4,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:26,simRaids:30};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -678,7 +678,7 @@ function storeGet(){
     return Promise.resolve(v===null?null:{key:SKEY,value:v});
   }catch(e2){ return Promise.resolve(null); }
 }
-function saveProfile(){ P.cfg=CFG; P.cfgv=7; storeSet(JSON.stringify(P)); }
+function saveProfile(){ P.cfg=CFG; P.cfgv=8; storeSet(JSON.stringify(P)); }
 function loadProfile(){
   try{
     return storeGet().then(function(r){
@@ -711,7 +711,7 @@ function loadProfile(){
           // cfgv 5: the v1.03 tuning batch must actually reach a saved profile.
           // Old pinned sliders are dropped exactly as the v0.68 migration did;
           // credits, stash, armoury and the recorder are untouched.
-          if(P.cfgv===7&&P.cfg){ applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; }
+          // cfgv 8: his saved config pins simGreed at 26, which is the number that made
           else P.cfg=null;
         } }
     }).catch(function(){});
@@ -5378,6 +5378,49 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
     G.shells.push({x:sh.x,y:sh.y,vx:Math.cos(sa)*rnd(60,130),vy:Math.sin(sa)*rnd(60,130),t:0,life:rnd(.5,.9),rot:rnd(0,6)});
   }
 }
+// ---------------------------------------------------------------- THE COST OF GREED
+// Pillar 1 of this design is RISK VERSUS GREED, and as of v1.58 it was measurably not
+// in the game. Across 150 sim raids, among the 67 that ran past 150 seconds, carrying
+// 500 to 1500c got out 33 percent of the time, 1500 to 3000c got out 39 percent, and
+// carrying over 3000c got out 56 percent. Greed was SAFER than caution.
+// The cause was a side effect of something he asked for. His note on 2026-08-22 was
+// "make it where the backpack is unlimited and you can just take it all", so PACKCAP
+// went to 99999. That was right, and the cap is staying gone. But the only cost of
+// weight in the whole file was computed as a fraction of that cap, so setting the cap
+// to infinity silently set the cost of carrying anything to zero as well. Taking
+// everything became free, and a pillar quietly stopped existing.
+// The fix keeps his instruction exactly: nothing is ever refused, no pickup is blocked,
+// there is no wall. Weight just COSTS, continuously, and the more you take the more it
+// costs. You can still walk out with all of it; you will be slow and you will be loud
+// while you do, which is the decision the pillar is supposed to be about.
+// Calibrated against the armour rigs, which are the existing scale for "what a whole
+// raid commitment is worth": heavy plate costs 14 percent speed and 34 percent noise.
+// A serious haul should cost at least that, because it is the same kind of bet.
+// FREE is the kit you deploy with, so a light run feels exactly as it does now.
+// First pass at these was LOAD_SPD 260 and LOAD_NOISE 90, which put a 52wt bag at 12
+// percent slower and 36 percent louder. Measured over 150 raids against the same build
+// without it: extract rate identical at 35 percent and the average haul went UP. A cost
+// that cannot be measured is not a cost, so it is doubled here. 52wt is now 21 percent
+// slower and 53 percent louder, and a 100wt haul is 38 percent slower and more than
+// twice as loud, which is well past what the heavy rig asks and is meant to be.
+var LOAD_FREE=20, LOAD_SPD=150, LOAD_NOISE=60, LOAD_FLOOR=0.62;
+function loadOf(w){
+  // Feel is his call, so the whole penalty sits on one slider. loadPen 0 restores the
+  // v1.58 behaviour exactly, where carrying costs nothing, and 2 makes a big haul
+  // genuinely punishing. If a loaded run feels like wading, this is the one number.
+  var K=(CFG.loadPen===undefined?1:CFG.loadPen);
+  if(K<=0) return {spd:1,noise:1,stam:1};
+  var over=w-LOAD_FREE; if(over<0) over=0;
+  return {
+    // 40wt costs 13 percent speed, 52wt costs 21, 100wt bottoms out at 38.
+    spd:  clamp(1-(over*K)/LOAD_SPD,LOAD_FLOOR,1),
+    // 40wt is 33 percent louder, 52wt is 53, 100wt is more than double. A full bag
+    // rattles, and the machines hunt noise, so a fortune actively recruits them.
+    noise:1+(over*K)/LOAD_NOISE,
+    // And you cannot simply sprint out from under it.
+    stam: 1+(over*K)/80
+  };
+}
 function bagWeight(){ var w=0; for(var i=0;i<G.bag.length;i++) w+=(ITEMS[G.bag[i]]?ITEMS[G.bag[i]].wt:1); return w; }
 // Put an item back on the ground as a searchable pile, so dropping something is
 // a decision you can walk back rather than destroying it. Fast to re-open,
@@ -5931,14 +5974,16 @@ function updatePlayer(dt){
   if(p.ads) sprint=false;
   G.sprinting=sprint;
   var cap=PACKCAP[P.pack];
-  var load=clamp(1-bagWeight()/(cap*1.15),.55,1);
+  // Was a fraction of PACKCAP, which is 99999, so this was pinned at 1 and the whole
+  // cost of carrying was dead. See loadOf.
+  var LD=loadOf(bagWeight()), load=LD.spd;
   var wading=inWater(p.x,p.y);
   if(wading) sprint=false;
   G.sprinting=sprint;
   var spd=CFG.pSpeed*load*armorById(p.rig).spd; if(crouch) spd*=.52; if(sprint) spd*=1.62;
   if(wading) spd*=.55;
   if(p.ads) spd*=.62;
-  if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam+15*dt);
+  if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.stam+15*dt);
 
   if(mg>0){
     var ox=p.x,oy=p.y;
@@ -5946,7 +5991,7 @@ function updatePlayer(dt){
     p.noiseAcc=(p.noiseAcc||0)+dt;
     // wading defeats crouch entirely: splashing is loud whatever you do
     var iv=wading?.30:(crouch?99:(sprint?.38:.72));
-    if(p.noiseAcc>iv){ p.noiseAcc=0; ping(p.x,p.y,wading?290:(sprint?250:110),false,false,'player','move'); }
+    if(p.noiseAcc>iv){ p.noiseAcc=0; ping(p.x,p.y,(wading?290:(sprint?250:110))*LD.noise,false,false,'player','move'); }
     // Footprints. Wet boots leave a dark trail for a while after leaving water,
     // dry boots a faint scuff; either way the ground remembers where you went,
     // which is his litter answer and also free navigation memory.
@@ -6223,6 +6268,9 @@ function updateBot(dt){
   p.noiseAcc=(p.noiseAcc||0)+dt;
   var moved=false;
   var cap=PACKCAP[P.pack];
+  // The bot pays the same carry cost the player does, or the sim would be measuring a
+  // player who does not exist and would report a change nobody can feel.
+  var LD=loadOf(bagWeight());
   if(threat&&(p.ammo>0||p.reserve>0)){
     p.face=Math.atan2(threat.y-p.y,threat.x-p.x);
     if(p.ammo===0){
@@ -6234,12 +6282,12 @@ function updateBot(dt){
         fireWeapon(p,p.wep,threat.x+rnd(-10,10),threat.y+rnd(-10,10),true);
       }
     }
-    if(td<110){ moveToward(p,p.x-(threat.x-p.x),p.y-(threat.y-p.y),CFG.pSpeed*.7,dt); moved=true; }
+    if(td<110){ moveToward(p,p.x-(threat.x-p.x),p.y-(threat.y-p.y),CFG.pSpeed*.7*LD.spd,dt); moved=true; }
   // leave enough clock to walk there AND sit through the whole inbound wait
   } else if(bagWeight()>=CFG.simGreed||bagWeight()>=cap||G.timeLeft<CFG.extractWait+120||(p.ammo+p.reserve)<=0){
     var z=G.active;
     G.botWantsOut=true;
-    navSeek(p,z.x,z.y,CFG.pSpeed*.95,dt); moved=true;
+    navSeek(p,z.x,z.y,CFG.pSpeed*.95*LD.spd,dt); moved=true;
     p.face=Math.atan2(z.y-p.y,z.x-p.x);
   } else {
     if(!p.goal||p.goal.opened||p.goal.skip){
@@ -6259,14 +6307,14 @@ function updateBot(dt){
         p.searchT=(p.searchT||0)+dt;
         if(p.searchT>=p.goal.time){ openContainer(p.goal); p.searchT=0; p.goal=null; }
       } else {
-        navSeek(p,p.goal.x,p.goal.y,CFG.pSpeed*.9,dt); moved=true;
+        navSeek(p,p.goal.x,p.goal.y,CFG.pSpeed*.9*LD.spd,dt); moved=true;
         p.seekT=(p.seekT||0)+dt;
         p.face=Math.atan2(p.goal.y-p.y,p.goal.x-p.x);
         p.searchT=0;
       }
     }
   }
-  if(moved&&p.noiseAcc>.6){ p.noiseAcc=0; ping(p.x,p.y,140,false,false,'player','move'); }
+  if(moved&&p.noiseAcc>.6){ p.noiseAcc=0; ping(p.x,p.y,140*LD.noise,false,false,'player','move'); }
   // Give up on a container the bot cannot get to, on two conditions, both of
   // which had to be learned the hard way. It has to be progress and not motion:
   // the original check asked whether the bot had moved at all, and that stopped
@@ -7650,7 +7698,10 @@ function runSim(){
 // falls as value rises is the game working as designed, and the shape of the fall is
 // the tuning dial. haul was already recorded on death, it just had nobody reading it.
 function haulBands(rows,minDur){
-  var B=[{lo:0,hi:500,n:0,e:0},{lo:500,hi:1500,n:0,e:0},{lo:1500,hi:3000,n:0,e:0},{lo:3000,hi:1e9,n:0,e:0}];
+  // Rebanded at v1.59. The old top band was 3000c and up, which held 128 of 150 runs
+  // once the bot looted like he does, so the split had no resolution left exactly where
+  // the interesting decisions are. These five cover the real range of a greedy run.
+  var B=[{lo:0,hi:1000,n:0,e:0},{lo:1000,hi:3000,n:0,e:0},{lo:3000,hi:6000,n:0,e:0},{lo:6000,hi:12000,n:0,e:0},{lo:12000,hi:1e9,n:0,e:0}];
   for(var i=0;i<rows.length;i++){
     var r=rows[i]; if(r.outcome!=='extract'&&r.outcome!=='dead') continue;
     if(minDur&&(r.dur||0)<minDur) continue;
@@ -9678,7 +9729,16 @@ function drawHUD(){
     ctx.fillText('[X] '+p.sec.name+'  '+p.secAmmo,W-16,by-LH(52));
   }
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
-  ctx.fillText(G.bag.length+' ITEMS  '+bagWeight()+'wt',W-16,by);
+  // A cost you cannot see is not a decision, it is the game feeling wrong for no stated
+  // reason. The weight readout now says what the weight is DOING: how much speed it is
+  // taking and how much louder it has made you. Amber once it bites, rust once it is
+  // genuinely dangerous, so the moment to think about leaving is visible on the HUD
+  // rather than being something you infer after dying with a full bag.
+  var _bw=bagWeight(), _ld=loadOf(_bw);
+  var _spdPct=Math.round((1-_ld.spd)*100), _noisePct=Math.round((_ld.noise-1)*100);
+  ctx.fillStyle=(_spdPct>=18?'#c8674a':(_spdPct>=7?'#ffb02e':'#8a96a1'));
+  ctx.fillText(G.bag.length+' ITEMS  '+_bw+'wt'+
+    (_spdPct>0?('   '+_spdPct+'% SLOWER  '+_noisePct+'% LOUDER'):''),W-16,by);
   // standing cue: the bag was findable only from a dim 14-item legend line
   if(!G.bagOpen){
     ctx.font=FS(TYPE.label); ctx.fillStyle='#ffb02e';
@@ -10325,7 +10385,12 @@ var SLIDERS=[
   ['bright','Brightness',0.6,2.2,0.05,1],
   ['regenDelay','Regen starts after (s)',0,40,1,1],
   ['regenSec','Regen seconds per HP',1,12,0.5,1],
-  ['simGreed','Sim bot greed (bag wt)',10,60,2,1],
+  // Ceiling raised from 60 to 140. The bot left at 26wt while his own runs come home
+  // with 19 to 30 items, so the sim has always modelled a far more cautious player than
+  // the one holding the mouse, and any change to the cost of carrying would have been
+  // invisible in it. Default moved 26 to 52.
+  ['loadPen','Cost of a heavy bag',0,2,0.1,0],
+  ['simGreed','Sim bot greed (bag wt)',10,140,2,1],
   ['simRaids','Sim raid count',10,80,5,1]
 ];
 function fmtV(v){ return (Math.round(v*100)/100).toString(); }
