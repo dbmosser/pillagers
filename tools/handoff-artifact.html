@@ -1,0 +1,845 @@
+<title>Dark Raiders Handoff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Rubik:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<style>
+/* ============================================================ tokens
+   Palette lifted from the game's own district table: RUST YARD's accent
+   for structure, the extraction beacon's coolant teal for anything that
+   means "this is the way out", and the FAILING gun-wear red for the
+   things that have already cost somebody a day. The neutrals carry a
+   warm bias in light and a violet bias in dark, because the renderer's
+   own comment insists its darks are violet rather than absence. */
+:root{
+  --rust:#C4651F;
+  --rust-soft:#E08A45;
+  --coolant:#0E8C82;
+  --alarm:#C0392B;
+  --ground:#F6F2EC;
+  --raised:#FFFFFF;
+  --sunk:#EDE7DE;
+  --ink:#1E1B22;
+  --ink-2:#4A4551;
+  --ink-3:#7A7280;
+  --rule:#DDD5CA;
+  --rule-hard:#C6BCAE;
+  --stripe-warn:#C0392B;
+  --code-bg:#EFEAE2;
+  --shadow:0 1px 2px rgba(30,27,34,.06), 0 8px 24px -12px rgba(30,27,34,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --rust:#E58A3C;
+    --rust-soft:#B96A28;
+    --coolant:#35D6C8;
+    --alarm:#E0483A;
+    --ground:#14121A;
+    --raised:#1C1926;
+    --sunk:#100E16;
+    --ink:#EAE4EE;
+    --ink-2:#B0A8BC;
+    --ink-3:#79718A;
+    --rule:#2C2739;
+    --rule-hard:#3D3650;
+    --stripe-warn:#E0483A;
+    --code-bg:#221E2E;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --rust:#E58A3C;
+  --rust-soft:#B96A28;
+  --coolant:#35D6C8;
+  --alarm:#E0483A;
+  --ground:#14121A;
+  --raised:#1C1926;
+  --sunk:#100E16;
+  --ink:#EAE4EE;
+  --ink-2:#B0A8BC;
+  --ink-3:#79718A;
+  --rule:#2C2739;
+  --rule-hard:#3D3650;
+  --stripe-warn:#E0483A;
+  --code-bg:#221E2E;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:"Rubik",system-ui,-apple-system,sans-serif;
+  font-size:16.5px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ============================================================ shell */
+.shell{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:0;
+  max-width:1180px;
+  margin:0 auto;
+  padding:0 24px 96px;
+}
+@media (min-width:1000px){
+  .shell{grid-template-columns:216px minmax(0,1fr); gap:56px; padding:0 32px 120px}
+}
+
+/* ============================================================ masthead */
+.mast{
+  grid-column:1/-1;
+  border-bottom:1px solid var(--rule-hard);
+  padding:48px 0 28px;
+  margin-bottom:48px;
+}
+.mast .eyebrow{
+  font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--rust);
+  margin:0 0 14px;
+}
+.mast h1{
+  font-family:"Bricolage Grotesque","Rubik",sans-serif;
+  font-optical-sizing:auto;
+  font-weight:800;
+  font-size:clamp(34px,6.2vw,60px);
+  line-height:1.02;
+  letter-spacing:-.025em;
+  margin:0 0 16px;
+  text-wrap:balance;
+}
+.mast .standfirst{
+  font-size:19px;
+  line-height:1.5;
+  color:var(--ink-2);
+  max-width:60ch;
+  margin:0 0 26px;
+}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{
+  font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:11.5px;
+  font-weight:500;
+  letter-spacing:.02em;
+  font-variant-numeric:tabular-nums;
+  padding:5px 10px;
+  border:1px solid var(--rule-hard);
+  border-radius:2px;
+  color:var(--ink-2);
+  background:var(--raised);
+  white-space:nowrap;
+}
+.chip b{color:var(--ink); font-weight:700}
+.chip.hot{border-color:var(--rust); color:var(--rust)}
+.chip.hot b{color:var(--rust)}
+
+/* ============================================================ rail */
+.rail{display:none}
+@media (min-width:1000px){
+  .rail{
+    display:block;
+    position:sticky;
+    top:0;
+    align-self:start;
+    max-height:100vh;
+    overflow-y:auto;
+    padding:4px 0 40px;
+  }
+}
+.rail p{
+  font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:10.5px; font-weight:500;
+  letter-spacing:.16em; text-transform:uppercase;
+  color:var(--ink-3);
+  margin:0 0 14px;
+}
+.rail ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+.rail a{
+  display:grid;
+  grid-template-columns:24px 1fr;
+  gap:8px;
+  align-items:baseline;
+  padding:5px 8px 5px 0;
+  font-size:13.5px;
+  line-height:1.3;
+  color:var(--ink-2);
+  text-decoration:none;
+  border-left:2px solid transparent;
+  padding-left:10px;
+  transition:color .12s, border-color .12s;
+}
+.rail a span{
+  font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:11px;
+  color:var(--ink-3);
+  font-variant-numeric:tabular-nums;
+}
+.rail a:hover{color:var(--ink); border-left-color:var(--rule-hard)}
+.rail a.on{color:var(--rust); border-left-color:var(--rust)}
+.rail a.on span{color:var(--rust)}
+.rail a:focus-visible{outline:2px solid var(--coolant); outline-offset:2px}
+
+/* ============================================================ prose */
+main{min-width:0; max-width:70ch}
+section{margin:0 0 64px; scroll-margin-top:24px}
+.sec-head{
+  display:flex; align-items:baseline; gap:14px;
+  margin:0 0 20px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--rule);
+}
+.sec-num{
+  font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:13px; font-weight:700;
+  color:var(--rust);
+  font-variant-numeric:tabular-nums;
+  flex:none;
+}
+h2{
+  font-family:"Bricolage Grotesque","Rubik",sans-serif;
+  font-weight:700;
+  font-size:clamp(21px,3vw,27px);
+  line-height:1.16;
+  letter-spacing:-.017em;
+  margin:0;
+  text-wrap:balance;
+}
+h3{
+  font-family:"Bricolage Grotesque","Rubik",sans-serif;
+  font-weight:700;
+  font-size:17.5px;
+  letter-spacing:-.008em;
+  margin:32px 0 10px;
+  text-wrap:balance;
+}
+p{margin:0 0 15px}
+strong{font-weight:600; color:var(--ink)}
+a{color:var(--coolant); text-underline-offset:2px}
+ul,ol{margin:0 0 15px; padding-left:22px; display:flex; flex-direction:column; gap:7px}
+li::marker{color:var(--ink-3)}
+code{
+  font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:.855em;
+  background:var(--code-bg);
+  padding:1.5px 5px;
+  border-radius:2px;
+  color:var(--ink);
+}
+hr{border:0; border-top:1px solid var(--rule); margin:40px 0}
+
+/* ============================================================ devices */
+.lede{
+  font-size:18px;
+  line-height:1.55;
+  color:var(--ink-2);
+  border-left:2px solid var(--rust);
+  padding-left:18px;
+  margin:0 0 22px;
+}
+
+/* A trap has a cost attached. The stripe is the severity, not decoration. */
+.trap{
+  background:var(--raised);
+  border:1px solid var(--rule);
+  border-left:3px solid var(--stripe-warn);
+  border-radius:2px;
+  padding:16px 18px;
+  margin:0 0 14px;
+  box-shadow:var(--shadow);
+}
+.trap h4{
+  font-family:"Bricolage Grotesque","Rubik",sans-serif;
+  font-weight:700; font-size:15.5px;
+  margin:0 0 7px;
+  letter-spacing:-.005em;
+}
+.trap p:last-child, .trap ul:last-child{margin-bottom:0}
+.trap .cost{
+  display:inline-block;
+  font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:10px; font-weight:700;
+  letter-spacing:.13em; text-transform:uppercase;
+  color:var(--stripe-warn);
+  margin:0 0 8px;
+}
+
+.rule-card{
+  background:var(--sunk);
+  border:1px solid var(--rule);
+  border-radius:2px;
+  padding:18px 20px;
+  margin:0 0 22px;
+}
+.rule-card p:last-child{margin-bottom:0}
+.rule-card .quote{
+  font-family:"Bricolage Grotesque","Rubik",sans-serif;
+  font-size:16.5px;
+  line-height:1.45;
+  font-weight:500;
+  color:var(--ink);
+  margin:0 0 8px;
+}
+.rule-card .src{
+  font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:11px;
+  color:var(--ink-3);
+  letter-spacing:.04em;
+}
+
+.tablewrap{overflow-x:auto; margin:0 0 22px; border:1px solid var(--rule); border-radius:2px}
+table{border-collapse:collapse; width:100%; font-size:14px; background:var(--raised)}
+th,td{
+  text-align:left;
+  padding:9px 14px;
+  border-bottom:1px solid var(--rule);
+  vertical-align:top;
+  line-height:1.42;
+}
+th{
+  font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:10.5px; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-3);
+  background:var(--sunk);
+  white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:0}
+td.num{font-family:"JetBrains Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums; white-space:nowrap}
+td.bad{color:var(--alarm); font-weight:600}
+td.ok{color:var(--coolant); font-weight:600}
+td.mono{font-family:"JetBrains Mono",ui-monospace,monospace; font-size:12.5px; white-space:nowrap}
+
+pre{
+  background:var(--sunk);
+  border:1px solid var(--rule);
+  border-radius:2px;
+  padding:14px 16px;
+  overflow-x:auto;
+  margin:0 0 22px;
+  font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:12.5px;
+  line-height:1.65;
+  color:var(--ink-2);
+}
+pre code{background:none; padding:0; font-size:inherit}
+
+.checklist{list-style:none; padding:0; gap:0}
+.checklist li{
+  display:grid;
+  grid-template-columns:22px 1fr;
+  gap:11px;
+  align-items:start;
+  padding:9px 0;
+  border-bottom:1px solid var(--rule);
+}
+.checklist li:last-child{border-bottom:0}
+.checklist li::before{
+  content:"";
+  width:15px; height:15px;
+  margin-top:4px;
+  border:1.5px solid var(--rule-hard);
+  border-radius:2px;
+  display:block;
+}
+.grouphead{
+  font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:10.5px; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--rust);
+  margin:26px 0 6px;
+}
+
+.kicker{
+  font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:10.5px; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3);
+  margin:0 0 6px;
+}
+
+footer{
+  grid-column:1/-1;
+  border-top:1px solid var(--rule-hard);
+  margin-top:24px;
+  padding-top:20px;
+  font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:11.5px;
+  color:var(--ink-3);
+  letter-spacing:.03em;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important; animation:none !important; scroll-behavior:auto !important}
+}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="shell">
+
+  <header class="mast">
+    <p class="eyebrow">Handoff / picking this up cold</p>
+    <h1>Dark Raiders Handoff</h1>
+    <p class="standfirst">Everything a fresh agent needs to work on a single-file extraction shooter with no build step, no dependencies, and no JavaScript runtime on the machine. Ordered by what costs you most if you get it wrong.</p>
+    <div class="chips">
+      <span class="chip">Build <b>v1.55</b></span>
+      <span class="chip">One file <b>11,340 lines</b></span>
+      <span class="chip">Maps <b>4</b></span>
+      <span class="chip">Dependencies <b>0</b></span>
+      <span class="chip hot">Runtime <b>browser only</b></span>
+    </div>
+  </header>
+
+  <nav class="rail" aria-label="Contents">
+    <p>Contents</p>
+    <ol>
+      <li><a href="#s0"><span>00</span>Sixty seconds</a></li>
+      <li><a href="#s1"><span>01</span>Scope boundary</a></li>
+      <li><a href="#s2"><span>02</span>Working with Daniel</a></li>
+      <li><a href="#s3"><span>03</span>Which document wins</a></li>
+      <li><a href="#s4"><span>04</span>How the file is laid out</a></li>
+      <li><a href="#s5"><span>05</span>Workflow rules</a></li>
+      <li><a href="#s6"><span>06</span>Verifying with no Node</a></li>
+      <li><a href="#s7"><span>07</span>Traps that cost time</a></li>
+      <li><a href="#s8"><span>08</span>What the sim can prove</a></li>
+      <li><a href="#s9"><span>09</span>Low extract rate</a></li>
+      <li><a href="#s10"><span>10</span>Where the build stands</a></li>
+      <li><a href="#s11"><span>11</span>A worked example</a></li>
+      <li><a href="#s12"><span>12</span>Session checklist</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section id="s0">
+      <div class="sec-head"><span class="sec-num">00</span><h2>The sixty-second version</h2></div>
+      <p class="lede">Dark Raiders is a single-player extraction shooter that lives entirely in one HTML file. Open it in a browser and it runs. A three-quarter overhead canvas renderer draws a flat top-down simulation. Ten-minute raids: loot, get out, keep what you carried.</p>
+      <p>Daniel is the designer and playtester. He does not write code.</p>
+      <p>You will do five things over and over:</p>
+      <ol>
+        <li>Read new flight-recorder data in <code>exports/</code> and act on it.</li>
+        <li>Build or fix something in <code>dark_raiders.html</code>.</li>
+        <li>Verify it with the browser harness, because there is no Node on this machine.</li>
+        <li>Bump the version, write a changelog entry in <code>DESIGN.md</code>, commit.</li>
+        <li>Report in bullet points with a play link at the top and the bottom.</li>
+      </ol>
+    </section>
+
+    <section id="s1">
+      <div class="sec-head"><span class="sec-num">01</span><h2>The scope boundary, and the most expensive mistake available</h2></div>
+      <p class="lede">This project is the 2.5D three-quarter-view version, and only that.</p>
+      <p>Daniel runs three separate Claude projects for Dark Raiders. This folder keeps the three-quarter top-down view. The other two are complete independent rewrites as a first-person shooter and a third-person shooter. They share no code and no assets.</p>
+
+      <div class="trap">
+        <span class="cost">Has happened four times</span>
+        <h4>Agents from the other projects write into this folder</h4>
+        <p>At various points a first-person raycaster, a WebGL renderer, a dream-state post-processing layer, and once a committed <code>v0.29: third person WebGL renderer</code> on master. Each incident cost a full working session in recovery.</p>
+      </div>
+
+      <ul>
+        <li>Never convert the renderer here. No WebGL, no raycaster, no 3D.</li>
+        <li>Never add an external library or a build step.</li>
+        <li>If you find 3D code in the working file, <strong>check <code>git log</code> first</strong>. Another agent may be actively committing, and reverting would destroy wanted work that simply landed in the wrong folder. Then park it on a branch, restore the canonical file, and tell Daniel.</li>
+        <li>The last known-clean line is branch <code>v2.5d</code>, tag <code>v2.5d-last-good</code>.</li>
+      </ul>
+    </section>
+
+    <section id="s2">
+      <div class="sec-head"><span class="sec-num">02</span><h2>Who you are working with</h2></div>
+      <p>Daniel is the designer and playtester. <strong>He does not write code, run commands, or read git terminology.</strong> Never ask him to. Ship finished builds; he plays them by clicking a link.</p>
+
+      <h3>How he wants to be spoken to</h3>
+      <p>He has been explicit about this, repeatedly. Follow it literally.</p>
+      <ul>
+        <li><strong>A play link at the top and the bottom of every message. Always.</strong></li>
+        <li><strong>Bullet points.</strong> Bottom line first, most important thing at the top.</li>
+        <li><strong>Succinct.</strong> He has said long descriptions waste his time.</li>
+        <li><strong>Sim numbers belong in the summary</strong>, not buried at the end.</li>
+        <li><strong>No em dashes or en dashes anywhere.</strong></li>
+        <li><strong>Never wait to ask.</strong> His words: "NEED YOU TO BE AUTONOMOUS SO NEVER 'WAIT TO ASK'".</li>
+        <li>When two of his requests conflict, <strong>the most recent one wins</strong>.</li>
+        <li>Own a mistake in one line and fix it. If a check found nothing, say so.</li>
+      </ul>
+
+      <h3>What he wants from the game</h3>
+      <p>From his own answers, kept because they are the standing brief:</p>
+      <ul>
+        <li>A raid should feel <strong>tense and frightening</strong>. Horror-adjacent, not a power fantasy.</li>
+        <li>The game is about <strong>risk versus greed</strong>.</li>
+        <li>Structure should be <strong>seasons or tiers</strong>.</li>
+        <li>He wants <strong>neutral characters</strong> in the world: traders, survivors.</li>
+        <li><strong>Losing a raid should be a real gut punch.</strong></li>
+        <li>His oldest complaint is <strong>maps feel samey</strong>. He wants handmade landmarks, themed districts, real interiors, weather and time variety.</li>
+        <li>Look: push <strong>brighter</strong>, and sprites further toward big-headed Toriyama styling.</li>
+        <li>His own playtest tags: "Extract too easy" and "Loot boring".</li>
+      </ul>
+    </section>
+
+    <section id="s3">
+      <div class="sec-head"><span class="sec-num">03</span><h2>The documents, and which one wins</h2></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Document</th><th>Location</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">DARK_RAIDERS_SPEC.md</td><td class="mono">Desktop</td><td><strong>Definitive.</strong> Supersedes everything else where they conflict.</td></tr>
+            <tr><td class="mono">CLAUDE.md</td><td class="mono">project root</td><td>Working rules for this folder. Read every session.</td></tr>
+            <tr><td class="mono">DESIGN.md</td><td class="mono">project root</td><td>Pillars, systems, config, changelog, telemetry, known limits. 861 lines.</td></tr>
+            <tr><td class="mono">HANDOFF.md</td><td class="mono">project root</td><td>This document.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Two mandates from the spec you must not violate:</p>
+
+      <div class="rule-card">
+        <p class="quote">Operate with high autonomy. The developer may be unreachable for a day or more at a time. Do not block waiting on approval. Do not maintain an open-questions list. Where this spec is silent or ambiguous, make the call using your best judgment and move forward.</p>
+        <p class="src">SPEC / AUTONOMY MANDATE</p>
+      </div>
+
+      <div class="rule-card">
+        <p class="quote">Map designs are to be built from your own design knowledge and judgment. Do not attempt to source, datamine, extract, or import proprietary map files, geometry, textures, or asset data from any commercial game.</p>
+        <p class="src">SPEC / ASSET SOURCING</p>
+      </div>
+
+      <p>The sourcing rule has been tested in practice. Daniel once asked for a map that "perfectly mimics" a specific commercial game's map. The right answer was to cite his own spec, decline to copy it, and deliver a measured rebuild designed from what that kind of place actually is. He accepted that.</p>
+      <p>Tone touchstones from the spec: <strong>Chrono Trigger</strong> for viewpoint, <strong>Sea of Stars</strong> for readable verticality, <strong>Super Animal Royale</strong> for top-down shooter feel, <strong>Zero Sievert</strong> for the grimy extraction loop.</p>
+    </section>
+
+    <section id="s4">
+      <div class="sec-head"><span class="sec-num">04</span><h2>How the file is laid out</h2></div>
+      <p>The whole game sits inside a single <code>(function(){ 'use strict'; ... })()</code>, so <strong>nothing is on <code>window</code></strong>. That matters for testing.</p>
+      <p>Navigate by the banner comments. <code>grep -n "^// ={10,}" dark_raiders.html</code> prints the table of contents:</p>
+      <pre><code>config          data            WEAR            profile
+contracts       audio           VOICES          utils
+map             fixed maps      COLD STORAGE    TYPE
+geometry        PARLEY          WEAK POINTS     YOUR BODY
+raid build      THE SEAL        WINDFALLS       COOPERATION
+THE LISTENER    THE PEDDLER     THE STRAY       WILDLIFE
+input           gamepad         throwables      sim helpers
+hotbar          player update   bot player      enemies
+end of run      THE TERMS       the season      sim runner
+2D renderer     HUD             tuning panel    undercroft
+main loop       hub UI          wiring          boot</code></pre>
+
+      <h3>The layer split. Do not blur it</h3>
+      <ul>
+        <li><strong>Simulation, AI, collision and line of sight run on flat top-down coordinates.</strong> No height exists there.</li>
+        <li><strong>Rendering is a separate layer:</strong> a y-sorted painter's pass, fog, lighting, and the HUD on top.</li>
+        <li><strong>Elevation is a pure render lift.</strong> A platform's perimeter is an ordinary wall with gaps where ramps are. This is why the game can have four terraces without a 3D engine.</li>
+      </ul>
+
+      <h3>Systems worth knowing before you edit</h3>
+      <ul>
+        <li><strong>Maps are fixed and hand-authored.</strong> <code>FIXED_MAPS</code> holds four definitions, compiled by <code>buildFixedMap(def)</code>. The procedural generator is gone.</li>
+        <li><strong>Visibility</strong> is a raycast polygon: <code>buildVisPoly</code>, <code>losClear</code>, <code>canSee</code>, <code>rayHit</code>. Fog is painted with <code>destination-out</code>.</li>
+        <li><strong>Navigation</strong> is A* on a 16-unit grid: <code>buildNav</code>, <code>navPath</code>, <code>navSeek</code>.</li>
+        <li><strong>The bot sim</strong> is headless: <code>simStep</code>, <code>runSim</code>, <code>__simBatch</code>, fixed dt of 0.15.</li>
+        <li><strong>Audio</strong> is WebAudio from scratch: a Schroeder reverb of four comb delays, stereo panning, per-kind machine voices.</li>
+        <li><strong>Typography</strong> goes through one scale. Never write a raw font string; use <code>FS(TYPE.micro|label|head|title|huge)</code>.</li>
+      </ul>
+
+      <div class="trap">
+        <span class="cost">Holds his real progress</span>
+        <h4>The storage key is <code>salvagerun:profile</code></h4>
+        <p>Never change it without a migration. Note that Chrome treats every <code>file://</code> document as one origin, so a stale copy of the game in another folder shares the same storage.</p>
+      </div>
+    </section>
+
+    <section id="s5">
+      <div class="sec-head"><span class="sec-num">05</span><h2>Workflow rules</h2></div>
+      <ol>
+        <li><strong>Data before changes.</strong> Tuning comes from flight-recorder exports. One batch per feedback cycle, each change with a one-line reason. New features are welcome unprompted, he asked for that explicitly, but balance changes need data.</li>
+        <li><strong>One canonical file.</strong> Overwrite <code>dark_raiders.html</code> in place. Never create <code>dark_raiders_v2.html</code>. Git history is the version trail.</li>
+        <li><strong>Version discipline, every build.</strong> Bump <code>var VER</code> near the top; it flows into all three visible strings automatically. Add a <code>DESIGN.md</code> entry. Commit as <code>vX.Y: one-line summary</code> on <code>master</code>.</li>
+        <li><strong>Verify before done.</strong> Do not report a build ready if it has not passed.</li>
+        <li><strong>Rollback on request.</strong> "Revert" means revert or checkout of the prior commit, then re-verify.</li>
+        <li><strong>Feel is his call.</strong> The bot sim measures balance, not fun.</li>
+      </ol>
+
+      <h3>Changelog style</h3>
+      <p>Entries are long-form and explain the why, including what was measured and what was not. Every entry ends with an explicit <strong>"Not verified: ..."</strong> line naming the thing only a human in the chair can judge. Keep that convention. It is the single most useful thing in the document.</p>
+    </section>
+
+    <section id="s6">
+      <div class="sec-head"><span class="sec-num">06</span><h2>Verifying with no Node on the machine</h2></div>
+      <p class="lede">There is no JavaScript runtime installed. <code>node --check</code> cannot run. The browser is the runtime. Say so plainly in every report.</p>
+
+      <h3>The harness</h3>
+      <p><code>tools/</code> holds four PowerShell scripts. They persist across sessions; use them rather than rebuilding your own.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Script</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">tools/mkfixture.ps1</td><td>Builds <code>tools/fixture.html</code>: the real game with <code>window.__*</code> test hooks injected at the boot banner. <strong>Rebuild after every edit.</strong></td></tr>
+            <tr><td class="mono">tools/serve.ps1</td><td>Static file server. <code>-Root &lt;path&gt; -Port &lt;n&gt;</code>.</td></tr>
+            <tr><td class="mono">tools/collector.ps1</td><td>Telemetry sink. The game POSTs each run and it lands in <code>exports/</code>.</td></tr>
+            <tr><td class="mono">tools/capture.ps1</td><td>Image sink. The page POSTs a base64 PNG so you can actually look at a frame.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Port</th><th>Serving</th></tr></thead>
+          <tbody>
+            <tr><td class="num">8802</td><td><strong>Daniel's play link:</strong> <code>http://localhost:8802/dark_raiders.html</code></td></tr>
+            <tr><td class="num">8800</td><td>The <code>tools</code> folder, for <code>fixture.html</code>. Separate origin keeps test writes off his real profile.</td></tr>
+            <tr><td class="num">8799</td><td>Telemetry collector</td></tr>
+            <tr><td class="num">8779</td><td>Image capture sink</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Check the servers are alive at the start of every session.</strong> They die when the machine or session restarts, and the first Daniel knows about it is "link doesn't work".</p>
+
+      <h3>The sequence</h3>
+      <ol>
+        <li>Edit <code>dark_raiders.html</code>.</li>
+        <li>Rebuild the fixture.</li>
+        <li>Load <code>http://localhost:8800/fixture.html</code>.</li>
+        <li>Call <code>__forceSize(1280,720)</code> first, or the canvas is zero-sized and <code>drawImage</code> throws.</li>
+        <li>For each of the four maps: <code>__prof().mapIx = n; __startRaid();</code> then step <code>__sim(dt)</code> and <code>__frame(dt)</code> for a few dozen frames.</li>
+        <li><strong>Assert <code>__state().drawErr</code> is null.</strong> The renderer catches per-entity faults so one bad entity does not kill the frame. A silent <code>drawErr</code> is a real bug a clean console will not show you.</li>
+        <li>Run <code>__simBatch(n)</code> for balance numbers. It blocks the main thread for roughly ten seconds per raid, so kick it off with <code>setTimeout</code> and poll a global.</li>
+      </ol>
+
+      <div class="trap">
+        <span class="cost">Shipped a dead build</span>
+        <h4>Verification must draw a frame</h4>
+        <p>v0.98 shipped completely dead. The version label is set on the line <em>before</em> the async profile load, so it read correctly on a build whose first frame threw. The exception happened inside a <code>requestAnimationFrame</code> callback, and <strong>the browser pane suspends rAF while hidden</strong>, so the console stayed empty too. Both available signals were structurally incapable of seeing the failure.</p>
+        <p>Checking the version label and the console is not enough. Drive at least one hub frame and one raid frame, and assert nothing throws.</p>
+      </div>
+
+      <div class="trap">
+        <span class="cost">Looks like a regression, is not</span>
+        <h4>The browser pane suspends animation when hidden</h4>
+        <p>Anything time-based fails there and it looks exactly like a catastrophic regression. Verify simulation logic through the headless bot sim, which runs on a <code>while</code> loop and is unaffected. Anything that exists only in the render or input layer cannot be verified this way. Say so and flag it for his playtest.</p>
+      </div>
+    </section>
+
+    <section id="s7">
+      <div class="sec-head"><span class="sec-num">07</span><h2>Traps that have already cost time</h2></div>
+      <p>None of these are hypothetical. Each has bitten at least once.</p>
+
+      <div class="trap">
+        <span class="cost">Four times in one session</span>
+        <h4>PowerShell here-strings versus file line endings</h4>
+        <p>The file uses CRLF. A here-string passed through the tool layer often contains LF. A multi-line anchor therefore matches <strong>zero</strong> times and the edit silently fails, or worse, half-applies.</p>
+        <p>Use single-line anchors, or do line-index surgery with <code>ReadAllLines</code> / <code>RemoveRange</code> / <code>InsertRange</code>. Always assert the match count is exactly 1 before replacing.</p>
+      </div>
+
+      <div class="trap">
+        <span class="cost">Silent corruption</span>
+        <h4><code>.Replace()</code> replaces every occurrence</h4>
+        <p><code>drawHubWorld</code> duplicates the raid renderer almost verbatim, so render-pass anchors are routinely non-unique. Count matches first. Every time.</p>
+      </div>
+
+      <div class="trap">
+        <span class="cost">Interrupts his play session</span>
+        <h4>Never navigate or reload a tab he is playing in</h4>
+        <p>Read it with script instead. He plays in a <code>file://</code> tab or on 8802.</p>
+      </div>
+
+      <div class="trap">
+        <span class="cost">Ten fake files in his Downloads</span>
+        <h4>The fixture can leak into his telemetry</h4>
+        <p>The flight recorder POSTs to the collector and <strong>falls back to a silent browser download if the collector is down</strong>. A fixture that blocks one exit of that chain sends every probe run down the next exit. Ten files once appeared in his Downloads looking like real playtest data.</p>
+        <p><strong>Authenticate telemetry before tuning on it.</strong> The tells: <code>dur:0s</code>, <code>moved:0</code>, <code>shots:0</code>, <code>killer:null</code>, or a killer of <code>test</code>. The profile header also differs, because the fixture runs on a different origin with its own localStorage.</p>
+      </div>
+
+      <div class="trap">
+        <span class="cost">A map 84% reachable</span>
+        <h4>Buildings need 90 units of clearance on every side</h4>
+        <p><code>makeBuilding</code> rolls doors onto <strong>one or two of its four walls at random</strong>. A building with 46 units of clearance on its north side seals itself entirely the moment the roll puts its only door there, and the interior becomes floor you can see and never reach.</p>
+        <p>Nothing within 90 units of anything else. The same applies one level down: a locked room inside a building needs clearance from that building's inner walls too.</p>
+      </div>
+
+      <div class="trap">
+        <span class="cost">1,297 unreachable cells</span>
+        <h4>Scatter props can seal a map</h4>
+        <p>A car 50 units wide dropped in a 70-unit doorway is a wall. The build now floods the finished nav grid and removes any wreck or ruin touching unreachable ground; authored geometry is never cut. If you add another kind of scatter prop, put it through the same guard.</p>
+      </div>
+
+      <div class="trap">
+        <span class="cost">Two versions, every raid</span>
+        <h4>Watch for a dangling <code>else</code></h4>
+        <p>The v1.55 crash was one. The raider draw was written as the <code>else</code> of the weak-point test, so every entity kind <em>without</em> weak points ran the raider path and threw on <code>e2.bag.length</code>.</p>
+        <p>It was worse than a missing nameplate. The throw skipped the <code>wc.restore()</code> that pairs with the deck lift, so <strong>every entity drawn after it slid upward for the rest of the frame</strong>. On a map whose top terrace lifts 132 units, that is the whole world jumping.</p>
+      </div>
+    </section>
+
+    <section id="s8">
+      <div class="sec-head"><span class="sec-num">08</span><h2>What the bot sim can and cannot prove</h2></div>
+      <p class="lede">This is the section most likely to make you draw a wrong conclusion, so it has real numbers behind it.</p>
+      <p>Extract rate is a binomial proportion, and the sim is noisier than almost any change you will make. Below: 20,000 simulated build comparisons per row, between two builds that are <strong>genuinely identical</strong>.</p>
+
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Raids per arm</th><th>Shows a 5+ point gap</th><th>Shows a 10+ point gap</th><th>Average false gap</th></tr></thead>
+          <tbody>
+            <tr><td class="num">30</td><td class="num bad">68.5%</td><td class="num bad">49.8%</td><td class="num">9.8 pts</td></tr>
+            <tr><td class="num">100</td><td class="num">50.4%</td><td class="num">15.5%</td><td class="num">5.3 pts</td></tr>
+            <tr><td class="num">200</td><td class="num">32.3%</td><td class="num">4.2%</td><td class="num">3.8 pts</td></tr>
+            <tr><td class="num">500</td><td class="num ok">10.5%</td><td class="num ok">0.1%</td><td class="num">2.4 pts</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Read the first row twice. <strong>Change nothing at all, run 30 raids against 30, and half the time you will see a ten point difference.</strong></p>
+
+      <p class="kicker">A real 10-point improvement, how often you catch it</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Raids per arm</th><th>Points the wrong way</th><th>Significant, unpaired</th><th>Paired: winner correct</th></tr></thead>
+          <tbody>
+            <tr><td class="num">30</td><td class="num bad">25.3%</td><td class="num bad">11.9%</td><td class="num">79.4%</td></tr>
+            <tr><td class="num">100</td><td class="num">8.7%</td><td class="num">30.8%</td><td class="num ok">95.1%</td></tr>
+            <tr><td class="num">200</td><td class="num ok">2.2%</td><td class="num">53.0%</td><td class="num ok">99.3%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>What to do about it</h3>
+      <ul>
+        <li><strong>Never compare two single sim runs.</strong> This mistake has already been made on this project.</li>
+        <li>The practical rule is not "run 373 raids". It is <strong>run the same seeds through both builds and ship the winner</strong>. The sign of a paired difference is right 95 percent of the time at 100 seeds and 99 percent at 200, far cheaper than chasing significance.</li>
+        <li>Paired testing needs <strong>seeded randomness, which the game does not have yet.</strong> There are 45 raw <code>Math.random()</code> calls. Seeding them is roughly four lines plus a mechanical sweep, and it unlocks honest A/B testing, raid replay, and golden-fixture regression tests. It is the top open item.</li>
+        <li>Report the <strong>flips</strong>, not just the rate. "37 of 500 seeds flipped from death to extract" names the cases to go and look at.</li>
+        <li><strong>The bot is not Daniel.</strong> It does not loot greedily the way a player does. Treat its output as guardrails, not as a difficulty target.</li>
+        <li>Guard any telemetry target with a second metric. An extract rate that rises because the bot learned to rat the nearest exit with nothing reads as success in the data and as boredom in the chair.</li>
+      </ul>
+    </section>
+
+    <section id="s9">
+      <div class="sec-head"><span class="sec-num">09</span><h2>Diagnosing the thing he complains about most</h2></div>
+      <p>A low extract rate is three different problems wearing one number, and each has a different fingerprint.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Cause</th><th>Signature in the data</th><th>What to change</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Difficulty</strong></td><td>Deaths spread across the map at all loot values, short time to death, dying with unused consumables</td><td>Time to kill, enemy damage, enemy count</td></tr>
+            <tr><td><strong>Legibility</strong></td><td>Deaths cluster at specific geometry, or right after committing to a route, or from threats never perceived</td><td>Telegraphing, audio cues, sight lines, alert feedback. <strong>Do not touch numbers</strong></td></tr>
+            <tr><td><strong>Economy</strong></td><td>Deaths cluster on high-value runs while low-value runs extract fine; kit value trending down over a campaign</td><td>Insurance, safety nets, sinks, the loot value curve</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>The single most diagnostic split is extract rate against loot value carried at time of death.</strong> Flat means difficulty. Rising death rate with loot value means the risk curve is working as intended. That field is not in the recorder yet. Adding it is cheap and it settles an argument that has been running for weeks.</p>
+      <p>On targets: Tarkov sits around 20 to 30 percent survival, but that is player-versus-player with full loot loss and a large anti-death-spiral apparatus. <strong>In a PvE game, death by bot at a 25 percent rate reads as the game cheating.</strong> The defensible shape is two rates: roughly 55 to 70 percent overall, with the highest-value zone deliberately near 35 to 45 so the deep push stays a real gamble.</p>
+    </section>
+
+    <section id="s10">
+      <div class="sec-head"><span class="sec-num">10</span><h2>Where the build stands</h2></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Map</th><th>Size</th><th>Identity</th><th>Reachable</th></tr></thead>
+          <tbody>
+            <tr><td><strong>DAM BATTLEGROUNDS</strong></td><td class="num">5200x4000</td><td>Nine zones stacked vertically; the crest is the one deliberately exposed crossing</td><td class="num">99.15%</td></tr>
+            <tr><td><strong>BURIED CITY</strong></td><td class="num">&mdash;</td><td>Desert ruins, the densest named ground in the game</td><td class="num ok">100.00%</td></tr>
+            <tr><td><strong>COLD STORAGE</strong></td><td class="num">4200x3400</td><td>Built with no open ground in it</td><td class="num ok">100.00%</td></tr>
+            <tr><td><strong>THE QUARRY</strong></td><td class="num">4600x3600</td><td>Five terraces, 132 units rim to floor, eight haul ramps, staggered</td><td class="num">99.22%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Recently shipped</h3>
+      <p>The Seal (a door too big to cut in one raid), gun wear and repair, machines that cooperate, The Terms, machine voices, weather that turns mid-raid, The Listener, your body stays where you fell, The Stray, scopes, weak points, armour tiers, contracts paying in gear, emotes and parley, bushes you can hide in, seasons.</p>
+
+      <h3>Open, roughly in order of value</h3>
+      <ol>
+        <li><strong>Seed the randomness.</strong> Unlocks paired A/B, replay, and regression fixtures. Cheap.</li>
+        <li><strong>Paired-seed A/B at 200 shared seeds</strong>, ship the winner. Retires the 30-raid comparison entirely.</li>
+        <li><strong>Loot value at death in the recorder.</strong> One field; settles the difficulty versus legibility versus economy question.</li>
+        <li><strong>Index the wall segments.</strong> <code>rayHit</code> is a linear scan over every segment in the map, roughly 2,300 on the dam. <code>segsNear</code> already fixes this for the visibility polygon but is applied nowhere else, and <code>G.vseg</code> is the full list plus smoke rather than a narrowed set. A uniform grid at 128 to 192 units benchmarks at 16x on total ray work, 103x on bullet rays, and it is provably exact. A comment in the file claiming <code>vseg</code> caches only walls near the player is <strong>stale and wrong</strong>.</li>
+        <li><strong>Bake the light falloff.</strong> Radial gradients are built inside the frame loop, one per light per frame. Baking them measures about 19x.</li>
+        <li><strong>Small hardening.</strong> No <code>visibilitychange</code> handler, so every tab return simulates a clamped 50ms of phantom time. No canvas context-loss handler, so a GPU memory event blanks the game permanently with no recovery.</li>
+      </ol>
+
+      <h3>Deliberately not doing</h3>
+      <p>No OffscreenCanvas worker, no atlas rebuild, no dirty rectangles, no quadtree, no structure-of-arrays rewrite, and <strong>no splitting the file</strong>. At 11,340 lines it is inside the proven band for single-file projects, and a build step would reintroduce exactly the toolchain rot the single file exists to avoid.</p>
+      <p>A fixed-timestep accumulator would make the played game and the simulated game identical and is structurally the right answer, but it touches every rendered entity and <strong>will change how movement feels</strong>. Do it only with a real playtest cycle budgeted for feel alone.</p>
+
+      <h3>His outstanding complaints</h3>
+      <ul>
+        <li>"raiders should drop better loot"</li>
+        <li>"not enough enemies, boring, looting"</li>
+        <li>Wrecked cars read as suitcases from directly overhead rather than as vehicles</li>
+      </ul>
+    </section>
+
+    <section id="s11">
+      <div class="sec-head"><span class="sec-num">11</span><h2>A worked example of the standard you are held to</h2></div>
+      <p>Daniel reported: <em>"pushing the thing to start extraction process isn't working."</em></p>
+      <p>That was <strong>four</strong> separate bugs, and finding only the first would have left him still unable to extract.</p>
+      <ol>
+        <li>Calling extraction takes <strong>1.6 seconds of held E</strong>, and nothing on screen said so. A crate gets a labelled prompt and a filling progress bar; the way out of the raid had neither, so a tap on E was indistinguishable from a dead button.</li>
+        <li>A container within 46 units <strong>ate the keypress outright</strong>. Measured: 3 containers sat inside dam extraction rings every single raid, so those points could never be called, ever.</li>
+        <li>A closed extraction point was <strong>completely silent</strong>. No message, no sound, no refusal.</li>
+        <li>All three places that draw a zone coloured it by "the last zone you walked into" rather than by whether it was open, so a <strong>closed point painted itself teal and captioned itself EXTRACTION</strong>.</li>
+      </ol>
+      <p>The lesson: when he reports something, reproduce it from the code, then keep looking after you find the first cause. His reports are accurate and usually understated.</p>
+    </section>
+
+    <section id="s12">
+      <div class="sec-head"><span class="sec-num">12</span><h2>Session checklist</h2></div>
+
+      <p class="grouphead">At the start</p>
+      <ul class="checklist">
+        <li>Read <code>CLAUDE.md</code>, <code>DESIGN.md</code>, and the spec.</li>
+        <li>Confirm the working file has no 3D code in it.</li>
+        <li>Start the servers on 8802, 8800 and 8799, and confirm they respond.</li>
+        <li>Check <code>exports/</code> for files without a <code>consumed-</code> prefix, and check his Downloads. Authenticate them before using them.</li>
+      </ul>
+
+      <p class="grouphead">Before reporting a build ready</p>
+      <ul class="checklist">
+        <li>Fixture rebuilt from the current file.</li>
+        <li>All four maps build, step, and draw with <code>drawErr</code> null.</li>
+        <li><code>VER</code> bumped.</li>
+        <li><code>DESIGN.md</code> entry written, including an explicit "Not verified" line.</li>
+        <li>Committed on <code>master</code> as <code>vX.Y: summary</code>.</li>
+        <li>Play link confirmed to serve the new version number.</li>
+        <li>Consumed telemetry renamed with a <code>consumed-</code> prefix.</li>
+      </ul>
+
+      <p class="grouphead">In the report to Daniel</p>
+      <ul class="checklist">
+        <li>Play link at the top and the bottom.</li>
+        <li>Bullet points, bottom line first.</li>
+        <li>Sim numbers in the summary.</li>
+        <li>No em dashes or en dashes.</li>
+        <li>Say plainly what could not be verified and what he should watch for.</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer>
+    Dark Raiders / 2.5D build / handoff written at v1.55
+  </footer>
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.rail a'));
+  var map = {};
+  links.forEach(function(a){
+    var el = document.querySelector(a.getAttribute('href'));
+    if(el) map[a.getAttribute('href').slice(1)] = a;
+  });
+  if(!('IntersectionObserver' in window)) return;
+  var seen = {};
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ seen[e.target.id] = e.isIntersecting ? e.intersectionRatio : 0; });
+    var best=null, bestV=0;
+    Object.keys(seen).forEach(function(id){ if(seen[id] > bestV){ bestV = seen[id]; best = id; } });
+    links.forEach(function(a){ a.classList.remove('on'); });
+    if(best && map[best]) map[best].classList.add('on');
+  }, {rootMargin:'-10% 0px -70% 0px', threshold:[0,.25,.5,1]});
+  document.querySelectorAll('section[id]').forEach(function(s){ io.observe(s); });
+})();
+</script>
