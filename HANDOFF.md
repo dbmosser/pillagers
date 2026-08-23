@@ -159,6 +159,7 @@ Entries in `DESIGN.md` are long-form and explain the *why*, including what was m
 
 | Script | What it does |
 |---|---|
+| `tools/start-servers.ps1` | **Run this first, every session.** Starts everything below that is not already running and prints what is listening. Safe to re-run. |
 | `tools/mkfixture.ps1` | Builds `tools/fixture.html`: the real game with `window.__*` test hooks injected at the boot banner. **Rebuild after every edit.** |
 | `tools/serve.ps1` | Static file server. `-Root <path> -Port <n>`. |
 | `tools/collector.ps1` | Telemetry sink on 8799. The game POSTs each run and it lands in `exports/`. |
@@ -173,7 +174,12 @@ Entries in `DESIGN.md` are long-form and explain the *why*, including what was m
 | 8799 | Telemetry collector |
 | 8779 | Image capture sink |
 
-Start them in the background. **Check they are alive at the start of every session** — they die when the machine or session restarts, and the first Daniel knows about it is "link doesn't work".
+**Check they are alive at the start of every session.** They die when the machine or session restarts, and the first Daniel knows about it is "link doesn't work". This has already cost him a broken link twice in one day. `tools/start-servers.ps1` does the whole job and is safe to re-run.
+
+Two traps if you ever launch these yourself rather than using that script. Both fail **silently**, reporting that the server started and then that it is down:
+
+- **Do not name a PowerShell function parameter `$Args`.** It is an automatic variable, the parameter never binds, and the server launches with no root and no port.
+- **Quote every path explicitly.** They all contain a space, in "dark raiders", and `Start-Process` does not reliably quote array elements.
 
 ### The verification sequence
 
@@ -356,7 +362,7 @@ The lesson: when he reports something, reproduce it from the code, then keep loo
 
 - [ ] Read `CLAUDE.md`, `DESIGN.md`, and the spec.
 - [ ] Confirm the working file has no 3D code in it.
-- [ ] Start the servers on 8802, 8800, 8799, and confirm they respond.
+- [ ] Run `tools/start-servers.ps1` and confirm all three report OK.
 - [ ] Check `exports/` for files without a `consumed-` prefix, and check his Downloads. Authenticate them before using them.
 
 **Before reporting a build ready:**

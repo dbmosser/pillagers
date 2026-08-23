@@ -576,6 +576,7 @@ main loop       hub UI          wiring          boot</code></pre>
         <table>
           <thead><tr><th>Script</th><th>What it does</th></tr></thead>
           <tbody>
+            <tr><td class="mono">tools/start-servers.ps1</td><td><strong>Run this first, every session.</strong> Starts everything below that is not already running and prints what is listening. Safe to re-run.</td></tr>
             <tr><td class="mono">tools/mkfixture.ps1</td><td>Builds <code>tools/fixture.html</code>: the real game with <code>window.__*</code> test hooks injected at the boot banner. <strong>Rebuild after every edit.</strong></td></tr>
             <tr><td class="mono">tools/serve.ps1</td><td>Static file server. <code>-Root &lt;path&gt; -Port &lt;n&gt;</code>.</td></tr>
             <tr><td class="mono">tools/collector.ps1</td><td>Telemetry sink. The game POSTs each run and it lands in <code>exports/</code>.</td></tr>
@@ -595,7 +596,16 @@ main loop       hub UI          wiring          boot</code></pre>
           </tbody>
         </table>
       </div>
-      <p><strong>Check the servers are alive at the start of every session.</strong> They die when the machine or session restarts, and the first Daniel knows about it is "link doesn't work".</p>
+      <div class="trap">
+        <span class="cost">A broken link, twice in a day</span>
+        <h4>Check the servers are alive at the start of every session</h4>
+        <p>They die when the machine or session restarts, and the first Daniel knows about it is "link doesn't work". <code>tools/start-servers.ps1</code> does the whole job and is safe to re-run.</p>
+        <p>Two traps if you ever launch these yourself instead. Both fail <strong>silently</strong>, reporting that the server started and then that it is down:</p>
+        <ul>
+          <li><strong>Do not name a PowerShell function parameter <code>$Args</code>.</strong> It is an automatic variable, the parameter never binds, and the server launches with no root and no port.</li>
+          <li><strong>Quote every path explicitly.</strong> They all contain a space, in "dark raiders", and <code>Start-Process</code> does not reliably quote array elements.</li>
+        </ul>
+      </div>
 
       <h3>The sequence</h3>
       <ol>
@@ -791,7 +801,7 @@ main loop       hub UI          wiring          boot</code></pre>
       <ul class="checklist">
         <li>Read <code>CLAUDE.md</code>, <code>DESIGN.md</code>, and the spec.</li>
         <li>Confirm the working file has no 3D code in it.</li>
-        <li>Start the servers on 8802, 8800 and 8799, and confirm they respond.</li>
+        <li>Run <code>tools/start-servers.ps1</code> and confirm all three report OK.</li>
         <li>Check <code>exports/</code> for files without a <code>consumed-</code> prefix, and check his Downloads. Authenticate them before using them.</li>
       </ul>
 
