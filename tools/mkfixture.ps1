@@ -1,9 +1,12 @@
-param([string]$Root = 'C:\Users\User1\Desktop\dark raiders')
+param([string]$Root = 'C:\Users\User1\Desktop\dark raiders',[string]$Src='',[string]$Dst='')
 # Builds tools\fixture.html: the game with a set of window.__* test hooks
 # injected at the boot banner, so a headless check can drive the real code.
 # Rebuild it after EVERY edit to dark_raiders.html, then verify against it.
-$src = Join-Path $Root 'dark_raiders.html'
-$dst = Join-Path $Root 'tools\fixture.html'
+# -Src and -Dst let a fixture be built from an OLD revision of the game, which is how
+# a paired A/B is run: git show <rev>:dark_raiders.html to a file, build a second
+# fixture from it, then put the same seed list through both and compare per seed.
+$src = if($Src){ $Src } else { Join-Path $Root 'dark_raiders.html' }
+$dst = if($Dst){ $Dst } else { Join-Path $Root 'tools\fixture.html' }
 $needle = '// ================================================================ boot'
 # Only names that exist in the 2.5D source. An object literal naming a missing
 # function throws at definition time and silently kills every hook after it,

@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.56';
+var VER='1.57';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -3131,9 +3131,80 @@ function rayHit(px,py,dx,dy,segs,maxT){
   }
   return best;
 }
+// ---------------------------------------------------------------- segment index
+// rayHit was a linear scan over every wall segment on the map, and the map has 2,464
+// of them on the dam. Measured on v1.56 before this existed:
+//   updateEnts 6.34ms of a 6.62ms sim step, against 1.15ms for the entire renderer
+//   a 500 unit sight line genuinely needs 11 of the 2,464 segments. 0.4 percent.
+//   a 200 unit sight line, which is most of what the AI asks for, needs 1.
+// So better than 99 percent of every ray was testing geometry that could not possibly
+// be in the way. This is the thing gating "not enough enemies": the renderer has ample
+// headroom and the machines do not.
+// A uniform grid is the right structure here because the segments never move. Each is
+// filed into every cell its bounding box touches, once, at map build. A query returns
+// every segment whose box overlaps the query box, which is a SUPERSET of the true
+// intersectors, so the answer rayHit gives is bit for bit the one it gave before. This
+// is an exact optimisation, not an approximation, and that claim is testable now that
+// raids are seeded: the same 60 seeds must produce the same 60 outcomes.
+var SEG_CELL=160;
+function buildSegGrid(segs,w,h){
+  var cell=SEG_CELL,cols=Math.max(1,Math.ceil(w/cell)),rows=Math.max(1,Math.ceil(h/cell));
+  var cells=new Array(cols*rows),i,x,y;
+  for(i=0;i<segs.length;i++){
+    var s=segs[i];
+    var x0=Math.floor(Math.min(s.x1,s.x2)/cell),x1=Math.floor(Math.max(s.x1,s.x2)/cell);
+    var y0=Math.floor(Math.min(s.y1,s.y2)/cell),y1=Math.floor(Math.max(s.y1,s.y2)/cell);
+    x0=clamp(x0,0,cols-1); x1=clamp(x1,0,cols-1); y0=clamp(y0,0,rows-1); y1=clamp(y1,0,rows-1);
+    for(y=y0;y<=y1;y++) for(x=x0;x<=x1;x++){
+      var k=y*cols+x; if(!cells[k]) cells[k]=[]; cells[k].push(s);
+    }
+  }
+  return {cell:cell,cols:cols,rows:rows,cells:cells,segs:segs,stamp:0};
+}
+// One scratch array, reused, because allocating a result per ray would hand back in
+// garbage collection most of what the index saves. Safe only because the single
+// consumer below finishes with it inside the same call and nothing re-enters.
+var _segOut=[];
+function segsBox(gr,x0,y0,x1,y1){
+  var cell=gr.cell;
+  var cx0=clamp(Math.floor(x0/cell),0,gr.cols-1),cx1=clamp(Math.floor(x1/cell),0,gr.cols-1);
+  var cy0=clamp(Math.floor(y0/cell),0,gr.rows-1),cy1=clamp(Math.floor(y1/cell),0,gr.rows-1);
+  _segOut.length=0;
+  // Single cell is the overwhelmingly common case for short AI sight lines, and it
+  // needs no duplicate check at all because a segment is filed once per cell.
+  if(cx0===cx1&&cy0===cy1){
+    var b0=gr.cells[cy0*gr.cols+cx0];
+    if(b0) for(var q=0;q<b0.length;q++) _segOut.push(b0[q]);
+    return _segOut;
+  }
+  // A segment spanning several cells would otherwise be returned several times, which
+  // is harmless to the answer but is wasted work. Stamped rather than cleared so the
+  // dedupe costs nothing per query.
+  var st=++gr.stamp;
+  for(var y=cy0;y<=cy1;y++) for(var x=cx0;x<=cx1;x++){
+    var b=gr.cells[y*gr.cols+x]; if(!b) continue;
+    for(var i=0;i<b.length;i++){ var s=b[i]; if(s._st===st) continue; s._st=st; _segOut.push(s); }
+  }
+  return _segOut;
+}
+// The bounding box of a ray of known reach, which is the tightest exact bound there is
+// for one. Used by the handful of callers that raycast against the map directly.
+function rayHitG(px,py,dx,dy,maxT){
+  var qx=px+dx*maxT,qy=py+dy*maxT;
+  var segs=(G&&G.grid)?segsBox(G.grid,Math.min(px,qx),Math.min(py,qy),Math.max(px,qx),Math.max(py,qy)):G.map.segs;
+  return rayHit(px,py,dx,dy,segs,maxT);
+}
 function losClear(ax,ay,bx,by,segs){
   var dx=bx-ax,dy=by-ay,d=Math.sqrt(dx*dx+dy*dy);
   if(d<1) return true; dx/=d; dy/=d;
+  // The grid is consulted ONLY when the caller handed over the map's own segment list
+  // by identity. refreshVseg sets G.vseg to exactly that object when there is no smoke
+  // on the map, and to a fresh concatenation when there is, so a smoked raid falls back
+  // to the linear scan automatically and a caller passing an already filtered list is
+  // never quietly diverted onto different geometry. That identity test is the whole
+  // safety argument for this being a drop in.
+  if(G&&G.grid&&G.grid.segs===segs)
+    segs=segsBox(G.grid,(ax<bx?ax:bx),(ay<by?ay:by),(ax<bx?bx:ax),(ay<by?by:ay));
   return rayHit(ax,ay,dx,dy,segs,d-2)>=d-2;
 }
 // Only the segments a ray of this reach could possibly touch. A ray is capped at
@@ -3473,7 +3544,59 @@ function inWater(x,y){
   if(!G||!G.map) return false;
   return inWaterMap(G.map,x,y);
 }
+// ---------------------------------------------------------------- wall index
+// The segment index above made line of sight 19 to 47 times cheaper and barely moved
+// the frame, which is how this was found. Bisecting updateEnts by entity kind gave
+// sentry 116us, crawler 119us, snitch 111us, raider 108us: near identical costs for
+// four completely different behaviours, which can only mean shared per body code.
+// It is this function. It tested all 606 walls on the dam for every body every frame
+// at 37.8us a call, and a body of radius 11 had ZERO walls within 40 units of it.
+// Same structure as the segment grid and the same argument: walls never move, so each
+// is filed once into every cell its rect touches.
+// Two things this needs that the segment version does not.
+// First, collide MUTATES the body as it goes, so a later wall sees the position after
+// an earlier push. Order therefore matters, and the query sorts its result back into
+// original wall order so the resolution sequence is the one it always was.
+// Second, because the body moves during the call, the query box has to cover where it
+// might END UP, not just where it started. A push places a body exactly r from a
+// surface, so displacement within one call is on the order of r; the pad below is 96
+// units against a body radius of 11, which is several times the worst case. That is an
+// argument, not a proof, so the equivalence is also checked the hard way: 60 seeds
+// through the old build and the new one must produce identical raids.
+var WALL_CELL=192, WALL_PAD=96;
+function buildWallGrid(walls,w,h){
+  var cell=WALL_CELL,cols=Math.max(1,Math.ceil(w/cell)),rows=Math.max(1,Math.ceil(h/cell));
+  var cells=new Array(cols*rows),i,x,y;
+  for(i=0;i<walls.length;i++){
+    var t=walls[i]; t._wi=i;
+    var x0=clamp(Math.floor(t.x/cell),0,cols-1),x1=clamp(Math.floor((t.x+t.w)/cell),0,cols-1);
+    var y0=clamp(Math.floor(t.y/cell),0,rows-1),y1=clamp(Math.floor((t.y+t.h)/cell),0,rows-1);
+    for(y=y0;y<=y1;y++) for(x=x0;x<=x1;x++){
+      var k=y*cols+x; if(!cells[k]) cells[k]=[]; cells[k].push(t);
+    }
+  }
+  return {cell:cell,cols:cols,rows:rows,cells:cells,walls:walls,stamp:0};
+}
+var _wallOut=[];
+function wallsNear(gr,cxp,cyp,rad){
+  var cell=gr.cell,pad=rad+WALL_PAD;
+  var cx0=clamp(Math.floor((cxp-pad)/cell),0,gr.cols-1),cx1=clamp(Math.floor((cxp+pad)/cell),0,gr.cols-1);
+  var cy0=clamp(Math.floor((cyp-pad)/cell),0,gr.rows-1),cy1=clamp(Math.floor((cyp+pad)/cell),0,gr.rows-1);
+  _wallOut.length=0;
+  var st=++gr.stamp;
+  for(var y=cy0;y<=cy1;y++) for(var x=cx0;x<=cx1;x++){
+    var b=gr.cells[y*gr.cols+x]; if(!b) continue;
+    for(var i=0;i<b.length;i++){ var t=b[i]; if(t._ws===st) continue; t._ws=st; _wallOut.push(t); }
+  }
+  // Original order restored, because collide resolves in sequence and is not
+  // order independent. Almost always zero to six entries, so this is free.
+  if(_wallOut.length>1) _wallOut.sort(function(m,n){ return m._wi-n._wi; });
+  return _wallOut;
+}
 function collide(e,walls){
+  // Grid only when the caller handed over the map's own wall list by identity, so the
+  // hub, which keeps a separate list and has no grid, is never diverted.
+  if(G&&G.wgrid&&G.wgrid.walls===walls) walls=wallsNear(G.wgrid,e.x,e.y,e.r);
   var r=e.r;
   for(var i=0;i<walls.length;i++){
     var w=walls[i];
@@ -4512,7 +4635,7 @@ function buildRaid(sim){
     }
   }
   var termClock=(!sim&&hasTerm('window'))?0.66:1;
-  var g={sim:!!sim,seed:seed,seal:(sim?null:{x:G_SEAL_SPOT.x,y:G_SEAL_SPOT.y,gained:0}),
+  var g={sim:!!sim,seed:seed,grid:buildSegGrid(map.segs,WORLD_W,WORLD_H),wgrid:buildWallGrid(map.walls,WORLD_W,WORLD_H),seal:(sim?null:{x:G_SEAL_SPOT.x,y:G_SEAL_SPOT.y,gained:0}),
     nMach:N_SENTRY+N_CRAWLER,map:map,ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:Math.round(CFG.raidSec*termClock),paused:false,
     player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,
       // The sim wears a FIXED Scav Rig rather than whatever he happens to have
@@ -4950,7 +5073,7 @@ function doThrow(){
   // through the one rule the game is built on. The throw now stops at the first
   // wall in its path, a short way off the face so it detonates against cover
   // rather than inside it.
-  var wt=rayHit(p.x,p.y,ux,uy,G.map.segs,rngT),blocked=wt<rngT;
+  var wt=rayHitG(p.x,p.y,ux,uy,rngT),blocked=wt<rngT;
   // Never behind the thrower: the standoff shrinks when the wall is close, so a
   // throw into cover you are hugging still lands in front of you.
   if(blocked) rngT=Math.max(wt*0.6,wt-12);
@@ -6166,7 +6289,7 @@ function seekPoint(e,tx,ty,spd,dt){
     // first version hugged until the timer ran out every time and never
     // converged. A clear corridor plus being closer than we were is enough.
     var la=Math.atan2(ty-e.y,tx-e.x),probe=Math.min(d0,170);
-    if(rayHit(e.x,e.y,Math.cos(la),Math.sin(la),G.map.segs,probe)>=probe-1&&d0<(e.slideD||1e9)-4){ e.slideT=0; e.slideFlip=false; }
+    if(rayHitG(e.x,e.y,Math.cos(la),Math.sin(la),probe)>=probe-1&&d0<(e.slideD||1e9)-4){ e.slideT=0; e.slideFlip=false; }
     else{
       if(e.slideT<=0) e.slideFlip=true;   // timed out, so try the other way round next time
       var sa=Math.atan2(ty-e.y,tx-e.x)+(e.slideDir||1)*1.5708;
@@ -6189,8 +6312,8 @@ function seekPoint(e,tx,ty,spd,dt){
       // Choose the side with more room rather than a coin flip, so the detour
       // is usually the short way round the building instead of the long way.
       var ga=Math.atan2(ty-e.y,tx-e.x);
-      var lft=rayHit(e.x,e.y,Math.cos(ga-1.5708),Math.sin(ga-1.5708),G.map.segs,420);
-      var rgt=rayHit(e.x,e.y,Math.cos(ga+1.5708),Math.sin(ga+1.5708),G.map.segs,420);
+      var lft=rayHitG(e.x,e.y,Math.cos(ga-1.5708),Math.sin(ga-1.5708),420);
+      var rgt=rayHitG(e.x,e.y,Math.cos(ga+1.5708),Math.sin(ga+1.5708),420);
       e.slideDir=lft>rgt?-1:1;
       if(e.slideFlip){ e.slideDir=-e.slideDir; e.slideFlip=false; }
     }
@@ -6922,7 +7045,7 @@ function updateBullets(dt){
         wl=G.map.walls[w];
         if(sx>wl.x&&sx<wl.x+wl.w&&sy>wl.y&&sy<wl.y+wl.h){ inside=true; break; }
       }
-      var wallT=inside?0:rayHit(sx,sy,ux,uy,G.map.segs,trav);
+      var wallT=inside?0:rayHitG(sx,sy,ux,uy,trav);
       var lim=Math.min(trav,wallT);
       var steps=Math.max(1,Math.ceil(lim/BSTEP));
       for(var s=1;s<=steps&&!hit;s++){
