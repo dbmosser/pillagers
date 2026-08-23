@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.49';
+var VER='1.50';
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
@@ -639,6 +639,17 @@ function loadProfile(){
   return Promise.resolve();
 }
 // One line in the hub, because a body you forget about is a body that rots.
+// Where every seal stands, so coming back is a plan he makes in the Undercroft.
+function sealLines(){
+  var out=[];
+  for(var i=0;i<FIXED_MAPS.length;i++){
+    var R=sealRec(i);
+    if(R.cut<=0&&R.tier<=0) continue;
+    out.push(FIXED_MAPS[i].name+': seal tier '+(R.tier+1)+', '+
+      Math.round(R.cut)+' of '+sealNeed(R.tier)+' seconds cut.');
+  }
+  return out;
+}
 function bodyLine(){
   var B=P.body;
   if(!B||!B.items) return '';
@@ -2982,6 +2993,77 @@ function refreshVseg(){
 // it is what you read across a room to decide whether the trip is worth it. Any
 // code that replaces a container's contents has to recompute it, so both live
 // here rather than being open-coded at each site.
+// ==================================================================== THE SEAL
+// Nothing in this game ever gave you a reason to go back to a map except that it
+// was your turn to. Every raid started the same way and ended the same way, and
+// the map you were on was a backdrop rather than a place with a history.
+// The Seal is one heavy door per map that takes far longer to cut than a single
+// raid allows. Progress is PER MAP and it persists, so the dam remembers how far
+// through it you got, and the only way to make progress is to come back.
+// Two rules make it a decision rather than a chore:
+//   1. CUTTING IS LOUD. The same howl the Strongbox makes, for as long as you
+//      stand there, which means every Listener on the map and most of a district
+//      knows exactly where you are and that you are not moving.
+//   2. PROGRESS ONLY BANKS IF YOU WALK OUT. Cut for thirty seconds and die and
+//      you cut nothing. That is the greed pillar applied to time instead of loot.
+// Finishing it pays out and then reseals HARDER, so the reason to return never
+// runs out and the map has a ladder of its own.
+function sealRec(mi){
+  P.seals=P.seals||{};
+  if(!P.seals[mi]) P.seals[mi]={cut:0,tier:0,done:0};
+  return P.seals[mi];
+}
+function sealNeed(tier){ return 40+tier*25; }
+function sealHere(){
+  return sealRec(clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1));
+}
+// Fixed per map, derived from the map's own geometry so it is always the same
+// door in the same place: the far corner from the first authored spawn.
+function sealSpot(map,def){
+  var s0=def.spawns[0],best=null,bd=-1;
+  for(var i=0;i<def.landmarks.length;i++){
+    var L=def.landmarks[i],cx=L.x+L.w/2,cy=L.y+L.h/2;
+    var d=dist({x:cx,y:cy},s0);
+    if(d>bd){ bd=d; best={x:cx,y:cy}; }
+  }
+  if(!best) best={x:WORLD_W*0.5,y:WORLD_H*0.5};
+  // MUST be the same door in the same place every raid, so the candidate test
+  // uses the map DEFINITION only. Testing against the built wall list looked
+  // right and was not: furniture and interior partitions are rolled fresh each
+  // raid, so a spot that was clear last time can be blocked this time and the
+  // seal walks. Measured on COLD STORAGE, where it moved across four raids.
+  function defClear(x,y){
+    if(x<90||y<90||x>WORLD_W-90||y>WORLD_H-90) return false;
+    var q,W2;
+    for(q=0;q<def.walls.length;q++){
+      W2=def.walls[q];
+      if(x>W2.x-30&&x<W2.x+W2.w+30&&y>W2.y-30&&y<W2.y+W2.h+30) return false;
+    }
+    for(q=0;q<def.buildings.length;q++){
+      W2=def.buildings[q];
+      if(x>W2.x-30&&x<W2.x+W2.w+30&&y>W2.y-30&&y<W2.y+W2.h+30) return false;
+    }
+    for(q=0;q<(def.water||[]).length;q++){
+      W2=def.water[q];
+      if(x>W2.x&&x<W2.x+W2.w&&y>W2.y&&y<W2.y+W2.h) return false;
+    }
+    return true;
+  }
+  for(var r=60;r<=760;r+=40){
+    for(var a=0;a<16;a++){
+      var ang=a*Math.PI/8;
+      var x=best.x+Math.cos(ang)*r,y=best.y+Math.sin(ang)*r;
+      if(defClear(x,y)) return {x:x,y:y};
+    }
+  }
+  return {x:clamp(best.x,120,WORLD_W-120),y:clamp(best.y,120,WORLD_H-120)};
+}
+function sealPayout(tier){
+  var pool=WINDFALL_ELITE.slice(),loot=[];
+  var n=Math.min(pool.length,3+Math.floor(tier/2));
+  for(var i=0;i<n;i++) loot.push(pool.splice(ri(0,pool.length-1),1)[0]);
+  return loot;
+}
 // ================================================== WINDFALLS AND THE STRONGBOX
 // "ITS BORING. I JUST FIND JUNK" and "I SHOULD FIND TOP TIER LOOT EVERY RUN".
 // Raising the drop rates would only move where the floor is: within three raids
@@ -3147,6 +3229,7 @@ function packScatter(){
 // and the 34 percent noise penalty on the Breacher Plate all stop being flavour
 // the moment one of these wakes up.
 var LISTEN_R=760;
+var G_SEAL_SPOT={x:0,y:0};
 function mkListener(x,y){
   return {kind:'listener',x:x,y:y,r:14,
     hp:Math.round(120*CFG.eHp*seasonHp()),maxhp:Math.round(120*CFG.eHp*seasonHp()),
@@ -3678,6 +3761,11 @@ function buildRaid(sim){
       var gcw=mkCrawler(CP.x+rnd(-120,120),CP.y+rnd(-120,120)); gcw.camp=CP; ents.push(gcw);
     }
   }
+  // THE SEAL. Not a container: a door you cut at, in the same place every raid.
+  if(!sim){
+    var sq=sealSpot(map,FIXED_MAPS[mapIx]);
+    G_SEAL_SPOT=sq;
+  }
   // THE STRONGBOX goes wherever is most dangerous: inside a locked room if the
   // map has one, otherwise in an encampment, otherwise as far from any way out
   // as the map allows. Never anywhere convenient.
@@ -3718,7 +3806,8 @@ function buildRaid(sim){
     }
   }
   var termClock=(!sim&&hasTerm('window'))?0.66:1;
-  var g={sim:!!sim,nMach:N_SENTRY+N_CRAWLER,map:map,ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:Math.round(CFG.raidSec*termClock),paused:false,
+  var g={sim:!!sim,seal:(sim?null:{x:G_SEAL_SPOT.x,y:G_SEAL_SPOT.y,gained:0}),
+    nMach:N_SENTRY+N_CRAWLER,map:map,ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:Math.round(CFG.raidSec*termClock),paused:false,
     player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,
       // The sim wears a FIXED Scav Rig rather than whatever he happens to have
       // equipped. Raiders now carry armour, so a bare sim player was measuring a
@@ -5012,6 +5101,38 @@ function updatePlayer(dt){
       G.tel.doorsOpened=(G.tel.doorsOpened||0)+1;
       say(doorNear.name+' is open.'); blip('pick'); ping(p.x,p.y,340,false,false,'player','move');
     }
+  }
+  // THE SEAL. Hold E at the door and it cuts, loudly, for as long as you stand
+  // there. Progress is held on the RUN until you extract, so dying with thirty
+  // seconds cut means you cut nothing.
+  if(G.seal&&!G.seal.done){
+    var SR=sealHere(),sd=dist(p,G.seal);
+    G.nearSeal=(sd<70)?G.seal:null;
+    if(G.nearSeal&&keys['KeyE']&&!p.downed){
+      var need=sealNeed(SR.tier);
+      var have=SR.cut+G.seal.gained;
+      if(have<need){
+        G.seal.gained+=dt;
+        G.crowbarUp=0.25;
+        G.sealNoise=(G.sealNoise||0)+dt;
+        if(G.sealNoise>0.5){
+          G.sealNoise=0;
+          ping(G.seal.x,G.seal.y,620,false,false,'player','move');
+          if(!G.sim) sfx('alarm',G.seal.x,G.seal.y);
+        }
+        if(SR.cut+G.seal.gained>=need){
+          G.seal.done=1;
+          var loot=sealPayout(SR.tier);
+          var sc=setLoot(mkContainer(G.seal.x+rnd(-24,24),G.seal.y+rnd(20,40),'cache'),loot);
+          sc.cache=1; sc.time=1.2; G.containers.push(sc);
+          say('The seal is cut. Whatever ARC put behind it is yours if you live.');
+          label(G.seal.x,G.seal.y-26,'SEAL BROKEN','#ffd76a',0,true);
+          spark(G.seal.x,G.seal.y,'#ffd76a',40,420);
+        }
+      }
+      return;                       // cutting owns the key and your attention
+    }
+    if(!keys['KeyE']) G.sealNoise=0;
   }
   // The stall. While it is open E belongs to the panel and not to a crate under
   // your feet, and walking away closes it: you are never trapped in a menu with
@@ -6339,6 +6460,27 @@ function endRaid(how){
     lines.push('<span style="color:var(--rust)">You signed for '+Math.round(tPay*100)+
       '% and did not come back for it.</span>');
   }
+  // THE SEAL banks only if you walk out. Thirty seconds of cutting and a death
+  // is thirty seconds of nothing, which is the entire point of it.
+  if(G.seal&&G.seal.gained>0){
+    var SRC=sealHere();
+    if(how==='extract'){
+      SRC.cut+=G.seal.gained;
+      var needE=sealNeed(SRC.tier);
+      if(G.seal.done){
+        SRC.tier++; SRC.cut=0;
+        lines.push('<span style="color:var(--amber)">The seal on '+FIXED_MAPS[clamp(P.mapIx||0,0,FIXED_MAPS.length-1)].name+
+          ' is broken. It reseals harder: tier '+SRC.tier+' needs '+sealNeed(SRC.tier)+' seconds.</span>');
+      } else {
+        lines.push('<span style="color:var(--coolant)">Seal cut '+Math.round(SRC.cut)+
+          ' of '+needE+' seconds. Banked.</span>');
+      }
+      saveProfile();
+    } else {
+      lines.push('<span style="color:var(--rust)">'+Math.round(G.seal.gained)+
+        ' seconds of cutting, lost with you.</span>');
+    }
+  }
   if(how==='extract'){
     P.ext++;
     // Notoriety fades, slowly. Four clean extractions and one stall opens to you
@@ -7146,6 +7288,9 @@ function drawContS(ct){
       wc.fillStyle='#e6b4ff'; wc.fillText('ARC CACHE',ct.x,ct.y-lift-d2-26);
       wc.textAlign='left';
     }
+    if(ct.seal){
+      // drawn from the container pass so it y-sorts with everything else
+    }
     if(ct.strong&&!ct.opened){
       var spl=0.5+0.5*Math.sin(G.t*2.2);
       wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.34*spl;
@@ -7600,6 +7745,31 @@ function render2D(dt){
       wc.fillStyle='rgba(0,0,0,.55)'; wc.fillRect(ne.x-tw/2-4,ne.y-lift+5,tw+8,3);
       wc.fillStyle=hostile?'#e0483a':'#ffb02e'; wc.fillRect(ne.x-tw/2-4,ne.y-lift+5,(tw+8)*fw,3);
     }
+  }
+  // THE SEAL, in the world. A slab with a progress band cut into it.
+  if(G.seal){
+    var SW=G.seal,SRw=sealHere(),needW=sealNeed(SRw.tier);
+    var pctW=clamp((SRw.cut+SW.gained)/needW,0,1);
+    var swx=SW.x,swy=SW.y;
+    wc.fillStyle='rgba(10,8,6,.40)';
+    wc.beginPath(); wc.ellipse(swx,swy+4,30,11,0,0,6.2832); wc.fill();
+    wc.fillStyle=INK; rrF(swx-26,swy-52,52,56,4);
+    wc.fillStyle=SW.done?'#5a4a26':'#2f3844'; rrF(swx-24,swy-50,48,52,3);
+    wc.fillStyle=SW.done?'#8a7038':'#465262'; wc.fillRect(swx-24,swy-50,48,4);
+    wc.fillStyle='rgba(12,10,16,.6)'; wc.fillRect(swx-18,swy-40,36,3);
+    wc.fillRect(swx-18,swy-24,36,3);
+    // the cut so far, a bright band creeping up the slab
+    wc.fillStyle=SW.done?'#ffd76a':'#35d6c8';
+    wc.fillRect(swx-20,swy-6-44*pctW,40,Math.max(2,44*pctW));
+    wc.globalAlpha=0.5;
+    wc.fillStyle=SW.done?'#ffd76a':'#8fd0ff';
+    wc.fillRect(swx-20,swy-8-44*pctW,40,2);
+    wc.globalAlpha=1;
+    wc.textAlign='center'; wc.font=FS('700 10px "Titan One","Rubik",sans-serif');
+    wc.fillStyle=INK; wc.fillText(SW.done?'SEAL BROKEN':('THE SEAL  '+Math.round(pctW*100)+'%'),swx+1,swy-59);
+    wc.fillStyle=SW.done?'#ffd76a':'#8fd0ff';
+    wc.fillText(SW.done?'SEAL BROKEN':('THE SEAL  '+Math.round(pctW*100)+'%'),swx,swy-60);
+    wc.textAlign='left';
   }
   // Emote bubbles. A parley you cannot see happening is a dice roll, so every
   // hail, refusal and wave back gets a mark over the head that sent it.
@@ -8706,6 +8876,20 @@ function drawMapOverlay(){
     ctx.fillText(LM2.name,ox+(LM2.x+LM2.w/2)*sc,oy+(LM2.y+LM2.h/2)*sc+3);
     ctx.textAlign='left';
   }
+  // THE SEAL, always marked. It is the reason you came back.
+  if(G.seal){
+    var slx=ox+G.seal.x*sc,sly=oy+G.seal.y*sc;
+    var SRm=sealHere(),needM=sealNeed(SRm.tier);
+    var pctM=clamp((SRm.cut+G.seal.gained)/needM,0,1);
+    ctx.strokeStyle=G.seal.done?'#ffd76a':'#8fd0ff'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(slx,sly,12,0,6.2832); ctx.stroke();
+    ctx.strokeStyle=G.seal.done?'#ffd76a':'#35d6c8'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.arc(slx,sly,12,-1.5708,-1.5708+6.2832*pctM); ctx.stroke();
+    ctx.textAlign='center'; ctx.font=FS('700 9px "Titan One","Rubik",sans-serif');
+    ctx.fillStyle=G.seal.done?'#ffd76a':'#8fd0ff';
+    ctx.fillText(G.seal.done?'SEAL BROKEN':('SEAL '+Math.round(pctM*100)+'%'),slx,sly-16);
+    ctx.textAlign='left';
+  }
   // THE STRONGBOX. Marked from the start: it is not a secret, it is a dare.
   for(i=0;i<G.containers.length;i++){
     var sbm=G.containers[i];
@@ -9302,7 +9486,8 @@ function stashCounts(){
 // The roadmap lives in the game because he asked for it there. I edit this list
 // every build; DONE items rotate off as new ones land.
 var ROADMAP=[
-  ['NOW','A reason to go back to a map you already cleared'],
+  ['NOW','Gun condition and repair, so a favourite weapon wears out'],
+  ['DONE','THE SEAL: a door too big to cut in one raid, per map'],
   ['NEXT','Two raiders, one raid (a big one, not a quick one)'],
   ['DONE','Machines that answer a call and take roles: pin, flank, rush'],
   ['DONE','THE TERMS: sign for worse odds and ARC pays better'],
@@ -9578,6 +9763,13 @@ function renderHub(){
     wl.appendChild(row);
   });
   var cl=document.getElementById('contracts'); cl.innerHTML='';
+  (function(){
+    var sl=sealLines(); if(!sl.length) return;
+    var sh=document.createElement('div'); sh.className='hint';
+    sh.style.color='#8fd0ff';
+    sh.innerHTML='<b>'+sl.join('<br>')+'</b>';
+    cl.appendChild(sh);
+  })();
   (function(){
     var bl=bodyLine(); if(!bl) return;
     var bh=document.createElement('div'); bh.className='hint';
