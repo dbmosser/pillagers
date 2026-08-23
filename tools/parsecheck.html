@@ -1,0 +1,100 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Dark Raiders parse check</title>
+<style>
+  body{background:#14100e;color:#e8e0d4;font:14px/1.5 ui-monospace,Consolas,monospace;padding:18px}
+  h1{font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:#c8a24a;margin:0 0 14px}
+  .ok{color:#7fd48a} .bad{color:#e2564a} .dim{color:#8a8076}
+  pre{white-space:pre-wrap;margin:6px 0 18px}
+  td{padding:2px 14px 2px 0;vertical-align:top}
+</style>
+<h1>Dark Raiders parse check</h1>
+<p class="dim">This machine has no JavaScript runtime, so <code>node --check</code> cannot run.
+This is the substitute: it fetches a build, pulls the script out, and asks the browser's own
+parser to compile it without executing it. A build that fails here is dead on arrival and must
+never be reported as ready.</p>
+<p class="dim">Default target is <code>fixture.html</code> in this folder, which
+<code>tools/mkfixture.ps1</code> rebuilds from the game on every edit, so it is the same
+script the game runs. It is fetched same origin on purpose: the play server on 8802 sends no
+CORS headers, so fetching it from here fails silently and the page hangs on "checking".
+Add <code>?f=NAME.html</code> to check another file in this folder.</p>
+<div id="out">checking...</div>
+<script>
+// Brace, paren and bracket balance, skipping strings, both comment forms and regex
+// literals. An unbalanced count localises the fault far better than the parser message
+// does: V8 reports the error at the LAST line of the file when an early block is left
+// open, which points at the end of the IIFE and tells you nothing.
+function balance(src){
+  var i=0,n=src.length,line=1,par=0,cur=0,sq=0,prev='',firstNeg=null;
+  while(i<n){
+    var c=src[i],d=src[i+1];
+    if(c==='\n'){ line++; i++; continue; }
+    if(c==='/'&&d==='/'){ while(i<n&&src[i]!=='\n') i++; continue; }
+    if(c==='/'&&d==='*'){ i+=2; while(i<n&&!(src[i]==='*'&&src[i+1]==='/')){ if(src[i]==='\n') line++; i++; } i+=2; continue; }
+    if(c==='"'||c==="'"||c==='`'){ var q=c; i++;
+      while(i<n){ if(src[i]==='\\'){ i+=2; continue; } if(src[i]===q){ i++; break; } if(src[i]==='\n') line++; i++; }
+      continue; }
+    if(c==='/'&&/[=(,:[!&|?{};+\-*%~^<>]/.test(prev)){ i++;
+      while(i<n){ if(src[i]==='\\'){ i+=2; continue; }
+        if(src[i]==='['){ while(i<n&&src[i]!==']'){ if(src[i]==='\\') i++; i++; } }
+        if(src[i]==='/'){ i++; break; } if(src[i]==='\n') break; i++; }
+      continue; }
+    if(c==='(') par++; else if(c===')'){ par--; if(par<0&&!firstNeg) firstNeg='paren went negative at line '+line; }
+    else if(c==='{') cur++; else if(c==='}'){ cur--; if(cur<0&&!firstNeg) firstNeg='brace went negative at line '+line; }
+    else if(c==='[') sq++; else if(c===']'){ sq--; if(sq<0&&!firstNeg) firstNeg='bracket went negative at line '+line; }
+    if(!/\s/.test(c)) prev=c;
+    i++;
+  }
+  return {par:par,cur:cur,sq:sq,lines:line,firstNeg:firstNeg};
+}
+// Every duplicated top level declaration. This is the single most likely way an edit
+// breaks this file: an anchored insert that includes its own anchor line leaves the
+// original behind, so a function is declared twice and one opening brace is orphaned.
+// It happened on v1.58 with spotIn and cost a build.
+function dupes(src){
+  var re=/^(function\s+[A-Za-z0-9_$]+\s*\()/gm,m,seen={},out=[];
+  var lines=src.split('\n');
+  for(var i=0;i<lines.length;i++){
+    var t=lines[i].match(/^function\s+([A-Za-z0-9_$]+)\s*\(/);
+    if(!t) continue;
+    if(seen[t[1]]!==undefined) out.push({name:t[1],first:seen[t[1]]+1,again:i+1});
+    else seen[t[1]]=i;
+  }
+  return out;
+}
+var f=(location.search.match(/[?&]f=([^&]+)/)||[])[1];
+var url=f?decodeURIComponent(f):'fixture.html';
+fetch(url).then(function(r){
+  if(!r.ok) throw new Error('HTTP '+r.status+' for '+url);
+  return r.text();
+}).then(function(t){
+  var m=t.match(/<script\b[^>]*>([\s\S]*?)<\/script>/);
+  var out=document.getElementById('out');
+  if(!m){ out.innerHTML='<p class="bad">no script tag found in '+url+'</p>'; return; }
+  var src=m[1], b=balance(src), du=dupes(src), parse;
+  try{ new Function(src); parse='OK'; }catch(e){ parse=e.name+': '+e.message; }
+  var ver=(src.match(/var VER='([^']+)'/)||[])[1]||'?';
+  var pass=(parse==='OK'&&b.par===0&&b.cur===0&&b.sq===0&&du.length===0);
+  var h='<table>';
+  h+='<tr><td>file</td><td>'+url+'</td></tr>';
+  h+='<tr><td>VER</td><td>'+ver+'</td></tr>';
+  h+='<tr><td>chars</td><td>'+src.length.toLocaleString()+' in '+b.lines.toLocaleString()+' lines</td></tr>';
+  h+='<tr><td>parse</td><td class="'+(parse==='OK'?'ok':'bad')+'">'+parse+'</td></tr>';
+  h+='<tr><td>balance</td><td class="'+(b.par||b.cur||b.sq?'bad':'ok')+'">parens '+b.par+', braces '+b.cur+', brackets '+b.sq+
+     (b.firstNeg?(' <span class="bad">('+b.firstNeg+')</span>'):'')+'</td></tr>';
+  h+='<tr><td>duplicate fns</td><td class="'+(du.length?'bad':'ok')+'">'+
+     (du.length?du.map(function(d){return d.name+' at lines '+d.first+' and '+d.again;}).join('<br>'):'none')+'</td></tr>';
+  h+='</table>';
+  h+='<p class="'+(pass?'ok':'bad')+'" style="font-size:18px">'+(pass?'PASS':'FAIL')+'</p>';
+  if(!pass) h+='<p class="dim">A non-zero brace count localises the fault better than the parser message. '+
+    'V8 blames the last line of the file when an early block is left open.</p>';
+  out.innerHTML=h;
+  document.title=(pass?'PASS ':'FAIL ')+'v'+ver+' parse check';
+}).catch(function(e){
+  // A silent hang on "checking" is worse than a failure, because it reads as a slow
+  // check rather than as no check at all.
+  document.getElementById('out').innerHTML='<p class="bad">CHECK DID NOT RUN: '+e.message+
+    '</p><p class="dim">Fetch must be same origin. Serve the file from this folder on 8800.</p>';
+  document.title='ERROR parse check';
+});
+</script>
