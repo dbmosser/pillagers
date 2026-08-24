@@ -209,6 +209,21 @@ window.__prof=function(){ return P; };
 // in exports/ as real-looking runs with 0 duration and 0 movement, which is
 // exactly the artefact class the tick rules warn about. Killed at source.
 window.__isFixture=1;
+// THE FIXTURE IS SILENT. Verification drives real frames, and real frames fire real
+// gunshots, alarms and machine voices through WebAudio. On 2026-08-24 a 40 raid batch
+// played all of it out loud on Daniel's PC while he was trying to work. He should never
+// be able to hear my tests. Every emitter is stubbed at the source rather than relying
+// on a gain of zero, because a later build could add a new node that misses the bus.
+try{ sfx=function(){}; }catch(e){}
+try{ blip=function(){}; }catch(e){}
+try{ say=function(){}; }catch(e){}
+try{ tickAmbience=function(){}; }catch(e){}
+try{ tickEnemyAudio=function(){}; }catch(e){}
+try{ tickPlayerSteps=function(){}; }catch(e){}
+try{ tickMachineVoices=function(){}; }catch(e){}
+// And belt and braces: never let an AudioContext start at all.
+try{ if(window.AudioContext) window.AudioContext=function(){ throw new Error('fixture is silent'); }; }catch(e){}
+try{ if(window.webkitAudioContext) window.webkitAudioContext=window.AudioContext; }catch(e){}
 // The fixture must never write into his recorder OR his Downloads. The v1.31
 // fix redirected DROP to a dead port, which stopped the collector posts but
 // sent every probe run down the fetch-failure fallback, which is
