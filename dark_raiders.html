@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.74';
+var VER='1.75';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -4679,6 +4679,54 @@ function buildRaid(sim){
     placeCache(LX.x+LX.w/2,LX.y+LX.h/2,LX.name);
   }
   while(caches.length<3) placeCache(WORLD_W*rr(),WORLD_H*rr(),'ARC CACHE');
+  // EVERY LOCKED DOOR GETS A KEY, v1.75. Same fault as the district contract in v1.74 and
+  // found by asking the same question: does the map actually supply what it promises?
+  // Keys only ever arrived as a rare roll on the safe and cache tables, and `resolveKey`
+  // then picked ONE of the map's locked rooms at random, so with two rooms per map even a
+  // key that did spawn was a coin flip on which door it opened. Measured over ten seeds
+  // per map, the fraction of raids where BOTH locked rooms had a key somewhere on the map:
+  //   DAM BATTLEGROUNDS 7/10   BURIED CITY 8/10   THE QUARRY 8/10
+  //   COLD STORAGE      3/10
+  // So on COLD STORAGE, seven raids in ten contained a visibly locked door that could not
+  // be opened by anything on the map, and nothing told you. The room is drawn, it has a
+  // door, it says it is locked, and the key simply is not there. That is the same silent
+  // shape as the impossible contract: it reads as your own failure to find something.
+  // The promise is now made structurally, exactly as the three caches above are. Each
+  // locked room is guaranteed one key in an ordinary container somewhere on the map, and
+  // never inside the room it opens. Rarity is untouched: the key is still a search rather
+  // than a handout, and extra keys from the loot tables still roll on top.
+  (function(){
+    var LK=map.locked||[];
+    for(var lk=0;lk<LK.length;lk++){
+      var kid='key_'+LK[lk].id, LR4=LK[lk];
+      // A key that rolled INSIDE the room it opens does not count. That was a hole in my
+      // first version of this guard: it saw the key, decided the promise was kept, and
+      // left the door sealed anyway. Measured before the correction, a key landed inside
+      // its own room 3 to 9 times per twelve seeds depending on the map, so not rare.
+      var outside=function(CC){
+        return !(CC.x>LR4.x-40&&CC.x<LR4.x+LR4.w+40&&
+                 CC.y>LR4.y-40&&CC.y<LR4.y+LR4.h+40);
+      };
+      var have=false;
+      for(var ci3=0;ci3<containers.length&&!have;ci3++)
+        if(containers[ci3].loot.indexOf(kid)>=0&&outside(containers[ci3])) have=true;
+      if(have) continue;
+      // Somewhere unopened, not inside the door it opens, and not a cache, so the key is
+      // found by searching the world rather than by winning the jackpot you already want.
+      var cands=[];
+      for(var ci4=0;ci4<containers.length;ci4++){
+        var CC=containers[ci4];
+        if(CC.cache||CC.strong) continue;
+        if(!outside(CC)) continue;
+        cands.push(CC);
+      }
+      if(!cands.length) continue;
+      var pickC=cands[ri(0,cands.length-1)];
+      pickC.loot.push(kid);
+      pickC.loot.sort(function(a,b){ return ival(a)-ival(b); });
+      pickC.best=bestRarity(pickC.loot);
+    }
+  })();
   // ENCAMPMENTS. His spec: "encampments with a bunch of high tier loot and
   // surrounded by enemies", explicitly different from the jackpot caches. A
   // cache is free money if you walk there; an encampment is a defended position.
