@@ -1,7 +1,7 @@
 # Tiny sink so the page can hand a rendered frame straight to disk. Avoids
 # round-tripping a few thousand base64 characters through the transcript.
 param([int]$Port=8779,
-      [string]$Out='C:\Users\User1\Desktop\dark raiders\tools\shots')
+      [string]$Out='C:\claudecode\dark raiders\tools\shots')
 $l = New-Object System.Net.HttpListener
 $l.Prefixes.Add("http://localhost:$Port/")
 $l.Start()

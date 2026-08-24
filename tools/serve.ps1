@@ -1,4 +1,4 @@
-param([string]$Root="C:\Users\User1\Desktop\dark raiders",[int]$Port=8802)
+param([string]$Root="C:\claudecode\dark raiders",[int]$Port=8802)
 $listener=New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://localhost:$Port/")
 $listener.Start()

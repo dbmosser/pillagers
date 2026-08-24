@@ -4,7 +4,7 @@
 # Run this at the START of every session. The servers do not survive a machine
 # restart or a session ending, and the first Daniel knows about it is that his
 # play link does not work.
-param([string]$Root = 'C:\Users\User1\Desktop\dark raiders')
+param([string]$Root = 'C:\claudecode\dark raiders')
 
 $serve     = Join-Path $Root 'tools\serve.ps1'
 $collector = Join-Path $Root 'tools\collector.ps1'

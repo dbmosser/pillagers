@@ -1,5 +1,5 @@
 param(
-  [string]$Root = "C:\Users\User1\Desktop\dark raiders",
+  [string]$Root = "C:\claudecode\dark raiders",
   [int]$Port = 8799
 )
 # Telemetry collector. The game POSTs its flight recorder here and this writes it

@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.67';
+var VER='1.68';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -422,7 +422,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -6893,9 +6893,25 @@ function updateEnts(dt){
           [pick(['core','titan','coil']),pick(['optic','servo','board']),'cell']);
         cl2.time=1.3; G.containers.push(cl2);
         if(!G.sim) say(e.name+' has stopped listening.');
+      // AMMUNITION COMES BACK OFF THE THINGS THAT MADE YOU SPEND IT, v1.68.
+      // Measured over 40 raids on v1.67: the player fires 202 rounds a raid and 40
+      // percent of raids run COMPLETELY DRY, spending an average of 98 seconds unable
+      // to shoot at all, first hitting empty at a median of 270 seconds. That is his
+      // "Ran out of ammo" tag, and it is not a scarcity problem: there are 1,760 rounds
+      // lying on the dam across 44 boxes against the 202 a raid uses. The problem is
+      // that only 44 of 236 containers hold any, so finding ammunition is luck and
+      // there is nothing you can DO about being empty. Ninety eight seconds with no
+      // counterplay is not tension, it is dead time.
+      // A destroyed machine now reliably returns some of what it cost to destroy it,
+      // which closes the loop and makes the answer to running low FIGHT rather than
+      // search two hundred boxes hoping. Sentries are the ranged threat that drains a
+      // magazine, so a sentry always yields ammunition alongside its salvage; crawlers
+      // keep their existing roll. CFG.machAmmo is the dial and 0 restores v1.67.
       } else if(e.kind!=='snitch'&&rr()<.55){
         var c2=mkContainer(e.x,e.y,'crate');
-        setLoot(c2,[e.kind==='sentry'?pick(['servo','board','ammobox','ammobox','cell']):pick(['scrap','wire','cell','ammobox'])]);
+        var mdrop=[e.kind==='sentry'?pick(['servo','board','optic','cell']):pick(['scrap','wire','cell','ammobox'])];
+        if(e.kind==='sentry'&&rr()<(CFG.machAmmo===undefined?1:CFG.machAmmo)) mdrop.push('ammobox');
+        setLoot(c2,mdrop);
         c2.time=.8; G.containers.push(c2);
       } else if(e.kind==='snitch'){
         var c3=setLoot(mkContainer(e.x,e.y,'crate'),[pick(['board','optic','comp'])]); c3.time=.7;
@@ -10698,6 +10714,7 @@ var SLIDERS=[
   // the one holding the mouse, and any change to the cost of carrying would have been
   // invisible in it. Default moved 26 to 52.
   ['loadPen','Cost of a heavy bag',0,2,0.1,0],
+  ['machAmmo','Ammo back from a killed sentry',0,1,0.1,0],
   ['simGreed','Sim bot greed (bag wt)',10,140,2,1],
   ['simRaids','Sim raid count',10,80,5,1]
 ];

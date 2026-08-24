@@ -1,4 +1,4 @@
-param([string]$Root = 'C:\Users\User1\Desktop\dark raiders',[string]$Src='',[string]$Dst='')
+param([string]$Root = 'C:\claudecode\dark raiders',[string]$Src='',[string]$Dst='')
 # Builds tools\fixture.html: the game with a set of window.__* test hooks
 # injected at the boot banner, so a headless check can drive the real code.
 # Rebuild it after EVERY edit to dark_raiders.html, then verify against it.
