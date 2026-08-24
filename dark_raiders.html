@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.63';
+var VER='1.64';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -2630,7 +2630,13 @@ function buildFixedMap(def){
   var wrecks=[],wantW=Math.round(30*AREA);
   for(var wt=0;wt<wantW*30&&wrecks.length<wantW;wt++){
     var wx3=rnd(120,WORLD_W-120),wy3=rnd(120,WORLD_H-120);
-    var ww3=rnd(46,62),wh3=rnd(24,30);
+    // Every wreck on every map was long in x and short in y, identical proportions and
+    // identical orientation, which is half of why they read as a row of luggage rather
+    // than as traffic. A road full of cars all facing the same way is a car park; cars
+    // that died where they were are at angles to each other.
+    var wVert=rr()<0.42;
+    var wLong=rnd(46,62), wShort=rnd(23,28);
+    var ww3=wVert?wShort:wLong, wh3=wVert?wLong:wShort;
     var okW=true,q3;
     for(q3=0;q3<walls.length;q3++){ var WW3=walls[q3];
       if(wx3<WW3.x+WW3.w+26&&wx3+ww3>WW3.x-26&&wy3<WW3.y+WW3.h+26&&wy3+wh3>WW3.y-26){ okW=false; break; } }
@@ -2642,8 +2648,9 @@ function buildFixedMap(def){
       if(wx3<PW3.x+PW3.w+40&&wx3+ww3>PW3.x-40&&wy3<PW3.y+PW3.h+40&&wy3+wh3>PW3.y-40){ okW=false; break; } }
     if(!okW) continue;
     var wrk={x:wx3,y:wy3,w:ww3,h:wh3,d:1,wreck:1,
-             hue:pick(['#6a4f42','#4b5a63','#5d5347','#3f4a55','#6b5b3e']),
-             rust:rnd(0,1),flip:rr()<.5?1:-1};
+             // Warm mid browns read as leather at this size. Automotive paint, faded.
+             hue:pick(['#7a3f38','#3f5a6b','#5a6068','#2f4450','#6d6a52','#8a6a3a','#46564a']),
+             rust:rnd(0,1),flip:rr()<.5?1:-1,vert:wVert};
     var okX=true;
     for(q3=0;q3<def.spawns.length;q3++){ var SW=def.spawns[q3];
       if(SW.x>wx3-60&&SW.x<wx3+ww3+60&&SW.y>wy3-60&&SW.y<wy3+wh3+60){ okX=false; break; } }
@@ -9004,26 +9011,79 @@ function render2D(dt){
       wc.stroke();
       wc.fillStyle='rgba(150,80,40,.10)'; rrF(rx4,ry4+rh4*0.45,rw4,rh4*0.55,2);
     } else if(it.w&&it.w.wreck){
+      // WRECKS, rebuilt at v1.64. His note: wrecked cars read as suitcases from directly
+      // overhead. Captured a frame and he was right, it was not close: a warm brown
+      // rounded box with a smaller rounded box centred on top, which is a handle, and two
+      // dark stubs on the near edge, which are clasps. Three things were doing it.
+      // The roof was CENTRED, so it read as a handle rather than as a cabin. The wheels
+      // were two stubs on one edge only. And every wreck was long in x, so a group of
+      // them lined up like luggage on a carousel.
+      // The fix is the strongest overhead vehicle cue there is: FOUR WHEELS, at the
+      // corners, sticking out past the body on both sides. Nothing else in this art style
+      // has that silhouette. Then the body steps hood, cabin, boot along its long axis so
+      // there is a front and a back, and the glass is two separate panels flanking the
+      // roof instead of one bar across the middle.
       var CR=it.w,cw3=CR.w,ch3=CR.h,cx3=CR.x,cy3=CR.y;
-      shadowE(cx3+cw3/2,cy3+ch3-1,cw3*0.52,6,.34);
-      // body, sitting low on dead suspension
-      wc.fillStyle=INK; rrF(cx3-1,cy3-15,cw3+2,ch3+16,5);
-      wc.fillStyle=CR.hue; rrF(cx3,cy3-14,cw3,ch3+13,4.5);
-      // roof and cabin, offset so it reads as a car and not a box
-      wc.fillStyle=darkHex(CR.hue,0.72);
-      rrF(cx3+cw3*0.24,cy3-22,cw3*0.5,14,3);
-      wc.fillStyle=INK; rrF(cx3+cw3*0.26,cy3-21,cw3*0.46,7,2);
-      wc.fillStyle='rgba(120,150,165,.35)'; rrF(cx3+cw3*0.28,cy3-20,cw3*0.42,5,1.5);
-      // rust bloom and a missing panel, so no two look identical
-      wc.fillStyle='rgba(150,80,40,'+(0.18+0.30*CR.rust).toFixed(2)+')';
-      rrF(cx3+cw3*(CR.flip>0?0.06:0.62),cy3-9,cw3*0.30,ch3*0.7,2);
-      wc.fillStyle='rgba(18,14,12,.55)';
-      wc.fillRect(cx3+cw3*(CR.flip>0?0.70:0.14),cy3-6,cw3*0.16,4);
-      // wheels, one always flat
-      wc.fillStyle='#191c21';
-      rrF(cx3+cw3*0.10,cy3+ch3-6,cw3*0.16,6,2);
-      rrF(cx3+cw3*0.72,cy3+ch3-(CR.flip>0?3:6),cw3*0.16,(CR.flip>0?3:6),2);
-      wc.fillStyle=darkHex(CR.hue,0.55); wc.fillRect(cx3+2,cy3-14,cw3-4,1.6);
+      var vt=!!CR.vert;
+      // Long axis in local terms, so one piece of code draws both orientations.
+      var LEN=vt?ch3:cw3, WID=vt?cw3:ch3;
+      shadowE(cx3+cw3/2,cy3+ch3-1,cw3*0.54,6,.34);
+      // Local to world. u runs along the car, v across it, both 0..1.
+      function CX(u,v){ return vt?(cx3+v*cw3):(cx3+u*cw3); }
+      function CY(u,v){ return vt?(cy3+u*ch3):(cy3+v*ch3); }
+      function box(u0,v0,u1,v1,lift,col,rad){
+        var xa=CX(u0,v0),ya=CY(u0,v0),xb=CX(u1,v1),yb=CY(u1,v1);
+        var x=Math.min(xa,xb),y=Math.min(ya,yb),w=Math.abs(xb-xa),h=Math.abs(yb-ya);
+        wc.fillStyle=col; rrF(x,y-lift,w,h,rad===undefined?2:rad);
+      }
+      // Wheels FIRST, under the body, and deliberately proud of it on both sides so the
+      // silhouette from straight above is unmistakably a vehicle.
+      // Captured a frame of the first attempt and only TWO wheels were visible, sitting
+      // detached below the shell like a pair of dropped blocks. Cause: the wheels were
+      // drawn at lift 3 against a body at lift 14, so the far pair was hidden underneath
+      // and the near pair floated eleven pixels clear of the bodywork.
+      // Wheels now share the body lift and straddle it, so a sliver shows past BOTH long
+      // edges. That is the whole silhouette argument: nothing else in this world has
+      // four dark studs poking out of its sides, and a suitcase certainly does not.
+      var tyre='#15181c';
+      var wOff=0.08, wLen=0.20, prod=0.15;
+      box(wOff,-prod,wOff+wLen,prod,14,tyre,2.5);
+      box(wOff,1-prod,wOff+wLen,1+prod,14,tyre,2.5);
+      box(1-wOff-wLen,-prod,1-wOff,prod,14,tyre,2.5);
+      box(1-wOff-wLen,1-prod,1-wOff,1+prod,14,tyre,2.5);
+      // One wheel is always flat, so the thing reads as dead rather than parked.
+      box(1-wOff-wLen,(CR.flip>0?1-prod*0.55:-prod),1-wOff,(CR.flip>0?1+prod*0.55:prod*0.55),11,'rgba(12,10,9,.9)',1.5);
+      // Body shell, squarer shoulders than a suitcase would have.
+      box(-0.01,-0.02,1.01,1.02,15,INK,3);
+      box(0,0,1,1,14,CR.hue,2.5);
+      // Hood at the front and boot at the rear both sit LOWER than the cabin. Two steps
+      // in the roofline is what separates a car from a box with a lid.
+      var fr=(CR.flip>0)?0:1;   // which end is the nose
+      var noseU=fr?0.78:0.0, noseU2=fr?1.0:0.22;
+      var tailU=fr?0.0:0.78,  tailU2=fr?0.22:1.0;
+      box(noseU,0.04,noseU2,0.96,11,darkHex(CR.hue,0.24),2);
+      box(tailU,0.06,tailU2,0.94,11,darkHex(CR.hue,0.32),2);
+      // Cabin, offset toward the tail the way a saloon sits, never centred.
+      var cabA=fr?0.30:0.24, cabB=fr?0.76:0.70;
+      box(cabA-0.01,0.05,cabB+0.01,0.95,22,INK,2.5);
+      box(cabA,0.08,cabB,0.92,21,darkHex(CR.hue,0.46),2);
+      // Windscreen and rear glass as two panels with roof between them.
+      var gl='rgba(126,158,172,.42)', glD='rgba(70,92,104,.5)';
+      var wsA=fr?cabB-0.16:cabA, wsB=fr?cabB:cabA+0.16;
+      var rgA=fr?cabA:cabB-0.14, rgB=fr?cabA+0.14:cabB;
+      box(wsA,0.14,wsB,0.86,20,gl,1.5);
+      box(rgA,0.18,rgB,0.82,20,glD,1.5);
+      // Rust bloom and a torn panel, so no two are identical.
+      wc.fillStyle='rgba(150,80,40,'+(0.16+0.28*CR.rust).toFixed(2)+')';
+      var ru=(CR.flip>0?0.08:0.60);
+      box(ru,0.10,ru+0.28,0.62,13,'rgba(150,80,40,'+(0.16+0.28*CR.rust).toFixed(2)+')',2);
+      box(fr?0.02:0.86,0.30,fr?0.12:0.96,0.70,12,'rgba(18,14,12,.55)',1.5);
+      // A dead headlight at the nose, which also tells you which way it was pointing.
+      box(fr?0.955:0.005,0.12,fr?1.0:0.045,0.34,12,'rgba(210,200,170,.30)',1);
+      box(fr?0.955:0.005,0.66,fr?1.0:0.045,0.88,12,'rgba(210,200,170,.30)',1);
+      // Roof highlight, one strip along the top so the deck reads as metal.
+      // darkHex only darkens, so a highlight has to be an overlay rather than a shade.
+      box(cabA+0.02,0.16,cabB-0.02,0.24,21,'rgba(255,252,244,.13)',1);
     } else if(it.w&&it.w.furn){
       // Furniture: a table (top face on legs) or a shelf unit (tall face with
       // strata). Same three-value language as everything else.
