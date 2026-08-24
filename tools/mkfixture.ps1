@@ -291,7 +291,10 @@ window.__bag={weight:bagWeight,drop:dropItem,worst:worstBagIndex,cull:autoCull,
   cap:function(){ return PACKCAP[P.pack]; },ival:ival,items:function(){ return ITEMS; }};
 // ================================================================ boot
 '@
-$text = Get-Content $src -Raw
+# Windows PowerShell 5.1 Get-Content -Raw decodes with the ANSI codepage, so UTF-8
+# source came back as mojibake and Set-Content -Encoding utf8 then double encoded it.
+# Four hub labels shipped into every fixture with a stray A-circumflex. Read explicit.
+$text = [IO.File]::ReadAllText($src,[Text.Encoding]::UTF8)
 $text = $text.Replace($needle, $inject)
-Set-Content -Path $dst -Value $text -Encoding utf8
+[IO.File]::WriteAllText($dst,$text,(New-Object Text.UTF8Encoding $false))
 "written: " + (Test-Path $dst)

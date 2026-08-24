@@ -1191,6 +1191,126 @@ siege intensity for the median call is the right trade at all. Restoring the
 gradient necessarily makes the typical extraction easier than it was yesterday,
 and whether the greed pillar should be a gradient or should simply be loud is a
 design question I have not decided for him.
+### v1.80: the sim could not measure the half of the game that decides the outcome
+
+v1.79 left a loose thread I could not pull with the tools I had. Of 120 seeded
+raids, 89 died before ever calling a beacon, which is why four consecutive
+builds aimed at the extraction trip all failed to move the extract rate. So the
+question became: what separates the 31 raids that got out from the 89 that did
+not?
+
+Almost nothing, is the honest answer, except one thing. Shots fired per raid:
+109 dead against 115 survived. Hit rate: 66.8 against 71.1. Kills per minute:
+4.46 against 4.49, which is identical. Containers per minute: the dead actually
+loot slightly FASTER, 6.09 against 5.66. The survivors are not better shots,
+they do not fight more efficiently, and they are not more careful about looting.
+
+The one number that moves is first contact: 67 seconds for the dead against 114
+for the survivors. But that number cannot be taken at face value, because it is
+censored: a raid that ends at 150 seconds is structurally incapable of recording
+a first contact at 200. Longer raids get more chances to have a late contact, so
+the correlation is partly an artifact of the thing it claims to explain.
+
+So I ran a landmark analysis instead. Take only raids that survived to time T,
+which means every one of them had a full opportunity to be contacted before T,
+and split on whether they actually were. That removes the censoring.
+
+    alive at 60s   contacted before: 14.6% extract   not yet: 23.1%
+    alive at 90s   contacted before: 17.0%           not yet: 28.9%
+    alive at 120s  contacted before: 22.0%           not yet: 30.3%
+    alive at 180s  contacted before: 23.8%           not yet: 45.0%
+
+Same direction at all four landmarks, widening as the raid goes on. No single
+landmark is significant on its own at these sample sizes; the consistency across
+four nested cuts is the signal, not any one row.
+
+And here is the problem, which the code has been stating plainly in a comment
+for eighty builds: "The bot never crouches, so this measures exactly the
+standing half of the mechanic." Crouch costs 48 percent of movement speed and
+buys step noise down from a radius of 170 to 72, removes the periodic footstep
+ping almost entirely, and improves the concealment roll from 0.62 to 0.22 while
+moving. It is the primary tool a player has for controlling the exact variable
+that the landmark analysis says decides the raid. The sim had no access to it.
+
+Every balance conclusion this project has drawn about survivability was drawn
+from a bot that walks everywhere upright.
+
+simCrouch is a dial. 0 is the old standing-only behaviour and remains the
+default so every historical number stays reproducible. 1 crouches while looting
+when a machine is within 700 units. 2 crouches whenever not fleeing; the bot
+never crouches while running from something, because that is not what the tool
+is for.
+
+Two mistakes of mine, both caught and both worth recording because the second
+one is a trap that will recur.
+
+First, mkfixture read the source with Get-Content -Raw, which in Windows
+PowerShell 5.1 decodes using the ANSI codepage rather than UTF-8, then wrote it
+back with -Encoding utf8. That double encoded every non-ASCII character, so four
+hub labels shipped into every fixture with a stray A-circumflex. The game file
+itself was never touched and is clean in git; only the test artifact was
+corrupt. Both ends now use explicit UTF-8.
+
+Second, and more instructive: I reported that the simCrouch 0 dial was not
+neutral, and it is. Two builds served from the same origin share one
+localStorage profile, but each tab boots its own copy of it into memory and then
+mutates it as raids run. The two tabs had run different numbers of raids, so
+their in-memory profiles had drifted apart, and I was comparing two builds
+across two different player states while believing I had controlled for it.
+Resetting mapIx, body and runs was not enough. Rebuilt as a loop that boots each
+build into a fresh iframe from an identical profile, all four bisect variants
+including the untouched build then reproduced v1.79 exactly. THE DIAL IS
+NEUTRAL. The harness was wrong, not the code.
+
+Then the measurement partly refuted the finding that motivated the whole build,
+which is the most useful thing that happened today. 120 seeds per arm, THE
+QUARRY, simGreed 52, greedFull 20,000.
+
+                    simCrouch 0     1        2
+    first contact     78s          122s     131s
+    raid duration    170s          237s     279s
+    containers       16.7          16.7     16.7
+    extract rate     17.5%         21.7%    14.2%
+
+Crouch does exactly what it promises to the variable the landmark analysis
+identified: first contact moves from 78 seconds to 131, a 68 percent delay. That
+part is unambiguous and large.
+
+The outcome does not follow. Selective crouching gains 4.2 points and crouching
+always LOSES 3.3, which is not even monotone. At 120 a side those are z of about
+0.8 and 0.7, so the honest statement is that extract rate is FLAT across all
+three arms and neither difference is real.
+
+The mechanism is visible in the other two rows. Containers opened is 16.7 in
+every arm, because the bot loots to a goal count rather than to a clock, so
+crouching costs no loot at all. What it costs is time: 170 seconds becomes 279.
+Crouch buys 53 seconds of not being seen and spends 109 seconds of being on the
+surface to buy it. The two cancel.
+
+This is the difference between a correlation and an intervention, and it is why
+the landmark analysis was not enough on its own. Controlling for censoring does
+not control for confounding: raids where contact comes late may be late-contact
+because the spawn was favourable, not because anything the player did caused it.
+Crouch is the actual intervention, and the causal effect of delaying detection
+turns out to be roughly zero once its price is paid.
+
+That makes five mechanisms now that have failed to move the extract rate, but
+this is the first one that failed for a reason I can name rather than shrug at.
+It is also direct evidence for the design question already on his desk: the game
+punishes time spent rather than value carried, and that time punishment is
+currently strong enough to cancel out the primary stealth tool in the game. A
+player who uses cover and patience correctly is not rewarded for it. I am not
+deciding that; it is his call, and it is now a measured argument rather than an
+opinion.
+
+Not verified: any of this for a HUMAN player. The bot loots to a goal count, so
+crouching costs it nothing but time; a person who crouches is usually also
+choosing to skip containers, take better angles and reposition, none of which
+the bot does. The result above says the time cost cancels the stealth benefit
+FOR A PLAYER WHO CHANGES NOTHING ELSE, which is not the same claim as crouching
+being worthless. Also not verified on the other three maps, and not verified at
+any other value of simGreed; the bot's bag threshold interacts directly with
+raid length and this whole result is about raid length.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.79';
+var VER='1.80';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -422,7 +422,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -6669,10 +6669,31 @@ function updatePlayer(dt){
 function updateBot(dt){
   var p=G.player,T=G.tel;
   p.moving=false;
-  // The bot never crouches, so this measures exactly the standing half of the
-  // mechanic, which is the half bushes were added to provide.
+  // THE BOT CAN NOW CROUCH, v1.80, and it is a dial because for eighty builds it
+  // could not. The old comment here read "the bot never crouches, so this measures
+  // exactly the standing half of the mechanic", which was true and quietly fatal:
+  // v1.79 measured that the strongest single predictor of surviving a raid is how
+  // long before something first sees you, and crouch is the main tool a player has
+  // for controlling exactly that. The sim could not measure the half of the game
+  // that decides the outcome. simCrouch 0 is the old standing-only behaviour and is
+  // the default so every historical number stays reproducible; 1 crouches while
+  // looting when a machine is close; 2 crouches whenever not fleeing.
+  var CRN=CFG.simCrouch||0, botCrouch=false;
+  if(CRN>0&&!p.downed){
+    if(CRN>=2) botCrouch=true;
+    else {
+      for(var ci=0;ci<G.ents.length;ci++){
+        var ce=G.ents[ci];
+        if(ce.dead||ce.kind==='raider'||ce.kind==='peddler'||ce.kind==='stray') continue;
+        if(dist(ce,p)<700){ botCrouch=true; break; }
+      }
+    }
+  }
+  // Crouching costs 48 percent of your speed and buys back step noise and a much
+  // better concealment roll. These are the player's own numbers, not sim-only ones.
+  var CSPD=botCrouch?0.52:1, CNOISE=botCrouch?(72/170):1;
   G.pBush=inBush(p.x,p.y);
-  G.pConceal=concealAt(p.x,p.y,!!p.moving,false,false);
+  G.pConceal=concealAt(p.x,p.y,!!p.moving,false,botCrouch);
   if(p.iv>0) p.iv-=dt;
   if(p.downed){
     if(!p.revived&&findHeal()>=0){ selfRevive(); }
@@ -6718,12 +6739,12 @@ function updateBot(dt){
         fireWeapon(p,p.wep,threat.x+rnd(-10,10),threat.y+rnd(-10,10),true);
       }
     }
-    if(td<110){ moveToward(p,p.x-(threat.x-p.x),p.y-(threat.y-p.y),CFG.pSpeed*.7*LD.spd,dt); moved=true; }
+    if(td<110){ botCrouch=false; moveToward(p,p.x-(threat.x-p.x),p.y-(threat.y-p.y),CFG.pSpeed*.7*LD.spd,dt); moved=true; }
   // leave enough clock to walk there AND sit through the whole inbound wait
   } else if(bagWeight()>=CFG.simGreed||bagWeight()>=cap||G.timeLeft<CFG.extractWait+120||(p.ammo+p.reserve)<=0){
     var z=G.active;
     G.botWantsOut=true;
-    navSeek(p,z.x,z.y,CFG.pSpeed*.95*LD.spd,dt); moved=true;
+    navSeek(p,z.x,z.y,CFG.pSpeed*.95*LD.spd*CSPD,dt); moved=true;
     p.face=Math.atan2(z.y-p.y,z.x-p.x);
   } else {
     if(!p.goal||p.goal.opened||p.goal.skip){
@@ -6743,14 +6764,15 @@ function updateBot(dt){
         p.searchT=(p.searchT||0)+dt;
         if(p.searchT>=p.goal.time){ openContainer(p.goal); p.searchT=0; p.goal=null; }
       } else {
-        navSeek(p,p.goal.x,p.goal.y,CFG.pSpeed*.9*LD.spd,dt); moved=true;
+        navSeek(p,p.goal.x,p.goal.y,CFG.pSpeed*.9*LD.spd*CSPD,dt); moved=true;
         p.seekT=(p.seekT||0)+dt;
         p.face=Math.atan2(p.goal.y-p.y,p.goal.x-p.x);
         p.searchT=0;
       }
     }
   }
-  if(moved&&p.noiseAcc>.6){ p.noiseAcc=0; ping(p.x,p.y,140*LD.noise,false,false,'player','move'); }
+  if(botCrouch) T.tCrouchBot=(T.tCrouchBot||0)+dt;
+  if(moved&&p.noiseAcc>.6){ p.noiseAcc=0; ping(p.x,p.y,140*LD.noise*CNOISE,false,false,'player','move'); }
   // Give up on a container the bot cannot get to, on two conditions, both of
   // which had to be learned the hard way. It has to be progress and not motion:
   // the original check asked whether the bot had moved at all, and that stopped
@@ -7852,7 +7874,7 @@ function endRaid(how){
 
   if(G.sim){
     G.simResult={outcome:how,seed:G.seed,dur:Math.round(CFG.raidSec-G.timeLeft),haul:haul,items:G.bag.length,
-      containers:T.containers,windfalls:T.windfalls||0,siegeArrivals:T.siegeArrivals||0,siegeNoSpot:T.siegeNoSpot||0,killer:T.deathKiller,firstContact:T.firstContact===null?null:Math.round(T.firstContact),
+      containers:T.containers,windfalls:T.windfalls||0,crouched:T.tCrouchBot?Math.round(T.tCrouchBot):0,siegeArrivals:T.siegeArrivals||0,siegeNoSpot:T.siegeNoSpot||0,killer:T.deathKiller,firstContact:T.firstContact===null?null:Math.round(T.firstContact),
       shots:T.shots,hits:T.hits,kills:T.kills,closest:Math.round(T.closestExtract),
       downs:T.downs,revives:T.revives,raidersExt:T.raidersExtracted,
       beaconCalls:T.beaconCalls,beaconMissed:T.beaconMissed,
