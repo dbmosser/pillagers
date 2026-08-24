@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.62';
+var VER='1.63';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -421,7 +421,7 @@ function rr(){
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
-  nSentry:17,nCrawler:20,nRaider:6,nSnitch:4,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
+  nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
   eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
@@ -451,7 +451,7 @@ function CH(){
   var m=opticMag();
   return (CFG.coneDeg*Math.PI/360)/(m>1?(1+(m-1)*0.85):1);
 }
-function ival(k){ return Math.round((ITEMS[k]?ITEMS[k].val:0)*CFG.lootMult*seasonLoot()); }
+function ival(k){ return Math.round((ITEMS[k]?ITEMS[k].val:0)*CFG.lootMult*seasonLoot()); }  // unknown key is worth 0, never throws
 
 // ================================================================ data
 var WEAPONS={
@@ -1443,6 +1443,15 @@ function resolveKey(){
   if(!L.length) return 'scrap';
   return 'key_'+L[ri(0,L.length-1)].id;
 }
+// LOOT.safe and LOOT.cache contain a KEY placeholder rather than a real item, because
+// which keys exist depends on which map is loaded. Only mkContainer ever resolved it,
+// which was fine while containers were the only thing that rolled on those tables.
+// v1.58 gave raiders in medium and heavy rigs rolls on LOOT.safe and quietly broke that
+// assumption: the literal string KEY went into a raider bag, and on death the bag became
+// a corpse container through setLoot, where bestRarity looked up ITEMS[KEY], found
+// undefined, and threw inside the death handler. Killing an armoured raider could take
+// the raid down. Anything that rolls a loot table goes through here now.
+function rollLoot(t){ var k=rollTable(t); return k==='KEY'?resolveKey():k; }
 function rollTable(t){var s=0,i;for(i=0;i<t.length;i++)s+=t[i][1];var r=rr()*s;
   for(i=0;i<t.length;i++){r-=t[i][1];if(r<=0)return t[i][0];}return t[0][0];}
 // One shared contour colour for every body on the map. Warm near-black rather
@@ -3839,9 +3848,12 @@ function mkStrongbox(x,y){
   return c;
 }
 function bestRarity(loot){
+  // Defensive. An unknown key here used to throw inside a death handler and take the
+  // whole raid with it, which is far too high a price for a bad loot table entry.
   var best='common';
   for(var j=0;j<loot.length;j++){
-    var r=ITEMS[loot[j]].r;
+    var it=ITEMS[loot[j]]; if(!it) continue;
+    var r=it.r;
     if(r==='elite'||(r==='rare'&&best!=='elite')||(r==='uncommon'&&best==='common')) best=r;
   }
   return best;
@@ -3882,10 +3894,21 @@ function mkSentry(x,y){
     name:mkName('SENTRY',['K','R','V','T']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:70,dmg:14,rng:340,cone:.62,hitT:0};
 }
+// Crawler damage 20 to 13, and it is half of a pair with the raised counts. Measured,
+// 120 seeds per arm on the dam, same build, only the numbers changing:
+//   17s/20c/6r/4sn, crawler 20 dmg: 26 percent extract, 12.1 kills a raid
+//   20s/34c/8r/5sn, crawler 20 dmg: 18 percent extract, 15.0 kills a raid
+//   20s/34c/8r/5sn, crawler 13 dmg: 24 percent extract, 16.4 kills a raid
+// His note is "not enough enemies, boring", and the first attempt at answering it just
+// made the game eight points more lethal, which is not what he asked for. Softening the
+// crawler buys the density back: a THIRD more fighting per raid at the same survival
+// rate as before any of it. The crawler is the right thing to soften because it is the
+// melee rusher, so it is the one whose count you notice most and the one that killed 48
+// of 98 in the dense arm; a sentry is a ranged threat you are meant to respect.
 function mkCrawler(x,y){
   return {kind:'crawler',x:x,y:y,r:15,hp:Math.round(52*CFG.eHp*seasonHp()),maxhp:Math.round(52*CFG.eHp*seasonHp()),
     name:mkName('CRAWLER',['A','C','H','M']),
-    face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:150,dmg:20,rng:26,cone:1.5,hitT:0,legs:rnd(0,6.28)};
+    face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:150,dmg:13,rng:26,cone:1.5,hitT:0,legs:rnd(0,6.28)};
 }
 // ====================================================== MACHINES THAT COOPERATE
 // Every machine on the map fought its own private battle. Six of them noticing
@@ -4083,7 +4106,7 @@ function mkRaider(x,y,forceId){
     // Veterans carry what a veteran would have found. Everyone else carries body and
     // locker tier, which is still a real step up from junk.
     var tbl=(RT>=2)?(rr()<0.45?LOOT.safe:LOOT.locker):(rr()<0.35?LOOT.locker:LOOT.body);
-    r.bag.push(rollTable(tbl));
+    r.bag.push(rollLoot(tbl));
   }
   return r;
 }
