@@ -1493,6 +1493,68 @@ ceiling for the strategy than a description of typical play.
 Verified neutral against v1.81 across six seeds using the fresh-iframe harness,
 identical outcome, haul and duration on every one. Parse PASS at 1.82, all four
 maps draw with drawErr null, hub renders.
+### v1.83: measuring the one constant the strongest mechanic in the game rests on
+
+v1.82 established that a single line IS the crouch mechanic. Invisibility to
+anything further than 170 units while crouched is worth 15.8 to 42.5 percent
+extract rate on its own, and every other component of crouch, the speed cost,
+the concealment multiplier, the step-noise discount, lands within the noise band
+of that figure. So the entire strongest mechanic in the game sits on one integer
+that nothing has ever measured.
+
+For scale on why it dominates: default viewFar is 620. A threshold of 170 means
+crouching defeats roughly three quarters of the sighting range outright,
+regardless of cones, alert state or concealment. It is not a modifier, it is a
+switch.
+
+crouchHide is now a dial defaulting to 170, with 0 disabling the rule entirely,
+and the sweep runs 0, 90, 170, 300 and 620 at 120 seeds an arm with the real
+crouch mechanic active, THE QUARRY, simGreed 52, greedFull 20,000, pack T1.
+
+The sweep, 120 seeds an arm.
+
+    crouchHide   extract   1st contact   never seen   duration   haul
+      0 (off)     15.8%       130s            5         275s    7,043
+      90          47.5%       249s           45         356s    9,486
+      170         41.7%       209s           29         340s    9,092
+      300         19.2%       134s            6         291s    7,848
+      620         15.8%       130s            5         275s    7,043
+
+Monotone decreasing in the threshold, which is the right direction: the rule
+hides you from everything BEYOND the number, so a smaller number hides you from
+more of the map.
+
+The useful shape is how violently it turns over between 170 and 300. Going from
+170 to 300 costs 22.5 points of extract rate, from 41.7 down to 19.2, and at 300
+the mechanic is only 3.4 points better than switched off. Almost the entire
+value of crouch lives in the band from about 90 to 200. The shipped 170 is
+sitting on the steep face of that curve, not on a plateau, which means the
+strongest mechanic in the game is highly sensitive to a constant that was
+presumably picked by feel.
+
+A consistency check fell out of this for free and it is worth recording. The 620
+arm reproduces the 0 arm EXACTLY: same extract rate, same first contact, same
+duration, same haul, same container count, to the digit. That is correct rather
+than suspicious. Enemy sight range is about 620, so requiring a target to be
+further than 620 away before hiding it can never fire, and a vacuous condition
+and a disabled rule are the same thing. Two different code paths agreeing to the
+digit is good evidence that this rule really is the only thing the dial changes.
+
+Not verified: the shape of the curve between 90 and 170, which is exactly where
+the decision lives and where I have only two points. Nor anything below 90, and
+a very low threshold presumably inverts into uselessness at some point since a
+machine standing on top of you still sees you. Not verified on the other three
+maps, whose viewFar differs by preset, and the 620 equivalence in particular is
+a property of THIS preset's sight range rather than a general law. And not
+verified against a human: the bot crouches whenever a machine is within 700
+units, which is more disciplined than most players, so every number in that
+table is closer to a ceiling for the strategy than a description of real play.
+
+Verified neutral: at the default 170 the build reproduces v1.82 exactly across
+six seeds, and the check was run at crouchParts 15 so it actually exercises the
+edited line rather than a branch that never fires. Durations of 422, 445 and 505
+seconds in that sample confirm these were crouched raids and not the upright
+baseline wearing a different label.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
