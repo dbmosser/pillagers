@@ -1390,6 +1390,109 @@ value judgement about his economy that I have deliberately not made, and whether
 the discount should scale the noise penalty as heavily as the speed penalty,
 since loadOf currently returns both from the same multiplier and a real backpack
 plausibly helps you carry weight without doing anything at all about the rattle.
+### v1.82: what I called crouch stealth in v1.80 was arithmetic, and the real thing was switched off
+
+Two measurements disagreed and both were mine. v1.59 measured that a heavy bag
+makes you 53 percent louder and did not move the extract rate one point across
+450 raids. v1.80 measured that crouching moves first contact from 78 seconds to
+131 and I reported that as crouch delaying detection. Both cannot be telling the
+truth about noise, so crouchParts splits crouch into its three separate effects
+and runs them apart: bit 1 the speed cost, bit 2 the step-noise discount, bit 4
+the concealment improvement.
+
+    arm                             first contact   duration
+    upright                              78s          169s
+    full crouch (1+2+4)                 130s          275s
+    speed + noise, no conceal (1+2)     132s          279s
+    speed + conceal, no noise (1+4)     126s          260s
+    noise + conceal, NO speed cost (6)   78s          169s
+
+Every arm that pays the speed cost lands between 126 and 132 seconds. The arm
+carrying both stealth benefits with no speed cost is indistinguishable from
+walking upright: 78 seconds and 169 seconds duration, matching the baseline to
+the second.
+
+So the entire first-contact delay I attributed to stealth in v1.80 is the SPEED
+PENALTY. Moving at 52 percent means covering less ground per second and
+therefore meeting fewer things per second. It is arithmetic, not concealment.
+The concealment multiplier and the step-noise discount together contribute zero
+measurable delay. That is a correction to v1.80 and it is the more interesting
+result.
+
+Then the reason turned up, and it is not that concealment is worthless. pcon is
+genuinely live: it multiplies enemy sight range and the ambient threshold in the
+detection call. What the sim never had is this line:
+
+    if(sees&&!G.sim&&(keys['ControlLeft']||keys['ControlRight'])&&dist(e,p)>170)
+      sees=false;
+
+Crouching makes you flatly invisible to anything more than 170 units away,
+regardless of cones, ranges and concealment values. It is by far the strongest
+stealth effect in the game. It was fenced off with !G.sim, and it reads the
+player's crouch state off the keys object, which the bot has never touched. So
+the sim was structurally incapable of measuring crouch stealth, and everything
+it COULD see about crouching was the residue: a concealment multiplier and a
+footstep radius, which do nothing on their own.
+
+This is the third time in five builds that the sim has been blind to a shipped
+mechanic: windfalls in v1.78, crouch itself in v1.80, and now the rule that
+makes crouch worth using. The pattern is always the same shape, an early
+performance or determinism guard that quietly became a correctness hole.
+
+v1.82 publishes one G.pCrouch flag from both updatePlayer and updateBot so the
+rule has a single source of truth instead of reading the keyboard, and puts sim
+access behind crouchParts bit 8. Default remains 7, so the bit is off and every
+historical number stays reproducible. The real game is untouched and always had
+the rule.
+
+With bit 8 available, the decomposition finishes, 120 seeds an arm, THE QUARRY,
+simGreed 52, greedFull 20,000, pack T1.
+
+    arm                        parts   extract   1st contact   never seen
+    upright                        -    15.8%        78s            5
+    hard rule ALONE                8    42.5%       121s           22
+    hard rule + speed cost       1+8    40.0%       193s           35
+    hard rule + noise + conceal 2+4+8   45.8%       126s           26
+    real crouch, everything       15    41.7%       209s           29
+
+The hard rule on its own takes the extract rate from 15.8 to 42.5 percent. Every
+other arm sits within a few points of that, between 40.0 and 45.8, which is the
+width of the noise at this sample size. The speed cost is worth about minus 2.5
+points and the concealment multiplier plus the step-noise discount together are
+worth about plus 3.3. Neither is distinguishable from zero. Crouch IS the hard
+rule; the rest is garnish on top of it.
+
+Paired upright against real crouch: 39 seeds flip to extract, 8 flip to dead, 73
+unchanged. Forty-seven discordant pairs splitting 39 to 8 is not a close call.
+For scale, the five builds before this one moved the extract rate by less than a
+point each, and modelling one line that was already shipped moved it 26 points.
+
+One instrumentation bug of mine, caught by the numbers refusing to make sense. I
+wrote G.pCrouch=!!CCON, which conflates "the bot is crouching" with "the
+concealment bit is enabled", so the first attempt at a hard-rule-only arm
+silently never had the hard rule at all and read 10 percent. Corrected to
+!!botCrouch and the two affected arms re-run; the numbers above are the
+corrected ones. The default path was never affected, because bit 4 is set in the
+default 7 and the two expressions agree there.
+
+What this does NOT settle, and it is the whole design question: crouch is
+currently a near-invisible dominant strategy. It costs 48 percent of movement
+speed and roughly triples survival, and nothing in the game says so. Whether the
+answer is to weaken it, to price it higher, to teach it, or to leave it alone as
+a skill reward is his call and I have not made it. I have only established that
+the sim can finally see it.
+
+Not verified: any of this on the other three maps, or at other values of
+simGreed, and in particular whether 170 units is the right threshold. The rule is
+binary and total, so the entire mechanic sits on that one constant and nothing
+has ever measured it. Also not verified: whether the bot's crouch policy
+resembles a human's. It crouches whenever a machine is within 700 units, which
+is a far more disciplined player than most, so 42.5 percent is closer to a
+ceiling for the strategy than a description of typical play.
+
+Verified neutral against v1.81 across six seeds using the fresh-iframe harness,
+identical outcome, haul and duration on every one. Parse PASS at 1.82, all four
+maps draw with drawErr null, hub renders.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

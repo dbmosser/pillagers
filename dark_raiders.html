@@ -400,7 +400,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.81';
+var VER='1.82';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -431,7 +431,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -6437,6 +6437,7 @@ function updatePlayer(dt){
   // Once per frame, not once per enemy: 57 bodies each scanning the bush list
   // would be the same answer computed 57 times.
   G.pBush=inBush(p.x,p.y);
+  G.pCrouch=!!crouch;
   G.pConceal=concealAt(p.x,p.y,!!p.moving,!!G.sprinting,crouch);
   if(sprint) T.tSprint+=dt;
 
@@ -6700,9 +6701,21 @@ function updateBot(dt){
   }
   // Crouching costs 48 percent of your speed and buys back step noise and a much
   // better concealment roll. These are the player's own numbers, not sim-only ones.
-  var CSPD=botCrouch?0.52:1, CNOISE=botCrouch?(72/170):1;
+  // CROUCH IS THREE SEPARATE EFFECTS AND crouchParts CAN RUN THEM APART, v1.82.
+  // Bit 1 is the speed cost, bit 2 is the step-noise discount, bit 4 is the
+  // concealment improvement. Default 7 is all three, which is the real mechanic.
+  // The reason to be able to split them: v1.59 measured that carrying a heavy bag
+  // makes you 53 percent louder and did not move the extract rate one point across
+  // 450 raids, while v1.80 measured that crouching moves first contact from 78
+  // seconds to 131. Both of those cannot be telling the truth about noise, and the
+  // only way to find out which is to run the halves separately.
+  var CPART=(CFG.crouchParts===undefined?7:CFG.crouchParts);
+  var CSPD =(botCrouch&&(CPART&1))?0.52:1;
+  var CNOISE=(botCrouch&&(CPART&2))?(72/170):1;
+  var CCON =!!(botCrouch&&(CPART&4));
   G.pBush=inBush(p.x,p.y);
-  G.pConceal=concealAt(p.x,p.y,!!p.moving,false,botCrouch);
+  G.pCrouch=!!botCrouch;   // whether the bot IS crouching, not whether the conceal bit is set
+  G.pConceal=concealAt(p.x,p.y,!!p.moving,false,CCON);
   if(p.iv>0) p.iv-=dt;
   if(p.downed){
     if(!p.revived&&findHeal()>=0){ selfRevive(); }
@@ -7250,7 +7263,18 @@ function updateEnts(dt){
     var pcon=(G.pConceal===undefined)?1:G.pConceal;
     var wkSight=(e.blind>0)?0.32:1;
     var sees=canSee(e.x,e.y,e.face,p.x,p.y,G.vseg,e.rng*(e.alert>0?1.35:1)*pcon*wkSight,e.cone,CFG.eAmbient*pcon*wkSight);
-    if(sees&&!G.sim&&(keys['ControlLeft']||keys['ControlRight'])&&dist(e,p)>170) sees=false;
+    // THE HARD CROUCH RULE. Crouching makes you invisible to anything further than
+    // 170 units, full stop, regardless of cones and concealment values. It is by far
+    // the strongest stealth effect in the game and it was fenced off with !G.sim, so
+    // the sim could not see it and read the player's crouch off the keys object,
+    // which the bot never touches. v1.82 measured the consequence: with the speed
+    // cost removed, crouch changed first contact by ZERO seconds, because everything
+    // the sim could model about crouching was the concealment multiplier and the step
+    // noise, and the part that actually hides you was switched off. crouchParts bit 8
+    // lets the sim have it. Default 7 leaves it off so every historical number stays
+    // reproducible; the real game is untouched and always had it.
+    var HARDC=(CFG.crouchParts===undefined?7:CFG.crouchParts)&8;
+    if(sees&&G.pCrouch&&dist(e,p)>170&&(!G.sim||HARDC)) sees=false;
     if(sees&&p.downed&&e.kind!=='raider') sees=false;
 
     // ---- warden: slow, relentless, optional
