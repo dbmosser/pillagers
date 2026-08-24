@@ -243,6 +243,17 @@ window.__gun={roll:rollFieldGun,fire:fireWeapon,quals:GUNQ,wtier:WTIER,weapons:W
 window.__pad={poll:pollPad,state:function(){ return PAD; },tap:function(){ return PADTAP; },
   hold:function(){ return PADHOLD; },legend:function(){ return LEGEND_PAD; }};
 window.__mouseState=function(){ return mouse; };
+// TWO TRAPS WHEN DRIVING HELD-KEY ACTIONS ACROSS MORE THAN ONE RAID. Both cost a
+// diagnosis on 2026-08-24 while testing THE SEAL, and both look exactly like the game
+// being broken rather than the harness.
+// 1. showScreen does keys={} , which REPLACES the object rather than clearing it. A
+//    reference captured once at the top of a test is stale the moment a raid ends, so
+//    every later keypress goes into an orphan object and the action silently stops
+//    happening. Call __keysRef() fresh inside each step, never hoist it.
+// 2. Standing still in a live raid to hold a key gets you shot. The seal cut read 10.1
+//    seconds against 15 asked for, purely because a crawler reached the tester. Pin
+//    hp, clear downed and set iv every step when the point of the test is the mechanic
+//    rather than the fight.
 window.__keysRef=function(){ return keys; };
 window.__wx={list:function(){ return WEATHER; },cur:wx,VF:VF,AMBR:AMBR,ping:ping,pick:pickWeather};
 window.__audio={amb:tickAmbience,steps:tickEnemyAudio,sfx:sfx,blip:blip,ears:earsOf,

@@ -1013,6 +1013,19 @@ Three things, none of which should be built without him saying so.
   - **Also confirmed clean, and worth stating because it found nothing:** every special character and set piece spawns on every raid. Sentry, crawler, snitch, listener, raider, warden, peddler and stray, plus encampments and THE SEAL, all **16 of 16 seeds on all four maps**. Nothing he has been promised is failing to turn up.
   - Parse check PASS, four maps built, stepped, drawn and HUD-drawn with `drawErr` null, plus hub frames and all four hub screens, with **zero unknown loot keys** across every container on every map, which is the check that would catch a bad entry in the two new tables. **Not verified: whether a CHECKPOINT now reads as somewhere worth a detour.** The sim bot walks to the nearest container and does not know what a landmark is, so it cannot tell me whether going out of your way for ammunition is a decision worth making. That is his to feel.
 
+### THE SEAL audited end to end (2026-08-24 tick, no code change)
+The only cross-raid promise in the game, and the most fragile kind of state there is: progress lives in the profile between raids. Driven end to end for the first time rather than read.
+- **Abandoning a raid loses the cutting.** Fifteen seconds cut, zero banked.
+- **Extracting banks exactly what you cut.** Fifteen seconds cut, fifteen banked.
+- **Cutting the remaining twenty five completes it**, and a reward cache appears at the door in the same instant, container count 224 to 225.
+- **The tier advances**, 0 to 1, **the cut resets to zero**, and **the reseal is genuinely harder**, 40 seconds to 65.
+- **Progress is per map and not global.** Breaking the dam's seal leaves BURIED CITY still at tier 0, which is what makes it a reason to return to a specific place.
+Eight checks, zero failures. Nothing to fix.
+
+**Two traps in my own harness, found on the way, both now recorded next to the hooks that need them.** Both looked exactly like the game being broken.
+- `showScreen` does `keys={}`, which REPLACES the object rather than clearing it. A reference captured once at the top of a test is stale the moment a raid ends, so every later keypress lands in an orphan object and the action silently stops happening. This is what made raids two and three of the first seal test read as a total failure to accumulate: the game was fine and my keyboard had been disconnected.
+- Standing still in a live raid to hold a key gets you shot. The first cut read 10.1 seconds against 15 asked for, purely because a crawler reached the tester mid test. When the point is the mechanic rather than the fight, pin health and clear the downed flag every step.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
