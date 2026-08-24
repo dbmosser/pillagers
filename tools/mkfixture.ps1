@@ -134,6 +134,12 @@ window.__simBatch=function(n){
 window.__export=function(){ return buildExport(); };
 // The cost of a heavy bag, so the curve can be read off the real function rather than
 // off my arithmetic, and so the loadPen slider can be proven to reach zero.
+// TIMING: WARM FOR AT LEAST 100 FRAMES BEFORE MEASURING ANYTHING.
+// A short warm gives readings that are pure JIT cold start and they look exactly like
+// a catastrophic regression. This has now cost two investigations: COLD STORAGE read
+// 11.33ms a frame at 40 warm frames and 2.41 at 120, and THE QUARRY read a 9.03ms sim
+// step at 40 and 0.43 at 120. Both were nothing. Warm 120, then measure twice and
+// distrust the first pass.
 window.__load=function(w){ return loadOf(w); };
 // Container opening, whole or by subset, so the staged pull can be driven and checked
 // without needing a key held down for four seconds of real time.
