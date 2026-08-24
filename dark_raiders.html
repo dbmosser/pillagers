@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.65';
+var VER='1.66';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -2623,29 +2623,56 @@ function buildFixedMap(def){
   // RUINS: whole buildings that fell in. Emitted as one solid block so nothing
   // about them is enterable, which is what makes them read as destroyed rather
   // than as a building the generator forgot to open.
+  // v1.66. His note asked for "buildings that are completely destroyed and cannot be
+  // entered", which is exactly what this is, and on two maps it was barely happening.
+  // Measured before: DAM wanted 36 ruins and placed 15, BURIED CITY 37 and placed 28,
+  // COLD STORAGE 25 and placed 8, and THE QUARRY wanted 29 and placed TWO. Wrecks over
+  // the same maps placed 120 of 120, 122 of 122, 82 of 82 and 96 of 96, so the failure
+  // was specific to ruins rather than to scatter placement generally.
+  // It was never broken, it was over constrained. A ruin is 150 to 320 wide and needs 70
+  // units of clearance from every wall, so the largest needs a clear 460 by 400. By the
+  // time this runs, the wall list already holds every building wall, interior partition,
+  // piece of furniture, platform perimeter and racking run on the map. On THE QUARRY,
+  // which is five terraces, essentially nowhere is that clear, so all 1,160 attempts
+  // failed but two and the map shipped with no destroyed buildings in it at all.
+  // The fix is to stop treating "a ruin" as one size. Each attempt now tries a large
+  // footprint, then a medium, then a small one at the same spot, so a gap that cannot
+  // take a collapsed warehouse can still take a collapsed shed. The clearance rule is
+  // UNCHANGED at 70 against walls and buildings, because that is the reachability
+  // guarantee and it is not what was wrong.
   var ruins=[],wantR=Math.round(9*AREA);
+  var RSIZE=[[150,320,130,260],[110,190,100,160],[78,128,70,108]];
   for(var rt=0;rt<wantR*40&&ruins.length<wantR;rt++){
     var rx3=rnd(160,WORLD_W-360),ry3=rnd(160,WORLD_H-360);
-    var rw3=rnd(150,320),rh3=rnd(130,260);
-    var okR=true,q4;
-    for(q4=0;q4<walls.length;q4++){ var WR=walls[q4];
-      if(rx3<WR.x+WR.w+70&&rx3+rw3>WR.x-70&&ry3<WR.y+WR.h+70&&ry3+rh3>WR.y-70){ okR=false; break; } }
-    if(!okR) continue;
-    for(q4=0;q4<buildings.length;q4++){ var BR=buildings[q4];
-      if(rx3<BR.x+BR.w+70&&rx3+rw3>BR.x-70&&ry3<BR.y+BR.h+70&&ry3+rh3>BR.y-70){ okR=false; break; } }
-    if(!okR) continue;
-    for(q4=0;q4<ruins.length;q4++){ var PR=ruins[q4];
-      if(rx3<PR.x+PR.w+140&&rx3+rw3>PR.x-140&&ry3<PR.y+PR.h+140&&ry3+rh3>PR.y-140){ okR=false; break; } }
-    if(!okR) continue;
-    // never seal a spawn or a way out behind rubble
-    for(q4=0;q4<def.spawns.length;q4++){ var SP4=def.spawns[q4];
-      if(SP4.x>rx3-90&&SP4.x<rx3+rw3+90&&SP4.y>ry3-90&&SP4.y<ry3+rh3+90){ okR=false; break; } }
-    if(!okR) continue;
-    for(q4=0;q4<def.extracts.length;q4++){ var EX4=def.extracts[q4];
-      if(EX4.x>rx3-130&&EX4.x<rx3+rw3+130&&EX4.y>ry3-130&&EX4.y<ry3+rh3+130){ okR=false; break; } }
-    if(!okR) continue;
-    var ru={x:rx3,y:ry3,w:rw3,h:rh3,d:ri(0,3),ruin:1,seed:rnd(0,6.28)};
-    ruins.push(ru); walls.push(ru);
+    for(var tier=0;tier<RSIZE.length;tier++){
+      var RS=RSIZE[tier];
+      var rw3=rnd(RS[0],RS[1]), rh3=rnd(RS[2],RS[3]);
+      var okR=true,q4;
+      // Clearance against real geometry, unchanged at 70. This is the reachability
+      // guarantee and it is not what was failing.
+      for(q4=0;q4<walls.length;q4++){ var WR=walls[q4];
+        if(rx3<WR.x+WR.w+70&&rx3+rw3>WR.x-70&&ry3<WR.y+WR.h+70&&ry3+rh3>WR.y-70){ okR=false; break; } }
+      if(!okR) continue;
+      for(q4=0;q4<buildings.length;q4++){ var BR=buildings[q4];
+        if(rx3<BR.x+BR.w+70&&rx3+rw3>BR.x-70&&ry3<BR.y+BR.h+70&&ry3+rh3>BR.y-70){ okR=false; break; } }
+      if(!okR) continue;
+      // Ruin to ruin spacing scales with the ruin. 140 was a flat rule sized for the
+      // largest footprint, and it was pricing small rubble out of gaps it fits in.
+      var rsep=(tier===0)?140:((tier===1)?110:84);
+      for(q4=0;q4<ruins.length;q4++){ var PR=ruins[q4];
+        if(rx3<PR.x+PR.w+rsep&&rx3+rw3>PR.x-rsep&&ry3<PR.y+PR.h+rsep&&ry3+rh3>PR.y-rsep){ okR=false; break; } }
+      if(!okR) continue;
+      // never seal a spawn or a way out behind rubble
+      for(q4=0;q4<def.spawns.length;q4++){ var SP4=def.spawns[q4];
+        if(SP4.x>rx3-90&&SP4.x<rx3+rw3+90&&SP4.y>ry3-90&&SP4.y<ry3+rh3+90){ okR=false; break; } }
+      if(!okR) continue;
+      for(q4=0;q4<def.extracts.length;q4++){ var EX4=def.extracts[q4];
+        if(EX4.x>rx3-130&&EX4.x<rx3+rw3+130&&EX4.y>ry3-130&&EX4.y<ry3+rh3+130){ okR=false; break; } }
+      if(!okR) continue;
+      var ru={x:rx3,y:ry3,w:rw3,h:rh3,d:ri(0,3),ruin:1,seed:rnd(0,6.28)};
+      ruins.push(ru); walls.push(ru);
+      break;   // placed at this tier, do not also try the smaller ones
+    }
   }
   // WRECKED VEHICLES: real cover out in the open, and the strongest single
   // signal that this place was lived in and then left in a hurry.
@@ -2789,7 +2816,13 @@ function buildFixedMap(def){
   // 2.3 percent of the map, and it moved every raid because the props roll every
   // raid. So flood the finished grid and pull out any piece of my own litter
   // that is touching ground you cannot reach. Authored geometry is never cut.
-  for(var gp=0;gp<4;gp++){
+  // Pass budget 4 to 10. Each pass cuts every offending prop and rebuilds the grid, so
+  // it converges quickly, but it gives up silently if it runs out. v1.66 placed many more
+  // ruins and THE QUARRY stopped converging inside four: reachability fell from 99.57 to
+  // 98.39 percent, which is about 1.2 percent of the map turned into floor you can see and
+  // never stand on. The loop breaks the moment a pass cuts nothing, so the extra budget is
+  // free on every map that already converged.
+  for(var gp=0;gp<10;gp++){
     var seenP=floodNav(mapNav),CP=mapNav.c,lost=[],yP,xP,iP;
     for(yP=0;yP<mapNav.h;yP++) for(xP=0;xP<mapNav.w;xP++){
       iP=yP*mapNav.w+xP;
