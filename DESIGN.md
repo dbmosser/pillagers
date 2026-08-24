@@ -1107,6 +1107,90 @@ is a design question about how loud the greed pillar should be and I have not
 decided it. Also not verified by play: whether the widened spread reads as
 "windfalls feel earned now" or just as "windfalls got rarer in the safe half of
 the map", which is the same change described from the other side.
+### v1.79: the greed dial was pinned at maximum for most of the calls it graded
+
+Direct follow on from v1.78. Turning windfalls on in the sim moved average haul
+up 73 percent, and anything keyed to bag value had been calibrated against the
+low number. The obvious place to look is greedOf, which divides bag value by a
+hardcoded 12,000 and clamps, and which the extraction siege scales off entirely:
+the arrival interval is 8 minus 4.6 times greed, the arrival cap is 6 plus 8
+times greed, and the ring noise is 1,200 times one plus 0.7 times greed.
+
+I expected the top of the scale to be unreachable. It is the opposite. Over 120
+seeded raids on THE QUARRY at simGreed 52, of the 31 raids that called a beacon,
+the median call carried 12,118 and 17 of 31, 55 percent, were at or above 12,000.
+Average greed came out at 0.934 of maximum. The highest call was 19,954, which
+is 66 percent past a ceiling it cannot express.
+
+So greedOf clamped to 1 for the majority of the calls it was asked to grade. A
+player calling with 12,000 and a player calling with 19,954 bought exactly the
+same siege: same 13 to 14 arrivals, same 3.4 second interval, same noise. The
+dial that exists specifically to make greed cost something in proportion had
+stopped being proportional and become a constant, which is the same failure the
+danger term had in v1.78, arrived at from the other end.
+
+The divisor is now a CFG dial, greedFull, so both arms run in one build, and it
+defaults to 20,000 to span the range that actually occurs. Because the dial is
+read at beacon call and nothing before it changes, callGreed per seed is
+identical across arms, so this is a genuinely paired comparison rather than the
+aggregate-only situation v1.78 was stuck with.
+
+Separately, one real bug found by reading the spawner. The arrival counter
+incremented before the placement could fail:
+
+    G.siegeSpawned++;
+    do{ ss2=freeSpot(G.map,30); st2++; }while(dist(ss2,p)<700&&st2<40);
+    if(dist(ss2,p)>=700){ ...spawn... }
+
+A siege that could not find a spot at least 700 units from the player burned one
+of its capped arrivals anyway and quietly came up short. The cap is a promise
+about how bad the ring gets and a failed dice roll must not pay it off. The
+counter now increments only on a successful placement, and two new counters,
+siegeArrivals and siegeNoSpot, report how often each happens so the failure rate
+is visible instead of inferred.
+
+And then the measurement embarrassed that fix, which is worth recording rather
+than quietly dropping. Across 240 raids, 120 a side, siegeNoSpot came back ZERO
+in both arms. The bug is real as written and the cap could genuinely be paid off
+by a failed roll, but it never once fired under these conditions. I fixed a
+defect with a measured incidence of nothing. It stays fixed because it is wrong
+either way, but I am not claiming it changed anything, because it did not.
+
+The paired A/B, 120 seeds, THE QUARRY, simGreed 52, greedFull 12,000 against
+20,000. The pairing held: 119 of 120 seeds produced an identical callGreed and
+the same 31 raids called a beacon in both arms, so this compares the same
+decisions rather than merely the same seeds. The single mismatch is the one seed
+whose outcome diverged.
+
+Arrivals per call go 6.03 to 4.90, down 19 percent, and the sign is consistent
+rather than noisy: 24 seeds down, 6 unchanged, 1 up. That is the gradient coming
+back. Under the old divisor the majority of calls were clamped to the same
+maximum siege; now what you carry actually selects the intensity.
+
+Survival did not move and I am not going to pretend it did. Extract rate went
+15.0 to 15.8 percent, one seed flipped to extract, none flipped to dead, and
+deaths in the siege went 12 to 11. On 120 seeds that is nothing. This is the
+fourth mechanism aimed at the extraction trip that has failed to move the
+outcome, and the reason is the same one measured before and reconfirmed here: 89
+of these 120 raids died before ever calling a beacon. Only 31 raids reach the
+siege at all, so no amount of tuning it can move the headline number. The siege
+is a texture change for the quarter of raids that get there, and that is the
+honest description of what this build does.
+
+I also checked the thing I most expected to be broken and it was fine, so I am
+saying so plainly: the siege runs during both the inbound wait and the boarding
+hold, up to 55 seconds, which makes the caps of 6 and 14 both exactly reachable.
+The comment above it is accurate. That check found nothing.
+
+Not verified: whether 20,000 is the right ceiling or merely a better one. It is
+fitted to one map at one bot greed setting, and the bot fills its bag by weight
+rather than by value, so a real player who leaves heavy cheap items behind will
+carry more value per unit weight than this measures and will sit higher on the
+scale than these numbers suggest. Also not verified: whether lowering average
+siege intensity for the median call is the right trade at all. Restoring the
+gradient necessarily makes the typical extraction easier than it was yesterday,
+and whether the greed pillar should be a gradient or should simply be loud is a
+design question I have not decided for him.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
