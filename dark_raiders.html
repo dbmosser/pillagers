@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.75';
+var VER='1.76';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -4618,15 +4618,44 @@ function buildRaid(sim){
   // Landmark loot. Going somewhere specific has to be worth more than searching
   // the nearest box, or a landmark is just scenery. Each kind stocks what its
   // name promises, and the tower is deliberately thin but valuable.
-  var LMTABLE={rare:'safe',medical:'body',ammo:'body',bulk:'crate'};
+  // LANDMARKS NOW STOCK WHAT THEIR NAME PROMISES, v1.76. The old mapping was
+  //   {rare:'safe', medical:'body', ammo:'body', bulk:'crate'}
+  // and then the container type was chosen as tt==='body' ? 'locker'. Two faults fell out
+  // of that. medical and ammo both mapped to 'body', so a RELIEF STATION and a CHECKPOINT
+  // produced byte for byte the SAME loot, and half the landmark themes in the game were
+  // indistinguishable from each other. And because 'body' was then turned into a locker,
+  // LOOT.body, which is the actually medical-weighted table, was never used by a landmark
+  // at all: the medical landmark did not stock medical supplies, it stocked lockers.
+  // Each theme now has a table that matches its sign. This also quietly answers the
+  // resupply question left open at v1.70: a CHECKPOINT or a SWITCHYARD is now a place you
+  // can deliberately GO for ammunition when you are running dry, which is a decision on
+  // the map rather than a number in a config, and it is justified by the landmark's own
+  // name rather than invented.
+  var LMLOOT={
+    rare:   LOOT.safe,
+    bulk:   LOOT.crate,
+    // A relief station: dressings and medkits first, with the plates you would expect to
+    // find in a place that patched people up.
+    medical:[['bandage',30],['medkit',20],['plate',12],['comp',8],['cell',8],['scrap',12],['board',6],['servo',4]],
+    // A checkpoint or a switchyard: this is where the rounds are.
+    ammo:   [['ammobox',44],['cell',12],['scrap',12],['wire',8],['comp',8],['plate',6],['board',5],['gun_pistol',3],['gun_smg',2]]
+  };
+  var LMTYPE={rare:'safe',medical:'locker',ammo:'locker',bulk:'crate'};
   for(var lc2=0;lc2<map.landmarks.length;lc2++){
     var LC=map.landmarks[lc2];
     var nlm=Math.max(1,Math.round(ri(3,6)*LC.dens*CFG.contDens));
     for(var q2=0;q2<nlm;q2++){
       var sp3=spotWall(map,{x:LC.x,y:LC.y,w:LC.w,h:LC.h},30);
       if(!sp3) continue;
-      var tt=LMTABLE[LC.loot]||'crate';
-      var cc3=mkContainer(sp3.x,sp3.y,tt==='safe'?'safe':(tt==='body'?'locker':'crate'),LC.d);
+      var cc3=mkContainer(sp3.x,sp3.y,LMTYPE[LC.loot]||'crate',LC.d);
+      var tbl=LMLOOT[LC.loot];
+      // rare and bulk already roll the right table through mkContainer, so only the two
+      // that were wrong get restocked.
+      if(tbl&&(LC.loot==='medical'||LC.loot==='ammo')){
+        var lmn=cc3.loot.length||2, fresh=[];
+        for(var lq=0;lq<lmn;lq++) fresh.push(rollLoot(tbl));
+        setLoot(cc3,fresh);
+      }
       containers.push(cc3);
     }
   }
