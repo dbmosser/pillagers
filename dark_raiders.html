@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.61';
+var VER='1.62';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -1648,23 +1648,71 @@ function makeBuilding(x,y,w,h,out,d,bid,forcePlan){
   // 34 margin left channels too thin to walk and minted sealed slivers behind
   // tables (measured 27 cells over 10 maps). At 52 the narrowest channel is
   // 52-24=28, twice a body.
-  if(iw>180&&ih>150){
-    var nF=ri(3,6);
+  // v1.62. His note was "and where is the furniture?", and the honest answer was that
+  // it existed but most rooms did not qualify for any. Measured on v1.61: the DAM, which
+  // is the map he plays most, had 61 pieces spread over 14 of its 35 buildings, so
+  // TWENTY ONE BUILDINGS WERE COMPLETELY BARE. Walk into most doors on that map and the
+  // room is an empty floor, which is exactly what he described. BURIED CITY reads far
+  // better at 79 percent furnished, and that is a size accident rather than a decision:
+  // the gate wanted a room over 180 by 150 and the dam is built from smaller rooms.
+  // The gate now scales instead of excluding. A room only needs to be big enough to walk
+  // around a piece, and the margin scales with the room rather than being a flat 52,
+  // which is what made small rooms impossible to place in at all.
+  // The walkability guarantee is unchanged and is what makes this safe to loosen: the
+  // sealed-room repair pass above strips furniture by ib and re-floods, so a layout that
+  // this pass ever seals is repaired rather than shipped.
+  if(iw>96&&ih>84){
+    // Margin is 18 percent of the room, floored at 20 and capped at the old 52, so a big
+    // hall behaves exactly as it did and a small room gets a workable band.
+    var mgX=clamp(Math.round(iw*0.18),24,52), mgY=clamp(Math.round(ih*0.18),24,52);
+    // Scaled by floor area rather than a flat 3 to 6, so a big hall is not as sparse as
+    // a cupboard and a cupboard is not as crowded as a hall.
+    var area=(iw*ih)/10000;
+    // First pass here was area*1.15 capped at 9, and it BACKFIRED. It pushed a big hall
+    // from the old 3 to 6 pieces up to 9, which sealed rooms, and the repair pass then
+    // stripped every piece from those buildings. Measured: furniture pieces on the dam
+    // went up 61 to 80 while FURNISHED BUILDINGS went DOWN, 14 of 35 to 9 of 35. More
+    // furniture, emptier map. Density is now close to the old numbers for a big room and
+    // the change is purely that small rooms get two pieces instead of none.
+    var nF=clamp(Math.round(area*0.35)+ri(1,2),2,6);
     for(var fi2=0;fi2<nF;fi2++){
       var fw2=rnd(20,34),fh2=rnd(14,26);
-      var fx4=ix+rnd(52,Math.max(53,iw-52-fw2)),fy4=iy+rnd(52,Math.max(53,ih-52-fh2));
+      var fx4=ix+rnd(mgX,Math.max(mgX+1,iw-mgX-fw2)),fy4=iy+rnd(mgY,Math.max(mgY+1,ih-mgY-fh2));
       var ft=ri(1,7);
       // 3 counter, 4 kitchen unit: both hug a wall, because a counter in the
       // middle of a room is a table and reads as one.
       if(ft===3||ft===4){
+        // A counter run is 46 to 88 long, which is longer than some of the rooms this
+        // now runs in. Clamped to the wall it hugs, so it can never overhang the room
+        // it is in or be placed at a negative offset.
         var horiz=rr()<.5;
-        if(horiz){ fw2=rnd(46,88); fh2=13; fy4=(rr()<.5?iy+18:iy+ih-18-fh2);
-          fx4=ix+rnd(24,Math.max(25,iw-24-fw2)); }
-        else { fw2=13; fh2=rnd(46,88); fx4=(rr()<.5?ix+18:ix+iw-18-fw2);
-          fy4=iy+rnd(24,Math.max(25,ih-24-fh2)); }
+        if(horiz){ fw2=clamp(rnd(46,88),20,Math.max(20,iw-36)); fh2=13;
+          fy4=(rr()<.5?iy+18:iy+ih-18-fh2);
+          fx4=ix+rnd(18,Math.max(19,iw-18-fw2)); }
+        else { fh2=clamp(rnd(46,88),20,Math.max(20,ih-36)); fw2=13;
+          fx4=(rr()<.5?ix+18:ix+iw-18-fw2);
+          fy4=iy+rnd(18,Math.max(19,ih-18-fh2)); }
       } else if(ft===5){ fw2=rnd(30,42); fh2=rnd(20,26); }
       else if(ft===6){ fw2=rnd(34,48); fh2=rnd(15,20); }
       else if(ft===7){ fw2=rnd(14,20); fh2=rnd(22,30); }
+      // In a SMALL room, shove the piece against the nearest wall. A piece touching a
+      // wall cannot split a room in two, so it cannot seal anything, so the repair pass
+      // above never has to strip the whole building. That pass removes ALL furniture from
+      // any building it finds sealed, which is why the first attempt at this made the dam
+      // emptier: more pieces meant more sealed rooms meant more buildings stripped bare.
+      // Big rooms are left alone, because a table in the middle of a hall is the point.
+      // FLUSH, not merely near. A 10 unit gap behind a piece is narrower than a body
+      // needs, so it mints a sliver of floor you can see and never stand on: measured a
+      // dip on the dam from 99.07 to 98.42 percent reachable at 10 units. Touching the
+      // wall leaves no gap to be trapped in, and it is what furniture against a wall
+      // looks like anyway.
+      if(iw<=180||ih<=150){
+        var cxr=fx4+fw2/2-(ix+iw/2), cyr=fy4+fh2/2-(iy+ih/2);
+        if(Math.abs(cxr)/Math.max(1,iw)>Math.abs(cyr)/Math.max(1,ih))
+          fx4=(cxr<0)?(ix+1):(ix+iw-1-fw2);
+        else
+          fy4=(cyr<0)?(iy+1):(iy+ih-1-fh2);
+      }
       out.push({x:fx4,y:fy4,w:fw2,h:fh2,d:d,ib:bid,furn:ft});
     }
   }
