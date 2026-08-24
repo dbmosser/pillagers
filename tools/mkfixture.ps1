@@ -135,6 +135,10 @@ window.__export=function(){ return buildExport(); };
 // The cost of a heavy bag, so the curve can be read off the real function rather than
 // off my arithmetic, and so the loadPen slider can be proven to reach zero.
 window.__load=function(w){ return loadOf(w); };
+// Container opening, whole or by subset, so the staged pull can be driven and checked
+// without needing a key held down for four seconds of real time.
+window.__open=function(ct,keys){ return openContainer(ct,keys); };
+window.__bestRarity=function(a){ return bestRarity(a); };
 window.__simSeedsFull=function(seeds){
   var out=[],i;
   for(i=0;i<seeds.length;i++){

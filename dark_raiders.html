@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.60';
+var VER='1.61';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -3798,7 +3798,15 @@ function bestRarity(loot){
   }
   return best;
 }
-function setLoot(c,loot){ c.loot=loot; c.best=bestRarity(loot); return c; }
+// Every container whose contents are set AFTER it is built comes through here: the ARC
+// strongbox, the seal cache, the warden drop, a raider corpse, your own dropped items.
+// The worst-first sort therefore belongs here as well as in mkContainer, or the staged
+// pull would hand out the prize first on exactly the containers where it matters most.
+// Caught by the v1.61 check: one misordered container per map, and it was the strongbox,
+// which is a nine second cut that howls the whole time. Handing over the best of its
+// three elites in the first three seconds would have gutted the one moment in a raid
+// that is supposed to feel like opening a vault.
+function setLoot(c,loot){ loot.sort(function(a,b){ return ival(a)-ival(b); }); c.loot=loot; c.best=bestRarity(loot); return c; }
 function mkContainer(x,y,type,d){
   var times={crate:1.4,locker:2.2,safe:3.4,body:1.0,cache:4.6};
   var counts={crate:[1,2],locker:[1,3],safe:[2,3],body:[1,2],cache:[2,3]};
@@ -3807,7 +3815,14 @@ function mkContainer(x,y,type,d){
     var lk=rollTable(LOOT[type]);
     loot.push(lk==='KEY'?resolveKey():lk);
   }
-  return {x:x,y:y,r:15,type:type,d:(d===undefined?-1:d),loot:loot,opened:false,time:times[type],best:bestRarity(loot),rot:rnd(-.25,.25)};
+  // WORST FIRST, BEST LAST, from v1.61. This one line is what turns a search from a
+  // hold-to-collect into a decision. You get the junk early and the prize only if you
+  // stay for the whole bar, so every container asks the same question the raid asks:
+  // is one more thing worth the time it costs. It matters because it happens about
+  // twenty one times a raid, and the data says the deep looting window is where people
+  // actually die.
+  loot.sort(function(a,b){ return ival(a)-ival(b); });
+  return {x:x,y:y,r:15,type:type,d:(d===undefined?-1:d),loot:loot,opened:false,time:times[type],best:bestRarity(loot),rot:rnd(-.25,.25),pulled:0};
 }
 // Machines get stencilled unit designations so they read as specific things on
 // the field, the way the AI raiders already do with their callsigns.
@@ -5495,7 +5510,11 @@ function findHeal(){
   }
   return best;
 }
-function openContainer(ct){
+// onlyKeys grants a SUBSET without finishing the container, which is how a search now
+// pays out item by item as the bar fills. Called with no subset it behaves exactly as
+// it always did and finishes the job, so every existing caller is untouched.
+function openContainer(ct,onlyKeys){
+  if(onlyKeys){ grantLoot(ct,onlyKeys); return; }
   // Searching is messy. Two or three bits of discarded packing hit the ground
   // beside every container you rifle through, and they stay: a looted district
   // LOOKS looted on the walk back, which is his litter answer working as
@@ -5535,8 +5554,12 @@ function openContainer(ct){
       sfx('charge',ct.x,ct.y);
     }
   }
-  for(var l=0;l<ct.loot.length;l++){
-    var key=ct.loot[l],itm=ITEMS[key];
+  grantLoot(ct,ct.loot);
+}
+function grantLoot(ct,keys){
+  var p=G.player,T=G.tel;
+  for(var l=0;l<keys.length;l++){
+    var key=keys[l],itm=ITEMS[key];
     T.items++; T.rar[itm.r]++;
     // one line per item; label() stacks them into a column so they never overlap
     label(ct.x,ct.y-10,
@@ -6233,6 +6256,28 @@ function updatePlayer(dt){
         if(!G.sim&&(near.prog||0)>0) say('Resuming, '+Math.round(100*near.prog/near.time)+'% done.');
       }
       near.prog=(near.prog||0)+dt;
+      // STAGED PULLS, v1.61. His note: "looting feels so uninspired, how can we make it
+      // more interesting???" It was one hold, one lump of loot, about twenty one times a
+      // raid, with no decision anywhere in it. Items now come out one at a time as the
+      // bar fills, worst first, so breaking off early keeps everything you have already
+      // pulled and leaves the best thing in the box. Progress persists, so you can come
+      // back for it. That makes every container a small version of the raid: one more
+      // thing, or get out. It also puts the greed decision in the LOOTING phase, which
+      // is where the v1.60 measurement says 55 percent of deaths actually happen, rather
+      // than at the extraction ring where I had been putting it.
+      var _tot=(near.loot?near.loot.length:0)+(near.pulled||0);
+      if(_tot>0&&near.loot.length>0){
+        // Stage k completes at k/_tot of the bar, so the last item lands exactly as the
+        // bar fills and the final grant below has nothing left to give.
+        var _due=Math.floor(near.prog/near.time*_tot)-(near.pulled||0);
+        while(_due>0&&near.loot.length>0){
+          var _k=near.loot.shift();
+          near.pulled=(near.pulled||0)+1;
+          openContainer(near,[_k]);
+          near.best=bestRarity(near.loot);
+          _due--;
+        }
+      }
       G.searchT=near.prog;
       // SPEC 7.4: the crowbar is IN YOUR HANDS while you work, contextually,
       // not as a hotbar chore. That is the cost: you can be caught holding it.
