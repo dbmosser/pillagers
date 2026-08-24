@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.71';
+var VER='1.72';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -682,8 +682,27 @@ var RECIPES=[
   {name:'2x Ammo Box',out:{ammobox:2},need:{comp:1,cell:1}},
   {name:'Armor Plate',out:{plate:1},need:{comp:2,board:1}},
   {name:'Medkit',out:{medkit:1},need:{bandage:2,comp:1}},
-  {name:'Smoke Canister',out:{smoke:1},need:{comp:1,cell:1}},
-  {name:'Decoy Beacon',out:{decoy:1},need:{comp:1,wire:1}},
+  // TWO TRAP RECIPES, fixed at v1.72. Materials and credits are fully fungible here,
+  // because everything in the stash sells, so a recipe can be priced honestly against the
+  // shop. Priced recursively through the Component Kit, which is an ingredient in six of
+  // the seven recipes: smoke cost 235 in materials against 150 to simply buy one, and
+  // decoy cost 210 against 100. Both were strictly dominated, which is the same shape as
+  // the Compact SMG trap already recorded in section 13: a thing the game offers you that
+  // is never the right choice.
+  // Fixed by raising the YIELD rather than cutting the cost, so nothing he already owns
+  // or has already crafted becomes worse, which is the same principle the SMG write up
+  // recommends. Frag is deliberately left at one: it prices out level with the shop, and
+  // its real value is that crafting reaches it before the 600 reputation gate does, which
+  // is a reason to craft that has nothing to do with cost.
+  // THE RULE EVERY RECIPE HAS TO SATISFY, learned by breaking it. Inputs must be worth
+  // MORE than the output sells for, or crafting prints money, and LESS than buying the
+  // same output outright, or the recipe is a trap. That window is exactly the shop's
+  // markup. My first attempt at the decoy was 3x for a component and a wire: 228 in
+  // materials selling for 258, which is a printer, the precise thing this audit existed
+  // to rule out. Two decoys need inputs worth between 160 and 200, and one component kit
+  // at 179 is the only clean way to land inside it.
+  {name:'2x Smoke Canister',out:{smoke:2},need:{comp:1,cell:1}},
+  {name:'2x Decoy Beacon',out:{decoy:2},need:{comp:1}},
   {name:'Frag Charge',out:{frag:1},need:{comp:1,cell:1,scrap:2}}
 ];
 var THROWKEYS=['smoke','decoy','frag'];
