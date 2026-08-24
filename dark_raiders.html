@@ -415,7 +415,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.86';
+var VER='1.87';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -446,7 +446,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -4330,7 +4330,22 @@ function mkRaider(x,y,forceId){
 // and he pays INSTANTLY, banked the moment the deal closes, so it is yours even
 // if you are killed thirty seconds later. The bag on your back is worth full
 // price and can be taken from you. His offer is worth half and cannot.
+// AND 0.55 IS ABOVE EVERY SURVIVAL RATE THIS PROJECT HAS EVER MEASURED, v1.87.
+// The decision the peddler puts to you is per item: sell it for 0.55 of value with
+// certainty, or carry it to the ring for 1.0 of value with probability p. Selling
+// wins whenever p is below 0.55. Measured upright extract rates are 30.8, 15.8,
+// 17.5 and 42.5 percent on the four maps, and even a disciplined crouching player
+// tops out at 54.2 on the easiest map. Every one of those is under the break-even,
+// so emptying your bag to him is the mathematically correct move on every map and
+// every play style measured, and there is exactly one peddler on every raid.
+// That inverts the premise of the genre, which rests on carry it out or lose it.
+// The rate is a dial now and the DEFAULT IS UNCHANGED at 0.55, because where the
+// break-even should sit relative to the survival rate is a question about what the
+// peddler is for, and it is his. Roughly: 0.30 makes him a bad-day escape hatch,
+// 0.55 makes him the optimal line, and anything above about 0.45 beats the current
+// rate on three maps out of four.
 var PEDDLER_BUY=0.55;
+function pedBuyRate(){ return (CFG.pedBuy===undefined?PEDDLER_BUY:CFG.pedBuy); }
 var PED_STOCK=['medkit','medkit','plate','ammobox','bandage','gun_smg','gun_carbine','gun_shotgun','comp','optic','titan'];
 function pedPrice(k){ return Math.round(ival(k)*1.9); }
 // He closes his stall to you once you have killed one of him. Notoriety is
@@ -4423,7 +4438,7 @@ function pedSellAll(){
     // He will not buy a key. Selling him the way into the vault you are standing
     // next to is not a trade, it is a mistake with a confirmation button.
     if(ITEMS[k]&&ITEMS[k].use==='key'){ kept.push(k); continue; }
-    tot+=Math.round(ival(k)*PEDDLER_BUY); n++;
+    tot+=Math.round(ival(k)*pedBuyRate()); n++;
   }
   if(!n){ say('Nothing in your bag he wants.'); return; }
   G.bag=kept;
@@ -10681,7 +10696,7 @@ function drawTrade(){
   var tot=0,n=0;
   for(i=0;i<G.bag.length;i++){
     var k=G.bag[i]; if(ITEMS[k]&&ITEMS[k].use==='key') continue;
-    tot+=Math.round(ival(k)*PEDDLER_BUY); n++;
+    tot+=Math.round(ival(k)*pedBuyRate()); n++;
   }
   cy+=LH(21);
   ctx.font=FS(TYPE.head); ctx.fillStyle=n?'#7fc4a0':'#4d5762';

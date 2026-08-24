@@ -1750,6 +1750,87 @@ geometry instead of one point each on four confounded ones. Not verified on
 anything but the upright bot, and crouch compresses the map spread on its own,
 so the entire question may matter less for a player who crouches.
 
+### v1.87: the peddler pays more than extracting does, on every map, by the numbers
+
+The peddler had never been audited. He buys anything in your bag at PEDDLER_BUY
+and pays instantly, banked the moment the deal closes, so it is yours even if you
+die thirty seconds later. The comment above him states the design exactly: "The
+bag on your back is worth full price and can be taken from you. His offer is
+worth half and cannot."
+
+PEDDLER_BUY is 0.55.
+
+The decision he presents is per item, and it is a straight expected-value
+comparison: sell for 0.55 of value with certainty, or carry to the ring for 1.0
+of value with probability p. Selling wins whenever p is below 0.55. So the
+question is simply whether the survival rate is above or below 55 percent.
+
+    upright bot        map0 30.8   map1 15.8   map2 17.5   map3 42.5
+    disciplined crouch map0 45.0   map1 41.7   map2 45.0   map3 54.2
+
+Eight measurements, every one under the break-even. Even the best case in the
+project, the easiest of the four maps played by a bot that crouches whenever a
+machine is within 700 units, lands at 54.2 against a break-even of 55. And the
+entity census says there is exactly one peddler on every raid on every map, so
+the option is always available. Emptying your bag to him is the mathematically
+correct play in every situation this project has ever measured.
+
+That inverts the premise the whole genre rests on, which is carry it out or lose
+it. The risky option is supposed to pay more in expectation than the safe one,
+and here it does not.
+
+The honest caveats, because the raw comparison flatters the finding. Extraction
+also banks your weapon and your rig, which dying costs you and the peddler does
+not replace, and it is the only thing that advances exItem and haul contracts.
+Selling is also not exclusive with extracting: you can sell what you are holding
+when you meet him and keep looting afterwards, so in practice he is a partial
+hedge rather than an alternative ending. The real margin is therefore narrower
+than 55 against 15.8 makes it sound. But the per-item bag decision, which is the
+one he actually puts in front of you, is not close on any map.
+
+pedBuy is a dial and THE DEFAULT IS UNCHANGED at 0.55, because where the
+break-even should sit relative to the survival rate is a question about what the
+peddler is for and it is his. Roughly: 0.30 makes him a bad-day escape hatch,
+0.55 makes him the optimal line, and anything above about 0.45 still beats the
+current rate on three maps out of four.
+
+Verified the dial: a fixed bag of two Data Cores, a Servo, an Optic and a
+Circuit Board sells for 562, 1,027 and 1,496 credits at rates 0.30, 0.55 and
+0.80. The ratios are 0.547 and 1.457 against the expected 0.545 and 1.454, so it
+scales exactly. Note the absolute figure is above face value times rate, because
+ival applies its own modifiers on top of the raw table value, but that cancels
+out of the break-even entirely since both sides of the comparison use ival.
+
+THREE CONTRACT AUDITS THAT FOUND NOTHING, recorded because a clean audit is a
+result and I have been finding defects at a rate that makes silence look like
+absence of checking.
+
+First, exItem contracts ask you to extract carrying board, optic, servo or core.
+All four are plain loot with no use field, so they land in the bag rather than
+being consumed on pickup the way ammo and armour are. Satisfiable.
+
+Second, the open contract asks for N safes, lockers or crates, and it picks the
+type without consulting the map, which is the exact shape of the v1.74 district
+bug. It is fine here. Worst case across ten seeds a map: safes 31, 19, 14 and
+29, lockers 42, 32, 22 and 39, crates 108, 76, 63 and 91, against asks that top
+out around six. Nothing close to impossible.
+
+Third, contractExtract has no G.sim guard while contractKill and contractOpen
+both have one, which looked like sim raids farming the profile's contracts. They
+do not. endRaid returns inside its sim block well before contractExtract is
+reached. The other two need their own guards because they fire mid-raid. The
+asymmetry is correct.
+
+Not verified: the peddler's actual availability in play. There is one on every
+map, but I have not measured how often a real player encounters him, how far off
+a natural looting route he sits, or whether he is reachable before the bag is
+already full, and all three change the practical size of this. Not verified
+either whether the bot ever uses him: the sim's peddler behaviour is not modelled
+at all, so none of the extract rates quoted above include selling, which means
+they are the rates for players who ignore him. Working out what the rate becomes
+when the bot does sell is the obvious next measurement and it needs the bot
+taught to trade first.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
