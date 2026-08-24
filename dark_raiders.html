@@ -361,6 +361,15 @@ var AREA=(WORLD_W*WORLD_H)/(2600*2000);   // scale decorative counts off the old
 // pure friction with nothing on the other side of it. The three pack tiers stay
 // in the data so the armoury still reads, they are just no longer a wall.
 var PACKCAP=[99999,99999,99999];
+// WHAT A BACKPACK TIER ACTUALLY BUYS, v1.81. It used to buy nothing. All three
+// PACKCAP entries are 99999 because he asked for unlimited carry on 2026-08-22 and
+// that instruction stands, but the shop kept selling Tier 2 at 450c and Tier 3 at
+// 1,300c, labelled "(99999wt)", for a total of 1,750 credits of no effect whatever.
+// A better pack cannot hold more when the old one already held everything, so it
+// carries the same load more comfortably instead: it discounts the weight penalty
+// rather than removing the wall, which keeps his rule exactly and gives the greed
+// pillar the counterplay it never had.
+var PACKPEN=[1,0.80,0.62];
 // SPEC 9.7: ARMOUR IN THREE TIERS, READABLE ON THE SILHOUETTE. One flat armour
 // pool topped up by plates was a health bar with an extra name. Three rigs is a
 // decision you make in the Undercroft and then live with for a whole raid:
@@ -391,7 +400,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.80';
+var VER='1.81';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -5758,7 +5767,7 @@ function loadOf(w){
   // Feel is his call, so the whole penalty sits on one slider. loadPen 0 restores the
   // v1.58 behaviour exactly, where carrying costs nothing, and 2 makes a big haul
   // genuinely punishing. If a loaded run feels like wading, this is the one number.
-  var K=(CFG.loadPen===undefined?1:CFG.loadPen);
+  var K=(CFG.loadPen===undefined?1:CFG.loadPen)*((typeof P!=='undefined'&&PACKPEN[P.pack]!==undefined)?PACKPEN[P.pack]:1);
   if(K<=0) return {spd:1,noise:1,stam:1};
   var over=w-LOAD_FREE; if(over<0) over=0;
   return {
@@ -9522,7 +9531,7 @@ function render2D(dt){
       if(pLift>0){ wc.save(); wc.translate(0,-pLift); }
       var pmode=p.downed?'down':(p.roll>0?'roll':(crouchP?'crouch':''));
       drawOp(p.x,p.y,p.face,p.roll>0?(1-p.roll/.38)*12.6:p.bob,'#8fa3b5',
-        clamp(bagWeight()/PACKCAP[P.pack],0,1),p.muzzle,(G.crowbarUp>0?'bar':pmode),p.iv,
+        clamp((1-loadOf(bagWeight()).spd)/(1-LOAD_FLOOR),0,1),p.muzzle,(G.crowbarUp>0?'bar':pmode),p.iv,
         {moving:!!p.moving,sprint:!!G.sprinting,ads:!!p.ads,hurt:p.hitFlash,bulk:armorById(p.rig).bulk,
          rl:(p.reloading>0&&p.wep.reload)?clamp(1-p.reloading/p.wep.reload,0,1):0});
       if(pLift>0) wc.restore();
@@ -11790,7 +11799,7 @@ function renderHub(){
   var w=WEAPONS[P.equipped]||WEAPONS.fists;
   document.getElementById('equipped').innerHTML=
     '<div class="wn">'+w.name+'</div><div class="ws">DMG '+w.dmg+' &middot; MAG '+(w.mag||'-')+
-    ' &middot; RANGE '+w.rng+' &middot; '+(w.auto?'AUTO':'SEMI')+' &middot; PACK T'+(P.pack+1)+' ('+PACKCAP[P.pack]+'wt)</div>';
+    ' &middot; RANGE '+w.rng+' &middot; '+(w.auto?'AUTO':'SEMI')+' &middot; PACK T'+(P.pack+1)+' (-'+Math.round((1-PACKPEN[P.pack])*100)+'% carry)</div>';
   var wl=document.getElementById('weplist'); wl.innerHTML='';
   P.weapons.forEach(function(k){
     // Same guard as the stash above: an armoury entry naming a gun this build no longer
@@ -11999,7 +12008,7 @@ function renderShop(){
       owned=(P.rigs||[]).indexOf(o.k)>=0;
     }
     else if(o.kind==='wep'){ label=WEAPONS[o.k].name; owned=P.weapons.indexOf(o.k)>=0; }
-    else if(o.kind==='pack'){ label='Backpack Tier '+(o.lvl+1)+' ('+PACKCAP[o.lvl]+'wt)'; owned=P.pack>=o.lvl; }
+    else if(o.kind==='pack'){ label='Backpack Tier '+(o.lvl+1)+' (-'+Math.round((1-PACKPEN[o.lvl])*100)+'% carry penalty)'; owned=P.pack>=o.lvl; }
     else label=ITEMS[o.k].name;
     nm.textContent=label+(locked?'  [REP '+o.rep+']':'');
     if(locked) nm.style.color='var(--ash)';

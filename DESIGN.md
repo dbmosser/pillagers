@@ -1311,6 +1311,85 @@ FOR A PLAYER WHO CHANGES NOTHING ELSE, which is not the same claim as crouching
 being worthless. Also not verified on the other three maps, and not verified at
 any other value of simGreed; the bot's bag threshold interacts directly with
 raid length and this whole result is about raid length.
+### v1.81: the shop was selling 1,750 credits of nothing
+
+Chased from the v1.80 confound. Containers opened came out at 16.7 in all three
+crouch arms, which is only possible if the bot stops looting on something other
+than a clock. It stops on bag WEIGHT, at simGreed. That sent me to the weight
+system, and the weight system has a hole in it that is not the bot's fault.
+
+PACKCAP is [99999,99999,99999]. That is correct and deliberate: his note on
+2026-08-22 was "make it where the backpack is unlimited and you can just take it
+all", v1.59 honoured it, and moved the cost of weight onto loadOf so that taking
+everything is allowed but expensive. None of that is in question and none of it
+changed today.
+
+What nobody went back and checked is that the SHOP still sells backpacks.
+Backpack Tier 2 at 450 credits, Backpack Tier 3 at 1,300, gated behind 1,500
+rep, rendered in the store as "Backpack Tier 2 (99999wt)". All three tiers are
+the same number. The upgrade path costs 1,750 credits and does nothing at all,
+and the label is technically honest in a way that reads as a bug report.
+
+A better pack cannot hold more when the old one already held everything, so it
+carries the same load more comfortably instead. PACKPEN is [1, 0.80, 0.62] and
+multiplies the loadOf penalty. His rule is untouched to the letter: nothing is
+ever refused, no pickup is blocked, there is still no wall. Tier 3 does not let
+you carry more, it makes 60wt feel like 40. The greed pillar gets the counterplay
+it never had, and the progression purchase starts existing.
+
+Two smaller things from the same read. The operator sprite's loaded pose was fed
+clamp(bagWeight()/PACKCAP[P.pack],0,1), which after the cap went to infinity is
+pinned at about 0.0006, so the character has never once visibly carried anything
+regardless of load. It now reads the real speed penalty. And both the shop label
+and the loadout line now state the discount instead of printing 99999wt.
+
+Two checks that found nothing, said plainly because a check that finds nothing
+is still a result. The HUD weight readout is correct and always has been: it
+shows item count, weight, and the live percentage slower and louder straight
+from loadOf. And the autoCull and "Bag full" machinery is unreachable dead code
+at cap 99999, but that is a direct consequence of his instruction rather than a
+defect, so it stays exactly where it is.
+
+Verified neutral: at pack tier 0, PACKPEN[0] is 1 and the build reproduces v1.80
+exactly across six seeds, checked with the fresh-iframe harness that v1.80
+established rather than the two-tab method that gave a false answer last time.
+Anyone who has not bought a pack sees no change whatsoever.
+
+Measured, 120 seeds per tier, THE QUARRY, simGreed 52, greedFull 20,000,
+simCrouch 0.
+
+                    T1        T2        T3
+    extract rate    15.8%     16.7%     19.2%
+    avg haul        7,729     7,992     8,015
+    containers      16.7      17.3      17.0
+    first contact   78s       79s       80s
+    duration        169s      176s      171s
+
+Both extract rate and haul are monotone in tier, which is the shape a working
+upgrade should have, and first contact is flat at 78, 79, 80 exactly as it
+should be since a pack has nothing to do with being seen.
+
+The effect is NOT statistically established and I am not going to claim it is.
+Paired T1 against T3: 110 of 120 seeds have the same outcome, 7 flip to extract
+and 3 flip to dead. Ten discordant pairs splitting 7 to 3 is a two-sided p of
+about 0.34, which is nothing. The aggregate 3.4 point gap is the same ten seeds
+described differently, not independent evidence.
+
+What IS established is the thing that actually mattered: the purchase does
+something now. Before this build the effect size was not small, it was exactly
+zero by construction, because the number the upgrade changed was the same number
+at every tier. Going from provably nothing to probably-slightly-positive is the
+result; the magnitude is unresolved.
+
+Not verified: the size of the effect, and it would take far more than 120 seeds
+to resolve it, because the limiting quantity is the ten discordant pairs rather
+than the sample. A cleaner test would widen PACKPEN and check the direction
+holds before trying to pin the number. Also not verified: whether 450 and 1,300
+credits are the right prices for a 20 and 38 percent carry discount, which is a
+value judgement about his economy that I have deliberately not made, and whether
+the discount should scale the noise penalty as heavily as the speed penalty,
+since loadOf currently returns both from the same multiplier and a real backpack
+plausibly helps you carry weight without doing anything at all about the rattle.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
