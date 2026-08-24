@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.69';
+var VER='1.70';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -422,7 +422,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -3938,6 +3938,19 @@ function bestRarity(loot){
 // three elites in the first three seconds would have gutted the one moment in a raid
 // that is supposed to feel like opening a vault.
 function setLoot(c,loot){ loot.sort(function(a,b){ return ival(a)-ival(b); }); c.loot=loot; c.best=bestRarity(loot); return c; }
+// Does this unopened container hold ammunition, and is the player low enough to be told?
+// CFG.ammoTell is the threshold in rounds and 0 switches the whole thing off. The default
+// 45 is a bit over one magazine of the rifle, which is the point at which a fight stops
+// being a decision and starts being arithmetic.
+function ammoTell(ct){
+  if(!G||!G.player||ct.opened) return false;
+  var th=(CFG.ammoTell===undefined?45:CFG.ammoTell);
+  if(th<=0) return false;
+  if(G.player.ammo+G.player.reserve>th) return false;
+  var lo=ct.loot; if(!lo) return false;
+  for(var i=0;i<lo.length;i++){ var it=ITEMS[lo[i]]; if(it&&it.use==='ammo') return true; }
+  return false;
+}
 function mkContainer(x,y,type,d){
   var times={crate:1.4,locker:2.2,safe:3.4,body:1.0,cache:4.6};
   var counts={crate:[1,2],locker:[1,3],safe:[2,3],body:[1,2],cache:[2,3]};
@@ -8653,6 +8666,28 @@ function drawContS(ct){
       wc.beginPath(); wc.arc(ct.x,ct.y-lift-d2-3,30,0,6.2832); wc.fill();
     }
     wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+    // AMMUNITION TELL, v1.70. v1.68 measured that two raids in five still run completely
+    // dry and that a dry raid loses an average of 74 seconds to being unable to shoot.
+    // The cause is not scarcity, there are 1,760 rounds on the dam against the 202 a raid
+    // uses, it is that only 44 of 236 containers hold any and nothing tells you which.
+    // Adding more ammunition would be the lazy fix and would flatten the tension. This is
+    // the pillar-correct one instead: INFORMATION IS THE GAME. When you are genuinely
+    // low, a box you can SEE that holds ammunition says so.
+    // Three deliberate limits keep it from being a cheat. It only appears below a real
+    // threshold, so a stocked player never sees it. It is drawn in the world pass under
+    // the fog, so it cannot reveal anything through a wall or across unexplored ground:
+    // you still have to go and look. And it says only "ammunition is in here", never how
+    // much or what else, so the search is still a commitment.
+    if(!G.sim&&ammoTell(ct)){
+      var apu=.45+.4*Math.sin(G.t*5.5+ct.x*.03);
+      wc.globalAlpha=apu; wc.fillStyle='#ffd25c';
+      var ax=ct.x, ay=ct.y-lift-d2-13;
+      wc.fillRect(ax-3,ay-1,6,4.6);          // a stubby magazine
+      wc.fillRect(ax-1.6,ay-3.4,3.2,2.4);
+      wc.globalAlpha=apu*.5;
+      wc.fillRect(ax-4.4,ay+4,8.8,1.1);
+      wc.globalAlpha=1;
+    }
     if(ct.cache){
       wc.font=FS(TYPE.head); wc.textAlign='center';
       wc.fillStyle=INK; wc.fillText('ARC CACHE',ct.x+1,ct.y-lift-d2-25);
@@ -10715,6 +10750,7 @@ var SLIDERS=[
   // invisible in it. Default moved 26 to 52.
   ['loadPen','Cost of a heavy bag',0,2,0.1,0],
   ['machAmmo','Ammo back from a killed sentry',0,1,0.1,0],
+  ['ammoTell','Show ammo boxes below this reserve',0,200,5,1],
   ['simGreed','Sim bot greed (bag wt)',10,140,2,1],
   ['simRaids','Sim raid count',10,80,5,1]
 ];

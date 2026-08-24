@@ -141,6 +141,7 @@ window.__export=function(){ return buildExport(); };
 // step at 40 and 0.43 at 120. Both were nothing. Warm 120, then measure twice and
 // distrust the first pass.
 window.__load=function(w){ return loadOf(w); };
+window.__tell=function(ct){ return ammoTell(ct); };
 // Container opening, whole or by subset, so the staged pull can be driven and checked
 // without needing a key held down for four seconds of real time.
 window.__open=function(ct,keys){ return openContainer(ct,keys); };
