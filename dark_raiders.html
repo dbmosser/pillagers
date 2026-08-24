@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.68';
+var VER='1.69';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -11478,7 +11478,16 @@ function renderHub(){
   document.getElementById('credits').innerHTML=P.credits.toLocaleString()+'<small>CREDITS</small>';
   document.getElementById('reptop').textContent=P.rep.toLocaleString();
   var sl=document.getElementById('stashlist'); sl.innerHTML='';
-  var counts=stashCounts(),keysArr=Object.keys(counts);
+  // DEFENCE IN DEPTH, v1.69. loadProfile has filtered unknown stash and armoury keys
+  // since v0.48, and that is the right place to repair a save. It is not enough on its
+  // own, because it only runs at LOAD: a key with no ITEMS entry that enters the stash
+  // mid session reaches this sort immediately and throws, and the throw takes the whole
+  // hub down with no way back into the game. v1.63 proved that class is reachable, when
+  // an unresolved KEY placeholder got into a raider bag and crashed the death handler.
+  // The hub now skips what it does not recognise instead of dying on it. Found by
+  // driving the four hub renderers against eighteen hostile profile states; this was
+  // one of three that threw.
+  var counts=stashCounts(),keysArr=Object.keys(counts).filter(function(k){ return !!ITEMS[k]; });
   keysArr.sort(function(a,b){ return ITEMS[b].val-ITEMS[a].val; });
   document.getElementById('stashct').textContent=P.stash.length;
   if(!keysArr.length){
@@ -11505,7 +11514,10 @@ function renderHub(){
     ' &middot; RANGE '+w.rng+' &middot; '+(w.auto?'AUTO':'SEMI')+' &middot; PACK T'+(P.pack+1)+' ('+PACKCAP[P.pack]+'wt)</div>';
   var wl=document.getElementById('weplist'); wl.innerHTML='';
   P.weapons.forEach(function(k){
-    var wp=WEAPONS[k],row=document.createElement('div'); row.className='row';
+    // Same guard as the stash above: an armoury entry naming a gun this build no longer
+    // knows is skipped rather than allowed to take the hub down.
+    var wp=WEAPONS[k]; if(!wp) return;
+    var row=document.createElement('div'); row.className='row';
     var nm=document.createElement('div'); nm.className='nm'; nm.textContent=wp.name;
     row.appendChild(nm);
     if(k!==P.equipped){
@@ -11547,7 +11559,11 @@ function renderHub(){
     h.innerHTML='Contract standing <b>'+cs+'</b> &middot; '+nx;
     cl.appendChild(h);
   })();
+  // loadProfile guarantees this is an array on a saved profile, but nothing guarantees it
+  // stays one, and a null here throws in exactly the same place as the two above.
+  if(!Array.isArray(P.contracts)) P.contracts=[];
   P.contracts.forEach(function(c,ci){
+    if(!c) return;
     var row=document.createElement('div'); row.className='crow';
     var cd=document.createElement('div'); cd.className='cd'; cd.textContent=c.desc;
     var TT=CTIER[c.tier]||CTIER.std;
