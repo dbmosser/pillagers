@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.76';
+var VER='1.77';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -3690,7 +3690,9 @@ function bodyStash(how,bag,guns,rig){
   P.body={
     map:clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1),
     x:Math.round(G.player.x),y:Math.round(G.player.y),
-    items:items, rig:rig||'none', raids:BODY_RAIDS, n:P.runs
+    items:items, rig:rig||'none', raids:BODY_RAIDS, n:P.runs,
+    // Untouched until you have had one actual chance to go back for it. See bodyAge.
+    fresh:1
   };
   return P.body;
 }
@@ -3699,6 +3701,18 @@ function bodyStash(how,bag,guns,rig){
 function bodyAge(){
   var B=P.body;
   if(!B||!B.items) return;
+  // OFF BY ONE, fixed at v1.77. The comment below says the scavengers take their cut
+  // "every raid you do not come back for it", and that was the intent, but this runs from
+  // buildRaid, which includes the raid where you DO come back. So the cut was always
+  // taken before you had any opportunity to reach the body, and because the good stuff
+  // goes first it was the expensive half that went.
+  // Measured: died carrying eight items worth 2,280c, and on the very first raid back,
+  // before touching anything, the body held six items worth 768c. A Titan Plate and a
+  // Data Core, 1,512c of the 2,280, were gone before the raid had started. Recovering
+  // your body intact was not possible at all, which is not what the feature says it does.
+  // The first raid after a death now spends this flag instead of a quarter of your kit.
+  // Every raid after that costs the quarter exactly as before, so the urgency is intact.
+  if(B.fresh){ B.fresh=0; return; }
   B.raids--;
   if(B.raids<=0){ P.body=null; return; }
   // Scavengers. A quarter of what is left, rounded up, every raid you do not
