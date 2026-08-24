@@ -1674,6 +1674,82 @@ of ordinary play.
 Verified neutral: waterDefeatsCrouch 0 reproduces v1.84 exactly across six seeds
 via the fresh-iframe harness at crouchParts 15 so the edited line fires. Parse
 PASS at 1.85, all four maps draw with drawErr null, hub renders.
+### v1.86: a clean correlation, a failed intervention, and the spread is still there
+
+v1.85 found that the four maps run from 15.8 to 42.5 percent extract rate at
+identical settings and left the cause open. This build went after the cause,
+found a very clean-looking answer, tested it, and the test refused to confirm it.
+Recording the whole arc because the negative half is the useful half.
+
+MACHINE DENSITY IS NOT THE ANSWER. Per million square units of the span the
+containers actually occupy, the four maps carry 3.18, 3.16, 3.38 and 3.31
+machines. That is flat. The maps are not guarded differently, and raw enemy
+count is actively anti-correlated with difficulty: map 0 fields the most
+machines of any map, 62, and is the second easiest, while map 2 fields the
+fewest, 45, and is the second hardest.
+
+LOOT DENSITY LOOKED LIKE THE ANSWER. Containers per million: 13.42, 12.16,
+10.98, 9.56 for maps 3, 0, 2, 1, against extract rates of 42.5, 30.8, 17.5 and
+15.8. Perfect rank agreement across all four. Machines per container tells the
+same story inverted: 0.247, 0.261, 0.308, 0.331. The mechanism was easy to
+state and sounded right: the bot fills its bag by weight, so a sparse map means
+walking further for the same haul, and walking further past a constant density
+of machines means more encounters. Difficulty as loot SPACING rather than guard
+count.
+
+So I built the test. MAPCONT multipliers behind a lootNorm flag, default 0,
+pulling each map toward about 12 containers per million. The dial does what it
+claims: density spread narrows from 3.98 to 1.18, at 12.17, 11.98, 11.41 and
+12.59, while machine density stays put at 3.18, 3.17, 3.37 and 3.31. Only the
+intended quantity moved.
+
+AND THE SPREAD DID NOT COLLAPSE.
+
+    map   shipped   loot-normalised   delta   density change
+     0     30.8%        26.7%         -4.1    12.16 -> 12.17
+     1     15.8%        25.8%         +10.0    9.56 -> 11.98
+     2     17.5%        10.8%         -6.7    10.94 -> 11.41
+     3     42.5%        38.3%         -4.2    13.54 -> 12.59
+
+    spread shipped 26.7 points, normalised 27.5 points
+
+Map 1 moved 10 points in the predicted direction on the largest density change,
+which is the one encouraging row. Map 3 lost 4.2 on a density cut, also
+directionally right. But map 2 GAINED density and LOST 6.7 points, which is
+backwards, and map 0's density did not move at all, 12.16 to 12.17, yet its rate
+still fell 4.1 points.
+
+That last row is the important one, because it is a direct read of the noise
+floor: a 4.1 point swing with no change to the variable under test. At 120 seeds
+the standard error on a rate near 30 percent is about 4.2 points and on a
+difference of two such rates about 5.9. So map 0 and map 3 are noise, map 2 is
+about one standard error, and map 1's plus 10 is about 1.7. Not one of these
+clears the bar on its own.
+
+The comparison is also unpaired in the way that matters. lootNorm changes map
+generation, so a given seed no longer produces the same raid across arms, which
+is the same limitation v1.78 ran into and it removes the per-seed pairing that
+made earlier results sharp.
+
+WHAT I ACTUALLY KNOW NOW. The correlation is real and striking, but it rests on
+four data points, and a perfect rank agreement among four items happens by
+chance one time in twenty-four. The intervention did not reproduce it. The
+honest position is that loot density MAY be a contributor, most plausibly on map
+1, and that the cause of the 27 point spread is still unknown. I am not going to
+write it up as solved because the picture was pretty.
+
+The dial stays in at default 0, changing nothing, because it is the apparatus
+for the better version of this experiment rather than a balance change.
+
+Not verified: the whole causal claim, which is the point of this entry. Also not
+verified: whether 120 seeds is remotely enough. To resolve a 5 point effect
+against a 5.9 point standard error needs several hundred seeds an arm, and the
+right next experiment is one map at four or five deliberately spaced densities
+rather than four maps at one, since that gives a dose-response curve on a single
+geometry instead of one point each on four confounded ones. Not verified on
+anything but the upright bot, and crouch compresses the map spread on its own,
+so the entire question may matter less for a player who crouches.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
