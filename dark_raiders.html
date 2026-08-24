@@ -370,6 +370,12 @@ var PACKCAP=[99999,99999,99999];
 // rather than removing the wall, which keeps his rule exactly and gives the greed
 // pillar the counterplay it never had.
 var PACKPEN=[1,0.80,0.62];
+// How far up the operator the waterline sits, in world pixels from the feet.
+// Measured rather than guessed: sampling a pixel column through the player at 2x
+// zoom puts the top of the head 44 screen pixels above the feet, so the sprite is
+// 22 world pixels tall. The first attempt used 17, which is 77 percent up the body
+// and put the water at his chest. Half of 22 is the waist.
+var WADE_DEPTH=11;
 // WHY THE FOUR MAPS ARE DIFFERENT DIFFICULTIES, measured at v1.86. Machine density
 // per unit area is near identical across all four, 3.18, 3.16, 3.38 and 3.31 per
 // million square units, so the maps are NOT guarded differently. Loot density is
@@ -415,7 +421,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.87';
+var VER='1.88';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -446,7 +452,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -6434,7 +6440,10 @@ function updatePlayer(dt){
   if(wading) sprint=false;
   G.sprinting=sprint;
   var spd=CFG.pSpeed*load*armorById(p.rig).spd; if(crouch) spd*=.52; if(sprint) spd*=1.62;
-  if(wading) spd*=.55;
+  // "make character much slower". 0.55 was a shrug; deep water you are wading
+  // through at waist height should be a commitment, not a texture. A dial so the
+  // feel is his to set without going back into the movement code.
+  if(wading) spd*=(CFG.wadeSpd===undefined?0.34:CFG.wadeSpd);
   if(p.ads) spd*=.62;
   if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.stam+15*dt);
 
@@ -9065,10 +9074,27 @@ function render2D(dt){
   // the lighting stops lining up with the ground.
   var Z=ZOOM(),VW=W/Z,VH=H/Z;
   // camera with cursor lean
+  // HIS NOTE, 2026-08-24: "zooming with the mouse is janky". The easing was
+  // already smooth and geometric, so the remaining problem was not the zoom, it
+  // was that the CAMERA and the ZOOM eased at different rates against coupled
+  // targets. The old target was tx = p.x + lean - VW/2, and VW is W/Z, so every
+  // frame the zoom eased it moved the camera target by a large amount, and the
+  // camera then chased it at its own slower rate. Algebraically the player's
+  // screen position is independent of Z at rest, which is why it looked right
+  // once it settled; during the ease the two rates disagree and the world slides
+  // under you and then settles back. That is the jank.
+  // The fix separates what is being smoothed. A world-space anchor eases toward
+  // the player, the cursor lean eases in SCREEN pixels where it is already
+  // zoom-invariant, and the camera is then derived exactly from the current
+  // eased zoom. Nothing chases a target that zoom is moving, so a wheel spin
+  // changes the scale and nothing else.
   var lean=p.ads?(opticMag()>1?.46:.30):.13;
-  var tx=p.x+(mouse.x-W/2)/Z*lean-VW/2,ty=p.y+(mouse.y-H/2)/Z*lean-VH*.54;
-  if(G.camX===undefined){ camX=tx; camY=ty; }
-  camX+=(tx-camX)*Math.min(1,dt*9); camY+=(ty-camY)*Math.min(1,dt*9);
+  var leanSX=(mouse.x-W/2)*lean, leanSY=(mouse.y-H/2)*lean;
+  if(G.anchX===undefined){ G.anchX=p.x; G.anchY=p.y; G.leanSX=leanSX; G.leanSY=leanSY; }
+  var ke=Math.min(1,dt*9);
+  G.anchX+=(p.x-G.anchX)*ke;       G.anchY+=(p.y-G.anchY)*ke;
+  G.leanSX+=(leanSX-G.leanSX)*ke;  G.leanSY+=(leanSY-G.leanSY)*ke;
+  camX=G.anchX-(W/2-G.leanSX)/Z;   camY=G.anchY-(H*.54-G.leanSY)/Z;
   camX=camClamp(camX,VW,WORLD_W); camY=camClamp(camY,VH,WORLD_H);
   G.camX=camX; G.camY=camY;
   var sk=G.shake>0?G.shake*.7:0;
@@ -9613,10 +9639,39 @@ function render2D(dt){
       var pLift=((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y):0);
       if(pLift>0){ wc.save(); wc.translate(0,-pLift); }
       var pmode=p.downed?'down':(p.roll>0?'roll':(crouchP?'crouch':''));
+      // HIS NOTE, 2026-08-24: "water should be deeper, go up to character's
+      // waist". Wading was a speed number and a splash noise with nothing on
+      // screen saying so, which made the cost feel arbitrary. The operator is
+      // now clipped at the waterline and the part below it is simply not drawn,
+      // so you are visibly IN the water rather than standing on a blue tile.
+      // Clipping rather than redrawing keeps this inside the existing 2.5D pass:
+      // no new sprite, no second draw, no layer.
+      var pWet=(!p.downed&&!G.sim&&inWater(p.x,p.y));
+      if(pWet){
+        wc.save();
+        wc.beginPath();
+        wc.rect(p.x-40,p.y-90,80,90-WADE_DEPTH);
+        wc.clip();
+      }
       drawOp(p.x,p.y,p.face,p.roll>0?(1-p.roll/.38)*12.6:p.bob,'#8fa3b5',
         clamp((1-loadOf(bagWeight()).spd)/(1-LOAD_FLOOR),0,1),p.muzzle,(G.crowbarUp>0?'bar':pmode),p.iv,
         {moving:!!p.moving,sprint:!!G.sprinting,ads:!!p.ads,hurt:p.hitFlash,bulk:armorById(p.rig).bulk,
          rl:(p.reloading>0&&p.wep.reload)?clamp(1-p.reloading/p.wep.reload,0,1):0});
+      if(pWet){
+        wc.restore();
+        // The waterline itself: a dark ellipse where the body enters, a bright
+        // meniscus on top of it, and a wake that only exists while you move, so
+        // standing still in water is visibly quieter than walking through it.
+        var wy=p.y-WADE_DEPTH, wob=Math.sin(G.t*3.1)*0.8;
+        wc.fillStyle='rgba(18,38,54,.55)';
+        wc.beginPath(); wc.ellipse(p.x,wy+wob,13,4.2,0,0,6.2832); wc.fill();
+        wc.strokeStyle='rgba(150,205,225,.5)'; wc.lineWidth=1;
+        wc.beginPath(); wc.ellipse(p.x,wy+wob,13,4.2,0,0,6.2832); wc.stroke();
+        if(p.moving){
+          wc.strokeStyle='rgba(180,222,240,'+(0.30+0.14*Math.sin(G.t*7)).toFixed(3)+')';
+          wc.beginPath(); wc.ellipse(p.x,wy+2+wob,20+2.5*Math.sin(G.t*5),6.5,0,0,6.2832); wc.stroke();
+        }
+      }
       if(pLift>0) wc.restore();
     } else {
       var e2=it.e;
@@ -10385,9 +10440,19 @@ function drawHUD(){
     var clab=cc<=0.15?'HIDDEN':(cc<=0.30?'WELL HIDDEN':(cc<=0.45?'CONCEALED':(cc<1?'PARTLY HIDDEN':'CRASHING THROUGH')));
     var ccol=cc<=0.30?'#7fc4a0':(cc<1?'#ffc04a':'#e0483a');
     ctx.font=FS(TYPE.head);
+    // HIS NOTE, 2026-08-24: "CONCEALED on the right lower corner is blocked by
+    // the key legend". It was drawn bottom LEFT at x=14, which is exactly the
+    // column the legend panel occupies, and the legend bottoms out at
+    // H - max(LH(52),96) while this sat at by - LH(62), so the two overlap for
+    // any legend tall enough to reach down. The legend is on by default, so that
+    // was the normal state of the screen. Moved to the right column, stacked
+    // above the inventory cue, where nothing else is drawn.
     var cw2=ctx.measureText(clab).width;
-    ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(14,by-LH(62),cw2+16,LH(20));
-    ctx.fillStyle=ccol; ctx.fillText(clab,22,by-LH(48));
+    ctx.textAlign='right';
+    ctx.fillStyle='rgba(6,9,13,.72)';
+    ctx.fillRect(W-16-cw2-8,by-LH(106),cw2+16,LH(20));
+    ctx.fillStyle=ccol; ctx.fillText(clab,W-24,by-LH(92));
+    ctx.textAlign='left';
   }
   bar(16,by,280,18,p.hp/p.maxhp,p.hp>50?'#5fae6f':(p.hp>25?'#d0a13c':'#c8452f'));
   ctx.font=FS(TYPE.head); ctx.fillStyle='#FFF6DC';
@@ -10433,9 +10498,15 @@ function drawHUD(){
   ctx.fillText(G.bag.length+' ITEMS  '+_bw+'wt'+
     (_spdPct>0?('   '+_spdPct+'% SLOWER  '+_noisePct+'% LOUDER'):''),W-16,by);
   // standing cue: the bag was findable only from a dim 14-item legend line
+  // HIS NOTE, 2026-08-24: this sat on top of the weapon name. It was the only
+  // offset in the whole right-hand stack written in RAW PIXELS while its five
+  // siblings all use LH(), which scales with the UI. At 1.0 scale 68 happens to
+  // clear the sidearm line at LH(52); at 2.09 scale, which this file supports,
+  // LH(34) is 71 and the weapon name climbs straight through it. Scaled now, and
+  // moved clear of the tallest line in the stack.
   if(!G.bagOpen){
     ctx.font=FS(TYPE.label); ctx.fillStyle='#ffb02e';
-    ctx.fillText('TAB  INVENTORY',W-16,by-68);
+    ctx.fillText('TAB  INVENTORY',W-16,by-LH(70));
   }
   var pl2=[],tsn=THROWKEYS[G.tsel];
   for(i=0;i<3;i++){
@@ -11415,10 +11486,21 @@ function showScreen(s){
 //    blank forever with no error in the console. Everything drawn here is drawn from
 //    scratch every frame except the two baked ground layers, so recovery is just
 //    dropping those caches and letting the next frame rebuild them.
+// HIS NOTE, 2026-08-24: "my mouse grahpic disappeared". The canvas sets
+// cursor:none, so the in-game reticle IS the cursor, and the reticle is drawn
+// only when !keys['KeyM'], because holding M shows the map. Nothing ever cleared
+// a held key when the window lost focus: keyup fires at the window, so alt-tab
+// or a click into another app while a key is down latches that key true forever.
+// Latch M and the cursor is gone for the rest of the session, with no way back
+// short of pressing and releasing M again, which nobody would guess. The same
+// latch is what leaves sprint or crouch stuck on, which has bitten this file
+// before. Every key is now released whenever focus or visibility goes.
+function releaseAllKeys(){ keys={}; mouse.down=false; if(G) G.sprinting=false; }
 document.addEventListener('visibilitychange',function(){
-  if(!document.hidden) lastTs=performance.now();
+  if(document.hidden) releaseAllKeys(); else lastTs=performance.now();
 });
-window.addEventListener('focus',function(){ lastTs=performance.now(); });
+window.addEventListener('blur',releaseAllKeys);
+window.addEventListener('focus',function(){ releaseAllKeys(); lastTs=performance.now(); });
 function onCtxLost(e){
   e.preventDefault();
   ctxLost=true;

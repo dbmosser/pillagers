@@ -1,0 +1,54 @@
+﻿=== DARK RAIDERS v1.87 FLIGHT RECORDER ===
+Profile: 16 runs, 5 extracted, 10 died, best haul 11500c, credits 1164, rep 0, pack T1
+Active config [B]: {"coneDeg":130,"viewFar":620,"ambient":150,"raidSec":600,"pSpeed":158,"extractWait":25,"nSentry":20,"nCrawler":34,"nRaider":8,"nSnitch":5,"eDmg":1.2,"eHp":1,"lootMult":1,"contDens":1,"concealPow":1,"packR":620,"packMax":4,"eAmbient":100,"noiseMult":1,"safeSlots":1,"downTime":12,"regenDelay":10,"regenSec":3,"bright":1.7,"simGreed":52,"simRaids":30,"loadPen":1,"machAmmo":1,"ammoTell":45,"raiderExtract":14,"greedFull":20000,"simCrouch":0,"crouchParts":7,"crouchHide":170,"crouchBreaksChase":1,"waterDefeatsCrouch":0,"lootNorm":0,"pedBuy":0.55,"preset":"B"}
+
+FEELING TAGS (all runs): Extract too easy x3, Too easy x2, Loot boring x1, AI too dumb x1, Ran out of ammo x1, Extract too tense x1
+
+--- RUNS (oldest first) ---
+#1 EXTRACT [B] wep:Auto Rifle dur:309s haul:7115c items:30 cont:16 shots:13 acc:15% kills:0s/1c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:1called/0missed regen:0hp firstContact:none firstLoot:116s moved:11886 crouch:0s sprint:4s lit:42% closestExt:21 aiExtracted:4
+   tags: Extract too easy, Too easy, Loot boring
+   note: looting feels so uninspired, how can we make it more interesting???
+#2 EXTRACT [B] wep:Auto Rifle dur:285s haul:11500c items:22 cont:10 shots:75 acc:37% kills:3s/8c/0r/0sn heals:0 downs:0 rev:0 marked:1 beacon:1called/0missed regen:35hp firstContact:183s firstLoot:85s moved:18605 crouch:0s sprint:10s lit:13% closestExt:8 aiExtracted:4
+   tags: Too easy, AI too dumb, Extract too easy, Ran out of ammo
+#3 ABANDON [B] wep:Auto Rifle dur:25s haul:180c items:3 cont:0 shots:21 acc:0% kills:0s/0c/0r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:none firstLoot:none moved:3784 crouch:0s sprint:8s lit:30% closestExt:2491 aiExtracted:1
+   note: character not rendering
+   in-run note @25s: every block is the smae lengt, map has no atmosphere, needs verticality, hills, woods, town centers, big buildings, etc
+#4 DEAD [B] wep:Auto Rifle dur:396s haul:12875c items:19 cont:15 shots:93 acc:33% kills:2s/9c/0r/2sn heals:0 downs:2 rev:1 marked:0 beacon:3called/2missed regen:0hp firstContact:130s firstLoot:140s moved:20226 crouch:0s sprint:13s lit:9% closestExt:5 killer:sentry diedAt:112m aiExtracted:4
+   tags: Extract too tense
+   note: extract was too hard, once i call the beacon and it arrivs i should have 30 seconds t get back into the circle and use it to extract
+   in-run note @190s: not enough enemies, boring -- looting
+#5 DEAD [B] wep:Compact SMG dur:119s haul:3935c items:15 cont:8 shots:65 acc:43% kills:1s/6c/0r/1sn heals:0 downs:2 rev:1 marked:0 beacon:1called/1missed regen:8hp firstContact:56s firstLoot:9s moved:8221 crouch:0s sprint:9s lit:12% closestExt:4 killer:sentry diedAt:51m aiExtracted:4
+   note: player should be able to use the beacon and extract while downed
+#6 EXTRACT [B] wep:Scav Pistol dur:203s haul:8085c items:9 cont:7 shots:57 acc:75% kills:5s/8c/0r/0sn heals:3 downs:0 rev:0 marked:0 beacon:1called/0missed regen:0hp firstContact:30s firstLoot:47s moved:19466 crouch:0s sprint:28s lit:24% closestExt:1 aiExtracted:4
+   tags: Extract too easy
+   note: note enough enemites on map
+#7 DEAD [B] wep:Stitcher dur:54s haul:145c items:3 cont:1 shots:40 acc:33% kills:1s/2c/0r/0sn heals:0 downs:2 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:32s firstLoot:38s moved:7263 crouch:0s sprint:12s lit:6% closestExt:987 killer:raider diedAt:1746m DRAWERR:crawler: Cannot read properties of undefined (reading 'length') wx:clear/golden
+   note: - there are still random lights flotaign in the air.  get rid of them, we don't need them since its daytime.  too many animals -- and deer are stuck in a smal area which makes them spastic.  -- raider battle felt really good
+#8 DEAD [B] wep:Worn Auto Rifle dur:600s haul:1530c items:20 cont:10 shots:51 acc:43% kills:0s/2c/1r/0sn heals:0 downs:0 rev:0 marked:0 beacon:0called/0missed regen:22hp firstContact:58s firstLoot:4s moved:11031 crouch:0s sprint:19s lit:7% closestExt:2278 killer:timer diedAt:2278m aiExtracted:5 DRAWERR:crawler: Cannot read properties of undefined (reading 'length') wx:fog/morning gunsEq:1
+   in-run note @93s: - raiders should drop better loot
+-
+   in-run note @108s: i should not be able to see the red attack views of enemies unless i am looking at them via line of sight, e.g. fog of war should block it.
+#9 DEAD [B] wep:Scav Pistol dur:40s haul:120c items:2 cont:0 shots:1 acc:0% kills:0s/0c/0r/0sn heals:0 downs:2 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:36s firstLoot:none moved:1823 crouch:0s sprint:0s lit:2% closestExt:648 killer:raider diedAt:648m DRAWERR:crawler: Cannot read properties of undefined (reading 'length') wx:rain/noon
+#10 EXTRACT [B] wep:Stitcher dur:204s haul:4620c items:4 cont:1 shots:66 acc:29% kills:0s/5c/1r/0sn heals:0 downs:1 rev:0 marked:1 beacon:1called/0missed regen:0hp firstContact:27s firstLoot:178s moved:10580 crouch:0s sprint:10s lit:8% closestExt:13 aiExtracted:4 DRAWERR:crawler: Cannot read properties of undefined (reading 'length') wx:fog/dusk caches:1 wardenMet:1 viaHold:1
+#11 DEAD [B] wep:Hullcracker dur:87s haul:7505c items:6 cont:2 shots:25 acc:44% kills:0s/2c/0r/0sn heals:0 downs:2 rev:1 marked:0 beacon:0called/0missed regen:0hp firstContact:62s firstLoot:40s moved:1322 crouch:0s sprint:0s lit:2% closestExt:994 killer:crawler diedAt:994m aiExtracted:4 DRAWERR:crawler: Cannot read properties of undefined (reading 'length') wx:blackout/dusk caches:1
+#12 DEAD [B] wep:Scav Pistol dur:40s haul:60c items:1 cont:0 shots:11 acc:91% kills:0s/2c/0r/0sn heals:0 downs:2 rev:1 marked:0 beacon:1called/0missed regen:0hp firstContact:12s firstLoot:none moved:3181 crouch:0s sprint:2s lit:9% closestExt:2 killer:crawler diedAt:210m aiExtracted:1 DRAWERR:crawler: Cannot read properties of undefined (reading 'length') wx:blackout/noon diedInSiege:1
+#13 EXTRACT [B] wep:Scav Pistol dur:79s haul:180c items:2 cont:1 shots:16 acc:75% kills:0s/4c/0r/0sn heals:0 downs:1 rev:1 marked:0 beacon:1called/0missed regen:2hp firstContact:38s firstLoot:35s moved:13000 crouch:0s sprint:29s lit:14% closestExt:20 aiExtracted:4 DRAWERR:crawler: Cannot read properties of undefined (reading 'length') wx:fog/noon viaHold:1
+#14 DEAD [B] wep:Scav Pistol dur:134s haul:3830c items:19 cont:13 shots:93 acc:60% kills:2s/3c/0r/1sn heals:0 downs:3 rev:1 marked:0 beacon:0called/0missed regen:13hp firstContact:16s firstLoot:29s moved:12721 crouch:0s sprint:25s lit:20% closestExt:133 thrown:1sm/0dc/0fr killer:listener diedAt:1073m aiExtracted:6 wx:fog/noon wardenMet:1
+   note: snitch too easy to kill
+   in-run note @124s: lockers should onbly be up against the walls. and where is the furniteure?
+#15 DEAD [B] wep:Kettle dur:208s haul:0c items:0 cont:2 shots:46 acc:7% kills:0s/0c/0r/0sn heals:0 downs:1 rev:0 marked:0 beacon:0called/0missed regen:0hp firstContact:189s firstLoot:121s moved:6462 crouch:0s sprint:2s lit:2% closestExt:83 killer:raider diedAt:335m aiExtracted:6 wx:storm/dawn
+#16 DEAD [B] wep:Scav Pistol dur:133s haul:5840c items:19 cont:8 shots:28 acc:32% kills:0s/1c/0r/1sn heals:0 downs:2 rev:1 marked:3 beacon:0called/0missed regen:0hp firstContact:103s firstLoot:12s moved:8264 crouch:1s sprint:5s lit:12% closestExt:85 killer:crawler diedAt:506m aiExtracted:6 wx:blackout/dawn gunsEq:1(PRISTINE)
+
+--- SURVIVAL BY VALUE CARRIED (his runs) ---
+  carrying 0-1000c: 20% out  (1/5)
+  carrying 1000-3000c: 0% out  (0/1)
+  carrying 3000-6000c: 25% out  (1/4)
+  carrying 6000-12000c: 75% out  (3/4)
+  carrying 12000c+: 0% out  (0/1)
+  of 10 deaths: 7 before ever calling the dropship, 2 after calling but not in the ring, 1 during the siege.
+  70 PERCENT DIED BEFORE THE DECISION TO LEAVE EXISTED. While that is true,
+  the bands above cannot be read as a risk curve at all: the light bands are
+  full of runs that never got rich, not runs that chose to stay light. Anything
+  aimed at the trip out is invisible in this number. Fix the looting phase first.
+
+=== END RECORDER ===

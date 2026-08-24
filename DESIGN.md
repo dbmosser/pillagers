@@ -1831,6 +1831,81 @@ they are the rates for players who ignore him. Working out what the rate becomes
 when the bot does sell is the obvious next measurement and it needs the bot
 taught to trade first.
 
+### v1.88: five notes from him in one sitting, and the cursor one was the real bug
+
+He sent five things while I was mid-measurement. All five are in. Taking them in
+order of how badly they were broken rather than the order they arrived.
+
+THE CURSOR. "my mouse grahpic disappeared". This is a genuine trap and not a
+cosmetic one. The canvas is styled cursor:none, so the in-game reticle IS the
+pointer, and the reticle is drawn only under !keys['KeyM'], because holding M
+raises the map. keyup is bound at the window, so any key still down when the
+window loses focus never receives its keyup and stays true forever. Alt-tab with
+M held, or click into another app mid-press, and the pointer is gone for the rest
+of the session with no visible cause and no obvious way back. The same latch is
+what leaves sprint or crouch stuck on, which this file has been bitten by before.
+releaseAllKeys now runs on blur, on focus, and on the page becoming hidden, and
+it clears the key map, the mouse button and the sprint flag together.
+
+THE ZOOM. "zooming with the mouse is janky". The easing was already smooth,
+already geometric, already debounced against localStorage, all fixed in an
+earlier pass, so the remaining fault was somewhere else: the CAMERA and the ZOOM
+were easing at different rates against coupled targets. The camera target was
+tx = p.x + lean - VW/2 and VW is W/Z, so every frame the zoom eased it moved the
+camera target by a large amount and the camera then chased it at its own slower
+rate. At rest the algebra cancels and the player sits at a fixed screen position
+regardless of zoom, which is exactly why it looked correct once it settled; it is
+only during the ease that the two rates disagree, so the world slides under you
+and then settles back. The fix separates what is being smoothed: a world-space
+anchor eases toward the player, the cursor lean eases in SCREEN pixels where it
+is already zoom-invariant, and the camera is then derived exactly from the
+current eased zoom. Nothing chases a target that zoom is moving.
+
+TAB INVENTORY OVER THE WEAPON NAME. It was the only offset in the entire
+right-hand stack written in raw pixels while its five siblings all use LH(),
+which scales with the UI setting. At 1.0 scale the raw 68 happens to clear the
+sidearm line at LH(52) and looks fine. This file supports scales up to 2.09,
+where LH(34) is 71, and the weapon name climbs straight through it. Scaled, and
+moved clear of the tallest line in the stack.
+
+CONCEALED UNDER THE LEGEND. It was drawn bottom LEFT at x=14, which is precisely
+the column the legend panel occupies, and the legend bottoms out at
+H - max(LH(52),96) while the label sat at by - LH(62). The legend is on by
+default, so that overlap was the normal state of the screen rather than an edge
+case. Moved to the right column, stacked above the inventory cue, where nothing
+else draws.
+
+WATER. "water should be deeper, go up to character's waist, make character much
+slower". Wading was a speed multiplier and a splash radius with nothing on screen
+saying so, which makes the cost feel arbitrary rather than earned. The operator
+is now clipped at the waterline and the part below it is simply not drawn, with a
+dark entry ellipse, a bright meniscus on top of it, and a wake that only appears
+while you are moving, so standing still in water is visibly quieter than walking
+through it. Clipping rather than compositing a second sprite keeps all of this
+inside the existing 2.5D pass: no new layer, no second draw, no renderer change.
+Speed goes from 0.55 to 0.34 and is now the wadeSpd dial so the feel is his to
+set without going back into the movement code.
+
+One mistake of mine in that last one, caught by measuring instead of eyeballing.
+I set the waterline at 17 world pixels on the assumption the operator stands
+about 34 tall. Sampling a pixel column straight through the player put the top of
+the head 44 screen pixels above the feet at 2x zoom, so the sprite is 22 world
+pixels, and 17 was 77 percent up the body: chest height, not waist. WADE_DEPTH is
+11, which is half of 22, and the corrected placement was re-measured the same way.
+
+Verified: parse PASS at 1.88, all four maps draw with drawErr null, hub renders,
+and a wading raid driven through a zoom sweep from 1.9 down to 0.8 draws clean
+with nothing thrown, which exercises the clip path and the new camera derivation
+together.
+
+Not verified: any of the four feel changes actually FEEL right, because the
+browser pane does not composite while hidden so I cannot screenshot it, and feel
+is the whole point of every one of them. The waterline height and the wake are
+measured to be geometrically correct and drawn where intended, which is not the
+same as looking good. The zoom fix is verified as not throwing and as
+mathematically decoupled, not as smooth to a hand on a wheel. He should click the
+play link and tell me which of the five still feels wrong.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
