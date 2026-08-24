@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.70';
+var VER='1.71';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -522,11 +522,40 @@ function addWear(id,rounds){
 }
 // What a repair costs. Scales with how good the gun is and how far gone it is,
 // and it wants a part as well as money so the workshop stays relevant.
+// What replacing this gun would cost, rather than fixing it. The shop price where the
+// shop stocks it, otherwise the item value scaled by the ratio the shop actually uses,
+// which is a consistent 2.0 to 2.5 across every gun it sells.
+function replaceCost(id){
+  // SHOP is declared further down the file. That is harmless because nothing calls this
+  // until the Workshop is open, long after boot, but the guard costs nothing and means a
+  // future caller moved earlier cannot trip over the hoisting.
+  if(typeof SHOP!=='undefined'&&SHOP) for(var ri2=0;ri2<SHOP.length;ri2++){
+    var o=SHOP[ri2];
+    if(o&&o.k===id&&o.cost) return o.cost;
+  }
+  var v=ival('gun_'+id);
+  return v?Math.round(v*2.4):900;
+}
 function repairCost(id){
   var w=wearOf(id);
   if(w<=0) return null;
   var tier=(WTIER[id]||1);
-  return {credits:Math.round(w*0.9*(1+tier*0.35)),
+  var raw=Math.round(w*0.9*(1+tier*0.35));
+  // REPAIR MUST NEVER COST MORE THAN REPLACING, v1.71. Measured on v1.70, and the wear
+  // economy was inverted at every tier past WORN:
+  //   pistol  buy 600    repair at FOULED 1,154   at FAILING 1,944
+  //   smg     buy 2,200  repair at FAILING 2,448
+  //   rifle   buy 3,800  repair at 2,400 rounds 4,428
+  //   dmr     buy 4,500  repair at 2,400 rounds 5,184
+  // and the curve had no ceiling at all, so it grew forever with rounds fired. Servicing
+  // a gun was therefore always the wrong move: throwing it away and buying another was
+  // cheaper, which makes the Workshop a trap and quietly deletes the point of v1.51,
+  // where a favourite gun was meant to become a running cost you CHOOSE to pay.
+  // Capped at 60 percent of replacement. Still a real bill, still escalating with use up
+  // to that ceiling, and now always the cheaper option, so servicing is a decision about
+  // whether you want THIS gun rather than a punishment for having used it.
+  var cap=Math.round(replaceCost(id)*0.6);
+  return {credits:Math.min(raw,cap),
           part:(w>=950?'servo':'comp'),
           parts:(w>=1600?2:1)};
 }
