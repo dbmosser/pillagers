@@ -1606,6 +1606,74 @@ are, and a stricter or looser choice would move this number.
 Verified neutral at the shipped default against v1.83 across six seeds using the
 fresh-iframe harness, at crouchParts 15 so the edited line actually fires. Parse
 PASS at 1.84, all four maps draw with drawErr null, hub renders.
+### v1.85: the four maps are not the same difficulty and nothing had ever measured it
+
+Two things this build. The small one first.
+
+WATER. The noise block says "wading defeats crouch entirely: splashing is loud
+whatever you do", and inside the noise system that is true: the footstep interval
+drops to 0.30 and the radius goes to 290. But "entirely" is not what happens,
+because the rule that actually hides you has never had a wading check. v1.82
+measured the noise half of crouch at roughly nothing and the invisibility half at
+26 points, so what water currently defeats is the part that does not matter and
+what it leaves intact is the part that does. You can crouch-wade across open
+water, splashing loudly enough to be heard at 290 units, and stay invisible to
+anything past 170. waterDefeatsCrouch is a dial and DEFAULTS TO THE SHIPPED
+BEHAVIOUR, because making water genuinely dangerous is a balance change rather
+than a typo fix and the comment is ambiguous about whether "entirely" was ever
+meant globally. His call, dial ready either way.
+
+A check that found nothing, recorded because it looked alarming: the fixture
+profile reads equipped 'fists' with an empty weapons array, which would mean
+every combat number this week came from an unarmed bot. It does not. The guard
+in buildRaid rolls one of the four issued starters whenever the equipped weapon
+is fists or is missing from the armoury, so the bot always deploys armed.
+
+Now the real finding. Crouch had only ever been measured on THE QUARRY, so I ran
+upright against crouch on all four maps, 120 seeds an arm, simGreed 52,
+greedFull 20,000, pack T1, crouchHide 170, crouchBreaksChase 1. Eight arms.
+
+    map   upright   crouch   gain    flips up/down   1st contact upright
+     0     30.8%    45.0%   +14.2      37 / 20             95s
+     1     15.8%    41.7%   +25.8      39 /  8             78s
+     2     17.5%    45.0%   +27.5      41 /  8             88s
+     3     42.5%    54.2%   +11.7      30 / 16             85s
+
+All four gains are significant on their own: z of 2.25, 4.52, 4.71 and 2.06.
+
+The headline is not the crouch column. It is the upright one. At identical
+settings the four maps run from 15.8 to 42.5 percent extract rate, a 27 point
+spread, and map 3 is close to three times easier than map 1. Nothing in this
+project has ever measured that, every balance number I have produced this week
+came from map 1, and map 1 turns out to be the hardest of the four. Every
+absolute figure in the last eight changelog entries is therefore a
+worst-case-map figure rather than a typical one. The A/B comparisons are all
+still sound, because both arms always shared a map, but the levels are not
+representative and I have been quoting them as though they were.
+
+The second finding is that crouch is a difficulty equaliser. It pays most where
+the map is hardest, plus 25.8 and 27.5 on the two worst maps against plus 14.2
+and 11.7 on the two easiest, and the result is that the spread collapses from 27
+points to 12.5. With crouch the four maps all land between 41.7 and 54.2, which
+is another way of saying that a player who crouches is barely playing four
+different maps at all.
+
+First contact upright is nearly identical everywhere, 78 to 95 seconds, so the
+maps are not differing in how fast you get found. They differ in what happens
+next.
+
+Not verified: WHY the maps differ. Enemy counts, layout openness, extract
+placement and container density are all plausible and I have measured none of
+them; this build establishes the gap exists, not what causes it. Not verified
+whether the spread is intentional, since four maps of equal difficulty would be
+a strange design goal and 27 points may simply be more than intended. And not
+verified for a human: the bot crouches whenever a machine is within 700 units,
+so the crouch column is closer to a ceiling for the strategy than a description
+of ordinary play.
+
+Verified neutral: waterDefeatsCrouch 0 reproduces v1.84 exactly across six seeds
+via the fresh-iframe harness at crouchParts 15 so the edited line fires. Parse
+PASS at 1.85, all four maps draw with drawErr null, hub renders.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
