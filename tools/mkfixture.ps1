@@ -163,6 +163,35 @@ window.__simSeedsFull=function(seeds){
   return out;
 };
 window.__world=function(){ return {w:WORLD_W,h:WORLD_H}; };
+// WINDFALL PROBE. Reports windfallOdds broken into its three terms at every
+// container on the current raid, so the promise ("odds rise with distance from a
+// way out, time on the surface, and danger") can be checked against real geometry
+// rather than against the comment that describes it.
+window.__wf=function(atSec){
+  if(!G) return null;
+  var save=G.timeLeft;
+  if(atSec!==undefined&&atSec!==null) G.timeLeft=CFG.raidSec-atSec;
+  var rows=[];
+  for(var i=0;i<G.containers.length;i++){
+    var c=G.containers[i];
+    var near=1e9;
+    for(var z=0;z<G.zones.length;z++){ var d=dist(c,G.zones[z]); if(d<near) near=d; }
+    var danger=0,dLos=0,dAware=0,dAlive=0;
+    for(var e=0;e<G.ents.length;e++){
+      var E=G.ents[e];
+      if(E.kind==='raider'||E.kind==='peddler'||E.kind==='stray') continue;
+      if(dist(c,E)<340&&losClear(c.x,c.y,E.x,E.y,G.vseg||G.map.segs)){ danger=1; if(!E.dead) dAlive=1; if(losClear(c.x,c.y,E.x,E.y,G.vseg||G.map.segs)) dLos=1; if(E.alert||E.state==='chase'||E.state==='hunt'||E.state==='search') dAware=1; break; }
+    }
+    var out=CFG.raidSec-G.timeLeft;
+    rows.push({kind:c.kind,near:Math.round(near),
+      tDist:+(clamp(near/2600,0,1)*0.10).toFixed(4),
+      tTime:+(clamp((out-240)/420,0,1)*0.08).toFixed(4),
+      tDang:danger?0.10:0,dLos:dLos,dAware:dAware,dAlive:dAlive,
+      odds:+windfallOdds(c.x,c.y).toFixed(4)});
+  }
+  G.timeLeft=save;
+  return {raidSec:CFG.raidSec,zones:G.zones.length,cons:rows.length,rows:rows};
+};
 // Paired A/B. Runs an explicit list of seeds so the SAME raids can be put through
 // two builds and compared pairwise. Unpaired 30v30 comparisons are close to a coin
 // flip; the sign of a paired difference is right about 95 percent of the time at 100

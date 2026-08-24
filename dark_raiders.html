@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.77';
+var VER='1.78';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -3991,14 +3991,20 @@ function windfallOdds(x,y){
   // the nerve, which is the other half of the extract-too-easy answer.
   var out=CFG.raidSec-G.timeLeft;
   odds+=clamp((out-240)/420,0,1)*0.08;
-  // And is anything near enough to kill you for it?
+  // And is anything near enough to kill you for it? IT HAS TO BE ABLE TO SEE THE
+  // CONTAINER, fixed at v1.78. Proximity alone fired on 65 percent of every
+  // container on all four maps, and 62 percent of those were an enemy standing on
+  // the other side of a wall. That is not danger, it is population density, and a
+  // bonus that pays on two thirds of the map is a baseline wearing a costume.
+  // Requiring line of sight cuts it to about a quarter of containers, which is the
+  // spike it was always meant to be, so the payout goes up to match.
   var danger=0;
   for(var e2=0;e2<G.ents.length;e2++){
     var E=G.ents[e2];
     if(E.kind==='raider'||E.kind==='peddler'||E.kind==='stray') continue;
-    if(dist({x:x,y:y},E)<340){ danger=1; break; }
+    if(dist({x:x,y:y},E)<340&&losClear(x,y,E.x,E.y,G.vseg||G.map.segs)){ danger=1; break; }
   }
-  if(danger) odds+=0.06;
+  if(danger) odds+=0.10;
   return clamp(odds,0,0.28);
 }
 // THE ARC STRONGBOX. One per raid, in the worst place on the map, and it takes
@@ -5870,17 +5876,26 @@ function openContainer(ct,onlyKeys){
   // The windfall is rolled at the moment of opening, not at map build, because
   // half its inputs are things about YOU: how long you have been out here and
   // what is standing near you right now.
-  if(!ct.strong&&!ct.dropped&&!ct.mine&&!G.sim){
+  // THE SIM ROLLS THIS TOO, as of v1.78. It used to be skipped under !G.sim, so
+  // every balance number this project has ever produced was measured on a game
+  // without windfalls in it: hauls were understated, and worse, the sim drew one
+  // fewer random number per container than the real game does, which means a
+  // seeded raid in the sim was never the same raid as that seed played live.
+  // Seeds stay comparable sim to sim, and are now comparable to the real thing.
+  // Only the presentation is skipped.
+  if(!ct.strong&&!ct.dropped&&!ct.mine){
     var wo=windfallOdds(ct.x,ct.y);
     if(rr()<wo){
       var wk=pick(WINDFALL);
       ct.loot=ct.loot.concat([wk]);
       ct.windfall=1;
       T.windfalls=(T.windfalls||0)+1;
-      say('There is something under it.');
-      label(ct.x,ct.y-30,'WINDFALL','#ffd76a',0,true);
-      spark(ct.x,ct.y,'#ffd76a',30,320);
-      sfx('charge',ct.x,ct.y);
+      if(!G.sim){
+        say('There is something under it.');
+        label(ct.x,ct.y-30,'WINDFALL','#ffd76a',0,true);
+        spark(ct.x,ct.y,'#ffd76a',30,320);
+        sfx('charge',ct.x,ct.y);
+      }
     }
   }
   grantLoot(ct,ct.loot);
@@ -7824,7 +7839,7 @@ function endRaid(how){
 
   if(G.sim){
     G.simResult={outcome:how,seed:G.seed,dur:Math.round(CFG.raidSec-G.timeLeft),haul:haul,items:G.bag.length,
-      containers:T.containers,killer:T.deathKiller,firstContact:T.firstContact===null?null:Math.round(T.firstContact),
+      containers:T.containers,windfalls:T.windfalls||0,killer:T.deathKiller,firstContact:T.firstContact===null?null:Math.round(T.firstContact),
       shots:T.shots,hits:T.hits,kills:T.kills,closest:Math.round(T.closestExtract),
       downs:T.downs,revives:T.revives,raidersExt:T.raidersExtracted,
       beaconCalls:T.beaconCalls,beaconMissed:T.beaconMissed,

@@ -1034,6 +1034,79 @@ Eight checks, zero failures. Nothing to fix.
   - **Worth flagging for his own save:** this has been live for every death he has ever had, so every body he has gone back for was already stripped of its two best items before he arrived. If recovering a body has ever felt underwhelming, that is why.
   - Parse check PASS, four maps built, stepped, drawn and HUD-drawn with `drawErr` null, plus hub frames and all four hub screens. **Not verified: whether three raids is now too generous.** Making the first trip intact is strictly more valuable than before, so the window may want to be shorter to compensate; `BODY_RAIDS` is one constant. I have deliberately not touched it in the same build as the fix, because changing the rule and the number together would make the next measurement unreadable.
 
+### v1.78: the danger bonus fired on two thirds of the map, most of it through a wall
+
+Third audit in the "does the map supply what it visibly promises" run, and this
+time the promise is a comment. WINDFALLS carry a claim right above the function:
+the odds "rise the further you are from a way out, the longer you have been on
+the surface, and the closer you are to something that can kill you." Three
+claims, all numeric, all checkable. I built a probe that reports windfallOdds
+broken into its three terms at every container on a raid and ran it over 40
+raids across all four maps, about 7,800 containers.
+
+The distance term is fine. Nearest way out averages 1,243 units and reaches
+3,449, so the gradient is real and reaches about half its ceiling on average.
+That one does what it says.
+
+The danger term does not. It fired on 65 percent of every container on all four
+maps: 64.3, 64.7, 64.2, 66.5. A bonus that pays on two thirds of the map is not
+a spike, it is a baseline wearing a costume, and a baseline is exactly the thing
+the comment three lines above says windfalls exist to avoid. Worse: of the ones
+that did fire, only 38 percent had line of sight to the container. The other 62
+percent were a crawler standing on the far side of a wall, which the raid
+correctly treats as no threat at all everywhere else in the codebase. The test
+was a proximity test wearing the name danger. It measured population density.
+
+Line of sight is now required, and because that cuts the trigger rate from 65
+percent to 31.4 percent, the payout goes from 0.06 to 0.10 so the term still
+means something when it lands.
+
+The average is deliberately almost unchanged: 0.1368 before, 0.1303 after. What
+changed is the shape, which is the entire point. Before, 78 percent of all
+containers sat in two adjacent odds bands, 0.10 and 0.15, and only 3.1 percent
+ever reached 0.20. Nothing reached the top band, so the 0.28 cap had never once
+been approached. After: the middle two bands hold 49 percent, 13.3 percent reach
+0.20 or better, and the top band is populated. Same money, distributed by what
+you actually did rather than by where the map happened to put a sentry.
+
+Second finding, from the same read. The windfall roll was skipped under G.sim,
+so the bot sim has never once modelled windfalls. Every haul number this project
+has produced was measured on a version of the game with the system switched off.
+The subtler half is worse: the real game draws one random number per container
+that the sim did not, so a seeded raid in the sim was never the same raid as
+that seed played live. Seeds were only ever comparable sim to sim. The sim now
+rolls it and skips only the presentation.
+
+Measured, 120 seeds, THE QUARRY pinned, simGreed 52. The 1.77 arm reported zero
+windfalls on all 120 raids, which is the proof rather than the inference. The
+1.78 arm reports 198 across 120 raids: 1.65 a raid, 9.9 percent of containers
+opened, 91 raids with at least one and 29 with none, tail out to six. Average
+haul goes 4,478 to 7,734. That lift of 3,256 reconciles against the item table
+independently: the nine windfall keys average 2,070 credits, and 1.65 times
+2,070 is 3,415, within five percent of observed.
+
+The important reading of that number is that it is NOT an economy change. The
+real game has always rolled windfalls. What moved is the measurement: every
+balance conclusion this project has drawn from the sim was drawn against an
+average haul 42 percent below what the game actually pays. Nothing in the
+player's economy changed today; the instrument stopped lying about it.
+
+One honest limit on this comparison. Drawing one more random number per
+container shifts the stream, so the same seed is no longer the same raid across
+the two builds. This stopped being a paired test the moment the fix landed, and
+the aggregate is all that survives. Extract rate read 20 percent against 15
+percent, which at 120 a side is a z of about 1.0 and therefore nothing; I am not
+reporting it as an effect, and the per seed flips are meaningless here for the
+same reason. Paired comparisons resume from 1.78 forward.
+
+Not verified: whether 31 percent is the right trigger rate, or whether the
+danger term should scale with how many things can see you rather than firing
+once on the first one found. It breaks on the first hit, so a container watched
+by four sentries in the open pays exactly what one behind a low crate pays. That
+is a design question about how loud the greed pillar should be and I have not
+decided it. Also not verified by play: whether the widened spread reads as
+"windfalls feel earned now" or just as "windfalls got rarer in the safe half of
+the map", which is the same change described from the other side.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
