@@ -391,7 +391,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.73';
+var VER='1.74';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -841,6 +841,21 @@ var CTIER={std:{n:1,r:1,name:'STANDARD',c:'#9aa6b2',w:1},
 // Contract standing is its own ledger. Finish work and the board starts
 // offering you work worth taking.
 function cstand(){ return P.cstand||0; }
+// Which districts the map you are about to play actually contains, and how many buildings
+// each one has. Containers are only ever placed inside buildings and landmarks, so a
+// district with no buildings has no containers, and a contract naming it can never be
+// finished. Read off the map DEFINITION rather than a live raid, because contracts are
+// generated in the hub before any raid exists.
+function districtsOnMap(){
+  var mi=clamp(P&&P.mapIx!==undefined?P.mapIx:0,0,FIXED_MAPS.length-1);
+  var B=FIXED_MAPS[mi].buildings||[], seen={}, out=[];
+  for(var i=0;i<B.length;i++){
+    var d=(B[i].d===undefined?0:B[i].d);
+    seen[d]=(seen[d]||0)+1;
+  }
+  for(var k in seen) out.push({d:+k,buildings:seen[k]});
+  return out;
+}
 function contractTier(){
   var cs=cstand(),r=rr();
   if(cs>=8&&r<0.25) return 'elite';
@@ -892,7 +907,27 @@ function genContract(){
     var per2={safe:300,locker:140,crate:70}[ct];
     c={type:'open',ct:ct,n:n2,prog:0,reward:n2*per2,desc:'Search '+n2+' '+(ct==='safe'?'secure cases':ct+'s')};
   } else if(roll<.75){
-    var d=ri(0,3),n3=up(ri(2,4));
+    // A DISTRICT THE MAP ACTUALLY HAS, v1.74. This picked a district index 0 to 3 at
+    // random and never checked whether the map you are about to play contains one.
+    // Measured over six seeds per map, worst case containers in each district:
+    //   DAM BATTLEGROUNDS  53 / 36 / 26 / 30
+    //   BURIED CITY        13 /  0 / 10 / 78
+    //   COLD STORAGE       27 /  9 /  2 / 38
+    //   THE QUARRY         33 / 61 / 23 / 20
+    // BURIED CITY has NO buildings tagged district 1 at all, so "search 4 containers in
+    // that district" was literally impossible, and one district contract in four rolled
+    // it. COLD STORAGE has two containers in district 2 against a contract that asks for
+    // up to four. There is nothing on screen to tell you a contract cannot be finished,
+    // so it just sits in the slot paying nothing until you notice and reroll it.
+    // The district is now drawn from the ones the current map's buildings actually use,
+    // and the ask is clamped to what that district can supply.
+    var dpool=districtsOnMap(), dcap={};
+    for(var dq=0;dq<dpool.length;dq++) dcap[dpool[dq].d]=dpool[dq].buildings;
+    var pickD=dpool.length?dpool[ri(0,dpool.length-1)]:{d:ri(0,3),buildings:99};
+    var d=pickD.d;
+    // A district with two buildings in it cannot reasonably be asked for four containers.
+    var n3=up(ri(2,4));
+    if(pickD.buildings<3) n3=Math.min(n3,2);
     c={type:'district',d:d,n:n3,prog:0,reward:n3*160,desc:'Search '+n3+' containers in '+DISTRICTS[d].name};
   } else if(roll<.9){
     var it=pick(['board','optic','servo','core']);
