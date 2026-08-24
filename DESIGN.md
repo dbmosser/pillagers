@@ -1555,6 +1555,57 @@ six seeds, and the check was run at crouchParts 15 so it actually exercises the
 edited line rather than a branch that never fires. Durations of 422, 445 and 505
 seconds in that sample confirm these were crouched raids and not the upright
 baseline wearing a different label.
+### v1.84: half of crouch is stealth and the other half is a get-out-of-jail button
+
+Found by reading, not by measuring. The hard crouch rule that v1.82 identified as
+the entire crouch mechanic has no awareness condition of any kind:
+
+    if(sees&&G.pCrouch&&dist(e,p)>170) sees=false;
+
+No check on e.alert, none on e.state. A sentry that is actively chasing you from
+200 units away loses you the instant you crouch. So crouch is not only a stealth
+tool, it is a combat disengage available at any moment at range, and that is a
+different mechanic wearing the same button.
+
+crouchBreaksChase separates the two jobs. 1 is the shipped behaviour and remains
+the default. 0 makes anything already in 'chase' immune, so crouch still hides
+you from things that have not found you and no longer erases a pursuit that has.
+120 seeds an arm, THE QUARRY, simGreed 52, greedFull 20,000, pack T1, crouchHide
+170, real crouch active.
+
+                        extract   1st contact   duration   haul    downs
+    shipped (breaks)     41.7%       209s         340s     9,092   0.61
+    chase immune         29.2%       183s         327s     9,106   0.68
+
+Twelve and a half points, and it splits the mechanic almost exactly in half.
+Against the v1.82 upright baseline of 15.8 percent: not being found in the first
+place is worth 13.4 points, and shaking a pursuer that already found you is
+worth 12.5 more. Crouch has been doing two jobs of roughly equal size and only
+one of them looks like stealth.
+
+Paired: 32 seeds flip to dead when pursuit can no longer be shaken, 17 flip to
+extract, 71 unchanged. Forty-nine discordant pairs splitting 32 to 17 gives a z
+of about 2.1 and a two-sided p near 0.03, so this one clears the bar, unlike
+most of the effects measured this week. Containers are identical at 19.5 in both
+arms and haul is within 14 credits, which is the expected shape: the change does
+not alter what the bot collects, only whether it survives to keep it.
+
+Nothing is decided here and the default is unchanged. Whether erasing a chase at
+range is a fair reward for accepting 48 percent less speed, or whether it should
+cost something, or be limited to enemies that have lost line of sight, is a
+design question about what crouch is FOR, and it is his.
+
+Not verified: this is one map at one bot policy, and the bot crouches whenever a
+machine is within 700 units, which means it is effectively always holding the
+disengage button down. A player who crouches reactively rather than permanently
+would see a smaller number. Also not verified: 'chase' may not be the right
+predicate. It is the state used when a machine is actively coming for you, but
+'hunt' and 'investigate' also describe something that has some idea where you
+are, and a stricter or looser choice would move this number.
+
+Verified neutral at the shipped default against v1.83 across six seeds using the
+fresh-iframe harness, at crouchParts 15 so the edited line actually fires. Parse
+PASS at 1.84, all four maps draw with drawErr null, hub renders.
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
