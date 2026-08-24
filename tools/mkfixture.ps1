@@ -135,6 +135,20 @@ window.__export=function(){ return buildExport(); };
 // The cost of a heavy bag, so the curve can be read off the real function rather than
 // off my arithmetic, and so the loadPen slider can be proven to reach zero.
 window.__load=function(w){ return loadOf(w); };
+window.__simSeedsFull=function(seeds){
+  var out=[],i;
+  for(i=0;i<seeds.length;i++){
+    pendSeed=seeds[i]>>>0;
+    G=buildRaid(true);
+    var guard=0,cap=Math.round(CFG.raidSec/0.15)+200;
+    while(!G.over&&guard<cap){ simStep(.15); guard++; }
+    if(!G.over){ G.tel.deathKiller='timer'; endRaid('dead'); }
+    var r=G.simResult;
+    r.seed=seeds[i]>>>0; r.beaconT=(G.beaconT!==null&&G.beaconT!==undefined)?1:0;
+    out.push(r); G=null;
+  }
+  return out;
+};
 window.__world=function(){ return {w:WORLD_W,h:WORLD_H}; };
 // Paired A/B. Runs an explicit list of seeds so the SAME raids can be put through
 // two builds and compared pairwise. Unpaired 30v30 comparisons are close to a coin
