@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.86';
+var VER='2.87';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -454,7 +454,7 @@ var VER='2.86';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='2.83';
+var WHATSNEW_VER='2.87';
 var WHATSNEW=[
   'Your FIRE button now uses the selected hotbar slot.',
   'Heals take time now. The bar shows health arriving.',
@@ -464,7 +464,8 @@ var WHATSNEW=[
   'BACKSPACE resets a lost cursor.',
   'Tuning Console: toggles for heals, feuds and windows.',
   'The Undercroft is five stations now. Holt handles all trade.',
-  'The world breaks: walls, cars, glass all have HP now.'
+  'The world breaks: walls, cars, glass all have HP now.',
+  'Inventory is an item grid: real icons, stacks, drag to hotbar.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -5959,18 +5960,35 @@ function raidKey(code,repeat,ev){
   // Bag browsing. The arrows double as movement keys, so while the bag is open
   // they select instead and WASD still walks: you can sort without being rooted.
   if(G&&!G.over&&G.bagOpen&&G.bag.length){
-    if(code==='ArrowUp'){ G.bagSel=(G.bagSel-1+G.bag.length)%G.bag.length; if(ev) ev.preventDefault(); }
-    if(code==='ArrowDown'){ G.bagSel=(G.bagSel+1)%G.bag.length; if(ev) ev.preventDefault(); }
+    // GRID NAVIGATION, v2.87: the selection is a STACK index now, and the four
+    // arrows walk the tile grid. Left/right step one tile, up/down step a row
+    // of G.bagCols, which drawBag keeps current.
+    var _stN=bagStacks().length, _bc=G.bagCols||5;
+    if(code==='ArrowLeft'){ G.bagSel=(G.bagSel-1+_stN)%_stN; if(ev) ev.preventDefault(); }
+    if(code==='ArrowRight'){ G.bagSel=(G.bagSel+1)%_stN; if(ev) ev.preventDefault(); }
+    if(code==='ArrowUp'){ G.bagSel=(G.bagSel-_bc+_stN)%_stN; if(ev) ev.preventDefault(); }
+    if(code==='ArrowDown'){ G.bagSel=(G.bagSel+_bc)%_stN; if(ev) ev.preventDefault(); }
     if(code==='KeyZ'&&!repeat){
-      var dk=dropItem(clamp(G.bagSel,0,G.bag.length-1));
-      if(dk){ say('Dropped '+ITEMS[dk].name); blip('clank'); }
-      if(G.bagSel>=G.bag.length) G.bagSel=Math.max(0,G.bag.length-1);
+      // Drop ONE from the selected stack, the last one picked up.
+      var _stk=bagStacks()[clamp(G.bagSel,0,_stN-1)];
+      if(_stk){
+        var dk=dropItem(_stk.idxs[_stk.idxs.length-1]);
+        if(dk){ say('Dropped '+ITEMS[dk].name); blip('clank'); }
+      }
+      var _n2=bagStacks().length;
+      if(G.bagSel>=_n2) G.bagSel=Math.max(0,_n2-1);
     }
     // 1 and 2 put the selected gun in your hands or on your back. Digits rather
     // than a single equip key because the whole point of his note is CHOOSING
     // which of the two slots it goes to, and one key cannot express that.
-    if((code==='Digit1'||code==='Numpad1')&&!repeat) equipFromBag(clamp(G.bagSel,0,G.bag.length-1),1);
-    if((code==='Digit2'||code==='Numpad2')&&!repeat) equipFromBag(clamp(G.bagSel,0,G.bag.length-1),2);
+    if((code==='Digit1'||code==='Numpad1')&&!repeat){
+      var _sg=bagStacks()[clamp(G.bagSel,0,_stN-1)];
+      if(_sg) equipFromBag(_sg.idxs[0],1);
+    }
+    if((code==='Digit2'||code==='Numpad2')&&!repeat){
+      var _sg2=bagStacks()[clamp(G.bagSel,0,_stN-1)];
+      if(_sg2) equipFromBag(_sg2.idxs[0],2);
+    }
   }
   if(code==='KeyC'&&G&&!G.over&&!repeat){
     P.autoloot=!P.autoloot; saveProfile();
@@ -6008,7 +6026,7 @@ cv.addEventListener('mousedown',function(e){
       var C=G.bagCells[dc];
       if(mouse.x>=C.x&&mouse.x<=C.x+C.w&&mouse.y>=C.y&&mouse.y<=C.y+C.h){
         G.drag={key:C.key,bagIx:C.bagIx};
-        G.bagSel=C.bagIx;
+        G.bagSel=(C.stackIx!==undefined?C.stackIx:C.bagIx);
         blip('pick');
         return;
       }
@@ -7095,17 +7113,17 @@ function hotbarSlots(){
   // currently up. The list order never changes, so the number keys never move.
   var A =sw?p.sec:p.wep,      Aam=sw?p.secAmmo:p.ammo;
   var B =sw?p.wep:p.sec,      Bam=sw?p.ammo:p.secAmmo;
-  out.push({k:'gunA',name:A.name,kind:'gun',inHand:!sw,
+  out.push({k:'gunA',name:A.name,kind:'gun',inHand:!sw,icon:A.id,
     count:(A.mag===0?null:Aam),c:A.tint||'#ffd48a'});
-  if(B) out.push({k:'gunB',name:B.name,kind:'gun',inHand:sw,
+  if(B) out.push({k:'gunB',name:B.name,kind:'gun',inHand:sw,icon:B.id,
     count:(B.mag===0?null:Bam),c:B.tint||'#ffd48a'});
   for(var i=0;i<THROWKEYS.length;i++){
     var tk=THROWKEYS[i];
-    out.push({k:'throw:'+tk,name:ITEMS[tk].name,kind:'throw',
+    out.push({k:'throw:'+tk,name:ITEMS[tk].name,kind:'throw',icon:tk,
       count:G.pouch[tk]||0,c:ITEMS[tk].c});
   }
   var hi=findHeal();
-  out.push({k:'heal',name:hi>=0?ITEMS[G.bag[hi]].name:'Medical',kind:'heal',
+  out.push({k:'heal',name:hi>=0?ITEMS[G.bag[hi]].name:'Medical',kind:'heal',icon:(hi>=0?G.bag[hi]:'bandage'),
     count:countHeals(),c:'#6fe0a0'});
   // ARMOUR YOU ARE CARRYING, v2.17. A plate had no way to be used. It is listed
   // in the shop at 620 credits and the deploy loadout ranks armour FIRST, above
@@ -7114,9 +7132,9 @@ function hotbarSlots(){
   // refused every single time and a bought plate never reached a raid at all.
   // Only appears when you are actually carrying one, so the slot order does not
   // move for anyone who is not.
-  if(countArmor()>0) out.push({k:'plate',name:'Armor Plate',kind:'armor',
+  if(countArmor()>0) out.push({k:'plate',name:'Armor Plate',kind:'armor',icon:'plate',
     count:countArmor(),c:'#5aa9e6'});
-  out.push({k:'bar',name:'Crowbar',kind:'tool',count:null,c:'#9aa8b2'});
+  out.push({k:'bar',name:'Crowbar',kind:'tool',count:null,c:'#9aa8b2',icon:'bar'});
   // HIS REQUEST, 2026-08-25: "I want the inventory to be physical like minecraft
   // so you can drag icons down to the quick bars". The bar above is DERIVED: it
   // is rebuilt from scratch every frame from what you happen to be carrying, and
@@ -7135,7 +7153,7 @@ function hotbarSlots(){
     var have=0;
     for(var bi=0;bi<G.bag.length;bi++) if(G.bag[bi]===akey) have++;
     if(have<=0) continue;
-    out[aix]={k:'item:'+akey,name:ait.name,
+    out[aix]={k:'item:'+akey,name:ait.name,icon:akey,
       kind:(ait.use==='heal'?'heal':(ait.use==='armor'?'armor':(ait.use==='gun'?'gun':'item'))),
       count:have,c:ait.c||'#cdd6dd',assigned:1,itemKey:akey};
   }
@@ -12172,7 +12190,11 @@ function drawHUD(){
       var cx2=bx+bw/2,cy2=hy+bw*0.45;
       ctx.globalAlpha=empty?.28:1;
       ctx.fillStyle=S.c;
-      if(S.kind==='gun'){
+      // Real item portraits, v2.87: the slot draws the same icon the inventory
+      // and the shops use, so a Kettle looks like a Kettle everywhere. The old
+      // four-glyph fallback survives for any slot without an icon key.
+      if(S.icon){ drawItemIcon(ctx,S.icon,cx2,cy2,bw*0.64); }
+      else if(S.kind==='gun'){
         ctx.fillRect(cx2-bw*0.28,cy2-bw*0.05,bw*0.46,bw*0.11);
         ctx.fillRect(cx2+bw*0.10,cy2-bw*0.13,bw*0.10,bw*0.09);
         ctx.fillRect(cx2-bw*0.20,cy2+bw*0.06,bw*0.09,bw*0.14);
@@ -12423,8 +12445,7 @@ function drawHUD(){
     ctx.fillRect(mouse.x-ds/2,mouse.y-ds/2,ds,ds);
     ctx.strokeStyle='#7fe0a0'; ctx.lineWidth=1.5;
     ctx.strokeRect(mouse.x-ds/2+.5,mouse.y-ds/2+.5,ds-1,ds-1);
-    ctx.fillStyle=DI.c||'#cdd6dd';
-    ctx.fillRect(mouse.x-ds*0.22,mouse.y-ds*0.22,ds*0.44,ds*0.44);
+    drawItemIcon(ctx,G.drag.key,mouse.x,mouse.y,ds*0.72);
     ctx.globalAlpha=1;
     ctx.font=FS(TYPE.micro); ctx.fillStyle='#cdd6dd'; ctx.textAlign='center';
     ctx.fillText(DI.name,mouse.x,mouse.y+ds);
@@ -12667,15 +12688,308 @@ function drawTrade(){
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
   ctx.fillText('He is unarmed. Shooting him has a price.',x+14,y+PH-LH(13));
 }
+// ================================================================ item icons
+// HIS NOTE, 2026-08-25: "any time the player is interacting with inventory, gun
+// selection, shops, etc. -- i want there to be good images/graphics of the
+// items so that it is visually compelling." One procedural renderer, because
+// the charter forbids asset files: every surface that shows an item calls
+// drawItemIcon and gets the same picture of it, so a Frag Charge in the bag,
+// on the hotbar and in a shop row is recognisably one object.
+function gunIcon(c,id,cx,cy,S,tint){
+  // Side profiles facing right, proportioned from each weapon's own character:
+  // barrel length tracks range, the drum tracks the magazine, the scope tracks
+  // the optic. Drawn in the weapon's tint over a dark under-shadow for pop.
+  var W=WEAPONS[id]||WEAPONS.pistol;
+  var L=S*clamp((W.rng||300)/760,0.42,1.0);         // barrel reach
+  var col=tint||W.tint||'#ffd48a';
+  c.save(); c.translate(cx,cy);
+  c.fillStyle='rgba(0,0,0,.35)';
+  c.fillRect(-S*0.5+1.5,-S*0.06+1.5,S*0.5+L*0.5,S*0.12);
+  c.fillStyle=col;
+  // receiver
+  c.fillRect(-S*0.28,-S*0.09,S*0.34,S*0.18);
+  // barrel
+  c.fillRect(S*0.06,-S*0.05,L*0.55,S*0.10);
+  // stock (long guns) or grip-only (pistols)
+  if(id!=='pistol'&&id!=='ferro') c.fillRect(-S*0.5,-S*0.06,S*0.24,S*0.12);
+  // grip
+  c.fillRect(-S*0.16,S*0.07,S*0.10,S*0.20);
+  // magazine: drum for the lmg, long stick for smg family, box otherwise
+  if(id==='lmg'){ c.beginPath(); c.arc(-S*0.02,S*0.16,S*0.13,0,6.2832); c.fill(); }
+  else if(id==='smg'||id==='kettle'||id==='stitcher') c.fillRect(0,S*0.07,S*0.09,S*0.26);
+  else if(W.mag>0) c.fillRect(0,S*0.07,S*0.10,S*0.16);
+  // pump / foregrip on the scatterguns
+  if(id==='shotgun'||id==='hullcracker') c.fillRect(S*0.16,S*0.03,S*0.16,S*0.09);
+  // optic
+  if(W.optic){ c.fillStyle=darkHex(col,0.5);
+    c.fillRect(-S*0.10,-S*0.20,S*0.22,S*0.09);
+    c.fillStyle='#bfe8ff'; c.fillRect(S*0.08,-S*0.185,S*0.035,S*0.06); }
+  // muzzle tip
+  c.fillStyle=darkHex(col,0.55);
+  c.fillRect(S*0.06+L*0.55-S*0.04,-S*0.05,S*0.04,S*0.10);
+  c.restore();
+}
+function drawItemIcon(c,key,cx,cy,S){
+  var it=ITEMS[key];
+  // Weapon ids arrive from the hotbar; field guns arrive as gun_* items.
+  if(WEAPONS[key]) return gunIcon(c,key,cx,cy,S);
+  if(it&&it.use==='gun'&&it.gk) return gunIcon(c,it.gk,cx,cy,S,it.c);
+  var col=(it&&it.c)||'#cdd6dd';
+  var dk=darkHex(col,0.55), lt='rgba(255,255,255,.35)';
+  c.save(); c.translate(cx,cy);
+  function shadow(w,h){ c.fillStyle='rgba(0,0,0,.35)'; c.fillRect(-w/2+1.5,-h/2+1.5,w,h); }
+  switch(key){
+    case 'scrap':
+      c.fillStyle=dk; c.beginPath();
+      c.moveTo(-S*.42,S*.30); c.lineTo(-S*.10,-S*.38); c.lineTo(S*.16,-S*.06);
+      c.lineTo(S*.44,-S*.30); c.lineTo(S*.38,S*.34); c.closePath(); c.fill();
+      c.fillStyle=col; c.beginPath();
+      c.moveTo(-S*.36,S*.24); c.lineTo(-S*.08,-S*.30); c.lineTo(S*.12,-S*.02);
+      c.lineTo(S*.36,-S*.22); c.lineTo(S*.30,S*.28); c.closePath(); c.fill();
+      break;
+    case 'wire': case 'coil':
+      c.strokeStyle=col; c.lineWidth=S*.11; c.lineCap='round';
+      c.beginPath();
+      for(var wq=0;wq<3;wq++) c.arc(-S*.18+wq*S*.18,0,S*.20,Math.PI*.9,Math.PI*2.1);
+      c.stroke();
+      c.strokeStyle=dk; c.lineWidth=S*.05;
+      c.beginPath(); c.moveTo(-S*.40,S*.16); c.lineTo(S*.42,S*.10); c.stroke();
+      break;
+    case 'cell':
+      shadow(S*.5,S*.8);
+      c.fillStyle=col; c.fillRect(-S*.25,-S*.34,S*.5,S*.68);
+      c.fillStyle=dk; c.fillRect(-S*.12,-S*.44,S*.24,S*.10);
+      c.fillStyle=lt; c.fillRect(-S*.25,-S*.34,S*.5,S*.14);
+      c.fillStyle=dk; c.fillRect(-S*.16,-S*.06,S*.32,S*.09);
+      c.fillRect(-S*.16,S*.12,S*.32,S*.09);
+      break;
+    case 'board': case 'relay':
+      shadow(S*.8,S*.6);
+      c.fillStyle=col; c.fillRect(-S*.4,-S*.3,S*.8,S*.6);
+      c.strokeStyle=dk; c.lineWidth=S*.045;
+      c.beginPath();
+      c.moveTo(-S*.3,-S*.18); c.lineTo(S*.1,-S*.18); c.lineTo(S*.1,S*.08);
+      c.moveTo(-S*.3,S*.16) ; c.lineTo(S*.28,S*.16);
+      c.moveTo(-S*.14,-S*.18); c.lineTo(-S*.14,S*.16);
+      c.stroke();
+      c.fillStyle=dk; c.fillRect(S*.14,-S*.22,S*.2,S*.18);
+      c.fillStyle='#d8c25a';
+      for(var bq=0;bq<4;bq++) c.fillRect(-S*.44,-S*.24+bq*S*.14,S*.06,S*.07);
+      break;
+    case 'optic':
+      shadow(S*.7,S*.7);
+      c.fillStyle=dk; c.beginPath(); c.arc(0,0,S*.36,0,6.2832); c.fill();
+      c.fillStyle=col; c.beginPath(); c.arc(0,0,S*.28,0,6.2832); c.fill();
+      c.fillStyle='#0e1420'; c.beginPath(); c.arc(0,0,S*.15,0,6.2832); c.fill();
+      c.fillStyle=lt; c.beginPath(); c.arc(-S*.09,-S*.10,S*.07,0,6.2832); c.fill();
+      break;
+    case 'servo':
+      shadow(S*.7,S*.5);
+      c.fillStyle=col; c.fillRect(-S*.36,-S*.22,S*.5,S*.44);
+      c.fillStyle=dk; c.fillRect(S*.14,-S*.08,S*.30,S*.16);
+      c.fillStyle=lt; c.fillRect(-S*.36,-S*.22,S*.5,S*.12);
+      c.fillStyle=dk; c.beginPath(); c.arc(-S*.12,0,S*.10,0,6.2832); c.fill();
+      break;
+    case 'comp':
+      shadow(S*.6,S*.6);
+      c.fillStyle=col; c.fillRect(-S*.28,-S*.28,S*.56,S*.56);
+      c.fillStyle=dk;
+      for(var cq=0;cq<3;cq++){
+        c.fillRect(-S*.4,-S*.2+cq*S*.18,S*.1,S*.06);
+        c.fillRect(S*.3,-S*.2+cq*S*.18,S*.1,S*.06);
+      }
+      c.fillStyle=dk; c.fillRect(-S*.14,-S*.14,S*.28,S*.28);
+      break;
+    case 'core': case 'wcore':
+      c.fillStyle='rgba(0,0,0,.3)'; c.beginPath(); c.arc(1.5,1.5,S*.34,0,6.2832); c.fill();
+      var cg=c.createRadialGradient(0,0,S*.05,0,0,S*.34);
+      cg.addColorStop(0,'#ffffff'); cg.addColorStop(.4,col); cg.addColorStop(1,dk);
+      c.fillStyle=cg; c.beginPath(); c.arc(0,0,S*.32,0,6.2832); c.fill();
+      c.strokeStyle=dk; c.lineWidth=S*.06;
+      c.beginPath(); c.arc(0,0,S*.40,Math.PI*.15,Math.PI*.85); c.stroke();
+      c.beginPath(); c.arc(0,0,S*.40,Math.PI*1.15,Math.PI*1.85); c.stroke();
+      break;
+    case 'titan':
+      shadow(S*.8,S*.5);
+      c.fillStyle=dk; c.beginPath();
+      c.moveTo(-S*.42,S*.26); c.lineTo(-S*.30,-S*.16) ; c.lineTo(S*.42,-S*.16);
+      c.lineTo(S*.30,S*.26); c.closePath(); c.fill();
+      c.fillStyle=col; c.beginPath();
+      c.moveTo(-S*.30,-S*.16); c.lineTo(-S*.22,-S*.30); c.lineTo(S*.5,-S*.30);
+      c.lineTo(S*.42,-S*.16); c.closePath(); c.fill();
+      c.fillStyle=lt; c.fillRect(-S*.30,-S*.12,S*.6,S*.08);
+      break;
+    case 'ledger': case 'codex':
+      shadow(S*.6,S*.72);
+      c.fillStyle=dk; c.fillRect(-S*.3,-S*.36,S*.6,S*.72);
+      c.fillStyle=col; c.fillRect(-S*.22,-S*.36,S*.52,S*.72);
+      c.fillStyle=lt; c.fillRect(-S*.22,-S*.36,S*.52,S*.10);
+      c.strokeStyle=dk; c.lineWidth=S*.04;
+      c.beginPath();
+      c.moveTo(-S*.10,-S*.16); c.lineTo(S*.20,-S*.16);
+      c.moveTo(-S*.10,-S*.02); c.lineTo(S*.20,-S*.02);
+      c.moveTo(-S*.10,S*.12); c.lineTo(S*.20,S*.12);
+      c.stroke();
+      if(key==='codex'){ c.fillStyle='#d8c25a'; c.fillRect(S*.16,-S*.08,S*.14,S*.18); }
+      break;
+    case 'blackbox':
+      shadow(S*.76,S*.5);
+      c.fillStyle='#2a2e34'; c.fillRect(-S*.38,-S*.25,S*.76,S*.5);
+      c.fillStyle=col; c.fillRect(-S*.38,-S*.07,S*.76,S*.14);
+      c.fillStyle=lt; c.fillRect(-S*.38,-S*.25,S*.76,S*.09);
+      c.fillStyle='#101317'; c.fillRect(-S*.30,S*.10,S*.14,S*.08); c.fillRect(S*.16,S*.10,S*.14,S*.08);
+      break;
+    case 'reactor':
+      shadow(S*.62,S*.74);
+      c.fillStyle=col; c.fillRect(-S*.31,-S*.37,S*.62,S*.74);
+      c.fillStyle=lt; c.fillRect(-S*.31,-S*.37,S*.62,S*.12);
+      c.fillStyle=dk;
+      c.beginPath(); c.arc(0,S*.04,S*.2,0,6.2832); c.fill();
+      c.fillStyle='#ffe28a';
+      for(var rq=0;rq<3;rq++){
+        var ra=rq*2.094-1.57;
+        c.beginPath(); c.arc(Math.cos(ra)*S*.1,S*.04+Math.sin(ra)*S*.1,S*.05,0,6.2832); c.fill();
+      }
+      break;
+    case 'bloom':
+      c.fillStyle='rgba(0,0,0,.3)'; c.beginPath(); c.arc(1.5,1.5,S*.32,0,6.2832); c.fill();
+      c.fillStyle=dk; c.beginPath();
+      c.moveTo(0,-S*.44); c.lineTo(S*.26,0); c.lineTo(0,S*.44); c.lineTo(-S*.26,0);
+      c.closePath(); c.fill();
+      c.fillStyle=col; c.beginPath();
+      c.moveTo(0,-S*.34); c.lineTo(S*.18,0); c.lineTo(0,S*.34); c.lineTo(-S*.18,0);
+      c.closePath(); c.fill();
+      c.fillStyle=lt; c.beginPath();
+      c.moveTo(0,-S*.34); c.lineTo(S*.18,0); c.lineTo(0,0); c.closePath(); c.fill();
+      break;
+    case 'bandage':
+      shadow(S*.66,S*.44);
+      c.fillStyle=col; c.beginPath(); c.arc(-S*.12,0,S*.22,0,6.2832); c.fill();
+      c.fillStyle=dk; c.beginPath(); c.arc(-S*.12,0,S*.10,0,6.2832); c.fill();
+      c.fillStyle=col; c.fillRect(-S*.12,-S*.22,S*.54,S*.16);
+      c.fillStyle=lt; c.fillRect(-S*.12,-S*.22,S*.54,S*.06);
+      break;
+    case 'medkit':
+      shadow(S*.78,S*.6);
+      c.fillStyle=col; c.fillRect(-S*.39,-S*.3,S*.78,S*.6);
+      c.fillStyle=lt; c.fillRect(-S*.39,-S*.3,S*.78,S*.12);
+      c.fillStyle='#ffffff';
+      c.fillRect(-S*.07,-S*.2,S*.14,S*.4); c.fillRect(-S*.2,-S*.07,S*.4,S*.14);
+      c.fillStyle=dk; c.fillRect(-S*.06,-S*.34,S*.12,S*.07);
+      break;
+    case 'meat':
+      shadow(S*.6,S*.5);
+      c.fillStyle=col; c.beginPath(); c.ellipse(-S*.05,0,S*.3,S*.22,0.3,0,6.2832); c.fill();
+      c.fillStyle=lt; c.beginPath(); c.ellipse(-S*.1,-S*.05,S*.14,S*.09,0.3,0,6.2832); c.fill();
+      c.fillStyle='#e8e2d4'; c.fillRect(S*.2,-S*.05,S*.2,S*.09);
+      c.beginPath(); c.arc(S*.4,0,S*.07,0,6.2832); c.fill();
+      break;
+    case 'ammobox':
+      shadow(S*.72,S*.54);
+      c.fillStyle=col; c.fillRect(-S*.36,-S*.2,S*.72,S*.44);
+      c.fillStyle=dk; c.fillRect(-S*.36,-S*.27,S*.72,S*.1);
+      c.fillStyle='#d8b25a';
+      for(var aq=0;aq<3;aq++){
+        c.fillRect(-S*.2+aq*S*.16,-S*.14,S*.09,S*.22);
+        c.beginPath(); c.arc(-S*.155+aq*S*.16,-S*.14,S*.045,Math.PI,0); c.fill();
+      }
+      break;
+    case 'plate':
+      c.fillStyle='rgba(0,0,0,.35)'; c.beginPath();
+      c.moveTo(-S*.3+1.5,-S*.34+1.5); c.lineTo(S*.3+1.5,-S*.34+1.5);
+      c.lineTo(S*.38+1.5,S*.1+1.5); c.lineTo(0+1.5,S*.42+1.5); c.lineTo(-S*.38+1.5,S*.1+1.5);
+      c.closePath(); c.fill();
+      c.fillStyle=col; c.beginPath();
+      c.moveTo(-S*.3,-S*.34); c.lineTo(S*.3,-S*.34); c.lineTo(S*.38,S*.1);
+      c.lineTo(0,S*.42); c.lineTo(-S*.38,S*.1); c.closePath(); c.fill();
+      c.fillStyle=lt; c.fillRect(-S*.3,-S*.34,S*.6,S*.12);
+      c.fillStyle=dk;
+      c.beginPath(); c.arc(-S*.2,-S*.2,S*.04,0,6.2832); c.fill();
+      c.beginPath(); c.arc(S*.2,-S*.2,S*.04,0,6.2832); c.fill();
+      break;
+    case 'smoke':
+      shadow(S*.4,S*.76);
+      c.fillStyle=col; c.fillRect(-S*.2,-S*.3,S*.4,S*.64);
+      c.fillStyle=dk; c.fillRect(-S*.12,-S*.42,S*.24,S*.12);
+      c.fillStyle=lt; c.fillRect(-S*.2,-S*.3,S*.4,S*.12);
+      c.strokeStyle='rgba(220,228,235,.8)'; c.lineWidth=S*.07; c.lineCap='round';
+      c.beginPath(); c.moveTo(S*.02,-S*.5);
+      c.quadraticCurveTo(S*.22,-S*.62,S*.12,-S*.76); c.stroke();
+      break;
+    case 'decoy':
+      shadow(S*.56,S*.5);
+      c.fillStyle=col; c.fillRect(-S*.28,-S*.06,S*.56,S*.4);
+      c.fillStyle=dk; c.fillRect(-S*.28,-S*.06,S*.56,S*.12);
+      c.strokeStyle=dk; c.lineWidth=S*.05;
+      c.beginPath(); c.moveTo(S*.12,-S*.06); c.lineTo(S*.2,-S*.44); c.stroke();
+      c.fillStyle='#ff5a4a'; c.beginPath(); c.arc(S*.2,-S*.46,S*.06,0,6.2832); c.fill();
+      c.strokeStyle='rgba(255,120,100,.7)'; c.lineWidth=S*.04;
+      c.beginPath(); c.arc(S*.2,-S*.46,S*.14,-2.2,-0.4); c.stroke();
+      c.beginPath(); c.arc(S*.2,-S*.46,S*.22,-2.0,-0.6); c.stroke();
+      break;
+    case 'frag':
+      c.fillStyle='rgba(0,0,0,.35)'; c.beginPath(); c.arc(1.5,S*.06+1.5,S*.3,0,6.2832); c.fill();
+      c.fillStyle=col; c.beginPath(); c.arc(0,S*.06,S*.3,0,6.2832); c.fill();
+      c.strokeStyle=dk; c.lineWidth=S*.045;
+      c.beginPath(); c.moveTo(-S*.3,S*.06); c.lineTo(S*.3,S*.06);
+      c.moveTo(0,-S*.24); c.lineTo(0,S*.36); c.stroke();
+      c.fillStyle=dk; c.fillRect(-S*.1,-S*.42,S*.2,S*.14);
+      c.fillStyle='#c8ccd2'; c.fillRect(S*.08,-S*.46,S*.2,S*.08);
+      c.fillStyle=lt; c.beginPath(); c.arc(-S*.1,-S*.04,S*.09,0,6.2832); c.fill();
+      break;
+    case 'bar':
+      c.save(); c.rotate(-0.6);
+      c.fillStyle='rgba(0,0,0,.35)'; c.fillRect(-S*.06+1.5,-S*.4+1.5,S*.12,S*.8);
+      c.fillStyle=col||'#9aa8b2'; c.fillRect(-S*.06,-S*.4,S*.12,S*.8);
+      c.fillStyle=darkHex(col||'#9aa8b2',0.5);
+      c.beginPath(); c.arc(0,-S*.4,S*.14,Math.PI,0); c.fill();
+      c.restore();
+      break;
+    default:
+      if(it&&it.use==='key'){
+        shadow(S*.7,S*.34);
+        c.fillStyle=col;
+        c.beginPath(); c.arc(-S*.22,0,S*.16,0,6.2832); c.fill();
+        c.fillStyle='#0e1420'; c.beginPath(); c.arc(-S*.22,0,S*.07,0,6.2832); c.fill();
+        c.fillStyle=col;
+        c.fillRect(-S*.08,-S*.05,S*.5,S*.10);
+        c.fillRect(S*.26,S*.05,S*.07,S*.12); c.fillRect(S*.38,S*.05,S*.07,S*.16);
+      } else {
+        shadow(S*.64,S*.64);
+        c.fillStyle=dk; c.fillRect(-S*.32,-S*.32,S*.64,S*.64);
+        c.fillStyle=col; c.fillRect(-S*.26,-S*.26,S*.52,S*.52);
+        c.fillStyle=lt; c.fillRect(-S*.26,-S*.26,S*.52,S*.16);
+      }
+  }
+  c.restore();
+}
+// Bag stacks: identical items grouped, Minecraft style, order of first pickup.
+function bagStacks(){
+  var st=[],ix={};
+  for(var i=0;i<G.bag.length;i++){ var k=G.bag[i];
+    if(ix[k]===undefined){ ix[k]=st.length; st.push({key:k,idxs:[i]}); }
+    else st[ix[k]].idxs.push(i);
+  }
+  return st;
+}
 function drawBag(){
-  var p=G.player,PW=LH(270),x=W-PW-12,y=48,i;
-  var maxRows=Math.max(3,Math.floor((H-LH(260))/LH(16)));
-  var rows=Math.min(G.bag.length,maxRows);
-  // +40 reserves the control hint row at the bottom. Without the reserve the
-  // hint prints straight over the last items in the list; at +22 it still
-  // clipped the final row, so the gap is measured from the list end below
-  // rather than guessed from the panel height.
-  var hh=LH(150)+Math.max(1,rows)*LH(16)+(G.bag.length>maxRows?LH(16):0)+LH(40);
+  // THE GRID, v2.87. His notes, same afternoon: items should have "good
+  // images/graphics" everywhere, and the inventory "should move to like a
+  // placement/backpack system like arc raiders or diablo... or minecraft, but
+  // the backpack should be unlimited". So: a tile grid of icon stacks,
+  // identical items stacking with a count badge, unlimited depth with a
+  // scrolling window, rarity on the tile border, and the existing drag,
+  // keyboard, equip and drop verbs all speaking stack now.
+  var p=G.player,PW=LH(300),x=W-PW-12,y=48,i;
+  var stacks=bagStacks();
+  var COLS=5; G.bagCols=COLS;
+  var TILE=LH(48),GAP=LH(6);
+  var gridW=COLS*TILE+(COLS-1)*GAP;
+  var gx=x+Math.round((PW-gridW)/2);
+  var rowsAll=Math.max(1,Math.ceil(stacks.length/COLS));
+  var rowsMax=Math.max(2,Math.floor((H-LH(300))/(TILE+GAP)));
+  var rows=Math.min(rowsAll,rowsMax);
+  var hh=LH(150)+rows*(TILE+GAP)+LH(64);
   hh=Math.min(hh,H-70);
   ctx.fillStyle='rgba(6,9,13,.96)'; ctx.fillRect(x,y,PW,hh);
   ctx.strokeStyle='#3a4552'; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,PW-1,hh-1);
@@ -12688,13 +13002,14 @@ function drawBag(){
   cy+=LH(8);
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
 
-  // equipped
+  // equipped, with its portrait
   cy+=LH(16);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
   ctx.fillText('EQUIPPED',x+11,cy);
   cy+=LH(15);
+  drawItemIcon(ctx,p.wep.id,x+11+LH(16),cy-LH(2),LH(30));
   ctx.font=FS(TYPE.head); ctx.fillStyle='#cdd6dd';
-  ctx.fillText(p.wep.name,x+11,cy);
+  ctx.fillText(p.wep.name,x+11+LH(38),cy);
   ctx.font=FS(TYPE.label); ctx.textAlign='right';
   ctx.fillStyle=p.wep.mag===0?'#8a96a1':(p.ammo===0?'#ff4d3d':'#ffb02e');
   ctx.fillText(p.wep.mag===0?'MELEE':(p.ammo+' / '+p.reserve),x+PW-11,cy);
@@ -12703,87 +13018,72 @@ function drawBag(){
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
   ctx.fillText('DMG '+p.wep.dmg+'  RANGE '+p.wep.rng+'  '+(p.wep.auto?'AUTO':'SEMI')+
     (p.wep.mag?('  MAG '+p.wep.mag):''),x+11,cy);
-
-  // body
-  cy+=LH(18);
-  ctx.fillStyle='#6b7783'; ctx.fillText('BODY',x+11,cy);
-  cy+=LH(14);
-  ctx.font=FS(TYPE.label); ctx.fillStyle='#cdd6dd';
-  ctx.fillText('Integrity '+Math.round(p.hp)+'/'+p.maxhp+'    Armor '+Math.round(p.armor),x+11,cy);
-  cy+=LH(14);
-  var pl=[];
-  for(i=0;i<THROWKEYS.length;i++) pl.push(THROWKEYS[i].toUpperCase().slice(0,3)+' x'+G.pouch[THROWKEYS[i]]);
-  ctx.fillStyle='#8a96a1'; ctx.fillText('Pouch  '+pl.join('   '),x+11,cy);
-
-  // bag
-  cy+=LH(20);
-  ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
-  ctx.fillText('BAG  '+bagWeight()+'wt',x+11,cy);
-  ctx.textAlign='right';
-  ctx.fillStyle='#7fc4a0'; ctx.fillText('better guns auto-equip',x+PW-11,cy-13);
-  ctx.textAlign='left';
-  ctx.textAlign='right'; ctx.fillText('\u25c6 = kept on death',x+PW-11,cy); ctx.textAlign='left';
-  cy+=LH(6);
+  cy+=LH(16);
+  ctx.fillText('Integrity '+Math.round(p.hp)+'/'+p.maxhp+'    Armor '+Math.round(p.armor)+
+    '    BAG '+bagWeight()+'wt  ('+G.bag.length+' items)',x+11,cy);
+  cy+=LH(8);
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
-  cy+=LH(14);
+  cy+=LH(10);
+
+  // the grid, windowed around the selection
+  var sel=clamp(G.bagSel||0,0,Math.max(0,stacks.length-1));
+  G.bagSel=sel;
+  var selRow=Math.floor(sel/COLS);
+  var top0=clamp(selRow-Math.floor(rows/2),0,Math.max(0,rowsAll-rows));
   var prot=safeSet();
-  ctx.font=FS(TYPE.label);
-  // Scroll the window so the highlighted row is always on screen, otherwise a
-  // bag longer than the panel has items you can select but never see.
-  var sel=clamp(G.bagSel||0,0,Math.max(0,G.bag.length-1));
-  var top0=clamp(sel-Math.floor(rows/2),0,Math.max(0,G.bag.length-rows));
-  // Every visible row records the rectangle it was drawn in, so a row can be
-  // picked up. Recorded during the draw for the same reason the hotbar cells are:
-  // a second copy of this arithmetic would drift.
   G.bagCells=[];
-  for(i=0;i<rows;i++){
-    var bi=top0+i;
-    var it=ITEMS[G.bag[bi]];
-    if(!it) continue;
-    var rowY=cy+i*LH(16), rowTop=rowY-LH(10), rowH=LH(14);
-    G.bagCells.push({x:x+7,y:rowTop,w:PW-14,h:rowH,bagIx:bi,key:G.bag[bi]});
-    var hoverRow=(mouse.x>=x+7&&mouse.x<=x+PW-7&&mouse.y>=rowTop&&mouse.y<=rowTop+rowH);
-    if(bi===sel){
-      ctx.fillStyle='rgba(127,146,216,.22)';
-      ctx.fillRect(x+7,rowTop,PW-14,rowH);
-      ctx.fillStyle='#ffc04a'; ctx.fillText('\u25b8',x+3,rowY);
-    } else if(hoverRow&&!G.drag){
-      // Hovering says "this is a thing you can pick up", which is the whole
-      // difference between a list and a physical inventory.
-      ctx.fillStyle='rgba(127,224,160,.10)';
-      ctx.fillRect(x+7,rowTop,PW-14,rowH);
+  for(var r2=0;r2<rows;r2++){
+    for(var c2=0;c2<COLS;c2++){
+      var si=(top0+r2)*COLS+c2;
+      if(si>=stacks.length) break;
+      var st=stacks[si], it=ITEMS[st.key];
+      var tx=gx+c2*(TILE+GAP), ty=cy+r2*(TILE+GAP);
+      G.bagCells.push({x:tx,y:ty,w:TILE,h:TILE,key:st.key,stackIx:si,bagIx:st.idxs[0]});
+      var hov=(mouse.x>=tx&&mouse.x<=tx+TILE&&mouse.y>=ty&&mouse.y<=ty+TILE);
+      ctx.fillStyle=(si===sel)?'rgba(52,60,84,.9)':(hov?'rgba(34,42,58,.9)':'rgba(18,24,34,.9)');
+      ctx.fillRect(tx,ty,TILE,TILE);
+      ctx.strokeStyle=(si===sel)?'#ffc04a':(RCOL[it&&it.r]||'rgba(90,102,116,.6)');
+      ctx.lineWidth=(si===sel)?2:1.2;
+      ctx.strokeRect(tx+.5,ty+.5,TILE-1,TILE-1);
+      drawItemIcon(ctx,st.key,tx+TILE/2,ty+TILE/2-LH(2),TILE*0.62);
+      if(st.idxs.length>1){
+        ctx.font=FS(TYPE.micro); ctx.textAlign='right'; ctx.fillStyle='#FFF6DC';
+        ctx.fillText(String(st.idxs.length),tx+TILE-LH(4),ty+TILE-LH(4));
+        ctx.textAlign='left';
+      }
+      var isProt=false;
+      for(var pk=0;pk<st.idxs.length;pk++) if(prot[st.idxs[pk]]){ isProt=true; break; }
+      if(isProt){ ctx.font=FS(TYPE.micro); ctx.fillStyle='#7fc4a0';
+        ctx.fillText('\u25c6',tx+LH(3),ty+LH(12)); }
     }
-    // A colour swatch per row: the grabbable icon, tinted by the item itself.
-    ctx.fillStyle=it.c||'#cdd6dd';
-    ctx.fillRect(x+11,rowY-LH(7),LH(7),LH(7));
-    ctx.fillStyle=RCOL[it.r]||'#cdd6dd';
-    ctx.fillText((prot[bi]?'\u25c6 ':'  ')+it.name,x+11+LH(11),rowY);
-    ctx.textAlign='right'; ctx.fillStyle='#ffc04a';
-    ctx.fillText(ival(G.bag[bi])+'c',x+PW-11,rowY);
+  }
+  var gridBot=cy+rows*(TILE+GAP);
+  if(rowsAll>rows){
+    ctx.font=FS(TYPE.micro); ctx.fillStyle='#9aa8d0'; ctx.textAlign='center';
+    ctx.fillText('row '+(top0+1)+'-'+(top0+rows)+' of '+rowsAll,x+PW/2,gridBot+LH(2));
     ctx.textAlign='left';
   }
-  var listEnd=cy+Math.max(0,rows-1)*LH(16);
-  if(G.bag.length>rows){
-    ctx.fillStyle='#9aa8d0';
-    listEnd=cy+rows*LH(16);
-    ctx.fillText((sel+1)+' of '+G.bag.length,x+11,listEnd);
-  }
-  // the two controls this panel now owns, placed below whatever the list ended
-  // up occupying rather than at a fixed offset from the panel bottom
-  var hintY=Math.min(listEnd+18,y+hh-8);
+
+  // the selected stack, spelled out
+  var hintY=Math.min(gridBot+LH(20),y+hh-LH(24));
   ctx.strokeStyle='#232b35'; ctx.beginPath();
-  ctx.moveTo(x+11,hintY-11); ctx.lineTo(x+PW-11,hintY-11); ctx.stroke();
-  ctx.fillStyle='#9aa8d0'; ctx.font=FS(TYPE.micro);
-  // The two slot keys only mean anything on a gun, so the hint says so only then.
-  var _selK=G.bag[clamp(G.bagSel,0,Math.max(0,G.bag.length-1))];
-  var _selGun=!!(_selK&&ITEMS[_selK]&&ITEMS[_selK].use==='gun');
-  ctx.fillText((PAD&&PAD.on)?'DPAD select   DPAD L drop':
-    ('\u2191\u2193 select   Z drop'+(_selGun?'   1 equip   2 secondary':'')),x+11,hintY);
-  ctx.textAlign='right';
-  ctx.fillStyle=P.autoloot?'#4de3d0':'#9aa8d0';
-  ctx.fillText(((PAD&&PAD.on)?'DPAD R autoloot ':'C autoloot ')+(P.autoloot?'ON':'OFF'),x+PW-11,hintY);
-  ctx.textAlign='left';
-  if(!G.bag.length){ ctx.fillStyle='#6b7783'; ctx.fillText('Empty. Go find something.',x+11,cy); }
+  ctx.moveTo(x+11,hintY-LH(12)); ctx.lineTo(x+PW-11,hintY-LH(12)); ctx.stroke();
+  if(stacks.length){
+    var sst=stacks[sel], sit=ITEMS[sst.key];
+    ctx.font=FS(TYPE.label);
+    ctx.fillStyle=RCOL[sit&&sit.r]||'#cdd6dd';
+    ctx.fillText((sit?sit.name:sst.key)+(sst.idxs.length>1?('  x'+sst.idxs.length):''),x+11,hintY);
+    ctx.textAlign='right'; ctx.fillStyle='#ffc04a';
+    ctx.fillText(ival(sst.key)+'c each',x+PW-11,hintY);
+    ctx.textAlign='left';
+    ctx.font=FS(TYPE.micro); ctx.fillStyle='#9aa8d0';
+    var isGun=!!(sit&&sit.use==='gun');
+    ctx.fillText((PAD&&PAD.on)?'DPAD select   DPAD L drop'
+      :('ARROWS move   Z drop one   drag to hotbar'+(isGun?'   1/2 equip':'')),x+11,hintY+LH(14));
+  } else {
+    ctx.font=FS(TYPE.label); ctx.fillStyle='#6b7783';
+    ctx.fillText('Bag is empty.',x+11,hintY);
+  }
 }
 function drawMapOverlay(){
   var p=G.player,i;

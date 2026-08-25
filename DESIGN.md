@@ -7603,6 +7603,64 @@ not verified: the road detours change where tarmac lies on all four maps, which
 is pure bake visuals with no collision or sight consequence, but the LOOK of the
 new detours has only been sampled around one reservoir and one grove.
 
+### v2.87: every item has a face, and the inventory is a grid of them
+
+His notes, three in one afternoon: items should have "good images/graphics...
+so that it is visually compelling" wherever the player meets them, and the
+inventory "should move to like a placement/backpack system like arc raiders or
+diablo... or minecraft, but the backpack should be unlimited". One build,
+because the second note is what the first one is FOR.
+
+THE ICON SYSTEM. The charter forbids asset files, so the pictures are drawn:
+one procedural renderer, drawItemIcon, that every surface calls, so a Frag
+Charge in the bag, on the hotbar and later in a shop row is recognisably one
+object. Every item family has its own painter: scrap is torn plate, wire is a
+coil, a cell is a battery with terminals and charge bars, a board is a PCB with
+traces and pins, an optic is a lens with a highlight, a core is a radial glow in
+a frame, a titan is an ingot, ledgers and codices are books, the blackbox has
+its orange stripe, medical is a roll and a crossed case, the plate is a bolted
+slab, the throwables are a canister with a wisp, a beacon with signal arcs and
+a levered sphere with a crosshatch, keys are keys, meat is a drumstick, and
+anything unknown falls back to a tinted tile so a future item is never
+invisible. Guns get their own renderer, gunIcon: twelve side profiles built
+from each weapon's OWN stats, barrel length from range, a drum for the LMG, a
+long stick magazine for the SMG family, a pump for the scatterguns, a scope
+block with a glass glint for the optics, so the icon set stays honest as the
+table changes.
+
+THE GRID. TAB now opens tiles, not a list: five columns, unlimited depth with a
+window that follows the selection, identical items stacking with a count badge,
+rarity as the tile's border colour, the kept-on-death diamond on protected
+stacks, and the selected stack spelled out underneath with its per-unit value.
+The equipped weapon header draws its portrait beside its stats. Every verb
+moved with it: arrows walk the grid in two dimensions, Z drops ONE item from
+the selected stack, 1 and 2 equip a selected gun to hand or back, and dragging
+a tile to the hotbar works exactly as v2.50 built it, with the dragged icon
+under the cursor instead of a coloured square.
+
+THE HOTBAR shows portraits too: the actual gun in each gun slot, the actual
+throwable, the best heal you are carrying, the plate, the crowbar. The old
+four-glyph set survives only as a fallback for a slot with no icon key.
+
+Verified in pixels and by verb. The staged bag with one of everything,
+tools/shots/inv_grid.png, shows thirty-one items as four windowed rows of
+distinct, readable tiles. Functionally, driven through the real input paths:
+Z on a three-scrap stack leaves two; ArrowRight moves one stack and ArrowDown
+moves five; a medkit tile dragged onto hotbar slot five assigns it with its
+icon riding the slot; Digit1 on the rifle stack puts the Auto Rifle in hand.
+Parsecheck PASS at v2.87, all four maps and the hub drive and draw clean with
+10 of 10 entities moving. WHATSNEW updated and bumped; the itch zip is rebuilt
+at v2.87.
+
+Not verified: the shops, the stash, the armoury and the peddler still show
+text, which is the second half of his first note; the icon system was built to
+serve them (a dataURL cache over drawItemIcon drops into the DOM renderers) and
+that is the next build. Also not verified: icon legibility at his font scale
+and monitor, same caveat as every visual; the tile and icon sizes ride LH() so
+they scale with his text setting, but eyes beat arithmetic. Also: gamepad bag
+navigation still speaks list, DPAD up/down only; the grid needs left/right
+wired for pad, one line each, queued with the shop pass.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
