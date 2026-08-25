@@ -3181,6 +3181,84 @@ is a small change with a potentially large effect, and it is the first thing I
 would test if he wants that machine to matter. I have not tested it because
 choosing where it stands is choosing what it is for.
 
+### v2.07: the wear, jam and repair economy is fully built and the game never routes you into it
+
+Audited weapon wear, which has never been checked. It is an entire subsystem: four
+condition tiers, per-tier spread and reload penalties, a jam probability, a repair
+shop that wants credits and parts, and a cost curve tuned at v1.57. All of it
+works. Almost none of it is reachable.
+
+THREE PROVENANCES, AND ONLY ONE OF THEM PARTICIPATES.
+
+  issued   a loaner starter, from wep=WEAPONS[pick(STARTERS)]. It has no jam
+           field at all, so the jam test p.wep.jam>0 is undefined>0, false, and it
+           can never jam. wearable() also excludes it, so it never accrues wear.
+  field    a pickup. rollFieldGun copies the base weapon and overwrites dmg,
+           spread, mag and name from its GUNQ roll. It never sets jam either, so
+           a Worn Auto Rifle has worse spread and still cannot jam.
+  owned    from the armoury, via wc2.jam=WS.jam. The ONLY provenance that accrues
+           wear and the only one that can jam.
+
+So the jam mechanic exists solely for guns you bought and equipped in the hub.
+
+AND THE STATE THAT DECIDES IT IS STUCK. The fixture profile owns six guns, smg,
+lmg, pistol, dmr, shotgun and rifle, and P.equipped is 'fists'. The deploy guard
+reads:
+
+    if(!wep||wep.id==='fists'||!P.weapons||P.weapons.indexOf(P.equipped)<0){
+      wep=WEAPONS[pick(STARTERS)]; wepIssued=true; }
+
+It DETECTS the inconsistency and silently works around it by issuing a loaner. It
+does not repair P.equipped. endRaid does repair it, at line 8606, but only on the
+death path. So once that field goes stale while you own guns, every deploy hands
+you a loaner and nothing fixes it until you die or equip manually in the hub.
+Measured: six of six raids came back 'issued'.
+
+MEANWHILE THE ARMOURY HAS RUN AWAY. Every one of the six owned guns is past
+FAILING, which is 1,600 rounds and a 6 percent jam per shot:
+
+    lmg 44,330    rifle 9,627    smg 8,312
+    shotgun 3,230    dmr 2,883    pistol 2,490
+
+The LMG is twenty seven times past the threshold. Repair is priced sensibly and is
+affordable, 467 to 3,110 credits plus two servos each, 12,287 for the lot against
+13,085 credits in the bank. The economy is solvent and idle.
+
+HIS OWN TELEMETRY AGREES, which is what makes this more than a fixture artifact.
+Every weapon named across his seventeen runs is a starter, the Scav Pistol, or a
+field pickup carrying a GUNQ prefix: Auto Rifle, Compact SMG, Scav Pistol,
+Stitcher, Hullcracker, Kettle, Worn Auto Rifle, Tuned Riot Scattergun. Not one
+armoury gun. He has never engaged the wear system, so he has never seen a jam, and
+the repair shop has never had a reason to exist for him.
+
+WHAT I SHIPPED IS THE INSTRUMENT, NOT THE FIX. Every run now records where its gun
+came from, and the export line prints it as wep:Name(issued|field|owned). The next
+set of runs will say plainly whether the repair shop is a system or an ornament,
+and the same field is on simResult so batch measurement can see it too. Verified:
+six of six read issued with fists equipped, and equipping an owned gun flips it to
+owned.
+
+I did not change the deploy guard, and that restraint is the point. Repairing
+P.equipped there would hand him one of six FAILING guns at 6 percent a shot in
+place of a clean loaner, which is a downgrade dressed as a bugfix. Whether owning
+a gun should mean carrying it, whether wear should cap, and whether a field pickup
+should be able to jam are three separate design questions about what that economy
+is for, and they are his.
+
+Also checked and clean, recorded because it would have been serious: addWear is
+properly guarded with if(!G.sim&&!wep._echo), so the thousands of sim raids this
+session did NOT write wear into the saved profile. Those six FAILING guns are his
+real play, not my contamination.
+
+Not verified: whether P.equipped going stale is reachable in normal play or is an
+artifact of this fixture profile's history. Buying a weapon sets it, and dying
+repairs it, so the window is narrow, but the deploy path treating the
+inconsistency as normal rather than fixing it is what makes the state persistent
+once entered. Also not verified: whether the wear thresholds are reachable at all
+in a single session. FOULED needs 950 rounds and his heaviest run fired 111, so on
+that pace it is roughly nine raids on one owned gun before the first jam is even
+possible.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
