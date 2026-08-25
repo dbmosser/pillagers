@@ -443,13 +443,18 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.76';
+var VER='2.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
 // card shows ONCE per version on the hub and stamps itself seen. The list is
 // authored by hand and kept SHORT: only lines that change how he plays, never
 // fixes or measurements. Update it when shipping something he will feel.
+// Keyed to its own version, NOT to VER, v2.77. VER bumps on every build,
+// including measurement-only ones, so keying the card on it would re-show the
+// same unchanged list every session, and a card that nags is a card that gets
+// walked through unread. WHATSNEW_VER moves only when the list itself changes.
+var WHATSNEW_VER='2.76';
 var WHATSNEW=[
   'Your FIRE button now uses the selected hotbar slot.',
   'Heals take time now. The bar shows health arriving.',
@@ -13185,7 +13190,7 @@ function drawHubHUD(ox,oy){
   // does on the hub is walk, and a card that needs its own key to close is a
   // card that gets stuck. Stamped seen on dismissal, not on display, so closing
   // the tab mid-card shows it again next time.
-  if(P.lastSeenVer!==VER){
+  if(P.lastSeenVer!==WHATSNEW_VER){
     var wnW=LH(430), wnH=LH(56)+WHATSNEW.length*LH(17);
     var wnX=W/2-wnW/2, wnY=H/2-wnH/2-LH(20);
     ctx.fillStyle='rgba(6,9,13,.94)'; ctx.fillRect(wnX,wnY,wnW,wnH);
@@ -13199,7 +13204,7 @@ function drawHubHUD(ox,oy){
     ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
     ctx.fillText('walk to dismiss',W/2,wnY+wnH-LH(8));
     ctx.textAlign='left';
-    if(p.moving){ P.lastSeenVer=VER; saveProfile(); }
+    if(p.moving){ P.lastSeenVer=WHATSNEW_VER; saveProfile(); }
   }
   ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(140,152,163,.75)';
   ctx.textAlign='center';

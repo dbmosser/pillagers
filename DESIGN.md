@@ -7176,6 +7176,35 @@ rather than a caveat: the WHATSNEW list only stays true if future player-facing
 builds update it, and a stale list is worse than none; the comment above it says
 so, and this entry says it twice.
 
+### v2.77: the whats-new card stops nagging, one build after it was born
+
+A design flaw in v2.76, caught the next morning and owned. The card keyed its
+seen-state to VER, and VER bumps on EVERY build, including measurement-only ones
+that change nothing he can feel. Under that rule the identical seven lines would
+have re-shown at every session that followed any build at all, and a card that
+nags with unchanged content is a card that gets walked through unread, which
+defeats the one job it has.
+
+The card now keys to WHATSNEW_VER, a version stamped on the LIST rather than on
+the build, sitting directly above the list with the comment that says when to
+move it: only when the list itself changes. The header still names the current
+build, so he always sees the real version number; the seen-state just stops
+caring about builds that did not touch him.
+
+Verified: parsecheck PASS at v2.77, all four maps drive and draw clean with 10
+of 10 entities moving, hub steps clean. The two states exercised directly: a
+profile stamped 2.76 stays card-free on this 2.77 build, and an unseen profile
+shows the card and stamps to the LIST version 2.76, not to the build version,
+after ten frames of walking.
+
+Not verified: the failure mode this creates, which is the mirror of the one it
+fixes: if a future build adds a player-facing change and updates WHATSNEW but
+forgets to bump WHATSNEW_VER, the new line is silently never shown to anyone who
+saw the old card. The two constants sit four lines apart with a comment binding
+them, which is the strongest guard a convention can be; a check that the list
+content hash matches the version would be stronger and is not worth its weight
+in a game with one developer and one player.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
