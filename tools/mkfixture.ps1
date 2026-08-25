@@ -172,6 +172,25 @@ window.__feudFoe=function(a,b){ return feudFoe(a,b); };
 // on the wettest map because inWater lives inside the IIFE and typeof from page
 // scope read undefined; a hook makes that failure impossible to repeat.
 window.__water={at:inWater};
+// THE MEASUREMENT BASELINE, ONE CALL, v2.67. Every batch this cycle opened with
+// the same twenty hand-typed dial assignments, and twice a smoke test that
+// skipped them produced rates that meant nothing and briefly looked like
+// findings. This is the canonical pin: every dial a measurement arm depends on,
+// set to the shipped-default measurement posture, returning what it changed so a
+// probe can log it. Arms then override ONLY the dial under test. mapIx and
+// equipment are pinned too, since forgetting the map is the other classic.
+window.__pinDefaults=function(mapIx){
+  var C2=CFG, P2=P, changed={};
+  var want={simGreed:52,simCrouch:0,simSell:0,simPed:0,simSidearm:1,simSwapBack:1,
+    simWade:1,simLootNoise:1,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,
+    seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,
+    eHp:1,lootMult:1,windows:1,simEngage:0,raiderFeud:1,simReach:1,healOverTime:1,
+    simRetreatHeal:0};
+  for(var k in want){ if(C2[k]!==want[k]){ changed[k]=[C2[k],want[k]]; C2[k]=want[k]; } }
+  P2.mapIx=(mapIx===undefined)?1:mapIx;
+  P2.body=null; P2.equipped='smg'; P2.wear=P2.wear||{}; P2.wear['smg']=0;
+  return {pinned:true, mapIx:P2.mapIx, changed:changed};
+};
 // And a sim raid that can be STEPPED from outside, so a diagnostic can sample
 // state mid-raid while keeping sim semantics. __simSeedsFull owns the batch case;
 // this owns the instrumented-single-raid case that keeps getting hand-rolled

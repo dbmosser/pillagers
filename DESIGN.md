@@ -6792,6 +6792,40 @@ bimodal shape is the finding and it is visible at this n. Also not verified:
 whether a 59.5 percent swum raid is fun, which is his kind of question, and the
 map's wet routes are his authorship.
 
+### v2.67: one call pins the measurement baseline, ending the hand-typed dial ritual
+
+Fixture only, no game logic changed. The last recurring hazard in the measurement
+workflow, closed the same way v2.60 closed the batch loop.
+
+Every batch this cycle opened with the same twenty hand-typed dial assignments,
+simGreed 52, simCrouch 0, the eleven correctness dials, the tier pin and the rest,
+and the ritual failed twice in one day: two smoke tests ran with whatever dials
+the previous batch had left behind, produced arm rates that meant nothing, and one
+of them briefly read as a real discrepancy before the cause was traced. The v2.63
+fingerprint makes such a mismatch VISIBLE after the fact; this makes it not happen.
+
+__pinDefaults(mapIx) sets every dial a measurement arm depends on to the canonical
+measurement posture in one call, pins the map, the loadout and the gun wear, and
+returns a ledger of exactly what it changed so a probe can see what the previous
+occupant left dirty. Arms then override only the dial under test. The dial list
+lives in ONE place now, so when a future build adds a dial to the posture it is
+added once rather than remembered in every batch.
+
+Verified: parsecheck PASS at v2.67, all four maps and the hub drive and draw
+clean. The pin itself exercised: eHp forced to 1.5, simGreed to 99, healOverTime
+to 0 and the map to QUARRY, one call returned a change ledger naming exactly
+those three dials with their old and new values, the CFG read back at canon, a
+sim row stamped the canonical fingerprint hot1 feud1 reach1 win1 rheal0 eng0
+pip0 greed52, and the mapIx argument overrode the default.
+
+Not verified: adoption, which is a discipline rather than a mechanism; the
+function only helps the session that remembers to call it first, and the memory
+note for the 320-seed standard now needs one line pointing at it, which is
+written alongside this entry. Also deliberately out of scope: __pinDefaults does
+not restore dials afterwards, that remains the batch runner's job, because a pin
+and a restore are different promises and conflating them is how dials got dirty
+in the first place.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
