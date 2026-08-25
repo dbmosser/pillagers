@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.33';
+var VER='2.34';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -474,7 +474,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -7531,10 +7531,36 @@ function updateBot(dt){
     p.face=Math.atan2(z.y-p.y,z.x-p.x);
   } else {
     if(!p.goal||p.goal.opened||p.goal.skip){
+      // THE BOT CANNOT READ THE PIP, v2.34, and the player is expected to. Every
+      // unlooted container carries c.best, the best rarity inside it, and the
+      // comment where it is set says exactly what it is for: "what you read
+      // across a room to decide whether the trip is worth it". This loop never
+      // looked at it. Pure nearest-first, value ignored entirely.
+      // That is measurable and it was measured before this build. On extracted
+      // raids the bot opens 21.2 containers at 534 credits each; his own five
+      // extracted runs opened 7.0 at 900. Three times the containers, forty
+      // percent less from each. He is reading the pip and walking past crates.
+      // So the sim has been modelling a player who loots everything he trips
+      // over, which is not the player, and any absolute haul it reports is a
+      // thorough looter's number rather than his.
+      // simPip weighs the pip against the walk: a rare container is worth going
+      // twice as far for, an elite more than three times. It DEFAULTS TO 0, the
+      // old nearest-first behaviour, for the same reason simSell, simPed and
+      // simCrouch do. This changes what the bot IS rather than fixing something
+      // broken, and every number in this file's back catalogue was measured
+      // without it.
       p.goal=null; var bd=1e9;
+      var _pipW=(CFG.simPip===undefined?0:CFG.simPip);
+      var _pipK={common:1,uncommon:0.75,rare:0.5,elite:0.3};
       for(i=0;i<G.containers.length;i++){
         var ct=G.containers[i]; if(ct.opened||ct.skip) continue;
-        var dd=dist(p,ct); if(dd<bd){ bd=dd; p.goal=ct; }
+        var dd=dist(p,ct);
+        if(_pipW){
+          var kk=_pipK[ct.best]; if(kk===undefined) kk=1;
+          // blend so the dial is a strength rather than a switch
+          dd*=(1-_pipW)+_pipW*kk;
+        }
+        if(dd<bd){ bd=dd; p.goal=ct; }
       }
       p.goalD=undefined; p.seekT=0;
       // A fresh target starts with a clean slate, or it inherits the last one's

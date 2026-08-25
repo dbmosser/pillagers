@@ -5016,6 +5016,73 @@ tell me whether any of this session's twenty-odd builds improved his experience 
 all. Also not verified: the bot's 534 is BURIED CITY only, and container mix varies
 by map, so the crate reading above is one map's worth of evidence.
 
+### v2.34: the bot cannot read the pip, and the player is expected to
+
+v2.33 measured that the bot opens 21.2 containers at 534 credits each while his own
+extracted runs opened 7.0 at 900, and ended saying the bot spends its raid on
+containers he would walk past. This is why.
+
+    p.goal=null; var bd=1e9;
+    for(i=0;i<G.containers.length;i++){
+      var ct=G.containers[i]; if(ct.opened||ct.skip) continue;
+      var dd=dist(p,ct); if(dd<bd){ bd=dd; p.goal=ct; }
+    }
+
+Pure nearest-first. Value never enters it. Meanwhile every unlooted container
+carries c.best, the best rarity inside it, and the comment where that is set says
+precisely what it is for: "what you read across a room to decide whether the trip
+is worth it". The game hands the player a value signal and gives the bot no way to
+see it, so the sim has been modelling a player who loots whatever he trips over.
+That is the same family as crouch, water, the sidearm and the jam: a mechanic the
+player uses and the bot cannot.
+
+simPip weighs the pip against the walk. A rare container is worth going twice as
+far for, an elite more than three times, blended by the dial's strength so it is a
+weighting rather than a switch. Measured, 120 seeds an arm on BURIED CITY, with his
+own five extracted runs in the last row for scale:
+
+                   containers   haul     per container   extract   duration
+    nearest-first     21.2      11,338        534         20.8%      195s
+    reads the pip     18.0      13,352        743         23.3%      178s
+    HIM                7.0       6,300        900           -          -
+
+Every axis moves toward him. Fewer containers, more out of each, more banked, out
+sooner, and out more often. That is four independent measures agreeing, which is
+the strongest evidence yet that the pip is the thing he is actually using and the
+bot's 534 was never his number.
+
+The extract rate moves 2.5 points, which at 120 seeds is inside one standard error
+and is not a claim. The per-container figure is the claim: 534 to 743, a 39 percent
+improvement in what a container is worth, from nothing but choosing better ones.
+
+IT DEFAULTS TO OFF, AND THE EVIDENCE ARGUES THE OTHER WAY. simSell, simPed and
+simCrouch all default 0 for one reason: they change what the bot IS rather than
+fixing something broken, and every number in this file's back catalogue was
+measured without them. simPip is the same kind of change and gets the same
+treatment. But I want the disagreement on the record rather than buried: four
+measures say the pip arm is closer to the real player, so the honest reading is
+that simPip 1 is the better model and simPip 0 is the more comparable one. That is
+a decision with numbers attached rather than a shrug, and it is his to make.
+
+Verified: all four maps and the hub draw clean, a container with its pip deleted
+still gets chosen without throwing, and the shipped default reproduces the
+nearest-first behaviour.
+
+MY OWN CONTAMINATION, CAUGHT AND CLEARED. The verification pass reported the
+default as 1. It was not: the source has simPip:0 and the saved profile had 0. My
+measurement loop had left CFG.simPip at 1 in the live fixture session and I read it
+back before resetting. Nothing persisted, and the dial is back at 0, but I nearly
+reported my own test state as a shipped default.
+
+Not verified: whether the weights are right. common 1, uncommon 0.75, rare 0.5,
+elite 0.3 are the first numbers I tried and they were not tuned, only measured. A
+sweep would tell you whether the bot should go three times as far for an elite or
+ten, and there is a real risk that a strong weighting sends it across the map past
+easy money. Also not verified: the pip tells you the BEST rarity in a container,
+not the total, so a crate with one rare and nothing else outranks a safe with four
+uncommons. That is what the player sees too, so the bot is now wrong in the same
+way he is, which is the point, but it means neither of you is optimising value.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
