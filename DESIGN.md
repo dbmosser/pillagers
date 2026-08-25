@@ -5083,6 +5083,58 @@ not the total, so a crate with one rare and nothing else outranks a safe with fo
 uncommons. That is what the player sees too, so the bot is now wrong in the same
 way he is, which is the point, but it means neither of you is optimising value.
 
+### v2.35: the pip weight swept, and it does not buy survival
+
+No game logic changed. v2.34 shipped simPip with the first weights I tried and said
+so in its own Not verified line. This sweeps them. The dial was already written as
+a STRENGTH rather than a switch, so the sweep needed no code at all: five arms, 120
+seeds each on BURIED CITY, everything else pinned.
+
+    simPip   containers   value per container   extract   duration
+      0         17.9             503             20.8%      195s
+      0.25      16.8             510             20.8%      182s
+      0.50      16.7             537             20.0%      190s
+      0.75      15.5             580             27.5%      184s
+      1.00      14.5             665             23.3%      178s
+
+WHAT THE DIAL CONTROLS, IT CONTROLS CLEANLY. Containers fall monotonically from
+17.9 to 14.5. Value per container rises monotonically from 503 to 665, a 32 percent
+improvement. Duration falls from 195 seconds to 178. Three series, all monotone,
+all in the direction the mechanism predicts: the bot walks past more junk, gets more
+out of what it does open, and finishes sooner.
+
+WHAT IT DOES NOT CONTROL IS WHETHER THE BOT LIVES. Extract rate reads 20.8, 20.8,
+20.0, 27.5, 23.3. That is not a curve, it is noise around 22 with one high reading.
+At 120 seeds and a rate near 0.22 one standard error is 3.8 points, so the 27.5 at
+0.75 is 1.75 standard errors above the baseline and the arm ABOVE it falls back to
+23.3. A real effect does not disappear when you turn the dial further up. I am
+calling that spike noise, and if I had swept three values instead of five I would
+have reported a peak at 0.75 and been wrong.
+
+SO THE WEIGHTS DO NOT NEED RETUNING. common 1, uncommon 0.75, rare 0.5, elite 0.3
+were the first numbers I tried and the sweep says the response is smooth and
+monotone across the whole blend range, which is what you want from a weighting: no
+threshold, no cliff, no value at which the bot starts sprinting across the map past
+easy money. The strongest setting is also the best match to his behaviour, so if
+the dial is ever turned on, 1 is the value.
+
+AND THE SWEEP ANSWERS THE DEFAULT QUESTION MORE PRECISELY THAN v2.34 COULD. That
+build kept simPip at 0 on the general principle that it changes what the bot IS.
+The sweep sharpens it: the dial moves haul and container figures a great deal and
+does not move extract rate at all. So turning it on would invalidate every HAUL
+number in this file's back catalogue and would leave every EXTRACT RATE comparison
+intact. That is a much narrower cost than I assumed, and it is worth him knowing
+that the fidelity gain is available for the price of one column rather than all of
+them. It stays 0 until he says otherwise.
+
+Not verified: any of this on the other three maps. BURIED CITY has 187 containers
+at the density measured in v2.15 and COLD STORAGE has 136, so a map with fewer
+containers offers fewer chances to be choosy and the same dial should do less there.
+The monotonicity is the claim I would defend across maps; the magnitudes are one
+map's. Also not verified: whether a bot that skips junk should also skip it when the
+bag is nearly full, which is the point where a common crate two steps away beats an
+elite across the street. The dial has no notion of how much room is left.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
