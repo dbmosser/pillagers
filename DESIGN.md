@@ -2292,6 +2292,68 @@ not verified: what is still sealing rooms at high density. The gentler slope say
 the remaining cause is smaller than the free-standing one, not that it is gone,
 and until it is found the density dial has a ceiling somewhere below 2.2.
 
+### v1.94: one unreachable cell was costing a building all of its furniture
+
+v1.93 left a loose thread I made myself. I predicted that once furniture hugged
+the walls, raising density would start RAISING furnished buildings, and it did not:
+81, 78, 69 as density went up. Gentler than the minus 22 before it, but still
+falling, and I said at the time that something else was still closing rooms.
+
+This is that something, and it is not a sealing bug at all. It is the penalty.
+
+    if(sealed>0){ bad[bi]=1; any=true; }
+    ...
+    if(walls[wi].furn&&walls[wi].ib!==undefined&&bad[walls[wi].ib]) walls.splice(wi,1);
+
+The building is marked bad on a SINGLE unreachable cell, and then every piece of
+furniture in it is removed. One table making one 1-cell pocket in the corner of a
+hall costs that hall all six of its pieces. The threshold was deliberately set to
+zero at some point, on the correct reasoning that even a 1-cell pocket is floor a
+player can see and never stand on, but the RESPONSE to crossing it was never
+scaled to match. Zero tolerance plus total punishment.
+
+That also explains the exact shape v1.93 produced. Hugging stopped pieces from
+splitting rooms, which is why the slope got much gentler, but every additional
+piece is still one more chance to mint a pocket somewhere in the building, and one
+pocket still took everything. So the count kept falling.
+
+Now the repair removes only the pieces adjacent to the unreachable floor. The
+blanket strip is kept directly underneath as the fallback for a building still
+sealed after that, and the partition strip behind it, so the safety net is exactly
+as strong as it was and only the collateral damage is gone.
+
+Measured, 112 buildings over four maps, eight seeds each, hugging on in both arms:
+
+    repair  dens   pieces   furnished   pct     reachable
+      0     1.0     424        81      72.2       99.43
+      0     1.6     582        74      66.1       99.49
+      0     2.2     722        71      63.2       99.51
+      1     1.0     449        91      80.8       99.32
+      1     1.6     669        90      80.0       99.47     <- new default
+      1     2.2     776        87      77.9       99.37
+
+At every density targeted repair wins on both axes at once, ten to sixteen more
+furnished buildings AND more pieces surviving.
+
+The slope is now essentially flat: 91, 90, 87. A fall of four across a 2.2x
+density range, against twelve at v1.93 and twenty-two before any of this. I
+predicted it would start rising and it does not; what it does is stop falling,
+which is the outcome that actually matters and is close enough to the prediction
+that I will call the diagnosis confirmed rather than press the point.
+
+Against what he actually played on v1.87: 366 pieces in 69 furnished buildings at
+5.3 pieces a room, now 669 pieces in 90 furnished buildings at 7.4 a room. Eighty
+three percent more furniture, twenty one more furnished buildings, forty percent
+more in each room you walk into. Reachability 99.47 against 99.50, unchanged
+within noise, and every cell in the matrix sits between 99.32 and 99.51 so nothing
+here is near the 98.42 that v1.62 caused.
+
+Not verified: whether any of this reads as furnished to him, which is the whole
+point and cannot be answered from a fixture. Also not verified: the remaining four
+building fall from 1.0 to 2.2. It is small enough to be noise at eight seeds a
+cell and I have not chased it, so the density dial still has an unmeasured ceiling
+somewhere above 2.2 rather than a proven one.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
