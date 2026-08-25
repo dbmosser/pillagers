@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.85';
+var VER='2.86';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3145,6 +3145,86 @@ function buildFixedMap(def){
   }
   var water=[];
   for(i=0;i<(def.water||[]).length;i++){ var WQ=def.water[i]; water.push({x:WQ.x,y:WQ.y,w:WQ.w,h:WQ.h}); }
+  // ROADS, COMPUTED ONCE AND SHARED, v2.86. The bake laid road bars itself and
+  // skipped groves by grid cell, but authored maps push their woods with
+  // r:-1,c:-1, so the skip NEVER fired and tarmac ran straight through every
+  // grove: his "trees should only spawn on grass" is, at root, roads spawning
+  // under trees. The runs are now computed here, with grove rects in the
+  // blocklist so roads DETOUR woods, stored on the map, and the bake draws this
+  // list instead of laying its own; one list, so the picture and the logic
+  // cannot disagree.
+  var roadRects=[],roadDashes=[];
+  (function(){
+    var cw8=WORLD_W/8,ch8=WORLD_H/8,i2,j2,o2;
+    var RB=[];
+    for(i2=0;i2<buildings.length;i2++){ var RBb=buildings[i2];
+      RB.push({x:RBb.x-10,y:RBb.y-10,w:RBb.w+20,h:RBb.h+20}); }
+    for(i2=0;i2<walls.length;i2++){ var RWw=walls[i2];
+      if(RWw.furn||RWw.wreck||RWw.ledge) continue;
+      if(RWw.w>=100&&RWw.h>=100) RB.push({x:RWw.x-10,y:RWw.y-10,w:RWw.w+20,h:RWw.h+20}); }
+    for(i2=0;i2<woodsList.length;i2++){ var RWd=woodsList[i2];
+      RB.push({x:RWd.x-10,y:RWd.y-10,w:RWd.w+20,h:RWd.h+20}); }
+    function clearR(x,y,w,h){
+      for(var q=0;q<RB.length;q++){ var Q=RB[q];
+        if(x<Q.x+Q.w&&x+w>Q.x&&y<Q.y+Q.h&&y+h>Q.y) return false; }
+      return true;
+    }
+    function lay(x,y,w,h){
+      var horiz=w>=h,len=horiz?w:h,step=24;
+      for(var o3=0;o3<len;o3+=step){
+        var sw=horiz?Math.min(step,len-o3):w, sh=horiz?h:Math.min(step,len-o3);
+        var sx=horiz?x+o3:x, sy=horiz?y:y+o3;
+        if(clearR(sx,sy,sw,sh)) roadRects.push({x:sx,y:sy,w:sw,h:sh});
+      }
+    }
+    for(i2=1;i2<8;i2++)for(j2=0;j2<8;j2++) lay(80+j2*cw8-40,80+i2*ch8-42,cw8+80,66);
+    for(i2=1;i2<8;i2++)for(j2=0;j2<8;j2++) lay(80+i2*cw8-42,80+j2*ch8-40,66,ch8+80);
+    for(i2=1;i2<8;i2++)for(j2=0;j2<8;j2++){
+      var ry2=80+i2*ch8-3;
+      for(o2=0;o2<cw8-40;o2+=64){ var dx3=80+j2*cw8+o2;
+        if(clearR(dx3,ry2,32,5)) roadDashes.push({x:dx3,y:ry2,w:32,h:5}); }
+    }
+    for(i2=1;i2<8;i2++)for(j2=0;j2<8;j2++){
+      var rx2=80+i2*cw8-3;
+      for(o2=0;o2<ch8-40;o2+=64){ var dy3=80+j2*ch8+o2;
+        if(clearR(rx2,dy3,5,32)) roadDashes.push({x:rx2,y:dy3,w:5,h:32}); }
+    }
+  })();
+  // PLACEMENT CULLS, v2.86. His notes: "bushes should only spawn on grass",
+  // "same for trees", "look for other logical inconsistencies like this in the
+  // map and resolve them". Bushes could scatter into water and onto tarmac,
+  // wrecks had no water test at all, and grove rolls could put a trunk in a
+  // flooded margin. These are CULLS, run after every placement roll has been
+  // drawn, so they consume no rr() and every seeded stream in the back
+  // catalogue is untouched; the cost is a few fewer props where props never
+  // belonged. Containers in water are NOT culled: the flooded shelf is DAM's
+  // authored identity, per the v2.66 wading measurements.
+  function _inWaterRaw(x,y){
+    for(var q=0;q<water.length;q++){ var W3=water[q];
+      if(x>W3.x&&x<W3.x+W3.w&&y>W3.y&&y<W3.y+W3.h) return true; }
+    return false;
+  }
+  function _onRoad(x,y){
+    for(var q=0;q<roadRects.length;q++){ var R3=roadRects[q];
+      if(x>=R3.x&&x<=R3.x+R3.w&&y>=R3.y&&y<=R3.y+R3.h) return true; }
+    return false;
+  }
+  var _cullLog={bushWater:0,bushRoad:0,treeWater:0,treeRoad:0,wreckWater:0};
+  for(i=bushes.length-1;i>=0;i--){
+    var CB=bushes[i];
+    if(_inWaterRaw(CB.x,CB.y)){ _cullLog.bushWater++; bushes.splice(i,1); }
+    else if(_onRoad(CB.x,CB.y)){ _cullLog.bushRoad++; bushes.splice(i,1); }
+  }
+  for(i=walls.length-1;i>=0;i--){
+    var CT=walls[i];
+    if(CT.tree){
+      var tcx=CT.x+CT.w/2, tcy=CT.y+CT.h/2;
+      if(_inWaterRaw(tcx,tcy)){ _cullLog.treeWater++; walls.splice(i,1); continue; }
+      if(_onRoad(tcx,tcy)){ _cullLog.treeRoad++; walls.splice(i,1); }
+    } else if(CT.wreck){
+      if(_inWaterRaw(CT.x+CT.w/2,CT.y+CT.h/2)){ _cullLog.wreckWater++; walls.splice(i,1); }
+    }
+  }
   var mapNav=repairInteriors(walls,buildings);
   // PROP CONNECTIVITY GUARD. Wrecks and ruins are placed against the finished
   // wall list, but nothing checked whether they PINCH: a car 50 units wide
@@ -3208,6 +3288,7 @@ function buildFixedMap(def){
     segs.push({x1:w2.x,y1:w2.y+w2.h,x2:w2.x,y2:w2.y});
   }
   return {fixed:def.id,name:def.name,walls:walls,segs:segs,buildings:buildings,water:water,
+    roadRects:roadRects,roadDashes:roadDashes,cullLog:_cullLog,
     cw:WORLD_W/8,ch:WORLD_H/8,cols:8,rows:8,
     bushes:bushes,landmarks:landmarks,zones:zseeds,districtAt:districtAt,zoneAt:zoneAt,woods:woodsList,bigPairs:[],plats:plats,ramps:ramps,platAt:platAt,liftAt:liftAt,locked:lockedRooms,
     spawns:def.spawns,extracts:def.extracts,nav:mapNav};
@@ -3467,53 +3548,16 @@ function bakeGround(map){
   // Roads are laid in short runs now and any run that meets a building, a cliff
   // face or a collapsed block is simply not laid. A road that stops at a wall
   // and picks up on the far side reads as a road that was there first.
-  var ROADBLOCK=[];
-  for(i=0;i<map.buildings.length;i++){ var RB=map.buildings[i];
-    ROADBLOCK.push({x:RB.x-10,y:RB.y-10,w:RB.w+20,h:RB.h+20}); }
-  for(i=0;i<map.walls.length;i++){ var RW=map.walls[i];
-    if(RW.furn||RW.wreck||RW.ledge) continue;
-    // big solid masses only: cliff bands, ruins, the things a road detours
-    if(RW.w>=100&&RW.h>=100) ROADBLOCK.push({x:RW.x-10,y:RW.y-10,w:RW.w+20,h:RW.h+20}); }
-  function roadClear(x,y,w,h){
-    for(var q=0;q<ROADBLOCK.length;q++){ var Q=ROADBLOCK[q];
-      if(x<Q.x+Q.w&&x+w>Q.x&&y<Q.y+Q.h&&y+h>Q.y) return false; }
-    return true;
-  }
-  // Lay one bar as a series of short runs, skipping the ones that are blocked.
-  function roadBar(x,y,w,h){
-    var horiz=w>=h,len=horiz?w:h,step=24;
-    for(var o=0;o<len;o+=step){
-      var sw=horiz?Math.min(step,len-o):w, sh=horiz?h:Math.min(step,len-o);
-      var sx=horiz?x+o:x, sy=horiz?y:y+o;
-      if(roadClear(sx,sy,sw,sh)) c.fillRect(sx,sy,sw,sh);
-    }
-  }
+  // Drawn from the map's OWN road list, v2.86, computed once in makeMap with
+  // grove rects in the blocklist so roads detour woods. The bake used to lay
+  // its own runs and skip groves by grid cell, but authored woods carry
+  // r:-1,c:-1, so the skip never fired and tarmac ran under every grove.
   c.fillStyle=isDay()?'#857C6F':'#221a26';
-  for(i=1;i<map.rows;i++)for(j=0;j<map.cols;j++){
-    if(woodsCell(i-1,j)||woodsCell(i,j)||bigSpine('h',i,j)) continue;
-    roadBar(80+j*map.cw-40,80+i*map.ch-42,map.cw+80,66);
-  }
-  for(i=1;i<map.cols;i++)for(j=0;j<map.rows;j++){
-    if(woodsCell(j,i-1)||woodsCell(j,i)||bigSpine('v',j,i)) continue;
-    roadBar(80+i*map.cw-42,80+j*map.ch-40,66,map.ch+80);
-  }
+  for(i=0;i<(map.roadRects||[]).length;i++){ var RR2=map.roadRects[i];
+    c.fillRect(RR2.x,RR2.y,RR2.w,RR2.h); }
   c.fillStyle='rgba(200,180,120,.20)';
-  for(i=1;i<map.rows;i++)for(j=0;j<map.cols;j++){
-    if(woodsCell(i-1,j)||woodsCell(i,j)||bigSpine('h',i,j)) continue;
-    var ry2=80+i*map.ch-3;
-    for(k=0;k<map.cw-40;k+=64){
-      var dx3=80+j*map.cw+k;
-      if(roadClear(dx3,ry2,32,5)) c.fillRect(dx3,ry2,32,5);
-    }
-  }
-  for(i=1;i<map.cols;i++)for(j=0;j<map.rows;j++){
-    if(woodsCell(j,i-1)||woodsCell(j,i)||bigSpine('v',j,i)) continue;
-    var rx2=80+i*map.cw-3;
-    for(k=0;k<map.ch-40;k+=64){
-      var dy3=80+j*map.ch+k;
-      if(roadClear(rx2,dy3,5,32)) c.fillRect(rx2,dy3,5,32);
-    }
-  }
+  for(i=0;i<(map.roadDashes||[]).length;i++){ var RD2=map.roadDashes[i];
+    c.fillRect(RD2.x,RD2.y,RD2.w,RD2.h); }
   // SPEC 4.5: closed manholes, baked into the floor. Permanent map features
   // that read as where a raider surfaces from the undercroft.
   for(i=0;i<(map.spawns||[]).length;i++){
@@ -5455,6 +5499,13 @@ function buildRaid(sim){
         f:rnd(0,9),fl:rr()<.30,post:1});
     }
   }
+  // NO LAMPS STANDING IN WATER, v2.86, the same cull family as the map pass:
+  // the audit found fifteen lit posts in DAM's reservoir and nine in QUARRY's
+  // sumps, an electric lamp planted mid-lake. Filtered AFTER every roll is
+  // drawn, so the PRNG stream is untouched; the building-interior exemption in
+  // inWaterMap keeps a lamp inside a dry powerhouse alive.
+  for(i=lights.length-1;i>=0;i--)
+    if(inWaterMap(map,lights[i].x,lights[i].y)) lights.splice(i,1);
   var ents=[];
   // Keep looking for a spot that is genuinely far enough, and if the map cannot
   // offer one, hand back the furthest we saw. The old version fell back to an

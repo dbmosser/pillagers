@@ -7545,6 +7545,64 @@ until today's, which is why a bug this visible could hide from a capture
 workflow that photographs what it stages. His eyes found it in normal play
 within a day of playing, which is the argument for his eyes.
 
+### v2.86: the world stops contradicting itself, and the trees-on-roads bug was roads all along
+
+His notes, three in a row: "bushes should only spawn on grass", "same for trees",
+"look for other logical inconsistencies like this in the map and resolve them."
+An audit hook was built first, __placeAudit, and it put numbers on the mess
+before anything was fixed:
+
+    culled, per raid on the audit seeds
+                     DAM   BURIED   COLD   QUARRY
+    bushes in water   68      0       2      13
+    bushes on roads   12     27      16      16
+    trees in water     6      0       0       0
+    wrecks in water   34      0       5      14
+    lamps in water    15      0       0       9
+
+A THIRD OF DAM'S CARS WERE PARKED IN THE RESERVOIR, sixty-eight bushes grew in
+it, and fifteen electric lamp posts stood lit in open water. Wrecks had no water
+test at all; the bush scatter tested walls and buildings but never water or
+tarmac.
+
+THE TREES-ON-ROADS BUG WAS ROADS-UNDER-TREES. Trees only ever spawn inside
+authored grove rects, and the bake's road layer was SUPPOSED to skip groves, but
+it skipped them by grid cell and authored maps push woods with r:-1,c:-1, so the
+skip never fired once on any live map and tarmac ran straight through every
+wood. The road runs are now computed once in makeMap with grove rects in the
+blocklist, so roads DETOUR woods, stored on the map, and the bake draws that
+stored list: one list, so the picture and the logic cannot disagree. The
+tree-on-road cull that was written alongside has caught zero trees since,
+because the cause is gone.
+
+EVERYTHING ELSE IS A CULL, NOT A RETRY, and that is stream discipline: filters
+run after every placement roll has been drawn, so they consume no rr() and every
+seeded comparison in the back catalogue is untouched. Bushes in water or on
+tarmac go, trees in water go, wrecks in water go, and lamps in water go at raid
+build with the same pattern. The building-floor exemption holds throughout: a
+lamp inside the dry powerhouse that the reservoir rect overlaps stays lit, which
+the audit initially flagged until the audit was taught the game's own inWaterMap
+definition of wet.
+
+KEPT, DELIBERATELY: containers in water, 31 on DAM and 12 on QUARRY on the audit
+seeds. The flooded shelf is DAM's authored identity, v2.66 measured the wading
+economy built on it, and a suitcase in a flood reads as flotsam in a way a lit
+lamp post never can.
+
+Verified: parsecheck PASS at v2.86, all four maps and the hub drive and draw
+clean with 10 of 10 entities moving; the audit reads zero in every culled
+category on all four maps; and the reservoir seen in pixels,
+tools/shots/dam_reservoir.png, water with buildings and flotsam and nothing
+absurd in it. The itch zip is rebuilt at v2.86.
+
+Not verified: balance. DAM lost 80 bushes and 34 wrecks, real concealment and
+real cover, most of it in water where the wading routes ran; the 320-seed
+destruct-style paired run on this build against v2.85 has not been run, and DAM
+is the map to run it on if the extract rate looks different in his hands. Also
+not verified: the road detours change where tarmac lies on all four maps, which
+is pure bake visuals with no collision or sight consequence, but the LOOK of the
+new detours has only been sampled around one reservoir and one grove.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

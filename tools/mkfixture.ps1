@@ -182,6 +182,27 @@ window.__hb=function(){ return HB; };
 // fires its rAF. Each call arms one more rAF, which is exactly the loop
 // resuming normally if the pane ever becomes visible, so this is safe to drive.
 window.__loop=function(ts){ loop(ts); };
+// Placement sanity audit, v2.86: counts of props sitting on ground they should
+// not, plus the culls makeMap already performed this raid.
+window.__placeAudit=function(){
+  var m=G&&G.map; if(!m) return null;
+  // The game's own definition of wet, building-floor exemption included, or the
+  // audit flags a lamp on a dry powerhouse floor as standing in the lake.
+  function wet(x,y){ return inWaterMap(m,x,y); }
+  function road(x,y){ for(var q=0;q<(m.roadRects||[]).length;q++){ var R3=m.roadRects[q];
+    if(x>=R3.x&&x<=R3.x+R3.w&&y>=R3.y&&y<=R3.y+R3.h) return true; } return false; }
+  var out={culledThisRaid:m.cullLog||null, live:{bushWater:0,bushRoad:0,treeWater:0,treeRoad:0,
+    wreckWater:0,containerWater:0,lampWater:0,bushes:m.bushes.length,roadRuns:(m.roadRects||[]).length}};
+  m.bushes.forEach(function(b){ if(wet(b.x,b.y))out.live.bushWater++; else if(road(b.x,b.y))out.live.bushRoad++; });
+  m.walls.forEach(function(w){
+    if(w.tree){ var cx=w.x+w.w/2,cy=w.y+w.h/2;
+      if(wet(cx,cy))out.live.treeWater++; else if(road(cx,cy))out.live.treeRoad++; }
+    else if(w.wreck){ if(wet(w.x+w.w/2,w.y+w.h/2))out.live.wreckWater++; }
+  });
+  (G.containers||[]).forEach(function(c){ if(wet(c.x,c.y))out.live.containerWater++; });
+  (G.lights||[]).forEach(function(l){ if(wet(l.x,l.y))out.live.lampWater++; });
+  return out;
+};
 // THE MEASUREMENT BASELINE, ONE CALL, v2.67. Every batch this cycle opened with
 // the same twenty hand-typed dial assignments, and twice a smoke test that
 // skipped them produced rates that meant nothing and briefly looked like
