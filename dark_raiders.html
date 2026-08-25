@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.29';
+var VER='2.30';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -6955,8 +6955,15 @@ function updatePlayer(dt){
     if(!keys['KeyF']) p.healLock=false;
     // The beacon countdown lives in here, so going down used to freeze the
     // dropship in mid air and the landing could resolve neither way. It now
-    // keeps flying, and if it lands while you are bleeding out inside the ring
-    // your crew drags you aboard. Crawling for the ring is a real last play.
+    // keeps flying, and a downed operator inside the ring can board it.
+    // WORDING CORRECTED v2.30: this used to say your crew "drags you aboard",
+    // which reads as automatic and is not what happens. Boarding is the same
+    // second pull it is for everyone, the E key just passes through while you
+    // are down. Measured all four combinations: standing with E extracts,
+    // standing without E does not, DOWNED WITH E EXTRACTS, downed without E
+    // does not. That is the right rule and it matches "pull again to board"
+    // everywhere else; only the comment was overselling it.
+    // Crawling for the ring is a real last play.
     // And per his run #5 note, a downed operator can now CALL the ship too:
     // the E key passes through, so bleeding out inside the ring with no beacon
     // inbound is a decision point instead of a death sentence.

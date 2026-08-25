@@ -217,7 +217,7 @@ A run of quiet ticks with no new data produced these. Each was measured, not ass
 - **The game runs at the same speed on any monitor.** At 30, 60, 144 and 240 frames a second: movement, sprinting, stamina drain and the raid clock are identical to the decimal, 604.5 units walked in four seconds, 734.5 sprinting with 22 stamina left, 4.00 seconds off the clock. Regeneration lands within one hit point. The one thing that varies is rate of fire, because a shot can only leave on a frame boundary: a 120ms weapon fires every 133ms at 60Hz and every 121ms at 240, so 30 shots against 34 over four seconds. Inherent to frame-gated firing and not built, since the usual fix trades it for catch-up bursts after a stutter. It shifts every weapon by the same proportion, so the Compact SMG finding below is unaffected by refresh rate.
 
 ## 13. What is waiting on Daniel
-- **What should the dropship do if you are bleeding out inside the ring when it lands? (v0.82)** Right now the inbound countdown freezes the moment you go down, so the ship waits, and the landing cannot resolve either way until you get up. Measured: the beacon ticks 0.00 seconds in 4.8 while downed, though your bleed out timer and the raid clock both keep running. Two options, both a change of feel: the ship hauls you aboard unconscious, or it leaves without you and you call it again. One line either way.
+- **RESOLVED, and it was resolved by him in run #5 (closed v2.30).** This asked what the dropship should do if you are bleeding out inside the ring when it lands, and said the countdown freezes while you are down. Both halves are now out of date. His own run #5 note answered the question: "player should be able to use the beacon and extract while downed". It was built, and the code cites that note. Re-measured on the current build rather than trusted: the beacon TICKS while downed, 10.0 down to 7.0 across three seconds, against the 0.00 in 4.8 this entry recorded; a downed operator can CALL a ring, beacon reaching 22.6 with E held; and all four boarding combinations behave, standing with E extracts, standing without E does not, DOWNED WITH E EXTRACTS, downed without E does not. So a downed player boards by pulling, exactly like anyone else. This entry sat here for thirty builds describing a question that had been answered and a behaviour that had been changed, which is the specific way a stale open-question list wastes his attention and mine.
 - **One good raid buys anything in the shop (measured v0.80, nothing changed).** A raid where the bag comes back full is worth 4,400 to 5,000 credits. The most expensive thing in the shop is the Marksman Rifle at 4,500, and everything else is cheaper. Reputation gates still pace unlocks, but credits stop being a constraint almost immediately. This is not something the map change caused; it measures the same on the old map size. Whether that matters is a design call.
 - **The backpack decides raid length, not the clock.** He asked for at least ten minutes to extract and has it, but a bot looting to its carry limit fills up and leaves after about two and a half minutes. The remaining seven are only useful for swapping held items for better ones. If a raid is meant to be a ten minute commitment, carry weight is the lever, not the timer.
 - **Should machines be able to walk around cover to reach you? (v0.72)** The game now has real route finding, and it is wired into looting, investigating and extraction but deliberately not into combat chasing. Switching chasing on would make sentries, crawlers and raiders pursue you around buildings instead of snagging on the corner. That is a straight difficulty increase and cuts against "the player is too fragile", which is why it is parked rather than shipped. One line either way settles it.
@@ -4772,6 +4772,66 @@ recomputed. I am not going to pretend those are trustworthy now. Also not verifi
 whether preferring the ring you stand in is right when two are live and neither is
 yours, which cannot happen today because nothing but the player calls one, and
 would need a rule the moment anything else does.
+
+### v2.30: section 13 was still asking him a question he answered thirty builds ago
+
+v2.29 ended saying his 17 run export carried diedInSiege values I had just made
+suspect and had not recomputed. So this build went back to the export. The column
+is fine, and the trip found something worse than a bad number.
+
+THE COLUMN IS CLEAN. Exactly one run in the eighteen carries diedInSiege:1, run
+#12, and that run reads beacon:1called/0missed with closestExt:2. He was two units
+from the middle of the ring when he died. The stale mirror v2.29 fixed only
+persists if you LEAVE a called ring, and he had not left it. Nothing in that export
+needs recomputing, which is the answer I wanted rather than the one I expected.
+
+THEN I CHECKED HIS NOTES AGAINST CURRENT CODE, which is the standing rule and the
+reason it exists. Run #4, "once i call the beacon and it arrivs i should have 30
+seconds t get back into the circle": built, z.hold is Math.min(30, ...). Run #5,
+"player should be able to use the beacon and extract while downed": built, and the
+comment in updatePlayer cites that note by number.
+
+AND SECTION 13 STILL ASKS IT AS AN OPEN QUESTION. The entry, dated v0.82, reads:
+"What should the dropship do if you are bleeding out inside the ring when it lands?
+Right now the inbound countdown freezes the moment you go down... Measured: the
+beacon ticks 0.00 seconds in 4.8 while downed... Two options, both a change of
+feel... One line either way."
+
+Every part of that is out of date. He answered the question in run #5, the answer
+was implemented, and the measurement it quotes is no longer true. Re-measured on
+the current build rather than trusted:
+
+    beacon while downed        10.0 -> 7.0 across three seconds, not 0.00 in 4.8
+    downed operator calling    reaches 22.6 with E held, so yes
+    boarding, all four cases   standing+E EXTRACT   standing, no E  no
+                               DOWNED+E   EXTRACT   downed, no E    no
+
+So a downed player boards by pulling, exactly like anyone else, which is the right
+rule and matches "pull again to board" everywhere else in the file.
+
+That entry has sat in "What is waiting on Daniel" for thirty builds describing a
+question that was answered and a behaviour that was changed. I have read section 13
+at the start of a tick more than once this session looking for the highest value
+open item, and this was in it. It is retired with the measurements above rather
+than deleted, so the next reader can see it was closed by him and when.
+
+ALSO CORRECTED, ONE LINE OF MINE. The comment above that code said the crew "drags
+you aboard", which reads as automatic. It is not: E passes through while you are
+down, and you still pull. The mechanic is right and only the description was
+overselling it. Reworded rather than reimplemented, because the four-way
+measurement says the behaviour is correct.
+
+No balance arm. The only executable change is a comment, and the section 13 edit is
+documentation; a sim raid still runs and the four boarding cases behave identically
+after the edit, which is the check that the comment change touched nothing.
+
+Not verified: the rest of section 13. There are five more entries in it and two
+gated items, and I have only re-measured the one I happened to trip over. On this
+evidence the list should be assumed stale until each entry is checked the way this
+one was, and I have not done that. Also not verified: whether run #12's
+diedInSiege:1 is right for the right reason. He was in the ring, so the flag is
+plausible, but a beacon he had called and a siege that had actually begun are two
+different conditions and the flag only tests the first.
 
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
