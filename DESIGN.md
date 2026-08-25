@@ -5195,6 +5195,68 @@ profile is a defensible reason not to; the v1.96 grudge-record fix chose shieldi
 for a similar case, and I have chosen visibility here rather than quietly picking a
 side on his behalf.
 
+### v2.37: the sim inherited his world tier, and it was worth eight points of extract rate
+
+v2.36 made the world tier visible and left the question open: should the sim inherit
+it at all. The file had already answered, three lines into the same player object:
+
+    armor:(sim?armorById('light').cap:myRig().cap)
+
+with the comment "a constant baseline also keeps the numbers comparable across
+builds, which is the whole point of having a sim at all". The rig is pinned because
+it varies with his progression. The world tier varies with his progression and was
+not pinned. So this is consistency with a decision already made rather than a new
+policy, and the sim now runs at tier 0 regardless of the profile.
+
+I EXPECTED THIS TO BE AN EIGHT PERCENT ADJUSTMENT TO HAUL. It is not. 120 seeds an
+arm, everything else pinned:
+
+                        tier   extract   haul    extracted haul   containers   dur
+    inherits profile      1     20.8%    9,028      11,338          17.9       195s
+    pinned neutral        0     29.2%    8,897      10,859          18.3       197s
+
+EXTRACT RATE MOVES 8.4 POINTS. 17 seeds flip to extract, 7 flip to dead, 96 keep
+their outcome. McNemar on 24 discordant pairs is z 2.04, p about 0.04, which is the
+first result this session to clear the bar on its own rather than being reported as
+suggestive.
+
+A six percent change in machine health buys eight points of survival. That is a
+much steeper response than the multiplier suggests, and it says the game sits at an
+operating point where small changes to enemy durability matter a lot. Worth knowing
+independently of this build.
+
+AND IT MEANS MY PUBLISHED EXTRACT RATES WERE TIER 1 FIGURES. Everything this session
+has quoted, the 20.8, the 22.5 on BURIED CITY, the four-map spread at v2.13, was
+measured on a profile carrying loot x1.08 and machines at x1.06. A neutral profile
+sees roughly eight points more. The COMPARISONS still hold, because every arm was
+paired inside one tier and the multiplier appears on both sides, which is the same
+argument that saved the haul figures at v2.33. The ABSOLUTE rates were eight points
+pessimistic and I did not know it.
+
+Haul barely moves, 9,028 to 8,897, because the eight percent cut to item values is
+nearly cancelled by more raids surviving to bank anything.
+
+IMPLEMENTED WITHOUT REOPENING A TRAP. worldTier is read from ival, which runs during
+buildRaid before G is assigned, so testing G.sim inside it would have reintroduced
+exactly the stale-G defect v1.96 diagnosed and v2.24 finished removing. The flag is
+set from buildRaid's own sim parameter instead. Verified that the live game is
+untouched: a live raid built immediately after a sim batch still spawns sentries at
+159 health, which is 150 times 1.06, his real tier, on all four maps. A sim sentry
+is 150. The export header still reports HIS tier, not the pinned one, because that
+header describes his game and not my instrument.
+
+simPinTier 0 restores inheritance.
+
+Not verified: the pairing here is weak and I am not going to dress it up. Changing
+enemy health changes combat, which changes the whole raid, so the two arms are not
+the same 120 raids and the 96 matching outcomes are matching outcomes rather than
+matching raids. The McNemar figure treats the seeds as paired, which flatters it. A
+cleaner design would hold health fixed and vary only the loot multiplier to separate
+the two halves of the tier, and I have not run that. Also not verified: whether the
+8.4 points is specific to the step from tier 1 to 0. Tier 5 is health x1.30, five
+times the step measured here, and there is no reason to assume the response stays
+linear that far out.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

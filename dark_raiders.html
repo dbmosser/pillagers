@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.36';
+var VER='2.37';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -474,7 +474,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -4890,6 +4890,8 @@ function wildTick(dt){
   }
 }
 function buildRaid(sim){
+  // Set from the parameter, never inferred from G, which is not assigned yet.
+  SIMRAID=!!sim;
   // The raid is seeded here and nowhere else. G.seed is written into the flight
   // recorder and the sim result, so any run in the data can be rebuilt exactly.
   // pendSeed is how the paired A/B runner forces two builds onto the same seed;
@@ -8725,7 +8727,25 @@ var SEASON_TIERS=[
 ];
 
 function seasonNo(){ return (P&&P.season)||1; }
-function worldTier(){ return clamp((P&&P.worldTier)||0,0,5); }
+// PINNED FOR THE SIM, v2.37. v2.36 found that seasonLoot and seasonHp read
+// P.worldTier with no sim guard, so the headless batch inherited whatever tier
+// the profile happened to be on, and made that visible in the export. This
+// settles whether it SHOULD inherit it, and the file had already answered:
+// three lines into the same player object, armour reads
+// armor:(sim?armorById('light').cap:myRig().cap) with the comment "a constant
+// baseline also keeps the numbers comparable across builds, which is the whole
+// point of having a sim at all". The rig is pinned because it varies with his
+// progression. The world tier varies with his progression and was not.
+// So this is consistency with a decision already made, not a new policy.
+// SIMRAID rather than G.sim, deliberately. ival() is called during buildRaid,
+// before G is assigned, which is exactly the stale-G trap v1.96 diagnosed and
+// v2.24 removed the last of. The flag is set from buildRaid's own parameter.
+// simPinTier 0 makes the sim inherit the profile tier again.
+var SIMRAID=false;
+function worldTier(){
+  if(SIMRAID&&CFG.simPinTier!==0) return 0;
+  return clamp((P&&P.worldTier)||0,0,5);
+}
 // The world tier is a multiplier on top of his tuning sliders rather than a
 // rewrite of them, so the Tuning Console still says what he set it to.
 function seasonLoot(){ return 1+0.08*worldTier(); }
