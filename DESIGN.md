@@ -1984,6 +1984,63 @@ furnished reads as furnished. The browser pane does not composite while hidden s
 I cannot screenshot, and both of those are perception questions that only he can
 close.
 
+### v1.90: the crash in his telemetry was fixed thirty-five builds ago and the recorder never said so
+
+The headline finding from his 17 runs was DRAWERR:crawler in seven of them, and I
+treated it as the top-priority live bug. It is not a live bug. It was fixed in
+v1.55. The recorder simply reprints it forever.
+
+The mechanism is worth stating plainly because it will keep happening otherwise.
+P.log keeps the last 60 runs and lives in the saved profile. The exporter walks
+the WHOLE log on every export. So a fault recorded once appears in every report
+from then on, with nothing on the line to say which build produced it, and a fresh
+export of an old failure is indistinguishable from a new one.
+
+What it cost: I read the seven failures as current, drove 96 raids across all four
+maps with 45 drawn frames each looking for a reproduction and got zero, cleared
+liftAt, weakOf and drawCrawlerS by inspection, confirmed the raider else-branch
+was still correctly guarded, and then had to fan out a four-angle static search
+before the actual boundary surfaced. Every one of those steps was sound and none
+of them could have found anything, because there was nothing there.
+
+THE BOUNDARY. Cumulative DRAWERR count across his exports, by the build each run
+was played on: runs #7 and #8 under v1.53, runs #9 to #13 under v1.54, and then
+zero new ones. Run #14 under v1.57, runs #15 to #18 under v1.87, all clean. The
+dividing line is the commit titled "v1.55: the crawler crash in his own runs",
+which introduced the "else if(e2.kind==='raider')" guard. Seven failures, all of
+them before the fix, none after.
+
+THE WEATHER LEAD WAS THE SAME ARTIFACT. I noted that every failing run carried a
+weather tag while the six clean early runs carried none, and flagged it as the
+strongest lead. It was a version marker, not a cause: wx was only added in v1.17,
+so the oldest runs have no tag at all. The direct controls kill it outright, and I
+should have run them sooner: #13 fog/noon failed and #14 fog/noon did not, #7
+clear/golden failed and #18 clear/golden did not, #11 and #12 blackout failed and
+#16 blackout did not, #9 rain failed and #17 rain did not.
+
+THE FIX IS THE RECORDER, not the renderer. Every run record now carries ver:VER,
+stamped at the moment the run ends, and the export prints it first on the line:
+
+    #7 v1.54 DEAD [B] wep:Stitcher dur:54s ...
+
+Anything recorded before this build prints "v?", which is itself the signal that
+the run predates the stamp. Verified: the export path renders "#1 v? DEAD [B]
+wep:Scav Pistol ..." for existing history.
+
+This is exactly the failure the standing instructions warn about, which is that
+several of his complaints have already been fixed in later builds and re-fixing
+them wastes a session. The instruction says to check each note against the current
+code first. I did check the current code, twice, and the code was fine both times;
+what I could not do was tell that his DATA was old, because the data did not say.
+Now it does.
+
+Not verified: whether any of the other faults in his log are also historical. The
+same reasoning applies to every line in every export he has ever sent, and I have
+no way to re-date the existing entries because the stamp only starts from here.
+The practical consequence is that the "character not rendering" note on run #3 and
+anything else from the low-numbered runs should be treated as undated rather than
+current until he reproduces them on a v1.90 or later run.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

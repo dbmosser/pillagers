@@ -421,7 +421,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.89';
+var VER='1.90';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -8231,7 +8231,19 @@ function endRaid(how){
     Math.round(CFG.raidSec-G.timeLeft)+'s on surface</span>');
 
   pendingRun={
-    n:P.runs,seed:G.seed,outcome:how,weapon:T.weapon,preset:CFG.preset||'custom',termPay:tPay,terms:termsOn().slice(),
+    // WHICH BUILD THIS RUN WAS PLAYED ON, added v1.90, and it cost a session to
+    // learn why it matters. P.log keeps the last 60 runs and the exporter
+    // reprints ALL of them on every export, so a fault recorded once reappears in
+    // every report from then on with nothing to say it is history. His exports
+    // showed DRAWERR:crawler in runs #7 to #13 and I read it as a live crash,
+    // hunted it across 96 driven raids, found nothing, and had to fan out a
+    // static search before the boundary turned up: those seven runs were played
+    // on v1.53 and v1.54, and that crash was fixed in v1.55. Runs #14 onward, on
+    // v1.57 and v1.87, are all clean. The weather tags looked like a lead and
+    // were an artifact of the same thing, because wx was only added in v1.17, so
+    // the oldest runs simply have no tag. Every run now carries the version it
+    // was played on, so neither of us chases the same ghost twice.
+    n:P.runs,ver:VER,seed:G.seed,outcome:how,weapon:T.weapon,preset:CFG.preset||'custom',termPay:tPay,terms:termsOn().slice(),
     drawErr:T.drawErr||null,
     wx:(G.wx&&G.wx.id)||'clear',wxTurns:G.wxTurned||0,tod:(G.tod&&G.tod.id)||'noon',
     caches:T.cachesOpened||0,windfalls:T.windfalls||0,strongbox:T.strongbox||0,rounds:T.rounds||0,jams:T.jams||0,campSafes:T.campSafes||0,wardenMet:T.wardenMet||0,doorsOpened:T.doorsOpened||0,
@@ -12147,7 +12159,9 @@ function buildExport(){
   L.push('--- RUNS (oldest first) ---');
   P.log.forEach(function(r){
     var kills=r.kills?(r.kills.sentry+'s/'+r.kills.crawler+'c/'+r.kills.raider+'r/'+(r.kills.snitch||0)+'sn'):'0';
-    var line='#'+r.n+' '+r.outcome.toUpperCase()+' ['+(r.preset||'?')+'] wep:'+r.weapon+' dur:'+r.dur+'s haul:'+r.haul+
+    // v-stamp first, and "v?" for anything recorded before v1.90 had the field,
+    // which is itself the signal that the run is old enough to predate it.
+    var line='#'+r.n+' v'+(r.ver||'?')+' '+r.outcome.toUpperCase()+' ['+(r.preset||'?')+'] wep:'+r.weapon+' dur:'+r.dur+'s haul:'+r.haul+
       'c items:'+r.items+' cont:'+r.containers+' shots:'+r.shots+' acc:'+r.acc+'%'+
       ' kills:'+kills+' heals:'+r.heals+' downs:'+(r.downs||0)+' rev:'+(r.revives||0)+
       ' marked:'+(r.marked||0)+
