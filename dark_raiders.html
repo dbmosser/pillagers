@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.77';
+var VER='2.78';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14209,7 +14209,15 @@ document.getElementById('abandonbtn').onclick=function(){
 // Reports go out over a quiet local drop first, because a browser download made
 // Windows ask where to save a file after every single run. The download is only
 // a fallback for when the drop is not listening, and it has to be turned on.
-var DROP='http://localhost:8799/telemetry';
+// NULL OFF LOCALHOST, v2.78. The game is going to friends over the web, and on
+// an https origin a fetch to http://localhost is mixed content: blocked before
+// the network, rejected into the fallback, and a red console error on every
+// single run for people who never had a collector to reach. The drop only ever
+// existed on this machine, so it is only attempted here; everyone else goes
+// straight to the download fallback, which carries user activation because
+// autoExport runs inside the outcome button's click.
+var DROP=(location.hostname==='localhost'||location.hostname==='127.0.0.1')
+  ?'http://localhost:8799/telemetry':null;
 function downloadExport(){
   try{
     var blob=new Blob([buildExport()],{type:'text/plain'});
@@ -14246,6 +14254,7 @@ function autoExport(){
     } else P.lastReport='no drop';
     saveProfile(); syncAutoEx();
   }
+  if(!DROP){ fallback(); return; }
   try{
     fetch(DROP,{method:'POST',headers:{'Content-Type':'text/plain'},body:body})
       .then(function(r){

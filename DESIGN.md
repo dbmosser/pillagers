@@ -7205,6 +7205,49 @@ them, which is the strongest guard a convention can be; a check that the list
 content hash matches the version would be stronger and is not worth its weight
 in a game with one developer and one player.
 
+### v2.78: web-hardened for tonight's itch upload
+
+He asked how to put the game online for friends and is uploading to itch.io
+tonight, so this build makes the single file behave itself on an origin that is
+not this machine.
+
+THE ONE WART, FOUND BY GREPPING FOR EVERYTHING THE FILE REACHES FOR. The game is
+self-contained by charter, no CDNs, no libraries, and the sweep found exactly one
+network reference: the telemetry DROP to http://localhost:8799. On an https itch
+origin that fetch is mixed content, blocked before the network, rejected into the
+download fallback, and a red console error on every single run for people who
+never had a collector to reach. DROP is now null anywhere but localhost, and
+autoExport goes straight to the fallback when it is null, so friends get a clean
+console and their run report lands in Downloads.
+
+CHECKED RATHER THAN ASSUMED, because iframes eat downloads: the fallback download
+is triggered inside autoExport, which runs inside the outcome button's click
+handler, so it carries user activation, which is what itch's sandbox requires for
+a download. The chain was read end to end before relying on it. Friends' reports
+save as dark_raiders_runN.txt; if he forwards them into exports/ they get mined
+exactly like his own, which quietly turns tonight's upload into a playtest
+pipeline.
+
+THE INSTRUCTIONS HE ASKED TO KEEP live in tools/PUBLISH.md: the five itch steps,
+the re-upload flow for updates, the friend-facing notes on saves and reports, the
+zip rebuild commands, and the Netlify fallback. The upload artifact,
+tools/publish/dark_raiders_web.zip with index.html inside, is rebuilt at v2.78,
+and tools/publish/ is gitignored because a build artifact in the history is how a
+stale zip gets shipped.
+
+Verified: parsecheck PASS at v2.78, all four maps drive and draw clean with 10 of
+10 entities moving, hub clean through the hub frame hook, and the drop gate
+confirmed present in the served build with hostname localhost keeping the drop
+alive HERE, so his own collector flow is untouched.
+
+Not verified: the off-localhost branch on a real https origin, which cannot be
+tested from this machine; the expression is a hostname equality and the fallback
+path it selects is the same one exercised every time the local drop is down,
+which is well-trodden. Also not verified: itch's iframe on his actual account
+settings tonight; if the download prompt does not appear for friends, the first
+thing to check is their browser's automatic-download permission for the itch
+domain, and P.autoExport stays the off switch.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
