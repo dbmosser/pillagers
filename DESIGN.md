@@ -2448,6 +2448,77 @@ roughly thirty percent of seeds and closes a sale on four. The extract differenc
 sample. Also not verified, and still deliberately his: whether 0.55 is the right
 number. This build measures what the rate does, it does not choose it.
 
+### v1.96: I raised a false alarm about the harness, and found a real bug underneath it
+
+RETRACTION FIRST. At v1.95 I reported that two identical sim batches diverge when
+only the usual four profile fields are reset, and told him that every multi-arm
+batch this session had been leaking state between arms and that the crouch, greed,
+pack and furniture numbers deserved less confidence. That was wrong.
+
+Two independent attempts to reproduce it both come back clean:
+
+  eight seed batch run twice, seeds recorded per raid, four field reset:
+    all eight identical, all seeds matching, first divergence index -1
+  four runs interleaved, peddler off twice then on twice:
+    pedOffStable true, pedOnStable true
+
+I cannot reproduce my own finding and I do not know what was wrong with the test
+that produced it. What I can say is that the reset works, that I should have
+isolated before raising the alarm rather than after, and that the measurements
+stand as originally reported. The full-profile-restore harness costs nothing and
+removes the question, so it stays as the standard, but it is now a belt rather
+than a fix for a hole.
+
+Twenty candidate explanations were generated and every one was refuted under
+adversarial verification, which is the correct outcome when the phenomenon does
+not exist. The sweep was not wasted though, because one of the refutations
+contained a real defect that nothing else would have found.
+
+THE REAL BUG. G is assigned in exactly four places in the file: 5302, 8244, 8529
+and 12729. buildRaid spans 4680 to 5300. So G is not assigned until AFTER
+buildRaid returns, and every (G&&G.sim) test evaluated during map construction is
+reading the PREVIOUS raid's object.
+
+mkRaider is called from buildRaid at line 5051 and line 4363 read:
+
+    var rec=(G&&G.sim)?{kills:0,deaths:0,met:0,standing:0}:idRec(ident.id);
+
+That guard has never once seen the raid it is building. In real play G held the
+previous raid, whose sim flag was false, so the idRec branch was taken and it
+looked correct by accident. In the headless batch G is null between seeds, so
+(G&&G.sim) is falsy there too, and SIM RAIDERS HAVE ALWAYS READ THE LIVE GRUDGE
+RECORDS the guard exists to shield them from. Every balance number involving
+raiders was measured against whatever grudges his profile happened to be carrying.
+
+Fixed by passing the sim flag down as a parameter instead of inferring it from a
+global that is not set yet.
+
+Verified positively rather than by absence. Eight real identities, read back from
+a live raid, loaded with kills 5, deaths 2, met 9, standing 6, then a four seed
+batch run against a neutral roster and against the grudged one:
+
+    neutral   dead:3649:190 | dead:152:85 | dead:9184:315 | dead:3247:144
+    grudged   dead:3649:190 | dead:152:85 | dead:9184:315 | dead:3247:144
+    new grudge records created by the sim: 0
+
+Zero records created is the decisive half. The sim now takes the neutral literal
+branch and never calls idRec at all, so it cannot read or create a record. Before
+the fix it called idRec on every raider it spawned.
+
+Second, smaller fix in the harness. __simSeedsFull relied on G being null, which
+held only because the loop nulls it at the end of each iteration. A played raid, a
+__newRaid, or an exception thrown mid loop would leave G non-null and the next
+batch's first seed would be built against it. G is now nulled immediately before
+each build, so that is a guarantee instead of a side effect.
+
+Not verified: how much the grudge leak actually moved past numbers. Raiders are 5
+to 8 of roughly 60 entities on a map and grudge only changes their opening
+disposition, so the effect is probably small, but "probably small" is a guess and
+I have not measured it. Anyone re-deriving a raider-specific number from before
+v1.96 should re-run it. Also not verified: what was wrong with the v1.95 test that
+started all this. It is not reproducible and I have stopped chasing it rather than
+keep spending on a phenomenon I cannot demonstrate.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

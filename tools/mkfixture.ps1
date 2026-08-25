@@ -152,6 +152,13 @@ window.__simSeedsFull=function(seeds){
   var out=[],i;
   for(i=0;i<seeds.length;i++){
     pendSeed=seeds[i]>>>0;
+    // NULL IT FIRST. buildRaid reads G during construction in several places and
+    // does not assign it until after it returns, so a leftover G from a played
+    // raid, a __newRaid, or an exception thrown mid loop would be read as the
+    // current raid and poison this batch's first seed. The loop already nulls G
+    // at the end of every iteration, which is why batches are stable in practice;
+    // this makes that a guarantee rather than a side effect.
+    G=null;
     G=buildRaid(true);
     var guard=0,cap=Math.round(CFG.raidSec/0.15)+200;
     while(!G.over&&guard<cap){ simStep(.15); guard++; }
@@ -210,6 +217,13 @@ window.__simSeeds=function(seeds){
   var out=[],i,t0=performance.now();
   for(i=0;i<seeds.length;i++){
     pendSeed=seeds[i]>>>0;
+    // NULL IT FIRST. buildRaid reads G during construction in several places and
+    // does not assign it until after it returns, so a leftover G from a played
+    // raid, a __newRaid, or an exception thrown mid loop would be read as the
+    // current raid and poison this batch's first seed. The loop already nulls G
+    // at the end of every iteration, which is why batches are stable in practice;
+    // this makes that a guarantee rather than a side effect.
+    G=null;
     G=buildRaid(true);
     var guard=0,cap=Math.round(CFG.raidSec/0.15)+200;
     while(!G.over&&guard<cap){ simStep(.15); guard++; }
