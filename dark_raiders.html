@@ -421,7 +421,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.99';
+var VER='2.00';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -452,7 +452,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -6984,6 +6984,25 @@ function updateBot(dt){
   var CSPD =(botCrouch&&(CPART&1))?0.52:1;
   var CNOISE=(botCrouch&&(CPART&2))?(72/170):1;
   var CCON =!!(botCrouch&&(CPART&4));
+  // THE BOT WALKS ON WATER, and did until v2.00. updatePlayer pays 0.34 speed and
+  // a 2.6x step-noise radius for wading; updateBot has never referenced inWater at
+  // all, so the sim has been moving through water as though it were open ground.
+  // That is not uniform across the game: map 0 is 20.5 percent water by area with
+  // 44 of its 249 containers standing in it, map 3 is 7 percent with 17 of 205,
+  // map 2 is 2.2 percent with none, and map 1 has no water whatsoever. So the
+  // error is concentrated on exactly two maps, which means it did not just add
+  // noise to the four-map comparison at v1.85, it TILTED it: map 0 measured as the
+  // second easiest while its bot was crossing a fifth of the map for free.
+  // Fifth divergence of this family, after windfalls at v1.78, crouch at v1.80,
+  // the hard crouch rule at v1.82 and the peddler at v1.95. Defaults ON, like the
+  // windfall fix did, because a sim that ignores a movement rule the player cannot
+  // ignore is measuring a different game. simWade 0 restores the old behaviour.
+  var BWET=(CFG.simWade===0)?false:inWater(p.x,p.y);
+  var BWADE=BWET?(CFG.wadeSpd===undefined?0.34:CFG.wadeSpd):1;
+  // Splashing is loud whatever you do, which is the same rule the player gets.
+  if(BWET) CNOISE*=2.64;
+  // And the same floor the player has, so the Warden promise holds for the bot too.
+  function botSpd(v){ return v<SPEED_FLOOR?SPEED_FLOOR:v; }
   G.pBush=inBush(p.x,p.y);
   G.pCrouch=!!botCrouch;   // whether the bot IS crouching, not whether the conceal bit is set
   G.pConceal=concealAt(p.x,p.y,!!p.moving,false,CCON);
@@ -7032,7 +7051,7 @@ function updateBot(dt){
         fireWeapon(p,p.wep,threat.x+rnd(-10,10),threat.y+rnd(-10,10),true);
       }
     }
-    if(td<110){ botCrouch=false; moveToward(p,p.x-(threat.x-p.x),p.y-(threat.y-p.y),CFG.pSpeed*.7*LD.spd,dt); moved=true; }
+    if(td<110){ botCrouch=false; moveToward(p,p.x-(threat.x-p.x),p.y-(threat.y-p.y),botSpd(CFG.pSpeed*.7*LD.spd*BWADE),dt); moved=true; }
   // THE BOT CAN USE THE PEDDLER, v1.95, and until now it could not, so every
   // extract rate this project has quoted is the rate for a player who ignores
   // him. v1.87 measured that his 0.55 beats every survival rate on every map,
@@ -7062,13 +7081,13 @@ function updateBot(dt){
     })()){
     var PD=G.botPed;
     if(dist(p,PD)<70){ pedSellAll(); G.botPed=null; }
-    else { navSeek(p,PD.x,PD.y,CFG.pSpeed*.92*LD.spd*CSPD,dt); moved=true;
+    else { navSeek(p,PD.x,PD.y,botSpd(CFG.pSpeed*.92*LD.spd*CSPD*BWADE),dt); moved=true;
            p.face=Math.atan2(PD.y-p.y,PD.x-p.x); }
   // leave enough clock to walk there AND sit through the whole inbound wait
   } else if(bagWeight()>=CFG.simGreed||bagWeight()>=cap||G.timeLeft<CFG.extractWait+120||(p.ammo+p.reserve)<=0){
     var z=G.active;
     G.botWantsOut=true;
-    navSeek(p,z.x,z.y,CFG.pSpeed*.95*LD.spd*CSPD,dt); moved=true;
+    navSeek(p,z.x,z.y,botSpd(CFG.pSpeed*.95*LD.spd*CSPD*BWADE),dt); moved=true;
     p.face=Math.atan2(z.y-p.y,z.x-p.x);
   } else {
     if(!p.goal||p.goal.opened||p.goal.skip){
@@ -7088,7 +7107,7 @@ function updateBot(dt){
         p.searchT=(p.searchT||0)+dt;
         if(p.searchT>=p.goal.time){ openContainer(p.goal); p.searchT=0; p.goal=null; }
       } else {
-        navSeek(p,p.goal.x,p.goal.y,CFG.pSpeed*.9*LD.spd*CSPD,dt); moved=true;
+        navSeek(p,p.goal.x,p.goal.y,botSpd(CFG.pSpeed*.9*LD.spd*CSPD*BWADE),dt); moved=true;
         p.seekT=(p.seekT||0)+dt;
         p.face=Math.atan2(p.goal.y-p.y,p.goal.x-p.x);
         p.searchT=0;

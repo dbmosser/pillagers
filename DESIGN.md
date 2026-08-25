@@ -2729,6 +2729,71 @@ have not enumerated. I checked load, crouch, sprint, wading, ADS and armour
 because those are the multipliers in updatePlayer, but a status effect applied
 elsewhere would sit outside the floor and reopen exactly this hole.
 
+### v2.00: the bot has been walking on water, and it tilted the map comparison
+
+v1.99 closed with an open question of my own: whether other slow sources sit
+outside the new speed floor. Chasing that found something larger. updatePlayer
+pays 0.34 speed and a 2.6x step-noise radius for wading. updateBot has never
+referenced inWater at all. The sim has been crossing water as open ground for the
+entire life of the project.
+
+The reason this matters more than a uniform error is that water is not uniform:
+
+    map 0   20.5% of the world is water   44 of 249 containers stand in it
+    map 1    0%                            none, no water at all
+    map 2    2.2%                          none
+    map 3    7.0%                          17 of 205
+
+So the error is concentrated on two maps. It did not add noise to the four-map
+comparison at v1.85, it TILTED it, and in the direction that flatters the map it
+most affects: map 0 measured second easiest while its bot crossed a fifth of that
+map for free.
+
+Fifth divergence of this family, after windfalls at v1.78, crouch at v1.80, the
+hard crouch rule at v1.82 and the peddler at v1.95. Every one is a guard or an
+omission that was correct when written and became a correctness hole as the game
+grew past it. Defaults ON, following the windfall precedent, because a sim that
+ignores a movement rule the player cannot ignore is measuring a different game.
+simWade 0 restores the old behaviour. The bot also gets the SPEED_FLOOR the player
+received at v1.99, so the Warden promise now holds for both.
+
+Measured, 120 seeds an arm, eight arms, four maps against water cost off and on:
+
+    map   water    extract free -> pays    duration free -> pays   seeds changed
+     0    20.5%      13.3% -> 9.2%   -4.1     212s -> 247s  +35        57 of 120
+     1     0%        20.8% -> 20.8%   0.0     178s -> 178s   +0         0 of 120
+     2     2.2%       9.2% -> 6.7%   -2.5     186s -> 188s   +2        14 of 120
+     3     7.0%      26.7% -> 27.5%  +0.8     189s -> 196s   +7        20 of 120
+
+THE CONTROL IS THE RESULT. Map 1 has no water anywhere, and it came back with
+ZERO seeds changed and zero delta on every single metric. That is what makes the
+rest of the table trustworthy: the change provably touches water and nothing else.
+Had map 1 moved at all, the diagnosis would have been wrong and the other three
+columns would mean nothing.
+
+Duration is the cleanest signal because it is the direct mechanical consequence,
+and it scales with water almost perfectly: plus 35 seconds on map 0, plus 7 on map
+3, plus 2 on map 2, zero on map 1. Seeds changed scales the same way, 57, 20, 14,
+0.
+
+The extract rates are the headline but the weakest column. Minus 4.1, minus 2.5
+and plus 0.8 at 120 seeds a side are all inside a standard error of roughly 4 to 5
+points, so no single one clears significance on its own. What is solid is that
+map 0 gets harder and slower, which is the tilt predicted before the run.
+
+Note that the absolute rates here do not match v1.85's 30.8, 15.8, 17.5 and 42.5.
+Fifteen builds separate them, including the v1.96 grudge fix, the v1.99 speed
+floor and a different crateMin, so the levels have moved. The comparison that
+matters is within this table, arm against arm on the same build.
+
+Not verified: whether the bot should also pay the wading NOISE in a way that
+changes its behaviour rather than just its audibility. CNOISE is multiplied by
+2.64 when wet, which makes the bot louder, but the bot has no concept of choosing
+a quieter route, so the noise cost is currently a consequence it suffers rather
+than a decision it makes. A player routes around water partly to stay quiet; the
+bot cannot, so map 0 is probably still measured as easier than a human would find
+it even after this fix.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
