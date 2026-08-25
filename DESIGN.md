@@ -5818,6 +5818,62 @@ a bug, so it goes to him. Also not verified: selfRevive is untouched and still s
 health to 40 instantly, on the reasoning that getting off the floor is a different
 act from patching a wound.
 
+### v2.47: the cursor was being left outside the canvas, and BACKSPACE brings it back
+
+His note, 2026-08-25: "mouse graphic is still disappearing, can we maybe add a key
+command to refresh it". Still is the important word, because v0.98 already fixed a
+version of this and shipped a comment saying so.
+
+WHAT v0.98 FIXED WAS A DIFFERENT FAULT. It blamed a latched M: the reticle is drawn
+only when M is not held, and keyup fires at the window, so alt-tabbing with M down
+latched it forever. That was real and the blur handler that came out of it is
+correct. It is not what is biting him now, and the file could have told me so: a
+latched M also draws the entire map overlay. He would have seen a map, not a missing
+cursor.
+
+THE ONE THAT HIDES SILENTLY IS THE RESIZE. The canvas sets cursor:none, so the
+reticle IS the cursor, and it is drawn at mouse.x, mouse.y. Those are only written by
+a mousemove OVER the canvas. resize() centres them exactly once, guarded by
+mouse.init, which is already true after the first resize. So shrink the window, drag
+it to a smaller monitor, or open a dock that reflows the page, and the last known
+position is now outside the canvas: the reticle draws off-screen, there is no OS
+cursor because cursor:none is still in force, and the game otherwise looks perfectly
+normal. Nothing recovers it but moving the mouse back over the canvas, and if the
+pointer is already parked somewhere else that is not obvious either. mouse.x and
+mouse.y are now clamped into the canvas on every resize.
+
+AND THE BLUR PATH HAD THE SAME GAP ONE LEVEL UP. releaseAllKeys cleared held keys and
+the mouse button, but the reticle also hides for an open bag, and G.bagOpen is not a
+key. Alt-tab with the inventory open and it stayed latched. Cleared now, along with a
+clamp on the way back in, since returning from another monitor is exactly when the
+cursor can be out of bounds.
+
+BACKSPACE IS THE KEY HE ASKED FOR. One press releases every held key, closes the bag,
+and puts the reticle in the middle of the screen. It deliberately does not require a
+live raid, so it rescues the hub screen too, and it is in the legend as BKSP.
+
+Verified by driving it. The reticle parked at 99999,99999 comes back to 486,274 on
+BACKSPACE. With bagOpen true, KeyM held, Shift held and the mouse button latched
+down, one press clears all four and the HUD draws clean afterwards. The resize clamp
+was verified by parking the reticle at 100000,100000 and firing a resize: it is
+pulled back to the canvas bounds.
+
+A NOTE ON MY OWN TEST, because it briefly reported a failure that was not one.
+releaseAllKeys does keys={}, which REBINDS the variable rather than emptying the
+object, so the handle my first probe was holding went stale and still showed KeyM
+true. The game is fine, because every reader inside the file references the variable
+and not a captured object. The probe was wrong, not the code, and I only found that
+by re-fetching the reference.
+
+Not verified: an actual window shrink in his browser. The fixture pane does not
+shrink its canvas with the viewport, it reported 978 wide at a 400 wide viewport, so
+I drove the resize handler directly instead. That proves the clamp fires and does the
+right thing; it does not prove his particular way of resizing reaches that handler.
+If the cursor still goes missing after this, the next thing to suspect is a path that
+changes the canvas size without firing a resize event. Also not verified: whether
+BACKSPACE is a key he likes. It was free, nothing else is bound to it, and it reads
+as "undo", but it is one line to move.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

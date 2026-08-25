@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.46';
+var VER='2.47';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -5648,7 +5648,7 @@ function raidKey(code,repeat,ev){
     }
     if(code==='KeyG'||code==='Space'||code==='KeyQ'||code==='KeyC') return;
   }
-  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyX','KeyV','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
+  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyX','KeyV','Backspace','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
   if((code==='Escape'||code==='KeyP')&&G&&!G.over) togglePauseBox(true);
   if(code==='KeyH'&&G&&!repeat) G.legendOn=!G.legendOn;
   // X swaps primary and secondary. Each keeps its own loaded magazine; the
@@ -5665,6 +5665,9 @@ function raidKey(code,repeat,ev){
   }
   if(code==='KeyQ'&&G&&!G.over&&!repeat) cycleThrow();
   if(code==='KeyG'&&G&&!G.over&&!G.paused&&!repeat) useHot();
+  // BACKSPACE puts the cursor back. Works with no raid running, so it also
+  // rescues the hub screen.
+  if(code==='Backspace'&&!repeat) restoreCursor();
   if(code==='Space'&&G&&!G.over&&!G.paused&&!repeat) tryRoll();
   if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){ G.bagOpen=!G.bagOpen; G.bagSel=0; }
   // Bag browsing. The arrows double as movement keys, so while the bag is open
@@ -9492,6 +9495,17 @@ function resize(){
   fogC.width=W; fogC.height=H;
   litC.width=W; litC.height=H;
   if(!mouse.init){ mouse.x=W/2; mouse.y=H/2; mouse.init=true; }
+  // HIS NOTE, 2026-08-25: "mouse graphic is still disappearing". v0.98 blamed a
+  // latched M and cleared held keys on blur, which was a real fix for a different
+  // fault: a latched M draws the whole map overlay, so he would have SEEN that.
+  // This is the one that hides silently. The canvas sets cursor:none, so the
+  // reticle IS the cursor, and it is drawn at mouse.x,mouse.y. Those are only
+  // ever written by a mousemove OVER the canvas, and this centring runs once
+  // because mouse.init is already true after the first resize. Shrink the window,
+  // or move to a smaller monitor, and the last known position is now outside the
+  // canvas: the reticle is drawn off-screen and there is no cursor anywhere,
+  // with the game otherwise looking completely normal. Clamped on every resize.
+  mouse.x=clamp(mouse.x,0,W); mouse.y=clamp(mouse.y,0,H);
 }
 window.addEventListener('resize',resize);
 // World to screen for the HUD layer, which is always drawn unscaled on top.
@@ -11742,7 +11756,7 @@ function safeSet(){
 var LEGEND=[
   ['MOVE',[['WASD','move'],['SHIFT','sprint'],['CTRL','crouch, near silent'],['SPACE','dodge roll']]],
   ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','steady aim'],['R','reload'],['X','swap weapon']]],
-  ['GEAR',[['1-7','select hotbar slot'],['FIRE','use selected slot'],['X','swap gun'],['TAB','inventory']]],
+  ['GEAR',[['1-7','select hotbar slot'],['FIRE','use selected slot'],['X','swap gun'],['TAB','inventory'],['BKSP','reset cursor']]],
   ['WORLD',[['E','search / call beacon'],['M','hold for map'],['H','hide this list'],['P','pause']]]
 ];
 // SPEC 10.3: the colour language has to be learnable, so it is stated.
@@ -12638,7 +12652,25 @@ function showScreen(s){
 // short of pressing and releasing M again, which nobody would guess. The same
 // latch is what leaves sprint or crouch stuck on, which has bitten this file
 // before. Every key is now released whenever focus or visibility goes.
-function releaseAllKeys(){ keys={}; mouse.down=false; if(G) G.sprinting=false; }
+function releaseAllKeys(){
+  keys={}; mouse.down=false; if(G) G.sprinting=false;
+  // The reticle also hides for an open bag, and alt-tabbing with the bag open
+  // left that panel latched too. Cleared with the keys, for the same reason.
+  if(G) G.bagOpen=false;
+  // And put the cursor back somewhere on the canvas, since a return from another
+  // monitor is exactly when it can be outside it.
+  if(W>0&&H>0){ mouse.x=clamp(mouse.x,0,W); mouse.y=clamp(mouse.y,0,H); }
+}
+// HIS REQUEST, 2026-08-25: "can we maybe add a key command to refresh it". One key
+// that undoes every way the cursor can be lost: releases held keys, closes the bag,
+// and puts the reticle back in the middle of the screen where it cannot be missed.
+// Deliberately does NOT need a live raid, so it works on the hub screen too.
+function restoreCursor(){
+  releaseAllKeys();
+  if(W>0&&H>0){ mouse.x=W/2; mouse.y=H/2; }
+  mouse.init=true;
+  if(G&&!G.over) say('Cursor reset.');
+}
 document.addEventListener('visibilitychange',function(){
   if(document.hidden) releaseAllKeys(); else lastTs=performance.now();
 });
