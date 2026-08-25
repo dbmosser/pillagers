@@ -175,8 +175,11 @@ window.__feudFoe=function(a,b){ return feudFoe(a,b); };
 // with the McNemar arithmetic attached. Start it, poll __pairedPoll(), read the
 // result when done:true. MessageChannel and never setTimeout, because a hidden tab
 // throttles setTimeout to one callback a minute and these batches run unattended.
-window.__pairedBg=function(seeds,dialsA,dialsB){
-  var st={a:0,b:0,c:0,d:0,done:0,n:seeds.length,fin:false};
+window.__pairedBg=function(seeds,dialsA,dialsB,keepRows){
+  // keepRows stores {seed, a:{outcome,killer,haul,tod}, b:{...}} per seed. Off by
+  // default because 320 full rows is memory nobody reads unless the question is
+  // attributional, which every killer-table question this cycle turned out to be.
+  var st={a:0,b:0,c:0,d:0,done:0,n:seeds.length,fin:false,rows:keepRows?[]:null};
   window.__PBG=st;
   var save={},k;
   for(k in dialsA) save[k]=CFG[k];
@@ -191,6 +194,9 @@ window.__pairedBg=function(seeds,dialsA,dialsB){
       var rb=window.__simSeedsFull([s])[0];
       var xa=(ra.outcome==='extract')?1:0, xb=(rb.outcome==='extract')?1:0;
       if(xa&&xb)st.a++; else if(xa&&!xb)st.b++; else if(!xa&&xb)st.c++; else st.d++;
+      if(st.rows) st.rows.push({seed:s,
+        a:{outcome:ra.outcome,killer:ra.killer||null,haul:ra.haul,tod:ra.timeOfDeath},
+        b:{outcome:rb.outcome,killer:rb.killer||null,haul:rb.haul,tod:rb.timeOfDeath}});
       st.done++;
     }
     if(st.done>=st.n){
@@ -215,10 +221,20 @@ window.__pairedPoll=function(){
   var p=0,mn=Math.min(b,c);
   if(disc>0){ for(var kk=0;kk<=mn;kk++) p+=Math.exp(lch(disc,kk)-disc*Math.log(2)); p=Math.min(1,2*p); }
   else p=1;
-  return {finished:true, n:n,
+  var out={finished:true, n:n,
     rateA:+(100*(st.a+b)/n).toFixed(1), rateB:+(100*(st.a+c)/n).toFixed(1),
     table:{both:st.a,onlyA:b,onlyB:c,neither:st.d},
     discordant:disc, z:+Math.sqrt(chi).toFixed(2), exactTwoSidedP:+p.toFixed(5)};
+  if(st.rows){
+    // The killer tables per arm, computed here so the console never has to.
+    var ka={},kb={};
+    st.rows.forEach(function(r){
+      var k1=r.a.killer||'(extract)'; ka[k1]=(ka[k1]||0)+1;
+      var k2=r.b.killer||'(extract)'; kb[k2]=(kb[k2]||0)+1;
+    });
+    out.killersA=ka; out.killersB=kb; out.rows=st.rows;
+  }
+  return out;
 };
 window.__blip=function(t){ return blip(t); };
 // PAIRED ARMS AND THE TEST THAT GOES WITH THEM, v2.42. Two arms run over one seed

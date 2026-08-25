@@ -6680,6 +6680,36 @@ unreadable. If one of them is ever flipped in an arm, it joins the stamp then, a
 until it does the fingerprint can claim two rows match when an unstamped dial
 differs.
 
+### v2.64: the paired runner keeps rows now, because every question this cycle ended in a killer table
+
+Fixture only, no game logic changed. v2.60 shipped the backgrounded paired runner
+and named its own gap: no per-seed rows. That gap then cost three hand-rolled
+batches in a single day, the COLD feud test, the COLD against BURIED death-time
+comparison and the four-map survey, each rebuilt from scratch because the question
+was ATTRIBUTIONAL, which killer, at what time, with what haul, and the runner only
+kept the McNemar counts.
+
+__pairedBg takes a fourth argument, keepRows. Off by default, because three
+hundred and twenty full rows is memory nobody reads unless the question needs it.
+On, every seed stores outcome, killer, haul and time of death for BOTH arms, and
+__pairedPoll's finished result carries the rows plus a killer table per arm
+computed in the poll, so the console never has to fold three hundred rows by hand
+again.
+
+Verified: parsecheck PASS at v2.64, all four maps and the hub drive and draw
+clean. The option exercised on a five-seed extreme pair: five rows present, each
+carrying both arms' outcome, killer, haul and time of death, killer tables
+computed per arm, and CFG.eHp back at 1 afterwards. Default off confirmed by the
+earlier v2.60-style call still returning no rows field.
+
+Not verified: memory behaviour at full scale with rows on, 320 rows of two small
+objects each, which arithmetic says is trivial and which the first real
+attributional batch will confirm in passing. Also noted while testing: two smoke
+runs of the same extreme pair gave different arm rates because smoke tests do not
+pin the full dial set, which is exactly the class of ambiguity the v2.63
+fingerprint now makes visible on the rows themselves; a smoke test is a mechanism
+check, not a measurement, and its rates mean nothing.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
