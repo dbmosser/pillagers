@@ -6240,6 +6240,61 @@ Also not verified: whether feud and simReach are individually neutral or cancell
 each other out; the isolation says their SUM is near zero and nothing about the
 parts. Also, as with every arm this cycle: BURIED CITY, Compact SMG, simGreed 52.
 
+### v2.54: a bot that retreats to heal buys back a third of the medkit cost, suggestively
+
+v2.53 ended with an argument that needed a number: the 7.5 point cost of
+heal-over-time was measured on a bot that pops its medkit at 45 health wherever it
+happens to be standing, and a person retreats first, so the player's true cost is
+somewhere below the bot's. This build gives the argument its instrument and its
+first reading.
+
+simRetreatHeal, DEFAULT OFF. With the dial on, a bot below the heal threshold holds
+its medkit while any live hostile has it in a sightline inside 420 units, and spends
+those frames moving away from the nearest one; the moment it breaks contact, it
+heals. A floor at 22 health: below that, waiting is a worse gamble than healing in
+the open, two sentry hits from dead, so it heals regardless, or a bot pinned in a
+long fight would hold a medkit all the way to zero. Behaviour-capability change, so
+it defaults off like simSell, simPed, simCrouch and simPip, and the back catalogue
+stays reproducible.
+
+Driven before measuring, all four behaviours: with a sentry staring at it from 200
+units and health at 35, the bot holds the heal, the bag still has its medkit, and
+one step later it is further away, 200 to 218. Threat removed, next step it heals.
+Health forced to 20 under the same sentry, it heals under fire, which is the floor
+working. Dial back at 0 after every probe.
+
+THE MEASUREMENT. 320 seeds, heal-over-time ON in both arms, only the retreat
+changing:
+
+    stand and heal 19.1% against retreat first 21.9%
+    discordant 25 to 16, z 1.25, exact two-sided p = 0.211
+
+RETREATING BUYS BACK 2.8 OF THE 7.5 POINTS, AND THE EVIDENCE IS SUGGESTIVE RATHER
+THAN ESTABLISHED. The direction is the predicted one and it does not clear the bar;
+by v2.42's own arithmetic a 2.8 point true effect at these rates needs more seeds
+than 320 to show cleanly, so this is reported at the strength it has.
+
+WHAT THE PAIR OF NUMBERS SAYS TOGETHER, taking both at face value. Standing still,
+the medkit costs 7.5. Retreating first, about 4.7. So LESS THAN HALF the cost of
+his medkit change is the bot healing in stupid places; the majority is the time
+itself, six seconds of not shooting and not looting in a game that punishes both,
+and no amount of healing technique gets that back. For him the practical bracket
+is: the change made the game somewhere between about 5 and 7.5 points harder
+depending on how well he heals, and healOverTime 0 remains the one-dial exit.
+
+Verified: parsecheck PASS at v2.54, all four maps and the hub drive and draw clean
+with 10 of 10 entities moving, the four retreat behaviours driven directly, and the
+shipped default confirmed at 0. One defect caught before it shipped: the first cut
+read LD.spd for the retreat speed, and LD is declared further down updateBot, so it
+was hoisted and undefined and the retreat threw the moment a foe was found. The
+load penalty is computed inline there now.
+
+Not verified: the 2.8 at significance, which would take roughly 900 seeds at this
+discordance rate and is queued behind better uses of that wall clock. Also not
+verified: whether 420 units and the 22 floor are the right constants; both were
+reasoned, neither swept. Also unchanged and still open: feud and simReach
+individually, known only to sum to about zero.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

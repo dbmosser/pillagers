@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.53';
+var VER='2.54';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -474,7 +474,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -7891,7 +7891,40 @@ function updateBot(dt){
   // Same heal path the player uses, so the bot cannot be modelling instant heals
   // in a game that no longer has them. The bot commits and stays hurt for the
   // duration exactly as he does.
-  if(p.hp<45){ var hi=findHeal(); if(hi>=0){ applyHeal(G.bag[hi]); G.bag.splice(hi,1); T.heals++; } }
+  // RETREAT BEFORE HEALING, v2.54, dial simRetreatHeal, DEFAULT OFF. v2.53
+  // measured that heal-over-time costs the bot 7.5 points of extract rate and
+  // named the mechanism: the bot pops its medkit at 45 health wherever it is
+  // standing, mid-fight included, and dies during the six seconds. A person
+  // retreats first. This dial makes the bot hold its heal while any live hostile
+  // has it in a sightline within 420 units, and spend those frames moving AWAY
+  // from the nearest one instead; the moment it breaks contact, it heals.
+  // Behaviour-capability change, so it defaults off like simSell, simPed,
+  // simCrouch and simPip, and every number in the back catalogue stays
+  // reproducible. Its purpose is to measure the gap between "bot that heals
+  // badly" and "player who heals well", not to ship a smarter bot by stealth.
+  // A FLOOR AT 22 HEALTH: below that, waiting is a worse gamble than healing in
+  // the open, two sentry hits from dead, so the bot heals regardless. Without
+  // the floor a bot pinned in a long fight holds a medkit all the way to zero.
+  if(p.hp<45){
+    var hHold=false;
+    if(CFG.simRetreatHeal&&p.hp>22&&!(p.healQ>0)){
+      var hFoe=null,hFd=420;
+      for(var hz2=0;hz2<G.ents.length;hz2++){
+        var hE=G.ents[hz2];
+        if(hE.dead||hE.hp<=0||hE.neutral||hE.kind==='snitch') continue;
+        if(hE.kind==='raider'&&!hE.hostile) continue;
+        var hD=dist(p,hE);
+        if(hD<hFd&&losClear(p.x,p.y,hE.x,hE.y,G.vseg)){ hFd=hD; hFoe=hE; }
+      }
+      if(hFoe){
+        hHold=true;
+        // LD is declared further down this function, so at this point it is
+        // hoisted and undefined; the load penalty is computed inline instead.
+        moveToward(p,p.x-(hFoe.x-p.x),p.y-(hFoe.y-p.y),botSpd(CFG.pSpeed*.85*loadOf(bagWeight()).spd*BWADE),dt);
+      }
+    }
+    if(!hHold){ var hi=findHeal(); if(hi>=0){ applyHeal(G.bag[hi]); G.bag.splice(hi,1); T.heals++; } }
+  }
   tickHeal(dt);
 
   var threat=null,td=1e9,i;
