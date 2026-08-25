@@ -2662,6 +2662,73 @@ mechanism predicts it would not, since a heavy valuable item earns its place in
 the bag, but that is reasoning rather than measurement and the moment I test it I
 am choosing an economy, which is the part I am leaving to him.
 
+### v1.99: I broke the Warden's promise at v1.88 and did not notice for eleven builds
+
+The Warden carries one of the most specific promises in the file, written into its
+own movement code: "Never faster than a walk, never gives up. The threat is a
+tide, not a sprinter, so avoiding it is always a live option." That is a claim
+about two numbers, and the numbers live about 2,000 lines apart.
+
+Warden speed is 36. Player base is 158, so walking away is trivially possible and
+the promise looks safe. It is not, because every slow effect on the player
+MULTIPLIES:
+
+    walking, empty                158.0    4.39x the Warden
+    walking, 120wt                 98.0    2.72x
+    wading, empty                  53.7    1.49x
+    wading, 120wt                  33.3    0.92x   <- Warden is faster
+    wading + crouch, 120wt         17.3    0.48x
+    wading + crouch + ADS, 120wt   10.7    0.30x
+
+Below 36 the Warden simply walks you down. There is no counterplay: it never
+gives up, so a heavily loaded player caught in water is dead, and a crouched one
+is dead twice over.
+
+I CAUSED THIS AT v1.88. He asked for water to be "much slower" and I took wadeSpd
+from 0.55 to 0.34. That request was reasonable and the change is right on its own
+terms: at 0.55 the loaded wade was 53.9 and safely clear, at 0.34 it is 33.3 and
+is not. What I failed to do was check the new multiplier against the costs that
+already existed. Eleven builds ago, and nothing caught it in between, because
+every check I ran was about the thing I had just changed rather than about what it
+now interacted with.
+
+The fix makes the promise structural rather than a coincidence. WARDEN_SPD is
+named where the Warden is built, SPEED_FLOOR is named next to it at 46, which is
+1.28 times the Warden, and the player's speed is floored after every multiplier
+has been applied. Verified in the built fixture that the floor sits at line 6679,
+after load, crouch, sprint, wading and ADS at 6661 to 6666, so nothing can be
+applied afterwards and slip underneath it.
+
+    walking, empty                158.0   untouched
+    walking, 120wt                 98.0   untouched
+    wading, empty                  53.7   untouched
+    wading, 120wt          33.3 ->  46.0   floored
+    wading + crouch        17.3 ->  46.0   floored
+    wading + crouch + ADS  10.7 ->  46.0   floored
+
+Three of the six cases are not touched at all, including wading empty at 53.7, so
+the "much slower" water he asked for is entirely intact. The floor binds only on
+combinations that would otherwise drop below a walk.
+
+A harness mistake on the way, the third of its kind this session and caught the
+same way, by the output being obviously wrong. I tried to verify by teleporting
+the player into water and measuring displacement over half a second. It reported
+wading as FASTER than walking, 194.6 against 71.5, with crouch and ADS having no
+effect at all. That is collision ejection being counted as locomotion: dropping
+the player inside geometry and measuring how far the solver pushed them out. A
+number that contradicts the formula that obviously constrains it is a broken
+instrument, so I discarded it and verified the arithmetic through the same
+computation that found the bug, plus a direct read of the built fixture to confirm
+the floor's position in the chain.
+
+Not verified: whether 46 is the right floor. It is set at 1.28 times the Warden
+because that is enough to walk away without making encumbrance feel weightless,
+but I have no play data on whether being floored FEELS like a rescue or like the
+controls going numb. Also not verified: whether other slow sources exist that I
+have not enumerated. I checked load, crouch, sprint, wading, ADS and armour
+because those are the multipliers in updatePlayer, but a status effect applied
+elsewhere would sit outside the floor and reopen exactly this hole.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

@@ -421,7 +421,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.98';
+var VER='1.99';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -4350,10 +4350,19 @@ function listenersHearInner(x,y,s,fromPlayer){
 // and killing it is the only source of the Warden Core, the most valuable item
 // in the game. That is his "guarded loot different from the jackpot" in one
 // body: caches are free if you walk there, the Warden is a fight you elect.
+// THE WARDEN IS A TIDE, AND THAT HAS TO BE ENFORCED, not just intended. Its own
+// comment promises "never faster than a walk, never gives up. The threat is a
+// tide, not a sprinter, so avoiding it is always a live option." That promise is
+// a relationship between two numbers that live 2,000 lines apart, so it is named
+// here and enforced at the player's speed rather than left to hold by luck.
+var WARDEN_SPD=36;
+// The slowest the player can ever be. 1.28x the warden, so walking away is always
+// possible however encumbered, wet or crouched you are.
+var SPEED_FLOOR=46;
 function mkWarden(x,y){
   return {kind:'warden',x:x,y:y,r:30,hp:Math.round(620*CFG.eHp*seasonHp()),maxhp:Math.round(620*CFG.eHp*seasonHp()),
     name:mkName('WARDEN',['X','Z','Q']),
-    face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:36,dmg:30,rng:430,cone:1.15,hitT:0,seenYou:false};
+    face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:WARDEN_SPD,dmg:30,rng:430,cone:1.15,hitT:0,seenYou:false};
 }
 function mkSnitch(x,y){
   // 26 to 38. Deliberately small: the weave above is doing the work, and this is only
@@ -6655,6 +6664,19 @@ function updatePlayer(dt){
   // feel is his to set without going back into the movement code.
   if(wading) spd*=(CFG.wadeSpd===undefined?0.34:CFG.wadeSpd);
   if(p.ads) spd*=.62;
+  // AND THE FLOOR, v1.99, because these multipliers STACK and I broke the Warden's
+  // promise without noticing. Load, water, crouch and ADS all multiply, so a heavy
+  // player wading moves at 33.3 against a Warden at 36, crouched 17.3, and aiming
+  // 10.7. The Warden's own comment says avoiding it is always a live option; at
+  // those speeds it simply is not, it walks you down.
+  // I caused it at v1.88. He asked for water to be much slower and I took wadeSpd
+  // from 0.55 to 0.34, which is right on its own: at 0.55 the same loaded wade was
+  // 53.9 and safely clear. What I did not check was the interaction with a cost
+  // that already existed. The floor makes the promise structural rather than a
+  // coincidence between two numbers 2,000 lines apart, and it binds ONLY on
+  // combinations that would otherwise drop below a walk, so nothing he asked for
+  // is undone: wading empty is 53.7 and untouched.
+  if(spd<SPEED_FLOOR) spd=SPEED_FLOOR;
   if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.stam+15*dt);
 
   if(mg>0){
