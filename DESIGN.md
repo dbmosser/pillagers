@@ -4395,6 +4395,73 @@ builds this session already. Also not verified: the stale name could reach anyth
 OTHER than the death screen. lastHitName has one reader, and I checked, but it is
 the sort of field that acquires readers.
 
+### v2.24: the defect v1.96 fixed is still written down in the line that fixed it
+
+v2.23 ended on an assumption I had made load-bearing without checking it: that
+nothing but the player throws, which is what makes "YOUR OWN CHARGE" true. Checked
+first, and it holds. doThrow is the only thing that pushes a frag, smoke or decoy,
+and its single call site is useHot, which is the player's hotbar. Nothing else in
+the file throws anything.
+
+That led into the raider code, and into a bug class worth sweeping.
+
+THE CLASS. v1.96 records it exactly: buildRaid spans hundreds of lines and G is not
+assigned until AFTER it returns, so every (G&&G.sim) test evaluated during a map
+build reads the PREVIOUS raid. It found one instance, in mkRaider, and fixed it by
+threading the sim flag down as a parameter.
+
+SWEPT, AND v1.96 WAS COMPLETE. buildRaid's own body contains exactly one mention of
+G and it is inside a comment. Of the 72 functions it calls directly, exactly one
+reads G, and that one is mkRaider. Going a level deeper, ping and wx read G and
+would be genuinely dangerous at build time, since ping opens with if(!G) return and
+a stale non-null G defeats that guard completely; neither is called during a build,
+directly or through any callee. Nothing else to fix.
+
+BUT THE FIX LEFT THE DEFECT IN THE FILE:
+
+    var rec=(simBuild||(G&&G.sim))?{blank}:idRec(ident.id);
+
+The stale read survives as an OR. It is unreachable today, and I checked rather
+than assumed: runSim does G=null after every seed and the headless batch does the
+same, verified live, so G is null or a live raid whenever this runs with simBuild
+false. But it means the exact defect v1.96 diagnosed is still sitting in the line
+that fixed it, one careless G assignment away from being live again, and what it
+does when live is silent: every raider gets a blank grudge record and the whole
+identity ledger switches off with no symptom.
+
+Removed. Inert by logic rather than by measurement, which is stronger here: in a
+sim build simBuild is true, and (true||X) is true for every X, so the sim cannot
+tell the difference no matter what G holds. Confirmed in both directions anyway,
+because a logical argument about the wrong expression is worth nothing:
+
+    sim raid,  raider standing    0     blank record, correct
+    live raid, raider standing  -76     real ledger read, correct
+    G after a headless batch    null    which is why the fallback was unreachable
+
+FIVE AUDITS, ALL CLEAN, so nobody runs them again.
+
+  1. Only the player throws, confirmed above.
+  2. The stale-G sweep across buildRaid and two levels of callees, above.
+  3. CONTRACT PROGRESS. An ELITE kill contract multiplies by 2.4, so it can ask for
+     5 snitches, and COLD STORAGE spawns 3 while THE QUARRY spawns 4. That looked
+     like the impossible contract of v1.74 all over again. It is not: contracts
+     live on P.contracts, which is the saved profile, and prog accumulates. Nothing
+     resets it between raids. A five-snitch contract is a multi-raid job, not an
+     impossible one.
+  4. runSim's cleanup, which is what makes point 2 safe. G=null after every seed.
+  5. The frag blast rename from v2.23 still holds with the raider kit confirmed,
+     since raiders carry guns and grudges and no throwables.
+
+Not verified: whether a blank grudge record is even distinguishable from a real one
+at standing 0. A fresh identity he has never met also has standing 0, so if this
+had gone live the symptom would have been invisible until a raider he had killed
+twice greeted him like a stranger. That is an argument for having removed it rather
+than a gap in the check, but it does mean I cannot write a regression test that
+would have caught the original. Also not verified: the sweep covers functions
+DEFINED with "function name(" at column zero. Anything assigned as a var or nested
+inside another function would not appear in my call list, and this file has a
+handful of inner helpers like that in buildRaid itself.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
