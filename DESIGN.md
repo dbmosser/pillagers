@@ -4714,6 +4714,65 @@ when both are within 1500 units of it, which they can be, since the ping is
 positional and two nearby rings would each alert the same machines. That is a
 double-alert rather than a double-clock and this build does not address it.
 
+### v2.29: walk away from the ring you called and the HUD lies for the rest of the raid
+
+v2.28 ended admitting that finding the same defect twice by walking past it is not
+a search strategy. So this build read the whole 142 line loop rather than the two
+lines next to the last bug, and enumerated every piece of state it touches.
+
+THE SWEEP ITSELF CAME BACK CLEAN, and that part is worth saying. Fifteen G fields
+and ten z fields appear in tickExtractPoints. Two of the G ones, G.siegePerZone and
+G.raidSec, are not fields at all: my pattern matched the tail of CFG.siegePerZone
+and CFG.raidSec, which is a reminder that a regex over source is not a reader. Of
+the rest, every write to a global inside the per-zone loop is either guarded by
+z===G.active or sits in the else branch that restores the old behaviour. No third
+global clock. The two v2.27 and v2.28 found were the two there were.
+
+BUT THE GUARD ITSELF IS THE BUG. G.beaconT, G.shipHold and G.shipHoldMax exist so
+the HUD and the telemetry can read one value without knowing which ring owns it.
+Every write to them is guarded by z===G.active, and the loop skips any zone with no
+beacon. So the moment you walk from the ring you called to a different ring, the
+mirror stops being updated AND stops being cleared.
+
+Measured, calling a ring at 6 seconds and then standing in another:
+
+                                    old        new
+    ring ticks down to               4          4
+    G.beaconT mirror reads           6          4     frozen, then tracking
+    after the ship leaves            6        null    never cleared, then cleared
+    HUD prints            BEACON INBOUND 6s   nothing
+    diedInSiege would fire          yes         no
+
+Two things read that value. drawHUD prints "BEACON INBOUND 6s" with a progress bar,
+permanently, for the remainder of the raid. And killPlayer sets diedInSiege from
+G.beaconT!==null, so every later death in that raid is filed as a siege death, in
+the same telemetry this project has been quoting siege numbers out of.
+
+Fixed by recomputing the mirrors once, after every zone has ticked, from the zones
+themselves. The ring you are standing in wins so the number matches the circle you
+are in; otherwise any live beacon does, which is what you want when you called one
+and walked off; and when none is live the mirrors clear. Standing in your own ring
+is unchanged, verified: zone 7, mirror 7, exact match.
+
+Driven through real frames across all three phases with the HUD drawing each one:
+inbound at 1.9, holding at 29.9, gone at null, drawErr null throughout.
+
+PROVED INERT FOR THE SIM. diedInSiege is in simResult so this could have moved
+numbers, which is why it went behind a dial rather than straight in. 120 seeds an
+arm comparing outcome, duration, shots, haul, killer, diedInSiege, beacon calls,
+beacons missed and siege arrivals: 120 of 120 BYTE IDENTICAL. The bot calls its
+ring and stands in it, so it never meets this. beaconMirror 0 restores the guarded
+writes alone.
+
+Not verified: how far back the diedInSiege figures are wrong. The stale mirror only
+persists if you leave a called ring, which the bot never does, so every batch number
+this project has published is unaffected. His own runs are another matter, and the
+17 run export he sent carried diedInSiege values I have never gone back and
+recomputed. I am not going to pretend those are trustworthy now. Also not verified:
+whether preferring the ring you stand in is right when two are live and neither is
+yours, which cannot happen today because nothing but the player calls one, and
+would need a rule the moment anything else does.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

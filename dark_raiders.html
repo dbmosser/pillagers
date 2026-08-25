@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.28';
+var VER='2.29';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -474,7 +474,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -6849,6 +6849,36 @@ function tickExtractPoints(dt){
       T.beaconMissed=(T.beaconMissed||0)+1;
       if(dist(p,z)<1400){ blip('clank'); say('It left without you. Pull it again.'); }
     }
+  }
+  // THE MIRRORS ARE A VIEW, NOT A CACHE, v2.29. G.beaconT, G.shipHold and
+  // G.shipHoldMax exist so the HUD and the telemetry can read one value without
+  // knowing which ring owns it. Every write to them is guarded by z===G.active,
+  // and the loop above skips any zone with no beacon, so the moment you walk from
+  // the ring you called to a different ring the mirror stops being updated AND
+  // stops being cleared. Measured: call a ring at 6 seconds, walk to another, and
+  // the ring ticks down to 4 while G.beaconT sits at 6; let the first ring run
+  // right out, beacon gone, hold gone, ship departed, and G.beaconT is STILL 6.
+  // Two things read it. drawHUD prints "BEACON INBOUND 6s" with a progress bar,
+  // permanently, for the rest of the raid. And killPlayer sets diedInSiege from
+  // G.beaconT!==null, so every later death is filed as a siege death.
+  // Recomputed here from the zones themselves, once, after they have all ticked.
+  // The ring you are standing at wins so the number matches the circle you are in;
+  // otherwise any live beacon does, which is what you want when you called one and
+  // walked off. beaconMirror 0 restores the guarded writes alone.
+  if(CFG.beaconMirror!==0){
+    var mz=null;
+    for(var mi=0;mi<G.zones.length;mi++){
+      var MZ=G.zones[mi];
+      if(MZ.beaconT===null||MZ.beaconT===undefined) continue;
+      if(MZ===G.active){ mz=MZ; break; }
+      if(!mz) mz=MZ;
+    }
+    if(mz){
+      G.beaconT=mz.beaconT;
+      var mHold=(mz.beaconT<=0&&mz.hold!==null&&mz.hold!==undefined);
+      G.shipHold=mHold?mz.hold:null;
+      if(mHold) G.shipHoldMax=mz.holdMax;
+    } else { G.beaconT=null; G.shipHold=null; }
   }
   // SPEC 5.3: points close progressively, each announced two minutes ahead, and
   // a point already pulled completes its full sequence even past its cutoff.
