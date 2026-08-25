@@ -3365,7 +3365,7 @@ consistency check I wanted.
 Fires at the designed rate: 1,091 jams in 17,586 trigger pulls, 0.062 against a
 nominal 0.060.
 
-THREE ARMS, 120 SEEDS EACH, THE QUARRY, simGreed 20000, everything else pinned:
+THREE ARMS, 120 SEEDS EACH, BURIED CITY, simGreed 20000, everything else pinned:
 
                               extract   dur   shots   hits   jams   haul
   loaner, jam live             10.8%    264   144.0   95.1   0.00   11,479
@@ -3409,7 +3409,7 @@ loaner should be read as a rough direction, not as attribution.
 ### v2.10: one body with nowhere to go took the whole map's pathfinding budget
 
 Found sideways. I was trying to measure the wear curve and one seed would not
-finish: 600260 on THE QUARRY ran 1,344 sim steps in fourteen seconds while its
+finish: 600260 on BURIED CITY ran 1,344 sim steps in fourteen seconds while its
 neighbours ran 4,000 in two. It was not a hang. It was uniformly 10.8ms a step
 against 0.5, and no single step was slow, which is the shape of a fixed cost paid
 every frame rather than a stall.
@@ -3435,7 +3435,7 @@ the most expensive query there is, and because the ration is one per frame for t
 whole map, it also STARVES every other body of pathing. Two harms, and the second
 is the one I did not expect.
 
-Measured, THE QUARRY, 400 steps, exactly one body with an unreachable goal:
+Measured, BURIED CITY, 400 steps, exactly one body with an unreachable goal:
 
                               old      fixed
     steps that ran a search   89.3%    23.8%
@@ -3508,7 +3508,7 @@ whether 0.06 is tuned correctly, and that FOULED at 0.022 is the tier a player
 actually reaches first and was unmeasured. This measures all four. It is the whole
 build, and it exists because v2.09 shipped a claim I could not support.
 
-120 seeds per tier, THE QUARRY, one gun, everything else pinned identically,
+120 seeds per tier, BURIED CITY, one gun, everything else pinned identically,
 navBackoff 1 and simJam 1:
 
     tier      rounds   jam     extract   dur   shots   hit%   jams   haul
@@ -3554,7 +3554,7 @@ is the FOULED jam rate, not the FAILING one. Tuning 0.06 changes almost nothing.
 Not verified: any of this on the other three maps. Container density decides how
 often the bag threshold beats the ammo threshold, and shots per raid is the
 quantity jam scales against, so a map where the bot fires less should show a
-shallower cliff. This is THE QUARRY only. Also not verified: the same curve for
+shallower cliff. This is BURIED CITY only. Also not verified: the same curve for
 the player rather than the bot. The bot fires 204.6 shots on a CLEAN gun; his
 heaviest run fired 111, so he shoots roughly half as much and would meet the cliff
 proportionally more slowly within a raid, though he reaches the tier itself just
@@ -3622,7 +3622,7 @@ Cost is nothing. Build 377.0ms per map before, 362.6 after, which is noise aroun
 a fill of 81,250 cells. Container count is identical at 3,810 and no container
 lost its loot or its pip.
 
-Outcomes, 120 seeds an arm, THE QUARRY, everything pinned:
+Outcomes, 120 seeds an arm, BURIED CITY, everything pinned:
 
               extract   dur   shots   containers   haul
     off         7.5%    252   142.4     22.9      11,646
@@ -3643,6 +3643,68 @@ And one thing I did NOT investigate: the ARC STRONGBOX being behind a locked doo
 every single raid on every map. That is what the code asks for and it may well be
 intended, but it means the vault moment the design talks about is gated on finding
 a key first, and nothing in the design notes says that out loud.
+
+### v2.13: the wear cliff is real on all four maps and nothing like the same size, and I had the map name wrong for four builds
+
+No game logic changed. Two things here: a correction, and the measurement v2.11
+said it was missing.
+
+THE CORRECTION FIRST, BECAUSE IT AFFECTS EVERY NUMBER SINCE v2.09. I have been
+pinning mapIx 1 and calling it THE QUARRY. mapIx 1 is BURIED CITY. FIXED_MAPS is
+dam, buried, cold, quarry, so THE QUARRY is mapIx 3 and I never touched it until
+this build. Every arm in v2.09, v2.10, v2.11 and v2.12 ran on BURIED CITY. The
+numbers are all still valid, they were correctly pinned and correctly paired, they
+were simply attributed to the wrong map, and I have corrected those four entries
+in place. The commit messages for those builds still say THE QUARRY and cannot be
+changed. Earlier entries in this file also say THE QUARRY and I have NOT touched
+them, because I do not know whether the map order was the same when they were
+written and guessing would make the record worse rather than better.
+
+NOW THE MEASUREMENT. CLEAN against FOULED, 120 seeds per arm, one gun, everything
+else pinned identically, on all four maps:
+
+    map                  CLEAN   FOULED   cliff   jams/raid   CLEAN haul
+    DAM BATTLEGROUNDS     8.3%    5.8%     2.5      3.88       15,536
+    BURIED CITY          20.0%    5.8%    14.2      3.58       16,897
+    COLD STORAGE          6.7%    4.2%     2.5      3.67       16,286
+    THE QUARRY           21.7%   11.7%    10.0      4.28       20,357
+
+THE PENALTY IS UNIFORM AND THE DAMAGE IS NOT. Jams per raid sit between 3.58 and
+4.28 on every map, so FOULED is doing the same thing everywhere. What differs is
+how much there was to lose. The cliff tracks the CLEAN baseline almost exactly:
+the two maps where a healthy gun extracts one raid in five lose 10 and 14 points,
+and the two where it extracts one in twelve to one in fifteen lose 2.5.
+
+So v2.11's headline needs qualifying. "The wear curve is a trapdoor" was measured
+on one map and it is a trapdoor on that map. Averaged over four it is 7.3 points,
+and on half the maps it is a nuisance rather than a cliff. The DIRECTION holds
+everywhere, the MAGNITUDE was specific to the map I happened to pin. The v2.11
+conclusion I still stand behind is the one about the lever: FOULED at 0.022 does
+nearly all the work and FAILING at 0.060 adds little, and nothing here contradicts
+that.
+
+AND THE BIGGER FINDING IS NOT ABOUT WEAR AT ALL. Look at the CLEAN column. With an
+identical gun, an identical bot and identical settings, extract rate runs 6.7, 8.3,
+20.0 and 21.7 percent. The maps are not close to each other: THE QUARRY is 3.2
+times easier to walk out of than COLD STORAGE. That sits directly against the
+standing complaint that "maps feel samey", and it suggests the problem was never
+that they play the same. They play very differently and nothing tells him which is
+which. There is no difficulty shown anywhere in the hub, and contract pay does not
+scale with it either, which means the sensible play is to farm the easy map and
+the game never says so.
+
+That is a design question, not a defect, so it goes to him rather than into a
+build: whether map choice should be a stated risk-and-reward decision with pay to
+match, or whether the three hard maps should come up toward the easy one.
+
+Not verified: whether the difficulty spread survives a real player. Every number
+here is the bot, and the bot's weaknesses are not evenly distributed across maps.
+COLD STORAGE is the smallest world at 4200x3400 with the fewest containers, 136
+against THE QUARRY's 208, so its low rate may partly be the bag filling slower
+rather than the map being more lethal, and I did not separate those. Also not
+verified: WORN and FAILING on the three maps I added. This is CLEAN against FOULED
+only, chosen because v2.11 established that is where the whole effect lives, so
+the shape of the middle of the curve on those maps is assumed rather than measured.
 
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
