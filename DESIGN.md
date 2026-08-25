@@ -3706,6 +3706,76 @@ verified: WORN and FAILING on the three maps I added. This is CLEAN against FOUL
 only, chosen because v2.11 established that is where the whole effect lives, so
 the shape of the middle of the curve on those maps is assumed rather than measured.
 
+### v2.14: the map spread is lethality, not pace, and it is the sentry
+
+No game logic changed. v2.13 ended on a confound I raised against my own finding:
+COLD STORAGE is the smallest world with the fewest containers, so its low extract
+rate might be the bag filling slowly rather than the map being more dangerous.
+This settles it, and two sentry audits that follow from the answer both come back
+clean, which is worth as much as a fix.
+
+FIRST, CREDIT WHERE IT IS DUE AND I DID NOT GIVE IT. I wrote up the map spread at
+v2.13 as though it were new. It is not: v1.85 found it, and v1.86 went after the
+cause, tested loot density as the explanation with the MAPCONT dial, and honestly
+reported that the intervention did not reproduce the correlation. The spread has
+been a known open question for thirty builds. What is new here is the decomposition
+of HOW raids end, which nobody has run.
+
+120 seeds a map, CLEAN gun, everything pinned identically:
+
+    map                 extract   died to enemy   ran out clock   1st contact
+    DAM BATTLEGROUNDS     8.3%        79.2%          12.5%          152s
+    BURIED CITY          22.5%        74.2%           3.3%          107s
+    COLD STORAGE          6.7%        87.5%           5.8%          131s
+    THE QUARRY           21.7%        69.2%           9.2%          127s
+
+MY CONFOUND IS DEAD. If COLD STORAGE were hard because looting is slow, its raids
+would end on the clock. They do not: 5.8 percent, the second LOWEST of the four,
+and it opens 27.6 containers, identical to DAM. It is the most lethal map by a
+clear margin, 87.5 percent of raids ending in something killing you. Pace is not
+the story anywhere; between 69 and 88 percent of raids on every map end with a
+machine standing over you, and the clock accounts for 3 to 13.
+
+AND ONE MACHINE DOES MOST OF IT. Sentry kills per 120 raids: 60 on the dam, 58 on
+COLD STORAGE, 56 on BURIED CITY, 46 on THE QUARRY. Against total deaths of 83 to
+105, that is roughly two of every three deaths in this game, on every map, caused
+by the same enemy. Crawlers are a distant second at 19 to 29 and everything else
+is noise. Contact itself is not the differentiator either: 98 to 99 percent of
+raids meet something on all four maps.
+
+So the honest statement of the open question changes shape. It is not "why are
+some maps harder", it is "why is the sentry more effective on some maps", and
+that is a question about sight lines and geometry rather than about loot.
+
+TWO SENTRY AUDITS, BOTH CLEAN, RECORDED BECAUSE A NEGATIVE RESULT STOPS THE NEXT
+PASS REPEATING THEM.
+
+  1. The telegraphed fire at v1.18 claims in its own comment that the 0.4s charge
+     is subtracted from the old cooldown so DPS is unchanged. Checked against the
+     diff that introduced it: the old roll was rnd(0.35,0.75) and the new cycle is
+     0.4+rnd(0,0.35), which is rnd(0.40,0.75). Mean 0.55 against 0.575, about four
+     percent slower and inside rounding. The Warden's is exact, 2.4 against
+     0.7+1.7. The claim is true.
+  2. Leaving the chase state does not clear e.windup, so in principle a sentry
+     that loses you mid charge could reacquire and fire with no telegraph at all,
+     which would be exactly the unfairness v1.18 set out to remove. Measured over
+     14 raids, 409 chase entries and 366 chase exits: ZERO exits carried a pending
+     charge. The window cannot open, because a 0.4s windup always resolves long
+     before `alert` decays far enough to drop the state. Real hole, unreachable,
+     and I am not adding dead code to close it.
+
+Not verified: whether the sentry's dominance is geometry or simply arithmetic. It
+fires every 0.40 to 0.75 seconds for 14, which is 19 to 35 damage a second against
+100 health, so anything that keeps one in line of sight for four seconds is fatal
+regardless of the map, and I have not measured how long sight lines actually stay
+open on each map. That is the measurement I would run next and it is the one that
+would separate "COLD STORAGE has longer firing lanes" from "COLD STORAGE crowds
+you into them". Also not verified: any of this for a player rather than the bot.
+The bot does not use cover deliberately, it crouches only when a dial says so and
+this arm had simCrouch 0, so a sentry gets a cleaner shot at it than at a person
+who is actively breaking line of sight. The RANKING should survive that; the
+absolute rates should not be read as difficulty for him.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
