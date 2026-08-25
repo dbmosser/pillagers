@@ -220,7 +220,7 @@ A run of quiet ticks with no new data produced these. Each was measured, not ass
 - **RESOLVED, and it was resolved by him in run #5 (closed v2.30).** This asked what the dropship should do if you are bleeding out inside the ring when it lands, and said the countdown freezes while you are down. Both halves are now out of date. His own run #5 note answered the question: "player should be able to use the beacon and extract while downed". It was built, and the code cites that note. Re-measured on the current build rather than trusted: the beacon TICKS while downed, 10.0 down to 7.0 across three seconds, against the 0.00 in 4.8 this entry recorded; a downed operator can CALL a ring, beacon reaching 22.6 with E held; and all four boarding combinations behave, standing with E extracts, standing without E does not, DOWNED WITH E EXTRACTS, downed without E does not. So a downed player boards by pulling, exactly like anyone else. This entry sat here for thirty builds describing a question that had been answered and a behaviour that had been changed, which is the specific way a stale open-question list wastes his attention and mine.
 - **One good raid buys anything in the shop (measured v0.80, nothing changed).** A raid where the bag comes back full is worth 4,400 to 5,000 credits. The most expensive thing in the shop is the Marksman Rifle at 4,500, and everything else is cheaper. Reputation gates still pace unlocks, but credits stop being a constraint almost immediately. This is not something the map change caused; it measures the same on the old map size. Whether that matters is a design call.
 - **The backpack decides raid length, not the clock.** He asked for at least ten minutes to extract and has it, but a bot looting to its carry limit fills up and leaves after about two and a half minutes. The remaining seven are only useful for swapping held items for better ones. If a raid is meant to be a ten minute commitment, carry weight is the lever, not the timer.
-- **Should machines be able to walk around cover to reach you? (v0.72)** The game now has real route finding, and it is wired into looting, investigating and extraction but deliberately not into combat chasing. Switching chasing on would make sentries, crawlers and raiders pursue you around buildings instead of snagging on the corner. That is a straight difficulty increase and cuts against "the player is too fragile", which is why it is parked rather than shipped. One line either way settles it.
+- **RESOLVED at v0.90, by him (closed v2.31).** This asked whether machines should walk around cover to reach you and said route finding was "deliberately not" wired into combat chasing. False: the chase branch calls navSeek at the player in five places, and measured over ten raids, 1,920 of 4,961 chase ticks carry a routed path, 38.7 percent, routes up to seven waypoints. v0.90's note records the decision: "Chase now routes around cover instead of clipping corners, because he approved letting them hunt." Answered by him and built forty builds before this entry was read again. ORIGINAL TEXT: **Should machines be able to walk around cover to reach you? (v0.72)** The game now has real route finding, and it is wired into looting, investigating and extraction but deliberately not into combat chasing. Switching chasing on would make sentries, crawlers and raiders pursue you around buildings instead of snagging on the corner. That is a straight difficulty increase and cuts against "the player is too fragile", which is why it is parked rather than shipped. One line either way settles it.
 - **Extraction rings land inside a building about one time in eight (v0.71).** Measured 0 of 120 rings meaningfully obstructed, so they always work; it just means sometimes you extract from indoors. Cosmetic, and his call whether to push them into the open.
 Three things, none of which should be built without him saying so.
 
@@ -4832,6 +4832,75 @@ one was, and I have not done that. Also not verified: whether run #12's
 diedInSiege:1 is right for the right reason. He was in the ring, so the flag is
 plausible, but a beacon he had called and a siege that had actually begun are two
 different conditions and the flag only tests the first.
+
+### v2.31: he chose "hauled aboard" at v0.90 and it was never built
+
+v2.30 retired one stale section 13 entry and said the rest of the list should be
+assumed stale until checked. Checking the next one found something worse than
+staleness.
+
+FIRST, THE ONE I WENT LOOKING FOR. Section 13 asks "Should machines be able to walk
+around cover to reach you?" and says route finding is wired into looting,
+investigating and extraction "but deliberately not into combat chasing". That is
+false. The chase branch calls navSeek at the player in five places. Measured over
+ten raids: 4,961 chase ticks observed, 1,920 of them carrying a routed path, 38.7
+percent, with routes up to seven waypoints.
+
+It is not a regression, and the history says who decided it. v0.90's own note:
+"Chase now routes around cover instead of clipping corners, BECAUSE HE APPROVED
+LETTING THEM HUNT". So that question was answered by him and built forty builds
+ago, and section 13 has been asking it ever since.
+
+AND THE SAME NOTE CONTAINS A PROMISE THAT WAS NEVER KEPT. The next clause reads:
+"The dropship keeps flying while you are down and TAKES YOU IF YOU ARE IN THE RING,
+because he chose hauled aboard."
+
+The first half shipped. The second half did not, and the diff proves it: v0.90's
+downed branch called tryExtractTick(dt) with no wantCall argument, so a downed
+operator could not board at all. Later, answering his run #5, the E key was passed
+through, which lets a downed player board BY PULLING. Automatic pickup, the thing
+he actually chose, has never existed in this game.
+
+v2.30 IS MINE TO OWN. Last build I found the comment saying his crew "drags you
+aboard", measured that you still have to pull, and reworded the comment to match
+the code. I called the pull requirement "the right rule". It matches the code and
+it contradicts his decision, and I checked the code against itself instead of
+against what he asked for. That is the same failure the standing rule about
+re-checking his notes exists to prevent, one level up.
+
+BUILT. A downed operator inside the ring with the ship down is taken. Reaching that
+branch already means standing in the circle with the ship landed, so the only new
+condition is being unable to stand up.
+
+Verified, all four combinations plus the boundary:
+
+    state                        pull-only (old)   hauled (new)
+    downed, in ring, no E             no extract      EXTRACT
+    downed, in ring, E held           extract         extract
+    downed, OUTSIDE the ring          -               no extract
+    standing, in ring, no E           -               no extract
+
+That last row needed a second pass and is worth recording. It first came back as an
+extract, which looked like my guard firing for an upright player. It was not: the
+siege had downed him while he stood there, so the pickup was correct. Re-run with
+hard invulnerability so he cannot go down, a standing player with no E does not
+leave, hold sitting at 10.2 with the ship still on the ground. The guard is right
+and my first reading of my own test was wrong.
+
+PROVED INERT FOR THE SIM. 120 seeds an arm on outcome, duration, haul, killer,
+downs, holdExtract and beacon calls: 120 of 120 identical. The bot never goes down
+inside a holding ring, so it cannot reach this. hauledAboard 0 restores pull-only.
+
+Not verified: whether he still wants it. He chose this at v0.90, which is forty
+builds and a great deal of tuning ago, and the argument against it is real: being
+taken automatically removes the last decision in the tensest moment of a raid, and
+a player who wanted to crawl out and try again no longer can. I have built what he
+asked for rather than what I would pick, and the dial is there because the gap
+between those two is exactly where I should not be guessing. Also not verified: the
+remaining three section 13 entries, two of which I can already see are stale. The
+shop one says the dearest item is the Marksman Rifle at 4,500 when the Breacher
+Plate is 7,800, and the backpack one describes a carry limit that PACKCAP made
+unlimited on 2026-08-22 at his request.
 
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
