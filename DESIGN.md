@@ -3856,6 +3856,83 @@ stated design and the safes are the point of them, but the same argument that
 makes the guards population makes the camps population, and I did not want to
 change the number of set pieces on a map without him saying so.
 
+### v2.16: wearing nothing was better than the rig you paid for
+
+Audited armour, because v2.14 established that two of every three deaths in this
+game are a sentry and armour is the only thing that answers a sentry. Two defects,
+one of them a single character.
+
+THE FALSY ZERO. damagePlayer read:
+
+    var soak=armorById(p.rig).absorb||0.55;
+
+No Rig has absorb 0.00. In JavaScript 0 is falsy, so `0.00||0.55` is 0.55, and a
+player wearing nothing absorbed 55 percent of every hit. That is MORE than the
+Scav Rig at 0.50 and nearly the Plated Vest at 0.58.
+
+THE CEILING THAT IGNORED THE RIG. The comment above ARMOR_MAX states the intent
+plainly: "the old flat ceiling is now whatever rig you walked in wearing, so the
+HUD bar scales to the rig instead of to a constant that no longer means anything".
+The code then wrote Math.max(ARMOR_MAX, rig.cap), which puts the constant straight
+back for any rig under 60, and that is the bottom two of four:
+
+    rig             table cap    actual ceiling
+    No Rig               0            60
+    Scav Rig            35            60
+    Plated Vest         70            70
+    Breacher Plate     120           120
+
+TOGETHER THEY INVERT THE LADDER. Old behaviour, side by side:
+
+    No Rig     ceiling 60   absorb 0.55   noise 1.00   costs nothing
+    Scav Rig   ceiling 60   absorb 0.50   noise 1.02   costs credits
+
+Same ceiling, worse absorption, worse noise, and you pay for it. The Scav Rig was
+a strictly dominated purchase and the correct play was to wear nothing and pick up
+plates. Fixed, the ladder is 0, 35, 70, 120 instead of 60, 60, 70, 120.
+
+Four more falsy zeros in the same family were fixed with it: the plate pickup
+guards all read `g.player.armorCap||ARMOR_MAX`, which would have turned a real
+ceiling of 0 back into 60 at every one of them. Now an explicit undefined test.
+
+Verified by hitting the player for 100 with each rig, both dial positions:
+No Rig now absorbs 0 of it where it used to eat 55; Scav Rig caps at 35 absorbed
+where it used to reach 60; Plated and Breacher are unchanged in both, which is the
+control that says I only moved what I meant to.
+
+Measured, BURIED CITY, 118 paired seeds, everything else pinned. The sim wears a
+fixed Scav Rig, so this arm isolates the CEILING alone:
+
+                        extract   died to enemy   downs   haul
+    ceiling 60, old      22.9%       73.7%        0.78   16,905
+    ceiling 35, new      17.8%       78.0%        0.81   16,348
+
+Minus 5.1 points, 10 seeds flip to dead against 4 to extract, 40 of 118 identical.
+McNemar z is about 1.60, p near 0.11, so not significant on its own, but the
+direction and size are exactly what removing 25 points of armour buffer predicts.
+
+THIS MAKES THE GAME HARDER AND I AM NOT HIDING THAT. He has said more than once
+that he dies too fast. This build takes armour away from the two cheapest rigs.
+The defence is that the ladder was inverted, not merely mistuned: an upgrade path
+where the free option beats the first paid option is not a difficulty setting, it
+is a broken shop. rigCap 0 restores the old ceiling if he disagrees; the absorb
+fix is not dialled, because a falsy zero is a bug rather than a balance choice.
+
+AND IT LANDS ON HIS SAVE HARDEST, which he needs to know before he plays. His
+profile is rig 'none'. Under the old numbers that quietly gave him a 60 point
+ceiling at 0.55 absorption, the best deal in the game. He now has 0 and 0.00,
+literally no armour system at all, which is what "No Rig" always claimed. He is
+carrying 13,085 credits and the shop sells rigs. Buying one is now strictly worth
+doing, which was the whole point.
+
+Not verified: the effect on the two upper rigs, and it could go either way. The
+sim wears a fixed Scav Rig by design so every number above is the light tier, and
+Plated and Breacher did not move a single value in the audit, but I have not run a
+raid arm on them and their relative value against the cheaper rigs has changed
+even though their own numbers have not. Also not verified: whether 35 is the right
+cap now that it binds. It has never actually bound before, so the figure has never
+been playtested as a ceiling, only ever written down as one.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

@@ -414,6 +414,21 @@ function myRig(){ return armorById((P&&P.rig)||'none'); }
 // scales to the rig instead of to a constant that no longer means anything.
 var ARMOR_MAX=60;
 function armorCap(){ return (G&&G.player&&G.player.armorCap!==undefined)?G.player.armorCap:ARMOR_MAX; }
+// THE RIG'S CAP IS THE CEILING, AND FOR TWO OF THE FOUR RIGS IT WAS NOT, v2.16.
+// The comment above ARMOR_MAX states the intent exactly: "the old flat ceiling is
+// now whatever rig you walked in wearing, so the HUD bar scales to the rig instead
+// of to a constant that no longer means anything". The code then wrote
+// Math.max(ARMOR_MAX, rig.cap), which restores the constant for every rig whose
+// cap is below 60, and that is the bottom two:
+//   No Rig     cap   0  ->  ceiling 60
+//   Scav Rig   cap  35  ->  ceiling 60
+//   Plated     cap  70  ->  ceiling 70   correct
+//   Breacher   cap 120  ->  ceiling 120  correct
+// So the Scav Rig's stated cap did nothing, and "No Rig" could hold sixty points
+// of armour. Combined with the absorb fallback fixed in damagePlayer, wearing
+// NOTHING was strictly better than wearing the rig you paid for.
+// rigCap 0 restores the old ceiling.
+function rigCeil(A){ return CFG.rigCap===0?Math.max(ARMOR_MAX,A.cap):A.cap; }
 // Medical the Undercroft always issues, so a bad run cannot leave you with none.
 var ISSUED_HEALS=2;
 
@@ -421,7 +436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.15';
+var VER='2.16';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -452,7 +467,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -5385,7 +5400,7 @@ function buildRaid(sim){
       // build. A constant baseline also keeps the numbers comparable across
       // builds, which is the whole point of having a sim at all.
       armor:(sim?armorById('light').cap:myRig().cap),
-      armorCap:(sim?Math.max(ARMOR_MAX,armorById('light').cap):Math.max(ARMOR_MAX,myRig().cap)),
+      armorCap:(sim?rigCeil(armorById('light')):rigCeil(myRig())),
       rig:(sim?'light':((P&&P.rig)||'none')),face:0,wep:wep,
       ammo:wep.mag,reserve:wep.mag*2,sec:sec,secAmmo:sec.mag,reloading:0,lastShot:-9999,stam:100,
       wepIssued:wepIssued,secIssued:true,wepFromArmory:!wepIssued,secFromArmory:false,
@@ -5438,7 +5453,7 @@ function buildRaid(sim){
     // and you lose what you carry when you die, so take the smallest.
     function takeBest(use,wantBigger){
       if(taken>=SLOTS) return false;
-      if(use==='armor'&&g.player.armor>=(g.player.armorCap||ARMOR_MAX)) return false;
+      if(use==='armor'&&g.player.armor>=((g.player.armorCap===undefined?ARMOR_MAX:g.player.armorCap))) return false;
       var bi=-1,bv=0;
       for(var i=0;i<P.stash.length;i++){
         var t=ITEMS[P.stash[i]];
@@ -5449,8 +5464,8 @@ function buildRaid(sim){
       if(bi<0) return false;
       var key=P.stash[bi],itm=ITEMS[key];
       // do not burn a whole plate for a few points of headroom
-      if(use==='armor'&&((g.player.armorCap||ARMOR_MAX)-g.player.armor)<itm.amt*0.5) return false;
-      if(use==='armor') g.player.armor=Math.min(g.player.armorCap||ARMOR_MAX,g.player.armor+itm.amt);
+      if(use==='armor'&&(((g.player.armorCap===undefined?ARMOR_MAX:g.player.armorCap))-g.player.armor)<itm.amt*0.5) return false;
+      if(use==='armor') g.player.armor=Math.min((g.player.armorCap===undefined?ARMOR_MAX:g.player.armorCap),g.player.armor+itm.amt);
       else if(use==='ammo') g.player.reserve+=itm.amt;
       else g.bag.push(key);
       P.stash.splice(bi,1); taken++;
@@ -5468,7 +5483,7 @@ function buildRaid(sim){
       var DEV=['medkit','medkit','plate','plate','ammobox','ammobox'];
       for(var dk=0;dk<DEV.length;dk++){
         var di=ITEMS[DEV[dk]];
-        if(di.use==='armor') g.player.armor=Math.min(g.player.armorCap||ARMOR_MAX,g.player.armor+di.amt);
+        if(di.use==='armor') g.player.armor=Math.min((g.player.armorCap===undefined?ARMOR_MAX:g.player.armorCap),g.player.armor+di.amt);
         else if(di.use==='ammo') g.player.reserve+=di.amt;
         else g.bag.push(DEV[dk]);
       }
@@ -6016,7 +6031,12 @@ function damagePlayer(amt,src,srcName){
   }
   amt*=CFG.eDmg;
   if(p.armor>0){
-    var soak=armorById(p.rig).absorb||0.55;
+    // NOT ||, v2.16. No Rig has absorb 0.00 and 0 is falsy, so this fallback
+    // silently handed a player wearing nothing 0.55 absorption, better than the
+    // Scav Rig's 0.50. Reachable because armorCap let a no-rig player fill sixty
+    // points from plates. An explicit type test, so a real zero survives.
+    var RA=armorById(p.rig);
+    var soak=(RA&&typeof RA.absorb==='number')?RA.absorb:0.55;
     var ab=Math.min(p.armor,amt*soak); p.armor-=ab; amt-=ab;
   }
   p.hp-=amt; p.hitFlash=.28; G.shake=Math.max(G.shake,5);
