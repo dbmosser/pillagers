@@ -443,7 +443,22 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.75';
+var VER='2.76';
+// WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
+// and thirty builds have landed since; nothing in the game says so, and finding
+// out that heals take time by dying mid-heal is the wrong way to learn it. This
+// card shows ONCE per version on the hub and stamps itself seen. The list is
+// authored by hand and kept SHORT: only lines that change how he plays, never
+// fixes or measurements. Update it when shipping something he will feel.
+var WHATSNEW=[
+  'Your FIRE button now uses the selected hotbar slot.',
+  'Heals take time now. The bar shows health arriving.',
+  'Buildings have windows: see and shoot through, not walk through.',
+  'Raider crews feud. The colour bar by a name is his crew.',
+  'Drag items from TAB inventory onto the hotbar.',
+  'BACKSPACE resets a lost cursor.',
+  'Tuning Console: toggles for heals, feuds and windows.'
+];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -13165,6 +13180,26 @@ function drawHubHUD(ox,oy){
     ctx.font=FS(TYPE.label); ctx.fillStyle='#8a96a1';
     ctx.fillText(s.sub,W/2,H-42);
     ctx.textAlign='left';
+  }
+  // The one-time card. Dismissed by walking, because the first thing anybody
+  // does on the hub is walk, and a card that needs its own key to close is a
+  // card that gets stuck. Stamped seen on dismissal, not on display, so closing
+  // the tab mid-card shows it again next time.
+  if(P.lastSeenVer!==VER){
+    var wnW=LH(430), wnH=LH(56)+WHATSNEW.length*LH(17);
+    var wnX=W/2-wnW/2, wnY=H/2-wnH/2-LH(20);
+    ctx.fillStyle='rgba(6,9,13,.94)'; ctx.fillRect(wnX,wnY,wnW,wnH);
+    ctx.strokeStyle='#3a4552'; ctx.lineWidth=1; ctx.strokeRect(wnX+.5,wnY+.5,wnW-1,wnH-1);
+    ctx.textAlign='center';
+    ctx.font=FS(TYPE.head); ctx.fillStyle='#ffb02e';
+    ctx.fillText('UPDATED TO v'+VER,W/2,wnY+LH(22));
+    ctx.font=FS(TYPE.label); ctx.fillStyle='#cdd6dd';
+    for(var wq=0;wq<WHATSNEW.length;wq++)
+      ctx.fillText(WHATSNEW[wq],W/2,wnY+LH(42)+wq*LH(17));
+    ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
+    ctx.fillText('walk to dismiss',W/2,wnY+wnH-LH(8));
+    ctx.textAlign='left';
+    if(p.moving){ P.lastSeenVer=VER; saveProfile(); }
   }
   ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(140,152,163,.75)';
   ctx.textAlign='center';

@@ -173,6 +173,8 @@ window.__feudFoe=function(a,b){ return feudFoe(a,b); };
 // scope read undefined; a hook makes that failure impossible to repeat.
 window.__water={at:inWater};
 window.__tune={toggle:toggleTune,sliders:function(){return SLIDERS;}};
+// Renders the hub scene INCLUDING its HUD and any card; __frame only draws raids.
+window.__hubFrame=function(dt){ drawHubWorld(dt===undefined?0.016:dt); };
 // THE MEASUREMENT BASELINE, ONE CALL, v2.67. Every batch this cycle opened with
 // the same twenty hand-typed dial assignments, and twice a smoke test that
 // skipped them produced rates that meant nothing and briefly looked like

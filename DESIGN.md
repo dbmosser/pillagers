@@ -7139,6 +7139,43 @@ that today. Also the standing caveat on all spell counts: 34 to 54 spells per
 map resists formal testing, and every number above is a distribution eyeballed
 honestly rather than a p-value.
 
+### v2.76: the game tells him what changed, once, on the hub
+
+His last recorded runs were v2.43 and thirty-three builds have landed since:
+the trigger drives the hotbar now, heals cost six seconds, buildings grew
+windows, the raiders went to war in colours, the inventory drags, and three new
+toggles sit on his console. Nothing in the game said any of it, and the way he
+was going to find out that heals take time was by dying inside one.
+
+A one-time card on the hub now says so. UPDATED TO v2.76 over a short authored
+list, seven lines, each one a change he will FEEL and none of them a fix or a
+measurement; the list is a hand-maintained constant next to VER with its own
+comment saying exactly what belongs on it. The card is dismissed by WALKING,
+because the first thing anyone does on the hub is walk and a card needing its
+own close key is a card that gets stuck; the stamp is written on dismissal
+rather than display, so closing the tab mid-card shows it again. Seen state
+lives in a NEW profile field, lastSeenVer, no storage key changes, and an old
+profile without the field simply sees the card once, which is the intended
+behaviour for exactly that profile.
+
+The fixture gained __hubFrame, because __frame draws raids and the card lives in
+the hub renderer, a distinction the first capture attempt demonstrated by
+producing a raid HUD. With the real hub frame: the card renders centred over the
+Undercroft, amber header, all seven lines legible, stations readable around it,
+walk-to-dismiss footer in place. tools/shots/whatsnew_card2.png is the frame.
+
+Verified: parsecheck PASS at v2.76, all four maps drive and draw clean with 10
+of 10 entities moving, hub steps clean; the card shows on a profile with no
+lastSeenVer, ten frames of held W stamp it to 2.76 and save, and the layout was
+seen in pixels rather than reasoned about.
+
+Not verified: the card against his real profile, which has no lastSeenVer and
+will show it on his next hub visit, exactly once, which is the feature working
+but has not been watched happening on his save. Also a maintenance obligation
+rather than a caveat: the WHATSNEW list only stays true if future player-facing
+builds update it, and a stale list is worse than none; the comment above it says
+so, and this entry says it twice.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
