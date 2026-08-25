@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.42';
+var VER='2.43';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -474,7 +474,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -7431,11 +7431,33 @@ function updateBot(dt){
   if(p.hp<45){ var hi=findHeal(); if(hi>=0){ p.hp=Math.min(p.maxhp,p.hp+ITEMS[G.bag[hi]].amt); G.bag.splice(hi,1); T.heals++; } }
 
   var threat=null,td=1e9,i;
+  // THE BOT SHOT AT WHAT IT COULD NOT REACH, v2.43, and the literal that caused it
+  // was doing two jobs at once. The threat scan used a bare 300 with no relation to
+  // the gun in the bot's hands, and that one number answered both "what may I shoot
+  // at" and "how close does something have to be before I stop looting and deal with
+  // it". Those are different questions and they need different answers, so this
+  // splits them rather than swapping one literal for another.
+  // THE CORRECTNESS HALF, simReach, DEFAULT ON. Bullets die at wep.rng: fireWeapon
+  // sets life to rng/1180, so a round fired past the weapon's range cannot arrive.
+  // The Riot Scattergun dies at 260 and the Hullcracker at 210, so a bot holding
+  // either was firing at threats out to 300 and throwing those rounds away. That
+  // matters beyond tidiness because running dry is one of the four conditions that
+  // end the looting phase. The bot now holds fire outside its own range, which is
+  // what the player does by not pulling the trigger.
+  // THE BEHAVIOUR HALF, simEngage, DEFAULT OFF. Nine of the twelve weapons out-range
+  // 300, the Marksman Rifle by 460, so a bot with a long gun refuses fights it would
+  // win. Fixing that is tempting and is NOT a correctness fix, because the branch
+  // order means any threat inside the radius stops the bot looting entirely: raise
+  // the radius to 760 and a bot with a Marksman Rifle stands and trades all raid
+  // instead of filling its bag. That is a change to what the bot IS, so it follows
+  // simSell, simPed, simCrouch and simPip and stays off until measured and asked for.
+  var TRW=(p.wep&&typeof p.wep.rng==='number')?p.wep.rng:300;
+  var TR=CFG.simEngage?(TRW>300?TRW:300):300;
   for(i=0;i<G.ents.length;i++){
     var e=G.ents[i];
     if(e.kind==='snitch') continue;
     var d=dist(p,e);
-    if(d<300&&d<td&&losClear(p.x,p.y,e.x,e.y,G.vseg)){ threat=e; td=d; }
+    if(d<TR&&d<td&&losClear(p.x,p.y,e.x,e.y,G.vseg)){ threat=e; td=d; }
   }
   p.noiseAcc=(p.noiseAcc||0)+dt;
   var moved=false;
@@ -7472,7 +7494,7 @@ function updateBot(dt){
       if(p.reloading<=0&&p.reserve>0){ p.reloading=p.wep.reload; T.reloads++; }
     } else {
       var now=G.t*1000;
-      if(p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){
+      if(p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof&&(CFG.simReach===0||td<=TRW)){
         // Same shape as the player path: the roll happens on the trigger pull, so
         // a fouled gun costs the round AND the second it takes to cycle.
         // DRAWN BEFORE THE DIAL IS CONSULTED, and that is not a style choice. Put

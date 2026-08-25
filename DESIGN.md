@@ -5595,6 +5595,71 @@ fixture and 313 an arm is roughly ten minutes for one comparison. Also not verif
 any of the four blocks on a map other than BURIED CITY, so the 9.2 point spread is one
 map's noise floor and the quieter maps may well be tighter or worse.
 
+### v2.43: the sentry threshold is real at n=320, and the bot was shooting past its own barrel
+
+Two things, one measured and one fixed.
+
+THE MEASUREMENT FIRST, BECAUSE IT SETTLES FOUR BUILDS. v2.42 worked out that 120
+seeds an arm is about 2.6 times too small for these effects and put the required
+number at roughly 313. So this ran 320, set in advance, and ran to 320 rather than
+stopping when it crossed. Both arms on each seed in turn, sentry health identical
+in both, only the SMG changed so shots to kill a sentry moves 13 to 14:
+
+                          14 shots extract   14 shots dead
+    13 shots extract            41                51
+    13 shots dead               28               200
+
+    28.8% against 21.6%, discordant 79, z 2.48, exact two-sided p = 0.0128
+
+IT CLEARS THE BAR. The sentry threshold is real. That is the result v2.40 claimed
+on 1.34 standard errors, v2.41 walked back, and v2.42 said needed 313 seeds before
+anybody should believe it. It needed 320 and it survived them. The direction never
+changed across six arms; only the evidence for it did.
+
+Worth being exact about what is established: one extra round to kill a sentry costs
+about 7 points of extract rate on BURIED CITY with the Compact SMG. eHp x1.06 is
+what pushes 150 health to 159 and 159 needs the fourteenth round, so that remains
+the whole cost of world tier 1, and eHp 1.00 remains the setting.
+
+THE FIX, WHICH IS UNRELATED AND WAS FOUND WHILE READING THAT CODE. The bot's threat
+scan used a bare literal 300 with no relation to the gun in its hands, and that one
+number was answering two different questions: what may I shoot at, and how close
+does something have to be before I stop looting and deal with it. Splitting them is
+the whole change.
+
+    simReach, DEFAULT ON, the correctness half. fireWeapon sets a bullet's life to
+    rng/1180, so a round fired beyond the weapon's range cannot arrive. The Riot
+    Scattergun dies at 260 and the Hullcracker at 210, so a bot holding either was
+    firing at threats out to 300 and throwing those rounds away. Running dry is one
+    of the four conditions that end the looting phase, so wasted rounds are not
+    cosmetic. The bot now holds fire outside its own range.
+
+    simEngage, DEFAULT OFF, the behaviour half. Nine of the twelve weapons out-range
+    300, the Marksman Rifle by 460, so a bot with a long gun refuses fights it would
+    win. That is tempting and it is NOT a correctness fix, because of the branch
+    order: any threat inside the radius stops the bot looting entirely, so raising
+    the radius to 760 gives you a bot that stands and trades all raid instead of
+    filling its bag. It changes what the bot IS, so it follows simSell, simPed,
+    simCrouch and simPip and stays off.
+
+THE MACHINES ALREADY DID THIS RIGHT, which is what made it a defect rather than a
+convention. Every machine fire path checks its own range before pulling: dw<e.rng*1.2
+on the sentry's windup, d<e.rng*1.15 on the raider's, d<e.rng on the pinning branch.
+The bot's was the only one that did not.
+
+Verified: parsecheck PASS, all four maps and the hub draw clean with 10 of 10 entities
+moving on every map, and the shipped defaults read simReach 1, simEngage 0.
+
+Not verified: what simReach is worth in extract rate, and I want that stated plainly
+rather than buried. It is a correctness fix with an argument behind it, not a measured
+one, and the A/B has not been run. It should be, at 320 seeds, and the honest guess is
+that it is small, because the guns that waste rounds are the two shortest and the sim
+deploys an SMG. Also not verified: with simReach on and simEngage off there is a band
+between the weapon's range and 300 where a shotgun bot stops looting and cannot shoot,
+so it idles. It idled before too, just noisily, and I have not measured whether that
+band costs anything. Also not verified: the p=0.0128 result is BURIED CITY and the
+Compact SMG only, as every arm in this thread has been.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
