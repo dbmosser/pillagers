@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.82';
+var VER='2.83';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -454,7 +454,7 @@ var VER='2.82';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='2.81';
+var WHATSNEW_VER='2.83';
 var WHATSNEW=[
   'Your FIRE button now uses the selected hotbar slot.',
   'Heals take time now. The bar shows health arriving.',
@@ -463,7 +463,8 @@ var WHATSNEW=[
   'Drag items from TAB inventory onto the hotbar.',
   'BACKSPACE resets a lost cursor.',
   'Tuning Console: toggles for heals, feuds and windows.',
-  'The Undercroft is five stations now. Holt handles all trade.'
+  'The Undercroft is five stations now. Holt handles all trade.',
+  'The world breaks: walls, cars, glass all have HP now.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -495,7 +496,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -2838,10 +2839,10 @@ var FIXED_MAPS=[
 function buildFixedMap(def){
   WORLD_W=def.w; WORLD_H=def.h; AREA=(WORLD_W*WORLD_H)/(2600*2000);
   var walls=[],b=40,i;
-  walls.push({x:0,y:0,w:WORLD_W,h:b,d:1});
-  walls.push({x:0,y:WORLD_H-b,w:WORLD_W,h:b,d:1});
-  walls.push({x:0,y:0,w:b,h:WORLD_H,d:1});
-  walls.push({x:WORLD_W-b,y:0,w:b,h:WORLD_H,d:1});
+  walls.push({x:0,y:0,w:WORLD_W,h:b,d:1,noDes:1});
+  walls.push({x:0,y:WORLD_H-b,w:WORLD_W,h:b,d:1,noDes:1});
+  walls.push({x:0,y:0,w:b,h:WORLD_H,d:1,noDes:1});
+  walls.push({x:WORLD_W-b,y:0,w:b,h:WORLD_H,d:1,noDes:1});
   for(i=0;i<def.walls.length;i++){ var aw=def.walls[i]; walls.push({x:aw.x,y:aw.y,w:aw.w,h:aw.h,d:aw.d===undefined?1:aw.d}); }
   var buildings=[];
   var _wallsBeforeBuildings=walls.length;
@@ -6239,6 +6240,20 @@ function explodeFrag(f){
   // being told a sentry did it is the exact shape of unfairness that entry set
   // out to remove.
   if(dp<R&&losClear(f.x,f.y,p.x,p.y,G.map.segs)) damagePlayer(60*(1-dp/R)+12,'other','YOUR OWN CHARGE');
+  // The blast takes walls with it. 200 at the centre falling to 40 at the edge:
+  // one charge breaks glass, furniture, wrecks and trees outright and leaves a
+  // building wall over half gone, so two charges open a building, which is what
+  // "takes enough damage" means for masonry. Iterated backward off a snapshot
+  // because a destroyed wall mutates the array under the loop.
+  if(CFG.destruct!==0){
+    var _bwWalls=G.map.walls.slice();
+    for(var _bwI=_bwWalls.length-1;_bwI>=0;_bwI--){
+      var _bw2=_bwWalls[_bwI];
+      var _cx=clamp(f.x,_bw2.x,_bw2.x+_bw2.w), _cy=clamp(f.y,_bw2.y,_bw2.y+_bw2.h);
+      var _dd2=Math.hypot(_cx-f.x,_cy-f.y);
+      if(_dd2<R) damageWall(_bw2,200*(1-_dd2/R)+40,_cx,_cy);
+    }
+  }
   for(i=G.ents.length-1;i>=0;i--){
     var e=G.ents[i],de=dist(e,f);
     if(de<R+e.r&&losClear(f.x,f.y,e.x,e.y,G.map.segs)){
@@ -6450,6 +6465,62 @@ function damagePlayer(amt,src,srcName){
     p.healQ=0; p.healRate=0;
     G.tel.downs++; say('DOWN. F to self-revive with medical.');
   }
+}
+// DESTRUCTIBLE ENVIRONMENT, v2.83. His note: "environment should be
+// destructible -- walls, cars, etc -- everything should have HP and get
+// destroyed if it takes enough damage." Movement reads map.walls, sight and
+// bullets read map.segs, and routing reads the nav grid, so destroying a wall
+// is the door-unlock operation generalised: take the rect out and rebuild what
+// derives from it. HP is lazy, stamped on first damage, and scales by material:
+// glass breaks to a burst, furniture to a magazine, a wreck or tree to
+// sustained fire or one charge, a building wall wants charges, terrain takes a
+// demolition's worth. The world border, locked-room shells, keyed doors and
+// ledges are never destructible: the first is the map's edge, the middle two
+// are gated content whose gate is the point, and ledges are terrain.
+function wallHp(w){
+  if(w.noDes||w.lockWall||w.door||w.ledge) return null;
+  if(w.win) return 25;
+  if(w.furn) return 60;
+  if(w.tree) return 120;
+  if(w.wreck||w.ruin) return 150;
+  if(w._bw) return 320;
+  return 700;
+}
+// One rebuild for everything derived from walls, shared with the keyed door.
+// Fixes two latent faults the door's inline version carried: its seg rebuild
+// forgot the window skip, so opening a door re-sealed every window on the map,
+// and it never rebuilt the ray grid or the wall grid, so bullets kept dying on
+// the ghost of a wall that no longer existed.
+function rebuildGeometry(){
+  var walls=G.map.walls, segs=[];
+  for(var i=0;i<walls.length;i++){ var w2=walls[i];
+    if(w2.win) continue;
+    segs.push({x1:w2.x,y1:w2.y,x2:w2.x+w2.w,y2:w2.y});
+    segs.push({x1:w2.x+w2.w,y1:w2.y,x2:w2.x+w2.w,y2:w2.y+w2.h});
+    segs.push({x1:w2.x+w2.w,y1:w2.y+w2.h,x2:w2.x,y2:w2.y+w2.h});
+    segs.push({x1:w2.x,y1:w2.y+w2.h,x2:w2.x,y2:w2.y});
+  }
+  G.map.segs=segs;
+  G.grid=buildSegGrid(segs,WORLD_W,WORLD_H);
+  G.wgrid=buildWallGrid(walls,WORLD_W,WORLD_H);
+  G.map.nav=buildNav(walls);
+  refreshVseg();
+}
+function damageWall(w,amt,x,y){
+  if(CFG.destruct===0) return false;
+  var cap=wallHp(w);
+  if(cap===null) return false;
+  if(w.hpLeft===undefined) w.hpLeft=cap;
+  w.hpLeft-=amt;
+  if(w.hpLeft>0) return false;
+  var ix=G.map.walls.indexOf(w);
+  if(ix>=0) G.map.walls.splice(ix,1);
+  rebuildGeometry();
+  decal(x!==undefined?x:w.x+w.w/2, y!==undefined?y:w.y+w.h/2,'#1a1512',rnd(14,24));
+  spark(x!==undefined?x:w.x+w.w/2, y!==undefined?y:w.y+w.h/2,'#c9b490',18,260);
+  if(!G.sim){ blip('clank'); G.shake=Math.max(G.shake,3); }
+  if(G.tel) G.tel.wallsDown=(G.tel.wallsDown||0)+1;
+  return true;
 }
 function fireWeapon(sh,wep,tx,ty,fromPlayer){
   var spx=wep.spread*(fromPlayer&&G.player.ads?0.4:1);
@@ -7682,14 +7753,7 @@ function updatePlayer(dt){
       doorNear.open=true;
       for(var dw=G.map.walls.length-1;dw>=0;dw--)
         if(G.map.walls[dw].door===doorNear.id) G.map.walls.splice(dw,1);
-      G.map.segs=[];
-      for(var sg=0;sg<G.map.walls.length;sg++){ var sw=G.map.walls[sg];
-        G.map.segs.push({x1:sw.x,y1:sw.y,x2:sw.x+sw.w,y2:sw.y});
-        G.map.segs.push({x1:sw.x+sw.w,y1:sw.y,x2:sw.x+sw.w,y2:sw.y+sw.h});
-        G.map.segs.push({x1:sw.x+sw.w,y1:sw.y+sw.h,x2:sw.x,y2:sw.y+sw.h});
-        G.map.segs.push({x1:sw.x,y1:sw.y+sw.h,x2:sw.x,y2:sw.y});
-      }
-      G.map.nav=buildNav(G.map.walls);
+      rebuildGeometry();   // shared with destruction, v2.83; fixes the window re-seal and the ghost-wall ray grid
       G.tel.doorsOpened=(G.tel.doorsOpened||0)+1;
       say(doorNear.name+' is open.'); blip('pick'); ping(p.x,p.y,340,false,false,'player','move');
     }
@@ -9149,6 +9213,20 @@ function updateBullets(dt){
       for(var s=1;s<=steps&&!hit;s++){
         var dd=lim*s/steps;
         b.x=sx+ux*dd; b.y=sy+uy*dd;
+        // GLASS TAKES PASS-THROUGH DAMAGE, v2.83. A window has no segments by
+        // design, v2.51, so a round flies through it and the wall-impact branch
+        // below can never touch it; without this clause glass was the one
+        // material in the game that bullets could not break. The round damages
+        // the pane it crosses and KEEPS FLYING, once per pane per round.
+        if(CFG.destruct!==0){
+          var _gwL=wallsNear(G.wgrid,b.x,b.y,2);
+          for(var _gwI=0;_gwI<_gwL.length;_gwI++){
+            var _gw=_gwL[_gwI];
+            if(_gw.win&&b._win!==_gw&&b.x>=_gw.x&&b.x<=_gw.x+_gw.w&&b.y>=_gw.y&&b.y<=_gw.y+_gw.h){
+              b._win=_gw; damageWall(_gw,b.dmg,b.x,b.y); break;
+            }
+          }
+        }
         if(b.player){
           for(var e2=0;e2<G.ents.length;e2++){
             var en=G.ents[e2];
@@ -9254,6 +9332,15 @@ function updateBullets(dt){
       }
       if(!hit&&wallT<trav){
         b.x=sx+ux*wallT; b.y=sy+uy*wallT;
+        // The round that dies on a wall damages it, whoever fired it: machines
+        // can breach cover too, which is half of what makes cover a resource.
+        var _dwL=wallsNear(G.wgrid,b.x,b.y,3);
+        for(var _dwI=0;_dwI<_dwL.length;_dwI++){
+          var _dw=_dwL[_dwI];
+          if(b.x>=_dw.x-3&&b.x<=_dw.x+_dw.w+3&&b.y>=_dw.y-3&&b.y<=_dw.y+_dw.h+3){
+            damageWall(_dw,b.dmg,b.x,b.y); break;
+          }
+        }
         spark(b.x,b.y,'#ffd9a0',5,150);
         if(!G.sim) G.puffs.push({x:b.x,y:b.y,t:0,life:.22,c:'#8a939c',r:9});
         decal(b.x,b.y,'#0d0f13',rnd(3,6));
@@ -9488,7 +9575,7 @@ function endRaid(how){
       dials:'hot'+(CFG.healOverTime===0?0:1)+' feud'+(CFG.raiderFeud===0?0:1)
         +' reach'+(CFG.simReach===0?0:1)+' win'+(CFG.windows===0?0:1)
         +' rheal'+(CFG.simRetreatHeal?1:0)+' eng'+(CFG.simEngage?1:0)
-        +' pip'+(CFG.simPip?1:0)+' greed'+CFG.simGreed};
+        +' pip'+(CFG.simPip?1:0)+' des'+(CFG.destruct===0?0:1)+' greed'+CFG.simGreed};
     return;
   }
 

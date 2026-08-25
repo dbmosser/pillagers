@@ -7408,6 +7408,62 @@ of exports/, so the outcome flow's export leg ran only to its P.log write; the
 export itself is the most exercised path in the project and was not re-proven
 here.
 
+### v2.83: the world breaks
+
+His note, 2026-08-25: "environment should be destructible -- walls, cars, etc --
+everything should have HP and get destroyed if it takes enough damage." Also this
+build: the extract ending of the first-session walk closed green, items banked to
+the stash, the log stamped, the hub returned, so the whole friend-facing loop was
+walked before the world learned to break.
+
+THE ARCHITECTURE MADE IT THE DOOR-UNLOCK OPERATION, GENERALISED. Movement reads
+map.walls, sight and bullets read map.segs, routing reads the nav grid; the keyed
+door already removed a wall mid-raid and rebuilt what derives from it. So a wall
+with zero HP dies the way an opened door does: out of the array, geometry
+rebuilt, debris on the floor. HP is stamped lazily on first damage and scales by
+material: glass 25, furniture 60, a tree 120, a wreck or ruin 150, a building
+wall 320, authored terrain 700. Bullets damage the wall they die on, WHOEVER
+fired them, machines included, which is half of what makes cover a resource now.
+A frag charge deals 200 at its centre falling to 40 at the edge, so one charge
+breaks glass, furniture, wrecks and trees outright and leaves a building wall
+more than half gone; two charges open a building, which is what "takes enough
+damage" means for masonry. Never destructible: the world border, locked-room
+shells, keyed doors, ledges. CFG.destruct is the dial, default on because this
+is his design request, and it joins the v2.63 fingerprint as 'des'.
+
+GLASS NEEDED ITS OWN PHYSICS, found when the first probe could not shoot a
+window out: a window has no segments by design since v2.51, so rounds pass
+through and the wall-impact branch can never touch it. Glass was briefly the one
+material bullets could not break. A round crossing a pane now damages it in
+transit and KEEPS FLYING, once per pane per round, so the third SMG round breaks
+the window and the hole becomes a doorway.
+
+THE SHARED REBUILD FIXED TWO LATENT DOOR BUGS IN PASSING. The keyed door's
+inline rebuild forgot the window skip, so opening any locked door RE-SEALED
+every window on the map into a solid; and it never rebuilt the ray or wall
+grids, so bullets kept dying on the ghost of the removed door. Both paths now
+run rebuildGeometry(), one function, one truth.
+
+Verified with real bullets on live raids: furniture dead in six rounds with the
+wall count down one and the telemetry counting it; line of sight OPEN through
+the hole; the border surviving forty rounds of 50; a locked-room shell likewise;
+a 320-HP building wall down in seven rounds of 50; destruct 0 refusing all of
+it; a window dead in exactly three SMG rounds with its hole walkable; and after
+all the carnage, 120 frames of raid driving and drawing clean. Parsecheck PASS
+at v2.83, all four maps and the hub drive and draw clean, WHATSNEW updated with
+its version bumped, the itch zip rebuilt at v2.83.
+
+Not verified: balance, and this one is LARGE. Destruction changes cover, which
+v2.43 proved is where raids are decided; the 320-seed A/B on destruct exists as
+one __pairedBg call and has not been run, and until it has, the extract-rate
+consequences of a breakable world are unknown. Also not verified: nav rebuild
+cost under sustained demolition, one buildNav per destroyed wall, fine for
+gunfire cadence and untested against a player who chains charges. Also: one
+probed window's hole still ejected a body because a coincident twin wall run
+stood behind the pane, which is correct behaviour where real geometry remains,
+and cosmetically a destroyed wall's baked contact shadow may linger on the
+ground until the next raid.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
