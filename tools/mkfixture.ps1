@@ -168,6 +168,21 @@ window.__weapons=function(){ return WEAPONS; };
 // fixture blocks AudioContext, so calling it here stays silent by construction.
 window.__lootVoice=function(keys){ return lootVoice(keys); };
 window.__feudFoe=function(a,b){ return feudFoe(a,b); };
+// Water membership, for diagnostics. A v2.66 probe silently measured zero wading
+// on the wettest map because inWater lives inside the IIFE and typeof from page
+// scope read undefined; a hook makes that failure impossible to repeat.
+window.__water={at:inWater};
+// And a sim raid that can be STEPPED from outside, so a diagnostic can sample
+// state mid-raid while keeping sim semantics. __simSeedsFull owns the batch case;
+// this owns the instrumented-single-raid case that keeps getting hand-rolled
+// wrongly against live raids.
+window.__simRaidBegin=function(seed){ pendSeed=seed>>>0; G=null; G=buildRaid(true); return true; };
+window.__simRaidStep=function(dt){ if(!G||G.over) return false; simStep(dt||0.15); return !G.over; };
+window.__simRaidEnd=function(){
+  if(!G) return null;
+  if(!G.over){ G.tel.deathKiller='probe'; endRaid('dead'); }
+  var r=G.simResult; G=null; return r;
+};
 // BACKGROUNDED PAIRED BATCH, v2.60. Every 320-seed comparison this cycle was run
 // by hand-rolling the same MessageChannel loop into the console, five times, with
 // the same mistakes available every time (setTimeout throttling, forgetting to

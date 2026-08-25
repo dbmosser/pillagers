@@ -6745,6 +6745,53 @@ and weather variants, and a vertical window, since the captured one is
 horizontal; each is one more capture if doubt ever arises. Also unchanged from
 v2.51: no crouching below sills, which is a design question and his.
 
+### v2.66: DAM raids run long because some of them are half swum, and a broken probe owned
+
+Fixture hooks only, no game logic changed. Three loose ends closed, one of them
+mine.
+
+THE BROKEN PROBE FIRST. The first pass at DAM's 243-second raids reported zero
+wading on the wettest map in the game, and the zero was my instrument: inWater
+lives inside the IIFE, the probe ran in page scope, typeof read undefined and the
+sampler silently counted nothing. The same probe also drove LIVE raids with
+__startRaid and compared their durations against sim-raid figures, which is not a
+comparison at all. Both faults are now structural rather than repeatable: the
+fixture exposes __water.at, and __simRaidBegin / __simRaidStep / __simRaidEnd give
+diagnostics a steppable SIM raid with real sim semantics, which is the thing four
+probes this week hand-rolled against live raids by mistake.
+
+THE ANSWER, MEASURED WITH THE FIXED INSTRUMENT. Twelve sim raids per map on the
+duration extremes, sampling water membership each second:
+
+    DAM     mean 14.7 percent of raid time in water, extremes 0 to 59.5
+    QUARRY  mean  2.1 percent
+
+AND THE SHAPE MATTERS MORE THAN THE MEAN. DAM's per-raid figures are bimodal:
+five raids of twelve never touch water, five spend a quarter to a third of the
+raid in it, one spends SIX MINUTES OF TEN swimming. The seed decides whether the
+loot route crosses the flood, and a bot that routes wet pays 0.34 speed on
+every wet step. That is where DAM's long tail of slow raids comes from, and it is
+the map working as authored, the flood is DAM's identity the way the aisles are
+COLD's.
+
+THE WINDOW PALETTE ADDENDUM, closing v2.65's remaining caveat: the same capture
+pass was run on the other three maps. DAM's grey-blue, COLD's mixed block and
+QUARRY's rain-washed yard all show the glass band reading as a window against
+their own palettes, and the DAM and QUARRY frames both catch the vision fan
+exiting through a pane onto the ground beyond, which is the feature drawn as one
+picture. tools/shots/window_dam.png, window_cold.png, window_quarry.png.
+
+Verified: parsecheck PASS at v2.66, all four maps and the hub drive and draw
+clean, __water.at returns true over DAM flood tiles by construction of the
+measurement itself, and the steppable sim raid produces sim-typical durations,
+205 and 194 second means, where the live-raid mistake had produced 447.
+
+Not verified: the wading share against the survey's full 120-seed duration gap,
+since twelve instrumented raids are a bearing rather than a coordinate; the
+bimodal shape is the finding and it is visible at this n. Also not verified:
+whether a 59.5 percent swum raid is fun, which is his kind of question, and the
+map's wet routes are his authorship.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
