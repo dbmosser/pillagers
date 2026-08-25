@@ -2982,6 +2982,68 @@ Also not verified on the other three maps; container density changes how often t
 bag threshold beats the ammo threshold, so the one-in-six figure is specific to
 THE QUARRY.
 
+### v2.04: the pistol goes back in the holster, and the vein is exhausted
+
+v2.03 taught the bot to draw its sidearm when the primary ran dry, and I flagged
+the asymmetry it created in the same entry: it drew the pistol and stayed on it
+forever, so a bot that later picked up an ammo box kept fighting with a Scav
+Pistol while its rifle sat holstered behind a full reserve. Smaller than the hole
+it replaced, same shape. This closes it.
+
+Both rules are guarded against chasing each other. It swaps back only when the gun
+in hand is EMPTY, so it never interrupts a burst, and only when the holstered gun
+is a higher tier, so the two conditions cannot alternate.
+
+The oscillation risk was the thing most likely to be wrong, so it was tested
+before anything else, by forcing the scenario rather than hoping to meet it:
+
+    start            Kettle, 28 in the magazine, 56 reserve
+    forced dry       PISTOL, 12 rounds, 0 reserve
+    ammo found       KETTLE again, reloading, 60 reserve
+    400 more steps   Kettle, 11 rounds, zero further swaps
+
+MY FIRST THRASH TEST WAS WORTHLESS AND I CAUGHT IT. Six full raids produced zero
+weapon changes, so "no thrash" was vacuous: the dry condition never fired in any
+of them, which is consistent with v2.03 measuring that it binds on about one raid
+in six. A test that cannot observe the thing it is testing proves nothing, and it
+looked like a pass.
+
+Measured, 120 seeds an arm:
+
+                  extract   duration   shots   haul
+    one way        22.5%      182s     123.7   8,078
+    both ways      23.3%      181s     124.6   8,097
+
+118 of 120 seeds come back BYTE IDENTICAL. Two are touched, one flips to extract,
+none flip to dead. It is the smallest effect of the whole series, and it should
+be: swapping back requires going fully dry, THEN finding ammo, THEN surviving long
+enough for the better gun to matter, which is a rare compound condition.
+
+Correct, non-harmful, and nearly inert. All three are worth saying.
+
+AND THE VEIN IS EXHAUSTED. Six sim divergences have now been found and fixed, and
+their measured impact is a clean descending sequence:
+
+    crouch, v1.80 and v1.82        +26 points of extract rate
+    water, v2.00                   -4.1 on the map it affects, and a real tilt
+    footstep rate, v2.01           +5.0, not significant
+    sidearm, v2.03                 +1.7, one raid in six
+    swap back, v2.04               +0.8, two raids in 120
+    loot noise, v2.02               0.0, nothing at all
+
+The guard sweep at v2.02 already established there is nothing structural left: 86
+of 97 guards verified correct by design. The remaining finds are real defects with
+no measurable consequence, which is the signal to stop mining here. Fidelity work
+on the sim has stopped paying, and the open questions worth money now are the ones
+I keep handing back to him: crate contents, the peddler rate, and verticality.
+
+Not verified: whether the swap-back tier test is the right predicate. It compares
+WTIER, so a bot holding a Pristine pistol and a Worn rifle of higher tier will
+holster the better-conditioned gun for the better-tiered one. Quality is tracked
+separately in qRank and is not consulted here, which is the same class of omission
+this entry is fixing, just one level down. It affects nobody at 118 of 120 seeds
+identical, but it is wrong in the same way.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
