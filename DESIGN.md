@@ -3776,6 +3776,86 @@ this arm had simCrouch 0, so a sentry gets a cleaner shot at it than at a person
 who is actively breaking line of sight. The RANKING should survive that; the
 absolute rates should not be read as difficulty for him.
 
+### v2.15: the camp guards never scaled with the ground, and four more hypotheses died on the way
+
+v2.14 narrowed the thirty-build-old map spread question from "why are some maps
+harder" to "why is the sentry more effective on some maps". This build eliminates
+four candidate answers with numbers and finds one real defect underneath them.
+
+FOUR HYPOTHESES, ALL DEAD, ALL RECORDED SO NOBODY RUNS THEM AGAIN.
+
+  1. ENEMY DENSITY. Already normalised: den=clamp(AREA/4.0,0.45,1.6) exists
+     precisely because COLD STORAGE was accidentally denser, and it works. Total
+     bodies per million square units come out 3.85, 3.83, 3.99 and 3.99. Flat.
+  2. SIGHT LINE LENGTH. 900 rays a map from random open ground, marched to first
+     wall. Mean open line: THE QUARRY 174, COLD STORAGE 213, DAM 224, BURIED CITY
+     263. The ranking is not difficulty's ranking and is not even close: the map
+     with the SHORTEST lines and the map with the LONGEST are the two EASIEST.
+     Percent of rays reaching a sentry's 340 range says the same, 13.1 to 25.1.
+  3. DISTANCE FROM DROP TO A WAY OUT. 40 seeds a map: BURIED CITY 1583, THE
+     QUARRY 1457, COLD STORAGE 1284, DAM 1168. Backwards. The two EASY maps make
+     you walk furthest. A single-seed probe had said COLD STORAGE was 1856 and I
+     nearly reported that; forty seeds put it at 1284 and killed it.
+  4. WATER. DAM BATTLEGROUNDS is 21.9 percent wet by walkable ground, against THE
+     QUARRY 8.3, COLD STORAGE 2.1 and BURIED CITY 0. That is a real and large
+     difference and it plausibly explains the DAM, where a quarter of the ground
+     cuts you to a third speed and raises your noise. It cannot explain COLD
+     STORAGE, which is almost dry and is the hardest map in the game.
+
+Also discarded before it reached a report: a concealment probe that returned
+"100 percent of walkable ground concealed" on all four maps, which is nonsense
+and means I called the wrong function. Not reported as a finding.
+
+WHAT WAS ACTUALLY WRONG. Every map spawns exactly four sentries and four crawlers
+MORE than config times den. Raiders and snitches match their predictions exactly.
+A constant offset, not a scaling error, and it is the camps: two per raid, each
+running two iterations that push one sentry and one crawler, flat, regardless of
+how big the map is.
+
+That is the identical bug v1.85 fixed everywhere else, in its own words: "the
+counts in CFG are flat, so they were really this many bodies per map rather than
+per acre". The patrol spawn was fixed. The guard detail was missed.
+
+    sentries per million square units, with the flat detail included
+      DAM 1.154   BURIED CITY 1.134   COLD STORAGE 1.261   THE QUARRY 1.208
+
+The smallest map carries 11 percent more sentries per acre than the largest,
+entirely because of a constant, and it is the map with the lowest extract rate in
+the game.
+
+Scaling the detail by den changes exactly ONE map at the current four sizes,
+because the other three round back to 2. COLD STORAGE goes from 2 guards a camp
+to 1, its sentries from 18 to 16, and its density from 1.261 to 1.120, which makes
+it the LEAST dense map rather than the most. Both camps survive with all four
+safes and their tether, so an encampment is still a defended position. Verified:
+DAM, BURIED CITY and THE QUARRY are byte identical across the dial.
+
+Measured on COLD STORAGE, 120 seeds an arm, everything else pinned:
+
+                     extract   died to enemy   clock   containers   haul
+    flat detail       6.7%        87.5%         5.8%     27.6      16,286
+    scaled detail    11.7%        87.5%         0.8%     28.8      17,161
+
+Plus 5.0 points, 12 seeds flip to extract against 6 to dead. campNorm 0 restores
+the flat detail.
+
+AND I AM NOT CALLING THAT SIGNIFICANT. Eighteen discordant pairs split 12 to 6 is
+a McNemar z of about 1.41, which is p around 0.16. It is the right direction, it
+is the size you would predict from an 11 percent density cut, and it does not
+clear the bar on its own. The pairing is also weak here for the same reason
+v1.86's lootNorm was: removing two bodies changes the number of random draws, so
+zero of 120 seeds come back identical and these are not the same raids. The
+correctness argument is what carries this change, not the five points.
+
+Not verified: whether COLD STORAGE is still an outlier once the constant is gone.
+Its density is now the lowest of the four and its extract rate is still 11.7
+against 21.7 and 22.5 on the two easy maps, so most of the gap survives and the
+original question is only partly answered. Also not verified: whether two camps
+per raid should itself scale. I left the camp COUNT flat because "two per raid" is
+stated design and the safes are the point of them, but the same argument that
+makes the guards population makes the camps population, and I did not want to
+change the number of set pieces on a map without him saying so.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

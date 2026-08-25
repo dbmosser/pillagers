@@ -421,7 +421,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.14';
+var VER='2.15';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -452,7 +452,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -5270,9 +5270,26 @@ function buildRaid(sim){
     }
     if(ssp) ents.push(mkStray(ssp.x,ssp.y));
   }
+  // THE GUARD DETAIL NEVER SCALED WITH THE GROUND, v2.15. v1.85 established the
+  // rule and the reason: "the counts in CFG are flat, so they were really this
+  // many bodies per map rather than per acre", and COLD STORAGE being 31 percent
+  // smaller made it denser purely by accident. That fix went into nOf and every
+  // patrol body follows it. The camps were missed, and they are population too:
+  // two camps times two iterations is a FLAT four sentries and four crawlers on
+  // every map regardless of its size.
+  // Measured, sentries per million square units, with the flat detail included:
+  //   DAM 1.154   BURIED CITY 1.134   COLD STORAGE 1.261   THE QUARRY 1.208
+  // So the smallest map carries 11 percent more sentries per acre than the
+  // largest, entirely because of this constant, and it is also the map with the
+  // lowest extract rate in the game at 6.7 percent.
+  // Scaling by den changes only COLD STORAGE at the current four sizes, 2 guards
+  // to 1, because every other map rounds back to 2. The camp keeps all four
+  // safes and its tether, so it is still a defended position rather than free
+  // money. campNorm 0 restores the flat detail.
+  var GPC=(CFG.campNorm===0)?2:Math.max(1,Math.round(2*den));
   for(var gc=0;gc<camps.length;gc++){
     var CP=camps[gc];
-    for(var gi=0;gi<2;gi++){
+    for(var gi=0;gi<GPC;gi++){
       var gs=mkSentry(CP.x+rnd(-140,140),CP.y+rnd(-140,140)); gs.camp=CP; ents.push(gs);
       var gcw=mkCrawler(CP.x+rnd(-120,120),CP.y+rnd(-120,120)); gcw.camp=CP; ents.push(gcw);
     }
