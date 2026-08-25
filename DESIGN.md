@@ -3562,6 +3562,88 @@ as fast. And one honest limitation of the whole series: every tier here is the
 Compact SMG, which v1.57 already flagged as a trap purchase, so the absolute rates
 belong to that gun and only the SHAPE of the curve should be read as general.
 
+### v2.12: the map was showing you ten containers you could never open, and almost every alarm on the way here was false
+
+v2.10 closed with an open question I wrote myself: 2.1 percent of sampled points
+had no route, and I did not know whether they SHOULD. This answers it. The answer
+is mostly yes, and the honest part of this entry is how many wrong turns it took
+to get there.
+
+WHAT WAS ACTUALLY WRONG, and it is small. Placement asks freeSpot whether a point
+is clear of walls. That is not the same question as whether a body can GET there,
+and nothing anywhere asked the second one. Across 20 maps and 3,810 containers
+that are not deliberately sealed:
+
+    sealed by navPath                      59
+      of which inside a locked room        49   keyed, by design
+      of which in a camp                    0
+      GENUINELY STRANDED                   10   0.26 percent
+
+Ten containers across twenty maps, about one every second raid. Each one renders,
+carries loot, and shows its rarity pip, so it is loot the game draws on the map
+and never lets you have. Now zero: one flood fill over the nav grid the map
+already builds, from the drop, cached, then a single sweep that relocates anything
+stranded. cacheReach 0 restores the old behaviour.
+
+FOUR FALSE ALARMS, IN ORDER, BECAUSE THE PATTERN IS THE POINT.
+
+  1. I measured 4.1 to 5.7 percent of containers unreachable on every map and
+     nearly reported a general placement failure. Most of it was locked rooms.
+  2. I found 70.5 percent of CACHES sealed, which looked damning, and it is
+     because caches are the container type that locked rooms are stocked with.
+     120 of 120 locked room caches read sealed, correctly, because the door is
+     shut. v1.75 already guarantees every locked door gets a key.
+  3. Stripping those out left 26.3 percent of ARC caches sealed, the ones with a
+     comment above them reading "a jackpot you never find is the same as no
+     jackpot". So I fixed placeCache. IT FIXED NOTHING. Broken down by tag,
+     placeCache's own caches are 0 of 60 sealed and were never the problem: every
+     single sealed one was the ARC STRONGBOX, 20 of 20, which is placed inside a
+     locked room ON PURPOSE as its first choice. I shipped a guard on a site with
+     a zero percent failure rate and had to take it back out.
+  4. Before all of that, my collide-based flood fill reported the entire map
+     walkable, 211,600 cells of 211,600. collide is an EJECTOR: it mutates the
+     point and returns nothing, so my boolean test was always false. Same family
+     as measuring collision ejection as locomotion earlier in this series.
+
+Only after the fourth correction did two independent instruments agree: navPath
+and a body scale flood fill returned the same 8 containers on the test seed, with
+zero disagreement in either direction, against 75.3 percent of the map walkable
+and 25.3 percent blocked. That agreement is the only reason I trust the ten.
+
+WHAT THE SWEEP DELIBERATELY DOES NOT TOUCH. My first version moved everything it
+found, including 49 ordinary crates and lockers that had spawned inside a locked
+room. They are unreachable for exactly as long as the door is, which is the point
+of the door, and relocating them would have quietly deleted part of the reward for
+spending a key. The sweep now skips anything inside a locked room rectangle, the
+flagged locked room caches, and the strongbox. Verified: 49 still inside, 120
+locked room caches untouched, strongbox still 20 of 20 sealed.
+
+Cost is nothing. Build 377.0ms per map before, 362.6 after, which is noise around
+a fill of 81,250 cells. Container count is identical at 3,810 and no container
+lost its loot or its pip.
+
+Outcomes, 120 seeds an arm, THE QUARRY, everything pinned:
+
+              extract   dur   shots   containers   haul
+    off         7.5%    252   142.4     22.9      11,646
+    on          9.2%    253   140.5     22.7      11,233
+
+107 of 120 byte identical, 118 same outcome, 2 flip to extract and ZERO to dead.
+The 1.7 points is noise at this n and I am not claiming it. Zero flips to dead is
+the part worth having: a placement fix should never cost a raid, and it does not.
+
+Not verified: whether the ten stranded containers were reachable by the PLAYER
+rather than by a body. Both instruments model a body of radius 11 pathing on foot,
+and the player is that body, but the player can also be pushed by an explosion,
+which no instrument here accounts for. Also not verified: whether relocating is
+better than deleting. A stranded crate becomes an ordinary crate somewhere else,
+which very slightly raises open ground loot density, and at ten containers across
+twenty maps I cannot measure the difference between that and simply removing them.
+And one thing I did NOT investigate: the ARC STRONGBOX being behind a locked door
+every single raid on every map. That is what the code asks for and it may well be
+intended, but it means the vault moment the design talks about is gated on finding
+a key first, and nothing in the design notes says that out loud.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
