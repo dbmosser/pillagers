@@ -218,8 +218,8 @@ A run of quiet ticks with no new data produced these. Each was measured, not ass
 
 ## 13. What is waiting on Daniel
 - **RESOLVED, and it was resolved by him in run #5 (closed v2.30).** This asked what the dropship should do if you are bleeding out inside the ring when it lands, and said the countdown freezes while you are down. Both halves are now out of date. His own run #5 note answered the question: "player should be able to use the beacon and extract while downed". It was built, and the code cites that note. Re-measured on the current build rather than trusted: the beacon TICKS while downed, 10.0 down to 7.0 across three seconds, against the 0.00 in 4.8 this entry recorded; a downed operator can CALL a ring, beacon reaching 22.6 with E held; and all four boarding combinations behave, standing with E extracts, standing without E does not, DOWNED WITH E EXTRACTS, downed without E does not. So a downed player boards by pulling, exactly like anyone else. This entry sat here for thirty builds describing a question that had been answered and a behaviour that had been changed, which is the specific way a stale open-question list wastes his attention and mine.
-- **One good raid buys anything in the shop (measured v0.80, nothing changed).** A raid where the bag comes back full is worth 4,400 to 5,000 credits. The most expensive thing in the shop is the Marksman Rifle at 4,500, and everything else is cheaper. Reputation gates still pace unlocks, but credits stop being a constraint almost immediately. This is not something the map change caused; it measures the same on the old map size. Whether that matters is a design call.
-- **The backpack decides raid length, not the clock.** He asked for at least ten minutes to extract and has it, but a bot looting to its carry limit fills up and leaves after about two and a half minutes. The remaining seven are only useful for swapping held items for better ones. If a raid is meant to be a ten minute commitment, carry weight is the lever, not the timer.
+- **One good raid buys anything in the shop (v0.80 claim, RE-MEASURED v2.32, still true and now by a wider margin).** The v0.80 numbers are all stale and are kept here only so the drift is visible: it said a full bag is worth 4,400 to 5,000 credits and that the dearest item is the Marksman Rifle at 4,500. Current, 120 seeds on BURIED CITY at the default simGreed 52: an EXTRACTED raid banks a mean of 11,338 and a median of 10,885, never less than 5,687. The dearest item is now the Breacher Plate at 7,800, not the DMR, and buying literally everything in the shop costs 26,570. His own eighteen recorded runs are the honest counterweight: five extracted, mean 6,300, best 11,500, so one good raid of HIS does not quite cover the Breacher and two do. Either way the conclusion holds and has got stronger, and his profile is the proof: 13,085 credits banked, nothing bought, still wearing No Rig. Reputation gates still pace unlocks, but credits stop being a constraint almost immediately. This is not something the map change caused; it measures the same on the old map size. Whether that matters is a design call.
+- **The clock decides almost nothing, but the backpack no longer decides anything either (RE-MEASURED v2.32, and the mechanism named here is now wrong).** The shape of the finding survives: 120 seeds at the default settings run a mean of 195 seconds and a median of 201 against a 600 second clock, and exactly ONE raid in 120 uses the full ten minutes. So the seven spare minutes he asked for are still spare. But the cause named above is gone. PACKCAP has been [99999,99999,99999] since 2026-08-22, at his own request for unlimited carry, so there is no carry limit to fill up and A HUMAN PLAYER IS NEVER PUSHED OUT BY HIS BAG AT ALL. What ends a bot raid now is simGreed, a bag WEIGHT threshold of 52 that exists only in the sim, so this entry was describing a measurement dial as if it were the game. The open question is real and unchanged in substance: if a raid is meant to be a ten minute commitment, nothing currently makes it one. Carry weight is no longer available as the lever, because he already spent it.
 - **RESOLVED at v0.90, by him (closed v2.31).** This asked whether machines should walk around cover to reach you and said route finding was "deliberately not" wired into combat chasing. False: the chase branch calls navSeek at the player in five places, and measured over ten raids, 1,920 of 4,961 chase ticks carry a routed path, 38.7 percent, routes up to seven waypoints. v0.90's note records the decision: "Chase now routes around cover instead of clipping corners, because he approved letting them hunt." Answered by him and built forty builds before this entry was read again. ORIGINAL TEXT: **Should machines be able to walk around cover to reach you? (v0.72)** The game now has real route finding, and it is wired into looting, investigating and extraction but deliberately not into combat chasing. Switching chasing on would make sentries, crawlers and raiders pursue you around buildings instead of snagging on the corner. That is a straight difficulty increase and cuts against "the player is too fragile", which is why it is parked rather than shipped. One line either way settles it.
 - **Extraction rings land inside a building about one time in eight (v0.71).** Measured 0 of 120 rings meaningfully obstructed, so they always work; it just means sometimes you extract from indoors. Cosmetic, and his call whether to push them into the open.
 Three things, none of which should be built without him saying so.
@@ -4901,6 +4901,66 @@ remaining three section 13 entries, two of which I can already see are stale. Th
 shop one says the dearest item is the Marksman Rifle at 4,500 when the Breacher
 Plate is 7,800, and the backpack one describes a carry limit that PACKCAP made
 unlimited on 2026-08-22 at his request.
+
+### v2.32: the last two stale entries in section 13, re-measured
+
+No game logic changed. v2.30 and v2.31 each found a section 13 entry asking a
+question he had already answered. The two remaining measured entries were quoting
+v0.80 figures, so this re-measures both. Neither turns out to be an answered
+question; both turn out to have the wrong numbers, and one has the wrong mechanism.
+
+THE SHOP ENTRY. It said a full bag is worth 4,400 to 5,000 credits and the dearest
+item is the Marksman Rifle at 4,500. Current, 120 seeds on BURIED CITY at the
+DEFAULT simGreed of 52 rather than the 20,000 my recent arms have been pinning:
+
+    all 120 raids       mean 9,028   median 9,632   range 76 to 23,703
+    extracted only      mean 11,338  median 10,885  never below 5,687   25 of 120
+    extract rate        20.8 percent
+
+And the shop has moved further than the haul did. The dearest item is the Breacher
+Plate at 7,800, which did not exist when this was written; the DMR at 4,500 is
+second. Everything in the shop together is 26,570, and the highest reputation gate
+is 5,000.
+
+So the entry's CONCLUSION survives and is stronger than when written: one extracted
+raid banks a mean 11,338 against a dearest item of 7,800. His own eighteen recorded
+runs are the honest counterweight, because the bot is not him: five extracted, mean
+6,300, best 11,500, so one good raid of his does not quite cover the Breacher and
+two do. Either way his profile settles it. He is carrying 13,085 credits, has
+bought nothing, and is still wearing No Rig. Credits are not his constraint.
+
+THE BACKPACK ENTRY, WHERE THE MECHANISM IS NOW WRONG. It said a bot looting to its
+carry limit fills up and leaves after about two and a half minutes, so the last
+seven of the ten he asked for are spare. The shape holds:
+
+    duration, 120 raids   mean 195s   median 201s   against a 600s clock
+    ran the full clock    1 of 120
+    finished under 150s   37 of 120
+
+One raid in a hundred and twenty uses the ten minutes. But the cause named in the
+entry no longer exists. PACKCAP has been [99999,99999,99999] since 2026-08-22, at
+his own request for unlimited carry, so there is no carry limit to fill. What ends
+a bot raid is simGreed, a bag weight threshold of 52 that exists ONLY in the sim.
+The entry was describing a measurement dial as though it were the game.
+
+The consequence is worth stating plainly because it is not what the entry implies:
+A HUMAN PLAYER IS NEVER PUSHED OUT BY HIS BAG AT ALL. Nothing makes a raid a ten
+minute commitment, and carry weight is no longer available as the lever, because he
+already spent it on unlimited carry. The question stays open, with its answer space
+smaller than the entry claims.
+
+Both entries are updated in place with the measurements and the stale figures kept
+visible, rather than retired, because unlike the two before them these are still
+genuine open questions.
+
+Not verified: the haul numbers on the other three maps. Everything above is BURIED
+CITY, which v2.13 measured as one of the two EASY maps at 22.5 percent, so the 20.8
+percent extract rate and the 11,338 extracted haul are close to a best case. COLD
+STORAGE at 6.7 percent would bank far less per raid simply by extracting less
+often, and I have not run it. Also not verified: whether simGreed 52 is a fair
+stand-in for how he actually loots. It is the shipped default and therefore the
+right number to quote, but his five extracted runs averaged 6,300 against the sim's
+11,338, which is a gap wide enough that the two are not measuring the same player.
 
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
