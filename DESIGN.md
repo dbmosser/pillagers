@@ -6514,6 +6514,37 @@ actually reachable for him to judge. Also not verified: whether the elite fanfar
 overlapping a firefight is legible or lost; the voices were tuned for the quiet of
 looting and a strongbox cut under siege is not quiet.
 
+### v2.60: the paired batch becomes a fixture tool instead of a ritual
+
+Fixture only, no game logic changed. Five 320-seed comparisons ran this cycle, the
+stack, the heal isolation, the retreat dial, the windows null and the feud
+isolation, and every one was the same MessageChannel loop hand-typed into the
+console with the same mistakes on offer each time: setTimeout throttling in a
+hidden tab, dials left dirty after the batch, and the standing temptation to stop
+early the moment the split looks good.
+
+__pairedBg(seeds, dialsA, dialsB) is that loop, once. It runs both arms of every
+seed back to back so the pairing is exact, chunks with MessageChannel so a hidden
+tab cannot throttle it, restores every dial it touched when it finishes, and
+leaves progress on a window counter. __pairedPoll() reads progress while it runs
+and the full McNemar result when it is done: rates, the concordance table,
+discordant count, chi with continuity correction, and the exact two-sided p.
+
+Verified both directions on the live fixture: a null pair with identical dials
+returns zero discordant of four, which the deterministic sim guarantees, and an
+extreme pair, eHp 0.45 against 1.9, returns three of six discordant all in one
+direction with rates 50 against 0. CFG.eHp read 1 after both batches, so the
+restore works. Parsecheck PASS at v2.60 and all four maps and the hub drive and
+draw clean.
+
+Not verified: a full 320-seed batch through the new runner, since that is 25
+minutes to re-prove arithmetic already proven at small n and hand-proven five
+times at full n this cycle. The next real comparison will be its first full-scale
+run, and its numbers can be sanity-checked against the hand-rolled ones if the
+question overlaps. Also not stored: per-seed rows, which the hand-rolled loops
+also dropped; if a future question needs per-seed haul or killer under both arms,
+the runner needs a rows option it does not have.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

@@ -168,6 +168,58 @@ window.__weapons=function(){ return WEAPONS; };
 // fixture blocks AudioContext, so calling it here stays silent by construction.
 window.__lootVoice=function(keys){ return lootVoice(keys); };
 window.__feudFoe=function(a,b){ return feudFoe(a,b); };
+// BACKGROUNDED PAIRED BATCH, v2.60. Every 320-seed comparison this cycle was run
+// by hand-rolling the same MessageChannel loop into the console, five times, with
+// the same mistakes available every time (setTimeout throttling, forgetting to
+// restore dials, stopping early at a good-looking split). This is that loop, once,
+// with the McNemar arithmetic attached. Start it, poll __pairedPoll(), read the
+// result when done:true. MessageChannel and never setTimeout, because a hidden tab
+// throttles setTimeout to one callback a minute and these batches run unattended.
+window.__pairedBg=function(seeds,dialsA,dialsB){
+  var st={a:0,b:0,c:0,d:0,done:0,n:seeds.length,fin:false};
+  window.__PBG=st;
+  var save={},k;
+  for(k in dialsA) save[k]=CFG[k];
+  for(k in dialsB) if(!(k in save)) save[k]=CFG[k];
+  function step(){
+    var t0=Date.now();
+    while(st.done<st.n && Date.now()-t0<20000){
+      var s=seeds[st.done];
+      for(k in dialsA) CFG[k]=dialsA[k];
+      var ra=window.__simSeedsFull([s])[0];
+      for(k in dialsB) CFG[k]=dialsB[k];
+      var rb=window.__simSeedsFull([s])[0];
+      var xa=(ra.outcome==='extract')?1:0, xb=(rb.outcome==='extract')?1:0;
+      if(xa&&xb)st.a++; else if(xa&&!xb)st.b++; else if(!xa&&xb)st.c++; else st.d++;
+      st.done++;
+    }
+    if(st.done>=st.n){
+      for(k in save) CFG[k]=save[k];
+      st.fin=true;
+      return;
+    }
+    mc.port2.postMessage(0);
+  }
+  var mc=new MessageChannel();
+  mc.port1.onmessage=step;
+  mc.port2.postMessage(0);
+  return {started:true, n:st.n};
+};
+window.__pairedPoll=function(){
+  var st=window.__PBG;
+  if(!st) return {err:'no batch started'};
+  if(!st.fin) return {done:st.done, of:st.n, onlyA:st.b, onlyB:st.c, finished:false};
+  var n=st.n, b=st.b, c=st.c, disc=b+c;
+  var chi=disc>0?Math.pow(Math.abs(b-c)-1,2)/disc:0;
+  function lch(nn,kk){var s2=0;for(var i=0;i<kk;i++)s2+=Math.log(nn-i)-Math.log(i+1);return s2;}
+  var p=0,mn=Math.min(b,c);
+  if(disc>0){ for(var kk=0;kk<=mn;kk++) p+=Math.exp(lch(disc,kk)-disc*Math.log(2)); p=Math.min(1,2*p); }
+  else p=1;
+  return {finished:true, n:n,
+    rateA:+(100*(st.a+b)/n).toFixed(1), rateB:+(100*(st.a+c)/n).toFixed(1),
+    table:{both:st.a,onlyA:b,onlyB:c,neither:st.d},
+    discordant:disc, z:+Math.sqrt(chi).toFixed(2), exactTwoSidedP:+p.toFixed(5)};
+};
 window.__blip=function(t){ return blip(t); };
 // PAIRED ARMS AND THE TEST THAT GOES WITH THEM, v2.42. Two arms run over one seed
 // list are PAIRED, and comparing their extract rates as if they were independent
