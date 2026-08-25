@@ -177,6 +177,11 @@ window.__tune={toggle:toggleTune,sliders:function(){return SLIDERS;}};
 window.__hubFrame=function(dt){ drawHubWorld(dt===undefined?0.016:dt); };
 // The hub state itself, so a cold-start walk can visit stations for real.
 window.__hb=function(){ return HB; };
+// The MAIN LOOP, steppable with synthetic timestamps, because deathBeat and the
+// whole live-raid frame path exist only inside loop() and a hidden pane never
+// fires its rAF. Each call arms one more rAF, which is exactly the loop
+// resuming normally if the pane ever becomes visible, so this is safe to drive.
+window.__loop=function(ts){ loop(ts); };
 // THE MEASUREMENT BASELINE, ONE CALL, v2.67. Every batch this cycle opened with
 // the same twenty hand-typed dial assignments, and twice a smoke test that
 // skipped them produced rates that meant nothing and briefly looked like

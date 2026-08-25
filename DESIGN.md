@@ -7365,6 +7365,49 @@ authorship and his. Also not verified: whether the Terms belongs under Holt
 thematically, since signing for worse odds is more a gambler's trade; it is one
 line to move to Vesh if he prefers.
 
+### v2.82: dying no longer undoes the starter fix, and the whole first-session loop is walked
+
+The cold-start walk reached its last stretch, death, the outcome screen, and the
+second deploy, and the stretch paid for itself twice over.
+
+FIRST, THE WALK ITSELF, driven through the REAL machinery for the first time: the
+main loop is now steppable from the fixture with synthetic timestamps (__loop),
+because deathBeat and the whole live-raid frame path exist only inside loop() and
+a hidden pane never fires its rAF. With it, the full sequence ran end to end: no
+medical, downed, dying, the 1.5 second death beat, KILLED IN ACTION with the
+killer named and the distance from extraction, a feeling tag clicked through the
+real button, a note typed into the real field, the confirm button pressed, the
+run landing in P.log with outcome dead, the tag, the note and ver 2.81 stamped,
+the raid state cleared, and a second deploy from the lift working immediately.
+The earlier attempt at this walk failed because the bot logic self-revived with
+the probe's own bandages, which was the probe's error and is noted as such.
+
+SECOND, THE BUG THE WALK CAUGHT: v2.80 SURVIVED EXACTLY ONE DEATH. The death
+ledger has a fallback, "if the gun you had equipped was lost with your body, fall
+back to another owned gun", and it tested P.weapons.indexOf(P.equipped). But
+'fists' is deliberately never in P.weapons, it is the value that MEANS "no
+deliberate equip, roll me a starter", so every death flipped equipped to the
+armoury pistol and brought the two-identical-pistols kit back from the second
+raid onward. A fresh player dies in their first raid more often than not, so
+v2.80's fix was, for most of its audience, one raid long. 'fists' is now exempt
+from the fallback.
+
+Verified from a wiped profile: first deploy rolls an issued Kettle, death with
+the full outcome flow, equipped reads fists after the ledger, second deploy rolls
+an issued Ferro. And the v2.80 variety caveat closes in passing: three distinct
+starters, Ferro, Hullcracker and Kettle, have now been rolled across the walks.
+Parsecheck PASS at v2.82, all four maps drive and draw clean with 10 of 10
+entities moving, hub clean. The itch zip is rebuilt at v2.82.
+
+Not verified: the extraction side of the same ledger, which re-equips the first
+carried gun on a successful extract; that is deliberate behaviour with its own
+comment, banking a field find and making it yours, and it correctly never sees
+'fists' because it only fires when a real gun was carried out. Also not
+verified: autoExport stayed disabled through the probe to keep fixture runs out
+of exports/, so the outcome flow's export leg ran only to its P.log write; the
+export itself is the most exercised path in the project and was not re-proven
+here.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
