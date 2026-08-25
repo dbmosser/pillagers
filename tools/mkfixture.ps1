@@ -154,6 +154,12 @@ window.__ival=function(k){ return ival(k); };
 // Banking an extracted item, so the armoury invariant can be tested directly
 // rather than by driving a whole raid to a successful extraction.
 window.__bank=function(k){ return bankItem(k); };
+// The hotbar and the carried-armour verb, so the slot list and the slotting
+// rule can be driven headlessly instead of through a keypress.
+window.__hotbar=function(){ return hotbarSlots(); };
+window.__useArmor=function(){ return useArmor(); };
+window.__useHot=function(){ return useHot(); };
+window.__setHot=function(i){ return setHot(i); };
 window.__items=function(){ return ITEMS; };
 window.__loot=function(){ return LOOT; };
 window.__bestRarity=function(a){ return bestRarity(a); };

@@ -436,7 +436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.16';
+var VER='2.17';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -5453,7 +5453,15 @@ function buildRaid(sim){
     // and you lose what you carry when you die, so take the smallest.
     function takeBest(use,wantBigger){
       if(taken>=SLOTS) return false;
-      if(use==='armor'&&g.player.armor>=((g.player.armorCap===undefined?ARMOR_MAX:g.player.armorCap))) return false;
+      // CARRY IT INSTEAD OF REFUSING IT, v2.17. You always deploy at your rig's
+      // cap, so this test was true every single time and armour, the category
+      // this function ranks FIRST, was never once taken. A plate is now carried
+      // in the bag and slotted from the hotbar when you have actually lost some,
+      // which is what a repair item is for. With No Rig the ceiling is 0 and
+      // there is nothing to slot it into, so it stays refused.
+      var _acap=(g.player.armorCap===undefined?ARMOR_MAX:g.player.armorCap);
+      if(use==='armor'&&_acap<=0) return false;
+      var _carryArmor=(use==='armor'&&g.player.armor>=_acap);
       var bi=-1,bv=0;
       for(var i=0;i<P.stash.length;i++){
         var t=ITEMS[P.stash[i]];
@@ -5463,9 +5471,11 @@ function buildRaid(sim){
       }
       if(bi<0) return false;
       var key=P.stash[bi],itm=ITEMS[key];
-      // do not burn a whole plate for a few points of headroom
-      if(use==='armor'&&(((g.player.armorCap===undefined?ARMOR_MAX:g.player.armorCap))-g.player.armor)<itm.amt*0.5) return false;
-      if(use==='armor') g.player.armor=Math.min((g.player.armorCap===undefined?ARMOR_MAX:g.player.armorCap),g.player.armor+itm.amt);
+      // do not burn a whole plate for a few points of headroom, unless it is
+      // being carried rather than applied, in which case headroom is irrelevant
+      if(use==='armor'&&!_carryArmor&&((_acap-g.player.armor)<itm.amt*0.5)) return false;
+      if(_carryArmor) g.bag.push(key);
+      else if(use==='armor') g.player.armor=Math.min(_acap,g.player.armor+itm.amt);
       else if(use==='ammo') g.player.reserve+=itm.amt;
       else g.bag.push(key);
       P.stash.splice(bi,1); taken++;
@@ -6459,6 +6469,15 @@ function hotbarSlots(){
   var hi=findHeal();
   out.push({k:'heal',name:hi>=0?ITEMS[G.bag[hi]].name:'Medical',kind:'heal',
     count:countHeals(),c:'#6fe0a0'});
+  // ARMOUR YOU ARE CARRYING, v2.17. A plate had no way to be used. It is listed
+  // in the shop at 620 credits and the deploy loadout ranks armour FIRST, above
+  // ammo and medical, on the stated reasoning that "armour and ammo are spent the
+  // moment you land". You land at myRig().cap, which is FULL, so the take was
+  // refused every single time and a bought plate never reached a raid at all.
+  // Only appears when you are actually carrying one, so the slot order does not
+  // move for anyone who is not.
+  if(countArmor()>0) out.push({k:'plate',name:'Armor Plate',kind:'armor',
+    count:countArmor(),c:'#5aa9e6'});
   out.push({k:'bar',name:'Crowbar',kind:'tool',count:null,c:'#9aa8b2'});
   return out;
 }
@@ -6466,6 +6485,29 @@ function countHeals(){
   var n=0;
   for(var i=0;i<G.bag.length;i++){ var it=ITEMS[G.bag[i]]; if(it&&it.use==='heal') n++; }
   return n;
+}
+function countArmor(){
+  var n=0;
+  for(var i=0;i<G.bag.length;i++){ var it=ITEMS[G.bag[i]]; if(it&&it.use==='armor') n++; }
+  return n;
+}
+function findArmor(){
+  for(var i=0;i<G.bag.length;i++){ var it=ITEMS[G.bag[i]]; if(it&&it.use==='armor') return i; }
+  return -1;
+}
+// Slotting a plate you are carrying. The ceiling is the rig's, so with No Rig
+// this refuses and says why rather than silently eating the plate.
+function useArmor(){
+  var p=G.player,ix=findArmor();
+  if(ix<0) return;
+  var cap=armorCap();
+  if(cap<=0){ say('No rig to slot it into.'); return; }
+  if(p.armor>=cap){ say('Armour is already full.'); return; }
+  var it=ITEMS[G.bag[ix]];
+  p.armor=Math.min(cap,p.armor+it.amt);
+  G.bag.splice(ix,1);
+  say(it.name+' slotted. Armour '+Math.round(p.armor)+'.');
+  blip('pick');
 }
 function hotSel(){ return clamp(G.hot||0,0,hotbarSlots().length-1); }
 function setHot(i){
@@ -6490,6 +6532,7 @@ function useHot(){
   if(!s2) return;
   if(s2.kind==='throw') doThrow();
   else if(s2.kind==='heal') raidKey('KeyF',false,null);
+  else if(s2.kind==='armor') useArmor();
 }
 function tryExtractTick(dt,wantCall){
   // SPEC 5.2 and 5.3. Extraction is a TWO STAGE pull at any point that is still

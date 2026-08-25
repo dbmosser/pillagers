@@ -3933,6 +3933,78 @@ even though their own numbers have not. Also not verified: whether 35 is the rig
 cap now that it binds. It has never actually bound before, so the figure has never
 been playtested as a ceiling, only ever written down as one.
 
+### v2.17: the Armor Plate could never reach a raid, and the loadout ranked it first
+
+Went to audit rig prices after v2.16 changed the ladder. The prices are fine. What
+is not fine is the item sitting next to them in the shop.
+
+THE DEPLOY LOADOUT RANKS ARMOUR FIRST AND HAS NEVER ONCE TAKEN ANY. Its own
+comment states the priority and the reason: "in the order that actually keeps you
+alive: armour, then ammo, then medical. Armour and ammo are spent the moment you
+land". The guard immediately under it reads:
+
+    if(use==='armor'&&g.player.armor>=armorCap) return false;
+
+and the player is created with armor:myRig().cap. You always land FULL. So the
+test is true on every deploy, for every rig, and the highest priority category in
+the loadout was refused every single time.
+
+Measured before the fix, two plates in the stash, deploying with each rig:
+
+    No Rig    plates taken 0 of 2      Scav Rig  plates taken 0 of 2
+    Plated    plates taken 0 of 2      Breacher  plates taken 0 of 2
+
+The Armor Plate is in the shop at 620 credits behind 800 reputation. It is also in
+the peddler's stock and on the crafting table. Nothing you bought could ever be
+carried into a raid, and the only value it had was selling it back for 340, which
+is a guaranteed 280 credit loss on a deliberate purchase. Same shape as the
+impossible contract at v1.74 and the keyless door at v1.75: the game sells you
+something that cannot work.
+
+A plate FOUND in a raid was always fine, and I checked that before assuming: with
+armour full or no rig it falls through to the bag as salvage worth 340, and with
+armour missing it applies. So this is specifically the bought and stashed plate.
+
+TWO HALVES TO THE FIX, BECAUSE THE FIRST ALONE WOULD HAVE DONE NOTHING.
+
+Carrying it was the obvious fix and I nearly shipped only that. Then I checked the
+hotbar and there was no armour verb at all: gun, gun, three throwables, medical,
+crowbar. A carried plate would have sat in the bag exactly as unusable as it was
+in the stash, and I would have called it fixed. So:
+
+  1. The loadout now CARRIES a plate when armour is already full instead of
+     refusing it, and still refuses outright when the rig ceiling is 0, because
+     with No Rig there is genuinely nothing to slot it into.
+  2. The hotbar gains an armour slot, and only when you are actually carrying one,
+     so the slot order does not move for anyone who is not.
+
+Verified end to end, deploy with two plates in stash, take a hit, slot one:
+
+    rig        carried   slot appears   armour after 80 damage   after slotting
+    No Rig        0          no                 0                    0
+    Scav Rig      1         yes                 0                   35
+    Breacher      1         yes                57                  112
+
+It consumes exactly one plate, refuses when armour is full without consuming, and
+says why with No Rig rather than silently eating it. Slot count is 7 without a
+plate and 8 with, on every map.
+
+NO BALANCE MEASUREMENT, AND THE REASON IS THE POINT RATHER THAN AN EXCUSE. The
+stash loadout is the else branch of a test on `sim`; a sim raid takes the other
+branch and is handed two bandages. Verified rather than asserted: a sim raid run
+with three plates in the stash leaves all three there and the stash the same
+length. The sim cannot see any of this, so a 120 seed arm would compare a build
+against itself and report a difference of exactly zero, which would be a number
+that looks like evidence and is not.
+
+Not verified: whether one carried plate is the right amount. It takes one of the
+three kit slots, so it now competes with ammo and medical for the first time ever,
+and that trade has never existed before this build. Also not verified: the
+peddler still sells plates mid raid, and buying one there with No Rig is the same
+dead purchase the shop had, since he has no rig check either. I did not touch him
+because his stock is a random draw rather than a menu, and gating it needs a
+decision about whether he should refuse a sale or just warn.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
