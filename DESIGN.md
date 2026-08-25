@@ -5309,6 +5309,76 @@ is obviously wrong and shows exactly how far the linear reading can be trusted.
 Also not verified: whether the same steepness holds on the other three maps, since
 COLD STORAGE already sits at 6.7 percent and has much less room to fall.
 
+### v2.39: enemy health is a threshold, not a slope, and my v2.38 exchange rate was wrong
+
+No game logic changed. v2.38 quoted "roughly 1.8 points of survival per one percent
+of enemy health" and flagged in its own Not verified line that this was a straight
+line drawn through two dots. This sweeps the dial and the line is not there. 120
+seeds an arm, BURIED CITY, simGreed 52, simPinTier 1, lootMult 1, everything else
+pinned:
+
+    eHp     sentry HP   SMG shots to kill   extract   haul    duration
+    0.85       128             11            30.0%    9,227     206s
+    0.94       141             12            27.5%    8,612     189s
+    1.00       150             13            29.2%    8,897     197s
+    1.06       159             14            18.3%    8,331     195s
+    1.10       165             14            20.3%    8,419     196s
+
+MY v2.38 NUMBER IS WRONG AND SO WAS THE ADVICE THAT CAME WITH IT. There is no
+constant exchange rate. The first three arms are flat, 30.0 / 27.5 / 29.2, all
+inside one standard error of each other, and that covers a 15 percent range of
+enemy health. Then it drops and stays down. Worse, v2.38 told him that turning
+eHp down to 0.94 would buy back about eleven points. It buys back nothing: 0.94
+measures 27.5 percent, which is LOWER than leaving the dial at 1.00. I gave him a
+number to type into his own Tuning Console and it would have made his game very
+slightly worse while he believed it was making it much better.
+
+WHAT IS ACTUALLY THERE IS ONE THRESHOLD. Everything at or below 13 SMG shots to
+kill a sentry sits near 29 percent. Everything at 14 sits near 20. The break is
+between 13 and 14, and there is no step at 11 to 12 or 12 to 13, so this is a
+single threshold rather than a staircase with a step per round.
+
+AND IT TRACKS THE SHOT COUNT, NOT THE HEALTH. That prediction was made before the
+test was run, which is the only reason it is worth anything. Sentry health was
+pinned at 150 and the SMG was weakened from 12 damage to 11, which moves shots to
+kill from 13 to 14 while leaving every enemy's health exactly where it was. Same
+120 seeds:
+
+    arm                              sentry HP   shots   extract
+    eHp 1.00, SMG dmg 12                150       13      29.2%
+    eHp 1.00, SMG dmg 11                150       14      21.7%
+    eHp 1.06, SMG dmg 12                159       14      18.3%
+    eHp 1.10, SMG dmg 12                165       14      20.3%
+
+The damage-side arm landed with the 14-shot group, not with the health that
+produced it. Pooling the three arms each side, grouped by shots to kill: 104 of
+360 extract at 13 or fewer, 72 of 360 at 14. That is 28.9 percent against 20.0,
+a gap of 8.9 points, standard error 3.2, z 2.8, p about 0.005.
+
+THE OBVIOUS MECHANISM IS NOT THE MECHANISM. The magazine was the first thing I
+checked and it is ruled out: the SMG holds 30, and at 11, 12, 13, 14 and 15 shots
+to kill you get exactly 2 sentries per magazine every time, so no reload boundary
+is crossed anywhere in the tested range. Whatever puts the break at 14
+specifically, it is not running dry.
+
+WHAT HE SHOULD ACTUALLY DO WITH THE DIAL. If the game is too hard, eHp needs to
+be at or below 1.00, and there is no gain from going further down than that. The
+useful setting is 1.00, not 0.94 and not 0.85, and the thing that made tier 1 hurt
+was that x1.06 pushed the sentry across a threshold rather than that it added six
+percent of anything.
+
+Not verified: why 14. The magazine is excluded and I have not found what replaces
+it. The untested hypothesis is time on target, since 14 shots at 88ms is 1.232
+seconds of sustained fire against 1.144 at 13, and if a machine's return-fire or
+repositioning window sits between those two numbers that would do it; I am
+recording that as a guess and not as a finding. Also not verified: this is one
+weapon against one enemy type on one map. Sentries are not the only thing shooting
+back and the SMG is not the only gun, so "13 shots" is the coordinate of a break in
+this configuration rather than a general rule. Also not verified: the single
+damage-side arm on its own is 1.34 standard errors from the 13-shot arm, which
+does not clear the bar by itself; the 2.8 comes from pooling three arms a side,
+and the pooling groups by the very variable being tested.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

@@ -160,6 +160,9 @@ window.__hotbar=function(){ return hotbarSlots(); };
 window.__useArmor=function(){ return useArmor(); };
 window.__useHot=function(){ return useHot(); };
 window.__pedBuy=function(i){ return pedBuy(i); };
+// The weapon table, so shots-to-kill can be varied from the WEAPON side
+// instead of the health side and the two separated causally.
+window.__weapons=function(){ return WEAPONS; };
 window.__setHot=function(i){ return setHot(i); };
 window.__items=function(){ return ITEMS; };
 window.__loot=function(){ return LOOT; };
