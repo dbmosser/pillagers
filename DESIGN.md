@@ -6904,6 +6904,48 @@ clean in the fixture.
 Not verified: a composited frame on the live page, as above, which needs either
 his eyes or a displayed pane; everything short of that is green.
 
+### v2.70: nine hundred seeds say retreating to heal is worth less than I said
+
+No game logic changed. v2.54 measured simRetreatHeal at plus 2.8 points on 320
+seeds, called it suggestive at p 0.21, and estimated roughly 900 seeds to settle
+it. The 900 have now been run, the first full-scale batch through the v2.67 pin
+and the v2.60 background runner, and the answer cuts against my own earlier
+number:
+
+    stand and heal 20.0% against retreat first 21.9%
+    discordant 99 of 900: 58 flip toward retreating, 41 against
+    z 1.61, exact two-sided p = 0.107
+
+THE EFFECT SHRANK AS THE SAMPLE GREW, 2.8 points at 320 down to 1.9 at 900, which
+is what regression to the mean looks like when an early estimate rode its noise.
+And it STILL does not clear the bar. So the honest statement of record: teaching
+the bot to break contact before healing is worth somewhere around two points,
+probably, and even nine hundred paired raids cannot promise the sign.
+
+WHAT THIS SETTLES ABOUT THE MEDKIT, AND IT IS THE STRONGER FORM OF v2.54's
+CONCLUSION. The heal-over-time cost is 7.5 points, established at p 0.00012.
+Healing technique recovers at most a quarter of it, unprovably. The rest is the
+six seconds themselves, not shooting and not looting in a game that punishes
+both, and no behaviour buys that back. For him the bracket tightens: the medkit
+change made the game about 5.5 to 7.5 points harder almost regardless of how
+well he heals, and healOverTime on the console, there since v2.68, remains the
+only real exit.
+
+TOOLING NOTE, since this was the first full-scale run of the new pipeline:
+__pinDefaults reported a clean baseline before the batch, __pairedBg carried 900
+seeds without a stall across roughly eighty minutes of hidden-tab wall clock, and
+the dial came back restored. The pipeline is no longer new.
+
+Verified: parsecheck PASS at v2.70, all four maps and the hub drive and draw
+clean. VER and DESIGN.md only.
+
+Not verified: the 1.9 points itself, which at p 0.107 remains a direction rather
+than a finding, and this file is done spending wall clock on it; the dial is off
+by default, its value is bounded above by small, and the question only matters if
+he ever turns it on. Also not verified: whether the shrink from 2.8 to 1.9 will
+continue at larger n; the honest prior after watching it shrink once is that the
+true effect sits below 1.9, not above.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
