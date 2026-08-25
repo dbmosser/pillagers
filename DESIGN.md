@@ -2041,6 +2041,109 @@ The practical consequence is that the "character not rendering" note on run #3 a
 anything else from the low-numbered runs should be treated as undated rather than
 current until he reproduces them on a v1.90 or later run.
 
+AND THE V1.03 ENTRY IN THIS VERY FILE SETTLES IT. The v1.03 section above records
+"his first v1.01 recorder data" with these notes: "looting feels so uninspired",
+"character not rendering (run #3, abandoned)", and "every block is the same
+length, map has no atmosphere, needs verticality". Those are verbatim the notes on
+runs #1 and #3 of the export he sent today. His first three runs are from the
+v1.01 era, were read and acted on at v1.03, and have been reprinted in every
+export for eighty-seven builds since. There is no better demonstration of why the
+stamp was needed.
+
+Addendum, from an adversarial pass that tried to refute the crawler conclusion and
+could not. Three pieces of evidence turn the boundary from strong inference into
+proof, recorded because the next person to see DRAWERR in an export will want them.
+
+First, .kind is never assigned anywhere in the file. A word-boundary search for an
+assignment rather than a comparison returns ZERO hits across all 12,498 lines;
+every occurrence is ===. An entity cannot change kind at runtime, so a draw item
+holding a crawler can never reach the raider branch by any path.
+
+Second, both guards landed in the same commit. git show of 0f43a6b, "v1.55: the
+crawler crash in his own runs", removes the bare clamp(e2.bag.length/7,0,1) and
+adds BOTH the else if(e2.kind==='raider') kind test AND the inline
+(e2.bag?e2.bag.length:0) fallback. Two independent fixes for one fault, which is
+why nothing has recurred in 35 builds.
+
+Third, the weather red herring is datable. git log -S on the wx export field
+bottoms out at f1789b6, "v1.17: the recorder learns the new systems". The apparent
+weather correlation is nothing but the overlap window between v1.17, when the tag
+started printing, and v1.55, when the crash stopped happening.
+
+Also recorded so it is not rediscovered as new: line 7215 reads e.bag.length with
+no inline guard, in the death and drop path. It is gated on kind==='raider' so it
+is safe by the same argument, and it is not in the y-sorted draw loop, so it could
+never produce a DRAWERR label at all.
+
+### v1.91: you choose the two guns now, and most of his list turned out to be ghosts
+
+His note: "'better guns autoequip' -- no. you should be able to carry all the guns
+you want but you only have 2 equipped, then we need a way for you to change the 2
+you have equipped."
+
+Two of those three already existed. There have been two slots since early on,
+p.wep and p.sec, swapped with X, and the bag has been uncapped since 2026-08-22.
+What was missing was the CHOICE: a better gun equipped itself the instant you
+picked it up, so the loadout was decided by pickup order rather than by you.
+
+autoEquip is a dial and defaults to 0, off. A found gun now goes into the bag like
+any other item. Inside the inventory, 1 puts the selected gun in your hands and 2
+puts it on your back, and whatever was in that slot goes back into the bag, so the
+exchange never destroys anything.
+
+The one exception is issued kit, and it is deliberate rather than an oversight.
+The four starter rifles and the Scav Pistol are loaners, and the pickup path has
+refused to bank them since an old audit found that banking one silently ended the
+fresh starter roll forever, because owning a copy made it your permanent equipped
+gun from then on. equipFromBag keeps that rule: displace an issued gun and it is
+left behind with a line saying so; displace a found one and it returns to the bag.
+
+Verified as a chain rather than as three separate assertions, because the property
+that matters is that nothing is ever lost:
+
+    start                     Stitcher in hands, issued, bag [carbine, smg]
+    1 on carbine              primary Burst Carbine, Stitcher LEFT BEHIND (issued)
+    1 on smg                  primary Compact SMG, carbine RETURNED to bag
+    2 on carbine              secondary Burst Carbine, Scav Pistol left behind (issued)
+
+A key conflict came with it and is fixed. The hotbar handler took every digit and
+ran before the inventory, so with the bag open one press of 1 would have both
+moved the hotbar selection and equipped a gun. It is now gated on the bag being
+closed. Verified both directions: with the bag open, Digit1 equips and the hotbar
+does NOT move; with the bag closed, Digit2 moves the hotbar as it always did.
+
+THE REST OF HIS LIST, DATED. The v1.90 version stamp paid for itself immediately.
+Running git log -S against each complaint puts almost all of them before the fix
+that answered them:
+
+  "random lights floating in the air"        run #7, v1.53   fixed in v1.55
+  "deer stuck in a small area, spastic"      run #7, v1.53   fixed in v1.55
+  "too many animals"                         run #7, v1.53   touched in v1.53
+  "looting feels so uninspired"              run #1, v1.01   logged at v1.03
+  "character not rendering"                  run #3, v1.01   logged at v1.03
+  "needs verticality, hills, woods"          run #3, v1.01   logged at v1.03, still his call
+  "snitch too easy to kill"                  run #14, v1.57  possibly still live
+  "lockers / where is the furniture"         run #14, v1.57  live, handled at v1.89
+
+Both the lamp posts and the deer home range were fixed in the same commit as the
+crawler crash, 0f43a6b, whose title is "v1.55: the crawler crash in his own runs,
+and eight things he asked for". Run #7 is the run where he asked for them. His
+export has been reprinting the request every session since the session that
+granted it.
+
+So of everything in the seventeen-run export, only the snitch note is plausibly
+still open. Everything genuinely outstanding is what he typed directly today, and
+those are dated by definition.
+
+Not verified: whether 1 and 2 are the right keys. They are the digits the hotbar
+already owns, and the guard makes them mean different things depending on whether
+a panel is open, which is the kind of overload that reads fine in a changelog and
+badly under the hand. If it feels wrong, the alternative is a dedicated key that
+cycles the slot, at the cost of not being able to name the slot directly. Also not
+verified by play: whether losing auto-equip makes the early game worse, since the
+upgrade-on-pickup rule was load bearing for a long time and a player who never
+opens the inventory will now carry a starter for the whole raid.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

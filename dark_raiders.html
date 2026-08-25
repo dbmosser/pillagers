@@ -421,7 +421,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.90';
+var VER='1.91';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -452,7 +452,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1,autoEquip:0};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -5281,7 +5281,11 @@ function raidKey(code,repeat,ev){
   // reserve pool is shared, so swapping is not a way to dodge running dry.
   if(code==='KeyX'&&G&&!G.over&&!G.paused&&!repeat) swapGuns();
   // SPEC 6.1: 1 to 7 select a hotbar slot, and G acts with whatever is selected.
-  if(G&&!G.over&&!repeat&&code.indexOf('Digit')===0){
+  // NOT WHILE THE BAG IS OPEN. v1.91 gave 1 and 2 a second meaning inside the
+  // inventory, equipping the selected gun to a slot, and this handler runs first
+  // and swallows every digit, so without the guard one keypress would both move
+  // the hotbar selection and equip a gun.
+  if(G&&!G.over&&!repeat&&!G.bagOpen&&code.indexOf('Digit')===0){
     var dn=parseInt(code.slice(5),10);
     if(dn>=1&&dn<=9){ setHot(dn-1); if(ev) ev.preventDefault(); }
   }
@@ -5299,6 +5303,11 @@ function raidKey(code,repeat,ev){
       if(dk){ say('Dropped '+ITEMS[dk].name); blip('clank'); }
       if(G.bagSel>=G.bag.length) G.bagSel=Math.max(0,G.bag.length-1);
     }
+    // 1 and 2 put the selected gun in your hands or on your back. Digits rather
+    // than a single equip key because the whole point of his note is CHOOSING
+    // which of the two slots it goes to, and one key cannot express that.
+    if((code==='Digit1'||code==='Numpad1')&&!repeat) equipFromBag(clamp(G.bagSel,0,G.bag.length-1),1);
+    if((code==='Digit2'||code==='Numpad2')&&!repeat) equipFromBag(clamp(G.bagSel,0,G.bag.length-1),2);
   }
   if(code==='KeyC'&&G&&!G.over&&!repeat){
     P.autoloot=!P.autoloot; saveProfile();
@@ -6004,9 +6013,17 @@ function grantLoot(ct,keys){
       // Audit: dropping a bagged gun and re-searching it rerolled quality until
       // Pristine. Your own discards come back at plain field grade.
       var found=ct.dropped?(function(){var g2={};for(var k2 in WEAPONS[itm.gk])g2[k2]=WEAPONS[itm.gk][k2];g2.q='field';g2.qRank=1;return g2;})():rollFieldGun(itm.gk);
+      // HIS NOTE, 2026-08-24: "'better guns autoequip' -- no. you should be able
+      // to carry all the guns you want but you only have 2 equipped, then we need
+      // a way for you to change the 2 you have equipped."
+      // So the automatic swap is off by default. A found gun goes into the bag
+      // like everything else and the choice of what is in your hands is yours,
+      // made from the inventory with the two slot keys. autoEquip 1 restores the
+      // old behaviour for anyone who wants it, because the upgrade-on-pickup rule
+      // was load bearing for a long time and the starters still rank through it.
       var tierUp=(WTIER[itm.gk]||0)>(WTIER[p.wep.id]||0);
       var condUp=(WTIER[itm.gk]||0)===(WTIER[p.wep.id]||0)&&found.qRank>(p.wep.qRank===undefined?1:p.wep.qRank);
-      if(tierUp||condUp){
+      if(CFG.autoEquip&&(tierUp||condUp)){
         // Audit findings, both breaking. First: this guard used to be "does an
         // item exist for this gun", which is true for the ISSUED sidearm, so an
         // X-swapped loaner pistol got banked as sellable loot and the splice
@@ -6095,6 +6112,43 @@ function swapGuns(){
   G.hot=pp.swapped?1:0;
   G.tel.weapon=pp.wep.name;
   say(pp.wep.name+' up');
+  blip('pick');
+  return true;
+}
+// EQUIP A CARRIED GUN INTO ONE OF THE TWO SLOTS, v1.91. His note: carry all the
+// guns you want, only two equipped, and a way to change which two. This is that
+// way. It is the exact inverse of the auto-equip that used to happen on pickup:
+// the gun in the bag goes to the chosen slot and whatever was in that slot goes
+// back into the bag, so nothing is ever destroyed by the exchange.
+// Issued kit is the one exception and it is DROPPED rather than bagged, for the
+// same reason the pickup path already refuses to bank it: the loaner pistol is
+// not yours, banking it silently ended the fresh starter roll forever, and the
+// armoury copy never left base. That fix is old and this must not undo it.
+function equipFromBag(ix,slot){
+  var p=G&&G.player;
+  if(!p||p.downed||p.roll>0||G.over||G.paused) return false;
+  if(ix<0||ix>=G.bag.length) return false;
+  var key=G.bag[ix],itm=ITEMS[key];
+  if(!itm||itm.use!=='gun') return false;
+  var gk=itm.gk;
+  // A bagged gun carries no quality of its own, so it comes back at field grade,
+  // matching the anti-reroll rule on dropped guns.
+  var g={}; for(var k in WEAPONS[gk]) g[k]=WEAPONS[gk][k];
+  g.q='field'; g.qRank=1;
+  var toSec=(slot===2);
+  var oldW=toSec?p.sec:p.wep;
+  var oldIssued=toSec?p.secIssued:p.wepIssued;
+  G.bag.splice(ix,1);
+  if(oldW&&oldW.id!=='fists'){
+    if(oldIssued) say(oldW.name+' was issued kit, left behind.');
+    else G.bag.push('gun_'+oldW.id);
+  }
+  if(toSec){ p.sec=g; p.secAmmo=Math.ceil(g.mag/2); p.secIssued=false; p.secFromArmory=false; }
+  else { p.wep=g; p.ammo=Math.ceil(g.mag/2); p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; }
+  G.tel.weapon=p.wep.name;
+  G.tel.gunsEquipped=(G.tel.gunsEquipped||0)+1;
+  if(G.bagSel>=G.bag.length) G.bagSel=Math.max(0,G.bag.length-1);
+  say(g.name+(toSec?' to secondary':' equipped'));
   blip('pick');
   return true;
 }
@@ -10932,7 +10986,11 @@ function drawBag(){
   ctx.strokeStyle='#232b35'; ctx.beginPath();
   ctx.moveTo(x+11,hintY-11); ctx.lineTo(x+PW-11,hintY-11); ctx.stroke();
   ctx.fillStyle='#9aa8d0'; ctx.font=FS(TYPE.micro);
-  ctx.fillText((PAD&&PAD.on)?'DPAD select   DPAD L drop':'\u2191\u2193 select   Z drop',x+11,hintY);
+  // The two slot keys only mean anything on a gun, so the hint says so only then.
+  var _selK=G.bag[clamp(G.bagSel,0,Math.max(0,G.bag.length-1))];
+  var _selGun=!!(_selK&&ITEMS[_selK]&&ITEMS[_selK].use==='gun');
+  ctx.fillText((PAD&&PAD.on)?'DPAD select   DPAD L drop':
+    ('\u2191\u2193 select   Z drop'+(_selGun?'   1 equip   2 secondary':'')),x+11,hintY);
   ctx.textAlign='right';
   ctx.fillStyle=P.autoloot?'#4de3d0':'#9aa8d0';
   ctx.fillText(((PAD&&PAD.on)?'DPAD R autoloot ':'C autoloot ')+(P.autoloot?'ON':'OFF'),x+PW-11,hintY);
