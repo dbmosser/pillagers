@@ -2794,6 +2794,62 @@ than a decision it makes. A player routes around water partly to stay quiet; the
 bot cannot, so map 0 is probably still measured as easier than a human would find
 it even after this fix.
 
+### v2.01: v2.00 fixed how loud the bot is in water and missed how often
+
+v2.00 gave the bot the player's wading noise by scaling CNOISE, the loudness. That
+is half the rule. The player's footstep INTERVAL changes with state too, and by
+more than the radius does:
+
+    state      player interval    bot interval, before
+    walking       0.72s               0.6s
+    wading        0.30s               0.6s
+    crouched      99s                 0.6s
+
+Both errors point the same way, and the crouch one is far worse than the wading
+one that prompted the look. An interval of 99 in a 600 second raid means a
+crouching player emits essentially NO periodic footstep at all; the bot kept
+pinging every 0.6 seconds at 0.42 radius. So the sim has been measuring crouch
+with most of its noise benefit removed, and crouch is the strongest mechanic in
+the game, which means the arm this project leans on hardest was the one most
+understated.
+
+Fixed by taking the ratios from the player's own constants rather than inventing
+them: wet is 0.6 scaled by 0.30/0.72, crouched is effectively never, walking is
+unchanged at 0.6.
+
+Measured, 120 seeds an arm, bot crouching in BOTH arms, isolated with crouchParts
+bit 2 so only the footstep rate differs:
+
+                     extract   haul    containers   first contact
+    old flat rate     33.3%    9,353     19.1          195s
+    new player rate   38.3%    9,811     18.7          194s
+
+Plus 5.0 points and plus 4.9 percent haul, and 16 seeds flip to extract against 10
+to dead with 94 unchanged. THAT IS NOT SIGNIFICANT. Twenty six discordant pairs
+splitting 16 to 10 is a z of about 1.2, so the direction is consistent but the
+sample cannot carry the claim, and I am not going to present a fidelity fix as a
+balance win.
+
+The interesting null is first contact: 195 against 194, unmoved. I expected silent
+footsteps to delay being found, and they do not, because the hard crouch rule
+already dominates detection. Anything beyond 170 units cannot see a crouched
+player at all, so footstep noise has almost nothing left to do for FIRST contact.
+Where it should matter is after contact, in whether something reacquires you,
+which is not what this measurement was pointed at.
+
+The justification is fidelity rather than effect size. The sim was measurably
+wrong about a rule the player lives under, in a direction that understated the
+mechanic the project has spent the most builds studying. It is worth fixing at
+zero measured cost even if the outcome number is noise.
+
+Not verified: whether the crouched interval should be literally infinite for the
+bot. I used 1e9, which mirrors the player's 99 in effect, but the player still
+makes noise from firing, dodging and searching, so "crouched is silent" is only
+true of the periodic footstep. If some other emitter is missing from the bot the
+same way, this fix moves the sim closer to the player without arriving.
+Not verified either: whether the +5 points survives a larger sample. The right
+test is several hundred seeds a side, which is a long batch, and I have not run it.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

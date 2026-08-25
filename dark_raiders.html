@@ -421,7 +421,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.00';
+var VER='2.01';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -7114,8 +7114,21 @@ function updateBot(dt){
       }
     }
   }
+  // FOOTSTEP RATE, NOT JUST RADIUS, v2.01. v2.00 gave the bot the player's wading
+  // noise by scaling CNOISE, which is the loudness. It missed the other half: the
+  // player's footstep INTERVAL changes with state too, and by more than the radius
+  // does. updatePlayer uses 0.30 wading, 0.72 walking, and 99 crouched, which for
+  // a 600 second raid means a crouching player emits essentially no periodic
+  // footstep at all. The bot has always used a flat 0.6 regardless.
+  // Both errors point the same way and both understate the thing the sim is worst
+  // at already. Wading, the bot was 2.4x quieter than the player. Crouching, far
+  // worse: the player goes silent and the bot kept pinging every 0.6 seconds at
+  // 0.42 radius, so the sim has been measuring crouch with most of its noise
+  // benefit removed, and crouch is the single strongest mechanic in the game.
+  // Ratios are taken from the player's own numbers rather than invented.
+  var BIV=BWET?(0.6*(0.30/0.72)):(botCrouch&&(CPART&2)?1e9:0.6);
   if(botCrouch) T.tCrouchBot=(T.tCrouchBot||0)+dt;
-  if(moved&&p.noiseAcc>.6){ p.noiseAcc=0; ping(p.x,p.y,140*LD.noise*CNOISE,false,false,'player','move'); }
+  if(moved&&p.noiseAcc>BIV){ p.noiseAcc=0; ping(p.x,p.y,140*LD.noise*CNOISE,false,false,'player','move'); }
   // Give up on a container the bot cannot get to, on two conditions, both of
   // which had to be learned the hard way. It has to be progress and not motion:
   // the original check asked whether the bot had moved at all, and that stopped
