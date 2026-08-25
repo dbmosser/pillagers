@@ -7248,6 +7248,38 @@ settings tonight; if the download prompt does not appear for friends, the first
 thing to check is their browser's automatic-download permission for the itch
 domain, and P.autoExport stays the off switch.
 
+### v2.79: the whats-new card greets returning players, not arriving ones
+
+One conditional, and the second first-impression fix in two builds, both found by
+walking the cold-start path a friend will take tonight.
+
+A fresh profile has no lastSeenVer, so under v2.77's rule a friend clicking the
+itch link would have had, as the LITERAL FIRST SCREEN of the game, a card headed
+UPDATED TO v2.79 listing changes to controls they have never used: "your FIRE
+button NOW uses the selected slot" is a sentence addressed to somebody's memory,
+and they do not have one. The card was written for the returning player and now
+checks that it has one: a profile with zero runs stamps itself current silently
+and goes straight to the clean hub; a profile that has played shows the card
+exactly as before.
+
+His own profile has runs, so HE still gets the card on his next session, which is
+the point of the thing existing.
+
+Verified all three states through the real hub frame: a no-runs no-stamp profile
+comes out stamped 2.76 with no card shown; a five-run unstamped profile keeps the
+card up while standing still; ten frames of held W stamp it and save. Parsecheck
+PASS at v2.79, all four maps drive and draw clean with 10 of 10 entities moving.
+The itch zip is rebuilt at v2.79, so tonight's upload carries this.
+
+Not verified: whether a fresh player should get a different card, a welcome
+rather than a changelog, which is a real idea and a design call; the legend list
+already carries the controls and the hub prompts carry the flow, so the cold
+start is not unaided, and a welcome card is his to want. Also not verified: the
+zero-runs test reads P.runs, which counts finished raids; a friend who opens the
+game, walks the hub and closes without raiding stays a "fresh" profile and would
+see no card even after future updates until they actually play, which is judged
+correct rather than a hole.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

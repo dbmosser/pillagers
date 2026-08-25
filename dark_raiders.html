@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.78';
+var VER='2.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13190,6 +13190,13 @@ function drawHubHUD(ox,oy){
   // does on the hub is walk, and a card that needs its own key to close is a
   // card that gets stuck. Stamped seen on dismissal, not on display, so closing
   // the tab mid-card shows it again next time.
+  // RETURNING PLAYERS ONLY, v2.79. A fresh profile has no lastSeenVer, and with
+  // friends arriving cold from the itch link tonight, their first screen would
+  // have been a list of CHANGES to controls they never used: "your FIRE button
+  // NOW does..." means nothing without a before. A profile with no runs stamps
+  // itself current silently and never sees the card; the card greets the player
+  // it was written for, the one coming back.
+  if(P.lastSeenVer!==WHATSNEW_VER&&!(P.runs>0)){ P.lastSeenVer=WHATSNEW_VER; saveProfile(); }
   if(P.lastSeenVer!==WHATSNEW_VER){
     var wnW=LH(430), wnH=LH(56)+WHATSNEW.length*LH(17);
     var wnX=W/2-wnW/2, wnY=H/2-wnH/2-LH(20);
