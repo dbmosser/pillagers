@@ -6470,6 +6470,50 @@ worth 25 minutes against a predicted zero. Also not verified: the feud's +0.7 at
 6 discordant pairs is statistically nothing and is reported as the direction of a
 whisper, not a finding.
 
+### v2.59: the v2.48 loot sounds never played, because I wired them to a path his game does not take
+
+A defect in my own recent work, found by reading the call graph and owned in full.
+
+v2.48 added pickRare, pickElite and pickGun and verified them green: nine chooser
+cases correct, twenty-five real containers opened, voices selected properly. All of
+that was true and none of it mattered, because the verification called
+openContainer's FULL path directly, and live play has not used that path for
+whole containers since v1.61. His containers open through STAGED PULLS: items come
+out one at a time as the search bar fills, each granted through grantLoot with an
+early return that bypasses the announcement entirely, and the full open then runs
+at the very end with an EMPTY list. So the special-find sounds shipped, tested
+clean, and never once played in his game; every staged find got a silent text
+label and the container's closing got the same old generic blip. The tell was
+right there in the flow: the finish was announcing "Found: " with nothing after
+it.
+
+THE FIX PUTS THE VOICE WHERE THE MOMENT IS. A rare, elite or field gun now sounds
+the instant it comes OUT of the box mid-search, which is better than the v2.48
+design as well as an actual repair of it: the payoff lands on the pull, not on the
+container closing seconds later. Commons stay silent during staging, so a
+three-item crate does not chirp three times; the plain pick blip still marks the
+container finishing, and a finish with items left, which happens when a container
+is opened in one lump by any other caller, keeps the full v2.48 announcement.
+
+THE LESSON, BLUNTLY, FOR MY OWN VERIFICATION PRACTICE. I verified the function and
+not the game. openContainer(ct) was the obvious thing to call and it is not what
+play calls. The fixture drive that would have caught this, hold E at a real
+container and watch the staged path, existed all along and was used for the FIX in
+under a minute: a planted rare and a gun both came out through the staged pulls,
+two items granted, container opened, nothing thrown. That is the drive v2.48
+should have run.
+
+Verified: parsecheck PASS at v2.59, all four maps and the hub drive and draw
+clean, and a full staged search driven on a live raid with a rare and a gun in the
+box, both pulled through the repaired path, bag up two, no throw. The fixture is
+silent by construction, so no sound played during any of it, which is the point of
+the fixture.
+
+Not verified: the sound itself in his ears, unchanged from v2.48's caveat, and now
+actually reachable for him to judge. Also not verified: whether the elite fanfare
+overlapping a firefight is legible or lost; the voices were tuned for the quiet of
+looting and a strongbox cut under siege is not quiet.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.58';
+var VER='2.59';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -6831,11 +6831,14 @@ function grantLoot(ct,keys){
     spark(ct.x,ct.y,itm.c,7,120);
   }
   if(!G.sim){
-    say('Found: '+ct.loot.map(function(k){return ITEMS[k].name;}).join(', '));
-    // The payoff now matches what was actually in there. A gun outranks the
-    // rarity ladder because it is a different kind of find: an Auto Rifle and a
-    // Cell Bank are both 'rare' and only one of them changes how the raid goes.
-    blip(lootVoice(ct.loot),undefined,undefined);
+    // After staged pulls the list is usually empty by the time the full open
+    // runs; announcing "Found: " with nothing in it was v2.48's tell that the
+    // voices were wired to the wrong path. An empty finish gets the plain blip
+    // as the container-closed tick and nothing else.
+    if(ct.loot.length){
+      say('Found: '+ct.loot.map(function(k){return ITEMS[k].name;}).join(', '));
+      blip(lootVoice(ct.loot),undefined,undefined);
+    } else blip('pick');
     ping(p.x,p.y,90,false,false,'player','move');
   }
 }
@@ -7765,6 +7768,21 @@ function updatePlayer(dt){
           var _k=near.loot.shift();
           near.pulled=(near.pulled||0)+1;
           openContainer(near,[_k]);
+          // THE v2.48 LOOT VOICES WERE UNREACHABLE, v2.59, and this is where they
+          // actually belong. That build wired pickRare, pickElite and pickGun into
+          // the FULL-open path of openContainer, and verified them by calling that
+          // path directly. But live play opens containers through THESE staged
+          // pulls, which grant through grantLoot and bypass the full path
+          // entirely; the full open then runs at the end with an empty list. So
+          // the sounds shipped, tested green, and never once played in his game.
+          // The voice now fires the moment the special item comes OUT of the box,
+          // which is the moment his note was about. Commons stay silent here so
+          // three staged pulls do not chirp three times; the ordinary pick blip
+          // still marks the container finishing below.
+          if(!G.sim){
+            var _lv=lootVoice([_k]);
+            if(_lv!=='pick') blip(_lv);
+          }
           near.best=bestRarity(near.loot);
           _due--;
         }
