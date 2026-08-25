@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.35';
+var VER='2.36';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -8853,7 +8853,10 @@ function endRaid(how){
       // Where the raid actually ends. Three separate mechanisms aimed at the trip out
       // have now failed to move the extract rate, so the next question is whether the
       // trip out is where anybody dies. diedInSiege answers it directly.
-      diedInSiege:T.diedInSiege||0,callGreed:T.callGreed||0,timeOfDeath:Math.round(CFG.raidSec-G.timeLeft)};
+      diedInSiege:T.diedInSiege||0,callGreed:T.callGreed||0,timeOfDeath:Math.round(CFG.raidSec-G.timeLeft),
+      // Carried on the row itself so a batch can never be compared across tiers
+      // by accident. seasonLoot scales haul and seasonHp scales enemy health.
+      tier:worldTier(),lootMul:+seasonLoot().toFixed(3),hpMul:+seasonHp().toFixed(3)};
     return;
   }
 
@@ -13087,6 +13090,20 @@ function buildExport(){
   L.push('=== DARK RAIDERS v'+VER+' FLIGHT RECORDER ===');
   L.push('Profile: '+P.runs+' runs, '+P.ext+' extracted, '+P.died+' died, best haul '+P.best+'c, credits '+P.credits+', rep '+P.rep+', pack T'+(P.pack+1));
   L.push('Active config ['+(CFG.preset||'custom')+']: '+JSON.stringify(CFG));
+  // THE WORLD TIER SCALES EVERY NUMBER BELOW IT, v2.36, and nothing said so.
+  // seasonLoot() multiplies ival, so every haul and every credit figure in this
+  // file is scaled by it, and seasonHp() multiplies the health of every machine.
+  // Both read P.worldTier with no sim guard, so the headless batch inherits it
+  // too: every measurement this project has published was taken at whatever tier
+  // the profile happened to be on, and never recorded which. The fixture profile
+  // is on tier 1, so the last twenty-odd builds of sim numbers were all measured
+  // at loot x1.08 and enemy health x1.06 rather than at neutral. That does not
+  // make them wrong, since every arm was paired inside one tier, but it makes
+  // them non-transferable to a profile on a different tier, and nobody could have
+  // known that from the export.
+  L.push('World tier '+worldTier()+' (season '+seasonNo()+'): loot x'+seasonLoot().toFixed(2)+
+         ', enemy health x'+seasonHp().toFixed(2)+
+         (worldTier()===0?'  [neutral]':'  [every haul and credit figure below is scaled by this]'));
   L.push('');
   var tagCount={};
   P.log.forEach(function(r){ (r.tags||[]).forEach(function(t){ tagCount[t]=(tagCount[t]||0)+1; }); });

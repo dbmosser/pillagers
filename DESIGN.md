@@ -5135,6 +5135,66 @@ map's. Also not verified: whether a bot that skips junk should also skip it when
 bag is nearly full, which is the point where a common crate two steps away beats an
 elite across the street. The dial has no notion of how much room is left.
 
+### v2.36: every number I have published was measured at world tier 1 and never said so
+
+v2.35 ended naming a blind spot in simPip: it weighs rarity against distance but
+never against how much room is left in the bag. Checked first, and it is mostly not
+a blind spot, which is worth saying before anything else.
+
+RARITY ALREADY PROXIES THE THING THE LOAD PENALTY CHARGES FOR. Carry is unlimited
+since 2026-08-22, so weight costs you speed and noise rather than space, which means
+the quantity that matters is value per unit weight. Across the whole item table:
+
+    rarity      mean value/weight   median   min    max
+    common             63             60      23     110
+    uncommon          186            155     105     275
+    rare              352            317     260   1,400
+    elite             765            760     425   1,550
+
+Medians of 60, 155, 317, 760, roughly two and a half times a tier, cleanly
+separated. A bot choosing by pip is already choosing approximately by value per
+weight. The blind spot I named is real only at the edges where the ranges overlap,
+and I am recording that rather than building a fix for it.
+
+THEN THE THING I ACTUALLY FOUND, WHICH IS ABOUT MY OWN NUMBERS. ival multiplies
+every item value by seasonLoot(), and every machine's health is multiplied by
+seasonHp(). Both read P.worldTier and neither has a sim guard, so the headless
+batch inherits whatever tier the profile is on.
+
+The fixture profile is on TIER 1. So loot has been scaled by 1.08 and enemy health
+by 1.06 for every measurement this session, roughly twenty builds of arms, and not
+one of them recorded it. The tier advances only when a season reward is claimed,
+which also zeroes the season points, so tier 1 with sp 0 is consistent and not a
+defect; the defect is that nothing anywhere wrote the number down.
+
+It does not make the comparisons wrong. Every arm was paired inside a single tier,
+so the multiplier appears on both sides and cancels, which is the same argument that
+saved the haul figures at v2.33. What it does is make them NON-TRANSFERABLE. A
+profile on tier 0 sees 8 percent less loot and 6 percent weaker machines than every
+figure in this file, a profile on tier 5 sees 40 and 30 percent more, and nobody
+reading the export could have told which they were looking at.
+
+Fixed by making it impossible to miss. simResult now carries tier, lootMul and hpMul
+on every row, so a batch cannot be compared across tiers by accident. And the export
+header states it in words:
+
+    World tier 1 (season 2): loot x1.08, enemy health x1.06
+      [every haul and credit figure below is scaled by this]
+
+with a [neutral] marker instead when the tier is 0, verified by flipping the profile
+to 0 and back.
+
+Not verified: what tier HIS profile is on. The fixture is a copy and has been through
+a season claim; his live save on 8802 may be on 0, 1 or something else, and if it is
+not 1 then the absolute figures I have been quoting to him are off by up to 8 percent
+on loot in whichever direction. The next export he sends will now say so on its first
+screen, which is the point of the change, but until then I cannot correct the record.
+Also not verified: whether the sim SHOULD inherit his tier at all. Modelling his
+actual world is a defensible reason to, and shielding the measurement from a moving
+profile is a defensible reason not to; the v1.96 grudge-record fix chose shielding
+for a similar case, and I have chosen visibility here rather than quietly picking a
+side on his behalf.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
