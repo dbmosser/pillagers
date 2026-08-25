@@ -2583,6 +2583,85 @@ threshold. Also not verified: whether a readout is enough at all, since he has t
 be crouching already to see it, and the thing he never does is press the key. A
 first-raid prompt would reach him and a HUD label may not.
 
+### v1.98: the looting decision does not exist on most containers, and my fix for it did not earn its place
+
+His recorder's own verdict was "fix the looting phase first" and his note was
+"looting feels so uninspired, how can we make it more interesting???". This build
+is the measurement behind that, plus an attempted fix that I built, measured and
+then defaulted back off.
+
+WHAT LOOTING ACTUALLY PAYS. Every container on all four maps, six seeds each,
+priced through ival so rarity and market modifiers are included:
+
+    type     avg     per second   under 150c   single item   median gain
+    crate    101c      72/s         81.8%        49.3%           0
+    body     242c     242/s         38.5%        50.7%           0
+    locker   357c     162/s         26.3%        32.4%          48
+    safe   1,614c     475/s          0%           0%           508
+    cache  4,399c     956/s          0%           0%         1,102
+
+The first three columns are defensible tiering: the common thing pays less than
+the rare thing. The last two are not.
+
+v1.61 sorts container loot worst first and describes that one line as "what turns
+a search from a hold-to-collect into a decision... every container asks the same
+question the raid asks: is one more thing worth the time it costs." Measured, that
+question is only ever asked by safes and caches. Half of all CRATES hold a single
+item, so there is no second thing to stay for, and the median gain from finishing
+the bar on a crate is exactly zero. Crates are about 48 percent of every container
+in the game and bodies another 10, so on roughly 58 percent of what you open the
+decision the design is built around cannot fire at all.
+
+THE FIX I TRIED. A crate always holds two. Cheapest possible change: it touches no
+loot table and no item value, it converts an existing one-or-two roll into two.
+
+It did exactly what it was designed to do:
+
+    single-item crates       51.4%  ->  0%
+    crates with no gain      62.5%  ->  19.2%
+    average crate value        99c  ->  134c
+
+AND IT IS STILL NOT WORTH SHIPPING. The decision it creates is not worth making.
+The second item averages 35 credits against a first item of 56, so the question
+becomes "is another 35c worth 0.7 more seconds", which is the same non-decision
+wearing a second coat. Giving him two worthless things instead of one worthless
+thing is not an answer to "uninspired".
+
+And it costs. Over 120 seeds an arm:
+
+                  extract    haul      containers   duration
+    crateMin 1     20.8%    8,136        16.1        178s
+    crateMin 2     16.7%    7,764        16.0        183s
+
+Haul fell 4.6 percent, which surprised me and has a clean mechanism: the bot fills
+its bag by WEIGHT, so an extra near-worthless item displaces better loot it would
+otherwise have carried out. Adding volume to a weight-capped bag makes the bag
+worse. The extract difference is 25 extractions against 20 at 120 seeds and sits
+inside the noise, so I am not claiming it.
+
+So the default goes back to 1 and the dial stays. This is a negative result and
+the honest version of it is that I fixed the letter of the v1.61 mechanic and not
+its spirit.
+
+WHERE THE REAL PROBLEM IS. Not the count, the contents. 81.8 percent of crates pay
+under 150c and they are half the containers in the game, so the modal looting
+experience in Dark Raiders is opening something worth 76 credits. The fix has to
+change what a crate can CONTAIN, or widen its variance so that a few are genuinely
+worth stopping for, which is what v1.78 already argued when it said the thing that
+makes loot exciting is variance you caused. Both of those are balance decisions
+about how the economy should feel, and they are his, not mine.
+
+Verified: parse PASS at 1.98, four maps draw with drawErr null, hub renders, and
+the default really is restored, 46.2 percent of 630 sampled crates hold a single
+item again.
+
+Not verified: whether widening crate variance would actually feel better, because
+I have not built it. Also not verified: whether the 4.6 percent haul drop would
+persist if the second item were valuable rather than junk. The weight-displacement
+mechanism predicts it would not, since a heavy valuable item earns its place in
+the bag, but that is reasoning rather than measurement and the moment I test it I
+am choosing an economy, which is the part I am leaving to him.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

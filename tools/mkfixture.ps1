@@ -147,6 +147,12 @@ window.__repair={cost:repairCost,replace:replaceCost,go:repairGun};
 // Container opening, whole or by subset, so the staged pull can be driven and checked
 // without needing a key held down for four seconds of real time.
 window.__open=function(ct,keys){ return openContainer(ct,keys); };
+// Item value and the item table, so a probe can price a container's contents.
+// ival applies rarity and market modifiers on top of the raw table value, so
+// reading ITEMS[k].val directly would understate everything.
+window.__ival=function(k){ return ival(k); };
+window.__items=function(){ return ITEMS; };
+window.__loot=function(){ return LOOT; };
 window.__bestRarity=function(a){ return bestRarity(a); };
 window.__simSeedsFull=function(seeds){
   var out=[],i;
