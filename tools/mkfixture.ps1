@@ -175,6 +175,8 @@ window.__water={at:inWater};
 window.__tune={toggle:toggleTune,sliders:function(){return SLIDERS;}};
 // Renders the hub scene INCLUDING its HUD and any card; __frame only draws raids.
 window.__hubFrame=function(dt){ drawHubWorld(dt===undefined?0.016:dt); };
+// The hub state itself, so a cold-start walk can visit stations for real.
+window.__hb=function(){ return HB; };
 // THE MEASUREMENT BASELINE, ONE CALL, v2.67. Every batch this cycle opened with
 // the same twenty hand-typed dial assignments, and twice a smoke test that
 // skipped them produced rates that meant nothing and briefly looked like

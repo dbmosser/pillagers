@@ -7280,6 +7280,47 @@ game, walks the hub and closes without raiding stays a "fresh" profile and would
 see no card even after future updates until they actually play, which is judged
 correct rather than a hole.
 
+### v2.80: a fresh player gets a rolled starter instead of two identical pistols
+
+Third cold-start find in three builds, and the deepest, surfaced by driving the
+first raid a friend will play tonight from a genuinely wiped profile.
+
+The fresh-profile literal shipped equipped:'pistol', and the deploy grants every
+operator a Scav Pistol sidearm unconditionally. So a brand-new player's first
+kit was their owned Scav Pistol as primary AND the issued Scav Pistol as
+sidearm: two identical guns, an X swap that swaps nothing, and wear quietly
+accruing on their only owned weapon from the first shot of their first raid,
+toward a jam mechanic and a repair shop they have never heard of. Worse, the
+four rolled starters, Ferro, Kettle, Stitcher, Hullcracker, exist for exactly
+one stated reason, giving a first raid some character after bare-hands deploys
+proved a death spiral, and the profile default meant that system NEVER FIRED for
+the only players it was built for. His own recorded runs are full of starters
+because his profile reads equipped 'fists'; fresh friends were getting a blander
+first raid than the developer ever saw.
+
+The fix is the one field: a new profile is born with equipped:'fists', which
+routes the deploy to the rolled-starter branch exactly as that code's own
+comment promises. The owned pistol stays in the armoury for whenever they choose
+it deliberately, wear-free until then. Existing profiles are untouched, this is
+only the literal a new profile is created from, and the loadProfile guard
+already handles 'fists' as an equipped value.
+
+Verified from a wiped profile through the REAL flow: fresh boot, hub, walk onto
+the DEPLOY LIFT, press E through the actual hub step, and the raid opens with an
+ISSUED starter, Ferro plus the Scav Pistol sidearm, wepIssued true, three
+deploys from three. The full cold path also drove clean end to end earlier in
+the same probe set: no card for a fresh profile, DAM first map, two bandages, no
+rig, 120 frames of raid without a throw. Parsecheck PASS at v2.80, all four maps
+and the hub drive and draw clean. The itch zip is rebuilt at v2.80.
+
+Not verified: starter VARIETY across fresh deploys, since the three probe
+deploys re-entered from near-identical PRNG state and all rolled Ferro; the
+pick(STARTERS) mechanism is untouched by this change and its variety has been in
+live service since v1.0x, so this is noted rather than chased. Also not
+verified: whether a fresh player should ALSO start without the armoury pistol
+entirely; owning one unused gun is harmless and gives the armoury screen
+something to show, so it stays.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
