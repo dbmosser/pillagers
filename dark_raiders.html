@@ -421,7 +421,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.02';
+var VER='2.03';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -452,7 +452,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -7040,6 +7040,18 @@ function updateBot(dt){
   // The bot pays the same carry cost the player does, or the sim would be measuring a
   // player who does not exist and would report a change nobody can feel.
   var LD=loadOf(bagWeight());
+  // THE BOT NEVER DREW ITS SIDEARM, v2.03, second of the two holes the guard sweep
+  // confirmed. Every deploy gives the player a Scav Pistol with a full magazine as
+  // p.sec and p.secAmmo, and swapGuns has no sim guard at all, so it works
+  // headlessly. updateBot simply never called it, and its dry test read only
+  // p.ammo+p.reserve. The reserve is one universal pool, so when it emptied the bot
+  // walked off the raid with a loaded pistol in its other hand.
+  // Not a small bookkeeping error, because the dry clause is one of the four
+  // conditions that END the looting phase. A raid a player would have fought out
+  // with a sidearm was recorded as ending early, which is the measurement the v1.68
+  // ammo economy note rests on: 40 percent of raids running completely dry, first
+  // empty at a median of 270 seconds. Those numbers counted a gun still in hand.
+  if(CFG.simSidearm!==0&&p.sec&&(p.ammo+p.reserve)<=0&&(p.secAmmo||0)>0) swapGuns();
   if(threat&&(p.ammo>0||p.reserve>0)){
     p.face=Math.atan2(threat.y-p.y,threat.x-p.x);
     if(p.ammo===0){
@@ -7084,7 +7096,7 @@ function updateBot(dt){
     else { navSeek(p,PD.x,PD.y,botSpd(CFG.pSpeed*.92*LD.spd*CSPD*BWADE),dt); moved=true;
            p.face=Math.atan2(PD.y-p.y,PD.x-p.x); }
   // leave enough clock to walk there AND sit through the whole inbound wait
-  } else if(bagWeight()>=CFG.simGreed||bagWeight()>=cap||G.timeLeft<CFG.extractWait+120||(p.ammo+p.reserve)<=0){
+  } else if(bagWeight()>=CFG.simGreed||bagWeight()>=cap||G.timeLeft<CFG.extractWait+120||(p.ammo+p.reserve+((CFG.simSidearm!==0&&p.sec)?(p.secAmmo||0):0))<=0){
     var z=G.active;
     G.botWantsOut=true;
     navSeek(p,z.x,z.y,botSpd(CFG.pSpeed*.95*LD.spd*CSPD*BWADE),dt); moved=true;

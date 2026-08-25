@@ -2925,6 +2925,63 @@ so when the universal reserve empties it abandons the raid while holding a full
 Scav Pistol magazine, which corrupts the ammo-economy measurement v1.68 rests on.
 That is a real finding and it is still open.
 
+### v2.03: the bot walked off raids holding a loaded pistol
+
+Second of the two holes the v2.02 guard sweep confirmed, and the last one it
+found. Every deploy hands the player a Scav Pistol with a full magazine as p.sec
+and p.secAmmo. swapGuns has NO sim guard, so it works headlessly. updateBot simply
+never called it, and its dry test read only p.ammo+p.reserve. The reserve is one
+universal pool, so when it emptied the bot ended its raid with a second gun still
+loaded in the other hand.
+
+That is not bookkeeping, because the dry clause is one of the FOUR conditions that
+end the looting phase:
+
+    bagWeight()>=CFG.simGreed || bagWeight()>=cap ||
+    G.timeLeft<CFG.extractWait+120 || (p.ammo+p.reserve)<=0
+
+A raid a player would have fought out with a sidearm was recorded as ending early.
+That is the measurement the v1.68 ammo economy note rests on, 40 percent of raids
+running completely dry with the first empty at a median of 270 seconds, and those
+numbers counted a gun still in hand.
+
+Both halves fixed: the bot swaps when the primary is dry and the sidearm has
+rounds, and the dry test counts the sidearm so it cannot bail while still armed.
+
+Measured, 120 seeds an arm:
+
+                     extract   duration   shots   containers   haul
+    no sidearm        20.8%      177s     121.3     15.9       7,899
+    draws sidearm     22.5%      182s     123.7     16.3       8,078
+
+Directionally exactly as predicted, and small. Plus 1.7 points, plus 5 seconds,
+plus 2.4 shots. The paired view is the useful one: 100 of 120 seeds come back BYTE
+IDENTICAL, 118 have the same outcome, 2 flip to extract, and ZERO flip to dead.
+
+Zero flips to dead is the part worth having. The change is strictly non-harmful:
+there is no seed where drawing the pistol made things worse, which is what you
+want from a fix that gives the bot a capability it should always have had.
+
+The reason the aggregate is small is that the dry clause rarely binds. Only 20 of
+120 seeds differ at all, so on roughly 83 percent of raids the bot dies or fills
+its bag before ammo ever becomes the deciding condition. The defect was real and
+its blast radius is one raid in six.
+
+That also puts a caveat on v1.68 rather than overturning it. I cannot say from
+here whether "40 percent run completely dry" was inflated by this bug, because
+that figure was measured on a build many versions back with a different bot, a
+different economy and a different set of sim divergences. What I can say is that
+the condition it counted was being evaluated with one gun missing.
+
+Not verified: whether the bot should also swap the OTHER way, back to a reloaded
+primary once reserve ammo is found. It swaps to the pistol and stays there, so a
+bot that picks up an ammo box after going dry keeps fighting with the sidearm
+while its rifle sits holstered with a full reserve behind it. That is now the
+asymmetry, and it is smaller than the one it replaced but it is the same shape.
+Also not verified on the other three maps; container density changes how often the
+bag threshold beats the ammo threshold, so the one-in-six figure is specific to
+THE QUARRY.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
