@@ -3114,6 +3114,73 @@ non-monotone extract result is real signal or noise. 23.3, 27.5, 25.0 at 120 see
 a side is inside a standard error, so the honest reading is that the dial moved
 raids around without moving outcomes.
 
+### v2.06: the Listener never meets you, and that is why nothing else about it matters
+
+v2.05 established that the Listener hears a walking player at 230 units and that
+turning that up made the player do BETTER, not worse. I guessed the reason was its
+blindness: sight 26 with a cone of zero, so it arrives where the sound was and
+cannot find you. That guess was incomplete. Tracking every Listener across twelve
+full raids gives the actual shape:
+
+    median closest approach to the player   985 units
+    damage range                             26 units
+    raids where it got within damage range    1 of 12
+    raids where it never woke at all          7 of 12
+
+Seven of twelve raids it never activates. Not "fails to kill you", never wakes:
+zero hunt seconds, zero wakes. On a map about 4,500 units across, with two of them
+at random free spots at least 1,000 from the drop, and a hearing radius of 230 for
+a walking player, the player simply never passes close enough to one.
+
+And when it does wake it does not converge. Seed 1079193 woke thirty six times,
+gave up twenty eight times, hunted for seventy two seconds, and never got closer
+than 1,454 units. Seed 1015841 woke twenty one times and hunted for 353 seconds
+with a closest approach of 1,529. That is not a pursuit, it is an oscillation:
+hear something at the edge of range, run at it, mill for seven seconds, sleep,
+hear again.
+
+So there are two independent failures stacked, and the one I found second is the
+bigger one. Blindness explains why it cannot finish. Rarity explains why it never
+starts. Raising listenGain at v2.05 addressed the second a little and made the
+first worse, which is exactly why it produced more hunting and fewer kills.
+
+The design comment above it says the noise system becomes load bearing "the moment
+one of these wakes up". Measured: that moment arrives in five raids out of twelve,
+and pays off in one.
+
+WHAT I FIXED, both narrow and neither a balance decision.
+
+N_LISTEN was the only enemy count in the file that was not a dial. nSentry,
+nCrawler, nSnitch and nRaider are all CFG; this was a bare 2. The machine whose
+entire purpose is to make noise matter could not be tuned without editing code.
+nListen now exists and defaults to the same 2.
+
+And the silence term was applying by halves. termsOn reads P.terms with no sim
+guard, and listenersHearInner already used hasTerm('silence') unguarded to widen
+the reach by fifty percent, but the extra machine that term grants was fenced
+behind !sim. So a sim raid with that term got the hearing bonus and not the body.
+Seventh instance of the family the v2.02 sweep closed, and the narrowest, since it
+only bites when that term is on. Verified: default is 2, the dial moves it to 5,
+and with the term active a sim raid now spawns 3 as the real game always did.
+Profile terms were empty throughout, so this never touched any earlier number.
+
+WHAT I DID NOT FIX, deliberately. Every remaining option changes what this enemy
+IS. More of them, a bigger radius, placement near loot rather than at random, or
+sight to reacquire on arrival: those are four different machines. The Listener as
+written is a rare ambush that punishes noise in a specific place; the alternatives
+turn it into a patrolling threat, a map-wide pressure, or a hunter. Picking is his,
+and I have now spent two builds circling it, which is the point to stop and hand
+over a complete diagnosis rather than keep making unilateral changes to an enemy
+whose purpose is undecided.
+
+Not verified: whether placement is the cheapest lever. Listeners use
+far(freeSpot(map,26),1000), pure random at least 1,000 from the drop, while the
+peddler is deliberately parked at a landmark about 1,700 out. Placement intent
+already exists elsewhere in this file, so putting a Listener where looting happens
+is a small change with a potentially large effect, and it is the first thing I
+would test if he wants that machine to matter. I have not tested it because
+choosing where it stands is choosing what it is for.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
