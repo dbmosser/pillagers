@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.43';
+var VER='2.44';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -6141,7 +6141,29 @@ function damagePlayer(amt,src,srcName){
     var soak=(RA&&typeof RA.absorb==='number')?RA.absorb:0.55;
     var ab=Math.min(p.armor,amt*soak); p.armor-=ab; amt-=ab;
   }
-  p.hp-=amt; p.hitFlash=.28; G.shake=Math.max(G.shake,5);
+  // HIS NOTE, 2026-08-25: "show damage as red on the health bar momentarily so
+  // player can see what damage they just took". The bar jumped straight to the
+  // new value, so a hit that took 14 and a hit that took 34 looked identical:
+  // the bar was shorter and that was all you got. hpGhost is the health you had
+  // BEFORE this hit. It holds for dmgHold seconds, so the red block is readable,
+  // then drains, so the size of the block is the size of the hit.
+  // Pure presentation: nothing here is read by any decision, so the sim is
+  // untouched and no PRNG draw is added.
+  var _pre=p.hp;
+  p.hp-=amt;
+  if(amt>0){
+    // A second hit while the red is still showing extends the same block rather
+    // than restarting from the lower value, or a burst reads as one small hit.
+    if(!(p.hpGhost>_pre)) p.hpGhost=_pre;
+    p.dmgHold=0.55;
+    p.lastDmg=Math.round(amt); p.dmgPopT=1.05;
+  }
+  // The flash and the shake now scale with the size of the hit instead of being
+  // one constant, which is the other half of "clearer indicators": a graze and a
+  // sentry burst should not feel the same.
+  var _sev=clamp(amt/26,0.35,1.9);
+  p.hitFlash=Math.max(p.hitFlash||0,.20+.30*_sev);
+  G.shake=Math.max(G.shake,4+7*_sev);
   blip('hit'); decal(p.x+rnd(-10,10),p.y+rnd(-10,10),'#7a1a14',rnd(6,13));
   if(p.hp<=0){
     p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src;
@@ -7123,6 +7145,12 @@ function updatePlayer(dt){
   // and only on a gun that is actually fouled, so a maintained weapon never
   // does this.
   if(p.jam>0){ p.jam-=dt; if(p.jam<=0&&!G.sim) say('Cleared.'); }
+  // The red damage block: hold, then drain toward the real value. Drain is
+  // proportional so a big hit takes visibly longer to bleed off than a small one.
+  if(p.hpGhost===undefined||p.hpGhost<p.hp) p.hpGhost=p.hp;
+  if(p.dmgHold>0) p.dmgHold-=dt;
+  else if(p.hpGhost>p.hp) p.hpGhost=Math.max(p.hp,p.hpGhost-(28+(p.hpGhost-p.hp)*2.6)*dt);
+  if(p.dmgPopT>0) p.dmgPopT-=dt;
   if(mouse.down&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){
     if(p.wep.mag===0){
       // magazine-less weapon (fists): swings for free, HUD already labels it MELEE
@@ -11445,15 +11473,42 @@ function drawHUD(){
     ctx.fillStyle=ccol; ctx.fillText(clab,W-24,by-LH(92));
     ctx.textAlign='left';
   }
-  bar(16,by,280,18,p.hp/p.maxhp,p.hp>50?'#5fae6f':(p.hp>25?'#d0a13c':'#c8452f'));
-  ctx.font=FS(TYPE.head); ctx.fillStyle='#FFF6DC';
-  ctx.fillText('HP  '+Math.round(p.hp),24,by+14);
+  // HIS NOTE, 2026-08-25: "health bar needs to be bigger/more prominent". It was
+  // 280 by 18 sharing the bottom-left column with armour and stamina at the same
+  // width, so the thing that kills you looked like the thing that makes you jog.
+  // Now 360 by 26 with the number set in the title face, and armour and stamina
+  // stay narrow underneath it so the hierarchy reads at a glance.
+  var HBW=360,HBH=26;
+  bar(16,by,HBW,HBH,p.hp/p.maxhp,p.hp>50?'#5fae6f':(p.hp>25?'#d0a13c':'#c8452f'));
+  // THE RED BLOCK, his note the same day. Drawn from the current health up to
+  // what it was before the hit, so the width of the red IS the size of the hit.
+  if(p.hpGhost>p.hp){
+    var g0=16+HBW*clamp(p.hp/p.maxhp,0,1);
+    var g1=16+HBW*clamp(p.hpGhost/p.maxhp,0,1);
+    // Brighter while held, fading as it drains, so it reads as a fresh wound.
+    var ga=p.dmgHold>0?0.95:0.72;
+    ctx.fillStyle='rgba(224,72,58,'+ga+')';
+    ctx.fillRect(g0,by,Math.max(0,g1-g0),HBH);
+    ctx.fillStyle='rgba(255,214,206,.9)';
+    ctx.fillRect(g0,by,2,HBH);
+  }
+  ctx.font=FS(TYPE.title); ctx.fillStyle='#FFF6DC';
+  ctx.fillText('HP  '+Math.round(p.hp),24,by+18);
+  // The number that was just taken off, floating clear of the bar and fading.
+  if(p.dmgPopT>0&&p.lastDmg>0){
+    var dpa=clamp(p.dmgPopT/1.05,0,1);
+    ctx.save();
+    ctx.font=FS(TYPE.title);
+    ctx.fillStyle='rgba(232,86,70,'+dpa+')';
+    ctx.fillText('-'+p.lastDmg,16+HBW+14,by+18-(1-dpa)*14);
+    ctx.restore();
+  }
   if(p.armor>0){
     bar(16,by-22,280,11,p.armor/armorCap(),'#5aa9e6');
     ctx.font=FS(TYPE.micro);
     ctx.fillText('ARMOR  '+Math.round(p.armor),24,by-13);
   }
-  bar(16,by+22,280,8,p.stam/100,'#8fb5c8');
+  bar(16,by+HBH+4,280,8,p.stam/100,'#8fb5c8');
   ctx.textAlign='right';
   ctx.font=FS(TYPE.head); ctx.fillStyle='#cdd6dd';
   if(p.wep.wearName&&p.wep.wearName!=='CLEAN'){

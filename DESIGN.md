@@ -5660,6 +5660,59 @@ so it idles. It idled before too, just noisily, and I have not measured whether 
 band costs anything. Also not verified: the p=0.0128 result is BURIED CITY and the
 Compact SMG only, as every arm in this thread has been.
 
+### v2.44: the health bar is twice the bar it was, and a hit now leaves a mark you can read
+
+His three notes, 2026-08-25, all about the same thirty pixels: "health bar needs to
+be bigger/more prominent", "taking damage needs better/clearer indicators", "show
+damage as red on the health bar momentarily so player can see what damage they just
+took".
+
+WHY THE OLD BAR TOLD HIM NOTHING. It was 280 by 18, drawn in the bottom left in the
+same column and at the same width as armour and stamina. Three bars, one size, so
+the one that kills you looked like the one that makes you jog. And it snapped
+straight to the new value on a hit, which means a graze that took 8 and a sentry
+burst that took 34 produced the identical event: the bar is shorter now, work out
+the rest yourself.
+
+WHAT IT IS NOW. 360 by 26 with the number set in the title face, and armour and
+stamina left narrow underneath so the hierarchy reads without being read.
+
+THE RED BLOCK IS THE HIT, AT ITS ACTUAL SIZE. hpGhost holds the health you had
+before the round landed. It sits still for 0.55 seconds, so the block is legible
+rather than a flicker, then drains toward the true value at a rate proportional to
+its own size, so a big hit visibly takes longer to bleed off than a small one. The
+width of the red IS the damage. A second hit while the red is still up EXTENDS the
+same block rather than restarting from the lower value, or a burst of three would
+read as one small hit, which is exactly backwards from what he asked for.
+
+The number comes with it: the amount taken floats to the right of the bar and fades
+over about a second, so there is a figure as well as a shape.
+
+AND THE FLASH AND THE SHAKE NOW SCALE WITH THE HIT. Both were constants, .28 flash
+and 5 shake, whatever hit you. They now ride a severity term clamped to 0.35 to 1.9,
+so a graze and a burst stop feeling the same. That is the "clearer indicators" half
+and it costs nothing: no new state, no PRNG draw.
+
+NOTHING HERE REACHES THE SIM. hpGhost, dmgHold, lastDmg and dmgPopT are read only
+by drawHUD. No decision consults them, no random number is drawn, so every arm in
+this file remains comparable across this build. Worth stating because presentation
+changes have leaked into measurement here before.
+
+Verified by driving it rather than by reading it: a 24 point hit through eDmg 1.2
+lands as 29, health goes 100 to 71 with the ghost held at 100 and lastDmg 29; after
+40 frames the hold has expired and the ghost has drained to 90.8; after 240 it has
+reconciled at the true value. Parsecheck PASS, all four maps and the hub draw clean
+with the block on screen.
+
+Not verified: how it actually looks. The fixture proves the numbers move correctly
+and that drawing them throws nothing; it cannot tell me whether 360 by 26 is the
+right size on his monitor or whether 0.55 seconds is the right hold. Those are
+judgements he makes by playing it, and the two constants are one line each if he
+wants them different. Also not verified: the damage number is drawn to the RIGHT of
+the bar, at x 390, and I have not checked that against every HUD element that lives
+along that edge at small window widths, so it may collide with something on a narrow
+window.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
