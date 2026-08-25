@@ -66,6 +66,7 @@
   .row .nm { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .row .vl { color:var(--amber); font-size:10.5px; }
   .swatch { width:3px; height:13px; border-radius:1px; flex:none; }
+  .ic { flex:none; image-rendering:auto; vertical-align:middle; margin-right:2px; }
   .r-common{color:#cfd8ef;} .r-uncommon{color:#7fc4a0;} .r-rare{color:#7cc4ff;} .r-elite{color:#d08ce8;}
   button { font-family:'Rubik',system-ui,sans-serif; background:transparent;
     border:1px solid var(--steel-hi); color:var(--bone); padding:5px 9px; font-size:10px;
@@ -443,7 +444,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.87';
+var VER='2.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -465,7 +466,7 @@ var WHATSNEW=[
   'Tuning Console: toggles for heals, feuds and windows.',
   'The Undercroft is five stations now. Holt handles all trade.',
   'The world breaks: walls, cars, glass all have HP now.',
-  'Inventory is an item grid: real icons, stacks, drag to hotbar.'
+  'Item graphics everywhere: inventory grid, hotbar, shops, stash.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -12678,8 +12679,9 @@ function drawTrade(){
     var noRig=(IT.use==='armor'&&armorCap()<=0);
     var can=!S.sold&&!noRig&&(P.credits||0)>=S.price;
     ctx.font=FS(TYPE.label);
+    if(!S.sold) drawItemIcon(ctx,S.k,x+LH(24),cy-LH(5),LH(18));
     ctx.fillStyle=S.sold?'#4d5762':(can?IT.c:'#8a5a4a');
-    ctx.fillText('['+(i+2)+']  '+(S.sold?'sold':IT.name),x+14,cy);
+    ctx.fillText('['+(i+2)+']  '+(S.sold?'sold':IT.name),x+LH(38),cy);
     ctx.textAlign='right';
     ctx.fillStyle=S.sold?'#4d5762':(can?'#ffc04a':'#8a5a4a');
     ctx.fillText(S.sold?'gone':(noRig?'no rig':(S.price.toLocaleString()+'c')),x+PW-14,cy);
@@ -12730,6 +12732,34 @@ function gunIcon(c,id,cx,cy,S,tint){
   c.restore();
 }
 function drawItemIcon(c,key,cx,cy,S){
+  // Shop pseudo-keys: rigs and backpacks are not ITEMS, but they deserve faces
+  // in the rows that sell them. rig_light|rig_medium|rig_heavy draw a vest that
+  // thickens with the tier; 'pack' draws the backpack.
+  if(key&&key.indexOf('rig_')===0){
+    var tier=key.slice(4), tc=tier==='heavy'?'#7a8ea0':(tier==='medium'?'#6a9ab0':'#5aa9e6');
+    var th=tier==='heavy'?1.0:(tier==='medium'?0.8:0.62);
+    c.save(); c.translate(cx,cy);
+    c.fillStyle='rgba(0,0,0,.35)'; c.fillRect(-S*.3+1.5,-S*.36+1.5,S*.6,S*.72);
+    c.fillStyle=tc;
+    c.fillRect(-S*.3,-S*.36,S*.6,S*.72);
+    c.fillStyle=darkHex(tc,0.55);
+    c.fillRect(-S*.3,-S*.36,S*.14,S*.72); c.fillRect(S*.16,-S*.36,S*.14,S*.72);
+    c.fillStyle='rgba(255,255,255,.3)'; c.fillRect(-S*.3,-S*.36,S*.6,S*.1);
+    c.fillStyle=darkHex(tc,0.4);
+    c.fillRect(-S*.16,-S*.1,S*.32,S*.09*th);
+    c.fillRect(-S*.16,S*.08,S*.32,S*.09*th);
+    c.restore(); return;
+  }
+  if(key==='pack'){
+    c.save(); c.translate(cx,cy);
+    c.fillStyle='rgba(0,0,0,.35)'; c.fillRect(-S*.28+1.5,-S*.34+1.5,S*.56,S*.68);
+    c.fillStyle='#8a6a3a'; c.fillRect(-S*.28,-S*.34,S*.56,S*.68);
+    c.fillStyle='rgba(255,255,255,.3)'; c.fillRect(-S*.28,-S*.34,S*.56,S*.16);
+    c.fillStyle=darkHex('#8a6a3a',0.55);
+    c.fillRect(-S*.28,-S*.06,S*.56,S*.1);
+    c.fillRect(-S*.1,S*.12,S*.2,S*.16);
+    c.restore(); return;
+  }
   var it=ITEMS[key];
   // Weapon ids arrive from the hotbar; field guns arrive as gun_* items.
   if(WEAPONS[key]) return gunIcon(c,key,cx,cy,S);
@@ -12964,6 +12994,29 @@ function drawItemIcon(c,key,cx,cy,S){
   c.restore();
 }
 // Bag stacks: identical items grouped, Minecraft style, order of first pickup.
+// The same icons for the DOM: rendered once per key and size to an offscreen
+// canvas, cached as a dataURL, dropped into shop and stash rows as an <img>.
+// The cache is tiny (a few dozen 26px sprites) and never invalidates, because
+// the painters are pure functions of the item table.
+var _iconURL={};
+function itemIconURL(key,S){
+  var ck=key+'|'+S, hit=_iconURL[ck];
+  if(hit) return hit;
+  var cnv=document.createElement('canvas'); cnv.width=S; cnv.height=S;
+  var c2=cnv.getContext('2d');
+  drawItemIcon(c2,key,S/2,S/2,S*0.82);
+  return _iconURL[ck]=cnv.toDataURL();
+}
+function iconImg(key,S){
+  var im=document.createElement('img');
+  im.className='ic'; im.src=itemIconURL(key,S||26);
+  im.style.width=(S||26)+'px'; im.style.height=(S||26)+'px';
+  return im;
+}
+function iconImgHTML(key,S){
+  S=S||22;
+  return '<img class="ic" src="'+itemIconURL(key,S)+'" style="width:'+S+'px;height:'+S+'px">';
+}
 function bagStacks(){
   var st=[],ix={};
   for(var i=0;i<G.bag.length;i++){ var k=G.bag[i];
@@ -14165,7 +14218,7 @@ function renderGamble(){
   for(var i=0;i<log.length;i++){
     var it=ITEMS[log[i]];
     if(!it) continue;
-    h+='<div class="row"><span class="nm" style="color:'+(RCOL[it.r]||'#cdd6dd')+'">'+it.name+'</span>'+
+    h+='<div class="row">'+iconImgHTML(log[i],22)+'<span class="nm" style="color:'+(RCOL[it.r]||'#cdd6dd')+'">'+it.name+'</span>'+
        '<span class="vl">'+it.val.toLocaleString()+'c</span></div>';
   }
   el.innerHTML=h;
@@ -14180,7 +14233,7 @@ function renderCrate(){
   var h='';
   for(var i=0;i<kit.length;i++){
     var it=ITEMS[kit[i]];
-    h+='<div class="row"><span class="nm" style="color:'+(RCOL[it.r]||'#cdd6dd')+'">'+it.name+'</span></div>';
+    h+='<div class="row">'+iconImgHTML(kit[i],22)+'<span class="nm" style="color:'+(RCOL[it.r]||'#cdd6dd')+'">'+it.name+'</span></div>';
   }
   el.innerHTML=h;
   var b=document.getElementById('cratetoggle');
@@ -14237,7 +14290,7 @@ function renderHub(){
   }
   keysArr.forEach(function(k){
     var it=ITEMS[k],row=document.createElement('div'); row.className='row';
-    var sw=document.createElement('div'); sw.className='swatch'; sw.style.background=it.c;
+    var sw=iconImg(k,24);   // the item's face, v2.88; the 3px swatch is retired
     var nm=document.createElement('div'); nm.className='nm r-'+it.r;
     nm.textContent=it.name+' x'+counts[k];
     var vl=document.createElement('div'); vl.className='vl'; vl.textContent=ival(k)+'c';
@@ -14259,6 +14312,7 @@ function renderHub(){
     // knows is skipped rather than allowed to take the hub down.
     var wp=WEAPONS[k]; if(!wp) return;
     var row=document.createElement('div'); row.className='row';
+    row.appendChild(iconImg(k,26));
     var nm=document.createElement('div'); nm.className='nm'; nm.textContent=wp.name;
     row.appendChild(nm);
     if(k!==P.equipped){
@@ -14526,7 +14580,10 @@ function renderShop(){
         saveProfile(); renderShop(); renderHub();
       };
     }
+    var sic=o.kind==='wep'?o.k:(o.kind==='rig'?('rig_'+o.k):(o.kind==='pack'?'pack':o.k));
+    row.appendChild(iconImg(sic,26));
     row.appendChild(nm); row.appendChild(vl); row.appendChild(b);
+    row.insertBefore(row.children[0],nm);
     s.appendChild(row);
   });
 }
@@ -14547,6 +14604,7 @@ function renderWork(){
     any.forEach(function(id){
       var W=WEAPONS[id],ST=wearStep(id),C=repairCost(id);
       var row=document.createElement('div'); row.className='row';
+      row.appendChild(iconImg(id,26));
       var nm=document.createElement('div'); nm.className='nm';
       nm.innerHTML=W.name+' <span style="color:'+ST.c+'">'+ST.name+'</span>'+
         '<br><span style="color:var(--ash);font-size:9.5px">'+wearOf(id)+' rounds &middot; '+
@@ -14570,6 +14628,8 @@ function renderWork(){
   })();
   RECIPES.forEach(function(r){
     var row=document.createElement('div'); row.className='row';
+    var outKey=null; for(var ok2 in r.out){ outKey=ok2; break; }
+    if(outKey) row.appendChild(iconImg(outKey,26));
     var nm=document.createElement('div'); nm.className='nm';
     var need=[],can=true,k;
     for(k in r.need){

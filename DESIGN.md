@@ -7661,6 +7661,47 @@ they scale with his text setting, but eyes beat arithmetic. Also: gamepad bag
 navigation still speaks list, DPAD up/down only; the grid needs left/right
 wired for pad, one line each, queued with the shop pass.
 
+### v2.88: the shops got faces too, finishing the item-graphics note
+
+The second half of "any time the player is interacting with inventory, gun
+selection, shops, etc." v2.87 built the renderer and the inventory; this build
+carries the same pictures into every remaining surface.
+
+THE BRIDGE TO THE DOM IS A CACHE. The shop, workshop, stash, armoury, gambler
+and dev crate are HTML modals, not canvas, so itemIconURL renders each icon once
+to an offscreen canvas, caches the dataURL by key and size, and iconImg drops it
+into a row as an ordinary img. The cache is a few dozen 26 pixel sprites,
+computed lazily, never invalidated, because the painters are pure functions of
+the item table.
+
+WHERE THE FACES NOW ARE. Holt's shop: every row, with two pseudo-keys invented
+for the goods that are not ITEMS, rigs draw as a vest that thickens with its
+tier and the backpack draws as a pack. The workshop: repairs lead with the
+worn gun's own silhouette, recipes lead with the face of what they MAKE, so
+"Armor Plate from 2 comp and a board" reads at a glance as a plate. The stash:
+the three-pixel colour swatch is retired for the item's portrait. The armoury:
+each owned gun's silhouette beside its name, the same picture the hotbar shows
+when you carry it. Vesh's log and the dev crate list: inline icons in their
+string rows. And the Peddler's canvas panel, met mid-raid: his stock now shows
+the key, the box and the plate beside their prices.
+
+Verified through the real stations rather than by calling renderers: the trader,
+stash, gambler and dev box were each walked to and opened with their actual
+keys, and the DOM counted 16 icon images in the shop, 7 in the workshop, 10 in
+the crate and 5 in the stash; the gambler read zero on an empty log, which is
+correct, and 3 once the log had entries. The Peddler's panel was captured in
+pixels, tools/shots/peddler_icons.png, key and ammo box and plate all present.
+Parsecheck PASS at v2.88, all four maps and the hub drive and draw clean with
+10 of 10 entities moving. The whatsnew line now says icons are everywhere, and
+the itch zip is rebuilt at v2.88.
+
+Not verified: the merc bench, which still shows text, deliberately: mercenaries
+are PEOPLE, and a person deserves a portrait system rather than an item icon,
+which is authorship worth its own decision. Also not verified: DOM icon
+appearance at his zoom and text scale; the imgs are sized in CSS pixels and do
+not ride LH(), which is fine at 100 percent zoom and untested elsewhere. Also
+the standing caveat: legibility is judged by his eyes, not my geometry.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
