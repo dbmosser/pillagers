@@ -2354,6 +2354,100 @@ building fall from 1.0 to 2.2. It is small enough to be noise at eight seeds a
 cell and I have not chased it, so the density dial still has an unmeasured ceiling
 somewhere above 2.2 rather than a proven one.
 
+### v1.95: the bot can trade, and the harness I have been measuring on was leaking
+
+v1.87 established that the peddler's 0.55 beats every survival rate on every map,
+and closed by saying the sim could not model using him, so every rate quoted was
+the rate for a player who ignores him. This build fixes that, and finding out how
+badly took three attempts and turned up something worse than the original
+question.
+
+FOURTH GUARD, SAME SHAPE. The peddler was gated out of the sim entirely:
+
+    // decision is live. Never in the sim. The bot has no trade logic, so a
+    // neutral body in the crowd would only muddy the balance numbers.
+    if(!sim){ ... mkPeddler ... }
+
+True when written, and now the exact thing standing in the way. That is windfalls
+at v1.78, crouch at v1.80, the hard crouch rule at v1.82, and now this. Every
+performance or determinism guard in this file eventually becomes a correctness
+hole, and the tell is always the same: a comment explaining why the sim does not
+need to model something the player relies on.
+
+pedSellAll is sim safe now. A headless batch must never credit P.credits or call
+saveProfile, or it pays him for raids he never played and writes the profile
+hundreds of times a batch. Verified: profile untouched across both arms.
+
+THREE ATTEMPTS, AND THE FIRST TWO WERE MY OWN FAULT.
+
+Attempt one: the policy diverted the moment the bag was worth 1,500, and the
+peddler sits about 1,700 from the drop, so the bot abandoned looting immediately
+and marched across open ground. Containers 15.2 to 6.9, duration 175s to 102s,
+extract 20 to 5.8 percent, and only 11 of 120 raids ever arrived. That is a
+measurement of a bad player, not of the peddler, and reported as-is it would have
+condemned his price for reasons that have nothing to do with the price. Fixed with
+a proximity gate: sell when the stall is on your way, within 700, which is what a
+person does.
+
+Attempt two: spawning the peddler was gated on simSell, so the selling arm drew
+random numbers at map build that the ignoring arm did not, and the same seed
+produced a different raid. It reported extract rate moving 20 to 10.8 percent on
+the strength of 5 raids out of 120 that actually sold, which is arithmetically
+impossible. Exactly the v1.78 trap. simPed and simSell are now separate: he is on
+the map in both arms, and only whether the bot walks over differs.
+
+AND THEN THE HARNESS ITSELF. Chasing attempt two I checked determinism properly
+and found this:
+
+  one seed replayed three times, resetting body and runs:  IDENTICAL
+  six seed batch run twice, resetting the usual four:      DIVERGES
+  six seed batch run twice, restoring the WHOLE profile:   IDENTICAL
+  fields of P observably changed by a batch:               NONE
+
+The last two contradict each other and I do not yet know why. Restoring P
+wholesale fixes it while nothing in P appears to change, which means either the
+JSON diff is blind to something, a removed key or an identity rather than a value,
+or the leaking state is not in P at all and the restore is fixing it by side
+effect. A once-per-session cache that consumes randomness the first time it is
+built would fit every observation including that the later seeds in a batch
+converge while the first few differ. A four angle search with adversarial
+verification is running against the file.
+
+The practical consequence is stated plainly because it touches my own past work:
+every multi-arm batch this session started arm two from whatever arm one left
+behind. The large effects are far too big to be leakage, crouch at plus 26 points
+and targeted furniture repair at plus 16 buildings among them, but the small ones
+deserve less confidence than I gave them and I will say which once the cause is
+known. From here the standard is a full profile snapshot restored before every
+arm, which is proven stable.
+
+THE RESULT, on the stable harness, peddler present in both arms, 120 seeds:
+
+                    ignore    sell
+    extract rate     12.5%    10.8%
+    containers        15.4     14.7
+    duration          173s     176s
+    raids that sold      0        5
+    avg realised      1501     1376
+
+Paired: 84 of 120 seeds byte identical, which is the correctness check, since a
+seed where the bot never meets him must produce the same raid in both arms. 107
+of 120 realise the same credits. Eight better selling, five worse.
+
+The number that matters is the five seeds where he actually sold. On every one of
+them the bot DIED IN BOTH ARMS. Ignoring him realised zero. Selling realised 4,866
+each. That is the peddler doing exactly what the comment above him claims: the bag
+on your back is worth full price and can be taken from you, his offer is worth
+half and cannot. On a raid you were going to lose, half of something beats all of
+nothing, and this is the first direct measurement of it rather than an argument
+from the break-even.
+
+Not verified: whether the aggregate is positive, because the policy diverts on
+roughly thirty percent of seeds and closes a sale on four. The extract difference,
+12.5 against 10.8, is fifteen extractions against thirteen and is noise at this
+sample. Also not verified, and still deliberately his: whether 0.55 is the right
+number. This build measures what the rate does, it does not choose it.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

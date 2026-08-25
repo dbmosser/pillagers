@@ -421,7 +421,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.94';
+var VER='1.95';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -452,7 +452,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,autoEquip:0};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -4508,7 +4508,10 @@ function strayGive(e){
   label(e.x,e.y-34,'+'+pay+'c','#ffc04a',0.35,false);
 }
 function pedSellAll(){
-  if(!G||!G.trade) return;
+  // G.trade is the open stall panel, which only exists in the real game. The bot
+  // has no panel, so it is allowed through under G.sim and the caller is
+  // responsible for having put it next to a peddler first.
+  if(!G||(!G.trade&&!G.sim)) return;
   var i,tot=0,n=0,kept=[];
   for(i=0;i<G.bag.length;i++){
     var k=G.bag[i];
@@ -4517,14 +4520,22 @@ function pedSellAll(){
     if(ITEMS[k]&&ITEMS[k].use==='key'){ kept.push(k); continue; }
     tot+=Math.round(ival(k)*pedBuyRate()); n++;
   }
-  if(!n){ say('Nothing in your bag he wants.'); return; }
+  if(!n){ if(!G.sim) say('Nothing in your bag he wants.'); return; }
   G.bag=kept;
-  P.credits+=tot; saveProfile();
+  // SIM SAFE, v1.95. The bot needs to be able to trade so the peddler can finally
+  // be measured, and a sim raid must never touch the saved profile: crediting
+  // P.credits from a headless batch would quietly pay him for raids he never
+  // played, and saveProfile on every sale would write the profile hundreds of
+  // times a batch. The sale still happens and is still recorded on the raid, it
+  // just does not reach the bank.
+  if(!G.sim){ P.credits+=tot; saveProfile(); }
   G.pedSold=(G.pedSold||0)+tot;
   if(G.tel) G.tel.pedSold=G.pedSold;
-  G.trade.traded=1;
-  say('Sold '+n+' for '+tot.toLocaleString()+'c. Banked, whatever happens next.');
-  blip('pick'); ping(G.trade.x,G.trade.y,190,false,false,'player','move');
+  if(G.trade) G.trade.traded=1;
+  if(!G.sim){
+    say('Sold '+n+' for '+tot.toLocaleString()+'c. Banked, whatever happens next.');
+    blip('pick'); ping(G.trade.x,G.trade.y,190,false,false,'player','move');
+  }
 }
 function pedBuy(ix){
   if(!G||!G.trade) return;
@@ -5071,9 +5082,26 @@ function buildRaid(sim){
   }
   // One Peddler per raid, parked at whichever landmark sits about 1700 out from
   // the drop: far enough that reaching him is a decision, near enough that the
-  // decision is live. Never in the sim. The bot has no trade logic, so a neutral
-  // body in the crowd would only muddy the balance numbers the sim exists for.
-  if(!sim){
+  // decision is live. NOT in the sim unless simSell is on, v1.95. The comment
+  // that used to sit here said 'never in the sim, the bot has no trade logic, so
+  // a neutral body in the crowd would only muddy the balance numbers'. That was
+  // true and is now the thing standing in the way: the bot HAS trade logic as of
+  // this build, and v1.87 measured that his 0.55 beats every survival rate on
+  // every map, so a sim with no peddler in it is a sim of a strictly worse game
+  // than the one being played. This is the FOURTH performance-or-determinism
+  // guard to turn into a correctness hole the same way, after windfalls at v1.78,
+  // crouch at v1.80 and the hard crouch rule at v1.82. Default simSell 0 keeps
+  // him out and every historical number reproducible.
+  // SPAWNING AND USING ARE SEPARATE DIALS, and they have to be, because mkPeddler
+  // and its placement search both draw from the seeded stream. Gating the SPAWN on
+  // simSell meant the selling arm consumed random numbers the ignoring arm did
+  // not, so the same seed produced a different raid and the two arms were not
+  // comparable at all: extract rate appeared to move from 20 to 10.8 percent on
+  // the strength of 5 raids out of 120 that actually sold, which is arithmetically
+  // impossible and was pure stream divergence. Exactly the trap v1.78 hit with
+  // windfalls. simPed puts him on the map, simSell decides whether the bot walks
+  // over. Turn simPed on in BOTH arms and the comparison is paired again.
+  if(!sim||CFG.simPed||CFG.simSell){
     var lmp=map.landmarks||[],pbest=null,pbd=1e9;
     for(var lp=0;lp<lmp.length;lp++){
       var LP=lmp[lp],lcxx=LP.x+LP.w/2,lcyy=LP.y+LP.h/2;
@@ -6940,6 +6968,37 @@ function updateBot(dt){
       }
     }
     if(td<110){ botCrouch=false; moveToward(p,p.x-(threat.x-p.x),p.y-(threat.y-p.y),CFG.pSpeed*.7*LD.spd,dt); moved=true; }
+  // THE BOT CAN USE THE PEDDLER, v1.95, and until now it could not, so every
+  // extract rate this project has quoted is the rate for a player who ignores
+  // him. v1.87 measured that his 0.55 beats every survival rate on every map,
+  // which makes selling the mathematically correct move and makes a sim that
+  // never sells a sim of the wrong game. simSell 0 is the old blind behaviour and
+  // stays the default so the whole back catalogue of numbers remains reproducible.
+  // 1 walks to the stall once the bag is worth the detour and empties it.
+  // Checked BEFORE the extract branch, because the entire point is that selling
+  // competes with extracting for the same bagful.
+  } else if(CFG.simSell&&(function(){
+      if(bagValue()<(CFG.simSellMin===undefined?1500:CFG.simSellMin)) return false;
+      var pd=null;
+      for(var pq=0;pq<G.ents.length;pq++) if(G.ents[pq].kind==='peddler'){ pd=G.ents[pq]; break; }
+      if(!pd||!pedOpen()) return false;
+      // ONLY IF HE IS ON YOUR WAY. The first version of this policy diverted the
+      // moment the bag was worth 1,500, and the peddler is parked about 1,700
+      // units from the drop, so the bot abandoned looting almost immediately and
+      // marched across open ground to reach him. Measured: containers fell 15.2
+      // to 6.9, raid length 175s to 102s, extract rate 20 to 5.8 percent, and
+      // only 11 of 120 raids ever arrived. That is not a measurement of the
+      // peddler, it is a measurement of a bad player, and it would have made the
+      // stall look worthless for reasons that have nothing to do with his price.
+      // A real player sells when the stall is convenient. So: proximity gate.
+      if(dist(p,pd)>(CFG.simSellNear===undefined?700:CFG.simSellNear)) return false;
+      G.botPed=pd;
+      return true;
+    })()){
+    var PD=G.botPed;
+    if(dist(p,PD)<70){ pedSellAll(); G.botPed=null; }
+    else { navSeek(p,PD.x,PD.y,CFG.pSpeed*.92*LD.spd*CSPD,dt); moved=true;
+           p.face=Math.atan2(PD.y-p.y,PD.x-p.x); }
   // leave enough clock to walk there AND sit through the whole inbound wait
   } else if(bagWeight()>=CFG.simGreed||bagWeight()>=cap||G.timeLeft<CFG.extractWait+120||(p.ammo+p.reserve)<=0){
     var z=G.active;
@@ -8158,7 +8217,7 @@ function endRaid(how){
 
   if(G.sim){
     G.simResult={outcome:how,seed:G.seed,dur:Math.round(CFG.raidSec-G.timeLeft),haul:haul,items:G.bag.length,
-      containers:T.containers,windfalls:T.windfalls||0,crouched:T.tCrouchBot?Math.round(T.tCrouchBot):0,siegeArrivals:T.siegeArrivals||0,siegeNoSpot:T.siegeNoSpot||0,killer:T.deathKiller,firstContact:T.firstContact===null?null:Math.round(T.firstContact),
+      containers:T.containers,windfalls:T.windfalls||0,pedSold:T.pedSold||0,crouched:T.tCrouchBot?Math.round(T.tCrouchBot):0,siegeArrivals:T.siegeArrivals||0,siegeNoSpot:T.siegeNoSpot||0,killer:T.deathKiller,firstContact:T.firstContact===null?null:Math.round(T.firstContact),
       shots:T.shots,hits:T.hits,kills:T.kills,closest:Math.round(T.closestExtract),
       downs:T.downs,revives:T.revives,raidersExt:T.raidersExtracted,
       beaconCalls:T.beaconCalls,beaconMissed:T.beaconMissed,
