@@ -4127,6 +4127,75 @@ a platform at lift 0, and nothing in the file stops that or warns about it. I le
 them because changing provably-safe code adds risk for no measured gain, but they
 are a trap laid for whoever adds the next map.
 
+### v2.20: canSee guards one argument correctly and two wrongly, on the same line
+
+v2.19 closed with the sweep's own limitation written down: the regex matched
+`X || <number>` and therefore could not see the same bug written as `x ? x : d`
+or with a variable or call on the right. This build sweeps those two forms, and
+they come back clean, which is worth saying plainly.
+
+THE SELF-TEST TERNARY, `X ? X : d`. Eleven sites. Every one is either a clamp
+(botSpd returns v<SPEED_FLOOR?SPEED_FLOOR:v, which is a floor and not a default),
+a string fallback, or a null-object guard. None of them is a numeric default where
+0 is legal. Nothing to fix.
+
+THE IDENTIFIER DEFAULT, `X || <name>`. Thirty-odd sites, and almost all are plain
+boolean logic rather than defaults: G.sim||G.over, p.moving||p.downed, !rig||
+rig==='none'. The genuine defaults are table lookups falling back to another table
+entry, which cannot be 0. caller.roleT||rnd(...) does treat 0 as unset, and that is
+correct: roleT 0 means the role has expired and a fresh duration is exactly what
+should be rolled.
+
+ONE SITE IS DIFFERENT, AND IT IS THE WORST POSSIBLE PLACE FOR IT.
+
+    function canSee(px,py,face,tx,ty,segs,far,cone,amb){
+      var chh=cone===undefined?CH():cone;
+      var lim=...<=chh?(far||VF()):(amb||AMBR());
+
+The same expression guards `cone` with an explicit undefined test and `far` and
+`amb` with ||. So a caller asking for a sight range of ZERO, which is the natural
+way to say blind, gets the full default instead. That is the exact inversion you
+least want in the function every enemy's eyes run through, and v2.14 measured that
+two of every three deaths in this game are a sentry.
+
+IT IS NOT REACHABLE TODAY AND I CHECKED RATHER THAN ASSUMED. The enemy call site
+passes e.rng*mult*pcon*wkSight and CFG.eAmbient*pcon*wkSight. eAmbient's slider is
+bounded 40 to 200. wkSight is 0.32 or 1. pcon is concealAt, which returns
+1-(1-raw)*clamp(pw,0,1) with raw floored at 0.10 for a crouched stationary player
+in a bush. Minimum 0.10, never 0.
+
+So the safety of the most load-bearing sight test in the game rests entirely on a
+constant in an unrelated function, and the obvious future tuning move, making full
+concealment actually full, would hand every machine on the map its default vision
+back. That is a landmine rather than a bug, and it is one line to defuse.
+
+PROVED INERT RATHER THAN ASSERTED INERT. seeStrict 0 keeps the ||, so both live in
+one build, and 120 seeds an arm on BURIED CITY comparing outcome, duration, shots,
+hits, haul, containers, killer, first contact and jams as one joined string:
+
+    120 paired seeds, 120 BYTE IDENTICAL, 0 differing
+
+And proved not to be a no-op, by calling canSee directly with a target 30 units in
+front and a range of zero:
+
+                        far 0      far 340   far undefined
+    seeStrict 0 (old)   SEES       sees      sees
+    seeStrict 1 (new)   blind      sees      sees
+
+The old code sees a target through a sight range of zero. The new code does not,
+and both agree everywhere else, which is the whole claim.
+
+Not verified: whether any FUTURE caller wants far=0 to mean "use the default". I
+have assumed zero means zero, which is the only reading that makes the argument
+useful, but the old behaviour was ten builds of history and something could have
+been written to lean on it. Nothing in the file does today, which is what the 120
+identical seeds demonstrate, and it would only matter if a call site were added
+that passes a computed 0 and expects full vision, which would be a strange thing to
+write on purpose. Also not verified: the sweep still cannot see this class when the
+default is supplied by a caller further up, for example a function that takes an
+options object and spreads defaults into it. This file does not use that pattern,
+so I did not build a probe for it.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

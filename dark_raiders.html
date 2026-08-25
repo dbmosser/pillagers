@@ -436,7 +436,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.19';
+var VER='2.20';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -467,7 +467,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -3649,7 +3649,25 @@ function conePoly(px,py,face,half,range,segs,rays){
 function canSee(px,py,face,tx,ty,segs,far,cone,amb){
   var dx=tx-px,dy=ty-py,d=Math.sqrt(dx*dx+dy*dy);
   var chh=cone===undefined?CH():cone;
-  var lim=Math.abs(angDiff(Math.atan2(dy,dx),face))<=chh?(far||VF()):(amb||AMBR());
+  // THE SAME LINE GUARDS cone CORRECTLY AND far AND amb WRONGLY, v2.20. cone uses
+  // an explicit undefined test one line up; far and amb use ||, so a caller asking
+  // for a sight range of ZERO gets the full default instead of blindness. That is
+  // the exact inversion you least want in the function every enemy's eyes run
+  // through: two of every three deaths in this game are a sentry, and a sentry
+  // sees through here.
+  // It is NOT reachable today and I checked rather than assumed. The enemy call
+  // site passes e.rng*mult*pcon*wkSight and CFG.eAmbient*pcon*wkSight, where
+  // eAmbient's slider is bounded 40 to 200, wkSight is 0.32 or 1, and pcon is
+  // concealAt, which returns 1-(1-raw)*clamp(pw,0,1) with raw floored at 0.10.
+  // So the minimum is 0.10 and never 0. The safety of the most important sight
+  // test in the game rests entirely on a constant in an unrelated function, and
+  // anyone tuning a crouched stationary player in a bush down to fully hidden
+  // would hand every machine on the map its default vision back.
+  // seeStrict 0 restores the || so the two can be proven identical.
+  var _far=(far===undefined||far===null)?VF():far;
+  var _amb=(amb===undefined||amb===null)?AMBR():amb;
+  if(CFG.seeStrict===0){ _far=far||VF(); _amb=amb||AMBR(); }
+  var lim=Math.abs(angDiff(Math.atan2(dy,dx),face))<=chh?_far:_amb;
   if(d>lim) return false;
   return losClear(px,py,tx,ty,segs);
 }
