@@ -5449,6 +5449,71 @@ verified: the crawler control is clean but it is one control; I did not construc
 arm where the sentry breakpoint stays put while another enemy's moves, which is the
 mirror test and would be stronger than what I ran.
 
+### v2.41: the mirror test says it really is the sentry, and also that I overstated v2.40
+
+No game logic changed. v2.40 ended naming the missing control: I had shown one
+enemy's breakpoint moving while another's held, and had not run the mirror, an arm
+where the SENTRY holds and something else moves. This is that arm, and it changes
+my confidence in both directions.
+
+BUILDING IT NEEDED FRACTIONAL DAMAGE AND A CORRECTION. Enemy health in the sim is
+sentry 150, crawler 52, raider 78. v2.40's arithmetic used 55 and 83, which are the
+TIER 1 values I read off a live raid by mistake; the sim pins tier 0, so the bases
+are 52 and 78. The conclusion is unaffected, since the sentry numbers were right,
+but the crawler and raider figures in that entry are one tier high. Verified that
+SMG damage takes a fractional value with no rounding anywhere in the path, so the
+breakpoints can be steered independently: at 10.2 damage a sentry takes 15 rounds,
+a raider 8, a crawler 6; at 10.6 the sentry still takes 15 and the raider still 8,
+and only the crawler drops, to 5.
+
+    120 seeds, BURIED CITY, sentry and raider breakpoints HELD, crawler moved
+
+    arm                          extract   shots   hits   duration
+    A  dmg 10.2, crawler 6         25.0%   145.7   94.7    195s
+    B  dmg 10.6, crawler 5         23.3%   147.2   97.1    188s
+
+    what killed the bot            A     B
+    nothing, extracted            30    28
+    sentry                        46    54
+    crawler                       25    23
+    raider                        11    12
+    warden                         3     1
+    listener                       2     1
+    timer                          3     1
+
+THE MIRROR PASSES. Making the crawler a full round cheaper to kill moves the
+extract rate by 1.7 points, standard error 5.5, which is a third of one standard
+error and is nothing. Crawler deaths move 25 to 23, which is also nothing. Compare
+the same manipulation applied to the sentry in v2.40: 7.5 points and fourteen
+deaths. Same kind of change, same size of change, different machine, and the effect
+disappears. That is the control v2.40 was missing and it points the same way.
+
+AND NOW THE PART THAT WEAKENS MY OWN LAST BUILD. Sentry deaths in this pair went 46
+to 54, a swing of eight, in an arm where the sentry breakpoint did not move at all.
+So eight deaths of drift is inside the noise of this measure at 120 seeds. v2.40
+reported fourteen and treated it as decisive. Fourteen against a noise floor of
+eight is about 1.75 times noise, which is suggestive and is not proof, and I
+presented it more firmly than that. The extract-rate contrasts are the same story:
+v2.40's 7.5 points is 1.34 standard errors and this build's 1.7 is 0.31, so neither
+arm clears the bar alone. What carries the claim is the three together, v2.39's
+pooled 2.8 standard errors plus a breakpoint that moves the outcome and a breakpoint
+that does not, and not any single number I have quoted.
+
+WHAT I NOW BELIEVE, STATED AT THE STRENGTH THE EVIDENCE SUPPORTS. The sentry duel
+is very likely the thing that world tier 1 breaks, the mechanism is one extra round
+in a fight that is close to even, and eHp 1.00 is still the setting to use. I would
+defend that as the best reading of five arms. I would not defend any particular
+number of points as the size of it.
+
+Not verified: why sentry deaths carry eight of drift when nothing about the sentry
+changed. The two arms differ in continuous time-to-kill even where the integer holds,
+10.2 against 10.6 is four percent faster, so some of it is real and some is seed
+noise, and I did not separate them. Also not verified, still: the other three maps
+and any weapon other than the Compact SMG. Also not verified: whether a same-damage
+pair, one arm run twice on the same seeds, would show the same eight-death spread,
+which is the measurement that would actually pin the noise floor instead of
+inferring it from one pair.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
