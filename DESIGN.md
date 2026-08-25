@@ -6394,6 +6394,41 @@ has no direct evidence yet. Also not verified: whether the early raider deaths a
 FIGHTS or ambushes; the telemetry records who killed the bot but not whether the
 bot fired back, and shots-fired-at-death would separate a duel from an execution.
 
+### v2.57: crews wear their colours, closing the gap v2.49 shipped with
+
+One small change, finishing a feature rather than adding one. v2.49 gave every
+raider a crew and set rival crews shooting each other, and its own Not verified
+line named the hole: nothing on screen said who was with whom, so a feud read as
+two identical men inexplicably trading fire. A feature whose whole value is being
+watched shipped illegible.
+
+Every raider's nameplate now carries a crew block: a small coloured bar ahead of
+the name, one colour per crew, red for crew one, blue for crew two, with two more
+colours banked in case raiderCrews is ever raised past two. The block draws only
+while the feud is live: mercenaries never show one, since they are exempt from
+feuding and their loyalty is to the wallet, and raiderFeud 0 removes the colours
+along with the behaviour, so the plate never advertises a war that is not
+happening.
+
+The nameplate was the right place rather than the coat. Coats already vary per
+IDENTITY, they are how you recognise a man you have met before, and repainting
+them by crew would have destroyed that to say something the plate can say in five
+pixels. The existing plate colour keeps its old meaning, grudge red, passive
+green, running teal, so the two systems stack: the bar says whose side he is on,
+the name colour says how he feels about YOU.
+
+Verified: parsecheck PASS at v2.57, all four maps and the hub drive and draw
+clean. Two rival raiders parked beside the player and a frame drawn with both
+plates on screen, no throw; the dial flipped off and drawn again, no throw. The
+crew indices confirmed different on the two test raiders, 1 and 0.
+
+Not verified: legibility, which is the entire point and cannot be read from a
+fixture. Five pixels of bar at nameplate distance may be too subtle on his
+monitor, and if it is, the width is one number. Also not verified: whether the
+bar should also appear on the corpse of a feud casualty, which would let him
+read a firefight he arrived too late to see; bodies currently carry no plate at
+all and that is a larger change than this one.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.56';
+var VER='2.57';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -11287,6 +11287,15 @@ function render2D(dt){
     var plate=ne.kind==='peddler'
       ? (pedOpen()?(G.nearPed===ne?'THE PEDDLER  [E] DEAL':'THE PEDDLER'):'THE PEDDLER  [CLOSED]')
       : ne.name+(ne.state==='extract'?' [RUNNING]':(ne._plateTag||''));
+    // CREWS ARE VISIBLE, v2.57. v2.49 gave every raider a crew and rival crews
+    // shoot each other, and then nothing on screen said who was with whom, so a
+    // feud read as two identical men inexplicably trading fire. The plate now
+    // carries the crew's colours: a small block ahead of the name, one colour
+    // per crew. Feuds are OFF for mercenaries and the colours mean nothing when
+    // the dial is off, so the block only appears while the feature is live.
+    var crewC=null;
+    if(ne.kind==='raider'&&CFG.raiderFeud!==0&&!ne.merc&&ne.crew!==undefined)
+      crewC=['#c8452f','#4a90c2','#c2a54a','#7a4ac2'][ne.crew%4];
     wc.font=FS(TYPE.micro);
     var tw=wc.measureText(plate).width;
     // Plate height follows the actual rendered font, or the scaled-up text
@@ -11294,6 +11303,10 @@ function render2D(dt){
     var ph2=Math.ceil(parseFloat(wc.font)*1.35);
     wc.fillStyle='rgba(6,9,13,.62)';
     wc.fillRect(ne.x-tw/2-4,ne.y-lift-ph2+3,tw+8,ph2);
+    if(crewC){
+      wc.fillStyle=crewC;
+      wc.fillRect(ne.x-tw/2-11,ne.y-lift-ph2+3,5,ph2);
+    }
     // SPEC 8.4: a visible hostility indicator per raider, so the situation is
     // readable before you commit. Grudge red, passive green, everyone else dim.
     if(ne.kind==='stray'){ wc.fillStyle=ne.helped?'#5a9a6a':'#7fc4a0'; } else
