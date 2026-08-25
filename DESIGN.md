@@ -6545,6 +6545,55 @@ question overlaps. Also not stored: per-seed rows, which the hand-rolled loops
 also dropped; if a future question needs per-seed haul or killer under both arms,
 the runner needs a rows option it does not have.
 
+### v2.61: the COLD raider problem is twice as many of the same fight, and two more theories are dead
+
+No game logic changed. Third pass at the v2.55 anomaly, raiders killing the bot 21
+times per 120 raids on COLD against 8 or 9 elsewhere, and this one lands on a
+mechanism by killing two more candidates first.
+
+THEORY TWO, FEUD CROSSFIRE, IS DEAD. The feud fires within 600 units of the bot by
+construction, COLD is the tightest map, and a stray feud round that hits the player
+is booked as killer:raider, so the arithmetic was tempting. Measured: 120 COLD
+seeds, feud off against feud on, killer distributions kept. Raider kills 19 without
+the feud, 21 with it. The anomaly predates the feud entirely, and as a bonus the
+feud's outcome-neutrality now holds on the hardest map too, 6.7 against 7.5 percent
+extract.
+
+WHAT THE DAMAGE PROBE SAYS. Forty COLD raids driven with the moment of FIRST raider
+damage recorded, distance and time: twelve raids take raider fire, first hit at a
+median of 35 seconds and 251 units, and all twelve shooters were in the chase
+state. Not corridor collisions, only two events under 150 units. Not window snipes
+either, nothing beyond 310. A raider SEES the bot inside the first minute, turns
+hostile, closes, and opens fire at rifle range.
+
+THE BURIED CONTRAST CLOSES IT. Same probe, same seeds, same forty raids: six events
+against COLD's twelve, at the same character, median 27 seconds and 213 units,
+chase state again. So COLD does not host a different KIND of raider encounter, it
+hosts the SAME encounter at TWICE the rate, and the doubled kill count follows
+directly. The question collapses from "why are COLD's raiders lethal" to "why does
+a raider spot the bot twice as often in COLD's first minute", and the honest
+candidates are the map's tight sightlines and the shared early loot routes of the
+smallest container pool. That remains unproven, but it is now a question about
+sighting geometry rather than about combat, feuds, timing or censoring, which is
+four wrong doors closed.
+
+WORTH SAYING ABOUT THE METHOD: every theory so far died to a probe that needed no
+new code. The sim's telemetry, dmg by source, killer, time of death, plus driven
+raids with __rawStep, has answered censoring, feuds, and now the encounter
+character, each in under half an hour. The instrument this project actually
+needed was built across v1.5 through v2.4, and this cycle is the payoff.
+
+Verified: parsecheck PASS at v2.61, all four maps and the hub drive and draw
+clean. VER and DESIGN.md only.
+
+Not verified: the sighting-geometry mechanism, which would need a probe that
+samples raider-to-bot line of sight through the first minute rather than waiting
+for damage; it is the natural next probe if the anomaly ever matters enough to
+act on. Also not verified: whether 12 of 40 against 6 of 40 is itself
+significant, roughly p 0.10 two-sided at these counts, so the DIRECTION agrees
+with the 120-seed kill counts but this probe alone would not carry the claim; the
+21-against-8 kill figures at 120 seeds remain the load-bearing evidence.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
