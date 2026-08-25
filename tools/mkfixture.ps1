@@ -151,6 +151,9 @@ window.__open=function(ct,keys){ return openContainer(ct,keys); };
 // ival applies rarity and market modifiers on top of the raw table value, so
 // reading ITEMS[k].val directly would understate everything.
 window.__ival=function(k){ return ival(k); };
+// Banking an extracted item, so the armoury invariant can be tested directly
+// rather than by driving a whole raid to a successful extraction.
+window.__bank=function(k){ return bankItem(k); };
 window.__items=function(){ return ITEMS; };
 window.__loot=function(){ return LOOT; };
 window.__bestRarity=function(a){ return bestRarity(a); };

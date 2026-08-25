@@ -3259,6 +3259,79 @@ in a single session. FOULED needs 950 rounds and his heaviest run fired 111, so 
 that pace it is roughly nine raids on one owned gun before the first jam is even
 possible.
 
+### v2.08: banking a gun never told the armoury you were holding it
+
+v2.07 ended on an open question, whether P.equipped going stale is reachable in
+normal play or is an artifact of this profile's history. It is reachable, and this
+is the site.
+
+Every place that adds to P.weapons maintains the invariant except one. Buying a
+gun sets P.equipped. endRaid repairs it on the death path. bankItem, which is how
+a recovered field gun enters the armoury, did neither. So the sequence is:
+
+    own nothing                    equipped is 'fists'
+    extract carrying a field gun   armoury fills, equipped still 'fists'
+    every deploy after that        indexOf(P.equipped)<0, loaner issued, no repair
+
+The deploy guard DETECTS the inconsistency and works around it rather than fixing
+it, so the state is self-perpetuating until you die or equip by hand. It is
+exactly the state the profile is in, six guns owned with fists equipped, and it is
+why six of six raids came back 'issued' at v2.07. It is also why the wear, jam and
+repair economy is unreachable, since wearable() and the jam field only exist for a
+gun you own AND carry.
+
+MY FIRST FIX WAS FENCED IN THE WRONG BRANCH AND WOULD NOT HAVE HELPED HIM. I put
+the repair inside if(indexOf(it.gk)<0), the new-gun branch. But a save that owns
+six guns recovers a DUPLICATE almost every time, and a duplicate falls straight
+through to the stash as loot. The repair would never have fired for the exact save
+that needed it. It now runs for any banked gun, and a duplicate still goes to the
+stash exactly as before.
+
+Verified as a matrix rather than a rate, because this is a correctness change:
+
+    armoury      equipped   banked      result
+    empty        fists      new gun     equips it, no stash
+    owns it      fists      DUPLICATE   equips it, still stashed as loot
+    owns other   stale id   new gun     equips it, no stash
+    two guns     owned gun  new gun     LEFT ALONE, added to armoury
+    two guns     owned gun  DUPLICATE   LEFT ALONE, still stashed
+    one gun      owned gun  a servo     untouched
+
+It repairs a broken state and never overrides a deliberate one.
+
+AND THE PAYOFF, ON HIS ACTUAL PROFILE. Three deploys in the stuck state came back
+issued, carrying hullcracker, hullcracker and ferro, all with no jam field at all.
+One duplicate recovery, and the next three deploys came back owned, carrying the
+SMG, with jam 0.06. That is the wear economy switching on: 6 percent per shot,
+because that gun is 8,312 rounds past FAILING and has never been repaired. The
+repair shop finally has a reason to exist, and 12,287 credits of repair bills sit
+against 13,085 in the bank.
+
+I am stating the downside plainly rather than selling this. He will now carry a
+FAILING gun where he used to carry a clean loaner, and that is a real change in
+his moment to moment experience. It is still correct: he owns those guns, he chose
+to buy them, and a game that quietly hands you a loaner forever because of a stale
+string is not protecting you, it is hiding a subsystem from you.
+
+FOUND AND NOT FIXED, DELIBERATELY: THE BOT CANNOT JAM. The jam roll lives at 6788
+inside if(mouse.down&&...), the player's fire path. The bot fires at 7113 and
+neither rolls a jam nor checks p.jam before shooting. So the consequence this
+build just switched on does not exist in the sim at all. That is the seventh
+divergence of the family the v2.02 sweep catalogued, and unlike the last few it
+is not inert: it is now load bearing, because v2.08 is what routes a player onto
+the guns where jam is live. It is its own change with its own measurement and it
+gets its own build rather than being smuggled into this one.
+
+Not verified: what this does to extract rate, and I want to be exact about why
+rather than call it small. I cannot measure it. An A/B would put an owned gun with
+better base stats against a loaner in a sim that never jams, so it would report
+the owned gun as strictly better and that number would be a lie by construction.
+The honest sequence is to fix the bot jam first and measure afterwards, which is
+the next build. Also not verified: whether a 6 percent jam is survivable in real
+play rather than merely correct. FAILING is a tier the game has never actually
+delivered to anybody, so nothing in this project's history says what it feels
+like, and he is about to be the first to find out.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
