@@ -421,7 +421,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.01';
+var VER='2.02';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -452,7 +452,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -7105,7 +7105,27 @@ function updateBot(dt){
       var gd=dist(p,p.goal);
       if(gd<40){
         p.searchT=(p.searchT||0)+dt;
-        if(p.searchT>=p.goal.time){ openContainer(p.goal); p.searchT=0; p.goal=null; }
+        // THE BOT LOOTED IN TOTAL SILENCE until v2.02, and that is the largest
+        // sim divergence found so far. updatePlayer emits a search ping every 0.5
+        // seconds of progress at radius 180, or 560 for a strongbox, and AI
+        // raiders pay it too. The bot emitted NOTHING: standing at a container
+        // means moved is false so the movement ping is skipped, and grantLoot's
+        // completion ping is fenced under !G.sim. A bot opening 11 to 15
+        // containers a raid made not one looting sound.
+        // It matters because ping() is not cosmetic. It sets e.alert to at least
+        // 1 and flips every entity in radius from patrol or loot to investigate
+        // with its target on the container, and it calls listenersHear
+        // unconditionally, which is the LISTENER'S ONLY INPUT since that machine
+        // never calls canSee. So the sim was missing every investigate transition
+        // that looting causes, which makes first contact read late, starts fewer
+        // chases, and overstates the extract rate. It also made Listeners close to
+        // inert, since looting noise is the main thing they exist to hear.
+        p.searchAcc=(p.searchAcc||0)+dt;
+        if(CFG.simLootNoise!==0&&p.searchAcc>0.5){
+          p.searchAcc=0;
+          ping(p.goal.x,p.goal.y,p.goal.strong?560:180,false,false,'player','move');
+        }
+        if(p.searchT>=p.goal.time){ openContainer(p.goal); p.searchT=0; p.searchAcc=0; p.goal=null; }
       } else {
         navSeek(p,p.goal.x,p.goal.y,botSpd(CFG.pSpeed*.9*LD.spd*CSPD*BWADE),dt); moved=true;
         p.seekT=(p.seekT||0)+dt;
@@ -7126,9 +7146,19 @@ function updateBot(dt){
   // 0.42 radius, so the sim has been measuring crouch with most of its noise
   // benefit removed, and crouch is the single strongest mechanic in the game.
   // Ratios are taken from the player's own numbers rather than invented.
-  var BIV=BWET?(0.6*(0.30/0.72)):(botCrouch&&(CPART&2)?1e9:0.6);
+  // AND CROUCHED IS NOT SILENT, correcting v2.01 which I shipped an hour ago.
+  // I set the crouched interval to 1e9 on the reasoning that updatePlayer uses 99
+  // seconds, which is effectively never. That is only true of ONE of the player's
+  // two noise channels. tickPlayerSteps still emits a step ping every time, at
+  // radius 72 when crouched against 170 walking, so a crouched player is quiet,
+  // not absent. Making the bot literally silent overshot the player and handed
+  // crouch a benefit the real game does not give it, in the same direction as the
+  // error I was fixing. The crouched bot now pings on the step channel's own
+  // cadence at the step channel's own radius ratio.
+  var BIV=BWET?(0.6*(0.30/0.72)):0.6;
+  var BRAD=botCrouch&&(CPART&2)?(72/140):1;
   if(botCrouch) T.tCrouchBot=(T.tCrouchBot||0)+dt;
-  if(moved&&p.noiseAcc>BIV){ p.noiseAcc=0; ping(p.x,p.y,140*LD.noise*CNOISE,false,false,'player','move'); }
+  if(moved&&p.noiseAcc>BIV){ p.noiseAcc=0; ping(p.x,p.y,140*LD.noise*CNOISE*BRAD,false,false,'player','move'); }
   // Give up on a container the bot cannot get to, on two conditions, both of
   // which had to be learned the hard way. It has to be progress and not motion:
   // the original check asked whether the bot had moved at all, and that stopped

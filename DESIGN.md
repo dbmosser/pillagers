@@ -2850,6 +2850,81 @@ same way, this fix moves the sim closer to the player without arriving.
 Not verified either: whether the +5 points survives a larger sample. The right
 test is several hundred seeds a side, which is a long batch, and I have not run it.
 
+### v2.02: the bot looted in silence, which was real and turned out not to matter
+
+Rather than trip over a sixth sim divergence the way the previous five were found,
+I swept the whole class. There are 97 sim guards in the file, 65 of which skip
+work. Partitioned into five non-overlapping regions, every guard classified, and
+anything claimed as a hole put through adversarial verification.
+
+    86  cosmetic or correct by design
+    13  candidates raised
+     2  survived verification
+
+Eighty six being correct is the result that matters most: the sim has no screen
+and no speakers, so skipping audio, particles, HUD text and DOM work is right, and
+the overwhelming majority of these guards are doing exactly that. This class is
+now closed rather than being picked off one bug at a time.
+
+THE BOT LOOTED IN TOTAL SILENCE. updatePlayer emits a search ping every 0.5s of
+progress at radius 180, 560 for a strongbox, and AI raiders pay it too at 80.
+updateBot emitted nothing at all: standing at a container means `moved` is false
+so the movement ping is skipped, and grantLoot's completion ping is fenced under
+!G.sim. A bot opening 11 to 15 containers a raid made not one looting sound.
+
+And that is not cosmetic on its face. ping() sets e.alert to at least 1, flips
+every entity in radius from patrol or loot into investigate with its target on the
+container, and calls listenersHear unconditionally, which is the Listener's ONLY
+input since that machine never calls canSee.
+
+SO I PREDICTED FIRST CONTACT WOULD COME EARLIER AND THE EXTRACT RATE WOULD FALL.
+It does not. 120 seeds an arm:
+
+                     extract   first contact   haul    containers   listener kills
+    silent loot       20.8%        85s         8,136      16.1            1
+    audible loot      20.8%        82s         7,899      15.9            2
+
+Zero change in extract rate. Three seconds on first contact. Paired, 116 of 120
+seeds are unchanged with 2 flipping each way, which is as close to no effect as a
+measurement gets.
+
+The mechanism is almost certainly redundancy. The bot already emits a movement
+ping of 140 times the load factor while walking between containers, which is the
+same order as the 180 search ping, and it walks far more than it searches. Any
+machine close enough to hear a search was already close enough to hear the
+approach. The silence was real, and it was covered.
+
+The fix stays because it is correct: the sim was missing a rule the player lives
+under, the code now matches, and it costs nothing measurable. But I called it "the
+largest sim divergence found so far" when I found it, and the number says it is
+the smallest of the six. Being right that the code was wrong is not the same as
+being right about what it was worth.
+
+AND A CORRECTION TO v2.01, WHICH I SHIPPED AN HOUR EARLIER. I set the crouched
+bot's footstep interval to 1e9 because updatePlayer uses 99 seconds. That is only
+true of one of the player's two noise channels: tickPlayerSteps still emits a step
+ping at radius 72 when crouched against 170 walking. A crouched player is quiet,
+not silent. My version handed crouch a benefit the real game does not give it, in
+the same direction as the error I was fixing. The crouched bot now pings on the
+step channel's cadence at its radius ratio, 72 over 140.
+
+Caught one more of my own on the way: I wrote the measurement referencing a
+CFG.simLootNoise dial I had never added, so both arms would have been identical
+and the null result would have been an artifact of my harness rather than a fact
+about the game. Added the dial before running. That is the fourth harness mistake
+this session and the second caught before it produced a wrong number rather than
+after.
+
+Not verified: whether the loot ping matters on a map where the bot walks less. THE
+QUARRY has the lowest container density of the four, so the walk-to-search ratio
+is at its highest there and the redundancy argument is at its strongest. On map 0
+or map 3, where containers are denser and the bot walks less between them, the
+search ping might not be covered by movement noise. I measured one map.
+Also not verified: the second confirmed hole. The bot never swaps to its sidearm,
+so when the universal reserve empties it abandons the raid while holding a full
+Scav Pistol magazine, which corrupts the ammo-economy measurement v1.68 rests on.
+That is a real finding and it is still open.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
