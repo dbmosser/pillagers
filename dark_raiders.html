@@ -421,7 +421,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.91';
+var VER='1.92';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -646,6 +646,11 @@ var ITEMS={
   ledger:{name:'ARC Payroll Ledger',val:1400,wt:1,r:'rare',c:'#8fd0ff'},
   coil:{name:'Induction Coil',val:1050,wt:3,r:'rare',c:'#7cc4ff'},
   bandage:{name:'Bandage',val:60,wt:1,r:'common',c:'#d9d4c8',use:'heal',amt:28},
+  // Dropped by an animal you shot, v1.92. Deliberately poor: 45c for 2wt is worse
+  // per unit weight than almost anything else you can carry, because the point is
+  // that hunting is texture and a bad-run mercy, not an income. The gunshot that
+  // got it has already told the map where you are.
+  meat:{name:'Field Dressed Meat',val:45,wt:2,r:'common',c:'#a8563e'},
   medkit:{name:'Medkit',val:210,wt:2,r:'uncommon',c:'#e05c5c',use:'heal',amt:65},
   ammobox:{name:'Ammo Box',val:90,wt:1,r:'common',c:'#c2a35e',use:'ammo',amt:40},
   plate:{name:'Armor Plate',val:340,wt:3,r:'uncommon',c:'#5aa9e6',use:'armor',amt:55},
@@ -4525,6 +4530,10 @@ function wildTick(dt){
   var p=G.player,i,c;
   for(i=0;i<G.wild.length;i++){
     c=G.wild[i];
+    // A shot one lies where it fell. It still SORTS and DRAWS, because a carcass
+    // in the grass is the whole reward for the shot, but nothing else about it
+    // ticks: no wander, no flee, no wall test, no home range.
+    if(c.dead){ if(c.hitT>0) c.hitT-=dt; continue; }
     c.t-=dt; c.f+=dt*(c.st==='flee'?14:3);
     // What frightens it: you, a raider, or a round going past. Birds are the
     // jumpiest thing on the map and deer let you get closer.
@@ -7869,6 +7878,50 @@ function updateBullets(dt){
               sfx("hit",en.x,en.y); hit=true; break;
             }
           }
+          // HIS NOTE, 2026-08-24: "you should be able to kill animals". They were
+          // pure set dressing: no hp, and no bullet ever tested against them, so
+          // rounds passed straight through a deer standing in the open. Tested
+          // AFTER the machines so a shot can never lose a sentry to a bird that
+          // happened to be in front of it, and only for a round that has already
+          // missed everything that can shoot back.
+          if(!hit&&G.wild) for(var wq=0;wq<G.wild.length;wq++){
+            var CW=G.wild[wq];
+            if(CW.dead) continue;
+            var cwr=(CW.k==='deer')?13:6;
+            if(dist(b,CW)<cwr+3){
+              CW.hp=(CW.hp===undefined?(CW.k==='deer'?34:8):CW.hp)-b.dmg;
+              CW.hitT=.16;
+              // Everything alive out there panics when one of them is shot, which
+              // is the tell that makes hunting cost something: a herd breaking is
+              // visible a long way off.
+              for(var wp=0;wp<G.wild.length;wp++){
+                var OW=G.wild[wp];
+                if(OW.dead||dist(OW,CW)>420) continue;
+                OW.st='flee'; OW.life=Math.max(OW.life||0,2.2);
+                var fdx=OW.x-b.x,fdy=OW.y-b.y,fl2=Math.sqrt(fdx*fdx+fdy*fdy)||1;
+                OW.vx=(fdx/fl2)*(OW.k==='deer'?168:210); OW.vy=(fdy/fl2)*(OW.k==='deer'?168:210);
+              }
+              spark(b.x,b.y,'#c0503a',8,190);
+              if(CW.hp<=0){
+                CW.dead=1; CW.st='dead'; CW.vx=0; CW.vy=0;
+                if(G.tel) G.tel.wildKilled=(G.tel.wildKilled||0)+1;
+                if(!G.sim){
+                  G.hitMark={t:0,life:.44,kill:true};
+                  spark(CW.x,CW.y,'#8e2b1c',16,240);
+                  decal(CW.x,CW.y,'#4a1810',rnd(7,12));
+                  say(CW.k==='deer'?'The deer goes down.':'You shot a bird.');
+                }
+                // A carcass is worth carrying, but only just: this is texture and
+                // a small mercy on a bad run, not a living. The noise of the shot
+                // has already cost more than the meat is worth.
+                if(CW.k==='deer'&&!G.sim){
+                  var cc2=setLoot(mkContainer(CW.x,CW.y,'body'),['meat']);
+                  G.containers.push(cc2);
+                }
+              }
+              sfx("hit",CW.x,CW.y); hit=true; break;
+            }
+          }
         } else {
           if(dist(b,p)<p.r+3){ damagePlayer(b.dmg,b.owner.kind,b.owner.name); spark(b.x,b.y,'#ff4d3d',10,200); hit=true; }
           if(!hit) for(var e3=0;e3<G.ents.length;e3++){
@@ -9424,6 +9477,27 @@ function render2D(dt){
     try{
     if(it.cr){
       var CT=it.cr,cxw=CT.x,cyw=CT.y-CT.z,fl=CT.face||1;
+      // A carcass, drawn before the live shapes so neither branch has to know
+      // about it. Flat on its side, darker than the living animal, with the
+      // ground stain under it, and no legs or motion at all.
+      if(CT.dead){
+        shadowE(CT.x,CT.y+1,CT.k==='deer'?15:5,CT.k==='deer'?5:2.5,.34);
+        wc.fillStyle='#3a1b12';
+        wc.beginPath();
+        wc.ellipse(CT.x,CT.y-2,CT.k==='deer'?14:5.5,CT.k==='deer'?5.5:3,0.18,0,6.2832);
+        wc.fill();
+        wc.fillStyle='#5c2a1c';
+        wc.beginPath();
+        wc.ellipse(CT.x-2,CT.y-3.5,CT.k==='deer'?10:3.8,CT.k==='deer'?3.4:1.9,0.18,0,6.2832);
+        wc.fill();
+        if(CT.k==='deer'){
+          wc.strokeStyle='#3a1b12'; wc.lineWidth=1.8;
+          wc.beginPath();
+          wc.moveTo(CT.x+11,CT.y-4); wc.lineTo(CT.x+17,CT.y-7);
+          wc.moveTo(CT.x-9,CT.y-1); wc.lineTo(CT.x-15,CT.y+1);
+          wc.stroke();
+        }
+      } else
       if(CT.k==='bird'){
         shadowE(CT.x,CT.y,3.5,2,.30*(1-CT.z/90));
         var flap=CT.st==='flee'?Math.sin(CT.f)*5:0;

@@ -2144,6 +2144,60 @@ verified by play: whether losing auto-equip makes the early game worse, since th
 upgrade-on-pickup rule was load bearing for a long time and a player who never
 opens the inventory will now carry a starter for the whole raid.
 
+### v1.92: the animals were bulletproof
+
+His note: "you should be able to kill animals". They were not merely tough, they
+were untouchable. G.wild had no hp field and no bullet in the file ever tested
+against it, so a round fired point blank at a deer standing in the open grass
+passed straight through it and carried on. The only thing wildlife has ever done
+is flinch when something frightened it.
+
+Deer take 34, birds take 8, both roughly two rifle rounds and one respectively.
+
+The hit test is placed AFTER the machine loop and behind a !hit guard, which is
+the part that matters and the part that could have gone wrong. A bird drifting
+between you and a sentry must never eat the round you aimed at the sentry.
+Verified adversarially rather than assumed: with a bird parked directly in front
+of a machine, the shot took 12 off the machine and the bird lived; with no
+machine anywhere near, the same shot killed the bird. Set dressing cannot
+intercept a shot that matters.
+
+Shooting one panics everything within 420 units, which is the cost of hunting.
+A herd breaking is visible a long way further than the animal you actually hit,
+so taking the shot tells anything watching that direction where you are, on top
+of the gunshot itself.
+
+A dead deer leaves a carcass container holding Field Dressed Meat, 45c for 2wt.
+That is deliberately poor. It is worse per unit of weight than nearly anything
+else you can pick up, because hunting should be texture and a mercy on a bad run
+rather than an income, and the shot that got it has already cost you more in
+noise than the meat is worth.
+
+Dead animals stop ticking entirely, no wander, no flee, no wall test, no home
+range, but they still sort and draw, because the carcass lying in the grass is
+the whole visible reward. It draws as a flat dark shape with the ground stain
+under it and, on a deer, two stiff legs out to one side.
+
+Verified end to end on a real raid: three rounds of 12 against 34 hp killed a
+deer at minus 2, the carcass container spawned at its position holding meat, the
+one other animal inside the panic radius was set fleeing, telemetry counted
+wildKilled 1, and fifteen drawn frames afterwards came back with drawErr null.
+Six carcasses forced onto the ground on a separate raid also drew clean, as did
+all four maps and the four hub screens.
+
+One thing that slowed this down and is worth recording for next time: __sim does
+NOT advance bullets. It calls refreshVseg, updatePlayer, updateEnts and
+updateThrowables, and __rawStep is simStep, the bot path. Neither moves a round.
+The hook that does is __bullets(dt). My first attempt fired twelve rounds into a
+deer and reported it unkillable, when in fact no bullet had moved at all.
+
+Not verified: whether killing animals is worth doing, which is a feel question
+and the meat value is a guess. 45c is set low on purpose but I have no play data
+on whether that reads as a fair trade for the noise or as pointless. Also not
+verified: whether birds at 8hp are too easy to hit with a shotgun, since the
+pellet loop fires one bullet per pellet and every one of them now tests against
+wildlife.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
