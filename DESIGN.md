@@ -5765,6 +5765,59 @@ fires can disagree while a slot sits empty. Also not verified: the armour plate 
 because the fixture profile carries no plate, so that branch of useHot was exercised
 by neither of these tests.
 
+### v2.46: healing takes time now, and the bot does it the same way
+
+His note, 2026-08-25: "medkit shouldn't be instant, it should heal you up slowly".
+
+WHY THE OLD ONE WAS A NON-DECISION. A Medkit returned 65 health in the frame the key
+went down. There was never a moment where you had committed to healing and were still
+hurt, so pressing F cost you nothing but the item: no window, no risk, nothing to
+interrupt. Healing was a transaction rather than an action.
+
+The item is now spent immediately and the health arrives over ITEMS[k].hot seconds.
+Bandage 28 over 2.6s, Medkit 65 over 6.0s. That is 10.8 a second for both on purpose,
+so the bigger item is not FASTER, it is LONGER, and choosing the Medkit means
+choosing to be busy for six seconds. He named the Medkit; the Bandage moves with it,
+because one instant heal and one gradual heal sitting in the same slot is the
+confusing version of this change.
+
+Stacking is never a downgrade: a second item while one is running adds its health to
+the queue and takes the faster of the two rates.
+
+ONE HEAL PATH FOR THE PLAYER AND THE BOT, WHICH IS THE PART THAT MATTERS BEYOND THIS
+BUILD. The bot healed on its own line inside updateBot and the player healed on
+another inside updatePlayer, both spelled out longhand. That is the exact shape of
+every fidelity hole this file has had to find the hard way: wading at v2.00, the
+sidearm at v2.03, the jam at v2.09, the pip at v2.34. Each was a rule the player
+lived under and the bot did not, and each was found builds or months later. Leaving
+two heal lines in place would have queued up the next one. Both now call applyHeal
+and both tick tickHeal, so they cannot drift apart again.
+
+Verified by driving both sides rather than by reading. PLAYER: health 30, one Medkit,
+F pressed. The item leaves the bag on the first frame and the health does not: 30.0 at
+0.0s with 65 queued, 40.8 at 1.0s, 62.5 at 3.0s, 95.0 at 6.0s with the queue empty.
+That is 10.8 a second, arriving on schedule, and 30 plus 65 is 95. BOT: same setup,
+stepped through updateBot rather than updatePlayer, 30.0 to 30.2 on the first step
+with 64.8 queued and 40.8 after a second, which is the player's curve. healOverTime 0
+returns both to instant, verified at 95 health in one step, and the dial is back at 1.
+
+THE BAR SHOWS IT, because it had to. v2.44 put a red block on the health bar for
+damage taken; an incoming heal is the same problem mirrored, and without it using a
+Medkit looks like nothing happened for six seconds. Pending health draws as a pulsing
+green segment from where you are to where you are going.
+
+Not verified: what this does to survival, and it is the first change in a while that
+should genuinely move it. The bot now spends six seconds at low health where it used
+to spend none, and it heals at hp below 45, which is exactly when something is usually
+shooting at it. I have not run the A and B. healOverTime is a dial precisely so that
+can be measured properly at 320 seeds, and on v2.42's arithmetic anything smaller than
+that will not answer it. Also not verified: whether taking damage should interrupt a
+heal in progress. It does not today, which is the generous reading; the harsh reading
+is that a heal interrupted by a hit is wasted, and that is a design call rather than
+a bug, so it goes to him. Also not verified: selfRevive is untouched and still sets
+health to 40 instantly, on the reasoning that getting off the floor is a different
+act from patching a wound.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

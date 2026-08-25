@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.45';
+var VER='2.46';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -474,7 +474,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -667,13 +667,13 @@ var ITEMS={
   relay:{name:'Orbital Relay',val:1700,wt:4,r:'elite',c:'#c090ff'},
   ledger:{name:'ARC Payroll Ledger',val:1400,wt:1,r:'rare',c:'#8fd0ff'},
   coil:{name:'Induction Coil',val:1050,wt:3,r:'rare',c:'#7cc4ff'},
-  bandage:{name:'Bandage',val:60,wt:1,r:'common',c:'#d9d4c8',use:'heal',amt:28},
+  bandage:{name:'Bandage',val:60,wt:1,r:'common',c:'#d9d4c8',use:'heal',amt:28,hot:2.6},
   // Dropped by an animal you shot, v1.92. Deliberately poor: 45c for 2wt is worse
   // per unit weight than almost anything else you can carry, because the point is
   // that hunting is texture and a bad-run mercy, not an income. The gunshot that
   // got it has already told the map where you are.
   meat:{name:'Field Dressed Meat',val:45,wt:2,r:'common',c:'#a8563e'},
-  medkit:{name:'Medkit',val:210,wt:2,r:'uncommon',c:'#e05c5c',use:'heal',amt:65},
+  medkit:{name:'Medkit',val:210,wt:2,r:'uncommon',c:'#e05c5c',use:'heal',amt:65,hot:6.0},
   ammobox:{name:'Ammo Box',val:90,wt:1,r:'common',c:'#c2a35e',use:'ammo',amt:40},
   plate:{name:'Armor Plate',val:340,wt:3,r:'uncommon',c:'#5aa9e6',use:'armor',amt:55},
   gun_pistol:{name:'Scav Pistol (field)',val:300,wt:3,r:'common',c:'#ffd48a',use:'gun',gk:'pistol'},
@@ -6336,6 +6336,45 @@ function autoCull(cap){
 // happens to sit earliest in the bag. A self-revive is a flat 40 HP whatever it
 // costs you, so spending a 210c medkit when a 60c bandage was sitting next to it
 // was pure loss, and topping up a scratch with a medkit throws most of it away.
+// HIS NOTE, 2026-08-25: "medkit shouldn't be instant, it should heal you up slowly".
+// A Medkit returned 65 health in the frame you pressed the key, which made the
+// decision free: there was never a moment where you had committed to healing and
+// were still hurt. Now the item is spent at once and the health arrives over
+// ITEMS[k].hot seconds. Bandage 28 over 2.6s, Medkit 65 over 6.0s, which is the
+// same 10.8 a second for both, so the bigger item is not faster, it is longer.
+// He named the Medkit; the Bandage moves too, because one instant heal and one
+// gradual heal in the same slot would be the confusing version of this.
+// ONE FUNCTION FOR THE PLAYER AND THE BOT. The bot healed on its own line inside
+// updateBot and the player healed on another inside updatePlayer, which is the
+// exact shape of every fidelity hole this file has found: wading, the sidearm,
+// the jam, the pip. Both now call this, so they cannot drift apart again.
+// healOverTime 0 restores the instant behaviour for measurement.
+function applyHeal(key){
+  var it=ITEMS[key]; if(!it) return 0;
+  var amt=it.amt||0;
+  var hot=(typeof it.hot==='number')?it.hot:0;
+  var p=G.player;
+  if(hot>0&&CFG.healOverTime!==0&&amt>0){
+    // A second item while one is still running ADDS its health and takes the
+    // faster of the two rates, so stacking is never a downgrade.
+    p.healQ=(p.healQ||0)+amt;
+    p.healRate=Math.max(p.healRate||0,amt/hot);
+    return 0;
+  }
+  var b=p.hp; p.hp=Math.min(p.maxhp,p.hp+amt); return p.hp-b;
+}
+// Delivers the queued health. Called from updatePlayer AND updateBot, for the
+// same reason applyHeal exists.
+function tickHeal(dt){
+  var p=G.player;
+  if(!(p.healQ>0)) return;
+  var give=Math.min(p.healQ,(p.healRate||10)*dt);
+  var room=p.maxhp-p.hp;
+  if(room<=0){ p.healQ=0; p.healRate=0; return; }
+  if(give>room) give=room;
+  p.hp+=give; p.healQ-=give;
+  if(p.healQ<=0.001){ p.healQ=0; p.healRate=0; }
+}
 function findHeal(){
   var best=-1,bestAmt=1e9,bestVal=1e9;
   for(var i=0;i<G.bag.length;i++){
@@ -7151,6 +7190,7 @@ function updatePlayer(dt){
   if(p.dmgHold>0) p.dmgHold-=dt;
   else if(p.hpGhost>p.hp) p.hpGhost=Math.max(p.hp,p.hpGhost-(28+(p.hpGhost-p.hp)*2.6)*dt);
   if(p.dmgPopT>0) p.dmgPopT-=dt;
+  tickHeal(dt);
   // HIS NOTE, 2026-08-25: "when i switch to nades or bandaids or whatever, i
   // should just pull the shoot button to use it, not hit g -- makes no sense.
   // Needs to be more like minecraft in this regard -- loaded quickbar item
@@ -7213,8 +7253,11 @@ function updatePlayer(dt){
   if(keys['KeyF']&&!p.healLock){
     p.healLock=true; var idx=findHeal();
     if(idx>=0&&p.hp<p.maxhp){
-      p.hp=Math.min(p.maxhp,p.hp+ITEMS[G.bag[idx]].amt);
-      G.bag.splice(idx,1); blip('pick'); say('Patched up'); T.heals++;
+      var _hk=G.bag[idx];
+      applyHeal(_hk);
+      G.bag.splice(idx,1); blip('pick');
+      say(ITEMS[_hk]&&ITEMS[_hk].hot>0&&CFG.healOverTime!==0?('Using '+ITEMS[_hk].name+'...'):'Patched up');
+      T.heals++;
       spark(p.x,p.y,'#6fe0a0',10,90);
     } else if(p.hp>=p.maxhp) say('Already at full');
     else say('No medical supplies');
@@ -7486,7 +7529,11 @@ function updateBot(dt){
       p.ammo+=take; p.reserve-=take;
     }
   }
-  if(p.hp<45){ var hi=findHeal(); if(hi>=0){ p.hp=Math.min(p.maxhp,p.hp+ITEMS[G.bag[hi]].amt); G.bag.splice(hi,1); T.heals++; } }
+  // Same heal path the player uses, so the bot cannot be modelling instant heals
+  // in a game that no longer has them. The bot commits and stays hurt for the
+  // duration exactly as he does.
+  if(p.hp<45){ var hi=findHeal(); if(hi>=0){ applyHeal(G.bag[hi]); G.bag.splice(hi,1); T.heals++; } }
+  tickHeal(dt);
 
   var threat=null,td=1e9,i;
   // THE BOT SHOT AT WHAT IT COULD NOT REACH, v2.43, and the literal that caused it
@@ -11521,6 +11568,18 @@ function drawHUD(){
     ctx.fillRect(g0,by,Math.max(0,g1-g0),HBH);
     ctx.fillStyle='rgba(255,214,206,.9)';
     ctx.fillRect(g0,by,2,HBH);
+  }
+  // THE INCOMING HEAL, the mirror of the red block above. A heal is no longer
+  // instant, so there is now a state where health is ON ITS WAY and the bar has
+  // to say so, or using a Medkit looks like nothing happened.
+  if(p.healQ>0){
+    var h0=16+HBW*clamp(p.hp/p.maxhp,0,1);
+    var h1=16+HBW*clamp((p.hp+p.healQ)/p.maxhp,0,1);
+    var hpul=0.42+0.22*Math.sin(G.t*7.4);
+    ctx.fillStyle='rgba(111,224,160,'+hpul+')';
+    ctx.fillRect(h0,by,Math.max(0,h1-h0),HBH);
+    ctx.fillStyle='rgba(190,255,220,.85)';
+    ctx.fillRect(h0,by,2,HBH);
   }
   ctx.font=FS(TYPE.title); ctx.fillStyle='#FFF6DC';
   ctx.fillText('HP  '+Math.round(p.hp),24,by+18);
