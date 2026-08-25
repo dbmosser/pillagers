@@ -4325,6 +4325,76 @@ there. Also not verified: any of this for a stash large enough that the SMALLEST
 heal rule starts mattering, since two bandages and two medkits is a tidy case and a
 real stash of forty mixed items may not behave as neatly.
 
+### v2.23: dying to your own charge blamed whichever machine had last grazed you
+
+Four things audited clean this tick and one real defect found in the fifth, on the
+screen that ends every failed raid.
+
+THE DEFECT. The death screen picks its wording like this:
+
+    var kn=(T.lastHitName&&T.deathKiller!=='timer')?T.lastHitName:...
+
+and damagePlayer wrote the name like this:
+
+    if(srcName) G.tel.lastHitName=srcName;
+
+Only ever written, never cleared. Every damagePlayer call in the file passes a
+source name except ONE: the frag blast at explodeFrag, which passes 'other' and
+nothing else. So a raid where anything named ever touched you, and which then
+ended in a blast, printed the wrong killer by name.
+
+That is not a corner. v0.58 measured it: a charge thrown into cover you are
+standing against lands inside its own blast for a median 85 damage out of 100 to
+the thrower, and that entry exists precisely because being killed unfairly by your
+own throwable felt like an ambush. It then left the screen telling you a sentry did
+it. Nothing on this map throws anything back, per the same entry, so a frag blast
+is always yours and the attribution is always wrong.
+
+Two lines. The blast now names itself, and lastHitName is assigned
+unconditionally so an unnamed source clears the previous one rather than
+inheriting it.
+
+Verified by reproducing the exact sequence through the real code path rather than
+by calling the formatter: get grazed by a named machine, then drop a live frag at
+your feet and let updateThrowables run it.
+
+    before the blast   lastHitName  CRAWLER N-12
+    after the blast    lastHitName  YOUR OWN CHARGE
+    death screen       KILLED BY YOUR OWN CHARGE   (was: KILLED BY CRAWLER N-12)
+    damage taken       79 of 100, which is v0.58's median 85 within noise
+
+An unnamed source with no replacement name now falls through to the killer kind,
+so it reads KILLED BY OTHER rather than a stale machine, and named killers are
+untouched: a sentry hit still prints SENTRY K-9.
+
+FOUR AUDITS, ALL CLEAN, recorded so nobody repeats them.
+
+  1. THE PLATES-ONLY STASH, which v2.22 left unverified. Deploying with four
+     plates and nothing else takes three, the hotbar armour slot reads count 3,
+     and the Undercroft still issues two bandages. With No Rig it takes none and
+     leaves all four in the stash. Correct.
+  2. A MESSY STASH of forty mixed items, which v2.22 also flagged, since two
+     bandages and two medkits is a tidy case. Forty in, thirty-two left: three kit
+     slots and five throwables. Heal 56, reserve 100, armour 35, same as the tidy
+     case.
+  3. DEPLOY WEIGHT. Three plates plus two bandages is 11, and LOAD_FREE is 20, so
+     the auto-loadout cannot silently hand you a movement penalty at the drop.
+  4. THE BACKPACK CAP. PACKCAP is [99999,99999,99999], which looked like a bug and
+     is not: the comment two lines above it records that he asked for unlimited
+     carry on 2026-08-22. Both derivations behave correctly under it, and the
+     bot's bagWeight()>=cap looting condition simply never fires, which is what
+     unlimited means.
+
+Not verified: whether YOUR OWN CHARGE is the right wording when the frag was not
+yours. It always is today because nothing else throws, but the AI raiders share a
+lot of the player's kit and the moment one of them gets a frag this line becomes a
+lie in the other direction. The name is hardcoded at the blast rather than derived
+from a thrower, because throwables carry no owner field, and adding one to fix a
+case that cannot happen yet is the kind of speculative work that has cost me two
+builds this session already. Also not verified: the stale name could reach anything
+OTHER than the death screen. lastHitName has one reader, and I checked, but it is
+the sort of field that acquires readers.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

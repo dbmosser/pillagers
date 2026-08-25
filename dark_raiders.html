@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.22';
+var VER='2.23';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -5910,7 +5910,15 @@ function explodeFrag(f){
   flash(f.x,f.y,310,'#ffb267',.45);
   ping(f.x,f.y,560,false,false,'env','fire');
   var dp=dist(p,f);
-  if(dp<R&&losClear(f.x,f.y,p.x,p.y,G.map.segs)) damagePlayer(60*(1-dp/R)+12,'other');
+  // NAMED, v2.23. This was the one damagePlayer call in the file that passed no
+  // source name, and lastHitName is only ever written, never cleared, so the
+  // death screen printed whichever machine had last grazed you. Nothing on this
+  // map throws anything back, per v0.58, so a frag blast is always your own, and
+  // v0.58 also measured that a charge thrown into cover you are standing against
+  // lands in its own blast for a median 85 of 100. Dying to your own frag and
+  // being told a sentry did it is the exact shape of unfairness that entry set
+  // out to remove.
+  if(dp<R&&losClear(f.x,f.y,p.x,p.y,G.map.segs)) damagePlayer(60*(1-dp/R)+12,'other','YOUR OWN CHARGE');
   for(i=G.ents.length-1;i>=0;i--){
     var e=G.ents[i],de=dist(e,f);
     if(de<R+e.r&&losClear(f.x,f.y,e.x,e.y,G.map.segs)){
@@ -6068,7 +6076,10 @@ function damagePlayer(amt,src,srcName){
   if(p.iv>0) return;
   p.combatT=0;
   G.tel.dmg[src]=(G.tel.dmg[src]||0)+amt;
-  if(srcName) G.tel.lastHitName=srcName;
+  // CLEARED, NOT JUST SET, v2.23. An unnamed source used to leave the previous
+  // name standing, which is how a stale machine name reached the death screen.
+  // Assigning unconditionally means the last hit is always the last hit.
+  G.tel.lastHitName=srcName||null;
   if(p.downed){
     p.downT-=3; blip('hit');
     if(p.downT<=0) killPlayer(src);
