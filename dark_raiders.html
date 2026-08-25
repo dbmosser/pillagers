@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.47';
+var VER='2.48';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -1373,6 +1373,54 @@ function blip(type,d,pan){
     o2.type='sine'; o2.frequency.setValueAtTime(660,t); o2.frequency.exponentialRampToValueAtTime(1180,t+.09);
     g4.gain.setValueAtTime(.07,t); g4.gain.exponentialRampToValueAtTime(.001,t+.12);
     o2.connect(g4); g4.connect(OUT); o2.start(t); o2.stop(t+.13);
+  // HIS NOTE, 2026-08-25: "there should be a better loot noise for finding rare
+  // items or guns". Every container in the game played the one 'pick' blip above,
+  // a single sine from 660 to 1180, whether it held four pieces of scrap or an
+  // elite. The pip on the lid tells you what a container is worth BEFORE you open
+  // it and then the payoff says nothing, so the best moment in the loop was the
+  // quietest. Three new voices, pitched so they read as a ladder even through a
+  // firefight, and a separate one for a gun because a gun is a different KIND of
+  // find rather than a more valuable one.
+  } else if(type==='pickRare'){
+    // Two notes, a rising fifth, with a soft tail. Clearly above 'pick' without
+    // being a fanfare, because rare is common enough to hear often.
+    [[784,0],[1175,.085]].forEach(function(NP){
+      var op=a.createOscillator(),gp=a.createGain();
+      op.type='triangle'; op.frequency.setValueAtTime(NP[0],t+NP[1]);
+      gp.gain.setValueAtTime(.075,t+NP[1]);
+      gp.gain.exponentialRampToValueAtTime(.001,t+NP[1]+.22);
+      op.connect(gp); gp.connect(OUT); op.start(t+NP[1]); op.stop(t+NP[1]+.24);
+    });
+  } else if(type==='pickElite'){
+    // Three ascending notes plus a high shimmer. This one is allowed to be a
+    // fanfare: six items in the whole table are elite.
+    [[784,0],[1046,.075],[1568,.155]].forEach(function(NP){
+      var oe=a.createOscillator(),ge=a.createGain();
+      oe.type='triangle'; oe.frequency.setValueAtTime(NP[0],t+NP[1]);
+      ge.gain.setValueAtTime(.085,t+NP[1]);
+      ge.gain.exponentialRampToValueAtTime(.001,t+NP[1]+.30);
+      oe.connect(ge); ge.connect(OUT); oe.start(t+NP[1]); oe.stop(t+NP[1]+.32);
+    });
+    var osh=a.createOscillator(),gsh=a.createGain();
+    osh.type='sine';
+    osh.frequency.setValueAtTime(2350,t+.155); osh.frequency.exponentialRampToValueAtTime(3400,t+.44);
+    gsh.gain.setValueAtTime(.030,t+.155); gsh.gain.exponentialRampToValueAtTime(.001,t+.46);
+    osh.connect(gsh); gsh.connect(OUT); osh.start(t+.155); osh.stop(t+.48);
+  } else if(type==='pickGun'){
+    // Metal, not music: a filtered noise scrape over a low thunk, so it reads as
+    // a weapon being lifted rather than as a better pickup chime.
+    var gl=1900,bg=a.createBuffer(1,gl,a.sampleRate),cg=bg.getChannelData(0);
+    for(var gi=0;gi<gl;gi++) cg[gi]=(Math.random()*2-1)*Math.pow(1-gi/gl,2.6);
+    var sg=a.createBufferSource(); sg.buffer=bg;
+    var fg=a.createBiquadFilter(); fg.type='bandpass';
+    fg.frequency.setValueAtTime(1500,t); fg.frequency.exponentialRampToValueAtTime(760,t+.16);
+    fg.Q.value=2.4;
+    var gg2=a.createGain(); gg2.gain.value=.16;
+    sg.connect(fg); fg.connect(gg2); gg2.connect(OUT); sg.start(t);
+    var ot=a.createOscillator(),gt=a.createGain();
+    ot.type='sine'; ot.frequency.setValueAtTime(190,t); ot.frequency.exponentialRampToValueAtTime(78,t+.17);
+    gt.gain.setValueAtTime(.13,t); gt.gain.exponentialRampToValueAtTime(.001,t+.20);
+    ot.connect(gt); gt.connect(OUT); ot.start(t); ot.stop(t+.22);
   } else if(type==='charge'){
     var oc=a.createOscillator(),gc=a.createGain();
     oc.type='sawtooth';
@@ -6378,6 +6426,26 @@ function tickHeal(dt){
   p.hp+=give; p.healQ-=give;
   if(p.healQ<=0.001){ p.healQ=0; p.healRate=0; }
 }
+// Which pickup voice a haul deserves. Takes the BEST thing in the container,
+// because that is the thing you will remember finding.
+var LOOTRANK={common:0,uncommon:1,rare:2,elite:3};
+function lootVoice(keys){
+  if(!keys||!keys.length) return 'pick';
+  var best=-1,gun=false;
+  for(var i=0;i<keys.length;i++){
+    var it=ITEMS[keys[i]];
+    if(!it) continue;
+    if(it.use==='gun') gun=true;
+    var rk=LOOTRANK[it.r];
+    // Not ||, because common is rank 0 and 0 is falsy. Same trap as the armour
+    // absorb fallback at v2.16.
+    if(typeof rk==='number'&&rk>best) best=rk;
+  }
+  if(gun) return 'pickGun';
+  if(best>=3) return 'pickElite';
+  if(best>=2) return 'pickRare';
+  return 'pick';
+}
 function findHeal(){
   var best=-1,bestAmt=1e9,bestVal=1e9;
   for(var i=0;i<G.bag.length;i++){
@@ -6522,7 +6590,11 @@ function grantLoot(ct,keys){
   }
   if(!G.sim){
     say('Found: '+ct.loot.map(function(k){return ITEMS[k].name;}).join(', '));
-    blip('pick'); ping(p.x,p.y,90,false,false,'player','move');
+    // The payoff now matches what was actually in there. A gun outranks the
+    // rarity ladder because it is a different kind of find: an Auto Rifle and a
+    // Cell Bank are both 'rare' and only one of them changes how the raid goes.
+    blip(lootVoice(ct.loot),undefined,undefined);
+    ping(p.x,p.y,90,false,false,'player','move');
   }
 }
 // Three-phase extract: call it in from inside the ring, survive the inbound wait

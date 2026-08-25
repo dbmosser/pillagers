@@ -163,6 +163,11 @@ window.__pedBuy=function(i){ return pedBuy(i); };
 // The weapon table, so shots-to-kill can be varied from the WEAPON side
 // instead of the health side and the two separated causally.
 window.__weapons=function(){ return WEAPONS; };
+// The pickup-voice chooser and the blip synth, so a rarity ladder can be checked
+// without anything being audible. blip() returns early on a sim raid and the
+// fixture blocks AudioContext, so calling it here stays silent by construction.
+window.__lootVoice=function(keys){ return lootVoice(keys); };
+window.__blip=function(t){ return blip(t); };
 // PAIRED ARMS AND THE TEST THAT GOES WITH THEM, v2.42. Two arms run over one seed
 // list are PAIRED, and comparing their extract rates as if they were independent
 // samples throws the pairing away and reads far more into a gap than is there.

@@ -5874,6 +5874,62 @@ changes the canvas size without firing a resize event. Also not verified: whethe
 BACKSPACE is a key he likes. It was free, nothing else is bound to it, and it reads
 as "undo", but it is one line to move.
 
+### v2.48: the best moment in the loop was the quietest one
+
+His note, 2026-08-25: "there should be a better loot noise for finding rare items or
+guns".
+
+EVERY CONTAINER IN THE GAME PLAYED THE SAME SOUND. One 'pick' blip, a single sine
+sweeping 660 to 1180 in 120 milliseconds, whether the box held four pieces of scrap
+or a Black Box. That is worse than it sounds, because the pip on the lid already
+tells you what a container is WORTH before you open it: the game builds anticipation
+correctly and then pays it off with nothing. His run #1 note was "looting feels so
+uninspired, how can we make it more interesting???" and this is one of the reasons
+why. The reward for the best find in a raid was identical to the reward for junk.
+
+FOUR VOICES NOW, PITCHED AS A LADDER.
+  pick        unchanged, common and uncommon
+  pickRare    two notes, a rising fifth at 784 and 1175, soft tail. Above 'pick'
+              without being a fanfare, because rare is common enough to hear often.
+  pickElite   three ascending notes at 784, 1046 and 1568 with a high shimmer over
+              the top. Allowed to be a fanfare: six items in the entire table are
+              elite.
+  pickGun     metal rather than music. A bandpassed noise scrape sweeping 1500 down
+              to 760 over a low sine thunk, so it reads as a weapon being lifted.
+
+A GUN OUTRANKS THE RARITY LADDER, which is a judgement rather than a rule. An Auto
+Rifle and a Cell Bank are both tagged 'rare' and only one of them changes how the
+rest of the raid goes. A gun is a different KIND of find, not a more valuable one, so
+it gets its own voice rather than a place in the queue.
+
+The chooser takes the BEST thing in the container, because that is the thing you will
+remember finding, and it uses an explicit numeric test rather than a falsy fallback:
+common is rank 0 and 0 is falsy, which is the same trap that handed a player wearing
+no rig 0.55 absorption at v2.16.
+
+Verified against the real item table rather than against my assumptions. Nine cases,
+all correct: an empty container, a null argument and an unknown item key all fall back
+to 'pick'; common alone and uncommon alone stay 'pick'; rare gives pickRare; elite
+gives pickElite; and a gun returns pickGun whether it is sitting next to an elite or
+next to scrap. Then twenty five real containers opened on a LIVE raid, which is the
+only way the new path actually runs, with no errors: 18 plain, 4 rare, 2 elite, 1 gun.
+So a bit over a quarter of containers now sound like something, which is about the
+right frequency for it to stay meaningful.
+
+AND THE FIXTURE STAYED SILENT, which I checked rather than assumed, because driving
+frames once played gunfire aloud on his machine while he was working. AudioContext is
+blocked in the fixture and reports "fixture is silent"; all four voices were called
+directly and none threw.
+
+Not verified: how any of it actually SOUNDS. I can prove the right voice is chosen for
+the right contents and that nothing throws; I cannot hear the fixture, and the
+frequencies, gains and note spacings are chosen on reasoning rather than by ear. If
+the elite fanfare is annoying on the twentieth hearing, or the gun scrape reads as a
+bug rather than as metal, those are numbers in one block and they need his ears. Also
+not verified: these fire on opening a CONTAINER. Picking an item up off the ground,
+looting a body and buying from the peddler all still use the old single blip, and I
+have not touched them.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
