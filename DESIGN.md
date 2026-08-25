@@ -6345,6 +6345,55 @@ the COLD raider mechanism named above. Also: BURIED reads 16.7 here against 19.1
 the 320-seed batches, which is inside one SE of both and a reminder that a 120-seed
 number is a bearing, not a coordinate.
 
+### v2.56: the COLD raider anomaly is an early-game fact, and my first explanation was wrong
+
+No game logic changed. v2.55 flagged that raiders kill the bot 21 times on COLD
+STORAGE against 8 or 9 on other maps despite COLD fielding the fewest raiders, and
+offered a reading: COLD's late first contact compresses the raid's violence into
+its second half, so raider deaths pile up late. That reading was checked before
+being trusted, and it is wrong.
+
+THE TEST. 120 seeds on BURIED and COLD with time of death recorded per kill:
+
+                              BURIED      COLD
+    raider kills                 7          21
+    median raider kill time     46s         49s
+    median machine kill time   217s        226s
+    raider kills after 150s      1           2
+    alive at 150s               84          85
+
+THE CENSORING STORY IS DEAD ON EVERY AXIS. Raider kills are EARLY deaths on both
+maps, median under fifty seconds, while machine kills cluster past 200. Survival to
+150 seconds is identical, 84 against 85, so COLD does not keep the bot alive longer
+for raiders to farm. Nineteen of COLD's twenty-one raider kills land in the first
+150 seconds. The compressed-second-half mechanism I proposed predicts the exact
+opposite of all of this, and it is withdrawn.
+
+WHAT IS ACTUALLY TRUE: COLD's raiders kill three times as often in the OPENING of
+the raid, 21 against 7, which at these counts is roughly p 0.01 as a two-sided
+binomial. Per fielded raider, five against eight, it is nearly five to one. The
+spawn-time facts do not obviously explain it: raider density per square unit is
+about the same on both maps, the nearest raider spawns no closer, and the weapon
+mix is the same table. What differs is the map itself: COLD is the smallest floor
+at 4200 by 3400 with the tightest interior, so the bot's opening loot route and the
+raiders' opening loot routes share corridors sooner. That is a plausible mechanism
+and it remains UNPROVEN; distinguishing it from, say, a sightline effect through
+COLD's shelving would need positional tracing that this build does not do.
+
+Why this entry exists at all: v2.55 shipped a mechanism-shaped guess with a flag on
+it, and the check took twenty minutes and killed it. The file has a long record of
+plausible readings that died on contact with a measurement, v2.22's regression hunt,
+v2.38's exchange rate, v2.41's overstated deaths, and the cheapest time to kill one
+is before anyone builds on it.
+
+Verified: parsecheck PASS at v2.56, all four maps and the hub drive and draw clean.
+VER and DESIGN.md only.
+
+Not verified: the corridor-sharing mechanism, which is the surviving candidate and
+has no direct evidence yet. Also not verified: whether the early raider deaths are
+FIGHTS or ambushes; the telemetry records who killed the bot but not whether the
+bot fired back, and shots-fired-at-death would separate a duel from an execution.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
