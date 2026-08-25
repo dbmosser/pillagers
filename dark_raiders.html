@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.62';
+var VER='2.63';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -9433,7 +9433,19 @@ function endRaid(how){
       diedInSiege:T.diedInSiege||0,callGreed:T.callGreed||0,timeOfDeath:Math.round(CFG.raidSec-G.timeLeft),
       // Carried on the row itself so a batch can never be compared across tiers
       // by accident. seasonLoot scales haul and seasonHp scales enemy health.
-      tier:worldTier(),lootMul:+seasonLoot().toFixed(3),hpMul:+seasonHp().toFixed(3)};
+      tier:worldTier(),lootMul:+seasonLoot().toFixed(3),hpMul:+seasonHp().toFixed(3),
+      // THE DIAL FINGERPRINT, v2.63, same trap class the tier stamp above closed
+      // at v2.36. This cycle changed three behaviour defaults, healOverTime,
+      // raiderFeud and simReach, and one of them alone moves the extract rate
+      // 7.5 points, so a batch from v2.43 and a batch from v2.58 quote rates for
+      // DIFFERENT GAMES with nothing on the row saying so. Every balance-bearing
+      // dial that has shipped default-on or been A/B'd this cycle is stamped, as
+      // a compact string so a hundred rows do not carry a hundred objects, and a
+      // comparison across mismatched fingerprints is visible instead of silent.
+      dials:'hot'+(CFG.healOverTime===0?0:1)+' feud'+(CFG.raiderFeud===0?0:1)
+        +' reach'+(CFG.simReach===0?0:1)+' win'+(CFG.windows===0?0:1)
+        +' rheal'+(CFG.simRetreatHeal?1:0)+' eng'+(CFG.simEngage?1:0)
+        +' pip'+(CFG.simPip?1:0)+' greed'+CFG.simGreed};
     return;
   }
 

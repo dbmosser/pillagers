@@ -6644,6 +6644,42 @@ Also not verified: whether the same aisle effect shows on the QUARRY's terraces,
 which the four-map killer table hints at, sentries there hold the same top spot
 at a higher extract rate, and nobody has asked the question of that map yet.
 
+### v2.63: every sim row now says which game it was measured on
+
+One small change, same trap class as the tier stamp at v2.36. That build found that
+every published number had been silently scaled by the profile's world tier and
+fixed it by stamping tier, lootMul and hpMul on every sim row, so a batch could
+not be compared across tiers by accident. This cycle recreated the identical trap
+one layer up: three behaviour defaults changed, healOverTime, raiderFeud and
+simReach, and one of them alone moves the extract rate 7.5 points, so a batch
+recorded at v2.43 and a batch recorded at v2.58 quote rates for DIFFERENT GAMES
+with nothing on either row saying so. The next session that lines two old batches
+up side by side walks straight into it.
+
+Every simResult now carries a dial fingerprint, one compact string rather than an
+object so a hundred rows do not carry a hundred copies:
+
+    dials: "hot1 feud1 reach1 win1 rheal0 eng0 pip0 greed52"
+
+covering the heal, the feud, the weapon-range reach, windows, retreat-heal, the
+engage radius, the pip and the greed threshold, which is every dial that has
+shipped default-on or been A/B'd this cycle. A mismatch between two batches is now
+visible in the first row of each instead of discoverable only by whoever remembers
+which build changed which default.
+
+Verified: parsecheck PASS at v2.63, all four maps and the hub drive and draw
+clean. The stamp itself exercised: a row at shipped defaults reads hot1 feud1
+reach1 win1 rheal0 eng0 pip0 greed52, the same seed with healOverTime 0 reads hot0
+with all else identical, and the dial was back at 1 afterwards.
+
+Not verified: completeness. The fingerprint covers the dials this cycle touched
+plus greed; older behaviour dials, simCrouch, simSell, simPed, simWade and the
+rest, are not stamped, on the argument that they have been stable at their
+defaults since their own build notes and stamping all thirty would make the string
+unreadable. If one of them is ever flipped in an arm, it joins the stamp then, and
+until it does the fingerprint can claim two rows match when an unstamped dial
+differs.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
