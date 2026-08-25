@@ -6429,6 +6429,47 @@ bar should also appear on the corpse of a feud casualty, which would let him
 read a firefight he arrived too late to see; bodies currently carry no plate at
 all and that is a larger change than this one.
 
+### v2.58: the default-stack ledger closes, and the feud almost never decides a raid
+
+No game logic changed. Third and last batch in the attribution thread: raiderFeud
+isolated on the same 320 seeds, modern defaults in both arms, only the feud
+toggling.
+
+    no feud 18.4% against feud 19.1%
+    discordant 6 of 320: 2 seeds extract only without the feud, 4 only with it
+
+THE LEDGER NOW CLOSES TO WITHIN NOISE.
+    whole stack (v2.53 batch one)        -6.8 points
+    healOverTime alone (v2.53 batch two) -7.5 points
+    raiderFeud alone (this batch)        +0.7 points
+    simReach, by subtraction             about 0.0
+
+Every point of the difficulty drop this cycle walks through the medkit and nothing
+else. simReach, the correctness fix, is free, which is what a correctness fix
+should be. And the feud is worth a fraction of a point IN THE BOT'S FAVOUR, which
+was the v2.53 prediction, raiders shooting raiders means fewer guns pointed at the
+bot, delivered at about a tenth the size anyone would have guessed.
+
+THE FEUD FACT WORTH KEEPING: 314 OF 320 RAIDS END IDENTICALLY WITH THE WAR ON OR
+OFF. v2.49 measured feuds FIRING in roughly 38 percent of raids, real bullets and
+real raider corpses, and this batch says all of that violence changes the bot's own
+outcome in under 2 percent of raids. The feud changes the WORLD without changing
+the bot's fate, which for a texture feature is close to ideal: drama that costs the
+player nothing measurable, exactly like windows at v2.52. The pattern across this
+cycle is now sharp enough to state: TEXTURE IS FREE, TIME IS EXPENSIVE. Windows,
+feuds and crew colours moved nothing; six seconds of medkit moved seven and a half
+points.
+
+Verified: parsecheck PASS at v2.58, all four maps and the hub drive and draw clean.
+VER and DESIGN.md only.
+
+Not verified: the simReach zero is inferred by subtraction across batches rather
+than isolated directly, and the arithmetic assumes the three effects add, which
+interactions could break; a direct simReach isolation would settle it and is not
+worth 25 minutes against a predicted zero. Also not verified: the feud's +0.7 at
+6 discordant pairs is statistically nothing and is reported as the direction of a
+whisper, not a finding.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
