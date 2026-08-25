@@ -7464,6 +7464,87 @@ stood behind the pane, which is correct behaviour where real geometry remains,
 and cosmetically a destroyed wall's baked contact shadow may linger on the
 ground until the next raid.
 
+### v2.84: the breakable world is balance-neutral, measured before anyone had to wonder
+
+No game logic changed. v2.83 shipped destruction with its balance consequences
+named as the largest open question, cover decides raids per the v2.43 thread and
+destruction changes cover, so the 320-seed paired A/B ran immediately rather
+than someday. destruct 0 against destruct 1, BURIED CITY, pinned via
+__pinDefaults, rows kept:
+
+    intact world 17.5% against breakable world 17.8%
+    discordant 33 of 320: 16 flip toward intact, 17 toward breakable
+    z 0, exact two-sided p = 1.0
+
+    killers      intact   breakable
+    sentry         145       136
+    crawler         86        91
+    raider          20        18
+    warden           7        10
+    extracted       56        57
+
+AS NULL AS A NULL GETS, and the killer table says why in one line: nothing about
+WHO kills the bot changes, because the bot does not demolish on purpose. It has
+no charge-against-wall behaviour and no reason to shoot masonry, so the world
+breaks only incidentally under stray fire, and incidental breakage at these HP
+values is not enough to move outcomes. Ten percent of raids still flip, the
+by-now-familiar signature of a texture feature: the raid is DIFFERENT, walls
+fall and holes open and fights reroute, and the aggregate does not care.
+
+THE PATTERN THIS CYCLE IS NOW FOUR FOR FOUR. Windows, feuds, crew colours and a
+destructible world all measured at or within noise of zero balance cost, while
+the one change that touched TIME, the six-second medkit, moved 7.5 points.
+Texture is free; time is expensive. That is now the closest thing this project
+has to a law.
+
+WORTH SAYING FOR THE PLAYER'S SIDE, because the null is the BOT'S null: he and
+his friends have grenades and intent. A player who charges a wall to flank a
+camp is doing something the sim never models, so the FEELING of destruction is
+entirely unmeasured here, only its passive cost, and the passive cost is zero,
+which is exactly what a feature like this wants: all upside surface, no hidden
+tax.
+
+Verified: parsecheck PASS at v2.84, all four maps and the hub drive and draw
+clean. Measurement build, VER and DESIGN.md only.
+
+Not verified: BURIED CITY only, as every arm this cycle; a map with more
+furniture in fire lanes could in principle differ. Also not verified: the
+player-intent side named above, which no sim arm can reach and his next raids
+will answer by feel.
+
+### v2.85: the shadow tower over every named machine was a font weight
+
+His report: "there's a glitch where each enemy has a large shadow rectangle
+above it." Reproduced on the first capture: a name-plate-wide column of panel
+dark rising from every named machine past the top of the screen.
+
+FOUND BY INSTRUMENTING THE CANVAS, not by reading. fillRect and fill were
+monkey-patched for one frame to log every call whose rectangle covered a pixel
+inside the column, with stack traces. One call matched: a fillRect 93 wide and
+810 TALL in rgba(6,9,13,.62), the standard text backplate colour, from the
+nameplate painter.
+
+THE BUG IS ONE parseFloat. The plate height was computed as
+parseFloat(wc.font)*1.35, written when font strings began with their size. Every
+TYPE face now leads with a WEIGHT, "600 10px Rubik", so parseFloat returned 600,
+the weight, and the backplate drew ceil(600*1.35)=810 pixels tall behind every
+plate. The height now comes from the actual px token, and the one other
+candidate site was grepped for: this was the only parseFloat(font) in the file.
+
+Verified three ways: the instrumented frame after the fix shows the tallest
+backplate at 18 pixels; the same staged scene that showed the towers, sentry and
+crawler and raider pulled around the player, now shows compact plates and
+nothing above them, tools/shots/glitch_fixed.png against glitch_shadow.png; and
+parsecheck PASS at v2.85 with all four maps and the hub driving and drawing
+clean, 10 of 10 entities moving. The itch zip is rebuilt at v2.85.
+
+Not verified: when the weights were added to TYPE and therefore how long this
+was live; the typography rework predates this session's captures, and none of
+the session's own screenshots framed a named machine with headroom above it
+until today's, which is why a bug this visible could hide from a capture
+workflow that photographs what it stages. His eyes found it in normal play
+within a day of playing, which is the argument for his eyes.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
