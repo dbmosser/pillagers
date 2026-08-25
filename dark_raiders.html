@@ -421,7 +421,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.08';
+var VER='2.09';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -452,7 +452,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -6787,10 +6787,13 @@ function updatePlayer(dt){
         // a fouled gun costs you the round AND the second it takes to cycle.
         if(p.wep.jam>0&&rr()<p.wep.jam){
           p.ammo--; p.lastShot=now; p.fired=true; p.jam=0.9;
+          // The counter is a FACT and moves out of the presentation guard, v2.09.
+          // It was fenced with the say and the blip, so a sim raid could not have
+          // reported a jam even once the bot could have one.
+          G.tel.jams=(G.tel.jams||0)+1;
           if(!G.sim){
             say(p.wep.name+' jammed.');
             blip('clank'); G.shake=Math.max(G.shake,2);
-            G.tel.jams=(G.tel.jams||0)+1;
           }
         } else {
           p.ammo--; p.lastShot=now; p.fired=true;
@@ -6992,6 +6995,16 @@ function updatePlayer(dt){
 function updateBot(dt){
   var p=G.player,T=G.tel;
   p.moving=false;
+  // THE BOT CAN JAM, v2.09, and until now it could not, which made every number
+  // this project has quoted about owned guns a number for a game without the
+  // penalty. The roll lived inside the player's mouse.down fire path, and
+  // simStep calls updateBot and never updatePlayer, so no sim raid has ever
+  // jammed or ever ticked a jam down. It did not matter while nobody carried an
+  // owned gun; v2.08 is what routes players onto exactly those guns, so it
+  // matters now. The clock ticks whether or not there is anything to shoot at,
+  // as it does for the player, so a bot that jams and then breaks contact still
+  // spends the second cycling the action.
+  if(p.jam>0) p.jam-=dt;
   // THE BOT CAN NOW CROUCH, v1.80, and it is a dial because for eighty builds it
   // could not. The old comment here read "the bot never crouches, so this measures
   // exactly the standing half of the mechanic", which was true and quietly fatal:
@@ -7111,9 +7124,25 @@ function updateBot(dt){
       if(p.reloading<=0&&p.reserve>0){ p.reloading=p.wep.reload; T.reloads++; }
     } else {
       var now=G.t*1000;
-      if(p.reloading<=0&&now-p.lastShot>p.wep.rof){
-        p.ammo--; p.lastShot=now;
-        fireWeapon(p,p.wep,threat.x+rnd(-10,10),threat.y+rnd(-10,10),true);
+      if(p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){
+        // Same shape as the player path: the roll happens on the trigger pull, so
+        // a fouled gun costs the round AND the second it takes to cycle.
+        // DRAWN BEFORE THE DIAL IS CONSULTED, and that is not a style choice. Put
+        // the rr() inside the dial test and simJam 0 skips a draw that simJam 1
+        // takes, which shifts the whole PRNG stream from the first shot onward and
+        // makes the two arms different raids rather than the same raid with and
+        // without jams. My first measurement did exactly that: 120 of 120 seeds
+        // diverged and the per-seed flip counts meant nothing. Drawing whenever the
+        // gun CAN jam keeps both arms on one stream, and guns with jam 0, every
+        // loaner and every field pickup, never draw at all, so the entire back
+        // catalogue of sim numbers stays reproducible.
+        var jr=(p.wep.jam>0)?rr():1;
+        if(CFG.simJam!==0&&p.wep.jam>0&&jr<p.wep.jam){
+          p.ammo--; p.lastShot=now; p.jam=0.9; T.jams=(T.jams||0)+1;
+        } else {
+          p.ammo--; p.lastShot=now;
+          fireWeapon(p,p.wep,threat.x+rnd(-10,10),threat.y+rnd(-10,10),true);
+        }
       }
     }
     if(td<110){ botCrouch=false; moveToward(p,p.x-(threat.x-p.x),p.y-(threat.y-p.y),botSpd(CFG.pSpeed*.7*LD.spd*BWADE),dt); moved=true; }
@@ -8431,7 +8460,7 @@ function endRaid(how){
   if(G.sim){
     G.simResult={outcome:how,seed:G.seed,dur:Math.round(CFG.raidSec-G.timeLeft),haul:haul,items:G.bag.length,
       containers:T.containers,windfalls:T.windfalls||0,pedSold:T.pedSold||0,wepSource:(function(){ var W=G.player&&G.player.wep; if(!W) return 'none'; if(G.player.wepIssued) return 'issued'; return wearable(W.id)?'owned':'field'; })(),crouched:T.tCrouchBot?Math.round(T.tCrouchBot):0,siegeArrivals:T.siegeArrivals||0,siegeNoSpot:T.siegeNoSpot||0,killer:T.deathKiller,firstContact:T.firstContact===null?null:Math.round(T.firstContact),
-      shots:T.shots,hits:T.hits,kills:T.kills,closest:Math.round(T.closestExtract),
+      shots:T.shots,hits:T.hits,kills:T.kills,jams:T.jams||0,closest:Math.round(T.closestExtract),
       downs:T.downs,revives:T.revives,raidersExt:T.raidersExtracted,
       beaconCalls:T.beaconCalls,beaconMissed:T.beaconMissed,
       // Where the raid actually ends. Three separate mechanisms aimed at the trip out

@@ -3332,6 +3332,80 @@ play rather than merely correct. FAILING is a tier the game has never actually
 delivered to anybody, so nothing in this project's history says what it feels
 like, and he is about to be the first to find out.
 
+### v2.09: the bot could not jam, and once it can, v2.08 looks like a mistake
+
+The jam roll lived inside the player's mouse.down fire path. simStep calls
+updateBot and never updatePlayer, so no sim raid in this project's history has
+ever jammed, ever ticked a jam clock down, or ever been blocked by one. The bot
+fired at 7113 with no roll and no p.jam test at all.
+
+Seventh divergence of the family the v2.02 sweep catalogued, and the first one
+that is not inert. The previous six ran from +26 points down to 0.0 and I wrote at
+v2.04 that the vein was exhausted. It was, for the game as it stood. v2.08 changed
+the game: it routes players onto owned guns, and owned guns are the only ones that
+can jam. A guard that was harmless for eighty builds became load bearing the
+moment the build before it landed.
+
+Fixed in three places. The bot rolls a jam on the trigger pull, is blocked while
+jammed, and ticks the clock down whether or not it has a target. The T.jams
+counter moved out of the !G.sim presentation guard, where it sat with the say and
+the blip, because a counter is a fact and not a presentation detail. And simResult
+now carries jams, which it never did.
+
+MY FIRST MEASUREMENT WAS INVALID AND THE HARNESS TOLD ME SO. I put the rr() inside
+the dial test, so simJam 0 skipped a draw that simJam 1 took. From the first shot
+onward the two arms ran different raids, 120 of 120 seeds diverged, and the flip
+counts I was about to quote meant nothing. The draw now happens whenever the gun
+CAN jam, before the dial is consulted, so both arms share one stream. Guns with
+jam 0, every loaner and every field pickup, never draw, so the back catalogue
+stays reproducible. After the fix exactly ONE seed of 120 came back byte identical
+and it was the one seed where the gun never jammed once, which is the internal
+consistency check I wanted.
+
+Fires at the designed rate: 1,091 jams in 17,586 trigger pulls, 0.062 against a
+nominal 0.060.
+
+THREE ARMS, 120 SEEDS EACH, THE QUARRY, simGreed 20000, everything else pinned:
+
+                              extract   dur   shots   hits   jams   haul
+  loaner, jam live             10.8%    264   144.0   95.1   0.00   11,479
+  owned FAILING, jam OFF       11.7%    292   175.4   92.0   0.00   13,275
+  owned FAILING, jam LIVE       2.5%    258   137.5   75.4   9.09   11,478
+
+A FAILING gun costs 9.2 points of extract rate, 11.7 down to 2.5, a 79 percent
+relative collapse. Nine jams a raid, 38 fewer shots, 17 fewer hits.
+
+AND THAT IS THE REAL RESULT OF THIS BUILD, WHICH IS THAT v2.08 MADE HIS GAME
+WORSE. Loaner against owned FAILING, both with the jam live, is 10.8 against 2.5.
+Twelve seeds where the loaner survives and the owned gun dies, two the other way.
+v2.08 is the build that moves him from the first row to the third.
+
+I flagged this exact risk at v2.07 and then walked into it. The v2.07 entry says
+repairing P.equipped "would hand him one of six FAILING guns at 6 percent a shot
+in place of a clean loaner, which is a downgrade dressed as a bugfix", and I
+declined to touch the deploy guard for that reason. One build later I fixed the
+same invariant at a different site and argued it was correct, which it is, without
+rechecking the reasoning I had written down the day before. Correct and harmful
+are not exclusive, and I had already worked that out once.
+
+I am NOT reverting v2.08. The invariant bug is real, and hiding six wrecked guns
+behind a loaner is what made the wear economy unreachable in the first place. The
+missing piece is not the repair, it is that the game never tells him. Nothing in
+the hub says a gun is FAILING, nothing at deploy says the gun in his hands jams
+one shot in sixteen, and the repair shop that would fix all six for 12,287 against
+13,085 in the bank has never once been pointed at. A 6 percent jam he can see and
+choose to fix is a system. The same 6 percent unannounced is a tax. That is v2.10
+and it starts now.
+
+Not verified: whether 0.06 is correctly tuned, and this build cannot tell you.
+Every number above is one gun, 8,312 rounds deep, at the worst of four tiers, on
+one map. FOULED at 0.022 is the tier a player actually reaches first and it is
+unmeasured here. Also not verified: the loaner row is not paired with the other
+two. A loaner has jam 0 so it never draws, which puts it on a different stream by
+construction, so 10.8 against 2.5 is an aggregate difference of 120 raids against
+120 raids and not a per-seed comparison. The 12 and 2 seed flips against the
+loaner should be read as a rough direction, not as attribution.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
