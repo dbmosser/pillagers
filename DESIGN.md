@@ -6826,6 +6826,43 @@ not restore dials afterwards, that remains the batch runner's job, because a pin
 and a restore are different promises and conflating them is how dials got dirty
 in the first place.
 
+### v2.68: the exit dial I kept promising him is now actually on the console
+
+His-facing fix, small code, embarrassing cause. Three changelog entries this
+cycle, v2.53, v2.54 and v2.58, told him "healOverTime 0 is one dial in the
+console" as the escape hatch from the medkit change and its measured 7.5 points
+of difficulty. Checked today: the Tuning Console had never heard of it. Thirty
+sliders, none of them the three dials this cycle shipped, so the exit I kept
+pointing at was reachable only through devtools, which for him means it did not
+exist. The claim was written three times and verified zero times, which is the
+same failure as the v2.48 loot sounds wearing a different coat.
+
+The console now carries all three of the cycle's gameplay dials, as 0/1 toggles:
+
+    Heals take time (0 instant)     live
+    Raider crews feud (0 truce)     live
+    Buildings have windows          NEXT RAID
+
+Heals and feuds read their dial at use time, so those flip mid-raid; windows are
+cut when the map is built, so that row carries the console's existing NEXT RAID
+tag. All three participate in the preset system the same way every other slider
+does: touching one marks the config custom and saves, and applying a preset
+resets them to defaults alongside everything else.
+
+Verified through the console's own machinery rather than by reading it: the
+fixture gained a __tune hook, the modal was opened by its real toggle, the list
+built 33 rows, all three labels present, the NEXT RAID tag on windows and only on
+windows, and the Heals slider driven through its own oninput handler set
+CFG.healOverTime to 0, marked the preset custom, and set it back. Parsecheck PASS
+at v2.68, all four maps and the hub drive and draw clean.
+
+Not verified: the row labels' fit at his font scale, since the console renders
+labels at whatever TYPE scale he runs and "Heals take time (0 instant)" is longer
+than most rows; if it wraps badly the label is one string. Also not verified: 
+whether simRetreatHeal belongs on the console too. It stays off it deliberately,
+it is a sim-behaviour dial rather than a game dial, and the console has kept that
+distinction since simGreed was allowed on only because the sim card reads it.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

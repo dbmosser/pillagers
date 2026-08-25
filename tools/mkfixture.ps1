@@ -172,6 +172,7 @@ window.__feudFoe=function(a,b){ return feudFoe(a,b); };
 // on the wettest map because inWater lives inside the IIFE and typeof from page
 // scope read undefined; a hook makes that failure impossible to repeat.
 window.__water={at:inWater};
+window.__tune={toggle:toggleTune,sliders:function(){return SLIDERS;}};
 // THE MEASUREMENT BASELINE, ONE CALL, v2.67. Every batch this cycle opened with
 // the same twenty hand-typed dial assignments, and twice a smoke test that
 // skipped them produced rates that meant nothing and briefly looked like
