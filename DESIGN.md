@@ -3500,6 +3500,68 @@ and some may be the doorway quantisation that has produced false positives in th
 project twice before. This build makes an unreachable goal cheap; it does not ask
 whether the goal should have been unreachable.
 
+### v2.11: the wear curve is not a ramp, it is a trapdoor at FOULED
+
+No game logic changed in this build. v2.09 measured one wear tier and I wrote in
+its own Not verified line that a single point on a four point curve cannot say
+whether 0.06 is tuned correctly, and that FOULED at 0.022 is the tier a player
+actually reaches first and was unmeasured. This measures all four. It is the whole
+build, and it exists because v2.09 shipped a claim I could not support.
+
+120 seeds per tier, THE QUARRY, one gun, everything else pinned identically,
+navBackoff 1 and simJam 1:
+
+    tier      rounds   jam     extract   dur   shots   hit%   jams   haul
+    CLEAN          0   0.000    20.0%    343   204.6   66.1   0.00   16,897
+    WORN         420   0.000    16.7%    310   191.9   62.7   0.00   14,453
+    FOULED       950   0.022     5.8%    278   163.2   57.7   3.58   12,275
+    FAILING     1600   0.060     3.3%    241   130.1   54.4   8.33   10,513
+
+READ THE GAPS, NOT THE ROWS:
+
+    CLEAN  -> WORN      -3.3 points    stat penalty only, no jam
+    WORN   -> FOULED   -10.9 points    the first frame jam exists
+    FOULED -> FAILING   -2.5 points    jam nearly TRIPLES, 0.022 to 0.06
+
+Almost the entire cost of neglecting a weapon is paid at the moment jam stops
+being zero. Tripling the jam rate afterwards costs a quarter of what switching it
+on cost. That is a trapdoor, not a ramp, and it is the opposite of what a wear
+curve with four named tiers and a cost that grows with rounds fired looks like it
+promises.
+
+The paired view says the same thing. Against CLEAN on the same seeds: WORN flips
+15 seeds to dead and 11 back to extract, which is close to a coin toss and
+consistent with a small stat penalty. FOULED flips 21 to dead and only 4 to
+extract. FAILING flips 23 to dead and 3 to extract. FOULED has already done
+essentially all of the damage that FAILING does.
+
+WHY THIS MATTERS FOR HIM SPECIFICALLY. FOULED is 950 rounds. His heaviest recorded
+run fired 111. So it is roughly nine raids on one owned gun, which is a normal
+amount of play, and it is the first tier he will ever meet. The tier he will meet
+first is the one that takes his extract rate from 16.7 to 5.8.
+
+WHAT I AM NOT DOING. I am not retuning it. Whether the cliff is wrong depends on
+what wear is FOR, and there are at least three coherent answers: a soft tax that
+nudges you toward the shop, a hard deadline that makes servicing mandatory, or a
+resource sink that punishes hoarding guns you do not maintain. The current numbers
+implement the second one whether or not that was the intent. Moving 0.022 down, or
+inserting a tier between WORN and FOULED, or making the first jam of a raid free,
+are three different games and picking is his.
+
+What I can say with numbers, which is what he was missing: the lever that matters
+is the FOULED jam rate, not the FAILING one. Tuning 0.06 changes almost nothing.
+
+Not verified: any of this on the other three maps. Container density decides how
+often the bag threshold beats the ammo threshold, and shots per raid is the
+quantity jam scales against, so a map where the bot fires less should show a
+shallower cliff. This is THE QUARRY only. Also not verified: the same curve for
+the player rather than the bot. The bot fires 204.6 shots on a CLEAN gun; his
+heaviest run fired 111, so he shoots roughly half as much and would meet the cliff
+proportionally more slowly within a raid, though he reaches the tier itself just
+as fast. And one honest limitation of the whole series: every tier here is the
+Compact SMG, which v1.57 already flagged as a trap purchase, so the absolute rates
+belong to that gun and only the SHAPE of the curve should be read as general.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
