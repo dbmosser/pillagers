@@ -5514,6 +5514,87 @@ pair, one arm run twice on the same seeds, would show the same eight-death sprea
 which is the measurement that would actually pin the noise floor instead of
 inferring it from one pair.
 
+### v2.42: I measured the noise floor and it swallows most of what I reported this session
+
+No game logic changed; the fixture gains a paired-test helper. v2.41 ended saying I
+had never measured what a null arm looks like and had twice quoted death-count
+swings without one. This measures it, and the answer is worse for my own back
+catalogue than I expected.
+
+FOUR BLOCKS OF 120 SEEDS, NOTHING CHANGED BETWEEN THEM. Same shipped defaults, same
+map, same greed, same pinned tier. The only difference is which seeds.
+
+    block   extract   sentry deaths   crawler deaths
+      1      29.2%         49              26
+      2      20.0%         52              35
+      3      24.2%         58              27
+      4      23.3%         43              28
+    range     9.2          15               9
+    sd        3.8          6.2             4.1
+
+THE UNCHANGED GAME SPANS 9.2 POINTS OF EXTRACT RATE. And 15 sentry deaths. Set that
+against what I reported: v2.40's headline was a 7.5 point extract gap and fourteen
+extra sentry deaths. Both are smaller than the spread the game produces when
+absolutely nothing is changed.
+
+BUT I HAVE TO BE CAREFUL NOT TO OVERCORRECT, BECAUSE THESE MEASURE DIFFERENT THINGS.
+The four blocks use DIFFERENT seed sets. Every arm in v2.39 through v2.41 used the
+SAME seed list, so between-seed-set variation is common to both arms and largely
+cancels. The 9.2 points is the error bar on an ABSOLUTE rate, not on a paired
+difference. What it kills is the decimal: quoting "29.2 percent" as the extract rate
+of this game is false precision, and it should have been "about 24, give or take 4".
+Everything absolute this session inherits that.
+
+SO I RAN THE TEST I SHOULD HAVE RUN ORIGINALLY. Both arms on each seed before moving
+to the next, which makes the pairing exact, then McNemar on the discordant pairs.
+119 pairs, sentry at 13 rounds against 14, health identical:
+
+                        dmg 11 extract   dmg 11 dead
+    dmg 12 extract            17              18
+    dmg 12 dead                9              75
+
+    rate 29.4% against 21.8%, discordant 27, chi 2.37, z 1.54, exact p = 0.122
+
+IT DOES NOT CLEAR THE BAR. Eighteen seeds flip toward the 13-round arm and nine flip
+the other way. The direction is the one I predicted and the p is 0.12. That is
+suggestive and it is not a finding, and v2.40 reported it as though it were.
+
+WHY THE WHOLE SESSION KEPT LANDING "INSIDE ONE STANDARD ERROR". The convention of
+120 seeds an arm is simply too small for the effects being chased. At this
+discordance rate, 0.227, and this split, detecting it at the five percent level with
+eighty percent power needs about 71 discordant pairs, which is about 313 seeds an
+arm. My standing convention is roughly 2.6 times too small. That is not a fact about
+this build, it is a fact about every A and B in this file, and it explains a long run
+of results that came out directionally right and statistically mute.
+
+THE TOOLING NOW MAKES THE RIGHT TEST THE EASY ONE. __simPaired(seeds,dialsA,dialsB)
+runs both arms on each seed in turn, returns McNemar's table with an exact two-sided
+p, and puts every dial it touched back. Verified two ways: a null pair with identical
+dials returns zero discordant pairs and identical rates, which it must since the sim
+is deterministic, and an extreme pair returns five of six discordant all in one
+direction. Both left CFG.eHp back at 1.
+
+WHERE THE SENTRY THREAD ACTUALLY STANDS. Six arms, and every arm needing 14 or more
+rounds has a lower extract rate than every arm needing 13 or fewer. The direction has
+never once come out backwards, the crawler mirror at v2.41 correctly showed nothing,
+and the pooled contrast at v2.39 was 2.8 standard errors. That is a good working
+hypothesis. It is not established, no single paired test reaches significance, and I
+should have said so three builds ago instead of at the end.
+
+MY ADVICE ABOUT THE DIAL SURVIVES ANYWAY, FOR A REASON THAT IS NOT STATISTICAL. eHp
+1.00 was already the neutral setting and going below it has never measured better
+than leaving it. So "leave it at 1.00" costs him nothing whether or not the sentry
+mechanism is real, which is the only reason I am not withdrawing that too.
+
+Not verified: the noise floor for a PAIRED difference, which is the number I actually
+need and still do not have. Four null blocks give the spread across seed sets; the
+equivalent for paired arms would need repeated pairs under a dial that genuinely does
+nothing, and there is no such dial to hand. Also not verified: whether 313 seeds is
+achievable in a session, since 120 seeds takes about two minutes of wall clock in the
+fixture and 313 an arm is roughly ten minutes for one comparison. Also not verified:
+any of the four blocks on a map other than BURIED CITY, so the 9.2 point spread is one
+map's noise floor and the quieter maps may well be tighter or worse.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

@@ -163,6 +163,40 @@ window.__pedBuy=function(i){ return pedBuy(i); };
 // The weapon table, so shots-to-kill can be varied from the WEAPON side
 // instead of the health side and the two separated causally.
 window.__weapons=function(){ return WEAPONS; };
+// PAIRED ARMS AND THE TEST THAT GOES WITH THEM, v2.42. Two arms run over one seed
+// list are PAIRED, and comparing their extract rates as if they were independent
+// samples throws the pairing away and reads far more into a gap than is there.
+// v2.42 measured the cost: four 120-seed blocks of the UNCHANGED game span 9.2
+// points of extract rate, so a single arm's rate is worth about plus or minus 4.
+// This runs both arms on each seed before moving to the next, which keeps the
+// pairing exact, and returns McNemar's table so the right test is the easy one.
+// dialsA and dialsB are merged into CFG for their own arm only; every other dial
+// must already be pinned by the caller.
+window.__simPaired=function(seeds,dialsA,dialsB){
+  var rows=[],a=0,b=0,c=0,d=0,k;
+  var save={}; for(k in dialsA) save[k]=CFG[k]; for(k in dialsB) save[k]=CFG[k];
+  for(var i=0;i<seeds.length;i++){
+    var ra,rb;
+    for(k in dialsA) CFG[k]=dialsA[k];
+    ra=window.__simSeedsFull([seeds[i]])[0];
+    for(k in dialsB) CFG[k]=dialsB[k];
+    rb=window.__simSeedsFull([seeds[i]])[0];
+    var xa=(ra.outcome==='extract')?1:0, xb=(rb.outcome==='extract')?1:0;
+    if(xa&&xb)a++; else if(xa&&!xb)b++; else if(!xa&&xb)c++; else d++;
+    rows.push({seed:seeds[i],a:ra,b:rb});
+  }
+  for(k in save) CFG[k]=save[k];
+  var n=seeds.length, disc=b+c;
+  var chi=disc>0?Math.pow(Math.abs(b-c)-1,2)/disc:0;
+  function lch(nn,kk){var s=0;for(var i2=0;i2<kk;i2++)s+=Math.log(nn-i2)-Math.log(i2+1);return s;}
+  var p=0,mn=Math.min(b,c);
+  if(disc>0){ for(var kk=0;kk<=mn;kk++) p+=Math.exp(lch(disc,kk)-disc*Math.log(2)); p=Math.min(1,2*p); }
+  else p=1;
+  return {n:n, rateA:+(100*(a+b)/n).toFixed(1), rateB:+(100*(a+c)/n).toFixed(1),
+    table:{bothExtract:a,onlyA:b,onlyB:c,neither:d}, discordant:disc,
+    mcnemarChi:+chi.toFixed(2), z:+Math.sqrt(chi).toFixed(2),
+    exactTwoSidedP:+p.toFixed(4), rows:rows};
+};
 window.__setHot=function(i){ return setHot(i); };
 window.__items=function(){ return ITEMS; };
 window.__loot=function(){ return LOOT; };
