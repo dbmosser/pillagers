@@ -5379,6 +5379,76 @@ damage-side arm on its own is 1.34 standard errors from the 13-shot arm, which
 does not clear the bar by itself; the 2.8 comes from pooling three arms a side,
 and the pooling groups by the very variable being tested.
 
+### v2.40: the threshold is one sentry duel, and it is decided by a single round
+
+No game logic changed. v2.39 found the break between 13 and 14 SMG shots and ended
+saying I had excluded the magazine and had not found what replaced it. This finds
+it, and the answer needed no new mechanism, only reading the killer column.
+
+Both arms hold sentry health fixed at 150 and change only the SMG, so nothing about
+the machines differs between them. 120 seeds, BURIED CITY, everything else pinned:
+
+    arm                        extract   shots   hits   duration
+    A  SMG dmg 12, 13 shots     29.2%    155.4   100.3    197s
+    B  SMG dmg 11, 14 shots     21.7%    154.6   101.8    201s
+
+    what killed the bot        A     B
+    nothing, extracted         35    26
+    sentry                     44    58
+    crawler                    29    25
+    raider                      8     9
+    warden                      3     0
+    listener                    0     1
+    timer                       1     1
+
+THE WHOLE SWING IS SENTRIES. Deaths to sentries go 44 to 58, up fourteen, and the
+nine extractions lost are inside that. Nothing else moves further than noise.
+
+IT IS NOT THE AMMO ECONOMY, WHICH WAS MY FIRST GUESS AND IS WRONG. If every kill
+cost an extra round the bot should fire more, and it does not: 155.4 shots against
+154.6, and 100.3 hits against 101.8. Both arms fire the same raid's worth of
+ammunition. The extra round is not being spent, because the bot that needs it is
+dead before it gets there.
+
+AND THE ARM CONTAINS ITS OWN CONTROL, WHICH IS THE PART I WOULD DEFEND. Dropping
+SMG damage from 12 to 11 does not move every breakpoint. A crawler has 55 health
+and takes 5 shots at both values, unchanged. A sentry has 150 and goes from 13 to
+14. So inside a single arm, one common enemy's breakpoint moved and one did not,
+and the deaths follow the breakpoint exactly: sentries up fourteen, crawlers not up
+at all. That is a within-arm comparison rather than a pooled cross-arm one, and it
+does not depend on the grouping I flagged as weak in v2.39.
+
+WHY THE SENTRY DUEL IS THIS TIGHT. A sentry has range 340 and the bot only
+registers a threat at 300, so the bot walks into forty units of being shot at
+before it may shoot back. The sentry hits for 14, and through the light rig the sim
+pins, that is 10 hits to put the bot down. The bot needs 13 rounds at 88ms, about
+1.14 seconds of held trigger, to put the sentry down first. Those two clocks are
+close enough that the fight is roughly even, which is why one more round on the
+bot's side of it is worth fourteen raids in a hundred and twenty.
+
+WHAT THIS MEANS FOR THE DIAL, AND IT IS THE SAME ADVICE AS v2.39 WITH A REASON
+UNDER IT. eHp x1.06 takes the sentry from 150 to 159 and 159 needs 14 rounds. That
+is the entire cost of world tier 1: not six percent of anything, one extra round in
+one duel. eHp 1.00 is the setting, and below 1.00 buys nothing because 141 and 128
+still lose the same duel the same way.
+
+I AM NOT RETUNING ANYTHING. The obvious move is to widen the gap, by giving the bot
+its threat range at 340 to match the sentry, or by moving sentry health off the
+breakpoint. Both are difficulty changes and difficulty is his, and the 300 against
+340 asymmetry may well be deliberate: a machine that outranges you is a machine you
+are supposed to avoid rather than duel. That is a design question and it goes to him
+with numbers attached instead of being quietly decided here.
+
+Not verified: whether the bot's 300 unit threat range is intentional. I found it in
+updateBot's threat scan and it is a bare literal with no comment, so I cannot tell
+from the file whether it was chosen to sit under the sentry's 340 or simply never
+compared against it. Also not verified: any of this on the other three maps, or
+against any weapon but the Compact SMG. Sentry counts differ per map, so a map with
+fewer sentries should show a smaller break, and I have not measured that. Also not
+verified: the crawler control is clean but it is one control; I did not construct an
+arm where the sentry breakpoint stays put while another enemy's moves, which is the
+mirror test and would be stronger than what I ran.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
