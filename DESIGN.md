@@ -7093,6 +7093,52 @@ while the player watches from distance, where the label and prompt never
 coexist; the defer costs that case 2.3 seconds of name for no benefit, which is
 judged cheaper than a per-label liveness query.
 
+### v2.75: QUARRY breaks my aisle theory, which its own caveat predicted
+
+No game logic changed. v2.62 closed the COLD raider thread on "long aisle holds
+convert sightings into kills" and its Not verified line named the check that
+could break it: the same probe on QUARRY's terraces. Run now, with DAM alongside,
+completing the four-map table:
+
+    map       spells   median   p75     p90     over 2s
+    DAM         37     0.30s    0.45s    9.6s    16.2%
+    BURIED      54     0.75s    1.35s    5.4s    14.8%
+    COLD        49     1.35s    5.7s    21.8s    38.8%
+    QUARRY      34     1.65s    4.35s    7.35s   47.1%
+
+AND THE THEORY AS STATED IS DEAD, killed by the map I said to check. QUARRY holds
+line of sight LONGEST, the highest median and nearly half of all spells past two
+seconds, and QUARRY's raiders kill the bot LEAST, eight or nine per 120 raids
+against COLD's twenty-one. If hold length alone converted sightings into kills,
+QUARRY would be the raider abattoir of the four. It is the easiest map in the
+game.
+
+WHAT SURVIVES, STATED AT ITS REAL STRENGTH. COLD still has the kills, still has
+them early, still at rifle range from chasing raiders, and still has long holds;
+none of that moved. What died is the claim that the holds ALONE are the
+mechanism. The discriminating difference between COLD and QUARRY is what the
+held line runs THROUGH: COLD's holds live in shelving lanes where breaking
+sideways is a wall, QUARRY's live over open ground where both parties can
+manoeuvre and shoot, and open ground is a fight the bot's own weapon can join.
+So the surviving hypothesis is holds PLUS confinement, a lane you cannot leave
+laterally, and that is one more unproven mechanism rather than a conclusion; the
+difference this time is that it is the last one standing after five others died
+on measurement, not the first one that sounded right.
+
+The p90 column carries a second small fact: DAM's holds are glimpses at the
+median, 0.30 seconds, city-like, but its 90th percentile is 9.6 seconds, longer
+than BURIED's, which will be the dam crest and the open water margins, the same
+both-ways-open geometry as QUARRY at smaller scale.
+
+Verified: parsecheck PASS at v2.75, all four maps and the hub drive and draw
+clean. Measurement build, VER and DESIGN.md only, run under __pinDefaults.
+
+Not verified: the confinement clause, which would need a lateral-escape metric,
+roughly the free width perpendicular to the held sightline, and nothing measures
+that today. Also the standing caveat on all spell counts: 34 to 54 spells per
+map resists formal testing, and every number above is a distribution eyeballed
+honestly rather than a p-value.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
