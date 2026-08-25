@@ -6989,6 +6989,41 @@ map at spawn, the sweep-placed 'body' furniture containers, correctly carry no
 fallen name and still read SEARCH BODY, which was confirmed in passing by the
 prompt fallback but not exercised as its own case.
 
+### v2.72: a bought gun sounds like a gun, finishing the sound ladder's loose ends
+
+Two one-line changes, closing the last corners v2.48 left open and v2.59
+re-opened for inspection.
+
+The Peddler's counter was the remaining place a find crossed into the bag on the
+old generic chirp: buying an Auto Rifle from him clicked exactly like picking up
+scrap, while pulling the identical rifle from a crate has rung like metal since
+v2.59. The purchase now routes through lootVoice, so a bought gun scrapes, a
+bought elite gets its fanfare, and a bought bandage stays a click, decided by the
+same table that prices the find everywhere else.
+
+Second, the auto-equip path: with autoEquip on, a field gun good enough to swap
+to announced itself with the generic blip. It is a GUN arriving in your hands,
+the single most consequential pickup in the game, and it now uses pickGun. The
+dial defaults off, so most raids never hear this line, but the one that does
+should not be told it found scrap.
+
+Deliberately left on the plain blip, after reading every call site rather than
+sweeping blind: the drag pickup, the slot assignment, the slot select, manual gun
+equipping from the inventory, the armour slot, the stray hand-off and the body
+recovery. Those are ACTIONS the player chose, not finds the world dealt, and a
+rarity fanfare on a deliberate act would teach the ladder to mean nothing.
+
+Verified: parsecheck PASS at v2.72, all four maps and the hub drive and draw
+clean with 10 of 10 entities moving. The purchase exercised for real: a
+gun_rifle planted in a live Peddler's stock, bought through the actual pedBuy
+path, arrived in the bag, marked sold, threw nothing, and the voice chosen for it
+is pickGun. Silent in the fixture by construction, as always.
+
+Not verified: the sell-to-peddler direction, which still plays the plain blip and
+is left that way on purpose, selling is a decision and the money line already
+carries the payoff; if he wants a register sound for it, that is a taste call.
+Also not verified, unchanged from v2.48: every voice's actual sound in his ears.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

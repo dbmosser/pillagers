@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.71';
+var VER='2.72';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -4960,7 +4960,11 @@ function pedBuy(ix){
   st.sold=true; G.bag.push(st.k); G.trade.traded=1;
   G.pedBought=(G.pedBought||0)+st.price;
   say('Bought '+ITEMS[st.k].name+' for '+st.price.toLocaleString()+'c.');
-  blip('pick');
+  // The purchase gets the same voice the find would have, v2.72. Buying a gun
+  // from the Peddler chirped like picking up scrap while pulling the identical
+  // gun from a crate rang like metal, and the difference was only which counter
+  // it crossed. lootVoice already knows what the thing is.
+  blip(lootVoice([st.k]));
 }
 // ================================================================ WILDLIFE
 // His note, 2026-08-22: the world needs to look old and abandoned. Abandoned
@@ -6823,7 +6827,8 @@ function grantLoot(ct,keys){
         if(!G.sim){
           var cmp=oldDmg>0?Math.round((found.dmg*(found.pellets||1)/Math.max(1,oldDmg*(1))-1)*100):0;
           say(found.name+' equipped'+(cmp>0?', +'+cmp+'% damage':'')+'.');
-          if(found.qRank>=2) blip('pick');
+          // A gun worth auto-equipping is a gun, so it sounds like one, v2.72.
+          if(found.qRank>=2) blip('pickGun');
         }
       } else G.bag.push(key);
     }
