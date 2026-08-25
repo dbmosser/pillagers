@@ -5257,6 +5257,58 @@ the two halves of the tier, and I have not run that. Also not verified: whether 
 times the step measured here, and there is no reason to assume the response stays
 linear that far out.
 
+### v2.38: enemy health is the steepest dial in the game, and loot value does not touch survival at all
+
+No game logic changed. v2.37 measured 8.4 points of extract rate from pinning the
+sim's world tier and admitted the arm confounded two things: tier 1 raises machine
+health by six percent AND item values by eight. This separates them, and it needed
+no code, because eHp and lootMult are already sliders and the sim now runs at
+neutral so each one isolates cleanly. A two by two with the fourth cell already
+measured last build, 120 seeds an arm:
+
+    arm            eHp    lootMult   extract   haul    duration
+    A neutral      1.00     1.00      29.2%    8,897     197s
+    B health only  1.06     1.00      18.3%    8,331     195s
+    C loot only    1.00     1.08      29.2%    9,518     196s
+
+HEALTH IS THE WHOLE EFFECT. Six percent more machine health costs 10.9 points of
+extract rate, 29.2 down to 18.3. That is the steepest response this project has
+measured from any single number: roughly 1.8 points of survival per one percent of
+enemy health, over the step tested.
+
+LOOT VALUE MOVES SURVIVAL BY EXACTLY ZERO. 29.2 against 29.2, the same 35 raids of
+120. It moves haul by 7.0 percent, which is the multiplier arriving where it should
+and nowhere else.
+
+AND THAT NULL IS STRONGER THAN IT LOOKS, because I checked whether arm C was really
+a pure economy change and it was not. greedOf() is bagValue()/greedFull and
+bagValue() sums ival(), so an eight percent loot multiplier raises PERCEIVED GREED
+by eight percent, and greed drives the siege: the arrival interval is 8-4.6*GR and
+the cap is 6+8*GR. Arm C was carrying a slightly angrier siege the whole way and
+still landed on the same extract rate to the decimal.
+
+WHAT THIS IS WORTH TO HIM. He has said the game is too hard more than once, and
+eHp is a slider already on his Tuning Console. This is the exchange rate: about
+1.8 points of extract rate for every percent of enemy health, in the region around
+1.0. Turning eHp down to 0.94 should buy roughly the same eleven points that tier 1
+was taking away. I am not touching it, because difficulty is his and a dial he
+already owns needs a number rather than a decision from me.
+
+It also re-frames three builds of my own work. v2.05 and v2.06 went after the
+Listener, v2.15 after camp guard density, v2.27 and v2.28 after the siege clocks,
+and the largest effect any of them produced was a couple of points. A six percent
+change to one stat is worth five times that. If the question is ever "make the game
+easier", the answer is not the machines' behaviour, it is their health.
+
+Not verified: linearity, and I want to be exact about how little I know here. Two
+health points were tested, 1.00 and 1.06. Quoting 1.8 points per percent is a
+straight line drawn through two dots, and there is no reason the response stays
+straight at 0.9 or at 1.3. Tier 5 is health x1.30, five times the step measured,
+and extrapolating this slope there would predict an extract rate below zero, which
+is obviously wrong and shows exactly how far the linear reading can be trusted.
+Also not verified: whether the same steepness holds on the other three maps, since
+COLD STORAGE already sits at 6.7 percent and has much less room to fall.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
