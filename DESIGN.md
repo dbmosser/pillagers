@@ -7702,6 +7702,37 @@ appearance at his zoom and text scale; the imgs are sized in CSS pixels and do
 not ride LH(), which is fine at 100 percent zoom and untested elsewhere. Also
 the standing caveat: legibility is judged by his eyes, not my geometry.
 
+### v2.89: the placement culls get a dial, so their cost can be measured
+
+No behaviour changed at the shipped defaults. v2.86 removed a great deal of the
+world: on DAM alone, 54 bushes and 35 wrecks and 15 lamp posts that were standing
+in the reservoir, plus 20 bushes on tarmac. Its own Not verified line named the
+risk plainly, that bushes are concealment and wrecks are cover and v2.43
+established cover is where raids are decided, and that the paired run had not
+been done. This build makes that run possible.
+
+placeCull is the dial. It gates the makeMap culls and the raid-time lamp cull,
+and it is exactly the kind of dial this project prefers: the filters consume no
+rr(), so gating them cannot shift a single PRNG stream, which means placeCull 0
+reproduces the pre-v2.86 world on the SAME seed, misplaced props and all. Both
+arms therefore run in one build against identical raids, which is the standard
+this file has held since v2.42.
+
+Verified on one DAM seed, 9800, driven both ways: with the dial off the map
+carries 240 bushes of which 54 stand in water and 35 wrecks stand in water, and
+the cull log is empty; with it on the log records 54 bushes and 6 trees and 35
+wrecks and 20 road bushes removed, and 166 bushes remain, none of them wet and
+none on tarmac. Parsecheck PASS at v2.89, all four maps and the hub drive and
+draw clean with 10 of 10 entities moving. The dial joins the v2.63 fingerprint
+as 'cull' and the v2.67 pin baseline, so no future batch can run it dirty by
+accident.
+
+Not verified: the answer. The 320-seed paired run on DAM, placeCull 0 against 1,
+is in flight as this entry is written and its result belongs to the next build.
+DAM is the right map for it because DAM lost the most, and if the extract rate
+moves anywhere it moves there. Also not verified: the other three maps, which
+lost far less and are not worth 320 seeds each unless DAM shows something.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
