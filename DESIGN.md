@@ -4661,6 +4661,59 @@ shared-cap behaviour on the ship HOLD phase specifically, since my measurement
 pinned beaconT to a huge number to reach the cap and never exercised the handover
 into z.hold.
 
+### v2.28: I fixed one of the two clocks last build
+
+v2.27 moved the siege SPAWN counter off the global and onto the zone, because it
+was a global being ticked inside a loop that runs per zone. It stopped there. Two
+lines below the code it changed, in the same loop, sits the re-ping clock:
+
+    G.siege=(G.siege||0)+dt;
+    if(G.siege>=2){ G.siege=0; ping(z.x,z.y,1200*(1+0.7*GR),...); }
+
+Same defect, same loop, same build failed to see it. Measured with two beacons
+running, 20 seconds of sim, counting how many times the clock fired:
+
+    one beacon    10 of an expected 10      correct
+    two beacons   20 of an expected 10      exactly double
+
+It is not a small thing to double. That ping is 1200 strength, the loudest event in
+the game, half again past the 760 the Listener's falloff caps at, and every one of
+them drags everything within 1500 units into investigate. Two calls turned the
+whole map over twice as often as one, on top of the spawn rate v2.27 already found.
+
+Fixed the same way, so both clocks now live on the zone that owns them and the
+globals mirror the ring you are standing at:
+
+                          before   after
+    one beacon              10       10     the control, unchanged
+    two beacons             20       10
+
+AND THE HOLD PHASE, WHICH IS THE PART v2.27 SAID IT HAD NOT TESTED. That entry
+admitted its measurement pinned beaconT to a huge number to reach the cap and never
+exercised the handover into z.hold. Tested here, with the beacon expiring into the
+boarding window: 10 re-pings of an expected 10 with one beacon and with two, and
+the hold counting down correctly from 30. The comment promises arrivals continue
+"while the beacon runs or the ship holds", and both halves now behave.
+
+The whole cycle also driven end to end through real frames rather than by pinning
+state: beacon, into hold, ship leaves without you, beaconMissed incremented once,
+drawErr null.
+
+PROVED INERT FOR THE SIM, which calls one beacon. 120 seeds an arm comparing
+outcome, duration, shots, haul, containers, killer, siege arrivals, beacon calls
+and beacons missed as one joined string: 120 of 120 BYTE IDENTICAL. siegePerZone 0
+restores both globals together, since they are one defect.
+
+Not verified: whether anything else in that loop is still global. I checked the
+three counters this file names siege-something and they are now all per zone or
+correctly global, but the loop is fifty lines long and I found this one only
+because v2.27 had walked past it, which is not a search strategy. The honest state
+is that I have fixed the two I found rather than proved there is not a third. Also
+not verified: whether two simultaneous beacons should re-ping the same ring twice
+when both are within 1500 units of it, which they can be, since the ping is
+positional and two nearby rings would each alert the same machines. That is a
+double-alert rather than a double-clock and this build does not address it.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

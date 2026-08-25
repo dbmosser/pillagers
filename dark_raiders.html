@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.27';
+var VER='2.28';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -6708,7 +6708,7 @@ function tryExtractTick(dt,wantCall){
       // And how loud that call is, is how rich you are. This is the same number the
       // siege reads, so the noise and the arrivals tell one consistent story.
       ping(z.x,z.y,700*(1+0.8*greedOf()),true,false,'env','fire');
-      G.siege=0;
+      G.siege=0; z.siege=0;
       for(var si=0;si<G.ents.length;si++){
         var se=G.ents[si];
         if(dist(se,z)>2200) continue;
@@ -6808,9 +6808,20 @@ function tickExtractPoints(dt){
       T.siegeArrivals=(T.siegeArrivals||0)+1;
     } else T.siegeNoSpot=(T.siegeNoSpot||0)+1;
   }
-  G.siege=(G.siege||0)+dt;
-  if(G.siege>=2){
-    G.siege=0;
+  // AND THE RE-PING CLOCK, v2.28, WHICH v2.27 LEFT BEHIND. That build moved the
+  // siege SPAWN counter onto the zone and stopped there, and this is the same
+  // defect in the same loop: a global accumulating dt once per zone per frame.
+  // Measured with two beacons running, 20 seconds of sim: the ring re-pinged 20
+  // times instead of 10, exactly double. It is not a small thing to double. This
+  // ping is 1200 strength, the loudest event in the game and well past the 760 the
+  // Listener's falloff caps at, and every re-ping drags everything within 1500
+  // units into investigate. Two calls turned the whole map over twice as often.
+  if(_pz) z.siege=(z.siege||0)+dt; else G.siege=(G.siege||0)+dt;
+  var _sg=_pz?z.siege:G.siege;
+  if(z===G.active) G.siege=_sg;
+  if(_sg>=2){
+    if(_pz) z.siege=0; else G.siege=0;
+    if(z===G.active) G.siege=0;
     // The ring itself is what the machines hear, and a rich extraction is a louder event.
     ping(z.x,z.y,1200*(1+0.7*GR),true,false,'env','fire');
     for(var bi=0;bi<G.ents.length;bi++){
