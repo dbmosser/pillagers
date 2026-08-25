@@ -6594,6 +6594,56 @@ significant, roughly p 0.10 two-sided at these counts, so the DIRECTION agrees
 with the 120-seed kill counts but this probe alone would not carry the claim; the
 21-against-8 kill figures at 120 seeds remain the load-bearing evidence.
 
+### v2.62: COLD's raiders kill because its aisles do not blink, and the thread closes
+
+No game logic changed. Fifth and final pass at the COLD raider anomaly, and the
+mechanism is now measured rather than argued.
+
+TWO PROBES, SAME FORTY RAIDS EACH, TWENTY PER MAP, FIRST MINUTES OF THE RAID.
+
+SIGHTING PRESSURE IS IDENTICAL, which killed the tight-sightlines theory as
+stated: sampling once a second, some hostile raider had line of sight to the bot
+in 8.0 percent of COLD samples against 8.5 on BURIED, and was inside its own
+weapon range in 6.2 against 5.7. Raiders SEE the bot equally often on both maps.
+Theory five, dead like the previous four, but this one died into the answer.
+
+SIGHTING LENGTH IS NOT. Tracking each raider's CONTINUOUS line-of-sight spell:
+
+                          COLD      BURIED
+    spells recorded         49         54
+    median spell          1.35s      0.75s
+    75th percentile       5.7s       1.35s
+    90th percentile      21.8s       5.4s
+    spells over 2s       38.8%      14.8%
+
+SAME NUMBER OF GLIMPSES, THREE TIMES THE HOLD. On BURIED a raider catches sight of
+the bot and the city's clutter cuts the line inside a second, so most sightings
+die as glimpses and the chase fizzles. On COLD, once a raider has the bot, the
+warehouse's long aisles keep the line open for five, ten, twenty seconds, which is
+time to turn hostile, close to rifle range and land the eleven rounds a kill
+needs. Every number upstream of this now follows: equal sightings, double the
+damage events at 200 to 300 units in chase state, double the kills, all in the
+first minute, feud-independent, censoring-independent.
+
+SO THE ANOMALY IS THE MAP DOING EXACTLY WHAT A WAREHOUSE SHOULD DO, and the
+question this thread opened with, mechanism or bug, resolves as mechanism, and a
+GOOD one: COLD's identity is long dangerous lanes, and its raiders are the thing
+that identity arms best. Nothing gets fixed, because nothing is broken. If its
+7.5 percent extract rate is ever judged too cruel, the honest lever is anything
+that breaks aisle sightlines, more shelving clutter, not raider counts, and that
+is map authorship, which is his.
+
+Verified: parsecheck PASS at v2.62, all four maps and the hub drive and draw
+clean. VER and DESIGN.md only.
+
+Not verified: the spell-length gap at formal significance, 49 and 54 spells with
+heavy right tails resist the tests this file has been using, and I am not going
+to dress a distributional eyeball up as a p-value; the 2.6x median ratio and the
+tripled over-2s share across a hundred spells is reported as strong and unformal.
+Also not verified: whether the same aisle effect shows on the QUARRY's terraces,
+which the four-map killer table hints at, sentries there hold the same top spot
+at a higher extract rate, and nobody has asked the question of that map yet.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
