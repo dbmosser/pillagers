@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.73';
+var VER='2.74';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -8541,6 +8541,7 @@ function updateEnts(dt){
         // prompt below spends them. byPlayer is not consulted on purpose, a body
         // is a body whoever dropped him.
         c.fallen=e.name||null;
+        c.fellAt=G.t;
         if(e.crew!==undefined&&!e.merc) c.fallenCrew=e.crew;
         decal(e.x,e.y,'#6e1c15',rnd(16,26));
       } else if(e.kind==='listener'){
@@ -11872,7 +11873,12 @@ function drawHUD(){
       // a feud aftermath readable: two named bodies from different crews in one
       // doorway tell the story by themselves. The crew block matches the one
       // the living man wore on his nameplate at v2.57.
-      if(nc2.fallen){
+      // Observed at v2.73: standing on a body as it drops shows the kill label
+      // AND this named prompt saying the same name for the label's two seconds,
+      // which reads as a stutter. The prompt defers the NAME until the label has
+      // faded; the search cue itself never disappears, because hiding the
+      // interaction while showing the corpse would be worse than the stutter.
+      if(nc2.fallen&&(nc2.fellAt===undefined||G.t-nc2.fellAt>2.3)){
         var _ft='[E] SEARCH '+nc2.fallen.toUpperCase();
         ctx.fillText(_ft,s.x,s.y);
         if(nc2.fallenCrew!==undefined&&CFG.raiderFeud!==0){

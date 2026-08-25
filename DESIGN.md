@@ -7058,6 +7058,41 @@ are saying the same name, so it is recorded as observed and acceptable rather
 than as a defect; if he ever reports the flicker of doubled text, the fix is to
 suppress the prompt while a label is live at that spot, and it is small.
 
+### v2.74: the corpse stops saying its name twice
+
+One conditional, closing the overlap v2.73 captured and called acceptable. It was
+acceptable; it was also the single most common way he will ever meet the named
+corpse, because the usual reason to be standing over a raider's body the moment
+it drops is having just made it, at close range, and for the kill label's two
+seconds the world said LOOTGOBLIN_PRIME twice in two fonts a few pixels apart.
+
+The body now stamps the raid clock at the moment it falls, and the search prompt
+defers the NAME until 2.3 seconds have passed, a hair past the label's life.
+During the overlap the prompt reads the plain SEARCH BODY, so the interaction cue
+never disappears, which matters more than the name does; hiding the whole prompt
+to avoid a stutter would have hidden the fact that the body can be searched at
+all. Bodies found cold, the ordinary case for a feud aftermath, show their name
+immediately, since their label is long gone.
+
+A probe correction worth a line: the first verification aged the body with __sim
+and reported the defer never expiring, which briefly read as a bug. __sim
+deliberately does not advance the raid clock, a fact this file established at
+v2.39 and I re-forgot; __rawStep does, and under it the sequence is exactly as
+designed, generic at the drop, named at 3.15 seconds, both draw states clean.
+
+Verified: parsecheck PASS at v2.74, all four maps and the hub drive and draw
+clean with 10 of 10 entities moving, the fellAt stamp present on a dropped body,
+the fresh state showing generic and the aged state showing the name on the raid
+clock, neither state throwing.
+
+Not verified: the exact 2.3 against the label's real fade curve, which was read
+from the label code's lifetime rather than measured against its alpha; if a
+frame or two of faint overlap survives at the boundary it is invisible against
+the fade and not worth a capture. Also not verified: a body dropped by a feud
+while the player watches from distance, where the label and prompt never
+coexist; the defer costs that case 2.3 seconds of name for no benefit, which is
+judged cheaper than a per-label liveness query.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
