@@ -6946,6 +6946,49 @@ he ever turns it on. Also not verified: whether the shrink from 2.8 to 1.9 will
 continue at larger n; the honest prior after watching it shrink once is that the
 true effect sits below 1.9, not above.
 
+### v2.71: a raider's corpse says whose it was, and the check that led here found nothing wrong
+
+Two things this tick: an audit that came back clean, and the small feature the
+audit pointed at.
+
+THE AUDIT FIRST, RECORDED BECAUSE A CLEAN SWEEP IS INFORMATION. The worry was
+v2.49's bullet path setting byPlayer false on feud kills: if raider loot drops
+were gated on that flag, a feud casualty would vanish without a lootable body and
+the aftermath of the feature's own fights would be empty. Checked: the drop runs
+on e.bag.length alone, whoever fired the shot, and byPlayer gates only kill
+credit, contract progress and the grudge ledger, which is exactly where it
+belongs. Feud casualties drop everything they carried, gun included, since every
+raider spawns with one in the bag. Nothing to fix.
+
+THE GAP NEXT DOOR, WHICH v2.57's OWN NOT VERIFIED LINE NAMED. A dead raider
+became an anonymous 'body' container, so the aftermath of a feud, two corpses in
+a doorway, read as furniture. The living man wears his name on a plate and his
+crew's colours beside it since v2.57; dead, he lost both.
+
+The body container now carries the fallen man's name and crew. The search prompt
+spends them: standing over a raider's corpse reads SEARCH SIGMAGRINDSETTOM rather
+than SEARCH BODY, with the same crew block the living man wore, in the same
+colours, drawn beside the prompt. Two named bodies from different crews in one
+doorway now tell the story of the fight by themselves, which is the last piece of
+making the feud something he can read off the world. Mercenaries keep their name
+and show no crew block, because they were exempt from the war alive and stay
+exempt dead; the crew block also disappears entirely when raiderFeud is off, so
+the prompt never advertises a war that is not running.
+
+Verified by killing rather than by reading: a raider shot down with byPlayer
+FALSE dropped a body carrying his exact name, his crew index and all six items of
+his bag; the prompt path drew clean with the player stood on the corpse; a
+mercenary killed the same way dropped a named body with NO crew tag. Parsecheck
+PASS at v2.71, all four maps and the hub drive and draw clean with 10 of 10
+entities moving.
+
+Not verified: the LOOK of the crew block beside the prompt, which is four pixels
+of colour positioned from a measureText width; if it crowds the text at his font
+scale it is two constants. Also not verified: bodies that already existed on the
+map at spawn, the sweep-placed 'body' furniture containers, correctly carry no
+fallen name and still read SEARCH BODY, which was confirmed in passing by the
+prompt fallback but not exercised as its own case.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
