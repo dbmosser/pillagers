@@ -7024,6 +7024,40 @@ is left that way on purpose, selling is a decision and the money line already
 carries the payoff; if he wants a register sound for it, that is a taste call.
 Also not verified, unchanged from v2.48: every voice's actual sound in his ears.
 
+### v2.73: the corpse prompt seen in pixels, and one more stale G in the legend
+
+One string fixed and one caveat closed, both found by the same capture.
+
+THE STALE STRING. The long help block's HOTBAR line still read "1-7 selects, G
+uses it." v2.45 moved the hotbar's action onto the trigger and updated the GEAR
+key list and the under-bar caption, and this third copy of the same fact was
+missed, sitting eight lines below the GEAR section that contradicted it. It reads
+"1-7 selects, FIRE uses it" now. Three copies of one fact is the disease; this
+build only treats the symptom, and the honest note is that any future control
+change has THREE legend surfaces to visit: the key list, the under-bar caption,
+and the tips block.
+
+THE CAPTURE, closing v2.71's look caveat. First shot caught the corpse prompt
+buried under the kill announcement, which is correct behaviour, the label
+outlives the kill by two seconds and the prompt by design sits at the same spot.
+Second shot, taken after the label faded: the prompt reads [E] SEARCH
+LOOTGOBLIN_PRIME in the standard prompt yellow with the fallen man's red crew
+block sitting clear of the text on its left, legible at capture scale, no
+crowding, no wrap. The feud aftermath is now readable in-world exactly as
+intended, and it has been SEEN rather than reasoned about.
+tools/shots/corpse_prompt2.png is the frame.
+
+Verified: parsecheck PASS at v2.73, all four maps and the hub drive and draw
+clean. The capture itself exercised the full kill-drop-approach-prompt chain on
+a live raid.
+
+Not verified: the two seconds of overlap between the kill label and the search
+prompt when the player is already standing on the body as it drops, visible in
+the first capture. It resolves itself as the label fades and both pieces of text
+are saying the same name, so it is recorded as observed and acceptable rather
+than as a defect; if he ever reports the flicker of doubled text, the fix is to
+suppress the prompt while a label is live at that spot, and it is small.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
