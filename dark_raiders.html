@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.49';
+var VER='2.50';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -5780,10 +5780,47 @@ cv.addEventListener('mousemove',function(e){
 });
 cv.addEventListener('mousedown',function(e){
   if(e.button===2){ if(G&&!G.over) G.player.ads=true; return; }
+  // PICK UP AN ITEM. Only while the inventory is open, and the drag is claimed
+  // here so the same click cannot also pull the trigger.
+  if(G&&!G.over&&G.bagOpen&&G.bagCells){
+    for(var dc=0;dc<G.bagCells.length;dc++){
+      var C=G.bagCells[dc];
+      if(mouse.x>=C.x&&mouse.x<=C.x+C.w&&mouse.y>=C.y&&mouse.y<=C.y+C.h){
+        G.drag={key:C.key,bagIx:C.bagIx};
+        G.bagSel=C.bagIx;
+        blip('pick');
+        return;
+      }
+    }
+  }
   if(e.button===0){ mouse.down=true; ac(); }
 });
 window.addEventListener('mouseup',function(e){
   if(e.button===2){ if(G) G.player.ads=false; }
+  // DROP. Released over a quickbar cell, the item is assigned to that slot;
+  // released anywhere else the drag is simply abandoned, which is what every
+  // inventory that works does. On the window rather than the canvas so letting
+  // go outside the play area still ends the drag instead of leaving one stuck.
+  if(e.button===0&&G&&G.drag){
+    var d=G.drag; G.drag=null;
+    var dropped=false;
+    if(G.hotCells) for(var hc=0;hc<G.hotCells.length;hc++){
+      var HC=G.hotCells[hc];
+      if(mouse.x>=HC.x&&mouse.x<=HC.x+HC.w&&mouse.y>=HC.y&&mouse.y<=HC.y+HC.h){
+        G.hotAssign=G.hotAssign||{};
+        // One item, one slot. Dropping something that already lives elsewhere on
+        // the bar MOVES it, or the same Medkit ends up on three slots at once.
+        for(var ok in G.hotAssign) if(G.hotAssign[ok]===d.key) delete G.hotAssign[ok];
+        G.hotAssign[HC.i]=d.key;
+        G.hot=HC.i;
+        blip('pick');
+        say((ITEMS[d.key]?ITEMS[d.key].name:'Item')+' to slot '+(HC.i+1));
+        dropped=true;
+        break;
+      }
+    }
+    if(!dropped) mouse.down=false;
+  }
   if(e.button===0) mouse.down=false;
 });
 // ================================================================ gamepad
@@ -6778,6 +6815,28 @@ function hotbarSlots(){
   if(countArmor()>0) out.push({k:'plate',name:'Armor Plate',kind:'armor',
     count:countArmor(),c:'#5aa9e6'});
   out.push({k:'bar',name:'Crowbar',kind:'tool',count:null,c:'#9aa8b2'});
+  // HIS REQUEST, 2026-08-25: "I want the inventory to be physical like minecraft
+  // so you can drag icons down to the quick bars". The bar above is DERIVED: it
+  // is rebuilt from scratch every frame from what you happen to be carrying, and
+  // nothing about it is yours. Dragging needs a slot to be a place you put a
+  // thing, so an assignment map overrides the derived slot at that index.
+  // Overrides rather than a full stored layout on purpose: the derived list stays
+  // exactly as it was, so nothing that already works can regress, and an
+  // assignment that no longer makes sense simply falls away.
+  if(G.hotAssign) for(var ai in G.hotAssign){
+    var aix=+ai, akey=G.hotAssign[ai];
+    if(!(aix>=0&&aix<out.length)) continue;
+    var ait=ITEMS[akey]; if(!ait) continue;
+    // An assignment is only live while you are still carrying the thing. Spend
+    // your last Medkit and the slot goes back to whatever it was, rather than
+    // sitting there as a lie.
+    var have=0;
+    for(var bi=0;bi<G.bag.length;bi++) if(G.bag[bi]===akey) have++;
+    if(have<=0) continue;
+    out[aix]={k:'item:'+akey,name:ait.name,
+      kind:(ait.use==='heal'?'heal':(ait.use==='armor'?'armor':(ait.use==='gun'?'gun':'item'))),
+      count:have,c:ait.c||'#cdd6dd',assigned:1,itemKey:akey};
+  }
   return out;
 }
 function countHeals(){
@@ -6829,6 +6888,24 @@ function setHot(i){
 function useHot(){
   var sl=hotbarSlots(),s2=sl[hotSel()];
   if(!s2) return;
+  // AN ASSIGNED SLOT NAMES ONE SPECIFIC ITEM. The generic heal path calls
+  // findHeal, which deliberately picks the SMALLEST heal you are carrying; if he
+  // has dragged a Medkit onto a slot he means that Medkit, not the bandage
+  // findHeal would have reached for.
+  if(s2.assigned&&s2.itemKey){
+    var ix=G.bag.indexOf(s2.itemKey);
+    if(ix<0) return;
+    var ait=ITEMS[s2.itemKey]; if(!ait) return;
+    if(ait.use==='heal'){
+      if(G.player.hp>=G.player.maxhp){ say('Already at full'); return; }
+      applyHeal(s2.itemKey); G.bag.splice(ix,1); blip('pick');
+      say(ait.hot>0&&CFG.healOverTime!==0?('Using '+ait.name+'...'):'Patched up');
+      G.tel.heals++;
+      return;
+    }
+    if(ait.use==='armor'){ useArmor(); return; }
+    return;   // valuables are carried, not used
+  }
   if(s2.kind==='throw') doThrow();
   else if(s2.kind==='heal') raidKey('KeyF',false,null);
   else if(s2.kind==='armor') useArmor();
@@ -7355,7 +7432,9 @@ function updatePlayer(dt){
   // as that slot stayed selected. Tools fall through to the gun.
   // count is tested as "not greater than zero" rather than "=== 0" because a
   // slot can carry null: the Crowbar does, and so does a magazine-less gun.
-  var hotGun=(!HSC||HSC.kind==='gun'||HSC.kind==='tool'||!(HSC.count>0));
+  // 'item' is an assigned valuable: carried, not usable, so it falls through to
+  // the gun exactly as an empty slot does rather than killing the trigger.
+  var hotGun=(!HSC||HSC.kind==='gun'||HSC.kind==='tool'||HSC.kind==='item'||!(HSC.count>0));
   if(mouse.down&&!hotGun){
     if(!p.fired){ p.fired=true; useHot(); }
   }
@@ -11623,13 +11702,20 @@ function drawHUD(){
     var sl=hotbarSlots(),sel=hotSel();
     var bw=LH(46),gap=LH(5),tw2=sl.length*bw+(sl.length-1)*gap;
     var hx=Math.round(W/2-tw2/2),hy=H-LH(58);
+    // The rectangles are recorded AS THEY ARE DRAWN rather than recomputed by the
+    // mouse code. Two copies of this arithmetic would drift the first time the
+    // slot count or the scale changed, and the drop target would stop matching
+    // the thing on screen.
+    G.hotCells=[];
     for(var q=0;q<sl.length;q++){
       var S=sl[q],bx=hx+q*(bw+gap),on=q===sel;
+      G.hotCells.push({x:bx,y:hy,w:bw,h:bw,i:q});
       var empty=(S.count===0);
       ctx.fillStyle=on?'rgba(38,32,20,.94)':'rgba(18,15,24,.80)';
       ctx.fillRect(bx,hy,bw,bw);
-      ctx.strokeStyle=on?'#ffc04a':'rgba(140,152,163,.35)';
-      ctx.lineWidth=on?2:1;
+      var dragOver=(G.drag&&mouse.x>=bx&&mouse.x<=bx+bw&&mouse.y>=hy&&mouse.y<=hy+bw);
+      ctx.strokeStyle=dragOver?'#7fe0a0':(on?'#ffc04a':'rgba(140,152,163,.35)');
+      ctx.lineWidth=(dragOver||on)?2:1;
       ctx.strokeRect(bx+.5,hy+.5,bw-1,bw-1);
       var cx2=bx+bw/2,cy2=hy+bw*0.45;
       ctx.globalAlpha=empty?.28:1;
@@ -11651,6 +11737,12 @@ function drawHUD(){
       ctx.globalAlpha=1;
       ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(160,172,184,.8)';
       ctx.fillText(String(q+1),bx+LH(4),hy+LH(11));
+      // A slot he arranged himself is marked, so an assigned bar can be told from
+      // the default one at a glance.
+      if(S.assigned){
+        ctx.fillStyle='#7fe0a0';
+        ctx.fillRect(bx+bw-LH(7),hy+LH(3),LH(4),LH(4));
+      }
       if(S.count!==null&&S.count!==undefined){
         ctx.font=FS(TYPE.micro);
         ctx.fillStyle=empty?'#7a5040':'#FFF6DC';
@@ -11869,6 +11961,23 @@ function drawHUD(){
     drawLegend();
   }
   if(G.bagOpen) drawBag();
+  // The item under the cursor while it is being carried. Drawn last so it rides
+  // over both the panel and the bar, which is the only way a drag reads as
+  // holding something rather than as a highlight moving about.
+  if(G.drag&&ITEMS[G.drag.key]){
+    var DI=ITEMS[G.drag.key], ds=LH(26);
+    ctx.globalAlpha=.92;
+    ctx.fillStyle='rgba(10,14,19,.86)';
+    ctx.fillRect(mouse.x-ds/2,mouse.y-ds/2,ds,ds);
+    ctx.strokeStyle='#7fe0a0'; ctx.lineWidth=1.5;
+    ctx.strokeRect(mouse.x-ds/2+.5,mouse.y-ds/2+.5,ds-1,ds-1);
+    ctx.fillStyle=DI.c||'#cdd6dd';
+    ctx.fillRect(mouse.x-ds*0.22,mouse.y-ds*0.22,ds*0.44,ds*0.44);
+    ctx.globalAlpha=1;
+    ctx.font=FS(TYPE.micro); ctx.fillStyle='#cdd6dd'; ctx.textAlign='center';
+    ctx.fillText(DI.name,mouse.x,mouse.y+ds);
+    ctx.textAlign='left';
+  }
   if(G.trade) drawTrade();
   // The emote bar. Deliberately a strip and not a wheel: a wheel wants a mouse
   // you are already using to aim, and this has to be usable while something is
@@ -12171,19 +12280,34 @@ function drawBag(){
   // bag longer than the panel has items you can select but never see.
   var sel=clamp(G.bagSel||0,0,Math.max(0,G.bag.length-1));
   var top0=clamp(sel-Math.floor(rows/2),0,Math.max(0,G.bag.length-rows));
+  // Every visible row records the rectangle it was drawn in, so a row can be
+  // picked up. Recorded during the draw for the same reason the hotbar cells are:
+  // a second copy of this arithmetic would drift.
+  G.bagCells=[];
   for(i=0;i<rows;i++){
     var bi=top0+i;
     var it=ITEMS[G.bag[bi]];
     if(!it) continue;
+    var rowY=cy+i*LH(16), rowTop=rowY-LH(10), rowH=LH(14);
+    G.bagCells.push({x:x+7,y:rowTop,w:PW-14,h:rowH,bagIx:bi,key:G.bag[bi]});
+    var hoverRow=(mouse.x>=x+7&&mouse.x<=x+PW-7&&mouse.y>=rowTop&&mouse.y<=rowTop+rowH);
     if(bi===sel){
       ctx.fillStyle='rgba(127,146,216,.22)';
-      ctx.fillRect(x+7,cy+i*LH(16)-LH(10),PW-14,LH(14));
-      ctx.fillStyle='#ffc04a'; ctx.fillText('\u25b8',x+3,cy+i*LH(16));
+      ctx.fillRect(x+7,rowTop,PW-14,rowH);
+      ctx.fillStyle='#ffc04a'; ctx.fillText('\u25b8',x+3,rowY);
+    } else if(hoverRow&&!G.drag){
+      // Hovering says "this is a thing you can pick up", which is the whole
+      // difference between a list and a physical inventory.
+      ctx.fillStyle='rgba(127,224,160,.10)';
+      ctx.fillRect(x+7,rowTop,PW-14,rowH);
     }
+    // A colour swatch per row: the grabbable icon, tinted by the item itself.
+    ctx.fillStyle=it.c||'#cdd6dd';
+    ctx.fillRect(x+11,rowY-LH(7),LH(7),LH(7));
     ctx.fillStyle=RCOL[it.r]||'#cdd6dd';
-    ctx.fillText((prot[bi]?'\u25c6 ':'  ')+it.name,x+11,cy+i*LH(16));
+    ctx.fillText((prot[bi]?'\u25c6 ':'  ')+it.name,x+11+LH(11),rowY);
     ctx.textAlign='right'; ctx.fillStyle='#ffc04a';
-    ctx.fillText(ival(G.bag[bi])+'c',x+PW-11,cy+i*LH(16));
+    ctx.fillText(ival(G.bag[bi])+'c',x+PW-11,rowY);
     ctx.textAlign='left';
   }
   var listEnd=cy+Math.max(0,rows-1)*LH(16);
@@ -12810,7 +12934,7 @@ function releaseAllKeys(){
   keys={}; mouse.down=false; if(G) G.sprinting=false;
   // The reticle also hides for an open bag, and alt-tabbing with the bag open
   // left that panel latched too. Cleared with the keys, for the same reason.
-  if(G) G.bagOpen=false;
+  if(G){ G.bagOpen=false; G.drag=null; }
   // And put the cursor back somewhere on the canvas, since a return from another
   // monitor is exactly when it can be outside it.
   if(W>0&&H>0){ mouse.x=clamp(mouse.x,0,W); mouse.y=clamp(mouse.y,0,H); }

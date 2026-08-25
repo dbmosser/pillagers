@@ -6005,6 +6005,69 @@ identity, not by crew, so right now there is no way to look at two raiders and k
 whether they are about to fight. That is a real gap for a feature whose whole value is
 being watched, and it is a design call rather than a bug.
 
+### v2.50: you can pick things up out of the bag and put them on the bar
+
+His request, 2026-08-25: "I want the inventory to be physical like minecraft so you
+can drag icons down to the quick bars".
+
+TWO THINGS WERE IN THE WAY AND ONLY ONE OF THEM WAS THE INVENTORY. The bag was a text
+list, which is the obvious half. The other half is that the quickbar was DERIVED: it
+is rebuilt from scratch every frame out of whatever you happen to be carrying, so
+there was no such thing as a slot you had put something in. Dragging needs a slot to
+be a place, not a readout.
+
+WHAT IT DOES NOW. Rows in the bag carry a colour swatch and light up under the
+cursor. Press on one and you are carrying it: the item follows the cursor with its
+name under it, and any quickbar cell you pass over outlines in green. Let go on a
+cell and that slot is yours. Let go anywhere else and the drag is abandoned, which is
+what every inventory that works does.
+
+ASSIGNMENTS ARE AN OVERRIDE, NOT A REPLACEMENT, and that was the design decision that
+kept this build small. The derived bar is untouched and still produced exactly as
+before; a map of slot index to item key is applied on top of it. So nothing that
+already worked can regress, and an assignment that stops making sense simply falls
+away rather than having to be cleaned up.
+
+FOUR RULES, ALL OF THEM MEASURED RATHER THAN ASSUMED.
+  An assignment is live only while you still carry the thing. Spend your last Medkit
+  and the slot goes back to whatever it was instead of sitting there as a lie.
+  Verified: slot 3 reads Medkit, is used, and reverts to Decoy Beacon.
+  One item, one slot. Dropping something that already lives elsewhere on the bar
+  MOVES it. Verified: dropped on slot 2 then slot 4, the map ends as {4: medkit}.
+  An assigned slot uses THAT item. The generic heal path calls findHeal, which
+  deliberately reaches for the SMALLEST heal you carry; if he has dragged a Medkit
+  onto a slot he means the Medkit. Verified: with a Medkit and a Bandage in the bag,
+  using the assigned slot consumed the Medkit and queued 65 health.
+  A valuable on a slot must not swallow the trigger. Scrap Metal is not usable, so
+  the slot falls through to the gun exactly as an empty slot does since v2.45.
+  Verified: with Scrap on the selected slot, firing still cost a round. This is the
+  same trap the Crowbar sprang in v2.45 and it would have been the same bug again.
+
+THE RECTANGLES ARE RECORDED AS THEY ARE DRAWN, for both the bag rows and the bar
+cells, rather than recomputed by the mouse code. Two copies of that arithmetic would
+drift apart the first time the slot count or the UI scale changed and the drop target
+would stop matching the thing on the screen.
+
+A drag does not survive losing focus, for the same reason the keys do not.
+
+Verified: parsecheck PASS, four maps and the hub draw clean, and the whole gesture
+driven with real MouseEvents from a bag row to a bar cell and back out again.
+
+MY TEST WAS WRONG BEFORE THE CODE WAS. The first drag probe reported no grab at all.
+The listener is on cv, the world canvas, while __ctxCanvas() returns hcv, the HUD
+canvas, so I had been dispatching every event at the wrong element. The game was
+fine.
+
+Not verified: how it FEELS, which for a drag is most of it. I can prove the item is
+picked up, follows the cursor, highlights the right cell and lands where it was
+dropped; I cannot tell whether the grab threshold, the ghost size or the drop
+tolerance are comfortable, and those are judgements from using it. Also not verified:
+assignments live on G and therefore last one raid. Whether a bar he arranged should
+persist across deploys is a real question and it touches the profile, so it is his
+call rather than mine. Also not verified: this is mouse only. The gamepad path has a
+virtual cursor and could in principle drive the same gesture, and I have not wired or
+tested it, so on a controller the bar is still the derived one.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
