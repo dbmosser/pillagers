@@ -421,7 +421,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.96';
+var VER='1.97';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -10722,10 +10722,32 @@ function drawHUD(){
     ctx.fillStyle='#ffc04a'; ctx.fillText(lab,W-tw3-22,48+LH(14));
   })();
   // A hiding mechanic you cannot tell is working is just an inconsistent enemy.
-  if(G.pBush){
+  // CROUCH HAS NO TELL, AND IT IS THE STRONGEST MECHANIC IN THE GAME, v1.97.
+  // v1.82 measured the hard crouch rule at 15.8 to 42.5 percent extract rate on
+  // its own, and v1.84 split that roughly in half between not being found and
+  // shaking a pursuer. His own seventeen run export reads crouch:0s in every
+  // single run. He has never used it, and nothing on screen has ever suggested he
+  // should: the only concealment readout in the game fires when you are standing
+  // in a bush. That is a teaching problem, not a balance one, so this changes no
+  // number. It reuses the readout that already exists and simply tells the truth
+  // about the state you are in, which is that below the hide threshold nothing
+  // further away than that can see you at all.
+  var _cr=!!G.pCrouch, _nearD=1e9;
+  if(_cr) for(var _ci=0;_ci<G.ents.length;_ci++){
+    var _ce=G.ents[_ci];
+    if(_ce.dead||_ce.kind==='peddler'||_ce.kind==='stray') continue;
+    var _cd=dist(_ce,G.player); if(_cd<_nearD) _nearD=_cd;
+  }
+  var _chid=(CFG.crouchHide===undefined?170:CFG.crouchHide);
+  if(G.pBush||_cr){
     var cc=G.pConceal===undefined?1:G.pConceal;
     var clab=cc<=0.15?'HIDDEN':(cc<=0.30?'WELL HIDDEN':(cc<=0.45?'CONCEALED':(cc<1?'PARTLY HIDDEN':'CRASHING THROUGH')));
     var ccol=cc<=0.30?'#7fc4a0':(cc<1?'#ffc04a':'#e0483a');
+    // Crouched outranks the bush wording, because the rule is stronger and total.
+    if(_cr&&_chid>0){
+      if(_nearD>_chid){ clab='CROUCHED  UNSEEN'; ccol='#7fc4a0'; }
+      else { clab='CROUCHED  TOO CLOSE'; ccol='#ffc04a'; }
+    } else if(_cr){ clab='CROUCHED'; ccol='#ffc04a'; }
     ctx.font=FS(TYPE.head);
     // HIS NOTE, 2026-08-24: "CONCEALED on the right lower corner is blocked by
     // the key legend". It was drawn bottom LEFT at x=14, which is exactly the

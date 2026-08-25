@@ -2519,6 +2519,70 @@ v1.96 should re-run it. Also not verified: what was wrong with the v1.95 test th
 started all this. It is not reproducible and I have stopped chasing it rather than
 keep spending on a phenomenon I cannot demonstrate.
 
+### v1.97: the grudge leak measured, and crouch finally has a tell
+
+TWO THINGS OWED FROM v1.96, both closed.
+
+FIRST, A CHECK THAT FOUND NOTHING, recorded because it could easily have found
+something. The dead guard fixed at v1.96 read G during map construction, when G
+still holds the previous raid. If mkRaider did that, its siblings might too. They
+do not. mkSentry, mkCrawler, mkSnitch, mkPeddler, mkWarden, mkListener,
+mkContainer, setLoot, rollLoot and mkStrongbox contain no reference to G at all.
+The other G.sim reads I traced, in wxTick, listenersHearInner, strayGive and
+wildTick, all run at raid time when G is properly assigned. mkRaider was the only
+one.
+
+SECOND, THE SIZE OF THE LEAK, which v1.96 left as an explicit guess. I wrote that
+the effect was "probably small" and flagged it unverified. Measured now, v1.95
+against v1.96, 120 seeds each, run twice per build with a neutral grudge roster
+and with a realistically loaded one:
+
+                        seeds changed by grudges   extract   haul
+    v1.95, leaking            116 of 120            20.8%   8,136 -> 8,341
+    v1.96, fixed                0 of 120            20.8%   8,136 -> 8,136
+
+Both halves of my guess were wrong, in opposite directions. Ninety seven percent
+of individual raids changed depending on what grudges the profile happened to
+carry, which is far more pervasive than "probably small". But the aggregate was
+UNBIASED: extract rate identical to the decimal, haul moved 2.5 percent, inside
+the noise band this project works in.
+
+And the reason no past conclusion is affected is structural rather than lucky.
+Every write to the grudge table is correctly guarded by !G.sim at a point where G
+IS assigned, so a sim batch reads the table but never mutates it. Both arms of
+every A/B ever run therefore saw the SAME grudges. Constant contamination across
+arms is exactly the condition under which a paired comparison survives, which is
+why the v1.95 numbers hold. The zero in the v1.96 row is the other half of the
+proof: the fix does what it claims, grudges can no longer reach a sim raid.
+
+CROUCH HAS A TELL NOW. v1.82 measured the hard crouch rule at 15.8 to 42.5 percent
+extract rate on its own, the largest single effect in this file by a wide margin,
+and v1.84 split it roughly evenly between not being found and shaking a pursuer
+that already found you. His own seventeen run export reads crouch:0s in EVERY
+RUN. He has never once used it.
+
+Nothing on screen has ever suggested he should. The only concealment readout in
+the game fires when you are standing in a bush, so the strongest mechanic
+available has been completely silent. That is a teaching problem and not a
+balance one, so this changes no number: it reuses the readout that already exists
+and reports the state you are actually in.
+
+    CROUCHED  UNSEEN      nothing inside the hide radius, so nothing beyond it
+                          can see you at all
+    CROUCHED  TOO CLOSE   something is inside it and the rule does not apply
+    bush wording          unchanged when standing
+
+Verified in all three states with drawErr null, and verified as draw-only rather
+than asserted: v1.96 and v1.97 produce byte identical results across 60 seeds,
+which is what it means for a change to touch the HUD and nothing else.
+
+Not verified: whether the wording teaches him anything. "CROUCHED TOO CLOSE" is
+trying to say two things at once, that you are crouched and that it is not helping
+here, and it may read as a warning to back off rather than as an explanation of a
+threshold. Also not verified: whether a readout is enough at all, since he has to
+be crouching already to see it, and the thing he never does is press the key. A
+first-raid prompt would reach him and a HUD label may not.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
