@@ -4261,6 +4261,70 @@ about the OTHER two things you deploy with, the gun and the three kit slots. Arm
 is called out alone because it is the one v2.16 changed under him, and a readiness
 panel that lists everything is a different and larger piece of work.
 
+### v2.22: tried to fix a regression I had not caused, and reverted it
+
+v2.17 ended on a worry about its own change: a carried plate takes one of the
+three kit slots, so "it now competes with ammo and medical for the first time
+ever, and that trade has never existed before this build". This build went to
+settle that. The worry was wrong, the fix I wrote for it was a no-op, and both
+of those are the result.
+
+WHAT I THOUGHT I HAD FOUND. Deploying with a full stash takes plate, ammobox and
+bandage. Deploying with no plates available takes ammobox, medkit and medkit. Put
+side by side that reads as the plate pushing out a medkit: 35 effective HP on a
+Scav Rig, weighing 3, in place of 65 HP of healing weighing 2. Strictly worse, and
+shipped by me five ticks ago.
+
+So I moved armour to the end of the priority chain, behind a kitOrder dial, on the
+reasoning that v2.17 changed a plate from APPLIED to CARRIED and left it sitting at
+the front of a list whose stated justification, "armour and ammo are spent the
+moment you land", no longer described it.
+
+THE DIAL CHANGED NOTHING. Four rig and stash combinations, both settings, byte for
+byte identical takes. The reason is obvious once measured and I should have seen it
+before writing code: the explicit chain calls takeBest once per category, and there
+are exactly three slots and three categories, so with a stocked stash every order
+takes one of each. Order cannot change a set that is one-of-everything.
+
+WHAT ACTUALLY DISPLACES THE SECOND HEAL is the fill loop, which only runs when a
+category came back empty, and that is true under any ordering. So the comparison I
+built the fix on was not order versus order at all, it was has-plates versus
+has-no-plates.
+
+AND MEASURED PROPERLY, THE TRADE IS GOOD. Same stash minus the plates, light and
+heavy rigs:
+
+                        heal items   heal HP   reserve   plates
+    plates in stash          2          56       100        1
+    no plates in stash       2          56       100        0
+
+Identical healing, identical ammo. The plate is free at the point of use, because
+ISSUED_HEALS tops the bag back up to two heals whenever the stash take falls short:
+you carry one bandage from the stash instead of two, and the Undercroft hands you
+the second one. The whole cost is ONE stash bandage, worth 65 credits, in exchange
+for carrying 35 to 55 effective HP that would otherwise sit at home.
+
+So v2.17 is fine and better than I feared, and the dial is out of the file rather
+than left in as apparatus, because apparatus for a question that turned out not to
+exist is just dead code with a confident comment on it. Verified by line count:
+13,284 before the attempt and 13,284 after the revert.
+
+THE PROCESS FAILURE IS THE USEFUL PART. I had the measurement that disproves this
+in the FIRST probe of the tick, sitting in a field called healHPCarried that read
+56 in every single row including the ones I was calling worse. I read the take
+lists, formed the story, and did not look at the column that contradicted it until
+after the fix failed. Third time this session that a number I had already collected
+would have stopped me earlier.
+
+Not verified: what happens when the stash has plates and nothing else. The chain
+takes armour, ammo and heal, the fill loop then retries all three, and with only
+plates present a player would deploy carrying up to three of them and two issued
+bandages. That is probably correct, since there is nothing better to bring, but the
+armour hotbar slot shows a single count and I have not checked how three reads
+there. Also not verified: any of this for a stash large enough that the SMALLEST
+heal rule starts mattering, since two bandages and two medkits is a tidy case and a
+real stash of forty mixed items may not behave as neatly.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
