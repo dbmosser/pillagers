@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.24';
+var VER='2.25';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -4649,9 +4649,27 @@ function strayReveal(){
 }
 function strayGive(e){
   if(!G||G.sim||!e||e.helped) return;
+  // AMMO NEVER REACHES THE BAG, v2.25, so one want in six could not be satisfied.
+  // This looked only in G.bag, and an Ammo Box cannot be there: the deploy loadout
+  // does reserve+=amt, and grantLoot does reserve+=amt, so picking one up off the
+  // floor adds 40 rounds and grows the bag by zero. Measured both paths. The one
+  // exception is buying one from the Peddler, who pushes his stock into the bag,
+  // which is a coincidence rather than a route.
+  // STRAY_WANTS is medkit, bandage, plate, ammobox, medkit, bandage, so a sixth of
+  // all Strays asked for the single thing you cannot hand over, and told you "you
+  // have none" however many boxes you were carrying in your reserve. Same shape as
+  // the impossible district contract at v1.74 and the keyless door at v1.75.
+  // Ammunition now comes out of the pool it actually lives in. It costs a real 40
+  // rounds, which is the point: a gift should be something you feel.
   var ix=G.bag.indexOf(e.want);
-  if(ix<0){ say('He needs a '+ITEMS[e.want].name.toLowerCase()+'. You have none.'); return; }
-  G.bag.splice(ix,1);
+  var fromReserve=false;
+  if(ix<0&&e.want==='ammobox'){
+    var need=ITEMS.ammobox.amt;
+    if(G.player.reserve>=need){ G.player.reserve-=need; fromReserve=true; }
+    else { say('He needs ammunition. You cannot spare '+need+' rounds.'); return; }
+  }
+  if(ix<0&&!fromReserve){ say('He needs a '+ITEMS[e.want].name.toLowerCase()+'. You have none.'); return; }
+  if(!fromReserve) G.bag.splice(ix,1);
   e.helped=1; e.want2=null;
   blip('pick');
   var c=strayReveal();

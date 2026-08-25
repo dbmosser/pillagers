@@ -4462,6 +4462,75 @@ DEFINED with "function name(" at column zero. Anything assigned as a var or nest
 inside another function would not appear in my call list, and this file has a
 handful of inner helpers like that in buildRaid itself.
 
+### v2.25: one Stray in six asked for the one thing you cannot hand over
+
+v2.24 ended naming its own blind spot: the sweep only saw functions declared as
+"function name(" at column zero, so nested helpers and var-assigned functions were
+invisible, and buildRaid has several. Closed first, and it is clean.
+
+THE BLIND SPOT, SWEPT. 36 nested function declarations and 2 var-assigned ones.
+Of buildRaid's five inner helpers, clearOfPads, placeCache, far, nOf and takeBest,
+NONE reads G. Of all 36 nested helpers only two mention G: botSpd, which does not
+once you read the line rather than the window around it, and `one`, which is
+runSim's own driver and ASSIGNS G rather than reading a stale one. Both
+var-assigned functions, `outside` inside buildRaid and `done` in the config copier,
+are clean. So v1.96 plus the v2.24 removal covers the whole class, including the
+part I could not see when I said so.
+
+THEN THE STRAY, WHICH HAS NEVER BEEN AUDITED. He asks for one item and pays for
+it: a marked cache, 260 to 540 credits, and a point of notoriety cleared, which the
+comment above him says is the only way to clear it other than waiting.
+
+    var ix=G.bag.indexOf(e.want);
+    if(ix<0){ say('He needs a '+ITEMS[e.want].name.toLowerCase()+'. You have none.'); return; }
+
+It looks in the bag, and STRAY_WANTS is medkit, bandage, plate, ammobox, medkit,
+bandage. An Ammo Box CANNOT BE IN THE BAG. The deploy loadout does reserve+=amt and
+grantLoot does reserve+=amt, so a box dissolves into the ammunition pool at both
+ends. Measured both paths on a live raid:
+
+    at deploy            bag [plate, medkit, bandage], reserve 100, no ammobox
+    picking one up       reserve 100 -> 140, bag grew by ZERO
+
+So a sixth of all Strays asked for the single thing you can never be carrying, and
+told you "You have none" no matter how many boxes were in your reserve. Same shape
+as the impossible district contract at v1.74 and the keyless door at v1.75: the
+game offers a trade it has made impossible, and it reads as your own failure to
+find something.
+
+There is exactly one exception and it is a coincidence, not a route: the Peddler
+pushes his stock into G.bag, so a box BOUGHT from him is in the bag and would have
+worked.
+
+FIXED BY TAKING THE AMMUNITION FROM WHERE IT ACTUALLY LIVES. The bag is still
+checked first, so a bought box is spent before your reserve is. Otherwise 40 rounds
+come out of the pool, and if you cannot spare 40 he says so instead of pretending
+you have nothing. It costs a real 40 rounds, which is the point: a gift should be
+something you feel, and this is a game where running dry ends four raids in ten.
+
+Verified, five cases on live raids:
+
+    want      state                     result
+    ammobox   100 reserve               helped, reserve 100->60, paid 291
+    ammobox   20 reserve                refused, nothing spent, no payout
+    ammobox   one bought, in the bag    helped, bag consumed it, reserve untouched
+    medkit    in the bag                helped, unchanged behaviour, paid 268
+    plate     none carried              refused, correctly
+
+No balance arm and it is not possible to have one: strayGive opens with
+if(!G||G.sim||...) return, and the sim build does not even place a Stray, which I
+confirmed rather than assumed while trying to write the guard test. A 120 seed run
+would compare the build against itself.
+
+Not verified: whether 40 rounds is the right price. It is one Ammo Box exactly,
+which is the honest reading of "he wants an ammo box", but the reserve is a single
+universal pool shared by both guns, so 40 rounds off a Marksman Rifle player is
+five magazines and off an LMG player it is barely one. The item is flat and the
+weapons are not. Also not verified: whether he should want a plate at all now.
+v2.16 made No Rig a real zero, so a player with no rig cannot carry a plate either,
+and that is a second want he cannot satisfy, though unlike the ammo box it is a
+consequence of a choice he made rather than of the plumbing.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
