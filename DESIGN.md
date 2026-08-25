@@ -4962,6 +4962,60 @@ stand-in for how he actually loots. It is the shipped default and therefore the
 right number to quote, but his five extracted runs averaged 6,300 against the sim's
 11,338, which is a gap wide enough that the two are not measuring the same player.
 
+### v2.33: the sim banks twice what he does because it opens three times the containers
+
+v2.32 ended on a worry with teeth: the sim reports 11,338 credits for an extracted
+raid and his own five extracted runs averaged 6,300, and if the bot is looting a
+different game from the one he plays then every balance number this session quoted
+inherits the error. Decomposed, and the answer is reassuring in a way I did not
+expect.
+
+    extracted raids     containers   items   haul     per container
+    the sim, 120 seeds     21.2       32.8   11,338        534
+    him, 5 real runs        7.0       13.4    6,300        900
+
+THE BOT OPENS THREE TIMES AS MANY CONTAINERS AND GETS 40 PERCENT LESS OUT OF EACH
+ONE. He loots selectively and well; the bot loots exhaustively and badly. Across
+all eighteen of his runs he averages 5.6 containers, so this is his style and not
+one lucky raid.
+
+That matters for what it does NOT invalidate. Every arm this session has been a
+paired A/B inside one build, so a difference in how thoroughly the bot loots
+appears in both arms and cancels out of the comparison. The extract rates stand.
+What does not stand is any ABSOLUTE haul figure quoted from the sim as though it
+were his: the sim's 11,338 is a thorough looter's number and he banks 6,300.
+
+It also puts a number on something the project already suspected. The bot's 534 a
+container against his 900 is the crate problem measured from the other end: the
+containers he skips are the ones dragging the average down, which is the same
+finding as "81.8 percent of crates pay under 150c" arriving by a different route.
+
+TWO AUDITS ON THE WAY, BOTH CLEAN.
+
+The haul figure is honest. haul is the sum of ival() over the bag, extracted items
+go to the stash, and the stash sells at the same ival. Driven end to end with a
+known bag: reported 1,750, six items banked, stash sell value 1,750, exact match,
+and no credits move during the raid. The number on the screen is the number you get.
+
+And the export renders correctly for a real log row, no undefined fields.
+
+SHIPPED, SO NOBODY HAS TO DERIVE IT AGAIN. The run line now carries perCont, the
+haul divided by containers opened. It is the single number that separates a
+thorough looter from a selective one, it took a hand decomposition to get at this
+tick, and the next export will simply state it. Verified against his own data:
+run #1 was haul 7,115 over 16 containers and the line now reads perCont:445c, which
+is 444.7 rounded. Omitted entirely when a run opened nothing, so a death at 40
+seconds does not print a division by zero.
+
+Not verified: whether his 900 a container is skill or version. His eighteen runs
+are a v1.87 recorder and the loot tables have moved since, including v2.12 relocating
+stranded containers and the crate work before it, so part of the per-container gap
+could be the game rather than the player. The only clean way to separate those is a
+fresh export from him on the current build, which is also the only thing that would
+tell me whether any of this session's twenty-odd builds improved his experience at
+all. Also not verified: the bot's 534 is BURIED CITY only, and container mix varies
+by map, so the crate reading above is one map's worth of evidence.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

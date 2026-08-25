@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.32';
+var VER='2.33';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -13075,7 +13075,16 @@ function buildExport(){
     // v-stamp first, and "v?" for anything recorded before v1.90 had the field,
     // which is itself the signal that the run is old enough to predate it.
     var line='#'+r.n+' v'+(r.ver||'?')+' '+r.outcome.toUpperCase()+' ['+(r.preset||'?')+'] wep:'+r.weapon+(r.wepSource?'('+r.wepSource+')':'')+' dur:'+r.dur+'s haul:'+r.haul+
-      'c items:'+r.items+' cont:'+r.containers+' shots:'+r.shots+' acc:'+r.acc+'%'+
+      // VALUE PER CONTAINER, v2.33. This is the number that separates a thorough
+      // looter from a selective one, and it had to be derived by hand to answer
+      // the question v2.32 raised about the sim banking nearly twice what he does.
+      // The answer was not a broken economy: on his five extracted runs he opened
+      // 7.0 containers for 900 credits each, and the bot opens 21.2 for 534. He
+      // loots better and less; the bot loots worse and more. Putting it on the
+      // line means the next export answers that without anyone recomputing it.
+      'c items:'+r.items+' cont:'+r.containers+
+      (r.containers>0?(' perCont:'+Math.round(r.haul/r.containers)+'c'):'')+
+      ' shots:'+r.shots+' acc:'+r.acc+'%'+
       ' kills:'+kills+' heals:'+r.heals+' downs:'+(r.downs||0)+' rev:'+(r.revives||0)+
       ' marked:'+(r.marked||0)+
       ' beacon:'+(r.beaconCalls||0)+'called/'+(r.beaconMissed||0)+'missed'+
