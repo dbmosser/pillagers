@@ -4595,6 +4595,72 @@ happens on a map with no locked rooms at all, since all four authored maps have
 exactly two, and the fallback branch has therefore only ever been exercised by me
 forcing it.
 
+### v2.27: two extraction calls shared one siege, so the second one was free
+
+Audited the extraction beacon, which is the system every other reward in the game
+has to survive in order to pay out.
+
+THE TELL WAS DEAD STATE. tryExtractTick sets five things when a beacon is called:
+
+    z.beaconT=CFG.extractWait; z.hold=null; z.siegeSpawned=0; z.siegeSpawnT=0; z.siegeGreed=null;
+
+Four of those are read again later. z.siegeSpawned and z.siegeSpawnT are never read
+by anything. The tick that consumes them uses G.siegeSpawned and G.siegeSpawnT
+instead, which is a global sitting inside a loop that runs PER ZONE, three lines
+under z.siegeGreed being read per zone so the price of a call is fixed per call.
+
+A SECOND BEACON IS REACHABLE, and I checked rather than assumed, because nothing
+except the player calls one. The design comment says an AI raider can call a ring
+across the map; the code has exactly one assignment to z.beaconT and it is the
+player's. So this needs him to do it deliberately: call a ring, run to another and
+call that too. Measured on BURIED CITY, three open rings 2,560 apart against a 25
+second inbound wait and a 158 per second sprint. There is time.
+
+WITH BOTH RUNNING, BOTH ZONES TICKED THE SAME COUNTER:
+
+    siegeSpawnT after 10 seconds of sim     old 4.0     new 2.0 per zone
+    per-zone clocks                         old 0, 0    new 2.0, 2.0
+
+and the cap, which is the part that actually mattered. Greed pinned at 0.2 so the
+interval is about 7.1 seconds and the cap is 8 per call, run to exhaustion:
+
+                        arrivals   zone A   zone B
+    one beacon, old         8         -        -
+    one beacon, new         8         8        -
+    two beacons, old        8         -        -
+    two beacons, new       16         8        8
+
+One beacon is unchanged, which is the control that matters. Two beacons under the
+old code produced EIGHT arrivals total, because both calls drew on one budget. So
+calling a decoy ring cost nothing: you doubled your chances to board and the ring
+did not get any worse for it. The comment above the code promises "one machine
+every 8 seconds while the beacon runs or the ship holds, capped at six per call".
+Per call is now what it is, and a second call costs a second siege.
+
+The globals are kept in step with the ring you are standing at, so anything reading
+G for display keeps working, verified on a live beacon driven through real frames:
+zone counter 1, global mirror 1, drawErr null.
+
+PROVED INERT FOR THE SIM. The bot calls one beacon, so this should change nothing
+headless, and 120 seeds an arm comparing outcome, duration, shots, haul,
+containers, killer, siege arrivals and beacon calls as one joined string came back
+120 of 120 BYTE IDENTICAL. siegePerZone 0 restores the shared global.
+
+Also checked and clean on the way: the Stray's plate want is satisfiable by a
+no-rig player after all, since grantLoot puts a found plate in the bag even at
+ceiling 0, and his notoriety promise is real, P.notoriety is decremented.
+
+Not verified: whether a second call SHOULD cost a second siege, or whether the
+right fix was the opposite one, making a second call impossible while a beacon is
+already inbound. I fixed the code to match the comment above it, which is the
+conservative reading, but "capped at six per call" was written when there was only
+ever one call and it may simply not have contemplated two. Making a decoy ring
+genuinely expensive is a real difficulty increase for a tactic he may never have
+used, and if he was using it deliberately this removes it. Also not verified: the
+shared-cap behaviour on the ship HOLD phase specifically, since my measurement
+pinned beaconT to a huge number to reach the cap and never exercised the handover
+into z.hold.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.26';
+var VER='2.27';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -474,7 +474,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -6761,19 +6761,47 @@ function tickExtractPoints(dt){
   if(z.siegeGreed===undefined||z.siegeGreed===null) z.siegeGreed=greedOf();
   var GR=z.siegeGreed;
   var siegeIv=8-4.6*GR, siegeCap=Math.round(6+8*GR);
-  G.siegeSpawnT=(G.siegeSpawnT||0)+dt;
-  G.siegeSpawned=G.siegeSpawned||0;
-  if(G.siegeSpawnT>=siegeIv&&G.siegeSpawned<siegeCap){
+  // THE SIEGE CLOCK IS PER CALL, v2.27, and it was global inside a per-zone loop.
+  // Every line around it is per zone: z.beaconT, z.hold, and z.siegeGreed, which
+  // is read three lines up so the price is fixed per call. The counter and the
+  // interval it drives were G.siegeSpawnT and G.siegeSpawned, and the call site
+  // even writes z.siegeSpawned and z.siegeSpawnT to zero and then never reads
+  // them again. Dead state next to a global doing its job is the tell.
+  // It matters because a second beacon is reachable. Nothing else calls one, so
+  // this needs the player to do it deliberately: call a ring, run to another and
+  // call that. Measured on BURIED CITY, three open rings 2,560 apart against a
+  // 25 second wait and a 158/s sprint, so there is time. With both running, both
+  // zones tick the SAME counter: siegeSpawnT advanced 1.0 per half second of sim
+  // instead of 0.5, so arrivals came at DOUBLE the promised rate, and the two
+  // calls shared one cap instead of having one each.
+  // The comment above promises "one machine every 8 seconds while the beacon runs
+  // or the ship holds, capped at six per call". Per call is now what it is.
+  // siegePerZone 0 restores the shared global.
+  var _pz=(CFG.siegePerZone!==0);
+  if(_pz){
+    z.siegeSpawnT=(z.siegeSpawnT||0)+dt;
+    z.siegeSpawned=z.siegeSpawned||0;
+  } else {
+    G.siegeSpawnT=(G.siegeSpawnT||0)+dt;
+    G.siegeSpawned=G.siegeSpawned||0;
+  }
+  var _sT=_pz?z.siegeSpawnT:G.siegeSpawnT, _sN=_pz?z.siegeSpawned:G.siegeSpawned;
+  // The globals stay in step with the ring you are actually standing at, so
+  // anything reading G for display keeps working.
+  if(z===G.active){ G.siegeSpawnT=_sT; G.siegeSpawned=_sN; }
+  if(_sT>=siegeIv&&_sN<siegeCap){
     // THE ARRIVAL IS ONLY SPENT IF IT ARRIVES, fixed at v1.79. The counter used to
     // increment before the placement could fail, so a siege that could not find a
     // spot at least 700 units from the player silently came up short against its own
     // cap. The cap is a promise about how bad the ring gets; a failed dice roll must
     // not quietly pay it off.
-    G.siegeSpawnT=0;
+    if(_pz) z.siegeSpawnT=0; else G.siegeSpawnT=0;
+    if(z===G.active) G.siegeSpawnT=0;
     var ss2=null,st2=0;
     do{ ss2=freeSpot(G.map,30); st2++; }while(dist(ss2,p)<700&&st2<40);
     if(dist(ss2,p)>=700){
-      G.siegeSpawned++;
+      if(_pz) z.siegeSpawned++; else G.siegeSpawned++;
+      if(z===G.active) G.siegeSpawned=_pz?z.siegeSpawned:G.siegeSpawned;
       var nm=rr()<.5?mkSentry(ss2.x,ss2.y):mkCrawler(ss2.x,ss2.y);
       nm.alert=3; nm.state='investigate'; nm.tx=z.x+rnd(-60,60); nm.ty=z.y+rnd(-60,60);
       G.ents.push(nm);
