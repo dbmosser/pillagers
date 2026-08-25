@@ -6295,6 +6295,56 @@ verified: whether 420 units and the 22 floor are the right constants; both were
 reasoned, neither swept. Also unchanged and still open: feud and simReach
 individually, known only to sum to about zero.
 
+### v2.55: the four-map picture at current rules, and COLD STORAGE has a raider problem
+
+No game logic changed. Every measurement this cycle has been BURIED CITY, and the
+last four-map survey predates windows, feuds, timed heals, the reach fix and the
+sentry findings, so the map spread the file quotes was measured on a different
+game. Re-measured: 120 seeds per map, current defaults, same seed list everywhere.
+
+    map            extract   haul    duration   median first contact
+    QUARRY          19.2%    9,405     205s            78s
+    BURIED CITY     16.7%    8,058     221s            43s
+    DAM             10.8%    8,882     243s            95s
+    COLD STORAGE     7.5%    8,683     219s           113s
+
+THE SPREAD SURVIVED EVERYTHING THIS CYCLE SHIPPED. Easiest to hardest still runs
+QUARRY, BURIED, DAM, COLD, and COLD at 7.5 percent against QUARRY at 19.2 is a
+factor of 2.6, roughly the same shape the file has carried since v2.13. Twenty
+builds of mechanics, windows cut into every building, raiders at war with each
+other, and the ordering of the maps did not move. Whatever makes COLD hard is
+structural, not incidental.
+
+THE SENTRY IS THE APEX KILLER ON ALL FOUR MAPS, 47 to 56 deaths of 120 everywhere,
+which is consistent with the v2.40 through v2.43 thread: the sentry duel is the
+fight that decides raids, on every map, at every density.
+
+AND ONE GENUINE ANOMALY: RAIDERS KILL THE BOT 21 TIMES ON COLD, against 8 or 9 on
+the other three. COLD is the map with the FEWEST raiders, five against eight, so
+per raider it is roughly four times as lethal there. COLD is also the smallest,
+tightest map with the fewest containers, so bot and raiders work the same shelves
+sooner; the first-contact medians say the bot goes unseen longest on COLD, 113
+seconds, so the raid's violence is compressed into its second half where bags are
+full and health is spent. That reading is an argument, not a measurement, and it is
+flagged rather than trusted.
+
+FIRST CONTACT SPANS 43 TO 113 SECONDS ACROSS MAPS, nearly a factor of three, which
+is the most texture the four maps have shown in one number: BURIED starts fights in
+the first minute, COLD lets you work in silence and then kills you. Against his
+standing complaint that maps feel samey, the numbers say the maps PLAY differently;
+whether they FEEL different is his call, since feel lives in art and audio, not in
+extract rates.
+
+Verified: parsecheck PASS at v2.55, all four maps and the hub drive and draw clean.
+Measurement build, VER and DESIGN.md only.
+
+Not verified: everything at 120 seeds a map, so one SE is about 3 points and only
+the COLD against QUARRY gap clears two SEs on its own; the ORDERING matches the
+historical one, which is worth more than any single pairwise gap. Also not verified:
+the COLD raider mechanism named above. Also: BURIED reads 16.7 here against 19.1 in
+the 320-seed batches, which is inside one SE of both and a reminder that a 120-seed
+number is a bearing, not a coordinate.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
