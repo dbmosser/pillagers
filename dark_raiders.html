@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.80';
+var VER='2.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -454,7 +454,7 @@ var VER='2.80';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='2.76';
+var WHATSNEW_VER='2.81';
 var WHATSNEW=[
   'Your FIRE button now uses the selected hotbar slot.',
   'Heals take time now. The bar shows health arriving.',
@@ -462,7 +462,8 @@ var WHATSNEW=[
   'Raider crews feud. The colour bar by a name is his crew.',
   'Drag items from TAB inventory onto the hotbar.',
   'BACKSPACE resets a lost cursor.',
-  'Tuning Console: toggles for heals, feuds and windows.'
+  'Tuning Console: toggles for heals, feuds and windows.',
+  'The Undercroft is five stations now. Holt handles all trade.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -12969,28 +12970,43 @@ function buildHub(){
     segs.push({x1:q.x+q.w,y1:q.y+q.h,x2:q.x,y2:q.y+q.h});
     segs.push({x1:q.x,y1:q.y+q.h,x2:q.x,y2:q.y});
   }
+  // FIVE STATIONS, NOT TEN, v2.81. His note: "there are too many characters to
+  // choose from in the undercroft -- it needs to be like a stash, a single
+  // trader/quest giver, the gambler, the cheat menu/dev box, and the deploy
+  // lift." Every modal survives untouched; what changes is how many bodies
+  // stand around offering them. A merged station lists its functions as KEYS in
+  // its sub line, so Holt is now the one trader and quest-giver, carrying the
+  // shop, the workshop, the hiring bench and the Terms; the stash terminal
+  // carries the season board; the dev box carries the crate and the tuning
+  // console. acts maps key codes to the same functions the old stations called,
+  // and E always fires the FIRST listed, so the muscle memory of "walk up,
+  // press E" still does the most common thing at every station.
   var stations=[
     {id:'lift',x:350,y:105,r:48,label:'DEPLOY LIFT',sub:'to the surface',c:'#35d6c8',
-     act:function(){ ac(); startRaid(); }},
-    {id:'req',x:110,y:255,r:44,label:'HOLT, QUARTERMASTER',sub:'buy gear',c:'#ffb02e',vendor:1,
-     act:function(){ say2(vendorLine('req')); renderShop(); document.getElementById('shopmodal').classList.add('on'); }},
-    {id:'work',x:590,y:255,r:44,label:'MERRIT, FITTER',sub:'craft from junk',c:'#7fc4a0',vendor:1,
-     act:function(){ say2(vendorLine('work')); renderWork(); document.getElementById('workmodal').classList.add('on'); }},
+     acts:{KeyE:['deploy',function(){ ac(); startRaid(); }]}},
+    {id:'trader',x:110,y:255,r:46,label:'HOLT, THE TRADER',sub:'',c:'#ffb02e',vendor:1,
+     acts:{KeyE:['shop',function(){ say2(vendorLine('req')); renderShop(); document.getElementById('shopmodal').classList.add('on'); }],
+           KeyR:['workshop',function(){ say2(vendorLine('work')); renderWork(); document.getElementById('workmodal').classList.add('on'); }],
+           KeyF:['hire',function(){ renderMerc(); document.getElementById('mercmodal').classList.add('on'); }],
+           KeyT:['the terms',function(){ renderTerms(); document.getElementById('termsmodal').classList.add('on'); }]}},
     {id:'gamble',x:110,y:110,r:42,label:'VESH, THE GAMBLER',sub:'unmarked goods, flat price',c:'#e0a0ff',vendor:1,
-     act:function(){ renderGamble(); document.getElementById('gamblemodal').classList.add('on'); }},
-    {id:'merc',x:350,y:255,r:42,label:'HIRING BENCH',sub:'take a raider with you',c:'#e0483a',vendor:1,
-     act:function(){ renderMerc(); document.getElementById('mercmodal').classList.add('on'); }},
-    {id:'crate',x:590,y:110,r:40,label:'DEV CRATE',sub:'test kit, opt in per run',c:'#9aa8b2',
-     act:function(){ renderCrate(); document.getElementById('cratemodal').classList.add('on'); }},
-    {id:'term',x:350,y:365,r:46,label:'OPERATOR TERMINAL',sub:'stash, loadout, contracts, recorder',c:'#5aa9e6',
-     act:function(){ renderHub(); document.getElementById('hub').classList.add('on'); }},
-    {id:'terms',x:200,y:180,r:42,label:'THE TERMS',sub:'sign for worse odds, better pay',c:'#ffb02e',vendor:1,
-     act:function(){ renderTerms(); document.getElementById('termsmodal').classList.add('on'); }},
-    {id:'season',x:140,y:390,r:44,label:'SEASON BOARD',sub:'the long track, and what is coming',c:'#ffd76a',vendor:1,
-     act:function(){ renderSeason(); document.getElementById('seasonmodal').classList.add('on'); }},
-    {id:'tune',x:560,y:390,r:40,label:'TUNING CONSOLE',sub:'sliders and bot sim',c:'#d08ce8',
-     act:function(){ toggleTune(true); }}
+     acts:{KeyE:['deal',function(){ renderGamble(); document.getElementById('gamblemodal').classList.add('on'); }]}},
+    {id:'term',x:350,y:365,r:46,label:'THE STASH',sub:'',c:'#5aa9e6',
+     acts:{KeyE:['terminal',function(){ renderHub(); document.getElementById('hub').classList.add('on'); }],
+           KeyR:['season',function(){ renderSeason(); document.getElementById('seasonmodal').classList.add('on'); }]}},
+    {id:'dev',x:590,y:255,r:42,label:'DEV BOX',sub:'',c:'#9aa8b2',
+     acts:{KeyE:['dev crate',function(){ renderCrate(); document.getElementById('cratemodal').classList.add('on'); }],
+           KeyR:['tuning',function(){ toggleTune(true); }]}}
   ];
+  // The sub line is BUILT from the acts, so the keys on screen can never drift
+  // from the keys that work; a one-act station keeps its authored flavour line.
+  var KEYNAMES={KeyE:'E',KeyR:'R',KeyF:'F',KeyT:'T'};
+  stations.forEach(function(st){
+    var ks=Object.keys(st.acts);
+    if(ks.length>1)
+      st.sub=ks.map(function(k){return '['+KEYNAMES[k]+'] '+st.acts[k][0];}).join('   ');
+    st.act=st.acts.KeyE[1];
+  });
   var lights=[];
   for(var s=0;s<stations.length;s++)
     lights.push({x:stations[s].x,y:stations[s].y-10,r:190,c:stations[s].c,i:.34,f:s*1.7,fl:false});
@@ -13075,8 +13091,14 @@ function updateHubWorld(dt){
     if(d<st.r&&d<bd){ bd=d; best=st; }
   }
   HB.near=best;
-  if(keys['KeyE']&&best&&!HB.eLock){ HB.eLock=true; ac(); best.act(); }
-  if(!keys['KeyE']) HB.eLock=false;
+  // Any key the station maps fires its function; the lock spans them all so a
+  // held key opens exactly one modal.
+  if(best&&!HB.eLock){
+    for(var ak in best.acts){
+      if(keys[ak]){ HB.eLock=true; ac(); best.acts[ak][1](); break; }
+    }
+  }
+  if(!keys['KeyE']&&!keys['KeyR']&&!keys['KeyF']&&!keys['KeyT']) HB.eLock=false;
 }
 function drawHubWorld(dt){
   var p=HB.player,i,j;

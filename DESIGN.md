@@ -7321,6 +7321,50 @@ verified: whether a fresh player should ALSO start without the armoury pistol
 entirely; owning one unused gun is harmless and gives the armoury screen
 something to show, so it stays.
 
+### v2.81: the Undercroft is five stations, exactly the five he named
+
+His note, 2026-08-25: "there are too many characters to choose from in the
+undercroft -- it needs to be like a stash, a single trader/quest giver, the
+gambler, the cheat menu/dev box, and the deploy lift." Ten stations stood in a
+700 by 470 room; his list is five, and five is what stands there now, his five:
+
+    DEPLOY LIFT        to the surface
+    HOLT, THE TRADER   [E] shop  [R] workshop  [F] hire  [T] the terms
+    VESH, THE GAMBLER  unmarked goods, flat price
+    THE STASH          [E] terminal  [R] season
+    DEV BOX            [E] dev crate  [R] tuning
+
+NOTHING WAS DELETED, ONLY THE CROWD. Every modal, the shop, the workshop, the
+hiring bench, the Terms, the season board, the dev crate, the tuning console,
+survives byte for byte; what changed is how many bodies offer them. A merged
+station maps several KEYS, its sub line is BUILT from that map so the keys on
+screen can never drift from the keys that work, and E always fires the first
+listed function, so walk-up-and-press-E still does the most common thing
+everywhere. Holt absorbs all four trade-and-work functions, which makes him the
+single trader and quest-giver the note asked for; the Terminal becomes THE STASH
+and carries the season board; the crate and the console share the dev box.
+
+Verified through the real hub input rather than by calling the modals: the
+player teleported to each station and each mapped key pressed through the actual
+hub step, nine routes, nine correct modals, shop workshop merc terms gamble
+terminal season crate tuning, each confirmed open by its DOM class and closed
+before the next. Five stations counted in the live hub state. The new layout
+seen in pixels, tools/shots/undercroft5.png: five islands with room around them,
+against ten before. Parsecheck PASS at v2.81, all four maps drive and draw clean
+with 10 of 10 entities moving, hub steps and draws clean. WHATSNEW updated with
+the change and WHATSNEW_VER bumped, so returning players get told; the itch zip
+is rebuilt at v2.81.
+
+Not verified: the gamepad, which maps its A button to KeyE only, so pad players
+reach each station's FIRST function and not the merged extras; that is four
+functions out of reach on pad, it predates this build only in shape, and wiring
+pad buttons to the extra keys is straightforward if he plays on pad. Also not
+verified: the empty floor where five stations used to stand, which the capture
+shows as pleasantly roomy but which may read as bare to him; furniture is
+authorship and his. Also not verified: whether the Terms belongs under Holt
+thematically, since signing for worse odds is more a gambler's trade; it is one
+line to move to Vesh if he prefers.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
