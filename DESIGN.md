@@ -6710,6 +6710,41 @@ pin the full dial set, which is exactly the class of ambiguity the v2.63
 fingerprint now makes visible on the rows themselves; a smoke test is a mechanism
 check, not a measurement, and its rates mean nothing.
 
+### v2.65: the windows look like windows, verified in pixels rather than in prose
+
+No game logic changed. v2.51 shipped windows with an honest hole in its
+verification: "Not verified: the LOOK. The sill and glass colours are reasoned,
+not seen; if a window reads as a doorway on his monitor the mullion and sill
+constants are the place to push." The fixture can prove geometry and cannot see.
+The capture sink on 8779 can, and it is the same instrument that settled the
+cars-as-suitcases complaint at v1.64, so a look question got the look tool.
+
+The player was stood two steps south of an 80 by 16 window on BURIED CITY, the
+world frame rendered and posted as a PNG, and the PNG read back. What the pixels
+show: the window is a pale blue-grey band set into the wall run, visibly glass
+against the solid masonry either side of it, split into two panes by the mullion,
+with the sill line along its base. It does not read as a doorway, because a
+doorway in this game is an absence and the glass band is emphatically a presence.
+And the payoff of the whole feature is in the same frame: the player's vision fan
+pours THROUGH the pane and lights the floor of the room beyond, while the wall
+either side of it still casts shadow, which is see-through-but-not-walk-through
+drawn as one picture.
+
+So v2.51's remaining caveat narrows from "the look is unverified" to "one window
+on one map at one size has been seen and looks right". The colours were chosen
+blind at v2.51 and happen to sit well against BURIED's purple palette; the other
+three maps use other palettes and their windows have been proven open to rays but
+not yet looked at.
+
+Verified: parsecheck PASS at v2.65, all four maps and the hub drive and draw
+clean, and the captured frame itself, tools/shots/window_v264.png, 310KB posted
+through the sink and inspected.
+
+Not verified: the other three maps' palettes under the same glass colours, night
+and weather variants, and a vertical window, since the captured one is
+horizontal; each is one more capture if doubt ever arises. Also unchanged from
+v2.51: no crouching below sills, which is a design question and his.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
