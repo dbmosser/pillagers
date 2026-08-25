@@ -6130,6 +6130,62 @@ to push. Also not verified: crouching below a sill. A window blocks nothing at a
 height, so there is no hiding under it, and whether there SHOULD be is a design
 question that belongs to him.
 
+### v2.52: going down interrupts the heal, and windows are balance-neutral at n=320
+
+TWO SMALL FIXES AND ONE MEASUREMENT.
+
+THE FIRST FIX. v2.46 made healing take time and left one seam open: nothing cleared
+the queue when the player went down. The queued remainder of a Medkit kept trickling
+into a body on the floor, so health crept up from zero while downed, which nothing
+else in the game expects, and part of a heal survived a catastrophe it should not
+have. Going down now zeroes the queue and the rate, verified by queuing 65 points
+and taking a 500 damage hit: downed true, queue 0. v2.46's open question, whether
+ORDINARY damage should interrupt a heal, stays open and stays his; being shot to the
+floor is not ordinary damage.
+
+THE SECOND FIX IS ONE STRING. The caption under the hotbar still read "[G] use"
+after v2.45 moved the action onto the trigger; it reads "[FIRE] use" now, matching
+the legend.
+
+THE MEASUREMENT, WHICH IS THE REAL CONTENT OF THIS BUILD. v2.51 cut roughly two
+hundred windows into the four maps and changed every line-of-sight answer in the
+game in both directions, and shipped honestly labelled as unmeasured. Measured now
+at the size v2.42 says these arms need: 320 seeds, BURIED CITY, both arms of every
+seed run back to back, windows 0 against windows 1, everything else pinned.
+
+                        windows on extract   windows on dead
+    windows off extract        21                  39
+    windows off dead           40                 220
+
+    18.8% without windows against 19.1% with, discordant 79, exact p = 1.0
+
+WINDOWS ARE BALANCE-NEUTRAL AND RAID-SCRAMBLING AT THE SAME TIME, and both halves
+matter. The rate does not move: 0.3 points, z of zero, as null as a null gets. But
+79 of 320 raids CHANGED OUTCOME, 39 flipping one way and 40 the other, which is a
+quarter of all raids. For comparison, the sentry-round change at v2.43 flipped the
+same count, 79, but 51 against 28. So windows redraw individual fights about as
+strongly as the strongest balance lever measured this cycle, and do it symmetrically:
+every firing line a window opens INTO the bot's cover it also opens OUT of it. That
+is the best outcome the feature could have had. It changes raids without changing
+the game's difficulty, which is what a texture feature should do and almost never
+does.
+
+Worth a note for the record: the base rate in this batch reads 18.8 to 19.1 against
+the 24 give or take 4 the null blocks measured at v2.42. This batch runs with
+raiderFeud, healOverTime and simReach all on, which v2.42's blocks did not have, and
+each is plausibly worth a point or two of extract rate in the harsh direction. Their
+individual costs are unmeasured, and I am flagging that rather than pretending the
+gap is noise.
+
+Verified: parsecheck PASS at v2.52, all four maps and the hub drive and draw clean
+with 10 of 10 entities moving, and the down-interrupt exercised directly.
+
+Not verified: the windows null is BURIED CITY only, and window density differs per
+map, so a map with more exterior wall could still tilt. Also not verified: the
+combined cost of the three new-default dials named above; if his next runs feel
+harder than the file's back catalogue promised, that stack of defaults is the first
+suspect, and each has a dial to switch off.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
