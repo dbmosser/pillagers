@@ -4059,6 +4059,74 @@ still makes plates from two comp and one board with no rig check, but that costs
 materials rather than credits and produces a real item you can sell or use later,
 so it is not the same trap and I have left it alone.
 
+### v2.19: swept the falsy zero, and four systems audited clean
+
+v2.16 found a defect that turned on one character: `absorb||0.55` where the value
+was legitimately 0.00. That is a bug CLASS, not an incident, so this build sweeps
+the whole file for it, the way v2.02 swept the sim guards. Most of the tick is
+negative results, which is the honest shape of a sweep.
+
+THE SWEEP. Every `X || N` in the file where N is non-zero, 24 sites, classified by
+whether 0 is a legal value for X:
+
+  REAL, and fixed:
+    found.qRank||1     GUNQ ranks 'worn' at 0. Every Worn gun found was recorded
+                       as Field in T.bestQ. Worn is weight 33 of 100, so this
+                       misread a THIRD of all gun finds.
+  LEGAL BUT UNREACHABLE, left alone and recorded:
+    WTIER[id]||1       fists are tier 0, but repairCost returns null on w<=0
+                       first and wearable() excludes fists explicitly, so a
+                       fists tier is never computed.
+    lift||24, 4 sites  a platform at ground level would be legal and would read
+                       as lifted 24. No authored platform on any of the four maps
+                       has lift 0; the only 0 is on a synthetic ramp object that
+                       these four sites never see.
+    CT.face||1         face 0 is a legal heading. Measured on 28 critters: 22 have
+                       no face property at all and 6 are non-zero, none is 0.
+  CORRECT BY DESIGN, 17 sites:
+    0 is the "unset" sentinel rather than a value. Directions that are plus or
+    minus 1, xpLevel, devicePixelRatio, pellets, zoom, radius, shipHoldMax.
+    A default is the right answer for all of these.
+  Also checked: spotFree's pad||22, where pad 0 is legal. No call site passes 0.
+
+THE ONE FIX IS A WRONG NUMBER, NOT A WRONG OUTCOME, and I want that stated
+plainly rather than dressed up. The export prints only tuned and PRISTINE, so
+bestQ 0 and bestQ 1 render identically and no player has ever seen the
+difference. It is fixed because the next thing to read bestQ would have inherited
+the error silently, which is exactly how the armour defect survived.
+
+FOUR AUDITS ON THE WAY, ALL CLEAN. Recorded so the next pass does not repeat them.
+
+  1. CRAFTING INGREDIENTS. Every recipe needs one of six materials. Sampled 4,755
+     containers over 24 raids on all four maps: scrap 1,229, wire 1,007, bandage
+     698, cell 663, board 605, comp 258. Nothing is starved and no recipe is dead.
+     v1.72 already priced the recipes against the shop, so I did not redo that.
+  2. THE SIEGE. simResult has carried a siegeNoSpot failure counter that nobody
+     had read. 119 seeds: 31 raids ran a siege, 214 arrivals, and ZERO no-spot
+     failures. The counter has never fired.
+  3. THE SNITCH. It flees while alarming and its alarm aborts after 3 seconds of
+     lost sight against a 3 to 4 second windup, which looked self-defeating.
+     Measured over 12 driven raids: 20 alarms started, 19 completed, 1 aborted.
+     95 percent. The counterplay is kill it or move, and it works.
+  4. UNGUARDED PRESENTATION IN THE SNITCH. Its say and sfx calls have no !G.sim
+     guard while the sentry windup right above them does, which looked like the
+     family v2.09 fixed. Both functions guard internally, so the call sites are
+     harmless.
+
+AND A MISTAKE I MADE AND CAUGHT BEFORE REPORTING IT. I measured 1.67 snitch alarms
+a raid against 0.28 beaconCalls a raid and spent a while treating that 6x gap as a
+defect. It is not: beaconCalls is the player's extraction dropship and a snitch
+alarm calls reinforcements to a marked position. Two different mechanics with
+similar names, and I had conflated them.
+
+Not verified: whether the sweep is complete. It matches `X || N` with a numeric
+literal, so it cannot see `a||b` where b is a variable or a call, and it cannot see
+the same class expressed as `x ? x : d`. Both would hide the identical bug. Also
+not verified: the four lift||24 sites will become live the moment any map authors
+a platform at lift 0, and nothing in the file stops that or warns about it. I left
+them because changing provably-safe code adds risk for no measured gain, but they
+are a trap laid for whoever adds the next map.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
