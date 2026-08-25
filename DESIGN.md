@@ -3044,6 +3044,76 @@ separately in qRank and is not consulted here, which is the same class of omissi
 this entry is fixing, just one level down. It affects nobody at 118 of 120 seeds
 identical, but it is wrong in the same way.
 
+### v2.05: the Listener cannot hear, and making it hear does not help
+
+The Listener kills one or two raids in a hundred and twenty, in every batch I have
+run all session, and hearing is its entire reason to exist. So I went looking.
+
+ITS RANGE IS A CAP, NOT A RANGE. LISTEN_R is 760, but the test is
+d <= min(s*1.35, 760), so a sound only carries s*1.35 and reaching 760 needs a
+sound of strength 563 or more. Every emitter in the file, against a sentry's 340
+sight range:
+
+    bot walking          140  ->  heard at 189
+    player walking step  170  ->  heard at 230
+    player searching     180  ->  heard at 243
+    player wading        290  ->  heard at 392
+    player sprinting     300  ->  heard at 405
+    strongbox cut        560  ->  heard at 756
+    snitch alarm         620  ->  capped at 760
+    beacon call          700  ->  capped at 760
+    siege ring          1200  ->  capped at 760
+
+Only four sounds in the whole game ever reach its advertised range, and three of
+them are ALREADY ALARMS: the snitch has marked you, the beacon is called, the
+siege is running. Everything else on the map knows by then. So the Listener's full
+reach is almost never the thing that finds you first. The strongbox at 560 is the
+one case where the design works exactly as written.
+
+This also explains a null I could not account for at v2.02. I taught the bot to
+make looting noise expecting Listeners to wake, and measured nothing at all. A
+180-strength search ping is audible at 243 units. It was never going to hear it.
+
+SO I ADDED THE DIAL AND SWEPT IT, AND IT DID NOT WORK.
+
+    listenGain   extract   first contact   listener kills   seeds touched
+      1.35        23.3%        82s               2               -
+      2.5         27.5%        84s               1              41
+      3.6         25.0%        86s               0              51
+
+Making the Listener hear nearly three times further made the player do BETTER, not
+worse. Extract rate went up and then down, non-monotone and within about one
+standard error, first contact got two to four seconds LATER, and listener kills
+went DOWN to zero. Forty one and fifty one seeds were touched, so the dial is
+doing something; it just is not making that enemy dangerous.
+
+THE REASON IS THAT IT CANNOT SEE. Listener sight range is 26 with a cone of ZERO,
+against a sentry's 340, a raider's 302 and the Warden's 430. It is 7.6 percent of
+a sentry. So the loop is: hear a noise, sprint to that spot at 196, arrive, and
+have no way whatsoever to find you now that you have moved. Hearing better only
+makes it sprint to more stale positions, and a machine committed to running at
+stale positions is a machine that is reliably somewhere you are not. That is why
+turning the volume up made it LESS lethal.
+
+The fix is therefore not the falloff and I have not made it. It is either giving
+the Listener enough sight to reacquire on arrival, or making it re-listen while
+hunting so it can correct course, or accepting that it is a herding tool rather
+than a killer and tuning it as one. Those are three different enemies and picking
+between them is a design decision about what that machine is FOR, which is his.
+
+listenGain defaults to the shipped 1.35 and changes nothing. It stays because the
+next attempt should start from a measured baseline rather than a guess, and
+because the sweep above is the evidence that the falloff is the wrong lever.
+
+Not verified: whether a Listener with real sight would be fun or simply unfair. It
+does 34 damage against a sentry's 14 and moves at 196 against the player's 158, so
+it is already the fastest and hardest-hitting thing on the field; the only reason
+it is survivable is that it is blind. Giving it eyes is not a small change and
+should be measured before it is believed. Also not verified: whether the
+non-monotone extract result is real signal or noise. 23.3, 27.5, 25.0 at 120 seeds
+a side is inside a standard error, so the honest reading is that the dial moved
+raids around without moving outcomes.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

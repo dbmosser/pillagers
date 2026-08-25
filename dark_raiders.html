@@ -421,7 +421,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.04';
+var VER='2.05';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -452,7 +452,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -4328,7 +4328,37 @@ function listenersHearInner(x,y,s,fromPlayer){
     if(e.kind!=='listener') continue;
     var d=dist(e,{x:x,y:y});
     var reach=LISTEN_R*(hasTerm('silence')?1.5:1);
-    if(d>Math.min(s*1.35*(hasTerm('silence')?1.5:1),reach)) continue;
+    // WHAT THE LISTENER CAN ACTUALLY HEAR, measured at v2.05. Its reach is
+    // LISTEN_R=760, but that is a CAP, not a range: a sound is only heard at
+    // s*1.35, so reaching 760 needs a sound of strength 563 or more. Enumerating
+    // every emitter in the file against a sentry's 620 sight:
+    //
+    //   bot walking          140  ->  heard at 189   0.30x a sentry's sight
+    //   player walking step  170  ->  heard at 230   0.37x
+    //   player searching     180  ->  heard at 243   0.39x
+    //   player wading        290  ->  heard at 392   0.63x
+    //   player sprinting     300  ->  heard at 405   0.65x
+    //   strongbox cut        560  ->  heard at 756   1.22x
+    //   snitch alarm         620  ->  heard at 760   capped
+    //   beacon call          700  ->  heard at 760   capped
+    //   siege ring          1200  ->  heard at 760   capped
+    //
+    // So the machine built entirely around HEARING detects a walking player at 230
+    // units, while the machine built around SEEING detects him at 620. And only
+    // four sounds in the game ever reach its advertised range: the strongbox, the
+    // snitch alarm, the beacon and the siege. Three of those four are already
+    // alarms, things that have alerted everything else on the map anyway, so the
+    // Listener's full reach is almost never the thing that finds you first. That
+    // is why it kills one or two raids in a hundred and twenty.
+    // The strongbox case IS the design working as written: nine seconds at 560
+    // reaches most of a district and every Listener on the map.
+    // listenGain is the falloff and it DEFAULTS TO THE SHIPPED 1.35, because how
+    // far a listening machine should hear ordinary footsteps is a question about
+    // how frightening he wants that enemy to be, and that is his to answer. At 2.5
+    // a walking player is heard at 425, roughly two thirds of a sentry's sight; at
+    // 3.6 the cap finally binds on normal movement.
+    var LG=(CFG.listenGain===undefined?1.35:CFG.listenGain);
+    if(d>Math.min(s*LG*(hasTerm('silence')?1.5:1),reach)) continue;
     e.heardX=x; e.heardY=y;
     e.millT=0;
     if(e.state==='dormant'){
