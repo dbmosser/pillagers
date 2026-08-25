@@ -5713,6 +5713,58 @@ the bar, at x 390, and I have not checked that against every HUD element that li
 along that edge at small window widths, so it may collide with something on a narrow
 window.
 
+### v2.45: the trigger uses what you are holding, which is what a quickbar is for
+
+His note, 2026-08-25: "when i switch to nades or bandaids or whatever, i should just
+pull the shoot button to use it, not hit g -- makes no sense. Needs to be more like
+minecraft in this regard -- loaded quickbar item always activates with shoot button".
+
+HE IS RIGHT AND THE OLD SPLIT WAS INDEFENSIBLE. The number keys picked a slot, the
+slot was drawn highlighted along the bottom of the screen, and then the selection
+did nothing at all until you found a SECOND key. The hotbar showed you what was in
+your hand and the trigger ignored it. G was the only way to act, and G is not where
+anybody's hand is during a fight.
+
+The selected slot now drives the trigger. Guns shoot, throwables throw, medical
+heals, a plate goes on. G still works, because there was no reason to take it away,
+but the legend now reads FIRE rather than G.
+
+ONE ACTION PER CLICK for anything that is not an automatic weapon. p.fired already
+tracked exactly that for semi-automatics, so the throwable and medical paths reuse
+it; without that a grenade slot would throw the entire pouch in a fifth of a second.
+
+AN EMPTY SLOT FALLS THROUGH TO THE GUN, AND THAT IS A SAFETY RULE. Throw your last
+grenade and the slot stays selected. If an empty slot swallowed the trigger you would
+be standing in a firefight clicking at nothing, wondering why your gun had stopped,
+until you remembered to press 1. An empty slot is not a held item, so the trigger
+goes back to the gun.
+
+AND THE CROWBAR NEARLY SHIPPED AS A DEAD TRIGGER, which is mine to own. The hotbar
+has a seventh slot, kind 'tool', count null, and useHot has no branch for it: the
+crowbar is contextual, it comes up by itself while you work a container or cut a
+seal, and there is no standalone crowbar action anywhere in the file. My first
+version tested for an empty slot with count === 0, which null is not, so selecting
+the Crowbar routed the trigger into a function that did nothing and the fire button
+died until you pressed another number. Caught by enumerating the slots in the fixture
+rather than by reading. Tools now fall through with the empties, and the count test
+is "not greater than zero" so null, undefined and 0 are all handled the same way.
+
+Verified by driving the real mouse through every slot the hotbar produces rather than
+by inspection. Compact SMG: ammo down one. Smoke Canister with three in the pouch:
+pouch down one, one throwable in flight. Bandage at 60 health: one heal consumed, 28
+health back. Empty Smoke and the Crowbar with the cooldown cleared: ammo down one and
+nothing thrown, so the fall-through fires the gun. Parsecheck PASS, four maps and the
+hub draw clean.
+
+Not verified: nothing here changes the bot, which never reads mouse state, so the sim
+is untouched by construction rather than by measurement. Also not verified: whether
+falling through to the gun is what he wants when a slot empties, as against the slot
+auto-advancing back to slot 1. Falling through is the smaller change and keeps the
+selection where he put it, but it does mean the highlighted slot and the thing that
+fires can disagree while a slot sits empty. Also not verified: the armour plate path,
+because the fixture profile carries no plate, so that branch of useHot was exercised
+by neither of these tests.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
