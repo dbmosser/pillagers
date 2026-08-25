@@ -2198,6 +2198,100 @@ verified: whether birds at 8hp are too easy to hit with a shotgun, since the
 pellet loop fires one bullet per pellet and every one of them now tests against
 wildlife.
 
+### v1.93: furniture against the walls, and every other note in his export was already fixed
+
+Two things. The audit first, because it is the larger result.
+
+EVERY NOTE IN HIS SEVENTEEN RUN EXPORT HAS ALREADY BEEN ANSWERED. Dating each one
+against the build it was played on, using the v1.90 stamp and git log -S:
+
+  looting feels so uninspired          run #1   v1.01   logged at v1.03
+  character not rendering              run #3   v1.01   draw loop armoured, v1.03
+  needs verticality, hills, woods      run #3   v1.01   logged, gated on him
+  30 seconds to get back in the ring   run #4   early   already the rule, hold is min(30,...)
+  not enough enemies                   run #4   early   counts raised v1.53
+  extract while downed                 run #5   early   already in, cites run #5 by number
+  random lights floating in the air    run #7   v1.53   fixed v1.55
+  deer stuck in a small area, spastic  run #7   v1.53   fixed v1.55
+  too many animals                     run #7   v1.53   fixed v1.53
+  raiders should drop better loot      run #8   v1.53   fixed v1.58
+  attack cones visible through walls   run #8   v1.53   fixed v1.55
+  snitch too easy to kill              run #14  v1.57   fixed v1.58
+  lockers should be against the walls  run #14  v1.57   fixed v1.58
+  where is the furniture               run #14  v1.57   LIVE, this build
+
+Two commits did nearly all of it: 0f43a6b "v1.55: the crawler crash in his own
+runs, and eight things he asked for" and 9734e68 "v1.58: raiders stop dropping
+junk, lockers move to the walls, the snitch weaves". Both of those titles name
+his complaints directly. Several of the fixes carry his run number in a comment,
+which is how the snitch and the downed-extract ones were caught: the code says
+"his note on run #14" and "per his run #5 note" in so many words.
+
+His export reprints all sixty stored runs every time, so a request keeps arriving
+long after the session that granted it. That is what v1.90's version stamp was
+for and it has now paid for itself twice over in one day.
+
+THE ONE LIVE ITEM. "where is the furniteure?" measured true at v1.87 and this
+build is its fix. v1.89 established that density is not the lever, by reproducing
+the v1.62 failure exactly: raise it and pieces go UP while FURNISHED BUILDINGS go
+DOWN, because extra pieces land free-standing in big rooms, seal them, and the
+repair pass strips every piece from the whole building.
+
+The cause turned out to be a gate. There was already a wall-hug, added after
+v1.62, but it ran only on SMALL rooms, on the reasoning that a table in the
+middle of a hall is the point. That reasoning is correct for one table and wrong
+for five. A big room now keeps its centrepiece and every piece after the first
+goes against a wall, where it cannot split the room and so cannot seal it.
+
+Measured over 112 buildings on all four maps, eight seeds each:
+
+    hug  dens   pieces   furnished   pct
+     0   1.0     366        69      61.6      <- what he played on v1.87
+     0   1.6     434        57      50.9
+     0   2.2     475        47      42.0
+     1   1.0     423        81      72.3
+     1   1.6     611        78      69.6      <- new default
+     1   2.2     710        69      61.6
+
+At equal density hugging is a strict win on both axes at once, 366 to 423 pieces
+AND 69 to 81 furnished buildings. And it transforms the scaling: at 2.2 the old
+rule gave 475 pieces in 47 buildings, the new one gives 710 in 69, which is
+nearly double the furniture for the same furnished count as the old baseline.
+
+MY PREDICTION WAS HALF WRONG AND I AM NOT GOING TO ROUND IT UP. I predicted that
+with hugging, density would start RAISING furnished buildings. It does not. The
+count still falls, 81 to 78 to 69. The fall is much gentler, minus 12 across the
+range against minus 22 before, but it is still negative. Hugging reduces the
+sealing; it does not eliminate it. Something else is still closing rooms at high
+density and I have not found it.
+
+The default goes to 1.6 because that is a strict improvement on every axis
+against what he actually played: 611 pieces against 366, 78 furnished buildings
+against 69, and 7.8 pieces per furnished room against 5.3. This time the number
+is measured. At v1.89 I set the same 1.6 blind, without hugging, and it was flatly
+wrong: it would have shipped 14 percent FEWER furnished buildings.
+
+Reachability checked before shipping, because that is the metric v1.62 actually
+broke, 99.07 to 98.42 by minting slivers of floor behind furniture. At body scale,
+12 unit cells, 12 raids per configuration: 99.50 percent on what he plays now,
+99.40 at hug with density 1.0, 99.53 at the new default, 99.29 at 2.2. The new
+default is the highest of the four and nothing is close to the v1.62 failure.
+
+Two harness mistakes of mine getting to that number, both caught by the output
+being absurd rather than by care. The first flood fill tested every cell against
+every wall, roughly eight million checks a raid, and would never have finished. The
+rewrite rasterised walls into the grid but used 40 unit cells with 8 units of
+padding, so a 10 unit wall blocked a 40 unit cell, 600 walls chopped the map into
+islands, and it reported 8 to 21 percent reachable. A number that far from the
+known 99 is a broken instrument, not a discovery. Third attempt at body scale
+matches the historical figures.
+
+Not verified: whether 7.8 pieces in a room reads as furnished to him, which is
+the entire point and is a perception question I cannot answer from a fixture. Also
+not verified: what is still sealing rooms at high density. The gentler slope says
+the remaining cause is smaller than the free-standing one, not that it is gone,
+and until it is found the density dial has a ceiling somewhere below 2.2.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

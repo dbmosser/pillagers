@@ -421,7 +421,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.92';
+var VER='1.93';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -452,7 +452,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1,autoEquip:0};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,autoEquip:0};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -1852,7 +1852,18 @@ function makeBuilding(x,y,w,h,out,d,bid,forcePlan){
       // dip on the dam from 99.07 to 98.42 percent reachable at 10 units. Touching the
       // wall leaves no gap to be trapped in, and it is what furniture against a wall
       // looks like anyway.
-      if(iw<=180||ih<=150){
+      // AND EVERY PIECE AFTER THE FIRST, v1.93, which is what lets density rise
+      // at all. The hug above was gated on SMALL rooms only, on the reasoning
+      // that a table in the middle of a hall is the point. That reasoning is
+      // right for one table and wrong for five: v1.62 and again v1.89 measured
+      // that raising density puts pieces UP and furnished buildings DOWN, because
+      // the extra pieces land free-standing in the big rooms, seal them, and the
+      // repair pass then strips every piece from the whole building. So a big
+      // room keeps its centrepiece and everything else goes against a wall, where
+      // it cannot split the room and cannot seal anything. furnHug 0 restores the
+      // old rule for comparison.
+      var _hug=(CFG.furnHug===undefined?1:CFG.furnHug);
+      if(iw<=180||ih<=150||(_hug&&fi2>0)){
         var cxr=fx4+fw2/2-(ix+iw/2), cyr=fy4+fh2/2-(iy+ih/2);
         if(Math.abs(cxr)/Math.max(1,iw)>Math.abs(cyr)/Math.max(1,ih))
           fx4=(cxr<0)?(ix+1):(ix+iw-1-fw2);
