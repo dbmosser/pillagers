@@ -336,6 +336,13 @@
        edge below about 820px of window width and took TUNING with it, which is
        the console he adjusts the whole game from, so it was unreachable in a
        narrow window rather than merely cramped. -->
+  <!-- WHAT YOU ARE ABOUT TO WALK OUT IN, v2.21. v2.16 fixed an inverted armour
+       ladder and the honest consequence was that No Rig became literally no
+       armour, which is what it always claimed to be. Nothing in the hub said so.
+       This is the one screen between the stash and the surface, so it is where
+       it belongs. -->
+  <div id="readyline" style="margin-top:11px;font-size:11px;padding:7px 10px;
+       border:1px solid var(--steel-hi);border-radius:3px"></div>
   <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:11px">
     <button class="deploy" id="backfloor" style="flex:1.6">&larr; BACK TO THE FLOOR</button>
     <button class="deploy ghost" id="deploy" style="flex:1">DEPLOY</button>
@@ -436,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.20';
+var VER='2.21';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -12701,6 +12708,32 @@ function renderHub(){
   var i;
   document.getElementById('credits').innerHTML=P.credits.toLocaleString()+'<small>CREDITS</small>';
   document.getElementById('reptop').textContent=P.rep.toLocaleString();
+  // THE READINESS LINE. Deliberately states the number rather than nagging: the
+  // rig's cap IS the armour you land with, so "0 armour" is the whole warning.
+  // The price is only shown when he can actually cover it, because telling
+  // someone to buy a thing they cannot afford is noise.
+  (function(){
+    var rl=document.getElementById('readyline'); if(!rl) return;
+    var RG=myRig(), cap=rigCeil(RG);
+    if(cap<=0){
+      var cost=null;
+      for(var si=0;si<SHOP.length;si++){
+        var so=SHOP[si];
+        if(so.kind==='rig'&&P.rep>=so.rep&&(P.rigs||[]).indexOf(so.k)<0){
+          if(cost===null||so.price<cost) cost=so.price;
+        }
+      }
+      rl.style.borderColor='#8a5a4a'; rl.style.color='#e0a08a';
+      rl.innerHTML='<b>NO RIG.</b> You deploy with 0 armour, and a plate has nothing to slot into.'+
+        (cost!==null&&P.credits>=cost
+          ? ' The cheapest rig you can wear is '+cost.toLocaleString()+'c in REQUISITION.'
+          : '');
+    } else {
+      rl.style.borderColor='var(--steel-hi)'; rl.style.color='var(--ash)';
+      rl.innerHTML=RG.name+', <b>'+cap+' armour</b> on the drop, absorbing '+
+        Math.round(RG.absorb*100)+'% of every hit until it is gone.';
+    }
+  })();
   var sl=document.getElementById('stashlist'); sl.innerHTML='';
   // DEFENCE IN DEPTH, v1.69. loadProfile has filtered unknown stash and armoury keys
   // since v0.48, and that is the right place to repair a save. It is not enough on its

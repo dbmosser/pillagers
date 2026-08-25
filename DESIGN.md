@@ -4196,6 +4196,71 @@ default is supplied by a caller further up, for example a function that takes an
 options object and spreads defaults into it. This file does not use that pattern,
 so I did not build a probe for it.
 
+### v2.21: the hub now says what you are walking out in, and three more audits came back clean
+
+v2.16 fixed an inverted armour ladder and the honest consequence, which that entry
+states in full, was that No Rig became literally no armour. His save is rig 'none'.
+So the build I shipped five ticks ago quietly took sixty points of protection off
+his character and nothing anywhere on the screen mentions it. That is the gap worth
+closing, and it is legibility rather than balance.
+
+THE READINESS LINE. One line above DEPLOY, which is the last screen between the
+stash and the surface. It states the number rather than nagging, because the rig's
+cap IS the armour you land with, so "0 armour" is the whole warning:
+
+    no rig, can afford   NO RIG. You deploy with 0 armour, and a plate has nothing
+                         to slot into. The cheapest rig you can wear is 900c in
+                         REQUISITION.
+    no rig, broke        NO RIG. You deploy with 0 armour, and a plate has nothing
+                         to slot into.
+    Scav Rig             Scav Rig, 35 armour on the drop, absorbing 50% of every
+                         hit until it is gone.
+    Breacher Plate       Breacher Plate, 120 armour on the drop, absorbing 66% of
+                         every hit until it is gone.
+
+The price only appears when he can actually cover it and has not already bought
+that rig, because telling someone to buy a thing they cannot afford is noise. It
+reads the shop rather than hardcoding 900, so it stays true if the prices move.
+
+No balance arm. This is DOM in renderHub, the sim never renders the hub, and a sim
+raid still runs and extracts after the change. Verified rather than asserted, same
+as v2.17 and v2.18.
+
+THREE AUDITS ON THE WAY, ALL CLEAN.
+
+  1. CONCEALMENT, which is the item I named at the end of v2.20 and suspected of
+     being a coincidence. It is not. concealAt returns 1-(1-raw)*clamp(pw,0,1),
+     the slider is bounded 0 to 1, and at 1 pConceal equals raw exactly. Measured
+     live by binary searching the distance a sentry acquires the player, in a real
+     bush with real geometry:
+
+         crouched still   pConceal 0.10   seen from  34
+         crouched moving           0.22              75
+         standing still            0.40             136
+         standing moving           0.62             211
+         sprinting                 1.00             340
+
+     Exactly 340 times pConceal at every step. The 0.10 floor is authored, not an
+     accident of the canSee landmine, and the HUD's five labels line up with the
+     five real values.
+  2. THE HARD CROUCH RULE. HARDC is CFG.crouchParts&8 and crouchParts defaults to
+     7, so bit 8 is off and the rule is sim-off by default. That looked like a
+     divergence and is not: it is the decomposition dial v1.82 built, and simCrouch
+     defaults to 0 so the bot never crouches in the quoted arms anyway.
+  3. THE WARDEN'S PROMISE, which v1.99 made structural and v2.16 had a chance to
+     break by touching rigs. It holds. SPEED_FLOOR is applied at the END of the
+     multiplier chain, after load, rig, crouch, wade and ADS, so it catches every
+     combination, and 46 is still above WARDEN_SPD 36.
+
+Not verified: whether a line above DEPLOY is where he will actually look. It is the
+screen he presses a button on, which is the best argument available, but the same
+reasoning was used for the CONCEALED label that turned out to be sitting under the
+key legend, and I only learned that because he told me. This is a guess about
+attention dressed as a placement decision. Also not verified: the line says nothing
+about the OTHER two things you deploy with, the gun and the three kit slots. Armour
+is called out alone because it is the one v2.16 changed under him, and a readiness
+panel that lists everything is a different and larger piece of work.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
