@@ -421,7 +421,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='1.88';
+var VER='1.89';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -452,7 +452,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -1796,7 +1796,26 @@ function makeBuilding(x,y,w,h,out,d,bid,forcePlan){
     // went up 61 to 80 while FURNISHED BUILDINGS went DOWN, 14 of 35 to 9 of 35. More
     // furniture, emptier map. Density is now close to the old numbers for a big room and
     // the change is purely that small rooms get two pieces instead of none.
-    var nF=clamp(Math.round(area*0.35)+ri(1,2),2,6);
+    // HIS NOTE, 2026-08-24: "where is the furniteure?". It is there. Measured
+    // across the four maps: 81, 121, 91 and 85 pieces against 35, 28, 20 and 29
+    // buildings, so roughly three to four pieces per building, which is exactly
+    // what the cap of 6 and the +ri(1,2) floor produce and is too sparse to READ
+    // as furnished when you are standing in a room. The v1.62 disaster above is
+    // the reason it is this low, and the mechanism that broke was pieces SEALING
+    // a room so the repair pass stripped the lot. So this is a dial rather than a
+    // new constant: raising the cap is the part that was dangerous, and the cap
+    // is what furnDens moves.
+    // AND THE DIAL STAYS AT 1, because I set it to 1.6 and measured the v1.62
+    // failure happening all over again. 112 buildings across the four maps: at
+    // 1.0, 376 pieces in 72 furnished buildings, 64.3 percent; at 1.6, 442 pieces
+    // in 57, 50.9 percent; at 2.2, 473 pieces in 48, 42.9 percent. Pieces up,
+    // FURNISHED BUILDINGS DOWN, the same shape as v1.62's 61 to 80 pieces against
+    // 14 of 35 to 9 of 35 buildings. Density is not the lever. The lever is the
+    // sealing, and until placement stops sealing rooms, adding furniture
+    // subtracts furnished buildings. His complaint is real; this is not its fix,
+    // and the dial exists so the next attempt starts from measured ground.
+    var _fd=(CFG.furnDens===undefined?1:CFG.furnDens);
+    var nF=clamp(Math.round(area*0.35*_fd)+ri(1,2),2,Math.round(6*_fd));
     for(var fi2=0;fi2<nF;fi2++){
       var fw2=rnd(20,34),fh2=rnd(14,26);
       var fx4=ix+rnd(mgX,Math.max(mgX+1,iw-mgX-fw2)),fy4=iy+rnd(mgY,Math.max(mgY+1,ih-mgY-fh2));
@@ -4672,7 +4691,17 @@ function buildRaid(sim){
   for(var b=0;b<map.buildings.length;b++){
     var nc=Math.max(1,Math.round(ri(2,4)*CFG.contDens*mapContMul()));
     for(i=0;i<nc;i++){
-      var sp=spotWall(map,map.buildings[b],26); if(!sp) continue;
+      // HIS NOTE, 2026-08-24: "lockers should onbly be up against the walls".
+      // They already are, and I nearly reported a regression that did not exist:
+      // measured distance to the nearest wall is 28 average for lockers against
+      // 57 for crates, 39 for safes and 85 for bodies, so the wall-hugging pass
+      // is working. The problem is that the pad IS the answer. spotWall rejects
+      // any candidate within pad of a wall and then picks the closest survivor,
+      // so 26 is a floor nothing can be below, and 26 units of clear floor
+      // between a locker and the wall reads as near the wall rather than against
+      // it. A locker sprite is about 13 across, so 18 still cannot overlap the
+      // wall and closes most of the visible gap.
+      var sp=spotWall(map,map.buildings[b],18); if(!sp) continue;
       var rl=rr();
       containers.push(mkContainer(sp.x,sp.y,rl<.52?'crate':(rl<.86?'locker':'safe'),map.buildings[b].d));
     }

@@ -1906,6 +1906,84 @@ same as looking good. The zoom fix is verified as not throwing and as
 mathematically decoupled, not as smooth to a hand on a wheel. He should click the
 play link and tell me which of the five still feels wrong.
 
+### v1.89: his 17 real runs land, and two of his complaints were half right in opposite directions
+
+First real telemetry in a long while: 17 runs on v1.87, authenticated by durations
+from 25 to 600 seconds, real movement, real shots and real killers. Three exports,
+all consumed. The recorder's own verdict is worth quoting because it agrees with
+the sim to within a point: 73 percent of his deaths happened before the dropship
+was ever called, against 74 percent measured over 120 seeded raids, and its advice
+was "fix the looting phase first."
+
+One number in his data that I did not expect and should have: crouch:0s in ALL
+SEVENTEEN RUNS. He never crouches. v1.82 through v1.85 measured crouch at roughly
+plus 26 points of extract rate, the single strongest mechanic in the game, and he
+is playing 5 of 17 without it. That is not a balance problem, it is a teaching
+problem, and it is the clearest possible confirmation of the "near-invisible
+dominant strategy" note left at v1.82.
+
+LOCKERS. His note: "lockers should onbly be up against the walls". I measured 0
+percent of lockers within 26 units of a wall and very nearly reported v1.58 as
+regressed. It has not. The control run is what saved it: distance to the nearest
+wall averages 28 for lockers against 57 for crates, 39 for safes, 45 for caches
+and 85 for bodies, so the wall-hugging pass is working and lockers are by a wide
+margin the closest thing to a wall on the map. My threshold was the bug. spotWall
+rejects any candidate within pad of a wall and then picks the closest survivor, so
+pad is a floor NOTHING can be below, and I had set my test to exactly that floor.
+
+But his perception is still correct, and the pad is the reason: 26 units of clear
+floor between a locker and the wall reads as near the wall rather than against it.
+A locker sprite is about 13 across, so the pad is now 18, which still cannot
+overlap the wall and closes most of the visible gap. Measured after: average
+distance to nearest wall 23, down from 28, with the closest now at 9 rather than
+26. The corner cases sit closer than the pad because the pad test inflates an
+axis-aligned box while the distance is euclidean, which is exactly the behaviour
+wanted at a corner.
+
+FURNITURE, AND A DEFAULT I GOT WRONG. His note: "where is the furniteure?". It is
+there: 81, 121, 91 and 85 pieces on the four maps. Against 35, 28, 20 and 29
+buildings that is three to four per building, which is what the cap of 6 produces
+and is too sparse to READ as furnished from inside a room. The obvious fix is more
+furniture, so I put density behind furnDens and set it to 1.6.
+
+That was wrong, and measuring the right quantity caught it. v1.62's failure was
+never about piece count: pieces went UP 61 to 80 while FURNISHED BUILDINGS went
+DOWN 14 of 35 to 9 of 35, because dense rooms sealed themselves and the repair
+pass then stripped every piece out of them. So I counted furnished buildings, not
+pieces, across 112 buildings on all four maps:
+
+    furnDens 1.0   376 pieces   72 of 112 furnished   64.3%
+    furnDens 1.6   442 pieces   57 of 112 furnished   50.9%
+    furnDens 2.2   473 pieces   48 of 112 furnished   42.9%
+
+The same failure, reproduced exactly. My 1.6 default would have shipped a map with
+14 percent FEWER furnished buildings than today, which is the precise thing he was
+complaining about. Reverted to 1.0. Density is not the lever here; the sealing is,
+and until placement stops sealing rooms, adding furniture subtracts furnished
+buildings. The dial stays so the next attempt starts from measured ground rather
+than from a guess.
+
+Also fixed this build, from his five earlier notes, all verified in v1.88: the
+latched-key cursor loss, the zoom camera coupling, TAB INVENTORY drawn in raw
+pixels among LH-scaled siblings, CONCEALED drawn in the legend's own column, and
+water depth plus a wadeSpd dial at 0.34.
+
+Not verified: the crawler DRAWERR, which is the most important thing in his
+telemetry and is still open. It fired in 7 of 17 runs, consecutively, runs 7
+through 13, and then stopped. A reproduction attempt across 96 raids on all four
+maps with 45 drawn frames each produced ZERO instances, so it depends on state a
+plain drive does not reach. Weather is the strongest lead, since every failing run
+carried a weather tag and the six runs with no tag never failed, but it is not
+proven: one fog/noon run failed and another did not. Three suspects have been
+cleared by inspection, liftAt, weakOf and drawCrawlerS, and a fourth, the raider
+else-branch that caused an identical error before, is still correctly guarded. A
+four-angle search with adversarial verification is running against the real file.
+
+Not verified either: whether the locker gap now LOOKS right, or whether 64 percent
+furnished reads as furnished. The browser pane does not composite while hidden so
+I cannot screenshot, and both of those are perception questions that only he can
+close.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
