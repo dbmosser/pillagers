@@ -6068,6 +6068,68 @@ call rather than mine. Also not verified: this is mouse only. The gamepad path h
 virtual cursor and could in principle drive the same gesture, and I have not wired or
 tested it, so on a controller the bar is still the derived one.
 
+### v2.51: buildings have windows, and the whole feature is one omission in the segment builder
+
+His note, 2026-08-25: "buildings need windows that you can see and shoot out of but
+not walk through".
+
+THE ARCHITECTURE MADE THIS ALMOST FREE, WHICH IS WORTH RECORDING. A wall blocks
+three different things through two different systems: movement reads map.walls, and
+sight and bullets BOTH read map.segs, the segment list built from those walls. So a
+window is a wall that is simply never told to the ray caster: skip it in the segment
+builder and it stops blocking sight and stops stopping rounds, while collide still
+refuses to let a body through. No new subsystem, no special case in the shooting
+code, no per-frame cost. The bullet spawn check gets one line, so a round fired from
+inside a window strip does not die there, and the nav grid is untouched because a
+window cell is correctly not walkable.
+
+CARVING. Building walls get a strip of 52 to 84 units cut out, roughly 45 percent of
+eligible walls, at least 48 units clear of each end. Terrain, trees, ledges, the
+locked-room shells and the world border are never candidates. All three rolls are
+drawn for every candidate whether or not CFG.windows is on, the same discipline as
+the jam roll at v2.09 and the crew roll at v2.49, so windows 0 and 1 run the same
+PRNG stream and every seeded comparison in this file survives the feature.
+
+DRAWN AS A WINDOW, because a hole that looks like a doorway gets walked into. Low
+sill in the wall's own colours, pale glass band above it, a mullion on wide panes so
+they do not read as a serving hatch.
+
+THREE ROUNDS OF MY OWN VALIDATION FAILING, EACH ONE REAL AND EACH ONE MEASURED,
+because carving a hole is easy and proving the hole is open is the actual work.
+  ROUND ONE: 5 of 30 sampled windows on BURIED CITY were solid to sight. Not
+  geometry behind them: a COINCIDENT wall, because makeBuilding lays overlapping
+  runs, so carving one left its twin standing in the hole. A reconcile pass cuts the
+  same span out of any wall crossing a window.
+  ROUND TWO: the reconcile used rectangle overlap, and a wall that merely TOUCHES
+  the sight line occludes without overlapping. 60 of 76 open on DAM. Replaced the
+  guess with the game's own rayHit fired through every window at map build, demoting
+  any window that is not genuinely open; demotion adds an occluder and can close a
+  neighbour, so it iterates to a fixed point.
+  ROUND THREE: one window in 214 still failed, and the cause was ORDER. Locked-room
+  shells and other walls are pushed after the buildings, and a window carved before
+  they exist can be sealed by one. The carve now runs once every wall on the map is
+  present, immediately before the segments are built, and the validation probe is
+  deliberately longer than anything the game later checks.
+
+FINAL STATE, MEASURED TWICE ON DIFFERENT SEED SETS: 205 to 212 windows across the
+four maps, every single one see-through at 26 units and every single one ejecting a
+body stood in it, a real bullet flown through a window and surviving on all four
+maps, the window draw branch exercised with the player stood at a window, and the
+hub clean. Solid walls of window-like shape still block sight, 30 of 30.
+
+Not verified: what windows do to BALANCE, and this one is not small. Every machine
+and raider LOS check reads the same segments, so a window is a firing line in both
+directions: sentries can now see and shoot the player through walls that used to be
+cover, the Listener's hearing is unaffected but its sight is not, and the visibility
+fan the player sees pours through window gaps. Extract rate, first-contact time and
+camp behaviour could all move, the dial to measure it is CFG.windows, and at v2.42's
+arithmetic the A/B needs 320 seeds which I have not run. Also not verified: the LOOK,
+same as v2.48's sounds. The sill and glass colours are reasoned, not seen; if a
+window reads as a doorway on his monitor the mullion and sill constants are the place
+to push. Also not verified: crouching below a sill. A window blocks nothing at any
+height, so there is no hiding under it, and whether there SHOULD be is a design
+question that belongs to him.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
