@@ -4005,6 +4005,60 @@ dead purchase the shop had, since he has no rig check either. I did not touch hi
 because his stock is a random draw rather than a menu, and gating it needs a
 decision about whether he should refuse a sale or just warn.
 
+### v2.18: the peddler sold the plate the shop had stopped selling, and v2.17 is reachable after all
+
+Two small things: the site v2.17 named and left open, and a check on v2.17 itself
+that I should have run before shipping it.
+
+THE SITE I LEFT OPEN. v2.17 closed the Armor Plate defect in the hub and wrote in
+its own Not verified line that the peddler still sells plates mid raid with no rig
+check. He does, or did. He stocks plates at PED_STOCK, prices them at ival times
+1.9, which is about 646 credits, and with No Rig the ceiling is 0, so it can never
+be slotted and sells back for 340. The same guaranteed loss the shop had, at the
+one counter I had not closed.
+
+Refused now, with the reason said out loud, and the panel row greys the item and
+prints "no rig" where the price goes so the refusal is never a surprise. The
+backstop is in pedBuy rather than only in the drawing, which is the lesson the hub
+shop already learned and wrote down: a sale should stand on its own conditions
+rather than on the state of a row drawn earlier.
+
+Verified, peddler stocked with a plate and a medkit, 20,000 credits:
+
+    rig         plate        credits spent   medkit
+    No Rig      REFUSED          0           sells normally, 700
+    Scav Rig    sells            646         sells normally, 700
+
+Stock is not marked sold on the refusal either, so he still has it if you come
+back wearing something.
+
+AND THE CHECK I OWED v2.17. That build added an armour slot to the hotbar and I
+verified it by calling useArmor directly, which proves the function works and
+proves nothing about whether a player can reach it. If no key selected that slot
+the whole fix would have been dead on arrival, and I would have reported it as
+shipped. Digits 1 to 9 call setHot(dn-1) and KeyG calls useHot, so with eight
+slots the armour slot is index 6 and the key is 7. Driven through that path rather
+than through the function: armour 0 after an 80 damage hit, press 7, press G,
+armour 35 and the plate gone from the bag. It is reachable.
+
+The peddler panel also draws with a plate in stock and no rig, which is the case
+the new row branch introduces, and every map and the hub still draw clean.
+
+NO BALANCE ARM, same reason as v2.17 and verified the same way rather than
+asserted: the peddler is built inside the non-sim branch and simPed defaults to 0,
+so the bot does not trade at all in the arms this project quotes. Nothing here can
+move a sim number, and running 120 seeds would produce a difference of zero that
+looked like evidence.
+
+Not verified: whether refusing is better than warning. He is a trader, not a
+tutorial, and there is a reading where he takes your money for a plate you cannot
+use and that is exactly the kind of hard world this game is going for. I chose
+refusal because the shop already refuses and two counters selling the same item on
+different rules is worse than either rule. Also not verified: the crafting table
+still makes plates from two comp and one board with no rig check, but that costs
+materials rather than credits and produces a real item you can sell or use later,
+so it is not the same trap and I have left it alone.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 

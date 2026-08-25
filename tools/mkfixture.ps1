@@ -159,6 +159,7 @@ window.__bank=function(k){ return bankItem(k); };
 window.__hotbar=function(){ return hotbarSlots(); };
 window.__useArmor=function(){ return useArmor(); };
 window.__useHot=function(){ return useHot(); };
+window.__pedBuy=function(i){ return pedBuy(i); };
 window.__setHot=function(i){ return setHot(i); };
 window.__items=function(){ return ITEMS; };
 window.__loot=function(){ return LOOT; };
