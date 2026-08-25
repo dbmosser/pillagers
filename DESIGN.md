@@ -3406,6 +3406,100 @@ construction, so 10.8 against 2.5 is an aggregate difference of 120 raids agains
 120 raids and not a per-seed comparison. The 12 and 2 seed flips against the
 loaner should be read as a rough direction, not as attribution.
 
+### v2.10: one body with nowhere to go took the whole map's pathfinding budget
+
+Found sideways. I was trying to measure the wear curve and one seed would not
+finish: 600260 on THE QUARRY ran 1,344 sim steps in fourteen seconds while its
+neighbours ran 4,000 in two. It was not a hang. It was uniformly 10.8ms a step
+against 0.5, and no single step was slow, which is the shape of a fixed cost paid
+every frame rather than a stall.
+
+It was not the population and it was not the map. The two seeds are almost
+identical on both: 71 against 70 entities with the same kinds and states, 704
+against 698 walls, 2,816 against 2,792 segments.
+
+WHAT IT ACTUALLY IS. Route searches are rationed to one per frame for the entire
+map, set in refreshVseg, which the live loop and the sim step both call exactly
+once a frame. navSeek decides whether to spend it:
+
+    var stale=!e.path||e.pathT<=0||!e.pathGoal||dist(...)>140;
+
+and the comment directly under it says a failing search "makes it wait its turn
+like everyone else", pointing at the pathT cooldown set a few lines later. It does
+not. A FAILED search leaves e.path null, so !e.path is true again on the very next
+frame and pathT is never reached. The cooldown covers the case that does not need
+it, a successful path, and misses the only case it was written for.
+
+So a single body whose goal has no route re-requests every frame, forever. It pays
+the most expensive query there is, and because the ration is one per frame for the
+whole map, it also STARVES every other body of pathing. Two harms, and the second
+is the one I did not expect.
+
+Measured, THE QUARRY, 400 steps, exactly one body with an unreachable goal:
+
+                              old      fixed
+    steps that ran a search   89.3%    23.8%
+    cost per step             12.82ms   1.71ms
+    bodies stuck on pathFail   1         0
+
+A normal seed is untouched: 20.3 percent of steps either way, 0.79 against 0.71ms,
+which is noise. The fix only ever fires where the bug was.
+
+WHY THIS IS A PLAYER PROBLEM AND NOT A SIM PROBLEM. The ration lives in the call
+both loops share, so the live game pays the same 10ms every frame. Live frame cost,
+sim plus render plus HUD, 180 frames after 120 warm frames:
+
+                     median   p95     worst
+    old, seed 1       3.10    14.40   23.00
+    fixed, seed 1     1.80     2.60    5.70
+    old, seed 2       2.50     4.70   23.80
+    fixed, seed 2     2.50     4.20   10.10
+
+Median barely moves. The tail does, and a tail is exactly what a stutter is: worst
+case went from over the 16.7ms budget on both seeds to comfortably inside it. This
+is the sort of thing that reads as "the game went choppy in that raid" and never
+gets reported as a bug because it is intermittent and looks like the machine.
+
+OUTCOMES ARE A WASH, WHICH IS THE RIGHT ANSWER. 120 seeds an arm, everything
+pinned, CLEAN gun:
+
+                    extract   dur   shots   containers   haul     worst raid
+    old (0)          21.7%    355   207.4     32.1      17,280    47,525ms
+    fixed (1)        20.0%    343   204.6     31.6      16,897     2,589ms
+
+63 of 120 seeds byte identical, 108 of 120 same outcome, 5 flip to extract and 7 to
+dead. At n=120 and p around 0.21 one standard error is 3.7 points, so 1.7 down is
+well inside it and the flips are near symmetric. I am not claiming this made the
+game harder or easier. It made it cost less: total compute for the batch fell from
+297 seconds to 195, and the worst single raid went from 47.5 seconds to 2.6.
+
+That 47.5 seconds is the same defect measured from the other end. A raid the
+player would sit through at a degraded frame rate is a raid the sim takes
+eighteen times longer to run.
+
+navBackoff 1 is the fix and 0 restores the old behaviour, so both run in one build.
+
+A WRONG TURN WORTH RECORDING, because I nearly reported it. Chasing this I probed
+reachability using g.map.w and g.map.h, which do not exist on that object. Every
+target came out NaN, every query failed, and it told me 100 percent of the map was
+unreachable and that the dead centre could not be pathed to. Both false. The world
+size lives on the __world() hook; with real coordinates it is 141 of 144 sampled
+points reachable, 2.1 percent not, average query 0.89ms. The 2.1 percent is the
+real story here, since those are the goals that trigger the bug, but the reading
+that made me look was garbage and I would have shipped a false alarm about a
+broken nav grid.
+
+Not verified: how often a real player hits this. I found one pathological seed in
+the first eight I ran and one more in 120, so the honest range is somewhere around
+one raid in sixty to one in eight, and those two numbers are far enough apart that
+I do not trust either. What triggers it is a body picking a goal in the 2.1 percent
+of the map with no route, and I have not measured how goals are distributed against
+that, only that both exist. Also not verified: whether the 2.1 percent SHOULD be
+unreachable. Some of it will be sealed interiors, which is legitimate map making,
+and some may be the doorway quantisation that has produced false positives in this
+project twice before. This build makes an unreachable goal cheap; it does not ask
+whether the goal should have been unreachable.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
