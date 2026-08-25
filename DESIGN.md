@@ -6863,6 +6863,47 @@ whether simRetreatHeal belongs on the console too. It stays off it deliberately,
 it is a sim-behaviour dial rather than a game dial, and the console has kept that
 distinction since simGreed was allowed on only because the sim card reads it.
 
+### v2.69: the live page boots clean, and three small caveats close
+
+No code changed anywhere; this is a verification build that closes open caveats
+from the last three entries, and the version bump exists so the record of what
+was checked has an address.
+
+THE LIVE PAGE, CHECKED FOR THE FIRST TIME IN TWENTY-FIVE BUILDS. Parsecheck and
+the fixture share the game's script but not its boot context, and v0.98 shipped a
+build that parsed clean and died during boot, which is why "verify must draw a
+frame" is a standing rule. The play page on 8802 was loaded read-only: boot
+completed with ZERO console errors, both canvases constructed at full size, the
+tuning modal present in the DOM, and v2.68 in the page text. The one thing that
+could not be verified is an actually-drawn frame, because the browser pane was
+hidden and a hidden pane suspends requestAnimationFrame, which stalls the game
+loop by design; that limitation is documented in the session memory and is the
+pane's, not the game's. The boot-throw failure class v0.98 belonged to is
+excluded; a drawn frame on his monitor is not, and his next real session settles
+it by existing.
+
+A NOTE SO NOBODY PANICS AT A NUMBER: the profile visible from the pane on 8802
+reads zero runs and starter credits. That is the browser PANE'S own localStorage
+partition, which had never visited 8802 before. His real save lives in his own
+Chrome and was not touched.
+
+CONSOLE LABEL FIT, closing v2.68's caveat by measurement rather than pixels: the
+three new rows render their labels at the same 12 pixel height as every existing
+row, no horizontal overflow, no wrapping, and the NEXT RAID chip sits inline on
+the windows row only.
+
+CONSOLE PROMISES OLDER THAN THIS CYCLE, checked and clean: concealPow, packR,
+packMax and eHp, each described somewhere in this file as "on the Tuning
+Console", are all genuinely in the SLIDERS list. The v2.68 failure was this
+cycle's alone. That check found nothing, and it is recorded because a clean sweep
+is information too.
+
+Verified: parsecheck PASS at v2.69, all four maps and the hub drive and draw
+clean in the fixture.
+
+Not verified: a composited frame on the live page, as above, which needs either
+his eyes or a displayed pane; everything short of that is green.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
