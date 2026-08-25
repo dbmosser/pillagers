@@ -7733,6 +7733,51 @@ DAM is the right map for it because DAM lost the most, and if the extract rate
 moves anywhere it moves there. Also not verified: the other three maps, which
 lost far less and are not worth 320 seeds each unless DAM shows something.
 
+### v2.90: the hiring bench gets faces, and a note of his turns out to be already fixed
+
+Two things, plus a mistake of mine.
+
+THE CHECK THAT FOUND NOTHING, recorded because a clean sweep is information. His
+run #8 note reads "i should not be able to see the red attack views of enemies
+unless i am looking at them via line of sight, e.g. fog of war should block it."
+Checked against the current code before touching anything: the sentry cone loop
+carries `if(!sc.seen) continue;` with his note quoted above it, so it was fixed
+in a later build and re-fixing it would have been the exact waste the watchdog
+warns about. Nothing to do.
+
+THE BENCH. v2.88 finished his item-graphics note and left one surface text-only
+on purpose, saying a mercenary is a PERSON and deserves a portrait system rather
+than an item icon. This is that system. Every identity now has a bust drawn from
+its own coat colour, with features chosen by a stable hash of its id so the man
+you hired last week looks the same today: a visor, a cap, a hood or a cropped
+head with a scar, over one of five skin tones, with a collar and a strap so the
+coat reads as kit. Ten identities, ten genuinely distinct faces, seen in
+tools/shots/merc_portraits.png.
+
+The row says more than a price now. Underneath each tag sits your history with
+that man, "you killed him 2x", "owes you one", "died on your job", or "no
+history", because the rivalry ledger is what decides whether he will work for
+you at all and the bench used to render that as an unexplained "will not work
+for you".
+
+MY MISTAKE, OWNED: the 320-seed DAM cull measurement was running in the fixture
+page when I navigated that same tab to parsecheck, which destroyed it at 152 of
+320. Background batches and page navigation cannot share a tab; the batch is
+restarted after this build's verification rather than before it, which is the
+ordering this session should have been using all along.
+
+Verified: parsecheck PASS at v2.90, all four maps and the hub drive and draw
+clean with 10 of 10 entities moving, and the bench opened through its real
+station key at Holt, ten rows, ten portrait images, ten DISTINCT image sources,
+which is the check that the hash actually varies rather than drawing one face
+ten times. The itch zip is rebuilt at v2.90.
+
+Not verified: whether the faces read at 30 pixels on his monitor, the standing
+caveat on everything visual. Also not verified: the portraits are bench-only;
+the raider you meet in the FIELD still draws as the generic operator sprite in
+his coat colour, so hiring a man and then seeing him is not yet a recognition
+moment. That is a bigger piece of work and worth its own decision.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
