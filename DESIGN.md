@@ -6186,6 +6186,60 @@ combined cost of the three new-default dials named above; if his next runs feel
 harder than the file's back catalogue promised, that stack of defaults is the first
 suspect, and each has a dial to switch off.
 
+### v2.53: the medkit change costs 7.5 points of extract rate, and it is the whole of the drop
+
+No game logic changed; this is the measurement build that turns v2.52's suspicion
+into numbers. That build flagged the three new default-on dials, raiderFeud,
+healOverTime and simReach, as the suspects for the base rate sitting near 19 against
+the historical 24 give or take 4. Two batches of 320 seeds each, BURIED CITY, both
+arms of every seed back to back, windows on throughout.
+
+BATCH ONE, THE WHOLE STACK. Old defaults (feud off, instant heals, flat 300 reach)
+against today's:
+
+    25.9% against 19.1%, discordant 32 to 10, z 3.24, exact p = 0.0009
+
+The stack costs 6.8 points and it is not noise. It also reconciles the ledger:
+25.9 minus 6.8 is 19.1, which is exactly where the windows null read.
+
+BATCH TWO, THE ISOLATION, AND IT IS TOTAL. Same 320 seeds, feud and reach held OLD
+in both arms, only the heal changing:
+
+    instant heals 25.9% against heal-over-time 18.4%
+    discordant 31 to 7, z 3.73, exact p = 0.00012
+
+HEAL-OVER-TIME IS THE ENTIRE EFFECT. Its lone cost, 7.5 points, matches the whole
+stack's 6.8 within noise, which means feud and simReach are jointly about neutral,
+mildly helpful if anything, and every point of the drop walks through the medkit.
+That also confirms the v2.53 mechanism guess: the bot heals when health falls under
+45, which is precisely when something is shooting at it, and it now spends six
+seconds at low health in the open where it used to spend none. A bot that dies
+during its own heal.
+
+TWO READINGS, BOTH TRUE, AND THE DIFFERENCE MATTERS TO WHAT HE DOES NEXT.
+  First reading: the game genuinely got about seven points harder, because he asked
+  for a real change, medkits that cost time, and time in a firefight is life. That
+  is the feature WORKING. If the new difficulty is unwelcome the price tag now has
+  one name on it, and healOverTime 0 is one dial.
+  Second reading: the seven points may OVERSTATE what he will feel, because the bot
+  heals like a machine and he does not. The bot pops its medkit at 45 health
+  wherever it happens to be standing, mid-fight included. A person retreats first.
+  Teaching the bot to break contact before healing is a behaviour-capability
+  change, exactly the family of simCrouch and simPip, and by this file's own
+  convention it would default OFF, which would leave the measured rate where it
+  is. So the honest statement is: seven points for a bot that heals badly, an
+  unknown smaller number for a player who heals well.
+
+Verified: parsecheck PASS at v2.53, all four maps and the hub drive and draw clean.
+The build itself is VER and DESIGN.md only.
+
+Not verified: the second reading, which is an argument and not a measurement. The
+sim cannot currently retreat-then-heal, so the gap between "bot cost" and "player
+cost" has no number and will not get one until that behaviour exists behind a dial.
+Also not verified: whether feud and simReach are individually neutral or cancelling
+each other out; the isolation says their SUM is near zero and nothing about the
+parts. Also, as with every arm this cycle: BURIED CITY, Compact SMG, simGreed 52.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
