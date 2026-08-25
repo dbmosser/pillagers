@@ -4531,6 +4531,70 @@ v2.16 made No Rig a real zero, so a player with no rig cannot carry a plate eith
 and that is a second want he cannot satisfy, though unlike the ammo box it is a
 consequence of a choice he made rather than of the plumbing.
 
+### v2.26: the Stray's reward pointed at a locked door two times in five
+
+v2.25 ended worrying that a no-rig player could not satisfy a plate request either.
+Checked first, and the worry was wrong: with No Rig the ceiling is 0 so a plate
+cannot be APPLIED, but grantLoot still puts a found one in the bag as salvage, and
+the bag is what strayGive reads. Verified on a live raid with rig 'none': found
+plate lands in the bag, Stray helped, 347 credits paid. Every want in the table is
+now satisfiable by anyone.
+
+His notoriety promise is also real, which the same read confirmed. The comment says
+helping him is "the only way to clear it other than waiting", and strayGive does
+decrement P.notoriety. Clean.
+
+THE REWARD ITSELF IS WHERE THE DEFECT WAS. He pays in three things and the headline
+one is a marked cache: "He tells you where a cache is. It is on your map."
+strayReveal picked the farthest unopened container with c.cache set, deliberately,
+because the comment says the far one is a reason to go somewhere you were not
+going. The problem is what c.cache is true of. Three different things:
+
+    3 ARC caches       placed in the open, the ones drawn on the sector map
+    3 per locked room  and there are two locked rooms, so SIX
+    the ARC STRONGBOX  which v2.12 established is placed inside a locked room
+                       as its first preference
+
+Gated caches outnumber open ones two to one, and being deep inside buildings they
+are usually the farthest, so the far-one rule kept choosing them. Measured across
+32 raids on all four maps:
+
+    reveals pointing somewhere with no route without a key   13 of 32, 40.6%
+
+v1.75 guarantees a key exists somewhere on the map, so it was never impossible.
+But it turns a thank-you into a second errand, and the line he says does not
+mention the door. That is the same shape as the impossible contract and the keyless
+room, one step softer: the game keeps its promise in a way you cannot use yet.
+
+Fixed by applying the far-one rule to the caches you can actually walk to, and
+falling back to a gated one only when there is genuinely nothing else left. Same 32
+raids, same seeds:
+
+                                        before   after
+    reveals behind a locked door          13       0
+    fell back to a gated cache             -       0
+    average distance from the player       -    3,110
+
+Every reveal is now a named landmark, POWERHOUSE, RIM OFFICES, THE LONG DOCK, CHILL
+ROW, and the far-one character survives at 3,110 units. The fallback was tested
+directly rather than assumed: mark all three open caches revealed and it still
+returns a gated one; mark everything and it returns null, which is the branch that
+prints "he has nothing left to tell you, so he gives you what he has".
+
+No balance arm and none is possible. strayGive opens with if(!G||G.sim) return and
+the sim build does not place a Stray at all, which I confirmed at v2.25 while
+trying to write the guard test.
+
+Not verified: whether pointing at the strongbox was actually bad. It is the single
+richest container in the game, three elite items, and a player who knows where it
+is has something worth planning around even if the key hunt comes first. I have
+treated "cannot walk there today" as the thing to fix because that is what the
+sentence promises, but there is a reading where revealing the vault is the better
+reward and the fix should have been to the WORDING instead. Also not verified: what
+happens on a map with no locked rooms at all, since all four authored maps have
+exactly two, and the fallback branch has therefore only ever been exercised by me
+forcing it.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
