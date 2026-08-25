@@ -443,7 +443,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.48';
+var VER='2.49';
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
 // raid is a pure function of its seed. This exists for one reason: the bot sim is
@@ -474,7 +474,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -4578,6 +4578,7 @@ function mkRaider(x,y,forceId,simBuild){
   // whenever this runs with simBuild false. Removing it is therefore inert now and
   // stops it being a trap later. Same reasoning as the canSee guard at v2.20.
   var rec=simBuild?{kills:0,deaths:0,met:0,standing:0}:idRec(ident.id);
+  var _crewRoll=rr();
   var r={kind:'raider',x:x,y:y,r:11,hp:Math.round(78*CFG.eHp*seasonHp()),maxhp:Math.round(78*CFG.eHp*seasonHp()),react:rnd(.38,.62),
     face:rnd(0,6.28),state:'loot',tx:x,ty:y,cd:0,alert:0,spd:122,wep:WEAPONS[wk],dmg:WEAPONS[wk].dmg,
     rng:WEAPONS[wk].rng*.72,cone:.8,bag:[],goal:null,skips:[],goalT:0,goalD:0,extracting:0,hitT:0,step:0,
@@ -4585,6 +4586,22 @@ function mkRaider(x,y,forceId,simBuild){
     // SPEC 8.4: varying hostility. A raider you have killed before is shoot on
     // sight with no negotiation; one you have good standing with is passive
     // until provoked. Everyone else sits in between.
+    // HIS REQUEST, 2026-08-25: "other raiders should fight each other sometimes,
+    // they should all have friendly/unfriendly status mechanism that we already
+    // made, but towards one another". The model right above this line already
+    // decides how a raider feels about the PLAYER: a grudge if you have killed
+    // him, passive if your standing is good, otherwise a coin weighted to 0.55.
+    // This is the same idea pointed sideways. Every raider carries a CREW, and
+    // two raiders from different crews are enemies the same way a hostile raider
+    // is your enemy. Crews rather than a per-pair roll because hostility between
+    // people has to be transitive to be readable: a man does not shoot the raider
+    // beside him and then ignore an identical one ten metres away.
+    // THE ROLL IS DRAWN UNCONDITIONALLY, exactly as the jam roll is at v2.09.
+    // Putting rr() inside the dial test means raiderFeud 0 skips a draw that
+    // raiderFeud 1 takes, which shifts the whole stream from the first raider
+    // onward and makes the two arms different raids rather than the same raid
+    // with and without feuds.
+    crew:Math.floor(_crewRoll*Math.max(2,CFG.raiderCrews||2)),
     grudge:rec.kills>0, standing:rec.standing,
     hostile:(rec.kills>0)?true:(rec.standing>0?false:(rr()<0.55))};
   // A raider you can read before you commit. Better standing and grudge raiders
@@ -6428,6 +6445,52 @@ function tickHeal(dt){
 }
 // Which pickup voice a haul deserves. Takes the BEST thing in the container,
 // because that is the thing you will remember finding.
+// Two raiders are enemies when they are from different crews. Everything else in
+// the world is unaffected: this deliberately does NOT make sentries shoot sentries.
+function feudFoe(a,b){
+  if(CFG.raiderFeud===0) return false;
+  if(!a||!b||a===b) return false;
+  if(a.kind!=='raider'||b.kind!=='raider') return false;
+  // A hired mercenary is on YOUR side and does not brawl with strangers, or a
+  // man you paid for walks off to settle something of his own.
+  if(a.merc||b.merc) return false;
+  return a.crew!==b.crew;
+}
+// Engage a rival crew. Returns true if it took the frame, so the caller skips its
+// normal state behaviour.
+// MEASURED BEFORE THIS EXISTED: putting the rival check only inside the looting
+// branch made the whole feature nearly unreachable. Raiders are in 'loot' for 18
+// percent of their time and in 'extract' for 82, so four driven raids produced
+// exactly ZERO rival engagements while rival pairs came within 280 units of each
+// other 85 to 122 times. A feature that never fires is not a feature.
+// The 600 unit window around the player stays, and it is not a style choice:
+// G.vseg only caches walls near the player, so losClear is only ANSWERABLE there.
+// Beyond it raiders would trade shots through buildings. It also means feuds
+// happen where they can be seen, which is the half of this that is worth having.
+function feudEngage(e,dt){
+  if(CFG.raiderFeud===0||e.kind!=='raider'||e.dead) return false;
+  var p=G.player;
+  if(dist(e,p)>=600) return false;
+  var foe=null,fd=280;
+  for(var i=0;i<G.ents.length;i++){
+    var o=G.ents[i];
+    if(!feudFoe(e,o)||o.hp<=0) continue;
+    var d=dist(e,o);
+    if(d<fd&&losClear(e.x,e.y,o.x,o.y,G.vseg)){ fd=d; foe=o; }
+  }
+  if(!foe) return false;
+  var want=Math.atan2(foe.y-e.y,foe.x-e.x);
+  if(e.cd<=0&&e.wep&&fd<e.rng){
+    fireWeapon(e,e.wep,foe.x+rnd(-12,12),foe.y+rnd(-12,12),false);
+    e.cd=(e.wep.rof/1000)*rnd(1.5,2.4);
+  }
+  // Back off if he is right on top of you, the same rule the machine fight uses.
+  if(fd<90) moveToward(e,e.x-(foe.x-e.x),e.y-(foe.y-e.y),e.spd*.7,dt);
+  e.face+=clamp(angDiff(want,e.face),-5.5*dt,5.5*dt);
+  collide(e,G.map.walls);
+  if(e.cd>0) e.cd-=dt;
+  return true;
+}
 var LOOTRANK={common:0,uncommon:1,rare:2,elite:3};
 function lootVoice(keys){
   if(!keys||!keys.length) return 'pick';
@@ -8625,7 +8688,11 @@ function updateEnts(dt){
       if(dist(e,p)<600)
       for(var mm=0;mm<G.ents.length;mm++){
         var em=G.ents[mm];
-        if(em===e||em.kind==='raider'||em.kind==='snitch') continue;
+        // Raiders were skipped outright here, which is what kept them from ever
+        // fighting one another. A rival crew is now a valid target; a raider of
+        // your own crew still is not.
+        if(em===e||em.kind==='snitch') continue;
+        if(em.kind==='raider'&&!feudFoe(e,em)) continue;
         var dm=dist(e,em);
         if(dm<mtd&&losClear(e.x,e.y,em.x,em.y,G.vseg)){ mtd=dm; mth=em; }
       }
@@ -8673,6 +8740,10 @@ function updateEnts(dt){
       }
     }
     else if(e.state==='extract'&&e.kind==='raider'){
+      // A man running for the ring with a full bag who meets a rival crew stops
+      // and deals with it. This is also where the player is heading, so it is the
+      // most likely place he will ever watch one happen.
+      if(feudEngage(e,dt)) continue;
       var z=G.active;
       navSeek(e,z.x,z.y,e.spd*1.1,dt); want=Math.atan2(z.y-e.y,z.x-e.x);
       if(dist(e,z)<z.r){
@@ -8845,10 +8916,21 @@ function updateBullets(dt){
           if(!hit) for(var e3=0;e3<G.ents.length;e3++){
             var en3=G.ents[e3];
             if(en3===b.owner) continue;
-            if(dist(b,en3)<en3.r+3&&en3.kind!==b.owner.kind){
+            // Same-kind entities used to be immune to each other, so a raider's
+            // round passed straight THROUGH another raider even once he was
+            // aiming at him. The exception is deliberately narrow: feuding
+            // raiders only, so machines still never shoot each other.
+            if(dist(b,en3)<en3.r+3&&(en3.kind!==b.owner.kind||feudFoe(b.owner,en3))){
               en3.hp-=b.dmg; en3.hitT=.16;
               if(en3.hp<=0) en3.byPlayer=false;
-              if(en3.kind!=='snitch'){ en3.state='chase'; en3.alert=2; }
+              // A RAIDER SHOT BY A RIVAL MUST NOT GO AND HUNT THE PLAYER, which
+              // is what the line below would have done: 'chase' means chase HIM.
+              // Being shot by another crew would have aggroed half the map onto
+              // the one person who did not fire. Left in the looting state, where
+              // the picker above retaliates against whoever is actually nearest,
+              // which is the man who just shot him.
+              if(feudFoe(b.owner,en3)){ en3.alert=Math.max(en3.alert||0,2); }
+              else if(en3.kind!=='snitch'){ en3.state='chase'; en3.alert=2; }
               spark(b.x,b.y,'#ffc25c',8,200); hit=true; break;
             }
           }

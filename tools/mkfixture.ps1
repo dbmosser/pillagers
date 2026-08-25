@@ -167,6 +167,7 @@ window.__weapons=function(){ return WEAPONS; };
 // without anything being audible. blip() returns early on a sim raid and the
 // fixture blocks AudioContext, so calling it here stays silent by construction.
 window.__lootVoice=function(keys){ return lootVoice(keys); };
+window.__feudFoe=function(a,b){ return feudFoe(a,b); };
 window.__blip=function(t){ return blip(t); };
 // PAIRED ARMS AND THE TEST THAT GOES WITH THEM, v2.42. Two arms run over one seed
 // list are PAIRED, and comparing their extract rates as if they were independent

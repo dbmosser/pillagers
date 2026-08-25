@@ -5930,6 +5930,81 @@ not verified: these fire on opening a CONTAINER. Picking an item up off the grou
 looting a body and buying from the peddler all still use the old single blip, and I
 have not touched them.
 
+### v2.49: raiders belong to crews now, and rival crews shoot each other
+
+His request, 2026-08-25: "other raiders should fight each other sometimes, they
+should all have friendly/unfriendly status mechanism that we already made, but
+towards one another".
+
+THE MECHANISM HE MEANT WAS ALREADY THERE, POINTED AT HIM. mkRaider decides how each
+raider feels about the PLAYER: a grudge if you have killed him before, passive if
+your standing is good, otherwise a coin weighted to 0.55. This is the same idea
+turned sideways. Every raider now carries a CREW, and two raiders from different
+crews are enemies the same way a hostile raider is your enemy.
+
+CREWS RATHER THAN A PER-PAIR ROLL, because hostility between people has to be
+transitive to be readable. A man who shoots the raider beside him and ignores an
+identical one ten metres away looks broken; a man who shoots everyone not wearing
+his colours does not. Two crews by default, so about half of all pairs are hostile.
+
+THREE THINGS HAD TO CHANGE, AND THE SECOND ONE WOULD HAVE MADE IT SILENTLY DO
+NOTHING.
+  1. The target scan skipped raiders outright, which is what kept them from ever
+     picking each other. A rival crew is a valid target now; your own crew is not.
+  2. Bullets were immune between entities of the same KIND. A raider's round passed
+     straight through another raider even with the gun pointed at him. The exception
+     is deliberately narrow, feuding raiders only, so machines still never shoot
+     each other.
+  3. Being hit set state to 'chase', and for a raider 'chase' means chase THE
+     PLAYER. Shot by a rival, half the map would have turned on the one person who
+     did not fire. A feud hit now leaves him in his own state, where the scan
+     retaliates against whoever is nearest, which is the man who just shot him.
+
+AND THEN THE MEASUREMENT SAID I HAD BUILT SOMETHING THAT NEVER HAPPENS. The rival
+check went into the looting branch, which was the obvious place and was wrong:
+raiders are in 'loot' for 18 percent of their time and in 'extract' for 82. Four
+driven raids produced exactly ZERO engagements while rival pairs came within 280
+units of each other between 85 and 122 times. It worked when I forced two raiders
+together by hand and never once on its own. Extracting raiders fight now too, which
+is also the better version thematically: a man running for the ring with a full bag
+is exactly who has something worth taking, and the ring is where the player is
+heading anyway, so it is the most likely place he will ever watch one.
+
+THE 600 UNIT WINDOW AROUND THE PLAYER STAYS AND IS NOT NEGOTIABLE. G.vseg only
+caches walls near the player, so losClear is only ANSWERABLE there; beyond it
+raiders would trade shots through buildings. The existing raiders-fight-machines
+feature has lived under the same limit since his note #39. It also means feuds
+happen where they can be seen.
+
+MEASURED BY ATTRIBUTION RATHER THAN BY EYE. Eight seeds, each run twice with the
+same player path, once with raiderFeud 0 and once with 1. With the dial off, raiders
+lost ZERO health in all eight. With it on, 188 points across three of the eight, 74
+and 57 and 57. So the feud is the sole cause, and it fires in about 38 percent of
+raids: "sometimes", which is the word he used.
+
+Verified: parsecheck PASS, four maps and the hub draw clean with 10 of 10 entities
+moving, and two crews present on every map. The guards all hold: a raider is not his
+own enemy, two sentries are not enemies, a raider and a sentry do not count as a
+feud, a null argument is safe, and a hired mercenary is exempt so a man you paid for
+never wanders off to settle something of his own. raiderFeud 0 restores the old
+behaviour exactly.
+THE CREW ROLL IS DRAWN UNCONDITIONALLY, the same discipline as the jam roll at v2.09.
+Putting rr() inside the dial test would make raiderFeud 0 skip a draw that raiderFeud
+1 takes, shifting the PRNG stream from the first raider onward and turning the two
+arms into different raids. Verified: with the dial off the same seed produces the
+same raider count, the same first raider position and the same crew assignments.
+
+Not verified: what this does to the player's extract rate. Raiders killing each other
+means fewer raiders alive to kill him, and it also means a fight he can walk into or
+around, so it could move survival in either direction. I have not run it at 320 seeds
+and on v2.42's arithmetic nothing smaller will answer it. Also not verified: two
+crews is a guess. raiderCrews is a dial and 3 would make roughly two thirds of pairs
+hostile, which may be too much; I have measured 2 and nothing else. Also not verified:
+whether a crew should be VISIBLE. Coats already vary per identity but they vary by
+identity, not by crew, so right now there is no way to look at two raiders and know
+whether they are about to fight. That is a real gap for a feature whose whole value is
+being watched, and it is a design call rather than a bug.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
