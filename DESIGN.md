@@ -9423,3 +9423,51 @@ string during a window that already existed; it changes no roll, no entity decis
 and no timing constant, and the sim does not draw a HUD. Whether it makes the crier
 feel FAIR rather than merely visible is a question only his next run answers, and
 his tag is the instrument for it.
+
+### v3.14: a board for the other raiders, and no positions on it
+
+His request: "add a persistent info box that tells how many other raiders are on the
+map, gives info abt each other raider, like their bag value, and whether they've
+extracted".
+
+A ROSTER, NOT A SCAN. The obvious implementation is to walk G.ents each frame and
+list the raiders, and it is wrong, because a raider LEAVES that array by two
+different doors and both of them are the interesting outcomes. Extracting splices
+him out. Dying converts him into a named corpse container. A board that can only see
+live entities would report the man who just got away with 8,000c and the man you
+just killed as the same thing: absent. The roster is built with the raiders, holds
+each one by reference, and derives status from whether that reference is still an
+entity, so nothing has to be kept in sync by hand and there is one place to be
+wrong rather than five.
+
+Status is ACTIVE, RUNNING for a man who has decided to leave, DEAD, or EXTRACTED,
+colour coded, with a live bag value that FREEZES at the last known figure once he
+dies or gets out. That frozen number is the one that matters: what he left with, or
+what he is lying on.
+
+NO POSITIONS, deliberately, and this is the design decision in the feature. He asked
+for count, value and outcome, and that is exactly what it gives. The board answers
+"how much is still on this map and who is winning" without answering "where is he",
+which is the line between competitive information and a wallhack. A corpse worth
+6,000c is a reason to go looking; a corpse worth 6,000c with an arrow on it is a
+different game.
+
+Names are truncated to a MEASURED budget rather than a character count. The first
+version overlapped every long identity with its own value, because
+"FBI_Surveillance_Van" is not the width of "Kite" and a fixed column cannot hold
+both. It hides while the map or the bag is open, since both of those own the screen.
+
+Verified: parsecheck PASS at v3.14, all four maps and the hub drive and draw with
+drawErr null in the raid view and with the map overlay up. Roster sizes track the
+per-map raider counts, 8, 8, 5 and 6, which are nOf(CFG.nRaider) scaled by map area
+as expected. Bag value driven: giving a raider a Meridian Reactor Core and a Payroll
+Ledger reports 4,750c. All four statuses exercised in one frame by giving raiders
+bags, setting one to extract, removing one from ents to stand for a corpse and
+marking one out; the capture shows ACTIVE, DEAD, RUNNING and EXTRACTED in their
+correct colours with the summary line reading "1 out, 1 down".
+Not verified: no balance measurement, and none applies. This reads state that
+already exists and draws text; it changes no roll, no entity decision and no timing
+constant. What it might change is HIS play, since knowing a raider is carrying
+6,000c is a reason to hunt him, and that is a behaviour change no sim can measure
+because the bot does not read the HUD. If it turns the game into a manhunt he does
+not want, the honest fix is to show fewer columns rather than to hide the board.

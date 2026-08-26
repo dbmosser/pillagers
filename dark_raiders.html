@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.13';
+var VER='3.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5675,6 +5675,7 @@ function buildRaid(sim){
   var N_LISTEN=nOf(CFG.nListen===undefined?2:CFG.nListen)+(hasTerm('silence')?1:0);
   for(i=0;i<N_LISTEN;i++){ var s5=far(freeSpot(map,26),1000); ents.push(mkListener(s5.x,s5.y)); }
   // Each raid draws distinct identities, so you never meet two of the same name.
+  var roster=[];
   var idPool=IDENTITIES.slice();
   for(var ip=idPool.length-1;ip>0;ip--){ var jp=ri(0,ip),tp=idPool[ip]; idPool[ip]=idPool[jp]; idPool[jp]=tp; }
   for(i=0;i<N_RAIDER;i++){
@@ -5684,6 +5685,16 @@ function buildRaid(sim){
     // looking. It removes an entire tool from your hands for the whole run.
     if(!sim&&hasTerm('known')){ R3.hostile=true; R3.alert=2.5; R3.grudge=true; }
     ents.push(R3);
+    // HIS REQUEST, 2026-08-26: "add a persistent info box that tells how many other
+    // raiders are on the map, gives info abt each other raider, like their bag
+    // value, and whether they've extracted". A roster rather than a scan of G.ents,
+    // because a raider LEAVES that array by two different doors: extracting splices
+    // it out, and dying turns it into a named corpse container. Either way it stops
+    // existing as an entity, and a board that can only see live entities would
+    // report the two most interesting outcomes as "gone".
+    // It holds the entity by reference and derives status from it, so nothing has
+    // to be kept in sync by hand.
+    roster.push({ref:R3,name:R3.name,crew:R3.crew,val:0,out:false});
   }
   var sw=far(freeSpot(map,44),1400); ents.push(mkWarden(sw.x,sw.y));
   // SPEC 3.5: the hired mercenary drops in with you. He is a normal raider in
@@ -5896,7 +5907,7 @@ function buildRaid(sim){
     containers:(clearOfPads(containers),containers),ents:ents,bullets:[],pings:[],puffs:[],
     wild:(sim?[]:spawnWild(map)),
     decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],labels:[],flashes:[],hitMark:null,
-    zones:zones,active:active,camps:camps,beaconT:null,searching:null,searchT:0,waypoint:null,dmgWalls:[],
+    zones:zones,active:active,camps:camps,beaconT:null,searching:null,searchT:0,waypoint:null,dmgWalls:[],roster:roster,
     // Weather is rolled once per raid. Clear is weighted heaviest so the unusual
     // conditions stay unusual and keep their impact.
     wx:pickWeather(),
@@ -9593,6 +9604,8 @@ function updateEnts(dt){
         if(e.hitT>0) e.extracting=Math.max(0,e.extracting-dt*3);
         if(e.extracting>rdw){
           say(e.name+' extracted with the goods.'); T.raidersExtracted++;
+          if(G.roster){ for(var _rq=0;_rq<G.roster.length;_rq++){
+            if(G.roster[_rq].ref===e){ G.roster[_rq].out=true; break; } } }
           if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.8,c:'#35d6c8',r:34});
           G.ents.splice(i,1); continue;
         }
@@ -13298,6 +13311,7 @@ function drawHUD(){
     }
   }
   drawCrierMarkers();
+  if(!keys['KeyM']&&!G.bagOpen) drawRaiderBoard();
   if(keys['KeyM']) drawMapOverlay();
 }
 function safeSet(){
@@ -13423,6 +13437,66 @@ function drawNoiseMarkers(){
 // place and with the same bearing maths as the noise chevrons so the two cues
 // agree with each other. It draws only during the windup, which is exactly the
 // window where the answer is still available.
+// THE OTHER RAIDERS, his request. Who else is out here, what they are carrying, and
+// who has already left with it. Deliberately NO POSITIONS: the board answers "how
+// much is still on this map and who is winning" without turning into a wallhack,
+// which is the line between competitive information and knowing where to shoot.
+// Bag value freezes at the last known figure once a raider dies or extracts, because
+// that is the number that mattered: what he got out with, or what he is lying on.
+function drawRaiderBoard(){
+  var R=G.roster;
+  if(!R||!R.length) return;
+  var live=0,out=0,dead=0,i,rows=[];
+  for(i=0;i<R.length;i++){
+    var r=R[i],e=r.ref,inEnts=(G.ents.indexOf(e)>=0);
+    if(inEnts){
+      var v=0;
+      for(var b=0;b<e.bag.length;b++) v+=ival(e.bag[b]);
+      r.val=v;                                  // live figure while he is still out there
+    }
+    var st;
+    if(r.out){ st='EXTRACTED'; out++; }
+    else if(inEnts){ st=(e.state==='extract')?'RUNNING':'ACTIVE'; live++; }
+    else { st='DEAD'; dead++; }
+    rows.push({name:r.name,val:r.val,st:st,crew:r.crew});
+  }
+  // Wide enough for the value column, and names TRUNCATED to a measured budget
+  // rather than a character count. The first version overlapped every long
+  // identity with its own bag value, because "FBI_Surveillance_Van" is not the
+  // same width as "Kite" and a fixed column cannot hold both.
+  var PADX=14,y0=LH(96);
+  var LW=LH(214),LH1=LH(11);
+  var boxH=LH(20)+rows.length*LH1+LH(6);
+  ctx.fillStyle='rgba(18,15,24,.72)';
+  ctx.fillRect(PADX-8,y0-LH(13),LW,boxH);
+  ctx.strokeStyle='rgba(58,69,82,.75)'; ctx.lineWidth=1;
+  ctx.strokeRect(PADX-7.5,y0-LH(12.5),LW-1,boxH-1);
+  ctx.font=FS(TYPE.micro);
+  ctx.fillStyle='#ffb02e';
+  ctx.fillText('RAIDERS  '+live+' out here',PADX,y0-LH(2));
+  var yy=y0+LH(10);
+  for(i=0;i<rows.length;i++){
+    var w=rows[i];
+    var col=w.st==='EXTRACTED'?'#7fc4a0':(w.st==='DEAD'?'#6b7783':(w.st==='RUNNING'?'#ffd25c':'#cdd6dd'));
+    ctx.fillStyle=col;
+    var _rt=(w.val>0?w.val.toLocaleString()+'c':'-')+'  '+w.st;
+    var _budget=LW-LH(26)-ctx.measureText(_rt).width-LH(8);
+    var _nm=w.name;
+    if(ctx.measureText(_nm).width>_budget){
+      while(_nm.length>2&&ctx.measureText(_nm+'\u2026').width>_budget) _nm=_nm.slice(0,-1);
+      _nm+='\u2026';
+    }
+    ctx.fillText(_nm,PADX,yy);
+    ctx.textAlign='right';
+    ctx.fillText(_rt,PADX+LW-LH(18),yy);
+    ctx.textAlign='left';
+    yy+=LH1;
+  }
+  if(out+dead>0){
+    ctx.fillStyle='rgba(140,152,163,.75)';
+    ctx.fillText(out+' out  ·  '+dead+' down',PADX,yy+LH(1));
+  }
+}
 function drawCrierMarkers(){
   var p=G.player,ps=w2s(p.x,0,p.y);
   if(!ps) return;
