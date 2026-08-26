@@ -10653,3 +10653,52 @@ above 28 rounds was reasoned about rather than captured. The Chatter at 44 round
 takes it and drew clean on all four maps, but I have not read back a picture of the
 solid arc specifically, only of the segmented one.
 
+
+### v3.34: one heal at a time, and it takes longer
+
+HIS NOTE: "change it so you can only use one heal at a time and it heals slower and
+you can't apply the next one until the full heal cycle of the previous one is done."
+
+The old rule was deliberately the opposite, and its own comment said so: "A second
+item while one is still running ADDS its health and takes the FASTER of the two rates,
+so stacking is never a downgrade." That is a reasonable anti-frustration rule and it
+had one consequence nobody wrote down: the correct play under fire was to dump the
+entire medical bag at once, because doing so was strictly better than pacing it. It
+made healing a resource dump rather than a commitment.
+
+WHAT CHANGED. A heal already running now refuses the next one outright, and the rate
+is divided by healSlow. A Bandage was 28 health over 2.6 seconds; it is 28 over 4.16
+now. Two dials: healSolo 0 restores stacking, healSlow 1 restores the old speed.
+
+BOTH DOORS, NOT ONE. There are two ways to start a heal: the generic verb on F, and
+the hotbar's named-item path which exists so that dragging a Medkit onto a slot means
+THAT Medkit rather than whatever findHeal would have reached for. The refusal is at
+both, because a named slot must not be a way around a limit the generic verb enforces.
+That second path is exactly the sort of thing that gets missed and then reads as the
+feature not working.
+
+BALANCE, and it is measurable because the bot heals through the same two functions.
+320 paired seeds on GREYWATER DAM, mapIx pinned, simGreed 52 both arms, old stacking
+and full speed against the new rule:
+
+  extract rate   13.8 percent stacking   12.8 percent one at a time
+  discordant     5 favouring stacking, 2 favouring the new rule
+  McNemar exact two sided p = 0.453
+
+One point, comfortably inside the noise floor this project measured at 9.2 points
+across 120-seed blocks. So it costs the bot nothing it can prove, which is the right
+answer for a change made for feel rather than for difficulty.
+
+Verified: parsecheck PASS at v3.34, all four maps and the hub draw with drawErr null.
+The whole sequence driven through the REAL key path with window.__loop and a held F,
+not by calling the functions: first heal takes the Bandage out of a three item bag and
+queues 27.9 at rate 6.73, which is exactly 28 divided by 2.6 times 1.6; a second press
+one frame later is refused with "Still working the last one. 28 to go." and the bag
+does not shrink; the heal completes in 4.1 seconds taking health 20 to 48, which is
+the full 28; and a press after that IS accepted and takes the second Bandage.
+Not verified: the sim's own healing behaviour under the new rule. The A/B above
+measures the OUTCOME, which is what matters, but I have not checked whether the bot's
+heal policy is now leaving items unused because it tries to stack and gets refused. If
+it is, the 1 point above is partly a bot bug rather than a difficulty change, and that
+would understate the rule rather than overstate it.
+
