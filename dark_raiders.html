@@ -492,7 +492,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.34';
+var VER='3.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -552,7 +552,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6,extOutside:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -3499,7 +3499,7 @@ function buildFixedMap(def){
     roadRects:roadRects,roadDashes:roadDashes,cullLog:_cullLog,
     cw:WORLD_W/8,ch:WORLD_H/8,cols:8,rows:8,
     bushes:bushes,landmarks:landmarks,zones:zseeds,districtAt:districtAt,zoneAt:zoneAt,woods:woodsList,bigPairs:[],plats:plats,ramps:ramps,platAt:platAt,liftAt:liftAt,locked:lockedRooms,
-    spawns:def.spawns,extracts:def.extracts,nav:mapNav};
+    spawns:def.spawns,extracts:extractsOutside(def.extracts,buildings),nav:mapNav};
 }
 // SPEC 4.1: the procedural map generator that lived here is DELETED, along with
 // its zone seeding, landmark reservation, woods and big building placement and
@@ -3710,6 +3710,51 @@ function darkHex(hex,amt){
   return _shade[k]='#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
 }
 // district palette, lightened and warmed under an overcast noon
+// EXTRACTS NEVER LAND INSIDE A BUILDING, v3.35. His note, and it settles a
+// question DESIGN has carried open since v0.71: "extraction rings land inside a
+// building about one time in eight, cosmetic, and his call whether to push them
+// into the open." He has made the call.
+// Measured across the four maps before touching anything, because "one in eight"
+// was a guess from a much older layout: exactly ONE of the twelve authored
+// extracts is inside a building today, COLD STORAGE index 2 at 1700,400. That is
+// the one I moved to THE LONG DOCK myself when its two extracts were 503 units
+// apart and the map ran a 4.4 percent extract rate. So this is my mess.
+// The push is DETERMINISTIC and draws no rolls: if the ring is clear it does not
+// move at all, and if it is not, an outward spiral of sixteen headings at
+// forty unit steps takes the first position whose whole ring clears every
+// building. Nothing random, so a seed still reproduces exactly.
+// It gives up rather than teleporting: if 1,400 units of search finds nothing,
+// the point stays where the author put it, because an extract in a bad place is
+// better than one in an arbitrary place.
+var EXT_RING=78, EXT_PAD=18;
+function extRingClear(x,y,builds){
+  for(var b=0;b<builds.length;b++){
+    var B=builds[b];
+    if(x>=B.x&&x<=B.x+B.w&&y>=B.y&&y<=B.y+B.h) return false;
+    var cx=Math.max(B.x,Math.min(x,B.x+B.w)), cy=Math.max(B.y,Math.min(y,B.y+B.h));
+    if(Math.hypot(cx-x,cy-y)<EXT_RING+EXT_PAD) return false;
+  }
+  return true;
+}
+function extractsOutside(list,builds){
+  var out=[],i,rad,a2;
+  for(i=0;i<list.length;i++){
+    var e=list[i];
+    var copy={}; for(var k in e) copy[k]=e[k];
+    if(CFG.extOutside===0||extRingClear(e.x,e.y,builds)){ out.push(copy); continue; }
+    var moved=false;
+    for(rad=40;rad<=1400&&!moved;rad+=40){
+      for(a2=0;a2<16;a2++){
+        var th=a2/16*6.2832;
+        var nx=clamp(e.x+Math.cos(th)*rad,140,WORLD_W-140);
+        var ny=clamp(e.y+Math.sin(th)*rad,140,WORLD_H-140);
+        if(extRingClear(nx,ny,builds)){ copy.x=Math.round(nx); copy.y=Math.round(ny); moved=true; break; }
+      }
+    }
+    out.push(copy);
+  }
+  return out;
+}
 function dcol(d,key){
   var c=DISTRICTS[d===undefined?3:d][key];
   // The v1.0 palette is authored AT daylight, so lightening it again blew every

@@ -10702,3 +10702,61 @@ heal policy is now leaving items unused because it tries to stack and gets refus
 it is, the 1 point above is partly a bot bug rather than a difficulty change, and that
 would understate the rule rather than overstate it.
 
+
+### v3.35: extracts never land inside a building, and the one that did was mine
+
+HIS NOTE: "extracts should never happen inside a building." This settles a question
+DESIGN has carried open since v0.71: "extraction rings land inside a building about
+one time in eight. Measured 0 of 120 rings meaningfully obstructed, so they always
+work; it just means sometimes you extract from indoors. Cosmetic, and his call whether
+to push them into the open."
+
+MEASURED BEFORE TOUCHING ANYTHING, because "one in eight" was a guess from a much
+older layout. Exactly ONE of the twelve authored extracts is inside a building today:
+COLD STORAGE index 2, at 1700,400. And that is the one I moved there myself, when that
+map's two extracts sat 503 units apart and it ran a 4.4 percent extract rate. My mess.
+
+THE PUSH IS DETERMINISTIC AND DRAWS NO ROLLS. If the ring is already clear the point
+does not move at all, which is eleven of the twelve. If it is not, an outward spiral
+of sixteen headings at forty unit steps takes the first position whose WHOLE ring,
+78 units plus 18 of padding, clears every building. Nothing random, so a seed still
+reproduces exactly. It gives up rather than teleporting: if 1,400 units of search
+finds nothing the point stays where the author put it, because an extract in a bad
+place beats one in an arbitrary place. It also copies each entry rather than mutating,
+because def.extracts is shared with the FIXED_MAPS table and writing through it would
+corrupt every later raid.
+
+COLD STORAGE's extract moved 1700,400 to 1822,696. 316 units, still in THE LONG DOCK.
+
+AND THE BALANCE, WHICH IS NOT WHAT I WANTED. 320 paired seeds on COLD STORAGE, mapIx
+pinned, simGreed 52 both arms:
+
+  extract rate   7.8 percent inside the building   5.3 percent pushed out
+  discordant     16 favouring inside, 8 favouring outside
+  McNemar exact two sided p = 0.152
+
+So it LEANS 2.5 points worse and does not reach significance. Twenty-four discordant
+pairs at p=0.15 is exactly the kind of consistent-looking lean I have twice now
+mistaken for signal, so I am not calling it real. But I am also not hiding it: COLD
+STORAGE was already the weakest of the four maps, and this may make it slightly
+weaker.
+
+I AM SHIPPING IT ANYWAY, and the reasoning matters. He asked for a specific thing in
+plain terms. A 2.5 point lean that does not reach significance is not grounds for
+overriding an explicit instruction about how his game should look. extOutside 0
+restores the old placement in one dial if the number turns out to be real.
+
+Verified: parsecheck PASS at v3.35, all four maps and the hub draw with drawErr null.
+All twelve extracts across the four maps re-checked after the change: zero have a
+centre inside a building and zero have a ring biting one. G.zones agrees with
+map.extracts on every index on every map, so the thing the game uses and the thing the
+overlay draws are the same points. The A/B above ran on the only map that changed.
+MY OWN ERROR THIS BUILD: I first anchored the helper on clearOfPads, which is a
+function NESTED inside buildRaid, so extractsOutside was scoped locally and
+buildFixedMap threw ReferenceError on all four maps. Caught by the drive, hoisted to
+top level.
+Not verified: whether the 2.5 points is real. It would take a second independent 320
+to separate from noise and I have not run one, because the change ships either way on
+his instruction. Also not verified: the other three maps are untouched by this, so
+their numbers are unchanged by construction rather than by measurement.
+
