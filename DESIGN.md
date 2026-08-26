@@ -9471,3 +9471,69 @@ constant. What it might change is HIS play, since knowing a raider is carrying
 6,000c is a reason to hunt him, and that is a behaviour change no sim can measure
 because the bot does not read the HUD. If it turns the game into a manhunt he does
 not want, the honest fix is to show fewer columns rather than to hide the board.
+
+### v3.15: the pipe from a stranger's browser to this repo, off by default
+
+His question: "i wqant to put this on the internet and make it so anyone who plays
+it, it automatically uses their game telemetry to further iterate in cluade --
+doable?" Yes, and most of it already existed. The recorder has produced a complete
+report since v1.17 and autoExport has always tried to post it. What was missing was
+a destination that works anywhere except this machine, and a reason for a stranger
+to be comfortable with it.
+
+THE SEAM. PUBLIC_DROP is a single constant, null today. Set it to an https endpoint
+and every consenting player's run posts there; leave it null and nothing about the
+game changes for anyone. It is a constant rather than a build step because there is
+no build step. It must be https, since a fetch to http from an https origin is
+mixed content and dies before the network, which is the exact fault v2.78 fixed for
+the localhost drop.
+
+CONSENT IS SEPARATE FROM REPORTING. autoExport decides whether a report is produced;
+P.shareRuns decides whether it leaves the machine. Someone who clicks a link to play
+a game has not agreed to send me their play data, so sharing is OFF by default and
+Settings carries a row that says in one sentence what is sent: the same report he
+can already export by hand, containing raids, loadouts and typed notes, plus an
+anonymous install id, and nothing else about them. His own local drop is unaffected,
+because that is his machine and needs no permission from anyone.
+
+THE RULE IS A PURE FUNCTION, and that is a testing decision. The fixture stubs
+autoExport and downloadExport on purpose: a test that ran the real one dribbled
+dark_raiders_run*.txt into his Downloads for days before v1.31, and that protection
+must stay. It also makes the consent path untestable through the normal route, so
+the rule lives in telemetryDest(pub, loc, shared, proto) where its whole truth table
+can be driven without posting anything anywhere. Protocol is a parameter for the
+same reason: a fixture served over http could otherwise never exercise the one path
+that actually matters, a consenting player on the live site.
+
+AN INSTALL ID, generated locally, twelve random characters, stored in the profile.
+Without it every stranger's runs pool into one heap and the per-profile analysis the
+recorder does becomes meaningless. It says nothing except "these runs came from the
+same browser". The export header now carries it alongside the origin hostname,
+because a build served from itch is not the build on his machine and may be several
+versions behind, and I need to know that before comparing anything.
+
+THE COLLECTOR, in tools/public-collector/worker.js: about forty lines for Cloudflare
+Workers, free at this volume, with a size cap, a header sniff so it only stores
+things shaped like our reports, a 30 day expiry, and an admin-key GET that the
+matching tools/pull-public-runs.ps1 drains into exports/. Pulled files land WITHOUT
+the consumed- prefix, because that prefix is the watchdog's "already mined" marker
+and these have not been mined. The pull script also flags any run with dur:0s and
+moved:0, which is the same authenticity rule the watchdog uses on his own files: a
+run with no duration and no movement is a fixture leak, not a person.
+
+Verified: parsecheck PASS at v3.15, all four maps and the hub drive and draw with
+drawErr null. The consent rule is driven across its full truth table: on itch with
+sharing off it resolves to nothing; on itch with sharing on it resolves to the
+public endpoint; on itch over http it resolves to nothing even with sharing on; with
+no endpoint configured it resolves to nothing regardless; and on his own machine it
+resolves to the LOCAL drop whether sharing is on or off. With the shipped
+PUBLIC_DROP of null, a consenting player on https still resolves to null, so nothing
+can post anywhere until he sets it. The Settings row renders, the switch flips OFF
+to ON to OFF, and the export header follows it, reading "Shared: yes" only while it
+is on. The install id is stable across repeated exports.
+Not verified: no live endpoint exists yet, so nothing has actually been posted or
+pulled end to end. worker.js and pull-public-runs.ps1 are both written and neither
+has been run, because running them needs a deployed Worker and a KV binding that
+only he can create. The moment he deploys one, the first thing to check is a real
+round trip rather than my reading of it. No balance measurement: this changes no
+roll, no entity decision and no timing constant.

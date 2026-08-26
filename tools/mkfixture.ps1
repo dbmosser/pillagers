@@ -15,6 +15,10 @@ $needle = '// ================================================================ b
 $inject = @'
 window.__frame=function(dt){ render2D(dt===undefined?0.016:dt); };
 window.__state=function(){ return G; };
+// The telemetry consent rule, exposed so its truth table can be driven. autoExport
+// and downloadExport are stubbed below and must stay stubbed, so this is the only
+// way to check where a report would have been allowed to go.
+window.__telemetryDest=function(pub,loc,shared,proto){ return telemetryDest(pub,loc,shared,proto); };
 // Reads the message system from INSIDE the module, so a test can tell "say did
 // not run" apart from "say ran but I am holding a different G".
 window.__say=function(m){ say(m); return {inside:(G?G.msg:null),sim:(G?!!G.sim:null),sameG:(G===window.__state())}; };

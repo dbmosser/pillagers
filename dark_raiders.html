@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.14';
+var VER='3.15';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -834,7 +834,7 @@ var THROWKEYS=['smoke','decoy','frag'];
 // armoury for whenever they choose it. Existing profiles are untouched, this is
 // only the literal a NEW profile is born from.
 var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,died:0,best:0,
-  log:[],pack:0,rep:0,contracts:[],cfg:null,lastSim:null,autoExport:true,autoDownload:false,lastReport:'',cond:'day'};
+  log:[],pack:0,rep:0,contracts:[],cfg:null,lastSim:null,autoExport:true,autoDownload:false,shareRuns:false,iid:null,lastReport:'',cond:'day'};
 var SKEY='salvagerun:profile';
 function storeSet(v){
   try{
@@ -15721,6 +15721,10 @@ function buildExport(){
   var L=[],i;
   L.push('=== DARK RAIDERS v'+VER+' FLIGHT RECORDER ===');
   L.push('Profile: '+P.runs+' runs, '+P.ext+' extracted, '+P.died+' died, best haul '+P.best+'c, credits '+P.credits+', rep '+P.rep+', pack T'+(P.pack+1));
+  // Who and where this came from, so a run pulled off the public endpoint can be
+  // separated from his own without guessing. Origin matters because a build served
+  // from itch is not the build on his machine and may be several versions behind.
+  L.push('Install: '+installId()+'   Origin: '+location.hostname+'   Shared: '+(shareOn()?'yes':'no'));
   L.push('Active config ['+(CFG.preset||'custom')+']: '+JSON.stringify(CFG));
   // THE WORLD TIER SCALES EVERY NUMBER BELOW IT, v2.36, and nothing said so.
   // seasonLoot() multiplies ival, so every haul and every credit figure in this
@@ -16053,8 +16057,61 @@ document.getElementById('abandonbtn').onclick=function(){
 // existed on this machine, so it is only attempted here; everyone else goes
 // straight to the download fallback, which carries user activation because
 // autoExport runs inside the outcome button's click.
-var DROP=(location.hostname==='localhost'||location.hostname==='127.0.0.1')
+// HIS QUESTION, 2026-08-26: "i wqant to put this on the internet and make it so
+// anyone who plays it, it automatically uses their game telemetry to further
+// iterate in cluade -- doable?" Yes, and almost all of it already existed: the
+// recorder has built a complete report since v1.17 and autoExport already tries to
+// post it. What was missing was a destination that works off this machine.
+// PUBLIC_DROP is the seam. Set it to an https endpoint and every player's run
+// posts there; leave it null and nothing changes for anyone. It is deliberately a
+// plain constant rather than a build step, because there is no build step.
+// It must be https: on an https origin like itch, a fetch to http is mixed content
+// and dies before the network, which is the exact fault v2.78 fixed for localhost.
+var PUBLIC_DROP=null;   // e.g. 'https://your-worker.workers.dev/run'
+var LOCAL_DROP=(location.hostname==='localhost'||location.hostname==='127.0.0.1')
   ?'http://localhost:8799/telemetry':null;
+// Local first when it exists, because that is his own machine and costs nothing.
+// A player on the web has no local collector and goes straight to the public one.
+var DROP=LOCAL_DROP||((PUBLIC_DROP&&location.protocol==='https:')?PUBLIC_DROP:null);
+// SHARING IS OFF UNTIL ASKED, and separately from his own auto-report. autoExport
+// governs whether a report is produced at all; this governs whether it leaves the
+// machine it was produced on. Someone who opens a link to play a game has not
+// agreed to send me their play data, so the default is no and the notice says what
+// it does in one line. On his own machine the local drop is unaffected by it.
+function shareOn(){ return P.shareRuns===true; }
+// WHERE A REPORT IS ALLOWED TO GO, as a pure function of the three things that
+// decide it, so the rule can be tested without posting anything anywhere. The
+// fixture stubs autoExport and downloadExport on purpose, since a test that ran
+// the real one would dribble files into his Downloads, which it did for days
+// before v1.31. That protection also makes the consent rule untestable through
+// the normal path, so the rule lives here instead of inline.
+// The local drop needs no consent because it is his own machine. The public drop
+// needs it every time. Anything else is null and the report falls back to a file.
+function telemetryDest(pub,loc,shared,proto){
+  pub=(pub===undefined)?PUBLIC_DROP:pub;
+  loc=(loc===undefined)?LOCAL_DROP:loc;
+  shared=(shared===undefined)?shareOn():shared;
+  // Protocol is a parameter so the https requirement can be exercised from a
+  // fixture served over http. Without it the one path that actually matters, a
+  // consenting player on the live site, is the one path no test can reach.
+  proto=(proto===undefined)?location.protocol:proto;
+  if(loc) return loc;
+  if(pub&&shared&&proto==='https:') return pub;
+  return null;
+}
+// An anonymous per-INSTALL id, generated locally and never tied to anything about
+// the person. Without it every stranger's runs pool into one indistinguishable
+// heap and the per-profile analysis the recorder does becomes meaningless. It is
+// random, it is stored in the same profile as everything else, and it says nothing
+// except "these runs came from the same browser".
+function installId(){
+  if(!P.iid){
+    var s='';
+    for(var i=0;i<12;i++) s+='abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random()*36)];
+    P.iid=s;
+  }
+  return P.iid;
+}
 function downloadExport(){
   try{
     var blob=new Blob([buildExport()],{type:'text/plain'});
@@ -16091,9 +16148,11 @@ function autoExport(){
     } else P.lastReport='no drop';
     saveProfile(); syncAutoEx();
   }
-  if(!DROP){ fallback(); return; }
+  var dest=telemetryDest();
+  if(!dest){ fallback(); return; }
   try{
-    fetch(DROP,{method:'POST',headers:{'Content-Type':'text/plain'},body:body})
+    fetch(dest,{method:'POST',headers:{'Content-Type':'text/plain'},body:body,
+                keepalive:true,mode:'cors'})
       .then(function(r){
         if(r&&r.ok){ P.lastReport='saved'; savedAtRun=P.runs; saveProfile(); syncAutoEx(); }
         else fallback();
@@ -16232,6 +16291,8 @@ function renderSettings(){
     '<button id="set_text" style="padding:6px 12px">'+Math.round(uiScale()*100)+'%</button></div>'+
     '<div class="row"><div style="flex:1"><b>Auto-export the flight recorder</b><div class="hint">Writes a run report to your Downloads at the end of every raid.</div></div>'+
     '<button id="set_auto" style="padding:6px 12px">'+(P.autoExport?'ON':'OFF')+'</button></div>'+
+    '<div class="row"><div style="flex:1"><b>Share runs with the developer</b><div class="hint">Off by default. When on, the same run report you can already export is sent to the developer so the game can be tuned on real play. It carries your raids, loadouts and any notes you type, plus an anonymous install id, and nothing else about you. Switch it off any time.</div></div>'+
+    '<button id="set_share" style="padding:6px 12px">'+(P.shareRuns?'ON':'OFF')+'</button></div>'+
     '<div class="row"><div style="flex:1"><b>Controls legend</b><div class="hint">H in a raid cycles compact, full and off. Compact is the default.</div></div>'+
     '<span class="hint">H</span></div>'+
     '<div class="row"><div style="flex:1"><b>Mouse cursor</b><div class="hint">The cursor hides while you are aiming and returns with the bag. BACKSPACE forces it back at any time.</div></div>'+
@@ -16243,6 +16304,9 @@ function renderSettings(){
   };
   document.getElementById('set_auto').onclick=function(){
     P.autoExport=!P.autoExport; saveProfile(); syncAutoEx(); renderSettings();
+  };
+  document.getElementById('set_share').onclick=function(){
+    P.shareRuns=!P.shareRuns; installId(); saveProfile(); renderSettings();
   };
 }
 document.getElementById('devtoolsbtn').onclick=function(){
