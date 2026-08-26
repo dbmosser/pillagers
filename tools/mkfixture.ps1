@@ -508,6 +508,7 @@ window.__prof=function(){ return P; };
 window.__loadProfile=function(){ return loadProfile(); };
 window.__primer={open:function(){ openPrimer(); },maybe:function(){ maybePrimer(); },list:function(){ return PRIMER; }};
 window.__status={player:function(){ return playerStatus(); },raider:function(e){ return raiderStatus(e); },col:STATCOL};
+window.__board=function(){ renderSeason(); return ROADMAP; };
 window.__saveProfile=function(){ return saveProfile(); };
 // The fixture must never write into his flight recorder. Test runs were landing
 // in exports/ as real-looking runs with 0 duration and 0 movement, which is

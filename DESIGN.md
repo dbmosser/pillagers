@@ -11406,3 +11406,57 @@ coat colours are picked to sit in the same value band as the original ten by eye
 measured against the district palettes, so one of them may read badly on a particular
 map's ground.
 
+
+### v3.43: the board went stale a second time, in the same way its own comment warned about
+
+A sweep of every UI string that ASSERTS a rule or a number, checked against what the
+code does. Two of them were wrong and one of those is the thing he actually reads.
+
+THE SEASON BOARD'S ROADMAP. Its renderer filters DONE out, on the stated reasoning
+that "the board is what is coming, not a receipt". So NOW and NEXT are the only lines
+he ever sees there, and the single NOW line was:
+
+  "COLD STORAGE walks out 4.4% against 15 to 23 elsewhere: does that stand?"
+
+That question was answered a long time ago. The 4.4 percent was traced to two of three
+rings sitting 503 units apart, one was moved to THE LONG DOCK, and it went to 15.0.
+This cycle it measures 14.0. Meanwhile twenty-five builds of work were not on the list
+at all, so the one screen that tells him what the game is waiting on was showing him a
+solved problem and nothing else.
+
+The comment sitting directly above that array warns, in these words, that a roadmap
+advertising finished work is "the same stale-claim fault as the SPEC 4.6 comment and
+the MAPCONT copy". It went stale again anyway, which is the actual lesson: a warning
+comment does not maintain a list.
+
+NOW IS NOW FIVE REAL QUESTIONS, all of them genuinely open and genuinely his, all
+carrying the number that makes them decidable rather than the feeling:
+
+  the four maps span 16 extract points, even them out or let a hard map be hard
+  the extraction crowd is the map you woke on the way there, not the siege
+  LVL and PROFICIENCY gate nothing, trophies or make them do something
+  a raider walking out steps past a downed crewmate, earned his exit or not a crew
+  armour is lost on death, so the 900c rig costs about 318c a raid to wear
+
+Seven recent builds moved to DONE so the list stops implying the game froze in July.
+
+THE OTHER WRONG STRING. HEAVY PATROLS reads "Forty percent more machines out there."
+The 1.40 multiplier is applied to `den`, which nOf uses for EVERY spawn count, so
+signing that term also gives you forty percent more raiders and snitches. The forty
+percent was right and the word "machines" was not. It says "everything out there:
+machines, raiders and snitches alike" now.
+
+Verified: parsecheck PASS at v3.43, all four maps and the hub draw with drawErr null.
+The board driven through renderSeason and read back from the DOM rather than from the
+array: six rows, five NOW and one NEXT, zero DONE rows leaking through the filter, and
+the 4.4 percent string gone from the table entirely.
+MY OWN DUPLICATE, caught by that read-back: I placed a NEXT line next to the new NOW
+block without removing the original further down, so the board showed "Two raiders, one
+raid" twice. Reading the rendered DOM rather than trusting the source array is what
+caught it.
+Not verified: no balance measurement, and none applies; this is a list of strings and a
+term description. Also not verified: the other forty-odd assertive strings in the file.
+I swept the ones stating a rule or a number and found two wrong; I did not check the
+flavour lines, and a wrong claim hiding in a piece of flavour is exactly where the
+MAPCONT copy was hiding.
+
