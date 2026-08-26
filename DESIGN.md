@@ -8157,3 +8157,106 @@ any simulated number; it does re-roll what a real raid looks like after that poi
 on a given seed, which is a reshuffle rather than a bias, and no seeded comparison
 against an older build survives it.
 
+
+### v2.97: every name lifted from ARC Raiders is gone, and it was more than the word ARC
+
+His note: "we need to remove all references to ARC raiders -- we shouldn't be
+calling anything by the same name, etc. -- guns, enemies, no references to 'ARC'".
+
+He was right to widen it past the string, because the string was the smaller half.
+I audited every player-visible name in the file against the shipped vocabulary of
+ARC Raiders, cross-checked against published weapon, enemy and map lists rather
+than against my own recall, and the collisions were worse than the faction name.
+
+WHAT WAS ACTUALLY LIFTED
+
+Four guns. Ferro, Kettle, Stitcher and Hullcracker are all four real ARC Raiders
+weapons, and they sit in ONE contiguous block in WEAPONS, introduced together as
+the issued starters. Four verbatim names in four consecutive lines is not
+convergent invention, it is a batch import, and it is the single most damaging
+thing in the file because these are the guns a new player is handed on their first
+deploy. Renamed to TACKER, SPUTTER, CHATTER and SCUTTLE, with the fire behaviour,
+stats and sound profiles untouched: a semi-auto sidearm, a short spray gun, a loud
+automatic and a close-range breacher, which is what they always were.
+
+Two maps. DAM BATTLEGROUNDS and BURIED CITY are both shipped ARC Raiders map names,
+verbatim. Now GREYWATER DAM and SUNKEN QUARTER. The map ids are internal and never
+touch a save, so nothing migrates; P.mapIx is an index and P.seals is keyed by that
+index, both unaffected.
+
+One enemy. Our SNITCH and their Snitch are the same word for the same idea: a small
+machine that spots you and calls in everything else. Ours is now the CRIER, which
+is the same job described in our own words. The nameplate, the contract text, the
+warning line and the two feeling tags all move with it.
+
+The faction. ARC is the name of the hostile machine faction in ARC Raiders, and it
+was ours too, on the caches, the strongbox, three elite items, the seal payoff line,
+the Terms and two roadmap entries. It is MERIDIAN now.
+
+One partial. Their Dam Battlegrounds has a POI called Central Spillway and our dam
+had a zone called THE SPILLWAY. A spillway is a part of a dam and neither of us
+invented the word, but it costs nothing to stop sharing it, so ours is THE OVERFLOW
+and its landmark is OVERFLOW BRIDGE.
+
+WHAT I DELIBERATELY DID NOT RENAME, and why, because a rename that goes too far
+strips the game of its own identity as surely as one that stops too short:
+
+SENTRY, CRAWLER, WARDEN, LISTENER, STRAY and the PEDDLER are not in their roster.
+Their nearest machines are Sentinel and Turret, which are different words, and
+sentry is plain English used in hundreds of games. The dam's own vocabulary stays
+too. A reservoir, a crest, a turbine hall, a switchyard, a tailrace and a
+powerhouse are what a hydroelectric dam physically HAS, none of them appear in
+their published POI list, and renaming them would be renaming the English language
+rather than removing a lift. Scav Pistol, Compact SMG, Auto Rifle, Marksman Rifle,
+Burst Carbine, Riot Scattergun and Support MG are generic descriptors and stay.
+
+One thing I am flagging rather than deciding: their game is ARC Raiders, its
+players are called Raiders, and this game is DARK RAIDERS with raider enemies. He
+did not ask me to rename the game and I have not. It is his call, and it is worth
+one deliberate thought rather than a silent edit.
+
+THE SAVE MIGRATION, which is the only risky part of this build. The gun KEYS were
+renamed along with the display names, because leaving ferro and hullcracker in the
+source would keep a private record of the lift. Those keys are in his profile:
+P.weapons holds owned gun ids, P.equipped holds one, and P.wear is a ledger keyed
+by gun id. loadProfile already filters P.weapons down to keys the build recognises,
+which means WITHOUT a migration a returning save would have had its owned starters
+and their accumulated wear silently deleted, with no error and nothing on screen to
+say so. The migration maps all four old keys across all three fields and runs
+BEFORE that filter, which is the entire reason it exists.
+
+Verified: parsecheck PASS at v2.97, all four maps and the hub drive and
+draw with drawErr null. Zero case-insensitive matches for "arc raiders" remain in
+the file and zero genuine ARC tokens; the only survivors of a bare ARC substring
+search are the word SEARCH, the canvas arc() call, carcass, hierarchy, archive and
+a base64 font blob, which is exactly why this was done with anchored replacements
+and never a blanket one. WEAPONS now exposes tacker=Tacker, sputter=Sputter,
+chatter=Chatter, scuttle=Scuttle and none of the four old keys resolve. The sector
+board lists GREYWATER DAM, SUNKEN QUARTER, COLD STORAGE and THE QUARRY. Nameplates
+read CRIER E-97, CRIER N-23, CRIER E-86. Items read Meridian Black Box, Meridian
+Reactor Core, Meridian Payroll Ledger. Pixel capture at 1280x718 shows the
+MERIDIAN CACHE world label and a held "Fouled Tacker" in the weapon readout.
+
+THE MIGRATION WAS TESTED AGAINST A PLANTED SAVE, not reasoned about. A pre-v2.97
+profile was written into storage carrying weapons ["ferro","kettle","pistol"],
+equipped "ferro", wear {ferro:1200, hullcracker:340, pistol:50}, 1926 credits, 28
+runs, a two item stash and a contract reading "Destroy 2 snitches". After a reload
+it came back as weapons ["tacker","sputter","pistol"], equipped "tacker", wear
+{pistol:50, tacker:1200, scuttle:340} and "Destroy 2 criers". Note the third wear
+entry: hullcracker wear carried to scuttle even though that gun was never in the
+owned list, and pistol was left alone. Credits, runs, stash and the unrelated
+part-completed sentry contract are untouched.
+Not verified: no balance measurement, and none applies. Not one number, roll,
+timing constant or decision changed in this build; it is strings and four object
+keys. The one risk here was never balance, it was the save migration, and that is
+tested above rather than argued for.
+
+Two judgement calls he may want to overturn. First, the internal enemy kind is
+still the string 'snitch', wired through some thirty code sites plus CFG.nSnitch
+which lives in his SAVED config, so renaming it would have meant a second
+migration for zero player-visible gain; what he reads says CRIER everywhere.
+Second, the game is called DARK RAIDERS and its human enemies are raiders, while
+their game is ARC Raiders and its players are Raiders. He did not ask me to rename
+his game and I have not touched it. Both of those are his to decide, and they are
+written down here rather than quietly settled.
+

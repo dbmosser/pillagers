@@ -209,7 +209,7 @@
 
 <div class="modal" id="termsmodal">
   <h3>The Terms</h3>
-  <div class="msub">Sign for worse conditions and ARC pays better. Every one of these is a real handicap, it applies the moment you deploy, and the bonus is paid only if you walk out. Die under your own terms and you have simply made a bad day worse.</div>
+  <div class="msub">Sign for worse conditions and Meridian pays better. Every one of these is a real handicap, it applies the moment you deploy, and the bonus is paid only if you walk out. Die under your own terms and you have simply made a bad day worse.</div>
   <div class="plist" id="termslist" style="border:1px solid var(--steel-hi)"></div>
   <div id="termstotal" style="margin-top:10px;font-weight:700"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
@@ -350,7 +350,7 @@
         </div>
         <div style="padding:0 12px 7px"><button id="autoexbtn" style="width:100%;font-size:9.5px">Auto-export: ON</button></div>
         <div style="padding:0 12px 7px"><button id="textsizebtn" style="width:100%;font-size:9.5px">Text size: 100%</button></div>
-        <div style="padding:0 12px 7px"><button id="mapbtn" style="width:100%;font-size:9.5px">Map: DAM BATTLEGROUNDS</button></div>
+        <div style="padding:0 12px 7px"><button id="mapbtn" style="width:100%;font-size:9.5px">Map: GREYWATER DAM</button></div>
         <div id="simprog" style="font-size:9.5px;color:var(--ash);padding:0 12px 7px;display:none"></div>
       <h2 style="border-top:1px solid var(--steel-hi)">Roadmap</h2>
       <div class="plist" id="roadmap"></div>
@@ -473,7 +473,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.96';
+var VER='2.97';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -484,18 +484,18 @@ var VER='2.96';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='2.95';
+var WHATSNEW_VER='2.97';
 var WHATSNEW=[
+  'RENAMED: your issued guns are Tacker, Sputter, Chatter and Scuttle.',
+  'RENAMED: GREYWATER DAM, the SUNKEN QUARTER, the CRIER, Meridian caches.',
+  'Your owned guns and their wear carried over. Nothing was lost.',
   'FOUR SECTORS. Press R at the lift to choose where you deploy.',
-  'The lift now says which sector it is taking you to.',
-  'Dev box, T: settings. Text size and auto-export live there.',
   'Keyed doors show a lock: green if you carry its key, amber if not.',
   'Windows are framed and lit now, so you can pick them out.',
+  'Raiders no longer all arrive at full health.',
   'The controls legend is compact. H cycles compact, full, off.',
-  'Game messages moved to the top centre, out from under it.',
   '1 to 9 pick a hotbar slot even with the inventory open.',
-  'ENTER equips the selected bag gun, SHIFT+ENTER to your back.',
-  'The world breaks: walls, cars, glass all have HP.'
+  'Dev box, T: settings. Text size and auto-export live there.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -567,20 +567,20 @@ var WEAPONS={
   dmr:{optic:1.9,id:'dmr',name:'Marksman Rifle',dmg:48,rof:680,spread:.016,mag:8,reload:2300,rng:760,auto:false,noise:520,tint:'#fff0c0'},
   // Four issued starters, one rolled at random on every deploy. Tuned at or just
   // under the Scav Pistol and Compact SMG so the shop and loot guns stay upgrades.
-  ferro:{id:'ferro',name:'Ferro',dmg:17,rof:240,spread:.048,mag:14,reload:1300,rng:400,auto:false,noise:320,tint:'#ffd9a8',starter:1},
-  kettle:{id:'kettle',name:'Kettle',dmg:11,rof:80,spread:.130,mag:28,reload:1750,rng:330,auto:true,noise:300,tint:'#ffe6b8',starter:1},
-  stitcher:{id:'stitcher',name:'Stitcher',dmg:20,rof:150,spread:.085,mag:22,reload:1950,rng:470,auto:true,noise:400,tint:'#ffd18a',starter:1},
-  hullcracker:{id:'hullcracker',name:'Hullcracker',dmg:9,pellets:5,rof:780,spread:.200,mag:6,reload:2200,rng:210,auto:false,noise:470,tint:'#ffc98a',starter:1},
+  tacker:{id:'tacker',name:'Tacker',dmg:17,rof:240,spread:.048,mag:14,reload:1300,rng:400,auto:false,noise:320,tint:'#ffd9a8',starter:1},
+  sputter:{id:'sputter',name:'Sputter',dmg:11,rof:80,spread:.130,mag:28,reload:1750,rng:330,auto:true,noise:300,tint:'#ffe6b8',starter:1},
+  chatter:{id:'chatter',name:'Chatter',dmg:20,rof:150,spread:.085,mag:22,reload:1950,rng:470,auto:true,noise:400,tint:'#ffd18a',starter:1},
+  scuttle:{id:'scuttle',name:'Scuttle',dmg:9,pellets:5,rof:780,spread:.200,mag:6,reload:2200,rng:210,auto:false,noise:470,tint:'#ffc98a',starter:1},
   // Field families added at v1.08, because his answer to gear versus valuables
   // was 'not even close'. Three genuinely different fire patterns, not stat dups.
   carbine:{id:'carbine',name:'Burst Carbine',dmg:17,burst:3,rof:360,spread:.055,mag:24,reload:1900,rng:500,auto:false,noise:400,tint:'#ffd88a'},
   shotgun:{id:'shotgun',name:'Riot Scattergun',dmg:12,pellets:6,rof:650,spread:.170,mag:7,reload:2400,rng:260,auto:false,noise:500,tint:'#ffbe7a'},
   lmg:{optic:1.15,id:'lmg',name:'Support MG',dmg:16,rof:105,spread:.105,mag:60,reload:3400,rng:540,auto:true,noise:460,tint:'#ffca90'}
 };
-var STARTERS=['ferro','kettle','stitcher','hullcracker'];
+var STARTERS=['tacker','sputter','chatter','scuttle'];
 // How guns rank against each other. Used both for auto-equipping a better find
 // in the field and for deciding which of the two carried guns to equip on return.
-var WTIER={fists:0,ferro:1,pistol:1,kettle:2,hullcracker:2,smg:2,stitcher:2,carbine:3,shotgun:3,rifle:3,lmg:4,dmr:4};
+var WTIER={fists:0,tacker:1,pistol:1,sputter:2,scuttle:2,smg:2,chatter:2,carbine:3,shotgun:3,rifle:3,lmg:4,dmr:4};
 // Field gun quality. Every gun found in the world rolls a condition, so a gun
 // find is a slot machine and not a table lookup: his answer on gear versus
 // valuables was "not even close", and this is what makes two Auto Rifles found
@@ -697,13 +697,13 @@ var ITEMS={
   comp:{name:'Component Kit',val:120,wt:1,r:'uncommon',c:'#c9b458'},
   core:{name:'Data Core',val:520,wt:2,r:'rare',c:'#4f9be6'},
   titan:{name:'Titanium Cell',val:880,wt:3,r:'rare',c:'#6fb6ff'},
-  blackbox:{name:'ARC Black Box',val:1900,wt:3,r:'elite',c:'#c77ce8'},
+  blackbox:{name:'Meridian Black Box',val:1900,wt:3,r:'elite',c:'#c77ce8'},
   // His playtest, 2026-08-22: "ITS BORING. I JUST FIND JUNK." He was right, and
   // it was not a drop rate problem, it was a CONTENT problem: the entire top of
   // the loot table was one item at weight 2 in one container type. A rarity tier
   // with a single member cannot feel like a jackpot because there is nothing to
   // be lucky about.
-  reactor:{name:'ARC Reactor Core',val:2600,wt:4,r:'elite',c:'#e08cff'},
+  reactor:{name:'Meridian Reactor Core',val:2600,wt:4,r:'elite',c:'#e08cff'},
   wcore:{name:'Warden Core',val:3800,wt:5,r:'elite',c:'#ffd76a'},
   // SPEC 7.6: keys. Single use, they say what they open, sellable if you will
   // never use one, and they can be extracted and brought back for a targeted raid.
@@ -718,7 +718,7 @@ var ITEMS={
   codex:{name:'Sealed Codex',val:2200,wt:2,r:'elite',c:'#d89cff'},
   bloom:{name:'Bloom Sample',val:3100,wt:2,r:'elite',c:'#ff9ce8'},
   relay:{name:'Orbital Relay',val:1700,wt:4,r:'elite',c:'#c090ff'},
-  ledger:{name:'ARC Payroll Ledger',val:1400,wt:1,r:'rare',c:'#8fd0ff'},
+  ledger:{name:'Meridian Payroll Ledger',val:1400,wt:1,r:'rare',c:'#8fd0ff'},
   coil:{name:'Induction Coil',val:1050,wt:3,r:'rare',c:'#7cc4ff'},
   bandage:{name:'Bandage',val:60,wt:1,r:'common',c:'#d9d4c8',use:'heal',amt:28,hot:2.6},
   // Dropped by an animal you shot, v1.92. Deliberately poor: 45c for 2wt is worse
@@ -786,7 +786,7 @@ var DISTRICTS=[
 ];
 var TAGS=['Too dark','Not dark enough','Too easy','Too hard','Shooting felt weak','Shooting felt good',
   'Loot boring','Loot exciting','Got lost','Timer too short','Timer too long','AI too dumb','AI unfair',
-  'Extract too easy','Extract too tense','Ran out of ammo','Ammo economy good','Dodge roll great','Dodge roll weak','Snitch felt great','Snitch felt unfair','Felt great'];
+  'Extract too easy','Extract too tense','Ran out of ammo','Ammo economy good','Dodge roll great','Dodge roll weak','Crier felt great','Crier felt unfair','Felt great'];
 var RECIPES=[
   {name:'Component Kit',out:{comp:1},need:{scrap:3,wire:2}},
   {name:'2x Ammo Box',out:{ammobox:2},need:{comp:1,cell:1}},
@@ -863,9 +863,32 @@ function loadProfile(){
           // and armoury never had the same protection. An item retired in a
           // later version would have thrown the moment the hub tried to draw it,
           // taking the whole hub with it and stranding a real save.
+          // A contract is saved with its sentence already written, so three of
+          // them on his board still said "snitches" after the rename. Patched in
+          // place rather than regenerated, because regenerating would silently
+          // reroll contracts he is part way through.
+          if(Array.isArray(P.contracts)) P.contracts.forEach(function(_c){
+            if(_c&&typeof _c.desc==='string')
+              _c.desc=_c.desc.replace(/snitches/g,'criers').replace(/snitch/g,'crier');
+          });
           if(!Array.isArray(P.stash)) P.stash=[];
           P.stash=P.stash.filter(function(k){ return !!ITEMS[k]; });
           if(!Array.isArray(P.weapons)) P.weapons=[];
+          // THE v2.97 GUN RENAME MIGRATION. The four issued starters were named
+          // Ferro, Kettle, Stitcher and Hullcracker, which are four real ARC
+          // RAIDERS weapons, so they are gone. Their internal KEYS went with the
+          // names rather than being left behind as a private record of the lift.
+          // This has to run BEFORE the filter on the very next lines, and that is
+          // the whole reason it exists: the filter drops any weapon key the build
+          // no longer knows, so without this a returning save would have its owned
+          // starters and their accumulated wear SILENTLY DELETED, which is the
+          // worst class of bug this file can ship. Owned guns, the equipped gun
+          // and the wear ledger are all keyed by gun id, so all three are mapped.
+          var GUNMIG={ferro:'tacker',kettle:'sputter',stitcher:'chatter',hullcracker:'scuttle'};
+          P.weapons=P.weapons.map(function(k){ return GUNMIG[k]||k; });
+          if(GUNMIG[P.equipped]) P.equipped=GUNMIG[P.equipped];
+          if(P.wear){ for(var _gk in GUNMIG){ if(P.wear[_gk]!==undefined){
+            P.wear[GUNMIG[_gk]]=(P.wear[GUNMIG[_gk]]||0)+P.wear[_gk]; delete P.wear[_gk]; } } }
           P.weapons=P.weapons.filter(function(k){ return !!WEAPONS[k]; });
           if(!WEAPONS[P.equipped]) P.equipped=P.weapons.length?P.weapons[0]:'fists';
           // The saved config is a full copy of every tunable, so it silently pins
@@ -923,7 +946,11 @@ function ensureContracts(){
 // "sentrys" and "snitchs" are not words, and a contract board is the one place
 // in the game he reads a full sentence. There are four unit names and they never
 // change, so spell the plurals rather than bolting an s on the end.
-var UNITPLURAL={sentry:'sentries',crawler:'crawlers',raider:'raiders',snitch:'snitches',listener:'listeners'};
+var UNITPLURAL={sentry:'sentries',crawler:'crawlers',raider:'raiders',snitch:'criers',listener:'listeners'};
+// The singular was built from the kind string itself, which is an internal id and
+// is not always the name the player knows the thing by. Since v2.97 exactly one
+// of them differs, and that is precisely the case a bare kind string gets wrong.
+var UNITNAME={sentry:'sentry',crawler:'crawler',raider:'raider',snitch:'crier',listener:'listener'};
 // SPEC 16: contracts that pay in GEAR, not only credits. A board that hands out
 // money and nothing else is a slower version of selling loot, and it made the
 // whole feature something you completed by accident rather than something you
@@ -951,7 +978,7 @@ var CGEAR={
     {kind:'wep',k:'lmg'},
     {kind:'stash',ks:['bloom'],                           label:'Bloom Sample'},
     {kind:'stash',ks:['titan','core','coil'],             label:'A crate of rare salvage'},
-    {kind:'stash',ks:['reactor'],                         label:'ARC Reactor Core'}
+    {kind:'stash',ks:['reactor'],                         label:'Meridian Reactor Core'}
   ]
 };
 var CTIER={std:{n:1,r:1,name:'STANDARD',c:'#9aa6b2',w:1},
@@ -1019,7 +1046,7 @@ function genContract(){
     var tgt=pick(['sentry','crawler','raider','snitch']);
     var n=up(tgt==='raider'?2:(tgt==='snitch'?2:ri(3,6)));
     var per={sentry:150,crawler:90,raider:260,snitch:200}[tgt];
-    c={type:'kill',tgt:tgt,n:n,prog:0,reward:n*per,desc:'Destroy '+n+' '+(n>1?UNITPLURAL[tgt]:tgt)};
+    c={type:'kill',tgt:tgt,n:n,prog:0,reward:n*per,desc:'Destroy '+n+' '+(n>1?UNITPLURAL[tgt]:(UNITNAME[tgt]||tgt))};
   } else if(roll<.55){
     var ct=pick(['safe','locker','crate']);
     var n2=up(ct==='safe'?2:ri(3,5));
@@ -1029,11 +1056,11 @@ function genContract(){
     // A DISTRICT THE MAP ACTUALLY HAS, v1.74. This picked a district index 0 to 3 at
     // random and never checked whether the map you are about to play contains one.
     // Measured over six seeds per map, worst case containers in each district:
-    //   DAM BATTLEGROUNDS  53 / 36 / 26 / 30
-    //   BURIED CITY        13 /  0 / 10 / 78
+    //   GREYWATER DAM  53 / 36 / 26 / 30
+    //   SUNKEN QUARTER        13 /  0 / 10 / 78
     //   COLD STORAGE       27 /  9 /  2 / 38
     //   THE QUARRY         33 / 61 / 23 / 20
-    // BURIED CITY has NO buildings tagged district 1 at all, so "search 4 containers in
+    // SUNKEN QUARTER has NO buildings tagged district 1 at all, so "search 4 containers in
     // that district" was literally impossible, and one district contract in four rolled
     // it. COLD STORAGE has two containers in district 2 against a contract that asks for
     // up to four. There is nothing on screen to tell you a contract cannot be finished,
@@ -1393,15 +1420,15 @@ function blip(type,d,pan){
     // firing before you see it. Defaults reproduce the old rifle crack exactly.
     var FV={
       pistol:{len:1700,lp:2600,g:.13,decay:3.6},
-      ferro:{len:1700,lp:2400,g:.13,decay:3.6},
+      tacker:{len:1700,lp:2400,g:.13,decay:3.6},
       smg:{len:1500,lp:2100,g:.11,decay:4.0},
-      kettle:{len:1500,lp:2000,g:.11,decay:4.0},
-      stitcher:{len:1900,lp:2200,g:.12,decay:3.8},
+      sputter:{len:1500,lp:2000,g:.11,decay:4.0},
+      chatter:{len:1900,lp:2200,g:.12,decay:3.8},
       carbine:{len:2000,lp:2300,g:.13,decay:3.6},
       rifle:{len:2600,lp:0,g:.16,decay:3.2},
       dmr:{len:5200,lp:1400,g:.20,decay:2.4,thump:1},
       shotgun:{len:4200,lp:900,g:.22,decay:2.2,thump:1},
-      hullcracker:{len:4200,lp:950,g:.20,decay:2.2,thump:1},
+      scuttle:{len:4200,lp:950,g:.20,decay:2.2,thump:1},
       lmg:{len:2400,lp:1500,g:.15,decay:2.9}
     };
     var V=FV[arguments[3]]||FV.rifle;
@@ -1947,7 +1974,7 @@ function makeBuilding(x,y,w,h,out,d,bid,forcePlan){
   // it existed but most rooms did not qualify for any. Measured on v1.61: the DAM, which
   // is the map he plays most, had 61 pieces spread over 14 of its 35 buildings, so
   // TWENTY ONE BUILDINGS WERE COMPLETELY BARE. Walk into most doors on that map and the
-  // room is an empty floor, which is exactly what he described. BURIED CITY reads far
+  // room is an empty floor, which is exactly what he described. SUNKEN QUARTER reads far
   // better at 79 percent furnished, and that is a size accident rather than a decision:
   // the gate wanted a room over 180 by 150 and the dam is built from smaller rooms.
   // The gate now scales instead of excluding. A room only needs to be big enough to walk
@@ -2070,7 +2097,7 @@ function buildNav(walls,pad){
 // CAN ANYTHING ACTUALLY GET THERE, v2.12. freeSpot asks one question, is this
 // point clear of walls, and that says nothing about whether a body can REACH it.
 // Placement has been trusting it as though it did. Measured across 20 maps and
-// 3,950 containers: 26.3 percent of ARC caches were placed somewhere no route
+// 3,950 containers: 26.3 percent of Meridian caches were placed somewhere no route
 // reaches, and those are the ones drawn on his sector map with a comment above
 // them reading "a jackpot you never find is the same as no jackpot".
 // One flood fill over the nav grid the map already carries, from the drop,
@@ -2310,7 +2337,7 @@ var LANDMARKS=[
 //
 // SPEC 4.5: spawns are randomised among a fixed set of valid points, each
 // marked in the world by a closed manhole, visible whether or not it was used.
-// SPEC 4.2: DAM BATTLEGROUNDS. A dam and industrial complex, built from my own
+// SPEC 4.2: GREYWATER DAM. A dam and industrial complex, built from my own
 // design knowledge, not sourced from any commercial game. The anchor is the dam
 // wall itself running across the north with its powerhouse; water is held above
 // it and spills into a channel below. Outer zones read differently on purpose:
@@ -2318,10 +2345,10 @@ var LANDMARKS=[
 // housing row is close interiors, the spillway is a committed crossing.
 var FIXED_MAPS=[
 {
-  id:'dam', name:'DAM BATTLEGROUNDS', w:5200, h:4000,
+  id:'dam', name:'GREYWATER DAM', w:5200, h:4000,
   // REBUILT v1.52. His note: the dam was the weak map. Measured, he was right:
   // only 10.4 percent of its walkable ground sat inside a named place against
-  // 47.6 on BURIED CITY, its mean sight line was the longest in the game at 675,
+  // 47.6 on SUNKEN QUARTER, its mean sight line was the longest in the game at 675,
   // and it had the least interior of the three. It was three widely spaced
   // things with a field between them.
   // The rebuild is my own design, worked from what a dam actually IS as a place
@@ -2336,7 +2363,7 @@ var FIXED_MAPS=[
     {name:'TURBINE HALL',    d:1, x:1500, y:960,  w:1500, h:1200},
     {name:'SWITCHYARD',      d:3, x:3000, y:960,  w:2200, h:1200},
     {name:'DROWNED WOOD',    d:2, x:0,    y:2160, w:1400, h:1840},
-    {name:'THE SPILLWAY',    d:0, x:1400, y:2160, w:1000, h:1840},
+    {name:'THE OVERFLOW',    d:0, x:1400, y:2160, w:1000, h:1840},
     {name:'THE TAILRACE',    d:0, x:2400, y:2160, w:1500, h:1840},
     {name:'OUTFLOW YARD',    d:3, x:3900, y:2160, w:1300, h:1840}
   ],
@@ -2454,7 +2481,7 @@ var FIXED_MAPS=[
   plats:[
     {x:2560,y:2680,w:1000,h:120,lift:26,name:'TAILRACE WALK'},
     {x:3180,y:1980,w:860, h:120,lift:26,name:'YARD GANTRY'},
-    {x:1660,y:2960,w:660, h:130,lift:48,name:'SPILLWAY BRIDGE'}
+    {x:1660,y:2960,w:660, h:130,lift:48,name:'OVERFLOW BRIDGE'}
   ],
   ramps:[
     {x:2410,y:2680,w:150,h:120},
@@ -2487,13 +2514,13 @@ var FIXED_MAPS=[
   ]
 },
 {
-  // SPEC 4.3: BURIED CITY. Desert ruins. The whole identity is one contrast:
+  // SPEC 4.3: SUNKEN QUARTER. Desert ruins. The whole identity is one contrast:
   // a huge open central courtyard with long sightlines that is genuinely
   // dangerous to cross, ringed by garages and outbuildings that are tight
   // close quarters clearing. It has to play nothing like the dam, so there is
   // no verticality anchor and no water: the tension here is exposure, and the
   // relief is doorways.
-  id:'buried', name:'BURIED CITY', w:4600, h:4600,
+  id:'buried', name:'SUNKEN QUARTER', w:4600, h:4600,
   zones:[
     {name:'THE COURTYARD', d:0, x:1300, y:1300, w:2000, h:2000},
     {name:'NORTH GARAGES', d:3, x:0,    y:0,    w:4600, h:1300},
@@ -2587,8 +2614,8 @@ var FIXED_MAPS=[
 // His top complaint, in his own words, is that the maps feel SAMEY, and with
 // two of them he was right by arithmetic before anything else. This third one
 // is authored against both of the others rather than beside them.
-//   DAM BATTLEGROUNDS is wide horizontal bands split by one long barrier.
-//   BURIED CITY is a symmetrical ring around one enormous open courtyard.
+//   GREYWATER DAM is wide horizontal bands split by one long barrier.
+//   SUNKEN QUARTER is a symmetrical ring around one enormous open courtyard.
 //   COLD STORAGE has no open ground at all.
 // It is a packing plant: 4200 by 3400, about a third smaller than either of the
 // others, and every part of it is built to cut sight lines. Rows of racking on
@@ -2884,7 +2911,7 @@ function buildFixedMap(def){
   }
   // Tagged rather than carved here. More walls are pushed AFTER this point,
   // locked-room shells among them, and a window cut before those exist can be
-  // sealed by one of them: that is what left a single window on BURIED CITY
+  // sealed by one of them: that is what left a single window on SUNKEN QUARTER
   // reading as open while a later wall stood in it. The carve now happens once
   // every wall on the map is present, immediately before the segments are built.
   for(var _bwi=_wallsBeforeBuildings;_bwi<walls.length;_bwi++) walls[_bwi]._bw=1;
@@ -2984,7 +3011,7 @@ function buildFixedMap(def){
   // than as a building the generator forgot to open.
   // v1.66. His note asked for "buildings that are completely destroyed and cannot be
   // entered", which is exactly what this is, and on two maps it was barely happening.
-  // Measured before: DAM wanted 36 ruins and placed 15, BURIED CITY 37 and placed 28,
+  // Measured before: DAM wanted 36 ruins and placed 15, SUNKEN QUARTER 37 and placed 28,
   // COLD STORAGE 25 and placed 8, and THE QUARRY wanted 29 and placed TWO. Wrecks over
   // the same maps placed 120 of 120, 122 of 122, 82 of 82 and 96 of 96, so the failure
   // was specific to ruins rather than to scatter placement generally.
@@ -3137,7 +3164,7 @@ function buildFixedMap(def){
           // the deck edge. The three older maps author their ramps ABUTTING a
           // platform rather than overlapping it, so a strict test finds nothing
           // and the ramp reads as flat ground: measured, every catwalk ramp on
-          // BURIED CITY and COLD STORAGE went 0 to 0 and you stepped onto the
+          // SUNKEN QUARTER and COLD STORAGE went 0 to 0 and you stepped onto the
           // deck with a 26 unit pop instead of walking up.
           if(!(R.x<P2.x+P2.w+24&&R.x+R.w>P2.x-24&&R.y<P2.y+P2.h+24&&R.y+R.h>P2.y-24)) continue;
           var lf2=P2.lift||24;
@@ -3378,7 +3405,7 @@ function carveWindows(walls){
 // A window is only a window if you can actually see through the hole. makeBuilding
 // lays overlapping wall runs, so an outer shell and an inner run can occupy the
 // same line, and carving one of them leaves the other standing in the gap. Measured
-// before this existed: 5 of 30 windows on BURIED CITY were solid to sight despite
+// before this existed: 5 of 30 windows on SUNKEN QUARTER were solid to sight despite
 // carrying win:1, which is worse than having no windows because the wall LOOKS open.
 // This cuts the same span out of any solid wall lying across a window, and then
 // drops any window it could not clear back to solid rather than shipping a lie.
@@ -4484,7 +4511,7 @@ function windfallOdds(x,y){
   if(danger) odds+=0.10;
   return clamp(odds,0,0.28);
 }
-// THE ARC STRONGBOX. One per raid, in the worst place on the map, and it takes
+// THE MERIDIAN STRONGBOX. One per raid, in the worst place on the map, and it takes
 // nine seconds to crack while screaming the whole time. It is the discrete
 // version of the same idea: a set piece you can choose to be greedy about.
 function mkStrongbox(x,y){
@@ -4495,7 +4522,7 @@ function mkStrongbox(x,y){
   for(var i=0;i<3&&pool.length;i++) loot.push(pool.splice(ri(0,pool.length-1),1)[0]);
   var c=mkContainer(x,y,'cache');
   setLoot(c,loot);
-  c.cache=1; c.strong=1; c.time=9.0; c.tag='ARC STRONGBOX';
+  c.cache=1; c.strong=1; c.time=9.0; c.tag='MERIDIAN STRONGBOX';
   return c;
 }
 function bestRarity(loot){
@@ -4509,7 +4536,7 @@ function bestRarity(loot){
   }
   return best;
 }
-// Every container whose contents are set AFTER it is built comes through here: the ARC
+// Every container whose contents are set AFTER it is built comes through here: the Meridian
 // strongbox, the seal cache, the warden drop, a raider corpse, your own dropped items.
 // The worst-first sort therefore belongs here as well as in mkContainer, or the staged
 // pull would hand out the prize first on exactly the containers where it matters most.
@@ -4775,7 +4802,7 @@ function mkSnitch(x,y){
   // so that one lucky burst at range is not a guaranteed kill on a thing whose whole
   // job is to make you choose between chasing it and leaving.
   return {kind:'snitch',x:x,y:y,r:11,hp:Math.round(38*CFG.eHp*seasonHp()),maxhp:Math.round(38*CFG.eHp*seasonHp()),
-    name:mkName('SNITCH',['E','N','S']),
+    name:mkName('CRIER',['E','N','S']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:170,dmg:0,rng:380,cone:1.2,hitT:0,lost:0,
     // Per drone phase, so two of them never weave in formation and read as one target.
     jseed:rnd(0,6.283)};
@@ -4956,7 +4983,7 @@ function mkPeddler(x,y,map){
 // map until you find him, which is the difference: the Peddler is an errand you
 // can plan and the Stray is something you stumble into.
 // What he pays with is the interesting part. Not much money: he tells you where
-// an ARC CACHE is. That answers the loot complaint directly, because a cache is
+// an Meridian cache is. That answers the loot complaint directly, because a cache is
 // pure high tier, and it means the reward for being decent to someone is a
 // reason to go somewhere you were not going.
 // And helping him takes a point of NOTORIETY off you, which is the only way to
@@ -4974,8 +5001,8 @@ function mkStray(x,y){
 function strayReveal(){
   // A CACHE YOU CAN WALK TO, v2.26. The reward line is "He tells you where a cache
   // is. It is on your map", and c.cache is true of three different things: the
-  // three ARC caches placed in the open, the three caches inside EACH locked room,
-  // and the ARC STRONGBOX, which v2.12 established is placed inside a locked room
+  // three Meridian caches placed in the open, the three caches inside EACH locked room,
+  // and THE MERIDIAN STRONGBOX, which v2.12 established is placed inside a locked room
   // as its first preference. Locked-room caches therefore outnumber open ones two
   // to one, and being deep inside buildings they are usually the farthest, so the
   // far-one rule kept choosing them.
@@ -5391,7 +5418,7 @@ function buildRaid(sim){
     }
   }
   clearOfPads(containers);
-  // ARC CACHES. His playtest: "I SHOULD FIND TOP TIER LOOT EVERY RUN EVEN IF I
+  // Meridian caches. His playtest: "I SHOULD FIND TOP TIER LOOT EVERY RUN EVEN IF I
   // MOVE STRAIGHT TO THE EXTRACT." Pure random drop rates cannot promise that,
   // so the promise is made structurally instead: three caches are PLACED every
   // raid, and where they are placed is the risk versus greed decision.
@@ -5420,14 +5447,14 @@ function buildRaid(sim){
     var LX=map.landmarks[lcx];
     placeCache(LX.x+LX.w/2,LX.y+LX.h/2,LX.name);
   }
-  while(caches.length<3) placeCache(WORLD_W*rr(),WORLD_H*rr(),'ARC CACHE');
+  while(caches.length<3) placeCache(WORLD_W*rr(),WORLD_H*rr(),'MERIDIAN CACHE');
   // EVERY LOCKED DOOR GETS A KEY, v1.75. Same fault as the district contract in v1.74 and
   // found by asking the same question: does the map actually supply what it promises?
   // Keys only ever arrived as a rare roll on the safe and cache tables, and `resolveKey`
   // then picked ONE of the map's locked rooms at random, so with two rooms per map even a
   // key that did spawn was a coin flip on which door it opened. Measured over ten seeds
   // per map, the fraction of raids where BOTH locked rooms had a key somewhere on the map:
-  //   DAM BATTLEGROUNDS 7/10   BURIED CITY 8/10   THE QUARRY 8/10
+  //   GREYWATER DAM 7/10   SUNKEN QUARTER 8/10   THE QUARRY 8/10
   //   COLD STORAGE      3/10
   // So on COLD STORAGE, seven raids in ten contained a visibly locked door that could not
   // be opened by anything on the map, and nothing told you. The room is drawn, it has a
@@ -5720,7 +5747,7 @@ function buildRaid(sim){
   // two camps times two iterations is a FLAT four sentries and four crawlers on
   // every map regardless of its size.
   // Measured, sentries per million square units, with the flat detail included:
-  //   DAM 1.154   BURIED CITY 1.134   COLD STORAGE 1.261   THE QUARRY 1.208
+  //   DAM 1.154   SUNKEN QUARTER 1.134   COLD STORAGE 1.261   THE QUARRY 1.208
   // So the smallest map carries 11 percent more sentries per acre than the
   // largest, entirely because of this constant, and it is also the map with the
   // lowest extract rate in the game at 6.7 percent.
@@ -5787,7 +5814,7 @@ function buildRaid(sim){
   // rarity pip, so it is loot the game shows you and never lets you have.
   // Deliberately sealed things are skipped, and knowing which those are is most
   // of the work: a locked room is keyed and v1.75 guarantees every door gets a
-  // key, and the ARC STRONGBOX is placed inside one on purpose.
+  // key, and THE MERIDIAN STRONGBOX is placed inside one on purpose.
   // Measured across 20 maps and 3,810 non-design containers before this: 58 read
   // as sealed, but 48 were inside a locked room and 0 in a camp, leaving TEN
   // genuinely stranded, 0.26 percent, about one every second raid. Small, and
@@ -7487,7 +7514,7 @@ function tickExtractPoints(dt){
   // them again. Dead state next to a global doing its job is the tell.
   // It matters because a second beacon is reachable. Nothing else calls one, so
   // this needs the player to do it deliberately: call a ring, run to another and
-  // call that. Measured on BURIED CITY, three open rings 2,560 apart against a
+  // call that. Measured on SUNKEN QUARTER, three open rings 2,560 apart against a
   // 25 second wait and a 158/s sprint, so there is time. With both running, both
   // zones tick the SAME counter: siegeSpawnT advanced 1.0 per half second of sim
   // instead of 0.5, so arrivals came at DOUBLE the promised rate, and the two
@@ -7959,7 +7986,7 @@ function updatePlayer(dt){
           var loot=sealPayout(SR.tier);
           var sc=setLoot(mkContainer(G.seal.x+rnd(-24,24),G.seal.y+rnd(20,40),'cache'),loot);
           sc.cache=1; sc.time=1.2; G.containers.push(sc);
-          say('The seal is cut. Whatever ARC put behind it is yours if you live.');
+          say('The seal is cut. Whatever Meridian put behind it is yours if you live.');
           label(G.seal.x,G.seal.y-26,'SEAL BROKEN','#ffd76a',0,true);
           spark(G.seal.x,G.seal.y,'#ffd76a',40,420);
         }
@@ -9043,7 +9070,7 @@ function updateEnts(dt){
         e.wind=rnd(3,4);
         e.markX=p.x; e.markY=p.y;      // the position that gets called in
         sfx('alarm',e.x,e.y);
-        say('A snitch has you. Kill it or move.');
+        say('A crier has you. Kill it or move.');
       }
       var wantS=e.face;
       if(e.state==='alarm'){
@@ -10851,7 +10878,7 @@ function drawContS(ct){
   if(ct.type==='crate'){ w=16;lift=9;d2=8;cF='#4e3a1e';cT='#8a6a3a';cL='#ab8a55'; }
   else if(ct.type==='locker'){ w=12;lift=20;d2=6;cF='#24333e';cT='#4a6a80';cL='#6a8ea6'; }
   else if(ct.type==='safe'){ w=16;lift=13;d2=8;cF='#2a1f33';cT='#5a4670';cL='#7c6796'; }
-  // An ARC cache is the biggest, brightest object of its kind in the game on
+  // An Meridian cache is the biggest, brightest object of its kind in the game on
   // purpose: it is the one thing every raid guarantees, so it has to be findable.
   else if(ct.type==='cache'){ w=26;lift=19;d2=11;cF='#3a2050';cT='#8f4fc0';cL='#e0a0ff'; }
   else { w=20;lift=3;d2=6;cF='#302719';cT='#57462f';cL='#756042'; }
@@ -10920,8 +10947,8 @@ function drawContS(ct){
     }
     if(ct.cache){
       wc.font=FS(TYPE.head); wc.textAlign='center';
-      wc.fillStyle=INK; wc.fillText('ARC CACHE',ct.x+1,ct.y-lift-d2-25);
-      wc.fillStyle='#e6b4ff'; wc.fillText('ARC CACHE',ct.x,ct.y-lift-d2-26);
+      wc.fillStyle=INK; wc.fillText('MERIDIAN CACHE',ct.x+1,ct.y-lift-d2-25);
+      wc.fillStyle='#e6b4ff'; wc.fillText('MERIDIAN CACHE',ct.x,ct.y-lift-d2-26);
       wc.textAlign='left';
     }
     if(ct.seal){
@@ -10935,8 +10962,8 @@ function drawContS(ct){
       wc.fillStyle=sgr2; wc.beginPath(); wc.arc(ct.x,ct.y-lift,62,0,6.2832); wc.fill();
       wc.restore();
       wc.textAlign='center'; wc.font=FS(TYPE.label);
-      wc.fillStyle=INK; wc.fillText('ARC STRONGBOX',ct.x+1,ct.y-lift-d2-25);
-      wc.fillStyle='#ffd76a'; wc.fillText('ARC STRONGBOX',ct.x,ct.y-lift-d2-26);
+      wc.fillStyle=INK; wc.fillText('MERIDIAN STRONGBOX',ct.x+1,ct.y-lift-d2-25);
+      wc.fillStyle='#ffd76a'; wc.fillText('MERIDIAN STRONGBOX',ct.x,ct.y-lift-d2-26);
       wc.textAlign='left';
     }
     if(ct.mine&&!ct.opened){
@@ -13040,15 +13067,15 @@ function gunIcon(c,id,cx,cy,S,tint){
   // barrel
   c.fillRect(S*0.06,-S*0.05,L*0.55,S*0.10);
   // stock (long guns) or grip-only (pistols)
-  if(id!=='pistol'&&id!=='ferro') c.fillRect(-S*0.5,-S*0.06,S*0.24,S*0.12);
+  if(id!=='pistol'&&id!=='tacker') c.fillRect(-S*0.5,-S*0.06,S*0.24,S*0.12);
   // grip
   c.fillRect(-S*0.16,S*0.07,S*0.10,S*0.20);
   // magazine: drum for the lmg, long stick for smg family, box otherwise
   if(id==='lmg'){ c.beginPath(); c.arc(-S*0.02,S*0.16,S*0.13,0,6.2832); c.fill(); }
-  else if(id==='smg'||id==='kettle'||id==='stitcher') c.fillRect(0,S*0.07,S*0.09,S*0.26);
+  else if(id==='smg'||id==='sputter'||id==='chatter') c.fillRect(0,S*0.07,S*0.09,S*0.26);
   else if(W.mag>0) c.fillRect(0,S*0.07,S*0.10,S*0.16);
   // pump / foregrip on the scatterguns
-  if(id==='shotgun'||id==='hullcracker') c.fillRect(S*0.16,S*0.03,S*0.16,S*0.09);
+  if(id==='shotgun'||id==='scuttle') c.fillRect(S*0.16,S*0.03,S*0.16,S*0.09);
   // optic
   if(W.optic){ c.fillStyle=darkHex(col,0.5);
     c.fillRect(-S*0.10,-S*0.20,S*0.22,S*0.09);
@@ -13441,7 +13468,8 @@ function bagStacks(){
 function drawBag(){
   // THE GRID, v2.87. His notes, same afternoon: items should have "good
   // images/graphics" everywhere, and the inventory "should move to like a
-  // placement/backpack system like arc raiders or diablo... or minecraft, but
+  // placement/backpack system like [title elided v2.97] or diablo... or
+  // minecraft, but
   // the backpack should be unlimited". So: a tile grid of icon stacks,
   // identical items stacking with a count badge, unlimited depth with a
   // scrolling window, rarity on the tile border, and the existing drag,
@@ -13628,7 +13656,7 @@ function drawMapOverlay(){
     ctx.strokeStyle='rgba(180,196,210,.55)'; ctx.lineWidth=1.5;
     ctx.beginPath(); ctx.arc(mx3,my3,5,0,6.2832); ctx.stroke();
   }
-  // ARC caches are marked, because a guaranteed jackpot you never find is the
+  // Meridian caches are marked, because a guaranteed jackpot you never find is the
   // same as no jackpot. Marked whether or not you have been there, so the route
   // choice is available from the first second of the raid: the near one is on
   // your way out, the far ones are a decision.
@@ -14438,15 +14466,15 @@ var ROADMAP=[
   ['NOW','Deployment briefings: choose the map knowing what is on it'],
   ['DONE','THE QUARRY: a fourth map that is five terraces and eight ramps'],
   ['DONE','A world that looks lived in and left: wrecks, ruins, kitchens, birds and deer'],
-  ['DONE','DAM BATTLEGROUNDS rebuilt: nine zones, seven landmarks, a real crest'],
+  ['DONE','GREYWATER DAM rebuilt: nine zones, seven landmarks, a real crest'],
   ['DONE','Guns wear with use and Merrit services them'],
   ['DONE','THE SEAL: a door too big to cut in one raid, per map'],
   ['NEXT','Two raiders, one raid (a big one, not a quick one)'],
   ['DONE','Machines that answer a call and take roles: pin, flank, rush'],
-  ['DONE','THE TERMS: sign for worse odds and ARC pays better'],
+  ['DONE','THE TERMS: sign for worse odds and Meridian pays better'],
   ['DONE','Machine voices: tell a Sentry from a Crawler with your eyes shut'],
   ['DONE','Weather that turns while you are still out there'],
-  ['DONE','Windfalls and the ARC Strongbox: greed sets the odds'],
+  ['DONE','Windfalls and the Meridian Strongbox: greed sets the odds'],
   ['DONE','THE LISTENER: blind, dormant, and it hunts the noise you make'],
   ['DONE','Your body stays where you fell, and you can go back for it'],
   ['DONE','The Stray: a survivor who tells you where a cache is'],
@@ -14668,7 +14696,7 @@ function renderGamble(){
 }
 // DRAG IT ACROSS, v2.92. His note: "i don't understand how to move stuff from
 // the dev box to my inventory -- again, needs to be dragable ala diablo,
-// minecraft, arc raiders." He is right that it was opaque: the crate was a
+// minecraft, [title elided v2.97]." He is right that it was opaque: the crate was a
 // READ-ONLY LIST beside an on/off toggle, so there was no way to take one
 // medkit, only to switch a fixed kit on for the whole raid. It is two panels
 // now, the crate's infinite supply on the left and your actual stash on the
