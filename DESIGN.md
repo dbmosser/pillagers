@@ -8003,3 +8003,68 @@ Not verified: no balance measurement was run. Nothing in this build touches a
 random draw, an entity decision or a timing constant; it is HUD layout, one input
 guard and two draw routines, so the seeded stream is unchanged by construction
 rather than by measurement.
+
+### v2.95: four maps were built and he has been playing one of them for 25 runs
+
+His note: "if thre are multiple maps, i think i always play the same one, and i
+don't know how to switch them -- gotta let me choose somehow -- maybe we need
+another thing in the undercroft called settings?"
+
+He is right, and checking it against the current code makes it worse rather than
+better. The switch was not missing. It has existed for a long time as a 9.5px
+button called "Map: DAM BATTLEGROUNDS", parked in the dev half of the Operator
+Terminal between the sim progress line and the roadmap, and clicking it cycled
+blind to the next index. So the feature was there, it was simply hidden behind the
+one panel he has separately told me has "way too much sthit going on", and it named
+no sector until after you had already committed to changing to it. His flight
+recorder confirms the outcome: 25 runs, every one of them on index 0.
+
+THE FIX IS PLACEMENT, NOT FUNCTIONALITY. The choice now rides on the DEPLOY LIFT,
+which is the one station in the Undercroft that every raid passes through. E still
+deploys, with no extra step and no new friction, and R opens the sector board. The
+lift's own prompt line states the destination: "[E] deploy [R] sector > COLD
+STORAGE". That line is generated from a FUNCTION rather than a string, because the
+hub geometry is built once and the sector can change while you are standing in it,
+which a baked string would not survive.
+
+THE BOARD SAYS WHAT THE SECTORS ARE. A picker that lists four names is barely
+better than a blind cycle, because "there are four maps" was never the missing
+information; a reason to prefer one was. Each sector carries a character line
+written from the measurements rather than from flavour, plus its size, its named
+zone count, its keyed room count, and its container density as a percentage against
+the average, drawn live from MAPCONT. Seal progress appears when you have cut any,
+and a sector holding your body says so, because that is the single most likely
+reason to deliberately pick a map you would otherwise skip. The current sector is
+marked DEPLOYING HERE, so the state is never ambiguous.
+
+SETTINGS, as he asked, but not as a sixth station. He asked at v2.81 for FEWER
+bodies in the Undercroft and was right, so adding one back to hold two switches
+would be undoing his own note. The dev box already carries the things that are
+switches rather than content, so settings is its third key: T. It holds text size
+and auto-export, which were the other two buttons buried beside the map button, and
+states the two controls that are easy to lose, H for the legend and BACKSPACE for
+the cursor. The Operator Terminal buttons still work and still sync; this is a
+second door onto the same flags, not a move.
+
+The old map button is not deleted either, it just stops cycling blind and opens the
+same board.
+
+Verified: parsecheck PASS at v2.95, all four maps and the hub drive and draw with
+drawErr null. Driven through the DOM, which is the path a player takes: the button
+opens the board, the board renders 4 rows named DAM BATTLEGROUNDS, BURIED CITY,
+COLD STORAGE and THE QUARRY, exactly one carries DEPLOYING HERE, clicking row 2
+moves the mark, sets mapIx to 2, updates the terminal button to "Map: COLD STORAGE"
+and persists 2 into salvagerun:profile under the unchanged key. Facts row for COLD
+STORAGE reads "42 by 34 hectares, 5 named zones, 2 keyed rooms, +9% loot". The lift
+sub line reads "[E] deploy [R] sector > COLD STORAGE" and its acts are KeyE and
+KeyR; the dev box reads "[E] dev crate [R] tuning [T] settings". Both settings
+toggles move and write back, text size 100 to 125 percent and auto-export OFF to
+ON. Hub frame captured at 1280x718 with the lift line legible.
+Not verified: no balance measurement, and none is meaningful here. Nothing in this
+build touches a random draw, an entity decision or a timing constant. One caveat
+worth stating plainly: this build makes it easy for him to leave DAM BATTLEGROUNDS
+for the first time, so the next flight recorder may show an extract rate that moved
+for reasons of map character rather than of balance. The per-map spread has never
+been measured against his own play, only against the bot, so treat the first
+cross-sector runs as uncontrolled.
+

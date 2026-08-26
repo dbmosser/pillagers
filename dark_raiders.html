@@ -245,6 +245,23 @@
   </div>
 </div>
 
+<div class="modal" id="sectormodal">
+  <h3>Where are you going?</h3>
+  <div class="msub">Four sectors, and they are not reskins of each other. Your stash, your credits, your contracts and your seal progress are yours everywhere; what changes is the ground you have to work. Your body stays on the sector it fell on.</div>
+  <div id="sectorlist"></div>
+  <div style="display:flex;gap:8px;margin-top:10px">
+    <button class="deploy" id="sectordeploy" style="flex:1.4">DEPLOY TO THIS SECTOR</button>
+    <button id="closesector" style="padding:8px 20px">Close</button>
+  </div>
+</div>
+<div class="modal" id="settingsmodal">
+  <h3>Settings</h3>
+  <div class="msub">Presentation only. Nothing here changes the game, the balance or your profile.</div>
+  <div id="setlist" class="plist"></div>
+  <div style="display:flex;gap:8px;margin-top:10px">
+    <button id="closesettings" style="padding:8px 20px">Close</button>
+  </div>
+</div>
 <div class="modal" id="cratemodal">
   <h3>Dev Crate</h3>
   <div class="msub">Testing convenience. Take any of it into the next raid, or take none. Opt in per run.</div>
@@ -456,7 +473,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.94';
+var VER='2.95';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -467,18 +484,18 @@ var VER='2.94';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='2.87';
+var WHATSNEW_VER='2.95';
 var WHATSNEW=[
-  'Your FIRE button now uses the selected hotbar slot.',
-  'Heals take time now. The bar shows health arriving.',
-  'Buildings have windows: see and shoot through, not walk through.',
-  'Raider crews feud. The colour bar by a name is his crew.',
-  'Drag items from TAB inventory onto the hotbar.',
-  'BACKSPACE resets a lost cursor.',
-  'Tuning Console: toggles for heals, feuds and windows.',
-  'The Undercroft is five stations now. Holt handles all trade.',
-  'The world breaks: walls, cars, glass all have HP now.',
-  'Item graphics everywhere: inventory grid, hotbar, shops, stash.'
+  'FOUR SECTORS. Press R at the lift to choose where you deploy.',
+  'The lift now says which sector it is taking you to.',
+  'Dev box, T: settings. Text size and auto-export live there.',
+  'Keyed doors show a lock: green if you carry its key, amber if not.',
+  'Windows are framed and lit now, so you can pick them out.',
+  'The controls legend is compact. H cycles compact, full, off.',
+  'Game messages moved to the top centre, out from under it.',
+  '1 to 9 pick a hotbar slot even with the inventory open.',
+  'ENTER equips the selected bag gun, SHIFT+ENTER to your back.',
+  'The world breaks: walls, cars, glass all have HP.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -13832,7 +13849,8 @@ function buildHub(){
   // press E" still does the most common thing at every station.
   var stations=[
     {id:'lift',x:350,y:105,r:48,label:'DEPLOY LIFT',sub:'to the surface',c:'#35d6c8',
-     acts:{KeyE:['deploy',function(){ ac(); startRaid(); }]}},
+     acts:{KeyE:['deploy',function(){ ac(); startRaid(); }],
+           KeyR:['sector',function(){ renderSector(); document.getElementById('sectormodal').classList.add('on'); }]}},
     {id:'trader',x:110,y:255,r:46,label:'HOLT, THE TRADER',sub:'',c:'#ffb02e',vendor:1,
      acts:{KeyE:['shop',function(){ say2(vendorLine('req')); renderShop(); document.getElementById('shopmodal').classList.add('on'); }],
            KeyR:['workshop',function(){ say2(vendorLine('work')); renderWork(); document.getElementById('workmodal').classList.add('on'); }],
@@ -13845,7 +13863,8 @@ function buildHub(){
            KeyR:['season',function(){ renderSeason(); document.getElementById('seasonmodal').classList.add('on'); }]}},
     {id:'dev',x:590,y:255,r:42,label:'DEV BOX',sub:'',c:'#9aa8b2',
      acts:{KeyE:['dev crate',function(){ renderCrate(); document.getElementById('cratemodal').classList.add('on'); }],
-           KeyR:['tuning',function(){ toggleTune(true); }]}}
+           KeyR:['tuning',function(){ toggleTune(true); }],
+           KeyT:['settings',function(){ renderSettings(); document.getElementById('settingsmodal').classList.add('on'); }]}}
   ];
   // The sub line is BUILT from the acts, so the keys on screen can never drift
   // from the keys that work; a one-act station keeps its authored flavour line.
@@ -13856,6 +13875,19 @@ function buildHub(){
       st.sub=ks.map(function(k){return '['+KEYNAMES[k]+'] '+st.acts[k][0];}).join('   ');
     st.act=st.acts.KeyE[1];
   });
+  // HIS NOTE, 2026-08-25: "if thre are multiple maps, i think i always play the
+  // same one, and i don't know how to switch them." He was right and the reason
+  // is embarrassing: the switch existed, as a 9.5px button buried in the dev half
+  // of the Operator Terminal, cycling blind with no map named until after you
+  // pressed it. Four maps have been built and he has been playing DAM
+  // BATTLEGROUNDS, index 0, for 25 runs. The destination now rides on the lift
+  // itself, so the one station everybody uses every raid states where it is
+  // taking you before you step in. A FUNCTION rather than a string because the
+  // hub is built once and the sector can change while you are standing in it.
+  stations[0].sub=function(){
+    return '[E] deploy   [R] sector      >  '+
+      FIXED_MAPS[clamp(P.mapIx||0,0,FIXED_MAPS.length-1)].name;
+  };
   var lights=[];
   for(var s=0;s<stations.length;s++)
     lights.push({x:stations[s].x,y:stations[s].y-10,r:190,c:stations[s].c,i:.34,f:s*1.7,fl:false});
@@ -14065,7 +14097,7 @@ function drawHubHUD(ox,oy){
     ctx.font=FS(TYPE.head); ctx.fillStyle=s.c;
     ctx.fillText('[E]  '+s.label,W/2,H-58);
     ctx.font=FS(TYPE.label); ctx.fillStyle='#8a96a1';
-    ctx.fillText(s.sub,W/2,H-42);
+    ctx.fillText(typeof s.sub==='function'?s.sub():s.sub,W/2,H-42);
     ctx.textAlign='left';
   }
   // The one-time card. Dismissed by walking, because the first thing anybody
@@ -15283,9 +15315,86 @@ function syncMapBtn(){
   var b=document.getElementById('mapbtn');
   if(b) b.textContent='Map: '+FIXED_MAPS[clamp(P.mapIx||0,0,FIXED_MAPS.length-1)].name;
 }
+// The blind cycle is gone. Same button, but it now opens the board that says
+// what the four sectors actually ARE, which is the part he never had.
 document.getElementById('mapbtn').onclick=function(){
-  P.mapIx=((P.mapIx||0)+1)%FIXED_MAPS.length;
-  saveProfile(); syncMapBtn();
+  renderSector(); document.getElementById('sectormodal').classList.add('on');
+};
+// WHAT EACH SECTOR IS, in one line, written from the measurements rather than
+// from flavour. These are not decoration: the whole reason he stayed on one map
+// is that the game never gave him a reason to prefer another, and "they are all
+// four different maps" is not a reason. Density is the measured container
+// multiplier from MAPCONT, stated as a percentage against the average.
+var SECTOR_CHAR=[
+  'Slow and wet. Three stacked worlds joined at a handful of crossings, and the crest is the only long way across. Roughly a seventh of a raid here is spent wading, which is slower and louder than walking.',
+  'Loud and early. The densest interior in the game and the most loot per container, which also means contact comes soonest. If you like fighting in rooms, this is the one.',
+  'Quiet, then lethal. Long holds down tight aisles where nothing happens for minutes and then all of it happens at once. The least forgiving sector to be caught in the open on.',
+  'Open and forgiving. The longest sight lines in the game and the fewest raider kills, so you see trouble coming and can usually walk away from it. The thinnest loot of the four.'
+];
+function renderSector(){
+  var host=document.getElementById('sectorlist');
+  var cur=clamp(P.mapIx||0,0,FIXED_MAPS.length-1),h='';
+  for(var i=0;i<FIXED_MAPS.length;i++){
+    var M=FIXED_MAPS[i],R=sealRec(i),sel=(i===cur);
+    var dens=Math.round(((MAPCONT[i]===undefined?1:MAPCONT[i])-1)*100);
+    var densTxt=(dens>0?('+'+dens+'% loot'):(dens<0?(dens+'% loot'):'average loot'));
+    var facts=[Math.round(M.w/100)+' by '+Math.round(M.h/100)+' hectares',
+               (M.zones?M.zones.length:0)+' named zones',
+               (M.locked?M.locked.length:0)+' keyed rooms',
+               densTxt];
+    if(R.tier>0||R.cut>0) facts.push('seal tier '+(R.tier+1)+', '+Math.round(R.cut)+' of '+sealNeed(R.tier)+'s cut');
+    if(P.body&&P.body.items&&P.body.map===i) facts.push('YOUR BODY IS HERE, '+P.body.items.length+' items');
+    h+='<div class="row sectorpick" data-map="'+i+'" style="display:block;cursor:pointer;'+
+       (sel?'border-left:3px solid var(--amber);background:rgba(255,176,46,.10)':'border-left:3px solid transparent')+'">'+
+       '<div><b style="color:'+(sel?'var(--amber)':'var(--bone)')+'">'+M.name+'</b>'+
+       (sel?' <span style="color:var(--amber);font-size:10px">DEPLOYING HERE</span>':'')+
+       '<div class="hint" style="margin:2px 0 0">'+SECTOR_CHAR[i]+'</div>'+
+       '<div class="hint" style="margin:2px 0 0;color:var(--ash)">'+facts.join('  &middot;  ')+'</div></div></div>';
+  }
+  host.innerHTML=h;
+  var rows=host.querySelectorAll('.sectorpick');
+  for(var r=0;r<rows.length;r++){
+    rows[r].onclick=function(){
+      P.mapIx=parseInt(this.getAttribute('data-map'),10);
+      saveProfile(); syncMapBtn(); renderSector();
+    };
+  }
+}
+document.getElementById('sectordeploy').onclick=function(){
+  document.getElementById('sectormodal').classList.remove('on');
+  document.getElementById('hub').classList.remove('on');
+  ac(); startRaid();
+};
+document.getElementById('closesector').onclick=function(){
+  document.getElementById('sectormodal').classList.remove('on');
+};
+// HIS NOTE, same message: "maybe we need another thing in the undercroft called
+// settings?" Not another station, he asked for fewer of those at v2.81 and was
+// right. The dev box already holds the two things that are switches rather than
+// content, so settings is its third key. The buttons in the Operator Terminal
+// still work and still sync; this is a second door onto the same two flags.
+function renderSettings(){
+  var host=document.getElementById('setlist');
+  host.innerHTML=
+    '<div class="row"><div style="flex:1"><b>Text size</b><div class="hint">Scales every string on every canvas and in every panel.</div></div>'+
+    '<button id="set_text" style="padding:6px 12px">'+Math.round(uiScale()*100)+'%</button></div>'+
+    '<div class="row"><div style="flex:1"><b>Auto-export the flight recorder</b><div class="hint">Writes a run report to your Downloads at the end of every raid.</div></div>'+
+    '<button id="set_auto" style="padding:6px 12px">'+(P.autoExport?'ON':'OFF')+'</button></div>'+
+    '<div class="row"><div style="flex:1"><b>Controls legend</b><div class="hint">H in a raid cycles compact, full and off. Compact is the default.</div></div>'+
+    '<span class="hint">H</span></div>'+
+    '<div class="row"><div style="flex:1"><b>Mouse cursor</b><div class="hint">The cursor hides while you are aiming and returns with the bag. BACKSPACE forces it back at any time.</div></div>'+
+    '<span class="hint">BKSP</span></div>';
+  document.getElementById('set_text').onclick=function(){
+    var cur=UISCALES.indexOf(uiScale());
+    P.uiScale=UISCALES[(cur+1)%UISCALES.length];
+    saveProfile(); syncTextSize(); renderSettings();
+  };
+  document.getElementById('set_auto').onclick=function(){
+    P.autoExport=!P.autoExport; saveProfile(); syncAutoEx(); renderSettings();
+  };
+}
+document.getElementById('closesettings').onclick=function(){
+  document.getElementById('settingsmodal').classList.remove('on');
 };
 document.getElementById('textsizebtn').onclick=function(){
   var cur=UISCALES.indexOf(uiScale());
