@@ -10560,3 +10560,57 @@ on smokeR or fragR would compare two arms in which no throwable is ever used, an
 would correctly report no difference. His own runs are the only measurement these two
 dials can have, and his last one records 3 smoke and 0 frags thrown.
 
+
+### v3.32: nine slots, a crowbar that admits what it is, and rarity you can actually see
+
+THREE OF HIS NOTES, all about the same bar.
+
+"WHAT IS ITEM 7 SUPPOSED TO BE? WHEN I SELECT IT, RIGHT HAND CORNER SAYS AUTO RIFLE
+AND IT SHOOTS MY GUN, BUT IT HAS A DIFFERENT GRAPHIC."
+
+Slot 7 is the Crowbar. It is deliberately informational: it comes up by itself while
+you work a container or cut a seal, there is no standalone crowbar action anywhere in
+the file, and tools fall through to the gun precisely so that selecting one never
+swallows your trigger. That design is defensible and I have not changed it.
+
+The READOUT was not defensible. kind 'tool' was lumped in with 'gun' in the corner
+panel, so selecting a crowbar printed the RIFLE's name over a crowbar icon, and the
+mismatch is indistinguishable from a bug. It names itself now, and states where the
+trigger actually went rather than leaving him to infer it:
+
+  Crowbar
+  comes up on its own
+  Chatter still in hand
+
+"CAN WE INCREASE THE HOTBAR TO 9 ITEMS?" The bar is DERIVED, rebuilt every frame from
+what you are carrying, so its length was however many things you happened to have,
+seven or eight. The digits 1 to 9 have selected slots since v2.94, so two of those
+keys addressed nothing at all. It is padded to a fixed nine now: the derived slots
+keep their order and the remainder are real empty slots you can drag anything onto,
+which is what makes the extra keys worth having rather than merely present.
+
+"IN THE TOOLBAR, THE RARITY COLORS OF THE ITEMS SHOULD BE SHOWN. SAME FOR THE
+INVENTORY. IT SHOULD BE THE ENTIRE BACKGROUND, NOT JUST THE OUTLINING SQUARE."
+
+Rarity was a 1.2 pixel border, which at hotbar scale is a few pixels of colour around
+a dark tile and reads as nothing at a glance under pressure. The whole tile is tinted
+now, in both places. rfill() derives the wash from RCOL rather than restating the four
+colours, because two colour tables for one concept is exactly how the border and the
+fill would drift apart. Common sits at 6 percent alpha deliberately: if everything is
+tinted, nothing is. The wash goes over the base fill so a selected slot still reads as
+selected, and under the icon so it never fights the portrait.
+
+Verified: parsecheck PASS at v3.32, all four maps and the hub draw with drawErr null,
+raid view and bag open. G.hotCells is 9, so nine cells are drawn AND nine drop targets
+are recorded from the same loop that draws them. Read back from the pixels with one
+item of each of the four rarities in the bag: all four inventory tiles are visibly
+different and the throwable slots carry their tint. Slot 7 selected reads exactly as
+quoted above.
+MY OWN COLLISION, CAUGHT BY THE CAPTURE AND FIXED: the first cut put the second tool
+line at by-LH(4), which sat directly on top of the carry-weight readout. Both lines
+now live inside the vertical space the single ammo line would have used.
+Not verified: no balance measurement, and none applies; this is slot padding and two
+fills, and drawHUD never runs with G.sim set. Also not verified: whether nine slots
+changes anything for him in practice. The two new slots are empty until he drags
+something into them, and the drag itself is only three builds old.
+

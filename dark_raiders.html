@@ -458,6 +458,7 @@ function myRig(){ return armorById((P&&P.rig)||'none'); }
 // The old flat ceiling is now whatever rig you walked in wearing, so the HUD bar
 // scales to the rig instead of to a constant that no longer means anything.
 var ARMOR_MAX=60;
+var HOTBAR_N=9;
 function armorCap(){ return (G&&G.player&&G.player.armorCap!==undefined)?G.player.armorCap:ARMOR_MAX; }
 // The rig the SIM wears. 'light' is what buildRaid has hardcoded since the bare
 // sim player was found to be measuring a game nobody plays, and it stays the
@@ -491,7 +492,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.31';
+var VER='3.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -768,6 +769,20 @@ var ITEMS={
 // they must always be edited together. Rare moved because #5aa9e6 on a navy
 // panel was a real contrast failure, and rare items are what the stash is for.
 var RCOL={common:'#cfd8ef',uncommon:'#7fc4a0',rare:'#7cc4ff',elite:'#d08ce8'};
+// HIS NOTE: "in the toolbar, the rarity colors of the items should be shown. Same
+// for the inventory. It should be the entire background, not just the outlining
+// square." Rarity was a 1.2px border, which at hotbar scale is a few pixels of
+// colour around a dark tile and reads as nothing at a glance under pressure.
+// RFILL is the same four colours at a low alpha, so a tile is TINTED by what it
+// is worth. Derived from RCOL rather than written out again, because two colour
+// tables for one concept is exactly how the border and the fill would drift.
+// 'common' is deliberately near-transparent: if everything is tinted, nothing is.
+var RFILL_A={common:0.06,uncommon:0.20,rare:0.24,elite:0.30};
+function rfill(r){
+  var c=RCOL[r]; if(!c) return null;
+  var n=parseInt(c.slice(1),16);
+  return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+(RFILL_A[r]||0.18)+')';
+}
 var SHOP=[
   {k:'bandage',kind:'item',price:110,rep:0},{k:'medkit',kind:'item',price:390,rep:0},
   {k:'ammobox',kind:'item',price:170,rep:0},{k:'smoke',kind:'item',price:150,rep:0},
@@ -7643,6 +7658,14 @@ function hotbarSlots(){
   // Overrides rather than a full stored layout on purpose: the derived list stays
   // exactly as it was, so nothing that already works can regress, and an
   // assignment that no longer makes sense simply falls away.
+  // HIS NOTE: "Can we increase the hotbar to 9 items?" The bar is DERIVED, so its
+  // length was however many things you happened to be carrying, seven or eight.
+  // The digits 1 to 9 have selected slots since v2.94, so two of them addressed
+  // nothing. Padded to a fixed nine: the derived slots keep their order, and the
+  // remainder are real empty slots you can drag anything onto, which is what
+  // makes the extra keys worth having rather than just present.
+  while(out.length<HOTBAR_N) out.push({k:'empty:'+out.length,name:'Empty slot',kind:'empty',count:0,c:'#4d5762'});
+  if(out.length>HOTBAR_N) out.length=HOTBAR_N;
   if(G.hotAssign) for(var ai in G.hotAssign){
     var aix=+ai, akey=G.hotAssign[ai];
     if(!(aix>=0&&aix<out.length)) continue;
@@ -13615,8 +13638,13 @@ function drawHUD(){
       var empty=(S.count===0);
       ctx.fillStyle=on?'rgba(38,32,20,.94)':'rgba(18,15,24,.80)';
       ctx.fillRect(bx,hy,bw,bw);
+      // the rarity wash goes OVER the base so a selected slot still reads as
+      // selected, and under the icon so it never fights the portrait
+      var _hr=(S.itemKey&&ITEMS[S.itemKey])?ITEMS[S.itemKey].r
+             :((S.icon&&ITEMS[S.icon])?ITEMS[S.icon].r:null);
+      if(_hr&&!empty){ var _hf=rfill(_hr); if(_hf){ ctx.fillStyle=_hf; ctx.fillRect(bx,hy,bw,bw); } }
       var dragOver=(G.drag&&mouse.x>=bx&&mouse.x<=bx+bw&&mouse.y>=hy&&mouse.y<=hy+bw);
-      ctx.strokeStyle=dragOver?'#7fe0a0':(on?'#ffc04a':'rgba(140,152,163,.35)');
+      ctx.strokeStyle=dragOver?'#7fe0a0':(on?'#ffc04a':((_hr&&RCOL[_hr]&&!empty)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
       ctx.lineWidth=(dragOver||on)?2:1;
       ctx.strokeRect(bx+.5,hy+.5,bw-1,bw-1);
       var cx2=bx+bw/2,cy2=hy+bw*0.45;
@@ -13779,17 +13807,35 @@ function drawHUD(){
   // same time. It follows the held slot now: a gun still reads name over
   // ammo, and anything else reads its name over how many you have.
   var _HS=hotbarSlots(), _HH=_HS[hotSel()];
-  var _heldGun=(!_HH||_HH.kind==='gun'||_HH.kind==='tool');
+  // HIS NOTE: "what is item 7 supposed to be? when I select it, right hand corner
+  // says auto rifle and it shoots my gun, but it has a different graphic."
+  // Slot 7 is the Crowbar. It is deliberately INFORMATIONAL: it comes up by
+  // itself while you work a container, there is no standalone crowbar action, and
+  // tools fall through to the gun so selecting one never swallows your trigger.
+  // That design is fine. The READOUT was not: 'tool' was lumped in with 'gun'
+  // here, so the corner printed the rifle's name over a crowbar icon and the
+  // mismatch read as a bug. A tool now names itself and says where the trigger
+  // actually went, which is the same fall-through, stated.
+  var _isTool=(_HH&&_HH.kind==='tool');
+  var _heldGun=(!_HH||_HH.kind==='gun');
   ctx.font=FS(TYPE.head); ctx.fillStyle=_heldGun?'#cdd6dd':(_HH.c||'#cdd6dd');
   ctx.fillText(_heldGun
     ? (p.wep.name+(p.ads?(opticMag()>1?('  '+opticMag().toFixed(2).replace(/0$/,'')+'x SCOPE'):'  [ADS]'):''))
     : _HH.name,
     W-16,by-LH(34));
   ctx.font=FS(TYPE.title);
-  if(!_heldGun){
+  if(_isTool){
+    ctx.font=FS(TYPE.label); ctx.fillStyle='#8a96a1';
+    // Both lines live in the vertical space the single ammo line would have used.
+    // The first cut put the second line at by-LH(4) and the capture showed it
+    // sitting on top of the carry-weight readout underneath.
+    ctx.fillText('comes up on its own',W-16,by-LH(22));
+    ctx.fillText(p.wep.name+' still in hand',W-16,by-LH(10));
+  }
+  else if(!_heldGun){
     var _cn=(_HH.count===null||_HH.count===undefined)?null:_HH.count;
     ctx.fillStyle=(_cn===0)?'#ff4d3d':'#cdd6dd';
-    ctx.fillText(_cn===null?'HELD':(_cn+' held'),W-16,by-LH(14));
+    ctx.fillText(_HH.kind==='empty'?'EMPTY':(_cn===null?'HELD':(_cn+' held')),W-16,by-LH(14));
   }
   else if(p.wep.mag===0){ ctx.fillStyle='#8a96a1'; ctx.fillText('MELEE',W-16,by-LH(14)); }
   else if(p.jam>0){ ctx.fillStyle='#e0483a'; ctx.fillText('JAMMED',W-16,by-LH(14)); }
@@ -14857,6 +14903,8 @@ function drawBag(){
       var hov=(mouse.x>=tx&&mouse.x<=tx+TILE&&mouse.y>=ty&&mouse.y<=ty+TILE);
       ctx.fillStyle=(si===sel)?'rgba(52,60,84,.9)':(hov?'rgba(34,42,58,.9)':'rgba(18,24,34,.9)');
       ctx.fillRect(tx,ty,TILE,TILE);
+      var _bf=rfill(it&&it.r);
+      if(_bf){ ctx.fillStyle=_bf; ctx.fillRect(tx,ty,TILE,TILE); }
       ctx.strokeStyle=(si===sel)?'#ffc04a':(RCOL[it&&it.r]||'rgba(90,102,116,.6)');
       ctx.lineWidth=(si===sel)?2:1.2;
       ctx.strokeRect(tx+.5,ty+.5,TILE-1,TILE-1);
