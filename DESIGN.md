@@ -9063,3 +9063,77 @@ than running two more 320 seed batches for a dial that has now failed to move
 anything twice. Also still unmeasured against HIS play rather than the bot's, for
 the reason given at v3.07: he fights raiders far more than the bot does.
 
+
+### v3.09: "punishes time spent, not value carried" stops being a slogan and becomes a measurement
+
+I have been repeating that phrase to him for weeks as a design concern, flagged as
+his call, without ever measuring it. This tick measured it. It is true, and the
+size of the effect is larger than I expected.
+
+THE HAZARD CURVE. 440 simulated raids across all four sectors. For each 60 second
+window: of everyone still ALIVE at the start of it, what fraction did not survive
+it. This has no selection problem, because every run is at risk in every window it
+reaches.
+
+  minute 1   4.8%   (21 of 440)
+  minute 2  16.7%   (70 of 419)
+  minute 3  18.9%   (65 of 344)
+  minute 4  30.0%   (79 of 263)
+  minute 5  31.6%   (54 of 171)
+  minute 6  45.1%   (46 of 102)
+  minute 7  27.9%   (12 of 43)
+  minute 8  46.4%   (13 of 28)
+
+Monotonic apart from minute 7, where n has fallen to 43 and the noise takes over.
+A raid's ninth minute is roughly NINE TIMES deadlier than its first. The clock is
+the antagonist.
+
+AND THE VALUE BANDS ARE SELECTION, CONFIRMED. The same 440 runs reproduce the exact
+shape his own recorder shows:
+
+  0-1k    2.6% out   average duration  84s
+  1-3k    0.0% out                    167s
+  3-6k    6.5% out                    209s
+  6-12k  18.6% out                    250s
+  12k+   23.8% out                    233s
+
+Read the duration column and the whole table dissolves. A run carrying under 1,000c
+is not a cautious run, it is a run that died at 84 seconds before it could get
+rich. The bands sort runs by how long they lasted and then report that as though it
+were about weight. Carrying more does not kill you; it is evidence you survived
+long enough to pick things up.
+
+The recorder already half knew this. haulBandLines carries a paragraph explaining
+why the bands must not be read as a risk curve, and it prints that paragraph
+whenever most deaths happen before the extraction decision, which for him is 83
+percent of them. A number that needs a paragraph telling you not to read it is a
+number worth replacing.
+
+WHAT SHIPS. The export now leads with SURVIVAL BY TIME IN RAID, computed the same
+way, from his own log. The value bands stay underneath, because they are still the
+right answer to a different question and the comparison between the two is the
+lesson. The new table states plainly what it is: every run is at risk in every
+minute it reaches, so if these numbers climb, the clock is what is killing him and
+not the weight of the bag.
+
+WHAT THIS DOES NOT DO is change the game. I am not touching the raid clock, the
+siege, or enemy escalation on the back of one measurement, because which of those
+should carry the pressure is a design decision and it is his. What it does is
+replace a misleading instrument with an honest one, so the next time either of us
+argues about greed and risk we are arguing from the right number.
+
+Verified: parsecheck PASS at v3.09, all four maps and the hub drive and draw with
+drawErr null in the raid view and with the map overlay up. The hazard arithmetic is
+checked against a PLANTED log with a known shape rather than eyeballed: 10 runs,
+two dying at 30 and 45 seconds, three at 70, 80 and 110, two extracting at 220 and
+230, three dying at 240, 250 and 260. It reports minute 1 as 2 of 10, minute 2 as 3
+of 8, minute 3 as 0 of 5, minute 4 as 1 of 5, which is correct on every count
+including that the two extractions are at risk but are not deaths.
+Not verified: the hazard curve is the BOT's, not his. His own table will be thin
+for a while, since it needs runs spread across the minutes and he has 32 logged,
+and the per-minute counts will be small enough to be noisy until that grows. I have
+deliberately not tried to explain WHY hazard rises: alert accumulation, the siege,
+ammunition running down and the timer forcing the endgame are all candidates and I
+have measured none of them, so attributing it would be exactly the kind of
+plausible story that made me misread the penetration lean one tick ago.
+
