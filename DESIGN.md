@@ -8751,3 +8751,51 @@ problem as the thing being fixed.
 Not verified: nothing outstanding. The correction itself is verified by the probe
 described above, and the claim that no measurement was affected rests on ping()
 never having been stubbed, which is checked rather than assumed.
+
+### v3.05: the search bar stops pricing the box, and the roadmap stops advertising finished work
+
+TWO HALVES OF ONE NUMBER. At v2.99 I put "3 left, ELITE" on the search bar so the
+"one more pull or get out" decision had something behind it. At v3.01 he said loot
+boxes should not tell you the value of what is inside before you open them, because
+it kills the gamble. I neutralised the pre-open glow and kept this one, arguing it
+lands after you have committed rather than while you are choosing which box.
+
+That distinction is thinner than his principle. Knowing the last item is ELITE is
+knowing the value before you have it, which is the thing he objected to, and the
+fact that it arrives four seconds later does not change what it tells you.
+
+So the number is split along the line his principle actually draws. COUNT STAYS:
+how many pulls are left is a question about TIME, and time is what you are visibly
+spending and what the bar is already measuring. RARITY GOES: that is value, and
+whether the time is worth the value is precisely the gamble. The bar also drops
+back to neutral amber instead of glowing with whatever is still in the box. The
+label now reads "2 items left" and nothing else.
+
+THE ROADMAP WAS ADVERTISING FINISHED WORK. Its NOW item read "Deployment
+briefings: choose the map knowing what is on it", and that shipped across v2.95
+and v3.00: the lift names its destination, and the sector board describes all four
+sectors with measured extract rates, contact times, container counts and median
+hauls. Leaving it under NOW is the same stale-claim fault as the SPEC 4.6 comment
+describing a deletion that had been reverted, and as the MAPCONT copy built on an
+inert constant. It is DONE now, and NOW states the thing that is genuinely open and
+waiting on him: COLD STORAGE walking out at 4.4 percent against 15 to 23 everywhere
+else.
+
+I also swept for more of the duplicated-transform defect that produced the
+throwable bug at v3.01 and the map-click problem at v3.02, and FOUND NOTHING
+FURTHER. There is exactly one world-to-screen function, w2s, with nine callers and
+no hand-rolled copies anywhere in the file, and screen-to-world is now the single
+mouseWorld plus the map projection, each with one definition. The gamepad path
+computes the inverse deliberately to synthesise a cursor position and is not a
+duplicate. Saying so plainly because a check that finds nothing is still a result.
+
+Verified: parsecheck PASS at v3.05, all four maps and the hub drive and draw with
+drawErr null, in the raid view and with the map overlay up. Search label driven
+through the real main loop against a planted container holding two commons and an
+elite: the label reads "2 items left" with two still inside and the best of them
+elite, and the elite is not named or coloured anywhere on screen. Pixel capture at
+4x confirms neutral amber text and bar.
+Not verified: no balance measurement, and none applies. This build changes one HUD
+string, one bar colour and one roadmap entry; it touches no roll, no entity
+decision and no timing constant. The judgement call itself is his to overturn: if
+he wanted the rarity kept and only the pre-open glow gone, it is one line back.
