@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.00';
+var VER='3.01';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6352,13 +6352,31 @@ function tryRoll(){
   p.roll=.38; p.rollCd=.85; p.iv=Math.max(p.iv,.30); p.stam-=ROLLSTAM;
   ping(p.x,p.y,80,false,false,'player','move'); blip('clank');
 }
+// HIS NOTE, 2026-08-26: "when I use a throwable, it should travel in the direction
+// that I am looking, similar to firing the gun. Right now it seems to always go in
+// another direction." He is exactly right and the cause is duplicated arithmetic
+// that drifted, which is the defect class this file produces more than any other.
+// There were TWO copies of screen-to-world. The aiming copy divides by the zoom,
+// and carries a comment saying it must, "or aiming drifts further from the cursor
+// the further you zoom in and the gun stops pointing where you are pointing". The
+// throwing copy was written before that fix and never got it, so it read the mouse
+// as if the zoom were always 1. At any zoom other than 1 the gun and the throw
+// disagree, and the gap widens the further the cursor is from screen centre, which
+// is precisely "it always goes in another direction".
+// There is now ONE function and both callers use it, so this cannot recur.
+function mouseWorld(){
+  var p=G.player,pz=ZOOM();
+  var cx=(G.camX===undefined?p.x-W/(2*pz):G.camX);
+  var cy=(G.camY===undefined?p.y-H/pz*0.54:G.camY);
+  return {x:mouse.x/pz+cx, y:mouse.y/pz+cy};
+}
 function doThrow(){
   var p=G.player;
   if(p.downed||p.roll>0) return;
   var tk=THROWKEYS[G.tsel];
   if(G.pouch[tk]<=0){ cycleThrow(); if(G.pouch[THROWKEYS[G.tsel]]<=0) return; tk=THROWKEYS[G.tsel]; }
   G.pouch[tk]--; G.tel.thr[tk]++;
-  var wx=mouse.x+(G.camX===undefined?p.x-W/2:G.camX),wy=mouse.y+(G.camY===undefined?p.y-H*.54:G.camY);
+  var _mw=mouseWorld(),wx=_mw.x,wy=_mw.y;
   var dx=wx-p.x,dy=wy-p.y,d=Math.sqrt(dx*dx+dy*dy);
   var rngT=Math.min(d,270);
   var ux=(d>1?dx/d:1),uy=(d>1?dy/d:0);
@@ -7674,9 +7692,8 @@ function updatePlayer(dt){
   // Screen to world has to divide by the zoom, or aiming drifts further from
   // the cursor the further you zoom in and the gun stops pointing where you
   // are pointing.
-  var pz=ZOOM();
-  var cxa=(G.camX===undefined?p.x-W/(2*pz):G.camX),cya=(G.camY===undefined?p.y-H/pz*.54:G.camY);
-  p.face=Math.atan2(mouse.y/pz+cya-p.y,mouse.x/pz+cxa-p.x);
+  var _aw=mouseWorld();
+  p.face=Math.atan2(_aw.y-p.y,_aw.x-p.x);
   if(p.hitFlash>0) p.hitFlash-=dt;
   if(G.crowbarUp>0) G.crowbarUp-=dt;
   if(p.recoil>0) p.recoil-=dt*7;
@@ -7936,7 +7953,24 @@ function updatePlayer(dt){
           fireWeapon(p,p.wep,p.x+Math.cos(p.face)*100,p.y+Math.sin(p.face)*100,true);
         }
       }
-    } else { if(!p.fired){ say('Dry. Press R.'); p.fired=true; } p.lastShot=now; }
+    } else {
+      // HIS NOTE, 2026-08-26: "game should auto-reload if you try to fire a gun
+      // that is empty clip but has reserve ammo". Pulling the trigger on an empty
+      // magazine is an unambiguous statement that you want to shoot, and making
+      // you then press a second key to say so again is a chore, not a decision.
+      // It reloads on the dry pull now. The reload still takes its full time and
+      // is still interruptible, so nothing about the cost of running dry changes,
+      // only the extra keystroke. With no reserve at all it says so, because then
+      // there is genuinely nothing to do about it.
+      if(!p.fired){
+        if(p.reserve>0&&p.reloading<=0){
+          p.reloading=p.wep.reload; T.reloads++;
+          if(!G.sim) say('Reloading...');
+        } else if(p.reserve<=0) say('Out of ammo.');
+        p.fired=true;
+      }
+      p.lastShot=now;
+    }
   }
   if(!mouse.down) p.fired=false;
 
@@ -10919,9 +10953,24 @@ function drawContS(ct){
     wc.fillRect(ct.x-w/2,ct.y-lift-d2-9,w*pf2,3);
   }
   if(!ct.opened){
+    // HIS NOTE, 2026-08-26: "the loot boxes shouldn't tell you the value of loot
+    // BEFORE you open them lol that kills the gamble". He is right, and it was
+    // doing exactly that: the pulse over every unopened container was tinted
+    // RCOL[ct.best], the rarity of the best thing inside, so an elite box glowed
+    // purple from across the room and a common one glowed white. Choosing which
+    // box to spend six seconds on is the gamble, and the box was answering it for
+    // you before you touched it.
+    // The pulse is neutral amber now: it still says UNLOOTED, which is navigation
+    // rather than gambling, and says nothing about what is in there.
+    // A CACHE keeps its own colour on purpose and that is not the same thing. A
+    // cache is a public landmark, named on the world label and marked on the
+    // sector map by deliberate design, because v1.75 established that a guaranteed
+    // jackpot you can never find is the worst of both worlds. You know a cache is
+    // rich the way you know a bank is rich; what you do not know is what is in any
+    // particular drawer.
     var pu=.5+.35*Math.sin(G.t*3+ct.x*.05);
     wc.globalCompositeOperation='lighter';
-    wc.fillStyle=RCOL[ct.best];
+    wc.fillStyle=ct.cache?RCOL[ct.best]:'#ffc04a';
     wc.globalAlpha=(ct.cache?.55:.28)*pu;
     wc.beginPath(); wc.arc(ct.x,ct.y-lift-d2-3,ct.cache?15:6,0,6.2832); wc.fill();
     if(ct.cache){
@@ -11448,7 +11497,18 @@ function render2D(dt){
       var vt=!!CR.vert;
       // Long axis in local terms, so one piece of code draws both orientations.
       var LEN=vt?ch3:cw3, WID=vt?cw3:ch3;
-      shadowE(cx3+cw3/2,cy3+ch3-1,cw3*0.54,6,.34);
+      // HIS NOTE, 2026-08-26: "why are all the cars on top of little hills? looks
+      // dumb, revert it". A wreck was drawing its own big soft ellipse under
+      // itself, 59 units wide and 12 tall on a car 55 wide, at 34 percent black.
+      // It is my v2.96 that made him see it: until then the floor was covered in
+      // 60 dark ellipses per unit area of fake terrain, so one more dark oval
+      // under a car blended into the noise. I deleted the fake hills, the ground
+      // went clean, and every remaining oval started reading as a mound with a car
+      // parked on it. That is a real consequence of my change and he is right to
+      // call it.
+      // The ellipse is also redundant. A wreck is a wall, and bakeGround already
+      // lays a contact shadow at the foot of EVERY wall, so the car is grounded
+      // the same way a building is. Dropped, which is the revert he asked for.
       // Local to world. u runs along the car, v across it, both 0..1.
       function CX(u,v){ return vt?(cx3+v*cw3):(cx3+u*cw3); }
       function CY(u,v){ return vt?(cy3+u*ch3):(cy3+v*ch3); }

@@ -8447,3 +8447,83 @@ four strings and one facts row. The numbers ON the board are bot-sim medians and
 are not claimed to be his; his own recorder has him dying to raiders far more
 often than the bot does, which is stated on the board rather than buried here.
 
+
+### v3.01: the throw was aiming with the wrong copy of the maths, and two of my own changes came back
+
+Four of his notes.
+
+THE THROWABLE, "when I use a throwable, it should travel in the direction that I am
+looking, similar to firing the gun. Right now it seems to always go in another
+direction." He is exactly right, and the cause is the defect class this file
+produces more than any other: duplicated arithmetic that drifted apart.
+
+There were two copies of screen-to-world. The aiming copy divides the mouse
+position by the zoom and carries a comment saying it must, "or aiming drifts
+further from the cursor the further you zoom in and the gun stops pointing where
+you are pointing". The throwing copy predates that fix and never received it, so it
+read the cursor as though the zoom were always 1. At any zoom other than 1 the gun
+and the throw disagree, and the error grows the further the cursor sits from screen
+centre. That is precisely "it always goes in another direction".
+
+There is one mouseWorld() now and both callers use it, so the two cannot drift
+again. Measured across zooms 0.7, 1.0, 1.3 and 1.6 at five cursor positions: the
+throw heading now matches the aim heading to within 0.3 degrees everywhere.
+
+AUTO-RELOAD, "game should auto-reload if you try to fire a gun that is empty clip
+but has reserve ammo". Pulling the trigger on an empty magazine is an unambiguous
+statement that you want to shoot, and making you press a second key to say so again
+is a chore rather than a decision. The dry pull starts the reload now. The reload
+still takes its full time and is still interruptible, so the cost of running dry is
+unchanged; only the extra keystroke is gone. With no reserve at all nothing starts,
+because then there is genuinely nothing to do about it.
+
+THE CARS ON HILLS, "why are all the cars on top of little hills? looks dumb, revert
+it". This one is mine and the chain is worth writing down. A wreck was drawing its
+own soft ellipse underneath itself, 59 units wide and 12 tall on a car 55 wide, at
+34 percent black. It had always been there. What changed is v2.96, where I deleted
+the 60-dark-ellipses-per-unit-area pass of fake terrain he asked me to remove. Until
+then one more dark oval under a car was lost in a floor covered in dark ovals. I
+cleaned the ground, and every surviving ellipse started reading as a mound with a
+car parked on it. He is right to call it and right that it is a revert.
+
+The ellipse is also redundant, which is why removing it is the correct fix rather
+than the expedient one. A wreck is a wall, and bakeGround already lays a contact
+shadow at the foot of every wall, so the car stays grounded exactly the way a
+building is.
+
+THE LOOT TELL, "the loot boxes shouldn't tell you the value of loot BEFORE you open
+them lol that kills the gamble". Correct, and it was doing exactly that: the pulse
+over every unopened container was tinted RCOL[ct.best], the rarity of the best item
+inside, so an elite box glowed purple from across a room and a common one glowed
+white. Choosing which box is worth six seconds IS the gamble, and the box was
+answering that question before you touched it. The pulse is neutral amber now. It
+still says UNLOOTED, which is navigation rather than gambling, and says nothing
+about the contents.
+
+A cache keeps its colour and that is deliberately not the same thing. A cache is a
+public landmark, named on its world label and marked on the sector map, because
+v1.75 established that a guaranteed jackpot you can never find is the worst of both
+worlds. You know a cache is rich the way you know a bank is rich; you still do not
+know what is in any particular drawer.
+
+ONE THING I HAVE LEFT AND WANT HIM TO RULE ON. v2.99 put "3 left, ELITE" on the
+progress bar WHILE you are searching a box. That is the same information one step
+later, and I have kept it on the reasoning that it lands after you have committed,
+where it powers the "one more pull or get out" decision rather than the "which box"
+decision. If he meant that one too, it is one line to remove and I will.
+
+Verified: parsecheck PASS at v3.01, all four maps and the hub drive and draw with
+drawErr null. Throw direction measured against aim heading at five cursor positions
+across four zoom levels, maximum disagreement 0.3 degrees. Auto-reload driven
+through the real main loop in three cases: empty magazine with 60 reserve starts a
+full-length reload; empty magazine with zero reserve starts nothing; five rounds in
+the magazine fires normally and spends one, starting no reload. Wreck captured at
+4x with the camera settled, which is how the ellipse was identified in the first
+place.
+Not verified: the two on-screen strings on the auto-reload path, "Reloading..." and
+"Out of ammo.". The reload state changes correctly every time but G.msg did not
+change in the fixture and I could not establish why inside a reasonable budget, so
+I am flagging the text as unconfirmed rather than claiming it. The behaviour is
+verified; the words may not appear. No balance measurement: nothing here touches a
+roll, an entity decision or a timing constant.
+
