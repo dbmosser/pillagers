@@ -11571,3 +11571,55 @@ something it is not paying. I checked the six terms against the code; I did not 
 the code looking for places that should call hasTerm and do not, which is the same
 audit from the other end and would probably find more.
 
+
+### v3.46: "lit:" has been counting lamps that were switched off, and I have been reading it
+
+THE REVERSE AUDIT FOUND NOTHING, and that is worth stating first. v3.45 checked six
+term descriptions against their code; this checked the code for places that should
+honour a term and do not. Both raid light sources sit inside the single
+`if(!sim&&!hasTerm('blackout'))` block, so BLACKOUT is complete. NO SAFE POCKET is
+complete: the death path's only bankItem call runs nSafe times and the term sets nSafe
+to zero, so a new gun type found on the run you die on is not quietly added to the
+armoury either. The four hasTerm sites for SILENT RUNNING cover the Listener count, the
+reach cap and the per-sound range. Nothing further owes a term anything.
+
+WHAT IT TURNED UP INSTEAD was one line over. The tLit counter reads:
+
+    if(dist(p,L)<L.r*.6 && losClear(...)) T.tLit += dt;
+
+Purely positional: near the lamp OBJECT, with a clear line to it. Whether the lamp is
+emitting anything never entered into it. Lamp brightness is
+`wx().lights * (isDay() ? tod().lights : 1)`, and the v3.44 audit established that
+MORNING and NOON are zero and GOLDEN HOUR is 0.25. So on the raids where lamps
+contribute nothing, a run could still report "lit:42%", meaning forty-two percent of
+it spent standing near a light fitting that was off.
+
+THAT NUMBER IS ONE I HAVE BEEN USING. It goes into every flight recorder line and I
+have read it as "how exposed does he play". His last four runs read 3, 7, 3 and 4
+percent and I wrote in the v3.44 entry that he "is already playing mostly in the dark
+by choice". Some of that was lamps that were dark anyway, and I should not have drawn
+the inference from a figure I had not checked.
+
+Gated on real brightness now. Driven at the sharpest possible test, the player parked
+directly on a lamp for six seconds of sim time on the same seed and the same map:
+
+  at NOON,  tod lights 0   lit 0.00 seconds
+  at DUSK,  tod lights 1   lit 6.00 seconds
+
+Before this change both read six.
+
+HIS HISTORICAL "lit:" FIGURES ARE NOT COMPARABLE to the ones he will produce from now
+on. The old ones are inflated by however often his raids landed at morning or noon,
+which pickTod makes two in five. I am not going to retro-correct the consumed exports,
+because the raw time of day is recorded on each line and anyone can see which ones are
+suspect, but the discontinuity is real and it is at v3.46.
+
+Verified: parsecheck PASS at v3.46, all four maps and the hub draw with drawErr null,
+landing at noon, golden, noon and golden and reporting lit 0 on all four, which is now
+correct rather than a coincidence. The noon-against-dusk pair driven as tabled above.
+The reverse audit read every lights.push site and every bankItem caller.
+Not verified: no balance measurement, and none applies; tLit is written once per frame
+into telemetry and read by nothing that makes a decision. Also not verified: the OTHER
+telemetry counters. tLit was wrong in a way nothing downstream could reveal, and there
+are a dozen more fields on that line, of which I have now checked exactly one.
+

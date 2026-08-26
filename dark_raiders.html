@@ -503,7 +503,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.45';
+var VER='3.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8672,7 +8672,20 @@ function updatePlayer(dt){
 
   for(var li=0;li<G.lights.length;li++){
     var L=G.lights[li];
-    if(dist(p,L)<L.r*.6&&losClear(p.x,p.y,L.x,L.y,G.vseg)){ T.tLit+=dt; break; }
+    // "lit:" HAS BEEN COUNTING UNLIT LAMPS, v3.46. This test is purely positional:
+    // near the lamp OBJECT and with a clear line to it. Whether the lamp is
+    // emitting anything never entered into it, and lamp brightness is
+    //   wx().lights * (isDay() ? tod().lights : 1)
+    // which the v3.44 audit established is ZERO at MORNING and NOON and 0.25 at
+    // GOLDEN HOUR. So on the raids where the lamps contribute nothing, a run could
+    // still report "lit:42%", meaning forty-two percent of it was spent standing
+    // near a light fitting that was off.
+    // I have been reading that number in his flight recorder to reason about how
+    // exposed he plays. His last four runs read 3, 7, 3 and 4 percent, which I took
+    // as "he stays in the dark"; at least some of that was lamps that were dark
+    // anyway. Gated on real brightness now, so the figure means being visibly lit.
+    var _lb=wx().lights*(isDay()?tod().lights:1);
+    if(_lb>0.05&&dist(p,L)<L.r*.6&&losClear(p.x,p.y,L.x,L.y,G.vseg)){ T.tLit+=dt; break; }
   }
   T.closestExtract=Math.min(T.closestExtract,dist(p,G.active));
 
