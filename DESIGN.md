@@ -11517,3 +11517,57 @@ figure already in his exports is the number that will show it: his last four run
 Also not verified, and it is now a fair question for him rather than a defect: whether
 25 percent is the right price for a cost that is entirely about what you can see.
 
+
+### v3.45: the rest of the contract terms, four of six wrong about themselves
+
+v3.44 found BLACKOUT PROTOCOL charging 25 percent for something it delivered on six
+raids in ten. That was one term of six, so this finishes the set: each term's
+description read as a specification, then checked against the code that implements it.
+
+  BLACKOUT PROTOCOL   fixed at v3.44, was inert on 37 percent of raids
+  HEAVY PATROLS       fixed at v3.43, said "machines", multiplies every spawn count
+  SHORT WINDOW        WRONG, fixed here
+  NO SAFE POCKET      correct, no change
+  THEY KNOW YOU       WRONG in behaviour, fixed here
+  SILENT RUNNING      correct, no change
+
+NO SAFE POCKET and SILENT RUNNING are clean, and saying so is the point of an audit.
+Pockets sets nSafe to 0, which is exactly "nothing is saved if you die, not one item".
+Silent Running adds one Listener and multiplies both the reach cap and the per-sound
+range by 1.5, which is exactly "one more Listener, and they all hear half again as far".
+
+SHORT WINDOW SAID THE WRONG CLOCK. "The dropship leaves on a clock cut by a third"
+reads as the boarding window being shortened. It is not: termClock multiplies
+CFG.raidSec, so it cuts the WHOLE RAID. Driven: 600 seconds becomes 396. The beacon
+wait and the 30 second boarding hold are untouched. That is a far bigger penalty than
+the words describe, and a player pricing a 25 percent bonus against "the dropship
+leaves sooner" is pricing the wrong thing. It says what it does now.
+
+THEY KNOW YOU WAS WRONG IN BEHAVIOUR, AND IT IS MY BUG. "Every raider out there is
+hostile and already looking" is applied in buildRaid's opening roster loop. My v3.36
+waves call mkRaider from a completely different function and never touched the term, so
+a raider arriving at ninety seconds into a raid you had paid 30 percent for walked in
+neutral, and could be hailed and parleyed with like anyone else. The term's description
+is the specification and it says every raider. Driven with the term signed and the wave
+cap forced: the opening roster is hostile as it always was, and all four wave arrivals
+are hostile now where none of them were before.
+
+FOUR OF SIX TERMS WERE WRONG ABOUT THEMSELVES, two in wording and two in behaviour.
+The pattern behind all four is the same and it is worth naming: a term is implemented
+in ONE place and then the game grows a SECOND place that should have honoured it. Lamps
+grew a time-of-day multiplier. Spawn counts grew a shared density scalar. Raiders grew
+a second constructor. Nothing in the file connects a term's text to the code that owes
+it, so each new system silently opted out.
+
+Verified: parsecheck PASS at v3.45, all four maps and the hub draw with drawErr null.
+SHORT WINDOW driven on one seed with and without: timeLeft 600 against 396, ratio
+0.660. THEY KNOW YOU driven through the real loop with waves forced: four arrivals,
+all four hostile. The two clean terms read against their implementations line by line.
+Not verified: no balance measurement, and the sim cannot give one. __pinDefaults does
+not sign terms and the bot has no way to, so every term in this file is measured only
+by him. That is also why four of them could be wrong for this long without a number
+going strange anywhere. Also not verified: whether any OTHER system owes a term
+something it is not paying. I checked the six terms against the code; I did not walk
+the code looking for places that should call hasTerm and do not, which is the same
+audit from the other end and would probably find more.
+
