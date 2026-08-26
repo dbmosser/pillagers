@@ -9277,3 +9277,55 @@ decision and no timing constant, and the sim does not draw a HUD. What I have NO
 measured is whether showing this changes how he plays, which is the only question
 that really matters about it and the only one the bot cannot answer.
 
+
+### v3.11: grenades cook in the hand, and every hit shakes the camera
+
+TWO OF HIS NOTES.
+
+COOKING, "make ti where you can hold the mouse down to cook grenades in your hand".
+The fuse is the whole point of a frag and it was entirely on the game's side of the
+table: 1.1 seconds started when the thing LANDED, so a grenade was delayed area
+denial and never a timed weapon. Anything that could walk simply left before it went
+off, and the player had no say in that at all.
+
+Press pulls the pin and starts the clock in your hand. Release throws whatever fuse
+is left. Hold too long and it goes off where you are standing, which is the price
+that makes the decision a decision. The pin is spent on the PRESS, not the throw,
+because that is what committing means: cook it off and the grenade is gone and so
+are you.
+
+Smoke and decoy use the same hold-and-release gesture and simply wait in the hand,
+because they have no fuse to run out. Everything else on the hotbar keeps its
+single press behaviour, since a bandage has nothing to hold down for.
+
+The aim, wall-stop and launch code is now one function shared by the instant path
+and the cooked path, for the same reason mouseWorld and mapProj exist: two copies of
+the same maths is how a throw and its aim end up disagreeing, which is exactly the
+bug of v3.01.
+
+SCREEN SHAKE, "add screen shake any time you take damage". Shake was reserved for
+loud events, explosions, a wall coming down, a jam, so a sentry chipping you across
+a street produced a red vignette and nothing else, which at range is easy to miss
+while reading the ground. Every hit now shakes, scaled by the size of it so a graze
+registers and a heavy round rocks the camera, capped so a burst cannot stack into
+something unreadable, and taken as a max against the current shake so a frag going
+off in the same frame still owns the screen.
+
+Verified: parsecheck PASS at v3.11, all four maps and the hub drive and draw with
+drawErr null in the raid view and with the map overlay up. The cook cycle is driven
+through the real main loop on the frag hotbar slot: press starts cooking with kind
+'frag' and takes the pouch from 5 to 4; releasing after 0.29s puts one throw in
+flight carrying cook 0.29. Fuse carryover checked at three cook lengths and matches
+the arithmetic exactly every time: 0.00 cooked lands with 1.10 fuse, 0.54 cooked
+lands with 0.56, 0.98 cooked lands with 0.12. Holding past the fuse detonates at
+frame 69, which is 1.104 seconds against a FRAG_FUSE of 1.1, costs the full 100 hp
+at point blank, and does NOT immediately re-pull another pin because the press latch
+still holds, so a held button cannot chain-detonate the whole pouch. A bandage slot
+under the same held button still applies once and never enters a cook.
+Not verified: no balance measurement, and none is possible for this one. doThrow is
+reached only from useHot, which is a player input path, so the bot never throws
+anything and a paired A/B would compare two identical runs. The damage shake is
+render-only and fenced behind !G.sim. One process note: my first cook test grabbed
+the wrong hotbar slot, because throwables occupy THREE separate slots and the first
+one is smoke, and I nearly reported a pouch bug and a broken cook-off that were both
+my test selecting a smoke canister and waiting for a fuse it does not have.
