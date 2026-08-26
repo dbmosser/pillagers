@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.06';
+var VER='3.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -533,7 +533,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -9539,10 +9539,41 @@ function updateEnts(dt){
 // round's path, and bodies are sampled in steps small enough that no hitbox can
 // be stepped over.
 var BSTEP=8;
+// HIS NOTE, 2026-08-26: "bullets should pass through thin walls, slow down, and do
+// reduced damages -- like in COD black ops 2".
+// SCOPED ON PURPOSE. This game states, in the throwable comment and in the whole
+// sight model, that every wall stops sight and gunfire outright, and that is the
+// one rule the cover system is built on. Making building walls porous would not be
+// a feature, it would be removing cover from the game. So THIN means thin: the
+// soft furnishings, the car bodies and the trees, the things you instinctively
+// expect a rifle round to go through and a wall not to. Building walls at 320 HP
+// and terrain at 700 stay solid, and glass already passes through untouched
+// because a window carries no segments at all.
+// The costs are per material and they compound, because two thicknesses of car
+// should not be free. A round is capped at PEN_MAX pieces so nothing tunnels the
+// length of a room, and it dies rather than penetrating once its damage falls
+// below PEN_FLOOR, which is what stops a spent round doing chip damage forever.
+var PEN_MAX=2, PEN_FLOOR=4;
+function penFactor(w){
+  if(!w||CFG.penetrate===0) return null;
+  if(w.noDes||w.lockWall||w.door||w.ledge) return null;  // gated content stays gated
+  if(w.furn)            return {dmg:0.55,spd:0.80};
+  if(w.tree)            return {dmg:0.50,spd:0.78};
+  if(w.wreck||w.ruin)   return {dmg:0.45,spd:0.75};
+  return null;                                           // building walls, terrain
+}
+// Distance from a point inside a rect to where the ray leaves it. Analytic rather
+// than marched, so a shallow angle through a long car costs what it should.
+function penExit(w,x,y,ux,uy){
+  var tx=(ux>0)?((w.x+w.w-x)/ux):((ux<0)?((w.x-x)/ux):1e9);
+  var ty=(uy>0)?((w.y+w.h-y)/uy):((uy<0)?((w.y-y)/uy):1e9);
+  var t=Math.min(tx,ty);
+  return (t>0&&t<1e9)?t:0;
+}
 function updateBullets(dt){
   var p=G.player;
   for(var i=G.bullets.length-1;i>=0;i--){
-    var b=G.bullets[i],hit=false;
+    var b=G.bullets[i],hit=false,punched=false;
     var mx=b.vx*dt,my=b.vy*dt,trav=Math.sqrt(mx*mx+my*my);
     if(trav>0){
       var ux=mx/trav,uy=my/trav,sx=b.x,sy=b.y,w,wl;
@@ -9687,19 +9718,53 @@ function updateBullets(dt){
         b.x=sx+ux*wallT; b.y=sy+uy*wallT;
         // The round that dies on a wall damages it, whoever fired it: machines
         // can breach cover too, which is half of what makes cover a resource.
-        var _dwL=wallsNear(G.wgrid,b.x,b.y,3);
+        var _dwL=wallsNear(G.wgrid,b.x,b.y,3),_struck=null;
         for(var _dwI=0;_dwI<_dwL.length;_dwI++){
           var _dw=_dwL[_dwI];
           if(b.x>=_dw.x-3&&b.x<=_dw.x+_dw.w+3&&b.y>=_dw.y-3&&b.y<=_dw.y+_dw.h+3){
-            damageWall(_dw,b.dmg,b.x,b.y); break;
+            _struck=_dw; damageWall(_dw,b.dmg,b.x,b.y); break;
           }
         }
-        spark(b.x,b.y,'#ffd9a0',5,150);
-        if(!G.sim) G.puffs.push({x:b.x,y:b.y,t:0,life:.22,c:'#8a939c',r:9});
-        decal(b.x,b.y,'#0d0f13',rnd(3,6));
-        sfx("clank",b.x,b.y); hit=true;
+        // PUNCH THROUGH, or stop. The wall takes its damage either way above, so a
+        // round that penetrates still chips what it passed through, which is what
+        // makes shooting through a car door eventually open the car door.
+        // THE DECAL ROLL IS DRAWN UNCONDITIONALLY, v2.09's jam rule again, and it
+        // is easy to miss here because the roll is an ARGUMENT. decal() early
+        // returns on G.sim, but `decal(x,y,c,rnd(3,6))` evaluates rnd BEFORE the
+        // call, so the non-penetrating branch would consume one rr() that the
+        // penetrating branch does not. In a paired A/B that shifts the whole
+        // stream from the first bullet impact onward and the two arms stop being
+        // the same raid, which is precisely what makes such a measurement lie.
+        var _decR=rnd(3,6);
+        var _pf=penFactor(_struck);
+        if(_pf&&(b._pen||0)<PEN_MAX&&b.dmg*_pf.dmg>=PEN_FLOOR){
+          b._pen=(b._pen||0)+1;
+          b.dmg*=_pf.dmg;
+          b.vx*=_pf.spd; b.vy*=_pf.spd;
+          // Step out through the far face rather than nudging forward blindly, or
+          // a shallow angle leaves the round inside the rect and the next frame
+          // kills it on the inside-geometry test.
+          var _ex=penExit(_struck,b.x,b.y,ux,uy)+1.5;
+          b.x+=ux*_ex; b.y+=uy*_ex;
+          // MUST claim the position. The tail of this function does
+          // `if(!hit){ b.x=sx+ux*trav; ... }`, which would overwrite the exit
+          // point I just computed with the full free-flight travel and undo the
+          // whole thing: the round would land wherever it would have gone with no
+          // wall present, sometimes back INSIDE the rect, where the next frame's
+          // inside-geometry test kills it. Caught it because a 25 unit deep wreck
+          // was reporting two penetrations for one crossing.
+          punched=true;
+          spark(b.x,b.y,'#ffd9a0',3,110);
+          if(!G.sim) G.puffs.push({x:b.x,y:b.y,t:0,life:.18,c:'#8a939c',r:6});
+          sfx("clank",b.x,b.y);
+        } else {
+          spark(b.x,b.y,'#ffd9a0',5,150);
+          if(!G.sim) G.puffs.push({x:b.x,y:b.y,t:0,life:.22,c:'#8a939c',r:9});
+          decal(b.x,b.y,'#0d0f13',_decR);
+          sfx("clank",b.x,b.y); hit=true;
+        }
       }
-      if(!hit){ b.x=sx+ux*trav; b.y=sy+uy*trav; }
+      if(!hit&&!punched){ b.x=sx+ux*trav; b.y=sy+uy*trav; }
     }
     b.life-=dt;
     if(hit||b.life<=0) G.bullets.splice(i,1);
@@ -9928,7 +9993,7 @@ function endRaid(how){
       dials:'hot'+(CFG.healOverTime===0?0:1)+' feud'+(CFG.raiderFeud===0?0:1)
         +' reach'+(CFG.simReach===0?0:1)+' win'+(CFG.windows===0?0:1)
         +' rheal'+(CFG.simRetreatHeal?1:0)+' eng'+(CFG.simEngage?1:0)
-        +' pip'+(CFG.simPip?1:0)+' des'+(CFG.destruct===0?0:1)+' cull'+(CFG.placeCull===0?0:1)+' wear'+(CFG.raiderWear===0?0:1)+' greed'+CFG.simGreed};
+        +' pip'+(CFG.simPip?1:0)+' des'+(CFG.destruct===0?0:1)+' cull'+(CFG.placeCull===0?0:1)+' wear'+(CFG.raiderWear===0?0:1)+' pen'+(CFG.penetrate===0?0:1)+' greed'+CFG.simGreed};
     return;
   }
 

@@ -8878,3 +8878,81 @@ sectors, because nothing in this build touches them: the edit is one coordinate
 inside the COLD STORAGE record plus a skip in a shadow pass keyed on the wreck
 flag.
 
+
+### v3.07: rounds punch through the thin things, and stop dead on the walls that matter
+
+His note: "bullets should pass through thin walls, slow down, and do reduced
+damages -- like in COD black ops 2".
+
+SCOPED ON PURPOSE, and this is the whole design decision. This game states, in the
+throwable comment and in the entire sight model, that every wall stops sight and
+gunfire outright, and that is the one rule the cover system is built on. Making
+building walls porous would not be a feature, it would be deleting cover from the
+game. So THIN means thin: the soft furnishings, the car bodies and the trees, the
+things you instinctively expect a rifle round to go through and a brick wall not
+to. Building walls at 320 HP and terrain at 700 stay solid. Glass already passed
+through untouched, because a window carries no segments at all by the v2.51 design.
+
+Per material, measured on a driven round:
+
+  furniture   damage x0.55   speed x0.80   (40 -> 22 dmg, 600 -> 480)
+  tree        damage x0.50   speed x0.78   (40 -> 20 dmg, 600 -> 468)
+  wreck/ruin  damage x0.45   speed x0.75   (40 -> 18 dmg, 900 -> 675)
+
+A round is capped at two pieces so nothing tunnels the length of a room, and it
+stops rather than penetrating once its damage would fall under 4, which is what
+prevents a spent round chipping through scenery forever. Whatever it passes
+through still takes the full damage it would have taken by stopping there, so
+shooting through a car door eventually opens the car door. It cuts both ways:
+machines and raiders punch through the same materials you do.
+
+TWO BUGS OF MINE ON THE WAY, both found by driving it rather than reading it.
+
+The first: I left hit=false after penetrating, and the tail of updateBullets does
+`if(!hit){ b.x=sx+ux*trav; }`. That overwrote the exit point I had just computed
+with the full free-flight travel, sometimes putting the round back INSIDE the rect,
+where the next frame's inside-geometry test killed it. The tell was a 25 unit deep
+wreck reporting TWO penetrations for one crossing. There is a `punched` flag now
+and the tail respects it.
+
+The second is subtler and is the v2.09 jam rule wearing a disguise. The
+non-penetrating branch calls `decal(b.x,b.y,'#0d0f13',rnd(3,6))`. decal() early
+returns on G.sim, so I would normally not think about it, but the rnd is an
+ARGUMENT and JavaScript evaluates it before the call. So the pen-off arm consumed
+one rr() that the pen-on arm did not, which shifts the entire stream from the first
+bullet impact onward and makes the two arms different raids rather than the same
+raid with and without penetration. The roll is drawn unconditionally into a local
+now, before the branch. Had I not caught it the measurement below would have been
+noise dressed as a result.
+
+BALANCE: costs about two points, not significant. 320 seeds paired on GREYWATER
+DAM, mapIx pinned, simGreed 52 in both arms, dial off against dial on in one build.
+
+  extract rate   13.8 percent off (44 of 320)   11.6 percent on (37 of 320)
+  discordant     16 favouring off, 9 favouring on
+  McNemar exact two sided p = 0.23
+  mean haul across all runs 8,418c off, 8,579c on
+  killers barely move: sentry 155 to 157, crawler 99 to 104, warden 7 to 7
+
+p=0.23 is not significance and I am not claiming harm. What I will say is that the
+lean was negative and CONSISTENT: arm A led from seed 17 onward and never gave the
+lead back across 320 pairs, which is not the shape of a coin landing badly. The
+mechanism is obvious once stated, since penetration is symmetric and the bot spends
+its life behind exactly the furniture and wrecks this makes porous. It ships ON
+because he asked for it and the cost is inside the noise floor, and it is on
+CFG.penetrate if either of us wants it back out.
+
+Verified: parsecheck PASS at v3.07, all four maps and the hub drive and draw with
+drawErr null. Penetration driven per material with a hand-placed round: furniture,
+tree and wreck each cross with exactly one penetration recorded and the damage and
+speed multipliers land on their stated values; with the dial off none of the three
+cross and the round dies on the face; a building wall stops a round dead with the
+dial ON, which is the cover pillar holding. Materials still take their damage in
+both cases.
+Not verified: I have not measured penetration separately per map, only on
+GREYWATER DAM. The material mix differs between sectors, so a map thick with
+furniture would feel this more than the dam does. Also unmeasured: what this does
+to HIS play rather than the bot's. He fights raiders far more than the bot does and
+raiders take cover behind the same soft things, so the symmetric cost may not land
+symmetrically for him.
+
