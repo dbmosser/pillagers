@@ -11238,3 +11238,71 @@ thousand seeds. I am not going to chase it, because the honest answer, that armi
 them costs you about five health a raid and does not measurably change whether you get
 out, is already the useful one.
 
+
+### Replication pass: three claims re-run on a second seed family, and one of them is my own correction being corrected
+
+Having just corrected v3.39 for calling significance off a single batch, I applied the
+same rule to every balance claim still standing on one run. Each dial was re-run at 320
+paired seeds on a DIFFERENT seed family, 104729 instead of 7919, so the two batches are
+independent rather than the same raids twice.
+
+McNemar pools cleanly by adding the discordant cells, because each seed pair is its own
+independent trial.
+
+  RAIDERKIT, arming the raiders
+    run 1   6 against 17   +3.4 points   p = 0.035
+    run 2  12 against 19   +2.2 points   p = 0.281
+    POOLED 18 against 36   z = 2.45      p = 0.020
+
+  SPAWNCLEAR, keeping spawns off the extraction rings
+    run 1   5 against 16   +3.4 points   p = 0.027
+    run 2   8 against 16   +2.5 points   p = 0.152
+    POOLED 13 against 32   z = 2.83      p = 0.0066
+
+  RAIDERWAVES, replacing raiders who leave
+    run 1  19 against  9   -3.1 points   p = 0.087
+    run 2  25 against 29   +1.2 points   p = 0.683
+    POOLED 44 against 38   z = -0.66     p = 0.581
+
+THREE DIFFERENT ANSWERS, AND ONLY ONE OF THEM IS "NO".
+
+spawnClear replicates in direction on both runs and pools to p = 0.0066. That is a
+real effect and the strongest measured result in this whole cycle. Keeping the drop
+point away from the ring is worth about three points.
+
+raiderWaves does NOT replicate. It went 3.1 points the wrong way and then 1.2 points
+the right way, and pools to p = 0.58, which is as close to nothing as this test gets.
+v3.38 reported that 3.1 point cost as a lean it was shipping anyway; that lean was
+noise and the entry should not have quoted it as a cost at all.
+
+AND RAIDERKIT, WHERE I HAVE TO CORRECT MY OWN CORRECTION FROM THIS MORNING. I wrote
+that the effect "is inside the noise floor" and that I "cannot establish its sign". That
+was too strong and I reached it by weighting a 60-seed probe against two 320s. Both
+320-seed batches point the same way, +3.4 and +2.2, and pooled they reach p = 0.020.
+The direction replicates and the magnitude is consistent. The accurate statement is
+that arming the raiders is worth about two to three points in the PLAYER's favour, not
+that the sign is unknowable.
+
+What survives from that correction, and it still matters: the MECHANISM I offered at
+v3.39 is refuted regardless. Hostiles chasing changes by -0.003 per sample, so nothing
+is being diverted, and the player's lowest health drops 5.2 with kit on. Whatever is
+producing the two to three points, it is not the feud story I told.
+
+THE REUSABLE LESSON, and it is not "one batch is never enough". It is that a single
+batch tells you the DIRECTION cheaply and the SIGNIFICANCE badly. All three of these
+kept their run-1 direction into run 2 except the one that was genuinely null, and the
+p-values swung wildly while the point estimates did not. Point estimates first,
+p-values only after a second family.
+
+No version bump: dark_raiders.html is unchanged by this entry. Every dial stays where
+it is; raiderWaves stays ON because he asked for it and it now measures as free rather
+than as a 3.1 point cost.
+Verified: the six batches tabled above, three dials times two independent seed
+families, 320 paired seeds each, mapIx pinned and simGreed 52 in every arm.
+Not verified: the seed families are not equivalent in absolute terms. The 104729 family
+runs a much higher baseline on GREYWATER DAM, 17.2 percent against 13.1 on 7919, so
+absolute rates are not comparable across families even though the paired deltas are.
+I have not investigated why, and every historical number in this file comes from the
+7919 family, which means the back catalogue's absolute rates are a property of that
+family as much as of the game.
+
