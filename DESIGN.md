@@ -10504,3 +10504,59 @@ at other window sizes. The wrap is measured at runtime so it should hold, but ev
 capture here is one size, and the fixed vertical offset under HUNTING and SEARCHING is
 in LH units rather than tested against a short window.
 
+
+### v3.31: throwables that reach far enough to matter, and the label that made cooking look broken
+
+TWO OF HIS NOTES, and they turn out to be about the same three items.
+
+"SMOKE AND GRENADES NEED LARGER RADIUS TO BE WORTH USING." He is right, and the
+geometry says why rather than taste.
+
+Smoke was an 82 unit disc. A sentry sees 620. So the cloud you threw to break line of
+sight covered about a seventh of the distance it needed to, and standing behind it
+barely changed who could see you. The mechanism was never the problem: smokeSegs
+already feeds an octagon of the cloud straight into G.vseg, so it is a real sight
+blocker that machines respect. The radius was the only thing wrong. 165 now, double,
+which puts it at roughly a quarter of a sentry's sight: enough to cross a street
+inside.
+
+The frag blast was 95 units, a little over four player widths, so a charge landing a
+stride from a crawler often did nothing at all to it. 150 now, still well inside the
+310 unit flash it was already drawing. Both are dials, smokeR and fragR.
+
+MEASURED RATHER THAN ASSERTED, at the one distance that decides whether the change is
+real. A crawler 120 units from the blast, on open ground with clear sight:
+
+  fragR 95  (old)   0 damage
+  fragR 150 (new)   38.8 damage
+  fragR 95  at 40   74.9 damage
+  fragR 150 at 40   84.1 damage
+
+So the change does what it says at the edge and barely moves the centre, which is the
+right shape. My first attempt at this measured 0 at both radii and I nearly reported
+the change as inert: I had parked the crawler 900 units away, behind a building, and
+explodeFrag requires clear line of sight. My placement, not the code.
+
+"WHEN YOU START COOKING A GRENADE, SAY COOKING INSTEAD OF IN HAND AND GIVE A VISIBLE
+COUNTDOWN." The frag already did exactly that, with a 1.1 second countdown and a bar
+that goes red over the last third. What he was holding was a SMOKE, because smoke is
+the first of the three throwable slots, and smoke and decoy have no fuse at all: they
+go off where they land. So they got 'IN HAND', which says nothing, and the reasonable
+conclusion from that is that cooking is broken.
+
+They still do not get a countdown, because inventing one would be a lie about a fuse
+that does not exist. They get their name and the one thing you need, which is that
+letting go throws it: "SMOKE CANISTER / RELEASE TO THROW".
+
+Verified: parsecheck PASS at v3.31, all four maps and the hub draw with drawErr null.
+Smoke driven through the REAL path, hotbar slot selected and the throw action used
+rather than pushing a cloud into the array: one cloud, radius 165, pouch decremented.
+Frag measured at four radius and distance combinations as tabled above. The label read
+back from the pixels: "SMOKE CANISTER" over "RELEASE TO THROW", boxed, above the
+operator.
+Not verified: no balance measurement, and it is not available. throwFrom has exactly
+two callers and both are player input, so the BOT NEVER THROWS ANYTHING. A paired A/B
+on smokeR or fragR would compare two arms in which no throwable is ever used, and
+would correctly report no difference. His own runs are the only measurement these two
+dials can have, and his last one records 3 smoke and 0 frags thrown.
+

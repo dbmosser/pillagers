@@ -491,7 +491,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.30';
+var VER='3.31';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -551,7 +551,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light'};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -6719,7 +6719,15 @@ function cookOff(){
   explodeFrag({x:p.x,y:p.y});
 }
 function activateThrow(th){
-  if(th.kind==='smoke'){ G.smokes.push({x:th.tx,y:th.ty,r:82,t:0,life:12}); sfx("clank",th.tx,th.ty); }
+  // HIS NOTE: "smoke and grenades need larger radius to be worth using." He is
+  // right and the geometry says why. Smoke was an 82 unit disc against a sentry
+  // that sees 620, so the cloud you threw to break line of sight was about a
+  // seventh of the distance it needed to cover, and standing behind it barely
+  // changed who could see you. It is a real sight blocker, smokeSegs feeds an
+  // octagon of it straight into G.vseg, so the radius was the only thing wrong.
+  // 165 is double, and puts the cloud at roughly a quarter of a sentry's sight,
+  // which is enough to cross a street inside.
+  if(th.kind==='smoke'){ G.smokes.push({x:th.tx,y:th.ty,r:(CFG.smokeR===undefined?165:CFG.smokeR),t:0,life:12}); sfx("clank",th.tx,th.ty); }
   else if(th.kind==='decoy'){ G.decoys.push({x:th.tx,y:th.ty,t:0,life:6,acc:.7}); sfx("clank",th.tx,th.ty); }
   else if(th.kind==='frag'){
     // Whatever fuse the thrower did not burn in his hand. Floored so a grenade
@@ -6729,7 +6737,10 @@ function activateThrow(th){
   }
 }
 function explodeFrag(f){
-  var p=G.player,R=95,i;
+  // The blast was 95 units, a little over four player widths, so a charge landing
+  // a stride away from a crawler often did nothing to it. 150 makes the throw
+  // worth the slot without reaching the 310 unit flash it already draws.
+  var p=G.player,R=(CFG.fragR===undefined?150:CFG.fragR),i;
   sfx("boom",f.x,f.y);
   if(!G.sim){ spark(f.x,f.y,'#ffcf7a',34,340); decal(f.x,f.y,'#141210',rnd(20,30));
     G.puffs.push({x:f.x,y:f.y,t:0,life:.6,c:'#ffb267',r:52}); }
@@ -13503,10 +13514,24 @@ function drawHUD(){
       var isFrag=(p.cookKind==='frag');
       var ccol=!isFrag?'#7cc4ff':(cf>0.66?'#ff4d3d':(cf>0.33?'#ffc04a':'#7fc4a0'));
       ctx.fillStyle='rgba(6,9,13,.72)';
-      ctx.fillRect(cs2.x-26,cs2.y-LH(34),52,LH(15));
+      ctx.fillRect(cs2.x-58,cs2.y-LH(34),116,LH(15)+(p.cookKind==='frag'?0:LH(11)));
       ctx.font=FS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle=ccol;
-      ctx.fillText(isFrag?('COOKING '+Math.max(0,(FRAG_FUSE-(p.cookT||0))).toFixed(1)+'s'):'IN HAND',
+      // HIS NOTE: "when you start cooking a grenade, say COOKING instead of 'in
+      // hand' and give a visible countdown." The frag already did exactly that.
+      // What he was holding was a SMOKE, because smoke is the first of the three
+      // throwable slots, and smoke and decoy have no fuse at all: they go off
+      // where they land. So they got 'IN HAND', which says nothing, and the
+      // reasonable conclusion is that cooking is broken.
+      // They still do not get a countdown, because inventing one would be a lie
+      // about a fuse that does not exist. They get their name and the thing you
+      // actually need to know, which is that letting go throws it.
+      ctx.fillText(isFrag?('COOKING '+Math.max(0,(FRAG_FUSE-(p.cookT||0))).toFixed(1)+'s')
+                         :(ITEMS[p.cookKind]?ITEMS[p.cookKind].name.toUpperCase():'IN HAND'),
                    cs2.x,cs2.y-LH(24));
+      if(!isFrag){
+        ctx.fillStyle='#8a96a1';
+        ctx.fillText('RELEASE TO THROW',cs2.x,cs2.y-LH(14));
+      }
       ctx.textAlign='left';
       if(isFrag) bar(cs2.x-24,cs2.y-LH(22),48,4,1-cf,ccol);
     }
