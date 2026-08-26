@@ -459,6 +459,16 @@ function myRig(){ return armorById((P&&P.rig)||'none'); }
 // scales to the rig instead of to a constant that no longer means anything.
 var ARMOR_MAX=60;
 function armorCap(){ return (G&&G.player&&G.player.armorCap!==undefined)?G.player.armorCap:ARMOR_MAX; }
+// The rig the SIM wears. 'light' is what buildRaid has hardcoded since the bare
+// sim player was found to be measuring a game nobody plays, and it stays the
+// default so no back-catalogue number moves. An unknown id falls back to 'light'
+// rather than throwing, because a typo in a dial should cost a measurement, not
+// the whole batch.
+function simRigId(){
+  var r=CFG.simRig;
+  if(!r) return 'light';
+  return armorById(r)&&armorById(r).id===r ? r : 'light';
+}
 // THE RIG'S CAP IS THE CEILING, AND FOR TWO OF THE FOUR RIGS IT WAS NOT, v2.16.
 // The comment above ARMOR_MAX states the intent exactly: "the old flat ceiling is
 // now whatever rig you walked in wearing, so the HUD bar scales to the rig instead
@@ -481,7 +491,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.28';
+var VER='3.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -541,7 +551,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light'};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -6032,9 +6042,14 @@ function buildRaid(sim){
       // game nobody plays: it dropped from 64 percent extract to 20 in one
       // build. A constant baseline also keeps the numbers comparable across
       // builds, which is the whole point of having a sim at all.
-      armor:(sim?armorById('light').cap:myRig().cap),
-      armorCap:(sim?rigCeil(armorById('light')):rigCeil(myRig())),
-      rig:(sim?'light':((P&&P.rig)||'none')),face:0,wep:wep,
+      // WHICH rig it wears is a dial now, v3.29, defaulting to the 'light' this
+      // has always hardcoded so every number in the back catalogue is unchanged.
+      // It exists so the question "is the 900 credit Scav Rig actually worth 900
+      // credits" can be answered by measurement instead of by me asserting it in
+      // two consecutive changelogs, which is what I did at v3.28.
+      armor:(sim?armorById(simRigId()).cap:myRig().cap),
+      armorCap:(sim?rigCeil(armorById(simRigId())):rigCeil(myRig())),
+      rig:(sim?simRigId():((P&&P.rig)||'none')),face:0,wep:wep,
       ammo:wep.mag,reserve:wep.mag*2,sec:sec,secAmmo:sec.mag,reloading:0,lastShot:-9999,stam:100,
       wepIssued:wepIssued,secIssued:true,wepFromArmory:!wepIssued,secFromArmory:false,
       bob:0,recoil:0,hitFlash:0,downed:false,downT:0,revived:false,iv:0,jam:0,pendKiller:null,
@@ -16135,7 +16150,7 @@ function renderHub(){
         _fix=' The cheapest rig you can wear is '+cost.toLocaleString()+'c in REQUISITION.';
       } else if(_anyRig!==null){
         _fix=' You have the standing for one, but it costs '+_anyRig.toLocaleString()+
-          'c and you hold '+(P.credits||0).toLocaleString()+'c. One extraction covers it.';
+          'c and you hold '+(P.credits||0).toLocaleString()+'c.';
       } else {
         // Anything else, and there is at least one state I constructed in a test
         // without showing it can actually happen: owning a rig while wearing

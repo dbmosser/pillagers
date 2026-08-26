@@ -10400,3 +10400,66 @@ naming. It is not information, because the information was already there. That l
 either that he has not read it or that he does not believe it is worth 900c, and I
 cannot tell those apart from here.
 
+
+### v3.29: the Scav Rig is a trap purchase, measured, and I had just recommended it twice
+
+v3.28 ended by asserting the 900 credit Scav Rig was obviously worth buying and that
+"one extraction covers it". I had never measured it. So I built the dial and measured
+it, and the answer is no.
+
+THE DIAL. buildRaid has always hardcoded the sim into a Scav Rig, with a good reason
+recorded next to it: a bare sim player dropped from 64 percent extract to 20 in one
+build, and a constant baseline keeps numbers comparable. CFG.simRig now names that rig
+and defaults to 'light', so every number in the back catalogue is unchanged, and an
+unknown id falls back to 'light' rather than throwing.
+
+THE MEASUREMENT. 320 paired seeds on GREYWATER DAM, mapIx pinned, simGreed 52 both
+arms, no rig against the Scav Rig:
+
+  extract rate    11.3 percent bare    15.6 percent in the rig
+  discordant      7 favouring bare, 21 favouring the rig
+  McNemar exact two sided p = 0.0125, z = 2.46
+
+So the rig works. It buys 4.3 points of extraction and that is significant. Run twice,
+identical both times.
+
+AND IT STILL LOSES YOU MONEY, because of a rule two thousand lines away: SPEC 9.7, the
+rig goes with everything else you were carrying. Dying strips it from P.rigs and puts
+it on your body. It is not a purchase, it is a consumable you re-buy every death.
+
+  mean haul, extracted, bare      11,665c over 36 extractions
+  mean haul, extracted, in a rig  11,226c over 50 extractions
+  extra value per raid from the rig                      +442c
+  chance you do not walk out, in the rig                  84.4 percent
+  expected rig loss per raid, 84.4 percent of 900c        -759c
+  NET PER RAID                                            -318c
+
+At the bot's skill the Scav Rig costs about 318 credits a raid to wear. It is the
+same shape as the Compact SMG finding: a thing the shop offers, that measurably works,
+and that you are still worse off buying.
+
+I AM NOT REBALANCING IT. Armour pricing is a design decision and the standing rule on
+the Compact SMG says so explicitly. What I have done is delete the nudge I added one
+build ago: the no-rig line no longer says "One extraction covers it", because that
+sentence was steering him toward a purchase I have now measured as negative for a
+player at this survival rate. It states the price and his balance and stops.
+
+THE BREAK EVEN IS THE INTERESTING NUMBER for whoever decides this. The rig pays for
+itself when the survival rate is high enough that 900 times the death rate falls below
+the extra haul it wins. At these hauls that is roughly a 96 percent survival rate,
+which no one will reach, OR a price nearer 350 credits, OR the rig not being lost on
+death. Three levers and all three are his.
+
+Verified: parsecheck PASS at v3.29, all four maps and the hub draw with drawErr null.
+The dial driven across six values: light, none, medium and heavy each produce the
+right rig id, armour and cap on the sim player, and both 'nonsense' and undefined fall
+back to light with 35 armour rather than throwing. The A/B run twice at 320 paired
+seeds with identical results. The economics computed from the run's own rows rather
+than from the back catalogue's BURIED CITY numbers.
+Not verified: the bot is not him. Every figure above is at an 11 to 16 percent extract
+rate, and his own recorded rate is 23 percent over 35 runs, which moves the break even
+in the rig's favour without getting near it. I also have not measured the medium or
+heavy rigs, which cost 3,200 and 7,800 and are lost the same way, so if the cheap one
+is negative those are almost certainly worse; I am flagging that rather than claiming
+it, because I have not run them.
+
