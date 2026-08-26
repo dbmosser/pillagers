@@ -11079,3 +11079,42 @@ one of the two spawns it fixes puts him 286 units from an extraction on the map 
 actually plays, and that is a broken raid rather than a balance question. The A/B is
 the next thing I owe on this.
 
+
+### The spawnClear measurement I owed, and it is the largest single win in this run
+
+v3.40 shipped the spawn guard on his note alone, with an explicit line saying the A/B
+was owed because a longer walk back is the raid's core loop. Run now, 320 paired seeds
+on COLD STORAGE, the map with the two 286 and 290 unit spawns and the map he plays:
+
+  extract rate   8.8 percent with bad spawns allowed   12.2 percent with the guard
+  discordant     5 favouring the old behaviour, 16 favouring the guard
+  McNemar exact two sided z = 2.18, p = 0.027
+
+Significant, and 3.4 points in the guard's favour. I had braced for a cost and it is a
+gain.
+
+WHY IT IS A GAIN, and this is a hypothesis rather than a finding: COLD STORAGE has
+been the weak map for a long time. v-earlier traced its 4.4 percent rate to two of
+three extracts sitting 503 units apart and moved one, taking it to 15.0. This looks
+like the same family of defect one layer up. Landing 286 units from a ring does not
+give you a free extraction, it gives you a raid whose structure has collapsed: the
+walk out that generates the loot never happens, and the bot instead mills about near a
+ring it has no reason to use yet with an empty bag.
+
+Two of the four maps' worst spawns are on COLD STORAGE and it is the only map where
+both of the two worst in the whole game sit. So the map that has measured worst for
+its entire life had the two most broken spawn points in the game, and nobody, me
+included, checked the two hand authored lists against each other until he landed on
+one and said so.
+
+No version bump: the game is unchanged by this entry, which only supplies the number
+v3.40 said it owed.
+Verified: the A/B above, 320 paired seeds, mapIx pinned to COLD STORAGE and simGreed
+52 in both arms.
+Not verified: the other three maps. GREYWATER DAM has two spawns under 900 and THE
+QUARRY has one, so the guard changes their behaviour too, and I have measured only the
+map with the worst offenders. The sign is very unlikely to reverse but the magnitude
+on those maps is unmeasured. Also not verified: the explanation above. That the walk
+out is what generates the loot is the obvious reading and I have not probed haul or
+containers opened with the dial off against on, which is what would show it.
+
