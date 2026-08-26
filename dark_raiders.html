@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.19';
+var VER='3.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1528,6 +1528,73 @@ function blip(type,d,pan){
     oc.frequency.setValueAtTime(280,t); oc.frequency.exponentialRampToValueAtTime(980,t+.38);
     gc.gain.setValueAtTime(.045*vol,t); gc.gain.exponentialRampToValueAtTime(.001,t+.42);
     oc.connect(gc); gc.connect(OUT); oc.start(t); oc.stop(t+.44);
+  } else if(type==='beacon'){
+    // HIS NOTE: "need more audio indicators for extraction". Calling the ship was
+    // one alarm blip at touchdown and silence either side of it, so the loudest
+    // decision in the raid made almost no sound. Five voices now, one per state
+    // change, and they are deliberately a family: same square timbre, rising
+    // pitch as the sequence progresses, so the sequence is legible as a sequence.
+    // CALL CONFIRMED. Two rising notes, the signal going up.
+    var ob=a.createOscillator(),gb=a.createGain();
+    ob.type='square';
+    ob.frequency.setValueAtTime(420,t);
+    ob.frequency.setValueAtTime(630,t+.10);
+    gb.gain.setValueAtTime(.05*vol,t);
+    gb.gain.setValueAtTime(.05*vol,t+.10);
+    gb.gain.exponentialRampToValueAtTime(.001,t+.30);
+    ob.connect(gb); gb.connect(OUT); ob.start(t); ob.stop(t+.31);
+  } else if(type==='inbound'){
+    // THE WAIT NEEDED A HEARTBEAT. A single sonar ping, repeated on an interval
+    // the caller shortens as the ship gets closer, so the approach is audible
+    // without anything on screen. Long tail on purpose: it has to read as coming
+    // from a long way off.
+    var oi=a.createOscillator(),gi=a.createGain(),fi=a.createBiquadFilter();
+    oi.type='sine';
+    oi.frequency.setValueAtTime(1180,t);
+    oi.frequency.exponentialRampToValueAtTime(880,t+.42);
+    fi.type='lowpass'; fi.frequency.value=2400;
+    gi.gain.setValueAtTime(.045*vol,t);
+    gi.gain.exponentialRampToValueAtTime(.001,t+.45);
+    oi.connect(fi); fi.connect(gi); gi.connect(OUT); oi.start(t); oi.stop(t+.46);
+  } else if(type==='touchdown'){
+    // THE SHIP ON THE GROUND, and it should be the heaviest sound in the game
+    // after an explosion. Low thump for the weight, filtered noise for the
+    // downwash, and a hydraulic sigh as it settles.
+    var lb=a.createBuffer(1,9000,a.sampleRate),lc=lb.getChannelData(0);
+    for(var li=0;li<9000;li++) lc[li]=(Math.random()*2-1)*Math.pow(1-li/9000,1.7);
+    var ls=a.createBufferSource(); ls.buffer=lb;
+    var lf=a.createBiquadFilter(); lf.type='lowpass'; lf.frequency.setValueAtTime(700,t);
+    lf.frequency.exponentialRampToValueAtTime(180,t+.9);
+    var lg=a.createGain();
+    lg.gain.setValueAtTime(.20*vol,t); lg.gain.exponentialRampToValueAtTime(.001,t+.95);
+    ls.connect(lf); lf.connect(lg); lg.connect(OUT); ls.start(t); ls.stop(t+.96);
+    var ot=a.createOscillator(),gt=a.createGain();
+    ot.type='sine';
+    ot.frequency.setValueAtTime(96,t); ot.frequency.exponentialRampToValueAtTime(42,t+.55);
+    gt.gain.setValueAtTime(.24*vol,t); gt.gain.exponentialRampToValueAtTime(.001,t+.6);
+    ot.connect(gt); gt.connect(OUT); ot.start(t); ot.stop(t+.61);
+  } else if(type==='board'){
+    // HOLDING E TO BOARD. Pitch rides the progress of the hold, passed as the
+    // fourth argument, so the sound itself tells you how far through you are and
+    // letting go early is audible as well as visible.
+    var pr=clamp(arguments[3]===undefined?0:arguments[3],0,1);
+    var oq=a.createOscillator(),gq=a.createGain();
+    oq.type='square';
+    oq.frequency.setValueAtTime(520+pr*520,t);
+    gq.gain.setValueAtTime(.035*vol,t);
+    gq.gain.exponentialRampToValueAtTime(.001,t+.07);
+    oq.connect(gq); gq.connect(OUT); oq.start(t); oq.stop(t+.08);
+  } else if(type==='lastcall'){
+    // THE HOLD WINDOW RUNNING OUT. Two hard notes, falling, once a second, and
+    // deliberately the ugliest sound in this family.
+    var oc2=a.createOscillator(),gc2=a.createGain();
+    oc2.type='sawtooth';
+    oc2.frequency.setValueAtTime(760,t);
+    oc2.frequency.setValueAtTime(520,t+.11);
+    gc2.gain.setValueAtTime(.075*vol,t);
+    gc2.gain.setValueAtTime(.075*vol,t+.11);
+    gc2.gain.exponentialRampToValueAtTime(.001,t+.26);
+    oc2.connect(gc2); gc2.connect(OUT); oc2.start(t); oc2.stop(t+.27);
   } else if(type==='alarm'){
     var o3=a.createOscillator(),g5=a.createGain();
     o3.type='sawtooth'; o3.frequency.setValueAtTime(920,t); o3.frequency.setValueAtTime(660,t+.09);
@@ -7608,11 +7675,15 @@ function tryExtractTick(dt,wantCall){
     if(wantCall){
       if(z.pullT===undefined||z.pullT===null) z.pullT=0;
       z.pullT+=dt;
+      // The hold itself has a voice, rising with progress, so letting go early
+      // is something you HEAR rather than something you notice afterwards.
+      z.boardT=(z.boardT||0)+dt;
+      if(z.boardT>=0.13){ z.boardT=0; blip('board',0,undefined,z.pullT/1.4); }
       if(z.pullT>=1.4){ T.holdExtract=1; endRaid('extract'); return; }
     } else z.pullT=null;
     return;
   }
-  if(z) z.pullT=null;
+  if(z){ if(z.pullT===null||z.pullT===undefined||z.pullT===0) z.boardT=0; z.pullT=null; }
   G.active=z||G.active;
   // A refusal has to say what it is refusing, or it reads as a dead button.
   if(z&&wantCall&&!z.open){
@@ -7652,6 +7723,7 @@ function tryExtractTick(dt,wantCall){
       z.beaconT=CFG.extractWait; z.hold=null; z.siegeSpawned=0; z.siegeSpawnT=0; z.siegeGreed=null; z.pullN=0; z.pinged=0;
       G.beaconT=z.beaconT; G.shipHold=null; G.siegeSpawned=0; G.siegeSpawnT=0;
       T.beaconCalls=(T.beaconCalls||0)+1;
+      blip('beacon');
       // The price has to be legible BEFORE the wait, or it is not a decision, it is an
       // ambush. The line names what the bag did.
       var _g=greedOf();
@@ -7677,7 +7749,7 @@ function tryExtractTick(dt,wantCall){
       blip('alarm');
       say(G.timeLeft<CFG.extractWait
         ? 'Pulled. Inbound '+Math.round(CFG.extractWait)+'s. The raid clock runs out first.'
-        : 'Pulled. Inbound '+Math.round(CFG.extractWait)+'s, then pull again to board. Everything heard that.');
+        : 'Pulled. Inbound '+Math.round(CFG.extractWait)+'s, then hold E to board. Everything heard that.');
     }
     return;
   }
@@ -7691,6 +7763,16 @@ function tickExtractPoints(dt){
   for(var zi=0;zi<G.zones.length;zi++){
     var z=G.zones[zi];
     if(z.beaconT===null||z.beaconT===undefined) continue;
+    // THE APPROACH IS AUDIBLE NOW. A ping whose interval shrinks from 2.2s at
+    // the moment of the call to 0.55s as the ship arrives, so the wait has a
+    // pulse and you can hear how close it is with your eyes on the tree line
+    // instead of on the timer.
+    if(z.beaconT>0&&!G.sim&&z===G.active){
+      var _fr=clamp(1-z.beaconT/Math.max(1,CFG.extractWait),0,1);
+      var _iv=2.2-1.65*_fr;
+      z.pingT=(z.pingT||0)+dt;
+      if(z.pingT>=_iv){ z.pingT=0; blip('inbound',dist(p,z)); }
+    }
     z.beaconT-=dt;
     if(z===G.active) G.beaconT=z.beaconT;
   // The beacon keeps calling while it is inbound, so anything that wanders off
@@ -7852,9 +7934,17 @@ function tickExtractPoints(dt){
     // then killing him on the timer at twelve is a lie.
     if(z.hold===null||z.hold===undefined){
       z.hold=Math.min(30,Math.max(3,G.timeLeft-1)); z.holdMax=z.hold;
-      if(dist(p,z)<1400){ blip('alarm'); say('Dropship is DOWN. Pull again to board, '+Math.round(z.hold)+'s.'); }
+      if(dist(p,z)<1400){ blip('touchdown',dist(p,z)); blip('alarm',dist(p,z));
+        say('Dropship is DOWN. Hold E to board, '+Math.round(z.hold)+'s.'); }
     }
+    // THE WINDOW CLOSING, once a second for the last eight. This is the only
+    // sound in the family that is meant to be unpleasant: it is the one that
+    // costs you the raid if you ignore it.
+    var _hPrev=z.hold;
     z.hold-=dt;
+    if(!G.sim&&z===G.active&&z.hold<=8&&z.hold>0&&Math.ceil(z.hold)!==Math.ceil(_hPrev)){
+      blip('lastcall',dist(p,z));
+    }
     if(z===G.active){ G.shipHold=z.hold; G.shipHoldMax=z.holdMax; }
     if(z.hold<=0){
       z.beaconT=null; z.hold=null; z.pullT=null;
@@ -13611,6 +13701,66 @@ function drawHUD(){
     ctx.fillText(p.revived?'Auto-injector spent. Crawl or bleed out.':
       (canRev?'[F] SELF-REVIVE (uses medical)':'No medical in bag. Crawl or bleed out.'),W/2,H/2+6);
     ctx.textAlign='left';
+  }
+  // HIS NOTE: "a middle-of-the-screen HOLD E TO EXTRACT once its open, even if
+  // downed". He is right that it was missing and the reason is that the bottom
+  // strip told you the ship was HOLDING and never once told you what to do about
+  // it. The instruction lived only in a say() line that scrolls away in a couple
+  // of seconds, so if you were fighting when it landed you never saw it.
+  // DRAWN AFTER THE DOWNED OVERLAY, deliberately, which is the "even if downed"
+  // half. That overlay paints a red wash over the whole screen and then DOWN and
+  // a bleed-out bar, and anything drawn before it is underneath it.
+  // IT SAYS WHAT IS ACTUALLY TRUE IN EACH CASE, which is not what I first wrote.
+  // A downed player standing in the ring when the ship is down does not hold E at
+  // all: hauledAboard has picked him up automatically since v2.30, on his own
+  // instruction, and the raid ends in that same frame. Printing HOLD E at him
+  // would be a lie and he would never see it anyway. So the downed lines are
+  // about the two states where a downed man still has something to do, crawling
+  // to the ring and waiting for the ship, and the HOLD E line is for the case
+  // that genuinely needs it.
+  if(!G.over&&G.beaconT!==null&&G.active){
+    var _shipDown=(G.beaconT<=0&&G.shipHold!==null&&G.shipHold!==undefined);
+    var _inRing=dist(p,G.active)<G.active.r;
+    var _msg=null,_col='#35d6c8',_sub=null;
+    if(p.downed){
+      if(_inRing&&_shipDown&&CFG.hauledAboard!==0){ _msg='THEY HAVE YOU'; _sub='Hauling you aboard'; }
+      else if(_inRing&&_shipDown){ _msg='HOLD E TO EXTRACT'; _sub='You can board from the floor'; }
+      else if(_inRing){ _msg='SHIP INBOUND'; _sub='Stay down, they will haul you aboard'; _col='#ffb02e'; }
+      else { _msg='CRAWL TO THE RING'; _sub=_shipDown?('Ship leaves in '+Math.max(0,Math.ceil(G.shipHold))+'s'):'Ship is coming'; _col='#ff5a4a'; }
+    } else if(_shipDown&&_inRing){
+      _msg='HOLD E TO EXTRACT';
+      _sub='Ship leaves in '+Math.max(0,Math.ceil(G.shipHold))+'s';
+    } else if(_shipDown){
+      _msg='SHIP IS DOWN'; _sub='Get to the ring, '+Math.max(0,Math.ceil(G.shipHold))+'s'; _col='#ff5a4a';
+    }
+    if(_msg){
+      // Pulsing, because a static line at the centre of the screen stops being
+      // read after about two seconds. Driven off the raid clock rather than off
+      // a frame counter so it does not depend on framerate, and off G.timeLeft
+      // rather than a new piece of state.
+      var _pu=0.72+0.28*Math.abs(Math.sin(G.timeLeft*2.6));
+      // Standing, it sits WELL above centre. At H/2-10 the box landed squarely on
+      // the operator, who is drawn at the centre of the screen, so the one moment
+      // you most need to see yourself was the one moment a panel covered you.
+      // It clears the world's own EXTRACTION - OPEN badge as well, which sits at
+      // the ring, and the ring is always under you when this line is showing.
+      // Downed, it goes below the bleed-out bar and the self-revive line instead,
+      // because those are the other two things you need at once.
+      var _y=p.downed?H/2+64:H/2-124;
+      ctx.textAlign='center';
+      ctx.font=FS(TYPE.huge);
+      ctx.fillStyle='rgba(6,9,13,.55)';
+      var _tw=ctx.measureText(_msg).width;
+      ctx.fillRect(W/2-_tw/2-16,_y-LH(26),_tw+32,LH(38));
+      ctx.globalAlpha=_pu;
+      ctx.fillStyle=_col; ctx.fillText(_msg,W/2,_y);
+      ctx.globalAlpha=1;
+      if(_sub){
+        ctx.font=FS(TYPE.label); ctx.fillStyle='#e8e2d5';
+        ctx.fillText(_sub,W/2,_y+LH(20));
+      }
+      ctx.textAlign='left';
+    }
   }
   if(!p.downed){
     drawNoiseMarkers();

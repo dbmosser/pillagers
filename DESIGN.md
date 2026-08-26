@@ -9906,3 +9906,74 @@ rather than to race it, and with nothing shooting at the reviver. Whether a 13 s
 average approach ever actually beats the real 16 second clock in a live firefight is
 a different question and this does not answer it.
 
+
+### v3.20: the extraction says something now, and it says it in the middle of the screen
+
+HIS NOTE, live during the previous build: "need more audio indicators for extraction
+and also a middle-of-the-screen HOLD E TO EXTRACT once its open, even if downed."
+Both halves were real gaps and both were the same underlying gap: the loudest, most
+committed thirty seconds in the raid told you almost nothing while they were
+happening.
+
+THE AUDIO. Calling the ship made exactly ONE sound, an alarm blip at touchdown, with
+silence on either side of it. Five voices now, one per state change, deliberately a
+family: same rising-pitch logic so the sequence reads as a sequence.
+
+  beacon      two rising square notes    the signal going up, on the call
+  inbound     a sonar ping with a tail   repeated while the ship approaches
+  touchdown   low thump plus downwash    the heaviest sound after an explosion
+  board       a short tick, pitch rises  rides the 1.4s hold, so letting go is audible
+  lastcall    two falling saw notes      once a second for the final eight
+
+THE INBOUND PING IS THE ONE THAT CHANGES THE WAIT. Its interval shrinks from 2.2
+seconds at the moment of the call to 0.55 as the ship arrives, so the approach has a
+pulse and you can hear how close it is with your eyes on the tree line instead of on
+the timer. Driven over a real 25 second wait: 21 pings, quickening.
+
+THE PROMPT. The bottom strip said SHIP HOLDING 29s and never once said what to do
+about it. The instruction existed only in a say() line that scrolls away in a couple
+of seconds, so if you were fighting when it landed, you never saw it and the ship
+left without you. HOLD E TO EXTRACT now sits at the middle of the screen for as long
+as the window is open.
+
+IT IS DRAWN AFTER THE DOWNED OVERLAY, which is the "even if downed" half and is the
+whole trick. That overlay paints a red wash across the entire screen, then DOWN, a
+bleed-out bar and the self-revive line. Anything drawn before it is underneath it.
+
+AND IT SAYS WHAT IS ACTUALLY TRUE, which is not what I first wrote. A downed player
+standing in the ring when the ship is down does not hold anything: hauledAboard has
+picked him up automatically since v2.30, on his own instruction, and the raid ends in
+that same frame. Printing HOLD E at him would have been a lie he never had time to
+read. So the four downed states each say their own true thing: THEY HAVE YOU while
+being hauled, HOLD E TO EXTRACT if hauledAboard is off and he really must pull, SHIP
+INBOUND with "stay down, they will haul you aboard" while the ship is still coming,
+and CRAWL TO THE RING with the countdown if he is outside it.
+
+TWO THINGS THE SCREENSHOTS CAUGHT. At H/2-10 the panel landed squarely on the
+operator, who is drawn at the centre of the screen, so the one moment you most need
+to see yourself was the one moment a box covered you. And one nudge later the
+subtitle was sitting on the world's own EXTRACTION - OPEN badge, which is always
+under you when this line is showing. It is at H/2-124 standing and H/2+64 downed,
+below the bleed bar and the self-revive line rather than over them.
+
+ONE STALE LINE FIXED. The call-time message still said "then pull again to board",
+written back when boarding was a second tap. It says hold E now, like everything else.
+
+Verified on the PLAY PATH, not the sim, driven through window.__loop with the real
+key state, because v2.48 shipped sounds that tested green and never played and the
+reason was that nothing ever reached the call sites. Full sequence on GREYWATER DAM:
+E held, beacon called at 1.6s with beaconCalls going to 1; 21 inbound pings across
+the 25 second wait; touchdown reached with the say line reading "Dropship is DOWN.
+Hold E to board, 30s."; 4 last-call warnings as the hold ran 8 seconds down to 4.8,
+one per second exactly as intended; 10 board ticks while E was held, ending in
+holdExtract 1. All three boarding cases driven separately: standing and holding E
+extracts, downed with hauledAboard on is hauled with "They have you", downed with
+hauledAboard off boards from the floor on E. parsecheck PASS at v3.20, all four maps
+and the hub draw with drawErr null. Three captures read back through the sink.
+Not verified: that any of these five sounds is actually AUDIBLE, or pleasant, or
+distinguishable from each other. blip() returns early without an AudioContext, so
+what I have proven is that the call sites are reached at the right moments with the
+right arguments, which is the failure v2.48 had. Whether the touchdown reads as a
+dropship or as a thud is his ear and not mine. Also not verified: how the prompt sits
+at other window sizes; every capture here is 1278 by 718.
+
