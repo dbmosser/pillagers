@@ -503,7 +503,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.41';
+var VER='3.42';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5050,7 +5050,37 @@ var IDENTITIES=[
   {id:'wifi',  tag:'FBI_Surveillance_Van',coat:'#5a7a6a'},
   {id:'crouch',tag:'CrouchSpammer',       coat:'#8a4a6a'},
   {id:'nan',   tag:'ur_dad_left_4_milk',  coat:'#4a6a8a'},
-  {id:'lag',   tag:'LagSwitch_Larry',     coat:'#8a6a4a'}
+  {id:'lag',   tag:'LagSwitch_Larry',     coat:'#8a6a4a'},
+  // ENOUGH NAMES FOR THE ROSTER THAT EXISTS, v3.42. Ten identities was written when
+  // ten raiders was the maximum. nOf scales nRaider by map area, so GREYWATER DAM
+  // and SUNKEN QUARTER already ask for FOURTEEN at the default, v3.41's "Raiders:
+  // Many" asks for twenty-one, and v3.36's waves can add six more on top. The list
+  // has been wrapping for a long time.
+  // v3.38 stopped that showing as literal duplicates on the board by suffixing the
+  // overflow, which fixed the display and left a subtler problem: idRec keys the
+  // GRUDGE record off id, so 'prone_1' accumulates standing separately from
+  // 'prone'. Two men with almost the same name and unrelated histories with you is
+  // worse than either a duplicate or a stranger.
+  // Twenty-eight now, which covers the worst case of twenty-one plus six waves with
+  // one to spare, so the suffix path survives only as the guard it was meant to be.
+  {id:'ratio', tag:'RatioedInChat',        coat:'#7a4a4a'},
+  {id:'sweat', tag:'SweatLordSupreme',     coat:'#3a6a7a'},
+  {id:'afk',   tag:'AFK_In_The_Bushes',    coat:'#5a7a4a'},
+  {id:'ping',  tag:'900Ping_Andy',         coat:'#7a5a8a'},
+  {id:'meta',  tag:'MetaSlaveMitch',       coat:'#8a7a3a'},
+  {id:'camp',  tag:'CamperVanBeethoven',   coat:'#4a7a6a'},
+  {id:'clutch',tag:'ClutchOrKick_Kev',     coat:'#8a5a5a'},
+  {id:'aim',   tag:'AimAssistedAlan',      coat:'#5a5a8a'},
+  {id:'toxic', tag:'ToxicButPolite',       coat:'#6a8a4a'},
+  {id:'brick', tag:'BuiltDifferentBrick',  coat:'#8a4a3a'},
+  {id:'gg',    tag:'gg_ez_no_re',          coat:'#4a8a7a'},
+  {id:'loot2', tag:'LootLordLucas',        coat:'#7a7a4a'},
+  {id:'wall',  tag:'WallhackWally',        coat:'#5a4a7a'},
+  {id:'third', tag:'ThirdPartyPete',       coat:'#7a6a5a'},
+  {id:'quick', tag:'QuickscopeQuentin',    coat:'#4a6a5a'},
+  {id:'panic', tag:'PanicReloadPam',       coat:'#8a6a7a'},
+  {id:'grief', tag:'GriefTheGriefers',     coat:'#6a5a4a'},
+  {id:'tilt',  tag:'PermanentlyTilted',    coat:'#7a4a6a'}
 ];
 function idRec(id){
   P.rivals=P.rivals||{};

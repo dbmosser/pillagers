@@ -11365,3 +11365,44 @@ Also not verified: whether the spread should be closed at all. Four maps that pl
 identically is not obviously better than four that play differently, and which of those
 he wants is his call, not a defect I should quietly tune away.
 
+
+### v3.42: enough names for the roster that actually exists
+
+Ten identities was written when ten raiders was the maximum, and the maximum has moved
+three times since without anybody looking at the list. nOf scales nRaider by map area,
+so GREYWATER DAM and SUNKEN QUARTER already ask for FOURTEEN at the default. v3.41's
+"Raiders: Many" asks for twenty-one. v3.36's waves can add six more on top of that. The
+list has been wrapping for a long time and the board has been showing it.
+
+v3.38 caught the literal duplicates and suffixed the overflow, which fixed the display
+and left a subtler problem behind. idRec keys the GRUDGE record off id, so 'prone_1'
+accumulates standing entirely separately from 'prone'. Kill ProneBone_42 and
+ProneBone_42_2 walks past you unbothered, which is the identity system saying two
+different things about the same name. Two men with almost the same name and unrelated
+histories with you is worse than either a plain duplicate or an honest stranger.
+
+Twenty-eight identities now. Worst case reachable from Settings is twenty-one at
+"Many" plus six waves, so twenty-eight covers it with one spare and the suffix path
+goes back to being the guard it was written as rather than a routine occurrence.
+
+Same register as the existing ten, because the joke is load bearing: these are the
+names of people who are also out here doing this, and RatioedInChat reads as a person
+in a way that Raider_17 does not.
+
+Verified: parsecheck PASS at v3.42, all four maps and the hub draw with drawErr null,
+and zero duplicate roster names on all four at default counts. Driven at the worst case
+a player can actually reach, Raiders set to Many with the wave cap at six and the gap
+at one second: a twenty-six name roster, twenty-one at the drop plus five waves, every
+name unique AND every name checked against the IDENTITIES table rather than just
+against each other, so nothing invented a suffix.
+MY OWN FALSE POSITIVE, worth recording because it nearly became a bug report: my first
+check flagged "suffixed" names by testing for a trailing underscore and digits, which
+matches ProneBone_42, a real identity. The detector was wrong, not the code. Testing
+membership of the source list is the check that actually means something.
+Not verified: no balance measurement, and none applies. This adds rows to a table of
+names and coat colours; it changes no count, no roll and no behaviour, and mkRaider
+takes whichever identity it is handed either way. Also not verified: the eighteen new
+coat colours are picked to sit in the same value band as the original ten by eye, not
+measured against the district palettes, so one of them may read badly on a particular
+map's ground.
+
