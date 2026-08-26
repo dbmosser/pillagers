@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.01';
+var VER='3.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5870,7 +5870,7 @@ function buildRaid(sim){
     containers:(clearOfPads(containers),containers),ents:ents,bullets:[],pings:[],puffs:[],
     wild:(sim?[]:spawnWild(map)),
     decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],labels:[],flashes:[],hitMark:null,
-    zones:zones,active:active,camps:camps,beaconT:null,searching:null,searchT:0,
+    zones:zones,active:active,camps:camps,beaconT:null,searching:null,searchT:0,waypoint:null,
     // Weather is rolled once per raid. Clear is weighted heaviest so the unusual
     // conditions stay unusual and keep their impact.
     wx:pickWeather(),
@@ -6117,6 +6117,24 @@ cv.addEventListener('mousemove',function(e){
   mouse.x=e.clientX-r.left; mouse.y=e.clientY-r.top;
 });
 cv.addEventListener('mousedown',function(e){
+  // MARK A WAYPOINT. While the map is up the click belongs to the map and must
+  // not reach the trigger, which is why this returns rather than falling through.
+  // Right button clears, left button sets, and a click outside the map rectangle
+  // is ignored so a stray click on the surround does not drop a waypoint in a
+  // corner of the world.
+  if(G&&!G.over&&keys['KeyM']){
+    if(e.button===2){ G.waypoint=null; say('Waypoint cleared'); return; }
+    if(e.button===0){
+      var MP=mapProj();
+      if(mouse.x>=MP.ox&&mouse.x<=MP.ox+WORLD_W*MP.sc&&
+         mouse.y>=MP.oy&&mouse.y<=MP.oy+WORLD_H*MP.sc){
+        var wpt=mapScreenToWorld(mouse.x,mouse.y);
+        G.waypoint={x:clamp(wpt.x,0,WORLD_W),y:clamp(wpt.y,0,WORLD_H)};
+        blip('pick'); say('Waypoint marked');
+      }
+      return;
+    }
+  }
   if(e.button===2){ if(G&&!G.over) G.player.ads=true; return; }
   // PICK UP AN ITEM. Only while the inventory is open, and the drag is claimed
   // here so the same click cannot also pull the trigger.
@@ -12292,7 +12310,11 @@ function drawHUD(){
   // for aiming and an arrow is for pointing at things. Set only on change, so
   // this is not a style write every frame, and driven from the render so every
   // path that closes the bag, TAB, focus loss, death, BACKSPACE, puts it back.
-  var _wantCur=(!p.downed&&G.bagOpen)?'default':'none';
+  // The cursor is hidden in a raid so the reticle is the only pointer. It has to
+  // come back for anything that is actually clicked, which since v3.02 is the map
+  // as well as the inventory: "add cursor when map is up" was part of his note and
+  // without it he would be marking waypoints blind.
+  var _wantCur=(!p.downed&&(G.bagOpen||keys['KeyM']))?'default':'none';
   if(_curNow!==_wantCur){ _curNow=_wantCur; try{ cv.style.cursor=_wantCur; }catch(e){} }
   // reticle at the cursor
   if(!p.downed&&!G.bagOpen&&!keys['KeyM']){
@@ -12357,13 +12379,43 @@ function drawHUD(){
   var mm=Math.floor(G.timeLeft/60),ss=Math.floor(G.timeLeft%60);
   ctx.fillStyle=G.timeLeft<45?'#ff4d3d':'#cdd6dd';
   ctx.fillText(mm+':'+(ss<10?'0':'')+ss,W/2,30);
-  var za=Math.atan2(G.active.y-p.y,G.active.x-p.x),zd=Math.round(dist(p,G.active));
-  ctx.font=FS(TYPE.label); ctx.fillStyle='#35d6c8';
-  ctx.fillText('BEACON '+zd+'m',W/2,46);
-  ctx.save(); ctx.translate(W/2,60); ctx.rotate(za+Math.PI/2);
-  ctx.fillStyle='#35d6c8';
-  ctx.beginPath(); ctx.moveTo(0,-8); ctx.lineTo(-5,5); ctx.lineTo(5,5); ctx.closePath(); ctx.fill();
-  ctx.restore();
+  // HIS NOTE, 2026-08-26: "can you make it point to the NEAREST extraction instead,
+  // and make it switch any time the player finds a nearer extraction -- also ...
+  // the beacon indicator should change to like 'Marked Waypoint' and point to that
+  // instead". It pointed at G.active, which is whichever ring the raid nominated,
+  // and it never changed as you moved. On a map with three open extracts that
+  // means the arrow can point AWAY from the nearest way out, which is the single
+  // worst thing a compass can do.
+  // A waypoint outranks the extracts when one is set, because a waypoint is an
+  // explicit instruction and the nearest extract is only a default. Once the
+  // beacon is actually inbound the compass locks to THAT ring regardless, because
+  // at that point there is only one way out that matters and pointing anywhere
+  // else would get him killed.
+  var _tgt=null,_lbl='',_col='#35d6c8';
+  if(G.beaconT!==null&&G.beaconT!==undefined&&G.active){
+    _tgt=G.active; _lbl='BEACON';
+  } else if(G.waypoint){
+    _tgt=G.waypoint; _lbl='WAYPOINT'; _col='#ffc04a';
+  } else {
+    var _bd=1e9;
+    for(var _zi=0;_zi<G.zones.length;_zi++){
+      var _z=G.zones[_zi];
+      if(_z.open===false) continue;
+      var _dz=dist(p,_z);
+      if(_dz<_bd){ _bd=_dz; _tgt=_z; }
+    }
+    _lbl='EXTRACT';
+    if(!_tgt){ _tgt=G.active; _lbl='BEACON'; }
+  }
+  if(_tgt){
+    var za=Math.atan2(_tgt.y-p.y,_tgt.x-p.x),zd=Math.round(dist(p,_tgt));
+    ctx.font=FS(TYPE.label); ctx.fillStyle=_col;
+    ctx.fillText(_lbl+' '+zd+'m',W/2,46);
+    ctx.save(); ctx.translate(W/2,60); ctx.rotate(za+Math.PI/2);
+    ctx.fillStyle=_col;
+    ctx.beginPath(); ctx.moveTo(0,-8); ctx.lineTo(-5,5); ctx.lineTo(5,5); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
   if(G.marked>0){
     ctx.font=FS(TYPE.head);
     ctx.fillStyle='rgba(255,60,40,'+(.6+.4*Math.sin(G.t*10))+')';
@@ -13678,6 +13730,21 @@ function drawBag(){
     ctx.fillText('Bag is empty.',x+11,hintY);
   }
 }
+// HIS NOTE, 2026-08-26: "player should be able to mark a waypoint on their map
+// using the mouse (add cursor when map is up)". The map draw computed its own
+// scale and origin as locals, so a click had no way to ask where it landed in the
+// world. That projection is a function now and BOTH the draw and the click use
+// it, for the same reason mouseWorld() exists after the throwable bug: two copies
+// of a coordinate transform is how the cursor and the thing it points at end up
+// disagreeing.
+function mapProj(){
+  var pad=70,sc=Math.min((W-pad*2)/WORLD_W,(H-pad*2)/WORLD_H);
+  return {sc:sc,ox:(W-WORLD_W*sc)/2,oy:(H-WORLD_H*sc)/2};
+}
+function mapScreenToWorld(sx,sy){
+  var M=mapProj();
+  return {x:(sx-M.ox)/M.sc, y:(sy-M.oy)/M.sc};
+}
 function drawMapOverlay(){
   var p=G.player,i;
   // The sector map was the last full screen surface still wearing the old grey
@@ -13686,8 +13753,7 @@ function drawMapOverlay(){
   // behind by the v0.84 recolour, so holding M dropped you out of a navy and
   // amber game into a grey one.
   ctx.fillStyle='rgba(9,12,34,.94)'; ctx.fillRect(0,0,W,H);
-  var pad=70,sc=Math.min((W-pad*2)/WORLD_W,(H-pad*2)/WORLD_H);
-  var ox=(W-WORLD_W*sc)/2,oy=(H-WORLD_H*sc)/2;
+  var _MP=mapProj(),sc=_MP.sc,ox=_MP.ox,oy=_MP.oy;
   // double frame, matching the windows in the terminal
   ctx.strokeStyle='#2f4394'; ctx.lineWidth=3;
   ctx.strokeRect(ox-3,oy-3,WORLD_W*sc+6,WORLD_H*sc+6);
@@ -13698,6 +13764,8 @@ function drawMapOverlay(){
   ctx.fillText('SECTOR MAP',ox,oy-10);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#9aa8d0';
   ctx.fillText('hostile positions unknown',ox+110,oy-10);
+  ctx.fillStyle='#ffc04a';
+  ctx.fillText(G.waypoint?'CLICK set waypoint  ·  RIGHT-CLICK clear':'CLICK to set a waypoint',ox+300,oy-10);
   // conditions belong on the map, since they change how far you can see
   ctx.textAlign='right';
   ctx.fillStyle=wx().id==='clear'?'#9aa8d0':'#4de3d0';
@@ -13891,6 +13959,23 @@ function drawMapOverlay(){
     ctx.fillStyle=act?'#4de3d0':'rgba(154,168,208,.80)';
     ctx.fillText(act?'OPEN':'CLOSED',ox+zz.x*sc,oy+zz.y*sc+zz.r*sc+16);
     ctx.textAlign='left';
+  }
+  // THE WAYPOINT, v3.02. Drawn before the player marker so his own dot always
+  // sits on top of it, and drawn as a ring plus crosshair rather than a filled
+  // dot so it cannot be mistaken for an extract or for himself.
+  if(G.waypoint){
+    var wpx=ox+G.waypoint.x*sc, wpy=oy+G.waypoint.y*sc;
+    ctx.strokeStyle='#ffc04a'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(wpx,wpy,7,0,6.2832); ctx.stroke();
+    ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.moveTo(wpx-11,wpy); ctx.lineTo(wpx-3,wpy);
+    ctx.moveTo(wpx+3,wpy);  ctx.lineTo(wpx+11,wpy);
+    ctx.moveTo(wpx,wpy-11); ctx.lineTo(wpx,wpy-3);
+    ctx.moveTo(wpx,wpy+3);  ctx.lineTo(wpx,wpy+11);
+    ctx.stroke();
+    ctx.font=FS(TYPE.micro); ctx.fillStyle='#ffc04a'; ctx.textAlign='center';
+    ctx.fillText('WAYPOINT',wpx,wpy-14); ctx.textAlign='left';
   }
   // your own marker, ringed in ink so a gold dot never disappears into a gold
   // district block

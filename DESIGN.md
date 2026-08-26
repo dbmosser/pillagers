@@ -8527,3 +8527,58 @@ I am flagging the text as unconfirmed rather than claiming it. The behaviour is
 verified; the words may not appear. No balance measurement: nothing here touches a
 roll, an entity decision or a timing constant.
 
+
+### v3.02: the compass pointed at a fixed ring, and now it points at the way out you are actually near
+
+His note: "what is the beacon indicator at the top of the screen -- can you make it
+point to the NEAREST extraction instead, and make it switch any time the player
+finds a nearer extraction -- also, player should be able to mark a waypoint on
+their map using the mouse (add cursor when map is up), and then the beacon
+indicator should change to like 'Marked Waypoint' and point to that instead".
+
+WHAT IT WAS DOING. The arrow read G.active, the single ring the raid nominates at
+build time, and it never changed as he moved. Every map has three open extracts, so
+on any given run the arrow could confidently point at the second or third nearest
+one. A compass that points away from the nearest way out is worse than no compass,
+because he trusts it. His own recorder has runs ending with closestExt over 2,000
+metres, which is exactly what walking toward the wrong ring looks like.
+
+WHAT IT DOES NOW, in priority order, and the order is the design:
+
+  1. If the beacon is actually inbound, it locks to THAT ring no matter what. At
+     that point there is one way out that matters and pointing anywhere else would
+     get him killed.
+  2. Otherwise, if a waypoint is set, it points there and says WAYPOINT in amber.
+     A waypoint is an explicit instruction and outranks a default.
+  3. Otherwise it points at the NEAREST open extract, recomputed every frame, and
+     says EXTRACT. Walk past a closer ring and the arrow swings to it by itself.
+
+THE WAYPOINT. Hold M, click anywhere on the map, and it drops a marked point;
+right-click clears it. The cursor now appears while the map is up, which was part
+of his note and without which he would be aiming the click blind. A click outside
+the map rectangle is ignored so a stray click on the surround cannot drop a
+waypoint in a corner of the world, and the click returns before it can reach the
+trigger, so marking a waypoint never also fires the gun.
+
+The map draw used to compute its own scale and origin as locals, which meant a
+click had no way to ask where it had landed. That projection is a shared function
+now and both the draw and the click use it. This is the same lesson as the
+throwable bug one build ago: two copies of a coordinate transform is precisely how
+a cursor and the thing it points at end up disagreeing, so there is one copy.
+
+Verified: parsecheck PASS at v3.02, all four maps and the hub drive and draw with
+drawErr null, and the map overlay draws clean both with and without a waypoint set.
+Compass retargeting driven from three standpoints on GREYWATER DAM, each 300 units
+off a different ring: the nearest zone comes back as index 0, then 1, then 2, so it
+does switch rather than sticking. Click round trip verified by dispatching real
+mousedown events at three screen positions with the map up, and the resulting world
+coordinates match the projection arithmetic exactly: screen (700,500) becomes world
+(3022,2976) against a hand-computed (3022,2976). Pixel capture at 1280x718 shows
+the waypoint ring and crosshair on the map, the "CLICK set waypoint, RIGHT-CLICK
+clear" hint, and "WAYPOINT 2412m" on the compass.
+Not verified: no balance measurement, and none applies. This is HUD targeting, one
+click handler and a cursor rule; it changes no roll, no entity decision and no
+timing constant. Worth noting for later: the same capture shows zone and landmark
+labels overprinting each other on the sector map, which is his separate "names of
+areas make no sense" note and is the next build rather than this one.
+
