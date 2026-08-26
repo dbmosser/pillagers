@@ -11306,3 +11306,62 @@ I have not investigated why, and every historical number in this file comes from
 7919 family, which means the back catalogue's absolute rates are a property of that
 family as much as of the game.
 
+
+### The four maps are not balanced, and every number in this file was measured on the hardest one
+
+A survey rather than a build. 150 seeded raids per map on the current build, same seed
+family, mapIx pinned, simGreed 52:
+
+  map              extract   mean haul   mean dur   crawler deaths
+  GREYWATER DAM     10.7%      10,825       232s          51
+  COLD STORAGE      14.0%      11,735       225s          45
+  THE QUARRY        24.0%      11,454       208s          24
+  SUNKEN QUARTER    26.7%      11,062       217s          31
+
+A SIXTEEN POINT SPREAD, and the ranking is not what this file has believed. COLD
+STORAGE has been called "the weak map" for a long time and it is now second worst by
+three points. GREYWATER DAM is the hardest map in the game and nothing anywhere says
+so.
+
+THAT MATTERS BEYOND MAP BALANCE, and it is the reason this survey was worth a tick:
+mapIx 0 is GREYWATER DAM, and __pinDefaults defaults to it. EVERY paired A/B in this
+project's history has been run on the hardest of the four maps. That does not
+invalidate the paired deltas, which are differences measured on identical raids, but
+every ABSOLUTE rate in the back catalogue is a GREYWATER number and reads about ten
+points pessimistic against SUNKEN QUARTER.
+
+WHAT IT IS NOT. Two hypotheses tested and both refuted, which is the useful half.
+
+DENSITY IS NOT THE CAUSE. Machines per million square units: 4.23, 4.16, 4.20, 4.11.
+nOf's area scaling is working exactly as designed. GREYWATER and SUNKEN QUARTER have
+IDENTICAL counts, 34 sentries, 54 crawlers, 14 raiders, 88 machines, on near identical
+area, 20.8 against 21.2 million. Same enemies, same room, and one is two and a half
+times harder than the other.
+
+WATER IS NOT THE CAUSE EITHER, and this one looked convincing. Seconds spent wading
+per raid: GREYWATER 51.9, THE QUARRY 15.8, COLD STORAGE 2.5, SUNKEN QUARTER 0.0. That
+is nearly a quarter of a GREYWATER raid at half speed, unable to crouch and making
+noise, and it very nearly ranks the maps correctly. So I removed the penalty: wadeSpd
+0.34 against 1.0, 320 paired seeds on GREYWATER.
+
+  14.1 percent with the penalty   14.7 percent without it
+  discordant 16 against 18, p = 0.864
+
+Nothing. Fifty-two seconds of wading costs the bot nothing measurable. Water correlates
+with map difficulty and causes none of it.
+
+THAT IS TWICE IN ONE SESSION I have offered a mechanism and had the measurement refuse
+it, after the raider feud story this morning. Both times the story was plausible, fitted
+the numbers I had, and was wrong. I am not offering a third. The spread is real and
+established; its cause is open.
+
+No version bump: dark_raiders.html is unchanged by this entry.
+Verified: 600 raids for the survey, 200 for the diagnostics, and one 320-seed paired
+A/B, all at dt 0.15 with mapIx pinned per map and simGreed 52.
+Not verified: the cause of the spread, which is now the open question. Candidates I
+have NOT tested are extraction ring placement and spacing, building layout and how much
+open ground a route crosses, and container distribution against where the rings are.
+Also not verified: whether the spread should be closed at all. Four maps that play
+identically is not obviously better than four that play differently, and which of those
+he wants is his call, not a defect I should quietly tune away.
+
