@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.98';
+var VER='2.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11145,7 +11145,12 @@ function render2D(dt){
     var isFire=pn.typ==='fire';
     wc.strokeStyle=hexA(col,a3*(isFire?0.95:0.55));
     wc.lineWidth=(isFire?2.6:1.6)*(0.6+0.4*near);
-    var pr=8+(pn.t/pn.life)*Math.min(pn.s*0.42,130)*(pn.occ===undefined?1:pn.occ);
+    // A NEGATIVE RADIUS THROWS, and a throw here is not a cosmetic fault: this
+    // sits inside render2D's draw list, so the exception takes out every single
+    // thing due to be drawn after it, which is the same failure mode as the
+    // y-sort throw. pn.t over pn.life is data, and data that has ever been wrong
+    // once will be wrong again, so the radius is floored rather than trusted.
+    var pr=Math.max(1,8+(pn.t/pn.life)*Math.min(pn.s*0.42,130)*(pn.occ===undefined?1:pn.occ));
     wc.beginPath(); wc.arc(pn.x,pn.y,pr,0,6.2832); wc.stroke();
   }
   // marked ring
@@ -12437,9 +12442,37 @@ function drawHUD(){
       ctx.textAlign='left';
     }
   }
+  // THE GREED DECISION NEEDS THE NUMBER, v2.99. v1.61 broke a container open into
+  // staged pulls precisely so that leaving early would be a real choice: worst
+  // item first, progress persists, so "one more thing or get out" is the raid in
+  // miniature. The information to make that choice was never on the bar you are
+  // actually looking at. The container's own glow carries best-remaining as a
+  // COLOUR, which is a fine ambient cue from across a room and useless while your
+  // eye is pinned to a progress bar six pixels tall, and that bar was hardcoded
+  // amber no matter what was left in the box.
+  // So the bar now takes the colour of the best item STILL INSIDE, and says how
+  // many are left and what the best of them is. near.best is already recomputed
+  // after every pull, so this walks down live: the plate reads ELITE while the
+  // good thing is still in there and drops to COMMON the moment you have it,
+  // which is exactly the instant the correct answer flips from stay to go.
   if(G.searching){
     var s2=w2s(G.searching.x,26,G.searching.y);
-    if(s2) bar(s2.x-30,s2.y-8,60,6,G.searchT/G.searching.time,'#ffd25c');
+    if(s2){
+      var _sc=G.searching;
+      var _left=_sc.loot?_sc.loot.length:0;
+      var _bc=RCOL[_sc.best]||'#ffd25c';
+      bar(s2.x-30,s2.y-8,60,6,G.searchT/_sc.time,_bc);
+      if(_left>0){
+        var _lbl=_left+' left  '+String(_sc.best||'common').toUpperCase();
+        ctx.font=FS(TYPE.micro); ctx.textAlign='center';
+        var _lw2=ctx.measureText(_lbl).width;
+        ctx.fillStyle='rgba(6,9,13,.72)';
+        ctx.fillRect(s2.x-_lw2/2-LH(5),s2.y-LH(24),_lw2+LH(10),LH(13));
+        ctx.fillStyle=_bc;
+        ctx.fillText(_lbl,s2.x,s2.y-LH(14));
+        ctx.textAlign='left';
+      }
+    }
   }
   // The world pass already draws the name and a health pip on every visible
   // entity, so the HUD only adds the alert marker, sitting above that plate.
@@ -14303,7 +14336,17 @@ function loop(ts){
   // run down behind a blank screen either, so the whole frame is skipped until the
   // browser hands the context back. lastTs is restamped on restore.
   if(ctxLost){ lastTs=ts; return; }
-  var dt=Math.min((ts-lastTs)/1000,.05); lastTs=ts;
+  // THE CLAMP WAS ONE SIDED, found v2.99. This bounded dt from ABOVE at 50ms, so a
+  // backgrounded tab returning does not teleport everything, but it never bounded
+  // it from BELOW. A negative dt runs the entire game backwards for one frame: the
+  // raid clock counts up, every particle and ping ages in reverse, and anything
+  // deriving a radius or an alpha from elapsed-over-lifetime goes negative with it.
+  // I hit this driving the fixture with a synthetic timestamp lower than the last
+  // one, so the trigger was mine rather than the browser's, and requestAnimationFrame
+  // is monotonic in real play. It is still one Math.max to make a whole class of
+  // impossible-to-debug frame unreachable, and the harness now cannot produce it
+  // either, which is worth as much.
+  var dt=clamp((ts-lastTs)/1000,0,.05); lastTs=ts;
   // Ahead of every early return below, so zoom keeps easing in the hub, while
   // paused and on the death screen instead of freezing part way through a step.
   tickZoom(dt);

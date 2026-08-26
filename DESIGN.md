@@ -8318,3 +8318,66 @@ Not verified: no balance measurement, and none applies. This build moves DOM nod
 between parents and adds two click handlers. Nothing in it touches a random draw,
 an entity decision, a timing constant or anything the sim can see.
 
+
+### v2.99: the greed decision finally gets its number, and a one-sided clamp turns up underneath it
+
+Two of the open items I was carrying turned out to be already done, which is worth
+saying before the thing that was not. Wrecked cars reading as suitcases from
+overhead was rebuilt at v1.64 into a four-wheels-at-the-corners silhouette with a
+stepped hood, cabin and boot, and "looting feels so uninspired" was answered at
+v1.61 with staged pulls and refined at v2.59. Both were still sitting on the open
+list. Checking his notes against the CURRENT code before acting keeps paying for
+itself; this is the third and fourth time this cycle.
+
+WHAT WAS ACTUALLY MISSING was the other half of the v1.61 design. Staged pulls
+exist so that leaving early is a real choice: items come out worst first, progress
+persists on the container, so "one more thing or get out" is the whole raid played
+in six seconds. But the information needed to make that choice was never on the
+thing you look at while making it. The container's own glow carries best-remaining
+as a colour, which is a good ambient cue from across a room and useless when your
+eye is pinned to a six pixel progress bar, and that bar was hardcoded amber no
+matter what was still in the box.
+
+The bar now takes the colour of the best item still inside and carries a plate
+saying how many are left and what the best of them is. It walks down live, because
+near.best is already recomputed after every pull. Driven with a planted container
+holding two commons, a rare and an elite, the plate reads ELITE at four left, at
+three, at two and at one, and only stops when the elite is in your bag. That is
+correct rather than a bug: worst-first sorting means the good thing is always last,
+so the plate is telling you precisely how much is riding on the next second and a
+half of standing still. "1 left ELITE" is the strongest argument the game can make
+for staying, and until now it could not make it.
+
+AND THE THING I FOUND UNDERNEATH IT. Driving that test I crashed render2D with
+"The radius provided (-83.8152) is negative". The trigger was mine: I fed the
+fixture a synthetic timestamp LOWER than the previous one. But the crash exposed
+two real defects.
+
+First, the frame clamp was one sided. `Math.min((ts-lastTs)/1000,.05)` bounds dt
+from above, so a backgrounded tab returning does not teleport the world, and it
+never bounded dt from below at all. A negative dt runs the entire game backwards
+for one frame: the raid clock counts up, particles and pings age in reverse, and
+anything deriving a radius or an alpha from elapsed-over-lifetime goes negative
+with it. requestAnimationFrame is monotonic in real play so this is not something
+he can hit today, but it is one Math.max to make a whole class of undebuggable
+frame unreachable, and it means the harness cannot manufacture one either.
+
+Second, and this one is not hypothetical: the noise-ping ring computed its radius
+straight from pn.t over pn.life and handed it to arc() unchecked. A negative
+radius THROWS, and that call sits inside render2D's draw list, so the exception
+takes out every single thing queued to be drawn after it. That is the same failure
+mode as the y-sort throw this file has already been bitten by once. The radius is
+floored now rather than trusted.
+
+Verified: parsecheck PASS at v2.99, all four maps and the hub drive and draw with
+drawErr null. Staged-pull test driven through the real main loop against a planted
+four-item container: pulls step 4 to 3 to 2 to 1 to done, the bag gains each item,
+best-remaining reads elite throughout and drawErr stays null on every sampled
+frame. Pixel capture at 1280x718 shows "2 left ELITE" on its plate in elite purple
+with the progress bar tinted to match. The dt clamp is verified by the failure that
+found it: driving __loop with a timestamp 50 seconds in the past now throws nothing
+and leaves drawErr null, where before the fix that exact call crashed the render.
+Not verified: no balance measurement, and none applies. This build adds a HUD
+readout, floors one radius and clamps one delta. It changes no roll, no entity
+decision and no timing constant, and the sim does not draw a HUD at all.
+
