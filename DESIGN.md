@@ -9537,3 +9537,45 @@ has been run, because running them needs a deployed Worker and a KV binding that
 only he can create. The moment he deploys one, the first thing to check is a real
 round trip rather than my reading of it. No balance measurement: this changes no
 roll, no entity decision and no timing constant.
+
+### v3.16: the safes in the fields were camp strongboxes all along
+
+His note: "i am searching safes outside. It donesn't make much sense for someone to
+keep a safe outside, ya know."
+
+He is right, and the audit found exactly one source. There are three container
+placement paths and two of them cannot produce a safe outdoors: the building pass
+runs spotWall INSIDE a building, and the open-ground scatter can only roll crate or
+body. The third is encampments, which place FOUR safes each on a ring of open ground
+30 to 90 units from the camp centre, two camps a raid. Eight office safes standing
+in fields, every single raid. His own run #33 recorded campSafes:4 on the raid he
+complained about.
+
+Counted across all four sectors after the change: safes standing in the open that
+are NOT camp containers, zero on every map. Indoor safes 33, 7, 9 and 36. So the
+complaint was entirely camp safes and nothing else is leaking outdoors.
+
+THE LOOT IS NOT THE MISTAKE. An encampment is advertised danger with a guarded
+payout, marked in red on the sector map for exactly that reason, and defended by the
+raiders camped on it. A rich container there is the design working. What is wrong is
+the OBJECT: a wall safe belongs bolted into an office and nobody hauls one into a
+field to leave it on the grass.
+
+So the container keeps its loot table, its 3.4 second search time and its contract
+category, and gains a camp flag that changes what it IS rather than what it holds.
+It draws wider, lower and iron-banded with a brass hasp, which reads as a chest a
+crew dragged out and padlocked rather than a cabinet that fell out of a building,
+and the prompt says SEARCH STRONGBOX instead of SEARCH SAFE. Placed side by side at
+6x the two are unmistakably different objects.
+
+Verified: parsecheck PASS at v3.16, all four maps and the hub drive and draw with
+drawErr null in the raid view and with the map overlay up. Container census run per
+map as above, confirming zero stray safes outdoors and eight camp strongboxes each.
+Pixel capture at 6x with an indoor safe moved next to a camp strongbox shows the two
+sprites and the STRONGBOX prompt.
+Not verified: no balance measurement, and none is needed. Nothing about loot,
+timing, count or placement changed; the container is in the same spot with the same
+contents and the same search time. This is a sprite branch, a flag and a prompt
+string. Whether a banded chest in a field is fiction he accepts is his call, and the
+alternative if not is to move camp loot under cover, which WOULD be a placement
+change and would want measuring.

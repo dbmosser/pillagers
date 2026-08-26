@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.15';
+var VER='3.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5568,7 +5568,19 @@ function buildRaid(sim){
         if(!hit) sx2={x:px2,y:py2};
       }
       if(!sx2) sx2=freeSpot(map,26);
+      // HIS NOTE, 2026-08-26: "i am searching safes outside. It donesn't make much
+      // sense for someone to keep a safe outside, ya know". He is right, and this
+      // is where they come from: an encampment scatters FOUR of them on a ring of
+      // open ground, two camps a raid, so eight office safes stand in fields.
+      // The LOOT is not the mistake. An encampment is advertised danger with a
+      // guarded payout, which is the whole point of marking it in red on the map,
+      // and it is defended by the raiders camped on it. What is wrong is the
+      // OBJECT: a wall safe belongs in an office, and nobody carries one into a
+      // field. So the container keeps its table, its search time and its contract
+      // category, and gains a flag that makes it read as what it actually is, a
+      // field strongbox that a crew hauled out here and padlocked.
       var cc2=mkContainer(sx2.x,sx2.y,'safe',map.districtAt?map.districtAt(cs.x,cs.y):-1);
+      cc2.camp=1;
       containers.push(cc2);
     }
   }
@@ -11200,6 +11212,9 @@ function drawContS(ct){
   // gap survives the night composite crushing them together.
   if(ct.type==='crate'){ w=16;lift=9;d2=8;cF='#4e3a1e';cT='#8a6a3a';cL='#ab8a55'; }
   else if(ct.type==='locker'){ w=12;lift=20;d2=6;cF='#24333e';cT='#4a6a80';cL='#6a8ea6'; }
+  // A camp strongbox is wider, lower and iron-banded: a chest somebody dragged
+  // here, not a cabinet bolted to a wall. Same loot, same time, different object.
+  else if(ct.type==='safe'&&ct.camp){ w=22;lift=9;d2=9;cF='#33281c';cT='#6b5a3e';cL='#9a8256'; }
   else if(ct.type==='safe'){ w=16;lift=13;d2=8;cF='#2a1f33';cT='#5a4670';cL='#7c6796'; }
   // An Meridian cache is the biggest, brightest object of its kind in the game on
   // purpose: it is the one thing every raid guarantees, so it has to be findable.
@@ -11224,6 +11239,20 @@ function drawContS(ct){
   } else {
     wc.fillStyle=cT; rrF(ct.x-w/2,ct.y-lift-d2,w,d2,2);
     wc.fillStyle=cL; wc.fillRect(ct.x-w/2+1,ct.y-lift-d2,w-2,1.2);
+  }
+  // Iron bands and a hasp, so a camp strongbox reads as a banded chest at a
+  // glance rather than as a beige box. Drawn after the lid so it survives both
+  // the open and closed shapes, and skipped once looted because an emptied chest
+  // is meant to read as spent.
+  if(ct.type==='safe'&&ct.camp&&!ct.opened){
+    wc.fillStyle='rgba(24,20,16,.85)';
+    wc.fillRect(ct.x-w/2+3,ct.y-lift-d2,2.2,lift+d2);
+    wc.fillRect(ct.x+w/2-5,ct.y-lift-d2,2.2,lift+d2);
+    wc.fillStyle='rgba(210,190,140,.55)';
+    wc.fillRect(ct.x-w/2+3,ct.y-lift-d2,2.2,1.2);
+    wc.fillRect(ct.x+w/2-5,ct.y-lift-d2,2.2,1.2);
+    wc.fillStyle='#c9b458';
+    wc.fillRect(ct.x-1.6,ct.y-lift+1,3.2,3.4);
   }
   wc.globalAlpha=1;
   // SPEC 7.4: partial progress is shown ON the container, so a half opened
@@ -12847,7 +12876,7 @@ function drawHUD(){
           ctx.fillRect(s.x-_fw/2-9,s.y-LH(9),4,LH(11));
         }
       }
-      else ctx.fillText('[E] SEARCH '+nc2.type.toUpperCase(),s.x,s.y);
+      else ctx.fillText('[E] SEARCH '+((nc2.type==='safe'&&nc2.camp)?'STRONGBOX':nc2.type.toUpperCase()),s.x,s.y);
       // His #23: item names in the world when you are near them. A single-item
       // crate that YOU dropped or a body someone emptied loot into is not a
       // mystery box, so it says what it holds; multi-item finds stay unsearched
