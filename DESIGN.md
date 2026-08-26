@@ -8956,3 +8956,59 @@ to HIS play rather than the bot's. He fights raiders far more than the bot does 
 raiders take cover behind the same soft things, so the symmetric cost may not land
 symmetrically for him.
 
+
+### v3.08: early deaths are not ambushes, and the check that proved it found no bug
+
+THE INVESTIGATION FIRST, BECAUSE IT CAME BACK NEGATIVE. His flight recorder keeps
+saying the same thing at the bottom of every export: 83 percent of his deaths
+happen before the decision to leave exists. Several of his short runs looked like
+ambushes, and one in particular, run #29, died at 65 seconds having moved 461 units
+and fired ZERO shots. That reads as being killed with no warning, which if true
+would be a real defect in how threats are telegraphed.
+
+400 simulated raids across all four sectors, 345 deaths, split at 90 seconds:
+
+                        died under 90s      died at 90s or later
+  count                 60 (17% of deaths)  285
+  median duration       65s                 214s
+  median first contact  34s                 94s
+  contact to death      28s                 82s
+  never fired a shot    1 (2%)              4 (1%)
+  containers opened     5                   18
+  killers               sentry 41, crawler 14, raider 3    sentry 154, crawler 110
+
+THE AMBUSH THEORY IS DEAD. Two percent of early deaths involved never firing a
+shot, which is the same rate as late deaths, and the median early death came 28
+SECONDS after first contact. That is a fight that was lost, not a jump scare. The
+one thing that actually separates a short run from a long one is WHEN contact
+happened: 34 seconds against 94. Early death is early contact, and the player is
+getting a normal amount of warning and then losing.
+
+So there is no defect here to fix, and I am saying so rather than inventing one.
+His run #29 with zero shots is real but it is the two percent case, and a handful
+of his runs is a small sample against 345.
+
+WHAT SHIPS OFF THE BACK OF IT. The measurement does say what number is worth
+showing him, and it is not the one the death screen was showing. "KILLED BY SENTRY,
+812M FROM EXTRACTION" tells him what he just watched happen. It now also reads
+"IN CONTACT 88S, FIRST SEEN AT 42S", or "NEVER SPOTTED" when nothing ever found
+him. Those two numbers are the ones that distinguish a run that was going to end
+early from one that was not, and putting them at the moment of death is the
+difference between an epitaph and feedback. It costs nothing: both values were
+already in the telemetry and already in the exported run line, they were simply
+never shown to him at the point where he would care.
+
+Verified: parsecheck PASS at v3.08, all four maps and the hub drive and draw with
+drawErr null in the raid view and with the map overlay up. Death screen driven in
+both branches: with firstContact 42 and a death at t=130 it reads "KILLED BY
+SENTRY, 2353M FROM EXTRACTION, IN CONTACT 88S, FIRST SEEN AT 42S", and with
+firstContact null it reads "KILLED BY TIMER, 1538M FROM EXTRACTION, NEVER
+SPOTTED". The arithmetic is checked against the inputs rather than eyeballed.
+Not verified: no balance measurement, and none applies. This build adds text to a
+screen that appears after the raid is already over; it changes no roll, no entity
+decision and no timing constant, and the sim never builds that screen. The
+investigation itself is measured against the BOT, which fights differently from
+him: it dies to machines far more than he does, so if his early deaths really do
+have a different shape, this sample would not show it. What I can say is that the
+engine is not denying warning, because the bot gets 28 seconds of it.
+

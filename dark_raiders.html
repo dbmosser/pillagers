@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.07';
+var VER='3.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10290,7 +10290,22 @@ function endRaid(how){
   if(how==='extract'){ t.textContent='EXTRACTED'; t.style.color='var(--coolant)'; s.textContent='BEACON REACHED'; }
   else if(how==='dead'){ t.textContent='KILLED IN ACTION'; t.style.color='var(--hazard)';
     var kn=(T.lastHitName&&T.deathKiller!=='timer')?T.lastHitName:String(T.deathKiller||'unknown').toUpperCase();
-    s.textContent='KILLED BY '+kn+(T.deathDistExtract?',  '+T.deathDistExtract+'M FROM EXTRACTION':''); }
+    // HOW LONG YOU WERE IN CONTACT, added v3.08 off the back of a 400 raid
+    // measurement. Runs that end early are not ambushes: across 345 simulated
+    // deaths only 2 percent of the player's early deaths involved never firing a
+    // shot, and the median gap between first contact and dying was 28 seconds,
+    // which is a fight, not a jump scare. What actually separates a short run from
+    // a long one is WHEN contact happened: median first contact 34s on runs that
+    // ended under 90 seconds against 94s on runs that lasted. So the number worth
+    // putting in front of him at the moment of death is not what killed him, which
+    // he watched, but how long the fight had been going and how early it started.
+    // That is the difference between an epitaph and feedback.
+    var _fc=T.firstContact;
+    var _contact=(_fc!==null&&_fc!==undefined)?Math.max(0,Math.round(G.t-_fc)):null;
+    s.textContent='KILLED BY '+kn+(T.deathDistExtract?',  '+T.deathDistExtract+'M FROM EXTRACTION':'');
+    if(_contact!==null)
+      s.textContent+='   ·   IN CONTACT '+_contact+'S, FIRST SEEN AT '+Math.round(_fc)+'S';
+    else s.textContent+='   ·   NEVER SPOTTED'; }
   else { t.textContent='ABANDONED'; t.style.color='var(--ash)'; s.textContent='RUN TERMINATED'; }
   // SPEC 5.7 and 17: both tracks are visible on the post run summary.
   lines.push('<span style="color:var(--ash)">LEVEL '+(P.xpLevel||1)+
