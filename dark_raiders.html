@@ -444,7 +444,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.90';
+var VER='2.91';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6447,7 +6447,7 @@ function flash(x,y,r,col,life){
 }
 // World-anchored text that rises and fades. Used for loot pickups and kill
 // confirmations so both read at the point they happened, not just on the HUD.
-function label(x,y,txt,col,delay,big){
+function label(x,y,txt,col,delay,big,ik){
   if(G.sim) return;
   // Push off any live label that would land on top of this one. Without this a
   // container holding three items stacks all three lines in the same spot.
@@ -6461,7 +6461,7 @@ function label(x,y,txt,col,delay,big){
     if(!clash) break;
     row++;
   }
-  G.labels.push({x:x,y:y-row*13,txt:txt,c:col||'#cdd6dd',t:-(delay||0),life:1.9,big:!!big});
+  G.labels.push({x:x,y:y-row*13,txt:txt,c:col||'#cdd6dd',t:-(delay||0),life:1.9,big:!!big,ik:ik||null});
   if(G.labels.length>40) G.labels.shift();
 }
 function decal(x,y,col,size){
@@ -6791,6 +6791,36 @@ function applyHeal(key){
   }
   var b=p.hp; p.hp=Math.min(p.maxhp,p.hp+amt); return p.hp-b;
 }
+// ONE HEAL VERB, v2.91. His report: "when i tried to heal, it was glitchy."
+// Two faults, and the second explains the word.
+// ONE: the guard read p.hp<p.maxhp, which was true BEFORE heal-over-time and
+// wrong after it. Health now arrives over seconds, so pressing again while a
+// Medkit is still flowing passed a check against health that had not risen yet
+// and burned a second item into a queue that could never fit. The guard now
+// counts what is already inbound.
+// TWO, and this is the glitch: the hotbar's heal slot called
+// raidKey('KeyF'), and raidKey's first line is keys[code]=true with NOTHING
+// ever releasing it, because a keyup only arrives from a real key. So healing
+// from the hotbar latched KeyF on forever, healLock latched with it, and the F
+// key was dead for the rest of the raid until you pressed and released F once
+// to no effect. Same latched-key family v0.98 fixed for the map key. No path
+// synthesises a keypress any more: both the key and the slot call this.
+function useMedical(){
+  var p=G.player;
+  var idx=findHeal();
+  if(idx<0){ say('No medical supplies'); return false; }
+  // What is already on its way counts as health you have.
+  if(p.hp+(p.healQ||0)>=p.maxhp){
+    say((p.healQ>0)?'Already healing.':'Already at full');
+    return false;
+  }
+  var k=G.bag[idx], it=ITEMS[k];
+  applyHeal(k); G.bag.splice(idx,1); blip('pick');
+  say(it&&it.hot>0&&CFG.healOverTime!==0?('Using '+it.name+'...'):'Patched up');
+  G.tel.heals++;
+  spark(p.x,p.y,'#6fe0a0',10,90);
+  return true;
+}
 // Delivers the queued health. Called from updatePlayer AND updateBot, for the
 // same reason applyHeal exists.
 function tickHeal(dt){
@@ -6942,7 +6972,7 @@ function grantLoot(ct,keys){
     // one line per item; label() stacks them into a column so they never overlap
     label(ct.x,ct.y-10,
       itm.name+(itm.use==='ammo'?' +'+itm.amt+' ammo':(itm.use==='armor'&&p.armor<armorCap()?' +'+Math.round(Math.min(armorCap()-p.armor,itm.amt))+' armor':' '+ival(key)+'c')),
-      RCOL[itm.r],0,itm.r==='rare'||itm.r==='elite');
+      RCOL[itm.r],0,itm.r==='rare'||itm.r==='elite',key);
     if(itm.use==='ammo') p.reserve+=itm.amt;   // SPEC 6.4: one universal pool
     // A plate is worth 55 but only applied below 20 armour, so deploying with a
     // plate from stash put you at 55 and made every plate you then found dead
@@ -7224,7 +7254,12 @@ function useHot(){
     if(ix<0) return;
     var ait=ITEMS[s2.itemKey]; if(!ait) return;
     if(ait.use==='heal'){
-      if(G.player.hp>=G.player.maxhp){ say('Already at full'); return; }
+      // Same inbound-aware guard as useMedical; this path names ONE item so it
+      // cannot just delegate, but it must not overfill either.
+      var _pp=G.player;
+      if(_pp.hp+(_pp.healQ||0)>=_pp.maxhp){
+        say((_pp.healQ>0)?'Already healing.':'Already at full'); return;
+      }
       applyHeal(s2.itemKey); G.bag.splice(ix,1); blip('pick');
       say(ait.hot>0&&CFG.healOverTime!==0?('Using '+ait.name+'...'):'Patched up');
       G.tel.heals++;
@@ -7234,7 +7269,7 @@ function useHot(){
     return;   // valuables are carried, not used
   }
   if(s2.kind==='throw') doThrow();
-  else if(s2.kind==='heal') raidKey('KeyF',false,null);
+  else if(s2.kind==='heal') useMedical();   // never raidKey: it latches the key on, v2.91
   else if(s2.kind==='armor') useArmor();
 }
 function tryExtractTick(dt,wantCall){
@@ -7794,18 +7829,7 @@ function updatePlayer(dt){
   }
   if(!mouse.down) p.fired=false;
 
-  if(keys['KeyF']&&!p.healLock){
-    p.healLock=true; var idx=findHeal();
-    if(idx>=0&&p.hp<p.maxhp){
-      var _hk=G.bag[idx];
-      applyHeal(_hk);
-      G.bag.splice(idx,1); blip('pick');
-      say(ITEMS[_hk]&&ITEMS[_hk].hot>0&&CFG.healOverTime!==0?('Using '+ITEMS[_hk].name+'...'):'Patched up');
-      T.heals++;
-      spark(p.x,p.y,'#6fe0a0',10,90);
-    } else if(p.hp>=p.maxhp) say('Already at full');
-    else say('No medical supplies');
-  }
+  if(keys['KeyF']&&!p.healLock){ p.healLock=true; useMedical(); }
   if(!keys['KeyF']) p.healLock=false;
 
   // SPEC 7.6: spend a key at its door. Single use, and the key names its door
@@ -10134,6 +10158,7 @@ function finishSim(res){
 
 // ================================================================ 2D renderer (3/4 view)
 var ctx=null,wc=null,camX=0,camY=0,VX=0,VY=0,VIS=[];
+var _curNow='none';   // last cursor style written to the canvas, v2.91
 var fogC=document.createElement('canvas'),fx2=fogC.getContext('2d');
 var litC=document.createElement('canvas'),lx2=litC.getContext('2d');
 function resize(){
@@ -11643,11 +11668,19 @@ function render2D(dt){
     var rise=Math.min(lb.t,lb.life)*26;
     wc.globalAlpha=la;
     wc.font=FS((lb.big?'700 11px':'700 10px')+' "Titan One","Rubik",sans-serif');
+    // THE THING YOU FOUND, DRAWN, v2.91. His run #1 note is "looting feels so
+    // uninspired, how can we make it more interesting???" and the recorder's own
+    // reading of his deaths ends "Fix the looting phase first." The payoff for
+    // opening a container was a line of text; now the item's own portrait rises
+    // out of the crate beside its name, using the icon set v2.87 built. The
+    // plate widens to hold it so nothing overlaps.
+    var icw=lb.ik?15:0;
     wc.fillStyle='rgba(6,9,13,.55)';
     var lw=wc.measureText(lb.txt).width;
-    wc.fillRect(lb.x-lw/2-4,lb.y-rise-10,lw+8,13);
+    wc.fillRect(lb.x-lw/2-4-icw,lb.y-rise-10,lw+8+icw,13);
+    if(lb.ik) drawItemIcon(wc,lb.ik,lb.x-lw/2-icw+3,lb.y-rise-4,13);
     wc.fillStyle=lb.c;
-    wc.fillText(lb.txt,lb.x,lb.y-rise);
+    wc.fillText(lb.txt,lb.x+icw/2,lb.y-rise);
     wc.globalAlpha=1;
   }
   wc.textAlign='left';
@@ -11955,6 +11988,18 @@ function drawHUD(){
     ctx.strokeStyle='rgba(255,206,120,'+(0.16+0.14*k).toFixed(3)+')'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.arc(mouse.x,mouse.y,LH(30)+LH(16)*k,0,6.2832); ctx.stroke();
   })();
+  // A REAL POINTER WHILE THE BAG IS OPEN, v2.91. His note: "when i pull up my
+  // inventory, the mouse should come up so i can use it to view inventory items
+  // and drag them down onto the hotbar." He is right and this is my gap from
+  // v2.50: the canvas sets cursor:none because the reticle IS the cursor, and
+  // the reticle is deliberately hidden while the bag is open, so the drag system
+  // shipped with nothing on screen to drag WITH. The OS arrow is restored for
+  // exactly that window, which is also the correct instrument: a crosshair is
+  // for aiming and an arrow is for pointing at things. Set only on change, so
+  // this is not a style write every frame, and driven from the render so every
+  // path that closes the bag, TAB, focus loss, death, BACKSPACE, puts it back.
+  var _wantCur=(!p.downed&&G.bagOpen)?'default':'none';
+  if(_curNow!==_wantCur){ _curNow=_wantCur; try{ cv.style.cursor=_wantCur; }catch(e){} }
   // reticle at the cursor
   if(!p.downed&&!G.bagOpen&&!keys['KeyM']){
     var rx0=mouse.x,ry0=mouse.y;
@@ -13792,6 +13837,8 @@ function drawHubWorld(dt){
 }
 function drawHubHUD(ox,oy){
   var p=HB.player;
+  // The hub is a place you point at things, so it always has an arrow, v2.91.
+  if(_curNow!=='default'){ _curNow='default'; try{ cv.style.cursor='default'; }catch(e){} }
   ctx.clearRect(0,0,W,H);
   ctx.font=FS(TYPE.head); ctx.fillStyle='#ffb02e';
   ctx.fillText('THE UNDERCROFT',16,28);

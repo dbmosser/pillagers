@@ -7778,6 +7778,64 @@ the raider you meet in the FIELD still draws as the generic operator sprite in
 his coat colour, so hiring a man and then seeing him is not yet a recognition
 moment. That is a bigger piece of work and worth its own decision.
 
+### v2.91: healing was latching the F key, and the inventory had no cursor to drag with
+
+Three of his notes in one build, two of them my own defects.
+
+THE HEAL, WHICH HE CALLED GLITCHY AND THEN PINNED PRECISELY: "bandage glitch
+happens when i try to use 2 in a row". Two faults sat behind that sentence.
+
+  ONE, THE LATCH, and this is the one that earns the word. The hotbar's heal
+  slot called raidKey('KeyF'), and raidKey's FIRST LINE is keys[code]=true.
+  Nothing releases it, because a keyup only ever arrives from a real key. So
+  healing from the hotbar latched KeyF on permanently; the live handler reads
+  `if(keys['KeyF']&&!p.healLock)` and clears healLock only on `!keys['KeyF']`,
+  so healLock latched too and THE F KEY WAS DEAD for the rest of the raid. Same
+  family as the latched map key v0.98 fixed, reintroduced by v2.45 wiring the
+  trigger to the hotbar and reaching for a synthesised keypress to do it.
+
+  TWO, THE GUARD, which is v2.46's debt. The check was p.hp<p.maxhp, correct
+  before heal-over-time and wrong after it: health now arrives over seconds, so
+  a second press tested health that had not risen yet and could burn an item
+  into a queue with no room for it. The guard counts what is already inbound.
+
+Both are gone, and no path synthesises a keypress any more: the key and the slot
+and the assigned slot all call one useMedical verb.
+
+THE CURSOR, his note: "when i pull up my inventory, the mouse should come up so i
+can use it to view inventory items and drag them down onto the hotbar." My gap
+from v2.50. The canvas sets cursor:none because the reticle IS the cursor, and
+the reticle is deliberately hidden while the bag is open, so the drag system
+shipped with nothing on screen to drag with. The OS arrow is restored for
+exactly that window, which is also the right instrument, a crosshair aims and an
+arrow points, and the hub always carries one now too. Written only on change,
+driven from the render, so every path that closes the bag puts it back.
+
+THE LOOT, his standing complaint since run #1: "looting feels so uninspired, how
+can we make it more interesting???", which the recorder's own reading of his
+deaths ends by seconding, "Fix the looting phase first." The payoff for opening a
+container was a line of text. Every found item now rises out of the crate with
+its own portrait beside its name, using the icon set v2.87 built, plate widened
+to hold it. tools/shots/loot_labels.png shows a five-item find.
+
+Verified by driving his exact case. Two bandages at 40 health: first press
+queues 28 with one left in the bag, second press queues 56 with none left, and
+it settles at 96 with an empty queue, so both were used and nothing was wasted.
+The latch: healing from the hotbar slot leaves keys.KeyF false and healLock
+false, and the F key still works afterwards, consuming the second bandage.
+Cursor: none in a raid, default with the bag open, none again on close, none
+while downed, default in the hub. Loot labels carry their item key and draw
+clean. Parsecheck PASS at v2.91, all four maps and the hub drive and draw clean.
+The itch zip is rebuilt at v2.91.
+
+Not verified: whether two bandages SHOULD both be spendable when the second
+partly overflows. The guard refuses only when the inbound total already fills
+you, so topping up stays possible and stacking past full does not; a stricter
+rule would refuse any partial overflow and would annoy anyone trying to top off
+before a fight. Also not verified: the loot label plate widens by a fixed 15
+pixels for its icon, which is right at the current text scale and untested at
+his largest.
+
 ### Which settings touch enemies, settled (v0.69 tick, no code change)
 The v0.68 mistake was assuming a setting was the player's when it was shared. Rather than fix the one case and move on, every tunable was traced to where it is actually read, so the class is closed.
 
