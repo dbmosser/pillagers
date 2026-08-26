@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.11';
+var VER='3.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6425,6 +6425,20 @@ function mouseWorld(){
 // One fuse constant now instead of a literal, because the cook timer and the landed
 // timer have to be the same number or the readout lies.
 var FRAG_FUSE=1.1;
+// HIS NOTE, 2026-08-26: "I THINK YOUR SCALING FOR METERS IS OFF -- I'M STANDING
+// RIGHT next to an extraction and it says im 90 m away lol". He is right and the
+// cause is that there was no scaling at all: every readout suffixed with an m was
+// printing raw WORLD UNITS. Standing at the lip of an extraction ring, which has a
+// radius of 78 units, therefore announced 78 to 90 metres.
+// One unit is a tenth of a metre. That anchor is chosen so the sectors come out at
+// a believable size, 520 by 400 metres for GREYWATER DAM rather than five
+// kilometres, and so the ring reads as about 8 metres across, which is a marker on
+// the ground rather than an airfield. The art is not internally to scale, a door is
+// 70 units and a car is 62, so no anchor satisfies every object; the map is the
+// thing worth being right about because it is what every distance readout is
+// measuring across.
+var U_PER_M=10;
+function metres(u){ return Math.round(u/U_PER_M); }
 // The aim, wall-stop and launch half of a throw, split out so the instant path and
 // the cooked path cannot drift apart. It does NOT touch the pouch: whoever calls it
 // has already paid for the grenade.
@@ -10387,7 +10401,7 @@ function endRaid(how){
     // That is the difference between an epitaph and feedback.
     var _fc=T.firstContact;
     var _contact=(_fc!==null&&_fc!==undefined)?Math.max(0,Math.round(G.t-_fc)):null;
-    s.textContent='KILLED BY '+kn+(T.deathDistExtract?',  '+T.deathDistExtract+'M FROM EXTRACTION':'');
+    s.textContent='KILLED BY '+kn+(T.deathDistExtract?',  '+metres(T.deathDistExtract)+'M FROM EXTRACTION':'');
     if(_contact!==null)
       s.textContent+='   ·   IN CONTACT '+_contact+'S, FIRST SEEN AT '+Math.round(_fc)+'S';
     else s.textContent+='   ·   NEVER SPOTTED'; }
@@ -12684,7 +12698,7 @@ function drawHUD(){
   if(_tgt){
     var za=Math.atan2(_tgt.y-p.y,_tgt.x-p.x),zd=Math.round(dist(p,_tgt));
     ctx.font=FS(TYPE.label); ctx.fillStyle=_col;
-    ctx.fillText(_lbl+' '+zd+'m',W/2,46);
+    ctx.fillText(_lbl+' '+metres(zd)+'m',W/2,46);
     ctx.save(); ctx.translate(W/2,60); ctx.rotate(za+Math.PI/2);
     ctx.fillStyle=_col;
     ctx.beginPath(); ctx.moveTo(0,-8); ctx.lineTo(-5,5); ctx.lineTo(5,5); ctx.closePath(); ctx.fill();
@@ -15621,10 +15635,10 @@ function buildExport(){
       ' firstContact:'+(r.firstContact===null?'none':r.firstContact+'s')+
       ' firstLoot:'+(r.firstLoot===null?'none':r.firstLoot+'s')+
       ' moved:'+r.dist+' crouch:'+r.crouch+'s sprint:'+r.sprint+'s lit:'+r.litPct+'%'+
-      ' closestExt:'+(r.closestExtract===null?'none':r.closestExtract);
+      ' closestExt:'+(r.closestExtract===null?'none':(metres(r.closestExtract)+'m'));
     if(r.thr&&(r.thr.smoke||r.thr.decoy||r.thr.frag))
       line+=' thrown:'+r.thr.smoke+'sm/'+r.thr.decoy+'dc/'+r.thr.frag+'fr';
-    if(r.outcome==='dead') line+=' killer:'+r.deathKiller+' diedAt:'+r.deathDistExtract+'m';
+    if(r.outcome==='dead') line+=' killer:'+r.deathKiller+' diedAt:'+metres(r.deathDistExtract)+'m';
     if(r.raidersExtracted) line+=' aiExtracted:'+r.raidersExtracted;
     if(r.drawErr) line+=' DRAWERR:'+r.drawErr;
     // Older rows have no map because they predate v2.96, and they are NOT

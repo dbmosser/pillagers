@@ -9329,3 +9329,55 @@ render-only and fenced behind !G.sim. One process note: my first cook test grabb
 the wrong hotbar slot, because throwables occupy THREE separate slots and the first
 one is smoke, and I nearly reported a pouch bug and a broken cook-off that were both
 my test selecting a smoke canister and waiting for a fuse it does not have.
+
+### v3.12: every distance in the game was printing world units with an m after it
+
+His note: "I THINK YOUR SCALING FOR METERS IS OFF -- I'M STANDING RIGHT next to an
+extraction and it says im 90 m away lol". He is right, and the cause is that there
+was no scaling anywhere: the compass, the death screen and two fields in the flight
+recorder all took a raw world-unit distance and suffixed an m. An extraction ring
+has a radius of 78 units, so standing on its lip genuinely announced 78 to 90
+metres.
+
+One unit is now a tenth of a metre, through a single metres() helper used by all
+four readouts. The anchor is chosen on the MAP rather than on any object, because
+the art is not internally to scale, a locked-room door is 70 units wide and a car is
+62, so no anchor satisfies everything. What every distance readout is measuring is
+ground covered, so ground is the thing worth being right about. The sectors come out
+at 520x400, 460x460, 420x340 and 460x360 metres, which is a believable size for a
+place you cross on foot in ten minutes, and the ring reads about 8 metres across,
+which is a marker rather than an airfield.
+
+HIS TELEMETRY, run #33, and it corrects my v3.09 conclusion in an important way.
+This is his FIRST extract on COLD STORAGE, the sector I unclustered at v3.06, and
+the survival-by-time table I shipped at v3.09 is now printing from his own log:
+
+  minute 1  21%      minute 4   9%
+  minute 2  31%      minute 5  13%
+  minute 3  29%      minute 6  17%
+
+That is the OPPOSITE SHAPE to the bot's. The bot's hazard climbs monotonically from
+4.8 to 45 percent and I wrote at v3.09 that "the clock is the antagonist". For HIM
+the danger peaks in minutes two and three and then falls by half. He is not being
+worn down by time, he is being tested early and coasting once he is through it.
+n is 33 runs so the per-minute counts are small, but the shape is clear and it is
+inverted, so the sentence I wrote at v3.09 is true of the bot and not of him. The
+instrument is working exactly as intended: it gave him his own answer rather than
+mine.
+
+Also in that run: tags "Crier felt unfair" and "Felt great", and the note "never
+even saw crier. Raider at extract was fun. Still ALOT of bots pushing extract, maybe
+too many." Two open items taken from that, not built in this tick: the crier alarms
+from off screen with nothing on the HUD to say where it is, and the extraction siege
+volume needs measuring against his complaint rather than my taste.
+
+Verified: parsecheck PASS at v3.12, all four maps and the hub drive and draw with
+drawErr null in the raid view and with the map overlay up. Standing exactly on a
+ring edge measures 78 raw units and the compass prints 8m. Map extents recomputed
+through the same helper.
+Not verified: no balance measurement, and none applies. This changes four display
+strings and adds one pure function; it touches no roll, no entity decision and no
+timing constant, and every distance used for GAMEPLAY, sight range, throw range,
+noise radius, extraction radius, is still in world units and completely untouched.
+The choice of ten units per metre is a judgement call about fiction rather than a
+measurement, and if he wants the sectors to read bigger it is one constant.
