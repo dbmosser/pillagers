@@ -11175,3 +11175,66 @@ against them. Also not verified: whether these are the right six. They are the s
 judged a player would actually reach for, and the tuner still holds the other forty
 for me.
 
+
+### Correcting v3.39: the raiderKit result does not reproduce, and my mechanism was wrong
+
+v3.39 reported that arming the raiders makes the raid EASIER by 3.4 points at p=0.035,
+called it significant, and offered a mechanism. I went back to test the mechanism and
+found the result itself does not hold.
+
+THREE MEASUREMENTS OF THE SAME DIAL, all on GREYWATER DAM with mapIx pinned and
+simGreed 52 in both arms:
+
+  v3.39, 320 paired seeds   10.0 against 13.4   +3.4   p = 0.035
+  today, 320 paired seeds   11.9 against 14.1   +2.2   p = 0.281
+  today,  60 paired seeds   15.0 against 13.3   -1.7   not run for significance
+
+Same direction on both 320s and the opposite direction on the 60. The honest reading
+is that this effect is inside the noise floor. This project measured that floor at 9.2
+points across 120-seed blocks, so a two to three point effect is not something 320
+seeds can resolve, and v3.39's p=0.035 was one draw from a distribution whose next
+draw was 0.281.
+
+I SHOULD NOT HAVE CALLED IT SIGNIFICANT ON ONE RUN. The rule this file already
+follows for balance claims is a second independent batch, and I applied it to
+spawnClear in the very same tick and not to this. That is the correction.
+
+AND THE MECHANISM I OFFERED IS REFUTED. v3.39 said, hedged as a hypothesis, that
+better armed raiders kill each other and the machines faster so more of the map's
+attention points away from you. Measured, paired, 60 seeds at the correct step:
+
+  hostiles chasing or alarmed, per sample   -0.003
+  machines dead by the end                  +0.45
+  raiders still alive at the end            +0.12
+
+Attention is unchanged to three decimal places. Nothing is being diverted. The feud
+story was the obvious story and it is not what is happening.
+
+WHAT IS ACTUALLY MEASURABLE, and it is the plain reading rather than the clever one:
+
+  lowest health the player reaches   -5.22 with kit on
+  raid length                        -8.3 seconds
+
+Armed raiders hurt you more and end your raid sooner, which is exactly what you would
+expect from giving them better guns, heals and grenades. It simply does not move the
+extract rate far enough to measure. The feature is doing what he asked; my story about
+why it helped was wrong because it never helped in the first place.
+
+A METHOD ERROR OF MY OWN, and it is the reusable part. My first diagnostic probe
+stepped at dt 0.25 and reported extract rates of 15.7 against 10.0, the opposite sign
+to both 320s. __pairedBg and every batch helper in the fixture step at 0.15. A coarser
+step is a different game: bullets cover more ground per tick, collisions are tested
+less often, and reaction timings shift. A hand rolled probe MUST use 0.15 or it is not
+measuring the game the back catalogue describes. Re-run at 0.15, the numbers above.
+
+No version bump: dark_raiders.html is unchanged by this entry. raiderKit stays ON,
+because he asked for raiders that use what they carry and they now do; what changed is
+what I claim about it.
+Verified: the three A/Bs tabled above, and the paired diagnostics at dt 0.15 over 60
+seeds.
+Not verified: the true sign of the extract effect. Establishing a two point difference
+against a 9.2 point noise floor needs sample sizes I have not run and probably several
+thousand seeds. I am not going to chase it, because the honest answer, that arming
+them costs you about five health a raid and does not measurably change whether you get
+out, is already the useful one.
+
