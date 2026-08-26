@@ -8645,3 +8645,57 @@ CACHE markers sit close together in the SWITCHYARD, legible but tight, and I hav
 left them rather than push labels far enough from their markers to become
 ambiguous about which marker they belong to.
 
+
+### v3.04: the breakable world had HP and never once showed it
+
+His note: "all destructible environment pieces should have HP that shows up once
+they start taking damage from players, enemies, raiders, etc".
+
+The HP has existed since v2.83 and was completely invisible. hpLeft is stamped on
+first damage and counted down in silence, so shooting a wreck looked identical
+whether it was one shot from breaking or thirty. That makes the whole destructible
+system a guess: you cannot tell whether you are wasting ammunition on a wall or one
+burst from opening a route, and both are common enough to matter.
+
+Anything breakable that has been hit now wears a bar until it dies. It appears on
+the FIRST point of damage and never before, which is his condition and also the
+thing that keeps the world from turning into a field of health bars: an untouched
+wreck shows nothing.
+
+Three details that are deliberate rather than incidental.
+
+It is fed by a list. damageWall pushes a piece onto G.dmgWalls the first time it
+stamps hpLeft and splices it off when the piece breaks, so the draw pass walks the
+handful of things that have been damaged rather than the six to eight hundred walls
+on the map, every frame, forever.
+
+The bar fades. Five seconds after the last hit it starts dissolving and is gone
+three seconds later, so a wall you shot once on the way past does not advertise
+itself for the rest of the raid. Hit it again and it comes straight back.
+
+It is placed above the LIFT, not above the ground rect. Every solid draws its top
+face raised by 14 or 26 units depending on size, and the first version put the bar
+10 units off the ground y, which measured on a wreck put it straight across the
+bodywork. 28 clears the tallest lift in the game.
+
+Colour is the usual three-step, green above half, amber above a quarter, red below,
+so the question the bar exists to answer, is one more burst worth it, is answerable
+at a glance rather than by reading a number.
+
+Verified: parsecheck PASS at v3.04, all four maps and the hub drive and draw with
+drawErr null, in the raid view and with the map overlay up, and with a damaged
+piece on screen in every one of them. Damage driven directly through damageWall via
+a new scalar-only fixture hook: a wreck reports 150 max and steps 110, then 70,
+then dies on the third hit, at which point it leaves both G.map.walls and the
+damaged list, and the very next frame draws clean. A window reports 25 max and
+chips to 15. A keyed door absorbs 999 damage, reports null HP and stays in the
+wall list, so the gated content stays gated exactly as v2.83 intended. Pixel
+capture at 4x shows the bar over a wreck at 55 of 150.
+Not verified: no balance measurement, and none applies. This build adds a HUD
+overlay and a bookkeeping list. It changes no roll, no entity decision, no timing
+constant and no damage number; the sim does not draw and is unaffected.
+One note on process: the first attempt at this test returned the wall object
+itself and serialised the entire geometry graph, blowing the result budget. The
+hook returns only scalars now, which is the general rule for anything in this
+fixture that touches map geometry.
+

@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.03';
+var VER='3.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5870,7 +5870,7 @@ function buildRaid(sim){
     containers:(clearOfPads(containers),containers),ents:ents,bullets:[],pings:[],puffs:[],
     wild:(sim?[]:spawnWild(map)),
     decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],labels:[],flashes:[],hitMark:null,
-    zones:zones,active:active,camps:camps,beaconT:null,searching:null,searchT:0,waypoint:null,
+    zones:zones,active:active,camps:camps,beaconT:null,searching:null,searchT:0,waypoint:null,dmgWalls:[],
     // Weather is rolled once per raid. Clear is weighted heaviest so the unusual
     // conditions stay unusual and keep their impact.
     wx:pickWeather(),
@@ -6714,11 +6714,21 @@ function damageWall(w,amt,x,y){
   if(CFG.destruct===0) return false;
   var cap=wallHp(w);
   if(cap===null) return false;
-  if(w.hpLeft===undefined) w.hpLeft=cap;
+  // HIS NOTE, 2026-08-26: "all destructible environment pieces should have HP that
+  // shows up once they start taking damage from players, enemies, raiders, etc".
+  // The HP existed since v2.83 and was completely invisible: hpLeft is stamped on
+  // first damage and counted down in silence, so shooting a wreck looked identical
+  // whether it was one shot from breaking or thirty. Anything that has been hit
+  // now goes on a list and wears a bar until it dies, which is also why the bar
+  // pass costs nothing per frame: it walks the handful of things that have been
+  // damaged rather than the six to eight hundred walls on the map.
+  if(w.hpLeft===undefined){ w.hpLeft=cap; w.hpMax=cap; if(G.dmgWalls) G.dmgWalls.push(w); }
   w.hpLeft-=amt;
+  w.hpHit=G.t;
   if(w.hpLeft>0) return false;
   var ix=G.map.walls.indexOf(w);
   if(ix>=0) G.map.walls.splice(ix,1);
+  if(G.dmgWalls){ var dx=G.dmgWalls.indexOf(w); if(dx>=0) G.dmgWalls.splice(dx,1); }
   rebuildGeometry();
   decal(x!==undefined?x:w.x+w.w/2, y!==undefined?y:w.y+w.h/2,'#1a1512',rnd(14,24));
   spark(x!==undefined?x:w.x+w.w/2, y!==undefined?y:w.y+w.h/2,'#c9b490',18,260);
@@ -11850,6 +11860,35 @@ function render2D(dt){
         if(G.tel) G.tel.drawErr=G.drawErr;
         say('Render fault logged: '+G.drawErr);
       }
+    }
+  }
+  // DAMAGE BARS on anything breakable that has been hit. Drawn after the sorted
+  // pass so a bar is never buried under the object it belongs to, and only while
+  // the piece is hurt: an undamaged wreck shows nothing, which is what keeps the
+  // world from turning into a field of health bars.
+  if(G.dmgWalls&&G.dmgWalls.length){
+    for(var dwI=0;dwI<G.dmgWalls.length;dwI++){
+      var DW=G.dmgWalls[dwI];
+      if(!DW||DW.hpLeft===undefined||!DW.hpMax) continue;
+      var dfr=clamp(DW.hpLeft/DW.hpMax,0,1);
+      if(dfr>=1) continue;
+      var dbw=Math.max(18,Math.min(DW.w,64));
+      // Clear of the wall LIFT, not of the wall's ground rect. Every solid draws
+      // its top face raised by 14 or 26 depending on size, so a bar placed off the
+      // ground y lands on the object's own roof; measured on a wreck and it sat
+      // across the bodywork. 28 puts it above the tallest lift in the game.
+      var dbx=DW.x+DW.w/2-dbw/2, dby=DW.y-28;
+      // fades out a few seconds after the last hit so a wall you shot once and
+      // walked away from stops advertising itself for the rest of the raid
+      var age=G.t-(DW.hpHit||0);
+      var da=age>5?clamp(1-(age-5)/3,0,1):1;
+      if(da<=0) continue;
+      wc.globalAlpha=da;
+      wc.fillStyle='rgba(10,8,14,.78)';
+      wc.fillRect(dbx-1,dby-1,dbw+2,5);
+      wc.fillStyle=dfr>0.5?'#7fc4a0':(dfr>0.25?'#ffc04a':'#ff5040');
+      wc.fillRect(dbx,dby,dbw*dfr,3);
+      wc.globalAlpha=1;
     }
   }
   // nameplates over anything you can currently see

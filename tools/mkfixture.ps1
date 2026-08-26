@@ -77,6 +77,26 @@ window.__startRaid=function(o){
   return startRaid();
 };
 window.__mapOverlay=function(){ drawMapOverlay(); return {w:W,h:H,dpr:DPR}; };
+// Damage a breakable by index into G.map.walls and report ONLY scalars: handing
+// back the wall object serialises the whole geometry graph and blows the result
+// budget, which is how the first attempt at this test failed.
+window.__hitWall=function(ix,amt){
+  var w=G.map.walls[ix];
+  if(!w) return {err:'no wall at '+ix};
+  var dead=damageWall(w,amt,w.x+w.w/2,w.y+w.h/2);
+  return {dead:!!dead,hpLeft:(w.hpLeft===undefined?null:Math.round(w.hpLeft)),
+          hpMax:(w.hpMax===undefined?null:w.hpMax),
+          onList:(G.dmgWalls?G.dmgWalls.length:-1),
+          stillInWalls:G.map.walls.indexOf(w)>=0};
+};
+window.__wallIndex=function(pred){
+  for(var i=0;i<G.map.walls.length;i++){ var w=G.map.walls[i];
+    if(pred==='wreck'&&w.wreck) return i;
+    if(pred==='furn'&&w.furn) return i;
+    if(pred==='win'&&w.win) return i;
+    if(pred==='door'&&w.door) return i; }
+  return -1;
+};
 // Lets a measurement rebuild the map at the pre-v0.68 world size so before and
 // after are read off the same code path instead of off my arithmetic.
 // Samples one sim raid so a stall can be told apart from a decision never made.
