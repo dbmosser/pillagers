@@ -10033,3 +10033,44 @@ without doing anything, so it is the same quiet no-op I just fixed on the gun sl
 one row over. I have not fixed it because I have not measured that anyone would try
 it, but it is the same defect and I am naming it rather than leaving it to be found.
 
+
+### v3.22: closing the defect I named in v3.21 rather than leaving it to be found
+
+v3.21 fixed guns landing on gun slots and then wrote, in its own "Not verified" line,
+that the two mismatched cases were still doing exactly what the bug it had just fixed
+did. Naming a defect and shipping it is only better than missing it if the next build
+closes it, so this is that build.
+
+A gun dropped on a heal or throwable slot wrote a hotAssign entry that useHot reads
+and then returns from without acting. A consumable dropped on a gun slot wrote one
+that the gun slots never read at all, because they are rebuilt from p.wep and p.sec
+every frame. Both accepted the drag, announced success and changed nothing, which is
+the precise failure that made his run #35 note read as "I was unable to" rather than
+as "it did the wrong thing".
+
+Both now refuse and say what they are refusing, which is the rule this file already
+applies to the extraction prompt and to a locked door. "Slot 2 is a weapon slot. Guns
+only." and "Guns go in slot 1 or 2, not slot 6."
+
+ALSO CHECKED THIS TICK, AND THE CHECK FOUND NOTHING. Every remaining note in his run
+#33 batch is already fixed in current code, each with his own wording quoted at the
+fix: the red attack cones behind walls, the floating lights in daylight, the deer
+stuck in a small area, lockers not against walls, the snitch dying too easily,
+raiders dropping poor loot, and not enough enemies. That is seven notes I would have
+re-fixed if I had trusted the list instead of the file.
+
+The cone gate is the one I did not merely read but drove, because a comment claiming
+a fix is exactly the thing this project has been burned by. A sentry at 150 units
+with sight is marked seen and draws its cone; the same sentry with the player 3,600
+units away is not seen and draws nothing.
+
+Verified: parsecheck PASS at v3.22, all four maps and the hub draw with drawErr null,
+in the raid view, with the bag open and with the map overlay up. All four drag
+combinations driven through real canvas mouse events: gun onto a gun slot equips and
+moves the secondary, gun onto slot 6 refuses and writes no assignment, bandage onto a
+gun slot refuses and writes no assignment, bandage onto slot 6 assigns exactly as
+before. The sentry cone gate driven as described above.
+Not verified: nothing new is outstanding from this change. The refusals are strings
+and a branch; there is no balance surface to measure and no sim behaviour touched,
+since none of this code runs with G.sim set.
+

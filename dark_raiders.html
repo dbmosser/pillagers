@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.21';
+var VER='3.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6333,6 +6333,23 @@ window.addEventListener('mouseup',function(e){
           }
           dropped=true;
           break;
+        }
+        // AND THE SAME NO-OP ONE ROW OVER. v3.21 fixed guns landing on gun slots
+        // and left the two mismatched cases doing exactly what the bug I had just
+        // fixed did: accept the drag, announce success, change nothing. A gun
+        // dropped on a heal or throwable slot wrote an assignment that useHot
+        // reads and then returns from without acting, and a consumable dropped on
+        // a gun slot wrote one that the gun slots never read at all.
+        // A refusal that says what it is refusing is the rule this file already
+        // uses for the extraction prompt, and it applies here for the same reason:
+        // a gesture that silently does nothing teaches you the feature is missing.
+        if(_si&&_si.kind==='gun'){
+          say('Slot '+(HC.i+1)+' is a weapon slot. Guns only.');
+          dropped=true; break;
+        }
+        if(_dit&&_dit.use==='gun'){
+          say('Guns go in slot 1 or 2, not slot '+(HC.i+1)+'.');
+          dropped=true; break;
         }
         G.hotAssign=G.hotAssign||{};
         // One item, one slot. Dropping something that already lives elsewhere on
