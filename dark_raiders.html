@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.12';
+var VER='3.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13297,6 +13297,7 @@ function drawHUD(){
       ctx.textAlign='center'; ctx.fillText(EE.name,ebx+ebw/2,ey0+LH(20)); ctx.textAlign='left';
     }
   }
+  drawCrierMarkers();
   if(keys['KeyM']) drawMapOverlay();
 }
 function safeSet(){
@@ -13407,6 +13408,63 @@ function drawNoiseMarkers(){
     ctx.moveTo(sz,0); ctx.lineTo(-sz*0.7,sz*0.75); ctx.lineTo(-sz*0.7,-sz*0.75);
     ctx.closePath(); ctx.fill();
     ctx.restore();
+  }
+}
+// HIS RUN #33, tagged "Crier felt unfair" with the note "never even saw crier".
+// The crier is the one enemy whose counterplay the game states out loud: it winds
+// up for three to four seconds and the message says "Kill it or move." Both of
+// those answers need you to know WHERE it is, and the game never said. It spots
+// you from outside the viewport, flees while winding, and the only cues were an
+// audio charge and a line of text. So the fair fight the design describes was, in
+// his run, an invisible timer he could do nothing about. That is not difficulty,
+// it is the game asking a question it will not let you read.
+// While a crier is calling, it is marked: a ring and a countdown if it is on
+// screen, a chevron at the screen edge pointing at it if it is not, in the same
+// place and with the same bearing maths as the noise chevrons so the two cues
+// agree with each other. It draws only during the windup, which is exactly the
+// window where the answer is still available.
+function drawCrierMarkers(){
+  var p=G.player,ps=w2s(p.x,0,p.y);
+  if(!ps) return;
+  for(var i=0;i<G.ents.length;i++){
+    var e=G.ents[i];
+    if(e.kind!=='snitch'||e.state!=='alarm') continue;
+    if(e.wind===undefined||e.wind===null) continue;
+    var left=Math.max(0,e.wind);
+    var pulse=0.55+0.45*Math.sin(G.t*9);
+    var s=w2s(e.x,26,e.y);
+    var pad=26;
+    var onScreen=s&&s.x>pad&&s.x<W-pad&&s.y>pad&&s.y<H-pad;
+    if(onScreen){
+      ctx.strokeStyle='rgba(255,80,64,'+pulse+')'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.arc(s.x,s.y,LH(17),0,6.2832); ctx.stroke();
+      ctx.font=FS(TYPE.micro); ctx.textAlign='center';
+      ctx.fillStyle='rgba(255,120,100,.95)';
+      ctx.fillText('CRIER '+left.toFixed(1)+'s',s.x,s.y-LH(22));
+      ctx.textAlign='left';
+    } else {
+      var ang=Math.atan2(e.y-p.y,e.x-p.x);
+      var ca=Math.cos(ang),sa=Math.sin(ang),tt=1e9;
+      if(ca>1e-6) tt=Math.min(tt,(W-pad-ps.x)/ca); else if(ca<-1e-6) tt=Math.min(tt,(pad-ps.x)/ca);
+      if(sa>1e-6) tt=Math.min(tt,(H-pad-ps.y)/sa); else if(sa<-1e-6) tt=Math.min(tt,(pad-ps.y)/sa);
+      if(!(tt>0&&tt<1e9)) tt=0;
+      var mx=ps.x+ca*tt,my=ps.y+sa*tt;
+      ctx.save(); ctx.translate(mx,my); ctx.rotate(ang);
+      ctx.fillStyle='rgba(255,80,64,'+pulse+')';
+      ctx.beginPath(); ctx.moveTo(15,0); ctx.lineTo(-10,10); ctx.lineTo(-10,-10);
+      ctx.closePath(); ctx.fill();
+      ctx.restore();
+      ctx.font=FS(TYPE.micro); ctx.textAlign='center';
+      ctx.fillStyle='rgba(255,120,100,.95)';
+      // Inward from the edge, not upward. A chevron pinned to the top of the
+      // screen had its label clamped into the extraction banner; pushing the text
+      // toward screen centre puts it on the side that always has room, whichever
+      // edge the chevron is on.
+      var _lx=clamp(mx-ca*LH(26),LH(42),W-LH(42));
+      var _ly=clamp(my-sa*LH(26),LH(20),H-LH(12));
+      ctx.fillText('CRIER '+left.toFixed(1)+'s',_lx,_ly);
+      ctx.textAlign='left';
+    }
   }
 }
 function drawLegend(){

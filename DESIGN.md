@@ -9381,3 +9381,45 @@ timing constant, and every distance used for GAMEPLAY, sight range, throw range,
 noise radius, extraction radius, is still in world units and completely untouched.
 The choice of ten units per metre is a judgement call about fiction rather than a
 measurement, and if he wants the sectors to read bigger it is one constant.
+
+### v3.13: the crier stops being an invisible timer
+
+From his run #33, tagged "Crier felt unfair", with the note "never even saw crier."
+
+The crier is the one enemy whose counterplay the game states out loud. It winds up
+for three to four seconds and the message says "Kill it or move." Both of those
+answers require knowing WHERE it is, and the game never said. It spots you from
+outside the viewport, flees while winding, and the only cues were an audio charge
+and a line of text. So the fair fight the design describes was, in his run, an
+invisible countdown he could do nothing about. That is not difficulty, it is the
+game asking a question it will not let you read.
+
+A crier that is calling is now marked for exactly the length of its windup: a
+pulsing ring and a countdown if it is on screen, a chevron at the screen edge
+pointing at it with the same countdown if it is not. The bearing maths is the same
+one the noise chevrons use, measured from the operator rather than from the centre
+of the screen, so the two cues agree with each other instead of pointing a dozen
+degrees apart while aiming.
+
+The label sits INWARD from the edge rather than above the chevron. The first
+version pushed it upward and clamped it, which planted the text inside the
+EXTRACTION banner whenever the crier was due north; offsetting along the inward
+normal puts it on the side that always has room, whichever edge the chevron lands
+on.
+
+Nothing about the crier's behaviour changed. It has the same windup, the same
+flee, the same weave, the same alarm. What changed is that the three seconds it
+gives you are now three seconds you can act on.
+
+Verified: parsecheck PASS at v3.13, all four maps and the hub drive and draw with
+drawErr null in the raid view and with the map overlay up. The marker is driven in
+all three states: on screen, off screen, and not alarming, where it correctly draws
+nothing. The off-screen chevron is exercised on six bearings including all four
+diagonals and two cardinals, drawErr null on every one. Pixel capture at 1280x718
+shows the chevron on the top-right edge with "CRIER 0.7s" beside it, alongside the
+v3.10 hunting readout and the v3.12 metre scaling reading "EXTRACT 55m".
+Not verified: no balance measurement, and none applies. This draws two shapes and a
+string during a window that already existed; it changes no roll, no entity decision
+and no timing constant, and the sim does not draw a HUD. Whether it makes the crier
+feel FAIR rather than merely visible is a question only his next run answers, and
+his tag is the instrument for it.
