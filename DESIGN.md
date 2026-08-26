@@ -10760,3 +10760,62 @@ to separate from noise and I have not run one, because the change ships either w
 his instruction. Also not verified: the other three maps are untouched by this, so
 their numbers are unchanged by construction rather than by measurement.
 
+
+### v3.36: raiders arrive in waves, and the number he was reacting to
+
+HIS NOTE: "why are all the raiders extracted with 6.5 mins left, we need multiple
+waves of raiders i guess."
+
+MEASURED FIRST, because "all" is a strong word and this project has twice built a fix
+for a premise nobody checked. 60 seeded raids on COLD STORAGE, roster of 7, counting
+how many have EXTRACTED at each minute:
+
+  60s 0.66    120s 1.07   180s 1.58   240s 1.80
+  300s 2.33   360s 2.50   420s 3.21   600s 3.42
+
+So 24 percent are gone at the six-and-a-half-minute mark he named, not all of them,
+and 49 percent by the end. His own run #36 recorded 6 of 10, which is higher than the
+bot's average but the same shape.
+
+THE SHAPE HE IS DESCRIBING IS REAL EVEN THOUGH THE NUMBER WAS NOT. The roster only
+ever shrinks. Raiders leave by extracting or by dying and nothing has ever replaced
+them, so the back half of a long raid is emptier than the front half by construction,
+and the map gets quieter exactly as your own bag becomes worth stealing. That is
+backwards.
+
+A WAVE IS A REPLACEMENT, NOT A RAID. It fires only when the live count has actually
+fallen below a floor of five, so a raid where nobody leaves gets no waves at all and
+plays exactly as it did before this build. The feature is invisible until the thing he
+complained about happens. Bounded the way the siege is bounded, at most six arrivals
+across a whole raid, because an unbounded trickle is how the extract ring ended up
+conscripting eighty machines at v3.18. They drop far from you, best of 24 free spots
+by distance with a 900 unit floor, so a wave is never a spawn on your head. And the
+arrival joins G.roster, so the board he asked for at v3.17 lists him by name with a
+bag value rather than a stranger who is somehow not on the list.
+
+BALANCE: 320 paired seeds on GREYWATER DAM, mapIx pinned, simGreed 52 both arms.
+
+  extract rate   12.8 percent off   12.5 percent on
+  discordant     15 favouring off, 14 favouring on
+  McNemar exact two sided p = 1.00
+
+Dead neutral, which is the ideal result: the map stays populated late without the raid
+getting harder.
+
+Verified: parsecheck PASS at v3.36, all four maps and the hub draw with drawErr null,
+and all four fire ZERO waves in a normal opening, confirming the floor gate. Driven
+under the condition it exists for: cull the roster to 2 live raiders and three waves
+arrive over the next 350 seconds, restoring the live count to exactly the floor of 5
+and stopping there rather than running to the cap of 6. Roster grows 10 to 13 so the
+board sees them. All three arrivals landed 5,062 units or further from the player,
+against a 900 minimum.
+MY OWN ERROR, THE SAME ONE AS LAST BUILD: I called far(), which is a closure inside
+buildRaid, from a top level function. Identical ReferenceError to v3.35's
+extractsOutside, one build apart. Inlined, and measuring from the PLAYER rather than
+the drop point, which is the correct reference for a mid raid arrival anyway.
+Not verified: what waves do to a HUMAN raid. The bot's raids end at a median of 484
+seconds and it rarely thins the roster below five on its own, so the A/B above is
+largely measuring raids where the feature never fired. The condition it exists for is
+his: a long raid where he has personally killed several raiders. That is exactly the
+case the sim cannot generate, and his next export is the measurement.
+

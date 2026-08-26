@@ -492,7 +492,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.35';
+var VER='3.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -552,7 +552,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6,extOutside:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6,extOutside:1,raiderWaves:1,raiderWaveCap:6,raiderWaveMin:5,raiderWaveGap:45};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -7834,6 +7834,7 @@ function tryExtractTick(dt,wantCall){
     if(dist(p,Z)<Z.r){ z=Z; break; }
   }
   tickExtractPoints(dt);
+  tickRaiderWaves(dt);
   // a point already boarding that you are standing in: second pull leaves
   if(z&&z.hold!==undefined&&z.hold!==null&&z.hold>0){
     // HAULED ABOARD, v2.31, which is what he actually chose at v0.90 and has
@@ -7941,6 +7942,67 @@ function tryExtractTick(dt,wantCall){
 // SPEC 5.2 and 5.3: every extraction point runs its own clock, so an AI raider
 // can call one across the map and you can hear it and go contest it, and the
 // boarding window is shared with whoever is standing there.
+// RAIDERS ARRIVE IN WAVES, v3.36. His note: "why are all the raiders extracted
+// with 6.5 mins left, we need multiple waves of raiders i guess."
+// MEASURED FIRST, because "all" is a strong word. 60 seeded raids on COLD
+// STORAGE, roster of 7, counting how many have EXTRACTED at each minute:
+//   60s 0.66   120s 1.07   180s 1.58   240s 1.80   300s 2.33   420s 3.21
+//   600s 3.42, which is 49 percent of the roster gone by the end.
+// So not all, and not by 6.5 minutes. But the shape he is describing is real:
+// the roster only ever shrinks. Raiders leave by extracting or by dying and
+// nothing ever replaces them, so the back half of a long raid is emptier than
+// the front half by construction, and the map he is standing in gets quieter
+// exactly as his own bag gets worth stealing.
+// A WAVE IS A REPLACEMENT, NOT A RAID. It only fires when the live count has
+// actually fallen below the floor, so a raid where nobody leaves gets no waves
+// at all and plays exactly as it did before this build. That is deliberate: the
+// feature should be invisible until the thing he complained about happens.
+// Bounded the same way the siege is bounded, because an unbounded trickle is
+// how the extract ring ended up conscripting eighty machines: at most
+// raiderWaveCap arrivals across the whole raid.
+// They drop FAR from you, on the same 1190 unit rule the opening roster uses,
+// so a wave is never a spawn on your head.
+// The new arrival joins G.roster, so the board he asked for at v3.17 shows him
+// with a name and a bag value like everyone else, rather than a stranger who is
+// somehow not on the list.
+function tickRaiderWaves(dt){
+  if(CFG.raiderWaves===0||!G||G.over||!G.roster) return;
+  var cap=(CFG.raiderWaveCap===undefined?6:CFG.raiderWaveCap);
+  var floorN=(CFG.raiderWaveMin===undefined?5:CFG.raiderWaveMin);
+  var gap=(CFG.raiderWaveGap===undefined?45:CFG.raiderWaveGap);
+  G.waveT=(G.waveT||0)+dt;
+  G.waveN=G.waveN||0;
+  if(G.waveT<gap) return;
+  G.waveT=0;
+  if(G.waveN>=cap) return;
+  var live=0;
+  for(var i=0;i<G.ents.length;i++){
+    var e=G.ents[i];
+    if(e.kind==='raider'&&!e.finished&&!e.merc&&e.hp>0) live++;
+  }
+  if(live>=floorN) return;
+  // FAR FROM YOU, and the far() helper the opening roster uses is a closure
+  // inside buildRaid, so it is not reachable here. Same shape, inlined: take the
+  // best of up to 24 free spots by distance from the PLAYER, which is the right
+  // reference for a mid-raid arrival where the opening roster measured from the
+  // drop point instead. My second scope mistake this session; the first was
+  // extractsOutside at v3.35 and it threw the same ReferenceError.
+  // STREAM DISCIPLINE. A fixed 24 rolls are drawn every time this branch is
+  // reached, whether or not the spot is accepted, so the arrival cannot shift
+  // the PRNG relative to a raid that declines the wave.
+  var sp=null,bd=-1;
+  for(var _fq=0;_fq<24;_fq++){
+    var _c=freeSpot(G.map,30), _cd=dist(_c,G.player);
+    if(_cd>bd){ bd=_cd; sp=_c; }
+  }
+  var idn=IDENTITIES[(G.waveN+G.roster.length)%IDENTITIES.length];
+  if(!sp||bd<900) return;
+  var NR=mkRaider(sp.x,sp.y,idn,!!G.sim);
+  G.ents.push(NR);
+  G.roster.push({ref:NR,name:NR.name,crew:NR.crew,val:0,out:false});
+  G.waveN++;
+  if(!G.sim) say('Another team just dropped.');
+}
 function tickExtractPoints(dt){
   var p=G.player,T=G.tel;
   for(var zi=0;zi<G.zones.length;zi++){
