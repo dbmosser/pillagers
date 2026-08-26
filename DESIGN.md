@@ -9848,3 +9848,61 @@ of day is not a playtest. Also not verified: how the weathering reads at night o
 fog, where the district palette is darkened by 0.42 and low alpha detail may vanish
 entirely; I checked clear daylight only.
 
+
+### Closing the v3.17 gap: crew revive works, and my first test of it was the thing that was broken
+
+v3.17 shipped crew revive with an explicit "Not verified" line, because driving it
+needs two same-crew raiders, one downed and the other idle and in range, and I could
+not arrange that without hand placing them. That debt is now paid, and the way it
+went is worth recording.
+
+FIRST ATTEMPT, WRONG, AND IT LOOKED LIKE A SHIPPED BUG. I downed one raider and
+teleported his crewmate to 120 units away. The reviver latched on correctly,
+e.reviving set on the first frame, and then walked steadily AWAY: 110 units, 166,
+289, 393, and then stalled moving 1.5 units a step. I had it written down as a
+feature that had never once worked.
+
+It was my test. Teleporting a body to an arbitrary offset drops it inside whatever
+geometry happens to be there, collide() shoves it out, and the route it then computes
+is a route out of a wall rather than a route to a man. The game was fine; the harness
+was placing a body somewhere no body could ever have walked to.
+
+SECOND ATTEMPT, WITH NO TELEPORTING AT ALL. Run the raid 12 seconds so every body is
+standing somewhere it walked to itself, find a raider that already has a same-crew
+mate within the 760 unit reach, down that raider, and touch nothing else. Five seeds
+on GREYWATER DAM:
+
+  seed   started apart   closest approach   revived at
+  6161        722              42             9.5s
+  7777        658               8            14.4s
+  2024        337             288            19.3s
+  9091        538               8            13.4s
+  4242         82              82            never
+
+Four of five, from as far as 722 units, every one of them standing up on 31 of 78
+health, which is the 40 percent the code promises. The pickup itself was verified
+separately at touching range: 3.2 seconds, hp 31, state back to loot, and the
+crewRevives counter incrementing once.
+
+THE FIFTH SEED IS NOT A BUG, IT IS THE DESIGN, and it is the one case worth naming
+because it will look wrong when he sees it. On 4242 the crewmate was 82 units away,
+which is nothing, and never moved. He was already in the extract state, and the
+revive branch deliberately lives inside the loot state only, on the reasoning that a
+man with something more urgent has a better use of the next four seconds. Extracting
+counts as more urgent. So a raider walking out with a full bag will step past a
+downed crewmate at arm's length and keep going.
+
+I am not changing that on my own. It is a statement about what a crew is, and there
+are two defensible answers: he is leaving and he has earned it, or a crew that walks
+past its own is not a crew. One line either way settles it and the line is his.
+
+No version bump: the game is unchanged by this entry. The only thing that changed is
+what I know about it, and one thing I had wrongly written down as broken.
+Verified: the five seed table above, and the touching range pickup at 3.2 seconds
+with the telemetry counter moving.
+Not verified: crew revive under fire. Every one of these five was measured with the
+downed man's bleed-out clock forced long, because the point was to test the approach
+rather than to race it, and with nothing shooting at the reviver. Whether a 13 second
+average approach ever actually beats the real 16 second clock in a live firefight is
+a different question and this does not answer it.
+
