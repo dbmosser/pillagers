@@ -15,6 +15,10 @@ $needle = '// ================================================================ b
 $inject = @'
 window.__frame=function(dt){ render2D(dt===undefined?0.016:dt); };
 window.__state=function(){ return G; };
+// Reads the message system from INSIDE the module, so a test can tell "say did
+// not run" apart from "say ran but I am holding a different G".
+window.__say=function(m){ say(m); return {inside:(G?G.msg:null),sim:(G?!!G.sim:null),sameG:(G===window.__state())}; };
+window.__msg=function(){ return G?{msg:G.msg,msgT:G.msgT,sim:!!G.sim}:null; };
 window.__cam=function(){ return {x:camX,y:camY}; };
 window.__cfg=function(){ return CFG; };
 window.__keys=function(){ return keys; };
@@ -485,7 +489,15 @@ window.__isFixture=1;
 // on a gain of zero, because a later build could add a new node that misses the bus.
 try{ sfx=function(){}; }catch(e){}
 try{ blip=function(){}; }catch(e){}
-try{ say=function(){}; }catch(e){}
+// say() WAS STUBBED TO A NO-OP HERE AND IT IS NOT AN AUDIO EMITTER. Its whole body
+// is `if(G&&!G.sim){G.msg=m;G.msgT=3.2;}`, a state write with no sound anywhere in
+// it, so silencing it bought nothing and quietly broke every assertion any test
+// could make about on-screen messages: G.msg simply never changed in the fixture.
+// That cost a v3.01 changelog line admitting I could not verify two strings, when
+// the game was fine and the harness was lying. It now does the real thing AND
+// records the last line, so the fixture stays as silent as it ever was and a test
+// can finally read what the game said.
+try{ say=function(m){ window.__lastSay=m; if(G&&!G.sim){ G.msg=m; G.msgT=3.2; } }; }catch(e){}
 try{ tickAmbience=function(){}; }catch(e){}
 try{ tickEnemyAudio=function(){}; }catch(e){}
 try{ tickPlayerSteps=function(){}; }catch(e){}

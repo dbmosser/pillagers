@@ -8699,3 +8699,55 @@ itself and serialised the entire geometry graph, blowing the result budget. The
 hook returns only scalars now, which is the general rule for anything in this
 fixture that touches map geometry.
 
+
+### Correction to v3.01, and a fixture that was lying about messages
+
+The v3.01 entry ends with a "Not verified" line saying the two auto-reload strings,
+"Reloading..." and "Out of ammo.", could not be confirmed because G.msg did not
+change in the fixture and I could not establish why. That framing was wrong and the
+implication, that something in the game might be off, was wrong with it.
+
+The game was fine. The HARNESS was lying. tools/mkfixture.ps1 stubbed say() to a
+no-op, grouped in with the audio emitters:
+
+    try{ say=function(){}; }catch(e){}
+
+say() is not an audio emitter. Its entire body is
+`if(G&&!G.sim){G.msg=m;G.msgT=3.2;}`, a state write with no sound anywhere in it.
+Stubbing it bought no silence at all and quietly broke every assertion any test
+could ever make about on-screen messages, because G.msg simply never changed in the
+fixture. I chased it through the wrong suspects for a while: a shadowed
+definition, a stale G handle, a latched KeyR, T being undefined inside
+updatePlayer. It was none of those. Settled it by adding a probe that calls say()
+from INSIDE the module and reports what the module itself sees, which came back
+with the message unchanged, G live and G.sim false, and that could only mean say
+itself was not the function I thought it was.
+
+The stub now does the real thing and records the last line:
+
+    try{ say=function(m){ window.__lastSay=m; if(G&&!G.sim){ G.msg=m; G.msgT=3.2; } }; }catch(e){}
+
+The fixture stays exactly as silent as it was, because say never made a sound, and
+tests can now read what the game said. Both v3.01 strings are verified with it:
+a dry trigger with 60 reserve gives msg "Reloading..." with the reload started at
+1300ms, and with zero reserve gives msg "Out of ammo." with no reload.
+
+I audited the other five stubs for the same fault and found none. sfx, blip,
+tickAmbience, tickEnemyAudio, tickPlayerSteps and tickMachineVoices are all
+genuinely audio-only, and every one of them already begins with its own
+`if(G.sim) return`, so they are inert in a sim regardless. Importantly ping(), which
+is what actually drives enemy hearing, was never stubbed, so no measurement has
+been affected by this. tickPlayerSteps calls blip('foot') for the sound; the AI
+facing noise comes from ping elsewhere.
+
+One real consequence beyond the correction: because messages now land in the
+fixture, the message plate added at v2.94 is exercised for the first time in the
+four-map draw check, and all four maps plus the hub draw clean with a message up.
+
+No game version bump. Not one byte of dark_raiders.html changed in this tick; the
+fix is entirely in tools/mkfixture.ps1. Putting a new VER on an identical game to
+satisfy a process step would make the version label lie, which is the same class of
+problem as the thing being fixed.
+Not verified: nothing outstanding. The correction itself is verified by the probe
+described above, and the claim that no measurement was affected rests on ping()
+never having been stubbed, which is checked rather than assumed.
