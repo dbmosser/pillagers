@@ -503,7 +503,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.38';
+var VER='3.39';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -563,7 +563,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6,extOutside:1,raiderWaves:1,raiderWaveCap:6,raiderWaveMin:5,raiderWaveGap:45};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6,extOutside:1,raiderWaves:1,raiderWaveCap:6,raiderWaveMin:5,raiderWaveGap:45,raiderKit:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -7431,9 +7431,12 @@ function feudEngage(e,dt){
   if(!foe) return false;
   var want=Math.atan2(foe.y-e.y,foe.x-e.x);
   if(e.cd<=0&&e.wep&&fd<e.rng){
-    fireWeapon(e,e.wep,foe.x+rnd(-12,12),foe.y+rnd(-12,12),false);
-    e.cd=(e.wep.rof/1000)*rnd(1.5,2.4);
-    e.shotT=0.35;   // read by raiderStatus, decayed in updateEnts
+    if(e.kind==='raider'&&raiderThrow(e,foe,fd,dt)){ /* charge instead of a burst */ }
+    else {
+      fireWeapon(e,e.wep,foe.x+rnd(-12,12),foe.y+rnd(-12,12),false);
+      e.cd=(e.wep.rof/1000)*rnd(1.5,2.4);
+      e.shotT=0.35;   // read by raiderStatus, decayed in updateEnts
+    }
   }
   // Back off if he is right on top of you, the same rule the machine fight uses.
   if(fd<90) moveToward(e,e.x-(foe.x-e.x),e.y-(foe.y-e.y),e.spd*.7,dt);
@@ -7990,6 +7993,85 @@ function tryExtractTick(dt,wantCall){
 // The new arrival joins G.roster, so the board he asked for at v3.17 shows him
 // with a name and a bag value like everyone else, rather than a stranger who is
 // somehow not on the list.
+// RAIDERS USE WHAT THEY CARRY, v3.39. His note: "the raider bots should do
+// EVERYTHING a real bot does including inventory management, equipping items,
+// throw throwables, etc."
+// He is right and the gap was total. A raider looted containers and pushed the
+// contents into e.bag, and that bag was thereafter nothing but a number on the
+// board and a pile of loot on his corpse. He never equipped a gun he found, he
+// never used a bandage while bleeding, and throwFrom has exactly two callers and
+// both are player input, so nothing on the map has ever thrown anything at you.
+// THREE VERBS, ONE DIAL. raiderKit 0 restores the old behaviour exactly.
+// Each one mirrors a rule the player already lives under rather than inventing a
+// parallel system: the gun swap uses the same WTIER table autoEquip uses, the
+// heal uses the same one-at-a-time rule v3.34 put on the player, and the throw
+// uses the same throwFrom that his own hand uses.
+function raiderUseKit(e,dt){
+  if(CFG.raiderKit===0||!e||e.downed||e.finished||e.merc) return;
+  var i,it;
+  // ---- EQUIP. A better gun in the bag belongs in his hands, same tier test the
+  // player's autoEquip uses. He does not carry two, so the old one is dropped
+  // back into the bag and stays worth taking off his body.
+  if((e.kitT=(e.kitT||0)-dt)<=0){
+    e.kitT=1.1;
+    var bestIx=-1,bestT=WTIER[e.wep.id]||0;
+    for(i=0;i<e.bag.length;i++){
+      it=ITEMS[e.bag[i]];
+      if(!it||it.use!=='gun'||!it.gk) continue;
+      var t2=WTIER[it.gk]||0;
+      if(t2>bestT){ bestT=t2; bestIx=i; }
+    }
+    if(bestIx>=0){
+      var gk=ITEMS[e.bag[bestIx]].gk, old=e.wep;
+      var g={}; for(var k in WEAPONS[gk]) g[k]=WEAPONS[gk][k];
+      e.bag.splice(bestIx,1);
+      if(old&&old.id!=='fists') e.bag.push('gun_'+old.id);
+      e.wep=g; e.dmg=g.dmg; e.rng=g.rng*0.72;
+      e.kitSwaps=(e.kitSwaps||0)+1;
+    }
+  }
+  // ---- HEAL. Hurt, not currently in the middle of one, and holding something
+  // that heals. One at a time and over time, exactly as v3.34 made it for the
+  // player, so the same three seconds of vulnerability applies to him.
+  if((e.healQ||0)>0){
+    var give=Math.min(e.healQ,(e.healRate||9)*dt);
+    var room=e.maxhp-e.hp;
+    if(room<=0){ e.healQ=0; }
+    else { if(give>room) give=room; e.hp+=give; e.healQ-=give; if(e.healQ<=0.001) e.healQ=0; }
+  } else if(e.hp<e.maxhp*0.55){
+    for(i=0;i<e.bag.length;i++){
+      it=ITEMS[e.bag[i]];
+      if(!it||it.use!=='heal') continue;
+      e.healQ=it.amt||0;
+      e.healRate=(it.amt||0)/Math.max(0.6,(it.hot||2.6)*(CFG.healSlow===undefined?1.6:CFG.healSlow));
+      e.bag.splice(i,1);
+      e.kitHeals=(e.kitHeals||0)+1;
+      break;
+    }
+  }
+}
+// A raider throwing at the thing he is fighting. Called from the fight branch so
+// it can only happen when he actually has a target, and rate limited hard: a
+// charge every eight seconds at most, and only in the band where a thrown charge
+// is better than a bullet, which is far enough that he is not standing in his own
+// blast and near enough that it lands.
+function raiderThrow(e,foe,fd,dt){
+  if(CFG.raiderKit===0||!e||!foe||e.downed) return false;
+  e.thrT=(e.thrT||0)-dt;
+  if(e.thrT>0) return false;
+  if(fd<180||fd>520) return false;
+  var ix=-1;
+  for(var i=0;i<e.bag.length;i++){ var it=ITEMS[e.bag[i]]; if(it&&it.use==='throw'&&it.tk==='frag'){ ix=i; break; } }
+  if(ix<0) return false;
+  e.bag.splice(ix,1);
+  e.thrT=8;
+  e.kitThrows=(e.kitThrows||0)+1;
+  // Straight into the same frag list the player's charge lands in, so it damages
+  // HIM and his friends on exactly the same terms.
+  G.frags.push({x:foe.x+rnd(-26,26),y:foe.y+rnd(-26,26),t:0,fuse:FRAG_FUSE});
+  if(!G.sim) sfx('clank',e.x,e.y);
+  return true;
+}
 function tickRaiderWaves(dt){
   if(CFG.raiderWaves===0||!G||G.over||!G.roster) return;
   // ONCE A FRAME. tryExtractTick, which calls this, has THREE call sites, so the
@@ -9508,6 +9590,9 @@ function updateEnts(dt){
   // stays at zero for the entire sim, which I found out by using it as a guard
   // and switching raider waves off in every sim raid ever run.
   G.frameN=(G.frameN||0)+1;
+  for(var _kq=0;_kq<G.ents.length;_kq++){
+    if(G.ents[_kq].kind==='raider') raiderUseKit(G.ents[_kq],dt);
+  }
   var p=G.player,T=G.tel;
   // His in-run note at 190s: "not enough enemies, boring". A raid emptied as it
   // went: everything he killed stayed dead and the back half of the clock had

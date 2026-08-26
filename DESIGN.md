@@ -10964,3 +10964,66 @@ everyone, but it IS a real information gain and I have not measured what it does
 how the map is played. Also not verified: whether 3.1 points is real. It would need a
 second independent 320 to separate from noise and I ran one, not two.
 
+
+### v3.39: raiders use what they carry, and arming them makes the raid EASIER
+
+HIS NOTE: "the raider bots should do EVERYTHING a real bot does including inventory
+management, equipping items, throw throwables, etc."
+
+He is right and the gap was total. A raider looted containers and pushed the contents
+into e.bag, and that bag was thereafter nothing but a number on the board and a pile
+of loot on his corpse. He never equipped a gun he found, he never used a bandage while
+bleeding, and throwFrom has exactly two callers, both player input, so nothing on this
+map has ever thrown anything at you.
+
+THREE VERBS, EACH MIRRORING A RULE THE PLAYER ALREADY LIVES UNDER rather than
+inventing a parallel system.
+
+EQUIP uses the same WTIER table the player's autoEquip uses. A higher tier gun in the
+bag goes into his hands, his old one goes back into the bag, and it stays worth taking
+off his body. Driven: a raider holding a Scav Pistol with a rifle in his bag is
+carrying the rifle within a second, with gun_pistol in the bag and his damage and
+range figures tracking the new weapon.
+
+HEAL uses the one-at-a-time, over-time rule v3.34 put on the player, including the
+same healSlow divisor, so the same three seconds of vulnerability applies to him.
+Triggers below 55 percent health. Driven: 23 of 78 health, one Bandage in the bag,
+and he comes out at 51 with the bandage gone. That is exactly 28, the Bandage's value.
+
+THROW goes into the same G.frags list the player's charge lands in, so it damages HIM
+and his own crew on exactly the same terms. Rate limited hard, one charge per eight
+seconds, and only in the 180 to 520 band where a thrown charge beats a bullet and he
+is not standing in his own blast.
+
+AND THE MEASUREMENT IS THE OPPOSITE OF WHAT I EXPECTED. 320 paired seeds on GREYWATER
+DAM, mapIx pinned, simGreed 52 both arms:
+
+  extract rate   10.0 percent without kit   13.4 percent with it
+  discordant     6 favouring off, 17 favouring ON
+  McNemar exact two sided z = 2.09, p = 0.035
+
+Significant, and arming the opposition made the raid EASIER by 3.4 points. I built
+this expecting to report a cost.
+
+The shape is not new. v3.17 raised the raider count and found the same sign, and wrote
+down why: "raiders fight machines and each other, so more of them is more noise
+pointed at something other than you." Better armed raiders presumably kill each other
+and the machines faster, and a frag thrown by a raider kills whatever is near it
+including sentries. I am NOT asserting that mechanism. It is the obvious story and
+this project has twice built on an obvious story that turned out to be wrong, so it is
+written here as a hypothesis with a measurement attached and nothing more.
+
+raiderKit 0 restores the old behaviour exactly.
+
+Verified: parsecheck PASS at v3.39, all four maps and the hub draw with drawErr null,
+and all three behaviours occur NATURALLY inside a 45 second sim on the four maps
+without being forced: 2, 3, 0 and 0 gun swaps, 0, 2, 0 and 1 heals, and 1 throw. Equip
+and heal each driven in isolation as tabled above. The A/B above ran to completion at
+320 paired seeds.
+Not verified: WHY it helps. The feud hypothesis is untested; I have not measured
+raider-on-raider kills or raider-thrown frags killing machines with the dial off
+against on, which is the probe that would settle it. Also not verified: what this does
+to a HUMAN raid. The bot does not loot competitively and rarely fights raiders, so the
+arm of this that matters most to him, a raider who has looted a better rifle than his
+and will throw a charge at him, is the arm the sim exercises least.
+

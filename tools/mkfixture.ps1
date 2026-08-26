@@ -263,7 +263,7 @@ window.__pinDefaults=function(mapIx){
     // restores its own dials so the A/Bs were safe, but nothing else was.
     // Same defect again at v3.17: raiderDown shipped unpinned. Every new dial
     // must land here in the same build that introduces it.
-    destruct:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6,extOutside:1,raiderWaves:1,raiderWaveCap:6,raiderWaveMin:5,raiderWaveGap:45};
+    destruct:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6,extOutside:1,raiderWaves:1,raiderWaveCap:6,raiderWaveMin:5,raiderWaveGap:45,raiderKit:1};
   for(var k in want){ if(C2[k]!==want[k]){ changed[k]=[C2[k],want[k]]; C2[k]=want[k]; } }
   P2.mapIx=(mapIx===undefined)?1:mapIx;
   P2.body=null; P2.equipped='smg'; P2.wear=P2.wear||{}; P2.wear['smg']=0;
