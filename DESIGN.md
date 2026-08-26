@@ -11027,3 +11027,55 @@ to a HUMAN raid. The bot does not loot competitively and rarely fights raiders, 
 arm of this that matters most to him, a raider who has looted a better rifle than his
 and will throw a charge at him, is the arm the sim exercises least.
 
+
+### v3.40: his run #37, and one of the two notes is a bug I shipped an hour earlier
+
+Both notes on run #37, played on v3.39.
+
+"ITS SAYO 'SHOOTING' BUT I'M NOT, I'M JUST WALKING." Mine, from v3.38, and it was
+permanent rather than occasional. p.lastShot is written as G.t*1000, MILLISECONDS of
+game time, and I compared it against G.t in SECONDS. Ten seconds into a raid that
+reads 10 minus 10000, which is comfortably less than 0.35, so the test passed on every
+frame of every raid from the moment the clock started moving. The status has read
+SHOOTING permanently since v3.38 shipped.
+
+THE REASON MY V3.38 DRIVE MISSED IT is worth more than the fix. I tested every player
+verb by SETTING p.lastShot by hand to a value in the units I believed it used, so the
+probe and the bug shared the same wrong assumption and agreed with each other. The
+test this build uses walks for two seconds without touching the mouse, then holds the
+real trigger through the real loop. Driven: walking reads MOVING, firing reads
+SHOOTING, and two seconds after ceasing fire it reads HOLDING.
+
+"I JUST SPAWNED RIGHT NEXT TO AN EXTRACTION, THAT SHOULD NEVER HAPPEN." Agreed, and
+this one is authoring rather than code. Spawns and extracts are two independent hand
+placed lists with nothing checking one against the other, so an edit to either can
+quietly put them on top of each other. Measured across all four maps:
+
+  GREYWATER DAM    582, 860, 903, 1056, 1842, 1890     2 of 6 under 900
+  SUNKEN QUARTER   1078 and up                         0 of 6
+  COLD STORAGE     286, 290, 1090, 1348, 1406, 1522    2 of 6 under 900
+  THE QUARRY       670, 920, 1213, 1281, 1557, 2815    1 of 6
+
+Five of twenty four, and COLD STORAGE, the map he was playing, has two spawns at 286
+and 290 units. That is not near an extraction, that is on it. The whole raid is walk
+out, find something, walk back, and landing on the way out deletes the first half.
+
+A spawn under spawnClear from any ring is skipped. My FIRST cut took the furthest
+spawn instead, and that was wrong for a reason the numbers show plainly: COLD STORAGE
+has two bad spawns of six, so rolling either would have sent you to the same single
+far manhole every time and turned a six way roll into a four way one with a heavy
+bias. It scans forward from the roll and takes the first that clears, so the roll stays
+meaningful. Driven over 16 raids on COLD STORAGE: closest spawn to a ring goes from
+286 to 1,090, and all four qualifying spawns are still used.
+
+Verified: parsecheck PASS at v3.40, all four maps and the hub draw with drawErr null.
+The status sequence driven through window.__loop with real keys and a real trigger as
+described. Spawn distances measured from the authored lists on all four maps before
+and after. Sixteen COLD STORAGE raids for the spread.
+Not verified: no balance measurement on the spawn change, and it deserves one. Moving
+the drop point further from the ring lengthens the walk back, which is the raid's core
+loop, and I have not run a paired A/B on spawnClear. I am shipping it first because
+one of the two spawns it fixes puts him 286 units from an extraction on the map he
+actually plays, and that is a broken raid rather than a balance question. The A/B is
+the next thing I owe on this.
+

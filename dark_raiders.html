@@ -503,7 +503,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.39';
+var VER='3.40';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -563,7 +563,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6,extOutside:1,raiderWaves:1,raiderWaveCap:6,raiderWaveMin:5,raiderWaveGap:45,raiderKit:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6,extOutside:1,raiderWaves:1,raiderWaveCap:6,raiderWaveMin:5,raiderWaveGap:45,raiderKit:1,spawnClear:900};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -5535,7 +5535,51 @@ function buildRaid(sim){
   // SPEC 4.5: randomised among a FIXED set of valid spawn points, every one of
   // which is a manhole standing in the world whether or not it was used today.
   var i,t;
-  var spawnPt=map.spawns[ri(0,map.spawns.length-1)];
+  // HIS NOTE ON RUN #37: "i just spawned right next to an extraction, that
+  // should never happen." Agreed, and the reason is that spawns and extracts are
+  // authored as two independent hand placed lists with nothing checking one
+  // against the other, so a layout edit on either side can quietly put them on
+  // top of each other.
+  // The whole raid is walk out, find something, walk back. Landing on the way
+  // out deletes the first half of that.
+  // Prefers rather than forces: it takes the FURTHEST spawn from any extract
+  // among those that clear spawnClear, and if none clear it, it takes the
+  // furthest anyway rather than refusing to start a raid. Deterministic given
+  // the roll, and the roll is still drawn so the PRNG stream is unchanged.
+  var _spIx=ri(0,map.spawns.length-1);
+  var spawnPt=map.spawns[_spIx];
+  if(CFG.spawnClear!==0&&map.extracts&&map.extracts.length){
+    var _minD=(CFG.spawnClear===undefined?900:CFG.spawnClear);
+    function _nearestExt(q){
+      var d=1e9;
+      for(var _e=0;_e<map.extracts.length;_e++) d=Math.min(d,Math.hypot(map.extracts[_e].x-q.x,map.extracts[_e].y-q.y));
+      return d;
+    }
+    if(_nearestExt(spawnPt)<_minD){
+      // SCAN FORWARD FROM THE ROLL, taking the first spawn that clears. Taking
+      // the FURTHEST one was my first cut and it destroys variety: COLD STORAGE
+      // has two bad spawns of six, so rolling either would have sent you to the
+      // same single far manhole every time, turning a six way roll into a two
+      // way one. Scanning keeps the roll meaningful and still never lands you
+      // next to a ring.
+      var _found=null;
+      for(var _sq2=1;_sq2<map.spawns.length;_sq2++){
+        var _cand2=map.spawns[(_spIx+_sq2)%map.spawns.length];
+        if(_nearestExt(_cand2)>=_minD){ _found=_cand2; break; }
+      }
+      // Nothing on this map clears the bar: take the furthest rather than refuse
+      // to start, because a compromised spawn beats no raid.
+      if(!_found){
+        var _bestSp=spawnPt,_bestD=_nearestExt(spawnPt);
+        for(var _sq3=0;_sq3<map.spawns.length;_sq3++){
+          var _d3=_nearestExt(map.spawns[_sq3]);
+          if(_d3>_bestD){ _bestD=_d3; _bestSp=map.spawns[_sq3]; }
+        }
+        _found=_bestSp;
+      }
+      spawnPt=_found;
+    }
+  }
   var start={x:spawnPt.x,y:spawnPt.y};
   // A hand placed spawn can land inside geometry as the layout is edited, and a
   // blocked spawn is a raid that starts stuck. Verified per map in testing, but
@@ -14519,7 +14563,16 @@ function playerStatus(){
   if(G.searching) return 'SEARCHING';
   // A shot inside the last third of a second still reads as shooting, which is
   // what makes the line move like the fight does rather than lagging it.
-  if(G.t-(p.lastShot||-9999)<0.35) return 'SHOOTING';
+  // HIS NOTE ON RUN #37: "its sayo 'shooting' but i'm not, i'm just walking."
+  // My bug, one build old and shipped straight to him. p.lastShot is written as
+  // G.t*1000, MILLISECONDS of game time, and I compared it against G.t in
+  // seconds. At ten seconds in that is 10 minus 10000, which is very much less
+  // than 0.35, so the test passed on every frame of every raid and the status
+  // read SHOOTING permanently from the moment the clock started.
+  // Both sides in milliseconds now. The unit mismatch is exactly the kind of
+  // thing a driven test catches and my v3.38 drive did not, because I set
+  // p.lastShot by hand in the probe instead of firing the gun.
+  if((G.t*1000)-(p.lastShot||-1e9)<350) return 'SHOOTING';
   if(p.ads) return 'AIMING';
   if(G.sprinting&&p.moving) return 'SPRINTING';
   if(G.pCrouch) return 'CROUCHED';
