@@ -10191,3 +10191,57 @@ entity decision and no timing constant, and none of it runs with G.sim set. Also
 verified, and it is again the thing that matters: whether naming the next unlock
 actually makes him sell. That needs his next export, not my fixture.
 
+
+### v3.25: notoriety was a live gate with no readout
+
+Third build in a row from the same sweep, and the sweep is the useful part: for every
+number the profile carries, is it READ by a decision anywhere, and can the player SEE
+it? Reputation failed the second test at v3.23. Notoriety fails it the same way.
+
+WHAT NOTORIETY ACTUALLY DOES. It is earned by shooting someone who is not armed and by
+killing the Peddler, and it is doing three things:
+
+  at 2 or more        the Peddler refuses to trade with you at all
+  every point         a merc costs 15 percent more to hire, and it compounds
+  every 4 extractions one point falls off
+
+WHAT YOU COULD SEE. The moment you earn it, and only that moment: a say line, a
+floating NOTORIETY label, and then nothing. Not in the hub, not on the HUD, not in the
+flight recorder. The Peddler's refusal is written well and names its cause, "He has
+heard what you did to the last one. No deal.", but a player who earned the point two
+sessions ago has no standing number to connect it to and no idea he is one clean
+extraction from getting his fence back.
+
+It now sits beside REP at the top of the Undercroft, and only when non-zero, because a
+permanent NOTORIETY 0 is noise:
+
+  NOTORIETY 2 (Peddler refuses you. merc hire +30%. 3 more extractions sheds a point.)
+
+It also goes into the flight recorder header, along with the stash count, so the next
+export tells me both of the things I had to infer by reading his numbers sideways this
+cycle.
+
+MY MISTAKE, OWNED: the first cut of that header line shipped a doubled plus operator,
+which made a unary plus on a string and printed "pack T1NaN2". Caught by driving the
+exporter rather than reading it, fixed, and both header variants now read clean.
+
+THE REST OF THE SWEEP FOUND NOTHING, and that is worth stating. Every other profile
+field is either live or honestly labelled as a career stat: P.sp gates season tiers,
+P.notoriety as above, P.log, P.lastSim, P.lastReport, P.season, P.terms, P.autoloot
+and P.mapIx are all read by real decisions. The only dead ones remain the two named at
+v3.24, P.xpLevel and P.prof, plus P.best, which is a flight-recorder career stat that
+says so.
+
+Verified: parsecheck PASS at v3.25, all four maps and the hub drive and draw with
+drawErr null. The readout driven across five states: 0 renders nothing at all, 1 with
+0 extractions reads "merc hire +15%. 4 more extractions sheds a point.", 1 with 3
+reads "1 more extraction" with the singular correct, 2 adds "Peddler refuses you." and
++30%, 3 reads +45%. The gate itself driven rather than read: pedOpen is true at
+notoriety 1 and false at 2. The exporter driven at notoriety 2 and 0, both header
+lines clean and NaN-free.
+Not verified: no balance measurement, and none applies. This is one string in the hub
+and two fields in a text export; it changes no roll, no entity decision and no timing
+constant, and none of it runs with G.sim set. Also not verified: whether he has ANY
+notoriety. I have never been able to see it, which is the whole point of this build,
+and his next export is the first one that will tell me.
+

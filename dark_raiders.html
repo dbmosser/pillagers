@@ -337,7 +337,7 @@
   <div class="toprow">
     <div>
       <div class="brand">DARK<span>//</span>RAIDERS <span id="verlabel"></span></div>
-      <div style="font-size:9.5px;color:var(--ash);letter-spacing:.14em;margin-top:4px">THE UNDERCROFT &mdash; OPERATOR TERMINAL &mdash; REP <span id="reptop" style="color:var(--amber)">0</span></div>
+      <div style="font-size:9.5px;color:var(--ash);letter-spacing:.14em;margin-top:4px">THE UNDERCROFT &mdash; OPERATOR TERMINAL &mdash; REP <span id="reptop" style="color:var(--amber)">0</span> <span id="notoline"></span></div>
     </div>
     <div class="credits" id="credits">0<small>CREDITS</small></div>
   </div>
@@ -481,7 +481,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.24';
+var VER='3.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16189,6 +16189,30 @@ function renderHub(){
       _nl.style.color='';
     }
   }
+  // NOTORIETY WAS A LIVE GATE WITH NO READOUT, v3.25. Same defect family as
+  // reputation having no visible source, found by the same sweep.
+  // It is earned by shooting someone who is not armed and by killing the
+  // Peddler, it is announced loudly at the moment you earn it, and then it
+  // vanishes: nothing in the hub, nothing on the HUD, nothing in the flight
+  // recorder. Meanwhile it is doing three things you can feel and cannot see.
+  //   at 2 or more   the Peddler refuses to trade, permanently until it decays
+  //   every point     merc hire costs 15 percent more, and it compounds
+  //   every 4 extracts  one point falls off
+  // The refusal itself is written well and names its cause: "He has heard what
+  // you did to the last one. No deal." What was missing is the standing number,
+  // so a player who earned it two sessions ago has no way to connect the two.
+  // Shown only when non-zero, because a permanent NOTORIETY 0 is noise.
+  var _nt=P.notoriety||0, _ntEl=document.getElementById('notoline');
+  if(_ntEl){
+    if(_nt>0){
+      var _toGo=4-((P.notExt||0)%4);
+      _ntEl.innerHTML='&mdash; NOTORIETY <span style="color:var(--rust)">'+_nt+'</span>'+
+        ' <span style="color:var(--ash)">('+
+        (_nt>=2?'Peddler refuses you. ':'')+
+        'merc hire +'+Math.round(_nt*15)+'%. '+
+        _toGo+' more extraction'+(_toGo===1?'':'s')+' sheds a point.)</span>';
+    } else _ntEl.innerHTML='';
+  }
   var w=WEAPONS[P.equipped]||WEAPONS.fists;
   document.getElementById('equipped').innerHTML=
     '<div class="wn">'+w.name+'</div><div class="ws">DMG '+w.dmg+' &middot; MAG '+(w.mag||'-')+
@@ -16334,7 +16358,8 @@ function fmtRun(r){
 function buildExport(){
   var L=[],i;
   L.push('=== DARK RAIDERS v'+VER+' FLIGHT RECORDER ===');
-  L.push('Profile: '+P.runs+' runs, '+P.ext+' extracted, '+P.died+' died, best haul '+P.best+'c, credits '+P.credits+', rep '+P.rep+', pack T'+(P.pack+1));
+  L.push('Profile: '+P.runs+' runs, '+P.ext+' extracted, '+P.died+' died, best haul '+P.best+'c, credits '+P.credits+', rep '+P.rep+', pack T'+(P.pack+1)+
+    ', notoriety '+(P.notoriety||0)+', stash '+P.stash.length);
   // Who and where this came from, so a run pulled off the public endpoint can be
   // separated from his own without guessing. Origin matters because a build served
   // from itch is not the build on his machine and may be several versions behind.
