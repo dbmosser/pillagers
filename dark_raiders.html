@@ -347,6 +347,7 @@
       <div class="plist" id="stashlist"></div>
       <div style="padding:8px 12px;border-top:1px solid var(--steel-hi)">
         <button id="sellall" style="width:100%">Sell all salvage</button>
+        <div id="sellhint" class="hint" style="margin-top:6px;font-size:9.5px;line-height:1.35"></div>
       </div>
     </div>
     <div class="panel">
@@ -479,7 +480,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.22';
+var VER='3.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16115,6 +16116,41 @@ function renderHub(){
     row.appendChild(sw); row.appendChild(nm); row.appendChild(vl); row.appendChild(b);
     sl.appendChild(row);
   });
+  // REPUTATION HAD NO VISIBLE SOURCE, v3.23, and his own profile is the evidence:
+  // 35 runs, 8 extracted, best haul 11,500c, and REP 0. Not low. Zero.
+  // Reading the code for where rep comes from: P.rep is never decremented
+  // anywhere in the file, so it is a lifetime career total, and it is granted in
+  // exactly three places, all of them a SALE FROM THE STASH in the Undercroft.
+  // Every other way money reaches you pays credits and no rep at all: the Stray
+  // pays 260 to 540, the in-raid Peddler pays whatever you fence, the merc's cut
+  // pays 10 percent of what he walked out with, and hazard pay is a percentage of
+  // the haul. Four credit sources, zero rep sources.
+  // So a player who fences in the field and never sells at home banks money,
+  // unlocks nothing, and is never told why. The shop does its half correctly: a
+  // locked line reads [REP 400]. Nothing anywhere said where REP 400 comes from.
+  // The fix is not economic, it is a label. The one button that grants rep now
+  // states both currencies it pays, live, and the shop says where rep comes from
+  // instead of only what it costs.
+  var _sv=0,_sn=0;
+  for(var _si2=0;_si2<P.stash.length;_si2++){
+    var _sk=P.stash[_si2];
+    if(!ITEMS[_sk]||ITEMS[_sk].use) continue;   // usable kit is kept, never sold
+    _sv+=ival(_sk); _sn++;
+  }
+  var _sb=document.getElementById('sellall');
+  if(_sb){
+    _sb.textContent=_sn
+      ? ('Sell all salvage  \u00b7  '+_sv.toLocaleString()+'c  +'+_sv.toLocaleString()+' REP')
+      : 'Nothing to sell';
+    _sb.disabled=!_sn;
+    _sb.style.opacity=_sn?'':'0.5';
+  }
+  var _sh=document.getElementById('sellhint');
+  if(_sh){
+    _sh.textContent=_sn
+      ? 'Selling here is the ONLY thing that earns REP. The Peddler pays cash, not standing.'
+      : 'REP is earned by selling salvage here. Fencing to the Peddler pays cash only.';
+  }
   var w=WEAPONS[P.equipped]||WEAPONS.fists;
   document.getElementById('equipped').innerHTML=
     '<div class="wn">'+w.name+'</div><div class="ws">DMG '+w.dmg+' &middot; MAG '+(w.mag||'-')+
@@ -16355,7 +16391,8 @@ function renderShop(){
   // now states the balance FIRST, before the thing it is asking you to spend it
   // on. walletLine is one helper so a new vendor cannot ship without one.
   document.getElementById('repline').textContent=
-    'You hold '+P.credits.toLocaleString()+'c  \u00b7  rep '+P.rep.toLocaleString();
+    'You hold '+P.credits.toLocaleString()+'c  \u00b7  rep '+P.rep.toLocaleString()+
+    '  \u00b7  REP comes from selling salvage in the Undercroft.';
   var s=document.getElementById('shop'); s.innerHTML='';
   SHOP.forEach(function(o){
     var row=document.createElement('div'); row.className='row';

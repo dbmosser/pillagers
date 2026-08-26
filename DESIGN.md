@@ -10074,3 +10074,65 @@ Not verified: nothing new is outstanding from this change. The refusals are stri
 and a branch; there is no balance surface to measure and no sim behaviour touched,
 since none of this code runs with G.sim set.
 
+
+### v3.23: reputation had no visible source, and his profile has been saying so for 35 runs
+
+HIS PROFILE, from the run #35 export: 35 runs, 8 extracted, best haul 11,500c,
+credits 1,926, **rep 0**. Not low. Zero, after thirty-five raids.
+
+I have been reading that header every tick for days and treating it as a difficulty
+signal. It is not. It is a broken loop, and reading the code for where reputation
+actually comes from says exactly what the loop is.
+
+P.rep IS NEVER DECREMENTED ANYWHERE IN THE FILE. There is no `P.rep-=` in 16,000
+lines, so it is not a currency you spend, it is a lifetime career total, and the
+things it gates stay unlocked once reached. It is granted in exactly three places and
+all three are a SALE FROM THE STASH in the Undercroft: selling one item, selling all,
+and a contract reward.
+
+MEANWHILE FOUR SEPARATE THINGS PAY CREDITS AND NO REP AT ALL.
+
+  the Stray            260 to 540c for helping him
+  the in-raid Peddler  whatever you fence to him, and this is the big one
+  the merc's cut       10 percent of what your hired gun walked out with
+  hazard pay           a percentage of the haul for taking terms
+
+So a player who fences in the field and never sells at home banks money, unlocks
+nothing, and is never told why. That is precisely his profile: money in the bank, a
+stash he has apparently never cashed, and every rig, gun and pack still locked.
+
+THE SHOP WAS ALREADY DOING ITS HALF CORRECTLY. A locked line reads "Plated Vest (70
+armour, 6% slower, 16% louder)  [REP 1200]". It tells you the price. Nothing anywhere
+in the game told you where REP 1200 comes from, and the one button that grants it read
+"Sell all salvage" with no number on it and no mention of reputation.
+
+THE FIX IS A LABEL, NOT AN ECONOMY. I have changed no payout, no rate and no gate,
+deliberately, because whether fencing to the Peddler SHOULD cost you standing is a
+real design question and it is his. What changed is that the loop is now legible from
+both ends:
+
+  the button   "Sell all salvage  ·  12,480c  +12,480 REP", live, and it disables
+               itself and reads "Nothing to sell" when there is nothing
+  under it     "Selling here is the ONLY thing that earns REP. The Peddler pays
+               cash, not standing."
+  the shop     "You hold 1,926c · rep 0 · REP comes from selling salvage in the
+               Undercroft."
+
+The button counts only what will actually be sold. sellall keeps anything with a use,
+so medical and plates in the stash are not counted toward a figure that then does not
+arrive.
+
+Verified: parsecheck PASS at v3.23, all four maps and the hub drive and draw with
+drawErr null. The label driven against a stash of three valuables plus one usable
+item: it reads 95c, which is exactly the sum of the three valuables and excludes the
+heal. Empty stash disables the button and reads "Nothing to sell". The sale itself
+driven by clicking the real button: it promised 165 and paid exactly 165 credits AND
+165 rep, took the four valuables, left the usable item in the stash, and re-rendered
+to "Nothing to sell". The shop line and the locked rows read back as quoted above.
+Not verified: no balance measurement, and none applies. This changes no roll, no
+entity decision and no timing constant; it adds three strings and a sum over an array
+the hub already walks, and none of it runs with G.sim set, so the paired batches
+cannot see it. What I have NOT established is the thing that actually matters, which
+is whether he was failing to find the button or had decided the stash was worth more
+to him unsold. The label answers the first and cannot answer the second.
+
