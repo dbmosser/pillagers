@@ -9768,3 +9768,83 @@ not as a balance improvement, and it should not be quoted as one. Also not verif
 anything about how this FEELS. Every number here is the bot's, and the bot does not
 mind standing in a crowd.
 
+
+### v3.19: four hundred years of nobody maintaining anything, and a render pass that was quietly a gameplay input
+
+HIS NOTE: "these building are supposed to look old and janky. backstory similar to
+arc raiders, we've been here for hundreds of years and the robots have ruled the
+surface for all that time." He is right and the reason is easy to see once you look
+at the code: a wall was five flat fills. A front face, a top face, a warm lip and two
+ink creases, every one of them perfectly straight and perfectly even. Straight and
+even is the one thing four centuries of weather does not leave behind.
+
+WHAT A WALL CARRIES NOW. Rain streaks hung from the top lip, varying length, never
+the full drop, because water running off an unwashed roof is the single most legible
+mark of age on concrete. A damp line wicking up from the ground with a ragged top
+edge. One crack on roughly a third of walls, measured at 31.3 percent on GREYWATER
+DAM, because every wall cracked is noise and a third of them cracked is a
+neighbourhood that has been left alone. Bites out of the parapet, which is the one
+that works at distance: the roofline is the silhouette, and a broken silhouette tells
+you nobody has been up there without you reading a single detail. And dark staining
+on the roof faces, because flat surfaces collect what falls on them.
+
+NONE OF IT IS RANDOM AND NONE OF IT IS STORED. grit() is a positional hash, pure in
+x and y, so the same wall weathers the same way in every frame, on every machine, in
+the sim and on screen, and two walls side by side weather differently. Driven: three
+consecutive frames of the same raid hash to the same pixels, so nothing shimmers.
+
+THE FIRST CUT WAS WRONG AND THE SCREENSHOT SAID SO. I stepped each wall at a fixed
+interval and varied only WHETHER a mark appeared. That gives you marks on a grid, and
+a grid reads as tiling, which reads as a surface someone manufactured and fitted,
+which is the exact opposite of the note. The buildings came out looking like they
+were clad in brick. The fix is that the STEP is jittered as well as the presence, so
+nothing on a wall lines up with anything else on it. I would not have caught that
+from the code; it needed the picture.
+
+WHAT IT COSTS. Between 0.74 and 1.05 ms a frame across the four maps, worst case
+4.50 ms total on COLD STORAGE against a 16.7 ms budget at 60fps. The percentage is
+large on the cheapest map, 62 percent of 1.55 ms, and the absolute number is what
+matters here. decay 0 turns the whole pass off.
+
+AND THE THING I FOUND ON THE WAY, WHICH MATTERS MORE THAN THE ART.
+
+Checking that grit() did not touch the seeded stream, I ran the same seeded raid
+twice, one arm drawing a frame on every step and one arm never drawing. They
+diverged: 74 entities undrawn against 75 drawn on seed 31337. With decay forced off
+they diverged identically, so it was not the new code.
+
+It was the screen shake, which I added earlier this cycle when he asked for shake on
+damage. Line 11594 read:
+
+    var ox=Math.round(camX+rnd(-sk,sk)),oy=Math.round(camY+rnd(-sk,sk));
+
+rnd() is the SEEDED gameplay PRNG. Two draws per rendered frame, and because sk is
+zero when nothing is shaking, rnd(-0,0) still calls rr() twice, so EVERY drawn frame
+advanced the raid's random stream by two regardless. Rendering was a gameplay input:
+the same seed played differently depending on how many frames had been painted.
+
+Every sim number in this file is still good, because __pairedBg draws no frames at
+all in either arm, and that is the only reason this never corrupted a measurement.
+But any comparison that had drawn one arm and not the other would have been silently
+meaningless, and the failure would have looked like noise rather than like a bug.
+
+There is now a second PRNG, fxr(), with its own state, never seeded from the raid,
+for cosmetics that need to jitter frame to frame the way grit() deliberately cannot.
+Shake draws from that. Driven on all four maps: drawn and undrawn arms of the same
+seed now produce byte identical entity counts and position signatures.
+
+Verified: parsecheck PASS at v3.19, all four maps and the hub drive and draw with
+drawErr null. Three consecutive frames of one raid hash identically, so the
+weathering does not shimmer. decay 1 and decay 0 produce byte identical sim results,
+so the art pass does not touch the seeded stream. The stream fix is driven on four
+seeds across four maps, all four now matching drawn against undrawn where all four
+differed before. Frame cost measured on all four maps and quoted above. Crack
+incidence measured at 31.3 percent of 742 plain walls on GREYWATER DAM. Looked at:
+two captures at 2x through the sink, and the second one is the reason the first
+version was rewritten.
+Not verified: whether it actually looks old to him rather than merely different to
+me. It is his note and his eye, and a screenshot from one spot on one map at one time
+of day is not a playtest. Also not verified: how the weathering reads at night or in
+fog, where the district palette is darkened by 0.42 and low alpha detail may vanish
+entirely; I checked clear daylight only.
+
