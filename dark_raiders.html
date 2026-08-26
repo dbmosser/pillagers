@@ -481,7 +481,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.27';
+var VER='3.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16110,11 +16110,42 @@ function renderHub(){
           if(cost===null||so.price<cost) cost=so.price;
         }
       }
+      // WHEN HE CANNOT AFFORD ONE, SAY SO, v3.28. The branch above names the
+      // cheapest rig only when he can already pay for it; below that threshold it
+      // appended nothing at all, so the one screen between the stash and the
+      // surface told a broke player he was in trouble and not one thing about it.
+      // MY FIRST VERSION OF THIS WAS BUILT ON A PREMISE I HAD NOT CHECKED, and
+      // the test killed it: I assumed reputation was what kept him rigless, since
+      // his profile reads rep 0 after 35 runs. It is not. The light rig is
+      // {price:900, rep:0}, so armour has never been rep gated at all, he has
+      // held more than 900c throughout, and this screen has been telling him the
+      // price the whole time. The rep branch I wrote could never fire, because
+      // P.rep < 0 is not a thing. It is deleted rather than left in looking
+      // useful, which is the same defect as a stale comment.
+      // What survives is the case that IS reachable and was genuinely silent.
+      var _anyRig=null;
+      for(var sj=0;sj<SHOP.length;sj++){
+        var sq=SHOP[sj];
+        if(sq.kind!=='rig'||(P.rigs||[]).indexOf(sq.k)>=0) continue;
+        if(P.rep<sq.rep) continue;
+        if(_anyRig===null||sq.price<_anyRig) _anyRig=sq.price;
+      }
+      var _fix='';
+      if(cost!==null&&P.credits>=cost){
+        _fix=' The cheapest rig you can wear is '+cost.toLocaleString()+'c in REQUISITION.';
+      } else if(_anyRig!==null){
+        _fix=' You have the standing for one, but it costs '+_anyRig.toLocaleString()+
+          'c and you hold '+(P.credits||0).toLocaleString()+'c. One extraction covers it.';
+      } else {
+        // Anything else, and there is at least one state I constructed in a test
+        // without showing it can actually happen: owning a rig while wearing
+        // none. Rather than write a branch for a case I have not proven is
+        // reachable, which is exactly the mistake the rep branch above was, this
+        // says the one thing that is true in every remaining state.
+        _fix=' REQUISITION is where rigs come from.';
+      }
       rl.style.borderColor='#8a5a4a'; rl.style.color='#e0a08a';
-      rl.innerHTML='<b>NO RIG.</b> You deploy with 0 armour, and a plate has nothing to slot into.'+
-        (cost!==null&&P.credits>=cost
-          ? ' The cheapest rig you can wear is '+cost.toLocaleString()+'c in REQUISITION.'
-          : '');
+      rl.innerHTML='<b>NO RIG.</b> You deploy with 0 armour, and a plate has nothing to slot into.'+_fix;
     } else {
       rl.style.borderColor='var(--steel-hi)'; rl.style.color='var(--ash)';
       rl.innerHTML=RG.name+', <b>'+cap+' armour</b> on the drop, absorbing '+

@@ -10350,3 +10350,53 @@ no gate. It is three strings and one arithmetic correction. What I cannot verify
 the only thing that matters again: whether seeing 459 against 830 changes what he
 does. That is his next export.
 
+
+### v3.28: a small fix, and a premise the test killed before it shipped
+
+I went to the deploy screen expecting to find the same defect as the last four builds:
+a gate the player cannot see. His profile says rep 0 after 35 runs and DESIGN has said
+for a long time that he is "still wearing No Rig", so the story wrote itself. Armour is
+rep gated, he has no rep, the warning is a dead end.
+
+THE STORY WAS WRONG AND THE SHOP SAYS SO IN ONE LINE:
+
+  {kind:'rig',k:'light',price:900,rep:0}
+
+The cheapest rig has NO reputation gate at all. It costs 900 credits, he holds 1,926,
+and the deploy screen has been telling him "The cheapest rig you can wear is 900c in
+REQUISITION" every single time he has deployed. Reputation is not what is keeping him
+rigless. He simply has not bought it, and the game has already said what to do.
+
+I had written a whole branch explaining the rep gap before I drove it. It could never
+fire, because it tested P.rep < 0. That is the chase-give-up failure again in
+miniature: a plausible mechanism, a story fitted to it, and no check. The difference
+this time is that the check ran before the commit rather than three builds later, and
+the branch is deleted rather than left in looking useful.
+
+WHAT SURVIVES IS SMALL AND REAL. Below 900 credits the old line appended nothing at
+all, so the one screen between the stash and the surface told a broke player he had no
+armour and not one thing about it. That state now reads:
+
+  NO RIG. You deploy with 0 armour, and a plate has nothing to slot into. You have
+  the standing for one, but it costs 900c and you hold 10c. One extraction covers it.
+
+And there is a neutral fallback for anything else, because during testing I
+constructed a state, owning a rig while wearing none, that I could NOT show is
+reachable in play: buying sets the worn rig, and the death fallback re-equips the last
+owned one. Rather than write a confident branch for a case I have not proven exists,
+which is the mistake I had just made one paragraph earlier, that path says the one
+thing true in every remaining state.
+
+Verified: parsecheck PASS at v3.28, all four maps and the hub draw with drawErr null.
+Four profile states driven through the real hub renderer: rep 0 with 1,926c names the
+900c rig, rep 0 with 10c names the price and the balance and that one extraction
+covers it, the constructed owns-but-unworn state gets the neutral pointer, and
+actually wearing the light rig gives the normal line, "Scav Rig, 35 armour on the
+drop, absorbing 50% of every hit until it is gone."
+Not verified: no balance measurement, and none applies; this is one string on a hub
+panel. And I have not verified the thing this build set out to explain, which is why
+he has deployed 35 times without spending 900 credits on armour that the screen keeps
+naming. It is not information, because the information was already there. That leaves
+either that he has not read it or that he does not believe it is worth 900c, and I
+cannot tell those apart from here.
+
