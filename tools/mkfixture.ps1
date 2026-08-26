@@ -251,7 +251,13 @@ window.__pinDefaults=function(mapIx){
     simWade:1,simLootNoise:1,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,
     seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,
     eHp:1,lootMult:1,windows:1,simEngage:0,raiderFeud:1,simReach:1,healOverTime:1,
-    simRetreatHeal:0,placeCull:1};
+    simRetreatHeal:0,placeCull:1,
+    // Dials added after this list was written were NOT being pinned, so a value
+    // left dirty by an aborted probe survived every later __pinDefaults and could
+    // silently contaminate a measurement. Caught when a timed-out probe left
+    // chaseGiveUp at 1 and the next pinned run still read 1. __pairedBg sets and
+    // restores its own dials so the A/Bs were safe, but nothing else was.
+    destruct:1,raiderWear:1,penetrate:1};
   for(var k in want){ if(C2[k]!==want[k]){ changed[k]=[C2[k],want[k]]; C2[k]=want[k]; } }
   P2.mapIx=(mapIx===undefined)?1:mapIx;
   P2.body=null; P2.equipped='smg'; P2.wear=P2.wear||{}; P2.wear['smg']=0;

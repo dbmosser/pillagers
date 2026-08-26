@@ -9137,3 +9137,82 @@ ammunition running down and the timer forcing the endgame are all candidates and
 have measured none of them, so attributing it would be exactly the kind of
 plausible story that made me misread the penetration lean one tick ago.
 
+
+### The chase-give-up "fix": wrong premise, measured harmful, reverted
+
+This tick I built a feature for a defect that does not exist, measured it, found it
+made the game significantly worse, and then found the defect was never there. All
+three of those are worth writing down, because the order they happened in is the
+lesson.
+
+WHAT I WENT LOOKING FOR. v3.09 established that hazard rises ninefold across a
+raid. A follow-up probe stepping 48 sim raids and sampling every 30 seconds
+established that the cause is not the player wearing down: ammunition RISES from 65
+to 206 rounds over a raid, dry runs are 0 to 3 percent, health holds near 85, armour
+falls only modestly from 35 to about 20. What climbs is machines in a hunting
+state, 0 to 8.6.
+
+WHAT I CONCLUDED, WRONGLY. I grepped for `state='patrol'` and found three
+assignments: one from investigate, two inside the crier's alarm. The chase block had
+none. I read that as "nothing ever gives up", noted that the warden's comment calls
+out "never gives up" as its special trait, and built a lost-sight timer behind a
+CFG.chaseGiveUp dial.
+
+WHAT THE MEASUREMENT SAID. 320 paired seeds on GREYWATER DAM, mapIx pinned,
+simGreed 52 both arms:
+
+  extract rate  15.0 percent off  ->  11.6 percent on
+  discordant    15 favouring off, 4 favouring on
+  McNemar exact two sided p = 0.019
+
+Significant, and in the wrong direction. My "fix" cost 3.4 points.
+
+WHAT WAS ACTUALLY THERE. Chasing machines already give up, at line 9417:
+
+    if(!sees&&e.alert<=0){ e.state=(raider?'loot':'investigate'); ... }
+
+Sight sets alert to 2.4 and it decays at 0.5 a second, so a pursuer that loses
+sight drops to investigate after 4.8 seconds and to patrol when it reaches the last
+known point. Driven and confirmed: chase to investigate at exactly 4.80s. My grep
+missed it because the exit routes through investigate and never mentions patrol,
+and I searched for the destination instead of the departure.
+
+So what I shipped was not a missing transition restored. It was a SECOND and faster
+give-up path stacked on the existing one, and it made pursuit worse for the bot
+rather than better. The whole thing is reverted: dark_raiders.html is byte for byte
+back at v3.09, with no chaseGiveUp dial and no CHASE_LOSE constant left behind.
+
+THE PROCESS FAILURE, because it is the reusable part. Two ticks ago I misread a
+consistent lean as signal because I had a plausible mechanism ready. This time I
+misread an absence of a string as an absence of behaviour, again because I had a
+plausible mechanism ready. Both times the story came first and the evidence was
+fitted to it. Grepping for a state name is not reading a state machine, and the
+correct check would have taken one driven probe: put a machine in chase, remove line
+of sight, watch what it does. That probe is four lines and it is what finally
+settled it.
+
+The v3.09 hazard finding still stands and is untouched: alerted machines do climb
+across a raid. What is now UNEXPLAINED is why, given that de-escalation works. Fresh
+contacts arriving faster than the 4.8 second decay clears them is the obvious
+candidate, and I am explicitly not asserting it, because that is exactly the kind of
+ready-made story that has cost me two ticks already.
+
+ONE THING KEPT. tools/mkfixture.ps1's __pinDefaults did not pin destruct,
+raiderWear or penetrate, all added after that list was written, so a value left
+dirty by an aborted probe survived every later pin. That is how a timed-out probe
+left a dial at 1 and the next pinned run still read 1. Those three are pinned now.
+__pairedBg was never affected because it sets and restores its own dials, but
+nothing else was protected.
+
+No version bump: the game is unchanged from v3.09. The only surviving edit is in the
+fixture.
+Verified: parsecheck PASS at v3.09 after the revert, all four maps and the hub drive
+and draw with drawErr null in the raid view and with the map overlay up,
+CFG.chaseGiveUp is undefined so no dead dial remains, __pinDefaults reports pinned,
+and the EXISTING de-escalation is driven and confirmed at 4.80 seconds.
+Not verified: why alerted count rises across a raid, which is now an open question
+rather than an answered one. I have measured that it is not ammunition, not health
+and not armour, and that de-escalation functions; I have not measured contact
+arrival rate against decay rate, which is the next thing to actually measure rather
+than guess.
+
