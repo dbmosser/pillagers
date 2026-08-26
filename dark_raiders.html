@@ -481,7 +481,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.26';
+var VER='3.27';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5217,13 +5217,13 @@ function pedSellAll(){
   // has no panel, so it is allowed through under G.sim and the caller is
   // responsible for having put it next to a peddler first.
   if(!G||(!G.trade&&!G.sim)) return;
-  var i,tot=0,n=0,kept=[];
+  var i,tot=0,full=0,n=0,kept=[];
   for(i=0;i<G.bag.length;i++){
     var k=G.bag[i];
     // He will not buy a key. Selling him the way into the vault you are standing
     // next to is not a trade, it is a mistake with a confirmation button.
     if(ITEMS[k]&&ITEMS[k].use==='key'){ kept.push(k); continue; }
-    tot+=Math.round(ival(k)*pedBuyRate()); n++;
+    tot+=Math.round(ival(k)*pedBuyRate()); full+=ival(k); n++;
   }
   if(!n){ if(!G.sim) say('Nothing in your bag he wants.'); return; }
   G.bag=kept;
@@ -5238,7 +5238,21 @@ function pedSellAll(){
   if(G.tel) G.tel.pedSold=G.pedSold;
   if(G.trade) G.trade.traded=1;
   if(!G.sim){
-    say('Sold '+n+' for '+tot.toLocaleString()+'c. Banked, whatever happens next.');
+    // THE LINE WAS SELLING THE UPSIDE AND HIDING BOTH COSTS, v3.27. "Banked,
+    // whatever happens next" is true and it is half the trade. The other half is
+    // that he pays 55 percent, and that fencing in the field earns NO reputation,
+    // which is the only thing that unlocks a rig, a gun or a pack.
+    // His profile is what sent me here: 35 runs, best haul 11,500c, and rep 0.
+    // Zero reputation after thirty-five raids is what it looks like when a player
+    // takes this deal every time, and the game has been recommending it.
+    // The number he needs is what the SAME bag is worth carried home, so both
+    // sides of the choice are on screen at the moment he makes it. Not a nag and
+    // not a refusal: he may well still want the certainty, and that is a real
+    // reason. It is just no longer a blind one.
+    var _full=full;
+    say('Sold '+n+' for '+tot.toLocaleString()+'c, his '+Math.round(pedBuyRate()*100)+
+      ' percent. Banked whatever happens next, and no standing: carried home it was '+
+      _full.toLocaleString()+'c and '+_full.toLocaleString()+' rep.');
     blip('pick'); ping(G.trade.x,G.trade.y,190,false,false,'player','move');
   }
 }
@@ -14197,10 +14211,10 @@ function drawTrade(){
   cy+=LH(9);
   ctx.strokeStyle='#3a3222'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.moveTo(x+14,cy); ctx.lineTo(x+PW-14,cy); ctx.stroke();
-  var tot=0,n=0;
+  var tot=0,n=0,fullv=0;
   for(i=0;i<G.bag.length;i++){
     var k=G.bag[i]; if(ITEMS[k]&&ITEMS[k].use==='key') continue;
-    tot+=Math.round(ival(k)*pedBuyRate()); n++;
+    tot+=Math.round(ival(k)*pedBuyRate()); fullv+=ival(k); n++;
   }
   cy+=LH(21);
   ctx.font=FS(TYPE.head); ctx.fillStyle=n?'#7fc4a0':'#4d5762';
@@ -14209,7 +14223,16 @@ function drawTrade(){
   ctx.fillText('+'+tot.toLocaleString()+'c',x+PW-14,cy); ctx.textAlign='left';
   cy+=LH(15);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
-  ctx.fillText('55% of value, paid now. Yours even if you die out there.',x+14,cy);
+  ctx.fillText(Math.round(pedBuyRate()*100)+'% of value, paid now. Yours even if you die out there.',x+14,cy);
+  // BOTH SIDES OF THE TRADE, v3.27. The panel quoted his offer and the upside of
+  // certainty and stopped there. What it never said is what the same bag is worth
+  // carried home, or that fencing earns no reputation at all, which is the only
+  // currency that unlocks a rig, a gun or a pack.
+  if(n){
+    cy+=LH(13);
+    ctx.fillStyle='#6b7783';
+    ctx.fillText('Carried home: '+fullv.toLocaleString()+'c and '+fullv.toLocaleString()+' REP. He pays no REP.',x+14,cy);
+  }
   cy+=LH(17);
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+14,cy); ctx.lineTo(x+PW-14,cy); ctx.stroke();
   cy+=LH(18);

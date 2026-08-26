@@ -10299,3 +10299,54 @@ measured that, because the bot's arm of it is CFG.autoEquip and the bot has alwa
 at 0, so a paired A/B would be measuring a dial nobody has moved rather than the
 choice he is now being offered. If he turns it on, his next exports are the measurement.
 
+
+### v3.27: the Peddler was selling the upside and hiding both costs
+
+Fifth build from the sweep, and this one is the decision point the other four were
+circling. His profile is 35 runs, best haul 11,500c, credits 1,926, and rep 0. Zero
+reputation after thirty-five raids is what it looks like when a player takes the
+Peddler's deal every time, and the game has been quietly recommending it.
+
+WHAT THE TRADE ACTUALLY COSTS. He pays PEDDLER_BUY, 55 percent of value. And fencing
+in the field earns no reputation at all, which is the only currency that unlocks a
+rig, a gun or a pack. Two costs.
+
+WHAT THE GAME SAID. The panel: "55% of value, paid now. Yours even if you die out
+there." The confirmation: "Sold 7 for 2,400c. Banked, whatever happens next." Both
+true, both one-sided, and neither one ever mentions reputation or what the same bag is
+worth carried home. A player reading only that has no reason to ever walk anything to
+the ring, and no way to connect it to the locked shop he sees later.
+
+BOTH SIDES NOW SIT TOGETHER AT THE MOMENT HE CHOOSES. The stall panel, under his
+offer:
+
+  [1] SELL BAG (6)                                          +459c
+  55% of value, paid now. Yours even if you die out there.
+  Carried home: 830c and 830 REP. He pays no REP.
+
+and the confirmation says the same thing after the fact. This is deliberately not a
+nag and not a refusal. Certainty is a real reason to take 55 percent, especially with
+a full bag and a long walk left, and the whole point of the Peddler is that the choice
+is his. It is simply no longer a blind one.
+
+A ROUNDING BUG I SHIPPED AND CAUGHT IN THE SAME TICK. The first version derived the
+carried-home figure by dividing the discounted total back out by 0.55. Each item's 55
+percent is rounded down individually, so dividing the sum back inflates it: four items
+genuinely worth 290c were quoted as 293c. Driving it caught the three-credit lie. The
+true value is now summed in the same loop as the discounted one, at both sites, and
+the quoted figure is asserted equal to the truth in the test.
+
+Verified: parsecheck PASS at v3.27, all four maps and the hub draw with drawErr null,
+and the stall panel drawn and captured. The sale driven through the real pedSellAll
+with a real stall open: a bag of four valuables plus a key sells 4 for 161c, the key
+is refused and stays in the bag, credits rise by exactly 161, REP RISES BY EXACTLY 0
+which is the claim the new line makes, and the quoted carried-home figure is 290,
+asserted equal to the independently summed true value rather than eyeballed. The panel
+read back from the pixels at six items: +459c against "Carried home: 830c and 830 REP.
+He pays no REP."
+Not verified: no balance measurement. The sim can trade, but simPed defaults to 0 so
+the bot does not use the Peddler, and in any case this changes no payout, no rate and
+no gate. It is three strings and one arithmetic correction. What I cannot verify is
+the only thing that matters again: whether seeing 459 against 830 changes what he
+does. That is his next export.
+
