@@ -11677,3 +11677,88 @@ way nobody could see. I have not measured how much, because the bot never signs 
 and so cannot show me. Also not verified: the remaining telemetry fields. Two checked,
 two wrong, and there are a dozen left.
 
+
+### v3.48: v3.47 shipped a crash at the end of every raid, and it was mine
+
+MY BUG, AND IT WAS A BAD ONE. v3.47 added a top level helper called elapsed()
+and replaced nine hand rolled copies of the same arithmetic with calls to it.
+One of those nine sites was inside endRaid, and endRaid already had a LOCAL
+variable of the same name:
+
+    var elapsed = CFG.raidSec - G.timeLeft;
+
+The replace turned that line into var elapsed = elapsed(). A var declaration
+hoists to the top of its function, so from the first line of endRaid onward the
+name elapsed referred to an undefined local rather than to the helper, and every
+call in that function threw TypeError: elapsed is not a function.
+
+endRaid is the function that runs when a raid ends. Every raid ends. So v3.47
+was dead at the end of extract, dead at the end of death and dead at the end of
+abandon: no payout screen, no profile save, no record of the run. The build ran
+fine right up to the moment it mattered and then threw. That is worse than a
+build that fails to load, because it fails after the player has done the work.
+
+The fix is one rename, the local is now el. The interesting part is why the
+v3.47 verification passed it.
+
+WHY MY OWN CHECK MISSED IT. The standard sweep is: parsecheck, then all four
+maps with __startRaid, forty __sim steps, __frame and __hud, then hub frames.
+Every one of those passed on v3.47 and they were right to. Not one of them ends
+a raid. The sweep drives the middle of a raid and draws it, and endRaid is not
+on that path at all. A crash sitting in the last function of the run was exactly
+the shape of bug that sweep cannot see.
+
+Driving endRaid is now part of the sweep, on all three outcomes plus the short
+abandon discard branch, which is the branch that actually used the shadowed
+local. It costs four calls.
+
+WHAT ELSE THE DRIVE TOLD ME, and it corrects something I have been repeating.
+At v3.38 I recorded that G.t does not advance during the sim, and I have treated
+that as fact since. Measured properly, over sixty steps of 0.15:
+
+    __sim            t 0      timeLeft 600 of 600     nothing advances
+    __simRaidStep    t 9.0    timeLeft 591 of 600     both advance
+    __loop           t 3.0    timeLeft 597 of 600     both advance
+
+So G.t stalls only under __sim, which is a hook that ticks entities so there is
+something to draw and deliberately does not run a clock. Under __simRaidStep,
+which is what every paired A/B in this project actually runs on, G.t advances
+normally. The claim as I had been stating it was wrong, and two fields rest on
+it: firstContact and firstLoot are both stamped from G.t, and both are sound in
+sim results. The DESIGN numbers quoting sim measured first contact times stand.
+
+THE TELEMETRY FIELD AUDIT IS FINISHED, and the rest of it is clean. Every field
+in the flight recorder has now been read against its write sites:
+
+    shots and hits   both counted per pellet, hits guarded by if(b.player) at
+                     10579 so enemy rounds never inflate it. acc is per pellet
+                     accuracy, consistently defined at both ends.
+    kills            guarded by e.byPlayer, and the enemy bullet path clears
+                     that flag on a kill, so attribution follows the last hitter.
+    distance         three write sites, crawl, roll and walk, in mutually
+                     exclusive branches, each measuring pre move to post move.
+    heals            three write sites and applyHeal itself does not count, so
+                     each use counts once. I expected a double count here and
+                     there is not one.
+    reloads          increments on reload start behind p.reloading<=0, so
+                     holding R cannot repeat it.
+    closestExtract   four sites, all Math.min, idempotent by construction.
+    tCrouch/tCrouchBot  player and bot kept in separate fields, and the export
+                     reads the player one.
+
+Two defects came out of this audit in total, tLit at v3.44 and elapsed at v3.47,
+both already fixed. Everything else checked out. Saying that plainly because a
+clean audit result is a result.
+
+Verified: parsecheck PASS at v3.48. All four maps drive and draw with frameErr
+and hudErr null, entity counts 115, 115, 80 and 90, hub steps and draws with
+drawErr null. endRaid driven on extract, dead and abandon after sixty steps and
+on the zero length abandon: no throw on any of the four, profile runs increments
+on extract and on death and correctly does not increment on the discard branch.
+The three steppers measured for clock advance as tabulated above.
+Not verified: I have not replayed a full raid through the real loop to a natural
+timeout, so the timeout path into endRaid is covered only by the same code the
+abandon and extract drives exercise, not by its own drive. I also have not
+re-run any balance measurement on this build, because nothing in it touches
+gameplay: it is a crash fix, a rename and an audit.
+
