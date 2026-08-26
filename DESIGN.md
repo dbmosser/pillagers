@@ -7873,3 +7873,133 @@ So the v0.69 correction was complete: awareness was the only leak. One process n
 
 
 
+
+### v2.92: the gun kept firing while the hand was full of something else
+
+Two of his notes, one root. "gun is shooting while i'm trying to heal" and "lower
+right corner still shows gun name and ammo info even when i switch to throwables,
+heals etc" are the same fault seen from two sides: the hotbar selection was
+authoritative for what you USED and advisory for everything else, so the gun code
+and the HUD both went on reading p.wep regardless.
+
+FIRING. v2.45 added a fall-through so an empty consumable slot would not swallow
+the trigger. The condition was !hotGun || !(HSC.count>0), which reads "fire the
+gun if the held thing is a gun OR the held stack is empty". The moment a stack hit
+zero mid-hold, which is exactly what the last bandage in a stack does, the held
+item became empty and an auto weapon opened up on the spot he was standing in. The
+fall-through is gone. When the last of a stack is consumed the selection now falls
+back to slot 0 explicitly, which is the behaviour the fall-through was groping for
+without firing a magazine on the way.
+
+READOUT. The bottom right block printed p.wep.name, the magazine and the jam and
+melee states unconditionally, because it predates the hotbar entirely. It now asks
+the hotbar what is in hand: a gun or tool prints the weapon block as before, and
+anything else prints that item's name and how many of it you are holding. Nothing
+about the gun is shown while the gun is not in your hands, which is the whole of
+his complaint.
+
+THE DEV CRATE, his note "i don't understand how to move stuff from the dev box to
+my inventory". It was a single list of buttons that added an item and said nothing
+back. It is now two panels side by side, the kit on the left and your stash on the
+right, with HTML5 drag and drop between them and Take and Bin buttons as the
+fallback, because a drag that fails silently is worse than a button.
+
+Verified: parsecheck PASS at v2.92, all four maps and the hub drive and draw with
+drawErr null. Driven test: holding fire with a two-bandage stack selected spends 0
+rounds across the whole heal, ends with an empty bag and the selection back on slot
+0, and the gun never fires. Crate panel renders 12 kit rows, 12 take buttons, 12
+draggable rows, and a take moves the row into the stash panel.
+Not verified: the actual mouse-drag gesture in the crate, which cannot be
+synthesised in the fixture; the Take and Bin buttons are the tested path and the
+drag shares their handlers.
+
+### v2.93: a fleeing raider announced it once a frame, and no shop said what you were holding
+
+THE FLEEING ANNOUNCEMENT, his note "when i fought a raider and when they started
+running it said they were running MANY times". Three separate code paths were
+fighting over one raider's state. Dropping below 30 percent health set the extract
+state and printed IS RUNNING, with no latch, so the label reprinted on every frame
+the condition still held. Worse, both bullet-hit handlers and the sight check
+unconditionally forced the chase state, so a man who was running was dragged back
+into the fight by the very shots chasing him, then dropped below the threshold
+again and re-announced. Four sites fixed: the announcement latches on e.fled, and a
+raider already extracting takes alertness from hits and from being seen but is
+never put back into chase. A raider who has decided to leave now actually leaves.
+
+WALLET LINES, his notes "requisition -- it doesn't show how much money i have so
+that's annoying" and "same problem for vesh". Four surfaces took his money without
+ever printing the balance: the gamble table, the workshop, the merc bench and the
+requisition shop. One walletLine helper now writes "You hold Nc" into all of them,
+and the shop's existing rep line carries the credits alongside it.
+
+Verified: parsecheck PASS at v2.93, all four maps and the hub drive and draw with
+drawErr null. Driven test: eight consecutive bullet hits on a fleeing raider leave
+it extracting all eight times and print IS RUNNING exactly once. All four wallet
+lines read the live credit total.
+Not verified: nothing outstanding on this one.
+
+### v2.94: the legend was eating the screen, the digits were locked out, and a keyed door looked like a wall
+
+Four of his notes, all the same shape: the game knew something and was not saying
+it.
+
+THE LEGEND, "update the key legend, make it smaller if possible". It was a 480px
+tall panel down the left edge, on by default, listing 18 bindings plus ten gear
+rules plus the six-colour sound key. H now cycles three states instead of two.
+COMPACT is the new default: two columns, twelve bindings, micro type, roughly a
+fifth of the area. One more press gives the full reference exactly as it was, one
+more turns it off. Nothing was deleted, it is just no longer always on screen.
+
+THE MESSAGES, "i see that the game is giving me messages in the upper left corner
+but I can't really read them bc it is blocked by the key legend". They were drawn
+at 16,26. The legend panel starts at 14. Every message the game has ever written
+was printed underneath it. The message line moved to top centre on its own plate,
+below the compass, which is the one column that is empty in every frame and where
+the eye already is because the raid timer lives there.
+
+THE DIGITS, "player should be able to switch which item is equipped by using 1-9
+keys even if inventory is open". The handler was explicitly guarded with a
+not-bagOpen test, and the guard was correct at the time: v1.91 had given 1 and 2 a
+second meaning inside the bag, equipping the selected gun to hand or back, and this
+handler runs first and swallows every digit. Two meanings for one key is the actual
+bug, so the second meaning moved. ENTER equips the selected bag gun to hand,
+SHIFT+ENTER to the back, and 1 through 9 now mean exactly one thing everywhere in
+the game.
+
+KEYED DOORS, "if a door needs a key, the game should give a clear indication of
+same". A locked room is five shell walls plus one wall carrying a door id, drawn in
+the same colours as the shell, so a locked room was a featureless box and the only
+tell was a prompt that appears once you are already standing on it. The door is now
+its own object: a frame, two recessed panels and a lock plate, with a padlock tag
+floating on the approach side. Both are GREEN when the matching key is in your bag
+and AMBER when it is not, so "can I open that yet" is answered from across the map.
+The near-door prompt also names the key now, so a Sealed Cellar Key found in a
+footlocker an hour later is recognisable as the answer to a door you walked away
+from.
+
+WINDOWS, "need clearer indication of windows". Glass was one 30 percent wash of
+blue-grey over the wall colour with a single mullion, which at raid distance is a
+slightly lighter patch of wall. A window is a tactical fact here, it is the one
+hole you can shoot through but not walk through, so it now carries a dark frame on
+all four sides, brighter glass, a light streak, a cross of muntins and a lit sill.
+
+His question "are destructible environments doable?" needed no build: they shipped
+at v2.83 and are on by default. Walls, wrecks, trees, furniture and glass all carry
+HP scaled by material, the rect is removed and rebuildGeometry re-derives segments,
+nav and both grids. The world border, locked-room shells, keyed doors and ledges
+are deliberately exempt, the middle two because the gate is the point. v2.84
+measured it balance-neutral, p=1.0 at n=320.
+
+Verified: parsecheck PASS at v2.94, all four maps and the hub drive and draw with
+drawErr null in all three legend states. Driven test: with the bag OPEN, Digit3
+selects slot 2 and Digit1 selects slot 0; with it closed Digit5 selects slot 4;
+ENTER moves a bag gun into the hand and out of the bag while Digit2 moves only the
+selection and leaves bag and weapon untouched; H cycles 1 to 2 to 0. Pixel captures
+at 1280x718 confirm the compact panel, the centred message plate, the door slab
+with a green plate while carrying its key, and framed window panes on a building
+face. Door and window counts per map: 2 doors and 54 to 69 windows on each of the
+four.
+Not verified: no balance measurement was run. Nothing in this build touches a
+random draw, an entity decision or a timing constant; it is HUD layout, one input
+guard and two draw routines, so the seeded stream is unchanged by construction
+rather than by measurement.

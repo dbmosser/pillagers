@@ -198,6 +198,7 @@
 
 <div class="modal" id="gamblemodal">
   <h3 id="gamble_h">Vesh the Gambler</h3>
+  <div class="msub" id="wallet_gamble" style="color:var(--amber);font-weight:700"></div>
   <div class="msub" id="gamble_line">Something in the pile, same price whatever it is. No refunds, no complaints.</div>
   <div class="plist" id="gamblelist" style="border:1px solid var(--steel-hi)"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
@@ -235,6 +236,7 @@
 
 <div class="modal" id="mercmodal">
   <h3>The Hiring Bench</h3>
+  <div class="msub" id="wallet_merc" style="color:var(--amber);font-weight:700"></div>
   <div class="msub">One raider, one run, paid up front. He loots for himself and you take ten percent of what he carries out. If he dies you owe his family, and that is not optional.</div>
   <div class="plist" id="merclist" style="border:1px solid var(--steel-hi)"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
@@ -246,7 +248,16 @@
 <div class="modal" id="cratemodal">
   <h3>Dev Crate</h3>
   <div class="msub">Testing convenience. Take any of it into the next raid, or take none. Opt in per run.</div>
-  <div class="plist" id="cratelist" style="border:1px solid var(--steel-hi)"></div>
+  <div style="display:flex;gap:10px">
+    <div style="flex:1;min-width:0">
+      <div class="hint" style="margin:0 0 4px"><b>CRATE</b> &middot; drag right, or click Take</div>
+      <div class="plist" id="cratelist" style="border:1px solid var(--steel-hi)"></div>
+    </div>
+    <div style="flex:1;min-width:0">
+      <div class="hint" style="margin:0 0 4px"><b>YOUR STASH</b> &middot; drag left to bin</div>
+      <div class="plist" id="cratestash" style="border:1px solid var(--steel-hi)"></div>
+    </div>
+  </div>
   <div style="display:flex;gap:8px;margin-top:10px">
     <button id="cratetoggle" style="padding:8px 20px">Dev kit: OFF</button>
     <button id="closecrate" style="padding:8px 20px">Close</button>
@@ -255,6 +266,7 @@
 
 <div class="modal" id="workmodal">
   <h3>Workshop</h3>
+  <div class="msub" id="wallet_work" style="color:var(--amber);font-weight:700"></div>
   <div class="msub">Craft from stash materials. Junk becomes components, components become gear.</div>
   <div class="plist" id="worklist" style="border:1px solid var(--steel-hi)"></div>
   <div style="margin-top:10px"><button id="closework" style="padding:8px 20px">Close</button></div>
@@ -444,7 +456,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.91';
+var VER='2.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5801,7 +5813,7 @@ function buildRaid(sim){
     wxAt:rnd(85,Math.max(120,CFG.raidSec*0.35)),
     tod:pickTod(),
     lightning:0,rainT:0,inLandmark:null,inZone:undefined,hot:0,
-    msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,legendOn:true,sprinting:false,
+    msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,legendOn:1,sprinting:false,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
       kills:{sentry:0,crawler:0,raider:0,snitch:0,warden:0,listener:0},
       dmg:{sentry:0,crawler:0,raider:0,snitch:0,other:0},
@@ -5944,16 +5956,24 @@ function raidKey(code,repeat,ev){
   }
   if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyX','KeyV','Backspace','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
   if((code==='Escape'||code==='KeyP')&&G&&!G.over) togglePauseBox(true);
-  if(code==='KeyH'&&G&&!repeat) G.legendOn=!G.legendOn;
+  // H CYCLES, v2.94. His note: "update the key legend, make it smaller if
+  // possible." It was one 480px tall panel down the whole left edge, on by
+  // default, listing 18 bindings plus ten gear rules plus the sound key, and it
+  // is the reason his messages were unreadable. Compact is now the default and
+  // holds the twelve keys you actually press; the full reference is one more
+  // press of H away, so nothing is lost, it is just no longer always on screen.
+  if(code==='KeyH'&&G&&!repeat) G.legendOn=(G.legendOn+1)%3;
   // X swaps primary and secondary. Each keeps its own loaded magazine; the
   // reserve pool is shared, so swapping is not a way to dodge running dry.
   if(code==='KeyX'&&G&&!G.over&&!G.paused&&!repeat) swapGuns();
-  // SPEC 6.1: 1 to 7 select a hotbar slot, and G acts with whatever is selected.
-  // NOT WHILE THE BAG IS OPEN. v1.91 gave 1 and 2 a second meaning inside the
-  // inventory, equipping the selected gun to a slot, and this handler runs first
-  // and swallows every digit, so without the guard one keypress would both move
-  // the hotbar selection and equip a gun.
-  if(G&&!G.over&&!repeat&&!G.bagOpen&&code.indexOf('Digit')===0){
+  // 1 to 9 SELECT A HOTBAR SLOT, ALWAYS, v2.94. His note: "player should be able
+  // to switch which item is equipped by using 1-9 keys even if inventory is
+  // open." The bag used to swallow every digit because v1.91 had given 1 and 2 a
+  // second meaning in there, equipping the selected gun to hand or back. Two
+  // meanings for one key is what made the guard necessary, so the second meaning
+  // moves: ENTER equips the selected bag gun to hand now, and the digits mean
+  // exactly one thing everywhere in the game.
+  if(G&&!G.over&&!repeat&&code.indexOf('Digit')===0){
     var dn=parseInt(code.slice(5),10);
     if(dn>=1&&dn<=9){ setHot(dn-1); if(ev) ev.preventDefault(); }
   }
@@ -5988,13 +6008,12 @@ function raidKey(code,repeat,ev){
     // 1 and 2 put the selected gun in your hands or on your back. Digits rather
     // than a single equip key because the whole point of his note is CHOOSING
     // which of the two slots it goes to, and one key cannot express that.
-    if((code==='Digit1'||code==='Numpad1')&&!repeat){
+    // ENTER equips the selected gun to hand, SHIFT+ENTER to the back, v2.94.
+    // The digits used to do this and now belong to the hotbar everywhere.
+    if((code==='Enter'||code==='NumpadEnter')&&!repeat){
       var _sg=bagStacks()[clamp(G.bagSel,0,_stN-1)];
-      if(_sg) equipFromBag(_sg.idxs[0],1);
-    }
-    if((code==='Digit2'||code==='Numpad2')&&!repeat){
-      var _sg2=bagStacks()[clamp(G.bagSel,0,_stN-1)];
-      if(_sg2) equipFromBag(_sg2.idxs[0],2);
+      if(_sg) equipFromBag(_sg.idxs[0],(keys['ShiftLeft']||keys['ShiftRight'])?2:1);
+      if(ev) ev.preventDefault();
     }
   }
   if(code==='KeyC'&&G&&!G.over&&!repeat){
@@ -7794,11 +7813,30 @@ function updatePlayer(dt){
   // as that slot stayed selected. Tools fall through to the gun.
   // count is tested as "not greater than zero" rather than "=== 0" because a
   // slot can carry null: the Crowbar does, and so does a magazine-less gun.
-  // 'item' is an assigned valuable: carried, not usable, so it falls through to
-  // the gun exactly as an empty slot does rather than killing the trigger.
-  var hotGun=(!HSC||HSC.kind==='gun'||HSC.kind==='tool'||HSC.kind==='item'||!(HSC.count>0));
+  // FULL EQUIP, v2.92. His note: "gun is shooting while i'm trying to heal --
+  // gun should fully unequip and healing item, throwable, whatever should fully
+  // equip." He is right, and v2.45's fall-through is what shot him. That build
+  // let an EMPTY consumable slot fall through to the gun as a safety valve, and
+  // an automatic weapon fires for as long as the button is held: hold the
+  // trigger on your last bandage and the moment the count hits zero the slot
+  // stops being a bandage, the fall-through hands the trigger to the rifle, and
+  // you are firing a gun you never chose to fire.
+  // A held item now owns the trigger absolutely. The valve moves to where it
+  // belongs: spending the last of a stack SELECTS THE GUN, so the trigger is
+  // never dead, and the swap happens between clicks rather than during one.
+  // Tools and assigned valuables are not held things, so they still yield.
+  var hotGun=(!HSC||HSC.kind==='gun'||HSC.kind==='tool'||HSC.kind==='item');
   if(mouse.down&&!hotGun){
-    if(!p.fired){ p.fired=true; useHot(); }
+    if(!p.fired){
+      p.fired=true;
+      var _hadCount=HSC.count;
+      useHot();
+      // Emptied by that use? Fall back to the gun for the NEXT click.
+      if(_hadCount!==null&&_hadCount!==undefined){
+        var _now=hotbarSlots()[hotSel()];
+        if(_now&&_now.count===0) setHot(0);
+      }
+    }
   }
   else if(mouse.down&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){
     if(p.wep.mag===0){
@@ -9005,9 +9043,26 @@ function updateEnts(dt){
 
     // A raider under 30 percent breaks off and runs for the dropship with what
     // it has. Machines never flee; fear is what makes the humans read as human.
+    // HIS NOTE, 2026-08-25: "i just fought a raider and when they started
+    // running it said they were running MANY times -- glitchy." Two faults, and
+    // the second is the cause of the first.
+    // The announcement was latched on state!=='extract', which looks correct
+    // until you notice what a BULLET does: the enemy-bullet handler forces
+    // state='chase' on anything it hits. So every round you landed on a fleeing
+    // raider knocked him out of flight, the next frame saw hp under 30 percent
+    // and state not extract, and it announced the same man running again. Shoot
+    // him five times, read it five times.
+    // Now e.fled latches the announcement to once per raider per raid, and the
+    // hit handler no longer cancels flight, because a man running from your
+    // gunfire should not be talked out of it BY your gunfire. That was never
+    // just a message bug: he was flip-flopping between fleeing and charging on
+    // every hit, which is also why the movement looked wrong.
     if(e.kind==='raider'&&e.state!=='extract'&&e.hp<e.maxhp*0.3){
       e.state='extract';
-      if(!G.sim&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)) label(e.x,e.y-18,e.name+' IS RUNNING','#ffd25c',0,true);
+      if(!e.fled){
+        e.fled=1;
+        if(!G.sim&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)) label(e.x,e.y-18,e.name+' IS RUNNING','#ffd25c',0,true);
+      }
     }
     if(sees){
       // SPEC 8.4: hostility varies. A passive raider that has not been provoked
@@ -9064,8 +9119,20 @@ function updateEnts(dt){
       // The stinger, once, on the transition into being hunted. Rate limited to
       // one in five seconds so a room of machines turning at once is one shock
       // rather than a wall of them, and placed at the thing that saw you.
-      if(e.state!=='chase'&&!G.sim&&(G.seenT||0)<=0){ G.seenT=5.0; sfx('seen',e.x,e.y); }
-      e.state='chase'; e.alert=2.4; e.tx=p.x; e.ty=p.y;
+      // FLIGHT IS STICKY, v2.93, the last half of his repeating-message report.
+      // Latching the announcement stopped the spam, but the raider was still
+      // flip-flopping: the flee branch set 'extract', and then THIS line, which
+      // runs every frame a hostile can see you, put him straight back into
+      // 'chase'. So a man at 20 percent health who could still see you never
+      // actually ran, he oscillated, and the movement read as broken because it
+      // was. A raider who has broken off keeps running while he can see you,
+      // which is the entire point of breaking off; he is still dangerous, he
+      // still shoots on the way out, he simply stops hunting.
+      if(e.kind==='raider'&&e.state==='extract'){ e.alert=2.4; }
+      else {
+        if(e.state!=='chase'&&!G.sim&&(G.seenT||0)<=0){ G.seenT=5.0; sfx('seen',e.x,e.y); }
+        e.state='chase'; e.alert=2.4; e.tx=p.x; e.ty=p.y;
+      }
     }
     var want=e.face;
     if(e.state==='chase'){
@@ -9351,7 +9418,11 @@ function updateBullets(dt){
               }
               en.hp-=edmg; en.hitT=.16;
               en.byPlayer=en.hp<=0;
-              if(en.kind!=='snitch'){ en.alert=2.6; en.state='chase'; en.tx=p.x; en.ty=p.y; }
+              // Same rule for YOUR rounds: shooting a fleeing raider does not
+              // talk him back into the fight, v2.93. This is the path his report
+              // actually came through, since he was the one shooting.
+              if(en.kind==='raider'&&en.state==='extract'){ en.alert=2.6; }
+              else if(en.kind!=='snitch'){ en.alert=2.6; en.state='chase'; en.tx=p.x; en.ty=p.y; }
               else { en.state='alarm'; }
               G.tel.hits++;
               // Hit feedback at the reticle. The sprite flash and spark happen out
@@ -9424,6 +9495,8 @@ function updateBullets(dt){
               // the picker above retaliates against whoever is actually nearest,
               // which is the man who just shot him.
               if(feudFoe(b.owner,en3)){ en3.alert=Math.max(en3.alert||0,2); }
+              // A man already running for the ring keeps running, v2.93.
+              else if(en3.kind==='raider'&&en3.state==='extract'){ en3.alert=2; }
               else if(en3.kind!=='snitch'){ en3.state='chase'; en3.alert=2; }
               spark(b.x,b.y,'#ffc25c',8,200); hit=true; break;
             }
@@ -11383,19 +11456,72 @@ function render2D(dt){
       // doorway and someone walks into it. Drawn as a low sill in the wall's own
       // colours with a pale glass band above it, so it reads as part of the same
       // building rather than as a gap.
+      // A KEYED DOOR HAS TO LOOK LIKE A KEYED DOOR, v2.94. His note: "if a door
+      // needs a key, the game should give a clear indication of same." The door
+      // was a wall rect carrying door:id and nothing else, drawn in the exact
+      // colours of the five shell walls around it, so from any distance a locked
+      // room was a featureless box and the only tell was the prompt that appears
+      // when you are already standing on it. Now the slab is its own object with
+      // a frame, two recessed panels and a lock plate, and the plate is GREEN
+      // when the matching key is in your bag and AMBER when it is not, so the
+      // question "can I open that yet" is answered from across the map.
+      if(wl2.door){
+        var _dk=false,_dq;
+        for(_dq=0;_dq<G.bag.length;_dq++){ var _di=ITEMS[G.bag[_dq]];
+          if(_di&&_di.use==='key'&&_di.door===wl2.door){ _dk=true; break; } }
+        var dTop=wl2.y-LIFT, dH=wl2.h+LIFT, dBot=wl2.y+wl2.h;
+        wc.fillStyle='#2a2118';
+        wc.fillRect(wl2.x,dTop,wl2.w,dH);
+        wc.fillStyle='#3d3020';
+        wc.fillRect(wl2.x+2,dTop+2,wl2.w-4,dH-4);
+        wc.fillStyle='rgba(18,14,12,.55)';
+        wc.fillRect(wl2.x+5,dTop+5,wl2.w*0.5-8,dH-10);
+        wc.fillRect(wl2.x+wl2.w*0.5+3,dTop+5,wl2.w*0.5-8,dH-10);
+        wc.fillStyle='rgba(232,214,186,.14)';
+        wc.fillRect(wl2.x,dTop,wl2.w,1.2);
+        // lock plate, on the door and again as a tag floating above it so the
+        // state reads even when the slab itself is a few pixels tall on screen
+        var lkc=_dk?'#7fc4a0':'#ffb02e';
+        wc.fillStyle='#15100c'; wc.fillRect(wl2.x+wl2.w*0.5-4,dTop+dH*0.42,8,10);
+        wc.fillStyle=lkc;       wc.fillRect(wl2.x+wl2.w*0.5-3,dTop+dH*0.42+1,6,8);
+        wc.fillStyle='#15100c'; wc.fillRect(wl2.x+wl2.w*0.5-1,dTop+dH*0.42+3,2,4);
+        var tgx=wl2.x+wl2.w*0.5, tgy=dBot+16;
+        wc.fillStyle='rgba(6,9,13,.72)'; wc.fillRect(tgx-7,tgy-8,14,13);
+        wc.strokeStyle=lkc; wc.lineWidth=1.4;
+        wc.beginPath(); wc.arc(tgx,tgy-3.2,3,Math.PI,0); wc.stroke();
+        wc.fillStyle=lkc; wc.fillRect(tgx-4,tgy-3,8,6);
+        wc.fillStyle='#15100c'; wc.fillRect(tgx-0.7,tgy-1.4,1.4,3);
+        continue;
+      }
+      // HIS NOTE, 2026-08-25: "need clearer indication of windows". The glass was
+      // one 30 percent wash of blue-grey over the wall's own colour with a single
+      // vertical mullion, which at raid distance is a slightly lighter patch of
+      // wall. A window is a tactical fact in this game, it is the one hole you can
+      // shoot through but not walk through, so it now carries a dark frame on all
+      // four sides, brighter glass, a cross of muntins and a lit sill, and reads
+      // as an opening rather than as a smudge.
       if(wl2.win){
         var sillH=Math.min(8,wl2.h);
+        var gTop=wl2.y-LIFT+8, gH=wl2.h+LIFT-8-sillH;
         wc.fillStyle=dcol(d3,'wall');
         wc.fillRect(wl2.x,wl2.y+wl2.h-sillH,wl2.w,sillH);
-        wc.fillStyle='rgba(150,190,205,.30)';
-        wc.fillRect(wl2.x,wl2.y-LIFT+8,wl2.w,wl2.h+LIFT-8-sillH);
-        wc.fillStyle='rgba(232,240,246,.35)';
-        wc.fillRect(wl2.x,wl2.y-LIFT+8,wl2.w,1.4);
-        // Mullion so a wide pane does not read as an open serving hatch.
-        if(wl2.w>wl2.h&&wl2.w>34){
-          wc.fillStyle='rgba(18,14,12,.5)';
-          wc.fillRect(wl2.x+wl2.w/2-1,wl2.y-LIFT+8,2,wl2.h+LIFT-8-sillH);
-        }
+        // frame first, glass inset into it
+        wc.fillStyle='#191410';
+        wc.fillRect(wl2.x,gTop,wl2.w,gH);
+        wc.fillStyle='rgba(158,204,222,.52)';
+        wc.fillRect(wl2.x+2,gTop+2,wl2.w-4,gH-4);
+        // a diagonal light streak so glass reads as glass and not as a hole
+        wc.fillStyle='rgba(236,248,255,.20)';
+        wc.fillRect(wl2.x+2,gTop+2,Math.max(3,wl2.w*0.28),gH-4);
+        // muntins, one across and one down, so the pane has a scale to it
+        wc.fillStyle='rgba(20,16,13,.75)';
+        if(wl2.w>wl2.h&&wl2.w>26) wc.fillRect(wl2.x+wl2.w/2-1,gTop+2,2,gH-4);
+        if(gH>12) wc.fillRect(wl2.x+2,gTop+gH*0.5-1,wl2.w-4,2);
+        // lit top lip and a bright sill, the two edges that catch light
+        wc.fillStyle='rgba(240,250,255,.55)';
+        wc.fillRect(wl2.x+2,gTop+2,wl2.w-4,1.4);
+        wc.fillStyle='rgba(232,214,186,.30)';
+        wc.fillRect(wl2.x,wl2.y+wl2.h-sillH,wl2.w,1.6);
         continue;
       }
       // The flat black wash that used to sit over every front face is gone. It
@@ -12079,7 +12205,20 @@ function drawHUD(){
   if(G.msgT>0){
     ctx.font=FS(TYPE.label);
     ctx.fillStyle='rgba(205,214,221,'+clamp(G.msgT,0,1)+')';
-    ctx.fillText(G.msg,16,26);
+    // HIS NOTE, 2026-08-25: "i see that the game is giving me messages in the
+    // upper left corner but I can't really read them bc it is blocked by the key
+    // legend." They sat at 16,26, which is the exact column the legend panel
+    // occupies, so every message the game has ever written was printed underneath
+    // it. Moved to top centre, below the compass and the MARKED banner, on its
+    // own plate: the one column that is empty in every frame, and where the eye
+    // already is because the timer lives there.
+    ctx.textAlign='center';
+    var _mw=ctx.measureText(G.msg).width;
+    ctx.fillStyle='rgba(6,9,13,'+(0.62*clamp(G.msgT,0,1))+')';
+    ctx.fillRect(W/2-_mw/2-LH(8),LH(96),_mw+LH(16),LH(17));
+    ctx.fillStyle='rgba(232,240,246,'+clamp(G.msgT,0,1)+')';
+    ctx.fillText(G.msg,W/2,LH(109));
+    ctx.textAlign='left';
   }
   // Extraction ring labels, drawn on the HUD above the fog. Three unexplained
   // circles on the ground was a real complaint; they say what they are now, and
@@ -12110,9 +12249,20 @@ function drawHUD(){
       var haveKey=false;
       for(var hk=0;hk<G.bag.length;hk++){ var hki=ITEMS[G.bag[hk]];
         if(hki&&hki.use==='key'&&hki.door===G.nearDoor.id){ haveKey=true; break; } }
+      // Say WHICH key, v2.94. "LOCKED" told you the door was shut, which you
+      // could see, and left you to work out that a specific named key exists
+      // somewhere on this map and that finding it is the way in. The second line
+      // names the exact item to look for, so a key that turns up in a footlocker
+      // an hour later is recognisable as the answer to this door.
+      var kName='';
+      for(var kk in ITEMS){ if(ITEMS[kk].use==='key'&&ITEMS[kk].door===G.nearDoor.id){ kName=ITEMS[kk].name; break; } }
       ctx.font=FS(TYPE.label); ctx.textAlign='center';
       ctx.fillStyle=haveKey?'#7fc4a0':'#ff8a76';
       ctx.fillText(haveKey?('[E] UNLOCK '+G.nearDoor.name):(G.nearDoor.name+' - LOCKED'),dsc.x,dsc.y);
+      if(!haveKey&&kName){
+        ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(255,176,46,.92)';
+        ctx.fillText('needs the '+kName,dsc.x,dsc.y+LH(12));
+      }
       ctx.textAlign='left';
     }
   }
@@ -12392,10 +12542,26 @@ function drawHUD(){
     ctx.font=FS(TYPE.micro); ctx.fillStyle=WSC.c;
     ctx.fillText(p.wep.wearName,W-16,by-LH(46));
   }
-  ctx.font=FS(TYPE.head); ctx.fillStyle='#cdd6dd';
-  ctx.fillText(p.wep.name+(p.ads?(opticMag()>1?('  '+opticMag().toFixed(2).replace(/0$/,'')+'x SCOPE'):'  [ADS]'):''),W-16,by-LH(34));
+  // WHAT YOU ARE ACTUALLY HOLDING, v2.92. His note: "lower right corner still
+  // shows gun name and ammo info even when i switch to throwables, heals etc."
+  // The readout was hardwired to p.wep, so the most prominent text on the HUD
+  // contradicted the highlighted hotbar slot and the trigger's behaviour at the
+  // same time. It follows the held slot now: a gun still reads name over
+  // ammo, and anything else reads its name over how many you have.
+  var _HS=hotbarSlots(), _HH=_HS[hotSel()];
+  var _heldGun=(!_HH||_HH.kind==='gun'||_HH.kind==='tool');
+  ctx.font=FS(TYPE.head); ctx.fillStyle=_heldGun?'#cdd6dd':(_HH.c||'#cdd6dd');
+  ctx.fillText(_heldGun
+    ? (p.wep.name+(p.ads?(opticMag()>1?('  '+opticMag().toFixed(2).replace(/0$/,'')+'x SCOPE'):'  [ADS]'):''))
+    : _HH.name,
+    W-16,by-LH(34));
   ctx.font=FS(TYPE.title);
-  if(p.wep.mag===0){ ctx.fillStyle='#8a96a1'; ctx.fillText('MELEE',W-16,by-LH(14)); }
+  if(!_heldGun){
+    var _cn=(_HH.count===null||_HH.count===undefined)?null:_HH.count;
+    ctx.fillStyle=(_cn===0)?'#ff4d3d':'#cdd6dd';
+    ctx.fillText(_cn===null?'HELD':(_cn+' held'),W-16,by-LH(14));
+  }
+  else if(p.wep.mag===0){ ctx.fillStyle='#8a96a1'; ctx.fillText('MELEE',W-16,by-LH(14)); }
   else if(p.jam>0){ ctx.fillStyle='#e0483a'; ctx.fillText('JAMMED',W-16,by-LH(14)); }
   else if(p.reloading>0){ ctx.fillStyle='#ffb02e'; ctx.fillText('RELOADING',W-16,by-LH(14)); }
   else {
@@ -12544,10 +12710,28 @@ function safeSet(){
 var LEGEND=[
   ['MOVE',[['WASD','move'],['SHIFT','sprint'],['CTRL','crouch, near silent'],['SPACE','dodge roll']]],
   ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','steady aim'],['R','reload'],['X','swap weapon']]],
-  ['GEAR',[['1-7','select hotbar slot'],['FIRE','use selected slot'],['X','swap gun'],['TAB','inventory'],['BKSP','reset cursor']]],
-  ['WORLD',[['E','search / call beacon'],['M','hold for map'],['H','hide this list'],['P','pause']]]
+  ['GEAR',[['1-9','select hotbar slot'],['FIRE','use selected slot'],['TAB','inventory'],['ENTER','equip gun from bag'],['BKSP','reset cursor']]],
+  ['WORLD',[['E','search / call beacon'],['M','hold for map'],['H','cycle this list'],['P','pause']]]
 ];
 // SPEC 10.3: the colour language has to be learnable, so it is stated.
+// The twelve keys a player actually presses, two columns, no headings. Anything
+// that is a rule rather than a binding lives in the full list behind H.
+var LEGEND_MINI=[
+  ['WASD','move'],['SHIFT','sprint'],
+  ['CTRL','crouch'],['SPACE','roll'],
+  ['LMB','fire'],['RMB','aim'],
+  ['R','reload'],['X','swap gun'],
+  ['1-9','hotbar'],['TAB','bag'],
+  ['E','search'],['M','map']
+];
+var LEGEND_MINI_PAD=[
+  ['L STICK','move'],['LS','sprint'],
+  ['RS','crouch'],['B','roll'],
+  ['RT','fire'],['LT','aim'],
+  ['X','reload'],['Y','swap gun'],
+  ['D-PAD','hotbar'],['BACK','bag'],
+  ['A','search'],['START','map']
+];
 var SOUNDKEY=[
   ['#ff8a80','robot moving'],['#c62828','robot firing'],
   ['#ffb74d','raider moving'],['#e65100','raider firing'],
@@ -12574,7 +12758,7 @@ var GEARRULES=[
   ['','Set loadout in the armory.'],
   ['ARMOUR','No equip key. Plates apply'],
   ['','on pickup until armour is full.'],
-  ['HOTBAR','1-7 selects, FIRE uses it.'],
+  ['HOTBAR','1-9 selects, FIRE uses it.'],
   ['','Only one item in hand.'],
   ['WATER','Slows you and is loud.'],
   ['','Crouch will not quiet a splash.'],
@@ -12626,6 +12810,26 @@ function drawLegend(){
   if(!G.legendOn){
     ctx.font=MONO; ctx.fillStyle='rgba(140,152,163,.55)';
     ctx.fillText('H  controls',14,H-14);
+    return;
+  }
+  // COMPACT, the default since v2.94. Two columns, twelve bindings, micro type,
+  // about a fifth of the area the full list took and clear of the message line.
+  if(G.legendOn===1){
+    var MN=(PAD&&PAD.on)?LEGEND_MINI_PAD:LEGEND_MINI,mi;
+    var COLW=LH(88),MROW=LH(10),MW=COLW*2+LH(24),MH=MROW*6+LH(16);
+    var mx=14,my=H-Math.max(LH(52),96)-MH;
+    ctx.fillStyle='rgba(18,15,24,.72)'; ctx.fillRect(mx-8,my-6,MW,MH+10);
+    ctx.strokeStyle='rgba(58,69,82,.75)'; ctx.lineWidth=1;
+    ctx.strokeRect(mx-7.5,my-5.5,MW-1,MH+9);
+    for(mi=0;mi<MN.length;mi++){
+      var cx0=mx+(mi%2)*COLW, cy0=my+LH(7)+Math.floor(mi/2)*MROW;
+      ctx.font=FS(TYPE.micro); ctx.fillStyle='#cdd6dd';
+      ctx.fillText(MN[mi][0],cx0,cy0);
+      ctx.font=MONO; ctx.fillStyle='#8a96a1';
+      ctx.fillText(MN[mi][1],cx0+LH(46),cy0);
+    }
+    ctx.font=MONO; ctx.fillStyle='rgba(140,152,163,.6)';
+    ctx.fillText('H  full list',mx,my+LH(7)+MROW*6+LH(3));
     return;
   }
   var x=14,i,j,rows=0;
@@ -12685,6 +12889,8 @@ function drawLegend(){
     ctx.fillText(SOUNDKEY[i][1],x+LH(18),cy);
     cy+=LH(10);
   }
+  ctx.font=MONO; ctx.fillStyle='rgba(140,152,163,.6)';
+  ctx.fillText('H  hide',x,cy+LH(3));
 }
 // Centred and large on purpose. This is the one moment in a raid where you
 // choose between money you can keep and money you might keep, and that deserves
@@ -14322,6 +14528,7 @@ function renderSeason(){
   });
 }
 function renderMerc(){
+  walletLine('wallet_merc');
   var el=document.getElementById('merclist'),h='';
   for(var i=0;i<IDENTITIES.length;i++){
     var ID=IDENTITIES[i],rec=idRec(ID.id),cost=mercCost(ID.id);
@@ -14357,6 +14564,7 @@ function renderMerc(){
 }
 function renderGamble(){
   var el=document.getElementById('gamblelist');
+  walletLine('wallet_gamble',GAMBLE_PRICE.toLocaleString()+'c a go');
   document.getElementById('gamble_line').textContent=vendorLine('gamble');
   var h='';
   var log=(P.gambleLog||[]).slice(-8).reverse();
@@ -14373,15 +14581,82 @@ function renderGamble(){
   b.disabled=P.credits<GAMBLE_PRICE;
   b.style.opacity=P.credits<GAMBLE_PRICE?0.45:1;
 }
+// DRAG IT ACROSS, v2.92. His note: "i don't understand how to move stuff from
+// the dev box to my inventory -- again, needs to be dragable ala diablo,
+// minecraft, arc raiders." He is right that it was opaque: the crate was a
+// READ-ONLY LIST beside an on/off toggle, so there was no way to take one
+// medkit, only to switch a fixed kit on for the whole raid. It is two panels
+// now, the crate's infinite supply on the left and your actual stash on the
+// right, with HTML5 drag between them: drag right to take, drag left to bin.
+// Every row also has a button, because a drag that fails silently teaches
+// nothing and a button always works.
+var CRATE_KIT=['medkit','plate','ammobox','frag','smoke','decoy','bandage',
+               'gun_dmr','gun_rifle','gun_shotgun','core','comp'];
+function crateTake(k){
+  P.stash.push(k); saveProfile(); renderCrate(); renderHub();
+  say2('Took '+ITEMS[k].name+'.'); blip('pick');
+}
+function crateBin(k){
+  var ix=P.stash.indexOf(k);
+  if(ix<0) return;
+  P.stash.splice(ix,1); saveProfile(); renderCrate(); renderHub();
+  say2('Binned '+ITEMS[k].name+'.'); blip('clank');
+}
+// One wallet line, so no counter can ship without telling you what you hold.
+function walletLine(id,extra){
+  var el=document.getElementById(id);
+  if(!el) return;
+  el.textContent='You hold '+P.credits.toLocaleString()+'c'+(extra?('  \u00b7  '+extra):'');
+}
 function renderCrate(){
   var el=document.getElementById('cratelist');
-  var kit=['medkit','medkit','plate','plate','ammobox','ammobox','frag','smoke','decoy','gun_dmr'];
-  var h='';
-  for(var i=0;i<kit.length;i++){
-    var it=ITEMS[kit[i]];
-    h+='<div class="row">'+iconImgHTML(kit[i],22)+'<span class="nm" style="color:'+(RCOL[it.r]||'#cdd6dd')+'">'+it.name+'</span></div>';
+  var h='',i;
+  for(i=0;i<CRATE_KIT.length;i++){
+    var k=CRATE_KIT[i],it=ITEMS[k];
+    h+='<div class="row" draggable="true" data-take="'+k+'">'+iconImgHTML(k,22)+
+       '<span class="nm" style="color:'+(RCOL[it.r]||'#cdd6dd')+'">'+it.name+'</span>'+
+       '<button data-takebtn="'+k+'" style="padding:2px 10px;font-size:10px">Take</button></div>';
   }
   el.innerHTML=h;
+  // the stash side
+  var sel=document.getElementById('cratestash');
+  if(sel){
+    var counts=stashCounts(),sh='',any=false;
+    for(var sk in counts){
+      var sit=ITEMS[sk]; if(!sit) continue;
+      any=true;
+      sh+='<div class="row" draggable="true" data-bin="'+sk+'">'+iconImgHTML(sk,22)+
+          '<span class="nm" style="color:'+(RCOL[sit.r]||'#cdd6dd')+'">'+sit.name+' x'+counts[sk]+'</span>'+
+          '<button data-binbtn="'+sk+'" style="padding:2px 10px;font-size:10px">Bin</button></div>';
+    }
+    if(!any) sh='<div class="hint">Stash is empty. Drag something over.</div>';
+    sel.innerHTML=sh;
+    // drops
+    sel.ondragover=function(e){ e.preventDefault(); };
+    sel.ondrop=function(e){
+      e.preventDefault();
+      var k2=e.dataTransfer.getData('text/plain');
+      if(k2&&k2.indexOf('take:')===0) crateTake(k2.slice(5));
+    };
+    el.ondragover=function(e){ e.preventDefault(); };
+    el.ondrop=function(e){
+      e.preventDefault();
+      var k3=e.dataTransfer.getData('text/plain');
+      if(k3&&k3.indexOf('bin:')===0) crateBin(k3.slice(4));
+    };
+    sel.querySelectorAll('[data-bin]').forEach(function(r){
+      r.ondragstart=function(e){ e.dataTransfer.setData('text/plain','bin:'+r.getAttribute('data-bin')); };
+    });
+    sel.querySelectorAll('[data-binbtn]').forEach(function(b2){
+      b2.onclick=function(e){ e.stopPropagation(); crateBin(b2.getAttribute('data-binbtn')); };
+    });
+  }
+  el.querySelectorAll('[data-take]').forEach(function(r){
+    r.ondragstart=function(e){ e.dataTransfer.setData('text/plain','take:'+r.getAttribute('data-take')); };
+  });
+  el.querySelectorAll('[data-takebtn]').forEach(function(b3){
+    b3.onclick=function(e){ e.stopPropagation(); crateTake(b3.getAttribute('data-takebtn')); };
+  });
   var b=document.getElementById('cratetoggle');
   b.textContent='Dev kit: '+(P.devKit?'ON':'OFF');
   b.style.borderColor=P.devKit?'var(--coolant)':'';
@@ -14672,7 +14947,12 @@ function buildExport(){
   return L.join('\n');
 }
 function renderShop(){
-  document.getElementById('repline').textContent='Your rep: '+P.rep.toLocaleString();
+  // HIS NOTE, 2026-08-25: "requisition -- it doesn't show how much money i have
+  // so that's annoying", and the same for Vesh. Every counter that takes money
+  // now states the balance FIRST, before the thing it is asking you to spend it
+  // on. walletLine is one helper so a new vendor cannot ship without one.
+  document.getElementById('repline').textContent=
+    'You hold '+P.credits.toLocaleString()+'c  \u00b7  rep '+P.rep.toLocaleString();
   var s=document.getElementById('shop'); s.innerHTML='';
   SHOP.forEach(function(o){
     var row=document.createElement('div'); row.className='row';
@@ -14734,6 +15014,7 @@ function renderShop(){
   });
 }
 function renderWork(){
+  walletLine('wallet_work');
   var s=document.getElementById('worklist'); s.innerHTML='';
   var counts=stashCounts();
   // REPAIRS first, because a gun that jams in a fight is more urgent than a
