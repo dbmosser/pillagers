@@ -11118,3 +11118,60 @@ on those maps is unmeasured. Also not verified: the explanation above. That the 
 out is what generates the loot is the obvious reading and I have not probed haul or
 containers opened with the dial off against on, which is what would show it.
 
+
+### v3.41: plain words instead of dials
+
+HIS NOTE: "can we give the player like all kinds of setting toggles that they will
+actually understand instead of the dials, like Raiders: Many, Few, None. Robots: Many,
+Few. All player forms like this need to focus on ease of use."
+
+The dev tuner has had every one of these for a long time and states them as what they
+are internally: nRaider 0 to 6, eDmg 0.5 to 2, raidSec 120 to 900. That is the right
+instrument for me and the wrong one for anybody else. Nobody wants to know that eDmg
+is a multiplier; they want to know whether the robots hit hard.
+
+SIX ROWS, AT THE TOP OF SETTINGS, above the presentation ones, because nobody opens
+that page to change a text size.
+
+  Other raiders            Many / Standard / Few / None
+  Machines                 Many / Standard / Few
+  How hard they hit        Brutal / Standard / Forgiving
+  Raid length              Long / Standard / Short
+  How much is out there    Rich / Standard / Lean
+  Heat when you call the ship   Heavy / Standard / Light
+
+EVERY MIDDLE OPTION IS EXACTLY WHAT THE GAME DOES TODAY. Driven and asserted: at
+defaults CFG reads nRaider 10, nSentry 20, nCrawler 34, eDmg 1, raidSec 600, lootMult
+1, siegeVol 1, raiderWaves 1, which is the shipped configuration to the number. So a
+profile that never opens this page plays the identical game and every balance figure
+in this file still describes the default.
+
+Each row names its effect in a sentence, because "Few" alone is a word and "Few,
+about half as many out there, and they fight each other and the machines as well as
+you" is a decision. A row sitting on anything other than its default draws its button
+in amber, so a profile that has been changed says so at a glance.
+
+AND THE CONTAMINATION THIS OPENED, WHICH IS THE PART THAT MATTERED. These persist on
+the profile, and the fixture loads the profile. A saved "Raiders: Many" would have run
+every future A/B in this project at nRaider 15 with nothing looking wrong anywhere.
+That is the v3.10 chaseGiveUp defect one layer up: a dial the PLAYER can now move has
+to be pinned like any other. nRaider, nSentry, nCrawler, eDmg and raidSec are in
+__pinDefaults now, joining lootMult, siegeVol and raiderWaves which were already there.
+Driven against a hostile profile with all six options pushed to their extremes: after
+the pin, CFG reads the shipped values on every one.
+
+Verified: parsecheck PASS at v3.41, all four maps and the hub draw with drawErr null.
+All six rows render with the right labels and all six read Standard on a fresh
+profile. The Raiders row driven through a full lap of the real button: Standard 10,
+Few 5, None 0, Many 15, back to Standard 10. Proven to reach the game rather than just
+CFG: at None a raid contains zero raiders and an empty roster, at Many it contains 21
+after area scaling. Persistence driven through the real save and the real load: the
+choice survives and is applied to CFG before the first raid.
+Not verified: no balance measurement, and deliberately none. Every one of these is a
+player choosing to change the balance, so measuring them would be measuring the
+choice rather than a defect. What I HAVE verified is the only thing that matters for
+the back catalogue, which is that the defaults are unchanged and the sim is pinned
+against them. Also not verified: whether these are the right six. They are the six I
+judged a player would actually reach for, and the tuner still holds the other forty
+for me.
+

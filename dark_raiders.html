@@ -503,7 +503,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.40';
+var VER='3.41';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -919,6 +919,10 @@ function loadProfile(){
           // SOMEONE NEW TO THIS GENRE. MAKE IT ALWAYS DAYTIME." Day is now the
           // default and every existing save is migrated to it. Night is still
           // reachable from the terminal, but nobody starts there.
+          // A saved choice has to reach CFG before the first raid is built, or
+          // the words in Settings and the dials the game reads disagree for one
+          // whole raid, which is the worst possible time for them to disagree.
+          try{ applyGameOpts(); }catch(e){}
           if(P.cond!=='day'&&P.cond!=='night') P.cond='day';
           if(!P.dayMigrated){ P.cond='day'; P.dayMigrated=1; }
           // Saved config already drops keys the game no longer knows; the stash
@@ -17620,9 +17624,106 @@ function maybePrimer(){
   if(P.primerSeen) return;
   openPrimer();
 }
+// PLAIN WORDS INSTEAD OF DIALS, v3.41. His note: "can we give the player like all
+// kinds of setting toggles that they will actually understand instead of the
+// dials, like Raiders: Many, Few, None. Robots: Many, Few. All player forms like
+// this need to focus on ease of use."
+// The dev tuner has had every one of these for a long time and states them as
+// what they are internally: nRaider 0 to 6, eDmg 0.5 to 2, raidSec 120 to 900.
+// That is the right instrument for me and the wrong one for anybody else. A
+// player does not want to know that eDmg is a multiplier; he wants to know
+// whether the robots hit hard.
+// THE MIDDLE OPTION OF EVERY ROW IS EXACTLY WHAT THE GAME DOES TODAY, so a
+// profile that never opens this page plays the identical game, and the balance
+// numbers in this file's back catalogue still describe the default.
+// Each row names its effect in one line, because "Few" alone is a word and
+// "Few, about half as many out there" is a decision.
+var GAMEOPTS=[
+  {k:'raiders', label:'Other raiders',
+   hint:'Human-shaped rivals looting the same map. They fight each other and the machines as well as you.',
+   opts:[
+     {n:'Many',     cfg:{nRaider:15}},
+     {n:'Standard', cfg:{nRaider:10}},
+     {n:'Few',      cfg:{nRaider:5}},
+     {n:'None',     cfg:{nRaider:0}}
+   ], def:1},
+  {k:'robots', label:'Machines',
+   hint:'Sentries and crawlers. They own the surface and they are what usually kills you.',
+   opts:[
+     {n:'Many',     cfg:{nSentry:28, nCrawler:46}},
+     {n:'Standard', cfg:{nSentry:20, nCrawler:34}},
+     {n:'Few',      cfg:{nSentry:12, nCrawler:20}}
+   ], def:1},
+  {k:'hits', label:'How hard they hit',
+   hint:'Damage taken from everything on the surface. Forgiving is roughly a third softer.',
+   opts:[
+     {n:'Brutal',    cfg:{eDmg:1.4}},
+     {n:'Standard',  cfg:{eDmg:1}},
+     {n:'Forgiving', cfg:{eDmg:0.7}}
+   ], def:1},
+  {k:'clock', label:'Raid length',
+   hint:'How long you have before the surface stops being survivable at all.',
+   opts:[
+     {n:'Long',     cfg:{raidSec:900}},
+     {n:'Standard', cfg:{raidSec:600}},
+     {n:'Short',    cfg:{raidSec:360}}
+   ], def:1},
+  {k:'loot', label:'How much is out there',
+   hint:'What every container is worth. Lean makes a good haul rarer rather than smaller.',
+   opts:[
+     {n:'Rich',     cfg:{lootMult:1.35}},
+     {n:'Standard', cfg:{lootMult:1}},
+     {n:'Lean',     cfg:{lootMult:0.7}}
+   ], def:1},
+  {k:'ext', label:'Heat when you call the ship',
+   hint:'How much of the map comes to the extraction ring once the beacon is up.',
+   opts:[
+     {n:'Heavy',    cfg:{siegeVol:1.4, raiderWaves:1}},
+     {n:'Standard', cfg:{siegeVol:1,   raiderWaves:1}},
+     {n:'Light',    cfg:{siegeVol:0.6, raiderWaves:0}}
+   ], def:1}
+];
+function gameOptIx(k){
+  var row=null;
+  for(var i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k===k) row=GAMEOPTS[i];
+  if(!row) return 0;
+  var v=(P.gameOpts&&P.gameOpts[k]);
+  return (typeof v==='number'&&v>=0&&v<row.opts.length)?v:row.def;
+}
+// Writes the chosen options into CFG. Called after the profile loads and again on
+// every change, so the dials and the words can never disagree.
+function applyGameOpts(){
+  for(var i=0;i<GAMEOPTS.length;i++){
+    var row=GAMEOPTS[i], sel=row.opts[gameOptIx(row.k)];
+    for(var c in sel.cfg) CFG[c]=sel.cfg[c];
+  }
+}
+function cycleGameOpt(k){
+  var row=null;
+  for(var i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k===k) row=GAMEOPTS[i];
+  if(!row) return;
+  P.gameOpts=P.gameOpts||{};
+  P.gameOpts[k]=(gameOptIx(k)+1)%row.opts.length;
+  applyGameOpts();
+  saveProfile();
+}
 function renderSettings(){
   var host=document.getElementById('setlist');
-  host.innerHTML=
+  // THE GAME ROWS COME FIRST. The presentation rows below are real settings but
+  // nobody opens this page to change a text size; they open it to make the game
+  // harder or easier, and burying that under four rows of housekeeping is the
+  // opposite of the ease of use he asked for.
+  var _go='<div class="row" style="opacity:.7"><div style="flex:1"><b>THE RAID</b>'+
+    '<div class="hint">These change the game itself. Every middle option is exactly how the game plays out of the box, so leaving this page alone changes nothing.</div></div></div>';
+  for(var _gq=0;_gq<GAMEOPTS.length;_gq++){
+    var _gr=GAMEOPTS[_gq], _gs=_gr.opts[gameOptIx(_gr.k)];
+    var _dflt=(gameOptIx(_gr.k)===_gr.def);
+    _go+='<div class="row"><div style="flex:1"><b>'+_gr.label+'</b>'+
+      '<div class="hint">'+_gr.hint+'</div></div>'+
+      '<button id="go_'+_gr.k+'" style="padding:6px 12px;min-width:92px'+
+      (_dflt?'':';color:var(--amber)')+'">'+_gs.n+'</button></div>';
+  }
+  host.innerHTML=_go+
     '<div class="row"><div style="flex:1"><b>Text size</b><div class="hint">Scales every string on every canvas and in every panel.</div></div>'+
     '<button id="set_text" style="padding:6px 12px">'+Math.round(uiScale()*100)+'%</button></div>'+
     '<div class="row"><div style="flex:1"><b>Auto-export the flight recorder</b><div class="hint">Writes a run report to your Downloads at the end of every raid.</div></div>'+
@@ -17650,6 +17751,12 @@ function renderSettings(){
   document.getElementById('set_share').onclick=function(){
     P.shareRuns=!P.shareRuns; installId(); saveProfile(); renderSettings();
   };
+  for(var _gh=0;_gh<GAMEOPTS.length;_gh++){
+    (function(k){
+      var b=document.getElementById('go_'+k);
+      if(b) b.onclick=function(){ cycleGameOpt(k); renderSettings(); };
+    })(GAMEOPTS[_gh].k);
+  }
   document.getElementById('set_primer').onclick=function(){
     document.getElementById('settingsmodal').classList.remove('on');
     openPrimer();
