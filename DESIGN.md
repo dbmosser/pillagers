@@ -9012,3 +9012,54 @@ him: it dies to machines far more than he does, so if his early deaths really do
 have a different shape, this sample would not show it. What I can say is that the
 engine is not denying warning, because the bot gets 28 seconds of it.
 
+
+### Penetration measured on a second sector: the dam's negative lean was noise
+
+At v3.07 I shipped bullet penetration with a caveat I was not comfortable with.
+The dam measurement came back 13.8 percent off against 11.6 on, p=0.23, and I wrote
+that the lean was "negative and CONSISTENT: arm A led from seed 17 onward and never
+gave the lead back across 320 pairs, which is not the shape of a coin landing
+badly." I also flagged that I had only measured one sector, and that the material
+mix differs between them.
+
+Both halves of that deserved checking, and the second one settles the first.
+
+SUNKEN QUARTER, 320 paired seeds, same protocol, mapIx pinned, simGreed 52 in both
+arms, dial off against dial on in one build:
+
+  extract rate   16.3 percent off (52 of 320)   16.9 percent on (54 of 320)
+  discordant     15 favouring off, 17 favouring on
+  McNemar exact two sided p = 0.86
+
+Dead neutral, and leaning the OPPOSITE way. This is the densest interior in the
+game and the sector with the most furniture, which is where penetration should bite
+hardest if it bites at all, and it does not.
+
+POOLED ACROSS BOTH SECTORS, 640 paired seeds:
+
+  discordant 57 pairs, 31 favouring off, 26 favouring on
+  McNemar exact two sided p = 0.60
+
+So penetration is balance neutral, and my "not the shape of a coin landing badly"
+was exactly the shape of a coin landing badly. A run of one arm leading for 300
+pairs feels like signal and is not; that is precisely what the 9.2 point noise
+floor across 120 seed blocks has been telling me since v2.42, and I talked myself
+past it because I had a plausible mechanism ready. Having a good story for why an
+effect should exist makes it easier, not harder, to misread the noise.
+
+The v3.07 entry stands except for that sentence, and this is the correction to it.
+Penetration ships on, now on two sectors' evidence instead of one.
+
+No version bump: not one byte of dark_raiders.html changed in this tick, it is a
+measurement and a correction. Putting a new VER on an identical game would make the
+version label lie.
+Verified: parsecheck PASS at v3.08, all four maps and the hub drive and draw with
+drawErr null in the raid view and with the map overlay up, and CFG.penetrate reads
+1 at the shipped defaults.
+Not verified: COLD STORAGE and THE QUARRY are still unmeasured for this dial. The
+two sectors measured are the two extremes of interior density, which is the axis
+penetration should act on, so I am treating the pooled result as sufficient rather
+than running two more 320 seed batches for a dial that has now failed to move
+anything twice. Also still unmeasured against HIS play rather than the bot's, for
+the reason given at v3.07: he fights raiders far more than the bot does.
+
