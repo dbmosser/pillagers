@@ -8799,3 +8799,82 @@ Not verified: no balance measurement, and none applies. This build changes one H
 string, one bar colour and one roadmap entry; it touches no roll, no entity
 decision and no timing constant. The judgement call itself is his to overturn: if
 he wanted the rarity kept and only the pre-open glow gone, it is one line back.
+
+### v3.06: COLD STORAGE had two of its three exits 503 units apart, and that was most of its lethality
+
+Two of his notes, and they turned out to be one finding twice.
+
+THE CARS, AGAIN. "cars are still up on little platforms and it looks dumb", which
+is the second time he has raised it, so my v3.01 fix was wrong. It removed the
+wreck's own soft ellipse and I called that done. The real cause was elsewhere
+entirely, and removing the ellipse MADE IT WORSE.
+
+bakeGround lays a hard-edged contact shadow under the footprint of EVERY wall, a
+full width rectangle up to 15 units deep. That is right for a building, which is a
+volume rising out of the ground, and wrong for a car, which is an object sitting on
+it. The wreck sprite is also drawn lifted 14 to 15 units, so the slab sat in a
+visible gap BELOW the car, and the two together read exactly as a vehicle parked on
+a plinth. The soft ellipse had been covering that gap. I captured it at 6x this
+time instead of guessing, which is what I should have done at v3.01. Wrecks are
+skipped in that pass now and draw a shadow that hugs the wheels at the body's own
+lift, so the car and its shadow touch.
+
+THE EXTRACTS. "extractions should be spaced out -- on this map they are nearly
+right next to each other". Measured across all four sectors, and he is precisely
+right about one of them. Closest pair of extraction rings:
+
+  GREYWATER DAM    1,955 units   29.8 percent of the map diagonal
+  SUNKEN QUARTER   2,560         39.4
+  THE QUARRY       1,841         31.5
+  COLD STORAGE       503          9.3
+
+The extraction ring is 78 units. Two of COLD STORAGE's three rings sat effectively
+on top of each other, both in the south-west, so the sector advertised three ways
+out and delivered two. THE LONG DOCK, the entire 4,200 wide northern strip, had no
+exit anywhere in it. The redundant ring moves into the dock at 1,700, 400. New
+closest pair is 2,284, or 42.3 percent, which makes COLD STORAGE the best spaced of
+the four rather than the worst by a factor of four.
+
+AND IT WAS MOST OF THE 4.4 PERCENT. This is the sector I flagged to him two builds
+ago as an outlier needing his ruling, on the reasoning that its lethality was
+interior geometry and would need real map surgery. It was not. It was two exits in
+the same place. Re-measured on the IDENTICAL 160 seed list used for the v3.00
+board, mapIx pinned, simGreed unchanged, one variable moved:
+
+  extract rate    4.4 percent (7 of 160)  ->  15.0 percent (24 of 160)
+  two proportion z = 3.21, p about 0.0013
+  median first contact 85s -> 77s
+  containers 14.8 -> 16.3, median haul 8,620c -> 7,775c
+  sentry deaths 96 -> 66, crawler 48 -> 62
+
+COLD STORAGE now sits level with GREYWATER DAM at 15.0 and below SUNKEN QUARTER at
+18.8 and THE QUARRY at 23.1. The outlier is gone, and it did not need a redesign,
+it needed one coordinate moved. Worth saying plainly: I told him the cause was
+probably confinement and long sight lines. I was wrong about the cause while being
+right that something was wrong, and his one-line note found it faster than my
+measurement did.
+
+The sector board moves with it. It carried "bot walks out 4.4%" for exactly one
+build, and leaving a stale number there would have recreated the precise fault that
+v3.00 existed to fix. It reads 15 percent now, first contact about 77s, 16.3
+containers, median haul 7,775c, and the character line no longer calls this the
+deadliest sector, because it is not one any more.
+
+Telemetry consumed this tick: run #32 on v3.05, COLD STORAGE, dead at 113s to a
+sentry with closestExt 12, which is reaching a ring and dying at it. No written
+note attached. It predates this build and is exactly the failure the extract move
+addresses.
+
+Verified: parsecheck PASS at v3.06, all four maps and the hub drive and draw with
+drawErr null in the raid view and with the map overlay up. Extract spacing
+re-measured on all four sectors after the change, and no extraction ring on any map
+sits inside a wall, checked against the full wall list rather than assumed. The 4.4
+to 15.0 result is 160 seeds against the same 160 seeds. Wreck captured at 6x before
+and after: the slab is gone and the shadow meets the wheels.
+Not verified: the extract move is measured against the BOT, not against him. The
+bot dies to machines far more than he does, so the size of the gain may differ for
+him even though the direction will not. I have also not re-measured the other three
+sectors, because nothing in this build touches them: the edit is one coordinate
+inside the COLD STORAGE record plus a skip in a shadow pass keyed on the wreck
+flag.
+

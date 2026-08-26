@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.05';
+var VER='3.06';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2726,8 +2726,21 @@ var FIXED_MAPS=[
     {x:300, y:680}, {x:2110,y:660}, {x:4000,y:660},
     {x:1080,y:2350},{x:2180,y:2300},{x:2020,y:3300}
   ],
+  // HIS NOTE, 2026-08-26: "extractions should be spaced out -- on this map they
+  // are nearly right next to each other". Measured across all four sectors and he
+  // is right, and it is COLD STORAGE specifically. The closest pair of extracts
+  // here was 503 units apart on a map whose diagonal is 5,404, which is 9.3
+  // percent. Every other sector's closest pair is 1,841 to 2,560, or 30 to 39
+  // percent. The extraction ring is 78 units, so two of the three rings sat
+  // effectively on top of each other: the map advertised three ways out and
+  // delivered two, both in the south-west.
+  // That left THE LONG DOCK, the entire 4,200 wide northern strip, with no exit
+  // anywhere in it, and it is very likely part of why this sector walks out at
+  // 4.4 percent against 15 to 23 elsewhere: fewer real exits is a longer trip to
+  // one. The redundant ring moves north into the dock. New spacing is 2,284 and
+  // 2,684, which puts COLD STORAGE in line with the other three.
   extracts:[
-    {x:850, y:2520}, {x:4020,y:1750}, {x:1320,y:2340}
+    {x:850, y:2520}, {x:4020,y:1750}, {x:1700,y:400}
   ]
 },
 {
@@ -3726,8 +3739,21 @@ function bakeGround(map){
   }
   // contact shadow where every wall meets the ground, baked once so it is free
   // per frame. Gives the raised faces something to sit in instead of floating.
+  // HIS NOTE, TWICE: "cars are still up on little platforms and it looks dumb".
+  // My v3.01 removed the wreck's own soft ellipse and I called that the fix. It
+  // was not, and removing it made this WORSE. The real cause is right here: every
+  // wall gets a hard-edged contact shadow slab under its footprint, a full-width
+  // rectangle up to 15 units deep. That is correct for a building, which is a
+  // volume rising out of the ground, and wrong for a car, which is an object
+  // sitting ON it. The wreck sprite is also drawn lifted 14 to 15 units, so the
+  // slab sits in a visible gap BELOW the car and the pair reads exactly as a
+  // vehicle parked on a plinth. Captured at 6x to be sure of it this time rather
+  // than guessing again.
+  // Wrecks are skipped here and draw their own contact shadow tight under the
+  // wheels, at the same lift as the body, so there is no gap to read as a step.
   for(i=0;i<map.walls.length;i++){
     var wc0=map.walls[i],sp=wc0.w<=60&&wc0.h<=60?9:15;
+    if(wc0.wreck) continue;
     var sg=c.createLinearGradient(0,wc0.y+wc0.h,0,wc0.y+wc0.h+sp);
     sg.addColorStop(0,'rgba(0,0,0,.42)'); sg.addColorStop(1,'rgba(0,0,0,0)');
     c.fillStyle=sg; c.fillRect(wc0.x-sp*.4,wc0.y+wc0.h,wc0.w+sp*.8,sp);
@@ -11523,6 +11549,13 @@ function render2D(dt){
       // roof instead of one bar across the middle.
       var CR=it.w,cw3=CR.w,ch3=CR.h,cx3=CR.x,cy3=CR.y;
       var vt=!!CR.vert;
+      // Contact shadow that HUGS the wheels rather than a slab on the floor below
+      // them. Drawn at the body lift so the car and its shadow touch, which is the
+      // whole difference between "sitting on the ground" and "up on a platform".
+      wc.fillStyle='rgba(0,0,0,.30)';
+      wc.beginPath();
+      wc.ellipse(cx3+cw3/2,cy3+ch3-13,cw3*0.47,Math.max(3,ch3*0.20),0,0,6.2832);
+      wc.fill();
       // Long axis in local terms, so one piece of code draws both orientations.
       var LEN=vt?ch3:cw3, WID=vt?cw3:ch3;
       // HIS NOTE, 2026-08-26: "why are all the cars on top of little hills? looks
@@ -15724,7 +15757,7 @@ document.getElementById('mapbtn').onclick=function(){
 var SECTOR_CHAR=[
   'Slow, and it hides you longest. Three stacked worlds joined at a handful of crossings, with the crest the only long way across. Trouble finds you later here than anywhere else, and raids run longer for it. Roughly a seventh of a raid is spent wading, which is slower and louder than walking.',
   'Loud and early. Contact comes soonest of the four, about half the time it takes on the dam, and the fighting is close because the interior is dense. Loot runs slightly thinner per container than elsewhere, so this is a sector you come to for the fight rather than the haul.',
-  'Quiet, then lethal, and by far the deadliest of the four. Long holds down tight aisles where nothing happens for minutes and then all of it happens at once. Machines account for almost every death here and there are fewer containers than anywhere else, but what is in them is worth more.',
+  'Quiet, then lethal. Long holds down tight aisles where nothing happens for minutes and then all of it happens at once, and machines account for almost every death here. It used to be far and away the deadliest sector; that turned out to be two of its three exits sitting 503 units apart, and with the third moved into the north dock it now walks out about as often as the dam.',
   'Open, forgiving, and the richest. Long sight lines mean you see trouble coming and can usually walk away from it, and it quietly carries the most containers, the most items and the biggest hauls in the game. The easiest sector to leave alive.'
 ];
 // Measured at v2.99 over 160 bot raids per sector, mapIx pinned, simGreed 52,
@@ -15734,7 +15767,11 @@ var SECTOR_CHAR=[
 var SECTOR_MEAS=[
   {ext:15.0,fc:105,cont:16.2,haul:8035},
   {ext:18.8,fc:53, cont:16.7,haul:7250},
-  {ext:4.4, fc:85, cont:14.8,haul:8620},
+  // COLD STORAGE remeasured at v3.06 on the SAME 160 seeds after the third extract
+  // moved out of the south-west cluster: 4.4 to 15.0 percent, 7 walkouts to 24.
+  // The board carried 4.4 for one build; leaving it would have recreated the exact
+  // fault v3.00 existed to fix, so it moves with the map.
+  {ext:15.0,fc:77, cont:16.3,haul:7775},
   {ext:23.1,fc:69, cont:16.9,haul:8965}
 ];
 function renderSector(){
