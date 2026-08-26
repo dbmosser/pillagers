@@ -11623,3 +11623,57 @@ into telemetry and read by nothing that makes a decision. Also not verified: the
 telemetry counters. tLit was wrong in a way nothing downstream could reveal, and there
 are a dozen more fields on that line, of which I have now checked exactly one.
 
+
+### v3.47: "how long have you been out" was wrong under one term, in nine places at once
+
+Continuing the telemetry audit v3.46 started, on the reasoning that the one field I had
+checked turned out to be wrong. The next one was wrong too, and it is the same defect
+repeated nine times.
+
+Every place in the file that wanted elapsed time computed it as
+
+    CFG.raidSec - G.timeLeft
+
+which is correct only while those two agree at the start of the raid. SHORT WINDOW
+multiplies the STARTING timeLeft by 0.66 and leaves CFG.raidSec alone. So on a signed
+raid the clock begins at 396 against a raidSec of 600, and every one of those nine
+expressions reported 204 SECONDS ELAPSED BEFORE THE PLAYER HAD MOVED.
+
+THE NINE, because the spread is the point:
+
+  the run's dur in the flight recorder
+  the sim result's dur
+  timeOfDeath
+  the "Ns on surface" line on the death screen
+  the litPct denominator, which v3.46 had just finished fixing the numerator of
+  the windfall odds ramp that pays you for time spent past four minutes
+  both in-run note timestamps
+  and the elapsed used by the container-odds code
+
+That sixth one is not cosmetic. It reads `clamp((out-240)/420,0,1)*0.08`, so on a SHORT
+WINDOW raid the player started already 204 seconds into a ramp meant to reward nerve,
+and got most of an eight percent windfall bonus for free from the first container.
+
+And his own pause notes on any SHORT WINDOW raid have been stamped 204 seconds late,
+which would have sent me looking at the wrong part of a run.
+
+ONE HELPER, ONE SOURCE OF TRUTH. G.raidLen records what the clock actually started at,
+and elapsed() subtracts from that. It is right whatever scales the raid: the term, the
+new "Raid length" setting from v3.41, or anything added later that scales it again,
+which is precisely how this broke in the first place.
+
+MY OWN MISCOUNT, caught by the edit's own assertion: I wrote the replacement expecting
+eight sites and the guard refused at nine. The file was not touched. If I had used a
+blind replace-all I would have shipped a comment that undercounted its own fix.
+
+Verified: parsecheck PASS at v3.47, all four maps and the hub draw with drawErr null.
+Driven through the real loop for ten seconds on one seed, with and without the term:
+raidLen 600 against 396, timeLeft 590 against 386, and elapsed reporting 10 in BOTH.
+Before this it read 10 and 214.
+Not verified: no balance measurement, and one of the nine sites deserves one. The
+windfall odds ramp is a real gameplay input and SHORT WINDOW raids have been getting a
+free head start on it, so signing that term was slightly better than advertised in a
+way nobody could see. I have not measured how much, because the bot never signs terms
+and so cannot show me. Also not verified: the remaining telemetry fields. Two checked,
+two wrong, and there are a dozen left.
+

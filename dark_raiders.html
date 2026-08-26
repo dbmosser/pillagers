@@ -503,7 +503,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.46';
+var VER='3.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2360,6 +2360,20 @@ var TODS=[
   {id:'dusk',name:'DUSK',add:'#42125c',addA:.24,dim:'rgba(18,10,36,0.18)',lights:1,line:'Dusk. The lamps are coming on.'}
 ];
 function tod(){ return (G&&G.tod)||TODS[2]; }
+// HOW LONG HAVE YOU BEEN OUT, v3.47, and it was wrong under one contract term in
+// NINE separate places. Every one of them computed elapsed as
+//   CFG.raidSec - G.timeLeft
+// which is correct only while those two agree at the start of the raid. SHORT
+// WINDOW multiplies the STARTING timeLeft by 0.66 and leaves CFG.raidSec alone,
+// so on a signed raid timeLeft begins at 396 against a raidSec of 600 and every
+// one of those expressions reported 204 SECONDS ELAPSED BEFORE THE PLAYER MOVED.
+// The nine: the run's dur, the sim result's dur, timeOfDeath, the "Ns on
+// surface" line on the death screen, the litPct denominator, the windfall odds
+// ramp that pays you for time spent, and both in-run note timestamps. His pause
+// notes on a SHORT WINDOW raid have all been stamped 204 seconds late.
+// G.raidLen is what the clock actually started at, so this is right whatever
+// scales it: the term, the Raid length setting, or anything added later.
+function elapsed(){ return (G?((G.raidLen===undefined?CFG.raidSec:G.raidLen)-G.timeLeft):0); }
 // BLACKOUT PROTOCOL WAS PAYING 25 PERCENT FOR NOTHING, FOUR RAIDS IN TEN, v3.44.
 // The term reads "Every lamp on the map stays dark" and it does exactly that: it
 // skips the lamp placement pass entirely. The defect is one layer over, in what
@@ -4748,7 +4762,7 @@ function windfallOdds(x,y){
   odds+=clamp(near/2600,0,1)*0.10;
   // How long have you been out? Past four minutes the map starts paying you for
   // the nerve, which is the other half of the extract-too-easy answer.
-  var out=CFG.raidSec-G.timeLeft;
+  var out=elapsed();
   odds+=clamp((out-240)/420,0,1)*0.08;
   // And is anything near enough to kill you for it? IT HAS TO BE ABLE TO SEE THE
   // CONTAINER, fixed at v1.78. Proximity alone fired on 65 percent of every
@@ -6225,7 +6239,7 @@ function buildRaid(sim){
   }
   var termClock=(!sim&&hasTerm('window'))?0.66:1;
   var g={sim:!!sim,seed:seed,grid:buildSegGrid(map.segs,WORLD_W,WORLD_H),wgrid:buildWallGrid(map.walls,WORLD_W,WORLD_H),seal:(sim?null:{x:G_SEAL_SPOT.x,y:G_SEAL_SPOT.y,gained:0}),
-    nMach:N_SENTRY+N_CRAWLER,map:map,ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:Math.round(CFG.raidSec*termClock),paused:false,
+    nMach:N_SENTRY+N_CRAWLER,map:map,ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:Math.round(CFG.raidSec*termClock),raidLen:Math.round(CFG.raidSec*termClock),paused:false,
     player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,
       // The sim wears a FIXED Scav Rig rather than whatever he happens to have
       // equipped. Raiders now carry armour, so a bare sim player was measuring a
@@ -10927,7 +10941,7 @@ function endRaid(how){
   for(i=0;i<G.bag.length;i++) haul+=ival(G.bag[i]);
 
   if(G.sim){
-    G.simResult={outcome:how,seed:G.seed,dur:Math.round(CFG.raidSec-G.timeLeft),haul:haul,items:G.bag.length,
+    G.simResult={outcome:how,seed:G.seed,dur:Math.round(elapsed()),haul:haul,items:G.bag.length,
       containers:T.containers,windfalls:T.windfalls||0,pedSold:T.pedSold||0,wepSource:(function(){ var W=G.player&&G.player.wep; if(!W) return 'none'; if(G.player.wepIssued) return 'issued'; return wearable(W.id)?'owned':'field'; })(),crouched:T.tCrouchBot?Math.round(T.tCrouchBot):0,siegeArrivals:T.siegeArrivals||0,siegeNoSpot:T.siegeNoSpot||0,killer:T.deathKiller,firstContact:T.firstContact===null?null:Math.round(T.firstContact),
       shots:T.shots,hits:T.hits,kills:T.kills,jams:T.jams||0,closest:Math.round(T.closestExtract),
       downs:T.downs,revives:T.revives,raidersExt:T.raidersExtracted,
@@ -10935,7 +10949,7 @@ function endRaid(how){
       // Where the raid actually ends. Three separate mechanisms aimed at the trip out
       // have now failed to move the extract rate, so the next question is whether the
       // trip out is where anybody dies. diedInSiege answers it directly.
-      diedInSiege:T.diedInSiege||0,callGreed:T.callGreed||0,timeOfDeath:Math.round(CFG.raidSec-G.timeLeft),
+      diedInSiege:T.diedInSiege||0,callGreed:T.callGreed||0,timeOfDeath:Math.round(elapsed()),
       // Carried on the row itself so a batch can never be compared across tiers
       // by accident. seasonLoot scales haul and seasonHp scales enemy health.
       tier:worldTier(),lootMul:+seasonLoot().toFixed(3),hpMul:+seasonHp().toFixed(3),
@@ -10963,7 +10977,7 @@ function endRaid(how){
   // gun, so both are always real however short they were; the v0.45 version of
   // this check covered every outcome and could silently throw away a successful
   // extraction, losing the run, the haul and the record of it.
-  var elapsed=CFG.raidSec-G.timeLeft;
+  var elapsed=elapsed();
   if(how==='abandon'&&elapsed<1.5&&T.distance<8&&T.containers===0&&T.shots===0){
     togglePauseBox(false);
     document.getElementById('outcome').classList.remove('on');
@@ -11174,7 +11188,7 @@ function endRaid(how){
   var acc=T.shots?Math.round(T.hits/T.shots*100):0;
   lines.push('<span style="color:var(--ash)">'+T.containers+' containers &middot; '+acc+'% accuracy &middot; '+
     (T.kills.sentry+T.kills.crawler+T.kills.raider+T.kills.snitch)+' kills &middot; '+
-    Math.round(CFG.raidSec-G.timeLeft)+'s on surface</span>');
+    Math.round(elapsed())+'s on surface</span>');
 
   pendingRun={
     // WHICH BUILD THIS RUN WAS PLAYED ON, added v1.90, and it cost a session to
@@ -11225,7 +11239,7 @@ function endRaid(how){
     wx:(G.wx&&G.wx.id)||'clear',wxTurns:G.wxTurned||0,tod:(G.tod&&G.tod.id)||'noon',
     caches:T.cachesOpened||0,windfalls:T.windfalls||0,strongbox:T.strongbox||0,rounds:T.rounds||0,jams:T.jams||0,campSafes:T.campSafes||0,wardenMet:T.wardenMet||0,doorsOpened:T.doorsOpened||0,
     gunsEq:T.gunsEquipped||0,bestQ:T.bestQ||0,holdExtract:T.holdExtract||0,diedInSiege:T.diedInSiege||0,
-    dur:Math.round(CFG.raidSec-G.timeLeft),
+    dur:Math.round(elapsed()),
     haul:haul,items:G.bag.length,containers:T.containers,
     shots:T.shots,hits:T.hits,acc:acc,reloads:T.reloads,heals:T.heals,
     downs:T.downs,revives:T.revives,thr:T.thr,marked:T.marked||0,
@@ -11235,7 +11249,7 @@ function endRaid(how){
     firstLoot:T.firstLoot===null?null:Math.round(T.firstLoot),
     dist:Math.round(T.distance),
     crouch:Math.round(T.tCrouch),sprint:Math.round(T.tSprint),
-    still:Math.round(T.tStill),litPct:Math.round(T.tLit/Math.max(1,CFG.raidSec-G.timeLeft)*100),
+    still:Math.round(T.tStill),litPct:Math.round(T.tLit/Math.max(1,elapsed())*100),
     closestExtract:T.closestExtract>=1e9?null:Math.round(T.closestExtract),
     deathKiller:T.deathKiller,deathDistExtract:T.deathDistExtract,
     raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
@@ -17428,12 +17442,12 @@ document.getElementById('simbtn').onclick=function(){ runSim(); };
 document.getElementById('closesim').onclick=function(){ document.getElementById('simmodal').classList.remove('on'); };
 document.getElementById('resumebtn').onclick=function(){
   var note=document.getElementById('pausenote').value.trim();
-  if(note&&G){ G.tel.notes.push({t:Math.round(CFG.raidSec-G.timeLeft),txt:note}); document.getElementById('pausenote').value=''; }
+  if(note&&G){ G.tel.notes.push({t:Math.round(elapsed()),txt:note}); document.getElementById('pausenote').value=''; }
   togglePauseBox(false);
 };
 document.getElementById('abandonbtn').onclick=function(){
   var note=document.getElementById('pausenote').value.trim();
-  if(note&&G){ G.tel.notes.push({t:Math.round(CFG.raidSec-G.timeLeft),txt:note}); document.getElementById('pausenote').value=''; }
+  if(note&&G){ G.tel.notes.push({t:Math.round(elapsed()),txt:note}); document.getElementById('pausenote').value=''; }
   togglePauseBox(false);
   if(G&&!G.over) endRaid('abandon');
 };
