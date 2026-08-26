@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.02';
+var VER='3.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13745,7 +13745,43 @@ function mapScreenToWorld(sx,sy){
   var M=mapProj();
   return {x:(sx-M.ox)/M.sc, y:(sy-M.oy)/M.sc};
 }
+// Marker labels on the sector map are placed at their marker, and markers sit
+// wherever the world put them, so CACHE lands on LOCKED and ENCAMPMENT lands on
+// CACHE. Same complaint as the doubled region names and the same cost: the map
+// stops being readable exactly where the interesting things are. This keeps the
+// rectangles it has already drawn and walks a label upward until it is clear,
+// giving up after a few tries rather than launching it off the top of the map.
+var _mapLbl=[];
+function mapLabelReset(){ _mapLbl.length=0; }
+function mapLabel(txt,x,y,col,font){
+  ctx.font=font||FS(TYPE.label);
+  var w=ctx.measureText(txt).width+6,h=LH(11),ty=y;
+  // FIRST ATTEMPT STACKED, and that was worse than the overlap it replaced. Three
+  // caches near each other each pushed up off the one below and produced a ladder
+  // of the word CACHE, which is more ink saying less. A repeat of the SAME word in
+  // a cluster carries no information: every one of those markers already draws its
+  // own ring, so the second CACHE is dropped outright and the cluster gets one
+  // label. Only labels that actually differ are worth separating, and those still
+  // walk upward until they are clear.
+  for(var d=0;d<_mapLbl.length;d++){
+    var D=_mapLbl[d];
+    if(D.t===txt && Math.abs(D.x-x)<90 && Math.abs(D.y-y)<70) return;
+  }
+  for(var pass=0;pass<7;pass++){
+    var hit=false;
+    for(var i=0;i<_mapLbl.length;i++){
+      var R=_mapLbl[i];
+      if(Math.abs(R.x-x)<(R.w+w)/2 && Math.abs(R.y-ty)<h){ hit=true; break; }
+    }
+    if(!hit) break;
+    ty-=h;
+  }
+  _mapLbl.push({x:x,y:ty,w:w,h:h,t:txt});
+  ctx.textAlign='center'; ctx.fillStyle=col;
+  ctx.fillText(txt,x,ty); ctx.textAlign='left';
+}
 function drawMapOverlay(){
+  mapLabelReset();
   var p=G.player,i;
   // The sector map was the last full screen surface still wearing the old grey
   // and near-black palette: the district fills already came through because they
@@ -13797,7 +13833,19 @@ function drawMapOverlay(){
   for(i=0;i<zl.length;i++){
     var Z2=zl[i];
     if(!Z2.cells) continue;
-    var zx=ox+(80+(Z2.mc+0.5)*G.map.cw)*sc, zy=oy+(80+(Z2.mr+0.5)*G.map.ch)*sc;
+    // HIS NOTE, 2026-08-26: "your names of areas on the maps make no sense". A
+    // capture of the sector map says it plainly: CONTRACTOR CAMP, TURBINE HALL,
+    // SWITCHYARD and THE TAILRACE each appear TWICE, one on top of the other, one
+    // faint and large and one small and amber. Zone captions and landmark labels
+    // are both drawn at the centre of their own rectangle, and a landmark that
+    // fills most of its zone shares that centre, so the same words print over
+    // themselves at two sizes. It does not read as two labels, it reads as
+    // garbled text, which is exactly "makes no sense".
+    // The zone caption is a caption for a REGION, so it sits near the top of that
+    // region rather than competing for the middle, the way a printed map letters
+    // a district across the top of it.
+    var zx=ox+(80+(Z2.mc+0.5)*G.map.cw)*sc;
+    var zy=oy+(80+(Z2.mr+0.5)*G.map.ch)*sc-G.map.ch*sc*0.34;
     ctx.font=FS(TYPE.head);
     ctx.fillStyle=hexA(DISTRICTS[Z2.d].wallTop,.28);
     ctx.fillText(Z2.name||DISTRICTS[Z2.d].name,zx,zy);
@@ -13811,10 +13859,7 @@ function drawMapOverlay(){
     ctx.strokeStyle=LM3.open?'rgba(127,196,160,.8)':'#ffd76a';
     ctx.lineWidth=2;
     ctx.strokeRect(lx3,ly3,LM3.w*sc,LM3.h*sc);
-    ctx.font=FS(TYPE.label); ctx.textAlign='center';
-    ctx.fillStyle=LM3.open?'#7fc4a0':'#ffd76a';
-    ctx.fillText(LM3.open?'OPEN':('LOCKED'),lx3+LM3.w*sc/2,ly3-6);
-    ctx.textAlign='left';
+    mapLabel(LM3.open?'OPEN':'LOCKED',lx3+LM3.w*sc/2,ly3-6,LM3.open?'#7fc4a0':'#ffd76a');
   }
   // SPEC 4.5: manholes on the sector map, so the fixed spawn set is learnable.
   for(i=0;i<(G.map.spawns||[]).length;i++){
@@ -13837,9 +13882,8 @@ function drawMapOverlay(){
     ctx.beginPath(); ctx.arc(qx,qy,9+2*qp,0,6.2832); ctx.stroke();
     ctx.fillStyle='#e6b4ff';
     ctx.beginPath(); ctx.arc(qx,qy,3.5,0,6.2832); ctx.fill();
-    ctx.font=FS(TYPE.label); ctx.textAlign='center';
-    ctx.fillText(CQ.opened?'LOOTED':'CACHE',qx,qy-15);
-    ctx.textAlign='left'; ctx.globalAlpha=1;
+    mapLabel(CQ.opened?'LOOTED':'CACHE',qx,qy-15,'#e6b4ff');
+    ctx.globalAlpha=1;
   }
   // Encampments in red: advertised danger. You are told where the fight is and
   // what it pays, and choosing it is the risk half of risk versus greed.
@@ -13850,10 +13894,7 @@ function drawMapOverlay(){
     ctx.beginPath();
     ctx.moveTo(cqx,cqy-9); ctx.lineTo(cqx+9,cqy); ctx.lineTo(cqx,cqy+9); ctx.lineTo(cqx-9,cqy); ctx.closePath();
     ctx.stroke();
-    ctx.fillStyle='#ff8a76';
-    ctx.font=FS(TYPE.label); ctx.textAlign='center';
-    ctx.fillText('ENCAMPMENT',cqx,cqy-14);
-    ctx.textAlign='left';
+    mapLabel('ENCAMPMENT',cqx,cqy-14,'#ff8a76');
   }
   // Landmarks are what the map is navigated BY, so they are labelled and boxed
   // rather than left as anonymous geometry.
@@ -13864,10 +13905,18 @@ function drawMapOverlay(){
     ctx.strokeRect(ox+LM2.x*sc,oy+LM2.y*sc,LM2.w*sc,LM2.h*sc);
     ctx.fillStyle='rgba(255,192,74,.07)';
     ctx.fillRect(ox+LM2.x*sc,oy+LM2.y*sc,LM2.w*sc,LM2.h*sc);
-    ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
-    ctx.fillStyle='#ffc04a';
-    ctx.fillText(LM2.name,ox+(LM2.x+LM2.w/2)*sc,oy+(LM2.y+LM2.h/2)*sc+3);
-    ctx.textAlign='left';
+    // A landmark whose name is simply its zone's name adds no information and
+    // costs legibility, so it draws its box and keeps quiet. The box still shows
+    // where the building is; the region is already captioned above it.
+    var _lz=G.map.zoneAt?G.map.zoneAt(LM2.x+LM2.w/2,LM2.y+LM2.h/2):null;
+    var _dupe=_lz&&_lz.name&&LM2.name&&
+              String(_lz.name).toUpperCase()===String(LM2.name).toUpperCase();
+    if(!_dupe){
+      ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
+      ctx.fillStyle='#ffc04a';
+      ctx.fillText(LM2.name,ox+(LM2.x+LM2.w/2)*sc,oy+(LM2.y+LM2.h/2)*sc+3);
+      ctx.textAlign='left';
+    }
   }
   // THE SEAL, always marked. It is the reason you came back.
   if(G.seal){

@@ -64,7 +64,18 @@ window.__movers={seekPoint:seekPoint,navSeek:navSeek,mkSentry:mkSentry,mkRaider:
 window.__newRaid=function(){ G=buildRaid(true); return G; };
 window.__hub=function(){ return HB; };
 window.__hubStep=function(dt){ updateHubWorld(dt); drawHubWorld(dt); };
-window.__startRaid=function(){ return startRaid(); };
+// __startRaid TOOK NO ARGUMENTS until 2026-08-26 and silently ignored everything
+// passed to it, so every __startRaid({mapIx:m,seed:s}) in a verification run built
+// whatever map P.mapIx already held, with an unpinned seed. Four-map render checks
+// were one map four times and said nothing about the other three. buildRaid reads
+// P.mapIx and pendSeed, so both are set here before the call, which is the same
+// route __simSeedsFull uses and the reason its per-map numbers were sound.
+window.__startRaid=function(o){
+  o=o||{};
+  if(o.mapIx!==undefined) P.mapIx=clamp(o.mapIx|0,0,FIXED_MAPS.length-1);
+  if(o.seed!==undefined) pendSeed=o.seed>>>0;
+  return startRaid();
+};
 window.__mapOverlay=function(){ drawMapOverlay(); return {w:W,h:H,dpr:DPR}; };
 // Lets a measurement rebuild the map at the pre-v0.68 world size so before and
 // after are read off the same code path instead of off my arithmetic.

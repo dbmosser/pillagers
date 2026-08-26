@@ -8582,3 +8582,66 @@ timing constant. Worth noting for later: the same capture shows zone and landmar
 labels overprinting each other on the sector map, which is his separate "names of
 areas make no sense" note and is the next build rather than this one.
 
+
+### v3.03: the map was printing half its names twice, and my own four-map check was one map four times
+
+His note: "your names of areas on the maps make no sense".
+
+I captured the sector map and he is right, though the cause is not the names. On
+GREYWATER DAM, CONTRACTOR CAMP, TURBINE HALL, SWITCHYARD, THE TAILRACE and THE
+CREST each appeared TWICE, one on top of the other, once large and faint and once
+small and amber. Zone captions and landmark labels are both drawn at the centre of
+their own rectangle, and a landmark that fills most of its zone shares that centre,
+so the same words printed over themselves at two sizes. It does not read as two
+labels. It reads as garbled text, which is exactly "makes no sense".
+
+Counted across all four sectors: 5 of 7 landmark labels duplicate their zone name
+on GREYWATER DAM, 3 of 3 on SUNKEN QUARTER, 3 of 3 on COLD STORAGE and 4 of 8 on
+THE QUARRY. On two of the four maps EVERY landmark label was printing twice.
+
+Three changes. A landmark whose name is simply its zone's name now draws its box
+and keeps quiet, because it adds no information and costs legibility; the region is
+already captioned. The zone caption moved off the centre line to near the top of
+its region, the way a printed map letters a district across the top of it rather
+than through the middle of it. And marker labels, CACHE, LOCKED, OPEN, ENCAMPMENT,
+go through one placer that keeps what it has already drawn and walks a new label
+clear of it.
+
+The first version of that placer was worse than the overlap it replaced. Three
+caches near each other each pushed up off the one below and produced a ladder of
+the word CACHE, which is more ink saying less. A repeat of the same word in a
+cluster carries nothing, because every one of those markers already draws its own
+ring, so a duplicate is dropped outright and the cluster gets one label. Only
+labels that genuinely differ are worth separating.
+
+AND THE THING THIS UNCOVERED, which matters more than the labels.
+
+Chasing why all four maps reported identical duplicate counts, I found that the
+fixture's __startRaid took NO ARGUMENTS. Every __startRaid({mapIx:m,seed:s}) in
+every verification run this session silently ignored both. So "all four maps drive
+and draw with drawErr null", which I have written at the bottom of six changelog
+entries, was in truth ONE map, whichever P.mapIx happened to hold, rendered four
+times with an unpinned seed. It was not a lie about the result but it was a much
+weaker check than the words claimed, and the words are what he reads.
+
+The hook now sets P.mapIx and pendSeed before calling startRaid, which is the same
+route __simSeedsFull uses and the reason the per-map sim numbers in v3.00 were
+sound, that path was never affected. Re-run properly, the four maps now come back
+genuinely different, world sizes 5200x4000, 4600x4600, 4200x3400 and 4600x3600,
+zone counts 9, 5, 5 and 9, and all four still draw clean in both the raid view and
+the map overlay. The earlier builds are not retroactively verified by this; they
+are verified from v3.03 onward, and anything from v2.94 to v3.02 rests on a
+one-map check plus parsecheck.
+
+Verified: parsecheck PASS at v3.03. All four maps, now actually four different
+maps, drive and draw with drawErr null in the raid view AND with the map overlay
+up, plus hub frames. Duplicate-suppression counts measured per map as above. Pixel
+captures at 1280x718 before and after: the doubled region names are gone, the CACHE
+ladder produced by the first placer is gone, and each cluster carries one label.
+Not verified: no balance measurement, and none applies. This build changes label
+placement on an overlay and a fixture hook; it touches no roll, no entity decision
+and no timing constant. Two minor crowdings remain where LOCKED, STRONGBOX and
+CACHE markers sit close together in the SWITCHYARD, legible but tight, and I have
+left them rather than push labels far enough from their markers to become
+ambiguous about which marker they belong to.
+
