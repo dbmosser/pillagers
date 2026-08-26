@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.16';
+var VER='3.17';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -532,8 +532,14 @@ function rr(){
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
-  nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1};
+  // HIS NOTE, 2026-08-26: "i want 10 raiders on the map, not 5". This is the count at
+// the REFERENCE map size and every map scales it by area, which is why he counted
+// five: nOf multiplies by clamp(AREA/4, 0.45, 1.6) and COLD STORAGE runs 0.69. That
+// scaling exists because a flat count made the small map 46 percent denser by
+// accident and dropped it to 6 percent extract, so it stays. Raised so the dam
+// carries ten and the smallest sector carries seven.
+nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -6447,6 +6453,10 @@ function mouseWorld(){
 // where you are standing, which is the price that makes the decision real.
 // One fuse constant now instead of a literal, because the cook timer and the landed
 // timer have to be the same number or the readout lies.
+// How long a downed raider has before he bleeds out. Longer than the player's 12,
+// because he has no auto-injector of his own and the only help available is
+// somebody choosing to walk over.
+var RAIDER_DOWN_T=16;
 var FRAG_FUSE=1.1;
 // HIS NOTE, 2026-08-26: "I THINK YOUR SCALING FOR METERS IS OFF -- I'M STANDING
 // RIGHT next to an extraction and it says im 90 m away lol". He is right and the
@@ -8219,6 +8229,52 @@ function updatePlayer(dt){
     var PE=G.ents[pe];
     if(PE.kind==='peddler'&&dist(p,PE)<74){ ped=PE; break; }
   }
+  // PICKING UP AN ENEMY, v3.17. He asked for it and it is the half of the feature
+  // that makes the other half matter: "players should be able to revive bots".
+  // It costs a medical item, exactly as reviving yourself does, so it is a real
+  // decision made out of a finite supply while something is probably shooting at
+  // you. What it buys is not gratitude in the abstract, it is an entry in the
+  // ledger this game has had since SPEC 8.4: standing goes UP by three, which is
+  // enough to flip a stranger friendly and to start digging out of a grudge you
+  // earned by killing him last week. He gets up on 40 percent health, the same
+  // figure the player's own self-revive gives.
+  // Checked before the stall and before crates so that a man bleeding at your feet
+  // outranks shopping, which is the correct priority for a key that does several
+  // things.
+  var downRdr=null;
+  for(var dr=0;dr<G.ents.length;dr++){
+    var DE=G.ents[dr];
+    if(DE.kind==='raider'&&DE.downed&&dist(p,DE)<64){ downRdr=DE; break; }
+  }
+  G.nearDown=downRdr;
+  if(downRdr&&keys['KeyE']&&!G.revLock){
+    G.revLock=1;
+    var hIx=findHeal();
+    if(hIx<0) say('No medical to revive him with.');
+    else{
+      G.bag.splice(hIx,1);
+      downRdr.downed=0; downRdr.state='loot'; downRdr.hp=Math.round(downRdr.maxhp*0.4);
+      // friendlyPC, not just hostile=false. That flag already means "made friendly
+      // by something you did, and it holds", with its own branch that keeps him
+      // calm while you stand next to him and ends it permanently if you shoot him.
+      // Setting only hostile=false let the ordinary hostility test flip him back
+      // the same second, which the first driven run caught: revived, standing +3,
+      // and still hostile:true.
+      downRdr.alert=0; downRdr.goal=null;
+      downRdr.hostile=false; downRdr.grudge=false; downRdr.friendlyPC=1;
+      G.tel.revives=(G.tel.revives||0)+1;
+      G.tel.raiderRevives=(G.tel.raiderRevives||0)+1;
+      blip('pick');
+      if(downRdr.ident&&!G.sim){
+        var rrv=idRec(downRdr.ident);
+        rrv.standing=(rrv.standing||0)+3; rrv.met++;
+        saveProfile();
+        say(downRdr.name+' is back on his feet. He will remember that.');
+      } else say('Back on his feet.');
+      label(downRdr.x,downRdr.y-18,'REVIVED','#7fc4a0',0,true);
+    }
+  }
+  if(!keys['KeyE']) G.revLock=0;
   // The Stray takes the same key as everything else, and a crate underfoot does
   // not steal it: he is checked first because he is the rarer thing.
   var stray=null;
@@ -9006,6 +9062,29 @@ function updateEnts(dt){
     if(e.kind==='crawler') e.legs+=dt*14;
 
     if(e.hp<=0){
+      // HIS REQUEST, 2026-08-26: "bot raiders should get downed and have the
+      // ability to get revived just like the player can. players should be able to
+      // revive bots". A raider is the only enemy this can apply to: machines have
+      // no one to help them and the warden is a tide rather than a man.
+      // The rules mirror the player's exactly, which is the point of the request.
+      // Lethal damage puts him on the floor with a bleed-out clock instead of
+      // killing him. He cannot move or shoot. The clock runs out and he dies where
+      // he fell, dropping his bag as a named body exactly as before.
+      // TWO WAYS OUT and they are the interesting part. Anyone can finish him: a
+      // second hit while he is down kills outright, no second chance, which is
+      // what stops this being a free extra health bar. And anyone can pick him up,
+      // including you, which turns the ledger the other way: a man you revive owes
+      // you, and the standing system this game already has is the place that debt
+      // is recorded.
+      if(CFG.raiderDown!==0&&e.kind==='raider'&&!e.downed&&!e.merc&&!e.finished){
+        e.downed=1; e.downT=RAIDER_DOWN_T; e.hp=1;
+        e.state='down'; e.alert=0; e.goal=null; e.cd=Math.max(e.cd||0,1);
+        if(!G.sim){
+          label(e.x,e.y-16,(e.name||'RAIDER')+' IS DOWN','#ffb02e',0,true);
+          blip('hit');
+        }
+        continue;
+      }
       // Killing the Peddler is allowed, and it is meant to be tempting: he is
       // standing over stock and he cannot shoot back. The price is NOTORIETY.
       // It is permanent, it closes every stall to you at two, and it makes every
@@ -9116,6 +9195,19 @@ function updateEnts(dt){
       spark(e.x,e.y,e.kind==='raider'?'#c8452f':'#ffb02e',22,300);
       if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:e.kind==='raider'?'#c8452f':'#ffb02e',r:26});
       G.ents.splice(i,1); continue;
+    }
+    // A man on the floor does nothing but bleed. No AI below this line runs for
+    // him, which is also what keeps him from shooting, fleeing or looting while
+    // down. Reaching zero on the clock sets hp to 0 with the downed flag cleared
+    // and finished set, so the very next frame takes the ordinary death path and
+    // he drops his bag as a named body like anyone else.
+    if(e.downed){
+      e.downT-=dt;
+      e.moving=false;
+      if(e.reviveT>0) e.reviveT-=dt;
+      if(e.downT<=0){ e.downed=0; e.finished=1; e.hp=0; }
+      if(e.cd>0) e.cd-=dt;
+      continue;
     }
     // The Peddler runs no AI whatsoever. He holds his ground, turns to face you,
     // and hails you once when you are near enough to deal. Nothing else about
@@ -9514,6 +9606,45 @@ function updateEnts(dt){
         e.state=e.kind==='raider'?'loot':'patrol'; e.cd=rnd(.5,1.6); e.scattered=0;
       }
     }
+    // A CREW PICKS ITS OWN UP, and only its own. Crews already decide who shoots
+    // whom since v2.49, so they are the natural unit for who is worth saving; a
+    // rival watching you bleed is the same rival who put you there. Only a raider
+    // with nothing more urgent goes, which is why this sits inside the loot state:
+    // a man in a firefight has a better use of the next four seconds.
+    else if(e.state==='loot'&&e.kind==='raider'&&CFG.raiderDown!==0&&(function(){
+      if(e.reviving&&(e.reviving.downed!==1||G.ents.indexOf(e.reviving)<0)) e.reviving=null;
+      if(!e.reviving){
+        var best=null,bd=760;
+        for(var rv=0;rv<G.ents.length;rv++){
+          var RD=G.ents[rv];
+          if(RD===e||RD.kind!=='raider'||!RD.downed) continue;
+          if(RD.crew!==e.crew) continue;
+          var dd3=dist(e,RD);
+          if(dd3<bd){ bd=dd3; best=RD; }
+        }
+        if(best){ e.reviving=best; e.revProg=0; }
+      }
+      return !!e.reviving;
+    })()){
+      var TG=e.reviving,dRv=dist(e,TG);
+      want=Math.atan2(TG.y-e.y,TG.x-e.x);
+      if(dRv>44){ navSeek(e,TG.x,TG.y,e.spd,dt); e.revProg=0; }
+      else{
+        e.revProg=(e.revProg||0)+dt;
+        TG.reviveT=Math.max(TG.reviveT||0,0.4);
+        if(e.revProg>=3.2){
+          TG.downed=0; TG.state='loot'; TG.hp=Math.round(TG.maxhp*0.4);
+          TG.alert=0; TG.goal=null;
+          e.reviving=null; e.revProg=0;
+          if(!G.sim){ label(TG.x,TG.y-18,'PICKED UP','#ffb02e',0,true); }
+          if(G.tel) G.tel.crewRevives=(G.tel.crewRevives||0)+1;
+        }
+      }
+      e.face+=clamp(angDiff(want,e.face),-5*dt,5*dt);
+      collide(e,G.map.walls);
+      if(e.cd>0) e.cd-=dt;
+      continue;
+    }
     else if(e.state==='loot'&&e.kind==='raider'){
       if(!e.goal||e.goal.opened){
         e.goal=null; var bd=1e9;
@@ -9614,6 +9745,23 @@ function updateEnts(dt){
         // Being shot at interrupts it. Standing calmly in the open while rounds land was
         // the other half of why they never lost a bag.
         if(e.hitT>0) e.extracting=Math.max(0,e.extracting-dt*3);
+        // HIS NOTE, 2026-08-26: "i just killed a raider standing in the extract.
+        // when i fired at him, he didn't do anything, just stood there". Correct,
+        // and this branch is why: it had no firing code at all. v2.93 stopped a
+        // fleeing raider from being dragged back into chase by the shots chasing
+        // him, which fixed a real oscillation, but it left the man standing in the
+        // ring with no way to answer at all. He loses extraction progress and dies
+        // like a target on a range.
+        // He returns fire now WITHOUT leaving extract, which is the distinction
+        // v2.93 was actually about: he has decided to leave and he still leaves,
+        // he simply is not a mannequin while he does it. Same weapon, same
+        // cooldown, same line of sight test the chase branch uses.
+        if(e.hostile!==false&&e.cd<=0&&!p.downed&&dist(e,p)<e.rng&&
+           canSee(e.x,e.y,e.face,p.x,p.y,G.vseg)){
+          fireWeapon(e,e.wep,p.x+rnd(-18,18),p.y+rnd(-18,18),false);
+          e.cd=(e.wep.rof/1000)*rnd(1.9,3.1);
+          e.face=Math.atan2(p.y-e.y,p.x-e.x);
+        }
         if(e.extracting>rdw){
           say(e.name+' extracted with the goods.'); T.raidersExtracted++;
           if(G.roster){ for(var _rq=0;_rq<G.roster.length;_rq++){
@@ -10117,7 +10265,7 @@ function endRaid(how){
       dials:'hot'+(CFG.healOverTime===0?0:1)+' feud'+(CFG.raiderFeud===0?0:1)
         +' reach'+(CFG.simReach===0?0:1)+' win'+(CFG.windows===0?0:1)
         +' rheal'+(CFG.simRetreatHeal?1:0)+' eng'+(CFG.simEngage?1:0)
-        +' pip'+(CFG.simPip?1:0)+' des'+(CFG.destruct===0?0:1)+' cull'+(CFG.placeCull===0?0:1)+' wear'+(CFG.raiderWear===0?0:1)+' pen'+(CFG.penetrate===0?0:1)+' greed'+CFG.simGreed};
+        +' pip'+(CFG.simPip?1:0)+' des'+(CFG.destruct===0?0:1)+' cull'+(CFG.placeCull===0?0:1)+' wear'+(CFG.raiderWear===0?0:1)+' pen'+(CFG.penetrate===0?0:1)+' down'+(CFG.raiderDown===0?0:1)+' greed'+CFG.simGreed};
     return;
   }
 
@@ -12849,6 +12997,18 @@ function drawHUD(){
         ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(255,176,46,.92)';
         ctx.fillText('needs the '+kName,dsc.x,dsc.y+LH(12));
       }
+      ctx.textAlign='left';
+    }
+  }
+  // A man on the floor is an interaction, so he gets the same kind of prompt a
+  // container does, and the timer says how long the offer stands.
+  if(G.nearDown&&!p.downed){
+    var ds3=w2s(G.nearDown.x,26,G.nearDown.y);
+    if(ds3){
+      ctx.font=FS(TYPE.label); ctx.textAlign='center';
+      ctx.fillStyle='#ffb02e';
+      ctx.fillText('[E] REVIVE '+(G.nearDown.name||'RAIDER')+
+        '  '+Math.max(0,G.nearDown.downT||0).toFixed(0)+'s',ds3.x,ds3.y);
       ctx.textAlign='left';
     }
   }

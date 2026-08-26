@@ -9579,3 +9579,93 @@ contents and the same search time. This is a sprite branch, a flag and a prompt
 string. Whether a banded chest in a field is fiction he accepts is his call, and the
 alternative if not is to move camp loot under cover, which WOULD be a placement
 change and would want measuring.
+
+### v3.17: raiders go down instead of dying, and anyone can pick them up
+
+Three of his notes, and they turn out to be one system plus two things that system
+exposed.
+
+DOWNED RAIDERS, "bot raiders should get downed and have the ability to get revived
+just like the player can. players should be able to revive bots". A raider is the
+only enemy this can apply to: machines have nobody to help them and the warden is a
+tide rather than a man.
+
+The rules mirror the player's, which is the point of the request. Lethal damage puts
+him on the floor with a 16 second bleed-out clock instead of killing him. He cannot
+move, shoot, flee or loot, because the downed check sits above every AI branch. The
+clock runs out and he dies exactly where he fell, dropping his bag as the same named
+body container as before, so nothing downstream of death changed.
+
+TWO WAYS OUT, and they are the feature.
+
+Anyone can finish him. A second lethal hit while he is down kills outright, no
+second chance. Without that this is just an extra health bar, and with it a downed
+man is a decision for whoever is standing over him.
+
+Anyone can pick him up, including you. It costs a medical item, the same as reviving
+yourself, so it is a real choice made from a finite supply while something is
+probably still shooting. What it buys is not gratitude in the abstract: standing in
+the identity ledger goes UP by three, which is enough to flip a stranger friendly
+and to start digging out of a grudge you earned by killing him last week. He stands
+up on 40 percent health, the same figure your own self-revive gives.
+
+His crew will come for him too. Only his own crew, since crews have decided who
+shoots whom since v2.49 and a rival watching you bleed is the rival who put you
+there, and only a raider with nothing more urgent, which is why it lives in the loot
+state rather than interrupting a firefight. Three seconds standing over him and he
+is up.
+
+ONE BUG THE FIRST DRIVEN RUN CAUGHT. Reviving set hostile=false and the ordinary
+hostility test flipped him straight back: revived, standing +3, still hostile. The
+correct flag was friendlyPC, which already means "made friendly by something you
+did, and it holds", and which already has a branch that keeps him calm while you
+stand next to him and ends it permanently if you shoot him. Reusing it was right;
+inventing a second peace flag would have been wrong.
+
+THE MANNEQUIN IN THE EXTRACT, "i just killed a raider standing in the extract. when
+i fired at him, he didn't do anything, just stood there". Correct, and the extract
+branch is why: it had no firing code in it at all. v2.93 stopped a fleeing raider
+being dragged back into chase by the shots chasing him, which fixed a real
+oscillation, and left the man standing in the ring with no way to answer. He now
+returns fire WITHOUT leaving extract, which is the distinction v2.93 was actually
+about: he has decided to leave and he still leaves, he simply is not a target on a
+range while he does it.
+
+TEN RAIDERS, "i want 10 raiders on the map, not 5". The count is per REFERENCE map
+size and every sector scales it by area, which is why he counted five: nOf
+multiplies by clamp(AREA/4, 0.45, 1.6) and COLD STORAGE runs 0.69. That scaling
+stays, because removing it is what made the small map 46 percent denser by accident
+and dropped it to 6 percent extract at v1.73. Raised from 8 to 10, which gives 10 on
+GREYWATER DAM and the SUNKEN QUARTER, 8 on THE QUARRY and 7 on COLD STORAGE.
+
+BALANCE: the extra raiders cost nothing measurable. 320 seeds paired on GREYWATER
+DAM, mapIx pinned, simGreed 52 both arms, 8 raiders against 10:
+
+  extract rate  12.2 percent at 8   14.1 percent at 10
+  discordant    18 favouring 8, 24 favouring 10
+  McNemar exact two sided p = 0.44
+
+Not significant, and if anything slightly positive, which is not as strange as it
+sounds: raiders fight machines and each other, so more of them is more noise pointed
+at something other than you.
+
+Verified: parsecheck PASS at v3.17, all four maps and the hub drive and draw with
+drawErr null in the raid view and with the map overlay up, with raider counts of 10,
+10, 7 and 8. Downed state driven: lethal damage leaves hp at 1, state 'down', a 16
+second clock, and the raider still an entity with the entity count unchanged; the
+clock expires and he is gone at 16.1 seconds. Finishing driven: a second lethal hit
+removes him immediately and leaves exactly one new container, named for the man who
+fell. Player revive driven through the real main loop: prompt appears, E spends the
+bandage, he stands at 31 of 78 health, standing goes 0 to 3, hostile false and
+friendlyPC true and it holds across 30 further frames. With no medical in the bag it
+refuses and says so, and he stays down. Return fire driven: a raider parked in an
+extraction ring with the player 120 units away produces enemy bullets and remains in
+extract state.
+Not verified: the crew revive is implemented and reachable but I have not driven it
+end to end, because it needs two same-crew raiders, one downed, the other idle in
+loot state and within 760 units, and I could not arrange that reliably from a seed
+without hand-placing both, which would prove my placement rather than the AI. It is
+the one part of this build resting on reading rather than measurement. Also
+unmeasured: raiderDown itself. The bot dies to raiders roughly twice in 320 raids,
+so a paired A/B on that dial would be measuring a fight the bot almost never has.
+
