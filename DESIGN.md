@@ -8260,3 +8260,61 @@ their game is ARC Raiders and its players are Raiders. He did not ask me to rena
 his game and I have not touched it. Both of those are his to decide, and they are
 written down here rather than quietly settled.
 
+
+### v2.98: the stash screen stops being two thirds developer furniture
+
+His note, outstanding since before the sector work: "way too much sthit going on in
+the stash, needs to simplify".
+
+He is describing the Operator Terminal, which is the panel he opens more than any
+other screen in the game, because it is where his stash and his loadout live. Its
+third column was carrying, in one scrolling stack: the flight recorder, four
+summary stats, Export for Claude, Run bot sim, an auto-export toggle, a text size
+toggle, a map switcher, a sim progress line, the entire roadmap, and a dropdown for
+loading older builds of the game. Nine of those thirteen things are instrumentation
+I built for myself. He opens that screen to look at loot.
+
+WHAT MOVED. Everything that is instrumentation rather than gameplay now lives
+behind one button, "Dev tools and roadmap", in its own panel: the export, the bot
+sim and its progress line, the map switcher, the roadmap and the old-build loader.
+What stays on the terminal is the flight recorder and the four stats, because those
+are him reading his own results, which is the game talking back to him rather than
+me talking to myself.
+
+WHAT WAS DELETED OUTRIGHT. The auto-export and text size toggles are gone from the
+terminal entirely rather than moved, because v2.95 already gave both of them a home
+in Settings under T at the dev box. They were a second set of buttons for the same
+two flags, which is worse than clutter: two controls for one state is how the two
+drift apart.
+
+HOW IT WAS DONE, and this is the part that kept it safe. Every element KEPT ITS ID
+and changed parent. Nothing was recreated, so every existing handler, every
+syncAutoEx and syncTextSize and syncMapBtn, and every renderHub write still finds
+exactly the node it has always found. The only code change is the two handlers for
+the new panel, plus a null guard on the two buttons that no longer exist: those
+were assigned at load with a bare getElementById, which throws on null, and a throw
+at that point in the file would have taken down every handler declared after it.
+That is the failure the guards exist for, not a theoretical one.
+
+Counted before and after: the terminal now presents 9 interactive controls where it
+presented 14, and its third panel is a list plus four numbers plus one button.
+
+One thing I did not touch and am flagging instead. The terminal's bottom row still
+carries DEPLOY, REQUISITION, WORKSHOP, CONDITIONS and TUNING, which duplicate what
+the Undercroft stations already do: Holt carries the shop, the workshop and the
+Terms, the lift carries deploy, the dev box carries tuning. That is arguably the
+same complaint again. I left it because it is a navigation bar he may well use as a
+shortcut rather than content in his way, and quietly removing someone's shortcuts
+is a different thing from decluttering a panel. Say the word and it goes.
+
+Verified: parsecheck PASS at v2.98, all four maps and the hub drive and draw with
+drawErr null. Driven through the DOM: the Dev tools button opens the panel and the
+Close button shuts it; all seven moved elements (exportbtn, simbtn, mapbtn,
+roadmap, buildsel, buildgo, simprog) resolve inside #devmodal and NONE of them
+resolve inside #hub any more; no id is duplicated anywhere in the file. The
+terminal still renders its stash count, log count and all four stat fields without
+throwing.
+Not verified: no balance measurement, and none applies. This build moves DOM nodes
+between parents and adds two click handlers. Nothing in it touches a random draw,
+an entity decision, a timing constant or anything the sim can see.
+

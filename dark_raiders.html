@@ -245,6 +245,26 @@
   </div>
 </div>
 
+<div class="modal" id="devmodal">
+  <h3>Dev tools</h3>
+  <div class="msub">Instrumentation, not gameplay. This is where the export, the bot sim, the roadmap and the old builds live. HIS NOTE: "way too much sthit going on in the stash, needs to simplify" - the Operator Terminal was carrying all of this on the same screen as his stash and his loadout, so the panel he opens twenty times a raid to look at loot was two thirds developer furniture.</div>
+  <div style="padding:7px 0;display:flex;gap:6px">
+    <button id="exportbtn" style="flex:1">Export for Claude</button>
+    <button id="simbtn" style="flex:1">Run bot sim</button>
+  </div>
+  <div style="padding:0 0 7px"><button id="mapbtn" style="width:100%;font-size:9.5px">Map: GREYWATER DAM</button></div>
+  <div id="simprog" style="font-size:9.5px;color:var(--ash);padding:0 0 7px;display:none"></div>
+  <h2 style="border-top:1px solid var(--steel-hi)">Roadmap</h2>
+  <div class="plist" id="roadmap" style="max-height:190px"></div>
+  <h2 style="border-top:1px solid var(--steel-hi)">Play an older build</h2>
+  <div style="display:flex;gap:6px;padding:0 0 10px">
+    <select id="buildsel" style="flex:1;background:rgba(9,14,40,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:'Rubik',system-ui,sans-serif;font-size:12px;padding:6px"></select>
+    <button id="buildgo" style="padding:6px 14px">OPEN</button>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:4px">
+    <button id="closedev" style="padding:8px 20px">Close</button>
+  </div>
+</div>
 <div class="modal" id="sectormodal">
   <h3>Where are you going?</h3>
   <div class="msub">Four sectors, and they are not reskins of each other. Your stash, your credits, your contracts and your seal progress are yours everywhere; what changes is the ground you have to work. Your body stays on the sector it fell on.</div>
@@ -344,21 +364,7 @@
         <div class="stat"><span>Avg haul (extracted)</span><b id="s_avg">--</b></div>
         <div class="stat"><span>Avg accuracy</span><b id="s_acc">--</b></div>
         <div class="stat"><span>Most common killer</span><b id="s_killer">--</b></div>
-        <div style="padding:7px 12px;display:flex;gap:6px">
-          <button id="exportbtn" style="flex:1">Export for Claude</button>
-          <button id="simbtn" style="flex:1">Run bot sim</button>
-        </div>
-        <div style="padding:0 12px 7px"><button id="autoexbtn" style="width:100%;font-size:9.5px">Auto-export: ON</button></div>
-        <div style="padding:0 12px 7px"><button id="textsizebtn" style="width:100%;font-size:9.5px">Text size: 100%</button></div>
-        <div style="padding:0 12px 7px"><button id="mapbtn" style="width:100%;font-size:9.5px">Map: GREYWATER DAM</button></div>
-        <div id="simprog" style="font-size:9.5px;color:var(--ash);padding:0 12px 7px;display:none"></div>
-      <h2 style="border-top:1px solid var(--steel-hi)">Roadmap</h2>
-      <div class="plist" id="roadmap"></div>
-      <h2 style="border-top:1px solid var(--steel-hi)">Play an older build</h2>
-      <div style="display:flex;gap:6px;padding:0 12px 10px">
-        <select id="buildsel" style="flex:1;background:rgba(9,14,40,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:'Rubik',system-ui,sans-serif;font-size:12px;padding:6px"></select>
-        <button id="buildgo" style="padding:6px 14px">OPEN</button>
-      </div>
+        <div style="padding:7px 12px"><button id="devtoolsbtn" style="width:100%">Dev tools and roadmap</button></div>
       </div>
     </div>
   </div>
@@ -473,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.97';
+var VER='2.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15479,15 +15485,27 @@ function renderSettings(){
     P.autoExport=!P.autoExport; saveProfile(); syncAutoEx(); renderSettings();
   };
 }
+document.getElementById('devtoolsbtn').onclick=function(){
+  document.getElementById('devmodal').classList.add('on');
+};
+document.getElementById('closedev').onclick=function(){
+  document.getElementById('devmodal').classList.remove('on');
+};
 document.getElementById('closesettings').onclick=function(){
   document.getElementById('settingsmodal').classList.remove('on');
 };
-document.getElementById('textsizebtn').onclick=function(){
+// The terminal copies of these two are GONE at v2.98, so their handlers have to
+// tolerate a missing element rather than throwing at load and taking every
+// handler declared after them down with it. Settings, on the dev box under T,
+// owns both switches now and its own buttons are wired inside renderSettings.
+var _tsb=document.getElementById('textsizebtn');
+if(_tsb) _tsb.onclick=function(){
   var cur=UISCALES.indexOf(uiScale());
   P.uiScale=UISCALES[(cur+1)%UISCALES.length];
   saveProfile(); syncTextSize();
 };
-document.getElementById('autoexbtn').onclick=function(){
+var _aeb=document.getElementById('autoexbtn');
+if(_aeb) _aeb.onclick=function(){
   P.autoExport=!P.autoExport; saveProfile(); syncAutoEx();
 };
 document.getElementById('exportbtn').onclick=function(){
