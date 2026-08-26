@@ -9216,3 +9216,64 @@ and not armour, and that de-escalation functions; I have not measured contact
 arrival rate against decay rate, which is the next thing to actually measure rather
 than guess.
 
+
+### v3.10: it was never pursuit piling up, it was the map waking one machine at a time
+
+This closes the question the reverted chase experiment opened, and it corrects my
+own v3.09 wording in the process.
+
+At v3.09 I wrote that hazard rises ninefold across a raid because machines
+accumulate in "a hunting state". A churn probe over 40 stepped raids, sampling every
+6 seconds and counting state TRANSITIONS rather than just states, says that
+description was wrong in the way that matters:
+
+  window     in CHASE   in INVESTIGATE   distinct ever alerted   entries per machine
+  0-30s        0.08          0.21                 0.1                  1.00
+  60-90s       0.39          3.61                 1.9                  1.04
+  150-180s     1.04          6.75                 5.0                  1.06
+  240-270s     0.84          8.23                 7.0                  1.12
+  300-330s     0.38         15.85                 6.8                  1.06
+
+Three readings, and each one kills a theory I had:
+
+PURSUIT DOES NOT ACCUMULATE. Machines in chase sit near one for the entire raid and
+never climb. The thing I "fixed" last tick was not broken, and this is the second
+piece of evidence for that after finding the de-escalation at line 9417.
+
+THEY ARE NOT RE-FINDING YOU. Entries per alerted machine stay at 1.0 to 1.15, so
+almost every machine that ever hunts you does it once. There is no churn, no
+sticky leash, nothing circling back.
+
+WHAT GROWS IS INVESTIGATE, from 0.2 to 15.9. Your own noise converts the map from
+patrol into investigate, one machine at a time, and they walk toward where you have
+been. Distinct machines ever alerted climbs steadily with it. The rising hazard is
+not a pack that never gives up; it is the map progressively waking up, and every
+gunshot and opened container pays into it.
+
+That is a good system. It was also completely invisible. The '?' and '!' markers
+draw only on entities you can SEE, so fifteen machines converging on your last
+firefight from off screen are represented by nothing at all until they walk into
+view. The one number that best predicts your death was the one number the game
+never showed you.
+
+WHAT SHIPS. Two lines top right, and only when non-zero: N HUNTING in red for
+anything in chase or alarm, N SEARCHING in amber for anything investigating, with
+the amber brightening past eight. They are COUNTS and deliberately not positions:
+it tells you how much of the map you have woken, which is the thing that kills you,
+without handing over a map of where everything is. Hunting and searching are split
+because they demand different answers, one is a fight and the other is a reason to
+leave the area.
+
+Verified: parsecheck PASS at v3.10, all four maps and the hub drive and draw with
+drawErr null in the raid view and with the map overlay up. Zero state draws nothing
+and does not throw, checked by forcing every entity to patrol. Both lines verified
+in a driven raid: a bot-driven raid to 210 seconds reports 0 hunting and 3
+searching and renders "3 SEARCHING"; a forced state of 2 chase and 9 investigate
+renders "2 HUNTING" above "9 SEARCHING", captured at 3x and read back from the
+pixels.
+Not verified: no balance measurement, and none applies. This adds two strings to
+the HUD and counts a state array that already exists; it changes no roll, no entity
+decision and no timing constant, and the sim does not draw a HUD. What I have NOT
+measured is whether showing this changes how he plays, which is the only question
+that really matters about it and the only one the bot cannot answer.
+
