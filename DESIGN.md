@@ -10614,3 +10614,42 @@ fills, and drawHUD never runs with G.sim set. Also not verified: whether nine sl
 changes anything for him in practice. The two new slots are empty until he drags
 something into them, and the drag itself is only three builds old.
 
+
+### v3.33: the magazine on the crosshair
+
+HIS NOTE: "add a visual indicator as part of the reticule/mouse that shows how many
+rounds are left before reload, see best practices for this in other games."
+
+The reticle has carried the gun's STATE since v2.99, on his earlier note that running
+dry should not just make the cursor vanish: jammed, reloading, empty and dry each
+change its colour and shape, and reloading draws a ring closing on the cursor. What it
+never carried was the COUNT, so the one number you check constantly was the one thing
+still pulling your eyes to the bottom right corner mid firefight.
+
+WHAT OTHER GAMES CONVERGED ON, and what this does: a ring around the crosshair reading
+clockwise from twelve, segmented into individual rounds while the magazine is small
+enough to count. Twenty-eight is where ticks stop being distinguishable at this scale,
+so above that it becomes a solid depleting arc instead.
+
+TWO DECISIONS THAT KEEP IT FROM BECOMING NOISE. Its alpha RISES as the magazine
+empties, from 0.22 at full to 0.77 at the last round, because a full magazine is not
+information and the crosshair should stay clean for the ninety percent of the time the
+question is not being asked. And it is suppressed entirely while reloading, because
+the reload ring already owns that exact radius and two rings in one place is worse
+than either alone. Colour steps with the fraction: pale above half, amber below,
+rust below a quarter, which matches the corner readout's own thresholds.
+
+It only draws with a gun actually up, tested through hotbarSlots rather than assumed,
+so holding a smoke or a medkit does not draw a magazine you are not holding.
+
+Verified: parsecheck PASS at v3.33, all four maps and the hub draw with drawErr null.
+Read back from the pixels at three points on a twelve round magazine: full draws
+twelve pale ticks, six draws six amber ticks spanning exactly half the ring clockwise
+from twelve, two draws two rust ticks. The segmented and solid paths are both
+exercised by the four maps, whose issued guns span magazines from 8 to 44.
+Not verified: no balance measurement, and none applies; this is a ring drawn at the
+cursor and drawHUD never runs with G.sim set. Also not verified: the solid-arc path
+above 28 rounds was reasoned about rather than captured. The Chatter at 44 rounds
+takes it and drew clean on all four maps, but I have not read back a picture of the
+solid arc specifically, only of the segmented one.
+

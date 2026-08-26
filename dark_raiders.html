@@ -492,7 +492,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.32';
+var VER='3.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13187,6 +13187,42 @@ function drawHUD(){
     ctx.moveTo(rx0,ry0-gap-len); ctx.lineTo(rx0,ry0-gap);
     ctx.moveTo(rx0,ry0+gap); ctx.lineTo(rx0,ry0+gap+len);
     ctx.stroke();
+    // HIS NOTE: "add a visual indicator as part of the reticule/mouse that shows
+    // how many rounds are left before reload, see best practices for this in
+    // other games." The reticle already carried the gun's STATE since v2.99,
+    // jammed, reloading, empty and dry, but never its COUNT, so the one number
+    // you check constantly was the one thing still forcing your eyes to the
+    // bottom right corner mid firefight.
+    // The shape other games converged on is a ring around the crosshair reading
+    // clockwise from twelve, and segmented when the magazine is small enough for
+    // individual rounds to be countable. Twenty-eight is where ticks stop being
+    // distinguishable at this scale, so above that it becomes a solid arc.
+    // ALPHA RISES AS IT EMPTIES. A full magazine is not information, so it sits
+    // at a whisper and gets louder as the answer starts to matter, which keeps
+    // the crosshair clean for the 90 percent of the time the question is not
+    // being asked. Suppressed entirely while reloading, because the reload ring
+    // already owns that radius and two rings in one place is noise.
+    var _HB=hotbarSlots()[hotSel()];
+    var _gunUp=(!_HB||_HB.kind==='gun'||_HB.kind==='tool');
+    if(_gunUp&&!rState&&p.wep&&p.wep.mag>0){
+      var _mf=clamp(p.ammo/p.wep.mag,0,1);
+      var _mr=gap+len+4;
+      var _mc=_mf>0.5?'230,240,246':(_mf>0.25?'255,192,74':'224,72,58');
+      var _ma=0.22+0.55*(1-_mf);
+      ctx.lineWidth=2.2; ctx.lineCap='butt';
+      if(p.wep.mag<=28){
+        var _seg=6.2832/p.wep.mag, _pad=_seg*0.22;
+        for(var _mi=0;_mi<p.ammo;_mi++){
+          var _a0=-1.5708+_mi*_seg+_pad*0.5, _a1=_a0+_seg-_pad;
+          ctx.strokeStyle='rgba('+_mc+','+_ma+')';
+          ctx.beginPath(); ctx.arc(rx0,ry0,_mr,_a0,_a1); ctx.stroke();
+        }
+      } else {
+        ctx.strokeStyle='rgba('+_mc+','+_ma+')';
+        ctx.beginPath(); ctx.arc(rx0,ry0,_mr,-1.5708,-1.5708+6.2832*_mf); ctx.stroke();
+      }
+      ctx.lineCap='butt';
+    }
     if(rState==='reload'&&p.wep.reload){
       // the reload as a ring closing on the cursor, so you know when the gun is
       // yours again without looking away from the fight
