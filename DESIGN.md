@@ -10887,3 +10887,80 @@ a read-only audit. Also not verified: whether the eight lines are the RIGHT eigh
 are my judgement of what a first-timer needs, weighted toward things his own notes show
 were invisible, and the only real test is somebody new playing it.
 
+
+### v3.38: one status verb for you and for them, and three bugs the screenshot found
+
+HIS NOTE: "there should be a 'status' for the player (reloading, running, shooting,
+etc) and that should also be applied to each Raider bot."
+
+ONE FUNCTION, TWO ENTRY POINTS, because the second half of his sentence is the whole
+design. The raider board has said ACTIVE for every raider who was neither dead nor
+extracted since v3.17, which describes a man asleep on patrol and a man in a firefight
+with the same word. And the player had no status line at all: reloading and jamming
+showed on the reticle and in the ammo corner, and everything else showed nowhere.
+playerStatus and raiderStatus sit next to each other and share one colour table, so a
+state that gets a verb for him gets the same verb, in the same colour, for them. Two
+parallel lists would drift the first time either side gained a state, which is the
+exact defect class this file has hit five times with strings.
+
+Order is priority, most urgent first, because a raider can easily be reloading AND
+fighting AND hurt and the answer to "what is he doing" is the top one. Fourteen player
+verbs, eleven raider verbs, all driven and all carrying a colour.
+
+THREE BUGS, AND THE FIRST TWO WERE ONLY VISIBLE IN A PICTURE.
+
+ONE, MY PLACEMENT. The status line went beside the HP number at by+18, which is
+INSIDE the green health fill, so RELOADING rendered as amber text on a green bar. It
+sits above the bar on its own dark plate now.
+
+TWO, DUPLICATE NAMES, AND I BLAMED THE WRONG THING. The capture showed the board
+listing LagSwitch_Larry, ProneBone_42, ur_dad_left_4_milk and SigmaGrindsetTom TWICE
+each. I attributed it to the v3.36 waves and wrote a fix for the wave namer. It was
+not the waves: the duplicates are present at raid start, before a single wave fires.
+IDENTITIES holds ten names, nOf scales nRaider by map area, and GREYWATER DAM and
+SUNKEN QUARTER both ask for FOURTEEN raiders, so idPool[i % 10] has been wrapping and
+opening every raid on those maps with four doubled names. Suffixed rather than capped,
+because the raider count is a balance number measured across hundreds of raids and the
+length of a name list is not a reason to change it.
+My wave-namer fix ALSO had a bug of its own on the way through: IDENTITIES entries are
+objects, so comparing roster.name to the entry rather than to entry.tag never matched
+anything.
+
+THREE, AND IT IS THE SERIOUS ONE. tryExtractTick has THREE call sites, so the wave
+clock added dt three times per frame and arrivals came at three times the stated
+interval. I guarded it with G.t, which advances in the live loop and STAYS AT ZERO FOR
+THE ENTIRE SIM, so that guard switched raider waves off in every simulated raid.
+Caught immediately because the drive reported waves 0 where it had reported 5.
+There is a real frame counter now, incremented in updateEnts, which is the one
+function both simStep and the live loop call exactly once a frame. Driven: waves now
+fire at 46, 91, 136, 181 and 226 seconds, gaps of exactly 45, against a stated gap of
+45.
+
+AND THAT CHANGED THE BALANCE, so v3.36's number is superseded. The corrected cadence
+costs MORE than the broken one, which sounds backwards until you see why: firing three
+times too fast burned the cap of six inside the first ninety seconds and then stopped,
+where a correct 45 second gap spreads six arrivals across the whole raid. 320 paired
+seeds on GREYWATER DAM, mapIx pinned, simGreed 52 both arms:
+
+  extract rate   13.1 percent off   10.0 percent on
+  discordant     19 favouring off, 9 favouring on
+  McNemar exact two sided p = 0.087
+
+A 3.1 point cost, short of significance and larger than I would dismiss as noise. I am
+shipping it: he asked for more raiders in the back half of a raid, more raiders in the
+back half of a raid is harder, and the honest thing is to say by how much rather than
+to quietly soften it. raiderWaveCap, raiderWaveMin and raiderWaveGap are all dials.
+
+Verified: parsecheck PASS at v3.38, all four maps and the hub draw with drawErr null.
+All 14 player states and all 11 raider states driven through the real functions and
+returning the right verb, and every verb returned has an entry in the colour table.
+Zero duplicate roster names on all four maps, and zero across a forced 19-name roster
+with five waves. Wave cadence measured at exactly the stated interval. Status line
+read back from the pixels above the bar.
+Not verified: the raider verbs are shown on the BOARD, which is omniscient by design
+since v3.17, so FIGHTING now tells you a raider you cannot see is in a fight. That is
+consistent with the board already showing bag values and extraction status for
+everyone, but it IS a real information gain and I have not measured what it does to
+how the map is played. Also not verified: whether 3.1 points is real. It would need a
+second independent 320 to separate from noise and I ran one, not two.
+

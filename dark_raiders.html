@@ -503,7 +503,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.37';
+var VER='3.38';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5897,7 +5897,20 @@ function buildRaid(sim){
   for(var ip=idPool.length-1;ip>0;ip--){ var jp=ri(0,ip),tp=idPool[ip]; idPool[ip]=idPool[jp]; idPool[jp]=tp; }
   for(i=0;i<N_RAIDER;i++){
     var s3=far(freeSpot(map,30),1190);
-    var R3=mkRaider(s3.x,s3.y,idPool[i%idPool.length],sim);
+    // MORE RAIDERS THAN NAMES, found v3.38 and it predates the waves I first
+    // blamed for it. IDENTITIES holds ten. nOf scales nRaider by map area, and
+    // GREYWATER DAM asks for FOURTEEN, so idPool[i % 10] wrapped and the board
+    // opened every raid on that map listing LagSwitch_Larry, ProneBone_42,
+    // ur_dad_left_4_milk and SigmaGrindsetTom twice each. A board whose entire
+    // job is telling you who is out there cannot have two of anyone.
+    // Suffixed rather than capped, because the raider count is a balance number
+    // measured across hundreds of raids and the name list is not a reason to
+    // change it. Same shape as the wave fallback so the two cannot diverge.
+    var _idb=idPool[i%idPool.length];
+    var _ident=(i<idPool.length)?_idb
+      :{id:_idb.id+'_'+Math.floor(i/idPool.length),
+        tag:_idb.tag+'_'+(Math.floor(i/idPool.length)+1), coat:_idb.coat};
+    var R3=mkRaider(s3.x,s3.y,_ident,sim);
     // THEY KNOW YOU. No passive raiders, no parley grace, everyone already
     // looking. It removes an entire tool from your hands for the whole run.
     if(!sim&&hasTerm('known')){ R3.hostile=true; R3.alert=2.5; R3.grudge=true; }
@@ -7420,6 +7433,7 @@ function feudEngage(e,dt){
   if(e.cd<=0&&e.wep&&fd<e.rng){
     fireWeapon(e,e.wep,foe.x+rnd(-12,12),foe.y+rnd(-12,12),false);
     e.cd=(e.wep.rof/1000)*rnd(1.5,2.4);
+    e.shotT=0.35;   // read by raiderStatus, decayed in updateEnts
   }
   // Back off if he is right on top of you, the same rule the machine fight uses.
   if(fd<90) moveToward(e,e.x-(foe.x-e.x),e.y-(foe.y-e.y),e.spd*.7,dt);
@@ -7978,6 +7992,12 @@ function tryExtractTick(dt,wantCall){
 // somehow not on the list.
 function tickRaiderWaves(dt){
   if(CFG.raiderWaves===0||!G||G.over||!G.roster) return;
+  // ONCE A FRAME. tryExtractTick, which calls this, has THREE call sites, so the
+  // wave clock was advancing up to three times per frame and arrivals came at
+  // three times the stated interval. G.t is identical across those calls within
+  // one frame, which makes it the cheapest correct guard.
+  if(G.waveAt===G.frameN) return;
+  G.waveAt=G.frameN;
   var cap=(CFG.raiderWaveCap===undefined?6:CFG.raiderWaveCap);
   var floorN=(CFG.raiderWaveMin===undefined?5:CFG.raiderWaveMin);
   var gap=(CFG.raiderWaveGap===undefined?45:CFG.raiderWaveGap);
@@ -8006,7 +8026,23 @@ function tickRaiderWaves(dt){
     var _c=freeSpot(G.map,30), _cd=dist(_c,G.player);
     if(_cd>bd){ bd=_cd; sp=_c; }
   }
-  var idn=IDENTITIES[(G.waveN+G.roster.length)%IDENTITIES.length];
+  // A NAME NOBODY ON THE BOARD ALREADY HAS, v3.38. The v3.36 wave picked
+  // IDENTITIES by index modulo its length, which collides the moment the roster
+  // is longer than a few, and a capture caught the board listing LagSwitch_Larry
+  // and ProneBone_42 twice each. A duplicate name on a board whose whole job is
+  // telling you WHO is out there is worse than no board.
+  // Falls back to a suffixed name rather than refusing the wave, because running
+  // out of identities should cost you a pretty name, not the feature.
+  var idn=null;
+  for(var _iq=0;_iq<IDENTITIES.length;_iq++){
+    var _cand=IDENTITIES[(G.waveN+_iq)%IDENTITIES.length], _taken=false;
+    for(var _rq2=0;_rq2<G.roster.length;_rq2++) if(G.roster[_rq2].name===_cand.tag){ _taken=true; break; }
+    if(!_taken){ idn=_cand; break; }
+  }
+  if(!idn){
+    var _base=IDENTITIES[G.waveN%IDENTITIES.length];
+    idn={id:_base.id+'_w'+G.waveN, tag:_base.tag+'_'+(G.waveN+2), coat:_base.coat};
+  }
   if(!sp||bd<900) return;
   var NR=mkRaider(sp.x,sp.y,idn,!!G.sim);
   G.ents.push(NR);
@@ -9458,6 +9494,20 @@ function moveToward(e,tx,ty,spd,dt){
 
 // ================================================================ enemies
 function updateEnts(dt){
+  // The SHOOTING marker decays here rather than in the fire branch, because this
+  // is the one tick every entity passes through exactly once a frame regardless
+  // of which AI branch it takes. Decaying it inside a branch would leave a raider
+  // who fired and then changed state stuck reading SHOOTING forever.
+  for(var _sq=0;_sq<G.ents.length;_sq++){
+    var _se=G.ents[_sq];
+    if(_se.shotT>0){ _se.shotT-=dt; if(_se.shotT<0) _se.shotT=0; }
+  }
+  // A FRAME COUNTER BOTH PATHS INCREMENT. updateEnts is called exactly once per
+  // frame by simStep AND by the live loop, which makes it the only honest place
+  // to count frames. G.t is NOT that place: it advances in the play loop and
+  // stays at zero for the entire sim, which I found out by using it as a guard
+  // and switching raider waves off in every sim raid ever run.
+  G.frameN=(G.frameN||0)+1;
   var p=G.player,T=G.tel;
   // His in-run note at 190s: "not enough enemies, boring". A raid emptied as it
   // went: everything he killed stayed dead and the back half of the clock had
@@ -13949,6 +13999,22 @@ function drawHUD(){
   }
   ctx.font=FS(TYPE.title); ctx.fillStyle='#FFF6DC';
   ctx.fillText('HP  '+Math.round(p.hp),24,by+18);
+  // YOUR OWN STATUS, beside the health because that is where you already look.
+  // Same verb and same colour the raider board gives them, from the same table,
+  // so "FIGHTING" means the same thing about you as it does about the man whose
+  // name is in the top left corner.
+  (function(){
+    // ABOVE the bar, not on it. The first cut put it at by+18 beside the HP
+    // number, which is inside the green fill, and the capture showed amber text
+    // on a green bar. Its own dark plate so it reads at any health.
+    var _ps=playerStatus();
+    ctx.font=FS(TYPE.label);
+    var _pw=ctx.measureText(_ps).width;
+    ctx.fillStyle='rgba(6,9,13,.72)';
+    ctx.fillRect(20,by-LH(17),_pw+10,LH(14));
+    ctx.fillStyle=STATCOL[_ps]||'#a5b1bc';
+    ctx.fillText(_ps,25,by-LH(6));
+  })();
   // The number that was just taken off, floating clear of the bar and fading.
   if(p.dmgPopT>0&&p.lastDmg>0){
     var dpa=clamp(p.dmgPopT/1.05,0,1);
@@ -14334,6 +14400,60 @@ function drawNoiseMarkers(){
 // which is the line between competitive information and knowing where to shoot.
 // Bag value freezes at the last known figure once a raider dies or extracts, because
 // that is the number that mattered: what he got out with, or what he is lying on.
+// ONE STATUS VERB, FOR YOU AND FOR THEM, v3.38. His note: "there should be a
+// 'status' for the player (reloading, running, shooting, etc) and that should
+// also be applied to each Raider bot."
+// The second half is why this is ONE function with two entry points rather than
+// two lists of strings. The raider board has said ACTIVE for every raider who was
+// neither dead nor extracted since v3.17, which covers a man asleep on patrol and
+// a man in a firefight with the same word. And the player had no status line at
+// all: reloading and jamming showed on the reticle and in the ammo corner, and
+// everything else showed nowhere.
+// Sharing the function means a state that gets a verb for him gets the same verb
+// for them, in the same order, forever. Two parallel lists would drift the first
+// time either side gained a state, which is the exact defect class this file has
+// hit five times with strings.
+// ORDER IS PRIORITY, most urgent first, because a raider can easily be reloading
+// AND fighting AND hurt, and the answer to "what is he doing" is the top one.
+var STATCOL={
+  DOWN:'#ff4d3d', FIGHTING:'#ff5a4a', SHOOTING:'#ff8a4a', RELOADING:'#ffb02e',
+  JAMMED:'#e0483a', HEALING:'#6fe0a0', REVIVING:'#7fc4a0', EXTRACTING:'#35d6c8',
+  COOKING:'#ffc04a', SEARCHING:'#ffc04a', LOOTING:'#cdd6dd', TRADING:'#7cc4ff',
+  HUNTING:'#ffb02e', SPRINTING:'#cdd6dd', AIMING:'#ffbe5a', CROUCHED:'#9aa8b2',
+  ROLLING:'#cdd6dd', MOVING:'#a5b1bc', HOLDING:'#8a96a1', IDLE:'#6b7783', GONE:'#6b7783'
+};
+function playerStatus(){
+  var p=G&&G.player; if(!p) return 'GONE';
+  if(p.downed) return 'DOWN';
+  if(p.roll>0) return 'ROLLING';
+  if((p.healQ||0)>0) return 'HEALING';
+  if(p.jam>0) return 'JAMMED';
+  if(p.reloading>0) return 'RELOADING';
+  if(p.cooking&&p.cookKind) return 'COOKING';
+  if(G.trade) return 'TRADING';
+  if(G.searching) return 'SEARCHING';
+  // A shot inside the last third of a second still reads as shooting, which is
+  // what makes the line move like the fight does rather than lagging it.
+  if(G.t-(p.lastShot||-9999)<0.35) return 'SHOOTING';
+  if(p.ads) return 'AIMING';
+  if(G.sprinting&&p.moving) return 'SPRINTING';
+  if(G.pCrouch) return 'CROUCHED';
+  if(p.moving) return 'MOVING';
+  return 'HOLDING';
+}
+function raiderStatus(e){
+  if(!e) return 'GONE';
+  if(e.downed) return 'DOWN';
+  if(e.reviving) return 'REVIVING';
+  if((e.shotT||0)>0) return 'SHOOTING';
+  if(e.state==='extract') return 'EXTRACTING';
+  if(e.state==='chase'||e.state==='alarm'||e.state==='hunt') return 'FIGHTING';
+  if((e.lootT||0)>0) return 'SEARCHING';
+  if(e.state==='investigate') return 'HUNTING';
+  if(e.state==='loot') return e.goal?'LOOTING':'IDLE';
+  if(e.state==='patrol') return 'MOVING';
+  return 'IDLE';
+}
 function drawRaiderBoard(){
   var R=G.roster;
   if(!R||!R.length) return;
@@ -14347,7 +14467,7 @@ function drawRaiderBoard(){
     }
     var st;
     if(r.out){ st='EXTRACTED'; out++; }
-    else if(inEnts){ st=(e.state==='extract')?'RUNNING':'ACTIVE'; live++; }
+    else if(inEnts){ st=raiderStatus(e); live++; }
     else { st='DEAD'; dead++; }
     rows.push({name:r.name,val:r.val,st:st,crew:r.crew});
   }
@@ -14368,7 +14488,7 @@ function drawRaiderBoard(){
   var yy=y0+LH(10);
   for(i=0;i<rows.length;i++){
     var w=rows[i];
-    var col=w.st==='EXTRACTED'?'#7fc4a0':(w.st==='DEAD'?'#6b7783':(w.st==='RUNNING'?'#ffd25c':'#cdd6dd'));
+    var col=w.st==='EXTRACTED'?'#7fc4a0':(w.st==='DEAD'?'#6b7783':(STATCOL[w.st]||'#cdd6dd'));
     ctx.fillStyle=col;
     var _rt=(w.val>0?w.val.toLocaleString()+'c':'-')+'  '+w.st;
     var _budget=LW-LH(26)-ctx.measureText(_rt).width-LH(8);
