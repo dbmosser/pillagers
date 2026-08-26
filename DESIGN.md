@@ -10136,3 +10136,58 @@ cannot see it. What I have NOT established is the thing that actually matters, w
 is whether he was failing to find the button or had decided the stash was worth more
 to him unsold. The label answers the first and cannot answer the second.
 
+
+### v3.24: what the reputation is FOR, and two career numbers that turn out to be decorations
+
+v3.23 told him where reputation comes from. This is the other half: what it buys, and
+how far away the next thing is. "rep 0" against a shop full of [REP 600] is a price
+list with no reason to read it.
+
+ONE LINE UNDER THE SELL BUTTON, computed from the SHOP table rather than restated, so
+a new item cannot ship without appearing here:
+
+  Next unlock: Frag Charge at REP 600.  600 to go.
+
+and when the stash in front of him would actually cover the gap, it says so and turns
+coolant blue:
+
+  Next unlock: Frag Charge at REP 600.  600 to go, and this stash covers it.
+
+It skips anything already owned, because a "next unlock" naming the rig on your back
+is worse than saying nothing. Rigs, guns and packs each have their own ownership test,
+matching the ones the shop itself uses; consumables are deliberately never treated as
+owned, since you can buy a frag charge every week.
+
+AND A SEPARATE FINDING I AM REPORTING RATHER THAN ACTING ON. Chasing the same "is this
+number live" question one step further, because [[the MAPCONT lesson]] in this file is
+that an authoritative looking constant can be completely inert:
+
+  P.sp        LIVE.  drives SEASON_TIERS, gates claimable season rewards.
+  P.rep       LIVE.  gates every rig, gun and pack in the shop.
+  P.xpLevel   INERT. written once, printed twice, read by no decision anywhere.
+  P.prof      INERT. written once, printed twice, read by no decision anywhere.
+
+So the HUD prints four progression numbers side by side in identical formatting and
+two of them do nothing at all. LVL and PROFICIENCY are career trophies wearing the
+same clothes as the two numbers that actually gate the game, which is the same defect
+class as reputation having no visible source: the player cannot tell the gate from the
+decoration.
+
+I have NOT changed them. Deleting them throws away a career stat he may like, and
+making them gate something is a design decision about what a level should DO, which is
+his and not mine. It is named here so it stops being invisible.
+
+Verified: parsecheck PASS at v3.24, all four maps and the hub drive and draw with
+drawErr null. The unlock line driven up the whole ladder, all eight rep gates: 0 names
+the Frag Charge at 600 with 600 to go, 600 names the Armor Plate at 800, 800 the
+Compact SMG at 1,000, 1,200 the Backpack Tier 3 at 1,500, 2,000 the Auto Rifle at
+2,500, and 5,000 reports everything unlocked. Ownership driven separately: owning the
+Plated Vest at its own gate of 1,200 correctly skips it and names Backpack Tier 3
+instead. The stash-covers-it branch driven both ways, one item against the 600 gap
+stays plain, four hundred items turns it coolant and adds the clause.
+Not verified: no balance measurement, and none applies for the same reason as v3.23.
+This reads the SHOP array and P.rep and writes one string; it changes no roll, no
+entity decision and no timing constant, and none of it runs with G.sim set. Also not
+verified, and it is again the thing that matters: whether naming the next unlock
+actually makes him sell. That needs his next export, not my fixture.
+
