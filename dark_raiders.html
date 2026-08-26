@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.17';
+var VER='3.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -539,7 +539,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -5362,7 +5362,7 @@ function buildRaid(sim){
     zones.push({x:map.extracts[z].x,y:map.extracts[z].y,r:78,open:true,
       beaconT:null,hold:null,pullT:null,callT:0,warned:0,
       closeAt:(cl===null?undefined:cl),
-      siegeSpawned:0,siegeSpawnT:0,siegeGreed:null});
+      siegeSpawned:0,siegeSpawnT:0,siegeGreed:null,pullN:0,pinged:0});
   }
   // shuffle which point draws which closure time, so the map is fixed but the
   // pressure pattern is not
@@ -7626,7 +7626,7 @@ function tryExtractTick(dt,wantCall){
     if(z.callT<1.6) return;
     z.callT=0;
     {
-      z.beaconT=CFG.extractWait; z.hold=null; z.siegeSpawned=0; z.siegeSpawnT=0; z.siegeGreed=null;
+      z.beaconT=CFG.extractWait; z.hold=null; z.siegeSpawned=0; z.siegeSpawnT=0; z.siegeGreed=null; z.pullN=0; z.pinged=0;
       G.beaconT=z.beaconT; G.shipHold=null; G.siegeSpawned=0; G.siegeSpawnT=0;
       T.beaconCalls=(T.beaconCalls||0)+1;
       // The price has to be legible BEFORE the wait, or it is not a decision, it is an
@@ -7695,7 +7695,7 @@ function tickExtractPoints(dt){
   // that empties as you drop things mid siege must not quietly call the machines off.
   if(z.siegeGreed===undefined||z.siegeGreed===null) z.siegeGreed=greedOf();
   var GR=z.siegeGreed;
-  var siegeIv=8-4.6*GR, siegeCap=Math.round(6+8*GR);
+  var siegeIv=8-4.6*GR, siegeCap=Math.round((6+8*GR)*(CFG.siegeVol===undefined?1:CFG.siegeVol));
   // THE SIEGE CLOCK IS PER CALL, v2.27, and it was global inside a per-zone loop.
   // Every line around it is per zone: z.beaconT, z.hold, and z.siegeGreed, which
   // is read three lines up so the price is fixed per call. The counter and the
@@ -7757,14 +7757,69 @@ function tickExtractPoints(dt){
   if(_sg>=2){
     if(_pz) z.siege=0; else G.siege=0;
     if(z===G.active) G.siege=0;
-    // The ring itself is what the machines hear, and a rich extraction is a louder event.
-    ping(z.x,z.y,1200*(1+0.7*GR),true,false,'env','fire');
+    // THE FLARE IS LOUD, THE SHIP IDLING IS NOT, v3.18. This ping is the thing
+    // that actually delivers the crowd, which took four measurements to find
+    // because it is the one line I did not suspect. Within the SAME raid, the
+    // same player, thirty seconds apart, across 30 beacon calls:
+    //
+    //                     30s before the call     during the call
+    //   machines on screen        3.97                  8.80      t = 5.7
+    //   of those, investigating   2.54                  6.20      t = 6.9
+    //   of those, hostile         0.35                  1.66
+    //
+    // He is right that the ring crowds, and it is not the arrivals doing it: the
+    // siege delivers 5.8 machines against a stated cap, but this fires every two
+    // seconds at full strength for the whole call, seventeen times over a typical
+    // 34 second wait, each one a map scale alarm.
+    // So the FIRST one stays exactly as loud as it was, because that is the flare
+    // going up and it should wake a district. Every repeat after it is the ship
+    // holding station, and siegeEcho is what that costs. IT SHIPS AT 1, meaning no
+    // continuously, it simply stops shouting the same shout seventeen times.
+    var _echo=(CFG.siegeEcho===undefined?1:CFG.siegeEcho);
+    var _first=!z.pinged; z.pinged=1;
+    ping(z.x,z.y,1200*(1+0.7*GR)*(_first?1:_echo),true,false,'env','fire');
+    // THE RING'S REACH IS A NUMBER NOW, v3.18. This loop is not the ping above it;
+    // it is a second, harder conscription that ignored walls, ignored the noise
+    // falloff and had no cap. 1500 units is a disc covering 34 percent of the map,
+    // it re-fired every 2 seconds for the whole call, and it refreshed alert to 2.4
+    // every time, so the 4.8 second de-escalation at the chase exit could never
+    // fire. Everything inside that disc was locked onto the ring until the ship
+    // left. Measured over 80 raids on GREYWATER DAM: the siege delivers 5.8
+    // arrivals against a stated cap of 6 to 14, but the ring HELD 10.6 machines on
+    // average, peaking at 16.4, and at the worst seed 33. The cap was a promise
+    // about a number that was never what showed up.
+    // So the conscription gets the same shape of promise the arrivals have, and
+    // is a FRACTION of it: siegePull multiplies the arrivals cap, default 0.5, so
+    // a ring drags in 3 to 7 on top of the 6 to 14 it spawns. Set it to 1 and the
+    // pull matches the arrivals; set it high enough that it never binds and the
+    // old unbounded sweep is back.
+    // The default is 0.5 and not 1 because 1 was MEASURED and does almost nothing:
+    // 80 raids at a cap of 6 to 14 moved the peak from 16.4 machines to 15.5, since
+    // the unbounded sweep was already averaging 10.6, right at its own cap. A cap
+    // set where the thing already sits is a promise, not a change, and he asked for
+    // a change.
+    // PER CALL, not per ping: once a machine has been conscripted it keeps being
+    // refreshed for free, so the siege does not go slack, and a conscript that
+    // dies does not buy you a replacement. The cap is about how bad the ring gets,
+    // and dying is the player answering it.
+    // siegePull 0 means the ring drags in nobody and only the arrivals come.
+    var _pullCap=Math.round((6+8*GR)*(CFG.siegePull===undefined?0.5:CFG.siegePull));
+    z.pullN=z.pullN||0;
     for(var bi=0;bi<G.ents.length;bi++){
       var be=G.ents[bi];
       if(dist(be,z)>1500) continue;
       if(be.state==='chase') continue;
+      // STREAM DISCIPLINE, the v2.09 jam rule. Both jitter rolls are drawn for
+      // every candidate the old loop would have reached, whether or not the cap
+      // lets this one through, so siegePull cannot shift the PRNG underneath a
+      // paired comparison.
+      var _jx=rnd(-50,50), _jy=rnd(-50,50);
+      if(be.pullZ!==z){
+        if(z.pullN>=_pullCap) continue;
+        be.pullZ=z; z.pullN++;
+      }
       be.alert=Math.max(be.alert,2.4);
-      if(be.state!=='extract'){ be.state='investigate'; be.tx=z.x+rnd(-50,50); be.ty=z.y+rnd(-50,50); }
+      if(be.state!=='extract'){ be.state='investigate'; be.tx=z.x+_jx; be.ty=z.y+_jy; }
     }
   }
     if(z.beaconT>0) continue;

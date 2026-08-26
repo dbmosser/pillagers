@@ -9669,3 +9669,102 @@ the one part of this build resting on reading rather than measurement. Also
 unmeasured: raiderDown itself. The bot dies to raiders roughly twice in 320 raids,
 so a paired A/B on that dial would be measuring a fight the bot almost never has.
 
+
+### v3.18: the crowd at your extract is not the siege, it is your own tail catching up
+
+His note was "still ALOT of bots pushing extract, maybe too many", and the run that
+came in this tick backs it: run #34, COLD STORAGE, beacon called, standing in the
+ring at 0m, dead at 44 seconds, diedInSiege. So I went looking for the mechanism.
+I found four candidates, built a dial for each, and measured all four. Three of them
+do nothing, one of them was a genuine unbounded loop, and none of them is the cause.
+This entry is mostly the measurement, because the measurement is the finding.
+
+WHAT THE RING ACTUALLY HOLDS. 80 raids on GREYWATER DAM, mapIx pinned, simGreed 52,
+sampling every half second for the whole beacon. Within 700 units of the ring: 10.6
+machines on average, peaking at 16.4, worst seed 33. Against a siege that delivers
+5.83 arrivals with a stated cap of 6 to 14. So the cap was a promise about a number
+that was never what showed up, and there was roughly twice that standing there.
+
+CANDIDATE ONE, THE UNBOUNDED CONSCRIPTION. Two lines below the siege ping there is a
+second, harder alert: every entity within 1500 units, no walls checked, no falloff,
+forced to investigate with alert refreshed to 2.4, re-firing every two seconds for
+the whole call. 1500 units is a disc covering 34 percent of a 5200 by 4000 map, and
+because alert never decayed the 4.8 second de-escalation could never fire. Measured
+intake: 37.8 machines conscripted per call on average, 80 at the worst seed, against
+a documented cap of six.
+
+That one is real and it is now bounded. siegePull multiplies the arrivals cap and
+ships at 0.5, so a ring drags in 3 to 7 on top of the 6 to 14 it spawns. Driven and
+confirmed over 80 raids: zero breaches, pull peaks exactly at the cap.
+
+AND IT CHANGED NOTHING. That is the part worth writing down. Bounding intake from
+37.8 to 5.0 moved the ring population from 16.4 at peak to 15.5. I had capped intake
+and left retention infinite, which I had even written into the comment as a feature.
+
+CANDIDATE TWO, ARRIVALS. siegeVol multiplies the arrivals cap. Sweeping it over 240
+raids cut arrivals from 5.63 to 3.40 and moved the peak from 15.5 to 15.0.
+
+CANDIDATE THREE, RETENTION. Stop refreshing a conscript once it has reached the ring,
+so the pile can churn instead of accumulating. 160 raids: machines on screen 8.74 to
+8.86, investigating 6.17 to 6.25, zero discordant pairs on outcome. Reverted rather
+than shipped, because a behaviour change that measures at zero is not a fix, it is
+just more code to be wrong later.
+
+CANDIDATE FOUR, THE ECHO. The ring re-pings at 1200 strength every two seconds,
+seventeen times over a typical 34 second wait, each one a map scale alarm. Cutting
+every repeat after the first to 15 percent, 360 raids: the on screen lift went from
+4.52 to 4.37. Nothing.
+
+THE CONTROL THAT SETTLED IT, and I should have run it first. Compare the same raid
+against itself: the 30 seconds BEFORE the call against the call. 30 beacons:
+
+                          30s before      during      paired t
+  machines on screen         3.97          8.80          5.69
+  of those, investigating    2.54          6.20          6.88
+  of those, hostile          0.35          1.66
+
+So he is right, and it is not small: calling the ship more than doubles what is on
+your screen, and 24 of 30 raids get busier. But with the ENTIRE conscription loop
+switched off and arrivals cut to 40 percent, the lift is 4.56 against 4.49 with
+everything on. Turning the siege off does not reduce the crowd at the siege.
+
+WHAT IT IS, THEN. The machines standing at your extract are the ones you woke on the
+way there. v3.10 measured that investigate accumulates from 0.2 to 15.9 across a
+raid, one machine at a time, paid for by your own gunshots and opened containers.
+The beacon is called at 224 seconds on average, so it inherits a map that is already
+awake, and then you stand still for 34 seconds and your tail catches up. That is why
+every siege dial is inert: the siege is not what summoned them, you did, minutes ago
+and somewhere else.
+
+I am NOT shipping a fix for that, and this is deliberate. The levers that would
+actually move it are how far player noise carries, how long the beacon runs, and
+whether you can keep moving while it does. All three change every raid rather than
+the last 34 seconds of one, and which of them he wants is his call and not mine.
+Flagged, measured, and left alone.
+
+WHAT SHIPS. One behaviour change, siegePull bounding a loop that had no bound.
+siegeVol and siegeEcho ship at 1, meaning no change at all: they are dials on the
+arrivals count and the re-ping strength, sitting at exactly today's values, because
+both measured inert and I am not going to ship a change that did nothing and call it
+an answer.
+
+ONE THING OWNED. v3.17 added raiderDown without adding it to __pinDefaults, which is
+the exact defect v3.10 caught and wrote a comment about. All four new dials are
+pinned now and the comment says so in stronger terms.
+
+Verified: parsecheck PASS at v3.18, all four maps and the hub drive and draw with
+drawErr null in the raid view and with the map overlay up. The cap is driven: 80
+raids, zero breaches, conscription peaks exactly at the per call cap, and unbounded
+it reaches 80 on one seed. siegeArrive is gone from both the game and the fixture,
+confirmed by grep. The four dials read back 0.5, 1 and 1 from a pinned fixture.
+Stream discipline held: both jitter rolls are drawn for every candidate the old loop
+would have reached, whether or not the cap admits it, so siegePull cannot shift the
+PRNG under a paired comparison.
+Not verified: the extract rate effect of siegePull is not established. 80 seeds gave
+13.8 percent unbounded against 17.5 percent bounded, 5 discordant pairs to 2, which
+is far short of significance and far short of the 320 paired seeds this project uses
+for a balance claim. I am shipping it as a correctness bound on an unbounded loop,
+not as a balance improvement, and it should not be quoted as one. Also not verified:
+anything about how this FEELS. Every number here is the bot's, and the bot does not
+mind standing in a crowd.
+

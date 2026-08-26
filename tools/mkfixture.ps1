@@ -261,7 +261,9 @@ window.__pinDefaults=function(mapIx){
     // silently contaminate a measurement. Caught when a timed-out probe left
     // chaseGiveUp at 1 and the next pinned run still read 1. __pairedBg sets and
     // restores its own dials so the A/Bs were safe, but nothing else was.
-    destruct:1,raiderWear:1,penetrate:1};
+    // Same defect again at v3.17: raiderDown shipped unpinned. Every new dial
+    // must land here in the same build that introduces it.
+    destruct:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1};
   for(var k in want){ if(C2[k]!==want[k]){ changed[k]=[C2[k],want[k]]; C2[k]=want[k]; } }
   P2.mapIx=(mapIx===undefined)?1:mapIx;
   P2.body=null; P2.equipped='smg'; P2.wear=P2.wear||{}; P2.wear['smg']=0;
