@@ -274,6 +274,17 @@
     <button id="closesector" style="padding:8px 20px">Close</button>
   </div>
 </div>
+<div class="modal" id="primermodal">
+  <h3>FIRST TIME OUT</h3>
+  <div class="msub">Eight things worth knowing before you take the lift up. You can bring this back any time from Settings.</div>
+  <div id="primerlist" class="plist"></div>
+  <div style="display:flex;gap:10px;margin-top:10px;align-items:center">
+    <label style="display:flex;gap:6px;align-items:center;font-size:11px;color:var(--ash);cursor:pointer">
+      <input type="checkbox" id="primernever" style="cursor:pointer"> Do not show this again
+    </label>
+    <button id="closeprimer" style="padding:8px 20px;margin-left:auto">Got it</button>
+  </div>
+</div>
 <div class="modal" id="settingsmodal">
   <h3>Settings</h3>
   <div class="msub">Presentation only. Nothing here changes the game, the balance or your profile.</div>
@@ -492,7 +503,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.36';
+var VER='3.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15552,7 +15563,7 @@ function buildHub(){
     {id:'gamble',x:110,y:110,r:42,label:'VESH, THE GAMBLER',sub:'unmarked goods, flat price',c:'#e0a0ff',vendor:1,
      acts:{KeyE:['deal',function(){ renderGamble(); document.getElementById('gamblemodal').classList.add('on'); }]}},
     {id:'term',x:350,y:365,r:46,label:'THE STASH',sub:'',c:'#5aa9e6',
-     acts:{KeyE:['terminal',function(){ renderHub(); document.getElementById('hub').classList.add('on'); }],
+     acts:{KeyE:['terminal',function(){ renderHub(); document.getElementById('hub').classList.add('on'); maybePrimer(); }],
            KeyR:['season',function(){ renderSeason(); document.getElementById('seasonmodal').classList.add('on'); }]}},
     {id:'dev',x:590,y:255,r:42,label:'DEV BOX',sub:'',c:'#9aa8b2',
      acts:{KeyE:['dev crate',function(){ renderCrate(); document.getElementById('cratemodal').classList.add('on'); }],
@@ -17304,6 +17315,53 @@ document.getElementById('closesector').onclick=function(){
 // right. The dev box already holds the two things that are switches rather than
 // content, so settings is its third key. The buttons in the Operator Terminal
 // still work and still sync; this is a second door onto the same two flags.
+// THE FIRST TIME OUT CARD, v3.37. His note: "lets work up a bunch of useful
+// information for a new player to show them at the beginning, instead of an
+// immediate changelog, like tell them about xbox controller support, and then
+// give them an opportunity to click a box to never see it again."
+// The changelog was already handled: v2.79 made it RETURNING PLAYERS ONLY, on
+// the reasoning that "your FIRE button NOW does..." means nothing without a
+// before. Correct, and it left a hole: a brand new player now saw nothing at
+// all. This fills that hole rather than replacing anything.
+// EVERY LINE IS SOMETHING THE GAME DOES NOT OTHERWISE TELL YOU, and several are
+// things his own notes show he did not know. The controller support in
+// particular has been in since v2.72 and is auto-detecting, so nobody has ever
+// been told it exists.
+var PRIMER=[
+  ['This is a raid, not a level','Drop in, take what you can carry, and call the dropship out. Reaching the surface with a full bag is the whole game. Dying leaves it all on your body.'],
+  ['An Xbox controller just works','Plug one in and it takes over: left stick moves, right stick aims, RT fires, LB reloads, A rolls. No toggle and no setup, and unplugging hands control straight back to the mouse.'],
+  ['E is the verb','E searches a container, opens the Peddler, revives a downed raider, and calls the dropship when you stand in a ring. TAB is your bag, M is the map, H cycles the controls legend.'],
+  ['Selling at home is the only thing that earns REP','The Peddler out in the field pays cash and no standing. REP is what unlocks every rig, gun and pack in Requisition, and it only comes from selling salvage in the Undercroft.'],
+  ['Your progress is permanent, your rig is not','Credits, reputation, weapons, unlocks and stats all carry between sessions automatically. The rig you are wearing does not: die and it stays on your body with everything else.'],
+  ['Calling the ship is the loudest thing you do','Hold E in an extraction ring to call it, wait, then hold E again to board. The heavier your bag, the more of the map comes to meet you. You can still be hauled aboard while downed.'],
+  ['The conditions box is telling you something','Top right of the screen. Fog cuts how far you see, rain and storm cut how far you are HEARD, a blackout kills the lamps. It states the actual numbers, not the mood.'],
+  ['Settings live at the dev box','Press T at the terminal in the Undercroft. Text size, auto-equip a better gun on pickup, autoloot when your bag is full, and this card again.']
+];
+function renderPrimer(){
+  var host=document.getElementById('primerlist');
+  if(!host) return;
+  var html='';
+  for(var i=0;i<PRIMER.length;i++){
+    html+='<div class="row"><div style="flex:1"><b>'+PRIMER[i][0]+'</b>'+
+          '<div class="hint">'+PRIMER[i][1]+'</div></div></div>';
+  }
+  host.innerHTML=html;
+  var cb=document.getElementById('primernever');
+  if(cb) cb.checked=!!P.primerOff;
+}
+function openPrimer(){
+  renderPrimer();
+  document.getElementById('primermodal').classList.add('on');
+}
+// Shown once, to a profile that has never finished a raid, and only if he has not
+// ticked the box. P.primerSeen is stamped on CLOSE rather than on open, so
+// closing the tab mid-read does not burn it.
+function maybePrimer(){
+  if(P.primerOff) return;
+  if((P.runs||0)>0&&P.primerSeen) return;
+  if(P.primerSeen) return;
+  openPrimer();
+}
 function renderSettings(){
   var host=document.getElementById('setlist');
   host.innerHTML=
@@ -17317,6 +17375,8 @@ function renderSettings(){
     '<button id="set_aeq" style="padding:6px 12px">'+(autoEquipOn()?'ON':'OFF')+'</button></div>'+
     '<div class="row"><div style="flex:1"><b>Autoloot when the bag is full</b><div class="hint">OFF by default, which is what a fresh profile actually does: P.autoloot is unset until you turn it on. When on, a full bag sheds its least valuable item to make room; off, a full bag simply refuses. C toggles this in a raid too.</div></div>'+
     '<button id="set_aloot" style="padding:6px 12px">'+(P.autoloot?'ON':'OFF')+'</button></div>'+
+    '<div class="row"><div style="flex:1"><b>First time out briefing</b><div class="hint">The eight things a new player needs. Shown once on a fresh profile; open it again any time.</div></div>'+
+    '<button id="set_primer" style="padding:6px 12px">SHOW</button></div>'+
     '<div class="row"><div style="flex:1"><b>Controls legend</b><div class="hint">H in a raid cycles compact, full and off. Compact is the default.</div></div>'+
     '<span class="hint">H</span></div>'+
     '<div class="row"><div style="flex:1"><b>Mouse cursor</b><div class="hint">The cursor hides while you are aiming and returns with the bag. BACKSPACE forces it back at any time.</div></div>'+
@@ -17332,6 +17392,10 @@ function renderSettings(){
   document.getElementById('set_share').onclick=function(){
     P.shareRuns=!P.shareRuns; installId(); saveProfile(); renderSettings();
   };
+  document.getElementById('set_primer').onclick=function(){
+    document.getElementById('settingsmodal').classList.remove('on');
+    openPrimer();
+  };
   document.getElementById('set_aeq').onclick=function(){
     P.autoEquip=!autoEquipOn(); saveProfile(); renderSettings();
   };
@@ -17344,6 +17408,13 @@ document.getElementById('devtoolsbtn').onclick=function(){
 };
 document.getElementById('closedev').onclick=function(){
   document.getElementById('devmodal').classList.remove('on');
+};
+document.getElementById('closeprimer').onclick=function(){
+  var cb=document.getElementById('primernever');
+  P.primerOff=!!(cb&&cb.checked);
+  P.primerSeen=1;
+  saveProfile();
+  document.getElementById('primermodal').classList.remove('on');
 };
 document.getElementById('closesettings').onclick=function(){
   document.getElementById('settingsmodal').classList.remove('on');

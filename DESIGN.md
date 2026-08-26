@@ -10819,3 +10819,71 @@ largely measuring raids where the feature never fired. The condition it exists f
 his: a long raid where he has personally killed several raiders. That is exactly the
 case the sim cannot generate, and his next export is the measurement.
 
+
+### v3.37: a first-time briefing, and the answer to "does progression actually persist"
+
+HIS NOTE: "lets work up a bunch of useful information for a new player to show them at
+the beginning, instead of an immediate changelog, like tell them about xbox controller
+support, and then give them an opportunity to click a box to never see it again."
+
+THE CHANGELOG WAS ALREADY HANDLED, and correctly. v2.79 made it returning-players
+only, on the reasoning that "your FIRE button NOW does..." means nothing without a
+before, so a fresh profile stamps itself current and never sees it. Right call, and it
+left a hole nobody noticed: a brand new player now saw NOTHING. This fills the hole
+rather than replacing anything, and the changelog still greets the player it was
+written for.
+
+EIGHT LINES, AND EVERY ONE IS SOMETHING THE GAME DOES NOT OTHERWISE TELL YOU. Several
+are things his own notes prove he did not know:
+  - it is a raid, not a level, and dying leaves the bag on your body
+  - AN XBOX CONTROLLER JUST WORKS, in since v2.72, auto-detecting, and nobody has
+    ever been told it exists because there is no toggle and no setup screen
+  - E is the verb: search, Peddler, revive, call the ship
+  - selling at HOME is the only thing that earns REP, which is the v3.23 finding
+  - progress is permanent, the rig is not, which is the v3.29 finding
+  - calling the ship is the loudest thing you do, and you can be hauled while downed
+  - the conditions box is telling you actual numbers, which is v3.30
+  - Settings is at the dev box on T
+
+A REAL CHECKBOX, because he asked for one. It is an HTML modal beside the existing
+Settings and Shop modals rather than canvas, so the box is a real input the mouse can
+tick rather than a rectangle I have to hit test myself.
+P.primerSeen is stamped on CLOSE, not on open, so closing the tab mid-read does not
+burn it. Ticking the box sets P.primerOff, which suppresses it permanently and
+independently. And Settings gets a SHOW row, so ticking never again is not a decision
+he can regret.
+
+AND HIS SECOND QUESTION: "do player's characters stay leveled up over multiple
+sessions? is that all worked out or do we have issues with that?"
+
+Driven rather than answered from memory, because this file has already produced two
+profile numbers that were written, displayed and read by nothing. Stamp 28 progression
+fields with recognisable values, call the REAL saveProfile, wipe the in-memory profile
+the way a new session starts, call the REAL loadProfile, and compare:
+
+  fields lost on save   0 of 43
+  fields changed on save 0
+  fields lost on load    0 of 28
+  fields changed on load 0
+
+Credits, reputation, weapons, owned rigs, the worn rig, pack tier, stash, xp, xpLevel,
+season progress and claims, notoriety and its decay counter, season number, contract
+terms, both preference toggles, all four lifetime stats, map choice, weapon wear, text
+size. All of it survives. My first attempt at this proved nothing, because __load in
+the fixture is loadOf(), a loadout helper, not the profile loader; there is a
+__loadProfile hook now so the question stays answerable.
+
+SO: YES, IT IS WORKED OUT, with two caveats already on the record. P.xpLevel and
+P.prof persist perfectly and gate nothing at all, per v3.24. And the rig is
+deliberately lost on death, per SPEC 9.7 and measured at v3.29.
+
+Verified: parsecheck PASS at v3.37, all four maps and the hub draw with drawErr null.
+The card driven through every state: a fresh profile opens it with all eight rows;
+closing without ticking stamps seen and not off; a second visit does not reopen it;
+Settings reopens it; ticking the box sets off; and with off set and seen cleared it
+stays shut, so never again means never again. Persistence driven as tabled above.
+Not verified: no balance measurement, and none applies; this is a modal in the hub and
+a read-only audit. Also not verified: whether the eight lines are the RIGHT eight. They
+are my judgement of what a first-timer needs, weighted toward things his own notes show
+were invisible, and the only real test is somebody new playing it.
+

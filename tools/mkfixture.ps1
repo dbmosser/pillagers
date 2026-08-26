@@ -495,6 +495,12 @@ window.__zoom={set:setZoom,tick:tickZoom,cur:ZOOM,target:zoomTarget,
 window.__roll={try:tryRoll,spd:function(){return ROLLSPD;},stam:function(){return ROLLSTAM;}};
 window.__getZoom=function(){ return ZOOM(); };
 window.__prof=function(){ return P; };
+// v3.37: the REAL profile loader, so "does progression survive a session" can be
+// driven rather than read. __load is loadOf(), a loadout helper, and calling it
+// for this proved nothing at all.
+window.__loadProfile=function(){ return loadProfile(); };
+window.__primer={open:function(){ openPrimer(); },maybe:function(){ maybePrimer(); },list:function(){ return PRIMER; }};
+window.__saveProfile=function(){ return saveProfile(); };
 // The fixture must never write into his flight recorder. Test runs were landing
 // in exports/ as real-looking runs with 0 duration and 0 movement, which is
 // exactly the artefact class the tick rules warn about. Killed at source.
