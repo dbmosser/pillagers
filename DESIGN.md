@@ -10463,3 +10463,44 @@ heavy rigs, which cost 3,200 and 7,800 and are lost the same way, so if the chea
 is negative those are almost certainly worse; I am flagging that rather than claiming
 it, because I have not run them.
 
+
+### v3.30: a conditions box, because the modifiers were only legible on a screen you have to stop to open
+
+HIS NOTE: "need a box that shows modifiers, e.g. storm, rain, night etc."
+
+The conditions existed and were drawn in exactly one place, the map overlay, which
+you have to stop and open. So the weather halving how far you can see, and the
+contract term you agreed to before you dropped, were both invisible for the entire
+raid you were actually playing.
+
+EVERY ROW STATES WHAT THE THING DOES. "STORM" is flavour. "sight -20%, you are 52
+percent quieter, lamps 45 percent out, lightning shows you" is a decision. The numbers
+are computed from the same WEATHER and TERMS tables the simulation reads, so this
+cannot drift from the behaviour the way a hand written description would, which is the
+stale-string defect that has now bitten this project five times.
+
+It shows time of day and what it does to the lamps, the weather and its four possible
+effects, every contract term you took with what it pays, and the season if you are
+past the first. It sits under the HUNTING and SEARCHING lines at a fixed offset rather
+than flowing after them, because those two appear and vanish constantly and a panel
+that jumps around is worse than one sitting slightly lower.
+
+THE FIRST CUT WAS WRONG AND THE CAPTURE SHOWED IT. I put each effect right aligned on
+its name's own line, which is fine for "MORNING / full daylight" and falls apart for
+STORM, whose effects are four clauses: the text ran straight out of the panel and
+across the map, and the rows collided with each other. Effects now get their own
+wrapped lines under the name, the wrap is measured against the panel's real inner
+width, and the box height is computed FROM the wrapped result rather than guessed.
+
+Verified: parsecheck PASS at v3.30, all four maps and the hub draw with drawErr null,
+including two maps that rolled STORM and two that rolled CLEAR, so both the long and
+the short case were exercised without me forcing them. All five weather entries forced
+in turn and drawn. Read back from the pixels at 1278x718 on STORM: the panel is
+contained, wraps to three lines, and does not touch the map.
+Not verified: no balance measurement, and none applies. This reads G.wx, tod(), TERMS
+and seasonNo() and draws text; it changes no roll, no entity decision and no timing
+constant, and drawHUD is never called with G.sim set. Also not verified: how it sits
+at other window sizes. The wrap is measured at runtime so it should hold, but every
+capture here is one size, and the fixed vertical offset under HUNTING and SEARCHING is
+in LH units rather than tested against a short window.
+

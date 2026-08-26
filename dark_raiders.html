@@ -491,7 +491,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.29';
+var VER='3.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13270,6 +13270,71 @@ function drawHUD(){
     ctx.textAlign='left';
   }
   ctx.textAlign='left';
+  // HIS NOTE: "need a box that shows modifiers, e.g. storm, rain, night etc."
+  // The conditions existed and were legible in exactly one place: the map
+  // overlay, which you have to stop and open. So the weather that is halving how
+  // far you can see, and the contract term you agreed to before you dropped, were
+  // both invisible for the entire raid you were actually playing.
+  // Every row states what the thing DOES, not just its name. "STORM" is flavour;
+  // "sight -20%, you are 52% quieter" is a decision. The numbers come from the
+  // same WEATHER and TERMS tables the simulation reads, so this cannot drift from
+  // the behaviour the way a hand written description would.
+  // Sits under the HUNTING and SEARCHING lines at a FIXED offset rather than
+  // flowing after them, because those two appear and disappear constantly and a
+  // panel that jumps around is worse than one slightly lower down.
+  (function(){
+    var MW=(G.wx||WEATHER[0]), MT=tod(), rows=[];
+    rows.push({k:MT.name,v:(MT.lights>=1?'lamps on':(MT.lights>0?'lamps coming on':'full daylight')),c:'#9aa8d0'});
+    var wv=[];
+    if(MW.view!==1) wv.push('sight '+(MW.view<1?'-':'+')+Math.round(Math.abs(1-MW.view)*100)+'%');
+    if(MW.noise!==1) wv.push(MW.noise<1?('you are '+Math.round((1-MW.noise)*100)+'% quieter')
+                                       :(Math.round((MW.noise-1)*100)+'% louder'));
+    if(MW.lights<1) wv.push('lamps '+Math.round((1-MW.lights)*100)+'% out');
+    if(MW.lightning) wv.push('lightning shows you');
+    rows.push({k:MW.name,v:wv.length?wv.join(', '):'nothing in the air',
+      c:MW.id==='clear'?'#9aa8d0':'#4de3d0'});
+    for(var _tq=0;_tq<TERMS.length;_tq++){
+      if(!hasTerm(TERMS[_tq].id)) continue;
+      rows.push({k:TERMS[_tq].name,v:'+'+Math.round(TERMS[_tq].pay*100)+'% pay',c:'#ffb02e'});
+    }
+    if(seasonNo()>1) rows.push({k:'SEASON '+seasonNo(),v:'harder, worth more',c:'#c9a0ff'});
+    // THE FIRST CUT PUT THE EFFECT RIGHT ALIGNED ON THE NAME'S OWN LINE and the
+    // capture showed why that was wrong: STORM's effects are four clauses long,
+    // so the text ran straight out of the panel and across the map, and the rows
+    // collided. Effects get their own wrapped lines under the name, and the box
+    // is measured from the wrapped result rather than guessed at.
+    ctx.font=FS(TYPE.micro);
+    var pad=8, lh=LH(11), bw=214, inner=bw-pad*2;
+    function wrap(t){
+      var words=String(t).split(' '),lines=[],cur='';
+      for(var i=0;i<words.length;i++){
+        var trial=cur?(cur+' '+words[i]):words[i];
+        if(ctx.measureText(trial).width<=inner){ cur=trial; }
+        else { if(cur) lines.push(cur); cur=words[i]; }
+      }
+      if(cur) lines.push(cur);
+      return lines.length?lines:[''];
+    }
+    var total=0;
+    for(var _wq=0;_wq<rows.length;_wq++){
+      rows[_wq].wrapped=wrap(rows[_wq].v);
+      total+=1+rows[_wq].wrapped.length;
+    }
+    var bh=pad*2+lh+total*lh;
+    var bx=W-16-bw, by=LH(30)+LH(12)*2+LH(6);
+    ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
+    ctx.fillStyle='rgba(120,140,160,.22)'; ctx.fillRect(bx,by,bw,1);
+    ctx.textAlign='left';
+    var ry=by+pad+LH(8);
+    ctx.fillStyle='#6b7783'; ctx.fillText('CONDITIONS',bx+pad,ry);
+    ry+=lh;
+    for(var _rq=0;_rq<rows.length;_rq++){
+      var R2=rows[_rq];
+      ctx.fillStyle=R2.c; ctx.fillText(R2.k,bx+pad,ry); ry+=lh;
+      ctx.fillStyle='#8a96a1';
+      for(var _lq=0;_lq<R2.wrapped.length;_lq++){ ctx.fillText(R2.wrapped[_lq],bx+pad+6,ry); ry+=lh; }
+    }
+  })();
   if(G.msgT>0){
     ctx.font=FS(TYPE.label);
     ctx.fillStyle='rgba(205,214,221,'+clamp(G.msgT,0,1)+')';
