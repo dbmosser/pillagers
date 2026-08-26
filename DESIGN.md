@@ -8068,3 +8068,92 @@ for reasons of map character rather than of balance. The per-map spread has neve
 been measured against his own play, only against the bot, so treat the first
 cross-sector runs as uncontrolled.
 
+
+### v2.96: the fake terrain goes, raiders arrive already hurt, and the peddler stops eating the search key
+
+Three of his notes. Two are removals and one is the first balance change in several
+builds, so it carries a measurement.
+
+THE GROUND NOISE, "ranbdom circles and squiggles on the map -- i guess they are
+supposed to suggest altitude changes or shadows or something -- but they look like
+shit, get rid of em". Two passes in bakeGround, both deleted. The first drew 180
+random four segment polylines per unit area, every vertex jittered up to 32 units
+in any direction, stroked black at up to 26 percent alpha. There is no charitable
+reading of that: they are random squiggles. The second drew 60 dark ellipses per
+unit area at up to 50 percent black, and those are the "circles" he means. Worse,
+they are the fake hills that the SPEC 4.6 comment forty lines above them says were
+DELETED. So the comment has been describing a deletion that did not hold, which is
+the stale-comment defect this file keeps producing: the note stayed and the code
+came back, and nobody reading the note would ever look.
+
+Nothing replaces them and nothing needs to. The floor still carries surface grime,
+gravel speckle, grass tufts, road dashes, water ripple, woods turf and a baked
+contact shadow at the foot of every wall. Every one of those is information about a
+real object in the world. The two that went were noise dressed up as terrain, which
+is why they read as altitude that turned out not to be there.
+
+RAIDERS ARRIVE WORN, "other raiders shouldn't always be at full health, right?"
+Right, and the game already agreed with him on the other half of this exact idea
+without ever finishing the thought: mkRaider has always set r.armor to 70 percent
+of the rig cap, on the reasoning that a man you meet deep in a raid has been shot
+at. His HEALTH was the one number still issued at a flat 100 percent to every
+raider on every map. A third of them stay fresh, on the fiction that they dropped
+in around when you did; the rest carry between 8 and 50 percent damage.
+
+The floor is deliberate and it is not cosmetic. v2.93 makes a raider run once he
+drops below 30 percent, so a spawn roll allowed to cross that line would put men on
+the map who flee from their first sight of you, which reads as broken rather than
+as wounded. Measured at n=640 raiders: with the dial off, 100 percent of raiders
+spawn at exactly full. With it on, health runs 50 to 100 percent, mean 81, 34
+percent still fresh, and zero below 50, so nothing spawns anywhere near the flee
+line. Both rolls are drawn UNCONDITIONALLY, the v2.09 jam rule repeated for crews
+at v2.49 and windows at v2.83, so the two arms are the same raid with and without
+wear rather than two different raids.
+
+THE PEDDLER WAS EATING THE SEARCH KEY, "i cant search a casher right next to the
+peddler". He is right, and it was unconditional rather than intermittent. The stall
+claims E across a 74 unit radius and opens on the press, and the line immediately
+after it returns out of the entire interaction tick, so the container scan forty
+lines below never ran while you stood anywhere near him. Any crate, cache or body
+inside that radius was unsearchable for the whole raid. The peddler is deliberately
+placed near loot, so this is not a corner case, it is the common case.
+
+The crate takes the key when you are standing on one: 46 units is ON a container
+while 74 is merely NEAR the stall. The resolution is self-clearing, which is why it
+is the right way round rather than the other. Search the crate, it is marked opened
+and skipped from then on, and the next press opens the stall. The reverse rule
+would have no exit at all. While a crate is blocking it the stall's own label stops
+advertising a key it is not going to get and says "search the crate first" instead.
+
+Verified: parsecheck PASS at v2.96, all four maps and the hub drive and draw with
+drawErr null. Driven test for the peddler, through the real main loop rather than
+the raw stepper because the interaction tick only runs there: standing 8 units from
+an unopened container and 51 units from the peddler, pedBlocked is 1, holding E
+starts the container search and leaves the stall closed, the search completes and
+marks the container opened, pedBlocked drops to 0 and the next press opens the
+stall. Raider wear measured at n=640 spawns per arm as above.
+
+BALANCE: raider wear is neutral, measured. 320 seeds paired on DAM BATTLEGROUNDS index
+0, simGreed pinned at 52 in both arms, dial off against dial on in the same build.
+Extract rate 14.7 percent with wear off (47 of 320) against 15.9 with it on (51 of
+320). Discordant pairs 3 against 7, McNemar exact two sided p=0.34. Mean haul
+across all runs 8757 against 8819. The killer table barely moves: sentry 156 to
+152, crawler 99 to 100, warden 8 to 8, raider 2 to 1.
+
+AND THE CAVEAT THAT MATTERS MORE THAN THE NUMBER. Look at that killer table again.
+Across 640 simulated raids the bot died to a RAIDER three times. Its deaths are
+sentries and crawlers, almost entirely. So the sim is a weak instrument for this
+particular change: I have measured that making raiders weaker does not move an
+outcome that raiders were barely deciding. His own flight recorder says the
+opposite about him, with killer:raider on three of his last six deaths, so wear
+will be more visible to him than to the bot. The honest reading is "no evidence of
+harm at n=320", not "no effect". The dial is CFG.raiderWear if it needs to come
+back out.
+
+Not verified: the ground passes were removed on his say-so and on my own reading,
+not measured, because there is nothing to measure. bakeGround is skipped entirely
+in the sim (ground:sim?null:bakeGround(map)) so removing draws from it cannot move
+any simulated number; it does re-roll what a real raid looks like after that point
+on a given seed, which is a reshuffle rather than a bias, and no seeded comparison
+against an older build survives it.
+

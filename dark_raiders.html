@@ -473,7 +473,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.95';
+var VER='2.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -527,7 +527,7 @@ function rr(){
 // untouched, their own cones are separate, so this is squarely a player gain.
 var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
   nSentry:20,nCrawler:34,nRaider:8,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -3705,19 +3705,25 @@ function bakeGround(map){
     sr.addColorStop(0,'rgba(0,0,0,.26)'); sr.addColorStop(1,'rgba(0,0,0,0)');
     c.fillStyle=sr; c.fillRect(wc0.x+wc0.w,wc0.y,sp*.7,wc0.h+sp*.5);
   }
-  for(i=0;i<Math.round(180*AREA);i++){
-    var x2=rnd(40,WORLD_W-40),y2=rnd(40,WORLD_H-40);
-    c.strokeStyle='rgba(0,0,0,'+rnd(.10,.26)+')'; c.lineWidth=rnd(.8,2.2);
-    c.beginPath(); c.moveTo(x2,y2);
-    var ax=x2,ay=y2;
-    for(j=0;j<4;j++){ ax+=rnd(-32,32); ay+=rnd(-32,32); c.lineTo(ax,ay); }
-    c.stroke();
-  }
-  for(i=0;i<Math.round(60*AREA);i++){
-    var x3=rnd(60,WORLD_W-60),y3=rnd(60,WORLD_H-60);
-    c.fillStyle='rgba(10,8,14,'+rnd(.25,.5)+')';
-    c.beginPath(); c.ellipse(x3,y3,rnd(10,30),rnd(7,20),rnd(0,3),0,6.2832); c.fill();
-  }
+  // HIS NOTE, 2026-08-25: "ranbdom circles and squiggles on the map -- i guess
+  // they are supposed to suggest altitude changes or shadows or something -- but
+  // they look like shit, get rid of em". Both passes are DELETED, and he has
+  // caught the same thing twice now. Two passes lived here. One drew 180 random
+  // four segment polylines per unit area, each vertex jittered up to 32 units in
+  // any direction, in black at up to 26 percent: literally random squiggles. The
+  // other drew 60 dark ellipses per unit area at up to 50 percent black, which
+  // are the "circles", and those are the fake hills the SPEC 4.6 comment forty
+  // lines above claims were already deleted. That comment has been a lie since
+  // whenever the ellipse pass was reinstated, which is the stale-comment class
+  // of defect this file keeps producing: the note stayed, the code came back.
+  // Nothing replaces them. The floor still carries surface grime, the gravel
+  // speckle, the grass tufts, road dashes, water ripple, woods turf and a baked
+  // contact shadow at the foot of every wall, which is real information about
+  // real objects. These two were noise pretending to be terrain.
+  // Stream note: bakeGround is skipped entirely in the sim (ground:sim?null:...)
+  // so removing draws from it cannot move any measured number. It does re-roll
+  // what a real raid looks like after this point on a given seed, which is a
+  // reshuffle rather than a bias.
   for(i=0;i<Math.round(380*AREA);i++){
     var x4=rnd(50,WORLD_W-50),y4=rnd(50,WORLD_H-50),inB=false;
     for(j=0;j<map.buildings.length;j++){var bb2=map.buildings[j];
@@ -4825,6 +4831,21 @@ function mkRaider(x,y,forceId,simBuild){
   // stops it being a trap later. Same reasoning as the canSee guard at v2.20.
   var rec=simBuild?{kills:0,deaths:0,met:0,standing:0}:idRec(ident.id);
   var _crewRoll=rr();
+  // HIS NOTE, 2026-08-25: "other raiders shouldn't always be at full health,
+  // right?" Right, and the game already agreed with him on the other half of the
+  // same idea: r.armor is set to 70 percent of the rig cap a few lines below,
+  // because a man you meet in hour two of a raid has been shot at. His HEALTH was
+  // the one thing still issued at exactly 100 percent to every raider on the map.
+  // A third of them are still fresh, on the fiction that they dropped in near
+  // when you did. The rest carry between 8 and 50 percent damage. The floor is
+  // deliberate: v2.93 makes a raider run at below 30 percent, so a spawn roll
+  // that could cross that line would put men on the map who flee from their first
+  // sight of you, which reads as broken rather than as wounded.
+  // BOTH ROLLS ARE DRAWN UNCONDITIONALLY, the v2.09 jam rule, repeated for crews
+  // at v2.49 and windows at v2.83. Drawing inside the dial test would mean
+  // raiderWear 0 skips draws that raiderWear 1 takes, and the two arms would be
+  // different raids rather than the same raid with and without wear.
+  var _wearRoll=rr(), _wearAmt=rr();
   var r={kind:'raider',x:x,y:y,r:11,hp:Math.round(78*CFG.eHp*seasonHp()),maxhp:Math.round(78*CFG.eHp*seasonHp()),react:rnd(.38,.62),
     face:rnd(0,6.28),state:'loot',tx:x,ty:y,cd:0,alert:0,spd:122,wep:WEAPONS[wk],dmg:WEAPONS[wk].dmg,
     rng:WEAPONS[wk].rng*.72,cone:.8,bag:[],goal:null,skips:[],goalT:0,goalD:0,extracting:0,hitT:0,step:0,
@@ -4868,6 +4889,8 @@ function mkRaider(x,y,forceId,simBuild){
   // Their rig is the tell you can already SEE before you commit, so it is the thing
   // that scales the reward. Deciding to take on the one in heavy plate is now a
   // decision with a visible upside instead of a worse version of the same fight.
+  if(CFG.raiderWear!==0&&_wearRoll>=0.34)
+    r.hp=Math.max(1,Math.round(r.maxhp*(0.50+_wearAmt*0.42)));
   var RT={none:0,light:1,medium:2,heavy:3}[r.rig]||0;
   var nloot=ri(2,4)+RT;
   for(var i=0;i<nloot;i++){
@@ -7963,9 +7986,28 @@ function updatePlayer(dt){
   G.nearStray=stray;
   if(stray&&keys['KeyE']&&!G.strayLock){ G.strayLock=1; strayGive(stray); }
   if(!keys['KeyE']) G.strayLock=0;
+  // HIS NOTE, 2026-08-25: "i cant search a casher right next to the peddler".
+  // Correct, and it was unconditional rather than flaky. The stall claims E for a
+  // 74 unit radius and opens on the keypress, and the very next line returns out
+  // of the whole interaction tick, so the container scan forty lines below never
+  // ran while you were anywhere near him. Any crate, cache or body that happened
+  // to sit inside that radius was unsearchable for the whole raid, and the
+  // peddler is deliberately placed near loot, so this is not a rare geometry.
+  // The crate wins the key when you are standing on one, because 46 units is
+  // ON it while 74 is merely NEAR the stall, and because the resolution is
+  // self-clearing: search the crate, it is marked opened and skipped, and the
+  // next E opens the stall. The reverse rule would have no way out at all.
+  var crateUnderfoot=false;
+  for(var cu=0;cu<G.containers.length;cu++){
+    var CU=G.containers[cu];
+    if(CU.opened) continue;
+    if(CU.auto&&G.t-CU.dropT<8) continue;
+    if(dist(p,CU)<46){ crateUnderfoot=true; break; }
+  }
   G.nearPed=ped;
+  G.pedBlocked=(ped&&crateUnderfoot)?1:0;
   if(G.trade&&(!ped||p.downed||G.trade.hp<=0)) G.trade=null;
-  if(ped&&!G.trade&&keys['KeyE']&&!G.pedLock){
+  if(ped&&!crateUnderfoot&&!G.trade&&keys['KeyE']&&!G.pedLock){
     G.pedLock=1;
     if(!pedOpen()) say('He has heard what you did to the last one. No deal.');
     else { G.trade=ped; blip('pick'); }
@@ -9765,7 +9807,7 @@ function endRaid(how){
       dials:'hot'+(CFG.healOverTime===0?0:1)+' feud'+(CFG.raiderFeud===0?0:1)
         +' reach'+(CFG.simReach===0?0:1)+' win'+(CFG.windows===0?0:1)
         +' rheal'+(CFG.simRetreatHeal?1:0)+' eng'+(CFG.simEngage?1:0)
-        +' pip'+(CFG.simPip?1:0)+' des'+(CFG.destruct===0?0:1)+' cull'+(CFG.placeCull===0?0:1)+' greed'+CFG.simGreed};
+        +' pip'+(CFG.simPip?1:0)+' des'+(CFG.destruct===0?0:1)+' cull'+(CFG.placeCull===0?0:1)+' wear'+(CFG.raiderWear===0?0:1)+' greed'+CFG.simGreed};
     return;
   }
 
@@ -10026,6 +10068,17 @@ function endRaid(how){
       return wearable(W.id)?'owned':'field'; })(),
     n:P.runs,ver:VER,seed:G.seed,outcome:how,weapon:T.weapon,preset:CFG.preset||'custom',termPay:tPay,terms:termsOn().slice(),
     drawErr:T.drawErr||null,
+    // WHICH SECTOR THIS RUN WAS ON, added v2.96, and it is overdue by exactly one
+    // build. The record has carried the version since v1.90 and the weather since
+    // v1.17, but never the map, because until v2.95 the map was effectively a
+    // constant: the switch was buried and his 25 logged runs were all on index 0.
+    // v2.95 put the choice on the deploy lift, so from here on his runs are spread
+    // across four sectors with measurably different character, and without this
+    // field every single one of them would be unattributable. That is the same
+    // shape of mistake as the missing version field, which cost a whole session
+    // chasing a crash that had been fixed two builds earlier.
+    mapIx:clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1),
+    mapName:FIXED_MAPS[clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1)].name,
     wx:(G.wx&&G.wx.id)||'clear',wxTurns:G.wxTurned||0,tod:(G.tod&&G.tod.id)||'noon',
     caches:T.cachesOpened||0,windfalls:T.windfalls||0,strongbox:T.strongbox||0,rounds:T.rounds||0,jams:T.jams||0,campSafes:T.campSafes||0,wardenMet:T.wardenMet||0,doorsOpened:T.doorsOpened||0,
     gunsEq:T.gunsEquipped||0,bestQ:T.bestQ||0,holdExtract:T.holdExtract||0,diedInSiege:T.diedInSiege||0,
@@ -11696,7 +11749,7 @@ function render2D(dt){
     else if(ne.kind==='raider'&&ne.parley>0&&ne.hostile) ne._plateTag=' [LISTENING]';
     else ne._plateTag='';
     var plate=ne.kind==='peddler'
-      ? (pedOpen()?(G.nearPed===ne?'THE PEDDLER  [E] DEAL':'THE PEDDLER'):'THE PEDDLER  [CLOSED]')
+      ? (pedOpen()?(G.nearPed===ne?(G.pedBlocked?'THE PEDDLER  (search the crate first)':'THE PEDDLER  [E] DEAL'):'THE PEDDLER'):'THE PEDDLER  [CLOSED]')
       : ne.name+(ne.state==='extract'?' [RUNNING]':(ne._plateTag||''));
     // CREWS ARE VISIBLE, v2.57. v2.49 gave every raider a crew and rival crews
     // shoot each other, and then nothing on screen said who was with whom, so a
@@ -14953,6 +15006,11 @@ function buildExport(){
     if(r.outcome==='dead') line+=' killer:'+r.deathKiller+' diedAt:'+r.deathDistExtract+'m';
     if(r.raidersExtracted) line+=' aiExtracted:'+r.raidersExtracted;
     if(r.drawErr) line+=' DRAWERR:'+r.drawErr;
+    // Older rows have no map because they predate v2.96, and they are NOT
+    // backfilled to index 0 even though that is almost certainly where they were
+    // played. A guess written into the record is indistinguishable from data, and
+    // the version field right there already says which of them predate the choice.
+    if(r.mapName) line+=' map:'+r.mapName;
     if(r.wx) line+=' wx:'+r.wx+'/'+(r.tod||'noon');
     if(r.caches) line+=' caches:'+r.caches;
     if(r.campSafes) line+=' campSafes:'+r.campSafes;
