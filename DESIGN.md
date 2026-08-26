@@ -9977,3 +9977,59 @@ right arguments, which is the failure v2.48 had. Whether the touchdown reads as 
 dropship or as a thud is his ear and not mine. Also not verified: how the prompt sits
 at other window sizes; every capture here is 1278 by 718.
 
+
+### v3.21: the gun slots were not drop targets, and the bag was telling him to press a key that had stopped meaning anything
+
+HIS RUN #35 NOTE, in-run at 92 seconds: "i was unable to swap the scav pitol in
+inventory slot 2 with the smg that i picked up off of a dead raider in my inventory."
+
+He is right, and it was two separate failures pointing the same way, which is
+probably why it read as the feature simply not existing.
+
+FAILURE ONE, THE GESTURE DID NOTHING. Slots 1 and 2 are not assignable items at all.
+hotbarSlots() rebuilds them from p.wep and p.sec every single frame, so they never
+consult G.hotAssign. The drop handler happily wrote hotAssign[1]='gun_smg', blipped,
+and said "Compact SMG to slot 2" at him. It accepted the drag, confirmed it out loud,
+and changed nothing. A silent no-op that announces success is worse than a refusal,
+because there is nothing to tell you to try something else.
+
+Dropping a gun on a gun slot now does what the gesture obviously means. The mapping
+has to go through p.swapped rather than assume, because slot A is "the gun you
+deployed with" and which of p.wep and p.sec that currently is depends on whether you
+have swapped. equipFromBag already did the hard part correctly, including putting the
+displaced gun back in the bag and refusing to bag issued kit.
+
+FAILURE TWO, AND IT IS THE ONE THAT SENT HIM DOWN THE WRONG PATH. The bag's own hint
+line read "ARROWS move   Z drop one   drag to hotbar   1/2 equip" whenever a gun was
+selected. Digits 1 and 2 stopped equipping bag guns at v2.94, when his note "player
+should be able to switch which item is equipped by using 1-9 keys even if inventory
+is open" moved that meaning onto ENTER so the digits would mean exactly one thing
+everywhere. The hint was not updated. So the game told him to press a key, he pressed
+it, the hotbar selection moved and no gun was equipped. The hint says ENTER equip and
+SHIFT+ENTER to back now, which is what the code actually does.
+
+That is the fourth stale-claim bug in this file's history and they all have the same
+shape: a behaviour moves and the string describing it does not.
+
+Verified by driving the REAL mouse events on the canvas, mousedown on the bag cell
+and mouseup on the hotbar cell, not by calling the handler directly. His exact
+scenario first: SMG in the bag, Scav Pistol in slot 2, drag one onto the other. The
+secondary goes Scav Pistol to Compact SMG, the SMG leaves the bag, and the say line
+reads "Compact SMG to secondary". Then the three cases that could have been broken by
+the slot mapping:
+
+  drop on slot 1, not swapped   SMG to hand, Chatter back in the bag
+  drop on slot 1, swapped       correctly targets the SECONDARY, pistol back in bag
+  drop on slot 2, issued kit    issued pistol left behind, nothing duplicated
+
+No gun is destroyed in any non-issued case; the displaced one is always in the bag
+afterwards. The ordinary consumable drag is unchanged and still works: a bandage
+dropped on slot 6 sets hotAssign 5 and stays in the bag. parsecheck PASS at v3.21,
+all four maps and the hub draw with drawErr null, with the bag open and closed.
+Not verified: whether dropping a gun on a THROWABLE or heal slot does anything
+sensible. It falls through to the old hotAssign path, which will write an assignment
+that useHot then ignores because the gun branch of the assigned-slot handler returns
+without doing anything, so it is the same quiet no-op I just fixed on the gun slots,
+one row over. I have not fixed it because I have not measured that anyone would try
+it, but it is the same defect and I am naming it rather than leaving it to be found.
+
