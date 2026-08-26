@@ -10245,3 +10245,57 @@ constant, and none of it runs with G.sim set. Also not verified: whether he has 
 notoriety. I have never been able to see it, which is the whole point of this build,
 and his next export is the first one that will tell me.
 
+
+### v3.26: a finished feature that has been switched off for its entire life
+
+Fourth build from the same sweep. Reputation had no visible source, notoriety had no
+readout, and this one is the other shape of the same question: a dial that IS read by
+real code, where the code behind it has simply never run.
+
+CFG.autoEquip has defaulted to 0 since it was written. Behind it sits a complete,
+carefully audited feature: pick up a gun of a higher tier, or the same gun in better
+condition, and it goes straight into your hands. Its own comments record two breaking
+bugs found and fixed in it, including one where an X-swapped loaner pistol got banked
+as sellable loot and deleted the armoury pistol that never left base. Someone did real
+work on this. Nobody ever turned it on, and nothing in the game ever mentioned that
+the behaviour existed.
+
+It is adjacent to his run #35 note, which is how I got here: "i was unable to swap the
+scav pitol in inventory slot 2 with the smg that i picked up off of a dead raider".
+v3.21 fixed the drag that should have worked. This is the other half, the pickup that
+could have made the drag unnecessary.
+
+I HAVE NOT FLIPPED THE DEFAULT. Auto-equipping mid-firefight is a real gameplay
+opinion and some players hate it, so it ships exactly as it behaved yesterday and
+becomes a choice instead of a secret. Two rows added to Settings:
+
+  Auto-equip a better gun            OFF, with what on and off each mean
+  Autoloot when the bag is full      OFF, and C still toggles it in a raid
+
+PRECEDENCE, because there are now two switches for one behaviour. The BOT always
+obeys CFG.autoEquip, so every measurement in the back catalogue still means what it
+said and a pinned batch cannot be contaminated by a profile setting. Outside the sim
+his setting wins once he has expressed one, and until he does, the dial's own default
+does.
+
+TWO THINGS THE DRIVING CAUGHT. The autoloot row first read "On by default", which I
+wrote from the tone of its say line. P.autoloot is not in the default profile at all,
+so a fresh save has it undefined and autoloot is OFF. The row says OFF now and says
+why. And I only noticed because the button label is computed from the same value the
+game uses rather than from what I believed.
+
+Verified: parsecheck PASS at v3.26, all four maps and the hub draw with drawErr null,
+raid view and bag open. Precedence driven through the resolver AND through the button
+the player actually reads, all four combinations agreeing: unset with the dial off is
+OFF, unset with the dial on is ON, set on against a dial that is off is ON, set off
+against a dial that is on is OFF. Then the behaviour itself driven through the real
+grantLoot path with a real container: with the setting ON a Scav Pistol becomes a
+Tuned Auto Rifle and the rifle is NOT in the bag; with it OFF the pistol stays in hand
+and the rifle is in the bag. Settings renders 7 rows with both new buttons reading OFF.
+Not verified: no balance measurement, and this is the one build in this run where that
+is a real gap rather than a formality. Auto-equip changes what the PLAYER carries, and
+if he switches it on his effective weapon tier rises across every raid. I have not
+measured that, because the bot's arm of it is CFG.autoEquip and the bot has always run
+at 0, so a paired A/B would be measuring a dial nobody has moved rather than the
+choice he is now being offered. If he turns it on, his next exports are the measurement.
+

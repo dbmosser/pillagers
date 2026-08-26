@@ -386,6 +386,11 @@ window.__simPaired=function(seeds,dialsA,dialsB){
 window.__setHot=function(i){ return setHot(i); };
 window.__items=function(){ return ITEMS; };
 window.__loot=function(){ return LOOT; };
+// v3.26: the auto-equip preference resolver and the settings renderer, so the
+// precedence rule (bot obeys the dial, player obeys his setting) can be driven
+// rather than asserted, and so the settings rows can be read back as strings.
+window.__autoEquip={on:function(){ return autoEquipOn(); },settings:function(){ renderSettings(); },
+  grant:function(ct,keys){ return grantLoot(ct,keys); }};
 window.__bestRarity=function(a){ return bestRarity(a); };
 window.__simSeedsFull=function(seeds){
   var out=[],i;
