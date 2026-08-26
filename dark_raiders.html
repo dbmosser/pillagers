@@ -479,7 +479,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='2.99';
+var VER='3.00';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15455,28 +15455,49 @@ function syncMapBtn(){
 document.getElementById('mapbtn').onclick=function(){
   renderSector(); document.getElementById('sectormodal').classList.add('on');
 };
-// WHAT EACH SECTOR IS, in one line, written from the measurements rather than
-// from flavour. These are not decoration: the whole reason he stayed on one map
-// is that the game never gave him a reason to prefer another, and "they are all
-// four different maps" is not a reason. Density is the measured container
-// multiplier from MAPCONT, stated as a percentage against the average.
+// WHAT EACH SECTOR IS, REWRITTEN FROM MEASUREMENT AT v3.00, and the first version
+// of these lines was partly wrong, which is the point of writing this down.
+// v2.95 shipped four confident sentences derived from MAPCONT, a per-map container
+// multiplier. MAPCONT is INERT at shipped settings: mapContMul() returns it only
+// when CFG.lootNorm is on and lootNorm defaults to 0, so the number the copy was
+// built on has never once affected a raid. Measured over 160 bot raids per sector,
+// two of the four loot claims were wrong and one was exactly backwards. THE QUARRY
+// was advertised as "the thinnest loot of the four" and actually yields the most
+// containers, the most items and the highest median haul; the SUNKEN QUARTER was
+// sold as "the most loot per container" and returns the least of any sector.
+// A sector board that lies is worse than no sector board, because he picks on it.
+// These lines now say only what 640 measured raids support.
 var SECTOR_CHAR=[
-  'Slow and wet. Three stacked worlds joined at a handful of crossings, and the crest is the only long way across. Roughly a seventh of a raid here is spent wading, which is slower and louder than walking.',
-  'Loud and early. The densest interior in the game and the most loot per container, which also means contact comes soonest. If you like fighting in rooms, this is the one.',
-  'Quiet, then lethal. Long holds down tight aisles where nothing happens for minutes and then all of it happens at once. The least forgiving sector to be caught in the open on.',
-  'Open and forgiving. The longest sight lines in the game and the fewest raider kills, so you see trouble coming and can usually walk away from it. The thinnest loot of the four.'
+  'Slow, and it hides you longest. Three stacked worlds joined at a handful of crossings, with the crest the only long way across. Trouble finds you later here than anywhere else, and raids run longer for it. Roughly a seventh of a raid is spent wading, which is slower and louder than walking.',
+  'Loud and early. Contact comes soonest of the four, about half the time it takes on the dam, and the fighting is close because the interior is dense. Loot runs slightly thinner per container than elsewhere, so this is a sector you come to for the fight rather than the haul.',
+  'Quiet, then lethal, and by far the deadliest of the four. Long holds down tight aisles where nothing happens for minutes and then all of it happens at once. Machines account for almost every death here and there are fewer containers than anywhere else, but what is in them is worth more.',
+  'Open, forgiving, and the richest. Long sight lines mean you see trouble coming and can usually walk away from it, and it quietly carries the most containers, the most items and the biggest hauls in the game. The easiest sector to leave alive.'
+];
+// Measured at v2.99 over 160 bot raids per sector, mapIx pinned, simGreed 52,
+// identical seed list on all four. Stated as bot numbers on the board itself
+// because the bot is not him: it dies to machines far more than he does, so read
+// these as the SHAPE of each sector rather than as his own odds.
+var SECTOR_MEAS=[
+  {ext:15.0,fc:105,cont:16.2,haul:8035},
+  {ext:18.8,fc:53, cont:16.7,haul:7250},
+  {ext:4.4, fc:85, cont:14.8,haul:8620},
+  {ext:23.1,fc:69, cont:16.9,haul:8965}
 ];
 function renderSector(){
   var host=document.getElementById('sectorlist');
   var cur=clamp(P.mapIx||0,0,FIXED_MAPS.length-1),h='';
   for(var i=0;i<FIXED_MAPS.length;i++){
     var M=FIXED_MAPS[i],R=sealRec(i),sel=(i===cur);
-    var dens=Math.round(((MAPCONT[i]===undefined?1:MAPCONT[i])-1)*100);
-    var densTxt=(dens>0?('+'+dens+'% loot'):(dens<0?(dens+'% loot'):'average loot'));
+    var MS=SECTOR_MEAS[i]||{};
     var facts=[Math.round(M.w/100)+' by '+Math.round(M.h/100)+' hectares',
                (M.zones?M.zones.length:0)+' named zones',
-               (M.locked?M.locked.length:0)+' keyed rooms',
-               densTxt];
+               (M.locked?M.locked.length:0)+' keyed rooms'];
+    // Real numbers, labelled as the bot's, replacing the fabricated loot
+    // percentage that came off an inert constant.
+    if(MS.ext!==undefined) facts.push('bot walks out '+MS.ext+'%');
+    if(MS.fc!==undefined)  facts.push('first contact ~'+MS.fc+'s');
+    if(MS.cont!==undefined)facts.push(MS.cont+' containers a raid');
+    if(MS.haul!==undefined)facts.push('median haul '+MS.haul.toLocaleString()+'c');
     if(R.tier>0||R.cut>0) facts.push('seal tier '+(R.tier+1)+', '+Math.round(R.cut)+' of '+sealNeed(R.tier)+'s cut');
     if(P.body&&P.body.items&&P.body.map===i) facts.push('YOUR BODY IS HERE, '+P.body.items.length+' items');
     h+='<div class="row sectorpick" data-map="'+i+'" style="display:block;cursor:pointer;'+

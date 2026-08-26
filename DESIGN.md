@@ -8381,3 +8381,69 @@ Not verified: no balance measurement, and none applies. This build adds a HUD
 readout, floors one radius and clamps one delta. It changes no roll, no entity
 decision and no timing constant, and the sim does not draw a HUD at all.
 
+
+### v3.00: I audited my own sector board and two of its four claims were false
+
+v2.95 put a sector board on the deploy lift and gave each of the four maps a
+confident sentence about what it is like to play. I wrote those sentences five
+builds ago. This build measured them, and the honest result is that I should not
+have written them the way I did.
+
+640 bot raids, 160 per sector, identical seed list on all four, mapIx pinned,
+simGreed 52. Against the claims:
+
+  GREYWATER DAM    extract 15.0%   first contact 105s   16.2 cont   median haul 8,035c
+  SUNKEN QUARTER   extract 18.8%   first contact  53s   16.7 cont   median haul 7,250c
+  COLD STORAGE     extract  4.4%   first contact  85s   14.8 cont   median haul 8,620c
+  THE QUARRY       extract 23.1%   first contact  69s   16.9 cont   median haul 8,965c
+
+WHAT HELD UP. The dam is slow: it has the latest first contact in the game by a
+wide margin, 105 seconds against 53 on the Sunken Quarter, and the longest raids.
+The Sunken Quarter is loud and early exactly as advertised, contact arriving in
+about half the time the dam takes. Cold Storage is quiet then lethal and it is not
+close: 4.4 percent extract against 15 to 23 everywhere else, with sentries
+accounting for 96 of its 153 deaths. The Quarry is open and forgiving, 23.1
+percent, the best odds of the four.
+
+WHAT WAS FALSE. Both loot claims. I told him THE QUARRY has "the thinnest loot of
+the four" and it actually carries the most containers, the most items and the
+highest median haul in the game. I told him the SUNKEN QUARTER has "the most loot
+per container" and it returns the least of any sector. One of those is wrong and
+the other is exactly backwards, which is worse: he would have picked against his
+own interest on both counts.
+
+THE CAUSE, and it is the failure mode this file keeps producing. I derived both
+claims from MAPCONT, a per-map container multiplier reading 0.99, 1.26, 1.09, 0.89.
+I never checked whether the game uses it. It does not. mapContMul() returns MAPCONT
+only when CFG.lootNorm is on, lootNorm defaults to 0, and so that constant has
+never once affected a shipped raid. I read a number out of the source, wrote
+player-facing copy from it, and shipped. It is the same class as the SPEC 4.6
+comment describing a deletion that had been reverted, and as the v2.48 loot voices
+that tested green through a path live play never takes: the file says a thing, the
+game does another, and nobody looks.
+
+WHAT SHIPS. The four character lines are rewritten to say only what 640 measured
+raids support, including the two that now say the opposite of what they said
+yesterday. The fabricated "+9% loot" chip is gone from the facts row and is
+replaced with the real measurements: bot extract rate, median time to first
+contact, containers per raid and median haul. Those are LABELLED as bot numbers on
+the board itself and in the comment, because the bot is not him. It dies to
+machines far more than he does, so these describe the shape of a sector rather
+than his own odds, and saying so on the board is the difference between data and
+another confident sentence.
+
+MAPCONT is left in place and left inert. Turning lootNorm on would be a real
+balance change across all four maps and it needs its own paired measurement, not a
+drive-by while fixing some copy. Flagging it rather than doing it.
+
+Verified: parsecheck PASS at v3.00, all four maps and the hub drive and draw with
+drawErr null. The board is read back through the DOM after the change and returns
+the four facts rows verbatim, e.g. THE QUARRY "46 by 36 hectares, 9 named zones, 2
+keyed rooms, bot walks out 23.1%, first contact ~69s, 16.9 containers a raid,
+median haul 8,965c". The measurement itself is 640 sims run through
+__simSeedsFull with __pinDefaults per map.
+Not verified: no A/B, because nothing in this build changes behaviour. It changes
+four strings and one facts row. The numbers ON the board are bot-sim medians and
+are not claimed to be his; his own recorder has him dying to raiders far more
+often than the bot does, which is stated on the board rather than buried here.
+
