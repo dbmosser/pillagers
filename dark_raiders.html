@@ -503,7 +503,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.43';
+var VER='3.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2284,13 +2284,13 @@ function navReachable(map,x,y){
 // and it hides theirs.
 var WEATHER=[
   {id:'clear',name:'CLEAR',view:1,noise:1,lights:1,rain:0,
-   line:'Still air. Nothing covering you but the dark.'},
+   line:'Still air. Nothing out here is covering you.'},
   {id:'rain',name:'RAIN',view:0.90,noise:0.60,lights:1,rain:1,
    line:'Rain. It covers your noise, and theirs.'},
   {id:'fog',name:'FOG BANK',view:0.60,noise:1,lights:0.85,rain:0,
    line:'Fog bank. You will not see them coming.'},
   {id:'blackout',name:'BLACKOUT',view:1,noise:1,lights:0,rain:0,
-   line:'Grid is down. No lamps tonight.'},
+   line:'Grid is down. Every lamp on the map is dead.'},
   {id:'storm',name:'STORM',view:0.80,noise:0.48,lights:0.55,rain:2,lightning:true,
    line:'Storm. The lightning will show you to everything out there.'}
 ];
@@ -2360,7 +2360,35 @@ var TODS=[
   {id:'dusk',name:'DUSK',add:'#42125c',addA:.24,dim:'rgba(18,10,36,0.18)',lights:1,line:'Dusk. The lamps are coming on.'}
 ];
 function tod(){ return (G&&G.tod)||TODS[2]; }
-function pickTod(){ return TODS[ri(0,TODS.length-1)]; }
+// BLACKOUT PROTOCOL WAS PAYING 25 PERCENT FOR NOTHING, FOUR RAIDS IN TEN, v3.44.
+// The term reads "Every lamp on the map stays dark" and it does exactly that: it
+// skips the lamp placement pass entirely. The defect is one layer over, in what
+// the lamps were contributing in the first place. Lamp brightness is
+//   wx().lights * (isDay() ? tod().lights : 1)
+// and TODS gives MORNING and NOON lights:0. Day has been the default and every
+// save was migrated to it, and pickTod draws uniformly from five entries, so two
+// raids in five already had every lamp contributing zero before the term was
+// signed. Another one in five, GOLDEN HOUR, contributes 0.25. So a term costing
+// nothing bought 25 percent more pay on 40 percent of raids and close to nothing
+// on another 20.
+// The fix is not to dim the sun, which would be silly, and not to reprice the
+// term, which would make it a worse deal without making it a real one. If you
+// sign for the grid being down you GO IN when the grid matters: blackout forces
+// a time of day whose lamps are actually load bearing. DUSK at 1.0 and DAWN at
+// 0.7 are the two that are, and picking between them keeps a roll rather than a
+// constant.
+// STREAM DISCIPLINE: the uniform roll is drawn either way, so signing the term
+// cannot shift the PRNG for anything downstream. The second roll only happens on
+// the branch that already diverged by having a term signed.
+function pickTod(){
+  var t=TODS[ri(0,TODS.length-1)];
+  if(typeof hasTerm==='function'&&hasTerm('blackout')){
+    var dark=[];
+    for(var i=0;i<TODS.length;i++) if(TODS[i].lights>=0.7) dark.push(TODS[i]);
+    if(dark.length) t=dark[ri(0,dark.length-1)];
+  }
+  return t;
+}
 function pickWeather(){
   var id=rollTable([['clear',34],['rain',22],['fog',18],['blackout',13],['storm',13]]);
   for(var i=0;i<WEATHER.length;i++) if(WEATHER[i].id===id) return WEATHER[i];

@@ -11460,3 +11460,60 @@ I swept the ones stating a rule or a number and found two wrong; I did not check
 flavour lines, and a wrong claim hiding in a piece of flavour is exactly where the
 MAPCONT copy was hiding.
 
+
+### v3.44: BLACKOUT PROTOCOL was paying 25 percent for nothing, four raids in ten
+
+The v3.43 sweep covered strings that state a rule. This tick covered the FLAVOUR lines,
+on the reasoning that MAPCONT's wrong claim was hiding in flavour, and the flavour
+turned up a live balance defect rather than a wording one.
+
+TWO LINES ASSUMED NIGHT. "Still air. Nothing covering you but the dark." and "Grid is
+down. No lamps tonight." Both were written when night was the default. His own note
+"MOSTLY FRUSTRATING, MAKE IT ALWAYS DAYTIME" made day the default and migrated every
+existing save to it, so those two lines have been describing a darkness that is not
+there. Reworded to say what is actually true in either condition.
+
+AND CHASING THE SECOND ONE FOUND THE REAL PROBLEM. BLACKOUT PROTOCOL is a contract
+term: sign it, take worse odds, Meridian pays 25 percent more. It reads "Every lamp on
+the map stays dark" and it does exactly that, skipping the lamp placement pass. The
+defect is one layer over, in what the lamps were contributing in the first place:
+
+  lamp brightness = wx().lights * (isDay() ? tod().lights : 1)
+
+and TODS gives MORNING and NOON lights:0, GOLDEN HOUR 0.25. pickTod draws uniformly
+from five, so before the term was signed at all, two raids in five already had every
+lamp contributing exactly zero and another one in five had them at a quarter. Measured
+over 30 seeded raids without the term: 37 percent landed somewhere lamps barely matter.
+
+So a term that cost nothing bought 25 percent more pay on roughly four raids in ten.
+
+THE FIX IS NOT TO DIM THE SUN, which would be silly, and not to reprice the term, which
+would make it a worse deal without making it a real one. If you sign for the grid being
+down, you go in when the grid matters: blackout now forces a time of day whose lamps
+are load bearing, DUSK at 1.0 or DAWN at 0.7, and picks between them so it stays a roll
+rather than a constant. Measured over 30 seeded raids with the term signed: dusk 16,
+dawn 14, and 0 percent landing where lamps barely matter.
+
+Stream discipline held: the uniform roll is drawn either way, so signing the term
+cannot shift the PRNG for anything downstream of it.
+
+WHAT THE TERM ACTUALLY COSTS, which I checked before deciding the fix was enough.
+G.lights is read in exactly one place outside the draw calls, and that place is
+T.tLit, the "lit:" percentage in his flight recorder. Lamps do not touch detection,
+damage or any AI decision. BLACKOUT's entire cost is that you cannot see as well,
+which is a real cost to a person walking into a room and precisely zero to a bot that
+never looks at the rendered image.
+
+Verified: parsecheck PASS at v3.44, all four maps and the hub draw with drawErr null,
+landing on dusk, dusk, golden and dawn across the four. The time-of-day distribution
+measured both ways over 30 seeded raids each, tabled above. The claim that lamps are
+draw-and-telemetry only was checked by reading every non-draw reference to G.lights,
+of which there is one.
+Not verified: no balance measurement, and the sim cannot provide one. The bot never
+signs terms, and even if it did, the thing this term removes is only ever consumed by a
+renderer the sim does not run. His own runs are the only measurement, and the "lit:"
+figure already in his exports is the number that will show it: his last four runs read
+3, 7, 3 and 4 percent lit, so he is already playing mostly in the dark by choice.
+Also not verified, and it is now a fair question for him rather than a defect: whether
+25 percent is the right price for a cost that is entirely about what you can see.
+
