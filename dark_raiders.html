@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.76';
+var VER='3.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4248,10 +4248,25 @@ function spotFree(map,x,y,pad){
   return true;
 }
 function freeSpot(map,pad){
+  // THE 4 MILLISECOND SPOT, v3.77. Phase timers put the residual sim spikes on
+  // frames with exactly one freeSpot call: every candidate scanned the ENTIRE
+  // wall list, up to 400 candidates against roughly two thousand rects, so a
+  // patrol retarget could cost four to five milliseconds on its own. The same
+  // question asked of the wall grid touches the handful of rects near the
+  // candidate instead. wallsNear returns a SUPERSET of every wall within the
+  // pad, so accept and reject are BYTE-IDENTICAL to the full scan, which means
+  // identical rnd() consumption and byte-identical maps per seed; verified by
+  // layout signature either side of this change. The grid is the live G.wgrid
+  // when it matches (destruction rebuilds that one), else a lazy per-map build
+  // paid once, which covers map generation before G exists.
   pad=pad||22;
+  var gr=(typeof G!=='undefined'&&G&&G.wgrid&&G.wgrid.walls===map.walls)?G.wgrid
+    :((map._fsGrid&&map._fsGrid.walls===map.walls)?map._fsGrid
+    :(map._fsGrid=buildWallGrid(map.walls,WORLD_W,WORLD_H)));
   for(var t=0;t<400;t++){
     var x=rnd(70,WORLD_W-70),y=rnd(70,WORLD_H-70),ok=1;
-    for(var i=0;i<map.walls.length;i++){var w=map.walls[i];
+    var nw=wallsNear(gr,x,y,pad);
+    for(var i=0;i<nw.length;i++){var w=nw[i];
       if(x>w.x-pad&&x<w.x+w.w+pad&&y>w.y-pad&&y<w.y+w.h+pad){ok=0;break;}}
     if(ok) return {x:x,y:y};
   }
@@ -17397,7 +17412,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The trade flows both ways now: drag an item onto him and he will actually use it',
+  now:'The 4ms patrol-retarget spike is dead; the sim frame is flat',
   next:'The datacore build and the ghost friend, whichever he ranks first'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

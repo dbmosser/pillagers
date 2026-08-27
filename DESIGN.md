@@ -13351,3 +13351,42 @@ taking his OWN meds, which shrinks his settle cut by whatever he uses; the
 direction is pro-player but the magnitude over real raids is unmeasured, and
 no A/B covers it because the sim never hires.
 
+
+### v3.77: freeSpot answers from the wall grid, and a harness lie confessed
+
+THE SPOT THAT COST FOUR MILLISECONDS. freeSpot picks a random legal point on
+the map by rejection sampling, and every candidate scanned the ENTIRE wall
+list, up to 400 candidates against roughly two thousand rects. A patrol
+retarget could pay four to five milliseconds for one call. It now asks the
+wall grid that collide has used since the wgrid build: wallsNear returns a
+superset of every wall within the pad, so accept and reject are
+BYTE-IDENTICAL to the full scan, which means identical rnd() consumption and
+byte-identical maps per seed. Verified the strong way: container and entity
+layout signatures for three seeds captured before the change and re-hashed
+after it match exactly. Average sim frame on the COLD STORAGE probe dropped
+from 0.96 to 0.74ms.
+
+AND A CONFESSION THAT MATTERS MORE THAN THE WIN. Three instrumentation
+rounds this tick read zero for every suspect, waves, saveProfile, freeSpot
+itself, and I nearly attributed the spikes to ghosts again. The zeros were
+MY OWN BUG: the fixture's __perfTimes returned a hard-coded four keys, so
+every accumulator added later was written faithfully and never returned, and
+the probes read absent fields coerced to zero. The same class as the __cfg
+no-op setter caught at v3.61: a harness that looks like it is measuring and
+is not. __perfTimes now returns every accumulator it holds, and the first
+honest round shows the residual 5 to 6ms spikes are in updateEnts's own
+INLINE loop body, with every wrappable callee under a millisecond combined.
+Deterministic per seed, bounded, inside frame budget with draw stacked on
+top, and now the next level of the hunt has real instruments.
+
+Verified: parsecheck PASS at v3.77. All four maps drive and draw with
+frameErr and hudErr null at the standard baselines, hub clean, endRaid clean
+on all three outcomes. Layout signatures identical across the freeSpot
+change for seeds 4400, 602 and 31415. freeSpot's own timer reads zero on
+spike frames that previously carried it.
+Not verified: the residual inline-updateEnts burst, roughly 5ms on
+deterministic frames, remains unattributed below function granularity;
+collide and seekPoint wrappers are the next instruments if his machine still
+stutters. The spotWall sampler still does full scans at build time only,
+noted as a candidate, untouched because build time is not frame time.
+
