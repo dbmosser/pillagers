@@ -14598,3 +14598,32 @@ seeds and is queued behind the two batches already running; whether the wider
 boulevards create sightlines that make any map meaner; how it reads on the other
 three maps, since only GREYWATER was measured.
 
+
+### v4.02 - Polish: the recorder was about to lie, and the primer now teaches the new things
+
+Two small things that matter more than they look.
+
+THE RECORDER WAS ABOUT TO LIE. Kills are tallied by entity kind, so a Bulwark
+kill was being counted correctly inside the raid, but BOTH places the flight
+recorder reports kills, the per-run total and the kills:1s/2c/0r/0sn string,
+still listed only the older machines. A raid where he killed two Bulwarks would
+have reported them nowhere: the total would be short by two and the string would
+not mention them. He reads those reports and I tune from them, so a silent
+undercount is the worst kind of defect this project can ship. Both now include
+bulwark, and the run line reads kills:1s/2c/0r/0sn/1h/2b. Verified through the
+real export formatter with a synthetic run rather than by reading the diff.
+
+THE PRIMER TEACHES THEM. Two cards, in the place that already teaches:
+  "The Bulwark carries a wall" - shooting the slab is close to useless and loud,
+  its back is soft and marked with a hot orange seam, the fight is a circle
+  rather than a duel, and it is slower than you are so leaving is allowed.
+  "Some contracts judge how you played" - most contracts count things, some set
+  a condition on the whole raid, they pay well because they take away the thing
+  you would normally reach for, and they only bank if you reach the ship.
+Fifteen cards now. A mechanic nobody is told about is a secret, and this game
+has a place for telling people, so new mechanics go in it in the same cycle.
+
+Not verified: the two 320-seed measurements still in flight, the Bulwark's cost
+and the raider steady-aim I shipped without pricing; whether the primer cards
+read well to someone who has not just built the thing they describe.
+
