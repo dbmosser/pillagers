@@ -14072,3 +14072,54 @@ AudioContext by construction, so every audio check here is logic, not sound;
 whether tension dropping the lead reads as intended or as the music cutting
 out; and the bush fix by eye in a real raid, though the counts are measured.
 
+
+### v3.92 - His fresh note: "too dark", and it was a compounding bug (2026-08-27)
+
+Two real exports landed (48 and 49 runs, v3.89, his install, authenticated by
+non-zero duration, movement and shots). The Priorities line is unchanged from
+the standing five. The fresh signal is an in-run note at 9 SECONDS on run #48:
+"too dark", logged on the CURRENT build, in FOG, at NOON, and the same words
+appear on run #47. Checked against current code before touching anything, per
+the standing rule, and it is not a mood judgement.
+
+Bad weather does two separate things and nothing ever checked them TOGETHER.
+Fog cuts sight distance to 60 percent, so the cone shrinks from 620 to 372,
+and the fog-of-war sheet over everything outside that cone keeps its full
+daylight opacity of about 0.42. Small bright hole, large brown sheet: the eye
+reads dusk however sunny the palette claims to be. The fix is the rule this
+sheet was already written under, quoted from its own comment: the stealth
+budget lives in whether an enemy is DRAWN, gated on e.seen, not in how opaque
+the unseen area is. So the sheet is now lifted in proportion to how much the
+weather has already taken, (1 - wx.view) * 0.34, daylight only. Fog goes 0.42
+to 0.28 opacity, storm to 0.35, rain to 0.38, CLEAR IS BYTE-IDENTICAL. Sight
+range, enemy drawing and every stealth number are untouched: fog still means
+you will not see them coming, it just no longer means nightfall at midday.
+fogLift 0 restores v3.91 exactly.
+
+LOOKED AT, not assumed: three captures of the same seed and camera in fog,
+before, after, and a deliberately over-bright control. Before against after is
+a visible lift in the unseen area with the lit cone unchanged. The control is
+nearly identical to after, which tells me the clamp floor is now the binding
+constraint, so this is close to the most that can be lifted without editing
+the floor or the sheet colour. If he still says too dark, those two values are
+the next lever and both are one-line dials.
+
+Also carried in this build: v3.91's bush and tree road culls, and the reactive
+music, both from his notes earlier the same day.
+
+Not verified: whether HE reads the new fog as fixed - only he can say; the
+music by ear; the raider extraction behaviour below.
+
+### Queued from his own words: raiders should work an extraction like a person
+
+Run #44 note, verbatim: "raider bots were just standing in the circle but not
+attempting to extract -- they should play like humans -- e.g. hit the
+extraction to call the beacon and then get out to aggro enemies away from the
+extraction point, and then return to extraction point after 30+ seconds and
+click to extract". Checked against current code: raiders hold the ring for
+CFG.raiderExtract seconds, 14 by default, or 3 when a beacon is already
+holding, and there is no call-then-leave-then-return behaviour at all. So the
+note still stands against the current build. This is the same instruction as
+his standing directive to pass the benchmark bot's human behaviours down to
+the in-game raiders, and it is the next build.
+
