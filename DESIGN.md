@@ -14407,3 +14407,47 @@ not catch this. New rule, now in memory: after every mkfixture rebuild, RELOAD t
 tab and prove the dial changes an OBSERVABLE before launching a measurement.
 Proven this time: bushRoadR 0 leaves 153 bushes, bushRoadR 1 leaves 133.
 
+
+### THE BENCH NEVER DROPPED. I was measuring an unarmed bot. (2026-08-27)
+
+Correcting the alarm I raised last tick in the strongest terms, because I raised
+it publicly and it was wrong. There is no regression. The current build,
+measured properly, benches at 16.3 percent over 80 seeds of the official family
+with zero discordant, which is ABOVE the 10.0 percent I have been quoting all
+day, not seven points below it.
+
+The 2.5 percent readings were my procedure, not the game. __pinDefaults does two
+jobs and I was thinking of it as one: it pins the DIALS, and it also pins the
+PROFILE, P.equipped to the smg, wear back to zero, body cleared, map index set.
+The fixture loads his real saved profile, so a batch launched on a freshly
+loaded tab without calling it runs the benchmark bot carrying whatever weapon
+and wear that profile happened to hold. __pairedBg does not call it either; it
+only saves and restores the dials it was handed. So three runs today measured a
+differently equipped bot and I read the resulting floor as a catastrophe.
+
+What survives and what does not:
+  SURVIVES: the A/B CONCLUSIONS from those runs. Both arms shared the same
+  unpinned loadout, so raiderSmart null and raiderRoll null are still true
+  statements about those changes, and the roll's zero discordant is still
+  explained by the bot never shooting raiders.
+  DOES NOT SURVIVE: their ABSOLUTE rates, and any effect small enough to hide
+  under a floor that low. The bush attribution is the one that matters, since a
+  cover change has little room to show at 2.5 percent; it has been relaunched
+  with the pin in place.
+  ALSO DOES NOT SURVIVE: my claim that clearing bushes cost survival. It was
+  never demonstrated, it was inferred by elimination from a drop that did not
+  happen. The honest position is that nothing today has been shown to have hurt
+  the player, and the bush question is now being asked properly for the first
+  time.
+
+The rule, now in memory: __pinDefaults(mapIx) immediately before every
+__pairedBg, on every freshly loaded tab, no exceptions. Two harness faults in
+one day, the stale tab and this, both producing confident numbers that meant
+nothing. Both were caught by asking what the harness was actually doing rather
+than trusting a plausible story, which is the only reason today's conclusions
+are worth anything.
+
+Not verified: the bush attribution, rerun properly and in flight; a full 320
+seed bench at v3.97 to replace the 10.0 figure, which the 80 seed re-take
+suggests is now around 16 percent.
+
