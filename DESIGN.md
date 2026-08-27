@@ -13028,3 +13028,49 @@ chosen with the game's own losClear rather than teleporting blind. Second,
 nothing in this pass changed code, so there is no build, no version bump and
 no zip, just evidence.
 
+
+### v3.71: the ten millisecond frame spike was a route that never existed
+
+HIS STANDING NOTE, "game is laggy at moments". The v3.55 LOD answered part of
+it; this build measured what was left and killed the biggest remaining spike.
+
+MEASURED FIRST. Thirty timed frames per map at the standard baselines: sim
+averages 0.9 to 1.5ms, draw 1.7 to 2.1ms, HUD half a millisecond, all
+comfortable against the 16.7ms budget. But sim MAXES hit 5.6, 5.7, 9.9 and
+5.0ms across the four maps, and a 10ms spike on the same frame as a draw is a
+dropped frame, which is exactly "laggy at moments". Fixture-side counters on
+the expensive calls tied the two worst spikes, 9.4 and 9.5ms, to a SINGLE
+navPath call each.
+
+THE CAUSE IS ASKING FOR THE IMPOSSIBLE. The A* expansion cap is sized to the
+whole grid, on purpose, so long cross-map routes do not fail on budget. The
+price appears when the route does not EXIST: the search exhausts the entire
+cap before admitting it, about 100,000 expansions, 9 to 10 milliseconds. And
+the game asks for impossible routes routinely: every raider that picks a
+cache inside a still-locked room asks for one, pays the full spike, marks the
+container unreachable, and another raider asks again later.
+
+UNREACHABLE IS NOW FREE. One flood fill labels the nav grid's connected
+components the first time a route is asked of a nav build, and from then on
+"is there any route at all" is two array reads before the search starts. The
+labels cannot go stale: the nav object is rebuilt whenever walls change, a
+door opening included, and fresh labels are computed on the next query.
+4-connected labelling matches the walker's reachability exactly, because its
+diagonal step requires both orthogonal neighbours open.
+
+Verified: parsecheck PASS at v3.71. All four maps drive and draw with
+frameErr and hudErr null at the standard baselines, hub clean, endRaid clean
+on all three outcomes. A route into a locked room's cache returns null in
+0.8ms cached, with the one-time labelling costing 8.5ms exactly once per nav
+build; an open container still routes; a cross-map route still routes. The
+COLD STORAGE spike scenario re-measured under the audit protocol: average
+0.64ms, maximum 2.6ms, ZERO frames over 3ms, against a 9.9ms maximum and
+eight frames over 3ms before.
+Not verified: a successful LONG route still costs 10 to 15ms in one frame,
+measured on a corner-to-ring query; it is rare (raid start, beacon walks) and
+amortising the search across frames is real surgery I am not doing as a side
+effect. The remaining sub-5ms spikes with no navPath in them (three sighted
+in the audit) are unattributed and stay on the list. And the labelling cost
+lands on the first query after any door opens, 8.5ms once, which is the same
+class of spike it prevents but paid one time instead of per victim.
+

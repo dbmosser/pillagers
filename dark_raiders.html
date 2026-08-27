@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.70';
+var VER='3.71';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9913,6 +9913,33 @@ function navPath(nav,sx,sy,tx,ty){
   var goal=nearestOpen(cell(Math.floor(tx/NAVC),Math.floor(ty/NAVC)));
   if(start<0||goal<0) return null;
   if(start===goal) return [{x:tx,y:ty}];
+  // UNREACHABLE MEANS FREE, v3.71. A search for a route that does not exist
+  // burns the entire expansion cap before admitting it, and the cap is sized
+  // to the whole grid, which measured 9 to 10 milliseconds per call on COLD
+  // STORAGE, the single largest frame spike in the game. The everyday case is
+  // a raider asking for a route to a cache inside a still-locked room.
+  // Connected components are labelled once per nav build with one flood fill,
+  // so "is there any route at all" becomes two array reads. The nav object is
+  // rebuilt whenever the walls change, a door opening included, so the labels
+  // cannot outlive the geometry they describe. 4-connected labelling matches
+  // the walker exactly: its diagonal step requires both orthogonal neighbours
+  // open, so any diagonal link is also a 4-connected link.
+  if(!nav.region){
+    var RG=new Int32Array(n), RQ=new Int32Array(n), rid=0;
+    for(var _rs=0;_rs<n;_rs++){
+      if(nav.blk[_rs]||RG[_rs]) continue;
+      rid++; var _rh=0,_rt=0; RQ[_rt++]=_rs; RG[_rs]=rid;
+      while(_rh<_rt){
+        var cc=RQ[_rh++], ccx=cc%gw, ccy=(cc/gw)|0;
+        if(ccx>0&&!nav.blk[cc-1]&&!RG[cc-1]){ RG[cc-1]=rid; RQ[_rt++]=cc-1; }
+        if(ccx<gw-1&&!nav.blk[cc+1]&&!RG[cc+1]){ RG[cc+1]=rid; RQ[_rt++]=cc+1; }
+        if(ccy>0&&!nav.blk[cc-gw]&&!RG[cc-gw]){ RG[cc-gw]=rid; RQ[_rt++]=cc-gw; }
+        if(ccy<gh-1&&!nav.blk[cc+gw]&&!RG[cc+gw]){ RG[cc+gw]=rid; RQ[_rt++]=cc+gw; }
+      }
+    }
+    nav.region=RG;
+  }
+  if(nav.region[start]!==nav.region[goal]) return null;
   var gx=goal%gw,gy=(goal/gw)|0;
   // Weighted slightly above true distance. A strict A star explores a wide fan
   // of equally good routes across open ground and the worst query measured 13.4ms,
@@ -17194,7 +17221,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The count ghost: what inflated every pre-v3.62 sweep, hunted with instrumentation',
+  now:'Frame spikes: the failed-route search that cost 10ms is dead, watching for the rest',
   next:'The datacore build, the moment he ranks the roadmap row'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

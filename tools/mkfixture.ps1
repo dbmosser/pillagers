@@ -575,6 +575,11 @@ window.__keysRef=function(){ return keys; };
 window.__wx={list:function(){ return WEATHER; },cur:wx,VF:VF,AMBR:AMBR,ping:ping,pick:pickWeather};
 window.__music=function(){ tickMusic(); return {mode:musicMode(),wanted:musicWanted(),started:!!MUS.g,step:MUS.step}; };
 window.__hudBox=function(){ return HUDBOX; };
+// perf instrumentation, fixture-only: count the expensive calls per __sim
+var _PNAV=0,_PLOS=0;
+try{ var _onav=navPath; navPath=function(){ _PNAV++; return _onav.apply(null,arguments); }; }catch(e){}
+try{ var _olos=losClear; losClear=function(){ _PLOS++; return _olos.apply(null,arguments); }; }catch(e){}
+window.__perfCounters=function(reset){ var r={nav:_PNAV,los:_PLOS}; if(reset){_PNAV=0;_PLOS=0;} return r; };
 window.__audio={amb:tickAmbience,steps:tickEnemyAudio,sfx:sfx,blip:blip,ears:earsOf,
   bus:bus,ctx:ac,ambObj:function(){ return AMB; }};
 window.__bag={weight:bagWeight,drop:dropItem,worst:worstBagIndex,cull:autoCull,
