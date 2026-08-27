@@ -579,7 +579,17 @@ window.__hudBox=function(){ return HUDBOX; };
 var _PNAV=0,_PLOS=0;
 try{ var _onav=navPath; navPath=function(){ _PNAV++; return _onav.apply(null,arguments); }; }catch(e){}
 try{ var _olos=losClear; losClear=function(){ _PLOS++; return _olos.apply(null,arguments); }; }catch(e){}
-window.__perfCounters=function(reset){ var r={nav:_PNAV,los:_PLOS}; if(reset){_PNAV=0;_PLOS=0;} return r; };
+var _PSEG=0,_PFS=0,_PSPOT=0;
+try{ var _oref=refreshVseg; refreshVseg=function(){ _PSEG++; return _oref.apply(null,arguments); }; }catch(e){}
+try{ var _ofs=freeSpot; freeSpot=function(){ _PFS++; return _ofs.apply(null,arguments); }; }catch(e){}
+try{ var _osw=spotWall; spotWall=function(){ _PSPOT++; return _osw.apply(null,arguments); }; }catch(e){}
+window.__perfCounters=function(reset){ var r={nav:_PNAV,los:_PLOS,vseg:_PSEG,freeSpot:_PFS,spotWall:_PSPOT}; if(reset){_PNAV=0;_PLOS=0;_PSEG=0;_PFS=0;_PSPOT=0;} return r; };
+var _PT={vseg:0,ents:0,player:0,thr:0};
+try{ var _tref=refreshVseg; refreshVseg=function(){ var t0=performance.now(); var r=_tref.apply(null,arguments); _PT.vseg+=performance.now()-t0; return r; }; }catch(e){}
+try{ var _tent=updateEnts; updateEnts=function(){ var t0=performance.now(); var r=_tent.apply(null,arguments); _PT.ents+=performance.now()-t0; return r; }; }catch(e){}
+try{ var _tpl=updatePlayer; updatePlayer=function(){ var t0=performance.now(); var r=_tpl.apply(null,arguments); _PT.player+=performance.now()-t0; return r; }; }catch(e){}
+try{ var _tth=updateThrowables; updateThrowables=function(){ var t0=performance.now(); var r=_tth.apply(null,arguments); _PT.thr+=performance.now()-t0; return r; }; }catch(e){}
+window.__perfTimes=function(reset){ var r={vseg:+_PT.vseg.toFixed(2),ents:+_PT.ents.toFixed(2),player:+_PT.player.toFixed(2),thr:+_PT.thr.toFixed(2)}; if(reset){_PT.vseg=0;_PT.ents=0;_PT.player=0;_PT.thr=0;} return r; };
 window.__audio={amb:tickAmbience,steps:tickEnemyAudio,sfx:sfx,blip:blip,ears:earsOf,
   bus:bus,ctx:ac,ambObj:function(){ return AMB; }};
 window.__bag={weight:bagWeight,drop:dropItem,worst:worstBagIndex,cull:autoCull,

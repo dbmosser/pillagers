@@ -13074,3 +13074,19 @@ in the audit) are unattributed and stay on the list. And the labelling cost
 lands on the first query after any door opens, 8.5ms once, which is the same
 class of spike it prevents but paid one time instead of per victim.
 
+
+### Measurement addendum, 2026-08-27: the residual spikes live in updateEnts
+
+Phase timers in the fixture (refreshVseg, updateEnts, updatePlayer,
+updateThrowables now individually timed) attribute every remaining spike to
+updateEnts: 4.3 to 6.0ms worst cases over 200 frames on COLD STORAGE, with
+refreshVseg and the player at zero in those same frames. One spike carried a
+129-call losClear burst, a machine contact-call sweep; the rest carry no
+counted expensive call, so the cost is in the entity loop's own occasional
+branches, one level deeper than the current counters see.
+
+Left there deliberately: with the 10ms failed-route class dead, the worst
+observed frame is 6ms of sim plus about 2ms of draw, inside the 16.7ms budget
+with headroom. The next attribution level (per-kind timing inside updateEnts)
+is the open thread if his machine still stutters on v3.71.
+
