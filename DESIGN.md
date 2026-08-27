@@ -12136,3 +12136,62 @@ the existing downed branch. Nothing A/B'd: the wind-up makes healing strictly
 worse under fire and the v3.51 note already flagged that the healing stack's
 net effect on extract rate is unmeasured; this adds to that same open question.
 
+
+### v3.55: dumb simulation out of earshot, and the rain turned back down
+
+His note: "game is laggy at moments, optimize performance where possible --
+might have to do with so many raiders -- can we dumb-simulate their moves when
+they aren't in earshot? Or come up with similar solutions".
+
+MEASURED FIRST. A quiet frame is 3.6ms all in, nowhere near a problem. The
+moments are the problem: force 102 entities into chase at once and the sim step
+averages 4.19ms with WORST FRAMES OF 14.5, which on top of a 7ms draw is past
+the 16.6ms budget, and that is his lag. The route finder is already rationed to
+one search per frame, so the spike is the price of a single search plus a
+hundred sight rays a frame.
+
+HIS INSTINCT SHIPS, WITH ONE CORRECTION HE SHOULD KNOW ABOUT. The first cut did
+exactly what he suggested: a body farther than 1100 units from the player, past
+every noise radius in the game, dropped the route finder entirely and steered
+straight with the wall slide. Measured before shipping, six seeds, and it gutted
+them: 42 raiders filled their haul and left across the control raids against 22
+with the cut, because a body that cannot route cannot get INTO buildings, and
+the loot is in the buildings. Dumb simulation is supposed to be invisible; that
+one was a lobotomy with good framerates.
+
+What ships instead: a far body keeps its routes and keeps looting, but skips the
+per-frame sight ray outright and refreshes its route every 10 to 14 seconds
+instead of every 2.6 to 3.8. Nobody can see whether an off-screen body
+re-planned its corridor this second or ten seconds ago, which makes this the
+version of the idea that is actually free. lodR 0 turns it off.
+
+  same stress, 102 in chase      avg 4.19ms worst 14.5   ->   avg 2.28ms worst 10.4
+  raiders filling their haul     42 without LOD          ->   36 with, same seeds
+                                 (the rejected first cut managed 22)
+
+THE RAIN, "rain graphic is distracting, can it be less prominent somehow?".
+v3.44's rain was invisible and v3.51 fixed that by overshooting to loud, this
+session, both his notes. Split the difference: 110 to 290 drops at 20 to 38
+percent alpha against v3.51's 150 to 510 at 26 to 52, thinner strokes, and the
+intensity scaling stays so a storm still outranks a shower.
+
+FOUND WHILE MEASURING, and worth recording: the fixture's __cfg() takes no
+arguments and returns CFG by reference. Every probe this session that called
+__cfg({...}) with an object was silently doing nothing, and two A/B probes today
+produced identical arms because of it, caught both times by the results being
+identical to the digit. Past DESIGN measurements are unaffected: their dials
+came from __pinDefaults, which does write. The correct fixture idiom is
+__cfg().dial=value, after __simRaidBegin so the pins do not re-apply over it.
+
+Verified: parsecheck PASS at v3.55. Four maps drive and draw with frameErr and
+hudErr null, hub clean, endRaid on all three outcomes no throw. Stress and
+behaviour figures as tabulated, all measured on the same seeds both arms, with
+the dial flipped mid-raid via the reference idiom above.
+Not verified: the stress scenario is synthetic, 102 simultaneous chasers is
+more than any real raid produces, so his in-play lag moments should improve
+but I cannot reproduce his exact ones. The behaviour cost of slow route
+refresh is bounded by the six-seed probe, not by a 320-seed A/B; nExt 36
+against 42 could be noise or could be a real few percent of raider throughput,
+and if raiders feel scarcer at extracts this dial is the first suspect. The
+rain level is again a number chosen by arithmetic, not a captured frame.
+
