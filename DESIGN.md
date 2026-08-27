@@ -11990,3 +11990,61 @@ he asked for all five as directives rather than as experiments. Healing, downed
 time and the Warden all push survivability in opposite directions and the net
 effect on extract rate is currently unknown.
 
+
+### v3.52: the status you could not see, the raiders you could not read, the items that said nothing
+
+Three of his notes, all about the same failure: information that exists and is
+not reaching him.
+
+THE PLAYER STATUS WAS UNDER THE ARMOUR BAR, "the player status is currently
+blocked by the armor in the bottom left corner". Correct and unarguable from the
+code: the status plate occupied by-17 to by-3, the armour bar occupies by-22 to
+by-11, and the armour bar is drawn AFTER the plate in the same function, so with
+any armour on it painted straight over the word. v3.50's armour slot means he
+now wears a rig most of the time, which took this from occasional to permanent.
+The plate stacks 24px above the armour bar when one is showing and stays put
+when there is not, so nothing moves for a player with no rig.
+
+THE RAIDER LIST LEARNED THE PLAYER'S VOCABULARY, "the list of Raiders needs to
+give more detail on what they are doing, should be more similar to the player
+status. Firing, jogging, sprinting, aiming, standing still, looting, extracting,
+healing". Reading his list against raiderStatus: three verbs were missing and
+one was lying. HEALING existed for the player and not for the raider, even
+though raiders have used medical since v3.40 and e.healQ is literally the same
+field the player's HEALING reads. And IDLE covered two different men: one
+standing still and one walking somewhere both read IDLE. e.moving is already
+maintained by moveToward, so MOVING and HOLDING now mean for a raider exactly
+what they mean for you. SEARCHING also moved above EXTRACTING in precedence,
+because a man with his hands in a container is doing something more legible than
+the state he returns to when he straightens up.
+
+Driven live, one raider forced through each branch: HOLDING, MOVING, HEALING,
+SEARCHING, EXTRACTING, and in loot state with no goal HOLDING versus MOVING by
+the movement flag. Not in his list: sprinting, jogging and aiming, because a
+raider HAS no sprint, no jog and no ads. Those are player-only mechanics, and
+inventing fake distinctions to match the wording would be dressing, not detail.
+
+WHAT KIND OF THING IS THIS, "items in inventory should note whether they are
+equipable or crafting/salvage materials", "or quest items if applicable, etc".
+The stash row gave a name, a count and a price, and nothing about what the thing
+IS, so a Keycard and a coil of Copper Wire read as the same kind of object with
+different numbers. ITEMS has carried the answer since the beginning in it.use.
+Each row now wears a small outlined tag: MEDICAL, THROWABLE, AMMO, KEY, EQUIP
+for guns, GEAR for armour, and everything with no use at all is SALVAGE, which
+is by definition the sell-and-craft pile. Driven: five stash items render five
+correct tags with their colours.
+
+Verified: parsecheck PASS at v3.52. Four maps drive and draw with frameErr and
+hudErr null, hub clean, endRaid on all three outcomes with no throw. Raider
+verbs driven through every new branch as above. Stash tags driven through the
+real renderHub path: Medkit MEDICAL, Smoke THROWABLE, Ammo Box AMMO, Bandage
+MEDICAL, Scrap SALVAGE. A HUD frame drawn with armour 40 and drawErr null, which
+exercises the lifted plate branch.
+Not verified: the lifted status plate is proven not to throw and proven to take
+the armour branch, but whether it LOOKS right at by-24 is a pixel judgement the
+pane cannot screenshot; the geometry says plate 20 to 41 above the bar's 22,
+clear by construction. The KEY tag has no live item to appear on unless a
+keycard is in the stash, and EQUIP/GEAR appear only if a gun or rig key is ever
+stashed rather than in the armoury, which the current flows do not produce; those
+two tags are reachable in code and unobserved in practice.
+

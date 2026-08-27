@@ -65,6 +65,9 @@
   .gsub{ font-size:9px; color:var(--ash); letter-spacing:.04em; }
   .gtag{ font-size:8.5px; letter-spacing:.14em; color:var(--coolant); flex:none; }
   .gslot.empty .gtag{ color:var(--rust); }
+  /* Small, outlined, and never louder than the item name it qualifies. */
+  .itag{ font-size:8px; letter-spacing:.12em; padding:1px 4px; border:1px solid;
+    border-radius:2px; opacity:.85; flex:none; }
   .panel { border:2px solid var(--steel-hi); border-radius:5px;
     background:linear-gradient(180deg,var(--win-top),var(--win-bot));
     box-shadow:inset 0 0 0 2px var(--steel), 0 2px 0 rgba(0,0,0,.5);
@@ -542,7 +545,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.51';
+var VER='3.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14336,13 +14339,23 @@ function drawHUD(){
     // ABOVE the bar, not on it. The first cut put it at by+18 beside the HP
     // number, which is inside the green fill, and the capture showed amber text
     // on a green bar. Its own dark plate so it reads at any health.
+    // HIS NOTE, v3.52: "the player status is currently blocked by the armor in
+    // the bottom left corner". Correct and unarguable from the code: the status
+    // plate occupies by-17 to by-3 and the armour bar occupies by-22 to by-11,
+    // and the armour bar is drawn AFTER it in this same function, so whenever he
+    // was wearing a rig with armour left it painted straight over the word. The
+    // v3.51 armour slot means he is wearing one far more often, so this went
+    // from occasional to permanent.
+    // The status now stacks ABOVE the armour bar when there is one, and stays
+    // where it was when there is not, so nothing moves for a player with no rig.
     var _ps=playerStatus();
+    var _up=(p.armor>0)?24:0;
     ctx.font=FS(TYPE.label);
     var _pw=ctx.measureText(_ps).width;
     ctx.fillStyle='rgba(6,9,13,.72)';
-    ctx.fillRect(20,by-LH(17),_pw+10,LH(14));
+    ctx.fillRect(20,by-_up-LH(17),_pw+10,LH(14));
     ctx.fillStyle=STATCOL[_ps]||'#a5b1bc';
-    ctx.fillText(_ps,25,by-LH(6));
+    ctx.fillText(_ps,25,by-_up-LH(6));
   })();
   // The number that was just taken off, floating clear of the bar and fading.
   if(p.dmgPopT>0&&p.lastDmg>0){
@@ -14779,18 +14792,32 @@ function playerStatus(){
   if(p.moving) return 'MOVING';
   return 'HOLDING';
 }
+// HIS NOTE, v3.52: "the list of Raiders needs to give more detail on what they
+// are doing, e.g. should be more similar to the player status. Firing, jogging,
+// sprinting, aiming, standing still, looting, extracting, healing".
+// Three verbs were missing outright and one was lying. HEALING existed for the
+// player and not for the raider, even though raiders have used medical since
+// v3.40 and e.healQ is exactly the same field the player's HEALING reads. And
+// IDLE was doing the work of two different things: a man standing still and a
+// man walking somewhere both read IDLE, which is the "more detail" he is asking
+// for. e.moving is already maintained by moveToward, so MOVING and HOLDING now
+// mean for a raider precisely what they mean for the player.
+// SEARCHING moved above EXTRACTING deliberately: a man with his hands in a
+// container is doing something more interesting than the state he will return
+// to when he straightens up.
 function raiderStatus(e){
   if(!e) return 'GONE';
   if(e.downed) return 'DOWN';
   if(e.reviving) return 'REVIVING';
+  if((e.healQ||0)>0) return 'HEALING';
   if((e.shotT||0)>0) return 'SHOOTING';
+  if((e.lootT||0)>0) return 'SEARCHING';
   if(e.state==='extract') return 'EXTRACTING';
   if(e.state==='chase'||e.state==='alarm'||e.state==='hunt') return 'FIGHTING';
-  if((e.lootT||0)>0) return 'SEARCHING';
   if(e.state==='investigate') return 'HUNTING';
-  if(e.state==='loot') return e.goal?'LOOTING':'IDLE';
-  if(e.state==='patrol') return 'MOVING';
-  return 'IDLE';
+  if(e.state==='loot') return e.goal?'LOOTING':(e.moving?'MOVING':'HOLDING');
+  if(e.state==='patrol') return e.moving?'MOVING':'HOLDING';
+  return e.moving?'MOVING':'HOLDING';
 }
 function drawRaiderBoard(){
   var R=G.roster;
@@ -16898,6 +16925,25 @@ function renderCrate(){
 // A slot reads the same way every time: icon, what it is, what it does, and
 // whether anything is in it. EMPTY is drawn as loudly as a filled slot on
 // purpose, because "no rig" is a decision he was making without being told.
+// HIS NOTE, v3.52: "items in inventory should note whether they are equipable or
+// crafting/salvage materials", "or quest items if applicable, etc". The stash
+// row gave a name, a count and a price, and nothing at all about what the thing
+// IS, so a Keycard and a coil of Copper Wire read as the same kind of object
+// with different numbers next to them. ITEMS already carries the answer in
+// it.use, which has six values, and the one with no use at all is by definition
+// the sell-and-craft pile.
+var ICLASS={
+  gun:   {t:'EQUIP',     c:'#7cc4ff'},
+  armor: {t:'GEAR',      c:'#5aa9e6'},
+  heal:  {t:'MEDICAL',   c:'#6fe0a0'},
+  ammo:  {t:'AMMO',      c:'#c2a35e'},
+  'throw':{t:'THROWABLE',c:'#e07040'},
+  key:   {t:'KEY',       c:'#ffb02e'}
+};
+function itemClass(k){
+  var it=ITEMS[k]; if(!it) return {t:'SALVAGE',c:'#8a96a1'};
+  return ICLASS[it.use]||{t:'SALVAGE',c:'#8a96a1'};
+}
 function gearSlot(label,key,name,sub,empty){
   var ic=(!empty&&key)?iconImgHTML(key,30):'<span class="gx">--</span>';
   return '<div class="gslot'+(empty?' empty':'')+'">'+
@@ -17028,13 +17074,16 @@ function renderHub(){
     var sw=iconImg(k,24);   // the item's face, v2.88; the 3px swatch is retired
     var nm=document.createElement('div'); nm.className='nm r-'+it.r;
     nm.textContent=it.name+' x'+counts[k];
+    var IC=itemClass(k);
+    var tg=document.createElement('div'); tg.className='itag';
+    tg.textContent=IC.t; tg.style.color=IC.c; tg.style.borderColor=IC.c;
     var vl=document.createElement('div'); vl.className='vl'; vl.textContent=ival(k)+'c';
     var b=document.createElement('button'); b.textContent='Sell';
     b.onclick=function(){
       var ix=P.stash.indexOf(k);
       if(ix>=0){ P.stash.splice(ix,1); P.credits+=ival(k); P.rep+=ival(k); saveProfile(); renderHub(); }
     };
-    row.appendChild(sw); row.appendChild(nm); row.appendChild(vl); row.appendChild(b);
+    row.appendChild(sw); row.appendChild(nm); row.appendChild(tg); row.appendChild(vl); row.appendChild(b);
     sl.appendChild(row);
   });
   // REPUTATION HAD NO VISIBLE SOURCE, v3.23, and his own profile is the evidence:
