@@ -15100,3 +15100,29 @@ Not verified: the dodge at 320 seeds, queued behind the sprint measurement
 still running; whether it should also apply to the PLAYER-facing raiders,
 which would be the fifth hand-down and follows the same measure-first path.
 
+
+### Measurement: the raider sprint is difficulty-free, and the parity record is perfect
+
+320 paired seeds, official family, sprint off against on: 20.3 against 19.7
+percent, discordant 42 split 22 to 20. A clean null for his survival, with
+healthy churn: 42 raids went differently, because men who bolt for the ring
+change the rhythm of a raid without changing its danger. Sentry deaths tick
+up 104 to 116, the price of louder feet near the machines, and crawler deaths
+fall 56 to 46, because a sprinting man outruns what a jogging one did not.
+
+The full parity scorecard, every ability measured at 320 seeds:
+  dodge roll    zero raids changed, invisible to the benchmark
+  steady aim    10.3 vs 10.3, split 2 to 2, null
+  crouch        byte-identical raids, provably free
+  sprint        20.3 vs 19.7, split 22 to 20, null with 42-raid churn
+
+Four human abilities handed down to the raiders, each reversible on its own
+switch, and not one of them moved his difficulty. That is the standard his
+hand-down order set: realism first, and the proof that it IS realism rather
+than a buff is that the scales did not move.
+
+Also launched: the Howler ring dodge at 320 seeds, guard first proving 137
+units out of the ring with it against 85 without. In flight.
+
+Not verified: the dodge at scale; everything awaiting his own hands.
+
