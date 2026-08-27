@@ -12417,3 +12417,68 @@ pickTod is unchanged but I did not drive a termed raid this build. Whether the
 explainer sentence reads well at his window width is unmeasured, since the pane
 cannot screenshot.
 
+
+### v3.60: the undercroft has a radio
+
+His note: "add faint 16 bit music in the undercroft and a toggle to cut it on
+always, on in undercroft only, or off". Shipped as written, all three states.
+
+NO FILES, same as every other sound in the game. The music is two synthesized
+voices: a square-wave lead pushed through a 2400Hz lowpass so it reads as an
+old console rather than an alarm, and a triangle bass underneath it. Eight bars
+in A minor at 72 BPM, 64 steps, about 27 seconds around, and the echo is the
+same note played again three steps later at a third of the volume, which is
+the whole of how 16-bit consoles faked space. The loop is written into two
+arrays; nothing is random, so it cannot touch the gameplay PRNG stream even in
+principle.
+
+FAINT means faint: the music has its own gain node at 0.15 with per-note peaks
+around 0.16, so it sits far under every gunshot and footstep the game already
+makes. It deliberately does NOT route through BUS, because BUS feeds the room
+reverb whose send is driven per frame from where the operator is standing
+inside a raid, and the radio is not standing anywhere. Dry, quiet, straight to
+the output. A musicVol dial scales it without a build.
+
+THE TOGGLE lives in Settings with the other presentation rows, one button,
+three states, cycling UNDERCROFT, ALWAYS, OFF. UNDERCROFT is the default and
+plays only while no raid is live, which includes every screen of the hub.
+ALWAYS keeps it running quietly on the surface too. OFF is off. The choice
+persists on the profile, and loadProfile assigns the saved object wholesale
+(P=d, checked before shipping) so the field survives a reload without a
+migration.
+
+SILENCE WHERE SILENCE IS OWED. The bot sim is gated explicitly: G.sim false is
+required before a single note schedules, so a 320-seed batch stays mute even
+in ALWAYS mode. The fixture is silent by construction rather than by flag: it
+replaces the AudioContext constructor with a throw, ac() catches that and
+returns null, and tickMusic returns before creating a node. Leaving a raid
+fades the music out over a third of a second and resets the loop to step
+zero, so coming home always starts the phrase from the top rather than
+resuming mid-bar after ten minutes on the surface.
+
+ONE TICK SITE. tickMusic is called once per frame from the main loop, which
+drives the hub and the raid alike, so there is no second copy of the gating
+logic to drift from the first, which is the two-systems-that-never-met class
+of bug this project keeps paying for.
+
+Verified: parsecheck PASS at v3.60. All four maps drive and draw with frameErr
+and hudErr null, hub frames clean, endRaid driven on extract, dead and abandon
+with no throw. The gate driven through the new __music fixture hook, six
+states: hub default wanted TRUE, OFF wanted false, ALWAYS wanted true in the
+hub AND in a real driven raid, ALWAYS wanted FALSE inside a bot sim raid
+(the sim silence rule holding), UNDERCROFT wanted false inside a raid. In
+every one of those states started stayed false, which is the fixture proving
+it cannot construct audio at all. The settings button, clicked through the
+real optbtn path, cycles UNDERCROFT to ALWAYS to OFF and back with P.music
+tracking each step. Persistence is verified by reading, not driving:
+loadProfile assigns the saved object wholesale at P=d with no field whitelist.
+Before any of this was applied, a three-reviewer adversarial panel read the
+patch against the live file and found zero blockers; its one real catch is a
+PRE-EXISTING dangling-else in loadProfile (line 1023, else P.cfg=null binds to
+the wrong if) which is the next build's work, not this one's.
+Not verified: the actual sound of it. This machine's verification path cannot
+listen, so the composition, the loudness and the fade are correct by
+construction, from the note data and the gain envelopes, not by ear. If the
+loop is annoying or the level is wrong, the musicVol dial and the OFF state
+are both one click away while I retune it from his note.
+

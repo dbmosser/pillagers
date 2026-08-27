@@ -534,6 +534,9 @@ try{ tickAmbience=function(){}; }catch(e){}
 try{ tickEnemyAudio=function(){}; }catch(e){}
 try{ tickPlayerSteps=function(){}; }catch(e){}
 try{ tickMachineVoices=function(){}; }catch(e){}
+// tickMusic is DELIBERATELY not stubbed here, departing from stub-at-source:
+// the __music hook has to observe the real gate to verify it, and the throwing
+// AudioContext below makes ac() return null so tickMusic cannot emit anyway.
 // And belt and braces: never let an AudioContext start at all.
 try{ if(window.AudioContext) window.AudioContext=function(){ throw new Error('fixture is silent'); }; }catch(e){}
 try{ if(window.webkitAudioContext) window.webkitAudioContext=window.AudioContext; }catch(e){}
@@ -566,6 +569,7 @@ window.__mouseState=function(){ return mouse; };
 //    rather than the fight.
 window.__keysRef=function(){ return keys; };
 window.__wx={list:function(){ return WEATHER; },cur:wx,VF:VF,AMBR:AMBR,ping:ping,pick:pickWeather};
+window.__music=function(){ tickMusic(); return {mode:musicMode(),wanted:musicWanted(),started:!!MUS.g,step:MUS.step}; };
 window.__audio={amb:tickAmbience,steps:tickEnemyAudio,sfx:sfx,blip:blip,ears:earsOf,
   bus:bus,ctx:ac,ambObj:function(){ return AMB; }};
 window.__bag={weight:bagWeight,drop:dropItem,worst:worstBagIndex,cull:autoCull,

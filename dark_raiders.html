@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.59';
+var VER='3.60';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -606,7 +606,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:900,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:900,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -1294,6 +1294,77 @@ function verb(){
   wet.connect(a.destination);
   REV={send:send,wet:wet,pre:pre,cells:cells};
   return REV;
+}
+// ---------------------------------------------------------------- the radio
+// HIS NOTE, v3.60: "add faint 16 bit music in the undercroft and a toggle to
+// cut it on always, on in undercroft only, or off". No files and no external
+// anything, same as every other sound in the game: two oscillator voices, a
+// square lead through a lowpass and a triangle bass, playing a 64 step, eight
+// bar loop in A minor at 72 BPM, about 27 seconds around. The echo is the same
+// note again three steps later at a third of the volume, which is the whole of
+// how 16 bit consoles faked space.
+// It does NOT route through BUS, deliberately: BUS feeds the room reverb whose
+// send is driven per frame from where the operator is STANDING in a raid, and
+// music is not in the world. Dry, faint, straight to the destination.
+// FIXTURE SILENCE is by construction, not by flag: the fixture replaces the
+// AudioContext constructor with a throw, so ac() returns null there and
+// tickMusic returns before creating a single node. The sim is gated separately
+// because a bot raid runs in THIS context, where audio is real.
+var MUS={g:null,lp:null,next:0,step:0};
+var MUS_SPB=0.4167;                       // an 8th note at 72 BPM
+var MUS_BASS=[33,33,29,31,33,33,29,28];   // A A F G  A A F E, one root per bar
+var MUS_LEAD=[
+  57,0,60,0,64,0,62,0,  60,0,57,0,0,0,55,0,
+  53,0,57,0,60,0,57,0,  55,0,59,0,62,0,0,0,
+  57,0,60,0,64,0,67,0,  69,0,67,0,64,0,62,0,
+  60,0,57,0,53,0,57,0,  64,0,59,0,56,0,52,0];
+var MUSIC_MODES=['hub','always','off'];
+var MUSIC_NAMES={hub:'UNDERCROFT',always:'ALWAYS',off:'OFF'};
+function musicMode(){ var m=(P&&P.music); return (m==='always'||m==='off')?m:'hub'; }
+function musicWanted(){
+  if(G&&G.sim) return false;              // the bot sim is silent, always
+  var m=musicMode();
+  if(m==='off') return false;
+  if(m==='always') return true;
+  return !G;                              // 'hub': only while no raid is live
+}
+function tickMusic(){
+  if(!musicWanted()){
+    // Fade rather than cut, and forget the clock so the loop restarts clean
+    // from step 0 instead of resuming mid-phrase after an hour on the surface.
+    if(MUS.g&&AC){ try{ MUS.g.gain.setTargetAtTime(0,AC.currentTime,0.35); }catch(e){} }
+    MUS.next=0;
+    return;
+  }
+  var a=ac(); if(!a) return;
+  if(!MUS.g){
+    MUS.lp=a.createBiquadFilter(); MUS.lp.type='lowpass'; MUS.lp.frequency.value=2400;
+    MUS.g=a.createGain(); MUS.g.gain.value=0;
+    MUS.g.connect(MUS.lp); MUS.lp.connect(a.destination);
+  }
+  MUS.g.gain.setTargetAtTime(0.15*(CFG.musicVol===undefined?1:CFG.musicVol),a.currentTime,0.9);
+  if(!MUS.next||MUS.next<a.currentTime-0.5){ MUS.next=a.currentTime+0.08; MUS.step=0; }
+  while(MUS.next<a.currentTime+0.65){
+    musNote(a,MUS.next,MUS.step);
+    MUS.step=(MUS.step+1)&63;
+    MUS.next+=MUS_SPB;
+  }
+}
+function musNote(a,t,step){
+  var si=step&7;
+  if(si===0||si===4) musVoice(a,t,MUS_BASS[(step>>3)&7],'triangle',si===0?0.60:0.34,1.5);
+  var m=MUS_LEAD[step];
+  if(m){ musVoice(a,t,m,'square',0.16,0.34);
+         musVoice(a,t+MUS_SPB*3,m,'square',0.055,0.30); }
+}
+function musVoice(a,t,midi,type,vol,dur){
+  var o=a.createOscillator(),g=a.createGain();
+  o.type=type; o.frequency.value=440*Math.pow(2,(midi-69)/12);
+  g.gain.setValueAtTime(0,t);
+  g.gain.linearRampToValueAtTime(vol,t+0.014);
+  g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+  o.connect(g); g.connect(MUS.g);
+  o.start(t); o.stop(t+dur+0.05);
 }
 // The acoustic of a world point. Ordered most enclosed first, because a locked
 // room inside a building is both and should read as the vault, not the shed.
@@ -16640,6 +16711,7 @@ function loop(ts){
   // impossible-to-debug frame unreachable, and the harness now cannot produce it
   // either, which is worth as much.
   var dt=clamp((ts-lastTs)/1000,0,.05); lastTs=ts;
+  tickMusic();
   // Ahead of every early return below, so zoom keeps easing in the hub, while
   // paused and on the death screen instead of freezing part way through a step.
   tickZoom(dt);
@@ -18353,6 +18425,8 @@ function renderSettings(){
   host.innerHTML=_go+
     '<div class="row"><div style="flex:1"><b>Text size</b><div class="hint">Scales every string on every canvas and in every panel.</div></div>'+
     '<button id="set_text" style="padding:6px 12px">'+Math.round(uiScale()*100)+'%</button></div>'+
+    '<div class="row"><div style="flex:1"><b>Music</b><div class="hint">A faint 16-bit loop. UNDERCROFT plays it only down here, ALWAYS keeps it running quietly on the surface too, OFF is silence.</div></div>'+
+    '<button id="set_music" style="padding:6px 12px;min-width:110px">'+MUSIC_NAMES[musicMode()]+'</button></div>'+
     '<div class="row"><div style="flex:1"><b>Auto-export the flight recorder</b><div class="hint">Writes a run report to your Downloads at the end of every raid.</div></div>'+
     '<button id="set_auto" style="padding:6px 12px">'+(P.autoExport?'ON':'OFF')+'</button></div>'+
     '<div class="row"><div style="flex:1"><b>Share runs with the developer</b><div class="hint">Off by default. When on, the same run report you can already export is sent to the developer so the game can be tuned on real play. It carries your raids, loadouts and any notes you type, plus an anonymous install id, and nothing else about you. Switch it off any time.</div></div>'+
@@ -18371,6 +18445,11 @@ function renderSettings(){
     var cur=UISCALES.indexOf(uiScale());
     P.uiScale=UISCALES[(cur+1)%UISCALES.length];
     saveProfile(); syncTextSize(); renderSettings();
+  };
+  document.getElementById('set_music').onclick=function(){
+    var cur=MUSIC_MODES.indexOf(musicMode());
+    P.music=MUSIC_MODES[(cur+1)%MUSIC_MODES.length];
+    saveProfile(); renderSettings();
   };
   document.getElementById('set_auto').onclick=function(){
     P.autoExport=!P.autoExport; saveProfile(); syncAutoEx(); renderSettings();
