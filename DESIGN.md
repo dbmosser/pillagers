@@ -15564,3 +15564,28 @@ reading clearly; four-map sweep 110/111/74/91, howlers 2/2/1/2, bulwarks all
 1, no draw errors; hub clean; extract and dead endings ran. Not verified:
 night vegetation in play, and whether the four climates read as character or
 just as colour, which only his eyes can say.
+
+### m436 - v4.22: the board's questions end in their answers
+
+His run notes are how decisions come back, and the open questions on the
+roadmap board asked in prose, which invites prose back. Every open row now
+ends in its one-word answers, capitalised: EVEN or KEEP for the map spread;
+QUIETER, SHORTER or MOVE for the touchdown crowd (with the fresh 7-of-8
+number in the row); TROPHIES, FOLD or TEETH for LVL and proficiency (with
+his own LVL 5 after 53 runs in the row); EARNED or CREW for the downed
+crewmate; PRICE, PERMANENCE or INSURANCE for armour. A single word in a
+pause note now settles any of them.
+
+The drag order he sets on that board is stored as row TEXT and matched
+verbatim, so rewording every row would have silently thrown away his saved
+ranking - the same family as the storage-key rule. A migration maps old text
+to new at profile load.
+
+Verified: parse PASS at v4.22; the migration driven on the real load path,
+an old-text order saved to storage, loaded, and read back as the new texts
+in the saved sequence, with the export priorities line honouring it (armour
+first, as saved); four-map sweep 110/111/74/91 no draw errors; hub clean;
+extract and dead endings ran; fixture profile order restored afterwards.
+Not verified: his actual saved ranking on his real profile, which will pass
+through the same migration on his next load and should come out unchanged -
+his next export's priorities line is the proof to check.
