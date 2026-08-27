@@ -575,6 +575,7 @@ window.__keysRef=function(){ return keys; };
 window.__wx={list:function(){ return WEATHER; },cur:wx,VF:VF,AMBR:AMBR,ping:ping,pick:pickWeather};
 window.__music=function(){ tickMusic(); return {mode:musicMode(),wanted:musicWanted(),started:!!MUS.g,step:MUS.step}; };
 window.__hudBox=function(){ return HUDBOX; };
+window.__w2s=function(x,y){ return w2s(x,0,y); };
 // perf instrumentation, fixture-only: count the expensive calls per __sim
 var _PNAV=0,_PLOS=0;
 try{ var _onav=navPath; navPath=function(){ _PNAV++; return _onav.apply(null,arguments); }; }catch(e){}

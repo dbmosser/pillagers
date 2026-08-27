@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.75';
+var VER='3.76';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6926,6 +6926,28 @@ window.addEventListener('mouseup',function(e){
         break;
       }
     }
+    // GIVE, v3.76: the other half of the v3.75 trade. Drag an item out of your
+    // open bag and release it over your merc and it is his, into the same live
+    // bag E searches. His name confirms it, so a miss reads as a miss.
+    if(!dropped&&G&&!G.over&&d&&d.key){
+      for(var _gm=0;_gm<G.ents.length;_gm++){
+        var _gme=G.ents[_gm];
+        if(_gme.kind!=='raider'||!_gme.merc||_gme.downed) continue;
+        if(dist(G.player,_gme)<=110){
+          var _gs=w2s(_gme.x,0,_gme.y);
+          if(_gs&&Math.hypot(mouse.x-_gs.x,mouse.y-_gs.y)<46){
+            var _gix=G.bag.indexOf(d.key);
+            if(_gix>=0){
+              G.bag.splice(_gix,1);
+              _gme.bag.push(d.key);
+              say((ITEMS[d.key]?ITEMS[d.key].name:'Item')+' to '+_gme.name+'.');
+              blip('pick'); dropped=true;
+            }
+          }
+        }
+        break;
+      }
+    }
     if(!dropped) mouse.down=false;
   }
   if(e.button===0) mouse.down=false;
@@ -8494,7 +8516,13 @@ function tryExtractTick(dt,wantCall){
 // heal uses the same one-at-a-time rule v3.34 put on the player, and the throw
 // uses the same throwFrom that his own hand uses.
 function raiderUseKit(e,dt){
-  if(CFG.raiderKit===0||!e||e.downed||e.finished||e.merc) return;
+  // v3.76: the merc exclusion is GONE. It predates the partner arc, and it made
+  // giving him a Medkit a lie: he would carry it to the grave unopened. He now
+  // heals from his bag and equips a better gun exactly as every raider has
+  // since the kit build, which is what makes handing him one worth doing. The
+  // cost balances itself: what he uses is value that never reaches the settle,
+  // and keeping him alive is worth more than ten percent of a bandage.
+  if(CFG.raiderKit===0||!e||e.downed||e.finished) return;
   var i,it;
   // ---- EQUIP. A better gun in the bag belongs in his hands, same tier test the
   // player's autoEquip uses. He does not carry two, so the old one is dropped
@@ -14643,7 +14671,7 @@ function drawHUD(){
           ctx.fillRect(s.x-_fw/2-9,s.y-LH(9),4,LH(11));
         }
       }
-      else ctx.fillText('[E] SEARCH '+((nc2.type==='safe'&&nc2.camp)?'STRONGBOX':nc2.type.toUpperCase()),s.x,s.y);
+      else ctx.fillText('[E] SEARCH '+(nc2.mercSrc?(String(nc2.mercSrc.name).toUpperCase()+"'S BAG"):((nc2.type==='safe'&&nc2.camp)?'STRONGBOX':nc2.type.toUpperCase())),s.x,s.y);
       // His #23: item names in the world when you are near them. A single-item
       // crate that YOU dropped or a body someone emptied loot into is not a
       // mystery box, so it says what it holds; multi-item finds stay unsearched
@@ -17369,7 +17397,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Partner merc complete: rescue, orders, searchable bag, honest settle. Watching his hires',
+  now:'The trade flows both ways now: drag an item onto him and he will actually use it',
   next:'The datacore build and the ghost friend, whichever he ranks first'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

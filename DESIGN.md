@@ -13310,3 +13310,44 @@ cosmetic and noted. And the whole line is real-play only by design, so no
 sim or A/B exercises it, which is correct and also means only his next hire
 proves it in anger.
 
+
+### v3.76: the trade flows both ways, and he uses what you hand him
+
+THE HALF v3.75 LEFT OPEN. Drag an item out of your open bag and release it
+over your merc and it is his, into the same live bag E searches. His name
+confirms the handoff, "Medkit to ur_mom_GAMING", so a missed drop reads as a
+miss rather than a mystery.
+
+AND IT IS NOT A DEAD LETTERBOX. The raider kit system, equip the better gun,
+heal when hurt, has excluded the merc since it shipped, which predates the
+partner arc and would have made this build a lie: a Medkit handed to him
+would have ridden to the grave unopened. The exclusion is gone. He now heals
+from his bag when hurt and equips a decisively better gun the moment he has
+one, whether he looted it or you handed it to him, and his replaced gun goes
+back into his bag where it stays worth taking off his body. The cost
+balances itself: what he uses is value that never reaches the ten percent
+settle, and keeping him alive is worth more than ten percent of a bandage.
+Handing him your spare LMG is now a real upgrade decision for the raid, not
+a donation.
+
+The search prompt also names him: standing over your hire reads SEARCH
+UR_MOM_GAMING'S BAG instead of the generic verb.
+
+Verified: parsecheck PASS at v3.76. All four maps drive and draw with
+frameErr and hudErr null at the standard baselines, hub clean, endRaid clean
+on all three outcomes. The give driven through the REAL mouse handlers with
+the REAL world-to-screen projection, newly exposed to the fixture: the
+medkit left the player's bag, arrived in his, and the named line was said. A
+hurt merc engaged a heal within seconds, queue observed at 28 health and the
+kit consumed. A handed LMG, tier four over his tier-three carbine, was in
+his hands inside four seconds with the carbine returned to his bag. An
+earlier probe handed him a RIFLE and he refused it, which looked like a bug
+and is the opposite: rifle and carbine share a tier, and the system
+correctly declines a sidegrade. The prompt read as his bag on the near scan.
+Not verified: the drop hit zone is 46 screen pixels around his centre, sized
+by judgement rather than by his mouse and monitor; if handoffs feel fumbly
+the number moves. The healing behaviour change also applies to the merc
+taking his OWN meds, which shrinks his settle cut by whatever he uses; the
+direction is pro-player but the magnitude over real raids is unmeasured, and
+no A/B covers it because the sim never hires.
+
