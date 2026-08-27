@@ -13780,3 +13780,22 @@ MIXED weapon history, so it is approximate by construction; and the 16.9
 baseline predates the aim change by one build, so the true current baseline
 needs one more 320-seed run at the new pins, queued for the next tick.
 
+
+### Baseline record, 2026-08-27 late: 9.4 percent, and what the ladder teaches
+
+320 seeds, GREYWATER, Daniel posture with human aim, arms identical, zero
+discordant: 30 of 320, 9.4 percent. The bench ladder now reads:
+
+  greedy bot, machine aim      7.2   (retired: wrong player twice over)
+  his greed, machine aim      16.9   (aim was carrying the fights)
+  his greed, his aim           9.4   (CURRENT official bench)
+  Daniel himself              29
+
+The gap between 9.4 and his 29 is the part of him the bot still does not
+have, and the ladder localises it: not greed, not aim, both now matched, so
+it is DECISION-MAKING, which fights to take and which to walk away from. His
+40 shots a raid against the bot's 80-plus says he declines most of the
+fights the bot accepts, and at human accuracy accepting them is what kills
+the bot. FIGHT SELECTION is therefore the next realism build: the bot should
+disengage machines it has no need to kill, the way he demonstrably does.
+
