@@ -14140,3 +14140,42 @@ path. His rule about checking complaints against current code exists precisely
 to catch this, and it only worked here because I read the code before building.
 The queue item is closed as already-shipped, not built twice.
 
+
+### v3.93 - The hand-down: raiders inherit the bot's survival instincts
+
+HIS ORDER, verbatim: "lets make sure we eventually pass all these findings
+down to the in-game raider bots to make them more human-like". First instance,
+and the evidence came free, because the in-game raider carried the IDENTICAL
+defect the benchmark bot was measured to have. Its entire answer to a machine
+in its face was `if(mtd<90) moveToward(away, e.spd*0.7)`: 85 units a second
+for a raider, against a crawler that closes at 150. That is the same arithmetic
+that made crawlers the bot's number-one killer, 124 deaths in 320 raids, and
+that fixing (v3.88) moved bot survival from 5.0 to 8.8 percent, with the
+sightline follow-up (v3.89) taking it to 12.2.
+
+raiderSmart, DEFAULT ON, because it is his instruction and it is the raider
+behaving correctly rather than a balance experiment; the dial exists so it is
+reversible and measurable, and 0 restores the v3.92 backpedal byte for byte.
+Raiders now kite a melee machine at 1.25 speed instead of walking away from it,
+slide along the wall when cornered rather than dying in it, and answer a ranged
+machine by stepping out of its line using the same fixed eight-bearing sweep at
+the same 95 units the bot uses. Zero rnd draws either way, so no seeded stream
+moves and every raid still builds byte-identically.
+
+What he should SEE in play: raiders who survive contact with machines the way
+a person would, instead of feeding the first crawler that finds them. Note
+this cuts both ways, and deliberately: a raider who lives longer is a raider
+still on the map when you meet him, and one more full bag walking to the ring.
+
+Smoke seed 7331: the raid ran 258 to 370 seconds and the bot's killer moved
+from howler to sentry, which is the expected shape of a busier map. The 320
+paired seeds on the official family are running as this is written.
+
+Also in this build: nothing else. v3.91 (bushes, music) and v3.92 (weather
+darkness) shipped earlier today from his notes.
+
+Not verified: the hand-down at scale (320 A/B in flight); whether raider
+extract rate rises enough to need a counterweight; the player-facing half of
+the hand-down, raiders taking cover from YOU rather than from machines, which
+is a bigger balance change and is not built.
+

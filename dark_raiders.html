@@ -560,7 +560,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.92';
+var VER='3.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -620,7 +620,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -11229,7 +11229,44 @@ function updateEnts(dt){
           fireWeapon(e,e.wep,mth.x+rnd(-10,10),mth.y+rnd(-10,10),false);
           e.cd=(e.wep.rof/1000)*rnd(1.5,2.4);
         }
-        if(mtd<90) moveToward(e,e.x-(mth.x-e.x),e.y-(mth.y-e.y),e.spd*.7,dt);
+// THE HAND-DOWN, v3.93, raiderSmart, DEFAULT ON. HIS ORDER: "lets make sure
+        // we eventually pass all these findings down to the in-game raider bots to
+        // make them more human-like". This is the first instance, and the evidence
+        // came free, because the raider had the IDENTICAL defect the benchmark bot
+        // was measured to have. Its whole answer to a machine in its face was to
+        // back off at 0.7 speed: 85 units a second for a raider, against a crawler
+        // that closes at 150. The bot version of that mistake was worth 124 deaths
+        // in 320 raids, and fixing it (v3.88 simFlee) moved bot survival from 5.0
+        // to 8.8 percent; the follow-up, breaking sightlines instead of trading in
+        // the open (v3.89 simCover), moved it again to 12.2.
+        // Raiders now get both, in the same shapes, with the same guarantees: a
+        // melee machine is KITED at 1.25 speed rather than walked away from, and a
+        // ranged machine is answered by stepping out of its line, using the same
+        // fixed eight-bearing sweep at the same 95 units with ZERO rnd draws, so
+        // no seeded stream moves and every raid still builds byte-identically.
+        // What he should SEE is raiders who survive machine contact the way a
+        // person would, instead of dying to the first crawler that finds them.
+        // raiderSmart 0 restores the v3.92 backpedal exactly.
+        var _rs=(CFG.raiderSmart!==0);
+        var _rmelee=_rs&&mth.rng<=30&&mtd<220;
+        var _rcv=null;
+        if(_rs&&!_rmelee&&mth.rng>=200&&mth.kind!=='raider'){
+          for(var _rc=0;_rc<8;_rc++){
+            var _rca=Math.atan2(e.y-mth.y,e.x-mth.x)+_rc*0.7854;
+            var _rcx=e.x+Math.cos(_rca)*95,_rcy=e.y+Math.sin(_rca)*95;
+            if(losClear(e.x,e.y,_rcx,_rcy,G.vseg)&&!losClear(mth.x,mth.y,_rcx,_rcy,G.vseg)){ _rcv={x:_rcx,y:_rcy}; break; }
+          }
+        }
+        if(_rmelee){
+          var _rfx=e.x,_rfy=e.y;
+          moveToward(e,e.x-(mth.x-e.x),e.y-(mth.y-e.y),e.spd*1.25,dt);
+          // Cornered: slide along the wall rather than die in it, same instinct
+          // at the same speed, exactly as the bot does.
+          if(Math.hypot(e.x-_rfx,e.y-_rfy)<e.spd*1.25*dt*0.35)
+            moveToward(e,e.x-(mth.y-e.y),e.y+(mth.x-e.x),e.spd*1.25,dt);
+        }
+        else if(_rcv) moveToward(e,_rcv.x,_rcv.y,e.spd*1.15,dt);
+        else if(mtd<90) moveToward(e,e.x-(mth.x-e.x),e.y-(mth.y-e.y),e.spd*.7,dt);
         e.face+=clamp(angDiff(want,e.face),-5.5*dt,5.5*dt);
         collide(e,G.map.walls);
         if(e.cd>0) e.cd-=dt;
@@ -17915,8 +17952,8 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'His fresh note: bad weather read as nightfall at noon, so haze no longer doubles as darkness',
-  next:'Raiders that work an extraction like he does, then measure simHoldFire'
+  now:'The hand-down he ordered: raiders kite and take cover from machines, as the benchmark bot learned to',
+  next:'Measure the hand-down at 320 seeds, then simHoldFire'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a
