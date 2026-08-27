@@ -438,7 +438,7 @@
     <button class="deploy ghost" id="deploy" style="flex:1">DEPLOY</button>
     <button class="deploy ghost" id="shopbtn" style="flex:1">REQUISITION</button>
     <button class="deploy ghost" id="workbtn" style="flex:1">WORKSHOP</button>
-    <button class="deploy ghost" id="opbtn" style="flex:1">TERMINAL</button>
+    <button class="deploy ghost" id="opbtn" style="flex:1">CONTRACTS</button>
     <button class="deploy ghost" id="condbtn" style="flex:1">CONDITIONS</button>
     <button class="deploy ghost" id="tunebtn" style="flex:1">TUNING</button>
   </div>
@@ -545,7 +545,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.55';
+var VER='3.56';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -639,6 +639,15 @@ function ival(k){ return Math.round((ITEMS[k]?ITEMS[k].val:0)*CFG.lootMult*seaso
 // ================================================================ data
 var WEAPONS={
   fists:{id:'fists',name:'Bare Hands',dmg:6,rof:420,spread:.30,mag:0,reload:0,rng:60,auto:false,noise:0,tint:'#cdd6dd'},
+  // THE CROWBAR SWINGS, v3.56. His note: "7 is supposed to be crowbar but it
+  // still fires the gun -- should melee instead". The first pass at this slot,
+  // v3.41, made the READOUT honest and kept the fall-through; he has now asked
+  // again with a directive, so the fall-through itself is wrong. mag:0 routes it
+  // down the same melee path Bare Hands has always used. noise 0 is the point of
+  // swinging a crowbar: it is the quiet answer to a lone crawler that a gunshot
+  // would advertise. dmg 26 kills a crawler in two swings and a sentry in five,
+  // strong enough to be a real tool, nowhere near replacing a gun.
+  crowbar:{id:'crowbar',name:'Crowbar',dmg:26,rof:520,spread:.20,mag:0,reload:0,rng:66,auto:false,noise:0,tint:'#9aa8b2'},
   pistol:{id:'pistol',name:'Scav Pistol',dmg:19,rof:290,spread:.055,mag:12,reload:1400,rng:420,auto:false,noise:330,tint:'#ffd48a'},
   smg:{id:'smg',name:'Compact SMG',dmg:12,rof:88,spread:.115,mag:30,reload:1850,rng:360,auto:true,noise:300,tint:'#ffe0a0'},
   rifle:{optic:1.25,id:'rifle',name:'Auto Rifle',dmg:23,rof:132,spread:.070,mag:25,reload:2050,rng:520,auto:true,noise:420,tint:'#ffcf7a'},
@@ -8899,11 +8908,17 @@ function updatePlayer(dt){
       }
     }
   }
-  else if(mouse.down&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){
-    if(p.wep.mag===0){
-      // magazine-less weapon (fists): swings for free, HUD already labels it MELEE
-      if(p.wep.auto||!p.fired){ p.lastShot=now; p.fired=true;
-        fireWeapon(p,p.wep,p.x+Math.cos(p.face)*100,p.y+Math.sin(p.face)*100,true); }
+  else if(mouse.down&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>((HSC&&HSC.kind==='tool')?WEAPONS.crowbar:p.wep).rof){
+    // With the Crowbar slot selected the trigger swings the crowbar instead of
+    // falling through to the gun, v3.56. Everything else about the fall-through
+    // stands: an empty consumable slot still hands the trigger to the gun,
+    // because that valve exists for a different reason and he never complained
+    // about it. Only the tool changed sides.
+    var _mw=(HSC&&HSC.kind==='tool')?WEAPONS.crowbar:p.wep;
+    if(_mw.mag===0){
+      if(_mw.auto||!p.fired){ p.lastShot=now; p.fired=true;
+        if(_mw.id==='crowbar') G.crowbarUp=0.3;
+        fireWeapon(p,_mw,p.x+Math.cos(p.face)*100,p.y+Math.sin(p.face)*100,true); }
     }
     else if(p.ammo>0){
       if(p.wep.auto||!p.fired){
@@ -14502,8 +14517,8 @@ function drawHUD(){
     // Both lines live in the vertical space the single ammo line would have used.
     // The first cut put the second line at by-LH(4) and the capture showed it
     // sitting on top of the carry-weight readout underneath.
-    ctx.fillText('comes up on its own',W-16,by-LH(22));
-    ctx.fillText(p.wep.name+' still in hand',W-16,by-LH(10));
+    ctx.fillText('MELEE  quiet swing',W-16,by-LH(22));
+    ctx.fillText('opens containers on its own',W-16,by-LH(10));
   }
   else if(!_heldGun){
     var _cn=(_HH.count===null||_HH.count===undefined)?null:_HH.count;

@@ -12195,3 +12195,54 @@ against 42 could be noise or could be a real few percent of raider throughput,
 and if raiders feel scarcer at extracts this dial is the first suspect. The
 rain level is again a number chosen by arithmetic, not a captured frame.
 
+
+### v3.56: the crowbar swings, and the quests door says what is behind it
+
+THE CROWBAR, "7 is supposed to be crowbar but it still fires the gun -- should
+melee instead". The first answer to this slot, v3.41, made the readout honest
+and kept the fall-through, on the argument that there was no standalone crowbar
+action to route to. He has now asked again with a directive, which settles it:
+the fall-through itself is the bug.
+
+The crowbar is a real weapon now. mag 0 routes it down the same melee path Bare
+Hands has used since the beginning, so no new combat code, one data row: 26
+damage, 66 reach, semi, and NOISE ZERO, which is the entire point of swinging a
+crowbar. It is the quiet answer to a lone crawler that a gunshot would
+advertise to the map. Two swings kill a crawler, five a sentry, nowhere near
+replacing a gun. With the slot selected the trigger swings; the empty-consumable
+fall-through to the gun is untouched, because that valve exists for a different
+reason and it was never the complaint. The corner readout now says MELEE quiet
+swing, and the bar still comes up on its own when you work a container.
+
+Also reworded per his lines: the heal refusal says "Still applying prior
+healing item." and the CONTRACTS point below.
+
+THE QUESTS DOOR, "ok you fixed the stash but now I don't know where I need to
+go to see the quests". Fair: v3.50 moved contracts behind a button labelled
+TERMINAL, which names the furniture rather than the reason to open it. The
+button says CONTRACTS now. Nothing moved again, the label just tells the truth.
+
+VERIFICATION CAUGHT MY OWN PROBE LYING TWICE before it said anything true,
+recorded because both are reusable mistakes. First: __sim does not step
+bullets, updateBullets lives in simStep, so a swing under __sim spawns a round
+that hangs frozen in the air forever and reads as a miss; __rawStep is the
+stepper that flies it. Second: the player's facing is re-derived from the mouse
+every frame, so setting p.face in a probe does nothing and the swing goes
+wherever the cursor is, not where you put the target. The honest probe fires
+once, reads the aim off the spawned round's velocity, parks the target on that
+line, and steps with __rawStep.
+
+Verified: parsecheck PASS at v3.56. Four maps drive and draw with frameErr and
+hudErr null, hub clean, endRaid on all three outcomes no throw. The crowbar
+driven through the real trigger with the tool slot selected: one swing, crawler
+52 to 26 which is exactly the 26 on the data row, tel.hits 1, tel.shots 1, no
+ammo spent, no muzzle flash and no shell. The CONTRACTS button renders and
+opens the same modal.
+Not verified: the second swing in the probe missed because the crawler lunged
+after the first, so repeat-swing cadence at rof 520 is exercised only by the
+code path, not by a landed second hit. Raiders and machines have no crowbar and
+no melee response change, so no balance measurement is owed. The crowbar kills
+count as ordinary kills in telemetry; nothing distinguishes a quiet kill yet,
+so whether noise 0 melee actually avoids waking the room is asserted by the
+ping(noise 0) path rather than measured end to end.
+
