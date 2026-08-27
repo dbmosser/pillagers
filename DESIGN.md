@@ -13439,3 +13439,19 @@ including all four new ones, and the rendered card shows twelve rows.
 Not verified: nothing beyond the render, because nothing beyond content
 changed; no dial moved and no balance surface was touched.
 
+
+### Verification note, 2026-08-27: the controller path is driven at last
+
+Every pad change since v3.41 has shipped with "verified by the table's own
+convention" in its Not-verified line, because no controller is attached to
+this machine. The fixture can lie usefully: navigator.getGamepads is
+patchable, so a synthetic pad drove the REAL pollPad through the REAL frame
+loop via __loop. Verified with it: a Dpad-up tap cycles the merc order
+exactly once per press, three presses walking follow, hold, loot with the
+right voice lines, which is the v3.74 binding live end to end; the A button
+held sets KeyE while down and clears it on release, the PADHOLD semantics;
+and the left stick at 0.9 moved the operator 23 units right over ten frames
+through the analog path. Single-fire edge semantics confirmed by the order
+advancing exactly one state per press. The synthetic-pad technique is in the
+memory file; the recurring pad caveat is closed.
+
