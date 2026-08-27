@@ -14123,3 +14123,20 @@ note still stands against the current build. This is the same instruction as
 his standing directive to pass the benchmark bot's human behaviours down to
 the in-game raiders, and it is the next build.
 
+
+### CORRECTION: the raider extraction note was ALREADY FIXED (2026-08-27)
+
+I wrote in the v3.92 entry that his run #44 note about raiders standing in the
+ring was "still unfixed against the current build". That is wrong and I am
+correcting it in place rather than quietly. I checked CFG.raiderExtract, saw a
+14 second dwell, and stopped reading. The behaviour he asked for is fully
+implemented one screen higher up, under CFG.raiderBeacon, default ON, and its
+comment quotes his note verbatim: a raider at an idle open ring CALLS the
+dropship on a 1.6 second commitment, clears out to a standoff 140 units past
+the ring edge while the ship is inbound, which is his "aggro enemies away",
+keeps fighting from out there, then comes back and BOARDS in 3 seconds rather
+than serving a 14 second dwell. The 14 seconds only applies to the old no-call
+path. His rule about checking complaints against current code exists precisely
+to catch this, and it only worked here because I read the code before building.
+The queue item is closed as already-shipped, not built twice.
+
