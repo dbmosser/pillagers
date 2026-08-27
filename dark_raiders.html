@@ -542,7 +542,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.50';
+var VER='3.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -602,7 +602,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6,extOutside:1,raiderWaves:1,raiderWaveCap:6,raiderWaveMin:5,raiderWaveGap:45,raiderKit:1,spawnClear:900,raiderHaul:7};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:6,raiderWaveMin:5,raiderWaveGap:45,raiderKit:1,spawnClear:900,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -5101,9 +5101,19 @@ var WARDEN_SPD=36;
 // possible however encumbered, wet or crouched you are.
 var SPEED_FLOOR=46;
 function mkWarden(x,y){
-  return {kind:'warden',x:x,y:y,r:30,hp:Math.round(620*CFG.eHp*seasonHp()),maxhp:Math.round(620*CFG.eHp*seasonHp()),
+  var _whp=Math.round((CFG.wardenHp===undefined?900:CFG.wardenHp)*CFG.eHp*seasonHp());
+  return {kind:'warden',x:x,y:y,r:30,hp:_whp,maxhp:_whp,
     name:mkName('WARDEN',['X','Z','Q']),
-    face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:WARDEN_SPD,dmg:30,rng:430,cone:1.15,hitT:0,seenYou:false};
+    // HIS NOTE, v3.51: "Warden needs to be much stronger and have better range".
+    // He met one for the first time in run #40 and it did not register as the
+    // thing it is supposed to be. 620 health, 30 damage and 430 range put him
+    // inside a Marksman Rifle's reach while hitting softer than a sentry, so the
+    // correct play against the map's set piece was to back up eleven metres and
+    // shoot it. Now 900 health, 46 damage and 620 range, which is the same reach
+    // as the longest gun in the game rather than half of it.
+    face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:WARDEN_SPD,
+    dmg:(CFG.wardenDmg===undefined?46:CFG.wardenDmg),
+    rng:(CFG.wardenRng===undefined?620:CFG.wardenRng),cone:1.15,hitT:0,seenYou:false};
 }
 function mkSnitch(x,y){
   // 26 to 38. Deliberately small: the weave above is doing the work, and this is only
@@ -7145,7 +7155,14 @@ function label(x,y,txt,col,delay,big,ik){
     if(!clash) break;
     row++;
   }
-  G.labels.push({x:x,y:y-row*13,txt:txt,c:col||'#cdd6dd',t:-(delay||0),life:1.9,big:!!big,ik:ik||null});
+  // HIS NOTE, v3.51: "when you loot an item, its name needs to stay up for
+  // longer so players know what they got". Every label in the game shared one
+  // 1.9 second life, which is fine for BEHIND YOU and much too short for the
+  // name of a thing you now own. A label carrying an item key is by definition
+  // a loot name, so that is the one that gets the longer life. Combat and state
+  // shouts are untouched.
+  G.labels.push({x:x,y:y-row*13,txt:txt,c:col||'#cdd6dd',t:-(delay||0),
+    life:(ik?3.8:1.9),big:!!big,ik:ik||null});
   if(G.labels.length>40) G.labels.shift();
 }
 function decal(x,y,col,size){
@@ -7483,9 +7500,19 @@ function autoCull(cap){
 // exact shape of every fidelity hole this file has found: wading, the sidearm,
 // the jam, the pip. Both now call this, so they cannot drift apart again.
 // healOverTime 0 restores the instant behaviour for measurement.
+// HIS NOTE, v3.51: "healing needs to be slower and weaker". Two dials, because
+// they are two different complaints and he named both. healSlow stretches the
+// cycle (1.6 to 2.4, so a Medkit is 14.4 seconds of commitment rather than 9.6)
+// and healPow cuts what the item is worth at all (0.70, so a Bandage is 20 not
+// 28 and a Medkit is 46 not 65). Applied here, at the one place the amount is
+// read, so the over-time path, the instant path and the rate all inherit it
+// rather than three sites drifting apart later.
+function healAmt(it){
+  return Math.round((it&&it.amt||0)*(CFG.healPow===undefined?1:CFG.healPow));
+}
 function applyHeal(key){
   var it=ITEMS[key]; if(!it) return 0;
-  var amt=it.amt||0;
+  var amt=healAmt(it);
   var hot=(typeof it.hot==='number')?it.hot:0;
   var p=G.player;
   if(hot>0&&CFG.healOverTime!==0&&amt>0){
@@ -8202,7 +8229,7 @@ function raiderUseKit(e,dt){
       it=ITEMS[e.bag[i]];
       if(!it||it.use!=='heal') continue;
       e.healQ=it.amt||0;
-      e.healRate=(it.amt||0)/Math.max(0.6,(it.hot||2.6)*(CFG.healSlow===undefined?1.6:CFG.healSlow));
+      e.healRate=healAmt(it)/Math.max(0.6,(it.hot||2.6)*(CFG.healSlow===undefined?1.6:CFG.healSlow));
       e.bag.splice(i,1);
       e.kitHeals=(e.kitHeals||0)+1;
       break;
@@ -13567,9 +13594,17 @@ function render2D(dt){
   // it costs the same regardless of zoom or map size.
   var WX=wx();
   if(WX.rain>0){
-    var drops=WX.rain>1?170:100;
-    wc.strokeStyle=WX.rain>1?'rgba(176,196,232,.30)':'rgba(160,180,220,.20)';
-    wc.lineWidth=WX.rain>1?1.5:1;
+    // HIS IN-RUN NOTE at 39s: "it says its raining but i don't see the rain
+    // effect". The renderer was not broken and reads the same blended weather
+    // the label does, so there was no desync to fix: it was simply far too
+    // faint to see. 100 hairlines at 20 percent alpha across a whole screen is
+    // roughly one thin mark per twenty thousand pixels. Tripled, opacity up,
+    // and both now scale with how hard it is actually raining instead of
+    // stepping once at rain>1, so a shower and a storm no longer look the same.
+    var _rr=Math.min(WX.rain,2);
+    var drops=Math.round(150+_rr*180);
+    wc.strokeStyle='rgba(176,196,232,'+(0.26+_rr*0.13).toFixed(3)+')';
+    wc.lineWidth=WX.rain>1?1.7:1.2;
     wc.beginPath();
     for(i=0;i<drops;i++){
       // deterministic per drop, scrolled by time: no allocation, no state
@@ -15872,7 +15907,7 @@ var SLIDERS=[
   ['contDens','Container density x',0.5,2,0.1,0],
   ['noiseMult','Noise radius x',0.5,2,0.05,1],
   ['safeSlots','Safe pocket slots',0,5,1,1],
-  ['downTime','Downed bleed-out (s)',5,25,1,1],
+  ['downTime','Downed bleed-out (s)',5,45,1,1],
   ['bright','Brightness',0.6,2.2,0.05,1],
   ['regenDelay','Regen starts after (s)',0,40,1,1],
   ['regenSec','Regen seconds per HP',1,12,0.5,1],

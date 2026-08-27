@@ -11926,3 +11926,67 @@ I measured against a captured frame, because the pane cannot screenshot here.
 Nothing in this build was A/B'd, because nothing in it touches gameplay except
 the ring radius, which is cosmetic.
 
+
+### v3.51: healing is weaker and slower, the Warden is a set piece again
+
+Four of his notes, all numbers, all shipped behind dials so any of them can be
+walked back without a build.
+
+HEALING, "healing needs to be slower and weaker". Two complaints in one
+sentence, so two dials rather than one fudge. healSlow goes 1.6 to 2.4, which
+stretches the commitment, and a new healPow at 0.70 cuts what the item is worth
+at all. Both are applied at healAmt(), the single place the amount is read, so
+the over-time path, the instant path, the rate and the raider bots all inherit
+the same number instead of four sites drifting apart later.
+
+Measured through the bot's own heal, a Medkit at 20 health:
+
+  before   65 health delivered over 9.6 seconds   6.77/s
+  after    46 health delivered over 14.3 seconds  3.19/s
+
+So it is 71 percent as strong and takes half as long again to arrive, and 14.3
+seconds is now a genuinely dangerous thing to start in the open.
+
+DOWNED, "being downed should last twice as long before you die". downTime 12 to
+24, exactly twice. The tuning slider's ceiling was 25, which would have made the
+new default nearly unadjustable, so that goes to 45.
+
+THE WARDEN, "Warden needs to be much stronger and have better range". He met one
+for the first time in run #40 and it did not register as the thing it is meant
+to be. 620 health, 30 damage and 430 range put the map's set piece INSIDE a
+Marksman Rifle's reach while hitting softer than a sentry, so the correct play
+against him was to back off eleven metres and plink. Now 900 health, 46 damage
+and 620 range, which is the reach of the longest gun in the game rather than
+half of it. Verified live off a spawned Warden: hp 900, dmg 46, rng 620.
+
+LOOT NAMES, "when you loot an item, its name needs to stay up for longer so
+players know what they got". Every label in the game shared one 1.9 second life,
+which is right for BEHIND YOU and much too short for the name of a thing you now
+own. A label carrying an item key IS a loot name by construction, so that is the
+one that gets 3.8 seconds. Combat and state shouts are untouched.
+
+RAIN, from his in-run note at 39 seconds: "it says its raining but i don't see
+the rain effect". I checked the renderer before touching it and there was no bug
+to fix: it reads wx(), the same blended weather the label reads, so label and
+effect cannot disagree. It was simply too faint to see. 100 hairlines at 20
+percent alpha across a whole screen is about one thin mark per twenty thousand
+pixels. Now 150 to 510 drops and 26 to 52 percent alpha, both scaling with how
+hard it is actually raining rather than stepping once at rain>1, so a shower and
+a storm no longer look identical.
+
+Verified: parsecheck PASS at v3.51. All four maps drive and draw with frameErr
+and hudErr null, 115, 115, 80 and 90 entities, hub clean, endRaid driven on
+extract, dead and abandon with no throw. Dials read live from a running raid:
+downTime 24, healSlow 2.4, healPow 0.70, Warden hp 900 dmg 46 rng 620. The
+Medkit figures above were driven through the bot's real heal verb in a sim raid.
+Not verified: the "before" half of the healing table is arithmetic, not
+measurement. I pinned healPow and healSlow into the fixture's want-list in the
+same build, so __simRaidBegin re-applies them and I could not run the old values
+as a live arm; 65 over 9.6s is computed from the same formula, not observed. The
+rain change is unmeasured because the pane cannot screenshot, so "more visible"
+rests on the numbers rather than on a captured frame. None of this was A/B'd for
+extract rate: five simultaneous changes cannot be attributed by a paired run, and
+he asked for all five as directives rather than as experiments. Healing, downed
+time and the Warden all push survivability in opposite directions and the net
+effect on extract rate is currently unknown.
+
