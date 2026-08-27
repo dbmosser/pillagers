@@ -15489,3 +15489,35 @@ run row carrying ["steady","far"] and an export line containing
 "contracts:steady,far", via the real outcome button; probe row removed from
 the fixture profile afterwards. Not verified: a contracts entry appearing in
 one of HIS exports, which needs him to bank a card in real play.
+
+### m434 - v4.20: each sector stands on its own ground
+
+The standing complaint is that the maps feel samey, and one honest cause was
+found today: a single hardcoded base colour under all four sectors since the
+beginning. Every map now declares its own ground, day and night. Mossy damp
+concrete at GREYWATER DAM, flood silt in the SUNKEN QUARTER, cold blue
+concrete in COLD STORAGE, dry ochre dust at THE QUARRY. The fades around
+buildings dissolve into the sector's own colour rather than the old grey, so
+nothing wears a halo.
+
+Owned mistake, one line: the first version of this was INERT, because the
+built map copies chosen fields from the sector spec and I added mine to the
+spec without carrying it across, so two full rounds of captures were taken
+of the unchanged game and I initially judged them as if they showed the new
+work. The trap is the same one MAPCONT taught: a constant that looks
+authoritative is not necessarily read. Caught by the observable guard, one
+line asking the live page what the built map held, which answered UNDEFINED.
+
+The first live version was also too timid: the sensible-looking hues were
+swallowed by district glows and lighting, so the shipped values are a step
+bolder in the same muted family.
+
+Verified: parse PASS at v4.20; the field proven live on the built map; a
+pixel census of the baked ground on all four maps at day AND night shows a
+perfect diagonal, hundreds of sampled points of each sector's own colour and
+zero of any other sector's; captures of all four sectors at pinned clear
+noon taken and looked at, silt and ochre and moss all reading where open
+ground is visible; four-map sweep 110/111/74/91 with howlers 2/2/1/2 and
+bulwarks all 1, no draw errors; hub clean; extract and dead endings ran.
+Not verified: whether the identity lands for him in normal play, where
+weather, night and the lit cone sit on top of everything.
