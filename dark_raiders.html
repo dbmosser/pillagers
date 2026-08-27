@@ -503,7 +503,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.48';
+var VER='3.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -563,7 +563,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6,extOutside:1,raiderWaves:1,raiderWaveCap:6,raiderWaveMin:5,raiderWaveGap:45,raiderKit:1,spawnClear:900};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:12,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6,extOutside:1,raiderWaves:1,raiderWaveCap:6,raiderWaveMin:5,raiderWaveGap:45,raiderKit:1,spawnClear:900,raiderHaul:7};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -5174,7 +5174,7 @@ function mkRaider(x,y,forceId,simBuild){
   var _wearRoll=rr(), _wearAmt=rr();
   var r={kind:'raider',x:x,y:y,r:11,hp:Math.round(78*CFG.eHp*seasonHp()),maxhp:Math.round(78*CFG.eHp*seasonHp()),react:rnd(.38,.62),
     face:rnd(0,6.28),state:'loot',tx:x,ty:y,cd:0,alert:0,spd:122,wep:WEAPONS[wk],dmg:WEAPONS[wk].dmg,
-    rng:WEAPONS[wk].rng*.72,cone:.8,bag:[],goal:null,skips:[],goalT:0,goalD:0,extracting:0,hitT:0,step:0,
+    rng:WEAPONS[wk].rng*.72,cone:.8,bag:[],looted:0,goal:null,skips:[],goalT:0,goalD:0,extracting:0,hitT:0,step:0,
     coat:ident.coat, ident:ident.id, name:ident.tag,
     // SPEC 8.4: varying hostility. A raider you have killed before is shoot on
     // sight with no negotiation; one you have good standing with is passive
@@ -10352,7 +10352,28 @@ function updateEnts(dt){
           if(e.skips&&e.skips.indexOf(ct)>=0) continue;
           var dd=dist(e,ct); if(dd<bd){ bd=dd; e.goal=ct; }
         }
-        if(!e.goal||e.bag.length>=7) e.state='extract';
+        // HE WAS BORN WITH A FULL BAG, v3.49. His note was "why are all the
+        // raiders extracted with 6.5 mins left". I answered it at v3.38 with
+        // waves, which was his own suggested fix and which added more raiders
+        // without touching why the first lot left. This is why.
+        // The go home test was e.bag.length>=7. The bag a raider SPAWNS with is
+        // one weapon plus ri(2,4) loot plus his rig tier, so 3 to 8 items before
+        // he has taken a single step. Measured on GREYWATER: the first raider
+        // enters extract state between 0 and 3 seconds, the median is 14
+        // seconds, and the raider population falls from 8.5 in the first minute
+        // to 2.7 in the second, with 232 unopened containers still on the map.
+        // Worse, it is exactly backwards. nloot scales with the rig, so the
+        // heavy plate raider carries the most and is therefore the FIRST out of
+        // the door, when the whole point of the v3.10 loot rework was that
+        // visible heavy plate marks the fight worth taking. The man worth
+        // fighting was gone by second three.
+        // Two systems that never met: the spawn bag exists so a raider drops a
+        // believable haul when you kill him, and the threshold exists to mean
+        // "my bag is full, I am going home". Counting the first toward the
+        // second conflates what he brought with what he came for.
+        // Now it counts CONTAINERS HE OPENED THIS RAID. The spawn bag is
+        // untouched, so kill rewards are exactly as they were.
+        if(!e.goal||(e.looted||0)>=CFG.raiderHaul) e.state='extract';
         e.goalT=0; e.goalD=e.goal?dist(e,e.goal):0;
         e.pathFail=false; e.path=null;   // clean slate per target, as with the bot
       }
@@ -10412,6 +10433,7 @@ function updateEnts(dt){
           if(e.lootT>2){
             e.goal.opened=true;
             for(var q=0;q<e.goal.loot.length;q++) e.bag.push(e.goal.loot[q]);
+            e.looted=(e.looted||0)+1;
             e.lootT=0; e.goal=null; ping(e.x,e.y,80,true,false,'raider','move');
           }
         }

@@ -11762,3 +11762,80 @@ abandon and extract drives exercise, not by its own drive. I also have not
 re-run any balance measurement on this build, because nothing in it touches
 gameplay: it is a crash fix, a rename and an audit.
 
+
+### v3.49: the raiders were born with a full bag, which is why they left at once
+
+His note at v3.38 was "why are all the raiders extracted with 6.5 mins left, we
+need multiple waves of raiders i guess". I built the waves, which was his own
+suggested fix, and they did help, but I never asked why the FIRST lot left. This
+is why, and it is a plain bug rather than a tuning question.
+
+The go home test was e.bag.length>=7. The bag a raider SPAWNS with is one weapon
+plus ri(2,4) loot plus his rig tier, which is 3 to 8 items before he has taken a
+single step. So a good fraction of the raiders on the map met the "my bag is
+full, go home" condition on the first frame of the raid.
+
+MEASURED ON GREYWATER, six seeded raids, before:
+
+  first raider entering extract state    0 to 3 seconds
+  median raider entering extract         14 seconds
+  raiders alive, minute 0 to 6           8.5, 2.7, 1.9, 2.2, 2.4, 2.3, 0.6
+  unopened containers still on the map   232
+
+And it was exactly backwards. nloot scales with the rig, so the heavy plate
+raider carries the most and was therefore FIRST out of the door. The entire
+point of the v3.10 loot rework was that visible heavy plate marks the fight
+worth taking. The man worth fighting was gone by second three.
+
+Two systems that never met, which is the same shape as several bugs before it.
+The spawn bag exists so a raider drops a believable haul when you kill him. The
+threshold exists to mean "my bag is full, I am going home". Counting the first
+toward the second conflates what he brought with what he came for.
+
+Now it counts CONTAINERS HE OPENED THIS RAID, on a new e.looted counter, against
+a new dial CFG.raiderHaul default 7. The spawn bag is untouched, so what he
+drops when you kill him is exactly what it was. Same six seeds, after:
+
+  first raider entering extract state    23 seconds
+  median raider entering extract         87 seconds
+  raiders alive, minute 0 to 6           10.0, 7.5, 3.7, 2.8, 3.1, 3.5, 3.8
+
+The map now has raiders on it for the whole raid instead of emptying inside a
+minute.
+
+BALANCE, AND I AM NOT GOING TO OVERSTATE IT. 320 paired seeds on GREYWATER,
+mapIx and simGreed 52 pinned in both arms, raiderHaul 1 as a stand in for the
+old fast exit against raiderHaul 7:
+
+  extract rate    14.7 percent at haul 1     10.9 percent at haul 7
+  discordant      33 favouring the fast exit, 21 favouring haul 7
+  McNemar exact two sided p = 0.134
+
+The direction is that a populated map is harder, which is what you would expect,
+and 3.8 points is not nothing. But p=0.134 is not significant, and my own
+standing rule from the replication work is that one batch gives direction
+cheaply and significance badly. This wants a second seed family before anyone
+treats 3.8 points as real. Shipping anyway, because the behaviour it fixes is a
+bug he reported and the cost, if it is real at all, is the price of a map with
+people on it. raiderHaul is a dial, so it can be turned down without a build.
+
+ALSO CLOSED, the v3.17 unverified item. Crew revive had never been driven end to
+end. Driven now: two same crew raiders placed 30 units apart, one downed, the
+other in loot state. He targets him, closes, holds 3.2 seconds and the downed
+man stands up at 31 of 78 health in loot state, with tel.crewRevives at 1. It
+works. What the same probe showed is that it almost never HAPPENS: across eight
+full raids a raider was downed in one single sample, because under the old
+behaviour they had all left before anything could fight them. That may change on
+its own now they stay.
+
+Verified: parsecheck PASS at v3.49. All four maps drive and draw with frameErr
+and hudErr null, 115, 115, 80 and 90 entities, hub clean. endRaid driven on
+extract, dead, abandon and the zero length abandon with no throw, runs
+incrementing on extract and death and correctly not on the discard branch. The
+before and after dwell figures above are the same six seeds either side.
+Not verified: the A/B is one seed family only and p=0.134, so the 3.8 point
+extract cost is a direction and not a result. I have not swept raiderHaul for a
+best value, 7 is simply the number the old test used. I have not measured what
+staying longer does to raider deaths or to crew revive frequency, which is the
+one thing that probe suggests should now change.
+
