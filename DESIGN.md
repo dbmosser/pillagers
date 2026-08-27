@@ -13390,3 +13390,14 @@ collide and seekPoint wrappers are the next instruments if his machine still
 stutters. The spotWall sampler still does full scans at build time only,
 noted as a candidate, untouched because build time is not frame time.
 
+
+Perf addendum, same day: the hunt stops at the loop body. With honest timers,
+every wrappable callee is exonerated on the spike frames: navSeek, seekPoint,
+moveToward, collide, canSee, losClear, navPath, freeSpot, raiderUseKit,
+packCall, listenersHear, tickRaiderWaves and saveProfile together account for
+under one millisecond of a six millisecond updateEnts frame. The remainder is
+the loop's own inline arithmetic, deterministic per seed, bounded at about
+7ms worst with draw stacked well inside the 16.7ms budget. The instruments
+stay in the fixture; the next word belongs to his machine, which is the only
+place "laggy at moments" can actually be observed.
+
