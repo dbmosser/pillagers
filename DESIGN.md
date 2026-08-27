@@ -12946,3 +12946,40 @@ carry the new set consistently from here. The two new lids sit in spots the
 generator says are clear, but no eye has confirmed the NE corner does not
 read as odd against the switchyard's authored dressing.
 
+
+### v3.70: every raid now records what it was built with
+
+THE COUNT GHOST GETS AN INSTRUMENT. Every verification sweep from roughly
+v3.48 to v3.61 ran against fixture-tab state that inflated enemy counts about
+forty percent, 115 entities on GREYWATER against the true pinned 82, and the
+defect was only NOTICED when the state died with a deleted test profile,
+because nothing anywhere recorded what a raid had actually been built with.
+The artifact is destroyed, the cause is still unidentified, and I have spent
+two investigations failing to resurrect it: a grown profile, a Many/Many
+settings profile and a high-season profile all census correctly today with
+the pins holding. So this build stops hunting the old ghost and instruments
+against the next one.
+
+Every raid is now stamped at birth with a census: total entities, the count
+by kind, and the three count dials it was built under. The census rides into
+the run's log record and prints on every flight recorder line as
+
+  ents:82(s24/c38/r10/sn5 dials 20/34/10)
+
+so the moment any state anywhere inflates or starves a raid again, the
+evidence arrives in the next export instead of decomposing in a tab. It costs
+no PRNG draws, reads no dial, and changes nothing downstream; waves that add
+raiders later are deliberately not counted, because the census means BIRTH
+composition, the thing the ghost corrupted.
+
+Verified: parsecheck PASS at v3.70. All four maps drive and draw with
+frameErr and hudErr null, and the stamped census matches the live entity
+count exactly on every map, 82, 83, 55 and 68. Hub clean, endRaid clean on
+all three outcomes. The export line driven through the real builder with an
+injected record renders the format above verbatim.
+Not verified: the census-into-log write on the real client, because the
+fixture suppresses flight recorder writes by design (P.log stays empty here,
+which is itself the correct behaviour being verified); the first real export
+he sends from v3.70 will carry the proof. And the ghost itself remains an
+open case: this build is the tripwire, not the conviction.
+

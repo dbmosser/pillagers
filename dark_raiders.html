@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.69';
+var VER='3.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6518,6 +6518,21 @@ function buildRaid(sim){
       tCrouch:0,tSprint:0,tStill:0,tLit:0,
       closestExtract:1e9,deathKiller:null,deathDistExtract:null,
       raidersExtracted:0,beaconCalls:0,beaconMissed:0,notes:[],thr:{smoke:0,decoy:0,frag:0}}};
+  // THE SPAWN CENSUS, v3.70. Every sweep from roughly v3.48 to v3.61 ran
+  // against fixture-tab state that inflated entity counts about forty percent,
+  // and it was only NOTICED when the state died, because nothing anywhere
+  // recorded what a raid was actually built with. The artifact is destroyed
+  // and the cause is still unidentified, so this is the instrument that turns
+  // the next occurrence into data instead of an autopsy: the composition of
+  // the raid, by kind, with the count dials it was built under, stamped on the
+  // raid at birth and carried into the log record and every export line.
+  // Costs no draws, reads no dial, changes nothing downstream.
+  g.census=(function(){
+    var by={};
+    for(var _ci=0;_ci<ents.length;_ci++){ var _ck=ents[_ci].kind; by[_ck]=(by[_ck]||0)+1; }
+    return {total:ents.length,by:by,
+      dials:{nS:CFG.nSentry,nC:CFG.nCrawler,nR:CFG.nRaider,nSn:CFG.nSnitch}};
+  })();
   g.vseg=map.segs;
   if(sim){
     g.bag=['bandage','bandage'];
@@ -11668,6 +11683,7 @@ function endRaid(how){
     caches:T.cachesOpened||0,windfalls:T.windfalls||0,strongbox:T.strongbox||0,rounds:T.rounds||0,jams:T.jams||0,campSafes:T.campSafes||0,wardenMet:T.wardenMet||0,doorsOpened:T.doorsOpened||0,
     gunsEq:T.gunsEquipped||0,bestQ:T.bestQ||0,holdExtract:T.holdExtract||0,diedInSiege:T.diedInSiege||0,
     dur:Math.round(elapsed()),
+    census:G.census||null,
     haul:haul,items:G.bag.length,containers:T.containers,
     shots:T.shots,hits:T.hits,acc:acc,reloads:T.reloads,heals:T.heals,eliteKills:T.eliteKills||0,
     downs:T.downs,revives:T.revives,thr:T.thr,marked:T.marked||0,
@@ -18030,6 +18046,7 @@ function buildExport(){
     // backfilled to index 0 even though that is almost certainly where they were
     // played. A guess written into the record is indistinguishable from data, and
     // the version field right there already says which of them predate the choice.
+    if(r.census) line+=' ents:'+r.census.total+'(s'+(r.census.by.sentry||0)+'/c'+(r.census.by.crawler||0)+'/r'+(r.census.by.raider||0)+'/sn'+(r.census.by.snitch||0)+' dials '+r.census.dials.nS+'/'+r.census.dials.nC+'/'+r.census.dials.nR+')';
     if(r.mapName) line+=' map:'+r.mapName;
     if(r.wx) line+=' wx:'+r.wx+'/'+(r.tod||'noon');
     if(r.caches) line+=' caches:'+r.caches;
