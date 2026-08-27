@@ -14627,3 +14627,44 @@ Not verified: the two 320-seed measurements still in flight, the Bulwark's cost
 and the raider steady-aim I shipped without pricing; whether the primer cards
 read well to someone who has not just built the thing they describe.
 
+
+### Measurements: the steady aim is free, the Bulwark costs about three points
+
+Two 320-seed paired runs, official family, both properly pinned, run in parallel.
+
+RAIDER STEADY AIM (v3.95): 10.3 against 10.3 percent, discordant 4 split 2 to 2.
+A perfect null. Raiders who plant their feet and take a careful shot are now as
+accurate as he is when he does the same thing, and it costs the player NOTHING
+measurable. That is the ideal outcome for a parity change and the second one
+today: realism gained, difficulty untouched. Worth stating plainly because the
+intuition says otherwise, and the intuition would have been wrong.
+
+THE BULWARK (v3.98): 13.4 percent without it, 10.3 with one on the map. That is
+a cost of about three points, and it is NOT statistically confirmed: discordant
+56, split 33 to 23, which is p about 0.18. So the honest statement is that the
+direction is sensible and the size is roughly three points, with the measurement
+unable to rule out chance at this sample.
+
+The 56 discordant pairs are the more interesting number. A change that flips 56
+of 320 raids in one direction or the other is a change that reshapes the raid
+rather than taxing it: the Bulwark is not a flat 3 percent tax, it makes many
+raids go differently, some better and some worse. That is what a genuinely new
+enemy should do, and it is exactly what a mere stat nudge does not.
+
+It kills the bot directly only 6 times in 320. What it actually does is push it
+around: howler deaths DOUBLE, 7 to 14, because a machine that owns the ground in
+front of it moves you into shelled ground that you would otherwise have crossed
+at your own pace. Sentries and raiders and crawlers barely move. The Bulwark's
+danger is positional, which is what it was designed to be.
+
+Keeping nBulwark at 1. His own recorder notes ask twice for more pressure, "not
+enough enemies, boring, looting" and "note enough enemites on map", and a three
+point cost that arrives as a positioning problem rather than a damage race is
+the kind of difficulty he has been asking for. nBulwark 0 removes it entirely
+and he can veto from the report.
+
+Not verified: the Bulwark cost at a sample large enough to confirm three points,
+which would need roughly 1,200 seeds; whether one per map is right on the small
+maps, since COLD STORAGE has 57 entities against GREYWATER's 85 and gets the
+same single Bulwark; the new streets, still unmeasured.
+
