@@ -301,7 +301,13 @@
 <div class="modal" id="opmodal">
   <h3>Operator terminal</h3>
   <div class="msub">Contracts, run history and the numbers. None of this is your kit, which is why it is no longer sharing a screen with it.</div>
-  <h2>Contracts</h2>
+  <h2>Mainframe</h2>
+  <div id="mfstatus" style="padding:6px 12px;font-size:11px"></div>
+  <div style="padding:0 12px 8px">
+    <button id="mfbuild" style="width:100%">BUILD A RACK</button>
+    <div id="mfhint" class="hint" style="margin-top:5px;font-size:9.5px;line-height:1.4"></div>
+  </div>
+  <h2 style="border-top:1px solid var(--steel-hi)">Contracts</h2>
   <div class="plist" id="contracts" style="max-height:170px"></div>
   <h2 style="border-top:1px solid var(--steel-hi)">Flight recorder <em id="logct">0</em></h2>
   <div class="plist" id="loglist" style="max-height:200px"></div>
@@ -546,7 +552,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.79';
+var VER='3.80';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11630,6 +11636,14 @@ function endRaid(how){
   // SPEC 3.5: settle the mercenary contract. Ten percent of his haul if he
   // walks out with you, a death benefit if he did not, and the hire is spent
   // either way. A bad mercenary run can genuinely put you in debt.
+  // THE MAINFRAME PAYS, v3.80: per extraction, never per hour. The line on the
+  // outcome screen is what makes a rack feel like a thing you own.
+  if(!G.sim&&how==='extract'&&(P.racks||0)>0){
+    var _mfPay=(P.racks||0)*RACK_PAY;
+    P.credits+=_mfPay;
+    if(G.tel) G.tel.rackPay=_mfPay;
+    lines.push('<span style="color:var(--coolant)">MAINFRAME: '+P.racks+' rack'+(P.racks===1?'':'s')+' fenced the data. +'+_mfPay.toLocaleString()+'c, banked.</span>');
+  }
   if(P.merc&&!G.sim){
     var mercEnt=null;
     for(var me=0;me<G.ents.length;me++) if(G.ents[me].merc) mercEnt=G.ents[me];
@@ -17339,6 +17353,53 @@ function loop(ts){
 }
 
 // ================================================================ hub UI
+// THE MAINFRAME, v3.80. HIS RANKING: "data cores". The salvage pile finally has
+// a second verb. A rack is BUILT from bulk junk pulled out of the stash, and
+// every rack pays a dividend each time you extract alive: income tied to
+// playing, never to waiting, which is the line that keeps passive income from
+// dissolving the reason to deploy. Capped at four racks. Part two adds the
+// data-core intel slot and the visible machines in the undercroft room.
+var RACK_COST={scrap:4,wire:3,cell:2,board:2};
+var RACK_CAP=4;
+var RACK_PAY=200;
+function rackAfford(){
+  var c=stashCounts();
+  for(var k in RACK_COST) if((c[k]||0)<RACK_COST[k]) return false;
+  return true;
+}
+function rackCostLine(){
+  var c=stashCounts(),parts=[];
+  for(var k in RACK_COST) parts.push(RACK_COST[k]+' '+(ITEMS[k]?ITEMS[k].name:k)+' ('+(c[k]||0)+' held)');
+  return parts.join(', ');
+}
+function buildRack(){
+  if((P.racks||0)>=RACK_CAP){ say('The mainframe wall is full.'); return; }
+  if(!rackAfford()){ say('Not enough parts. '+rackCostLine()); return; }
+  for(var k in RACK_COST){
+    for(var q=0;q<RACK_COST[k];q++){
+      var ix=P.stash.indexOf(k);
+      if(ix>=0) P.stash.splice(ix,1);
+    }
+  }
+  P.racks=(P.racks||0)+1;
+  saveProfile();
+  blip('pick');
+  say('Rack '+P.racks+' hums to life. '+(P.racks*RACK_PAY)+'c every time you make it home.');
+  renderMainframe(); try{ renderHub(); }catch(e){}
+}
+function renderMainframe(){
+  var st=document.getElementById('mfstatus'); if(!st) return;
+  var r=P.racks||0;
+  var bars='';
+  for(var i=0;i<RACK_CAP;i++)
+    bars+='<span style="display:inline-block;width:34px;height:12px;margin-right:5px;border:1px solid var(--steel-hi);background:'+(i<r?'rgba(53,214,200,.35)':'rgba(0,0,0,.3)')+'"></span>';
+  st.innerHTML=bars+'  <b style="color:var(--coolant)">'+r+' of '+RACK_CAP+' racks</b>'+
+    (r>0?'  <span style="color:var(--amber)">+'+(r*RACK_PAY)+'c per extraction</span>':'');
+  var bt=document.getElementById('mfbuild'), hn=document.getElementById('mfhint');
+  if(bt){ bt.disabled=(r>=RACK_CAP)||!rackAfford(); bt.textContent=(r>=RACK_CAP)?'THE WALL IS FULL':'BUILD A RACK'; }
+  if(hn){ hn.textContent=(r>=RACK_CAP)?'Four racks is the whole wall. They pay '+(RACK_CAP*RACK_PAY)+'c every extraction.'
+    :('A rack costs '+rackCostLine()+'. Each pays '+RACK_PAY+'c every time you extract alive. Junk becomes infrastructure.'); }
+}
 function stashCounts(){
   var c={},i;
   for(i=0;i<P.stash.length;i++) c[P.stash[i]]=(c[P.stash[i]]||0)+1;
@@ -17364,7 +17425,7 @@ function stashCounts(){
 // NOW is for things genuinely open and genuinely HIS, because that is what the
 // board is for: it is the one place the game tells him what it is waiting on.
 var ROADMAP=[
-  ['NOW','Datacores: mainframe racks that pay per extraction, intel bought with cores, a crafting bench, or the B+C hybrid? Ranking this row is answering it'],
+  ['NOW','Mainframe part two: slot a Data Core for next-raid intel, and racks you can SEE in the room'],
   ['NOW','The four maps span 16 extract points. Should they be evened out, or is a hard map allowed to be hard?'],
   ['NOW','The crowd at your extraction is the map you woke on the way there, not the siege. Quieter movement, shorter beacon, or move while it lands?'],
   ['NOW','LVL and PROFICIENCY are career stats that gate nothing. Keep as trophies, or make them do something?'],
@@ -17420,8 +17481,8 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Your save can be backed up to a file and restored, so a browser cleanup cannot erase you',
-  next:'The datacore build and the ghost friend, whichever he ranks first'
+  now:'The Mainframe is in: junk builds racks, racks pay on every extraction. He picked this',
+  next:'Mainframe part two: the Data Core intel slot, then the ghost friend'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a
@@ -18202,7 +18263,7 @@ function fmtRun(r){
 function buildExport(){
   var L=[],i;
   L.push('=== DARK RAIDERS v'+VER+' FLIGHT RECORDER ===');
-  L.push('Profile: '+P.runs+' runs, '+P.ext+' extracted, '+P.died+' died, best haul '+P.best+'c, credits '+P.credits+', rep '+P.rep+', pack T'+(P.pack+1)+
+  L.push('Profile: '+P.runs+' runs, '+P.ext+' extracted, '+P.died+' died, best haul '+P.best+'c, credits '+P.credits+', rep '+P.rep+', racks '+(P.racks||0)+', pack T'+(P.pack+1)+
     ', notoriety '+(P.notoriety||0)+', stash '+P.stash.length);
   // Who and where this came from, so a run pulled off the public endpoint can be
   // separated from his own without guessing. Origin matters because a build served
@@ -18517,7 +18578,8 @@ document.getElementById('condbtn').onclick=function(){
 // Dev tools, and the same keyboard route it always had.
 document.getElementById('optbtn').onclick=function(){ renderSettings(); document.getElementById('settingsmodal').classList.add('on'); };
 (function(){ var t2=document.getElementById('tunebtn2'); if(t2) t2.onclick=function(){ document.getElementById('devmodal').classList.remove('on'); toggleTune(true); }; })();
-document.getElementById('opbtn').onclick=function(){ renderHub(); document.getElementById('opmodal').classList.add('on'); };
+document.getElementById('opbtn').onclick=function(){ renderHub(); renderMainframe(); document.getElementById('opmodal').classList.add('on'); };
+document.getElementById('mfbuild').onclick=function(){ buildRack(); };
 document.getElementById('closeop').onclick=function(){ document.getElementById('opmodal').classList.remove('on'); };
 // HIS NOTE, v3.57: "menus should be zoomable with the wheel instead of ctrl and
 // wheel". The wheel over the undercroft scales the menus. A list that can still

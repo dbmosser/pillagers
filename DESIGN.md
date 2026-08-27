@@ -13501,3 +13501,39 @@ that either produces the file or does not; and a restore of a LARGE aged
 profile, since the fixture's scratch profile is small. Both are one honest
 click from proven.
 
+
+### v3.80: the Mainframe, because he said "data cores"
+
+HIS RANKING CAME BACK IN TWO WORDS and this is part one of the answer. The
+salvage pile finally has a second verb: BUILD. The Operator Terminal now
+opens with the Mainframe wall, four rack slots drawn as filling bars. A rack
+costs 4 Scrap, 3 Copper Wire, 2 Cracked Cells and 2 Circuit Boards pulled
+out of the stash, about 675c of junk if he had sold it, and every rack pays
+200c EVERY TIME HE EXTRACTS ALIVE, reported on the outcome screen as its own
+banked line. Income is tied to playing, never to waiting: no rack ever pays
+a credit for time passing, which is the line that keeps base income from
+dissolving the reason to deploy. Four racks is the whole wall, 800c per
+successful extraction, and the build button prices itself against the stash
+and says exactly what is missing.
+
+Part two, already named on the roadmap: the Data Core intel slot, spend a
+520c core for a next-raid reveal, and racks you can SEE in the undercroft
+room. The export's profile header now carries the rack count, so his own
+telemetry tracks the wall growing.
+
+Verified: parsecheck PASS at v3.80, all four maps drive and draw clean at
+the standard baselines, hub clean, raid endings clean. The wall driven
+through the real terminal button: an empty stash disables the build and
+reads 0 of 4; a stash stocked for exactly two racks built the first for
+exactly eleven items with the hum line said, built the second down to an
+empty stash with the button disabling again; a real driven extraction with
+two racks banked exactly 400c with the MAINFRAME line on the outcome screen
+and the amount in telemetry; a death paid nothing and printed nothing; and
+the export header reads racks 2.
+Not verified: the economy over his real play, deliberately. The sim never
+builds racks, so no A/B measures this; the payback arithmetic says a rack
+earns back its salvage in three or four extractions at his real extract
+rate, which is a designed gift, and if it feels too generous RACK_PAY is one
+number. The recipe balance against what his actual stash holds is also his
+to feel out; the first Not-enough-parts message will say what is short.
+
