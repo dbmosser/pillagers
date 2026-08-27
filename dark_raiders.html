@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.61';
+var VER='3.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -606,7 +606,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:900,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:900,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -5039,10 +5039,35 @@ function mkContainer(x,y,type,d){
 function mkName(pre,letters){
   return pre+' '+pick(letters)+'-'+ri(10,99);
 }
+// ---------------------------------------------------------------- ELITES, v3.62
+// HIS NOTE: "there need to be like rarer, Elite versions of each enemy that are
+// clearly indicated by different colors and have more health and deal more
+// damage". Applies to sentries, crawlers, criers and raiders, the four kinds
+// whose constructors call this. NOT the Warden, who is already the map's set
+// piece, and not the listener or the neutrals.
+// THE ROLL IS DRAWN FOR EVERY SPAWN, unconditionally, before the rate is
+// consulted, the same rule as the jam and feud rolls: eliteRate 0 and 0.08
+// must produce the same raid with and without elites, or every paired A/B on
+// this dial measures two different maps instead of elites.
+// Damage is deliberately NOT scaled here. Raiders fire shared WEAPONS objects,
+// and scaling those would buff every user of the gun including the player; a
+// sentry's inline fire weapon reads e.dmg, so scaling e.dmg AND the bullet
+// would double it. The multiplier rides on the bullet in fireWeapon (sh.elite)
+// and on the crawler's one melee line, and nowhere else.
+function blessElite(e){
+  var roll=rr();
+  var rate=(CFG.eliteRate===undefined?0.08:CFG.eliteRate);
+  if(roll>=rate) return e;
+  e.elite=1;
+  var hm=(CFG.eliteHp===undefined?2.2:CFG.eliteHp);
+  e.hp=Math.round(e.hp*hm); e.maxhp=Math.round(e.maxhp*hm);
+  e.r=Math.round(e.r*1.12);
+  return e;
+}
 function mkSentry(x,y){
-  return {kind:'sentry',x:x,y:y,r:22,hp:Math.round(150*CFG.eHp*seasonHp()),maxhp:Math.round(150*CFG.eHp*seasonHp()),
+  return blessElite({kind:'sentry',x:x,y:y,r:22,hp:Math.round(150*CFG.eHp*seasonHp()),maxhp:Math.round(150*CFG.eHp*seasonHp()),
     name:mkName('SENTRY',['K','R','V','T']),
-    face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:70,dmg:14,rng:340,cone:.62,hitT:0};
+    face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:70,dmg:14,rng:340,cone:.62,hitT:0});
 }
 // Crawler damage 20 to 13, and it is half of a pair with the raised counts. Measured,
 // 120 seeds per arm on the dam, same build, only the numbers changing:
@@ -5056,9 +5081,9 @@ function mkSentry(x,y){
 // melee rusher, so it is the one whose count you notice most and the one that killed 48
 // of 98 in the dense arm; a sentry is a ranged threat you are meant to respect.
 function mkCrawler(x,y){
-  return {kind:'crawler',x:x,y:y,r:15,hp:Math.round(52*CFG.eHp*seasonHp()),maxhp:Math.round(52*CFG.eHp*seasonHp()),
+  return blessElite({kind:'crawler',x:x,y:y,r:15,hp:Math.round(52*CFG.eHp*seasonHp()),maxhp:Math.round(52*CFG.eHp*seasonHp()),
     name:mkName('CRAWLER',['A','C','H','M']),
-    face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:150,dmg:13,rng:26,cone:1.5,hitT:0,legs:rnd(0,6.28)};
+    face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:150,dmg:13,rng:26,cone:1.5,hitT:0,legs:rnd(0,6.28)});
 }
 // ====================================================== MACHINES THAT COOPERATE
 // Every machine on the map fought its own private battle. Six of them noticing
@@ -5239,11 +5264,11 @@ function mkSnitch(x,y){
   // 26 to 38. Deliberately small: the weave above is doing the work, and this is only
   // so that one lucky burst at range is not a guaranteed kill on a thing whose whole
   // job is to make you choose between chasing it and leaving.
-  return {kind:'snitch',x:x,y:y,r:11,hp:Math.round(38*CFG.eHp*seasonHp()),maxhp:Math.round(38*CFG.eHp*seasonHp()),
+  return blessElite({kind:'snitch',x:x,y:y,r:11,hp:Math.round(38*CFG.eHp*seasonHp()),maxhp:Math.round(38*CFG.eHp*seasonHp()),
     name:mkName('CRIER',['E','N','S']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:170,dmg:0,rng:380,cone:1.2,hitT:0,lost:0,
     // Per drone phase, so two of them never weave in formation and read as one target.
-    jseed:rnd(0,6.283)};
+    jseed:rnd(0,6.283)});
 }
 // SPEC 8.5: a persistent roster of TEN named identities. Absurd gamer tags,
 // deliberately. They remember across runs in both directions: kill one and it
@@ -5386,6 +5411,7 @@ function mkRaider(x,y,forceId,simBuild){
   // decision with a visible upside instead of a worse version of the same fight.
   if(CFG.raiderWear!==0&&_wearRoll>=0.34)
     r.hp=Math.max(1,Math.round(r.maxhp*(0.50+_wearAmt*0.42)));
+  blessElite(r);
   var RT={none:0,light:1,medium:2,heavy:3}[r.rig]||0;
   var nloot=ri(2,4)+RT;
   for(var i=0;i<nloot;i++){
@@ -5394,6 +5420,11 @@ function mkRaider(x,y,forceId,simBuild){
     var tbl=(RT>=2)?(rr()<0.45?LOOT.safe:LOOT.locker):(rr()<0.35?LOOT.locker:LOOT.body);
     r.bag.push(rollLoot(tbl));
   }
+  // Elite raiders carry two extra veteran-tier rolls. Drawn for EVERY raider,
+  // pushed only for elites, so the dial cannot shift the stream.
+  var _xt=(RT>=2)?LOOT.safe:LOOT.locker;
+  var _x1=rollLoot(_xt),_x2=rollLoot(_xt);
+  if(r.elite){ r.bag.push(_x1,_x2); }
   return r;
 }
 // ============================================================== THE PEDDLER
@@ -7458,7 +7489,7 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
   for(var pel=0;pel<shots;pel++){
     var ang=base+rnd(-spx,spx);
     G.bullets.push({x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17,
-      vx:Math.cos(ang)*1180,vy:Math.sin(ang)*1180,dmg:wep.dmg,
+      vx:Math.cos(ang)*1180,vy:Math.sin(ang)*1180,dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1),
       life:wep.rng/1180,player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a'});
   }
   // A burst weapon fires its extra rounds on a short delay, one per 70ms, each
@@ -10103,6 +10134,7 @@ function updateEnts(dt){
       // Last hit wins, exactly as the flag was set at the killing blow.
       if(e.byPlayer){
         T.kills[e.kind]++; contractKill(e.kind);
+        if(e.elite) T.eliteKills=(T.eliteKills||0)+1;
         // SPEC 8.5 and 5.8: the rivalry ledger. Killing an identity is a
         // permanent grudge; it will be shoot on sight every run from now on.
         if(e.kind==='raider'&&e.ident&&!G.sim){
@@ -10511,7 +10543,7 @@ function updateEnts(dt){
       var d=dist(e,p); want=Math.atan2(p.y-e.y,p.x-e.x);
       if(e.kind==='crawler'){
         if(d>e.rng) navSeek(e,p.x,p.y,e.spd,dt);
-        else if(e.cd<=0&&!p.downed){ damagePlayer(e.dmg,'crawler',e.name); e.cd=.7; }
+        else if(e.cd<=0&&!p.downed){ damagePlayer(e.dmg*(e.elite?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1),'crawler',e.name); e.cd=.7; }
       } else if(e.kind==='raider'){
         // His answers, 2026-08-22: raiders should FLANK, use COVER, and FLEE
         // when hurt. Flanking: each raider commits to a side at first contact
@@ -11584,7 +11616,7 @@ function endRaid(how){
     gunsEq:T.gunsEquipped||0,bestQ:T.bestQ||0,holdExtract:T.holdExtract||0,diedInSiege:T.diedInSiege||0,
     dur:Math.round(elapsed()),
     haul:haul,items:G.bag.length,containers:T.containers,
-    shots:T.shots,hits:T.hits,acc:acc,reloads:T.reloads,heals:T.heals,
+    shots:T.shots,hits:T.hits,acc:acc,reloads:T.reloads,heals:T.heals,eliteKills:T.eliteKills||0,
     downs:T.downs,revives:T.revives,thr:T.thr,marked:T.marked||0,
     beaconCalls:T.beaconCalls,beaconMissed:T.beaconMissed,regen:T.regen||0,
     kills:T.kills,dmg:T.dmg,rar:T.rar,
@@ -13362,6 +13394,17 @@ function render2D(dt){
       var e2=it.e;
       var eLift=((G&&G.map&&G.map.liftAt)?G.map.liftAt(e2.x,e2.y):0);
       if(eLift>0){ wc.save(); wc.translate(0,-eLift); }
+      // ELITE MARKER, v3.62: one site under every kind's sprite, in the same
+      // purple the loot pips already use for elite, so the colour is a word
+      // the player has met before. Pure time drive, no PRNG touch.
+      if(e2.elite){
+        var _ep=0.55+0.45*Math.sin(G.t*3.1+e2.x*0.02);
+        wc.save(); wc.globalCompositeOperation='lighter';
+        wc.strokeStyle='rgba(208,140,232,'+(0.28+0.24*_ep).toFixed(3)+')';
+        wc.lineWidth=2;
+        wc.beginPath(); wc.ellipse(e2.x,e2.y+2,e2.r*1.2,Math.max(3,e2.r*0.5),0,0,6.2832); wc.stroke();
+        wc.restore();
+      }
       if(e2.kind==='warden') drawWardenS(e2);
       else if(e2.kind==='sentry') drawSentryS(e2);
       else if(e2.kind==='crawler') drawCrawlerS(e2);
@@ -15137,7 +15180,7 @@ function drawRaiderBoard(){
     if(r.out){ st='EXTRACTED'; out++; }
     else if(inEnts){ st=raiderStatus(e); live++; }
     else { st='DEAD'; dead++; }
-    rows.push({name:r.name,val:r.val,st:st,crew:r.crew,out:r.out,outAt:r.outAt});
+    rows.push({name:r.name,val:r.val,st:st,crew:r.crew,out:r.out,outAt:r.outAt,el:!!(r.ref&&r.ref.elite)});
   }
   // HIS NOTE, v3.53: "once a raider has extracted, move them to the bottom of
   // the list and then make their name disappear after one minute after their
@@ -15181,7 +15224,9 @@ function drawRaiderBoard(){
       while(_nm.length>2&&ctx.measureText(_nm+'\u2026').width>_budget) _nm=_nm.slice(0,-1);
       _nm+='\u2026';
     }
+    if(w.el) ctx.fillStyle='#d08ce8';
     ctx.fillText(_nm,PADX,yy);
+    ctx.fillStyle=col;
     ctx.textAlign='right';
     ctx.fillText(_rt,PADX+LW-LH(18),yy);
     ctx.textAlign='left';
@@ -17744,7 +17789,7 @@ function buildExport(){
       'c items:'+r.items+' cont:'+r.containers+
       (r.containers>0?(' perCont:'+Math.round(r.haul/r.containers)+'c'):'')+
       ' shots:'+r.shots+' acc:'+r.acc+'%'+
-      ' kills:'+kills+' heals:'+r.heals+' downs:'+(r.downs||0)+' rev:'+(r.revives||0)+
+      ' kills:'+kills+(r.eliteKills?' elites:'+r.eliteKills:'')+' heals:'+r.heals+' downs:'+(r.downs||0)+' rev:'+(r.revives||0)+
       ' marked:'+(r.marked||0)+
       ' beacon:'+(r.beaconCalls||0)+'called/'+(r.beaconMissed||0)+'missed'+
       ' regen:'+(r.regen||0)+'hp'+

@@ -12551,3 +12551,80 @@ designed behaviour but I could not rehearse it on his actual profile. The
 window.storage wrapper path in storeGet, if his environment provides one, is
 untested here because the fixture fell through to localStorage.
 
+
+### v3.62: elite enemies, and a ghost in the verification numbers
+
+HIS NOTE: "there need to be like rarer, Elite versions of each enemy that are
+clearly indicated by different colors and have more health and deal more
+damage". Shipped for sentries, crawlers, criers and raiders. Not the Warden,
+who is already the map's set piece and got his own buff at v3.51, and not the
+listener or the neutrals.
+
+THE RULES. Roughly one spawn in twelve (eliteRate 0.08) comes up elite: 2.2x
+health, 1.6x damage, 12 percent bigger, and marked by a pulsing ring in the
+same purple the loot pips already use for elite, so the colour is a word the
+player has met before. Elite raiders also carry two extra veteran-tier rolls
+in the bag, so the harder fight pays. Elite raider names draw in that purple
+on the raider board. Kills of elites are counted and appear in the flight
+recorder as "elites:N". Three dials: eliteRate, eliteHp, eliteDmg.
+
+WHERE THE DAMAGE MULTIPLIER LIVES, because the wrong place was a bug waiting.
+Raiders fire shared WEAPONS objects, so scaling those would buff every user of
+the gun including the player. A sentry's fire path reads e.dmg into an inline
+weapon, so scaling e.dmg AND the bullet would double it. The multiplier
+therefore rides in exactly two places: on the bullet at fireWeapon, keyed off
+the shooter's elite flag, which covers every gun in every hand, and on the
+crawler's one melee line. Elite crawlers hitting RAIDERS in melee are not
+scaled, which is noted rather than hidden.
+
+STREAM DISCIPLINE, the same as the jam and feud rolls: the elite roll is drawn
+for every spawn and the raider's two bonus loot rolls are drawn for every
+raider, unconditionally, with the results discarded for non-elites. Driven:
+eliteRate 0 and 0.08 on the same seed build byte-identical raids, same
+weather, same container positions, same raider names, zero elites in one and
+eight in the other.
+
+MEASURED, 320 paired seeds on GREYWATER, mapIx and simGreed pinned:
+
+  extract rate   5.9 percent no elites   7.8 percent with elites
+  discordant     12 favouring no elites, 18 favouring elites
+  McNemar exact two sided p = 0.36
+
+No measurable cost, and the direction is mildly positive, which is the raider
+haul lesson again: an elite is more noise pointed at something other than you,
+and an elite raider is a richer body to loot.
+
+AND THE GHOST. Verifying this build turned up something unrelated and real:
+every sweep this session has reported entity counts of 115, 115, 80 and 90 on
+the four maps, and the true pinned composition is 82, 83, 55 and 68. The 115
+figure matches Many raiders plus Many machines at map scale EXACTLY
+(34+52+18+6+5). I rebuilt the v3.61 game with the v3.61 fixture generator,
+byte for byte from git, and it censuses 82, so no code ever produced 115 on a
+clean page. The inflated counts came from PAGE STATE in the fixture tab that
+had persisted since roughly v3.48 and died when I deleted the fixture's stored
+profile during the v3.61 persistence verification. I tried to resurrect it:
+a grown profile, a Many/Many gameOpts profile, and a high season sp all still
+census 82 with the pins holding. The artifact is destroyed and the mechanism
+is unproven, which I am recording rather than hiding.
+What it means for the record: paired A/B deltas all stand, both arms always
+shared whatever state was live. Absolute rates are another matter: this
+build's 5.9 percent no-elite GREYWATER baseline against the 10.9 to 14.7 of
+recent builds moved WITH the page state, so session absolute rates carried an
+uncontrolled variable, one more reason the map-spread rule of never quoting an
+absolute without its context was right. Sweep baselines from here forward are
+82, 83, 55 and 68.
+
+Verified: parsecheck PASS at v3.62. All four maps drive and draw with frameErr
+and hudErr null at the new baselines, hub clean, endRaid clean on all three
+outcomes. Elite scaling read off live spawns: sentry 330 of base 150, crawler
+114 of 52, crier 84 of 38, raider 172 of 78, radii grown, raider damage field
+untouched by design. Spawn rate 129 elites in 1691 eligible spawns across 25
+raids, 7.6 percent against the 8 configured. Stream discipline driven as
+above. Dials pinned in the fixture want list in this same build.
+Not verified: the elite ring's look. The pane cannot screenshot, so the marker
+is correct by code reading, not by eye; if the purple reads wrong over water
+or in blackout, that is a retune from his note. The elite bullet multiplier is
+verified by code path, not by measuring a landed elite shot's damage number in
+play. And the ghost above is an open investigation, not a closed one: the
+cause of the inflated counts is unidentified, only its scope and its death.
+
