@@ -14957,3 +14957,35 @@ greed, so his pending decision gets a number from the right robot. In flight.
 Not verified: the war measurement; his ear on the music; his hands on the
 walls fix.
 
+
+### v4.08 - Parity three: raiders crouch while they loot
+
+Next item off his parity audit. Crouch, the strongest sneaking rule in the
+game, has belonged to the player alone since the day it was written. Raiders
+now crouch for the same reason he does: while working a box, which is the
+moment a person is stationary, occupied, and trying not to be noticed.
+
+What it does, all three channels of it:
+  They LOOK crouched: the low pose the game already draws, applied while they
+  work. Confirmed by eye against a standing figure in the same frame.
+  They are HARDER TO SPOT: same concealment channel the bushes use, so
+  crouched in a bush takes the stronger of the two. Measured: a standing
+  raider is visible at 300; the same raider crouched at his box is not; up
+  close, at 140, crouching saves nobody, which is as it should be.
+  They are QUIETER: half the footstep noise radius while working, the same
+  discount his own crouch buys.
+
+The whole thing is derived from what the body is DOING, looting at a box,
+rather than a flag stored on it, so there is no state to forget to clear.
+Hired mercs are excluded on purpose: your own man should never vanish on you.
+raiderCrouch 0 restores v4.07 exactly.
+
+What he should feel: walking past a shelf row and finding a man suddenly
+THERE, low over a crate, where a standing figure would have been visible from
+the street. Ambush by industriousness rather than by placement.
+
+Not verified: the crouch at 320 seeds, queued behind the machine-war
+measurement still running; whether the low pose reads at real zoom in motion;
+whether crouched looters make raids feel emptier than the count says, since
+fewer visible raiders is the direct intent.
+
