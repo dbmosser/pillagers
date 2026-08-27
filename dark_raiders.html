@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.71';
+var VER='3.72';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10563,7 +10563,12 @@ function updateEnts(dt){
         if(!G.sim&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)) label(e.x,e.y-18,e.name+' IS RUNNING','#ffd25c',0,true);
       }
     }
-    if(sees){
+    // v3.72: a merc whose client is DOWN skips the entire seen-you section.
+    // The watch block was capturing him to stare at your body, and with that
+    // hole patched he fell through to the tail that sets state to chase, which
+    // is the section doing its job on the wrong man. The rescue branch in the
+    // state chain below owns him for as long as you are on the floor.
+    if(sees&&!(e.merc&&p.downed&&!e.downed&&CFG.raiderDown!==0)){
       // SPEC 8.4: hostility varies. A passive raider that has not been provoked
       // watches you rather than opening fire, and only turns when you crowd it
       // or shoot it. One you have killed before never gives you that grace.
@@ -10710,6 +10715,36 @@ function updateEnts(dt){
       if(dist(e,{x:e.tx,y:e.ty})<34){
         e.state=e.kind==='raider'?'loot':'patrol'; e.cd=rnd(.5,1.6); e.scattered=0;
       }
+    }
+    // YOUR HIRE PICKS YOU UP, v3.72, the first line of the partner-merc scoping.
+    // v3.17 taught crews to revive their own and taught YOU to revive the merc,
+    // and left the man you PAID standing over your bleeding body doing nothing,
+    // which reads as a bug the moment it happens. He now abandons looting or
+    // investigating to come for you, same 3.2 second pickup, same 40 percent
+    // stand-up as every other revive in the game. It costs no medical item:
+    // his fee covered it, and that asymmetry is the point of having hired him.
+    // He does NOT break off an active fight to do it, the same judgement the
+    // crew revive makes: a man in a firefight has a better use of the next
+    // four seconds, and the thing that downed you is usually still shooting.
+    else if(e.kind==='raider'&&e.merc&&!e.downed&&p.downed&&CFG.raiderDown!==0){
+      var dPv=dist(e,p);
+      want=Math.atan2(p.y-e.y,p.x-e.x);
+      if(!e.revSaid){ e.revSaid=1; say(e.name+' is coming for you.'); }
+      if(dPv>44){ navSeek(e,p.x,p.y,e.spd,dt); e.revProgP=0; }
+      else{
+        e.revProgP=(e.revProgP||0)+dt;
+        if(e.revProgP>=3.2){
+          e.revProgP=0; e.revSaid=0;
+          p.downed=false; p.hp=Math.round(p.maxhp*0.4); p.iv=2;
+          if(G.tel){ G.tel.revives=(G.tel.revives||0)+1; G.tel.mercRevives=(G.tel.mercRevives||0)+1; }
+          blip('pick'); say(e.name+' pulls you up. That is what you paid for.');
+          label(p.x,p.y-22,'PICKED UP','#35d6c8',0,true);
+        }
+      }
+      e.face+=clamp(angDiff(want,e.face),-5*dt,5*dt);
+      collide(e,G.map.walls);
+      if(e.cd>0) e.cd-=dt;
+      continue;
     }
     // A CREW PICKS ITS OWN UP, and only its own. Crews already decide who shoots
     // whom since v2.49, so they are the natural unit for who is worth saving; a
@@ -17221,8 +17256,8 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Frame spikes: the failed-route search that cost 10ms is dead, watching for the rest',
-  next:'The datacore build, the moment he ranks the roadmap row'
+  now:'Partner merc line one is in: he picks you up. Next lines: orders, shared extraction',
+  next:'The datacore build and the ghost friend, whichever he ranks first'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a

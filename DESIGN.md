@@ -13139,3 +13139,46 @@ something else by accident: the v3.51 rain is clearly visible, readable
 streaks over the dark ground, which closes the "more visible rests on
 numbers" caveat from that build. Rain confirmed by eye in RAIN weather.
 
+
+### v3.72: the man you paid picks you up
+
+THE FIRST LINE OF THE PARTNER-MERC SCOPING, built because it was the gap that
+reads as a bug: v3.17 taught crews to revive their own and taught YOU to
+revive the merc, and left the man you PAID standing over your bleeding body
+doing nothing. He now abandons looting or investigating and comes for you the
+moment you go down, announces it, holds the same 3.2 second pickup as every
+other revive in the game, and stands you up at 40 percent. It costs no
+medical item: his fee covered it, and that asymmetry is the point of having
+hired him. He does NOT break off an active firefight to do it, the same
+judgement the crew revive makes, because the thing that downed you is usually
+still shooting at him.
+
+IT TOOK THREE ATTEMPTS TO MAKE HIM MOVE, and the record matters more than
+the feature. The branch was right the first time; everything around it was
+not. First drive: he said his line and walked NORTH forever, because my probe
+had teleported him to x 5240 on a 5200-wide world and the border wall pinned
+him while the wall-slide bled him sideways. A probe bug, not a game bug.
+Second drive, legally placed: he arrived at your body and STARED at it,
+because the stand-and-watch block for non-hostile raiders runs before the
+state chain and continues, so a merc who could SEE you never reached the
+rescue. Patching only that hole produced the third failure: with the watch
+continue gone he fell through to the seen-you tail, which set him to CHASE, a
+section doing its job on the wrong man. The shipped fix gates the ENTIRE
+seen-you section off for a merc whose client is down, and the rescue branch
+in the state chain owns him for as long as you are on the floor.
+
+Verified: parsecheck PASS at v3.72. All four maps drive and draw with
+frameErr and hudErr null at the standard baselines, hub clean, endRaid clean
+on all three outcomes. The rescue driven end to end: a merc in loot state 213
+units away announces, navigates over, and stands the player up at 5.0 seconds
+of a 24 second bleed-out, hp 40 of 100, with revives and mercRevives both
+counting and the voice line landing. The v3.17 crew revive re-driven as a
+regression after the chain insert: a downed raider is still picked up by his
+crewmate at 33 health with crewRevives counting.
+Not verified: a merc who is mid-firefight when you go down is designed to
+finish the fight first, and that priority is by code reading, not by a driven
+two-front scenario. The rescue with the merc BEYOND earshot or across the map
+rests on the same navSeek that carried him 213 units, not on a cross-map
+drive. And no real raid with a real hired merc has been through this yet;
+his next hire will be the proof.
+
