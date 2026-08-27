@@ -13090,3 +13090,44 @@ observed frame is 6ms of sim plus about 2ms of draw, inside the 16.7ms budget
 with headroom. The next attribution level (per-kind timing inside updateEnts)
 is the open thread if his machine still stutters on v3.71.
 
+
+### Scoping note, 2026-08-27: what "Two raiders, one raid" can honestly be
+
+The roadmap's NEXT row, scoped before building so the build starts from a
+plan. The constraint that shapes everything is already written in this file
+and has held since v1.49: true co-op is a hard wall, real netcode and an
+engine move, and pretending otherwise means shipping half of it. So the item
+cannot mean two people on two machines. Inside the walls it can mean two
+things, and they stack.
+
+PART ONE, THE PARTNER. The Mercenary already drops in with you, fights your
+side and never turns. What he is NOT is a partner: he cannot revive you, you
+cannot order him, his bag is his own, and when the dropship lands he is
+cargo, not crew. The partner build closes that gap with systems that all
+exist already:
+  he revives you when you go down, the crew-revive AI from v3.17 pointed at
+  the player; you already can revive him;
+  three orders on one key, FOLLOW, HOLD, LOOT HERE, the states his AI
+  already has, plus a marker;
+  a shared extraction: the ship waits for both or he boards what you called,
+  the v3.58 boarding logic he already runs;
+  his bag opens like a container while he stands with you, trade both ways;
+  and he PERSISTS: the same named man, keeping his wear and his standing
+  with you, hireable again, mournable when he dies for good.
+Each line is a build on its own; together they are the "big one, not a quick
+one" the row promised.
+
+PART TWO, THE GHOST FRIEND. The recorder already exports a full profile as
+text, and the game already builds raiders from identity records. A friend's
+export pasted into the terminal becomes a GHOST RAIDER: a bot wearing that
+real person's name, loadout, stats and habits (their measured greed, their
+crouch rate, their favourite gun), dropped into your raid as an ally or a
+rival. Two real raiders, one raid, no netcode: one of them live, one of them
+replayed from data a friend actually generated. This is the only
+two-real-people shape the walls allow, and nothing else in the genre does it.
+
+RECOMMENDATION: Part One first, one line at a time, revive then orders then
+shared extraction then trade then persistence; Part Two after, since it
+feeds on systems Part One hardens. Ranking the roadmap row is the go signal,
+and nothing here builds until it moves.
+
