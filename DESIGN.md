@@ -12767,3 +12767,45 @@ that is a tuning pass on the values, not a structure change. The keyhole
 glyph's size on his monitor. And the open-state green is code-verified only,
 since no key was spent in the driven raid.
 
+
+### v3.66: the spawn floor rises to answer a fair complaint
+
+HIS NOTE, run #39: "I spawned 100 m from an extract. that is too close."
+
+The guard already existed. v3.4x's spawnClear scans the manhole roll forward
+until it finds one at least 900 units from every extraction point, and the
+replication pass confirmed it helps at p=0.0066. So why did he land at 100
+metres? Because the system did exactly what it was tuned to: at ten units to
+the metre, 900 units is a 90 metre floor, and the manhole he rolled sits 1090
+units, 109 metres, from the nearest ring. It CLEARED the dial. His tolerance
+is simply higher than the number was, and he is right: the raid is walk out,
+find something, walk back, and starting a hundred metres from the door
+deletes the shape of it.
+
+Measured before choosing the new floor, every manhole on every map against
+its nearest ring: GREYWATER 1890/1842/1056/903/860/582, SUNKEN 2179 down to
+1078, COLD STORAGE 1522/1406/1348/1090/290/286, QUARRY 2815 down to 670. The
+offender was that 1090. Any floor that excludes it also excludes GREYWATER's
+1056, so the honest number is 1150, a 115 metre minimum. The cost is variety:
+GREYWATER falls to two clearing manholes of six, COLD STORAGE keeps three,
+QUARRY four, SUNKEN all six. The follow-up on the books is authoring a new
+far manhole for GREYWATER so its variety comes back.
+
+Driven across 120 raids on all four maps: the closest rolled spawn was 1213
+units, 121 metres, and zero landed under the floor.
+
+BALANCE: 320 paired seeds on GREYWATER, mapIx and simGreed pinned, 900
+against 1150: extract 7.8 percent at the old floor, 6.3 at the new,
+discordant 15 to 10, McNemar exact p=0.42. Not significant, direction mildly
+negative as longer walks should be, and it is a dial if the price reads
+wrong.
+
+Verified: parsecheck PASS at v3.66. Four maps drive and draw clean at the
+standard baselines, hub clean, endRaid clean on all three outcomes. The
+spawn geometry table above measured live, the 120-raid floor check ran
+clean, and the dial is pinned in the fixture want list at the new value.
+Not verified: the paired result is one seed family, and COLD STORAGE, where
+his complaint actually happened, was not the A/B map; the floor check
+covered it geometrically but its extract-rate cost specifically is
+unmeasured.
+
