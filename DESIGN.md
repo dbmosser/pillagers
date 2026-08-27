@@ -14536,3 +14536,27 @@ question only he can answer; whether the rewards are worth the restriction;
 'In and out' against a map whose extraction is far from the drop, where three
 minutes may be impossible rather than hard.
 
+
+### Measurement: clearing the roads cost NOTHING. My cover theory is dead.
+
+320 paired seeds, official family, properly pinned this time: bushes kept, the
+old centre-only cull, 12.8 percent. Bushes cleared off the tarmac, the current
+disc cull, 13.4 percent. Discordant 4, split 1 to 3, which is a clean null and
+if anything leans very slightly toward the cleaned map.
+
+That closes the question I got wrong twice. I claimed the bush cull had cost
+several points of survival, and I reached that by ELIMINATION from a bench drop
+that turned out to be my own unpinned loadout. The honest record is now: his
+bushes-on-roads complaint was fixed, the fix removes 31 to 54 bushes a map, and
+it costs the player nothing measurable. No compensating undergrowth needs to be
+planted anywhere. The idea that the map leans on bush concealment is unsupported
+by the only test that has ever been run on it.
+
+Both arms also sit near 13 percent, consistent with the 16.3 percent 80-seed
+re-take, so the current build's true bench is somewhere in the 13 to 16 band and
+the 10.0 figure I quoted all day yesterday is stale rather than wrong. A full
+320-seed identical-arms bench at v4.00 is the next measurement after the Bulwark.
+
+Not verified: the Bulwark's own cost, 320 seeds running as this is written; the
+replacement official bench number.
+
