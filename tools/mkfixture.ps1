@@ -574,6 +574,7 @@ window.__mouseState=function(){ return mouse; };
 window.__keysRef=function(){ return keys; };
 window.__wx={list:function(){ return WEATHER; },cur:wx,VF:VF,AMBR:AMBR,ping:ping,pick:pickWeather};
 window.__music=function(){ tickMusic(); return {mode:musicMode(),wanted:musicWanted(),started:!!MUS.g,step:MUS.step}; };
+window.__hudBox=function(){ return HUDBOX; };
 window.__audio={amb:tickAmbience,steps:tickEnemyAudio,sfx:sfx,blip:blip,ears:earsOf,
   bus:bus,ctx:ac,ambObj:function(){ return AMB; }};
 window.__bag={weight:bagWeight,drop:dropItem,worst:worstBagIndex,cull:autoCull,

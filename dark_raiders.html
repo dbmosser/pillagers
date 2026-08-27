@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.63';
+var VER='3.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6712,6 +6712,11 @@ cv.addEventListener('click',function(){ ac(); });
 cv.addEventListener('mousemove',function(e){
   var r=cv.getBoundingClientRect();
   mouse.x=e.clientX-r.left; mouse.y=e.clientY-r.top;
+  if(HUDDRAG){
+    P.hud=P.hud||{}; var HD=P.hud[HUDDRAG.id]=P.hud[HUDDRAG.id]||{};
+    HD.dx=HUDDRAG.dx+(mouse.x-HUDDRAG.mx);
+    HD.dy=HUDDRAG.dy+(mouse.y-HUDDRAG.my);
+  }
 });
 cv.addEventListener('mousedown',function(e){
   // MARK A WAYPOINT. While the map is up the click belongs to the map and must
@@ -6746,9 +6751,31 @@ cv.addEventListener('mousedown',function(e){
       }
     }
   }
+  // HUD PANELS CLAIM THE CLICK, v3.64: the same rule as the map and the bag
+  // above, a click on furniture must not pull the trigger. The glyph toggles
+  // collapse; anywhere else on the panel starts a drag that mousemove feeds
+  // and mouseup saves. Skipped while the bag or the map own the screen.
+  if(e.button===0&&G&&!G.over&&!G.bagOpen&&!keys['KeyM']){
+    for(var hk in HUDBOX){
+      var HB2=HUDBOX[hk];
+      if(!HB2) continue;
+      if(mouse.x>=HB2.x&&mouse.x<=HB2.x+HB2.w&&mouse.y>=HB2.y&&mouse.y<=HB2.y+HB2.h){
+        if(HB2.tg&&mouse.x>=HB2.tg.x&&mouse.x<=HB2.tg.x+HB2.tg.w&&
+           mouse.y>=HB2.tg.y&&mouse.y<=HB2.tg.y+HB2.tg.h){
+          P.hud=P.hud||{}; P.hud[hk]=P.hud[hk]||{};
+          P.hud[hk].c=!P.hud[hk].c; saveProfile(); blip('pick');
+          return;
+        }
+        HUDDRAG={id:hk,mx:mouse.x,my:mouse.y,
+          dx:hudOff(hk).dx,dy:hudOff(hk).dy};
+        return;
+      }
+    }
+  }
   if(e.button===0){ mouse.down=true; ac(); }
 });
 window.addEventListener('mouseup',function(e){
+  if(HUDDRAG){ HUDDRAG=null; try{ saveProfile(); }catch(_e2){} }
   if(e.button===2){ if(G) G.player.ads=false; }
   // DROP. Released over a quickbar cell, the item is assigned to that slot;
   // released anywhere else the drag is simply abandoned, which is what every
@@ -14228,14 +14255,23 @@ function drawHUD(){
       rows[_wq].wrapped=wrap(rows[_wq].v);
       total+=1+rows[_wq].wrapped.length;
     }
-    var bh=pad*2+lh+total*lh;
+    delete HUDBOX.cond;
+    var HOc=hudOff('cond');
+    var bh=HOc.c?(pad*2+lh):(pad*2+lh+total*lh);
     var bx=W-16-bw, by=LH(30)+LH(12)*2+LH(6);
+    bx=clamp(bx+HOc.dx,4,Math.max(4,W-bw-4));
+    by=clamp(by+HOc.dy,LH(10),Math.max(LH(10),H-LH(30)));
     ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
     ctx.fillStyle='rgba(120,140,160,.22)'; ctx.fillRect(bx,by,bw,1);
     ctx.textAlign='left';
     var ry=by+pad+LH(8);
     ctx.fillStyle='#6b7783'; ctx.fillText('CONDITIONS',bx+pad,ry);
+    HUDBOX.cond={x:bx,y:by,w:bw,h:bh,tg:{x:bx+bw-LH(20),y:by,w:LH(20),h:LH(16)}};
+    ctx.textAlign='right'; ctx.fillStyle='#8a96a1';
+    ctx.fillText(HOc.c?'[+]':'[-]',bx+bw-pad,ry);
+    ctx.textAlign='left'; ctx.fillStyle='#6b7783';
     ry+=lh;
+    if(HOc.c) return;
     for(var _rq=0;_rq<rows.length;_rq++){
       var R2=rows[_rq];
       ctx.fillStyle=R2.c; ctx.fillText(R2.k,bx+pad,ry); ry+=lh;
@@ -15165,7 +15201,21 @@ function raiderStatus(e){
   if(e.state==='patrol') return e.moving?'MOVING':'HOLDING';
   return e.moving?'MOVING':'HOLDING';
 }
+// MOVABLE, COLLAPSIBLE HUD, v3.64. HIS NOTE: "make it so that the player can
+// click to collapse the raider list, the conditions, the key legend -- and they
+// should be able to drag it where they want it too".
+// Each panel's draw pass writes its live rectangle into HUDBOX, and deletes it
+// when the panel is not on screen, so the click claim below can never swallow a
+// shot over furniture that is not there. The [-]/[+] glyph is the collapse
+// toggle; anywhere else on the panel starts a drag. Offsets and the collapsed
+// flag persist on the profile under P.hud.
+var HUDBOX={},HUDDRAG=null;
+function hudOff(id){
+  var o=(P&&P.hud&&P.hud[id])||{};
+  return {dx:o.dx||0,dy:o.dy||0,c:!!o.c};
+}
 function drawRaiderBoard(){
+  delete HUDBOX.raiders;
   var R=G.roster;
   if(!R||!R.length) return;
   var live=0,out=0,dead=0,i,rows=[];
@@ -15202,9 +15252,12 @@ function drawRaiderBoard(){
   // rather than a character count. The first version overlapped every long
   // identity with its own bag value, because "FBI_Surveillance_Van" is not the
   // same width as "Kite" and a fixed column cannot hold both.
+  var HOr=hudOff('raiders');
   var PADX=14,y0=LH(96);
   var LW=LH(214),LH1=LH(11);
-  var boxH=LH(20)+rows.length*LH1+LH(6);
+  PADX=clamp(PADX+HOr.dx,4,Math.max(4,W-LW-4));
+  y0=clamp(y0+HOr.dy,LH(20),Math.max(LH(20),H-LH(30)));
+  var boxH=HOr.c?LH(18):(LH(20)+rows.length*LH1+LH(6));
   ctx.fillStyle='rgba(18,15,24,.72)';
   ctx.fillRect(PADX-8,y0-LH(13),LW,boxH);
   ctx.strokeStyle='rgba(58,69,82,.75)'; ctx.lineWidth=1;
@@ -15212,6 +15265,12 @@ function drawRaiderBoard(){
   ctx.font=FS(TYPE.micro);
   ctx.fillStyle='#ffb02e';
   ctx.fillText('RAIDERS  '+live+' out here',PADX,y0-LH(2));
+  HUDBOX.raiders={x:PADX-8,y:y0-LH(13),w:LW,h:boxH,
+    tg:{x:PADX-8+LW-LH(20),y:y0-LH(13),w:LH(20),h:LH(16)}};
+  ctx.textAlign='right'; ctx.fillStyle='#8a96a1';
+  ctx.fillText(HOr.c?'[+]':'[-]',PADX-8+LW-LH(6),y0-LH(2));
+  ctx.textAlign='left';
+  if(HOr.c) return;
   var yy=y0+LH(10);
   for(i=0;i<rows.length;i++){
     var w=rows[i];
@@ -15283,6 +15342,18 @@ function drawCrierMarkers(){
 }
 function drawLegend(){
   var MONO=FS(TYPE.micro);   // audit: bypassed FS, sat below the floor
+  delete HUDBOX.legend;
+  var HOl=hudOff('legend');
+  // The collapse click and the H key are two doors to the same room: c forces
+  // the one-line hint whatever mode H last chose, and clicking it reopens.
+  if(HOl.c){
+    var _lx=clamp(14+HOl.dx,4,Math.max(4,W-LH(90))),_ly=clamp(H-14+HOl.dy,LH(14),H-4);
+    ctx.font=MONO; ctx.fillStyle='rgba(140,152,163,.55)';
+    ctx.fillText('controls  [+]',_lx,_ly);
+    HUDBOX.legend={x:_lx-4,y:_ly-LH(11),w:LH(90),h:LH(15),
+      tg:{x:_lx-4,y:_ly-LH(11),w:LH(90),h:LH(15)}};
+    return;
+  }
   if(!G.legendOn){
     ctx.font=MONO; ctx.fillStyle='rgba(140,152,163,.55)';
     ctx.fillText('H  controls',14,H-14);
@@ -15294,9 +15365,15 @@ function drawLegend(){
     var MN=(PAD&&PAD.on)?LEGEND_MINI_PAD:LEGEND_MINI,mi;
     var COLW=LH(88),MROW=LH(10),MW=COLW*2+LH(24),MH=MROW*6+LH(16);
     var mx=14,my=H-Math.max(LH(52),96)-MH;
+    mx=clamp(mx+HOl.dx,4,Math.max(4,W-MW-4));
+    my=clamp(my+HOl.dy,LH(14),Math.max(LH(14),H-MH-4));
     ctx.fillStyle='rgba(18,15,24,.72)'; ctx.fillRect(mx-8,my-6,MW,MH+10);
     ctx.strokeStyle='rgba(58,69,82,.75)'; ctx.lineWidth=1;
     ctx.strokeRect(mx-7.5,my-5.5,MW-1,MH+9);
+    HUDBOX.legend={x:mx-8,y:my-6,w:MW,h:MH+10,tg:{x:mx-8+MW-LH(20),y:my-6,w:LH(20),h:LH(14)}};
+    ctx.textAlign='right'; ctx.fillStyle='#8a96a1'; ctx.font=MONO;
+    ctx.fillText('[-]',mx-8+MW-4,my+LH(4));
+    ctx.textAlign='left';
     for(mi=0;mi<MN.length;mi++){
       var cx0=mx+(mi%2)*COLW, cy0=my+LH(7)+Math.floor(mi/2)*MROW;
       ctx.font=FS(TYPE.micro); ctx.fillStyle='#cdd6dd';
@@ -17010,8 +17087,8 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Collapsible, draggable HUD panels: the raider list, conditions and the key legend',
-  next:'Bodies that read as bodies from overhead, and locked rooms marked on the map'
+  now:'Bodies that read as bodies from overhead, and locked rooms marked on the map',
+  next:'Spawn never lands within sight of an extraction point, and the datacore question'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a

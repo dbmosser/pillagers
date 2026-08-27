@@ -12671,3 +12671,49 @@ exercised headlessly, so the grab-and-pull feel is his to confirm. The
 priorities line will appear in the next real export he sends; none exists yet
 that carries it.
 
+
+### v3.64: the HUD furniture collapses and moves
+
+HIS NOTE: "make it so that the player can click to collapse the raider list,
+the conditions, the key legend -- and they should be able to drag it where
+they want it too". All three, shipped.
+
+Each panel now carries a [-] glyph in its corner. Click it and the panel
+collapses to its title bar, click the [+] and it comes back. Grab a panel
+anywhere else and drag it where you want it. Positions and collapsed states
+persist on the profile, and a panel dragged toward an edge clamps so it can
+never leave the screen and become unrecoverable.
+
+THE CLICK MUST NOT PULL THE TRIGGER, which is the entire risk of clickable
+furniture on a canvas you also shoot on. The mousedown handler already had a
+claim chain for this exact problem, the map claims its click and the bag
+claims its click, each returning before the trigger arms. The panels join
+that chain, after the map and the bag and before the gun. While the map
+overlay or the bag is open the panels do not claim at all, so nothing new
+can swallow a click that belonged to either.
+
+Each panel's draw pass writes its live rectangle into a registry and deletes
+it when the panel is not drawn, so the claim can never trigger on furniture
+that is not on screen, the stale-rectangle class of bug killed at the source.
+
+The legend keeps its H key, which cycles mini, full and hidden exactly as
+before; the click collapse is a separate flag that forces the one-line hint
+whatever mode H last chose, and clicking that hint reopens it.
+
+Verified: parsecheck PASS at v3.64. All four maps drive and draw with frameErr
+and hudErr null at 82, 83, 55 and 68 entities, hub clean, endRaid clean on all
+three outcomes. The interactions driven through REAL dispatched MouseEvents on
+the real canvas listeners, not synthetic handler calls: clicking the raider
+board glyph collapsed it from 174 to 23 pixels with the flag saved, clicking
+again restored it; dragging the conditions panel body moved it exactly the
+drag delta with dx -120 dy +90 saved to the profile; forcing absurd offsets
+of +-99999 redrew the panel clamped on screen; a click on open ground still
+arms the trigger; and the shot counter recorded ZERO shots fired across every
+panel interaction, which is the claim chain doing its one job.
+Not verified: the feel of the drag at his framerate and DPI, and the glyph hit
+target size on his screen, which the pane cannot judge without eyes. My first
+probe also failed honestly and is worth recording: the mousedown handler reads
+the mouse position from the last mousemove, and a dispatched mousedown with no
+preceding mousemove reads a stale position, which is exactly how a real
+browser behaves and my synthetic sequence initially did not.
+
