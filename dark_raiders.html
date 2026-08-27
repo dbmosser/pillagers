@@ -560,7 +560,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.12';
+var VER='4.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8507,7 +8507,13 @@ function swapGuns(){
   var ow=pp.wep,oa=pp.ammo,oi=pp.wepIssued,of2=pp.wepFromArmory;
   pp.wep=pp.sec; pp.ammo=pp.secAmmo; pp.wepIssued=pp.secIssued; pp.wepFromArmory=pp.secFromArmory;
   pp.sec=ow; pp.secAmmo=oa; pp.secIssued=oi; pp.secFromArmory=of2;
-  pp.reloading=0; pp.fired=true; pp.lastShot=G.t*1000;
+// v4.13 HIS NOTE: "when i switch from one gun to another, it goes from
+  // holding to shooting, which is inaccurate". Correct: the swap writes
+  // lastShot to hold the trigger through the changeover, and the status line
+  // reads lastShot as proof of gunfire, so every swap painted SHOOTING for a
+  // third of a second. The swap now stamps its own moment and the status
+  // reads that first.
+  pp.reloading=0; pp.fired=true; pp.lastShot=G.t*1000; pp.swapT=G.t;
   pp.swapped=!pp.swapped;
   // The highlight follows the gun, always. Pressing X used to move the gun
   // without moving the selection, which is the other half of how the hotbar and
@@ -16321,7 +16327,10 @@ function playerStatus(){
   if(p.roll>0) return 'ROLLING';
   if((p.healQ||0)>0) return 'HEALING';
   if(p.jam>0) return 'JAMMED';
-  if(p.reloading>0) return 'RELOADING';
+if(p.reloading>0) return 'RELOADING';
+  // Checked BEFORE the shooting test, because the swap writes the shooting
+  // clock as a side effect and the more specific truth wins.
+  if((G.t-(p.swapT===undefined?-9:p.swapT))<0.45) return 'SWITCHING GUNS';
   if(p.cooking&&p.cookKind) return 'COOKING';
   if(G.trade) return 'TRADING';
   if(G.searching) return 'SEARCHING';
@@ -16340,7 +16349,7 @@ function playerStatus(){
   if(p.ads) return 'AIMING';
   if(G.sprinting&&p.moving) return 'SPRINTING';
   if(G.pCrouch) return 'CROUCHED';
-  if(p.moving) return 'MOVING';
+  if(p.moving) return 'JOGGING';
   return 'HOLDING';
 }
 // HIS NOTE, v3.52: "the list of Raiders needs to give more detail on what they
@@ -18477,7 +18486,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The board is caught up: eight lines of this week, all shipped, all measured, all reversible',
+  now:'His status-line notes: SWITCHING GUNS when you switch, JOGGING when you jog',
   next:'His open calls: machine war, street amount, music gap, crewmate revive'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -15263,3 +15263,25 @@ number in it is current, same-posture, and same-seed-family.
 
 Not verified: nothing in flight; the table above is the tick's product.
 
+
+### v4.13 - His two status-line notes, same hour they arrived
+
+"When i switch from one gun to another, it goes from holding to shooting,
+which is inaccurate -- shouldn't it say switching weapons?" He diagnosed it
+exactly. The swap writes the shooting clock as a side effect, to hold the
+trigger through the changeover, and the status line reads that clock as proof
+of gunfire, so every swap painted SHOOTING for a third of a second. The swap
+now stamps its own moment, and the status checks it BEFORE the shooting test,
+because the more specific truth wins. Both switch paths, the X key and the
+hotbar, go through the same door, so one stamp covers both.
+
+"Instead of moving, change it to jogging (slower) or sprinting (faster)."
+MOVING is now JOGGING; SPRINTING already had its own word and keeps it.
+
+Verified by trial: at rest HOLDING, walking JOGGING, the instant after a swap
+SWITCHING GUNS even with the shooting clock freshly written. Sweep green at
+85/86/57/71, all endings, hub clean.
+
+Not verified: his eye on the new words in play; the COLD STORAGE forensic
+run, still in flight.
+
