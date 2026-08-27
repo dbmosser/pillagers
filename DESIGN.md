@@ -15435,3 +15435,33 @@ woken map, and the siege's contribution concentrates exactly in the landings
 that go wrong. Quieter movement attacks the big share; a shorter beacon
 shrinks the window in which the small share arrives; moving while it lands
 dodges both.
+
+### m432 - v4.18: two more conduct contracts, and a testing trap owned
+
+Two new jobs on the board, judged like the other five from the numbers the
+run already keeps. "Extract without ever being knocked down" pays 1,100 base:
+the fall itself is the failure, which makes it the first contract that cares
+about how close the fights get rather than whether they happen. "Cover
+14,000 distance, then extract" pays 950 base and drags a raid across ground
+a looter would never touch, roughly a map and a half of walking. Both are
+all-or-nothing at the ship, per the standing rule that conduct you abandoned
+is conduct you did not keep.
+
+Owned mistake, one line: my four-map sweep called __startRaid with a bare
+number, which the hook silently ignores, so the "four maps" were one map
+four times, and stacking raids without ending them crashed the hub picture;
+both were my probe's errors, not the game's, proven by the previous build
+failing the same way. The corrected procedure, object argument plus end
+every raid before the hub check, is now the only one I will use.
+
+Verified: parse PASS at v4.18; four maps drove distinct at seed 7919 (110/
+111/74/91 bodies, howlers 2/2/1/2, bulwarks all 1, no draw errors); hub
+clean fresh and post-raid; extract, dead and abandon endings all ran; every
+judgment branch exercised on the play path through the real profile: the
+no-fall card banks on a clean extract, breaks after a down, the distance
+card refuses at 6,000 and banks at 15,000; the panel drew its two new note
+lines mid-raid without error; generation driven 3,000 times through a new
+__genContract fixture hook, 160 conduct cards, all seven kinds present,
+none malformed. Not verified: the two new cards appearing on his real board
+in an ordinary session, and whether 14,000 feels like a fair ask in play,
+both of which only his runs can answer.

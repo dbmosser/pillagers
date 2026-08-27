@@ -510,6 +510,9 @@ window.__zoom={set:setZoom,tick:tickZoom,cur:ZOOM,target:zoomTarget,
 window.__roll={try:tryRoll,spd:function(){return ROLLSPD;},stam:function(){return ROLLSTAM;}};
 window.__getZoom=function(){ return ZOOM(); };
 window.__prof=function(){ return P; };
+// v4.18: the board only refills at boot, so a new contract kind could crash card
+// creation and no sweep would ever roll it. This calls the real generator directly.
+window.__genContract=function(){ return genContract(); };
 // v3.37: the REAL profile loader, so "does progression survive a session" can be
 // driven rather than read. __load is loadOf(), a loadout helper, and calling it
 // for this proved nothing at all.

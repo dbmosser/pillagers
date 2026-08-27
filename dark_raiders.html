@@ -560,7 +560,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.17';
+var VER='4.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1255,7 +1255,11 @@ function genContract(){
     // wanted, and leaving no trace means letting a sentry live that you would
     // rather delete. conductCon 0 restores the old five-type table exactly.
     if(CFG.conductCon!==0&&roll>=.9&&rr()<0.55){
-      var kind=pick(['clean','quiet','swift','weak','elite']);
+// v4.18: two more, same rules as the first five, judged at the ship from
+      // telemetry the run already records. 'steady' bans the fall itself;
+      // 'far' demands a real crossing, roughly a map and a half of walking,
+      // which drags the raid through ground a looter would never touch.
+      var kind=pick(['clean','quiet','swift','weak','elite','steady','far']);
       if(kind==='clean') c={type:'conduct',ck:'clean',n:1,prog:0,reward:Math.round(900*M.n),
         desc:'Extract without using a single heal'};
       else if(kind==='quiet') c={type:'conduct',ck:'quiet',n:1,prog:0,reward:Math.round(1300*M.n),
@@ -1264,6 +1268,10 @@ function genContract(){
         desc:'Extract within 3 minutes of landing'};
       else if(kind==='weak') c={type:'conduct',ck:'weak',n:up(2),prog:0,reward:Math.round(700*M.n)*up(2),
         desc:'Hit '+up(2)+' machine weak points, then extract'};
+else if(kind==='steady') c={type:'conduct',ck:'steady',n:1,prog:0,reward:Math.round(1100*M.n),
+        desc:'Extract without ever being knocked down'};
+      else if(kind==='far') c={type:'conduct',ck:'far',n:1,prog:0,reward:Math.round(950*M.n),
+        desc:'Cover 14,000 distance, then extract'};
       else c={type:'conduct',ck:'elite',n:1,prog:0,reward:Math.round(1500*M.n),
         desc:'Kill an elite and extract with the body cold'};
       c.tier=t; c.reward=Math.round(c.reward*M.r); c.gear=rollGear(t);
@@ -1301,7 +1309,9 @@ function conductMet(ck){
   var T2=(G&&G.tel)||null; if(!T2) return false;
   if(ck==='clean') return (T2.heals||0)===0;
   if(ck==='swift') return elapsed()<=180;
-  if(ck==='elite') return (T2.eliteKills||0)>=1;
+if(ck==='elite') return (T2.eliteKills||0)>=1;
+  if(ck==='steady') return (T2.downs||0)===0;
+  if(ck==='far') return (T2.distance||0)>=14000;
   if(ck==='quiet'){
     var K=T2.kills||{},tot=0;
     for(var k in K) tot+=K[k]||0;
@@ -15438,7 +15448,9 @@ if(seasonNo()>1) rows.push({k:'SEASON '+seasonNo(),v:'harder, worth more',c:'#c9
           lost=_left<=0;
           note=lost?'BROKEN, past three minutes':(_left+'s left to be gone');
         }
-        else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no elite killed yet'; }
+else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no elite killed yet'; }
+        else if(CC.ck==='steady'){ lost=(T.downs||0)>0; note=lost?'BROKEN, you went down':'still on your feet'; }
+        else if(CC.ck==='far'){ note=Math.round((T.distance||0)/1000)+'k of 14k covered'; }
         else if(CC.ck==='weak'){ note=((T.weakHits||0))+' of '+CC.n+' weak points hit'; }
 rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'});
       }
@@ -18544,8 +18556,8 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Question two is being measured: who is really at the ring at touchdown, map-born or siege-born',
-  next:'His open calls: machine war, street amount, music gap, crewmate revive'
+  now:'Seven kinds of conduct contract: stay clean, stay quiet, stay fast, stay up, or go far',
+  next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a
