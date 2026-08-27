@@ -13876,3 +13876,41 @@ Not verified: simFlee at scale (320 A/B in flight); whether kiting shifts the
 killer mix off crawlers at scale; sentry-disengagement (breaking sightlines)
 is NOT built yet and sentries are killer number two.
 
+
+### Measurement: simFlee nearly doubles survival, 5.0 to 8.8 percent (2026-08-27)
+
+320 paired seeds (9203 family), GREYWATER, full Daniel posture both arms,
+backpedal against kiting: 5.0 to 8.8 percent, discordant 26 split 7 to 19 for
+kiting, McNemar exact p about 0.03. The first realism change that moved
+survival, and it moved it the way the ladder predicted: the bot was dying to
+a fight a human simply walks away from.
+
+Killer table, deaths per 320:
+
+  arm         crawler  sentry  raider  howler  other
+  backpedal      124     102      64       8      6
+  kiting          37     160      72       8     15
+
+Crawlers collapse as a killer, 124 to 37. Sentries absorb the survivors (102
+to 160): the kiting bot lives long enough to be shot instead, and a sentry is
+the one hunter it still faces standing still in the open. Breaking sightlines
+against ranged machines is the next rung of human survival skill. Raider
+deaths keep creeping toward HIS mix (51, 64, 72 across the three arms so far).
+Haul flat, duration up 127s to 143s, both consistent with longer lives.
+
+Determinism cross-check, free: this run's control arm carries the same dials
+as the previous run's simPick arm, and it reproduced it EXACTLY, 5.0 percent,
+killer table identical to the unit. Two separate 320-raid runs, one build,
+same numbers.
+
+### Standing directive from Daniel, 2026-08-27: pass the findings DOWN
+
+His words: "lets make sure we eventually pass all these findings down to the
+in-game raider bots to make them more human-like." Everything the benchmark
+work discovers - fight selection (simPick), kiting melee (simFlee), human aim
+wobble (simAim), calibrated greed (simGreed) - is a candidate behaviour for
+the RAIDER NPCs the player actually meets, each behind its own dial with a
+paired measurement before it ships as default. Raiders already carry greed
+(raiderHaul) and extract logic; the aim, flee and fight-pick findings are the
+new material. Tracked as roadmap work, not yet built.
+
