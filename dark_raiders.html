@@ -260,7 +260,7 @@
 <div class="modal" id="mercmodal">
   <h3>The Hiring Bench</h3>
   <div class="msub" id="wallet_merc" style="color:var(--amber);font-weight:700"></div>
-  <div class="msub">One raider, one run, paid up front. He loots for himself and you take ten percent of what he carries out. If he dies you owe his family, and that is not optional. On the surface, B cycles his orders: loot free, follow you, or hold a position. And if you go down, he comes for you.</div>
+  <div class="msub">One raider, one run, paid up front. He loots for himself and you take ten percent of what he carries out. If he dies you owe his family, and that is not optional. On the surface, B cycles his orders: loot free, follow you, or hold a position. Stand with him and E searches his bag, and your cut is settled at the ramp either way. If you go down, he comes for you.</div>
   <div class="plist" id="merclist" style="border:1px solid var(--steel-hi)"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
     <button id="mercclear" style="padding:8px 20px">Hire nobody</button>
@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.74';
+var VER='3.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9388,6 +9388,25 @@ function updatePlayer(dt){
     if(ct.auto&&G.t-ct.dropT<8) continue;   // your own auto-shed discard, cooling
     var d=dist(p,ct); if(d<46&&d<nd){ nd=d; near=ct; }
   }
+  // HIS BAG OPENS LIKE A CONTAINER, v3.75, partner-merc line four. Stand with
+  // your hired man and E searches what he is carrying, through the same staged
+  // pulls as every box in the game, worst first, one at a time. The virtual
+  // container never enters G.containers, so it is never drawn, never counted
+  // as a container looted, never rolls a windfall, and its loot array IS his
+  // live bag, so what you take is genuinely gone from him and what he loots
+  // while you watch genuinely appears. A real container within reach wins the
+  // keypress, because a crate is the rarer opportunity.
+  if(!near&&!onPad&&!G.sim){
+    for(var _mc=0;_mc<G.ents.length;_mc++){
+      var _mm=G.ents[_mc];
+      if(_mm.kind!=='raider'||!_mm.merc||_mm.downed) continue;
+      if(dist(p,_mm)>=56||!_mm.bag.length) break;
+      if(!_mm.bagCt) _mm.bagCt={type:'body',time:1.4,loot:_mm.bag,opened:false,mercSrc:_mm,prog:0,pulled:0};
+      _mm.bagCt.x=_mm.x; _mm.bagCt.y=_mm.y;
+      near=_mm.bagCt;
+      break;
+    }
+  }
   G.nearContainer=near;
   if(near&&keys['KeyE']){
     // With autoloot on, a full bag sheds its worst rather than refusing you, so
@@ -9463,8 +9482,16 @@ function updatePlayer(dt){
         if(near.strong&&!G.sim) sfx('alarm',near.x,near.y);
       }
       if(near.prog>=near.time){
-        if(near.mine&&!near.opened) bodyRecover(near);
-        openContainer(near); G.searching=null; G.searchT=0; near.prog=0;
+        if(near.mercSrc){
+          // A man is not a crate: emptying his bag leaves him searchable again
+          // the moment he picks something else up, with no opened flag, no
+          // container count, no windfall roll and no litter thrown at his feet.
+          near.prog=0; near.pulled=0; G.searching=null; G.searchT=0;
+          say('That is everything '+near.mercSrc.name+' is carrying.');
+        } else {
+          if(near.mine&&!near.opened) bodyRecover(near);
+          openContainer(near); G.searching=null; G.searchT=0; near.prog=0;
+        }
       }
     }
   } else {
@@ -17342,7 +17369,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Partner merc: rescue, orders, pad binding, and a settle that knows who boarded',
+  now:'Partner merc complete: rescue, orders, searchable bag, honest settle. Watching his hires',
   next:'The datacore build and the ghost friend, whichever he ranks first'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

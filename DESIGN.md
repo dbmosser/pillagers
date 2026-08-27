@@ -13268,3 +13268,45 @@ driven press. Standing deltas were not asserted numerically in the drive,
 only the lines and the credits; the arithmetic is one line each and reads
 clean.
 
+
+### v3.75: his bag opens like a container
+
+PARTNER-MERC LINE FOUR, and the line that completes the arc scoped three
+ticks ago. Stand with your hired man and E searches what he is carrying,
+through the same staged pulls as every box in the game, worst first, one at
+a time, resumable. What you take is genuinely gone from him and what he
+loots while you stand there genuinely appears, because the search reads his
+LIVE bag, not a copy.
+
+A MAN IS NOT A CRATE, and the seams all say so. The virtual container never
+enters the world's container list, so it is never drawn, never counted
+toward containers looted, never rolls a windfall, and throws no litter at
+his feet. Emptying him sets no opened flag: the moment he picks something
+else up he is searchable again. A real container within reach wins the
+keypress, because a crate is the rarer opportunity, and the beacon still
+owns E inside a ring. The Hiring Bench copy now carries the whole contract
+in three sentences: orders on B, his bag under E, your cut at the ramp, and
+he comes for you when you go down.
+
+WHAT THE ARC ADDS UP TO. Four builds: he picks you up (v3.72), he takes
+orders and fights under them (v3.73), the settle knows how he got out and a
+pad can command him (v3.74), and his bag is yours to manage (v3.75). The
+mercenary is now a partner in every sense the scoping asked for short of
+shared boarding animations, and every line of it was driven end to end in
+the fixture before shipping.
+
+Verified: parsecheck PASS at v3.75. All four maps drive and draw with
+frameErr and hudErr null at the standard baselines, hub clean, endRaid clean
+on all three outcomes. The bag search driven through the real E-hold path:
+three items pulled one at a time from his live bag into yours, the container
+counter unmoved at zero gained, the completion line naming him, a fresh item
+added to his bag making him searchable again and arriving in your bag on the
+second search, and a real crate placed nearer winning the keypress over him.
+Not verified: giving items TO him, which is the one direction this trade
+does not flow; the drag system's drop targets are screen-space cells and he
+is a moving world-space body, so that is its own build if his play asks for
+it. The search prompt shows the generic SEARCH verb rather than his name,
+cosmetic and noted. And the whole line is real-play only by design, so no
+sim or A/B exercises it, which is correct and also means only his next hire
+proves it in anger.
+
