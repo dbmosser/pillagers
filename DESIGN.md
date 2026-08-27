@@ -15227,3 +15227,39 @@ answers might overturn.
 Not verified: nothing in flight for the first time today; everything now
 waits on his hands, his ears, or his word.
 
+
+### The four-map difficulty table, re-taken at the current posture, and it flips history
+
+320 seeds per map, identical arms, zero discordant on every run (nine perfect
+steadiness proofs today). Robot extraction rate by map:
+
+  GREYWATER DAM     20.9
+  SUNKEN QUARTER    15.0
+  THE QUARRY        14.1
+  COLD STORAGE      13.1
+
+The standing belief, written in this file and in my own working notes, was
+that GREYWATER is the hardest map. At the current posture it is the EASIEST by
+six to eight points, and COLD STORAGE, the map he has played almost
+exclusively this week, is the hardest. Two things changed under the old
+number: the robot got his survival habits, which pay best on GREYWATER's open
+ground (kiting and wall-cover need room and walls), and the world gained the
+Howler and the Bulwark, which press hardest in COLD STORAGE's tight aisles.
+The stale belief is corrected in the working notes as of tonight.
+
+HIS OWN RECORD, split by map from his 51 runs: on COLD STORAGE, 8 of 23,
+34.8 percent. His older pre-stamp runs, mixed maps, 6 of 28. So the honest
+like-for-like comparison, on the map he actually plays, is HIM 34.8 against
+the robot's 13.1 THERE: a 2.7-to-one margin, considerably wider than the
+1.37 headline, which had compared his mixed record against the robot on what
+turns out to be the easiest map. The robot plays in his STYLE; on equal
+ground he remains nearly three times better at it, and that margin is the
+honest measure of human skill this benchmark cannot reach.
+
+FOR HIS PRIORITIES QUESTION ONE, "should the maps be evened out, or is a hard
+map allowed to be hard": the spread is 13.1 to 20.9, a 7.8 point band, with
+the map he plays most at the bottom of it. The table is his to rule on; every
+number in it is current, same-posture, and same-seed-family.
+
+Not verified: nothing in flight; the table above is the tick's product.
+
