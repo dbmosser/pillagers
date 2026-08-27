@@ -14989,3 +14989,37 @@ measurement still running; whether the low pose reads at real zoom in motion;
 whether crouched looters make raids feel emptier than the count says, since
 fewer visible raiders is the direct intent.
 
+
+### The machine war, measured at the corrected robot: his decision brief
+
+320 paired seeds, official family, robot at his real appetite, machines blind
+to raiders against machines that hunt them: 20.3 against 17.8 percent. The
+average cost is about two and a half points and is NOT statistically firm
+(discordant 72, split 40 to 32, roughly even odds it is chance).
+
+The 72 is the story. That is the highest churn any change has ever produced
+here, a quarter of all raids changing their outcome, half of them for the
+worse and nearly half for the BETTER. The war does not tax the raid, it
+rewrites it: machines that would have been waiting for him are busy, raiders
+that would have ambushed him are dead or fighting, and gunfire breaks out in
+places he never went.
+
+What it does to the texture, from the death records: raiders as his killer
+rise 66 to 76, which is the direction HIS OWN record points (raiders are his
+number-one killer). Crawlers fall 56 to 40, busy chewing on someone else.
+Sentries rise 104 to 123, the noise of the war keeps them lit. And the
+average bag comes home slightly HEAVIER, 2,701 to 2,908, because dead raiders
+drop their bags and contested ground gets emptied of contestants.
+
+So the brief, plainly: switching the war on makes the world feel alive and
+dangerous in a new way, moves who kills you toward what his own history looks
+like, barely changes the average difficulty, and pays a little better. The
+cost is chaos: a quarter of raids go differently, and some of those are
+deaths that would not have happened. It stays OFF until he says the word;
+machVsRaider 1 is the word.
+
+Also launched: the raider crouch at 320 seeds, the launch guard first proving
+a crouched looter flips from seen to unseen at 300. In flight.
+
+Not verified: the crouch at scale; everything awaiting his hands and ears.
+
