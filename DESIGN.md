@@ -12908,3 +12908,41 @@ reads as a deliberate kerb or as a gap. Roads that now stop short lay
 slightly less tarmac in total, which could subtly change machine pathing
 noise on tarmac, unmeasured because no pathing reads roadRects.
 
+
+### v3.69: GREYWATER gets two far manholes, and the spawn roll stops funnelling
+
+THE FOLLOW-UP v3.66 PROMISED. Raising the spawn floor to 1150 answered his
+too-close complaint but halved GREYWATER's variety: only two of its six
+manholes cleared the bar. Two new manholes are authored in, a northeast
+switchyard corner at 2721 from the nearest ring and a southwest tailwater
+corner at 2008. Neither was guessed: a grid scan of the whole map found every
+point at least 1500 from all three rings, clear of walls by 60 and water by
+30, and both picks were nav-pathed to all three rings before being written
+into the map. The manhole art and the sector-map marker come free, because
+both are baked from the spawns list itself.
+
+AND THE PICKER HAD A FUNNEL. Verifying the new lids exposed a distribution
+bug in the v3.4x scan-forward: a roll landing on a non-clearing manhole
+walked forward to the NEXT clearing index in array order, so whichever
+manhole followed a run of bad ones absorbed all their probability. Measured:
+with four of eight clearing, ONE lid took 27 of 40 raids. The same single
+ri() draw is now remapped uniformly over the clearing set, one draw either
+way so the PRNG stream is untouched, and the same 40 seeds now spread
+13/11/9/6 across the four clearing lids. The no-clearing-spawn fallback,
+furthest rather than refusing to start, is unchanged.
+
+Verified: parsecheck PASS at v3.69. All four maps drive and draw with
+frameErr and hudErr null at the standard baselines, hub clean, endRaid clean
+on all three outcomes. Both new manholes probed clear of walls and water and
+nav-pathed to all three rings from inside the built map. Forty seeded
+GREYWATER raids used all four clearing manholes at 13/11/9/6 with a minimum
+spawn-to-ring distance of 1842 units, 184 metres. Variety on the other maps
+unregressed: SUNKEN uses six distinct spawns, COLD STORAGE three, QUARRY
+four, each matching its clearing count.
+Not verified: no paired A/B for the new manholes, because the change is map
+DATA rather than a dial, so there is no arm to hold constant; GREYWATER
+absolutes will drift with the longer average walk and the fixture pins will
+carry the new set consistently from here. The two new lids sit in spots the
+generator says are clear, but no eye has confirmed the NE corner does not
+read as odd against the switchyard's authored dressing.
+

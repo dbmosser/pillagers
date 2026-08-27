@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.68';
+var VER='3.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2855,7 +2855,12 @@ var FIXED_MAPS=[
   ],
   spawns:[
     {x:820, y:2180}, {x:4900,y:2700}, {x:3400,y:3900},
-    {x:1180,y:1010}, {x:3040,y:1010}, {x:4980,y:1720}
+    {x:1180,y:1010}, {x:3040,y:1010}, {x:4980,y:1720},
+    // v3.69: two far manholes so the v3.66 spawn floor (1150) stops halving
+    // this map's variety. NE switchyard corner at 2721 from the nearest ring,
+    // SW tailwater corner at 2008. Both grid-scanned clear of walls by 60 and
+    // water by 30, and nav-pathed to all three rings before being authored.
+    {x:4840,y:840}, {x:200,y:3560}
   ],
   extracts:[
     {x:1290,y:1900}, {x:4900,y:3560}, {x:3060,y:2900}
@@ -5851,17 +5856,19 @@ function buildRaid(sim){
       return d;
     }
     if(_nearestExt(spawnPt)<_minD){
-      // SCAN FORWARD FROM THE ROLL, taking the first spawn that clears. Taking
-      // the FURTHEST one was my first cut and it destroys variety: COLD STORAGE
-      // has two bad spawns of six, so rolling either would have sent you to the
-      // same single far manhole every time, turning a six way roll into a two
-      // way one. Scanning keeps the roll meaningful and still never lands you
-      // next to a ring.
-      var _found=null;
-      for(var _sq2=1;_sq2<map.spawns.length;_sq2++){
-        var _cand2=map.spawns[(_spIx+_sq2)%map.spawns.length];
-        if(_nearestExt(_cand2)>=_minD){ _found=_cand2; break; }
+      // UNIFORM OVER THE CLEARING SET, v3.69. The scan-forward this replaces
+      // (v3.4x) fixed the furthest-always funnel and then built its own: every
+      // roll landing on a non-clearing manhole walked forward to the NEXT
+      // clearing index in array order, so whichever manhole followed a run of
+      // bad ones absorbed all of their probability. Measured on GREYWATER with
+      // four of eight clearing: one lid took 27 of 40 raids. The same single
+      // ri() draw is now remapped over the clearing manholes only, so each gets
+      // an equal share and the stream is untouched: one draw either way.
+      var _clear2=[];
+      for(var _sq2=0;_sq2<map.spawns.length;_sq2++){
+        if(_nearestExt(map.spawns[_sq2])>=_minD) _clear2.push(map.spawns[_sq2]);
       }
+      var _found=_clear2.length?_clear2[_spIx%_clear2.length]:null;
       // Nothing on this map clears the bar: take the furthest rather than refuse
       // to start, because a compromised spawn beats no raid.
       if(!_found){
@@ -17171,7 +17178,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'A far manhole for GREYWATER so the spawn floor costs no variety, and the count ghost',
+  now:'The count ghost: what inflated every pre-v3.62 sweep, hunted with instrumentation',
   next:'The datacore build, the moment he ranks the roadmap row'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
