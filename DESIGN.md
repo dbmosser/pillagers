@@ -14495,3 +14495,44 @@ Not verified: the Bulwark at 320 seeds, queued behind the bush attribution still
 running; whether one a map is the right number; whether it reads correctly IN
 MOTION, since a still capture cannot show the shield tracking as it turns.
 
+
+### v4.00 - CONDUCT CONTRACTS: the first ones that ask HOW you play
+
+Third item off the deferred content list, and the one that costs nothing in
+new systems. Every contract this game has ever offered is "do N of a thing":
+kill six, open five, carry two out. They vary the ERRAND and never the RAID.
+Not one of them has ever asked the player to play differently, which is the
+only kind of variety that changes an evening.
+
+Five new contracts, all conditions on CONDUCT rather than counts:
+  Walk out clean      extract without using a single heal
+  Leave no trace      extract without killing anything at all
+  In and out          extract within three minutes of landing
+  Find the seam       hit N machine weak points, then extract
+  Cold body           kill an elite and extract
+
+Each one bans or demands a habit, and the pay is the risk it creates: walking
+out clean means walking out without the bandage you wanted, and leaving no
+trace means letting a sentry live that you would much rather delete. "In and
+out" inverts the whole loot loop for one raid, since the greed that normally
+pays is the thing that will cost you the contract.
+
+They are judged at the ship from G.tel, the same record the run report prints,
+so a contract can never disagree with the numbers he is shown, they need no new
+bookkeeping anywhere in the raid, and none of them can be farmed by touching
+things. All of them require reaching the ship: conduct you abandoned is conduct
+you did not keep.
+
+VERIFIED BY TRIAL, both directions, eight cases: clean completes with no heals
+and stays at zero after two; quiet completes with an empty kill table and fails
+on a single sentry; elite completes on one elite kill and fails on none; the
+weak point contract banks at three hits against a target of two and stays at
+zero at one. Rolled 600 contracts: conduct comes up 34 times, about six percent,
+spread across all five kinds, so they read as an occasional special rather than
+the new normal. conductCon 0 restores the old five-type table exactly.
+
+Not verified: whether six percent is the right frequency, which is a feel
+question only he can answer; whether the rewards are worth the restriction;
+'In and out' against a map whose extraction is far from the drop, where three
+minutes may be impossible rather than hard.
+
