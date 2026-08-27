@@ -560,7 +560,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.97';
+var VER='3.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -620,7 +620,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,bushRoadR:1,machVsRaider:0};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,bushRoadR:1,machVsRaider:0,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -4681,6 +4681,11 @@ var WEAKPTS={
   warden:[
     {id:'seam', name:'CORE SEAM', ang:Math.PI, rf:0.58, rad:11, mult:3.0, eff:'overheat', c:'#ffd76a'},
     {id:'optic',name:'OPTIC',     ang:0,       rf:0.62, rad:7,  mult:1.8, eff:'blind',    c:'#6fd8ff'}
+  ],
+  // The Bulwark's opening is simply its BACK, wide and generous, because the
+  // lesson is positional and a fiddly pixel would teach it badly.
+  bulwark:[
+    {id:'spine',name:'EXPOSED SPINE', ang:Math.PI, rf:0.55, rad:10, mult:2.6, eff:'overheat', c:'#ff8a3c'}
   ]
 };
 function weakOf(e){ return WEAKPTS[e.kind]||null; }
@@ -5471,6 +5476,22 @@ function mkSnitch(x,y){
 // says exactly where it lands, so the machine's whole design is a question:
 // are you moving, or are you looting one more thing. It punishes the one
 // behaviour nothing else on the map punishes, standing still.
+// THE BULWARK, v3.98, second item off the deferred content list and the answer
+// to a question the game has never asked: WHERE are you standing. Every other
+// machine is solved by damage and cover. This one is solved by GEOMETRY. It
+// carries a slab shield across its front arc that eats almost everything, so
+// shooting it from the front is a waste of a magazine and a lot of noise, and
+// its back is soft. It walks at you slowly and never stops, so the fight is a
+// dance: circle it, or leave it, or let it herd you into something worse.
+// It is deliberately not a damage race. Its gun is weak and slow; the threat is
+// that it OWNS the ground in front of it and keeps taking more of it.
+function mkBulwark(x,y){
+  return blessElite({kind:'bulwark',x:x,y:y,r:24,
+    hp:Math.round(260*CFG.eHp*seasonHp()),maxhp:Math.round(260*CFG.eHp*seasonHp()),
+    name:mkName('BULWARK',['B','V','X']),
+    face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:52,
+    dmg:11,rng:300,cone:.8,hitT:0});
+}
 function mkHowler(x,y){
   return blessElite({kind:'howler',x:x,y:y,r:20,
     hp:Math.round(120*CFG.eHp*seasonHp()),maxhp:Math.round(120*CFG.eHp*seasonHp()),
@@ -6405,6 +6426,8 @@ function buildRaid(sim){
   for(i=0;i<N_SENTRY;i++){ var s1=far(freeSpot(map,30),880); ents.push(mkSentry(s1.x,s1.y)); }
   for(i=0;i<N_CRAWLER;i++){ var s2=far(freeSpot(map,26),780); ents.push(mkCrawler(s2.x,s2.y)); }
   for(i=0;i<N_SNITCH;i++){ var s4=far(freeSpot(map,26),720); ents.push(mkSnitch(s4.x,s4.y)); }
+var N_BULWARK=nOf(CFG.nBulwark===undefined?1:CFG.nBulwark);
+  for(i=0;i<N_BULWARK;i++){ var s4c=far(freeSpot(map,30),900); ents.push(mkBulwark(s4c.x,s4c.y)); }
   var N_HOWLER=nOf(CFG.nHowler===undefined?2:CFG.nHowler);
   for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980); ents.push(mkHowler(s4b.x,s4b.y)); }
   // Two per map at the reference size. Any more and the map stops having quiet
@@ -6698,7 +6721,7 @@ function buildRaid(sim){
     msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,legendOn:1,sprinting:false,
     mercOrder:'loot',mercHold:null,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
-      kills:{sentry:0,crawler:0,raider:0,snitch:0,warden:0,listener:0,howler:0},
+      kills:{sentry:0,crawler:0,raider:0,snitch:0,warden:0,listener:0,howler:0,bulwark:0},
       dmg:{sentry:0,crawler:0,raider:0,snitch:0,other:0},
       containers:0,items:0,rar:{common:0,uncommon:0,rare:0,elite:0},
       firstContact:null,firstLoot:null,distance:0,
@@ -11626,6 +11649,24 @@ function updateBullets(dt){
                   G.tel.weakHits=(G.tel.weakHits||0)+1;
                   G.hitMark={t:0,life:.5,kill:false,weak:true};
                 }
+} else if(en.kind==='bulwark'&&(function(){
+                // THE SHIELD. A round is soaked when it arrives inside the
+                // front arc, measured from the bullet's own travel direction
+                // against the machine's facing, so it is about where YOU are,
+                // not where you were aiming. bulwarkSoak 0.12 leaves a twelfth
+                // of the damage getting through, enough that a determined
+                // magazine still does something and slow enough that it is
+                // always the wrong plan.
+                var _ba=Math.atan2(-b.vy,-b.vx);
+                var _bd=Math.abs(Math.atan2(Math.sin(_ba-en.face),Math.cos(_ba-en.face)));
+                return _bd<(CFG.bulwarkArc===undefined?1.15:CFG.bulwarkArc);
+              })()){
+                edmg*=(CFG.bulwarkSoak===undefined?0.12:CFG.bulwarkSoak);
+                if(!G.sim){
+                  spark(b.x,b.y,'#9fb4c4',10,220);
+                  sfx('clank',b.x,b.y);
+                  if(!en._shTold){ en._shTold=1; say('The slab eats it. Get behind him.'); }
+                }
               } else if(en.armor>0){
                 var esk=armorById(en.rig).absorb||0;
                 var eab=Math.min(en.armor,edmg*esk); en.armor-=eab; edmg-=eab;
@@ -13080,6 +13121,34 @@ function drawListenerS(e){
     wc.fillRect(e.x-1.4+sway*1.2,hy-1.2,2.8,2.4);
   }
 }
+function drawBulwarkS(e){
+  shadowE(e.x,e.y+2,e.r*.95,4,.36);
+  // legs, then hull, then the slab across the front so it reads as carried
+  wc.fillStyle='#20262c';
+  rrF(e.x-16,e.y+4,9,6,2); rrF(e.x+7,e.y+4,9,6,2);
+  wc.fillStyle=INK; rrF(e.x-15,e.y-16,30,24,6);
+  wc.fillStyle=e.hitT>0?'#8a4a42':'#333c46'; rrF(e.x-13,e.y-14,26,20,5);
+  wc.fillStyle='#3f4a55'; rrF(e.x-13,e.y-14,26,7,4);
+  var _bl=Math.sin(G.t*3+e.x*0.01)>0;
+  wc.fillStyle=_bl?'#ffb02e':'#4a3a1c';
+  wc.beginPath(); wc.arc(e.x,e.y-10,2.4,0,6.2832); wc.fill();
+  wc.save(); wc.translate(e.x,e.y-4); wc.rotate(e.face);
+  // CAPTURED AND LOOKED AT, v3.99. The first cut drew a thin plank floating a
+  // few pixels off the hull, and since the shield IS this machine, a silhouette
+  // that does not say WALL at a glance is a failed design however correct the
+  // damage maths is. Wider, taller, flush against the body, with a lit top edge
+  // and rivets so it reads as carried plate rather than a stripe.
+  wc.fillStyle=INK; rrF(8,-25,15,50,3);
+  wc.fillStyle='#5d6b78'; rrF(9,-24,13,48,2.5);
+  wc.fillStyle='#78899a'; rrF(9,-24,13,7,2.5);            // the lit top lip
+  wc.fillStyle='#39434d'; rrF(9,17,13,7,2.5);             // shadowed foot
+  wc.fillStyle='#2b333b';
+  wc.beginPath(); wc.arc(15.5,-16,1.7,0,6.2832); wc.fill();
+  wc.beginPath(); wc.arc(15.5,0,1.7,0,6.2832); wc.fill();
+  wc.beginPath(); wc.arc(15.5,16,1.7,0,6.2832); wc.fill();
+  wc.fillStyle='#8fa3b5'; rrF(9,-3,13,2,1);               // the viewing slit
+  wc.restore();
+}
 function drawHowlerS(e){
   shadowE(e.x,e.y+2,e.r*.9,4,.35);
   wc.fillStyle=INK; rrF(e.x-16,e.y-14,32,22,6);
@@ -14194,6 +14263,7 @@ function render2D(dt){
       else if(e2.kind==='snitch') drawSnitchS(e2);
       else if(e2.kind==='listener') drawListenerS(e2);
       else if(e2.kind==='howler') drawHowlerS(e2);
+      else if(e2.kind==='bulwark') drawBulwarkS(e2);
       else if(e2.kind==='peddler') drawPeddlerS(e2);
       else if(e2.kind==='stray'){
         // Crouched and drab. He is not posed like anything else on the map,
@@ -18073,8 +18143,8 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Found the one sided war: machines have never once looked for a raider. Built, measured, OFF until he says',
-  next:'His verdict on the war, then the bush cover replacement'
+  now:'THE BULWARK: a shield that eats your rounds from the front and a spine that does not, redrawn to read as a wall',
+  next:'Measure the Bulwark at 320 seeds, then his verdict on the machine versus raider war'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a

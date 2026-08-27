@@ -14451,3 +14451,47 @@ Not verified: the bush attribution, rerun properly and in flight; a full 320
 seed bench at v3.97 to replace the 10.0 figure, which the 80 seed re-take
 suggests is now around 16 percent.
 
+
+### v3.98 / v3.99 - THE BULWARK, and the first enemy that is solved by geometry
+
+Second item off the deferred content list. Every machine in this game so far is
+answered with damage and cover. The Bulwark is answered with WHERE YOU STAND. It
+carries a slab across its front arc that eats almost everything, so emptying a
+magazine into its face is a waste of ammunition and a great deal of noise, and
+its back is soft. It walks at you at 52, never stops, and holds at its own
+standoff, so the fight is a dance: circle it, leave it, or let it herd you into
+something worse. It is deliberately not a damage race; the gun is weak and slow
+and the threat is that it OWNS the ground in front of it and keeps taking more.
+
+Measured, not asserted. A 40 damage round into the front arc lands 4.8, exactly
+the 0.12 soak. The same round into its back lands 104, because the back is an
+EXPOSED SPINE weak point at 2.6x, built on the weak-point system the sentry and
+warden already use rather than a parallel one. That is a 22 to 1 reward for
+getting behind it, which is the lesson stated in arithmetic. Left alone in the
+open at 150 units it takes a stationary player from 100 to 0 in fourteen
+seconds, so ignoring it is not free either.
+
+Dials: nBulwark 1 a map, bulwarkArc 1.15 radians of shield, bulwarkSoak 0.12.
+New sweep baselines are 85/86/57/71 entities with one Bulwark on every map.
+
+LOOKED AT, TWICE, and changed because of it. The first draw put a thin plank
+floating a few pixels off the hull, and since the shield IS this machine, a
+silhouette that does not say WALL at a glance is a failed design however correct
+the damage maths is. Redrawn wider and taller, flush to the body, with a lit top
+lip, rivets and a viewing slit. The second capture reads as a walking wall. The
+weak point marker the game already draws for vents and optics turned out to be
+the big orange disc on its back, which is exactly right, the machine teaches its
+own counterplay, but at radius 14 the glow was wider than the machine, so it is
+now 10.
+
+Two probe faults of mine, both caught here rather than shipped: I first fired
+test rounds 30 units off the centreline and read the misses as a broken shield,
+and I then ran a lethality probe with __sim alone, which does not tick bullets,
+and read the resulting stillness as a harmless enemy. Both were my instrument,
+both times the machine was fine. The lesson is the same one as the stale tab:
+prove the probe can detect the thing before believing what it reports.
+
+Not verified: the Bulwark at 320 seeds, queued behind the bush attribution still
+running; whether one a map is the right number; whether it reads correctly IN
+MOTION, since a still capture cannot show the shield tracking as it turns.
+
