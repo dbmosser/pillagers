@@ -14560,3 +14560,41 @@ the 10.0 figure I quoted all day yesterday is stale rather than wrong. A full
 Not verified: the Bulwark's own cost, 320 seeds running as this is written; the
 replacement official bench number.
 
+
+### v4.01 - "every block is the smae lengt": it was literally true
+
+Last item off the deferred content list, and his in-run note names it exactly:
+"every block is the smae lengt, map has no atmosphere". Checked against the
+code, and he is not describing a feeling, he is describing the generator. The
+street grid was seven avenues at exact eighths of the world, on both axes, on
+every map, always. Nothing else in this game repeats like that, and perfect
+regularity is the thing a player reads as GENERATED long before they can say
+why.
+
+gridJitter, DEFAULT ON. Each avenue now takes a fixed offset of up to a fifth
+of a cell and its own width anywhere between a lane and a boulevard, both drawn
+from grit(), the positional hash the wall weathering already uses. Three
+consequences worth stating: ZERO rr() draws, so no seeded stream moves and the
+entire back catalogue of measurements stays reproducible; a given map always
+generates the same streets, so THE QUARRY is recognisably itself every time and
+merely stops being graph paper; and roads are tarmac rather than collision, so
+nothing about routing, cover or navigation changes. gridJitter 0 restores the
+exact lattice.
+
+MEASURED, since a picture could not settle it. On GREYWATER at seed 4242 the
+road geometry goes from 1,636 rects to 1,655 with a different checksum, and the
+spacing between major avenues changes from 884 / 928 / 1116 to 812 / 976 / 1116.
+Blocks now differ from each other by up to a fifth where they used to be
+identical.
+
+HONEST ABOUT THE SIZE OF IT: I captured the same camera before and after and the
+difference is subtle at play zoom. This changes the CITY, which is read at map
+scale and over a whole raid, not in one screenful. If he wants the streets to
+feel genuinely irregular rather than merely not-perfect, the amplitude is one
+number and I can double it; that is a taste call and it is his.
+
+Not verified: whether the new streets change survival, which needs its own 320
+seeds and is queued behind the two batches already running; whether the wider
+boulevards create sightlines that make any map meaner; how it reads on the other
+three maps, since only GREYWATER was measured.
+
