@@ -545,7 +545,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.56';
+var VER='3.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -964,7 +964,7 @@ function loadProfile(){
     return storeGet().then(function(r){
       if(r&&r.value){ var d=JSON.parse(r.value);
         if(d&&typeof d.credits==='number'){ P=d;
-          if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0;
+          if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={}; if(!P.menuZoom)P.menuZoom=1;
           if(!P.rep)P.rep=0; if(P.autoExport===undefined)P.autoExport=true; if(P.autoDownload===undefined)P.autoDownload=false;
           // His playtest, 2026-08-22: "MOSTLY FRUSTRATING, ITS TOO JARRING FOR
           // SOMEONE NEW TO THIS GENRE. MAKE IT ALWAYS DAYTIME." Day is now the
@@ -6319,6 +6319,11 @@ function buildRaid(sim){
       wepIssued:wepIssued,secIssued:true,wepFromArmory:!wepIssued,secFromArmory:false,
       bob:0,recoil:0,hitFlash:0,downed:false,downT:0,revived:false,iv:0,jam:0,pendKiller:null,
       roll:0,rollCd:0,rollDir:{x:1,y:0},ads:false},
+    // THE HOTBAR YOU PLANNED, v3.57. "should be able to build out your hotbar
+    // when in inventory". The hub writes P.hotAssign; a real raid starts from a
+    // copy of it, so the bar comes up arranged the way you left it. The sim
+    // never reads a plan, because the bot must be the same bot in every arm.
+    hotAssign:(sim||!P.hotAssign)?null:JSON.parse(JSON.stringify(P.hotAssign)),
     bag:[],pouch:{smoke:0,decoy:0,frag:0},tsel:0,
     containers:(clearOfPads(containers),containers),ents:ents,bullets:[],pings:[],puffs:[],
     wild:(sim?[]:spawnWild(map)),
@@ -6664,6 +6669,9 @@ window.addEventListener('mouseup',function(e){
         // the bar MOVES it, or the same Medkit ends up on three slots at once.
         for(var ok in G.hotAssign) if(G.hotAssign[ok]===d.key) delete G.hotAssign[ok];
         G.hotAssign[HC.i]=d.key;
+        // And the arrangement survives the raid: a drag mid-raid IS building
+        // your hotbar, so it writes the same plan the hub edits.
+        if(!G.sim){ P.hotAssign=JSON.parse(JSON.stringify(G.hotAssign)); saveProfile(); }
         G.hot=HC.i;
         blip('pick');
         say((ITEMS[d.key]?ITEMS[d.key].name:'Item')+' to slot '+(HC.i+1));
@@ -13983,8 +13991,12 @@ function drawHUD(){
     rows.push({k:MT.name,v:(MT.lights>=1?'lamps on':(MT.lights>0?'lamps coming on':'full daylight')),c:'#9aa8d0'});
     var wv=[];
     if(MW.view!==1) wv.push('sight '+(MW.view<1?'-':'+')+Math.round(Math.abs(1-MW.view)*100)+'%');
-    if(MW.noise!==1) wv.push(MW.noise<1?('you are '+Math.round((1-MW.noise)*100)+'% quieter')
-                                       :(Math.round((MW.noise-1)*100)+'% louder'));
+    // HIS NOTE, v3.57: "shouldn't it be 'all characters are 40% quieter'
+    // instead of 'you'?" Checked against the code before touching it: ping()
+    // multiplies EVERY noise on the map by the weather, his and theirs alike,
+    // so the mechanic was already fair and the text was lying about it.
+    if(MW.noise!==1) wv.push(MW.noise<1?('everyone is '+Math.round((1-MW.noise)*100)+'% quieter')
+                                       :('everyone is '+Math.round((MW.noise-1)*100)+'% louder'));
     if(MW.lights<1) wv.push('lamps '+Math.round((1-MW.lights)*100)+'% out');
     if(MW.lightning) wv.push('lightning shows you');
     rows.push({k:MW.name,v:wv.length?wv.join(', '):'nothing in the air',
@@ -17068,6 +17080,25 @@ function itemClass(k){
   var it=ITEMS[k]; if(!it) return {t:'SALVAGE',c:'#8a96a1'};
   return ICLASS[it.use]||{t:'SALVAGE',c:'#8a96a1'};
 }
+// The hub side of "build out your hotbar": nine cells matching the raid bar.
+// A planned cell shows its item and clicking it clears it; the number keys the
+// raid uses are printed on the cells so the mapping is not a guess.
+function hotPlanHTML(){
+  var h='<div style="padding:7px 12px;border-bottom:1px solid var(--steel-hi)">'+
+    '<div class="glab" style="margin-bottom:5px">HOTBAR PLAN  (click a cell to clear, use the buttons in Inventory to fill)</div>'+
+    '<div style="display:flex;gap:4px">';
+  for(var i=0;i<HOTBAR_N;i++){
+    var k=(P.hotAssign||{})[i], it=k?ITEMS[k]:null;
+    h+='<div data-plan="'+i+'" title="'+(it?('Slot '+(i+1)+': '+it.name+', click to clear'):('Slot '+(i+1)))+'"'+
+      ' style="width:34px;height:34px;border:1px '+(it?'solid':'dashed')+' var(--steel-hi);border-radius:3px;'+
+      'display:flex;align-items:center;justify-content:center;cursor:'+(it?'pointer':'default')+';'+
+      'background:rgba(0,0,0,.3);position:relative">'+
+      (it?iconImgHTML(k,22):'<span style="color:var(--ash);font-size:9px">'+(i+1)+'</span>')+
+      (it?'<span style="position:absolute;right:2px;bottom:0;font-size:8px;color:var(--ash)">'+(i+1)+'</span>':'')+
+      '</div>';
+  }
+  return h+'</div></div>';
+}
 function gearSlot(label,key,name,sub,empty){
   var ic=(!empty&&key)?iconImgHTML(key,30):'<span class="gx">--</span>';
   return '<div class="gslot'+(empty?' empty':'')+'">'+
@@ -17090,7 +17121,11 @@ function renderGear(){
            :('ARMOUR '+rg.cap+'  ABSORB '+Math.round(rg.absorb*100)+'%  SPEED x'+rg.spd.toFixed(2)),
       noRig)+
     gearSlot('PACK','pack','Tier '+(P.pack+1),
-      'Carry penalty '+Math.round((1-PACKPEN[P.pack])*100)+'% lighter',false);
+      'Carry penalty '+Math.round((1-PACKPEN[P.pack])*100)+'% lighter',false)+hotPlanHTML();
+  g.querySelectorAll('[data-plan]').forEach(function(c){
+    c.onclick=function(){ var ix=c.getAttribute('data-plan');
+      if((P.hotAssign||{})[ix]!==undefined){ delete P.hotAssign[ix]; saveProfile(); renderHub(); } };
+  });
   // Owned armour, with the same Equip affordance the weapons have had all along.
   // Buying a vest in Requisition put it on you silently, which is the other half
   // of his note: there was no screen anywhere that showed the thing you bought.
@@ -17116,6 +17151,7 @@ function renderGear(){
   }
 }
 function renderHub(){
+  if(typeof applyMenuZoom==='function') applyMenuZoom();
   var i;
   document.getElementById('credits').innerHTML=P.credits.toLocaleString()+'<small>CREDITS</small>';
   document.getElementById('reptop').textContent=P.rep.toLocaleString();
@@ -17191,7 +17227,7 @@ function renderHub(){
   document.getElementById('stashct').textContent=P.stash.length;
   if(!keysArr.length){
     var em=document.createElement('div'); em.className='hint';
-    em.textContent='Stash is empty. Deploy, loot, extract.'; sl.appendChild(em);
+    em.textContent='Inventory is empty. Deploy, loot, extract.'; sl.appendChild(em);
   }
   keysArr.forEach(function(k){
     var it=ITEMS[k],row=document.createElement('div'); row.className='row';
@@ -17202,6 +17238,33 @@ function renderHub(){
     var tg=document.createElement('div'); tg.className='itag';
     tg.textContent=IC.t; tg.style.color=IC.c; tg.style.borderColor=IC.c;
     var vl=document.createElement('div'); vl.className='vl'; vl.textContent=ival(k)+'c';
+    // HIS NOTES, v3.57: "next to sell there should be the option to equip if
+    // applicable" and "should be able to build out your hotbar when in
+    // inventory". A field gun equips into the armoury on the spot. A usable
+    // (medical, throwable, plate) goes onto the first open cell of the hotbar
+    // plan. Salvage gets neither button, selling is what salvage is for.
+    if(it.use==='gun'&&it.gk&&WEAPONS[it.gk]){
+      var eq=document.createElement('button'); eq.textContent='Equip';
+      eq.onclick=function(){
+        var ix2=P.stash.indexOf(k); if(ix2<0) return;
+        P.stash.splice(ix2,1);
+        if(P.weapons.indexOf(it.gk)<0) P.weapons.push(it.gk);
+        P.equipped=it.gk; saveProfile(); renderHub();
+      };
+      row.appendChild(eq);
+    }
+    else if(it.use==='heal'||it.use==='throw'||it.use==='armor'){
+      var sb=document.createElement('button'); sb.textContent='Slot';
+      sb.title='Put this on the first open hotbar cell';
+      sb.onclick=function(){
+        P.hotAssign=P.hotAssign||{};
+        var placed=false,si;
+        for(si=4;si<HOTBAR_N&&!placed;si++) if(P.hotAssign[si]===undefined){ P.hotAssign[si]=k; placed=true; }
+        for(si=0;si<4&&!placed;si++) if(P.hotAssign[si]===undefined){ P.hotAssign[si]=k; placed=true; }
+        if(placed){ saveProfile(); renderHub(); }
+      };
+      row.appendChild(sb);
+    }
     var b=document.createElement('button'); b.textContent='Sell';
     b.onclick=function(){
       var ix=P.stash.indexOf(k);
@@ -17754,6 +17817,33 @@ document.getElementById('condbtn').onclick=function(){
 document.getElementById('tunebtn').onclick=function(){ toggleTune(true); };
 document.getElementById('opbtn').onclick=function(){ renderHub(); document.getElementById('opmodal').classList.add('on'); };
 document.getElementById('closeop').onclick=function(){ document.getElementById('opmodal').classList.remove('on'); };
+// HIS NOTE, v3.57: "menus should be zoomable with the wheel instead of ctrl and
+// wheel". The wheel over the undercroft scales the menus. A list that can still
+// scroll in the wheel direction keeps the wheel, because taking scrolling away
+// from lists to give the whole screen zoom would be trading one complaint for
+// two. Applied with CSS zoom to the hub and the modals, never the raid canvas,
+// so nothing about aim or world rendering is touched.
+function applyMenuZoom(){
+  var z=(P&&P.menuZoom)||1;
+  var hb=document.getElementById('hub'); if(hb) hb.style.zoom=z;
+  document.querySelectorAll('.modal').forEach(function(m){ m.style.zoom=z; });
+}
+document.addEventListener('wheel',function(e){
+  var hb=document.getElementById('hub');
+  if(!hb||!hb.classList.contains('on')) return;      // menus only, never a raid
+  var el=e.target;
+  while(el&&el!==document.body){
+    if(el.scrollHeight>el.clientHeight+2){
+      var up=e.deltaY<0;
+      if((up&&el.scrollTop>0)||(!up&&el.scrollTop+el.clientHeight<el.scrollHeight-1)) return;
+    }
+    el=el.parentElement;
+  }
+  e.preventDefault();
+  var z=((P&&P.menuZoom)||1)+(e.deltaY<0?0.08:-0.08);
+  P.menuZoom=Math.max(0.7,Math.min(1.6,Math.round(z*100)/100));
+  saveProfile(); applyMenuZoom();
+},{passive:false});
 document.getElementById('closetune').onclick=function(){ toggleTune(false); };
 document.getElementById('preA').onclick=function(){ applyPreset('A'); };
 document.getElementById('preB').onclick=function(){ applyPreset('B'); };

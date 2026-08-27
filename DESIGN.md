@@ -12246,3 +12246,62 @@ count as ordinary kills in telemetry; nothing distinguishes a quiet kill yet,
 so whether noise 0 melee actually avoids waking the room is asserted by the
 ping(noise 0) path rather than measured end to end.
 
+
+### v3.57: the inventory does things now, and the menus zoom on the wheel
+
+Five of his notes in one pass, four of them about the same screen.
+
+EQUIP NEXT TO SELL, "next to sell there should be the option to equip if
+applicable". A field gun in the inventory now has an Equip button: it leaves the
+stash, joins the armoury, and is in your hands on the next deploy. Medical,
+throwables and plates get a Slot button instead, which is the next item. Salvage
+gets neither, selling is what salvage is for, and the v3.52 type tags already
+say which is which on every row.
+
+BUILD YOUR HOTBAR IN THE UNDERCROFT, "inventory still weak -- should be able to
+build out your hotbar when in inventory". The Equipped panel now carries a
+HOTBAR PLAN strip: nine cells matching the raid bar, numbered as the keys are.
+The Slot button on an inventory row puts that item on the first open cell,
+clicking a cell clears it, and a real raid starts with the bar arranged exactly
+as planned, because buildRaid seeds the in-raid assignment map from the plan.
+The machinery already existed since the minecraft-style drag request; this
+build gave it a home screen and a memory: an in-raid drag now writes the plan
+back too, so an arrangement made under fire survives the raid. The sim never
+reads a plan, the bot must be the same bot in every A/B arm.
+
+ONE THING, ONE NAME, "inventory and stash should basically be the same thing
+when in undercroft". They always were the same array; the screen sometimes said
+stash and sometimes inventory. It says Inventory everywhere the player reads
+now. The storage key does not change, per the standing migration rule.
+
+THE WHEEL ZOOMS THE MENUS, "menus should be zoomable with the wheel instead of
+ctrl and wheel". Wheel over the undercroft scales the hub and every modal, 70 to
+160 percent, remembered on the profile. One carve-out that is the difference
+between a feature and a regression: a list that can still scroll in the wheel's
+direction keeps the wheel, so the inventory list scrolls to its end before the
+screen starts zooming. The raid canvas is untouched, the wheel there still
+zooms the world as it always has.
+
+THE RAIN LINE, "shouldn't it be 'all characters are 40% quieter' instead of
+'you'?" Checked against the code before changing anything, per the standing
+rule: ping() multiplies EVERY noise on the map by the weather, his and theirs
+alike, so the mechanic was already fair and the modifier box was lying about
+it. It says "everyone is 40% quieter" now. The weather's own line always said
+"It covers your noise, and theirs", which was the accurate half.
+
+Verified: parsecheck PASS at v3.57. Four maps drive and draw with frameErr and
+hudErr null, hub clean, endRaid on all three outcomes no throw. Driven through
+the real DOM: nine plan cells render; a stash of medkit, smoke, field rifle and
+scrap grows exactly the right buttons per row, Slot+Sell, Slot+Sell, Equip+Sell,
+Sell alone; pressing Slot on the Medkit writes plan cell 5; pressing Equip on
+the rifle sets equipped to rifle, adds it to the armoury and removes it from
+the stash; a raid started with that plan seeds G.hotAssign and slot 5 reads
+Medkit, kind heal, assigned. Hub zoom style applies.
+Not verified: the wheel zoom is wired through a real wheel event I cannot
+synthesise meaningfully from the fixture, so the scroll-first carve-out logic
+is exercised by reading, not by a driven wheel. CSS zoom is a Chrome behaviour;
+if he ever runs this in Firefox the menus will not scale, which I am noting
+rather than fixing since his machine is Chrome. The Equip button uses the base
+weapon for a field gun, deliberately discarding the field quality roll, and
+that simplification is unmarked in the UI.
+
