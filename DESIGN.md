@@ -13941,3 +13941,48 @@ Not verified: simCover at scale (320 A/B in flight); whether shot count at
 scale stays near his 40 or balloons; whether the killer mix moves toward HIS
 (raiders first); the raider hand-down he ordered is tracked, not built.
 
+
+### Measurement: simCover works, 8.8 to 12.2 percent, p about 0.04 (2026-08-27)
+
+320 paired seeds (9203 family), full posture both arms, standing in the open
+against ducking behind walls: 8.8 to 12.2 percent, discordant 25 split 7 to
+19 for cover. Killer table per 320: sentries fall 160 to 128 as designed;
+crawlers tick up 37 to 51 and howlers DOUBLE 8 to 15, both because the bot
+now lives long enough to meet them, and cover is worthless against a machine
+that shoots over walls. The ring-dodge rung just earned its place in the
+queue. Raiders hold at 72 to 73, now the number-two killer and closing on
+sentries, which is the direction HIS record points. Third consecutive free
+determinism proof: the control arm reproduced the previous run's simFlee arm
+to the raid.
+
+The realism ladder, all on the 9203 family, GREYWATER, his greed and aim:
+
+  fights everything, stands still     5.0
+  plus kiting melee (v3.88)           8.8
+  plus wall cover (v3.89)            12.2
+  Daniel                             29
+
+### Harness lesson, owned: three probe mistakes in one signature
+
+Every second-arm smoke this session reported killer "probe" and dur 192s
+because __simRaidBegin takes a BARE SEED, not an options object (my object
+went through seed>>>0 and became seed 0), the natural step is dt 0.15 (my
+0.016 loops only reached 192 of 600 game-seconds), and __simRaidEnd labels a
+force-killed unfinished raid killer:probe. The smokes were really "dead by
+192s vs alive at 192s", directionally fine, mislabeled. An 8-seed
+fingerprint probe returned eight IDENTICAL raids (all seed 0) before the
+signature was read. Probe rule reaffirmed and extended: read the HOOK SOURCE
+in mkfixture before first use, not just the setter back.
+
+### Fingerprint at full posture: the bot still shoots 2.7x too much
+
+Eight seeds, correct driver: median 110 shots a raid against HIS 40, and the
+inflation mechanism is visible in the design: the bot fires continuously
+WHILE kiting and while running to cover, then re-engages when the chaser
+catches up, where a human mostly just leaves. Holding fire while
+disengaging, or genuinely breaking chases, is the next shot-count lever.
+Killers in the small sample: raiders first, like his record.
+
+Not verified: official bench on the 7919 family (in flight, identical arms,
+doubles as a fourth determinism proof).
+
