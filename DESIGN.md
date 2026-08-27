@@ -13537,3 +13537,44 @@ rate, which is a designed gift, and if it feels too generous RACK_PAY is one
 number. The recipe balance against what his actual stash holds is also his
 to feel out; the first Not-enough-parts message will say what is short.
 
+
+### v3.81: the Mainframe is complete, cores buy sight, the computers stand in the room
+
+PART TWO OF HIS PICK, shipped the same day as part one. Three pieces.
+
+THE MAINFRAME IS A PLACE NOW. A sixth station stands in the Undercroft's
+top-right corner, THE MAINFRAME, walk up and E opens the wall. And the
+computers are VISIBLE: one cabinet per built rack stacks along the top wall
+beside the station, lights blinking on the room clock, so four racks read as
+a working installation the moment you step off the lift. The "build out
+computers in your base" line from his original note, literally.
+
+CORES BUY SIGHT. The wall's second button, SLOT A DATA CORE, spends one
+520c Data Core from the stash and arms intel for exactly one raid. It burns
+the moment the lift moves. That raid's M map carries three new truths: a
+gold KEY mark on the exact container holding each locked-room key, gone the
+moment the box is opened; a live purple dot on every elite still standing;
+and INTEL LIVE in the corner so you know what you paid for. Map only, on
+purpose: intel is knowing, not seeing, and the world itself shows nothing.
+
+The run line in the export records intel:1 on the raid that burned a core,
+so his own telemetry will show whether intel raids go better, which is the
+measurement that eventually prices the core.
+
+Verified: parsecheck PASS at v3.81, all four maps drive and draw clean at
+the standard baselines, hub clean with three racks standing and no draw
+error, raid endings clean. The slot flow driven through the real terminal
+buttons: no core in the stash disables the slot; slotting consumes exactly
+one core, arms the flag, and relabels the button CORE SLOTTED; deploying
+burns the arm, sets the raid flag, and found three key containers on the
+driven GREYWATER seed, the two guaranteed plus one that rolled naturally.
+The intel map CAPTURED AND LOOKED AT: the gold key marks, the purple elite
+dots, the INTEL LIVE tag and the locked-room outlines all read clearly on
+one frame, saved as tools/shots/intel_map.png.
+Not verified: whether intel actually improves his raids, which is exactly
+what the intel:1 stamp in his exports will measure over real play. The map
+header still says "hostile positions unknown" while intel shows elite dots,
+a one-line retitle noted for the next polish pass. And the second Sub-count
+miscount in as many days was caught by the patch script's own tripwire
+before any write, which is that guard earning its keep again.
+
