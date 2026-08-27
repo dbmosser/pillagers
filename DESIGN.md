@@ -12048,3 +12048,45 @@ keycard is in the stash, and EQUIP/GEAR appear only if a gun or rig key is ever
 stashed rather than in the armoury, which the current flows do not produce; those
 two tags are reachable in code and unobserved in practice.
 
+
+### v3.53: extracted raiders sink and fade, and the waves actually come
+
+Two of his notes, and the second uncovered a feature my own v3.49 had quietly
+switched off.
+
+THE BOARD, "once a raider has extracted, move them to the bottom of the list and
+then make their name disappear after one minute after their extract". The board
+is a WHO IS STILL OUT HERE instrument, and a man who left three minutes ago is
+history pinned above the living. Extracted rows now sink below everyone still on
+the map, hold for sixty seconds so you see they made it, then drop off. Dead men
+keep their place, because a body is still information about the map. The
+extraction moment is stamped in raid time on the roster entry; entries with no
+stamp are kept rather than aged out by a time they never recorded.
+
+THE WAVES, "at least 2 additional waves of raiders should join, or maybe they
+should come in every minute but less of them? retool it". Reading the wave gate
+against the current game: gap 45 seconds, one man per wave, and a live ceiling
+of FIVE, meaning a wave only came if fewer than five raiders were alive. That
+ceiling was written when raiders emptied off the map in the first minute. v3.49
+fixed exactly that, the map now holds 8 to 10 live raiders for most of the raid,
+so since two builds ago the ceiling test refused every single wave and the
+feature had stopped existing without anyone deleting it. His "at least 2 should
+join" is him noticing.
+
+Retooled to his second suggestion, which is the better design: one man arrives
+every 60 seconds while fewer than 12 are on the map, to a budget of 8 per raid.
+Measured in a full sim raid: 5 arrivals over 322 seconds, one per minute, where
+the same raid on v3.52 would have produced none.
+
+Verified: parsecheck PASS at v3.53. Four maps drive and draw with frameErr and
+hudErr null, hub clean, endRaid on all three outcomes no throw. Waves measured
+live as above, waveN 5 and roster grown by 5 in 322 seconds. The board driven
+through all three fade cases in one HUD frame with no throw: extracted 110
+seconds ago and gone, extracted 10 seconds ago and showing, and a legacy entry
+with no stamp kept.
+Not verified: the board's visual order is canvas text, so "extracted rows are at
+the bottom" is proven by the concat order in code and by the frame not throwing,
+not by reading pixels back. The wave cadence interacts with raiderHaul from
+v3.49 and the pair has not been A/B'd together for extract rate; the population
+the two produce jointly is measured, the difficulty is not.
+

@@ -545,7 +545,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.52';
+var VER='3.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -605,7 +605,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:6,raiderWaveMin:5,raiderWaveGap:45,raiderKit:1,spawnClear:900,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:900,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -8269,9 +8269,19 @@ function tickRaiderWaves(dt){
   // one frame, which makes it the cheapest correct guard.
   if(G.waveAt===G.frameN) return;
   G.waveAt=G.frameN;
-  var cap=(CFG.raiderWaveCap===undefined?6:CFG.raiderWaveCap);
-  var floorN=(CFG.raiderWaveMin===undefined?5:CFG.raiderWaveMin);
-  var gap=(CFG.raiderWaveGap===undefined?45:CFG.raiderWaveGap);
+  // RETOOLED, v3.53. His note: "at least 2 additional waves of raiders should
+  // join, or maybe they should come in every minute but less of them? retool
+  // it". Both halves in one change, because the second is the mechanism for the
+  // first. Waves were gap 45 with a live ceiling of 5, which was topping up a
+  // map that v3.49's fix now keeps at 8 to 10 live raiders, so after that build
+  // the ceiling test refused every wave and the feature had quietly stopped
+  // existing. Now one man arrives every 60 seconds while fewer than 12 are on
+  // the map, to a budget of 8 arrivals per raid. Ten minutes, first two ticks
+  // pass the ceiling, so at least two join early and the trickle continues as
+  // men die and leave, which is precisely his "every minute but less of them".
+  var cap=(CFG.raiderWaveCap===undefined?8:CFG.raiderWaveCap);
+  var floorN=(CFG.raiderWaveMin===undefined?12:CFG.raiderWaveMin);
+  var gap=(CFG.raiderWaveGap===undefined?60:CFG.raiderWaveGap);
   G.waveT=(G.waveT||0)+dt;
   G.waveN=G.waveN||0;
   if(G.waveT<gap) return;
@@ -10555,7 +10565,7 @@ function updateEnts(dt){
         if(e.extracting>rdw){
           say(e.name+' extracted with the goods.'); T.raidersExtracted++;
           if(G.roster){ for(var _rq=0;_rq<G.roster.length;_rq++){
-            if(G.roster[_rq].ref===e){ G.roster[_rq].out=true; break; } } }
+            if(G.roster[_rq].ref===e){ G.roster[_rq].out=true; G.roster[_rq].outAt=elapsed(); break; } } }
           if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.8,c:'#35d6c8',r:34});
           G.ents.splice(i,1); continue;
         }
@@ -14834,8 +14844,24 @@ function drawRaiderBoard(){
     if(r.out){ st='EXTRACTED'; out++; }
     else if(inEnts){ st=raiderStatus(e); live++; }
     else { st='DEAD'; dead++; }
-    rows.push({name:r.name,val:r.val,st:st,crew:r.crew});
+    rows.push({name:r.name,val:r.val,st:st,crew:r.crew,out:r.out,outAt:r.outAt});
   }
+  // HIS NOTE, v3.53: "once a raider has extracted, move them to the bottom of
+  // the list and then make their name disappear after one minute after their
+  // extract". The board is a WHO IS STILL OUT HERE instrument, and a man who
+  // left three minutes ago is history pinned above the living. Extracted rows
+  // sink below everyone still on the map, hold for sixty seconds so you see
+  // that they made it, then drop off. Dead men keep their place: a body is
+  // still information about the map. outAt is stamped in raid time at the
+  // moment of extraction; entries from before this build have no stamp and are
+  // kept rather than aged out by a time they never recorded.
+  var _eNow=elapsed(),_stay=[],_gone=[];
+  for(i=0;i<rows.length;i++){
+    var _w=rows[i];
+    if(_w.out&&_w.outAt!==undefined&&_eNow-_w.outAt>60) continue;
+    (_w.out?_gone:_stay).push(_w);
+  }
+  rows=_stay.concat(_gone);
   // Wide enough for the value column, and names TRUNCATED to a measured budget
   // rather than a character count. The first version overlapped every long
   // identity with its own bag value, because "FBI_Surveillance_Van" is not the
