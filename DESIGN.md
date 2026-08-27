@@ -1,3 +1,34 @@
+> **YOUR OPEN DECISIONS, one page, 2026-08-27 evening.** Everything below is
+> built or measured and waiting on a word from you. Answer any of them in a
+> run note or a message, as short as you like.
+>
+> **1. The machine war** — machines hunt raiders, not just you. Measured: it
+> rewrites a quarter of all raids at roughly the same average difficulty,
+> shifts who kills you toward raiders (like your own record), and pays
+> slightly better. Say **"war on"** to flip it.
+>
+> **2. Street variety amount** — the blocks are already off the grid, but the
+> effect is subtle at play zoom. Say **"double the streets"** for a bolder
+> irregularity, or nothing to keep it as is.
+>
+> **3. Music silence after combat** — currently the music stays away until
+> you've had four calm seconds. Say a number ("music 6") to change it.
+>
+> **4. Crewmate revive (your roadmap Q4)** — raiders now roll, aim, crouch,
+> sprint and dodge like you; the one ability I did not hand down is reviving
+> a downed crewmate, because you asked the question and I won't answer it for
+> you. Say **"revive yes/no"**.
+>
+> **5. Map spread (your roadmap Q1), fresh numbers** — robot extraction rate:
+> GREYWATER 20.9, SUNKEN 15.0, QUARRY 14.1, COLD STORAGE 13.1. Your own COLD
+> rate: 34.8. COLD is hardest because raider contact is highest there and the
+> Bulwark nearly triples its kills in tight aisles. Say **"even them out"**
+> or **"hard maps stay hard"**.
+>
+> Standing benchmark: the test robot now plays with your greed, aim, fight
+> selection, kiting, wall cover and artillery dodge — 20.9% survival to your
+> 28.6 — and every number above was measured by it over 320 raids per test.
+
 > **SUPERSEDED, 2026-08-22.** `C:\Users\User1\Desktop\DARK_RAIDERS_SPEC.md` is now the definitive design document and governs wherever it conflicts with anything below. This file is retained as the build history and the record of what was measured and why. New design decisions live in the spec; this remains the changelog.
 # DARK RAIDERS Design Bible
 Prepared: August 20, 2026. Revised: August 20, 2026 (v0.6).
@@ -10111,11 +10142,11 @@ deliberately, because whether fencing to the Peddler SHOULD cost you standing is
 real design question and it is his. What changed is that the loop is now legible from
 both ends:
 
-  the button   "Sell all salvage  �  12,480c  +12,480 REP", live, and it disables
+  the button   "Sell all salvage  �  12,480c  +12,480 REP", live, and it disables
                itself and reads "Nothing to sell" when there is nothing
   under it     "Selling here is the ONLY thing that earns REP. The Peddler pays
                cash, not standing."
-  the shop     "You hold 1,926c � rep 0 � REP comes from selling salvage in the
+  the shop     "You hold 1,926c � rep 0 � REP comes from selling salvage in the
                Undercroft."
 
 The button counts only what will actually be sold. sellall keeps anything with a use,
