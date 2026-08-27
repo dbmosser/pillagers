@@ -13227,3 +13227,44 @@ have; the engagement is the same shared code the loot branch runs live every
 raid, which is the strongest paper argument short of a driven one. Gamepad
 players have no B equivalent yet, noted as the next gap in the orders line.
 
+
+### v3.74: the settle knows how he got out, and a pad can give orders
+
+PARTNER-MERC LINE THREE, plus the gap v3.73 named. Dpad up now cycles the
+merc's orders on a controller, mapped through the same tap table as every
+other pad action, so the B key and the pad edge are one code path.
+
+THE SETTLE GREW EYES. The contract used to know three outcomes: dead, alive
+at your extraction, or anything else, and the anything-else read "left out
+there". Two of its blind spots are gone.
+
+First, an alive merc at your extraction now settles by HOW he got out.
+Standing at the ring with you is "boards behind you", worth the full +2
+standing; alive across the map is "makes his own way out", worth +1. The
+money is deliberately identical either way, because the ten percent cut is a
+contract term, not a proximity bonus, and making it one would teach you to
+babysit him instead of letting him work.
+
+Second, the wrong obituary. A merc who fled low and boarded an EARLIER ship,
+which the v3.58 beacon behaviour makes genuinely possible, was read as "left
+out there" and paid nothing, because his entity was gone from the world by
+the time the contract settled. The roster remembers the man and what he
+carried: he now settles as "was on an earlier ship" with the cut paid from
+his recorded bag value and +1 standing. Dying with him still on the surface
+still reads "left out there", which is correct, because it is true.
+
+Verified: parsecheck PASS at v3.74. All four maps drive and draw with
+frameErr and hudErr null at the standard baselines, hub clean, endRaid clean
+on all three outcomes. All four settle branches driven against the real
+outcome screen: a merc 40 units away at extraction reads "boards behind you"
+and pays; one two thousand units away reads "makes his own way out"; one
+removed from the world with a roster row marked out and 4,200c of bag value
+reads "was on an earlier ship" and pays exactly 420; and dying with him
+alive still reads "left out there".
+Not verified: the pad binding is the same one-line table entry as every
+working pad action, but no controller is attached to this machine, so Dpad
+up firing the cycle is verified by the table's own convention rather than a
+driven press. Standing deltas were not asserted numerically in the drive,
+only the lines and the credits; the arithmetic is one line each and reads
+clean.
+

@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.73';
+var VER='3.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6953,6 +6953,7 @@ var PADTAP={
   5:'KeyG',       // RB     throw it
   8:'Tab',        // View   inventory
   9:'KeyP',       // Menu   pause
+  12:'KeyB',      // Dpad up     merc orders
   14:'KeyZ',      // Dpad left   drop selected
   15:'KeyC'       // Dpad right  autoloot toggle
 };
@@ -11569,14 +11570,33 @@ function endRaid(how){
       lines.push('<span style="color:var(--rust)">'+mname+' died. Death benefit '+MERC_DEATH.toLocaleString()+'c owed'+(P.credits<0?', you are in debt':'')+'.</span>');
       var mr=idRec(P.merc); mr.standing=Math.min(mr.standing,-1);
     } else if(mercEnt&&how==='extract'){
+      // v3.74, partner-merc line three: the settle can now tell HOW he got out.
+      // Standing with you at the ring is boarding behind you, worth the full
+      // +2; alive across the map is making his own way, worth +1. The money is
+      // deliberately identical either way, because the cut is a contract term,
+      // not a proximity bonus.
       var mhaul=0;
       for(var mb=0;mb<mercEnt.bag.length;mb++) mhaul+=ival(mercEnt.bag[mb]);
       var cut=Math.round(mhaul*0.10);
       P.credits+=cut;
-      lines.push('<span style="color:var(--coolant)">'+mname+' walked out with '+mhaul.toLocaleString()+'c. Your cut '+cut.toLocaleString()+'c.</span>');
-      var mr2=idRec(P.merc); mr2.standing=(mr2.standing||0)+2; mr2.met++;
+      var _mnear=(G.active&&dist(mercEnt,G.active)<260)||dist(mercEnt,G.player)<200;
+      lines.push('<span style="color:var(--coolant)">'+mname+(_mnear?' boards behind you with ':' makes his own way out with ')+mhaul.toLocaleString()+'c. Your cut '+cut.toLocaleString()+'c.</span>');
+      var mr2=idRec(P.merc); mr2.standing=(mr2.standing||0)+(_mnear?2:1); mr2.met++;
     } else {
-      lines.push('<span style="color:var(--ash)">'+mname+' was left out there.</span>');
+      // A merc who fled low and boarded an EARLIER ship was read as "left out
+      // there" and paid nothing, because his entity was gone from the world.
+      // The roster remembers the man and what he carried out.
+      var _mrow=null;
+      for(var _mr3=0;_mr3<(G.roster||[]).length;_mr3++){ var _R3=G.roster[_mr3];
+        if(_R3.ref&&_R3.ref.merc){ _mrow=_R3; break; } }
+      if(_mrow&&_mrow.out&&how==='extract'){
+        var cut2=Math.round((_mrow.val||0)*0.10);
+        P.credits+=cut2;
+        lines.push('<span style="color:var(--coolant)">'+mname+' was on an earlier ship with '+(_mrow.val||0).toLocaleString()+'c. Your cut '+cut2.toLocaleString()+'c.</span>');
+        var mr4=idRec(P.merc); mr4.standing=(mr4.standing||0)+1; mr4.met++;
+      } else {
+        lines.push('<span style="color:var(--ash)">'+mname+' was left out there.</span>');
+      }
     }
     P.merc=null;
   }
@@ -17322,7 +17342,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Partner merc lines one and two are in: rescue and orders. Next: shared extraction',
+  now:'Partner merc: rescue, orders, pad binding, and a settle that knows who boarded',
   next:'The datacore build and the ghost friend, whichever he ranks first'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
