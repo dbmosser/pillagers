@@ -13799,3 +13799,37 @@ fights the bot accepts, and at human accuracy accepting them is what kills
 the bot. FIGHT SELECTION is therefore the next realism build: the bot should
 disengage machines it has no need to kill, the way he demonstrably does.
 
+
+### v3.87 - Fight selection: the bot learns to walk past a fight (2026-08-27)
+
+The third rung of making the benchmark play like HIM, on his direct order that
+the test player must act like a real human because it is the benchmark for
+everything else. His greed went in at v3.85 (simGreed 23), his aim at v3.86
+(simAim 52), and the ladder those produced - 16.9 percent with aimbot aim, 9.4
+percent with his aim, his real 29 - localised the remaining gap precisely:
+the bot accepts every fight and he does not. He fires about 40 rounds a raid;
+the bot fired 80-plus, because the threat scan made a target of anything
+inside 300 units with a sightline, patrolling or not. Under machine accuracy
+that habit was free. Under his accuracy it is what kills the bot.
+
+simPick, DEFAULT OFF, pinned ON in the fixture posture. With it on, the scan
+only accepts an entity that is HUNTING the bot - state chase, alarm or hunt,
+or an alert still above 0.8 - or anything inside 150 units, too close to
+sneak past. It also stops shooting the peddler, downed raiders and friendlies
+(merc, ghost), which the old scan would happily target. Off, the scan is
+byte-identical to v3.86 and the entire back catalogue of numbers reproduces.
+
+One game-side change rode along: the Howler now goes loud (alert 3) while it
+shells, decaying over about six seconds. Its brain never uses sight, so its
+alert never rose, and a fight-picking bot would have looted straight through
+a barrage; this also feeds the threat music, which is honest - a machine
+shelling you IS a threat. Cosmetically invisible otherwise.
+
+Smoke seed 7331: haul 2970 to 4410 (it looted instead of duelling), shots 78
+to 73. The 320-seed paired measurement against the old scan is running as
+this entry is written and its numbers land in the next note.
+
+Not verified: whether simPick moves the extract rate or the shot count at
+scale (320-seed A/B in flight); whether the killer mix shifts toward raiders,
+his number-one killer; the Howler alert change in real play by ear.
+
