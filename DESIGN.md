@@ -12809,3 +12809,61 @@ his complaint actually happened, was not the A/B map; the floor check
 covered it geometrically but its extract-rate cost specifically is
 unmeasured.
 
+
+### v3.67: the datacore question, laid out for his call
+
+HIS NOTE: "there needs to be something to do with like datacores and all this
+crap -- maybe build out computers in your base or something to give passive
+income? crafting? brainstorm on this concept". This build is the brainstorm,
+written down and put on the rankable roadmap, plus nothing else, because
+which of these gets built is a design call and it is his.
+
+THE PROBLEM, stated plainly. Salvage has exactly one verb: SELL. Scrap, wire,
+cells, boards, optics, servos, datacores, all of it exists to become credits,
+and credits already buy everything. So the moment his credit balance is
+comfortable, half the loot table stops meaning anything, and "loot boring" is
+sitting in his feeling tags. The fix is a SECOND VERB for salvage. Three
+candidate verbs, and they pull in different directions.
+
+OPTION A, THE WORKBENCH: crafting. Recipes turn junk into the consumables the
+game already has. Two scrap and a wire make an ammo box, a cell and a board
+make a decoy, a datacore is the catalyst the good recipes need, frags,
+plates, medkits. Pull: deepens the deploy loop, junk becomes preparation, no
+new economy to balance. Push: it is a new UI surface, and crafting menus are
+where extraction games go to feel like spreadsheets.
+
+OPTION B, THE MAINFRAME: computers in the undercroft, his own words, but paid
+PER EXTRACTION rather than per hour. Racks are built from boards, cells and
+datacores, they visibly stack up in the hub, and each rack pays a dividend
+every time you extract, the fiction being that your network fences data while
+you are on the surface. Pull: the base visibly grows, salvage becomes
+infrastructure, and because it pays on EXTRACTION it cannot be farmed by
+waiting, which is the trap in real-time passive income: money for not playing
+is acid on the reason to deploy. Push: it is still income, and income is the
+thing salvage already buys.
+
+OPTION C, THE TERMINAL DECRYPTS: datacores buy INTEL, not money. Feed the
+mainframe a core before deploying and the next raid starts with something
+revealed: the locked rooms' key locations, the elites marked, which ring the
+dropship favours. Pull: in a game built on not being able to see, information
+is the most valuable currency there is, datacores get a use credits cannot
+replace, and it is a RECURRING sink, spent every raid rather than built once.
+Push: it only spends datacores, so the scrap-and-wire pile still has one
+verb.
+
+MY RECOMMENDATION, for whatever it is worth: B and C on the same piece of
+furniture. Racks built from bulk salvage pay a small per-extraction dividend
+and are the visible computers he asked for; datacores slot into those racks
+per raid for intel. Bulk junk becomes construction, rare cores become sight,
+the undercroft grows, and nothing pays a credit for standing still. A stays
+on the shelf unless he wants deeper preparation play later.
+
+The roadmap now carries this as a NOW question, so ranking it in the dev box
+is answering it.
+
+Verified: parsecheck PASS at v3.67, all four maps drive and draw clean at the
+standard baselines, hub clean, endRaid clean, and the new roadmap row renders
+in the dev box as a draggable open question.
+Not verified: nothing else, because nothing else changed. No gameplay, no
+dials, no balance surface.
+
