@@ -14252,3 +14252,39 @@ a better gun already work, which are two more parity questions I have not
 answered; the roll BY EYE in his own play; and the raiderSmart measurement,
 still running at the corrected posture.
 
+
+### Measurement: the hand-down is a clean null for HIS difficulty (2026-08-27)
+
+320 paired seeds, official 7919 family, corrected posture, raiders kiting and
+taking cover against the old backpedal: 2.5 against 2.5 percent, discordant 6
+split 3 to 3. As close to a perfect null as this harness produces. Killer table
+barely moves (crawler 102 to 110, sentry 130 to 119, raider 60 to 63) and mean
+haul is flat, 3,192 to 3,079.
+
+That is the RIGHT result for a realism change and worth saying plainly: raiders
+now handle machines like people, and it costs the player nothing. Realism was
+the goal; difficulty neutrality is the proof it was realism and not a buff.
+
+### But the absolute rate moved, and I have not yet attributed it
+
+The bench was 10.0 percent this morning on this exact family and seed list. Both
+arms of this run sit at 2.5. Since both arms share it, the cause is NOT the
+raider AI change; it is something else shipped today and present in both:
+  - v3.91's road cull, which removes 31 to 54 BUSHES per map, and a bush is
+    concealment the bot was hiding in;
+  - v3.94's raider dodge roll, which makes raiders survive the bot's rounds and
+    so leaves more armed men alive on the map.
+Both are plausible and I will not guess between them. The attribution A/B,
+raiderRoll off against on, is running as this is written; if the roll is
+innocent, the bushes did it and that is a real and interesting finding about
+how much the player leans on undergrowth.
+
+Worth stating: a lower bench is not automatically a problem. Both changes are
+things he ASKED for (bushes off the tarmac, raiders at parity), and if the game
+got harder because the world is more honest, the answer may be to accept it or
+to compensate elsewhere. That is his call, which is why it is measured and
+reported rather than quietly tuned away.
+
+Not verified: which of the two caused the drop (A/B in flight); whether 2.5
+percent is stable or this family is being stingy again.
+
