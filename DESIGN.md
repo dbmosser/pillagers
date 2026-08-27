@@ -14888,3 +14888,40 @@ the other. Both files consumed.
 Not verified: the loot fix in HIS hands; the tripwire has caught nothing yet,
 which is what it should say until the glitch recurs.
 
+
+### THE BENCH AT HIS TRUE GREED: 20.3 percent, and the gap is nearly closed
+
+320 seeds, official family, identical arms, the bot at simGreed 14, the value
+his own 49 runs calibrated this morning: 65 of 320, 20.3 percent, ZERO
+discordant, the fifth consecutive perfect determinism proof.
+
+The ladder, all measured this same day on the same family:
+  bot at greed 23 (too greedy)        13 to 16 percent
+  bot at greed 14 (his real appetite) 20.3 percent
+  HIM, 49 real runs                   28.6 percent
+
+This morning the gap between the benchmark and him was three to one. It is now
+1.4 to one, and every rung of the closing was a measured behaviour: his greed,
+his aim, his fight-picking, his kiting, his wall-cover, and finally his actual
+loot appetite. What remains of the gap is dominated by the one known
+difference left, the bot fires 96 rounds to his 40.
+
+### v4.07 - The quiet retreat, narrow, measured BEFORE it counts this time
+
+The first attempt at fixing the shot gap held the bot's fire during BOTH kinds
+of disengage and collapsed survival 12.5 to 1.3, because a bot that cannot
+shoot the crawler chasing it just gets eaten. The narrow retry holds fire ONLY
+while running to cover against a ranged machine, where the whole plan is to
+break the sightline anyway and every round fired en route is noise and lead
+thrown at a wall. Kiting keeps its gun.
+
+Process fixed where it failed last time: the dial stays DEFAULT OFF, nothing
+is pinned, and the launch itself first proved the change bites (probe seed:
+81 shots without, 47 with, and 47 is nearly his 40) before the 320-seed
+verdict was allowed to start. It is running as this is written.
+
+Not verified: the quiet retreat at scale, in flight; his three open calls
+stand: the machine-versus-raider war, doubling the street irregularity, and
+whether four seconds is the right silence after combat before the music dares
+come back.
+

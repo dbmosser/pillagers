@@ -560,7 +560,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.06';
+var VER='4.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10126,7 +10126,16 @@ function updateBot(dt){
       // simFlee and simCover already do; the raid BUILD is untouched, so both
       // arms of an A/B still play the same map with the same loot and spawns.
       if(p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof&&(CFG.simReach===0||td<=TRW)&&
-         !(CFG.simHoldFire&&(_flee||_cv))){
+// NARROWED, v4.07. The first simHoldFire suppressed fire during BOTH
+        // disengages and measured 12.5 against 1.3 percent: a bot that cannot
+        // shoot the crawler chasing it just gets eaten, because kiting only
+        // works if the chaser dies before the wall arrives. The narrow version
+        // holds fire ONLY while running to cover against a ranged machine,
+        // where the entire plan is to break the sightline anyway and every
+        // round fired on the way is noise and lead thrown at a wall. Kiting
+        // keeps its gun. Still DEFAULT OFF until the 320-seed run says
+        // otherwise; measured first this time.
+         !(CFG.simHoldFire&&_cv)){
         // Same shape as the player path: the roll happens on the trigger pull, so
         // a fouled gun costs the round AND the second it takes to cycle.
         // DRAWN BEFORE THE DIAL IS CONSULTED, and that is not a style choice. Put
@@ -18378,8 +18387,8 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'His wall notes: looting through walls is impossible now, and a tripwire will catch the walk-through',
-  next:'A fresh bench at the corrected greed, then his verdict on the machine versus raider war'
+  now:'The bench reads 20.3 against his 28.6, and the narrow quiet-retreat retry is being measured',
+  next:'The quiet-retreat verdict, then his calls: machine war, street jitter, music gap'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a
