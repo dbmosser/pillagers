@@ -15156,3 +15156,32 @@ Not verified: the fresh bench, in flight; whether the ring dodge belongs on
 the PLAYER-FACING raiders too, which would be hand-down five and follows the
 same measure-first path next.
 
+
+### v4.11 - Hand-down five: raiders step out of the Howler ring too
+
+The benchmark bot learned to sidestep the artillery ring and its shell deaths
+fell nine to one; the red circle is painted for two full seconds and raiders
+have eyes. A raider standing in an inbound ring now sprints radially clear
+exactly as the bot does, and that is his whole turn that frame, which is what
+fleeing artillery costs. Mercs and the ghost dodge too: your own man eating a
+shell he watched land was never loyalty, it was blindness.
+
+OWNED: the first placement was wrong and my own probe caught it before it
+shipped as a lie. I anchored the dodge inside the only-when-he-sees-the-player
+section, so a raider looking at his crate never dodged, which is most raiders
+most of the time. The probe read identical movement both ways, 66 and 66, and
+refused to pass. Relocated to where every living raider passes each frame,
+sighted or not, and the probe now reads 66 without against 100 with, past the
+90 unit blast edge inside six tenths of a second. The relocation note stays in
+the code so the next reader knows why it sits where it sits.
+
+Sweep green at 85/86/57/71, all endings, hub clean. raiderDodgeRing 0 restores
+stand-and-take-it.
+
+What he should feel: shelling a group with a Howler nearby scatters it like a
+kicked anthill instead of gathering corpses, and his own merc stops dying to
+artillery he could see coming for two seconds.
+
+Not verified: the raider dodge at 320 seeds, queued behind the official bench
+still running; how the scatter reads in real play.
+
