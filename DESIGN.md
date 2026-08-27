@@ -13131,3 +13131,11 @@ shared extraction then trade then persistence; Part Two after, since it
 feeds on systems Part One hardens. Ranking the roadmap row is the go signal,
 and nothing here builds until it moves.
 
+
+Eyes pass addendum: eyes_road_stop.png set out to photograph a v3.68 road
+setback and framed a lateral street instead, which is allowed geometry, so
+the setback's LOOK stays geometry-verified only. The same frame verified
+something else by accident: the v3.51 rain is clearly visible, readable
+streaks over the dark ground, which closes the "more visible rests on
+numbers" caveat from that build. Rain confirmed by eye in RAIN weather.
+
