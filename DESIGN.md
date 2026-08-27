@@ -15023,3 +15023,31 @@ a crouched looter flips from seen to unseen at 300. In flight.
 
 Not verified: the crouch at scale; everything awaiting his hands and ears.
 
+
+### v4.09 - Parity four: a raider making a run for it actually RUNS
+
+Fourth and final buildable item off his parity audit (the fifth, reviving a
+downed crewmate, is his open roadmap question four and stays his call). He
+bolts at 256; a raider "making a run for it" jogged at 134 forever, which is
+why a fleeing man never read as fleeing.
+
+A raider heading for the ship now burns a six second sprint pool at one and a
+half times his speed, and when it is empty he is back to the jog for good:
+one desperate push per man, the shape of a stamina bar spent all at once. The
+pool never refills. Sprinting hammers the noise map at 1.4 times, the same
+loud-feet trade the player's own sprint makes, so a bolting man is audible
+before he is visible. The sprint POSE was already wired to the leaving state,
+so the legs have been telling this story since long before the speed made it
+true.
+
+Verified: first second of flight covers 184 units, exactly the burst speed;
+the pool drains second for second and reads zero after the push; the man
+reached the ring on the burst and boarded. Sweep green at 85/86/57/71.
+
+What he should feel: wounded men and full bags BOLTING for the ring, loud and
+brief, catchable if he reacts and gone if he hesitates. raiderSprint 0
+restores the jog.
+
+Not verified: sprint at 320 seeds, queued behind the crouch measurement;
+whether 1.5 for six seconds is the right burst against his own 256.
+
