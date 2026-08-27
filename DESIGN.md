@@ -15335,3 +15335,28 @@ against 2,701. Tight ground, more contact, less room to be clever.
 Not verified: the wreck look at his zoom in motion; the new poll buttons in
 his hands; whether the 23k abandon was life or design.
 
+
+### v4.16 - His run #53 note: the status line tells every truth at once
+
+His run #53 first: a clean extraction, his fifteenth. 73 percent accuracy,
+eleven crawlers down, out through a blackout dusk with 5,145c banked.
+
+His note at 90 seconds: "if i have 2 or more statuses at once, i.e. shooting
+and moving, healing, etc -- they should all show together so they are all
+accurate." The line was a priority ladder that told one truth and swallowed
+the rest; healing while sprinting read only HEALING, which is half a lie. It
+now lists everything true at once, actions first, movement last: HEALING +
+SPRINTING, SHOOTING + SPRINTING, RELOADING + JOGGING. Down and rolling stay
+alone, because a man on the floor or mid-tumble is doing exactly one thing,
+and the gun keeps its ladder within the list, since one gun cannot be jammed
+and reloading and firing at once. The label's backing already sizes itself to
+the text and its colour now follows the first word.
+
+Verified by trial: HOLDING at rest, SPRINTING alone when only running,
+HEALING + SPRINTING, HEALING + JOGGING, SHOOTING + SPRINTING, RELOADING +
+JOGGING, and back to HOLDING when everything stops. Sweep green at
+85/86/57/71, all endings, hub clean.
+
+Not verified: the compound line at his eye in a real fight, and whether three
+truths at once ever crowds the corner it lives in.
+
