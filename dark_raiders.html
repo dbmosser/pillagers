@@ -44,7 +44,27 @@
   .brand { font-family:'Titan One','Rubik',sans-serif; font-weight:800; font-size:13px;
     letter-spacing:.42em; color:var(--amber); text-transform:uppercase; }
   .brand span { color:var(--ash); }
-  .hubgrid { display:grid; grid-template-columns:1.05fr 1fr 1fr; gap:14px; flex:1; min-height:0; margin-top:12px; }
+  .hubgrid { display:grid; grid-template-columns:1fr 1fr; gap:14px; flex:1; min-height:0; margin-top:12px; }
+  /* THE EQUIPMENT SLOTS, v3.50. His note: "stuff you buy in requisition, its not
+     clear when you are wearing your vest, etc. NEEDS TO BE MORE LIKE
+     DIABLO/MINECRAFT". A slot is a labelled box that is either filled or
+     visibly EMPTY, which is the idea he is pointing at: you read your character
+     by looking at what is in the slots, not by reading a sentence. */
+  .gslot{ display:flex; align-items:center; gap:10px; padding:8px 12px;
+    border-bottom:1px solid var(--steel-hi); background:rgba(53,214,200,.045); }
+  .gslot.empty{ background:rgba(255,255,255,.015); }
+  .gic{ width:38px; height:38px; flex:none; display:flex; align-items:center; justify-content:center;
+    border:1px solid var(--steel-hi); border-radius:3px; background:rgba(0,0,0,.30); }
+  .gslot.empty .gic{ border-style:dashed; }
+  .gx{ color:var(--ash); font-size:11px; }
+  .gtx{ flex:1; min-width:0; }
+  .glab{ font-size:8.5px; letter-spacing:.18em; color:var(--ash); }
+  .gnm{ font-family:'Rubik',system-ui,sans-serif; font-weight:700; font-size:13.5px; color:var(--coolant);
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .gslot.empty .gnm{ color:var(--ash); }
+  .gsub{ font-size:9px; color:var(--ash); letter-spacing:.04em; }
+  .gtag{ font-size:8.5px; letter-spacing:.14em; color:var(--coolant); flex:none; }
+  .gslot.empty .gtag{ color:var(--rust); }
   .panel { border:2px solid var(--steel-hi); border-radius:5px;
     background:linear-gradient(180deg,var(--win-top),var(--win-bot));
     box-shadow:inset 0 0 0 2px var(--steel), 0 2px 0 rgba(0,0,0,.5);
@@ -265,6 +285,33 @@
     <button id="closedev" style="padding:8px 20px">Close</button>
   </div>
 </div>
+<!-- THE OPERATOR TERMINAL, v3.50. Three notes in a row, and they are one note:
+     "inventory page is messy, it's like a whole operator terminal, it needs to
+     just be inventory, move operator terminal somewhere else", then "it needs to
+     just be inventory, with icons, and loadout with icons, contracts, flight
+     recorder, all this other stuff, need to move to another terminal".
+     The hub is now two panels, what you own and what you are wearing. The
+     contracts board and the flight recorder are real features and are not
+     deleted, they are behind the TERMINAL button. Same element ids, so renderHub
+     still fills them exactly as before whether the door is open or shut. -->
+<div class="modal" id="opmodal">
+  <h3>Operator terminal</h3>
+  <div class="msub">Contracts, run history and the numbers. None of this is your kit, which is why it is no longer sharing a screen with it.</div>
+  <h2>Contracts</h2>
+  <div class="plist" id="contracts" style="max-height:170px"></div>
+  <h2 style="border-top:1px solid var(--steel-hi)">Flight recorder <em id="logct">0</em></h2>
+  <div class="plist" id="loglist" style="max-height:200px"></div>
+  <div style="border-top:1px solid var(--steel-hi)">
+    <div class="stat"><span>Extract rate</span><b id="s_rate">--</b></div>
+    <div class="stat"><span>Avg haul (extracted)</span><b id="s_avg">--</b></div>
+    <div class="stat"><span>Avg accuracy</span><b id="s_acc">--</b></div>
+    <div class="stat"><span>Most common killer</span><b id="s_killer">--</b></div>
+    <div style="padding:7px 0"><button id="devtoolsbtn" style="width:100%">Dev tools and roadmap</button></div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:4px">
+    <button id="closeop" style="padding:8px 20px">Close</button>
+  </div>
+</div>
 <div class="modal" id="sectormodal">
   <h3>Where are you going?</h3>
   <div class="msub">Four sectors, and they are not reskins of each other. Your stash, your credits, your contracts and your seal progress are yours everywhere; what changes is the ground you have to work. Your body stays on the sector it fell on.</div>
@@ -354,7 +401,7 @@
   </div>
   <div class="hubgrid">
     <div class="panel">
-      <h2>Stash <em id="stashct">0</em></h2>
+      <h2>Inventory <em id="stashct">0</em></h2>
       <div class="plist" id="stashlist"></div>
       <div style="padding:8px 12px;border-top:1px solid var(--steel-hi)">
         <button id="sellall" style="width:100%">Sell all salvage</button>
@@ -363,22 +410,13 @@
       </div>
     </div>
     <div class="panel">
-      <h2>Loadout + Contracts</h2>
+      <h2>Equipped</h2>
+      <div id="gearslots"></div>
       <div class="equipped" id="equipped"></div>
-      <div id="weplist" style="max-height:96px;overflow-y:auto"></div>
-      <h2 style="border-top:1px solid var(--steel-hi)">Contracts</h2>
-      <div class="plist" id="contracts"></div>
-    </div>
-    <div class="panel">
-      <h2>Flight recorder <em id="logct">0</em></h2>
-      <div class="plist" id="loglist"></div>
-      <div style="border-top:1px solid var(--steel-hi)">
-        <div class="stat"><span>Extract rate</span><b id="s_rate">--</b></div>
-        <div class="stat"><span>Avg haul (extracted)</span><b id="s_avg">--</b></div>
-        <div class="stat"><span>Avg accuracy</span><b id="s_acc">--</b></div>
-        <div class="stat"><span>Most common killer</span><b id="s_killer">--</b></div>
-        <div style="padding:7px 12px"><button id="devtoolsbtn" style="width:100%">Dev tools and roadmap</button></div>
-      </div>
+      <h2 style="border-top:1px solid var(--steel-hi)">Weapons owned</h2>
+      <div id="weplist" style="max-height:120px;overflow-y:auto"></div>
+      <h2 style="border-top:1px solid var(--steel-hi)">Body armour owned</h2>
+      <div id="riglist" style="flex:1;min-height:0;overflow-y:auto"></div>
     </div>
   </div>
   <!-- Wraps rather than clipping. Six buttons on one nowrap row ran off the
@@ -397,6 +435,7 @@
     <button class="deploy ghost" id="deploy" style="flex:1">DEPLOY</button>
     <button class="deploy ghost" id="shopbtn" style="flex:1">REQUISITION</button>
     <button class="deploy ghost" id="workbtn" style="flex:1">WORKSHOP</button>
+    <button class="deploy ghost" id="opbtn" style="flex:1">TERMINAL</button>
     <button class="deploy ghost" id="condbtn" style="flex:1">CONDITIONS</button>
     <button class="deploy ghost" id="tunebtn" style="flex:1">TUNING</button>
   </div>
@@ -503,7 +542,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.49';
+var VER='3.50';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8257,7 +8296,7 @@ function tickRaiderWaves(dt){
   G.ents.push(NR);
   G.roster.push({ref:NR,name:NR.name,crew:NR.crew,val:0,out:false});
   G.waveN++;
-  if(!G.sim) say('Another team just dropped.');
+  if(!G.sim) say('Another wave of players has entered.');
 }
 function tickExtractPoints(dt){
   var p=G.player,T=G.tel;
@@ -12391,7 +12430,15 @@ function render2D(dt){
     // thing due to be drawn after it, which is the same failure mode as the
     // y-sort throw. pn.t over pn.life is data, and data that has ever been wrong
     // once will be wrong again, so the radius is floored rather than trusted.
-    var pr=Math.max(1,8+(pn.t/pn.life)*Math.min(pn.s*0.42,130)*(pn.occ===undefined?1:pn.occ));
+    // HIS NOTE, v3.50: "make the white sound circles for steps much smaller,
+    // they are distracting, esp when sprinting". A footstep ring grew to the
+    // same 130 unit ceiling a gunshot did, and sprinting is the loudest move
+    // noise there is, so running produced a strobe of huge rings centred on the
+    // one thing he is trying to look at. Gunfire keeps its old size, because a
+    // shot IS the loud event and the ring is how you place it. Movement rings
+    // shrink to about a third and start smaller.
+    var _grow=isFire?Math.min(pn.s*0.42,130):Math.min(pn.s*0.15,44);
+    var pr=Math.max(1,(isFire?8:4)+(pn.t/pn.life)*_grow*(pn.occ===undefined?1:pn.occ));
     wc.beginPath(); wc.arc(pn.x,pn.y,pr,0,6.2832); wc.stroke();
   }
   // marked ring
@@ -16813,6 +16860,56 @@ function renderCrate(){
   b.style.borderColor=P.devKit?'var(--coolant)':'';
   b.style.color=P.devKit?'var(--coolant)':'';
 }
+// A slot reads the same way every time: icon, what it is, what it does, and
+// whether anything is in it. EMPTY is drawn as loudly as a filled slot on
+// purpose, because "no rig" is a decision he was making without being told.
+function gearSlot(label,key,name,sub,empty){
+  var ic=(!empty&&key)?iconImgHTML(key,30):'<span class="gx">--</span>';
+  return '<div class="gslot'+(empty?' empty':'')+'">'+
+    '<div class="gic">'+ic+'</div>'+
+    '<div class="gtx"><div class="glab">'+label+'</div>'+
+    '<div class="gnm">'+name+'</div><div class="gsub">'+sub+'</div></div>'+
+    '<div class="gtag">'+(empty?'EMPTY':'EQUIPPED')+'</div></div>';
+}
+function renderGear(){
+  var g=document.getElementById('gearslots'); if(!g) return;
+  var w=WEAPONS[P.equipped]||WEAPONS.fists;
+  var rg=armorById((P&&P.rig)||'none');
+  var noRig=(rg.id==='none');
+  g.innerHTML=
+    gearSlot('WEAPON',P.equipped,w.name,
+      'DMG '+w.dmg+'  MAG '+(w.mag||'-')+'  RANGE '+w.rng+'  '+(w.auto?'AUTO':'SEMI'),false)+
+    gearSlot('BODY ARMOUR',noRig?null:('rig_'+rg.id),
+      noRig?'No rig':rg.name,
+      noRig?'You are wearing nothing. Every hit lands in full.'
+           :('ARMOUR '+rg.cap+'  ABSORB '+Math.round(rg.absorb*100)+'%  SPEED x'+rg.spd.toFixed(2)),
+      noRig)+
+    gearSlot('PACK','pack','Tier '+(P.pack+1),
+      'Carry penalty '+Math.round((1-PACKPEN[P.pack])*100)+'% lighter',false);
+  // Owned armour, with the same Equip affordance the weapons have had all along.
+  // Buying a vest in Requisition put it on you silently, which is the other half
+  // of his note: there was no screen anywhere that showed the thing you bought.
+  var rl=document.getElementById('riglist'); if(!rl) return;
+  rl.innerHTML='';
+  var owned=['none'].concat((P.rigs||[]).slice());
+  for(var i=0;i<owned.length;i++){
+    var A=armorById(owned[i]);
+    if(A.id!=='none'&&(P.rigs||[]).indexOf(A.id)<0) continue;
+    var row=document.createElement('div'); row.className='row';
+    if(A.id!=='none') row.appendChild(iconImg('rig_'+A.id,26));
+    var nm=document.createElement('div'); nm.className='nm';
+    nm.textContent=A.name+(A.id==='none'?'  (no protection)':'  '+A.cap+' armour');
+    row.appendChild(nm);
+    if(A.id!==((P&&P.rig)||'none')){
+      var b=document.createElement('button'); b.textContent='Wear';
+      (function(id){ b.onclick=function(){ P.rig=id; saveProfile(); renderHub(); }; })(A.id);
+      row.appendChild(b);
+    } else {
+      var t=document.createElement('div'); t.className='vl'; t.textContent='WORN'; row.appendChild(t);
+    }
+    rl.appendChild(row);
+  }
+}
 function renderHub(){
   var i;
   document.getElementById('credits').innerHTML=P.credits.toLocaleString()+'<small>CREDITS</small>';
@@ -17001,6 +17098,7 @@ function renderHub(){
         _toGo+' more extraction'+(_toGo===1?'':'s')+' sheds a point.)</span>';
     } else _ntEl.innerHTML='';
   }
+  renderGear();
   var w=WEAPONS[P.equipped]||WEAPONS.fists;
   document.getElementById('equipped').innerHTML=
     '<div class="wn">'+w.name+'</div><div class="ws">DMG '+w.dmg+' &middot; MAG '+(w.mag||'-')+
@@ -17446,6 +17544,8 @@ document.getElementById('condbtn').onclick=function(){
   hubGround=null;
 };
 document.getElementById('tunebtn').onclick=function(){ toggleTune(true); };
+document.getElementById('opbtn').onclick=function(){ renderHub(); document.getElementById('opmodal').classList.add('on'); };
+document.getElementById('closeop').onclick=function(){ document.getElementById('opmodal').classList.remove('on'); };
 document.getElementById('closetune').onclick=function(){ toggleTune(false); };
 document.getElementById('preA').onclick=function(){ applyPreset('A'); };
 document.getElementById('preB').onclick=function(){ applyPreset('B'); };

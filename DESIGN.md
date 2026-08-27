@@ -11839,3 +11839,90 @@ best value, 7 is simply the number the old test used. I have not measured what
 staying longer does to raider deaths or to crew revive frequency, which is the
 one thing that probe suggests should now change.
 
+
+### v3.50: the hub is your kit now, and the terminal moved out
+
+Five notes in a row, and they are one note.
+
+  "inventory page is messy, it's like a whole operator terminal, it needs to
+  just be inventory. Move operator terminal somewhere else"
+  "it needs to just be inventory, with icons, and loadout with icons.
+  contracts, flight recorder, all this other stuff, need to move to another
+  terminal"
+  "stuff you buy in requisition, its not clear when you are wearing your vest,
+  etc. NEEDS TO BE MORE LIKE DIABLO/MINECRAFT"
+  "should be able to view inventory and character equips in the undercroft"
+  "its not clear if he's giving me this stuff or its going to my inventory or
+  what, game needs better constructs around item management and inventory vs
+  stash vs equipped to player"
+
+THE HUB IS TWO PANELS. Inventory on the left, Equipped on the right. That is
+all. It was three panels, and the second was titled "Loadout + Contracts" and
+the third was the flight recorder with the extract rate, the average haul, the
+average accuracy, the most common killer and a dev tools button. Two thirds of
+the screen he opens after every raid to look at his loot was reporting
+furniture.
+
+EQUIPMENT SLOTS, which is the Diablo half of the note. Three labelled slots,
+WEAPON, BODY ARMOUR and PACK. Each one is an icon, the name, what it does, and
+the word EQUIPPED. A slot with nothing in it draws with a dashed border, the
+name greyed, and the word EMPTY in rust.
+
+The body armour slot is the whole point. Wearing nothing now reads:
+
+  BODY ARMOUR   No rig
+                You are wearing nothing. Every hit lands in full.   EMPTY
+
+and wearing something reads:
+
+  BODY ARMOUR   Plated Vest
+                ARMOUR 70  ABSORB 58%  SPEED x0.94              EQUIPPED
+
+Before this there was no screen anywhere in the game that showed the vest he had
+bought. Requisition took the credits, set P.rig silently, and the hub's one line
+of loadout text described the GUN. He was asking a fair question.
+
+BODY ARMOUR OWNED, a list underneath with the same Equip affordance the weapons
+have had since the beginning, except the button says Wear. No Rig is always in
+the list, so taking the plate off is a thing you can actually do and see. This
+is also the answer to the stash versus equipped half of the note: owned armour
+sits in a list, worn armour sits in a slot, and the word WORN is on exactly one
+row.
+
+THE OPERATOR TERMINAL is a new modal behind a new TERMINAL button. Contracts,
+the flight recorder, the four summary stats and the dev tools door all moved
+into it unchanged. Deliberately the same element ids, so renderHub fills them
+exactly as it always did whether the door is open or shut, which is why this is
+a move and not a rewrite.
+
+TWO SMALLER ONES he called while I was in here.
+
+Footstep rings. "make the white sound circles for steps much smaller, they are
+distracting, esp when sprinting". A movement ping grew to the same 130 unit
+ceiling a gunshot did, and sprinting is the loudest movement noise there is, so
+running produced a strobe of large rings centred on the one thing he is trying
+to watch. Movement rings now cap at 44 and start at 4. GUNFIRE IS UNCHANGED at
+130 and 8, because a shot is the loud event and the ring is how you place it.
+
+Wording. "Another team just dropped" is now "Another wave of players has
+entered", verbatim as he wrote it.
+
+Verified: parsecheck PASS at v3.50. All four maps drive and draw with frameErr
+and hudErr null, 115, 115, 80 and 90 entities, hub frames clean, endRaid driven
+on extract, dead and abandon with no throw. The hub itself driven through the
+real path rather than by calling the renderer directly, which matters because
+__hub() returns the hub state and does NOT re-render, and my first probe was
+wrong for exactly that reason: with two rigs owned and the vest on, three slots
+render with three icons and zero empty slots, the armour slot reads Plated Vest
+ARMOUR 70 ABSORB 58% SPEED x0.94, the owned list has three rows and two Wear
+buttons with WORN on the vest; clicking Wear switches the rig and the list
+updates; with no rig the slot renders EMPTY with the "wearing nothing" line; the
+terminal opens and closes and the contracts and recorder elements are inside it
+and still populated.
+Not verified: I have not looked at this on a narrow window, so the two column
+grid is unmeasured below about 820px where the button row already wraps. The
+footstep ring change is a number I picked by reading the growth formula, not one
+I measured against a captured frame, because the pane cannot screenshot here.
+Nothing in this build was A/B'd, because nothing in it touches gameplay except
+the ring radius, which is cosmetic.
+
