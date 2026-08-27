@@ -260,7 +260,7 @@
 <div class="modal" id="mercmodal">
   <h3>The Hiring Bench</h3>
   <div class="msub" id="wallet_merc" style="color:var(--amber);font-weight:700"></div>
-  <div class="msub">One raider, one run, paid up front. He loots for himself and you take ten percent of what he carries out. If he dies you owe his family, and that is not optional.</div>
+  <div class="msub">One raider, one run, paid up front. He loots for himself and you take ten percent of what he carries out. If he dies you owe his family, and that is not optional. On the surface, B cycles his orders: loot free, follow you, or hold a position. And if you go down, he comes for you.</div>
   <div class="plist" id="merclist" style="border:1px solid var(--steel-hi)"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
     <button id="mercclear" style="padding:8px 20px">Hire nobody</button>
@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.72';
+var VER='3.73';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5078,6 +5078,29 @@ function mkName(pre,letters){
 // sentry's inline fire weapon reads e.dmg, so scaling e.dmg AND the bullet
 // would double it. The multiplier rides on the bullet in fireWeapon (sh.elite)
 // and on the crawler's one melee line, and nowhere else.
+// An ordered merc is positioned, not pacified: the same close-range machine
+// and rival-crew engagement the loot branch runs, shared so the three merc
+// branches cannot drift apart. Returns true when he is fighting this frame.
+function mercEngage(e,dt){
+  var p=G.player,mth=null,mtd=280;
+  if(dist(e,p)<600)
+  for(var mm=0;mm<G.ents.length;mm++){
+    var em=G.ents[mm];
+    if(em===e||em.kind==='snitch'||em.downed) continue;
+    if(em.kind==='raider'&&!feudFoe(e,em)) continue;
+    var dm=dist(e,em);
+    if(dm<mtd&&losClear(e.x,e.y,em.x,em.y,G.vseg)){ mtd=dm; mth=em; }
+  }
+  if(!mth) return false;
+  var wnt=Math.atan2(mth.y-e.y,mth.x-e.x);
+  if(e.cd<=0){
+    fireWeapon(e,e.wep,mth.x+rnd(-10,10),mth.y+rnd(-10,10),false);
+    e.cd=(e.wep.rof/1000)*rnd(1.5,2.4);
+  }
+  if(mtd<90) moveToward(e,e.x-(mth.x-e.x),e.y-(mth.y-e.y),e.spd*.7,dt);
+  e.face+=clamp(angDiff(wnt,e.face),-5.5*dt,5.5*dt);
+  return true;
+}
 function blessElite(e){
   var roll=rr();
   var rate=(CFG.eliteRate===undefined?0.08:CFG.eliteRate);
@@ -6510,6 +6533,7 @@ function buildRaid(sim){
     tod:pickTod(WX_ROLL),
     lightning:0,rainT:0,inLandmark:null,inZone:undefined,hot:0,
     msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,legendOn:1,sprinting:false,
+    mercOrder:'loot',mercHold:null,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
       kills:{sentry:0,crawler:0,raider:0,snitch:0,warden:0,listener:0},
       dmg:{sentry:0,crawler:0,raider:0,snitch:0,other:0},
@@ -6690,6 +6714,22 @@ function raidKey(code,repeat,ev){
   }
   if(code==='KeyQ'&&G&&!G.over&&!repeat) cycleThrow();
   if(code==='KeyG'&&G&&!G.over&&!G.paused&&!repeat) useHot();
+  // ORDERS, v3.73, partner-merc line two. One key, three states, and the words
+  // are the feedback: LOOT is the freelancer he has always been, FOLLOW keeps
+  // him at your shoulder, HOLD nails him to the spot he is standing on when
+  // you say it. No merc alive, no order, no message.
+  if(code==='KeyB'&&G&&!G.over&&!G.paused&&!repeat&&!G.sim){
+    var _mrc=null;
+    for(var _mi=0;_mi<G.ents.length;_mi++){ var _me=G.ents[_mi];
+      if(_me.kind==='raider'&&_me.merc&&!_me.downed){ _mrc=_me; break; } }
+    if(_mrc){
+      G.mercOrder=(G.mercOrder==='loot')?'follow':(G.mercOrder==='follow'?'hold':'loot');
+      if(G.mercOrder==='hold') G.mercHold={x:_mrc.x,y:_mrc.y};
+      say('Order: '+(G.mercOrder==='loot'?(_mrc.name+', loot on your own.')
+        :(G.mercOrder==='follow'?(_mrc.name+', on me.'):(_mrc.name+', hold here.'))));
+      blip('pick');
+    }
+  }
   // BACKSPACE puts the cursor back. Works with no raid running, so it also
   // rescues the hub screen.
   if(code==='Backspace'&&!repeat) restoreCursor();
@@ -10568,7 +10608,8 @@ function updateEnts(dt){
     // hole patched he fell through to the tail that sets state to chase, which
     // is the section doing its job on the wrong man. The rescue branch in the
     // state chain below owns him for as long as you are on the floor.
-    if(sees&&!(e.merc&&p.downed&&!e.downed&&CFG.raiderDown!==0)){
+    if(sees&&!(e.merc&&!e.downed&&(
+        (p.downed&&CFG.raiderDown!==0)||G.mercOrder==='follow'||G.mercOrder==='hold'))){
       // SPEC 8.4: hostility varies. A passive raider that has not been provoked
       // watches you rather than opening fire, and only turns when you crowd it
       // or shoot it. One you have killed before never gives you that grace.
@@ -10742,6 +10783,31 @@ function updateEnts(dt){
         }
       }
       e.face+=clamp(angDiff(want,e.face),-5*dt,5*dt);
+      collide(e,G.map.walls);
+      if(e.cd>0) e.cd-=dt;
+      continue;
+    }
+    // FOLLOW AND HOLD, v3.73. The rescue above outranks both, because a downed
+    // client is the only order that matters. Under either order he still runs
+    // the shared engagement, so positioning him is not disarming him.
+    else if(e.kind==='raider'&&e.merc&&!e.downed&&G.mercOrder==='follow'){
+      if(!mercEngage(e,dt)){
+        var dF=dist(e,p);
+        want=Math.atan2(p.y-e.y,p.x-e.x);
+        if(dF>120) navSeek(e,p.x,p.y,e.spd,dt);
+        e.face+=clamp(angDiff(want,e.face),-5*dt,5*dt);
+      }
+      collide(e,G.map.walls);
+      if(e.cd>0) e.cd-=dt;
+      continue;
+    }
+    else if(e.kind==='raider'&&e.merc&&!e.downed&&G.mercOrder==='hold'&&G.mercHold){
+      if(!mercEngage(e,dt)){
+        var dH=dist(e,G.mercHold);
+        want=Math.atan2(G.mercHold.y-e.y,G.mercHold.x-e.x);
+        if(dH>40) navSeek(e,G.mercHold.x,G.mercHold.y,e.spd,dt);
+        e.face+=clamp(angDiff(want,e.face),-4*dt,4*dt);
+      }
       collide(e,G.map.walls);
       if(e.cd>0) e.cd-=dt;
       continue;
@@ -17256,7 +17322,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Partner merc line one is in: he picks you up. Next lines: orders, shared extraction',
+  now:'Partner merc lines one and two are in: rescue and orders. Next: shared extraction',
   next:'The datacore build and the ghost friend, whichever he ranks first'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

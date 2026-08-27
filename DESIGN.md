@@ -13182,3 +13182,48 @@ rests on the same navSeek that carried him 213 units, not on a cross-map
 drive. And no real raid with a real hired merc has been through this yet;
 his next hire will be the proof.
 
+
+### v3.73: three orders for the man you hired
+
+PARTNER-MERC LINE TWO. The B key cycles the merc's orders, and the words are
+the interface: LOOT, "loot on your own", the freelancer he has always been;
+FOLLOW, "on me", he holds your shoulder at 120 units; HOLD, "hold here", he
+is nailed to the spot he was standing on when you said it. No merc alive, no
+order, no message. Your down outranks every order: the v3.72 rescue sits
+above both branches in the chain, so a downed client is the only command
+that matters.
+
+AN ORDERED MERC IS POSITIONED, NOT PACIFIED. Both new branches run the same
+close-range engagement the loot branch has always run, machines and rival
+crews inside 280 with line of sight, pulled into a shared helper so the three
+copies cannot drift apart. Ordering him to HOLD a doorway means he fights
+the doorway, which is the entire reason to order it.
+
+THE SEEN-YOU SECTION NEEDED RELEASING AGAIN, the v3.72 lesson applied one
+build later. The stand-and-watch block captures any non-hostile raider who
+can see you, which is the merc's tag-along stare, and it would have captured
+him out of FOLLOW and HOLD exactly as it captured him out of the rescue. The
+section gate now releases a merc who is rescuing OR under orders, and the
+state chain owns him.
+
+The Hiring Bench says the key exists, in its own copy: "On the surface, B
+cycles his orders: loot free, follow you, or hold a position. And if you go
+down, he comes for you." The compact legend stays twelve rows because its
+box is sized to exactly twelve; the bench is where you learn about the man
+you are hiring.
+
+Verified: parsecheck PASS at v3.73. All four maps drive and draw with
+frameErr and hudErr null at the standard baselines, hub clean, endRaid clean
+on all three outcomes. The orders driven through the REAL keyboard handler
+with dispatched B presses: the cycle reads follow, hold, loot with the right
+voice line each time; FOLLOW closed 250 units to 122 and held inside the
+budget; HOLD pinned him at ZERO drift while the player walked 420 units
+away; holdSet recorded the post. The v3.72 rescue and the v3.17 crew revive
+both re-verified earlier this session and their branches are untouched above
+the new ones.
+Not verified: an ordered merc entering a real fight, because staging a
+machine assault on his held position needs choreography the probe does not
+have; the engagement is the same shared code the loot branch runs live every
+raid, which is the strongest paper argument short of a driven one. Gamepad
+players have no B equivalent yet, noted as the next gap in the orders line.
+
