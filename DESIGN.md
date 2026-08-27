@@ -13686,3 +13686,61 @@ dying disproportionately to shells, the bot learns to step aside before the
 number is trusted. The shell whistle does not exist yet, the alarm chirp
 stands in, and his ear will decide if the machine needs its own voice.
 
+
+### v3.85: the bot learns to play like Daniel, and the Howler is acquitted
+
+HIS ORDER, verbatim: "i am not confident that the player in your testing is
+acting like a real human would -- spend some focus on that since it becomes
+the benchmark for everything else." He was right, and the study that answers
+him is the most consequential measurement this project has run.
+
+FIRST, THE HOWLER VERDICT IT INTERRUPTED: 320 paired seeds, no howlers
+against two, 7.2 against 5.9 percent, p=0.62. Statistically nothing, even
+for a bot that walks straight through every warning ring. The machine
+stays as shipped.
+
+THE FINGERPRINT STUDY. Forty-eight bot raids collected the same per-run
+statistics his flight recorder keeps, laid against his 47 real runs:
+
+  metric              HIM        BOT at simGreed 52
+  extract rate        29%        2 to 7%
+  median duration     123s       188s
+  containers a raid   3          15
+  bag on extract      4,620c     13,045c
+  shots / accuracy    40 / 43%   82 / 72%
+  heals a raid        0.7        3.4
+  first loot at       36s        3s
+  killed mostly by    RAIDERS    machines
+
+He plays a cautious smash and grab. The bot played a greedy marathon with
+machine aim. Every absolute number this project ever quoted described that
+second player, not him.
+
+ONE DIAL WAS MOST OF THE DISGUISE. At simGreed 23, calibrated so the target
+bag matches his revealed appetite, the bot CONVERGES: duration 127s against
+his 123, bag out 4,540c against his 4,620, ground covered 7,299 against his
+8,264, extract 21 percent against his 29. The residual eight points is
+plausibly actual skill, dodging and raider-reading the bot does not have,
+which is the honest place for a gap to live. simGreed 23 is now THE DANIEL
+POSTURE, pinned as the standard measurement stance; everything before this
+entry ran at 52 and its absolute levels are not comparable.
+
+ALSO FIXED: the distance gauge read moved:0 for every bot raid ever run,
+because T.distance only accumulated in the human movement branches; the bot
+walks through moveToward, and it is measured there now.
+
+STILL OPEN, ranked: the bot's 72 percent accuracy against his 43; the killer
+mix, raiders kill HIM most while machines kill the bot, which says the bot
+fights raiders wrongly or not at all; and it opens 10 quick boxes where he
+picks 3. The GREYWATER absolute baseline must be re-run at the new posture
+next tick; 7.2 percent is a greed-52 number.
+
+Verified: parsecheck PASS at v3.85, all four maps drive and draw clean at
+the 84/85/56/70 baselines, hub clean, endings clean. The gauge fix measured
+live: movedMed 7,299 where every prior sim read zero. The convergence run
+used 24 raids against the study's 48; directionally decisive, statistically
+modest, and the 320-seed re-baseline is queued.
+Not verified: whether simGreed 23 also converges the bot on the OTHER maps,
+measured only on GREYWATER seeds so far; and the residual gaps above, which
+are the next builds in this line.
+
