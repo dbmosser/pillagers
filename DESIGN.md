@@ -13455,3 +13455,16 @@ through the analog path. Single-fire edge semantics confirmed by the order
 advancing exactly one state per press. The synthetic-pad technique is in the
 memory file; the recurring pad caveat is closed.
 
+
+### Baseline record, 2026-08-27: v3.78 GREYWATER reference number
+
+320 seeded bot raids on the hardest map at pinned measurement posture: the
+bot extracts 23 of 320, 7.2 percent. This is the reference every future
+change gets compared against; the previous references (10-15 percent) were
+taken against the inflated-count page state that died at v3.61 and are not
+comparable. Both arms of the run were deliberately identical and agreed on
+all 320 outcomes, zero discordant, which doubles as a determinism proof:
+the same seeded raid replayed gives the same outcome every time on this
+build. For scale, HIS real record is 11 extractions in 39 runs, about 28
+percent, roughly four times the deliberately-mediocre bot.
+
