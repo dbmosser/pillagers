@@ -15051,3 +15051,26 @@ restores the jog.
 Not verified: sprint at 320 seeds, queued behind the crouch measurement;
 whether 1.5 for six seconds is the right burst against his own 256.
 
+
+### Measurement: the raider crouch is perfectly free, and provably so
+
+320 paired seeds, official family, crouch off against on: 20.3 against 20.3,
+ZERO discordant, identical killer tables, identical bags to the credit. The
+raids are not merely similar, they are the same raids. That is the correct
+result and the strongest possible one: the crouch is aimed entirely at HIS
+EYES, the pose, the spotting distance, the hush, and the benchmark robot does
+not look through his eyes, so a clean implementation should cost exactly
+nothing in the robot's world. It does. The feature is free and the proof is
+total.
+
+The parity audit he ordered is now fully built. Four abilities handed down and
+each one measured: the dodge roll (no measurable cost), the steady aim (none),
+the crouch (provably zero), and the sprint (320 seeds in flight as this is
+written, the launch guard first showing 134 units in the fleeing man's first
+second without it and 184 with). The fifth item on the audit, whether a raider
+should revive a downed crewmate, is his open roadmap question four and stays
+untouched until he answers it.
+
+Not verified: the sprint at scale, in flight; all four abilities together in
+HIS hands, which is the only test that counts.
+
