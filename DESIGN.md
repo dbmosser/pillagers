@@ -12983,3 +12983,20 @@ which is itself the correct behaviour being verified); the first real export
 he sends from v3.70 will carry the proof. And the ghost itself remains an
 open case: this build is the tripwire, not the conviction.
 
+
+### Measurement note, 2026-08-27: the elite A/B replicated to a clean null
+
+The v3.62 elite measurement ran one seed family and read mildly positive for
+elites, 5.9 against 7.8 percent, p=0.36. The standing discipline says one
+family gives direction cheaply and significance badly, so the second family
+(104729) ran today on the current build: 7.2 against 5.3 percent, p=0.36, the
+OPPOSITE direction, with the discordant tables mirrored almost exactly, 12/18
+then 18/12. Read together that is a null: elites at one in twelve have no
+measurable effect on extract rate in either direction, which is the best
+possible answer for "did the feature break balance". The v3.62 entry's
+"mildly positive" was noise, and this note corrects it.
+Caveat stated plainly: family two ran on v3.70, which carries the new spawn
+floor and the GREYWATER manholes family one did not, so the two families are
+not a strict pool; the mirrored symmetry is why the null reading stands
+anyway.
+
