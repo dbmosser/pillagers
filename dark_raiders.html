@@ -560,7 +560,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.88';
+var VER='3.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -620,7 +620,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -9862,6 +9862,22 @@ function updateBot(dt){
     // retreat it slides perpendicular instead of dying in the corner, which is
     // the same instinct at the same speed. No new PRNG draws either way; off,
     // the movement is byte-identical to v3.87.
+    // COVER, v3.89, simCover, DEFAULT OFF. With kiting in, sentries became the
+    // bot number-one killer, 160 of 320 deaths, because its answer to a ranged
+    // hunter is to stand in the open and trade. He steps behind a wall. The
+    // sweep tries eight fixed bearings starting directly away from the threat,
+    // 95 units out, and takes the first spot it can walk straight to that the
+    // threat cannot see. Fixed order, ZERO rnd draws, so the PRNG stream and
+    // every historical number survive either setting. Raiders are excluded:
+    // a firefight with people is a fight he does take.
+    var _cv=null;
+    if(CFG.simCover&&threat.rng>=200&&threat.kind!=='raider'&&!p.downed){
+      for(var _ci=0;_ci<8;_ci++){
+        var _ca=Math.atan2(p.y-threat.y,p.x-threat.x)+_ci*0.7854;
+        var _cx=p.x+Math.cos(_ca)*95,_cy=p.y+Math.sin(_ca)*95;
+        if(losClear(p.x,p.y,_cx,_cy,G.vseg)&&!losClear(threat.x,threat.y,_cx,_cy,G.vseg)){ _cv={x:_cx,y:_cy}; break; }
+      }
+    }
     if(CFG.simFlee&&threat.rng<=30&&td<220&&!p.downed){
       botCrouch=false;
       var _fs=botSpd(CFG.pSpeed*(CFG.simFleeSpd===undefined?1.3:CFG.simFleeSpd)*LD.spd*BWADE);
@@ -9870,6 +9886,15 @@ function updateBot(dt){
       if(Math.hypot(p.x-_fx,p.y-_fy)<_fs*dt*0.35){
         moveToward(p,p.x-(threat.y-p.y),p.y+(threat.x-p.x),_fs,dt);
       }
+      moved=true;
+    }
+    else if(_cv){
+      // Run to the wall at flee speed, still firing on the existing trigger
+      // logic. Once the sightline breaks, the threat scan drops the sentry and
+      // the bot goes back to looting while the alert decays, which is exactly
+      // the human move: duck, wait it out, move on.
+      botCrouch=false;
+      moveToward(p,_cv.x,_cv.y,botSpd(CFG.pSpeed*(CFG.simFleeSpd===undefined?1.3:CFG.simFleeSpd)*LD.spd*BWADE),dt);
       moved=true;
     }
     else if(td<110){ botCrouch=false; moveToward(p,p.x-(threat.x-p.x),p.y-(threat.y-p.y),botSpd(CFG.pSpeed*.7*LD.spd*BWADE),dt); moved=true; }
@@ -17784,8 +17809,8 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The benchmark bot learns to RUN: crawlers kill it because it backpedals slower than they walk',
-  next:'Measure simFlee at 320 seeds, then the box-choice gap and a fresh official bench'
+  now:'The benchmark bot ducks behind walls: sentries were shooting it flat-footed in the open',
+  next:'Measure simCover at 320 seeds, then a fresh official bench and the raider hand-down he ordered'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a

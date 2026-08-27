@@ -13914,3 +13914,30 @@ paired measurement before it ships as default. Raiders already carry greed
 (raiderHaul) and extract logic; the aim, flee and fight-pick findings are the
 new material. Tracked as roadmap work, not yet built.
 
+
+### v3.89 - simCover: the bot ducks behind walls (2026-08-27)
+
+Fourth rung of the realism ladder, straight from the v3.88 killer table:
+kiting collapsed crawler deaths (124 to 37) and sentries inherited the
+survivors, 160 of 320, because the bot's whole answer to a ranged hunter was
+to stand flat-footed in the open and trade. He steps behind a wall.
+
+simCover, DEFAULT OFF, pinned ON in the fixture posture. When the selected
+threat is a ranged machine (rng 200 plus, raiders excluded, a firefight with
+people is a fight he does take), the bot sweeps eight fixed bearings starting
+directly away from the threat, 95 units out, and takes the first spot it can
+walk straight to that the threat cannot see, running there at flee speed and
+still firing on the way. Once the sightline breaks the threat scan drops the
+sentry, alert decays, and the bot goes back to work: duck, wait it out, move
+on. The sweep is a fixed order with ZERO rnd draws, so the PRNG stream and
+the entire back catalogue survive either dial setting. Off, movement is
+byte-identical to v3.88.
+
+Smoke seed 7331: lived 46s longer, haul 4290 to 5900, but shots ballooned 44
+to 118, so ducking may create long re-engage loops on this seed. One seed is
+noise; the 320-seed paired run is in flight as this is written.
+
+Not verified: simCover at scale (320 A/B in flight); whether shot count at
+scale stays near his 40 or balloons; whether the killer mix moves toward HIS
+(raiders first); the raider hand-down he ordered is tracked, not built.
+
