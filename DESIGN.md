@@ -13986,3 +13986,31 @@ Killers in the small sample: raiders first, like his record.
 Not verified: official bench on the 7919 family (in flight, identical arms,
 doubles as a fourth determinism proof).
 
+
+### Official bench re-taken: 10.0 percent, and an honest wrinkle (2026-08-27)
+
+320 seeds, 7919 family, GREYWATER, the full posture (his greed 23, his aim
+52, fight selection, kiting, wall cover), identical arms: 32 of 320, 10.0
+percent, ZERO discordant, the fourth consecutive perfect determinism proof.
+OFFICIAL BENCH IS NOW 10.0. Killer mix at the bench: sentry 138, raider 76,
+crawler 47, warden 12, howler 10.
+
+The wrinkle, stated plainly rather than buried: on THIS family the whole
+skills stack moved the bench only 9.4 to 10.0, while on the 9203 family the
+same stack moved 5.6 to 12.2. Same code, same map. The within-family paired
+results stand (kiting p=0.03, cover p=0.04, both on 320 pairs); what varies
+wildly is how much those skills are WORTH per seed family. Open question,
+falsifiable next check queued: re-run the kiting A/B on the 7919 family. If
+it nulls there, the gains are seed-terrain-dependent and the bench family
+happens to be stingy with them; either way the bot keeps every human skill,
+because realism, not score, is the assignment.
+
+Ladder against him: bench bot 10.0, Daniel 29. The remaining gap in ranked
+order: shot volume (his 40, bot 110, it fires while fleeing where he just
+leaves), box selection (his 3 chosen, bot 10 quick), howler ring-dodge
+(deaths doubled once cover let it live long enough to be shelled), and the
+raider hand-down he ordered once the behaviours settle.
+
+Not verified: why skill value is family-dependent (check queued); nothing
+else outstanding from this tick.
+
