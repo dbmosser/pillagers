@@ -15185,3 +15185,18 @@ artillery he could see coming for two seconds.
 Not verified: the raider dodge at 320 seeds, queued behind the official bench
 still running; how the scatter reads in real play.
 
+
+### THE OFFICIAL BENCH IS NOW 20.9 PERCENT
+
+320 seeds, official family, identical arms at the completed posture, his
+greed, his aim, fight-picking, kiting, wall cover and the ring dodge: 67 of
+320, 20.9 percent, ZERO discordant, the sixth consecutive perfect steadiness
+proof. Against his measured 28.6 the benchmark robot now stands at a 1.37 to
+one gap, down from three to one at the start of the realism work. Every
+balance number from here on is taken by a robot that plays recognisably like
+him, and the remaining gap is dominated by the one documented, twice-measured,
+accepted difference: it fires 96 rounds to his 40 because suppression is its
+substitute for his reflexes.
+
+Not verified: the raider-facing ring dodge at scale, launched next.
+
