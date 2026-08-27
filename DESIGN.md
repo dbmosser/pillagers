@@ -15126,3 +15126,33 @@ units out of the ring with it against 85 without. In flight.
 
 Not verified: the dodge at scale; everything awaiting his own hands.
 
+
+### Measurements: the ring dodge earns its pin, and the frame budget is clean
+
+THE RING DODGE, 320 paired seeds, official family: 19.7 against 20.9 percent,
+discordant 16 split 6 to 10 toward the dodge. The overall gain is within
+noise, but the mechanism-specific number is total: deaths to Howler artillery
+fall from NINE to ONE. The machine that punishes standing still no longer
+kills a robot that has learned to step aside, which is precisely what it was
+built to test. Sidestepping a two-second telegraph is what any person does,
+so the dodge is now PINNED into the benchmark posture, after its own paired
+measurement, per the rule that was written in this file the day I pinned one
+before measuring. A fresh official bench at the completed posture, greed 14,
+aim 52, fight-picking, kiting, cover, crouch context and ring dodge, is
+running as this is written; expect it near 21 percent against his 28.6.
+
+THE FRAME BUDGET, re-audited after a week that added two machines and six
+behaviours: 0.74 milliseconds of thinking plus 2.19 of drawing per frame on
+the busiest map, against a 16 millisecond allowance. Under a fifth of the
+budget in total. No hidden performance debt from the week; the internal
+stopwatches show the same shape they always have, entities and collision on
+top, nothing new grown hot.
+
+ALSO CHECKED AND CLOSED: his "rain at night too distracting" note from run
+#45 was already addressed at v3.58, which dims the rain exactly as the scene
+darkens and quotes his words; nothing to do, and saying so.
+
+Not verified: the fresh bench, in flight; whether the ring dodge belongs on
+the PLAYER-FACING raiders too, which would be hand-down five and follows the
+same measure-first path next.
+
