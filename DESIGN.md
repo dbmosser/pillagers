@@ -25,6 +25,11 @@
 > Bulwark nearly triples its kills in tight aisles. Say **"even them out"**
 > or **"hard maps stay hard"**.
 >
+> **New fact for your Q2** — measured at touchdown: about 7 of 8 bodies at
+> your ring woke on your walk there; the siege share concentrates in the
+> landings that kill. Say **"quieter"**, **"shorter beacon"**, or
+> **"move while it lands"**.
+>
 > Standing benchmark: the test robot now plays with your greed, aim, fight
 > selection, kiting, wall cover and artillery dodge — 20.9% survival to your
 > 28.6 — and every number above was measured by it over 320 raids per test.
@@ -15417,3 +15422,16 @@ RAIDERS had called across the map; scoped to his own ring before sampling.
 Not verified: a larger sample, cheap to grow whenever a robot raid runs;
 which of his three options he wants, which is the decision itself.
 
+
+### Question two, the fuller sample: seven of eight bodies are map-born
+
+Twenty-four robot raids, seven touchdowns captured at his own ring: 123
+map-born hostiles against 17 siege-born, 88 percent the map he woke. The
+first three landings' 51-to-none was the clean end of the spread, not the
+whole truth: when the wait stretches, siege arrivals DO reach the ring, and
+the two deadliest landings carried the biggest siege share, 8 of 36 on one.
+So the refined fact under his three options: the crowd is overwhelmingly the
+woken map, and the siege's contribution concentrates exactly in the landings
+that go wrong. Quieter movement attacks the big share; a shorter beacon
+shrinks the window in which the small share arrives; moving while it lands
+dodges both.
