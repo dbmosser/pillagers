@@ -13606,3 +13606,42 @@ this build, since the previous build's captured intel frame already showed
 the old wording; his next intel raid shows the new line or it does not, and
 the map is the first place he will look.
 
+
+### v3.83: the ghost friend walks
+
+THE LAST BIG ROW ON THE BOARD, built next-in-line after his "data cores"
+pick shipped. The idea from the scoping note, now real: a friend sends the
+run-report file the game already exports, the same one Share runs produces.
+At the Mainframe, type what to call them, pick the file, and from then on a
+raider wearing THEIR name walks his raids: their favourite gun read from
+their actual run lines, their greed tuned from their actual extract rate, a
+high-rate friend leaves early with what they have while a low-rate friend
+stays greedy, exactly as they really play. Friendly the way a parleyed
+raider is friendly, blue on the raider board, one per raid, replaceable by
+importing another file. Two real people, one raid, no netcode: one live,
+one replayed from data a friend actually generated, which is the shape
+nothing else in the genre has.
+
+THE MECHANISM IS DELIBERATELY WEIGHTLESS. The ghost is applied after the
+raid is built, by re-dressing one raider that already exists: no PRNG
+draws, no sim contact, no possible effect on any A/B, and raids without an
+imported friend are byte-identical to before. The run line records ghost:1
+so his telemetry shows which raids were haunted.
+
+Verified: parsecheck PASS at v3.83, all four maps drive and draw clean at
+the standard baselines, hub clean, raid endings clean. The parser driven
+against a synthetic report in the exact export format: three runs read as
+67 percent extract, Auto Rifle favourite, 3,333c average haul, and junk
+text rejected. The ghost driven through a real deploy: found in the raid
+renamed Big Mike, friendly and parley-locked, carrying the Auto Rifle,
+greed set to the efficient five-box threshold, roster row renamed, board
+row blue-flagged, telemetry stamped, and the Mainframe panel naming him
+with his record. Two Sub-count assertions fired before writing during the
+build, and one apostrophe-in-here-string trap was caught by inspection
+before it could repeat the v3.78 parse failure.
+Not verified: the file-picker click itself, same as every picker, one real
+click from proven; a report from a DIFFERENT version of the game with
+drifted run-line format, where the parser returns null and says so rather
+than importing garbage, by design but undriven; and whether a ghost in the
+raid actually changes how his raids feel, which only he can report.
+

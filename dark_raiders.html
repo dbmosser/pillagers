@@ -308,6 +308,12 @@
     <div id="mfhint" class="hint" style="margin-top:5px;font-size:9.5px;line-height:1.4"></div>
     <button id="mfslot" style="width:100%;margin-top:7px">SLOT A DATA CORE</button>
     <div id="mfslothint" class="hint" style="margin-top:5px;font-size:9.5px;line-height:1.4"></div>
+    <div style="display:flex;gap:6px;margin-top:7px">
+      <input id="mfghostname" placeholder="friend&#39;s name" maxlength="18"
+        style="flex:1;background:rgba(9,14,40,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:'Rubik',system-ui,sans-serif;font-size:12px;padding:6px">
+      <button id="mfghost" style="flex:1">IMPORT A FRIEND</button>
+    </div>
+    <div id="mfghosthint" class="hint" style="margin-top:5px;font-size:9.5px;line-height:1.4"></div>
   </div>
   <h2 style="border-top:1px solid var(--steel-hi)">Contracts</h2>
   <div class="plist" id="contracts" style="max-height:170px"></div>
@@ -554,7 +560,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.82';
+var VER='3.83';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6669,6 +6675,7 @@ function startRaid(){
       }
     }
   }
+  applyGhost();
   showScreen('raid');
   // Lead with the weather, because it is a condition you plan around rather
   // than decoration, and the controls line is the same every single raid.
@@ -10974,7 +10981,7 @@ function updateEnts(dt){
         // second conflates what he brought with what he came for.
         // Now it counts CONTAINERS HE OPENED THIS RAID. The spawn bag is
         // untouched, so kill rewards are exactly as they were.
-        if(!e.goal||(e.looted||0)>=CFG.raiderHaul) e.state='extract';
+        if(!e.goal||(e.looted||0)>=(e.ghostHaul||CFG.raiderHaul)) e.state='extract';
         e.goalT=0; e.goalD=e.goal?dist(e,e.goal):0;
         e.pathFail=false; e.path=null;   // clean slate per target, as with the bot
       }
@@ -11934,6 +11941,7 @@ function endRaid(how){
     dur:Math.round(elapsed()),
     census:G.census||null,
     intel:G.intel?1:0,
+    ghostIn:(G.tel&&G.tel.ghostIn)?1:0,
     haul:haul,items:G.bag.length,containers:T.containers,
     shots:T.shots,hits:T.hits,acc:acc,reloads:T.reloads,heals:T.heals,eliteKills:T.eliteKills||0,
     downs:T.downs,revives:T.revives,thr:T.thr,marked:T.marked||0,
@@ -15569,7 +15577,7 @@ function drawRaiderBoard(){
     if(r.out){ st='EXTRACTED'; out++; }
     else if(inEnts){ st=raiderStatus(e); live++; }
     else { st='DEAD'; dead++; }
-    rows.push({name:r.name,val:r.val,st:st,crew:r.crew,out:r.out,outAt:r.outAt,el:!!(r.ref&&r.ref.elite)});
+    rows.push({name:r.name,val:r.val,st:st,crew:r.crew,out:r.out,outAt:r.outAt,el:!!(r.ref&&r.ref.elite),gh:!!(r.ref&&r.ref.ghost)});
   }
   // HIS NOTE, v3.53: "once a raider has extracted, move them to the bottom of
   // the list and then make their name disappear after one minute after their
@@ -15623,6 +15631,7 @@ function drawRaiderBoard(){
       _nm+='\u2026';
     }
     if(w.el) ctx.fillStyle='#d08ce8';
+    if(w.gh) ctx.fillStyle='#7cc4ff';
     ctx.fillText(_nm,PADX,yy);
     ctx.fillStyle=col;
     ctx.textAlign='right';
@@ -17445,6 +17454,79 @@ function buildRack(){
   say('Rack '+P.racks+' hums to life. '+(P.racks*RACK_PAY)+'c every time you make it home.');
   renderMainframe(); try{ renderHub(); }catch(e){}
 }
+// THE GHOST FRIEND, v3.83, the last big row on the board. A friend sends the
+// run-report file the game already exports; imported here, a raider wearing
+// their NAME, their FAVOURITE GUN and their measured GREED walks his raids.
+// Friendly the way a parleyed raider is friendly, and marked on the board.
+// The ghost is applied AFTER the raid is built, by re-dressing one raider that
+// already exists, so it consumes no PRNG draws, never touches the sim, and
+// cannot move an A/B by a single roll.
+function parseGhost(txt,name){
+  if(!txt||txt.indexOf('FLIGHT RECORDER')<0) return null;
+  var runs=0,ext=0,weps={},haul=0,hauls=0;
+  var lines=String(txt).split('\n');
+  for(var i=0;i<lines.length;i++){
+    var L2=lines[i];
+    var m=L2.match(/^#\d+\s+\S+\s+(EXTRACT|DEAD|ABANDON)\b/);
+    if(!m) continue;
+    runs++;
+    if(m[1]==='EXTRACT') ext++;
+    var wm=L2.match(/wep:([^(]+?)[\s(]/);
+    if(wm){ var wn=wm[1].trim(); weps[wn]=(weps[wn]||0)+1; }
+    var hm=L2.match(/haul:(\d+)c/);
+    if(hm){ haul+=parseInt(hm[1],10); hauls++; }
+  }
+  if(runs<1) return null;
+  var favName=null,favN=0;
+  for(var k in weps) if(weps[k]>favN){ favN=weps[k]; favName=k; }
+  var favKey='rifle';
+  for(var wk in WEAPONS) if(WEAPONS[wk].name===favName){ favKey=wk; break; }
+  return {tag:String(name||'THE GHOST').slice(0,18),
+    wep:favKey, wepName:WEAPONS[favKey].name,
+    runs:runs, ext:ext, rate:Math.round(ext/runs*100),
+    avgHaul:hauls?Math.round(haul/hauls):0};
+}
+function importGhost(){
+  var nm=(document.getElementById('mfghostname')||{}).value||'';
+  nm=nm.trim();
+  if(!nm){ say('Type what to call them first.'); return; }
+  var inp=document.createElement('input');
+  inp.type='file'; inp.accept='.txt';
+  inp.onchange=function(){
+    var f=inp.files&&inp.files[0]; if(!f) return;
+    var rd=new FileReader();
+    rd.onload=function(){
+      var g=parseGhost(String(rd.result),nm);
+      if(!g){ say('That is not a Dark Raiders run report.'); return; }
+      P.ghost=g;
+      saveProfile();
+      blip('pick');
+      say(g.tag+' imported: '+g.runs+' runs, '+g.rate+'% extract, favours the '+g.wepName+'. They walk your raids now.');
+      renderMainframe();
+    };
+    rd.readAsText(f);
+  };
+  inp.click();
+}
+// One raider in the built raid becomes the ghost: renamed, re-gunned, made
+// friendly the way a parley holds, and greed-tuned from their real record. A
+// high extract rate leaves early with what it has; a low one gets greedy.
+function applyGhost(){
+  if(!P.ghost||!G||G.sim) return;
+  for(var i=0;i<G.ents.length;i++){
+    var e=G.ents[i];
+    if(e.kind!=='raider'||e.merc) continue;
+    e.name=P.ghost.tag;
+    e.ghost=1;
+    e.hostile=false; e.friendlyPC=1; e.grudge=false;
+    if(WEAPONS[P.ghost.wep]) e.wep=WEAPONS[P.ghost.wep];
+    e.ghostHaul=(P.ghost.rate>=25)?5:9;
+    for(var r2=0;r2<(G.roster||[]).length;r2++)
+      if(G.roster[r2].ref===e){ G.roster[r2].name=e.name; break; }
+    if(G.tel) G.tel.ghostIn=1;
+    break;
+  }
+}
 function slotCore(){
   if(P.intel){ say('A core is already slotted. It burns on your next deploy.'); return; }
   var ix=P.stash.indexOf('core');
@@ -17474,6 +17556,10 @@ function renderMainframe(){
     sb.disabled=!!P.intel||!haveCore;
     sb.textContent=P.intel?'CORE SLOTTED, BURNS ON DEPLOY':'SLOT A DATA CORE';
   }
+  var gh2=document.getElementById('mfghosthint');
+  if(gh2){ gh2.textContent=P.ghost
+    ?(P.ghost.tag+' walks your raids: '+P.ghost.rate+'% extract over '+P.ghost.runs+' runs, favours the '+P.ghost.wepName+'. Import another file to replace them.')
+    :'A friend sends you their exported run report, the same file Share runs makes. Name them, pick the file, and a raider wearing their name, their favourite gun and their real habits joins your raids. Blue on the board.'; }
   if(sh2){ sh2.textContent=P.intel
     ?'Your next raid deploys with intel: every locked-room key and every elite, live on your map. One core, one raid.'
     :('Spend a Data Core (520c on the shelf) and your next raid deploys knowing things: every locked-room key location and every elite, live on the M map. '+(P.stash.indexOf('core')>=0?'One is in the stash.':'None in the stash right now.')); }
@@ -17509,7 +17595,7 @@ var ROADMAP=[
   ['NOW','LVL and PROFICIENCY are career stats that gate nothing. Keep as trophies, or make them do something?'],
   ['NOW','A raider walking out will step past a downed crewmate. Has he earned his exit, or is that not a crew?'],
   ['NOW','Armour is lost on death, so the 900c rig costs about 318c a raid to wear. Price, or permanence?'],
-  ['NEXT','The ghost friend: a raider built from the exported profile of a real friend, in your raid'],
+  ['DONE','The ghost friend: a real friend walks your raids, imported from their run report'],
   ['DONE','The partner merc: he rescues you, takes orders, trades both ways, settles honestly'],
   ['DONE','Elite enemies at one in twelve, purple-ringed, tougher and better paid'],
   ['DONE','The dev box ranks priorities by dragging, and your order rides in every export'],
@@ -17559,8 +17645,8 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Polish on the Mainframe: the map header respects intel, the primer teaches the wall',
-  next:'The ghost friend, whenever he ranks it up'
+  now:'The ghost friend is in: name a friend, pick their report file, they walk your raids',
+  next:'Whatever his next export ranks, or the roadmap NOW questions he answers'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a
@@ -18412,6 +18498,7 @@ function buildExport(){
     // played. A guess written into the record is indistinguishable from data, and
     // the version field right there already says which of them predate the choice.
     if(r.intel) line+=' intel:1';
+    if(r.ghostIn) line+=' ghost:1';
     if(r.census) line+=' ents:'+r.census.total+'(s'+(r.census.by.sentry||0)+'/c'+(r.census.by.crawler||0)+'/r'+(r.census.by.raider||0)+'/sn'+(r.census.by.snitch||0)+' dials '+r.census.dials.nS+'/'+r.census.dials.nC+'/'+r.census.dials.nR+')';
     if(r.mapName) line+=' map:'+r.mapName;
     if(r.wx) line+=' wx:'+r.wx+'/'+(r.tod||'noon');
@@ -18660,6 +18747,7 @@ document.getElementById('optbtn').onclick=function(){ renderSettings(); document
 document.getElementById('opbtn').onclick=function(){ renderHub(); renderMainframe(); document.getElementById('opmodal').classList.add('on'); };
 document.getElementById('mfbuild').onclick=function(){ buildRack(); };
 document.getElementById('mfslot').onclick=function(){ slotCore(); };
+document.getElementById('mfghost').onclick=function(){ importGhost(); };
 document.getElementById('closeop').onclick=function(){ document.getElementById('opmodal').classList.remove('on'); };
 // HIS NOTE, v3.57: "menus should be zoomable with the wheel instead of ctrl and
 // wheel". The wheel over the undercroft scales the menus. A list that can still
