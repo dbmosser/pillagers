@@ -554,7 +554,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.81';
+var VER='3.82';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16454,7 +16454,7 @@ function drawMapOverlay(){
   ctx.font=FS(TYPE.label); ctx.fillStyle='#ffc04a';
   ctx.fillText('SECTOR MAP',ox,oy-10);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#9aa8d0';
-  ctx.fillText('hostile positions unknown',ox+110,oy-10);
+  ctx.fillText(G.intel?'elites and keys are live intel':'hostile positions unknown',ox+110,oy-10);
   ctx.fillStyle='#ffc04a';
   ctx.fillText(G.waypoint?'CLICK set waypoint  ·  RIGHT-CLICK clear':'CLICK to set a waypoint',ox+300,oy-10);
   // conditions belong on the map, since they change how far you can see
@@ -17559,7 +17559,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Mainframe complete: racks pay, cores buy intel, the computers stand in the room',
+  now:'Polish on the Mainframe: the map header respects intel, the primer teaches the wall',
   next:'The ghost friend, whenever he ranks it up'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -18978,6 +18978,7 @@ var PRIMER=[
   ['A hired merc is a partner now','Hire one at the Bench. B cycles his orders, loot free, follow you, or hold a spot. Stand with him and E searches his bag; drag an item from yours onto him and he will actually use it. Go down and he comes for you.'],
   ['The Undercroft has a radio','A faint 16-bit loop plays down here. The Music row in Settings cycles it: UNDERCROFT only, ALWAYS, or OFF.'],
   ['The HUD is yours to arrange','The raider list, the conditions box and the key legend all collapse on their corner glyph and drag anywhere. Positions stick between raids.'],
+  ['Junk builds the Mainframe','The station in the top-right corner of the Undercroft. Racks are built from scrap, wire, cells and boards, and each pays 200c every time you extract alive. Slot a Data Core there and your next raid deploys with every locked-room key and every elite marked on the map.'],
   ['Settings live at the dev box','Press T at the terminal in the Undercroft. Text size, auto-equip a better gun on pickup, autoloot when your bag is full, and this card again.']
 ];
 function renderPrimer(){

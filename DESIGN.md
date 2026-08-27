@@ -13578,3 +13578,31 @@ a one-line retitle noted for the next polish pass. And the second Sub-count
 miscount in as many days was caught by the patch script's own tripwire
 before any write, which is that guard earning its keep again.
 
+
+### v3.82: two small honesty fixes on the Mainframe
+
+THE MAP STOPS CONTRADICTING ITSELF. The sector map's header always read
+"hostile positions unknown", including on a raid where a burned Data Core
+was showing every elite as a live purple dot, which made the paid intel look
+like a glitch. With intel live the header now reads "elites and keys are
+live intel"; without it, the old line stands and stays true.
+
+THE PRIMER TEACHES THE WALL. A thirteenth first-time card, "Junk builds the
+Mainframe": where the station is, what a rack costs, what it pays, and what
+slotting a Data Core does. The feature he picked deserves to be
+discoverable by someone who has never read a changelog.
+
+AND THE CABINETS PASSED THE EYES RULE. The v3.81 rack visuals had shipped
+draw-clean but unlooked-at; a captured frame of the Undercroft with four
+racks shows a legible bank of computers beside the station label, saved as
+tools/shots/hub_racks.png.
+
+Verified: parsecheck PASS at v3.82, all four maps drive and draw clean at
+the standard baselines, hub clean, raid endings clean, the primer lists
+thirteen cards with the Mainframe card present, and the hub frame with four
+racks was captured and looked at.
+Not verified: the header swap in a live intel raid was code-verified only
+this build, since the previous build's captured intel frame already showed
+the old wording; his next intel raid shows the new line or it does not, and
+the map is the first place he will look.
+
