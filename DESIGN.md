@@ -14796,3 +14796,57 @@ crates" correctly absent.
 Not verified: the fresh bench at greed 14; whether the panel is too tall when
 three counting contracts are live at once, which is the case I have not drawn.
 
+
+### v4.05 - His four notes in one build: rings, music, reload, ammo
+
+HIS NOTE ONE, the sound rings: "if I am running away from a crawler, i should
+still be able to see their steps behind me via red rings, but I can't". He was
+right, and the rings themselves were fine; the PAINT ORDER was wrong. Rings were
+drawn onto the ground, and the fog-of-war shade was then laid over everything he
+cannot see - 42 percent grey by day, up to 93 by night. Hearing exists precisely
+FOR the ground you cannot see, so the rings were buried exactly where they
+mattered and clear only where his eyes already worked. They now draw above the
+darkness and below the rain. Captured both orders on the same scene and LOOKED:
+old order, two step-rings behind the player are barely-there smudges; new order,
+both read plainly through the shade. ringsOnTop 0 restores the old order.
+
+HIS NOTE TWO, the music: "music should stop completely when combat starts (e.g.
+player shoots or is shot at), and should not return until player has been out of
+combat for a few seconds". Combat is stamped in exactly two places: the gun
+itself, for his own trigger and for any round aimed within 80 units of where he
+stands, and the damage handler, which catches melee and artillery splash. The
+music cuts NEAR-INSTANTLY on the stamp (a fast cut, not the usual slow fade) and
+returns after four calm seconds, dialable. A raider shooting a machine across
+the map is not his fight and does not touch his music. In reactive mode the
+tension music still builds while he is hunted right up until the first shot,
+which makes the cut itself the loudest thing the radio does. Verified by test:
+calm = playing, shot = off, two seconds later = off, four and a half = back,
+hunted-but-no-shots = playing, gunfire = off.
+
+HIS NOTE THREE, reload: "needs a clear indicator on the mouse cursor that shows
+how long it takes -- maybe a bar above character too". The cursor now draws the
+full ring track faintly first so the WHOLE wait is visible, closes the bright
+thick arc over it, and counts the remaining seconds down in text beside the
+crosshair. Above the character, an amber bar in the same style as every other
+over-the-head bar. First capture showed the bar floating a full head above him,
+double-lifted; fixed and re-captured, it sits on his head.
+
+HIS NOTE FOUR, ammo at the cursor: "needs to be thicker/more obvious/more
+animated". Thicker: ring width up half again. More obvious: brighter floor, so
+it never fades to a whisper. More animated: every shot kicks a 160ms flash into
+the ring so the count visibly ticks down as you fire, and below a quarter
+magazine the whole ring breathes until you feed it. Captured at 3 of 14 rounds:
+three fat red notches over the crosshair, unmissable.
+
+Fixed along the way, found by my own test: a shot fired at the exact first
+instant of a raid read as "never happened" because a zero timestamp was treated
+as no timestamp. Would almost never bite in play; hardened anyway.
+
+All four behind their own settings (ringsOnTop, musicCombat + musicCombatGap,
+cursorLoud). Sweep green at 85/86/57/71, all endings, hub clean.
+
+Not verified: all four BY EAR AND HAND in his real play, which only he can do -
+in particular whether four seconds of calm is the right gap before the music
+returns, and whether the cut wants to also duck the reverb tail; the fresh bench
+at his corrected greed, still running.
+

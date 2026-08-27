@@ -560,7 +560,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.04';
+var VER='4.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -620,7 +620,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,bushRoadR:1,machVsRaider:0,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,bushRoadR:1,machVsRaider:0,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,musicCombat:1,musicCombatGap:4,cursorLoud:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -1420,10 +1420,27 @@ var MUS_LEAD=[
 var MUSIC_MODES=['hub','reactive','always','off'];
 var MUSIC_NAMES={hub:'UNDERCROFT',reactive:'REACTIVE',always:'ALWAYS',off:'OFF'};
 function musicMode(){ var m=(P&&P.music); return (m==='always'||m==='off'||m==='reactive')?m:'hub'; }
+// COMBAT, for the music's purposes, v4.05. HIS NOTE: "music should stop
+// completely when combat starts (e.g. player shoots or is shot at), and should
+// not return until player has been out of combat for a few seconds". Combat is
+// stamped in exactly two places: fireWeapon, for his own trigger and for any
+// round aimed at where he stands, and damagePlayer, which catches melee and
+// artillery splash that never pass through fireWeapon. The stamp then decays:
+// out of combat means no stamp for musicCombatGap seconds, default four.
+function inCombat(){
+  if(!G||G.sim) return false;
+  return (G.t-(G.combatT===undefined?-1e9:G.combatT))<(CFG.musicCombatGap===undefined?4:CFG.musicCombatGap);
+}
 function musicWanted(){
   if(G&&G.sim) return false;              // the bot sim is silent, always
   var m=musicMode();
-  if(m==='off') return false;
+if(m==='off') return false;
+  // v4.05: the fight is its own soundtrack. Gunfire cuts the music dead in any
+  // mode, and it stays away until the fight has actually let go of him. The
+  // tension states, hunted, ship called, hurt, still bring the music UP in
+  // reactive mode right until the first shot, which makes the cut itself the
+  // loudest thing the radio does.
+  if(CFG.musicCombat!==0&&G&&inCombat()) return false;
 if(m==='always') return true;
   // REACTIVE: always in the Undercroft, and in a raid only once something is
   // actually happening. The threshold sits above the idle floor so a distant
@@ -1450,7 +1467,7 @@ function tickMusic(){
   if(!musicWanted()){
     // Fade rather than cut, and forget the clock so the loop restarts clean
     // from step 0 instead of resuming mid-phrase after an hour on the surface.
-    if(MUS.g&&AC){ try{ MUS.g.gain.setTargetAtTime(0,AC.currentTime,0.35); }catch(e){} }
+    if(MUS.g&&AC){ try{ MUS.g.gain.setTargetAtTime(0,AC.currentTime,(CFG.musicCombat!==0&&inCombat())?0.06:0.35); }catch(e){} }
     MUS.next=0;
     return;
   }
@@ -7775,7 +7792,7 @@ function killPlayer(src){
   }
 }
 function damagePlayer(amt,src,srcName){
-  if(G) G.musHitT=G.t;              // v3.90: being hit is news the music wants
+  if(G){ G.musHitT=G.t; G.combatT=G.t; }              // v3.90: being hit is news the music wants
   var p=G.player;
   if(p.iv>0) return;
   p.combatT=0;
@@ -7918,6 +7935,13 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
   // sideways. Now the same 0.4 multiplier is available to anyone who has
   // actually steadied, which for a raider means standing still long enough to
   // set up (sh.steady, set by the AI that knows whether it moved this frame).
+// v4.05: combat starts here. His own trigger, or any round aimed at within
+  // 80 units of where he stands; a raider shooting a machine across the map is
+  // not his fight and does not touch his music.
+  if(G&&!G.sim){
+    if(fromPlayer) G.combatT=G.t;
+    else { var _cp=G.player; if(_cp&&Math.hypot(tx-_cp.x,ty-_cp.y)<80) G.combatT=G.t; }
+  }
   var spx=wep.spread*(((fromPlayer&&G.player.ads)||(!fromPlayer&&sh&&sh.steady))?0.4:1);
   var base=Math.atan2(ty-sh.y,tx-sh.x);
   // A shotgun throws a handful of pellets on one trigger pull. Everything else
@@ -13634,7 +13658,9 @@ function render2D(dt){
     for(j=1;j<pol.length;j++) wc.lineTo(pol[j].x,pol[j].y);
     wc.closePath(); wc.fill();
   }
-  // noise pings
+// noise pings. v4.05: drawn AFTER the darkness now, see below; this pass
+  // only runs if ringsOnTop is dialled off.
+  if(CFG.ringsOnTop===0)
   for(i=0;i<G.pings.length;i++){
     var pn=G.pings[i],dp=dist(p,pn);
     // Distance encoding: a faint small mark is far off, a large bright one is
@@ -14837,7 +14863,34 @@ function render2D(dt){
   ag.addColorStop(0,'rgba(0,0,0,'+clamp(.85*BR,.6,.99)+')'); ag.addColorStop(1,'rgba(0,0,0,0)');
   fx2.fillStyle=ag;
   fx2.beginPath(); fx2.arc(psx,psy,AMBR(),0,6.2832); fx2.fill();
-  wc.drawImage(fogC,0,0);
+wc.drawImage(fogC,0,0);
+  // HIS NOTE, v4.05: "if I am running away from a crawler, i should still be
+  // able to see their steps behind me via red rings, but I can''t". True, and
+  // the reason is paint order, not the rings. They were drawn onto the ground,
+  // and the fog-of-war sheet was then laid over everything he cannot see, 42
+  // percent grey by day and up to 93 by night. Hearing exists precisely FOR the
+  // ground you cannot see, so the rings were being buried exactly where they
+  // mattered and shown clearly only where his own eyes already worked. They now
+  // draw above the darkness and below the rain. Same colours, same falloff,
+  // same occlusion; ringsOnTop 0 restores the old order.
+  if(CFG.ringsOnTop!==0){
+    wc.save(); wc.scale(Z,Z); wc.translate(-ox,-oy);
+    for(i=0;i<G.pings.length;i++){
+      var pn=G.pings[i],dp=dist(p,pn);
+      var near=clamp(1-dp/(pn.s*1.5),0,1);
+      var a3=(1-pn.t/pn.life)*near*(pn.occ===undefined?1:pn.occ);
+      if(a3<=0.01) continue;
+      var fam=SNDCOL[pn.src||'player']||SNDCOL.player;
+      var col=fam[pn.typ==='fire'?'fire':'move'];
+      var isFire=pn.typ==='fire';
+      wc.strokeStyle=hexA(col,a3*(isFire?0.95:0.55));
+      wc.lineWidth=(isFire?2.6:1.6)*(0.6+0.4*near);
+      var _grow=isFire?Math.min(pn.s*0.42,130):Math.min(pn.s*0.15,44);
+      var pr=Math.max(1,(isFire?8:4)+(pn.t/pn.life)*_grow*(pn.occ===undefined?1:pn.occ));
+      wc.beginPath(); wc.arc(pn.x,pn.y,pr,0,6.2832); wc.stroke();
+    }
+    wc.restore();
+  }
   // Weather sits ON TOP of the fog, because rain falls between you and the world
   // rather than behind the darkness. Drawn in screen space at a fixed count, so
   // it costs the same regardless of zoom or map size.
@@ -14983,8 +15036,17 @@ function drawHUD(){
       var _mf=clamp(p.ammo/p.wep.mag,0,1);
       var _mr=gap+len+4;
       var _mc=_mf>0.5?'230,240,246':(_mf>0.25?'255,192,74':'224,72,58');
-      var _ma=0.22+0.55*(1-_mf);
-      ctx.lineWidth=2.2; ctx.lineCap='butt';
+// v4.05 HIS NOTE: "amt of bullets in clip shown on mouse cursor needs to
+      // be thicker/more obvious/more animated". Three answers in one: the ring
+      // is wider and starts brighter; each shot kicks a 160ms flash into it, so
+      // the count visibly TICKS down as you fire; and once the magazine is a
+      // quarter full the whole ring breathes until you feed it.
+      var _loud=(CFG.cursorLoud!==0);
+      var _shotAge=(G.t*1000)-(p.lastShot||-1e9);
+      var _kick=(_loud&&_shotAge>=0&&_shotAge<160)?(1-_shotAge/160):0;
+      var _lowPulse=(_loud&&_mf<=0.25)?(0.14+0.14*Math.sin(G.t*9)):0;
+      var _ma=Math.min(1,(_loud?(0.48+0.42*(1-_mf)):(0.22+0.55*(1-_mf)))+_kick*0.4+_lowPulse);
+      ctx.lineWidth=(CFG.cursorLoud!==0?3.4:2.2)+((typeof _kick!=='undefined')?_kick*1.6:0); ctx.lineCap='butt';
       if(p.wep.mag<=28){
         var _seg=6.2832/p.wep.mag, _pad=_seg*0.22;
         for(var _mi=0;_mi<p.ammo;_mi++){
@@ -14999,12 +15061,29 @@ function drawHUD(){
       ctx.lineCap='butt';
     }
     if(rState==='reload'&&p.wep.reload){
-      // the reload as a ring closing on the cursor, so you know when the gun is
-      // yours again without looking away from the fight
-      ctx.strokeStyle='rgba(255,192,74,.9)'; ctx.lineWidth=2.4;
-      ctx.beginPath();
-      ctx.arc(rx0,ry0,gap+len+4,-1.5708,-1.5708+6.2832*clamp(1-p.reloading/(p.wep.reload/1000),0,1));
-      ctx.stroke();
+      // v4.05 HIS NOTE: "reload needs a clear indicator on the mouse cursor
+      // that shows how long it takes". The old thin arc showed progress with no
+      // sense of the whole, so it read as decoration. Now the full track is
+      // drawn faintly first, the filled part closes over it thick and bright,
+      // and the seconds still to wait sit beside the cursor counting down,
+      // which is the "how long" he asked for, literally.
+      var _rlf=clamp(1-p.reloading/(p.wep.reload/1000),0,1);
+      var _rlr=gap+len+4;
+      if(CFG.cursorLoud!==0){
+        ctx.strokeStyle='rgba(255,192,74,.26)'; ctx.lineWidth=4.4;
+        ctx.beginPath(); ctx.arc(rx0,ry0,_rlr,0,6.2832); ctx.stroke();
+        ctx.strokeStyle='rgba(255,192,74,.95)'; ctx.lineWidth=4.4;
+        ctx.beginPath(); ctx.arc(rx0,ry0,_rlr,-1.5708,-1.5708+6.2832*_rlf); ctx.stroke();
+        var _ta0=ctx.textAlign;
+        ctx.font=FS(TYPE.micro); ctx.textAlign='left'; ctx.fillStyle='rgba(255,192,74,.95)';
+        ctx.fillText(Math.max(0,p.reloading).toFixed(1)+'s',rx0+_rlr+7,ry0+4);
+        ctx.textAlign=_ta0;
+      } else {
+        ctx.strokeStyle='rgba(255,192,74,.9)'; ctx.lineWidth=2.4;
+        ctx.beginPath();
+        ctx.arc(rx0,ry0,_rlr,-1.5708,-1.5708+6.2832*_rlf);
+        ctx.stroke();
+      }
     } else if(rState){
       // a struck-through cross: the shape says "not now" at a glance
       ctx.strokeStyle=rCol; ctx.lineWidth=2;
@@ -15425,6 +15504,17 @@ rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'})
       }
       ctx.textAlign='left';
       if(isFrag) bar(cs2.x-24,cs2.y-LH(22),48,4,1-cf,ccol);
+    }
+  }
+// v4.05: "maybe a bar above character too", so there is one, in the same
+  // amber as the cursor ring and the same shape as every other over-the-head
+  // bar in the game. Only while reloading, gone the frame the gun is back.
+  if(CFG.cursorLoud!==0&&p.reloading>0&&p.wep&&p.wep.reload&&!p.downed){
+    var _rb=w2s(p.x,34,p.y);
+    if(_rb){
+      ctx.fillStyle='rgba(6,9,13,.72)';
+      ctx.fillRect(_rb.x-27,_rb.y-LH(10),54,LH(8));
+      bar(_rb.x-25,_rb.y-LH(9),50,LH(5),clamp(1-p.reloading/(p.wep.reload/1000),0,1),'#ffc04a');
     }
   }
   if(G.searching){
@@ -18258,7 +18348,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Every live contract shows in the raid now, and the benchmark bot is recalibrated to his real looting',
+  now:'His four notes: rings above the darkness, gunfire kills the music, and the cursor shouts reload and ammo',
   next:'A fresh bench at the corrected greed, then his verdict on the machine versus raider war'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
