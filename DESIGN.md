@@ -14712,3 +14712,30 @@ Not verified: the streets measurement still in flight; whether the CONDITIONS
 panel is getting crowded now that it can hold five kinds of row at once, which
 is a look-at-it question for him in a real raid.
 
+
+### Measurement: the irregular streets are free
+
+320 paired seeds, official family, pinned, uniform lattice against jittered
+avenues: 10.3 against 10.6 percent, discordant ONE, split 0 to 1. Haul 4,299
+against 4,303. Duration 144 against 144. There is no effect here at all, and
+the single discordant pair says the raids themselves barely diverge.
+
+That is the ideal result for this change and worth being precise about why.
+Moving the avenues changes what the CITY LOOKS LIKE, not what it costs to cross:
+roads are tarmac rather than collision, the buildings that actually shape a
+fight never moved, and the bushes and trees culled off the new road lines are
+the same handful as before. So his "every block is the smae lengt" complaint is
+answered without paying a single point of survival for it, and the answer needed
+no balance compensation anywhere.
+
+Three consecutive measurements have now come back null: the raider steady aim,
+the road cull, and the streets. That is not the harness failing to detect
+things, because the Bulwark run in between moved 56 of 320 raids on the same
+instrument the same day. It is three changes that genuinely do not touch
+difficulty, which is exactly what a realism or a presentation change should
+look like when it is done correctly.
+
+Not verified: how the new streets read on the three maps other than GREYWATER;
+whether he wants the jitter amplitude doubled, which is his taste call and one
+number.
+
