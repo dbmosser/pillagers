@@ -13833,3 +13833,46 @@ Not verified: whether simPick moves the extract rate or the shot count at
 scale (320-seed A/B in flight); whether the killer mix shifts toward raiders,
 his number-one killer; the Howler alert change in real play by ear.
 
+
+### Measurement: simPick moved nothing, and the killer table said why (2026-08-27)
+
+320 paired seeds (9203 family), GREYWATER, Daniel posture, old scan against
+simPick: 5.6 against 5.0 percent, discordant 16 split 9 to 7. Null. Haul flat
+(4,287 to 4,342), duration flat (132s to 127s). Fight selection is the right
+shape of realism but it is not where the bot deaths were coming from.
+
+The keepRows killer table is the real finding. Deaths of 320 raids per arm:
+
+  arm            crawler  sentry  raider  howler  warden  listener
+  old scan          117     107      51      12       8         5
+  simPick           124     102      64       8       3         2
+
+Three quarters of bot deaths are crawlers and sentries in BOTH arms, fights
+simPick rightly keeps because those machines are hunting the bot. The raider
+share nudged his way (51 to 64) but the mix stays inverted against HIS record,
+where raiders are the number-one killer. So the flaw is not which fights the
+bot starts, it is what it does once hunted: it stands and trades.
+
+One caution for cross-family comparisons: this family reads 5.6 percent where
+the 7919 family read 9.4 on identical dials. Paired within a family stays the
+only honest comparison; the official bench number is quoted from 7919.
+
+### v3.88 - simFlee: the bot learns to run from what it cannot outfight
+
+The arithmetic behind crawler dominance: a crawler closes at 150 units a
+second. The bot's only melee answer was a 0.7-speed backpedal, 111 a second,
+walking backwards slower than the thing chewing it. He walks at 158 and
+sprints at 256; a crawler has likely never killed him. simFlee, DEFAULT OFF,
+pinned in the fixture posture: a melee hunter inside 220 is kited at
+simFleeSpd 1.3 (about 205 a second), still firing on the existing trigger
+logic, sliding perpendicular when a wall eats the retreat. No new PRNG draws;
+off, movement is byte-identical to v3.87.
+
+Smoke seed 7331: shots 73 to 44 (his figure is about 40), duration 192 to
+146, the death moved from melee to a sentry. The 320-seed paired measurement
+is in flight as this is written.
+
+Not verified: simFlee at scale (320 A/B in flight); whether kiting shifts the
+killer mix off crawlers at scale; sentry-disengagement (breaking sightlines)
+is NOT built yet and sentries are killer number two.
+
