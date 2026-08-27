@@ -12305,3 +12305,69 @@ rather than fixing since his machine is Chrome. The Equip button uses the base
 weapon for a field gun, deliberately discarding the field quality roll, and
 that simplification is unmarked in the UI.
 
+
+### v3.58: raiders work the beacon like people, and three dead-feeling keys got faces
+
+His run #44 note, and it is two findings in one sentence: "couldn't call the
+beacon when downed in the extraction circle -- raider bots were just standing in
+the circle but not attempting to extract -- they should play like humans".
+
+THE DOWNED CALL WAS NEVER BROKEN, AND I CAN PROVE IT, WHICH IS THE PROBLEM.
+Driven before touching anything: downed inside an open ring, E held, and the
+beacon sets after the same 1.6 seconds it takes standing. It has worked since
+v2.30. What failed him is that not one pixel says so: the downed overlay covered
+every state EXCEPT "in the ring, nothing called": crawl prompts, ship-inbound
+lines, board lines, all present, and for the one state he was actually in it
+showed only the self-revive line. A man holding a dead-feeling key for a second
+concludes it does not work, and he is right to conclude that.
+
+The overlay now says HOLD E TO CALL THE DROPSHIP with a filling bar in exactly
+that state. The standing call got the same bar under its existing prompt,
+because the only progress indicator was a tiny bar on the ring marker, nowhere
+near where you look. And the seal got its overdue line from his earlier note,
+"THE SEAL NEEDS some sort of visual indicator to tell you to hold E": HOLD E TO
+CUT THE SEAL with cut progress, same disease, same cure.
+
+THE STANDING-AROUND RAIDERS WERE REAL, and the cause is old: the SPEC has
+promised "an AI raider can call one across the map" since 5.2 was written, and
+z.beaconT was only ever written by the player's pull. A raider reached the ring
+and sat in a dwell timer, and every hit rolled the timer back, so a contested
+ring produced a statue collection.
+
+Now, with raiderBeacon on: a raider at an idle open ring CALLS it, with the
+same 1.6 second commitment and the same per-zone siege consequences the player
+pays. While the ship is inbound he clears out past the ring edge, which is his
+"aggro enemies away from the extraction point", because the fighting branches
+all still run out there. When the ship is down he boards in 3 seconds, a
+boarding rather than a 14 second stand. The shared window cuts both ways by
+design: you can ride out on his call, and he will ride out on yours.
+
+Driven end to end on one raider at a quiet ring: calls at 1.6s, stands off at
+2.8s, ship arrives at 26.6s, aboard and gone at 30.4s.
+
+ALSO IN THIS BUILD, three of his short notes:
+- "tuning is still too much -- needs simple toggles instead". The hub button is
+  now OPTIONS and opens the settings card with the plain-language toggles built
+  at v3.42. The dial console did not die, it moved in with the rest of the
+  instrumentation behind Dev tools.
+- "rain at night is still too distracting". Third rain note, and the reason one
+  number kept being wrong twice: bright strokes read far louder on a dark scene
+  than at noon. The alpha now scales with time-of-day darkness, full at noon,
+  a bit over half at night.
+- "there should be a button in inventory to sell all salvage at once". Checked
+  and it exists: Sell all salvage, directly under the inventory list, and it
+  quotes the total. Nothing shipped for this one; saying so per the standing
+  rule, and if it is not visible enough on his screen that is worth a note back.
+
+Verified: parsecheck PASS at v3.58. Four maps drive and draw with frameErr and
+hudErr null, hub clean, endRaid on all three outcomes no throw. Downed call
+re-driven and working; raider beacon loop driven with the timeline above; HUD
+frames drawn in both new prompt states with drawErr null.
+Not verified: raiders now start sieges at their own rings, which is a real
+change to how loud the map is and to sim extract rates, and I have not re-run
+the population or extract A/Bs on top of it; he directed the behaviour, so it
+ships, and the first recorder file on v3.58 will say what it did. The OPTIONS
+swap means TUNING is two clicks away instead of one, which is the point, but if
+he reaches for it often he will feel the move. The rain scaling at night is
+still arithmetic, not a captured frame.
+

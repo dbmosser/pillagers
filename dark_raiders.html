@@ -276,6 +276,7 @@
     <button id="simbtn" style="flex:1">Run bot sim</button>
   </div>
   <div style="padding:0 0 7px"><button id="mapbtn" style="width:100%;font-size:9.5px">Map: GREYWATER DAM</button></div>
+  <div style="padding:0 0 7px"><button id="tunebtn2" style="width:100%;font-size:9.5px">Tuning console (all the dials)</button></div>
   <div id="simprog" style="font-size:9.5px;color:var(--ash);padding:0 0 7px;display:none"></div>
   <h2 style="border-top:1px solid var(--steel-hi)">Roadmap</h2>
   <div class="plist" id="roadmap" style="max-height:190px"></div>
@@ -440,7 +441,7 @@
     <button class="deploy ghost" id="workbtn" style="flex:1">WORKSHOP</button>
     <button class="deploy ghost" id="opbtn" style="flex:1">CONTRACTS</button>
     <button class="deploy ghost" id="condbtn" style="flex:1">CONDITIONS</button>
-    <button class="deploy ghost" id="tunebtn" style="flex:1">TUNING</button>
+    <button class="deploy ghost" id="optbtn" style="flex:1">OPTIONS</button>
   </div>
 </div>
 <script>
@@ -545,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.57';
+var VER='3.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -605,7 +606,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:900,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:900,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -10616,9 +10617,47 @@ function updateEnts(dt){
       // most likely place he will ever watch one happen.
       if(feudEngage(e,dt)) continue;
       var z=G.active;
-      navSeek(e,z.x,z.y,e.spd*1.1,dt); want=Math.atan2(z.y-e.y,z.x-e.x);
-      if(dist(e,z)<z.r){
-        e.extracting+=dt;
+      // THE RING IS A DOOR, NOT A WAITING ROOM, v3.58. His run #44: "raider bots
+      // were just standing in the circle but not attempting to extract -- they
+      // should play like humans -- e.g. hit the extraction to call the beacon
+      // and then get out to aggro enemies away from the extraction point, and
+      // then return ... and click to extract".
+      // What he watched was real: a raider reached the ring and accumulated a
+      // dwell timer while standing in it, no call, no ship, and every hit he
+      // took rolled the timer back, so a contested ring produced a statue. The
+      // SPEC has said "an AI raider can call one across the map" since 5.2 was
+      // written; z.beaconT was only ever written by the player's pull. Never
+      // implemented until now.
+      // With raiderBeacon on, a raider at an idle open ring CALLS it, same 1.6
+      // second commitment, same siege consequences since the per zone clocks
+      // already run for every ring. While the ship is inbound he clears out to a
+      // standoff past the ring edge, which is his "aggro enemies away", since
+      // the fighting branches all still fire out there. When the ship is down he
+      // comes back and boards in 3 seconds, a boarding, not a 14 second dwell.
+      // The shared window cuts both ways by design: you can ride out on his
+      // call, and he will happily board the ship YOU called.
+      var _zin=(z.beaconT!==null&&z.beaconT!==undefined);
+      var _zhold=(z.hold!==undefined&&z.hold!==null&&z.hold>0);
+      var _standoff=(CFG.raiderBeacon!==0&&_zin&&!_zhold);
+      if(_standoff){
+        var _oa=Math.atan2(e.y-z.y,e.x-z.x)||0.7;
+        navSeek(e,z.x+Math.cos(_oa)*(z.r+140),z.y+Math.sin(_oa)*(z.r+140),e.spd,dt);
+        e.extracting=0;
+      } else navSeek(e,z.x,z.y,e.spd*1.1,dt);
+      want=Math.atan2(z.y-e.y,z.x-e.x);
+      if(!_standoff&&dist(e,z)<z.r){
+        if(CFG.raiderBeacon!==0&&!_zin&&!_zhold&&z.open){
+          e.extracting=0;
+          e.rcallT=(e.rcallT||0)+dt;
+          if(e.rcallT>=1.6){
+            e.rcallT=0;
+            z.beaconT=CFG.extractWait; z.hold=null; z.siegeSpawned=0; z.siegeSpawnT=0; z.pullN=0; z.pinged=0;
+            if(z===G.active){ G.beaconT=z.beaconT; G.shipHold=null; G.siegeSpawned=0; G.siegeSpawnT=0; }
+            ping(z.x,z.y,700,true,false,'raider','fire');
+            if(!G.sim) say(e.name+' called the dropship.');
+          }
+        }
+        else e.extracting+=dt;
         // A RAIDER LEAVING IS SUPPOSED TO BE A CHANCE, v1.73. Measured over 60 raids:
         // eight raiders spawn and SEVEN of them get out, an 88 percent extract rate,
         // against the player's high thirties. They were not better at the game, they were
@@ -10633,7 +10672,7 @@ function updateEnts(dt){
         // full bag, which since v1.58 is a genuinely valuable bag, is the best target in
         // the raid, and you have to choose whether crossing open ground to the extraction
         // ring is worth it. CFG.raiderExtract is the dial and 5 restores the old value.
-        var rdw=(CFG.raiderExtract===undefined?14:CFG.raiderExtract);
+        var rdw=(CFG.raiderBeacon!==0&&_zhold)?3:(CFG.raiderExtract===undefined?14:CFG.raiderExtract);
         // Being shot at interrupts it. Standing calmly in the open while rounds land was
         // the other half of why they never lost a bag.
         if(e.hitT>0) e.extracting=Math.max(0,e.extracting-dt*3);
@@ -13722,7 +13761,14 @@ function render2D(dt){
     // than v3.51, still scaling with intensity so a storm outranks a shower.
     var _rr=Math.min(WX.rain,2);
     var drops=Math.round(110+_rr*90);
-    wc.strokeStyle='rgba(176,196,232,'+(0.20+_rr*0.09).toFixed(3)+')';
+    // "rain at night is still too distracting", v3.58. Bright strokes on a dark
+    // scene pop far harder than the same strokes at noon, which is why one
+    // number kept being wrong twice. The alpha now scales with how dark the
+    // time of day actually is: full strength at noon, a bit over half in the
+    // dead of night. tod().lights is already "how much the lamps are needed",
+    // which is the darkness figure.
+    var _rl=(typeof tod==='function'&&tod())?tod().lights:0;
+    wc.strokeStyle='rgba(176,196,232,'+((0.20+_rr*0.09)*(1-0.45*_rl)).toFixed(3)+')';
     wc.lineWidth=WX.rain>1?1.4:1;
     wc.beginPath();
     for(i=0;i<drops;i++){
@@ -14611,6 +14657,20 @@ function drawHUD(){
   } else if(!G.over&&dist(p,G.active)<G.active.r){
     ctx.font=FS(TYPE.head); ctx.textAlign='center';
     ctx.fillStyle='#35d6c8'; ctx.fillText('HOLD E TO CALL THE BEACON',W/2,H-70);
+    // The 1.6 second hold is VISIBLE now. It had a tiny bar on the ring marker
+    // and nothing where you are actually looking, so letting go at a second
+    // read as the button not working.
+    if(G.active.callT>0) bar(W/2-70,H-62,140,7,clamp(G.active.callT/1.6,0,1),'#35d6c8');
+    ctx.textAlign='left';
+  }
+  // HIS NOTE, v3.58: "THE SEAL NEEDS some sort of visual indicator to tell you
+  // to hold E". Same disease as the beacon call: the interaction existed, the
+  // instruction lived nowhere.
+  if(!G.over&&G.seal&&!G.seal.done&&G.nearSeal&&!p.downed){
+    var _SRh=sealHere();
+    ctx.font=FS(TYPE.head); ctx.textAlign='center';
+    ctx.fillStyle='#ffd76a'; ctx.fillText('HOLD E TO CUT THE SEAL',W/2,H-100);
+    bar(W/2-70,H-92,140,7,clamp((_SRh.cut+G.seal.gained)/Math.max(1,sealNeed(_SRh.tier)),0,1),'#ffd76a');
     ctx.textAlign='left';
   }
   if(p.downed){
@@ -14622,6 +14682,18 @@ function drawHUD(){
     var canRev=!p.revived&&findHeal()>=0;
     ctx.fillText(p.revived?'Auto-injector spent. Crawl or bleed out.':
       (canRev?'[F] SELF-REVIVE (uses medical)':'No medical in bag. Crawl or bleed out.'),W/2,H/2+6);
+    // HIS RUN #44: "couldn't call the beacon when downed in the extraction
+    // circle". Driven before touching anything: THE CALL WORKS FROM THE FLOOR
+    // and has since v2.30, E passes through and 1.6 held seconds set the
+    // beacon. What was missing was any pixel saying so. The downed overlay
+    // covered every state except this one: in the ring, no ship called. A man
+    // holding a dead-feeling key for a second with no response concludes it
+    // does not work, and he is right to.
+    if(G.beaconT===null&&G.active&&G.active.open&&dist(p,G.active)<G.active.r){
+      ctx.fillStyle='#35d6c8';
+      ctx.fillText('HOLD E TO CALL THE DROPSHIP',W/2,H/2+LH(26));
+      if(G.active.callT>0) bar(W/2-70,H/2+LH(33),140,7,clamp(G.active.callT/1.6,0,1),'#35d6c8');
+    }
     ctx.textAlign='left';
   }
   // HIS NOTE: "a middle-of-the-screen HOLD E TO EXTRACT once its open, even if
@@ -17814,7 +17886,13 @@ document.getElementById('condbtn').onclick=function(){
   // the ground is baked once per raid, so the next deploy picks up the palette
   hubGround=null;
 };
-document.getElementById('tunebtn').onclick=function(){ toggleTune(true); };
+// HIS NOTE, v3.58: "tuning is still too much -- needs simple toggles instead".
+// The hub button is now OPTIONS and opens the settings card, which is the
+// simple-toggle surface built for exactly this request at v3.42. The dial
+// console is instrumentation, so it lives with the instrumentation: a button in
+// Dev tools, and the same keyboard route it always had.
+document.getElementById('optbtn').onclick=function(){ renderSettings(); document.getElementById('settingsmodal').classList.add('on'); };
+(function(){ var t2=document.getElementById('tunebtn2'); if(t2) t2.onclick=function(){ document.getElementById('devmodal').classList.remove('on'); toggleTune(true); }; })();
 document.getElementById('opbtn').onclick=function(){ renderHub(); document.getElementById('opmodal').classList.add('on'); };
 document.getElementById('closeop').onclick=function(){ document.getElementById('opmodal').classList.remove('on'); };
 // HIS NOTE, v3.57: "menus should be zoomable with the wheel instead of ctrl and
