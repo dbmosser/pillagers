@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.58';
+var VER='3.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1897,6 +1897,7 @@ function rnd(a,b){return a+rr()*(b-a);}
 // pure function of position, draw from here instead of from rr(). Same shape as
 // rr(), its own state, and it is never seeded from the raid: if it were, it
 // would be part of the raid again and we would be back where we started.
+var WX_ROLL=null;   // carries the weather roll into pickTod inside the same literal
 var FXS=0x2545F491;
 function fxr(){
   FXS=(FXS+0x9E3779B9)>>>0;
@@ -2446,8 +2447,19 @@ function elapsed(){ return (G?((G.raidLen===undefined?CFG.raidSec:G.raidLen)-G.t
 // STREAM DISCIPLINE: the uniform roll is drawn either way, so signing the term
 // cannot shift the PRNG for anything downstream. The second roll only happens on
 // the branch that already diverged by having a term signed.
-function pickTod(){
+function pickTod(wx){
   var t=TODS[ri(0,TODS.length-1)];
+  // HIS NOTE, v3.59: "golden hour shouldn't happen at night -- doesn't make
+  // sense". The time of day and the weather rolled independently, so one raid
+  // in ten opened on a storm-black screen with a box in the corner reading
+  // GOLDEN HOUR, "Everything glows", over a scene with nothing glowing in it.
+  // He read that as night, fairly. Under STORM or BLACKOUT weather the golden
+  // roll re-lands on one of the other four.
+  // STREAM DISCIPLINE, same rule as the jam and feud rolls: the fallback draw
+  // happens on EVERY raid, not just the one in ten that uses it, so the fix
+  // cannot shift the PRNG for raids it never touched.
+  var fb=[TODS[0],TODS[1],TODS[2],TODS[4]][ri(0,3)];
+  if(wx&&(wx.id==='storm'||wx.id==='blackout')&&t.id==='golden') t=fb;
   if(typeof hasTerm==='function'&&hasTerm('blackout')){
     var dark=[];
     for(var i=0;i<TODS.length;i++) if(TODS[i].lights>=0.7) dark.push(TODS[i]);
@@ -6332,7 +6344,7 @@ function buildRaid(sim){
     zones:zones,active:active,camps:camps,beaconT:null,searching:null,searchT:0,waypoint:null,dmgWalls:[],roster:roster,
     // Weather is rolled once per raid. Clear is weighted heaviest so the unusual
     // conditions stay unusual and keep their impact.
-    wx:pickWeather(),
+    wx:(WX_ROLL=pickWeather()),
     // One turn in most raids, two in some, never in the first ninety seconds so
     // the conditions you deployed into are the conditions you get to plan with.
     wxNext:null,wxT:0,
@@ -6343,7 +6355,7 @@ function buildRaid(sim){
     // do not have. Pulled forward, keeping a floor so the conditions you
     // deployed into are still the conditions you get to plan with.
     wxAt:rnd(85,Math.max(120,CFG.raidSec*0.35)),
-    tod:pickTod(),
+    tod:pickTod(WX_ROLL),
     lightning:0,rainT:0,inLandmark:null,inZone:undefined,hot:0,
     msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,legendOn:1,sprinting:false,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
@@ -11261,9 +11273,13 @@ function endRaid(how){
       doorsOpened:T.doorsOpened||0,caches:T.cachesOpened||0});
     if(gained>0){
       var cap=SEASON_TIERS[SEASON_TIERS.length-1].sp;
-      lines.push('<span style="color:var(--amber)">Season '+seasonNo()+': +'+gained+
-        ' progress'+(how==='dead'?' (half, for dying)':(how==='abandon'?' (a quarter, for backing out)':''))+
-        '. '+Math.min(cap,(P.sp||0)+gained).toLocaleString()+' of '+cap.toLocaleString()+'.</span>');
+      // HIS NOTE, v3.59: "it says Season 1 +84 progress -- but what the hell
+      // does that mean? is it rep? not clear". It is not rep. Named and
+      // explained at the one place he reads it.
+      lines.push('<span style="color:var(--amber)">SEASON XP +'+gained+
+        (how==='dead'?' (half, for dying)':(how==='abandon'?' (a quarter, for backing out)':''))+
+        '  &middot;  '+Math.min(cap,(P.sp||0)+gained).toLocaleString()+' of '+cap.toLocaleString()+
+        '</span><br><span style="color:var(--ash)">Not rep. Kills, loot, doors and extracting all pay it. It unlocks the reward tiers on the SEASON board at the terminal, and finishing the board moves the whole world up a tier.</span>');
     }
   })();
   if(G.strayPaid){

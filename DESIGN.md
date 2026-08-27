@@ -12371,3 +12371,49 @@ swap means TUNING is two clicks away instead of one, which is the point, but if
 he reaches for it often he will feel the move. The rain scaling at night is
 still arithmetic, not a captured frame.
 
+
+### v3.59: golden hour under a storm, and a number he could not name
+
+Two of his notes, both about the game telling him things badly.
+
+GOLDEN HOUR AT NIGHT, "golden hour shouldn't happen at night -- doesn't make
+sense". The time of day and the weather rolled independently and never looked
+at each other, so roughly one raid in ten opened on a storm-black or
+blackout-black screen with a box in the corner reading GOLDEN HOUR and a line
+saying "Everything glows, including you" over a scene in which nothing glowed.
+He read that as night, which is fair, because storm light at 0.55 and blackout
+at 0 are darker than the game's actual dusk.
+
+pickTod now sees the weather roll, which was already decided eleven lines
+earlier in the same literal, carried across on a module temp because the raid
+object does not exist yet at that point. Under STORM or BLACKOUT the golden
+roll re-lands on one of the other four times of day.
+
+STREAM DISCIPLINE, the same rule as the jam roll and the feud roll: the
+fallback is drawn on EVERY raid, not only the one in ten that uses it, so the
+fix cannot shift the PRNG for the nine raids it never touches. The v2.09 class
+of bug, avoided rather than shipped this time.
+
+SEASON PROGRESS, "it says Season 1 +84 progress -- but what the hell does that
+mean? is it rep? not clear". It is not rep, and nothing on the screen said so.
+The death and extract screens now name it SEASON XP, keep the half-for-dying
+and quarter-for-abandoning qualifiers, and add one ash-grey sentence under it:
+not rep, what pays it, what it unlocks, and that finishing the board moves the
+world tier. One sentence, on the one screen where he asked the question.
+
+Verified: parsecheck PASS at v3.59. All four maps drive and draw with frameErr
+and hudErr null, 115, 115, 80 and 90 entities, hub clean, endRaid driven on
+extract, dead and abandon with no throw. The combo itself: 120 seeded raids
+across all four maps produced 34 storm or blackout raids and ZERO with golden
+hour, against roughly 7 expected under the old independent roll; golden hour
+still occurred 11 times under permitted skies, so it was excluded, not deleted.
+Same seed twice gives the same weather/tod pair, so the unconditional fallback
+draw kept determinism. The SEASON XP line read back off the real outcome DOM
+after a driven death: "SEASON XP +2 (half, for dying) . 779 of 7,500" with the
+explainer sentence present.
+Not verified: the one-in-ten figure is arithmetic from the roll tables, not a
+measured rate from the old build. The blackout CONTRACT TERM path through
+pickTod is unchanged but I did not drive a termed raid this build. Whether the
+explainer sentence reads well at his window width is unmeasured, since the pane
+cannot screenshot.
+
