@@ -12628,3 +12628,46 @@ verified by code path, not by measuring a landed elite shot's damage number in
 play. And the ghost above is an open investigation, not a closed one: the
 cause of the inflated counts is unidentified, only its scope and its death.
 
+
+### v3.63: the dev box says what is being built, and he ranks what comes next
+
+HIS NOTE: "add what you are working on now and next in the dev box, and make
+it so i can rearrange the priorities by dragging". Both halves shipped, and
+the second half is quietly the biggest steering upgrade this project has had.
+
+WHAT IS BEING BUILT. The roadmap now opens with two rows the watchdog owns:
+BUILDING, the change actually in progress, and UP NEXT, the one queued behind
+it. They live in a DEVNOW constant with a standing rule written beside it:
+update it every build as part of the version bump, the same ritual as the
+changelog, because a stale "working on" line is the MAPCONT class of lie, a
+screen that looks authoritative and is not.
+
+RANKING BY DRAGGING. The open roadmap questions, the NOW and NEXT rows, are
+now draggable: drop one onto another and it takes that position. The order
+persists on the profile. Rows he has never ranked keep code order and sit
+BELOW the ones he has ranked, because a question I add next week must not jump
+a queue he deliberately set. DONE rows are history and do not drag.
+
+WHY THIS STEERS THE PROJECT. His order is written into every flight recorder
+export as one line: "Priorities, his order: 1) ... 2) ...". The watchdog reads
+exports at every tick, before it reads anything else. Until now the tick chose
+the "highest-value open item" by its own judgement; from this build, dragging
+a row in the dev box IS assigning the next build. No note needed, no typing,
+and the channel already existed: the export he was already sending.
+
+Verified: parsecheck PASS at v3.63. All four maps drive and draw with frameErr
+and hudErr null at the corrected baselines of 82, 83, 55 and 68 entities, hub
+clean, endRaid clean on extract, dead and abandon. The dev box driven through
+the real button: BUILDING and UP NEXT rows render with the DEVNOW text, the
+hint renders, six open rows carry the drag attribute. The drop handler driven
+directly: dropping the last open row onto the first moves it to first, saves a
+six-entry order on the profile, and re-renders in the new order. The export
+read back through the real builder now contains the priorities line with the
+dropped row listed first.
+Not verified: the drop handler was driven with a synthetic event object that
+exercises the full reorder-save-rerender path, but the browser's NATIVE drag
+and drop plumbing, dragstart through drop with a real DataTransfer, is not
+exercised headlessly, so the grab-and-pull feel is his to confirm. The
+priorities line will appear in the next real export he sends; none exists yet
+that carries it.
+

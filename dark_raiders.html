@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.62';
+var VER='3.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17003,16 +17003,64 @@ var ROADMAP=[
   ['DONE','The Mercenary: hire one of the ten for a single run']
 ];
 var BUILDS=[];   // filled from builds/index.json at boot; empty list hides nothing but options
+// HIS NOTE, v3.63: "add what you are working on now and next in the dev box,
+// and make it so i can rearrange the priorities by dragging".
+// DEVNOW is the watchdog speaking: what the current build actually is and what
+// is queued behind it. UPDATE IT EVERY BUILD as part of the VER bump, the same
+// ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
+// that looks authoritative and is stale.
+var DEVNOW={
+  now:'Collapsible, draggable HUD panels: the raider list, conditions and the key legend',
+  next:'Bodies that read as bodies from overhead, and locked rooms marked on the map'
+};
+// The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
+// he has never ranked keep code order and sink BELOW the ones he has, because a
+// new question must not jump a queue he deliberately set.
+function roadmapOpenOrdered(){
+  var open=[],done=[],i;
+  for(i=0;i<ROADMAP.length;i++){ (ROADMAP[i][0]==='DONE'?done:open).push(ROADMAP[i]); }
+  var ord=(P&&Array.isArray(P.roadmapOrder))?P.roadmapOrder:[];
+  open.sort(function(a,b){
+    var ia=ord.indexOf(a[1]), ib=ord.indexOf(b[1]);
+    if(ia<0&&ib<0) return 0;
+    if(ia<0) return 1;
+    if(ib<0) return -1;
+    return ia-ib;
+  });
+  return {open:open,done:done};
+}
 function renderRoadmap(){
   var el=document.getElementById('roadmap');
   if(!el) return;
-  var h='';
-  for(var i=0;i<ROADMAP.length;i++){
-    var tag=ROADMAP[i][0];
-    var col=tag==='NOW'?'var(--coolant)':(tag==='NEXT'?'var(--amber)':(tag==='DONE'?'#5a9a6a':'var(--ash)'));
-    h+='<div class="row"><span style="color:'+col+';font-weight:700;min-width:44px">'+tag+'</span><span class="nm" style="white-space:normal">'+ROADMAP[i][1]+'</span></div>';
+  var R=roadmapOpenOrdered(), h='', i, t;
+  h+='<div class="row" style="background:rgba(53,214,200,.05)"><span style="color:var(--coolant);font-weight:700;min-width:70px">BUILDING</span><span class="nm" style="white-space:normal">'+DEVNOW.now+'</span></div>';
+  h+='<div class="row"><span style="color:var(--amber);font-weight:700;min-width:70px">UP NEXT</span><span class="nm" style="white-space:normal">'+DEVNOW.next+'</span></div>';
+  h+='<div class="hint" style="padding:4px 12px">The open questions below are yours to rank: drag a row onto another to reorder. Your order rides along in every export, so it steers what gets built next.</div>';
+  for(i=0;i<R.open.length;i++){ t=R.open[i];
+    h+='<div class="row" draggable="true" data-rm="'+encodeURIComponent(t[1])+'" style="cursor:grab">'+
+       '<span style="color:'+(t[0]==='NOW'?'var(--coolant)':'var(--amber)')+';font-weight:700;min-width:44px">'+t[0]+'</span>'+
+       '<span class="nm" style="white-space:normal">'+t[1]+'</span></div>';
+  }
+  for(i=0;i<R.done.length;i++){ t=R.done[i];
+    h+='<div class="row"><span style="color:#5a9a6a;font-weight:700;min-width:44px">DONE</span><span class="nm" style="white-space:normal">'+t[1]+'</span></div>';
   }
   el.innerHTML=h;
+  el.querySelectorAll('[data-rm]').forEach(function(r){
+    r.ondragstart=function(ev){ ev.dataTransfer.setData('text/plain','rm:'+r.getAttribute('data-rm')); };
+    r.ondragover=function(ev){ ev.preventDefault(); };
+    r.ondrop=function(ev){
+      ev.preventDefault();
+      var d=ev.dataTransfer.getData('text/plain');
+      if(!d||d.indexOf('rm:')!==0) return;
+      var from=decodeURIComponent(d.slice(3)), to=decodeURIComponent(r.getAttribute('data-rm'));
+      if(from===to) return;
+      var order=roadmapOpenOrdered().open.map(function(x){return x[1];});
+      var fi=order.indexOf(from), ti=order.indexOf(to);
+      if(fi<0||ti<0) return;
+      order.splice(fi,1); order.splice(ti,0,from);
+      P.roadmapOrder=order; saveProfile(); renderRoadmap();
+    };
+  });
 }
 function initBuildPicker(){
   var sel=document.getElementById('buildsel'),go=document.getElementById('buildgo');
@@ -17751,6 +17799,14 @@ function buildExport(){
   // from itch is not the build on his machine and may be several versions behind.
   L.push('Install: '+installId()+'   Origin: '+location.hostname+'   Shared: '+(shareOn()?'yes':'no'));
   L.push('Active config ['+(CFG.preset||'custom')+']: '+JSON.stringify(CFG));
+  // HIS PRIORITY ORDER RIDES IN EVERY EXPORT, v3.63. The dev box lets him drag
+  // the open roadmap questions into his own order; this line is how that order
+  // reaches the watchdog, which reads exports every tick. Dragging a row is
+  // literally steering the next build.
+  (function(){
+    var R=roadmapOpenOrdered();
+    L.push('Priorities, his order: '+R.open.map(function(x,i){return (i+1)+') '+x[1];}).join('  '));
+  })();
   // THE WORLD TIER SCALES EVERY NUMBER BELOW IT, v2.36, and nothing said so.
   // seasonLoot() multiplies ival, so every haul and every credit figure in this
   // file is scaled by it, and seasonHp() multiplies the health of every machine.
