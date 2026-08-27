@@ -30,6 +30,23 @@
 > landings that kill. Say **"quieter"**, **"shorter beacon"**, or
 > **"move while it lands"**.
 >
+> **Your question 3, LVL and PROFICIENCY, the numbers** - from your own 53
+> logged runs: you are LEVEL 5 (a level takes you roughly 20 runs at your
+> pace, so as a GATE it would be glacial) and PROFICIENCY 12 (one to three
+> points per good extract, and a death hands back 60 percent of what you
+> carried). The game already has two working progression tracks: reputation
+> gates the shop stock, seasons harden the world. Teeth for LVL/PROF means a
+> third track on top, or folding them into those two. Say **"trophies"**
+> (no change), **"fold"** (LVL feeds reputation so climbing levels
+> unlocks stock), or **"teeth"** and name what they should gate.
+>
+> **Your question 5, armour, the shape of each answer** - today the 900c rig
+> vanishes with you, which at your death rate prices it about 318c a raid.
+> Say **"price"** (keep it, dying is meant to cost), **"permanence"**
+> (the rig survives death and wears out instead, a small build), or
+> **"insurance"** (pay a cut up front to get it back on death, a medium
+> build).
+>
 > Standing benchmark: the test robot now plays with your greed, aim, fight
 > selection, kiting, wall cover and artillery dodge — 20.9% survival to your
 > 28.6 — and every number above was measured by it over 320 raids per test.
