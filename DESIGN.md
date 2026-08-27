@@ -14323,3 +14323,35 @@ own 320 seeds and is queued behind the bench attribution now running; the same
 bonus for a raider planted in an extraction ring, deliberately NOT built yet
 because that man is already the most dangerous target in the raid.
 
+
+### v3.96 + attribution: the dodge roll is innocent, and here is the proof
+
+320 paired seeds, official family, raiders unable to roll against raiders
+rolling: 2.5 against 2.5 percent, ZERO discordant. Not merely no effect on
+survival, no effect on the raids AT ALL: identical outcomes seed for seed.
+
+That zero is informative rather than disappointing, because it explains itself.
+The roll triggers on being hit by one of the PLAYER's rounds, and in a bot raid
+the benchmark bot barely shoots raiders at all: simPick, its fight selection,
+only engages what is actively hunting it, and a raider working containers is
+not. So in 320 simulated raids the trigger essentially never fired, which also
+explains the zero rolls I saw when I first probed a sim raid and briefly took
+for a broken feature. It is not broken; it is a feature aimed at HIS fights,
+verified directly on the play path, and invisible to a benchmark that does not
+pick those fights. The right conclusion is that the roll costs the sim nothing
+and the sim cannot price it: only he can, by shooting at someone.
+
+By elimination the bench drop from 10.0 to 2.5 percent belongs to the other
+change shipped between those runs, v3.91's bush cull, which removes 31 to 54
+bushes a map. v3.96 adds bushRoadR so that can be measured rather than assumed:
+1 is the disc test that clears the roads, 0 reproduces the old centre-only test
+and its bushes exactly. That A/B is running as this is written.
+
+If it confirms, the finding is a real one about this game rather than a bug:
+undergrowth is worth several points of survival, so tidying the roads quietly
+took cover away, and the fix is not to put bushes back on the tarmac but to put
+the same quantity of undergrowth somewhere it belongs.
+
+Not verified: the bush attribution itself, in flight; whether v3.95's steady
+aim moves difficulty, queued behind it.
+
