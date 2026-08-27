@@ -13000,3 +13000,31 @@ floor and the GREYWATER manholes family one did not, so the two families are
 not a strict pool; the mirrored symmetry is why the null reading stands
 anyway.
 
+
+### Verification note, 2026-08-27: the eyes pass
+
+Three shipped builds carried an honest "Not verified: the look of it" line
+because the pane cannot screenshot. The capture sink can, so this pass closed
+all three with real frames at play zoom, saved in tools/shots.
+
+  eyes_body_open.png    The v3.65 body figure at 1.4x on open ground, beside
+                        a sentry for scale: reads as a fallen person, pale
+                        head, coat, splayed legs. The v3.65 caveat about
+                        smearing at distance is closed. At 1x behind a bush
+                        it reads as a dark form, which is what a corpse in
+                        undergrowth should do.
+  eyes_rings_1x.png     The v3.50 sound rings: five movement pings at the
+                        feet draw as small quiet circles, one gunshot draws
+                        the large amber ring. The distinction he asked for,
+                        confirmed by eye.
+  eyes_elite_los.png    The v3.62 elite ring, visible around a sentry at
+                        1.4x and clearly at 2.2x in body_v365.png. Purple,
+                        pulsing, unmistakable against the machine.
+
+Two process notes worth keeping. First, the fog of war ate my first elite
+shot: an enemy the player is not facing paints zero pixels, which is the
+v0.27 rule working, and the fix was to stand the probe player on a sightline
+chosen with the game's own losClear rather than teleporting blind. Second,
+nothing in this pass changed code, so there is no build, no version bump and
+no zip, just evidence.
+
