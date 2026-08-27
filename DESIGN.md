@@ -13645,3 +13645,44 @@ drifted run-line format, where the parser returns null and says so rather
 than importing garbage, by design but undriven; and whether a ghost in the
 raid actually changes how his raids feel, which only he can report.
 
+
+### v3.84: THE HOWLER, the first new machine since the Listener
+
+OFF THE DEFERRED LIST, where "Rocketeer analog: arcing projectiles" had sat
+since the list was written, and shipped under the standing rule that an
+empty request queue is not an empty work queue.
+
+WHAT IT IS. Artillery. Two per map at reference size, squat and slow, and it
+does not need to see you over a wall once it knows where you are. A shell
+hangs in the air for 2.1 seconds while a red ring grows on the ground at the
+exact landing point, then 35 damage at the centre falling off across a 90
+unit blast that also hurts machines and raiders unlucky enough to share it.
+Scatter grows with distance, so range is a real defence, and it holds fire
+inside 140 units, so walking it down is the counterplay its range invites.
+It never approaches: it plants, and it mails the fight to WHERE YOU WERE.
+The design in one line: every other machine punishes being seen, the Howler
+is the first that punishes STANDING STILL, which is the looting posture, so
+one more pull at an open crate is now a real question.
+
+Elites roll on it like every machine. Kills count as h in the recorder's
+kill string. Four dials: nHowler, howlerDmg, howlerAir, howlerR, all pinned,
+and nHowler 0 removes the machine entirely if he hates it.
+
+Sweep baselines rise with the new spawns: 84, 85, 56 and 70 entities.
+
+Verified: parsecheck PASS at v3.84, all four maps drive and draw clean at
+the NEW baselines with 2, 2, 1 and 2 howlers respectively, hub clean, raid
+endings clean. The brain driven: an alerted Howler at 400 units fired within
+frames, scatter landed 20 units off the mark at that range, the shell hung
+exactly 2.1 seconds, and standing dead centre cost exactly 41 health, which
+is the formula to the point. The machine held its ground to the unit while
+firing. The warning ring CAPTURED AND LOOKED AT: bright red, growing,
+unmistakable around the player's position, tools/shots/howler.png. The body
+captured at tools/shots/howler_body.png and reads as its own silhouette.
+Not verified: fairness at scale, which is the next tick's 320-seed
+measurement of nHowler 0 against 2, and whether the bot ever dodges the
+ring, which it has no code to notice; if the measurement shows the sim
+dying disproportionately to shells, the bot learns to step aside before the
+number is trusted. The shell whistle does not exist yet, the alarm chirp
+stands in, and his ear will decide if the machine needs its own voice.
+
