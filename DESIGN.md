@@ -12717,3 +12717,53 @@ the mouse position from the last mousemove, and a dispatched mousedown with no
 preceding mousemove reads a stale position, which is exactly how a real
 browser behaves and my synthetic sequence initially did not.
 
+
+### v3.65: bodies are people and locked rooms are on the map
+
+Two of his notes, both about things not saying what they are.
+
+A BODY IS A BODY. "the random 'bodies' that players can search don't look
+like bodies at all". Correct, and the code said why: the container renderer
+had a styled branch for crates, lockers, safes, camp chests and caches, and
+'body' fell through to the generic else, a 20-wide beige box with a lid. A
+fallen man drew as a suitcase, the same silhouette family as the v1.64 wreck
+complaint.
+
+Now it is a prone figure: torso in a worn coat, bare head past the collar,
+two legs splayed with ground showing between them, one arm flung clear with a
+pale hand at the end of it. It lies FLAT, no lift, because bodies do not
+stand on end. Orientation comes from grit(x,y), the positional hash, so every
+body holds its own facing forever with no PRNG stream touch and no shimmer.
+Dead raiders and your own recoverable corpse use the same container type, so
+they inherit the figure too, which they should have had all along.
+
+AND FOR ONCE I LOOKED AT IT. The capture sink was down all session; restarted
+it and shot the first attempt at 2.2x zoom: it read as a LOG, one dark capsule
+with the legs fused into the torso and every value within a step of the next.
+Second pass separated the limbs with real gaps, stepped the coat two values
+above the trousers, and added the hand. The second capture reads as a person.
+Both frames are in tools/shots as body_v365.png and body_v365b.png. The same
+frame also confirmed the v3.62 elite ring reading clearly under a sentry,
+which had shipped sight unseen.
+
+LOCKED ROOMS ON THE MAP. "locked rooms should be clearly indicated on the
+map". The M map now outlines each locked room in amber with a keyhole glyph
+at its centre and the room's name above it, TURBINE ROOM, SUBSTATION VAULT
+and their siblings on the other maps. Once the door is opened the mark turns
+green and says OPEN, because a spent key is information worth exactly as much
+as an unspent one.
+
+Verified: parsecheck PASS at v3.65, twice, once per body iteration. All four
+maps drive and draw with frameErr and hudErr null at 82, 83, 55 and 68
+entities, hub clean, endRaid clean on all three outcomes. The map overlay
+driven with M held: draws clean with both GREYWATER locked rooms present and
+labelled, and again clean with one room flipped open. Fifteen body containers
+on the seed-4401 map drew through the new branch with no error, and the
+figure itself was verified BY EYE from two captured frames, which is a first
+for this project's art changes.
+Not verified: the figure at 1.0x zoom from a normal play distance, where it
+will be about half the captured size; if it smears back into a lump at range
+that is a tuning pass on the values, not a structure change. The keyhole
+glyph's size on his monitor. And the open-state green is code-verified only,
+since no key was spent in the driven raid.
+

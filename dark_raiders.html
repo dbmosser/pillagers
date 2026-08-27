@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.64';
+var VER='3.65';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12478,6 +12478,52 @@ function drawContS(ct){
   // Opaque ink plate instead of the 35 percent stroke this used to carry, which
   // was the only outline anywhere in the game. All of it stays inside the dim
   // window so an opened container still fades as one whole object.
+  if(ct.type==='body'){
+    // A BODY IS A BODY, v3.65. HIS NOTE: "the random 'bodies' that players can
+    // search don't look like bodies at all". Correct: this branch fell through
+    // to the generic box, so a fallen man drew as a 20-wide beige suitcase, the
+    // same silhouette family the v1.64 wreck fix was about. Now it is a prone
+    // figure: torso, head, splayed legs, one arm flung out, lying flat on the
+    // ground with no lift, because bodies do not stand on end.
+    // Orientation comes from grit(x,y), the positional hash, so every body has
+    // its own stable facing with no PRNG stream touch and no per-frame shimmer.
+    // This also covers dead raiders and your own recovered corpse, which use
+    // the same container type and should have looked like this all along.
+    // First capture read as a LOG: one dark capsule, legs fused to the torso,
+    // values too close. Second pass separates the limbs with real gaps and
+    // steps the coat two values up from the trousers, so the silhouette is a
+    // figure and not a shape.
+    var ba=grit(ct.x,ct.y)*6.2832;
+    wc.save(); wc.translate(ct.x,ct.y-2); wc.rotate(ba);
+    wc.fillStyle='rgba(10,8,6,.5)';
+    rrF(-20,-8,40,17,7);
+    // legs: splayed apart with ground showing between them
+    wc.save(); wc.rotate(0.30);
+    wc.fillStyle=INK; rrF(-19.5,-2.2,12,4.4,2);
+    wc.fillStyle='#33291f'; rrF(-19,-1.7,11,3.4,1.5);
+    wc.restore();
+    wc.save(); wc.rotate(-0.34);
+    wc.fillStyle=INK; rrF(-19.5,-2.2,11,4.4,2);
+    wc.fillStyle='#33291f'; rrF(-19,-1.7,10,3.4,1.5);
+    wc.restore();
+    // torso in a worn coat, clearly lighter than the trousers
+    wc.fillStyle=INK; rrF(-10,-5.6,20,11.2,4);
+    wc.fillStyle='#4a4034'; rrF(-9.4,-5,18.8,10,3.5);
+    wc.fillStyle='#5c5040'; rrF(-9.4,-5,18.8,3.6,2.5);
+    // arm flung clear, with a pale hand at the end of it
+    wc.save(); wc.rotate(0.55);
+    wc.fillStyle=INK; rrF(1,4.4,12.5,4,1.8);
+    wc.fillStyle='#4a4034'; rrF(1.5,4.9,11,3,1.4);
+    wc.fillStyle='#8a755c'; wc.beginPath(); wc.arc(13.4,6.4,2.1,0,6.2832); wc.fill();
+    wc.restore();
+    // head, bare, past the collar
+    wc.fillStyle=INK; wc.beginPath(); wc.arc(13,-0.5,4.6,0,6.2832); wc.fill();
+    wc.fillStyle='#8a755c';
+    wc.beginPath(); wc.arc(13,-0.5,3.8,0,6.2832); wc.fill();
+    wc.fillStyle='rgba(255,255,255,.14)';
+    wc.beginPath(); wc.arc(12,-1.6,1.6,0,6.2832); wc.fill();
+    wc.restore();
+  } else {
   wc.fillStyle=INK; wc.fillRect(ct.x-w/2-1,ct.y-lift-d2-1,w+2,lift+d2+2);
   wc.fillStyle=cF; wc.fillRect(ct.x-w/2,ct.y-lift,w,lift);
   if(ct.opened){
@@ -12488,6 +12534,7 @@ function drawContS(ct){
   } else {
     wc.fillStyle=cT; rrF(ct.x-w/2,ct.y-lift-d2,w,d2,2);
     wc.fillStyle=cL; wc.fillRect(ct.x-w/2+1,ct.y-lift-d2,w-2,1.2);
+  }
   }
   // Iron bands and a hasp, so a camp strongbox reads as a banded chest at a
   // glance rather than as a beige box. Drawn after the lid so it survives both
@@ -16212,6 +16259,23 @@ function drawMapOverlay(){
     ctx.stroke();
     mapLabel('ENCAMPMENT',cqx,cqy-14,'#ff8a76');
   }
+  // LOCKED ROOMS, v3.65. HIS NOTE: "locked rooms should be clearly indicated on
+  // the map". Amber outline and a keyhole while the door stands, green and OPEN
+  // once it is spent, because a used key is information worth exactly as much
+  // as an unspent one.
+  var lkm=(G.map.locked||[]);
+  for(i=0;i<lkm.length;i++){
+    var LKM=lkm[i];
+    var lqx=ox+LKM.x*sc,lqy=oy+LKM.y*sc,lqw=LKM.w*sc,lqh=LKM.h*sc;
+    ctx.strokeStyle=LKM.open?'rgba(127,196,160,.8)':'#ffb02e'; ctx.lineWidth=2;
+    ctx.strokeRect(lqx,lqy,lqw,lqh);
+    ctx.lineWidth=1;
+    var kcx=lqx+lqw/2,kcy=lqy+lqh/2-3;
+    ctx.fillStyle=LKM.open?'rgba(127,196,160,.9)':'#ffb02e';
+    ctx.beginPath(); ctx.arc(kcx,kcy,3.2,0,6.2832); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(kcx-2.2,kcy+7.5); ctx.lineTo(kcx+2.2,kcy+7.5); ctx.lineTo(kcx,kcy+1); ctx.closePath(); ctx.fill();
+    mapLabel((LKM.name||'LOCKED ROOM')+(LKM.open?'  Â·  OPEN':'  Â·  LOCKED'),lqx+lqw/2,lqy-6,LKM.open?'#7fc4a0':'#ffc04a');
+  }
   // Landmarks are what the map is navigated BY, so they are labelled and boxed
   // rather than left as anonymous geometry.
   var lms=(G.map.landmarks||[]);
@@ -17087,8 +17151,8 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Bodies that read as bodies from overhead, and locked rooms marked on the map',
-  next:'Spawn never lands within sight of an extraction point, and the datacore question'
+  now:'Spawn distance to the nearest extraction point, and roads that run into buildings',
+  next:'The datacore question: crafting, base computers, passive income (his call first)'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a
