@@ -15200,3 +15200,30 @@ substitute for his reflexes.
 
 Not verified: the raider-facing ring dodge at scale, launched next.
 
+
+### Measurement: the raider ring dodge changes ONE raid in 320. v4.12: the board catches up.
+
+The raider-facing ring dodge, 320 paired seeds, official family: 20.9 against
+20.6 percent, discordant exactly ONE, killer tables identical to within a
+single death. Raiders scattering from artillery is pure texture: the world
+reads livelier and no scale moved. That closes the hand-down program his
+directive started: five human behaviours passed down to the raider characters,
+roll, steady aim, crouch, sprint, ring dodge, and every one measured free.
+
+v4.12 catches the hub roadmap board up with the week: eight new DONE lines,
+the Bulwark, conduct contracts, the irregular streets, raiders playing like
+people, the artillery sidestep for everyone, combat killing the music, the
+warning rings and cursor work, and the wall fixes. He reads that board in the
+game; it should not be a week behind the game it sits in.
+
+The autonomous queue is, for the first time, genuinely empty of things I can
+decide alone: every remaining item is one of his calls. The machine war
+(brief written, rewrites a quarter of raids at near-neutral cost), the street
+irregularity amount, the music gap seconds, and roadmap question four, the
+crewmate revive. Until one of those lands or new play data arrives, ticks
+will verify, measure deeper, and hold the line rather than invent work his
+answers might overturn.
+
+Not verified: nothing in flight for the first time today; everything now
+waits on his hands, his ears, or his word.
+
