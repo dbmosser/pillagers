@@ -560,7 +560,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.09';
+var VER='4.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -620,7 +620,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,bushRoadR:1,machVsRaider:0,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,musicCombat:1,musicCombatGap:4,cursorLoud:1,raiderCrouch:1,raiderSprint:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,bushRoadR:1,machVsRaider:0,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,musicCombat:1,musicCombatGap:4,cursorLoud:1,raiderCrouch:1,raiderSprint:1,simDodgeRing:0};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -10077,7 +10077,30 @@ function updateBot(dt){
   var cap=PACKCAP[P.pack];
   // The bot pays the same carry cost the player does, or the sim would be measuring a
   // player who does not exist and would report a change nobody can feel.
-  var LD=loadOf(bagWeight());
+var LD=loadOf(bagWeight());
+  // RING DODGE, v4.10, simDodgeRing, DEFAULT OFF. The Howler paints a red ring
+  // on the ground for two full seconds before its shell lands, the whole
+  // design of the machine being the question "are you moving or not", and the
+  // benchmark bot has never once answered it: it stands in the ring and takes
+  // the hit. A human sidesteps the obvious. When a shell is inbound on ground
+  // the bot occupies, it sprints straight out of the blast circle, radially,
+  // past the rim with margin. That frame it does nothing else, which is what
+  // sprinting out of artillery costs. No dice rolled; the whole back
+  // catalogue reproduces with the dial off.
+  function _botRingDodge(){
+    if(CFG.simDodgeRing!==1||p.downed||!G.shells||!G.shells.length) return false;
+    var RD=(CFG.howlerR===undefined?90:CFG.howlerR)+16;
+    for(var _si=0;_si<G.shells.length;_si++){
+      var _sh=G.shells[_si];
+      var _sd=Math.hypot(p.x-_sh.tx,p.y-_sh.ty);
+      if(_sd>=RD) continue;
+      var _sa=(_sd>0.5)?Math.atan2(p.y-_sh.ty,p.x-_sh.tx):(p.face+3.1416);
+      moveToward(p,_sh.tx+Math.cos(_sa)*(RD+34),_sh.ty+Math.sin(_sa)*(RD+34),botSpd(CFG.pSpeed*1.45*LD.spd*BWADE),dt);
+      moved=true;
+      return true;
+    }
+    return false;
+  }
   // THE BOT NEVER DREW ITS SIDEARM, v2.03, second of the two holes the guard sweep
   // confirmed. Every deploy gives the player a Scav Pistol with a full magazine as
   // p.sec and p.secAmmo, and swapGuns has no sim guard at all, so it works
@@ -10118,7 +10141,8 @@ function updateBot(dt){
       }
     }
   }
-  if(threat&&(p.ammo>0||p.reserve>0)){
+if(_botRingDodge()){}
+  else if(threat&&(p.ammo>0||p.reserve>0)){
     p.face=Math.atan2(threat.y-p.y,threat.x-p.x);
     if(p.ammo===0){
       if(p.reloading<=0&&p.reserve>0){ p.reloading=p.wep.reload; T.reloads++; }
@@ -18423,8 +18447,8 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Parity four: a raider making a run for it actually RUNS, one six second burst per man',
-  next:'Measure crouch and sprint, then his three open calls'
+  now:'The benchmark bot steps out of the Howler ring like anyone with eyes would',
+  next:'Measure sprint and the ring dodge, then his three open calls'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a

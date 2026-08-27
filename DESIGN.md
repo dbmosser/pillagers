@@ -15074,3 +15074,29 @@ untouched until he answers it.
 Not verified: the sprint at scale, in flight; all four abilities together in
 HIS hands, which is the only test that counts.
 
+
+### v4.10 - The benchmark bot steps out of the Howler ring
+
+The Howler paints a red circle on the ground for two full seconds before its
+shell lands. The whole machine is one question, "are you moving or not", and
+the benchmark bot has never once answered it: it stood in the circle and took
+the hit, which is why Howler deaths doubled the moment wall-cover let it live
+long enough to be shelled. Anyone with eyes sidesteps this.
+
+simDodgeRing, DEFAULT OFF until its 320 seeds are in. When a shell is inbound
+on ground the bot occupies, it sprints straight out of the blast circle,
+radially, past the rim with margin, and does nothing else that frame, which
+is what fleeing artillery costs. It outranks every other plan, because the
+ground is about to explode. No dice are rolled either way, so the entire
+back catalogue reproduces with the dial off.
+
+Verified with a sharpened probe after the first one could not tell dodging
+from ordinary wandering: shell aimed at the bot's feet, six tenths of a
+second later the bot is 137 units from the ring centre with the dodge, past
+the 90 unit blast edge, against 85 without it, still inside. Sweep green at
+85/86/57/71.
+
+Not verified: the dodge at 320 seeds, queued behind the sprint measurement
+still running; whether it should also apply to the PLAYER-facing raiders,
+which would be the fifth hand-down and follows the same measure-first path.
+
