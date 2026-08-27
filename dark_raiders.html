@@ -560,7 +560,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.03';
+var VER='4.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15175,7 +15175,20 @@ if(seasonNo()>1) rows.push({k:'SEASON '+seasonNo(),v:'harder, worth more',c:'#c9
         }
         else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no elite killed yet'; }
         else if(CC.ck==='weak'){ note=((T.weakHits||0))+' of '+CC.n+' weak points hit'; }
-        rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'});
+rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'});
+      }
+      // v4.04: and the COUNTING contracts too. v4.03 fixed the conduct ones
+      // because a rule you cannot see is a rule you will break, and the same
+      // argument applies one notch weaker to "kill six sentries": you cannot
+      // decide whether the sixth is worth crossing the street for if you do not
+      // know you are on five. Progress comes straight off the contract object
+      // the hub panel reads, so the two can never disagree. Finished ones are
+      // dropped rather than shown ticked, because the panel is for decisions
+      // that are still live.
+      for(var _cq2=0;_cq2<P.contracts.length;_cq2++){
+        var CD=P.contracts[_cq2];
+        if(!CD||CD.type==='conduct'||CD.prog>=CD.n) continue;
+        rows.push({k:'CONTRACT',v:(CD.desc||'contract')+'  '+CD.prog+'/'+CD.n,c:'#ffb02e'});
       }
     }
     // THE FIRST CUT PUT THE EFFECT RIGHT ALIGNED ON THE NAME'S OWN LINE and the
@@ -18245,8 +18258,8 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The conduct contracts are visible IN the raid now, live, and they go red the moment you break one',
-  next:'The streets measurement, then his verdict on the machine versus raider war'
+  now:'Every live contract shows in the raid now, and the benchmark bot is recalibrated to his real looting',
+  next:'A fresh bench at the corrected greed, then his verdict on the machine versus raider war'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a

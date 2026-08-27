@@ -14739,3 +14739,60 @@ Not verified: how the new streets read on the three maps other than GREYWATER;
 whether he wants the jitter amplitude doubled, which is his taste call and one
 number.
 
+
+### RECALIBRATION: the benchmark bot was still three times greedier than he is
+
+His standing order is that the bot is the benchmark and must be calibrated
+against HIS runs, so this tick re-derived his fingerprint from the 49 real runs
+in the last export and measured the bot against it on nine seeds.
+
+  metric        HIM (49 real runs)   BOT at simGreed 23
+  duration      123s                 167s
+  containers    3                    9
+  shots         40                   100
+  accuracy      43%                  52%
+  haul          2,915c               5,350c
+
+Three times the boxes and nearly twice the bag. simGreed is a BAG WEIGHT
+threshold, so it was swept on the same nine seeds:
+
+  simGreed   dur    cont   shots   haul
+  8          105s   3      96      1,515c
+  14         116s   5      96      3,185c
+  23         167s   9      100     5,350c
+  HIM        123s   3      40      2,915c
+
+14 is the fit: duration within 7 seconds of his, haul within 270 credits,
+containers 5 against his 3, where 8 matches the box count but undershoots the
+bag by half. The fixture posture pin moves 23 to 14. This is a HARNESS change
+and the game file is untouched by it, so no VER bump belongs to it and the
+shipped game plays exactly as before.
+
+CONSEQUENCE, STATED PLAINLY: every absolute rate measured at greed 23 today,
+including the 13 to 16 percent bench, is now the rate for a bot that loots
+differently from him, and a fresh bench at greed 14 is queued. The paired A/B
+CONCLUSIONS from today all survive, because both arms always shared the greed.
+
+The residual gap is shots: 96 against his 40, and greed does not touch it, as
+the sweep shows it stuck at 96 across every value. That is the disengage-fire
+problem simHoldFire tried to solve and solved catastrophically. It remains the
+last big realism gap and it needs a narrower attempt than the one I withdrew.
+
+### v4.04 - Every live contract shows in the raid
+
+v4.03 put the conduct contracts in the CONDITIONS panel because a rule you
+cannot see is a rule you will break. The same argument applies one notch weaker
+to the counting contracts: you cannot decide whether the sixth sentry is worth
+crossing the street for if you do not know you are on five. All live contracts
+now appear with their progress, amber for counting ones and green or red for
+conduct ones, read straight off the contract objects the hub panel uses so the
+two can never disagree. Finished contracts are dropped rather than shown ticked,
+because the panel is for decisions that are still live.
+
+CAPTURED AND LOOKED AT: weather rows, then a green conduct row reading "no heals
+yet", then an amber "Destroy 6 sentries 2/6", with the completed "Search 5
+crates" correctly absent.
+
+Not verified: the fresh bench at greed 14; whether the panel is too tall when
+three counting contracts are live at once, which is the case I have not drawn.
+

@@ -259,7 +259,7 @@ window.__pinDefaults=function(mapIx){
 // bag out 4.6k, median raid 123s). Every absolute number before this ran at 52,
 // which measured a player five times greedier than him; those numbers are not
 // comparable to what follows. His order: the bot is the benchmark.
-var want={simGreed:23,simCrouch:0,simSell:0,simPed:0,simSidearm:1,simSwapBack:1,
+var want={simGreed:14,simCrouch:0,simSell:0,simPed:0,simSidearm:1,simSwapBack:1,
     simWade:1,simLootNoise:1,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,
     seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,
     eHp:1,lootMult:1,windows:1,simEngage:0,raiderFeud:1,simReach:1,healOverTime:1,
