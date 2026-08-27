@@ -12090,3 +12090,49 @@ not by reading pixels back. The wave cadence interacts with raiderHaul from
 v3.49 and the pair has not been A/B'd together for extract rate; the population
 the two produce jointly is measured, the difficulty is not.
 
+
+### v3.54: medicine and plates take time to apply, and you watch it
+
+Two of his notes, one system: "heal should have a time-to-apply that shows in a
+bar above character before it actually starts healing", then "same for armor
+plates".
+
+Pressing the verb now COMMITS the item and starts a wind-up: 1.5 seconds for
+medical and 2 for a plate, both dials (healPrep, armorPrep). A small bar fills
+above the character's head in world space, green for medicine, armour blue for
+a plate, and the effect lands when it fills. Only then does the v3.51 slow drip
+begin, so a Medkit from the press to the last point of health is now 1.5 plus
+14.3 seconds of visible commitment.
+
+THE ITEM IS SPENT AT THE PRESS, NOT AT THE LANDING. Going down mid-apply cancels
+the wind-up and the item is gone. That is deliberate and it is the point:
+starting a plate with a crawler closing is now a real decision with a real
+downside, where before v3.51 the entire heal was instant and free of any such
+question.
+
+ONE AT A TIME, every way in. The generic heal verb, the named hotbar slot, the
+armour verb and the bot's own heal all start the same wind-up and all refuse
+while one is running, with a message naming what is still being applied. The
+guard sits in each entry rather than in the shared machinery, same shape as the
+healSolo refusal, so no path can become a way around it.
+
+Raiders do NOT wind up. Their kit already runs on its own use timer inside
+raiderUseKit, and stacking a second delay on top of it would be tuning their
+survivability sideways in a build about the player's information. Flagged, not
+hidden: if raider heals feel too responsive next playtest, this is where the
+asymmetry is.
+
+Verified: parsecheck PASS at v3.54. Four maps drive and draw with frameErr and
+hudErr null, hub clean, endRaid on all three outcomes no throw. The wind-up
+measured through the bot's real heal in a sim raid: prep appears at 0.15s with
+max 1.5, healQ starts at exactly prep plus 1.5 seconds, and hp is untouched
+until then. A world frame drawn with a live prep draws clean, which exercises
+the bar.
+Not verified: the bar's position at y-40 is geometry I have not seen rendered,
+same screenshot limitation as always. The downed-cancels-prep branch is written
+and unmeasured, because arranging a down during a 1.5 second window from a
+seeded start is timing I could not hit reliably; the line is one assignment in
+the existing downed branch. Nothing A/B'd: the wind-up makes healing strictly
+worse under fire and the v3.51 note already flagged that the healing stack's
+net effect on extract rate is unmeasured; this adds to that same open question.
+

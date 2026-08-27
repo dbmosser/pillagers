@@ -263,7 +263,7 @@ window.__pinDefaults=function(mapIx){
     // restores its own dials so the A/Bs were safe, but nothing else was.
     // Same defect again at v3.17: raiderDown shipped unpinned. Every new dial
     // must land here in the same build that introduces it.
-    destruct:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:900,raiderHaul:7,healPow:0.70,healSlow:2.4,wardenHp:900,wardenDmg:46,wardenRng:620,downTime:24,
+    destruct:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:900,raiderHaul:7,healPow:0.70,healSlow:2.4,wardenHp:900,wardenDmg:46,wardenRng:620,downTime:24,healPrep:1.5,armorPrep:2,
     // v3.41 gave the PLAYER plain-language control of eight of these dials and
     // persists his choice on the profile. The fixture loads that profile, so a
     // saved "Raiders: Many" would silently run every A/B at nRaider 15 and every

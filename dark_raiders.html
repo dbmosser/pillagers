@@ -545,7 +545,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.53';
+var VER='3.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -605,7 +605,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:900,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:900,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -7247,7 +7247,7 @@ function damagePlayer(amt,src,srcName){
   G.shake=Math.max(G.shake,4+7*_sev);
   blip('hit'); decal(p.x+rnd(-10,10),p.y+rnd(-10,10),'#7a1a14',rnd(6,13));
   if(p.hp<=0){
-    p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src;
+    p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null;
     // GOING DOWN INTERRUPTS A HEAL IN PROGRESS, v2.52. Without this the queued
     // health from v2.46 kept trickling into a body on the floor: hp crept up
     // from 0 while downed, which nothing else in the game expects, and the
@@ -7563,17 +7563,49 @@ function useMedical(){
     say((p.healQ>0)?'Already healing.':'Already at full');
     return false;
   }
+  if(p.prep){ say('Already applying '+(ITEMS[p.prep.key]?ITEMS[p.prep.key].name:'something')+'.'); return false; }
   var k=G.bag[idx], it=ITEMS[k];
-  applyHeal(k); G.bag.splice(idx,1); blip('pick');
-  say(it&&it.hot>0&&CFG.healOverTime!==0?('Using '+it.name+'...'):'Patched up');
+  G.bag.splice(idx,1); startPrep('heal',k); blip('pick');
+  say('Applying '+it.name+'...');
   G.tel.heals++;
   spark(p.x,p.y,'#6fe0a0',10,90);
   return true;
 }
 // Delivers the queued health. Called from updatePlayer AND updateBot, for the
 // same reason applyHeal exists.
+// HIS NOTES, v3.54: "heal should have a time-to-apply that shows in a bar above
+// character before it actually starts healing", then "same for armor plates".
+// Pressing the verb now COMMITS the item and starts a wind-up: 1.5 seconds for
+// medical, 2 for a plate, both dials. The effect lands when the bar fills. The
+// item is spent at the press, not at the landing, so being downed mid-apply
+// loses the item, which is the cost that makes starting one under fire a
+// decision. One wind-up at a time, and every entry path refuses while one runs.
+function startPrep(kind,key){
+  G.player.prep={t:0,
+    max:(kind==='armor'?(CFG.armorPrep===undefined?2:CFG.armorPrep)
+                       :(CFG.healPrep===undefined?1.5:CFG.healPrep)),
+    kind:kind,key:key};
+}
+function tickPrep(dt){
+  var p=G.player;
+  if(!p.prep) return;
+  p.prep.t+=dt;
+  if(p.prep.t<p.prep.max) return;
+  var PR=p.prep; p.prep=null;
+  var it=ITEMS[PR.key];
+  if(PR.kind==='armor'){
+    var cap=armorCap();
+    p.armor=Math.min(cap,p.armor+(it&&it.amt||0));
+    say(it.name+' slotted. Armour '+Math.round(p.armor)+'.');
+  } else {
+    applyHeal(PR.key);
+    say(it&&it.hot>0&&CFG.healOverTime!==0?('Using '+it.name+'...'):'Patched up');
+  }
+  blip('pick');
+}
 function tickHeal(dt){
   var p=G.player;
+  tickPrep(dt);
   if(!(p.healQ>0)) return;
   var give=Math.min(p.healQ,(p.healRate||10)*dt);
   var room=p.maxhp-p.hp;
@@ -7979,10 +8011,10 @@ function useArmor(){
   var cap=armorCap();
   if(cap<=0){ say('No rig to slot it into.'); return; }
   if(p.armor>=cap){ say('Armour is already full.'); return; }
-  var it=ITEMS[G.bag[ix]];
-  p.armor=Math.min(cap,p.armor+it.amt);
-  G.bag.splice(ix,1);
-  say(it.name+' slotted. Armour '+Math.round(p.armor)+'.');
+  if(p.prep){ say('Already applying '+(ITEMS[p.prep.key]?ITEMS[p.prep.key].name:'something')+'.'); return; }
+  var it=ITEMS[G.bag[ix]],k4=G.bag[ix];
+  G.bag.splice(ix,1); startPrep('armor',k4);
+  say('Slotting '+it.name+'...');
   blip('pick');
 }
 function hotSel(){ return clamp(G.hot||0,0,hotbarSlots().length-1); }
@@ -8026,8 +8058,9 @@ function useHot(){
       if(_pp.hp+(_pp.healQ||0)>=_pp.maxhp){
         say((_pp.healQ>0)?'Already healing.':'Already at full'); return;
       }
-      applyHeal(s2.itemKey); G.bag.splice(ix,1); blip('pick');
-      say(ait.hot>0&&CFG.healOverTime!==0?('Using '+ait.name+'...'):'Patched up');
+      if(_pp.prep){ say('Already applying '+(ITEMS[_pp.prep.key]?ITEMS[_pp.prep.key].name:'something')+'.'); return; }
+      G.bag.splice(ix,1); startPrep('heal',s2.itemKey); blip('pick');
+      say('Applying '+ait.name+'...');
       G.tel.heals++;
       return;
     }
@@ -9297,7 +9330,7 @@ function updateBot(dt){
         moveToward(p,p.x-(hFoe.x-p.x),p.y-(hFoe.y-p.y),botSpd(CFG.pSpeed*.85*loadOf(bagWeight()).spd*BWADE),dt);
       }
     }
-    if(!hHold){ var hi=findHeal(); if(hi>=0){ applyHeal(G.bag[hi]); G.bag.splice(hi,1); T.heals++; } }
+    if(!hHold&&!p.prep){ var hi=findHeal(); if(hi>=0){ var _hk=G.bag[hi]; G.bag.splice(hi,1); startPrep('heal',_hk); T.heals++; } }
   }
   tickHeal(dt);
 
@@ -12480,6 +12513,16 @@ function render2D(dt){
     var _grow=isFire?Math.min(pn.s*0.42,130):Math.min(pn.s*0.15,44);
     var pr=Math.max(1,(isFire?8:4)+(pn.t/pn.life)*_grow*(pn.occ===undefined?1:pn.occ));
     wc.beginPath(); wc.arc(pn.x,pn.y,pr,0,6.2832); wc.stroke();
+  }
+  // The wind-up bar, above the head, world space so it stays with the body.
+  // Amber while filling, the same colour family as the reload thread, because
+  // both mean "committed, wait".
+  if(p.prep){
+    var _pf=clamp(p.prep.t/p.prep.max,0,1);
+    wc.fillStyle='rgba(6,9,13,.78)';
+    wc.fillRect(p.x-17,p.y-40,34,6);
+    wc.fillStyle=p.prep.kind==='armor'?'#5aa9e6':'#6fe0a0';
+    wc.fillRect(p.x-16,p.y-39,32*_pf,4);
   }
   // marked ring
   if(G.marked>0){
