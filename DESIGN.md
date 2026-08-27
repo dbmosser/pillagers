@@ -12867,3 +12867,44 @@ in the dev box as a draggable open question.
 Not verified: nothing else, because nothing else changed. No gameplay, no
 dials, no balance surface.
 
+
+### v3.68: roads stop short of walls, and the vault stops growing shrubbery
+
+Two of his map notes, both placement logic, both culls, so neither touches a
+PRNG stream.
+
+ROADS. "there are instances where roads run into buildings, which makes no
+sense". v2.86 stopped tarmac running UNDER buildings by laying roads in 24
+unit segments and dropping any segment that overlaps something solid. What it
+left behind was the last surviving segment ending FLUSH against the wall
+face, and tarmac touching brickwork reads as a road driving into the
+building. Each segment is now probed expanded 28 units along the run's own
+axis, so a road halts a visible setback short of anything solid, the way a
+road ends at a barrier rather than at the wall. Lateral clearance is
+unchanged, so a road running alongside a building still may, which is a
+street. The centre line dashes obey the same setback, or they would float on
+dirt where their road was dropped.
+
+THE BUSH. "i just found a bush inside a locked building". The bushFree cull
+rejects walls and building interiors, but a locked room is neither: it is
+four wall strips around an open interior with no buildings entry, so a
+placement roll landing INSIDE the enclosure cleared every strip by margin and
+passed. A sealed vault does not grow shrubbery. The locked room rectangles
+now reject bushes like any other interior.
+
+Verified: parsecheck PASS at v3.68. All four maps drive and draw with
+frameErr and hudErr null at 82, 83, 55 and 68 entities, hub clean, endRaid
+clean on all three outcomes. Measured across all four maps: ZERO road
+segments whose along-axis neighbourhood touches a building, against 24 on
+SUNKEN QUARTER and 13 on THE QUARRY before the fix would have allowed, and
+ZERO bushes inside any locked room or building across 566 placed bushes. My
+first probe reported false failures and the mistake is worth recording: a
+segment of a horizontal road is 24 wide and 66 tall, so classifying segments
+by w>h tags every row segment as vertical and expands the probe ACROSS the
+road into the buildings beside it; the corrected probe expands along the run.
+Not verified: the look of a road stopping at its setback, which is geometry
+verified but not eyeballed this build; his screen will judge whether 28 units
+reads as a deliberate kerb or as a gap. Roads that now stop short lay
+slightly less tarmac in total, which could subtly change machine pathing
+noise on tarmac, unmeasured because no pathing reads roadRects.
+
