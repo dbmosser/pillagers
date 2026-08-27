@@ -14850,3 +14850,41 @@ in particular whether four seconds of calm is the right gap before the music
 returns, and whether the cut wants to also duck the reverb tail; the fresh bench
 at his corrected greed, still running.
 
+
+### v4.06 - His two wall notes: one fixed outright, one given a camera
+
+Fresh play data landed mid-tick, two files, 51 runs, authenticated. Two new
+notes from run #50 on the CURRENT build, both about walls, checked against the
+code before touching anything.
+
+"i just looted through a wall -- shouldn't be possible." He is right, and it
+was never PREVENTED: the entire test for what your hands can reach was
+"distance under 46", nothing else, since the day containers existed. A box
+thirty units away on the far side of a twelve unit wall was always searchable.
+The reach now also requires a clear line from you to the box, the same sight
+test everything else uses. Verified by staging it: box behind a wall at 44
+units, search key held, nothing happens; same box in the open, the search
+starts. One known edge left open deliberately: windows are see-through, so a
+box directly behind glass is still reachable; if that reads wrong in play,
+requiring the glass broken first is one line.
+
+"i just glitched through a wall." Every wall on all four maps was probed with
+a test body pushed into its centre: 2,970 walls, every single one pushed back
+correctly. So there is no phantom wall; this was a moment, and a moment needs
+a camera. Every frame of a real raid now checks whether your centre is inside
+a solid wall, and the first time it ever is, the run report gets a loud
+WALLCLIP entry with the exact spot, the wall's size and the second it
+happened. Verified by standing the test body inside a wall: the stamp reads
+location, shape and time. Next time it happens to you, the report will say
+where, and I can go look at that exact piece of map.
+
+Also in his data: the beacon-while-downed complaint (run #44) is from v3.55
+and was addressed at v3.69; the raider-extraction complaint in the same note
+was already shipped as raiderBeacon. The five Priorities questions are
+unchanged. Runs #50 and #51 are the first on v4.0x: 8,890c haul with 74
+percent accuracy in one, dead to a listener mid-siege; dead to a crawler in
+the other. Both files consumed.
+
+Not verified: the loot fix in HIS hands; the tripwire has caught nothing yet,
+which is what it should say until the glitch recurs.
+
