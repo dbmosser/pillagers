@@ -560,7 +560,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.18';
+var VER='4.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1320,9 +1320,14 @@ if(ck==='elite') return (T2.eliteKills||0)>=1;
   return false;
 }
 function contractExtract(bag,haul){
+  // v4.19: which cards banked on THIS extraction, stamped into the recorder.
+  // The export listed everything about a run except contract activity, so
+  // whether the board works in the wild was invisible in his files.
+  var _banked=[];
   for(var i=0;i<P.contracts.length;i++){
     var c=P.contracts[i];
     if(c.prog>=c.n) continue;
+    var _wasOpen=true;
     if(c.type==='exItem'){
       var n=0;
       for(var j=0;j<bag.length;j++) if(bag[j]===c.item) n++;
@@ -1332,10 +1337,13 @@ if(c.type==='haul'&&haul>=c.v) c.prog=c.n;
     if(c.type==='conduct'){
       // 'weak' counts through the raid and only needs the extraction to bank it;
       // the rest are all-or-nothing conditions on the whole run.
-      if(c.ck==='weak'){ if(((G&&G.tel&&G.tel.weakHits)||0)>=c.n) c.prog=c.n; }
+if(c.ck==='weak'){ if(((G&&G.tel&&G.tel.weakHits)||0)>=c.n) c.prog=c.n; }
       else if(conductMet(c.ck)) c.prog=c.n;
     }
+    if(_wasOpen&&c.prog>=c.n)
+      _banked.push(c.type==='conduct'?c.ck:(c.type==='kill'?'kill-'+c.tgt:(c.type==='exItem'?'item':c.type)));
   }
+  if(G&&G.tel&&_banked.length) G.tel.contractsBanked=_banked;
 }
 
 // ================================================================ audio
@@ -12621,7 +12629,8 @@ downs:T.downs,revives:T.revives,raidersExt:T.raidersExtracted,
     dur:Math.round(elapsed()),
     census:G.census||null,
     intel:G.intel?1:0,
-    wallClip:(G.tel&&G.tel.wallClip)||null,
+wallClip:(G.tel&&G.tel.wallClip)||null,
+    contractsBanked:(G.tel&&G.tel.contractsBanked)||null,
     ghostIn:(G.tel&&G.tel.ghostIn)?1:0,
     haul:haul,items:G.bag.length,containers:T.containers,
     shots:T.shots,hits:T.hits,acc:acc,reloads:T.reloads,heals:T.heals,eliteKills:T.eliteKills||0,
@@ -18556,7 +18565,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Seven kinds of conduct contract: stay clean, stay quiet, stay fast, stay up, or go far',
+  now:'Run reports now say which contracts paid out, so the board proves itself in your own files',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -19409,7 +19418,8 @@ function buildExport(){
     // played. A guess written into the record is indistinguishable from data, and
     // the version field right there already says which of them predate the choice.
     if(r.intel) line+=' intel:1';
-    if(r.wallClip) line+=' WALLCLIP:'+r.wallClip.f+'@'+r.wallClip.x+','+r.wallClip.y+'('+r.wallClip.ww+'x'+r.wallClip.wh+')t'+r.wallClip.at+'s';
+if(r.wallClip) line+=' WALLCLIP:'+r.wallClip.f+'@'+r.wallClip.x+','+r.wallClip.y+'('+r.wallClip.ww+'x'+r.wallClip.wh+')t'+r.wallClip.at+'s';
+    if(r.contractsBanked&&r.contractsBanked.length) line+=' contracts:'+r.contractsBanked.join(',');
     if(r.ghostIn) line+=' ghost:1';
     if(r.census) line+=' ents:'+r.census.total+'(s'+(r.census.by.sentry||0)+'/c'+(r.census.by.crawler||0)+'/r'+(r.census.by.raider||0)+'/sn'+(r.census.by.snitch||0)+' dials '+r.census.dials.nS+'/'+r.census.dials.nC+'/'+r.census.dials.nR+')';
     if(r.mapName) line+=' map:'+r.mapName;

@@ -15465,3 +15465,27 @@ __genContract fixture hook, 160 conduct cards, all seven kinds present,
 none malformed. Not verified: the two new cards appearing on his real board
 in an ordinary session, and whether 14,000 feels like a fair ask in play,
 both of which only his runs can answer.
+
+### m433 - v4.19: the run report now says which contracts paid out
+
+The report line carried everything about a run except contract activity, so
+whether the board works in real play was invisible in his files, and v4.18's
+"Not verified" line said exactly that. Now, when an extraction banks a card,
+the card's name rides the run line as "contracts:steady,far" style. Judged
+cards are named by their conduct kind, kill contracts by their target, the
+rest by type. Nothing is printed on runs that banked nothing, keeping the
+line clean.
+
+Two workshop notes worth keeping. First, the canonical file has MIXED line
+endings, original regions one kind and patched regions the other, so any
+multi-line anchored edit must try both forms; the patch helper now does.
+Second, the run log is only written when the outcome button is pressed, so
+the honest way to drive this feature was to press it: raid, extract, click,
+then read the row and the export.
+
+Verified: parse PASS at v4.19; four maps drove distinct with no draw errors;
+hub clean; a driven extraction with both new conduct cards active produced a
+run row carrying ["steady","far"] and an export line containing
+"contracts:steady,far", via the real outcome button; probe row removed from
+the fixture profile afterwards. Not verified: a contracts entry appearing in
+one of HIS exports, which needs him to bank a card in real play.
