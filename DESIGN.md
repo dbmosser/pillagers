@@ -14925,3 +14925,35 @@ stand: the machine-versus-raider war, doubling the street irregularity, and
 whether four seconds is the right silence after combat before the music dares
 come back.
 
+
+### Verdict: the quiet retreat fails even narrowed. The shot gap is the price of survival.
+
+320 paired seeds, official family, corrected greed, gun loud against gun
+silent while running to cover: 20.3 against 15.6 percent, discordant 31 split
+23 to 8 against the quiet version, roughly one chance in a hundred of being
+luck. Sentry deaths rose 104 to 119 and Howler deaths 10 to 16: a bot that
+stops shooting on the way to a wall gives the turret free shots and stands in
+shelled ground longer.
+
+Both versions of this idea have now been measured and both failed: the broad
+one collapsed survival 12.5 to 1.3, the narrow one costs five points. The
+honest conclusion is that the bot's 96 rounds against his 40 is not a defect
+to be fixed, it is HOW THE BOT SURVIVES without the human skills that cannot
+be coded cheaply: micro-dodging, timing peeks, reading a machine's cycle. He
+declines fights with his feet; the bot declines them with suppression. The
+dial stays off, the bench stays 20.3, and the shot-count difference is
+accepted and DOCUMENTED as the known remaining difference between benchmark
+and player, rather than papered over with a change that makes the bot die
+unlike him in order to shoot like him.
+
+The realism ladder closes here for now: greed, aim, fight-picking, kiting,
+cover and loot appetite all matched and measured, 5.0 percent at the start of
+the work to 20.3 at the end of it, against his 28.6. Every future balance
+number is taken by a robot that plays recognisably like him.
+
+Also launched: the machine-versus-raider war re-measured at the corrected
+greed, so his pending decision gets a number from the right robot. In flight.
+
+Not verified: the war measurement; his ear on the music; his hands on the
+walls fix.
+
