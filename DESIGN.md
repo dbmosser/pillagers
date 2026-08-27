@@ -14288,3 +14288,38 @@ reported rather than quietly tuned away.
 Not verified: which of the two caused the drop (A/B in flight); whether 2.5
 percent is stable or this family is being stingy again.
 
+
+### v3.95 - Parity two: steady aim was a privilege, not an advantage
+
+Second item off the audit he asked for. The line that grants steady aim read
+`wep.spread*(fromPlayer&&G.player.ads?0.4:1)`, and the important word is
+fromPlayer: the game asked whether the shooter was THE HUMAN before it would
+tighten anything. A raider who planted his feet and took a careful shot fired
+exactly as loosely as one sprinting sideways, forever. That is not a difficulty
+choice anybody made, it is a privilege that got written into the plumbing.
+
+raiderSteady, DEFAULT ON. The same 0.4 multiplier is now available to a shooter
+who has actually steadied, and for a raider that means standing still: he sets
+up in 0.55 seconds of genuine stillness, measured off ACTUAL DISPLACEMENT rather
+than a state flag, so it can never disagree with what he did on screen. Half a
+unit of movement in a frame counts as moving. His aim jitter tightens with it,
+16 units to 8, and the two rnd draws are unchanged in COUNT with only their
+magnitude moving, so the seeded stream is untouched and the back catalogue stays
+reproducible. Earshot gated at 900 like the roll, for the reason he gave.
+
+Verified rather than assumed. Over a 420 frame firefight the raider was steady
+for 53 frames, about 13 percent, and his longest plant was 1.39 seconds: that is
+the plant-shoot-move rhythm the flanking code produces, not a man rooted to the
+spot. And the bonus is real arithmetic, not a flag nobody reads: 200 shots each
+way at spread 0.20 give a mean angular deviation of 0.0976 radians loose against
+0.0385 steady, a ratio of 0.39 where the intended multiplier is 0.40.
+
+What he should feel: a raider who breaks contact and sets up becomes genuinely
+more dangerous than one running at him, which is the difference between fighting
+a person and fighting a spray pattern. Sweep green at 84/85/56/70.
+
+Not verified: whether this makes raider firefights too lethal, which needs its
+own 320 seeds and is queued behind the bench attribution now running; the same
+bonus for a raider planted in an extraction ring, deliberately NOT built yet
+because that man is already the most dangerous target in the raid.
+

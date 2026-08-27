@@ -560,7 +560,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.94';
+var VER='3.95';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -620,7 +620,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -7764,7 +7764,14 @@ function damageWall(w,amt,x,y){
   return true;
 }
 function fireWeapon(sh,wep,tx,ty,fromPlayer){
-  var spx=wep.spread*(fromPlayer&&G.player.ads?0.4:1);
+// PARITY, v3.95, second item off his audit. Steady aim was not a player
+  // ADVANTAGE, it was a player PRIVILEGE: this line asked whether the shooter
+  // was the human before it would tighten anything, so a raider who planted
+  // his feet and took a careful shot fired exactly as loosely as one sprinting
+  // sideways. Now the same 0.4 multiplier is available to anyone who has
+  // actually steadied, which for a raider means standing still long enough to
+  // set up (sh.steady, set by the AI that knows whether it moved this frame).
+  var spx=wep.spread*(((fromPlayer&&G.player.ads)||(!fromPlayer&&sh&&sh.steady))?0.4:1);
   var base=Math.atan2(ty-sh.y,tx-sh.x);
   // A shotgun throws a handful of pellets on one trigger pull. Everything else
   // fires a single round, which is pellets of 1.
@@ -11047,11 +11054,24 @@ function updateEnts(dt){
         var pang=Math.atan2(e.y-p.y,e.x-p.x);
         var fang=pang+e.flank*1.25;
         var fx3=p.x+Math.cos(fang)*e.rng*.55,fy3=p.y+Math.sin(fang)*e.rng*.55;
+var _rpx=e.x,_rpy=e.y;                       // v3.95: where he was before he moved
         if(d>e.rng*.85) navSeek(e,fx3,fy3,e.spd,dt);
         else if(d<e.rng*.30) moveToward(e,e.x-(p.x-e.x),e.y-(p.y-e.y),e.spd*.7,dt);
         else if(e.cd>0.35) moveToward(e,e.x+Math.cos(pang+e.flank*1.5708)*40,e.y+Math.sin(pang+e.flank*1.5708)*40,e.spd*.55,dt);
+e.plantT=(Math.hypot(e.x-_rpx,e.y-_rpy)>0.5)?0:((e.plantT||0)+dt);
+        e.steady=(CFG.raiderSteady!==0)&&e.plantT>0.55&&
+                 dist(e,p)<(CFG.raiderRollEar===undefined?900:CFG.raiderRollEar);
         if(e.cd<=0&&sees&&d<e.rng){
-          fireWeapon(e,e.wep,p.x+rnd(-16,16),p.y+rnd(-16,16),false);
+// A planted man aims. Measured off actual displacement rather than a
+          // state flag, so it cannot disagree with what he did: half a unit of
+          // movement in a frame counts as moving. 0.55 seconds of stillness is
+          // the setup time, which is roughly the beat his own right mouse takes
+          // to matter. Earshot gated like the roll, because parity is for the
+          // fights he can see. The two rnd draws are unchanged in COUNT and only
+          // their magnitude moves, so the seeded stream is untouched and every
+          // historical number stays reproducible.
+          var _rjit=(e.steady?8:16);
+          fireWeapon(e,e.wep,p.x+rnd(-_rjit,_rjit),p.y+rnd(-_rjit,_rjit),false);
           e.cd=(e.wep.rof/1000)*rnd(1.7,2.9);
         }
       } else {
@@ -17995,8 +18015,8 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Parity: raiders dodge roll now, his move at his numbers, whenever you are close enough to see it',
-  next:'The rest of the parity audit, crouch and steady aim and reviving a crewmate'
+  now:'Parity two: a raider who plants his feet aims, the same steady bonus his right mouse gives him',
+  next:'What the bench drop was, then crouch and the crewmate revive question'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a
