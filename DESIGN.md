@@ -14668,3 +14668,47 @@ which would need roughly 1,200 seeds; whether one per map is right on the small
 maps, since COLD STORAGE has 57 entities against GREYWATER's 85 and gets the
 same single Bulwark; the new streets, still unmeasured.
 
+
+### v4.03 - The conduct contracts are visible IN the raid, and they go red
+
+v4.00 shipped contracts that forbid a habit for a whole raid, and contracts have
+only ever been visible in the Undercroft. So a man could accept "no heals",
+deploy, and heal at minute two having simply forgotten. A rule you cannot see is
+a rule you will break, and breaking one you never saw does not feel like a
+decision you got wrong, it feels like the game cheating.
+
+They now appear in the CONDITIONS panel, which already exists, is already
+draggable and collapsible, and already lists everything else true about this
+raid: the light, the weather, the contract terms, the season. Live rather than
+static: each one recomputes its own verdict every frame from the same telemetry
+that will judge it at the ship, so the panel and the payout can never disagree.
+A kept one is green and says where it stands, "no heals yet", "nothing killed
+yet", "2 of 3 weak points hit". A lost one turns red, says CONTRACT LOST and
+says WHY: "BROKEN, you healed", "BROKEN, 3 killed", "BROKEN, past three
+minutes". The timed one shows the clock it is racing, "180s left to be gone".
+
+CAPTURED AND LOOKED AT, both states in one frame: two broken contracts in red
+with their reasons and one live contract in green with its countdown, sitting
+under the weather rows with no collision and the panel growing to fit. condHud 0
+hides them again.
+
+### Checked three of his older notes against current code and found nothing to do
+
+His standing rule is that his complaints must be checked against the CURRENT
+build before acting, because several have already been fixed and re-fixing them
+wastes the tick. Three checked this tick, all three already closed:
+  "i just spawned right next to an extraction" - spawnClear, v3.69, picks the
+  furthest spawn clearing 1,150 units and remaps the roll uniformly over the
+  clearing set.
+  "i should not be able to see the red attack views of enemies unless i am
+  looking at them" - the cone loop gained `if(!sc.seen) continue;` and the
+  comment quotes his note.
+  "i was unable to swap the scav pistol in inventory slot 2" - addressed at the
+  hotbar swap path, his run #35 quoted in the code.
+Saying so explicitly because "I checked and there was nothing to do" is a
+result, and silence about it looks like the check never happened.
+
+Not verified: the streets measurement still in flight; whether the CONDITIONS
+panel is getting crowded now that it can hold five kinds of row at once, which
+is a look-at-it question for him in a real raid.
+
