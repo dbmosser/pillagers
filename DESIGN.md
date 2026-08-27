@@ -15589,3 +15589,12 @@ extract and dead endings ran; fixture profile order restored afterwards.
 Not verified: his actual saved ranking on his real profile, which will pass
 through the same migration on his next load and should come out unchanged -
 his next export's priorities line is the proof to check.
+
+### m437 - soak note for the day's five builds
+
+Ninety sim-seconds of continuous drawing per map, all four maps, at night in
+rolled weather (rain on two), machines closing on a standing player, HUD
+drawn every second: no draw errors and nothing thrown, on the build carrying
+all of today's work (contracts, per-sector ground, per-sector vegetation,
+board rewording). Not verified: nothing new; this entry exists so the soak
+is on the record.
