@@ -14014,3 +14014,61 @@ raider hand-down he ordered once the behaviours settle.
 Not verified: why skill value is family-dependent (check queued); nothing
 else outstanding from this tick.
 
+
+### Measurement: the kiting gain IS seed-family-dependent (2026-08-27)
+
+The queued falsifiable check, run on the OFFICIAL family: kiting off against
+on, 320 paired seeds, 7919 family, full posture otherwise. 8.8 to 10.0
+percent, discordant 26 split 11 to 15, p about 0.56. On the 9203 family the
+identical comparison was 5.0 to 8.8, split 7 to 19, p 0.03.
+
+Same code, same map, same dials. The DIRECTION agrees in both families; the
+SIZE does not, 1.2 points against 3.8. So the honest statement is that
+kiting helps, and how much depends on the terrain the seed family generates.
+Consequence for method, now standing: quote absolute rates only with the
+family named, never compare a rate across families, and treat any single
+family's effect size as an estimate with real spread around it. The v3.88
+claim of "nearly doubles survival" was true of the 9203 family and is not a
+general claim; the general claim is "kiting helps, by somewhere between one
+and four points depending on terrain".
+
+### v3.91 - His two notes: bushes off the tarmac, and music that reacts
+
+HIS NOTE ONE: "bushes are spawning on roads -- makes no sense". True, and
+worse than it looked. A road cull HAS existed since v2.86, and measuring it
+showed it was catching almost nothing: on the four maps at seed 4242 the
+number of bushes whose CENTRE POINT sits on tarmac is 0, 0, 0 and 2, while
+the number whose actual DISC overlaps tarmac is 50, 54, 33 and 37. A bush is
+a disc of radius 28 to 46 and the cull only ever asked about its centre, so
+between 33 and 54 bushes per map sat visibly on the road while a filter with
+their name on it reported success. That is the second time a check in this
+codebase looked authoritative and did nothing. The test is now the whole disc
+against the road rect, nearest-point style; trees get the same fix using the
+trunk's own half-width. Still a cull after the rolls, so no rr() is consumed
+and no seeded stream moves. Live counts now: 36, 54, 31, 34 bushes removed
+per map, out of roughly 130 to 190 placed.
+
+HIS NOTE TWO: "the music should change based on what's happening in game".
+The radio played one loop at one tempo whether you were counting tins in an
+empty shed or being run down. Now a single intensity number, 0 when nothing
+knows you are there and 1 when you are down, drives tempo (up to 26 percent
+faster), the lowpass (2400 opening to 4400), the level, and the arrangement:
+calm is bass and lead as written, tension DROPS the lead and leaves the bass
+walking alone, danger adds an off-beat eighth-note pulse and brings the lead
+back loud. Intensity reads the nearest hunting body (the number the ambience
+pass already computes, so the music can never disagree with the room), plus
+being hit, being under 40 integrity, being downed, and the extraction beacon,
+because calling the ship is the loudest thing you do.
+A fourth MODE, REACTIVE, is what this makes possible and is the one worth
+using: silence while you work, and the music finds you when something does.
+UNDERCROFT, ALWAYS and OFF are unchanged, and REACTIVE reacts in ALWAYS too.
+
+Verified numerically: intensity ladder 0 calm, 0.9 hunted, 0.9 hit, 1.0
+downed; REACTIVE gate false while calm in a raid, true when hunted, true when
+the ship is called, true in the Undercroft.
+
+Not verified: the music BY EAR, which only he can do - the fixture has no
+AudioContext by construction, so every audio check here is logic, not sound;
+whether tension dropping the lead reads as intended or as the music cutting
+out; and the bush fix by eye in a real raid, though the counts are measured.
+

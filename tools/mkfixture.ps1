@@ -271,7 +271,7 @@ var want={simGreed:23,simCrouch:0,simSell:0,simPed:0,simSidearm:1,simSwapBack:1,
     // restores its own dials so the A/Bs were safe, but nothing else was.
     // Same defect again at v3.17: raiderDown shipped unpinned. Every new dial
     // must land here in the same build that introduces it.
-    destruct:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,healPow:0.70,healSlow:2.4,wardenHp:900,wardenDmg:46,wardenRng:620,downTime:24,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:1,simFlee:1,simCover:1,
+    destruct:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:1.6,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,healPow:0.70,healSlow:2.4,wardenHp:900,wardenDmg:46,wardenRng:620,downTime:24,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:1,simFlee:1,simCover:1,simHoldFire:1,
     // v3.41 gave the PLAYER plain-language control of eight of these dials and
     // persists his choice on the profile. The fixture loads that profile, so a
     // saved "Raiders: Many" would silently run every A/B at nRaider 15 and every
@@ -578,7 +578,7 @@ window.__mouseState=function(){ return mouse; };
 //    rather than the fight.
 window.__keysRef=function(){ return keys; };
 window.__wx={list:function(){ return WEATHER; },cur:wx,VF:VF,AMBR:AMBR,ping:ping,pick:pickWeather};
-window.__music=function(){ tickMusic(); return {mode:musicMode(),wanted:musicWanted(),started:!!MUS.g,step:MUS.step}; };
+window.__music=function(){ tickMusic(); return {mode:musicMode(),wanted:musicWanted(),started:!!MUS.g,step:MUS.step,intensity:musIntensity(),smoothed:MUS.i}; };
 window.__hudBox=function(){ return HUDBOX; };
 window.__ghost={parse:parseGhost,apply:applyGhost};
 window.__w2s=function(x,y){ return w2s(x,0,y); };
