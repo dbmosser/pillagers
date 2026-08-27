@@ -14355,3 +14355,55 @@ the same quantity of undergrowth somewhere it belongs.
 Not verified: the bush attribution itself, in flight; whether v3.95's steady
 aim moves difficulty, queued behind it.
 
+
+### v3.97 - THE ONE SIDED WAR, and a correction to my own v3.93 claim
+
+Auditing his parity question turned up something larger than the item I was
+checking. EVERY sight test a machine performs in this game reads p.x,p.y. A
+sentry, a crawler, a warden, a listener: all of them are looking exclusively
+for the player, always, and nothing else on the map exists to them. Raiders
+have fought machines since his note 39, so the war has always run ONE WAY. A
+raider can empty a magazine into a sentry that will not so much as turn
+around, and the only way a machine has ever hurt a raider is by accident: a
+round meant for the player that a raider walked into, or Howler splash.
+
+Measured, same seed, 45 seconds of world time: with machines blind to raiders,
+10 raiders start and 10 finish with 748 hit points between them, UNCHANGED TO
+THE POINT. With machVsRaider on, the same 45 seconds leaves 8 raiders and 541.
+
+CORRECTION I OWE, and it is mine: v3.93's entry said the hand-down would let
+raiders "survive contact with machines the way a person would". That was
+overstated, because contact with machines was barely lethal to them in the
+first place. The kiting and cover I gave raiders only ever protected them from
+crossfire and splash, which is exactly why that measurement came back a perfect
+null. The behaviour is still right and still reads as human; the survival claim
+was not, and the null was telling me so.
+
+machVsRaider ships DEFAULT OFF and stays off until he says otherwise, because
+this is not a bug fix, it is a change to what the world IS. Switched on, the map
+fights itself: fewer raiders reach the extraction, gunfire happens in places he
+is nowhere near, and the machines that would have been hunting him are busy.
+That could be the best thing in the game or it could gut the raider pressure he
+likes; it is his call and the dial is one word.
+
+Implementation notes: only sentries and crawlers hunt, only when they have
+genuinely lost the player, and the check sits AFTER every existing sight rule so
+crouch, fog, blinding and concealment still answer the player question first. No
+new rnd draws when the dial is off, so the entire back catalogue reproduces.
+
+Not verified: what machVsRaider does to HIS extract rate over 320 seeds, which
+is queued behind the bush run; whether raider counts at the extraction fall far
+enough to matter; the bush attribution itself, rerun after the stale-page fault
+below and still in flight.
+
+### Harness fault owned: a stale tab produced a fake null
+
+The first bush attribution returned zero discordant across 59 seeds, which reads
+as "this change does nothing". It was not: the fixture TAB still held the build
+loaded before the rebuild, so the dial did not exist in the running page and both
+arms executed identical code. The dial even READ BACK correctly, because __cfg
+stores any key it is handed, so my existing rule about reading setters back does
+not catch this. New rule, now in memory: after every mkfixture rebuild, RELOAD the
+tab and prove the dial changes an OBSERVABLE before launching a measurement.
+Proven this time: bushRoadR 0 leaves 153 bushes, bushRoadR 1 leaves 133.
+
