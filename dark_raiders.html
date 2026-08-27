@@ -560,7 +560,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.14';
+var VER='4.15';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -900,9 +900,16 @@ var DISTRICTS=[
   {name:'GREENBELT',floor:'#74894F',accent:'#8FBF3A',wall:'#7E9070',wallTop:'#B4C79E',light:'#E4F5B0'},
   {name:'BLOCKHOUSE',floor:'#74628C',accent:'#A97ED0',wall:'#8A7EA0',wallTop:'#C0B4D4',light:'#F0DCFF'}
 ];
-var TAGS=['Too dark','Not dark enough','Too easy','Too hard','Shooting felt weak','Shooting felt good',
-  'Loot boring','Loot exciting','Got lost','Timer too short','Timer too long','AI too dumb','AI unfair',
-  'Extract too easy','Extract too tense','Ran out of ammo','Ammo economy good','Dodge roll great','Dodge roll weak','Crier felt great','Crier felt unfair','Felt great'];
+// v4.15 HIS NOTE on run #52: "give me new options for the end game feedback
+// buttons, most of this stuff isn't really a problem any more." The poll now
+// asks about the systems that are actually live and the questions actually
+// open. Evergreens stay; retired problems go; his old tags on old runs still
+// print because the strings are stored on the run.
+var TAGS=['Felt great','Too easy','Too hard','Too dark',
+  'Music felt right','Music annoying','Bulwark great','Bulwark unfair',
+  'Howler great','Howler unfair','Raiders felt human','Raiders felt dumb',
+  'Extract too easy','Extract too tense','Loot boring','Loot exciting',
+  'Maps feel samey','This map has character','Ran out of ammo','New machines too rare'];
 var RECIPES=[
   {name:'Component Kit',out:{comp:1},need:{scrap:3,wire:2}},
   {name:'2x Ammo Box',out:{ammobox:2},need:{comp:1,cell:1}},
@@ -5203,7 +5210,7 @@ function ammoTell(ct){
   return false;
 }
 function mkContainer(x,y,type,d){
-  var times={crate:1.4,locker:2.2,safe:3.4,body:1.0,cache:4.6};
+  var times={crate:1.4,locker:2.2,safe:3.4,body:1.0,cache:4.6,botwreck:1.0};
   // THE DECISION HAS TO EXIST TO BE A DECISION, v1.98. v1.61 sorts loot worst
   // first and calls that "what turns a search from a hold-to-collect into a
   // decision... every container asks the same question the raid asks: is one more
@@ -5235,10 +5242,10 @@ function mkContainer(x,y,type,d){
   // balance decisions that are his to make rather than mine. The dial stays so the
   // experiment can be re-run against whichever answer he picks.
   var _cmin=(CFG.crateMin===undefined?1:CFG.crateMin);
-  var counts={crate:[_cmin,2],locker:[1,3],safe:[2,3],body:[1,2],cache:[2,3]};
+  var counts={crate:[_cmin,2],locker:[1,3],safe:[2,3],body:[1,2],cache:[2,3],botwreck:[_cmin,2]};
   var c=counts[type],loot=[],n=ri(c[0],c[1]);
   for(var i=0;i<n;i++){
-    var lk=rollTable(LOOT[type]);
+    var lk=rollTable(LOOT[type==='botwreck'?'crate':type]);
     loot.push(lk==='KEY'?resolveKey():lk);
   }
   // WORST FIRST, BEST LAST, from v1.61. This one line is what turns a search from a
@@ -10886,13 +10893,20 @@ function updateEnts(dt){
       // magazine, so a sentry always yields ammunition alongside its salvage; crawlers
       // keep their existing roll. CFG.machAmmo is the dial and 0 restores v1.67.
       } else if(e.kind!=='snitch'&&rr()<.55){
-        var c2=mkContainer(e.x,e.y,'crate');
+// v4.15 HIS NOTE at 143 seconds of run #52: "crawlers are still turning
+        // into crates when they are destroyed, their loot boxes should look
+        // like downed crawlers instead, of course." Of course. Same complaint
+        // and same fix shape as his v3.65 bodies-as-suitcases note: the drop
+        // is now its own container type that DRAWS as a wreck, everything
+        // mechanical about it unchanged.
+        var c2=mkContainer(e.x,e.y,'botwreck');
+        c2.bot=e.kind;
         var mdrop=[e.kind==='sentry'?pick(['servo','board','optic','cell']):pick(['scrap','wire','cell','ammobox'])];
         if(e.kind==='sentry'&&rr()<(CFG.machAmmo===undefined?1:CFG.machAmmo)) mdrop.push('ammobox');
         setLoot(c2,mdrop);
         c2.time=.8; G.containers.push(c2);
       } else if(e.kind==='snitch'){
-        var c3=setLoot(mkContainer(e.x,e.y,'crate'),[pick(['board','optic','comp'])]); c3.time=.7;
+        var c3=setLoot(mkContainer(e.x,e.y,'botwreck'),[pick(['board','optic','comp'])]); c3.time=.7; c3.bot='snitch';
         G.containers.push(c3);
       }
       // Only announce a kill you could actually witness. Machines and raiders
@@ -13460,7 +13474,29 @@ function drawContS(ct){
   // Opaque ink plate instead of the 35 percent stroke this used to carry, which
   // was the only outline anywhere in the game. All of it stays inside the dim
   // window so an opened container still fades as one whole object.
-  if(ct.type==='body'){
+if(ct.type==='botwreck'){
+    // A killed machine on its side: scorched ground, a crumpled hull, bent
+    // legs at wrong angles, and a dead eye. Searched, the side panel is torn
+    // open and the cavity shows. Orientation from grit(x,y), the positional
+    // hash, exactly as bodies do it: stable per wreck, no dice, no shimmer.
+    var wa2=grit(ct.x,ct.y)*6.2832;
+    wc.save(); wc.translate(ct.x,ct.y-2); wc.rotate(wa2);
+    wc.fillStyle='rgba(8,6,4,.5)';
+    wc.beginPath(); wc.ellipse(0,2,16,9,0,0,6.2832); wc.fill();
+    wc.fillStyle=INK; rrF(-11,-8,22,15,6);
+    wc.fillStyle=ct.opened?'#241d18':'#3a2f26'; rrF(-10,-7,20,13,5);
+    wc.fillStyle=ct.opened?'#171310':'#4a3c30'; rrF(-10,-7,20,4.5,3);
+    if(ct.opened){ wc.fillStyle='#0e0b09'; rrF(-6,-4,12,8,3); }
+    wc.strokeStyle=INK; wc.lineWidth=3;
+    wc.beginPath(); wc.moveTo(9,-2); wc.lineTo(16,-7); wc.lineTo(20,-5); wc.stroke();
+    wc.beginPath(); wc.moveTo(9,3); wc.lineTo(15,8); wc.lineTo(13,12); wc.stroke();
+    wc.beginPath(); wc.moveTo(-10,4); wc.lineTo(-16,9); wc.stroke();
+    wc.strokeStyle='#3f342a'; wc.lineWidth=1.6;
+    wc.beginPath(); wc.moveTo(9,-2); wc.lineTo(16,-7); wc.lineTo(20,-5); wc.stroke();
+    wc.beginPath(); wc.moveTo(9,3); wc.lineTo(15,8); wc.lineTo(13,12); wc.stroke();
+    wc.fillStyle='#4a2620'; wc.beginPath(); wc.arc(-4,-1,2,0,6.2832); wc.fill();
+    wc.restore();
+  } else if(ct.type==='body'){
     // A BODY IS A BODY, v3.65. HIS NOTE: "the random 'bodies' that players can
     // search don't look like bodies at all". Correct: this branch fell through
     // to the generic box, so a fallen man drew as a 20-wide beige suitcase, the
@@ -18490,7 +18526,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The wall-glitch camera announces its catch, and COLD STORAGE is being examined for what makes it hardest',
+  now:'His run #52 notes: dead machines leave wrecks, and the feedback buttons ask current questions',
   next:'His open calls: machine war, street amount, music gap, crewmate revive'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

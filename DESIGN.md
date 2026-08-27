@@ -15285,3 +15285,53 @@ SWITCHING GUNS even with the shooting clock freshly written. Sweep green at
 Not verified: his eye on the new words in play; the COLD STORAGE forensic
 run, still in flight.
 
+
+### v4.15 - His run #52 notes, and what makes COLD STORAGE the hardest map
+
+HIS RUN #52 first, because it deserves the record: 456 seconds on COLD
+STORAGE in a dawn storm, 28 containers searched, a 23,215 credit bag, bigger
+than his best ever banked haul, 60 percent accuracy over 176 rounds, an elite
+down and HIS FIRST HOWLER KILL, two knockdowns survived, tagged Felt great.
+Then abandoned 98 metres from the ring without calling the ship, bag lost. If
+that was life interrupting, fine; if leaving felt better than extracting with
+23k, that is a design signal worth his words.
+
+HIS NOTE ONE: "give me new options for the end game feedback buttons, most of
+this stuff isn't really a problem any more." Done. The poll now asks about
+what is live: the music, the Bulwark, the Howler, whether raiders read as
+human, whether the map had character, whether the new machines are too rare.
+Evergreens stay. His old tags on old runs still print, because the words are
+stored on the run itself.
+
+HIS NOTE TWO, at 143 seconds: "crawlers are still turning into crates when
+they are destroyed, their loot boxes should look like downed crawlers
+instead, of course." Of course. Same complaint and same fix shape as his
+bodies-as-suitcases note from v3.65: machine salvage is now its own kind of
+searchable object that DRAWS as a wreck, scorched ground, crumpled hull, legs
+bent at wrong angles, a dead eye, and a torn-open cavity once stripped.
+CAPTURED AND LOOKED AT: the unsearched wreck reads as a destroyed machine,
+the searched one as a husk, neither reads as a shipping box. Snitch drops
+became wrecks too. Contract note: searching wrecks no longer counts toward
+"search N crates" contracts, because a wreck is not a crate and only ever
+counted as one by accident.
+
+OWNED, caught by my own probe rather than by him: the first version crashed
+the game on every machine salvage drop, because the box-maker holds three
+tables keyed by box type and I registered the new type in none of them. The
+short verification sweep cannot see it, because its raids kill nothing that
+drops. The kill-five-crawlers probe hit it instantly, twice, once per missing
+table. The wreck now rolls exactly as a crate did, same dice in the same
+order, so the seeded stream is untouched, and the drop sites overwrite the
+loot with machine salvage immediately after, as they always have.
+
+THE COLD STORAGE FORENSICS, from the 320-seed run with full death records:
+what makes his home map the hardest is PEOPLE AND PRESSURE, not geometry
+alone. Raiders kill the robot 81 times there against 62 on GREYWATER, the
+highest raider count anywhere, and the BULWARK kills 20 against 7, nearly
+triple, because a walking wall in a tight aisle owns the whole corridor.
+Median death comes at 94 seconds, fast, and the average bag home is 2,109
+against 2,701. Tight ground, more contact, less room to be clever.
+
+Not verified: the wreck look at his zoom in motion; the new poll buttons in
+his hands; whether the 23k abandon was life or design.
+
