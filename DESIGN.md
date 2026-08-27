@@ -15391,3 +15391,29 @@ JOGGING, and back to HOLDING when everything stops. Sweep green at
 Not verified: the compound line at his eye in a real fight, and whether three
 truths at once ever crowds the corner it lives in.
 
+
+### v4.17 - Question two gets its instrument, and the premise is confirmed
+
+His Priorities question two rests on a claim measured long ago: "the crowd at
+your extraction is the map you woke on the way there, not the siege." The
+game now measures it live: the instant the ship touches down at the ring HE
+is using, it counts every hostile within 420 and splits them by birth,
+map-spawned against siege-born (siege arrivals now carry a birth tag). The
+count rides in the robot's run record.
+
+First proper sample, three touchdowns from twelve robot raids at the current
+posture: 18-0, 16-0, 17-0. Fifty-one map-born bodies at the ring across three
+landings and NOT ONE siege arrival among them. The premise holds completely:
+siege arrivals spawn at least 700 out and have not arrived by touchdown, so
+the fight at the ring when the ship lands is entirely the map you woke, and
+the siege's pressure lands during the boarding window instead. His three
+options, quieter movement, shorter beacon, or move-while-it-lands, now have a
+measured fact under them: the first attacks the real cause, the second
+shortens the window the real cause uses, and the third dodges it entirely.
+
+Method note, owned in one line: the first capture counted crowds at ships
+RAIDERS had called across the map; scoped to his own ring before sampling.
+
+Not verified: a larger sample, cheap to grow whenever a robot raid runs;
+which of his three options he wants, which is the decision itself.
+
