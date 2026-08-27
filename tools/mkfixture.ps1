@@ -24,7 +24,11 @@ window.__telemetryDest=function(pub,loc,shared,proto){ return telemetryDest(pub,
 window.__say=function(m){ say(m); return {inside:(G?G.msg:null),sim:(G?!!G.sim:null),sameG:(G===window.__state())}; };
 window.__msg=function(){ return G?{msg:G.msg,msgT:G.msgT,sim:!!G.sim}:null; };
 window.__cam=function(){ return {x:camX,y:camY}; };
-window.__cfg=function(){ return CFG; };
+// v3.61: __cfg now accepts an optional patch. It silently ignored its argument
+// for the whole project, so every probe that "set" a dial through it was a
+// no-op that happened to coincide with __pinDefaults' pins. The v3.51 healing
+// probe's two identical arms were this, not only the pin re-application.
+window.__cfg=function(p){ if(p){ for(var k in p) CFG[k]=p[k]; } return CFG; };
 window.__keys=function(){ return keys; };
 window.__mouse=function(){ return mouse; };
 window.__sim=function(dt){ refreshVseg(); updatePlayer(dt); updateEnts(dt); updateThrowables(dt); };

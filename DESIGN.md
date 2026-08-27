@@ -12482,3 +12482,72 @@ construction, from the note data and the gain envelopes, not by ear. If the
 loop is annoying or the level is wrong, the musicVol dial and the OFF state
 are both one click away while I retune it from his note.
 
+
+### v3.61: tuning has not persisted across sessions since v1.59, one dangling else
+
+Found by the adversarial review panel that vetted the v3.60 music patch before
+it was applied, in code neither of us was touching. The panel's job was to
+check my anchors; this was next to one of them.
+
+WHAT BROKE, AND WHEN. Before v1.59 the loader ended with
+
+    if(P.cfgv===7&&P.cfg){ applyCfg(DEF,P.cfg); ... }
+    else P.cfg=null;
+
+which is the whole tuning persistence mechanism: a current save restores its
+dials, a stale save drops them and takes the new defaults. The v1.59 edit
+meant to bump the accepted version from 7 to 8 and instead REPLACED the entire
+if line with a comment explaining why, and the comment itself ends mid
+sentence: "his saved config pins simGreed at 26, which is the number that
+made". Made what, the file never said, for two hundred builds.
+
+An else with no if does not become an error in JavaScript. It glues itself to
+the nearest if above it, which after eleven intervening comment lines was
+
+    if(!WEAPONS[P.equipped]) P.equipped=...;
+
+so the machinery read: if your equipped gun is INVALID, repair it; otherwise,
+null your saved tuning. The common case, a player with a working gun, threw
+his dials away on every single load. And since the restore call was the thing
+the edit deleted, nothing anywhere read P.cfg at all: saveProfile has been
+faithfully writing the full dial state into every save since, and no code has
+ever read it back. Every session started on defaults plus whatever the
+friendly settings words re-applied.
+
+THE FIX RESTORES THE MECHANISM AT VERSION 9, not 8, deliberately. Every
+existing save carries a P.cfg refreshed under the broken loader, pinning
+whatever build its owner last played, and two hundred builds of default drift,
+healSlow, raiderHaul, the Warden, all of it, must not ride back in over the
+current game. A cfgv 8 save therefore drops its pins exactly once, which is
+what the version field is FOR, and from the very next save the dials finally
+persist. applyGameOpts runs again after the restore, because applyCfg rebuilds
+CFG from scratch and the settings words must always beat a raw dial copy.
+
+The discipline this reinstates, written at the site: when a shipped default
+changes deliberately, bump cfgv in both places, or the old value returns on
+every save.
+
+AND A HARNESS CONFESSION FOUND WHILE VERIFYING IT. The fixture's __cfg hook
+took no argument: window.__cfg=function(){ return CFG; }. Every probe in this
+project's history that "set" a dial by calling __cfg({...}) was a silent no-op
+that happened to coincide with what __pinDefaults had already pinned. The
+v3.51 healing probe's two identical arms were this, not only the pin
+re-application I blamed at the time; the shipped claims survive because the
+live arm measured the pinned, which were the shipped, values. __cfg now
+applies an optional patch, so a probe that says it set a dial has set it.
+
+Verified: parsecheck PASS at v3.61 twice, once after the game edit and again
+after the fixture hook fix. All four maps drive and draw with frameErr and
+hudErr null, hub clean, endRaid clean on all three outcomes. The mechanism
+driven end to end in the fixture's own origin-isolated storage: pSpeed set to
+201 through the repaired __cfg, saved at cfgv 9 with 201 in the stored JSON,
+clobbered back to 158 in memory, and loadProfile restored 201 with P.cfg
+intact. A hand-staled cfgv 8 save loaded to defaults with P.cfg nulled. A save
+whose raw dials said 15 raiders but whose settings words said Few loaded to 5,
+words over dials.
+Not verified: his real save on the play origin has not been through the new
+loader yet; it will take the one-time pin drop on his next load, which is the
+designed behaviour but I could not rehearse it on his actual profile. The
+window.storage wrapper path in storeGet, if his environment provides one, is
+untested here because the fixture fell through to localStorage.
+

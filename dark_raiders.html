@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.60';
+var VER='3.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -959,7 +959,7 @@ function autoEquipOn(){
   if(G&&G.sim) return !!CFG.autoEquip;
   return (P.autoEquip===undefined)?!!CFG.autoEquip:!!P.autoEquip;
 }
-function saveProfile(){ P.cfg=CFG; P.cfgv=8; storeSet(JSON.stringify(P)); }
+function saveProfile(){ P.cfg=CFG; P.cfgv=9; storeSet(JSON.stringify(P)); }
 function loadProfile(){
   try{
     return storeGet().then(function(r){
@@ -1019,7 +1019,31 @@ function loadProfile(){
           // cfgv 5: the v1.03 tuning batch must actually reach a saved profile.
           // Old pinned sliders are dropped exactly as the v0.68 migration did;
           // credits, stash, armoury and the recorder are untouched.
-          // cfgv 8: his saved config pins simGreed at 26, which is the number that made
+          // cfgv 8: his saved config pinned simGreed at 26, and the v1.59 edit
+          // that meant to bump the accepted version to 8 REPLACED the if line
+          // with this very comment and never finished either one. The sentence
+          // above ended mid-thought for two hundred builds, and the else below
+          // it silently glued itself to the equipped-weapon check further up,
+          // which is the dangling-else this comment block hid: with a VALID
+          // equipped gun the else fired and nulled the saved config on every
+          // load. Found v3.61 by an adversarial review panel, not by me.
+          // The consequence was that NO tuning ever persisted across sessions
+          // since v1.59: saveProfile kept writing P.cfg faithfully and nothing
+          // ever read it back.
+          // cfgv 9: restored at a NEW version on purpose. Every existing save
+          // carries a P.cfg refreshed under the broken loader, pinning whatever
+          // build he last played, and two hundred builds of default drift
+          // (healSlow, raiderHaul, the Warden, all of it) must not be quietly
+          // resurrected over the current game. Stale pins drop exactly once,
+          // and from the next save onward the dials finally persist.
+          // applyGameOpts runs AGAIN after the restore because applyCfg
+          // rebuilds CFG from scratch, and the friendly settings words must
+          // always win over a raw dial copy, per the v3.4x guarantee that the
+          // dials and the words can never disagree.
+          // THE DISCIPLINE THIS REINSTATES: when a shipped default changes
+          // deliberately, bump cfgv in saveProfile AND here, or the old value
+          // rides back in on every save.
+          if(P.cfgv===9&&P.cfg){ applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; try{ applyGameOpts(); }catch(e){} }
           else P.cfg=null;
         } }
     }).catch(function(){});
