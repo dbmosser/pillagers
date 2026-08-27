@@ -13744,3 +13744,39 @@ Not verified: whether simGreed 23 also converges the bot on the OTHER maps,
 measured only on GREYWATER seeds so far; and the residual gaps above, which
 are the next builds in this line.
 
+
+### v3.86: the bot's aim becomes human, and the official number is 16.9
+
+THE RE-BASELINE LANDED FIRST. 320 seeds on GREYWATER at the Daniel posture:
+54 extractions, 16.9 percent, zero discordant between identical arms, which
+re-proves per-seed determinism on the current build. The old 7.2 was a
+greed-52 number and is retired. His real 29 percent sits above the bot's
+16.9 by the margin his dodging and raider-reading should buy, which is the
+first time the bench number and his lived number have been in the same
+neighbourhood for a stated reason.
+
+THEN THE AIM. The bot shot 72 percent to his 43, because its wobble was a
+hardcoded plus-minus 10 units. The wobble is now the simAim dial, and it was
+calibrated EMPIRICALLY: 30 units read 57 percent, 48 read 51, 57 read 38,
+70 read 31, and the interpolated 52 units confirmed at 47 percent median on
+a fresh seed family, inside noise of his 43. simAim 52 is the pinned default.
+The rnd draw count is unchanged, so raid builds stay byte-identical and only
+where the bullets land moves.
+
+WHAT THIS MEANS FOR EVERY NUMBER AFTER TODAY: the bench player now leaves at
+his bag value, stays his two minutes, covers his ground and hits at his
+accuracy. Two known gaps remain, ranked: the killer mix (raiders are HIS top
+killer and barely touch the bot, which says the bot plays raider encounters
+wrongly) and box selection (ten quick crates against his chosen three).
+Those are the next builds in this line, and the 16.9 baseline may shift
+again once the aim change propagates through a full re-baseline, queued.
+
+Verified: parsecheck PASS at v3.86, all four maps drive and draw clean at
+the standard baselines, hub clean, endings clean. The calibration curve
+measured at four dial values with eight raids each, and the chosen value
+confirmed at pinned defaults on a fresh seed family.
+Not verified: the accuracy calibration is per-shot placement against his
+MIXED weapon history, so it is approximate by construction; and the 16.9
+baseline predates the aim change by one build, so the true current baseline
+needs one more 320-seed run at the new pins, queued for the next tick.
+
