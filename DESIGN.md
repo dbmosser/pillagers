@@ -13468,3 +13468,36 @@ the same seeded raid replayed gives the same outcome every time on this
 build. For scale, HIS real record is 11 extractions in 39 runs, about 28
 percent, roughly four times the deliberately-mediocre bot.
 
+
+### v3.79: your save can finally leave the browser
+
+THE GAP, in plain terms: everything he owns, forty runs, every credit, every
+unlock, lives in ONE browser storage entry, and a single "clear browsing
+data" would have erased it forever with no recourse. Nothing anywhere
+protected it. This build adds two rows to Settings.
+
+BACK UP YOUR PROGRESS writes the whole profile to a dated file in Downloads,
+salvagerun-backup-YYYYMMDD.txt, on one click. RESTORE FROM A BACKUP opens a
+file picker, validates that the picked file actually is a Dark Raiders
+profile using the same gate the loader has always trusted, quietly stashes
+the profile being replaced under a side key in case the wrong file was
+picked, writes the backup in through the normal storage path, and reloads it
+through the normal loader so every migration and repair the loader performs
+applies to restored saves too. The storage key itself is untouched, per the
+standing rule that it never changes without a migration.
+
+Verified: parsecheck PASS at v3.79, all four maps drive and draw clean at
+the standard baselines, hub clean, raid endings clean. Both buttons render
+in Settings with live handlers. The restore chain driven end to end in the
+fixture's own isolated storage: a junk file is rejected by the validation
+gate; a doctored backup with 777 runs and 123,456 credits restored to
+exactly those values; the outgoing profile was found intact under the side
+key; and rolling back from that side key returned the original. The backup
+button was deliberately NOT clicked in the harness, because it would drop a
+real file into his real Downloads, which is the same pollution the
+auto-export leak taught us to never do again.
+Not verified: the actual browser download on his machine, one click of his
+that either produces the file or does not; and a restore of a LARGE aged
+profile, since the fixture's scratch profile is small. Both are one honest
+click from proven.
+
