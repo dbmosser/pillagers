@@ -560,7 +560,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.93';
+var VER='3.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -620,7 +620,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1.2,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:24,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -10650,6 +10650,32 @@ function updateEnts(dt){
     // down. Reaching zero on the clock sets hp to 0 with the downed flag cleared
     // and finished set, so the very next frame takes the ordinary death path and
     // he drops his bag as a named body like anyone else.
+// THE DODGE ROLL, v3.94, raiderRoll, DEFAULT ON. HIS QUESTION: "are the
+    // raider bots using the dodge roll?" They were not. tryRoll had exactly two
+    // callers, the Space key and gamepad button 1, and the roll movement lived
+    // inside updatePlayer, so the signature defensive move in the game was
+    // something only the human could do. His follow-up sets the standard: "they
+    // need to be on complete parity when they are within earshot of a player for
+    // maximum realism".
+    // Same numbers as his, deliberately, because parity means the same move and
+    // not a cheaper imitation: ROLLSPD 320 for 0.38 seconds, invulnerable for
+    // the first 0.30. In place of stamina a raider pays a cooldown, so he cannot
+    // chain them any more than a full stamina bar lets you chain two.
+    // EARSHOT GATED, raiderRollEar 900, for the reason he gave: parity matters
+    // where it can be seen. A raider dodging alone on the far side of the map
+    // costs frames and tells nobody anything.
+    if(e.rollCd>0) e.rollCd-=dt;
+    if(e.roll>0){
+      e.roll-=dt;
+      var _rr=ROLLSPD*dt,_rsl=Math.max(1,Math.ceil(_rr/8));
+      for(var _rs2=0;_rs2<_rsl;_rs2++){
+        e.x+=(e.rollDir.x*_rr)/_rsl; e.y+=(e.rollDir.y*_rr)/_rsl;
+        collide(e,G.map.walls);
+      }
+      e.moving=true;
+      if(e.roll<=0){ e.roll=0; e.rollCd=1.5+rnd(0,0.6); }
+      continue;                       // rolling IS the action, exactly as it is for him
+    }
     if(e.downed){
       e.downT-=dt;
       e.moving=false;
@@ -11504,6 +11530,9 @@ function updateBullets(dt){
         if(b.player){
           for(var e2=0;e2<G.ents.length;e2++){
             var en=G.ents[e2];
+            // v3.94: the first 0.30s of a 0.38s roll is invulnerable, the same
+            // window the player gets, so a raider who times it eats nothing.
+            if(en.roll>0.08) continue;
             if(dist(b,en)<en.r+3){
               var edmg=b.dmg;
               // SPEC 8.7: a weak point is checked BEFORE armour, because it is
@@ -11523,7 +11552,21 @@ function updateBullets(dt){
                 var esk=armorById(en.rig).absorb||0;
                 var eab=Math.min(en.armor,edmg*esk); en.armor-=eab; edmg-=eab;
               }
-              en.hp-=edmg; en.hitT=.16;
+en.hp-=edmg; en.hitT=.16;
+              // v3.94: he has just been shot at by YOU, and a person answers
+              // that by getting off the line. Perpendicular to the incoming
+              // round, side chosen by which way he is already facing, so the
+              // dodge breaks the shooter's lead instead of running along it.
+              if(CFG.raiderRoll!==0&&en.kind==='raider'&&!en.downed&&!en.finished&&
+                 !en.roll&&!(en.rollCd>0)&&en.hp>0&&
+                 dist(en,p)<(CFG.raiderRollEar===undefined?900:CFG.raiderRollEar)){
+                var _bl=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
+                var _px=-b.vy/_bl,_py=b.vx/_bl;
+                if((_px*Math.cos(en.face)+_py*Math.sin(en.face))<0){ _px=-_px; _py=-_py; }
+                en.rollDir={x:_px,y:_py};
+                en.roll=0.38;
+                if(!G.sim) sfx('step',en.x,en.y);
+              }
               en.byPlayer=en.hp<=0;
               // Same rule for YOUR rounds: shooting a fleeing raider does not
               // talk him back into the fight, v2.93. This is the path his report
@@ -14101,8 +14144,8 @@ function render2D(dt){
       // upward by that deck's height for the rest of the frame. On THE QUARRY,
       // where the top terrace lifts 132, that is the whole world jumping.
       else if(e2.kind==='raider')
-        drawOp(e2.x,e2.y,e2.face,(e2.step||0)*4,e2.coat,
-          clamp((e2.bag?e2.bag.length:0)/7,0,1),e2.muzzle,'',0,
+        drawOp(e2.x,e2.y,e2.face,(e2.roll>0)?(1-e2.roll/.38)*12.6:(e2.step||0)*4,e2.coat,
+          clamp((e2.bag?e2.bag.length:0)/7,0,1),e2.muzzle,(e2.roll>0)?'roll':'',0,
           {moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT,bulk:e2.bulk||0});
 
       // SPEC 8.7: the openings have to be VISIBLE or they are a secret, and a
@@ -17952,8 +17995,8 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The hand-down he ordered: raiders kite and take cover from machines, as the benchmark bot learned to',
-  next:'Measure the hand-down at 320 seeds, then simHoldFire'
+  now:'Parity: raiders dodge roll now, his move at his numbers, whenever you are close enough to see it',
+  next:'The rest of the parity audit, crouch and steady aim and reviving a crewmate'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a

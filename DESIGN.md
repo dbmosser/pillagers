@@ -14179,3 +14179,76 @@ extract rate rises enough to need a counterweight; the player-facing half of
 the hand-down, raiders taking cover from YOU rather than from machines, which
 is a bigger balance change and is not built.
 
+
+### OWNED: simHoldFire was a catastrophic regression and I pinned it unmeasured
+
+HIS METHOD EXISTS FOR THIS AND I SKIPPED IT. v3.90 added simHoldFire, the bot
+holding its trigger while kiting or running to cover, and I pinned it ON in the
+benchmark posture in the same build without measuring it. Measured now, 80
+paired seeds on the official family: OFF 12.5 percent, ON 1.3 percent,
+discordant 9 to 0, which is about one chance in five hundred of being luck.
+
+The mechanism is obvious in hindsight. A cover spot is available almost
+everywhere in an urban map, so `_flee||_cv` was true most frames a threat
+existed, so the bot essentially stopped shooting whenever anything hunted it
+and walked backwards until something ate it. Crawler deaths per 320 went from
+47 at the bench to 147.
+
+Two things matter about the blast radius. The SHIPPED GAME WAS NEVER AFFECTED:
+simHoldFire defaults to 0 and only the fixture posture pinned it, so no raid he
+has ever played contained this. And the raiderSmart A/B I ran on top of it is
+void, both arms sat at 0.3 and 0.6 percent where nothing is detectable; it has
+been relaunched at the corrected posture. The pin is now 0. The idea is not
+dead, it is unmeasured and was wrong in this form; a narrower version, holding
+fire only while actually breaking a sightline and only for the second it takes,
+is worth trying LATER, with the measurement FIRST this time.
+
+### v3.94 - Parity: the raiders get his dodge roll
+
+HIS QUESTION: "are the raider bots using the dodge roll?" They were not. tryRoll
+had exactly two callers, the Space key and gamepad button 1, and the roll
+movement lived inside updatePlayer, so the signature defensive move in this game
+was something only the human could do. HIS STANDARD, immediately after: "they
+need to be on complete parity when they are within earshot of a player for
+maximum realism/human-like play".
+
+raiderRoll, DEFAULT ON. Same numbers as his, deliberately, because parity means
+the same move and not a cheaper imitation: ROLLSPD 320 for 0.38 seconds,
+invulnerable for the first 0.30. Where he pays 45 stamina a raider pays a 1.5 to
+2.1 second cooldown, so neither can chain them. The trigger is being hit by one
+of YOUR rounds, and the direction is perpendicular to that round with the side
+chosen by which way he already faces, so the dodge breaks your lead instead of
+running along it. Earshot gated at raiderRollEar 900, per his framing: parity
+matters where it can be seen.
+
+Verified on the real play path, not assumed: a round that lands starts the roll
+(hp 72 to 69.5, roll 0.38, direction perpendicular to a bullet travelling plus x
+was 0,-1, correct); the roll then advances 0.38 to 0 across 24 frames, carries
+the man 39 units and stops against geometry rather than through it; the cooldown
+lands at 1.54s; and a second round fired into him DURING the invulnerable window
+does nothing at all, 69.5 before and 69.5 after. Sweep green at 84/85/56/70.
+
+### The parity audit he asked for: what the player still has that raiders do not
+
+Checked against current code, not memory:
+  ALREADY AT PARITY: heal kits and bandages (raiderKit), thrown smoke, decoys
+  and frags (raiderThrow), armour with the same absorb model (raiderWear), and
+  the whole extraction dance, calling the dropship, clearing out while it lands
+  and boarding in 3 seconds (raiderBeacon).
+  FIXED THIS BUILD: the dodge roll.
+  STILL MISSING, ranked by how much a player would feel it:
+  1. CROUCH. The strongest stealth rule in the game, invisible past 170 units,
+     and no raider has ever used it. He can vanish from a fight; they cannot.
+  2. REVIVING A DOWNED CREWMATE. Only the hired merc does it. An ordinary
+     raider steps over his own crew, which is his own open roadmap question 4.
+  3. STEADY AIM. His right mouse tightens spread; a raider fires the same
+     spread whatever he is doing, so he can never take a careful shot.
+  4. SPRINTING as a real ability with a stamina pool. Raiders have speed
+     multipliers in specific branches, 1.05 to 1.25, but no burst they choose
+     to spend, so they cannot make a run for it the way he can.
+
+Not verified: whether raiders swapping to a sidearm when dry and field-picking
+a better gun already work, which are two more parity questions I have not
+answered; the roll BY EYE in his own play; and the raiderSmart measurement,
+still running at the corrected posture.
+
