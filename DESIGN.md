@@ -15521,3 +15521,29 @@ ground is visible; four-map sweep 110/111/74/91 with howlers 2/2/1/2 and
 bulwarks all 1, no draw errors; hub clean; extract and dead endings ran.
 Not verified: whether the identity lands for him in normal play, where
 weather, night and the lit cone sit on top of everything.
+
+### m435 - v4.21: the plants match the sector
+
+Second cut at the samey-maps complaint in one evening. The vegetation was
+one green family everywhere: the same four bush greens, three canopy greens
+and one turf on all four sectors, day and night. Each sector spec now
+carries three channel multipliers and every vegetation colour passes through
+them once per raid build: the dam grows damp and lush, the SUNKEN QUARTER's
+growth is murky and yellowed by standing water, COLD STORAGE is frost-bitten
+and grey-blue, THE QUARRY is dry olive scrub. The turf under woods groves
+takes the same treatment inside the bake, so a grove's lawn agrees with its
+bushes.
+
+The v4.20 lesson was applied rather than relearned: the builder line that
+carries spec fields onto the built map got the new field in the same patch,
+and the first check after the rebuild asked the LIVE page what the built map
+held and what the computed palette said. Quarry answered with its own
+multipliers and an olive bush against the dam's green one, first try.
+
+Verified: parse PASS at v4.21; field and palette proven live on the built
+map, differing across sectors; captures of COLD STORAGE and THE QUARRY at
+pinned clear noon taken and looked at, the frost lawn and olive scrub both
+reading clearly; four-map sweep 110/111/74/91, howlers 2/2/1/2, bulwarks all
+1, no draw errors; hub clean; extract and dead endings ran. Not verified:
+night vegetation in play, and whether the four climates read as character or
+just as colour, which only his eyes can say.

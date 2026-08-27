@@ -560,7 +560,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.20';
+var VER='4.21';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2849,6 +2849,7 @@ id:'dam', name:'GREYWATER DAM', w:5200, h:4000,
   // served all four maps since the beginning, which is a large part of why
   // they read as reskins from above. Damp mossy concrete for the dam.
   ground:{day:'#56705A',night:'#111813'},
+  veg:{r:0.90,g:1.05,b:0.95},   // v4.21: lush and damp
   // REBUILT v1.52. His note: the dam was the weak map. Measured, he was right:
   // only 10.4 percent of its walkable ground sat inside a named place against
   // 47.6 on SUNKEN QUARTER, its mean sight line was the longest in the game at 675,
@@ -3029,7 +3030,8 @@ id:'dam', name:'GREYWATER DAM', w:5200, h:4000,
   // no verticality anchor and no water: the tension here is exposure, and the
   // relief is doorways.
 id:'buried', name:'SUNKEN QUARTER', w:4600, h:4600,
-  ground:{day:'#75664F',night:'#16140f'},   // v4.20: flood silt
+  ground:{day:'#75664F',night:'#16140f'},
+  veg:{r:1.00,g:0.96,b:0.78},   // v4.21: murky waterlogged green   // v4.20: flood silt
   zones:[
     {name:'THE COURTYARD', d:0, x:1300, y:1300, w:2000, h:2000},
     {name:'NORTH GARAGES', d:3, x:0,    y:0,    w:4600, h:1300},
@@ -3136,7 +3138,8 @@ id:'buried', name:'SUNKEN QUARTER', w:4600, h:4600,
 // answer to TENSE AND FRIGHTENING that geometry can give.
 {
 id:'cold', name:'COLD STORAGE', w:4200, h:3400,
-  ground:{day:'#55647A',night:'#10151d'},   // v4.20: cold blue concrete
+  ground:{day:'#55647A',night:'#10151d'},
+  veg:{r:0.88,g:0.92,b:1.12},   // v4.21: frost-bitten   // v4.20: cold blue concrete
   zones:[
     {name:'THE LONG DOCK', d:0, x:0,    y:0,    w:4200, h:800 },
     {name:'PACKING FLOOR', d:1, x:0,    y:800,  w:2400, h:1600},
@@ -3249,7 +3252,8 @@ id:'cold', name:'COLD STORAGE', w:4200, h:3400,
 },
 {
 id:'quarry', name:'THE QUARRY', w:4600, h:3600,
-  ground:{day:'#836C48',night:'#181410'},   // v4.20: dry ochre dust
+  ground:{day:'#836C48',night:'#181410'},
+  veg:{r:1.18,g:1.02,b:0.66},   // v4.21: dry scrub   // v4.20: dry ochre dust
   // THE FOURTH MAP, and the roadmap item that had been sitting at NOW since
   // v1.52: one built around VERTICALITY. The other three are flat ground with a
   // catwalk or two bolted on, because that is all the elevation system could
@@ -3939,7 +3943,7 @@ function buildFixedMap(def){
     segs.push({x1:w2.x+w2.w,y1:w2.y+w2.h,x2:w2.x,y2:w2.y+w2.h});
     segs.push({x1:w2.x,y1:w2.y+w2.h,x2:w2.x,y2:w2.y});
   }
-  return {fixed:def.id,name:def.name,ground:def.ground||null,walls:walls,segs:segs,buildings:buildings,water:water,
+  return {fixed:def.id,name:def.name,ground:def.ground||null,veg:def.veg||null,walls:walls,segs:segs,buildings:buildings,water:water,
     roadRects:roadRects,roadDashes:roadDashes,cullLog:_cullLog,
     cw:WORLD_W/8,ch:WORLD_H/8,cols:8,rows:8,
     bushes:bushes,landmarks:landmarks,zones:zseeds,districtAt:districtAt,zoneAt:zoneAt,woods:woodsList,bigPairs:[],plats:plats,ramps:ramps,platAt:platAt,liftAt:liftAt,locked:lockedRooms,
@@ -4215,6 +4219,24 @@ function grit(x,y){
   h=(h^(h>>>13))*1274126177|0;
   return ((h^(h>>>16))>>>0)/4294967296;
 }
+// v4.21: the vegetation wears the sector's climate. One green family served
+// all four maps; now each spec carries channel multipliers and every bush,
+// canopy and turf colour is transformed through them once per raid build.
+function vegT(hex,v){
+  if(!v) return hex;
+  var r=Math.min(255,Math.round(parseInt(hex.slice(1,3),16)*v.r));
+  var g=Math.min(255,Math.round(parseInt(hex.slice(3,5),16)*v.g));
+  var b=Math.min(255,Math.round(parseInt(hex.slice(5,7),16)*v.b));
+  return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
+}
+function mkVegPal(map){
+  var v=(map&&map.veg)||null;
+  function A(a){ var o=[],q; for(q=0;q<a.length;q++) o.push(vegT(a[q],v)); return o; }
+  return {bushD:A(['#2f4a22','#41652c','#5d8a3c','#7aa84e']),
+          bushN:A(['#16220f','#1d2c14','#26361c','#31452a']),
+          treeD:A(['#3f5c2c','#557a3a','#6f9a4c']),
+          treeN:A(['#1c2a14','#26361c','#31452a'])};
+}
 function bakeGround(map){
   var g=document.createElement('canvas'); g.width=WORLD_W; g.height=WORLD_H;
   var c=g.getContext('2d'),i,j,k;
@@ -4316,7 +4338,7 @@ function bakeGround(map){
   // turf under the woods: layered organic blotches, darker at the rim
   for(i=0;i<(map.woods||[]).length;i++){
     var WW=map.woods[i];
-    c.fillStyle=isDay()?'#6E8A52':'#16240f';
+    c.fillStyle=vegT(isDay()?'#6E8A52':'#16240f',map.veg);
     c.fillRect(WW.x+6,WW.y+6,WW.w-12,WW.h-12);
     for(j=0;j<26;j++){
       c.fillStyle='rgba(40,70,30,'+rnd(.10,.24)+')';
@@ -6800,7 +6822,7 @@ var N_BULWARK=nOf(CFG.nBulwark===undefined?1:CFG.nBulwark);
   }
   var termClock=(!sim&&hasTerm('window'))?0.66:1;
   var g={sim:!!sim,seed:seed,grid:buildSegGrid(map.segs,WORLD_W,WORLD_H),wgrid:buildWallGrid(map.walls,WORLD_W,WORLD_H),seal:(sim?null:{x:G_SEAL_SPOT.x,y:G_SEAL_SPOT.y,gained:0}),
-    nMach:N_SENTRY+N_CRAWLER,map:map,ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:Math.round(CFG.raidSec*termClock),raidLen:Math.round(CFG.raidSec*termClock),paused:false,
+    nMach:N_SENTRY+N_CRAWLER,map:map,vegPal:mkVegPal(map),ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:Math.round(CFG.raidSec*termClock),raidLen:Math.round(CFG.raidSec*termClock),paused:false,
     player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,
       // The sim wears a FIXED Scav Rig rather than whatever he happens to have
       // equipped. Raiders now carry armour, so a bare sim player was measuring a
@@ -14147,14 +14169,14 @@ function render2D(dt){
       var bmine=(BU===G.pBush);
       if(bmine) wc.globalAlpha=0.52;
       shadowE(BU.x+2,BU.y+BU.r*0.26,BU.r*0.88,BU.r*0.28,.28);
-      wc.fillStyle=isDay()?'#2f4a22':'#16220f';
+      wc.fillStyle=isDay()?G.vegPal.bushD[0]:G.vegPal.bushN[0];
       wc.beginPath(); wc.ellipse(BU.x,BU.y,BU.r*0.96,BU.r*0.50,0,0,6.2832); wc.fill();
-      wc.fillStyle=isDay()?'#41652c':'#1d2c14';
+      wc.fillStyle=isDay()?G.vegPal.bushD[1]:G.vegPal.bushN[1];
       wc.beginPath(); wc.arc(BU.x-BU.r*0.34+bsw,BU.y-blf*0.50,BU.r*0.52,0,6.2832); wc.fill();
       wc.beginPath(); wc.arc(BU.x+BU.r*0.30+bsw,BU.y-blf*0.42,BU.r*0.48,0,6.2832); wc.fill();
-      wc.fillStyle=isDay()?'#5d8a3c':'#26361c';
+      wc.fillStyle=isDay()?G.vegPal.bushD[2]:G.vegPal.bushN[2];
       wc.beginPath(); wc.arc(BU.x+bsw*1.2,BU.y-blf*0.78,BU.r*0.54,0,6.2832); wc.fill();
-      wc.fillStyle=isDay()?'#7aa84e':'#31452a';
+      wc.fillStyle=isDay()?G.vegPal.bushD[3]:G.vegPal.bushN[3];
       wc.beginPath(); wc.arc(BU.x-BU.r*0.16+bsw*1.3,BU.y-blf*0.96,BU.r*0.32,0,6.2832); wc.fill();
       if(bmine) wc.globalAlpha=1;
     } else if(it.w&&it.w.tree){
@@ -14169,11 +14191,11 @@ function render2D(dt){
       wc.fillStyle='#2e2114';
       wc.fillRect(tcx-TR.w*.32,tby-26,TR.w*.2,26);
       var canY=tby-30,cr2=TR.canopy;
-      wc.fillStyle=isDay()?'#3f5c2c':'#1c2a14';
+      wc.fillStyle=isDay()?G.vegPal.treeD[0]:G.vegPal.treeN[0];
       wc.beginPath(); wc.arc(tcx+swayT,canY-cr2*.35,cr2,0,6.2832); wc.fill();
-      wc.fillStyle=isDay()?'#557a3a':'#26361c';
+      wc.fillStyle=isDay()?G.vegPal.treeD[1]:G.vegPal.treeN[1];
       wc.beginPath(); wc.arc(tcx+swayT-cr2*.25,canY-cr2*.5,cr2*.72,0,6.2832); wc.fill();
-      wc.fillStyle=isDay()?'#6f9a4c':'#31452a';
+      wc.fillStyle=isDay()?G.vegPal.treeD[2]:G.vegPal.treeN[2];
       wc.beginPath(); wc.arc(tcx+swayT-cr2*.35,canY-cr2*.62,cr2*.45,0,6.2832); wc.fill();
     } else if(it.w&&it.w.ruin){
       var RU=it.w,rw4=RU.w,rh4=RU.h,rx4=RU.x,ry4=RU.y,sd=RU.seed;
@@ -18578,7 +18600,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Each sector stands on its own ground: moss at the dam, silt in the Quarter, cold blue in Storage, ochre at the Quarry',
+  now:'The plants match the sector now too: damp growth at the dam, murk in the Quarter, frost in Storage, dry scrub at the Quarry',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
