@@ -13401,3 +13401,41 @@ the loop's own inline arithmetic, deterministic per seed, bounded at about
 stay in the fixture; the next word belongs to his machine, which is the only
 place "laggy at moments" can actually be observed.
 
+
+### v3.78: the board and the primer catch up with the game
+
+Fifteen builds of features had shipped since the dev box's DONE list and the
+first-time primer last moved, and the board is now the surface he steers the
+project from, so a stale board undersells what ranking a row actually does.
+
+THE BOARD. Nine new DONE rows: the partner merc arc, elites, drag-ranked
+priorities, the movable HUD, bodies and locked-room marks and road setbacks,
+the spawn floor with its new manholes, the Undercroft radio, and the tuning
+persistence fix that had been broken since v1.59. The NEXT row stops
+promising "Two raiders, one raid" wholesale, because Part One of it IS the
+partner merc and is delivered; it now names the open half honestly: the
+ghost friend, a raider built from the exported profile of a real friend.
+
+THE PRIMER. Four new cards for the systems a new player now meets in the
+first ten minutes: what a purple ring means, what a hired merc can do and
+the keys that command him, the radio and its toggle, and that the HUD
+panels collapse and drag. Still one screen, still dismissible forever.
+
+AND THE BUILD FAILED ONCE ON THE WAY, which is the process note worth
+keeping: I wrote friend''s, PowerShell escaping, inside a here-string where
+no escaping happens, and shipped two literal quotes into a single-quoted
+JavaScript string. parsecheck failed the build DEAD ON ARRIVAL with
+"Unexpected string", which is precisely the job it exists to do, and the
+fix was rephrasing to avoid the apostrophe. The habit and its collision are
+one line in the memory file now.
+
+Verified: parsecheck FAIL at the first v3.78 candidate, then PASS after the
+quote fix, which is the system working in both directions. All four maps
+drive and draw with frameErr and hudErr null at the standard baselines, hub
+clean, endRaid clean on all three outcomes. The board driven through the
+real dev-box button: forty DONE rows, the ghost friend NEXT row present,
+seven open rows still draggable. The primer's data carries twelve cards
+including all four new ones, and the rendered card shows twelve rows.
+Not verified: nothing beyond the render, because nothing beyond content
+changed; no dial moved and no balance surface was touched.
+

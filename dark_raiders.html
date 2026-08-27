@@ -546,7 +546,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='3.77';
+var VER='3.78';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17370,7 +17370,15 @@ var ROADMAP=[
   ['NOW','LVL and PROFICIENCY are career stats that gate nothing. Keep as trophies, or make them do something?'],
   ['NOW','A raider walking out will step past a downed crewmate. Has he earned his exit, or is that not a crew?'],
   ['NOW','Armour is lost on death, so the 900c rig costs about 318c a raid to wear. Price, or permanence?'],
-  ['NEXT','Two raiders, one raid (a big one, not a quick one)'],
+  ['NEXT','The ghost friend: a raider built from the exported profile of a real friend, in your raid'],
+  ['DONE','The partner merc: he rescues you, takes orders, trades both ways, settles honestly'],
+  ['DONE','Elite enemies at one in twelve, purple-ringed, tougher and better paid'],
+  ['DONE','The dev box ranks priorities by dragging, and your order rides in every export'],
+  ['DONE','The HUD panels collapse and drag, and the hub is inventory plus equipment slots'],
+  ['DONE','Bodies that read as bodies, locked rooms marked on the map, roads that stop at walls'],
+  ['DONE','A spawn floor of 115 metres, with new far manholes so GREYWATER kept its variety'],
+  ['DONE','A faint 16-bit radio in the Undercroft with a three-state toggle'],
+  ['DONE','Tuning that finally persists between sessions, broken silently since v1.59'],
   ['DONE','Plain-language raid settings: raiders, machines, damage, length, loot, heat'],
   ['DONE','A first-time briefing you can turn off, and a conditions box that states real numbers'],
   ['DONE','Raiders that equip what they loot, heal, throw, and arrive in waves'],
@@ -17412,7 +17420,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The 4ms patrol-retarget spike is dead; the sim frame is flat',
+  now:'The board and the primer caught up with the game. Waiting on his ranking',
   next:'The datacore build and the ghost friend, whichever he ranks first'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -18824,6 +18832,10 @@ var PRIMER=[
   ['Your progress is permanent, your rig is not','Credits, reputation, weapons, unlocks and stats all carry between sessions automatically. The rig you are wearing does not: die and it stays on your body with everything else.'],
   ['Calling the ship is the loudest thing you do','Hold E in an extraction ring to call it, wait, then hold E again to board. The heavier your bag, the more of the map comes to meet you. You can still be hauled aboard while downed.'],
   ['The conditions box is telling you something','Top right of the screen. Fog cuts how far you see, rain and storm cut how far you are HEARD, a blackout kills the lamps. It states the actual numbers, not the mood.'],
+  ['A purple ring means elite','About one machine or raider in twelve is elite: twice the health, harder hits, a purple ring at its feet, and a deeper bag when it falls. The colour is the same purple the loot pips use for elite, on purpose.'],
+  ['A hired merc is a partner now','Hire one at the Bench. B cycles his orders, loot free, follow you, or hold a spot. Stand with him and E searches his bag; drag an item from yours onto him and he will actually use it. Go down and he comes for you.'],
+  ['The Undercroft has a radio','A faint 16-bit loop plays down here. The Music row in Settings cycles it: UNDERCROFT only, ALWAYS, or OFF.'],
+  ['The HUD is yours to arrange','The raider list, the conditions box and the key legend all collapse on their corner glyph and drag anywhere. Positions stick between raids.'],
   ['Settings live at the dev box','Press T at the terminal in the Undercroft. Text size, auto-equip a better gun on pickup, autoloot when your bag is full, and this card again.']
 ];
 function renderPrimer(){
