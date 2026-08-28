@@ -17161,3 +17161,83 @@ report and not that every one of those sixteen events still increments its
 counter correctly. weakHits and wallsDown are the two I would most want
 confirmed from a real run of yours. No balance run; nothing here touches a
 number a raid outcome depends on.
+
+### m505 - v4.88 to v4.91: the Howler gets ears, contracts speak, one bad card cannot lock the hub
+
+THE HOWLER COULD NOT SHOOT OVER A WALL, which is the only thing artillery
+is for. Its own devlog line calls it "artillery that mails the fight to
+where you were standing" and its own code comment says it never uses
+sight, but the only way anything in this game starts shooting is the chase
+transition, and that transition is gated entirely on being seen.
+
+Measured, 24 Howlers on the dam, player parked at 400 units, well inside
+the 900 range and well outside the 140 hold: with a clear line, 11 of 12
+fired. With a wall in the way, 1 of 12. It was a sniper with a two second
+delay.
+
+So it gets ears and only ears. It joins the hearing sweep that until now
+served exactly one machine, and it fires on the position it was TOLD
+about. Everything that made it fair is untouched: it still holds fire
+under 140 units so walking it down is still the counterplay, the shell
+still takes 2.1 seconds, the red ring still shows where it lands, and
+scatter still grows with range. Firing on a report is deliberately less
+accurate than firing on sight, and the bearing goes stale after eight
+seconds so it cannot shell your last known position forever.
+
+What changes is that a wall is now cover from its eyes and not from its
+gun. That is the difference between artillery and a rifle.
+
+THE BENCHMARK. 320 paired seeds on the dam, deaf against hearing.
+
+  deaf, which is v4.87 exactly   16.3 percent
+  hearing, which is now          16.6 percent
+  discordant 17, 8 one way and 9 the other, p = 1.0
+
+No measurable difficulty change. Two things worth saying about that. The
+deaf arm reproducing 16.3 to the decimal is the eleventh straight
+determinism proof and it also confirms the new landmarks on the other two
+maps did not touch this one. And the Howler does not appear in either
+killer table AT ALL, 0 of roughly 267 deaths across 640 raids, before or
+after. So this makes the machine coherent rather than dangerous, and if
+you want it to actually threaten you that is a separate decision about its
+damage or its cooldown, not about its senses.
+
+CONTRACTS FINISHED IN SILENCE. The board tracks a contract, the HUD counts
+it down while you are out there, and at the moment it banks - the one
+moment worth telling you about - the result went into telemetry and
+nowhere else. The extraction screen lists every item, your integrity, the
+mercenary settlement and your notoriety, and never mentioned that you
+finished the job you took. It names them now.
+
+ONE BAD CARD COULD LOCK YOU OUT OF THE HUB FOREVER. My own fault in how it
+surfaced: a probe of mine wrote contract objects with no reward field and
+the profile saved them. But the hole is real. The row calls reward
+toLocaleString with nothing checking that reward exists, the throw escapes
+renderHub, renderHub escapes showScreen, and showScreen is the call that
+puts you back in the Undercroft after a raid. Since contracts are SAVED, a
+reload does not clear it. A card written by an older build, before reward
+existed, lands there identically. A malformed card is now replaced rather
+than allowed to take the terminal down with it.
+
+Also, and overdue: the file had no head at all, so the browser tab on the
+itch page and on any link you share read as a URL. It says DARK//RAIDERS.
+
+Verified: parse PASS at v4.91; four-map sweep clean at 110, 111, 74 and 91
+entities with container and place counts unchanged; all three raid
+endings; hub clean. The Howler driven in isolation, with every other
+entity removed from the world so nothing else could give it a bearing:
+fires 7 of 7 on sight, fires 7 of 7 through a wall on a heard bearing,
+fires 0 of 7 through a wall having heard nothing, holds fire 14 of 14
+inside 140 units on a heard bearing, and fires 10 of 10 on a fresh bearing
+against 0 of 10 on an expired one. The howlerDeaf dial read back at both
+settings and shown to change behaviour before the benchmark was trusted.
+Contract completion driven to the extraction screen and both lines read
+back off the manifest. The hub hardening driven with the exact card that
+broke it, plus a list of null, undefined and a malformed object, all
+rendering.
+
+Not verified: the Howler was measured against a bot, and the bot dodges
+the ring. Whether shelling through a wall actually feels different to a
+human is the thing I cannot test here and the thing I would most like a
+run report about. The v4.90 outcome line was verified with contracts I
+forced to completion rather than earned across a real raid.

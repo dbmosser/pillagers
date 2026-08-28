@@ -1,3 +1,6 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DARK//RAIDERS</title>
 <div id="root">
 <style>
   /* Fonts embedded as data URIs: the game must look right offline, and the font
@@ -567,7 +570,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.87';
+var VER='4.91';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,6 +1353,7 @@ if(ck==='elite') return (T2.eliteKills||0)>=1;
   return false;
 }
 function contractExtract(bag,haul){
+  var _done=[];
   // v4.19: which cards banked on THIS extraction, stamped into the recorder.
   // The export listed everything about a run except contract activity, so
   // whether the board works in the wild was invisible in his files.
@@ -1370,10 +1374,13 @@ if(c.type==='haul'&&haul>=c.v) c.prog=c.n;
 if(c.ck==='weak'){ if(((G&&G.tel&&G.tel.weakHits)||0)>=c.n) c.prog=c.n; }
       else if(conductMet(c.ck)) c.prog=c.n;
     }
-    if(_wasOpen&&c.prog>=c.n)
+if(_wasOpen&&c.prog>=c.n){
       _banked.push(c.type==='conduct'?c.ck:(c.type==='kill'?'kill-'+c.tgt:(c.type==='exItem'?'item':c.type)));
+      _done.push(c.desc||'contract');
+    }
   }
-  if(G&&G.tel&&_banked.length) G.tel.contractsBanked=_banked;
+if(G&&G.tel&&_banked.length) G.tel.contractsBanked=_banked;
+  return _done;
 }
 
 // ================================================================ audio
@@ -5659,7 +5666,7 @@ function listenersHear(x,y,s,fromPlayer){
 function listenersHearInner(x,y,s,fromPlayer){
   for(var i=0;i<G.ents.length;i++){
     var e=G.ents[i];
-    if(e.kind!=='listener') continue;
+if(e.kind!=='listener'&&e.kind!=='howler') continue;
     var d=dist(e,{x:x,y:y});
     var reach=LISTEN_R*(hasTerm('silence')?1.5:1);
     // WHAT THE LISTENER CAN ACTUALLY HEAR, measured at v2.05. Its reach is
@@ -5693,7 +5700,10 @@ function listenersHearInner(x,y,s,fromPlayer){
     // 3.6 the cap finally binds on normal movement.
     var LG=(CFG.listenGain===undefined?1.35:CFG.listenGain);
     if(d>Math.min(s*LG*(hasTerm('silence')?1.5:1),reach)) continue;
-    e.heardX=x; e.heardY=y;
+e.heardX=x; e.heardY=y;
+    // The Howler does not wake, hunt or walk to a noise. It writes the bearing
+    // down and keeps its gun warm, which is what a gun crew does.
+    if(e.kind==='howler'){ if(CFG.howlerDeaf!==1) e.hearT=8; continue; }
     e.millT=0;
     if(e.state==='dormant'){
       e.state='hunt'; e.wakeT=0.9;
@@ -5776,7 +5786,7 @@ function mkHowler(x,y){
     hp:Math.round(120*CFG.eHp*seasonHp()),maxhp:Math.round(120*CFG.eHp*seasonHp()),
     name:mkName('HOWLER',['H','W','L']),
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,cd:0,alert:0,spd:40,
-    dmg:(CFG.howlerDmg===undefined?35:CFG.howlerDmg),rng:900,cone:6.29,hitT:0});
+    dmg:(CFG.howlerDmg===undefined?35:CFG.howlerDmg),rng:900,cone:6.29,hitT:0,heardX:0,heardY:0,hearT:0});
 }
 // SPEC 8.5: a persistent roster of TEN named identities. Absurd gamer tags,
 // deliberately. They remember across runs in both directions: kill one and it
@@ -11484,6 +11494,27 @@ if(e.state==='hunt'){
       collide(e,G.map.walls);
       continue;
     }
+if(e.kind==='howler'&&e.hearT>0){
+      e.hearT-=dt;
+      // Only when sight has NOT already put it on target, so a Howler that can
+      // see you keeps its existing accuracy rather than firing twice.
+      if(CFG.howlerDeaf!==1&&e.state!=='chase'&&e.cd<=0&&!p.downed){
+        var _hd=dist(e,{x:e.heardX,y:e.heardY});
+        if(_hd<e.rng&&_hd>140){
+          // Wider scatter than the aimed shot: it is shooting at a report, not
+          // at you, and the difference should be survivable.
+          var _hs2=Math.min(190,_hd*0.20);
+          G.shells.push({mortar:1,x0:e.x,y0:e.y,
+            tx:e.heardX+rnd(-_hs2,_hs2),ty:e.heardY+rnd(-_hs2,_hs2),
+            t:0,air:(CFG.howlerAir===undefined?2.1:CFG.howlerAir),
+            dmg:e.dmg*(e.elite?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)});
+          e.cd=5.4+rnd(0,1.8);
+          e.alert=3;
+          ping(e.x,e.y,620,false,false,'robot','fire');
+          if(!G.sim) sfx('alarm',e.x,e.y);
+        }
+      }
+    }
     if(e.alert>0) e.alert-=dt*.5;
     // A vented machine is rooted and harmless while it cools, and a blinded one
     // is still coming but cannot pick you out at range. Both are on timers you
@@ -12801,7 +12832,7 @@ silentExit:T.silentExit||0,
       dials:'hot'+(CFG.healOverTime===0?0:1)+' feud'+(CFG.raiderFeud===0?0:1)
         +' reach'+(CFG.simReach===0?0:1)+' win'+(CFG.windows===0?0:1)
         +' rheal'+(CFG.simRetreatHeal?1:0)+' eng'+(CFG.simEngage?1:0)
-        +' pip'+(CFG.simPip?1:0)+' des'+(CFG.destruct===0?0:1)+' cull'+(CFG.placeCull===0?0:1)+' wear'+(CFG.raiderWear===0?0:1)+' pen'+(CFG.penetrate===0?0:1)+' down'+(CFG.raiderDown===0?0:1)+' greed'+CFG.simGreed};
+        +' pip'+(CFG.simPip?1:0)+' des'+(CFG.destruct===0?0:1)+' cull'+(CFG.placeCull===0?0:1)+' wear'+(CFG.raiderWear===0?0:1)+' pen'+(CFG.penetrate===0?0:1)+' down'+(CFG.raiderDown===0?0:1)+' hear'+(CFG.howlerDeaf===1?0:1)+' greed'+CFG.simGreed};
     return;
   }
 
@@ -12966,7 +12997,9 @@ silentExit:T.silentExit||0,
       if(P.notExt>=4){ P.notExt=0; P.notoriety--;
         lines.push('<span style="color:var(--ash)">The traders are starting to forget. Notoriety '+P.notoriety+'.</span>'); }
     }
-    contractExtract(G.bag,haul);
+var _cdone=contractExtract(G.bag,haul);
+    for(i=0;i<_cdone.length;i++)
+      lines.push('<span style="color:#7fc4a0">CONTRACT COMPLETE: '+escHtml(_cdone[i])+'. Claim it at the board.</span>');
     for(i=0;i<G.bag.length;i++){ var bm=bankItem(G.bag[i]); if(bm) lines.push(bm); }
     // Both hands count. Extracting with the sidearm up used to throw away the
     // Marksman Rifle holstered in the other slot. Issued kit is a loaner and is
@@ -19271,7 +19304,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The run report finally keeps the sixteen things it was counting all raid and throwing away at the end',
+  now:'The Howler shells you through walls, finishing a contract says so out loud, and one bad card can no longer lock you out of the hub',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -19964,8 +19997,16 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   // loadProfile guarantees this is an array on a saved profile, but nothing guarantees it
   // stays one, and a null here throws in exactly the same place as the two above.
   if(!Array.isArray(P.contracts)) P.contracts=[];
-  P.contracts.forEach(function(c,ci){
+P.contracts.forEach(function(c,ci){
     if(!c) return;
+    // A malformed card is dropped from the display rather than allowed to take
+    // the whole terminal down with it. Nothing here is player-facing repair: a
+    // card with no reward cannot be paid, so it is replaced with a fresh one.
+    if(typeof c.reward!=='number'||!isFinite(c.reward)){
+      try{ P.contracts[ci]=genContract(); }catch(_cg){ P.contracts[ci]=null; }
+      c=P.contracts[ci];
+      if(!c) return;
+    }
     var row=document.createElement('div'); row.className='crow';
     var cd=document.createElement('div'); cd.className='cd'; cd.textContent=c.desc;
     var TT=CTIER[c.tier]||CTIER.std;
