@@ -15638,3 +15638,47 @@ his zoom in motion, and the banner in a genuinely earned ship-down rather
 than a forced state. Found in passing, confirmed on the banner capture: the
 SHIP HOLDING strip text collides with the hotbar, exactly as his run 55
 note says - it leads the next build.
+
+### m439 - v4.24: runs 55 and 56, plus four orders straight from the chat
+
+He is playing and talking tonight, and this build is everything he said,
+in his words. The ship strip drew dead on top of the hotbar (his note, and
+my own banner capture had already caught it); it now sits well clear, with
+the ring instruction nudged below its own progress bar after a second look.
+Music is silent on the pause screen, on the died and extracted screens, and
+in the Undercroft itself, on his direct order. Which uncovered the real
+finding: the DEFAULT music mode was 'hub', meaning play ONLY in the
+Undercroft, so everything he has ever complained about the music - no
+variety, playing over the death screen - was hub-mode playback. The default
+is reactive now, the raid plays to what is happening, and the hub-only mode
+is retired.
+
+The downed timer drops from 24 seconds to 17, the middle of his "2/3 to
+3/4" order, with the seconds counted beside the bleed bar; saved profiles
+migrate the old 24 without touching any dial he chose deliberately (config
+version 10, and the loader accepts it rather than nulling the save). The
+fixture's own pin list carried 24 too and would have re-imposed it on every
+future measurement; caught and moved to 17 in the same build. Stamina
+recharges at half the old rate on his order, and running dry locks the
+sprint until the bar is back to 12 so the key cannot be fluttered at zero.
+Abandoning a run now asks: the first click arms a separate YES button on
+the far side of the row, a double-click lands harmlessly, and Resume
+disarms it. The stash line spells out "63 items in stash".
+
+Owned mistake, one line, and it is a REPEAT: quote-doubling inside a
+PowerShell here-string shipped two literal quotes into the music gate and
+the build died at parse; the memory file that warns about exactly this
+existed before tonight. Also new tooling fact: scripts with non-ASCII
+characters need a UTF-8 byte mark or PowerShell 5.1 reads them as ANSI and
+anchors fail.
+
+Verified: parse PASS at v4.24; four-map sweep clean, hub clean, extract and
+dead endings ran; music gate driven - hub false, raid-idle false under
+reactive, paused false; downTime dial reads 17 through the pin; stamina
+driven dry on the play path with the real shift key, lock observed at
+empty, regen measured at exactly 7.5 per second, unlock observed at 12;
+abandon driven through the real buttons - first click arms without ending,
+a double-click does not end, resume disarms and resets, the armed YES
+genuinely ends; strip and downed overlay captured and READ, seconds showing,
+nothing colliding. Not verified: the config migration on HIS real save
+(next export's config line is the proof), and how 17 seconds feels.
