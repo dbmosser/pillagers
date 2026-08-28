@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.27';
+var VER='4.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7748,7 +7748,7 @@ function howlerImpact(SH){
   flash(SH.tx,SH.ty,220,'#ff9a5c',.4);
   ping(SH.tx,SH.ty,480,false,false,'robot','fire');
   var dp=dist(p,{x:SH.tx,y:SH.ty});
-  if(dp<R&&!p.downed) damagePlayer(SH.dmg*(1-dp/R)+6,'howler','HOWLER');
+  if(dp<R&&!p.downed) damagePlayer(SH.dmg*(1-dp/R)+6,'howler','HOWLER',SH.x,SH.y);
   for(var i=G.ents.length-1;i>=0;i--){
     var e=G.ents[i]; if(e.kind==='howler') continue;
     var de=dist(e,{x:SH.tx,y:SH.ty});
@@ -7917,7 +7917,9 @@ function killPlayer(src){
     blip('boom'); G.shake=Math.max(G.shake,10);
   }
 }
-function damagePlayer(amt,src,srcName){
+function damagePlayer(amt,src,srcName,sx,sy){
+  // v4.28: the direction of the hit, stamped for the ring around the body.
+  if(G&&sx!==undefined&&G.player) G.player.hitFrom={ang:Math.atan2(sy-G.player.y,sx-G.player.x),at:G.t};
   if(G){ G.musHitT=G.t; G.combatT=G.t; }              // v3.90: being hit is news the music wants
   var p=G.player;
   if(p.iv>0) return;
@@ -11144,7 +11146,7 @@ function updateEnts(dt){
         navSeek(e,e.heardX,e.heardY,e.spd,dt);
         e.face+=clamp(angDiff(Math.atan2(e.heardY-e.y,e.heardX-e.x),e.face),-6*dt,6*dt);
         var ld=dist(e,p);
-        if(ld<e.rng&&e.cd<=0&&!p.downed){ damagePlayer(e.dmg,'listener',e.name); e.cd=0.85; }
+        if(ld<e.rng&&e.cd<=0&&!p.downed){ damagePlayer(e.dmg,'listener',e.name,e.x,e.y); e.cd=0.85; }
         if(dist(e,{x:e.heardX,y:e.heardY})<40){
           // Arrived at the sound and there is nothing here. It waits, and any
           // new noise inside this window puts it straight back on you.
@@ -11473,7 +11475,7 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
         }
       } else if(e.kind==='crawler'){
         if(d>e.rng) navSeek(e,p.x,p.y,e.spd,dt);
-        else if(e.cd<=0&&!p.downed){ damagePlayer(e.dmg*(e.elite?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1),'crawler',e.name); e.cd=.7; }
+        else if(e.cd<=0&&!p.downed){ damagePlayer(e.dmg*(e.elite?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1),'crawler',e.name,e.x,e.y); e.cd=.7; }
       } else if(e.kind==='raider'){
         // His answers, 2026-08-22: raiders should FLANK, use COVER, and FLEE
         // when hurt. Flanking: each raider commits to a side at first contact
@@ -11775,7 +11777,8 @@ e.plantT=(Math.hypot(e.x-_rpx,e.y-_rpy)>0.5)?0:((e.plantT||0)+dt);
           } else if(gd2<e.goalD-14){ e.goalD=gd2; e.goalT=0; }
         }
         if(e.goal&&dist(e,e.goal)<30){
-          e.lootT=(e.lootT||0)+dt;
+e.lootT=(e.lootT||0)+dt;
+          if(!G.sim&&Math.random()<dt*0.7) blip('pick',dist(e,G.player));
           if(e.lootT>2){
             e.goal.opened=true;
             for(var q=0;q<e.goal.loot.length;q++) e.bag.push(e.goal.loot[q]);
@@ -12076,7 +12079,8 @@ if(!WK){
               G.tel.hits++;
               // Hit feedback at the reticle. The sprite flash and spark happen out
               // in the dark at range, so a landed shot could read as a miss.
-              G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
+G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
+              if(en.hp<=0&&dist(en,p)>620) blip('clank',760);
               spark(b.x,b.y,en.kind==='raider'?'#e0483a':'#ffc25c',9,220);
               sfx("hit",en.x,en.y); hit=true; break;
             }
@@ -12126,7 +12130,7 @@ if(!WK){
             }
           }
         } else {
-          if(dist(b,p)<p.r+3){ damagePlayer(b.dmg,b.owner.kind,b.owner.name); spark(b.x,b.y,'#ff4d3d',10,200); hit=true; }
+          if(dist(b,p)<p.r+3){ damagePlayer(b.dmg,b.owner.kind,b.owner.name,b.x-b.vx*0.05,b.y-b.vy*0.05); spark(b.x,b.y,'#ff4d3d',10,200); hit=true; }
           if(!hit) for(var e3=0;e3<G.ents.length;e3++){
             var en3=G.ents[e3];
             if(en3===b.owner) continue;
@@ -15834,7 +15838,18 @@ rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'})
 // v4.05: "maybe a bar above character too", so there is one, in the same
   // amber as the cursor ring and the same shape as every other over-the-head
   // bar in the game. Only while reloading, gone the frame the gun is back.
+  // v4.28 HIS ANSWER 42: a red arc on a small circle around the body, pointing
+  // at whatever just hurt you, fading over eight tenths of a second. Drawn
+  // whether or not anything else is happening around the cursor.
+  if(p.hitFrom&&(G.t-p.hitFrom.at)<0.8&&!p.downed){
+    var _hfA=1-(G.t-p.hitFrom.at)/0.8;
+    var _hfC=w2s(p.x,0,p.y);
+    ctx.strokeStyle='rgba(255,77,61,'+(_hfA*0.9).toFixed(2)+')';
+    ctx.lineWidth=4;
+    ctx.beginPath(); ctx.arc(_hfC.x,_hfC.y,LH(30),p.hitFrom.ang-0.55,p.hitFrom.ang+0.55); ctx.stroke();
+  }
   if(CFG.cursorLoud!==0&&p.reloading>0&&p.wep&&p.wep.reload&&!p.downed){
+
     var _rb=w2s(p.x,34,p.y);
     if(_rb){
       ctx.fillStyle='rgba(6,9,13,.72)';
@@ -18690,7 +18705,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The deploy lift asks WHERE first: E opens the sector menu, and every sector says how many of your runs it has seen',
+  now:'A red ring shows where the hit came from, far kills tick, raiders rummage audibly, walking out costs reputation',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -19852,9 +19867,20 @@ document.getElementById('resumebtn').onclick=function(){
 // Resuming or reopening the pause box disarms it.
 document.getElementById('abandonbtn').onclick=function(){
   var cb=document.getElementById('confirmabandon');
-  if(cb.style.display==='none'){ cb.style.display='inline-block'; this.textContent='...sure?'; return; }
+  if(cb.style.display==='none'){
+    cb.style.display='inline-block'; this.textContent='...sure?';
+    var _el=(G&&!G.over)?elapsed():0;
+    cb.textContent=(_el>60)?('YES, abandon it (reputation -'+abandonRepCost(_el)+')'):'YES, abandon it (free this early)';
+    return;
+  }
 };
+function abandonRepCost(el){ return Math.min(400,100+Math.round(el/10)); }
 document.getElementById('confirmabandon').onclick=function(){
+  if(G&&!G.over&&elapsed()>60){
+    var _rc=abandonRepCost(elapsed());
+    P.rep=Math.max(0,P.rep-_rc);
+    say('Walked out on the job. Reputation -'+_rc+'.');
+  }
   var note=document.getElementById('pausenote').value.trim();
   if(note&&G){ G.tel.notes.push({t:Math.round(elapsed()),txt:note}); document.getElementById('pausenote').value=''; }
   togglePauseBox(false);

@@ -15826,3 +15826,31 @@ key handling: the menu opened, three sectors read never-raided, the
 seeded-history sector counted correctly; probe rows removed after. Not
 verified: whether he actually picks somewhere new, which his next export
 answers.
+
+### m443 - v4.28: hits point home, kills confirm, rummaging is audible, walking out costs
+
+Four more of his fifty, with his corrections applied. When something hurts
+you, a red arc appears on a small circle around your body pointing at the
+source, fading in under a second - his correction taken, a ring around the
+character rather than a screen-edge flash. Every caller that knows where
+the hit came from passes the position: bullets, crawler claws, listeners,
+howler shells. When a machine dies beyond your sight from your own round, a
+quiet metallic tick confirms it. A raider rummaging through a container is
+audible when you are close, on a chance rather than a metronome, per his
+"sometimes, not always". And abandoning a run now costs reputation, 100
+plus 10 per minute up to 400, warned in exact numbers on the YES button
+itself; the first minute stays free so a bad spawn costs nothing.
+
+One insertion mistake owned: the ring first landed inside the reload-only
+draw guard and appeared only mid-reload; caught by looking at the capture,
+moved out, re-captured. The mixed line endings fought back for the first
+time inside a SINGLE anchor (my LF insert meeting original CRLF), and the
+fix is a regex join with flexible endings - noted in the tooling memory.
+
+Verified: parse PASS at v4.28; four-map sweep clean; the hit stamp driven
+with a real bullet from a known direction, angle exact; the ring captured
+on screen after the guard fix; abandon driven both ways, free label at
+zero seconds, "reputation -120" label at 200 seconds and exactly 120
+charged on confirm; rummage and kill-tick code paths sim-guarded. Not
+verified: the kill tick and rummage in his ears, ring readability in a
+real firefight.
