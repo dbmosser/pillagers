@@ -16302,3 +16302,18 @@ Verified: parse PASS at v4.56; the running belt captured and looked at on
 the gallery; four-map sweep clean. Not verified: the dragline in frame
 (same draw pass, off-camera in the capture), and the machinery under fog
 at night.
+
+### m471 - the answer-wave benchmark: 14.4 percent
+
+The 320-seed identical-arms run on v4.56, closing the wave that carried
+his fifty answers: 14.4 percent (46 of 320), zero discordant pairs, the
+eighth perfect determinism proof in a row. The wave - live crier
+information, machine field repairs, possum ambushes, crew moods, raider
+retreat smoke and kit used against the shooter, restocking crates - cost
+the robot 2.8 points against the 17.2 back-shot boundary. The killer table
+tells the story: raiders took 89 of its 274 deaths (62 before the wave),
+sentries fell to 105 from 124, and the median extracted haul ROSE from
+2,125 to 3,295 on the restocked map. Harder world, richer world: the
+direction his answers chose, measured. The robot barely uses what HE
+gained - stims, tracers, back-shots, the damage ring - so his own rate
+should hold up better than the robot's did.
