@@ -15760,3 +15760,32 @@ Raiders: 45 bots loot bodies including yours. 46 text barks. 47 crews
 fight on sight. 48 grenades rare, smoke free. 49 unclear, ask him later.
 50 a rival system: 'Your Rival' is whoever he has fought most, marked and
 hunting him.
+
+### m441 - v4.26: the first batch of the fifty
+
+Answer 5: jams are gone. The wear table was the only source of a jam
+chance in the game, so both its non-zero entries are zero and every jam
+roll everywhere is dead code that never fires; wear still costs spread and
+reload. The stream discipline is untouched, because a gun that cannot jam
+never drew from the seeded stream.
+
+Answer 3: a shot in the back deals half again more damage, machines and
+raiders alike, judged by the round's travel against the target's facing.
+It does not stack on a weak-point hit, so the rear vent does not
+double-dip. A small BACK x1.5 label says why the hit felt heavy.
+
+Answer 6: tracers at night. Your own rounds draw a triple-length streak
+with a hot bright core after dark; enemy rounds stay short, so the night
+tells your fire from theirs.
+
+Answer 8 needed NO code: a sentry's stray round already damages a crawler,
+proven live with a driven round (15 of 15 damage landed). Same-kind
+machines stay immune to each other, which is the correct reading of the
+answer.
+
+Verified: parse PASS at v4.26; four-map sweep clean; back-arc driven both
+ways on a live sentry, 30 from behind against 20 from the front on a
+20-damage round; friendly fire driven, 15 landed; night tracers captured
+and looked at, five long player streaks against one short enemy dash.
+Not verified: the jam removal in his hands (nothing left to test, the
+mechanism is deleted), and back-shot balance in real fights.

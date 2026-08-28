@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.25';
+var VER='4.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -709,8 +709,8 @@ var GUNQ=[
 var WEARSTEPS=[
   {at:0,    name:'CLEAN',   spread:1.00, reload:1.00, jam:0,     c:'#7fc4a0'},
   {at:420,  name:'WORN',    spread:1.12, reload:1.08, jam:0,     c:'#cdd6dd'},
-  {at:950,  name:'FOULED',  spread:1.30, reload:1.22, jam:0.022, c:'#ffc04a'},
-  {at:1600, name:'FAILING', spread:1.50, reload:1.40, jam:0.060, c:'#e0483a'}
+  {at:950,  name:'FOULED',  spread:1.30, reload:1.22, jam:0,     c:'#ffc04a'},
+  {at:1600, name:'FAILING', spread:1.50, reload:1.40, jam:0,     c:'#e0483a'}
 ];
 function wearOf(id){ P.wear=P.wear||{}; return P.wear[id]||0; }
 function wearStep(id){
@@ -12044,7 +12044,14 @@ function updateBullets(dt){
                 var esk=armorById(en.rig).absorb||0;
                 var eab=Math.min(en.armor,edmg*esk); en.armor-=eab; edmg-=eab;
               }
-en.hp-=edmg; en.hitT=.16;
+if(!WK){
+                var _bsa=Math.atan2(b.vy,b.vx);
+                if(Math.abs(Math.atan2(Math.sin(_bsa-en.face),Math.cos(_bsa-en.face)))<0.9){
+                  edmg*=1.5;
+                  if(!G.sim) label(en.x,en.y-Math.round(en.r*1.3),'BACK  x1.5','#ffd76a',0,true);
+                }
+              }
+              en.hp-=edmg; en.hitT=.16;
               // v3.94: he has just been shot at by YOU, and a person answers
               // that by getting off the line. Perpendicular to the incoming
               // round, side chosen by which way he is already facing, so the
@@ -14921,10 +14928,16 @@ function render2D(dt){
   // air pass: bullets, sparks, puffs, throws, smoke
   wc.globalCompositeOperation='lighter';
   for(i=0;i<G.bullets.length;i++){
-    var b=G.bullets[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
+var b=G.bullets[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
+    var _trc=(!isDay()&&!b.owner)?3:1;
     wc.strokeStyle=b.tint; wc.lineWidth=2;
-    wc.beginPath(); wc.moveTo(b.x-b.vx/bm*9,b.y-b.vy/bm*9-12);
+    wc.beginPath(); wc.moveTo(b.x-b.vx/bm*9*_trc,b.y-b.vy/bm*9*_trc-12);
     wc.lineTo(b.x,b.y-12); wc.stroke();
+    if(_trc>1){
+      wc.strokeStyle='rgba(255,236,180,.9)'; wc.lineWidth=1;
+      wc.beginPath(); wc.moveTo(b.x-b.vx/bm*14,b.y-b.vy/bm*14-12);
+      wc.lineTo(b.x,b.y-12); wc.stroke();
+    }
   }
   for(i=0;i<G.sparks.length;i++){
     var sp=G.sparks[i];
@@ -18677,7 +18690,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Four distinct tracks on the radio, one rolled each deployment: LOW ROAD, COLD HOLLOW, RUST MARKET, GLASS FIELD',
+  now:'Your fifty answers are the roadmap now. First batch: jams are gone, back-shots hurt x1.5, night tracers',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
