@@ -15890,3 +15890,24 @@ Ammo Box / Took Circuit Board / Took Optics Lens in sequence through the
 real E-hold path, and a one-item container still said Found; four-map
 sweep clean earlier this build. Not verified: whether the message rate
 feels chatty on a fast loot route - his call to make.
+
+### m447 - v4.31: the sector map remembers you, forever
+
+His idea from run #52, and the one he named tonight as proof that ideas get
+dropped: the map blacked out until each area is explored once, StarCraft
+style, persisting across runs, with a charted percentage. Built exactly as
+asked. A 32 by 32 grid per sector lives on the profile; walking through a
+cell charts it and its neighbours for good; the sector map paints solid
+black over anything never seen, hiding walls and names alike; your own
+marker and the map chrome stay; the corner counts "2% of this sector
+charted". The in-world fog of war is completely untouched - this is the
+MAP's memory, not your eyes.
+
+Verified: parse PASS at v4.31; charting driven through the real loop, nine
+cells after a few steps; save and reload kept every charted cell; the
+capture shows the mask fully opaque after the first cut ghosted labels
+through (caught by looking), the percent counter live, and - by accident of
+two probe raids - persistence itself visible on screen as two separate
+charted patches. Four-map sweep clean, hub clean, extract and dead endings
+ran. Not verified: the feel of charting pace, and the profile growing by
+four small grids (about four kilobytes) - watch his next export loads.
