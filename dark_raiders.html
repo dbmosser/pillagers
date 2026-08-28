@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.31';
+var VER='4.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8090,6 +8090,26 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
   var base=Math.atan2(ty-sh.y,tx-sh.x);
   // A shotgun throws a handful of pellets on one trigger pull. Everything else
   // fires a single round, which is pellets of 1.
+if(wep.mag===0){
+    var _swHit=false;
+    if(fromPlayer&&G){
+      for(var _mi=0;_mi<G.ents.length;_mi++){
+        var _me=G.ents[_mi];
+        if(_me.downed||_me.finished) continue;
+        if(dist(sh,_me)>wep.rng+_me.r) continue;
+        var _ma=Math.atan2(_me.y-sh.y,_me.x-sh.x);
+        if(Math.abs(Math.atan2(Math.sin(_ma-base),Math.cos(_ma-base)))>0.9) continue;
+        var _mdm=wep.dmg;
+        if(Math.abs(Math.atan2(Math.sin(base-_me.face),Math.cos(base-_me.face)))<0.9) _mdm*=1.5;
+        _me.hp-=_mdm; _me.hitT=.16;
+        if(_me.hp<=0) _me.byPlayer=true;
+        _swHit=true;
+        if(!G.sim){ spark(_me.x,_me.y,'#cdd6dd',10,200); sfx('clank',_me.x,_me.y); }
+      }
+    }
+    if(!G.sim&&!_swHit&&fromPlayer) blip('foot');
+    return;
+  }
   var shots=wep.pellets||1;
   for(var pel=0;pel<shots;pel++){
     var ang=base+rnd(-spx,spx);
@@ -18748,7 +18768,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The sector map starts dark and remembers forever: what you have seen once is charted for good, with a percent counter',
+  now:'The crowbar finally swings: a real arc of a hit in front of you, no more little bullet',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

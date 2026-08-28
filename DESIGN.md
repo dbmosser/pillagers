@@ -15911,3 +15911,23 @@ two probe raids - persistence itself visible on screen as two separate
 charted patches. Four-map sweep clean, hub clean, extract and dead endings
 ran. Not verified: the feel of charting pace, and the profile growing by
 four small grids (about four kilobytes) - watch his next export loads.
+
+### m448 - v4.32: the crowbar swings
+
+His run #52: "crowbar does not melee, it fires a bullet lol". It literally
+did: bare hands and the crowbar pushed a projectile with a 60-unit life
+into the bullet list. A swing is now a real arc: everything in front within
+reach takes the hit, the back-shot bonus applies (sneaking up with a
+crowbar is now the strongest quiet opening in the game at 39 damage), no
+projectile ever spawns, metal connects with a clank and a whiff gets a dull
+thud. Machines never used melee through this path, so nothing else changes.
+
+Verified: parse PASS at v4.32; four-map sweep clean; the swing driven on
+the play path through the real trigger with the crowbar genuinely in hand:
+a crawler in front took exactly 26 x 1.5 = 39, zero bullets spawned, and a
+distant sentry was untouched. Two probe artifacts cost three rounds and
+are noted for the workshop: the fire gate compares against G.t which never
+moves under __sim (set p.lastShot very negative), and the aim comes from
+the mouse's SCREEN position, not its world fields, so a probe must place
+the target along p.face rather than setting mouse.wx. Not verified: the
+swing feel and its noise level in his hands.
