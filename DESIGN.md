@@ -15682,3 +15682,30 @@ a double-click does not end, resume disarms and resets, the armed YES
 genuinely ends; strip and downed overlay captured and READ, seconds showing,
 nothing colliding. Not verified: the config migration on HIS real save
 (next export's config line is the proof), and how 17 seconds feels.
+
+### HIS ANSWERS, 2026-08-27, questions 1 to 20 of 50 (21-50 still open)
+
+Combat: 1 enemies drop more ammo YES. 2 weakpoints on ALL machines YES.
+3 back-shots deal bonus damage on EVERYTHING including raiders (his rewrite
+of the melee question). 4 grenades common and cheap. 5 JAMMED GUNS ARE
+REMOVED, he dislikes the concept entirely. 6 tracer rounds at night YES.
+7 SMG kicks harder the longer the trigger is held. 8 machine friendly fire
+YES, a sentry's stray rounds hurt crawlers.
+
+Looting: 9 visible marking for LOCKED ROOMS ONLY. 10 one jackpot container
+per map YES. 11 interruptible search NO. 12 lots of locked rooms is fine,
+KEY entry only, no loud forced entry. 13 containers respawn slowly during
+a raid YES. 14 weight before pickup NO.
+
+Moving: 15 sprint footprints trackable by machines AND raiders YES.
+16 vaulting NO. 17 crouch stays as is. 18 stamina stims YES. 19 swimming NO.
+
+Extracting: 20 a silent second extraction, no beacon, crazy expensive,
+about 10,000c, YES.
+
+Build order chosen (bug-adjacent and small first, then systems): jam
+removal (5), back-shot bonus (3), machine friendly fire (8), tracers at
+night (6), more enemy ammo drops (1), SMG heat kick (7), weakpoints on all
+machines (2), stamina stims (18), grenade economy (4), locked-room marking
+and more locked rooms with keys (9+12), jackpot container (10), container
+respawn during raid (13), footprints (15), silent extraction (20).
