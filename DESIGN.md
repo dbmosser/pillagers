@@ -16546,3 +16546,19 @@ buttons warm bone at 11.5px; four-map sweep and hub clean. Not verified:
 pixels, since the browser pane is not on his screen to photograph - the
 computed styles are what the renderer uses, but his eyes get the final
 vote when he next opens a shop.
+
+### m484 - v4.68: REDO slice five, the stragglers
+
+The last of the audit's mechanical defects: twenty-three inline button
+paddings collapse to one size, the five lists that never got the family
+border are framed like their siblings (settings, primer, sector, the
+contracts and log lists), and the settings sliders read their amber from
+the palette instead of a private copy of it. The two declared exceptions
+stand on purpose: the golden DEPLOY button stays the game's one loud
+call-to-action, and the loot-name display face stays its own flavour.
+
+Verified: parse PASS at v4.68; the sector list's computed border read back
+1px through the live page; four-map sweep and hub clean. The audit's
+eighteen defects now stand at fourteen closed, two declared exceptions,
+and two remaining - the outcome screen's oversized title and the full
+canvas-versus-window frame question - which are next.

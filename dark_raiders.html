@@ -165,7 +165,7 @@
   .trow label{ color:var(--ash); }
   .trow .tv{ color:var(--amber); text-align:right; }
   .trow .nx{ color:var(--steel-hi); font-size:8.5px; margin-left:5px; }
-  input[type=range]{ width:100%; accent-color:#ffc04a; background:transparent; }
+  input[type=range]{ width:100%; accent-color:var(--amber); background:transparent; }
   .crow{ padding:6px 12px; border-bottom:1px solid rgba(42,50,61,.35); font-size:10.5px; }
   .crow .cd{ color:var(--bone); }
   .crow .cp{ color:var(--ash); font-size:9.5px; margin-top:2px; display:flex; justify-content:space-between; align-items:center; }
@@ -174,6 +174,8 @@
     background:rgba(9,14,40,.92); border:1px solid var(--steel-hi); border-radius:3px;
     box-shadow:inset 0 1px 3px rgba(0,0,0,.45); padding:10px;
     overflow:auto; flex:1; line-height:1.55; white-space:pre-wrap; margin:0; }
+  /* REDO slice five: the lists that never got the family border. */
+  #setlist,#primerlist,#sectorlist,#contracts,#loglist{ border:1px solid var(--steel-hi); }
 </style>
 
 <canvas id="cv"></canvas>
@@ -201,7 +203,7 @@
   <div style="font-size:9px;color:var(--ash);letter-spacing:.2em;margin-top:16px">HOW DID THAT RUN FEEL</div>
   <div class="tagwrap" id="tagwrap"></div>
   <textarea id="oc_note" rows="2" style="max-width:520px" placeholder="Anything else? (optional)"></textarea>
-  <button style="margin-top:14px;padding:9px 26px" id="oc_btn">Log run and return</button>
+  <button style="margin-top:14px;padding:8px 22px" id="oc_btn">Log run and return</button>
 </div>
 
 <div class="modal" id="exportmodal">
@@ -209,9 +211,9 @@
   <div class="msub">Copy this and paste it to Claude. Includes runs, tags, notes, active config, and the last bot sim.</div>
   <textarea id="exporttext" style="flex:1"></textarea>
   <div style="display:flex;gap:8px;margin-top:10px">
-    <button id="copybtn" style="padding:8px 20px">Copy to clipboard</button>
-    <button id="closeexport" style="padding:8px 20px">Close</button>
-    <button id="wipelog" style="padding:8px 20px;margin-left:auto;border-color:var(--rust);color:var(--rust)">Clear recorder</button>
+    <button id="copybtn" style="padding:8px 22px">Copy to clipboard</button>
+    <button id="closeexport" style="padding:8px 22px">Close</button>
+    <button id="wipelog" style="padding:8px 22px;margin-left:auto;border-color:var(--rust);color:var(--rust)">Clear recorder</button>
   </div>
 </div>
 
@@ -219,7 +221,7 @@
   <h3>Requisition</h3>
   <div class="msub">Medical, ammo, armor and throwables are auto-loaded on your next deployment. Higher reputation (earned by selling and completing contracts) unlocks better stock. <span id="repline" style="color:var(--amber)"></span></div>
   <div class="plist" id="shop" style="border:1px solid var(--steel-hi)"></div>
-  <div style="margin-top:10px"><button id="closeshop" style="padding:8px 20px">Close</button></div>
+  <div style="margin-top:10px"><button id="closeshop" style="padding:8px 22px">Close</button></div>
 </div>
 
 <div class="modal" id="gamblemodal">
@@ -228,8 +230,8 @@
   <div class="msub" id="gamble_line">Something in the pile, same price whatever it is. No refunds, no complaints.</div>
   <div class="plist" id="gamblelist" style="border:1px solid var(--steel-hi)"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
-    <button id="gamblebtn" style="padding:8px 20px;border-color:var(--amber);color:var(--amber)">Gamble 450c</button>
-    <button id="closegamble" style="padding:8px 20px">Leave</button>
+    <button id="gamblebtn" style="padding:8px 22px;border-color:var(--amber);color:var(--amber)">Gamble 450c</button>
+    <button id="closegamble" style="padding:8px 22px">Leave</button>
   </div>
 </div>
 
@@ -239,8 +241,8 @@
   <div class="plist" id="termslist" style="border:1px solid var(--steel-hi)"></div>
   <div id="termstotal" style="margin-top:10px;font-weight:700"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
-    <button id="termsclear" style="padding:8px 20px">Sign nothing</button>
-    <button id="closeterms" style="padding:8px 20px">Leave</button>
+    <button id="termsclear" style="padding:8px 22px">Sign nothing</button>
+    <button id="closeterms" style="padding:8px 22px">Leave</button>
   </div>
 </div>
 
@@ -256,7 +258,7 @@
   <div class="msub">In order. This is the actual queue, not a wish list.</div>
   <div class="plist" id="roadmaplist" style="border:1px solid var(--steel-hi)"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
-    <button id="closeseason" style="padding:8px 20px">Leave</button>
+    <button id="closeseason" style="padding:8px 22px">Leave</button>
   </div>
 </div>
 
@@ -266,8 +268,8 @@
   <div class="msub">One raider, one run, paid up front. He loots for himself and you take ten percent of what he carries out. If he dies you owe his family, and that is not optional. On the surface, B cycles his orders: loot free, follow you, or hold a position. Stand with him and E searches his bag, and your cut is settled at the ramp either way. If you go down, he comes for you.</div>
   <div class="plist" id="merclist" style="border:1px solid var(--steel-hi)"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
-    <button id="mercclear" style="padding:8px 20px">Hire nobody</button>
-    <button id="closemerc" style="padding:8px 20px">Leave</button>
+    <button id="mercclear" style="padding:8px 22px">Hire nobody</button>
+    <button id="closemerc" style="padding:8px 22px">Leave</button>
   </div>
 </div>
 
@@ -289,7 +291,7 @@
     <button id="buildgo" style="padding:6px 14px">OPEN</button>
   </div>
   <div style="display:flex;gap:8px;margin-top:4px">
-    <button id="closedev" style="padding:8px 20px">Close</button>
+    <button id="closedev" style="padding:8px 22px">Close</button>
   </div>
 </div>
 <!-- THE OPERATOR TERMINAL, v3.50. Three notes in a row, and they are one note:
@@ -330,7 +332,7 @@
     <div style="padding:7px 0"><button id="devtoolsbtn" style="width:100%">Dev tools and roadmap</button></div>
   </div>
   <div style="display:flex;gap:8px;margin-top:4px">
-    <button id="closeop" style="padding:8px 20px">Close</button>
+    <button id="closeop" style="padding:8px 22px">Close</button>
   </div>
 </div>
 <div class="modal" id="sectormodal">
@@ -339,7 +341,7 @@
   <div id="sectorlist"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
     <button class="deploy" id="sectordeploy" style="flex:1.4">DEPLOY TO THIS SECTOR</button>
-    <button id="closesector" style="padding:8px 20px">Close</button>
+    <button id="closesector" style="padding:8px 22px">Close</button>
   </div>
 </div>
 <div class="modal" id="primermodal">
@@ -350,7 +352,7 @@
     <label style="display:flex;gap:6px;align-items:center;font-size:11px;color:var(--ash);cursor:pointer">
       <input type="checkbox" id="primernever" style="cursor:pointer"> Do not show this again
     </label>
-    <button id="closeprimer" style="padding:8px 20px;margin-left:auto">Got it</button>
+    <button id="closeprimer" style="padding:8px 22px;margin-left:auto">Got it</button>
   </div>
 </div>
 <div class="modal" id="settingsmodal">
@@ -358,7 +360,7 @@
   <div class="msub">Presentation only. Nothing here changes the game, the balance or your profile.</div>
   <div id="setlist" class="plist"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
-    <button id="closesettings" style="padding:8px 20px">Close</button>
+    <button id="closesettings" style="padding:8px 22px">Close</button>
   </div>
 </div>
 <div class="modal" id="cratemodal">
@@ -375,8 +377,8 @@
     </div>
   </div>
   <div style="display:flex;gap:8px;margin-top:10px">
-    <button id="cratetoggle" style="padding:8px 20px">Dev kit: OFF</button>
-    <button id="closecrate" style="padding:8px 20px">Close</button>
+    <button id="cratetoggle" style="padding:8px 22px">Dev kit: OFF</button>
+    <button id="closecrate" style="padding:8px 22px">Close</button>
   </div>
 </div>
 
@@ -385,7 +387,7 @@
   <div class="msub" id="wallet_work" style="color:var(--amber);font-weight:700"></div>
   <div class="msub">Craft from stash materials. Junk becomes components, components become gear.</div>
   <div class="plist" id="worklist" style="border:1px solid var(--steel-hi)"></div>
-  <div style="margin-top:10px"><button id="closework" style="padding:8px 20px">Close</button></div>
+  <div style="margin-top:10px"><button id="closework" style="padding:8px 22px">Close</button></div>
 </div>
 
 <div class="modal" id="tunemodal">
@@ -399,9 +401,9 @@
   </div>
   <div class="plist" id="tunelist" style="border:1px solid var(--steel-hi);padding:6px 12px"></div>
   <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
-    <button id="cfgcopy" style="padding:8px 20px">Copy config</button>
+    <button id="cfgcopy" style="padding:8px 22px">Copy config</button>
     <span id="cfgcopied" style="font-size:10px;color:var(--coolant);display:none">Copied</span>
-    <button id="closetune" style="padding:8px 20px;margin-left:auto">Close</button>
+    <button id="closetune" style="padding:8px 22px;margin-left:auto">Close</button>
   </div>
 </div>
 
@@ -409,7 +411,7 @@
   <h3>Bot simulation report</h3>
   <div class="msub">Statistical balance data from headless bot raids run against the active config. Fun is your department; broken numbers are this one's.</div>
   <pre class="simpre" id="simpre"></pre>
-  <div style="margin-top:10px"><button id="closesim" style="padding:8px 20px">Close</button></div>
+  <div style="margin-top:10px"><button id="closesim" style="padding:8px 22px">Close</button></div>
 </div>
 
 <div class="screen on" id="hub">
@@ -563,7 +565,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.67';
+var VER='4.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19172,7 +19174,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'REDO slice four: the menus join in - warmer text, readable sizes, every header in the same amber voice',
+  now:'REDO slice five: one button size, every list framed, no colour copies left outside the palette',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
