@@ -16451,3 +16451,24 @@ at jog speed with the status reading JOGGING, shift on top hit sprint
 speed reading SPRINTING, caps again stopped the walk dead; four-map sweep
 clean. Not verified: whether auto-jog toward the cursor feels right versus
 locking the direction at the moment of the tap - his hands will say.
+
+### m479 - v4.63: run #58's second half
+
+Three more of the morning's notes. Rigs and shields drop in the field at
+last: armour plates got heavier table weights, and actual rigs appear
+rarely - a Scav Rig or Plated Vest in safes, a Plated Vest or Breacher
+Plate in Meridian caches - used from the hotbar to strap straight on, as
+final as buying one. The full key list behind H opens centred on screen
+instead of on top of the raiders board. And the cursor answers his
+discovery that the panels are clickable: over any live panel it becomes a
+small pointer arrow instead of the crosshair.
+
+Verified: parse PASS at v4.63; a field Plated Vest driven through the real
+hotbar strapped on with capacity 70 announced and the item consumed; the
+centred key list captured clear of the board; four-map sweep clean. Not
+verified: rig drop frequency in play (rare by design), and the pointer
+arrow's feel - the ammo ring still draws around it for now, one line to
+quiet if he minds.
+
+Remaining from run #58: movable HUD blocks - slice one of the UI redo,
+which still awaits his one-word REDO.
