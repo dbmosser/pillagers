@@ -16672,3 +16672,28 @@ Listeners running down a moving player, possums waking, machines welding
 each other. Nothing thrown, nothing drawn wrong. The cover scan runs
 inside the chase branch every frame a raider's gun is cycling and cost no
 measurable frame time at these entity counts.
+
+### m490 - question two on the v4.70 world: still map-born
+
+Six more touchdowns on the build with cover, pursuit, possums and repairs
+all live: 26 hostiles at his ring, every single one of them woken by his
+own walk, not one flown in by the siege. The answer has now survived every
+enemy change made in two days of work. Whatever remedy he picks, the
+target is the map he wakes on the way there.
+
+### m491 - two audit waves running
+
+Wave one asks the question he asked out loud: is there anything left a
+player can do that a raider bot cannot. Six readers take movement, combat,
+items, world interaction, senses and survival; three adversarial reviewers
+then try to refute every claimed gap, filter out anything invisible in
+play, and hunt for capabilities the readers missed in both directions.
+
+Wave two audits the classes of fault that have actually bitten this
+project: features that exist but never run at shipped defaults (four
+documented cases), mechanics the game never teaches (he keeps discovering
+his own game by accident), content too rare to ever be seen, enemies that
+cannot fulfil their purpose (the Listener was harmless for two hundred
+builds), code paths the standard verification never enters, and the
+unresolved stutter. Two provers then attack the findings and rank what
+would hurt him first.
