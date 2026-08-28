@@ -16333,3 +16333,14 @@ Verified: parse PASS at v4.57; the full stack captured and read: STANDING,
 ARMOR 40, WINDED in red, HP 100, nothing clipped, nothing overlapped;
 four-map sweep clean. Not verified: the no-armour layout variant in play
 (the label drops to its old height by design).
+
+### m473 - v4.58: the radio introduces itself
+
+One line when the music actually starts: "On the radio: COLD HOLLOW." He
+can learn the four tracks by name and say which wear thin over long
+sessions - the whisper exists to make his next music note precise. Fires
+once per deployment, only in real play, only at the moment sound begins.
+
+Verified: parse PASS at v4.58; four-map sweep, extract and dead endings
+clean; the announcement rides the same audio-start branch the fixture
+cannot hear, sim-guarded twice. Not verified: the line in his ears.
