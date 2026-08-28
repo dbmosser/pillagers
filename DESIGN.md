@@ -15984,3 +15984,23 @@ in a script file, never inline through the shell.
 Verified: parse PASS at v4.35 after the repair; night captured and looked
 at; four-map sweep clean. Not verified: his eyes at his screen brightness,
 which is the only judge of a lighting change that matters.
+
+### m452 - v4.36: the survivor became a person
+
+Three of his run #52 notes in one build. A standing green prompt now floats
+over a found survivor: "[E] GIVE ARMOR PLATE", whatever he happens to need,
+so the interaction is never a secret again. A helped survivor follows you
+at a respectful distance and pitches in with his pistol against machines he
+can see - "follow you to extract and help you", as ordered. And shooting
+him is answered: he turns hostile for good and returns fire, instead of
+standing there absorbing rounds like furniture.
+
+Both behaviours run in real play only, never in the robot benchmark, so
+the seeded stream and every measurement stay untouched - proven by the
+unchanged sweep counts.
+
+Verified: parse PASS at v4.36; the prompt captured and read on screen;
+a helped survivor followed and put a round into a sentry; a betrayed one
+flipped hostile and fired at the player; four-map sweep unchanged. Not
+verified: his companion's pathing over long distances and whether his
+pistol is too strong or too weak beside a real fight.

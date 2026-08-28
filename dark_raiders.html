@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.35';
+var VER='4.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11157,8 +11157,33 @@ function updateEnts(dt){
     // The Peddler runs no AI whatsoever. He holds his ground, turns to face you,
     // and hails you once when you are near enough to deal. Nothing else about
     // him ticks, which is exactly why he can never become a movement bug.
-    if(e.kind==='stray'){
+if(e.kind==='stray'){
       var sdd=dist(e,p);
+      if(!G.sim&&e.hostile&&!e.downed){
+        if(sdd<420&&losClear(e.x,e.y,p.x,p.y,G.vseg)){
+          e.face=Math.atan2(p.y-e.y,p.x-e.x);
+          e.cd=(e.cd||0)-dt;
+          if(e.cd<=0){ e.cd=0.9; fireWeapon(e,WEAPONS.pistol,p.x,p.y,false); }
+        }
+        continue;
+      }
+      if(!G.sim&&e.helped&&!e.downed){
+        // HIS NOTE: "Survivor should follow you to extract and help you."
+        if(sdd>150){ navSeek(e,p.x,p.y,120,dt); e.moving=true; }
+        else e.moving=false;
+        e.cd=(e.cd||0)-dt;
+        if(e.cd<=0){
+          var _sgT=null,_sgB=1e9;
+          for(var _sg=0;_sg<G.ents.length;_sg++){
+            var _sgE=G.ents[_sg];
+            if(_sgE.downed||_sgE.finished||_sgE.neutral) continue;
+            if(_sgE.kind!=='sentry'&&_sgE.kind!=='crawler'&&_sgE.kind!=='snitch'&&_sgE.kind!=='listener') continue;
+            var _sgD=dist(e,_sgE);
+            if(_sgD<380&&_sgD<_sgB&&losClear(e.x,e.y,_sgE.x,_sgE.y,G.vseg)){ _sgB=_sgD; _sgT=_sgE; }
+          }
+          if(_sgT){ e.face=Math.atan2(_sgT.y-e.y,_sgT.x-e.x); e.cd=1.1; fireWeapon(e,WEAPONS.pistol,_sgT.x,_sgT.y,false); }
+        }
+      }
       if(sdd<300) e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.2*dt,2.2*dt);
       if(!e.found&&sdd<190&&!G.sim&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)){
         e.found=1;
@@ -12100,7 +12125,11 @@ function updateBullets(dt){
                 var esk=armorById(en.rig).absorb||0;
                 var eab=Math.min(en.armor,edmg*esk); en.armor-=eab; edmg-=eab;
               }
-if(!WK){
+if(en.kind==='stray'&&!en.hostile&&!G.sim){
+                en.hostile=1; en.helped=0;
+                say('The survivor returns fire.');
+              }
+              if(!WK){
                 var _bsa=Math.atan2(b.vy,b.vx);
                 if(Math.abs(Math.atan2(Math.sin(_bsa-en.face),Math.cos(_bsa-en.face)))<0.9){
                   edmg*=1.5;
@@ -16306,6 +16335,19 @@ ctx.fillStyle='rgba(190,255,220,.85)';
   // HIS NOTE, v3.58: "THE SEAL NEEDS some sort of visual indicator to tell you
   // to hold E". Same disease as the beacon call: the interaction existed, the
   // instruction lived nowhere.
+(function(){
+    if(G.over||p.downed) return;
+    for(var _si=0;_si<G.ents.length;_si++){
+      var _se=G.ents[_si];
+      if(_se.kind!=='stray'||!_se.found||_se.helped||_se.hostile) continue;
+      if(dist(_se,p)>120) continue;
+      var _sp=w2s(_se.x,40,_se.y);
+      ctx.font=FS(TYPE.label); ctx.textAlign='center'; ctx.fillStyle='#7fc4a0';
+      ctx.fillText('[E] GIVE '+ITEMS[_se.want].name.toUpperCase(),_sp.x,_sp.y);
+      ctx.textAlign='left';
+      break;
+    }
+  })();
   if(!G.over&&G.seal&&!G.seal.done&&G.nearSeal&&!p.downed){
     var _SRh=sealHere();
     ctx.font=FS(TYPE.head); ctx.textAlign='center';
@@ -18788,7 +18830,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The howler starts outdoors where artillery belongs, never on a warehouse floor',
+  now:'The survivor asks for help in plain sight, follows you when helped, fights beside you, and shoots back if betrayed',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
