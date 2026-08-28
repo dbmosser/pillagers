@@ -15875,3 +15875,18 @@ this family the reshuffle landed against the robot. Killer mix at the new
 boundary: sentries 124, raiders 62, crawlers 57 of 261 deaths, siege
 almost nothing. Median extracted haul 2,125. All future comparisons run
 against 17.2, and nothing before the boundary is comparable.
+
+### m446 - v4.30: every item announces itself
+
+His run #56: the found message appeared randomly. Diagnosed, not random at
+all: items pulled in stages never announced, only whatever REMAINED at the
+final open did, so a container emptied stage by stage said nothing and a
+container finished in one hold said everything. Now each staged pull says
+"Took Ammo Box." the moment the item lands, and the final-open message
+still covers the one-shot case, so every acquisition speaks exactly once.
+
+Verified: parse PASS at v4.30; a driven three-item search read back Took
+Ammo Box / Took Circuit Board / Took Optics Lens in sequence through the
+real E-hold path, and a one-item container still said Found; four-map
+sweep clean earlier this build. Not verified: whether the message rate
+feels chatty on a fast loot route - his call to make.
