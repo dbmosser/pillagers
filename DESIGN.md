@@ -16024,3 +16024,17 @@ three were ammo boxes, no crash in the drop path; four-map sweep clean.
 Not verified: shop prices in his hands, and whether wreck ammo makes
 sustained fighting TOO comfortable - the benchmark will say once the next
 320 runs.
+
+### m454 - v4.38: the SMG climbs
+
+His answer 7. Holding the Compact SMG's trigger builds heat; heat widens
+the spread up to nearly double at a two-second hold, and letting go bleeds
+it off three times as fast as it built. Taps stay surgical; emptying the
+magazine in one pull is a choice with a price. The heat only exists on the
+player's own held mouse, so the robot benchmark never sees it and the
+stream is untouched.
+
+Verified: parse PASS at v4.38; driven with the real trigger: twelve cold
+shots spread across 0.219 radians, twelve at held-two-seconds across
+0.378; four-map sweep clean. Not verified: the feel of the climb curve
+under his hand.
