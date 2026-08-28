@@ -16084,3 +16084,25 @@ refilled on schedule with fresh loot while a safe with a far older stamp
 stayed open forever; four-map sweep clean. Not verified: pacing over a
 full played raid, and whether the restock line reads as information or
 noise.
+
+### m458 - v4.42: sprint leaves a trail
+
+His answer 15: sprinting drops a boot print every 34 units, each living six
+seconds and fading as it goes. Any patrolling or investigating hunter -
+sentry, crawler, raider, snitch - that crosses a fresh trail turns and
+follows it to the newest print it can reach, rate-limited so the trail
+pulls rather than teleports. Sprint is now genuinely loud in space as well
+as sound: cut the corner, break the trail, or pay for the speed. The robot
+never sprints, so the benchmark stream is untouched.
+
+Also closed by inspection, no code: his answer 31 asked for at most three
+weather changes a raid; the game has always rolled one, or two on a 30
+percent chance, so the cap already holds.
+
+Verified: parse PASS at v4.42; prints driven at real tick rates, one per
+step of sprint, aging out on schedule; a patrolling sentry placed on the
+trail turned to investigate the newest print; the four-map sweep clean.
+One probe artifact noted: a single __sim call takes its whole argument as
+ONE tick, so a 2.5-second call is one giant step and drops one print -
+drive fine-grained steps when testing per-tick behaviour. Not verified:
+the hunt feel when a whole patrol picks up the same trail.

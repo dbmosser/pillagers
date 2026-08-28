@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.41';
+var VER='4.42';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9599,7 +9599,15 @@ if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
   if(_shNow&&!p._shPrev) p.sprintTog=!p.sprintTog;
   p._shPrev=_shNow;
   if(p.stamLock) p.sprintTog=false;
-  var sprint=!!p.sprintTog&&p.stam>2&&!p.stamLock&&!crouch&&mg>0;
+var sprint=!!p.sprintTog&&p.stam>2&&!p.stamLock&&!crouch&&mg>0;
+  if(sprint&&mg>0){
+    G.prints=G.prints||[];
+    var _lpr=G.prints.length?G.prints[G.prints.length-1]:null;
+    if(!_lpr||dist(p,_lpr)>34){
+      G.prints.push({x:p.x,y:p.y,t:0});
+      if(G.prints.length>40) G.prints.shift();
+    }
+  }
   if(p.ads) sprint=false;
   G.sprinting=sprint;
   var cap=PACKCAP[P.pack];
@@ -10960,6 +10968,12 @@ function moveToward(e,tx,ty,spd,dt){
 
 // ================================================================ enemies
 function updateEnts(dt){
+if(G.prints){
+    for(var _pi=G.prints.length-1;_pi>=0;_pi--){
+      G.prints[_pi].t+=dt;
+      if(G.prints[_pi].t>6) G.prints.splice(_pi,1);
+    }
+  }
   for(var _rs=0;_rs<G.containers.length;_rs++){
     var _rc=G.containers[_rs];
     if(!_rc.opened){ continue; }
@@ -10976,8 +10990,24 @@ function updateEnts(dt){
   // is the one tick every entity passes through exactly once a frame regardless
   // of which AI branch it takes. Decaying it inside a branch would leave a raider
   // who fired and then changed state stuck reading SHOOTING forever.
-  for(var _sq=0;_sq<G.ents.length;_sq++){
+for(var _sq=0;_sq<G.ents.length;_sq++){
     var _se=G.ents[_sq];
+    if(G.prints&&G.prints.length&&!_se.downed&&!_se.finished&&!_se.neutral&&
+       (_se.state==='patrol'||_se.state==='investigate')&&
+       (_se.kind==='sentry'||_se.kind==='crawler'||_se.kind==='raider'||_se.kind==='snitch')){
+      _se.printCd=(_se.printCd||0)-dt;
+      if(_se.printCd<=0){
+        for(var _pj=G.prints.length-1;_pj>=0;_pj--){
+          var _pr=G.prints[_pj];
+          if(_pr.t<4&&dist(_se,_pr)<170){
+            _se.state='investigate'; _se.tx=_pr.x; _se.ty=_pr.y;
+            _se.printCd=2.5;
+            break;
+          }
+        }
+        if(_se.printCd<=0) _se.printCd=0.6;
+      }
+    }
     if(_se.shotT>0){ _se.shotT-=dt; if(_se.shotT<0) _se.shotT=0; }
   }
   // A FRAME COUNTER BOTH PATHS INCREMENT. updateEnts is called exactly once per
@@ -14039,6 +14069,12 @@ function render2D(dt){
     wc.globalCompositeOperation='source-over';
   }
   // decals + shells
+if(G.prints) for(i=0;i<G.prints.length;i++){
+    var _fp=G.prints[i],_fa=clamp(1-_fp.t/6,0,1)*0.35;
+    wc.fillStyle='rgba(40,30,20,'+_fa.toFixed(2)+')';
+    wc.fillRect(_fp.x-3,_fp.y-1,3,5);
+    wc.fillRect(_fp.x+1,_fp.y-3,3,5);
+  }
   for(i=0;i<G.decals.length;i++){
     var dc=G.decals[i];
     if(dc.x<ox-40||dc.x>ox+VW+40||dc.y<oy-40||dc.y>oy+VH+40) continue;
@@ -18891,7 +18927,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Crates and lockers slowly restock after a few minutes, so a long raid finds a second wave',
+  now:'Sprinting leaves footprints for six seconds, and anything hunting will follow the trail',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
