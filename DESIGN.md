@@ -16069,3 +16069,18 @@ unchanged - the placement draws its randomness after every spawn, so the
 entity stream did not move. Not verified: whether raiders route to it
 (they treat it as any container if they pass), and the emotion of the
 find, which belongs to him.
+
+### m457 - v4.41: the map restocks, slowly
+
+His answer 13 at his cadence: crates and lockers refill just under three
+minutes after being emptied, re-rolled through the game's own dice, with a
+quiet line when it happens near you. Safes stay cracked, wrecks stay
+wrecks, the vault case is once per raid. A long raid now finds a second
+wave, which is the first mechanical reason to use minutes seven through
+ten - the very minutes the old ten-minute finding said nothing used.
+
+Verified: parse PASS at v4.41; a crate driven through the real tick
+refilled on schedule with fresh loot while a safe with a far older stamp
+stayed open forever; four-map sweep clean. Not verified: pacing over a
+full played raid, and whether the restock line reads as information or
+noise.
