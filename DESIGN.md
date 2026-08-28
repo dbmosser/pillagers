@@ -16151,3 +16151,23 @@ over ten seconds, and the same wounded machine stayed at 40 when its
 partner was pulled into combat; four-map sweep clean. Not verified: the
 repair rate against his pace of play - the wave benchmark at the end of
 the night will show the aggregate.
+
+### m462 - v4.46 to v4.48: crews with moods, raiders with kit
+
+His answers 47 and 48 across three builds. Whether the two crews are at
+each other's throats is now decided per raid, six raids in ten, derived
+from the seed itself with no new random draw - some days the streets are a
+war and some days everyone just wants to loot, which is "sometimes, not
+always" exactly. Raider grenades went from an eight-second cooldown to
+twenty - rare, as ordered - while smoke became their instinct: a raider
+whose health breaks pops smoke on his own position at the moment he turns
+for the ship, covering the retreat like a person would, and the kit works
+against YOU now, not only in crew feuds.
+
+Verified: parse PASS at v4.48; crews measured hot in exactly 6 of 10
+driven raids, matching the seed arithmetic; a breaking raider popped one
+smoke at the flee flip, latched to once; four-map sweep clean. The first
+smoke placement (inside the throw helper) was unreachable for a hurt man
+because the flee flip fires first - found by driving it, moved to the
+flip. Not verified: how often the retreat smoke reads in real fights, and
+the grenade rarity feel.
