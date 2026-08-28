@@ -15807,3 +15807,22 @@ hunt, but shoots on sight. Story landmarks: messages about how the elites
 bailed on Earth and left it to be ruled by robots. Everything else:
 "yes do these", order mine to choose, and a complete UI redo is "awesome" -
 greenlit as a project.
+
+### m442 - v4.27: the lift asks WHERE first
+
+His answer 34, in his own words: map selection should be more prominent,
+a menu after choosing to deploy, and he is not sure he has ever played the
+Quarry. The cause was one keybinding: E on the lift deployed instantly to
+whatever sector was last set, and the full sector menu, with its per-map
+characters and numbers, lived on R where he never looked. E now opens the
+menu; the instant deploy moved to R for the muscle-memory case. And every
+sector row now leads with his own history there: "you: 41 runs here" or
+YOU HAVE NEVER RAIDED HERE in capitals, counted from his flight recorder,
+so the un-visited three announce themselves at the moment of choice.
+
+Verified: parse PASS at v4.27; four-map sweep clean; driven on the play
+path, the hub character walked to the lift and E pressed through the real
+key handling: the menu opened, three sectors read never-raided, the
+seeded-history sector counted correctly; probe rows removed after. Not
+verified: whether he actually picks somewhere new, which his next export
+answers.
