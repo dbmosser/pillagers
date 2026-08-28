@@ -16663,3 +16663,12 @@ cost of cover: a raider hiding behind a wall while his gun cycles is a
 raider not shooting. Median haul held at about three thousand. So the
 mixture of who kills you shifted meaningfully while the total barely
 moved - exactly the shape a realism change should have.
+
+### m489 - v4.70 soak
+
+Three hundred drawn seconds across all four maps at night with the new
+cover and pursuit behaviours live: raiders ducking sightlines mid-reload,
+Listeners running down a moving player, possums waking, machines welding
+each other. Nothing thrown, nothing drawn wrong. The cover scan runs
+inside the chase branch every frame a raider's gun is cycling and cost no
+measurable frame time at these entity counts.
