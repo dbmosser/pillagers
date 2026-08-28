@@ -16187,3 +16187,20 @@ through the held pull, exactly 10,000 charged, the flag stamped, and the
 guard refused a downed player in an earlier accidental drive; four-map
 sweep clean. Not verified: the price against his economy over time, and
 whether six seconds exposed is enough risk.
+
+### m464 - v4.50: YOUR RIVAL
+
+His answer 50, with his correction: no active hunting, just an enemy with
+your name in his mouth. The identity grudge book has counted kills and
+deaths per raider name since the feud system; whoever he has fought most,
+at two or more fights, is now YOUR RIVAL. When that identity spawns - the
+pool is fixed, so he genuinely recurs - he wears a star on the raiders
+board, the raid announces him a few seconds in ("YOUR RIVAL is out here"),
+he shoots on sight like any raider, and the run line records rivalMet:1 so
+the story is in the data too.
+
+Verified: parse PASS at v4.50; with a stacked grudge book the right
+identity spawned as rival within four raids, starred, announced and
+flagged; the fixture grudge book restored after; four-map sweep clean.
+Not verified: how often the rival naturally recurs at his real fight
+rates, which his exports will now show.

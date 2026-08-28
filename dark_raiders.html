@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.49';
+var VER='4.50';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5772,6 +5772,14 @@ function idRec(id){
   if(!P.rivals[id]) P.rivals[id]={kills:0,deaths:0,met:0,standing:0};
   return P.rivals[id];
 }
+function myRival(){
+  var best=null,bs=1;
+  for(var id in (P.rivals||{})){
+    var r=P.rivals[id],f=(r.kills||0)+(r.deaths||0);
+    if(f>bs){ bs=f; best=id; }
+  }
+  return best;
+}
 function mkRaider(x,y,forceId,simBuild){
   var wk=pick(['pistol','smg','pistol','rifle']);
   var ident=forceId||pick(IDENTITIES);
@@ -5818,7 +5826,8 @@ function mkRaider(x,y,forceId,simBuild){
   var r={kind:'raider',x:x,y:y,r:11,hp:Math.round(78*CFG.eHp*seasonHp()),maxhp:Math.round(78*CFG.eHp*seasonHp()),react:rnd(.38,.62),
     face:rnd(0,6.28),state:'loot',tx:x,ty:y,cd:0,alert:0,spd:122,wep:WEAPONS[wk],dmg:WEAPONS[wk].dmg,
     rng:WEAPONS[wk].rng*.72,cone:.8,bag:[],looted:0,goal:null,skips:[],goalT:0,goalD:0,extracting:0,hitT:0,step:0,
-    coat:ident.coat, ident:ident.id, name:ident.tag,
+coat:ident.coat, ident:ident.id, name:ident.tag,
+    rival:(!simBuild&&ident.id===myRival())?1:0,
     // SPEC 8.4: varying hostility. A raider you have killed before is shoot on
     // sight with no negotiation; one you have good standing with is passive
     // until provoked. Everyone else sits in between.
@@ -7095,9 +7104,16 @@ function startRaid(){
   showScreen('raid');
   // Lead with the weather, because it is a condition you plan around rather
   // than decoration, and the controls line is the same every single raid.
-  say(G.wx.id==='clear'
+say(G.wx.id==='clear'
     ? (G.tod&&G.tod.line?G.tod.line:'Surface contact. TAB for inventory, E to search, M for the map.')
     : G.wx.line);
+  for(var _rv=0;_rv<G.ents.length;_rv++){
+    if(G.ents[_rv].rival){
+      G.tel.rivalMet=1;
+      setTimeout((function(nm){return function(){ if(G&&!G.over) say('YOUR RIVAL is out here: '+nm+'. He will shoot on sight.'); };})(G.ents[_rv].name),4000);
+      break;
+    }
+  }
 }
 
 // ================================================================ input
@@ -12625,7 +12641,8 @@ function endRaid(how){
       containers:T.containers,windfalls:T.windfalls||0,pedSold:T.pedSold||0,wepSource:(function(){ var W=G.player&&G.player.wep; if(!W) return 'none'; if(G.player.wepIssued) return 'issued'; return wearable(W.id)?'owned':'field'; })(),crouched:T.tCrouchBot?Math.round(T.tCrouchBot):0,siegeArrivals:T.siegeArrivals||0,siegeNoSpot:T.siegeNoSpot||0,killer:T.deathKiller,firstContact:T.firstContact===null?null:Math.round(T.firstContact),
       shots:T.shots,hits:T.hits,kills:T.kills,jams:T.jams||0,closest:Math.round(T.closestExtract),
 downs:T.downs,revives:T.revives,raidersExt:T.raidersExtracted,
-      silentExit:T.silentExit||0,
+silentExit:T.silentExit||0,
+      rivalMet:T.rivalMet||0,
       ringCrowd:T.ringCrowd||null,
       beaconCalls:T.beaconCalls,beaconMissed:T.beaconMissed,
       // Where the raid actually ends. Three separate mechanisms aimed at the trip out
@@ -16882,7 +16899,7 @@ function drawRaiderBoard(){
     if(r.out){ st='EXTRACTED'; out++; }
     else if(inEnts){ st=raiderStatus(e); live++; }
     else { st='DEAD'; dead++; }
-    rows.push({name:r.name,val:r.val,st:st,crew:r.crew,out:r.out,outAt:r.outAt,el:!!(r.ref&&r.ref.elite),gh:!!(r.ref&&r.ref.ghost)});
+    rows.push({name:((r.ref&&r.ref.rival)?'\u2605 ':'')+r.name,val:r.val,st:st,crew:r.crew,out:r.out,outAt:r.outAt,el:!!(r.ref&&r.ref.elite),gh:!!(r.ref&&r.ref.ghost)});
   }
   // HIS NOTE, v3.53: "once a raider has extracted, move them to the bottom of
   // the list and then make their name disappear after one minute after their
@@ -19000,7 +19017,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'SILENT DEPARTURE: hold N at any open point, pay 10,000c, and leave with no beacon, no wait, no siege',
+  now:'YOUR RIVAL: the raider you have fought most wears a star, gets announced, and shoots on sight',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -19855,7 +19872,8 @@ function buildExport(){
     if(r.intel) line+=' intel:1';
 if(r.wallClip) line+=' WALLCLIP:'+r.wallClip.f+'@'+r.wallClip.x+','+r.wallClip.y+'('+r.wallClip.ww+'x'+r.wallClip.wh+')t'+r.wallClip.at+'s';
 if(r.contractsBanked&&r.contractsBanked.length) line+=' contracts:'+r.contractsBanked.join(',');
-    if(r.silentExit) line+=' silentExit:1';
+if(r.silentExit) line+=' silentExit:1';
+    if(r.rivalMet) line+=' rivalMet:1';
     if(r.ghostIn) line+=' ghost:1';
     if(r.census) line+=' ents:'+r.census.total+'(s'+(r.census.by.sentry||0)+'/c'+(r.census.by.crawler||0)+'/r'+(r.census.by.raider||0)+'/sn'+(r.census.by.snitch||0)+' dials '+r.census.dials.nS+'/'+r.census.dials.nC+'/'+r.census.dials.nR+')';
     if(r.mapName) line+=' map:'+r.mapName;
