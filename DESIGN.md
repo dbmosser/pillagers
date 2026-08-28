@@ -16562,3 +16562,21 @@ Verified: parse PASS at v4.68; the sector list's computed border read back
 eighteen defects now stand at fourteen closed, two declared exceptions,
 and two remaining - the outcome screen's oversized title and the full
 canvas-versus-window frame question - which are next.
+
+### m485 - v4.69: the REDO's mechanical core is complete
+
+The outcome screen's forty-two-pixel title - the last oversized header -
+joins the scale at thirty, matching the canvas hero size. The audit's
+eighteen defects now stand: sixteen closed across six slices, two declared
+exceptions that are exceptions on purpose (the golden DEPLOY button as the
+game's one loud call-to-action, and the loot-name display face as
+flavour). What remains of the REDO is judgement rather than mechanics:
+whether any panel should move or merge, which is his eyes' territory when
+he next plays, and the movable-windows system from slice one gives him the
+tools to answer it himself.
+
+Verified: parse PASS at v4.69; four-map sweep, extract and dead endings
+clean. The redo ran audit-first: four parallel readers mapped every
+surface, a synthesis ranked eighteen defects with exact line references,
+and every slice asserted its counts before swapping. Not verified: taste.
+That report card comes from the next run file.
