@@ -17016,3 +17016,101 @@ outcome depends on, so the 320-seed benchmark was not re-run and v4.76's
 for the Pedlar, the Warden and the seal were confirmed in the code path
 but not photographed, because making all three drop in one raid takes a
 full playthrough rather than a probe.
+
+### m502 - v4.84 and v4.85: more of the map has a name, and it stops stuttering
+
+Two of the four maps have seven and eight named places on them. The other
+two had three each, and not because they are featureless. Both of them
+have ground their own source comments already gave a name to, which then
+never became somewhere you could be standing IN.
+
+The Sunken Quarter authors its west side as "stepped ruins, broken cover"
+and its east side as "greener, overgrown ruin", both fully built, and the
+map has never once said either name out loud. Cold Storage has five zones
+and three places: the sump, which is a pond with a pump shed over it, and
+the scrap line, which is rows of shipping containers with two sheds in
+them, were both nameless. All four are now named places: WEST TERRACES,
+EAST TERRACES, THE SUMP, SCRAP LINE.
+
+They were appended rather than inserted. The first two landmarks in each
+list are the ones that get the named caches, and those should not move.
+
+Cost, measured before and after over six seeds a map: the Sunken Quarter
+goes from 195.2 containers a raid to 203.8, Cold Storage from 143.7 to
+152.8. Four and six percent more boxes on the two maps that had the least
+to find. GREYWATER DAM and THE QUARRY are untouched at 239.8 and 212.2, so
+the 320-seed benchmark, which runs on the dam, is unaffected and v4.76's
+16.3 percent still stands.
+
+THE STUTTER. Driving the new callouts turned up an old one: "Entering the
+the sump." The line is built by gluing "Entering the" onto the name, and
+nine of the places in this game are called THE something. THE COURTYARD,
+THE CREST, THE TAILRACE, THE LONG DOCK, THE MAGAZINE, THE WORKSHOPS, THE
+CRUSHER, THE DRAGLINE, THE SUMP. On all four maps, on both the landmark
+callout and the zone-crossing callout, since the day those callouts went
+in. A place that already carries its article keeps it now.
+
+That one is worth saying plainly: it was not found by reading the code, it
+was found by making the game say all twenty-three of its place names out
+loud in one probe and reading the output.
+
+Verified: parse PASS at v4.85; four-map sweep clean at 110, 111, 74 and 91
+entities; all three raid endings; hub clean. All twenty-three landmark
+callouts across all four maps driven through the real frame loop and read
+back one by one, every one correct and none stuttering. The scrap line
+photographed with its callout on screen. Container counts measured before
+and after on all four maps.
+
+Not verified: no balance run, on the grounds above - the two changed maps
+are not the benchmark map, and the benchmark was not re-run. The zone
+crossing callout was fixed by the same helper as the landmark one but only
+the landmark path was driven end to end; the zone path is the same one
+line change and was read, not exercised. THE QUARRY also has a place
+called THE SUMP, so that name now appears on two different maps. You never
+see both in one raid and both were already in the game, so I have left the
+names alone rather than rewrite shipped content on my own judgement, but
+it is worth a decision if map identity matters to you here.
+
+### m503 - v4.86: a bad number can no longer kill a raid outright
+
+Found by a broken probe of my own, which is the honest way to say it. I
+was trying to drive the zone-crossing callout, read rectangles off
+G.map.zones that are not on G.map.zones, and fed the player a NaN
+position. The whole raid render died on the spot with a thrown exception.
+
+That is the same trap as the hub clock two versions ago, and this time it
+is on the screen he actually plays. The player's own position feeds
+createRadialGradient in the light pass. That call THROWS on a non-finite
+number instead of quietly ignoring it, the way fillRect and translate do.
+So one bad coordinate does not make the player glitch, it kills the entire
+raid render, and the raid with it.
+
+This is not a hypothetical in this codebase. The casings bug drove fifteen
+raiders to NaN in a single frame, on the first shot of every raid, for
+sixty builds. The only reason the player never went with them is that
+nothing happened to write one into HIM. That is luck, not safety.
+
+The position is now checked once a frame before anything can read it, and
+snapped back to the last good one if it ever stops being a number. A frame
+of rubber banding is survivable; a dead render is not.
+
+One trap avoided on the way in: my first draft fell back to G.map.spawn,
+which does not exist. The maps carry a spawns ARRAY. Writing the field I
+assumed was there would have turned the rescue into a second crash, in
+exactly the situation where the rescue is the only thing running. Checked
+against the live map object before applying, and the fallback is the first
+spawn point with the world centre behind it.
+
+Verified: parse PASS at v4.86; four-map sweep clean at 110, 111, 74 and 91
+entities with container counts and place counts unchanged from v4.85; all
+three raid endings; hub clean. The guard itself driven both ways: a NaN
+written in after a good frame snaps back to the last good position and the
+raid keeps rendering, and an Infinity written in from a cold start with no
+good position on record falls back to the map spawn and the raid keeps
+rendering. Both of those threw and killed the raid before this change.
+
+Not verified: no balance run; this changes no number a raid outcome
+depends on. I have not gone looking for a path that actually writes a bad
+coordinate into the player, so this is a net under the trapeze rather than
+a fix to a known fall. If one exists it will now show as a one frame snap
+instead of a dead screen, which is also how it would get reported.
