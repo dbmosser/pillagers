@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.33';
+var VER='4.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6659,7 +6659,17 @@ function buildRaid(sim){
 var N_BULWARK=nOf(CFG.nBulwark===undefined?1:CFG.nBulwark);
   for(i=0;i<N_BULWARK;i++){ var s4c=far(freeSpot(map,30),900); ents.push(mkBulwark(s4c.x,s4c.y)); }
   var N_HOWLER=nOf(CFG.nHowler===undefined?2:CFG.nHowler);
-  for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980); ents.push(mkHowler(s4b.x,s4b.y)); }
+for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
+    for(var _hb=0;_hb<map.buildings.length;_hb++){ var _HB=map.buildings[_hb];
+      if(s4b.x>_HB.x&&s4b.x<_HB.x+_HB.w&&s4b.y>_HB.y&&s4b.y<_HB.y+_HB.h){
+        var _pl=s4b.x-_HB.x,_pr=_HB.x+_HB.w-s4b.x,_pu=s4b.y-_HB.y,_pd=_HB.y+_HB.h-s4b.y;
+        var _mn=Math.min(_pl,_pr,_pu,_pd);
+        if(_mn===_pl) s4b.x=_HB.x-40; else if(_mn===_pr) s4b.x=_HB.x+_HB.w+40;
+        else if(_mn===_pu) s4b.y=_HB.y-40; else s4b.y=_HB.y+_HB.h+40;
+        break;
+      }
+    }
+    ents.push(mkHowler(s4b.x,s4b.y)); }
   // Two per map at the reference size. Any more and the map stops having quiet
   // in it, which is the thing they exist to threaten.
   // TWO THINGS WRONG HERE, both v2.06.
@@ -18774,7 +18784,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Tap shift to sprint, tap to stop, and raiders now read JOGGING, SPRINTING and AIMING like people',
+  now:'The howler starts outdoors where artillery belongs, never on a warehouse floor',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

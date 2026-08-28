@@ -15952,3 +15952,17 @@ drain and regen resumed; raider verbs read back JOGGING, AIMING and
 SPRINTING OUT from live raiders; four-map sweep clean. Not verified: how
 the toggle feels against his muscle memory - if he hates it, one line
 brings hold-to-sprint back.
+
+### m450 - v4.34: artillery starts outdoors
+
+His run #52: "howler shouldn't spawn inside." The spot picker avoids walls,
+not rooms, so the mortar machine could legally begin a raid standing on a
+warehouse floor. An indoor pick is now pushed out the nearest side of the
+building it landed in - deliberately with NO extra random draws, so the
+seeded stream, the map and every other spawn stay byte-identical; only an
+offending howler moves, and always to the same place for the same seed.
+
+Verified: parse PASS at v4.34; 42 howlers across 24 driven raids on all
+four maps, zero indoors; the four-map entity counts unchanged at
+110/111/74/91, which is the proof the stream did not move. Not verified:
+nothing - this one is fully closed by the drive.
