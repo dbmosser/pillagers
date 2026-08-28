@@ -16317,3 +16317,19 @@ sentries fell to 105 from 124, and the median extracted haul ROSE from
 direction his answers chose, measured. The robot barely uses what HE
 gained - stims, tracers, back-shots, the damage ring - so his own rate
 should hold up better than the robot's did.
+
+### m472 - v4.57: bars you can read in a firefight, part two
+
+His run #55: stamina and armour bars bigger and clearer. Armour grew to
+the health bar's language - thick, labelled ARMOR with the number inside.
+Stamina grew half again, wears the word STAMINA, turns amber when it runs
+low and blood-red reading WINDED while the sprint lockout holds, so the
+one state that changes what your legs can do is spelled out. The status
+line stacks above it all. Two layout misfires on the way - the taller bar
+clipped the screen bottom, then the moved stack swallowed the status word
+- both caught by LOOKING at captures and fixed before shipping.
+
+Verified: parse PASS at v4.57; the full stack captured and read: STANDING,
+ARMOR 40, WINDED in red, HP 100, nothing clipped, nothing overlapped;
+four-map sweep clean. Not verified: the no-armour layout variant in play
+(the label drops to its old height by design).
