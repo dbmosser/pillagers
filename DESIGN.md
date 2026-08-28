@@ -16645,3 +16645,21 @@ observable, six raiders driven through a cycling reload with the dial off
 and on, four of the six taking different ground and two identical because
 no cover existed near them. Not verified: what either costs the robot -
 the 320 measuring exactly that is next.
+
+### m488 - the v4.70 measurement: both behaviours are free
+
+320 paired seeds, both new behaviours off against both on. Off 11.9
+percent, on 12.5, and only six seeds in three hundred and twenty disagreed
+at all - two where the new behaviours killed him, four where he got out
+anyway. That is a coin flip on six trials, so the honest reading is NO
+measurable cost: raiders that break your sight and a Listener that keeps
+hearing you make the world behave properly without moving the difficulty
+needle.
+
+The interesting half is inside the killer table. Listener kills doubled,
+5 to 11, which is the machine finally doing the job it was built for two
+hundred builds ago. Raider kills fell, 90 to 74, and that is the honest
+cost of cover: a raider hiding behind a wall while his gun cycles is a
+raider not shooting. Median haul held at about three thousand. So the
+mixture of who kills you shifted meaningfully while the total barely
+moved - exactly the shape a realism change should have.
