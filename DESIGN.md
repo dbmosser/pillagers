@@ -16602,3 +16602,46 @@ continue immediately: a fresh 320-seed benchmark, owed because v4.61 to
 v4.63 put field rigs into the safe and cache loot tables and that touches
 what the robot finds; more touchdown landings for question two; and the
 redo's taste pass, which waits on nothing but his next run file.
+
+### m486 - the v4.69 baseline: 11.9 percent, and why it moved
+
+320 identical arms on v4.69: 11.9 percent (38/320), zero discordant, the
+ninth straight determinism proof. Down from 14.4 at v4.56, and the honest
+reading is that most of that is not difficulty. v4.63 put field rigs into
+the safe and cache tables, and adding entries to a loot table changes the
+roll stream itself, so every container on every map draws differently from
+that build onward. It is another boundary, not a nerf. Killers: sentry
+106, raider 90, crawler 49, and the Listener finally appears with 5.
+Median extracted haul 3,035.
+
+### m487 - v4.70: the last parity item, and the Listener wakes up
+
+TWO enemy behaviours he asked for long ago and never got.
+
+His parity order was "complete parity when they are within earshot", and
+five hand-downs shipped - the roll, the steady aim, the crouch, the sprint,
+the ring dodge - but COVER was wired against machines only, so a raider
+reloading in front of him strafed in the open like a target. He now breaks
+YOUR line of sight while his gun cycles, using the same eight-angle scan
+the robot's own cover rule uses, gated inside the range where a sight
+question can be answered at all. Pure geometry, no random draws, so the
+seeded stream is untouched.
+
+And the Listener, measured dead at v2.06 and never fixed in the two
+hundred builds since: median closest approach 985 units, inside its
+damage reach in one raid of twelve, never woke at all in seven. The cause
+was never its speed or its teeth - it charges the last place it HEARD, and
+that point is stale the moment you keep walking. It hunts by sound, so
+sound is the fix: while it is already hunting and you are inside earshot,
+your own movement keeps feeding it your position. Stand still or crouch
+and the trail goes cold exactly where it went cold before; sprinting
+carries half again as far. Both changes carry dials.
+
+Verified: parse PASS at v4.70; four-map sweep, hub, extract and dead
+endings clean; the Listener driven with a real movement key - a moving
+player at 250 units updated its target to the live position, releasing the
+key left the target stale; the raider cover dial proven live by an
+observable, six raiders driven through a cycling reload with the dial off
+and on, four of the six taking different ground and two identical because
+no cover existed near them. Not verified: what either costs the robot -
+the 320 measuring exactly that is next.
