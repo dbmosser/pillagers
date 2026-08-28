@@ -16408,3 +16408,28 @@ Verified: parse PASS at v4.60; driven through the real buttons: arm shows
 both labels, NO keeps the raid alive and restores the row, YES at 200
 seconds ends the raid and charges exactly 120; four-map sweep clean. Not
 verified: whether the reputation price needs a louder colour on the YES.
+
+### m477 - v4.61: five clarity notes from run #58, same morning
+
+He played the DAM twice this morning - the sector menu earning its keep -
+and left twelve notes. The five quick ones shipped in this build: a held
+trigger now reloads an empty magazine (the dry-pull reload only listened
+for a fresh press, so automatics stayed silent); the mystery corner text
+says whose eyes it counts, "2 MACHINES HUNTING YOU / 3 SEARCHING THE
+AREA"; the bandage countdown lives above the character in the same
+over-head language as the reload bar, with seconds under it, and the old
+health-bar-side counter is gone as he asked; HOLD E TO CUT THE SEAL moved
+over the player's head and out of the hotbar's lane; and loot name labels
+hold a second longer with wider stagger so a fast cascade stays readable.
+
+Verified: parse PASS at v4.61; the held-empty automatic drove a real
+reload; the over-head heal bar captured beside the reload bar with the
+compound HEALING + RELOADING status confirming both at once; four-map
+sweep, extract and dead endings clean. Not verified: the label pacing in a
+real windfall cascade, and the seal prompt position at his zoom.
+
+Still open from run #58, next builds: the movement model (shift back to
+hold-to-sprint, CAPS LOCK as the auto-jog latch - his two notes read
+together), rig and shield drops on the map, the H-list collision, a
+pointer cursor over clickable panels, and movable HUD blocks, which is the
+first slice of the UI redo he greenlit.

@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.60';
+var VER='4.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8008,8 +8008,8 @@ function label(x,y,txt,col,delay,big,ik){
   // name of a thing you now own. A label carrying an item key is by definition
   // a loot name, so that is the one that gets the longer life. Combat and state
   // shouts are untouched.
-  G.labels.push({x:x,y:y-row*13,txt:txt,c:col||'#cdd6dd',t:-(delay||0),
-    life:(ik?3.8:1.9),big:!!big,ik:ik||null});
+G.labels.push({x:x,y:y-row*15,txt:txt,c:col||'#cdd6dd',t:-(delay||0),
+    life:(ik?4.8:1.9),big:!!big,ik:ik||null});
   if(G.labels.length>40) G.labels.shift();
 }
 function decal(x,y,col,size){
@@ -8414,7 +8414,7 @@ function applyHeal(key){
     // Now a heal already running refuses the next one outright, at the two call
     // sites that can start one, and the rate itself is divided by healSlow.
     // healSolo 0 restores stacking and healSlow 1 restores the old speed.
-    p.healQ=amt;
+    p.healQ=amt; p.healAmt0=amt;
     p.healRate=amt/(hot*(CFG.healSlow===undefined?1.6:CFG.healSlow));
 
     return 0;
@@ -9916,11 +9916,11 @@ if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.s
       // is still interruptible, so nothing about the cost of running dry changes,
       // only the extra keystroke. With no reserve at all it says so, because then
       // there is genuinely nothing to do about it.
-      if(!p.fired){
+if(!p.fired||p.wep.auto){
         if(p.reserve>0&&p.reloading<=0){
           p.reloading=p.wep.reload; T.reloads++;
           if(!G.sim) say('Reloading...');
-        } else if(p.reserve<=0) say('Out of ammo.');
+        } else if(p.reserve<=0&&!p.fired) say('Out of ammo.');
         p.fired=true;
       }
       p.lastShot=now;
@@ -15865,12 +15865,12 @@ function drawHUD(){
     var _ax=W-16,_ay=LH(30);
     if(_hunt>0){
       ctx.fillStyle='rgba(255,80,64,.95)';
-      ctx.fillText(_hunt+(_hunt===1?' HUNTING':' HUNTING'),_ax,_ay);
+      ctx.fillText(_hunt+(_hunt===1?' MACHINE HUNTING YOU':' MACHINES HUNTING YOU'),_ax,_ay);
       _ay+=LH(12);
     }
     if(_att>0){
       ctx.fillStyle='rgba(255,176,46,'+(_att>8?0.95:0.72)+')';
-      ctx.fillText(_att+' SEARCHING',_ax,_ay);
+      ctx.fillText(_att+' SEARCHING THE AREA',_ax,_ay);
     }
     ctx.textAlign='left';
   }
@@ -16205,6 +16205,15 @@ ctx.fillStyle='#35d6c8';
     ctx.lineWidth=4;
     ctx.beginPath(); ctx.arc(_hfC.x,_hfC.y,LH(30),p.hitFrom.ang-0.55,p.hitFrom.ang+0.55); ctx.stroke();
   }
+if((p.healQ||0)>0&&!p.downed){
+    var _hb2=w2s(p.x,50,p.y);
+    ctx.fillStyle='rgba(6,9,13,.72)';
+    ctx.fillRect(_hb2.x-27,_hb2.y-LH(10),54,LH(8));
+    bar(_hb2.x-25,_hb2.y-LH(9),50,LH(5),clamp(1-(p.healQ/((p.healAmt0||p.healQ))),0,1),'#6fe0a0');
+    ctx.font=FS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle='#6fe0a0';
+    ctx.fillText(Math.max(1,Math.ceil(p.healQ/(p.healRate||10)))+'s',_hb2.x,_hb2.y+LH(8));
+    ctx.textAlign='left';
+  }
   if(CFG.cursorLoud!==0&&p.reloading>0&&p.wep&&p.wep.reload&&!p.downed){
 
     var _rb=w2s(p.x,34,p.y);
@@ -16432,8 +16441,7 @@ ctx.fillStyle='rgba(190,255,220,.85)';
     // v4.23 HIS NOTE: "counter should be told in seconds, e.g. 3 seconds to
     // go". healQ is hit points on their way; healRate is hp per second; the
     // division is the seconds he asked for.
-    ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(111,224,160,.95)';
-    ctx.fillText(Math.max(1,Math.ceil(p.healQ/(p.healRate||10)))+'s to go',h1+6,by+HBH-1);
+    // v4.61: the seconds moved above the character, per his run #58 note.
   }
   ctx.font=FS(TYPE.title); ctx.fillStyle='#FFF6DC';
   ctx.fillText('HP  '+Math.round(p.hp),24,by+18);
@@ -16625,8 +16633,9 @@ if(p.armor>0){
   if(!G.over&&G.seal&&!G.seal.done&&G.nearSeal&&!p.downed){
     var _SRh=sealHere();
     ctx.font=FS(TYPE.head); ctx.textAlign='center';
-    ctx.fillStyle='#ffd76a'; ctx.fillText('HOLD E TO CUT THE SEAL',W/2,H-100);
-    bar(W/2-70,H-92,140,7,clamp((_SRh.cut+G.seal.gained)/Math.max(1,sealNeed(_SRh.tier)),0,1),'#ffd76a');
+var _slp=w2s(p.x,66,p.y);
+    ctx.fillStyle='#ffd76a'; ctx.fillText('HOLD E TO CUT THE SEAL',_slp.x,_slp.y);
+    bar(_slp.x-70,_slp.y+LH(6),140,7,clamp((_SRh.cut+G.seal.gained)/Math.max(1,sealNeed(_SRh.tier)),0,1),'#ffd76a');
     ctx.textAlign='left';
   }
   if(p.downed){
@@ -19127,7 +19136,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Abandoning asks a real question now: YES with the price spelled out, or NO, keep playing',
+  now:'Held trigger reloads an empty clip, MACHINES HUNTING YOU says whose eyes, bandage counts above your head',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
