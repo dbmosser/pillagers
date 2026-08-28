@@ -16004,3 +16004,23 @@ a helped survivor followed and put a round into a sentry; a betrayed one
 flipped hostile and fired at the player; four-map sweep unchanged. Not
 verified: his companion's pathing over long distances and whether his
 pistol is too strong or too weak beside a real fight.
+
+### m453 - v4.37: legs in a syringe, cheap grenades, wrecks that feed the gun
+
+Three of his answers in one economy pass. The Stim Injector (answer 18):
+180c value, one weight, slottable on the hotbar, and using it fills the
+stamina bar and clears the winded lockout instantly - no channel time,
+because the whole point is the moment you need your legs RIGHT NOW.
+Grenades (answer 4) drop to 140c with the reputation gate removed, and
+both frags and stims now appear in lockers and on bodies. And machine
+wrecks (answer 1) get their own loot table instead of rolling as supply
+crates: a third of a wreck is ammunition, which is the loop he asked for -
+aggressive play feeds itself.
+
+Verified: parse PASS at v4.37; the stim driven through the real hotbar
+slot, stamina 10 to 100, lockout cleared, item consumed; five machines
+killed by driven rounds produced three wrecks holding six items of which
+three were ammo boxes, no crash in the drop path; four-map sweep clean.
+Not verified: shop prices in his hands, and whether wreck ammo makes
+sustained fighting TOO comfortable - the benchmark will say once the next
+320 runs.
