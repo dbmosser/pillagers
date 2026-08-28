@@ -16472,3 +16472,26 @@ quiet if he minds.
 
 Remaining from run #58: movable HUD blocks - slice one of the UI redo,
 which still awaits his one-word REDO.
+
+### m480 - v4.64: REDO slice one, every corner is a window
+
+He said REDO, and ruled that a greenlight needs no second ask - recorded
+as standing law. Slice one delivers his run #58 line "right hand and left
+hand lower corner modules should be movable windows": the health cluster
+(status, armour, stamina, health) and the gear corner (inventory hint,
+sidearm, weapon, ammo) are draggable windows now, each wrapped in one
+canvas transform so everything inside moves as a unit, registered with the
+same click-to-drag plumbing the raiders board, conditions box and key
+legend have had since v3.64. Positions persist on the profile. No collapse
+toggles on these two - hiding your own health is not a feature.
+
+Meanwhile a four-reader audit is sweeping every UI surface - canvas
+panels, all fifteen DOM screens, the palette, the typography - to produce
+the defect list that drives the remaining slices: one panel language, one
+type scale, one accent meaning per colour.
+
+Verified: parse PASS at v4.64; both clusters driven to mid-screen through
+the real offset store and captured intact as units; offsets reset after;
+four-map sweep clean. Not verified: drag feel with the mouse itself, and
+collision of a dragged cluster with the hotbar if he parks one there - his
+arrangement, his call.
