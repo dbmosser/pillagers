@@ -16382,3 +16382,12 @@ minor at fifty, the slowest and emptiest of the five: long sine roots,
 sparse triangle tones with real silence between them. Verified rolling in
 the rotation through fifteen driven deployments; parse PASS; sweep clean.
 Not verified: the sound of it, his ears, morning.
+
+### Question two, the post-wave tally
+
+Nine more touchdowns captured on the finished night build: 132 hostiles at
+the ring woke on the walk there against ONE flown in by the siege. The
+running study across all builds now stands at eighteen landings, roughly
+nineteen of every twenty bodies map-born. The night's enemy changes made
+the answer stronger, not weaker: whatever remedy he picks - QUIETER,
+SHORTER, or MOVE - the target is the map he wakes, not the ship he calls.
