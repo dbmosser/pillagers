@@ -16495,3 +16495,21 @@ the real offset store and captured intact as units; offsets reset after;
 four-map sweep clean. Not verified: drag feel with the mouse itself, and
 collision of a dragged cluster with the hotbar if he parks one there - his
 arrangement, his call.
+
+### m481 - v4.65: REDO slice two, one colour per meaning
+
+The audit found five ambers, two teals, eight danger reds and four gains
+living side by side. The canvas speaks four accents now: amber #ffc04a
+for anything you can choose or interact with (absorbing four stray
+ambers), teal #4de3d0 for information (absorbing the second teal), hazard
+#ff5a4a for danger states (absorbing the state reds - the HP fill, crew
+identity red and damage pop keep their own voices deliberately), and gain
+green #7fc4a0 for rewards (absorbing three). One semantic repair inside
+the sweep: the hotbar drag-over ring was a choice affordance wearing
+gain-green and is amber now. A hundred and forty colour sites moved, every
+count asserted exactly before the swap.
+
+Verified: parse PASS at v4.65; the busy HUD captured - every amber on
+screen is now the same amber, the extract chain is one teal; four-map
+sweep clean. Not verified: the pale-gold keys and door lamps reading
+slightly deeper now, worth his glance.

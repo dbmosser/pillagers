@@ -94,7 +94,7 @@
   button { font-family:'Rubik',system-ui,sans-serif; background:transparent;
     border:1px solid var(--steel-hi); color:var(--bone); padding:5px 9px; font-size:10px;
     letter-spacing:.06em; cursor:pointer; text-transform:uppercase; transition:all .12s; }
-  button:hover:not(:disabled){ border-color:var(--amber); color:var(--amber); background:rgba(255,176,46,.08); }
+  button:hover:not(:disabled){ border-color:var(--amber); color:var(--amber); background:rgba(255,192,74,.08); }
   button:disabled{ opacity:.3; cursor:not-allowed; }
   button:focus-visible{ outline:2px solid var(--coolant); outline-offset:1px; }
   .deploy { padding:12px; font-family:'Rubik',system-ui,sans-serif; font-weight:800;
@@ -246,7 +246,7 @@
   <h3 id="seasonhead">Season 1</h3>
   <div class="msub">Ten tiers. Every raid feeds it, and a raid you die on still pays half, because a run you learned something from is not worth nothing. Finish the track and the world moves up a tier: loot is worth more and everything out there is harder.</div>
   <div id="seasonbar" style="height:16px;border:1px solid var(--steel-hi);background:rgba(0,0,0,.35);margin:6px 0 10px 0;position:relative">
-    <div id="seasonfill" style="height:100%;width:0%;background:linear-gradient(90deg,#ffb02e,#ffd76a)"></div>
+    <div id="seasonfill" style="height:100%;width:0%;background:linear-gradient(90deg,#ffc04a,#ffc04a)"></div>
     <div id="seasontext" style="position:absolute;inset:0;text-align:center;font-size:11px;line-height:16px;color:#120e0c;font-weight:700"></div>
   </div>
   <div class="plist" id="seasonlist" style="border:1px solid var(--steel-hi);max-height:300px;overflow:auto"></div>
@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.64';
+var VER='4.65';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -710,7 +710,7 @@ var WEARSTEPS=[
   {at:0,    name:'CLEAN',   spread:1.00, reload:1.00, jam:0,     c:'#7fc4a0'},
   {at:420,  name:'WORN',    spread:1.12, reload:1.08, jam:0,     c:'#cdd6dd'},
   {at:950,  name:'FOULED',  spread:1.30, reload:1.22, jam:0,     c:'#ffc04a'},
-  {at:1600, name:'FAILING', spread:1.50, reload:1.40, jam:0,     c:'#e0483a'}
+  {at:1600, name:'FAILING', spread:1.50, reload:1.40, jam:0,     c:'#ff5a4a'}
 ];
 function wearOf(id){ P.wear=P.wear||{}; return P.wear[id]||0; }
 function wearStep(id){
@@ -807,17 +807,17 @@ var ITEMS={
   // with a single member cannot feel like a jackpot because there is nothing to
   // be lucky about.
   reactor:{name:'Meridian Reactor Core',val:2600,wt:4,r:'elite',c:'#e08cff'},
-  wcore:{name:'Warden Core',val:3800,wt:5,r:'elite',c:'#ffd76a'},
+  wcore:{name:'Warden Core',val:3800,wt:5,r:'elite',c:'#ffc04a'},
   // SPEC 7.6: keys. Single use, they say what they open, sellable if you will
   // never use one, and they can be extracted and brought back for a targeted raid.
-  key_dam_turbine:{name:'Turbine Room Key',val:600,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'dam_turbine'},
-  key_dam_vault:{name:'Substation Vault Key',val:700,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'dam_vault'},
-  key_bc_cellar:{name:'Sealed Cellar Key',val:600,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'bc_cellar'},
-  key_bc_depot:{name:'Garage Depot Key',val:700,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'bc_depot'},
-  key_cs_freezer:{name:'Blast Freezer Key',val:700,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'cs_freezer'},
-  key_cs_office:{name:'Foreman Office Key',val:600,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'cs_office'},
-  key_quarry_mag:{name:'Magazine Key',val:750,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'quarry_mag'},
-  key_quarry_assay:{name:'Assay Office Key',val:650,wt:1,r:'rare',c:'#ffd76a',use:'key',door:'quarry_assay'},
+  key_dam_turbine:{name:'Turbine Room Key',val:600,wt:1,r:'rare',c:'#ffc04a',use:'key',door:'dam_turbine'},
+  key_dam_vault:{name:'Substation Vault Key',val:700,wt:1,r:'rare',c:'#ffc04a',use:'key',door:'dam_vault'},
+  key_bc_cellar:{name:'Sealed Cellar Key',val:600,wt:1,r:'rare',c:'#ffc04a',use:'key',door:'bc_cellar'},
+  key_bc_depot:{name:'Garage Depot Key',val:700,wt:1,r:'rare',c:'#ffc04a',use:'key',door:'bc_depot'},
+  key_cs_freezer:{name:'Blast Freezer Key',val:700,wt:1,r:'rare',c:'#ffc04a',use:'key',door:'cs_freezer'},
+  key_cs_office:{name:'Foreman Office Key',val:600,wt:1,r:'rare',c:'#ffc04a',use:'key',door:'cs_office'},
+  key_quarry_mag:{name:'Magazine Key',val:750,wt:1,r:'rare',c:'#ffc04a',use:'key',door:'quarry_mag'},
+  key_quarry_assay:{name:'Assay Office Key',val:650,wt:1,r:'rare',c:'#ffc04a',use:'key',door:'quarry_assay'},
   codex:{name:'Sealed Codex',val:2200,wt:2,r:'elite',c:'#d89cff'},
   bloom:{name:'Bloom Sample',val:3100,wt:2,r:'elite',c:'#ff9ce8'},
   relay:{name:'Orbital Relay',val:1700,wt:4,r:'elite',c:'#c090ff'},
@@ -4945,7 +4945,7 @@ var WEAKPTS={
     {id:'optic',name:'OPTIC', ang:0,       rf:0.58, rad:6,  mult:2.0, eff:'blind',    c:'#6fd8ff'}
   ],
   warden:[
-    {id:'seam', name:'CORE SEAM', ang:Math.PI, rf:0.58, rad:11, mult:3.0, eff:'overheat', c:'#ffd76a'},
+    {id:'seam', name:'CORE SEAM', ang:Math.PI, rf:0.58, rad:11, mult:3.0, eff:'overheat', c:'#ffc04a'},
     {id:'optic',name:'OPTIC',     ang:0,       rf:0.62, rad:7,  mult:1.8, eff:'blind',    c:'#6fd8ff'}
   ],
   // The Bulwark's opening is simply its BACK, wide and generous, because the
@@ -5065,7 +5065,7 @@ function bodyRecover(ct){
   G.bodyTaken=1;
   say('You took it all back. '+got+' item'+(got===1?'':'s')+
       (rg&&rg!=='none'?(' and the '+armorById(rg).name):'')+'.');
-  label(ct.x,ct.y-22,'RECOVERED','#35d6c8',0,true);
+  label(ct.x,ct.y-22,'RECOVERED','#4de3d0',0,true);
   blip('pick');
 }
 function bushAtMap(map,x,y){
@@ -8641,8 +8641,8 @@ function openContainer(ct,onlyKeys){
       T.windfalls=(T.windfalls||0)+1;
       if(!G.sim){
         say('There is something under it.');
-        label(ct.x,ct.y-30,'WINDFALL','#ffd76a',0,true);
-        spark(ct.x,ct.y,'#ffd76a',30,320);
+        label(ct.x,ct.y-30,'WINDFALL','#ffc04a',0,true);
+        spark(ct.x,ct.y,'#ffc04a',30,320);
         sfx('charge',ct.x,ct.y);
       }
     }
@@ -10002,8 +10002,8 @@ if(!p.fired||p.wep.auto){
           var sc=setLoot(mkContainer(G.seal.x+rnd(-24,24),G.seal.y+rnd(20,40),'cache'),loot);
           sc.cache=1; sc.time=1.2; G.containers.push(sc);
           say('The seal is cut. Whatever Meridian put behind it is yours if you live.');
-          label(G.seal.x,G.seal.y-26,'SEAL BROKEN','#ffd76a',0,true);
-          spark(G.seal.x,G.seal.y,'#ffd76a',40,420);
+          label(G.seal.x,G.seal.y-26,'SEAL BROKEN','#ffc04a',0,true);
+          spark(G.seal.x,G.seal.y,'#ffc04a',40,420);
         }
       }
       return;                       // cutting owns the key and your attention
@@ -11199,7 +11199,7 @@ if(e.state==='possum'){
         e.downed=1; e.downT=RAIDER_DOWN_T; e.hp=1;
         e.state='down'; e.alert=0; e.goal=null; e.cd=Math.max(e.cd||0,1);
         if(!G.sim){
-          label(e.x,e.y-16,(e.name||'RAIDER')+' IS DOWN','#ffb02e',0,true);
+          label(e.x,e.y-16,(e.name||'RAIDER')+' IS DOWN','#ffc04a',0,true);
           blip('hit');
         }
         continue;
@@ -11317,10 +11317,10 @@ if(e.state==='possum'){
       // shoot each other, so an ungated label prints readable text through walls
       // telling you something died and exactly where.
       if(canSee(p.x,p.y,p.face,e.x,e.y,G.vseg))
-        label(e.x,e.y-16,(e.name||e.kind.toUpperCase())+' DOWN',e.kind==='raider'?'#e0483a':'#ffb02e',0,true);
+        label(e.x,e.y-16,(e.name||e.kind.toUpperCase())+' DOWN',e.kind==='raider'?'#ff5a4a':'#ffc04a',0,true);
       if(e.kind!=='raider') decal(e.x,e.y,'#241a10',rnd(14,22));
-      spark(e.x,e.y,e.kind==='raider'?'#c8452f':'#ffb02e',22,300);
-      if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:e.kind==='raider'?'#c8452f':'#ffb02e',r:26});
+      spark(e.x,e.y,e.kind==='raider'?'#c8452f':'#ffc04a',22,300);
+      if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:e.kind==='raider'?'#c8452f':'#ffc04a',r:26});
       G.ents.splice(i,1); continue;
     }
     // A man on the floor does nothing but bleed. No AI below this line runs for
@@ -11527,7 +11527,7 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
           if(e.windup<=0){
             e.windup=null;
             if(sees&&dw<e.rng*1.2&&!p.downed){
-              fireWeapon(e,{dmg:e.dmg,spread:.05,rng:e.rng,noise:520,tint:'#ffd76a'},p.x+rnd(-8,8),p.y+rnd(-8,8),false);
+              fireWeapon(e,{dmg:e.dmg,spread:.05,rng:e.rng,noise:520,tint:'#ffc04a'},p.x+rnd(-8,8),p.y+rnd(-8,8),false);
             }
             e.cd=1.7;   // 0.7 charge + 1.7 = the old 2.4 cycle
           }
@@ -11645,7 +11645,7 @@ if(e.kind==='raider'&&e.state!=='extract'&&e.hp<e.maxhp*0.3){
           G.smokes.push({x:e.x,y:e.y,r:(CFG.smokeR===undefined?165:CFG.smokeR),t:0,life:12});
           if(!G.sim) sfx('clank',e.x,e.y);
         }
-        if(!G.sim&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)) label(e.x,e.y-18,e.name+' IS RUNNING','#ffd25c',0,true);
+        if(!G.sim&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)) label(e.x,e.y-18,e.name+' IS RUNNING','#ffc04a',0,true);
       }
     }
     // v3.72: a merc whose client is DOWN skips the entire seen-you section.
@@ -11879,7 +11879,7 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
           p.downed=false; p.hp=Math.round(p.maxhp*0.4); p.iv=2;
           if(G.tel){ G.tel.revives=(G.tel.revives||0)+1; G.tel.mercRevives=(G.tel.mercRevives||0)+1; }
           blip('pick'); say(e.name+' pulls you up. That is what you paid for.');
-          label(p.x,p.y-22,'PICKED UP','#35d6c8',0,true);
+          label(p.x,p.y-22,'PICKED UP','#4de3d0',0,true);
         }
       }
       e.face+=clamp(angDiff(want,e.face),-5*dt,5*dt);
@@ -11942,7 +11942,7 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
           TG.downed=0; TG.state='loot'; TG.hp=Math.round(TG.maxhp*0.4);
           TG.alert=0; TG.goal=null;
           e.reviving=null; e.revProg=0;
-          if(!G.sim){ label(TG.x,TG.y-18,'PICKED UP','#ffb02e',0,true); }
+          if(!G.sim){ label(TG.x,TG.y-18,'PICKED UP','#ffc04a',0,true); }
           if(G.tel) G.tel.crewRevives=(G.tel.crewRevives||0)+1;
         }
       }
@@ -12183,7 +12183,7 @@ e.lootT=(e.lootT||0)+dt;
           say(e.name+' extracted with the goods.'); T.raidersExtracted++;
           if(G.roster){ for(var _rq=0;_rq<G.roster.length;_rq++){
             if(G.roster[_rq].ref===e){ G.roster[_rq].out=true; G.roster[_rq].outAt=elapsed(); break; } } }
-          if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.8,c:'#35d6c8',r:34});
+          if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.8,c:'#4de3d0',r:34});
           G.ents.splice(i,1); continue;
         }
       }
@@ -12351,7 +12351,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
                 var _bsa=Math.atan2(b.vy,b.vx);
                 if(Math.abs(Math.atan2(Math.sin(_bsa-en.face),Math.cos(_bsa-en.face)))<0.9){
                   edmg*=1.5;
-                  if(!G.sim) label(en.x,en.y-Math.round(en.r*1.3),'BACK  x1.5','#ffd76a',0,true);
+                  if(!G.sim) label(en.x,en.y-Math.round(en.r*1.3),'BACK  x1.5','#ffc04a',0,true);
                 }
               }
               en.hp-=edmg; en.hitT=.16;
@@ -12381,7 +12381,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               // in the dark at range, so a landed shot could read as a miss.
 G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
               if(en.hp<=0&&dist(en,p)>620) blip('clank',760);
-              spark(b.x,b.y,en.kind==='raider'?'#e0483a':'#ffc25c',9,220);
+              spark(b.x,b.y,en.kind==='raider'?'#ff5a4a':'#ffc25c',9,220);
               sfx("hit",en.x,en.y); hit=true; break;
             }
           }
@@ -12430,7 +12430,7 @@ G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
             }
           }
         } else {
-          if(dist(b,p)<p.r+3){ damagePlayer(b.dmg,b.owner.kind,b.owner.name,b.x-b.vx*0.05,b.y-b.vy*0.05); spark(b.x,b.y,'#ff4d3d',10,200); hit=true; }
+          if(dist(b,p)<p.r+3){ damagePlayer(b.dmg,b.owner.kind,b.owner.name,b.x-b.vx*0.05,b.y-b.vy*0.05); spark(b.x,b.y,'#ff5a4a',10,200); hit=true; }
           if(!hit) for(var e3=0;e3<G.ents.length;e3++){
             var en3=G.ents[e3];
             if(en3===b.owner) continue;
@@ -13615,7 +13615,7 @@ function drawWardenS(e){
   var hunting=e.seenYou;
   wc.fillStyle=INK; rrF(x-11,y-41,22,9,4);
   wc.globalCompositeOperation='lighter';
-  wc.fillStyle=hunting?'#ff3b30':'#ffb02e';
+  wc.fillStyle=hunting?'#ff3b30':'#ffc04a';
   wc.globalAlpha=hunting?(.75+.25*Math.sin(G.t*9)):.5;
   wc.fillRect(x-8+Math.cos(e.face)*3,y-39,16,4);
   wc.globalAlpha=.25;
@@ -13629,7 +13629,7 @@ function drawWardenS(e){
   }
   if(e.muzzle>0){
     wc.globalCompositeOperation='lighter';
-    wc.fillStyle='#ffd76a'; wc.globalAlpha=clamp(e.muzzle*6,0,1);
+    wc.fillStyle='#ffc04a'; wc.globalAlpha=clamp(e.muzzle*6,0,1);
     wc.beginPath(); wc.arc(x+fl2*26,y-34,7,0,6.2832); wc.fill();
     wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
   }
@@ -13669,7 +13669,7 @@ function drawSentryS(e){
   // sensor head
   wc.fillStyle='#333b45'; wc.fillRect(e.x+fl*7*S-8*S,e.y-46*S,16*S,12*S);
   wc.fillStyle='#4a535e'; wc.fillRect(e.x+fl*7*S-8*S,e.y-46*S,16*S,2.5*S);
-  var ec=hunting?'#ff3a2a':(e.state==='investigate'?'#ffd25c':'#ffb02e');
+  var ec=hunting?'#ff3a2a':(e.state==='investigate'?'#ffc04a':'#ffc04a');
   wc.globalCompositeOperation='lighter';
   wc.fillStyle=ec;
   // eye plus a halo that swells while hunting
@@ -13722,7 +13722,7 @@ function drawCrawlerS(e){
   // Scary is specificity: a thing with six legs and three eyes that all look AT
   // you reads as predatory in a way a colour swap never will.
   wc.globalCompositeOperation='lighter';
-  wc.fillStyle=hunting?'#ff3b30':'#ffb02e';
+  wc.fillStyle=hunting?'#ff3b30':'#ffc04a';
   var eyA=hunting?(.85+.15*Math.sin(G.t*16)):.5;
   wc.globalAlpha=eyA;
   var ehx=e.x+fl*13*S,ehy=e.y-18*S*lunge;
@@ -13761,7 +13761,7 @@ function drawPeddlerS(e){
   wc.fillStyle=gr; wc.beginPath(); wc.arc(e.x+28,e.y-30,66,0,6.2832); wc.fill();
   wc.restore();
   wc.fillStyle='#3a2c1e'; wc.fillRect(e.x+27,e.y-24,2,24);
-  wc.fillStyle='#ffd76a'; wc.fillRect(e.x+25,e.y-34,6,8);
+  wc.fillStyle='#ffc04a'; wc.fillRect(e.x+25,e.y-34,6,8);
   wc.fillStyle='#fff3c8'; wc.fillRect(e.x+27,e.y-32,2,4);
 }
 function drawListenerS(e){
@@ -13819,7 +13819,7 @@ function drawBulwarkS(e){
   wc.fillStyle=e.hitT>0?'#8a4a42':'#333c46'; rrF(e.x-13,e.y-14,26,20,5);
   wc.fillStyle='#3f4a55'; rrF(e.x-13,e.y-14,26,7,4);
   var _bl=Math.sin(G.t*3+e.x*0.01)>0;
-  wc.fillStyle=_bl?'#ffb02e':'#4a3a1c';
+  wc.fillStyle=_bl?'#ffc04a':'#4a3a1c';
   wc.beginPath(); wc.arc(e.x,e.y-10,2.4,0,6.2832); wc.fill();
   wc.save(); wc.translate(e.x,e.y-4); wc.rotate(e.face);
   // CAPTURED AND LOOKED AT, v3.99. The first cut drew a thin plank floating a
@@ -13846,7 +13846,7 @@ function drawHowlerS(e){
   wc.save(); wc.translate(e.x,e.y-8); wc.rotate(-0.6);
   wc.fillStyle=INK; rrF(-4,-22,9,24,3);
   wc.fillStyle='#4a545e'; rrF(-3,-21,7,22,2.5);
-  wc.fillStyle='#ffb02e'; rrF(-3,-21,7,3,1.5);
+  wc.fillStyle='#ffc04a'; rrF(-3,-21,7,3,1.5);
   wc.restore();
   wc.fillStyle='#20262c';
   rrF(e.x-18,e.y+4,8,5,2); rrF(e.x+10,e.y+4,8,5,2);
@@ -13897,7 +13897,7 @@ function drawSnitchS(e){
   var on=al?(Math.sin(G.t*16)>0):(Math.sin(G.t*4)>-.4);
   if(on){
     wc.globalCompositeOperation='lighter';
-    wc.fillStyle=al?'#ff3a2a':'#ffb02e';
+    wc.fillStyle=al?'#ff3a2a':'#ffc04a';
     wc.globalAlpha=.32;
     wc.beginPath(); wc.arc(e.x,cy-19*S,7*S,0,6.2832); wc.fill();
     wc.globalAlpha=1;
@@ -13920,7 +13920,7 @@ function drawContS(ct){
   // An Meridian cache is the biggest, brightest object of its kind in the game on
   // purpose: it is the one thing every raid guarantees, so it has to be findable.
 else if(ct.type==='cache'){ w=26;lift=19;d2=11;cF='#3a2050';cT='#8f4fc0';cL='#e0a0ff'; }
-  else if(ct.type==='jackpot'){ w=24;lift=14;d2=10;cF='#4a3410';cT='#b8860b';cL='#ffd76a'; }
+  else if(ct.type==='jackpot'){ w=24;lift=14;d2=10;cF='#4a3410';cT='#b8860b';cL='#ffc04a'; }
   else { w=20;lift=3;d2=6;cF='#302719';cT='#57462f';cL='#756042'; }
   // SPEC 7.4: an opened container stays VISIBLY opened for the rest of the run,
   // because an emptied container is evidence a raider has been here. It reads
@@ -14075,7 +14075,7 @@ if(ct.type==='botwreck'){
     // much or what else, so the search is still a commitment.
     if(!G.sim&&ammoTell(ct)){
       var apu=.45+.4*Math.sin(G.t*5.5+ct.x*.03);
-      wc.globalAlpha=apu; wc.fillStyle='#ffd25c';
+      wc.globalAlpha=apu; wc.fillStyle='#ffc04a';
       var ax=ct.x, ay=ct.y-lift-d2-13;
       wc.fillRect(ax-3,ay-1,6,4.6);          // a stubby magazine
       wc.fillRect(ax-1.6,ay-3.4,3.2,2.4);
@@ -14096,24 +14096,24 @@ if(ct.type==='botwreck'){
       var spl=0.5+0.5*Math.sin(G.t*2.2);
       wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.34*spl;
       var sgr2=wc.createRadialGradient(ct.x,ct.y-lift,2,ct.x,ct.y-lift,62);
-      sgr2.addColorStop(0,'#ffd76a'); sgr2.addColorStop(1,'rgba(0,0,0,0)');
+      sgr2.addColorStop(0,'#ffc04a'); sgr2.addColorStop(1,'rgba(0,0,0,0)');
       wc.fillStyle=sgr2; wc.beginPath(); wc.arc(ct.x,ct.y-lift,62,0,6.2832); wc.fill();
       wc.restore();
       wc.textAlign='center'; wc.font=FS(TYPE.label);
       wc.fillStyle=INK; wc.fillText('MERIDIAN STRONGBOX',ct.x+1,ct.y-lift-d2-25);
-      wc.fillStyle='#ffd76a'; wc.fillText('MERIDIAN STRONGBOX',ct.x,ct.y-lift-d2-26);
+      wc.fillStyle='#ffc04a'; wc.fillText('MERIDIAN STRONGBOX',ct.x,ct.y-lift-d2-26);
       wc.textAlign='left';
     }
     if(ct.mine&&!ct.opened){
       var bpl=0.5+0.5*Math.sin(G.t*3);
       wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.34*bpl;
       var bgr=wc.createRadialGradient(ct.x,ct.y-lift,2,ct.x,ct.y-lift,54);
-      bgr.addColorStop(0,'#35d6c8'); bgr.addColorStop(1,'rgba(0,0,0,0)');
+      bgr.addColorStop(0,'#4de3d0'); bgr.addColorStop(1,'rgba(0,0,0,0)');
       wc.fillStyle=bgr; wc.beginPath(); wc.arc(ct.x,ct.y-lift,54,0,6.2832); wc.fill();
       wc.restore();
       wc.textAlign='center'; wc.font=FS(TYPE.label);
       wc.fillStyle=INK; wc.fillText('YOUR BODY',ct.x+1,ct.y-lift-d2-25);
-      wc.fillStyle='#35d6c8'; wc.fillText('YOUR BODY',ct.x,ct.y-lift-d2-26);
+      wc.fillStyle='#4de3d0'; wc.fillText('YOUR BODY',ct.x,ct.y-lift-d2-26);
       wc.textAlign='left';
     }
   }
@@ -14221,7 +14221,7 @@ if(G.map.story){
     shadowE(_st2.x,_st2.y+2,10,4,.35);
     wc.fillStyle='#2b2f36'; wc.fillRect(_st2.x-7,_st2.y-26,14,28);
     wc.fillStyle='#9aa8b2'; wc.fillRect(_st2.x-5,_st2.y-24,10,3);
-    wc.fillStyle='#ffd76a'; wc.fillRect(_st2.x-3,_st2.y-18,6,2);
+    wc.fillStyle='#ffc04a'; wc.fillRect(_st2.x-3,_st2.y-18,6,2);
     if(!G.sim&&!G.storyRead&&G.player&&dist(G.player,_st2)<60){
       G.storyRead=1; G.tel.storyRead=1;
       say(_st2.name+'. '+_st2.text);
@@ -14260,7 +14260,7 @@ if(G.map.story){
   // extract zones
   for(i=0;i<G.zones.length;i++){
     var z=G.zones[i],act=!!z.open;
-    wc.strokeStyle=act?'#35d6c8':'rgba(120,135,148,.35)';
+    wc.strokeStyle=act?'#4de3d0':'rgba(120,135,148,.35)';
     wc.lineWidth=act?3:1.5;
     wc.beginPath(); wc.arc(z.x,z.y,z.r,0,6.2832); wc.stroke();
     if(act){
@@ -14811,7 +14811,7 @@ if(!sc.seen) continue;
         wc.fillRect(wl2.x,dTop,wl2.w,1.2);
         // lock plate, on the door and again as a tag floating above it so the
         // state reads even when the slab itself is a few pixels tall on screen
-        var lkc=_dk?'#7fc4a0':'#ffb02e';
+        var lkc=_dk?'#7fc4a0':'#ffc04a';
         wc.fillStyle='#15100c'; wc.fillRect(wl2.x+wl2.w*0.5-4,dTop+dH*0.42,8,10);
         wc.fillStyle=lkc;       wc.fillRect(wl2.x+wl2.w*0.5-3,dTop+dH*0.42+1,6,8);
         wc.fillStyle='#15100c'; wc.fillRect(wl2.x+wl2.w*0.5-1,dTop+dH*0.42+3,2,4);
@@ -15155,7 +15155,7 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     // readable before you commit. Grudge red, passive green, everyone else dim.
     if(ne.kind==='stray'){ wc.fillStyle=ne.helped?'#5a9a6a':'#7fc4a0'; } else
     if(ne.kind==='peddler'){ wc.fillStyle=pedOpen()?'#ffc04a':'#8a5a4a'; } else
-    wc.fillStyle=ne.state==='extract'?'#35d6c8'
+    wc.fillStyle=ne.state==='extract'?'#4de3d0'
       :(ne.kind==='raider'&&ne.grudge?'#ff3b30'
       :(ne.kind==='raider'&&!ne.hostile?'#7fc4a0'
       :(ne.state==='chase'||ne.state==='alarm'
@@ -15166,7 +15166,7 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     if(ne.hp<ne.maxhp){
       var fw=clamp(ne.hp/ne.maxhp,0,1);
       wc.fillStyle='rgba(0,0,0,.55)'; wc.fillRect(ne.x-tw/2-4,ne.y-lift+5,tw+8,3);
-      wc.fillStyle=hostile?'#e0483a':'#ffb02e'; wc.fillRect(ne.x-tw/2-4,ne.y-lift+5,(tw+8)*fw,3);
+      wc.fillStyle=hostile?'#ff5a4a':'#ffc04a'; wc.fillRect(ne.x-tw/2-4,ne.y-lift+5,(tw+8)*fw,3);
     }
   }
   // THE SEAL, in the world. A slab with a progress band cut into it.
@@ -15182,15 +15182,15 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     wc.fillStyle='rgba(12,10,16,.6)'; wc.fillRect(swx-18,swy-40,36,3);
     wc.fillRect(swx-18,swy-24,36,3);
     // the cut so far, a bright band creeping up the slab
-    wc.fillStyle=SW.done?'#ffd76a':'#35d6c8';
+    wc.fillStyle=SW.done?'#ffc04a':'#4de3d0';
     wc.fillRect(swx-20,swy-6-44*pctW,40,Math.max(2,44*pctW));
     wc.globalAlpha=0.5;
-    wc.fillStyle=SW.done?'#ffd76a':'#8fd0ff';
+    wc.fillStyle=SW.done?'#ffc04a':'#8fd0ff';
     wc.fillRect(swx-20,swy-8-44*pctW,40,2);
     wc.globalAlpha=1;
     wc.textAlign='center'; wc.font=FS(TYPE.label);
     wc.fillStyle=INK; wc.fillText(SW.done?'SEAL BROKEN':('THE SEAL  '+Math.round(pctW*100)+'%'),swx+1,swy-59);
-    wc.fillStyle=SW.done?'#ffd76a':'#8fd0ff';
+    wc.fillStyle=SW.done?'#ffc04a':'#8fd0ff';
     wc.fillText(SW.done?'SEAL BROKEN':('THE SEAL  '+Math.round(pctW*100)+'%'),swx,swy-60);
     wc.textAlign='left';
   }
@@ -15478,7 +15478,7 @@ var b=G.bullets[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
     wc.beginPath(); wc.arc(ux,uy-18,EG.kind==='sentry'?30:22,0,6.2832); wc.fill();
   }
   if(inb){
-    wc.globalAlpha=.10+.16*urg; wc.fillStyle='#35d6c8';
+    wc.globalAlpha=.10+.16*urg; wc.fillStyle='#4de3d0';
     wc.beginPath(); wc.arc(az.x,az.y,60+70*urg,0,6.2832); wc.fill();
   }
   wc.restore();
@@ -15552,7 +15552,7 @@ wc.drawImage(fogC,0,0);
       _lg.addColorStop(1,'rgba(255,192,74,0)');
       wc.fillStyle=_lg;
       wc.beginPath(); wc.arc(_LK.doorX,_LK.doorY-26,46,0,6.2832); wc.fill();
-      wc.fillStyle='#ffd76a';
+      wc.fillStyle='#ffc04a';
       wc.fillRect(_LK.doorX-2,_LK.doorY-32,4,7);
     }
     wc.restore();
@@ -15806,7 +15806,7 @@ var gap=p.ads?3.5:(8+(p.recoil>0?p.recoil*7:0)+(G.sprinting?5:0));
     if(G.hitMark){
       var hm=G.hitMark,hk=clamp(1-hm.t/hm.life,0,1);
       var hIn=(hm.kill?7:5)+(1-hk)*(hm.kill?7:4),hOut=hIn+(hm.kill?7:5);
-      ctx.strokeStyle=hm.kill?'rgba(255,176,46,'+(hk*.95)+')':'rgba(240,248,252,'+(hk*.9)+')';
+      ctx.strokeStyle=hm.kill?'rgba(255,192,74,'+(hk*.95)+')':'rgba(240,248,252,'+(hk*.9)+')';
       ctx.lineWidth=hm.kill?2.4:1.8;
       ctx.beginPath();
       ctx.moveTo(rx0-hOut,ry0-hOut); ctx.lineTo(rx0-hIn,ry0-hIn);
@@ -15819,7 +15819,7 @@ var gap=p.ads?3.5:(8+(p.recoil>0?p.recoil*7:0)+(G.sprinting?5:0));
   // timer + compass
   ctx.font=FS(TYPE.title); ctx.textAlign='center';
   var mm=Math.floor(G.timeLeft/60),ss=Math.floor(G.timeLeft%60);
-  ctx.fillStyle=G.timeLeft<45?'#ff4d3d':'#cdd6dd';
+  ctx.fillStyle=G.timeLeft<45?'#ff5a4a':'#cdd6dd';
   ctx.fillText(mm+':'+(ss<10?'0':'')+ss,W/2,30);
   // HIS NOTE, 2026-08-26: "can you make it point to the NEAREST extraction instead,
   // and make it switch any time the player finds a nearer extraction -- also ...
@@ -15833,7 +15833,7 @@ var gap=p.ads?3.5:(8+(p.recoil>0?p.recoil*7:0)+(G.sprinting?5:0));
   // beacon is actually inbound the compass locks to THAT ring regardless, because
   // at that point there is only one way out that matters and pointing anywhere
   // else would get him killed.
-  var _tgt=null,_lbl='',_col='#35d6c8';
+  var _tgt=null,_lbl='',_col='#4de3d0';
   if(G.beaconT!==null&&G.beaconT!==undefined&&G.active){
     _tgt=G.active; _lbl='BEACON';
   } else if(G.waypoint){
@@ -15889,12 +15889,12 @@ var gap=p.ads?3.5:(8+(p.recoil>0?p.recoil*7:0)+(G.sprinting?5:0));
     ctx.textAlign='right'; ctx.font=FS(TYPE.micro);
     var _ax=W-16,_ay=LH(30);
     if(_hunt>0){
-      ctx.fillStyle='rgba(255,80,64,.95)';
+      ctx.fillStyle='rgba(255,90,74,.95)';
       ctx.fillText(_hunt+(_hunt===1?' MACHINE HUNTING YOU':' MACHINES HUNTING YOU'),_ax,_ay);
       _ay+=LH(12);
     }
     if(_att>0){
-      ctx.fillStyle='rgba(255,176,46,'+(_att>8?0.95:0.72)+')';
+      ctx.fillStyle='rgba(255,192,74,'+(_att>8?0.95:0.72)+')';
       ctx.fillText(_att+' SEARCHING THE AREA',_ax,_ay);
     }
     ctx.textAlign='left';
@@ -15929,7 +15929,7 @@ var gap=p.ads?3.5:(8+(p.recoil>0?p.recoil*7:0)+(G.sprinting?5:0));
       c:MW.id==='clear'?'#9aa8d0':'#4de3d0'});
     for(var _tq=0;_tq<TERMS.length;_tq++){
       if(!hasTerm(TERMS[_tq].id)) continue;
-      rows.push({k:TERMS[_tq].name,v:'+'+Math.round(TERMS[_tq].pay*100)+'% pay',c:'#ffb02e'});
+      rows.push({k:TERMS[_tq].name,v:'+'+Math.round(TERMS[_tq].pay*100)+'% pay',c:'#ffc04a'});
     }
 if(seasonNo()>1) rows.push({k:'SEASON '+seasonNo(),v:'harder, worth more',c:'#c9a0ff'});
     // v4.03: THE CONDUCT CONTRACTS BELONG HERE. v4.00 shipped contracts that
@@ -15975,7 +15975,7 @@ rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'})
       for(var _cq2=0;_cq2<P.contracts.length;_cq2++){
         var CD=P.contracts[_cq2];
         if(!CD||CD.type==='conduct'||CD.prog>=CD.n) continue;
-        rows.push({k:'CONTRACT',v:(CD.desc||'contract')+'  '+CD.prog+'/'+CD.n,c:'#ffb02e'});
+        rows.push({k:'CONTRACT',v:(CD.desc||'contract')+'  '+CD.prog+'/'+CD.n,c:'#ffc04a'});
       }
     }
     // THE FIRST CUT PUT THE EFFECT RIGHT ALIGNED ON THE NAME'S OWN LINE and the
@@ -16055,7 +16055,7 @@ rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'})
     var zwid=ctx.measureText(zlab).width;
     ctx.fillStyle='rgba(6,9,13,.78)';
     ctx.fillRect(zs.x-zwid/2-6,zs.y-LH(11),zwid+12,LH(15));
-    ctx.fillStyle=za?'#35d6c8':'rgba(168,180,193,.95)';
+    ctx.fillStyle=za?'#4de3d0':'rgba(168,180,193,.95)';
     ctx.fillText(zlab,zs.x,zs.y);
     if(!za){
       ctx.font=FS(TYPE.micro);
@@ -16082,7 +16082,7 @@ rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'})
       ctx.fillStyle=haveKey?'#7fc4a0':'#ff8a76';
       ctx.fillText(haveKey?('[E] UNLOCK '+G.nearDoor.name):(G.nearDoor.name+' - LOCKED'),dsc.x,dsc.y);
       if(!haveKey&&kName){
-        ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(255,176,46,.92)';
+        ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(255,192,74,.92)';
         ctx.fillText('needs the '+kName,dsc.x,dsc.y+LH(12));
       }
       ctx.textAlign='left';
@@ -16094,7 +16094,7 @@ rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'})
     var ds3=w2s(G.nearDown.x,26,G.nearDown.y);
     if(ds3){
       ctx.font=FS(TYPE.label); ctx.textAlign='center';
-      ctx.fillStyle='#ffb02e';
+      ctx.fillStyle='#ffc04a';
       ctx.fillText('[E] REVIVE '+(G.nearDown.name||'RAIDER')+
         '  '+Math.max(0,G.nearDown.downT||0).toFixed(0)+'s',ds3.x,ds3.y);
       ctx.textAlign='left';
@@ -16105,7 +16105,7 @@ rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'})
     var s=w2s(nc2.x,26,nc2.y);
     if(s){
       ctx.font=FS(TYPE.label); ctx.textAlign='center';
-      ctx.fillStyle='#ffd25c';
+      ctx.fillStyle='#ffc04a';
       // A raider's corpse is the one container with a NAME, and saying it makes
       // a feud aftermath readable: two named bodies from different crews in one
       // doorway tell the story by themselves. The crew block matches the one
@@ -16151,22 +16151,22 @@ rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'})
     if(ps){
       ctx.font=FS(TYPE.label); ctx.textAlign='center';
       if(!padZ.open){
-        ctx.fillStyle='#e0483a';
+        ctx.fillStyle='#ff5a4a';
         ctx.fillText('EXTRACTION CLOSED',ps.x,ps.y);
       } else if(padZ.hold!==undefined&&padZ.hold!==null&&padZ.hold>0){
         ctx.fillStyle='#7fc4a0';
         ctx.fillText('[E] BOARD - '+Math.ceil(padZ.hold)+'s',ps.x,ps.y);
         if(padZ.pullT>0) bar(ps.x-30,ps.y+LH(6),60,6,clamp(padZ.pullT/1.4,0,1),'#7fc4a0');
       } else if(padZ.beaconT!==null){
-        ctx.fillStyle='#35d6c8';
+        ctx.fillStyle='#4de3d0';
         ctx.fillText('INBOUND '+Math.ceil(padZ.beaconT)+'s',ps.x,ps.y);
       } else {
-ctx.fillStyle='#35d6c8';
+ctx.fillStyle='#4de3d0';
         ctx.fillText('[E] CALL EXTRACTION',ps.x,ps.y);
-        ctx.fillStyle=(P.credits>=10000)?'#9fe0c0':'#5a6a70';
+        ctx.fillStyle=(P.credits>=10000)?'#7fc4a0':'#5a6a70';
         ctx.fillText('[N] SILENT DEPARTURE - 10,000c',ps.x,ps.y+LH(14));
-        if(padZ.silT>0) bar(ps.x-30,ps.y+LH(20),60,6,clamp(padZ.silT/6,0,1),'#9fe0c0');
-        if(padZ.callT>0) bar(ps.x-30,ps.y+LH(6),60,6,clamp(padZ.callT/1.6,0,1),'#35d6c8');
+        if(padZ.silT>0) bar(ps.x-30,ps.y+LH(20),60,6,clamp(padZ.silT/6,0,1),'#7fc4a0');
+        if(padZ.callT>0) bar(ps.x-30,ps.y+LH(6),60,6,clamp(padZ.callT/1.6,0,1),'#4de3d0');
       }
       ctx.textAlign='left';
     }
@@ -16193,7 +16193,7 @@ ctx.fillStyle='#35d6c8';
     if(cs2){
       var cf=clamp((p.cookT||0)/FRAG_FUSE,0,1);
       var isFrag=(p.cookKind==='frag');
-      var ccol=!isFrag?'#7cc4ff':(cf>0.66?'#ff4d3d':(cf>0.33?'#ffc04a':'#7fc4a0'));
+      var ccol=!isFrag?'#7cc4ff':(cf>0.66?'#ff5a4a':(cf>0.33?'#ffc04a':'#7fc4a0'));
       ctx.fillStyle='rgba(6,9,13,.72)';
       ctx.fillRect(cs2.x-58,cs2.y-LH(34),116,LH(15)+(p.cookKind==='frag'?0:LH(11)));
       ctx.font=FS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle=ccol;
@@ -16266,7 +16266,7 @@ if((p.healQ||0)>0&&!p.downed){
       // instead of glowing with what is still in the box.
       var _sc=G.searching;
       var _left=_sc.loot?_sc.loot.length:0;
-      var _bc='#ffd25c';
+      var _bc='#ffc04a';
       bar(s2.x-30,s2.y-8,60,6,G.searchT/_sc.time,_bc);
       if(_left>0){
         var _lbl=_left+(_left===1?' item left':' items left');
@@ -16285,7 +16285,7 @@ if((p.healQ||0)>0&&!p.downed){
   for(i=0;i<VIS.length;i++){
     var e=VIS[i];
     var mk=null;
-    if(e.state==='investigate') mk=['?','#ffd25c'];
+    if(e.state==='investigate') mk=['?','#ffc04a'];
     else if(e.state==='chase'||e.state==='alarm') mk=['!','#ff5040'];
     if(!mk) continue;
     var sm2=w2s(e.x,spriteTop(e)+22,e.y);
@@ -16333,7 +16333,7 @@ if((p.healQ||0)>0&&!p.downed){
              :((S.icon&&ITEMS[S.icon])?ITEMS[S.icon].r:null);
       if(_hr&&!empty){ var _hf=rfill(_hr); if(_hf){ ctx.fillStyle=_hf; ctx.fillRect(bx,hy,bw,bw); } }
       var dragOver=(G.drag&&mouse.x>=bx&&mouse.x<=bx+bw&&mouse.y>=hy&&mouse.y<=hy+bw);
-      ctx.strokeStyle=dragOver?'#7fe0a0':(on?'#ffc04a':((_hr&&RCOL[_hr]&&!empty)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
+      ctx.strokeStyle=dragOver?'#ffc04a':(on?'#ffc04a':((_hr&&RCOL[_hr]&&!empty)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
       ctx.lineWidth=(dragOver||on)?2:1;
       ctx.strokeRect(bx+.5,hy+.5,bw-1,bw-1);
       var cx2=bx+bw/2,cy2=hy+bw*0.45;
@@ -16363,7 +16363,7 @@ if((p.healQ||0)>0&&!p.downed){
       // A slot he arranged himself is marked, so an assigned bar can be told from
       // the default one at a glance.
       if(S.assigned){
-        ctx.fillStyle='#7fe0a0';
+        ctx.fillStyle='#7fc4a0';
         ctx.fillRect(bx+bw-LH(7),hy+LH(3),LH(4),LH(4));
       }
       if(S.count!==null&&S.count!==undefined){
@@ -16415,7 +16415,7 @@ var by=H-34;
   if(G.pBush||_cr){
     var cc=G.pConceal===undefined?1:G.pConceal;
     var clab=cc<=0.15?'HIDDEN':(cc<=0.30?'WELL HIDDEN':(cc<=0.45?'CONCEALED':(cc<1?'PARTLY HIDDEN':'CRASHING THROUGH')));
-    var ccol=cc<=0.30?'#7fc4a0':(cc<1?'#ffc04a':'#e0483a');
+    var ccol=cc<=0.30?'#7fc4a0':(cc<1?'#ffc04a':'#ff5a4a');
     // Crouched outranks the bush wording, because the rule is stronger and total.
     if(_cr&&_chid>0){
       if(_nearD>_chid){ clab='CROUCHED  UNSEEN'; ccol='#7fc4a0'; }
@@ -16513,7 +16513,7 @@ if(p.armor>0){
     ctx.font=FS(TYPE.label); ctx.fillStyle='#FFF6DC';
     ctx.fillText('ARMOR  '+Math.round(p.armor),24,by-33);
   }
-  var _stc=p.stamLock?'#e0483a':(p.stam<35?'#ffb02e':'#8fb5c8');
+  var _stc=p.stamLock?'#ff5a4a':(p.stam<35?'#ffc04a':'#8fb5c8');
   bar(16,by-25,280,12,p.stam/100,_stc);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#0a0e14';
 ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
@@ -16563,14 +16563,14 @@ ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
   }
   else if(!_heldGun){
     var _cn=(_HH.count===null||_HH.count===undefined)?null:_HH.count;
-    ctx.fillStyle=(_cn===0)?'#ff4d3d':'#cdd6dd';
+    ctx.fillStyle=(_cn===0)?'#ff5a4a':'#cdd6dd';
     ctx.fillText(_HH.kind==='empty'?'EMPTY':(_cn===null?'HELD':(_cn+' held')),W-16,by-LH(14));
   }
   else if(p.wep.mag===0){ ctx.fillStyle='#8a96a1'; ctx.fillText('MELEE',W-16,by-LH(14)); }
-  else if(p.jam>0){ ctx.fillStyle='#e0483a'; ctx.fillText('JAMMED',W-16,by-LH(14)); }
-  else if(p.reloading>0){ ctx.fillStyle='#ffb02e'; ctx.fillText('RELOADING',W-16,by-LH(14)); }
+  else if(p.jam>0){ ctx.fillStyle='#ff5a4a'; ctx.fillText('JAMMED',W-16,by-LH(14)); }
+  else if(p.reloading>0){ ctx.fillStyle='#ffc04a'; ctx.fillText('RELOADING',W-16,by-LH(14)); }
   else {
-    ctx.fillStyle=p.ammo===0?'#ff4d3d':'#cdd6dd';
+    ctx.fillStyle=p.ammo===0?'#ff5a4a':'#cdd6dd';
     ctx.fillText(p.ammo+' / '+p.reserve,W-16,by-LH(14));
   }
   // the sidearm waiting on X, so the second gun is not a secret
@@ -16586,7 +16586,7 @@ ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
   // rather than being something you infer after dying with a full bag.
   var _bw=bagWeight(), _ld=loadOf(_bw);
   var _spdPct=Math.round((1-_ld.spd)*100), _noisePct=Math.round((_ld.noise-1)*100);
-  ctx.fillStyle=(_spdPct>=18?'#c8674a':(_spdPct>=7?'#ffb02e':'#8a96a1'));
+  ctx.fillStyle=(_spdPct>=18?'#c8674a':(_spdPct>=7?'#ffc04a':'#8a96a1'));
   ctx.fillText(G.bag.length+' ITEMS  '+_bw+'wt'+
     (_spdPct>0?('   '+_spdPct+'% SLOWER  '+_noisePct+'% LOUDER'):''),W-16,by);
   // standing cue: the bag was findable only from a dim 14-item legend line
@@ -16597,7 +16597,7 @@ ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
   // LH(34) is 71 and the weapon name climbs straight through it. Scaled now, and
   // moved clear of the tallest line in the stack.
   if(!G.bagOpen){
-    ctx.font=FS(TYPE.label); ctx.fillStyle='#ffb02e';
+    ctx.font=FS(TYPE.label); ctx.fillStyle='#ffc04a';
     ctx.fillText('TAB  INVENTORY',W-16,by-LH(70));
   }
   var pl2=[],tsn=THROWKEYS[G.tsel];
@@ -16615,9 +16615,9 @@ ctx.restore();
     var inRing=dist(p,G.active)<G.active.r;
     ctx.font=FS(TYPE.head); ctx.textAlign='center';
     var holding=G.beaconT<=0&&G.shipHold!==null&&G.shipHold!==undefined;
-    ctx.fillStyle=holding?(inRing?'#35d6c8':'#ff5a4a'):(inRing?'#35d6c8':'#ffb02e');
+    ctx.fillStyle=holding?(inRing?'#4de3d0':'#ff5a4a'):(inRing?'#4de3d0':'#ffc04a');
     ctx.fillText(holding?('SHIP HOLDING  '+Math.max(0,Math.ceil(G.shipHold))+'s'):('BEACON INBOUND  '+Math.ceil(G.beaconT)+'s'),W/2,H-140);
-    bar(W/2-90,H-132,180,9,holding?Math.max(0,G.shipHold/(G.shipHoldMax||30)):(1-G.beaconT/CFG.extractWait),holding?'#ff5a4a':(inRing?'#35d6c8':'#ffb02e'));
+    bar(W/2-90,H-132,180,9,holding?Math.max(0,G.shipHold/(G.shipHoldMax||30)):(1-G.beaconT/CFG.extractWait),holding?'#ff5a4a':(inRing?'#4de3d0':'#ffc04a'));
     if(!inRing){
       ctx.font=FS(TYPE.label); ctx.fillStyle='#ffc04a';
       ctx.fillText('GET TO THE RING',W/2,H-108);
@@ -16640,11 +16640,11 @@ ctx.restore();
     ctx.textAlign='left';
   } else if(!G.over&&dist(p,G.active)<G.active.r){
     ctx.font=FS(TYPE.head); ctx.textAlign='center';
-    ctx.fillStyle='#35d6c8'; ctx.fillText('HOLD E TO CALL THE BEACON',W/2,H-70);
+    ctx.fillStyle='#4de3d0'; ctx.fillText('HOLD E TO CALL THE BEACON',W/2,H-70);
     // The 1.6 second hold is VISIBLE now. It had a tiny bar on the ring marker
     // and nothing where you are actually looking, so letting go at a second
     // read as the button not working.
-    if(G.active.callT>0) bar(W/2-70,H-62,140,7,clamp(G.active.callT/1.6,0,1),'#35d6c8');
+    if(G.active.callT>0) bar(W/2-70,H-62,140,7,clamp(G.active.callT/1.6,0,1),'#4de3d0');
     ctx.textAlign='left';
   }
   // HIS NOTE, v3.58: "THE SEAL NEEDS some sort of visual indicator to tell you
@@ -16667,14 +16667,14 @@ ctx.restore();
     var _SRh=sealHere();
     ctx.font=FS(TYPE.head); ctx.textAlign='center';
 var _slp=w2s(p.x,66,p.y);
-    ctx.fillStyle='#ffd76a'; ctx.fillText('HOLD E TO CUT THE SEAL',_slp.x,_slp.y);
-    bar(_slp.x-70,_slp.y+LH(6),140,7,clamp((_SRh.cut+G.seal.gained)/Math.max(1,sealNeed(_SRh.tier)),0,1),'#ffd76a');
+    ctx.fillStyle='#ffc04a'; ctx.fillText('HOLD E TO CUT THE SEAL',_slp.x,_slp.y);
+    bar(_slp.x-70,_slp.y+LH(6),140,7,clamp((_SRh.cut+G.seal.gained)/Math.max(1,sealNeed(_SRh.tier)),0,1),'#ffc04a');
     ctx.textAlign='left';
   }
   if(p.downed){
     ctx.fillStyle='rgba(60,8,5,.45)'; ctx.fillRect(0,0,W,H);
     ctx.font=FS(TYPE.huge); ctx.textAlign='center';
-    ctx.fillStyle='#ff4d3d'; ctx.fillText('DOWN',W/2,H/2-34);
+    ctx.fillStyle='#ff5a4a'; ctx.fillText('DOWN',W/2,H/2-34);
 bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     ctx.font=FS(TYPE.label); ctx.fillStyle='#ffb0a0';
     ctx.fillText(Math.max(0,Math.ceil(p.downT))+'s',W/2+124,H/2-9);
@@ -16690,9 +16690,9 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     // holding a dead-feeling key for a second with no response concludes it
     // does not work, and he is right to.
     if(G.beaconT===null&&G.active&&G.active.open&&dist(p,G.active)<G.active.r){
-      ctx.fillStyle='#35d6c8';
+      ctx.fillStyle='#4de3d0';
       ctx.fillText('HOLD E TO CALL THE DROPSHIP',W/2,H/2+LH(26));
-      if(G.active.callT>0) bar(W/2-70,H/2+LH(33),140,7,clamp(G.active.callT/1.6,0,1),'#35d6c8');
+      if(G.active.callT>0) bar(W/2-70,H/2+LH(33),140,7,clamp(G.active.callT/1.6,0,1),'#4de3d0');
     }
     ctx.textAlign='left';
   }
@@ -16715,11 +16715,11 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
   if(!G.over&&G.beaconT!==null&&G.active){
     var _shipDown=(G.beaconT<=0&&G.shipHold!==null&&G.shipHold!==undefined);
     var _inRing=dist(p,G.active)<G.active.r;
-    var _msg=null,_col='#35d6c8',_sub=null;
+    var _msg=null,_col='#4de3d0',_sub=null;
     if(p.downed){
       if(_inRing&&_shipDown&&CFG.hauledAboard!==0){ _msg='THEY HAVE YOU'; _sub='Hauling you aboard'; }
       else if(_inRing&&_shipDown){ _msg='HOLD E TO EXTRACT'; _sub='You can board from the floor'; }
-      else if(_inRing){ _msg='SHIP INBOUND'; _sub='Stay down, they will haul you aboard'; _col='#ffb02e'; }
+      else if(_inRing){ _msg='SHIP INBOUND'; _sub='Stay down, they will haul you aboard'; _col='#ffc04a'; }
       else { _msg='CRAWL TO THE RING'; _sub=_shipDown?('Ship leaves in '+Math.max(0,Math.ceil(G.shipHold))+'s'):'Ship is coming'; _col='#ff5a4a'; }
     } else if(_shipDown&&_inRing){
       _msg='HOLD E TO EXTRACT';
@@ -16769,7 +16769,7 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     ctx.globalAlpha=.92;
     ctx.fillStyle='rgba(10,14,19,.86)';
     ctx.fillRect(mouse.x-ds/2,mouse.y-ds/2,ds,ds);
-    ctx.strokeStyle='#7fe0a0'; ctx.lineWidth=1.5;
+    ctx.strokeStyle='#7fc4a0'; ctx.lineWidth=1.5;
     ctx.strokeRect(mouse.x-ds/2+.5,mouse.y-ds/2+.5,ds-1,ds-1);
     drawItemIcon(ctx,G.drag.key,mouse.x,mouse.y,ds*0.72);
     ctx.globalAlpha=1;
@@ -16950,10 +16950,10 @@ function drawNoiseMarkers(){
 // ORDER IS PRIORITY, most urgent first, because a raider can easily be reloading
 // AND fighting AND hurt, and the answer to "what is he doing" is the top one.
 var STATCOL={
-  DOWN:'#ff4d3d', FIGHTING:'#ff5a4a', SHOOTING:'#ff8a4a', RELOADING:'#ffb02e',
-  JAMMED:'#e0483a', HEALING:'#6fe0a0', REVIVING:'#7fc4a0', EXTRACTING:'#35d6c8',
+  DOWN:'#ff5a4a', FIGHTING:'#ff5a4a', SHOOTING:'#ff8a4a', RELOADING:'#ffc04a',
+  JAMMED:'#ff5a4a', HEALING:'#6fe0a0', REVIVING:'#7fc4a0', EXTRACTING:'#4de3d0',
   COOKING:'#ffc04a', SEARCHING:'#ffc04a', LOOTING:'#cdd6dd', TRADING:'#7cc4ff',
-  HUNTING:'#ffb02e', SPRINTING:'#cdd6dd', AIMING:'#ffbe5a', CROUCHED:'#9aa8b2',
+  HUNTING:'#ffc04a', SPRINTING:'#cdd6dd', AIMING:'#ffbe5a', CROUCHED:'#9aa8b2',
   ROLLING:'#cdd6dd', MOVING:'#a5b1bc', STANDING:'#8a96a1', IDLE:'#6b7783', GONE:'#6b7783'
 };
 function playerStatus(){
@@ -17077,7 +17077,7 @@ function drawRaiderBoard(){
   ctx.strokeStyle='rgba(58,69,82,.75)'; ctx.lineWidth=1;
   ctx.strokeRect(PADX-7.5,y0-LH(12.5),LW-1,boxH-1);
   ctx.font=FS(TYPE.micro);
-  ctx.fillStyle='#ffb02e';
+  ctx.fillStyle='#ffc04a';
   ctx.fillText('RAIDERS  '+live+' out here',PADX,y0-LH(2));
   HUDBOX.raiders={x:PADX-8,y:y0-LH(13),w:LW,h:boxH,
     tg:{x:PADX-8+LW-LH(20),y:y0-LH(13),w:LH(20),h:LH(16)}};
@@ -17124,7 +17124,7 @@ function drawCrierMarkers(){
     var pad=26;
     var onScreen=s&&s.x>pad&&s.x<W-pad&&s.y>pad&&s.y<H-pad;
     if(onScreen){
-      ctx.strokeStyle='rgba(255,80,64,'+pulse+')'; ctx.lineWidth=2;
+      ctx.strokeStyle='rgba(255,90,74,'+pulse+')'; ctx.lineWidth=2;
       ctx.beginPath(); ctx.arc(s.x,s.y,LH(17),0,6.2832); ctx.stroke();
       ctx.font=FS(TYPE.micro); ctx.textAlign='center';
       ctx.fillStyle='rgba(255,120,100,.95)';
@@ -17138,7 +17138,7 @@ function drawCrierMarkers(){
       if(!(tt>0&&tt<1e9)) tt=0;
       var mx=ps.x+ca*tt,my=ps.y+sa*tt;
       ctx.save(); ctx.translate(mx,my); ctx.rotate(ang);
-      ctx.fillStyle='rgba(255,80,64,'+pulse+')';
+      ctx.fillStyle='rgba(255,90,74,'+pulse+')';
       ctx.beginPath(); ctx.moveTo(15,0); ctx.lineTo(-10,10); ctx.lineTo(-10,-10);
       ctx.closePath(); ctx.fill();
       ctx.restore();
@@ -17222,7 +17222,7 @@ var LEGW=LH(222);
   ctx.strokeRect(x-7.5,top-5.5,LEGW-1,boxH+9);
   var cy=top+LH(6);
   for(i=0;i<LEG.length;i++){
-    ctx.font=FS(TYPE.micro); ctx.fillStyle='#ffb02e';
+    ctx.font=FS(TYPE.micro); ctx.fillStyle='#ffc04a';
     ctx.fillText(LEG[i][0],x,cy); cy+=LH(12);
     for(j=0;j<LEG[i][1].length;j++){
       var k=LEG[i][1][j];
@@ -17438,7 +17438,7 @@ function drawItemIcon(c,key,cx,cy,S){
       c.moveTo(-S*.14,-S*.18); c.lineTo(-S*.14,S*.16);
       c.stroke();
       c.fillStyle=dk; c.fillRect(S*.14,-S*.22,S*.2,S*.18);
-      c.fillStyle='#d8c25a';
+      c.fillStyle='#ffc04a';
       for(var bq=0;bq<4;bq++) c.fillRect(-S*.44,-S*.24+bq*S*.14,S*.06,S*.07);
       break;
     case 'optic':
@@ -17495,7 +17495,7 @@ function drawItemIcon(c,key,cx,cy,S){
       c.moveTo(-S*.10,-S*.02); c.lineTo(S*.20,-S*.02);
       c.moveTo(-S*.10,S*.12); c.lineTo(S*.20,S*.12);
       c.stroke();
-      if(key==='codex'){ c.fillStyle='#d8c25a'; c.fillRect(S*.16,-S*.08,S*.14,S*.18); }
+      if(key==='codex'){ c.fillStyle='#ffc04a'; c.fillRect(S*.16,-S*.08,S*.14,S*.18); }
       break;
     case 'blackbox':
       shadow(S*.76,S*.5);
@@ -17777,7 +17777,7 @@ function drawBag(){
   ctx.strokeStyle='#3a4552'; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,PW-1,hh-1);
 
   var cy=y+LH(19);
-  ctx.font=FS(TYPE.head); ctx.fillStyle='#ffb02e';
+  ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
   ctx.fillText('INVENTORY',x+11,cy);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783'; ctx.textAlign='right';
   ctx.fillText((PAD&&PAD.on)?'VIEW to close':'TAB or I to close',x+PW-11,cy); ctx.textAlign='left';
@@ -17793,7 +17793,7 @@ function drawBag(){
   ctx.font=FS(TYPE.head); ctx.fillStyle='#cdd6dd';
   ctx.fillText(p.wep.name,x+11+LH(38),cy);
   ctx.font=FS(TYPE.label); ctx.textAlign='right';
-  ctx.fillStyle=p.wep.mag===0?'#8a96a1':(p.ammo===0?'#ff4d3d':'#ffb02e');
+  ctx.fillStyle=p.wep.mag===0?'#8a96a1':(p.ammo===0?'#ff5a4a':'#ffc04a');
   ctx.fillText(p.wep.mag===0?'MELEE':(p.ammo+' / '+p.reserve),x+PW-11,cy);
   ctx.textAlign='left';
   cy+=LH(14);
@@ -17995,10 +17995,10 @@ function drawMapOverlay(){
   for(i=0;i<(G.map.locked||[]).length;i++){
     var LM3=G.map.locked[i];
     var lx3=ox+LM3.x*sc,ly3=oy+LM3.y*sc;
-    ctx.strokeStyle=LM3.open?'rgba(127,196,160,.8)':'#ffd76a';
+    ctx.strokeStyle=LM3.open?'rgba(127,196,160,.8)':'#ffc04a';
     ctx.lineWidth=2;
     ctx.strokeRect(lx3,ly3,LM3.w*sc,LM3.h*sc);
-    mapLabel(LM3.open?'OPEN':'LOCKED',lx3+LM3.w*sc/2,ly3-6,LM3.open?'#7fc4a0':'#ffd76a');
+    mapLabel(LM3.open?'OPEN':'LOCKED',lx3+LM3.w*sc/2,ly3-6,LM3.open?'#7fc4a0':'#ffc04a');
   }
   // SPEC 4.5: manholes on the sector map, so the fixed spawn set is learnable.
   for(i=0;i<(G.map.spawns||[]).length;i++){
@@ -18043,11 +18043,11 @@ function drawMapOverlay(){
   for(i=0;i<lkm.length;i++){
     var LKM=lkm[i];
     var lqx=ox+LKM.x*sc,lqy=oy+LKM.y*sc,lqw=LKM.w*sc,lqh=LKM.h*sc;
-    ctx.strokeStyle=LKM.open?'rgba(127,196,160,.8)':'#ffb02e'; ctx.lineWidth=2;
+    ctx.strokeStyle=LKM.open?'rgba(127,196,160,.8)':'#ffc04a'; ctx.lineWidth=2;
     ctx.strokeRect(lqx,lqy,lqw,lqh);
     ctx.lineWidth=1;
     var kcx=lqx+lqw/2,kcy=lqy+lqh/2-3;
-    ctx.fillStyle=LKM.open?'rgba(127,196,160,.9)':'#ffb02e';
+    ctx.fillStyle=LKM.open?'rgba(127,196,160,.9)':'#ffc04a';
     ctx.beginPath(); ctx.arc(kcx,kcy,3.2,0,6.2832); ctx.fill();
     ctx.beginPath(); ctx.moveTo(kcx-2.2,kcy+7.5); ctx.lineTo(kcx+2.2,kcy+7.5); ctx.lineTo(kcx,kcy+1); ctx.closePath(); ctx.fill();
     mapLabel((LKM.name||'LOCKED ROOM')+(LKM.open?'  Â·  OPEN':'  Â·  LOCKED'),lqx+lqw/2,lqy-6,LKM.open?'#7fc4a0':'#ffc04a');
@@ -18061,10 +18061,10 @@ function drawMapOverlay(){
       var IKC=G.intelKeys[i];
       if(IKC.opened) continue;
       var ikx=ox+IKC.x*sc,iky=oy+IKC.y*sc;
-      ctx.fillStyle='#ffd76a';
+      ctx.fillStyle='#ffc04a';
       ctx.beginPath(); ctx.arc(ikx,iky-3,2.6,0,6.2832); ctx.fill();
       ctx.fillRect(ikx-1,iky-2,2,6);
-      mapLabel('KEY',ikx,iky-9,'#ffd76a');
+      mapLabel('KEY',ikx,iky-9,'#ffc04a');
     }
     for(i=0;i<G.ents.length;i++){
       var IEE=G.ents[i];
@@ -18101,12 +18101,12 @@ function drawMapOverlay(){
     var slx=ox+G.seal.x*sc,sly=oy+G.seal.y*sc;
     var SRm=sealHere(),needM=sealNeed(SRm.tier);
     var pctM=clamp((SRm.cut+G.seal.gained)/needM,0,1);
-    ctx.strokeStyle=G.seal.done?'#ffd76a':'#8fd0ff'; ctx.lineWidth=2;
+    ctx.strokeStyle=G.seal.done?'#ffc04a':'#8fd0ff'; ctx.lineWidth=2;
     ctx.beginPath(); ctx.arc(slx,sly,12,0,6.2832); ctx.stroke();
-    ctx.strokeStyle=G.seal.done?'#ffd76a':'#35d6c8'; ctx.lineWidth=3;
+    ctx.strokeStyle=G.seal.done?'#ffc04a':'#4de3d0'; ctx.lineWidth=3;
     ctx.beginPath(); ctx.arc(slx,sly,12,-1.5708,-1.5708+6.2832*pctM); ctx.stroke();
     ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
-    ctx.fillStyle=G.seal.done?'#ffd76a':'#8fd0ff';
+    ctx.fillStyle=G.seal.done?'#ffc04a':'#8fd0ff';
     ctx.fillText(G.seal.done?'SEAL BROKEN':('SEAL '+Math.round(pctM*100)+'%'),slx,sly-16);
     ctx.textAlign='left';
   }
@@ -18115,13 +18115,13 @@ function drawMapOverlay(){
     var sbm=G.containers[i];
     if(!sbm.strong||sbm.opened) continue;
     var sbx=ox+sbm.x*sc,sby=oy+sbm.y*sc;
-    ctx.strokeStyle='#ffd76a'; ctx.lineWidth=2;
+    ctx.strokeStyle='#ffc04a'; ctx.lineWidth=2;
     ctx.beginPath(); ctx.arc(sbx,sby,10,0,6.2832); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(sbx-14,sby); ctx.lineTo(sbx-10,sby);
     ctx.moveTo(sbx+10,sby); ctx.lineTo(sbx+14,sby);
     ctx.moveTo(sbx,sby-14); ctx.lineTo(sbx,sby-10);
     ctx.moveTo(sbx,sby+10); ctx.lineTo(sbx,sby+14); ctx.stroke();
-    ctx.fillStyle='#ffd76a';
+    ctx.fillStyle='#ffc04a';
     ctx.beginPath(); ctx.arc(sbx,sby,3.6,0,6.2832); ctx.fill();
     ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
     ctx.fillText('STRONGBOX',sbx,sby-15); ctx.textAlign='left';
@@ -18135,7 +18135,7 @@ function drawMapOverlay(){
     var bp=0.55+0.45*Math.sin(G.t*3);
     ctx.strokeStyle='rgba(53,214,200,'+bp.toFixed(2)+')'; ctx.lineWidth=2;
     ctx.beginPath(); ctx.arc(bmx,bmy,11,0,6.2832); ctx.stroke();
-    ctx.fillStyle='#35d6c8';
+    ctx.fillStyle='#4de3d0';
     ctx.beginPath(); ctx.arc(bmx,bmy,4,0,6.2832); ctx.fill();
     ctx.textAlign='center'; ctx.font=FS(TYPE.label);
     ctx.fillText('YOUR BODY',bmx,bmy-15); ctx.textAlign='left';
@@ -18170,10 +18170,10 @@ function drawMapOverlay(){
     var pdm=G.ents[i]; if(pdm.kind!=='peddler') continue;
     var pmx=ox+pdm.x*sc,pmy=oy+pdm.y*sc;
     ctx.fillStyle='#120e0c'; ctx.beginPath(); ctx.arc(pmx,pmy,6.4,0,6.2832); ctx.fill();
-    ctx.fillStyle=pedOpen()?'#ffd76a':'#8a5a4a';
+    ctx.fillStyle=pedOpen()?'#ffc04a':'#8a5a4a';
     ctx.beginPath(); ctx.arc(pmx,pmy,4.4,0,6.2832); ctx.fill();
     ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
-    ctx.fillStyle=pedOpen()?'#ffd76a':'#8a5a4a';
+    ctx.fillStyle=pedOpen()?'#ffc04a':'#8a5a4a';
     ctx.fillText(pedOpen()?'TRADER':'TRADER (CLOSED)',pmx,pmy-11);
     ctx.textAlign='left';
   }
@@ -18366,10 +18366,10 @@ function buildHub(){
   // and E always fires the FIRST listed, so the muscle memory of "walk up,
   // press E" still does the most common thing at every station.
   var stations=[
-    {id:'lift',x:350,y:105,r:48,label:'DEPLOY LIFT',sub:'to the surface',c:'#35d6c8',
+    {id:'lift',x:350,y:105,r:48,label:'DEPLOY LIFT',sub:'to the surface',c:'#4de3d0',
 acts:{KeyE:['choose sector',function(){ renderSector(); document.getElementById('sectormodal').classList.add('on'); }],
            KeyR:['quick deploy',function(){ ac(); startRaid(); }]}},
-    {id:'trader',x:110,y:255,r:46,label:'HOLT, THE TRADER',sub:'',c:'#ffb02e',vendor:1,
+    {id:'trader',x:110,y:255,r:46,label:'HOLT, THE TRADER',sub:'',c:'#ffc04a',vendor:1,
      acts:{KeyE:['shop',function(){ say2(vendorLine('req')); renderShop(); document.getElementById('shopmodal').classList.add('on'); }],
            KeyR:['workshop',function(){ say2(vendorLine('work')); renderWork(); document.getElementById('workmodal').classList.add('on'); }],
            KeyF:['hire',function(){ renderMerc(); document.getElementById('mercmodal').classList.add('on'); }],
@@ -18534,7 +18534,7 @@ function drawHubWorld(dt){
     var _bl=Math.sin(HB.t*3+i*1.7)>0;
     wc.fillStyle=_bl?'#4de3d0':'#1c4a44';
     wc.fillRect(_rx+4,_ry+20,4,4);
-    wc.fillStyle=(!_bl)?'#ffb02e':'#4a3a1c';
+    wc.fillStyle=(!_bl)?'#ffc04a':'#4a3a1c';
     wc.fillRect(_rx+11,_ry+20,4,4);
     wc.fillStyle='rgba(77,227,208,.25)'; wc.fillRect(_rx+4,_ry+30,18,2);
   }
@@ -18614,7 +18614,7 @@ function drawHubHUD(ox,oy){
   // The hub is a place you point at things, so it always has an arrow, v2.91.
   if(_curNow!=='default'){ _curNow='default'; try{ cv.style.cursor='default'; }catch(e){} }
   ctx.clearRect(0,0,W,H);
-  ctx.font=FS(TYPE.head); ctx.fillStyle='#ffb02e';
+  ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
   ctx.fillText('THE UNDERCROFT',16,28);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
   ctx.fillText(P.credits.toLocaleString()+'c  ·  REP '+P.rep.toLocaleString()+
@@ -18653,7 +18653,7 @@ function drawHubHUD(ox,oy){
     ctx.fillStyle='rgba(6,9,13,.94)'; ctx.fillRect(wnX,wnY,wnW,wnH);
     ctx.strokeStyle='#3a4552'; ctx.lineWidth=1; ctx.strokeRect(wnX+.5,wnY+.5,wnW-1,wnH-1);
     ctx.textAlign='center';
-    ctx.font=FS(TYPE.head); ctx.fillStyle='#ffb02e';
+    ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
     ctx.fillText('UPDATED TO v'+VER,W/2,wnY+LH(22));
     ctx.font=FS(TYPE.label); ctx.fillStyle='#cdd6dd';
     for(var wq=0;wq<WHATSNEW.length;wq++)
@@ -19170,7 +19170,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'REDO slice one: the health cluster and the gear corner are draggable windows now, like the boards above them',
+  now:'REDO slice two: one colour per meaning everywhere - amber chooses, teal informs, red warns, green rewards',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -19331,7 +19331,7 @@ function renderSeason(){
     else if(!ready) nm.style.color='var(--ash)';
     var vl=document.createElement('div'); vl.className='vl';
     vl.textContent=got?'claimed':(ready?'ready':(T.sp-sp).toLocaleString()+' to go');
-    if(ready) vl.style.color='#ffd76a';
+    if(ready) vl.style.color='#ffc04a';
     var b=document.createElement('button');
     if(got){ b.textContent='Claimed'; b.disabled=true; }
     else if(!ready){ b.textContent=T.sp.toLocaleString(); b.disabled=true; }
@@ -19511,7 +19511,7 @@ var ICLASS={
   heal:  {t:'MEDICAL',   c:'#6fe0a0'},
   ammo:  {t:'AMMO',      c:'#c2a35e'},
   'throw':{t:'THROWABLE',c:'#e07040'},
-  key:   {t:'KEY',       c:'#ffb02e'}
+  key:   {t:'KEY',       c:'#ffc04a'}
 };
 function itemClass(k){
   var it=ITEMS[k]; if(!it) return {t:'SALVAGE',c:'#8a96a1'};
@@ -19849,7 +19849,7 @@ function renderHub(){
   (function(){
     var bl=bodyLine(); if(!bl) return;
     var bh=document.createElement('div'); bh.className='hint';
-    bh.style.color='#35d6c8';
+    bh.style.color='#4de3d0';
     bh.innerHTML='<b>'+bl+'</b>';
     cl.appendChild(bh);
   })();
@@ -20578,7 +20578,7 @@ var _myR=0;
     if(R.tier>0||R.cut>0) facts.push('seal tier '+(R.tier+1)+', '+Math.round(R.cut)+' of '+sealNeed(R.tier)+'s cut');
     if(P.body&&P.body.items&&P.body.map===i) facts.push('YOUR BODY IS HERE, '+P.body.items.length+' items');
     h+='<div class="row sectorpick" data-map="'+i+'" style="display:block;cursor:pointer;'+
-       (sel?'border-left:3px solid var(--amber);background:rgba(255,176,46,.10)':'border-left:3px solid transparent')+'">'+
+       (sel?'border-left:3px solid var(--amber);background:rgba(255,192,74,.10)':'border-left:3px solid transparent')+'">'+
        '<div><b style="color:'+(sel?'var(--amber)':'var(--bone)')+'">'+M.name+'</b>'+
        (sel?' <span style="color:var(--amber);font-size:10px">DEPLOYING HERE</span>':'')+
        '<div class="hint" style="margin:2px 0 0">'+SECTOR_CHAR[i]+'</div>'+
