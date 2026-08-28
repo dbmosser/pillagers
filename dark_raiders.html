@@ -567,7 +567,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.86';
+var VER='4.87';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13125,7 +13125,14 @@ wallClip:(G.tel&&G.tel.wallClip)||null,
     still:Math.round(T.tStill),litPct:Math.round(T.tLit/Math.max(1,elapsed())*100),
     closestExtract:T.closestExtract>=1e9?null:Math.round(T.closestExtract),
     deathKiller:T.deathKiller,deathDistExtract:T.deathDistExtract,
-    raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
+raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
+    // Counted every raid since each was added, and binned at the end until v4.87.
+    weakHits:T.weakHits||0,wallsDown:T.wallsDown||0,storyRead:T.storyRead||0,
+    rivalMet:T.rivalMet||0,parleys:T.parleys||0,ringCrowd:T.ringCrowd||null,
+    strayHelped:T.strayHelped||0,strayKilled:T.strayKilled||0,wildKilled:T.wildKilled||0,
+    pedSold:T.pedSold||0,pedKilled:T.pedKilled||0,rackPay:T.rackPay||0,
+    crewRevives:T.crewRevives||0,mercRevives:T.mercRevives||0,raiderRevives:T.raiderRevives||0,
+    lastHitName:T.lastHitName||null,
     inRunNotes:T.notes.slice(),tags:[],note:''
   };
   saveProfile();
@@ -19264,7 +19271,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'A bad number can no longer kill a raid outright, the maps name more of their ground, and the callouts stopped stuttering',
+  now:'The run report finally keeps the sixteen things it was counting all raid and throwing away at the end',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -20122,7 +20129,20 @@ if(r.wallClip) line+=' WALLCLIP:'+r.wallClip.f+'@'+r.wallClip.x+','+r.wallClip.y
 if(r.contractsBanked&&r.contractsBanked.length) line+=' contracts:'+r.contractsBanked.join(',');
 if(r.silentExit) line+=' silentExit:1';
     if(r.rivalMet) line+=' rivalMet:1';
-    if(r.ghostIn) line+=' ghost:1';
+if(r.ghostIn) line+=' ghost:1';
+    // v4.87: sixteen counters that were being tracked and thrown away.
+    if(r.weakHits) line+=' weakHits:'+r.weakHits;
+    if(r.wallsDown) line+=' wallsDown:'+r.wallsDown;
+    if(r.storyRead) line+=' storyRead:'+r.storyRead;
+    if(r.parleys) line+=' parleys:'+r.parleys;
+    if(r.strayHelped||r.strayKilled) line+=' strays:'+(r.strayHelped||0)+'helped/'+(r.strayKilled||0)+'killed';
+    if(r.wildKilled) line+=' wildKilled:'+r.wildKilled;
+    if(r.pedSold||r.pedKilled) line+=' pedlar:'+(r.pedSold||0)+'sold'+(r.pedKilled?'/killed':'');
+    if(r.rackPay) line+=' rackPay:'+r.rackPay+'c';
+    if(r.crewRevives||r.mercRevives||r.raiderRevives)
+      line+=' revivedBy:'+(r.crewRevives||0)+'crew/'+(r.mercRevives||0)+'merc/'+(r.raiderRevives||0)+'raider';
+    if(r.ringCrowd) line+=' ringCrowd:'+r.ringCrowd;
+    if(r.outcome==='dead'&&r.lastHitName) line+=' lastHit:'+r.lastHitName;
     if(r.census) line+=' ents:'+r.census.total+'(s'+(r.census.by.sentry||0)+'/c'+(r.census.by.crawler||0)+'/r'+(r.census.by.raider||0)+'/sn'+(r.census.by.snitch||0)+' dials '+r.census.dials.nS+'/'+r.census.dials.nC+'/'+r.census.dials.nR+')';
     if(r.mapName) line+=' map:'+r.mapName;
     if(r.wx) line+=' wx:'+r.wx+'/'+(r.tod||'noon');

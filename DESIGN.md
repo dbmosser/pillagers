@@ -17114,3 +17114,50 @@ depends on. I have not gone looking for a path that actually writes a bad
 coordinate into the player, so this is a net under the trapeze rather than
 a fix to a known fall. If one exists it will now show as a one frame snap
 instead of a dead screen, which is also how it would get reported.
+
+### m504 - v4.87: the run report was throwing away most of what it counted
+
+Sixteen counters are tracked all the way through a raid and then dropped
+on the floor at the end, because the record literal never copies them off
+the telemetry object. The exporter even carries a line for rivalMet, which
+reads a field nothing writes, so "rivalMet:1" has never once printed in
+any report he has sent me.
+
+This is worse than a cosmetic gap. His run reports are the only channel
+his real play has to me, and I have just spent a build teaching the
+reference card what a weak spot is and what a shot in the back does.
+weakHits is the field that answers whether that teaching landed, and it
+was being counted every raid and binned at the end.
+
+What comes back: weakHits, wallsDown, storyRead, rivalMet, parleys, the
+strays helped and killed, wildlife killed, pedlar sold and killed, rack
+pay, who revived you split three ways between crew, mercenary and raider,
+the ring crowd, and the name of whatever hit you last when you die.
+
+Every one of them stays SILENT at zero, so a quiet raid does not grow a
+row of noughts and the line only lengthens when something actually
+happened.
+
+An honest note on how this was found. The earlier audit flagged rivalMet
+and I checked it, found it set, carried and printed, and nearly wrote it
+off as already fixed. It was carried and printed on the SIM result, which
+is the benchmark path, not on the run record, which is his path. The two
+are separate objects forty lines apart. Checking the first one and calling
+it done is exactly the mistake the sim-is-not-the-game rule exists to stop,
+and I made most of it before catching myself. The check that actually
+worked was mechanical: list every field written to telemetry, list every
+field named in the record, and diff them.
+
+Verified: parse PASS at v4.87; a raid stamped with all sixteen counters
+driven to a death ending and the exported line read back with every one of
+them present, rivalMet included; a clean extraction driven and the line
+read back with eleven of the twelve silent at zero, the twelfth being a
+rack payment that genuinely happened; four-map sweep clean at 110, 111, 74
+and 91 entities with container and place counts unchanged; hub clean.
+
+Not verified: the counters were stamped onto telemetry directly rather
+than earned through play, so this proves the wiring from telemetry to
+report and not that every one of those sixteen events still increments its
+counter correctly. weakHits and wallsDown are the two I would most want
+confirmed from a real run of yours. No balance run; nothing here touches a
+number a raid outcome depends on.
