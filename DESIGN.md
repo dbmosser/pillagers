@@ -15854,3 +15854,11 @@ zero seconds, "reputation -120" label at 200 seconds and exactly 120
 charged on confirm; rummage and kill-tick code paths sim-guarded. Not
 verified: the kill tick and rummage in his ears, ring readability in a
 real firefight.
+
+### m444 - v4.29: STANDING, not HOLDING
+
+His note, same evening: "'holding' as a status makes no sense -- standing?"
+He is right; HOLDING was gun-language for a state that is really just a man
+standing still. Player and raider status lines both say STANDING now, same
+colour. Verified: parse PASS, status read back STANDING on an idle
+operator, four-map sweep clean.

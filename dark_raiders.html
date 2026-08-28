@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.28';
+var VER='4.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16539,7 +16539,7 @@ var STATCOL={
   JAMMED:'#e0483a', HEALING:'#6fe0a0', REVIVING:'#7fc4a0', EXTRACTING:'#35d6c8',
   COOKING:'#ffc04a', SEARCHING:'#ffc04a', LOOTING:'#cdd6dd', TRADING:'#7cc4ff',
   HUNTING:'#ffb02e', SPRINTING:'#cdd6dd', AIMING:'#ffbe5a', CROUCHED:'#9aa8b2',
-  ROLLING:'#cdd6dd', MOVING:'#a5b1bc', HOLDING:'#8a96a1', IDLE:'#6b7783', GONE:'#6b7783'
+  ROLLING:'#cdd6dd', MOVING:'#a5b1bc', STANDING:'#8a96a1', IDLE:'#6b7783', GONE:'#6b7783'
 };
 function playerStatus(){
   var p=G&&G.player; if(!p) return 'GONE';
@@ -16568,7 +16568,7 @@ function playerStatus(){
   if(G.sprinting&&p.moving) parts.push('SPRINTING');
   else if(G.pCrouch) parts.push('CROUCHED');
   else if(p.moving) parts.push('JOGGING');
-  if(!parts.length) return 'HOLDING';
+  if(!parts.length) return 'STANDING';
   return parts.join(' + ');
 }
 // HIS NOTE, v3.52: "the list of Raiders needs to give more detail on what they
@@ -16594,9 +16594,9 @@ function raiderStatus(e){
   if(e.state==='extract') return 'EXTRACTING';
   if(e.state==='chase'||e.state==='alarm'||e.state==='hunt') return 'FIGHTING';
   if(e.state==='investigate') return 'HUNTING';
-  if(e.state==='loot') return e.goal?'LOOTING':(e.moving?'MOVING':'HOLDING');
-  if(e.state==='patrol') return e.moving?'MOVING':'HOLDING';
-  return e.moving?'MOVING':'HOLDING';
+  if(e.state==='loot') return e.goal?'LOOTING':(e.moving?'MOVING':'STANDING');
+  if(e.state==='patrol') return e.moving?'MOVING':'STANDING';
+  return e.moving?'MOVING':'STANDING';
 }
 // MOVABLE, COLLAPSIBLE HUD, v3.64. HIS NOTE: "make it so that the player can
 // click to collapse the raider list, the conditions, the key legend -- and they
