@@ -16433,3 +16433,21 @@ hold-to-sprint, CAPS LOCK as the auto-jog latch - his two notes read
 together), rig and shield drops on the map, the H-list collision, a
 pointer cursor over clickable panels, and movable HUD blocks, which is the
 first slice of the UI redo he greenlit.
+
+### m478 - v4.62: shift holds, CAPS walks
+
+His two run #58 notes read together: "'sprinting' should be reserved for
+when running as fast as possible via sprint" and "caps lock should
+auto-jog". The tap-to-sprint toggle from the dug-up list confused the
+status line the moment it kept running without the key, so shift returns
+to plain hold-to-sprint - SPRINTING now always means the key is down and
+the legs are at maximum. CAPS LOCK takes over the long walks: tap it and
+the operator keeps jogging toward the cursor with no key held, announced
+in one line; tap again to stop; any movement key overrides it; shift held
+during the auto-jog sprints on top of it.
+
+Verified: parse PASS at v4.62; driven with real keys: caps latched a jog
+at jog speed with the status reading JOGGING, shift on top hit sprint
+speed reading SPRINTING, caps again stopped the walk dead; four-map sweep
+clean. Not verified: whether auto-jog toward the cursor feels right versus
+locking the direction at the moment of the tap - his hands will say.
