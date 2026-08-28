@@ -16118,3 +16118,21 @@ legible at a glance.
 Verified: parse PASS at v4.43; driven through the real loop with real
 keys, the thread captured on the map and looked at; four-map sweep clean.
 Not verified: thread readability on a fully-charted late-game map.
+
+### m460 - v4.44: the crier delivers live information
+
+His answer 25, his words: mark you and flee but keep line of sight, "so
+they are delivering accurate info to their robo friends." The mark now
+TRACKS you for every moment the crier can still see you, and only goes
+stale when you break its sight. The circling flee it already had IS the
+keep-eyes-on behaviour; what changed is that the information is live, and
+the call-out tells you which kind went through: "they know exactly where
+you are" against "they are coming to where it LAST saw you." The
+counterplay is now what it should be: kill it, or break its eyes.
+
+Verified: parse PASS at v4.44; driven with a live crier, the mark followed
+the player exactly while seen; four-map sweep clean. Note for the record:
+this changes robot-raid outcomes (reinforcements aim at fresher marks), so
+the running answer-wave benchmark boundary now includes it; one fresh 320
+gets taken at the end of the wave rather than per build. Not verified: the
+new balance of running from a crier at range.

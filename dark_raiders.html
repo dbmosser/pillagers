@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.43';
+var VER='4.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11430,8 +11430,9 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
         say('A crier has you. Kill it or move.');
       }
       var wantS=e.face;
-      if(e.state==='alarm'){
+if(e.state==='alarm'){
         var ds=dist(e,p);
+        if(sees){ e.markX=p.x; e.markY=p.y; }
         if(!sees){ e.lost+=dt; if(e.lost>3){ e.state='patrol'; e.cd=0; e.wind=null; } }
         // flees, but at a speed a competent player can close or shoot
         // His note on run #14: "snitch too easy to kill". It was, and the reason was not
@@ -11456,7 +11457,8 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
           sfx('alarm',e.x,e.y);
           ping(e.markX,e.markY,620,true,false,'robot','fire');
           G.marked=2.2; T.marked=(T.marked||0)+1;
-          say('Alarm went out. They are coming to where you were.');
+say(sees?'Alarm went out. It kept eyes on you: they know exactly where you are.'
+                 :'Alarm went out. They are coming to where it LAST saw you.');
           // Reinforcements converge on the MARKED position, not your current
           // one, which is what makes repositioning the counterplay.
           for(var sb=0;sb<G.ents.length;sb++){
@@ -18943,7 +18945,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The sector map draws the path you have walked this raid as an amber thread',
+  now:'The crier keeps eyes on you while it flees, and its alarm carries LIVE information unless you break its sight',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
