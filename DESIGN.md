@@ -16791,3 +16791,23 @@ down was NOT taken automatically, then boarded when E was held, both
 driven; four-map sweep and hub clean; the new wording and arrow captured
 and read on screen. Not verified: whether he wants the old automatic
 pickup available as an option rather than deleted.
+
+### m495 - v4.74: his run 60
+
+"If i'm half way through pulling the extraction and i get downed, i should
+have to start over." Going down now interrupts the boarding hold exactly
+as releasing the key does, cleared on every point because the window is
+shared.
+
+And the open banner no longer camps in the middle of the screen. He is
+right that it duplicated the strip below it: the centre announces
+EXTRACTION POINT IS OPEN for four seconds and then gets out of his way,
+leaving the fact where he can already read it. The lines that are NOT
+duplicated below stay exactly as they were: hold E to board, and
+everything a downed man needs to know.
+
+Verified: parse PASS at v4.74; a boarding hold driven to halfway, then the
+player put on the floor, and the progress read back zero; the late state
+captured and the centre of the screen confirmed clear with the strip still
+carrying the countdown, the arrow and the distance; four-map sweep and hub
+clean. Not verified: whether four seconds is the right length of shout.
