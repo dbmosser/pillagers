@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.24';
+var VER='4.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1435,13 +1435,40 @@ function verb(){
 // tickMusic returns before creating a single node. The sim is gated separately
 // because a bot raid runs in THIS context, where audio is real.
 var MUS={g:null,lp:null,next:0,step:0};
-var MUS_SPB=0.4167;                       // an 8th note at 72 BPM
-var MUS_BASS=[33,33,29,31,33,33,29,28];   // A A F G  A A F E, one root per bar
-var MUS_LEAD=[
-  57,0,60,0,64,0,62,0,  60,0,57,0,0,0,55,0,
-  53,0,57,0,60,0,57,0,  55,0,59,0,62,0,0,0,
-  57,0,60,0,64,0,67,0,  69,0,67,0,64,0,62,0,
-  60,0,57,0,53,0,57,0,  64,0,59,0,56,0,52,0];
+// v4.25 HIS ORDERS: "music needs like multiple tracks that are completely
+// distinct so it doesn't get tiresome over long sessions" and "should
+// randomly select a track each time game starts". Four pieces, each its own
+// key, tempo, voices and temperament, rolled fresh at every deployment. The
+// roll uses Math.random on purpose: the seeded stream builds the world and
+// the A/B discipline depends on it, and which song plays must never move a
+// crate. All four run through the same intensity machinery, so every track
+// walks alone when watched and gains its pulse when hunted.
+var MUS_TRACKS=[
+{name:'LOW ROAD',spb:0.4167,bw:'triangle',lw:'square',   // A minor, 72, the original
+ bass:[33,33,29,31,33,33,29,28],
+ lead:[57,0,60,0,64,0,62,0,  60,0,57,0,0,0,55,0,
+       53,0,57,0,60,0,57,0,  55,0,59,0,62,0,0,0,
+       57,0,60,0,64,0,67,0,  69,0,67,0,64,0,62,0,
+       60,0,57,0,53,0,57,0,  64,0,59,0,56,0,52,0]},
+{name:'COLD HOLLOW',spb:0.5172,bw:'sine',lw:'triangle',  // D dorian, 58, slow and empty
+ bass:[38,38,36,33,38,38,41,40],
+ lead:[62,0,0,0,65,0,0,0,  67,0,0,0,62,0,0,0,
+       69,0,0,0,71,0,69,0, 67,0,0,0,0,0,0,0,
+       62,0,0,0,65,0,0,0,  67,0,69,0,72,0,0,0,
+       71,0,0,0,69,0,67,0, 62,0,0,0,0,0,0,0]},
+{name:'RUST MARKET',spb:0.3125,bw:'square',lw:'sawtooth',// E phrygian, 96, wiry and quick
+ bass:[28,29,28,31,28,29,26,28],
+ lead:[64,0,65,0,64,0,62,0, 64,0,67,0,65,0,64,0,
+       69,0,67,0,65,0,64,0, 65,0,64,0,0,0,0,0,
+       64,0,65,0,67,0,69,0, 71,0,69,0,67,0,65,0,
+       72,0,71,0,69,0,67,0, 65,0,64,0,0,0,62,0]},
+{name:'GLASS FIELD',spb:0.4545,bw:'sine',lw:'sine',      // C lydian, 66, bright and wrong
+ bass:[36,36,43,42,36,38,43,42],
+ lead:[76,0,0,0,79,0,0,0,  78,0,0,0,0,0,74,0,
+       76,0,0,0,83,0,0,0,  81,0,79,0,0,0,0,0,
+       76,0,0,0,79,0,0,0,  78,0,74,0,76,0,0,0,
+       81,0,0,0,79,0,78,0, 72,0,0,0,0,0,0,0]}];
+function musTrk(){ return MUS_TRACKS[MUS.trk||0]; }
 // THE MUSIC REACTS, v3.90. His note: "the music should change based on what's
 // happening in game". The radio was one loop at one tempo whether you were
 // counting tins in an empty shed or being run down by a crawler, which is the
@@ -1515,6 +1542,9 @@ function tickMusic(){
     MUS.next=0;
     return;
   }
+// The track roll lives ABOVE the audio gate: which song a raid gets must
+  // not depend on whether the speaker is awake yet.
+  if(G&&MUS.raidKey!==G.seed){ MUS.raidKey=G.seed; MUS.trk=(Math.random()*MUS_TRACKS.length)|0; }
   var a=ac(); if(!a) return;
   if(!MUS.g){
     MUS.lp=a.createBiquadFilter(); MUS.lp.type='lowpass'; MUS.lp.frequency.value=2400;
@@ -1529,8 +1559,9 @@ function tickMusic(){
   var lvl=(0.15+0.07*MUS.i)*(CFG.musicVol===undefined?1:CFG.musicVol);
   MUS.g.gain.setTargetAtTime(lvl,a.currentTime,0.9);
   MUS.lp.frequency.setTargetAtTime(2400+2000*MUS.i,a.currentTime,0.8);
+if(G&&MUS.raidKey!==G.seed){ MUS.raidKey=G.seed; MUS.trk=(Math.random()*MUS_TRACKS.length)|0; }
   if(!MUS.next||MUS.next<a.currentTime-0.5){ MUS.next=a.currentTime+0.08; MUS.step=0; }
-var _spb=MUS_SPB*(1-0.26*MUS.i);
+var _spb=musTrk().spb*(1-0.26*MUS.i);
   while(MUS.next<a.currentTime+0.65){
     musNote(a,MUS.next,MUS.step);
     MUS.step=(MUS.step+1)&63;
@@ -1539,17 +1570,18 @@ var _spb=MUS_SPB*(1-0.26*MUS.i);
 }
 function musNote(a,t,step){
   var si=step&7,I=MUS.i||0;
-  var root=MUS_BASS[(step>>3)&7];
-  if(si===0||si===4) musVoice(a,t,root,'triangle',si===0?0.60:0.34,1.5);
+var T=musTrk();
+  var root=T.bass[(step>>3)&7];
+  if(si===0||si===4) musVoice(a,t,root,T.bw,si===0?0.60:0.34,1.5);
   // DANGER PULSE: an off-beat eighth on the root once things are bad, which is
   // what turns a walking bass into a chase.
-  else if(I>0.62&&(si&1)===0) musVoice(a,t,root,'triangle',0.20,0.34);
-  var m=MUS_LEAD[step];
+  else if(I>0.62&&(si&1)===0) musVoice(a,t,root,T.bw,0.20,0.34);
+  var m=T.lead[step];
   if(!m) return;
   // TENSION drops the lead entirely and leaves the bass alone in the room.
   if(I>0.26&&I<=0.62) return;
-  musVoice(a,t,m,'square',0.16+0.10*I,0.34);
-  musVoice(a,t+MUS_SPB*3,m,'square',0.055,0.30);
+  musVoice(a,t,m,T.lw,0.16+0.10*I,0.34);
+  musVoice(a,t+T.spb*3,m,T.lw,0.055,0.30);
 }
 function musVoice(a,t,midi,type,vol,dur){
   var o=a.createOscillator(),g=a.createGain();
@@ -18645,7 +18677,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Runs 55 and 56: ship text off the hotbar, music silent on pause and end screens, downed timer 17s with a count, slower stamina with a sprint lockout, abandon asks twice',
+  now:'Four distinct tracks on the radio, one rolled each deployment: LOW ROAD, COLD HOLLOW, RUST MARKET, GLASS FIELD',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

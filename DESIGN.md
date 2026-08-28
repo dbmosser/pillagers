@@ -15709,3 +15709,24 @@ night (6), more enemy ammo drops (1), SMG heat kick (7), weakpoints on all
 machines (2), stamina stims (18), grenade economy (4), locked-room marking
 and more locked rooms with keys (9+12), jackpot container (10), container
 respawn during raid (13), footprints (15), silent extraction (20).
+
+### m440 - v4.25: four songs on the radio
+
+His orders, verbatim: multiple completely distinct tracks so long sessions
+do not tire, rolled at random each time the game starts. The one hardcoded
+piece is now four, each with its own key, tempo, voices and temperament:
+LOW ROAD (the original A-minor walk at 72), COLD HOLLOW (D dorian at 58,
+slow and empty, sine bass under a floating triangle), RUST MARKET (E
+phrygian at 96, wiry square bass under a sawtooth lead), and GLASS FIELD
+(C lydian at 66, bright and slightly wrong, all sines, bell register). One
+is rolled per deployment, keyed to the raid so a raid keeps its song, and
+the roll deliberately uses unseeded randomness so which track plays can
+never move a crate in the A/B discipline. All four run through the same
+intensity machinery: walking bass alone when watched, danger pulse and loud
+lead when hunted. The roll sits above the audio gate so the choice does not
+depend on the speaker being awake.
+
+Verified: parse PASS at v4.25; eight driven deployments rolled all four
+tracks in mixed order through the real tick; four-map sweep clean, hub
+clean. Not verified: how the three new pieces actually sound in his ears,
+which no fixture can hear.

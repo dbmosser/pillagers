@@ -581,7 +581,7 @@ window.__mouseState=function(){ return mouse; };
 //    rather than the fight.
 window.__keysRef=function(){ return keys; };
 window.__wx={list:function(){ return WEATHER; },cur:wx,VF:VF,AMBR:AMBR,ping:ping,pick:pickWeather};
-window.__music=function(){ tickMusic(); return {mode:musicMode(),wanted:musicWanted(),started:!!MUS.g,step:MUS.step,intensity:musIntensity(),smoothed:MUS.i}; };
+window.__music=function(){ tickMusic(); return {mode:musicMode(),wanted:musicWanted(),started:!!MUS.g,step:MUS.step,intensity:musIntensity(),smoothed:MUS.i,trk:(MUS.trk===undefined?null:MUS.trk),trkName:(MUS.trk===undefined?null:MUS_TRACKS[MUS.trk].name)}; };
 window.__hudBox=function(){ return HUDBOX; };
 window.__ghost={parse:parseGhost,apply:applyGhost};
 window.__w2s=function(x,y){ return w2s(x,0,y); };
