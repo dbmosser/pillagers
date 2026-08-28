@@ -16391,3 +16391,20 @@ running study across all builds now stands at eighteen landings, roughly
 nineteen of every twenty bodies map-born. The night's enemy changes made
 the answer stronger, not weaker: whatever remedy he picks - QUIETER,
 SHORTER, or MOVE - the target is the map he wakes, not the ship he calls.
+
+### m476 - v4.60: the abandon flow asks its question
+
+His run #57, this morning, on the DAM - his first raid outside COLD
+STORAGE in about twenty-five, which means the sector menu did its job on
+day one. His note: "abandon prompts make zero sense. its like there's a
+missing question." He was right: the first click showed "...sure?" with no
+actual question anywhere on screen. The click now turns the button row
+INTO the question: "YES, abandon this run (costs 120 reputation)" on one
+side, "NO, keep playing" on the other. NO disarms, resume disarms, and a
+double-click still cannot fall through - the second press lands on a
+button that has become the NO.
+
+Verified: parse PASS at v4.60; driven through the real buttons: arm shows
+both labels, NO keeps the raid alive and restores the row, YES at 200
+seconds ends the raid and charges exactly 120; four-map sweep clean. Not
+verified: whether the reputation price needs a louder colour on the YES.
