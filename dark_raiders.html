@@ -565,7 +565,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.70';
+var VER='4.71';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6195,16 +6195,17 @@ function wildTick(dt){
     c.t-=dt; c.f+=dt*(c.st==='flee'?14:3);
     // What frightens it: you, a raider, or a round going past. Birds are the
     // jumpiest thing on the map and deer let you get closer.
-    var trig=0,fear=(c.k==='bird'?190:300);
-    if(dist(p,c)<fear&&!p.downed) trig=1;
-    if(!trig) for(var e2=0;e2<G.ents.length;e2++){ if(dist(G.ents[e2],c)<fear*0.8){ trig=1; break; } }
+var trig=0,fear=(c.k==='bird'?190:300),_spook=null;
+    if(dist(p,c)<fear&&!p.downed){ trig=1; _spook=p; }
+    if(!trig) for(var e2=0;e2<G.ents.length;e2++){ if(dist(G.ents[e2],c)<fear*0.8){ trig=1; _spook=G.ents[e2]; break; } }
     if(!trig) for(var b2=0;b2<G.bullets.length;b2++){
       var BL=G.bullets[b2],bdx=BL.x-c.x,bdy=BL.y-c.y;
       if(bdx*bdx+bdy*bdy<260*260){ trig=1; break; }
     }
     if(trig&&c.st!=='flee'){
       c.st='flee'; c.life=(c.k==='bird'?rnd(3.2,5.0):rnd(2.4,4.0));
-      var ax=c.x-p.x,ay=c.y-p.y,al=Math.sqrt(ax*ax+ay*ay)||1;
+var _sf=_spook||p;
+      var ax=c.x-_sf.x,ay=c.y-_sf.y,al=Math.sqrt(ax*ax+ay*ay)||1;
       var spd=(c.k==='bird'?rnd(210,290):rnd(240,330));
       c.vx=ax/al*spd; c.vy=ay/al*spd;
       if(c.k==='bird'&&!G.sim) blip('flap',dist(p,c));
@@ -11124,6 +11125,14 @@ if(!_se.downed&&!_se.finished&&!_se.neutral&&_se.maxhp&&_se.hp<_se.maxhp&&
         }
       }
     }
+if(_se.kind==='raider'&&_se.sprintPool>0&&_se.moving&&!_se.downed&&!G.sim){
+      G.prints=G.prints||[];
+      var _rlp=G.prints.length?G.prints[G.prints.length-1]:null;
+      if(!_rlp||dist(_se,_rlp)>34){
+        G.prints.push({x:_se.x,y:_se.y,t:0});
+        if(G.prints.length>40) G.prints.shift();
+      }
+    }
     if(G.prints&&G.prints.length&&!_se.downed&&!_se.finished&&!_se.neutral&&
        (_se.state==='patrol'||_se.state==='investigate')&&
        (_se.kind==='sentry'||_se.kind==='crawler'||_se.kind==='raider'||_se.kind==='snitch')){
@@ -11748,7 +11757,7 @@ if(e.kind==='raider'&&e.state!=='extract'&&e.hp<e.maxhp*0.3){
       // was. A raider who has broken off keeps running while he can see you,
       // which is the entire point of breaking off; he is still dangerous, he
       // still shoots on the way out, he simply stops hunting.
-      if(e.kind==='raider'&&e.state==='extract'){ e.alert=2.4; }
+  if(e.kind==='raider'&&e.state==='extract'){ e.alert=2.4; }
       else {
         if(e.state!=='chase'&&!G.sim&&(G.seenT||0)<=0){ G.seenT=5.0; sfx('seen',e.x,e.y); }
         e.state='chase'; e.alert=2.4; e.tx=p.x; e.ty=p.y;
@@ -19054,7 +19063,7 @@ function applyGhost(){
     e.name=P.ghost.tag;
     e.ghost=1;
     e.hostile=false; e.friendlyPC=1; e.grudge=false;
-    if(WEAPONS[P.ghost.wep]) e.wep=WEAPONS[P.ghost.wep];
+if(WEAPONS[P.ghost.wep]) e.wep=(WEAPONS[P.ghost.wep].mag===0)?WEAPONS.pistol:WEAPONS[P.ghost.wep];
     e.ghostHaul=(P.ghost.rate>=25)?5:9;
     for(var r2=0;r2<(G.roster||[]).length;r2++)
       if(G.roster[r2].ref===e){ G.roster[r2].name=e.name; break; }
@@ -19189,7 +19198,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The last parity item: a raider whose gun is cycling breaks YOUR line of sight instead of strafing in the open',
+  now:'Parity audit fixes: animals run from what actually scared them, a ghost never spawns unarmed, raiders leave boot prints',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

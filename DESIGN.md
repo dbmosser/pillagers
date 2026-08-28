@@ -16697,3 +16697,31 @@ cannot fulfil their purpose (the Listener was harmless for two hundred
 builds), code paths the standard verification never enters, and the
 unresolved stutter. Two provers then attack the findings and rank what
 would hurt him first.
+
+### m492 - v4.71: the parity audit's first three, two of them real bugs
+
+The audit that answered his question also found two outright faults.
+
+An animal always fled from HIM, whatever actually spooked it. A deer
+flushed by a raider on the far side therefore ran toward him, so a tell
+built to say "someone is over there" said "someone is behind you". It now
+runs from whatever frightened it, which makes flushed wildlife a real
+direction finder for the first time.
+
+The ghost friend pasted a saved weapon onto a raider without checking it
+could shoot. Import a friend who died holding a crowbar or bare hands and
+the ghost spawned permanently harmless: he aimed, he cycled, and no round
+ever left the barrel, because the melee swing only ever worked for the
+player. A ghost carrying melee is handed a sidearm instead.
+
+And parity: raiders leave boot prints when they run, the same store and
+the same six-second life as his own, so the ground now says where THEY
+have been too. The writer first landed inside the branch that only runs
+once a raider has seen him, which meant a sprinting stranger left nothing;
+caught by driving it, moved to the pass every body walks through.
+
+Verified: parse PASS at v4.71; four-map sweep and hub clean; an animal
+spooked by a raider driven and measured running away from the RAIDER; a
+crowbar ghost driven and confirmed spawning with a Scav Pistol; a
+sprinting raider driven and leaving six prints. Not verified: how much
+raider prints change his reading of a map in play.
