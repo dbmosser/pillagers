@@ -15862,3 +15862,16 @@ He is right; HOLDING was gun-language for a state that is really just a man
 standing still. Player and raider status lines both say STANDING now, same
 colour. Verified: parse PASS, status read back STANDING on an idle
 operator, four-map sweep clean.
+
+### m445 - the v4.26-boundary benchmark: 17.2 percent
+
+The 320-seed identical-arms run on the build with back-shot damage came in
+at 17.2 percent (55 of 320), zero discordant pairs, the seventh perfect
+determinism proof in a row. That is 3.4 points below the corrected 20.6 of
+the pre-back-shot game. The mechanism is not cleanly attributed: the bonus
+only ever helps the shooter, and the robot IS the shooter, so the drop is
+second-order - faster kills reshuffle every later event on a seed, and on
+this family the reshuffle landed against the robot. Killer mix at the new
+boundary: sentries 124, raiders 62, crawlers 57 of 261 deaths, siege
+almost nothing. Median extracted haul 2,125. All future comparisons run
+against 17.2, and nothing before the boundary is comparable.
