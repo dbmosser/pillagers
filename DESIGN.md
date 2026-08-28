@@ -16912,3 +16912,23 @@ to prevent. Pointer moved with the insert and the live value verified at
 Verified: parse PASS at v4.78; the damage multiplier in play read back as
 1, unchanged; four-map sweep and hub clean. Not verified: nothing. His
 call now, and it is a real call rather than a broken promise.
+
+### m500 - the v4.76 benchmark: 16.3 percent, and hiding is why
+
+320 identical arms: 16.3 percent, zero discordant, the tenth straight
+determinism proof. Up 4.4 points from 11.9 at v4.69, and the killer table
+names the cause in one line: crawler kills fell from 49 to 15. That is the
+sight fix doing exactly what it was meant to do. Every other rule about
+concealment in this game was written around machines that can lose you,
+and the most common machine on the map could not; now it can, and breaking
+line of sight is worth something against the thing that kills most often.
+
+Sentries took up some of the slack, 106 to 131, which is the honest shape
+of it: the danger moved from the machine that cheated to the machine that
+was always playing fair. The Listener holds at 11 kills, still doing the
+job it could not do for two hundred builds. Median haul steady at 3,000.
+
+This is a real difficulty reduction for anyone who uses cover, which is
+the point, and it is disclosed rather than buried: if he wants the
+pressure back, the settings page now has HARDENED sitting one click above
+Standard.
