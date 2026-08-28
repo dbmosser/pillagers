@@ -16373,3 +16373,12 @@ shape below is for his yes or amendments before I spend days inside it):
    the game never breaks and he can call it off at any slice.
 Estimated at eight to twelve builds. Awaiting his word - one word: REDO to
 start, or notes to reshape it.
+
+### m475 - v4.59: THE LONG WAY DOWN
+
+A fifth piece for the sessions that run long, since the whole point of the
+multiple-tracks order was that long nights wear a small rotation thin. G
+minor at fifty, the slowest and emptiest of the five: long sine roots,
+sparse triangle tones with real silence between them. Verified rolling in
+the rotation through fifteen driven deployments; parse PASS; sweep clean.
+Not verified: the sound of it, his ears, morning.
