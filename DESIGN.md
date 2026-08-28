@@ -16171,3 +16171,19 @@ smoke placement (inside the throw helper) was unreachable for a hurt man
 because the flee flip fires first - found by driving it, moved to the
 flip. Not verified: how often the retreat smoke reads in real fights, and
 the grenade rarity feel.
+
+### m463 - v4.49: SILENT DEPARTURE
+
+His answer 20: a second way out, no beacon, crazy expensive, about ten
+thousand. Hold N at any open extraction point: no call, no thirty-second
+inbound, no siege, no noise ping - a six-second exposed pull, 10,000
+credits to the operator flying dark, and you are gone. The pad prompt
+offers it in green when you can afford it and grey when you cannot, the
+run line records silentExit:1, and a downed man cannot buy his way off the
+floor. The N key was unused everywhere in the game.
+
+Verified: parse PASS at v4.49; driven on the play path: a fresh raid ended
+through the held pull, exactly 10,000 charged, the flag stamped, and the
+guard refused a downed player in an earlier accidental drive; four-map
+sweep clean. Not verified: the price against his economy over time, and
+whether six seconds exposed is enough risk.

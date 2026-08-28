@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.48';
+var VER='4.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8987,6 +8987,21 @@ function tryExtractTick(dt,wantCall){
     var CZ=G.zones[cz];
     if((CZ!==z||!wantCall)&&CZ.callT>0) CZ.callT=Math.max(0,CZ.callT-dt*1.5);
   }
+if(z&&z.beaconT===null&&z.open&&!G.sim&&keys['KeyN']&&!p.downed){
+    var _scost=10000;
+    if(P.credits<_scost){
+      if(!G.silSaid||G.t-G.silSaid>3){ G.silSaid=G.t; say('A quiet ride costs '+_scost.toLocaleString()+'c. You have '+P.credits.toLocaleString()+'.'); }
+    } else {
+      z.silT=(z.silT||0)+dt;
+      if(!G.silSaid||G.t-G.silSaid>3){ G.silSaid=G.t; say('Flying dark. Hold to confirm the '+_scost.toLocaleString()+'c.'); }
+      if(z.silT>=6){
+        P.credits-=_scost;
+        T.silentExit=1; T.holdExtract=1;
+        say('No beacon, no noise. Gone.');
+        endRaid('extract'); return;
+      }
+    }
+  } else if(z&&z.silT) z.silT=0;
   if(z&&z.beaconT===null&&z.open&&wantCall){
     // the first pull takes a couple of seconds of standing there
     z.callT=(z.callT||0)+dt;
@@ -12610,6 +12625,7 @@ function endRaid(how){
       containers:T.containers,windfalls:T.windfalls||0,pedSold:T.pedSold||0,wepSource:(function(){ var W=G.player&&G.player.wep; if(!W) return 'none'; if(G.player.wepIssued) return 'issued'; return wearable(W.id)?'owned':'field'; })(),crouched:T.tCrouchBot?Math.round(T.tCrouchBot):0,siegeArrivals:T.siegeArrivals||0,siegeNoSpot:T.siegeNoSpot||0,killer:T.deathKiller,firstContact:T.firstContact===null?null:Math.round(T.firstContact),
       shots:T.shots,hits:T.hits,kills:T.kills,jams:T.jams||0,closest:Math.round(T.closestExtract),
 downs:T.downs,revives:T.revives,raidersExt:T.raidersExtracted,
+      silentExit:T.silentExit||0,
       ringCrowd:T.ringCrowd||null,
       beaconCalls:T.beaconCalls,beaconMissed:T.beaconMissed,
       // Where the raid actually ends. Three separate mechanisms aimed at the trip out
@@ -16003,8 +16019,11 @@ rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'})
         ctx.fillStyle='#35d6c8';
         ctx.fillText('INBOUND '+Math.ceil(padZ.beaconT)+'s',ps.x,ps.y);
       } else {
-        ctx.fillStyle='#35d6c8';
+ctx.fillStyle='#35d6c8';
         ctx.fillText('[E] CALL EXTRACTION',ps.x,ps.y);
+        ctx.fillStyle=(P.credits>=10000)?'#9fe0c0':'#5a6a70';
+        ctx.fillText('[N] SILENT DEPARTURE - 10,000c',ps.x,ps.y+LH(14));
+        if(padZ.silT>0) bar(ps.x-30,ps.y+LH(20),60,6,clamp(padZ.silT/6,0,1),'#9fe0c0');
         if(padZ.callT>0) bar(ps.x-30,ps.y+LH(6),60,6,clamp(padZ.callT/1.6,0,1),'#35d6c8');
       }
       ctx.textAlign='left';
@@ -18981,7 +19000,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Crews feud six raids in ten, raider grenades are rare, and a hurt raider pops smoke to break your sight',
+  now:'SILENT DEPARTURE: hold N at any open point, pay 10,000c, and leave with no beacon, no wait, no siege',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -19835,7 +19854,8 @@ function buildExport(){
     // the version field right there already says which of them predate the choice.
     if(r.intel) line+=' intel:1';
 if(r.wallClip) line+=' WALLCLIP:'+r.wallClip.f+'@'+r.wallClip.x+','+r.wallClip.y+'('+r.wallClip.ww+'x'+r.wallClip.wh+')t'+r.wallClip.at+'s';
-    if(r.contractsBanked&&r.contractsBanked.length) line+=' contracts:'+r.contractsBanked.join(',');
+if(r.contractsBanked&&r.contractsBanked.length) line+=' contracts:'+r.contractsBanked.join(',');
+    if(r.silentExit) line+=' silentExit:1';
     if(r.ghostIn) line+=' ghost:1';
     if(r.census) line+=' ents:'+r.census.total+'(s'+(r.census.by.sentry||0)+'/c'+(r.census.by.crawler||0)+'/r'+(r.census.by.raider||0)+'/sn'+(r.census.by.snitch||0)+' dials '+r.census.dials.nS+'/'+r.census.dials.nC+'/'+r.census.dials.nR+')';
     if(r.mapName) line+=' map:'+r.mapName;
