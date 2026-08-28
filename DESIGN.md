@@ -16218,3 +16218,20 @@ Verified: parse PASS at v4.51; all four maps' peddlers carried a showpiece
 at triple list (6,000 for a Marksman Rifle, 9,300 for a Bloom Sample);
 four-map sweep clean. Not verified: purchase through his trade screen in
 real play - the buy path is the same one his existing stock uses.
+
+### m466 - v4.52: the operator has a voice
+
+His answer 40. A short falling grunt when hurt - harder when the hit is
+big - and winded breathing that starts when a sprint runs the tank under
+45. Both synthesized in the same style as everything else in the game, no
+files, and the invulnerable frames after a roll stay silent so a tanked
+hit does not read as a wound. The sim remains mute.
+
+Also closed by inspection, no code: his answer 22, the unlimited bag,
+shipped on 2026-08-22 (every pack tier already carries 99999) - the
+overweight concept he ruled against has not existed for five days.
+
+Verified: parse PASS at v4.52; four-map sweep, extract and dead endings
+clean; the grunt and breath code paths are audio-only and cannot be heard
+by any fixture, which is exactly the limit of what this machine can test.
+Not verified: how they SOUND, which is his ears' first job next session.

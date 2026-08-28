@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.51';
+var VER='4.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1697,6 +1697,32 @@ function sfx(type,wx,wy,wid){
 // changed by gain, which costs nothing per frame. The filter opens and the pitch
 // lifts as something gets close to you, so the room itself tells you a machine
 // is hunting before you can see it.
+function voxGrunt(hard){
+  if(G&&G.sim) return;
+  var a=ac(); if(!a) return; var out=bus(); if(!out) return;
+  var o=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter();
+  f.type='lowpass'; f.frequency.value=900;
+  o.type='sawtooth';
+  var t=a.currentTime;
+  o.frequency.setValueAtTime(hard?150:120,t);
+  o.frequency.exponentialRampToValueAtTime(70,t+0.14);
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.linearRampToValueAtTime(hard?0.30:0.18,t+0.02);
+  g.gain.exponentialRampToValueAtTime(0.001,t+0.16);
+  o.connect(f); f.connect(g); g.connect(out);
+  o.start(t); o.stop(t+0.2);
+}
+function voxBreath(){
+  if(G&&G.sim) return;
+  var a=ac(); if(!a) return; var out=bus(); if(!out) return;
+  var n=a.createBuffer(1,Math.floor(a.sampleRate*0.18),a.sampleRate),d=n.getChannelData(0);
+  for(var i=0;i<d.length;i++){ var env=Math.sin(Math.PI*i/d.length); d[i]=(Math.random()*2-1)*env*0.5; }
+  var sb=a.createBufferSource(); sb.buffer=n;
+  var f=a.createBiquadFilter(); f.type='bandpass'; f.frequency.value=1400; f.Q.value=0.8;
+  var g=a.createGain(); g.gain.value=0.13;
+  sb.connect(f); f.connect(g); g.connect(out);
+  sb.start();
+}
 var AMB=null;
 function ambience(){
   var a=ac(); if(!a||AMB) return AMB;
@@ -7983,6 +8009,7 @@ function killPlayer(src){
 function damagePlayer(amt,src,srcName,sx,sy){
   // v4.28: the direction of the hit, stamped for the ring around the body.
   if(G&&sx!==undefined&&G.player) G.player.hitFrom={ang:Math.atan2(sy-G.player.y,sx-G.player.x),at:G.t};
+  if(G&&!G.sim&&G.player&&G.player.iv<=0) voxGrunt(amt>18);
   if(G){ G.musHitT=G.t; G.combatT=G.t; }              // v3.90: being hit is news the music wants
   var p=G.player;
   if(p.iv>0) return;
@@ -9680,6 +9707,7 @@ var sprint=!!p.sprintTog&&p.stam>2&&!p.stamLock&&!crouch&&mg>0;
   // is undone: wading empty is 53.7 and untouched.
   if(spd<SPEED_FLOOR) spd=SPEED_FLOOR;
 if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.stam+7.5*dt);
+  if(sprint&&p.stam<45&&!G.sim){ p.brT=(p.brT||0)-dt; if(p.brT<=0){ p.brT=0.55; voxBreath(); } }
   // v4.24 HIS NOTE: running dry locks the sprint until the bar is back to 12,
   // so you cannot flutter the key at zero for free bursts.
   if(p.stam<=2) p.stamLock=1;
@@ -19019,7 +19047,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The peddler carries one showpiece at triple price: the reason credits flow the other way in the field',
+  now:'The operator has a voice: grunts when hit, winded breathing on a low tank at a sprint',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
