@@ -16287,3 +16287,18 @@ Verified: parse PASS at v4.55; a mixed bag driven onto the open grid read
 back gear-then-cargo in exactly the intended order; four-map sweep clean.
 Not verified: whether he wants a visible divider line between the groups
 on top of the ordering.
+
+### m470 - v4.56: the Quarry works again
+
+His answer 34's second half: working machinery. The conveyor in the
+gallery runs - a dark belt of moving cleats between two turning pulleys,
+riding the terrace it was built on - and the dragline's boom swings slowly
+over its pit with the bucket hanging off the end. Pure drawing on the
+world clock: no collision, no randomness, nothing the benchmark can feel.
+The first cut drew in the ground pass and the terraces buried it; caught
+on the capture, moved above the world objects, recaptured.
+
+Verified: parse PASS at v4.56; the running belt captured and looked at on
+the gallery; four-map sweep clean. Not verified: the dragline in frame
+(same draw pass, off-camera in the capture), and the machinery under fog
+at night.
