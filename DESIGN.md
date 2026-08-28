@@ -16235,3 +16235,20 @@ Verified: parse PASS at v4.52; four-map sweep, extract and dead endings
 clean; the grunt and breath code paths are audio-only and cannot be heard
 by any fixture, which is exactly the limit of what this machine can test.
 Not verified: how they SOUND, which is his ears' first job next session.
+
+### m467 - v4.53: THE POSSUM
+
+His answer 24, his words: "it isn't marked as an enemy until it starts
+moving." One crawler in seven now spawns playing dead beside the nearest
+car wreck - chosen deterministically, no new random draws, so the rest of
+the world is byte-identical and only the possums themselves relocate. While
+it plays dead it has no nameplate, no vision cone, no movement and no AI at
+all; walk within arm's reach and it springs with the spotted sting and one
+line: "It was playing dead." The Listener's dormant state supplied the
+exact hiding pattern.
+
+Verified: parse PASS at v4.53; five to seven possums per map matching the
+crawler arithmetic; a possum driven dormant at 300 units through a full
+second and springing to chase at 60; entity counts unchanged on all four
+maps; sweep clean. Not verified: the fright, which is the entire point and
+belongs to him.

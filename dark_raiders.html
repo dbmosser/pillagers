@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.52';
+var VER='4.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6710,7 +6710,17 @@ while(caches.length<3) placeCache(WORLD_W*rr(),WORLD_H*rr(),'MERIDIAN CACHE');
   var N_SENTRY=nOf(CFG.nSentry),N_CRAWLER=nOf(CFG.nCrawler),
       N_SNITCH=nOf(CFG.nSnitch),N_RAIDER=nOf(CFG.nRaider);
   for(i=0;i<N_SENTRY;i++){ var s1=far(freeSpot(map,30),880); ents.push(mkSentry(s1.x,s1.y)); }
-  for(i=0;i<N_CRAWLER;i++){ var s2=far(freeSpot(map,26),780); ents.push(mkCrawler(s2.x,s2.y)); }
+for(i=0;i<N_CRAWLER;i++){ var s2=far(freeSpot(map,26),780); var _cw=mkCrawler(s2.x,s2.y);
+    if(i%7===3){
+      var _bw2=null,_bd2=1e9;
+      for(var _w3=0;_w3<map.walls.length;_w3++){ var _W3=map.walls[_w3];
+        if(!_W3.wreck) continue;
+        var _d3=Math.hypot(_W3.x+_W3.w/2-s2.x,_W3.y+_W3.h/2-s2.y);
+        if(_d3<_bd2){ _bd2=_d3; _bw2=_W3; } }
+      if(_bw2){ _cw.x=_bw2.x+_bw2.w/2; _cw.y=_bw2.y+_bw2.h+18; _cw.tx=_cw.x; _cw.ty=_cw.y; }
+      _cw.possum=1; _cw.state='possum';
+    }
+    ents.push(_cw); }
   for(i=0;i<N_SNITCH;i++){ var s4=far(freeSpot(map,26),720); ents.push(mkSnitch(s4.x,s4.y)); }
 var N_BULWARK=nOf(CFG.nBulwark===undefined?1:CFG.nBulwark);
   for(i=0;i<N_BULWARK;i++){ var s4c=far(freeSpot(map,30),900); ents.push(mkBulwark(s4c.x,s4c.y)); }
@@ -11133,6 +11143,12 @@ if(!_se.downed&&!_se.finished&&!_se.neutral&&_se.maxhp&&_se.hp<_se.maxhp&&
     e.moving=false;
     if(e.hitT>0) e.hitT-=dt;
     if(e.muzzle>0) e.muzzle-=dt;
+if(e.state==='possum'){
+      if(!p.downed&&dist(e,p)<95){
+        e.state='chase'; e.alert=4; e.tx=p.x; e.ty=p.y;
+        if(!G.sim){ sfx('seen',e.x,e.y); say('It was playing dead.'); }
+      } else { e.moving=false; continue; }
+    }
     if(e.kind==='crawler') e.legs+=dt*14;
 
     if(e.hp<=0){
@@ -14222,7 +14238,8 @@ if(G.prints) for(i=0;i<G.prints.length;i++){
     // should block it." This loop walked G.ents rather than the seen list, so a
     // sentry behind a building painted its cone across ground you had no
     // business knowing about: free intelligence on every machine on the map.
-    if(!sc.seen) continue;
+if(!sc.seen) continue;
+    if(sc.state==='possum') continue;
     // Draw the reach the simulation actually uses. A sentry that has heard
     // anything gets 35 percent more range, and the cone used to keep showing the
     // patrol figure, so it detected you from ground it had never marked.
@@ -15056,7 +15073,8 @@ if(G.prints) for(i=0;i<G.prints.length;i++){
     var lift=spriteTop(ne)+8;
     var hostile=ne.kind==='raider';
     // a raider bolting for the beacon is worth calling out: it is a race now
-    if(ne.kind==='listener'&&ne.state==='dormant') continue;
+if(ne.kind==='listener'&&ne.state==='dormant') continue;
+    if(ne.state==='possum') continue;
     if(ne.kind==='stray') ne._plateTag=ne.helped?' [SAFE]':('  NEEDS '+ITEMS[ne.want].name.toUpperCase());
     else if(ne.kind==='raider'&&ne.friendlyPC) ne._plateTag=' [FRIENDLY]';
     else if(ne.kind==='raider'&&ne.parley>0&&ne.hostile) ne._plateTag=' [LISTENING]';
@@ -19047,7 +19065,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The operator has a voice: grunts when hit, winded breathing on a low tank at a sprint',
+  now:'THE POSSUM: one crawler in seven plays dead by a wreck, unmarked, until you are nearly standing on it',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
