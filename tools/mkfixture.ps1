@@ -513,6 +513,8 @@ window.__prof=function(){ return P; };
 // v4.18: the board only refills at boot, so a new contract kind could crash card
 // creation and no sweep would ever roll it. This calls the real generator directly.
 window.__genContract=function(){ return genContract(); };
+// v4.77: the run-report status line, so a failure notice can be driven.
+window.__syncReport=function(){ syncAutoEx(); return document.getElementById('reportline'); };
 // v3.37: the REAL profile loader, so "does progression survive a session" can be
 // driven rather than read. __load is loadOf(), a loadout helper, and calling it
 // for this proved nothing at all.

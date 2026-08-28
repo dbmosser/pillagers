@@ -16867,3 +16867,22 @@ to the last known spot and sighted it still charged; the Warden driven to
 its target while blind and confirmed retargeting and moving instead of
 freezing; four-map sweep and hub clean. Not verified: what this costs the
 robot, which the measurement now running will say.
+
+### m498 - v4.77: the game can tell him when a report is lost
+
+The finding with a direct cost to both of us. The game has always known
+when a run report failed to save, and has never once been able to say so:
+it wrote that status into an element that does not exist anywhere in the
+page, removed from the terminal long ago and never rebuilt, so the lookup
+failed and the function returned on its first line every single time.
+
+His run reports are how his feedback reaches me at all, so a silent
+failure costs a whole raid of notes. The status has a home now, on the one
+screen he crosses before every drop, and it stays silent unless something
+is actually wrong: a red line saying the report was not saved and to copy
+it out of the recorder before the next raid.
+
+Verified: parse PASS at v4.77; driven through a new fixture hook across
+all three states - silent when saved, loud with COULD NOT SAVE on a
+failure, loud with the count of unsaved raids when the drop is missing;
+four-map sweep and hub clean. Not verified: nothing, this one is closed.
