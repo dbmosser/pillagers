@@ -15730,3 +15730,33 @@ Verified: parse PASS at v4.25; eight driven deployments rolled all four
 tracks in mixed order through the real tick; four-map sweep clean, hub
 clean. Not verified: how the three new pieces actually sound in his ears,
 which no fixture can hear.
+
+### HIS ANSWERS, questions 21 to 50 (the set is complete)
+
+Extract: 21 ship never leaves early. 22 THE BAG IS UNLIMITED, no overweight
+concept at all. 23 abandoning costs reputation, warned right on the new
+are-you-sure screen.
+
+Enemies: 24 a possum machine that plays dead in the wrecks YES, unmarked
+until it moves. 25 snitches mark then flee but keep line of sight, feeding
+accurate positions. 26 recurring named elite raiders. 27 the Bulwark
+crushes walls as it walks. 28 machines repair each other. 29 night raids:
+no call, he finds night too dark and jarring to judge, WHICH IS ITSELF A
+NOTE on night readability.
+
+Maps: 30 underground out of reach for now. 31 weather changes at most 3
+times a raid. 32 bridges no. 33 one pure-story landmark per map. 34 Quarry
+machinery yes, and MAP SELECTION MUST BE PROMINENT, a proper menu on
+deploy: he is not sure he has ever played the Quarry.
+
+Economy: 35 peddler carries one crazy expensive item. 36 gun insurance no.
+37 rep decay no. 38 featured map no. 39 stash unlimited.
+
+Sound and UI: 40 player grunts and breathing. 41 map screen shows this
+raid's footpath. 42 damage direction indicator. 43 searching makes a sound
+other raiders hear. 44 a subtle kill-confirm tick for off-screen deaths.
+
+Raiders: 45 bots loot bodies including yours. 46 text barks. 47 crews
+fight on sight. 48 grenades rare, smoke free. 49 unclear, ask him later.
+50 a rival system: 'Your Rival' is whoever he has fought most, marked and
+hunting him.
