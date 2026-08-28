@@ -16204,3 +16204,17 @@ identity spawned as rival within four raids, starred, announced and
 flagged; the fixture grudge book restored after; four-map sweep clean.
 Not verified: how often the rival naturally recurs at his real fight
 rates, which his exports will now show.
+
+### m465 - v4.51: the showpiece
+
+His answer 35. The peddler now always carries one showpiece, drawn from
+the very top of the economy - a Warden Core, a Reactor, a Bloom Sample, a
+Marksman Rifle, a Support MG - at three times list price, always the last
+thing on his table. Selling to him has always been the mathematically
+sound move; the showpiece is the one thing that makes credits flow the
+other way in the field, and a reason to visit him rich.
+
+Verified: parse PASS at v4.51; all four maps' peddlers carried a showpiece
+at triple list (6,000 for a Marksman Rifle, 9,300 for a Bloom Sample);
+four-map sweep clean. Not verified: purchase through his trade screen in
+real play - the buy path is the same one his existing stock uses.

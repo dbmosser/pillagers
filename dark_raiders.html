@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.50';
+var VER='4.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5925,10 +5925,12 @@ function mkPeddler(x,y,map){
   if(kcand.length&&rr()<0.6){
     var kk=pick(kcand); stock.push({k:kk,price:pedPrice(kk),sold:false});
   }
-  while(stock.length<3&&pool.length){
+while(stock.length<3&&pool.length){
     var ix=ri(0,pool.length-1),k2=pool.splice(ix,1)[0];
     stock.push({k:k2,price:pedPrice(k2),sold:false});
   }
+  var _show=pick(['wcore','reactor','bloom','gun_dmr','gun_lmg']);
+  stock.push({k:_show,price:Math.round(ival(_show)*3),sold:false,showpiece:1});
   return {kind:'peddler',x:x,y:y,r:12,hp:150,maxhp:150,face:1.57,
     coat:'#d8a13a',name:'THE PEDDLER',neutral:1,stock:stock,bag:[],
     state:'idle',tx:x,ty:y,cd:0,alert:0,spd:0,dmg:0,rng:0,cone:0,
@@ -19017,7 +19019,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'YOUR RIVAL: the raider you have fought most wears a star, gets announced, and shoots on sight',
+  now:'The peddler carries one showpiece at triple price: the reason credits flow the other way in the field',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
