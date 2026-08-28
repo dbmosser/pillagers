@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.34';
+var VER='4.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15225,7 +15225,11 @@ var b=G.bullets[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   var _wv=wx().view;
   var _lift=(CFG.fogLift===0||!isDay())?0:(1-_wv)*0.34;
   fx2.fillStyle=isDay()?('rgba(58,46,38,'+clamp(.46-(BR-1)*.06-_lift,.22,.54)+')')
-                       :('rgba(3,5,23,'+clamp(.93-(BR-1)*.09,.78,.96)+')');
+// v4.35 HIS NOTE, three times now: night is too dark and jarring. The
+                       // wash drops from a .87 ceiling to about .80 at his
+                       // brightness, with a touch more blue, so unlit shapes
+                       // keep their silhouettes and the dark stays dark.
+                       :('rgba(4,7,26,'+clamp(.86-(BR-1)*.09,.68,.90)+')');
   fx2.fillRect(0,0,W,H);
   // the fog cutouts are all world shapes, so the fog layer takes the world
   // transform exactly as the light layer does

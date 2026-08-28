@@ -15966,3 +15966,21 @@ Verified: parse PASS at v4.34; 42 howlers across 24 driven raids on all
 four maps, zero indoors; the four-map entity counts unchanged at
 110/111/74/91, which is the proof the stream did not move. Not verified:
 nothing - this one is fully closed by the drive.
+
+### m451 - v4.35: the night keeps its shapes
+
+"Too dark", three separate times, and tonight "still too dark and jarring
+to judge night raids". The night wash was near-black at 87 percent
+strength; it now sits near 80 with a touch more blue, so buildings, wrecks
+and road edges keep their silhouettes outside your light while the dark
+stays genuinely dark. Captured and compared against the old pitch-black
+frame: the difference is exactly the complaint answered.
+
+Owned, and it is the THIRD occurrence tonight: an inline patch shipped
+doubled quotes through a here-string and killed the build at parse. The
+rule is now absolute and recorded: any patch text containing quotes goes
+in a script file, never inline through the shell.
+
+Verified: parse PASS at v4.35 after the repair; night captured and looked
+at; four-map sweep clean. Not verified: his eyes at his screen brightness,
+which is the only judge of a lighting change that matters.
