@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.54';
+var VER='4.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17665,6 +17665,13 @@ function bagStacks(){
     if(ix[k]===undefined){ ix[k]=st.length; st.push({key:k,idxs:[i]}); }
     else st[ix[k]].idxs.push(i);
   }
+  st.sort(function(a,b){
+    var ia=ITEMS[a.key]||{},ib=ITEMS[b.key]||{};
+    var ua=(ia.use||a.key.indexOf('gun_')===0)?0:1;
+    var ub=(ib.use||b.key.indexOf('gun_')===0)?0:1;
+    if(ua!==ub) return ua-ub;
+    return String(ia.name||a.key)<String(ib.name||b.key)?-1:1;
+  });
   return st;
 }
 function drawBag(){
@@ -19084,7 +19091,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Four standing stones tell the story: the elites left Earth to the machines, one passage per sector',
+  now:'The bag sorts itself: gear your hands can use on top, cargo below',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

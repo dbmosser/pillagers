@@ -16272,3 +16272,18 @@ and flag both confirmed; four-map sweep clean. Not verified: whether the
 stones sit perfectly clear of walls on all four maps (the read works
 regardless), and whether the words land - they are his world's first
 written history, and he may want them rewritten.
+
+### m469 - v4.55: the bag knows what your hands can use
+
+His run #56: split the inventory into what can be equipped and what
+cannot. The grid now sorts gear first - medical, armour, throwables,
+stims, keys, guns - then cargo, each group alphabetical by display name,
+so the top rows are always the things you can act on and everything below
+is money in waiting. Selling, using and protecting items are untouched:
+the sort is display order only, and every cell still points at its real
+bag slot.
+
+Verified: parse PASS at v4.55; a mixed bag driven onto the open grid read
+back gear-then-cargo in exactly the intended order; four-map sweep clean.
+Not verified: whether he wants a visible divider line between the groups
+on top of the ordering.
