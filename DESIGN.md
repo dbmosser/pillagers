@@ -16764,3 +16764,30 @@ runs at true speed, half a second per half second; the ring dodge still
 works, a raider standing in an inbound ring moved clear; four-map sweep,
 hub, extract and dead endings all clean. Not verified: nothing. This one
 is closed.
+
+### m494 - v4.73: his run 59, on the fixed build
+
+He played the repaired game and left two orders.
+
+"If a player is downed and goes to the beacon, they should still have to
+pull E and hold to extract." That reverses the automatic pickup he chose
+back at v0.90, and reversing it is his to do. A man on the floor now holds
+the same pull as everyone else. The dial for this already existed, so the
+work was flipping the default, migrating saved profiles at a new config
+version, and proving the key actually reaches a downed player - which it
+does, because a run #5 note fixed that path long ago.
+
+And one vocabulary for the way out. Beacon, ship and extraction were three
+words for one thing. Everything says EXTRACTION now: the compass, the
+inbound line, the open line, the call prompt and the end screen. GET TO
+THE RING is gone, replaced by exactly what he asked for in its place - an
+arrow pointing at the way out with the distance beside it. It took three
+passes to place: stacked under the bar it touched the bar, moved down the
+number sat under the arrowhead, and side by side on one line it finally
+reads. Each one caught by looking at the capture.
+
+Verified: parse PASS at v4.73; a downed player in the ring with the ship
+down was NOT taken automatically, then boarded when E was held, both
+driven; four-map sweep and hub clean; the new wording and arrow captured
+and read on screen. Not verified: whether he wants the old automatic
+pickup available as an option rather than deleted.
