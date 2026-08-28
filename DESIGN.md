@@ -16513,3 +16513,19 @@ Verified: parse PASS at v4.65; the busy HUD captured - every amber on
 screen is now the same amber, the extract chain is one teal; four-map
 sweep clean. Not verified: the pale-gold keys and door lamps reading
 slightly deeper now, worth his glance.
+
+### m482 - v4.66: REDO slice three, one coat for every panel
+
+The audit found five near-identical panel darks and two border languages
+splitting the same screen. Every canvas panel now wears the canonical
+coat: the deep dark the conditions box always had, a subtle steel-blue
+border in the same family as the map frame and every menu window, and an
+amber title. The conditions box - previously borderless with a grey title,
+disagreeing with its draggable sibling on everything - gains the full
+frame and the amber CONDITIONS. The bar helper's backing and hairline
+joined the family, which quietly unifies every gauge in the game.
+
+Verified: parse PASS at v4.66; the raid captured with all three boards
+sharing one chrome; four-map sweep clean. Not verified: the steel border
+weight against his taste - one alpha value to tune if he wants it louder
+or quieter.

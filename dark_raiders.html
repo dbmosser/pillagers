@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.65';
+var VER='4.66';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14260,7 +14260,7 @@ if(G.map.story){
   // extract zones
   for(i=0;i<G.zones.length;i++){
     var z=G.zones[i],act=!!z.open;
-    wc.strokeStyle=act?'#4de3d0':'rgba(120,135,148,.35)';
+    wc.strokeStyle=act?'#4de3d0':'rgba(127,146,216,.30)';
     wc.lineWidth=act?3:1.5;
     wc.beginPath(); wc.arc(z.x,z.y,z.r,0,6.2832); wc.stroke();
     if(act){
@@ -15639,9 +15639,9 @@ wc.drawImage(fogC,0,0);
 
 // ================================================================ HUD (2D overlay)
 function bar(x,y,w,h,f,c,bg){
-  ctx.fillStyle=bg||'rgba(8,11,15,.8)'; ctx.fillRect(x,y,w,h);
+  ctx.fillStyle=bg||'rgba(6,9,13,.8)'; ctx.fillRect(x,y,w,h);
   ctx.fillStyle=c; ctx.fillRect(x,y,w*clamp(f,0,1),h);
-  ctx.strokeStyle='rgba(120,135,148,.35)'; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,w-1,h-1);
+  ctx.strokeStyle='rgba(127,146,216,.30)'; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,w-1,h-1);
 }
 function drawHUD(){
   var p=G.player,T=G.tel,i;
@@ -16006,11 +16006,11 @@ rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'})
     var bx=W-16-bw, by=LH(30)+LH(12)*2+LH(6);
     bx=clamp(bx+HOc.dx,4,Math.max(4,W-bw-4));
     by=clamp(by+HOc.dy,LH(10),Math.max(LH(10),H-LH(30)));
-    ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
-    ctx.fillStyle='rgba(120,140,160,.22)'; ctx.fillRect(bx,by,bw,1);
+ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
+    ctx.strokeStyle='rgba(127,146,216,.40)'; ctx.lineWidth=1; ctx.strokeRect(bx+.5,by+.5,bw-1,bh-1);
     ctx.textAlign='left';
     var ry=by+pad+LH(8);
-    ctx.fillStyle='#6b7783'; ctx.fillText('CONDITIONS',bx+pad,ry);
+    ctx.fillStyle='#ffc04a'; ctx.fillText('CONDITIONS',bx+pad,ry);
     HUDBOX.cond={x:bx,y:by,w:bw,h:bh,tg:{x:bx+bw-LH(20),y:by,w:LH(20),h:LH(16)}};
     ctx.textAlign='right'; ctx.fillStyle='#8a96a1';
     ctx.fillText(HOc.c?'[+]':'[-]',bx+bw-pad,ry);
@@ -16325,7 +16325,7 @@ if((p.healQ||0)>0&&!p.downed){
       var S=sl[q],bx=hx+q*(bw+gap),on=q===sel;
       G.hotCells.push({x:bx,y:hy,w:bw,h:bw,i:q});
       var empty=(S.count===0);
-      ctx.fillStyle=on?'rgba(38,32,20,.94)':'rgba(18,15,24,.80)';
+      ctx.fillStyle=on?'rgba(38,32,20,.94)':'rgba(6,9,13,.80)';
       ctx.fillRect(bx,hy,bw,bw);
       // the rarity wash goes OVER the base so a selected slot still reads as
       // selected, and under the icon so it never fights the portrait
@@ -16791,7 +16791,7 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     ctx.textAlign='left';
     for(var eq=0;eq<EMOTES.length;eq++){
       var EE=EMOTES[eq],ebx=ex0+eq*(ebw+egap);
-      ctx.fillStyle='rgba(18,15,24,.90)'; ctx.fillRect(ebx,ey0,ebw,ebh);
+      ctx.fillStyle='rgba(6,9,13,.90)'; ctx.fillRect(ebx,ey0,ebw,ebh);
       ctx.strokeStyle=(EE.k==='hail'&&weaponDown())?'#7fc4a0':'rgba(140,152,163,.42)';
       ctx.lineWidth=1; ctx.strokeRect(ebx+.5,ey0+.5,ebw-1,ebh-1);
       ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(160,172,184,.85)';
@@ -17072,9 +17072,9 @@ function drawRaiderBoard(){
   PADX=clamp(PADX+HOr.dx,4,Math.max(4,W-LW-4));
   y0=clamp(y0+HOr.dy,LH(20),Math.max(LH(20),H-LH(30)));
   var boxH=HOr.c?LH(18):(LH(20)+rows.length*LH1+LH(6));
-  ctx.fillStyle='rgba(18,15,24,.72)';
+  ctx.fillStyle='rgba(6,9,13,.72)';
   ctx.fillRect(PADX-8,y0-LH(13),LW,boxH);
-  ctx.strokeStyle='rgba(58,69,82,.75)'; ctx.lineWidth=1;
+  ctx.strokeStyle='rgba(127,146,216,.40)'; ctx.lineWidth=1;
   ctx.strokeRect(PADX-7.5,y0-LH(12.5),LW-1,boxH-1);
   ctx.font=FS(TYPE.micro);
   ctx.fillStyle='#ffc04a';
@@ -17182,8 +17182,8 @@ function drawLegend(){
     var mx=14,my=H-Math.max(LH(52),96)-MH;
     mx=clamp(mx+HOl.dx,4,Math.max(4,W-MW-4));
     my=clamp(my+HOl.dy,LH(14),Math.max(LH(14),H-MH-4));
-    ctx.fillStyle='rgba(18,15,24,.72)'; ctx.fillRect(mx-8,my-6,MW,MH+10);
-    ctx.strokeStyle='rgba(58,69,82,.75)'; ctx.lineWidth=1;
+    ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(mx-8,my-6,MW,MH+10);
+    ctx.strokeStyle='rgba(127,146,216,.40)'; ctx.lineWidth=1;
     ctx.strokeRect(mx-7.5,my-5.5,MW-1,MH+9);
     HUDBOX.legend={x:mx-8,y:my-6,w:MW,h:MH+10,tg:{x:mx-8+MW-LH(20),y:my-6,w:LH(20),h:LH(14)}};
     ctx.textAlign='right'; ctx.fillStyle='#8a96a1'; ctx.font=MONO;
@@ -17217,8 +17217,8 @@ function drawLegend(){
   var top=Math.max(8,H-Math.max(LH(52),96)-boxH);
 var LEGW=LH(222);
   x=Math.max(14,Math.round((W-LEGW)/2));
-  ctx.fillStyle='rgba(18,15,24,.82)'; ctx.fillRect(x-8,top-6,LEGW,boxH+10);
-  ctx.strokeStyle='rgba(58,69,82,.9)'; ctx.lineWidth=1;
+  ctx.fillStyle='rgba(6,9,13,.82)'; ctx.fillRect(x-8,top-6,LEGW,boxH+10);
+  ctx.strokeStyle='rgba(127,146,216,.55)'; ctx.lineWidth=1;
   ctx.strokeRect(x-7.5,top-5.5,LEGW-1,boxH+9);
   var cy=top+LH(6);
   for(i=0;i<LEG.length;i++){
@@ -17234,7 +17234,7 @@ var LEGW=LH(222);
     }
   }
   cy+=6;
-  ctx.strokeStyle='rgba(58,69,82,.8)';
+  ctx.strokeStyle='rgba(127,146,216,.45)';
   ctx.beginPath(); ctx.moveTo(x,cy-9); ctx.lineTo(x+200,cy-9); ctx.stroke();
   for(i=0;i<GEARRULES.length;i++){
     var gr=GEARRULES[i];
@@ -19170,7 +19170,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'REDO slice two: one colour per meaning everywhere - amber chooses, teal informs, red warns, green rewards',
+  now:'REDO slice three: every panel wears the same coat - one dark, one steel border, amber titles',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
