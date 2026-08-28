@@ -16580,3 +16580,25 @@ clean. The redo ran audit-first: four parallel readers mapped every
 surface, a synthesis ranked eighteen defects with exact line references,
 and every slice asserted its counts before swapping. Not verified: taste.
 That report card comes from the next run file.
+
+### HANDOFF NOTE, 2026-08-28: model switch at v4.69
+
+He switched models mid-session and asked for a flawless handoff. State at
+the swap: v4.69, commit 34b2cc7, tree clean, no unconsumed exports, all
+four servers listening, backups synced to Documents and OneDrive. Forty-five
+builds shipped in the preceding stretch (v4.25 to v4.69): every one of his
+fifty answers, every one of his run #57 and #58 notes, and the UI redo's
+mechanical core across six slices.
+
+The three wakers - the exports monitor and the minute and twenty-minute
+crons - are session-scoped and survive a model swap; a NEW session must
+re-arm all three before anything else. A full read-first state file now
+lives in memory as dark-raiders-handoff-state, indexed at the top of
+MEMORY.md, carrying the standing rules, the verify procedure, the
+benchmark boundaries, the patch tooling law, and the open decisions.
+
+Work does not pause for a handoff. The next actions were already queued and
+continue immediately: a fresh 320-seed benchmark, owed because v4.61 to
+v4.63 put field rigs into the safe and cache loot tables and that touches
+what the robot finds; more touchdown landings for question two; and the
+redo's taste pass, which waits on nothing but his next run file.
