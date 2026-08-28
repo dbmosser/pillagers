@@ -15598,3 +15598,43 @@ drawn every second: no draw errors and nothing thrown, on the build carrying
 all of today's work (contracts, per-sector ground, per-sector vegetation,
 board rewording). Not verified: nothing new; this entry exists so the soak
 is on the record.
+
+### m438 - v4.23: his run 54 notes, and a reload indicator that never worked
+
+He asked from the pause menu whether his notes actually reach me. They do,
+same hour, and this build is the proof: all four of run 54's notes shipped.
+
+The reload countdown was not a formatting nit, it was dead on arrival:
+p.reloading counts down in milliseconds and both the cursor arc and the
+over-head bar divided it by a figure in seconds, so the fraction pinned past
+one and clamped to zero. The bright arc and the bar he asked for in v4.05
+have been EMPTY through every reload since, and the text beside them printed
+raw milliseconds with an s on the end, which is the "backwards" he saw
+twice. Same unit family as the v3.38 SHOOTING bug. Both sides are in
+milliseconds now and the text says 1.4s style seconds.
+
+The bandage now counts down in seconds beside the incoming-heal bar ("3s to
+go", his phrasing). The bottom banner says EXTRACTION POINT IS OPEN with
+"15 seconds left, get to the ring" instead of SHIP IS DOWN. And no animal
+stays inside a building: walls always stopped a deer but a doorway is a gap
+and a bird lands where it likes; any wild thing found inside a footprint is
+pushed out the nearest side, its home moves with it so the idle wander does
+not walk it straight back in, and three strikes sends it off the map the way
+stuck deer already go.
+
+Workshop note: wildTick runs ONLY under the real loop (__loop with
+timestamps), not under __sim and not under __frame, which goes straight to
+the renderer. The animal fix read as dead twice before the right driver ran
+it.
+
+Verified: parse PASS at v4.23; reload driven on the play path with the real
+R key, 1300 to 800 milliseconds across a half-second of sim and the arc
+fraction at 0.38 mid-reload; heal counter drawn without error; the banner
+captured and READ on screen, correct wording and countdown; a deer placed
+dead centre of a building pushed out through the nearest side in one real
+frame, home moved, one strike counted; four-map sweep clean, hub clean,
+extract and dead endings ran. Not verified: how the seconds text reads at
+his zoom in motion, and the banner in a genuinely earned ship-down rather
+than a forced state. Found in passing, confirmed on the banner capture: the
+SHIP HOLDING strip text collides with the hotbar, exactly as his run 55
+note says - it leads the next build.

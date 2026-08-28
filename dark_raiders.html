@@ -560,7 +560,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.22';
+var VER='4.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6149,6 +6149,21 @@ function wildTick(dt){
       }
       c.x+=c.vx*dt; c.y+=c.vy*dt;
       if(c.z>0) c.z=Math.max(0,c.z-120*dt);
+    }
+if(!c.dead){
+      for(var bg2=0;bg2<G.map.buildings.length;bg2++){
+        var BG=G.map.buildings[bg2];
+        if(c.x>BG.x+4&&c.x<BG.x+BG.w-4&&c.y>BG.y+4&&c.y<BG.y+BG.h-4){
+          var gl=c.x-BG.x, gr=BG.x+BG.w-c.x, gu=c.y-BG.y, gd=BG.y+BG.h-c.y;
+          var gm=Math.min(gl,gr,gu,gd);
+          if(gm===gl) c.x=BG.x-15; else if(gm===gr) c.x=BG.x+BG.w+15;
+          else if(gm===gu) c.y=BG.y-15; else c.y=BG.y+BG.h+15;
+          c.hx=c.x; c.hy=c.y;
+          c.bump=(c.bump||0)+1;
+          if(c.bump>=3){ c.life=0; c.bump=0; }
+          break;
+        }
+      }
     }
     if(c.vx>1) c.face=1; else if(c.vx<-1) c.face=-1;
   }
@@ -15316,7 +15331,7 @@ function drawHUD(){
       // drawn faintly first, the filled part closes over it thick and bright,
       // and the seconds still to wait sit beside the cursor counting down,
       // which is the "how long" he asked for, literally.
-      var _rlf=clamp(1-p.reloading/(p.wep.reload/1000),0,1);
+      var _rlf=clamp(1-p.reloading/p.wep.reload,0,1);
       var _rlr=gap+len+4;
       if(CFG.cursorLoud!==0){
         ctx.strokeStyle='rgba(255,192,74,.26)'; ctx.lineWidth=4.4;
@@ -15325,7 +15340,7 @@ function drawHUD(){
         ctx.beginPath(); ctx.arc(rx0,ry0,_rlr,-1.5708,-1.5708+6.2832*_rlf); ctx.stroke();
         var _ta0=ctx.textAlign;
         ctx.font=FS(TYPE.micro); ctx.textAlign='left'; ctx.fillStyle='rgba(255,192,74,.95)';
-        ctx.fillText(Math.max(0,p.reloading).toFixed(1)+'s',rx0+_rlr+7,ry0+4);
+        ctx.fillText((Math.max(0,p.reloading)/1000).toFixed(1)+'s',rx0+_rlr+7,ry0+4);
         ctx.textAlign=_ta0;
       } else {
         ctx.strokeStyle='rgba(255,192,74,.9)'; ctx.lineWidth=2.4;
@@ -15765,7 +15780,7 @@ rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'})
     if(_rb){
       ctx.fillStyle='rgba(6,9,13,.72)';
       ctx.fillRect(_rb.x-27,_rb.y-LH(10),54,LH(8));
-      bar(_rb.x-25,_rb.y-LH(9),50,LH(5),clamp(1-p.reloading/(p.wep.reload/1000),0,1),'#ffc04a');
+      bar(_rb.x-25,_rb.y-LH(9),50,LH(5),clamp(1-p.reloading/p.wep.reload,0,1),'#ffc04a');
     }
   }
   if(G.searching){
@@ -15981,8 +15996,13 @@ rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'})
     var hpul=0.42+0.22*Math.sin(G.t*7.4);
     ctx.fillStyle='rgba(111,224,160,'+hpul+')';
     ctx.fillRect(h0,by,Math.max(0,h1-h0),HBH);
-    ctx.fillStyle='rgba(190,255,220,.85)';
+ctx.fillStyle='rgba(190,255,220,.85)';
     ctx.fillRect(h0,by,2,HBH);
+    // v4.23 HIS NOTE: "counter should be told in seconds, e.g. 3 seconds to
+    // go". healQ is hit points on their way; healRate is hp per second; the
+    // division is the seconds he asked for.
+    ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(111,224,160,.95)';
+    ctx.fillText(Math.max(1,Math.ceil(p.healQ/(p.healRate||10)))+'s to go',h1+6,by+HBH-1);
   }
   ctx.font=FS(TYPE.title); ctx.fillStyle='#FFF6DC';
   ctx.fillText('HP  '+Math.round(p.hp),24,by+18);
@@ -16214,7 +16234,7 @@ rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'})
       _msg='HOLD E TO EXTRACT';
       _sub='Ship leaves in '+Math.max(0,Math.ceil(G.shipHold))+'s';
     } else if(_shipDown){
-      _msg='SHIP IS DOWN'; _sub='Get to the ring, '+Math.max(0,Math.ceil(G.shipHold))+'s'; _col='#ff5a4a';
+      _msg='EXTRACTION POINT IS OPEN'; _sub=Math.max(0,Math.ceil(G.shipHold))+' seconds left, get to the ring'; _col='#ff5a4a';
     }
     if(_msg){
       // Pulsing, because a static line at the centre of the screen stops being
@@ -18609,7 +18629,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Every open question on the board now ends in its one-word answers: reply with a single word in a run note',
+  now:'Your run 54 notes: reload countdown fixed for real, bandage speaks seconds, the banner says EXTRACTION POINT IS OPEN, animals stay outside',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
