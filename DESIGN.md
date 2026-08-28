@@ -17294,3 +17294,42 @@ panel. The ambush numbers were measured against a sentry standing in
 isolation on the dam; a sentry in a room with three others may behave
 differently, though the turn rate that drives the result is shared by all
 of them.
+
+### m507 - v4.93: the one function in the file that was written and never called
+
+I listed every top level declaration in the game, 595 of them, and counted
+how many times each is referenced. Exactly one is referenced nowhere but
+its own definition line: seasonReady.
+
+What it does is count the season rewards you have EARNED and not
+collected. So the game has always known there was a gun sitting behind THE
+STASH with your name on it, and has never once mentioned it. The only way
+to find out is to walk over and press R on the off chance.
+
+Two places, because a reward you have to be standing on top of to hear
+about is barely better than silence. A badge over the station, amber and
+slowly pulsing, readable from the deploy lift on the other side of the
+room: "3 REWARDS WAITING". And the station's own prompt line when you get
+there, appended to the keys it already lists.
+
+Both are FUNCTIONS rather than strings, because the hub is built once when
+the game loads and rewards are earned while you are standing in it. That
+is the same trap the deploy lift's sector name hit at v2.95 and the reason
+the pattern was already there to copy.
+
+Worth saying: the fixture profile has a million season points and nothing
+claimed, so it shows ten waiting. If your own profile has been quietly
+accumulating these the same way, that badge is going to have something to
+say the next time you load the game.
+
+Verified: parse PASS at v4.93; four-map sweep clean at 110, 111, 74 and 91
+entities with container counts unchanged; all three raid endings; hub
+clean including the bare-argument call that used to kill it. Both states
+driven and read back: "10 rewards waiting" appended when there are some,
+the plain key list when everything is claimed, and the hub renders without
+throwing in either case. Badge photographed over THE STASH.
+
+Not verified: no balance run; nothing here touches a raid. I have not
+checked whether the season tiers themselves pay what they claim, only that
+the count of unclaimed ones is now visible. The badge was photographed at
+one window size.
