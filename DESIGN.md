@@ -17241,3 +17241,56 @@ the ring. Whether shelling through a wall actually feels different to a
 human is the thing I cannot test here and the thing I would most like a
 run report about. The v4.90 outcome line was verified with contracts I
 forced to completion rather than earned across a real raid.
+
+### m506 - v4.92: weak points are an opening move, and the card was teaching a bonus you cannot collect
+
+Two builds ago I put WEAK SPOTS on the reference card: the glowing parts
+take two to three times damage. Then I went and measured whether you can
+ever actually hit one, because teaching a bonus a player cannot collect is
+worse than not teaching it at all. He goes looking for it in the middle of
+a fight, never gets it, and concludes the game is lying to him.
+
+The measurement, driving real chases with every other entity removed from
+the world so nothing else could interfere:
+
+  a sentry HUNTING you            0 percent of the time, back turned
+    at radius 70, 110, 150, 200 and 260, circling as fast as a player can
+  a sentry that has NOT seen you  36.8 percent, median window 4.65s,
+    longest window 9.85s
+  a Warden hunting you            32 to 34 percent at close radius
+
+The reason is one number. Everything in the main entity loop turns at 5.5
+radians a second. Beating that on an orbit takes 385 units per second at
+arm's length and 825 at gun range, and nothing in this game moves that
+fast. The Warden is clamped separately at 2.2, which is why the Warden is
+the one enemy you genuinely can circle, and that is the design working:
+his own instruction was that the big one should move slowly enough that
+you can choose not to engage.
+
+So the mechanic is not broken. It is an AMBUSH. Line the shot up before it
+notices you and you have about four and a half seconds against a sentry's
+vent at 3.4 times damage. Once it is hunting you, that door is shut and
+the fight is the fight.
+
+The fix is therefore not a balance change and not a turn-rate nerf, both
+of which would have made his game easier without him asking. It is three
+lines on the card: open with them, anything hunting you keeps its front
+turned to you. No number in the game changed.
+
+I also rewrote the design comment above the weak point table, which has
+said since SPEC 8.7 that "the only way to use it is to be behind a machine
+that is hunting you". That describes the exact thing the game does not
+allow, and it is presumably why I taught it wrong in the first place. It
+now carries the measurements instead of the intention.
+
+Verified: parse PASS at v4.92; four-map sweep clean at 110, 111, 74 and 91
+entities with container counts unchanged; all three raid endings; hub
+clean; the card photographed at 1280 by 720 with the new lines in place,
+nothing clipped and the footer still under both columns.
+
+Not verified: no balance run, because nothing that affects a raid outcome
+was touched - the only change to the running game is five strings on a
+panel. The ambush numbers were measured against a sentry standing in
+isolation on the dam; a sentry in a room with three others may behave
+differently, though the turn rate that drives the result is shared by all
+of them.

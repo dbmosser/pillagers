@@ -570,7 +570,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.91';
+var VER='4.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4954,9 +4954,17 @@ function doEmote(ix){
 // ====================================================== WEAK POINTS
 // SPEC 8.7. A Sentry was 150 health and a Warden was 620, and the only tactic
 // either of them asked for was "have enough bullets". A weak point turns a
-// health bar into a place you have to GET TO: the vent is on its back, so the
-// only way to use it is to be behind a machine that is hunting you, which is
-// the exact opposite of what your nerve is telling you to do.
+// health bar into a place you have to GET TO: the vent is on its back, so using
+// it means being behind the machine.
+// MEASURED at v4.92, because this comment used to claim you did that to a
+// machine that was HUNTING you, and against a sentry that is impossible. A
+// sentry tracks at 5.5 radians a second. Beating that on an orbit needs 385
+// units per second at arm's length and 825 at gun range, so a hunting sentry
+// shows its back 0 percent of the time at every radius tested from 70 to 260.
+// An UNNOTICED one shows it 36.8 percent of the time, median window 4.65
+// seconds. The Warden, clamped to 2.2, is the one you really can circle: 32 to
+// 34 percent while it hunts you.
+// So this is an ambush, and the reference card says so.
 // Angles are offsets from the machine's own facing, so the openings turn as it
 // turns and flanking is a real manoeuvre rather than a stat check.
 var WEAKPTS={
@@ -16989,8 +16997,11 @@ var GEARRULES=[
   ['WATER','Slows you and is loud.'],
   ['','Crouch will not quiet a splash.'],
 ['RINGS','Teal ring is live. Grey cold.'],
-  ['WEAK SPOTS','The glowing parts take'],
+['WEAK SPOTS','The glowing parts take'],
   ['','two to three times damage.'],
+  ['','Open with them. Anything'],
+  ['','hunting you keeps its'],
+  ['','front turned to you.'],
 ['BEHIND','Back shots do half again'],
   ['','more damage, on anything.'],
   ['GRENADES','Hold FIRE to cook one.'],
@@ -19304,7 +19315,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The Howler shells you through walls, finishing a contract says so out loud, and one bad card can no longer lock you out of the hub',
+  now:'Weak points are an opening move, not a duelling move, and the card finally says which',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
