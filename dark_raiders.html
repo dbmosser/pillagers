@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.53';
+var VER='4.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2930,7 +2930,9 @@ id:'dam', name:'GREYWATER DAM', w:5200, h:4000,
   // v4.20: the ground itself carries the sector's identity. One base colour
   // served all four maps since the beginning, which is a large part of why
   // they read as reskins from above. Damp mossy concrete for the dam.
-  ground:{day:'#56705A',night:'#111813'},
+ground:{day:'#56705A',night:'#111813'},
+  story:{x:2600,y:780,name:'THE DEPARTURE NOTICE',
+    text:'A corroded board notice: "MERIDIAN EXECUTIVE LIFT WINDOW CLOSES 06:00. Seats are non-transferable. The dam will run itself. It has been told to."'},
   veg:{r:0.90,g:1.05,b:0.95},   // v4.21: lush and damp
   // REBUILT v1.52. His note: the dam was the weak map. Measured, he was right:
   // only 10.4 percent of its walkable ground sat inside a named place against
@@ -3112,7 +3114,9 @@ id:'dam', name:'GREYWATER DAM', w:5200, h:4000,
   // no verticality anchor and no water: the tension here is exposure, and the
   // relief is doorways.
 id:'buried', name:'SUNKEN QUARTER', w:4600, h:4600,
-  ground:{day:'#75664F',night:'#16140f'},
+ground:{day:'#75664F',night:'#16140f'},
+  story:{x:2300,y:2170,name:'THE HIGH WATER MARK',
+    text:'A line painted on brick, three metres up: "They raised the water the week they left. The last shuttle overflew the plaza at dawn and did not slow."'},
   veg:{r:1.00,g:0.96,b:0.78},   // v4.21: murky waterlogged green   // v4.20: flood silt
   zones:[
     {name:'THE COURTYARD', d:0, x:1300, y:1300, w:2000, h:2000},
@@ -3220,7 +3224,9 @@ id:'buried', name:'SUNKEN QUARTER', w:4600, h:4600,
 // answer to TENSE AND FRIGHTENING that geometry can give.
 {
 id:'cold', name:'COLD STORAGE', w:4200, h:3400,
-  ground:{day:'#55647A',night:'#10151d'},
+ground:{day:'#55647A',night:'#10151d'},
+  story:{x:1900,y:360,name:'THE MANIFEST',
+    text:'A clipboard, frozen to the desk: "Inventory, year one after departure: forty thousand tonnes of provisions, ownerless. The machines keep the cold chain unbroken. Nobody has told them to stop."'},
   veg:{r:0.88,g:0.92,b:1.12},   // v4.21: frost-bitten   // v4.20: cold blue concrete
   zones:[
     {name:'THE LONG DOCK', d:0, x:0,    y:0,    w:4200, h:800 },
@@ -3334,7 +3340,9 @@ id:'cold', name:'COLD STORAGE', w:4200, h:3400,
 },
 {
 id:'quarry', name:'THE QUARRY', w:4600, h:3600,
-  ground:{day:'#836C48',night:'#181410'},
+ground:{day:'#836C48',night:'#181410'},
+  story:{x:450,y:360,name:'THE LAST SHIFT LOG',
+    text:'A shift log, open to the final page: "The board took the yield projections and left the diggers running. The pit is eleven metres deeper than when the last human clocked out."'},
   veg:{r:1.18,g:1.02,b:0.66},   // v4.21: dry scrub   // v4.20: dry ochre dust
   // THE FOURTH MAP, and the roadmap item that had been sitting at NOW since
   // v1.52: one built around VERTICALITY. The other three are flat ground with a
@@ -4025,7 +4033,7 @@ function buildFixedMap(def){
     segs.push({x1:w2.x+w2.w,y1:w2.y+w2.h,x2:w2.x,y2:w2.y+w2.h});
     segs.push({x1:w2.x,y1:w2.y+w2.h,x2:w2.x,y2:w2.y});
   }
-  return {fixed:def.id,name:def.name,ground:def.ground||null,veg:def.veg||null,walls:walls,segs:segs,buildings:buildings,water:water,
+  return {fixed:def.id,name:def.name,ground:def.ground||null,veg:def.veg||null,story:def.story||null,walls:walls,segs:segs,buildings:buildings,water:water,
     roadRects:roadRects,roadDashes:roadDashes,cullLog:_cullLog,
     cw:WORLD_W/8,ch:WORLD_H/8,cols:8,rows:8,
     bushes:bushes,landmarks:landmarks,zones:zseeds,districtAt:districtAt,zoneAt:zoneAt,woods:woodsList,bigPairs:[],plats:plats,ramps:ramps,platAt:platAt,liftAt:liftAt,locked:lockedRooms,
@@ -14186,7 +14194,18 @@ function render2D(dt){
     wc.globalCompositeOperation='source-over';
   }
   // decals + shells
-if(G.prints) for(i=0;i<G.prints.length;i++){
+if(G.map.story){
+    var _st2=G.map.story;
+    shadowE(_st2.x,_st2.y+2,10,4,.35);
+    wc.fillStyle='#2b2f36'; wc.fillRect(_st2.x-7,_st2.y-26,14,28);
+    wc.fillStyle='#9aa8b2'; wc.fillRect(_st2.x-5,_st2.y-24,10,3);
+    wc.fillStyle='#ffd76a'; wc.fillRect(_st2.x-3,_st2.y-18,6,2);
+    if(!G.sim&&!G.storyRead&&G.player&&dist(G.player,_st2)<60){
+      G.storyRead=1; G.tel.storyRead=1;
+      say(_st2.name+'. '+_st2.text);
+    }
+  }
+  if(G.prints) for(i=0;i<G.prints.length;i++){
     var _fp=G.prints[i],_fa=clamp(1-_fp.t/6,0,1)*0.35;
     wc.fillStyle='rgba(40,30,20,'+_fa.toFixed(2)+')';
     wc.fillRect(_fp.x-3,_fp.y-1,3,5);
@@ -19065,7 +19084,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'THE POSSUM: one crawler in seven plays dead by a wreck, unmarked, until you are nearly standing on it',
+  now:'Four standing stones tell the story: the elites left Earth to the machines, one passage per sector',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -16252,3 +16252,23 @@ crawler arithmetic; a possum driven dormant at 300 units through a full
 second and springing to chase at 60; entity counts unchanged on all four
 maps; sweep clean. Not verified: the fright, which is the entire point and
 belongs to him.
+
+### m468 - v4.54: four standing stones
+
+His answers 33 and 53: one pure-story landmark per sector, no loot, and
+the story he chose - the elites bailed on Earth and left it ruled by
+robots. THE DEPARTURE NOTICE on the dam crest, board seats
+non-transferable and the dam told to run itself. THE HIGH WATER MARK in
+the Quarter, painted three metres up. THE MANIFEST frozen to a desk in
+Cold Storage, forty thousand ownerless tonnes kept cold by machines nobody
+told to stop. THE LAST SHIFT LOG at the Quarry rim, the diggers still
+running, the pit eleven metres deeper. A small standing stone marks each;
+walking to it reads the passage once per raid, and the recorder notes
+storyRead so his exports show who found what.
+
+Verified: parse PASS at v4.54; all four maps carry their story on the
+built object; the Quarry stone driven and read on the play path, message
+and flag both confirmed; four-map sweep clean. Not verified: whether the
+stones sit perfectly clear of walls on all four maps (the read works
+regardless), and whether the words land - they are his world's first
+written history, and he may want them rewritten.
