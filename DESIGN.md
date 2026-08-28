@@ -16136,3 +16136,18 @@ this changes robot-raid outcomes (reinforcements aim at fresher marks), so
 the running answer-wave benchmark boundary now includes it; one fresh 320
 gets taken at the end of the wave rather than per build. Not verified: the
 new balance of running from a crier at range.
+
+### m461 - v4.45: field repairs
+
+His answer 28. A wounded machine at rest, with another machine at rest
+within arm's reach, gets welded back together at roughly two points a
+second, blue sparks and all. The moment either machine enters a fight the
+welding stops. A fight you finish stays finished; a fight you walk away
+from heals over, which quietly raises the value of finishing what you
+start - and of the new back-shot opener that finishes things fast.
+
+Verified: parse PASS at v4.45; a resting pair driven from 40 health to 60
+over ten seconds, and the same wounded machine stayed at 40 when its
+partner was pulled into combat; four-map sweep clean. Not verified: the
+repair rate against his pace of play - the wave benchmark at the end of
+the night will show the aggregate.
