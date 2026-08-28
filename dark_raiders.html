@@ -565,7 +565,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.71';
+var VER='4.72';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7872,7 +7872,7 @@ function howlerImpact(SH){
   flash(SH.tx,SH.ty,220,'#ff9a5c',.4);
   ping(SH.tx,SH.ty,480,false,false,'robot','fire');
   var dp=dist(p,{x:SH.tx,y:SH.ty});
-  if(dp<R&&!p.downed) damagePlayer(SH.dmg*(1-dp/R)+6,'howler','HOWLER',SH.x,SH.y);
+  if(dp<R&&!p.downed) damagePlayer(SH.dmg*(1-dp/R)+6,'howler','HOWLER',SH.tx,SH.ty);
   for(var i=G.ents.length-1;i>=0;i--){
     var e=G.ents[i]; if(e.kind==='howler') continue;
     var de=dist(e,{x:SH.tx,y:SH.ty});
@@ -7885,7 +7885,8 @@ function howlerImpact(SH){
 function updateThrowables(dt){
   // Howler shells: two seconds in the air, and they land where the ring said.
   for(var shI=G.shells.length-1;shI>=0;shI--){
-    var SH=G.shells[shI];
+var SH=G.shells[shI];
+    if(!SH.mortar) continue;
     SH.t+=dt;
     if(SH.t>=SH.air){ G.shells.splice(shI,1); howlerImpact(SH); }
   }
@@ -8267,7 +8268,7 @@ if(wep.mag===0){
   }
   if(!G.sim&&!melee){
     var sa=ang-1.5+rnd(-.3,.3);
-    G.shells.push({x:sh.x,y:sh.y,vx:Math.cos(sa)*rnd(60,130),vy:Math.sin(sa)*rnd(60,130),t:0,life:rnd(.5,.9),rot:rnd(0,6)});
+    G.shells.push({brass:1,x:sh.x,y:sh.y,vx:Math.cos(sa)*rnd(60,130),vy:Math.sin(sa)*rnd(60,130),t:0,life:rnd(.5,.9),rot:rnd(0,6)});
   }
 }
 // ---------------------------------------------------------------- THE COST OF GREED
@@ -10459,7 +10460,8 @@ var LD=loadOf(bagWeight());
     if(CFG.simDodgeRing!==1||p.downed||!G.shells||!G.shells.length) return false;
     var RD=(CFG.howlerR===undefined?90:CFG.howlerR)+16;
     for(var _si=0;_si<G.shells.length;_si++){
-      var _sh=G.shells[_si];
+var _sh=G.shells[_si];
+      if(!_sh.mortar) continue;
       var _sd=Math.hypot(p.x-_sh.tx,p.y-_sh.ty);
       if(_sd>=RD) continue;
       var _sa=(_sd>0.5)?Math.atan2(p.y-_sh.ty,p.x-_sh.tx):(p.face+3.1416);
@@ -11682,7 +11684,8 @@ if(e.kind==='raider'&&e.state!=='extract'&&e.hp<e.maxhp*0.3){
     if(CFG.raiderDodgeRing!==0&&e.kind==='raider'&&!e.downed&&G.shells&&G.shells.length){
       var _rdR=(CFG.howlerR===undefined?90:CFG.howlerR)+16,_rdHit=false;
       for(var _rdi=0;_rdi<G.shells.length;_rdi++){
-        var _rdS=G.shells[_rdi];
+var _rdS=G.shells[_rdi];
+        if(!_rdS.mortar) continue;
         var _rdD=Math.hypot(e.x-_rdS.tx,e.y-_rdS.ty);
         if(_rdD>=_rdR) continue;
         var _rdA=(_rdD>0.5)?Math.atan2(e.y-_rdS.ty,e.x-_rdS.tx):e.face;
@@ -11772,7 +11775,7 @@ if(e.kind==='raider'&&e.state!=='extract'&&e.hp<e.maxhp*0.3){
         // counterplay the range invites.
         if(e.cd<=0&&d<e.rng&&d>140&&!p.downed){
           var _hsc=Math.min(120,d*0.12);
-          G.shells.push({x0:e.x,y0:e.y,tx:p.x+rnd(-_hsc,_hsc),ty:p.y+rnd(-_hsc,_hsc),
+          G.shells.push({mortar:1,x0:e.x,y0:e.y,tx:p.x+rnd(-_hsc,_hsc),ty:p.y+rnd(-_hsc,_hsc),
             t:0,air:(CFG.howlerAir===undefined?2.1:CFG.howlerAir),
             dmg:e.dmg*(e.elite?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)});
           e.cd=4.2+rnd(0,1.6);
@@ -14279,7 +14282,8 @@ if(G.map.story){
   }
   wc.fillStyle='#b08c3c';
   for(i=0;i<G.shells.length;i++){
-    var sl=G.shells[i];
+var sl=G.shells[i];
+    if(sl.mortar) continue;
     wc.globalAlpha=clamp(1-(sl.t-sl.life)/2.5,0,.9);
     wc.save(); wc.translate(sl.x,sl.y); wc.rotate(sl.rot);
     wc.fillRect(-1.6,-.7,3.2,1.4); wc.restore();
@@ -14381,7 +14385,9 @@ if(!sc.seen) continue;
   // Howler shells: the growing red ring IS the game of it, so it is drawn
   // loud; the shell itself is a dot on an arc with its shadow on the ground.
   for(i=0;i<G.shells.length;i++){
-    var SHD=G.shells[i], _sf=clamp(SHD.t/SHD.air,0,1);
+var SHD=G.shells[i];
+    if(!SHD.mortar) continue;
+    var _sf=clamp(SHD.t/SHD.air,0,1);
     var RR3=(CFG.howlerR===undefined?90:CFG.howlerR);
     wc.strokeStyle='rgba(255,90,60,'+(0.25+0.45*_sf).toFixed(3)+')';
     wc.lineWidth=2;
@@ -18936,8 +18942,8 @@ function loop(ts){
       // floor tells you something happened here. Settled shells stop simulating
       // entirely, so three hundred of them cost the same as none.
       for(i=G.shells.length-1;i>=0;i--){
-        var sl=G.shells[i];
-        if(sl.settled) continue;
+var sl=G.shells[i];
+        if(sl.mortar||sl.settled) continue;
         sl.t+=dt; sl.x+=sl.vx*dt; sl.y+=sl.vy*dt;
         sl.vx*=.88; sl.vy*=.88;
         if(sl.t>sl.life) sl.settled=true;
@@ -19198,7 +19204,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Parity audit fixes: animals run from what actually scared them, a ghost never spawns unarmed, raiders leave boot prints',
+  now:'CRITICAL FIX: the first shot of every raid was deleting every raider on the map. Spent brass and mortar shells shared one list',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

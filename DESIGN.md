@@ -16725,3 +16725,42 @@ spooked by a raider driven and measured running away from the RAIDER; a
 crowbar ghost driven and confirmed spawning with a Scav Pistol; a
 sprinting raider driven and leaving six prints. Not verified: how much
 raider prints change his reading of a map in play.
+
+### m493 - v4.72: THE WORST BUG THIS PROJECT HAS SHIPPED, and it was mine
+
+Owned in one line: my v4.11 raider ring-dodge deleted every raider on the
+map on the first shot of every raid, and it has been live for sixty
+builds.
+
+One list, G.shells, holds two completely different things: spent brass,
+pushed on every shot anyone fires, and howler mortar shells in the air.
+Six places read that list and every one assumed it held only its own kind.
+The ring-dodge asks each entry where it will land. A brass casing has no
+landing point, so the distance comes back as nonsense, the "too far to
+care" test fails because nonsense fails every comparison, and the raider
+is ordered to walk to a coordinate that does not exist. Measured: one
+casing turns all fifteen raiders into impossible positions in a single
+frame. They cannot be seen, shot, or shot BY; they cannot loot, fight or
+leave.
+
+Three more faults came from the same collision. The mortar's flight clock
+was advanced twice a frame, once by its own loop and once by the brass
+loop, so the two-second warning he was promised ran out in one. The
+artillery hit passed an undefined position to the damage system, so the
+new direction ring never drew for a shell. And each loop was drawing the
+other's objects into nothing.
+
+WHY SIXTY BUILDS OF MEASUREMENT MISSED IT: brass is cosmetic, so it sits
+behind the not-a-sim guard. The benchmark never creates a single casing.
+Every number this project has published came from a world where this bug
+could not fire. The sim is not the game, and a fault fenced behind a
+cosmetic guard is invisible to every measurement I have ever taken.
+
+Both kinds are tagged now and every one of the six readers takes only its
+own. Verified: parse PASS at v4.72; a real gun fired on the play path put
+ten casings on the ground and left all fifteen raiders whole, where the
+same drive before the fix broke fifteen of fifteen; the mortar clock now
+runs at true speed, half a second per half second; the ring dodge still
+works, a raider standing in an inbound ring moved clear; four-map sweep,
+hub, extract and dead endings all clean. Not verified: nothing. This one
+is closed.
