@@ -75,7 +75,7 @@ window.__canvases=function(){ return {world:cv,overlay:hcv}; };
 window.__movers={seekPoint:seekPoint,navSeek:navSeek,mkSentry:mkSentry,mkRaider:mkRaider,dist:dist,buildNav:buildNav};
 window.__newRaid=function(){ G=buildRaid(true); return G; };
 window.__hub=function(){ return HB; };
-window.__hubStep=function(dt){ updateHubWorld(dt); drawHubWorld(dt); };
+window.__hubStep=function(dt){ dt=(dt===undefined||!isFinite(dt))?0.016:dt; updateHubWorld(dt); drawHubWorld(dt); };
 // __startRaid TOOK NO ARGUMENTS until 2026-08-26 and silently ignored everything
 // passed to it, so every __startRaid({mapIx:m,seed:s}) in a verification run built
 // whatever map P.mapIx already held, with an unpinned seed. Four-map render checks

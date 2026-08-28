@@ -16932,3 +16932,87 @@ This is a real difficulty reduction for anyone who uses cover, which is
 the point, and it is disclosed rather than buried: if he wants the
 pressure back, the settings page now has HARDENED sitting one click above
 Standard.
+
+### m501 - v4.79 to v4.83: the card that teaches, the hub that cannot die, the caches that say their names
+
+Four things in one pass, all of them found by looking at the screen
+instead of at the code.
+
+THE REFERENCE CARD NOW TEACHES. Behind H there was a list of keys, and a
+whole layer of this game has no key at all. Weak spots take two to three
+times damage, a shot in the back does half again more on anything alive,
+holding FIRE cooks a grenade, grenades stop dead at walls so throwing one
+through a doorway is a wasted grenade, CAPS walks you along with your
+hands free, plus and minus zoom, and every box on the screen can be
+dragged where you want it and folded away with its own minus. None of
+that was written down anywhere. It is written down now.
+
+Adding it pushed the card off the bottom of the screen, which a capture
+caught and no test would have: the SOUND section, the one that tells you
+which colour of blip is about to kill you, was simply gone below the edge.
+The card is two columns now, keys on the left and rules on the right, with
+the footer under both. One rule also ran past the right edge and has been
+reworded to fit.
+
+THE HUB CAN NO LONGER BE KILLED FOR THE SESSION. Found while verifying the
+above, in my own harness first. The hub clock feeds createRadialGradient,
+which is one of the very few canvas calls that THROWS on a bad number
+instead of quietly ignoring it. So a single bad frame did not dim a lamp,
+it killed the entire hub render and took the screen he lands on after
+every raid with it, permanently, until reload. The clock refuses a bad
+value now and repairs itself if it ever holds one.
+
+My mistake underneath it: my verification has been calling the hub step
+hook with no argument, which fed it exactly that bad number. That is the
+same failure as the start-raid hook silently ignoring its argument, and it
+means recent runs were reporting a hub that had already been poisoned by
+the check itself. The hook defaults properly now.
+
+THE CACHES SAY THEIR REAL NAMES. Measured across forty seeds of the dam:
+ten floating MERIDIAN CACHE labels per raid, all identical, the closest
+pair eighteen pixels apart and one pair a single pixel apart, stacked into
+unreadable mush. The cause is the same one-flag-two-meanings mistake that
+hid the casings bug for sixty builds. The cache flag means BOTH "a named
+premium cache" and "a plain box inside a locked room", and six of the ten
+were the locked-room boxes, so the game was calling out through the walls
+of its own locked rooms and handing away the thing the key was for.
+
+Worse, the three real caches were each given a NAME when they were placed
+and the renderer threw all three away for a hardcoded string. The dam
+places one by the extraction and two inside its landmarks, and those
+landmarks are called the POWERHOUSE and the TURBINE HALL. So the map has
+had named places in it the whole time and has never once said one out
+loud. Now it does, on all four maps: POWERHOUSE, TURBINE HALL, THE
+COURTYARD, NORTH GARAGES, THE LONG DOCK, CHILL ROW, RIM OFFICES, THE
+MAGAZINE. That is a direct answer to the standing complaint that the maps
+feel samey, and it cost nothing but honesty in the renderer.
+
+A box with no name stays silent, which is now the locked-room boxes and
+nothing else. The three runtime drops keep a label because seeing what
+fell off a Warden is the whole point of killing one, but they say what
+they actually are: WARDEN WRECK, PEDLAR STOCK, SEAL PAYOUT.
+
+Placement itself was checked before touching it and is fine: the three
+named caches sit a minimum of 593 units apart, median 1,099, none closer
+than 250 on any of forty seeds. This was purely the renderer talking over
+itself.
+
+Verified: parse PASS at v4.83; four-map sweep clean at the usual 110, 111,
+74 and 91 entities with nothing thrown; all three raid endings driven,
+extract, dead and abandon; the hub survives the bad call that used to kill
+it; every map read back its own three cache names and six silent boxes;
+and all of it looked at in captures, which is how three of these four were
+found in the first place.
+
+The card was then photographed at 1024 by 600, 1280 by 720 and 1600 by
+900. It holds at all three, nothing clipped, footer under both columns. At
+1024 the message banner draws across the top of it, which it did before
+this change too and which I have left alone rather than move a stacking
+order I have not thought through.
+
+Not verified: no balance run. None of this touches a number that a raid
+outcome depends on, so the 320-seed benchmark was not re-run and v4.76's
+16.3 percent still stands as the current figure. The runtime drop labels
+for the Pedlar, the Warden and the seal were confirmed in the code path
+but not photographed, because making all three drop in one raid takes a
+full playthrough rather than a probe.
