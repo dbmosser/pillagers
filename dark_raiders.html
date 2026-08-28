@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.39';
+var VER='4.40';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -884,6 +884,7 @@ var LOOT={
   // Caches hold no junk at all. Every entry here is rare or elite, so opening one
   // is always worth the 4.6 seconds it pins you in place.
 botwreck:[['ammobox',34],['scrap',20],['wire',12],['cell',10],['board',9],['comp',6],['stim',4],['optic',5]],
+  jackpot:[['reactor',16],['wcore',14],['codex',13],['bloom',14],['blackbox',12],['relay',10],['titan',6],['core',5]],
   cache:[['blackbox',12],['reactor',10],['codex',10],['bloom',7],['relay',11],
          ['titan',14],['core',12],['ledger',10],['coil',10],['gun_dmr',8],['gun_rifle',7],['gun_lmg',6],['gun_shotgun',5],['medkit',6],['KEY',7]]
 };
@@ -5334,7 +5335,7 @@ function ammoTell(ct){
   return false;
 }
 function mkContainer(x,y,type,d){
-  var times={crate:1.4,locker:2.2,safe:3.4,body:1.0,cache:4.6,botwreck:1.0};
+  var times={crate:1.4,locker:2.2,safe:3.4,body:1.0,cache:4.6,botwreck:1.0,jackpot:6.0};
   // THE DECISION HAS TO EXIST TO BE A DECISION, v1.98. v1.61 sorts loot worst
   // first and calls that "what turns a search from a hold-to-collect into a
   // decision... every container asks the same question the raid asks: is one more
@@ -5366,7 +5367,7 @@ function mkContainer(x,y,type,d){
   // balance decisions that are his to make rather than mine. The dial stays so the
   // experiment can be re-run against whichever answer he picks.
   var _cmin=(CFG.crateMin===undefined?1:CFG.crateMin);
-  var counts={crate:[_cmin,2],locker:[1,3],safe:[2,3],body:[1,2],cache:[2,3],botwreck:[_cmin,2]};
+  var counts={crate:[_cmin,2],locker:[1,3],safe:[2,3],body:[1,2],cache:[2,3],botwreck:[_cmin,2],jackpot:[4,5]};
   var c=counts[type],loot=[],n=ri(c[0],c[1]);
   for(var i=0;i<n;i++){
     var lk=rollTable(LOOT[type]);
@@ -6469,7 +6470,21 @@ function buildRaid(sim){
     var LX=map.landmarks[lcx];
     placeCache(LX.x+LX.w/2,LX.y+LX.h/2,LX.name);
   }
-  while(caches.length<3) placeCache(WORLD_W*rr(),WORLD_H*rr(),'MERIDIAN CACHE');
+while(caches.length<3) placeCache(WORLD_W*rr(),WORLD_H*rr(),'MERIDIAN CACHE');
+  // v4.40 HIS ANSWER 10: THE VAULT CASE. One per map, contents worth a whole
+  // good raid. Placed at the free spot farthest from every spawn point, so
+  // finding it IS the crossing his far-contract asks for. Not on the map, not
+  // marked: the reward for actually exploring.
+  (function(){
+    var _bj=null,_bd=-1;
+    for(var _jt=0;_jt<60;_jt++){
+      var _jc=freeSpot(map,40); if(!_jc) continue;
+      var _jd=1e9;
+      for(var _js=0;_js<map.spawns.length;_js++) _jd=Math.min(_jd,dist(_jc,map.spawns[_js]));
+      if(_jd>_bd){ _bd=_jd; _bj=_jc; }
+    }
+    if(_bj) containers.push(mkContainer(_bj.x,_bj.y,'jackpot'));
+  })();
   // EVERY LOCKED DOOR GETS A KEY, v1.75. Same fault as the district contract in v1.74 and
   // found by asking the same question: does the map actually supply what it promises?
   // Keys only ever arrived as a rare roll on the safe and cache tables, and `resolveKey`
@@ -13716,7 +13731,8 @@ function drawContS(ct){
   else if(ct.type==='safe'){ w=16;lift=13;d2=8;cF='#2a1f33';cT='#5a4670';cL='#7c6796'; }
   // An Meridian cache is the biggest, brightest object of its kind in the game on
   // purpose: it is the one thing every raid guarantees, so it has to be findable.
-  else if(ct.type==='cache'){ w=26;lift=19;d2=11;cF='#3a2050';cT='#8f4fc0';cL='#e0a0ff'; }
+else if(ct.type==='cache'){ w=26;lift=19;d2=11;cF='#3a2050';cT='#8f4fc0';cL='#e0a0ff'; }
+  else if(ct.type==='jackpot'){ w=24;lift=14;d2=10;cF='#4a3410';cT='#b8860b';cL='#ffd76a'; }
   else { w=20;lift=3;d2=6;cF='#302719';cT='#57462f';cL='#756042'; }
   // SPEC 7.4: an opened container stays VISIBLY opened for the rest of the run,
   // because an emptied container is evidence a raider has been here. It reads
@@ -18863,7 +18879,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Every keyed door burns an amber lamp you can see across the dark: locked rooms advertise what they are',
+  now:'THE VAULT CASE: one gold case per map, worth a whole raid, sitting at the far end of a long walk',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

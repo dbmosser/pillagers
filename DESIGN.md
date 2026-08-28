@@ -16051,3 +16051,21 @@ Verified: parse PASS at v4.39; captured at night beside a keyed door and
 looked at, the lamp unmistakable over the padlock; four-map sweep clean.
 Not verified: whether the lamp needs to be dimmer by day, where the sun
 already does its work.
+
+### m456 - v4.40: THE VAULT CASE
+
+His answer 10, at his definition: contents worth a whole good raid, about
+eight thousand. One gold-banded case per map, placed at the free spot
+farthest from every spawn, unmarked and unadvertised: finding it IS the
+crossing, and it pairs naturally with the cover-ground contract. Ten
+sampled cases averaged 8,954c with an honest spread from 5,700 to 12,200,
+nothing inside but the top of the economy. A six-second search, four to
+five pulls, every one of them announcing itself.
+
+Verified: parse PASS at v4.40; exactly one case on each of the four maps;
+opened through the real staged-pull search with the payday cascade
+captured on screen; ten-case value sample taken; four-map sweep and hub
+unchanged - the placement draws its randomness after every spawn, so the
+entity stream did not move. Not verified: whether raiders route to it
+(they treat it as any container if they pass), and the emotion of the
+find, which belongs to him.
