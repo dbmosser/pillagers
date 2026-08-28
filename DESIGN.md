@@ -16886,3 +16886,29 @@ Verified: parse PASS at v4.77; driven through a new fixture hook across
 all three states - silent when saved, loud with COULD NOT SAVE on a
 failure, loud with the count of unsaved raids when the drop is missing;
 four-map sweep and hub clean. Not verified: nothing, this one is closed.
+
+### m499 - v4.78: the difficulty the game promised and never delivered
+
+The shipped default said enemies hit at 1.2, and the Standard option on
+the settings page wrote 1.0 straight over it every time a profile loaded.
+The settings page promises in its own words that the middle option is
+exactly how the game plays out of the box, and it was not: only a brand
+new profile, before its first save, ever ran at 1.2. All sixty of his
+logged runs ran soft.
+
+Two ways to make them agree, and the choice matters. Setting the default
+to the design intent would have made his game a fifth harder while he was
+away, which is not mine to do quietly. So they agree at the value he has
+ACTUALLY been playing, nothing changes under him, and the old intent
+becomes a real choice on the page: HARDENED, between Brutal and Standard,
+one click away whenever he wants it.
+
+One trap avoided on the way in: the default is a POSITION in that list,
+not a name, so inserting an option without moving the pointer would have
+silently handed him the harder setting - the exact thing this fix exists
+to prevent. Pointer moved with the insert and the live value verified at
+1 afterwards.
+
+Verified: parse PASS at v4.78; the damage multiplier in play read back as
+1, unchanged; four-map sweep and hub clean. Not verified: nothing. His
+call now, and it is a real call rather than a broken promise.
