@@ -15789,3 +15789,21 @@ ways on a live sentry, 30 from behind against 20 from the front on a
 and looked at, five long player streaks against one short enemy dash.
 Not verified: the jam removal in his hands (nothing left to test, the
 mechanism is deleted), and back-shot balance in real fights.
+
+### HIS CORRECTIONS to the hundred-objective list, same evening
+
+Back-shots: MORE damage, confirmed (the build already does +50 percent; my
+"half again" wording read as less to him - plainer words next time). Bot
+realism re-affirmed as the foundation: "make sure the bots are actually
+playing like human players or the whole thing is useless." Abandon-free
+window clarified as fine. Damage direction indicator: a RING AROUND THE
+CHARACTER, not a screen-edge arc. Jargon rule: only words a triple-A game
+would use. Machine weak points: the back IS the weak point, so the
+back-shot bonus already covers ordinary machines and the special spots stay
+on elites and bosses. Jackpot defined for him: contents worth a whole good
+raid, about 8,000. Container restock: at least 2 to 3 minutes before
+anything refills. Crew fights: sometimes, not always. The Rival: does not
+hunt, but shoots on sight. Story landmarks: messages about how the elites
+bailed on Earth and left it to be ruled by robots. Everything else:
+"yes do these", order mine to choose, and a complete UI redo is "awesome" -
+greenlit as a project.
