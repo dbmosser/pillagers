@@ -16841,3 +16841,29 @@ Verified: parse PASS at v4.75; the vault case prompt captured and read on
 screen; a listener driven through an alarm and confirmed hunting rather
 than frozen; four-map sweep and hub clean. Not verified: what the cover
 fix costs the robot, which the next measurement will say.
+
+### m497 - v4.76: hiding finally works, and the Warden stops standing still
+
+The biggest hole in the hiding system: a chasing crawler ran at the
+player's LIVE position with no sight test anywhere in its branch. Break
+line of sight, crouch, put a wall between you - it still came straight to
+you, because it was never looking. Every other rule about concealment was
+written around machines that can lose you, and the most common machine in
+the game could not. It runs at the last place it actually saw you now. The
+bite is untouched: twenty-six units is close enough to feel a man without
+eyes, and a crawler that can see you still charges exactly as before, both
+driven and confirmed.
+
+And the Warden: once it had seen him once it could never go back to
+wandering. It walked to the last place it saw him, arrived, and stood
+there for the rest of the raid - which is why the map's set piece turns up
+in about one raid in six. It never gives up by design, so it does not lose
+interest, it PROWLS: arriving blind, it picks the extraction point nearest
+itself and walks there, which is where people go. Deterministic on
+purpose, no dice rolled, so every seeded measurement stays comparable.
+
+Verified: parse PASS at v4.76; the crawler driven both ways, blind it went
+to the last known spot and sighted it still charged; the Warden driven to
+its target while blind and confirmed retargeting and moving instead of
+freezing; four-map sweep and hub clean. Not verified: what this costs the
+robot, which the measurement now running will say.

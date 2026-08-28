@@ -565,7 +565,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.75';
+var VER='4.76';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11546,7 +11546,16 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
       if(e.seenYou){
         // Never faster than a walk, never gives up. The threat is a tide, not a
         // sprinter, so avoiding it is always a live option.
-        navSeek(e,e.tx,e.ty,e.spd,dt); wantW=Math.atan2(e.ty-e.y,e.tx-e.x);
+navSeek(e,e.tx,e.ty,e.spd,dt); wantW=Math.atan2(e.ty-e.y,e.tx-e.x);
+        if(!sees&&dist(e,{x:e.tx,y:e.ty})<70&&G.zones&&G.zones.length){
+          var _wbz=null,_wbd=1e9;
+          for(var _wz=0;_wz<G.zones.length;_wz++){
+            var _wzz=G.zones[_wz],_wzd=dist(e,_wzz);
+            if(_wzd<90) continue;
+            if(_wzd<_wbd){ _wbd=_wzd; _wbz=_wzz; }
+          }
+          if(_wbz){ e.tx=_wbz.x; e.ty=_wbz.y; }
+        }
         var dw=dist(e,p);
         if(e.windup!==undefined&&e.windup!==null){
           e.windup-=dt;
@@ -11798,8 +11807,8 @@ var _rdS=G.shells[_rdi];
           ping(e.x,e.y,620,false,false,'robot','fire');
           if(!G.sim) sfx('alarm',e.x,e.y);
         }
-      } else if(e.kind==='crawler'){
-        if(d>e.rng) navSeek(e,p.x,p.y,e.spd,dt);
+} else if(e.kind==='crawler'){
+        if(d>e.rng) navSeek(e,sees?p.x:e.tx,sees?p.y:e.ty,e.spd,dt);
         else if(e.cd<=0&&!p.downed){ damagePlayer(e.dmg*(e.elite?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1),'crawler',e.name,e.x,e.y); e.cd=.7; }
       } else if(e.kind==='raider'){
         // His answers, 2026-08-22: raiders should FLANK, use COVER, and FLEE
@@ -19222,7 +19231,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Audit fixes: the best containers say their real names, the alarm no longer freezes listeners, fast-firing raiders finally take cover',
+  now:'Hiding works on crawlers at last, and the Warden prowls the extractions instead of standing still forever',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
