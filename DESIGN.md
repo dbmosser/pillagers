@@ -15931,3 +15931,24 @@ moves under __sim (set p.lastShot very negative), and the aim comes from
 the mouse's SCREEN position, not its world fields, so a probe must place
 the target along p.face rather than setting mouse.wx. Not verified: the
 swing feel and its noise level in his hands.
+
+### m449 - v4.33: tap to sprint, and raiders speak like runners
+
+Two items straight off the dug-up list. His third-ever session asked "I
+want to click sprint and just sprint until i'm done sprinting, i don't want
+to hold shift" - never built until tonight. Shift is a toggle: tap to
+start, tap to stop, running dry stops it, and it stays armed through a
+pause in movement so weaving between cover needs no re-tap.
+
+And his v3.52 ask that the raider board use his words - jogging, sprinting,
+aiming - which was refused back when raiders could do none of those things.
+They sprint and plant careful shots now, so the board says JOGGING for a
+walk, AIMING over a planted shot, and SPRINTING OUT for the dash to the
+ship.
+
+Verified: parse PASS at v4.33; toggle driven with the real shift key, one
+tap drained 28.6 stamina in a second of running, second tap stopped the
+drain and regen resumed; raider verbs read back JOGGING, AIMING and
+SPRINTING OUT from live raiders; four-map sweep clean. Not verified: how
+the toggle feels against his muscle memory - if he hates it, one line
+brings hold-to-sprint back.
