@@ -16038,3 +16038,16 @@ Verified: parse PASS at v4.38; driven with the real trigger: twelve cold
 shots spread across 0.219 radians, twelve at held-two-seconds across
 0.378; four-map sweep clean. Not verified: the feel of the climb curve
 under his hand.
+
+### m455 - v4.39: keyed doors burn a lamp
+
+His answers 9 and 12: locked rooms, and only locked rooms, should be
+visibly marked from outside. Every unopened keyed door now burns a small
+amber lamp with a pulsing glow, drawn above the fog like the warning
+rings, so the promise of a key-room reads across a dark street. Opening
+the door puts the lamp out.
+
+Verified: parse PASS at v4.39; captured at night beside a keyed door and
+looked at, the lamp unmistakable over the padlock; four-map sweep clean.
+Not verified: whether the lamp needs to be dimmer by day, where the sun
+already does its work.
