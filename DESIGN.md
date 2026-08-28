@@ -16811,3 +16811,33 @@ player put on the floor, and the progress read back zero; the late state
 captured and the centre of the screen confirmed clear with the strip still
 carrying the countdown, the arrow and the distance; four-map sweep and hub
 clean. Not verified: whether four seconds is the right length of shout.
+
+### m496 - v4.75: three audit findings closed
+
+The two best containers in the game finally say what they are. Both
+carried proper names and nothing ever read them: the Meridian Strongbox
+announced itself as SEARCH CACHE, identical to the nine ordinary pins
+around it, and the vault case announced itself as SEARCH JACKPOT, an
+internal table name leaking onto his screen. Any container with a name of
+its own now uses it, and the vault case has one at last.
+
+The crier's alarm was switching off every listener it woke. It pushed
+every body within nine hundred units into the investigate state, and the
+listener has no investigate behaviour at all - it stopped dead until some
+new noise arrived, and lost its dormant disguise while it stood there. So
+the loudest sound in the game was the one thing that could not reach the
+machine built to hunt sound. Listeners now take the alarm the only way
+they can take anything: as a noise to run down.
+
+And half the raiders never took cover, and were rewarded for it. The cover
+move only ran while a gun had more than a third of a second left to cycle,
+which the fast weapons never have - a submachine gun cycles in about a
+fifth. So the raiders who should move most stood still, and standing still
+is exactly what makes a raider steady, so their aim tightened by half as a
+prize for the bug. The gate is measured against each weapon's own cycle
+now.
+
+Verified: parse PASS at v4.75; the vault case prompt captured and read on
+screen; a listener driven through an alarm and confirmed hunting rather
+than frozen; four-map sweep and hub clean. Not verified: what the cover
+fix costs the robot, which the next measurement will say.
