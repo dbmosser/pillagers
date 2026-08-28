@@ -255,9 +255,11 @@ window.__placeAudit=function(){
 // equipment are pinned too, since forgetting the map is the other classic.
 window.__pinDefaults=function(mapIx){
   var C2=CFG, P2=P, changed={};
-  // DANIEL POSTURE. The pin is simGreed 14. The v3.85 note here used to say 23,
-// "calibrated from his 47 real runs", which the pin has never actually been, so
-// every number quoted since v3.85 ran at 14 while this comment claimed 23.
+  // DANIEL POSTURE. The pin is simGreed 14. The v3.85 note here still said 23,
+// "calibrated from his 47 real runs", long after the pin was deliberately
+// recalibrated 23 -> 14 on 2026-08-27 against a 49-run fingerprint. The move was
+// right and recorded; this comment was simply never updated with it, so it has
+// been describing a posture the harness stopped using.
 // Priced at v4.94 rather than silently corrected either way, 320 paired seeds on
 // COLD STORAGE: greed 14 extracts 13.8 percent, greed 23 extracts 8.4 percent,
 // 43 discordant, p = 0.0137. So the documented value is the WORSE match to him,

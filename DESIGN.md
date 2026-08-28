@@ -17334,17 +17334,23 @@ checked whether the season tiers themselves pay what they claim, only that
 the count of unclaimed ones is now visible. The badge was photographed at
 one window size.
 
-### m508 - v4.94: the benchmark has been measuring the wrong map with a bot three times worse than you
+### m508 - v4.94: what actually separates you from the bot, on the map you actually play
 
 Your standing order is that the bot is the benchmark and it gets
-calibrated against your real runs. I went and did that properly against
-your 60 logged runs, and the answer is uncomfortable.
+calibrated against your real runs. This is that, redone on current data.
 
-YOU DO NOT PLAY THE MAP THE BENCHMARK RUNS ON. Of the 32 of your runs that
-carry a map stamp, 29 are COLD STORAGE. Two are GREYWATER DAM. One is the
-Sunken Quarter. Every A/B I have ever run, every boundary at v4.26, v4.44,
-v4.63 and v4.76, and the 16.3 percent I have been quoting for weeks, are
-all GREYWATER, which is a map you have played twice.
+FIRST, CREDIT WHERE IT IS DUE AND NOT TO ME: the map problem was already
+found yesterday. The v4.7x notes record that GREYWATER is not the hardest
+map at the corrected posture, that every A/B had been running on it, and
+that your own COLD STORAGE record then stood at 34.8 percent against a bot
+at 13.1, a like-for-like margin of 2.7x. I am not rediscovering that. What
+follows is the same comparison on fresh data, plus two things that are new.
+
+YOU PLAY COLD STORAGE. It is starker than it was: of the 32 of your runs
+that carry a map stamp, 29 are COLD STORAGE, two are GREYWATER DAM, one is
+the Sunken Quarter. Every boundary I have quoted, v4.26, v4.44, v4.63 and
+v4.76, and the 16.3 percent headline, are all GREYWATER, a map you have
+played twice.
 
 So I ran the full 320 paired seeds on COLD STORAGE. Identical arms, zero
 discordant, twelfth straight determinism proof, and the number is 13.8
@@ -17371,10 +17377,12 @@ to YOU. So the bot's weakness is specifically that it walks into sentry
 sight lines and trades, and that is a routing and fighting problem, not a
 looting one.
 
-THE DIAL THAT CLAIMED TO BE CALIBRATED WAS NOT. The comment on the
-measurement pin has said since v3.85: "simGreed 23, calibrated from his 47
-real runs". The pin sets 14. Every number I have quoted since v3.85 ran at
-14 while the comment claimed 23.
+THE CALIBRATION COMMENT WAS STALE. The comment on the measurement pin
+has said since v3.85: "simGreed 23, calibrated from his 47 real runs". The
+pin sets 14. To be fair to the record, that move was deliberate: the pin
+was recalibrated 23 to 14 on 2026-08-27 against a 49-run fingerprint, and
+it was the right call. The comment was simply never updated with it, so
+for a day it has been describing a posture the harness stopped using.
 
 I priced it instead of quietly moving it either way. 320 paired seeds on
 COLD STORAGE:
