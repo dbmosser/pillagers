@@ -561,7 +561,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.42';
+var VER='4.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17993,6 +17993,16 @@ function drawMapOverlay(){
     ctx.fillText(discPct()+'% of this sector charted',ox+WORLD_W*sc,oy+WORLD_H*sc+LH(12));
     ctx.textAlign='left';
   })();
+if(G.trail&&G.trail.length>1){
+    ctx.strokeStyle='rgba(255,192,74,.55)'; ctx.lineWidth=1.5;
+    ctx.setLineDash([3,4]);
+    ctx.beginPath();
+    ctx.moveTo(ox+G.trail[0].x*sc,oy+G.trail[0].y*sc);
+    for(var _tw=1;_tw<G.trail.length;_tw++) ctx.lineTo(ox+G.trail[_tw].x*sc,oy+G.trail[_tw].y*sc);
+    ctx.lineTo(ox+p.x*sc,oy+p.y*sc);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
   // your own marker, ringed in ink so a gold dot never disappears into a gold
   // district block
   ctx.fillStyle='#120e0c';
@@ -18679,7 +18689,13 @@ function loop(ts){
       }
       if(G.shells.length>300) G.shells.splice(0,G.shells.length-300);
 wildTick(dt);
-      if(G.player&&!G.sim){
+if(G.player&&!G.sim){
+        G.trail=G.trail||[];
+        var _tl=G.trail.length?G.trail[G.trail.length-1]:null;
+        if(!_tl||dist(G.player,_tl)>60){
+          G.trail.push({x:G.player.x,y:G.player.y});
+          if(G.trail.length>400) G.trail.shift();
+        }
         var _dg=discArr();
         var _dcx=Math.floor(G.player.x/WORLD_W*DISC_N),_dcy=Math.floor(G.player.y/WORLD_H*DISC_N);
         for(var _dy=-1;_dy<=1;_dy++)for(var _dx=-1;_dx<=1;_dx++){
@@ -18927,7 +18943,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Sprinting leaves footprints for six seconds, and anything hunting will follow the trail',
+  now:'The sector map draws the path you have walked this raid as an amber thread',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

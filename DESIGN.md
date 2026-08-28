@@ -16106,3 +16106,15 @@ One probe artifact noted: a single __sim call takes its whole argument as
 ONE tick, so a 2.5-second call is one giant step and drops one print -
 drive fine-grained steps when testing per-tick behaviour. Not verified:
 the hunt feel when a whole patrol picks up the same trail.
+
+### m459 - v4.43: the map remembers your walk
+
+His answer 41. A breadcrumb records every 60 units of real movement, and
+the sector map draws the whole raid's path as a dashed amber thread ending
+at your marker, on top of the discovery mask. Where you have been and what
+you have seen are now the same picture, which also makes the charting pace
+legible at a glance.
+
+Verified: parse PASS at v4.43; driven through the real loop with real
+keys, the thread captured on the map and looked at; four-map sweep clean.
+Not verified: thread readability on a fully-charted late-game map.
