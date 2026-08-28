@@ -255,10 +255,25 @@ window.__placeAudit=function(){
 // equipment are pinned too, since forgetting the map is the other classic.
 window.__pinDefaults=function(mapIx){
   var C2=CFG, P2=P, changed={};
-  // DANIEL POSTURE, v3.85: simGreed 23, calibrated from his 47 real runs (median
-// bag out 4.6k, median raid 123s). Every absolute number before this ran at 52,
-// which measured a player five times greedier than him; those numbers are not
-// comparable to what follows. His order: the bot is the benchmark.
+  // DANIEL POSTURE. The pin is simGreed 14. The v3.85 note here used to say 23,
+// "calibrated from his 47 real runs", which the pin has never actually been, so
+// every number quoted since v3.85 ran at 14 while this comment claimed 23.
+// Priced at v4.94 rather than silently corrected either way, 320 paired seeds on
+// COLD STORAGE: greed 14 extracts 13.8 percent, greed 23 extracts 8.4 percent,
+// 43 discordant, p = 0.0137. So the documented value is the WORSE match to him,
+// not the better one, and moving the pin to 23 would widen the gap this comment
+// exists to close. The pin stays at 14 and the comment is now true.
+// THE GAP ITSELF, measured at v4.94 against his 29 logged COLD STORAGE runs:
+//   he extracts 41.4 percent, the bot 13.8. He is three times better.
+//   his median haul 3,260c, the bot 2,010c. He is richer AND safer at once,
+//   which is why no single greed value can reconcile them: greed trades one for
+//   the other and he is winning both.
+//   what kills him: raider 5, crawler 4, sentry 2. What kills the bot: sentry
+//   147, raider 68, crawler 27. The bot's real weakness is sentries, and that is
+//   a fighting and route problem, not a looting dial.
+// His order stands: the bot is the benchmark. It is currently a bad one for
+// absolute numbers. Paired A/B on one map still prices a change honestly, which
+// is what these batches are actually for.
 var want={simGreed:14,simCrouch:0,simSell:0,simPed:0,simSidearm:1,simSwapBack:1,
     simWade:1,simLootNoise:1,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,
     seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:1,simPip:0,simPinTier:1,

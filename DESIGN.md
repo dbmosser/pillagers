@@ -17333,3 +17333,79 @@ Not verified: no balance run; nothing here touches a raid. I have not
 checked whether the season tiers themselves pay what they claim, only that
 the count of unclaimed ones is now visible. The badge was photographed at
 one window size.
+
+### m508 - v4.94: the benchmark has been measuring the wrong map with a bot three times worse than you
+
+Your standing order is that the bot is the benchmark and it gets
+calibrated against your real runs. I went and did that properly against
+your 60 logged runs, and the answer is uncomfortable.
+
+YOU DO NOT PLAY THE MAP THE BENCHMARK RUNS ON. Of the 32 of your runs that
+carry a map stamp, 29 are COLD STORAGE. Two are GREYWATER DAM. One is the
+Sunken Quarter. Every A/B I have ever run, every boundary at v4.26, v4.44,
+v4.63 and v4.76, and the 16.3 percent I have been quoting for weeks, are
+all GREYWATER, which is a map you have played twice.
+
+So I ran the full 320 paired seeds on COLD STORAGE. Identical arms, zero
+discordant, twelfth straight determinism proof, and the number is 13.8
+percent.
+
+YOUR OWN RATE ON THAT MAP IS 41.4 PERCENT. Twelve extractions out of
+twenty-nine. You are three times better than the thing I have been using
+to price every change.
+
+It is not that you are playing it safe for less. Your median haul is
+3,260c and the bot's is 2,010c. You come out richer AND you come out more
+often, which is the part that matters: greed trades one of those against
+the other, so no setting of the greed dial can reconcile the two of you.
+You are simply better at the game in a way that dial cannot express.
+
+WHAT KILLS EACH OF US SAYS WHERE THE GAP IS.
+
+  you    raider 5, crawler 4, sentry 2, listener 1
+  bot    sentry 147, raider 68, crawler 27, warden 13, bulwark 11
+
+Sentries kill the bot more than everything else combined and are nearly
+the least of your problems. The things that kill you are the two that come
+to YOU. So the bot's weakness is specifically that it walks into sentry
+sight lines and trades, and that is a routing and fighting problem, not a
+looting one.
+
+THE DIAL THAT CLAIMED TO BE CALIBRATED WAS NOT. The comment on the
+measurement pin has said since v3.85: "simGreed 23, calibrated from his 47
+real runs". The pin sets 14. Every number I have quoted since v3.85 ran at
+14 while the comment claimed 23.
+
+I priced it instead of quietly moving it either way. 320 paired seeds on
+COLD STORAGE:
+
+  simGreed 14, the actual pin        13.8 percent
+  simGreed 23, the documented value   8.4 percent
+  43 discordant, 30 against 13, p = 0.0137
+
+The documented value is the WORSE match to you, not the better one.
+Moving the pin to 23 would have widened the very gap the comment exists to
+close. So the pin stays at 14 and the comment now says what is true, plus
+all the numbers above.
+
+WHAT THIS DOES AND DOES NOT INVALIDATE. A paired A/B on one map still
+prices a change honestly - same seeds, same world, one dial different -
+and that is what these batches are actually for. What is not trustworthy
+is the ABSOLUTE number. "16.3 percent" was never your experience and I
+have quoted it as though it were. From here the honest framing is that a
+change moved the bot by so much on a named map, and that your own rate is
+a separate figure I can only get from your run reports.
+
+Verified: parse PASS at v4.93, unchanged, since this build touches only a
+comment in the harness and no game code; four-map sweep clean at 110, 111,
+74 and 91 entities; all three raid endings; hub clean; the pin read back
+at simGreed 14 after the edit. Both 320-seed batches ran to completion on
+mapIx 2 with the map pin verified on the profile before starting, after I
+first checked the wrong field and nearly trusted an unpinned run.
+
+Not verified: your 29 COLD STORAGE runs span many versions, from v2.43 to
+v4.73, so your 41.4 percent is a rate across a moving game rather than
+against today's build. It is the best number available and it is not a
+clean one. I have also not tried to close the gap: making the bot better
+at sentries would change every number this project has, and that is your
+call, not mine.
