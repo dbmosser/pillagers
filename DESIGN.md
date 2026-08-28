@@ -16529,3 +16529,20 @@ Verified: parse PASS at v4.66; the raid captured with all three boards
 sharing one chrome; four-map sweep clean. Not verified: the steel border
 weight against his taste - one alpha value to tune if he wants it louder
 or quieter.
+
+### m483 - v4.67: REDO slice four, the menus join
+
+The menu side of the split: body text rises from 10-11px toward the
+canvas floor (rows 12.5, buttons 11.5, stats 12), the blue-tinted
+secondary grey warms to match the canvas greys, the primary text colour
+becomes the same warm bone the health bar has always used, gain green
+finally gets a palette variable, the pause title joins the canonical amber
+header voice, and a shared rule catches every previously browser-default
+h2 so no header in the game is unstyled again.
+
+Verified: parse PASS at v4.67; the shop opened through the real hub walk
+and its computed styles read back exactly - rows 12.5px, headers amber,
+buttons warm bone at 11.5px; four-map sweep and hub clean. Not verified:
+pixels, since the browser pane is not on his screen to photograph - the
+computed styles are what the renderer uses, but his eyes get the final
+vote when he next opens a shop.

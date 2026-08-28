@@ -13,8 +13,8 @@
        border of the classic double-framed window. --steel-hi flipping from dark
        grey to light periwinkle is the loudest single change here: every panel
        edge goes from invisible to a proper frame. */
-    --void:#0a0d1c; --steel:#2f4394; --steel-hi:#7f92d8; --ash:#9aa8d0;
-    --bone:#eef2ff; --amber:#ffc04a; --rust:#d8543a; --coolant:#4de3d0; --hazard:#ff5a4a;
+    --void:#0a0d1c; --steel:#2f4394; --steel-hi:#7f92d8; --ash:#9aa4b0;
+--bone:#FFF6DC; --amber:#ffc04a; --rust:#d8543a; --coolant:#4de3d0; --hazard:#ff5a4a; --gain:#7fc4a0;
     --win-top:#1c2a63; --win-bot:#101a42;
     background:var(--void); color:var(--bone); font-family:'Rubik',system-ui,sans-serif;
     /* Fit the browser window instead of a fixed 720. Opened in Chrome at a 551
@@ -83,16 +83,16 @@
   .plist { overflow-y:auto; flex:1; padding:3px 0; }
   .plist::-webkit-scrollbar { width:5px; }
   .plist::-webkit-scrollbar-thumb { background:var(--steel-hi); }
-  .row { display:flex; align-items:center; gap:8px; padding:5px 12px; font-size:11px;
+  .row { display:flex; align-items:center; gap:8px; padding:5px 12px; font-size:12.5px;
     border-bottom:1px solid rgba(42,50,61,.35); }
   .row:hover { background:rgba(255,192,74,.06); }
   .row .nm { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .row .vl { color:var(--amber); font-size:10.5px; }
+  .row .vl { color:var(--amber); font-size:12px; }
   .swatch { width:3px; height:13px; border-radius:1px; flex:none; }
   .ic { flex:none; image-rendering:auto; vertical-align:middle; margin-right:2px; }
   .r-common{color:#cfd8ef;} .r-uncommon{color:#7fc4a0;} .r-rare{color:#7cc4ff;} .r-elite{color:#d08ce8;}
   button { font-family:'Rubik',system-ui,sans-serif; background:transparent;
-    border:1px solid var(--steel-hi); color:var(--bone); padding:5px 9px; font-size:10px;
+    border:1px solid var(--steel-hi); color:var(--bone); padding:5px 9px; font-size:11.5px;
     letter-spacing:.06em; cursor:pointer; text-transform:uppercase; transition:all .12s; }
   button:hover:not(:disabled){ border-color:var(--amber); color:var(--amber); background:rgba(255,192,74,.08); }
   button:disabled{ opacity:.3; cursor:not-allowed; }
@@ -103,7 +103,7 @@
   .deploy:hover{ background:linear-gradient(180deg,#ffe4a0,#ffbe52); border-color:#fff0c8; color:#2a1a06; }
   .ghost { background:transparent; color:var(--amber); }
   .ghost:hover{ background:rgba(255,192,74,.09); }
-  .stat { display:flex; justify-content:space-between; padding:4px 12px; font-size:10.5px; }
+  .stat { display:flex; justify-content:space-between; padding:4px 12px; font-size:12px; }
   .stat b{ color:var(--bone); font-weight:500; } .stat span{ color:var(--ash); }
   .equipped{ padding:10px 12px; border-bottom:1px solid var(--steel-hi); background:rgba(53,214,200,.04); }
   .equipped .wn{ font-family:'Rubik',system-ui,sans-serif; font-weight:700; font-size:15px; color:var(--coolant); }
@@ -146,14 +146,16 @@
     display:none; flex-direction:column; align-items:center; justify-content:center; gap:11px; }
   .pausebox::before{ inset:60px 90px; }
   .pausebox.on{ display:flex; }
-  .pausebox h3{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:24px;
-    letter-spacing:.24em; margin:0; color:var(--bone); }
+.pausebox h3{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:20px;
+    letter-spacing:.24em; margin:0; color:var(--amber); text-transform:uppercase; }
   .modal{ position:absolute; inset:0; background:rgba(8,12,32,.92); z-index:60;
     display:none; flex-direction:column; padding:22px; }
   .modal::before{ inset:14px; }
   .modal.on{ display:flex; }
-  .modal h3{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:14px;
+.modal h3{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:14px;
     letter-spacing:.24em; margin:0 0 4px; color:var(--amber); text-transform:uppercase; }
+  .modal h2{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:14px;
+    letter-spacing:.24em; margin:10px 0 4px; color:var(--amber); text-transform:uppercase; }
   .msub{ font-size:10px; color:var(--ash); margin-bottom:9px; }
   .runline{ display:flex; gap:8px; padding:4px 12px; font-size:10px; border-bottom:1px solid rgba(42,50,61,.3); }
   .runline .o{ width:44px; flex:none; font-weight:700; }
@@ -561,7 +563,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.66';
+var VER='4.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19170,7 +19172,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'REDO slice three: every panel wears the same coat - one dark, one steel border, amber titles',
+  now:'REDO slice four: the menus join in - warmer text, readable sizes, every header in the same amber voice',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
