@@ -16344,3 +16344,32 @@ once per deployment, only in real play, only at the moment sound begins.
 Verified: parse PASS at v4.58; four-map sweep, extract and dead endings
 clean; the announcement rides the same audio-start branch the fixture
 cannot hear, sim-guarded twice. Not verified: the line in his ears.
+
+### m474 - the overnight soak, the Q2 tally, and the UI redo proposal
+
+Soak on the final build of the night: ninety drawn seconds per map, all
+four maps, at night in rolled weather, with every one of the night's
+thirty-four builds live - possums waking, footprints fading, machinery
+turning, stones reading, crates restocking. Nothing thrown, nothing drawn
+wrong.
+
+The touchdown study now stands at thirteen landings across builds: about
+nine of every ten bodies at his ring were woken by his walk, and the
+handful of siege arrivals cluster in the landings that go badly. The
+premise of his question two has survived every world change tonight.
+
+THE UI REDO, proposed (he said "completely redone would be awesome"; the
+shape below is for his yes or amendments before I spend days inside it):
+1. One design language: a single panel style (background, border, corner,
+   title case), one four-step type scale, one accent per meaning - amber
+   for choices, coolant for information, rust for danger, green for gain.
+2. One layout grammar: screen edges own their jobs. Left: who is out
+   there. Right: conditions and contracts. Bottom-left: the body (health,
+   armour, stamina, status). Bottom-centre: hands (hotbar). Top: place and
+   time. Centre: only what interrupts.
+3. Menus rebuilt on that grammar - shop, workshop, sector, season, bag -
+   same chrome, same keys, same title rows, one escape behaviour.
+4. Built in slices, one surface per build, each verified by capture, so
+   the game never breaks and he can call it off at any slice.
+Estimated at eight to twelve builds. Awaiting his word - one word: REDO to
+start, or notes to reshape it.
