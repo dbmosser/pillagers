@@ -17608,3 +17608,59 @@ line read back off the live element.
 Not verified: I could not reproduce the exact moment you abandoned, so the
 fix is aimed at the cause the capture proves rather than at your specific
 frame. No balance run; none of this touches a number a raid depends on.
+
+### m511 - v5.03: every gun on both counters, and a correction to yesterday
+
+HIS ORDER: "peddler and gambler need to have all guns including the ones
+that cant be bought elsewhere."
+
+WHAT WAS ALREADY TRUE, checked before building anything. Vesh had all
+seven the whole time: pistol, smg, carbine, shotgun, rifle, lmg and dmr
+are all in the gamble pool at descending odds. No change was needed there
+and none was made. Confirmed over 1,500 rolls: every one of the seven
+comes out, 186 gun pulls in total, so roughly one roll in eight is a gun.
+
+THE PEDDLER had three. The smg, carbine and shotgun sat in his general
+pool, and there was a two in five chance of a dmr or an lmg appearing as
+the showpiece. The pistol and the rifle were unreachable from him
+entirely.
+
+He now has a dedicated gun slot, always filled, drawn from all seven. Two
+reasons for a separate slot rather than dropping four more guns into the
+general pool. It guarantees he always has a weapon, which is most of what
+makes crossing a map to reach him worth the walk. And adding seven guns to
+a pool of eleven general goods would have quietly turned a general trader
+into a gun shop, which is not what was asked for.
+
+Measured over 40 stalls across all four maps: all seven guns appear, and
+ZERO stalls came up without a gun. Prices run 570c for a pistol to 3,800c
+for a dmr, with the showpiece path putting an lmg at 5,700c.
+
+A CORRECTION I OWE HIM. Yesterday, answering his note about elite
+find-only guns, I put a line in the trader saying the Carbine, the Riot
+Scattergun and the LMG "are only ever found out there". That was wrong
+when I wrote it. Vesh has always dealt in all three, and I did not check
+the gambler before writing a sentence about what cannot be bought. The
+line now says what is actually true: the trader does not stock the heavy
+end, and Vesh or the Peddler is where you go for it.
+
+That is twice in two days that I have stated something confident about
+this game without checking the second place it lives. The cache labels
+were the same shape and so was the rivalMet field. The lesson is the same
+one each time and it is worth writing down plainly: a claim about what the
+game does NOT do needs every source checked, not the first one.
+
+Verified: parse PASS at v5.03; four-map sweep clean at 110, 111, 74 and 91
+entities with container counts unchanged; all three raid endings; hub
+clean. 40 peddler stalls sampled across all four maps, all seven guns
+present, no gun-less stall. 1,500 gambler rolls, all seven present. The
+corrected trader line read back off the live element. The fixture profile
+was restored to its exact prior credits, stash length and gamble log after
+the 1,500 rolls, so the measurement left nothing behind.
+
+Not verified: no balance run. This changes what is purchasable, which is
+an economy change rather than a raid one, and the bot never buys from
+either vendor, so the 320-seed benchmark cannot see it. Whether a
+guaranteed gun on every stall makes the Peddler too generous is a
+judgement only real runs will answer, and the gun slot is one line to
+weight down if it does.

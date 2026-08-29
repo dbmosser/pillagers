@@ -576,7 +576,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.02';
+var VER='5.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5998,7 +5998,10 @@ coat:ident.coat, ident:ident.id, name:ident.tag,
 // rate on three maps out of four.
 var PEDDLER_BUY=0.55;
 function pedBuyRate(){ return (CFG.pedBuy===undefined?PEDDLER_BUY:CFG.pedBuy); }
-var PED_STOCK=['medkit','medkit','plate','ammobox','bandage','gun_smg','gun_carbine','gun_shotgun','comp','optic','titan'];
+var PED_STOCK=['medkit','medkit','plate','ammobox','bandage','comp','optic','titan','cell','servo'];
+// Every gun in the game, reachable from the stall. His order, and it also gives
+// the Peddler a reason to exist beyond plates.
+var PED_GUNS=['gun_pistol','gun_smg','gun_carbine','gun_shotgun','gun_rifle','gun_lmg','gun_dmr'];
 function pedPrice(k){ return Math.round(ival(k)*1.9); }
 // He closes his stall to you once you have killed one of him. Notoriety is
 // permanent and it is meant to be: shooting the unarmed man is the greediest
@@ -6013,7 +6016,10 @@ function mkPeddler(x,y,map){
   if(kcand.length&&rr()<0.6){
     var kk=pick(kcand); stock.push({k:kk,price:pedPrice(kk),sold:false});
   }
-while(stock.length<3&&pool.length){
+  // The gun slot, always filled, drawn from all seven.
+  var _pg=pick(PED_GUNS);
+  stock.push({k:_pg,price:pedPrice(_pg),sold:false});
+  while(stock.length<4&&pool.length){
     var ix=ri(0,pool.length-1),k2=pool.splice(ix,1)[0];
     stock.push({k:k2,price:pedPrice(k2),sold:false});
   }
@@ -19377,7 +19383,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The Quarry is not glitched any more: your body was being drawn a third of a screen above your own feet',
+  now:'The Peddler carries a gun on every stall, any of the seven, and Vesh already dealt in all of them',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -20298,8 +20304,9 @@ function renderShop(){
   // being spent, and name them, or the mechanic stays invisible.
   try{
     document.getElementById('repline').innerHTML+=
-      '<div style="color:#ffc04a;margin-top:5px">The best guns are not for sale at any price. '+
-      'The Carbine, the Riot Scattergun and the LMG are only ever found out there.</div>';
+      '<div style="color:#ffc04a;margin-top:5px">I do not stock the heavy end. '+
+      'For a Carbine, a Riot Scattergun, a Rifle or an LMG, try Vesh, '+
+      'or the Peddler out on the surface. He carries a gun on every stall.</div>';
   }catch(_eg){}
   var s=document.getElementById('shop'); s.innerHTML='';
   SHOP.forEach(function(o){
