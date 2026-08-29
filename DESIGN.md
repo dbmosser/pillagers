@@ -21174,3 +21174,65 @@ Not verified: __tune2 reads the authored table and the live DOM row count, but i
 does not check that each rendered row's slider is actually wired to the dial its
 label names. A row could still show the right words over the wrong dial and this
 would not catch it.
+
+## v5.87 and v5.88: three tuning sliders could not show the number they were set to
+
+v5.86 ended by saying __tune2 checks the slider table but not that each row is
+wired to the dial its label names. So I wrote that test: move every slider, then
+put it back. Thirty-two moved correctly. THREE DID NOT COME BACK, and the reason
+is a real defect in the tool he tunes the game with.
+
+THE ENEMY-COUNT SLIDERS HAVE MAXIMA BELOW THE GAME'S OWN DEFAULTS.
+
+  Sentries       max 14    default 20    Settings "Many" 28
+  Crawlers       max 18    default 34    Settings "Many" 46
+  AI pillagers   max  6    default 10    Settings "Many" 15
+
+An input range clamps, so buildTune does rg.value=CFG[k] and the browser pins the
+knob at the maximum while the number printed beside it reads the true value.
+Measured on a clean default profile: dial 20 with the knob at 14 and the readout
+saying 20, dial 34 with the knob at 18, dial 10 with the knob at 6.
+
+TWO CONSEQUENCES AND THE SECOND IS THE BAD ONE. The console MISREPORTS the game,
+showing a knob at full travel for a value well past it. And the first touch of
+that slider snaps the dial down to the maximum, so brushing Sentries cuts them
+from 20 to 14 and Crawlers from 34 to 18: a 30 to 47 percent cut, silent, with
+the readout still printing the number it just stopped being. Anyone who opened
+this console to change something else and grazed one of those has since been
+playing a much emptier map than the one he chose. I cannot tell whether that
+happened to him; I can only say the mechanism was there and that his own run
+notes have complained about empty maps.
+
+Ranges now span everything the game can be set to, Settings "Many" included, with
+headroom so a future default cannot outgrow them again. Re-driven: no knob fails
+to show its dial at defaults or at Many, and a full move-and-restore sweep of all
+32 sliders now returns every dial to where it started.
+
+THE KEEP-OR-SELL HINT WAS TRUE BUT SHORT. craftUse is the line under every
+salvage part, so it is the text he decides what to sell from. Checked every claim
+against RECIPES and RACK_COST: none false, three incomplete. Components are in
+six of the seven recipes and the hint named three. Cells and scrap both make frags
+and neither said so. Selling spare components because the game listed three uses
+and then being unable to craft throwables is a real cost. Both repair claims held
+up and are worth keeping because they are not obvious: repairCost picks servo for
+a gun worth 950 or more and comp for anything cheaper.
+
+Verified: parse PASS at v5.87 and v5.88; four maps 86/87/58/72 entities and
+236/200/154/225 containers at baseline; all three real endings through the outcome
+screen with extract paying 48c and dead and abandon zero; hub and ascent check;
+every one of the 32 sliders proven to write the dial its label names; no knob
+unable to represent its dial at defaults or at Settings Many; the components hint
+read off a live stash cell.
+
+MY OWN PROBE LIED TO ME TWICE IN THIS BUILD and both are worth recording. The
+slider sweep left the profile at three maxima and I read the resulting 60/60/40/51
+entity counts as a regression before finding it was the clamp. Then a run after
+__loadProfile reported 111/112/75/92 and zero XP on every ending, which was a
+stale profile handle: __prof returns a new object after a load and I was still
+holding the discarded one. Re-read fresh, everything is at baseline.
+
+Not verified: the hint text is now complete against the recipe table, but I have
+not checked it against the MAINFRAME rack costs beyond confirming the four
+materials it names, and I have not verified that raising three slider ceilings
+does not let him set an enemy count the spawner cannot actually place on the
+smallest map.
