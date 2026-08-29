@@ -436,6 +436,10 @@ window.__simPaired=function(seeds,dialsA,dialsB){
 window.__setHot=function(i){ return setHot(i); };
 window.__items=function(){ return ITEMS; };
 window.__loot=function(){ return LOOT; };
+// Container stocking, so "a body should be worth more than a crate" can be
+// MEASURED over thousands of rolls instead of eyeballed from the weight tables.
+window.__mkContainer=function(t){ return mkContainer(0,0,t); };
+window.__ival=function(k){ return ival(k); };
 // v3.26: the auto-equip preference resolver and the settings renderer, so the
 // precedence rule (bot obeys the dial, player obeys his setting) can be driven
 // rather than asserted, and so the settings rows can be read back as strings.

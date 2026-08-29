@@ -18196,3 +18196,98 @@ well on the ground. The HUD drag bar was driven through hudHit rather than by
 actually dragging a panel with a mouse.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.32  THE SITE GOES UP, DEATH KEEPS NOTHING, AND BODIES ARE WORTH ROBBING
+================================================================================
+
+v5.32: the site goes up, death keeps nothing, and bodies are worth robbing
+
+HIS TELEMETRY ARRIVED MID-BUILD, run #66 on v5.29, and it is the reason the
+first item exists. 600 seconds, 29 containers, 51 items, 42,480 CREDITS. That is
+not just his best haul, it is 68 percent above his previous best across 65 runs.
+He died 167 metres from an extract to killer:timer, and the game marked the
+largest score anyone has ever made in it by cutting straight to a summary box.
+His survival curve now reads 50 percent in minute ten. The clock is the real
+killer and it had no presence at all.
+
+THE SITE GOES UP. His words: "make a big explosion happen and show the player
+visibly dying... like the whole site got nuked or something". Two and a half
+seconds now sit between the clock hitting zero and the summary: a held breath,
+a white-out, a walking barrage across the map, and the operator going down in
+the middle of it rather than at the end, so the last second is the site burning
+over a body. Driven and measured: first blast at 0.48s, 18 explosions and the
+player down by 1.28s, 28 by 2.24s, summary at 2.61s.
+
+His carve-out is honoured exactly. If a beacon is already inbound the old
+instant death stands, because then the story is that you missed your ride, not
+that you were still standing on the site. Verified: ends on tick 0 with a beacon
+called. And it NEVER runs headless, so the bot path ends on the same frame it
+always did and no sim number in this project moves.
+
+DEATH KEEPS NOTHING. His words, and I measured before changing anything: a death
+already paid 0 credits, 0 rep and 0 seal points, and already took the bag and
+the worn rig. Exactly ONE thing came back, and it was the SAFE POCKET, which
+kept the single most valuable item in the bag.
+
+That is a thing HE ASKED FOR at Q4 of the beta spec: "ONE safe-pocket item
+survives death." His instruction today is newer and unambiguous, so it wins, but
+he should know he is reversing his own earlier call. It is done through the
+existing safeSlots dial rather than by deleting the mechanism, so setting it
+back to 1 in the Tuning Console restores Q4 with no rebuild.
+Verified: died carrying a Reactor Core, Titan Plate, plate, medkit and optic
+with 100,000c banked. Credits +0, rep +0, stash empty, worn rig gone, spare rig
+kept.
+
+BODIES ARE WORTH ROBBING. His note, and it was badly wrong before: the body
+table was 12 percent SCRAP with the same 1-to-2 item count as a crate, so a dead
+pillager was carrying about what a shipping crate holds. No scrap at all now,
+2-to-3 items, and the weight moved onto what a person actually carries.
+Measured over 4,000 of each:
+  crate    91c    1.49 items    0% gun
+  locker  366c    2.00 items   14% gun
+  body    678c    2.49 items   34% gun, 4.5% rig
+  safe   1448c    2.49 items   31% gun, 9% rig
+A body is now 7.4 times a crate and sits between a locker and a safe. The rig
+chance also answers his run #58 note, "I never find any rigs or shields on the
+map".
+
+SELL ALL, TWICE. His note, and he was right to suspect it. The BUTTON counted
+everything with no use field, the HANDLER refused to sell crafting parts, so the
+parts were priced into the button, never sold, and it came back offering the
+same credits for a sale it would not make. One predicate now, shared by the label
+and the click. Verified: sells once for 520c, then reads "Nothing to sell" and
+disables.
+
+RINGS ONLY FOR WHAT YOU CANNOT SEE. His two notes, which are one rule: rings
+vanish while the thing that made them is in line of sight, and come back when it
+ducks away. Decided at DRAW time off the same per-frame visibility flag the
+renderer uses, which is why the second half works. I also measured the rate,
+since he said crawlers show rings and sentries do not: over twenty seconds beside
+the player, sentry 53, crawler 96, raider 122, snitch 323, howler 400, bulwark
+579. Every kind does emit; a sentry is simply half a crawler. That is now the
+right difference rather than a bug, because quiet is worth knowing. Both ring
+passes are patched, including the one that actually runs.
+
+WORDING. "Crouched unseen" is gone: there were two vocabularies for one
+question, and crouching led with the pose. One ladder now, state first and
+reason second, so HIDDEN, WELL HIDDEN, CONCEALED, PARTLY HIDDEN and CRASHING
+THROUGH cover every case, with CROUCHED, TOO CLOSE or IN COVER after it.
+
+"9 SEARCHING THE AREA" now says what the nine are, and the line above it stopped
+calling pillagers machines: it counted every kind together and printed MACHINES.
+Both lines split by kind. Neither has ever included the player, and neither
+should, because this is a count of what is looking for YOU.
+
+Verified: parse PASS; four maps 110/111/74/91, the historical baseline, each
+with the map overlay; all three endings; hub clean. Nuke driven frame by frame,
+beacon carve-out ends on tick 0, sim path still ends instantly. Death keeps
+nothing. Sell-all offers once. Body loot measured at 4,000 rolls per container
+type. HUD driven with 4 machines and 3 pillagers investigating at once.
+
+Not verified: nobody has watched the site go up on a real screen, so I know the
+timings and the explosion count and I do not know it reads as a nuke rather than
+as a bug. I removed his own Q4 safe pocket on the strength of one sentence and
+he may want it back.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
