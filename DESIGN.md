@@ -18792,3 +18792,66 @@ only appears on, say, a Warden kill or a specific contract completion is not in
 these 208 and could still say anything.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.42  AUDIT PASS THREE, AND A CRASH IN THE PAYOUT PATH
+================================================================================
+
+v5.42: audit pass three, and a crash in the payout path
+
+PERFORMANCE FIRST, because he raised it. It is not a problem. Measured over 120
+real frames per map at 1600x900:
+
+  GREYWATER DAM    3.19 ms/frame   85 entities, 250 containers
+  SUNKEN QUARTER   3.74 ms/frame   86 entities, 201 containers
+  COLD STORAGE     3.88 ms/frame   57 entities, 159 containers
+  THE QUARRY       5.66 ms/frame   71 entities, 210 containers
+  busiest state    3.49 ms/frame   legend up, full roster, 300s of settling
+
+The budget at 60fps is 16.7ms, so the worst map leaves 11 milliseconds of
+headroom and the typical one leaves 13. Ageing the decals was worth doing on his
+note and for the correctness of it, but nothing here needed rescuing.
+
+THEN THE REAL FIND. I built a deliberately hostile profile: corrupt fog string,
+a rig that does not exist, a secondary gun that does not exist, unknown stash
+keys, unknown weapon keys, a hotbar pointing at a missing item, and a contracts
+array holding [null, {}, {id:'bogus'}]. Then a cfgv of 9 carrying every old
+default, to make the migration chain run end to end.
+
+Almost all of it held, and that is worth stating: cfgv 9 migrated cleanly all
+the way to 15 with all five migrations applied, the bogus rig gave zero armour,
+the bogus secondary gave fists, the corrupt fog fell back to nothing, and every
+unknown stash and weapon key was filtered out. The hub, the figure, the ops
+window and the ascent check all rendered.
+
+Then the raid ended and the whole thing came down:
+
+  endRaid: Cannot read properties of null (reading 'prog')
+
+The contract settlement loop reads c.prog on every entry of P.contracts, on
+EVERY extraction. One malformed entry and the payout throws, AFTER the raid is
+over, so the run and the haul go with it.
+
+This is exactly the failure my own notes warn about, written after a previous
+build shipped a crash in this same path: a raid that never ends is a raid whose
+ending was never checked. Everything before it passed on the same profile.
+
+A profile does not need to be edited to get here: a contract shape that changed
+between builds, a save written during a crash, a generator that threw halfway.
+The loop now skips what is not a contract, the same defence the stash grid has
+had since v1.69 for the same reason, and ensureContracts purges junk before
+topping up so bad entries cannot permanently crowd out real work at the ceiling
+of eight.
+
+Verified: parse PASS at v5.42. The exact crashing array, plus undefined and a
+bare string, driven through ALL THREE endings: all survive, credits paid, board
+purged and refilled to 8 with every entry a valid object, contracts window still
+draws. Four maps 85/86/57/71, hub and ascent check clean. HUD overlap re-checked
+at 1280x720, 1600x900 and 1920x1080: zero at all three.
+
+Not verified: I invented the hostile shapes from how a save could plausibly go
+wrong. A real corrupted profile of his may be broken in a way I did not think of,
+and the only defence that generalises is the one applied here, which is to skip
+rather than trust.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
