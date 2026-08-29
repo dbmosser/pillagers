@@ -21519,3 +21519,54 @@ repairCost prices it, and I have not looked at what servicing one now costs. The
 formula scales with tier, so the most expensive gun in the game to repair is now
 the one you are least likely to own, and I have not checked that the number it
 produces is sane rather than merely larger.
+
+## measurement: the neutral baseline, and the sim is deterministic
+
+The number every future balance change gets compared against. It did not exist
+before now: the world-tier removal at v5.80 and the armour and posture fixes at
+v5.90 and after mean nothing measured earlier in this file is comparable to
+anything measured after it.
+
+320 paired seeds, GREYWATER, both arms identical, posture verified clean by
+__pinAudit before starting.
+
+  EXTRACT RATE            15.3 percent, 49 of 320
+  median haul extracted   2,630c        mean 2,743c, range 0 to 7,025
+  mean haul lost on death 2,674c
+
+  WHAT KILLS THE BOT, 271 deaths
+    sentry    140    52 percent of all deaths
+    raider     57    21
+    crawler    26    10
+    choir      13     5
+    bulwark    11     4
+    warden     10     4
+    listener    5     2
+    other       5     2
+    timer       3     1
+    howler      1
+
+THE SIM IS PERFECTLY DETERMINISTIC PER SEED. Both arms ran identical dials, and
+every one of the 320 pairs agreed: 49 both extracted, 271 both died, ZERO
+discordant. That is not a throwaway result. Every paired A/B this project has
+ever run assumes that a seed reproduces exactly, so that a difference between
+arms can only come from the dial under test. This is the first time that
+assumption has been measured rather than relied on, and it holds exactly.
+
+SENTRIES ARE STILL THE WHOLE STORY. The v4.94 note on __pinDefaults said the
+bot's real weakness is sentries and called it "a fighting and route problem, not
+a looting dial". That was measured on a posture with three dials in the bot's
+favour. With the posture corrected it is not merely still true, it is more
+concentrated: sentries take more of the bot than everything else put together.
+
+AND THE CHOIR KILLS. It accounts for 13 deaths, more than the Warden and more
+than the Bulwark, which is worth knowing about a boss that is optional by design
+and that no human has ever fought. Either the bot walks into it or fifty metres
+of standoff is harder to respect than it reads.
+
+Not verified: this is one map. GREYWATER is where every A/B in this file has run,
+so it is the right map for continuity, but the extract rate on the other three is
+unmeasured at neutral and the killer mix almost certainly differs, since COLD
+STORAGE spawns two thirds the machines. I also have not re-measured his own
+extract rate against this, so the size of the human-versus-bot gap under the
+corrected posture is still the old figure from a posture that flattered the bot.
