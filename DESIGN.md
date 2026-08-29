@@ -20378,3 +20378,51 @@ Not verified: the third call site, the hidden gearslots block that renderGear
 still fills, gets the default hub wording. Nothing displays it since v2.98 moved
 those panels behind the terminal, so I believe it is unreachable text, but I have
 not proven that element is never shown.
+
+## v5.70: "a raid you die on still pays half" is off by an order of magnitude
+
+The 0.5 multiplier is real and it does fire. The sentence is still wrong, because
+the multiplier is not where the score comes from:
+
+  sp  = 90 if you EXTRACTED
+      + haul/1000 * 35        <- zero when you die, you carry nothing out
+      + containers * 3
+      + kills
+  then * 0.5 if you died
+
+Both large terms are gone before the halving starts, so the half is taken of the
+small remainder. Driven on all four maps with the canonical outcome strings: an
+extract pays 94 SP and a death on the same seed pays 2. That is 2 percent, not
+50. Those are quiet runs, so I worked a busy one through the formula as well:
+25 containers, a 6,000 haul, four sentries and six crawlers gives 423 extracted
+against 61 dead, about 15 percent. It is never a half in any raid a player can
+actually have.
+
+The comment above the multiplier says the aim is that "losing should hurt in gear
+and credits, which it already does, not by erasing the fact that the run
+happened". At 2 percent the run is erased, so the mechanism fails its own stated
+aim. Whether to pay more on a death is a balance decision and his, so the rewards
+screen stops claiming something untrue and the question goes on the board in his
+own one-word form: HALF for real, KEEP it brutal, or SPLIT so only the haul is
+lost.
+
+AND MY OWN ENDINGS TEST HAS BEEN DRIVING TWO OUTCOMES THE GAME NEVER PRODUCES.
+Chasing this turned up that endRaid takes 'extract', 'dead' and 'abandon'. There
+is no 'death' and no 'timeout': the clock running out calls endRaid('dead') with
+deathKiller set to 'timer'. My standing verification has been passing 'death' and
+'timeout' for many builds. Nothing threw, because the payout path does not
+validate the string, and the important assertions still held, credits stayed at
+zero and the outcome screen still had to be clicked through. But the 0.5 branch
+tests outcome==='dead' exactly, so every death I have driven took the full-pay
+path rather than the halved one, and I did not know that until today. The
+verification now uses the canonical three.
+
+Verified: parse PASS at v5.70; four maps 86/87/58/72; all three REAL endings
+driven through the outcome screen, extract paying 48c and dead and abandon paying
+zero; hub and ascent check; the board carries six NOW questions with the new one
+present and the old half claim gone from the page.
+
+Not verified: the 15 percent figure for a busy raid is arithmetic on the formula,
+not a driven run. My sim raids open nothing and kill nothing, so the 2 percent is
+the floor case rather than the typical one, and I have not produced a run with a
+real haul and a real body count to confirm the middle of the range.
