@@ -23045,3 +23045,47 @@ control that misbehaves specifically when there is nothing to act on, a Sell All
 nothing to sell for instance, is not covered by this. The sell button was checked
 separately earlier and reads "Nothing to sell" with itself disabled, but the rest were
 not.
+
+## Audit: the Listener item is closed, and his own telemetry is what closes it
+
+No VER bump and no code change. dark_raiders.html is untouched. This is the last
+unresolved item on the standing list and it deserves a verdict rather than another
+tick of being carried.
+
+HIS COMPLAINT, from run #61 on v4.93: "it sticks to the player and there's no chance
+to kill it." v5.45 and v5.60 worked on it, and v5.60's finding was that neither half
+was about the Listener's numbers: the game was TEACHING the one tactic that cannot
+beat it, backing away while firing, and never told him the thing that works.
+
+THREE INDEPENDENT CHECKS, ALL SAYING THE SAME THING.
+
+His feeling tags. "Listener beatable" appears THREE times in his export, on runs #68
+and #69. "Listener unfair" appears ZERO times. Those two tags were added at v5.60
+precisely so he could settle this, and he has settled it.
+
+His death record. Across 33 deaths the Listener killed him 3 times, which is fourth
+behind crawlers at 11, raiders at 10 and sentries at 8. It is not a dominant killer;
+it is the least common of the four things that kill him.
+
+My own measurement on the CURRENT build, which makes the claim mine as well as his.
+A Listener at 280 units on open ground with the lane verified clear by __los, standing
+still and firing an Auto Rifle: dead in 3.7 SECONDS, and it cost 14 health, 100 down
+to 86. It is not a damage sponge and it is not unkillable.
+
+And the teaching that fixed it is still in place. The in-raid banner reads "A LISTENER
+IS HUNTING YOU" in red while you are upright and switches to "CROUCHED. IT IS LOSING
+YOU" in green the moment you crouch, which is the tactic that actually works, because
+crouching drops you off its live noise tracking entirely. It no longer recommends
+backing away.
+
+The speeds are worth writing down since they are what "sticks to the player" means:
+the Listener moves at 196 against a walk of 158, so you cannot walk away from it, and
+a sprint at 1.62x is 256, so you can outrun it, at the cost of being heard at 300
+units instead of 210. Being unable to walk away from it is deliberate.
+
+Not verified: my kill test is one gun at one distance on open ground with a clear
+lane, which is the arena v5.60 built and not the situation he described. What I can
+say is that the fight is winnable and cheap when you can see it; what I still cannot
+reproduce is a Listener that closes and will not let go, and I have never once managed
+to. Since his own tags now say beatable and never say unfair, I am treating that as
+answered rather than continuing to hunt a scenario neither of us can produce.
