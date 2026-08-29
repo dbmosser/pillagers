@@ -19996,3 +19996,51 @@ is now trivially killable by a player who knows the trick, and I have only prove
 the trick works, not that the encounter is well tuned once he knows it. That is a
 balance call and I am not making it without him. I also measured only GREYWATER
 and only at 280 units with one gun for the six-lane run.
+
+## v5.61: two more things the primer told a new player that are not true
+
+v5.60 found the Listener row teaching the losing tactic. That was one row of
+nineteen, and there was no reason to think it was alone, so I checked every
+factual claim on the card against the code. Two more are wrong, both the v5.57
+species: copy that outlived the thing it describes.
+
+"YOU CAN STILL BE HAULED ABOARD WHILE DOWNED." Automatic pickup is hauledAboard
+and it is 0. The migration at cfgv 11 states why in his own terms: "he reversed
+the automatic pickup on his run-59 note". So the mechanic is correctly off and
+the sentence is stale, which matters because it teaches a new player that going
+down inside the ring is survivable by doing nothing. It is survivable, but only
+by doing something: the HUD prints HOLD E TO EXTRACT and "You can board from the
+floor" at exactly that player. The row now says that, and says nobody is coming
+for you, so the bleed-out clock is the deadline.
+
+"SELLING AT HOME IS THE ONLY THING THAT EARNS REP." Rep is written in five places
+and three of them are things you do in play. Selling one stash item pays rep
+equal to the price and so does sell-all, which are the two the card named.
+FINISHING A CONTRACT pays rep equal to the entire credit reward, which plausibly
+makes contracts the largest rep source in the game. A GHOST RUN pays rep worth
+half the ghost bonus. So the card was telling a new player to ignore the fastest
+route to every unlock in Requisition. Retitled and rewritten with all three, and
+the Peddler kept as the stated exception since he really does pay no standing.
+The progress board's tier 2 also pays 400 rep, but that is a one-off reward
+rather than a habit, so it stays off the card.
+
+CHECKED AND ALREADY CORRECT, so the card is not being rewritten for its own sake:
+elite rate one in twelve against eliteRate 0.08; the Choir's fifty metres against
+CHOIR_RNG 520 at the file's own ten-units-to-the-metre; rack pay 200c against
+RACK_PAY 200; ghost run 40 percent against haul*0.40; rig swap three seconds
+against a 3.2 second prep; TAB for the bag, M for the map and H for the legend all
+bound as described; and the Bulwark's soft marked back against a CORE SEAM weak
+point at angle PI with a 3.0 multiplier. Eight claims verified true, three found
+false across two builds.
+
+Verified: parse PASS at v5.61; four maps 86/87/58/72; three endings through the
+outcome screen with death and timeout paying zero credits; hub and ascent check;
+primer renders 19 rows with both new texts present and both false claims absent;
+fixture silent.
+
+Not verified: I did NOT drive a downed player boarding from the floor. I tried,
+and my synthetic downed state was wrong twice over, setting the flag directly
+while also forcing health back to full each frame, which just bled him out. The
+claim rests on reading the extraction tick and the HUD branch that prints HOLD E
+TO EXTRACT when hauledAboard is off, plus the v2.31 entry that documents the
+same. That is two independent readings and no playthrough.
