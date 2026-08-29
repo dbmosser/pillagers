@@ -934,7 +934,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.20';
+var VER='6.21';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24275,9 +24275,13 @@ function loadoutSnap(){
 }
 function loadoutLabel(L){
   if(!L) return 'EMPTY';
+  // v6.21: no rig in the label. Rigs went at v5.83 and P.rig is not consulted for
+  // protection any more, so this printed ", no rig" on every preset ever saved,
+  // which is both vocabulary he asked to delete and false: you ascend in 60 armour.
   var g=(L.equipped&&L.equipped!=='fists'&&WEAPONS[L.equipped])?WEAPONS[L.equipped].name:'no gun';
-  var r=armorById(L.rig||'none');
-  return g+(r.cap?(', '+r.name):', no rig')+', '+((L.kit||[]).length)+' packed';
+  var sec=(L.equippedSec&&L.equippedSec!=='none'&&WEAPONS[L.equippedSec])?WEAPONS[L.equippedSec].name:null;
+  var nk=(L.kit||[]).length;
+  return g+(sec?(' + '+sec):'')+', '+(nk?(nk+' packed'):'nothing packed');
 }
 // TAKES ONLY WHAT YOU STILL OWN. A preset holding a rig you have since lost
 // applies the rest and SAYS what it skipped, rather than failing whole or

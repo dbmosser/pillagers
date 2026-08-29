@@ -22718,3 +22718,70 @@ corrects P.mapIx as a second line of defence, so the two can only agree by both 
 right rather than by one being derived from the other. If a third route into a raid
 is ever added it will need the same treatment, which is the same shape of mistake as
 the quick ascent bug the build before this one.
+
+## v6.21: the loadout presets still talked about rigs, and the "intermittent" is solved
+
+THE PRESETS. His note was "completely remove the concept of rigs". v5.83 did the
+mechanic: myRig() returns the one body armour everybody wears and P.rig is not
+consulted for protection any more. The presets never got the message, and every saved
+loadout was labelled
+
+    Compact SMG, no rig, 3 packed
+
+because loadoutLabel read the stored L.rig, which on any profile since v5.83 is
+'none', whose cap is 0. So it printed "no rig" on every preset ever saved. That is
+vocabulary he asked to delete and it is also false: you ascend in 60 armour.
+
+The label now says what is true and useful, the gun and what is packed, and names the
+sidearm when there is one, because a two-gun loadout and a one-gun loadout are
+genuinely different things to choose between. loadoutApply keeps its rig branch: it is
+inert, and it is the only thing that still tolerates a pre-v5.83 preset without
+pushing a false "missing" into the message.
+
+Verified: a preset with two guns and three items reads "Compact SMG + Auto Rifle, 3
+packed", one with an empty kit reads "Compact SMG, nothing packed", and neither
+mentions a rig. Save and equip both work: the snapshot carries equipped, sidearm,
+hotAssign and kit, and equipping restores the kit and the hotbar exactly.
+
+### THE INTERMITTENT IS SOLVED, AND IT WAS NEVER INTERMITTENT
+
+Two builds ago I recorded, honestly, that some protocol runs read 197 and 214
+containers against a baseline of 200 and 225, that it never reproduced under
+investigation, and that I could not say what caused it. I can now. It is deterministic
+on the player's EQUIPPED WEAPON:
+
+    equipped 'smg' with a 'rifle' sidearm   236/197/154/214
+    equipped 'fists'                        236/200/154/225
+    back to 'smg'                           236/197/154/214
+
+Perfectly reproducible in both directions. The protocol pins the stash, the kit, junk
+and the safe pocket, and it has never pinned the GUNS. So any UI test that equipped a
+weapon, and several did, left the player armed for the next protocol run and shifted
+every downstream number. It looked intermittent because it depended on what I had been
+clicking, not on anything in the game.
+
+The baseline 236/200/154/225 is the FISTS baseline. The protocol now pins weapons,
+equipped and equippedSec alongside everything else, and reads 236/200/154/225 again.
+
+This is the fourth measurement fault of the session that turned out to be my harness
+rather than the game, after the settings-dial contamination, the oversized forceSize
+that hid the bottom HUD, and reading a 0x0 hidden panel. The pattern is the same every
+time: state I did not pin, or a surface I did not check was visible.
+
+Verified: parse PASS at v6.21; four maps 236/200/154/225 and 86/87/58/72 with the
+weapon pin in place; three endings through the outcome screen; hub, ascent check and
+the export builder; pin audit clean.
+
+Two audits that found nothing, recorded because a silent check is worth as much as a
+loud one. Every settings option was driven through all 30 of its states and each one
+applies exactly the dials its table claims, so the v3.4x guarantee that "the dials and
+the words can never disagree" holds. And with all six rows set to Standard, all eight
+dials equal the authored defaults exactly, so the copy claiming Standard is how the
+game has always played is true.
+
+Not verified: renderGear and its riglist block are dead code, writing into hosts that
+sit inside a display:none container, and they are where the stale "no rig" and "Pack
+Tier" vocabulary still lives. I read them as a player-facing lie twice today before
+checking they were invisible. They want deleting, but the region runs into the weapon
+list and I could not establish its end confidently enough to cut it in the same build
+as a label change, so it is a scoped follow-up rather than something I have done.
