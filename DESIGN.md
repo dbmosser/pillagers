@@ -22335,3 +22335,74 @@ with a different unit word, or built by concatenation across lines, would not ha
 matched the pattern, so this is a strong sweep rather than a proof. The sim stats
 line is fixed but every past reading I took from it was against the wrong number, and
 I have not gone back through the log to see which conclusions leaned on it.
+
+## v6.11 and v6.12: opening the ascent check threw away the loadout you packed
+
+This is the one worth having found, and it is very probably a real part of what he
+means by the menus being broken. It was found by DRIVING the operator terminal, not
+by reading it, and my first diagnosis was wrong in a way worth recording.
+
+FIRST, THE WIRING (v6.11). The button labelled ASCEND is #deploy and it was wired
+straight to startRaid(). There is a correct route, openLift(), which offers the
+sector page when more than one map is open and otherwise puts you on the ascent
+check. The button never called it, so pressing the button named after the thing you
+are about to do skipped the map choice and the loadout screen entirely, and the
+raid's standard-kit fallback fired because P.kitChosen was never set.
+
+THEN THE REAL ONE (v6.12). With the wiring fixed the loadout STILL did not arrive,
+and the cause was worse. renderStage(prefill) did this unconditionally:
+
+    if(prefill){ P.kit=standardKit().slice(0,DEPLOY_SLOTS); saveProfile(); }
+
+and openLift opens the check with prefill set. So opening the ascent check REPLACED
+whatever he had packed at the stash screen with an auto-picked kit. Every time.
+
+DRIVEN, with a loadout nothing else would produce, three Data Cores and a stim:
+    what he packed                 core, core, core, stim
+    P.kit after opening the check  medkit
+    the bag in the raid            medkit, bandage
+    the stash afterwards           core, core, core, stim, never left the vault
+He builds a loadout, presses ASCEND, and arrives with a medkit and a free bandage
+while everything he chose sits downstairs. The screen's own subtitle promises the
+opposite: "Everything on this page can still be changed. Nothing leaves your stash
+until you press ASCEND."
+
+The prefill is kept for what it was for, which is that a player who has packed
+nothing should not have to fill the screen by hand before their first raid. It now
+fires only when nothing is actually packed, and the test is stageKitLive rather than
+P.kit.length, because a kit whose stash copies have all been sold reconciles to empty
+and that genuinely is nothing packed.
+
+VERIFIED, three cases driven end to end at 1920x1080:
+  a deliberate loadout survives    kit stays core,core,core,stim; the bag carries
+                                   all four plus two issued bandages; safeUp is
+                                   core, so the safe pocket applies; the stash is
+                                   left holding only the medkit he did not pack
+  nothing packed                   still prefilled, smoke, frag, frag, plate,
+                                   medkit, medkit
+  a stale kit of items he no
+  longer owns                      reconciles to empty and prefills, rather than
+                                   sending him up with nothing
+
+A CORRECTION I MADE MID-DIAGNOSIS, because it nearly became a false report. My first
+evidence for the wiring bug was a bag reading plate, medkit, bandage, which I called
+the standard kit. It was not conclusive: his packed kit happened to resemble the
+standard one, and the frag I thought was missing was in the POUCH, where throwables
+belong, while the plate was in the bag because armour was already full. I only got
+clean evidence by re-running with a loadout the standard kit could never produce.
+Distinctive test data is the difference between a bug report and a guess.
+
+Verified: parse PASS at v6.12; four maps 236/200/154/225 and 86/87/58/72 from a
+cleared profile; three endings through the outcome screen; hub, ascent check and the
+export builder; pin audit clean.
+
+The four-map route is covered too, and I checked rather than assumed. Its ASCEND TO
+THIS SECTOR button calls the same renderStage(true), so it had the identical wipe;
+the fix sits inside renderStage, so both routes are protected by one change. Driven:
+a kit of three cores and a stim goes through the sector page to the check intact.
+
+Not verified: no human has taken the lift. The prefill still fires on a kit that
+reconciles to empty, which is right, but it means a player who deliberately wants to
+ascend carrying NOTHING cannot express that: emptying the kit and reopening the check
+refills it. That is a real edge and I have not decided whether it wants an explicit
+"go up light" state.
