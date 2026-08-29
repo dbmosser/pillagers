@@ -98,6 +98,14 @@
      it is, stacks carry a count, and rarity lives on the border so you read the
      value of a whole screen without reading a word of it. */
   .invtabs{ display:flex; gap:4px; padding:8px 10px 0 10px; flex-wrap:wrap; }
+.costile{width:96px;padding:8px 6px;border:1px solid var(--steel-hi);border-radius:3px;background:rgba(0,0,0,.32);
+  text-align:center;cursor:pointer;transition:border-color .1s,background .1s}
+.costile:hover{border-color:var(--amber);background:rgba(0,0,0,.5)}
+.costile.on{border-color:var(--amber);background:rgba(214,158,46,.14)}
+.costile.lock{opacity:.42;cursor:not-allowed}
+.costile.lock:hover{border-color:var(--steel-hi);background:rgba(0,0,0,.32)}
+.cosname{margin-top:6px;font-size:12px;letter-spacing:1px}
+.cosreq{margin-top:2px;font-size:10px;opacity:.65;letter-spacing:1px;text-transform:uppercase}
   .invtab{ font-size:9px; letter-spacing:.14em; text-transform:uppercase;
     padding:4px 9px; border:1px solid var(--steel-hi); border-radius:2px;
     color:var(--ash); cursor:pointer; background:rgba(0,0,0,.25); }
@@ -236,16 +244,7 @@
   <button style="margin-top:14px;padding:8px 22px" id="oc_btn">Log run and return</button>
 </div>
 
-<div class="modal" id="exportmodal">
-  <h3>Flight recorder export</h3>
-  <div class="msub">Copy this and paste it to Claude. Includes runs, tags, notes, active config, and the last bot sim.</div>
-  <textarea id="exporttext" style="flex:1"></textarea>
-  <div style="display:flex;gap:8px;margin-top:10px">
-    <button id="copybtn" style="padding:8px 22px">Copy to clipboard</button>
-    <button id="closeexport" style="padding:8px 22px">Close</button>
-    <button id="wipelog" style="padding:8px 22px;margin-left:auto;border-color:var(--rust);color:var(--rust)">Clear recorder</button>
-  </div>
-</div>
+
 
 <div class="modal" id="tradermodal">
   <h3>HOLT, THE TRADER</h3>
@@ -471,9 +470,24 @@
   </div>
 </div>
 <div class="modal" id="settingsmodal">
-  <h3>Settings</h3>
-  <div class="msub">Presentation only. Nothing here changes the game, the balance or your profile.</div>
-  <div id="setlist" class="plist"></div>
+  <h3>SETTINGS</h3>
+  <div class="invtabs" id="settabs" style="padding:0 0 10px 0"></div>
+  <div class="tpane" id="spane_display">
+    <div class="msub">Presentation only. Nothing here changes the game, the balance or your profile.</div>
+    <div id="setlist" class="plist"></div>
+  </div>
+  <div class="tpane" id="spane_rec" style="display:none">
+    <div class="msub">Every raid is logged here. Copy it out and send it to Daniel so the game can be tuned on real play.</div>
+    <textarea id="exporttext" style="flex:1;min-height:220px"></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button id="copybtn" style="padding:8px 22px">Copy to clipboard</button>
+      <button id="wipelog" style="padding:8px 22px;margin-left:auto;border-color:var(--rust);color:var(--rust)">Clear recorder</button>
+    </div>
+  </div>
+  <div class="tpane" id="spane_look" style="display:none">
+    <div class="msub">Cosmetic only. None of this changes how you play, how much you carry or how hard you hit.</div>
+    <div id="cosbody"></div>
+  </div>
   <div style="display:flex;gap:8px;margin-top:10px">
     <button id="closesettings" style="padding:8px 22px">Close</button>
   </div>
@@ -691,7 +705,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.26';
+var VER='5.27';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13851,6 +13865,62 @@ function fogSeen(wx2,wy2){
   if(x<0||y<0||x>=S.w||y>=S.h) return false;
   return S.g[y*S.w+x]===1;
 }
+// WHAT SHE CAN WEAR. Every entry is drawn and nothing else: no stat, no slot
+// cost, no weight. how: what unlocks it, and cosOwned is the only judge.
+var COSMETICS=[
+  {id:'none',   name:'Bare',           how:'always',      kind:'hat'},
+  {id:'band',   name:'Sweat Band',     how:'runs:5',      kind:'hat'},
+  {id:'phones', name:'Ear Defenders',  how:'extracts:5',  kind:'hat'},
+  {id:'mask',   name:'Dust Mask',      how:'runs:15',     kind:'hat'},
+  {id:'visor',  name:'Cracked Visor',  how:'warden:1',    kind:'hat'},
+  {id:'crown',  name:'Meridian Crown', how:'tier:1',      kind:'hat'},
+  {id:'blonde', name:'Blonde',         how:'always',      kind:'hair'},
+  {id:'dark',   name:'Dark',           how:'runs:3',      kind:'hair'},
+  {id:'red',    name:'Rust Red',       how:'extracts:12', kind:'hair'},
+  {id:'white',  name:'Bleached',       how:'level:6',     kind:'hair'},
+  {id:'green',  name:'Moss',           how:'buy:2500',    kind:'hair'}
+];
+// dark, lit, highlight. The figure is 15px across, so three tones is the whole
+// range the head has room for.
+var HAIRCOL={blonde:['#b8913f','#d9b257','#f2d98c'],dark:['#2f2830','#4d4048','#6e5d66'],
+             red:['#7d3320','#ad5033','#d47a4e'],white:['#a8a59c','#ddd9cd','#f4f1e6'],
+             green:['#4a5f3a','#6d8a52','#9ab472']};
+function cosOwned(c){
+  if(!c) return false;
+  if(c.how==='always') return true;
+  if(typeof P==='undefined'||!P) return false;
+  var bits=String(c.how).split(':'),k=bits[0],v=+bits[1];
+  if(k==='runs')     return (P.runs||0)>=v;
+  if(k==='extracts') return (P.ext||0)>=v;
+  if(k==='tier')     return (P.worldTier||0)>=v;
+  if(k==='level')    return (P.xpLevel||1)>=v;
+  if(k==='warden')   return ((P.kills&&P.kills.warden)||0)>=v;
+  if(k==='buy')      return !!((P.cosBought||{})[c.id]);
+  return false;
+}
+function cosNeed(c){
+  var bits=String(c.how).split(':'),k=bits[0],v=bits[1];
+  if(c.how==='always') return 'unlocked';
+  if(k==='runs')     return v+' raids run';
+  if(k==='extracts') return v+' extractions';
+  if(k==='tier')     return 'world tier '+v;
+  if(k==='level')    return 'level '+v;
+  if(k==='warden')   return 'put a Warden down';
+  if(k==='buy')      return v+'c from the Peddler';
+  return '';
+}
+function cosFind(id){
+  for(var i=0;i<COSMETICS.length;i++) if(COSMETICS[i].id===id) return COSMETICS[i];
+  return null;
+}
+// What she is actually wearing right now. Never returns something locked, so a
+// wiped profile or an edited save cannot leave her in a hat she has not earned.
+function cosWorn(kind){
+  var want=(kind==='hair')?(typeof P!=='undefined'&&P&&P.cosHair):(typeof P!=='undefined'&&P&&P.cosHat);
+  var c=cosFind(want);
+  if(c&&c.kind===kind&&cosOwned(c)) return c.id;
+  return kind==='hair'?'blonde':'none';
+}
 var DRAW_LIFT_MAX=30;
 function drawLift(v){ return (isFinite(v)&&v>0)?Math.min(v,DRAW_LIFT_MAX):0; }
 function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
@@ -13966,6 +14036,11 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // figure, and the old anonymous visor strip is gone.
   var hx2=x+leanX;
   var HERO=!!st.hero;
+  // WHAT SHE IS WEARING. Cosmetic only: these lines pick three colours and a
+  // hat id, and nothing downstream of them touches a number.
+  var _HC=HAIRCOL[HERO?cosWorn('hair'):'blonde']||HAIRCOL.blonde;
+  var HAIRDARK=_HC[0],HAIRLIT=_HC[1],HAIRHI=_HC[2];
+  var HAT=HERO?cosWorn('hat'):'none';
   // HER HAIR GOES DOWN FIRST, behind everything, so the head sits into it and the
   // mass reads past the shoulders the way it does in the reference.
   if(HERO){
@@ -13981,16 +14056,16 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     for(var _t=0;_t<segs.length;_t++)
       rrF(tx0+tdx*segs[_t][0]-segs[_t][1]/2-0.7, ty0+tdy*segs[_t][0]-segs[_t][1]/2-0.7,
           segs[_t][1]+1.4, segs[_t][1]+1.4, (segs[_t][1]+1.4)/2);
-    wc.fillStyle='#b8913f';
+    wc.fillStyle=HAIRDARK;
     for(var _u=0;_u<segs.length;_u++)
       rrF(tx0+tdx*segs[_u][0]-segs[_u][1]/2, ty0+tdy*segs[_u][0]-segs[_u][1]/2,
           segs[_u][1], segs[_u][1], segs[_u][1]/2);
     // the gather at the crown, and a highlight along the top of the tail
-    wc.fillStyle='#d9b257';
+    wc.fillStyle=HAIRLIT;
     rrF(tx0-2.6,ty0-2.6,5.2,5.2,2.6);
     // SIDES tight to the skull: enough to say "hair", not enough to be ears.
     wc.fillStyle=INK;      rrF(hx2-9.4,ty-35.4,3.1,10.5,1.5); rrF(hx2+6.3,ty-35.4,3.1,10.5,1.5);
-    wc.fillStyle='#b8913f'; rrF(hx2-8.9,ty-34.9,2.3,9.4,1.2);  rrF(hx2+6.6,ty-34.9,2.3,9.4,1.2);
+    wc.fillStyle=HAIRDARK; rrF(hx2-8.9,ty-34.9,2.3,9.4,1.2);  rrF(hx2+6.6,ty-34.9,2.3,9.4,1.2);
 
   }
   wc.fillStyle=INK; rrF(hx2-8.5,ty-38,17,15,6);
@@ -14011,8 +14086,34 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     // FRINGE, swept, over the forehead, and SIDE LOCKS down past the jaw. The
     // hair is the whole silhouette at this size, so it is the only thing she
     // wears that is actually hers. Everything else has to be picked up.
-    wc.fillStyle='#d9b257'; rrF(hx2-7.5,ty-37,15,4,4);
-    wc.fillStyle='#f2d98c'; wc.fillRect(hx2-6.6,ty-36.6,10.4,1.4);
+    wc.fillStyle=HAIRLIT; rrF(hx2-7.5,ty-37,15,4,4);
+    wc.fillStyle=HAIRHI;  wc.fillRect(hx2-6.6,ty-36.6,10.4,1.4);
+    // HEADGEAR. Sits on top of the fringe and the face because that is where a
+    // hat sits. Purely cosmetic: no soak, no slot, no weight, no stat.
+    if(HAT==='band'){
+      wc.fillStyle=INK;       rrF(hx2-8.2,ty-37.4,16.4,4.4,1.6);
+      wc.fillStyle='#c0503a'; rrF(hx2-7.6,ty-36.9,15.2,3.4,1.2);
+      wc.fillStyle='#e0705a'; wc.fillRect(hx2-6.8,ty-36.6,5.4,1);
+    } else if(HAT==='phones'){
+      wc.fillStyle=INK;       rrF(hx2-11.4,ty-33.4,4.6,7.6,2); rrF(hx2+6.8,ty-33.4,4.6,7.6,2);
+      wc.fillStyle='#22262e'; rrF(hx2-10.8,ty-32.8,3.4,6.4,1.6); rrF(hx2+7.4,ty-32.8,3.4,6.4,1.6);
+      wc.fillStyle=INK;       rrF(hx2-8.6,ty-39.2,17.2,2.8,1.2);
+      wc.fillStyle='#3c424e'; wc.fillRect(hx2-7.6,ty-38.8,15.2,1.2);
+    } else if(HAT==='mask'){
+      wc.fillStyle=INK;       rrF(hx2-8,ty-29.4,16,6.2,2.6);
+      wc.fillStyle='#14161b'; rrF(hx2-7.4,ty-28.9,14.8,5.2,2.2);
+      wc.fillStyle='#2b2f38'; wc.fillRect(hx2-6.6,ty-28.6,13.2,1.1);
+    } else if(HAT==='visor'){
+      wc.fillStyle=INK;       rrF(hx2-9,ty-40.6,18,5.4,2.2);
+      wc.fillStyle='#1b1f26'; rrF(hx2-8.4,ty-40.1,16.8,4.2,1.8);
+      wc.fillStyle='#a9682f'; rrF(hx2-7.4,ty-39.6,14.8,2.4,1);
+      wc.fillStyle='#e8b070'; wc.fillRect(hx2-6.6,ty-39.4,5.6,0.9);
+    } else if(HAT==='crown'){
+      wc.fillStyle=INK;       rrF(hx2-7.8,ty-40.6,15.6,5,1.4);
+      wc.fillStyle='#c9962c'; rrF(hx2-7.2,ty-40.1,14.4,3.8,1);
+      wc.fillStyle='#ffdc80'; wc.fillRect(hx2-6.4,ty-39.9,12.8,1.1);
+      wc.fillStyle='#fff4cc'; wc.fillRect(hx2-1.6,ty-40.4,3.2,1.6);
+    }
 
   }
   // a small mouth, hurt pulls it into a grimace
@@ -18951,11 +19052,11 @@ acts:{KeyE:['go up',function(){ openLift(); }],
      acts:{KeyE:['racks',function(){ renderHub(); renderMainframe(); document.getElementById('opmodal').classList.add('on'); }]}},
     (BETA_HIDE_DEV
       ? {id:'dev',x:590,y:255,r:42,label:'SETTINGS',sub:'',c:'#9aa8b2',
-         acts:{KeyE:['settings',function(){ renderSettings(); document.getElementById('settingsmodal').classList.add('on'); }]}}
+         acts:{KeyE:['settings',function(){ openSettings('display'); }]}}
       : {id:'dev',x:590,y:255,r:42,label:'DEV BOX',sub:'',c:'#9aa8b2',
          acts:{KeyE:['dev crate',function(){ renderCrate(); document.getElementById('cratemodal').classList.add('on'); }],
                KeyR:['tuning',function(){ toggleTune(true); }],
-               KeyT:['settings',function(){ renderSettings(); document.getElementById('settingsmodal').classList.add('on'); }]}})
+               KeyT:['settings',function(){ openSettings('display'); }]}})
   ];
   // The sub line is BUILT from the acts, so the keys on screen can never drift
   // from the keys that work; a one-act station keeps its authored flavour line.
@@ -19029,7 +19130,7 @@ function hubModalOpen(){
   return document.getElementById('hub').classList.contains('on')||
     document.getElementById('tradermodal').classList.contains('on')||
     document.getElementById('tunemodal').classList.contains('on')||
-    document.getElementById('exportmodal').classList.contains('on')||
+
     document.getElementById('simmodal').classList.contains('on')||
     document.getElementById('outcome').classList.contains('on');
 }
@@ -20986,7 +21087,7 @@ document.getElementById('condbtn').onclick=function(){
 // simple-toggle surface built for exactly this request at v3.42. The dial
 // console is instrumentation, so it lives with the instrumentation: a button in
 // Dev tools, and the same keyboard route it always had.
-document.getElementById('optbtn').onclick=function(){ renderSettings(); document.getElementById('settingsmodal').classList.add('on'); };
+document.getElementById('optbtn').onclick=function(){ openSettings('display'); };
 (function(){ var t2=document.getElementById('tunebtn2'); if(t2) t2.onclick=function(){ document.getElementById('devmodal').classList.remove('on'); toggleTune(true); }; })();
 document.getElementById('opbtn').onclick=function(){ renderHub(); renderMainframe(); document.getElementById('opmodal').classList.add('on'); };
 document.getElementById('mfbuild').onclick=function(){ buildRack(); };
@@ -21850,17 +21951,87 @@ var _aeb=document.getElementById('autoexbtn');
 if(_aeb) _aeb.onclick=function(){
   P.autoExport=!P.autoExport; saveProfile(); syncAutoEx();
 };
-document.getElementById('exportbtn').onclick=function(){
-  document.getElementById('exporttext').value=buildExport();
-  document.getElementById('exportmodal').classList.add('on');
-};
+// APPEARANCE. Every cosmetic in the game, owned or not, with the requirement
+// spelled out on the locked ones. Clicking an owned tile wears it immediately.
+function cosSwatch(c){
+  if(c.kind==='hair'){
+    var col=HAIRCOL[c.id]||HAIRCOL.blonde;
+    return '<span style="display:inline-block;width:34px;height:34px;border-radius:17px;'+
+           'background:linear-gradient(160deg,'+col[2]+' 0%,'+col[1]+' 45%,'+col[0]+' 100%);'+
+           'border:2px solid #14161b"></span>';
+  }
+  var f={none:'--',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC\u25AC',visor:'\u25AD',crown:'\u2662'}[c.id]||'?';
+  return '<span style="display:inline-block;width:34px;height:34px;line-height:34px;text-align:center;'+
+         'border-radius:6px;background:#1b1f26;border:2px solid #14161b;font-size:15px">'+f+'</span>';
+}
+function renderCosmetics(){
+  var box=document.getElementById('cosbody'); if(!box) return;
+  var H='';
+  [['hat','HEADGEAR'],['hair','HAIR']].forEach(function(g){
+    H+='<div style="margin:10px 0 4px 0;letter-spacing:2px;opacity:.7;font-size:12px">'+g[1]+'</div>';
+    H+='<div style="display:flex;flex-wrap:wrap;gap:8px">';
+    COSMETICS.filter(function(c){ return c.kind===g[0]; }).forEach(function(c){
+      var own=cosOwned(c), on=(cosWorn(g[0])===c.id);
+      H+='<div class="costile'+(own?'':' lock')+(on?' on':'')+'" data-kind="'+g[0]+'" data-id="'+c.id+'">'+
+         cosSwatch(c)+'<div class="cosname">'+c.name+'</div>'+
+         '<div class="cosreq">'+(own?(on?'WORN':'owned'):cosNeed(c))+'</div></div>';
+    });
+    H+='</div>';
+  });
+  box.innerHTML=H;
+  Array.prototype.forEach.call(box.querySelectorAll('.costile'),function(el){
+    el.onclick=function(){
+      var id=el.getAttribute('data-id'), kind=el.getAttribute('data-kind'), c=cosFind(id);
+      if(!c) return;
+      // The buy tiles are the only ones that can be unlocked from here, and
+      // only with credits you already have.
+      if(!cosOwned(c)){
+        var bits=String(c.how).split(':');
+        if(bits[0]==='buy'&&P.credits>=+bits[1]){
+          P.credits-=+bits[1];
+          P.cosBought=P.cosBought||{}; P.cosBought[id]=1;
+          try{ sfx('cache'); }catch(e){}
+        } else { try{ sfx('clank'); }catch(e){} return; }
+      }
+      if(kind==='hair') P.cosHair=id; else P.cosHat=id;
+      saveProfile(); renderCosmetics();
+      try{ renderHub&&renderHub(); }catch(e){}
+    };
+  });
+}
+// SETTINGS, one window, three tabs. Same shape as the trader: renderSettings and
+// buildExport are untouched and still fill the same elements.
+function openSettings(tab){
+  var want=tab||'display';
+  try{ renderSettings(); }catch(e){}
+  try{ document.getElementById('exporttext').value=buildExport(); }catch(e){}
+  var T=[['display','DISPLAY'],['look','APPEARANCE'],['rec','RUN RECORDER']];
+  try{ renderCosmetics(); }catch(e){}
+  var tb=document.getElementById('settabs');
+  if(tb){
+    tb.innerHTML='';
+    T.forEach(function(t){
+      var d=document.createElement('div');
+      d.className='invtab'+(want===t[0]?' on':'');
+      d.textContent=t[1];
+      d.onclick=function(){ openSettings(t[0]); };
+      tb.appendChild(d);
+    });
+  }
+  T.forEach(function(t){
+    var pane=document.getElementById('spane_'+t[0]);
+    if(pane) pane.style.display=(want===t[0])?'':'none';
+  });
+  document.getElementById('settingsmodal').classList.add('on');
+}
+document.getElementById('exportbtn').onclick=function(){ openSettings('rec'); };
 document.getElementById('copybtn').onclick=function(){
   var ta=document.getElementById('exporttext');
   ta.select();
   if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value);
   else document.execCommand('copy');
 };
-document.getElementById('closeexport').onclick=function(){ document.getElementById('exportmodal').classList.remove('on'); };
+
 document.getElementById('wipelog').onclick=function(){
   var b=document.getElementById('wipelog');
   if(b.dataset.armed){ P.log=[]; P.lastSim=null; delete b.dataset.armed; b.textContent='Clear recorder'; saveProfile(); renderHub();

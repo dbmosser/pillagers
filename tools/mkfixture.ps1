@@ -75,6 +75,16 @@ window.__canvases=function(){ return {world:cv,overlay:hcv}; };
 window.__movers={seekPoint:seekPoint,navSeek:navSeek,mkSentry:mkSentry,mkRaider:mkRaider,dist:dist,buildNav:buildNav};
 window.__newRaid=function(){ G=buildRaid(true); return G; };
 window.__hub=function(){ return HB; };
+// showScreen('hub') is the ONLY thing that builds HB, so every hub probe before
+// this hook existed had to reach for HB through a raid ending and got null.
+window.__showScreen=function(s){ showScreen(s); };
+// COSMETICS. Purely cosmetic, so nothing here can move a balance number, but the
+// unlock rules still have to be driven: a locked hat must never end up worn.
+window.__cos={list:function(){ return COSMETICS; },
+              owned:function(c){ return cosOwned(typeof c==='string'?cosFind(c):c); },
+              need:function(c){ return cosNeed(typeof c==='string'?cosFind(c):c); },
+              worn:function(k){ return cosWorn(k); },
+              render:function(){ return renderCosmetics(); }};
 window.__hubStep=function(dt){ dt=(dt===undefined||!isFinite(dt))?0.016:dt; updateHubWorld(dt); drawHubWorld(dt); };
 // __startRaid TOOK NO ARGUMENTS until 2026-08-26 and silently ignored everything
 // passed to it, so every __startRaid({mapIx:m,seed:s}) in a verification run built

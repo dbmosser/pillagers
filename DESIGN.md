@@ -17836,3 +17836,96 @@ persistent earned cosmetics with no gameplay effect. Not started. The
 visor, mask and headphones art from the first pass is kept in this
 changelog rather than deleted, because that is exactly the unlock content
 it should become.
+
+================================================================================
+v5.27  EARNED COSMETICS, AND SETTINGS BECOMES ONE WINDOW
+================================================================================
+
+Two things, both of them his.
+
+THE COSMETICS. His words were "no mask or shoulder plates -- headgear and
+armor should be in game pickups", and his Q18 and Q20 said the same thing
+from the other side: purely cosmetic, earned, and earned by all three of
+achievement, level and purchase. At v5.10 I gave the operator a visor, a
+mask and headphones as part of her body. At v5.11 I took them off again,
+which was right, because a thing you are simply wearing at character creation
+says nothing about you. This build puts that art back as the thing it should
+always have been: eleven cosmetics, ten of them locked, each with the
+requirement written on the tile.
+
+  Bare            always
+  Sweat Band      5 raids run
+  Ear Defenders   5 extractions
+  Dust Mask       15 raids run
+  Cracked Visor   put a Warden down
+  Meridian Crown  world tier 1
+  Blonde          always
+  Dark            3 raids run
+  Rust Red        12 extractions
+  Bleached        level 6
+  Moss            2500c
+
+That spread is deliberate. Two of them come off raids you will run in your
+first hour, so the system announces itself early. Two of them come off the
+counters that separate a careful player from a greedy one, extractions
+rather than raids, because extracting is the skill the game is actually
+about. One comes off the Warden, so the hardest fight in the build finally
+leaves a mark on you that other players can see. One comes off world tier,
+which until now was a number in a header and nothing else. One costs money,
+so credits have a sink that is not ammunition.
+
+None of them touches a number. No soak, no weight, no slot, no stat, not
+one line in this change is downstream of anything a raid reads. That is not
+a promise, it is the shape of the code: cosWorn returns an id, the id picks
+three hex colours and a branch in the head-drawing block, and the branch ends.
+
+cosWorn also refuses to return anything cosOwned says no to, so a wiped
+profile, an edited save, or a cosmetic whose requirement I later raise all
+resolve to bare and blonde rather than leaving her in something she has not
+earned. Verified by wiping the counters with a crown and red hair set in the
+profile and confirming she came back bare and blonde.
+
+The hair is now three tones rather than two hard-coded golds, because at
+15 pixels across the head, three tones is the whole range there is: the
+ponytail body, the gather and the fringe, and a highlight. Five hair colours
+share that structure, so the ponytail from v5.16 keeps its silhouette and
+only its palette moves.
+
+THE PICKER. A third tab on Settings, which is why the second half of this
+build exists.
+
+SETTINGS AND THE RECORDER ARE ONE WINDOW NOW. They were two separate
+full-screen boxes reached from two different places, and a beta player who
+found one had no reason to think the other existed. Same treatment the
+trader got: one window, tabs across the top, DISPLAY, APPEARANCE, RUN
+RECORDER, and the contents of each pane untouched. renderSettings and
+buildExport still fill exactly the same elements they always did.
+
+Three separate places opened Settings and only one of them went through the
+new opener, so from the other two the tabs never drew at all. The terminal
+station and the hub button both route through openSettings now. That is the
+kind of bug that ships quietly and is only ever found by the one person who
+opens the window the other way, which in this build is him.
+
+WHAT ELSE MOVED. tools/mkfixture.ps1 gained __showScreen and __cos, because
+HB is built by showScreen('hub') and nothing else, so every hub probe before
+today reached for HB through a raid ending and got null back. That was a hole
+in the verification harness rather than in the game, but it meant hub checks
+were quietly weaker than they read.
+
+Verified: parsecheck PASS at v5.27. Four maps clean at 110, 111, 74 and 91
+entities with no throw. All thirty hat-and-hair combinations rendered in the
+hub and every cosmetic rendered inside a live raid on GREYWATER. A pixel
+signature of the hub canvas differs for all six hats and all five hairs, with
+exactly one collision, bare-plus-blonde against blonde-plus-bare, which is
+the same picture twice and is correct. Locked tiles ignore clicks. The buy
+tile refuses at zero credits, charges 2500 once, and does not charge again.
+Nine of eleven tiles read as locked on a fresh profile. Driven through the
+hub's own settings button rather than by calling openSettings directly.
+
+Not verified: nobody has looked at these hats on a real screen at real
+speed, so I know each one draws and differs and I do not know that any of
+them reads as a hat rather than a smudge at 100 percent zoom. The Warden
+unlock is driven by setting P.kills.warden rather than by killing a Warden.
+No balance run: nothing in this build is reachable from a number a raid uses,
+so 320 paired seeds would measure only noise, and I did not spend them.
