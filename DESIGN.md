@@ -23426,3 +23426,50 @@ swept yet. Its box-matching is a heuristic and it produces false positives on wo
 space labels, so it finds candidates rather than verdicts. It measures the right border
 only in the sense that it measures all four, but every real hit so far has been
 horizontal; I have not confirmed it would catch a vertical overrun.
+
+## v6.38 - THE RIGHT CLICK MENU WAS BLACK ON BLACK, AND SO WAS THE DRAG GHOST
+
+His note: "right clicking items gives a dark menu with dark text, not very useful."
+Measured, and it is worse than it sounds. The item menu computes color rgb(0,0,0) on a
+rgba(9,13,19,.97) panel. Black on black, every row. Only the item name was readable,
+because it carries a rarity colour of its own.
+
+THE CAUSE IS SCOPE, NOT COLOUR, which is why it survived a palette pass. The whole
+palette is declared on #root. openItemMenu ends with document.body.appendChild(m), so
+the menu is a SIBLING of #root, every var(--bone) and var(--ash) inside it resolves to
+nothing, and colour falls back to black.
+
+THE DRAG GHOST HAD THE SAME BUG AND NOBODY HAD REPORTED IT, because you cannot report
+what you cannot see. grabGhost also mounts on document.body, so the label you drag
+across the stash was black text inside a black border on a near black background. The
+drag worked perfectly and gave no visible feedback, which is very likely part of what
+"these menus are broken" has meant all along. Found by checking the second body-mounted
+element the moment the first one turned out to be mis-scoped.
+
+Fixed by declaring the twelve palette variables on :root as well. The values are
+identical, so nothing inside #root can move; they simply stop being nothing outside it.
+Not by retargeting the #root rule, which also carries background, sizing and layout that
+must not land on html. Verified after: menu text and ghost text both compute
+rgb(255,246,220) on the dark panel, and the ghost border is amber again.
+
+THE DATED BODY ARMOUR LINE, his note. The bottom of the stash read "Body Armour, 60
+armour on the ascent, absorbing 50% of every hit until it is gone." RG.name is the std
+RIGS entry, still literally named "Body Armour", and rigs stopped being a concept at
+v5.83. Naming it made it read as a thing you had chosen. It now states the fact without
+the product name, matching the primer, which already said it correctly.
+
+TWO RENAMES, both his: "TRADE, CRAFT AND HIRE" is now "SHOP, CRAFT, AND HIRE" in the
+station label and the modal heading, and the Requisition heading no longer says "the
+whole counter".
+
+Verified: parse PASS at v6.38; the item menu and the drag ghost captured at 1080p with
+readable text; the readyline read back from the DOM; four maps 86/87/58/72 entities and,
+at seed 4242, 246/193/152/216 containers; all three endings through the outcome screen
+to a drawn hub; hub, renderStage and the export builder; pin audit clean.
+
+Not verified: the palette now resolves at :root, and I checked the two elements that
+were broken, not every other consumer of those variables, though widening a variable's
+scope cannot narrow anything. The primer still says REP "unlocks the counter in
+Requisition"; he flagged the heading and not that sentence, so I left it rather than
+rewrite copy he did not ask about. The NO RIG branch of the readyline is still there and
+is now unreachable, since myRig always returns the 60 armour standard.
