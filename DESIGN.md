@@ -20532,3 +20532,37 @@ also have not re-examined whether seven assignable keys is the right number now
 that two are reserved, and the in-raid bar still derives cells 4 to 9 from what
 you carry rather than being a fixed nine-slot grid, which is the deeper rebuild
 his "redo it all" may have meant and which I have not attempted.
+
+## v5.73: the Listener stops explaining itself
+
+HIS NOTE: "dont give the advice re listener (hunts by sound blah blah blah)".
+
+v5.45 printed the tactics because three instincts get you killed and the answers
+were invisible. v5.60 rewrote them because the ones being printed were the LOSING
+ones. Both of those were arguments about the text being wrong. He is saying he
+does not want the text at all, which is a different question and it is his.
+
+The in-raid banner keeps the one thing that is information rather than
+instruction, that something is hunting you, and drops the lecture. It now reads
+A LISTENER IS HUNTING YOU. The crouch line stays as it was, CROUCHED. IT IS
+LOSING YOU., because that is feedback on what he just did rather than advice
+about what to do next, and it is the only way to know crouching is working at all.
+
+The primer row was the same lecture in a quieter place and gets the same
+treatment. It is now what the thing IS and nothing about how to beat it: the
+Listener is blind, so light and cover and standing in a bush mean nothing to it,
+and it hunts the noise you make. Working out the rest is the game.
+
+Everything measured at v5.60 stays true and stays in the record; what changed is
+that the game stops saying it out loud.
+
+Verified: parse PASS at v5.73; four maps 86/87/58/72; all three real endings
+through the outcome screen with extract paying 48c and dead and abandon zero; hub
+and ascent check; the primer still renders 19 rows with the Listener row retitled
+and carrying no tactics.
+
+Not verified: whether the bare warning is enough for a new player to survive a
+first Listener. v5.45's original argument, that three instincts kill you and the
+answers are invisible, has not stopped being true; he has simply decided he would
+rather find out than be told, and I have no way to know how that reads to someone
+meeting one for the first time.
