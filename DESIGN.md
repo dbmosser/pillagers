@@ -20296,3 +20296,47 @@ his order, only that they match a live row again. If his saved order already had
 them, they return to where he put them; if the damage was already written back to
 his profile by a save after v5.62, this repairs the text but the position it
 repairs to is whatever was stored, which may be the bottom.
+
+## v5.68: a click that is not a drag, and the same false REP line one screen over
+
+HIS INSTRUCTION THIS TICK: "always assume the game will be played in a 1080p
+viewport." Taken as standing. It is also what found everything in this build,
+because I had never once looked at this screen at 1920x1080.
+
+A PATH THAT IS NOT DRAGGING. I tried to close my own v5.64 "not verified" note by
+driving a real mouse drag, and it does not fire: HTML5 drag and drop needs an OS
+level drag that synthetic mouse events do not produce. That proves nothing about
+the feature, and THAT is the problem. Dragging was the only way into the
+inventory and it is the one path the harness cannot test. So the detail bar grows
+a TAKE UP button beside Equip, Slot and Sell one: point at an item, press a
+button. It enforces the same two rules the drop does, one kit entry per stash
+copy and never past the nine slot cap. The drag stays for when he wants it.
+
+THE SAME FALSE REP CLAIM I FIXED AT v5.61, ONE SCREEN OVER. The sell button's
+hint said "Selling here is the ONLY thing that earns REP", in capitals. A
+finished contract pays rep equal to its whole credit reward and a ghost run pays
+half the ghost bonus, which is exactly why the primer line was rewritten. I
+missed this one because I searched the primer array rather than the string.
+Screenshotting the screen and reading it found it in seconds.
+
+AND I MADE THE LAYOUT WORSE BEFORE I MADE IT BETTER. At 1080p both columns
+stretched to about 620 pixels to hold one row of items, which I read as the bug.
+I capped them, screenshotted again, and it was worse: the content crammed into
+the top fifth and the empty space moved BELOW the panel, where it belonged to
+nothing. Inside the grids that space is bordered and reads as an inventory with
+room in it, which is what every inventory screen looks like. Reverted. What
+survives from the attempt is a 74 pixel floor, so a nearly empty stash still
+offers a real drop target rather than a sliver.
+
+Verified: parse PASS at v5.68; four maps 86/87/58/72; three endings through the
+outcome screen with death and timeout paying zero credits; hub and ascent check;
+Take up driven from the detail bar and the item lands in the kit; the corrected
+sell hint reads back off the live screen and no ONLY-earns-REP string survives
+anywhere in the page; the screen photographed at 1920x1080 with both columns
+filling the panel, the plan bar under them and no horizontal scroll.
+
+Not verified: still nobody has completed a drag with a real mouse, and I now
+believe I cannot test that in this harness at all rather than merely having
+failed to. The Take up button exists precisely because of that, but it means the
+drag path rests on a synthetic DragEvent and a screenshot showing the target is
+the right size and in the right place.

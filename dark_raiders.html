@@ -136,7 +136,11 @@
   .invtab:hover{ color:var(--bone); border-color:var(--amber); }
   .invtab.on{ color:#0d1435; background:var(--amber); border-color:var(--amber); font-weight:700; }
   .invgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(52px,1fr));
-    gap:6px; padding:10px; overflow-y:auto; flex:1; align-content:start; }
+    gap:6px; padding:10px; overflow-y:auto; align-content:start;
+    /* v5.68 capped these and it read worse: the content crammed to the top and
+       the empty space moved below the panel, belonging to nothing. Filling the
+       panel is what an inventory is supposed to look like. */
+    flex:1; min-height:74px; }
   .cell{ position:relative; aspect-ratio:1/1; border:1px solid var(--steel-hi);
     border-radius:3px; background:rgba(0,0,0,.32); display:flex;
     align-items:center; justify-content:center; cursor:pointer; transition:all .1s; }
@@ -766,7 +770,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.67';
+var VER='5.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21333,6 +21337,16 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
         for(var si=0;si<HOTBAR_N;si++) if(P.hotAssign[si]===undefined){ P.hotAssign[si]=k; break; }
         saveProfile(); renderHub();
       });
+      // TAKE UP, v5.68. The same rules the drop enforces, applied from a click:
+      // one kit entry per stash copy, and never past the deploy cap.
+      act('Take up',function(){
+        var live=stageKitLive();
+        if(live.length>=DEPLOY_SLOTS){ say2('Inventory is full at '+DEPLOY_SLOTS+'.'); return; }
+        var held=0; for(var _h=0;_h<P.stash.length;_h++) if(P.stash[_h]===k) held++;
+        var got=0;  for(var _g=0;_g<live.length;_g++)   if(live[_g]===k) got++;
+        if(got>=held){ say2('You only have '+held+' of those.'); return; }
+        P.kit.push(k); saveProfile(); renderHub();
+      });
       act('Sell one',function(){
         var ix=P.stash.indexOf(k);
         if(ix>=0){ P.stash.splice(ix,1); P.credits+=ival(k); P.rep+=ival(k); saveProfile(); renderHub(); }
@@ -21383,8 +21397,8 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   var _sh=document.getElementById('sellhint');
   if(_sh){
     _sh.textContent=_sn
-      ? 'Selling here is the ONLY thing that earns REP. The Peddler pays cash, not standing.'
-      : 'REP is earned by selling salvage here. Fencing to the Peddler pays cash only.';
+      ? 'Selling pays REP equal to the price. Finishing a contract pays more. The Peddler pays cash and no standing at all.'
+      : 'Selling salvage here pays REP equal to the price, and so does finishing a contract. The Peddler pays cash only.';
   }
   // AND WHAT THE REP IS FOR, v3.24. v3.23 told him where reputation comes from,
   // which was the missing half of the loop; this is the other half. "rep 0"
