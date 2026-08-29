@@ -770,7 +770,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.74';
+var VER='5.76';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9600,9 +9600,12 @@ function tryExtractTick(dt,wantCall){
     // Reaching this branch already means standing inside the ring with the ship
     // down, so the only new condition is being unable to stand up.
     // hauledAboard 0 restores the pull-only behaviour.
-    if(p.downed&&CFG.downResetsPull!==0&&(z.pullT||0)>0){
-      // Knocked down with a pull in progress: the pull is what you lose.
-      z.pullT=null; z.boardT=0;
+    if(p.downed&&CFG.downResetsPull!==0&&(z.pullT||0)>0&&!z.pullFloor){
+      // Knocked down with a pull that began on your feet: the pull is what you
+      // lose. A pull STARTED from the floor is exempt, or this branch would wipe
+      // it every second frame and a downed man could never board at all, which
+      // is exactly the lock-out he hit.
+      z.pullT=null; z.boardT=0; z.pullFloor=0;
       say('Knocked down. The hold is lost, start again.');
       return;
     }
@@ -9612,14 +9615,20 @@ function tryExtractTick(dt,wantCall){
       endRaid('extract'); return;
     }
     if(wantCall){
-      if(z.pullT===undefined||z.pullT===null) z.pullT=0;
+      if(z.pullT===undefined||z.pullT===null){
+        z.pullT=0;
+        // Remember where this pull began, so the knock-down rule above can tell
+        // "you were standing and got dropped" from "you are boarding from the
+        // floor", which is the whole difference between the two cases.
+        z.pullFloor=p.downed?1:0;
+      }
       z.pullT+=dt;
       // The hold itself has a voice, rising with progress, so letting go early
       // is something you HEAR rather than something you notice afterwards.
       z.boardT=(z.boardT||0)+dt;
       if(z.boardT>=0.13){ z.boardT=0; blip('board',0,undefined,z.pullT/1.4); }
       if(z.pullT>=1.4){ T.holdExtract=1; endRaid('extract'); return; }
-    } else z.pullT=null;
+    } else { z.pullT=null; z.pullFloor=0; }
     return;
   }
   if(z){ if(z.pullT===null||z.pullT===undefined||z.pullT===0) z.boardT=0; z.pullT=null; }
@@ -10115,7 +10124,11 @@ z.hold=Math.min(30,Math.max(3,G.timeLeft-1)); z.holdMax=z.hold;
       z.beaconT=null; z.hold=null; z.pullT=null;
       if(z===G.active){ G.beaconT=null; G.shipHold=null; }
       T.beaconMissed=(T.beaconMissed||0)+1;
-      if(dist(p,z)<1400){ blip('clank'); say('It left without you. Pull it again.'); }
+      // v5.75, his note. PULL is the boarding verb everywhere else, so "pull it
+      // again" pointed at a ship that is no longer there. Name the real action
+      // and its price.
+      if(dist(p,z)<1400){ blip('clank');
+        say('The ship left without you. Hold E to call another, '+Math.round(CFG.extractWait)+'s out.'); }
     }
   }
   // THE MIRRORS ARE A VIEW, NOT A CACHE, v2.29. G.beaconT, G.shipHold and
@@ -21830,7 +21843,9 @@ if(r.ghostIn) line+=' ghost:1';
     if(r.rackPay) line+=' rackPay:'+r.rackPay+'c';
     if(r.crewRevives||r.mercRevives||r.raiderRevives)
       line+=' revivedBy:'+(r.crewRevives||0)+'crew/'+(r.mercRevives||0)+'merc/'+(r.raiderRevives||0)+'raider';
-    if(r.ringCrowd) line+=' ringCrowd:'+r.ringCrowd;
+    if(r.ringCrowd) line+=' ringCrowd:'+((typeof r.ringCrowd==='object')
+      ? ((r.ringCrowd.mapBorn||0)+'woken/'+(r.ringCrowd.siegeBorn||0)+'siege')
+      : r.ringCrowd);
     if(r.outcome==='dead'&&r.lastHitName) line+=' lastHit:'+r.lastHitName;
     if(r.census) line+=' ents:'+r.census.total+'(s'+(r.census.by.sentry||0)+'/c'+(r.census.by.crawler||0)+'/r'+(r.census.by.raider||0)+'/sn'+(r.census.by.snitch||0)+' dials '+r.census.dials.nS+'/'+r.census.dials.nC+'/'+r.census.dials.nR+')';
     if(r.mapName) line+=' map:'+r.mapName;

@@ -20616,3 +20616,64 @@ enough to notice a name go down in the middle of a fight, which is the only thin
 that would argue for longer. I also kept extracted and dead on the same timer
 rather than giving extraction a longer hold, and I have no evidence about whether
 those two want different lengths.
+
+## v5.76: he could not extract while downed, and his own flight recorder says so
+
+FIRST REAL TELEMETRY IN A LONG WHILE. Two exports at v5.71, 68 and 69 runs, both
+authenticated: real durations, real shot counts, real killers, real typed notes.
+
+HIS NOTE, VERBATIM: "couldn't call the beacon when downed in the extraction
+circle". He also reported it live as "GAME WONT LET ME EXTRACT WHEN DOWNED". Two
+older notes in the same file describe exactly the rule he wants:
+  "if a plyayer is downed and goes to the beacon, they should still have to pull
+   E and hold to extract"
+  "if i'm half way through pulling the extraction and i get downed, i should have
+   to saart over."
+
+IT IS A LOOP I WROTE. The extraction tick reads:
+
+  if(p.downed && CFG.downResetsPull!==0 && (z.pullT||0)>0){ z.pullT=null; return; }
+  if(wantCall){ z.pullT+=dt; if(z.pullT>=1.4) endRaid('extract'); }
+
+The intent is his second note, knocked down mid-pull and you lose the pull. What
+it does is run EVERY FRAME. Hold E while down and frame one adds dt so pullT is
+above zero; frame two sees downed with pullT above zero and wipes it; frame three
+adds dt again. pullT oscillates between one frame of progress and nothing and can
+never reach the 1.4 needed to board. A downed man in the ring with the ship on
+the ground was locked out permanently, which is his first note exactly.
+
+Worse, the HUD promised the opposite. With hauledAboard off, which is his own
+setting since run 59, the downed branch prints HOLD E TO EXTRACT and "You can
+board from the floor". The screen told him to do the one thing the code
+guaranteed would fail. I flagged at v5.61 that I had never driven this path and
+the claim rested on reading; this is what was hiding in it.
+
+The pull now remembers whether it STARTED from the floor. One begun on your feet
+still dies when you are knocked down, which is his second note. One begun while
+already down is your last play and is allowed to finish, which is his first.
+
+THE FLIGHT RECORDER WAS PRINTING [object Object]. Run 69 exported
+"ringCrowd:[object Object]". ringCrowd is stamped as {mapBorn,siegeBorn} and the
+export concatenated the object into a string, so the one number I most wanted out
+of a real raid, how much of the crowd at his ring his own walk woke, has never
+been readable in a report. v5.62 answered that from the fixture; this is the
+field that would have answered it from HIS runs. It now prints as woken/siege.
+
+ALSO IN THE EXPORT, and already answered: the extraction line he asked for is
+there, the music notes predate the surface going silent, and the new feedback
+tags from v5.72 are already returning signal, Listener beatable twice and Choir
+worth it once, which are the two things I most needed a human for.
+
+Verified: parse PASS at v5.76; four maps 86/87/58/72; all three real endings
+through the outcome screen with extract paying 48c and dead and abandon zero; hub
+and ascent check.
+
+Not verified, and it matters here: I COULD NOT BUILD A LIVE REPRO. The fixture
+would not let me call a beacon at all. The autopilot walks the player off any
+ring I place him on, forcing p.downed is cleared by the next step because health
+is above zero, a hand-set zone never ticks because it is not in the called state,
+and the call itself is gated behind a container-underfoot check I could not
+clear. So the defect and the fix rest on reading the loop plus his two notes
+describing the behaviour, not on a driven repro. The change is a strict
+relaxation of a condition that currently blocks every downed pull, so it cannot
+make the lock-out worse, but I have not watched a downed man board.
