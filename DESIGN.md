@@ -23552,3 +23552,64 @@ elsewhere may still say requisition, workshop or operator terminal; I did not sw
 primer and the rules panel for the old words. The two renamed tab ids are unchanged
 underneath, so nothing that keys off them moved. LVL and PROF are hidden rather than
 removed, and the hair colour that unlocks at level 4 still unlocks silently.
+
+## v6.41 - TWO READOUTS OF ONE FACT, THREE TIMES, AND M BECOMES A TOGGLE
+
+Six of his notes, and a theme ran through half of them: the same fact drawn twice.
+
+THE HEALING BAR ON HIS CHARACTER'S HEAD. "The circle above the player's head is a great
+touch, but the bar over their head is not needed, it is literally on their head lol."
+I could not find it by reading, because the arc and the bar are drawn by different
+layers hundreds of lines apart and only one of them mentions healing by name. Driving a
+heal and capturing at 1:1 settled it in one look: an arc with the seconds inside it,
+and eight pixels above it a dark box with a green bar and the same seconds again. The
+bar is gone and the arc stays.
+
+THE EXTRACTION BAR, the same fault. "EXTRACTION INCOMING 14s" with a progress bar under
+it that was the identical clock in a second form. His word for it was overkill. Gone.
+
+THE DEATH SCREEN COLUMNS. "I have NO FUCKING IDEA what any of this means, these rows
+aren't even named." Four bare columns of numbers under HOW IT WENT. They are the time,
+what hit you, the damage, and the health you had left, and now they say so in a header
+row measured to the same widths so the numbers sit under their own names. Checked at
+1080p that the extra row does not push the panel past its box: 382px of content in a
+382px space, nothing overflowing.
+
+LEVEL AND PROFICIENCY were on that screen too and came off it for the same reason they
+came off the Undercroft header one build ago. And "Everything already in your stash is
+untouched" is gone on his note: "yeah no shit, don't need to say that". The count of
+what you lost was always the information.
+
+TIME OF DAY AND WEATHER, his rename, plus the question underneath it: "golden hour,
+lamps are on, so what, it's daytime, does this change anything?" That deserved checking
+rather than answering from memory. Time of day feeds three things: a colour tint, how
+lit the lamps are, and how bright rain strokes are. NOTHING reads light level for
+whether you are seen. There is no lightAt, no litness, no inLight anywhere in the file.
+So the answer is no, and rather than leave him wondering whether he is missing a
+mechanic, the row now says "Look only, it changes nothing." Weather keeps its real
+numbers and just gets its name on the row, because weather is the half that does
+something.
+
+M IS A TOGGLE. His note: "player shouldn't have to hold M to view map, just click M,
+and then click M again to make the map go away." It was hold-to-view, read off the held
+key in six places. Now a flag the key flips. The dpad button that used to hold the map
+flips the same flag on its rising edge so the pad matches the keyboard.
+
+A NEAR MISS ON THAT ONE. My first patch replaced every occurrence of the held-key read
+in one blanket pass, asserting five matches. There were seven. Six were real reads and
+the seventh was inside a comment explaining an old focus-latch bug, which a blanket
+replace would have rewritten into nonsense. Replaced one at a time instead, and the
+comment corrected by hand, since the trap it describes cannot happen to a toggle.
+
+Verified: parse PASS at v6.41; the map toggle driven through open, key release, and
+close, with the overlay drawn on all four maps; the death screen driven with a planted
+hit log and captured at 1080p with the named columns and no overflow; four maps
+86/87/58/72 entities and, at seed 4242, 246/193/152/216 containers; all three endings
+through the outcome screen to a drawn hub; hub, renderStage and the export builder; pin
+audit clean.
+
+Not verified: the map overlay text crowds the conditions panel at 800x450, which is
+below the 1080p target and was true before this build, so I have not treated it as a
+regression. I did not re-check every gamepad path, only that the dpad edge compiles and
+flips the same flag. The healing arc is unchanged and I did not re-measure its seconds
+against the real heal rate.
