@@ -22271,3 +22271,34 @@ characters with everything rendered, and I have deliberately not touched it. Tho
 words are the option descriptions, and there is a guarantee from v3.4x that the
 dials and the words can never disagree, so cutting them is a real risk rather than a
 tidy-up and wants its own build. No human has read any of the new copy.
+
+## v6.09: the death screen said the same distance twice, ten times apart
+
+Found by screenshotting a real death rather than by reading anything. The header
+said "KILLED BY UNKNOWN, 365M FROM EXTRACTION" and eight lines below it the manifest
+said "You died 3654m from the beacon". Same fact, same screen, same telemetry field,
+one of them wrong by a factor of ten.
+
+deathDistExtract is stored in world UNITS and every other reader converts through
+metres(): the KIA header does, the run report's diedAt does, and so does its
+closestExt. This one line took the raw units and appended an 'm'. So on the one
+screen that tells him how close he got before he died, the number was ten times too
+big, and the correct number was already printed above it.
+
+Verified by driving a real death: header and manifest now both read 152 and agree.
+
+Also checked and found already fixed, which is worth saying rather than leaving as
+an open item: his note "on KIA screen 'you walk out of here in a shirt' -- makes no
+sense / there is nothing to go back for -- makes no sense". Neither phrase is in the
+file any more; they went at v5.74 and only the comment recording the change remains.
+
+Verified: parse PASS at v6.09; four maps 236/200/154/225 and 86/87/58/72 from a
+cleared profile; three endings through the outcome screen; hub, ascent check and the
+export builder; pin audit clean.
+
+Not verified: I have not audited every other number on that screen against its
+source the way I did this one, so a second unit mismatch could still be sitting
+there. The twenty-two feeling tags are unchanged, and his note "give me new options
+for the end game feedback buttons, most of this stuff isn't really a problem any
+more" is still open; the current set reads current to me, but that is my judgement
+of his game rather than his, and it is his to make.
