@@ -378,14 +378,11 @@
 </div>
 <div class="modal" id="sectormodal">
   <h3>Where are you going?</h3>
-  <div class="msub">Four sectors, and they are not reskins of each other. Your stash, your credits, your contracts and your seal progress are yours everywhere; what changes is the ground you have to work. Your body stays on the sector it fell on.</div>
+  <div class="msub">Sectors are not reskins of each other. Your stash, your credits, your contracts and your seal progress are yours everywhere; what changes is the ground you have to work. Your body stays on the sector it fell on.</div>
   <div id="sectorlist"></div>
   <div id="sectorkit" style="margin-top:11px;font-size:11px;padding:8px 10px;
        border:1px solid var(--steel-hi);border-radius:3px"></div>
-  <div style="display:flex;gap:8px;margin-top:8px">
-    <button id="sectorarm" style="flex:1;padding:8px 10px">Stash and armoury</button>
-    <button id="sectorshop" style="flex:1;padding:8px 10px">Trader</button>
-  </div>
+
   <div style="display:flex;gap:8px;margin-top:8px">
     <button class="deploy" id="sectordeploy" style="flex:1.4">DEPLOY TO THIS SECTOR</button>
     <button id="closesector" style="padding:8px 22px">Close</button>
@@ -694,7 +691,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.22';
+var VER='5.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18750,7 +18747,7 @@ function buildHub(){
   // press E" still does the most common thing at every station.
   var stations=[
     {id:'lift',x:350,y:105,r:48,label:'DEPLOY LIFT',sub:'to the surface',c:'#4de3d0',
-acts:{KeyE:['choose sector',function(){ renderSector(); document.getElementById('sectormodal').classList.add('on'); }],
+acts:{KeyE:['go up',function(){ openLift(); }],
            KeyR:['quick deploy',function(){ ac(); startRaid(); }]}},
     {id:'trader',x:110,y:255,r:46,label:'HOLT, THE TRADER',sub:'',c:'#ffc04a',vendor:1,
      acts:{KeyE:['trade',function(){ openTrader('buy'); }],
@@ -21204,6 +21201,21 @@ function stageRow(label,value,btnText,fn,col){
   }
   return r;
 }
+// ONE DOOR to the surface. With a single sector offered there is nothing to
+// choose, so the lift opens the drop check directly; with more than one it opens
+// the sector page first and that page's DEPLOY continues to the drop check.
+function offeredCount(){
+  var c=0;
+  for(var i=0;i<FIXED_MAPS.length;i++) if(mapOffered(FIXED_MAPS[i])) c++;
+  return c;
+}
+function openLift(){
+  if(offeredCount()>1){
+    renderSector(); document.getElementById('sectormodal').classList.add('on'); return;
+  }
+  if(!mapOffered(FIXED_MAPS[clamp(P.mapIx||0,0,FIXED_MAPS.length-1)])) P.mapIx=firstOfferedMap();
+  renderStage(true); document.getElementById('stagemodal').classList.add('on');
+}
 function renderStage(prefill){
   if(prefill){ P.kit=standardKit().slice(0,DEPLOY_SLOTS); saveProfile(); }
   var M=FIXED_MAPS[clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1)];
@@ -21336,7 +21348,9 @@ function renderStage(prefill){
 }
 document.getElementById('stageback').onclick=function(){
   document.getElementById('stagemodal').classList.remove('on');
-  renderSector(); document.getElementById('sectormodal').classList.add('on');
+  // Back goes wherever you came from: the sector page if there was one, the
+  // Undercroft floor if the lift brought you straight here.
+  if(offeredCount()>1){ renderSector(); document.getElementById('sectormodal').classList.add('on'); }
 };
 document.getElementById('stagedrop').onclick=function(){
   // THE LIFT MOVES: only now does anything leave the stash.
@@ -21360,12 +21374,7 @@ document.getElementById('sectordeploy').onclick=function(){
 document.getElementById('closesector').onclick=function(){
   document.getElementById('sectormodal').classList.remove('on');
 };
-document.getElementById('sectorarm').onclick=function(){
-  renderHub(); document.getElementById('hub').classList.add('on');
-};
-document.getElementById('sectorshop').onclick=function(){
-  openTrader('buy');
-};
+
 // HIS NOTE, same message: "maybe we need another thing in the undercroft called
 // settings?" Not another station, he asked for fewer of those at v2.81 and was
 // right. The dev box already holds the two things that are switches rather than
