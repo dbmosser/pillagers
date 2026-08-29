@@ -143,6 +143,14 @@
     flex:1; min-height:74px; }
   /* ---- THE ITEM CONTEXT MENU, v6.00, his note "all items should be right
      clickable to get a context menu". Dark and tight, sitting at the cursor. */
+  /* The balance in the heading of every station, v6.14. Right aligned so the screen
+     name stays where the eye starts and the money is where his screenshots put it. */
+  .modcur{ margin-left:auto; display:flex; align-items:baseline; gap:14px;
+    font-size:15px; letter-spacing:.02em; color:var(--amber); font-weight:700; }
+  .modcur em{ font-style:normal; font-size:8.5px; letter-spacing:.14em;
+    color:var(--ash); margin-left:3px; font-weight:400; }
+  .modcur i{ font-style:normal; color:var(--bone); font-weight:700; }
+  .modal h3{ display:flex; align-items:baseline; gap:12px; }
   .imenu{ position:fixed; z-index:12000; min-width:186px; max-width:260px;
     background:rgba(9,13,19,.97); border:1px solid var(--steel-hi); border-radius:4px;
     box-shadow:0 10px 34px rgba(0,0,0,.66); padding:4px 0;
@@ -913,7 +921,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.13';
+var VER='6.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1926,7 +1934,7 @@ function verb(){
 var MUS={g:null,lp:null,next:0,step:0};
 // v4.25 HIS ORDERS: "music needs like multiple tracks that are completely
 // distinct so it doesn't get tiresome over long sessions" and "should
-// randomly select a track each time game starts". Four pieces, each its own
+// randomly select a track each time game starts". Three pieces, each its own
 // key, tempo, voices and temperament, rolled fresh at every deployment. The
 // roll uses Math.random on purpose: the seeded stream builds the world and
 // the A/B discipline depends on it, and which song plays must never move a
@@ -21144,8 +21152,23 @@ function mercCost(id){
 // v6.03: ONE DOOR. Opening any station closes every other one, because before
 // this each of fourteen open sites did classList.add('on') in ignorance of the
 // rest and they piled up three deep.
+// v6.14: the balance, on every screen. His note was about Requisition, but the same
+// annoyance applies everywhere money can be spent, and openModal is the single door
+// they all come through, so no screen can ship without it.
+function stampBalance(el){
+  if(!el) return;
+  var h=el.querySelector('h3'); if(!h) return;
+  var c=h.querySelector('.modcur');
+  if(!c){
+    c=document.createElement('span'); c.className='modcur';
+    h.appendChild(c);
+  }
+  c.innerHTML=(P.credits||0).toLocaleString()+'<em>c</em>'+
+    '<i>'+(P.rep||0).toLocaleString()+'<em>rep</em></i>';
+}
 function openModal(id){
   var el=document.getElementById(id); if(!el) return;
+  stampBalance(el);
   var all=document.querySelectorAll('.modal');
   for(var i=0;i<all.length;i++){
     var m=all[i];
@@ -22545,9 +22568,10 @@ function renderShop(){
   // so that's annoying", and the same for Vesh. Every counter that takes money
   // now states the balance FIRST, before the thing it is asking you to spend it
   // on. walletLine is one helper so a new vendor cannot ship without one.
+  // v6.14: the balance moved to the heading, where it is on every screen now, so
+  // this line keeps only what the heading cannot say: where reputation comes from.
   document.getElementById('repline').textContent=
-    'You hold '+P.credits.toLocaleString()+'c  \u00b7  rep '+P.rep.toLocaleString()+
-    '  \u00b7  REP comes from selling salvage in the Undercroft.';
+    'REP comes from selling salvage in the Undercroft.';
   // The best guns are not sold here and never have been. Say so where money is
   // being spent, and name them, or the mechanic stays invisible.
   // v6.08: the "I do not stock the heavy end" line came off the counter. It was

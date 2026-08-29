@@ -22455,3 +22455,61 @@ Not verified: three is a judgement, not a measurement, exactly like the three-ra
 legend number at v6.02. I have no data on how many contract lines a player reads. The
 cap also means a contract can be live and invisible, and if he ever finishes one
 without noticing it was tracked, this is why.
+
+## v6.14: the money, on every screen
+
+All five Arc Raiders screens he sent carry the same top bar, and the right hand end
+of it is always the same thing: what you are holding. Inventory, vendor, crafting,
+cosmetics, map selection, every one of them.
+
+Pillagers showed the balance in exactly two places, the Undercroft header and a
+sentence at the top of the counter. That sentence exists because of his note
+"requisition -- it doesn't show how much money i have so that's annoying". The same
+annoyance applies at Vesh, at the terms desk, on the ascent check and at the
+Mainframe, and until now the fix had been applied one screen at a time, each time he
+noticed another one.
+
+openModal has owned every station open in the game since v6.03, so it is the one
+place that can guarantee this without a per-screen edit and without a future screen
+shipping without one. Every station now gets the balance stamped into its heading on
+the way open. The counter's own sentence drops the balance it was duplicating and
+keeps only what the heading cannot say, which is where reputation comes from.
+
+Verified by driving it: Requisition, Contracts and Options all show 12,345c and 678
+rep in their headings, and spending between two opens shows 999c on the next screen,
+so it reads live state rather than a value stamped once.
+
+ALSO CHECKED AGAINST THE CURRENT CODE, and four of the six standing open items are
+already done. Recording it rather than carrying them another tick:
+  machines fight pillagers   CFG machVsRaider defaults to 1, not 0
+  elite guns cannot be bought   whisper and lance appear in no shop table; the
+                                counter sells pistol, smg, rifle and dmr only
+  seasons are gone              no player-visible string in the file contains the
+                                word; only internal identifiers and one comment
+  music cuts on death and
+  extract                       music plays only in the Undercroft. G exists for
+                                the whole raid AND for the outcome screen, and
+                                musicWanted returns false whenever G exists, so it
+                                has already faded before either screen appears
+Music variety is done too: three distinct themes, rolled fresh per deployment with
+Math.random rather than the seeded stream, so which song plays cannot move a crate.
+The comment above them claimed four; I checked for an orphaned fourth theme, there
+is none, so the comment was stale text and now says three.
+
+That leaves the Listener, which is gameplay rather than menus and is not what he has
+asked me to work on.
+
+Verified: parse PASS at v6.14; four maps 236/200/154/225 and 86/87/58/72 from a
+cleared profile; three endings through the outcome screen; hub, ascent check and the
+export builder; pin audit clean.
+
+I ran the protocol once against a profile I had only cleared with loadProfile rather
+than a real page reload, and it read 197 and 214 containers on two maps. That is the
+settings contamination from v6.03 again, and the rule from that build held: clear the
+profile FIRST, reload AFTER, and it is 236/200/154/225 every time. My harness, not
+the game, for the third time this session.
+
+Not verified: the heading shows credits and reputation. His screenshots carry three
+currencies and I have deliberately not invented a second or third one, because he
+said of their seeds currency that he did not know whether we need it, and my answer
+was no. If he ever wants one, this is the place it goes.
