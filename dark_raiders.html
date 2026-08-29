@@ -230,6 +230,13 @@
   .vprice{ margin-top:auto; padding-top:12px; border-top:1px solid #d8d1c1;
     font-size:10px; letter-spacing:.12em; color:#6a655a; }
   .vprice b{ display:block; font-size:19px; color:#14130f; letter-spacing:0; margin-top:2px; }
+  .vqty{ display:flex; align-items:center; gap:8px; margin-top:10px; }
+  .vqty button{ width:30px; height:30px; padding:0; border-radius:15px; border:none;
+    background:#ddd5c4; color:#2a2721; font-size:15px; font-weight:700; cursor:pointer;
+    font-family:inherit; line-height:1; }
+  .vqty button:hover{ background:#cbc2ae; }
+  .vqty span{ flex:1; text-align:center; background:#e4dccb; border-radius:4px;
+    padding:7px 0; font-size:12px; font-weight:700; color:#2a2721; letter-spacing:.06em; }
   .vbuy{ width:100%; padding:11px; margin-top:10px; background:var(--amber); color:#14130f;
     border:none; border-radius:4px; font-weight:700; font-size:11.5px; letter-spacing:.12em;
     cursor:pointer; font-family:inherit; }
@@ -906,7 +913,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.06';
+var VER='6.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22621,7 +22628,10 @@ function renderShopGrid(){
       '<span class="vp">'+o.price.toLocaleString()+'</span>'+
       (locked?'<span class="vlk">\u25cf</span>':'');
     cell.title=shopEntryLabel(o)+(locked?('  (needs rep '+o.rep+')'):'');
-    cell.onclick=function(){ P._shopSel=i; renderShopGrid(); };
+    cell.onclick=function(){
+      if(P._shopSel!==i) P._shopQty=1;   // a new item starts at one
+      P._shopSel=i; renderShopGrid();
+    };
     g.appendChild(cell);
   });
   renderShopDetail(rows);
@@ -22666,13 +22676,36 @@ function renderShopDetail(rows){
   }
   if(locked) h+='<div class="vdesc" style="color:#8a5a2c">Locked until reputation '+
     o.rep.toLocaleString()+'. You have '+P.rep.toLocaleString()+'.</div>';
-  h+='<div class="vprice">PRICE<b>'+o.price.toLocaleString()+'c</b></div>';
+  var stackable=(o.kind!=='wep'&&o.kind!=='rig');
+  if(P._shopQty===undefined||P._shopQty<1) P._shopQty=1;
+  var qty=stackable?P._shopQty:1;
+  h+='<div class="vprice">PRICE<b>'+(o.price*qty).toLocaleString()+'c</b></div>';
   d.innerHTML=h;
+  if(stackable){
+    var st=document.createElement('div'); st.className='vqty';
+    var minus=document.createElement('button'); minus.textContent='\u2212';
+    var num=document.createElement('span'); num.textContent='\u00d7'+qty;
+    var plus=document.createElement('button'); plus.textContent='+';
+    minus.onclick=function(){ P._shopQty=Math.max(1,qty-1); renderShopGrid(); };
+    plus.onclick=function(){ P._shopQty=Math.min(99,qty+1); renderShopGrid(); };
+    st.appendChild(minus); st.appendChild(num); st.appendChild(plus);
+    d.appendChild(st);
+  }
   var b=document.createElement('button');
   b.className='vbuy';
   b.textContent=btn?btn.textContent.toUpperCase():'BUY';
   b.disabled=btn?btn.disabled:true;
-  if(btn&&!btn.disabled) b.onclick=function(){ btn.click(); };
+  if(btn&&!btn.disabled) b.onclick=function(){
+    // Re-find the button between each purchase: buying re-renders the whole list,
+    // so the node captured before the loop is detached after the first click.
+    for(var q=0;q<qty;q++){
+      var rowsNow=document.getElementById('shop').children;
+      var rw=rowsNow[P._shopSel]; if(!rw) break;
+      var bb=rw.querySelector('button');
+      if(!bb||bb.disabled) break;
+      bb.click();
+    }
+  };
   d.appendChild(b);
 }
 // One line of plain English per item, for the cream panel. Falls back to what the

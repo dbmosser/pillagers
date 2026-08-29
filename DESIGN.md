@@ -22193,3 +22193,39 @@ Not verified: the grudge state was built by writing P.rivals directly rather tha
 killing him in a raid, so what is proven is that the panel renders the state
 correctly, not that the raid produces that state. Twenty eight faces is a lot of grid
 and I have not checked it at a smaller window. No human has clicked any of it.
+
+## v6.07: the quantity stepper
+
+From the seeds vendor screenshot he sent: a minus, a quantity and a plus sitting
+directly above the purchase button. Buying ten bandages here was ten separate clicks
+on ten separate rows, which is the kind of thing that makes a shop feel like
+paperwork rather than a shop.
+
+Only stackable stock gets one. A gun and a rig are one-off purchases, and a stepper
+on them would offer a quantity the counter would then refuse, which is the
+menu-entry-pretending-to-be-a-system fault I deleted the backpack for.
+
+The stepper does NOT reimplement buying. It clicks the delegated button N times,
+re-finding it between each because every purchase re-renders the whole list and the
+node captured before the loop is detached after the first click. It stops the moment
+that button goes disabled, so running out of money halfway through buys what you
+could afford and then stops.
+
+Verified by driving the real screen at 1920x1080:
+  a consumable shows the stepper; a Scav Pistol does not
+  four presses of plus reads x5 and the price line follows to 550c for a 110c item
+  buying at x5 takes credits 1,000 to 450 and puts five bandages in the stash
+  buying at x5 with only 250c buys TWO, leaves 30c and stops, rather than
+    overdrawing or silently doing nothing
+
+Also verified: parse PASS at v6.07; four maps 236/200/154/225 and 86/87/58/72 from a
+cleared profile; three endings through the outcome screen; hub, ascent check and the
+export builder; pin audit clean.
+
+The quantity RESETS when you pick a different item, which I fixed rather than wrote
+up as a maybe. Carrying it across selections means setting five bandages and then
+clicking a 4,500c rifle offers five of those, and the one time that fires it costs
+him twenty thousand credits. His reference resets per item and it is right to.
+
+Not verified: no keyboard entry for the number and no hold-to-repeat, so x20 is
+twenty presses of plus. No human has clicked it.
