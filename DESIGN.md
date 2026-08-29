@@ -20213,3 +20213,37 @@ Not verified: the mainframe now has three keys on it where it had one, and I hav
 not seen that sub line drawn at his text size. The old station was a one-act
 station whose authored flavour line was replaced by the built key list, which is
 the intended behaviour but changes how that corner of the Undercroft reads.
+
+## v5.66: pigtails become a headgear option instead of the only face she has
+
+HIS NOTE: "get rid of pigtails and add it as a headgear option". They had been
+drawn unconditionally on every HERO since v5.38, so there was no way to not have
+them; the appearance picker offered hair COLOURS and no styles at all.
+
+Pigtails are now a headgear cosmetic, owned from the start rather than unlocked,
+because this is a look and not a trophy. The default hat is 'none', so a fresh
+profile and his existing one both stop wearing them without any migration.
+
+WHAT STAYED UNCONDITIONAL, deliberately: the crown across the top of the skull
+and the tight sides. Those are the hair itself. Putting them behind the option
+would have given a bare scalp rather than a different hairstyle, which is not
+what he asked for. Only the two bunches and their ties moved.
+
+AND THE FIGURE ON THE STASH SCREEN AGREES WITH HER. The avatar is a separate
+drawing that reads the same hat id, so an option that showed on the operator and
+not on the figure you dress her with would be exactly the kind of disagreement
+the last four builds have been removing. Pigtails take the HAIR colour there
+rather than a hat colour, because they are hair.
+
+Verified: parse PASS at v5.66; four maps 86/87/58/72; three endings through the
+outcome screen with death and timeout paying zero credits; hub and ascent check;
+the headgear list is none, band, phones, mask, visor, crown, pigtails with none
+and pigtails both owned from the start; the default hat resolves to 'none' and
+picking it resolves to 'pigtails'; the operator draws clean bare, in pigtails and
+in the crown; the stash figure shows the marker when worn and nothing when bare.
+
+Not verified: nobody has looked at her. I know the bunches are gated and that
+every state draws without throwing, but whether she reads well WITHOUT them, at
+game zoom, is the whole question he was asking and it needs an eye rather than a
+probe. The avatar marker is two parentheses standing in for bunches, which is a
+placeholder glyph in a row of geometric ones and may look wrong beside them.

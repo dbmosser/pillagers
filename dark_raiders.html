@@ -766,7 +766,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.65';
+var VER='5.66';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14224,6 +14224,8 @@ var COSMETICS=[
   {id:'mask',   name:'Dust Mask',      how:'runs:15',     kind:'hat'},
   {id:'visor',  name:'Cracked Visor',  how:'warden:1',    kind:'hat'},
   {id:'crown',  name:'Meridian Crown', how:'tier:1',      kind:'hat'},
+  // v5.66, his note. Owned from the start: this is a look, not a trophy.
+  {id:'pigtails',name:'Pigtails',      how:'always',      kind:'hat'},
   {id:'blonde', name:'Blonde',         how:'always',      kind:'hair'},
   {id:'dark',   name:'Dark',           how:'runs:3',      kind:'hair'},
   {id:'red',    name:'Rust Red',       how:'extracts:12', kind:'hair'},
@@ -14426,6 +14428,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     // OPPOSITE phase so the pair reads as a walk cycle rather than a wobble.
     // x is the anchor out from the skull, then each bead steps down and outward.
     var _PIG=[[-1,-9.2],[1,9.2]];
+    if(HAT==='pigtails')
     for(var _hp=0;_hp<2;_hp++){
       wc.fillStyle=_hp?HAIRDARK:INK;
       var _pad=_hp?0:0.9;
@@ -14447,7 +14450,8 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     // The two ties, bright, where each bunch is gathered. At this size a single
     // brighter pixel pair is what makes them read as TIED rather than as lumps.
     wc.fillStyle=HAIRLIT;
-    for(var _g2=0;_g2<2;_g2++) rrF(_cx+_PIG[_g2][1]-2.4,_cy-2.2,4.8,3.4,1.6);
+    if(HAT==='pigtails')
+      for(var _g2=0;_g2<2;_g2++) rrF(_cx+_PIG[_g2][1]-2.4,_cy-2.2,4.8,3.4,1.6);
     // The crown between them, so the top of the head is hair and not scalp.
     wc.fillStyle=HAIRDARK;
     rrF(_cx-8.0,_cy-2.6,16.0,5.0,2.4);
@@ -22939,8 +22943,10 @@ function avatarHTML(){
   var hc=HAIRCOL[hair]||HAIRCOL.blonde;
   var rg=armorById((P&&P.rig)||'none');
   var rc=RIGCOL[rg.id]||RIGCOL.none;
-  var hatGlyph={none:'',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC',visor:'\u25AD',crown:'\u2662'}[hat]||'';
-  var hatBg={none:'',band:'#c0503a',phones:'#22262e',mask:'#14161b',visor:'#a9682f',crown:'#c9962c'}[hat]||'';
+  var hatGlyph={none:'',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC',visor:'\u25AD',crown:'\u2662',
+                pigtails:'()'}[hat]||'';
+  var hatBg={none:'',band:'#c0503a',phones:'#22262e',mask:'#14161b',visor:'#a9682f',crown:'#c9962c',
+             pigtails:hc[1]}[hat]||'';
   var h='<div class="avfig">'+
     '<div class="avhead" style="background:#f2d2a8">'+
       '<div class="avhair" style="background:linear-gradient(180deg,'+hc[2]+','+hc[1]+' 60%,'+hc[0]+')"></div>'+
