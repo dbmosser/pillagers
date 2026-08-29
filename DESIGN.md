@@ -20340,3 +20340,41 @@ believe I cannot test that in this harness at all rather than merely having
 failed to. The Take up button exists precisely because of that, but it means the
 drag path rests on a synthetic DragEvent and a screenshot showing the target is
 the right size and in the right place.
+
+## v5.69: the hotbar plan told him to go to the screen he was standing on
+
+Found the way v5.68's fault was found, by photographing a screen at 1920x1080 and
+reading it back, which is the first time anyone has looked at the ascent check at
+the size it will be played at.
+
+hotPlanHTML is drawn on three screens and its sentence was written for one of
+them. On the ASCENT CHECK it said "Slot an item in Inventory to fill the first
+free cell ... and what you carry in is chosen on the ascent check". He is
+standing on the ascent check while reading that, and the column immediately to
+the left of the plan is headed CARRYING, not Inventory. So the one instruction on
+that panel pointed at the page it was printed on and named a thing that is not
+there.
+
+It takes an argument now. On the ascent check it says a cell only fires if you
+are actually CARRYING that item, which makes the list on the left the thing that
+matters. In the stash it keeps pointing forward to the ascent check, which is
+true there, and it now names the TAKE UP button added at v5.68 alongside the drag,
+since the button is the path that certainly works.
+
+ALSO CHECKED ON THAT SCREEN AND CORRECT, so it is not being rewritten for its own
+sake: TAKE FROM THE STASH offered only a Medkit and a Frag Charge against a
+twelve item stash, which looked wrong and is right. It excludes salvage with no
+use, and it excludes what is already in the carrying list, so with one of two
+medkits and the only plate and the only smoke already packed, one medkit and one
+frag is exactly what is left to take.
+
+Verified: parse PASS at v5.69; four maps 86/87/58/72; three endings through the
+outcome screen with death and timeout paying zero credits; hub and ascent check;
+the ascent check wording now names CARRYING and no longer points at itself, and
+the stash wording still points forward and names TAKE UP, each read back off its
+own live screen.
+
+Not verified: the third call site, the hidden gearslots block that renderGear
+still fills, gets the default hub wording. Nothing displays it since v2.98 moved
+those panels behind the terminal, so I believe it is unreachable text, but I have
+not proven that element is never shown.

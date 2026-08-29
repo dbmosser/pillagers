@@ -770,7 +770,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.68';
+var VER='5.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21057,9 +21057,15 @@ function renderKitCol(){
     P.kit.push(key); saveProfile(); renderHub();
   };
 }
-function hotPlanHTML(){
+function hotPlanHTML(where){
+  // stage: he is ON the ascent check, so pointing at it is circular and the
+  // column beside the plan is called CARRYING. hub: the plan is a plan, and what
+  // makes it fire is chosen later.
+  var _hint=(where==='stage')
+    ? 'HOTBAR PLAN  &middot;  Which key each item answers to up there. A cell only fires if you are actually CARRYING that item, so the list on the left is what makes this real. Click a cell to clear it.'
+    : 'HOTBAR PLAN  &middot;  Which key each item answers to up there. Point at something in the stash and press TAKE UP, or drag it, to fill the first free cell. Click a cell to clear it. A plan only fires for something you actually carry in, and that is chosen on the ascent check.';
   var h='<div style="padding:7px 12px;border-bottom:1px solid var(--steel-hi)">'+
-    '<div class="glab" style="margin-bottom:5px">HOTBAR PLAN  &middot;  Slot an item in Inventory to fill the first free cell, click a cell to clear. A plan only fires for something you actually carry in, and what you carry in is chosen on the ascent check.</div>'+
+    '<div class="glab" style="margin-bottom:5px">'+_hint+'</div>'+
     '<div style="display:flex;gap:4px">';
   for(var i=0;i<HOTBAR_N;i++){
     var k=(P.hotAssign||{})[i], it=k?ITEMS[k]:null;
@@ -22493,7 +22499,7 @@ function renderStage(prefill){
   // the quick bar actually matters.
   (function(){
     var sp=document.getElementById('stageplan'); if(!sp) return;
-    sp.innerHTML=hotPlanHTML();
+    sp.innerHTML=hotPlanHTML('stage');
     Array.prototype.forEach.call(sp.querySelectorAll('[data-plan]'),function(el){
       var ix=+el.getAttribute('data-plan');
       el.onclick=function(){
