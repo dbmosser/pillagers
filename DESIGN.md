@@ -19125,3 +19125,51 @@ it. I cannot construct that case and do not believe it exists, but I have not
 proven it cannot.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.48  THE WAR STOPS BEING ONE SIDED
+================================================================================
+
+v5.48: the war stops being one sided
+
+HIS Q31: "Machines vs Pillagers fighting should be visible."
+
+The feature has existed since v3.97 and shipped OFF, with a note saying it
+changes what the world IS and that HE should decide. His beta spec decides it.
+
+I MEASURED IT BEFORE FLIPPING THE SWITCH, because that v3.97 note predicted
+fewer raiders and a map that fights itself while he loots. 320 PAIRED SEEDS on
+COLD STORAGE, the beta map, machVsRaider 0 against 1:
+
+  OFF   52 extractions of 320   16.3 percent
+  ON    54 extractions of 320   16.9 percent
+  discordant pairs 37 against 39
+  McNemar chi-squared 0.013, against 3.84 for significance at 0.05
+
+A dead heat. Every fear in that note is unfounded: the war costs nothing
+measurable in how often he gets out, so it is free atmosphere and it goes on.
+cfgv 16 with a migration, or the change would never reach his profile.
+
+IT ALSO WORKS, WHICH TOOK FOUR TRIES TO ESTABLISH. Placed a machine and a
+pillager in contact, far from the player, with a verified clear line of sight:
+
+  sentry shoots a pillager   48 hp down to 34, first hit at 222 frames
+  crawler bites a pillager   48 hp down to 27, first hit immediately
+
+FOUR FALSE ALARMS ON THE WAY, all mine, and worth writing down because I nearly
+reverted a working feature over each one. The pair drifted apart and I read it as
+"never engages". I pinned them and put them inside a wall, so line of sight
+failed. I pinned them somewhere clear and used __sim, WHICH DOES NOT ADVANCE
+BULLETS: 1,521 bullet-frames left the sentry and not one could ever arrive. That
+last one is written in my own notes and I did it anyway. The fifth attempt used
+the full frame loop and both machines landed hits inside four seconds.
+
+Verified: parse PASS at v5.48; four maps 85/86/57/71; all three endings through
+the outcome screen; hub and ascent check clean; machVsRaider reads 1 and a cfgv
+15 profile migrates to 16.
+
+Not verified: the 320 seeds were run on COLD STORAGE only. The other three maps
+have different machine densities and the war could land differently on them, and
+since the beta ships one map I did not spend another 960 raids finding out.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
