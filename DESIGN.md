@@ -21079,3 +21079,63 @@ that no longer matches its dial. I also have not re-read Settings with its rows
 RENDERED rather than as an empty shell, because renderSettings lives inside the
 IIFE and the fixture cannot call it, so the six raid rows are confirmed by source
 and by the v5.63 default check rather than by a photograph.
+
+## v5.86: six sliders in the tuning console were being thrown away on every load
+
+The tuning console was the last screen I had not read at 1080p, and it was worth
+reading. Three findings, one of them the most consequential thing this sweep has
+turned up.
+
+SIX SLIDERS DID NOTHING THAT SURVIVED. Settings owns eight dials through
+GAMEOPTS, and applyGameOpts rewrites all of them from the chosen words on every
+profile load. That is deliberate and the v3.4x guarantee behind it is good: the
+friendly words must win over a raw dial copy so the two can never disagree. But
+the tuning console ALSO has sliders for six of those dials, so moving Sentries,
+Crawlers, AI pillagers, Enemy damage, Raid timer or Loot value was undone by the
+next load without a word.
+
+MEASURED. Set coneDeg 150, ambient 120, eDmg 1.4, nCrawler 46 and nRaider 15,
+saved, reloaded:
+  not owned by Settings   coneDeg 150, ambient 120           both survived
+  owned by Settings       eDmg 1, nCrawler 34, nRaider 10    all three reverted
+
+This matters more than an ordinary dead control because of what the console is
+FOR. Its own header says "Tune until it feels right, then Copy config and paste
+it to Claude to make it the new default." If six of the most important dials
+silently revert, a session spent tuning them is wasted, and the config he pastes
+me describes a game he was not playing. I cannot tell how many balance
+conversations in this file were affected by that, only that they could have been.
+
+THE FIX KEEPS BOTH PROMISES. A dial he deliberately moves in the console is
+recorded as overridden, and applyGameOpts leaves those alone. Settings still wins
+for everything he has not touched, so the words and the dials still agree until
+he personally overrules one, and then it is an explicit act instead of a silent
+contradiction. Reset all clears the overrides as well as the dials. Driven both
+ways: without an override eDmg reverts to 1 on reload, with one it stays at 1.4.
+
+A SLIDER THAT COULD BREAK HIS ONE ABSOLUTE RULE. "when player dies, they
+shouldn't take any of the loot back to the undercroft, no credits, no gear,
+nothing." The console offered a live Safe pocket slots slider, 0 to 5. v5.32 set
+the default to 0 and v5.57 removed the term that read it, and I left the slider
+behind. The code it feeds still works, and with the term gone the guard in front
+of it is always false, so dragging that slider to 3 makes three items survive
+death. The slider is gone; the dial stays at 0 in the defaults so restoring the
+feature is one line if he ever wants it.
+
+AND THE LAST PLACE STILL SAYING SNITCH. The unit was renamed to CRIER at v2.9x
+and UNITPLURAL has said criers ever since. This slider was the last label in the
+interface still using the old word.
+
+Verified: parse PASS at v5.86; four maps 86/87/58/72 entities and 236/200/154/225
+containers at baseline; all three real endings through the outcome screen with
+extract paying 48c and dead and abandon zero; hub and ascent check; the override
+behaviour driven in both directions; the slider table read from source with the
+safe pocket row absent and nSnitch reading Criers.
+
+Not verified: I could not render the tuning console in the fixture, because
+toggleTune lives inside the IIFE and is not hooked, so my first attempt at
+checking the labels returned an empty list and reported two passes that were
+vacuous. The label checks in this entry are from the source table, not from a
+photograph, and nobody has seen the console with the safe pocket row missing. I
+also have not audited the other sixty-odd sliders for the same Settings collision,
+only the six that GAMEOPTS names.

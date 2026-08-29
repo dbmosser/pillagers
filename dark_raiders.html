@@ -778,7 +778,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.85';
+var VER='5.86';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19751,7 +19751,7 @@ var SLIDERS=[
   ['nSentry','Sentries',0,14,1,0],
   ['nCrawler','Crawlers',0,18,1,0],
   ['nRaider','AI pillagers',0,6,1,0],
-  ['nSnitch','Snitches',0,5,1,0],
+  ['nSnitch','Criers',0,5,1,0],
   ['eDmg','Enemy damage x',0.5,2,0.05,1],
   ['eHp','Enemy health x',0.5,2,0.05,0],
   ['lootMult','Loot value x',0.5,2,0.05,1],
@@ -19760,7 +19760,6 @@ var SLIDERS=[
   ['packMax','Machines that answer a call',0,10,1,0],
   ['contDens','Container density x',0.5,2,0.1,0],
   ['noiseMult','Noise radius x',0.5,2,0.05,1],
-  ['safeSlots','Safe pocket slots',0,5,1,1],
   ['downTime','Downed bleed-out (s)',5,45,1,1],
   ['bright','Brightness',0.6,2.2,0.05,1],
   ['regenDelay','Regen starts after (s)',0,40,1,1],
@@ -19799,6 +19798,9 @@ function buildTune(){
     var tv=document.createElement('div'); tv.className='tv'; tv.textContent=fmtV(CFG[k]);
     rg.oninput=function(){
       CFG[k]=parseFloat(rg.value); tv.textContent=fmtV(CFG[k]);
+      // Moving a slider claims that dial from Settings, or applyGameOpts would
+      // put it back on the next load and the tuning would be lost silently.
+      tunedKeys()[k]=1;
       CFG.preset='custom'; saveProfile();
     };
     row.appendChild(lab); row.appendChild(rg); row.appendChild(tv);
@@ -22231,7 +22233,11 @@ document.getElementById('closetune').onclick=function(){ toggleTune(false); };
 document.getElementById('preA').onclick=function(){ applyPreset('A'); };
 document.getElementById('preB').onclick=function(){ applyPreset('B'); };
 document.getElementById('preC').onclick=function(){ applyPreset('C'); };
-document.getElementById('preReset').onclick=function(){ applyPreset('B'); };
+document.getElementById('preReset').onclick=function(){
+  // Reset means reset: the console stops overruling Settings as well as
+  // returning the raw dials to baseline.
+  P.tuned={}; applyPreset('B'); try{ applyGameOpts(); }catch(e){} saveProfile();
+};
 document.getElementById('cfgcopy').onclick=function(){
   var txt='PILLAGERS v'+VER+' config: '+JSON.stringify(CFG);
   var done=function(){
@@ -22937,10 +22943,17 @@ function gameOptIx(k){
 }
 // Writes the chosen options into CFG. Called after the profile loads and again on
 // every change, so the dials and the words can never disagree.
+// WHICH DIALS THE TUNING CONSOLE HAS OVERRULED, v5.86. Empty for anyone who has
+// not touched a slider, which is everyone until they do.
+function tunedKeys(){ if(!P.tuned||typeof P.tuned!=='object') P.tuned={}; return P.tuned; }
 function applyGameOpts(){
+  var tk=tunedKeys();
   for(var i=0;i<GAMEOPTS.length;i++){
     var row=GAMEOPTS[i], sel=row.opts[gameOptIx(row.k)];
-    for(var c in sel.cfg) CFG[c]=sel.cfg[c];
+    // A dial he has moved by hand in the console is his, not the words'. Without
+    // this, six console sliders were rewritten from the Settings selection on
+    // every load and the change vanished with no message.
+    for(var c in sel.cfg) if(!tk[c]) CFG[c]=sel.cfg[c];
   }
 }
 function cycleGameOpt(k){
