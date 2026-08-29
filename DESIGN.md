@@ -22229,3 +22229,45 @@ him twenty thousand credits. His reference resets per item and it is right to.
 
 Not verified: no keyboard entry for the number and no hold-to-repeat, so x20 is
 twenty presses of plus. No human has clicked it.
+
+## v6.08: the longest paragraph in the game, which he had already complained about
+
+Measured rather than guessed. I counted the explanatory prose in every modal, and
+the Operator Terminal carried 792 characters of it, more than any other screen, with
+a worst single block of 475. That block is the PROGRESS explanation, and his note on
+it was "i have no idea what this means or why it says this".
+
+It was answering four questions at once: what feeds progress, the exact arithmetic
+of the payout, that there are ten rewards claimed in order, and that nothing resets
+or escalates. The arithmetic is what makes it unreadable, and it is also the part he
+never has to compute, because the outcome screen shows him the actual number every
+time a raid ends. A rule you are shown at the moment it applies does not need
+pre-explaining on a different screen.
+
+  475 characters -> 103: "Walking out feeds this. Dying barely does. Ten rewards,
+  claimed in order, and nothing here ever resets."
+
+THE GUN FOOTNOTE MOVED TO WHERE IT ANSWERS SOMETHING. The counter carried 130
+characters of shop-wide prose about guns that are NOT sold at that shop, which is the
+wrong place for it twice over. The fact is kept and now appears under a weapon's stat
+bars in the cream panel, on the screen where you are looking at a gun and wondering
+where the better ones are. Trader prose fell 244 characters to 84.
+
+Verified at 1920x1080: the rewards tab's longest block is now 103 characters; the
+"heavy end" note appears on the Scav Pistol panel and does NOT appear on the bandage
+panel; parse PASS at v6.08; four maps 236/200/154/225 and 86/87/58/72 from a cleared
+profile; three endings through the outcome screen; hub, ascent check and the export
+builder; pin audit clean.
+
+A measurement correction, because I nearly reported a false win. My before and after
+numbers for opmodal and settingsmodal are NOT comparable: the first pass measured
+them unopened, and opening a station renders its option descriptions and contract
+hints into the DOM, so both went UP after the cut. Only the trader figure is a like
+for like comparison. The rewards paragraph is verified by reading the block itself,
+not by the modal total.
+
+Not verified: settingsmodal is now the largest player-facing prose at 2,651
+characters with everything rendered, and I have deliberately not touched it. Those
+words are the option descriptions, and there is a guarantee from v3.4x that the
+dials and the words can never disagree, so cutting them is a real risk rather than a
+tidy-up and wants its own build. No human has read any of the new copy.
