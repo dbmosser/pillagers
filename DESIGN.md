@@ -23613,3 +23613,39 @@ below the 1080p target and was true before this build, so I have not treated it 
 regression. I did not re-check every gamepad path, only that the dpad edge compiles and
 flips the same flag. The healing arc is unchanged and I did not re-measure its seconds
 against the real heal rate.
+
+## v6.42 - REP IS CALLED XP, AND THE GAMBLER IS CALLED WIRT
+
+His instruction: "call rep XP instead, everywhere in the game."
+
+Twenty-four places print it and they all say XP now, including the three long sentences
+that spelled out "reputation" and the two that used "standing" as a third word for the
+same thing. The primer entry that teaches it is rewritten: it was "REP is not the same
+thing as money" and it also still pointed at "the counter in Requisition", a name that
+stopped existing two builds ago.
+
+THE FIELD IS STILL P.rep UNDERNEATH and every shop gate still reads o.rep. Renaming a
+saved field to change a word on screen would break every profile that exists, and the
+player cannot see the difference, so it stays.
+
+One line was carrying TWO stale names at once: the stash header still read "THE
+UNDERCROFT - OPERATOR TERMINAL - REP", so it kept the old name of a panel renamed at
+v6.40 as well as the old name of the currency. Both fixed.
+
+THE GAMBLER IS WIRT. He asked to drop the comma in "Vesh, the Gambler" and then to
+rename him outright, so the second note carried the first: he is WIRT THE GAMBLER on
+the station, Wirt the Gambler on the panel, and the shop line that points you at him for
+the guns it does not stock says Wirt.
+
+Verified: parse PASS at v6.42; the stash header read back from the live screen as "THE
+UNDERCROFT - THE MAINFRAME - XP 1,260" and the gambler panel as "Wirt the Gambler ...
+1,260XP"; four maps 86/87/58/72 entities and, at seed 4242, 246/193/152/216 containers;
+all three endings through the outcome screen to a drawn hub; hub, renderStage; pin audit
+clean.
+
+Not verified: I renamed what the player reads, not the internal field, so anything I
+missed will still print the old word rather than break. I swept the quoted strings and
+found no player-facing "rep" or "reputation" left, but the roadmap panel still contains
+a historical DONE line using the old word, which I left because it is a changelog entry
+about the past and it sits behind the dev tools that beta hides. One code comment still
+names Vesh.

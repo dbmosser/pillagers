@@ -462,7 +462,7 @@
 </div>
 
 <div class="modal" id="gamblemodal">
-  <h3 id="gamble_h">Vesh the Gambler</h3>
+  <h3 id="gamble_h">Wirt the Gambler</h3>
   <div class="msub" id="wallet_gamble" style="color:var(--amber);font-weight:700"></div>
   <div class="msub" id="gamble_line">Something in the pile, same price whatever it is. No refunds, no complaints.</div>
   <div class="msub" style="color:var(--coolant)">Whatever you pull goes straight to your stash. You do not have to carry it out of here.</div>
@@ -748,7 +748,7 @@
   <div class="toprow">
     <div>
       <div class="brand">PILLAGERS <span id="verlabel"></span></div>
-      <div style="font-size:9.5px;color:var(--ash);letter-spacing:.14em;margin-top:4px">THE UNDERCROFT &mdash; OPERATOR TERMINAL &mdash; REP <span id="reptop" style="color:var(--amber)">0</span> <span id="notoline"></span></div>
+      <div style="font-size:9.5px;color:var(--ash);letter-spacing:.14em;margin-top:4px">THE UNDERCROFT &mdash; THE MAINFRAME &mdash; XP <span id="reptop" style="color:var(--amber)">0</span> <span id="notoline"></span></div>
     </div>
     <div class="credits" id="credits">0<small>CREDITS</small></div>
   </div>
@@ -948,7 +948,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.41';
+var VER='6.42';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6816,8 +6816,8 @@ function pedSellAll(){
     // reason. It is just no longer a blind one.
     var _full=full;
     say('Sold '+n+' for '+tot.toLocaleString()+'c, his '+Math.round(pedBuyRate()*100)+
-      ' percent. Banked whatever happens next, and no standing: carried home it was '+
-      _full.toLocaleString()+'c and '+_full.toLocaleString()+' rep.');
+      ' percent. Banked whatever happens next, and no XP: carried home it was '+
+      _full.toLocaleString()+'c and '+_full.toLocaleString()+' XP.');
     blip('pick'); ping(G.trade.x,G.trade.y,190,false,false,'player','move');
   }
 }
@@ -13681,7 +13681,7 @@ function claimTier(ix){
   // that made it special was the season rollover, and that is gone. The dead
   // 'season' token went with it.
   if(T.kind==='credits'||T.kind==='last'){ P.credits+=T.v; msg='+'+T.v.toLocaleString()+'c'; }
-  if(T.kind==='rep'){ P.rep+=T.v; msg='+'+T.v+' rep'; }
+  if(T.kind==='rep'){ P.rep+=T.v; msg='+'+T.v+' XP'; }
   if(T.kind==='wep'){
     if(P.weapons.indexOf(T.v)<0) P.weapons.push(T.v);
     msg=WEAPONS[T.v].name+' in the armoury';
@@ -19079,7 +19079,7 @@ function drawTrade(){
   if(n){
     cy+=LH(13);
     ctx.fillStyle='#6b7783';
-    ctx.fillText('Carried home: '+fullv.toLocaleString()+'c and '+fullv.toLocaleString()+' REP. He pays no REP.',x+14,cy);
+    ctx.fillText('Carried home: '+fullv.toLocaleString()+'c and '+fullv.toLocaleString()+' XP. He pays no XP.',x+14,cy);
   }
   cy+=LH(17);
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+14,cy); ctx.lineTo(x+PW-14,cy); ctx.stroke();
@@ -20234,7 +20234,7 @@ acts:{KeyE:['go up',function(){ openLift(); }],
            KeyR:['craft',function(){ openTrader('craft'); }],
            KeyF:['hire', function(){ openTrader('hire'); }],
            KeyT:['the terms',function(){ renderTerms(); openModal('termsmodal'); }]}},
-    {id:'gamble',x:110,y:110,r:42,label:'VESH, THE GAMBLER',sub:'unmarked goods, flat price',c:'#e0a0ff',vendor:1,
+    {id:'gamble',x:110,y:110,r:42,label:'WIRT THE GAMBLER',sub:'unmarked goods, flat price',c:'#e0a0ff',vendor:1,
      acts:{KeyE:['deal',function(){ renderGamble(); openModal('gamblemodal'); }]}},
 {id:'term',x:350,y:365,r:46,label:'THE STASH',sub:'',c:'#5aa9e6',
      acts:{KeyE:['terminal',function(){ renderHub(); document.getElementById('hub').classList.add('on'); maybePrimer(); }]}},
@@ -20533,7 +20533,7 @@ function drawHubHUD(ox,oy){
   ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
   ctx.fillText('THE UNDERCROFT',16,28);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
-  ctx.fillText(P.credits.toLocaleString()+'c  ·  REP '+P.rep.toLocaleString()+
+  ctx.fillText(P.credits.toLocaleString()+'c  \u00b7  XP '+P.rep.toLocaleString()+
     '  ·  '+P.stash.length+' item'+(P.stash.length===1?'':'s')+' in stash  ·  '+P.runs+' runs',16,44);
   if(HUBSAY_T>0){
     ctx.textAlign='center';
@@ -21257,7 +21257,7 @@ function stampBalance(el){
     h.appendChild(c);
   }
   c.innerHTML=(P.credits||0).toLocaleString()+'<em>c</em>'+
-    '<i>'+(P.rep||0).toLocaleString()+'<em>rep</em></i>';
+    '<i>'+(P.rep||0).toLocaleString()+'<em>XP</em></i>';
 }
 function openModal(id){
   var el=document.getElementById(id); if(!el) return;
@@ -22265,7 +22265,7 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   var _sb=document.getElementById('sellall');
   if(_sb){
     _sb.textContent=_sn
-      ? ('Sell all salvage  \u00b7  '+_sv.toLocaleString()+'c  +'+_sv.toLocaleString()+' REP')
+      ? ('Sell all salvage  \u00b7  '+_sv.toLocaleString()+'c  +'+_sv.toLocaleString()+' XP')
       : 'Nothing to sell';
     _sb.disabled=!_sn;
     _sb.style.opacity=_sn?'':'0.5';
@@ -22273,8 +22273,8 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   var _sh=document.getElementById('sellhint');
   if(_sh){
     _sh.textContent=_sn
-      ? 'Selling here is the only thing that earns REP, and it pays it equal to the price. The Peddler in the field pays cash and no standing.'
-      : 'Selling salvage here pays REP equal to the price, and so does finishing a contract. The Peddler pays cash only.';
+      ? 'Selling here is the only thing that earns XP, and it pays it equal to the price. The Peddler in the field pays cash and no XP.'
+      : 'Selling salvage here pays XP equal to the price, and so does finishing a contract. The Peddler pays cash only.';
   }
   // AND WHAT THE REP IS FOR, v3.24. v3.23 told him where reputation comes from,
   // which was the missing half of the loop; this is the other half. "rep 0"
@@ -22304,12 +22304,12 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
         :(_nx.kind==='pack')?('Backpack Tier '+(_nx.lvl+1))
         :(ITEMS[_nx.k]?ITEMS[_nx.k].name:_nx.k);
       var _gap=_nx.rep-P.rep;
-      _nl.textContent='Next unlock: '+_nnm+' at REP '+_nx.rep.toLocaleString()+
+      _nl.textContent='Next unlock: '+_nnm+' at XP '+_nx.rep.toLocaleString()+
         '.  '+_gap.toLocaleString()+' to go'+
         (_sv>=_gap&&_sv>0?', and this stash covers it.':'.');
       _nl.style.color=(_sv>=_gap&&_sv>0)?'var(--coolant)':'';
     } else {
-      _nl.textContent='Everything the shop gates on REP is unlocked.';
+      _nl.textContent='Everything the shop gates on XP is unlocked.';
       _nl.style.color='';
     }
   }
@@ -22388,7 +22388,7 @@ P.contracts.forEach(function(c,ci){
     }
     var cp=document.createElement('div'); cp.className='cp';
     var st=document.createElement('span');
-    st.innerHTML=Math.min(c.prog,c.n)+' / '+c.n+' &middot; <b>'+c.reward.toLocaleString()+'c + rep</b>';
+    st.innerHTML=Math.min(c.prog,c.n)+' / '+c.n+' &middot; <b>'+c.reward.toLocaleString()+'c + XP</b>';
     cp.appendChild(st);
     if(c.prog>=c.n){
       var b=document.createElement('button'); b.textContent='Claim';
@@ -22467,7 +22467,7 @@ function fmtRun(r){
 function buildExport(){
   var L=[],i;
   L.push('=== PILLAGERS v'+VER+' FLIGHT RECORDER ===');
-  L.push('Profile: '+P.runs+' runs, '+P.ext+' extracted, '+P.died+' died, best haul '+P.best+'c, credits '+P.credits+', rep '+P.rep+', racks '+(P.racks||0)+', pack T'+(P.pack+1)+
+  L.push('Profile: '+P.runs+' runs, '+P.ext+' extracted, '+P.died+' died, best haul '+P.best+'c, credits '+P.credits+', XP '+P.rep+', racks '+(P.racks||0)+', pack T'+(P.pack+1)+
     ', notoriety '+(P.notoriety||0)+', stash '+P.stash.length);
   // Who and where this came from, so a run pulled off the public endpoint can be
   // separated from his own without guessing. Origin matters because a build served
@@ -22590,7 +22590,7 @@ function renderShop(){
   // v6.14: the balance moved to the heading, where it is on every screen now, so
   // this line keeps only what the heading cannot say: where reputation comes from.
   document.getElementById('repline').textContent=
-    'REP comes from selling salvage in the Undercroft.';
+    'XP comes from selling salvage in the Undercroft.';
   // The best guns are not sold here and never have been. Say so where money is
   // being spent, and name them, or the mechanic stays invisible.
   // v6.08: the "I do not stock the heavy end" line came off the counter. It was
@@ -22613,7 +22613,7 @@ function renderShop(){
     else if(o.kind==='wep'){ label=WEAPONS[o.k].name; owned=P.weapons.indexOf(o.k)>=0; }
     else if(o.kind==='pack'){ label='Backpack Tier '+(o.lvl+1)+' (-'+Math.round((1-PACKPEN[o.lvl])*100)+'% carry penalty)'; owned=P.pack>=o.lvl; }
     else label=ITEMS[o.k].name;
-    nm.textContent=label+(locked?'  [REP '+o.rep+']':'');
+    nm.textContent=label+(locked?'  [XP '+o.rep+']':'');
     if(locked) nm.style.color='var(--ash)';
     var vl=document.createElement('div'); vl.className='vl'; vl.textContent=o.price.toLocaleString()+'c';
     var b=document.createElement('button');
@@ -22699,7 +22699,7 @@ function renderConDetail(){
   rw.innerHTML='<div class="crlab" style="margin:0 0 7px">REWARDS</div>';
   var line=document.createElement('div'); line.className='crewline';
   var money=document.createElement('div'); money.className='crewc';
-  money.innerHTML=(c.reward||0).toLocaleString()+'<em>c + rep</em>';
+  money.innerHTML=(c.reward||0).toLocaleString()+'<em>c + XP</em>';
   line.appendChild(money);
   var gks=gearKeys(c.gear),seen={};
   for(var gi=0;gi<gks.length;gi++) seen[gks[gi]]=(seen[gks[gi]]||0)+1;
@@ -22753,7 +22753,7 @@ function renderShopGrid(){
     cell.innerHTML=iconImgHTML(shopEntryIcon(o),28)+
       '<span class="vp">'+o.price.toLocaleString()+'</span>'+
       (locked?'<span class="vlk">\u25cf</span>':'');
-    cell.title=shopEntryLabel(o)+(locked?('  (needs rep '+o.rep+')'):'');
+    cell.title=shopEntryLabel(o)+(locked?('  (needs XP '+o.rep+')'):'');
     cell.onclick=function(){
       if(P._shopSel!==i) P._shopQty=1;   // a new item starts at one
       P._shopSel=i; renderShopGrid();
@@ -22793,7 +22793,7 @@ function renderShopDetail(rows){
     h+=bar('Magazine',w.mag||0,mx.mag,(w.mag||'-'));
     h+=bar('Range',w.rng||0,mx.rng,Math.round((w.rng||0)/10)+'m');
     h+='<div class="vdesc" style="margin-top:10px;color:#7a6a3c">The heavy end is not '+
-       'stocked here. For a Carbine, a Scattergun, a Rifle or an LMG, try Vesh or the '+
+       'stocked here. For a Carbine, a Scattergun, a Rifle or an LMG, try Wirt or the '+
        'Peddler on the surface.</div>';
   } else if(o.kind==='rig'){
     var R=armorById(o.k);
@@ -22803,7 +22803,7 @@ function renderShopDetail(rows){
     var it=ITEMS[o.k];
     h+='<div class="vdesc">'+escHtml(it?(itemBlurb(o.k)||''):'')+'</div>';
   }
-  if(locked) h+='<div class="vdesc" style="color:#8a5a2c">Locked until reputation '+
++'<div class="vdesc" style="color:#8a5a2c">Locked until reputation '+
     o.rep.toLocaleString()+'. You have '+P.rep.toLocaleString()+'.</div>';
   var stackable=(o.kind!=='wep'&&o.kind!=='rig');
   if(P._shopQty===undefined||P._shopQty<1) P._shopQty=1;
@@ -22849,7 +22849,7 @@ function itemBlurb(k){
   if(it.use==='stim') return 'Refills stamina and clears winded.';
   if(it.use==='key') return 'Opens one locked room.';
   if(craftPart(k)) return craftUse(k)||'Crafting material.';
-  return 'Salvage. Sell it at the terminal for credits and reputation.';
+  return 'Salvage. Sell it at the terminal for credits and XP.';
 }
 function renderWork(){
   walletLine('wallet_work');
@@ -23239,7 +23239,7 @@ document.getElementById('abandonbtn').onclick=function(){
     this.textContent='NO, keep playing';
     this.style.borderColor=''; this.style.color='';
     var _el=(G&&!G.over)?elapsed():0;
-    cb.textContent=(_el>60)?('YES, abandon this run (costs '+abandonRepCost(_el)+' reputation)')
+    cb.textContent=(_el>60)?('YES, abandon this run (costs '+abandonRepCost(_el)+' XP)')
                            :'YES, abandon this run (free this early)';
     return;
   }
@@ -23253,7 +23253,7 @@ document.getElementById('confirmabandon').onclick=function(){
   if(G&&!G.over&&elapsed()>60){
     var _rc=abandonRepCost(elapsed());
     P.rep=Math.max(0,P.rep-_rc);
-    say('Walked out on the job. Reputation -'+_rc+'.');
+    say('Walked out on the job. XP -'+_rc+'.');
   }
   var note=document.getElementById('pausenote').value.trim();
   if(note&&G){ G.tel.notes.push({t:Math.round(elapsed()),txt:note}); document.getElementById('pausenote').value=''; }
@@ -23905,12 +23905,12 @@ document.getElementById('closesector').onclick=function(){
 // been told it exists.
 var PRIMER=[
   ['This is a raid, not a level','You ASCEND from the Undercroft, take what you can carry, and call extraction to come back down. Reaching the lift with a full bag is the whole game.'],
-  ['Dying costs you everything you carried','There is no body to go back for and no insurance. Your bag and both guns are gone. Credits, reputation and anything already in the stash are safe. That is the whole risk, and it is why walking out early is a real decision.'],
+  ['Dying costs you everything you carried','There is no body to go back for and no insurance. Your bag and both guns are gone. Credits, XP and anything already in the stash are safe. That is the whole risk, and it is why walking out early is a real decision.'],
   ['One of them is blind','The Listener. It has no eyes at all, so nothing about light, cover or standing still in a bush means anything to it. It hunts the noise you make. Everything else about it you can work out up there, and the screen will tell you when one is on you.'],
   ['You carry TWO guns and the second slot can be empty','Gun 1 and gun 2, chosen on the figure in your stash or on the ascent check, and X swaps between them out there. Leaving gun 2 empty is a real choice: one gun is lighter and quieter.'],
   ['You always wear body armour','Sixty points of it, absorbing half of every hit until it is gone, and it comes back for every raid. Armour Plates are the way to put it back on out there: put one on a key and use it like a medkit.'],
   ['E is the verb','E searches a container, opens the Peddler, revives a downed pillager, and calls extraction when you stand in a ring. TAB is your bag, M is the map, H cycles the controls legend.'],
-  ['REP is not the same thing as money','REP is what unlocks the counter in Requisition, and there is exactly one way to earn it: sell salvage at the terminal in the Undercroft, which pays rep equal to the price. Nothing else pays standing. Contracts and a clean unfound run pay well, but they pay in credits, and the Peddler out in the field pays cash and no standing at all.'],
+  ['XP is not the same thing as money','XP is what unlocks the shop, and there is exactly one way to earn it: sell salvage at the terminal in the Undercroft, which pays XP equal to the price. Nothing else pays XP. Contracts and a clean unfound run pay well, but they pay in credits, and the Peddler out in the field pays cash and no XP at all.'],
   ['Walking out unseen pays 40 percent more','If nothing ever finds you, the whole haul pays extra. The readout top right says UNFOUND while it is still true. Anything that starts hunting you ends it, so this is the reward for the quiet route rather than a bonus you stumble into.'],
   ['Calling extraction is the loudest thing you do','Hold E in an extraction ring to call it, wait, then hold E again to extract. The heavier your bag, the more of the map comes to meet you. Going down in the ring is not the end of it: you can board from the floor, the screen says HOLD E TO EXTRACT, and nobody comes to pick you up, so you have to do it before you bleed out.'],
   ['The conditions box is telling you something','Top right of the screen. Fog cuts how far you see, rain and storm cut how far you are HEARD, a blackout kills the lamps. It states the actual numbers, not the mood.'],
