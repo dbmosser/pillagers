@@ -21963,3 +21963,46 @@ category icon rail down the stash edge, and the stash header says "16 held" rath
 than their "27/64", because there is no stash cap to divide by. The cream detail
 panel, the top bar with tab pills, and the vendor, crafting, cosmetics and map
 screens are all still untouched.
+
+## v6.02: the HUD research, and the one thing it actually found
+
+His note: "our in-game hud is good but it could be better, research top huds for 2.5d
+video games like animal royale, etc and apply your findings".
+
+What the research says, across the Super Animal Royale HUD breakdown and several
+HUD design write-ups, is one thing repeatedly: the standard failure is showing
+everything all the time. Players need very little information at any given moment,
+and permanently displayed information stops being read at all.
+
+Measured against that, most of this HUD is already right, and two things I expected
+to have to build turned out to be built already. I am recording that rather than
+inventing work:
+  - A damage DIRECTION indicator, which is the single most important element in a
+    top down game because the thing shooting you is usually off screen. p.hitFrom
+    draws an arc at the bearing you were hit from, for 0.8 seconds. Already there.
+  - The legend is already collapsible, three states on H, and draggable.
+
+THE ONE REAL FINDING: the legend defaults to ON and never leaves. He has seventy
+recorded runs. He has not needed to be told WASD moves since run two, and a twelve
+binding panel has been sitting in the corner of every raid he has ever played. That
+is precisely the failure the research names, permanent tutorial text that stopped
+being information long ago and is now just occupied screen.
+
+So it retires itself. The compact panel shows for the first three raids and then
+steps down to the one line "H controls" hint, which is still the door back. H
+cycles all three states as before and nothing overrides that choice afterwards.
+
+Deliberately NOT done: nothing else is hidden. The conditions and contract panel is
+the objective, the pillager board is the other players, and both answer "what should
+I do next", which is the information the research says to keep. Stripping chrome for
+its own sake is the same mistake pointed the other way.
+
+Verified: parse PASS at v6.02; a profile with 0 runs starts legendOn 1 and one with
+70 starts at 0; H cycles 0 to 1 to 2 and back to 0; a frame and a HUD draw without
+throwing in all three states; four maps 236/200/154/225 and 86/87/58/72; three
+endings; hub and ascent check; pin audit clean.
+
+Not verified: three raids is a judgement, not a measurement. I have no data on when
+a player stops reading the panel, and the honest version of that number would come
+from asking him, not from me picking one. Nothing here has been played by a human,
+so whether the corner feels emptier or just barer is unknown.
