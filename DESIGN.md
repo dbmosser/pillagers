@@ -21304,3 +21304,60 @@ started a 320 seed paired baseline during this tick and abandoned it deliberatel
 because it was measuring a sim wearing the wrong rig and would have described a
 player who does not exist. That measurement still needs doing, and every sim
 figure in this file predates both the world-tier removal and this rig change.
+
+## tools: the sim posture had drifted five dials away from the shipped game
+
+__pinDefaults exists so every batch measures one fixed configuration, and its own
+comment states the discipline: "Every new dial must land here in the same build
+that introduces it." The reverse was never enforced. When a shipped DEFAULT
+moved, the pin kept the old value, so the harness has been measuring a game
+nobody plays.
+
+Checked every pinned dial against DEF. Five disagreed, and THREE HANDED THE BOT
+AN ADVANTAGE THE REAL GAME DOES NOT GIVE:
+
+  hauledAboard  pinned 1, shipped 0        the bot was automatically pulled out
+                                           when downed in the ring. He reversed
+                                           that himself on his run-59 note and it
+                                           migrated at cfgv 11.
+  spawnClear    pinned 1150, shipped 1500  the bot started closer to an extract
+                                           than he does. His note: "I spawned 100
+                                           m from an extract. that is too close."
+  raidSec       pinned 600, shipped 540    the bot got sixty seconds more raid.
+  machVsRaider  pinned 0, shipped 1        the bot's world had no machine and
+                                           pillager war.
+  simRig        pinned 'light', shipped 'std'  the bot wore a rig the game can no
+                                           longer issue, 35 armour against 60.
+                                           v5.90 fixed the default and this pin
+                                           ate it, which is how I found the rest.
+
+Also removed simPinTier, a dial deleted at v5.80, and a duplicate healSlow that
+appeared twice in the same object literal. The later value won and happened to
+match, so it was harmless, but two values for one dial in one literal is a trap
+waiting for a reorder.
+
+WHAT THIS MEANS FOR THE NUMBERS IN THIS FILE. The paired A/Bs are not invalidated,
+because both arms always shared the posture, and that is what those batches are
+for. But every ABSOLUTE figure was measured on a bot that spawned nearer the exit,
+had a longer clock, and could not fail an extraction it reached while downed. The
+v4.94 note on this very function measures the bot at 13.8 percent against his
+41.4 and calls it a bad benchmark for absolute numbers; part of that gap is this
+drift, and it runs in the direction that made the bot look BETTER than it should.
+
+Verified by comparing CFG before and after the pin on a freshly cleared profile:
+zero game dials now differ. The only five remaining differences are simGreed,
+simPick, simFlee, simCover and simDodgeRing, which are the bot's own behaviour
+switches and are exactly what the pin exists to set.
+
+MY FIRST RUN OF THAT CHECK REPORTED ZERO DIFFERENCES AND WAS WRONG. I had already
+called __pinDefaults earlier in the same page, so the "before" snapshot was
+captured from an already-pinned CFG and every dial matched itself. Caught it
+because simGreed should have shown 52 to 14 and did not. Re-run after a reload it
+reports honestly.
+
+No VER bump: dark_raiders.html is untouched by this commit.
+
+Not verified: the pin now agrees with the shipped defaults, but nothing enforces
+that it stays that way. The same drift will happen again the next time a default
+moves, and the only guard is this note and the comment already sitting in the
+function that did not prevent it the first five times.
