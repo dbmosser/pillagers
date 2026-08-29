@@ -22882,3 +22882,44 @@ Not verified: 1.2 is still a number I chose by eye rather than derived from anyt
 and it is clamped there, so a 1440p or 4K player gets the same scale as 1080p and will
 find it small again. The menus are DOM and were checked separately at 1080p; this
 change does not touch them.
+
+## v6.24: deleting the dead gear panel, because it kept fooling me
+
+renderGear and gearSlot wrote into #gearslots and #riglist, and renderHub wrote into
+#equipped and #weplist. All four of those elements sit inside a display:none
+container, so none of it has been on screen since the operator figure and the stash
+grid replaced it. About seventy lines rendering nothing.
+
+I did not delete it for tidiness. It is where the stale vocabulary lived, and it cost
+real time twice in one session: I read "No Rig (no protection) WORN" out of #riglist
+and came within one check of filing it as a player-facing lie, and I read its "Pack
+Tier" line after having removed the backpack from the game at v5.99. Dead code that
+describes removed concepts is a trap that keeps being sprung, and his instruction was
+to remove the concept of rigs completely, not to leave a hidden copy of it.
+
+THE EXCISION WAS DONE BETWEEN TWO UNIQUE MARKERS rather than by transcribing seventy
+lines into an anchor, because transcription is where my mistakes come from. The script
+asserted, before writing anything, that both markers were unique and in order, that
+the span contained renderGear and riglist, that it did NOT contain renderAvatar or
+renderStage, and that it was under 3,000 characters. It removed 2,605.
+
+renderAvatar sits in the middle of the removed region's call site and draws the
+VISIBLE operator panel, so the call to it is kept; only renderGear went. #stashct also
+stays, because renderHub still writes it and it is one harmless line, where the other
+four hosts had seventy lines of renderer behind them.
+
+Verified: parse PASS at v6.24, and the script is 4,076 characters and 83 lines smaller
+than v6.23; zero remaining references to gearSlot, renderGear, gearslots, riglist,
+weplist or the equipped host; the hub renders with no error and still shows 5 stash
+stacks, the packed item, the safe pocket, 7 quick-use keys, 7 operator slots, 3 loadout
+presets and a drawn avatar; the ascent check still builds; four maps 236/200/154/225
+and 86/87/58/72 with the weapon pin; three endings through the outcome screen; hub,
+ascent check and the export builder; pin audit clean.
+
+Not verified: the deletion is proven by the absence of references and by the screens
+still rendering, not by exercising every branch that used to reach them. If something
+called renderGear indirectly through a string or a lookup I would not have caught it,
+though nothing in this file does that. The armoury Equip button that lived in the
+hidden weapon list is gone with it; guns are chosen on the operator figure and have
+been since that panel stopped being shown, so nothing the player can reach has
+changed, but that is reasoning rather than a test of the old path.
