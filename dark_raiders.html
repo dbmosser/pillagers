@@ -934,7 +934,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.18';
+var VER='6.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20219,8 +20219,16 @@ stations.forEach(function(st){
   // taking you before you step in. A FUNCTION rather than a string because the
   // hub is built once and the sector can change while you are standing in it.
   stations[0].sub=function(){
-    return '[E] ascend   [R] sector      >  '+
-      FIXED_MAPS[clamp(P.mapIx||0,0,FIXED_MAPS.length-1)].name;
+    // v6.20: the keys come from the acts, like every other station, because this
+    // hard-coded pair said "[R] sector" while R has been the quick deploy.
+    var ks=Object.keys(stations[0].acts);
+    var keys=ks.map(function(k){ return '['+KEYNAMES[k]+'] '+stations[0].acts[k][0]; }).join('   ');
+    // And the destination is the one you will ACTUALLY get. P.mapIx defaults to 0,
+    // which is not offered in the beta, and openLift silently corrects it on the way
+    // in, so the sign used to name a sector the lift would not take you to.
+    var mi=clamp(P.mapIx||0,0,FIXED_MAPS.length-1);
+    if(!mapOffered(FIXED_MAPS[mi])) mi=firstOfferedMap();
+    return keys+'      >  '+FIXED_MAPS[mi].name;
   };
   var lights=[];
   for(var s=0;s<stations.length;s++)

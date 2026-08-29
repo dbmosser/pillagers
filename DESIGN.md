@@ -22662,3 +22662,59 @@ both of them start a raid, so E was tested by hand earlier and R by the loadout 
 above rather than as part of the loop. I also have not checked what quick ascent does
 when the sector page would have been offered, because BETA_ONE_MAP is true and only
 COLD STORAGE carries beta:1, so that branch cannot be reached in the beta at all.
+
+## v6.20: the lift's sign lied about both things written on it
+
+Found by dumping every station's sub line through the __station hook added last
+build. The lift, which is the one station everybody uses every raid, read:
+
+    [E] ascend   [R] sector      >  GREYWATER DAM
+
+and both halves were wrong.
+
+THE KEYS. Its acts are 'go up' and 'quick ascent'. The sub was a hard-coded string
+saying "ascend" and "sector", so it named a key R that does something else entirely:
+R is the quick deploy, not a sector picker. Twenty lines above it, the code that
+builds every OTHER station's sub line carries the comment "so the keys on screen can
+never drift from the keys that work". This override is that exact drift, and it is
+the one station where it matters most.
+
+THE DESTINATION. It printed FIXED_MAPS[P.mapIx], and P.mapIx defaults to 0, which is
+GREYWATER DAM. BETA_ONE_MAP is true and only COLD STORAGE carries beta:1, so the beta
+offers exactly one sector and it is not the one the sign named. openLift silently
+corrects P.mapIx on the way in, but the sign is read BEFORE you press anything, so a
+beta player stood at the lift being told it went to GREYWATER DAM and landed in COLD
+STORAGE.
+
+Both halves now come from the same place the behaviour does: the keys from the acts,
+and the destination from the map that will actually be used.
+
+Verified by driving it with P.mapIx forced to the lying default: the sign reads
+"[E] go up   [R] quick ascent      >  COLD STORAGE", the acts are go up and quick
+ascent, and pressing E sets mapIx to 2 and puts COLD STORAGE in the ascent check
+heading. Sign and reality agree.
+
+A test of mine that reported a false negative, corrected: my first check compared the
+sign against the ascent check's heading text and said they disagreed. They did not.
+The balance span added at v6.14 lives inside that heading, so its textContent now
+reads "COLD STORAGE90,048c30,000rep" and my substring match failed on my own
+addition. Stripping the span first, they match. A comparison against a heading is
+only as good as what else is in the heading.
+
+Verified: parse PASS at v6.20; four maps 236/200/154/225 and 86/87/58/72; three
+endings through the outcome screen; hub, ascent check and the export builder; pin
+audit clean.
+
+Also checked and found correct, so recording it rather than leaving it open: his note
+"THE STASH SAYS '4 REWARDS WAITING' BUT I HAVE NO IDEA HOW TO GET THEM". The waiting
+count now sits on THE MAINFRAME, not the stash, on the same line as the key that
+opens it: "[E] contracts   [R] rewards   [F] racks      >  10 rewards waiting". The
+stash terminal carries no such line. And the primer flow is right too: the first visit
+to the stash shows the primer over the panel, dismissing it leaves the panel, and the
+second visit goes straight to the stash.
+
+Not verified: the sign is correct at the moment it is read, and openLift still
+corrects P.mapIx as a second line of defence, so the two can only agree by both being
+right rather than by one being derived from the other. If a third route into a raid
+is ever added it will need the same treatment, which is the same shape of mistake as
+the quick ascent bug the build before this one.
