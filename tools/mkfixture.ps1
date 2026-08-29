@@ -217,7 +217,7 @@ window.__export=function(){ return buildExport(); };
 // distrust the first pass.
 window.__load=function(w){ return loadOf(w); };
 window.__tell=function(ct){ return ammoTell(ct); };
-window.__season={tiers:SEASON_TIERS,claim:claimTier,claimed:seasonClaimed,ready:seasonReady,no:seasonNo,tier:worldTier,label:tierLabel,sp:spForRun};
+window.__season={tiers:SEASON_TIERS,claim:claimTier,claimed:seasonClaimed,ready:seasonReady,label:tierLabel,sp:spForRun};
 window.__repair={cost:repairCost,replace:replaceCost,go:repairGun};
 // Container opening, whole or by subset, so the staged pull can be driven and checked
 // without needing a key held down for four seconds of real time.

@@ -20809,3 +20809,74 @@ references in the same tick as the rig change, so the concept is dead in play bu
 the plumbing is still there to be cleaned out. I also have not decided what
 happens after the tenth reward now that nothing follows it, which is the real
 open question his note creates and is his to answer.
+
+## v5.80: the escalating world tier is actually gone, not pinned
+
+HIS NOTE: "get rid of 'escalating world tier' -- i don't know what that is but i
+don't like the idea".
+
+He is right not to know what it is, and that is most of what was wrong with it.
+It was a hidden multiplier that climbed every time the reward board was finished:
+plus 8 percent to the value of every item and plus 6 percent to the health of
+every machine, permanently and repeatedly. Nothing on any screen ever explained
+it.
+
+V5.79 PINNED IT AT ZERO AND I LEFT THE PLUMBING IN, which is precisely why he met
+the phrase at all: the flight recorder still printed "World tier 1: loot x1.08,
+enemy health x1.06" at the top of every export, and the tenth reward still
+promised "the world moves up a tier". Pinning a thing is not removing it. That
+was my call at v5.79 and it was the wrong one.
+
+REMOVED: seasonNo, worldTier, seasonLoot, seasonHp and the SIMRAID flag are
+deleted outright. The 16 "*seasonHp()" multiplications in the spawn functions and
+the 1 "*seasonLoot()" in ival are gone from the arithmetic rather than left as a
+times-one. The export's tier line is gone, the per-run tier/lootMul/hpMul stamp
+is gone, the in-raid conditions panel loses its WORLD TIER row, the progress
+board header stops naming a tier, and the tenth reward now reads "10,000 credits,
+and the board is finished". simPinTier went too: it existed only to stop the
+headless sim inheriting a tier, and it was one dead key in the config dump he
+reads at the top of every report.
+
+THE CROWN WOULD HAVE BEEN STRANDED. The Meridian Crown gated on tier:1, which is
+unreachable the moment the tier stops climbing, so removing the tier would have
+quietly created an unobtainable cosmetic. It now gates on finishing the reward
+board, which is exactly the achievement the tier used to mark. Both halves of the
+gate were changed, the boolean and the label, because I got that wrong first time
+and the residue check caught it.
+
+TWO RESIDUES THE PATCH ITSELF MISSED, both found by grepping the dead names
+rather than trusting the edit: buildRaid still assigned SIMRAID after I deleted
+its declaration, which in non-strict mode silently creates a global rather than
+throwing; and cosNeed still carried a 'tier' label case with no 'board' case, so
+the crown would have rendered its requirement as an empty string.
+
+AND THE FIXTURE HOOK KILLED THE TEST HARNESS. mkfixture's __season hook named
+seasonNo and worldTier. A hook literal naming a missing function throws at
+definition time and takes every hook after it down: the fixture came up with 61
+hooks instead of 134 and no version string. The GAME FILE was clean and parsecheck
+passed, so only the harness was broken, which is the right way round, but it is
+exactly why the fixture has to be loaded and counted after any deletion rather
+than assumed.
+
+MEASURED, on a profile deliberately left at world tier 4, which is the worst case
+for a save already in flight. Every spawn is its base literal again: sentry 150,
+crawler 52, snitch 38, raider 78, listener 120, howler 120, bulwark 260, warden
+900, Choir 1250. At tier 4 a sentry was 186. Item values are base too: scrap 25,
+board 150, core 520. All twelve cosmetics have a reachable, labelled gate, and the
+crown is locked on an empty board and unlocked on a finished one.
+
+Verified: parse PASS at v5.80; four maps 86/87/58/72 entities and 236/200/154/225
+containers, both at the established baseline; all three real endings through the
+outcome screen with extract paying 48c and dead and abandon zero; hub, ascent
+check and the reward board; 134 hooks and the version string rendering; no "world
+tier" or "moves up a tier" string anywhere on the page; the export header carrying
+no tier line and no run row stamping lootMul or hpMul.
+
+Not verified: P.worldTier and P.season still sit in saved profiles as dead keys.
+Nothing reads them now, so they are inert rather than dangerous, and I have left
+them rather than writing a migration that touches his save for no behavioural
+gain. Run rows already written into his log keep their old tier stamps, which is
+correct, since those runs really were measured under a multiplier. I also have
+not re-measured any balance number against the neutral world, and every sim
+figure in this file older than today was taken at loot x1.08 and enemy health
+x1.06 without saying so.
