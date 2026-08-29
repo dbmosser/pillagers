@@ -20092,3 +20092,42 @@ to read the crowd, and it reads during the hold window, which is 84 frames. A
 player who fights his way to the ring bleeding, or who calls it and waits far
 longer, may see a different mix. Zero siege-born across six runs is a strong
 result but it is six runs on one hold length.
+
+## v5.63: Settings offered a music mode that does not exist, and his title-page note
+
+HIS NOTE, this tick: "on first page, instead of machines hunt by sight/sound,
+just say 'beware of hostile robots and fellow pillagers'". Done, and he is right
+twice over: the title card is three sentences and one of them was being spent on
+a mechanic, and it named only the machines when pillagers are half of what kills
+you up there.
+
+A MUSIC SETTING WITH A THIRD OPTION THAT IS NOT THERE. MUSIC_MODES is ['hub','off']
+and MUSIC_NAMES has two entries. ALWAYS went when raid music was cut, and two
+pieces of text still advertised it: the Settings hint said "ALWAYS keeps it
+running quietly on the surface too", and the primer said the row "cycles it:
+UNDERCROFT only, ALWAYS, or OFF". This is worse than a wrong number. It sends a
+player to a button and tells him to find a stop on it that does not exist, so he
+clicks past where he expects it and concludes the button is broken. Both now say
+two states, and the primer says plainly that nothing makes the surface play music.
+
+AND IT COUNTED THE BRIEFING WRONG. "The eight things a new player needs." There
+are nineteen. It now reads PRIMER.length, so it cannot drift again the next time
+a row is added, which is the same treatment v5.59 gave the crew count.
+
+EVERY MIDDLE OPTION WAS NOT QUITE RIGHT EITHER. I checked all six raid options
+against the shipped defaults one by one and the promise holds exactly: nRaider
+10, nSentry 20 with nCrawler 34, eDmg 1, raidSec 540, lootMult 1, and siegeVol 1
+with raiderWaves 1. But two of the six rows have FOUR options, where there is no
+middle, and in those the default is the one named Standard rather than a middle
+one. Naming the label instead of the position makes the sentence true of all six.
+
+Verified: parse PASS at v5.63; four maps 86/87/58/72; three endings through the
+outcome screen with death and timeout paying zero credits; hub and ascent check;
+primer renders 19 rows with the radio row naming two modes and no ALWAYS; the
+title card reads his line; fixture silent.
+
+Not verified: I could not run renderSettings from the fixture, because it lives
+inside the IIFE and is not hooked, so the three Settings strings are confirmed by
+reading the source and by parse PASS rather than by seeing the panel draw. The
+PRIMER.length interpolation sits in an ordinary string concatenation and a broken
+one would have failed the parse, but nobody has looked at that row on a screen.

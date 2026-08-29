@@ -445,7 +445,7 @@
       <div style="border:1px solid var(--steel-hi);border-radius:4px;padding:11px 13px;background:rgba(0,0,0,.28)">
         <div style="font-size:9px;letter-spacing:.2em;color:var(--amber)">2 &middot; PILLAGE</div>
         <div style="font-size:11.5px;color:var(--ash);margin-top:5px;line-height:1.5">
-          Hold E on anything worth opening. Machines hunt by sight, and one of them hunts by sound.</div>
+          Hold E on anything worth opening. Beware of hostile robots and fellow pillagers.</div>
       </div>
       <div style="border:1px solid var(--steel-hi);border-radius:4px;padding:11px 13px;background:rgba(0,0,0,.28)">
         <div style="font-size:9px;letter-spacing:.2em;color:var(--amber)">3 &middot; EXTRACT</div>
@@ -755,7 +755,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.62';
+var VER='5.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22605,7 +22605,7 @@ var PRIMER=[
   ['The conditions box is telling you something','Top right of the screen. Fog cuts how far you see, rain and storm cut how far you are HEARD, a blackout kills the lamps. It states the actual numbers, not the mood.'],
   ['A purple ring means elite','About one machine or pillager in twelve is elite: twice the health, harder hits, a purple ring at its feet, and a deeper bag when it falls. The colour is the same purple the loot pips use for elite, on purpose.'],
   ['A hired merc is a partner now','Hire one at the Bench. B cycles his orders, loot free, follow you, or hold a spot. Stand with him and E searches his bag; drag an item from yours onto him and he will actually use it. Go down and he comes for you.'],
-  ['The Undercroft has a radio','Three 16-bit pieces play down here, one picked at random each time you come back. The surface is deliberately silent. The Music row in Settings cycles it: UNDERCROFT only, ALWAYS, or OFF.'],
+  ['The Undercroft has a radio','Three 16-bit pieces play down here, one picked at random each time you come back. The surface is deliberately silent, and there is no setting that changes that. The Music row in Settings is UNDERCROFT or OFF.'],
   ['One thing out there does not chase you','The Choir. It is bolted to the ground on top of a cache and it never takes a step, but it fires in every direction for about fifty metres. Stand outside that and it cannot touch you. It is not a fight you have to take; it is a question about whether the cache is worth it.'],
   ['The HUD is yours to arrange','The raider list, the conditions box and the key legend all collapse on their corner glyph and drag anywhere. Positions stick between raids.'],
 ['The Bulwark carries a wall','The big one with the slab. Shooting the slab is close to useless: it eats almost everything and all the noise you make doing it brings company. Its back is soft and it is marked, a hot orange seam you can see from across a street. It walks at you and never stops, so the fight is a circle, not a duel. Or leave it. It is slower than you are.'],
@@ -22729,7 +22729,7 @@ function renderSettings(){
   // harder or easier, and burying that under four rows of housekeeping is the
   // opposite of the ease of use he asked for.
   var _go='<div class="row" style="opacity:.7"><div style="flex:1"><b>THE RAID</b>'+
-    '<div class="hint">These change the game itself. Every middle option is exactly how the game plays out of the box, so leaving this page alone changes nothing.</div></div></div>';
+    '<div class="hint">These change the game itself. Every option named Standard is exactly how the game plays out of the box, so leaving this page alone changes nothing.</div></div></div>';
   for(var _gq=0;_gq<GAMEOPTS.length;_gq++){
     var _gr=GAMEOPTS[_gq], _gs=_gr.opts[gameOptIx(_gr.k)];
     var _dflt=(gameOptIx(_gr.k)===_gr.def);
@@ -22741,7 +22741,7 @@ function renderSettings(){
   host.innerHTML=_go+
     '<div class="row"><div style="flex:1"><b>Text size</b><div class="hint">Scales every string on every canvas and in every panel.</div></div>'+
     '<button id="set_text" style="padding:6px 12px">'+Math.round(uiScale()*100)+'%</button></div>'+
-    '<div class="row"><div style="flex:1"><b>Music</b><div class="hint">A faint 16-bit loop. UNDERCROFT plays it only down here, ALWAYS keeps it running quietly on the surface too, OFF is silence.</div></div>'+
+    '<div class="row"><div style="flex:1"><b>Music</b><div class="hint">A faint 16-bit loop, three pieces, one picked at random each time you come back down. UNDERCROFT plays it, OFF is silence. The surface is deliberately silent either way.</div></div>'+
     '<button id="set_music" style="padding:6px 12px;min-width:110px">'+MUSIC_NAMES[musicMode()]+'</button></div>'+
     '<div class="row"><div style="flex:1"><b>Auto-export the flight recorder</b><div class="hint">Writes a run report to your Downloads at the end of every raid.</div></div>'+
     '<button id="set_auto" style="padding:6px 12px">'+(P.autoExport?'ON':'OFF')+'</button></div>'+
@@ -22755,7 +22755,7 @@ function renderSettings(){
     '<button id="set_aeq" style="padding:6px 12px">'+(autoEquipOn()?'ON':'OFF')+'</button></div>'+
     '<div class="row"><div style="flex:1"><b>Autoloot when the bag is full</b><div class="hint">OFF by default, which is what a fresh profile actually does: P.autoloot is unset until you turn it on. When on, a full bag sheds its least valuable item to make room; off, a full bag simply refuses. C toggles this in a raid too.</div></div>'+
     '<button id="set_aloot" style="padding:6px 12px">'+(P.autoloot?'ON':'OFF')+'</button></div>'+
-    '<div class="row"><div style="flex:1"><b>First time out briefing</b><div class="hint">The eight things a new player needs. Shown once on a fresh profile; open it again any time.</div></div>'+
+    '<div class="row"><div style="flex:1"><b>First time out briefing</b><div class="hint">The '+PRIMER.length+' things a new player needs. Shown once on a fresh profile; open it again any time.</div></div>'+
     '<button id="set_primer" style="padding:6px 12px">SHOW</button></div>'+
     '<div class="row"><div style="flex:1"><b>Controls legend</b><div class="hint">H in a raid cycles compact, full and off. Compact is the default.</div></div>'+
     '<span class="hint">H</span></div>'+
