@@ -20997,3 +20997,51 @@ any other screen at 1080p since scaling the room, so the raid HUD and the modals
 are still judged only from the earlier photographs, and I have not checked how the
 scaled room reads on a window SMALLER than 700 by 470, where the scale floor of 1
 means it behaves as before but the room no longer fits.
+
+## v5.84: the shop was still teaching the old reputation rule
+
+Found the way the last several have been found, by photographing a screen at
+1920x1080 and reading it rather than grepping for what I expected to be wrong.
+
+REQUISITION'S OWN HEADER said "Reputation, earned by selling and completing
+contracts, unlocks better stock". v5.78 made selling the only source of rep on
+his instruction, and I updated the sell hint and the primer row and stopped
+there. This is the screen where reputation actually MATTERS, which makes it the
+worst of the three places to be wrong, and it was the one I did not read. It also
+still described armour going to the stash, which was written when this counter
+sold rigs.
+
+AND ONE REWARD LINE HAD TWO STALE THINGS IN IT. The second rung of the progress
+board was {kind:'rep', v:400, label:'400 reputation, which opens the
+Quartermaster faster'}.
+
+  It GRANTED reputation, which is the currency that is now supposed to have a
+  single source. I flagged this in v5.78's own not-verified line and said it
+  would go out with seasons. Seasons went at v5.79 through v5.81 and this
+  survived, so a note-to-self is not a fix.
+
+  There is no Quartermaster. The word appears exactly once in the whole file,
+  here, and the shop is Requisition at TRADE, CRAFT AND HIRE. The reward named a
+  place he cannot go and find.
+
+Converted to 2,000 credits, which is what every other non-gear rung pays and sits
+between the 1,500 below it and the 3,000 above.
+
+CHECKED AND FOUND NOTHING, which is worth saying: the whole standing open list is
+now closed. The extraction banner already reads EXTRACTION OPEN with the seconds
+and a bar, gated on having called it and drawn near the bottom rather than
+mid-screen, which is both his run note and the open-list item. Music, elite guns,
+seasons and machines-versus-pillagers were all closed in earlier builds and
+re-confirmed here. No rep-granting reward survives anywhere in the file.
+
+Verified: parse PASS at v5.84; four maps 86/87/58/72 entities and 236/200/154/225
+containers at baseline; all three real endings through the outcome screen with
+extract paying 48c and dead and abandon zero; hub and ascent check; all ten board
+rungs claimed in one pass paying 22,500 credits and ZERO reputation, which is the
+end-to-end proof that selling is the only source.
+
+Not verified: I have now read Requisition, the stash, the ascent check, the
+outcome screen, the operator terminal and the Undercroft at 1080p, but not the
+Workshop, the hire bench, the Gambler, Settings or the tuning console. Those are
+the screens most likely to still carry a sentence written for a version of the
+game that no longer exists, on the evidence of every one I have looked at so far.
