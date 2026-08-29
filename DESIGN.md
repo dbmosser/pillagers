@@ -22115,3 +22115,41 @@ behind the same modal, so the trader screen is now half one design and half anot
 which is worse than either until CRAFT follows. No quantity stepper, so buying ten
 bandages is still ten clicks where his Celeste screenshot has a minus/times ten/plus
 row. Nothing here has been clicked by a human.
+
+## v6.05: the workshop matches the counter
+
+v6.04 rebuilt BUY and left CRAFT as a row list, which made the trader half one design
+and half another. That is worse than either, so this finishes it.
+
+His crafting screenshot is the same shape as his vendor one: a grid of what you can
+make, and the cream panel carrying the name, a REQUIRED RESOURCES list with have
+against need, and one big button. The have/need pair is the useful part of that
+panel and this screen already computed it, it was just buried in a grey subtitle
+inside a row where the two numbers did not line up with each other.
+
+Same delegation as the counter: the grid is a view over the rows the old renderer
+builds, and the button is the original. Crafting has a commit-or-refuse rule in it
+that was fixed once already, after seven recipes forced against an empty stash
+produced seven items out of nothing. I am not re-deriving that to change a layout.
+
+Repairs and recipes share the grid, because from the player's side "make a smoke
+canister" and "service the rifle" are the same errand at the same bench.
+
+Verified by driving the real screen at 1920x1080:
+  7 cells, 2 of them unaffordable and dimmed
+  an affordable recipe reads CRAFTED / UNCOMMON / Component Kit with REQUIRED
+    RESOURCES Scrap Metal 3/3 and Copper Wire 2/2, and CRAFT enabled
+  an unaffordable one reads GEAR / UNCOMMON / Armor Plate with Component Kit 1/2
+    and Circuit Board 0/1, BOTH shortfalls in red, and CRAFT disabled
+  crafting takes the stash from cell,comp,scrap,scrap,scrap,wire,wire to
+    cell,comp,comp, which is three scrap and two wire spent for one kit
+
+Also verified: parse PASS at v6.05; four maps 236/200/154/225 and 86/87/58/72 from a
+cleared profile; three endings through the outcome screen; hub, ascent check and the
+export builder; pin audit clean.
+
+Not verified: HIRE is still a row list, so the trader is now two thirds rebuilt
+rather than half, and the same objection applies until it follows. The repair detail
+shows credits as a have/need row alongside the parts, which reads correctly but is
+not how his screenshot does it, since Arc Raiders keeps currency in its own PRICE
+block. No human has clicked any of it.

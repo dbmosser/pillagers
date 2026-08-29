@@ -221,6 +221,12 @@
     letter-spacing:.04em; margin-bottom:3px; }
   .vbar{ height:4px; background:#d8d1c1; border-radius:2px; margin-bottom:9px; overflow:hidden; }
   .vbar i{ display:block; height:100%; background:#201e19; }
+  .crlab{ font-size:8px; letter-spacing:.16em; color:#6a655a; margin:4px 0 7px; }
+  .cres{ display:flex; align-items:center; gap:8px; margin-bottom:7px; }
+  .cres img{ width:22px; height:22px; flex:none; }
+  .crn{ font-size:11px; color:#2a2721; flex:1; min-width:0; }
+  .crv{ font-size:12px; font-weight:700; letter-spacing:.02em; }
+  .crv em{ font-style:normal; font-weight:400; color:#6a655a; }
   .vprice{ margin-top:auto; padding-top:12px; border-top:1px solid #d8d1c1;
     font-size:10px; letter-spacing:.12em; color:#6a655a; }
   .vprice b{ display:block; font-size:19px; color:#14130f; letter-spacing:0; margin-top:2px; }
@@ -389,8 +395,11 @@
 
   <div class="tpane" id="tpane_craft" style="display:none">
     <div class="msub" id="wallet_work" style="color:var(--amber);font-weight:700"></div>
-    <div class="msub">Craft from stash materials. Junk becomes components, components become gear.</div>
-    <div class="plist" id="worklist" style="border:1px solid var(--steel-hi)"></div>
+    <div class="vend">
+      <div class="vendgrid" id="craftgrid"></div>
+      <div class="vdet" id="craftdetail"></div>
+    </div>
+    <div class="plist" id="worklist" style="display:none"></div>
   </div>
 
   <div class="tpane" id="tpane_hire" style="display:none">
@@ -894,7 +903,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.04';
+var VER='6.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22639,6 +22648,7 @@ function renderWork(){
     any.forEach(function(id){
       var W=WEAPONS[id],ST=wearStep(id),C=repairCost(id);
       var row=document.createElement('div'); row.className='row';
+      row.setAttribute('data-w','repair:'+id);
       row.appendChild(iconImg(id,26));
       var nm=document.createElement('div'); nm.className='nm';
       nm.innerHTML=W.name+' <span style="color:'+ST.c+'">'+ST.name+'</span>'+
@@ -22661,8 +22671,9 @@ function renderWork(){
     h2.innerHTML='<b>CRAFTING</b>';
     s.appendChild(h2);
   })();
-  RECIPES.forEach(function(r){
+  RECIPES.forEach(function(r,ri){
     var row=document.createElement('div'); row.className='row';
+    row.setAttribute('data-w','recipe:'+ri);
     var outKey=null; for(var ok2 in r.out){ outKey=ok2; break; }
     if(outKey) row.appendChild(iconImg(outKey,26));
     var nm=document.createElement('div'); nm.className='nm';
@@ -22699,6 +22710,87 @@ function renderWork(){
     row.appendChild(nm); row.appendChild(b);
     s.appendChild(row);
   });
+  renderCraftGrid();
+}
+// v6.05, matching the counter and his crafting screenshot: what you can make as a
+// grid, and the cream panel carrying REQUIRED RESOURCES with have against need.
+// The have/need pair already existed; it was buried in a grey subtitle inside a row.
+function renderCraftGrid(){
+  var g=document.getElementById('craftgrid'); if(!g) return;
+  var rows=document.getElementById('worklist').querySelectorAll('[data-w]');
+  g.innerHTML='';
+  if(!rows.length){
+    var em=document.createElement('div'); em.className='hint';
+    em.style.gridColumn='1/-1';
+    em.textContent='Nothing to build and nothing to service.';
+    g.appendChild(em);
+    var d0=document.getElementById('craftdetail'); if(d0) d0.innerHTML='';
+    return;
+  }
+  var sel=P._craftSel;
+  if(sel===undefined||sel>=rows.length) sel=P._craftSel=0;
+  Array.prototype.forEach.call(rows,function(row,i){
+    var tag=row.getAttribute('data-w');
+    var btn=row.querySelector('button');
+    var kind=tag.split(':')[0], ref=tag.slice(kind.length+1);
+    var icon,label;
+    if(kind==='repair'){ icon=ref; label=(WEAPONS[ref]?WEAPONS[ref].name:ref)+'  (service)'; }
+    else {
+      var r=RECIPES[+ref], ok2=null; for(var kk in r.out){ ok2=kk; break; }
+      icon=ok2; label=r.name;
+    }
+    var cell=document.createElement('div');
+    cell.className='vcell'+(i===sel?' on':'')+((btn&&btn.disabled)?' locked':'');
+    cell.innerHTML=iconImgHTML(icon,28);
+    cell.title=label;
+    cell.onclick=function(){ P._craftSel=i; renderCraftGrid(); };
+    g.appendChild(cell);
+  });
+  renderCraftDetail(rows);
+}
+function renderCraftDetail(rows){
+  var d=document.getElementById('craftdetail'); if(!d) return;
+  var row=rows[P._craftSel||0]; if(!row){ d.innerHTML=''; return; }
+  var btn=row.querySelector('button');
+  var tag=row.getAttribute('data-w'), kind=tag.split(':')[0], ref=tag.slice(kind.length+1);
+  var counts=stashCounts(),h='';
+  function resRow(k,have,need){
+    var okc=(have>=need)?'#2f6f4e':'#a33d22';
+    return '<div class="cres">'+iconImgHTML(k,22)+
+      '<span class="crn">'+escHtml(ITEMS[k]?ITEMS[k].name:k)+'</span>'+
+      '<span class="crv" style="color:'+okc+'">'+have+'<em>/'+need+'</em></span></div>';
+  }
+  if(kind==='repair'){
+    var id=ref,W=WEAPONS[id],ST=wearStep(id),C=repairCost(id);
+    h+='<div class="vpills"><span class="vpill">SERVICE</span>'+
+       '<span class="vpill r" style="background:'+ST.c+'">'+escHtml(String(ST.name).toUpperCase())+'</span></div>'+
+       '<h4>'+escHtml(W?W.name:id)+'</h4>'+
+       '<div class="vdesc">'+wearOf(id)+' rounds through it. A worn gun jams more often.</div>'+
+       '<div class="crlab">REQUIRED RESOURCES</div>'+
+       resRow(C.part,(counts[C.part]||0),C.parts)+
+       '<div class="cres"><span class="crn" style="margin-left:0">Credits</span>'+
+       '<span class="crv" style="color:'+((P.credits>=C.credits)?'#2f6f4e':'#a33d22')+'">'+
+       P.credits.toLocaleString()+'<em>/'+C.credits.toLocaleString()+'</em></span></div>';
+  } else {
+    var r=RECIPES[+ref],outKey=null,outN=0;
+    for(var ok3 in r.out){ outKey=ok3; outN=r.out[ok3]; break; }
+    var oit=ITEMS[outKey];
+    h+='<div class="vpills"><span class="vpill">'+
+       escHtml((oit&&ICLASS[oit.use])?ICLASS[oit.use].t:'CRAFTED')+'</span>'+
+       '<span class="vpill r">'+escHtml(String((oit&&oit.r)||'common').toUpperCase())+'</span></div>'+
+       '<h4>'+escHtml(r.name)+'</h4>'+
+       '<div class="vdesc">'+escHtml(oit?(itemBlurb(outKey)||''):'')+
+       (outN>1?(' Makes '+outN+'.'):'')+'</div>'+
+       '<div class="crlab">REQUIRED RESOURCES</div>';
+    for(var k in r.need) h+=resRow(k,(counts[k]||0),r.need[k]);
+  }
+  d.innerHTML=h;
+  var b=document.createElement('button');
+  b.className='vbuy';
+  b.textContent=(kind==='repair')?'SERVICE':'CRAFT';
+  b.disabled=btn?btn.disabled:true;
+  if(btn&&!btn.disabled) b.onclick=function(){ btn.click(); };
+  d.appendChild(b);
 }
 
 // ================================================================ wiring
