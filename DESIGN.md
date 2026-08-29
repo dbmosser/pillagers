@@ -19231,3 +19231,60 @@ TIN AND WIRE at 130 is pleasant to sit under while reorganising a stash, and
 that is exactly the complaint that started this.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.50  EVERYTHING IN THE FILE THAT NOTHING COULD REACH
+================================================================================
+
+v5.50: everything in the file that nothing could reach
+
+Finding five dead songs at v5.49 made me ask the general question instead of the
+specific one. I enumerated every top level var and function in the file, 663 of
+them, and counted how many times each name appears anywhere. A count of ONE
+means the declaration and nothing else.
+
+SEVEN had no readers at all:
+
+  BODY_RAIDS     the body grace period, zero since v5.28
+  bodyStash      28 lines sitting below an unconditional "return null"
+  discPct        its only caller was the coarse map overlay, removed at v5.30
+  fogSeen        the sector map walks the grid directly now
+  itemClass      superseded by the rarity border and the stash tab classifier
+  inCombat       part of the reactive raid music
+  musIntensity   part of the reactive raid music
+
+THE MUSIC PAIR CAME WITH DIALS, which is why it matters more than tidiness.
+musicWanted returns false the moment G exists, so nothing reactive can run: no
+intensity, no combat gate, no tail. That is correct and it was his order. What
+was NOT correct is that musicCombat and musicTail sat in CFG with ZERO readers,
+and musicCombatGap was read only by a function nothing called. Three dials saved
+into every profile that could not affect anything, which is precisely the trap my
+notes call constants that look authoritative and are inert. All three deleted.
+musicVol stays: it has a real reader in tickMusic.
+
+I ALSO KEPT bodyStash "as a record" at v5.28 and that was the wrong call. A
+28 line unreachable function is not a record, it is a thing the next reader has
+to work out is dead. DESIGN.md is the record and it always was.
+
+I BROKE THE HARNESS DOING THIS AND THE SWEEP CAUGHT IT. mkfixture builds its
+hooks as object literals, and its own header warns that a literal naming a
+missing function throws at definition time and silently kills every hook after
+it. window.__body named BODY_RAIDS. So deleting one dead constant took out
+__hubFrame and every hook defined below it, and the four map sweep failed with
+"__hubFrame is not defined". Three stale hooks repaired: __body, __music which
+named musIntensity and the deleted MUS_TRACKS, and __fog whose seenAt called
+fogSeen. The verification now asserts all 34 hooks exist before it runs anything,
+so this class of breakage announces itself instead of looking like a game bug.
+
+Verified: parse PASS at v5.50, 22,942 lines, braces balanced, no duplicate
+functions. Zero remaining names with no readers, down from seven. All 34 fixture
+hooks present. Four maps 85/86/57/71, all three endings through the outcome
+screen, hub and ascent check clean, music reports three themes and dry-renders a
+full pass, the body hook and the fog hook both answer.
+
+Not verified: the reader count is textual. A name reached only through a computed
+property, like CFG[someVariable], would look dead to this method and is not. I
+checked the seven by hand before deleting any of them, but the method itself
+cannot see that pattern.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

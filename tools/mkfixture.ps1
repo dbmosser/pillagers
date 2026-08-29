@@ -89,7 +89,7 @@ window.__fog={frac:function(m){ return fogFrac(m); },
               packed:function(m){ return (P.mapSeen||{})[m]; },
               mark:function(){ return fogMark(); },
               grid:function(){ return G&&G.seen?G.seen:null; },
-              seenAt:function(x,y){ return fogSeen(x,y); }};
+              seenAt:function(x,y){ var S=G&&G.seen; if(!S) return true; var gx=Math.floor(x/FOG_CELL),gy=Math.floor(y/FOG_CELL); if(gx<0||gy<0||gx>=S.w||gy>=S.h) return false; return S.g[gy*S.w+gx]===1; }};
 // COSMETICS. Purely cosmetic, so nothing here can move a balance number, but the
 // unlock rules still have to be driven: a locked hat must never end up worn.
 window.__cos={list:function(){ return COSMETICS; },
@@ -163,7 +163,7 @@ window.__weak={pts:WEAKPTS,of:weakOf,pos:weakPos,hit:weakHit,apply:applyWeak};
 window.__bullets=function(dt){ updateBullets(dt); };
 window.__optic={mag:opticMag,CH:CH,VF:VF,AMBR:AMBR};
 window.__stray={make:mkStray,give:strayGive,reveal:strayReveal,wants:STRAY_WANTS};
-window.__body={here:bodyHere,age:bodyAge,line:bodyLine,recover:bodyRecover,RAIDS:BODY_RAIDS};
+window.__body={here:bodyHere,age:bodyAge,line:bodyLine,recover:bodyRecover,RAIDS:0};
 window.__listen={make:mkListener,hear:listenersHear,R:LISTEN_R};
 window.__spike={odds:windfallOdds,box:mkStrongbox,pool:WINDFALL,open:openContainer};
 window.__wxturn={tick:wxTick,mix:wxMix,list:WEATHER,TURN:WX_TURN,cur:wx};
@@ -651,7 +651,7 @@ window.__mouseState=function(){ return mouse; };
 //    rather than the fight.
 window.__keysRef=function(){ return keys; };
 window.__wx={list:function(){ return WEATHER; },cur:wx,VF:VF,AMBR:AMBR,ping:ping,pick:pickWeather};
-window.__music=function(){ tickMusic(); return {mode:musicMode(),wanted:musicWanted(),started:!!MUS.g,step:MUS.step,intensity:musIntensity(),smoothed:MUS.i,trk:(MUS.trk===undefined?null:MUS.trk),trkName:(MUS.trk===undefined?null:MUS_TRACKS[MUS.trk].name)}; };
+window.__music=function(){ tickMusic(); return {mode:musicMode(),wanted:musicWanted(),started:!!MUS.g,step:MUS.step,trkName:(MUS.trk?MUS.trk.name:null),themes:MUS_THEMES.length}; };
 window.__hudBox=function(){ return HUDBOX; };
 window.__ghost={parse:parseGhost,apply:applyGhost};
 window.__w2s=function(x,y){ return w2s(x,0,y); };
