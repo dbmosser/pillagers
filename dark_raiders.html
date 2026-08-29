@@ -913,7 +913,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.09';
+var VER='6.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9856,7 +9856,10 @@ function tryExtractTick(dt,wantCall){
         var od=dist(p,OZ);
         if(od<openD){ openD=od; openZ=OZ; }
       }
-      say(openZ ? ('This point is CLOSED. The open one is '+Math.round(openD)+'m away, marked on your map.')
+      // v6.10: metres. This printed raw world units, so the open point was
+      // announced as ten times further away than it is, while he was deciding
+      // whether to run for it.
+      say(openZ ? ('This point is CLOSED. The open one is '+metres(openD)+'m away, marked on your map.')
                 : 'This point is CLOSED.');
       blip('clank');
     }
@@ -14355,7 +14358,8 @@ function finishSim(res){
   var kl=Object.keys(killers).sort(function(a,b){return killers[b]-killers[a];});
   if(kl.length) L.push('Death causes: '+kl.map(function(k){return k+' x'+killers[k];}).join(', '));
   if(timerD) L.push('Timer expiry deaths: '+timerD+' ('+Math.round(timerD/n*100)+'% of raids). If high, the map is too big for the clock.');
-  if(closeN) L.push('Avg distance from extract at death: '+Math.round(closeS/closeN)+'m (closest approach)');
+  // v6.10: closestExtract accumulates raw world units, so this read ten times high.
+  if(closeN) L.push('Avg distance from extract at death: '+metres(closeS/closeN)+'m (closest approach)');
   L.push('Downs: '+downs+'  |  Self-revives: '+revs+'  |  AI pillagers extracted: '+rExt);
   L.push('Beacon calls: '+bCall+'  |  Missed landings (not in the ring): '+bMiss);
   haulBandLines(res,'Survival by value carried at the moment the raid ended:').forEach(function(s){L.push(s);});

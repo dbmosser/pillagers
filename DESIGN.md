@@ -22302,3 +22302,36 @@ there. The twenty-two feeling tags are unchanged, and his note "give me new opti
 for the end game feedback buttons, most of this stuff isn't really a problem any
 more" is still open; the current set reads current to me, but that is my judgement
 of his game rather than his, and it is his to make.
+
+## v6.10: the same unit bug, twice more, one of them in the raid
+
+v6.09 fixed one distance that printed raw world units with an 'm' on it, and I left
+"a second mismatch could still be sitting there" as a not-verified line. Rather than
+leave it there, I swept every metre string in the file. U_PER_M is 10, so the several
+sites doing Math.round(x/10) are correct and merely open-coded. Two were not.
+
+THE WORSE ONE IS IN THE RAID. Holding E on a closed extraction point tells you where
+the open one is, and it printed dist() raw. A point 200 metres away was announced as
+"2000m away", ten times too far, at the exact moment he is deciding whether it is
+reachable before the clock runs out. That is a number that changes a decision, and it
+was wrong every single time it appeared. Given the maps are about 400 metres across,
+it was reporting distances larger than the entire map.
+
+The second is the bot sim's stats panel, same fault, developer facing: average
+distance from extract at death read ten times high, which means any judgement I have
+made from that line was made against a wrong number.
+
+Verified by driving the real path rather than reading it: closing every zone but the
+furthest, standing on a closed one and holding E produces "This point is CLOSED. The
+open one is 200m away", against a true separation of 1,998 world units, which is 200
+metres. Before the fix that line read 1998m.
+
+Verified: parse PASS at v6.10; four maps 236/200/154/225 and 86/87/58/72 from a
+cleared profile; three endings through the outcome screen; hub, ascent check and the
+export builder; pin audit clean.
+
+Not verified: the sweep covered strings ending in a literal 'm'. A distance rendered
+with a different unit word, or built by concatenation across lines, would not have
+matched the pattern, so this is a strong sweep rather than a proof. The sim stats
+line is fixed but every past reading I took from it was against the wrong number, and
+I have not gone back through the log to see which conclusions leaned on it.
