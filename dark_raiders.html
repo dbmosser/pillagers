@@ -755,7 +755,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.51';
+var VER='5.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5315,6 +5315,12 @@ var WEAKPTS={
   // lesson is positional and a fiddly pixel would teach it badly.
   bulwark:[
     {id:'spine',name:'EXPOSED SPINE', ang:Math.PI, rf:0.55, rad:10, mult:2.6, eff:'overheat', c:'#ff8a3c'}
+  ],
+  // THE CHOIR, v5.52. It cannot move, so both openings are reachable by
+  // POSITIONING rather than by outrunning it, which is the only skill it tests.
+  choir:[
+    {id:'mouth',name:'CHOIR MOUTH', ang:0,       rf:0.66, rad:10, mult:2.4, eff:'overheat', c:'#ff8a3c'},
+    {id:'spine',name:'DORSAL SPINE',ang:Math.PI, rf:0.60, rad:12, mult:3.6, eff:'overheat', c:'#e0a0ff'}
   ]
 };
 function weakOf(e){ return WEAKPTS[e.kind]||null; }
@@ -6065,6 +6071,19 @@ var WARDEN_SPD=36;
 // The slowest the player can ever be. 1.28x the warden, so walking away is always
 // possible however encumbered, wet or crouched you are.
 var SPEED_FLOOR=46;
+// EMPLACED. hp is between a Warden and nothing else in the game, damage is
+// lower than a Warden's because it fires far more often, and rng 520 is
+// deliberately eighty short of a Marksman Rifle so there is a stand-off band
+// where you can hurt it and it cannot reach you. That band is the fight.
+var CHOIR_HP=1250, CHOIR_RNG=520;
+function mkChoir(x,y){
+  var _chp=Math.round(CHOIR_HP*CFG.eHp*seasonHp());
+  return {kind:'choir',x:x,y:y,r:26,hp:_chp,maxhp:_chp,
+    name:mkName('CHOIR',['A','M','R','V']),
+    face:rnd(0,6.28),state:'patrol',tx:x,ty:y,homeX:x,homeY:y,
+    cd:0,alert:0,spd:0,dmg:22,rng:CHOIR_RNG,cone:6.2832,
+    hitT:0,seenYou:false,windup:0,overheat:0,sang:0};
+}
 function mkWarden(x,y){
   var _whp=Math.round((CFG.wardenHp===undefined?900:CFG.wardenHp)*CFG.eHp*seasonHp());
   return {kind:'warden',x:x,y:y,r:30,hp:_whp,maxhp:_whp,
@@ -7182,6 +7201,16 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
     roster.push({ref:R3,name:R3.name,crew:R3.crew,val:0,out:false});
   }
   var sw=far(freeSpot(map,44),1400); ents.push(mkWarden(sw.x,sw.y));
+  // THE CHOIR STANDS ON A CACHE, v5.52. Not near one: on it. A boss that guards
+  // nothing is just a health bar in a field, and the cache is what turns it into
+  // a question. Placed on the SECOND cache rather than the extraction one, so a
+  // straight run out is still a paying run exactly as v1.75 promised.
+  if(caches.length>1){
+    var _cg=caches[1];
+    ents.push(mkChoir(_cg.x,_cg.y));
+  } else if(caches.length){
+    ents.push(mkChoir(caches[0].x,caches[0].y));
+  }
   // SPEC 3.5: the hired mercenary drops in with you. He is a normal raider in
   // every way except that he will not shoot you and he is tracked for payout.
   if(!sim&&P.merc){
@@ -12034,7 +12063,32 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
     // runs on a machine that has genuinely lost him.
     if(!sees&&e.state!=='chase'&&e.kind!=='raider'&&machHuntRaider(e,dt)) continue;
 
-    // ---- warden: slow, relentless, optional
+    // ---- the Choir: emplaced, all round, and it never takes a step
+    if(e.kind==='choir'){
+      if(e.overheat>0){ e.overheat-=dt; e.cd=Math.max(e.cd||0,0.35); }
+      if(e.cd>0) e.cd-=dt;
+      var _cd2=dist(e,p);
+      // It sings once when you first come inside its reach: the telegraph his
+      // Q32 asks for, and the only warning you get.
+      if(_cd2<e.rng&&!e.sang){ e.sang=1; if(!G.sim){ say('THE CHOIR HAS SEEN YOU.'); sfx('dish',e.x,e.y); } }
+      if(_cd2>e.rng*1.25) e.sang=0;
+      if(sees&&_cd2<e.rng){
+        if(!e.seenYou&&G.tel) G.tel.everSeen=1;
+        e.seenYou=true; e.alert=4;
+        e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.2*dt,2.2*dt);
+        if(e.overheat<=0&&e.cd<=0){
+          fireWeapon(e,{dmg:e.dmg,spread:.085,rng:e.rng,noise:430,tint:'#e0a0ff'},
+                     p.x+rnd(-14,14),p.y+rnd(-14,14),false);
+          e.cd=rnd(0.42,0.66);
+          if(!G.sim) sfx('shot',e.x,e.y);
+        }
+      } else {
+        // Out of reach or out of sight it simply turns, slowly, and waits.
+        e.face+=1.1*dt;
+      }
+      e.moving=false;
+      continue;
+    }
     if(e.kind==='warden'){
       // THE GHOST RUN DIES HERE, v5.36, corrected v5.47. One acquisition, by
       // anything, for any length of time, and the clean run is over for the rest
@@ -14465,6 +14519,7 @@ function spriteTop(e){
   if(e.kind==='sentry') return 46*(e.r/SENTRY_R0);
   if(e.kind==='crawler') return 24*(e.r/CRAWLER_R0);
   if(e.kind==='snitch') return 34*(e.r/SNITCH_R0);
+  if(e.kind==='choir') return 44;
   if(e.kind==='warden') return 52;
   return 40;   // humans grew a real head at v1.07
 }
@@ -14512,6 +14567,69 @@ function drawWardenS(e){
     wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
   }
   drawWindupGlow(e,x+fl2*26,y-34);
+}
+function drawChoirS(e){
+  var x=e.x,y=e.y;
+  var hot=(e.overheat||0)>0;
+  var live=e.seenYou&&!hot;
+  shadowE(x,y+3,30,10,.5);
+  // BOLTED DOWN. A wide flat plinth, drawn first and drawn low, so the shape
+  // reads as emplaced from any distance.
+  wc.fillStyle=INK;      rrF(x-26,y-9,52,13,4);
+  wc.fillStyle='#241d2e'; rrF(x-25,y-8,50,11,3);
+  wc.fillStyle='#3a2f47';
+  for(var b=0;b<5;b++) wc.fillRect(x-21+b*10,y-7,5,9);
+  // The drum, and a ring of pipes around it: this is the choir.
+  wc.fillStyle=INK;      rrF(x-19,y-40,38,33,7);
+  wc.fillStyle='#3c2f4c'; rrF(x-18,y-39,36,31,6);
+  wc.fillStyle='#54426a'; wc.fillRect(x-16,y-39,32,6);
+  var pipes=7;
+  for(var q=0;q<pipes;q++){
+    var pa=(q/pipes)*6.2832+G.t*0.20;
+    var px=x+Math.cos(pa)*15, py=y-24+Math.sin(pa)*5;
+    var ph=6+Math.sin(pa)*2.5;
+    wc.fillStyle=INK;      rrF(px-2.6,py-ph,5.2,ph+3,2);
+    wc.fillStyle='#6b5484'; rrF(px-1.8,py-ph+0.7,3.6,ph+1.6,1.6);
+  }
+  // THE MOUTH, front, which is one of its two weak points and the thing that
+  // brightens as the next shot loads.
+  var fl=Math.cos(e.face)>=0?1:-1;
+  var mx=x+Math.cos(e.face)*17, my=y-24+Math.sin(e.face)*5;
+  wc.fillStyle=INK; wc.beginPath(); wc.arc(mx,my,9,0,6.2832); wc.fill();
+  wc.globalCompositeOperation='lighter';
+  wc.fillStyle=hot?'#ff8a3c':(live?'#e0a0ff':'#8a6fa8');
+  wc.globalAlpha=hot?(.5+.4*Math.sin(G.t*14)):(live?(.55+.35*Math.sin(G.t*7)):.32);
+  wc.beginPath(); wc.arc(mx,my,live?8:5.5,0,6.2832); wc.fill();
+  // While it is awake it wears a faint halo, which is the only cue you get at
+  // range that you have wandered inside its reach.
+  if(live){
+    wc.globalAlpha=.16;
+    wc.beginPath(); wc.arc(x,y-22,26,0,6.2832); wc.fill();
+  }
+  wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  // VENTING. Unmistakable, because the four seconds it buys are the reward for
+  // hitting a weak point and the player has to know they have them.
+  if(hot){
+    wc.globalCompositeOperation='lighter';
+    wc.fillStyle='rgba(255,138,60,.42)';
+    for(var v=0;v<3;v++){
+      var vy=y-40-((G.t*40+v*14)%26);
+      wc.beginPath(); wc.ellipse(x+(v-1)*9,vy,5,3,0,0,6.2832); wc.fill();
+    }
+    wc.globalCompositeOperation='source-over';
+  }
+  if(e.hitT>0){
+    wc.globalCompositeOperation='lighter';
+    wc.fillStyle='rgba(255,70,56,'+clamp(e.hitT*2,0,.7)+')';
+    rrF(x-18,y-39,36,31,6);
+    wc.globalCompositeOperation='source-over';
+  }
+  if(e.muzzle>0){
+    wc.globalCompositeOperation='lighter';
+    wc.fillStyle='#e0a0ff'; wc.globalAlpha=clamp(e.muzzle*6,0,1);
+    wc.beginPath(); wc.arc(mx,my,8,0,6.2832); wc.fill();
+    wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  }
 }
 function drawWindupGlow(e,gx,gy){
   if(e.windup===undefined||e.windup===null) return;
@@ -15886,7 +16004,8 @@ var SHD=G.shells[i];
         wc.beginPath(); wc.ellipse(e2.x,e2.y+2,e2.r*1.2,Math.max(3,e2.r*0.5),0,0,6.2832); wc.stroke();
         wc.restore();
       }
-      if(e2.kind==='warden') drawWardenS(e2);
+      if(e2.kind==='choir') drawChoirS(e2);
+      else if(e2.kind==='warden') drawWardenS(e2);
       else if(e2.kind==='sentry') drawSentryS(e2);
       else if(e2.kind==='crawler') drawCrawlerS(e2);
       else if(e2.kind==='snitch') drawSnitchS(e2);

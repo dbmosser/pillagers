@@ -19338,3 +19338,65 @@ number or that SAVE sitting inside each row is discoverable rather than looking
 like part of the label.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.52  THE CHOIR, A SECOND BOSS THAT HOLDS GROUND
+================================================================================
+
+v5.52: THE CHOIR, a second boss that holds ground
+
+HIS Q36: "A second boss is welcome."
+
+IT HAD TO CONTRAST WITH THE WARDEN OR IT IS NOT A SECOND BOSS, IT IS ANOTHER
+WARDEN. The Warden is slow, long ranged, enormous and AVOIDABLE: its own comment
+calls it a tide rather than a sprinter, and walking away is always a live option.
+The Listener already owns fast and relentless. What nothing in this game does is
+HOLD GROUND.
+
+The Choir never moves. Not slowly. At all. It has no movement branch, no
+navSeek, and a speed of zero that nothing ever reads. It is bolted onto a cache,
+so it is not a thing that hunts you, it is a thing standing between you and a
+guaranteed jackpot.
+
+Every other enemy in the game asks "can I get away". This one asks "is that
+worth it", which is the question the whole game is supposed to be about.
+
+1,250 health, 22 damage a shot but firing two or three times a second, and 520
+units of all round reach. There is no safe ANGLE, only a safe DISTANCE, and the
+number is chosen: 520 is eighty short of a Marksman Rifle, so there is a
+stand-off band where you can hurt it and it cannot reach you. That band is the
+fight. Measured by standing still at four distances for five seconds each:
+
+  300 units   dead
+  480 units   78 health left
+  600 units   untouched
+  800 units   untouched
+
+Two weak points on the existing system, and because it cannot move, both are
+reached by POSITIONING rather than by outrunning anything: the CHOIR MOUTH at
+the front for 2.4x and an overheat, and the DORSAL SPINE at the back for 3.6x,
+worth more but requiring you to cross its field to get there.
+
+It sings once when you first enter its reach, which is the telegraph his Q32
+asks for and the only warning you get. It is drawn as an emplacement: a wide
+sunk plinth, a ring of turning pipes, and a mouth that brightens as the next
+shot loads. No legs and no treads anywhere on it, deliberately, because the
+first thing a player must read is that this thing is not coming after them.
+
+It stands on the SECOND cache rather than the extraction one, so a straight run
+out is still a paying run, exactly as v1.75 promised.
+
+Verified: parse PASS at v5.52, braces balanced, no duplicate functions. One
+Choir on every one of the four maps, each sitting 0 units from a cache, 1,250
+health, 520 reach, speed 0. It moved 0 units across 400 frames with a player
+inside its reach. Drawn in all four of its states: idle, venting, hit and
+firing. Four maps 86/87/58/72, the counts up by one for the new body. All three
+endings through the outcome screen, hub and ascent check clean, all 22 hooks
+present, fixture silent.
+
+Not verified: I have not killed one. 1,250 health against a stand-off band means
+a long fight with a rifle, and whether that reads as a boss or as a chore is a
+question only playing it answers. Its damage was measured against a player
+standing still on purpose, which is the worst case rather than the real one.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
