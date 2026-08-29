@@ -18103,3 +18103,96 @@ coarse layer came off, so I know one blackout draws and I do not know the map
 reads better rather than merely lighter.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.31  HIS LIVE UI PASS, AND THREE THINGS THAT WERE SIMPLY BROKEN
+================================================================================
+
+v5.31: his live UI pass, and three things that were simply broken
+
+TWELVE NOTES FROM HIM IN ONE SITTING. Three of them turned out to be dead code
+rather than taste, which is the useful part of this build.
+
+BROKEN, NOT DISLIKED:
+
+The wheel zoom has not worked ANYWHERE since the hub became a canvas space. It
+was built at v3.57, it never needed ctrl, and its guard is
+"if(!hub.classList.contains('on')) return". #hub stopped carrying that class
+when showScreen started removing it, so the handler returned immediately on
+every wheel event on every screen in the game. Measured: hubHasOn false with
+the hub open and a modal on top. It now fires on any menu surface, and the
+wheel zooms rather than scrolling because that is what he asked for. SHIFT
+scrolls a list.
+
+The Leave button on the trade and hire screens was never missing. It was BELOW
+THE BOTTOM OF THE WINDOW: .modal is inset:0 with a flex column and no overflow
+rule, so a tall pane grows past the screen edge and takes the footer with it.
+Three CSS lines fix it for every modal in the game.
+
+Contracts was "too small and hard to access" because the list rendered 65 PIXELS
+TALL holding 215 pixels of content, with the flight recorder next to it at 65
+holding 1266. One modal was carrying the mainframe, the contracts, the recorder
+and the stats in a single column and the lists were the only things that would
+shrink. It is now three tabs with CONTRACTS first: measured 564 of 564 pixels,
+so the whole list fits. He also asked for more contracts at once, so the board
+holds 8 instead of 3.
+
+MEASURED RATHER THAN GUESSED:
+
+"I spawned too close to an extract." The rule I built for this at v3.4x works;
+it is set too low. Distance from spawn to nearest extraction, 42 seeds:
+GREYWATER 184m floor, SUNKEN QUARTER 127m, COLD STORAGE 135m, THE QUARRY 121m,
+against a rule of 115m on maps 400 to 520m across. Raised 1150 to 1500 units.
+I first set 1600 and measured again: same 152m floor, but it pinned two maps to
+a single spawn so every raid there opened identically. 1500 gives the same floor
+with more variety, so 1500 is simply the better number. cfgv bumped to 13 with a
+migration, without which none of it would have reached his profile.
+
+HIS TASTE NOTES:
+
+Your own noise rings are gone entirely, his call. A ring exists to tell you
+about something you cannot see, and you can always see yourself. Enemy rings are
+untouched because they are the whole audio-telegraph mechanic. The noise itself
+is unchanged: only the visual push is guarded, so every machine still hears
+exactly what it heard before.
+
+Footprints go the other way: darker, larger, more obvious. Size 3 to 5.5, alpha
+0.14 to 0.34, both colours several shades darker. The two notes only sound
+contradictory: a ring is a readout of something you knew, a footprint is
+evidence of where you have been.
+
+"Sprinting out" is now "RUNNING FOR EXTRACT". It was trying to carry a verb and
+a destination in two words and carried neither. "Hunting" is "INVESTIGATING" and
+container-searching is "LOOTING", which is the second time those two have
+confused him. And yes, the panel includes YOU now, at the top, with the same two
+columns as everyone else. He asked whether it did, which was the evidence.
+
+Loot names lose the bold and hold before fading. The fade was linear across the
+whole life, so the label was already dimming on its first frame and was never
+once drawn at full strength, which is exactly what "less transparent when it
+first pops" describes. It now holds solid for 45 percent of its life. Life 4.8
+to 6.0 seconds.
+
+Panels drag by their bar. The arrow appeared anywhere over a panel and dragging
+really did start from anywhere in it. Both now agree on the bar and the collapse
+glyph. The body still swallows the click, so you still cannot shoot through your
+own HUD.
+
+The lore pass continues: HOLT, THE TRADER is TRADE, CRAFT AND HIRE, which is
+what the window's three tabs already did. The gambler says where your winnings
+go. The sector screen stopped promising a body that no longer exists.
+
+Verified: parse PASS; four maps 110/111/74/91, the historical baseline, each
+with the map overlay drawn; all three endings; hub clean. Player noise rings 0
+after walking, enemy rings still present. 17 footprints at size 5.5, alpha 0.34.
+SPRINTING OUT absent, RUNNING FOR EXTRACT and INVESTIGATING present. 8 contracts.
+Contracts list 564/564 with its Leave button on screen. ESC closes the contracts
+window and the trader. Wheel zoom moved 1 to 1.08 on a menu. A cfgv 12 profile
+carrying spawnClear 1150 migrated to 1500 on load.
+
+Not verified: nobody has looked at any of this on a real screen. I know the
+footprints are bigger and darker by their numbers and I do not know they read
+well on the ground. The HUD drag bar was driven through hudHit rather than by
+actually dragging a panel with a mouse.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

@@ -190,6 +190,12 @@
     display:none; flex-direction:column; padding:22px; }
   .modal::before{ inset:14px; }
   .modal.on{ display:flex; }
+  /* A MODAL MUST NEVER PUSH ITS OWN FOOTER OFF THE SCREEN, v5.31. Without these
+     three rules a tall pane grows past inset:0 and the Leave button goes with
+     it. Lists scroll inside themselves instead, so the footer is always there. */
+  .modal{ overflow:hidden; }
+  .modal .tpane{ min-height:0; overflow-y:auto; }
+  .modal > .plist{ min-height:0; overflow-y:auto; }
 .modal h3{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:14px;
     letter-spacing:.24em; margin:0 0 4px; color:var(--amber); text-transform:uppercase; }
   .modal h2{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:14px;
@@ -247,11 +253,11 @@
 
 
 <div class="modal" id="tradermodal">
-  <h3>HOLT, THE TRADER</h3>
+  <h3>TRADE, CRAFT AND HIRE</h3>
   <div class="invtabs" id="tradertabs" style="padding:0 0 10px 0"></div>
 
   <div class="tpane" id="tpane_buy">
-    <div class="msub">Medical, ammo, armour and throwables go to your stash and can be taken up on the drop check. Reputation, earned by selling and completing contracts, unlocks better stock. <span id="repline" style="color:var(--amber)"></span></div>
+    <div class="msub">Medical, ammo, armour and throwables go to your stash and can be taken up on the ascent check. Reputation, earned by selling and completing contracts, unlocks better stock. <span id="repline" style="color:var(--amber)"></span></div>
     <div class="plist" id="shop" style="border:1px solid var(--steel-hi)"></div>
   </div>
 
@@ -267,7 +273,7 @@
     <div class="plist" id="merclist" style="border:1px solid var(--steel-hi)"></div>
   </div>
 
-  <div style="display:flex;gap:8px;margin-top:10px">
+  <div style="display:flex;gap:8px;margin-top:10px;flex:none">
     <button id="mercclear" style="padding:8px 22px">Hire nobody</button>
     <button id="closetrader" style="padding:8px 22px;margin-left:auto">Leave</button>
   </div>
@@ -277,6 +283,7 @@
   <h3 id="gamble_h">Vesh the Gambler</h3>
   <div class="msub" id="wallet_gamble" style="color:var(--amber);font-weight:700"></div>
   <div class="msub" id="gamble_line">Something in the pile, same price whatever it is. No refunds, no complaints.</div>
+  <div class="msub" style="color:var(--coolant)">Whatever you pull goes straight to your stash. You do not have to carry it out of here.</div>
   <div class="plist" id="gamblelist" style="border:1px solid var(--steel-hi)"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
     <button id="gamblebtn" style="padding:8px 22px;border-color:var(--amber);color:var(--amber)">Gamble 450c</button>
@@ -344,9 +351,14 @@
      deleted, they are behind the TERMINAL button. Same element ids, so renderHub
      still fills them exactly as before whether the door is open or shut. -->
 <div class="modal" id="opmodal">
-  <h3>Operator terminal</h3>
-  <div class="msub">Contracts, run history and the numbers. None of this is your kit, which is why it is no longer sharing a screen with it.</div>
-  <h2>Mainframe</h2>
+  <h3>OPERATOR TERMINAL</h3>
+  <div class="invtabs" id="optabs" style="padding:0 0 10px 0"></div>
+  <div class="tpane" id="opane_con" style="display:flex;flex-direction:column;flex:1;min-height:0">
+    <div class="msub">Work you have signed for. Contracts pay on top of your haul, and they do not expire while you are down here.</div>
+    <div class="plist" id="contracts" style="flex:1;min-height:220px;overflow-y:auto"></div>
+  </div>
+  <div class="tpane" id="opane_mf" style="display:none;flex-direction:column;flex:1;min-height:0">
+  <div class="msub">The mainframe pays per extraction, every extraction, for as long as it is running.</div>
   <div id="mfstatus" style="padding:6px 12px;font-size:11px"></div>
   <div style="padding:0 12px 8px">
     <button id="mfbuild" style="width:100%">BUILD A RACK</button>
@@ -360,10 +372,10 @@
     </div>
     <div id="mfghosthint" class="hint" style="margin-top:5px;font-size:9.5px;line-height:1.4"></div>
   </div>
-  <h2 style="border-top:1px solid var(--steel-hi)">Contracts</h2>
-  <div class="plist" id="contracts" style="max-height:170px"></div>
-  <h2 style="border-top:1px solid var(--steel-hi)">Flight recorder <em id="logct">0</em></h2>
-  <div class="plist" id="loglist" style="max-height:200px"></div>
+  </div>
+  <div class="tpane" id="opane_rec" style="display:none;flex-direction:column;flex:1;min-height:0">
+  <h2>Flight recorder <em id="logct">0</em></h2>
+  <div class="plist" id="loglist" style="flex:1;min-height:200px;overflow-y:auto"></div>
   <div style="border-top:1px solid var(--steel-hi)">
     <div class="stat"><span>Extract rate</span><b id="s_rate">--</b></div>
     <div class="stat"><span>Avg haul (extracted)</span><b id="s_avg">--</b></div>
@@ -371,19 +383,20 @@
     <div class="stat"><span>Most common killer</span><b id="s_killer">--</b></div>
     <div style="padding:7px 0"><button id="devtoolsbtn" style="width:100%">Dev tools and roadmap</button></div>
   </div>
-  <div style="display:flex;gap:8px;margin-top:4px">
-    <button id="closeop" style="padding:8px 22px">Close</button>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:4px;flex:none">
+    <button id="closeop" style="padding:8px 22px">Leave</button>
   </div>
 </div>
 <div class="modal" id="sectormodal">
   <h3>Where are you going?</h3>
-  <div class="msub">Sectors are not reskins of each other. Your stash, your credits, your contracts and your seal progress are yours everywhere; what changes is the ground you have to work. Your body stays on the sector it fell on.</div>
+  <div class="msub">Sectors are not reskins of each other. Your stash, your credits, your contracts and your seal progress are yours everywhere; what changes is the ground you have to work.</div>
   <div id="sectorlist"></div>
   <div id="sectorkit" style="margin-top:11px;font-size:11px;padding:8px 10px;
        border:1px solid var(--steel-hi);border-radius:3px"></div>
 
   <div style="display:flex;gap:8px;margin-top:8px">
-    <button class="deploy" id="sectordeploy" style="flex:1.4">DEPLOY TO THIS SECTOR</button>
+    <button class="deploy" id="sectordeploy" style="flex:1.4">ASCEND TO THIS SECTOR</button>
     <button id="closesector" style="padding:8px 22px">Close</button>
   </div>
 </div>
@@ -705,7 +718,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.30';
+var VER='5.31';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -765,7 +778,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:0,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,musicCombat:1,musicCombatGap:4,cursorLoud:1,raiderCrouch:1,raiderSprint:1,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,listenRecT:0.55,listenRecSpd:0.30,downResetsPull:1,musicTail:9};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:0,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,musicCombat:1,musicCombatGap:4,cursorLoud:1,raiderCrouch:1,raiderSprint:1,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,listenRecT:0.55,listenRecSpd:0.30,downResetsPull:1,musicTail:9};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -1144,7 +1157,7 @@ function autoEquipOn(){
   if(G&&G.sim) return !!CFG.autoEquip;
   return (P.autoEquip===undefined)?!!CFG.autoEquip:!!P.autoEquip;
 }
-function saveProfile(){ P.cfg=CFG; P.cfgv=12; storeSet(JSON.stringify(P)); }
+function saveProfile(){ P.cfg=CFG; P.cfgv=13; storeSet(JSON.stringify(P)); }
 function loadProfile(){
   try{
     return storeGet().then(function(r){
@@ -1247,7 +1260,7 @@ if(typeof FIXED_MAPS!=='undefined'&&typeof mapOffered==='function'){
           // THE DISCIPLINE THIS REINSTATES: when a shipped default changes
           // deliberately, bump cfgv in saveProfile AND here, or the old value
           // rides back in on every save.
-if((P.cfgv===9||P.cfgv===10||P.cfgv===11||P.cfgv===12)&&P.cfg){
+if((P.cfgv>=9&&P.cfgv<=13)&&P.cfg){
             // cfgv 10: downed timer default moved 24 to 17 on his run-55 order.
             if(P.cfgv===9&&P.cfg.downTime===24) P.cfg.downTime=17;
             // cfgv 11: he reversed the automatic pickup on his run-59 note, so a
@@ -1258,6 +1271,12 @@ if((P.cfgv===9||P.cfgv===10||P.cfgv===11||P.cfgv===12)&&P.cfg){
             // still sitting on the old default, so a number he chose himself in
             // the Tuning Console survives.
             if(P.cfgv<12&&P.cfg.ambient===150) P.cfg.ambient=190;
+            // cfgv 13: "i spawned too close to an extract", measured at a floor
+            // of 121 metres against a 115 metre rule. 1150 to 1500 units, which
+            // measured identically to 1600 on the floor and kept more spawn
+            // variety. Only moved off the old default, so a figure he set
+            // himself in the Tuning Console survives untouched.
+            if(P.cfgv<13&&P.cfg.spawnClear===1150) P.cfg.spawnClear=1500;
             applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; try{ applyGameOpts(); }catch(e){} }
           else P.cfg=null;
         } }
@@ -1281,7 +1300,9 @@ function sealLines(){
 // function rather than deleted because four callers concatenate its result.
 function bodyLine(){ return ''; }
 function ensureContracts(){
-  while(P.contracts.length<3) P.contracts.push(genContract());
+  // EIGHT, v5.31, his ask. With three the board was not a board: you always
+  // held every contract in the game and picking was not a decision.
+  while(P.contracts.length<8) P.contracts.push(genContract());
   // Contracts saved before v1.38 carry no tier and no gear, so they would sit on
   // his board paying nothing but credits and the whole feature would look broken
   // for exactly as long as his current three take to finish. Backfilled in
@@ -7638,15 +7659,18 @@ cv.addEventListener('mousedown',function(e){
     for(var hk in HUDBOX){
       var HB2=HUDBOX[hk];
       if(!HB2) continue;
-      if(mouse.x>=HB2.x&&mouse.x<=HB2.x+HB2.w&&mouse.y>=HB2.y&&mouse.y<=HB2.y+HB2.h){
-        if(HB2.tg&&mouse.x>=HB2.tg.x&&mouse.x<=HB2.tg.x+HB2.tg.w&&
-           mouse.y>=HB2.tg.y&&mouse.y<=HB2.tg.y+HB2.tg.h){
+      if(inRect(HB2,mouse.x,mouse.y)){
+        if(inRect(HB2.tg,mouse.x,mouse.y)){
           P.hud=P.hud||{}; P.hud[hk]=P.hud[hk]||{};
           P.hud[hk].c=!P.hud[hk].c; saveProfile(); blip('pick');
           return;
         }
-        HUDDRAG={id:hk,mx:mouse.x,my:mouse.y,
-          dx:hudOff(hk).dx,dy:hudOff(hk).dy};
+        // ONLY THE BAR DRAGS, v5.31. The body still swallows the click so the
+        // shot does not go through the panel, but it is not a handle.
+        if(inRect(hudBar(HB2),mouse.x,mouse.y)){
+          HUDDRAG={id:hk,mx:mouse.x,my:mouse.y,
+            dx:hudOff(hk).dx,dy:hudOff(hk).dy};
+        }
         return;
       }
     }
@@ -8218,10 +8242,13 @@ function ping(x,y,s,h,quiet,src,typ){
     var pp=G.player;
     var d0=dist(pp,{x:x,y:y});
     // Range cutoff: silence is silence.
-    if(d0<=s*1.5){
+    var _src=src||(h?'robot':'player');
+    // NOT YOUR OWN, v5.31. You know what you just did; the ring only ever told
+    // you something you already knew, on top of what you were looking at.
+    if(d0<=s*1.5&&_src!=='player'){
       var occ=losClear(pp.x,pp.y,x,y,G.map.segs)?1:0.42;
       G.pings.push({x:x,y:y,t:0,life:1.1,s:s,h:!!h,
-        src:src||(h?'robot':'player'),typ:typ||'move',occ:occ});
+        src:_src,typ:typ||'move',occ:occ});
       if(G.pings.length>140) G.pings.shift();
     }
   }
@@ -8307,7 +8334,7 @@ function label(x,y,txt,col,delay,big,ik){
   // a loot name, so that is the one that gets the longer life. Combat and state
   // shouts are untouched.
 G.labels.push({x:x,y:y-row*15,txt:txt,c:col||'#cdd6dd',t:-(delay||0),
-    life:(ik?4.8:1.9),big:!!big,ik:ik||null});
+    life:(ik?6.0:1.9),big:!!big,ik:ik||null});
   if(G.labels.length>40) G.labels.shift();
 }
 function decal(x,y,col,size){
@@ -10106,8 +10133,10 @@ if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.s
       p.printAcc=0; p.printSide=!p.printSide;
       var pma=Math.atan2(my,mx),poff=p.printSide?1:-1;
       var ppx=p.x+Math.cos(pma+1.5708)*4*poff,ppy=p.y+Math.sin(pma+1.5708)*4*poff;
-      G.decals.push({x:ppx,y:ppy,c:p.wetT>0?'#2a3a44':'#3a332a',s:p.wetT>0?4:3,
-        a:p.wetT>0?.34:.14,rot:pma,print:1});
+      // DARKER, LARGER, MORE OBVIOUS, v5.31, his words. Wet boots track a real
+      // stain; dry boots still scuff the dirt visibly instead of almost not.
+      G.decals.push({x:ppx,y:ppy,c:p.wetT>0?'#141d26':'#241f16',s:p.wetT>0?7:5.5,
+        a:p.wetT>0?.62:.34,rot:pma,print:1});
       if(G.decals.length>420) G.decals.shift();
     }
     collide(p,G.map.walls);
@@ -15904,10 +15933,14 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
   for(i=0;i<G.labels.length;i++){
     var lb=G.labels[i];
     if(lb.t<0) continue;
-    var la=clamp(1-lb.t/lb.life,0,1);
+    // HOLD THEN FADE, v5.31. A linear fade across the whole life means the
+    // label is never once drawn at full strength, which is exactly what "less
+    // transparent when it first pops" is describing.
+    var _hold=lb.life*0.45;
+    var la=clamp(lb.t<=_hold?1:(1-(lb.t-_hold)/(lb.life-_hold)),0,1);
     var rise=Math.min(lb.t,lb.life)*26;
     wc.globalAlpha=la;
-    wc.font=FS((lb.big?'700 11px':'700 10px')+' "Titan One","Rubik",sans-serif');
+    wc.font=FS((lb.big?'11px':'10px')+' "Titan One","Rubik",sans-serif');
     // THE THING YOU FOUND, DRAWN, v2.91. His run #1 note is "looting feels so
     // uninspired, how can we make it more interesting???" and the recorder's own
     // reading of his deaths ends "Fix the looting phase first." The payoff for
@@ -16359,11 +16392,11 @@ function drawHUD(){
   // reticle at the cursor
 if(!p.downed&&!G.bagOpen&&!keys['KeyM']){
     var rx0=mouse.x,ry0=mouse.y;
-    var _overBox=false;
-    for(var _hb3 in HUDBOX){
-      var _HB3=HUDBOX[_hb3];
-      if(rx0>=_HB3.x&&rx0<=_HB3.x+_HB3.w&&ry0>=_HB3.y&&ry0<=_HB3.y+_HB3.h){ _overBox=true; break; }
-    }
+    // HIS NOTE: the pointer changes on the bar and the collapse glyph, and on
+    // nothing else. Over the body of a panel you keep the reticle, because the
+    // body is not something you can pick up.
+    var _hh=hudHit(rx0,ry0);
+    var _overBox=!!(_hh&&(_hh.part==='bar'||_hh.part==='glyph'));
     if(_overBox){
       ctx.fillStyle='rgba(230,240,246,.95)';
       ctx.beginPath();
@@ -17706,10 +17739,12 @@ function raiderStatus(e){
   if(e.reviving) return 'REVIVING';
   if((e.healQ||0)>0) return 'HEALING';
   if((e.shotT||0)>0) return 'SHOOTING';
-  if((e.lootT||0)>0) return 'SEARCHING';
-  if(e.state==='extract') return (e.sprintPool>0&&e.moving)?'SPRINTING OUT':'EXTRACTING';
+  if((e.lootT||0)>0) return 'LOOTING';
+  // RUNNING FOR EXTRACT, not "sprinting out". His note: the old label read as
+  // either a movement state or an outcome and you could not tell which.
+  if(e.state==='extract') return (e.sprintPool>0&&e.moving)?'RUNNING FOR EXTRACT':'EXTRACTING';
   if(e.state==='chase'||e.state==='alarm'||e.state==='hunt') return 'FIGHTING';
-  if(e.state==='investigate') return 'HUNTING';
+  if(e.state==='investigate') return 'INVESTIGATING';
 if(e.steady) return 'AIMING';
   if(e.sprintPool>0&&e.moving&&e.state==='extract') return 'SPRINTING';
   if(e.state==='loot') return e.goal?'LOOTING':(e.moving?'JOGGING':'STANDING');
@@ -17725,6 +17760,28 @@ if(e.steady) return 'AIMING';
 // toggle; anywhere else on the panel starts a drag. Offsets and the collapsed
 // flag persist on the profile under P.hud.
 var HUDBOX={},HUDDRAG=null;
+// The draggable strip of a panel: the top edge, as tall as its collapse glyph.
+// Some panels sit their glyph above the box top, so the bar follows the glyph
+// when it does rather than assuming the box origin is the header.
+function hudBar(HB){
+  if(!HB) return null;
+  var h=(HB.tg&&HB.tg.h)?HB.tg.h:14;
+  var y=(HB.tg&&HB.tg.y<HB.y)?HB.tg.y:HB.y;
+  return {x:HB.x,y:y,w:HB.w,h:h};
+}
+function inRect(r,mx,my){ return !!r&&mx>=r.x&&mx<=r.x+r.w&&my>=r.y&&my<=r.y+r.h; }
+// What is under the pointer: the collapse glyph, the drag bar, the inert body,
+// or nothing. One answer, used by the cursor and by mousedown so they can never
+// disagree about what is grabbable.
+function hudHit(mx,my){
+  for(var k in HUDBOX){
+    var HB=HUDBOX[k]; if(!HB) continue;
+    if(inRect(HB.tg,mx,my)) return {id:k,part:'glyph'};
+    if(inRect(hudBar(HB),mx,my)) return {id:k,part:'bar'};
+    if(inRect(HB,mx,my)) return {id:k,part:'body'};
+  }
+  return null;
+}
 function hudOff(id){
   var o=(P&&P.hud&&P.hud[id])||{};
   return {dx:o.dx||0,dy:o.dy||0,c:!!o.c};
@@ -17763,6 +17820,18 @@ function drawRaiderBoard(){
     (_w.out?_gone:_stay).push(_w);
   }
   rows=_stay.concat(_gone);
+  // YOU FIRST, always, and never sorted or aged out. His question "does that
+  // include the player?" is answered permanently by being on the list.
+  (function(){
+    var me=G.player; if(!me) return;
+    var myVal=0;
+    for(var _b=0;_b<G.bag.length;_b++) myVal+=ival(G.bag[_b]);
+    var myst='STANDING';
+    if(me.downed) myst='DOWN';
+    else if(G.active&&(G.active.pullT||0)>0) myst='EXTRACTING';
+    else if(me.moving) myst=(G.sprinting?'SPRINTING':'JOGGING');
+    rows.unshift({name:'YOU',val:myVal,st:myst,crew:null,out:false,me:1});
+  })();
   // Wide enough for the value column, and names TRUNCATED to a measured budget
   // rather than a character count. The first version overlapped every long
   // identity with its own bag value, because "FBI_Surveillance_Van" is not the
@@ -19112,7 +19181,7 @@ function buildHub(){
     {id:'lift',x:350,y:105,r:48,label:'ASCENT LIFT',sub:'to the surface',c:'#4de3d0',
 acts:{KeyE:['go up',function(){ openLift(); }],
            KeyR:['quick ascent',function(){ ac(); startRaid(); }]}},
-    {id:'trader',x:110,y:255,r:46,label:'HOLT, THE TRADER',sub:'',c:'#ffc04a',vendor:1,
+    {id:'trader',x:110,y:255,r:46,label:'TRADE, CRAFT AND HIRE',sub:'',c:'#ffc04a',vendor:1,
      acts:{KeyE:['trade',function(){ openTrader('buy'); }],
            KeyR:['craft',function(){ openTrader('craft'); }],
            KeyF:['hire', function(){ openTrader('hire'); }],
@@ -21077,6 +21146,30 @@ document.getElementById('sellall').onclick=function(){
 };
 // THE TRADER, one window. renderShop / renderWork / renderMerc are untouched and
 // still fill the same element ids; this only decides which pane is visible.
+// THE OPERATOR TERMINAL, three tabs. Contracts first, because that is what he
+// goes there for and it was the thing buried at the bottom.
+function openOps(tab){
+  var want=tab||'con';
+  var T=[['con','CONTRACTS'],['mf','MAINFRAME'],['rec','RUN RECORD']];
+  try{ renderHub(); }catch(e){}
+  try{ renderMainframe(); }catch(e){}
+  var tb=document.getElementById('optabs');
+  if(tb){
+    tb.innerHTML='';
+    T.forEach(function(t){
+      var d=document.createElement('div');
+      d.className='invtab'+(want===t[0]?' on':'');
+      d.textContent=t[1];
+      d.onclick=function(){ openOps(t[0]); };
+      tb.appendChild(d);
+    });
+  }
+  T.forEach(function(t){
+    var pane=document.getElementById('opane_'+t[0]);
+    if(pane) pane.style.display=(want===t[0])?'flex':'none';
+  });
+  document.getElementById('opmodal').classList.add('on');
+}
 function openTrader(tab){
   var T=[['buy','BUY','req'],['craft','CRAFT','work'],['hire','HIRE',null]];
   var want=tab||'buy';
@@ -21163,11 +21256,22 @@ document.getElementById('condbtn').onclick=function(){
 // Dev tools, and the same keyboard route it always had.
 document.getElementById('optbtn').onclick=function(){ openSettings('display'); };
 (function(){ var t2=document.getElementById('tunebtn2'); if(t2) t2.onclick=function(){ document.getElementById('devmodal').classList.remove('on'); toggleTune(true); }; })();
-document.getElementById('opbtn').onclick=function(){ renderHub(); renderMainframe(); document.getElementById('opmodal').classList.add('on'); };
+document.getElementById('opbtn').onclick=function(){ openOps('con'); };
 document.getElementById('mfbuild').onclick=function(){ buildRack(); };
 document.getElementById('mfslot').onclick=function(){ slotCore(); };
 document.getElementById('mfghost').onclick=function(){ importGhost(); };
 document.getElementById('closeop').onclick=function(){ document.getElementById('opmodal').classList.remove('on'); };
+// ESCAPE CLOSES THE TOP MODAL, whatever it is and wherever it was opened from.
+// Capture phase so it beats the in-raid Escape bindings: if a window is open,
+// Escape belongs to that window and not to the pause box underneath it.
+document.addEventListener('keydown',function(e){
+  if(e.code!=='Escape') return;
+  var open=document.querySelectorAll('.modal.on');
+  if(!open.length) return;
+  e.preventDefault(); e.stopPropagation();
+  // The last one in document order is the one drawn on top.
+  open[open.length-1].classList.remove('on');
+},true);
 // HIS NOTE, v3.57: "menus should be zoomable with the wheel instead of ctrl and
 // wheel". The wheel over the undercroft scales the menus. A list that can still
 // scroll in the wheel direction keeps the wheel, because taking scrolling away
@@ -21180,16 +21284,13 @@ function applyMenuZoom(){
   document.querySelectorAll('.modal').forEach(function(m){ m.style.zoom=z; });
 }
 document.addEventListener('wheel',function(e){
-  var hb=document.getElementById('hub');
-  if(!hb||!hb.classList.contains('on')) return;      // menus only, never a raid
-  var el=e.target;
-  while(el&&el!==document.body){
-    if(el.scrollHeight>el.clientHeight+2){
-      var up=e.deltaY<0;
-      if((up&&el.scrollTop>0)||(!up&&el.scrollTop+el.clientHeight<el.scrollHeight-1)) return;
-    }
-    el=el.parentElement;
-  }
+  // ANY menu surface, which is the fix: a modal on its own is enough, and the
+  // title screen counts. The only thing that keeps the wheel is a live raid
+  // with nothing open over it, where the wheel zooms the world.
+  var anyModal=document.querySelector('.modal.on');
+  var inRaid=(typeof state!=='undefined'&&state==='raid');
+  if(!anyModal&&inRaid) return;
+  if(e.shiftKey) return;              // SHIFT is how you scroll a long list now
   e.preventDefault();
   var z=((P&&P.menuZoom)||1)+(e.deltaY<0?0.08:-0.08);
   P.menuZoom=Math.max(0.7,Math.min(1.6,Math.round(z*100)/100));
