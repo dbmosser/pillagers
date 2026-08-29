@@ -247,11 +247,31 @@
   </div>
 </div>
 
-<div class="modal" id="shopmodal">
-  <h3>Requisition</h3>
-  <div class="msub">Medical, ammo, armor and throwables are auto-loaded on your next deployment. Higher reputation (earned by selling and completing contracts) unlocks better stock. <span id="repline" style="color:var(--amber)"></span></div>
-  <div class="plist" id="shop" style="border:1px solid var(--steel-hi)"></div>
-  <div style="margin-top:10px"><button id="closeshop" style="padding:8px 22px">Close</button></div>
+<div class="modal" id="tradermodal">
+  <h3>HOLT, THE TRADER</h3>
+  <div class="invtabs" id="tradertabs" style="padding:0 0 10px 0"></div>
+
+  <div class="tpane" id="tpane_buy">
+    <div class="msub">Medical, ammo, armour and throwables go to your stash and can be taken up on the drop check. Reputation, earned by selling and completing contracts, unlocks better stock. <span id="repline" style="color:var(--amber)"></span></div>
+    <div class="plist" id="shop" style="border:1px solid var(--steel-hi)"></div>
+  </div>
+
+  <div class="tpane" id="tpane_craft" style="display:none">
+    <div class="msub" id="wallet_work" style="color:var(--amber);font-weight:700"></div>
+    <div class="msub">Craft from stash materials. Junk becomes components, components become gear.</div>
+    <div class="plist" id="worklist" style="border:1px solid var(--steel-hi)"></div>
+  </div>
+
+  <div class="tpane" id="tpane_hire" style="display:none">
+    <div class="msub" id="wallet_merc" style="color:var(--amber);font-weight:700"></div>
+    <div class="msub">One pillager, one run, paid up front. He loots for himself and you take ten percent of what he carries out. If he dies you owe his family, and that is not optional. On the surface, B cycles his orders: loot free, follow you, or hold a position. Stand with him and E searches his bag, and your cut is settled at the ramp either way. If you go down, he comes for you.</div>
+    <div class="plist" id="merclist" style="border:1px solid var(--steel-hi)"></div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-top:10px">
+    <button id="mercclear" style="padding:8px 22px">Hire nobody</button>
+    <button id="closetrader" style="padding:8px 22px;margin-left:auto">Leave</button>
+  </div>
 </div>
 
 <div class="modal" id="gamblemodal">
@@ -292,16 +312,7 @@
   </div>
 </div>
 
-<div class="modal" id="mercmodal">
-  <h3>The Hiring Bench</h3>
-  <div class="msub" id="wallet_merc" style="color:var(--amber);font-weight:700"></div>
-  <div class="msub">One raider, one run, paid up front. He loots for himself and you take ten percent of what he carries out. If he dies you owe his family, and that is not optional. On the surface, B cycles his orders: loot free, follow you, or hold a position. Stand with him and E searches his bag, and your cut is settled at the ramp either way. If you go down, he comes for you.</div>
-  <div class="plist" id="merclist" style="border:1px solid var(--steel-hi)"></div>
-  <div style="display:flex;gap:8px;margin-top:10px">
-    <button id="mercclear" style="padding:8px 22px">Hire nobody</button>
-    <button id="closemerc" style="padding:8px 22px">Leave</button>
-  </div>
-</div>
+
 
 <div class="modal" id="devmodal">
   <h3>Dev tools</h3>
@@ -489,13 +500,7 @@
   </div>
 </div>
 
-<div class="modal" id="workmodal">
-  <h3>Workshop</h3>
-  <div class="msub" id="wallet_work" style="color:var(--amber);font-weight:700"></div>
-  <div class="msub">Craft from stash materials. Junk becomes components, components become gear.</div>
-  <div class="plist" id="worklist" style="border:1px solid var(--steel-hi)"></div>
-  <div style="margin-top:10px"><button id="closework" style="padding:8px 22px">Close</button></div>
-</div>
+
 
 <div class="modal" id="tunemodal">
   <h3>Tuning console</h3>
@@ -689,7 +694,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.21';
+var VER='5.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18748,9 +18753,9 @@ function buildHub(){
 acts:{KeyE:['choose sector',function(){ renderSector(); document.getElementById('sectormodal').classList.add('on'); }],
            KeyR:['quick deploy',function(){ ac(); startRaid(); }]}},
     {id:'trader',x:110,y:255,r:46,label:'HOLT, THE TRADER',sub:'',c:'#ffc04a',vendor:1,
-     acts:{KeyE:['shop',function(){ say2(vendorLine('req')); renderShop(); document.getElementById('shopmodal').classList.add('on'); }],
-           KeyR:['workshop',function(){ say2(vendorLine('work')); renderWork(); document.getElementById('workmodal').classList.add('on'); }],
-           KeyF:['hire',function(){ renderMerc(); document.getElementById('mercmodal').classList.add('on'); }],
+     acts:{KeyE:['trade',function(){ openTrader('buy'); }],
+           KeyR:['craft',function(){ openTrader('craft'); }],
+           KeyF:['hire', function(){ openTrader('hire'); }],
            KeyT:['the terms',function(){ renderTerms(); document.getElementById('termsmodal').classList.add('on'); }]}},
     {id:'gamble',x:110,y:110,r:42,label:'VESH, THE GAMBLER',sub:'unmarked goods, flat price',c:'#e0a0ff',vendor:1,
      acts:{KeyE:['deal',function(){ renderGamble(); document.getElementById('gamblemodal').classList.add('on'); }]}},
@@ -18834,8 +18839,7 @@ function bakeHubGround(){
 }
 function hubModalOpen(){
   return document.getElementById('hub').classList.contains('on')||
-    document.getElementById('shopmodal').classList.contains('on')||
-    document.getElementById('workmodal').classList.contains('on')||
+    document.getElementById('tradermodal').classList.contains('on')||
     document.getElementById('tunemodal').classList.contains('on')||
     document.getElementById('exportmodal').classList.contains('on')||
     document.getElementById('simmodal').classList.contains('on')||
@@ -20707,7 +20711,41 @@ document.getElementById('sellall').onclick=function(){
   saveProfile(); renderHub();
   say2(sold?('Sold '+sold+' for '+gained.toLocaleString()+'c.'):'Nothing tagged junk, and no loose salvage.');
 };
-document.getElementById('shopbtn').onclick=function(){ renderShop(); document.getElementById('shopmodal').classList.add('on'); };
+// THE TRADER, one window. renderShop / renderWork / renderMerc are untouched and
+// still fill the same element ids; this only decides which pane is visible.
+function openTrader(tab){
+  var T=[['buy','BUY','req'],['craft','CRAFT','work'],['hire','HIRE',null]];
+  var want=tab||'buy';
+  try{ renderShop(); }catch(e){}
+  try{ renderWork(); }catch(e){}
+  try{ renderMerc(); }catch(e){}
+  var tb=document.getElementById('tradertabs');
+  if(tb){
+    tb.innerHTML='';
+    T.forEach(function(t){
+      var d=document.createElement('div');
+      d.className='invtab'+(want===t[0]?' on':'');
+      d.textContent=t[1];
+      d.onclick=function(){ openTrader(t[0]); };
+      tb.appendChild(d);
+    });
+  }
+  T.forEach(function(t){
+    var pane=document.getElementById('tpane_'+t[0]);
+    if(pane) pane.style.display=(want===t[0])?'':'none';
+  });
+  var mc=document.getElementById('mercclear');
+  if(mc) mc.style.display=(want==='hire')?'':'none';
+  var line=T.filter(function(t){return t[0]===want;})[0];
+  if(line&&line[2]) { try{ say2(vendorLine(line[2])); }catch(e){} }
+  document.getElementById('tradermodal').classList.add('on');
+}
+function closeTrader(){
+  document.getElementById('tradermodal').classList.remove('on');
+  renderHub();
+}
+document.getElementById('shopbtn').onclick=function(){ openTrader('buy'); };
+document.getElementById('closetrader').onclick=closeTrader;
 document.getElementById('mercclear').onclick=function(){
   P.merc=null; saveProfile(); renderMerc(); renderHub();
 };
@@ -20720,9 +20758,7 @@ document.getElementById('termsclear').onclick=function(){
 document.getElementById('closeseason').onclick=function(){
   document.getElementById('seasonmodal').classList.remove('on');
 };
-document.getElementById('closemerc').onclick=function(){
-  document.getElementById('mercmodal').classList.remove('on');
-};
+
 document.getElementById('gamblebtn').onclick=function(){
   if(P.credits<GAMBLE_PRICE) return;
   P.credits-=GAMBLE_PRICE;
@@ -20743,9 +20779,9 @@ document.getElementById('cratetoggle').onclick=function(){
 document.getElementById('closecrate').onclick=function(){
   document.getElementById('cratemodal').classList.remove('on');
 };
-document.getElementById('closeshop').onclick=function(){ document.getElementById('shopmodal').classList.remove('on'); renderHub(); };
-document.getElementById('workbtn').onclick=function(){ renderWork(); document.getElementById('workmodal').classList.add('on'); };
-document.getElementById('closework').onclick=function(){ document.getElementById('workmodal').classList.remove('on'); renderHub(); };
+
+document.getElementById('workbtn').onclick=function(){ openTrader('craft'); };
+
 function syncCond(){
   var b=document.getElementById('condbtn');
   if(b) b.textContent=isDay()?'CONDITIONS: DAY':'CONDITIONS: NIGHT';
@@ -21328,7 +21364,7 @@ document.getElementById('sectorarm').onclick=function(){
   renderHub(); document.getElementById('hub').classList.add('on');
 };
 document.getElementById('sectorshop').onclick=function(){
-  renderShop(); document.getElementById('shopmodal').classList.add('on');
+  openTrader('buy');
 };
 // HIS NOTE, same message: "maybe we need another thing in the undercroft called
 // settings?" Not another station, he asked for fewer of those at v2.81 and was
