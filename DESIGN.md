@@ -22960,3 +22960,51 @@ wired purely through addEventListener would have been reported as dead and none 
 so the sweep is sound in the direction that matters and blind in the other. It also
 only sees buttons that are on screen in the state I put each screen into, so a control
 that appears only in some other state was not checked.
+
+## v6.26: what's new, current again, and an items audit that found nothing
+
+THE PANEL. The list was written at v6.02 and everything on it is still true, but the
+most important thing to happen since was missing, and it is the one that changes
+behaviour he may have built a habit around: until v6.12, opening the ascent check
+replaced whatever he had packed with an auto-picked kit, and pressing ASCEND or the
+lift's quick key skipped the screen and sent him up with a default. If he has been
+packing at the stash screen and finding a different kit in his hands, that was why,
+and he needs to be told it is fixed or he will keep working around it. It is now the
+first line. The vendor and workshop rebuild is on it too; the loadout-sections line
+came off, because the screen now says that itself.
+
+Verified: the panel draws for a returning player with lastSeenVer behind, headed
+UPDATED TO v6.26, with the loadout line first, and the Mainframe in the same capture
+shows "1 REWARD WAITING" beside it.
+
+### AN ITEMS AUDIT, FOUR CHECKS, NOTHING FOUND
+
+He named items in the standing focus, so I audited them rather than assuming.
+
+  46 items. 21 carry no use field and every one is salvage or a crafting material,
+  which is what they are for.
+
+  8 key items against 8 door ids, two doors on each of the four maps. Zero keys
+  without a door and zero doors without a key. Perfect symmetry.
+
+  9 gun items, all reachable. Whisper and Meridian Lance appear in loot tables and in
+  no shop table, which is his "elite guns that can only be found, never bought"
+  confirmed a second time by a different method than the earlier grep.
+
+  rig_light, rig_medium and rig_heavy survive in three loot tables as leftovers of the
+  removed rig system, and I expected this to be a find. It is not. The game already
+  presents them honestly: the detail line reads "salvage, sell it", they file under
+  PARTS rather than ARMOUR, and the context menu offers no way to wear them. Only the
+  icon still draws a vest, which is fair for scavenged armour plating you sell. I
+  looked for a lie here and there is not one.
+
+Verified: parse PASS at v6.26; four maps 236/200/154/225 and 86/87/58/72 with the
+weapon pin; three endings through the outcome screen; hub, ascent check and the export
+builder; pin audit clean.
+
+Not verified: the gun reachability check tests that each gun appears in a loot table,
+not that its table is ever rolled on a map he plays, so a gun could be technically
+reachable and practically absent. His own run reports name six different guns across
+seventy runs including a Meridian Lance, so the tables clearly do fire, but that is
+his evidence rather than mine. The panel itself is canvas-drawn and I verified it by
+capture rather than by reading text out of the DOM.
