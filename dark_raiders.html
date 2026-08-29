@@ -778,7 +778,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.92';
+var VER='5.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -904,7 +904,9 @@ var WEAPONS={
 var STARTERS=['tacker','sputter','chatter','scuttle'];
 // How guns rank against each other. Used both for auto-equipping a better find
 // in the field and for deciding which of the two carried guns to equip on return.
-var WTIER={fists:0,tacker:1,pistol:1,sputter:2,scuttle:2,smg:2,chatter:2,carbine:3,shotgun:3,rifle:3,lmg:4,dmr:4};
+// v5.93: whisper and lance were missing entirely and every reader defaults a
+// missing gun to 0, which ranked the two elite guns below bare hands.
+var WTIER={fists:0,tacker:1,pistol:1,sputter:2,scuttle:2,smg:2,chatter:2,carbine:3,shotgun:3,rifle:3,lmg:4,dmr:4,whisper:4,lance:5};
 // Field gun quality. Every gun found in the world rolls a condition, so a gun
 // find is a slot machine and not a table lookup: his answer on gear versus
 // valuables was "not even close", and this is what makes two Auto Rifles found

@@ -21473,3 +21473,49 @@ no cell. Heals, throwables and plates all get one automatically. I have not
 decided whether a stim deserves the same, because adding a cell shifts the number
 keys of everything after it, which is exactly the kind of change that would move
 his muscle memory mid-beta.
+
+## v5.93: the two best guns in the game ranked below bare hands
+
+Same lens as the stim, one table over: every gun WEAPONS defines, checked against
+where it can come from and how it is ranked.
+
+WTIER is how guns rank against each other, and its own comment says it is used
+"both for auto-equipping a better find in the field and for deciding which of the
+two carried guns to equip on return". I added the Whisper and the Meridian Lance
+at v5.4x and never added them to it. Every reader does WTIER[id]||0, so both
+elite guns have been ranked ZERO: below fists, below the issued Tacker, below
+everything in the game.
+
+SIX SITES READ IT AND FIVE GAVE THE WRONG ANSWER FOR THESE TWO GUNS:
+  autoEquip      a Lance on the ground was never a tier upgrade, so it was left
+  raider swap    an AI carrying a Lance rated it 0 and swapped down to a pistol
+  sim gun swap   a Lance in the sidearm never triggered the swap to the better gun
+  loadout sort   sorts by tier descending, so the two best guns sorted LAST
+  repairCost     uses ||1 rather than ||0, so they priced as the CHEAPEST tier to
+                 service, which is backwards for the best guns in the game
+
+Placed against the table's existing shape, 0 for fists up to 4 for the LMG and
+Marksman Rifle, and against what the two actually do. The Whisper is a 30 round
+automatic at noise 90 where the next quietest gun is 300; it is not more damaging
+than a rifle, so it sits level with the top tier rather than above it, because
+what it sells is silence. The Lance does 96 a shot at 82 metres with three in the
+magazine, and nothing else is close, so it gets a tier of its own at 5.
+
+DRIVEN: with auto-equip on and a Scav Pistol in hand, a Lance picked up now
+equips, a Whisper now equips, and a second pistol correctly does not.
+
+CHECKED AND FOUND NOTHING: every one of the fifteen entries in WEAPONS is
+reachable. Four have no item and no loot presence, tacker, sputter, chatter and
+scuttle, and those are the issued starters listed in STARTERS; fists and the
+crowbar are intrinsic. Nothing in the weapon table is orphaned.
+
+Verified: parse PASS at v5.93; four maps 86/87/58/72 entities and 236/200/154/225
+containers at baseline on a freshly cleared profile; all three real endings
+through the outcome screen with extract paying 48c and dead and abandon zero; hub
+and ascent check; the pin audit clean; the three auto-equip decisions above.
+
+Not verified: I set the Lance a tier above everything else, which changes how
+repairCost prices it, and I have not looked at what servicing one now costs. The
+formula scales with tier, so the most expensive gun in the game to repair is now
+the one you are least likely to own, and I have not checked that the number it
+produces is sane rather than merely larger.
