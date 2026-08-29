@@ -23008,3 +23008,40 @@ reachable and practically absent. His own run reports name six different guns ac
 seventy runs including a Meridian Lance, so the tables clearly do fire, but that is
 his evidence rather than mine. The panel itself is canvas-drawn and I verified it by
 capture rather than by reading text out of the DOM.
+
+## v6.27: two empty-state messages at once, on the first screen a new player sees
+
+Found by rendering every screen against a genuinely empty profile, which is the state
+a new player is in and the state I had never once tested in this whole session.
+
+THE GOOD NEWS FIRST: all eleven screens render without throwing on a profile with no
+items, no credits, no reputation, no weapons, no contracts and no history. Empty
+states are where interfaces usually break and none of these do.
+
+THE ONE FINDING: the stash printed its empty message twice.
+
+    Inventory is empty. Ascend, pillage, extract.
+    Nothing in the stash. Ascend, pillage, extract.
+
+Two blocks, each correct alone. The older fires when the whole stash is empty. The
+newer fires when the current TAB is empty, and it already handles both cases, saying
+"Nothing in the stash" on the ALL tab and "Nothing under this tab" on any other. An
+empty stash satisfies both conditions, so both printed, and the very first screen a
+new player opens told him the same thing twice in two different wordings.
+
+The newer one wins on every count: it covers strictly more cases, it is styled as a
+grid cell spanning the row rather than a loose hint, and it is centred. The older one
+is gone.
+
+Verified: an empty stash now shows exactly ONE message, "Nothing in the stash. Ascend,
+pillage, extract."; a stash holding a medkit with the GUNS tab selected shows exactly
+one, "Nothing under this tab."; parse PASS at v6.27; four maps 236/200/154/225 and
+86/87/58/72 with the weapon pin; three endings through the outcome screen; hub, ascent
+check and the export builder; pin audit clean.
+
+Not verified: the empty-profile sweep asked whether each screen renders and what its
+empty text says. It did not click anything on those screens in that state, so a
+control that misbehaves specifically when there is nothing to act on, a Sell All with
+nothing to sell for instance, is not covered by this. The sell button was checked
+separately earlier and reads "Nothing to sell" with itself disabled, but the rest were
+not.
