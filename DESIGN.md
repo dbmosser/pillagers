@@ -17417,3 +17417,127 @@ against today's build. It is the best number available and it is not a
 clean one. I have also not tried to close the gap: making the bot better
 at sentries would change every number this project has, and that is your
 call, not mine.
+
+### m509 - v4.94 to v5.00: nine of your in-game notes, and the Listener you were right about
+
+Two run reports landed, #61 and #62, both on v4.93, both real. They carried
+nine notes and one of them named the thing that killed you. Every note was
+checked against the current code before I touched anything.
+
+THE LISTENER. Your words: "it sticks to the player and there's no chance
+to kill it." You are right on both halves and here is the measurement.
+
+Sticking. You walk at 158, sprint at 256, crouch at 82. It runs at 196, so
+on paper you can outrun it. You cannot, because it re-reads your live
+position every frame you are moving and not crouched, out to 290 walking
+and 430 SPRINTING. Sprinting lengthens the leash faster than running
+lengthens the gap, and your stamina runs out first. Eight trials each, it
+has a fix on you at 200 units and you run:
+
+  walk away    5 of 8 killed you, final gap 11 units
+  sprint away  5 of 8 killed you, final gap 9 units
+  crouch away  0 of 8 killed you, final gap 459 units
+
+One of the three natural reactions works and it is the least obvious one.
+
+No chance to kill it. It needs three hits at 0.85s apart to kill you: 1.7
+seconds. The issued Scav Pistol needs seven hits on its 120 health, which
+is 2.0s at perfect aim, 5.2s at your median 54 percent, and 10.9s at the
+25 percent you actually shot that raid. It is also faster than a walking
+player, so you cannot back-pedal and shoot it either.
+
+The fix does not touch its health, its damage or its top speed. It now
+RECOVERS after each blow, 0.55s at a third speed, which is the window to
+back off and shoot that the fight never had. And the leash shortens to 210
+walking, 300 sprinting, so sprinting is a real escape at the cost of being
+loud to everything else. Measured after: sprinting away leaves a gap of
+119 instead of 9, and the median run now ends on 100 health instead of 32.
+
+320 paired seeds on the dam: 16.6 percent before, 16.9 after, 3 discordant,
+p = 1.0. No difficulty change overall. Listener kills fell 13 to 8. That is
+the shape I wanted: the broken enemy stops being broken and nothing else
+moves. The bot under-measures this because it never crouches and never
+sprints to break contact, so the gain for a human is larger than 13 to 8.
+
+"'YOU DIED' BUT THEN MY CHARACTER AVATER IS ALIVE." The fallen pose has
+existed since drawOp was written and the player used it while DOWNED.
+Nobody ever wired DEAD. So for the whole 1.5 seconds YOU DIED is on the
+screen, the operator stood there breathing. Fixed, and the capture that
+proved it caught a second one: the stance readout said STANDING while you
+were dead, because it had a DOWN case and no DEAD case. It says DEAD now.
+
+While I was in there: downed RAIDERS had the same gap. They have a real
+down state in the AI and the draw never asked about it, so a man you had
+just put on the floor looked identical to one aiming at you. That is very
+likely your other note, "another raider was randomly paused and didn't
+fight back" - a downed raider genuinely cannot fight, and now it looks
+like it.
+
+"A RANDOM 'SEARCHING THE AREA' THAT COMES AND GOES." Two causes and
+"random" is the right word for both. It counted every machine on the map,
+including things poking around 3,000 units away that are not your problem.
+And investigate is a transient state, so it strobed on and off. It now
+counts only within 1,000 units and holds for 2.5 seconds once it speaks.
+
+"GET RID OF ANY REFERENCES TO 'SHIP'." Twelve player-facing strings, now
+none. The game was running three vocabularies at once: EXTRACTION OPEN on
+one line, "Dropship is DOWN" on the next, and "board" as the verb. Settled
+language: you CALL EXTRACTION, it is INBOUND, then OPEN, then it CLOSES,
+and the verb is EXTRACT. One I missed on the first pass and had to go back
+for: SHIP INBOUND is uppercase and my search was for [Ss]hip. Internal
+variable names keep their spelling because you never see them.
+
+"MUSIC NEEDS TO BE MORE CONSTANT AND LESS SPORADIC." Reactive mode asked a
+fresh question every frame: is tension above 0.18 right now. Tension comes
+from the nearest hunting machine scaled by distance, which drifts in and
+out constantly, so the radio was not reacting to events, it was chattering
+at a threshold. The threshold now only STARTS it; once playing it runs
+until the surface has been quiet for nine seconds. Your combat rule is
+untouched and still wins: the first shot cuts it dead.
+
+"HALF WAY THROUGH PULLING THE EXTRACTION AND I GET DOWNED, I SHOULD HAVE
+TO START OVER." This collides with a choice you made at v0.90, HAULED
+ABOARD, which is why going down mid-pull currently ends the raid as a win.
+I did not throw either instruction away. Lying helpless in an open ring,
+they still take you: your v0.90 rule, untouched. Knocked down IN THE
+MIDDLE OF PULLING now costs you the pull. The difference is whether you
+were doing something when you fell. Dial: downResetsPull.
+
+"ONE LAST CHANCE TO EQUIP OR BUY AFTER YOU PICK YOUR MAP." The sector page
+now states what you are taking and puts the armoury and the trader one
+click away, both opening on top so closing them returns you to the drop
+you already chose. Run #61 is the argument for this: you deployed on an
+issued Scav Pistol with no rig and died in 74 seconds. The kit line
+mirrors the terminal's own readiness verdict rather than computing a
+second one that could disagree.
+
+"I AM CONFUSED ABOUT SEASON 2. GET RID OF SEASONS AND JUST HAVE LEVELS."
+The thing called a season is not a live-service event at all. It is a ten
+step reward ladder that every raid feeds, and finishing it moves the WORLD
+up a tier, +8 percent loot and +6 percent enemy health, capped at five.
+That is a level system with a misleading name, and the name is exactly why
+you asked what it was and why.
+
+The word is gone from everything you read. It is PROGRESS, ten rewards,
+and WORLD TIER when it steps up. I did NOT delete the ladder, and you
+should know that is a judgement call: you have ten unclaimed rewards
+sitting on it, deleting it takes those and a content system with them, and
+a rename is reversible where a deletion is not. If you want it actually
+gone rather than renamed, say so and it is one more pass.
+
+Verified: parse PASS at v5.00; four-map sweep clean at 110, 111, 74 and 91
+entities with container counts unchanged; all three raid endings; hub
+clean. The Listener driven in isolation with every other entity removed,
+before and after, on escape and on the fight. The status line read back at
+STANDING, DEAD and DOWN. The progress board header read back as PROGRESS.
+The pre-deploy kit line read back on a bare profile and a geared one, with
+the terminal's warning carried through. The death pose photographed. A
+case-insensitive sweep confirms no player-facing "ship" or "season" text
+survives anywhere.
+
+Not verified: the music tail is a timing change I could not hear, only
+reason about and read back; it wants your ear more than my probe. The
+raider-paused note is my best reading of what you saw rather than a
+reproduction, since I could not reproduce the exact moment. The 320-seed
+run was on GREYWATER because that is where run #61 died; the same change
+has not been priced on COLD STORAGE, which is the map you mostly play.

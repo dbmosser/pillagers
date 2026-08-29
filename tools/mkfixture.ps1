@@ -539,6 +539,9 @@ window.__loadProfile=function(){ return loadProfile(); };
 window.__primer={open:function(){ openPrimer(); },maybe:function(){ maybePrimer(); },list:function(){ return PRIMER; }};
 window.__status={player:function(){ return playerStatus(); },raider:function(e){ return raiderStatus(e); },col:STATCOL};
 window.__board=function(){ renderSeason(); return ROADMAP; };
+// The sector page and its pre-deploy kit line, so the last screen before a drop
+// can be driven and read like every other one.
+window.__sector=function(){ renderSector(); return document.getElementById('sectorkit'); };
 window.__saveProfile=function(){ return saveProfile(); };
 try{ var _osp=saveProfile; saveProfile=function(){ var t0=performance.now(); var r=_osp.apply(null,arguments); _PT.save=(_PT.save||0)+(performance.now()-t0); _PSAVE=(_PSAVE||0)+1; return r; }; var _PSAVE=0; }catch(e){}
 // The fixture must never write into his flight recorder. Test runs were landing

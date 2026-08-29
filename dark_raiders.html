@@ -250,8 +250,8 @@
 </div>
 
 <div class="modal" id="seasonmodal">
-  <h3 id="seasonhead">Season 1</h3>
-  <div class="msub">Ten tiers. Every raid feeds it, and a raid you die on still pays half, because a run you learned something from is not worth nothing. Finish the track and the world moves up a tier: loot is worth more and everything out there is harder.</div>
+  <h3 id="seasonhead">PROGRESS</h3>
+  <div class="msub">Ten rewards. Every raid feeds this, and a raid you die on still pays half, because a run you learned something from is not worth nothing. Claim all ten and the WORLD moves up a tier: loot is worth more and everything out there is harder. Then a fresh ten appear. This is the only ladder that changes the world; reputation opens shops, and your level and proficiency are your own.</div>
   <div id="seasonbar" style="height:16px;border:1px solid var(--steel-hi);background:rgba(0,0,0,.35);margin:6px 0 10px 0;position:relative">
     <div id="seasonfill" style="height:100%;width:0%;background:linear-gradient(90deg,#ffc04a,#ffc04a)"></div>
     <div id="seasontext" style="position:absolute;inset:0;text-align:center;font-size:11px;line-height:16px;color:#120e0c;font-weight:700"></div>
@@ -342,7 +342,13 @@
   <h3>Where are you going?</h3>
   <div class="msub">Four sectors, and they are not reskins of each other. Your stash, your credits, your contracts and your seal progress are yours everywhere; what changes is the ground you have to work. Your body stays on the sector it fell on.</div>
   <div id="sectorlist"></div>
-  <div style="display:flex;gap:8px;margin-top:10px">
+  <div id="sectorkit" style="margin-top:11px;font-size:11px;padding:8px 10px;
+       border:1px solid var(--steel-hi);border-radius:3px"></div>
+  <div style="display:flex;gap:8px;margin-top:8px">
+    <button id="sectorarm" style="flex:1;padding:8px 10px">Stash and armoury</button>
+    <button id="sectorshop" style="flex:1;padding:8px 10px">Trader</button>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:8px">
     <button class="deploy" id="sectordeploy" style="flex:1.4">DEPLOY TO THIS SECTOR</button>
     <button id="closesector" style="padding:8px 22px">Close</button>
   </div>
@@ -570,7 +576,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='4.93';
+var VER='5.00';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -630,7 +636,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:1,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:0,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,musicCombat:1,musicCombatGap:4,cursorLoud:1,raiderCrouch:1,raiderSprint:1,simDodgeRing:0,raiderDodgeRing:1};
+  eAmbient:100,noiseMult:1,safeSlots:1,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simPinTier:1,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'light',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderKit:1,spawnClear:1150,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:0,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,musicCombat:1,musicCombatGap:4,cursorLoud:1,raiderCrouch:1,raiderSprint:1,simDodgeRing:0,raiderDodgeRing:1,listenFair:1,listenRecT:0.55,listenRecSpd:0.30,downResetsPull:1,musicTail:9};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -1546,7 +1552,12 @@ if(CFG.musicCombat!==0&&G&&inCombat()) return false;
   // REACTIVE: always in the Undercroft, and in a raid only once something is
   // actually happening. The threshold sits above the idle floor so a distant
   // patrol does not start the band; it takes something that has noticed you.
-  if(m==='reactive') return !!G&&musIntensity()>0.18;
+if(m==='reactive'){
+    if(!G) return false;
+    // The threshold arms it; the tail keeps it honest.
+    if(musIntensity()>0.18) G.musHold=G.t;
+    return (G.t-(G.musHold===undefined?-1e9:G.musHold))<(CFG.musicTail===undefined?9:CFG.musicTail);
+  }
   return false;                           // the old hub-only mode is retired
 }
 // What is happening, as one number. G.musThreat is the nearest hunting body,
@@ -5660,7 +5671,7 @@ function mkListener(x,y){
     hp:Math.round(120*CFG.eHp*seasonHp()),maxhp:Math.round(120*CFG.eHp*seasonHp()),
     name:mkName('LISTENER',['V','X','K','N']),
     face:rnd(0,6.28),state:'dormant',tx:x,ty:y,homeX:x,homeY:y,
-    cd:0,alert:0,spd:196,dmg:34,rng:26,cone:0,hitT:0,
+    cd:0,alert:0,spd:196,dmg:34,rng:26,cone:0,hitT:0,recover:0,
     heardX:0,heardY:0,millT:0,wakeT:0,legs:rnd(0,6.28)};
 }
 // Called from ping(). Everything that makes a sound in this world goes through
@@ -9061,9 +9072,15 @@ function tryExtractTick(dt,wantCall){
     // Reaching this branch already means standing inside the ring with the ship
     // down, so the only new condition is being unable to stand up.
     // hauledAboard 0 restores the pull-only behaviour.
+    if(p.downed&&CFG.downResetsPull!==0&&(z.pullT||0)>0){
+      // Knocked down with a pull in progress: the pull is what you lose.
+      z.pullT=null; z.boardT=0;
+      say('Knocked down. The hold is lost, start again.');
+      return;
+    }
     if(p.downed&&CFG.hauledAboard!==0){
       T.holdExtract=1; T.hauled=1;
-      say('They have you. Hauling you aboard.');
+      say('They have you. Pulling you out.');
       endRaid('extract'); return;
     }
     if(wantCall){
@@ -9555,7 +9572,7 @@ z.hold=Math.min(30,Math.max(3,G.timeLeft-1)); z.holdMax=z.hold;
         G.tel.ringCrowd={mapBorn:_rcm,siegeBorn:_rcs};
       }
       if(dist(p,z)<1400){ blip('touchdown',dist(p,z)); blip('alarm',dist(p,z));
-        say('Dropship is DOWN. Hold E to board, '+Math.round(z.hold)+'s.'); }
+        say('EXTRACTION IS OPEN. Hold E to extract, '+Math.round(z.hold)+'s.'); }
     }
     // THE WINDOW CLOSING, once a second for the last eight. This is the only
     // sound in the family that is meant to be unpleasant: it is the one that
@@ -9641,8 +9658,10 @@ function selfRevive(){
 }
 
 // ================================================================ player update
+var DT_LAST=0.016;
 function updatePlayer(dt){
   var p=G.player,T=G.tel;
+  DT_LAST=isFinite(dt)?dt:0.016;
   if(!isFinite(p.x)||!isFinite(p.y)){
     var _sp=(G.map&&G.map.spawns&&G.map.spawns[0])||{x:WORLD_W/2,y:WORLD_H/2};
     p.x=isFinite(p.okx)?p.okx:_sp.x; p.y=isFinite(p.oky)?p.oky:_sp.y;
@@ -11480,14 +11499,22 @@ if(e.kind==='stray'){
         collide(e,G.map.walls); continue;
       }
 if(e.state==='hunt'){
+        var _lf=(CFG.listenFair!==0);
+        if(e.recover>0) e.recover-=dt;
         if(CFG.listenLive!==0&&!p.downed&&p.moving&&!G.pCrouch){
-          var _lr=(G.sprinting?430:290)*(CFG.listenGain===undefined?1.35:CFG.listenGain)/1.35;
+          var _lr=(_lf?(G.sprinting?300:210):(G.sprinting?430:290))*(CFG.listenGain===undefined?1.35:CFG.listenGain)/1.35;
           if(dist(e,p)<_lr){ e.heardX=p.x; e.heardY=p.y; e.millT=0; }
         }
-        navSeek(e,e.heardX,e.heardY,e.spd,dt);
+        // Recovering from its own blow: it is still coming, but slowly, and that
+        // is the only window in the fight. Never fully rooted, so backing off has
+        // to be a decision rather than a free reset.
+        navSeek(e,e.heardX,e.heardY,e.spd*((_lf&&e.recover>0)?(CFG.listenRecSpd===undefined?0.30:CFG.listenRecSpd):1),dt);
         e.face+=clamp(angDiff(Math.atan2(e.heardY-e.y,e.heardX-e.x),e.face),-6*dt,6*dt);
         var ld=dist(e,p);
-        if(ld<e.rng&&e.cd<=0&&!p.downed){ damagePlayer(e.dmg,'listener',e.name,e.x,e.y); e.cd=0.85; }
+        if(ld<e.rng&&e.cd<=0&&!p.downed){
+          damagePlayer(e.dmg,'listener',e.name,e.x,e.y); e.cd=0.85;
+          if(_lf){ e.recover=(CFG.listenRecT===undefined?0.55:CFG.listenRecT); if(!G.sim) sfx('alarm',e.x,e.y); }
+        }
         if(dist(e,{x:e.heardX,y:e.heardY})<40){
           // Arrived at the sound and there is nothing here. It waits, and any
           // new noise inside this window puts it straight back on you.
@@ -12242,7 +12269,7 @@ e.lootT=(e.lootT||0)+dt;
             z.beaconT=CFG.extractWait; z.hold=null; z.siegeSpawned=0; z.siegeSpawnT=0; z.pullN=0; z.pinged=0;
             if(z===G.active){ G.beaconT=z.beaconT; G.shipHold=null; G.siegeSpawned=0; G.siegeSpawnT=0; }
             ping(z.x,z.y,700,true,false,'raider','fire');
-            if(!G.sim) say(e.name+' called the dropship.');
+            if(!G.sim) say(e.name+' called extraction.');
           }
         }
         else e.extracting+=dt;
@@ -12672,7 +12699,7 @@ var SEASON_TIERS=[
   {sp:4200, kind:'standing',v:2,    label:'Every raider out there thinks better of you'},
   {sp:5200, kind:'credits', v:6000, label:'6,000 credits'},
   {sp:6300, kind:'wep',     v:'dmr'},
-  {sp:7500, kind:'season',  v:10000,label:'10,000 credits, and the world moves up a tier'}
+  {sp:7500, kind:'season',  v:10000,label:'10,000 credits, and the world moves up a tier'}   // 'season' is the internal kind, never shown
 ];
 
 function seasonNo(){ return (P&&P.season)||1; }
@@ -12749,7 +12776,7 @@ function claimTier(ix){
     P.season=seasonNo()+1;
     P.worldTier=worldTier()+1;
     P.sp=0; P.spClaimed=[];
-    msg+='. Season '+P.season+' begins, and the world is harder and worth more.';
+    msg+='. The world moves up to TIER '+worldTier()+': everything out there is harder, and everything is worth more. The reward board resets.';
   }
   saveProfile();
   return msg;
@@ -12908,7 +12935,7 @@ silentExit:T.silentExit||0,
       if(_mrow&&_mrow.out&&how==='extract'){
         var cut2=Math.round((_mrow.val||0)*0.10);
         P.credits+=cut2;
-        lines.push('<span style="color:var(--coolant)">'+mname+' was on an earlier ship with '+(_mrow.val||0).toLocaleString()+'c. Your cut '+cut2.toLocaleString()+'c.</span>');
+        lines.push('<span style="color:var(--coolant)">'+mname+' extracted earlier with '+(_mrow.val||0).toLocaleString()+'c. Your cut '+cut2.toLocaleString()+'c.</span>');
         var mr4=idRec(P.merc); mr4.standing=(mr4.standing||0)+1; mr4.met++;
       } else {
         lines.push('<span style="color:var(--ash)">'+mname+' was left out there.</span>');
@@ -12935,10 +12962,10 @@ silentExit:T.silentExit||0,
       // HIS NOTE, v3.59: "it says Season 1 +84 progress -- but what the hell
       // does that mean? is it rep? not clear". It is not rep. Named and
       // explained at the one place he reads it.
-      lines.push('<span style="color:var(--amber)">SEASON XP +'+gained+
+      lines.push('<span style="color:var(--amber)">PROGRESS +'+gained+
         (how==='dead'?' (half, for dying)':(how==='abandon'?' (a quarter, for backing out)':''))+
         '  &middot;  '+Math.min(cap,(P.sp||0)+gained).toLocaleString()+' of '+cap.toLocaleString()+
-        '</span><br><span style="color:var(--ash)">Not rep. Kills, loot, doors and extracting all pay it. It unlocks the reward tiers on the SEASON board at the terminal, and finishing the board moves the whole world up a tier.</span>');
+        '</span><br><span style="color:var(--ash)">Not rep. Kills, loot, doors and extracting all pay it. It unlocks the ten rewards on the progress board at the terminal, and finishing the board moves the whole world up a tier.</span>');
     }
   })();
   if(G.strayPaid){
@@ -13361,7 +13388,7 @@ function haulBandLines(rows,label){
   var P=deathPhase(rows);
   if(P.deaths>=10){
     var pct=Math.round(P.pre/P.deaths*100);
-    out.push('  of '+P.deaths+' deaths: '+P.pre+' before ever calling the dropship, '+
+    out.push('  of '+P.deaths+' deaths: '+P.pre+' before ever calling extraction, '+
              P.between+' after calling but not in the ring, '+P.siege+' during the siege.');
     if(pct>=45){
       out.push('  ' +pct+' PERCENT DIED BEFORE THE DECISION TO LEAVE EXISTED. While that is true,');
@@ -15080,7 +15107,7 @@ var SHD=G.shells[i];
         wc.clip();
       }
       drawOp(p.x,p.y,p.face,p.roll>0?(1-p.roll/.38)*12.6:p.bob,'#8fa3b5',
-        clamp((1-loadOf(bagWeight()).spd)/(1-LOAD_FLOOR),0,1),p.muzzle,(G.crowbarUp>0?'bar':pmode),p.iv,
+        clamp((1-loadOf(bagWeight()).spd)/(1-LOAD_FLOOR),0,1),p.muzzle,((G.deathBeat>0||p.hp<=0)?'down':(G.crowbarUp>0?'bar':pmode)),p.iv,
         {moving:!!p.moving,sprint:!!G.sprinting,ads:!!p.ads,hurt:p.hitFlash,bulk:armorById(p.rig).bulk,
          rl:(p.reloading>0&&p.wep.reload)?clamp(1-p.reloading/p.wep.reload,0,1):0});
       if(pWet){
@@ -15150,7 +15177,7 @@ var SHD=G.shells[i];
       // where the top terrace lifts 132, that is the whole world jumping.
       else if(e2.kind==='raider')
         drawOp(e2.x,e2.y,e2.face,(e2.roll>0)?(1-e2.roll/.38)*12.6:(e2.step||0)*4,e2.coat,
-          clamp((e2.bag?e2.bag.length:0)/7,0,1),e2.muzzle,(e2.roll>0)?'roll':(raiderCrouched(e2)?'crouch':''),0,
+          clamp((e2.bag?e2.bag.length:0)/7,0,1),e2.muzzle,(e2.downed||e2.state==='down')?'down':((e2.roll>0)?'roll':(raiderCrouched(e2)?'crouch':'')),0,
           {moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT,bulk:e2.bulk||0});
 
       // SPEC 8.7: the openings have to be VISIBLE or they are a secret, and a
@@ -15998,10 +16025,14 @@ _tgt=G.active; _lbl='EXTRACTION';
   // demand different answers: one is a fight, the other is a reason to move.
   var _att=0,_hunt=0;
   for(var _ai=0;_ai<G.ents.length;_ai++){
-    var _as=G.ents[_ai].state;
+    var _ae=G.ents[_ai],_as=_ae.state;
     if(_as==='chase'||_as==='alarm') _hunt++;
-    else if(_as==='investigate') _att++;
+    else if(_as==='investigate'&&dist(_ae,G.player)<1000) _att++;
   }
+  // Hold the last thing it said for a beat, so a machine flicking in and out of
+  // investigate cannot strobe the line.
+  if(_att>0){ G.attHold=2.5; G.attN=_att; }
+  else if((G.attHold||0)>0){ G.attHold-=DT_LAST; if(G.attHold>0) _att=G.attN||0; }
   if(_hunt+_att>0){
     ctx.textAlign='right'; ctx.font=FS(TYPE.micro);
     var _ax=W-16,_ay=LH(30);
@@ -16048,7 +16079,7 @@ _tgt=G.active; _lbl='EXTRACTION';
       if(!hasTerm(TERMS[_tq].id)) continue;
       rows.push({k:TERMS[_tq].name,v:'+'+Math.round(TERMS[_tq].pay*100)+'% pay',c:'#ffc04a'});
     }
-if(seasonNo()>1) rows.push({k:'SEASON '+seasonNo(),v:'harder, worth more',c:'#c9a0ff'});
+if(worldTier()>0) rows.push({k:'WORLD TIER '+worldTier(),v:'harder, worth more',c:'#c9a0ff'});
     // v4.03: THE CONDUCT CONTRACTS BELONG HERE. v4.00 shipped contracts that
     // forbid a habit for a whole raid, and contracts have only ever been visible
     // in the Undercroft, so a man could take "no heals" and then heal at minute
@@ -16842,14 +16873,14 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     if(p.downed){
       if(_inRing&&_shipDown&&CFG.hauledAboard!==0){ _msg='THEY HAVE YOU'; _sub='Hauling you aboard'; }
       else if(_inRing&&_shipDown){ _msg='HOLD E TO EXTRACT'; _sub='You can board from the floor'; }
-      else if(_inRing){ _msg='SHIP INBOUND'; _sub='Stay down, they will haul you aboard'; _col='#ffc04a'; }
-      else { _msg='CRAWL TO THE RING'; _sub=_shipDown?('Ship leaves in '+Math.max(0,Math.ceil(G.shipHold))+'s'):'Ship is coming'; _col='#ff5a4a'; }
+      else if(_inRing){ _msg='EXTRACTION INBOUND'; _sub='Stay down, they will pull you out'; _col='#ffc04a'; }
+      else { _msg='CRAWL TO THE RING'; _sub=_shipDown?('Extraction closes in '+Math.max(0,Math.ceil(G.shipHold))+'s'):'Extraction inbound'; _col='#ff5a4a'; }
     } else if(_shipDown&&_inRing){
       _msg='HOLD E TO EXTRACT';
-      _sub='Ship leaves in '+Math.max(0,Math.ceil(G.shipHold))+'s';
-} else if(_shipDown&&((G.shipHoldMax||30)-G.shipHold)<4){
-      _msg='EXTRACTION POINT IS OPEN'; _sub=Math.max(0,Math.ceil(G.shipHold))+' seconds left'; _col='#ff5a4a';
-    }
+      _sub='Extraction closes in '+Math.max(0,Math.ceil(G.shipHold))+'s';
+}
+    // The plain "it is open" status deliberately does NOT appear here any more.
+    // The bottom strip states it for the whole window; the centre is for verbs.
     if(_msg){
       // Pulsing, because a static line at the centre of the screen stops being
       // read after about two seconds. Driven off the raid clock rather than off
@@ -17090,10 +17121,11 @@ var STATCOL={
   JAMMED:'#ff5a4a', HEALING:'#6fe0a0', REVIVING:'#7fc4a0', EXTRACTING:'#4de3d0',
   COOKING:'#ffc04a', SEARCHING:'#ffc04a', LOOTING:'#cdd6dd', TRADING:'#7cc4ff',
   HUNTING:'#ffc04a', SPRINTING:'#cdd6dd', AIMING:'#ffbe5a', CROUCHED:'#9aa8b2',
-  ROLLING:'#cdd6dd', MOVING:'#a5b1bc', STANDING:'#8a96a1', IDLE:'#6b7783', GONE:'#6b7783'
+  ROLLING:'#cdd6dd', MOVING:'#a5b1bc', STANDING:'#8a96a1', IDLE:'#6b7783', GONE:'#6b7783', DEAD:'#ff5040'
 };
 function playerStatus(){
   var p=G&&G.player; if(!p) return 'GONE';
+  if(p.hp<=0&&!p.downed) return 'DEAD';
   if(p.downed) return 'DOWN';
   if(p.roll>0) return 'ROLLING';
   // COMPOUND, v4.16. HIS NOTE on run #53: "if i have 2 or more statuses at
@@ -18516,7 +18548,7 @@ acts:{KeyE:['choose sector',function(){ renderSector(); document.getElementById(
      acts:{KeyE:['deal',function(){ renderGamble(); document.getElementById('gamblemodal').classList.add('on'); }]}},
 {id:'term',x:350,y:365,r:46,label:'THE STASH',sub:'',c:'#5aa9e6',season:1,
      acts:{KeyE:['terminal',function(){ renderHub(); document.getElementById('hub').classList.add('on'); maybePrimer(); }],
-           KeyR:['season',function(){ renderSeason(); document.getElementById('seasonmodal').classList.add('on'); }]}},
+           KeyR:['progress',function(){ renderSeason(); document.getElementById('seasonmodal').classList.add('on'); }]}},
     {id:'mf',x:590,y:105,r:44,label:'THE MAINFRAME',sub:'',c:'#4de3d0',
      acts:{KeyE:['racks',function(){ renderHub(); renderMainframe(); document.getElementById('opmodal').classList.add('on'); }]}},
     {id:'dev',x:590,y:255,r:42,label:'DEV BOX',sub:'',c:'#9aa8b2',
@@ -19281,7 +19313,7 @@ var ROADMAP=[
 ['DONE','THE BULWARK: a walking slab that eats rounds from the front, soft spine behind'],
   ['DONE','Conduct contracts: walk out clean, kill nothing, be gone in three minutes'],
   ['DONE','Streets off the grid: the blocks are no longer all the same length'],
-  ['DONE','Raiders play like people: they roll, aim, crouch over crates, and bolt for the ship'],
+  ['DONE','Raiders play like people: they roll, aim, crouch over crates, and bolt for the extraction'],
   ['DONE','Everyone with eyes steps out of the Howler ring, your merc included'],
   ['DONE','Combat kills the music dead, and it stays away until the fight lets go'],
   ['DONE','Warning rings glow through the dark, the cursor shouts reload and ammo'],
@@ -19323,7 +19355,7 @@ var ROADMAP=[
   ['DONE','Contracts that pay in gear, in three tiers, not only credits'],
   ['DONE','Emotes and parley: hail a raider instead of shooting him'],
   ['DONE','Bushes you can hide in, and raiders who hide in them too'],
-  ['DONE','Seasons: ten tiers, and finishing one moves the whole world up'],
+  ['DONE','Ten rewards on the progress board, and finishing it moves the whole world up a tier'],
   ['DONE','COLD STORAGE, a third map built with no open ground in it'],
   ['DONE','Room acoustics, your own footsteps, and a stinger when something sees you'],
   ['DONE','The Peddler: sell your bag mid raid at half price, banked instantly'],
@@ -19337,7 +19369,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The hub finally tells you a season reward is waiting instead of making you go and check',
+  now:'Nine of your in-game notes in one pass, from the Listener that would not let go to the season nobody asked for',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -19483,7 +19515,7 @@ function renderTerms(){
 }
 function renderSeason(){
   var head=document.getElementById('seasonhead');
-  head.textContent='Season '+seasonNo()+(worldTier()?('   world tier '+worldTier()+': loot x'+seasonLoot().toFixed(2)+', enemies x'+seasonHp().toFixed(2)):'');
+  head.textContent=worldTier()?('PROGRESS   world tier '+worldTier()+': loot x'+seasonLoot().toFixed(2)+', enemies x'+seasonHp().toFixed(2)):'PROGRESS';
   var cap=SEASON_TIERS[SEASON_TIERS.length-1].sp,sp=P.sp||0;
   document.getElementById('seasonfill').style.width=clamp(100*sp/cap,0,100)+'%';
   document.getElementById('seasontext').textContent=sp.toLocaleString()+' / '+cap.toLocaleString();
@@ -20154,7 +20186,7 @@ function buildExport(){
   // make them wrong, since every arm was paired inside one tier, but it makes
   // them non-transferable to a profile on a different tier, and nobody could have
   // known that from the export.
-  L.push('World tier '+worldTier()+' (season '+seasonNo()+'): loot x'+seasonLoot().toFixed(2)+
+  L.push('World tier '+worldTier()+': loot x'+seasonLoot().toFixed(2)+
          ', enemy health x'+seasonHp().toFixed(2)+
          (worldTier()===0?'  [neutral]':'  [every haul and credit figure below is scaled by this]'));
   L.push('');
@@ -20786,6 +20818,26 @@ var _myR=0;
       saveProfile(); syncMapBtn(); renderSector();
     };
   }
+  syncSectorKit();
+}
+// What he is actually taking up there, stated at the last moment he can change it.
+function syncSectorKit(){
+  var el=document.getElementById('sectorkit');
+  if(!el) return;
+  var w=null;
+  try{ w=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null; }catch(_gw){ w=null; }
+  var rig=null;
+  try{ rig=myRig(); }catch(_gr){ rig=null; }
+  var line='<b>Going up with:</b> '+(w?escHtml(w.name):'an issued sidearm')+
+           ' &middot; '+escHtml((rig&&rig.name)||'No Rig');
+  // The terminal already decides whether that is enough and what to do about it.
+  // Repeat its verdict rather than writing a second one that can disagree.
+  try{
+    renderHub();
+    var rl=document.getElementById('readyline');
+    if(rl&&rl.innerHTML) line+='<div style="margin-top:5px">'+rl.innerHTML+'</div>';
+  }catch(_rh){}
+  el.innerHTML=line;
 }
 document.getElementById('sectordeploy').onclick=function(){
   document.getElementById('sectormodal').classList.remove('on');
@@ -20794,6 +20846,12 @@ document.getElementById('sectordeploy').onclick=function(){
 };
 document.getElementById('closesector').onclick=function(){
   document.getElementById('sectormodal').classList.remove('on');
+};
+document.getElementById('sectorarm').onclick=function(){
+  renderHub(); document.getElementById('hub').classList.add('on');
+};
+document.getElementById('sectorshop').onclick=function(){
+  renderShop(); document.getElementById('shopmodal').classList.add('on');
 };
 // HIS NOTE, same message: "maybe we need another thing in the undercroft called
 // settings?" Not another station, he asked for fewer of those at v2.81 and was
@@ -20813,19 +20871,19 @@ document.getElementById('closesector').onclick=function(){
 // particular has been in since v2.72 and is auto-detecting, so nobody has ever
 // been told it exists.
 var PRIMER=[
-  ['This is a raid, not a level','Drop in, take what you can carry, and call the dropship out. Reaching the surface with a full bag is the whole game. Dying leaves it all on your body.'],
+  ['This is a raid, not a level','Drop in, take what you can carry, and call extraction. Reaching the surface with a full bag is the whole game. Dying leaves it all on your body.'],
   ['An Xbox controller just works','Plug one in and it takes over: left stick moves, right stick aims, RT fires, LB reloads, A rolls. No toggle and no setup, and unplugging hands control straight back to the mouse.'],
-  ['E is the verb','E searches a container, opens the Peddler, revives a downed raider, and calls the dropship when you stand in a ring. TAB is your bag, M is the map, H cycles the controls legend.'],
+  ['E is the verb','E searches a container, opens the Peddler, revives a downed raider, and calls extraction when you stand in a ring. TAB is your bag, M is the map, H cycles the controls legend.'],
   ['Selling at home is the only thing that earns REP','The Peddler out in the field pays cash and no standing. REP is what unlocks every rig, gun and pack in Requisition, and it only comes from selling salvage in the Undercroft.'],
   ['Your progress is permanent, your rig is not','Credits, reputation, weapons, unlocks and stats all carry between sessions automatically. The rig you are wearing does not: die and it stays on your body with everything else.'],
-  ['Calling the ship is the loudest thing you do','Hold E in an extraction ring to call it, wait, then hold E again to board. The heavier your bag, the more of the map comes to meet you. You can still be hauled aboard while downed.'],
+  ['Calling extraction is the loudest thing you do','Hold E in an extraction ring to call it, wait, then hold E again to extract. The heavier your bag, the more of the map comes to meet you. You can still be hauled aboard while downed.'],
   ['The conditions box is telling you something','Top right of the screen. Fog cuts how far you see, rain and storm cut how far you are HEARD, a blackout kills the lamps. It states the actual numbers, not the mood.'],
   ['A purple ring means elite','About one machine or raider in twelve is elite: twice the health, harder hits, a purple ring at its feet, and a deeper bag when it falls. The colour is the same purple the loot pips use for elite, on purpose.'],
   ['A hired merc is a partner now','Hire one at the Bench. B cycles his orders, loot free, follow you, or hold a spot. Stand with him and E searches his bag; drag an item from yours onto him and he will actually use it. Go down and he comes for you.'],
   ['The Undercroft has a radio','A faint 16-bit loop plays down here. The Music row in Settings cycles it: UNDERCROFT only, ALWAYS, or OFF.'],
   ['The HUD is yours to arrange','The raider list, the conditions box and the key legend all collapse on their corner glyph and drag anywhere. Positions stick between raids.'],
 ['The Bulwark carries a wall','The big one with the slab. Shooting the slab is close to useless: it eats almost everything and all the noise you make doing it brings company. Its back is soft and it is marked, a hot orange seam you can see from across a street. It walks at you and never stops, so the fight is a circle, not a duel. Or leave it. It is slower than you are.'],
-  ['Some contracts judge how you played','Most contracts count things: kill six, open five, carry two out. Some instead set a condition on the whole raid. Walk out without a single heal. Leave without killing anything. Be gone inside three minutes. They pay well because they take away the thing you would normally reach for, and they are only banked if you actually reach the ship.'],
+  ['Some contracts judge how you played','Most contracts count things: kill six, open five, carry two out. Some instead set a condition on the whole raid. Walk out without a single heal. Leave without killing anything. Be gone inside three minutes. They pay well because they take away the thing you would normally reach for, and they are only banked if you actually extract.'],
   ['Junk builds the Mainframe','The station in the top-right corner of the Undercroft. Racks are built from scrap, wire, cells and boards, and each pays 200c every time you extract alive. Slot a Data Core there and your next raid deploys with every locked-room key and every elite marked on the map.'],
   ['Settings live at the dev box','Press T at the terminal in the Undercroft. Text size, auto-equip a better gun on pickup, autoloot when your bag is full, and this card again.']
 ];
@@ -20906,7 +20964,7 @@ hint:'Damage taken from everything on the surface. Standard is how the game has 
      {n:'Standard', cfg:{lootMult:1}},
      {n:'Lean',     cfg:{lootMult:0.7}}
    ], def:1},
-  {k:'ext', label:'Heat when you call the ship',
+  {k:'ext', label:'Heat when you call extraction',
    hint:'How much of the map comes to the extraction ring once the beacon is up.',
    opts:[
      {n:'Heavy',    cfg:{siegeVol:1.4, raiderWaves:1}},
