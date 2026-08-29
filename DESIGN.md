@@ -18047,3 +18047,59 @@ a raid loses that raid's exploration. That is a deliberate trade, not an
 oversight, but it has not been driven. Nobody has looked at the SURVEYED
 readout on a real screen, so I know it draws and I do not know it sits clear of
 the map frame at every window size.
+
+================================================================================
+v5.30  YOU ASCEND, AND THE MAP HAS ONE FOG LAYER INSTEAD OF TWO
+================================================================================
+
+v5.30: you ascend, and the map has one fog layer instead of two
+
+TWO THINGS, ONE OF THEM MINE TO FIX.
+
+THE LORE. His words: "you don't drop, you ascend. so on title page -- 1. Ascend
+2. Pillage 3. Extract". He is right and it has been wrong since the first build.
+The Undercroft is below. The lift goes up. The title screen already said "You go
+up, you take what is worth taking, and you come back down" one paragraph above
+three cards reading DROP, TAKE, GET OUT. The prose knew the setting and the
+labels did not.
+
+Twenty three player-facing strings changed. The cards are now ASCEND, PILLAGE,
+EXTRACT in his exact order. DROP CHECK is ASCENT CHECK, its button is ASCEND,
+and its kit is the Ascent kit. DEPLOY LIFT is ASCENT LIFT, [E] deploy is
+[E] ascend, DEPLOYING HERE is ASCENDING HERE. The rig lines say "on the ascent"
+rather than "on the drop". Both empty states now state the loop in his three
+words: "Ascend, pillage, extract."
+
+What did NOT change: every use of "drop" meaning a dropped ITEM. Loot really
+does fall on the floor, the hotbar really does drop one, and a bullet really
+did drop short. That word is correct there.
+
+ONE FOG LAYER, NOT TWO. This is mine. At v5.29 I made the fog grid persist and
+shipped it as the answer to "the map should stay revealed". It was already
+answered, at v4.31, by a 32 by 32 grid per sector that persisted across runs,
+painted solid over uncharted cells, and printed "N% of this sector charted" in
+the corner. So v5.29 put a SECOND persistent blackout over the same map at a
+different resolution with a second percentage in the opposite corner. Two opaque
+layers stacked, and two numbers that disagreed with each other.
+
+The fine grid wins: 55 by 42 against 32 by 32, and it already draws last with
+the extraction rings and your marker punched back through it. The coarse overlay
+and its readout are gone.
+
+His charted history is not thrown away. The old grid is still recorded and now
+seeds the fine grid for any sector that has no packed fog yet, so a map he
+charted before v5.29 opens charted rather than black.
+
+Verified: parse PASS; four maps 110/111/74/91 with the map overlay drawn on
+each; all three endings; hub clean. Title reads 1 ASCEND, 2 PILLAGE, 3 EXTRACT
+with no DROP anywhere in it; ASCENT CHECK live and DROP CHECK gone; the ascend
+button and the ascent lift label both present. A profile with a quarter of the
+coarse grid charted and no packed fog opened the map at 25.5 percent surveyed,
+and packed fog takes priority over it once written. The old charted string no
+longer appears anywhere.
+
+Not verified: nobody has looked at the sector map on a real screen since the
+coarse layer came off, so I know one blackout draws and I do not know the map
+reads better rather than merely lighter.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

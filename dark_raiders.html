@@ -401,17 +401,17 @@
 
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:26px;text-align:left">
       <div style="border:1px solid var(--steel-hi);border-radius:4px;padding:11px 13px;background:rgba(0,0,0,.28)">
-        <div style="font-size:9px;letter-spacing:.2em;color:var(--amber)">1 &middot; DROP</div>
+        <div style="font-size:9px;letter-spacing:.2em;color:var(--amber)">1 &middot; ASCEND</div>
         <div style="font-size:11.5px;color:var(--ash);margin-top:5px;line-height:1.5">
           Take the lift up with whatever you dare carry. What you bring, you can lose.</div>
       </div>
       <div style="border:1px solid var(--steel-hi);border-radius:4px;padding:11px 13px;background:rgba(0,0,0,.28)">
-        <div style="font-size:9px;letter-spacing:.2em;color:var(--amber)">2 &middot; TAKE</div>
+        <div style="font-size:9px;letter-spacing:.2em;color:var(--amber)">2 &middot; PILLAGE</div>
         <div style="font-size:11.5px;color:var(--ash);margin-top:5px;line-height:1.5">
           Hold E on anything worth opening. Machines hunt by sight, and one of them hunts by sound.</div>
       </div>
       <div style="border:1px solid var(--steel-hi);border-radius:4px;padding:11px 13px;background:rgba(0,0,0,.28)">
-        <div style="font-size:9px;letter-spacing:.2em;color:var(--amber)">3 &middot; GET OUT</div>
+        <div style="font-size:9px;letter-spacing:.2em;color:var(--amber)">3 &middot; EXTRACT</div>
         <div style="font-size:11.5px;color:var(--ash);margin-top:5px;line-height:1.5">
           Stand in a ring and hold E to call extraction. Die out there and it is all gone.</div>
       </div>
@@ -434,7 +434,7 @@
   </div>
 </div>
 <div class="modal" id="stagemodal">
-  <h3 id="stagehead">DROP CHECK</h3>
+  <h3 id="stagehead">ASCENT CHECK</h3>
   <div class="msub" id="stagewhere"></div>
   <div id="stagewarn" style="margin:10px 0;font-size:11px;padding:8px 10px;display:none;
        border:1px solid var(--hazard);border-radius:3px;color:var(--hazard)"></div>
@@ -442,7 +442,7 @@
     <div class="panel">
       <h2>Going up with</h2>
       <div id="stageload" style="padding:2px 0"></div>
-      <h2 style="border-top:1px solid var(--steel-hi)">Drop kit <em id="stagekitct"></em></h2>
+      <h2 style="border-top:1px solid var(--steel-hi)">Ascent kit <em id="stagekitct"></em></h2>
       <div class="plist" id="stagekit" style="max-height:150px;overflow-y:auto"></div>
     </div>
     <div class="panel">
@@ -453,7 +453,7 @@
     </div>
   </div>
   <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
-    <button class="deploy" id="stagedrop" style="flex:1.4">DROP</button>
+    <button class="deploy" id="stagedrop" style="flex:1.4">ASCEND</button>
     <button id="stageback" style="padding:8px 22px">Back</button>
     <div class="credits" id="stagecred" style="margin-left:auto"></div>
   </div>
@@ -705,7 +705,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.29';
+var VER='5.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -721,7 +721,7 @@ var WHATSNEW=[
   'RENAMED: your issued guns are Tacker, Sputter, Chatter and Scuttle.',
   'RENAMED: GREYWATER DAM, the SUNKEN QUARTER, the CRIER, Meridian caches.',
   'Your owned guns and their wear carried over. Nothing was lost.',
-  'FOUR SECTORS. Press R at the lift to choose where you deploy.',
+  'FOUR SECTORS. Press R at the lift to choose where you ascend to.',
   'Keyed doors show a lock: green if you carry its key, amber if not.',
   'Windows are framed and lit now, so you can pick them out.',
   'Pillagers no longer all arrive at full health.',
@@ -4414,6 +4414,10 @@ function isDay(){ return P.cond==='day'; }
 // A 32 by 32 grid per sector lives on the profile; walking within a cell and
 // its neighbours charts them for good. The in-world fog of war is untouched;
 // this is only the sector map remembering where you have been.
+// SINCE v5.30 THIS IS A MIGRATION SOURCE, NOT A DISPLAY. Nothing draws it any
+// more; drawMapFog is the only blackout on the sector map. It is still marked
+// every raid so that a profile which charted a sector before the fine grid
+// existed can seed that sector rather than starting black. See fogLoad.
 var DISC_N=32;
 function discArr(){
   P.discover=P.discover||{};
@@ -13891,7 +13895,21 @@ function fogUnpack(b64,cells){
 function fogLoad(S,mapIx){
   if(!S||!P) return;
   var g=fogUnpack((P.mapSeen||{})[mapIx],S.g.length);
-  if(g) S.g=g;
+  if(g){ S.g=g; return; }
+  // NOTHING PACKED FOR THIS MAP. Fall back to the v4.31 coarse grid, which has
+  // been recording the same fact at 32x32 since long before the fine one
+  // existed. Without this, removing the coarse overlay would silently discard
+  // every sector he has already charted and hand him a black map.
+  var a=(P.discover||{})['d'+mapIx];
+  if(!a||a.length!==DISC_N*DISC_N) return;
+  var cw2=WORLD_W/DISC_N, ch2=WORLD_H/DISC_N;
+  for(var q=0;q<a.length;q++){
+    if(!a[q]) continue;
+    // One coarse cell covers a block of fine cells; light the whole block.
+    var x0=Math.floor(((q%DISC_N)*cw2)/FOG_CELL), x1=Math.ceil((((q%DISC_N)+1)*cw2)/FOG_CELL);
+    var y0=Math.floor((Math.floor(q/DISC_N)*ch2)/FOG_CELL), y1=Math.ceil(((Math.floor(q/DISC_N)+1)*ch2)/FOG_CELL);
+    for(var y=y0;y<y1&&y<S.h;y++) for(var x=x0;x<x1&&x<S.w;x++) S.g[y*S.w+x]=1;
+  }
 }
 function fogSave(){
   if(!G||!G.seen||G.sim) return;
@@ -18913,19 +18931,11 @@ function drawMapOverlay(){
 // v4.31: what you have never seen is not on your map. Seen once, seen
   // forever, across runs. Painted over everything except your own marker and
   // the chrome, so an uncharted zone leaks neither walls nor names.
-  (function(){
-    var a=discArr(),cw2=WORLD_W/DISC_N,ch2=WORLD_H/DISC_N,q;
-    ctx.fillStyle='#050716';
-    for(q=0;q<a.length;q++){
-      if(a[q]) continue;
-      var qx=(q%DISC_N)*cw2,qy=Math.floor(q/DISC_N)*ch2;
-      ctx.fillRect(ox+qx*sc-0.5,oy+qy*sc-0.5,cw2*sc+1,ch2*sc+1);
-    }
-    ctx.font=FS(TYPE.micro); ctx.fillStyle='#9aa8d0';
-    ctx.textAlign='right';
-    ctx.fillText(discPct()+'% of this sector charted',ox+WORLD_W*sc,oy+WORLD_H*sc+LH(12));
-    ctx.textAlign='left';
-  })();
+  // THE COARSE OVERLAY IS GONE, v5.30. It did the same job as drawMapFog at half
+  // the resolution, so the map carried two stacked blackouts and two percentages
+  // that disagreed. drawMapFog is the one that survives. discArr is still marked
+  // and still on the profile, purely so fogLoad can seed a map he charted before
+  // v5.29 rather than making him walk it again.
 if(G.trail&&G.trail.length>1){
     ctx.strokeStyle='rgba(255,192,74,.55)'; ctx.lineWidth=1.5;
     ctx.setLineDash([3,4]);
@@ -19099,9 +19109,9 @@ function buildHub(){
   // and E always fires the FIRST listed, so the muscle memory of "walk up,
   // press E" still does the most common thing at every station.
   var stations=[
-    {id:'lift',x:350,y:105,r:48,label:'DEPLOY LIFT',sub:'to the surface',c:'#4de3d0',
+    {id:'lift',x:350,y:105,r:48,label:'ASCENT LIFT',sub:'to the surface',c:'#4de3d0',
 acts:{KeyE:['go up',function(){ openLift(); }],
-           KeyR:['quick deploy',function(){ ac(); startRaid(); }]}},
+           KeyR:['quick ascent',function(){ ac(); startRaid(); }]}},
     {id:'trader',x:110,y:255,r:46,label:'HOLT, THE TRADER',sub:'',c:'#ffc04a',vendor:1,
      acts:{KeyE:['trade',function(){ openTrader('buy'); }],
            KeyR:['craft',function(){ openTrader('craft'); }],
@@ -19149,7 +19159,7 @@ stations.forEach(function(st){
   // taking you before you step in. A FUNCTION rather than a string because the
   // hub is built once and the sector can change while you are standing in it.
   stations[0].sub=function(){
-    return '[E] deploy   [R] sector      >  '+
+    return '[E] ascend   [R] sector      >  '+
       FIXED_MAPS[clamp(P.mapIx||0,0,FIXED_MAPS.length-1)].name;
   };
   var lights=[];
@@ -19809,14 +19819,14 @@ if(WEAPONS[P.ghost.wep]) e.wep=(WEAPONS[P.ghost.wep].mag===0)?WEAPONS.pistol:WEA
   }
 }
 function slotCore(){
-  if(P.intel){ say('A core is already slotted. It burns on your next deploy.'); return; }
+  if(P.intel){ say('A core is already slotted. It burns on your next ascent.'); return; }
   var ix=P.stash.indexOf('core');
   if(ix<0){ say('No Data Core in the stash. They come off rare shelves and elite pillagers.'); return; }
   P.stash.splice(ix,1);
   P.intel=1;
   saveProfile();
   blip('pick');
-  say('Core slotted. Your next raid deploys with intel.');
+  say('Core slotted. Your next ascent carries intel.');
   renderMainframe(); try{ renderHub(); }catch(e){}
 }
 function renderMainframe(){
@@ -19835,7 +19845,7 @@ function renderMainframe(){
   if(sb){
     var haveCore=P.stash.indexOf('core')>=0;
     sb.disabled=!!P.intel||!haveCore;
-    sb.textContent=P.intel?'CORE SLOTTED, BURNS ON DEPLOY':'SLOT A DATA CORE';
+    sb.textContent=P.intel?'CORE SLOTTED, BURNS ON ASCENT':'SLOT A DATA CORE';
   }
   var gh2=document.getElementById('mfghosthint');
   if(gh2){ gh2.textContent=P.ghost
@@ -19935,7 +19945,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Fixed the drop check stealing your gun slots, which was mine and broke a raid',
+  now:'Fixed the ascent check stealing your gun slots, which was mine and broke a raid',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -20408,10 +20418,10 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
         _fix=' REQUISITION is where rigs come from.';
       }
       rl.style.borderColor='#8a5a4a'; rl.style.color='#e0a08a';
-      rl.innerHTML='<b>NO RIG.</b> You deploy with 0 armour, and a plate has nothing to slot into.'+_fix;
+      rl.innerHTML='<b>NO RIG.</b> You ascend with 0 armour, and a plate has nothing to slot into.'+_fix;
     } else {
       rl.style.borderColor='var(--steel-hi)'; rl.style.color='var(--ash)';
-      rl.innerHTML=RG.name+', <b>'+cap+' armour</b> on the drop, absorbing '+
+      rl.innerHTML=RG.name+', <b>'+cap+' armour</b> on the ascent, absorbing '+
         Math.round(RG.absorb*100)+'% of every hit until it is gone.';
     }
   })();
@@ -20430,7 +20440,7 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   document.getElementById('stashct').textContent=P.stash.length;
   if(!keysArr.length){
     var em=document.createElement('div'); em.className='hint';
-    em.textContent='Inventory is empty. Deploy, loot, extract.'; sl.appendChild(em);
+    em.textContent='Inventory is empty. Ascend, pillage, extract.'; sl.appendChild(em);
   }
   // ---- TABS, his Q12. Four categories plus everything, each carrying its count,
   // so you can see there is nothing under PARTS without clicking PARTS.
@@ -20518,7 +20528,7 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   if(!shown.length&&sl){
     var em2=document.createElement('div'); em2.className='cellempty';
     em2.style.cssText='grid-column:1/-1;padding:14px;text-align:center';
-    em2.textContent=(P.stashTab==='all')?'Nothing in the stash. Deploy, loot, extract.':'Nothing under this tab.';
+    em2.textContent=(P.stashTab==='all')?'Nothing in the stash. Ascend, pillage, extract.':'Nothing under this tab.';
     sl.appendChild(em2);
   }
   // REPUTATION HAD NO VISIBLE SOURCE, v3.23, and his own profile is the evidence:
@@ -21465,7 +21475,7 @@ var _myR=0;
     h+='<div class="row sectorpick" data-map="'+i+'" style="display:block;cursor:pointer;'+
        (sel?'border-left:3px solid var(--amber);background:rgba(255,192,74,.10)':'border-left:3px solid transparent')+'">'+
        '<div><b style="color:'+(sel?'var(--amber)':'var(--bone)')+'">'+M.name+'</b>'+
-       (sel?' <span style="color:var(--amber);font-size:10px">DEPLOYING HERE</span>':'')+
+       (sel?' <span style="color:var(--amber);font-size:10px">ASCENDING HERE</span>':'')+
        '<div class="hint" style="margin:2px 0 0">'+SECTOR_CHAR[i]+'</div>'+
        '<div class="hint" style="margin:2px 0 0;color:var(--ash)">'+facts.join('  &middot;  ')+'</div></div></div>';
   }
@@ -21576,10 +21586,10 @@ function openLift(){
 function renderStage(prefill){
   if(prefill){ P.kit=standardKit().slice(0,DEPLOY_SLOTS); saveProfile(); }
   var M=FIXED_MAPS[clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1)];
-  document.getElementById('stagehead').textContent='DROP CHECK  \u00b7  '+M.name;
+  document.getElementById('stagehead').textContent='ASCENT CHECK  \u00b7  '+M.name;
   document.getElementById('stagewhere').textContent=
     'Last stop before the lift. Everything on this page can still be changed. '+
-    'Nothing leaves your stash until you press DROP.';
+    'Nothing leaves your stash until you press ASCEND.';
   document.getElementById('stagecred').innerHTML=P.credits.toLocaleString()+'<small>CREDITS</small>';
 
   // ---- what you are wearing and holding
@@ -21595,7 +21605,7 @@ function renderStage(prefill){
   var rg=myRig();
   L.appendChild(stageRow('Armour',
     rg.cap?(escHtml(rg.name)+' \u00b7 '+rigCeil(rg)+' armour \u00b7 absorbs '+Math.round(rg.absorb*100)+'%')
-          :'No rig. You deploy with zero armour.',
+          :'No rig. You ascend with zero armour.',
     ((P.rigs||[]).length>1)?'Change':null,
     function(){ var rs=(P.rigs||[]).slice();
       if(rs.indexOf('none')<0) rs.push('none');
@@ -21621,7 +21631,7 @@ function renderStage(prefill){
     h.parentNode.appendChild(rb);
   })();
   var K=document.getElementById('stagekit'); K.innerHTML='';
-  if(!kit.length) K.innerHTML='<div class="hint" style="padding:8px 10px">Nothing packed. You will drop with your gun and whatever you find.</div>';
+  if(!kit.length) K.innerHTML='<div class="hint" style="padding:8px 10px">Nothing packed. You will ascend with your gun and whatever you find.</div>';
   // THIS SCREEN DESCRIBES, IT DOES NOT ASSIGN. An earlier version wrote the
   // hotbar plan from the kit on every render, which wiped any plan you had made
   // and, because an assignment overrides the derived slot at that index, handed
