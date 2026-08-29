@@ -778,7 +778,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.80';
+var VER='5.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13368,7 +13368,10 @@ function claimTier(ix){
   if((P.sp||0)<T.sp) return null;
   cl.push(ix);
   var msg='';
-  if(T.kind==='credits'||T.kind==='season'){ P.credits+=T.v; msg='+'+T.v.toLocaleString()+'c'; }
+  // 'last' pays like 'credits' because it IS a credit reward; the only thing
+  // that made it special was the season rollover, and that is gone. The dead
+  // 'season' token went with it.
+  if(T.kind==='credits'||T.kind==='last'){ P.credits+=T.v; msg='+'+T.v.toLocaleString()+'c'; }
   if(T.kind==='rep'){ P.rep+=T.v; msg='+'+T.v+' rep'; }
   if(T.kind==='wep'){
     if(P.weapons.indexOf(T.v)<0) P.weapons.push(T.v);
@@ -13380,8 +13383,8 @@ function claimTier(ix){
     msg='you stand better with all '+IDENTITIES.length+' crews out there';
   }
   if(T.kind==='last'){
-    // v5.79: was the season rollover, wiping progress and raising the world a
-    // tier. Now it is simply the last rung: it pays and it stays paid.
+    // msg is already '+10,000c' from the credits branch above, so this appends
+    // rather than starting a sentence with a full stop.
     msg+='. That is the whole board. Nothing resets and nothing gets harder.';
   }
   saveProfile();
@@ -13504,6 +13507,15 @@ silentExit:T.silentExit||0,
   }
 
   P.runs++;
+  // v5.81: PERSIST THE KILL TALLY. cosOwned gates the Cracked Visor on
+  // P.kills.warden and nothing in the file had ever written P.kills, so that
+  // cosmetic was unobtainable from the day it shipped. Kills are counted per
+  // raid in T.kills and died with the raid; this banks them.
+  if(!G.sim){
+    P.kills=P.kills||{};
+    var _tk=(G.tel&&G.tel.kills)||{};
+    for(var _kk in _tk) P.kills[_kk]=(P.kills[_kk]||0)+(_tk[_kk]||0);
+  }
   togglePauseBox(false);
   var lines=[];
   // SPEC 3.5: settle the mercenary contract. Ten percent of his haul if he
@@ -13579,7 +13591,7 @@ silentExit:T.silentExit||0,
       lines.push('<span style="color:var(--amber)">PROGRESS +'+gained+
         (how==='dead'?' (half, for dying)':(how==='abandon'?' (a quarter, for backing out)':''))+
         '  &middot;  '+Math.min(cap,(P.sp||0)+gained).toLocaleString()+' of '+cap.toLocaleString()+
-        '</span><br><span style="color:var(--ash)">Not rep. Kills, loot, doors and extracting all pay it. It unlocks the ten rewards on the progress board at the terminal, and finishing the board moves the whole world up a tier.</span>');
+        '</span><br><span style="color:var(--ash)">Kills, loot, doors and walking out all pay it. It unlocks the ten rewards at the Mainframe.</span>');
     }
   })();
   if(G.strayPaid){
@@ -20701,7 +20713,7 @@ var ROADMAP=[
   ['DONE','Contracts that pay in gear, in three tiers, not only credits'],
   ['DONE','Emotes and parley: hail a pillager instead of shooting him'],
   ['DONE','Bushes you can hide in, and raiders who hide in them too'],
-  ['DONE','Ten rewards on the progress board, and finishing it moves the whole world up a tier'],
+  ['DONE','Ten rewards on the progress board, claimed in order and yours to keep'],
   ['DONE','COLD STORAGE, a third map built with no open ground in it'],
   ['DONE','Room acoustics, your own footsteps, and a stinger when something sees you'],
   ['DONE','The Peddler: sell your bag mid raid at half price, banked instantly'],

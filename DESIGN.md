@@ -20880,3 +20880,60 @@ correct, since those runs really were measured under a multiplier. I also have
 not re-measured any balance number against the neutral world, and every sim
 figure in this file older than today was taken at loot x1.08 and enemy health
 x1.06 without saying so.
+
+## v5.81: v5.80 broke the tenth reward, and an audit caught it before he did
+
+I ran a five-lens adversarial audit over the v5.80 removal, thirty agents, each
+finding independently attacked by a verifier told to refute it by default. It
+found four real defects, three of them mine from v5.80 and one older. It also
+refuted several plausible-looking claims, which is the half that makes the rest
+worth believing.
+
+THE BAD ONE. Renaming the final board rung from kind:'season' to kind:'last'
+orphaned its PAYOUT. The credits branch tests kind==='credits'||kind==='season',
+nothing constructs 'season' any more, and 'last' matched no branch that touches
+P.credits. So claiming the tenth reward paid ZERO instead of 10,000. Worse,
+claimTier pushes the index onto the claimed list BEFORE the payout and refuses
+re-entry on an already-claimed index, so the 10,000 credits were permanently
+unrecoverable without hand-editing the save. The block's own comment read "it
+pays and it stays paid". It stayed paid and it never paid.
+
+That is the worst class of thing I ship: silent, unrecoverable, and sitting
+behind the single action a player takes at the very end of the ladder. Driven
+after the fix: claiming the tenth rung pays 10,000 credits and the board reads
+ten of ten.
+
+THE LINE HE ACTUALLY COMPLAINED ABOUT WAS STILL THERE. The post-raid summary, the
+most-read progression text in the game, still ended "and finishing the board
+moves the whole world up a tier". That is the exact mechanic he asked me to
+remove, printed after every single raid, and v5.80 missed it. It is also the
+paragraph he quoted earlier with "i have no idea what this means or why it says
+this", so it was doing no work even when it was true. Rewritten to say what pays
+progress and where the rewards are.
+
+THE ROADMAP still advertised the world tier as a shipped feature in the dev box,
+which is the stale-authoritative-screen fault this file has been bitten by
+before. Rewritten.
+
+AND ONE THAT IS NOT v5.80's FAULT BUT IS MINE. The Cracked Visor gates on
+P.kills.warden. P.kills appears exactly once in the whole file, as that read.
+Nothing has ever written it: kills are counted per raid in telemetry and die with
+the raid, so the visor has been unobtainable since the day it shipped. I told him
+earlier this same tick that "all twelve cosmetics have a reachable, labelled
+gate", and that was wrong. I checked the labels and I checked the crown, and I
+called that reachability. The kill tally is now banked into the profile where the
+other run stats are banked. Driven: visor locked, one warden killed and taken
+through the outcome screen, visor unlocked.
+
+Verified: parse PASS at v5.81; four maps 86/87/58/72 entities and 236/200/154/225
+containers at baseline; all three real endings through the outcome screen with
+extract paying 48c and dead and abandon zero; hub, ascent check and the reward
+board; the tenth reward paying 10,000; the kill tally persisting and the visor
+unlocking; no "world tier" or "world up a tier" string anywhere on the page.
+
+Not verified: the audit's other confirmed finding, that the claim toast reads
+"Tier 10: ..." using the word tier for a rung, I judged to be ordinary English
+rather than residue of the removed system and left alone; a verifier argued both
+ways and I made a call. I also have not checked whether banking P.kills changes
+anything that reads a profile kill count elsewhere, because nothing else reads
+one, which is exactly why it was broken.
