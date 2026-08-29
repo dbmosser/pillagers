@@ -17929,3 +17929,66 @@ them reads as a hat rather than a smudge at 100 percent zoom. The Warden
 unlock is driven by setting P.kills.warden rather than by killing a Warden.
 No balance run: nothing in this build is reachable from a number a raid uses,
 so 320 paired seeds would measure only noise, and I did not spend them.
+
+================================================================================
+v5.28  DEATH IS FINAL, PROPERLY THIS TIME
+================================================================================
+
+His Q27 was one sentence: "REMOVE the return to your body concept entirely -
+once you die it is gone."
+
+I did half of it and reported it done. That is the whole of this entry.
+
+WHAT I ACTUALLY DID THE FIRST TIME. I set BODY_RAIDS to 0 and left a comment
+saying the grace period was over. It was not over. bodyStash still wrote
+P.body on every death. bodyAge still ran, and its very first branch is the
+`fresh` flag, added at some earlier build to fix an off-by-one where scavengers
+took their cut before you had a chance to go back. `fresh` returns early, so
+the counter never decrements on the first raid after a death. Which means the
+body sat on the map, fully intact, waiting for you, for exactly one raid. Only
+on the SECOND raid did raids-- take it to minus one and delete it.
+
+So the feature he asked me to delete was still there, working, in the one and
+only case that matters: the run immediately after you died. And the death
+summary told the player so, in a line reading "Your body is still out there,
+on GREYWATER, with 6 items. It will be on your map for 0 raids." That sentence
+is a bug and a broken promise in the same breath, and it is precisely the
+class of thing he named as his number one quit risk at Q50: an obvious problem
+that would not be present in a real game.
+
+WHAT THIS BUILD DOES. bodyStash returns null before it does anything else. It
+is the single gate, so all six downstream call sites simply see no body: no
+container is placed in buildRaid, no line appears in the hub, no fact appears
+on the map screen. The old rule is left below the return, unreachable, as the
+record of what it was.
+
+The summary line is replaced by a count and a full stop:
+
+  "5 items went down with you. There is nothing to go back for."
+
+A migration clears P.body on the next raid start. That matters: with the aging
+rule gone, nothing would ever delete a body already sitting in a save, so his
+own profile would have carried one forever.
+
+The safe pocket is untouched, because that is a different rule and he asked
+for it explicitly. One item still survives a death.
+
+WHY IT WAS WORTH THE BUILD. Every other thing in the beta spec assumes death
+costs you. The rig bet, the decision to push one more building, the hot zone,
+the extraction timing, all of it. With a one-raid grace period, none of those
+decisions had a price, and eleven builds of balance work were measuring a game
+where dying was a detour.
+
+Verified: parsecheck PASS at v5.28. Four maps clean at 110, 111, 74 and 91,
+all three raid endings driven. A save carrying a pre-v5.28 body has it cleared
+on the next raid start, and no body container is placed. Died carrying five
+items with two rigs owned: no body written, the worn rig gone, the spare kept,
+and the new line present with the correct count. Safe pocket kept one item of
+four and said so.
+
+Not verified by a balance run, on purpose: body placement has always been
+behind an `if(!sim)` guard, so no sim has ever had a body on the map and no
+sim number in the entire history of this project measured the recovery rule.
+320 paired seeds would return the same figures they already return. What this
+change moves is the cost of dying to a HUMAN, and the only instrument for that
+is him playing it.

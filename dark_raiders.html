@@ -705,7 +705,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.27';
+var VER='5.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1277,14 +1277,9 @@ function sealLines(){
   }
   return out;
 }
-function bodyLine(){
-  var B=P.body;
-  if(!B||!B.items) return '';
-  return 'Your body is on '+FIXED_MAPS[B.map].name+' with '+B.items.length+
-    ' item'+(B.items.length===1?'':'s')+
-    (B.rig&&B.rig!=='none'?(' and the '+armorById(B.rig).name):'')+
-    '. '+B.raids+' raid'+(B.raids===1?'':'s')+' before it is picked clean.';
-}
+// Death is final since v5.28, so there is never a body to report. Kept as a
+// function rather than deleted because four callers concatenate its result.
+function bodyLine(){ return ''; }
 function ensureContracts(){
   while(P.contracts.length<3) P.contracts.push(genContract());
   // Contracts saved before v1.38 carry no tier and no gear, so they would sit on
@@ -5248,6 +5243,13 @@ function bodyHere(){
   return B;
 }
 function bodyStash(how,bag,guns,rig){
+  // DEATH IS FINAL. His Q27, in his words: "once you die, its gone forever."
+  // Nothing writes P.body any more. The rest of this function is kept as the
+  // record of what the recovery rule used to be and is unreachable, because the
+  // interesting part is not the code, it is that a soft version of this made
+  // every death cost nothing and the game had no teeth for eleven builds.
+  return null;
+  /* eslint-disable no-unreachable */
   // Only a death leaves a body. Abandoning is a decision, not a disaster.
   if(how!=='dead') return null;
   var items=bag.slice();
@@ -5266,10 +5268,15 @@ function bodyStash(how,bag,guns,rig){
     fresh:1
   };
   return P.body;
+  /* eslint-enable no-unreachable */
 }
 // Called once at the start of every raid: the clock on the body only runs while
 // you are out there, so it cannot rot away while you sit in the Undercroft.
 function bodyAge(){
+  // MIGRATION. A save made before v5.28 can still hold a body, and with the
+  // recovery rule gone nothing would ever clear it, so it would sit on the map
+  // for the life of the profile. One raid start is enough to be rid of it.
+  if(P.body){ P.body=null; saveProfile(); return; }
   var B=P.body;
   if(!B||!B.items) return;
   // OFF BY ONE, fixed at v1.77. The comment below says the scavengers take their cut
@@ -13256,7 +13263,7 @@ silentExit:T.silentExit||0,
   // rather than a free upgrade.
   if(how==='dead'&&P.rig&&P.rig!=='none'){
     var lostRig=armorById(P.rig);
-    G.lostRig=P.rig;                 // it goes onto the body, not into the bin
+    G.lostRig=P.rig;                 // recorded for the summary count, then gone
     P.rigs=(P.rigs||[]).filter(function(r){ return r!==P.rig; });
     P.rig=(P.rigs.length?P.rigs[P.rigs.length-1]:'none');
     lines.push('<span style="color:var(--rust)">'+lostRig.name+' is gone.'+
@@ -13372,19 +13379,13 @@ var _cdone=contractExtract(G.bag,haul);
     // Everything the ledger just called GONE is not gone. It is lying where you
     // fell, and the map you died on will show it to you next time you deploy
     // there. One body at a time, so this replaces any older one.
-    var hadOld=!!(P.body&&P.body.items&&P.body.items.length);
-    var bLost=[];
-    for(j=0;j<lostIdx.length;j++) bLost.push(G.bag[lostIdx[j]]);
-    var bd=bodyStash('dead',bLost,gone,G.lostRig||'none');
-    if(!bd&&hadOld){
-      lines.push('<span style="color:var(--ash)">You had nothing worth leaving. The old body is still out there.</span>');
-    }
-    if(bd){
-      lines.push('<span style="color:var(--coolant)">Your body is still out there, on '+
-        FIXED_MAPS[bd.map].name+', with '+bd.items.length+' item'+(bd.items.length===1?'':'s')+
-        (bd.rig!=='none'?(' and the '+armorById(bd.rig).name):'')+
-        '. It will be on your map for '+BODY_RAIDS+' raids.</span>');
-      if(hadOld) lines.push('<span style="color:var(--rust)">Whatever was on the last one is gone now.</span>');
+    // NOTHING TO GO BACK FOR. The ledger above already listed every item by
+    // name; this is the line that tells you the list is final, and it is the
+    // only thing standing between "you lost some stuff" and "that run mattered".
+    var nLost=lostIdx.length+gone.length+((G.lostRig&&G.lostRig!=='none')?1:0);
+    if(nLost>0){
+      lines.push('<span style="color:var(--rust)">'+nLost+' item'+(nLost===1?'':'s')+
+        ' went down with you. There is nothing to go back for.</span>');
     }
   } else {
     // An abandon never resolves the raid, so the armoury must read exactly as
@@ -21397,7 +21398,7 @@ var _myR=0;
     if(MS.cont!==undefined)facts.push(MS.cont+' containers a raid');
     if(MS.haul!==undefined)facts.push('median haul '+MS.haul.toLocaleString()+'c');
     if(R.tier>0||R.cut>0) facts.push('seal tier '+(R.tier+1)+', '+Math.round(R.cut)+' of '+sealNeed(R.tier)+'s cut');
-    if(P.body&&P.body.items&&P.body.map===i) facts.push('YOUR BODY IS HERE, '+P.body.items.length+' items');
+
     h+='<div class="row sectorpick" data-map="'+i+'" style="display:block;cursor:pointer;'+
        (sel?'border-left:3px solid var(--amber);background:rgba(255,192,74,.10)':'border-left:3px solid transparent')+'">'+
        '<div><b style="color:'+(sel?'var(--amber)':'var(--bone)')+'">'+M.name+'</b>'+
