@@ -21139,3 +21139,38 @@ vacuous. The label checks in this entry are from the source table, not from a
 photograph, and nobody has seen the console with the safe pocket row missing. I
 also have not audited the other sixty-odd sliders for the same Settings collision,
 only the six that GAMEOPTS names.
+
+## tools: the tuning console can be verified now, and the collision audit is finished
+
+Two loose ends from v5.86, both closed.
+
+THE CONSOLE COULD NOT BE DRIVEN. toggleTune and buildTune live inside the IIFE
+and nothing exposed them, so v5.86's label checks ran against an empty list and
+reported two passes that were vacuous. I caught that and fell back to reading the
+source, which was right but is not the standard this project holds. __tune2 now
+opens and closes it, hands back the authored slider table, and computes the
+Settings collision from GAMEOPTS rather than from my memory of it.
+
+Driven against the live game rather than the file: 32 sliders, the Safe pocket
+row absent, nSnitch reading Criers, and the console rendering all 32 rows when
+opened.
+
+AND THE COLLISION AUDIT IS COMPLETE, which was v5.86's other not-verified line.
+Settings owns eight dials: eDmg, lootMult, nCrawler, nRaider, nSentry, raidSec,
+raiderWaves and siegeVol. Exactly six of them also have a slider, and they are
+the six v5.86 fixed. raiderWaves and siegeVol have no slider, so nothing further
+collides and there is no second instance of the bug hiding in the other
+twenty-six sliders. That is now computed by the game on demand instead of being a
+claim I have to keep re-checking by hand.
+
+Verified: four maps 86/87/58/72 entities and 236/200/154/225 containers at
+baseline; all three real endings through the outcome screen with extract paying
+48c and dead and abandon zero; hub and ascent check; the console opening,
+rendering 32 rows and closing; 135 hooks with the fixture silent.
+
+No VER bump: dark_raiders.html is untouched by this commit.
+
+Not verified: __tune2 reads the authored table and the live DOM row count, but it
+does not check that each rendered row's slider is actually wired to the dial its
+label names. A row could still show the right words over the wrong dial and this
+would not catch it.

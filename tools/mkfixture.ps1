@@ -156,6 +156,20 @@ window.__setWorld=function(w,h){ WORLD_W=w; WORLD_H=h; AREA=(WORLD_W*WORLD_H)/(2
 window.__ctxCanvas=function(){ return ctx.canvas; };
 window.__hud=function(){ drawHUD(); };
 window.__conceal={bushAt:inBush,at:concealAt,mapBush:bushAtMap};
+  window.__tune2={
+    open:function(){ toggleTune(true); },
+    close:function(){ toggleTune(false); },
+    // the authored table, so a label can be checked without rendering
+    sliders:function(){ return SLIDERS.map(function(S){ return {key:S[0],label:S[1],min:S[2],max:S[3]}; }); },
+    // which dials the friendly Settings words own, and which of them a slider
+    // also offers: the v5.86 collision, computable rather than remembered
+    owned:function(){ var o={}; GAMEOPTS.forEach(function(r){ r.opts.forEach(function(x){
+                        for(var c in x.cfg) o[c]=1; }); }); return Object.keys(o); },
+    collisions:function(){ var o={}; GAMEOPTS.forEach(function(r){ r.opts.forEach(function(x){
+                        for(var c in x.cfg) o[c]=1; }); });
+                        return SLIDERS.filter(function(S){ return o[S[0]]; }).map(function(S){ return S[0]; }); },
+    overridden:function(){ return (P&&P.tuned)||{}; }
+  };
   window.__los={
     // straight line between two points, the test the game uses for a shot
     clear:function(ax,ay,bx,by){ refreshVseg(); return losClear(ax,ay,bx,by,G.vseg); },
