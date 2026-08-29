@@ -19442,3 +19442,68 @@ which is what the NaN fix was about, but whether a Choir kill is correctly
 attributed to the player is untested.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.54  NIGHT, MEASURED AT LAST
+================================================================================
+
+v5.54: night, measured at last
+
+HIS SPEC flags this as the thing to fix BEFORE anything else about day and
+night: "NIGHT IS TOO DARK AND HARD - he avoids playing it." He has said it five
+times. I have adjusted things in response twice and never once measured the
+screen.
+
+MEAN LUMINANCE of the whole world canvas, same seed, same map, sixty ticks in:
+
+  DAY, clear        96.7
+  NIGHT, clear      21.0     22 percent of day
+  NIGHT, blackout   20.4     21 percent of day
+  DAY, blackout     96.7     unchanged, because lamps give nothing in daylight
+
+Night was a fifth as bright as day. That is not a mood, it is a screen he cannot
+read, and BLACKOUT at night was very nearly free because it was already black.
+
+THREE SUSPECTS, TWO WRONG, AND I AM WRITING DOWN THE WRONG ONES because each
+looked obviously right:
+
+  1. The light-layer sheet. Lowered 0.52 to 0.30. Night went 22 to 23 percent.
+     Barely moved.
+  2. The ground bake. Night is not an overlay: bakeGround paints the entire
+     world in a separate palette, floors darkened 55 percent, roads, walls,
+     vegetation and water all swapped for near-black. Lifted the whole night
+     palette. 23 to 28 percent. A real term, not the big one.
+  3. THE FOG OF WAR SHEET, which is the answer. Over the roughly seventy percent
+     of screen outside your vision cone it is rgba(4,7,26) at 0.797 alpha at his
+     brightness. EIGHTY PERCENT OPAQUE NEAR-BLACK. Day is the same sheet at 0.40
+     in a warm colour.
+
+The comment directly above that line says "night is too dark and jarring, three
+times now" and the change made in response was .87 to .86. One percent, against
+a complaint he had already made three times and has now made five.
+
+THE LIFT IS SAFE BY THAT SHEET'S OWN RULE, written into the file at v3.92 and
+used there to justify exactly this for daylight fog: the stealth budget lives in
+whether an enemy is DRAWN, gated on e.seen, and NOT in how opaque the unseen area
+is. Verified rather than assumed: at night, 85 of 86 entities are still not drawn.
+No hostile is revealed, no sight range moves, wx().view is untouched.
+
+  night is now 43.1 against day 96.7, 45 percent, up from 22
+  blackout at night 42.1, 44 percent
+  all four maps land within one point of each other, 43 to 44 percent
+
+Still obviously night, still lamp-lit rather than flat, and legible. The clamp
+floor came down with the value so the brightness dial can still reach a genuinely
+dark night for anyone who wants one.
+
+Verified: parse PASS at v5.54. Four maps driven in BOTH conditions, 86/87/58/72
+each, because the palette change touches the bake. All three endings through the
+outcome screen, hub and ascent check clean, 22 hooks present, fixture silent.
+
+Not verified: I have measured mean luminance, which is not the same as
+readability. A brighter average could still hide the one thing that matters if
+the contrast lands wrong, and only his eyes settle that. This is also the first
+change this session that alters how the game LOOKS in every frame rather than
+what it does, so it is the one most likely to need pulling back.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

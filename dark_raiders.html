@@ -755,7 +755,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.53';
+var VER='5.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4681,7 +4681,7 @@ function dcol(d,key){
   // The v1.0 palette is authored AT daylight, so lightening it again blew every
   // surface toward white and destroyed the four value bands. Day uses it as
   // written; night darkens from it instead of the reverse.
-  return isDay()?c:darkHex(c,0.42);
+  return isDay()?c:darkHex(c,0.24);
 }
 // A POSITIONAL HASH FOR SURFACE DETAIL. Deterministic in x and y, uniform in
 // [0,1), and deliberately NOT part of the seeded gameplay stream: rendering must
@@ -4717,14 +4717,14 @@ function bakeGround(map){
   // radial fades around buildings must dissolve into the SAME colour or every
   // building wears a grey halo on a tinted sector, hence hexA0 below.
   var GDAY=(map.ground&&map.ground.day)||'#6E6A63';
-  var GNGT=(map.ground&&map.ground.night)||'#12161c';
+  var GNGT=(map.ground&&map.ground.night)||'#252c38';
   function hexA0(h){ return 'rgba('+parseInt(h.slice(1,3),16)+','+parseInt(h.slice(3,5),16)+','+parseInt(h.slice(5,7),16)+',0)'; }
   c.fillStyle=isDay()?GDAY:GNGT; c.fillRect(0,0,WORLD_W,WORLD_H);
   for(i=0;i<map.buildings.length;i++){
     var b=map.buildings[i],D=DISTRICTS[b.d];
     var cx=b.x+b.w/2,cy=b.y+b.h/2,rad=Math.max(b.w,b.h)*1.5;
     var gr=c.createRadialGradient(cx,cy,20,cx,cy,rad);
-    var df=isDay()?D.floor:darkHex(D.floor,0.55);
+    var df=isDay()?D.floor:darkHex(D.floor,0.34);
     gr.addColorStop(0,df); gr.addColorStop(.55,df); gr.addColorStop(1,hexA0(isDay()?GDAY:GNGT));
     c.fillStyle=gr; c.beginPath(); c.arc(cx,cy,rad,0,6.2832); c.fill();
   }
@@ -4759,7 +4759,7 @@ function bakeGround(map){
   // grove rects in the blocklist so roads detour woods. The bake used to lay
   // its own runs and skip groves by grid cell, but authored woods carry
   // r:-1,c:-1, so the skip never fired and tarmac ran under every grove.
-  c.fillStyle=isDay()?'#857C6F':'#221a26';
+  c.fillStyle=isDay()?'#857C6F':'#3c3242';
   for(i=0;i<(map.roadRects||[]).length;i++){ var RR2=map.roadRects[i];
     c.fillRect(RR2.x,RR2.y,RR2.w,RR2.h); }
   c.fillStyle='rgba(200,180,120,.20)';
@@ -4771,9 +4771,9 @@ function bakeGround(map){
     var MH=map.spawns[i];
     c.fillStyle='rgba(24,20,28,.55)';
     c.beginPath(); c.ellipse(MH.x,MH.y,20,15,0,0,6.2832); c.fill();
-    c.fillStyle=isDay()?'#4a4a52':'#22222a';
+    c.fillStyle=isDay()?'#4a4a52':'#35353f';
     c.beginPath(); c.ellipse(MH.x,MH.y,17,12.5,0,0,6.2832); c.fill();
-    c.fillStyle=isDay()?'#5e5e68':'#2c2c36';
+    c.fillStyle=isDay()?'#5e5e68':'#42424e';
     c.beginPath(); c.ellipse(MH.x,MH.y-1.5,15,11,0,0,6.2832); c.fill();
     c.strokeStyle='rgba(20,16,24,.5)'; c.lineWidth=1.4;
     for(var mr2=0;mr2<3;mr2++){
@@ -4788,9 +4788,9 @@ function bakeGround(map){
     var PD=map.plats[i],lf=PD.lift||24;
     c.fillStyle='rgba(18,14,22,.40)';
     c.fillRect(PD.x+6,PD.y+lf*0.5,PD.w,PD.h);
-    c.fillStyle=isDay()?'#9a9384':'#2a2732';
+    c.fillStyle=isDay()?'#9a9384':'#453f4e';
     c.fillRect(PD.x,PD.y,PD.w,PD.h);
-    c.fillStyle=isDay()?'#b3ab99':'#35313d';
+    c.fillStyle=isDay()?'#b3ab99':'#524b5c';
     c.fillRect(PD.x,PD.y,PD.w,4);
     c.fillStyle='rgba(20,16,24,.35)';
     c.fillRect(PD.x,PD.y+PD.h-5,PD.w,5);
@@ -4799,7 +4799,7 @@ function bakeGround(map){
   }
   for(i=0;i<(map.ramps||[]).length;i++){
     var RP=map.ramps[i];
-    c.fillStyle=isDay()?'#8f8878':'#252230';
+    c.fillStyle=isDay()?'#8f8878':'#3d3848';
     c.fillRect(RP.x,RP.y,RP.w,RP.h);
     c.fillStyle='rgba(255,246,220,.12)';
     var horiz2=RP.w>=RP.h;
@@ -4811,7 +4811,7 @@ function bakeGround(map){
   // turf under the woods: layered organic blotches, darker at the rim
   for(i=0;i<(map.woods||[]).length;i++){
     var WW=map.woods[i];
-    c.fillStyle=vegT(isDay()?'#6E8A52':'#16240f',map.veg);
+    c.fillStyle=vegT(isDay()?'#6E8A52':'#2b3d20',map.veg);
     c.fillRect(WW.x+6,WW.y+6,WW.w-12,WW.h-12);
     for(j=0;j<26;j++){
       c.fillStyle='rgba(40,70,30,'+rnd(.10,.24)+')';
@@ -4836,7 +4836,7 @@ function bakeGround(map){
   // flooded ground, baked with the rest of the floor
   for(i=0;i<(map.water||[]).length;i++){
     var q=map.water[i];
-    c.fillStyle=isDay()?'#5F93A0':'#101c22';
+    c.fillStyle=isDay()?'#5F93A0':'#22383f';
     c.fillRect(q.x,q.y,q.w,q.h);
     c.fillStyle=isDay()?'rgba(150,200,215,.16)':'rgba(90,150,180,.10)';
     for(j=0;j<Math.floor(q.w*q.h/2600);j++){
@@ -4859,7 +4859,7 @@ function bakeGround(map){
     }
     if(!wetB) continue;
     var DW=DISTRICTS[BW.d];
-    c.fillStyle=isDay()?DW.floor:darkHex(DW.floor,0.55);
+    c.fillStyle=isDay()?DW.floor:darkHex(DW.floor,0.34);
     c.fillRect(BW.x,BW.y,BW.w,BW.h);
   }
   // contact shadow where every wall meets the ground, baked once so it is free
@@ -4927,7 +4927,7 @@ function bakeGround(map){
     c.fillStyle='rgba(0,0,0,.30)'; c.fillRect(b3.x,b3.y,b3.w,b3.h);
     // same fault as the roads: building interiors stayed night-dark while the
     // world outside them lightened
-    c.fillStyle=isDay()?D3.accent:darkHex(D3.accent,0.45);
+    c.fillStyle=isDay()?D3.accent:darkHex(D3.accent,0.26);
     c.globalAlpha=.55; c.fillRect(b3.x+8,b3.y+8,b3.w-16,b3.h-16); c.globalAlpha=1;
     c.strokeStyle='rgba(0,0,0,.28)'; c.lineWidth=1;
     for(j=b3.x+8;j<b3.x+b3.w-8;j+=46){ c.beginPath(); c.moveTo(j,b3.y+8); c.lineTo(j,b3.y+b3.h-8); c.stroke(); }
@@ -14222,6 +14222,10 @@ function cosWorn(kind){
   if(c&&c.kind===kind&&cosOwned(c)) return c.id;
   return kind==='hair'?'blonde':'none';
 }
+// How heavy the darkness sheet is, day and night, before the brightness dial
+// divides it. Named because night being unreadable is a complaint he has made
+// twice and both previous attempts adjusted the wrong number.
+var DAY_SHEET=0.13, NIGHT_SHEET=0.30;
 var DRAW_LIFT_MAX=30;
 function drawLift(v){ return (isFinite(v)&&v>0)?Math.min(v,DRAW_LIFT_MAX):0; }
 function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
@@ -16368,8 +16372,11 @@ var b=G.bullets[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   // alpha expression below is byte for byte what it was, and the result was
   // measured rather than trusted, which is how the first attempt at these values
   // was caught making the hidden 92 percent of the screen 44 percent brighter.
-  lx2.fillStyle=isDay()?('rgba(22,28,54,'+clamp(.13/BR,.02,.2)+')')
-                       :('rgba(7,7,26,'+clamp(.52/BR,.05,.82)+')');
+  // NIGHT_SHEET was 0.52 and put night at 22 percent of day's brightness,
+  // measured. 0.30 is the value that lands it near 45 percent: still obviously
+  // night, still lamp-lit rather than flat, and legible. DAY_SHEET is untouched.
+  lx2.fillStyle=isDay()?('rgba(22,28,54,'+clamp(DAY_SHEET/BR,.02,.2)+')')
+                       :('rgba(7,7,26,'+clamp(NIGHT_SHEET/BR,.05,.82)+')');
   lx2.fillRect(0,0,W,H);
   // From here the light layer works in WORLD coordinates, matched to the world
   // canvas, so every light below uses its own position and radius directly and
@@ -16545,7 +16552,13 @@ var b=G.bullets[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
                        // wash drops from a .87 ceiling to about .80 at his
                        // brightness, with a touch more blue, so unlit shapes
                        // keep their silhouettes and the dark stays dark.
-                       :('rgba(4,7,26,'+clamp(.86-(BR-1)*.09,.68,.90)+')');
+                       // v5.54: .86 to .60. Measured, not argued: at .86 night
+                       // renders at 28 percent of day's mean luminance and he
+                       // has said it is unplayable five times. The floor of the
+                       // clamp comes down with it so the brightness dial can
+                       // still reach a genuinely dark night for anyone who
+                       // wants one.
+                       :('rgba(4,7,26,'+clamp(.60-(BR-1)*.09,.40,.90)+')');
   fx2.fillRect(0,0,W,H);
   // the fog cutouts are all world shapes, so the fog layer takes the world
   // transform exactly as the light layer does
