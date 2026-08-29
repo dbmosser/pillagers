@@ -168,6 +168,27 @@
      STACK along the bottom. This is what replaces a screen explaining itself in
      a sentence: the controls are stated once, as keys, and they are true
      everywhere an item cell appears. */
+  /* ---- THE LOADOUT COLUMN, v6.01, off his Arc Raiders screenshot. */
+  .invside{ min-width:0; display:flex; flex-direction:column; }
+  .lohead{ padding:9px 12px 7px; display:flex; justify-content:space-between;
+    align-items:baseline; gap:8px; font-size:12.5px; font-weight:700;
+    letter-spacing:.15em; color:var(--bone); }
+  .lohead em{ font-style:normal; font-weight:400; font-size:9.5px;
+    letter-spacing:.08em; color:var(--ash); }
+  /* flex:none on the two fixed sections, so BACKPACK is the only one that grows
+     and neither of the others can be squeezed into it. */
+  .losec{ border-top:1px solid var(--steel-hi); display:flex; flex-direction:column;
+    min-height:0; flex:none; }
+  .loslab{ padding:7px 12px 1px; display:flex; justify-content:space-between; gap:8px;
+    font-size:8.5px; letter-spacing:.17em; color:var(--ash); text-transform:uppercase; }
+  .loslab b{ color:var(--bone); font-weight:600; }
+  /* The safe pocket is one cell and must not stretch like a grid. */
+  #safegrid{ flex:none; min-height:0; padding:8px 12px 10px;
+    grid-template-columns:repeat(auto-fill,minmax(52px,1fr)); }
+  #safegrid .cellempty{ border:1px dashed var(--steel-hi); border-radius:3px;
+    aspect-ratio:1/1; display:flex; align-items:center; justify-content:center;
+    font-size:8px; letter-spacing:.1em; color:var(--ash); text-align:center;
+    padding:4px; grid-column:span 2; }
   .keybar{ display:flex; gap:16px; align-items:center; flex-wrap:wrap;
     padding:7px 12px; border-top:1px solid var(--steel-hi); }
   .keybar div{ display:flex; align-items:center; gap:6px;
@@ -639,14 +660,24 @@
     <div class="panel">
       <div class="invtabs" id="stashtabs"></div>
       <div id="invcols" style="display:flex;gap:0;flex:1;min-height:0">
-        <div style="flex:1.35;min-width:0;display:flex;flex-direction:column">
-          <div class="glab" style="padding:6px 12px 0">STASH  &middot;  <span id="stashn">0</span> held.</div>
+        <div class="invside" style="flex:1.35">
+          <div class="lohead">STASH<em><span id="stashn">0</span> held</em></div>
           <div class="invgrid" id="stashgrid"></div>
         </div>
-        <div id="kitcol" style="flex:1;min-width:0;display:flex;flex-direction:column;
-             border-left:1px solid var(--steel-hi)">
-          <div class="glab" style="padding:6px 12px 0">INVENTORY  &middot;  <span id="kitn">0</span> going up.</div>
-          <div class="invgrid" id="kitgrid"></div>
+        <div id="kitcol" class="invside" style="flex:1;border-left:1px solid var(--steel-hi)">
+          <div class="lohead">LOADOUT<em><span id="kitval">0</span>c going up</em></div>
+          <div class="losec" style="flex:1;border-top:none">
+            <div class="loslab">Backpack<b><span id="kitn">0</span> packed</b></div>
+            <div class="invgrid" id="kitgrid"></div>
+          </div>
+          <div class="losec">
+            <div class="loslab">Quick use<b><span id="quickn">0</span> on keys</b></div>
+            <div id="hotplanwrap"></div>
+          </div>
+          <div class="losec">
+            <div class="loslab">Safe pocket<b><span id="safen">0/1</span></b></div>
+            <div class="invgrid" id="safegrid"></div>
+          </div>
         </div>
       </div>
       <div class="keybar" id="invkeybar">
@@ -656,7 +687,6 @@
         <div><kbd>ALT</kbd> split stack</div>
         <div><kbd>1-9</kbd> bind to key</div>
       </div>
-      <div id="hotplanwrap"></div>
       <div id="stashdetail" style="padding:8px 12px;border-top:1px solid var(--steel-hi);
            min-height:52px;font-size:11px;color:var(--ash)"></div>
       <div style="padding:8px 12px;border-top:1px solid var(--steel-hi)">
@@ -821,7 +851,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.00';
+var VER='6.01';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13844,6 +13874,22 @@ var _cdone=contractExtract(G.bag,haul);
     idx.sort(function(a,b){ return ival(G.bag[b])-ival(G.bag[a]); });
     var nSafe=hasTerm('pockets')?0:Math.min(Math.round(CFG.safeSlots),idx.length);
     for(j=0;j<nSafe;j++){ saved.push(G.bag[idx[j]]); bankItem(G.bag[idx[j]]); }
+    // v6.01, his spec "ONE safe-pocket item survives death". Checked against the
+    // BAG, so an item you named and then used or lost is not conjured back.
+    // G.bag is NOT spliced. haul was computed from it and the ledger below reads
+    // it by index, so the item is removed from the INDEX LIST instead: banked,
+    // dropped out of idx, and therefore never listed as GONE. The search starts at
+    // nSafe so an item the automatic rebate already took cannot be banked twice.
+    if(P.safeUp){
+      var _spos=-1,_si2;
+      for(_si2=nSafe;_si2<idx.length;_si2++) if(G.bag[idx[_si2]]===P.safeUp){ _spos=_si2; break; }
+      if(_spos>=0){
+        var _sk=G.bag[idx[_spos]],_sit=ITEMS[_sk];
+        bankItem(_sk); saved.push(_sk); idx.splice(_spos,1);
+        lines.push('<span style="color:var(--gain)">'+(_sit?_sit.name:_sk)+
+          ' was in your safe pocket. It comes home.</span>');
+      }
+    }
     var savedVal=0;
     for(j=0;j<saved.length;j++) savedVal+=ival(saved[j]);
     var lostIdx=idx.slice(nSafe),shown=lostIdx.slice(0,7);
@@ -21244,11 +21290,52 @@ var ICLASS={
 // nothing leaves the stash until the lift goes. stageKitLive is what reconciles
 // the two, so reading it here means a kit entry whose stash copy was sold stops
 // being shown as though it were still coming with you.
+// v6.01: the safe pocket. P.safe names ONE item key; one copy of it comes home if
+// you die carrying it.
+function safeKey(){ return (P&&P.safe&&ITEMS[P.safe])?P.safe:null; }
+function setSafe(k){
+  if(k&&!ITEMS[k]) return 'That is not a thing you can carry.';
+  if(k&&ITEMS[k].use==='gun') return 'A gun does not fit in a safe pocket.';
+  P.safe=k||null; saveProfile(); return null;
+}
+function renderSafe(){
+  var sg=document.getElementById('safegrid'); if(!sg) return;
+  sg.innerHTML='';
+  var k=safeKey();
+  var lab=document.getElementById('safen');
+  if(lab) lab.textContent=(k?1:0)+'/1';
+  if(!k){
+    var em=document.createElement('div'); em.className='cellempty';
+    em.textContent='ONE ITEM SURVIVES YOUR DEATH. DROP IT HERE.';
+    sg.appendChild(em);
+  } else {
+    var cell=invCell(k,1,{from:'safe',verb:'click: empty the pocket',
+      act:function(){ setSafe(null); try{ sfx("pick"); }catch(e){} renderHub(); }});
+    if(cell){ cell.title=ITEMS[k].name+'\nin the safe pocket, comes home if you die carrying it'; sg.appendChild(cell); }
+  }
+  // Dropping anything here names it, which is the same gesture as everywhere else.
+  dropzone(sg,function(key){
+    var why=setSafe(key);
+    if(why){ say2(why); try{ sfx("clank"); }catch(e){} return; }
+    try{ sfx("pick"); }catch(e){}
+    renderHub();
+  });
+}
 function renderKitCol(){
   var kg=document.getElementById('kitgrid'); if(!kg) return;
   var K=stageKitLive();
   var kn=document.getElementById('kitn'); if(kn) kn.textContent=K.length;
   var sn=document.getElementById('stashn'); if(sn) sn.textContent=P.stash.length;
+  // v6.01: the loadout header carries what it is worth, the way his screenshot
+  // carries weight and value. Weight is deliberately absent: his spec says weight
+  // is irrelevant, so putting a weight readout there would be inventing a system.
+  var kvEl=document.getElementById('kitval');
+  if(kvEl){ var kv=0; for(var _kq=0;_kq<K.length;_kq++) kv+=ival(K[_kq]);
+    kvEl.textContent=kv.toLocaleString(); }
+  var qn=document.getElementById('quickn');
+  if(qn){ var qc=0,_ha=P.hotAssign||{}; for(var _qk in _ha) if(_ha[_qk]) qc++;
+    qn.textContent=qc; }
+  renderSafe();
   kg.innerHTML='';
   if(!K.length){
     var em=document.createElement('div'); em.className='cellempty';
@@ -21374,6 +21461,13 @@ function itemMenuRows(key,ctx,count){
   if(it.use!=='gun'){
     rows.push({sep:1});
     rows.push({keys:1,label:'Put on key'});
+  }
+  // v6.01: naming the safe pocket is a menu verb as well as a drop target.
+  if(it.use!=='gun'){
+    var _isSafe=(P.safe===key);
+    rows.push({label:_isSafe?'Take out of safe pocket':'Put in safe pocket',
+      hint:_isSafe?null:'survives death',
+      act:function(){ var why=setSafe(_isSafe?null:key); if(why) say2(why); refreshInv(); }});
   }
   if(ctx!=='kit'){
     rows.push({sep:1});
@@ -21531,17 +21625,20 @@ function hotPlanHTML(where){
   // stage: he is ON the ascent check, so pointing at it is circular and the
   // column beside the plan is called CARRYING. hub: the plan is a plan, and what
   // makes it fire is chosen later.
-  var _hint=(where==='stage')
-    ? 'HOTBAR PLAN  &middot;  Keys 1 and 2 are your two guns and cannot be changed here. Keys 3 to 9 are yours to set, and a key only fires if you are CARRYING that item. Click one to clear it.'
-    : 'HOTBAR PLAN  &middot;  Keys 1 and 2 are your two guns, chosen on the figure. Keys 3 to 9 are yours: point at something in the stash and press its number below, or drag it here. Putting it on a key also packs it, so it comes up with you. Click a key to clear it.';
+  // v6.01: no paragraph. The section is labelled QUICK USE in the loadout column
+  // and the key bar below states every gesture, so this said nothing new and
+  // overflowed its section onto the backpack cells while saying it. The one fact
+  // that is NOT stated elsewhere, that keys 1 and 2 are your guns and are set on
+  // the figure, is on the gun cells'' own tooltips.
+  var _hint='';
   // Keys 1 and 2 have never been assignable in a raid, so anything sitting on
   // them is dead weight from before v5.72 and goes now.
   if(P.hotAssign){ delete P.hotAssign[0]; delete P.hotAssign[1]; }
   var _g1=WEAPONS[P.equipped]||WEAPONS.fists;
   var _g2=(P.equippedSec&&P.equippedSec!=='none'&&WEAPONS[P.equippedSec])?WEAPONS[P.equippedSec]:null;
-  var h='<div style="padding:7px 12px;border-bottom:1px solid var(--steel-hi)">'+
-    '<div class="glab" style="margin-bottom:5px">'+_hint+'</div>'+
-    '<div style="display:flex;gap:4px">';
+  var h='<div style="padding:4px 12px 9px">'+
+    (_hint?('<div class="glab" style="margin-bottom:5px">'+_hint+'</div>'):'')+
+    '<div style="display:flex;gap:4px;flex-wrap:wrap">';
   for(var i=0;i<HOTBAR_N;i++){
     // THE TWO GUN KEYS. Shown so the numbers on this row are the numbers he will
     // actually press, and locked so he cannot build a plan the raid will discard.
@@ -23282,6 +23379,9 @@ document.getElementById('stagedrop').onclick=function(){
     var ix=P.stash.indexOf(kit[i]);
     if(ix>=0){ P.stash.splice(ix,1); P.dropKit.push(kit[i]); }
   }
+  // v6.01: the safe pocket only counts if the named item is genuinely going up.
+  // Naming something you left in the vault protects nothing.
+  P.safeUp=(P.safe&&P.dropKit.indexOf(P.safe)>=0)?P.safe:null;
   P.kit=[]; P.kitChosen=1; saveProfile();
   document.getElementById('stagemodal').classList.remove('on');
   document.getElementById('hub').classList.remove('on');

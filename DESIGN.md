@@ -21898,3 +21898,68 @@ NOT implemented, so the bar advertises four verbs and they have five. The cream
 detail panel, the top bar with tab pills and the vendor, crafting and cosmetics
 screens from his other four screenshots are not built; this build is the item cell
 and its verbs only.
+
+## v6.01: the loadout column, built like his screenshot, and a safe pocket that is a decision
+
+His Arc Raiders inventory shot is STASH on the left and LOADOUT on the right, and
+the loadout is not one list. It is named sections, each with its own count:
+    EQUIPMENT      BACKPACK 2/18      QUICK USE 3/4      SAFE POCKET 0/1
+Pillagers already had three of those four and called them nothing. The kit grid was
+"INVENTORY", the hotbar plan was a loose strip hanging below the whole panel with a
+paragraph explaining itself, and the safe pocket did not exist as a thing you could
+see. Naming them and stacking them in one column is most of the visual difference
+between his screenshot and mine.
+
+QUICK USE is exactly what the hotbar plan is, so it moved inside the loadout column
+and stopped being a separate region with its own instructions. The loadout header
+carries what you are taking up, in credits. It deliberately does NOT carry a weight
+readout even though his screenshot has one, because his spec says weight is
+irrelevant and a weight number would be inventing a system to look like the
+reference.
+
+THE SAFE POCKET IS A DECISION, NOT A REBATE. There was already a mechanism here,
+CFG.safeSlots, and it is the wrong shape: it keeps the N most VALUABLE items in your
+bag automatically when you die. That is a rebate. It is also set to 0 and has no UI,
+so nobody has ever seen it. The dial stays at 0 and untouched. What ships is a slot
+you fill on purpose, which is the only version that makes you think before the lift.
+
+The rule is strict on purpose: what survives is one copy of the item you named, and
+only if you actually carried it and still had it when you went down.
+
+DRIVEN END TO END, three cases, through the real lift button rather than a
+simulation of it:
+  named it and carried it   Data Core comes home. Manifest reads "Data Core was in
+                            your safe pocket. It comes home", the other three are
+                            listed GONE, and the arithmetic agrees: 520c saved,
+                            610c lost across 3 items.
+  named it, left it below   safeUp is null, nothing is protected, and the core is
+                            still sitting in the vault where it never left.
+  named it, spent it        safeUp is set but the bag no longer holds it, so nothing
+                            is conjured back and the stash ends empty.
+
+TWO BUGS IN MY OWN BUILD, both found by screenshotting it rather than trusting the
+diff. The hotbar plan's 46 word paragraph made its section taller than the flex
+column allowed, and the text rendered straight over the top of the backpack cells.
+Deleting the paragraph is most of the fix, and it should have gone anyway: it now
+sits under a label reading QUICK USE with a key bar beneath it stating every
+gesture, so it was repeating what two other things already said. The sections are
+also pinned so only BACKPACK grows, and no section can be squeezed into its
+neighbour again. Verified by measuring the three boxes rather than looking at them:
+backpack 146-229, quick use 248-295, safe pocket 314-392, no intersection.
+
+And a patch-tooling mistake worth the line: I put the here-string terminator inline
+at the end of a code line again, so the first replacement swallowed the second Sub
+call whole and the script made two edits where it declared three. The count guard
+refused to write, so the file was never touched. That guard has now caught this
+exact fault twice in one session and is the only reason neither reached disk.
+
+Verified: parse PASS at v6.01; four maps 236/200/154/225 and 86/87/58/72; three
+endings through the outcome screen; hub, ascent check, export builder; pin audit
+clean and no drift.
+
+Not verified: no EQUIPMENT section yet, so guns still live on the operator panel to
+the left rather than in the loadout column where his screenshot puts them. No
+category icon rail down the stash edge, and the stash header says "16 held" rather
+than their "27/64", because there is no stash cap to divide by. The cream detail
+panel, the top bar with tab pills, and the vendor, crafting, cosmetics and map
+screens are all still untouched.
