@@ -609,7 +609,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.18';
+var VER='5.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -661,7 +661,7 @@ function rr(){
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
-var DEF={coneDeg:130,viewFar:620,ambient:150,raidSec:600,pSpeed:158,extractWait:25,
+var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:600,pSpeed:158,extractWait:25,
   // HIS NOTE, 2026-08-26: "i want 10 raiders on the map, not 5". This is the count at
 // the REFERENCE map size and every map scales it by area, which is why he counted
 // five: nOf multiplies by clamp(AREA/4, 0.45, 1.6) and COLD STORAGE runs 0.69. That
@@ -1037,7 +1037,7 @@ function autoEquipOn(){
   if(G&&G.sim) return !!CFG.autoEquip;
   return (P.autoEquip===undefined)?!!CFG.autoEquip:!!P.autoEquip;
 }
-function saveProfile(){ P.cfg=CFG; P.cfgv=11; storeSet(JSON.stringify(P)); }
+function saveProfile(){ P.cfg=CFG; P.cfgv=12; storeSet(JSON.stringify(P)); }
 function loadProfile(){
   try{
     return storeGet().then(function(r){
@@ -1048,6 +1048,12 @@ if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.h
 // That plan is not a plan he made, so it goes, once. Guns are separately
 // protected in hotbarSlots so nothing like it can bite again.
 if(P.hotAssignAuto){ P.hotAssign={}; delete P.hotAssignAuto; } if(!P.menuZoom)P.menuZoom=1; if(!Array.isArray(P.kit))P.kit=[]; if(!Array.isArray(P.dropKit))P.dropKit=[];
+// BETA v1: one sector is offered, so a profile pointing at any other is moved
+// to the one that is. Not a display filter - the stored destination itself.
+if(typeof FIXED_MAPS!=='undefined'&&typeof mapOffered==='function'){
+  var _mi=clamp(P.mapIx||0,0,FIXED_MAPS.length-1);
+  if(!mapOffered(FIXED_MAPS[_mi])) P.mapIx=firstOfferedMap();
+}
           // v4.22: board rows were reworded to carry one-word answers, and the
           // saved drag order matches rows by exact text, so old text migrates.
           var RMV2={
@@ -1134,12 +1140,17 @@ if(P.hotAssignAuto){ P.hotAssign={}; delete P.hotAssignAuto; } if(!P.menuZoom)P.
           // THE DISCIPLINE THIS REINSTATES: when a shipped default changes
           // deliberately, bump cfgv in saveProfile AND here, or the old value
           // rides back in on every save.
-if((P.cfgv===9||P.cfgv===10||P.cfgv===11)&&P.cfg){
+if((P.cfgv===9||P.cfgv===10||P.cfgv===11||P.cfgv===12)&&P.cfg){
             // cfgv 10: downed timer default moved 24 to 17 on his run-55 order.
             if(P.cfgv===9&&P.cfg.downTime===24) P.cfg.downTime=17;
             // cfgv 11: he reversed the automatic pickup on his run-59 note, so a
             // saved profile carrying the old automatic value takes the new rule.
             if(P.cfgv<11&&P.cfg.hauledAboard===1) P.cfg.hauledAboard=0;
+            // cfgv 12: "i don't play night right now bc its too dark and hard".
+            // The ambient circle you carry goes 150 to 190. Only moved if it is
+            // still sitting on the old default, so a number he chose himself in
+            // the Tuning Console survives.
+            if(P.cfgv<12&&P.cfg.ambient===150) P.cfg.ambient=190;
             applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; try{ applyGameOpts(); }catch(e){} }
           else P.cfg=null;
         } }
@@ -2759,7 +2770,7 @@ var WEATHER=[
    line:'Rain. It covers your noise, and theirs.'},
   {id:'fog',name:'FOG BANK',view:0.60,noise:1,lights:0.85,rain:0,
    line:'Fog bank. You will not see them coming.'},
-  {id:'blackout',name:'BLACKOUT',view:1,noise:1,lights:0,rain:0,
+  {id:'blackout',name:'BLACKOUT',view:1,noise:1,lights:0.18,rain:0,
    line:'Grid is down. Every lamp on the map is dead.'},
   {id:'storm',name:'STORM',view:0.80,noise:0.48,lights:0.55,rain:2,lightning:true,
    line:'Storm. The lightning will show you to everything out there.'}
@@ -3013,6 +3024,14 @@ var LANDMARKS=[
 // it and spills into a channel below. Outer zones read differently on purpose:
 // the yard is open and crossable, the substation is a maze of small blocks, the
 // housing row is close interiors, the spillway is a committed crossing.
+// BETA v1 ships one sector. beta:1 marks the one that is offered; the others are
+// built and tested exactly as before but never appear on the deploy lift.
+var BETA_ONE_MAP=true;
+function mapOffered(m){ return !BETA_ONE_MAP||m.beta===1; }
+function firstOfferedMap(){
+  for(var i=0;i<FIXED_MAPS.length;i++) if(mapOffered(FIXED_MAPS[i])) return i;
+  return 0;
+}
 var FIXED_MAPS=[
 {
 id:'dam', name:'GREYWATER DAM', w:5200, h:4000,
@@ -3314,7 +3333,7 @@ ground:{day:'#75664F',night:'#16140f'},
 // meet things constantly and you almost never see them coming. That is the
 // answer to TENSE AND FRIGHTENING that geometry can give.
 {
-id:'cold', name:'COLD STORAGE', w:4200, h:3400,
+id:'cold', name:'COLD STORAGE', beta:1, w:4200, h:3400,
 ground:{day:'#55647A',night:'#10151d'},
   story:{x:1900,y:360,name:'THE MANIFEST',
     text:'A clipboard, frozen to the desk: "Inventory, year one after departure: forty thousand tonnes of provisions, ownerless. The machines keep the cold chain unbroken. Nobody has told them to stop."'},
@@ -5084,7 +5103,10 @@ function applyWeak(e,W){
 //   2. It ROTS. Three raids, and each raid you leave it out there the scavengers
 //      take a share of what is on it.
 //   3. It is on the map from the start, so it is a plan, not a surprise.
-var BODY_RAIDS=3;
+// HIS ORDER, Q27: "once you die, its gone forever." The body no longer persists
+// between raids at all. Zero rather than a deleted system, so every call site
+// keeps working and the grace period is simply over.
+var BODY_RAIDS=0;
 function bodyHere(){
   var B=P.body;
   if(!B||!B.items) return null;
@@ -20912,7 +20934,9 @@ var _myR=0;
   var rows=host.querySelectorAll('.sectorpick');
   for(var r=0;r<rows.length;r++){
     rows[r].onclick=function(){
-      P.mapIx=parseInt(this.getAttribute('data-map'),10);
+      var _px=parseInt(this.getAttribute('data-map'),10);
+      if(!mapOffered(FIXED_MAPS[_px])) return;
+      P.mapIx=_px;
       saveProfile(); syncMapBtn(); renderSector();
     };
   }
