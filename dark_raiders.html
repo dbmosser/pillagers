@@ -778,7 +778,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.90';
+var VER='5.91';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1093,7 +1093,7 @@ function rfill(r){
 var SHOP=[
   {k:'bandage',kind:'item',price:110,rep:0},{k:'medkit',kind:'item',price:390,rep:0},
   {k:'ammobox',kind:'item',price:170,rep:0},{k:'smoke',kind:'item',price:150,rep:0},
-  {k:'decoy',kind:'item',price:100,rep:0},{k:'frag',kind:'item',price:140,rep:0},{k:'stim',kind:'item',price:160,rep:0},
+  {k:'decoy',kind:'item',price:100,rep:0},{k:'frag',kind:'item',price:320,rep:0},{k:'stim',kind:'item',price:320,rep:0},
   {k:'plate',kind:'item',price:620,rep:800},
 
   {kind:'pack',lvl:1,price:450,rep:0},{kind:'pack',lvl:2,price:1300,rep:1500},
@@ -1186,8 +1186,8 @@ var RECIPES=[
   // materials selling for 258, which is a printer, the precise thing this audit existed
   // to rule out. Two decoys need inputs worth between 160 and 200, and one component kit
   // at 179 is the only clean way to land inside it.
-  {name:'2x Smoke Canister',out:{smoke:2},need:{comp:1,cell:1}},
-  {name:'2x Decoy Beacon',out:{decoy:2},need:{comp:1}},
+  {name:'2x Smoke Canister',out:{smoke:2},need:{comp:1,cell:1,scrap:2}},
+  {name:'2x Decoy Beacon',out:{decoy:2},need:{comp:1,scrap:2}},
   {name:'Frag Charge',out:{frag:1},need:{comp:1,cell:1,scrap:2}}
 ];
 var THROWKEYS=['smoke','decoy','frag'];

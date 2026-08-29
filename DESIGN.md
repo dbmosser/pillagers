@@ -21361,3 +21361,61 @@ Not verified: the pin now agrees with the shipped defaults, but nothing enforces
 that it stays that way. The same drift will happen again the next time a default
 moves, and the only guard is this note and the comment already sitting in the
 function that did not prevent it the first five times.
+
+## v5.91: two shop items printed money, and two recipes broke the rule written above them
+
+Priced the whole economy against itself. Selling pays ival(k), so a buy-and-resell
+margin is the item's value minus its price, and it should always be negative.
+
+  bandage  buy 110  sell  60   -50      medkit  buy 390  sell 210  -180
+  ammobox  buy 170  sell  90   -80      smoke   buy 150  sell 110   -40
+  decoy    buy 100  sell  80   -20      plate   buy 620  sell 340  -280
+  FRAG     buy 140  sell 180  +40
+  STIM     buy 160  sell 180  +20
+
+Six of eight lose money on resale, which is what a shop is. Two paid you to press
+Buy and then Sell, with no stock limit and no cooldown.
+
+AND IT WAS WORSE THAN CREDITS. v5.78 made selling the ONLY source of reputation
+and pays it equal to the price, on his instruction. So the frag loop minted
+reputation as fast as money, and reputation is what gates the entire Requisition
+counter. The one currency he asked to have a single honest source could be made
+at 40 a click. Repriced to 320 each, which puts the sell-back ratio at 0.56, the
+same band the honest six already sit in.
+
+TWO RECIPES BROKE THE RULE PRINTED DIRECTLY ABOVE THEM. The comment over RECIPES
+says: "Inputs must be worth MORE than the output sells for, or crafting prints
+money." 2x Smoke was 190 in for 220 out and 2x Decoy 120 in for 160 out. Both
+broke in the same edit that fixed something else: v1.72 found them strictly
+dominated and says it fixed that "by raising the YIELD rather than cutting the
+cost". Right instinct, overshot, and the doubled output crossed the sell value.
+
+BOUNDED, NOT INFINITE, and worth being exact about. From RAW materials the chain
+still loses: three scrap, two wire and a cell is 235 of input for 220 of smoke.
+The gain exists only when the component is FOUND rather than made, so it is
+capped by drops. It is not the frag loop, which had no cap at all. Fixed by
+raising the cost, the half v1.72 chose not to touch, so both constraints now
+hold: inputs above what the output sells for, and still below what it costs to
+buy, so crafting stays the cheaper route and v1.72's fix survives.
+
+CHECKED AND FOUND NOTHING, three times. Weapons go to the armoury rather than the
+stash and cannot be resold, so there is no gun loop. The Peddler is formula-based,
+buying at 0.55 of value and selling at 1.9, so a round trip through him loses 71
+percent and it cannot drift. The Gambler charges 450 for an expected 391 across
+its weighted pool, a 13 percent house edge, and every key in that pool resolves to
+a real value.
+
+Verified: parse PASS at v5.91; four maps 86/87/58/72 entities and 236/200/154/225
+containers at baseline on a freshly cleared profile; all three real endings
+through the outcome screen with extract paying 48c and dead and abandon zero; hub
+and ascent check; all seven recipes and all eight shop items repriced off the LIVE
+tables with zero printers in either; __pinAudit reporting ok with zero drift and
+only the five bot-behaviour dials differing.
+
+Not verified: I have not re-measured the extract rate. I started the 320 seed
+neutral baseline twice this tick and stopped it both times, the first because it
+was running on a sim wearing the wrong rig and the second because I had three
+unverified fixes sitting on disk and an unverified game file matters more than a
+measurement I can restart. It is running again now and I have not read it. I also
+have not checked whether raising frag from 140 to 320 makes frags too expensive to
+be worth buying at all, which is a balance question rather than an exploit.

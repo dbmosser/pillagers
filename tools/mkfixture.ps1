@@ -300,6 +300,27 @@ window.__placeAudit=function(){
 // set to the shipped-default measurement posture, returning what it changed so a
 // probe can log it. Arms then override ONLY the dial under test. mapIx and
 // equipment are pinned too, since forgetting the map is the other classic.
+// WHAT THE PIN IS ALLOWED TO DISAGREE WITH DEF ABOUT, v5.91: the bot's own
+// behaviour. Everything else is the shipped game and must match it exactly, or a
+// batch is measuring a configuration nobody plays. Anything not on this list
+// showing up in __pinAudit is drift and should be fixed in the pin, not added
+// here.
+window.__PIN_BOT_ONLY={simGreed:1,simPick:1,simFlee:1,simCover:1,simDodgeRing:1};
+window.__pinAudit=function(){
+  var save={},k;
+  for(k in CFG) save[k]=CFG[k];
+  var shipped={};
+  for(k in DEF) shipped[k]=DEF[k];
+  window.__pinDefaults(0);
+  var drift=[], botOnly=[];
+  for(k in CFG){
+    if(!(k in shipped)) continue;              // sim-only dials with no shipped default
+    if(String(CFG[k])===String(shipped[k])) continue;
+    (window.__PIN_BOT_ONLY[k]?botOnly:drift).push(k+': shipped '+shipped[k]+' pinned '+CFG[k]);
+  }
+  for(k in save) CFG[k]=save[k];               // put it back exactly as found
+  return {ok:drift.length===0, drift:drift, botOnly:botOnly};
+};
 window.__pinDefaults=function(mapIx){
   var C2=CFG, P2=P, changed={};
   // DANIEL POSTURE. The pin is simGreed 14. The v3.85 note here still said 23,
