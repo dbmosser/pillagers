@@ -18291,3 +18291,72 @@ as a bug. I removed his own Q4 safe pocket on the strength of one sentence and
 he may want it back.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.33  ITEMS SAY WHAT THEY ARE
+================================================================================
+
+v5.33: items say what they are
+
+HIS NOTE: "when you mouse over items in the inventory it should give you more
+info about them, esp guns and rigs".
+
+A gun said "GUN" and a rig said "RIG". Every number that decides whether one is
+better than another already existed in WEAPONS and ARMORS and was never once
+shown: damage, rate, magazine, reload, range, spread, noise, armour capacity,
+speed cost, absorption. You could own four guns and have no way to tell them
+apart except by price, which is not the same ranking.
+
+One describer, itemRows, used by BOTH the stash panel and the in-raid bag, so
+the two windows can never drift into saying different things about one object.
+The bag matters more than the stash here: it is the window you are in when you
+pull a gun off a body and have ten seconds to decide whether it beats the one
+in your hands.
+
+  Riot Scattergun    DAMAGE 72 a hit, 6 pellets of 12
+                     RATE 650 rpm semi
+                     MAGAZINE 7 rounds, 2.4s reload
+                     RANGE 26m   ACCURACY scattergun   NOISE very loud
+
+  Breacher Plate     ARMOUR 120 points
+                     ABSORBS 66% of a hit
+                     SPEED 14% slower   NOISE +34% louder
+                     VERSUS WORN +85 armour, slower
+
+A rig compares itself to the one you have on, because "120 points" means
+nothing on its own and "+85 armour, slower" is the actual decision.
+
+THREE THINGS I GOT WRONG IN THE FIRST PASS, caught by reading my own output
+instead of trusting it:
+
+  "MAGAZINE 7 rounds 2400.0s reload". reload is in MILLISECONDS, the countdown
+  being p.reloading -= dt*1000, so 2400 is 2.4 seconds and I printed forty
+  minutes. A number shown to a player that is wrong by a factor of a thousand is
+  worse than no number, because he would have believed it.
+
+  The Riot Scattergun said "DAMAGE 12 a hit". It fires SIX PELLETS, so a hit
+  with all of them is 72. Reporting 12 made the best close range gun in the game
+  look like the worst.
+
+  The Burst Carbine has burst:3 and I ignored it, and I printed a per-second
+  figure for SEMI weapons that assumes you hit the listed rate of fire by hand.
+  Held-fire damage is now only shown for weapons that are genuinely automatic.
+
+ALSO, HIS QUESTION: "i have never seen the safe pocket." He never saw it because
+it was never communicated. The entire interface for it was a seven pixel green
+diamond drawn in the corner of one inventory cell, with no label, no legend
+entry, and no line of text anywhere in the game explaining what it meant. That
+is worth knowing before he decides whether to turn it back on: he was not
+reversing a mechanic he had tried and disliked, he was removing one he had never
+been shown.
+
+Verified: parse PASS at v5.33; four maps 110/111/74/91; all three endings; hub
+clean. The in-raid bag drawn with a gun and a rig selected. Every stash tooltip
+read back as text: no reload figure above three digits, pellets and burst
+present, the LMG shows held-fire damage and the two semi weapons do not.
+
+Not verified: nobody has seen the bag panel on a real screen with six stat rows
+in it, so I know the rows draw and I do not know they fit without crowding the
+key hints underneath.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

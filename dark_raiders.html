@@ -718,7 +718,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.32';
+var VER='5.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17547,6 +17547,57 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
   if(!keys['KeyM']&&!G.bagOpen) drawRaiderBoard();
   if(keys['KeyM']) drawMapOverlay();
 }
+// EVERYTHING KNOWN ABOUT AN ITEM, as [label,value] rows. Shared by the stash
+// hover and the in-raid bag hover so both windows say the same thing.
+// rof is rounds per minute in WEAPONS, spread is radians, rng is world units and
+// the HUD talks in metres at ten units to the metre, so both are converted here
+// rather than in two places that could disagree.
+function itemRows(key){
+  var it=ITEMS[key]; if(!it) return [];
+  var R=[];
+  if(it.use==='gun'&&it.gk&&WEAPONS[it.gk]){
+    var W2=WEAPONS[it.gk];
+    // Pellets are per trigger pull, so the honest headline for a scattergun is
+    // the whole spread landing, with the per-pellet figure after it.
+    var perShot=W2.dmg*(W2.pellets||1);
+    var dmgTxt=perShot+' a hit';
+    if(W2.pellets>1) dmgTxt+='   '+W2.pellets+' pellets of '+W2.dmg;
+    if(W2.burst>1)   dmgTxt+='   '+W2.burst+'-round burst';
+    // Sustained damage only where you can actually hold the trigger down.
+    if(W2.auto&&W2.mag) dmgTxt+='   ~'+Math.round(perShot*(W2.rof/60))+'/sec held';
+    R.push(['DAMAGE',dmgTxt]);
+    R.push(['RATE',Math.round(W2.rof)+' rpm'+(W2.auto?'   automatic':'   semi')]);
+    // reload is MILLISECONDS: p.reloading-=dt*1000.
+    if(W2.mag) R.push(['MAGAZINE',W2.mag+' rounds   '+(W2.reload/1000).toFixed(1)+'s reload']);
+    R.push(['RANGE',Math.round(W2.rng/10)+'m']);
+    R.push(['ACCURACY',W2.spread<=0.03?'tight':(W2.spread<=0.07?'good':(W2.spread<=0.14?'loose':'scattergun'))]);
+    R.push(['NOISE',W2.noise>=300?'very loud':(W2.noise>=200?'loud':(W2.noise>0?'quiet':'silent'))]);
+  } else if(it.use==='rig'&&it.rk){
+    var A2=armorById(it.rk);
+    R.push(['ARMOUR',A2.cap+' points']);
+    R.push(['ABSORBS',Math.round(A2.absorb*100)+'% of a hit']);
+    R.push(['SPEED',A2.spd===1?'no penalty':(Math.round((1-A2.spd)*100)+'% slower')]);
+    R.push(['NOISE',A2.noise===1?'no penalty':('+'+Math.round((A2.noise-1)*100)+'% louder')]);
+    var worn=armorById((P&&P.rig)||'none');
+    if(worn.id===it.rk) R.push(['STATUS','WORN NOW']);
+    else if(A2.cap>worn.cap) R.push(['VERSUS WORN','+'+(A2.cap-worn.cap)+' armour, '+
+      (A2.spd<worn.spd?('slower'):(A2.spd>worn.spd?'faster':'same speed'))]);
+    else if(A2.cap<worn.cap) R.push(['VERSUS WORN','-'+(worn.cap-A2.cap)+' armour']);
+  } else if(it.use){
+    R.push(['USE',String(it.use).toUpperCase()]);
+  }
+  if(craftPart(key)) R.push(['KEEP FOR',craftUse(key)]);
+  return R;
+}
+function itemRowsHTML(key){
+  var R=itemRows(key); if(!R.length) return '';
+  var h='';
+  for(var i=0;i<R.length;i++)
+    h+='<div style="display:flex;gap:8px;font-size:10px;line-height:1.5">'+
+       '<span style="width:88px;opacity:.55;letter-spacing:.1em">'+R[i][0]+'</span>'+
+       '<span style="color:var(--bone)">'+escHtml(String(R[i][1]))+'</span></div>';
+  return h;
+}
 function safeSet(){
   var idx=[],i;
   for(i=0;i<G.bag.length;i++) idx.push(i);
@@ -18691,8 +18742,20 @@ function drawBag(){
     ctx.textAlign='left';
     ctx.font=FS(TYPE.micro); ctx.fillStyle='#9aa8d0';
     var isGun=!!(sit&&sit.use==='gun');
+    // WHAT IT ACTUALLY IS, v5.33. Same rows as the stash panel, same function,
+    // so the two windows can never describe one object differently. Drawn above
+    // the key hints because the stats are why you opened the bag.
+    var _rw=itemRows(sst.key), _ry=hintY+LH(13);
+    for(var _rr=0;_rr<_rw.length&&_rr<6;_rr++){
+      ctx.fillStyle='rgba(154,168,208,.55)';
+      ctx.fillText(_rw[_rr][0],x+11,_ry);
+      ctx.fillStyle='#cdd6dd';
+      ctx.fillText(String(_rw[_rr][1]),x+11+LH(74),_ry);
+      _ry+=LH(11);
+    }
+    ctx.fillStyle='#9aa8d0';
     ctx.fillText((PAD&&PAD.on)?'DPAD select   DPAD L drop'
-      :('ARROWS move   Z drop one   drag to hotbar'+(isGun?'   ENTER equip   SHIFT+ENTER to back':'')),x+11,hintY+LH(14));
+      :('ARROWS move   Z drop one   drag to hotbar'+(isGun?'   ENTER equip   SHIFT+ENTER to back':'')),x+11,_ry+LH(3));
   } else {
     ctx.font=FS(TYPE.label); ctx.fillStyle='#6b7783';
     ctx.fillText('Bag is empty.',x+11,hintY);
@@ -20628,7 +20691,10 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
       detail.innerHTML='<b class="r-'+(it.r||'common')+'">'+escHtml(it.name)+'</b>  x'+counts[k]+
         '  &middot;  '+ival(k).toLocaleString()+'c each  &middot;  '+what+
         (isJunk?'  &middot;  <span style="color:var(--rust)">TAGGED JUNK</span>':'')+
-        '<span id="stashacts" style="margin-left:10px"></span>';
+        '<span id="stashacts" style="margin-left:10px"></span>'+
+        // HIS NOTE: guns and rigs have to say what they are, not just that they
+        // are a gun or a rig. itemRowsHTML is shared with the in-raid bag.
+        '<div style="margin-top:5px">'+itemRowsHTML(k)+'</div>';
       var acts=document.getElementById('stashacts');
       function act(label,fn){
         var b=document.createElement('button');
