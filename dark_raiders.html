@@ -770,7 +770,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.71';
+var VER='5.72';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1135,7 +1135,11 @@ var DISTRICTS=[
 // open. Evergreens stay; retired problems go; his old tags on old runs still
 // print because the strings are stored on the run.
 var TAGS=['Felt great','Too easy','Too hard','Too dark',
-  'Music felt right','Music annoying','Bulwark great','Bulwark unfair',
+  // v5.72: the two music tags went where the music went. These two are the live
+  // unknowns instead: the Listener teaching was rewritten at v5.60 and nobody
+  // has tested it on a human, and the Choir has never been fought at all.
+  'Listener beatable','Listener unfair','Choir worth it','Choir a chore',
+  'Bulwark great','Bulwark unfair',
   'Howler great','Howler unfair','Pillagers felt human','Pillagers felt dumb',
   'Extract too easy','Extract too tense','Loot boring','Loot exciting',
   'Maps feel samey','This map has character','Ran out of ammo','New machines too rare'];
@@ -21091,19 +21095,69 @@ function renderKitCol(){
     P.kit.push(key); saveProfile(); renderHub();
   };
 }
+// PUTTING SOMETHING ON A KEY MEANS TAKING IT, v5.72, his note. The plan used to
+// write hotAssign alone, which let him build a plan for an item that never left
+// the stash: hotbarSlots only fires a key for something actually carried, so the
+// cell looked set and did nothing up there. The hotbar is a view of what you
+// carry, so this reserves the inventory slot in the same action.
+// Returns null on success, or the reason it refused.
+function planPut(slot,key){
+  if(!key||!ITEMS[key]) return 'Nothing to put there.';
+  // The v5.17 rule: a gun never takes a hotbar slot. Enforced here so the plan
+  // cannot even be BUILT wrong rather than being ignored later.
+  if(ITEMS[key].use==='gun') return 'Guns go in gun 1 and gun 2, not on a key.';
+  // Keys 1 and 2 ARE gun 1 and gun 2 in the raid, and hotbarSlots refuses to let
+  // an assignment displace a weapon, so allowing one here would only build a
+  // plan that gets thrown away on landing.
+  if(slot<2) return 'Keys 1 and 2 are your guns. Pick 3 or higher.';
+  var live=stageKitLive();
+  var held=0; for(var i=0;i<P.stash.length;i++) if(P.stash[i]===key) held++;
+  if(!held) return 'That is not in your stash any more.';
+  var picked=0; for(var j=0;j<live.length;j++) if(live[j]===key) picked++;
+  // Only claim another inventory slot if this item is not already coming.
+  if(picked<1){
+    if(live.length>=DEPLOY_SLOTS) return 'Inventory is full at '+DEPLOY_SLOTS+', so there is no room to carry that.';
+    P.kit.push(key);
+  }
+  P.hotAssign=P.hotAssign||{};
+  // One key per item: moving it clears wherever it was.
+  for(var ok in P.hotAssign) if(P.hotAssign[ok]===key) delete P.hotAssign[ok];
+  P.hotAssign[slot]=key;
+  saveProfile();
+  return null;
+}
 function hotPlanHTML(where){
   // stage: he is ON the ascent check, so pointing at it is circular and the
   // column beside the plan is called CARRYING. hub: the plan is a plan, and what
   // makes it fire is chosen later.
   var _hint=(where==='stage')
-    ? 'HOTBAR PLAN  &middot;  Which key each item answers to up there. A cell only fires if you are actually CARRYING that item, so the list on the left is what makes this real. Click a cell to clear it.'
-    : 'HOTBAR PLAN  &middot;  Which key each item answers to up there. Point at something in the stash and press TAKE UP, or drag it, to fill the first free cell. Click a cell to clear it. A plan only fires for something you actually carry in, and that is chosen on the ascent check.';
+    ? 'HOTBAR PLAN  &middot;  Keys 1 and 2 are your two guns and cannot be changed here. Keys 3 to 9 are yours to set, and a key only fires if you are CARRYING that item. Click one to clear it.'
+    : 'HOTBAR PLAN  &middot;  Keys 1 and 2 are your two guns, chosen on the figure. Keys 3 to 9 are yours: point at something in the stash and press its number below, or drag it here. Putting it on a key also packs it, so it comes up with you. Click a key to clear it.';
+  // Keys 1 and 2 have never been assignable in a raid, so anything sitting on
+  // them is dead weight from before v5.72 and goes now.
+  if(P.hotAssign){ delete P.hotAssign[0]; delete P.hotAssign[1]; }
+  var _g1=WEAPONS[P.equipped]||WEAPONS.fists;
+  var _g2=(P.equippedSec&&P.equippedSec!=='none'&&WEAPONS[P.equippedSec])?WEAPONS[P.equippedSec]:null;
   var h='<div style="padding:7px 12px;border-bottom:1px solid var(--steel-hi)">'+
     '<div class="glab" style="margin-bottom:5px">'+_hint+'</div>'+
     '<div style="display:flex;gap:4px">';
   for(var i=0;i<HOTBAR_N;i++){
+    // THE TWO GUN KEYS. Shown so the numbers on this row are the numbers he will
+    // actually press, and locked so he cannot build a plan the raid will discard.
+    if(i<2){
+      var _gw=(i===0)?_g1:_g2;
+      var _gn=_gw?_gw.name:'Empty';
+      h+='<div title="Key '+(i+1)+': GUN '+(i+1)+', '+_gn+'. Guns are chosen on the figure, not here."'+
+        ' style="width:34px;height:34px;border:1px solid rgba(255,212,138,.45);border-radius:3px;'+
+        'display:flex;align-items:center;justify-content:center;cursor:default;'+
+        'background:rgba(255,212,138,.07);position:relative">'+
+        ((_gw&&_gw.id)?iconImgHTML(_gw.id,22):'<span style="color:#ffd48a;font-size:8px">GUN</span>')+
+        '<span style="position:absolute;right:2px;bottom:0;font-size:8px;color:#ffd48a">'+(i+1)+'</span>'+
+        '</div>';
+      continue;
+    }
     var k=(P.hotAssign||{})[i], it=k?ITEMS[k]:null;
-    h+='<div data-plan="'+i+'" title="'+(it?('Slot '+(i+1)+': '+it.name+', click to clear'):('Slot '+(i+1)))+'"'+
+    h+='<div data-plan="'+i+'" title="'+(it?('Key '+(i+1)+': '+it.name+', click to clear'):('Key '+(i+1)+', free'))+'"'+
       ' style="width:34px;height:34px;border:1px '+(it?'solid':'dashed')+' var(--steel-hi);border-radius:3px;'+
       'display:flex;align-items:center;justify-content:center;cursor:'+(it?'pointer':'default')+';'+
       'background:rgba(0,0,0,.3);position:relative">'+
@@ -21293,6 +21347,8 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
       el.onclick=function(){
         if((P.hotAssign||{})[ix]!==undefined){
           delete P.hotAssign[ix]; saveProfile(); renderHub();
+        } else {
+          say2('Point at an item in the stash, then press the key number in the bar below.');
         }
       };
       el.addEventListener('dragover',function(ev){
@@ -21305,16 +21361,9 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
         ev.preventDefault();
         el.style.borderColor='var(--steel-hi)';
         var key=''; try{ key=ev.dataTransfer.getData('text/plain'); }catch(e){}
-        if(!key||!ITEMS[key]) return;
-        // A gun never takes a hotbar slot. That was the v5.17 bug that stole his
-        // gun slots and broke a raid, and the rule that fixed it lives in
-        // hotbarSlots; enforcing it here too means the plan cannot even be
-        // BUILT wrong, rather than being quietly ignored later.
-        if(ITEMS[key].use==='gun'){ try{ sfx('clank'); }catch(e){} return; }
-        P.hotAssign=P.hotAssign||{};
-        for(var ok in P.hotAssign) if(P.hotAssign[ok]===key) delete P.hotAssign[ok];
-        P.hotAssign[ix]=key;
-        saveProfile(); try{ sfx('pick'); }catch(e){}
+        var why=planPut(ix,key);
+        if(why){ try{ sfx('clank'); }catch(e){} say2(why); return; }
+        try{ sfx('pick'); }catch(e){}
         renderHub();
       });
     });
@@ -21372,11 +21421,34 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
         if(P.weapons.indexOf(it.gk)<0) P.weapons.push(it.gk);
         P.equipped=it.gk; saveProfile(); renderHub();
       });
-      if(it.use==='heal'||it.use==='throw'||it.use==='armor') act('Slot',function(){
-        P.hotAssign=P.hotAssign||{};
-        for(var si=0;si<HOTBAR_N;si++) if(P.hotAssign[si]===undefined){ P.hotAssign[si]=k; break; }
-        saveProfile(); renderHub();
-      });
+      if(it.use==='heal'||it.use==='throw'||it.use==='armor'){
+        var _lab=document.createElement('span');
+        _lab.textContent='  put on key';
+        _lab.style.cssText='color:var(--ash);font-size:9px;letter-spacing:.1em;margin-left:8px';
+        acts.appendChild(_lab);
+        for(var _sq=2;_sq<HOTBAR_N;_sq++){
+          (function(slot){
+            var taken=(P.hotAssign||{})[slot], mine=(taken===k);
+            var b=document.createElement('button');
+            b.textContent=String(slot+1);
+            b.title=mine?('Already on key '+(slot+1)+', click to clear')
+                        :(taken?('Key '+(slot+1)+' holds '+(ITEMS[taken]?ITEMS[taken].name:taken)+', click to replace')
+                               :('Put it on key '+(slot+1)+' and carry it up'));
+            b.style.cssText='padding:2px 6px;font-size:10px;margin-left:3px;min-width:20px'+
+              (mine?';color:#0d1435;background:var(--amber);border-color:var(--amber)'
+                   :(taken?';opacity:.5':''));
+            b.onclick=function(ev){
+              ev.stopPropagation();
+              if(mine){ delete P.hotAssign[slot]; saveProfile(); renderHub(); return; }
+              var why=planPut(slot,k);
+              if(why){ say2(why); return; }
+              try{ sfx('pick'); }catch(e){}
+              renderHub();
+            };
+            acts.appendChild(b);
+          })(_sq);
+        }
+      }
       // TAKE UP, v5.68. The same rules the drop enforces, applied from a click:
       // one kit entry per stash copy, and never past the deploy cap.
       act('Take up',function(){

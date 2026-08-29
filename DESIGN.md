@@ -20467,3 +20467,68 @@ Not verified: whether eight contract rows in the in-raid tracker is too many to
 read at a glance. Removing the duplicates takes about one and a half rows off it,
 but the panel still ran roughly a third of the screen height at 1080p in the
 photograph, and that is a judgement about his screen rather than a number.
+
+## v5.72: the hotbar plan was never wired to anything, and I should have read it three builds ago
+
+FOUR NOTES FROM HIM IN ONE SITTING, ending with "i wish you would just redo it
+all". He is right to be annoyed. I patched around this three times without going
+and reading how the live bar is actually built, and when I did, both faults were
+obvious and neither was the drag I had been chasing.
+
+FAULT ONE, HIS WORDS: "if i drag something from the stash directly to the hotbar
+plan, it should automatically move it into inventory." Assigning a key wrote
+P.hotAssign and NOTHING ELSE. hotbarSlots only fires a key for something you are
+actually carrying, so a plan for an item that never went up the lift sat there
+looking set and did nothing. Even a drag that worked perfectly produced a dead
+plan. In Minecraft, Diablo and ARC the hotbar is a VIEW OF WHAT YOU CARRY rather
+than a separate wish list, and that is the rule now: putting something on a key
+claims an inventory slot in the same action. One function, planPut, does both,
+and the drop and the buttons both go through it.
+
+FAULT TWO, HIS WORDS: "slots 1 and 2 should always be guns." THEY ALREADY WERE,
+IN THE RAID, AND THAT WAS THE BUG. hotbarSlots puts the primary in cell 1 and the
+sidearm in cell 2, and the code that lays a plan over it refuses to touch them:
+  if(out[aix] && out[aix].kind==='gun') continue;
+So the raid has always reserved those two keys, and the hub cheerfully offered
+him the same two cells to put a medkit on. Every plan he ever built on key 1 or 2
+was discarded the moment he landed. The plan now draws keys 1 and 2 as GUN 1 and
+GUN 2 from the guns he has chosen, they are not drop targets, planPut refuses
+them, and stale assignments left on them are pruned on sight.
+
+AND A PATH THAT IS NOT A DRAG. The drop handler was never the problem: a
+synthetic drop straight at a plan cell assigns correctly. The DRAG is what I
+cannot make fire in this harness, so it cannot be the only route. The detail bar
+now carries a numbered key row, 3 to 9, occupied keys dimmed and the item's own
+key highlighted, so the row reports the plan as well as setting it. The old Slot
+button chose the cell for him, which was never what he asked for. An empty plan
+cell also stops swallowing clicks in silence and says where the working control is.
+
+THE END OF RAID POLL WAS ASKING ABOUT MUSIC THAT DOES NOT PLAY. Photographed the
+outcome screen at 1080p, which nobody had looked at: two of the twenty feedback
+buttons were MUSIC FELT RIGHT and MUSIC ANNOYING, and there has been no raid
+music since v5.50 deleted the reactive system. The rule for that list is already
+written above it from v4.15, ask about what is live and retire what is not, so
+those two are gone and the live unknowns took their place: LISTENER BEATABLE and
+LISTENER UNFAIR, because v5.60 rewrote what the game teaches about it and only he
+can say whether that lands, and CHOIR WORTH IT and CHOIR A CHORE, because a 1,250
+health boss shipped and nobody has ever fought it.
+
+DRIVEN, the whole round trip: key 3 on a Medkit puts it on the key AND packs it;
+key 4 on a Smoke does the same; moving the Medkit from key 3 to key 5 moves the
+assignment without duplicating the inventory entry; a drop on key 6 packs a Plate
+the same way; a gun is refused a key; key 1 is not a drop target at all; and
+starting a raid with that plan produces a bar reading gun, gun, assigned heal,
+throw, throw, heal, tool.
+
+Verified: parse PASS at v5.72; four maps 86/87/58/72; all three real endings
+through the outcome screen with extract paying 48c and dead and abandon zero; hub
+and ascent check; seven assignable cells starting at key 3; stale gun-key
+assignments pruned; the outcome screen carrying the four new tags and neither
+music tag.
+
+Not verified: I still cannot complete a real mouse drag in this harness, so the
+drag path rests on synthetic events plus the click path existing beside it. I
+also have not re-examined whether seven assignable keys is the right number now
+that two are reserved, and the in-raid bar still derives cells 4 to 9 from what
+you carry rather than being a fixed nine-slot grid, which is the deeper rebuild
+his "redo it all" may have meant and which I have not attempted.
