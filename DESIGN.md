@@ -18360,3 +18360,77 @@ in it, so I know the rows draw and I do not know they fit without crowding the
 key hints underneath.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.34  ONE INVENTORY SCREEN, WITH HER STANDING IN IT
+================================================================================
+
+v5.34: one inventory screen, with her standing in it
+
+HIS SPEC, across five messages, built as one thing because it is one thing:
+  "stash menu should look like this: STASH, INVENTORY, HOTBAR PLAN. if its
+   coded correctly, that's all we need. There's no reason to have the
+   'Equipped' Menu."
+  "there should be an avatar of your character on the stash/inventory screen
+   and that's where you equip hat and rig"
+  "appearance should be in stash, not inside settings"
+  "Body armor should be in the stash, no reason for it to be seperated out as
+   a unique item class"
+  "i should be able to drag items from the stash to the hotbar plan!"
+
+WHAT WAS THERE. Two panels. A stash grid, and an "Equipped" column holding gear
+slots, a weapons list and a separate "Body armour owned" list. Rigs were the
+only item class in the game with their own private list, which is exactly the
+separation he objected to: a rig is a thing you own, it belongs with the other
+things you own, and you put it on by putting it on the figure.
+
+LEFT IS HER. A paper doll built out of blocks rather than drawn on a canvas, so
+it themes itself, scales with the menu zoom, and cannot throw the way a canvas
+figure can. Her hair takes the cosmetic colour, the hat sits on it, and the
+torso takes the colour of the rig, so a Breacher Plate is visibly a different
+object to a Scav Rig without reading a word.
+
+Four slots under her: HEADGEAR, HAIR, BODY ARMOUR, WEAPON. Clicking one opens
+its picker underneath, which is the entire reason the figure is there. You
+change what she is wearing by clicking the part of her you want to change.
+
+Body armour now lists everything you own AND any rig sitting in the stash, and
+wearing one out of the stash takes it out of the stash, exactly the way
+equipping a gun already did.
+
+Appearance came out of Settings, which is down to two tabs again.
+
+RIGHT IS EVERYTHING YOU HAVE, under his three words. STASH, INVENTORY, HOTBAR
+PLAN are three PLACES, not three filters: what is in the vault, what you are
+taking up with you, and what sits on the number keys. The five category filters
+survive as a smaller second row inside STASH, because with 97 items in his vault
+they are doing real work.
+
+DRAG WORKS. Native HTML5 drag, because the grid and the plan are both real DOM
+and the browser already knows how to do this properly: ghost image, cursor,
+escape key and drop-outside all come free. A GUN IS REFUSED at the drop, not
+quietly ignored afterwards. That was the v5.17 bug that stole his gun slots and
+broke a live raid, and enforcing it here means the plan cannot even be BUILT
+wrong.
+
+One thing I found doing it: rigs were filed under no category at all. tabOf
+tested use==='armor' and rigs carry use==='rig', so the ARMOUR filter read 0
+with a Breacher Plate sitting in the stash.
+
+Verified: parse PASS at v5.34, no duplicate functions; four maps 110/111/74/91;
+all three endings; hub clean. Three place tabs read STASH 7, INVENTORY 2, HOTBAR
+PLAN 0 against a known profile, with the category row underneath. The figure
+reports its four slots. Wore a Breacher Plate out of the stash from the figure:
+it left the stash, joined the owned list and became the worn rig. Hat picker
+shows only hats, six of them, and wearing the Cracked Visor stuck. Dragged a
+Medkit from the grid onto slot 3 with real DragEvents and a real DataTransfer,
+and it landed; dragged a Burst Carbine onto slot 5 and it was refused. Settings
+now reads DISPLAY, RUN RECORDER. Trader and operator terminal still open and
+still close on Escape.
+
+Not verified: nobody has seen the figure on a real screen, so I know she is
+assembled from the right colours and I do not know she reads as a person rather
+than as a stack of boxes. The ascent check still has its own kit list and has
+NOT yet been folded into this screen, which is the next piece of his spec.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

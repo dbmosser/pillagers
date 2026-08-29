@@ -98,6 +98,30 @@
      it is, stacks carry a count, and rarity lives on the border so you read the
      value of a whole screen without reading a word of it. */
   .invtabs{ display:flex; gap:4px; padding:8px 10px 0 10px; flex-wrap:wrap; }
+/* HER, on the left of the inventory, built out of blocks rather than drawn on a
+   canvas: the hub is HTML and a paper doll made of divs themes itself, scales
+   with the menu zoom, and cannot throw the way a canvas figure can. */
+.avfig{ display:flex; flex-direction:column; align-items:center; padding:14px 0 10px; }
+.avhead{ width:46px; height:40px; border-radius:7px; position:relative;
+  border:2px solid #14161b; display:flex; align-items:flex-start; justify-content:center; }
+.avhair{ position:absolute; left:-5px; right:-5px; top:-4px; height:17px; border-radius:8px 8px 3px 3px; }
+.avhat{ position:absolute; left:-7px; right:-7px; top:-13px; height:15px; border-radius:4px;
+  display:flex; align-items:center; justify-content:center; font-size:11px; color:#0d1435; }
+.aveyes{ position:absolute; top:17px; width:100%; display:flex; justify-content:center; gap:9px; }
+.aveye{ width:6px; height:7px; border-radius:3px; background:#FFF6DC; }
+.avtorso{ width:54px; height:46px; margin-top:-4px; border-radius:6px 6px 4px 4px;
+  border:2px solid #14161b; position:relative; }
+.avplate{ position:absolute; left:6px; right:6px; top:8px; height:14px; border-radius:2px; }
+.avlegs{ width:38px; height:20px; border-radius:0 0 5px 5px; border:2px solid #14161b; border-top:0; }
+.avslot{ display:flex; align-items:center; gap:8px; padding:5px 10px; cursor:pointer;
+  border-top:1px solid rgba(42,50,61,.55); }
+.avslot:hover{ background:rgba(255,192,74,.10); }
+.avslot.on{ background:rgba(255,192,74,.16); }
+.avsic{ width:26px; height:26px; border-radius:3px; border:1px solid var(--steel-hi);
+  display:flex; align-items:center; justify-content:center; font-size:12px;
+  background:rgba(0,0,0,.3); flex:none; }
+.avslab{ font-size:8.5px; letter-spacing:.16em; color:var(--ash); }
+.avsval{ font-size:11px; color:var(--bone); }
 .costile{width:96px;padding:8px 6px;border:1px solid var(--steel-hi);border-radius:3px;background:rgba(0,0,0,.32);
   text-align:center;cursor:pointer;transition:border-color .1s,background .1s}
 .costile:hover{border-color:var(--amber);background:rgba(0,0,0,.5)}
@@ -558,11 +582,17 @@
     </div>
     <div class="credits" id="credits">0<small>CREDITS</small></div>
   </div>
-  <div class="hubgrid">
+  <div class="hubgrid" style="grid-template-columns:232px 1fr">
+    <div class="panel" id="avpanel">
+      <h2>Your operator</h2>
+      <div id="avatar"></div>
+      <div id="avpicker" style="border-top:1px solid var(--steel-hi);padding:8px 10px;
+           max-height:230px;overflow-y:auto"></div>
+    </div>
     <div class="panel">
-      <h2>Stash <em id="stashct">0</em></h2>
       <div class="invtabs" id="stashtabs"></div>
       <div class="invgrid" id="stashgrid"></div>
+      <div id="hotplanwrap"></div>
       <div id="stashdetail" style="padding:8px 12px;border-top:1px solid var(--steel-hi);
            min-height:52px;font-size:11px;color:var(--ash)"></div>
       <div style="padding:8px 12px;border-top:1px solid var(--steel-hi)">
@@ -571,15 +601,12 @@
         <div id="nextunlock" class="hint" style="margin-top:4px;font-size:9.5px;line-height:1.35"></div>
       </div>
     </div>
-    <div class="panel">
-      <h2>Equipped</h2>
-      <div id="gearslots"></div>
-      <div class="equipped" id="equipped"></div>
-      <h2 style="border-top:1px solid var(--steel-hi)">Weapons owned</h2>
-      <div id="weplist" style="max-height:120px;overflow-y:auto"></div>
-      <h2 style="border-top:1px solid var(--steel-hi)">Body armour owned</h2>
-      <div id="riglist" style="flex:1;min-height:0;overflow-y:auto"></div>
-    </div>
+  </div>
+  <div style="display:none">
+    <!-- Kept so the renderers that still fill them have somewhere to write.
+         Nothing here is shown: the figure and the grid replaced all of it. -->
+    <span id="stashct">0</span><div id="gearslots"></div><div class="equipped" id="equipped"></div>
+    <div id="weplist"></div><div id="riglist"></div>
   </div>
   <!-- Wraps rather than clipping. Six buttons on one nowrap row ran off the
        edge below about 820px of window width and took TUNING with it, which is
@@ -718,7 +745,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.33';
+var VER='5.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20641,11 +20668,13 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   }
   // ---- TABS, his Q12. Four categories plus everything, each carrying its count,
   // so you can see there is nothing under PARTS without clicking PARTS.
+  // HIS THREE PLACES, then the category filters as a second row inside STASH.
+  if(!P.invTab) P.invTab='stash';
   var TABS=[['all','ALL'],['gun','GUNS'],['armor','ARMOUR'],['part','PARTS'],['use','CONSUMABLES']];
   function tabOf(k){
     var t=ITEMS[k]; if(!t) return 'part';
     if(t.use==='gun') return 'gun';
-    if(t.use==='armor') return 'armor';
+    if(t.use==='armor'||t.use==='rig') return 'armor';   // a rig IS body armour, v5.34
     if(craftPart(k)) return 'part';
     if(t.use) return 'use';
     return 'part';
@@ -20654,14 +20683,72 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   var tb=document.getElementById('stashtabs');
   if(tb){
     tb.innerHTML='';
-    TABS.forEach(function(T){
-      var cnt=keysArr.filter(function(k){ return T[0]==='all'||tabOf(k)===T[0]; })
-                     .reduce(function(a,k){ return a+counts[k]; },0);
+    // ROW ONE: the three places.
+    var PLACES=[['stash','STASH',P.stash.length],
+                ['kit','INVENTORY',(P.kit||[]).length],
+                ['plan','HOTBAR PLAN',Object.keys(P.hotAssign||{}).length]];
+    var r1=document.createElement('div'); r1.className='invtabs'; r1.style.padding='0';
+    PLACES.forEach(function(T){
       var d=document.createElement('div');
-      d.className='invtab'+(P.stashTab===T[0]?' on':'');
-      d.textContent=T[1]+'  '+cnt;
-      d.onclick=function(){ P.stashTab=T[0]; saveProfile(); renderHub(); };
-      tb.appendChild(d);
+      d.className='invtab'+(P.invTab===T[0]?' on':'');
+      d.textContent=T[1]+'  '+T[2];
+      d.onclick=function(){ P.invTab=T[0]; saveProfile(); renderHub(); };
+      r1.appendChild(d);
+    });
+    tb.appendChild(r1);
+    // ROW TWO: category filters, and only where they mean anything.
+    if(P.invTab==='stash'){
+      var r2=document.createElement('div'); r2.className='invtabs'; r2.style.padding='6px 0 0';
+      TABS.forEach(function(T){
+        var cnt=keysArr.filter(function(k){ return T[0]==='all'||tabOf(k)===T[0]; })
+                       .reduce(function(a,k){ return a+counts[k]; },0);
+        var d=document.createElement('div');
+        d.className='invtab'+(P.stashTab===T[0]?' on':'');
+        d.style.fontSize='8px';
+        d.textContent=T[1]+'  '+cnt;
+        d.onclick=function(){ P.stashTab=T[0]; saveProfile(); renderHub(); };
+        r2.appendChild(d);
+      });
+      tb.appendChild(r2);
+    }
+  }
+  // THE HOTBAR PLAN lives under the grid on its own tab, and is a drop target
+  // from the stash grid on every tab, because his note is "i should be able to
+  // drag items from the stash to the hotbar plan" and a drop target you have to
+  // switch tabs to reach is not that.
+  var hpw=document.getElementById('hotplanwrap');
+  if(hpw){
+    hpw.innerHTML=(P.invTab==='plan')?hotPlanHTML():'';
+    Array.prototype.forEach.call(hpw.querySelectorAll('[data-plan]'),function(el){
+      var ix=+el.getAttribute('data-plan');
+      // Clicking a filled cell still clears it, which is how it always worked.
+      el.onclick=function(){
+        if((P.hotAssign||{})[ix]!==undefined){
+          delete P.hotAssign[ix]; saveProfile(); renderHub();
+        }
+      };
+      el.addEventListener('dragover',function(ev){
+        ev.preventDefault();
+        try{ ev.dataTransfer.dropEffect='copy'; }catch(e){}
+        el.style.borderColor='var(--amber)';
+      });
+      el.addEventListener('dragleave',function(){ el.style.borderColor='var(--steel-hi)'; });
+      el.addEventListener('drop',function(ev){
+        ev.preventDefault();
+        el.style.borderColor='var(--steel-hi)';
+        var key=''; try{ key=ev.dataTransfer.getData('text/plain'); }catch(e){}
+        if(!key||!ITEMS[key]) return;
+        // A gun never takes a hotbar slot. That was the v5.17 bug that stole his
+        // gun slots and broke a raid, and the rule that fixed it lives in
+        // hotbarSlots; enforcing it here too means the plan cannot even be
+        // BUILT wrong, rather than being quietly ignored later.
+        if(ITEMS[key].use==='gun'){ try{ sfx('clank'); }catch(e){} return; }
+        P.hotAssign=P.hotAssign||{};
+        for(var ok in P.hotAssign) if(P.hotAssign[ok]===key) delete P.hotAssign[ok];
+        P.hotAssign[ix]=key;
+        saveProfile(); try{ sfx('pick'); }catch(e){}
+        renderHub();
+      });
     });
   }
   var detail=document.getElementById('stashdetail');
@@ -20670,7 +20757,17 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
       'Click a cell to tag it JUNK; junk is what the sell button clears.</span>';
   }
   detailIdle();
-  var shown=keysArr.filter(function(k){ return P.stashTab==='all'||tabOf(k)===P.stashTab; });
+  // WHICH PLACE. STASH is the vault, INVENTORY is what you are taking up, and
+  // HOTBAR PLAN shows the same stash so you have something to drag FROM.
+  var shown;
+  if(P.invTab==='kit'){
+    var kc={}; (P.kit||[]).forEach(function(k){ if(ITEMS[k]) kc[k]=(kc[k]||0)+1; });
+    counts=kc; keysArr=Object.keys(kc);
+    keysArr.sort(function(a,b){ return ITEMS[b].val-ITEMS[a].val; });
+    shown=keysArr.slice();
+  } else {
+    shown=keysArr.filter(function(k){ return P.invTab==='plan'||P.stashTab==='all'||tabOf(k)===P.stashTab; });
+  }
 
   shown.forEach(function(k){
     var it=ITEMS[k];
@@ -20680,6 +20777,12 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
     var cell=document.createElement('div');
     var isJunk=(P.junk||{})[k]?true:false;
     cell.className='cell c-'+(it.r||'common')+(isJunk?' junk':'');
+    // DRAGGABLE, v5.34. The key rides on the drag so the drop target does not
+    // have to guess which cell it came from.
+    cell.draggable=true;
+    cell.addEventListener('dragstart',function(ev){
+      try{ ev.dataTransfer.setData('text/plain',k); ev.dataTransfer.effectAllowed='copy'; }catch(e){}
+    });
     cell.innerHTML=iconImgHTML(k,30)+(counts[k]>1?('<span class="cnt">'+counts[k]+'</span>'):'');
     cell.title=it.name;
     cell.onmouseenter=function(){
@@ -20828,6 +20931,7 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
     } else _ntEl.innerHTML='';
   }
   renderGear();
+  try{ renderAvatar(); }catch(e){}
   var w=WEAPONS[P.equipped]||WEAPONS.fists;
   document.getElementById('equipped').innerHTML=
     '<div class="wn">'+w.name+'</div><div class="ws">DMG '+w.dmg+' &middot; MAG '+(w.mag||'-')+
@@ -22275,10 +22379,113 @@ function cosSwatch(c){
   return '<span style="display:inline-block;width:34px;height:34px;line-height:34px;text-align:center;'+
          'border-radius:6px;background:#1b1f26;border:2px solid #14161b;font-size:15px">'+f+'</span>';
 }
-function renderCosmetics(){
-  var box=document.getElementById('cosbody'); if(!box) return;
+// WHAT SHE IS WEARING, drawn as her. Hair takes the cosmetic colour, the hat
+// sits on top of it, and the torso takes the colour of the rig so a Breacher
+// Plate is visibly a different object to a Scav Rig at a glance.
+var RIGCOL={none:['#3d4450','#59626f'],light:['#4a5a48','#6d8163'],
+            medium:['#3f4d63','#5d7290'],heavy:['#5a4436','#8a6a4f']};
+function avatarHTML(){
+  var hair=cosWorn('hair'), hat=cosWorn('hat');
+  var hc=HAIRCOL[hair]||HAIRCOL.blonde;
+  var rg=armorById((P&&P.rig)||'none');
+  var rc=RIGCOL[rg.id]||RIGCOL.none;
+  var hatGlyph={none:'',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC',visor:'\u25AD',crown:'\u2662'}[hat]||'';
+  var hatBg={none:'',band:'#c0503a',phones:'#22262e',mask:'#14161b',visor:'#a9682f',crown:'#c9962c'}[hat]||'';
+  var h='<div class="avfig">'+
+    '<div class="avhead" style="background:#f2d2a8">'+
+      '<div class="avhair" style="background:linear-gradient(180deg,'+hc[2]+','+hc[1]+' 60%,'+hc[0]+')"></div>'+
+      (hat!=='none'?'<div class="avhat" style="background:'+hatBg+'">'+hatGlyph+'</div>':'')+
+      '<div class="aveyes"><div class="aveye"></div><div class="aveye"></div></div>'+
+    '</div>'+
+    '<div class="avtorso" style="background:linear-gradient(180deg,'+rc[1]+','+rc[0]+')">'+
+      (rg.cap>0?'<div class="avplate" style="background:rgba(0,0,0,.28)"></div>':'')+
+    '</div>'+
+    '<div class="avlegs" style="background:'+rc[0]+'"></div>'+
+  '</div>';
+  // The four slots. Each one opens its own picker underneath the figure, which
+  // is the whole reason the figure is here: you change what she wears by
+  // clicking the part of her you want to change.
+  var wep=WEAPONS[P.equipped]||WEAPONS.fists;
+  function slot(id,label,val,ic){
+    return '<div class="avslot'+(P._avSlot===id?' on':'')+'" data-av="'+id+'">'+
+      '<div class="avsic">'+ic+'</div>'+
+      '<div><div class="avslab">'+label+'</div><div class="avsval">'+escHtml(val)+'</div></div></div>';
+  }
+  h+=slot('hat','HEADGEAR',(cosFind(hat)||{name:'Bare'}).name,hatGlyph||'--');
+  h+=slot('hair','HAIR',(cosFind(hair)||{name:'Blonde'}).name,
+          '<span style="width:14px;height:14px;border-radius:7px;display:inline-block;background:'+hc[1]+'"></span>');
+  h+=slot('rig','BODY ARMOUR',rg.name+(rg.cap?('   '+rg.cap):''),rg.cap?'\u25A0':'--');
+  h+=slot('wep','WEAPON',wep.name,'\u2694');
+  return h;
+}
+function renderAvatar(){
+  var a=document.getElementById('avatar'); if(!a) return;
+  a.innerHTML=avatarHTML();
+  Array.prototype.forEach.call(a.querySelectorAll('.avslot'),function(el){
+    el.onclick=function(){
+      var id=el.getAttribute('data-av');
+      P._avSlot=(P._avSlot===id)?null:id;
+      renderAvatar(); renderAvPicker();
+    };
+  });
+  renderAvPicker();
+}
+// The picker under the figure. Cosmetics come here from Settings, per his note
+// "appearance should be in stash, not inside settings". Rigs come here from the
+// deleted "Body armour owned" list.
+function renderAvPicker(){
+  var box=document.getElementById('avpicker'); if(!box) return;
+  var slot=P._avSlot;
+  if(!slot){ box.innerHTML='<div class="hint" style="font-size:9.5px;line-height:1.4">'+
+    'Click a slot to change it. Headgear and hair are earned and change nothing about how you play.</div>'; return; }
+  if(slot==='hat'||slot==='hair'){ renderCosmetics(box,slot); return; }
+  if(slot==='wep'){
+    var h='<div class="glab" style="margin-bottom:5px">WEAPON</div>';
+    (P.weapons||[]).concat(['fists']).forEach(function(gk){
+      var W2=WEAPONS[gk]; if(!W2) return;
+      h+='<div class="avslot" data-wep="'+gk+'"><div class="avsic">\u2694</div><div>'+
+         '<div class="avsval">'+escHtml(W2.name)+(P.equipped===gk?'   WORN':'')+'</div>'+
+         '<div class="avslab">'+(W2.dmg*(W2.pellets||1))+' DMG   '+Math.round(W2.rng/10)+'M</div></div></div>';
+    });
+    box.innerHTML=h;
+    Array.prototype.forEach.call(box.querySelectorAll('[data-wep]'),function(el){
+      el.onclick=function(){ P.equipped=el.getAttribute('data-wep'); saveProfile(); renderHub(); };
+    });
+    return;
+  }
+  // RIGS. Owned rigs plus any rig sitting in the stash, because a rig is just an
+  // item now and the stash is where items live.
+  var h2='<div class="glab" style="margin-bottom:5px">BODY ARMOUR</div>';
+  var have={none:1};
+  (P.rigs||[]).forEach(function(r){ have[r]=1; });
+  (P.stash||[]).forEach(function(k){ var it=ITEMS[k]; if(it&&it.use==='rig'&&it.rk) have[it.rk]=1; });
+  ARMORS.forEach(function(A2){
+    if(!have[A2.id]) return;
+    h2+='<div class="avslot" data-rig="'+A2.id+'"><div class="avsic">'+(A2.cap?'\u25A0':'--')+'</div><div>'+
+        '<div class="avsval">'+escHtml(A2.name)+(((P&&P.rig)||'none')===A2.id?'   WORN':'')+'</div>'+
+        '<div class="avslab">'+A2.cap+' ARMOUR   '+Math.round(A2.absorb*100)+'% ABSORB'+
+        (A2.spd<1?('   '+Math.round((1-A2.spd)*100)+'% SLOWER'):'')+'</div></div></div>';
+  });
+  box.innerHTML=h2;
+  Array.prototype.forEach.call(box.querySelectorAll('[data-rig]'),function(el){
+    el.onclick=function(){
+      var id=el.getAttribute('data-rig');
+      P.rigs=P.rigs||[];
+      if(id!=='none'&&P.rigs.indexOf(id)<0) P.rigs.push(id);
+      // A rig worn out of the stash leaves the stash, the same as equipping a gun.
+      for(var i=0;i<P.stash.length;i++){
+        var it=ITEMS[P.stash[i]];
+        if(it&&it.use==='rig'&&it.rk===id){ P.stash.splice(i,1); break; }
+      }
+      P.rig=id; saveProfile(); renderHub();
+    };
+  });
+}
+function renderCosmetics(target,kindOnly){
+  var box=target||document.getElementById('cosbody'); if(!box) return;
   var H='';
-  [['hat','HEADGEAR'],['hair','HAIR']].forEach(function(g){
+  var GROUPS=[['hat','HEADGEAR'],['hair','HAIR']].filter(function(g){ return !kindOnly||g[0]===kindOnly; });
+  GROUPS.forEach(function(g){
     H+='<div style="margin:10px 0 4px 0;letter-spacing:2px;opacity:.7;font-size:12px">'+g[1]+'</div>';
     H+='<div style="display:flex;flex-wrap:wrap;gap:8px">';
     COSMETICS.filter(function(c){ return c.kind===g[0]; }).forEach(function(c){
@@ -22305,8 +22512,9 @@ function renderCosmetics(){
         } else { try{ sfx('clank'); }catch(e){} return; }
       }
       if(kind==='hair') P.cosHair=id; else P.cosHat=id;
-      saveProfile(); renderCosmetics();
-      try{ renderHub&&renderHub(); }catch(e){}
+      saveProfile();
+      renderCosmetics(target,kindOnly);
+      try{ renderAvatar&&renderAvatar(); }catch(e){}
     };
   });
 }
@@ -22316,8 +22524,7 @@ function openSettings(tab){
   var want=tab||'display';
   try{ renderSettings(); }catch(e){}
   try{ document.getElementById('exporttext').value=buildExport(); }catch(e){}
-  var T=[['display','DISPLAY'],['look','APPEARANCE'],['rec','RUN RECORDER']];
-  try{ renderCosmetics(); }catch(e){}
+  var T=[['display','DISPLAY'],['rec','RUN RECORDER']];
   var tb=document.getElementById('settabs');
   if(tb){
     tb.innerHTML='';
