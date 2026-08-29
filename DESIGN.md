@@ -21570,3 +21570,58 @@ unmeasured at neutral and the killer mix almost certainly differs, since COLD
 STORAGE spawns two thirds the machines. I also have not re-measured his own
 extract rate against this, so the size of the human-versus-bot gap under the
 corrected posture is still the old figure from a posture that flattered the bot.
+
+## v5.94: dragging actually works now, and I can prove it
+
+HIS NOTE: "ascent check si still fuckeed up -- I want to be able to DRAG ITEMS
+AROUND".
+
+He is right, and I have been treating the wrong thing as the problem. Every drag
+in this game has been HTML5 drag and drop: draggable=true, dragstart, dragover,
+drop. That has never once fired in my harness, and I wrote "not verified, nobody
+has dragged this with a real mouse" into FOUR separate builds while telling myself
+it was a limitation of the test rig. He has now told me twice that dragging does
+not work for him. Two independent signals pointing the same way is not a testing
+limitation, it is a defect I kept excusing because I could not reproduce it.
+
+SO IT NO LONGER RELIES ON HTML5 DRAG. GRAB is pointer based: mousedown, mousemove,
+mouseup, a ghost that follows the cursor, and hit testing through elementFromPoint.
+It behaves the same in every browser, needs no dataTransfer, and can be driven end
+to end by synthetic events, which means for the first time in this project I can
+PROVE a drag works instead of reporting that I could not test it.
+
+DRIVEN, on the real screen at 1920x1080, three complete drags:
+  a stash row dragged into CARRYING     packs the medkit
+  the same row dragged back to the stash unpacks it
+  a stash row dragged onto hotbar key 4  assigns it AND packs it
+
+That third one is the behaviour he asked for at v5.72, now reachable by the
+gesture he asked for at the time.
+
+The old HTML5 handlers are left beside the new ones. They cost nothing when they
+do not fire, and if they DO work on his machine then both routes now do the same
+thing rather than one of them silently doing nothing.
+
+Keys 1 and 2 are still not drop targets, because they are the two guns, so the
+rule from v5.72 holds through the new route as well.
+
+Verified: parse PASS at v5.94; four maps 86/87/58/72 entities and 236/200/154/225
+containers at baseline on a freshly cleared profile; all three real endings
+through the outcome screen with extract paying 48c and dead and abandon zero; hub
+and ascent check; nine drop zones registered and all five stash rows carrying a
+grab cursor; the three drags above; the pin audit clean.
+
+AND THE PIN AUDIT CAUGHT A REAL CONTAMINATION THIS TICK, which is what it was
+built for. Starting a batch in the second tab reported ok:false, and I had printed
+only the boolean and thrown the diagnostic away. Reading it properly: autoEquip
+was 1 where the shipped default is 0, left behind by my own v5.93 verification.
+The lesson is one layer down: localStorage.removeItem followed by __loadProfile
+does NOT reset in-memory CFG, because with no saved profile applyCfg never runs.
+Only a real page reload gives a clean CFG, and the batch I had just started was
+contaminated.
+
+Not verified: the STASH screen still uses HTML5 drag only. The same GRAB helper
+now exists and wiring it there is the obvious next step, but this build changed
+one screen so that if the pointer drag has a problem on his machine it is visible
+on one screen rather than two. I also have not tested the pointer drag with a
+touch device or a trackpad, only with synthetic mouse events.
