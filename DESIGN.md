@@ -18434,3 +18434,67 @@ than as a stack of boxes. The ascent check still has its own kit list and has
 NOT yet been folded into this screen, which is the next piece of his spec.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.35  FLOWING HAIR, AND THE ASCENT CHECK BECOMES THE SAME SCREEN
+================================================================================
+
+v5.35: flowing hair, and the ascent check becomes the same screen
+
+THE HAIR. His note: "ponytail looks like shit, give her flowing hair."
+
+He is right, and the reason is structural rather than a matter of taste. The
+ponytail was three circles on a stick pointing AWAY from her face, which meant
+it swung across her own body every time she turned, and at this size a stick of
+circles reads as exactly that.
+
+It is a MASS now. Nine strands falling from the crown to below the shoulder,
+each a different length, each lagging the turn by its own amount, tapering to a
+point with three beads down its run. Ink contour under the whole thing, same as
+everything else at this scale, or it disappears into dark ground. It hangs
+downward in screen space and only leans with motion, so it never crosses her
+face however she is facing.
+
+The lag is the part that makes it read as hair. A rigid shape that moves exactly
+with the head is a helmet; hair arrives a beat late and settles after you stop.
+
+I GOT THAT WRONG THE FIRST TIME AND THE PROBE CAUGHT IT. I stored the lag on
+drawOp's `st` parameter, and `st` is an object literal REBUILT EVERY FRAME at the
+call site. So st.hairLag was undefined on every frame, the seed branch ran every
+frame, and the delta was always exactly zero: the hair leaned with her facing and
+settled never. The picture still drew, which is why this class of fault survives
+a green run. Found by reading st.hairLag back after 150 draws and getting "not a
+number", the same shape as the __cfg setter that ignored its argument.
+
+The lag lives on the entity now. Snapped her head half a turn and watched it
+catch up: 0, 0.57, 1.03, 1.41, 1.72, 1.98, 2.19, 2.36, 2.50, 2.62, converging on
+pi. That is hair.
+
+THE ASCENT CHECK IS THE SAME SCREEN. His note: "Drop check should basically be
+the stash screen i described earlier."
+
+It had its own vocabulary for the same objects: a "Going up with" list of text
+rows with Change buttons, where the stash screen now has a figure you click. The
+figure and the hotbar plan move in, from the SAME functions, so there is one way
+to look at your operator and one way to build your quick bar.
+
+renderAvatar and renderAvPicker take a host id now, defaulting to the hub's, so
+the two screens share every line of code and cannot drift into describing the
+same operator differently. Wearing a rig on either screen redraws both.
+
+What stays different is the middle. The ascent check is the only screen that
+moves items from the vault into what you carry, and that transfer is genuinely
+its own job, so those two columns are untouched.
+
+Verified: parse PASS at v5.35; four maps 110/111/74/91; all three endings; hub
+clean. Hair drawn across 5 colours and 30 facings each, with all 6 hats over it.
+The lag seeds, lags, settles and converges. The ascent check reports its four
+figure slots and nine plan cells; a Breacher Plate worn from the ascent check
+left the stash, joined the owned list, and the hub figure agrees.
+
+Not verified: nobody has seen the hair move on a real screen. I know it lags by
+the right amount and settles to the right place, and I do not know that nine
+strands at this scale read as hair rather than as a dark blob behind her head.
+That is the one thing a number cannot tell me and it is the thing he objected to.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

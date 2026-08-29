@@ -78,6 +78,10 @@ window.__hub=function(){ return HB; };
 // showScreen('hub') is the ONLY thing that builds HB, so every hub probe before
 // this hook existed had to reach for HB through a raid ending and got null.
 window.__showScreen=function(s){ showScreen(s); };
+// The ascent check, so the screen he actually loads his kit on can be driven
+// rather than assumed. It shares the figure and the hotbar plan with the hub.
+window.__renderStage=function(prefill){ return renderStage(prefill); };
+window.__avatar=function(host,pick){ return renderAvatar(host,pick); };
 // FOG. Persistence is the whole point of it, so the probe has to be able to
 // read the packed profile string, not just the live grid.
 window.__fog={frac:function(m){ return fogFrac(m); },

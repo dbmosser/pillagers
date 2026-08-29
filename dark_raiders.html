@@ -477,10 +477,14 @@
        border:1px solid var(--hazard);border-radius:3px;color:var(--hazard)"></div>
   <div class="hubgrid" style="margin-top:10px">
     <div class="panel">
-      <h2>Going up with</h2>
-      <div id="stageload" style="padding:2px 0"></div>
+      <h2>Going up as</h2>
+      <div id="stageavatar"></div>
+      <div id="stageavatarpicker" style="border-top:1px solid var(--steel-hi);padding:8px 10px;
+           max-height:170px;overflow-y:auto"></div>
+      <div id="stageplan" style="border-top:1px solid var(--steel-hi)"></div>
       <h2 style="border-top:1px solid var(--steel-hi)">Ascent kit <em id="stagekitct"></em></h2>
-      <div class="plist" id="stagekit" style="max-height:150px;overflow-y:auto"></div>
+      <div class="plist" id="stagekit" style="max-height:130px;overflow-y:auto"></div>
+      <div id="stageload" style="display:none"></div>
     </div>
     <div class="panel">
       <h2>Take from the stash</h2>
@@ -745,7 +749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.34';
+var VER='5.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14180,25 +14184,52 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // HER HAIR GOES DOWN FIRST, behind everything, so the head sits into it and the
   // mass reads past the shoulders the way it does in the reference.
   if(HERO){
-    // THE PONYTAIL. Gathered at the back of the skull and swinging out behind
-    // her, opposite the way she is facing, so from above you read the direction
-    // of travel from her hair. It sways with the walk cycle.
-    var tailA=face+Math.PI, sway=Math.sin(ph*0.9)*0.20*(moving?1:0.25);
-    var tx0=hx2+Math.cos(tailA)*4.2, ty0=ty-30.5+Math.sin(tailA)*2.6;
-    var tdx=Math.cos(tailA+sway), tdy=Math.sin(tailA+sway)*0.55;
-    // three tapering segments, ink first so it keeps a contour against dark ground
-    var segs=[[0,4.6],[6.2,3.9],[11.4,2.9]];
-    wc.fillStyle=INK;
-    for(var _t=0;_t<segs.length;_t++)
-      rrF(tx0+tdx*segs[_t][0]-segs[_t][1]/2-0.7, ty0+tdy*segs[_t][0]-segs[_t][1]/2-0.7,
-          segs[_t][1]+1.4, segs[_t][1]+1.4, (segs[_t][1]+1.4)/2);
-    wc.fillStyle=HAIRDARK;
-    for(var _u=0;_u<segs.length;_u++)
-      rrF(tx0+tdx*segs[_u][0]-segs[_u][1]/2, ty0+tdy*segs[_u][0]-segs[_u][1]/2,
-          segs[_u][1], segs[_u][1], segs[_u][1]/2);
-    // the gather at the crown, and a highlight along the top of the tail
+    // FLOWING HAIR, v5.35, replacing the ponytail on his note. A MASS of strands
+    // falling from the crown past the shoulder, not a tail on a stick.
+    //
+    // Every strand lags the turn by its own amount, which is the whole trick:
+    // hair that moves exactly with the head is a helmet. The lag is stored on
+    // the entity so it settles across frames rather than being recomputed from
+    // scratch, and it is seeded from the facing the first time so she does not
+    // start every raid with her hair streaming sideways.
+    // st is rebuilt every frame at the call site, so the lag has to live on the
+    // entity itself. st.own is that entity; without one the hair simply does not
+    // lag rather than silently pretending to.
+    var _HO=st.own||st;
+    if(_HO.hairLag===undefined) _HO.hairLag=face;
+    var _dA=face-_HO.hairLag;
+    while(_dA> Math.PI) _dA-=6.2832;
+    while(_dA<-Math.PI) _dA+=6.2832;
+    _HO.hairLag+=_dA*0.18;                      // catches up over about six frames
+    var _hairLag=_HO.hairLag;
+    var _swing=Math.sin(ph*0.85)*(moving?1.7:0.45);
+    var _lean=Math.cos(_hairLag)*2.6;           // leans away from the turn
+    var _cx=hx2, _cy=ty-31.5;
+    // Nine strands across the back of the skull, longest in the middle.
+    var _STR=[[-7.4,9.5],[-5.6,12.5],[-3.6,15.0],[-1.6,16.4],[0.2,16.8],
+              [2.0,16.2],[4.0,14.6],[5.8,12.0],[7.4,9.0]];
+    // INK CONTOUR FIRST, whole mass, so it never vanishes into dark ground.
+    for(var _hp=0;_hp<2;_hp++){
+      wc.fillStyle=_hp?HAIRDARK:INK;
+      var _pad=_hp?0:0.9;
+      for(var _h=0;_h<_STR.length;_h++){
+        var _sx=_cx+_STR[_h][0], _len=_STR[_h][1];
+        // Each strand drifts a little further with the swing the lower it goes.
+        var _t2=(_h/(_STR.length-1))*2-1;            // -1 at the left, 1 at the right
+        var _dx=_lean*0.6+_swing*(0.35+0.25*Math.abs(_t2));
+        var _w=(_hp?2.9:2.9+_pad*2)*(1-0.22*Math.abs(_t2));
+        // Three beads down the strand, widest at the crown, tapering to a point.
+        for(var _b=0;_b<3;_b++){
+          var _f=_b/2;
+          var _bx=_sx+_dx*_f*_f, _by=_cy+_len*_f;
+          var _bw=_w*(1-0.30*_f);
+          rrF(_bx-_bw/2-_pad, _by-_bw/2-_pad, _bw+_pad*2, _bw+_pad*2, (_bw+_pad*2)/2);
+        }
+      }
+    }
+    // A highlight band across the crown, catching the light the way a head does.
     wc.fillStyle=HAIRLIT;
-    rrF(tx0-2.6,ty0-2.6,5.2,5.2,2.6);
+    rrF(_cx-6.4,_cy-2.0,12.8,4.4,2.2);
     // SIDES tight to the skull: enough to say "hair", not enough to be ears.
     wc.fillStyle=INK;      rrF(hx2-9.4,ty-35.4,3.1,10.5,1.5); rrF(hx2+6.3,ty-35.4,3.1,10.5,1.5);
     wc.fillStyle=HAIRDARK; rrF(hx2-8.9,ty-34.9,2.3,9.4,1.2);  rrF(hx2+6.6,ty-34.9,2.3,9.4,1.2);
@@ -15701,7 +15732,7 @@ var SHD=G.shells[i];
       }
       drawOp(p.x,p.y,p.face,p.roll>0?(1-p.roll/.38)*12.6:p.bob,'#242832',
         clamp((1-loadOf(bagWeight()).spd)/(1-LOAD_FLOOR),0,1),p.muzzle,((G.deathBeat>0||p.hp<=0)?'down':(G.crowbarUp>0?'bar':pmode)),p.iv,
-        {hero:1,moving:!!p.moving,sprint:!!G.sprinting,ads:!!p.ads,hurt:p.hitFlash,bulk:armorById(p.rig).bulk,
+        {hero:1,own:p,moving:!!p.moving,sprint:!!G.sprinting,ads:!!p.ads,hurt:p.hitFlash,bulk:armorById(p.rig).bulk,
          rl:(p.reloading>0&&p.wep.reload)?clamp(1-p.reloading/p.wep.reload,0,1):0});
       if(pWet){
         wc.restore();
@@ -21933,6 +21964,34 @@ function renderStage(prefill){
     'Nothing leaves your stash until you press ASCEND.';
   document.getElementById('stagecred').innerHTML=P.credits.toLocaleString()+'<small>CREDITS</small>';
 
+  // THE SAME FIGURE THE STASH SCREEN SHOWS, from the same function, so the two
+  // screens can never describe the same operator differently.
+  try{ renderAvatar('stageavatar','stageavatarpicker'); }catch(e){}
+  // THE SAME HOTBAR PLAN, and a drop target here too: this is the screen you are
+  // on when you decide what you are carrying, so it is the screen where building
+  // the quick bar actually matters.
+  (function(){
+    var sp=document.getElementById('stageplan'); if(!sp) return;
+    sp.innerHTML=hotPlanHTML();
+    Array.prototype.forEach.call(sp.querySelectorAll('[data-plan]'),function(el){
+      var ix=+el.getAttribute('data-plan');
+      el.onclick=function(){
+        if((P.hotAssign||{})[ix]!==undefined){ delete P.hotAssign[ix]; saveProfile(); renderStage(); }
+      };
+      el.addEventListener('dragover',function(ev){ ev.preventDefault(); el.style.borderColor='var(--amber)'; });
+      el.addEventListener('dragleave',function(){ el.style.borderColor='var(--steel-hi)'; });
+      el.addEventListener('drop',function(ev){
+        ev.preventDefault(); el.style.borderColor='var(--steel-hi)';
+        var key=''; try{ key=ev.dataTransfer.getData('text/plain'); }catch(e){}
+        if(!key||!ITEMS[key]) return;
+        if(ITEMS[key].use==='gun'){ try{ sfx('clank'); }catch(e){} return; }
+        P.hotAssign=P.hotAssign||{};
+        for(var ok in P.hotAssign) if(P.hotAssign[ok]===key) delete P.hotAssign[ok];
+        P.hotAssign[ix]=key; saveProfile(); try{ sfx('pick'); }catch(e){}
+        renderStage();
+      });
+    });
+  })();
   // ---- what you are wearing and holding
   var L=document.getElementById('stageload'); L.innerHTML='';
   var w=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null;
@@ -22418,27 +22477,29 @@ function avatarHTML(){
   h+=slot('wep','WEAPON',wep.name,'\u2694');
   return h;
 }
-function renderAvatar(){
-  var a=document.getElementById('avatar'); if(!a) return;
+function renderAvatar(host,pickHost){
+  var hid=host||'avatar', pid=pickHost||(host?host+'picker':'avpicker');
+  var a=document.getElementById(hid); if(!a) return;
   a.innerHTML=avatarHTML();
   Array.prototype.forEach.call(a.querySelectorAll('.avslot'),function(el){
     el.onclick=function(){
       var id=el.getAttribute('data-av');
       P._avSlot=(P._avSlot===id)?null:id;
-      renderAvatar(); renderAvPicker();
+      renderAvatar(hid,pid);
     };
   });
-  renderAvPicker();
+  renderAvPicker(pid,hid);
 }
 // The picker under the figure. Cosmetics come here from Settings, per his note
 // "appearance should be in stash, not inside settings". Rigs come here from the
 // deleted "Body armour owned" list.
-function renderAvPicker(){
-  var box=document.getElementById('avpicker'); if(!box) return;
+function renderAvPicker(pickHost,host){
+  var pid=pickHost||'avpicker', hid=host||'avatar';
+  var box=document.getElementById(pid); if(!box) return;
   var slot=P._avSlot;
   if(!slot){ box.innerHTML='<div class="hint" style="font-size:9.5px;line-height:1.4">'+
     'Click a slot to change it. Headgear and hair are earned and change nothing about how you play.</div>'; return; }
-  if(slot==='hat'||slot==='hair'){ renderCosmetics(box,slot); return; }
+  if(slot==='hat'||slot==='hair'){ renderCosmetics(box,slot,hid,pid); return; }
   if(slot==='wep'){
     var h='<div class="glab" style="margin-bottom:5px">WEAPON</div>';
     (P.weapons||[]).concat(['fists']).forEach(function(gk){
@@ -22449,7 +22510,8 @@ function renderAvPicker(){
     });
     box.innerHTML=h;
     Array.prototype.forEach.call(box.querySelectorAll('[data-wep]'),function(el){
-      el.onclick=function(){ P.equipped=el.getAttribute('data-wep'); saveProfile(); renderHub(); };
+      el.onclick=function(){ P.equipped=el.getAttribute('data-wep'); saveProfile();
+        renderAvatar(hid,pid); try{ renderHub(); }catch(e){} try{ renderStage(); }catch(e){} };
     });
     return;
   }
@@ -22477,11 +22539,14 @@ function renderAvPicker(){
         var it=ITEMS[P.stash[i]];
         if(it&&it.use==='rig'&&it.rk===id){ P.stash.splice(i,1); break; }
       }
-      P.rig=id; saveProfile(); renderHub();
+      P.rig=id; saveProfile();
+      renderAvatar(hid,pid);
+      try{ renderHub(); }catch(e){}
+      try{ renderStage(); }catch(e){}
     };
   });
 }
-function renderCosmetics(target,kindOnly){
+function renderCosmetics(target,kindOnly,hid,pid){
   var box=target||document.getElementById('cosbody'); if(!box) return;
   var H='';
   var GROUPS=[['hat','HEADGEAR'],['hair','HAIR']].filter(function(g){ return !kindOnly||g[0]===kindOnly; });
@@ -22513,8 +22578,8 @@ function renderCosmetics(target,kindOnly){
       }
       if(kind==='hair') P.cosHair=id; else P.cosHat=id;
       saveProfile();
-      renderCosmetics(target,kindOnly);
-      try{ renderAvatar&&renderAvatar(); }catch(e){}
+      renderCosmetics(target,kindOnly,hid,pid);
+      try{ renderAvatar(hid,pid); }catch(e){}
     };
   });
 }
