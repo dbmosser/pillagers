@@ -18914,3 +18914,56 @@ defence and is almost certainly correct, but I have not proven it is the siege
 rather than something else killing him there.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.44  AUDIT PASS FIVE, THE MAPS, AND TWO THINGS HIS RUN NOTES ASKED FOR
+================================================================================
+
+v5.44: audit pass five, the maps, and two things his run notes asked for
+
+THE MAPS. Asked every map whether the player can actually reach what it draws.
+All four: every extraction reachable, zero containers inside walls, and zero
+genuinely stranded containers by the game's own navReachable test, which is what
+the v2.12 cull uses.
+
+MY OWN PROBE RAISED A FALSE ALARM AND I WANT IT ON THE RECORD. My first pass
+used navPath, the A* solver, and reported ten unreachable containers on
+GREYWATER including five CACHES, which would have been the guaranteed jackpots
+stranded. That was alarming and it was wrong: navPath asks a stricter question
+than navReachable, and the game's own instrument says clean. I checked before
+acting, which is the only reason I am not currently rewriting cache placement
+to fix a problem that does not exist.
+
+TWO THINGS FROM HIS RUN NOTES, both from run #58, both still outstanding:
+
+AUTO RELOAD ON A HELD TRIGGER. "reload should happen automatically if i continue
+holding down mouse button at end of clip ammo." The BOT has done exactly this
+since it was written: its fire branch reloads the instant the magazine is empty.
+The player had to let go and press R. So the simulated player has enjoyed a
+quality-of-life behaviour the real one was denied, which is also precisely why no
+sim number ever noticed the friction. Held only, so a tap on an empty gun still
+does nothing, and a JAMMED gun is excluded because clearing a jam is its own
+action. Verified all three: a tap does nothing, holding starts the reload, and a
+jam blocks it.
+
+THE HEAL COUNTDOWN MOVED TO HER HEAD. "bandage timing countdowns needs to be
+shown above character or on mid screen. right now it just shows at health bar."
+A shrinking arc and the seconds remaining, drawn above the operator. In a fight
+his eyes are on her, not on the bottom-left corner. This also answers his run
+#55 note, "All bars should also show the seconds. Add seconds counts everywhere
+you can."
+
+ALSO CHECKED AND ALREADY CORRECT: his stamina note, "when player run out of
+stamina, it should have to fill to some level -- 10 or 15 percent -- before
+player can sprint again". Already built: stamLock engages at 2 percent and does
+not release until 12, and the HUD reads WINDED while it holds. Inside the range
+he asked for, so nothing to do.
+
+Verified: parse PASS at v5.44; four maps 85/86/57/71; all three endings driven
+through the outcome screen; hub and ascent check clean; zero HUD overlaps.
+
+Not verified: the heal ring has been driven for a no-throw and its arithmetic
+checked, but nobody has seen it on a real screen, so I do not know a 9 pixel ring
+above her head reads at normal zoom.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
