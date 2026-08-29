@@ -22828,3 +22828,57 @@ does with its 64. If he wants that fuller look it needs a decision from him abou
 whether the grid should pretend to have a size it does not have. The five pixel label
 overflow is also still there; it is a label spilling five pixels past its own box
 inside a panel with room, with overflow visible so nothing is clipped.
+
+## v6.23: the other half of the 1080p note, which is the screen he looks at most
+
+v6.22 grew the inventory cells on a tall viewport. The raid HUD had the same problem
+and it is the screen he spends the most time in front of. uiScale() returned P.uiScale
+or 1.0, a MANUAL setting, and nothing ever derived it from the window, so every label,
+panel and meter was drawn at the same logical size at 1920x1080 as at 1280x720. At his
+stated target resolution the entire HUD was proportionally smaller than it was
+designed to be.
+
+The default now comes from the viewport, and only when he has not set a scale himself:
+an explicit choice in Settings still wins, because a preference beats a guess.
+
+H is the canvas CSS height maintained by resize(), so this is a plain variable read on
+a function called every frame many times over. It deliberately does not read
+window.innerHeight, which can force layout.
+
+CONSERVATIVE ON PURPOSE, and the reason is in this file's own history. It gives 1.0 at
+720 and clamps at 1.2 by 1080. A larger number is arguably more correct and is also
+exactly where the risk is: there are at least three past entries about panels running
+outside their own boxes when text sizes moved, and every one was found by looking at a
+capture rather than by reasoning about it. 1.2 is the number I have actually looked at.
+
+Verified: the curve reads 1.0 at 720, 1.1 at 900, 1.2 at 1080, 1.2 at 1440 clamped,
+and 1.0 at 600 clamped, so an existing 720p player sees no change at all and a small
+window never shrinks; a frame and a HUD draw without throwing at all five sizes; and a
+1080p capture with health, armour, the pillager board, the conditions panel, the
+hotbar, the ammo readout and the extraction banner all on screen at once shows no
+overlap and nothing outside the frame.
+
+Also verified this tick, and it is the closest thing to a shipping check I have: the
+COMPLETE play loop driven end to end at a real 1920x1080, sixteen steps, all green.
+Title, enter the Undercroft, walk to the stash, the first-run primer, drag an item to
+pack it, drag another to the safe pocket, take the lift, the ascent check opens with
+the loadout intact, the raid starts carrying what was packed, it renders, extract, the
+outcome screen, back to the floor, the haul banked from 7 items to 10, credits paid
+90,048 to 90,304, the run counted, and the stash reopens afterwards.
+
+Verified: parse PASS at v6.23; four maps 236/200/154/225 and 86/87/58/72 with the
+weapon pin; three endings through the outcome screen; hub, ascent check and the export
+builder; pin audit clean.
+
+THE CROWDED STATE IS CHECKED TOO, because leaving that as a not-verified line when it
+takes one capture would have been laziness. Driven at 1080p with everything competing
+for the edges at once: twenty pillagers on the board, blackout weather at noon, three
+contract rows plus the overflow line, the hunting and searching counters, a siege up
+with both extraction prompts showing, a long weapon name in "Marksman Rifle (field)",
+and 116 entities alive. Nothing overlaps and nothing leaves the frame. The board runs
+to about a fifth of the screen height and the bottom meters start well below it.
+
+Not verified: 1.2 is still a number I chose by eye rather than derived from anything,
+and it is clamped there, so a 1440p or 4K player gets the same scale as 1080p and will
+find it small again. The menus are DOM and were checked separately at 1080p; this
+change does not touch them.

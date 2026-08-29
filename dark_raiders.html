@@ -942,7 +942,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.22';
+var VER='6.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4867,7 +4867,18 @@ var UISCALES=[1.0,1.25,1.5,1.75,2.0];
 // to 2.09x: the key legend swallowed the screen and lines printed over each
 // other. His report, verbatim: "key is too big, text is on top of each other."
 var TEXTLIFT=1.3;
-function uiScale(){ var v=P&&P.uiScale; return (typeof v==='number'&&v>0)?v:1.0; }
+function uiScale(){
+  // An explicit choice in Settings always wins.
+  var v=P&&P.uiScale;
+  if(typeof v==='number'&&v>0) return v;
+  // v6.23, his note "assume everything happens in 1080p or higher and adjust all
+  // menus/ui accordingly". The HUD was drawn at one logical size whatever the
+  // window, so at his target resolution it read proportionally small. H is the
+  // canvas CSS height kept by resize(), so this is a variable read rather than a
+  // layout-forcing measurement.
+  var h=(typeof H==='number'&&H>0)?H:720;
+  return clamp(1+(h-720)/720*0.4,1,1.2);
+}
 var _fs={};
 // ================================================================ TYPE
 // His note, 2026-08-23: "Text still looks like absolute shit, need a complete
