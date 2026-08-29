@@ -755,7 +755,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.50';
+var VER='5.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22729,12 +22729,94 @@ function renderAvatar(host,pickHost){
 // The picker under the figure. Cosmetics come here from Settings, per his note
 // "appearance should be in stash, not inside settings". Rigs come here from the
 // deleted "Body armour owned" list.
+// A PRESET IS A SNAPSHOT OF THE THINGS THE ASCENT CHECK CAN CHANGE. Nothing
+// cosmetic: a hat is part of you rather than part of a loadout.
+function loadoutSnap(){
+  return {equipped:P.equipped,equippedSec:(P.equippedSec||'none'),rig:(P.rig||'none'),
+          hotAssign:JSON.parse(JSON.stringify(P.hotAssign||{})),
+          kit:(P.kit||[]).slice()};
+}
+function loadoutLabel(L){
+  if(!L) return 'EMPTY';
+  var g=(L.equipped&&L.equipped!=='fists'&&WEAPONS[L.equipped])?WEAPONS[L.equipped].name:'no gun';
+  var r=armorById(L.rig||'none');
+  return g+(r.cap?(', '+r.name):', no rig')+', '+((L.kit||[]).length)+' packed';
+}
+// TAKES ONLY WHAT YOU STILL OWN. A preset holding a rig you have since lost
+// applies the rest and SAYS what it skipped, rather than failing whole or
+// quietly equipping something that is not in your stash.
+function loadoutApply(L){
+  if(!L) return 'nothing saved there';
+  var missing=[];
+  if(L.equipped&&(L.equipped==='fists'||(P.weapons||[]).indexOf(L.equipped)>=0)) P.equipped=L.equipped;
+  else if(L.equipped) missing.push(WEAPONS[L.equipped]?WEAPONS[L.equipped].name:L.equipped);
+  if(L.equippedSec==='none'||L.equippedSec==='fists') P.equippedSec='none';
+  else if((P.weapons||[]).indexOf(L.equippedSec)>=0) P.equippedSec=L.equippedSec;
+  else { P.equippedSec='none'; missing.push(WEAPONS[L.equippedSec]?WEAPONS[L.equippedSec].name:L.equippedSec); }
+  var haveRig=(L.rig==='none')||((P.rigs||[]).indexOf(L.rig)>=0);
+  if(haveRig) P.rig=L.rig;
+  else missing.push(armorById(L.rig).name);
+  // Only plan a slot for something that exists as an item.
+  var ha={};
+  for(var k in (L.hotAssign||{})) if(ITEMS[L.hotAssign[k]]) ha[k]=L.hotAssign[k];
+  P.hotAssign=ha;
+  // Only pack what is actually in the stash, one for one.
+  var pool=(P.stash||[]).slice(), kit=[];
+  (L.kit||[]).forEach(function(key){
+    var ix=pool.indexOf(key);
+    if(ix>=0){ pool.splice(ix,1); kit.push(key); }
+    else if(ITEMS[key]) missing.push(ITEMS[key].name);
+  });
+  P.kit=kit;
+  saveProfile();
+  return missing.length?('applied, without '+missing.slice(0,3).join(', ')):'applied';
+}
+function loadoutHTML(){
+  P.loadouts=P.loadouts||[null,null,null];
+  var h='<div class="glab" style="margin:10px 0 5px">LOADOUTS</div>';
+  for(var i=0;i<3;i++){
+    var L=P.loadouts[i];
+    h+='<div class="avslot" data-load="'+i+'" style="'+(L?'':'opacity:.55')+'">'+
+       '<div class="avsic">'+(i+1)+'</div><div style="flex:1">'+
+       '<div class="avsval">'+escHtml(loadoutLabel(L))+'</div>'+
+       '<div class="avslab">'+(L?'CLICK TO EQUIP':'CLICK SAVE TO FILL THIS')+'</div></div>'+
+       '<button data-save="'+i+'" style="padding:2px 7px;font-size:9px;margin-left:6px">SAVE</button>'+
+       '</div>';
+  }
+  return h;
+}
+function wireLoadouts(box,hid,pid){
+  Array.prototype.forEach.call(box.querySelectorAll('[data-save]'),function(b){
+    b.onclick=function(ev){
+      ev.stopPropagation();
+      var i=+b.getAttribute('data-save');
+      P.loadouts=P.loadouts||[null,null,null];
+      P.loadouts[i]=loadoutSnap(); saveProfile();
+      try{ sfx('pick'); }catch(e){}
+      renderAvatar(hid,pid); try{ renderHub(); }catch(e){} try{ renderStage(); }catch(e){}
+    };
+  });
+  Array.prototype.forEach.call(box.querySelectorAll('[data-load]'),function(el){
+    el.onclick=function(){
+      var i=+el.getAttribute('data-load');
+      var msg=loadoutApply((P.loadouts||[])[i]);
+      try{ sfx(msg==='nothing saved there'?'clank':'cache'); }catch(e){}
+      try{ say2&&say2(msg); }catch(e){}
+      renderAvatar(hid,pid); try{ renderHub(); }catch(e){} try{ renderStage(); }catch(e){}
+    };
+  });
+}
 function renderAvPicker(pickHost,host){
   var pid=pickHost||'avpicker', hid=host||'avatar';
   var box=document.getElementById(pid); if(!box) return;
   var slot=P._avSlot;
-  if(!slot){ box.innerHTML='<div class="hint" style="font-size:9.5px;line-height:1.4">'+
-    'Click a slot to change it. Headgear and hair are earned and change nothing about how you play.</div>'; return; }
+  if(!slot){
+    box.innerHTML='<div class="hint" style="font-size:9.5px;line-height:1.4">'+
+      'Click a slot to change it. Headgear and hair are earned and change nothing about how you play.</div>'+
+      loadoutHTML();
+    wireLoadouts(box,hid,pid);
+    return;
+  }
   if(slot==='hat'||slot==='hair'){ renderCosmetics(box,slot,hid,pid); return; }
   if(slot==='wep'||slot==='wep2'){
     var two=(slot==='wep2');

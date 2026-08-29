@@ -19288,3 +19288,53 @@ checked the seven by hand before deleting any of them, but the method itself
 cannot see that pattern.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.51  LOADOUT PRESETS
+================================================================================
+
+v5.51: loadout presets
+
+HIS Q15: "Loadout presets, one click."
+
+The ascent check now carries five slots on the figure, a nine cell hotbar plan
+and a packed kit. Rebuilding all of that by hand every time he wants to run the
+quiet kit instead of the heavy one is exactly what a preset is for.
+
+THREE SLOTS. Two cannot hold quiet, heavy and cheap at once; four is a list
+rather than a choice.
+
+WHAT A PRESET REMEMBERS is everything the ascent check can change: both guns,
+the rig, the hotbar plan and the packed kit. It deliberately does NOT remember
+cosmetics. A hat is part of you rather than part of a loadout, and a preset that
+silently changed how she looks would be a surprise instead of a convenience.
+
+APPLYING ONLY EVER TAKES WHAT YOU STILL OWN. This is the part that matters,
+because death takes your kit and a preset saved before a bad raid will name
+things that are gone. A preset holding a Breacher Plate you have since lost
+applies everything else and SAYS what it skipped, rather than failing whole or
+quietly equipping a rig that is not in your stash. The kit is matched one for
+one against what is actually in the stash, so a preset cannot conjure a second
+medkit out of a single one.
+
+Verified: three slots render on both the stash figure and the ascent check.
+Saved a heavy loadout, changed every field, applied it back, and got carbine,
+shotgun, heavy rig, both kit items and the hotbar plan returned exactly. Then
+deleted the heavy rig and the shotgun from the profile and applied again: gun one
+kept, gun two fell to none, the rig fell to light, the kit emptied, nothing
+threw, and a worn Cracked Visor was untouched.
+
+Also verified this build: all 22 fixture hooks present and the fixture SILENT,
+zero network and zero file-save attempts across all three endings. Both of those
+are new standing checks after v5.50, where deleting one dead constant killed
+every hook below it and let two zero-duration run files leak into exports.
+
+Parse PASS at v5.51; four maps 85/86/57/71; all three endings through the
+outcome screen; hub and ascent check clean.
+
+Not verified: nobody has used a preset in a real session. I know the round trip
+is exact and that it degrades safely; I do not know that three slots is the right
+number or that SAVE sitting inside each row is discoverable rather than looking
+like part of the label.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
