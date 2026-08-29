@@ -23649,3 +23649,63 @@ found no player-facing "rep" or "reputation" left, but the roadmap panel still c
 a historical DONE line using the old word, which I left because it is a changelog entry
 about the past and it sits behind the dev tools that beta hides. One code comment still
 names Vesh.
+
+## v6.43 - GUNS ARE CHOSEN ON QUICK USE 1 AND 2, AND THE OPERATOR IS COSMETIC ONLY
+
+Three of his notes were one change:
+
+  "spot 2 on the quick use still doesn't work right, it just says GUN"
+  "gun 1 and 2 controlled by 'your operator' but it needs to be controlled by spot 1-2
+   on the quick use instead, 'your operator' should be cosmetic only"
+  "guns should be normal inventory items like everything else, there's no reason for
+   them to be in the 'your operator'/'going up as'"
+
+THE WORD GUN WAS THE EMPTY STATE. The two gun cells on the quick-use row were dead
+pictures with cursor:default, no click and no drop, and when gun 2 held nothing the cell
+printed the literal string GUN. That is what he was looking at and calling broken: it
+was not a bug in the slot, the slot simply had no behaviour at all and a placeholder
+that read like a label.
+
+THEY ARE THE CONTROL NOW. Clicking a gun cell opens the list of guns you own directly
+under the row. Dragging a gun out of the stash onto a cell puts it in that slot and
+makes it yours, the same trade the right-click Equip has always made. Dropping anything
+that is not a gun is refused with a reason. Empty gun 2 says "Empty", the same word the
+picker uses, instead of GUN.
+
+The figure keeps headgear and hair and has lost both gun slots, so there is now exactly
+one place in the game where a gun is chosen. The picker branch that fed the old slots is
+deleted rather than left standing unreachable, because v5.89 already recorded what that
+costs: the rig picker sat behind a deleted slot for six builds and was a live hazard the
+whole time. What remains in its place is a guard that clears a stale selection from an
+older profile so it cannot fall through into the rig code underneath.
+
+TWO FAULTS OF MINE ON THE WAY, both caught before they went anywhere.
+
+The first was a real bug and the test caught it by luck. The quick-use row is rendered
+into TWO hosts, the stash panel and the ascent check, and each wires its own cells
+scoped to its own host. I wired the new gun cells with a document-wide query from inside
+renderHub, which reached both copies, and then renderStage rebuilt its host and threw
+those handlers away. Clicking a gun in the ascent check did nothing. It now wires per
+host from a shared function both renderers call, the way the existing quick-use keys
+have always been done.
+
+The second was mine and dumber: rewriting the stash-grid drop handler I supplied a
+complete replacement including its closing brace while the original body was still
+underneath, leaving an orphan with nothing opening it. Parsecheck caught it, brace count
+negative at line 24518, which is the entire reason that step is not optional.
+
+Verified: parse PASS at v6.43; both gun cells driven in BOTH hosts, click to open, pick
+to equip, and a gun dragged from the stash into gun 1 which left the stash and entered
+the armoury; a Medkit dragged at a gun slot refused without changing anything; the
+figure read back as HEADGEAR and HAIR only; a profile owning no guns renders the row and
+offers only fists; four maps 86/87/58/72 entities and, at seed 4242, 246/193/152/216
+containers; all three endings through the outcome screen to a drawn hub; hub,
+renderStage and the export builder; pin audit clean; captured at 1080p.
+
+Not verified: owned guns are chosen from the picker, not shown as cells in the stash
+grid, so the second half of "guns should be normal inventory items" is only half done.
+A gun ITEM in the stash behaves like any other item and can be dragged; a gun you
+already own still lives in the armoury and is reached through the picker. Making owned
+guns render as stash cells is the next step and is not in this build. I also did not
+re-check the raid-side hotbar, which has always refused to fire a key for slots 1 and 2
+and is unchanged.

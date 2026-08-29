@@ -948,7 +948,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.42';
+var VER='6.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21915,11 +21915,13 @@ function hotPlanHTML(where){
     if(i<2){
       var _gw=(i===0)?_g1:_g2;
       var _gn=_gw?_gw.name:'Empty';
-      h+='<div title="Key '+(i+1)+': GUN '+(i+1)+', '+_gn+'. Guns are chosen on the figure, not here."'+
-        ' style="width:34px;height:34px;border:1px solid rgba(255,212,138,.45);border-radius:3px;'+
-        'display:flex;align-items:center;justify-content:center;cursor:default;'+
-        'background:rgba(255,212,138,.07);position:relative">'+
-        ((_gw&&_gw.id)?iconImgHTML(_gw.id,22):'<span style="color:#ffd48a;font-size:8px">GUN</span>')+
+      var _sel=(P._gunSlot===i);
+      h+='<div data-gun="'+i+'" title="Gun '+(i+1)+': '+_gn+'. Click to choose, or drag a gun here."'+
+        ' style="width:34px;height:34px;border:1px solid '+(_sel?'var(--amber)':'rgba(255,212,138,.45)')+';border-radius:3px;'+
+        'display:flex;align-items:center;justify-content:center;cursor:pointer;'+
+        'background:rgba(255,212,138,'+(_sel?'.18':'.07')+');position:relative">'+
+        ((_gw&&_gw.id)?iconImgHTML(_gw.id,22)
+                      :'<span style="color:#ffd48a;font-size:7.5px;letter-spacing:.02em">Empty</span>')+
         '<span style="position:absolute;right:2px;bottom:0;font-size:8px;color:#ffd48a">'+(i+1)+'</span>'+
         '</div>';
       continue;
@@ -21933,7 +21935,86 @@ function hotPlanHTML(where){
       (it?'<span style="position:absolute;right:2px;bottom:0;font-size:8px;color:var(--ash)">'+(i+1)+'</span>':'')+
       '</div>';
   }
-  return h+'</div></div>';
+  h+='</div>';
+  h+=gunPickHTML();
+  return h+'</div>';
+}
+// THE GUN PICKER, v6.43. Lives under the quick-use row because that is where he
+// asked for the control to be. Only drawn when a gun cell is selected, so it costs
+// nothing until asked for.
+function gunPickHTML(){
+  var i=P._gunSlot;
+  if(i!==0&&i!==1) return '';
+  var two=(i===1);
+  var cur=two?(P.equippedSec||'none'):(P.equipped||'fists');
+  var other=two?(P.equipped||'fists'):(P.equippedSec||'none');
+  var list=(P.weapons||[]).slice();
+  if(two) list.unshift('none'); else list.push('fists');
+  var h='<div style="margin:7px 0 0 0;padding:7px 8px;background:rgba(0,0,0,.28);'+
+        'border:1px solid var(--steel-hi);border-radius:3px">'+
+        '<div class="glab" style="margin-bottom:5px">GUN '+(i+1)+
+        '<span style="float:right;opacity:.6;cursor:pointer" data-gunclose="1">close</span></div>';
+  for(var q=0;q<list.length;q++){
+    var gk=list[q];
+    var W2=(gk==='none')?null:WEAPONS[gk];
+    if(gk!=='none'&&!W2) continue;
+    var taken=(gk!=='none'&&gk!=='fists'&&gk===other);
+    var mine=(cur===gk);
+    h+='<div data-gunpick="'+gk+'" style="display:flex;gap:8px;align-items:center;'+
+       'padding:3px 5px;border-radius:2px;cursor:'+(taken?'default':'pointer')+';'+
+       'opacity:'+(taken?'.42':'1')+';'+(mine?'background:rgba(255,192,74,.14)':'')+'">'+
+       '<span style="width:20px;text-align:center">'+((W2&&W2.id)?iconImgHTML(W2.id,18):'--')+'</span>'+
+       '<span style="flex:1;font-size:10.5px">'+escHtml(W2?W2.name:'Empty')+'</span>'+
+       '<span style="font-size:8.5px;color:var(--ash);letter-spacing:.06em">'+
+         (mine?'EQUIPPED':(taken?'IN GUN '+(two?1:2):(W2?((W2.dmg*(W2.pellets||1))+' DMG'):'lighter, quieter')))+
+       '</span></div>';
+  }
+  return h+'</div>';
+}
+// WIRES ONE COPY OF THE QUICK-USE GUN CELLS, v6.43. Called by renderHub for the stash
+// panel and by renderStage for the ascent check, because each of them rebuilds its own
+// host and a document-wide pass is destroyed by whichever renders second.
+function wireGunRow(host){
+  if(!host) return;
+  Array.prototype.forEach.call(host.querySelectorAll('[data-gun]'),function(el){
+    var gi=+el.getAttribute('data-gun');
+    el.onclick=function(){
+      P._gunSlot=(P._gunSlot===gi)?null:gi;
+      saveProfile(); renderHub(); try{ renderStage(); }catch(e){}
+    };
+    dropzone(el,function(key){
+      var it=ITEMS[key];
+      if(!it||it.use!=='gun'||!it.gk||!WEAPONS[it.gk]){
+        say2('Only a gun goes in gun 1 or gun 2.'); try{ sfx('clank'); }catch(e){}
+        return;
+      }
+      // A gun dragged out of the stash is yours from now on, the same trade the
+      // right-click Equip has always made.
+      var ix=P.stash.indexOf(key);
+      if(ix>=0) P.stash.splice(ix,1);
+      if((P.weapons||[]).indexOf(it.gk)<0) P.weapons.push(it.gk);
+      // One gun cannot hold both slots, so taking it frees the other.
+      if(gi===0){ if((P.equippedSec||'none')===it.gk) P.equippedSec='none'; P.equipped=it.gk; }
+      else      { if((P.equipped||'fists')===it.gk) P.equipped='fists';     P.equippedSec=it.gk; }
+      saveProfile(); try{ sfx('pick'); }catch(e){}
+      renderHub(); try{ renderStage(); }catch(e){}
+    });
+  });
+  Array.prototype.forEach.call(host.querySelectorAll('[data-gunpick]'),function(el){
+    el.onclick=function(){
+      var gk=el.getAttribute('data-gunpick');
+      var i=P._gunSlot, two=(i===1);
+      var other=two?(P.equipped||'fists'):(P.equippedSec||'none');
+      if(gk!=='none'&&gk!=='fists'&&gk===other){ try{ sfx('clank'); }catch(e){} return; }
+      if(two) P.equippedSec=(gk==='none')?'none':gk;
+      else    P.equipped=(gk==='none')?'fists':gk;
+      saveProfile(); try{ sfx('pick'); }catch(e){}
+      renderHub(); try{ renderStage(); }catch(e){}
+    };
+  });
+  Array.prototype.forEach.call(host.querySelectorAll('[data-gunclose]'),function(el){
+    el.onclick=function(){ P._gunSlot=null; saveProfile(); renderHub(); try{ renderStage(); }catch(e){} };
+  });
 }
 function renderHub(){
   if(typeof applyMenuZoom==='function') applyMenuZoom();
@@ -22094,10 +22175,11 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
       });
     });
   }
+  wireGunRow(document.getElementById('hotplanwrap'));
   dropzone(document.getElementById('stashgrid'),function(key,from){
     if(from!=='kit') return;
-    var ix=P.kit.indexOf(key);
-    if(ix>=0){ P.kit.splice(ix,1); saveProfile(); try{ sfx('pick'); }catch(e){} renderHub(); }
+    var ixk=P.kit.indexOf(key);
+    if(ixk>=0){ P.kit.splice(ixk,1); saveProfile(); try{ sfx('pick'); }catch(e){} renderHub(); }
   });
   var detail=document.getElementById('stashdetail');
   function detailIdle(){
@@ -23691,6 +23773,7 @@ function renderStage(prefill){
   (function(){
     var sp=document.getElementById('stageplan'); if(!sp) return;
     sp.innerHTML=hotPlanHTML('stage');
+    wireGunRow(sp);
     Array.prototype.forEach.call(sp.querySelectorAll('[data-plan]'),function(el){
       var ix=+el.getAttribute('data-plan');
       el.onclick=function(){
@@ -24234,8 +24317,8 @@ function avatarHTML(){
   // armour and there is nothing to choose, so a slot here was a control that
   // did nothing. The rig picker below is now unreachable.
   var wep2=(P.equippedSec&&P.equippedSec!=='none'&&WEAPONS[P.equippedSec])?WEAPONS[P.equippedSec]:null;
-  h+=slot('wep','GUN 1',wep.name,'\u2460');
-  h+=slot('wep2','GUN 2',wep2?wep2.name:'Empty','\u2461');
+  // v6.43, his note: no guns on the figure. "Your operator should be cosmetic only",
+  // and guns are chosen on quick use 1 and 2, which is the row that fires them.
   return h;
 }
 function renderAvatar(host,pickHost){
@@ -24347,7 +24430,11 @@ function renderAvPicker(pickHost,host){
     return;
   }
   if(slot==='hat'||slot==='hair'){ renderCosmetics(box,slot,hid,pid); return; }
-  if(slot==='wep'||slot==='wep2'){
+  // v6.43: the wep and wep2 branch is gone with the slots that opened it. Guns are
+  // chosen on quick use 1 and 2 now. Left as a guard rather than nothing, so a stale
+  // P._avSlot from an older profile cannot fall through into the rig code below.
+  if(slot==='wep'||slot==='wep2'){ P._avSlot=null; box.innerHTML=''; return; }
+  if(false){
     var two=(slot==='wep2');
     var cur=two?(P.equippedSec||'none'):P.equipped;
     var other=two?P.equipped:(P.equippedSec||'none');
