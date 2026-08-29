@@ -156,6 +156,16 @@ window.__setWorld=function(w,h){ WORLD_W=w; WORLD_H=h; AREA=(WORLD_W*WORLD_H)/(2
 window.__ctxCanvas=function(){ return ctx.canvas; };
 window.__hud=function(){ drawHUD(); };
 window.__conceal={bushAt:inBush,at:concealAt,mapBush:bushAtMap};
+  window.__los={
+    // straight line between two points, the test the game uses for a shot
+    clear:function(ax,ay,bx,by){ refreshVseg(); return losClear(ax,ay,bx,by,G.vseg); },
+    // full sight test including facing and cone, what an enemy uses
+    see:function(px,py,face,tx,ty,far,cone){ refreshVseg(); return canSee(px,py,face,tx,ty,G.vseg,far,cone); },
+    // how far a clear shot reaches from a point along a heading, for arena setup
+    reach:function(x,y,th,max){ refreshVseg(); var m=max||900;
+      for(var d=20; d<=m; d+=20){ if(!losClear(x,y,x+Math.cos(th)*d,y+Math.sin(th)*d,G.vseg)) return d; }
+      return m; }
+  };
 window.__emote={do:doEmote,list:EMOTES,down:weaponDown,ids:function(){return IDENTITIES;},rec:idRec};
 window.__con={gen:genContract,label:gearLabel,pay:payGear,tier:contractTier,tiers:CTIER,gear:CGEAR,stand:cstand,render:renderHub};
 window.__arm={list:ARMORS,by:armorById,mine:myRig,cap:armorCap,ping:ping,hurt:damagePlayer,shop:renderShop,SHOP:SHOP};

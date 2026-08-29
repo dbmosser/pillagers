@@ -19882,3 +19882,54 @@ What I can say from reading is that it has 120 HP, about eleven Sputter rounds,
 moves at 196 against a 158 walk and a 256 sprint, and hits for 34 with a melee
 reach of 26. It is not unkillable. Whether it FEELS unkillable is his question and
 I have not answered it.
+
+## tools: a real line-of-sight hook, and a correction to v5.59
+
+CORRECTION FIRST. v5.59's "Not verified" note says my Listener duel put the
+player "in a map corner with a wall seven units away in every direction". The
+CONCLUSION was right and the EVIDENCE was garbage. I had reached for __hitWall as
+a sight test. __hitWall(wallIndex, amount) DAMAGES a wall and returns a truthy
+object for any index that exists, so every call read as "blocked" no matter where
+I pointed it, and the probe was quietly damaging walls while it ran. That is the
+sixth probe false alarm this tick and the only one where a broken method happened
+to land on a true answer, which is the most dangerous kind.
+
+THE HOOK THAT SHOULD HAVE EXISTED. __los, wrapping the functions the game itself
+asks: clear(ax,ay,bx,by) is losClear, the straight-line test a shot uses;
+see(px,py,face,tx,ty) is canSee with facing and cone; reach(x,y,heading,max)
+walks out along a heading and returns where sight stops, which is what arena
+setup actually needs. Combat probes can now ask the question the game asks.
+
+WHAT IT SAYS ABOUT GREYWATER. Sampling 638 points on a 160 grid, the most open
+spot on the entire map has 320 units of clearance in its worst direction, and 528
+of those points have under 100 units clear in some direction. There is nowhere on
+GREYWATER you can see 600 units in every direction. A long open firefight is not
+a thing this map can produce, which is worth knowing before any future balance
+argument that assumes one.
+
+THE LISTENER, AS FAR AS I CAN HONESTLY TAKE IT. Standing on the map's most open
+ground with a lane verified clear by __los, at 280 units:
+
+  gun       standing and firing        backing away and firing
+  rifle     killed in 1.8s, no damage  killed in 1.6s
+  carbine   killed in 1.8s, no damage  not run
+  shotgun   killed in 2.8s, no damage  not run
+  smg       killed in 2.9s, no damage  not run
+  pistol    killed in 3.1s, no damage  stalemate, it sat at 70 of 120
+  sputter   killed in 4.9s, no damage  stalemate, it sat at 83 of 120
+
+So it is not a damage sponge. 120 HP dies to anything in under five seconds when
+you can see it, and backing away while firing is the one approach that reliably
+fails to kill it, which is the approach the in-raid banner currently recommends.
+
+Verified: the __los hook returns finite numbers on all four maps and the fixture
+still exposes every hook (134 now, was 133).
+
+Not verified, and this is the important part: I COULD NOT REPRODUCE HIS COMPLAINT.
+He says "it sticks to the player and there's no chance to kill it". In my arena
+the Listener never closed at all, sitting at exactly 280 units for the whole
+fight, so every number above is a fight against a target that was not chasing me.
+The scenario he is describing is the one I have not tested. I also ran these on a
+profile my own reward test had pushed to world tier 1, which scales enemy HP by
+1.06 and is why one reading came back as 127 of 120. I am NOT changing the banner
+or the Listener's numbers on this evidence.
