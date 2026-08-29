@@ -23147,3 +23147,42 @@ moment is a different question and not one I can answer from here. It is dismiss
 and recallable from Settings, so nothing is lost by not reading it, but if he wants it
 shorter that is a decision about what a first-time player needs to be told, and his to
 make rather than mine.
+
+## v6.29: the primer named the wrong station and the wrong key for Settings
+
+"Settings live at the dev box. Press T at the terminal in the Undercroft."
+
+Two errors in one sentence, and it only became wrong when the beta build changed that
+station. With BETA_HIDE_DEV true, which is what ships, that station is labelled
+SETTINGS and binds E. T is what opened settings in the DEV build, where the same
+station is the DEV BOX and E opens the crate instead. And "the terminal" is a different
+station entirely, THE STASH. So a new player was told to press a key that does nothing
+at a station that is not the one they want.
+
+Found by checking the claim against __station, the hook added at v6.19 that lists what
+each station actually binds. Without it I would have had to trust the sentence.
+
+I THEN CHECKED THE OTHER SEVENTEEN PRIMER CLAIMS THE SAME WAY, and every one is right.
+X swaps guns, TAB opens the bag, M holds the map, H cycles the legend, B cycles a
+merc's orders, elites are about one in twelve against an eliteRate of 0.08, the Choir
+reaches about fifty metres against a CHOIR_RNG of 520 units, the Undercroft has three
+tracks, and walking out unseen pays 40 percent, which the HUD prints in those words.
+One wrong claim out of nineteen, and it is fixed.
+
+A suspicion of mine that was wrong, recorded because I nearly acted on it: I read
+howlerR at 90 units, nine metres, and thought the Choir's "about fifty metres" was a
+tenfold error of the same kind I found in the distances at v6.09. It is not. howlerR
+belongs to the Howler, a different machine, and the Choir has its own CHOIR_RNG of 520.
+Checking which constant belongs to which enemy took one grep and saved a wrong fix.
+
+Verified: the primer no longer contains "Press T at the terminal" or "dev box"; the
+instruction it now gives is walk to SETTINGS and press E, and driving dev.KeyE fires
+the act named settings and opens the settings modal, so the card describes the thing
+that happens; parse PASS at v6.29; four maps 236/200/154/225 and 86/87/58/72 with the
+weapon pin; three endings through the outcome screen; hub, ascent check and the export
+builder; pin audit clean.
+
+Not verified: the primer's claims are checked against the CODE, not against play. "The
+Bulwark's back is soft and it is marked with a hot orange seam" is the kind of sentence
+I can confirm exists in the renderer without knowing whether the seam reads as a target
+to a person under fire. Those are questions for him, not for a grep.
