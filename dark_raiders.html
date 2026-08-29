@@ -135,6 +135,14 @@
     color:var(--ash); cursor:pointer; background:rgba(0,0,0,.25); }
   .invtab:hover{ color:var(--bone); border-color:var(--amber); }
   .invtab.on{ color:#0d1435; background:var(--amber); border-color:var(--amber); font-weight:700; }
+  /* v6.22, his 1080p note. Bigger cells on a tall viewport so the panel is used
+     rather than merely fitted. The icon inside stays its rendered size on purpose;
+     upscaling a rasterised icon by 1.4x blurs it and buys nothing. */
+  @media (min-height:880px){
+    .invgrid{ grid-template-columns:repeat(auto-fill,minmax(66px,1fr)) !important; gap:9px !important; }
+    .vendgrid{ grid-template-columns:repeat(auto-fill,minmax(72px,96px)) !important; gap:9px !important; }
+    #safegrid{ grid-template-columns:repeat(auto-fill,minmax(66px,1fr)) !important; }
+  }
   .invgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(52px,1fr));
     gap:6px; padding:10px; overflow-y:auto; align-content:start;
     /* v5.68 capped these and it read worse: the content crammed to the top and
@@ -934,7 +942,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.21';
+var VER='6.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This

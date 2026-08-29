@@ -22785,3 +22785,46 @@ Tier" vocabulary still lives. I read them as a player-facing lie twice today bef
 checking they were invisible. They want deleting, but the region runs into the weapon
 list and I could not establish its end confidently enough to cut it in the same build
 as a label change, so it is a scoped follow-up rather than something I have done.
+
+## v6.22: the menus fit 1080p, they just did not use it
+
+His note: "assume everything happens in 1080p or higher and adjust all menus/ui
+accordingly".
+
+Audited at a REAL 1920x1080 viewport rather than a forced canvas size, which is a
+distinction that has caught me twice today: __forceSize sets the canvas, and
+window.innerHeight stays whatever the pane actually is, so an audit at "1080p" was
+really running at 720. Resized the pane properly first.
+
+ELEVEN SCREENS, TWO FINDINGS, and both are the same five pixel overflow on one small
+label. Nothing exceeded the viewport in either direction, and no panel had vertical
+overflow. So the menus FIT at 1080p, which is worth stating plainly because it is the
+half of his note I could have spent a build "fixing" and found nothing.
+
+What they did NOT do is USE it. At 720 the stash panel is short and the grid fills it.
+At 1080 the same panel is several hundred pixels taller, the cells stayed 52px, and
+eighty one items rendered as a single row across the top of a mostly empty blue field.
+Not broken; a screen designed for a smaller window being shown a bigger one.
+
+Cells now grow on a tall viewport: 52px to 68px, and the same stash wraps to two rows
+instead of one. The icons deliberately do NOT grow. itemIconURL rasterises at the size
+it is asked for, so scaling the image by a non-integer factor would blur pixel art for
+nothing, and a larger cell around the same icon is what his reference screenshots do
+anyway, where the art sits in a generous well rather than filling the tile.
+
+Keyed on viewport HEIGHT, because height is what changed and what left the panel
+empty. A wide short window is not the case being fixed.
+
+Verified: parse PASS at v6.22, with the script byte count unchanged from v6.21 because
+this is a CSS-only edit and parsecheck measures the script; cells measure 68x68 at
+1920x1080 and 52px below the breakpoint; four maps 236/200/154/225 and 86/87/58/72;
+three endings through the outcome screen; hub, ascent check and the export builder;
+pin audit clean.
+
+Not verified: there is still vertical space below the grid on a mostly-empty stash,
+and I have left it. An empty stash SHOULD look empty, and his spec says space is
+infinite, so there is no fixed slot count to draw as placeholders the way Arc Raiders
+does with its 64. If he wants that fuller look it needs a decision from him about
+whether the grid should pretend to have a size it does not have. The five pixel label
+overflow is also still there; it is a label spilling five pixels past its own box
+inside a panel with room, with overflow visible so nothing is clipped.
