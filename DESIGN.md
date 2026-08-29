@@ -23186,3 +23186,68 @@ Not verified: the primer's claims are checked against the CODE, not against play
 Bulwark's back is soft and it is marked with a hot orange seam" is the kind of sentence
 I can confirm exists in the renderer without knowing whether the seam reads as a target
 to a person under fire. Those are questions for him, not for a grep.
+
+## v6.30: the save file, hardened, and a very quiet audit tick
+
+THE ONE CHANGE. Loading twelve deliberately hostile profiles found eleven handled
+perfectly and one worth closing: a save carrying negative credits loaded and ran, and
+the Requisition header printed "-5,000c". It was never exploitable, because every
+spend re-checks affordability and the quantity stepper stops the moment the button
+goes disabled, but it is a nonsense number in front of him.
+
+It cannot arise from play; only from a corrupted or hand-edited save, which is exactly
+what the rest of that block exists for. loadProfile already filters unknown stash keys
+and unknown armoury guns for the same reason, so the counters belong in the same
+defence. Ten of them are now clamped to a non-negative number: credits, rep, runs,
+ext, died, best, sp, racks, notoriety and cstand. Clamping rather than zeroing,
+because a save reading -5,000 is damaged rather than a cheat to punish, and the honest
+repair is the nearest valid value.
+
+Verified: a profile with six negative counters loads with all of them at 0 and the
+header reads "0c 0rep"; a normal profile of 9,999 credits, 1,234 rep and 42 runs
+round-trips completely untouched; the twelve hostile states all still load and render
+five screens including a live raid frame; parse PASS at v6.30; four maps
+236/200/154/225 and 86/87/58/72 with the weapon pin; three endings; hub, ascent check
+and the export builder; pin audit clean.
+
+### SEVEN AUDITS, SIX FOUND NOTHING
+
+This was a quiet tick and the quiet is the result. Recording what was checked so it is
+not checked again blind.
+
+  SAVE ROUND TRIP. A rich profile touching every subsystem, 12,777 bytes, comes back
+  byte-identical across a save and load: credits, rep, runs, stash, kit, safe pocket,
+  weapons, both gun slots, hotbar assignments, junk tags, racks, seal progress, rivals,
+  progress points, claimed rewards and loadout presets.
+
+  HOSTILE PROFILES. Malformed JSON, empty, null, an array instead of an object, a
+  string where the stash should be, unknown item keys, unknown weapons, junk hotbar
+  entries, malformed seals, a non-array contracts field and garbage loadouts. All
+  twelve load and every screen renders.
+
+  IN-RAID HUD NUMBERS. Every readout matches the state behind it: HP 61, ARMOR 22,
+  ammo 17 of 41, "3 ITEMS", and the pillager board's "YOU 1,070c" equals the sum of
+  the bag's item values computed independently.
+
+  THE KEY LEGEND. Every key it names has a handler. ENTER equipping a gun from the bag
+  was driven end to end, Sputter to Auto Rifle with the bag emptied, because I had
+  edited that function at v6.28 and needed to know I had not broken it. N is a real
+  silent-departure hold in an open ring and CapsLock is a real walk toggle.
+
+  THE PRIMER'S REMAINING CLAIMS, seventeen of them, all true.
+
+  THE LISTENER, closed by his own tags in a separate entry.
+
+A PROBE OF MINE THAT FAILED TWICE ON THE SAME TEST, which is the lesson worth keeping.
+My first two attempts at the ENTER test reported that equipping from the bag did
+nothing, and I was one step from filing it as a regression I had caused. It was a
+LATCHED KEY left true by an earlier probe in the same page. Clearing every key first
+and the equip worked immediately. The keys object survives across raids, so any probe
+that sets one must clear it, and any probe that finds a keypress inert should suspect
+its own leftovers before the game.
+
+Not verified: the clamp runs at load. A value that goes negative DURING a session
+would not be caught until the next load, and I have not found a path that can do that,
+which is the reason this is defence rather than a fix. The hostile-profile sweep asks
+whether screens render and the raid runs; it does not assert that a repaired profile
+is sensible to play with, only that it is safe.

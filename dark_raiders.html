@@ -937,7 +937,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.29';
+var VER='6.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1401,6 +1401,18 @@ function loadProfile(){
       if(r&&r.value){ var d=JSON.parse(r.value);
         if(d&&typeof d.credits==='number'){ P=d;
 if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={};
+// v6.30: the counters cannot be negative or non-numeric. A damaged save carrying
+// negative credits used to load and print "-5,000c" in the Requisition header. It
+// was never exploitable, because every spend re-checks affordability, but it is a
+// nonsense number in front of him and it belongs with the unknown-key filters that
+// already run here.
+(function(){
+  var _num=['credits','rep','runs','ext','died','best','sp','racks','notoriety','cstand'];
+  for(var _ni=0;_ni<_num.length;_ni++){
+    var _k=_num[_ni],_v=P[_k];
+    if(typeof _v!=='number'||!isFinite(_v)||_v<0) P[_k]=Math.max(0,(typeof _v==='number'&&isFinite(_v))?_v:0);
+  }
+})();
 // v5.99: refund the retired backpack. 450 for tier 1, 1300 for tier 2, exactly what
 // the counter charged. Runs once and stamps itself so it can never pay twice.
 if(!P.packRefund&&P.pack>0){
