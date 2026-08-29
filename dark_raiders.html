@@ -755,7 +755,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.52';
+var VER='5.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7459,7 +7459,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
     msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,legendOn:1,sprinting:false,
     mercOrder:'loot',mercHold:null,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
-      kills:{sentry:0,crawler:0,raider:0,snitch:0,warden:0,listener:0,howler:0,bulwark:0},
+      kills:{sentry:0,crawler:0,raider:0,snitch:0,warden:0,listener:0,howler:0,bulwark:0,choir:0},
       dmg:{sentry:0,crawler:0,raider:0,snitch:0,other:0},
       containers:0,items:0,rar:{common:0,uncommon:0,rare:0,elite:0},
       firstContact:null,firstLoot:null,distance:0,
@@ -11784,6 +11784,16 @@ if(e.state==='possum'){
         cw.cache=1; cw.time=2.0; cw.tag='WARDEN WRECK'; G.containers.push(cw);
         say(e.name+' is down. Its core is exposed.');
         decal(e.x,e.y,'#3a2a10',rnd(30,44));
+      } else if(e.kind==='choir'){
+        // It was bolted to a cache and it was made of good parts. The pipes are
+        // the payout, and one of the two findable-only guns rides on it, because
+        // an emplacement is exactly where a weapon nobody sells would end up.
+        var cq=setLoot(mkContainer(e.x,e.y,'cache'),
+          [pick(['relay','codex','bloom']),pick(['titan','core','coil']),
+           pick(['gun_whisper','gun_lance']),'servo']);
+        cq.cache=1; cq.time=2.4; cq.tag='CHOIR WRECK'; G.containers.push(cq);
+        say(e.name+' has stopped singing.');
+        decal(e.x,e.y,'#2a1a3a',rnd(28,40));
       } else if(e.kind==='raider'&&e.bag.length){
         var c=setLoot(mkContainer(e.x,e.y,'body'),e.bag.slice()); G.containers.push(c);
         // WHOSE BODY THIS IS, v2.71. A dead raider became an anonymous 'body'

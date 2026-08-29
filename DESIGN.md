@@ -19400,3 +19400,45 @@ question only playing it answers. Its damage was measured against a player
 standing still on purpose, which is the worst case rather than the real one.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.53  THE CHOIR HAD NO DEATH
+================================================================================
+
+v5.53: the Choir had no death
+
+Shipping the boss and stopping at "it shoots you" left three holes, and all
+three only appear the moment somebody actually kills one, which is exactly the
+kind of thing that ships green.
+
+THE KILL COUNTER WOULD HAVE GONE NaN. T.kills[e.kind]++ writes into a table with
+a fixed set of keys and there was no choir key, so the first kill would have
+incremented undefined and carried NaN into the run report and into the contract
+counter. Added.
+
+IT DROPPED NOTHING. Every other body in this game leaves something: a Warden
+leaves its core, a Listener leaves a cache, a pillager leaves his bag. A boss
+with 1,250 health leaving bare ground is a punishment for winning. It now leaves
+a CHOIR WRECK: a relay or codex or bloom, a titan or core or coil, a servo, and
+one of the two findable-only guns, because an emplacement is exactly where a
+weapon nobody sells would end up.
+
+AND THERE WAS NO REASON TO FIGHT IT rather than walk around it, which would have
+made the whole design pointless. It is bolted to a cache, so the cache was
+always the reason, but now the wreck pays too: the thing it was built around
+plus what it was made of.
+
+Verified: parse PASS at v5.53. Killed one and checked every consequence: the
+entity is gone, the kill counter is a real number rather than NaN, a CHOIR WRECK
+container appears at its feet holding servo, titan, codex and a Whisper, and the
+run report carries a complete kills table with no nulls. Four maps 86/87/58/72,
+all three endings through the outcome screen, hub and ascent check clean, all 22
+hooks present, fixture silent.
+
+Not verified: I killed it by setting its health to zero rather than by shooting
+it, so the kill-CREDIT path, the part that decides the kill was yours and
+increments the counter, was not exercised. The counter is present and numeric,
+which is what the NaN fix was about, but whether a Choir kill is correctly
+attributed to the player is untested.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
