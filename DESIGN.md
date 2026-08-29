@@ -19686,3 +19686,55 @@ have not made it short, and whether a nineteen row card gets read at all is a
 question the card cannot answer about itself.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.57  A CONTRACT TERM THAT PAID 35 PERCENT FOR NOTHING
+================================================================================
+
+v5.57: a contract term that paid 35 percent for nothing
+
+Rewriting the primer at v5.56 told me there is a whole class of text I had not
+audited: things that only render in rare states. So I swept every string for
+language describing systems that have since been deleted, and it turned up a
+BALANCE bug rather than a wording one.
+
+NO SAFE POCKET. The term reads "Nothing is saved if you die. Not one item." and
+its entire mechanism is one line:
+
+  var nSafe = hasTerm('pockets') ? 0 : Math.min(Math.round(CFG.safeSlots), idx.length);
+
+At v5.32 I set safeSlots to 0 for everyone, on his instruction that a death
+should keep nothing. So BOTH branches of that expression now evaluate to zero.
+Signing the term changes not one thing about the raid and pays THIRTY FIVE
+PERCENT MORE for it.
+
+This is the exact fault the file already documents for BLACKOUT PROTOCOL at
+v3.44, in a different term, and this time I caused it three builds ago.
+
+It cannot be repriced into honesty because there is nothing left for it to take:
+the thing it removes is already gone for everybody. So the term is removed. The
+safeSlots dial stays, because setting it back to 1 is how he restores his own Q4
+if he wants it, and if he ever does the term can come back with it.
+
+I THEN CHECKED THE OTHER FIVE rather than assuming they were fine, and all of
+them have real mechanisms: HEAVY PATROLS multiplies enemy density by 1.40, SHORT
+WINDOW cuts the clock to 0.66, THEY KNOW YOU makes every pillager hostile with a
+grudge on spawn, SILENCE widens the Listener's reach by half, and BLACKOUT
+PROTOCOL skips the lamp pass and forces a time of day whose lamps matter.
+
+TWO STALE TEXTS in the same sweep. The dev roadmap listed "DONE: Your body stays
+where you fell, and you can go back for it", advertising a feature deleted at
+v5.28; it now reads CUT with the reason. And the YOUR BODY world label and map
+marker are deleted, since nothing can carry that flag any more.
+
+Verified: parse PASS at v5.57. Five terms remain, pockets is gone, all five
+signed at once start a raid, pay +140 percent and end cleanly through the
+outcome screen. Four maps 86/87/58/72, hub and ascent check clean, 25 hooks
+present, fixture silent.
+
+Not verified: I confirmed each surviving term HAS a reader and read what it
+does, but I did not measure any of them. Whether HEAVY PATROLS at 1.40 density
+is worth exactly 30 percent is a balance question and none of these five have
+ever been measured against their pay.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

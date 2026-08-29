@@ -755,7 +755,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.56';
+var VER='5.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13198,8 +13198,10 @@ var TERMS=[
    desc:'Forty percent more of everything out there: machines, pillagers and snitches alike.'},
   {id:'window',  name:'SHORT WINDOW',pay:0.25,
    desc:'The whole raid clock is cut by a third: about 400 seconds instead of 600.'},
-  {id:'pockets', name:'NO SAFE POCKET',pay:0.35,
-   desc:'Nothing is saved if you die. Not one item.'},
+  // NO SAFE POCKET was removed at v5.57. Its only effect was to zero safeSlots,
+  // and safeSlots has been zero for everyone since v5.32, so it paid 35 percent
+  // for no change at all. If safeSlots ever goes back to 1, this term comes back
+  // with it.
   {id:'known',   name:'THEY KNOW YOU',pay:0.30,
    desc:'Every pillager out there is hostile and already looking.'},
   {id:'silence', name:'SILENT RUNNING',pay:0.30,
@@ -15155,10 +15157,10 @@ if(ct.cache&&ct.tag&&!ct.strong){
       bgr.addColorStop(0,'#4de3d0'); bgr.addColorStop(1,'rgba(0,0,0,0)');
       wc.fillStyle=bgr; wc.beginPath(); wc.arc(ct.x,ct.y-lift,54,0,6.2832); wc.fill();
       wc.restore();
-      wc.textAlign='center'; wc.font=FS(TYPE.label);
-      wc.fillStyle=INK; wc.fillText('YOUR BODY',ct.x+1,ct.y-lift-d2-25);
-      wc.fillStyle='#4de3d0'; wc.fillText('YOUR BODY',ct.x,ct.y-lift-d2-26);
-      wc.textAlign='left';
+      // The YOUR BODY label was deleted at v5.57. Nothing can carry ct.mine any
+      // more: bodyStash returns null before it does anything and P.body is
+      // cleared on every raid start, so this branch has been unreachable since
+      // v5.28.
     }
   }
 }
@@ -19484,7 +19486,7 @@ function drawMapOverlay(){
     ctx.fillStyle='#4de3d0';
     ctx.beginPath(); ctx.arc(bmx,bmy,4,0,6.2832); ctx.fill();
     ctx.textAlign='center'; ctx.font=FS(TYPE.label);
-    ctx.fillText('YOUR BODY',bmx,bmy-15); ctx.textAlign='left';
+    ctx.textAlign='left';   // YOUR BODY map label deleted at v5.57, unreachable
   }
   // A cache the Stray told you about. This is his whole payment, so it is drawn
   // large and named: without it, being decent to him buys nothing you can see.
@@ -20584,7 +20586,7 @@ var ROADMAP=[
   ['DONE','Weather that turns while you are still out there'],
   ['DONE','Windfalls and the Meridian Strongbox: greed sets the odds'],
   ['DONE','THE LISTENER: blind, dormant, and it hunts the noise you make'],
-  ['DONE','Your body stays where you fell, and you can go back for it'],
+  ['CUT','Bodies you could go back for: removed at v5.28 on his order that a death is final'],
   ['DONE','The Stray: a survivor who tells you where a cache is'],
   ['DONE','Scopes that extend what you can SEE, not just what you can hit'],
   ['DONE','Weak points: the vent is on its back, so you have to flank'],
