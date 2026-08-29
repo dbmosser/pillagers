@@ -23089,3 +23089,61 @@ say is that the fight is winnable and cheap when you can see it; what I still ca
 reproduce is a Listener that closes and will not let go, and I have never once managed
 to. Since his own tags now say beatable and never say unfair, I am treating that as
 answered rather than continuing to hunt a scenario neither of us can produce.
+
+## v6.28: the first thing a new player reads taught a mechanic that cannot happen
+
+The primer card, shown once before anyone's first raid, carried a whole section headed
+"A rig you find can be put on out there", explaining that body armour is an ordinary
+item, that you find a better one mid-raid, open the bag and press ENTER, and that the
+new one starts empty.
+
+None of it is true. Rigs went at v5.83 on his instruction to remove the concept
+completely. myRig() returns one body armour for everybody and P.rig is not consulted
+for protection.
+
+AND THE CODE BEHIND IT WAS UNREACHABLE, which is how I found it rather than by reading
+the card. The wear-from-bag branch tests itm.use==='rig', and the item audit two
+builds ago found ZERO items carrying that use: the three surviving rig_ items have no
+use field at all. So the branch could not fire for anything in the game. The tutorial
+was teaching a keypress that does nothing, on the screen a player reads before they
+know anything else about the game.
+
+Replaced with what is actually true: you always wear sixty points of body armour, it
+absorbs half of every hit until it is gone, it comes back every raid, and Armour
+Plates are how you put it back on out there. That last part is his own instruction
+from the same note, "just make it where you can always use armor plates to heal up".
+
+The death section said "your bag, both guns and the rig you were wearing are gone" and
+now says bag and guns. And the dead branch is deleted rather than left to fool someone
+again, which is exactly what the dead gear panel did to me twice at v6.24.
+
+Verified: the primer no longer contains the word rig anywhere; the section is retitled
+"You always wear body armour"; putting an armour item in the bag and pressing ENTER in
+a live raid now does nothing and throws nothing, where before it reached a branch that
+could never complete; parse PASS at v6.28; four maps 236/200/154/225 and 86/87/58/72
+with the weapon pin; three endings through the outcome screen; hub, ascent check and
+the export builder; pin audit clean.
+
+TWO AUDITS THAT FOUND NOTHING. Three systems driven end to end and all sound: the
+Mainframe racks cost 11 materials, report "1 of 4 racks +200c per extraction" and pay
+"MAINFRAME: 1 rack fenced the data" worth 200c on extract; the Seal banks progress only
+if you walk out, showing "Seal cut 7 of 40 seconds" on the payout and "COLD STORAGE:
+seal tier 1" at the Mainframe, and banks nothing at all when you die; the Terms shorten
+the clock from 540 to 356 for the SHORT WINDOW term and pay a 25 percent hazard bonus
+on extract and nothing on death. And performance, measured because I had just raised
+the UI scale and the cell sizes: a full frame including simulation costs 5.46ms at
+720p, 7.32ms at 1080p and 9.91ms at 1080p with 116 entities alive, which is 59 percent
+of a sixty-frame budget at its worst.
+
+A probe of mine that reported a false negative, corrected: I searched the payout text
+for the word "term" and concluded the Terms bonus was paid silently. It is not. The
+line reads "Hazard pay +25%: 30c for SHORT WINDOW", and my regex was looking for a word
+the game does not use.
+
+Not verified: the primer is still 5,155 characters across nineteen sections, shown in
+one card to somebody who has not yet played a second of the game. Everything in it is
+now true, which is what this build was for, but whether any of it is READ at that
+moment is a different question and not one I can answer from here. It is dismissible
+and recallable from Settings, so nothing is lost by not reading it, but if he wants it
+shorter that is a decision about what a first-time player needs to be told, and his to
+make rather than mine.
