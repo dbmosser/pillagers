@@ -21731,3 +21731,93 @@ never create them, and any wall that somehow arrived without a lift falls back t
 the old expression rather than crashing, but a future change that adds walls
 mid-raid would silently get the old behaviour back. The hub keeps its own wall
 list and its own copy of the renderer and was deliberately left alone.
+
+## v5.97 and v5.98: a camera on "felt dumb", and the inventory he hates
+
+### v5.97, the pillager camera
+
+His run #70 tagged "Pillagers felt dumb". I could not reproduce it and I am not
+going to guess at AI, so this is an instrument, built the way the wallClip lesson
+says to build one: pointed at the thing actually complained about, and PROVEN to
+fire before shipping.
+
+I checked his older note first. Run #59: raiders should call the beacon, clear out
+to draw enemies away, then come back and board. That is fully implemented and has
+been since v5.2. So the tag is about something else.
+
+Then I measured, and got a real looking answer that was WRONG, which is worth
+recording. In the sim, 29 percent of the time a chasing raider does not move and
+none of those frames fire a shot. It looks exactly like his run #62 note about a
+raider randomly paused and not fighting back. It is not. Every one of those still
+frames belongs to a body more than 2,000 units away, outside lodR, where the route
+finder is deliberately rationed and nobody can see it. Zero of 2,033 still frames
+had line of sight to the player.
+
+And the sim cannot answer the question at all: across six seeds and three minutes,
+the bot player never once had line of sight to an AI raider. Zero frames. He killed
+two in eighty four seconds. The bot does not go where the people are.
+
+So the camera samples, four times a second, every pillager within 700 units that he
+has actual line of sight to: what state it is in, whether it moved, whether it shot.
+It reports as pillagerCam with seen, still, statue and shot counts plus a breakdown.
+
+PROVEN IN BOTH DIRECTIONS on the play path, which is the whole point:
+  a chaser pinned in place    18 seen, 12 still, 12 STATUE
+  a looter pinned in place    19 seen, 12 still,  0 statue
+Looting, boarding and being down are excluded from statue, because a body doing any
+of those is supposed to be still and silent, and counting them would have made this
+camera cry wolf on the most ordinary behaviour in the game.
+
+### v5.98, the inventory
+
+His notes: he can only carry 9 items, he hates these menus, and he asked for a
+report on the Diablo, Minecraft and Arc Raiders inventory systems and then for the
+game to mimic them. The report is written and published separately.
+
+ONE, the nine was a single hard-coded number, DEPLOY_SLOTS, capping the loadout on
+the way up while the in-raid bag is separately unlimited at PACKCAP 99999. A wall on
+the way in and nowhere else, which is why it felt arbitrary. It was. And it directly
+contradicts his own beta spec from this morning: GRID, every item the SAME SIZE,
+infinite space, weight is irrelevant. Not a balance call I get to make.
+
+TWO, the game had TWO inventories for the same objects. The stash screen was a grid
+of stacked cells; the ascent check was a list of rows with Take and Put back buttons.
+Same items, two shapes, two sets of verbs. None of the three reference games does
+this. Both are now the same grid, and the ascent check stacks.
+
+THREE, and this is the one that actually makes an inventory feel good: Minecraft's
+power is not capacity, it is the VERB SET, one gesture per intent, identical in every
+container. Pillagers had one verb, drag, and it only started working at v5.94. Now
+click takes one, shift-click takes the whole stack, right-click takes half, and 1-9
+while hovering binds to that hotbar key with nothing to click first. Plain click on
+the hub stash still tags JUNK, because that is his spec and the only place the tag
+can be set.
+
+Verified by DRIVING the real screens at 1920x1080 and dispatching the actual
+gestures, not by reading the code: 15 stash items render as 6 correctly counted
+stacks; shift-click packs all 6 medkits; right-click packs 2 of 4 plates; key 5 over
+a cell binds frag to slot 5 and packs it; plain click tags junk and packs nothing;
+on the ascent check both panels report class invgrid, 19 items render as 2 stacks,
+and shift-click carries all FOURTEEN, which is the nine being gone.
+
+Also verified: parse PASS at v5.98; four maps 236/200/154/225 containers and
+86/87/58/72 entities from a fresh page load, bit-identical to v5.96, so both builds
+are UI-only and did not perturb the seeded stream; three endings through the outcome
+screen; hub, ascent check and the export builder.
+
+One scare worth recording. A protocol run reported 197 and 214 containers where the
+baseline says 200 and 225, which would have meant nondeterministic worldgen and
+would have invalidated every paired A/B in the project. It did not: the same sweep
+run three times in a row is byte identical, and all four combinations of with and
+without drawing, with and without the mapIx write, agree. The odd numbers came from
+contamination inside my own harness run. Re-run from a genuine page reload it is
+clean, which is the only way to reset in-memory CFG.
+
+Not verified: the gestures are dispatched events, not a human hand, so nothing here
+proves the FEEL. Right-click packing half suppresses the browser context menu on
+those cells, which is correct for a game but I have not checked it against a
+trackpad. The number-key bind listens at the document, so it is live on every screen
+that shows a cell; it ignores typing in inputs, but I have not audited it against
+every other key handler in the game. The backpack line on the ascent check still
+advertises a carry penalty discount from PACKPEN, whose three tiers are identical
+values, so it is still a lie on screen; that is the next build, not this one.

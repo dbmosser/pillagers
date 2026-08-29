@@ -487,13 +487,13 @@
     </div>
     <div class="panel">
       <h2>2 &middot; Carrying <em id="stagekitct"></em></h2>
-      <div class="plist" id="stagekit" style="flex:1;min-height:90px;overflow-y:auto"></div>
+      <div class="invgrid" id="stagekit" style="flex:1;min-height:90px"></div>
       <div id="stageplan" style="border-top:1px solid var(--steel-hi)"></div>
       <div id="stageload" style="border-top:1px solid var(--steel-hi);padding:2px 0"></div>
     </div>
     <div class="panel">
       <h2>3 &middot; Take from the stash</h2>
-      <div class="plist" id="stagestash" style="flex:1;min-height:120px;overflow-y:auto"></div>
+      <div class="invgrid" id="stagestash" style="flex:1;min-height:120px"></div>
       <h2 style="border-top:1px solid var(--steel-hi)">Requisition &mdash; the whole counter</h2>
       <div class="plist" id="stagebuy" style="flex:1;min-height:120px;overflow-y:auto"></div>
     </div>
@@ -606,14 +606,12 @@
       <div class="invtabs" id="stashtabs"></div>
       <div id="invcols" style="display:flex;gap:0;flex:1;min-height:0">
         <div style="flex:1.35;min-width:0;display:flex;flex-direction:column">
-          <div class="glab" style="padding:6px 12px 0">STASH  &middot;  <span id="stashn">0</span> held.
-            Drag anything into INVENTORY to take it up, or onto a hotbar cell below.</div>
+          <div class="glab" style="padding:6px 12px 0">STASH  &middot;  <span id="stashn">0</span> held.</div>
           <div class="invgrid" id="stashgrid"></div>
         </div>
         <div id="kitcol" style="flex:1;min-width:0;display:flex;flex-direction:column;
              border-left:1px solid var(--steel-hi)">
-          <div class="glab" style="padding:6px 12px 0">INVENTORY  &middot;  <span id="kitn">0</span> of 9 going up.
-            Drop here from the stash. Click one to leave it behind.</div>
+          <div class="glab" style="padding:6px 12px 0">INVENTORY  &middot;  <span id="kitn">0</span> going up.</div>
           <div class="invgrid" id="kitgrid"></div>
         </div>
       </div>
@@ -678,7 +676,11 @@ var AREA=(WORLD_W*WORLD_H)/(2600*2000);   // scale decorative counts off the old
 // Room for everything the automatic rule would have taken, or the careful player
 // would be punished for being careful: the old rule grabs up to six throwables
 // plus three category picks.
-var DEPLOY_SLOTS=9;
+// v5.98, his note "for some reason i can only carry 9 items" and his spec line
+// "Infinite space. Weight is irrelevant." Kept as a constant so the eleven guards
+// that test it still compile and still refuse genuinely absurd input; set beyond
+// any reachable stash so it can never be the thing that stops him.
+var DEPLOY_SLOTS=9999;
 var PACKCAP=[99999,99999,99999];
 // WHAT A BACKPACK TIER ACTUALLY BUYS, v1.81. It used to buy nothing. All three
 // PACKCAP entries are 99999 because he asked for unlimited carry on 2026-08-22 and
@@ -778,7 +780,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.96';
+var VER='5.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10802,6 +10804,38 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
       }
     }
   }
+  // THE PILLAGER CAMERA, v5.97, on his tag "Pillagers felt dumb". Only bodies he
+  // can see count, because a body he cannot see cannot look stupid. Sampled at 4Hz
+  // rather than per frame: the sight ray is the cost here and a quarter second is
+  // far finer than the thing being measured.
+  if(!G.sim&&G.tel&&G.ents){
+    var _pg=G.tel.pgLook||(G.tel.pgLook={seen:0,still:0,quiet:0,statue:0,fired:0,by:{}});
+    G.tel._pgT=(G.tel._pgT||0)+dt;
+    if(G.tel._pgT>=0.25){
+      G.tel._pgT=0;
+      for(var _pi2=0;_pi2<G.ents.length;_pi2++){
+        var _pe=G.ents[_pi2];
+        if(!_pe||_pe.kind!=='raider'||_pe.dead) continue;
+        if(dist(_pe,p)>700) continue;
+        if(!losClear(p.x,p.y,_pe.x,_pe.y,G.vseg||G.map.segs)) continue;
+        _pg.seen++;
+        var _st=_pe.state||'?';
+        _pg.by[_st]=(_pg.by[_st]||0)+1;
+        var _moved=(_pe._pgx===undefined)?1:(Math.abs(_pe.x-_pe._pgx)+Math.abs(_pe.y-_pe._pgy));
+        // cd counts DOWN and is reset upward by a shot, so a rise across the
+        // interval is a shot fired inside it.
+        var _shot=(_pe._pgcd!==undefined&&_pe.cd>_pe._pgcd+0.01);
+        if(_moved<0.5) _pg.still++;
+        if(_shot) _pg.fired++; else _pg.quiet++;
+        // The exact thing he described: visible, stationary, not shooting back,
+        // in a state where neither is excusable. Looting, boarding and being down
+        // are all supposed to look like that, so they are not statues.
+        var _busy=(_st==='loot'||_st==='extract'||_st==='down');
+        if(_moved<0.5&&!_shot&&!_busy) _pg.statue++;
+        _pe._pgx=_pe.x; _pe._pgy=_pe.y; _pe._pgcd=_pe.cd;
+      }
+    }
+  }
   var near=null,nd=1e9;
   // Standing inside an extraction ring, the BEACON owns E. A crate is never the
   // more important thing to be doing while you are stood on the way out.
@@ -13889,6 +13923,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
     // Counted every raid since each was added, and binned at the end until v4.87.
     weakHits:T.weakHits||0,wallsDown:T.wallsDown||0,storyRead:T.storyRead||0,
     rivalMet:T.rivalMet||0,parleys:T.parleys||0,ringCrowd:T.ringCrowd||null,
+    pgLook:T.pgLook||null,
     strayHelped:T.strayHelped||0,strayKilled:T.strayKilled||0,wildKilled:T.wildKilled||0,
     pedSold:T.pedSold||0,pedKilled:T.pedKilled||0,rackPay:T.rackPay||0,
     crewRevives:T.crewRevives||0,mercRevives:T.mercRevives||0,raiderRevives:T.raiderRevives||0,
@@ -21171,21 +21206,15 @@ function renderKitCol(){
     em.textContent='Nothing picked. Drag from the stash.';
     kg.appendChild(em);
   }
-  K.forEach(function(k,i){
-    var it=ITEMS[k]; if(!it) return;
-    var cell=document.createElement('div');
-    cell.className='cell c-'+(it.r||'common');
-    cell.title=it.name+'  (click to leave it behind)';
-    cell.innerHTML=iconImgHTML(k,30);
-    grabbable(cell,k,'kit',it.name+'  \u2192  leave behind');
-    cell.draggable=true;
-    cell.addEventListener('dragstart',function(ev){
-      try{ ev.dataTransfer.setData('text/plain',k); ev.dataTransfer.effectAllowed='copy'; }catch(e){}
-    });
-    // Splice by INDEX, not by key: two medkits are two entries and clicking one
-    // of them has to drop exactly one.
-    cell.onclick=function(){ P.kit.splice(i,1); saveProfile(); renderHub(); };
-    kg.appendChild(cell);
+  // v5.98: stacked, like the stash beside it and like all three reference games.
+  var KC=stackCounts(K);
+  Object.keys(KC).forEach(function(k){
+    var cell=invCell(k,KC[k],{from:'kit',verb:'click: leave one behind',
+      act:function(n){
+        for(var q=0;q<n;q++){ var ix=P.kit.lastIndexOf(k); if(ix<0) break; P.kit.splice(ix,1); }
+        saveProfile(); try{ sfx('pick'); }catch(e){} renderHub();
+      }});
+    if(cell) kg.appendChild(cell);
   });
   // THE DROP TARGET. The whole column takes a drop, not just the grid, because a
   // column with two items in it is mostly empty space and aiming at the space
@@ -21222,6 +21251,65 @@ function renderKitCol(){
     P.kit.push(key); saveProfile(); renderHub();
   };
 }
+// ================================================== ONE INVENTORY CELL, v5.98
+// Built once and used by every grid in the game, because the whole complaint is
+// that the same item behaves differently depending on which screen it is on.
+// count is what the cell stacks; act(n) is what this particular grid does when
+// the player asks to move n of them.
+var INVHOVER=null;
+function stackCounts(list){
+  var c={},i;
+  for(i=0;i<list.length;i++) c[list[i]]=(c[list[i]]||0)+1;
+  return c;
+}
+function invCell(k,count,opt){
+  var it=ITEMS[k]; if(!it) return null;
+  opt=opt||{};
+  var cell=document.createElement('div');
+  cell.className='cell c-'+(it.r||'common')+(opt.junk?' junk':'');
+  cell.innerHTML=iconImgHTML(k,30)+(count>1?'<span class="cnt">'+count+'</span>':'');
+  // The tooltip is the only place the verbs are written down. They are not
+  // narrated on the screen any more, because a control that reads as a control
+  // does not need a sentence next to it.
+  cell.title=it.name+(count>1?'  x'+count:'')+
+    (opt.verb?('\n'+opt.verb+'\nshift-click: all '+count+'   right-click: half   1-9: bind to that key'):'');
+  if(opt.act){
+    cell.onclick=function(ev){
+      if(GRAB) return;                       // a drag ending on this cell is not a click
+      opt.act(ev.shiftKey?count:1);
+    };
+    cell.oncontextmenu=function(ev){
+      ev.preventDefault();
+      opt.act(Math.max(1,Math.ceil(count/2)));
+      return false;
+    };
+  }
+  cell.addEventListener('mouseenter',function(){ INVHOVER=k; });
+  cell.addEventListener('mouseleave',function(){ if(INVHOVER===k) INVHOVER=null; });
+  grabbable(cell,k,opt.from||'stash',it.name);
+  cell.draggable=true;
+  cell.addEventListener('dragstart',function(ev){
+    try{ ev.dataTransfer.setData('text/plain',k); ev.dataTransfer.effectAllowed='copy'; }catch(e){}
+  });
+  return cell;
+}
+// NUMBER KEYS BIND, which is the one Minecraft verb that has no mouse equivalent
+// and the fastest way there is to build a hotbar. Hovering is the selection, so
+// there is nothing to click first. Routed through planPut so it obeys exactly the
+// same rules as every other way of assigning a key, guns included.
+document.addEventListener('keydown',function(ev){
+  if(!INVHOVER) return;
+  if(ev.ctrlKey||ev.altKey||ev.metaKey) return;
+  var t=ev.target;
+  if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA')) return;
+  var d=ev.key.charCodeAt(0)-49;                 // '1' -> 0
+  if(ev.key.length!==1||d<0||d>8) return;
+  var why=planPut(d,INVHOVER);
+  ev.preventDefault();
+  if(why){ say2(why); try{ sfx('clank'); }catch(e){} return; }
+  try{ sfx('pick'); }catch(e){}
+  renderHub(); renderStage();
+});
 // PUTTING SOMETHING ON A KEY MEANS TAKING IT, v5.72, his note. The plan used to
 // write hotAssign alone, which let him build a plan for an item that never left
 // the stash: hotbarSlots only fires a key for something actually carried, so the
@@ -21535,7 +21623,33 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
     // never been demonstrated working here or for him.
     grabbable(cell,k,'stash',it.name);
     cell.innerHTML=iconImgHTML(k,30)+(counts[k]>1?('<span class="cnt">'+counts[k]+'</span>'):'');
-    cell.title=it.name;
+    cell.title=it.name+'  x'+counts[k]+
+      '\nclick: tag junk   shift-click: pack it   right-click: pack half   1-9: bind to that key';
+    // v5.98: hovering IS the selection, so a number key can bind whatever is
+    // under the cursor without clicking anything first. Same handler as every
+    // other grid, registered once at the document.
+    cell.addEventListener('mouseenter',function(){ INVHOVER=k; });
+    cell.addEventListener('mouseleave',function(){ if(INVHOVER===k) INVHOVER=null; });
+    // Shift-click and right-click PACK, matching the ascent check exactly. The
+    // one-kit-entry-per-stash-copy rule is the same one stageKitLive enforces.
+    function _packSome(want){
+      var live=stageKitLive(),held=counts[k],picked=0,q;
+      for(q=0;q<live.length;q++) if(live[q]===k) picked++;
+      var room=held-picked;
+      if(room<=0){ say2('All of your '+it.name+' are already packed.'); return; }
+      for(q=0;q<want&&q<room;q++) P.kit.push(k);
+      saveProfile(); try{ sfx('pick'); }catch(e){} renderHub();
+    }
+    cell.addEventListener('click',function(ev){
+      if(!ev.shiftKey) return;                 // plain click is the junk tag, below
+      ev.stopPropagation(); ev.preventDefault();
+      _packSome(counts[k]);
+    },true);
+    cell.oncontextmenu=function(ev){
+      ev.preventDefault();
+      _packSome(Math.max(1,Math.ceil(counts[k]/2)));
+      return false;
+    };
     cell.onmouseenter=function(){
       if(!detail) return;
       var what=craftPart(k)
@@ -21954,6 +22068,12 @@ if(r.ghostIn) line+=' ghost:1';
     if(r.ringCrowd) line+=' ringCrowd:'+((typeof r.ringCrowd==='object')
       ? ((r.ringCrowd.mapBorn||0)+'woken/'+(r.ringCrowd.siegeBorn||0)+'siege')
       : r.ringCrowd);
+    // v5.97: what the pillagers he could actually SEE were doing. statue is the
+    // count of quarter seconds where one was in his sight, not moving and not
+    // shooting, which is the shape of "felt dumb" and of his earlier "randomly
+    // paused and didn''t fight back".
+    if(r.pgLook&&r.pgLook.seen) line+=' pillagerCam:'+r.pgLook.seen+'seen/'+r.pgLook.still+'still/'+r.pgLook.statue+'statue/'+r.pgLook.fired+'shot'
+      +' doing:'+Object.keys(r.pgLook.by||{}).map(function(k){return k+r.pgLook.by[k];}).join(',');
     if(r.outcome==='dead'&&r.lastHitName) line+=' lastHit:'+r.lastHitName;
     if(r.census) line+=' ents:'+r.census.total+'(s'+(r.census.by.sentry||0)+'/c'+(r.census.by.crawler||0)+'/r'+(r.census.by.raider||0)+'/sn'+(r.census.by.snitch||0)+' dials '+r.census.dials.nS+'/'+r.census.dials.nC+'/'+r.census.dials.nR+')';
     if(r.mapName) line+=' map:'+r.mapName;
@@ -22847,7 +22967,8 @@ function renderStage(prefill){
 
   // ---- the kit
   var kit=stageKitLive();
-  document.getElementById('stagekitct').textContent=kit.length+' / '+DEPLOY_SLOTS;
+  // v5.98: a bare count. There is no denominator any more.
+  document.getElementById('stagekitct').textContent=kit.length+(kit.length===1?' item':' items');
   (function(){
     var h=document.getElementById('stagekitct');
     if(!h||h.__resetWired) return; h.__resetWired=1;
@@ -22857,21 +22978,22 @@ function renderStage(prefill){
     h.parentNode.appendChild(rb);
   })();
   var K=document.getElementById('stagekit'); K.innerHTML='';
-  if(!kit.length) K.innerHTML='<div class="hint" style="padding:8px 10px">Nothing packed. You will ascend with your gun and whatever you find.</div>';
+  if(!kit.length) K.innerHTML='<div class="cellempty">Nothing packed. You go up with your gun and whatever you find.</div>';
   // THIS SCREEN DESCRIBES, IT DOES NOT ASSIGN. An earlier version wrote the
   // hotbar plan from the kit on every render, which wiped any plan you had made
   // and, because an assignment overrides the derived slot at that index, handed
   // cells one and two to whatever you had packed - your two gun slots. Never
   // again: the bar is derived in the raid, guns first, and the drop check only
   // says where a thing is going to live.
-  kit.forEach(function(k,i){
-    var it=ITEMS[k];
-    var where=(it&&it.use==='throw')?'Pouch  \u00b7  its own key'
-             :(it&&it.use==='key')?'Bag  \u00b7  opens a locked room'
-             :'Bag  \u00b7  on the hotbar when you get there';
-    K.appendChild(stageRow(it?it.name:k, where,'Put back',
-      function(){ P.kit.splice(i,1); saveProfile(); renderStage(); }));
-    grabbable(K.lastChild,k,'kit',(it?it.name:k)+'  \u2192  put back');
+  // v5.98: cells, stacked, with the same verbs as every other grid.
+  var KCS=stackCounts(kit);
+  Object.keys(KCS).forEach(function(k){
+    var cell=invCell(k,KCS[k],{from:'kit',verb:'click: put one back',
+      act:function(nn){
+        for(var q=0;q<nn;q++){ var ix=P.kit.lastIndexOf(k); if(ix<0) break; P.kit.splice(ix,1); }
+        saveProfile(); try{ sfx('pick'); }catch(e){} renderStage();
+      }});
+    if(cell) K.appendChild(cell);
   });
   // Dropping a carried item back on the stash list unpacks it.
   dropzone(document.getElementById('stagestash'),function(key,from){
@@ -22882,7 +23004,6 @@ function renderStage(prefill){
   // And dropping anything on the carrying list packs it.
   dropzone(document.getElementById('stagekit'),function(key,from){
     if(from!=='stash') return;
-    if(stageKit().length>=DEPLOY_SLOTS){ say2('Carrying is full at '+DEPLOY_SLOTS+'.'); return; }
     var held=0; for(var i2=0;i2<P.stash.length;i2++) if(P.stash[i2]===key) held++;
     var got=0; var live=stageKitLive();
     for(var j2=0;j2<live.length;j2++) if(live[j2]===key) got++;
@@ -22904,14 +23025,14 @@ function renderStage(prefill){
     var free=counts[k]-(taken[k]||0);
     if(free<=0) return;
     any=true;
-    var it=ITEMS[k];
-    S.appendChild(stageRow(it.name+'  x'+free, escHtml(String(it.use).toUpperCase()),
-      kit.length<DEPLOY_SLOTS?'Take':null,
-      function(){ if(stageKit().length>=DEPLOY_SLOTS) return;
-        P.kit.push(k); saveProfile(); renderStage(); },'var(--gain)'));
-    grabbable(S.lastChild,k,'stash',it.name+'  \u2192  carry');
+    var cell=invCell(k,free,{from:'stash',verb:'click: carry one',
+      act:function(nn){
+        for(var q=0;q<nn&&q<free;q++) P.kit.push(k);
+        saveProfile(); try{ sfx('pick'); }catch(e){} renderStage();
+      }});
+    if(cell) S.appendChild(cell);
   });
-  if(!any) S.innerHTML='<div class="hint" style="padding:8px 10px">Nothing in the stash you can carry. Buy something below, or go up light.</div>';
+  if(!any) S.innerHTML='<div class="cellempty">Nothing here you can carry. Buy something below, or go up light.</div>';
 
   // ---- buying, straight into the kit when there is room
   var B=document.getElementById('stagebuy'); B.innerHTML='';
