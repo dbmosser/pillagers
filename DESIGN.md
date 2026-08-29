@@ -20131,3 +20131,46 @@ inside the IIFE and is not hooked, so the three Settings strings are confirmed b
 reading the source and by parse PASS rather than by seeing the panel draw. The
 PRIMER.length interpolation sits in an ordinary string concatenation and a broken
 one would have failed the parse, but nobody has looked at that row on a screen.
+
+## v5.64: stash and inventory could never be on screen at once, which is why the drag never worked
+
+HIS NOTE: "need to be able to see stash and inventory at the same time -- how am
+I supposed to move stuff to inventory?? I want to drag it from the stash". And,
+the same minute, "hotbar plan still doesn't work right. inventory/stash is still
+messed up". Those are one bug and it is mine.
+
+At v5.33 he asked for the stash menu to be "* STASH * INVENTORY * HOTBAR PLAN".
+I read three headings as three MUTUALLY EXCLUSIVE TABS. So the only two panels
+anyone would ever want to drag between could not be on screen together, which
+makes the drag I built him at v5.34 unreachable: there was nothing to drag TO.
+The hotbar plan had the same fault one layer down, drawn only on its own tab, so
+"drag from the stash to the hotbar plan" meant leaving the stash first.
+
+Now one screen. Stash on the left with its category filters, inventory on the
+right, the hotbar plan across the bottom, all visible together.
+
+THE MODEL DID NOT NEED CHANGING AND I DID NOT CHANGE IT. P.kit is a SELECTION
+from the stash rather than a move: stageKitLive reconciles one kit entry against
+one stash copy and nothing actually leaves the stash until the lift goes. So
+dragging right is picking, clicking a picked item is un-picking, and the stash
+count never moves. The whole column takes the drop rather than just the grid,
+because a column holding two things is mostly empty space and nobody should have
+to aim between cells.
+
+DRIVEN, not just rendered:
+  drop a medkit, then a second: both picked
+  drop a third when the stash holds two: refused, "You only have 2 of those"
+  twelve drops against a nine slot cap: stops at nine
+  a kit of four against a stash of three: reconciles to three on the next render
+  click one cell of a stack of two: removes exactly one, by index not by key
+  counts on both headers track, 3 and 3
+
+Verified: parse PASS at v5.64; four maps 86/87/58/72; three endings through the
+outcome screen with death and timeout paying zero credits; hub and ascent check;
+both grids present with the hotbar plan showing all nine cells on every view.
+
+Not verified: nobody has dragged this with a mouse. Every drop above is a
+synthetic DragEvent carrying a DataTransfer, which exercises my handler and the
+kit rules but not the browser's own drag affordances, so I cannot say the cursor
+does the right thing or that the amber highlight reads. The two columns are
+flex 1.35 against 1 and I have not seen them at his window width.

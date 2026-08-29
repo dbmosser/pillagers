@@ -601,7 +601,19 @@
     </div>
     <div class="panel">
       <div class="invtabs" id="stashtabs"></div>
-      <div class="invgrid" id="stashgrid"></div>
+      <div id="invcols" style="display:flex;gap:0;flex:1;min-height:0">
+        <div style="flex:1.35;min-width:0;display:flex;flex-direction:column">
+          <div class="glab" style="padding:6px 12px 0">STASH  &middot;  <span id="stashn">0</span> held.
+            Drag anything into INVENTORY to take it up, or onto a hotbar cell below.</div>
+          <div class="invgrid" id="stashgrid"></div>
+        </div>
+        <div id="kitcol" style="flex:1;min-width:0;display:flex;flex-direction:column;
+             border-left:1px solid var(--steel-hi)">
+          <div class="glab" style="padding:6px 12px 0">INVENTORY  &middot;  <span id="kitn">0</span> of 9 going up.
+            Drop here from the stash. Click one to leave it behind.</div>
+          <div class="invgrid" id="kitgrid"></div>
+        </div>
+      </div>
       <div id="hotplanwrap"></div>
       <div id="stashdetail" style="padding:8px 12px;border-top:1px solid var(--steel-hi);
            min-height:52px;font-size:11px;color:var(--ash)"></div>
@@ -755,7 +767,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.63';
+var VER='5.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20977,6 +20989,62 @@ var ICLASS={
 // The hub side of "build out your hotbar": nine cells matching the raid bar.
 // A planned cell shows its item and clicking it clears it; the number keys the
 // raid uses are printed on the cells so the mapping is not a guess.
+// THE INVENTORY COLUMN, v5.64, his note. P.kit is a SELECTION from the stash,
+// not a move, so this is a picking list: dropping adds, clicking removes, and
+// nothing leaves the stash until the lift goes. stageKitLive is what reconciles
+// the two, so reading it here means a kit entry whose stash copy was sold stops
+// being shown as though it were still coming with you.
+function renderKitCol(){
+  var kg=document.getElementById('kitgrid'); if(!kg) return;
+  var K=stageKitLive();
+  var kn=document.getElementById('kitn'); if(kn) kn.textContent=K.length;
+  var sn=document.getElementById('stashn'); if(sn) sn.textContent=P.stash.length;
+  kg.innerHTML='';
+  if(!K.length){
+    var em=document.createElement('div'); em.className='cellempty';
+    em.textContent='Nothing picked. Drag from the stash.';
+    kg.appendChild(em);
+  }
+  K.forEach(function(k,i){
+    var it=ITEMS[k]; if(!it) return;
+    var cell=document.createElement('div');
+    cell.className='cell c-'+(it.r||'common');
+    cell.title=it.name+'  (click to leave it behind)';
+    cell.innerHTML=iconImgHTML(k,30);
+    cell.draggable=true;
+    cell.addEventListener('dragstart',function(ev){
+      try{ ev.dataTransfer.setData('text/plain',k); ev.dataTransfer.effectAllowed='copy'; }catch(e){}
+    });
+    // Splice by INDEX, not by key: two medkits are two entries and clicking one
+    // of them has to drop exactly one.
+    cell.onclick=function(){ P.kit.splice(i,1); saveProfile(); renderHub(); };
+    kg.appendChild(cell);
+  });
+  // THE DROP TARGET. The whole column takes a drop, not just the grid, because a
+  // column with two items in it is mostly empty space and aiming at the space
+  // between cells is not a thing anyone should have to do.
+  var col=document.getElementById('kitcol'); if(!col) return;
+  col.ondragover=function(ev){
+    ev.preventDefault();
+    try{ ev.dataTransfer.dropEffect='copy'; }catch(e){}
+    col.style.background='rgba(255,192,74,.07)';
+  };
+  col.ondragleave=function(){ col.style.background=''; };
+  col.ondrop=function(ev){
+    ev.preventDefault(); col.style.background='';
+    var key=''; try{ key=ev.dataTransfer.getData('text/plain'); }catch(e){}
+    if(!key||!ITEMS[key]) return;
+    var live=stageKitLive();
+    if(live.length>=DEPLOY_SLOTS){ say2('Inventory is full at '+DEPLOY_SLOTS+'.'); return; }
+    // One kit entry per stash copy. Counting what is already picked against what
+    // the stash holds is the same rule stageKitLive enforces, applied before the
+    // pick rather than after it, so the refusal can say why.
+    var held=0; for(var i=0;i<P.stash.length;i++) if(P.stash[i]===key) held++;
+    var picked=0; for(var j=0;j<live.length;j++) if(live[j]===key) picked++;
+    if(picked>=held){ say2('You only have '+held+' of those.'); return; }
+    P.kit.push(key); saveProfile(); renderHub();
+  };
+}
 function hotPlanHTML(){
   var h='<div style="padding:7px 12px;border-bottom:1px solid var(--steel-hi)">'+
     '<div class="glab" style="margin-bottom:5px">HOTBAR PLAN  &middot;  Slot an item in Inventory to fill the first free cell, click a cell to clear. A plan only fires for something you actually carry in, and what you carry in is chosen on the ascent check.</div>'+
@@ -21141,22 +21209,12 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   var tb=document.getElementById('stashtabs');
   if(tb){
     tb.innerHTML='';
-    // ROW ONE: the three places.
-    var PLACES=[['stash','STASH',P.stash.length],
-                ['kit','INVENTORY',(P.kit||[]).length],
-                ['plan','HOTBAR PLAN',Object.keys(P.hotAssign||{}).length]];
-    var r1=document.createElement('div'); r1.className='invtabs'; r1.style.padding='0';
-    PLACES.forEach(function(T){
-      var d=document.createElement('div');
-      d.className='invtab'+(P.invTab===T[0]?' on':'');
-      d.textContent=T[1]+'  '+T[2];
-      d.onclick=function(){ P.invTab=T[0]; saveProfile(); renderHub(); };
-      r1.appendChild(d);
-    });
-    tb.appendChild(r1);
-    // ROW TWO: category filters, and only where they mean anything.
-    if(P.invTab==='stash'){
-      var r2=document.createElement('div'); r2.className='invtabs'; r2.style.padding='6px 0 0';
+    // THE THREE PLACES ARE NOT TABS ANY MORE, v5.64, on his note. They are all
+    // visible together, which is the only arrangement in which dragging between
+    // them means anything. What is left here is the category filter, which used
+    // to be hidden on two of the three tabs because they had nothing to filter.
+    {
+      var r2=document.createElement('div'); r2.className='invtabs'; r2.style.padding='0';
       TABS.forEach(function(T){
         var cnt=keysArr.filter(function(k){ return T[0]==='all'||tabOf(k)===T[0]; })
                        .reduce(function(a,k){ return a+counts[k]; },0);
@@ -21176,7 +21234,7 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   // switch tabs to reach is not that.
   var hpw=document.getElementById('hotplanwrap');
   if(hpw){
-    hpw.innerHTML=(P.invTab==='plan')?hotPlanHTML():'';
+    hpw.innerHTML=hotPlanHTML();
     Array.prototype.forEach.call(hpw.querySelectorAll('[data-plan]'),function(el){
       var ix=+el.getAttribute('data-plan');
       // Clicking a filled cell still clears it, which is how it always worked.
@@ -21217,15 +21275,8 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   detailIdle();
   // WHICH PLACE. STASH is the vault, INVENTORY is what you are taking up, and
   // HOTBAR PLAN shows the same stash so you have something to drag FROM.
-  var shown;
-  if(P.invTab==='kit'){
-    var kc={}; (P.kit||[]).forEach(function(k){ if(ITEMS[k]) kc[k]=(kc[k]||0)+1; });
-    counts=kc; keysArr=Object.keys(kc);
-    keysArr.sort(function(a,b){ return ITEMS[b].val-ITEMS[a].val; });
-    shown=keysArr.slice();
-  } else {
-    shown=keysArr.filter(function(k){ return P.invTab==='plan'||P.stashTab==='all'||tabOf(k)===P.stashTab; });
-  }
+  var shown=keysArr.filter(function(k){ return P.stashTab==='all'||tabOf(k)===P.stashTab; });
+  renderKitCol();
 
   shown.forEach(function(k){
     var it=ITEMS[k];
