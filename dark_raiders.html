@@ -576,7 +576,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.03';
+var VER='5.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1473,6 +1473,33 @@ var MUS={g:null,lp:null,next:0,step:0};
 // the A/B discipline depends on it, and which song plays must never move a
 // crate. All four run through the same intensity machinery, so every track
 // walks alone when watched and gains its pulse when hunted.
+var HUB_CHORDS={
+  Am:[57,60,64], F:[53,57,60], C:[60,64,67],
+  G:[55,59,62],  Dm:[57,62,65], E:[56,60,64]
+};
+var HUB_THEME={
+  name:'THE UNDERCROFT', spb:0.1364,       // sixteenths at 110bpm, 16 per bar
+  bars:[
+    // ---- A: the tune states itself
+    {c:'Am',b:45, lead:[69,0,0,0, 72,0,0,0, 76,0,0,0, 74,0,0,0]},
+    {c:'F', b:41, lead:[72,0,0,0, 0,0,0,0,  69,0,0,0, 0,0,0,0]},
+    {c:'C', b:48, lead:[67,0,0,0, 69,0,0,0, 72,0,0,0, 0,0,0,0]},
+    {c:'G', b:43, lead:[71,0,0,0, 0,0,0,0,  74,0,0,0, 71,0,0,0]},
+    {c:'Am',b:45, lead:[69,0,0,0, 72,0,0,0, 76,0,0,0, 79,0,0,0]},
+    {c:'F', b:41, lead:[77,0,0,0, 0,0,0,0,  76,0,0,0, 72,0,0,0]},
+    {c:'Dm',b:50, lead:[74,0,0,0, 77,0,0,0, 81,0,0,0, 0,0,0,0]},
+    {c:'E', b:40, lead:[76,0,0,0, 74,0,0,0, 71,0,0,0, 68,0,0,0]},
+    // ---- B: it lifts, then comes home
+    {c:'Am',b:45, lead:[76,0,0,0, 0,0,0,0,  72,0,0,0, 74,0,0,0]},
+    {c:'C', b:48, lead:[76,0,0,0, 79,0,0,0, 76,0,0,0, 72,0,0,0]},
+    {c:'F', b:41, lead:[69,0,0,0, 72,0,0,0, 77,0,0,0, 76,0,0,0]},
+    {c:'G', b:43, lead:[74,0,0,0, 71,0,0,0, 67,0,0,0, 0,0,0,0]},
+    {c:'Am',b:45, lead:[69,0,0,0, 0,0,0,0,  76,0,0,0, 0,0,0,0]},
+    {c:'Dm',b:50, lead:[77,0,0,0, 74,0,0,0, 69,0,0,0, 0,0,0,0]},
+    {c:'E', b:40, lead:[76,0,0,0, 0,0,0,0,  71,0,0,0, 68,0,0,0]},
+    {c:'Am',b:45, lead:[69,0,0,0, 0,0,0,0,  0,0,0,0,  0,0,0,0]}
+  ]
+};
 var MUS_TRACKS=[
 {name:'LOW ROAD',spb:0.4167,bw:'triangle',lw:'square',   // A minor, 72, the original
  bass:[33,33,29,31,33,33,29,28],
@@ -1504,7 +1531,7 @@ var MUS_TRACKS=[
        76,0,0,0,83,0,0,0,  81,0,79,0,0,0,0,0,
        76,0,0,0,79,0,0,0,  78,0,74,0,76,0,0,0,
        81,0,0,0,79,0,78,0, 72,0,0,0,0,0,0,0]}];
-function musTrk(){ return MUS_TRACKS[MUS.trk||0]; }
+function musTrk(){ return HUB_THEME; }
 // THE MUSIC REACTS, v3.90. His note: "the music should change based on what's
 // happening in game". The radio was one loop at one tempo whether you were
 // counting tins in an empty shed or being run down by a crawler, which is the
@@ -1518,9 +1545,9 @@ function musTrk(){ return MUS_TRACKS[MUS.trk||0]; }
 // The fourth MODE, REACTIVE, is the one this makes possible and is now the
 // recommended setting: silence while you work, and the music FINDS you when
 // something does. UNDERCROFT, ALWAYS and OFF are unchanged.
-var MUSIC_MODES=['hub','reactive','always','off'];
-var MUSIC_NAMES={hub:'UNDERCROFT',reactive:'REACTIVE',always:'ALWAYS',off:'OFF'};
-function musicMode(){ var m=(P&&P.music); return (m==='always'||m==='off'||m==='reactive')?m:'reactive'; }
+var MUSIC_MODES=['hub','off'];
+var MUSIC_NAMES={hub:'UNDERCROFT',off:'OFF'};
+function musicMode(){ return ((P&&P.music)==='off')?'off':'hub'; }
 // COMBAT, for the music's purposes, v4.05. HIS NOTE: "music should stop
 // completely when combat starts (e.g. player shoots or is shot at), and should
 // not return until player has been out of combat for a few seconds". Combat is
@@ -1533,32 +1560,15 @@ function inCombat(){
   return (G.t-(G.combatT===undefined?-1e9:G.combatT))<(CFG.musicCombatGap===undefined?4:CFG.musicCombatGap);
 }
 function musicWanted(){
-  if(G&&G.sim) return false;              // the bot sim is silent, always
-  var m=musicMode();
-if(m==='off') return false;
-  // v4.05: the fight is its own soundtrack. Gunfire cuts the music dead in any
-  // mode, and it stays away until the fight has actually let go of him. The
-  // tension states, hunted, ship called, hurt, still bring the music UP in
-  // reactive mode right until the first shot, which makes the cut itself the
-  // loudest thing the radio does.
-if(CFG.musicCombat!==0&&G&&inCombat()) return false;
-  // v4.24 HIS NOTE: silence on the pause screen and on the died/extracted
-  // screen. pendingRun is non-null exactly while the outcome screen waits.
-  if(G&&G.paused) return false;
+  if(musicMode()==='off') return false;
+  // THE SURFACE IS SILENT. G exists only inside a raid, so this one line is the
+  // whole of "scrap all music": no reactive band, no intensity, no tail, no
+  // combat gate, because there is nothing up there to gate. It also covers the
+  // outcome screen, which still holds G until the button is pressed, and the
+  // bot sim, which never has a speaker.
+  if(G) return false;
   if(typeof pendingRun!=='undefined'&&pendingRun) return false;
-// v4.24 HIS ORDER: no music in the Undercroft, any mode. G exists only in a
-  // raid, so the hub is silent and the radio belongs to the ground.
-  if(m==='always') return !!G;
-  // REACTIVE: always in the Undercroft, and in a raid only once something is
-  // actually happening. The threshold sits above the idle floor so a distant
-  // patrol does not start the band; it takes something that has noticed you.
-if(m==='reactive'){
-    if(!G) return false;
-    // The threshold arms it; the tail keeps it honest.
-    if(musIntensity()>0.18) G.musHold=G.t;
-    return (G.t-(G.musHold===undefined?-1e9:G.musHold))<(CFG.musicTail===undefined?9:CFG.musicTail);
-  }
-  return false;                           // the old hub-only mode is retired
+  return true;                            // the Undercroft, and only the Undercroft
 }
 // What is happening, as one number. G.musThreat is the nearest hunting body,
 // stamped once a frame by the ambience pass that already computes it, so this
@@ -1577,62 +1587,65 @@ function musIntensity(){
 }
 function tickMusic(){
   if(!musicWanted()){
-    // Fade rather than cut, and forget the clock so the loop restarts clean
-    // from step 0 instead of resuming mid-phrase after an hour on the surface.
-    if(MUS.g&&AC){ try{ MUS.g.gain.setTargetAtTime(0,AC.currentTime,(CFG.musicCombat!==0&&inCombat())?0.06:0.35); }catch(e){} }
-    MUS.next=0;
+    // Fade rather than cut, and forget the clock so the theme restarts clean
+    // from the top of bar one instead of resuming mid-phrase.
+    if(MUS.g&&AC){ try{ MUS.g.gain.setTargetAtTime(0,AC.currentTime,0.35); }catch(e){} }
+    MUS.next=0; MUS.step=0;
     return;
   }
-// The track roll lives ABOVE the audio gate: which song a raid gets must
-  // not depend on whether the speaker is awake yet.
-if(G&&MUS.raidKey!==G.seed){ MUS.raidKey=G.seed; MUS.trk=(Math.random()*MUS_TRACKS.length)|0; MUS.announce=(G&&!G.sim)?1:0; }
   var a=ac(); if(!a) return;
   if(!MUS.g){
-    MUS.lp=a.createBiquadFilter(); MUS.lp.type='lowpass'; MUS.lp.frequency.value=2400;
+    // One gentle lowpass for the whole theme. A fixed corner, because a filter
+    // that sweeps while you stand still is half of what "random" meant.
+    MUS.lp=a.createBiquadFilter(); MUS.lp.type='lowpass'; MUS.lp.frequency.value=3200;
     MUS.g=a.createGain(); MUS.g.gain.value=0;
     MUS.g.connect(MUS.lp); MUS.lp.connect(a.destination);
   }
-// Smoothed, because music that snaps between states sounds like a bug. The
-  // gain and filter glide over the better part of a second; the tempo is only
-  // read when the next step is scheduled, so a phrase never stutters.
-  var mi=musIntensity();
-  MUS.i=(MUS.i===undefined)?mi:MUS.i+(mi-MUS.i)*0.06;
-  var lvl=(0.15+0.07*MUS.i)*(CFG.musicVol===undefined?1:CFG.musicVol);
+  MUS.i=0;
+  var lvl=0.17*(CFG.musicVol===undefined?1:CFG.musicVol);
   MUS.g.gain.setTargetAtTime(lvl,a.currentTime,0.9);
-  MUS.lp.frequency.setTargetAtTime(2400+2000*MUS.i,a.currentTime,0.8);
-if(G&&MUS.raidKey!==G.seed){ MUS.raidKey=G.seed; MUS.trk=(Math.random()*MUS_TRACKS.length)|0; }
-if(!MUS.next||MUS.next<a.currentTime-0.5){
-    MUS.next=a.currentTime+0.08; MUS.step=0;
-    if(MUS.announce&&G&&!G.sim){ MUS.announce=0; say('On the radio: '+musTrk().name+'.'); }
-  }
-var _spb=musTrk().spb*(1-0.26*MUS.i);
+  var T=musTrk(), _len=T.bars.length*16;
+  if(!MUS.next||MUS.next<a.currentTime-0.5){ MUS.next=a.currentTime+0.08; MUS.step=0; }
   while(MUS.next<a.currentTime+0.65){
     musNote(a,MUS.next,MUS.step);
-    MUS.step=(MUS.step+1)&63;
-    MUS.next+=_spb;
+    MUS.step=(MUS.step+1)%_len;
+    MUS.next+=T.spb;
   }
 }
 function musNote(a,t,step){
-  var si=step&7,I=MUS.i||0;
-var T=musTrk();
-  var root=T.bass[(step>>3)&7];
-  if(si===0||si===4) musVoice(a,t,root,T.bw,si===0?0.60:0.34,1.5);
-  // DANGER PULSE: an off-beat eighth on the root once things are bad, which is
-  // what turns a walking bass into a chase.
-  else if(I>0.62&&(si&1)===0) musVoice(a,t,root,T.bw,0.20,0.34);
-  var m=T.lead[step];
+  var T=musTrk(), bi=(step/16)|0, si=step%16;
+  var B=T.bars[bi]; if(!B) return;
+  var ch=HUB_CHORDS[B.c]||HUB_CHORDS.Am;
+  // BASS: root on the downbeat, root again on the half, long and soft. Triangle,
+  // because a square down here booms and this is meant to sit under everything.
+  if(si===0) musVoice(a,t,B.b,'triangle',0.34,1.9,0.02);
+  else if(si===8) musVoice(a,t,B.b,'triangle',0.22,1.5,0.02);
+  // ARPEGGIO: the triad of this bar, rolling at eighths. This is the shimmer the
+  // whole style rests on, and it is derived from the chord rather than typed, so
+  // it can never disagree with the harmony above it.
+  if((si&1)===0){
+    var an=ch[((si>>1)+bi)%3];
+    if(((si>>1)&3)===0) an+=12;              // lift the top of each group an octave
+    musVoice(a,t,an,'triangle',0.085,0.46,0.012);
+  }
+  // LEAD: written, held, and doubled a breath late and a hair sharp so it has
+  // some width instead of arriving as a single naked beep.
+  var m=B.lead[si];
   if(!m) return;
-  // TENSION drops the lead entirely and leaves the bass alone in the room.
-  if(I>0.26&&I<=0.62) return;
-  musVoice(a,t,m,T.lw,0.16+0.10*I,0.34);
-  musVoice(a,t+T.spb*3,m,T.lw,0.055,0.30);
+  musVoice(a,t,m,'square',0.105,1.05,0.045);
+  musVoice(a,t+0.022,m,'triangle',0.075,1.05,0.05,1.004);
 }
-function musVoice(a,t,midi,type,vol,dur){
+// atk is the thing that separates a note from a beep. The old voice ramped to
+// full in 14ms on every single voice, which is a click with a pitch. The lead
+// now takes 45ms to speak and rings for a full second.
+function musVoice(a,t,midi,type,vol,dur,atk,detune){
   var o=a.createOscillator(),g=a.createGain();
-  o.type=type; o.frequency.value=440*Math.pow(2,(midi-69)/12);
+  o.type=type;
+  o.frequency.value=440*Math.pow(2,(midi-69)/12)*(detune||1);
+  var A=atk||0.014;
   g.gain.setValueAtTime(0,t);
-  g.gain.linearRampToValueAtTime(vol,t+0.014);
-  g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+  g.gain.linearRampToValueAtTime(vol,t+A);
+  g.gain.exponentialRampToValueAtTime(0.0008,t+dur);
   o.connect(g); g.connect(MUS.g);
   o.start(t); o.stop(t+dur+0.05);
 }
@@ -19383,7 +19396,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The Peddler carries a gun on every stall, any of the seven, and Vesh already dealt in all of them',
+  now:'The surface is silent, and the Undercroft has a real tune instead of two beeps a bar',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -17664,3 +17664,84 @@ either vendor, so the 320-seed benchmark cannot see it. Whether a
 guaranteed gun on every stall makes the Peddler too generous is a
 judgement only real runs will answer, and the gun slot is one line to
 weight down if it does.
+
+### m512 - v5.04 and v5.05: the surface is silent, and the Undercroft has a tune
+
+HIS ORDER: "we need to kill the dynamic music -- it just sounds like
+random beeps when the player isn't doing anything. scrap all music, then
+add chrono-trigger esque 16 bit music to the undercroft only."
+
+WHY IT SOUNDED LIKE BEEPS, and this was structural rather than a matter of
+taste. The lead line was one note every other step with rests between, and
+the reactive gate DROPPED THE LEAD ENTIRELY across the whole middle
+intensity band, 0.26 to 0.62, which is where a raid spends most of its
+time. So for most of a raid the only thing playing was a bass root on
+beats one and three of an eight step loop. That is not a melody with gaps
+in it. It is two beeps a bar, exactly as he said.
+
+THE SURFACE IS SILENT NOW. All of it, every mode. The whole of "scrap all
+music" is one line: G exists only inside a raid, so `if(G) return false`
+removes the reactive band, the intensity curve, the tail, the tempo
+bending and the combat gate at once, because there is no longer anything
+up there for them to govern. It also covers the outcome screen, which
+holds G until the button is pressed.
+
+The mode setting collapses from four to two, UNDERCROFT and OFF. Worth
+noting that 'hub' was already in MUSIC_MODES and MUSIC_NAMES, and the
+settings hint already described it as "plays it only down here" - but
+musicMode() only ever returned always, off or reactive, so cycling to it
+silently landed on reactive. Another option that existed and could not be
+reached, same family as seasonReady and the LANDMARKS table.
+
+THE THEME. Sixteen bars, A minor, 110bpm, written out rather than
+generated, because the last one was generated and that is precisely why it
+wandered.
+
+  A section, bars 1-8:   Am F C G / Am F Dm E
+  B section, bars 9-16:  Am C F G / Am Dm E Am
+
+Three voices, which is what makes it read as 16-bit rather than as a phone
+alarm. A slow root bass on the downbeat and the half. A triad arpeggio
+rolling underneath at eighths with the top of each group lifted an octave,
+which is the shimmer the whole style rests on. And a written melody on
+top, doubled a breath late and a hair sharp so it has some width.
+
+The arpeggio is BUILT from the chord of its bar rather than typed out, so
+it can never disagree with the harmony above it. The melody is hand
+written, because a tune is the one part you cannot get from a rule.
+
+The other half of the beep problem was the envelope. Every voice ramped to
+full in 14 milliseconds, which is a click with a pitch attached. The lead
+now takes 45ms to speak and rings for a full second.
+
+HOW A TUNE GETS VERIFIED BY SOMEONE WHO CANNOT HEAR IT. I added a dry run
+hook that swaps the voice for a recorder and drives the sequencer over the
+whole 256 step loop with no speaker, so the note stream can be READ. Every
+arpeggio note was checked against its bar's triad and every bass note
+against its bar's root.
+
+It caught a real mistake. Bar 15 was "F moving to E" in my head, but the
+chord is one per bar, so a B natural and a G# were sounding over an F
+major arpeggio: a tritone and a semitone rub, the one genuinely wrong
+moment in the sixteen. It is the dominant bar, so it became E outright.
+
+The same check flags three more notes: a D over Am twice and an A over C.
+Those are the 11th and the 6th, they are deliberate, and they are the
+notes that make a progression sound like music instead of arithmetic. The
+checker is blunter than the ear it stands in for and I have not "fixed"
+them.
+
+Verified: parse PASS at v5.05; four-map sweep clean at 110, 111, 74 and 91
+entities; all three raid endings; hub clean. The gate driven directly:
+music wanted in the Undercroft TRUE, inside a raid FALSE, back in the
+Undercroft after the raid TRUE. 258 scheduled events across the loop, zero
+arpeggio notes outside their chord, zero bass notes off their root.
+
+Not verified, and this is the important one: I CANNOT HEAR IT. Everything
+above is the note stream read back, which proves the harmony, the melody
+and the structure are what I wrote. It cannot tell me whether the balance
+between the three voices is right, whether the arpeggio is too busy under
+the tune, or whether 110bpm is the right walking pace for that room. The
+fixture never starts an audio context, so nothing here has made a sound.
+That needs his ears, and the three dials most likely to want moving are
+the arpeggio volume at 0.085, the lead at 0.105, and spb at 0.1364.

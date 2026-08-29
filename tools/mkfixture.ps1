@@ -539,6 +539,19 @@ window.__loadProfile=function(){ return loadProfile(); };
 window.__primer={open:function(){ openPrimer(); },maybe:function(){ maybePrimer(); },list:function(){ return PRIMER; }};
 window.__status={player:function(){ return playerStatus(); },raider:function(e){ return raiderStatus(e); },col:STATCOL};
 window.__board=function(){ renderSeason(); return ROADMAP; };
+// THE MUSIC, dry. Swaps the voice for a recorder and runs the sequencer over the
+// whole theme without a speaker, so the harmony and the melody can be READ. I
+// cannot hear the game; this is how a tune gets verified.
+window.__musDry=function(steps){
+  var out=[], real=musVoice;
+  musVoice=function(aa,t,midi,type,vol,dur,atk,det){
+    out.push({step:aa,midi:midi,type:type,vol:+(vol||0).toFixed(3),dur:dur,detune:det||1});
+  };
+  try{ for(var i=0;i<steps;i++) musNote(i,0,i); } finally { musVoice=real; }
+  return out;
+};
+window.__musTheme=function(){ return {theme:HUB_THEME,chords:HUB_CHORDS}; };
+window.__musWanted=function(){ return musicWanted(); };
 // The sector page and its pre-deploy kit line, so the last screen before a drop
 // can be driven and read like every other one.
 window.__sector=function(){ renderSector(); return document.getElementById('sectorkit'); };
