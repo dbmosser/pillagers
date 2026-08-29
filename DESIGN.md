@@ -19566,3 +19566,61 @@ untested. The 3.2 second figure is asserted rather than tuned; whether that is
 long enough to hurt has not been played.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.55 VERIFICATION  THE FULL BETA SWEEP
+================================================================================
+
+v5.55 verification: the full beta sweep, and four checks that found nothing
+
+No telemetry this tick and the tree was clean, so this is the sweep rather than
+a build. Nine checks against a VIRGIN profile, which is the state a beta player
+opens the game in and the state least often driven:
+
+  virgin profile carries every beta default    cfgv 16, raidSec 540,
+                                               safeSlots 0, spawnClear 1500,
+                                               machVsRaider 1, no secondary gun
+  23 fixture hooks present
+  four maps, DAY AND NIGHT, with the map overlay
+  all three endings through the outcome screen
+  hub, the figure and the ascent check, five slots on her
+  fixture stays silent, zero fetches and zero file saves
+  no HUD overlaps at 1280x720, 1600x900 and 1920x1080
+  both bosses present, and the Choir has speed 0
+  three music themes, silent in a raid and on the outcome screen
+
+All nine pass.
+
+FOUR THINGS I CHECKED THIS TICK AND FOUND NOTHING TO DO. Saying so explicitly,
+because a check that finds nothing is still worth the record:
+
+Q43, the kill feed after death, is fully built. The headline reads KILLED BY
+CHOIR M-40, 334M FROM EXTRACTION, NEVER SPOTTED, and under it a HOW IT WENT
+list gives every hit with its timestamp, damage and the health you had left:
+2s CHOIR M-40 -22 78 left, 2s -22 56 left, 3s -22 34 left. My first probe read
+the wrong element and reported it missing, which it is not.
+
+The compass. His spec says no compass strip, and the word appears in the source,
+so I read it: what exists is a single ARROW to the nearest extraction with a
+distance, which is what he asked for in run #59. Not the bearing strip his spec
+rejects. No action.
+
+The junk tag and sell-all: clicking a stash cell tags it, and sell-all then took
+two tagged Data Cores for 1,040c and left the medkit. Twenty scrap render as one
+cell. Autoloot on a held E opens a container and fills the bag.
+
+Damage numbers on, HUD holding all five panels through forty seconds idle with
+no fade, the bag not pausing the raid, no minimap, one generic ammo item, and
+all three extractions open and known at the drop.
+
+WHAT IS ACTUALLY LEFT for beta, and it is short: nobody has PLAYED any of the
+last eleven builds. Every number in them is measured and every path is driven,
+and not one of them has been looked at by a person.
+
+Not verified: the sweep drives a virgin profile and the four maps, and it cannot
+tell whether the game is FUN, whether night at 45 percent is now washed out
+rather than legible, whether the Choir reads as a boss or a chore, or whether
+three loadout slots is the right number. Those are the questions his next
+session answers and none of them have an instrument here.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
