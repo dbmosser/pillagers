@@ -18594,3 +18594,61 @@ is the one thing no probe of mine can answer. The hot zone has not been driven
 through a full move on the clock, only its placement and its loot rule.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.39  THE ASCENT CHECK ORGANISED, AND THE PISTOL CONFIRMED GONE
+================================================================================
+
+v5.39: the ascent check organised, and the pistol confirmed gone
+
+HIS NOTE: "it forces you to spawn with a scav pistol as your secondary gun...
+and just needs beeter organization, its wonky".
+
+THE PISTOL. Fixed in v5.38 and now proven rather than asserted. Drove a raid
+from a FRESH profile, the exact state a new player has: owns a pistol, has never
+chosen a secondary. Result: gun one is an issued loaner, gun two is FISTS. No
+free pistol. With one explicitly chosen, it is honoured. If he still saw it, he
+was on the build before last.
+
+THE WONKY, AND IT WAS MY BUG. Last build I moved the figure into the left panel
+of the ascent check and set #stageload to display:none, but renderStage still
+wrote the Gun 1, Gun 2, Armour, Backpack and Intel rows into it. So the rows I
+had just added to answer his gun-two note went into a HIDDEN div. Half of what
+that screen said about your loadout was invisible, which is squarely why it read
+as wonky.
+
+THE SHAPE. The screen answers three questions and they were interleaved. They
+are three numbered columns now, in the order you actually ask them:
+
+  1  GOING UP AS        the figure, and every slot on her
+  2  CARRYING           the ascent kit, the hotbar plan, the pack and the core
+  3  TAKE FROM THE STASH   the transfer and the requisition counter
+
+The guns and the rig are no longer repeated in column two as read-only rows with
+their own Change buttons. That was two controls for one decision, and the figure
+is the better one because you can see what you are choosing.
+
+A SUMMARY LINE sits above the ASCEND button, because everything above it is a
+control and this is the sentence you read on the way out:
+
+  Burst Carbine  ·  no second gun  ·  Scav Rig, 35 armour  ·  3 items packed
+
+An empty second gun is now impossible to miss, which is the whole point of the
+slot existing.
+
+One more of mine caught on the way: the "what is wrong with this ascent" warning
+block read rg and w, two variables declared by the loadout rows that had just
+moved out. It threw ReferenceError on every render of the screen. It looks them
+up itself now.
+
+Verified: parse PASS at v5.39, braces balanced. A fresh profile gives gun two
+FISTS and an issued gun one; an explicitly chosen secondary is honoured. The
+screen renders three numbered columns, five figure slots, nine plan cells, the
+pack and core rows VISIBLE in column two, and the summary line reading correctly
+with a missing second gun called out.
+
+Not verified: nobody has seen the three-column layout at a real window size, so I
+know it renders and I do not know the middle column is wide enough for the kit
+list plus nine plan cells without wrapping awkwardly.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

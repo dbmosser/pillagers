@@ -475,25 +475,31 @@
   <div class="msub" id="stagewhere"></div>
   <div id="stagewarn" style="margin:10px 0;font-size:11px;padding:8px 10px;display:none;
        border:1px solid var(--hazard);border-radius:3px;color:var(--hazard)"></div>
-  <div class="hubgrid" style="margin-top:10px">
+  <div class="hubgrid" style="margin-top:10px;grid-template-columns:236px 1fr 1fr">
     <div class="panel">
-      <h2>Going up as</h2>
+      <h2>1 &middot; Going up as</h2>
       <div id="stageavatar"></div>
       <div id="stageavatarpicker" style="border-top:1px solid var(--steel-hi);padding:8px 10px;
-           max-height:170px;overflow-y:auto"></div>
-      <div id="stageplan" style="border-top:1px solid var(--steel-hi)"></div>
-      <h2 style="border-top:1px solid var(--steel-hi)">Ascent kit <em id="stagekitct"></em></h2>
-      <div class="plist" id="stagekit" style="max-height:130px;overflow-y:auto"></div>
-      <div id="stageload" style="display:none"></div>
+           flex:1;min-height:0;overflow-y:auto"></div>
     </div>
     <div class="panel">
-      <h2>Take from the stash</h2>
-      <div class="plist" id="stagestash" style="max-height:190px;overflow-y:auto"></div>
+      <h2>2 &middot; Carrying <em id="stagekitct"></em></h2>
+      <div class="plist" id="stagekit" style="flex:1;min-height:90px;overflow-y:auto"></div>
+      <div id="stageplan" style="border-top:1px solid var(--steel-hi)"></div>
+      <div id="stageload" style="border-top:1px solid var(--steel-hi);padding:2px 0"></div>
+    </div>
+    <div class="panel">
+      <h2>3 &middot; Take from the stash</h2>
+      <div class="plist" id="stagestash" style="flex:1;min-height:120px;overflow-y:auto"></div>
       <h2 style="border-top:1px solid var(--steel-hi)">Requisition &mdash; the whole counter</h2>
-      <div class="plist" id="stagebuy" style="max-height:210px;overflow-y:auto"></div>
+      <div class="plist" id="stagebuy" style="flex:1;min-height:120px;overflow-y:auto"></div>
     </div>
   </div>
   <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
+    <div id="stagesum" style="flex:1;font-size:11px;padding:7px 10px;
+         border:1px solid var(--steel-hi);border-radius:3px"></div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex:none">
     <button class="deploy" id="stagedrop" style="flex:1.4">ASCEND</button>
     <button id="stageback" style="padding:8px 22px">Back</button>
     <div class="credits" id="stagecred" style="margin-left:auto"></div>
@@ -749,7 +755,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.38';
+var VER='5.39';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22077,6 +22083,21 @@ function renderStage(prefill){
     'Last stop before the lift. Everything on this page can still be changed. '+
     'Nothing leaves your stash until you press ASCEND.';
   document.getElementById('stagecred').innerHTML=P.credits.toLocaleString()+'<small>CREDITS</small>';
+  // WHAT YOU ARE ACTUALLY WALKING OUT WITH, in one sentence.
+  (function(){
+    var sw=document.getElementById('stagesum'); if(!sw) return;
+    var g1=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null;
+    var g2=(P.equippedSec&&P.equippedSec!=='none'&&P.equippedSec!=='fists')?WEAPONS[P.equippedSec]:null;
+    var rg2=myRig();
+    var bits=[];
+    bits.push(g1?escHtml(g1.name):'<span style="color:var(--hazard)">no gun of your own, a loaner</span>');
+    bits.push(g2?escHtml(g2.name):'<span style="color:var(--ash)">no second gun</span>');
+    bits.push(rg2.cap?(escHtml(rg2.name)+', '+rigCeil(rg2)+' armour')
+                     :'<span style="color:var(--hazard)">no rig, zero armour</span>');
+    var kn=stageKitLive().length;
+    bits.push(kn?(kn+' item'+(kn===1?'':'s')+' packed'):'<span style="color:var(--ash)">nothing packed</span>');
+    sw.innerHTML=bits.join('  &middot;  ');
+  })();
 
   // THE SAME FIGURE THE STASH SCREEN SHOWS, from the same function, so the two
   // screens can never describe the same operator differently.
@@ -22106,29 +22127,8 @@ function renderStage(prefill){
       });
     });
   })();
-  // ---- what you are wearing and holding
+  // ---- the two things you carry that are not items and not on the figure
   var L=document.getElementById('stageload'); L.innerHTML='';
-  var w=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null;
-  var w2=(P.equippedSec&&P.equippedSec!=='none'&&P.equippedSec!=='fists')?WEAPONS[P.equippedSec]:null;
-  L.appendChild(stageRow('Gun 2',
-    w2?(escHtml(w2.name)+' \u00b7 DMG '+(w2.dmg*(w2.pellets||1))+' \u00b7 MAG '+(w2.mag||'-'))
-      :'Empty. You are going up with one gun.',null,null));
-  L.appendChild(stageRow('Gun 1',
-    w?(escHtml(w.name)+' \u00b7 DMG '+w.dmg+' \u00b7 MAG '+(w.mag||'-')):'None owned. You will be issued a loaner.',
-    (P.weapons&&P.weapons.length>1)?'Change':null,
-    function(){ var ws=P.weapons.filter(function(k){return k!=='fists';});
-      if(!ws.length) return;
-      var ix=ws.indexOf(P.equipped); P.equipped=ws[(ix+1)%ws.length];
-      saveProfile(); renderStage(); }));
-  var rg=myRig();
-  L.appendChild(stageRow('Armour',
-    rg.cap?(escHtml(rg.name)+' \u00b7 '+rigCeil(rg)+' armour \u00b7 absorbs '+Math.round(rg.absorb*100)+'%')
-          :'No rig. You ascend with zero armour.',
-    ((P.rigs||[]).length>1)?'Change':null,
-    function(){ var rs=(P.rigs||[]).slice();
-      if(rs.indexOf('none')<0) rs.push('none');
-      var ix=rs.indexOf(P.rig); P.rig=rs[(ix+1)%rs.length];
-      saveProfile(); renderStage(); }));
   L.appendChild(stageRow('Backpack','Tier '+((P.pack||0)+1)+' \u00b7 '+
     Math.round((1-PACKPEN[P.pack||0])*100)+'% less carry penalty',null,null));
   L.appendChild(stageRow('Intel',
@@ -22220,7 +22220,12 @@ function renderStage(prefill){
       },owned?'var(--gain)':'var(--amber)'));
   });
 
-  // ---- what is wrong with this drop
+  // ---- what is wrong with this ascent
+  // rg and w were declared by the loadout rows that moved onto the figure, so
+  // this block now looks them up itself rather than inheriting two variables
+  // from a section that no longer exists.
+  var rg=myRig();
+  var w=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null;
   var warn=[];
   if(!rg.cap) warn.push('no armour');
   if(!w) warn.push('no gun of your own');
