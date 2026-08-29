@@ -21668,3 +21668,66 @@ but nobody has dragged this with a hand. I have also not tested touch or a
 trackpad, and the ghost element follows clientX and clientY with no scroll offset
 handling, so if either list is scrolled the ghost is right but I have not checked
 the drop target hit test under scroll.
+
+## v5.96: the wall glitch was in the drawing, and the camera I built for it was pointed the wrong way
+
+His run #70, on v5.93, the first run he has ever recorded on a v5.9x build:
+"map had wall glitch in some areas". That is the SECOND independent report. Run
+#63 said "glitchy, walls/player location inaccurate" and "i think this entire map
+is just glitched".
+
+v4.14 built a camera for exactly this: wallClip stamps the run record the first
+time his centre is strictly inside a solid wall, and says so out loud so he knows
+it caught one. THAT CAMERA HAS NEVER FIRED. Not once, across every export he has
+ever sent. For six builds I read the silence as "no such bug". The silence meant
+the camera was watching the wrong thing, and a probe that never fires is evidence
+about the probe.
+
+WHAT IT IS NOT. Collision is clean and I checked that first. All 2,982 walls
+across the four maps push a test body out of themselves, and the broad-phase grid
+agrees with a brute-force sweep on every single one, so there is no wall you can
+walk through and none the grid misses. That check found nothing.
+
+WHAT IT IS. Lift, the fake height that turns a flat rect into a 2.5D block, was
+computed from the size of the PIECE:
+
+    var LIFT=(wl2.w<=60&&wl2.h<=60)?14:26;
+
+and a wall is not one piece. carveWindows cuts a long shell wall into fragments so
+a window can stop sight without stopping movement. So a 361x16 span draws 26 tall
+and the 57x16 window stub butted straight against it draws 14 tall, and the top
+edge of one continuous, physically straight wall JUMPS TWELVE PIXELS at the joint.
+You are told the wall is somewhere it is not. That is his exact phrase: walls and
+player location inaccurate.
+
+MEASURED BEFORE AND AFTER, abutting collinear pieces that disagree on height:
+    GREYWATER DAM   61 -> 0
+    SUNKEN QUARTER  51 -> 0
+    COLD STORAGE    39 -> 0
+    THE QUARRY      31 -> 0
+182 visible steps gone. They cluster on windows, which is why he said "in SOME
+areas" rather than everywhere.
+
+Lift is now a property of the WALL, not the piece. Each piece proposes the old
+height, then every straight run of abutting collinear pieces is levelled to the
+tallest proposal in it, so a continuous wall cannot have a step in it whatever the
+carve did to it. 149 pieces were raised and they are all windows (54) and shell
+wall segments (95): no ledge, no door, no furniture, no wreck, no tree moved, so
+props that are meant to be short still are.
+
+Verified: parse PASS at v5.96; the four maps still build 86/87/58/72 entities and
+236/200/154/225 containers on a cleared profile and the three endings still pay
+40xp/48c, 40xp/0c and 0/0, all bit-identical to v5.95, which is the proof this is
+render-only and did not perturb the seeded stream that every paired A/B depends
+on; the specific stub from the probe, 57x16 at 3344,732, now reports lift 26
+against its neighbour's 26 where it used to report 14; a raid frame drawn on the
+play path with the title overlay down.
+
+Not verified: I proved the property the renderer consumes rather than the pixels
+it produces, so I have not diffed two screenshots to show the step disappearing to
+the eye. rebuildGeometry, which runs on destruction and on opening a door, does
+not re-run the pass; that is safe today because those paths only REMOVE walls and
+never create them, and any wall that somehow arrived without a lift falls back to
+the old expression rather than crashing, but a future change that adds walls
+mid-raid would silently get the old behaviour back. The hub keeps its own wall
+list and its own copy of the renderer and was deliberately left alone.

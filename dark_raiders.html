@@ -778,7 +778,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.95';
+var VER='5.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4460,6 +4460,7 @@ function buildFixedMap(def){
   // No new subsystem, no special case in the shooting code, no extra work per
   // frame; a window is just a wall that was never told to the ray caster.
   walls=reconcileWindows(carveWindows(walls));
+  assignLifts(walls);
   var segs=[];
   for(var m2=0;m2<walls.length;m2++){ var w2=walls[m2];
     if(w2.win) continue;
@@ -4491,6 +4492,53 @@ function buildFixedMap(def){
 // means CFG.windows 0 and 1 produce the same PRNG stream and therefore the same
 // spawns, the same loot and the same raid. Put the rr() inside the test and every
 // seeded comparison in this file would move the moment windows shipped.
+// v5.96, on his note "map had wall glitch in some areas".
+// Lift is the fake height that makes a flat rect read as a block. It used to be
+// derived per piece from the piece''s own size, which is wrong the moment a wall is
+// stored as more than one piece, and every shell wall with a window in it is. Here
+// each piece proposes the old height, then abutting collinear pieces are levelled
+// to the tallest proposal among them, so one wall is one height end to end.
+//
+// Trees, wrecks and furniture are left out. They are props that happen to be rects
+// and they are supposed to be short even when they are sat against a building.
+function assignLifts(walls){
+  var i,w,k;
+  for(i=0;i<walls.length;i++){ w=walls[i]; w.lift=(w.w<=60&&w.h<=60)?14:26; }
+  var byH={},byV={};
+  for(i=0;i<walls.length;i++){
+    w=walls[i];
+    if(w.tree||w.wreck||w.furn) continue;
+    k=Math.round(w.y)+'|'+Math.round(w.h); (byH[k]=byH[k]||[]).push(w);
+    k=Math.round(w.x)+'|'+Math.round(w.w); (byV[k]=byV[k]||[]).push(w);
+  }
+  // One group is every piece sharing a line and a thickness. Sorted along the line,
+  // a run is a maximal stretch whose pieces touch end to end.
+  function level(groups,horiz){
+    for(var g in groups){
+      var a=groups[g];
+      if(a.length<2) continue;
+      a.sort(horiz?function(m,n){return m.x-n.x;}:function(m,n){return m.y-n.y;});
+      var s=0,j,q;
+      for(j=1;j<=a.length;j++){
+        var brk=(j===a.length);
+        if(!brk){
+          var prev=a[j-1],cur=a[j];
+          var end=horiz?(prev.x+prev.w):(prev.y+prev.h);
+          var st=horiz?cur.x:cur.y;
+          brk=Math.abs(end-st)>1.5;
+        }
+        if(brk){
+          var hi=0;
+          for(q=s;q<j;q++) if(a[q].lift>hi) hi=a[q].lift;
+          for(q=s;q<j;q++) a[q].lift=hi;
+          s=j;
+        }
+      }
+    }
+  }
+  level(byH,true); level(byV,false);
+  return walls;
+}
 function carveWindows(walls){
   var out=[],i;
   for(i=0;i<walls.length;i++){
@@ -15936,7 +15984,9 @@ var SHD=G.shells[i];
       }
     } else if(it.w){
       var wl2=it.w,d3=wl2.d===undefined?3:wl2.d;
-      var LIFT=(wl2.w<=60&&wl2.h<=60)?14:26;
+      // v5.96: the run''s height, not the piece''s. The fallback is what the hub
+      // and anything else outside the map builder still uses.
+      var LIFT=wl2.lift||((wl2.w<=60&&wl2.h<=60)?14:26);
       // A WINDOW HAS TO LOOK LIKE A WINDOW or the hole in the wall reads as a
       // doorway and someone walks into it. Drawn as a low sill in the wall's own
       // colours with a pale glass band above it, so it reads as part of the same
