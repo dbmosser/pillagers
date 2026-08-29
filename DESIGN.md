@@ -23473,3 +23473,82 @@ scope cannot narrow anything. The primer still says REP "unlocks the counter in
 Requisition"; he flagged the heading and not that sentence, so I left it rather than
 rewrite copy he did not ask about. The NO RIG branch of the readyline is still there and
 is now unreachable, since myRig always returns the 60 armour standard.
+
+## v6.39 / v6.40 - ONE NAME PER THING, AND I OPENS YOUR THINGS
+
+A run of his notes, all on the same complaint: the menus do not agree with themselves.
+
+I OPENS YOUR INVENTORY IN THE UNDERCROFT. Checked first, because several of his notes
+have turned out to be already fixed. This one was real, and worse than not-bound: I was
+already in the hub's preventDefault list and wired to NOTHING, so the key was swallowed
+and then ignored. Up in a raid Tab and I both open the bag; down here neither did, and
+the only route to your own things was to walk to the terminal and press E. Both keys now
+toggle the same panel the terminal opens, guarded on a modal being up so Settings
+cannot be undercut by the stash sliding open beneath it.
+
+THE OTHER HALF OF THAT NOTE WAS ALREADY DONE and I am saying so rather than shipping a
+fix for it: dragging an item from the stash onto a quick-use key in the Undercroft
+already worked. Driven to be sure, a Medkit dragged onto key 3 lands as hotAssign 2.
+
+KEYS ARE THEIR OWN CLASS NOW, his note. The class already existed everywhere except the
+one place he looks at it: ICLASS has carried key:{t:'KEY'} for a long time and all eight
+door keys declare use:'key', but the stash tab list had no row for them, so they fell
+through to the generic "has a use" branch and filed under CONSUMABLES. Eight keys across
+four maps sitting in the consumables drawer. The tab reads KEYS 8 and consumables drops
+from 15 to 7.
+
+TEN PLACES HAD TWO OR THREE NAMES FOR ONE THING. I drove every menu and wrote down what
+each is called by the control that opens it, by its own heading, and by its tab.
+
+  PILL//AGERS, a styled span splitting the wordmark, which reads as a typo on the one
+  word in the game that can least afford it. Now PILLAGERS.
+
+  "Going up as" and "Your operator" are the same panel. His own example. Both are
+  YOUR OPERATOR.
+
+  The place you buy things had three names: station SHOP, tab BUY, button REQUISITION.
+  He renamed the station himself and "requisition" is exactly the kind of word the
+  plain-language rule exists to kill, so SHOP wins. WORKSHOP becomes CRAFT to match its
+  own tab, OPTIONS becomes SETTINGS to match the station and the panel it opens.
+
+  THE MAINFRAME opened a panel called OPERATOR TERMINAL containing a tab called
+  MAINFRAME: the station's name buried as a tab inside the thing it opens. The panel
+  takes the station name, and the tab that builds racks and slots data cores is RACKS.
+
+  Three names for two DIFFERENT things, which is worse than three for one. Settings had
+  RUN RECORDER, the log you copy and send me. The terminal had RUN RECORD, headed
+  "Flight recorder", which is your extract rate and average haul. Now SEND PLAY DATA and
+  YOUR STATS, each saying what it is.
+
+  Putting an item into what you carry had two names for the identical action, "Pack one"
+  in the right-click menu and "Take up" in the detail panel. His instruction is that it
+  is always Equip, so both are Equip, and the gun-only action that was also just "Equip"
+  becomes "Equip as your gun" so the two verbs cannot be confused.
+
+LVL AND PROF ARE OFF THE UNDERCROFT HEADER. His words: "i don't know WTF that means,
+more slop from you", then "PROF might be proficiency rating, but there's no context, 19
+out of what?" He is right twice, and my own roadmap note in this file already said it:
+LVL gates exactly one thing, a hair colour at level 4, and PROFICIENCY gates nothing at
+all. Two numbers on the first line of the Undercroft that gate nothing and have no
+ceiling to be read against. The values stay in the save untouched, so nothing is lost;
+they stop being shouted at him.
+
+A PATCH FAULT OF MINE, twice in a row on the same edit. The anchor for the LVL line
+carries a middot, and PowerShell 5.1 reads my patch scripts as ANSI, so the character
+arrived as two bytes and matched nothing. Building it from a character code did not fix
+it either. A regex with a dot in place of the character did. The Sub helper now has a
+SubRx sibling for exactly this.
+
+Verified: parse PASS at v6.39 and v6.40; I, Tab and Escape driven against the hub panel
+including the modal guard; a Medkit dragged to a quick-use key; the stash tab strip read
+back as ALL 46, GUNS 9, ARMOUR 1, PARTS 21, CONSUMABLES 7, KEYS 8; the brand, the seven
+stash buttons, the Mainframe heading and tabs and the Settings tabs all read back from
+the live DOM; four maps 86/87/58/72 entities and, at seed 4242, 246/193/152/216
+containers; all three endings through the outcome screen to a drawn hub; hub,
+renderStage and the export builder; pin audit clean.
+
+Not verified: I renamed the labels, not every sentence that mentions them, so body copy
+elsewhere may still say requisition, workshop or operator terminal; I did not sweep the
+primer and the rules panel for the old words. The two renamed tab ids are unchanged
+underneath, so nothing that keys off them moved. LVL and PROF are hidden rather than
+removed, and the hair colour that unlocks at level 4 still unlocks silently.

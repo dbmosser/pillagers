@@ -521,7 +521,7 @@
      deleted, they are behind the TERMINAL button. Same element ids, so renderHub
      still fills them exactly as before whether the door is open or shut. -->
 <div class="modal" id="opmodal">
-  <h3>OPERATOR TERMINAL</h3>
+  <h3>THE MAINFRAME</h3>
   <div class="invtabs" id="optabs" style="padding:0 0 10px 0"></div>
   <div class="tpane" id="opane_con" style="display:flex;flex-direction:column;flex:1;min-height:0">
     <div class="msub">Work you have signed for. Contracts pay on top of your haul, and they do not expire while you are down here.</div>
@@ -558,7 +558,7 @@
   </div>
   </div>
   <div class="tpane" id="opane_rec" style="display:none;flex-direction:column;flex:1;min-height:0">
-  <h2>Flight recorder <em id="logct">0</em></h2>
+  <h2>Your stats <em id="logct">0</em></h2>
   <div class="plist" id="loglist" style="flex:1;min-height:200px;overflow-y:auto"></div>
   <div style="border-top:1px solid var(--steel-hi)">
     <div class="stat"><span>Extract rate</span><b id="s_rate">--</b></div>
@@ -637,7 +637,7 @@
        border:1px solid var(--hazard);border-radius:3px;color:var(--hazard)"></div>
   <div class="hubgrid" style="margin-top:10px;grid-template-columns:236px 1fr 1fr">
     <div class="panel">
-      <h2>1 &middot; Going up as</h2>
+      <h2>1 &middot; Your operator</h2>
       <div id="stageavatar"></div>
       <div id="stageavatarpicker" style="border-top:1px solid var(--steel-hi);padding:8px 10px;
            flex:1;min-height:0;overflow-y:auto"></div>
@@ -651,7 +651,7 @@
     <div class="panel">
       <h2>3 &middot; Take from the stash</h2>
       <div class="invgrid" id="stagestash" style="flex:1;min-height:120px"></div>
-      <h2 style="border-top:1px solid var(--steel-hi)">Requisition</h2>
+      <h2 style="border-top:1px solid var(--steel-hi)">Shop</h2>
       <div class="plist" id="stagebuy" style="flex:1;min-height:120px;overflow-y:auto"></div>
     </div>
   </div>
@@ -708,7 +708,7 @@
       <div class="plist" id="cratelist" style="border:1px solid var(--steel-hi)"></div>
     </div>
     <div style="flex:1;min-width:0">
-      <div class="hint" style="margin:0 0 4px"><b>YOUR STASH</b> &middot; drag left to bin</div>
+      <div class="hint" style="margin:0 0 4px"><b>STASH</b> &middot; drag left to bin</div>
       <div class="plist" id="cratestash" style="border:1px solid var(--steel-hi)"></div>
     </div>
   </div>
@@ -747,7 +747,7 @@
 <div class="screen" id="hub">
   <div class="toprow">
     <div>
-      <div class="brand">PILL<span>//</span>AGERS <span id="verlabel"></span></div>
+      <div class="brand">PILLAGERS <span id="verlabel"></span></div>
       <div style="font-size:9.5px;color:var(--ash);letter-spacing:.14em;margin-top:4px">THE UNDERCROFT &mdash; OPERATOR TERMINAL &mdash; REP <span id="reptop" style="color:var(--amber)">0</span> <span id="notoline"></span></div>
     </div>
     <div class="credits" id="credits">0<small>CREDITS</small></div>
@@ -815,11 +815,11 @@
   <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:11px">
     <button class="deploy" id="backfloor" style="flex:1.6">&larr; BACK TO THE FLOOR</button>
     <button class="deploy ghost" id="deploy" style="flex:1">ASCEND</button>
-    <button class="deploy ghost" id="shopbtn" style="flex:1">REQUISITION</button>
-    <button class="deploy ghost" id="workbtn" style="flex:1">WORKSHOP</button>
+    <button class="deploy ghost" id="shopbtn" style="flex:1">SHOP</button>
+    <button class="deploy ghost" id="workbtn" style="flex:1">CRAFT</button>
     <button class="deploy ghost" id="opbtn" style="flex:1">CONTRACTS</button>
     <button class="deploy ghost" id="condbtn" style="flex:1">CONDITIONS</button>
-    <button class="deploy ghost" id="optbtn" style="flex:1">OPTIONS</button>
+    <button class="deploy ghost" id="optbtn" style="flex:1">SETTINGS</button>
   </div>
 </div>
 <script>
@@ -948,7 +948,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.38';
+var VER='6.40';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7908,6 +7908,21 @@ window.addEventListener('keydown',function(e){
     if(['Space','KeyE','Tab','KeyI'].indexOf(e.code)>=0) e.preventDefault();
     // Escape backs out of the terminal panel and returns you to the floor
     if(e.code==='Escape') document.getElementById('hub').classList.remove('on');
+    // I and TAB open your things from anywhere on the floor, v6.39, his note. The
+    // same panel the terminal opens, because there is only one inventory and making
+    // the key open a second view of it is how the two drift apart.
+    if((e.code==='KeyI'||e.code==='Tab')&&!e.repeat){
+      var _anyModal=false;
+      var _ms=document.querySelectorAll('.modal');
+      for(var _mi=0;_mi<_ms.length;_mi++){
+        if(_ms[_mi].classList.contains('on')){ _anyModal=true; break; }
+      }
+      if(!_anyModal){
+        var _hb=document.getElementById('hub');
+        if(_hb.classList.contains('on')) _hb.classList.remove('on');
+        else { renderHub(); _hb.classList.add('on'); maybePrimer(); }
+      }
+    }
     return;
   }
   if(state!=='raid') return;
@@ -20513,8 +20528,7 @@ function drawHubHUD(ox,oy){
   ctx.fillText('THE UNDERCROFT',16,28);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
   ctx.fillText(P.credits.toLocaleString()+'c  ·  REP '+P.rep.toLocaleString()+
-    '  ·  '+P.stash.length+' item'+(P.stash.length===1?'':'s')+' in stash  ·  '+P.runs+' runs  ·  LVL '+(P.xpLevel||1)+
-    '  ·  PROF '+(P.prof||0),16,44);
+    '  ·  '+P.stash.length+' item'+(P.stash.length===1?'':'s')+' in stash  ·  '+P.runs+' runs',16,44);
   if(HUBSAY_T>0){
     ctx.textAlign='center';
     ctx.font=FS(TYPE.head);
@@ -21677,9 +21691,9 @@ function itemMenuRows(key,ctx,count){
     if(count>1) rows.push({label:'Put all '+count+' back',act:function(){ unpackSome(key,count); refreshInv(); }});
   } else {
     var room=held-packed;
-    rows.push({label:'Pack one',hint:room?null:'none left',dim:!room,
+    rows.push({label:'Equip',hint:room?null:'none left',dim:!room,
       act:function(){ var why=packSome(key,1); if(why) say2(why); refreshInv(); }});
-    if(room>1) rows.push({label:'Pack all '+room,act:function(){ packSome(key,room); refreshInv(); }});
+    if(room>1) rows.push({label:'Equip all '+room,act:function(){ packSome(key,room); refreshInv(); }});
   }
   // Equipping and wearing are stash verbs: you cannot do either to a thing that is
   // only pencilled in as coming with you.
@@ -21997,11 +22011,13 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   // so you can see there is nothing under PARTS without clicking PARTS.
   // HIS THREE PLACES, then the category filters as a second row inside STASH.
   // P.invTab went with the three exclusive tabs at v5.64. Nothing reads it.
-  var TABS=[['all','ALL'],['gun','GUNS'],['armor','ARMOUR'],['part','PARTS'],['use','CONSUMABLES']];
+  var TABS=[['all','ALL'],['gun','GUNS'],['armor','ARMOUR'],['part','PARTS'],
+            ['use','CONSUMABLES'],['key','KEYS']];
   function tabOf(k){
     var t=ITEMS[k]; if(!t) return 'part';
     if(t.use==='gun') return 'gun';
     if(t.use==='armor'||t.use==='rig') return 'armor';   // a rig IS body armour, v5.34
+    if(t.use==='key') return 'key';                      // v6.39, his note: keys are their own class
     if(craftPart(k)) return 'part';
     if(t.use) return 'use';
     return 'part';
@@ -22149,7 +22165,7 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
         b.onclick=function(ev){ ev.stopPropagation(); fn(); };
         acts.appendChild(b);
       }
-      if(it.use==='gun'&&it.gk&&WEAPONS[it.gk]) act('Equip',function(){
+      if(it.use==='gun'&&it.gk&&WEAPONS[it.gk]) act('Equip as your gun',function(){
         var ix=P.stash.indexOf(k); if(ix<0) return;
         P.stash.splice(ix,1);
         if(P.weapons.indexOf(it.gk)<0) P.weapons.push(it.gk);
@@ -22190,7 +22206,7 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
       }
       // TAKE UP, v5.68. The same rules the drop enforces, applied from a click:
       // one kit entry per stash copy, and never past the deploy cap.
-      act('Take up',function(){
+      act('Equip',function(){
         var live=stageKitLive();
         if(live.length>=DEPLOY_SLOTS){ say2('Inventory is full at '+DEPLOY_SLOTS+'.'); return; }
         var held=0; for(var _h=0;_h<P.stash.length;_h++) if(P.stash[_h]===k) held++;
@@ -23028,7 +23044,7 @@ function openOps(tab){
   try{ ensureContracts(); }catch(e){}
   // REWARDS sits next to CONTRACTS because they are the two halves of the same
   // thing: work you sign for and work you are paid for.
-  var T=[['con','CONTRACTS'],['rew','REWARDS'],['mf','MAINFRAME'],['rec','RUN RECORD']];
+  var T=[['con','CONTRACTS'],['rew','REWARDS'],['mf','RACKS'],['rec','YOUR STATS']];
   try{ renderHub(); }catch(e){}
   try{ renderMainframe(); }catch(e){}
   try{ renderSeason(); }catch(e){}
@@ -24407,7 +24423,7 @@ function openSettings(tab){
   var want=tab||'display';
   try{ renderSettings(); }catch(e){}
   try{ document.getElementById('exporttext').value=buildExport(); }catch(e){}
-  var T=[['display','DISPLAY'],['rec','RUN RECORDER']];
+  var T=[['display','DISPLAY'],['rec','SEND PLAY DATA']];
   var tb=document.getElementById('settabs');
   if(tb){
     tb.innerHTML='';
