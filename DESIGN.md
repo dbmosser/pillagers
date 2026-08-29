@@ -20044,3 +20044,51 @@ while also forcing health back to full each frame, which just bled him out. The
 claim rests on reading the extraction tick and the HUD branch that prints HOLD E
 TO EXTRACT when hauledAboard is off, plus the v2.31 entry that documents the
 same. That is two independent readings and no playthrough.
+
+## v5.62: the questions on his board were built on old measurements
+
+The roadmap renderer skips DONE, so the only rows he actually sees are the five
+NOW questions. That makes a stale premise worse than a stale claim: a wrong fact
+in a DONE row misleads me, but a wrong fact in a NOW row makes him answer a
+question that is no longer the one in front of him. Two of the five had drifted.
+
+THE RING CROWD, RE-MEASURED. The row said "7 of 8 enemies at touchdown are ones
+your walk woke". The game already carries the instrument to check this: ringCrowd
+splits the bodies within 420 of the ring into mapBorn and siegeBorn. Six runs
+across all four maps, reading the value through the whole hold rather than the
+first frame it appears:
+
+  GREYWATER   14 map-woken, 0 siege     SUNKEN QUARTER  25 map-woken, 0 siege
+  GREYWATER   11 map-woken, 0 siege     COLD STORAGE     9 map-woken, 0 siege
+  GREYWATER   15 map-woken, 0 siege     THE QUARRY       9 map-woken, 0 siege
+
+Not 7 of 8. All of them, every time, on every map. That does not change his
+question, it sharpens it: the siege is not what meets you at the ring, your own
+walk across the map is, and the three answers he is choosing between are all
+still the right three.
+
+LVL NO LONGER GATES NOTHING. The row said "LVL and PROFICIENCY gate nothing (you
+are LVL 5 after 53 runs)". v5.43 put the Bleached hair behind level 4, so the flat
+claim is false, and the run count was his total from an older tick and has moved.
+The question is still worth asking, because one hair colour is not teeth, but it
+now asks about what is actually true: LVL gates exactly one thing and PROFICIENCY
+gates nothing at all.
+
+AND ONE DONE ROW DESCRIBES A SYSTEM THAT NO LONGER EXISTS. "Combat kills the
+music dead, and it stays away until the fight lets go" was the reactive raid
+music. musicWanted has returned false for the whole of a raid since v5.2x on his
+order, and v5.50 deleted inCombat, musIntensity, musicCombat, musicCombatGap and
+musicTail outright. There is no combat music rule because there is no raid music.
+He never sees DONE rows, so this one was only the record lying to me, which is
+precisely how the primer came to be wrong in the first place.
+
+Verified: parse PASS at v5.62; four maps 86/87/58/72; three endings through the
+outcome screen with death and timeout paying zero credits; hub and ascent check;
+the roadmap renders 56 rows with 5 NOW questions, both rewritten rows present and
+all three stale strings absent; fixture silent.
+
+Not verified: the ring measurement holds the player at full health so he survives
+to read the crowd, and it reads during the hold window, which is 84 frames. A
+player who fights his way to the ring bleeding, or who calls it and waits far
+longer, may see a different mix. Zero siege-born across six runs is a strong
+result but it is six runs on one hold length.
