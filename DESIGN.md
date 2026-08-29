@@ -21236,3 +21236,71 @@ not checked it against the MAINFRAME rack costs beyond confirming the four
 materials it names, and I have not verified that raising three slider ceilings
 does not let him set an enemy count the spawner cannot actually place on the
 smallest map.
+
+## v5.89 and v5.90: v5.77 gave everyone armour that absorbed nothing
+
+The worst bug this session, and it is mine, from four builds ago.
+
+WHAT v5.77 DID. It changed myRig() to return one standard body armour so the
+armour CAP and the plate path stopped depending on owning a rig. It did not
+change the line that stamps a rig id onto the player ENTITY, which still read the
+saved P.rig. So the player was built like this:
+
+  armor      myRig().cap         -> 60
+  armorCap   rigCeil(myRig())    -> 60
+  rig        (P&&P.rig)||'none'  -> whatever the save had, or 'none'
+
+FOUR PROPERTIES COME OFF THAT ID AND ONLY TWO CAME FROM myRig. damagePlayer
+takes its soak from armorById(p.rig).absorb, updatePlayer takes speed from .spd,
+ping takes noise from .noise, and the draw takes .bulk. 'none' has absorb 0.00.
+
+So since v5.77, a player with no saved rig, which is every fresh profile, has
+carried a sixty point armour bar that ABSORBS NOTHING. soak is zero, so the
+absorbed amount is zero, so the pool never depletes and never protects: the bar
+sits full forever while every hit lands in full. A profile still carrying an old
+'heavy' took a 14 percent speed penalty and 34 percent extra noise for armour the
+rest of the game calls standard.
+
+DRIVEN, same crawler, same seed, same 420 frames, only the id differing:
+  rig 'std'   armour absorbed all 60, player survived on 30 health
+  rig 'none'  armour absorbed 0, stayed at 60, PLAYER DIED
+That is the difference between living and dying, and it was live for four builds.
+
+THE FILE PREDICTED IT. The comment three lines above the soak reads: "No Rig has
+absorb 0.00 and 0 is falsy... Reachable because armorCap let a no-rig player fill
+sixty points from plates." That is a description of the state v5.77 made
+permanent, written before I made it. I read that comment at v5.77 and took the
+wrong lesson from it.
+
+AND THE SIM WAS WEARING A RIG THE GAME CANNOT ISSUE. simRig has been 'light'
+since v3.29, which was right while the Scav Rig existed. Rigs went at v5.77 and
+the dial did not move, so every bot raid since has worn 35 armour while the
+player it models wears 60. His standing rule is that the bot is the benchmark and
+must be calibrated against what he actually does, so it wears 'std' now. Changing
+a shipped default needs a cfgv bump AND a migration or the save rides the old
+value back in, which is exactly what happened when I first changed it and read the
+dial back: cfgv 17, driven on a forged cfgv 16 save carrying 'light', which loads
+as 'std'.
+
+ALSO REMOVED THE DEAD RIG PICKER that v5.83 said it would come back for. It was
+not merely dead: it offered every ARMORS entry including 'none' at zero armour, so
+any future edit routing a slot back to it would hand him a control that sets his
+armour ceiling to zero and re-creates precisely what v5.77 removed.
+
+CHECKED AND FOUND NOTHING, three times: no slider anywhere has a range that cannot
+represent its dial under any preset or any Settings option, so v5.88 was complete;
+bar() clamps its fraction so no HUD bar can overflow; and armour and health are
+both clamped at their caps on every write, so neither can exceed what its bar can
+show.
+
+Verified: parse PASS at v5.89 and v5.90; four maps 86/87/58/72 entities and
+236/200/154/225 containers at baseline on a freshly cleared profile; all three real
+endings through the outcome screen with extract paying 48c and dead and abandon
+zero; hub and ascent check; the player entity resolving to 'std'; the absorb
+comparison above; the cfgv 17 migration driven; no rig picker in the DOM.
+
+Not verified: I have not re-measured the extract rate on the neutral world. I
+started a 320 seed paired baseline during this tick and abandoned it deliberately,
+because it was measuring a sim wearing the wrong rig and would have described a
+player who does not exist. That measurement still needs doing, and every sim
+figure in this file predates both the world-tier removal and this rig change.
