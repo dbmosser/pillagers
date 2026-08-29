@@ -633,7 +633,7 @@
        border:1px solid var(--hazard);border-radius:3px;color:var(--hazard)"></div>
   <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:11px">
     <button class="deploy" id="backfloor" style="flex:1.6">&larr; BACK TO THE FLOOR</button>
-    <button class="deploy ghost" id="deploy" style="flex:1">DEPLOY</button>
+    <button class="deploy ghost" id="deploy" style="flex:1">ASCEND</button>
     <button class="deploy ghost" id="shopbtn" style="flex:1">REQUISITION</button>
     <button class="deploy ghost" id="workbtn" style="flex:1">WORKSHOP</button>
     <button class="deploy ghost" id="opbtn" style="flex:1">CONTRACTS</button>
@@ -755,7 +755,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.40';
+var VER='5.41';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17567,7 +17567,7 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     // does not work, and he is right to.
     if(G.beaconT===null&&G.active&&G.active.open&&dist(p,G.active)<G.active.r){
       ctx.fillStyle='#4de3d0';
-      ctx.fillText('HOLD E TO CALL THE DROPSHIP',W/2,H/2+LH(26));
+      ctx.fillText('HOLD E TO CALL EXTRACTION',W/2,H/2+LH(26));
       if(G.active.callT>0) bar(W/2-70,H/2+LH(33),140,7,clamp(G.active.callT/1.6,0,1),'#4de3d0');
     }
     ctx.textAlign='left';
@@ -17593,7 +17593,7 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     var _inRing=dist(p,G.active)<G.active.r;
     var _msg=null,_col='#4de3d0',_sub=null;
     if(p.downed){
-      if(_inRing&&_shipDown&&CFG.hauledAboard!==0){ _msg='THEY HAVE YOU'; _sub='Hauling you aboard'; }
+      if(_inRing&&_shipDown&&CFG.hauledAboard!==0){ _msg='THEY HAVE YOU'; _sub='Pulling you out'; }
       else if(_inRing&&_shipDown){ _msg='HOLD E TO EXTRACT'; _sub='You can board from the floor'; }
       else if(_inRing){ _msg='EXTRACTION INBOUND'; _sub='Stay down, they will pull you out'; _col='#ffc04a'; }
       else { _msg='CRAWL TO THE RING'; _sub=_shipDown?('Extraction closes in '+Math.max(0,Math.ceil(G.shipHold))+'s'):'Extraction inbound'; _col='#ff5a4a'; }
@@ -18845,7 +18845,7 @@ function drawBag(){
   ctx.textAlign='left';
   cy+=LH(14);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
-  ctx.fillText('DMG '+p.wep.dmg+'  RANGE '+p.wep.rng+'  '+(p.wep.auto?'AUTO':'SEMI')+
+  ctx.fillText('DMG '+(p.wep.dmg*(p.wep.pellets||1))+'  RANGE '+Math.round(p.wep.rng/10)+'m  '+(p.wep.auto?'AUTO':'SEMI')+
     (p.wep.mag?('  MAG '+p.wep.mag):''),x+11,cy);
   cy+=LH(16);
   ctx.fillText('Integrity '+Math.round(p.hp)+'/'+p.maxhp+'    Armor '+Math.round(p.armor)+
@@ -20692,7 +20692,7 @@ function itemClass(k){
 // raid uses are printed on the cells so the mapping is not a guess.
 function hotPlanHTML(){
   var h='<div style="padding:7px 12px;border-bottom:1px solid var(--steel-hi)">'+
-    '<div class="glab" style="margin-bottom:5px">HOTBAR PLAN  &middot;  Slot an item in Inventory to fill the first free cell, click a cell to clear. A plan only fires for something you actually carry in, and what you carry in is chosen on the drop check.</div>'+
+    '<div class="glab" style="margin-bottom:5px">HOTBAR PLAN  &middot;  Slot an item in Inventory to fill the first free cell, click a cell to clear. A plan only fires for something you actually carry in, and what you carry in is chosen on the ascent check.</div>'+
     '<div style="display:flex;gap:4px">';
   for(var i=0;i<HOTBAR_N;i++){
     var k=(P.hotAssign||{})[i], it=k?ITEMS[k]:null;
@@ -20721,7 +20721,7 @@ function renderGear(){
   var noRig=(rg.id==='none');
   g.innerHTML=
     gearSlot('WEAPON',P.equipped,w.name,
-      'DMG '+w.dmg+'  MAG '+(w.mag||'-')+'  RANGE '+w.rng+'  '+(w.auto?'AUTO':'SEMI'),false)+
+      'DMG '+(w.dmg*(w.pellets||1))+'  MAG '+(w.mag||'-')+'  RANGE '+Math.round(w.rng/10)+'m  '+(w.auto?'AUTO':'SEMI'),false)+
     gearSlot('BODY ARMOUR',noRig?null:('rig_'+rg.id),
       noRig?'No rig':rg.name,
       noRig?'You are wearing nothing. Every hit lands in full.'
@@ -21106,7 +21106,7 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   var w=WEAPONS[P.equipped]||WEAPONS.fists;
   document.getElementById('equipped').innerHTML=
     '<div class="wn">'+w.name+'</div><div class="ws">DMG '+w.dmg+' &middot; MAG '+(w.mag||'-')+
-    ' &middot; RANGE '+w.rng+' &middot; '+(w.auto?'AUTO':'SEMI')+' &middot; PACK T'+(P.pack+1)+' (-'+Math.round((1-PACKPEN[P.pack])*100)+'% carry)</div>';
+    ' &middot; RANGE '+Math.round(w.rng/10)+'m &middot; '+(w.auto?'AUTO':'SEMI')+' &middot; PACK T'+(P.pack+1)+' (-'+Math.round((1-PACKPEN[P.pack])*100)+'% carry)</div>';
   var wl=document.getElementById('weplist'); wl.innerHTML='';
   P.weapons.forEach(function(k){
     // Same guard as the stash above: an armoury entry naming a gun this build no longer
@@ -22362,7 +22362,7 @@ function maybePrimer(){
 // Each row names its effect in one line, because "Few" alone is a word and
 // "Few, about half as many out there" is a decision.
 var GAMEOPTS=[
-  {k:'raiders', label:'Other raiders',
+  {k:'raiders', label:'Other pillagers',
    hint:'Human-shaped rivals looting the same map. They fight each other and the machines as well as you.',
    opts:[
      {n:'Many',     cfg:{nRaider:15}},

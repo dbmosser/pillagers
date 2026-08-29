@@ -18730,3 +18730,65 @@ complained about twice, is still invisible to this test. That is the next thing
 to instrument.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.41  AUDIT PASS TWO, EVERY VISIBLE STRING CHECKED AGAINST HIS OWN RULES
+================================================================================
+
+v5.41: audit pass two, every visible string checked against his own rules
+
+Pass one measured HUD geometry. This pass measures LANGUAGE, because the lore
+rename at v5.30 was done by grepping for words I thought of, and that is exactly
+the method that leaves survivors.
+
+THE METHOD. Wrap fillText on both canvases, drive the game through a spread of
+live states (hurt, downed, extraction called, holding, legend compact, legend
+full, map open, bag open, unseen), and harvest every distinct string it draws.
+Then do the same to the DOM: open every modal, take its innerText. Run the whole
+corpus against his standing rules at once.
+
+208 canvas strings: CLEAN. Zero ship language, zero deployment-sense "drop",
+zero "raider", zero em or en dashes.
+
+The DOM was not clean. Five survivors, every one of them an instruction he had
+already given me:
+
+  "HOLD E TO CALL THE DROPSHIP"   a full-screen prompt in the middle of the most
+                                  important moment in the game
+  "Hauling you aboard"            the extraction confirmation
+His run #61 note was "get rid of any referneces to 'ship' -- i never even said
+the extraction was a ship. use consistent extraction language. no ship." Both
+of those have been sitting there since.
+
+  "Other raiders"                 on the conditions board. Everything else in the
+                                  game says pillager. This one is a LABEL rather
+                                  than a sentence, so it reads as the game's own
+                                  name for them.
+  "DEPLOY"                        the hub's own button. The lore pass caught the
+                                  lift, the sector screen and the ascent check,
+                                  and missed the biggest button on the hub.
+  "on the drop check"             in the hotbar plan text, naming a screen that
+                                  has been called the ascent check since v5.30.
+
+RANGE IN METRES. Found while fixing those: the gear panel and the ready line
+reported RANGE as raw world units, so a Burst Carbine read "RANGE 500" while the
+tooltip I built at v5.33 called the same gun 50m and the HUD reports every other
+distance in metres. Three numbers for one quantity, two of them in a unit the
+player never encounters anywhere else. Both now read metres, and both now
+account for shotgun pellets in the damage figure the way the tooltip does.
+
+I BROKE THE BUILD DOING IT AND THE PARSE CHECK CAUGHT IT. My replacement for the
+range string juxtaposed two string literals, leaving 'm'  ' in the middle of a
+concatenation. parsecheck returned FAIL with parens 1, which is precisely why
+that gate exists and why nothing ships without it.
+
+Verified: parse PASS at v5.41, braces balanced; four maps 85/86/57/71 at spawn,
+all three endings, hub and ascent check clean. The DOM re-harvested after the
+fix: zero occurrences of raider, deploy, drop check, dropship, aboard, or a raw
+three-digit RANGE. The hub button reads ASCEND.
+
+Not verified: the corpus only contains states I knew how to drive. A string that
+only appears on, say, a Warden kill or a specific contract completion is not in
+these 208 and could still say anything.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
