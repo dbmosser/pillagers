@@ -755,7 +755,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.45';
+var VER='5.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16807,30 +16807,6 @@ _tgt=G.active; _lbl='EXTRACTION';
     ctx.fillText('UNSEEN   +40% IF YOU WALK OUT LIKE THIS',W-16,LH(18));
     ctx.textAlign='left';
   }
-  // THE LISTENER TELLS YOU WHAT BEATS IT, v5.45. Measured: running dies in
-  // 2.8s, sprinting in 2.9, standing still in 3.1, and crouching escapes with
-  // two thirds of your health. Three instincts kill you and the two answers are
-  // invisible, so the answer is printed rather than discovered by dying.
-  (function(){
-    var hunting=0;
-    for(var _li=0;_li<G.ents.length;_li++){
-      var _le=G.ents[_li];
-      if(_le.kind==='listener'&&!_le.dead&&_le.state==='hunt') hunting++;
-    }
-    if(!hunting||G.over) return;
-    var _lt=G.pCrouch?'CROUCHED. IT IS LOSING YOU.'
-                     :'IT HUNTS BY SOUND.  CROUCH, OR BACK AWAY FIRING.  DO NOT RUN.';
-    var _lc=G.pCrouch?'rgba(127,196,160,.98)':'rgba(255,90,74,.98)';
-    ctx.textAlign='center'; ctx.font=FS(TYPE.label);
-    var _lw=ctx.measureText(_lt).width+26;
-    ctx.fillStyle='rgba(6,9,13,.82)';
-    ctx.fillRect(W/2-_lw/2,LH(40),_lw,LH(20));
-    ctx.strokeStyle=_lc; ctx.lineWidth=1;
-    ctx.strokeRect(W/2-_lw/2+0.5,LH(40)+0.5,_lw-1,LH(20)-1);
-    ctx.fillStyle=_lc;
-    ctx.fillText(_lt,W/2,LH(54));
-    ctx.textAlign='left';
-  })();
   ctx.textAlign='left';
   // HIS NOTE: "need a box that shows modifiers, e.g. storm, rain, night etc."
   // The conditions existed and were legible in exactly one place: the map

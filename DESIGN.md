@@ -18967,3 +18967,57 @@ checked, but nobody has seen it on a real screen, so I do not know a 9 pixel rin
 above her head reads at normal zoom.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.45  THE LISTENER IS NOT BROKEN, IT IS UNTAUGHT
+================================================================================
+
+v5.45: the Listener is not broken, it is untaught
+
+HIS NOTE, run #61: "the listener is broken, it sticks to the player and there's
+no chance to kill it."
+
+I MEASURED IT BEFORE TOUCHING ANYTHING. Woke one onto the player from 300 units
+and tried each of the things a person actually does:
+
+  RUN AWAY              dead in 2.8s
+  SPRINT AWAY           dead in 2.9s
+  STAND STILL           dead in 3.1s
+  CROUCH AND MOVE       ESCAPED at 8.7s, 66hp left, 410 units of gap
+  BACK AWAY FIRING      survived 14s at full health, never once hit
+
+So there is no balance fault. There are TWO answers that work and THREE
+instincts that kill you in about three seconds, and the game says nothing about
+any of it. Its speed is 196 against the player's 158, so the thing a person
+reaches for first, running, is the one thing that provably cannot work. Worse,
+SPRINTING IS THE WORST ANSWER OF ALL: it re-acquires a sprinting player at 300
+units instead of 210, so the harder you run the better it tracks you.
+
+Nerfing it would delete the best enemy in the game and break the one system that
+makes noise matter. The actual fault is that his only route to the answer was
+dying eleven times, and he stopped before he got there, which is the correct
+response to an unexplained instant death.
+
+So it tells you now. While any Listener is hunting, a bordered line sits above
+the reticle:
+
+  IT HUNTS BY SOUND.  CROUCH, OR BACK AWAY FIRING.  DO NOT RUN.
+
+and the moment you crouch it changes to
+
+  CROUCHED. IT IS LOSING YOU.
+
+which is the confirmation that matters, because the escape takes nearly nine
+seconds and without feedback you would break early and die.
+
+Verified: parse PASS at v5.45; four maps 85/86/57/71; all three endings through
+the outcome screen; hub and ascent check clean; zero HUD overlaps WITH the banner
+up. The banner is absent while the Listener is dormant, present while it hunts,
+flips its wording and colour on crouch, and disappears once the raid is over.
+
+Not verified: I could not cleanly simulate sustained semi-automatic fire in the
+harness, so the "back away firing" result is a survival measurement rather than a
+time-to-kill one. I know it never landed a hit on a backpedalling player in
+fourteen seconds; I do not know how long killing one actually takes.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
