@@ -21419,3 +21419,57 @@ unverified fixes sitting on disk and an unverified game file matters more than a
 measurement I can restart. It is running again now and I have not read it. I also
 have not checked whether raising frag from 140 to 320 makes frags too expensive to
 be worth buying at all, which is a balance question rather than an exploit.
+
+## v5.92: the Stim Injector could not be used
+
+Found by listing every distinct `use` an item declares and asking what handles
+each. Forty-six items across eight uses. Seven are wired end to end. 'stim' was
+not.
+
+There IS a handler and it works: useHot's assigned-slot branch refills stamina to
+full and clears the winded lock. But that branch only runs for a slot the player
+has ASSIGNED, and the derived hotbar builds cells for gun, throw, heal, armor and
+tool, never stim. So the only route to a stim was to put it on a key first, and
+the key buttons in the stash detail bar were gated on
+
+  it.use==='heal' || it.use==='throw' || it.use==='armor'
+
+which excludes it. No way to assign it, therefore no way to use it. The Stim
+Injector has been findable in three loot tables at weights 5, 8 and 4, and
+buyable at the counter, while doing nothing anyone could reach.
+
+v5.91 MADE IT WORSE. Repricing it from 160 to 320 doubled the cost of an item
+that could not be used. That is mine, from the previous build in this same
+session, and it is the second time this session that fixing one thing has
+sharpened another that was already broken underneath it.
+
+AND THE ASCENT CHECK COUNTED IT AS HEALING. hasHeal tests
+use==='heal'||use==='stim', so packing a stim silenced the warning that you are
+going up with nothing to heal with. The game told him he was covered by an item
+he could not use.
+
+One word added to the gate. Everything downstream already existed: planPut takes
+any non-gun, the hotbar drop target takes any non-gun, and useHot has known what
+to do with a stim since it was written.
+
+DRIVEN END TO END: a stim in the stash now shows the key buttons, pressing 3
+assigns it and packs it, and in a raid with stamina drained to 20 and the winded
+lock engaged, using key 3 puts stamina back to 100, clears the lock and consumes
+the stim from the bag.
+
+CHECKED AND FOUND NOTHING, twice. All 98 entries across the seven loot tables
+resolve to real items with positive weights, with only the KEY placeholder in the
+safe and cache tables, which resolves through resolveKey. And the pin audit added
+last build reports clean on every run of the protocol.
+
+Verified: parse PASS at v5.92; four maps 86/87/58/72 entities and 236/200/154/225
+containers at baseline on a freshly cleared profile; all three real endings
+through the outcome screen with extract paying 48c and dead and abandon zero; hub
+and ascent check; the stim assigned, packed, fired and consumed.
+
+Not verified: the stim is now reachable but it is still absent from the DERIVED
+hotbar, so a stim picked up mid-raid with no key already assigned to it still has
+no cell. Heals, throwables and plates all get one automatically. I have not
+decided whether a stim deserves the same, because adding a cell shifts the number
+keys of everything after it, which is exactly the kind of change that would move
+his muscle memory mid-beta.

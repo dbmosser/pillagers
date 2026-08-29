@@ -778,7 +778,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.91';
+var VER='5.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21485,7 +21485,12 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
         if(P.weapons.indexOf(it.gk)<0) P.weapons.push(it.gk);
         P.equipped=it.gk; saveProfile(); renderHub();
       });
-      if(it.use==='heal'||it.use==='throw'||it.use==='armor'){
+      // v5.92: 'stim' belongs here. useHot has always known how to use one, but
+      // the only route into useHot's item branch is an assigned key, and this
+      // gate was the thing refusing to assign it. Without this the Stim Injector
+      // is loot and shop stock that can never be used, while the ascent check
+      // counts it as healing you are carrying.
+      if(it.use==='heal'||it.use==='throw'||it.use==='armor'||it.use==='stim'){
         var _lab=document.createElement('span');
         _lab.textContent='  put on key';
         _lab.style.cssText='color:var(--ash);font-size:9px;letter-spacing:.1em;margin-left:8px';
