@@ -23251,3 +23251,127 @@ would not be caught until the next load, and I have not found a path that can do
 which is the reason this is defence rather than a fix. The hostile-profile sweep asks
 whether screens render and the raid runs; it does not assert that a repaired profile
 is sensible to play with, only that it is safe.
+
+## v6.36 - THE RULES PANEL TAUGHT A COMBAT RULE THAT DOES NOT EXIST
+
+Six builds, all of them on instructional surfaces. The primer and the key legend were
+swept in v6.28 and v6.29; this is the third surface, GEARRULES, the panel behind H that
+he opens mid-raid. Nineteen lines, four of them wrong, and one of the four wrong about
+how damage works.
+
+THE WORST ONE FIRST. "BEHIND: Back shots do half again more damage, on anything."
+
+There is no rear damage modifier anywhere in this game. I read the whole damage path:
+edmg starts as the bullet's damage, a weak point multiplies it, the Bulwark shield
+soaks inside its front arc, and that is the complete set of modifiers. Nothing compares
+the shooter's angle to the target's facing for damage purposes.
+
+The claim is also wrong a second time, independently. What DOES exist is weak points,
+and WEAKPTS has entries for exactly four kinds: sentry, warden, bulwark and choir.
+weakOf returns null for everything else, so a crawler, a pillager, a Listener, a Crier
+and a Howler have no opening at all and getting behind one buys nothing.
+
+So the panel told him to spend a fight manoeuvring for a bonus that is not implemented,
+against a roster where most things have no rear opening either. That is the reference
+card he opens while something is hunting him, and acting on it costs him the fight.
+
+It now names the four machines that actually have an opening and says plainly that
+everything else takes the same damage from any angle. The WEAK SPOTS entry got the true
+range at the same time: it said "two to three times", and the real multipliers run 1.8x
+on a Warden optic to 3.4x on a sentry vent, so it now reads "about twice to three and a
+half times, before armour".
+
+THE OTHER THREE, same method, each checked against the code rather than remembered.
+
+"A better gun auto-equips." CFG.autoEquip DEFAULTS TO 0, and the comment directly above
+the reader says so out loud: AUTO-EQUIP WAS A REAL FEATURE SHIPPED SWITCHED OFF. The
+rule was written while it was on and never revisited. It now says the feature exists and
+where to switch it on.
+
+"ARMOUR: No equip key." The assign gate takes use==='armor', so a plate can go on a
+hotbar key, and once armour is full a picked-up plate goes to the bag where a key is the
+only way to spend it. That is his own instruction from the rigs note, "just make it
+where you can always use armor plates to heal up", and the panel was stating the
+opposite of the thing he asked for.
+
+"Set loadout in the armory." There is no armoury. Guns are chosen on the operator
+figure, in the stash or on the ascent check, which is what the primer says four sections
+earlier. Same class as the "dev box" error closed in v6.29: a place name that stopped
+existing and took a working instruction down with it. I only caught it because it was
+sitting in my own capture of the corrected panel.
+
+And while there, one spelling. The five player-facing lines about where a gun goes were
+split three to two between "armoury" and "armory". Everything else the player reads uses
+the British form, BODY ARMOUR and "60 armour", so the two odd ones are now consistent.
+Code identifiers like P.armor are untouched; nobody reads those.
+
+THE WHAT'S NEW CARD SAID "UPDATED TO v6.26" ON A v6.34 BUILD
+
+Found by opening the hub on the real play path, where the title screen says v6.34 and
+the card underneath it says 6.26. The version it names is correct and deliberate, and
+the comment above it explains why: the list belongs to the build that last changed it,
+and naming the current build would make the card claim these were its changes. That
+reasoning stands and the number stays.
+
+The wording was the defect. "UPDATED TO v6.26" is a sentence about the player's build,
+and their build is 6.34, so the card stated something false in order to say something
+true. It now reads "NEW IN v6.26", which is a sentence about the list, which is what
+the number actually describes, and it cannot go stale however far VER runs ahead.
+
+THE SAME CARD WAS NARROWER THAN ITS OWN LONGEST LINE
+
+Measured at 1080p with the real label font: the box was LH(430) = 671px and the longest
+entry measures 702px, so 31px hung outside the border, 16px past each edge. The second
+longest is 670px and cleared the border by a single pixel. The card had no horizontal
+padding at all and one line was already through the wall.
+
+430 was a magic number that happened to fit the list on the day it was written, and any
+edit to WHATSNEW re-rolls whether the card fits, silently, with nothing checking it. The
+box now measures its own text: the widest line plus a real gutter, floored at the old
+width so a short list still reads as a card, and capped to the viewport so it can never
+push off screen. Checked at 720p, 1080p and 1440p, where it comes out 633, 758 and 758
+px wide with a 24 to 28px gutter each side and every line inside the border.
+
+THE FOUR-MAP CONTAINER BASELINE HAS BEEN CHECKING NOTHING, AND THAT IS MY FAULT
+
+Every verified line in this file since v5.80 reads "four maps 236/200/154/225 containers
+and 86/87/58/72 entities". This build I could not reproduce the container half, chased
+it through the weapon pin, a cleared profile, the sim flag and the CFG dials, and then
+checked it against HEAD, which did not reproduce it either. So it was not my edits.
+
+The container quad is a SEED FINGERPRINT, not a build invariant. Container counts come
+from ri(2,4) per building, so they change with the seed: across twelve seeds on HEAD
+they run 237 to 247, 191 to 207, 144 to 164 and 201 to 231, and not one of them gives
+236/200/154/225. Entity counts do not move at all, because they come from CFG dials, so
+86/87/58/72 is identical on every seed tested.
+
+That means the entity half was a real invariant and has been doing its job, and the
+container half was a number I copied forward from an entry whose seed I no longer know.
+It looked like the most precise thing in the verified line and it was the only part
+that could not fail honestly. The protocol from here records the seed: at seed 4242 this
+build gives 246/193/152/216, and the assertion that matters is 86/87/58/72 entities.
+
+Three of my probes cried wolf during this pass and none of them found a game fault: a
+0x0 canvas because the pane was unsized, a call to __stage which is a value and not a
+function, and __frame (the raid renderer) called after the outcome click when the raid
+is already torn down and the hub renderer is the right one. Related: extract and dead
+leave the raid live behind the outcome screen while abandon tears it down immediately,
+so a verification walk cannot assume the raid still exists after endRaid.
+
+Verified: parse PASS at v6.36; four maps 86/87/58/72 entities and, at seed 4242,
+246/193/152/216 containers, with the weapon pin and a reset CFG; all three endings
+through the outcome screen and back to a drawn hub; hub, ascent check, renderStage and
+the export builder; pin audit clean; the rules panel captured at 1080p with all four
+corrections wrapping inside the panel and nothing clipped; the what's new card captured
+on a returning profile reading "NEW IN v6.26" with every line inside its border.
+
+Not verified: the rules panel corrections are checked against the code and against a
+capture, not by fighting each of the four machines and measuring the damage numbers, so
+the claim that the four openings are the only ones rests on WEAKPTS having four entries
+rather than on observed hits. The card's width cap is the viewport, so a WHATSNEW line
+long enough to exceed the screen would still overflow; the lines do not wrap, and I did
+not add wrapping because that changes an authored layout rather than fixing a defect.
+The container fingerprint above is one seed on one machine and is a regression tripwire,
+not a balance measurement. I did not re-measure the Cold Storage extract rate this
+build, so the 8.8 percent figure from the 160-seed run still stands unrepeated, and it
+remains a bot number that disagrees with his own 30 percent.

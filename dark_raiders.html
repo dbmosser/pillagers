@@ -937,7 +937,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.30';
+var VER='6.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13708,7 +13708,7 @@ function bankItem(k){
     // fenced inside the new-gun branch would never fire for the very save that
     // needs it. A duplicate still goes to the stash exactly as before.
     if(!P.equipped||P.equipped==='fists'||P.weapons.indexOf(P.equipped)<0) P.equipped=it.gk;
-    if(isNew) return WEAPONS[it.gk].name+' recovered to armory';
+    if(isNew) return WEAPONS[it.gk].name+' recovered to the armoury';
   }
   P.stash.push(k); return null;
 }
@@ -13959,7 +13959,7 @@ var _cdone=contractExtract(G.bag,haul);
     for(i=0;i<kept.length;i++){
       if(P.weapons.indexOf(kept[i].id)<0){
         P.weapons.push(kept[i].id);
-        lines.push(kept[i].name+' added to your armory');
+        lines.push(kept[i].name+' added to your armoury');
       }
     }
     if(kept.length) P.equipped=kept[0].id;
@@ -18464,22 +18464,30 @@ var LEGEND_PAD=[
 // look like a bug the first time a frag lands short.
 var GEARRULES=[
   ['WEAPONS',function(){ return (PAD&&PAD.on)?'Y swaps primary/sidearm.':'X swaps primary/sidearm.'; }],
-  ['','A better gun auto-equips.'],
-  ['','Set loadout in the armory.'],
-  ['ARMOUR','No equip key. Plates apply'],
-  ['','on pickup until armour is full.'],
+  ['','A better gun auto-equips only'],
+  ['','if you switch it on in Settings.'],
+  ['','Set both guns on the figure,'],
+  ['','in the stash or on the check.'],
+  ['ARMOUR','Plates top you up the moment'],
+  ['','you pick one up. When armour is'],
+  ['','full they go to the bag instead,'],
+  ['','so keep one on a key.'],
   ['HOTBAR','1-9 selects, FIRE uses it.'],
   ['','Only one item in hand.'],
   ['WATER','Slows you and is loud.'],
   ['','Crouch will not quiet a splash.'],
 ['RINGS','Teal ring is live. Grey cold.'],
-['WEAK SPOTS','The glowing parts take'],
-  ['','two to three times damage.'],
-  ['','Open with them. Anything'],
-  ['','hunting you keeps its'],
-  ['','front turned to you.'],
-['BEHIND','Back shots do half again'],
-  ['','more damage, on anything.'],
+  ['WEAK SPOTS','The glowing parts take about'],
+  ['','twice to three and a half times'],
+  ['','damage, before armour. Open with'],
+  ['','them. Anything hunting you keeps'],
+  ['','its front turned to you.'],
+['BEHIND','Only the SENTRY, WARDEN,'],
+  ['','BULWARK and CHOIR have an'],
+  ['','opening at the back. Everything'],
+  ['','else takes the same damage from'],
+  ['','any angle, so flank those four'],
+  ['','and shoot the rest anywhere.'],
   ['GRENADES','Hold FIRE to cook one.'],
   ['','They stop at walls, so do not'],
   ['','throw through a doorway.'],
@@ -20524,7 +20532,11 @@ function drawHubHUD(ox,oy){
   // it was written for, the one coming back.
   if(P.lastSeenVer!==WHATSNEW_VER&&!(P.runs>0)){ P.lastSeenVer=WHATSNEW_VER; saveProfile(); }
   if(P.lastSeenVer!==WHATSNEW_VER){
-    var wnW=LH(430), wnH=LH(56)+WHATSNEW.length*LH(17);
+    ctx.font=FS(TYPE.label);
+    var wnTx=0;
+    for(var wm=0;wm<WHATSNEW.length;wm++) wnTx=Math.max(wnTx,ctx.measureText(WHATSNEW[wm]).width);
+    var wnW=Math.min(W-LH(40),Math.max(LH(430),Math.ceil(wnTx)+LH(36)));
+    var wnH=LH(56)+WHATSNEW.length*LH(17);
     var wnX=W/2-wnW/2, wnY=H/2-wnH/2-LH(20);
     ctx.fillStyle='rgba(6,9,13,.94)'; ctx.fillRect(wnX,wnY,wnW,wnH);
     ctx.strokeStyle='#3a4552'; ctx.lineWidth=1; ctx.strokeRect(wnX+.5,wnY+.5,wnW-1,wnH-1);
@@ -20532,7 +20544,11 @@ function drawHubHUD(ox,oy){
     ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
     // WHATSNEW_VER, not VER: the list belongs to the build that last changed it,
     // and naming the current build made the card claim these were its changes.
-    ctx.fillText('UPDATED TO v'+WHATSNEW_VER,W/2,wnY+LH(22));
+    // "NEW IN", not "UPDATED TO", v6.35: WHATSNEW_VER deliberately lags VER, so
+    // "UPDATED TO v6.26" was read by a v6.34 player as a claim about THEIR build,
+    // and it was false. "NEW IN" says the same thing about the list instead, which
+    // is what the number actually describes, and cannot go stale.
+    ctx.fillText('NEW IN v'+WHATSNEW_VER,W/2,wnY+LH(22));
     ctx.font=FS(TYPE.label); ctx.fillStyle='#cdd6dd';
     for(var wq=0;wq<WHATSNEW.length;wq++)
       ctx.fillText(WHATSNEW[wq],W/2,wnY+LH(42)+wq*LH(17));
