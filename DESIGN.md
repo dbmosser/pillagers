@@ -22513,3 +22513,44 @@ Not verified: the heading shows credits and reputation. His screenshots carry th
 currencies and I have deliberately not invented a second or third one, because he
 said of their seeds currency that he did not know whether we need it, and my answer
 was no. If he ever wants one, this is the place it goes.
+
+## Tooling: __resetCfg, because I have now made the same mistake three times
+
+No VER bump and no game change in this one. dark_raiders.html is untouched; this is
+tools/mkfixture.ps1 only, and saying so is more honest than stamping a new game
+version on a change that cannot affect the game.
+
+Three times this session a protocol run has read 197 and 214 containers, or 59
+entities against 86, and all three times it was the same cause. Clicking through the
+settings modal during a UI audit changes the difficulty dials AND SAVES THEM, and
+clearing localStorage does not undo it, because with no saved profile applyCfg never
+runs again and whatever the last click wrote is still live in memory.
+
+The documented workaround from v6.03 is clear the profile FIRST and reload AFTER. It
+works. But a workaround I have to remember is a workaround I will forget, and I have
+now forgotten it three times in one session, twice after writing it down. So this is
+the instrument fix rather than another note to self: __resetCfg puts every dial back
+to its authored default in memory, immediately, with no page reload and no ordering
+to get wrong. It returns what it changed, so a caller can see whether it had been
+measuring a contaminated build.
+
+DEMONSTRATED rather than asserted, which matters because the second half of this is a
+claim about my own instruments:
+  clean                     86/87/58/72 entities
+  four dials contaminated   41/41/27/36
+  __resetCfg()              reports 4 changed keys, restores 86/87/58/72
+  __pinAudit while
+  contaminated              ok:true, drift:0
+That last line is the important one. The pin audit reports perfectly clean while the
+game is running at half the entity count, because the Settings-owned dials are not
+among the pins it checks. Any future "the sim moved and I do not know why" has to
+call __resetCfg before trusting a green pin audit.
+
+Verified: the four maps and three endings run green through the rebuilt fixture, and
+the hook count went from 137 to 138, so adding it did not kill the hooks defined
+after it, which is the failure mode mkfixture has had before.
+
+Not verified: __resetCfg restores DEF, so it cannot recover a dial whose DEF default
+was itself changed without a cfgv bump and migration. It also clears P.tuned, which
+is correct for a measurement reset but would throw away a tuning session if I ever
+called it in the middle of one.

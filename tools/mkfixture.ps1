@@ -29,6 +29,20 @@ window.__cam=function(){ return {x:camX,y:camY}; };
 // no-op that happened to coincide with __pinDefaults' pins. The v3.51 healing
 // probe's two identical arms were this, not only the pin re-application.
 window.__cfg=function(p){ if(p){ for(var k in p) CFG[k]=p[k]; } return CFG; };
+// v6.15: put every dial back to its authored default, in memory, right now.
+// localStorage.removeItem plus __loadProfile does NOT do this: with no saved
+// profile applyCfg never runs, so whatever the last settings click wrote is still
+// live and the next sim run reads it. Returns what it changed so a caller can see
+// whether it was measuring a contaminated build.
+window.__resetCfg=function(){
+  var changed={};
+  for(var k in DEF){
+    if(CFG[k]!==DEF[k]) changed[k]=[CFG[k],DEF[k]];
+    CFG[k]=DEF[k];
+  }
+  try{ if(P) P.tuned={}; }catch(e){}
+  return changed;
+};
 window.__keys=function(){ return keys; };
 window.__mouse=function(){ return mouse; };
 window.__sim=function(dt){ refreshVseg(); updatePlayer(dt); updateEnts(dt); updateThrowables(dt); };
