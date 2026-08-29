@@ -17745,3 +17745,94 @@ the tune, or whether 110bpm is the right walking pace for that room. The
 fixture never starts an audio context, so nothing here has made a sound.
 That needs his ears, and the three dials most likely to want moving are
 the arpeggio volume at 0.085, the lead at 0.105, and spb at 0.1364.
+
+### m513 - v5.06 to v5.14: the drop check, and she has a face
+
+TWO ORDERS. "I want UI overhaul done, including, before deploy but after
+picking map, one last chance to equip or buy items before the raid", and
+then the character: female, blonde, black outfit, no mask, no shoulder
+plates, headgear and armour as pickups.
+
+THE DROP CHECK, and the thing I got wrong first. He asked for this once
+before and what I built at v4.98 was two buttons on the sector page that
+opened the terminal on top of it. That is a shortcut, not a screen, and
+him asking a second time was him telling me so.
+
+Then I found the real shape of it, and it is not what I first said. I
+claimed the bag starts empty and the stash never comes with you. That is
+false, and I said it because I read the bag:[] literal in the raid object
+and stopped there. Twenty lines below, buildRaid walks your stash and
+takes things: every throwable up to two of each kind, then three more by
+category, armour first, then ammunition, then the SMALLEST medical item.
+Up to nine things, chosen for you, by a rule stated nowhere in the game.
+
+So the game has always packed your bag. He wants to be the one who packs
+it. The drop check now sits between the sector and the lift and shows the
+gun, the rig, the pack, the intel core, what is going in the kit, what is
+still in the stash, and what the trader will sell you on the way out. It
+PRE-FILLS with exactly what the automatic rule would have taken, so
+pressing DROP and changing nothing gives the raid you would have had
+anyway, and this cannot become a quiet difficulty change.
+
+ONE RULE, NOT TWO, and I nearly shipped two. My first cut left the old
+automatic loadout in place beside the new screen, and measuring them
+against each other showed them disagreeing immediately: the drop check
+packed a plate that the automatic rule refuses when you have no rig to
+slot it into, and the ammunition came out different. That is the exact
+"two implementations that drift" failure I wrote a warning about one build
+earlier, in a comment, in this file. So the automatic rule is deleted and
+standardKit is now the only loadout logic in the game: the drop check
+pre-fills from it, quick deploy from the lift runs it, and buildRaid only
+ever applies a list somebody already chose.
+
+Proved by measurement rather than by reading: same stash, same seed, quick
+deploy against the drop check with nothing changed, on both No Rig and a
+Plated Vest. Bag, pouch, armour, reserve and remaining stash all identical
+with a rig. Without a rig the reserve differed by 16, which turned out to
+be a randomly rolled starter gun with a different magazine; reserve minus
+magazine times two is 40 in both arms, from the same ammunition box.
+
+HER. Reference art received, which changed the job from guessing to
+matching. What survives being shrunk to a 34 pixel sprite is: blonde hair
+past the shoulders, black kit, and a visible face.
+
+Three passes to get there and the first two diagnoses were both wrong. The
+first put a 21 by 25 blonde block from crown to waist, which painted over
+her body, because the head section of drawOp runs after the torso. The
+second shrank it and moved the weight below the ears, and it still read as
+a helmet. The actual problem was that hair was on all four sides of a 15
+pixel head, so whatever size I made it the result was a yellow square with
+a notch for a face. The crown came off entirely. Her fringe is the top of
+the silhouette, the mass hangs in two columns either side and flares below
+the jaw, and the skin now owns the middle of the sprite where the eye
+goes.
+
+His correction landed mid-build and it was the right one: "no mask or
+shoulder plates, headgear and armor should be in game pickups." I had
+baked into the character precisely the things that ought to be earned. The
+mask, the visor, the headphones and the pauldron all came off. Armour was
+already correct and I should not have touched it: the rig tiers drive
+st.bulk, which draws a plate at tier one, pauldrons at two and a collar at
+three, so wearing a Breacher Plate already puts steel on her shoulders.
+My extra pauldron was a second system competing with a working one.
+
+Verified: parse PASS at v5.14; four-map sweep clean at 110, 111, 74 and 91
+entities with container counts unchanged; all three raid endings; hub
+clean. The drop check driven end to end: opens, pre-fills, takes from the
+stash, buys into the kit, leaves the stash untouched until DROP, and the
+kit arrives in the bag and pouch. The downed and dead poses still draw
+with the new head. Her sprite photographed at four times scale in four
+states, no rig, walking, Breacher rig and facing away.
+
+Not verified: the drop check has only been driven, never clicked through
+by a person, and a screen is a different thing under a mouse. No balance
+run: the whole point of the pre-fill is that the default is unchanged, and
+that was proved by direct comparison rather than by 320 seeds. Her
+silhouette is my judgement of what reads at 34 pixels and it is the part
+of this I would most expect him to want moved.
+
+Still owed, from his last message: headgear and alternate heads as
+persistent earned cosmetics with no gameplay effect. Not started. The
+visor, mask and headphones art from the first pass is kept in this
+changelog rather than deleted, because that is exactly the unlock content
+it should become.

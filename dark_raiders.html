@@ -353,6 +353,31 @@
     <button id="closesector" style="padding:8px 22px">Close</button>
   </div>
 </div>
+<div class="modal" id="stagemodal">
+  <h3 id="stagehead">DROP CHECK</h3>
+  <div class="msub" id="stagewhere"></div>
+  <div id="stagewarn" style="margin:10px 0;font-size:11px;padding:8px 10px;display:none;
+       border:1px solid var(--hazard);border-radius:3px;color:var(--hazard)"></div>
+  <div class="hubgrid" style="margin-top:10px">
+    <div class="panel">
+      <h2>Going up with</h2>
+      <div id="stageload" style="padding:2px 0"></div>
+      <h2 style="border-top:1px solid var(--steel-hi)">Drop kit <em id="stagekitct"></em></h2>
+      <div class="plist" id="stagekit" style="max-height:150px;overflow-y:auto"></div>
+    </div>
+    <div class="panel">
+      <h2>Take from the stash</h2>
+      <div class="plist" id="stagestash" style="max-height:190px;overflow-y:auto"></div>
+      <h2 style="border-top:1px solid var(--steel-hi)">Buy on the way out</h2>
+      <div class="plist" id="stagebuy" style="max-height:150px;overflow-y:auto"></div>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
+    <button class="deploy" id="stagedrop" style="flex:1.4">DROP</button>
+    <button id="stageback" style="padding:8px 22px">Back</button>
+    <div class="credits" id="stagecred" style="margin-left:auto"></div>
+  </div>
+</div>
 <div class="modal" id="primermodal">
   <h3>FIRST TIME OUT</h3>
   <div class="msub">Eight things worth knowing before you take the lift up. You can bring this back any time from Settings.</div>
@@ -489,6 +514,14 @@ var AREA=(WORLD_W*WORLD_H)/(2600*2000);   // scale decorative counts off the old
 // behind, and since he also wants no junk in the world, refusing a pickup was
 // pure friction with nothing on the other side of it. The three pack tiers stay
 // in the data so the armoury still reads, they are just no longer a wall.
+// How many things you may carry INTO a raid from the stash. Three is deliberate:
+// enough to answer "I know what killed me last time", not enough to turn a raid
+// into a supply run. His order was a last chance to equip, not a loadout screen
+// from a shooter with respawns.
+// Room for everything the automatic rule would have taken, or the careful player
+// would be punished for being careful: the old rule grabs up to six throwables
+// plus three category picks.
+var DEPLOY_SLOTS=9;
 var PACKCAP=[99999,99999,99999];
 // WHAT A BACKPACK TIER ACTUALLY BUYS, v1.81. It used to buy nothing. All three
 // PACKCAP entries are 99999 because he asked for unlimited carry on 2026-08-22 and
@@ -576,7 +609,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.05';
+var VER='5.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1010,7 +1043,7 @@ function loadProfile(){
     return storeGet().then(function(r){
       if(r&&r.value){ var d=JSON.parse(r.value);
         if(d&&typeof d.credits==='number'){ P=d;
-if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={}; if(!P.menuZoom)P.menuZoom=1;
+if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={}; if(!P.menuZoom)P.menuZoom=1; if(!Array.isArray(P.kit))P.kit=[]; if(!Array.isArray(P.dropKit))P.dropKit=[];
           // v4.22: board rows were reworded to carry one-word answers, and the
           // saved drag order matches rows by exact text, so old text migrates.
           var RMV2={
@@ -7135,51 +7168,33 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   if(sim){
     g.bag=['bandage','bandage'];
   } else {
-    var taken=0,SLOTS=3,tcount={smoke:0,decoy:0,frag:0};
-    for(var k=P.stash.length-1;k>=0;k--){
-      var it=ITEMS[P.stash[k]];
-      if(!it) continue;
-      if(it.use==='throw'&&tcount[it.tk]<2){ g.pouch[it.tk]++; tcount[it.tk]++; P.stash.splice(k,1); }
-    }
-    // The three kit slots used to be filled by walking the stash backwards, so
-    // whichever items happened to sit at the end won. The same stash could send
-    // you out with 55 armour or with none. Now it goes by category, in the order
-    // that actually keeps you alive: armour, then ammo, then medical. Armour and
-    // ammo are spent the moment you land so take the biggest; medical is carried,
-    // and you lose what you carry when you die, so take the smallest.
-    function takeBest(use,wantBigger){
-      if(taken>=SLOTS) return false;
-      // CARRY IT INSTEAD OF REFUSING IT, v2.17. You always deploy at your rig's
-      // cap, so this test was true every single time and armour, the category
-      // this function ranks FIRST, was never once taken. A plate is now carried
-      // in the bag and slotted from the hotbar when you have actually lost some,
-      // which is what a repair item is for. With No Rig the ceiling is 0 and
-      // there is nothing to slot it into, so it stays refused.
-      var _acap=(g.player.armorCap===undefined?ARMOR_MAX:g.player.armorCap);
-      if(use==='armor'&&_acap<=0) return false;
-      var _carryArmor=(use==='armor'&&g.player.armor>=_acap);
-      var bi=-1,bv=0;
-      for(var i=0;i<P.stash.length;i++){
-        var t=ITEMS[P.stash[i]];
-        if(!t||t.use!==use) continue;
-        var v=t.amt||0;
-        if(bi<0||(wantBigger?v>bv:v<bv)){ bi=i; bv=v; }
+    // HE PACKED IT HIMSELF, on the drop check, and that is authoritative: the
+    // automatic rule below is skipped entirely. Applied the same way the rule
+    // applies things, so a medkit behaves identically whichever route it took.
+    // Quick deploy from the lift never opens that screen, so it still gets the
+    // old behaviour untouched.
+    {
+      // No choice made means this drop skipped the check, so pack it the way the
+      // game always has and take those items out of the stash here.
+      if(!P.kitChosen){
+        P.dropKit=standardKit();
+        for(var _si=0;_si<P.dropKit.length;_si++){
+          var _sx=P.stash.indexOf(P.dropKit[_si]);
+          if(_sx>=0) P.stash.splice(_sx,1);
+        }
       }
-      if(bi<0) return false;
-      var key=P.stash[bi],itm=ITEMS[key];
-      // do not burn a whole plate for a few points of headroom, unless it is
-      // being carried rather than applied, in which case headroom is irrelevant
-      if(use==='armor'&&!_carryArmor&&((_acap-g.player.armor)<itm.amt*0.5)) return false;
-      if(_carryArmor) g.bag.push(key);
-      else if(use==='armor') g.player.armor=Math.min(_acap,g.player.armor+itm.amt);
-      else if(use==='ammo') g.player.reserve+=itm.amt;
-      else g.bag.push(key);
-      P.stash.splice(bi,1); taken++;
-      return true;
+      P.kitChosen=0;
+      var _dk=(P.dropKit||[]).slice(); P.dropKit=[];
+      var _dcap=(g.player.armorCap===undefined?ARMOR_MAX:g.player.armorCap);
+      for(var _di=0;_di<_dk.length;_di++){
+        var _dit=ITEMS[_dk[_di]]; if(!_dit) continue;
+        if(_dit.use==='throw'){ if(g.pouch[_dk[_di]]!==undefined) g.pouch[_dk[_di]]++; }
+        else if(_dit.use==='ammo'){ g.player.reserve+=_dit.amt; }
+        else if(_dit.use==='armor'&&_dcap>0&&g.player.armor<_dcap){ g.player.armor=Math.min(_dcap,g.player.armor+_dit.amt); }
+        else g.bag.push(_dk[_di]);
+      }
+      saveProfile();
     }
-    takeBest('armor',true); takeBest('ammo',true); takeBest('heal',false);
-    // a missing category leaves a slot free, so fill it with whatever is left
-    while(taken<SLOTS&&(takeBest('heal',false)||takeBest('ammo',true)||takeBest('armor',true)));
     // You never drop in with nothing to patch yourself up. Issued kit, the same
     // deal as the loaner sidearm: free, outside the three stash slots, and gone
     // with you if you die. An empty stash used to mean no medical at all.
@@ -13674,9 +13689,23 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // animation cost. Head grew from 12x10 to 15x13, about 38 percent of the
   // figure, and the old anonymous visor strip is gone.
   var hx2=x+leanX;
+  var HERO=!!st.hero;
+  // HER HAIR GOES DOWN FIRST, behind everything, so the head sits into it and the
+  // mass reads past the shoulders the way it does in the reference.
+  if(HERO){
+    // Two columns of hair either side of the face, flaring below the jaw. No
+    // crown: the fringe is the top of her and the face owns the middle.
+    wc.fillStyle=INK;
+    rrF(hx2-11,ty-35.5,6.4,19.5,3); rrF(hx2+4.6,ty-35.5,6.4,19.5,3);
+    wc.fillStyle='#b8913f';
+    rrF(hx2-10.3,ty-34.8,5.2,18.2,2.6); rrF(hx2+5.1,ty-34.8,5.2,18.2,2.6);
+    wc.fillStyle='#d9b257';
+    rrF(hx2-10.3,ty-34.8,2.1,11,1.6);   rrF(hx2+8.2,ty-34.8,2.1,11,1.6);
+
+  }
   wc.fillStyle=INK; rrF(hx2-8.5,ty-38,17,15,6);
-  wc.fillStyle='#e0b98e'; rrF(hx2-7.5,ty-37,15,13,5);
-  wc.fillStyle=cLo; rrF(hx2-7.5,ty-37,15,4.6,5);
+  wc.fillStyle='#f2d2a8'; rrF(hx2-7.5,ty-37,15,13,5);
+  if(!HERO) wc.fillStyle=cLo, rrF(hx2-7.5,ty-37,15,4.6,5);
   // eyes: whites, pupils toward the aim, one specular dot each
   var pupX=Math.cos(face)*1.4,pupY=Math.sin(face)*0.9;
   wc.fillStyle='#FFF6DC';
@@ -13688,6 +13717,14 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   wc.fillStyle='#FFF6DC';
   wc.fillRect(hx2-4.1+pupX,ty-30.2+pupY,0.8,0.8);
   wc.fillRect(hx2+2.7+pupX,ty-30.2+pupY,0.8,0.8);
+  if(HERO){
+    // FRINGE, swept, over the forehead, and SIDE LOCKS down past the jaw. The
+    // hair is the whole silhouette at this size, so it is the only thing she
+    // wears that is actually hers. Everything else has to be picked up.
+    wc.fillStyle='#d9b257'; rrF(hx2-7.5,ty-37,15,4,4);
+    wc.fillStyle='#f2d98c'; wc.fillRect(hx2-6.6,ty-36.6,10.4,1.4);
+
+  }
   // a small mouth, hurt pulls it into a grimace
   wc.fillStyle='#8a5c46';
   if(st.hurt>0) wc.fillRect(hx2-2,ty-25.6,4,1.6);
@@ -15132,9 +15169,9 @@ var SHD=G.shells[i];
         wc.rect(p.x-40,p.y-90,80,90-WADE_DEPTH);
         wc.clip();
       }
-      drawOp(p.x,p.y,p.face,p.roll>0?(1-p.roll/.38)*12.6:p.bob,'#8fa3b5',
+      drawOp(p.x,p.y,p.face,p.roll>0?(1-p.roll/.38)*12.6:p.bob,'#242832',
         clamp((1-loadOf(bagWeight()).spd)/(1-LOAD_FLOOR),0,1),p.muzzle,((G.deathBeat>0||p.hp<=0)?'down':(G.crowbarUp>0?'bar':pmode)),p.iv,
-        {moving:!!p.moving,sprint:!!G.sprinting,ads:!!p.ads,hurt:p.hitFlash,bulk:armorById(p.rig).bulk,
+        {hero:1,moving:!!p.moving,sprint:!!G.sprinting,ads:!!p.ads,hurt:p.hitFlash,bulk:armorById(p.rig).bulk,
          rl:(p.reloading>0&&p.wep.reload)?clamp(1-p.reloading/p.wep.reload,0,1):0});
       if(pWet){
         wc.restore();
@@ -18779,8 +18816,8 @@ function drawHubWorld(dt){
       wc.fillStyle=hexA(s2.c,.55*pulse); wc.fillRect(s2.x-8,s2.y-31,16,18);
       wc.globalCompositeOperation='source-over';
     } else {
-      drawOp(p.x,p.y,p.face,p.bob,'#8fa3b5',clamp(P.stash.length/24,0,1),0,'',0,
-        {moving:p.moving,sprint:false,ads:false,hurt:0,rl:0});
+      drawOp(p.x,p.y,p.face,p.bob,'#242832',clamp(P.stash.length/24,0,1),0,'',0,
+        {hero:1,moving:p.moving,sprint:false,ads:false,hurt:0,rl:0});
     }
   }
   // station names float above their posts
@@ -19396,7 +19433,7 @@ var BUILDS=[];   // filled from builds/index.json at boot; empty list hides noth
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'The surface is silent, and the Undercroft has a real tune instead of two beeps a bar',
+  now:'She is on screen: blonde, black kit, face visible, and everything strapped on top of her has to be found',
   next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -20874,10 +20911,187 @@ function syncSectorKit(){
   }catch(_rh){}
   el.innerHTML=line;
 }
-document.getElementById('sectordeploy').onclick=function(){
-  document.getElementById('sectormodal').classList.remove('on');
+// THE STAGING SCREEN. Everything you can still change, on one page, at the last
+// moment you can change it.
+function stageKit(){ if(!Array.isArray(P.kit)) P.kit=[]; return P.kit; }
+// WHAT THE GAME WOULD HAVE PACKED FOR YOU. Same order, same category ranking,
+// same two-of-each throwable cap as buildRaid, run against a copy so nothing
+// moves. This is the drop check's default, which is what keeps "press DROP and
+// change nothing" identical to every raid before this screen existed.
+function standardKit(){
+  var pool=P.stash.slice(), out=[], tc={smoke:0,decoy:0,frag:0}, i;
+  for(i=pool.length-1;i>=0;i--){
+    var it=ITEMS[pool[i]];
+    if(it&&it.use==='throw'&&tc[pool[i]]!==undefined&&tc[pool[i]]<2){
+      tc[pool[i]]++; out.push(pool[i]); pool.splice(i,1);
+    }
+  }
+  var taken=0, _cap=0;
+  try{ _cap=rigCeil(myRig()); }catch(_rc){ _cap=0; }
+  function best(use,bigger){
+    if(taken>=3) return false;
+    if(use==='armor'&&_cap<=0) return false;
+    var bi=-1,bv=0;
+    for(var j=0;j<pool.length;j++){
+      var t=ITEMS[pool[j]];
+      if(!t||t.use!==use) continue;
+      var v=t.amt||0;
+      if(bi<0||(bigger?v>bv:v<bv)){ bi=j; bv=v; }
+    }
+    if(bi<0) return false;
+    out.push(pool[bi]); pool.splice(bi,1); taken++; return true;
+  }
+  best('armor',true); best('ammo',true); best('heal',false);
+  while(taken<3&&(best('heal',false)||best('ammo',true)||best('armor',true)));
+  return out;
+}
+// A kit entry is only real if the stash still holds one. Nothing is moved out of
+// the stash until the lift goes, so this is where the two are reconciled.
+function stageKitLive(){
+  var st=P.stash.slice(), out=[], K=stageKit();
+  for(var i=0;i<K.length;i++){
+    var ix=st.indexOf(K[i]);
+    if(ix>=0){ st.splice(ix,1); out.push(K[i]); }
+  }
+  if(out.length!==K.length) P.kit=out.slice();
+  return out;
+}
+function stageRow(label,value,btnText,fn,col){
+  var r=document.createElement('div'); r.className='row';
+  var d=document.createElement('div'); d.style.flex='1';
+  d.innerHTML='<b>'+escHtml(label)+'</b><div class="hint">'+value+'</div>';
+  r.appendChild(d);
+  if(btnText){
+    var b=document.createElement('button'); b.textContent=btnText;
+    b.style.padding='6px 12px';
+    if(col){ b.style.borderColor=col; b.style.color=col; }
+    b.onclick=fn; r.appendChild(b);
+  }
+  return r;
+}
+function renderStage(prefill){
+  if(prefill){ P.kit=standardKit().slice(0,DEPLOY_SLOTS); saveProfile(); }
+  var M=FIXED_MAPS[clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1)];
+  document.getElementById('stagehead').textContent='DROP CHECK  \u00b7  '+M.name;
+  document.getElementById('stagewhere').textContent=
+    'Last stop before the lift. Everything on this page can still be changed. '+
+    'Nothing leaves your stash until you press DROP.';
+  document.getElementById('stagecred').innerHTML=P.credits.toLocaleString()+'<small>CREDITS</small>';
+
+  // ---- what you are wearing and holding
+  var L=document.getElementById('stageload'); L.innerHTML='';
+  var w=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null;
+  L.appendChild(stageRow('Weapon',
+    w?(escHtml(w.name)+' \u00b7 DMG '+w.dmg+' \u00b7 MAG '+(w.mag||'-')):'None owned. You will be issued a loaner.',
+    (P.weapons&&P.weapons.length>1)?'Change':null,
+    function(){ var ws=P.weapons.filter(function(k){return k!=='fists';});
+      if(!ws.length) return;
+      var ix=ws.indexOf(P.equipped); P.equipped=ws[(ix+1)%ws.length];
+      saveProfile(); renderStage(); }));
+  var rg=myRig();
+  L.appendChild(stageRow('Armour',
+    rg.cap?(escHtml(rg.name)+' \u00b7 '+rigCeil(rg)+' armour \u00b7 absorbs '+Math.round(rg.absorb*100)+'%')
+          :'No rig. You deploy with zero armour.',
+    ((P.rigs||[]).length>1)?'Change':null,
+    function(){ var rs=(P.rigs||[]).slice();
+      if(rs.indexOf('none')<0) rs.push('none');
+      var ix=rs.indexOf(P.rig); P.rig=rs[(ix+1)%rs.length];
+      saveProfile(); renderStage(); }));
+  L.appendChild(stageRow('Backpack','Tier '+((P.pack||0)+1)+' \u00b7 '+
+    Math.round((1-PACKPEN[P.pack||0])*100)+'% less carry penalty',null,null));
+  L.appendChild(stageRow('Intel',
+    P.intel?'A Data Core is armed. Keys and elites show on the map.':'No core armed.',
+    (!P.intel&&P.stash.indexOf('core')>=0)?'Arm':null,
+    function(){ var ix=P.stash.indexOf('core');
+      if(ix<0) return; P.stash.splice(ix,1); P.intel=1; saveProfile(); renderStage(); },'var(--coolant)'));
+
+  // ---- the kit
+  var kit=stageKitLive();
+  document.getElementById('stagekitct').textContent=kit.length+' / '+DEPLOY_SLOTS;
+  (function(){
+    var h=document.getElementById('stagekitct');
+    if(!h||h.__resetWired) return; h.__resetWired=1;
+    var rb=document.createElement('button');
+    rb.textContent='standard'; rb.style.cssText='margin-left:8px;padding:2px 8px;font-size:9px';
+    rb.onclick=function(){ P.kit=standardKit().slice(0,DEPLOY_SLOTS); saveProfile(); renderStage(); };
+    h.parentNode.appendChild(rb);
+  })();
+  var K=document.getElementById('stagekit'); K.innerHTML='';
+  if(!kit.length) K.innerHTML='<div class="hint" style="padding:8px 10px">Nothing packed. You will drop with your gun and whatever you find.</div>';
+  kit.forEach(function(k,i){
+    var it=ITEMS[k];
+    K.appendChild(stageRow(it?it.name:k, (it&&it.use==='throw')?'Goes in the pouch':'Goes in the bag','Put back',
+      function(){ P.kit.splice(i,1); saveProfile(); renderStage(); }));
+  });
+
+  // ---- the stash, only the things worth carrying
+  var S=document.getElementById('stagestash'); S.innerHTML='';
+  var counts={};
+  P.stash.forEach(function(k){ var it=ITEMS[k];
+    if(!it||!it.use||it.use==='key') return;
+    counts[k]=(counts[k]||0)+1; });
+  var taken={}; kit.forEach(function(k){ taken[k]=(taken[k]||0)+1; });
+  var any=false;
+  Object.keys(counts).forEach(function(k){
+    var free=counts[k]-(taken[k]||0);
+    if(free<=0) return;
+    any=true;
+    var it=ITEMS[k];
+    S.appendChild(stageRow(it.name+'  x'+free, escHtml(String(it.use).toUpperCase()),
+      kit.length<DEPLOY_SLOTS?'Take':null,
+      function(){ if(stageKit().length>=DEPLOY_SLOTS) return;
+        P.kit.push(k); saveProfile(); renderStage(); },'var(--gain)'));
+  });
+  if(!any) S.innerHTML='<div class="hint" style="padding:8px 10px">Nothing in the stash you can carry. Buy something below, or go up light.</div>';
+
+  // ---- buying, straight into the kit when there is room
+  var B=document.getElementById('stagebuy'); B.innerHTML='';
+  SHOP.forEach(function(o){
+    if(o.kind!=='item') return;
+    if(P.rep<o.rep) return;
+    var it=ITEMS[o.k];
+    var can=P.credits>=o.price;
+    B.appendChild(stageRow(it.name, o.price.toLocaleString()+'c'+(can?'':'  (you hold '+P.credits.toLocaleString()+'c)'),
+      can?'Buy':null,
+      function(){ if(P.credits<o.price) return;
+        P.credits-=o.price; P.stash.push(o.k);
+        if(stageKit().length<DEPLOY_SLOTS) P.kit.push(o.k);
+        saveProfile(); renderStage(); },'var(--amber)'));
+  });
+
+  // ---- what is wrong with this drop
+  var warn=[];
+  if(!rg.cap) warn.push('no armour');
+  if(!w) warn.push('no gun of your own');
+  var hasHeal=kit.some(function(k){ return ITEMS[k]&&(ITEMS[k].use==='heal'||ITEMS[k].use==='stim'); });
+  if(!hasHeal) warn.push('nothing to heal with');
+  var W=document.getElementById('stagewarn');
+  if(warn.length){ W.style.display='block';
+    W.innerHTML='<b>Going up with '+escHtml(warn.join(', '))+'.</b> That is allowed, and it is how short raids happen.'; }
+  else W.style.display='none';
+}
+document.getElementById('stageback').onclick=function(){
+  document.getElementById('stagemodal').classList.remove('on');
+  renderSector(); document.getElementById('sectormodal').classList.add('on');
+};
+document.getElementById('stagedrop').onclick=function(){
+  // THE LIFT MOVES: only now does anything leave the stash.
+  var kit=stageKitLive();
+  P.dropKit=[];
+  for(var i=0;i<kit.length;i++){
+    var ix=P.stash.indexOf(kit[i]);
+    if(ix>=0){ P.stash.splice(ix,1); P.dropKit.push(kit[i]); }
+  }
+  P.kit=[]; P.kitChosen=1; saveProfile();
+  document.getElementById('stagemodal').classList.remove('on');
   document.getElementById('hub').classList.remove('on');
   ac(); startRaid();
+};
+document.getElementById('sectordeploy').onclick=function(){
+  // Straight to the drop check rather than straight up the lift. This is the
+  // whole of his order: after the map, before the raid.
+  document.getElementById('sectormodal').classList.remove('on');
+  renderStage(true); document.getElementById('stagemodal').classList.add('on');
 };
 document.getElementById('closesector').onclick=function(){
   document.getElementById('sectormodal').classList.remove('on');

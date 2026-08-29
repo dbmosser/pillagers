@@ -552,6 +552,11 @@ window.__musDry=function(steps){
 };
 window.__musTheme=function(){ return {theme:HUB_THEME,chords:HUB_CHORDS}; };
 window.__musWanted=function(){ return musicWanted(); };
+// The drop check: the last screen before a raid, so it can be driven like every
+// other one instead of only through a click path.
+window.__stage={ render:function(pf){ return renderStage(pf); },
+                 live:function(){ return stageKitLive(); },
+                 slots:function(){ return DEPLOY_SLOTS; } };
 // The sector page and its pre-deploy kit line, so the last screen before a drop
 // can be driven and read like every other one.
 window.__sector=function(){ renderSector(); return document.getElementById('sectorkit'); };
