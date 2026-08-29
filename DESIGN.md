@@ -19933,3 +19933,66 @@ The scenario he is describing is the one I have not tested. I also ran these on 
 profile my own reward test had pushed to world tier 1, which scales enemy HP by
 1.06 and is why one reading came back as 127 of 120. I am NOT changing the banner
 or the Listener's numbers on this evidence.
+
+## v5.60: the game was teaching the one tactic that cannot beat the Listener
+
+HIS COMPLAINT, verbatim: "it sticks to the player and there's no chance to kill
+it." Both halves turn out to be about the same thing, and neither is about the
+Listener's numbers. The game was telling him to do the losing thing, in two
+places, and never once told him the thing works.
+
+WHY MY EARLIER ATTEMPTS FAILED. I tried to measure this last tick and got
+nonsense, because a synthetic duel is itself a level. Three separate faults, all
+mine: I used __hitWall as a sight test when it damages walls by index; I set the
+Listener's state to 'chase', and reading its update shows it only moves in
+'hunt', so it stood frozen all fight; and I teleported it onto ground its
+pathfinder could not leave. This build uses the __los hook added last tick plus
+spotFree, and every lane below has BOTH endpoints on walkable ground and the
+whole corridor between them verified clear.
+
+MEASURED, six lanes on GREYWATER, 280 units, Sputter, clean profile at world
+tier 0:
+
+  stand and shoot    6 kills of 6, average 1.8s, ZERO damage taken
+  crouch and shoot   6 kills of 6, average 1.8s, ZERO damage taken
+  back away firing   0 kills, 40s stalemate, it sits at 76 of 120 and never
+                     comes nearer than 259
+  sprint away        one stalemate and one DEATH at 10.1s
+
+THE MECHANISM EXPLAINS ALL FOUR ROWS and is right there in its update. The
+Listener never chases you. It walks to heardX/heardY, and that is refreshed to
+your exact position ONLY while p.moving and not crouched, at 210 units walking
+and 300 sprinting. Stand still and it commits to where you WERE, walks into your
+muzzle and dies in under two seconds. Keep moving and you re-post your address
+every frame, which is exactly what "it sticks to the player" describes.
+
+SO THE BUG WAS THE ADVICE. The banner has said CROUCH, OR BACK AWAY FIRING since
+v5.45, and backing away firing loses at both killing and escaping. It now reads
+STOP MOVING AND SHOOT IT. RUNNING ONLY FEEDS IT, which is one instruction
+covering both winning answers and naming why the instinct is wrong.
+
+HOW THE WRONG ADVICE SURVIVED THREE BUILDS. The v5.45 note above it measured
+ESCAPE only: running dies in 2.8s, crouching gets away with two thirds of your
+health. That is a fine measurement of a different question. Nobody had measured
+FIGHTING, which is the question he actually asked. The comment now records both.
+
+THE PRIMER SAID IT TOO, AND ONE THING THAT IS SIMPLY FALSE. I wrote that row at
+v5.56 off the same escape numbers, so the first thing a new player reads is the
+losing line, and it never mentions the thing is killable. It also said "It is
+faster than you, so you cannot outrun it". Its speed is 196; a walk is 158 and a
+SPRINT is 256. A sprint is comfortably faster than it. What actually happens is
+that sprinting widens what it hears from 210 to 300 so it keeps the lock, and
+stamina runs out before the distance does. The row now leads with standing still
+and shooting, keeps crouching as the quiet alternative, and states the sprint
+trade honestly.
+
+Verified: parse PASS at v5.60; four maps 86/87/58/72; three endings through the
+outcome screen with death and timeout paying zero credits; hub and ascent check;
+primer renders 19 rows with the new Listener text present and both the old advice
+and the false outrun claim gone; fixture silent.
+
+Not verified: whether 1.8 seconds is too easy. Everything above says the Listener
+is now trivially killable by a player who knows the trick, and I have only proved
+the trick works, not that the encounter is well tuned once he knows it. That is a
+balance call and I am not making it without him. I also measured only GREYWATER
+and only at 280 units with one gun for the six-lane run.
