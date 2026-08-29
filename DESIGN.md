@@ -18652,3 +18652,81 @@ know it renders and I do not know the middle column is wide enough for the kit
 list plus nine plan cells without wrapping awkwardly.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.40  AUDIT PASS ONE, AND THREE REAL FAULTS IT FOUND
+================================================================================
+
+v5.40: audit pass one, and three real faults it found
+
+He asked me to audit and polish the whole game. This is the first pass: drive
+every screen from a virgin profile, run a long real-time raid on the real loop
+rather than the headless step, and MEASURE the things that have only ever been
+eyeballed. Three genuine faults, all found by measurement rather than by reading.
+
+THE KEY LEGEND OVERLAPPED THE HEALTH PANEL. Measured every registered HUD
+rectangle against every other, at 1600x900, with the game in its busiest honest
+state:
+  body    10,796  312x100     health and status, bottom left
+  legend   6,699  259x109     the H list, directly above it
+255 pixels wide by 12 tall of overlap, every frame the legend was up.
+
+This is his run #58 note, "if hit h to see full keys, it collides with the list
+of raiders", and his run #55 note about extract text colliding with the hotbar.
+Same class of fault, and this is the first time it has been measured rather than
+argued about. The legend reserved 96 pixels of bottom margin against a health
+panel about 100 tall. It reserves 118 now. Retested at 1280x720, 1600x900 and
+1920x1080: zero overlaps at all three.
+
+FOOTPRINTS WERE DELETING THE PERMANENT MARKS. The decal list hit its 420 ceiling
+after TWENTY SIX SECONDS of walking and stayed pinned there. Both halves of the
+last build caused it: prints last six seconds so they churn, and pillagers lay
+them too. The eviction is shift(), which removes the OLDEST decal, and the
+oldest decals are the permanent ones: scorch, blood, the junk around a container
+you opened. Boot traffic was quietly deleting the record of what happened here,
+within half a minute.
+
+Prints have their own budget of 150 now, and a print evicts a print. Verified by
+laying 30 permanent marks and walking a circuit for 2600 frames: all 30 survive,
+prints hold at exactly 150, and the total fell from a pinned 420 to 181.
+
+HIS NOTE ARRIVED MID-AUDIT: "scorch blood etc -- all this stuff can dispppear
+eventually if that will improve performance." Taken up. Everything on the ground
+has a life now: six seconds for boot marks, because those are a live signal about
+where someone is RIGHT NOW, and forty five for scorch, blood and junk, because
+those are a record worth reading a minute later. Each fades over the last sixth
+of its life, so a bootprint fades in one second and a scorch over seven rather
+than blinking out. Verified: scorch present at 6 seconds, gone by 48.
+
+THE CONTRACT BOARD NEVER REFILLED. ensureContracts() is called exactly ONCE in
+the entire file, at boot, inside the loadProfile promise. Nothing else calls it.
+So a board you clear stays cleared until you reload the page: complete your
+contracts and the tab is empty for the rest of the session.
+
+I made this worse in the same session I found it, by raising the board from 3 to
+8 on his note, so more resolve per raid and the empty state arrives sooner, on
+the tab I had just promoted to first position. It refills now at the end of a
+raid and on opening the window. Verified both: emptied the board, opened the
+window, 8 back; emptied it again, ran a raid, 8 back.
+
+ALSO CHECKED AND CLEAN, so it is on the record that these were looked at rather
+than assumed:
+  A virgin profile carries every new default: cfgv 15, raidSec 540, safeSlots 0,
+  spawnClear 1500, no secondary gun, and opens every screen without throwing.
+  3200 frames of a walked real-time circuit: zero console errors.
+  All 44 item icons draw, and none draws blank, checked by counting actual ink
+  in the pixels rather than by the call not throwing.
+  All 34 sound types fire without throwing.
+  Trader buy, craft and hire all populate; ops has three tabs; the inventory has
+  three places and five working category filters.
+  Weapon swap, container opening, the map overlay, and all three endings.
+  A death keeps nothing: stash unchanged, credits 0, rep 0, worn rig lost, spare
+  rig kept.
+
+Not verified: none of this has been looked at on a real screen. Overlap is
+measured between REGISTERED panels only, so any text drawn outside a HUDBOX
+rectangle, which includes the message line and the extraction prompts he has
+complained about twice, is still invisible to this test. That is the next thing
+to instrument.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

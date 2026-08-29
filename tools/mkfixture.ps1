@@ -440,6 +440,10 @@ window.__simPaired=function(seeds,dialsA,dialsB){
 window.__setHot=function(i){ return setHot(i); };
 window.__items=function(){ return ITEMS; };
 window.__loot=function(){ return LOOT; };
+// The item table and its icon renderer, so "does every item draw" can be
+// answered instead of assumed. A blank cell in his stash is a shipped bug.
+window.__items=function(){ return ITEMS; };
+window.__drawIcon=function(c,k,x,y,s){ return drawItemIcon(c,k,x,y,s); };
 // Container stocking, so "a body should be worth more than a crate" can be
 // MEASURED over thousands of rolls instead of eyeballed from the weight tables.
 window.__mkContainer=function(t){ return mkContainer(0,0,t); };
