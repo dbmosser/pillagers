@@ -749,7 +749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.35';
+var VER='5.38';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -801,7 +801,7 @@ function rr(){
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
-var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:600,pSpeed:158,extractWait:25,
+var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:25,
   // HIS NOTE, 2026-08-26: "i want 10 raiders on the map, not 5". This is the count at
 // the REFERENCE map size and every map scales it by area, which is why he counted
 // five: nOf multiplies by clamp(AREA/4, 0.45, 1.6) and COLD STORAGE runs 0.69. That
@@ -1190,7 +1190,7 @@ function autoEquipOn(){
   if(G&&G.sim) return !!CFG.autoEquip;
   return (P.autoEquip===undefined)?!!CFG.autoEquip:!!P.autoEquip;
 }
-function saveProfile(){ P.cfg=CFG; P.cfgv=14; storeSet(JSON.stringify(P)); }
+function saveProfile(){ P.cfg=CFG; P.cfgv=15; storeSet(JSON.stringify(P)); }
 function loadProfile(){
   try{
     return storeGet().then(function(r){
@@ -1293,7 +1293,7 @@ if(typeof FIXED_MAPS!=='undefined'&&typeof mapOffered==='function'){
           // THE DISCIPLINE THIS REINSTATES: when a shipped default changes
           // deliberately, bump cfgv in saveProfile AND here, or the old value
           // rides back in on every save.
-if((P.cfgv>=9&&P.cfgv<=14)&&P.cfg){
+if((P.cfgv>=9&&P.cfgv<=15)&&P.cfg){
             // cfgv 10: downed timer default moved 24 to 17 on his run-55 order.
             if(P.cfgv===9&&P.cfg.downTime===24) P.cfg.downTime=17;
             // cfgv 11: he reversed the automatic pickup on his run-59 note, so a
@@ -1315,6 +1315,9 @@ if((P.cfgv>=9&&P.cfgv<=14)&&P.cfg){
             // else on that list was already true; the safe pocket was the one
             // exception and it goes. Reverses by setting the dial back to 1.
             if(P.cfgv<14&&P.cfg.safeSlots===1) P.cfg.safeSlots=0;
+            // cfgv 15: his Q21 target is 4 to 9 minutes and the clock ran to
+            // ten, so the range did not fit inside the raid. 600 to 540.
+            if(P.cfgv<15&&P.cfg.raidSec===600) P.cfg.raidSec=540;
             applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; try{ applyGameOpts(); }catch(e){} }
           else P.cfg=null;
         } }
@@ -6652,8 +6655,10 @@ function buildRaid(sim){
   // issued Scav Pistol. Swap with X. An issued sidearm is a loaner and is never
   // taken from the armoury nor lost from it; one you chose rides the same rules
   // as your primary, which per his Q16 means you lose it when you die.
-  var sec=WEAPONS.pistol, secIss=true;
-  if(P.equippedSec&&P.equippedSec!=='fists'&&WEAPONS[P.equippedSec]&&
+  // EMPTY BY DEFAULT, v5.37, his note. No free pistol: gun two is a slot you
+  // fill, and leaving it empty is a real choice rather than an oversight.
+  var sec=WEAPONS.fists, secIss=false;
+  if(P.equippedSec&&P.equippedSec!=='fists'&&P.equippedSec!=='none'&&WEAPONS[P.equippedSec]&&
      (P.weapons||[]).indexOf(P.equippedSec)>=0&&P.equippedSec!==P.equipped){
     sec=WEAPONS[P.equippedSec]; secIss=false;
   }
@@ -6810,6 +6815,10 @@ function buildRaid(sim){
       containers.push(cc3);
     }
   }
+  // WHERE IT IS HOT. Placed away from the spawn so it is a decision to go, and
+  // re-rolled on a timer during the raid.
+  var _hz=freeSpot(map,60);
+  var hotZone={x:_hz.x,y:_hz.y,r:620,at:0,moves:0};
   var no=Math.max(2,Math.round(18*AREA*CFG.contDens*mapContMul()));
   for(i=0;i<no;i++){ var sp2=freeSpot(map,30); containers.push(mkContainer(sp2.x,sp2.y,rr()<.7?'crate':'body')); }
   // Nothing is allowed to lie on an extraction pad: within 46 units a container
@@ -7368,7 +7377,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
     containers:(clearOfPads(containers),containers),ents:ents,bullets:[],pings:[],puffs:[],
     wild:(sim?[]:spawnWild(map)),
     decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],labels:[],dmgN:[],flashes:[],hitMark:null,
-    zones:zones,active:active,camps:camps,beaconT:null,nuking:0,nukeT:0,searching:null,searchT:0,waypoint:null,dmgWalls:[],roster:roster,
+    zones:zones,active:active,camps:camps,beaconT:null,nuking:0,nukeT:0,hotZone:hotZone,searching:null,searchT:0,waypoint:null,dmgWalls:[],roster:roster,
     // Weather is rolled once per raid. Clear is weighted heaviest so the unusual
     // conditions stay unusual and keep their impact.
     wx:(WX_ROLL=pickWeather()),
@@ -8995,6 +9004,19 @@ function openContainer(ct,onlyKeys){
     if(G.decals.length>420) G.decals.splice(0,G.decals.length-420);
   }
   var p=G.player,T=G.tel;
+  // INSIDE THE HOT ZONE, RIGHT NOW. Checked at open time, not at build time, so
+  // the zone moving actually means something.
+  if(G.hotZone&&!ct.cache&&!ct.opened){
+    var _hd=Math.hypot(ct.x-G.hotZone.x,ct.y-G.hotZone.y);
+    if(_hd<=G.hotZone.r){
+      for(var _hb=0;_hb<2;_hb++){
+        var _hk=rollLoot(LOOT.safe);
+        if(_hk) ct.loot.push(_hk);
+      }
+      ct.hotPaid=1; T.hotOpened=(T.hotOpened||0)+1;
+      if(!G.sim) say('Hot ground. There is more in here than there should be.');
+    }
+  }
   ct.opened=true; T.containers++;
   if(T.firstLoot===null) T.firstLoot=G.t;
   // Instrumentation for every system shipped since v1.00, so his exports carry
@@ -10174,7 +10196,7 @@ if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.s
       // DARKER, LARGER, MORE OBVIOUS, v5.31, his words. Wet boots track a real
       // stain; dry boots still scuff the dirt visibly instead of almost not.
       G.decals.push({x:ppx,y:ppy,c:p.wetT>0?'#141d26':'#241f16',s:p.wetT>0?7:5.5,
-        a:p.wetT>0?.62:.34,rot:pma,print:1});
+        a:p.wetT>0?.62:.34,a0:p.wetT>0?.62:.34,rot:pma,print:1,t:0,life:6});
       if(G.decals.length>420) G.decals.shift();
     }
     collide(p,G.map.walls);
@@ -11959,6 +11981,9 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
 
     // ---- warden: slow, relentless, optional
     if(e.kind==='warden'){
+      // THE GHOST RUN DIES HERE, v5.36. One acquisition, by anything, for any
+      // length of time, and the clean run is over for the rest of the raid.
+      if(sees&&!e.seenYou&&G.tel) G.tel.everSeen=1;
       if(sees){ e.seenYou=true; e.tx=p.x; e.ty=p.y; e.alert=4;
         if(!e.announced){ e.announced=true; say('Something very large has noticed you.'); sfx('alarm',e.x,e.y); } }
       var wantW=e.face;
@@ -12683,6 +12708,14 @@ e.lootT=(e.lootT||0)+dt;
         // map: the ring would be invisible anyway and it is pure churn
         var wet=inWater(e.x,e.y);
         var iv2=wet?NP[0]*0.6:NP[0], amp=wet?NP[1]*1.7:NP[1];
+        // THEIR BOOTS TOO, v5.37. Only pillagers: a crawler has no boots and a
+        // sentry is tracked, so a bootprint from either would be a lie.
+        if(!G.sim&&e.kind==='raider'&&e.stepAcc>=iv2&&dist(e,p)<1400){
+          var _rw=inWater(e.x,e.y);
+          G.decals.push({x:e.x+rnd(-3,3),y:e.y+rnd(2,6),c:_rw?'#141d26':'#241f16',
+            s:_rw?6.4:5.0,a:_rw?.55:.30,a0:_rw?.55:.30,rot:e.face,print:1,t:0,life:6});
+          if(G.decals.length>420) G.decals.shift();
+        }
         if(e.stepAcc>=iv2&&dist(e,p)<amp*2.4){ e.stepAcc=0;
           // v4.08: a crouched looter rustles instead of stepping, half the
           // radius on the noise map, which is exactly the discount his own
@@ -13349,6 +13382,13 @@ silentExit:T.silentExit||0,
   // HAZARD PAY. Only on an extraction: signing for worse conditions and then
   // dying under them is simply a worse day, which is what makes it a bet rather
   // than a difficulty slider.
+  // THE GHOST BONUS. Extraction only: dying unseen is still dying.
+  if(how==='extract'&&!T.everSeen&&haul>0){
+    var ghost=Math.round(haul*0.40);
+    P.credits+=ghost; P.rep+=Math.round(ghost*0.5);
+    lines.push('<span style="color:#7fc4a0">GHOST RUN. Nothing on this map ever saw you: +'+
+      ghost.toLocaleString()+'c and +'+Math.round(ghost*0.5).toLocaleString()+' rep.</span>');
+  }
   if(how==='extract'&&tPay>0){
     var bonus=Math.round(haul*tPay);
     P.credits+=bonus;
@@ -14184,8 +14224,8 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // HER HAIR GOES DOWN FIRST, behind everything, so the head sits into it and the
   // mass reads past the shoulders the way it does in the reference.
   if(HERO){
-    // FLOWING HAIR, v5.35, replacing the ponytail on his note. A MASS of strands
-    // falling from the crown past the shoulder, not a tail on a stick.
+    // PIGTAILS, v5.38, on his note. Mass OUTSIDE the head outline, which is the
+    // only thing that reads as a hairstyle at this size.
     //
     // Every strand lags the turn by its own amount, which is the whole trick:
     // hair that moves exactly with the head is a helmet. The lag is stored on
@@ -14202,34 +14242,40 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     while(_dA<-Math.PI) _dA+=6.2832;
     _HO.hairLag+=_dA*0.18;                      // catches up over about six frames
     var _hairLag=_HO.hairLag;
-    var _swing=Math.sin(ph*0.85)*(moving?1.7:0.45);
-    var _lean=Math.cos(_hairLag)*2.6;           // leans away from the turn
-    var _cx=hx2, _cy=ty-31.5;
-    // Nine strands across the back of the skull, longest in the middle.
-    var _STR=[[-7.4,9.5],[-5.6,12.5],[-3.6,15.0],[-1.6,16.4],[0.2,16.8],
-              [2.0,16.2],[4.0,14.6],[5.8,12.0],[7.4,9.0]];
-    // INK CONTOUR FIRST, whole mass, so it never vanishes into dark ground.
+    var _swing=Math.sin(ph*0.85)*(moving?2.2:0.5);
+    var _lean=Math.cos(_hairLag)*2.2;           // trails the turn, settles after
+    var _cx=hx2, _cy=ty-33.0;
+    // TWO BUNCHES. side is -1 for her right, +1 for her left; they swing on
+    // OPPOSITE phase so the pair reads as a walk cycle rather than a wobble.
+    // x is the anchor out from the skull, then each bead steps down and outward.
+    var _PIG=[[-1,-9.2],[1,9.2]];
     for(var _hp=0;_hp<2;_hp++){
       wc.fillStyle=_hp?HAIRDARK:INK;
       var _pad=_hp?0:0.9;
-      for(var _h=0;_h<_STR.length;_h++){
-        var _sx=_cx+_STR[_h][0], _len=_STR[_h][1];
-        // Each strand drifts a little further with the swing the lower it goes.
-        var _t2=(_h/(_STR.length-1))*2-1;            // -1 at the left, 1 at the right
-        var _dx=_lean*0.6+_swing*(0.35+0.25*Math.abs(_t2));
-        var _w=(_hp?2.9:2.9+_pad*2)*(1-0.22*Math.abs(_t2));
-        // Three beads down the strand, widest at the crown, tapering to a point.
-        for(var _b=0;_b<3;_b++){
-          var _f=_b/2;
-          var _bx=_sx+_dx*_f*_f, _by=_cy+_len*_f;
-          var _bw=_w*(1-0.30*_f);
-          rrF(_bx-_bw/2-_pad, _by-_bw/2-_pad, _bw+_pad*2, _bw+_pad*2, (_bw+_pad*2)/2);
+      for(var _g=0;_g<2;_g++){
+        var _side=_PIG[_g][0], _ax=_cx+_PIG[_g][1];
+        var _ph2=_swing*_side;                  // opposite phase per side
+        // Four beads: the tie at the top, then a taper to a point at the tip.
+        var _BE=[[0.0,4.9],[5.4,4.3],[10.4,3.4],[14.6,2.2]];
+        for(var _b=0;_b<_BE.length;_b++){
+          var _f=_b/(_BE.length-1);
+          // Fall is mostly downward, swinging out further the lower it goes.
+          var _bx=_ax+_side*(1.5*_f*_f*4)+(_ph2+_lean*0.5)*_f*_f;
+          var _by=_cy+_BE[_b][0];
+          var _bw=_BE[_b][1];
+          rrF(_bx-_bw/2-_pad,_by-_bw/2-_pad,_bw+_pad*2,_bw+_pad*2,(_bw+_pad*2)/2);
         }
       }
     }
-    // A highlight band across the crown, catching the light the way a head does.
+    // The two ties, bright, where each bunch is gathered. At this size a single
+    // brighter pixel pair is what makes them read as TIED rather than as lumps.
     wc.fillStyle=HAIRLIT;
-    rrF(_cx-6.4,_cy-2.0,12.8,4.4,2.2);
+    for(var _g2=0;_g2<2;_g2++) rrF(_cx+_PIG[_g2][1]-2.4,_cy-2.2,4.8,3.4,1.6);
+    // The crown between them, so the top of the head is hair and not scalp.
+    wc.fillStyle=HAIRDARK;
+    rrF(_cx-8.0,_cy-2.6,16.0,5.0,2.4);
+    wc.fillStyle=HAIRLIT;
+    rrF(_cx-6.6,_cy-2.2,13.2,3.0,1.5);
     // SIDES tight to the skull: enough to say "hair", not enough to be ears.
     wc.fillStyle=INK;      rrF(hx2-9.4,ty-35.4,3.1,10.5,1.5); rrF(hx2+6.3,ty-35.4,3.1,10.5,1.5);
     wc.fillStyle=HAIRDARK; rrF(hx2-8.9,ty-34.9,2.3,9.4,1.2);  rrF(hx2+6.6,ty-34.9,2.3,9.4,1.2);
@@ -15071,7 +15117,7 @@ if(!sc.seen) continue;
     var pn=G.pings[i],dp=dist(p,pn);
     // IF YOU CAN SEE IT, YOU DO NOT NEED A RING FOR IT, v5.32. Asked every
     // frame, so a thing that ducks behind cover gets its ring back.
-    if(pn.ent&&pn.ent.seen) continue;
+    if(canSee(p.x,p.y,p.face,pn.x,pn.y,G.vseg)) continue;
     // Distance encoding: a faint small mark is far off, a large bright one is
     // immediate. Occlusion multiplies straight into both.
     var near=clamp(1-dp/(pn.s*1.5),0,1);
@@ -16345,7 +16391,7 @@ wc.drawImage(fogC,0,0);
       var pn=G.pings[i],dp=dist(p,pn);
       // IF YOU CAN SEE IT, YOU DO NOT NEED A RING FOR IT, v5.32. Asked every
       // frame, so a thing that ducks behind cover gets its ring back.
-      if(pn.ent&&pn.ent.seen) continue;
+      if(canSee(p.x,p.y,p.face,pn.x,pn.y,G.vseg)) continue;
       var near=clamp(1-dp/(pn.s*1.5),0,1);
       var a3=(1-pn.t/pn.life)*near*(pn.occ===undefined?1:pn.occ);
       if(a3<=0.01) continue;
@@ -16689,6 +16735,14 @@ _tgt=G.active; _lbl='EXTRACTION';
     if(_huntR>0) _aline(_huntR+(_huntR===1?' PILLAGER HUNTING YOU':' PILLAGERS HUNTING YOU'),'rgba(255,90,74,.95)');
     if(_att>0)   _aline(_att+(_att===1?' MACHINE SEARCHING':' MACHINES SEARCHING'),'rgba(255,192,74,'+(_att>8?0.95:0.72)+')');
     if(_attR>0)  _aline(_attR+(_attR===1?' PILLAGER SEARCHING':' PILLAGERS SEARCHING'),'rgba(255,192,74,'+(_attR>8?0.95:0.72)+')');
+    ctx.textAlign='left';
+  }
+  // UNSEEN, his Q34. Shown while it is still true, because a bonus you only
+  // learn about after you have lost it cannot change how you play.
+  if(!G.tel.everSeen&&!G.over){
+    ctx.textAlign='right'; ctx.font=FS(TYPE.micro);
+    ctx.fillStyle='rgba(127,196,160,.95)';
+    ctx.fillText('UNSEEN   +40% IF YOU WALK OUT LIKE THIS',W-16,LH(18));
     ctx.textAlign='left';
   }
   ctx.textAlign='left';
@@ -17872,6 +17926,37 @@ function playerStatus(){
 // zero and the summary screen. Never runs headless: tickNuke is only reachable
 // from the non-sim branch of the raid loop.
 var NUKE_LEN=2.6;
+// THE HOT ZONE, Q28. Moves on a timer, announced, and DANGER follows it: two
+// machines are pulled toward the new centre on every move, so the richer ground
+// is also the ground with more on it. Both halves have to be true or it is just
+// a free loot marker.
+var HOT_EVERY=115;
+function tickHot(dt){
+  var H=G.hotZone; if(!H) return;
+  H.at=(H.at||0)+dt;
+  if(H.at<HOT_EVERY) return;
+  H.at=0; H.moves=(H.moves||0)+1;
+  var sp=freeSpot(G.map,60);
+  H.x=sp.x; H.y=sp.y;
+  if(!G.sim){
+    say('The hot ground has moved. Check your map.');
+    try{ sfx('charge',G.player.x,G.player.y); }catch(e){}
+  }
+  // Danger follows the loot. Nearest two idle machines are sent to it rather
+  // than spawning new ones, so the enemy count a seed produces never changes.
+  var cand=[];
+  for(var i=0;i<G.ents.length;i++){
+    var e=G.ents[i];
+    if(e.dead||e.kind==='raider'||e.kind==='peddler'||e.kind==='stray') continue;
+    if(e.state==='chase'||e.state==='alarm') continue;
+    cand.push(e);
+  }
+  cand.sort(function(a,b){ return Math.hypot(a.x-H.x,a.y-H.y)-Math.hypot(b.x-H.x,b.y-H.y); });
+  for(var c=0;c<Math.min(2,cand.length);c++){
+    cand[c].tx=H.x+rnd(-160,160); cand[c].ty=H.y+rnd(-160,160);
+    cand[c].state='investigate';
+  }
+}
 function tickNuke(dt){
   var p=G.player;
   G.nukeT=(G.nukeT||0)+dt;
@@ -19196,6 +19281,23 @@ if(G.trail&&G.trail.length>1){
   // FOG LAST, over everything the map drew, so nothing that draws a building or
   // a container has to know fog exists.
   drawMapFog();
+  // THE HOT ZONE, over the fog. His Q28 says he must be able to CHOOSE to go or
+  // avoid, and a choice you cannot see until you have walked there is not one.
+  (function(){
+    var H=G.hotZone; if(!H) return;
+    var hx=ox+H.x*sc, hy=oy+H.y*sc, hr=Math.max(6,H.r*sc);
+    ctx.strokeStyle='rgba(255,120,60,.85)'; ctx.lineWidth=2;
+    ctx.setLineDash([6,5]);
+    ctx.beginPath(); ctx.arc(hx,hy,hr,0,6.2832); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='rgba(255,120,60,.13)';
+    ctx.beginPath(); ctx.arc(hx,hy,hr,0,6.2832); ctx.fill();
+    ctx.fillStyle='rgba(255,150,90,.95)'; ctx.font=FS(TYPE.micro); ctx.textAlign='center';
+    ctx.fillText('HOT GROUND',hx,hy-hr-5);
+    ctx.fillStyle='rgba(255,150,90,.65)';
+    ctx.fillText('richer, and busier',hx,hy-hr+7);
+    ctx.textAlign='left';
+  })();
   // Drawn AFTER the fog on purpose: the extraction rings and your own marker are
   // the two things you are never allowed to lose, per his Q23.
   (function(){
@@ -19831,6 +19933,7 @@ function loop(ts){
       updatePlayer(dt);
       if(!G.over){ updateEnts(dt); }
       if(!G.over){ updateBullets(dt); updateThrowables(dt); }
+      try{ tickHot(dt); }catch(e){}
       if(G.shake>0) G.shake=Math.max(0,G.shake-dt*26);
       if(G.msgT>0) G.msgT-=dt;
       if(G.marked>0) G.marked-=dt;
@@ -19923,6 +20026,17 @@ function loop(ts){
       }
       var i;
       for(i=G.pings.length-1;i>=0;i--){ G.pings[i].t+=dt; if(G.pings[i].t>G.pings[i].life) G.pings.splice(i,1); }
+      // FOOTPRINTS AGE OUT, v5.37. Only the ones carrying a life: scorch marks,
+      // blood and junk are permanent on purpose and have none.
+      for(i=G.decals.length-1;i>=0;i--){
+        var _dk=G.decals[i];
+        if(_dk.life===undefined) continue;
+        _dk.t+=dt;
+        if(_dk.t>=_dk.life){ G.decals.splice(i,1); continue; }
+        // Hold, then fade over the last two seconds.
+        var _fd=_dk.life-_dk.t;
+        _dk.a=(_fd>2)?_dk.a0:(_dk.a0*(_fd/2));
+      }
       for(i=G.puffs.length-1;i>=0;i--){ G.puffs[i].t+=dt; if(G.puffs[i].t>G.puffs[i].life) G.puffs.splice(i,1); }
       for(i=G.labels.length-1;i>=0;i--){ G.labels[i].t+=dt; if(G.labels[i].t>G.labels[i].life) G.labels.splice(i,1); }
       tickDmgNums(dt);
@@ -21995,7 +22109,11 @@ function renderStage(prefill){
   // ---- what you are wearing and holding
   var L=document.getElementById('stageload'); L.innerHTML='';
   var w=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null;
-  L.appendChild(stageRow('Weapon',
+  var w2=(P.equippedSec&&P.equippedSec!=='none'&&P.equippedSec!=='fists')?WEAPONS[P.equippedSec]:null;
+  L.appendChild(stageRow('Gun 2',
+    w2?(escHtml(w2.name)+' \u00b7 DMG '+(w2.dmg*(w2.pellets||1))+' \u00b7 MAG '+(w2.mag||'-'))
+      :'Empty. You are going up with one gun.',null,null));
+  L.appendChild(stageRow('Gun 1',
     w?(escHtml(w.name)+' \u00b7 DMG '+w.dmg+' \u00b7 MAG '+(w.mag||'-')):'None owned. You will be issued a loaner.',
     (P.weapons&&P.weapons.length>1)?'Change':null,
     function(){ var ws=P.weapons.filter(function(k){return k!=='fists';});
@@ -22243,7 +22361,7 @@ hint:'Damage taken from everything on the surface. Standard is how the game has 
    hint:'How long you have before the surface stops being survivable at all.',
    opts:[
      {n:'Long',     cfg:{raidSec:900}},
-     {n:'Standard', cfg:{raidSec:600}},
+     {n:'Standard', cfg:{raidSec:540}},
      {n:'Short',    cfg:{raidSec:360}}
    ], def:1},
   {k:'loot', label:'How much is out there',
@@ -22474,7 +22592,9 @@ function avatarHTML(){
   h+=slot('hair','HAIR',(cosFind(hair)||{name:'Blonde'}).name,
           '<span style="width:14px;height:14px;border-radius:7px;display:inline-block;background:'+hc[1]+'"></span>');
   h+=slot('rig','BODY ARMOUR',rg.name+(rg.cap?('   '+rg.cap):''),rg.cap?'\u25A0':'--');
-  h+=slot('wep','WEAPON',wep.name,'\u2694');
+  var wep2=(P.equippedSec&&P.equippedSec!=='none'&&WEAPONS[P.equippedSec])?WEAPONS[P.equippedSec]:null;
+  h+=slot('wep','GUN 1',wep.name,'\u2460');
+  h+=slot('wep2','GUN 2',wep2?wep2.name:'Empty','\u2461');
   return h;
 }
 function renderAvatar(host,pickHost){
@@ -22500,18 +22620,36 @@ function renderAvPicker(pickHost,host){
   if(!slot){ box.innerHTML='<div class="hint" style="font-size:9.5px;line-height:1.4">'+
     'Click a slot to change it. Headgear and hair are earned and change nothing about how you play.</div>'; return; }
   if(slot==='hat'||slot==='hair'){ renderCosmetics(box,slot,hid,pid); return; }
-  if(slot==='wep'){
-    var h='<div class="glab" style="margin-bottom:5px">WEAPON</div>';
-    (P.weapons||[]).concat(['fists']).forEach(function(gk){
-      var W2=WEAPONS[gk]; if(!W2) return;
-      h+='<div class="avslot" data-wep="'+gk+'"><div class="avsic">\u2694</div><div>'+
-         '<div class="avsval">'+escHtml(W2.name)+(P.equipped===gk?'   WORN':'')+'</div>'+
-         '<div class="avslab">'+(W2.dmg*(W2.pellets||1))+' DMG   '+Math.round(W2.rng/10)+'M</div></div></div>';
+  if(slot==='wep'||slot==='wep2'){
+    var two=(slot==='wep2');
+    var cur=two?(P.equippedSec||'none'):P.equipped;
+    var other=two?P.equipped:(P.equippedSec||'none');
+    var h='<div class="glab" style="margin-bottom:5px">'+(two?'GUN 2':'GUN 1')+'</div>';
+    // Gun two may be empty. Gun one may not: you always have your hands.
+    var list=(P.weapons||[]).slice();
+    if(two) list.unshift('none'); else list.push('fists');
+    list.forEach(function(gk){
+      var W2=(gk==='none')?null:WEAPONS[gk];
+      if(gk!=='none'&&!W2) return;
+      // The same gun cannot fill both slots, so it is offered in one at a time.
+      var taken=(gk!=='none'&&gk!=='fists'&&gk===other);
+      h+='<div class="avslot'+(taken?' lock':'')+'" data-wep="'+gk+'" data-two="'+(two?1:0)+'">'+
+         '<div class="avsic">'+(W2?'\u2694':'--')+'</div><div>'+
+         '<div class="avsval">'+escHtml(W2?W2.name:'Empty')+
+           (cur===gk?'   EQUIPPED':(taken?'   IN THE OTHER SLOT':''))+'</div>'+
+         '<div class="avslab">'+(W2?((W2.dmg*(W2.pellets||1))+' DMG   '+Math.round(W2.rng/10)+'M')
+                                  :'carry one gun, lighter and quieter')+'</div></div></div>';
     });
     box.innerHTML=h;
     Array.prototype.forEach.call(box.querySelectorAll('[data-wep]'),function(el){
-      el.onclick=function(){ P.equipped=el.getAttribute('data-wep'); saveProfile();
-        renderAvatar(hid,pid); try{ renderHub(); }catch(e){} try{ renderStage(); }catch(e){} };
+      el.onclick=function(){
+        var gk=el.getAttribute('data-wep');
+        if(el.className.indexOf('lock')>=0){ try{ sfx('clank'); }catch(e){} return; }
+        if(el.getAttribute('data-two')==='1') P.equippedSec=(gk==='none')?'none':gk;
+        else P.equipped=gk;
+        saveProfile();
+        renderAvatar(hid,pid); try{ renderHub(); }catch(e){} try{ renderStage(); }catch(e){}
+      };
     });
     return;
   }

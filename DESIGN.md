@@ -18498,3 +18498,99 @@ strands at this scale read as hair rather than as a dark blob behind her head.
 That is the one thing a number cannot tell me and it is the thing he objected to.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.36-5.38  STEALTH, HOT ZONE, RAID LENGTH, RINGS, TRACKS, PIGTAILS, TWO GUNS
+================================================================================
+
+v5.38: rings by position, tracks that fade, pigtails, and a real second gun
+
+THE RING FIX I SHIPPED AT v5.32 WAS WRONG AND HE CAUGHT IT. "red circle wen in
+line of sight is still there."
+
+I tested my own fix and it passed: a crawler beside the player carries its
+entity and its seen flag reads true, so the ring is skipped. What I never
+checked is HOW MANY ping call sites hand over an entity at all. Five do. These
+do not: an explosion, a bulwark shell landing, a machine calling from a mark, a
+pillager finishing a search, a pillager firing at a ring. Every one of those
+drew a circle no amount of line of sight could suppress, because there was no
+entity to ask.
+
+It asks the POSITION now. If the place a sound came from is somewhere you can
+currently see, the ring adds nothing. That cannot be defeated by a call site I
+forgot, which is the whole point. Verified both ways: a crawler in the open in
+front of her is suppressed, and the same point with her facing away still draws.
+
+FOOTPRINTS FADE, AND EVERY PILLAGER LEAVES THEM. His note. They had NO lifetime
+at all: a print sat there until the 420 decal cap pushed it out, which on a
+quiet map is minutes, so the ground became a permanent record of everywhere
+anyone had been. Six seconds now, holding, then fading over the last two.
+
+And they were hers alone. A pillager is a person in boots on the same ground,
+and their tracks are the more useful half: yours say where you have been, theirs
+say someone is here and which way they went. Only pillagers, not machines: a
+crawler has no boots and a sentry is tracked, so a bootprint from either would
+be a lie. Verified: 129 prints laid near a walking pillager, all life 6, and
+zero survive past seven seconds.
+
+PIGTAILS. His note: "i don't know whats going on with hair but i guess take it
+back to pigtails -- make the character pretty/hot."
+
+The flowing version was nine strands hanging straight down from the crown, which
+at fifteen pixels across the head is a dark rectangle behind her: no silhouette,
+nothing to read at a glance. Pigtails work at this size for one reason, and it
+is the reason they work in every sprite this size: they put mass OUTSIDE the
+head outline, so the shape is identifiable at any distance and any zoom.
+
+Two bunches, four beads each, tapering to a point, swinging on OPPOSITE phase so
+the pair reads as a walk cycle instead of a wobble. Bright ties where each is
+gathered, because a single brighter pixel pair is what makes them read as tied
+rather than as lumps. The turn lag from the flowing version is kept, because
+that part was good: they trail when she turns and settle when she stops.
+
+GUN 1 AND GUN 2. His note: "shouldnt force player to start with scav pistol
+equipped as gun 2."
+
+The two-gun system already existed in code and was invisible and unavoidable.
+The default was a FREE SCAV PISTOL: if you had not chosen a secondary you were
+handed one, every raid, forever. That is not a slot, it is a decoration with a
+gun in it, and it meant nobody ever felt the cost of carrying one weapon.
+
+Gun 2 is empty by default and Empty is an offered choice, described as what it
+actually buys you: lighter and quieter. The same gun cannot fill both slots, so
+it is greyed out in the other one. The issued loaner survives only where it was
+needed, on gun 1 when you own nothing. The ascent check lists both and says
+"Empty. You are going up with one gun."
+
+ALSO IN THIS BUILD: stealth is a rewarded path at last (Q34). Nothing anywhere
+tracked whether you had been seen. His own telemetry is the argument: across 66
+runs his crouch time is 0s in all but three. Crouching halves your noise and
+hides you past a distance, and he never uses it, because it has never once paid.
+Extract having never been acquired by anything and the haul pays 40 percent
+more, with a live UNSEEN readout so it is a thing you are protecting rather than
+a surprise at the ramp.
+
+The hot zone (Q28) is in and on the map: a dashed ring marked HOT GROUND,
+richer and busier, moving every 115 seconds with an announcement. The loot bonus
+is applied AT OPEN TIME rather than by pre-stocking, which is what makes a
+moving zone honest: a crate is rich because the zone is over it NOW. Danger
+follows it too, by redirecting the nearest two idle machines rather than
+spawning new ones, so a seed's enemy count never changes.
+
+Raid length is 540 seconds, his Q21 range being 4 to 9 minutes against a clock
+that ran to ten. His telemetry backs the direction: minute ten is now the
+deadliest minute in the game at 50 percent, because it is the minute the timer
+kills you in, and run #66 lost 42,480c to exactly that.
+
+Verified: parse PASS at v5.38; four maps 110/111/74/91; all three endings; hub
+clean; raidSec reads 540. Ring suppressed facing it, drawn facing away. Prints
+life 6 and gone by 7s, 129 laid by a walking pillager. Five figure slots reading
+hat, hair, rig, GUN 1, GUN 2; gun 2 offers none plus the guns you own with the
+equipped one locked out; a raid started with gun 2 empty gives fists, not a free
+pistol.
+
+Not verified: nobody has seen the pigtails move on a real screen, and "pretty"
+is the one thing no probe of mine can answer. The hot zone has not been driven
+through a full move on the clock, only its placement and its loot rule.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
