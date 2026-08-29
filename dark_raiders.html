@@ -913,7 +913,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.12';
+var VER='6.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17455,18 +17455,29 @@ rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'})
       // the hub panel reads, so the two can never disagree. Finished ones are
       // dropped rather than shown ticked, because the panel is for decisions
       // that are still live.
+      // v6.13: gathered, then filtered and capped, rather than pushed one by one.
+      var _live=[];
       for(var _cq2=0;_cq2<P.contracts.length;_cq2++){
         var CD=P.contracts[_cq2];
         if(!CD||CD.type==='conduct'||CD.prog>=CD.n) continue;
-        var _cdOff=(CD.type==='district'&&CD.map!==undefined&&CD.map!==P.mapIx);
+        // Work for another site cannot progress here, so it is not a decision you
+        // can act on during this raid. It stays on the Mainframe.
+        if(CD.type==='district'&&CD.map!==undefined&&CD.map!==P.mapIx) continue;
         var _cdTxt=(CD.desc||'contract');
         if(CD.type==='district'&&CD.map!==undefined){
-          var _cdM=FIXED_MAPS[clamp(CD.map,0,FIXED_MAPS.length-1)].name;
           // on its own map the site name is the ground under you, so drop it
-          _cdTxt=_cdOff?(_cdTxt+'  OTHER SITE'):_cdTxt.replace(', '+_cdM,'');
+          var _cdM=FIXED_MAPS[clamp(CD.map,0,FIXED_MAPS.length-1)].name;
+          _cdTxt=_cdTxt.replace(', '+_cdM,'');
         }
-        rows.push({k:'CONTRACT',v:_cdTxt+'  '+CD.prog+'/'+CD.n,c:_cdOff?'#6b7480':'#ffc04a'});
+        _live.push({left:Math.max(0,CD.n-CD.prog),txt:_cdTxt+'  '+CD.prog+'/'+CD.n});
       }
+      // Nearest to finishing first: "you are on five of six" is the fact that
+      // decides whether the sixth is worth crossing the street for.
+      _live.sort(function(a,b){ return a.left-b.left; });
+      var _cshow=Math.min(3,_live.length);
+      for(var _cs=0;_cs<_cshow;_cs++) rows.push({k:'CONTRACT',v:_live[_cs].txt,c:'#ffc04a'});
+      if(_live.length>_cshow)
+        rows.push({k:'',v:'+'+(_live.length-_cshow)+' more at the Mainframe',c:'#6b7480'});
     }
     // THE FIRST CUT PUT THE EFFECT RIGHT ALIGNED ON THE NAME'S OWN LINE and the
     // capture showed why that was wrong: STORM's effects are four clauses long,

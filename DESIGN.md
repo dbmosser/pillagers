@@ -22406,3 +22406,52 @@ reconciles to empty, which is right, but it means a player who deliberately want
 ascend carrying NOTHING cannot express that: emptying the kit and reopening the check
 refills it. That is a real edge and I have not decided whether it wants an explicit
 "go up light" state.
+
+## v6.13: the contract panel ate a third of the screen
+
+Seen in a real raid capture at 1280x720, not inferred: seven contracts, each its own
+row, filling the right hand side from the conditions box almost to the bottom. The
+HUD research is unambiguous that this is the standard failure, showing everything all
+the time, and a permanent block that size stops being read at all.
+
+Two changes, and neither hides anything you can act on.
+
+CONTRACTS FOR ANOTHER SITE COME OFF THE HUD. They were already drawn grey and
+labelled OTHER SITE because they cannot progress here, so during this raid they are
+by definition not actionable. They stay on the Mainframe, which is where you choose
+what to go and do. Showing work you are unable to do, on the screen where you are
+doing work, is the clearest case of clutter in the panel.
+
+THE COUNTING CONTRACTS ARE CAPPED AT THREE, nearest to finishing first, with a line
+saying how many more are waiting. Nearest first is the right order because "you are
+on five of six" is exactly the fact that decides whether the sixth is worth crossing
+the street for, which is the argument v4.04 made for showing them at all.
+
+CONDUCT CONTRACTS ARE NOT CAPPED and should not be. Those are rules you can break by
+accident, this panel is the only warning, and the v4.03 comment is right that a rule
+you cannot see is a rule you will break. There are at most a handful live and each is
+one line.
+
+Verified in a driven raid with 8 contracts, 7 of them on the current map: the panel
+renders three plus "+4 more at the Mainframe", four rows where there were seven.
+
+Also verified, and worth recording because it was nearly filed as a regression: the
+entire bottom HUD appeared to be missing in a 1920x1080 capture. It was not. The
+canvas CSS box was 1920x1080 while window.innerHeight was 720, so the bottom 360
+pixels, which is exactly where health, armour, stamina, the hotbar and the ammo
+readout live, were below the fold. Forced to the real pane size everything is
+present. My own harness, not the game.
+
+And his older note "extract piont is open doesnt need to stay on the middle of the
+screen the whole time" is ALREADY FIXED. The state now reads as a label attached to
+the ring in the world, EXTRACTION - OPEN with INBOUND 18s inside the circle, plus one
+line above the hotbar. Nothing sits mid-screen.
+
+Verified: parse PASS at v6.13; four maps 236/200/154/225 and 86/87/58/72 from a
+cleared profile; three endings through the outcome screen; hub, ascent check and the
+export builder; pin audit clean.
+
+Not verified: three is a judgement, not a measurement, exactly like the three-raid
+legend number at v6.02. I have no data on how many contract lines a player reads. The
+cap also means a contract can be live and invisible, and if he ever finishes one
+without noticing it was tracked, this is why.
