@@ -19507,3 +19507,62 @@ change this session that alters how the game LOOKS in every frame rather than
 what it does, so it is the one most likely to need pulling back.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.55  RIGS YOU CAN PUT ON OUT THERE
+================================================================================
+
+v5.55: rigs you can put on out there
+
+HIS Q9: "Multiple rigs carryable, swappable mid-raid."
+
+CHECKED WHAT EXISTED FIRST and two thirds of it did. You can own several rigs,
+and since v5.34 you wear one chosen off the figure. What you could not do is the
+third part: carry a spare UP and put it on. useArmor slots a PLATE into the rig
+you are already wearing and has never touched the rig itself.
+
+So a Breacher Plate pulled out of a safe was a thing you carried home and could
+not use. That is the worst shape an item can have: valuable, present, inert.
+
+ENTER PUTS IT ON, the same key that equips a gun from the bag, because "the
+thing under the cursor, put it on" is one idea and deserves one key. The bag
+hint says so, since a key nobody is told about does not exist.
+
+THREE RULES, and each is the interesting part:
+
+IT TAKES 3.2 SECONDS, through the same prep system a plate uses. Doing it
+instantly under fire would make the choice free, and the entire point of a heavy
+rig is that it is a commitment.
+
+THE ONE YOU TAKE OFF GOES IN THE BAG, so the swap is reversible and an upgrade
+found at minute two does not delete what you walked in wearing.
+
+A FRESH RIG ARRIVES EMPTY. Armour points do not carry across. That is what makes
+swapping mid-firefight a mistake and swapping between fights a decision, which
+is the difference between a mechanic and a button.
+
+Verified: light rig at 35 cap with 20 points, looted a Breacher Plate, pressed
+the equip path. Prep started as kind rig at 3.2 seconds; after it ran, the rig
+is heavy, the cap is 120, armour is 0, the profile agrees, and rig_light is in
+the bag. Re-wearing the rig you already have is refused, and so is swapping
+while already busy with something else. A rig carried out reaches the stash; a
+rig carried into a death is gone.
+
+Four maps 86/87/58/72, all three endings through the outcome screen, hub and
+ascent check clean, 23 hooks present, fixture silent, parse PASS at v5.55.
+
+ALSO CHECKED THIS TICK AND FOUND NOTHING TO DO, so it is on the record rather
+than silently skipped: damage numbers are on and their list is live; the HUD
+holds all five panels through forty seconds of standing still, so there is no
+idle fade; the bag does not pause the raid, the clock ran 1.9 seconds with it
+open; there is no minimap; ammo is a single generic ammobox with no per-calibre
+variants; all three extractions are open and known at the drop. The word
+compass does appear, and it is an ARROW to the nearest extract with a distance,
+which is what he asked for in run #59, not the bearing strip his spec rejects.
+
+Not verified: I drove the equip through the function rather than by pressing
+ENTER with a rig selected in the bag UI, so the selection-to-index path is
+untested. The 3.2 second figure is asserted rather than tuned; whether that is
+long enough to hurt has not been played.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

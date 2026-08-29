@@ -223,6 +223,7 @@ window.__bank=function(k){ return bankItem(k); };
 // rule can be driven headlessly instead of through a keypress.
 window.__hotbar=function(){ return hotbarSlots(); };
 window.__useArmor=function(){ return useArmor(); };
+window.__equipBag=function(ix,slot){ return equipFromBag(ix,slot); };
 window.__useHot=function(){ return useHot(); };
 window.__pedBuy=function(i){ return pedBuy(i); };
 // The weapon table, so shots-to-kill can be varied from the WEAPON side
