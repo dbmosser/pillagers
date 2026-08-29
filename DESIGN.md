@@ -21625,3 +21625,46 @@ now exists and wiring it there is the obvious next step, but this build changed
 one screen so that if the pointer drag has a problem on his machine it is visible
 on one screen rather than two. I also have not tested the pointer drag with a
 touch device or a trackpad, only with synthetic mouse events.
+
+## v5.95: the stash screen drags too, and a version lie I nearly shipped
+
+v5.94 put pointer drag on the ascent check. This is the other screen he has
+complained about, twice: "I want to drag it from the stash" and "dragging to the
+hotbar plan still doesn't work in the stash". Both were answered at the time with
+HTML5 handlers I could never demonstrate working. Same GRAB helper, five wirings,
+no new mechanism.
+
+DRIVEN on the real screen at 1920x1080, three complete drags:
+  a stash cell dragged onto INVENTORY        packs the plate
+  the same cell dragged back to the stash    unpacks it
+  a stash cell dragged onto hotbar key 5     assigns it AND packs it
+
+The reverse direction matters as much as the forward one. Until now the drag only
+ever went one way even in principle, which is the half-built feeling he keeps
+reporting: a thing you can put down but not pick back up is not really a thing you
+can move.
+
+I NEARLY SHIPPED A VERSION LIE AND WANT IT ON THE RECORD. My first attempt at this
+patch used an anchor that appears TWICE, once for the stash grid and once for the
+inventory column. Sub refused it, exactly as designed. But PowerShell's throw does
+not set a failing exit code, so the `&&` chain carried on: the version bump and the
+fixture rebuild both ran, leaving the file stamped v5.95 with only v5.94's content.
+Parsecheck would have passed, the protocol would have passed, and the build would
+have been a lie about itself. Caught by grepping for the edit rather than trusting
+"5 anchors" in the output.
+
+The patch script now sets ErrorActionPreference and traps, so a refused anchor
+exits non-zero and stops the chain. That guard belongs in every patch from here.
+
+Verified: parse PASS at v5.95; four maps 86/87/58/72 entities and 236/200/154/225
+containers at baseline on a freshly cleared profile; all three real endings
+through the outcome screen with extract paying 48c and dead and abandon zero; hub
+and ascent check; nine drop zones on the stash screen; the three drags above; the
+pin audit clean with zero drift.
+
+Not verified: still only synthetic mouse events. They exercise the exact listeners
+a real mouse fires, which is a great deal more than the HTML5 route ever allowed,
+but nobody has dragged this with a hand. I have also not tested touch or a
+trackpad, and the ghost element follows clientX and clientY with no scroll offset
+handling, so if either list is scrolled the ghost is right but I have not checked
+the drop target hit test under scroll.
