@@ -20677,3 +20677,51 @@ clear. So the defect and the fix rest on reading the loop plus his two notes
 describing the behaviour, not on a driven repro. The change is a strict
 relaxation of a condition that currently blocks every downed pull, so it cannot
 make the lock-out worse, but I have not watched a downed man board.
+
+## v5.77: rigs stop being a thing you manage, so a plate always works
+
+HIS NOTE: "completely remove the concept of rigs -- just make it where you can
+always use armor plates to heal up".
+
+The rig is referenced about a hundred and thirty times. Deleting all of that in
+one pass is how I break the game, and it is not what the instruction needs. What
+makes a rig a CONCEPT is that you own one, choose one, lose one and can be
+WITHOUT one. The armour pool itself is fine and is the thing plates refill.
+
+So the rig becomes a property everyone has rather than a thing you manage. One
+standard body armour, worn by definition, cap 60, which is the old flat
+ARMOR_MAX this game used before rigs existed at all. No speed or noise penalty,
+because with no lighter alternative to trade against, a universal penalty is just
+a slower game.
+
+THAT IS THE WHOLE OF "ALWAYS BE ABLE TO USE PLATES". useArmor refuses when the
+ceiling is zero, and the ceiling was zero exactly when P.rig was 'none'. It can
+no longer be zero, so the refusal is unreachable. Driven on a profile with the
+rig deleted and the owned list emptied, which is the state that used to be
+worst: it lands with cap 60 and full armour, and a plate taken at 10 armour puts
+it back to 60. The NO RIG warning that used to sit under the stash is gone from
+the page because its branch tests cap<=0 and nothing can reach it.
+
+HIS OWN TELEMETRY ARGUED THE SAME FROM THE OTHER SIDE. In the exports consumed
+this tick: "I never find any rigs or shields on the map -- maybe increase drop
+rates?" A class of gear he could not reliably obtain was gating the consumable
+that depends on it.
+
+DYING NO LONGER STRIPS A RIG, because there is no rig to strip. That branch is
+disabled rather than deleted so the lost-item counter below it keeps its shape,
+and the death screen no longer prints a line about falling back to a worse one.
+His rule that a death keeps nothing already covers everything carried.
+
+Verified: parse PASS at v5.77; four maps 86/87/58/72; all three real endings
+through the outcome screen with extract paying 48c and dead and abandon zero; hub
+and ascent check; a rigless profile landing armoured and a plate restoring it;
+no NO RIG string and no rig-lost line anywhere on a real death screen.
+
+Not verified: the rig is gone from the player's ARITHMETIC but not yet from every
+surface. Requisition still lists rigs for sale, the stash still has an ARMOUR
+category that will now only ever hold plates, the figure on the stash screen
+still shows a BODY ARMOUR slot, and the ascent check still has a rig row. Those
+are all display and they now all describe one fixed thing, so they read as
+redundant rather than wrong, but they are the next build. I also have not
+measured whether a universal cap of 60 with no speed cost makes the game easier
+than the Scav Rig's 35 that most of his runs actually wore.

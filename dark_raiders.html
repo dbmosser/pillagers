@@ -724,6 +724,11 @@ function mapContMul(){ return CFG.lootNorm?(MAPCONT[P.mapIx]===undefined?1:MAPCO
 // than an obvious upgrade.
 var ARMORS=[
   {id:'none',   name:'No Rig',         cap:0,   spd:1.00, noise:1.00, bulk:0, absorb:0.00},
+  // v5.77, his note. What every operator wears, always. No speed or noise cost,
+  // because with rigs gone there is no lighter alternative to trade it against,
+  // and a universal penalty is just a slower game. 60 is the old ARMOR_MAX, the
+  // flat ceiling this game used before rigs existed at all.
+  {id:'std',    name:'Body Armour',    cap:60,  spd:1.00, noise:1.00, bulk:0, absorb:0.50},
   {id:'light',  name:'Scav Rig',       cap:35,  spd:1.00, noise:1.02, bulk:1, absorb:0.50},
   {id:'medium', name:'Plated Vest',    cap:70,  spd:0.94, noise:1.16, bulk:2, absorb:0.58},
   {id:'heavy',  name:'Breacher Plate', cap:120, spd:0.86, noise:1.34, bulk:3, absorb:0.66}
@@ -732,7 +737,10 @@ function armorById(id){
   for(var i=0;i<ARMORS.length;i++) if(ARMORS[i].id===id) return ARMORS[i];
   return ARMORS[0];
 }
-function myRig(){ return armorById((P&&P.rig)||'none'); }
+// EVERY OPERATOR IS ARMOURED, v5.77. This used to read P.rig, which could be
+// 'none', which set the armour ceiling to zero and made a carried plate
+// unusable. There is no rig to be without any more.
+function myRig(){ return armorById('std'); }
 // The old flat ceiling is now whatever rig you walked in wearing, so the HUD bar
 // scales to the rig instead of to a constant that no longer means anything.
 var ARMOR_MAX=60;
@@ -770,7 +778,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.76';
+var VER='5.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13604,11 +13612,11 @@ silentExit:T.silentExit||0,
   // SPEC 9.7: the rig goes with everything else you were carrying. It is the
   // same rule the guns live under and it is what makes the Breacher Plate a bet
   // rather than a free upgrade.
-  if(how==='dead'&&P.rig&&P.rig!=='none'){
-    var lostRig=armorById(P.rig);
-    G.lostRig=P.rig;                 // recorded for the summary count, then gone
-    P.rigs=(P.rigs||[]).filter(function(r){ return r!==P.rig; });
-    P.rig=(P.rigs.length?P.rigs[P.rigs.length-1]:'none');
+  // v5.77: rigs are gone as a concept, so a death cannot strip one. Left as a
+  // dead branch rather than deleted so the summary counter below keeps its shape.
+  if(false){
+    var lostRig=myRig();
+    G.lostRig=null;
     lines.push('<span style="color:var(--rust)">'+lostRig.name+' is gone.'+
       (P.rig==='none'?' You have no rig left, so you ascend next time with zero armour.'
                      :(' Falling back to the '+myRig().name+'.'))+'</span>');
@@ -18064,7 +18072,7 @@ function itemRows(key){
     R.push(['ABSORBS',Math.round(A2.absorb*100)+'% of a hit']);
     R.push(['SPEED',A2.spd===1?'no penalty':(Math.round((1-A2.spd)*100)+'% slower')]);
     R.push(['NOISE',A2.noise===1?'no penalty':('+'+Math.round((A2.noise-1)*100)+'% louder')]);
-    var worn=armorById((P&&P.rig)||'none');
+    var worn=myRig();
     if(worn.id===it.rk) R.push(['STATUS','WORN NOW']);
     else if(A2.cap>worn.cap) R.push(['VERSUS WORN','+'+(A2.cap-worn.cap)+' armour, '+
       (A2.spd<worn.spd?('slower'):(A2.spd>worn.spd?'faster':'same speed'))]);
@@ -23101,7 +23109,7 @@ var RIGCOL={none:['#3d4450','#59626f'],light:['#4a5a48','#6d8163'],
 function avatarHTML(){
   var hair=cosWorn('hair'), hat=cosWorn('hat');
   var hc=HAIRCOL[hair]||HAIRCOL.blonde;
-  var rg=armorById((P&&P.rig)||'none');
+  var rg=myRig();
   var rc=RIGCOL[rg.id]||RIGCOL.none;
   var hatGlyph={none:'',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC',visor:'\u25AD',crown:'\u2662',
                 pigtails:'()'}[hat]||'';
