@@ -326,21 +326,9 @@
   </div>
 </div>
 
-<div class="modal" id="seasonmodal">
-  <h3 id="seasonhead">PROGRESS</h3>
-  <div class="msub">Ten rewards. Every raid feeds this, and a raid you die on still pays half, because a run you learned something from is not worth nothing. Claim all ten and the WORLD moves up a tier: loot is worth more and everything out there is harder. Then a fresh ten appear. This is the only ladder that changes the world; reputation opens shops, and your level and proficiency are your own.</div>
-  <div id="seasonbar" style="height:16px;border:1px solid var(--steel-hi);background:rgba(0,0,0,.35);margin:6px 0 10px 0;position:relative">
-    <div id="seasonfill" style="height:100%;width:0%;background:linear-gradient(90deg,#ffc04a,#ffc04a)"></div>
-    <div id="seasontext" style="position:absolute;inset:0;text-align:center;font-size:11px;line-height:16px;color:#120e0c;font-weight:700"></div>
-  </div>
-  <div class="plist" id="seasonlist" style="border:1px solid var(--steel-hi);max-height:300px;overflow:auto"></div>
-  <h3 style="margin-top:14px">What I am building next</h3>
-  <div class="msub">In order. This is the actual queue, not a wish list.</div>
-  <div class="plist" id="roadmaplist" style="border:1px solid var(--steel-hi)"></div>
-  <div style="display:flex;gap:8px;margin-top:10px">
-    <button id="closeseason" style="padding:8px 22px">Leave</button>
-  </div>
-</div>
+<!-- THE PROGRESS BOARD LIVES IN THE OPERATOR TERMINAL, v5.65, on his note that
+     contracts and rewards should both happen at the mainframe. Every id is the
+     one renderSeason already writes to, so the renderer is untouched. -->
 
 
 
@@ -380,6 +368,17 @@
   <div class="tpane" id="opane_con" style="display:flex;flex-direction:column;flex:1;min-height:0">
     <div class="msub">Work you have signed for. Contracts pay on top of your haul, and they do not expire while you are down here.</div>
     <div class="plist" id="contracts" style="flex:1;min-height:220px;overflow-y:auto"></div>
+  </div>
+  <div class="tpane" id="opane_rew" style="display:none;flex-direction:column;flex:1;min-height:0">
+    <div id="seasonhead" style="font-size:12px;letter-spacing:.14em;color:var(--amber);padding:0 0 6px"></div>
+    <div class="msub">Every raid feeds this, and a raid you die on still pays half, because a run you learned something from is not worth nothing. Claim all ten and the WORLD moves up a tier: loot is worth more and everything out there is harder. Then a fresh ten appear. This is the only ladder that changes the world; reputation opens shops, and your level and proficiency are your own.</div>
+    <div id="seasonbar" style="height:16px;border:1px solid var(--steel-hi);background:rgba(0,0,0,.35);margin:6px 0 10px 0;position:relative">
+      <div id="seasonfill" style="height:100%;width:0%;background:linear-gradient(90deg,#ffc04a,#ffc04a)"></div>
+      <div id="seasontext" style="position:absolute;inset:0;text-align:center;font-size:11px;line-height:16px;color:#120e0c;font-weight:700"></div>
+    </div>
+    <div class="plist" id="seasonlist" style="border:1px solid var(--steel-hi);flex:1;min-height:160px;overflow:auto"></div>
+    <div class="msub" style="margin-top:12px">What I am building next. In order, and it is the actual queue rather than a wish list.</div>
+    <div class="plist" id="roadmaplist" style="border:1px solid var(--steel-hi);max-height:170px;overflow:auto"></div>
   </div>
   <div class="tpane" id="opane_mf" style="display:none;flex-direction:column;flex:1;min-height:0">
   <div class="msub">The mainframe pays per extraction, every extraction, for as long as it is running.</div>
@@ -767,7 +766,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.64';
+var VER='5.65';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19794,11 +19793,12 @@ acts:{KeyE:['go up',function(){ openLift(); }],
            KeyT:['the terms',function(){ renderTerms(); document.getElementById('termsmodal').classList.add('on'); }]}},
     {id:'gamble',x:110,y:110,r:42,label:'VESH, THE GAMBLER',sub:'unmarked goods, flat price',c:'#e0a0ff',vendor:1,
      acts:{KeyE:['deal',function(){ renderGamble(); document.getElementById('gamblemodal').classList.add('on'); }]}},
-{id:'term',x:350,y:365,r:46,label:'THE STASH',sub:'',c:'#5aa9e6',season:1,
-     acts:{KeyE:['terminal',function(){ renderHub(); document.getElementById('hub').classList.add('on'); maybePrimer(); }],
-           KeyR:['progress',function(){ renderSeason(); document.getElementById('seasonmodal').classList.add('on'); }]}},
-    {id:'mf',x:590,y:105,r:44,label:'THE MAINFRAME',sub:'',c:'#4de3d0',
-     acts:{KeyE:['racks',function(){ renderHub(); renderMainframe(); document.getElementById('opmodal').classList.add('on'); }]}},
+{id:'term',x:350,y:365,r:46,label:'THE STASH',sub:'',c:'#5aa9e6',
+     acts:{KeyE:['terminal',function(){ renderHub(); document.getElementById('hub').classList.add('on'); maybePrimer(); }]}},
+    {id:'mf',x:590,y:105,r:44,label:'THE MAINFRAME',sub:'',c:'#4de3d0',season:1,
+     acts:{KeyE:['contracts',function(){ openOps('con'); }],
+           KeyR:['rewards', function(){ openOps('rew'); }],
+           KeyF:['racks',   function(){ openOps('mf');  }]}},
     (BETA_HIDE_DEV
       ? {id:'dev',x:590,y:255,r:42,label:'SETTINGS',sub:'',c:'#9aa8b2',
          acts:{KeyE:['settings',function(){ openSettings('display'); }]}}
@@ -21902,16 +21902,21 @@ function openOps(tab){
   // The board refills on the way in. ensureContracts is a while-loop up to the
   // ceiling, so calling it when the board is already full costs one comparison.
   try{ ensureContracts(); }catch(e){}
-  var T=[['con','CONTRACTS'],['mf','MAINFRAME'],['rec','RUN RECORD']];
+  // REWARDS sits next to CONTRACTS because they are the two halves of the same
+  // thing: work you sign for and work you are paid for.
+  var T=[['con','CONTRACTS'],['rew','REWARDS'],['mf','MAINFRAME'],['rec','RUN RECORD']];
   try{ renderHub(); }catch(e){}
   try{ renderMainframe(); }catch(e){}
+  try{ renderSeason(); }catch(e){}
   var tb=document.getElementById('optabs');
   if(tb){
     tb.innerHTML='';
     T.forEach(function(t){
       var d=document.createElement('div');
       d.className='invtab'+(want===t[0]?' on':'');
-      d.textContent=t[1];
+      var _rdy=(t[0]==='rew')?(function(){ try{ return seasonReady(); }catch(e){ return 0; } })():0;
+      d.textContent=t[1]+(_rdy?('  '+_rdy):'');
+      if(_rdy) d.style.color=(want===t[0])?'#0d1435':'var(--amber)';
       d.onclick=function(){ openOps(t[0]); };
       tb.appendChild(d);
     });
@@ -21964,9 +21969,7 @@ document.getElementById('closeterms').onclick=function(){
 document.getElementById('termsclear').onclick=function(){
   P.terms=[]; saveProfile(); renderTerms(); renderHub();
 };
-document.getElementById('closeseason').onclick=function(){
-  document.getElementById('seasonmodal').classList.remove('on');
-};
+
 
 document.getElementById('gamblebtn').onclick=function(){
   if(P.credits<GAMBLE_PRICE) return;

@@ -20174,3 +20174,42 @@ synthetic DragEvent carrying a DataTransfer, which exercises my handler and the
 kit rules but not the browser's own drag affordances, so I cannot say the cursor
 does the right thing or that the amber highlight reads. The two columns are
 flex 1.35 against 1 and I have not seen them at his window width.
+
+## v5.65: contracts and rewards both happen at the mainframe now
+
+TWO NOTES, ONE MINUTE APART. "THE STASH SAYS '4 REWARDS WAITING' BUT I HAVE NO
+IDEA HOW TO GET THEM", then "i think contracts and rewards should happen at the
+mainframe". The second answers the first, so I did that rather than patching the
+badge where it stood.
+
+THE DEAD END WAS REAL. The badge floated over THE STASH and the way to claim was
+to stand there and press R. The station's sub line did say so, but he was reading
+the big pulsing amber thing above it, which is what a big pulsing amber thing is
+for. Four rewards, no door.
+
+Contracts already lived in the operator terminal. Rewards live there now too, and
+the terminal is what the mainframe opens, so one station carries the work you
+sign for and the work you are paid for. The progress board's CONTENT moved into a
+fourth pane with every id intact, so renderSeason did not change one line: it
+still writes seasonhead, seasonfill, seasontext, seasonlist and roadmaplist by id.
+
+THE COUNT MOVED ONTO THE THING THAT OPENS IT. The tab reads REWARDS 10 rather
+than REWARDS, and goes amber when any are ready. The station badge moved with it,
+so the mainframe's line now reads
+
+  [E] contracts   [R] rewards   [F] racks      >  9 rewards waiting
+
+and the number and the key that answers it are finally in the same sentence. THE
+STASH keeps only its terminal and stops advertising something it cannot open.
+
+Verified: parse PASS at v5.65; four maps 86/87/58/72; three endings through the
+outcome screen with death and timeout paying zero credits; hub and ascent check;
+all four terminal panes exist and switch, the rewards pane renders 10 reward rows
+and 6 roadmap rows, the tab carries its count, claiming from the new home paid
+1,500c, the badge flag is on the mainframe and gone from the stash, and no
+reference to the deleted seasonmodal survives anywhere in the file.
+
+Not verified: the mainframe now has three keys on it where it had one, and I have
+not seen that sub line drawn at his text size. The old station was a one-act
+station whose authored flavour line was replaced by the built key list, which is
+the intended behaviour but changes how that corner of the Undercroft reads.
