@@ -778,7 +778,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.81';
+var VER='5.83';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -789,18 +789,17 @@ var VER='5.81';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='2.97';
+var WHATSNEW_VER='5.82';
 var WHATSNEW=[
-  'RENAMED: your issued guns are Tacker, Sputter, Chatter and Scuttle.',
-  'RENAMED: GREYWATER DAM, the SUNKEN QUARTER, the CRIER, Meridian caches.',
-  'Your owned guns and their wear carried over. Nothing was lost.',
-  'FOUR SECTORS. Press R at the lift to choose where you ascend to.',
-  'Keyed doors show a lock: green if you carry its key, amber if not.',
-  'Windows are framed and lit now, so you can pick them out.',
-  'Pillagers no longer all arrive at full health.',
-  'The controls legend is compact. H cycles compact, full, off.',
-  '1 to 9 pick a hotbar slot even with the inventory open.',
-  'Dev box, T: settings. Text size and auto-export live there.'
+  'RIGS ARE GONE. You always wear body armour, so a plate always works.',
+  'The world never gets harder behind you. Nothing escalates any more.',
+  'STASH and INVENTORY are one screen. Drag, or point and press a key number.',
+  'Hotbar keys 1 and 2 are your two guns. 3 to 9 are yours to set.',
+  'Putting something on a key also packs it, so it comes up with you.',
+  'CONTRACTS and REWARDS both live at the Mainframe now.',
+  'REP comes from selling salvage, and from nothing else.',
+  'Dead and extracted pillagers leave the board ten seconds after they go.',
+  'Down in an extraction ring, you can still hold E and board from the floor.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -1055,9 +1054,9 @@ medkit:{name:'Medkit',val:210,wt:2,r:'uncommon',c:'#e05c5c',use:'heal',amt:65,ho
   // v4.37 HIS ANSWER 18: instant legs. Fills the bar and clears the winded
   // lockout the moment it is used; no channel, no prep.
 stim:{name:'Stim Injector',val:180,wt:1,r:'uncommon',c:'#7fe0d0',use:'stim'},
-  rig_light:{name:'Scav Rig (field)',val:360,wt:2,r:'rare',c:'#8fb5c8',use:'rig',rk:'light'},
-  rig_medium:{name:'Plated Vest (field)',val:1280,wt:3,r:'rare',c:'#6fa0d8',use:'rig',rk:'medium'},
-  rig_heavy:{name:'Breacher Plate (field)',val:3120,wt:4,r:'elite',c:'#5a88c8',use:'rig',rk:'heavy'},
+  rig_light:{name:'Ballistic Weave',val:360,wt:2,r:'rare',c:'#8fb5c8'},
+  rig_medium:{name:'Plated Panel',val:1280,wt:3,r:'rare',c:'#6fa0d8'},
+  rig_heavy:{name:'Breacher Shell',val:3120,wt:4,r:'elite',c:'#5a88c8'},
   ammobox:{name:'Ammo Box',val:90,wt:1,r:'common',c:'#c2a35e',use:'ammo',amt:40},
   plate:{name:'Armor Plate',val:340,wt:3,r:'uncommon',c:'#5aa9e6',use:'armor',amt:55},
   gun_pistol:{name:'Scav Pistol (field)',val:300,wt:3,r:'common',c:'#ffd48a',use:'gun',gk:'pistol'},
@@ -1096,9 +1095,7 @@ var SHOP=[
   {k:'ammobox',kind:'item',price:170,rep:0},{k:'smoke',kind:'item',price:150,rep:0},
   {k:'decoy',kind:'item',price:100,rep:0},{k:'frag',kind:'item',price:140,rep:0},{k:'stim',kind:'item',price:160,rep:0},
   {k:'plate',kind:'item',price:620,rep:800},
-  {kind:'rig',k:'light',price:900,rep:0},
-  {kind:'rig',k:'medium',price:3200,rep:1200},
-  {kind:'rig',k:'heavy',price:7800,rep:3500},
+
   {kind:'pack',lvl:1,price:450,rep:0},{kind:'pack',lvl:2,price:1300,rep:1500},
   {k:'pistol',kind:'wep',price:600,rep:0},{k:'smg',kind:'wep',price:2200,rep:1000},
   {k:'rifle',kind:'wep',price:3800,rep:2500},{k:'dmr',kind:'wep',price:4500,rep:5000}
@@ -20020,13 +20017,24 @@ function placeName(n){
   n=String(n).toLowerCase();
   return n.indexOf('the ')===0?n.slice(4):n;
 }
+// HOW MUCH BIGGER THE UNDERCROFT IS DRAWN THAN IT IS AUTHORED, v5.82, on his
+// instruction to assume 1080p or higher. The room is 700 by 470 in room units
+// and that does not change; this is the lens. Fill the tighter axis, never shrink
+// below 1 so a small window is exactly what it was before.
+function hubScale(){
+  return Math.max(1, Math.min(W/HUBW, H/HUBH));
+}
 function drawHubWorld(dt){
   var p=HB.player,i,j;
   if(!hubGround) hubGround=bakeHubGround();
-  var ox=Math.round(camClamp(p.x-W/2,W,HUBW));
-  var oy=Math.round(camClamp(p.y-H*.55,H,HUBH));
+  // The camera works in ROOM units, so the visible span shrinks as the scale
+  // grows. Passing W and H here instead of the scaled span is what would put the
+  // player off centre at high zoom.
+  var S=hubScale(), vw=W/S, vh=H/S;
+  var ox=Math.round(camClamp(p.x-vw/2,vw,HUBW));
+  var oy=Math.round(camClamp(p.y-vh*.55,vh,HUBH));
   wc.fillStyle='#05070b'; wc.fillRect(0,0,W,H);
-  wc.save(); wc.translate(-ox,-oy);
+  wc.save(); wc.scale(S,S); wc.translate(-ox,-oy);
   wc.drawImage(hubGround,0,0);
   // station pads
   for(i=0;i<HB.stations.length;i++){
@@ -20124,20 +20132,25 @@ wc.fillStyle=on?s3.c:'rgba(160,172,184,.75)';
   lx2.fillRect(0,0,W,H);
   lx2.globalCompositeOperation='destination-out';
   for(i=0;i<HB.lights.length;i++){
-    var Lt=HB.lights[i],lsx=Lt.x-ox,lsy=Lt.y-oy;
-    if(lsx<-Lt.r||lsx>W+Lt.r||lsy<-Lt.r||lsy>H+Lt.r) continue;
+    var _S=hubScale();
+    var Lt=HB.lights[i],lsx=(Lt.x-ox)*_S,lsy=(Lt.y-oy)*_S,lr=Lt.r*_S;
+    if(lsx<-lr||lsx>W+lr||lsy<-lr||lsy>H+lr) continue;
     var fk=Lt.fl?(.80+.20*Math.sin(HB.t*9+Lt.f)):1;
-    var g2=lx2.createRadialGradient(lsx,lsy,0,lsx,lsy,Lt.r*fk);
+    // createRadialGradient is the one canvas call that throws on a non-finite
+    // number, so the radius is guarded rather than trusted.
+    var _lrad=Math.max(1,lr*fk);
+    var g2=lx2.createRadialGradient(lsx,lsy,0,lsx,lsy,_lrad);
     g2.addColorStop(0,'rgba(0,0,0,'+(.9*Lt.i)+')'); g2.addColorStop(1,'rgba(0,0,0,0)');
-    lx2.fillStyle=g2; lx2.beginPath(); lx2.arc(lsx,lsy,Lt.r*fk,0,6.2832); lx2.fill();
+    lx2.fillStyle=g2; lx2.beginPath(); lx2.arc(lsx,lsy,_lrad,0,6.2832); lx2.fill();
   }
   wc.drawImage(litC,0,0);
   wc.globalCompositeOperation='lighter';
   for(i=0;i<HB.lights.length;i++){
-    var L3=HB.lights[i],gx=L3.x-ox,gy=L3.y-oy;
-    if(gx<-90||gx>W+90||gy<-90||gy>H+90) continue;
+    var _S2=hubScale();
+    var L3=HB.lights[i],gx=(L3.x-ox)*_S2,gy=(L3.y-oy)*_S2,gr=Math.max(1,L3.r*.3*_S2);
+    if(gx<-gr||gx>W+gr||gy<-gr||gy>H+gr) continue;
     wc.globalAlpha=.09; wc.fillStyle=L3.c;
-    wc.beginPath(); wc.arc(gx,gy,L3.r*.3,0,6.2832); wc.fill();
+    wc.beginPath(); wc.arc(gx,gy,gr,0,6.2832); wc.fill();
   }
   wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
   drawHubHUD(ox,oy);
@@ -20187,7 +20200,9 @@ function drawHubHUD(ox,oy){
     ctx.strokeStyle='#3a4552'; ctx.lineWidth=1; ctx.strokeRect(wnX+.5,wnY+.5,wnW-1,wnH-1);
     ctx.textAlign='center';
     ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
-    ctx.fillText('UPDATED TO v'+VER,W/2,wnY+LH(22));
+    // WHATSNEW_VER, not VER: the list belongs to the build that last changed it,
+    // and naming the current build made the card claim these were its changes.
+    ctx.fillText('UPDATED TO v'+WHATSNEW_VER,W/2,wnY+LH(22));
     ctx.font=FS(TYPE.label); ctx.fillStyle='#cdd6dd';
     for(var wq=0;wq<WHATSNEW.length;wq++)
       ctx.fillText(WHATSNEW[wq],W/2,wnY+LH(42)+wq*LH(17));
@@ -23127,7 +23142,9 @@ function avatarHTML(){
   h+=slot('hat','HEADGEAR',(cosFind(hat)||{name:'Bare'}).name,hatGlyph||'--');
   h+=slot('hair','HAIR',(cosFind(hair)||{name:'Blonde'}).name,
           '<span style="width:14px;height:14px;border-radius:7px;display:inline-block;background:'+hc[1]+'"></span>');
-  h+=slot('rig','BODY ARMOUR',rg.name+(rg.cap?('   '+rg.cap):''),rg.cap?'\u25A0':'--');
+  // v5.83: the BODY ARMOUR slot is gone with rigs. Everyone wears the same
+  // armour and there is nothing to choose, so a slot here was a control that
+  // did nothing. The rig picker below is now unreachable.
   var wep2=(P.equippedSec&&P.equippedSec!=='none'&&WEAPONS[P.equippedSec])?WEAPONS[P.equippedSec]:null;
   h+=slot('wep','GUN 1',wep.name,'\u2460');
   h+=slot('wep2','GUN 2',wep2?wep2.name:'Empty','\u2461');

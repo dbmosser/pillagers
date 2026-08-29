@@ -20937,3 +20937,63 @@ rather than residue of the removed system and left alone; a verifier argued both
 ways and I made a call. I also have not checked whether banking P.kills changes
 anything that reads a profile kill count elsewhere, because nothing else reads
 one, which is exactly why it was broken.
+
+## v5.82 and v5.83: the Undercroft at 1080p, and the last of the rigs
+
+HIS INSTRUCTION: "assume everything happens in 1080p or higher and adjust all
+menus/ui accordingly". I acknowledged that two ticks ago and did not act on it,
+so this is the debt.
+
+THE UNDERCROFT WAS THE WORST OFFENDER. The room is authored as a fixed 700 by
+470 and was drawn at native size, with the camera centring it when the viewport
+is larger. At 1920 by 1080 that is a small lit box in the middle of a large black
+field: about a third of the width, under half the height, with every label sized
+for a 700 pixel room. Photographed before and after; it now fills the screen and
+all six stations read at a glance.
+
+It is a camera scale, not a bigger room. Layout, station positions and collision
+are all authored in room units and none of them moved. The camera works in room
+units now, so the visible span shrinks as the scale grows, and the scale never
+drops below 1 so a small window behaves exactly as it did. The two light passes
+run after the transform in screen space and were the only things that had to
+learn about the scale; everything else in the room, station labels included, is
+drawn inside the transform and scaled for free. The light radius is clamped
+above zero on the way into createRadialGradient, which is the one canvas call in
+this file that throws on a bad number.
+
+THE WHAT IS NEW CARD ANNOUNCED THE WRONG VERSION'S CHANGES. Found by
+screenshotting the scaled room: it read UPDATED TO v5.82 over a list of things
+that changed at v2.97. The card is keyed to WHATSNEW_VER rather than VER on
+purpose, and that design is right, but the HEADING interpolated VER, so it
+claimed the old list was the current build's work. The heading now names the
+version the list is actually for, and the list is rewritten to the nine things a
+returning player would actually notice, by the card's own stated rule: only lines
+that change how he plays.
+
+AND THE RIG REMOVAL IS FINISHED. v5.77 took rigs out of the arithmetic and said
+in its own not-verified line that Requisition still sold them, the figure still
+had a BODY ARMOUR slot and rig items still dropped. He asked for the concept
+gone, and a shop selling you a 7,800 credit Breacher Plate that myRig ignores is
+the concept. Requisition no longer lists them, the figure has no armour slot, and
+the three rig items are now plain salvage: Ballistic Weave, Plated Panel and
+Breacher Shell, at exactly their old values, so no loot table gets poorer and
+nothing needs rebalancing. Dropping their use and rk fields retires the eight
+use==='rig' readers by starving them rather than by editing eight call sites.
+
+Verified: parse PASS at v5.82 and v5.83; four maps 86/87/58/72 entities and
+236/200/154/225 containers at baseline on both; all three real endings through
+the outcome screen with extract paying 48c and dead and abandon zero; hub and
+ascent check; the Undercroft photographed at 1920 by 1080 with six stations
+legible; the card reading its own version over the new list; Requisition selling
+no rig and still selling plates; the figure showing headgear, hair, gun 1 and gun
+2 and no armour slot; a rig item resolving as Ballistic Weave with no use and
+value 360.
+
+Not verified: the rig picker inside renderAvPicker is now unreachable rather than
+deleted, because the slot that opened it is gone. I left it standing rather than
+cut into that function's branch structure in the same edit that changed the
+figure, so there is dead code there to remove later. I also have not looked at
+any other screen at 1080p since scaling the room, so the raid HUD and the modals
+are still judged only from the earlier photographs, and I have not checked how the
+scaled room reads on a window SMALLER than 700 by 470, where the scale floor of 1
+means it behaves as before but the room no longer fits.
