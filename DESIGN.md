@@ -20725,3 +20725,44 @@ are all display and they now all describe one fixed thing, so they read as
 redundant rather than wrong, but they are the next build. I also have not
 measured whether a universal cap of 60 with no speed cost makes the game easier
 than the Scav Rig's 35 that most of his runs actually wore.
+
+## v5.78: rep comes from selling and nothing else
+
+HIS NOTE: "Rep is only earned from selling items".
+
+Rep was written in five places and three of them were not selling. v5.61 found
+that and rewrote the primer to advertise all three, which was the right fix for
+the TEXT at the time and is the wrong RULE. He is settling it the other way, and
+the simpler rule is better: one currency, one source, nothing to work out.
+
+KEPT: selling one item, and sell-all. Both pay rep equal to the price, which is
+the relationship the shop has always described.
+
+REMOVED: the ghost run bonus, which paid rep worth half the credit bonus, and
+contract completion, which paid rep equal to the ENTIRE credit reward. That
+second one mattered: a contract paying 2,000c also paid 2,000 rep, which made
+contracts by a wide margin the fastest standing in the game and made the sell
+button's own advice about where rep comes from untrue. Both still pay well; they
+pay in credits now.
+
+DRIVEN, all three paths:
+  a ghost run extract      0 rep, 478 credits
+  a completed contract     0 rep, 184 credits
+  sell-all                 95 rep, 95 credits
+  sell one                 150 rep, 150 credits
+
+The two places that TELL him where rep comes from say the new rule. The sell hint
+is back to naming selling as the only source, which is what it said before v5.68
+and is true again, and the primer row says there is exactly one way and names the
+things that pay well but pay in cash.
+
+Verified: parse PASS at v5.78; four maps 86/87/58/72; all three real endings
+through the outcome screen with extract paying 48c and dead and abandon zero; hub
+and ascent check; the four rep paths measured above; the primer still rendering
+with the single-source wording.
+
+Not verified: the progress board's tier 2 still hands out 400 rep as a one-off
+reward. That is part of the seasons system he has also asked me to remove, so I
+have left it to go out with that rather than half-removing it here. I also have
+not looked at what taking rep off contracts does to how long the Requisition
+counter takes to unlock, which is now entirely paced by how much salvage he sells.
