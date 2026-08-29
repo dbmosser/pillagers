@@ -23772,3 +23772,48 @@ pistol is reasoned from the loaner rules rather than observed. The kit is grante
 raid build; I did not check what happens if he opens the ascent check, takes the
 freebie, backs out to the floor and ascends by quick-ascent from the lift instead, which
 takes a different route into the same commit and should carry the flag but is untested.
+
+## v6.45 - ONE FREE SELF-REVIVE, EVERY RAID
+
+His note: "player should always get one self-revive per raid, it should not be an item,
+it's just a one time use and once you blow it, can't do it again that raid."
+
+Checked against the current code before touching it, and most of this already existed.
+selfRevive has been once per raid since it was written, gated on a flag stamped on the
+player and rebuilt with every drop. What it ALSO did was require a heal in the bag and
+eat it. That is the part he is removing, so this is a smaller change than it sounds:
+drop the requirement, drop the consumption, and fix the three places that told him he
+could not get up because his bag was empty.
+
+The downed overlay said "No medical in bag. Crawl or bleed out." which is now never the
+reason, and it called the thing an auto-injector, an item name for something that is no
+longer an item. The bot was worse off than he was: it only tried to stand up when it
+happened to be carrying medical, so a bot that had spent its bandages just bled out with
+a revive in its pocket. Both fixed.
+
+THE DECISION IS NOW WHEN TO SPEND IT rather than whether the bag happens to hold a
+bandage at the moment you go down, which is the change he was actually asking for.
+
+A THIRD ENCODING FAULT OF MINE IN ONE SESSION, and the rule that comes out of it. I put
+a literal middot in the patch script for the revive prompt. PowerShell 5.1 reads these
+scripts as ANSI, so it went into the game as three mangled characters and would have
+drawn garbage in the middle of the prompt. The fix attempt then wrote a doubled
+backslash, which would have printed the escape as text. Third strike: the separator is
+now a comma. No non-ASCII character goes in a patch script again, for any reason.
+
+Also closing an item I left unverified in v6.44: the freebie kit carries correctly
+through the LIFT'S QUICK ASCENT as well as the ascent check button, driven and confirmed
+to hand out the issued Scav Pistol, two bandages, a plate in the bag and one frag.
+
+Verified: parse PASS at v6.45; downed with a completely EMPTY bag, which was the case
+that used to be fatal, F stands you up at 40hp and consumes nothing; a second attempt in
+the same raid is refused and you stay down; a fresh raid hands out a new one; the downed
+overlay drawn in both the spent and unspent states; four maps 86/87/58/72 entities and,
+at seed 4242, 246/193/152/216 containers; all three endings through the outcome screen
+to a drawn hub; hub, renderStage and the export builder; pin audit clean.
+
+Not verified: I did not measure what a free revive does to the extract rate. It is a
+straight buff to survival and the bot now uses it too, so the 8.8 percent Cold Storage
+figure is stale from this build onward and should not be compared against numbers taken
+before it. I did not check whether a revived player can be revived by a teammate
+afterwards, since the mercenary path is separate code.
