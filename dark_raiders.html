@@ -94,6 +94,33 @@
   .swatch { width:3px; height:13px; border-radius:1px; flex:none; }
   .ic { flex:none; image-rendering:auto; vertical-align:middle; margin-right:2px; }
   .r-common{color:#cfd8ef;} .r-uncommon{color:#7fc4a0;} .r-rare{color:#7cc4ff;} .r-elite{color:#d08ce8;}
+  /* THE GRID. Uniform cells, Minecraft rules: every item is one square whatever
+     it is, stacks carry a count, and rarity lives on the border so you read the
+     value of a whole screen without reading a word of it. */
+  .invtabs{ display:flex; gap:4px; padding:8px 10px 0 10px; flex-wrap:wrap; }
+  .invtab{ font-size:9px; letter-spacing:.14em; text-transform:uppercase;
+    padding:4px 9px; border:1px solid var(--steel-hi); border-radius:2px;
+    color:var(--ash); cursor:pointer; background:rgba(0,0,0,.25); }
+  .invtab:hover{ color:var(--bone); border-color:var(--amber); }
+  .invtab.on{ color:#0d1435; background:var(--amber); border-color:var(--amber); font-weight:700; }
+  .invgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(52px,1fr));
+    gap:6px; padding:10px; overflow-y:auto; flex:1; align-content:start; }
+  .cell{ position:relative; aspect-ratio:1/1; border:1px solid var(--steel-hi);
+    border-radius:3px; background:rgba(0,0,0,.32); display:flex;
+    align-items:center; justify-content:center; cursor:pointer; transition:all .1s; }
+  .cell:hover{ background:rgba(255,192,74,.10); transform:translateY(-1px); }
+  .cell.c-common{ border-color:#5a6478; }
+  .cell.c-uncommon{ border-color:#7fc4a0; box-shadow:inset 0 0 8px rgba(127,196,160,.16); }
+  .cell.c-rare{ border-color:#7cc4ff; box-shadow:inset 0 0 8px rgba(124,196,255,.20); }
+  .cell.c-elite{ border-color:#d08ce8; box-shadow:inset 0 0 10px rgba(208,140,232,.26); }
+  .cell .cnt{ position:absolute; right:3px; bottom:1px; font-size:10px; font-weight:700;
+    color:var(--bone); text-shadow:0 1px 2px #000; pointer-events:none; }
+  /* JUNK, his Q11: tag it once and sell-all obeys. A tagged cell is dimmed and
+     crossed, so a screen of junk is obvious before you press anything. */
+  .cell.junk{ opacity:.42; border-style:dashed; }
+  .cell.junk::after{ content:''; position:absolute; inset:0;
+    background:linear-gradient(135deg,transparent 46%,var(--rust) 46%,var(--rust) 54%,transparent 54%); }
+  .cellempty{ color:var(--ash); font-size:10px; }
   button { font-family:'Rubik',system-ui,sans-serif; background:transparent;
     border:1px solid var(--steel-hi); color:var(--bone); padding:5px 9px; font-size:11.5px;
     letter-spacing:.06em; cursor:pointer; text-transform:uppercase; transition:all .12s; }
@@ -458,10 +485,13 @@
   </div>
   <div class="hubgrid">
     <div class="panel">
-      <h2>Inventory <em id="stashct">0</em></h2>
-      <div class="plist" id="stashlist"></div>
+      <h2>Stash <em id="stashct">0</em></h2>
+      <div class="invtabs" id="stashtabs"></div>
+      <div class="invgrid" id="stashgrid"></div>
+      <div id="stashdetail" style="padding:8px 12px;border-top:1px solid var(--steel-hi);
+           min-height:52px;font-size:11px;color:var(--ash)"></div>
       <div style="padding:8px 12px;border-top:1px solid var(--steel-hi)">
-        <button id="sellall" style="width:100%">Sell all salvage</button>
+        <button id="sellall" style="width:100%">SELL JUNK AND LOOSE SALVAGE</button>
         <div id="sellhint" class="hint" style="margin-top:6px;font-size:9.5px;line-height:1.35"></div>
         <div id="nextunlock" class="hint" style="margin-top:4px;font-size:9.5px;line-height:1.35"></div>
       </div>
@@ -531,7 +561,11 @@ var PACKCAP=[99999,99999,99999];
 // carries the same load more comfortably instead: it discounts the weight penalty
 // rather than removing the wall, which keeps his rule exactly and gives the greed
 // pillar the counterplay it never had.
-var PACKPEN=[1,0.80,0.62];
+// One carry rule for everybody, his order. The tiers are retired rather than
+// rebalanced: a "backpack" that cannot change how much you carry is a menu entry
+// pretending to be a system. Left as an array so P.pack on an old profile still
+// indexes something, with every entry identical so it cannot matter.
+var PACKPEN=[0.80,0.80,0.80];
 // How far up the operator the waterline sits, in world pixels from the feet.
 // Measured rather than guessed: sampling a pixel column through the player at 2x
 // zoom puts the top of the head 44 screen pixels above the feet, so the sprite is
@@ -609,7 +643,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.19';
+var VER='5.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -967,6 +1001,17 @@ var TAGS=['Felt great','Too easy','Too hard','Too dark',
   'Howler great','Howler unfair','Raiders felt human','Raiders felt dumb',
   'Extract too easy','Extract too tense','Loot boring','Loot exciting',
   'Maps feel samey','This map has character','Ran out of ammo','New machines too rare'];
+function craftPart(k){
+  return k==='scrap'||k==='wire'||k==='cell'||k==='board'||k==='comp'||k==='servo';
+}
+function craftUse(k){
+  if(k==='scrap'||k==='wire') return 'component kits and mainframe racks';
+  if(k==='cell')  return 'ammunition, smoke, mainframe racks';
+  if(k==='board') return 'armour plates and mainframe racks';
+  if(k==='comp')  return 'plates, ammunition, medkits, gun repair';
+  if(k==='servo') return 'repairing worn guns';
+  return 'crafting';
+}
 var RECIPES=[
   {name:'Component Kit',out:{comp:1},need:{scrap:3,wire:2}},
   {name:'2x Ammo Box',out:{ammobox:2},need:{comp:1,cell:1}},
@@ -6444,9 +6489,15 @@ function buildRaid(sim){
   if(!wep||wep.id==='fists'||!P.weapons||P.weapons.indexOf(P.equipped)<0){
     wep=WEAPONS[pick(STARTERS)]; wepIssued=true;
   }
-  // Secondary: the Scav Pistol, always. Swap to it with X. It is issued kit, so
-  // it is never taken from the armoury and never lost from it.
-  var sec=WEAPONS.pistol;
+  // Secondary: YOURS if you have chosen one and still own it, otherwise the
+  // issued Scav Pistol. Swap with X. An issued sidearm is a loaner and is never
+  // taken from the armoury nor lost from it; one you chose rides the same rules
+  // as your primary, which per his Q16 means you lose it when you die.
+  var sec=WEAPONS.pistol, secIss=true;
+  if(P.equippedSec&&P.equippedSec!=='fists'&&WEAPONS[P.equippedSec]&&
+     (P.weapons||[]).indexOf(P.equippedSec)>=0&&P.equippedSec!==P.equipped){
+    sec=WEAPONS[P.equippedSec]; secIss=false;
+  }
   // Never drop the operator into a flooded tile. Water defeats crouch and halves
   // your speed, so a wet spawn means announcing yourself from second zero with
   // nothing you can do about it. Measured at 4.75% of maps before this.
@@ -7137,7 +7188,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
       armorCap:(sim?rigCeil(armorById(simRigId())):rigCeil(myRig())),
       rig:(sim?simRigId():((P&&P.rig)||'none')),face:0,wep:wep,
       ammo:wep.mag,reserve:wep.mag*2,sec:sec,secAmmo:sec.mag,reloading:0,lastShot:-9999,stam:100,
-      wepIssued:wepIssued,secIssued:true,wepFromArmory:!wepIssued,secFromArmory:false,
+      wepIssued:wepIssued,secIssued:secIss,wepFromArmory:!wepIssued,secFromArmory:!secIss,
       bob:0,recoil:0,hitFlash:0,downed:false,downT:0,revived:false,iv:0,jam:0,pendKiller:null,
       roll:0,rollCd:0,rollDir:{x:1,y:0},ads:false},
     // THE HOTBAR YOU PLANNED, v3.57. "should be able to build out your hotbar
@@ -19960,7 +20011,7 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
         Math.round(RG.absorb*100)+'% of every hit until it is gone.';
     }
   })();
-  var sl=document.getElementById('stashlist'); sl.innerHTML='';
+  var sl=document.getElementById('stashgrid'); if(sl) sl.innerHTML='';
   // DEFENCE IN DEPTH, v1.69. loadProfile has filtered unknown stash and armoury keys
   // since v0.48, and that is the right place to repair a save. It is not enough on its
   // own, because it only runs at LOAD: a key with no ITEMS entry that enters the stash
@@ -19977,51 +20028,95 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
     var em=document.createElement('div'); em.className='hint';
     em.textContent='Inventory is empty. Deploy, loot, extract.'; sl.appendChild(em);
   }
-  keysArr.forEach(function(k){
-    var it=ITEMS[k],row=document.createElement('div'); row.className='row';
-    var sw=iconImg(k,24);   // the item's face, v2.88; the 3px swatch is retired
-    var nm=document.createElement('div'); nm.className='nm r-'+it.r;
-    nm.textContent=it.name+' x'+counts[k];
-    var IC=itemClass(k);
-    var tg=document.createElement('div'); tg.className='itag';
-    tg.textContent=IC.t; tg.style.color=IC.c; tg.style.borderColor=IC.c;
-    var vl=document.createElement('div'); vl.className='vl'; vl.textContent=ival(k)+'c';
-    // HIS NOTES, v3.57: "next to sell there should be the option to equip if
-    // applicable" and "should be able to build out your hotbar when in
-    // inventory". A field gun equips into the armoury on the spot. A usable
-    // (medical, throwable, plate) goes onto the first open cell of the hotbar
-    // plan. Salvage gets neither button, selling is what salvage is for.
-    if(it.use==='gun'&&it.gk&&WEAPONS[it.gk]){
-      var eq=document.createElement('button'); eq.textContent='Equip';
-      eq.onclick=function(){
-        var ix2=P.stash.indexOf(k); if(ix2<0) return;
-        P.stash.splice(ix2,1);
+  // ---- TABS, his Q12. Four categories plus everything, each carrying its count,
+  // so you can see there is nothing under PARTS without clicking PARTS.
+  var TABS=[['all','ALL'],['gun','GUNS'],['armor','ARMOUR'],['part','PARTS'],['use','CONSUMABLES']];
+  function tabOf(k){
+    var t=ITEMS[k]; if(!t) return 'part';
+    if(t.use==='gun') return 'gun';
+    if(t.use==='armor') return 'armor';
+    if(craftPart(k)) return 'part';
+    if(t.use) return 'use';
+    return 'part';
+  }
+  if(!P.stashTab) P.stashTab='all';
+  var tb=document.getElementById('stashtabs');
+  if(tb){
+    tb.innerHTML='';
+    TABS.forEach(function(T){
+      var cnt=keysArr.filter(function(k){ return T[0]==='all'||tabOf(k)===T[0]; })
+                     .reduce(function(a,k){ return a+counts[k]; },0);
+      var d=document.createElement('div');
+      d.className='invtab'+(P.stashTab===T[0]?' on':'');
+      d.textContent=T[1]+'  '+cnt;
+      d.onclick=function(){ P.stashTab=T[0]; saveProfile(); renderHub(); };
+      tb.appendChild(d);
+    });
+  }
+  var detail=document.getElementById('stashdetail');
+  function detailIdle(){
+    if(detail) detail.innerHTML='<span style="opacity:.55">Point at an item for what it is worth and what it is for. '+
+      'Click a cell to tag it JUNK; junk is what the sell button clears.</span>';
+  }
+  detailIdle();
+  var shown=keysArr.filter(function(k){ return P.stashTab==='all'||tabOf(k)===P.stashTab; });
+
+  shown.forEach(function(k){
+    var it=ITEMS[k];
+    if(!sl) return;
+    // ONE CELL PER ITEM, one stack, whatever the quantity. Minecraft rules, and
+    // rarity lives on the border so a screen reads at a glance without words.
+    var cell=document.createElement('div');
+    var isJunk=(P.junk||{})[k]?true:false;
+    cell.className='cell c-'+(it.r||'common')+(isJunk?' junk':'');
+    cell.innerHTML=iconImgHTML(k,30)+(counts[k]>1?('<span class="cnt">'+counts[k]+'</span>'):'');
+    cell.title=it.name;
+    cell.onmouseenter=function(){
+      if(!detail) return;
+      var what=craftPart(k)
+        ? '<span style="color:var(--gain)">KEEP &mdash; '+escHtml(craftUse(k))+'</span>'
+        : (it.use ? '<span style="color:var(--coolant)">'+escHtml(String(it.use).toUpperCase())+'</span>'
+                  : '<span style="color:var(--ash)">salvage, sell it</span>');
+      detail.innerHTML='<b class="r-'+(it.r||'common')+'">'+escHtml(it.name)+'</b>  x'+counts[k]+
+        '  &middot;  '+ival(k).toLocaleString()+'c each  &middot;  '+what+
+        (isJunk?'  &middot;  <span style="color:var(--rust)">TAGGED JUNK</span>':'')+
+        '<span id="stashacts" style="margin-left:10px"></span>';
+      var acts=document.getElementById('stashacts');
+      function act(label,fn){
+        var b=document.createElement('button');
+        b.textContent=label; b.style.cssText='padding:2px 8px;font-size:10px;margin-left:5px';
+        b.onclick=function(ev){ ev.stopPropagation(); fn(); };
+        acts.appendChild(b);
+      }
+      if(it.use==='gun'&&it.gk&&WEAPONS[it.gk]) act('Equip',function(){
+        var ix=P.stash.indexOf(k); if(ix<0) return;
+        P.stash.splice(ix,1);
         if(P.weapons.indexOf(it.gk)<0) P.weapons.push(it.gk);
         P.equipped=it.gk; saveProfile(); renderHub();
-      };
-      row.appendChild(eq);
-    }
-    else if(it.use==='heal'||it.use==='throw'||it.use==='armor'){
-      var sb=document.createElement('button'); sb.textContent='Slot';
-      sb.title='Put this on the first open hotbar cell';
-      sb.onclick=function(){
+      });
+      if(it.use==='heal'||it.use==='throw'||it.use==='armor') act('Slot',function(){
         P.hotAssign=P.hotAssign||{};
-        var placed=false,si;
-        // First open cell, counting from 1 like the keys do. It used to start at
-        // five, so your first slotted item landed in the middle of the bar.
-        for(si=0;si<HOTBAR_N&&!placed;si++) if(P.hotAssign[si]===undefined){ P.hotAssign[si]=k; placed=true; }
-        if(placed){ saveProfile(); renderHub(); }
-      };
-      row.appendChild(sb);
-    }
-    var b=document.createElement('button'); b.textContent='Sell';
-    b.onclick=function(){
-      var ix=P.stash.indexOf(k);
-      if(ix>=0){ P.stash.splice(ix,1); P.credits+=ival(k); P.rep+=ival(k); saveProfile(); renderHub(); }
+        for(var si=0;si<HOTBAR_N;si++) if(P.hotAssign[si]===undefined){ P.hotAssign[si]=k; break; }
+        saveProfile(); renderHub();
+      });
+      act('Sell one',function(){
+        var ix=P.stash.indexOf(k);
+        if(ix>=0){ P.stash.splice(ix,1); P.credits+=ival(k); P.rep+=ival(k); saveProfile(); renderHub(); }
+      });
     };
-    row.appendChild(sw); row.appendChild(nm); row.appendChild(tg); row.appendChild(vl); row.appendChild(b);
-    sl.appendChild(row);
+    cell.onclick=function(){
+      P.junk=P.junk||{};
+      if(P.junk[k]) delete P.junk[k]; else P.junk[k]=1;
+      saveProfile(); renderHub();
+    };
+    sl.appendChild(cell);
   });
+  if(!shown.length&&sl){
+    var em2=document.createElement('div'); em2.className='cellempty';
+    em2.style.cssText='grid-column:1/-1;padding:14px;text-align:center';
+    em2.textContent=(P.stashTab==='all')?'Nothing in the stash. Deploy, loot, extract.':'Nothing under this tab.';
+    sl.appendChild(em2);
+  }
   // REPUTATION HAD NO VISIBLE SOURCE, v3.23, and his own profile is the evidence:
   // 35 runs, 8 extracted, best haul 11,500c, and REP 0. Not low. Zero.
   // Reading the code for where rep comes from: P.rep is never decremented
@@ -20550,13 +20645,21 @@ function renderWork(){
 document.getElementById('deploy').onclick=function(){ ac(); startRaid(); };
 document.getElementById('backfloor').onclick=function(){ document.getElementById('hub').classList.remove('on'); };
 document.getElementById('sellall').onclick=function(){
-  var kept=[],gained=0;
+  // HIS Q11 and his note about crafting: the obvious button used to sell the
+  // scrap, wire, cells and boards that every recipe and the mainframe racks are
+  // built from. It now clears exactly two things: what he has TAGGED as junk,
+  // and loose salvage that has no use at all. Crafting parts are never sold by
+  // it, whatever their use field says, and neither is anything usable.
+  var kept=[],gained=0,sold=0;
   P.stash.forEach(function(k){
-    if(ITEMS[k].use) kept.push(k);
-    else gained+=ival(k);
+    var it=ITEMS[k];
+    var junk=(P.junk||{})[k];
+    var keep = it && !junk && (it.use || craftPart(k));
+    if(keep) kept.push(k); else { gained+=ival(k); sold++; }
   });
   P.credits+=gained; P.rep+=gained; P.stash=kept;
   saveProfile(); renderHub();
+  say2(sold?('Sold '+sold+' for '+gained.toLocaleString()+'c.'):'Nothing tagged junk, and no loose salvage.');
 };
 document.getElementById('shopbtn').onclick=function(){ renderShop(); document.getElementById('shopmodal').classList.add('on'); };
 document.getElementById('mercclear').onclick=function(){
@@ -21087,7 +21190,9 @@ function renderStage(prefill){
   var S=document.getElementById('stagestash'); S.innerHTML='';
   var counts={};
   P.stash.forEach(function(k){ var it=ITEMS[k];
-    if(!it||!it.use||it.use==='key') return;
+    if(!it||!it.use) return;
+    // Keys BELONG on this list. Excluding them was the whole of "how do I take
+    // keys into raids": you could not, at all.
     counts[k]=(counts[k]||0)+1; });
   var taken={}; kit.forEach(function(k){ taken[k]=(taken[k]||0)+1; });
   var any=false;
