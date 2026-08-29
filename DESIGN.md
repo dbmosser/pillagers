@@ -17541,3 +17541,70 @@ raider-paused note is my best reading of what you saw rather than a
 reproduction, since I could not reproduce the exact moment. The 320-seed
 run was on GREYWATER because that is where run #61 died; the same change
 has not been priced on COLD STORAGE, which is the map you mostly play.
+
+### m510 - v5.01 and v5.02: the Quarry was not glitched, your body was being drawn a third of a screen above your own feet
+
+A third report, run #63, and it is the most valuable one you have ever
+sent because you abandoned the raid over it. Three notes: "glitchy,
+walls/player location inaccurate", "player step white circle graphics are
+glitching/inaccurate", and "i think this entire map is just glitched --
+restarting". THE QUARRY.
+
+You were right and here is exactly what it was.
+
+Standing on a deck translates your SPRITE upward by that deck's lift
+value. THE QUARRY authors lifts of 132, 99, 66 and 33. The other three
+maps use 24 to 48, which is why this has only ever happened to you on the
+Quarry. But the deck itself is painted FLAT at its true position: the bake
+draws the surface at its own y with a contact shadow at half the lift and
+a four pixel lip, and that is all the height the art ever conveys.
+
+So on THE RIM your operator was drawn 132 pixels above the platform he was
+standing on, while your cursor, your noise rings, your light and every
+wall stayed at your real position. The capture is unarguable: character
+near the top of the screen, crosshair and footstep rings 120 pixels below
+it. Both of your notes are the same bug seen from two angles, and "the
+whole map is glitched" is a fair verdict on it.
+
+THE LIFT VALUES ARE NOT PIXEL OFFSETS. They are world heights, used for
+y-sorting and sight lines. Feeding one straight into a canvas translate is
+the mistake, and it went unnoticed because three of the four maps happen
+to author values small enough to read as "standing on something".
+
+The DRAW lift is now clamped to 30, which is the top of the range the
+other three maps already use and which the deck art actually supports.
+Nothing about sorting, sight, collision or the lift values themselves
+changes; this governs only how far a sprite is nudged on screen. Noise
+rings get the same clamped lift instead of none, so a footstep made on a
+deck sits under the body that made it.
+
+A proper raised-deck render, where the platform surface is drawn at its
+own height with a visible side wall, is the real long-term answer and is a
+much bigger piece of work. This makes the Quarry playable today and makes
+all four maps agree.
+
+ELITE GUNS. Your note at one second: "there need to be elite guns that you
+can't buy, you can only find on maps." Checked before building anything,
+and they already exist. Thirteen weapons; the trader sells four. The
+Carbine, the Riot Scattergun and the LMG are tier 3, 3 and 4, they are in
+the world loot tables, and no amount of money will ever buy one. The
+mechanic you asked for has been in the game the whole time and the game
+never said so, which is the same shape as the caches and the weak points:
+a real system nobody can see. The trader now says it out loud, on the one
+screen where you are deciding what to spend money on, and names them.
+
+If what you actually want is MORE of them, or genuinely named one-off
+weapons rather than the existing tier 3 and 4 guns being find-only, that
+is a content job and I will take it on your word.
+
+Verified: parse PASS at v5.02; four-map sweep clean at 110, 111, 74 and 91
+entities with container counts unchanged; all three raid endings; hub
+clean. The Quarry photographed before and after standing on THE RIM: body
+and crosshair 120 pixels apart before, coincident after. World lift still
+reads 132 while the draw clamp is 30, so the logic is untouched. Save and
+restore balance counted per frame on all four maps and is zero. The shop
+line read back off the live element.
+
+Not verified: I could not reproduce the exact moment you abandoned, so the
+fix is aimed at the cause the capture proves rather than at your specific
+frame. No balance run; none of this touches a number a raid depends on.
