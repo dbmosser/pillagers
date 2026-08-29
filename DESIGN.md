@@ -19021,3 +19021,54 @@ time-to-kill one. I know it never landed a hit on a backpedalling player in
 fourteen seconds; I do not know how long killing one actually takes.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.46  TWO GUNS YOU CANNOT BUY
+================================================================================
+
+v5.46: two guns you cannot buy
+
+HIS NOTE, run #63: "there need to be elite guns that you can't buy, you can only
+find on maps."
+
+CHECKED FIRST: there was not one. All seven guns are in the SHOP, the seal
+rewards, or the Peddler, and PED_GUNS listed EVERY SINGLE ONE, so the gambler
+alone could hand you the complete armoury for 450c a pull. Nothing in the game
+was findable-only, so there was nothing a map could give you that money could
+not.
+
+These two are deliberately not "the same gun with bigger numbers", because a
+strictly better rifle only makes the rifle obsolete and changes no decision.
+Each does something no purchasable gun can:
+
+THE WHISPER, 14 damage, 520 rpm, 30 rounds, NOISE 90. The quietest shop weapon
+is 330. Ninety puts a shot underneath the 210 unit radius inside which a hunting
+Listener re-acquires you, so it is the only firearm in the game that does not
+automatically end a ghost run. That makes the stealth path I built at v5.36 into
+something you can equip FOR rather than merely attempt, and it gives the noise
+system a second answer besides crouching.
+
+THE MERIDIAN LANCE, 96 damage, 3 rounds, 4 second reload, noise 620, the loudest
+thing a person can carry. It drops a Listener in two shots and a sentry in one,
+and then you are standing in the open holding an empty gun that just told the
+whole map where you are. It is a decision about the next thirty seconds rather
+than a weapon you hold down.
+
+WHERE THEY COME FROM, measured over 4,000 opens of every container type:
+  crate 0%   locker 0%   body 0%   botwreck 0%
+  safe 6.3%   cache 11.8%   jackpot 59.2%
+Nothing ordinary drops them. A cache is placed deliberately every raid, a safe
+is a decision to stop, and a jackpot is the Meridian Strongbox. Confirmed absent
+from SHOP, from PED_GUNS and from the seal rewards by reading all three.
+
+Verified: parse PASS at v5.46; four maps 85/86/57/71; all three endings through
+the outcome screen; hub and ascent check clean. Both guns equipped, fired, and
+their icons drawn, because a missing gunshot voice or a missing icon would only
+ever surface there.
+
+Not verified: neither gun has been fired at anything by a person. I know the
+Whisper's noise number sits below the Listener's re-acquire radius; I do not know
+that a whole raid played with it feels like stealth rather than like a weak gun.
+That is the question his next run answers.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
