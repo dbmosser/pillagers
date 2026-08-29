@@ -507,7 +507,7 @@
 </div>
 <div class="modal" id="primermodal">
   <h3>FIRST TIME OUT</h3>
-  <div class="msub">Eight things worth knowing before you take the lift up. You can bring this back any time from Settings.</div>
+  <div class="msub">What is worth knowing before you take the lift up. The first three are the ones that get people killed. You can bring this back any time from Settings.</div>
   <div id="primerlist" class="plist"></div>
   <div style="display:flex;gap:10px;margin-top:10px;align-items:center">
     <label style="display:flex;gap:6px;align-items:center;font-size:11px;color:var(--ash);cursor:pointer">
@@ -755,7 +755,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.55';
+var VER='5.56';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22569,16 +22569,20 @@ document.getElementById('closesector').onclick=function(){
 // particular has been in since v2.72 and is auto-detecting, so nobody has ever
 // been told it exists.
 var PRIMER=[
-  ['This is a raid, not a level','Drop in, take what you can carry, and call extraction. Reaching the surface with a full bag is the whole game. Dying leaves it all on your body.'],
-  ['An Xbox controller just works','Plug one in and it takes over: left stick moves, right stick aims, RT fires, LB reloads, A rolls. No toggle and no setup, and unplugging hands control straight back to the mouse.'],
+  ['This is a raid, not a level','You ASCEND from the Undercroft, take what you can carry, and call extraction to come back down. Reaching the lift with a full bag is the whole game.'],
+  ['Dying costs you everything you carried','There is no body to go back for and no insurance. Your bag, both guns and the rig you were wearing are gone. Credits, reputation and anything already in the stash are safe. That is the whole risk, and it is why walking out early is a real decision.'],
+  ['Something hunts by SOUND, and running is the worst answer','The Listener. It is faster than you, so you cannot outrun it, and sprinting makes it track you BETTER. CROUCH and move, or back away firing. It loses you in about eight seconds. The screen tells you this while one is hunting; believe it the first time.'],
+  ['You carry TWO guns and the second slot can be empty','Gun 1 and gun 2, chosen on the figure in your stash or on the ascent check, and X swaps between them out there. Leaving gun 2 empty is a real choice: one gun is lighter and quieter.'],
+  ['A rig you find can be put on out there','Body armour is an ordinary item. Find a better one mid-raid, open your bag, press ENTER and she puts it on. It takes three seconds and the new rig starts EMPTY, so do it between fights and not during one.'],
   ['E is the verb','E searches a container, opens the Peddler, revives a downed pillager, and calls extraction when you stand in a ring. TAB is your bag, M is the map, H cycles the controls legend.'],
   ['Selling at home is the only thing that earns REP','The Peddler out in the field pays cash and no standing. REP is what unlocks every rig, gun and pack in Requisition, and it only comes from selling salvage in the Undercroft.'],
-  ['Your progress is permanent, your rig is not','Credits, reputation, weapons, unlocks and stats all carry between sessions automatically. The rig you are wearing does not: die and it stays on your body with everything else.'],
+  ['Walking out unseen pays 40 percent more','If nothing ever finds you, the whole haul pays extra. The readout top right says UNFOUND while it is still true. Anything that starts hunting you ends it, so this is the reward for the quiet route rather than a bonus you stumble into.'],
   ['Calling extraction is the loudest thing you do','Hold E in an extraction ring to call it, wait, then hold E again to extract. The heavier your bag, the more of the map comes to meet you. You can still be hauled aboard while downed.'],
   ['The conditions box is telling you something','Top right of the screen. Fog cuts how far you see, rain and storm cut how far you are HEARD, a blackout kills the lamps. It states the actual numbers, not the mood.'],
   ['A purple ring means elite','About one machine or pillager in twelve is elite: twice the health, harder hits, a purple ring at its feet, and a deeper bag when it falls. The colour is the same purple the loot pips use for elite, on purpose.'],
   ['A hired merc is a partner now','Hire one at the Bench. B cycles his orders, loot free, follow you, or hold a spot. Stand with him and E searches his bag; drag an item from yours onto him and he will actually use it. Go down and he comes for you.'],
-  ['The Undercroft has a radio','A faint 16-bit loop plays down here. The Music row in Settings cycles it: UNDERCROFT only, ALWAYS, or OFF.'],
+  ['The Undercroft has a radio','Three 16-bit pieces play down here, one picked at random each time you come back. The surface is deliberately silent. The Music row in Settings cycles it: UNDERCROFT only, ALWAYS, or OFF.'],
+  ['One thing out there does not chase you','The Choir. It is bolted to the ground on top of a cache and it never takes a step, but it fires in every direction for about fifty metres. Stand outside that and it cannot touch you. It is not a fight you have to take; it is a question about whether the cache is worth it.'],
   ['The HUD is yours to arrange','The raider list, the conditions box and the key legend all collapse on their corner glyph and drag anywhere. Positions stick between raids.'],
 ['The Bulwark carries a wall','The big one with the slab. Shooting the slab is close to useless: it eats almost everything and all the noise you make doing it brings company. Its back is soft and it is marked, a hot orange seam you can see from across a street. It walks at you and never stops, so the fight is a circle, not a duel. Or leave it. It is slower than you are.'],
   ['Some contracts judge how you played','Most contracts count things: kill six, open five, carry two out. Some instead set a condition on the whole raid. Walk out without a single heal. Leave without killing anything. Be gone inside three minutes. They pay well because they take away the thing you would normally reach for, and they are only banked if you actually extract.'],

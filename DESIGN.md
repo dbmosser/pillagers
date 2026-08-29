@@ -19624,3 +19624,65 @@ three loadout slots is the right number. Those are the questions his next
 session answers and none of them have an instrument here.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.56  THE FIRST THING A BETA PLAYER READS WAS LYING TO THEM
+================================================================================
+
+v5.56: the first thing a beta player reads was lying to them
+
+FOUND BY AUDIT, and it is the worst text in the game to have got wrong.
+
+The primer card is shown ONCE, to a profile that has never finished a raid.
+That is exactly why my v5.41 language sweep missed it: it renders for nobody but
+a brand new player, and I was never a brand new player. It is the first text in
+the game and it was wrong about the single most important rule in it.
+
+  "Dying leaves it all on your body"          bodies were deleted at v5.28
+  "die and it stays on your body"             there is no body to go back to
+  "An Xbox controller just works"             he cut controller from beta v1
+  "Drop in, take what you can carry"          you ASCEND, per his own lore note
+  "The Undercroft has a radio, a faint loop"  there are three pieces now
+  "Eight things worth knowing"                it listed sixteen
+
+Teaching a new player that their kit waits on their corpse is worse than
+teaching them nothing. They will go back for it, find bare ground, and conclude
+the game is broken. The count in the subtitle is the same class of fault: a
+hardcoded number in a sentence about a list is a lie waiting for the next person
+to add a row, and it had already happened.
+
+It also said NOTHING about the things that actually kill a new player or make
+the game worth playing. The first three cards are now the three that get people
+killed:
+
+  This is a raid, not a level          you ascend, you take, you come back down
+  Dying costs you everything carried   no body, no insurance, and why walking
+                                       out early is a real decision
+  Something hunts by SOUND             the Listener is faster than you, so
+                                       running cannot work and sprinting makes
+                                       it track you BETTER. Crouch and move.
+
+Then the things nobody would otherwise discover: two gun slots and why leaving
+the second empty is a choice, putting on a rig you find mid-raid, the forty
+percent for walking out unfound, and the Choir being a question rather than a
+fight.
+
+Verified: parse PASS at v5.56. The card lists 19 rows and renders all 19. Every
+one of the four old lies is gone by direct test, and all eight new topics are
+present. The subtitle no longer states a count. Four maps 86/87/58/72, all three
+endings through the outcome screen, hub and ascent check clean, 24 hooks
+present, fixture silent.
+
+TWO OTHER CHECKS THIS TICK, both of things I had built but never watched fire:
+Q42 damage numbers DO appear, verified by putting rounds into the Choir for 14
+damage and catching the number as it was raised. They fire only for damage YOU
+deal, which is correct and is the whole point of the weak point system. Q28's
+hot zone timer accumulates at 1.004x realtime and the move fires at its
+threshold, relocating the zone and incrementing its counter.
+
+Not verified: the primer is 19 rows now, which is more than anyone reads before
+their first raid. I have made it TRUE and put the lethal three at the top; I
+have not made it short, and whether a nineteen row card gets read at all is a
+question the card cannot answer about itself.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
