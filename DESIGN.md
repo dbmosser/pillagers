@@ -21045,3 +21045,37 @@ outcome screen, the operator terminal and the Undercroft at 1080p, but not the
 Workshop, the hire bench, the Gambler, Settings or the tuning console. Those are
 the screens most likely to still carry a sentence written for a version of the
 game that no longer exists, on the evidence of every one I have looked at so far.
+
+## v5.85: Settings contradicts itself in its first two lines
+
+Continuing the 1080p read-every-screen sweep onto the ones I had never opened.
+
+SETTINGS says, at the top: "Presentation only. Nothing here changes the game, the
+balance or your profile." The very first block inside it is headed THE RAID, and
+those six rows set enemy counts, damage taken, raid length, loot value and how
+much of the map comes to your extraction. They change the game, the balance and
+the profile, which is three for three against the sentence directly above them.
+
+The header is simply older than the panel. Presentation WAS all this held until
+v5.2x put the raid options at the top on his own ask for ease of use, and nobody
+revisited the line above them. Anyone who read the header and stopped would never
+find the sliders they came in for. It now says which half does what.
+
+CHECKED AND CLEAN, so the sweep is not just a list of faults: the Workshop's copy
+matches its recipes and none of the seven produces a rig, so crafting survived the
+rig removal untouched. The hire bench describes the mercenary contract exactly as
+the code settles it, ten percent of his haul, the death benefit, B for orders, and
+he comes for you when you go down. The Gambler carries the line he asked for about
+items going straight to the stash. Requisition lists no rig.
+
+Verified: parse PASS at v5.85; four maps 86/87/58/72 entities and 236/200/154/225
+containers at baseline; all three real endings through the outcome screen with
+extract paying 48c and dead and abandon zero; hub and ascent check; the Settings
+header reading the new line with no trace of the old claim.
+
+Not verified: the tuning console is the last screen I have not read at 1080p, and
+it is the one with the most numbers on it and therefore the most room for a label
+that no longer matches its dial. I also have not re-read Settings with its rows
+RENDERED rather than as an empty shell, because renderSettings lives inside the
+IIFE and the fixture cannot call it, so the six raid rows are confirmed by source
+and by the v5.63 default check rather than by a photograph.
