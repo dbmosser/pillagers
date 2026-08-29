@@ -23709,3 +23709,66 @@ already own still lives in the armoury and is reached through the picker. Making
 guns render as stash cells is the next step and is not in this build. I also did not
 re-check the raid-side hotbar, which has always refused to fire a key for slots 1 and 2
 and is unchanged.
+
+## v6.44 - THE FREEBIE KIT
+
+His spec, across three notes: an option at the top of the ascent check to take a freebie
+kit; choosing it means no guns, no heals, nothing of his own goes up; the kit is one
+Scav Pistol, two Bandages, one Frag Charge and one Armour Plate; the page darkens and
+he just clicks ASCEND; and anything already in his inventory or on the hotbar goes back
+to the stash.
+
+Built on machinery that already existed for this exact shape. The dev crate has granted
+free items outside the stash since SPEC 3.4, and the loaner sidearm has been issuing a
+gun that is neither taken from the armoury nor lost from it for just as long. The
+freebie kit is those two ideas with a different list, opted into per run.
+
+THE CONTENTS ARE DECLARED ONCE and read by both the banner that describes them and the
+raid that hands them out, because a list written in two places is a list that drifts.
+
+Choosing it empties the kit and the hotbar plan. Nothing has to be "returned": P.kit is
+a SELECTION out of the stash rather than a move, so emptying it puts everything back by
+itself, and the stash count is unchanged across the whole flow, which I checked.
+
+The pistol is an issued loaner, so his own guns are untouched: after a freebie run he
+still owns his rifle and SMG and they are still the ones equipped for next time.
+
+TWO FAULTS OF MINE, both caught by driving the ascend rather than reading it.
+
+The first meant the feature did nothing at all. I cleared the freebie flag inside the
+loadout intake, which runs EARLIER in the same function than the block that hands the
+kit out, so the grant tested a flag that had already been zeroed. The run went up with
+his own Auto Rifle and Compact SMG and I very nearly recorded the two bandages in his
+bag as proof it worked; they were the issued-heals rule that has always topped up an
+empty bag. The flag now rides on the raid object, set where it is consumed and read
+after.
+
+The second was quieter and would have shipped: my armour branch applied the plate to
+armour and consumed it either way, with no fall-through to the bag. You always land at
+a full 60 armour, so the plate was silently eaten on every single freebie run. It now
+mirrors the standard intake exactly, which has always fallen through to the bag when
+there is no room.
+
+AND TWO LINES THAT CONTRADICTED THE BANNER, seen in the capture of my own screen. The
+summary strip and the warning sit OUTSIDE the dimmed grid, so with the freebie chosen
+the strip still read "Auto Rifle . Compact SMG . Body Armour, 60 armour . nothing
+packed" underneath a banner saying none of his gear was going up, and the warning said
+he had nothing to heal with while the kit hands him two bandages. Both read the freebie
+now. The strip also lost the dated "Body Armour" rig name, fixed on the stash readyline
+at v6.38 and missed here because a different function builds it.
+
+Verified: parse PASS at v6.44; the banner driven from off to on and back; the kit
+committed through the real ASCEND button and read out of the live raid as a Scav Pistol
+marked issued, no second gun, two bandages and a plate in the bag, one frag in the
+pouch, 60 armour, his own guns and stash untouched, and the flag cleared afterwards; the
+summary strip and warning read back in both states; the bot sim path checked separately
+and does NOT receive the kit, so balance measurements are unaffected; four maps
+86/87/58/72 entities and, at seed 4242, 246/193/152/216 containers; all three endings
+through the outcome screen to a drawn hub; hub, renderStage and the export builder; pin
+audit clean; captured at 1080p.
+
+Not verified: I did not play a freebie run to its end, so the death path with an issued
+pistol is reasoned from the loaner rules rather than observed. The kit is granted at
+raid build; I did not check what happens if he opens the ascent check, takes the
+freebie, backs out to the floor and ascends by quick-ascent from the lift instead, which
+takes a different route into the same commit and should carry the flag but is untested.

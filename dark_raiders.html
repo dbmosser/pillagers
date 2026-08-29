@@ -185,6 +185,16 @@
   .imenurow.dim{ opacity:.38; cursor:default; }
   .imenurow.dim:hover{ background:none; color:var(--bone); }
   .imenusep{ height:1px; background:var(--steel-hi); margin:4px 0; }
+  /* THE FREEBIE KIT, v6.44. Choosing it makes the whole check inert: every panel
+     dims and stops taking the pointer, so there is nothing to fiddle with and the
+     only live things left are the banner and ASCEND. */
+  #stagemodal.freekit .hubgrid{ opacity:.28; pointer-events:none; filter:saturate(.35); }
+  #stagemodal.freekit #stagebuy{ opacity:.28; pointer-events:none; }
+  .fkbox{ margin:10px 0; padding:9px 12px; border:1px solid var(--amber); border-radius:3px;
+    background:rgba(255,192,74,.08); display:flex; align-items:center; gap:12px; }
+  .fkbox b{ color:var(--amber); letter-spacing:.1em; font-size:10.5px; }
+  .fkbox span{ flex:1; color:var(--ash); font-size:10.5px; }
+  .fkbox button{ min-width:132px; }
   .imenukeys{ padding:6px 11px 8px; display:flex; align-items:center; gap:5px; flex-wrap:wrap; }
   .imenukeys span{ color:var(--ash); margin-right:2px; }
   .imenukeys button{ padding:2px 0; width:20px; font-size:10px; min-width:0; }
@@ -635,6 +645,7 @@
   <div class="msub" id="stagewhere"></div>
   <div id="stagewarn" style="margin:10px 0;font-size:11px;padding:8px 10px;display:none;
        border:1px solid var(--hazard);border-radius:3px;color:var(--hazard)"></div>
+  <div id="freekit"></div>
   <div class="hubgrid" style="margin-top:10px;grid-template-columns:236px 1fr 1fr">
     <div class="panel">
       <h2>1 &middot; Your operator</h2>
@@ -948,7 +959,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.43';
+var VER='6.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7828,6 +7839,11 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
         }
       }
       P.kitChosen=0;
+      // Freebie kit is per run. The flag moves onto the raid here, because the block
+      // that hands the kit out runs LATER in this same function and a profile flag
+      // cleared at this point is invisible to it. That is exactly the bug the first
+      // version shipped with.
+      if(P.freeKit&&!g.sim){ P.dropKit=[]; g.freeKit=1; P.freeKit=0; }
       var _dk=(P.dropKit||[]).slice(); P.dropKit=[];
       var _dcap=(g.player.armorCap===undefined?ARMOR_MAX:g.player.armorCap);
       for(var _di=0;_di<_dk.length;_di++){
@@ -7844,6 +7860,24 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
     // with you if you die. An empty stash used to mean no medical at all.
     // SPEC 3.4: the Dev Crate. Opted in per run, so testing gear never leaks
     // into a run he did not ask for.
+    if(g.freeKit){
+      var _fcap=(g.player.armorCap===undefined?ARMOR_MAX:g.player.armorCap);
+      for(var _fk=0;_fk<FREEKIT.length;_fk++){
+        var _fi=ITEMS[FREEKIT[_fk]]; if(!_fi) continue;
+        if(_fi.use==='throw'){ if(g.pouch[FREEKIT[_fk]]!==undefined) g.pouch[FREEKIT[_fk]]++; }
+        else if(_fi.use==='ammo'){ g.player.reserve+=_fi.amt; }
+        else if(_fi.use==='armor'&&_fcap>0&&g.player.armor<_fcap){
+          g.player.armor=Math.min(_fcap,g.player.armor+_fi.amt);
+        }
+        else g.bag.push(FREEKIT[_fk]);
+      }
+      if(WEAPONS[FREEKIT_GUN]){
+        g.player.wep=WEAPONS[FREEKIT_GUN];
+        g.player.ammo=g.player.wep.mag;
+        g.player.wepIssued=true; g.player.wepFromArmory=false;
+      }
+      g.player.sec=WEAPONS.fists; g.player.secIssued=true;
+    }
     if(P.devKit){
       var DEV=['medkit','medkit','plate','plate','ammobox','ammobox'];
       for(var dk=0;dk<DEV.length;dk++){
@@ -23748,16 +23782,24 @@ function renderStage(prefill){
     'Last stop before the lift. Everything on this page can still be changed. '+
     'Nothing leaves your stash until you press ASCEND.';
   document.getElementById('stagecred').innerHTML=P.credits.toLocaleString()+'<small>CREDITS</small>';
+  renderFreeKit();
   // WHAT YOU ARE ACTUALLY WALKING OUT WITH, in one sentence.
   (function(){
     var sw=document.getElementById('stagesum'); if(!sw) return;
+    if(P.freeKit){
+      var _fkg=WEAPONS[FREEKIT_GUN];
+      sw.innerHTML='<span style="color:var(--amber)">FREEBIE KIT</span>  &middot;  '+
+        escHtml(_fkg?_fkg.name:'Scav Pistol')+' (issued)  &middot;  no second gun  &middot;  '+
+        '60 armour  &middot;  2 Bandages, 1 Frag Charge, 1 Armour Plate';
+      return;
+    }
     var g1=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null;
     var g2=(P.equippedSec&&P.equippedSec!=='none'&&P.equippedSec!=='fists')?WEAPONS[P.equippedSec]:null;
     var rg2=myRig();
     var bits=[];
     bits.push(g1?escHtml(g1.name):'<span style="color:var(--hazard)">no gun of your own, a loaner</span>');
     bits.push(g2?escHtml(g2.name):'<span style="color:var(--ash)">no second gun</span>');
-    bits.push(rg2.cap?(escHtml(rg2.name)+', '+rigCeil(rg2)+' armour')
+    bits.push(rg2.cap?(rigCeil(rg2)+' armour')
                      :'<span style="color:var(--hazard)">no rig, zero armour</span>');
     var kn=stageKitLive().length;
     bits.push(kn?(kn+' item'+(kn===1?'':'s')+' packed'):'<span style="color:var(--ash)">nothing packed</span>');
@@ -23923,6 +23965,9 @@ function renderStage(prefill){
   var hasHeal=kit.some(function(k){ return ITEMS[k]&&(ITEMS[k].use==='heal'||ITEMS[k].use==='stim'); });
   if(!hasHeal) warn.push('nothing to heal with');
   var W=document.getElementById('stagewarn');
+  // The freebie kit is a complete loadout of its own, so warnings about HIS kit are
+  // not about this run at all.
+  if(P.freeKit){ W.style.display='none'; return; }
   if(warn.length){ W.style.display='block';
     W.innerHTML='<b>Going up with '+escHtml(warn.join(', '))+'.</b> That is allowed, and it is how short raids happen.'; }
   else W.style.display='none';
@@ -23936,7 +23981,44 @@ document.getElementById('stageback').onclick=function(){
 // THE LIFT MOVES: only now does anything leave the stash. Extracted at v6.18 from
 // the ascent check''s own button so that quick ascent cannot take a different path,
 // which is exactly what it had been doing.
+// THE FREEBIE KIT, v6.44, his spec: one scav pistol, two bandages, one grenade, one
+// armour plate. Declared once and read by both the banner that describes it and the
+// raid that hands it out, because a list written twice is a list that drifts.
+var FREEKIT=['bandage','bandage','frag','plate'];
+var FREEKIT_GUN='pistol';
+function freeKitText(){
+  return 'A Scav Pistol, two Bandages, one Frag Charge and one Armour Plate. Nothing '+
+         'of your own goes up: no guns, no items, nothing on a key.';
+}
+function renderFreeKit(){
+  var host=document.getElementById('freekit'); if(!host) return;
+  var on=!!P.freeKit;
+  host.innerHTML='<div class="fkbox">'+
+    '<b>FREEBIE KIT</b>'+
+    '<span>'+(on?'Taking the freebie kit. '+escHtml(freeKitText()):
+      'Go up with issued gear instead of your own. '+escHtml(freeKitText()))+'</span>'+
+    '<button class="deploy ghost" id="fkbtn">'+(on?'USE MY OWN GEAR':'TAKE THE FREEBIE KIT')+'</button>'+
+    '</div>';
+  var md=document.getElementById('stagemodal');
+  if(md) md.classList[on?'add':'remove']('freekit');
+  var b=document.getElementById('fkbtn');
+  if(b) b.onclick=function(){
+    if(P.freeKit){ P.freeKit=0; saveProfile(); renderStage(); return; }
+    // HIS NOTE: anything already picked goes BACK. P.kit is a selection out of the
+    // stash rather than a move, so emptying it returns those items by itself; the
+    // hotbar plan is cleared for the same reason, since a key pointing at something
+    // you are not carrying is the exact fault v5.72 fixed.
+    P.kit=[]; P.hotAssign={}; P._gunSlot=null;
+    P.freeKit=1;
+    saveProfile();
+    try{ sfx('pick'); }catch(e){}
+    renderStage();
+  };
+}
 function commitKit(){
+  // The freebie kit takes nothing out of the stash, so there is nothing to commit.
+  // kitChosen is still stamped so the raid does not fall back to the standard kit.
+  if(P.freeKit){ P.dropKit=[]; P.safeUp=null; P.kit=[]; P.kitChosen=1; saveProfile(); return true; }
   var kit=stageKitLive();
   P.dropKit=[];
   for(var i=0;i<kit.length;i++){
