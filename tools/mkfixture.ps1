@@ -89,6 +89,24 @@ window.__canvases=function(){ return {world:cv,overlay:hcv}; };
 window.__movers={seekPoint:seekPoint,navSeek:navSeek,mkSentry:mkSentry,mkRaider:mkRaider,dist:dist,buildNav:buildNav};
 window.__newRaid=function(){ G=buildRaid(true); return G; };
 window.__hub=function(){ return HB; };
+// v6.19: fire a station's REAL act, the same function its key press calls.
+// __station() with no arguments lists what is there. Without this, a probe can only
+// call the modal openers directly, which skips the station wiring, and the
+// quick-ascent bug at v6.18 lived in exactly that gap.
+window.__station=function(id,key){
+  if(!HB) HB=buildHub();
+  var out=[];
+  for(var i=0;i<HB.stations.length;i++){
+    var st=HB.stations[i];
+    if(id===undefined){ out.push({id:st.id,label:st.label,keys:Object.keys(st.acts||{})}); continue; }
+    if(st.id!==id) continue;
+    var k=key||'KeyE';
+    if(!st.acts||!st.acts[k]) return {err:'no act '+k+' on '+id,keys:Object.keys(st.acts||{})};
+    st.acts[k][1]();
+    return {fired:id+'.'+k,name:st.acts[k][0]};
+  }
+  return id===undefined?out:{err:'no station '+id};
+};
 // showScreen('hub') is the ONLY thing that builds HB, so every hub probe before
 // this hook existed had to reach for HB through a raid ending and got null.
 window.__showScreen=function(s){ showScreen(s); };

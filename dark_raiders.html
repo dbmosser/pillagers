@@ -934,7 +934,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.17';
+var VER='6.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20166,7 +20166,11 @@ function buildHub(){
   var stations=[
     {id:'lift',x:350,y:105,r:48,label:'ASCENT LIFT',sub:'to the surface',c:'#4de3d0',
 acts:{KeyE:['go up',function(){ openLift(); }],
-           KeyR:['quick ascent',function(){ ac(); startRaid(); }]}},
+           // v6.18: quick ascent means skip the SCREEN, not discard what you packed.
+           // This called startRaid directly and never set kitChosen, so the
+           // standard-kit fallback fired and the loadout stayed in the vault. The
+           // same fault as the ASCEND button at v6.11, in a second place.
+           KeyR:['quick ascent',function(){ commitKit(); ac(); startRaid(); }]}},
     {id:'trader',x:110,y:255,r:46,label:'TRADE, CRAFT AND HIRE',sub:'',c:'#ffc04a',vendor:1,
      acts:{KeyE:['trade',function(){ openTrader('buy'); }],
            KeyR:['craft',function(){ openTrader('craft'); }],
@@ -23850,8 +23854,10 @@ document.getElementById('stageback').onclick=function(){
   // Undercroft floor if the lift brought you straight here.
   if(offeredCount()>1){ renderSector(); openModal('sectormodal'); }
 };
-document.getElementById('stagedrop').onclick=function(){
-  // THE LIFT MOVES: only now does anything leave the stash.
+// THE LIFT MOVES: only now does anything leave the stash. Extracted at v6.18 from
+// the ascent check''s own button so that quick ascent cannot take a different path,
+// which is exactly what it had been doing.
+function commitKit(){
   var kit=stageKitLive();
   P.dropKit=[];
   for(var i=0;i<kit.length;i++){
@@ -23861,7 +23867,15 @@ document.getElementById('stagedrop').onclick=function(){
   // v6.01: the safe pocket only counts if the named item is genuinely going up.
   // Naming something you left in the vault protects nothing.
   P.safeUp=(P.safe&&P.dropKit.indexOf(P.safe)>=0)?P.safe:null;
-  P.kit=[]; P.kitChosen=1; saveProfile();
+  P.kit=[];
+  // Nothing committed means nothing was packed, and kitChosen stays 0 so the raid
+  // hands out the standard kit rather than sending him up with an empty bag.
+  if(P.dropKit.length) P.kitChosen=1;
+  saveProfile();
+  return P.dropKit.length>0;
+}
+document.getElementById('stagedrop').onclick=function(){
+  commitKit();
   document.getElementById('stagemodal').classList.remove('on');
   document.getElementById('hub').classList.remove('on');
   ac(); startRaid();

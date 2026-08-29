@@ -22614,3 +22614,51 @@ that is not an ITEMS key would draw nothing, and gearKeys returns an empty list
 rather than throwing, which is the right failure but means a reward could go unshown
 the same way this one did. I have not enumerated every gear shape genContract can
 produce; I fixed the one the game actually generates.
+
+## v6.18 and v6.19: the same loadout bug in a second place, and the stations get testable
+
+QUICK ASCENT WAS THROWING THE LOADOUT AWAY TOO. The lift has two keys, E for "go up"
+and R for "quick ascent", and R was wired to ac(); startRaid(); which is the exact
+wiring I fixed on the ASCEND button at v6.11. It skips the ascent check, so
+P.kitChosen is never set, so the raid's standard-kit fallback fires and everything he
+packed stays in the vault.
+
+The comment I wrote at v6.11 says "Quick deploy from the lift never opens that
+screen, so it still gets the old behaviour untouched". That was true and it was not
+good enough. Quick ascent should mean SKIP THE SCREEN, not DISCARD MY CHOICES. A
+player who packs a loadout and then presses the fast key has not asked to have it
+thrown away, and until v6.12 he could not have noticed, because opening the screen
+threw it away too.
+
+The commit step is now one function shared by both routes rather than a body inside
+one button that the other route had no way to reach. Committing NOTHING deliberately
+leaves kitChosen at 0, so a player who packed nothing still gets the standard kit
+from the raid's own fallback instead of going up empty handed.
+
+Driven through the station's real act with three cores and a stim packed: the bag
+arrives holding core, core, core, stim plus two issued bandages, safeUp is core so
+the safe pocket applies, and the stash is left holding only the medkit he did not
+pack. Before this it was a medkit and a bandage.
+
+THE STATIONS ARE NOW TESTABLE, which is why the bug was found and why it took until
+now. Every Undercroft station is a key press at a place in a room, and the only way
+to reach one from a probe was to call the modal opener directly, which skips exactly
+the wiring the station owns. That gap is where this bug lived for as long as it did.
+__station fires a station's REAL act, the same function the key press calls, so the
+wiring is under test rather than the thing it happens to open.
+
+With it, all ten station keys across the six stations were driven: trader E R F T,
+Vesh E, the stash terminal E, the Mainframe E R F, and settings E. Every one fires
+without throwing and opens exactly one modal, so the v6.03 stacking fix holds on the
+floor as well as on the terminal buttons. That check found nothing further.
+
+Verified: parse PASS at v6.18; four maps 236/200/154/225 and 86/87/58/72; three
+endings through the outcome screen; hub, ascent check and the export builder; pin
+audit clean; hook count 137 to 139 across the two additions, so neither killed the
+hooks defined after it.
+
+Not verified: the lift's own two keys were not included in the station sweep because
+both of them start a raid, so E was tested by hand earlier and R by the loadout test
+above rather than as part of the loop. I also have not checked what quick ascent does
+when the sector page would have been offered, because BETA_ONE_MAP is true and only
+COLD STORAGE carries beta:1, so that branch cannot be reached in the beta at all.
