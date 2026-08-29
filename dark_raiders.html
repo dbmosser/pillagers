@@ -755,7 +755,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.58';
+var VER='5.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6276,7 +6276,7 @@ coat:ident.coat, ident:ident.id, name:ident.tag,
     // with and without feuds.
     crew:Math.floor(_crewRoll*Math.max(2,CFG.raiderCrews||2)),
     grudge:rec.kills>0, standing:rec.standing,
-    hostile:(rec.kills>0)?true:(rec.standing>0?false:(rr()<0.55))};
+    hostile:(rec.kills>0)?true:((rec.standing>0&&(rec.met||0)>0)?false:(rr()<0.55))};
   // A raider you can read before you commit. Better standing and grudge raiders
   // are the ones who have been out here long enough to be wearing something.
   var rrl=rr();
@@ -13314,7 +13314,7 @@ function claimTier(ix){
   if(T.kind==='kit'){ for(var i=0;i<T.v.length;i++) P.stash.push(T.v[i]); msg='kit to the stash'; }
   if(T.kind==='standing'){
     for(var j=0;j<IDENTITIES.length;j++){ var r=idRec(IDENTITIES[j].id); r.standing=(r.standing||0)+T.v; }
-    msg='standing up with all ten';
+    msg='you stand better with all '+IDENTITIES.length+' crews out there';
   }
   if(T.kind==='season'){
     // The whole point of tiers: the WORLD moves, not a number on your profile.

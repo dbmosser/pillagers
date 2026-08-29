@@ -19807,3 +19807,78 @@ empty, so I could not confirm what the greyed OTHER SITE row looks like on scree
 The wording and the grey are unread by any eye. I also did not measure whether
 crier contracts capped at 2 are still worth taking, or whether binding district
 contracts to a map makes them feel restrictive rather than directive.
+
+## v5.59: a progress reward that switched off a whole faction
+
+Third build in the same audit and the biggest thing it has found. v5.57 found a
+contract term paying for nothing, v5.58 found contracts asking for more than the
+map holds, and this one asked the ten progress-board rewards whether they deliver
+what they say. Nine do. The seventh does far more than it says.
+
+WHAT TIER 7 ACTUALLY DID. It pays "Every pillager out there thinks better of
+you": +2 standing with all 28 identities. The hostility roll one screen away is
+
+  hostile: kills>0 ? true : (standing>0 ? false : rr()<0.55)
+
+so any standing above zero is a hard off switch. Measured over 120 raiders across
+12 seeds: 57 percent hostile before claiming tier 7, ZERO PERCENT after. It never
+comes back either, because P.rivals survives the world-tier reset that clears the
+board. Claiming a reward described as goodwill permanently removes one of the
+three factions from the threat model, and nothing on screen says so.
+
+I DROVE ALL TEN BEFORE CONCLUDING ANYTHING. Set progress to maximum, opened the
+board, clicked every Claim button in turn and watched the profile: 1,500c, 400
+rep, the carbine, four items to the stash, 3,000c, the shotgun, tier 7, 6,000c,
+the DMR, then 10,000c with the world moving to tier 1 and the board resetting.
+Every one of them pays except that the seventh appeared to pay nothing, which is
+what sent me looking. It was paying: standing lives in P.rivals and my probe was
+reading the top level of the profile. Fourth time this tick a probe cried wolf.
+
+THE FIX IS AT THE ROLL, NOT THE REWARD. The roll's own comment says "passive if
+your standing is good", and that is a RELATIONSHIP. You earn it by parleying,
+which is +1 and met++, or by picking a downed raider up, which is +3 and met++.
+Both are things you chose to do to a specific man. What was missing is that a
+NUMBER WITHOUT A RELATIONSHIP read as friendship, so a blanket grant pacified 28
+strangers. The friendly branch now also requires met>0, a condition every
+legitimate way of earning standing already satisfies. I did not touch the odds.
+
+Measured after, same 12 seeds and 120 raiders:
+  fresh profile                        57 percent hostile   unchanged
+  tier 7 claimed, never met them       57 percent hostile   off switch gone
+  parleyed, standing positive           0 percent hostile   earned peace intact
+  met but wronged, standing negative   57 percent hostile   as it should be
+
+The baseline is untouched, so no normal player's game shifts.
+
+THIS MAKES TIER 7'S LABEL TRUE RATHER THAN WEAKER. Killing a crew drives standing
+to -1 or lower and it stays there. +2 across the board is how you climb back out
+with the crews you have wronged, and "thinks better of you" is repair, which is
+now what it does.
+
+AND THE MESSAGE COUNTED A TABLE IT DOES NOT READ. It said "standing up with all
+ten". There are 28 identities. Same species as the v5.57 term: copy asserting a
+number nothing checks. It now reads the length.
+
+FIVE OF THE SIX ITEMS ON MY OPEN LIST ARE ALREADY DONE IN CURRENT CODE, checked
+rather than assumed. machVsRaider is 1, not 0, and migrated at cfgv 16. Elite guns
+appear in no shop table. Music has three themes and musicWanted returns false in a
+raid, while paused, on death and on the outcome screen, so it already cuts
+everywhere the note asked. Seasons already read PROGRESS everywhere a player can
+see. The extraction line is a transient say(), not a permanent banner. The list
+was stale; only the Listener remains.
+
+Verified: parse PASS at v5.59; four maps 86/87/58/72; three endings through the
+outcome screen with death and timeout paying zero credits; hub and ascent check;
+all ten board rewards driven and confirmed paying; hostility measured four ways on
+120 raiders; tier 7 still grants all 28 crews; fixture silent.
+
+Not verified: I did not measure whether tier 7 is now WORTH 4,200 progress. It
+used to be worth a faction, which was too much; repair of wronged standing is
+defensible but I have no number saying it is the right size, and that is a balance
+call rather than a bug. I also could not get a trustworthy read on the Listener:
+my synthetic duel put the player in a map corner with a wall seven units away in
+every direction, so every tactical result it gave was geometry rather than combat.
+What I can say from reading is that it has 120 HP, about eleven Sputter rounds,
+moves at 196 against a 158 walk and a 256 sprint, and hits for 34 with a melee
+reach of 26. It is not unkillable. Whether it FEELS unkillable is his question and
+I have not answered it.
