@@ -375,7 +375,7 @@
   </div>
   <div class="tpane" id="opane_rew" style="display:none;flex-direction:column;flex:1;min-height:0">
     <div id="seasonhead" style="font-size:12px;letter-spacing:.14em;color:var(--amber);padding:0 0 6px"></div>
-    <div class="msub">Extracting is what feeds this. Walking out pays 90 straight away plus 35 for every 1,000 credits of haul, and both of those are gone if you die, so a death pays only for what you opened and killed, halved. In practice that is a small fraction of a run you finish. Claim all ten and the WORLD moves up a tier: loot is worth more and everything out there is harder, then a fresh ten appear. This is the only ladder that changes the world; reputation opens shops, and your level and proficiency are your own.</div>
+    <div class="msub">Extracting is what feeds this. Walking out pays 90 straight away plus 35 for every 1,000 credits of haul, and both of those are gone if you die, so a death pays only for what you opened and killed, halved. In practice that is a small fraction of a run you finish. Ten rewards, claimed in order, and when you have them all you have them. Nothing resets and nothing scales up behind you. Reputation opens the counter in Requisition, and your level and proficiency are your own.</div>
     <div id="seasonbar" style="height:16px;border:1px solid var(--steel-hi);background:rgba(0,0,0,.35);margin:6px 0 10px 0;position:relative">
       <div id="seasonfill" style="height:100%;width:0%;background:linear-gradient(90deg,#ffc04a,#ffc04a)"></div>
       <div id="seasontext" style="position:absolute;inset:0;text-align:center;font-size:11px;line-height:16px;color:#120e0c;font-weight:700"></div>
@@ -778,7 +778,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.78';
+var VER='5.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13334,10 +13334,13 @@ function seasonNo(){ return (P&&P.season)||1; }
 // v2.24 removed the last of. The flag is set from buildRaid's own parameter.
 // simPinTier 0 makes the sim inherit the profile tier again.
 var SIMRAID=false;
-function worldTier(){
-  if(SIMRAID&&CFG.simPinTier!==0) return 0;
-  return clamp((P&&P.worldTier)||0,0,5);
-}
+// SEASONS ARE GONE, v5.79, his note. This used to climb every time the reward
+// board was finished, scaling loot by 8 percent and enemy health by 6 percent a
+// tier, resetting the board behind it. That escalation IS the season concept.
+// Pinned at zero so seasonLoot and seasonHp are both exactly 1 and the world
+// stops rescaling under him. Kept as a function rather than deleted because
+// fifteen call sites read it and one flat answer is safer than fifteen edits.
+function worldTier(){ return 0; }
 // The world tier is a multiplier on top of his tuning sliders rather than a
 // rewrite of them, so the Tuning Console still says what he set it to.
 function seasonLoot(){ return 1+0.08*worldTier(); }
@@ -13394,11 +13397,9 @@ function claimTier(ix){
     msg='you stand better with all '+IDENTITIES.length+' crews out there';
   }
   if(T.kind==='season'){
-    // The whole point of tiers: the WORLD moves, not a number on your profile.
-    P.season=seasonNo()+1;
-    P.worldTier=worldTier()+1;
-    P.sp=0; P.spClaimed=[];
-    msg+='. The world moves up to TIER '+worldTier()+': everything out there is harder, and everything is worth more. The reward board resets.';
+    // v5.79: was the season rollover, wiping progress and raising the world a
+    // tier. Now it is simply the last rung: it pays and it stays paid.
+    msg+='. That is the whole board. Nothing resets and nothing gets harder.';
   }
   saveProfile();
   return msg;

@@ -20766,3 +20766,46 @@ reward. That is part of the seasons system he has also asked me to remove, so I
 have left it to go out with that rather than half-removing it here. I also have
 not looked at what taking rep off contracts does to how long the Requisition
 counter takes to unlock, which is now entirely paced by how much salvage he sells.
+
+## v5.79: seasons are gone, the ladder stays
+
+HIS NOTE: "completely remove concept of seasons". Also on the standing open list
+as "getting rid of the seasons concept in favour of levels", which is the phrasing
+that says which half to cut.
+
+WHAT MAKES IT A SEASON is not the ten rewards. It is that the board RESETS and
+the WORLD MOVES UP behind it: claim the tenth and your progress is wiped, a fresh
+ten appear, and every enemy gains 6 percent health and every item 8 percent value,
+permanently and repeatedly. That is the season, and that is what goes.
+
+WHAT SURVIVES is a ladder you climb once, which is what "in favour of levels"
+asks for. Ten rewards, claimed in order, and when you have them all you have them.
+
+THE ESCALATION WAS ALSO QUIETLY CORRUPTING MY OWN NUMBERS. Both exports consumed
+this tick carry the line "World tier 1: loot x1.08, enemy health x1.06 [every
+haul and credit figure below is scaled by this]". So every haul I have compared
+across his runs has been drifting against a multiplier neither of us was
+tracking, and the balance work in this file has been reading numbers off a moving
+ruler. Pinning the tier at zero fixes the measurement as well as the design.
+
+worldTier is pinned rather than deleted, because fifteen call sites read it and
+one flat answer is safer than fifteen edits. seasonLoot and seasonHp are
+therefore both exactly 1.
+
+DRIVEN on a profile that had ALREADY rolled to world tier 3, which is the worst
+case for a save in flight: all ten rewards claim, the board does NOT reset, the
+claimed list stays at ten and progress is not wiped, and a Listener spawns with
+120 health rather than the 142 that tier 3 used to give it. The stored tier is
+ignored rather than migrated, so nothing has to be rewritten in his save.
+
+Verified: parse PASS at v5.79; four maps 86/87/58/72; all three real endings
+through the outcome screen with extract paying 48c and dead and abandon zero; hub
+and ascent check; the ten claims and the flat enemy health above; no "WORLD moves
+up a tier" string left anywhere on the page.
+
+Not verified: P.worldTier, P.season and the sp reset machinery are all still in
+the file, inert. I have left them rather than ripping out another hundred
+references in the same tick as the rig change, so the concept is dead in play but
+the plumbing is still there to be cleaned out. I also have not decided what
+happens after the tenth reward now that nothing follows it, which is the real
+open question his note creates and is his to answer.
