@@ -19738,3 +19738,72 @@ is worth exactly 30 percent is a balance question and none of these five have
 ever been measured against their pay.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+## v5.58: contracts that could not be finished, and one that never said where
+
+Same fault as v5.57's contract term, in the generator rather than the payout: work
+the board offers that the map cannot supply. v5.57 found a term paying 35 percent
+for a mechanism I had switched off. This build asked the other direction, whether
+anything on the board asks for more than exists, and two things did.
+
+A KILL CONTRACT THAT ASKS FOR MORE CRIERS THAN THE MAP SPAWNS. The ask is
+up(base) and up() multiplies by tier, 1.6 at HARD and 2.4 at ELITE. Nothing ever
+asked what the map actually contains. Measured, and the counts are deterministic
+per map because they come off CFG times map size rather than off the seed:
+
+                sentry  crawler  raider  crier
+  GREYWATER DAM     24       38      10      5
+  SUNKEN QUARTER    24       39      10      5
+  COLD STORAGE      16       25       7      3
+  THE QUARRY        20       31       8      4
+
+ELITE asks for five criers. COLD STORAGE spawns three and THE QUARRY spawns four,
+so on half the maps that contract cannot be finished by killing every crier on the
+ground. I sampled the real generator 500 times per map at contract standing 12 and
+got 21 impossible contracts in 2000, every one an elite crier contract on those
+two maps. About one board slot in a hundred was dead on arrival.
+
+The cap is 70 percent of the WORST map's supply rather than the current one,
+because the board persists across raids and the map is chosen per raid: a contract
+taken while GREYWATER is selected has to survive being played on COLD STORAGE.
+Sentry 11, crawler 17, raider 4, crier 2. Seventy percent so that finishing one
+never requires a perfect sweep. The reward is n times per, so clamping the ask
+clamps the pay with it and an elite crier contract stops paying elite money.
+Re-sampled after the change: zero impossible in 2000.
+
+A DISTRICT CONTRACT IS ABOUT ONE MAP AND NEVER SAID SO. v1.74 made the district
+one the current map actually contains, and that fix still holds, confirmed in the
+same sample. What it did not do was make the contract remember which map that was.
+Take "search 10 containers in THE FLATS" while GREYWATER is selected, play COLD
+STORAGE, and you are asking for ten containers in a district that has two, which
+is the exact bug v1.74 set out to remove, arrived at from the other side.
+
+The contract now carries the map it was written for, says so on the board, and
+only counts progress there. Naming the map is the more important half: an
+unfinishable contract you cannot see is a dead slot, and an ask with a place on it
+is a reason to pick that map next. Contracts saved before this build have no map
+field and keep counting anywhere, so nothing already on his board changes.
+
+THE IN RAID TRACKER HAD THE SAME BLIND SPOT ONE SCREEN OVER. Binding the contract
+to its map fixes the board and breaks the panel: carry one to another site and the
+tracker listed it stuck at 0 of 5 forever with nothing saying why. It now stays on
+the list, greyed, reading OTHER SITE. Dropping it would be worse, because then the
+player only wonders where it went. The map name comes off the row when you are
+standing on that map, since the panel is 214 wide at micro and the ground under
+you already says it.
+
+Verified: parse PASS at v5.58; four maps 86/87/58/72 entities with a live district
+contract and a live kill contract loaded; all three endings driven THROUGH the
+outcome screen with XP and log entries advancing, and death and timeout both
+paying zero credits; hub, ascent check, and the board rendering eight freshly
+generated contracts; generator re-sampled 2000 times with zero impossible asks and
+all 401 district contracts carrying their map; progress guard driven three ways,
+crediting on its own map, blocked off it, and legacy contracts unaffected; fixture
+silent, nothing written to exports.
+
+Not verified: I proved the tracker row's LOGIC and that drawing it throws nothing,
+but the conditions panel writes its rectangle per frame and my probe read it back
+empty, so I could not confirm what the greyed OTHER SITE row looks like on screen.
+The wording and the grey are unread by any eye. I also did not measure whether
+crier contracts capped at 2 are still worth taking, or whether binding district
+contracts to a map makes them feel restrictive rather than directive.

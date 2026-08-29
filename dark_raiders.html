@@ -755,7 +755,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.57';
+var VER='5.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1387,6 +1387,10 @@ function ensureContracts(){
 // in the game he reads a full sentence. There are four unit names and they never
 // change, so spell the plurals rather than bolting an s on the end.
 var UNITPLURAL={sentry:'sentries',crawler:'crawlers',raider:'raiders',snitch:'criers',listener:'listeners'};
+// The most a kill contract may ever ask for, v5.58. 70 percent of the supply on
+// the WORST map, so the contract survives being carried to any map on the board.
+// Measured supply, worst map: sentry 16, crawler 25, raider 7, crier 3.
+var KILLCAP={sentry:11,crawler:17,raider:4,snitch:2};
 // The singular was built from the kind string itself, which is an internal id and
 // is not always the name the player knows the thing by. Since v2.97 exactly one
 // of them differs, and that is precisely the case a bare kind string gets wrong.
@@ -1485,6 +1489,7 @@ function genContract(){
   if(roll<.3){
     var tgt=pick(['sentry','crawler','raider','snitch']);
     var n=up(tgt==='raider'?2:(tgt==='snitch'?2:ri(3,6)));
+    n=Math.min(n,KILLCAP[tgt]||99);
     var per={sentry:150,crawler:90,raider:260,snitch:200}[tgt];
     c={type:'kill',tgt:tgt,n:n,prog:0,reward:n*per,desc:'Destroy '+n+' '+(n>1?UNITPLURAL[tgt]:(UNITNAME[tgt]||tgt))};
   } else if(roll<.55){
@@ -1514,7 +1519,9 @@ function genContract(){
     // A district with two buildings in it cannot reasonably be asked for four containers.
     var n3=up(ri(2,4));
     if(pickD.buildings<3) n3=Math.min(n3,2);
-    c={type:'district',d:d,n:n3,prog:0,reward:n3*160,desc:'Search '+n3+' containers in '+DISTRICTS[d].name};
+    var _dmi=clamp(P&&P.mapIx!==undefined?P.mapIx:0,0,FIXED_MAPS.length-1);
+    c={type:'district',d:d,n:n3,map:_dmi,prog:0,reward:n3*160,
+       desc:'Search '+n3+' containers in '+DISTRICTS[d].name+', '+FIXED_MAPS[_dmi].name};
   } else if(roll<.9){
     var it=pick(['board','optic','servo','core']);
     var n4=up(it==='core'?1:2);
@@ -1575,7 +1582,8 @@ function contractOpen(ct){
   for(var i=0;i<P.contracts.length;i++){
     var c=P.contracts[i];
     if(c.type==='open'&&c.ct===ct.type&&c.prog<c.n) c.prog++;
-    if(c.type==='district'&&ct.d===c.d&&c.prog<c.n) c.prog++;
+    if(c.type==='district'&&ct.d===c.d&&c.prog<c.n&&
+       (c.map===undefined||c.map===P.mapIx)) c.prog++;
   }
 }
 // The conduct verdict. Read off G.tel, which is the same record the run report
@@ -17096,7 +17104,14 @@ rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'})
       for(var _cq2=0;_cq2<P.contracts.length;_cq2++){
         var CD=P.contracts[_cq2];
         if(!CD||CD.type==='conduct'||CD.prog>=CD.n) continue;
-        rows.push({k:'CONTRACT',v:(CD.desc||'contract')+'  '+CD.prog+'/'+CD.n,c:'#ffc04a'});
+        var _cdOff=(CD.type==='district'&&CD.map!==undefined&&CD.map!==P.mapIx);
+        var _cdTxt=(CD.desc||'contract');
+        if(CD.type==='district'&&CD.map!==undefined){
+          var _cdM=FIXED_MAPS[clamp(CD.map,0,FIXED_MAPS.length-1)].name;
+          // on its own map the site name is the ground under you, so drop it
+          _cdTxt=_cdOff?(_cdTxt+'  OTHER SITE'):_cdTxt.replace(', '+_cdM,'');
+        }
+        rows.push({k:'CONTRACT',v:_cdTxt+'  '+CD.prog+'/'+CD.n,c:_cdOff?'#6b7480':'#ffc04a'});
       }
     }
     // THE FIRST CUT PUT THE EFFECT RIGHT ALIGNED ON THE NAME'S OWN LINE and the
