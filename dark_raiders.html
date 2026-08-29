@@ -189,6 +189,45 @@
     aspect-ratio:1/1; display:flex; align-items:center; justify-content:center;
     font-size:8px; letter-spacing:.1em; color:var(--ash); text-align:center;
     padding:4px; grid-column:span 2; }
+  /* ---- THE VENDOR, v6.04, off his Arc Raiders screenshots. */
+  .vend{ display:flex; gap:12px; min-height:0; max-height:62vh; align-items:stretch;
+    max-width:1080px; }
+  .vendgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(62px,84px));
+    justify-content:start; gap:7px; padding:10px; overflow-y:auto; align-content:start;
+    flex:1.5; min-width:0; border:1px solid var(--steel-hi); border-radius:3px; }
+  .vcell{ position:relative; aspect-ratio:1/1; border:1px solid var(--steel-hi);
+    border-radius:3px; background:rgba(0,0,0,.32); display:flex; align-items:center;
+    justify-content:center; cursor:pointer; transition:all .1s; }
+  .vcell:hover{ background:rgba(255,192,74,.10); }
+  .vcell.on{ border-color:var(--amber); background:rgba(255,192,74,.15);
+    box-shadow:0 0 0 1px var(--amber) inset; }
+  .vcell.locked{ opacity:.42; }
+  .vcell .vp{ position:absolute; right:3px; bottom:0; font-size:8.5px; font-weight:700;
+    color:var(--amber); text-shadow:0 1px 2px #000; }
+  .vcell .vlk{ position:absolute; right:3px; top:1px; font-size:8px; color:var(--ash); }
+  /* The cream panel. Inverted against the whole rest of the UI on purpose: in his
+     screenshots it is the one bright thing on screen and it is where the decision
+     and the money are. */
+  .vdet{ flex:1; min-width:196px; max-width:310px; background:#f1ebdf; color:#1b1a17;
+    border-radius:5px; padding:14px 15px; display:flex; flex-direction:column;
+    overflow-y:auto; }
+  .vpills{ display:flex; gap:5px; margin-bottom:9px; flex-wrap:wrap; }
+  .vpill{ font-size:7.5px; letter-spacing:.14em; padding:3px 7px; border-radius:2px;
+    background:#2f6f9e; color:#fff; font-weight:700; }
+  .vpill.r{ background:#8a6a2c; }
+  .vdet h4{ margin:0 0 8px; font-size:16px; letter-spacing:.03em; color:#14130f; }
+  .vdesc{ font-size:11px; line-height:1.5; color:#4c483f; margin-bottom:12px; }
+  .vstat{ display:flex; justify-content:space-between; font-size:9.5px; color:#4c483f;
+    letter-spacing:.04em; margin-bottom:3px; }
+  .vbar{ height:4px; background:#d8d1c1; border-radius:2px; margin-bottom:9px; overflow:hidden; }
+  .vbar i{ display:block; height:100%; background:#201e19; }
+  .vprice{ margin-top:auto; padding-top:12px; border-top:1px solid #d8d1c1;
+    font-size:10px; letter-spacing:.12em; color:#6a655a; }
+  .vprice b{ display:block; font-size:19px; color:#14130f; letter-spacing:0; margin-top:2px; }
+  .vbuy{ width:100%; padding:11px; margin-top:10px; background:var(--amber); color:#14130f;
+    border:none; border-radius:4px; font-weight:700; font-size:11.5px; letter-spacing:.12em;
+    cursor:pointer; font-family:inherit; }
+  .vbuy:disabled{ background:#cdc5b3; color:#8b8578; cursor:default; }
   .keybar{ display:flex; gap:16px; align-items:center; flex-wrap:wrap;
     padding:7px 12px; border-top:1px solid var(--steel-hi); }
   .keybar div{ display:flex; align-items:center; gap:6px;
@@ -340,8 +379,12 @@
   <div class="invtabs" id="tradertabs" style="padding:0 0 10px 0"></div>
 
   <div class="tpane" id="tpane_buy">
-    <div class="msub">Medical, ammo, plates and throwables go to your stash and can be taken up on the ascent check. Reputation unlocks better stock, and it comes from one thing only: selling salvage at the terminal. <span id="repline" style="color:var(--amber)"></span></div>
-    <div class="plist" id="shop" style="border:1px solid var(--steel-hi)"></div>
+    <div class="msub"><span id="repline" style="color:var(--amber)"></span></div>
+    <div class="vend">
+      <div class="vendgrid" id="shopgrid"></div>
+      <div class="vdet" id="shopdetail"></div>
+    </div>
+    <div class="plist" id="shop" style="display:none"></div>
   </div>
 
   <div class="tpane" id="tpane_craft" style="display:none">
@@ -851,7 +894,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.03';
+var VER='6.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22479,6 +22522,104 @@ function renderShop(){
     row.insertBefore(row.children[0],nm);
     s.appendChild(row);
   });
+  renderShopGrid();
+}
+// v6.04, off his Arc Raiders vendor screenshot: stock as a grid of cells, and one
+// cream panel carrying the name, what it does, the price and a single big button.
+function shopEntryLabel(o){
+  if(o.kind==='wep') return WEAPONS[o.k]?WEAPONS[o.k].name:o.k;
+  if(o.kind==='rig'){ var R=armorById(o.k); return R?R.name:o.k; }
+  return ITEMS[o.k]?ITEMS[o.k].name:o.k;
+}
+function shopEntryIcon(o){
+  return o.kind==='wep'?o.k:(o.kind==='rig'?('rig_'+o.k):o.k);
+}
+function shopEntryRarity(o){
+  if(o.kind==='wep') return 'rare';
+  var it=ITEMS[o.k]; return (it&&it.r)||'common';
+}
+function renderShopGrid(){
+  var g=document.getElementById('shopgrid'); if(!g) return;
+  var rows=document.getElementById('shop').children;
+  g.innerHTML='';
+  if(P._shopSel===undefined||P._shopSel>=SHOP.length) P._shopSel=0;
+  SHOP.forEach(function(o,i){
+    var row=rows[i]; if(!row) return;
+    var btn=row.querySelector('button');
+    var locked=P.rep<o.rep;
+    var cell=document.createElement('div');
+    cell.className='vcell'+(i===P._shopSel?' on':'')+(locked?' locked':'');
+    cell.innerHTML=iconImgHTML(shopEntryIcon(o),28)+
+      '<span class="vp">'+o.price.toLocaleString()+'</span>'+
+      (locked?'<span class="vlk">\u25cf</span>':'');
+    cell.title=shopEntryLabel(o)+(locked?('  (needs rep '+o.rep+')'):'');
+    cell.onclick=function(){ P._shopSel=i; renderShopGrid(); };
+    g.appendChild(cell);
+  });
+  renderShopDetail(rows);
+}
+function renderShopDetail(rows){
+  var d=document.getElementById('shopdetail'); if(!d) return;
+  var o=SHOP[P._shopSel]; if(!o){ d.innerHTML=''; return; }
+  var row=rows?rows[P._shopSel]:null;
+  var btn=row?row.querySelector('button'):null;
+  var locked=P.rep<o.rep;
+  var cat=(o.kind==='wep')?'WEAPON':(o.kind==='rig')?'BODY ARMOUR':
+    ((ITEMS[o.k]&&ICLASS[ITEMS[o.k].use])?ICLASS[ITEMS[o.k].use].t:'SUPPLY');
+  var rar=shopEntryRarity(o);
+  var h='<div class="vpills"><span class="vpill">'+escHtml(cat)+'</span>'+
+        '<span class="vpill r">'+escHtml(String(rar).toUpperCase())+'</span></div>'+
+        '<h4>'+escHtml(shopEntryLabel(o))+'</h4>';
+  if(o.kind==='wep'&&WEAPONS[o.k]){
+    var w=WEAPONS[o.k];
+    h+='<div class="vdesc">'+(w.auto?'Automatic.':'Semi automatic.')+
+       ' Reloads '+(w.mag||'-')+' at a time.</div>';
+    // Bars are scaled against the best gun in the game for each stat, computed
+    // here rather than hard coded so a new weapon cannot make them lie.
+    var mx={dmg:1,mag:1,rng:1};
+    for(var wk in WEAPONS){ var W2=WEAPONS[wk];
+      mx.dmg=Math.max(mx.dmg,(W2.dmg||0)*(W2.pellets||1));
+      mx.mag=Math.max(mx.mag,W2.mag||0);
+      mx.rng=Math.max(mx.rng,W2.rng||0); }
+    function bar(lab,val,max,shown){
+      return '<div class="vstat"><span>'+lab+'</span><span>'+shown+'</span></div>'+
+             '<div class="vbar"><i style="width:'+Math.round(Math.min(1,val/max)*100)+'%"></i></div>';
+    }
+    h+=bar('Damage',(w.dmg||0)*(w.pellets||1),mx.dmg,(w.dmg*(w.pellets||1)));
+    h+=bar('Magazine',w.mag||0,mx.mag,(w.mag||'-'));
+    h+=bar('Range',w.rng||0,mx.rng,Math.round((w.rng||0)/10)+'m');
+  } else if(o.kind==='rig'){
+    var R=armorById(o.k);
+    h+='<div class="vdesc">'+R.cap+' armour, absorbing '+Math.round(R.absorb*100)+
+       '% of every hit until it is gone.</div>';
+  } else {
+    var it=ITEMS[o.k];
+    h+='<div class="vdesc">'+escHtml(it?(itemBlurb(o.k)||''):'')+'</div>';
+  }
+  if(locked) h+='<div class="vdesc" style="color:#8a5a2c">Locked until reputation '+
+    o.rep.toLocaleString()+'. You have '+P.rep.toLocaleString()+'.</div>';
+  h+='<div class="vprice">PRICE<b>'+o.price.toLocaleString()+'c</b></div>';
+  d.innerHTML=h;
+  var b=document.createElement('button');
+  b.className='vbuy';
+  b.textContent=btn?btn.textContent.toUpperCase():'BUY';
+  b.disabled=btn?btn.disabled:true;
+  if(btn&&!btn.disabled) b.onclick=function(){ btn.click(); };
+  d.appendChild(b);
+}
+// One line of plain English per item, for the cream panel. Falls back to what the
+// item DOES rather than to a blank, because a blank on the panel where the money is
+// asked for is the worst place in the game to say nothing.
+function itemBlurb(k){
+  var it=ITEMS[k]; if(!it) return '';
+  if(it.use==='heal') return 'Heals you in the field.';
+  if(it.use==='armor') return 'Restores '+(it.amt||0)+' armour.';
+  if(it.use==='throw') return 'Thrown. Goes on a hotbar key.';
+  if(it.use==='ammo') return 'Refills a magazine from your bag.';
+  if(it.use==='stim') return 'Refills stamina and clears winded.';
+  if(it.use==='key') return 'Opens one locked room.';
+  if(craftPart(k)) return craftUse(k)||'Crafting material.';
+  return 'Salvage. Sell it at the terminal for credits and reputation.';
 }
 function renderWork(){
   walletLine('wallet_work');

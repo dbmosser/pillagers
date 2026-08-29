@@ -22063,3 +22063,55 @@ close buttons were skipped deliberately during the audit so the modal would stay
 open, so closing is still only tested by hand. The stacking fix stops modals opening
 over each other; it does not add a back stack, so closing a station always returns
 to the floor rather than to wherever you came from.
+
+## v6.04: the counter, built like his vendor screenshot
+
+Four of the five Arc Raiders screens he sent share one shape, and it is the most
+distinctive thing about that interface: a grid of what is on offer on the left, and
+a CREAM PANEL on the right carrying the name, what it is, what it does in stat bars,
+the price, and one big amber button. Vendor, crafting, cosmetics and map selection
+are all that same panel with different contents. It is also the one bright thing on
+a dark screen, and it is always where the decision and the money are.
+
+The counter here was a list of rows with a Buy button on each and three paragraphs
+of explanation above them. The paragraphs are gone. His reference never explains a
+screen in prose, and two of the three were telling you where to buy guns that are
+not sold here, which belongs on the missing item rather than on the whole shop.
+
+The wallet line stays, because it exists for his note "requisition -- it doesn't
+show how much money i have so that's annoying". The cream panel states a price, not
+a balance, so the balance stays at the top where he asked for it.
+
+THE GRID IS A VIEW OVER THE ROWS THE OLD RENDERER ALREADY BUILT, and buying
+delegates to that row's own button. That is deliberate. The purchase path has rep
+locks, affordability, owned and worn states, rig wearing and the pack special case
+baked into it, all previously working. Re-implementing that against a new grid would
+be re-deriving five rules for the sake of a layout, and the first one I got subtly
+wrong would cost him money. One source of truth for what the counter DOES, a new
+presentation for what it looks like.
+
+Stat bars are scaled against the best gun in the game for each stat, computed at
+render from WEAPONS rather than hard coded, so adding a weapon cannot make the bars
+lie about the ones already there.
+
+Verified by driving the real screen at 1920x1080:
+  12 stock cells, 3 of them rep locked and dimmed, 1 selected
+  a consumable reads MEDICAL / COMMON / Bandage / "Heals you in the field." / 110c
+  a gun reads WEAPON / RARE / Scav Pistol / "Semi automatic. Reloads 12 at a time."
+    with three real stat bars: Damage 19, Magazine 12, Range 42m
+  a locked gun reads "Locked until reputation 1,000. You have 900." and its BUY
+    button is DISABLED, which is the delegation working
+  buying a bandage takes credits 5,000 to 4,890 and puts 'bandage' in the stash
+And a layout fault caught by screenshotting rather than by measuring: auto-fill
+across a 1900px modal gave twelve columns for twelve items, so the stock read as one
+wide toolbar strip instead of a case of goods. Capped to a real grid, now 758px wide
+and wrapping to two rows.
+
+Also verified: parse PASS at v6.04; four maps 236/200/154/225 and 86/87/58/72 from a
+cleared profile; three endings; hub, ascent check, export builder; pin audit clean.
+
+Not verified: only the BUY tab was rebuilt. CRAFT and HIRE are still row lists
+behind the same modal, so the trader screen is now half one design and half another,
+which is worse than either until CRAFT follows. No quantity stepper, so buying ten
+bandages is still ten clicks where his Celeste screenshot has a minus/times ten/plus
+row. Nothing here has been clicked by a human.
