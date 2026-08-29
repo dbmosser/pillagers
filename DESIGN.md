@@ -19072,3 +19072,56 @@ that a whole raid played with it feels like stealth rather than like a weak gun.
 That is the question his next run answers.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.47  A GHOST RUN SURVIVED A PITCHED BATTLE, AND MY OWN CLAIM WAS WRONG
+================================================================================
+
+v5.47: a ghost run survived a pitched battle, and my own claim was wrong
+
+I wrote in the v5.46 commit that the Whisper is "the only firearm that does not
+automatically end a ghost run", then went to verify it. It is false, and what it
+turned up is worse than the claim.
+
+MEASURED. Stood in the open and emptied a magazine with three guns, including
+the loudest rifle in the game at 25 shots:
+
+  whisper  ghost intact     lance  ghost intact     rifle  ghost intact
+
+Firing breaks a ghost run for NO gun. The bonus keys on everSeen, which is set
+only where an enemy completes a line of SIGHT. So you could fight the entire map
+with a Support MG, kill everything that came at you, and still collect the forty
+percent, provided nothing finished looking at you. I shipped that at v5.36 and
+it has been wrong for eleven builds.
+
+That is not a ghost run. His Q34 asks to "finish a raid unseen", and the honest
+reading of unseen is NOT FOUND: if something is hunting you, it found you, and
+whether its last step was an eye or an ear is a technicality that only the code
+cares about.
+
+THE RULE NOW. The bonus dies when anything enters chase or alarm ON you, which
+are the two states the game already uses to mean "it knows where you are and it
+is coming". Being INVESTIGATED does not break it, deliberately: investigating is
+a machine walking toward a noise it has not resolved, and slipping away from that
+is the entire stealth game. The readout says UNFOUND rather than UNSEEN, because
+unseen was the wrong word for the rule.
+
+Verified: a rifle firefight loses it, a Whisper firefight loses it, THREE sentries
+investigating at once does NOT lose it, and a single chaser does. A genuinely
+clean extraction still pays and the summary still reads GHOST RUN.
+
+WHAT THIS COSTS THE WHISPER, honestly: less than I claimed. Its real advantage is
+that noise 90 sits under the 210 unit radius a hunting Listener re-acquires
+within, and that it draws fewer investigators in the first place. It is a
+stealth tool. It is not a licence to shoot people and stay a ghost, and neither
+is anything else now.
+
+Verified: parse PASS at v5.47; four maps 85/86/57/71; all three endings through
+the outcome screen; hub and ascent check clean.
+
+Not verified: the chase-or-alarm rule is checked once a frame from the HUD pass,
+so an entity that entered chase and left it inside a single frame would not trip
+it. I cannot construct that case and do not believe it exists, but I have not
+proven it cannot.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

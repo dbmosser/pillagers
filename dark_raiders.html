@@ -755,7 +755,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.46';
+var VER='5.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12032,8 +12032,10 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
 
     // ---- warden: slow, relentless, optional
     if(e.kind==='warden'){
-      // THE GHOST RUN DIES HERE, v5.36. One acquisition, by anything, for any
-      // length of time, and the clean run is over for the rest of the raid.
+      // THE GHOST RUN DIES HERE, v5.36, corrected v5.47. One acquisition, by
+      // anything, for any length of time, and the clean run is over for the rest
+      // of the raid. Sight is one way in; being HUNTED is the other, and that is
+      // handled where chase and alarm are entered rather than only here.
       if(sees&&!e.seenYou&&G.tel) G.tel.everSeen=1;
       if(sees){ e.seenYou=true; e.tx=p.x; e.ty=p.y; e.alert=4;
         if(!e.announced){ e.announced=true; say('Something very large has noticed you.'); sfx('alarm',e.x,e.y); } }
@@ -13439,7 +13441,7 @@ silentExit:T.silentExit||0,
   if(how==='extract'&&!T.everSeen&&haul>0){
     var ghost=Math.round(haul*0.40);
     P.credits+=ghost; P.rep+=Math.round(ghost*0.5);
-    lines.push('<span style="color:#7fc4a0">GHOST RUN. Nothing on this map ever saw you: +'+
+    lines.push('<span style="color:#7fc4a0">GHOST RUN. Nothing on this map ever found you: +'+
       ghost.toLocaleString()+'c and +'+Math.round(ghost*0.5).toLocaleString()+' rep.</span>');
   }
   if(how==='extract'&&tPay>0){
@@ -16791,6 +16793,7 @@ _tgt=G.active; _lbl='EXTRACTION';
   // "9 SEARCHING THE AREA" named nothing and the HUNTING line above it called
   // pillagers machines. Neither has ever included the player and neither should:
   // this is a count of what is looking for YOU.
+  try{ ghostCheck(); }catch(e){}
   var _att=0,_hunt=0,_attR=0,_huntR=0;
   for(var _ai=0;_ai<G.ents.length;_ai++){
     var _ae=G.ents[_ai],_as=_ae.state,_isR=(_ae.kind==='raider');
@@ -16816,7 +16819,7 @@ _tgt=G.active; _lbl='EXTRACTION';
   if(!G.tel.everSeen&&!G.over){
     ctx.textAlign='right'; ctx.font=FS(TYPE.micro);
     ctx.fillStyle='rgba(127,196,160,.95)';
-    ctx.fillText('UNSEEN   +40% IF YOU WALK OUT LIKE THIS',W-16,LH(18));
+    ctx.fillText('UNFOUND   +40% IF YOU WALK OUT LIKE THIS',W-16,LH(18));
     ctx.textAlign='left';
   }
   // THE LISTENER TELLS YOU WHAT BEATS IT, v5.45. Measured: running dies in
@@ -18081,6 +18084,19 @@ function tickNuke(dt){
     try{ sfx('boom',p.x,p.y); }catch(e){}
   }
   if(t>=NUKE_LEN&&!G.over) endRaid('dead');
+}
+// FOUND IS FOUND, v5.47. Called once a frame from the HUD pass, which already
+// walks every entity for the hunting and searching counts, so this costs the
+// comparison and nothing else. chase and alarm are the two states that mean an
+// entity knows where you are and is coming; investigate deliberately does not
+// count, because shaking off an unresolved noise is the stealth game working.
+function ghostCheck(){
+  if(!G||G.sim||!G.tel||G.tel.everSeen) return;
+  for(var i=0;i<G.ents.length;i++){
+    var e=G.ents[i];
+    if(e.dead||e.kind==='peddler'||e.kind==='stray') continue;
+    if(e.state==='chase'||e.state==='alarm'){ G.tel.everSeen=1; return; }
+  }
 }
 function raiderStatus(e){
   if(!e) return 'GONE';
