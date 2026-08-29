@@ -404,8 +404,11 @@
 
   <div class="tpane" id="tpane_hire" style="display:none">
     <div class="msub" id="wallet_merc" style="color:var(--amber);font-weight:700"></div>
-    <div class="msub">One pillager, one run, paid up front. He loots for himself and you take ten percent of what he carries out. If he dies you owe his family, and that is not optional. On the surface, B cycles his orders: loot free, follow you, or hold a position. Stand with him and E searches his bag, and your cut is settled at the ramp either way. If you go down, he comes for you.</div>
-    <div class="plist" id="merclist" style="border:1px solid var(--steel-hi)"></div>
+    <div class="vend">
+      <div class="vendgrid" id="mercgrid"></div>
+      <div class="vdet" id="mercdetail"></div>
+    </div>
+    <div class="plist" id="merclist" style="display:none"></div>
   </div>
 
   <div style="display:flex;gap:8px;margin-top:10px;flex:none">
@@ -903,7 +906,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.05';
+var VER='6.06';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21232,6 +21235,62 @@ function renderMerc(){
       ac(); blip('pick');
     };
   }
+  renderMercGrid();
+}
+// v6.06: the men as a grid of faces, and the same cream panel as the other two
+// tabs. Hiring delegates to the row, which owns the grudge check, the price and
+// the deduction.
+function renderMercGrid(){
+  var g=document.getElementById('mercgrid'); if(!g) return;
+  var rows=document.getElementById('merclist').querySelectorAll('[data-merc]');
+  g.innerHTML='';
+  if(P._mercSel===undefined||P._mercSel>=IDENTITIES.length) P._mercSel=0;
+  for(var i=0;i<IDENTITIES.length;i++){
+    (function(i){
+      var ID=IDENTITIES[i],cost=mercCost(ID.id);
+      var cell=document.createElement('div');
+      cell.className='vcell'+(i===P._mercSel?' on':'')+((cost===null)?' locked':'');
+      cell.innerHTML=mercImgHTML(ID.id,30)+
+        (P.merc===ID.id?'<span class="vp" style="color:var(--coolant)">HIRED</span>':
+          (cost===null?'':'<span class="vp">'+cost.toLocaleString()+'</span>'));
+      cell.title=ID.tag;
+      cell.onclick=function(){ P._mercSel=i; renderMercGrid(); };
+      g.appendChild(cell);
+    })(i);
+  }
+  renderMercDetail(rows);
+}
+function renderMercDetail(rows){
+  var d=document.getElementById('mercdetail'); if(!d) return;
+  var ID=IDENTITIES[P._mercSel||0]; if(!ID){ d.innerHTML=''; return; }
+  var rec=idRec(ID.id),cost=mercCost(ID.id),hired=(P.merc===ID.id);
+  var stand=rec.kills>0?('You killed him '+rec.kills+' time'+(rec.kills>1?'s':'')+'.')
+    :(rec.standing>0?'He owes you one.':(rec.deaths>0?'He died on your job.':'No history between you.'));
+  var h='<div class="vpills"><span class="vpill">PILLAGER</span>'+
+    (hired?'<span class="vpill r" style="background:#2f6f4e">HIRED</span>':
+      (cost===null?'<span class="vpill r" style="background:#8a3423">GRUDGE</span>':''))+
+    '</div><h4 style="color:'+ID.coat+'">'+escHtml(ID.tag)+'</h4>'+
+    '<div class="vdesc">'+escHtml(stand)+'</div>'+
+    '<div class="crlab">THE DEAL</div>'+
+    '<div class="vdesc">One run, paid up front. He loots for himself and you take '+
+    'ten percent of whatever he carries out, settled at the ramp either way. '+
+    'On the surface B cycles his orders, and standing with him E searches his bag. '+
+    'If you go down, he comes for you.</div>';
+  if(cost===null){
+    h+='<div class="vdesc" style="color:#8a3423">He will not work for you at any price.</div>';
+  }
+  h+='<div class="vprice">PRICE<b>'+(cost===null?'\u2014':(cost.toLocaleString()+'c'))+'</b></div>';
+  d.innerHTML=h;
+  var b=document.createElement('button');
+  b.className='vbuy';
+  b.textContent=hired?'HIRED':(cost===null?'WILL NOT WORK':'HIRE');
+  b.disabled=hired||cost===null||P.credits<cost;
+  if(!b.disabled){
+    b.onclick=function(){
+      for(var q=0;q<rows.length;q++) if(rows[q].getAttribute('data-merc')===ID.id){ rows[q].click(); break; }
+    };
+  }
+  d.appendChild(b);
 }
 function renderGamble(){
   var el=document.getElementById('gamblelist');

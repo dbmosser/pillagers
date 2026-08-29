@@ -22153,3 +22153,43 @@ rather than half, and the same objection applies until it follows. The repair de
 shows credits as a have/need row alongside the parts, which reads correctly but is
 not how his screenshot does it, since Arc Raiders keeps currency in its own PRICE
 block. No human has clicked any of it.
+
+## v6.06: hire, and the trader is one design again
+
+His vendor screenshot has a column of faces down the left with a tooltip naming the
+hovered one. Same idea here: the men are a grid of faces and the cream panel carries
+who he is, what he thinks of you, what he costs, and one button. With this, all
+three tabs of the trader are the same screen, which they have not been since v6.04
+split them.
+
+THE PARAGRAPH ABOVE THE LIST GOES, BUT NOT ALL OF IT. Three of its facts exist
+nowhere else in the game: B cycles his orders on the surface, standing with him and
+pressing E searches his bag, and your cut is ten percent settled at the ramp either
+way. Those moved into the panel, where they are read at the moment money is being
+asked for. Deleting them to match a screenshot would have been losing real rules to
+gain a layout, which is the opposite of the point.
+
+Hiring delegates to the row, which owns the grudge check, the price and the
+deduction. A man carrying a grudge shows a GRUDGE pill, a dash for a price, and a
+button reading WILL NOT WORK rather than a disabled HIRE, because "unavailable" and
+"he hates you" are different facts and the panel has room to say which.
+
+Verified by driving the real screen at 1920x1080: 28 faces; the panel reads PILLAGER
+/ the man's tag in his own coat colour / "No history between you." / THE DEAL / PRICE
+2,600c with HIRE enabled; clicking HIRE sets P.merc, takes exactly 2,600c, marks the
+cell HIRED in teal and flips the button to a disabled HIRED.
+
+Also verified: parse PASS at v6.06; four maps 236/200/154/225 and 86/87/58/72 from a
+cleared profile; three endings through the outcome screen; hub, ascent check and the
+export builder; pin audit clean and no drift.
+
+The grudge case IS tested, after I nearly shipped it as a disclaimer. Giving a man
+two kills on his record puts him at mercCost null, and the panel then reads a GRUDGE
+pill, "You killed him 2 times.", a PRICE of a dash, and a disabled button saying WILL
+NOT WORK rather than a greyed HIRE, because "unavailable" and "he hates you" are
+different facts and the panel has room to say which.
+
+Not verified: the grudge state was built by writing P.rivals directly rather than by
+killing him in a raid, so what is proven is that the panel renders the state
+correctly, not that the raid produces that state. Twenty eight faces is a lot of grid
+and I have not checked it at a smaller window. No human has clicked any of it.
