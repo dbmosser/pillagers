@@ -230,6 +230,16 @@
   .vbar{ height:4px; background:#d8d1c1; border-radius:2px; margin-bottom:9px; overflow:hidden; }
   .vbar i{ display:block; height:100%; background:#201e19; }
   .crlab{ font-size:8px; letter-spacing:.16em; color:#6a655a; margin:4px 0 7px; }
+  .crew{ margin-top:auto; padding-top:12px; border-top:1px solid #d8d1c1; }
+  .crewline{ display:flex; align-items:center; gap:10px; }
+  .crewc{ font-size:17px; font-weight:700; color:#14130f; letter-spacing:0; }
+  .crewc em{ font-style:normal; font-size:8.5px; letter-spacing:.13em; color:#6a655a;
+    margin-left:5px; font-weight:400; }
+  .crewcell{ position:relative; width:40px; height:40px; flex:none;
+    border:1px solid #cdc4b0; border-radius:3px; background:#e6dfcf;
+    display:flex; align-items:center; justify-content:center; }
+  .crewcell .cnt{ position:absolute; right:2px; bottom:0; font-size:10px;
+    font-weight:700; color:#14130f; text-shadow:0 0 3px #e6dfcf; }
   .cres{ display:flex; align-items:center; gap:8px; margin-bottom:7px; }
   .cres img{ width:22px; height:22px; flex:none; }
   .crn{ font-size:11px; color:#2a2721; flex:1; min-width:0; }
@@ -496,7 +506,10 @@
   <div class="invtabs" id="optabs" style="padding:0 0 10px 0"></div>
   <div class="tpane" id="opane_con" style="display:flex;flex-direction:column;flex:1;min-height:0">
     <div class="msub">Work you have signed for. Contracts pay on top of your haul, and they do not expire while you are down here.</div>
-    <div class="plist" id="contracts" style="flex:1;min-height:220px;overflow-y:auto"></div>
+    <div class="vend">
+      <div class="plist" id="contracts" style="flex:1.5;min-height:220px;overflow-y:auto;border:1px solid var(--steel-hi);border-radius:3px"></div>
+      <div class="vdet" id="condetail"></div>
+    </div>
   </div>
   <div class="tpane" id="opane_rew" style="display:none;flex-direction:column;flex:1;min-height:0">
     <div id="seasonhead" style="font-size:12px;letter-spacing:.14em;color:var(--amber);padding:0 0 6px"></div>
@@ -921,7 +934,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.14';
+var VER='6.17';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22396,8 +22409,14 @@ P.contracts.forEach(function(c,ci){
       };
       cp.appendChild(b);
     }
+    row.setAttribute('data-con',ci);
+    row.style.cursor='pointer';
+    (function(ix){ row.addEventListener('click',function(){ P._conSel=ix; renderConDetail(); }); })(ci);
+    if(P._conSel===undefined) P._conSel=ci;
+    if(P._conSel===ci) row.style.borderColor='var(--amber)';
     row.appendChild(cd); row.appendChild(cp); cl.appendChild(row);
   });
+  renderConDetail();
   var ll=document.getElementById('loglist'); ll.innerHTML='';
   document.getElementById('logct').textContent=P.log.length;
   for(i=P.log.length-1;i>=0;i--) ll.appendChild(fmtRun(P.log[i]));
@@ -22653,6 +22672,72 @@ function shopEntryIcon(o){
 function shopEntryRarity(o){
   if(o.kind==='wep') return 'rare';
   var it=ITEMS[o.k]; return (it&&it.r)||'common';
+}
+// v6.16, off his quest screenshot: the same cream panel as the counter and the
+// workshop, with a REWARDS strip showing what it actually pays as cells rather
+// than a phrase at the end of a row.
+function renderConDetail(){
+  var d=document.getElementById('condetail'); if(!d) return;
+  var list=(P.contracts||[]).filter(Boolean);
+  if(!list.length){ d.innerHTML='<div class="vdesc">No work on the board.</div>'; return; }
+  var ci=P._conSel;
+  var c=(ci!==undefined&&P.contracts[ci])?P.contracts[ci]:list[0];
+  if(!c){ d.innerHTML=''; return; }
+  var TT=CTIER[c.tier]||CTIER.std;
+  var done=(c.prog>=c.n), pct=Math.max(0,Math.min(1,c.prog/Math.max(1,c.n)));
+  var h='<div class="vpills"><span class="vpill" style="background:'+TT.c+';color:#14130f">'+
+    escHtml(String(TT.name).toUpperCase())+'</span>'+
+    (done?'<span class="vpill r" style="background:#2f6f4e">READY</span>':'')+'</div>'+
+    '<h4>'+escHtml(c.desc||'Contract')+'</h4>'+
+    '<div class="crlab">PROGRESS</div>'+
+    '<div class="vstat"><span>'+Math.min(c.prog,c.n)+' of '+c.n+'</span><span>'+
+      Math.round(pct*100)+'%</span></div>'+
+    '<div class="vbar"><i style="width:'+Math.round(pct*100)+'%"></i></div>';
+  d.innerHTML=h;
+  // REWARDS, as a strip at the foot of the panel, the way his screenshot has it.
+  var rw=document.createElement('div'); rw.className='crew';
+  rw.innerHTML='<div class="crlab" style="margin:0 0 7px">REWARDS</div>';
+  var line=document.createElement('div'); line.className='crewline';
+  var money=document.createElement('div'); money.className='crewc';
+  money.innerHTML=(c.reward||0).toLocaleString()+'<em>c + rep</em>';
+  line.appendChild(money);
+  var gks=gearKeys(c.gear),seen={};
+  for(var gi=0;gi<gks.length;gi++) seen[gks[gi]]=(seen[gks[gi]]||0)+1;
+  for(var gkey in seen){
+    if(!ITEMS[gkey]) continue;
+    var cell=document.createElement('div'); cell.className='crewcell';
+    cell.innerHTML=iconImgHTML(gkey,26)+
+      (seen[gkey]>1?('<span class="cnt">'+seen[gkey]+'</span>'):'');
+    cell.title=ITEMS[gkey].name+(seen[gkey]>1?('  x'+seen[gkey]):'');
+    line.appendChild(cell);
+  }
+  rw.appendChild(line);
+  d.appendChild(rw);
+  var b=document.createElement('button');
+  b.className='vbuy'; b.textContent=done?'CLAIM':'NOT FINISHED';
+  b.disabled=!done;
+  if(done) b.onclick=function(){
+    var rows=document.getElementById('contracts').querySelectorAll('[data-con]');
+    for(var q=0;q<rows.length;q++){
+      if(+rows[q].getAttribute('data-con')===(P._conSel|0)){
+        var bb=rows[q].querySelector('button'); if(bb) bb.click(); break;
+      }
+    }
+  };
+  d.appendChild(b);
+}
+// gearLabel turns a gear reward into words for the row. The panel needs the KEYS so
+// it can draw the things. The shape is {kind:'stash', ks:[...], label:'...'}, which
+// I got wrong first time by guessing rather than reading it, so the strip drew the
+// money and silently dropped the items. The other shapes are tolerated because a
+// reward that cannot be drawn should show nothing rather than throw.
+function gearKeys(g){
+  if(!g) return [];
+  if(typeof g==='string') return ITEMS[g]?[g]:[];
+  if(Array.isArray(g.ks)) return g.ks.filter(function(k){ return !!ITEMS[k]; });
+  if(g.k&&ITEMS[g.k]) return [g.k];
+  if(g.item&&ITEMS[g.item]) return [g.item];
+  return [];
 }
 function renderShopGrid(){
   var g=document.getElementById('shopgrid'); if(!g) return;

@@ -22554,3 +22554,63 @@ Not verified: __resetCfg restores DEF, so it cannot recover a dial whose DEF def
 was itself changed without a cfgv bump and migration. It also clears P.tuned, which
 is correct for a measurement reset but would throw away a tuning session if I ever
 called it in the middle of one.
+
+## v6.16 and v6.17: contracts get the panel, and a REWARDS strip that shows the goods
+
+His quest screenshot is the same cream panel as the vendor and the workshop, with one
+addition worth stealing: a REWARDS strip along the foot showing the actual items as
+cells rather than a sentence naming them. He said of that screen "quests are not
+particularly well done in my opinion, there are too many quest givers", so what is
+copied is the PANEL, not the structure. Pillagers has no quest givers and his spec
+says to keep it that way.
+
+The contracts themselves stay as rows on the left, deliberately. They are sentences
+with progress, not objects, and a grid of icons is a worse way to read "search two
+secure cases, 0 of 2" than a line of text. What they were missing is somewhere the
+reward is SHOWN rather than abbreviated to "600c + rep" at the end of a row.
+
+Claiming delegates to the row's own button, like the counter and the workshop. That
+button re-checks the contract is finished AND still the one in its slot before
+paying, which is a guard worth not re-deriving.
+
+I GOT THE GEAR SHAPE WRONG BY GUESSING IT. The first cut wrote a gearKey() handling a
+bare string and a .k, and the actual shape is
+
+    {kind:'stash', ks:['plate','plate'], label:'2 Armour Plates'}
+
+so it returned null every time and the strip drew the money and silently dropped the
+items. Fixed by reading the object instead of assuming it, and the keys are stacked
+by kind so two plates are one cell reading x2, the same rule as every other grid in
+the game.
+
+Verified by driving it at 1280x720: eight contract rows; the panel reads STANDARD /
+the description / PROGRESS 0 of 2 with a bar at 0% / REWARDS 600c + rep with an Armor
+Plate cell badged x2; selecting a different row repoints the panel; a finished
+contract shows a READY pill, a 100% bar and an enabled CLAIM, and clicking it pays
+exactly its 320c reward and issues a fresh contract in the slot.
+
+A misreading of my own screenshot, corrected: I thought the panel said 600 while the
+first row said 400, and filed it as a mismatch. Read programmatically, both say 600.
+The 400 was a different row, at a size where the digits are three pixels tall. Read
+the DOM, not the picture, when the claim is about a number.
+
+Verified: parse PASS at v6.17; four maps and 86/87/58/72 entities; three endings
+through the outcome screen; hub, ascent check and the export builder; pin audit clean.
+
+AN INTERMITTENT I HAVE NOT EXPLAINED, recorded rather than dressed up. Two protocol
+runs this tick read 197 and 214 containers on maps 1 and 3 where the baseline is 200
+and 225. It is not the CFG contamination from v6.03: __resetCfg reported ZERO changed
+keys, and the sweep read 236/200/154/225 immediately afterwards. I then ran the sweep
+eight times with and without drawing, with and without the protocol's stash prelude,
+and before and after the three endings, and every single one was 236/200/154/225. It
+has never reproduced once I start probing it. What I can say: the ENTITY counts are
+identical in every affected run, so the spawn stream is aligned and only in-raid
+looting differs; the drift is always downward and always on the same two maps; and it
+does not move the extract rate, which is the number balance decisions actually use.
+What I cannot say is what causes it.
+
+Not verified: the REWARDS strip draws items and credits. A contract paying something
+that is not an ITEMS key would draw nothing, and gearKeys returns an empty list
+rather than throwing, which is the right failure but means a reward could go unshown
+the same way this one did. I have not enumerated every gear shape genContract can
+produce; I fixed the one the game actually generates.
