@@ -23375,3 +23375,54 @@ The container fingerprint above is one seed on one machine and is a regression t
 not a balance measurement. I did not re-measure the Cold Storage extract rate this
 build, so the 8.8 percent figure from the 160-seed run still stands unrepeated, and it
 remains a bot number that disagrees with his own 30 percent.
+
+## v6.37 - A TEXT OUTSIDE ITS BOX DETECTOR, AND THE TWO LINES IT CAUGHT WERE MINE
+
+The v6.36 card overflow was one instance of a class: a canvas panel with a hardcoded
+width and text that no longer fits it. Nothing in this project could see that class, so
+the first move was a probe that can.
+
+It wraps the 2D context for one render pass, records every rect drawn and every string
+drawn with its measured extent and alignment, then asks of each string whether it fits
+inside the tightest box drawn around it.
+
+I TESTED THE PROBE BEFORE TRUSTING IT and it failed, which is the reason this entry
+exists at all. Planted a box 200px wide with a 513px string centred in it, and the
+detector reported nothing. The guard meant to skip full-width backgrounds read "text
+extends past both sides of this rect, so this is not its box", which is the exact
+signature of the thing being hunted. Rewritten to skip rects wider than 90 percent of
+the canvas instead, and to require the text to be aimed at the box rather than merely
+overlapping it. It then caught the planted string and ignored a string that fits.
+
+WHAT IT FOUND, over the hub, the in-raid HUD, the key legend, the rules panel and the
+map overlay: 92 strings in the rules panel, exactly two crossing the right border, and
+both of them lines I wrote in v6.31 and v6.32. "Plates top you up the moment" is 229px
+in a 208px column and "The glowing parts take about" is 222px. The first line of an
+entry sits to the right of its label and has 208px; the continuation lines start
+further left and have 305px. Both fixed by moving a word or two down, with the line
+counts unchanged so the panel height does not move. Re-measured after: all 92 strings
+inside the border.
+
+So the sweep that was supposed to audit the game audited me instead, two builds after I
+wrote the lines. Worth saying plainly: I corrected four false claims in that panel and
+introduced a layout defect doing it, and the only reason it did not ship is that the
+card overflow made me go looking for the class.
+
+Most of the other hits are false positives and are recorded so the next run does not
+chase them: world-space labels (station names on the hub floor, THE LONG DOCK, CACHE,
+ENCAMPMENT on the map) are drawn over decorative floor rects that are not their boxes.
+The key legend is genuinely clean at 146 strings. "H controls" overhangs its box by 3px,
+which is padding rounding, not a defect.
+
+Verified: parse PASS at v6.37; four maps 86/87/58/72 entities and, at seed 4242,
+246/193/152/216 containers, weapon pin and reset CFG; all three endings through the
+outcome screen to a drawn hub; hub, renderStage and the export builder; pin audit
+clean; the rules panel captured at 1080p with every line inside the border and the probe
+reporting zero overflow across its 92 strings.
+
+Not verified: the probe reads one frame per surface, so anything that only draws in a
+state I did not enter is unmeasured, and the stash and the station panels have not been
+swept yet. Its box-matching is a heuristic and it produces false positives on world
+space labels, so it finds candidates rather than verdicts. It measures the right border
+only in the sense that it measures all four, but every real hit so far has been
+horizontal; I have not confirmed it would catch a vertical overrun.
