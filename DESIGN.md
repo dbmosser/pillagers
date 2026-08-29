@@ -20247,3 +20247,52 @@ every state draws without throwing, but whether she reads well WITHOUT them, at
 game zoom, is the whole question he was asking and it needs an eye rather than a
 probe. The avatar marker is two parentheses standing in for bunches, which is a
 placeholder glyph in a row of geometric ones and may look wrong beside them.
+
+## v5.67: I reworded two roadmap rows and dropped them off his queue
+
+Found by repeating the v1.69 exercise, driving the hub renderers against twenty
+hostile profile states, on the screen I rewrote at v5.64. The rebuild itself came
+through clean. What the sweep walked into on the way was a regression from v5.62.
+
+P.roadmapOrder STORES ROW TEXT. roadmapOpenOrdered sorts the open rows by
+ord.indexOf(row text), and a row whose text no longer matches returns -1, which
+sorts BELOW every row he has ranked. So when v5.62 rewrote the ring-crowd
+question and the LVL question, both for good reasons, the two rewritten rows did
+not merely lose their place: they sank to the bottom of the queue he deliberately
+set. The RMV2 migration table exists to stop exactly this and has since v4.22,
+and I walked straight past it.
+
+Both generations of both rows now map to the current text. Mapped directly rather
+than chained, because RMV2 is applied in a single pass, so an old-to-v4.22-to-v5.62
+chain would only ever advance one step. Driven with all four historical strings
+saved into roadmapOrder: after a load, every one resolves to a live NOW row.
+
+THE HOSTILE SWEEP ITSELF FOUND THREE THROWS AND I AM FIXING NONE OF THEM, which
+is the honest answer rather than the tidy one. A null P.stash and a null P.weapons
+both throw in the hub, in stashCounts and in renderHub, neither of which is code I
+touched. They are not reachable: loadProfile coerces both to arrays
+unconditionally, and the restore-from-backup path runs through loadProfile, so a
+hand-edited backup is repaired before any renderer sees it. I drove that too,
+nulling both and calling loadProfile, and they came back as arrays. Writing
+guards for states nothing can produce is the mistake this file already named at
+v1.69, so the record is that they were checked and left alone. The other
+seventeen states, including kit longer than the stash, kit holding items that do
+not exist, a hotAssign pointing at slot 999 and a NaN credit balance, all render
+without throwing.
+
+AND ONE DEAD WRITE FROM THE REBUILD. v5.64 removed the three exclusive tabs, so
+nothing reads P.invTab, but a line still wrote it to the profile on every hub
+render. Removed. The key survives in existing saves and is inert, which is not
+worth a migration to delete.
+
+Verified: parse PASS at v5.67; four maps 86/87/58/72; three endings through the
+outcome screen with death and timeout paying zero credits; hub and ascent check;
+all four historical roadmap strings migrating to live rows; twenty hostile
+profile states driven through the hub, the ascent check and the operator terminal
+with seventeen clean and three unreachable.
+
+Not verified: I have not proven the two migrated rows land in the RIGHT place in
+his order, only that they match a live row again. If his saved order already had
+them, they return to where he put them; if the damage was already written back to
+his profile by a save after v5.62, this repairs the text but the position it
+repairs to is whatever was stored, which may be the bottom.
