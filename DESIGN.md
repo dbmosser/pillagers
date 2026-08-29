@@ -18855,3 +18855,62 @@ and the only defence that generalises is the one applied here, which is to skip
 rather than trust.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.43  AUDIT PASS FOUR, THE END-OF-RAID PATHS AND THE ECONOMY
+================================================================================
+
+v5.43: audit pass four, the end-of-raid paths and the economy
+
+Pass three found a crash in the payout by feeding it a hostile profile. This
+pass drove the paths that only run in specific circumstances, because that is
+where that crash was hiding and there was no reason to think it was alone.
+
+END OF RAID, every branch I could construct, all clean:
+  extracting while carrying a KEY
+  extracting with a mercenary hired
+  extracting with all six contract types live at once
+  extracting at world tier 5
+  extracting with a forty item bag
+  extracting with contract terms signed
+  dying to all ten killer kinds including the timer and a null killer
+  the full extraction cycle in real time, beacon to boarding
+  the clock running out and the site going up, explosions and body confirmed
+  bleeding out from downed to dead
+
+THE ECONOMY, all clean and all measured by watching the numbers move rather than
+by the click not throwing:
+  buying took 110c and put the item in the stash
+  crafting consumed five components and returned one, stash 101 to 97
+  the gambler took 450c and added an item
+  all three throwables fire, each decrementing its own pouch
+
+I MISREAD THE XP SYSTEM AND WANT TO BE CLEAR ABOUT IT. I measured ten
+extractions and got zero XP, and wrote it down as a dead system. It is not.
+addProgress is called from the outcome screen's continue button, and my probe
+had been calling endRaid directly and never clicking through. Driven properly it
+is 72 XP a run, and the curve is 1+floor(sqrt(xp/220)): level 2 at ten runs,
+level 3 at twenty five, level 5 at fifty, level 6 at a hundred.
+
+I also checked the thing that reading would have worried me about: the global
+Escape handler I added at v5.31 closes any .modal, and the outcome screen is
+class "outcome" rather than class "modal", so Escape cannot skip it and eat your
+XP, your seal points and your run log. Driven and confirmed.
+
+WHAT THE CURVE COST ME. My Bleached hair cosmetic gates on level 6, which the
+measurement says is about a HUNDRED raids. He has 66 across the entire life of
+the project, so I had shipped an unlock nobody would ever see. Lowered to level
+4, near forty raids. Checked the whole set against a plausible forty-raid
+player: ten of eleven cosmetics earned, and the one still locked is the one you
+buy, which is correct.
+
+Verified: parse PASS at v5.43; four maps 85/86/57/71; all three endings driven
+THROUGH the outcome screen, which is the play path, with XP, seal points and log
+entries all advancing; hub and ascent check clean.
+
+Not verified: the extraction cycle test ended in death after 29 seconds of
+holding the ring, which is the siege converging on a stationary player with no
+defence and is almost certainly correct, but I have not proven it is the siege
+rather than something else killing him there.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

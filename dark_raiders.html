@@ -755,7 +755,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.42';
+var VER='5.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14091,7 +14091,10 @@ var COSMETICS=[
   {id:'blonde', name:'Blonde',         how:'always',      kind:'hair'},
   {id:'dark',   name:'Dark',           how:'runs:3',      kind:'hair'},
   {id:'red',    name:'Rust Red',       how:'extracts:12', kind:'hair'},
-  {id:'white',  name:'Bleached',       how:'level:6',     kind:'hair'},
+  // LEVEL 4, not 6. Measured the curve instead of guessing: XP is 72 a run and
+  // the level is 1+floor(sqrt(xp/220)), so level 6 is about a HUNDRED runs. He
+  // has 66 across the whole life of the project. Level 4 lands near forty.
+  {id:'white',  name:'Bleached',       how:'level:4',     kind:'hair'},
   {id:'green',  name:'Moss',           how:'buy:2500',    kind:'hair'}
 ];
 // dark, lit, highlight. The figure is 15px across, so three tones is the whole
