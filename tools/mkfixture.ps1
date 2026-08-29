@@ -78,6 +78,14 @@ window.__hub=function(){ return HB; };
 // showScreen('hub') is the ONLY thing that builds HB, so every hub probe before
 // this hook existed had to reach for HB through a raid ending and got null.
 window.__showScreen=function(s){ showScreen(s); };
+// FOG. Persistence is the whole point of it, so the probe has to be able to
+// read the packed profile string, not just the live grid.
+window.__fog={frac:function(m){ return fogFrac(m); },
+              save:function(){ return fogSave(); },
+              packed:function(m){ return (P.mapSeen||{})[m]; },
+              mark:function(){ return fogMark(); },
+              grid:function(){ return G&&G.seen?G.seen:null; },
+              seenAt:function(x,y){ return fogSeen(x,y); }};
 // COSMETICS. Purely cosmetic, so nothing here can move a balance number, but the
 // unlock rules still have to be driven: a locked hat must never end up worn.
 window.__cos={list:function(){ return COSMETICS; },

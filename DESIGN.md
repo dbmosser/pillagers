@@ -17992,3 +17992,58 @@ sim number in the entire history of this project measured the recovery rule.
 320 paired seeds would return the same figures they already return. What this
 change moves is the cost of dying to a HUMAN, and the only instrument for that
 is him playing it.
+
+================================================================================
+v5.29  THE MAP STAYS REVEALED
+================================================================================
+
+The oldest thing on the list, and the one I wrote down as "he asked for this
+long ago and I never built it."
+
+WHAT EXISTED. Fog of war has been in since his Q22: one byte per 96 units of
+world, set as you walk, drawn over the sector map so you cannot read ground you
+have not crossed. What it never did was survive the raid. Every deployment
+built a fresh grid of zeroes, so you started blind on ground you had walked a
+dozen times.
+
+That is not fog of war, it is amnesia. And it is a real part of why he says the
+maps feel samey: you never accumulate a picture of a place, because the game
+takes it back every time you leave. A map you have surveyed 60 percent of is a
+different object to play in than a map you have surveyed none of, and until
+today no map in this game was ever anything but the second one.
+
+WHAT THIS BUILD DOES. The grid is bit packed and kept in the profile per map.
+5200 by 4000 at 96 units is 55 by 42, so 2310 cells, 289 bytes packed, 388
+characters of base64. Four maps is about 1.5KB in a profile that already holds
+several times that in config dials.
+
+It is written back on EVERY ending, including a death and an abandon, and it is
+written first, before any of the payout code that could throw. The ground you
+crossed on a run that killed you is still ground you crossed. Tying map
+knowledge to a successful extraction would make a death cost you twice, and I
+have just spent a build making sure a death costs you exactly once.
+
+Two ways it refuses to load rather than half loading: a base64 string that will
+not decode, and a decoded length that does not match the map's cell count. The
+second one is the important one, because it is what happens if I ever change
+FOG_CELL or a map's dimensions, and a half restored grid would show you the
+wrong parts of the wrong map with no way to tell.
+
+SURVEYED N%. Bottom left of the sector map, with the line "what you walk stays
+on the map" under it. Without that number the feature is invisible: the map is
+simply less black than he remembers, and nothing tells him that is deliberate.
+
+Verified: parsecheck PASS at v5.29. Four maps clean at 110, 111, 74 and 91,
+each with the map overlay drawn. Walked 29.5 percent of GREYWATER, DIED, and
+the next raid on the same map opened at 29.5 percent. Walked further and it
+grew to 46.1 percent. A different map read 0 percent throughout, and only the
+maps actually visited appear in the profile. A three seed headless batch left
+the stored map untouched, which matters because the sim must never inherit or
+write what he has explored. A corrupt base64 string and a correctly encoded
+but wrong length string both fall back to a blank map rather than a partial one.
+
+Not verified: nothing is written mid raid, so a browser closed in the middle of
+a raid loses that raid's exploration. That is a deliberate trade, not an
+oversight, but it has not been driven. Nobody has looked at the SURVEYED
+readout on a real screen, so I know it draws and I do not know it sits clear of
+the map frame at every window size.
