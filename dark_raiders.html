@@ -755,7 +755,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.48';
+var VER='5.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1718,7 +1718,9 @@ var MUS={g:null,lp:null,next:0,step:0};
 // walks alone when watched and gains its pulse when hunted.
 var HUB_CHORDS={
   Am:[57,60,64], F:[53,57,60], C:[60,64,67],
-  G:[55,59,62],  Dm:[57,62,65], E:[56,60,64]
+  G:[55,59,62],  Dm:[57,62,65], E:[56,60,64],
+  // Added v5.49 for the two new pieces.
+  Em:[52,55,59], D:[50,54,57], Bb:[46,50,53], Gm:[55,58,62], A:[57,61,64]
 };
 var HUB_THEME={
   name:'THE UNDERCROFT', spb:0.1364,       // sixteenths at 110bpm, 16 per bar
@@ -1743,38 +1745,69 @@ var HUB_THEME={
     {c:'Am',b:45, lead:[69,0,0,0, 0,0,0,0,  0,0,0,0,  0,0,0,0]}
   ]
 };
-var MUS_TRACKS=[
-{name:'LOW ROAD',spb:0.4167,bw:'triangle',lw:'square',   // A minor, 72, the original
- bass:[33,33,29,31,33,33,29,28],
- lead:[57,0,60,0,64,0,62,0,  60,0,57,0,0,0,55,0,
-       53,0,57,0,60,0,57,0,  55,0,59,0,62,0,0,0,
-       57,0,60,0,64,0,67,0,  69,0,67,0,64,0,62,0,
-       60,0,57,0,53,0,57,0,  64,0,59,0,56,0,52,0]},
-{name:'COLD HOLLOW',spb:0.5172,bw:'sine',lw:'triangle',  // D dorian, 58, slow and empty
- bass:[38,38,36,33,38,38,41,40],
- lead:[62,0,0,0,65,0,0,0,  67,0,0,0,62,0,0,0,
-       69,0,0,0,71,0,69,0, 67,0,0,0,0,0,0,0,
-       62,0,0,0,65,0,0,0,  67,0,69,0,72,0,0,0,
-       71,0,0,0,69,0,67,0, 62,0,0,0,0,0,0,0]},
-{name:'RUST MARKET',spb:0.3125,bw:'square',lw:'sawtooth',// E phrygian, 96, wiry and quick
- bass:[28,29,28,31,28,29,26,28],
- lead:[64,0,65,0,64,0,62,0, 64,0,67,0,65,0,64,0,
-       69,0,67,0,65,0,64,0, 65,0,64,0,0,0,0,0,
-       64,0,65,0,67,0,69,0, 71,0,69,0,67,0,65,0,
-       72,0,71,0,69,0,67,0, 65,0,64,0,0,0,62,0]},
-{name:'THE LONG WAY DOWN',spb:0.6,bw:'sine',lw:'triangle', // G minor, 50, long and empty
- bass:[31,31,27,29,31,26,27,29],
- lead:[67,0,0,0,0,0,70,0,  74,0,0,0,0,0,0,0,
-       72,0,0,0,70,0,0,0,  67,0,0,0,0,0,0,0,
-       65,0,0,0,0,0,67,0,  70,0,0,0,0,0,0,0,
-       67,0,0,0,62,0,0,0,  63,0,0,0,0,0,0,0]},
-{name:'GLASS FIELD',spb:0.4545,bw:'sine',lw:'sine',      // C lydian, 66, bright and wrong
- bass:[36,36,43,42,36,38,43,42],
- lead:[76,0,0,0,79,0,0,0,  78,0,0,0,0,0,74,0,
-       76,0,0,0,83,0,0,0,  81,0,79,0,0,0,0,0,
-       76,0,0,0,79,0,0,0,  78,0,74,0,76,0,0,0,
-       81,0,0,0,79,0,78,0, 72,0,0,0,0,0,0,0]}];
-function musTrk(){ return HUB_THEME; }
+// The five v4.25 tracks were DELETED here at v5.49. They had no readers, they
+// were in a format the current renderer cannot play, and a file full of songs
+// that cannot be heard is worse than an honest single loop. Their replacements
+// are MUS_THEMES below, written in the format musNote actually speaks.
+// TIN AND WIRE. E minor at about 130, the quick one: the lead keeps moving and
+// the bass walks under it, so the Undercroft sounds like a place where people
+// are working rather than a place where someone died.
+var THEME_TIN={
+  name:'TIN AND WIRE', spb:0.1154,
+  bars:[
+    {c:'Em',b:40, lead:[76,0,0,0, 74,0,72,0, 71,0,0,0, 72,0,74,0]},
+    {c:'C', b:36, lead:[72,0,0,0, 71,0,69,0, 67,0,0,0, 0,0,0,0]},
+    {c:'G', b:43, lead:[74,0,0,0, 71,0,74,0, 79,0,0,0, 76,0,0,0]},
+    {c:'D', b:38, lead:[74,0,72,0, 71,0,0,0, 69,0,0,0, 66,0,0,0]},
+    {c:'Em',b:40, lead:[76,0,0,0, 79,0,76,0, 74,0,0,0, 72,0,71,0]},
+    {c:'C', b:36, lead:[72,0,74,0, 76,0,0,0, 79,0,0,0, 0,0,0,0]},
+    {c:'Am',b:33, lead:[81,0,79,0, 76,0,0,0, 74,0,72,0, 69,0,0,0]},
+    {c:'D', b:38, lead:[71,0,0,0, 74,0,0,0, 78,0,0,0, 0,0,0,0]},
+    {c:'Em',b:40, lead:[79,0,0,0, 76,0,0,0, 74,0,76,0, 79,0,0,0]},
+    {c:'G', b:43, lead:[83,0,0,0, 81,0,79,0, 76,0,0,0, 74,0,0,0]},
+    {c:'C', b:36, lead:[76,0,74,0, 72,0,0,0, 71,0,0,0, 69,0,0,0]},
+    {c:'D', b:38, lead:[74,0,0,0, 78,0,0,0, 81,0,0,0, 78,0,0,0]},
+    {c:'Em',b:40, lead:[76,0,0,0, 0,0,0,0,  72,0,74,0, 76,0,0,0]},
+    {c:'Am',b:33, lead:[81,0,0,0, 79,0,76,0, 74,0,0,0, 0,0,0,0]},
+    {c:'D', b:38, lead:[78,0,76,0, 74,0,71,0, 69,0,0,0, 66,0,0,0]},
+    {c:'Em',b:40, lead:[64,0,0,0, 0,0,0,0,  0,0,0,0,  0,0,0,0]}
+  ]
+};
+// THE DEEP SHELF. D minor at about 84, the slow one: long notes, wide gaps, and
+// a bass that arrives late. This is the piece that makes standing in the stash
+// counting tins feel like being underground.
+var THEME_DEEP={
+  name:'THE DEEP SHELF', spb:0.1786,
+  bars:[
+    {c:'Dm',b:38, lead:[74,0,0,0, 0,0,0,0,  77,0,0,0, 0,0,0,0]},
+    {c:'Bb',b:34, lead:[77,0,0,0, 0,0,0,0,  0,0,0,0,  74,0,0,0]},
+    {c:'F', b:41, lead:[72,0,0,0, 0,0,0,0,  74,0,0,0, 0,0,0,0]},
+    {c:'C', b:36, lead:[76,0,0,0, 0,0,0,0,  0,0,0,0,  0,0,0,0]},
+    {c:'Dm',b:38, lead:[77,0,0,0, 0,0,0,0,  81,0,0,0, 0,0,0,0]},
+    {c:'Gm',b:31, lead:[79,0,0,0, 0,0,0,0,  77,0,0,0, 0,0,0,0]},
+    {c:'Bb',b:34, lead:[74,0,0,0, 0,0,0,0,  0,0,0,0,  72,0,0,0]},
+    {c:'A', b:33, lead:[69,0,0,0, 0,0,0,0,  73,0,0,0, 0,0,0,0]},
+    {c:'Dm',b:38, lead:[74,0,0,0, 0,0,0,0,  0,0,0,0,  0,0,0,0]},
+    {c:'F', b:41, lead:[81,0,0,0, 0,0,0,0,  79,0,0,0, 0,0,0,0]},
+    {c:'Gm',b:31, lead:[77,0,0,0, 0,0,0,0,  74,0,0,0, 0,0,0,0]},
+    {c:'C', b:36, lead:[72,0,0,0, 0,0,0,0,  0,0,0,0,  76,0,0,0]},
+    {c:'Bb',b:34, lead:[74,0,0,0, 0,0,0,0,  77,0,0,0, 0,0,0,0]},
+    {c:'A', b:33, lead:[73,0,0,0, 0,0,0,0,  69,0,0,0, 0,0,0,0]},
+    {c:'Dm',b:38, lead:[74,0,0,0, 0,0,0,0,  0,0,0,0,  0,0,0,0]},
+    {c:'Dm',b:26, lead:[62,0,0,0, 0,0,0,0,  0,0,0,0,  0,0,0,0]}
+  ]
+};
+// THREE PIECES, ROLLED PER VISIT. Math.random on purpose and not the seeded
+// stream: the seed builds the world and every A/B in this project depends on
+// it, so which song plays must never be able to move a crate. The choice is
+// held until the music stops, so a track never changes underneath you while you
+// are standing in the Undercroft.
+var MUS_THEMES=[HUB_THEME,THEME_TIN,THEME_DEEP];
+function musPick(){
+  MUS.trk=MUS_THEMES[Math.floor(Math.random()*MUS_THEMES.length)]||HUB_THEME;
+  return MUS.trk;
+}
+function musTrk(){ return MUS.trk||musPick(); }
 // THE MUSIC REACTS, v3.90. His note: "the music should change based on what's
 // happening in game". The radio was one loop at one tempo whether you were
 // counting tins in an empty shed or being run down by a crawler, which is the
@@ -1833,7 +1866,7 @@ function tickMusic(){
     // Fade rather than cut, and forget the clock so the theme restarts clean
     // from the top of bar one instead of resuming mid-phrase.
     if(MUS.g&&AC){ try{ MUS.g.gain.setTargetAtTime(0,AC.currentTime,0.35); }catch(e){} }
-    MUS.next=0; MUS.step=0;
+    MUS.next=0; MUS.step=0; MUS.trk=null;
     return;
   }
   var a=ac(); if(!a) return;

@@ -580,7 +580,7 @@ window.__musDry=function(steps){
   try{ for(var i=0;i<steps;i++) musNote(i,0,i); } finally { musVoice=real; }
   return out;
 };
-window.__musTheme=function(){ return {theme:HUB_THEME,chords:HUB_CHORDS}; };
+window.__musTheme=function(){ return {theme:HUB_THEME,chords:HUB_CHORDS,themes:MUS_THEMES,live:musTrk(),pick:function(){ MUS.trk=null; return musTrk(); }}; };
 window.__musWanted=function(){ return musicWanted(); };
 // The drop check: the last screen before a raid, so it can be driven like every
 // other one instead of only through a click path.

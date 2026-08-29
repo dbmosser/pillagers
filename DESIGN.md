@@ -19173,3 +19173,61 @@ have different machine densities and the war could land differently on them, and
 since the beta ships one map I did not spend another 960 raids finding out.
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+
+================================================================================
+v5.49  THE VARIETY WAS BUILT, THEN ORPHANED
+================================================================================
+
+v5.49: the variety was built, then orphaned
+
+HIS NOTE: "music needs more variety". It already had some, and I had made it
+unreachable.
+
+MUS_TRACKS held FIVE fully authored pieces: LOW ROAD, COLD HOLLOW, RUST MARKET,
+THE LONG WAY DOWN and GLASS FIELD. Each with its own key, tempo, waveforms, bass
+line and lead. They were written at v4.25 on his exact order, "music needs like
+multiple tracks that are completely distinct so it doesn't get tiresome over long
+sessions".
+
+MUS_TRACKS WAS REFERENCED EXACTLY ONCE IN THE FILE: its own declaration. Zero
+readers. musTrk returned HUB_THEME unconditionally, so one sixteen bar loop has
+been the entire soundtrack since the v5.2x rewrite made the music
+Undercroft-only, and five songs sat in the build that nobody could ever hear.
+
+That is the same fault as the constants my notes already warn about: something
+that looks like content, reads like content in the source, and is not reachable.
+Grepping for readers is the only thing that catches it.
+
+THEY COULD NOT SIMPLY BE SWITCHED BACK ON. They are in the old format, a flat 64
+step lead with a bass array, and musNote now reads bars, chords and a per bar
+bass. The renderer that understood them is gone. So rather than leave five dead
+songs pretending to be a soundtrack, they are DELETED, and two new pieces are
+written in the format the renderer actually speaks:
+
+  TIN AND WIRE      E minor, about 130. The quick one: the lead keeps moving and
+                    the bass walks under it, so the Undercroft sounds like a
+                    place where people are working.
+  THE DEEP SHELF    D minor, about 84. Long notes, wide gaps, a bass that
+                    arrives late. The piece that makes standing in the stash
+                    counting tins feel like being underground.
+
+Three pieces now, rolled per visit. Math.random on purpose and NOT the seeded
+stream: the seed builds the world and every A/B in this project depends on it, so
+which song plays must never be able to move a crate. The choice is held until the
+music stops, so a track cannot change underneath you mid-visit.
+
+Verified: parse PASS at v5.49, braces balanced, no duplicate functions. All three
+themes structurally checked: 16 bars each, every chord resolvable against
+HUB_CHORDS, every lead exactly 16 steps, every bass numeric. Rolled 300 times and
+all three come up (109 / 104 / 87). Each one dry-run through a full 256 step pass
+of the note scheduler without throwing. Gating unchanged and re-verified: wanted
+in the Undercroft, NOT in a raid, NOT on the outcome screen, wanted again after
+the button. Four maps 85/86/57/71, all three endings through the outcome screen,
+hub and ascent check clean.
+
+Not verified: nobody has HEARD either new piece. I know they are structurally
+valid and that the scheduler renders them without error; I do not know that
+TIN AND WIRE at 130 is pleasant to sit under while reorganising a stash, and
+that is exactly the complaint that started this.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
