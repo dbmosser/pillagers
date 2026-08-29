@@ -770,7 +770,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.70';
+var VER='5.71';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1378,6 +1378,19 @@ function sealLines(){
 // Death is final since v5.28, so there is never a body to report. Kept as a
 // function rather than deleted because four callers concatenate its result.
 function bodyLine(){ return ''; }
+// WHAT MAKES TWO CONTRACTS THE SAME JOB, v5.71. The type plus whatever that type
+// is about: which machine, which container, which district on which map, which
+// item, which conduct. Deliberately NOT the count, so "destroy 6 sentries" and
+// "destroy 14 sentries" collide and only one of them reaches the board.
+function contractKey(c){
+  if(!c||!c.type) return '?';
+  if(c.type==='kill')     return 'kill:'+c.tgt;
+  if(c.type==='open')     return 'open:'+c.ct;
+  if(c.type==='district') return 'district:'+c.d+':'+(c.map===undefined?'any':c.map);
+  if(c.type==='exItem')   return 'exItem:'+c.item;
+  if(c.type==='conduct')  return 'conduct:'+c.ck;
+  return c.type;
+}
 function ensureContracts(){
   // Drop anything that is not a usable contract before topping up, or junk
   // entries count toward the ceiling and permanently crowd out real work.
@@ -1388,7 +1401,21 @@ function ensureContracts(){
   } else P.contracts=[];
   // EIGHT, v5.31, his ask. With three the board was not a board: you always
   // held every contract in the game and picking was not a decision.
-  while(P.contracts.length<8) P.contracts.push(genContract());
+  // NO TWO ROWS THAT ARE THE SAME JOB, v5.71. Keyed on what the contract is
+  // ABOUT, not its size: two sentry hunts for different counts still read as one
+  // slot wasted. Bounded retries, then take what comes, so a narrow pool can
+  // never spin here.
+  while(P.contracts.length<8){
+    var _cNew=null;
+    for(var _ct=0;_ct<12;_ct++){
+      var _cTry=genContract(), _kTry=contractKey(_cTry), _dup=false;
+      for(var _cj=0;_cj<P.contracts.length;_cj++)
+        if(contractKey(P.contracts[_cj])===_kTry){ _dup=true; break; }
+      if(!_dup){ _cNew=_cTry; break; }
+      if(_ct===11) _cNew=_cTry;
+    }
+    P.contracts.push(_cNew||genContract());
+  }
   // Contracts saved before v1.38 carry no tier and no gear, so they would sit on
   // his board paying nothing but credits and the whole feature would look broken
   // for exactly as long as his current three take to finish. Backfilled in

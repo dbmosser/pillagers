@@ -20426,3 +20426,44 @@ Not verified: the 15 percent figure for a busy raid is arithmetic on the formula
 not a driven run. My sim raids open nothing and kill nothing, so the 2 percent is
 the floor case rather than the typical one, and I have not produced a run with a
 real haul and a real body count to confirm the middle of the range.
+
+## v5.71: nearly one slot in five on his contract board was the same job twice
+
+Found by photographing a live raid at 1920x1080, on his instruction that 1080p is
+the target. The in-raid tracker listed "Destroy 6 sentries" twice out of a board
+of eight. ensureContracts tops the board up with genContract and has never looked
+at what is already on it, so duplicates were always possible.
+
+MEASURED BEFORE THE FIX, 200 boards across all four maps and all three contract
+tiers: 174 of them, 87 percent, carried at least one duplicate job, averaging 1.50
+duplicates per board of eight. So on a typical board about one slot in five was a
+repeat of another slot.
+
+It matters more than it looks because v5.31 took the board from three to eight on
+his ask, and the stated point of a bigger board was that picking becomes a
+decision. Two identical rows are one slot of choice thrown away.
+
+Deduped on the DISCRIMINATOR rather than the whole contract: which machine, which
+container, which district on which map, which item, which conduct. Deliberately
+NOT the count, so "destroy 6 sentries" and "destroy 14 sentries" collide and only
+one reaches the board, because two rows differing only in a number are just as
+repetitive to read. Roughly twenty three distinct jobs exist against eight slots,
+so twelve tries is generous, and it falls through to accepting a duplicate rather
+than looping if the pool is ever narrower than the board.
+
+Measured after: 200 boards, zero duplicates, all eight slots filled every time.
+
+ALSO CLOSED A NOTE I LEFT OPEN AT v5.58. That build bound district contracts to
+the map they were written for and greyed them as OTHER SITE elsewhere, and I
+could not confirm the greying because my probe read the panel rectangle back
+empty. A live raid on GREYWATER holding a district contract for COLD STORAGE
+flags it correctly, checked against the same condition the tracker draws with.
+
+Verified: parse PASS at v5.71; four maps 86/87/58/72; all three real endings
+through the outcome screen with extract paying 48c and dead and abandon zero; hub
+and ascent check; 200 boards generated with no duplicate and a full eight slots.
+
+Not verified: whether eight contract rows in the in-raid tracker is too many to
+read at a glance. Removing the duplicates takes about one and a half rows off it,
+but the panel still ran roughly a third of the screen height at 1080p in the
+photograph, and that is a judgement about his screen rather than a number.
