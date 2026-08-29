@@ -787,11 +787,7 @@
       </div>
     </div>
   </div>
-  <div style="display:none">
-    <!-- Kept so the renderers that still fill them have somewhere to write.
-         Nothing here is shown: the figure and the grid replaced all of it. -->
-    <span id="stashct">0</span>
-  </div>
+
   <!-- Wraps rather than clipping. Six buttons on one nowrap row ran off the
        edge below about 820px of window width and took TUNING with it, which is
        the console he adjusts the whole game from, so it was unreachable in a
@@ -941,7 +937,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.24';
+var VER='6.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21960,7 +21956,7 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   // one of three that threw.
   var counts=stashCounts(),keysArr=Object.keys(counts).filter(function(k){ return !!ITEMS[k]; });
   keysArr.sort(function(a,b){ return ITEMS[b].val-ITEMS[a].val; });
-  document.getElementById('stashct').textContent=P.stash.length;
+
   if(!keysArr.length){
     var em=document.createElement('div'); em.className='hint';
     em.textContent='Inventory is empty. Ascend, pillage, extract.'; sl.appendChild(em);
@@ -22048,8 +22044,8 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   });
   var detail=document.getElementById('stashdetail');
   function detailIdle(){
-    if(detail) detail.innerHTML='<span style="opacity:.55">Point at an item for what it is worth and what it is for. '+
-      'Click a cell to tag it JUNK; junk is what the sell button clears.</span>';
+    if(detail) detail.innerHTML='<span style="opacity:.55">Click a cell to tag it JUNK. '+
+      'The sell button clears junk and loose salvage.</span>';
   }
   detailIdle();
   // WHICH PLACE. STASH is the vault, INVENTORY is what you are taking up, and

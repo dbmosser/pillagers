@@ -22923,3 +22923,40 @@ though nothing in this file does that. The armoury Equip button that lived in th
 hidden weapon list is gone with it; guns are chosen on the operator figure and have
 been since that panel stopped being shown, so nothing the player can reach has
 changed, but that is reasoning rather than a test of the old path.
+
+## v6.25: the last caption, and the last dead host
+
+"Point at an item for what it is worth and what it is for" was printed in the strip
+that IS the thing showing you that, the moment you point at anything. A caption
+explaining a caption. Gone.
+
+The second half of that line stays, shortened, because a plain click tagging JUNK is
+genuinely not stated anywhere else on the screen. The key bar covers drag, right
+click, shift, alt and the number keys and does not cover the plain click, precisely
+because that one is the odd one out.
+
+And the last permanently hidden host. A sweep of every element sitting inside a
+display:none ancestor found 34, of which 33 are simply inactive TAB PANES that appear
+the moment their tab is chosen, which is correct and not dead at all. Exactly one was
+genuinely unreachable: #stashct, which I left behind at v6.24. Nothing read it, so the
+write was work producing nothing. Both are gone and the display:none container with
+them.
+
+TWO AUDITS THAT FOUND NOTHING, and they are worth as much as the two builds. Every
+visible button on eleven screens, 71 of them, has a handler: there are no dead buttons
+anywhere in the menus. And apart from #stashct, nothing in the file is written to a
+host that cannot be shown.
+
+Verified: parse PASS at v6.25; the idle strip now reads only the junk rule; hovering a
+cell still produces the full item detail, which is the feature the deleted caption
+merely described; a plain click still tags junk exactly as the surviving sentence
+says; zero remaining references to stashct; four maps 236/200/154/225 and 86/87/58/72
+with the weapon pin; three endings through the outcome screen; hub, ascent check and
+the export builder; pin audit clean.
+
+Not verified: the dead-button sweep can only see handlers assigned as .onclick or an
+inline attribute, which is how nearly everything in this file is wired, but a control
+wired purely through addEventListener would have been reported as dead and none were,
+so the sweep is sound in the direction that matters and blind in the other. It also
+only sees buttons that are on screen in the state I put each screen into, so a control
+that appears only in some other state was not checked.
