@@ -770,7 +770,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.73';
+var VER='5.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13597,7 +13597,8 @@ silentExit:T.silentExit||0,
     P.rigs=(P.rigs||[]).filter(function(r){ return r!==P.rig; });
     P.rig=(P.rigs.length?P.rigs[P.rigs.length-1]:'none');
     lines.push('<span style="color:var(--rust)">'+lostRig.name+' is gone.'+
-      (P.rig==='none'?' You walk out of here in a shirt.':(' Falling back to the '+myRig().name+'.'))+'</span>');
+      (P.rig==='none'?' You have no rig left, so you ascend next time with zero armour.'
+                     :(' Falling back to the '+myRig().name+'.'))+'</span>');
   }
   // HAZARD PAY. Only on an extraction: signing for worse conditions and then
   // dying under them is simply a worse day, which is what makes it a bet rather
@@ -13716,13 +13717,16 @@ var _cdone=contractExtract(G.bag,haul);
     // Everything the ledger just called GONE is not gone. It is lying where you
     // fell, and the map you died on will show it to you next time you deploy
     // there. One body at a time, so this replaces any older one.
-    // NOTHING TO GO BACK FOR. The ledger above already listed every item by
-    // name; this is the line that tells you the list is final, and it is the
-    // only thing standing between "you lost some stuff" and "that run mattered".
+    // v5.74, his note. This used to end "There is nothing to go back for",
+    // which answered a question the game stopped asking at v5.28 when bodies you
+    // could return to were removed. With no corpse there is nothing to go back
+    // TO, so the sentence answered nothing and read as a non-sequitur. The count
+    // is the information; the second line is now the thing he actually wants to
+    // know at that moment, and unlike the old one it is true.
     var nLost=lostIdx.length+gone.length+((G.lostRig&&G.lostRig!=='none')?1:0);
     if(nLost>0){
       lines.push('<span style="color:var(--rust)">'+nLost+' item'+(nLost===1?'':'s')+
-        ' went down with you. There is nothing to go back for.</span>');
+        ' went down with you. Everything already in your stash is untouched.</span>');
     }
   } else {
     // An abandon never resolves the raid, so the armoury must read exactly as
@@ -18422,23 +18426,34 @@ function drawRaiderBoard(){
     var st;
     if(r.out){ st='EXTRACTED'; out++; }
     else if(inEnts){ st=raiderStatus(e); live++; }
-    else { st='DEAD'; dead++; }
-    rows.push({name:((r.ref&&r.ref.rival)?'\u2605 ':'')+r.name,val:r.val,st:st,crew:r.crew,out:r.out,outAt:r.outAt,el:!!(r.ref&&r.ref.elite),gh:!!(r.ref&&r.ref.ghost)});
+    else {
+      st='DEAD'; dead++;
+      // v5.74: nothing ever stamped a death, because dead rows used to be
+      // permanent. Taken the first frame the roster sees him gone, in raid time.
+      if(r.deadAt===undefined) r.deadAt=elapsed();
+    }
+    rows.push({name:((r.ref&&r.ref.rival)?'\u2605 ':'')+r.name,val:r.val,st:st,crew:r.crew,out:r.out,outAt:r.outAt,deadAt:r.deadAt,el:!!(r.ref&&r.ref.elite),gh:!!(r.ref&&r.ref.ghost)});
   }
-  // HIS NOTE, v3.53: "once a raider has extracted, move them to the bottom of
-  // the list and then make their name disappear after one minute after their
-  // extract". The board is a WHO IS STILL OUT HERE instrument, and a man who
-  // left three minutes ago is history pinned above the living. Extracted rows
-  // sink below everyone still on the map, hold for sixty seconds so you see
-  // that they made it, then drop off. Dead men keep their place: a body is
-  // still information about the map. outAt is stamped in raid time at the
-  // moment of extraction; entries from before this build have no stamp and are
-  // kept rather than aged out by a time they never recorded.
-  var _eNow=elapsed(),_stay=[],_gone=[];
+  // HIS NOTE, v3.53, revised by him at v5.74: "dead and exttracted players
+  // should move off of the pillagers list maybe like 10 seconds after they are
+  // dead/extracted". The board is a WHO IS STILL OUT HERE instrument, so anyone
+  // who is not out here any more is history pinned above the living.
+  //
+  // v3.53 built half of this for extraction at sixty seconds, which he is now
+  // shortening to ten. Dead men used to be kept forever on my reasoning that a
+  // body is still information about the map; he has overruled that, and on a
+  // board headed CURRENT PILLAGERS he is right.
+  //
+  // Both sink below the living first, so you get a beat to see that a name made
+  // it out or went down, then both drop. Entries from before this build carry no
+  // stamp and are kept rather than aged out by a time they never recorded.
+  var _eNow=elapsed(),_stay=[],_gone=[],_LEAVE=10;
   for(i=0;i<rows.length;i++){
     var _w=rows[i];
-    if(_w.out&&_w.outAt!==undefined&&_eNow-_w.outAt>60) continue;
-    (_w.out?_gone:_stay).push(_w);
+    var _at=_w.out?_w.outAt:_w.deadAt;
+    var _leaving=(_w.out||_w.st==='DEAD');
+    if(_leaving&&_at!==undefined&&_eNow-_at>_LEAVE) continue;
+    (_leaving?_gone:_stay).push(_w);
   }
   rows=_stay.concat(_gone);
   // YOU FIRST, always, and never sorted or aged out. His question "does that

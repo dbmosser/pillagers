@@ -20566,3 +20566,53 @@ first Listener. v5.45's original argument, that three instincts kill you and the
 answers are invisible, has not stopped being true; he has simply decided he would
 rather find out than be told, and I have no way to know how that reads to someone
 meeting one for the first time.
+
+## v5.74: the pillagers board stops listing people who are not there, and two dead-screen lines that made no sense
+
+THREE NOTES FROM HIM, all on the same theme: the game saying things that are not
+about the game any more.
+
+DEAD AND EXTRACTED LEAVE THE BOARD. His note: "dead and exttracted players should
+move off of the pillagers list maybe like 10 seconds after they are
+dead/extracted". Half of this existed and was set to his OLD answer: v3.53 was
+his own note asking for extracted names to sink and disappear after a MINUTE, so
+that part is simply shortened to ten seconds. The other half did not exist at
+all. Dead men were kept forever, on my reasoning that "a body is still
+information about the map", and he has overruled that. On a board headed CURRENT
+PILLAGERS he is plainly right: after one firefight it was mostly people who are
+not out there any more.
+
+A death had no timestamp, because dead rows used to be permanent. One is taken
+the first frame the roster notices the entry has left the entity list, on the
+same raid clock outAt already used. Both kinds sink below the living first so
+there is a beat to see that a name made it out or went down, then both drop.
+
+DRIVEN AND PHOTOGRAPHED at 1920x1080: three raiders removed from the map, the
+board at five seconds still listing all three as DEAD at the bottom, and the same
+board at seventeen seconds with the three rows gone and the panel visibly
+shorter. The header count never included them, so it does not move.
+
+"YOU WALK OUT OF HERE IN A SHIRT" is printed on the screen you get for DYING. You
+did not walk out of anywhere. It was reaching for a wry line about losing your rig
+and describing an exit that did not happen. What it is actually telling him is a
+fact about his next raid, so it now says he ascends next time with zero armour.
+
+"THERE IS NOTHING TO GO BACK FOR" answers a question the game stopped asking at
+v5.28, when bodies you could return to were removed on his order that a death is
+final. With no corpse there is nothing to go back TO, so the sentence answered
+nothing, which is exactly why it read as a non-sequitur to him. The item count
+was always the information; the second line is now the thing a player actually
+wants to know at that moment and, unlike the old one, it is true: what was
+already in the stash is untouched.
+
+Verified: parse PASS at v5.74; four maps 86/87/58/72; all three real endings
+through the outcome screen with extract paying 48c and dead and abandon zero; hub
+and ascent check; the roster ageing driven on the raid clock and photographed
+either side of the cut; both rewritten death lines read back off a real death
+screen with a rig actually lost, and neither old string survives anywhere.
+
+Not verified: ten seconds is his number and I have not tested whether it is long
+enough to notice a name go down in the middle of a fight, which is the only thing
+that would argue for longer. I also kept extracted and dead on the same timer
+rather than giving extraction a longer hold, and I have no evidence about whether
+those two want different lengths.
