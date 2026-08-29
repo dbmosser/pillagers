@@ -851,7 +851,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.02';
+var VER='6.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -862,17 +862,17 @@ var VER='6.02';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='5.82';
+var WHATSNEW_VER='6.02';
 var WHATSNEW=[
-  'RIGS ARE GONE. You always wear body armour, so a plate always works.',
-  'The world never gets harder behind you. Nothing escalates any more.',
-  'STASH and INVENTORY are one screen. Drag, or point and press a key number.',
-  'Hotbar keys 1 and 2 are your two guns. 3 to 9 are yours to set.',
-  'Putting something on a key also packs it, so it comes up with you.',
-  'CONTRACTS and REWARDS both live at the Mainframe now.',
-  'REP comes from selling salvage, and from nothing else.',
-  'Dead and extracted pillagers leave the board ten seconds after they go.',
-  'Down in an extraction ring, you can still hold E and board from the floor.'
+  'THE NINE ITEM LIMIT IS GONE. Carry whatever you want up the lift.',
+  'RIGHT CLICK ANY ITEM for everything you can do with it.',
+  'Drag anything anywhere. SHIFT moves a whole stack, ALT splits it.',
+  'Point at an item and press 1 to 9 to put it on that key.',
+  'SAFE POCKET: name one item and it comes home even if you die.',
+  'The loadout is BACKPACK, QUICK USE and SAFE POCKET, all on one screen.',
+  'The backpack upgrade is off the counter. It never did anything. Refunded.',
+  'CONTRACTS and REWARDS both live at the Mainframe.',
+  'REP comes from selling salvage, and from nothing else.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -14301,7 +14301,7 @@ function finishSim(res){
   P.lastSim={cfg:JSON.stringify(CFG),text:txt,runs:P.runs};
   saveProfile();
   document.getElementById('simpre').textContent=txt;
-  document.getElementById('simmodal').classList.add('on');
+  openModal('simmodal');
 }
 
 // ================================================================ 2D renderer (3/4 view)
@@ -20070,9 +20070,9 @@ acts:{KeyE:['go up',function(){ openLift(); }],
      acts:{KeyE:['trade',function(){ openTrader('buy'); }],
            KeyR:['craft',function(){ openTrader('craft'); }],
            KeyF:['hire', function(){ openTrader('hire'); }],
-           KeyT:['the terms',function(){ renderTerms(); document.getElementById('termsmodal').classList.add('on'); }]}},
+           KeyT:['the terms',function(){ renderTerms(); openModal('termsmodal'); }]}},
     {id:'gamble',x:110,y:110,r:42,label:'VESH, THE GAMBLER',sub:'unmarked goods, flat price',c:'#e0a0ff',vendor:1,
-     acts:{KeyE:['deal',function(){ renderGamble(); document.getElementById('gamblemodal').classList.add('on'); }]}},
+     acts:{KeyE:['deal',function(){ renderGamble(); openModal('gamblemodal'); }]}},
 {id:'term',x:350,y:365,r:46,label:'THE STASH',sub:'',c:'#5aa9e6',
      acts:{KeyE:['terminal',function(){ renderHub(); document.getElementById('hub').classList.add('on'); maybePrimer(); }]}},
     {id:'mf',x:590,y:105,r:44,label:'THE MAINFRAME',sub:'',c:'#4de3d0',season:1,
@@ -20083,7 +20083,7 @@ acts:{KeyE:['go up',function(){ openLift(); }],
       ? {id:'dev',x:590,y:255,r:42,label:'SETTINGS',sub:'',c:'#9aa8b2',
          acts:{KeyE:['settings',function(){ openSettings('display'); }]}}
       : {id:'dev',x:590,y:255,r:42,label:'DEV BOX',sub:'',c:'#9aa8b2',
-         acts:{KeyE:['dev crate',function(){ renderCrate(); document.getElementById('cratemodal').classList.add('on'); }],
+         acts:{KeyE:['dev crate',function(){ renderCrate(); openModal('cratemodal'); }],
                KeyR:['tuning',function(){ toggleTune(true); }],
                KeyT:['settings',function(){ openSettings('display'); }]}})
   ];
@@ -21060,6 +21060,21 @@ function mercCost(id){
   // hire per point of notoriety, and it compounds with a bad reputation.
   var risk=1+0.15*(P.notoriety||0);
   return Math.round(MERC_BASE*(1-disc)*risk);
+}
+// v6.03: ONE DOOR. Opening any station closes every other one, because before
+// this each of fourteen open sites did classList.add('on') in ignorance of the
+// rest and they piled up three deep.
+function openModal(id){
+  var el=document.getElementById(id); if(!el) return;
+  var all=document.querySelectorAll('.modal');
+  for(var i=0;i<all.length;i++){
+    var m=all[i];
+    // The tuning console and the sim console are deliberately allowed to sit over
+    // whatever is being tuned. Everything else is a place you are standing.
+    if(m.id===id||m.id==='tunemodal'||m.id==='simmodal') continue;
+    m.classList.remove('on');
+  }
+  el.classList.add('on');
 }
 function renderTerms(){
   var el=document.getElementById('termslist'); el.innerHTML='';
@@ -22602,7 +22617,7 @@ function openOps(tab){
     var pane=document.getElementById('opane_'+t[0]);
     if(pane) pane.style.display=(want===t[0])?'flex':'none';
   });
-  document.getElementById('opmodal').classList.add('on');
+  openModal('opmodal');
 }
 function openTrader(tab){
   var T=[['buy','BUY','req'],['craft','CRAFT','work'],['hire','HIRE',null]];
@@ -22629,7 +22644,7 @@ function openTrader(tab){
   if(mc) mc.style.display=(want==='hire')?'':'none';
   var line=T.filter(function(t){return t[0]===want;})[0];
   if(line&&line[2]) { try{ say2(vendorLine(line[2])); }catch(e){} }
-  document.getElementById('tradermodal').classList.add('on');
+  openModal('tradermodal');
 }
 function closeTrader(){
   document.getElementById('tradermodal').classList.remove('on');
@@ -22955,7 +22970,7 @@ function syncMapBtn(){
 // The blind cycle is gone. Same button, but it now opens the board that says
 // what the four sectors actually ARE, which is the part he never had.
 document.getElementById('mapbtn').onclick=function(){
-  renderSector(); document.getElementById('sectormodal').classList.add('on');
+  renderSector(); openModal('sectormodal');
 };
 // WHAT EACH SECTOR IS, REWRITTEN FROM MEASUREMENT AT v3.00, and the first version
 // of these lines was partly wrong, which is the point of writing this down.
@@ -23115,10 +23130,10 @@ function offeredCount(){
 }
 function openLift(){
   if(offeredCount()>1){
-    renderSector(); document.getElementById('sectormodal').classList.add('on'); return;
+    renderSector(); openModal('sectormodal'); return;
   }
   if(!mapOffered(FIXED_MAPS[clamp(P.mapIx||0,0,FIXED_MAPS.length-1)])) P.mapIx=firstOfferedMap();
-  renderStage(true); document.getElementById('stagemodal').classList.add('on');
+  renderStage(true); openModal('stagemodal');
 }
 // POINTER DRAG, v5.94, on his note. HTML5 drag and drop is the only drag this
 // game has ever had and it has never been demonstrated to work, here or for him.
@@ -23372,7 +23387,7 @@ document.getElementById('stageback').onclick=function(){
   document.getElementById('stagemodal').classList.remove('on');
   // Back goes wherever you came from: the sector page if there was one, the
   // Undercroft floor if the lift brought you straight here.
-  if(offeredCount()>1){ renderSector(); document.getElementById('sectormodal').classList.add('on'); }
+  if(offeredCount()>1){ renderSector(); openModal('sectormodal'); }
 };
 document.getElementById('stagedrop').onclick=function(){
   // THE LIFT MOVES: only now does anything leave the stash.
@@ -23394,7 +23409,7 @@ document.getElementById('sectordeploy').onclick=function(){
   // Straight to the drop check rather than straight up the lift. This is the
   // whole of his order: after the map, before the raid.
   document.getElementById('sectormodal').classList.remove('on');
-  renderStage(true); document.getElementById('stagemodal').classList.add('on');
+  renderStage(true); openModal('stagemodal');
 };
 document.getElementById('closesector').onclick=function(){
   document.getElementById('sectormodal').classList.remove('on');
@@ -23452,7 +23467,7 @@ function renderPrimer(){
 }
 function openPrimer(){
   renderPrimer();
-  document.getElementById('primermodal').classList.add('on');
+  openModal('primermodal');
 }
 // Shown once, to a profile that has never finished a raid, and only if he has not
 // ticked the box. P.primerSeen is stamped on CLOSE rather than on open, so
@@ -23665,7 +23680,7 @@ function renderSettings(){
   };
 }
 document.getElementById('devtoolsbtn').onclick=function(){
-  document.getElementById('devmodal').classList.add('on');
+  openModal('devmodal');
 };
 document.getElementById('closedev').onclick=function(){
   document.getElementById('devmodal').classList.remove('on');
@@ -23958,7 +23973,7 @@ function openSettings(tab){
     var pane=document.getElementById('spane_'+t[0]);
     if(pane) pane.style.display=(want===t[0])?'':'none';
   });
-  document.getElementById('settingsmodal').classList.add('on');
+  openModal('settingsmodal');
 }
 document.getElementById('exportbtn').onclick=function(){ openSettings('rec'); };
 document.getElementById('copybtn').onclick=function(){

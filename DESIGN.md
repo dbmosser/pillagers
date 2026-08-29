@@ -22006,3 +22006,60 @@ Not verified: three raids is a judgement, not a measurement. I have no data on w
 a player stops reading the panel, and the honest version of that number would come
 from asking him, not from me picking one. Nothing here has been played by a human,
 so whether the corner feels emptier or just barer is unknown.
+
+## v6.03: the stations were stacking three deep
+
+Found by clicking every control on every screen rather than by reading anything,
+which is the only reason it was found at all.
+
+THE STATIONS PILE UP. Open REQUISITION, then CONTRACTS, then OPTIONS:
+    after REQUISITION   [tradermodal]
+    after CONTRACTS     [tradermodal, opmodal]
+    after OPTIONS       [tradermodal, opmodal, settingsmodal]
+Three modals on at once. Nothing ever closed the one underneath, because each of
+fourteen open sites was an individual classList.add('on') with no knowledge of the
+other thirteen. Walking the Undercroft pressing E at stations silently builds a
+pile, and closing the one you are looking at reveals another behind it. That is "I
+cannot get out of these menus", and it is very probably a real part of what he means
+by the menus being broken.
+
+One function owns opening now and closes everything else on the way in. The tuning
+and sim consoles are exempt, because tuning a dial while looking at the screen it
+affects is the entire point of them. Verified: one modal on at a time, in every
+order I could click, where it used to reach three.
+
+WHAT'S NEW WAS FIVE BUILDS STALE. The panel on the Undercroft floor still said v5.82
+and still described the stash and inventory merge as the news, while the nine item
+cap, the context menus, the loadout sections, the safe pocket and the backpack
+refund all went unmentioned. Rewritten to what actually changed for him.
+
+TWO THINGS THE AUDIT CHECKED AND FOUND NOTHING, which I am recording because a
+silent check is worth as much as a loud one. No control in any of the four stations
+throws when clicked, across 72 controls. And WORKSHOP does correctly switch the
+trader screen to the CRAFT tab; my first audit reported it showing the Buy list
+because it was collecting hidden buttons from the panes that were not displayed.
+
+A GAP IN MY OWN INSTRUMENT, worth more than the bug. Clicking through the settings
+modal during the audit changed the difficulty dials AND SAVED THEM TO THE PROFILE, so
+the next protocol run read 59/59/39/51 entities against a baseline of 86/87/58/72
+and 34c extract pay against 48c. That is a 30 percent swing that looked exactly like
+a regression. It survived a page reload, because the reload loaded the profile the
+audit had written. The order that actually resets this is clear the profile FIRST,
+then reload; reloading first just loads the bad profile again.
+
+And __pinAudit reported ok with an EMPTY DRIFT LIST the entire time, while the game
+was demonstrably running at a different difficulty. So the pin audit is blind to the
+eight Settings-owned dials that applyGameOpts writes. It checks the pinned defaults
+and those were never touched. Any future "the sim moved and I do not know why" has
+to check the game options before trusting a clean pin audit.
+
+Verified: parse PASS at v6.03; one modal open at a time in every order; 72 station
+controls clicked with nothing thrown; four maps 236/200/154/225 and 86/87/58/72
+from a properly cleared profile; three endings; hub, ascent check, export builder.
+
+Not verified: I did not click the controls inside the sector select, crate, primer
+or tuning modals, only the four stations reachable from the terminal. Escape and the
+close buttons were skipped deliberately during the audit so the modal would stay
+open, so closing is still only tested by hand. The stacking fix stops modals opening
+over each other; it does not add a back stack, so closing a station always returns
+to the floor rather than to wherever you came from.
