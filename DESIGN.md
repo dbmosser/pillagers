@@ -21821,3 +21821,80 @@ that shows a cell; it ignores typing in inputs, but I have not audited it agains
 every other key handler in the game. The backpack line on the ascent check still
 advertises a carry penalty discount from PACKPEN, whose three tiers are identical
 values, so it is still a lie on screen; that is the next build, not this one.
+
+## v5.99 and v6.00: the backpack that did nothing, and the Arc Raiders verbs
+
+He sent five screenshots of the Arc Raiders menus and said "i want you to try to
+mimick arc raiders menus", then "all items should be right clickable to get a
+context menu and also draggable". Those two notes drive this build.
+
+### v5.99, the backpack comes out
+
+PACKPEN was [0.80, 0.80, 0.80]. Three tiers, one value. Buying T2 and T3 changed no
+number anywhere in the game. The comment above the array said so outright, from
+whenever the tiers were retired: a backpack that cannot change how much you carry is
+a menu entry pretending to be a system.
+
+It then stayed on the counter at 450 and 1300 credits, kept a row on the ascent
+check advertising "20% less carry penalty", and kept printing PACK T3 (-20% carry)
+on the weapon line. His profile says pack T3. He has paid 1,750 credits for two
+upgrades that did nothing while three screens told him they worked.
+
+With DEPLOY_SLOTS gone at v5.98 there is nothing left for a capacity upgrade to
+sell, so it is off the counter, off the ascent check and off the weapon line, and
+what he already spent is refunded once on load. Taking the item away without giving
+the credits back is the one version of this worse than leaving it alone.
+
+### v6.00, right-click is the context menu
+
+Two things came straight off his screenshots and both change what shipped at v5.98.
+
+FIRST, their key bar, printed along the bottom of the inventory screen:
+    ESC BACK  TAB INVENTORY  CTRL MULTI SELECT  SHIFT QUICK MOVE  ALT SPLIT STACK
+So SHIFT quick-moves and ALT splits. I had used Minecraft's, where right-click
+splits. His instruction settles it: right-click is the menu, so the split moved to
+ALT and now matches the game he is copying.
+
+SECOND, that bar is the answer to a note I have been failing for weeks. The stash
+screen used to carry the sentence "Drag anything into INVENTORY to take it up, or
+onto a hotbar cell below", which is a UI apologising for itself. Arc Raiders never
+explains a control in prose; it prints the keys once, in key caps, and they are true
+on every screen. The sentence is gone and a key bar replaces it.
+
+The context menu is what makes an item feel like an object rather than a picture.
+Everything you can do with a thing is now in one place, named, at the cursor,
+instead of spread across a click that tags junk, a hover panel with buttons in it, a
+drag, and seven numbered buttons that only appeared for some item types. Rows are
+built from the item and from WHERE it is sitting, so the same object offers pack in
+the stash and put back in the loadout.
+
+One row was written and then deleted before shipping: "Wear it" for armour. There is
+no use:'rig' item in ITEMS, rigs are set at the counter, and an Armor Plate is a
+consumable you heal with. Offering a verb the game cannot perform is exactly the
+fault I had just deleted the backpack for.
+
+Verified by driving the real screen at 1920x1080 and dispatching real events:
+the menu opens on right-click reading "Medkit x4" with Pack one, Pack all 4, Split
+stack (half) ALT, Tag as junk 210c each, and seven key buttons; clicking Pack all 4
+puts four medkits in the kit and closes the menu; a gun's menu reads Equip as your
+gun and clicking it sets equipped=rifle and removes the gun from the stash; the
+loadout side reads Put one back; an outside click closes it; a key button binds frag
+to slot 5; the key bar renders five caps.
+
+Also verified: parse PASS at v6.00; four maps 236/200/154/225 and 86/87/58/72;
+three endings through the outcome screen; hub, ascent check and the export builder;
+pin audit clean.
+
+A note on a false alarm, because I chased it twice. The protocol reported 197 and
+214 containers where the baseline says 200 and 225, twice, and both times it was the
+protocol being run in the same breath as the navigate, before the page finished its
+async boot. Warm, it is 236/200/154/225 every time, and the sweep is byte identical
+across every combination of drawing, profile load and stash contents I could build.
+Same class of trap as v0.98 shipping dead because the version label is stamped
+before the async boot: on this page, measure nothing until it has finished booting.
+
+Not verified: dispatched events, not a hand. CTRL multi-select from their key bar is
+NOT implemented, so the bar advertises four verbs and they have five. The cream
+detail panel, the top bar with tab pills and the vendor, crafting and cosmetics
+screens from his other four screenshots are not built; this build is the item cell
+and its verbs only.

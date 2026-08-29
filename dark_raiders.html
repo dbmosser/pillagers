@@ -141,6 +141,40 @@
        the empty space moved below the panel, belonging to nothing. Filling the
        panel is what an inventory is supposed to look like. */
     flex:1; min-height:74px; }
+  /* ---- THE ITEM CONTEXT MENU, v6.00, his note "all items should be right
+     clickable to get a context menu". Dark and tight, sitting at the cursor. */
+  .imenu{ position:fixed; z-index:12000; min-width:186px; max-width:260px;
+    background:rgba(9,13,19,.97); border:1px solid var(--steel-hi); border-radius:4px;
+    box-shadow:0 10px 34px rgba(0,0,0,.66); padding:4px 0;
+    font-size:11px; color:var(--bone); user-select:none; }
+  .imenuhead{ padding:7px 11px 6px; border-bottom:1px solid var(--steel-hi);
+    display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+  .imenuhead b{ font-size:11.5px; letter-spacing:.02em; }
+  .imenuhead em{ font-style:normal; color:var(--ash); font-size:10px; }
+  .imenurow{ padding:6px 11px; cursor:pointer; display:flex; gap:10px;
+    justify-content:space-between; align-items:center; }
+  .imenurow:hover{ background:rgba(255,192,74,.14); color:#fff; }
+  .imenurow em{ font-style:normal; color:var(--ash); font-size:9.5px; letter-spacing:.06em; }
+  .imenurow.dim{ opacity:.38; cursor:default; }
+  .imenurow.dim:hover{ background:none; color:var(--bone); }
+  .imenusep{ height:1px; background:var(--steel-hi); margin:4px 0; }
+  .imenukeys{ padding:6px 11px 8px; display:flex; align-items:center; gap:5px; flex-wrap:wrap; }
+  .imenukeys span{ color:var(--ash); margin-right:2px; }
+  .imenukeys button{ padding:2px 0; width:20px; font-size:10px; min-width:0; }
+  .imenukeys button.mine{ color:#0d1435; background:var(--amber); border-color:var(--amber); }
+
+  /* ---- THE KEY BAR. Straight off his Arc Raiders screenshot, which prints
+     ESC BACK / TAB INVENTORY / CTRL MULTI SELECT / SHIFT QUICK MOVE / ALT SPLIT
+     STACK along the bottom. This is what replaces a screen explaining itself in
+     a sentence: the controls are stated once, as keys, and they are true
+     everywhere an item cell appears. */
+  .keybar{ display:flex; gap:16px; align-items:center; flex-wrap:wrap;
+    padding:7px 12px; border-top:1px solid var(--steel-hi); }
+  .keybar div{ display:flex; align-items:center; gap:6px;
+    font-size:9px; letter-spacing:.13em; color:var(--ash); text-transform:uppercase; }
+  .keybar kbd{ display:inline-block; padding:2px 7px; border-radius:9px;
+    background:var(--bone); color:#11161d; font-size:8.5px; font-weight:700;
+    letter-spacing:.1em; font-family:inherit; }
   .cell{ position:relative; aspect-ratio:1/1; border:1px solid var(--steel-hi);
     border-radius:3px; background:rgba(0,0,0,.32); display:flex;
     align-items:center; justify-content:center; cursor:pointer; transition:all .1s; }
@@ -615,6 +649,13 @@
           <div class="invgrid" id="kitgrid"></div>
         </div>
       </div>
+      <div class="keybar" id="invkeybar">
+        <div><kbd>DRAG</kbd> move</div>
+        <div><kbd>RIGHT CLICK</kbd> all actions</div>
+        <div><kbd>SHIFT</kbd> quick move</div>
+        <div><kbd>ALT</kbd> split stack</div>
+        <div><kbd>1-9</kbd> bind to key</div>
+      </div>
       <div id="hotplanwrap"></div>
       <div id="stashdetail" style="padding:8px 12px;border-top:1px solid var(--steel-hi);
            min-height:52px;font-size:11px;color:var(--ash)"></div>
@@ -780,7 +821,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='5.98';
+var VER='6.00';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1100,7 +1141,8 @@ var SHOP=[
   {k:'decoy',kind:'item',price:100,rep:0},{k:'frag',kind:'item',price:320,rep:0},{k:'stim',kind:'item',price:320,rep:0},
   {k:'plate',kind:'item',price:620,rep:800},
 
-  {kind:'pack',lvl:1,price:450,rep:0},{kind:'pack',lvl:2,price:1300,rep:1500},
+  // v5.99: the two backpack tiers are gone from the counter. PACKPEN was three
+  // identical values, so they were never anything but a price tag.
   {k:'pistol',kind:'wep',price:600,rep:0},{k:'smg',kind:'wep',price:2200,rep:1000},
   {k:'rifle',kind:'wep',price:3800,rep:2500},{k:'dmr',kind:'wep',price:4500,rep:5000}
 ];
@@ -1243,6 +1285,13 @@ function loadProfile(){
       if(r&&r.value){ var d=JSON.parse(r.value);
         if(d&&typeof d.credits==='number'){ P=d;
 if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={};
+// v5.99: refund the retired backpack. 450 for tier 1, 1300 for tier 2, exactly what
+// the counter charged. Runs once and stamps itself so it can never pay twice.
+if(!P.packRefund&&P.pack>0){
+  var _pr=(P.pack>=1?450:0)+(P.pack>=2?1300:0);
+  P.credits=(P.credits||0)+_pr;
+  P.packRefund=1; P.pack=0;
+}
 // v5.18: the v5.17 drop check wrote the whole bar from the drop kit and saved it.
 // That plan is not a plan he made, so it goes, once. Guns are separately
 // protected in hotbarSlots so nothing like it can bite again.
@@ -21251,6 +21300,146 @@ function renderKitCol(){
     P.kit.push(key); saveProfile(); renderHub();
   };
 }
+// =============================================== THE ITEM CONTEXT MENU, v6.00
+// His note: "all items should be right clickable to get a context menu and also
+// draggable". One menu, built from the item and the place it is sitting, so the
+// same object offers the same verbs wherever it is shown.
+var IMENU=null;
+function closeItemMenu(){
+  if(IMENU&&IMENU.parentNode) IMENU.parentNode.removeChild(IMENU);
+  IMENU=null;
+}
+// Whichever inventory surface is open is the one that needs repainting. Calling
+// both unconditionally would throw on whichever screen is not built yet.
+function refreshInv(){
+  try{ var h=document.getElementById('hub'); if(h&&h.classList.contains('on')) renderHub(); }catch(e){}
+  try{ var m=document.getElementById('stagemodal'); if(m&&m.classList.contains('on')) renderStage(); }catch(e){}
+}
+function heldCount(key){
+  var c=0,i; for(i=0;i<P.stash.length;i++) if(P.stash[i]===key) c++; return c;
+}
+function packedCount(key){
+  var c=0,live=stageKitLive(),i; for(i=0;i<live.length;i++) if(live[i]===key) c++; return c;
+}
+function packSome(key,want){
+  var room=heldCount(key)-packedCount(key),q;
+  if(room<=0) return 'Every one of those is already packed.';
+  for(q=0;q<want&&q<room;q++) P.kit.push(key);
+  saveProfile(); return null;
+}
+function unpackSome(key,want){
+  var q,done=0;
+  for(q=0;q<want;q++){ var ix=P.kit.lastIndexOf(key); if(ix<0) break; P.kit.splice(ix,1); done++; }
+  if(!done) return 'That is not packed.';
+  saveProfile(); return null;
+}
+// The rows. ctx is where the cell lives, which decides whether the natural verb is
+// pack or put back, and count is what that cell is showing.
+function itemMenuRows(key,ctx,count){
+  var it=ITEMS[key],rows=[],held=heldCount(key),packed=packedCount(key);
+  if(!it) return rows;
+  if(ctx==='kit'){
+    rows.push({label:'Put one back',act:function(){ unpackSome(key,1); refreshInv(); }});
+    if(count>1) rows.push({label:'Put all '+count+' back',act:function(){ unpackSome(key,count); refreshInv(); }});
+  } else {
+    var room=held-packed;
+    rows.push({label:'Pack one',hint:room?null:'none left',dim:!room,
+      act:function(){ var why=packSome(key,1); if(why) say2(why); refreshInv(); }});
+    if(room>1) rows.push({label:'Pack all '+room,act:function(){ packSome(key,room); refreshInv(); }});
+  }
+  // Equipping and wearing are stash verbs: you cannot do either to a thing that is
+  // only pencilled in as coming with you.
+  if(ctx!=='kit'){
+    if(it.use==='gun'&&it.gk&&WEAPONS[it.gk]) rows.push({sep:1},{label:'Equip as your gun',act:function(){
+      var ix=P.stash.indexOf(key); if(ix<0) return;
+      P.stash.splice(ix,1);
+      if(P.weapons.indexOf(it.gk)<0) P.weapons.push(it.gk);
+      P.equipped=it.gk; saveProfile(); refreshInv();
+    }});
+    // No "wear it" row. There is no use:'rig' item in ITEMS; rigs are set from the
+    // counter, and an Armor Plate is a consumable you heal with, per his note
+    // "just make it where you can always use armor plates to heal up". Offering a
+    // verb the game cannot perform is exactly the menu-entry-pretending-to-be-a-
+    // system fault I just deleted the backpack for.
+  }
+  // ALT splits, per the Arc Raiders key bar. Splitting here means packing exactly
+  // half, which is the only thing "half a stack" can mean when the two sides are a
+  // vault and a loadout.
+  if(count>1) rows.push({label:'Split stack  (half)',hint:'ALT',act:function(){
+    var half=Math.max(1,Math.floor(count/2));
+    if(ctx==='kit') unpackSome(key,half); else packSome(key,half);
+    refreshInv();
+  }});
+  // Keys. Guns own 1 and 2 and planPut enforces that, so only 3 up is offered.
+  if(it.use!=='gun'){
+    rows.push({sep:1});
+    rows.push({keys:1,label:'Put on key'});
+  }
+  if(ctx!=='kit'){
+    rows.push({sep:1});
+    var isJ=(P.junk||{})[key]?true:false;
+    rows.push({label:isJ?'Untag junk':'Tag as junk',hint:isJ?null:ival(key).toLocaleString()+'c each',
+      act:function(){ P.junk=P.junk||{}; if(isJ) delete P.junk[key]; else P.junk[key]=1; saveProfile(); refreshInv(); }});
+  }
+  return rows;
+}
+function openItemMenu(x,y,key,ctx,count){
+  closeItemMenu();
+  var it=ITEMS[key]; if(!it) return;
+  var m=document.createElement('div'); m.className='imenu';
+  var head=document.createElement('div'); head.className='imenuhead';
+  head.innerHTML='<b class="r-'+(it.r||'common')+'">'+escHtml(it.name)+'</b>'+
+    (count>1?'<em>x'+count+'</em>':'');
+  m.appendChild(head);
+  itemMenuRows(key,ctx,count||1).forEach(function(r){
+    if(r.sep){ var d=document.createElement('div'); d.className='imenusep'; m.appendChild(d); return; }
+    if(r.keys){
+      var kr=document.createElement('div'); kr.className='imenukeys';
+      kr.innerHTML='<span>'+escHtml(r.label)+'</span>';
+      for(var sl=2;sl<HOTBAR_N;sl++){
+        (function(slot){
+          var b=document.createElement('button');
+          b.textContent=String(slot+1);
+          if((P.hotAssign||{})[slot]===key) b.className='mine';
+          b.onclick=function(){
+            closeItemMenu();
+            if((P.hotAssign||{})[slot]===key){ delete P.hotAssign[slot]; saveProfile(); refreshInv(); return; }
+            var why=planPut(slot,key);
+            if(why){ say2(why); try{ sfx('clank'); }catch(e){} return; }
+            try{ sfx('pick'); }catch(e){}
+            refreshInv();
+          };
+          kr.appendChild(b);
+        })(sl);
+      }
+      m.appendChild(kr); return;
+    }
+    var row=document.createElement('div');
+    row.className='imenurow'+(r.dim?' dim':'');
+    row.innerHTML='<span>'+escHtml(r.label)+'</span>'+(r.hint?'<em>'+escHtml(r.hint)+'</em>':'');
+    if(!r.dim) row.onclick=function(){ closeItemMenu(); r.act(); };
+    m.appendChild(row);
+  });
+  document.body.appendChild(m);
+  var w=m.offsetWidth,h=m.offsetHeight;
+  m.style.left=Math.max(4,Math.min(x,window.innerWidth-w-8))+'px';
+  m.style.top=Math.max(4,Math.min(y,window.innerHeight-h-8))+'px';
+  IMENU=m;
+}
+// Closing. Anywhere outside, Escape, or the next right-click.
+document.addEventListener('mousedown',function(ev){
+  if(IMENU&&!IMENU.contains(ev.target)) closeItemMenu();
+},true);
+document.addEventListener('keydown',function(ev){ if(ev.key==='Escape') closeItemMenu(); });
+// Wired onto every cell in the game, wherever the cell was built.
+function menuable(cell,key,ctx,count){
+  if(!cell) return;
+  cell.addEventListener('contextmenu',function(ev){
+    ev.preventDefault(); ev.stopPropagation();
+    openItemMenu(ev.clientX,ev.clientY,key,ctx,count||1);
+    return false;
+  });
+}
 // ================================================== ONE INVENTORY CELL, v5.98
 // Built once and used by every grid in the game, because the whole complaint is
 // that the same item behaves differently depending on which screen it is on.
@@ -21271,19 +21460,16 @@ function invCell(k,count,opt){
   // The tooltip is the only place the verbs are written down. They are not
   // narrated on the screen any more, because a control that reads as a control
   // does not need a sentence next to it.
-  cell.title=it.name+(count>1?'  x'+count:'')+
-    (opt.verb?('\n'+opt.verb+'\nshift-click: all '+count+'   right-click: half   1-9: bind to that key'):'');
+  cell.title=it.name+(count>1?'  x'+count:'')+'\nright-click for everything you can do with it';
   if(opt.act){
+    // Arc Raiders'' bar: SHIFT quick move, ALT split stack. Plain click moves one.
     cell.onclick=function(ev){
       if(GRAB) return;                       // a drag ending on this cell is not a click
-      opt.act(ev.shiftKey?count:1);
-    };
-    cell.oncontextmenu=function(ev){
-      ev.preventDefault();
-      opt.act(Math.max(1,Math.ceil(count/2)));
-      return false;
+      if(ev.altKey) opt.act(Math.max(1,Math.floor(count/2)));
+      else opt.act(ev.shiftKey?count:1);
     };
   }
+  menuable(cell,k,opt.from||'stash',count);
   cell.addEventListener('mouseenter',function(){ INVHOVER=k; });
   cell.addEventListener('mouseleave',function(){ if(INVHOVER===k) INVHOVER=null; });
   grabbable(cell,k,opt.from||'stash',it.name);
@@ -21623,8 +21809,7 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
     // never been demonstrated working here or for him.
     grabbable(cell,k,'stash',it.name);
     cell.innerHTML=iconImgHTML(k,30)+(counts[k]>1?('<span class="cnt">'+counts[k]+'</span>'):'');
-    cell.title=it.name+'  x'+counts[k]+
-      '\nclick: tag junk   shift-click: pack it   right-click: pack half   1-9: bind to that key';
+    cell.title=it.name+'  x'+counts[k]+'\nright-click for everything you can do with it';
     // v5.98: hovering IS the selection, so a number key can bind whatever is
     // under the cursor without clicking anything first. Same handler as every
     // other grid, registered once at the document.
@@ -21641,15 +21826,15 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
       saveProfile(); try{ sfx('pick'); }catch(e){} renderHub();
     }
     cell.addEventListener('click',function(ev){
-      if(!ev.shiftKey) return;                 // plain click is the junk tag, below
+      if(ev.altKey){                            // ALT split, per the key bar
+        ev.stopPropagation(); ev.preventDefault();
+        _packSome(Math.max(1,Math.floor(counts[k]/2))); return;
+      }
+      if(!ev.shiftKey) return;                  // plain click is the junk tag, below
       ev.stopPropagation(); ev.preventDefault();
       _packSome(counts[k]);
     },true);
-    cell.oncontextmenu=function(ev){
-      ev.preventDefault();
-      _packSome(Math.max(1,Math.ceil(counts[k]/2)));
-      return false;
-    };
+    menuable(cell,k,'stash',counts[k]);
     cell.onmouseenter=function(){
       if(!detail) return;
       var what=craftPart(k)
@@ -21838,7 +22023,7 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   var w=WEAPONS[P.equipped]||WEAPONS.fists;
   document.getElementById('equipped').innerHTML=
     '<div class="wn">'+w.name+'</div><div class="ws">DMG '+w.dmg+' &middot; MAG '+(w.mag||'-')+
-    ' &middot; RANGE '+Math.round(w.rng/10)+'m &middot; '+(w.auto?'AUTO':'SEMI')+' &middot; PACK T'+(P.pack+1)+' (-'+Math.round((1-PACKPEN[P.pack])*100)+'% carry)</div>';
+    ' &middot; RANGE '+Math.round(w.rng/10)+'m &middot; '+(w.auto?'AUTO':'SEMI')+'</div>';
   var wl=document.getElementById('weplist'); wl.innerHTML='';
   P.weapons.forEach(function(k){
     // Same guard as the stash above: an armoury entry naming a gun this build no longer
@@ -22957,8 +23142,8 @@ function renderStage(prefill){
   })();
   // ---- the two things you carry that are not items and not on the figure
   var L=document.getElementById('stageload'); L.innerHTML='';
-  L.appendChild(stageRow('Backpack','Tier '+((P.pack||0)+1)+' \u00b7 '+
-    Math.round((1-PACKPEN[P.pack||0])*100)+'% less carry penalty',null,null));
+  // v5.99: the Backpack row is gone. It advertised a carry discount off PACKPEN,
+  // whose three tiers are the same number, on a screen where carrying is unlimited.
   L.appendChild(stageRow('Intel',
     P.intel?'A Data Core is armed. Keys and elites show on the map.':'No core armed.',
     (!P.intel&&P.stash.indexOf('core')>=0)?'Arm':null,
