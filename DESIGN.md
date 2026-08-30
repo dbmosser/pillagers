@@ -27408,3 +27408,37 @@ Not verified: his real profile's seal/fog migration (his save has dam-era slot 0
 exactly the case the precedence fix addresses - the code path is the one tested, his
 data is not mine to open); any straggler references to the dead maps in comments
 (non-executing).
+
+## v7.40 - the Listener never stops, the crawl prompt tells the truth, the hire
+## follows you home
+
+Three of his orders in one small build.
+
+THE LISTENER NEVER STOPS COMING. "listener stops when shot, is that the intent? should
+keep rushing you IMO." Diagnosed by reproduction before touching anything: shots DO
+re-target it - one shot pulled it 300 units onto the player - so the stop he sees is
+the v5.60 recover window, where after landing its own blow it crawls at 30 percent for
+half a second, again and again in melee: a rhythmic stutter that reads as stopping.
+That was the fight's designed counterplay window, and he has overruled it. The recover
+slow is deleted; measured after: with recover armed it closed 194 units in a second,
+its full 196 speed. The listenRecT and listenRecSpd dials are inert as of this build.
+
+THE CRAWL PROMPT ONLY WHEN CRAWLING CAN FINISH. "only tell the player to crawl to the
+ring when downed if they are actually in range, maybe 30m or closer from the edge?"
+Within 300 units of the ring's edge the prompt coaches the crawl; beyond it, it states
+the fact instead: YOU ARE DOWN, the ring is Nm away. Its countdown also joined the
+min-sec rule while the line was open.
+
+THE HIRED PILLAGER FOLLOWS IN THE UNDERCROFT. "hired player should follow you in the
+undercroft." The crowd is drawn as pure clock functions with no step loop, so the
+follower got the one stateful branch: a tagged figure spawns by the arrival circle
+whenever a hire is active and walks after the player on a 70 unit leash. Measured: 436
+units closed to 184 across four seconds of walking away from him.
+
+Verified: parse PASS v7.40. All three through real paths as above. One map at seed
+4242: entities exactly 58, drawErr null. Three endings with headline assertions, hub
+and stage render.
+
+Not verified: the follower against hub walls (he steps straight lines and can brush
+posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
+(branch drawn clean, copy not screenshotted).
