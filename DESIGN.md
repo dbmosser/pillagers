@@ -24902,3 +24902,75 @@ panel, which I changed by string and did not open. And no difficulty measurement
 for the population floor or the empty rig; both certainly make the game harder and I have
 not run a seeded batch to say by how much. That batch is worth doing before he plays, and
 it is the next thing.
+
+## v6.72 - the hire is a partnership, and a new difficulty baseline
+
+His note, four complaints in one line: "'settled at the ramp either way' -- i don't know
+wtf that means, you only get his 10% if you both extract -- why would you be able to
+search his bag? if you hire a companion, they should not take friendly fire damage from
+the player while hired".
+
+THE COPY said "settled at the ramp either way", which described a rule he is changing in
+the same breath, in words that meant nothing. It now states the deal: one run, paid up
+front, ten percent if you BOTH get out, nothing if either of you does not, and your shots
+cannot hurt him.
+
+THE CUT NEEDS BOTH OF YOU OUT. The old branch paid the full ten percent whenever the
+PLAYER extracted and the merc merely existed, so a man still standing in the middle of
+the map when the ship left was settled as if he had boarded. He now has to have boarded,
+made his own way out, or be at the ramp; alive in the field pays nothing and says so.
+
+HIS BAG IS HIS. The virtual container that let you stand next to your hired man and pull
+things out of his pack is deleted. He is right that it made no sense: you paid him to
+work, he keeps what he lifts, and being able to take it straight back made the ten
+percent meaningless. Looting his corpse is untouched, because that is the ordinary body
+path and a dead man is not hired.
+
+YOUR ROUNDS PASS THROUGH HIM. Measured under identical fire at point blank: 51 damage to
+an ordinary pillager, 0 to a hired companion. He passes rounds rather than stopping them,
+so he cannot be used as cover either. GRENADES AND OTHER EXPLOSIONS ARE A DIFFERENT PATH
+AND ARE NOT COVERED; that is stated here rather than quietly assumed, and it is the next
+thing to close if he reports killing a companion with a frag.
+
+A NEW DIFFICULTY BASELINE, which was overdue: v6.63 gave melee its reach back, v6.66
+unfroze chasing pillagers, v6.71 emptied the starting rig and put a floor under the
+population, and v6.65 raised every price six times. I had been saying the old numbers
+were void without producing new ones.
+
+200 seeds, COLD STORAGE, greed 14, pinned:
+
+  extract        17.0 percent, 95 percent interval +/- 5.2
+  died           83.0 percent
+  abandoned       0
+  median haul    2,975c on an extract, 2,520c across all runs
+  bot accuracy   44.7 percent
+  killed by      sentry 65, raider 47, crawler 21, Organ 20, bulwark 5, warden 2,
+                 listener 1, timer 3, other 2
+
+Against the last comparable figure in the pin comment, 13.8 percent at greed 14 from
+v4.94, this is statistically indistinguishable: the interval covers it. So the honest
+reading is that four difficulty changes have NOT collapsed the bot, which surprised me
+and is worth him knowing before he plays.
+
+The crawler line is the interesting one. Crawlers killed the bot 21 times in 166 deaths,
+and before v6.63 a crawler could not reach the player to strike at all, so that number
+should have been near zero on any earlier build. It is direct evidence the melee fix is
+live and biting rather than merely present.
+
+Sentries remain the top killer at 65, exactly as the v4.94 note in __pinDefaults says:
+"the bot's real weakness is sentries, and that is a fighting and route problem".
+
+ALSO FIXED, my own rule breach from the previous build: v6.71 added three dials and
+pinned none of them, against the pin list's explicit instruction that "Every new dial
+must land here in the same build that introduces it". wadeInset, raiderFloorN and
+raiderFloorGap are pinned now. Also recorded: __pinAudit internally calls __pinDefaults(0),
+so auditing AFTER pinning silently resets mapIx to 0. Pin last, or re-pin after auditing.
+
+Verified: parse PASS. Four maps at seed 4242, counts 86/87/58/72 and 246/193/152/216,
+drawErr null. All three endings through the outcome screen. Hub frames and stage render.
+Friendly fire immunity measured as above. Pin audit clean, no drift.
+
+Not verified: the settlement copy and the both-out rule were changed by editing the
+settlement branch and the panel text, and I did not play a raid to the ramp with a hired
+man to watch the line print. The friendly fire rule IS measured; the money is not.
+Explosives on a companion are known-uncovered rather than unverified.

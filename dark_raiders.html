@@ -968,7 +968,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.71';
+var VER='6.72';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11247,17 +11247,11 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
   // live bag, so what you take is genuinely gone from him and what he loots
   // while you watch genuinely appears. A real container within reach wins the
   // keypress, because a crate is the rarer opportunity.
-  if(!near&&!onPad&&!G.sim){
-    for(var _mc=0;_mc<G.ents.length;_mc++){
-      var _mm=G.ents[_mc];
-      if(_mm.kind!=='raider'||!_mm.merc||_mm.downed) continue;
-      if(dist(p,_mm)>=56||!_mm.bag.length) break;
-      if(!_mm.bagCt) _mm.bagCt={type:'body',time:1.4,loot:_mm.bag,opened:false,mercSrc:_mm,prog:0,pulled:0};
-      _mm.bagCt.x=_mm.x; _mm.bagCt.y=_mm.y;
-      near=_mm.bagCt;
-      break;
-    }
-  }
+  // v6.72, his note: "why would you be able to search his bag?" No reason at all. You
+  // paid him to work for you and he keeps what he lifts; taking it back out of his pack
+  // while he stands there made the ten percent meaningless. The virtual container that
+  // made a hired man searchable is gone. Looting his corpse is unchanged: that is the
+  // ordinary body path and he is not hired any more.
   G.nearContainer=near;
   if(near&&keys['KeyE']){
     // With autoloot on, a full bag sheds its worst rather than refusing you, so
@@ -13533,6 +13527,10 @@ function updateBullets(dt){
         if(b.player){
           for(var e2=0;e2<G.ents.length;e2++){
             var en=G.ents[e2];
+            // v6.72, his note: a hired companion takes no friendly fire from you. The
+            // round passes through him rather than being stopped, so he cannot be used
+            // as cover either.
+            if(en.merc&&!en.downed) continue;
             // v3.94: the first 0.30s of a 0.38s roll is invulnerable, the same
             // window the player gets, so a raider who times it eats nothing.
             if(en.roll>0.08) continue;
@@ -14038,7 +14036,8 @@ silentExit:T.silentExit||0,
       P.credits-=MERC_DEATH;
       lines.push('<span style="color:var(--rust)">'+mname+' died. Death benefit '+'$'+MERC_DEATH.toLocaleString()+' owed'+(P.credits<0?', you are in debt':'')+'.</span>');
       var mr=idRec(P.merc); mr.standing=Math.min(mr.standing,-1);
-    } else if(mercEnt&&how==='extract'){
+    } else if(mercEnt&&how==='extract'&&(mercEnt.finished||mercEnt.out||
+              (G.active&&dist(mercEnt,G.active)<260)||dist(mercEnt,G.player)<200)){
       // v3.74, partner-merc line three: the settle can now tell HOW he got out.
       // Standing with you at the ring is boarding behind you, worth the full
       // +2; alive across the map is making his own way, worth +1. The money is
@@ -14063,6 +14062,10 @@ silentExit:T.silentExit||0,
         P.credits+=cut2;
         lines.push('<span style="color:var(--coolant)">'+mname+' extracted earlier with '+'$'+(_mrow.val||0).toLocaleString()+'. Your cut '+'$'+cut2.toLocaleString()+'.</span>');
         var mr4=idRec(P.merc); mr4.standing=(mr4.standing||0)+1; mr4.met++;
+      } else if(mercEnt&&how==='extract'){
+        // v6.72, his rule: the cut needs BOTH of you out. Alive in the field when the
+        // ship left is not out, so there is nothing to settle.
+        lines.push('<span style="color:var(--ash)">'+mname+' never made the ramp. No cut.</span>');
       } else {
         lines.push('<span style="color:var(--ash)">'+mname+' was left out there.</span>');
       }
@@ -21819,10 +21822,10 @@ function renderMercDetail(rows){
     '</div><h4 style="color:'+ID.coat+'">'+escHtml(ID.tag)+'</h4>'+
     '<div class="vdesc">'+escHtml(stand)+'</div>'+
     '<div class="crlab">THE DEAL</div>'+
-    '<div class="vdesc">One run, paid up front. He loots for himself and you take '+
-    'ten percent of whatever he carries out, settled at the ramp either way. '+
-    'On the surface B cycles his orders, and standing with him E searches his bag. '+
-    'If you go down, he comes for you.</div>';
+    '<div class="vdesc">One run, paid up front. He loots for himself, and if you BOTH '+
+    'get out you take ten percent of what he carried. If either of you does not make '+
+    'it, you get nothing. On the surface B cycles his orders. Your shots cannot hurt '+
+    'him. If you go down, he comes for you.</div>';
   if(cost===null){
     h+='<div class="vdesc" style="color:#8a3423">He will not work for you at any price.</div>';
   }
