@@ -25348,3 +25348,47 @@ Not verified: a REAL Xbox controller. Everything above was driven through a synt
 gamepad object with the standard mapping, which exercises the code but cannot prove the
 button indices match a physical pad in his hands. If A does the wrong thing when he plugs
 one in, the mapping tables are the place to look and the indices are the suspects.
+
+## v6.80 - every menu measured, and the one thing wrong with them was mine
+
+He asked for a super audit and polish, and has complained about menu text more than about
+anything else in this project. So rather than eyeball them, I measured all eleven at
+1920x1080, testing every leaf of text for three things:
+
+  EFFECTIVE SIZE      font size multiplied through the whole zoom chain, not the raw
+                      value. The naive reading says 127 elements in the shop are under
+                      12px; menus carry zoom 1.3, so the true figure is ZERO. Measuring
+                      the raw font size would have had me "fix" text that is already fine.
+  OVERFLOW            scrollWidth against clientWidth on the element itself
+  CLIPPING            past the window edge, EXCLUDING anything inside a scroll container,
+                      because a long list continuing below the fold is not a fault. That
+                      exclusion turned 78 false positives on the stats screen into 0.
+
+RESULT: shop, craft, hire, Wirt, stash, contracts, rewards, racks, settings and the terms
+all came back clean on all three. That is worth recording as a result rather than a
+non-event, because it means the v6.62 text sizing is holding across the whole game.
+
+ONE REAL FAULT, and it was mine from v6.74: the MOST RAIDED card needs 141 pixels for
+"GREYWATER DAM" in a 131 pixel card, so the map name ran out of its own box. The stat
+cards are sized for numbers. A card whose value is a NAME now wraps and steps down a size,
+decided by measuring the string rather than by hardcoding which card is the map one, so
+the next long value is handled without another round trip.
+
+Re-measured after: eleven menus, zero tiny, zero overflow, zero clipped.
+
+ALSO CHECKED AND ALREADY DONE, so no work was needed: the seasons concept is gone from
+everything player-facing, where the tab is called REWARDS and the only remaining 'season'
+token sits in a comment recording its own removal; the Undercroft header reads XP rather
+than the "LVL 5 - PROF 19" he could not parse; and the elite guns are already
+found-only, because the counter stocks four guns and neither the Whisper nor the Lance is
+among them.
+
+Verified: parse PASS. Four maps at seed 4242 with the bag open, entity counts 86/87/58/72,
+drawErr null, __hud clean. All three endings through the outcome screen and back to the
+hub. Hub frames and stage render. All eleven menus opened through their real station keys,
+not by adding a class.
+
+Not verified: any window narrower than 1920x1080. The audit is a measurement harness now
+rather than a one-off, so re-running it at another size is cheap, but every number above
+is from one width and he has said before that he plays on a large screen while others may
+not.

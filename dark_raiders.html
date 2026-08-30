@@ -412,7 +412,11 @@
   .scard .sk{ font-size:11px; letter-spacing:.10em; text-transform:uppercase;
               color:var(--ash); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .scard .sv{ font-size:23px; line-height:1.15; font-weight:700; color:var(--paper);
-              font-variant-numeric:tabular-nums; margin-top:2px; }
+              font-variant-numeric:tabular-nums; margin-top:2px;
+              overflow-wrap:anywhere; }
+  /* v6.80: a card holding a NAME rather than a number. The grid is sized for figures, so
+     a long word gets a step down and is allowed to wrap onto a second line. */
+  .scard .sv.word{ font-size:16px; line-height:1.2; letter-spacing:.01em; }
   .scard .ss{ font-size:12px; color:var(--ash); margin-top:2px; }
   .scard .ss b{ color:var(--amber); font-weight:600; }
   .scard.wide{ grid-column:1/-1; }
@@ -982,7 +986,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.79';
+var VER='6.80';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23205,8 +23209,11 @@ function renderStatCards(){
   var all=statSummary(P.log||[]);
   var last=statSummary((P.log||[]).slice(-10));
   function card(label,value,sub,wide){
+    // Measured, not guessed at per card: anything longer than a figure gets the word
+    // treatment, so a new long value never overflows the way GREYWATER DAM did.
+    var isWord=String(value).replace(/[^A-Za-z]/g,'').length>7;
     return '<div class="scard'+(wide?' wide':'')+'"><div class="sk">'+label+'</div>'+
-           '<div class="sv">'+value+'</div>'+
+           '<div class="sv'+(isWord?' word':'')+'">'+value+'</div>'+
            (sub?('<div class="ss">'+sub+'</div>'):'')+'</div>';
   }
   function pct(o){ return o.n?Math.round(o.ext/o.n*100)+'%':'--'; }
