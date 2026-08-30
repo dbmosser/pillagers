@@ -1016,7 +1016,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.91';
+var VER='6.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3920,7 +3920,7 @@ ground:{day:'#56705A',night:'#111813'},
     {id:'dam_house',   name:'POWERHOUSE',       x:2740,y:600, w:820, h:360, loot:'rare',   dens:1.8},
     {id:'dam_hall',    name:'TURBINE HALL',     x:1620,y:1060,w:1280,h:1000,loot:'rare',   dens:1.6},
     {id:'dam_yard',    name:'SWITCHYARD',       x:3160,y:1120,w:1900,h:1140,loot:'ammo',   dens:1.2},
-    {id:'dam_camp',    name:'CONTRACTOR CAMP',  x:180, y:1060,w:1200,h:980, loot:'medical',dens:1.4},
+    {id:'dam_camp',    name:'CONTRACTOR CAMP',  x:180, y:1060,w:1200,h:980, loot:'medical',dens:1.4, arch:'clinic'},
     {id:'dam_village', name:'DROWNED VILLAGE',  x:340, y:170, w:1500,h:300, loot:'bulk',   dens:1.5},
     {id:'dam_tail',    name:'THE TAILRACE',     x:2520,y:2300,w:1080,h:1500,loot:'bulk',   dens:1.1},
     {id:'dam_crest',   name:'THE CREST',        x:120, y:634, w:2600,h:282, loot:'ammo',   dens:0.8}
@@ -4027,7 +4027,7 @@ ground:{day:'#75664F',night:'#16140f'},
     {id:'bc_depot',  name:'GARAGE DEPOT',  x:3540,y:3600, w:220,h:220}
   ],
   landmarks:[
-    {id:'bc_yard',  name:'THE COURTYARD', x:1300,y:1300,w:2000,h:1740,loot:'bulk',   dens:0.5},
+    {id:'bc_yard',  name:'THE COURTYARD', x:1300,y:1300,w:2000,h:1740,loot:'bulk',   dens:0.5, arch:'townsq'},
     {id:'bc_north', name:'NORTH GARAGES', x:180, y:260, w:4060,h:880, loot:'ammo',   dens:1.3},
 {id:'bc_south', name:'SOUTH GARAGES', x:340, y:3060,w:3540,h:840, loot:'medical',dens:1.3},
     {id:'bc_west',  name:'WEST TERRACES', x:180, y:1440,w:1060,h:1300,loot:'rare',   dens:0.9},
@@ -4151,7 +4151,7 @@ ground:{day:'#55647A',night:'#10151d'},
     {id:'cs_chill', name:'CHILL ROW',     x:2520,y:900, w:1300,h:1200,loot:'medical',dens:1.5},
 {id:'cs_pack',  name:'PACKING FLOOR', x:220, y:900, w:2100,h:1400,loot:'ammo',   dens:1.3},
     {id:'cs_sump',  name:'THE SUMP',      x:220, y:2440,w:1000,h:820, loot:'rare',   dens:0.8},
-    {id:'cs_scrap', name:'SCRAP LINE',    x:2240,y:2480,w:1800,h:840, loot:'bulk',   dens:1.1}
+    {id:'cs_scrap', name:'SCRAP LINE',    x:2240,y:2480,w:1800,h:840, loot:'bulk',   dens:1.1, arch:'yard'}
   ],
   spawns:[
     {x:300, y:680}, {x:2110,y:660}, {x:4000,y:660},
@@ -4332,7 +4332,7 @@ ground:{day:'#836C48',night:'#181410'},
     {id:'q_office',  name:'RIM OFFICES',     x:240, y:224, w:420, h:270, loot:'medical',dens:1.4},
     {id:'q_mag',     name:'THE MAGAZINE',    x:2860,y:824, w:520, h:290, loot:'rare',   dens:1.8},
     {id:'q_gallery', name:'CONVEYOR GALLERY',x:300, y:1444,w:1700,h:290, loot:'bulk',   dens:1.0},
-    {id:'q_screen',  name:'SCREENING PLANT', x:2860,y:1444,w:600, h:290, loot:'ammo',   dens:1.4},
+    {id:'q_screen',  name:'SCREENING PLANT', x:2860,y:1444,w:600, h:290, loot:'ammo',   dens:1.4, arch:'checkpoint'},
     {id:'q_shops',   name:'THE WORKSHOPS',   x:2800,y:2064,w:700, h:290, loot:'ammo',   dens:1.3},
     {id:'q_crusher', name:'THE CRUSHER',     x:2400,y:2700,w:760, h:460, loot:'rare',   dens:1.9},
     {id:'q_drag',    name:'THE DRAGLINE',    x:3400,y:2700,w:520, h:380, loot:'bulk',   dens:1.2},
@@ -4662,7 +4662,30 @@ function buildFixedMap(def){
   for(i=0;i<def.landmarks.length;i++){
     var L=def.landmarks[i];
     landmarks.push({id:L.id,name:L.name,x:L.x,y:L.y,w:L.w,h:L.h,
-      d:districtAt(L.x+L.w/2,L.y+L.h/2),loot:L.loot,dens:L.dens,water:false});
+      d:districtAt(L.x+L.w/2,L.y+L.h/2),loot:L.loot,dens:L.dens,water:false,arch:L.arch||null});
+  }
+  // v6.92: a landmark that names an archetype gets that archetype's geometry. Runs before
+  // the segments are built below, so line of sight and collision take it without being
+  // told. put() is the same shape a wall push is everywhere else in this function.
+  for(i=0;i<landmarks.length;i++){
+    var _LM=landmarks[i];
+    if(!_LM.arch) continue;
+    var _AR=null;
+    for(var _ai=0;_ai<LANDMARKS.length;_ai++) if(LANDMARKS[_ai].id===_LM.arch){ _AR=LANDMARKS[_ai]; break; }
+    if(!_AR||typeof _AR.build!=='function') continue;
+    (function(LM,AR){
+      var made=0;
+      AR.build(LM.x,LM.y,LM.w,LM.h,function(x,y,w,h,d){
+        // Clamped into the landmark it belongs to, so a generator written for a square
+        // cell cannot spill across a map authored to a different shape.
+        var x1=clamp(x,LM.x,LM.x+LM.w), y1=clamp(y,LM.y,LM.y+LM.h);
+        var x2=clamp(x+w,LM.x,LM.x+LM.w), y2=clamp(y+h,LM.y,LM.y+LM.h);
+        if(x2-x1<6||y2-y1<6) return;
+        walls.push({x:x1,y:y1,w:x2-x1,h:y2-y1,d:(d===undefined?LM.d:d),lm:1});
+        made++;
+      },LM.d);
+      LM.built=made;
+    })(_LM,_AR);
   }
   var water=[];
   for(i=0;i<(def.water||[]).length;i++){ var WQ=def.water[i]; water.push({x:WQ.x,y:WQ.y,w:WQ.w,h:WQ.h}); }

@@ -25818,3 +25818,58 @@ Not verified: the remaining 20 or so confirmed items, including three unreferenc
 ids, four rig branches, a dead CFG dial and five fixture hooks that reference symbols which
 no longer exist. They are all non user facing and come out in the next batch rather than in
 one sweep, because a large deletion is exactly where a silent break hides.
+
+## v6.92 - the landmarks that had never existed
+
+The dead code audit flagged the LANDMARKS table as unreferenced. It is, and deleting it
+would have been the wrong call, which is why the audit was built to argue with itself.
+
+It holds SIX HAND AUTHORED PLACES with real geometry: a TOWN SQUARE with a stepped
+monument, market stalls round the rim and benches flanking it; a COLLAPSED TOWER with a
+fallen north face and rubble inside; a CARGO YARD of parallel container rows; a
+CHECKPOINT; a RELIEF STATION; a FLOODED PLAZA. Its own comment states exactly what it is
+for:
+
+  "His top complaint is that maps feel samey, and the fix is not more procedural
+   variation, it is somewhere you RECOGNISE."
+
+and the town square answers a note of his word for word: "needs ... town centers".
+
+NONE OF IT HAD EVER RUN. Each archetype exposes build(x,y,w,h,put,d) and nothing in the
+file has ever supplied a put. The per map landmark arrays that DID ship are named
+rectangles with a position, a size and a loot flavour: a landmark reserved an area, put its
+name on the sector map and laid down no geometry whatsoever. Every landmark in this game
+has been a label.
+
+A landmark may now name an archetype and receive its geometry. The pass runs after the
+landmark list is built and BEFORE the wall segments are computed, so sight lines and
+collision take the new structures without being told, and every piece is clamped into the
+landmark it belongs to so a generator written for a square cell cannot spill across a map
+authored to a different shape.
+
+WHICH PLACE GETS WHICH, assigned on character rather than one forced onto every map,
+because a town square in a tailrace would be worse than no town square. Each of these
+already had the name, the size and the loot flavour of the thing the generator builds:
+
+  SUNKEN QUARTER   THE COURTYARD     -> TOWN SQUARE      9 pieces
+  GREYWATER DAM    CONTRACTOR CAMP   -> RELIEF STATION   6 pieces
+  COLD STORAGE     SCRAP LINE        -> CARGO YARD      12 pieces
+  THE QUARRY       SCREENING PLANT   -> CHECKPOINT       9 pieces
+
+The courtyard is the one that answers his town centre note: 2000 by 1740 at density 0.5,
+already the open space on that map.
+
+Verified: parse PASS. Four maps at seed 4242, entity counts still exactly 86/87/58/72,
+drawErr null, __hud clean. All three endings through the outcome screen and back to the
+hub. Hub frames and stage render. Geometry confirmed present in the built wall list on all
+four maps, and the pillagers on the town square map still travel 3,202 units over two
+minutes, so the new structures have not walled the pathfinder into a corner.
+
+Container counts moved, to 232/193/153/213 from 245/193/150/205. That is expected and not
+a regression: new walls occupy ground that container placement was using, and containers
+have never been the invariant. Entity counts are, and they held exactly.
+
+Not verified: what any of it LOOKS like. I have proven the geometry exists, is reachable
+and does not break pathing, and I have not seen a single one of these places on screen.
+Whether the town square reads as a town square is the whole point of the feature and is
+exactly what my measurements cannot tell him.
