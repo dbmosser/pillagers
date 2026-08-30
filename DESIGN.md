@@ -26873,3 +26873,40 @@ Not verified: the heartbeat AUDIO in real ears (the blip call path is the extrac
 board tone repurposed; whether it reads as a heartbeat is his call); the effects at 200
 percent HUD scale; long term cost balance of the five prices; how any of it feels,
 which is the point of a bar.
+
+## v7.25 - the crowd gets real hair and real faces
+
+His note: "none of the raiders in the undercroft have girl hair -- i thought you were
+supposed to randomize all aspects including face -- build out the character creation
+cosmetics more -- add additional faces, etc."
+
+He was more right than he knew. What the code actually did: v6.67 shipped "thirteen
+hairstyles, up from five" of which EIGHT were cut names the renderer never learned. It
+reads hair as a colour lookup and nothing else, so braid, bun, tail, locs, mop, fringe,
+shaved and crop all fell through to the blonde default. And the crowd's visible "hair"
+was not even that: the band on every non hero head was the COAT colour darkened. The
+variety was fake twice over.
+
+Now real, three independently rolled aspects on every figure plus the two that already
+worked (skin, hat):
+
+  COLOURS   seven: blonde, dark, red, white, green, and new ash and violet.
+  CUTS      eight, drawn as actual geometry: crop, bob, long, bun, pigtails, mohawk,
+            shaved, tail. Bob and long put mass behind and beside the skull past the
+            jaw, which is what reads as feminine hair at this size; the bun sits high
+            behind, the tail falls to the collar, the mohawk stands up.
+  FACES     six: plain, straight brows, angled brows, lashes, beard shadow, freckles.
+
+The six fixed station workers spread across all lists so the regulars stay distinct;
+everyone passing through rolls all five aspects at random. Field pillagers inherit a
+dark crop by default, an upgrade from the coat coloured band they also wore.
+
+Verified: parse PASS v7.25. Crowd read back: all eight cuts and all six faces present
+across sixteen figures in one room. Floor screenshot shows distinct hair masses and
+colours at a glance (a red longhair by Wirt reads instantly). Four maps at seed 4242,
+entities exactly 86/87/58/72, drawErr null. Three endings with headline assertions, hub
+and stage render.
+
+Not verified: each cut inspected close up at full resolution (the floor shot is wide;
+per cut art judgement needs his eyes); the player's own wardrobe does not yet offer the
+new cuts, that is the character-creation half still to build.

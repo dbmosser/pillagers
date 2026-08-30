@@ -1053,7 +1053,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.24';
+var VER='7.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15340,7 +15340,9 @@ var BODYBUILD={lean:{sh:1.00,hip:1.00,head:1.00},broad:{sh:1.18,hip:0.96,head:1.
             curved:{sh:0.94,hip:1.14,head:0.98}};
 var HAIRCOL={blonde:['#b8913f','#d9b257','#f2d98c'],dark:['#2f2830','#4d4048','#6e5d66'],
              red:['#7d3320','#ad5033','#d47a4e'],white:['#a8a59c','#ddd9cd','#f4f1e6'],
-             green:['#4a5f3a','#6d8a52','#9ab472']};
+             green:['#4a5f3a','#6d8a52','#9ab472'],
+             ash:['#5a5350','#7d746f','#a29a93'],
+             violet:['#4b2f63','#6d4790','#9b6fc4']};
 function cosOwned(c){
   if(!c) return false;
   if(c.how==='always') return true;
@@ -15570,10 +15572,33 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.fillStyle=HAIRDARK; rrF(hx2-8.9,ty-34.9,2.3,9.4,1.2);  rrF(hx2+6.6,ty-34.9,2.3,9.4,1.2);
 
   }
+  var _NHC=null,_NCT=null;
+  if(!HERO){
+    _NHC=HAIRCOL[st.hair]||HAIRCOL.dark; _NCT=st.cut||'crop';
+    wc.fillStyle=_NHC[0];
+    if(_NCT==='long'){ rrF(hx2-9.6,ty-38.6,19.2,20.5,6); }
+    else if(_NCT==='bob'){ rrF(hx2-9.6,ty-38.6,19.2,15.5,6); }
+    else if(_NCT==='pigtails'){ rrF(hx2-13,ty-33.5,4.6,10.4,2.3); rrF(hx2+8.4,ty-33.5,4.6,10.4,2.3); rrF(hx2-9.2,ty-38.6,18.4,6,5); }
+    else if(_NCT==='bun'){ rrF(hx2-3.6,ty-42.4,7.2,5.6,2.8); }
+    else if(_NCT==='tail'){ rrF(hx2-2.4,ty-25,4.8,9.6,2.2); rrF(hx2-9.2,ty-38.6,18.4,6,5); }
+  }
   wc.fillStyle=INK; rrF(hx2-8.5,ty-38,17,15,6);
   wc.fillStyle=(st.hero?(SKINCOL[cosWorn('skin')]||SKINCOL.fair)
                        :(SKINCOL[st.skin]||'#f2d2a8')); rrF(hx2-7.5,ty-37,15,13,5);
-  if(!HERO) wc.fillStyle=cLo, rrF(hx2-7.5,ty-37,15,4.6,5);
+  if(!HERO){
+    if(_NCT==='mohawk'){
+      wc.fillStyle=_NHC[1]; rrF(hx2-2.1,ty-41.6,4.2,7.2,1.8); rrF(hx2-2.1,ty-37.4,4.2,4.8,1.8);
+    } else if(_NCT==='shaved'){
+      wc.fillStyle='rgba(30,26,24,.28)'; rrF(hx2-7.5,ty-37,15,4.2,5);
+    } else {
+      wc.fillStyle=_NHC[1]; rrF(hx2-7.5,ty-37,15,4.6,5);
+      wc.fillStyle=_NHC[2]; wc.fillRect(hx2-6.4,ty-36.6,9.6,1.3);
+      if(_NCT==='bob'||_NCT==='long'){
+        wc.fillStyle=_NHC[1];
+        rrF(hx2-9.3,ty-35.6,2.6,11.5,1.3); rrF(hx2+6.7,ty-35.6,2.6,11.5,1.3);
+      }
+    }
+  }
   // eyes: whites, pupils toward the aim, one specular dot each
   var pupX=Math.cos(face)*1.4,pupY=Math.sin(face)*0.9;
   wc.fillStyle='#FFF6DC';
@@ -15585,6 +15610,16 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   wc.fillStyle='#FFF6DC';
   wc.fillRect(hx2-4.1+pupX,ty-30.2+pupY,0.8,0.8);
   wc.fillRect(hx2+2.7+pupX,ty-30.2+pupY,0.8,0.8);
+  if(!HERO){
+    var _fx=st.faceIx===undefined?0:st.faceIx;
+    if(_fx===1){ wc.fillStyle=INK; wc.fillRect(hx2-5.6,ty-33.4,4.4,1.1); wc.fillRect(hx2+1.2,ty-33.4,4.4,1.1); }
+    else if(_fx===2){ wc.fillStyle=INK; wc.fillRect(hx2-5.6,ty-33.0,4.4,1.1); wc.fillRect(hx2+1.2,ty-33.8,4.4,1.1); }
+    else if(_fx===3){ wc.fillStyle=INK; wc.fillRect(hx2-5.8,ty-32.8,4.8,0.9); wc.fillRect(hx2+1.0,ty-32.8,4.8,0.9); }
+    else if(_fx===4){ wc.fillStyle='rgba(40,32,28,.30)'; rrF(hx2-6.4,ty-27.6,12.8,4.6,2.6); }
+    else if(_fx===5){ wc.fillStyle='rgba(150,90,60,.55)';
+      wc.fillRect(hx2-5.4,ty-27.8,1,1); wc.fillRect(hx2-3.2,ty-27.2,1,1);
+      wc.fillRect(hx2+2.4,ty-27.8,1,1); wc.fillRect(hx2+4.4,ty-27.2,1,1); }
+  }
   if(HERO){
     // FRINGE, swept, over the forehead, and SIDE LOCKS down past the jaw. The
     // hair is the whole silhouette at this size, so it is the only thing she
@@ -20976,8 +21011,9 @@ function buildHubCrowd(stations,walls){
   // v6.67: thirteen, up from five. Colour and cut both, since the draw takes a single
   // token; anything it does not recognise falls through to its default crop, so a new
   // name here is safe even before the renderer learns it.
-  var HAIRS=['blonde','dark','red','white','green','shaved','crop','mop','braid',
-             'tail','locs','bun','fringe'];
+  var HAIRS=['blonde','dark','red','white','green','ash','violet'];
+  var CUTS=['crop','bob','long','bun','pigtails','mohawk','shaved','tail'];
+  var FACEN=6;
   var HATS=['none','band','phones','mask','none','visor','pigtails','crown','none'];
   // Everything a body must not stand on. Walls are grown by the body radius so a
   // shoulder cannot clip a pier, and the stations keep their whole disc clear.
@@ -21002,7 +21038,8 @@ function buildHubCrowd(stations,walls){
   // every time you come down. ROLLED picks at random, for everyone just passing through.
   function nextIdent(){
     var id=IDENTITIES[used%IDENTITIES.length];
-    var look={skin:SKINS[used%SKINS.length], hair:HAIRS[used%HAIRS.length], hat:HATS[used%HATS.length]};
+    var look={skin:SKINS[used%SKINS.length], hair:HAIRS[used%HAIRS.length], hat:HATS[used%HATS.length],
+              cut:CUTS[used%CUTS.length], faceIx:used%FACEN};
     used++;
     return {id:id, look:look};
   }
@@ -21010,7 +21047,9 @@ function buildHubCrowd(stations,walls){
     return {id:IDENTITIES[(Math.random()*IDENTITIES.length)|0],
             look:{skin:SKINS[(Math.random()*SKINS.length)|0],
                   hair:HAIRS[(Math.random()*HAIRS.length)|0],
-                  hat:HATS[(Math.random()*HATS.length)|0]}};
+                  hat:HATS[(Math.random()*HATS.length)|0],
+                  cut:CUTS[(Math.random()*CUTS.length)|0],
+                  faceIx:(Math.random()*FACEN)|0}};
   }
   // ONE BESIDE EACH STATION, his first ask. Offset to the side and a little below so
   // the figure never sits on the post or under its floating name.
@@ -21459,7 +21498,7 @@ function drawHubWorld(dt){
         var _lk=_c.look||{};
         drawOp(_c.x+(_c.hx||0),_c.y+(_c.hy||0),_fc,_ph,_c.coat,0,0,'none',0,
           {hero:0,moving:!!_mv,sprint:false,ads:false,hurt:0,rl:0,
-           skin:_lk.skin,hair:_lk.hair,hat:_lk.hat,own:_c});
+           skin:_lk.skin,hair:_lk.hair,hat:_lk.hat,cut:_lk.cut,faceIx:_lk.faceIx,own:_c});
       }
       drawOp(p.x,p.y,p.face,p.bob,'#242832',clamp(P.stash.length/24,0,1),0,'',0,
         {hero:1,moving:p.moving,sprint:false,ads:false,hurt:0,rl:0});
