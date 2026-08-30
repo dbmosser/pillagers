@@ -25729,3 +25729,43 @@ Not verified: any of it on real hardware, and he has already caught me once ship
 controller work that passed synthetically and failed in his hands. In particular the
 trigger axes are read as buttons 6 and 7 with analog values, which is the standard
 mapping, but a pad that reports triggers as axes instead would move nothing at all.
+
+## v6.90 - the counter stops floating in a field of blue
+
+His screenshot of the shop, and the same complaint as the ascend dialog: content stranded
+in a corner with most of the screen empty. Measured before touching it: the vendor block
+ended 346 pixels down a 1080 screen and left 734 pixels of nothing underneath, with LEAVE
+adrift on the right.
+
+TWO PASSES, because the first one was wrong in an instructive way.
+
+FIRST I MADE THE PANE FILL THE MODAL. The empty blue went from 734 pixels to 65, and the
+screen looked no better: a twelve item grid had been stretched to 915 pixels tall, so the
+hole moved INSIDE the panel instead of going away. A stretched box with nothing in it is
+not an improvement on a small box in a big field, and I only saw that by looking at the
+screenshot rather than the number.
+
+AND THE FIRST ATTEMPT AT THAT DID NOTHING AT ALL, which is worth recording. I set flex:1
+on the pane and flex:1 on the vendor block inside it and measured no change. The pane had
+grown to 937 pixels correctly; the vendor block had not, because the pane's display is
+BLOCK, a div's default, so its child's flex-grow meant nothing. Nobody had ever told the
+pane to be a flex container. Hidden panes are hidden with an inline display:none, and
+inline beats a stylesheet rule, so making the rule display:flex was safe.
+
+WHAT SHIPS is the counter sized to what it holds and centred in the room it has: a compact
+grid with the detail card matching its height, in the middle of the screen. Tiles grew
+from 84 to 118 maximum, which also serves the complaint he has made more than any other.
+
+The centring is deliberately harmless to the long panes. justify-content only has room to
+act when the content is shorter than the box, so a pane with a screenful pushes back to
+the top by itself. Checked rather than assumed: the stats pane still starts 99 pixels down
+and is 905 tall, exactly as before.
+
+Verified: parse PASS. Four maps at seed 4242 with the bag open, entity counts 86/87/58/72,
+drawErr null, __hud clean. All three endings through the outcome screen and back to the
+hub. Hub frames and stage render. Shop measured at 1920x1080 before and after and
+screenshotted at each stage.
+
+Not verified: craft and hire share the pane rules with buy but hold different amounts, and
+I only looked at buy. If either of them is short enough to float or long enough to clip,
+the same two numbers will show it and I have not taken them.
