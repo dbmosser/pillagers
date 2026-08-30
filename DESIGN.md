@@ -27443,6 +27443,36 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.47 - THE MILE'S MISSING KEYS (HOTFIX)
+
+The 200-seed COLD MILE baseline died at seed 7234 and the autopsy found a real
+shipping bug in v7.41: keys are minted by resolveKey() as 'key_'+lockedRoomId
+and looked up in ITEMS, every earlier map's locked rooms have hardcoded ITEMS
+entries, and THE COLD MILE's eight rooms had none. Every mile raid filled its
+safes and caches with item ids that do not exist, and the first bot - or the
+first PLAYER - to open one crashed the raid in grantLoot reading undefined.r.
+Reproduced stepwise, pinned to eight key_cm_* ids by scanning every container
+on the map against the items table.
+
+Eight new ITEMS entries, following the established key pattern (rare, 1wt,
+600-750c, gold): Bond Room, Deep Freeze, Blast Vault, Cryo Lockup, Pump Control
+Vault, Melt Locker, Manifest Cage, Winch Room. The dead maps' key entries stay:
+an old profile can still hold one in its stash, and a key that renders beats a
+stash that crashes.
+
+The map assembler (p741) gains a lesson for its next run: it validated geometry
+- containment, spacing, clearance - but never validated that the map's locked
+ids resolve to key items, because the key table lives outside the map literal.
+That check belongs in the assembler and in the verify protocol, which opened
+containers but never asserted that every container's loot exists in ITEMS.
+
+Not verified: seed 7234 now completes (dead, 19,525 haul - the mile pays), both
+maps scan clean for unknown keys at seed 4242, and the full protocol passes -
+but only one previously-crashing seed was re-run, the 17 baseline seeds that
+finished before the crash were measured on a build where key containers were
+live grenades the bot happened not to open, and the whole 200-seed baseline is
+being restarted from zero on this build.
+
 ## v7.46 - THE RIG GRAVEYARD
 
 Section 3 of the audit, first half: the rig system left the game at v5.83, and
