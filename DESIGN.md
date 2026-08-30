@@ -27443,6 +27443,33 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.54 - NO PLACE YOU CANNOT FIND
+
+Three of his live notes, shipped while he plays.
+
+"contracts still reference specific maps which I already asked you to remove" -
+with his screenshot showing "Search 2 containers in FOUNDRY". The names were
+DISTRICTS, not maps, but he is right where it counts: FOUNDRY and GREENBELT
+are labels on no in-world surface, so the contract asked the player to find a
+place the game never shows. District contracts are now plain container
+contracts - "Search N containers", progress counts ANY container - and the
+contracts already on his board shed their district names at load, the same
+migration shape v7.39 used for map suffixes. The d field stays on the record
+for back-compat and is inert.
+
+"this is messed up -- cash needs to go somewhere else" - his screenshot showed
+the CARRYING $520 row wedged inside the CONDITIONS panel. The right corner of
+the HUD already shows what the carry is worth, live, priced the way the payout
+prices it - that duplicate row is gone and the corner is where cash lives.
+
+"in the map selection, next to the map name, put (SMALLER MAP) and (LARGER
+MAP)" - done, computed from map area and only tagging the extremes, so a third
+mid-sized map would stay untagged rather than lying.
+
+Not verified: the conditions panel was verified by code-path (the row is
+deleted; the panel is canvas-drawn so its absence was not screenshotted), and
+his live board's migrated contract descs will only be seen at his next reload.
+
 ## v7.53 - NOBODY STANDS ON ANYBODY
 
 His live report, verbatim: "people in the undercrof are standing on top of each

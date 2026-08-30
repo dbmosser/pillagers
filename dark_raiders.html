@@ -1054,7 +1054,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.53';
+var VER='7.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1572,6 +1572,8 @@ if(P.mapSeen&&P.mapSeen[2]){ P.mapSeen[0]=P.mapSeen[2]; }
 if(P.mapSeen){ delete P.mapSeen[1]; delete P.mapSeen[2]; delete P.mapSeen[3]; }
 if(P.contracts) for(var _cm=0;_cm<P.contracts.length;_cm++){
   var _CC=P.contracts[_cm];
+  if(_CC&&_CC.type==='district'&&_CC.desc)                             // v7.54: no place names
+    _CC.desc=_CC.desc.replace(/ in [A-Z ]+$/,'');
   if(_CC&&_CC.map!==undefined){ delete _CC.map;
     if(_CC.desc) _CC.desc=_CC.desc.replace(', GREYWATER DAM','').replace(', SUNKEN QUARTER','')
       .replace(', COLD STORAGE','').replace(', THE QUARRY','');
@@ -1946,7 +1948,7 @@ function genContract(){
     var n3=up(ri(2,4));
     if(pickD.buildings<3) n3=Math.min(n3,2);
     c={type:'district',d:d,n:n3,prog:0,reward:n3*160,
-       desc:'Search '+n3+' containers in '+DISTRICTS[d].name};
+       desc:'Search '+n3+' containers'};
   } else if(roll<.9){
     var it=pick(['board','optic','servo','core']);
     var n4=up(it==='core'?1:2);
@@ -2007,8 +2009,7 @@ function contractOpen(ct){
   for(var i=0;i<P.contracts.length;i++){
     var c=P.contracts[i];
     if(c.type==='open'&&c.ct===ct.type&&c.prog<c.n) c.prog++;
-    if(c.type==='district'&&ct.d===c.d&&c.prog<c.n&&
-       (c.map===undefined||c.map===P.mapIx)) c.prog++;
+    if(c.type==='district'&&c.prog<c.n) c.prog++;
   }
 }
 // The conduct verdict. Read off G.tel, which is the same record the run report
@@ -17971,8 +17972,7 @@ _tgt=G.active; _lbl='EXTRACTION';
   // panel that jumps around is worse than one slightly lower down.
   (function(){
     var MW=(G.wx||WEATHER[0]), MT=tod(), rows=[], _clines=[];
-    var _hv=0; for(var _hq=0;_hq<G.bag.length;_hq++) _hv+=ival(G.bag[_hq]);
-    rows.push({k:'CARRYING',v:'$'+_hv.toLocaleString(),c:'#ffc04a',vc:'#e8f0f6'});
+
     var _bzTags=[['drunk','LIQUOR'],['lsd','ACID']];
     for(var _bq=0;_bq<_bzTags.length;_bq++){
       var _bn=buzzDoses(_bzTags[_bq][0]);
@@ -24552,6 +24552,20 @@ var SECTOR_MEAS=[
   {ext:15.0,fc:72, cont:5.0,haul:2495},
   {ext:42.5,fc:62, cont:5.5,haul:2665}
 ];
+// v7.54, his note: the size difference stated next to the name. Only the
+// extremes are tagged, so a third mid-sized map would stay untagged.
+function sizeTag(ix){
+  var minA=1e15,maxA=0,minI=0,maxI=0;
+  for(var q=0;q<FIXED_MAPS.length;q++){
+    var A=FIXED_MAPS[q].w*FIXED_MAPS[q].h;
+    if(A<minA){ minA=A; minI=q; }
+    if(A>maxA){ maxA=A; maxI=q; }
+  }
+  if(minI===maxI) return '';
+  if(ix===minI) return '(SMALLER MAP)';
+  if(ix===maxI) return '(LARGER MAP)';
+  return '';
+}
 function renderSector(){
   var host=document.getElementById('sectorlist');
   var cur=clamp(P.mapIx||0,0,FIXED_MAPS.length-1),h='';
@@ -24575,6 +24589,7 @@ var _myR=0;
     h+='<div class="row sectorpick" data-map="'+i+'" style="display:block;cursor:pointer;'+
        (sel?'border-left:3px solid var(--amber);background:rgba(255,192,74,.10)':'border-left:3px solid transparent')+'">'+
        '<div><b style="color:'+(sel?'var(--amber)':'var(--bone)')+'">'+M.name+'</b>'+
+       ' <span style="color:var(--ash);font-size:11px">'+sizeTag(i)+'</span>'+
        (sel?' <span style="color:var(--amber);font-size:11px">ASCENDING HERE</span>':'')+
        '<div class="hint" style="margin:2px 0 0">'+SECTOR_CHAR[i]+'</div>'+
        '<div class="hint" style="margin:2px 0 0;color:var(--ash)">'+facts.join('  &middot;  ')+'</div></div></div>';
