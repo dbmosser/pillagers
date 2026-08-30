@@ -25392,3 +25392,60 @@ Not verified: any window narrower than 1920x1080. The audit is a measurement har
 rather than a one-off, so re-running it at another size is cheap, but every number above
 is from one width and he has said before that he plays on a large screen while others may
 not.
+
+## v6.81 - a duplicate id was bricking the stash screen
+
+Found by the inert-code audit he asked for, and it turned out not to be inert at all. This
+is the most serious live bug in the file and it can be sitting in his own save right now.
+
+TWO ELEMENTS CARRIED id="freekit": one inside #stagemodal, one inside #hub.
+getElementById returns the FIRST, so the hub's copy never received a single write in its
+life. The CLASS toggle, however, was applied to both hosts, and the CSS dims .hubgrid and
+#stagebuy to opacity .28 with pointer-events:none for either one.
+
+So with the freebie kit on:
+  the stash grid dims to 28 percent and stops accepting clicks
+  the box explaining why renders into #stagemodal
+  the USE MY OWN GEAR button that turns it off renders there too
+
+AND #stagemodal CANNOT BE OPENED. It is only ever removed from 'on', at two sites, and
+never added, because he had me delete the ascent check screen outright at v6.51. So any
+profile that ever set freeKit=1 has a permanently dimmed, unclickable stash grid and no
+control anywhere in the game to undo it. He asked for the freebie kit himself and was
+using it, which is exactly how a save ends up in that state.
+
+THE FIX is the one the verifying agent argued for rather than the one the finder proposed.
+The finder called line 848 dead markup and recommended deleting it; deleting it would have
+been runtime-neutral and would have CEMENTED the defect, because the hub would still dim
+with no way back. The hub host gets its own id instead, renderFreeKit writes the same box
+into every host, and the button became a CLASS so both copies can be wired. One id on two
+elements was the whole bug.
+
+Measured on a save deliberately stuck in the bad state:
+  before        freeKit 1, grid opacity 0.28, pointer-events none, no box, no button
+  after         box and button render on the stash screen, both copies wired
+  click off     freeKit 0, opacity 1, pointer-events auto, button reads TAKE THE FREEBIE KIT
+  click on      freeKit 1, dims again, button reads USE MY OWN GEAR
+
+So the feature now works both ways from the stash screen, which is where it belongs since
+the ascent check went.
+
+ABOUT THE AUDIT ITSELF: 45 agents, seven finders each hunting one class of dead code, then
+an adversarial pass whose job was to REFUTE each candidate by finding a live reference.
+28 candidates survived, 12 were refuted and saved from deletion. That refutation rate is
+the point: a third of what looked dead was alive, and without the second pass I would have
+deleted it.
+
+Verified: parse PASS. Four maps at seed 4242 with the bag open, entity counts 86/87/58/72,
+drawErr null, __hud clean. All three endings through the outcome screen and back to the
+hub. Hub frames and stage render. The stuck-save recovery measured as above, driven
+through the real station key rather than by calling the renderer.
+
+Not verified: whether his actual profile has freeKit set. I cannot read his localStorage
+from here. If his stash grid has been greyed out and unclickable, this is why, and it is
+fixed; if it has not, nothing about his save changes.
+
+Also still outstanding from the same audit: 27 other confirmed-dead items, including
+several dead DOM ids, four leftover branches for the rig system removed at v5.83, a dead
+CFG dial, and five fixture hooks that reference symbols which no longer exist. None of
+those is user-facing. They come out next, carefully, rather than in one sweep.

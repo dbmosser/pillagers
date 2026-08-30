@@ -845,7 +845,7 @@
        armour, which is what it always claimed to be. Nothing in the hub said so.
        This is the one screen between the stash and the surface, so it is where
        it belongs. -->
-<div id="freekit"></div>
+<div id="hubfreekit"></div>
 <div id="readyline" style="margin-top:11px;font-size:11px;padding:7px 10px;
        border:1px solid var(--steel-hi);border-radius:3px"></div>
   <div id="reportline" style="margin-top:8px;font-size:11px;padding:7px 10px;display:none;
@@ -986,7 +986,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.80';
+var VER='6.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24725,20 +24725,27 @@ function freeKitText(){
          'of your own goes up: no guns, no items, nothing on a key.';
 }
 function renderFreeKit(){
-  var host=document.getElementById('freekit'); if(!host) return;
   var on=!!P.freeKit;
-  host.innerHTML='<div class="fkbox">'+
+  // v6.81: built once and written to EVERY host. The button is a CLASS now, because two
+  // hosts cannot share one id, and one id on two elements is the whole of the bug this
+  // fixes: getElementById only ever reached the copy on a screen that no longer opens.
+  var html='<div class="fkbox">'+
     '<b>FREEBIE KIT</b>'+
     '<span>'+(on?'Taking the freebie kit. '+escHtml(freeKitText()):
       'Go up with issued gear instead of your own. '+escHtml(freeKitText()))+'</span>'+
-    '<button class="deploy ghost" id="fkbtn">'+(on?'USE MY OWN GEAR':'TAKE THE FREEBIE KIT')+'</button>'+
+    '<button class="deploy ghost fkbtn">'+(on?'USE MY OWN GEAR':'TAKE THE FREEBIE KIT')+'</button>'+
     '</div>';
+  var hosts=[document.getElementById('freekit'),document.getElementById('hubfreekit')];
+  var any=false;
+  for(var hi=0;hi<hosts.length;hi++){ if(hosts[hi]){ hosts[hi].innerHTML=html; any=true; } }
+  if(!any) return;
   var md=document.getElementById('stagemodal');
   if(md) md.classList[on?'add':'remove']('freekit');
   var hb=document.getElementById('hub');
   if(hb) hb.classList[on?'add':'remove']('freekit');
-  var b=document.getElementById('fkbtn');
-  if(b) b.onclick=function(){
+  // EVERY copy gets the handler, so whichever screen you are on can turn it off.
+  var btns=document.querySelectorAll('.fkbtn');
+  for(var bi=0;bi<btns.length;bi++) btns[bi].onclick=function(){
     if(P.freeKit){ P.freeKit=0; saveProfile(); renderStage(); return; }
     // HIS NOTE: anything already picked goes BACK. P.kit is a selection out of the
     // stash rather than a move, so emptying it returns those items by itself; the
