@@ -25990,3 +25990,41 @@ __hud clean. All three endings through the outcome screen. Hub frames and stage 
 
 Not verified: the same thing as v6.92, what they look like. I saw the town square and it
 reads; the other five exist as geometry I have measured and never looked at.
+
+## v6.97 - the ghost bonus finally obeys the order, and a fresh baseline
+
+CAUGHT BY A SCREENSHOT TAKEN FOR SOMETHING ELSE, again. Looking at the new tower on the
+quarry, the top right of the HUD read UNFOUND +40% IF YOU WALK OUT LIKE THIS. His order
+was "walking out unseen pays 40% more -- NO, get rid of this -- get rid of the entire
+FIRST TIME OUT menu". At v6.62 I removed the MENU and left the MECHANIC: the readout still
+sat on the HUD, the 40 percent still paid on an unseen extraction, and the outcome screen
+was still printing GHOST RUN lines this very session. He said get rid of THIS, meaning the
+bonus he had just named. I deleted the thing that described it and kept the thing itself.
+
+All three pieces are out together: the payout, the UNFOUND readout, and the help row that
+taught it. A fourth row mentioning "a clean unfound run" in passing was reworded.
+T.everSeen and silentExit stay, because they are facts the flight recorder logs rather
+than rewards. Measured: an unseen extraction with a real haul now prints no ghost line and
+pays nothing extra.
+
+AND A FRESH BASELINE, because the last one predates the overheat lock, the lightning, the
+population floor and the landmark geometry. Same 200 seeds, same map, same greed as the
+v6.72 measurement:
+
+  extract    13.5 percent, 95 percent interval +/- 4.7     was 17.0 +/- 5.2
+  died       86.5 percent
+  median extract haul  $3,220                              was $2,975
+  killed by  sentry 85, raider 35, Organ 22, crawler 20    sentry was 65
+
+The intervals overlap, so the honest reading is LEVEL, not collapsed, with the drift
+downward consistent with machines that now fight back when their vents are chained and a
+storm that shoots at everyone. Sentries rising from 65 to 85 kills is the overheat lock
+doing exactly what it was built to do.
+
+Verified: parse PASS. Four maps at seed 4242, entity counts 86/87/58/72, zero draw errors.
+All three endings through the outcome screen. Hub frames and stage render. The unseen
+extraction case measured directly.
+
+Not verified: whether he WANTED the quiet route to stop paying entirely, or only the
+readout gone. His words were unambiguous and I have followed them; if the intent was
+narrower, restoring the payout without the readout is a five line revert.
