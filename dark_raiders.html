@@ -960,7 +960,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.63';
+var VER='6.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20304,11 +20304,19 @@ function buildHubCrowd(stations){
   var SKINS=['porcelain','fair','olive','tan','bronze','umber','ebony'];
   var HAIRS=['blonde','dark','red','white','green'];
   var HATS=['none','band','phones','mask','none','visor','pigtails','crown','none'];
+  // FIXED walks the lists in order, so the six who work the stations are the same six
+  // every time you come down. ROLLED picks at random, for everyone just passing through.
   function nextIdent(){
     var id=IDENTITIES[used%IDENTITIES.length];
     var look={skin:SKINS[used%SKINS.length], hair:HAIRS[used%HAIRS.length], hat:HATS[used%HATS.length]};
     used++;
     return {id:id, look:look};
+  }
+  function rolledIdent(){
+    return {id:IDENTITIES[(Math.random()*IDENTITIES.length)|0],
+            look:{skin:SKINS[(Math.random()*SKINS.length)|0],
+                  hair:HAIRS[(Math.random()*HAIRS.length)|0],
+                  hat:HATS[(Math.random()*HATS.length)|0]}};
   }
   // ONE BESIDE EACH STATION, his first ask. Offset to the side and a little below so
   // the figure never sits on the post or under its floating name.
@@ -20318,17 +20326,24 @@ function buildHubCrowd(stations){
     crowd.push({x:clamp(st.x+side*40,30,HUBW-30), y:clamp(st.y+26,30,HUBH-30),
                 face:side>0?3.14:0, ident:nx.id, coat:nx.id.coat, look:nx.look, t0:i*1.7, talk:0});
   }
-  // AND THE GROUPS, two to four, turned inward so they read as a conversation.
-  var rings=[{x:230,y:180,n:3},{x:470,y:300,n:2},{x:250,y:420,n:4}];
-  for(var g=0;g<rings.length;g++){
-    var R=rings[g], r=22;
-    for(var k=0;k<R.n;k++){
-      var a=(k/R.n)*6.2832+g*0.7;
-      var nx2=nextIdent();
+  // AND THE LOOSE CROWD, rolled fresh every visit: where the groups stand, how many are
+  // in each, who they are and what they look like. Three or four huddles of two to four.
+  var nRings=3+((Math.random()*2)|0);
+  for(var g=0;g<nRings;g++){
+    var R={x:120+Math.random()*(HUBW-240), y:130+Math.random()*(HUBH-260)},
+        cnt=2+((Math.random()*3)|0), r=20+Math.random()*8;
+    for(var k=0;k<cnt;k++){
+      var a=(k/cnt)*6.2832+Math.random()*0.5;
+      var nx2=rolledIdent();
       crowd.push({x:clamp(R.x+Math.cos(a)*r,30,HUBW-30),
                   y:clamp(R.y+Math.sin(a)*r*0.6,30,HUBH-30),
                   face:a+3.1416, ident:nx2.id, coat:nx2.id.coat, look:nx2.look,
-                  t0:g*2.3+k*0.9, talk:1});
+                  t0:Math.random()*6, talk:1,
+                  // WHAT THEY ARE DOING, his note. A talker turns and gestures on the
+                  // spot; a worker paces a short beat between two points. Both are
+                  // driven off HB.t so they cost nothing and need no state machine.
+                  job:(Math.random()<0.35)?'work':'talk',
+                  hx:0, hy:0, amp:6+Math.random()*10, rate:0.5+Math.random()*0.5});
     }
   }
   return crowd;
@@ -20621,11 +20636,24 @@ function drawHubWorld(dt){
       var _cw=HB.crowd||[];
       for(var _ci=0;_ci<_cw.length;_ci++){
         var _c=_cw[_ci];
-        var _ph=Math.sin(HB.t*1.6+_c.t0)*0.5;
-        var _fc=_c.face+(_c.talk?Math.sin(HB.t*0.7+_c.t0)*0.22:0);
+        // v6.64, his note: they move. A worker paces a short beat between two points,
+        // which reads as carrying something back and forth; a talker sways and turns as
+        // if mid-sentence. Both are pure functions of the clock, so nothing to update.
+        var _mv=0;
+        if(_c.job==='work'){
+          var _w=Math.sin(HB.t*_c.rate+_c.t0);
+          _c.hx=Math.cos(_c.face)*_w*_c.amp;
+          _c.hy=Math.sin(_c.face)*_w*_c.amp*0.5;
+          _mv=Math.abs(Math.cos(HB.t*_c.rate+_c.t0))>0.35?1:0;
+        } else if(_c.job==='talk'){
+          _c.hx=Math.sin(HB.t*0.8+_c.t0)*2.2;
+          _c.hy=Math.cos(HB.t*0.6+_c.t0)*1.4;
+        }
+        var _ph=Math.sin(HB.t*(_c.job==='work'?3.4:1.6)+_c.t0)*(_c.job==='work'?1.5:0.5);
+        var _fc=_c.face+(_c.talk?Math.sin(HB.t*0.7+_c.t0)*0.34:0);
         var _lk=_c.look||{};
-        drawOp(_c.x,_c.y,_fc,_ph,_c.coat,0,0,'none',0,
-          {hero:0,moving:false,sprint:false,ads:false,hurt:0,rl:0,
+        drawOp(_c.x+(_c.hx||0),_c.y+(_c.hy||0),_fc,_ph,_c.coat,0,0,'none',0,
+          {hero:0,moving:!!_mv,sprint:false,ads:false,hurt:0,rl:0,
            skin:_lk.skin,hair:_lk.hair,hat:_lk.hat,own:_c});
       }
       drawOp(p.x,p.y,p.face,p.bob,'#242832',clamp(P.stash.length/24,0,1),0,'',0,
@@ -20764,6 +20792,10 @@ function showScreen(s){
   document.getElementById('hub').classList.remove('on');
   if(s==='hub'){
     if(!HB) HB=buildHub();
+    // v6.64, his note: the people milling about are different every time you come down.
+    // The six who work the stations are rebuilt too and come out the same, because they
+    // walk the identity lists in order rather than rolling.
+    else HB.crowd=buildHubCrowd(HB.stations);
     if(!hubGround) hubGround=bakeHubGround();
     HB.player.x=350; HB.player.y=250; HB.player.face=-1.5708;
     HB.near=null; HB.eLock=true; keys={};
@@ -21361,7 +21393,7 @@ function initBuildPicker(){
 // drawn over the Undercroft floor.
 var HUBSAY='',HUBSAY_T=0;
 function say2(t){ HUBSAY=t; HUBSAY_T=5; }
-var GAMBLE_PRICE=450;
+var GAMBLE_PRICE=2500;   // v6.64, his note: $2,500 a pull.
 var GAMBLE_POOL=[
   ['scrap',10],['wire',10],['cell',9],['bandage',9],['ammobox',10],['board',8],
   ['optic',7],['plate',6],['servo',6],['comp',6],['medkit',5],['smoke',4],['decoy',3],['frag',3],
@@ -23477,7 +23509,20 @@ document.addEventListener('wheel',function(e){
   var anyModal=document.querySelector('.modal.on');
   var inRaid=(typeof state!=='undefined'&&state==='raid');
   if(!anyModal&&inRaid) return;
-  if(e.shiftKey) return;              // SHIFT is how you scroll a long list now
+  if(e.shiftKey) return;
+  // v6.64, his note. If the pointer is over anything that can actually scroll, the wheel
+  // scrolls it and the zoom stays out of the way. Walk up from the target because the
+  // scrollable box is usually an ancestor of the row under the cursor.
+  if(!e.ctrlKey){
+    var _sc=e.target;
+    while(_sc&&_sc!==document.body){
+      if(_sc.scrollHeight-_sc.clientHeight>2){
+        var _cs=getComputedStyle(_sc);
+        if(_cs.overflowY==='auto'||_cs.overflowY==='scroll') return;   // let it scroll
+      }
+      _sc=_sc.parentElement;
+    }
+  }
   e.preventDefault();
   var z=((P&&P.menuZoom)||1)+(e.deltaY<0?0.08:-0.08);
   P.menuZoom=Math.max(0.7,Math.min(1.6,Math.round(z*100)/100));

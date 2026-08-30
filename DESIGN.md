@@ -24506,3 +24506,51 @@ the board at 34 of them. Every extract-rate number taken before this build is me
 game where melee did nothing, so the 8.8 percent Cold Storage figure and everything like
 it is now stale. I also did not check whether the Bulwark, the Warden or the Choir have
 the same centre-versus-body arithmetic anywhere in their own attacks.
+
+## v6.64 - THE UNDERCROFT HAS A LIFE, AND THE WHEEL DOES THE OBVIOUS THING
+
+Three of his notes.
+
+THE CROWD MOVES AND IS DIFFERENT EVERY VISIT. "the pillagers in the undercroft should
+move around and look like they are talking and working, right now they just stand still,
+pretty weird", and "appearance and locations should randomize every time, except the ones
+next to the different menu boxes should stay consistent".
+
+Split by intent, which is what makes that pair of notes one design rather than two. The
+six beside the stations are FIXED, same look and same spot every time, because they are
+the people who work there. Everyone else is rolled fresh on each trip down: how many
+huddles, how many in each, where they stand, who they are and what they wear. Ten to
+thirteen of them on the visits I measured.
+
+And they have something to do. A worker paces a short beat between two points, which
+reads as carrying something back and forth, and gets a faster stride. A talker sways and
+turns as if mid-sentence. Both are pure functions of the hub clock, so there is no state
+machine and no cost.
+
+A MISS OF MINE, caught by checking two visits rather than one. The roll happens in
+buildHubCrowd, but buildHub runs ONCE and is cached, so the second visit reused the first
+crowd and the randomisation never fired after the opening screen. The loose half is
+rebuilt on every entry now. The station six are rebuilt with it and come out identical,
+because they walk the identity lists in order rather than rolling.
+
+THE WHEEL SCROLLS. His note: "using mouse wheel inside a scrollabel menu should scroll up
+or down in the menu rather than increasing or decreaing the size of the entire page
+(obviously)." Obviously. The wheel zoomed and SHIFT was the scroll, which is backwards
+from everything else he uses. The wheel now scrolls whatever is under it whenever that
+thing can actually scroll, CTRL plus wheel is the zoom, and SHIFT still scrolls so the
+old habit does not break.
+
+WIRT COSTS $2,500 A PULL, his note, up from 450.
+
+Verified: parse PASS at v6.64; the station six confirmed identical across three visits
+and the loose crowd confirmed different, at 10, 12 and 13 people; jobs assigned on every
+visit; Wirt's button read back from the live panel as "Gamble $2500"; four maps
+86/87/58/72 entities and, at seed 4242, 246/193/152/216 containers; all three endings
+through the outcome screen to a drawn hub; hub, renderStage and the export builder; pin
+audit clean.
+
+Not verified: the crowd is drawn, not simulated, so nobody walks a path or avoids the
+player, and two rolled huddles can land close to each other or to a station. I checked
+the counts and the identities across visits but did not capture the motion, so "reads as
+talking and working" is my judgement of the maths rather than an observation. The wheel
+change is reasoned from the DOM and not driven with a real wheel event over a long list.
