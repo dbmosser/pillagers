@@ -25676,3 +25676,56 @@ Not verified: what happens if he takes the freebie and then ABANDONS. That path 
 the loadout, same as dying, on the reasoning that he did not complete a run; he has not
 said which he wants and it is a one-line change if backing out should keep the gear
 instead.
+
+## v6.89 - the triggers choose the range, and the gun settles itself
+
+His note: "on xbox controller, rather than ADS, left and right trigger should move the
+reticule cursor closer or further away from the player. ADS should happen automatically
+immediately before the player fires."
+
+WHY THIS IS THE RIGHT ASK. On a stick the aim is a virtual cursor placed a FIXED 200 units
+out along the push, so the one thing a pad could never do was choose its RANGE. You could
+point at a direction but never at a distance, which is most of why aiming on a pad felt
+worse than a mouse rather than merely different. The triggers now own that distance, they
+are analog so a light pull creeps and a full pull sweeps, and the reach is clamped to 70
+and 520 so it can never leave the screen.
+
+Holding steady aim stops being a button at all. The gun settles by itself on the shot and
+stays settled for a third of a second afterwards, so a burst holds its aim instead of
+flicking in and out of ADS between rounds. That tail is the whole reason it is a timer
+rather than a flag.
+
+MOVING FIRE TO A COLLIDED WITH SEARCH, which was on A, so rather than patch around it the
+whole raid map is re-cut and every verb now has exactly one home:
+
+  A          fire                      was: search, hold to call
+  X          search, hold to call      was: reload
+  Y          reload                    was: swap weapon
+  B          roll                      unchanged
+  LB / RB    walk the belt             v6.79
+  LT / RT    pull the reticle in / out this build
+  D-right    use the selected slot     v6.79
+  D-down     medical, D-up map, D-left drop, LS sprint, RS crouch, BACK bag, START pause
+
+SWAP WEAPON LOSES ITS BUTTON AND IS NOT REPLACED. Since v6.79 the bumpers reach every belt
+slot including the guns, and selecting a gun slot swaps to it, so a dedicated swap button
+was doing a job the belt already does better. The labels and the pad legend follow the
+buttons, because a prompt teaching a mapping that no longer exists is worse than no prompt.
+
+pollPad runs off the render loop and has no dt of its own, so anything that MOVES over
+time inside it needed one. dtPad is clamped to between 4 and 50 milliseconds: a stalled
+frame must not fling the reticle across the map, which is the same one-sided-clamp fault
+the main loop had at v2.99.
+
+Measured against a synthetic pad: RT pushed the reach out to 290 and LT pulled it back to
+144; A set ads true on the frame it fired and it stayed true for 76 polls, about 0.30
+seconds, then cleared; swap weapon is gone from the tap table.
+
+Verified: parse PASS. Four maps at seed 4242 with the bag open, entity counts 86/87/58/72,
+drawErr null, __hud clean. All three endings through the outcome screen and back to the
+hub. Hub frames and stage render.
+
+Not verified: any of it on real hardware, and he has already caught me once shipping
+controller work that passed synthetically and failed in his hands. In particular the
+trigger axes are read as buttons 6 and 7 with analog values, which is the standard
+mapping, but a pad that reports triggers as axes instead would move nothing at all.

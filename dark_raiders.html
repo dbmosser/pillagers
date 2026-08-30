@@ -1006,7 +1006,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.88';
+var VER='6.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8528,7 +8528,7 @@ var PAD={on:false,idx:-1,aiming:false,mx:0,my:0,prev:[],announced:false};
 // both hold-to-act.
 var PADTAP={
   1:'Space',      // B      dodge roll
-  3:'KeyX',       // Y      swap weapon
+  // Y is reload now and lives in PADHOLD; swapping guns is what the bumpers are for.
   // 4 and 5, the bumpers, are handled as belt selection in pollPad rather than as key
   // taps, because there is no key that means "previous slot".
   8:'Tab',        // View   inventory
@@ -8538,8 +8538,9 @@ var PADTAP={
   15:'KeyG'       // Dpad right  use the selected belt slot (was autoloot, v6.79)
 };
 var PADHOLD={
-  0:'KeyE',       // A      search, and hold to call the dropship
-  2:'KeyR',       // X      reload
+  // A is the trigger now, v6.89, so search moves across and reload moves with it.
+  2:'KeyE',       // X      search, and hold to call the dropship
+  3:'KeyR',       // Y      reload
   13:'KeyF',      // Dpad down   use medical
   10:'ShiftLeft', // LS click    sprint
   11:'ControlLeft'// RS click    crouch
@@ -8549,7 +8550,7 @@ function padOn(){ return !!(typeof PAD!=='undefined'&&PAD&&PAD.on); }
 // The label to show for a keyboard code, swapped for its controller button when a pad is
 // connected. Bracketed ASCII on purpose: circled-letter glyphs are non-ASCII and this
 // file has been corrupted twice by non-ASCII surviving a patch script badly.
-var PADLABEL={KeyE:'A',KeyR:'X',KeyF:'Y',KeyT:'RB',KeyG:'D-RIGHT',KeyX:'Y',KeyQ:'LB',
+var PADLABEL={KeyE:'X',KeyR:'Y',KeyF:'D-DOWN',KeyT:'RB',KeyG:'D-RIGHT',KeyX:'Y',KeyQ:'LB',
               Space:'B',Tab:'BACK',KeyP:'START',KeyB:'D-UP',KeyZ:'D-LEFT',
               ShiftLeft:'LS',ControlLeft:'RS',KeyM:'D-UP',KeyI:'BACK'};
 // The keyboard half, kept beside the controller half so a station key can never be
@@ -8633,6 +8634,14 @@ function padMenu(pressed){
   }
   return true;
 }
+// v6.89: pollPad has no dt, so anything that MOVES over time inside it needs one. Clamped
+// hard at both ends: a stalled frame must not teleport the reticle.
+function dtPad(){
+  var now=(typeof performance!=='undefined'&&performance.now)?performance.now():Date.now();
+  var d=(PAD._t===undefined)?(1/60):((now-PAD._t)/1000);
+  PAD._t=now;
+  return clamp(d,0.004,0.05);
+}
 function padAxis(v){
   // Radial deadzone with rescaling, so the first millimetre past the deadzone
   // is a small input and not a jump to 0.22 of full speed.
@@ -8685,7 +8694,8 @@ function pollPad(){
     var _fcy=(G.camY===undefined?_fp.y-H/_fz*0.54:G.camY);
     var _fsx=(_fp.x-_fcx)*_fz,_fsy=(_fp.y-_fcy)*_fz;
     var _fl=Math.sqrt(PAD.mx*PAD.mx+PAD.my*PAD.my)||1;
-    mouse.x=_fsx+(PAD.mx/_fl)*200*_fz; mouse.y=_fsy+(PAD.my/_fl)*200*_fz; mouse.init=true;
+    var _fr=(PAD.reach===undefined?200:PAD.reach);
+    mouse.x=_fsx+(PAD.mx/_fl)*_fr*_fz; mouse.y=_fsy+(PAD.my/_fl)*_fr*_fz; mouse.init=true;
   }
   if(G&&!G.over&&(rx||ry)){
     PAD.aiming=true;
@@ -8694,7 +8704,8 @@ function pollPad(){
     var cy=(G.camY===undefined?p.y-H/pz*0.54:G.camY);
     var psx=(p.x-cx)*pz,psy=(p.y-cy)*pz;
     var rl=Math.sqrt(rx*rx+ry*ry); if(rl>1){ rx/=rl; ry/=rl; }
-    mouse.x=psx+rx*200*pz; mouse.y=psy+ry*200*pz; mouse.init=true;
+    var _rr2=(PAD.reach===undefined?200:PAD.reach);
+    mouse.x=psx+rx*_rr2*pz; mouse.y=psy+ry*_rr2*pz; mouse.init=true;
   }
 
   PAD.ax=ax;
@@ -8710,6 +8721,8 @@ function pollPad(){
     // stick directly. Ownership only, and sprint works here too now.
     padHold('KeyE',pressed(0));
     padHold('ShiftLeft',pressed(10));
+    // A still works a station down here: there is nothing to shoot in the Undercroft, so
+    // the raid's fire binding has nothing to collide with.
     // v6.83: a station's other actions were unreachable on a pad. A opened the shop and
     // nothing could reach CRAFT, HIRE, REWARDS or the TERMS. X, Y and RB now carry the
     // second, third and fourth action, matching the labels PADLABEL prints.
@@ -8730,11 +8743,24 @@ function pollPad(){
   // used. Caught by test. The pad now only clears what the pad itself set.
   // triggers: RT fires, LT is steady aim. Both are analog, so a light pull is
   // deliberately still nothing: 0.35 is past the resting travel on a worn pad.
-  var rtOn=!G.over&&!G.paused&&trig(7)>0.35;
-  var ltOn=!G.over&&!G.paused&&trig(6)>0.35;
+  // v6.89, his note. The triggers are analog, so reach moves at a speed you choose
+  // rather than in steps: a light pull creeps, a full pull sweeps.
+  var _out=trig(7), _in=trig(6);
+  if(!G.over&&!G.paused&&(_out>0.08||_in>0.08)){
+    var _rate=520*dtPad();
+    PAD.reach=clamp((PAD.reach===undefined?200:PAD.reach)+(_out-_in)*_rate,70,520);
+  }
+  if(PAD.reach===undefined) PAD.reach=200;
+  // FIRING IS A BUTTON NOW. A is the shot, so the hand holding range is not the hand
+  // pulling the trigger.
+  var rtOn=!G.over&&!G.paused&&pressed(0);
   if(rtOn){ mouse.down=true; PAD.firing=1; }
   else if(PAD.firing){ mouse.down=false; PAD.firing=0; }
-  if(ltOn){ G.player.ads=true; PAD.adsing=1; }
+  // AND THE GUN SETTLES BY ITSELF, a beat before the shot and a beat after, so a burst
+  // stays steady instead of flicking in and out between rounds.
+  if(rtOn) PAD.adsT=0.35;
+  else if(PAD.adsT>0) PAD.adsT-=dtPad();
+  if(PAD.adsT>0){ G.player.ads=true; PAD.adsing=1; }
   else if(PAD.adsing){ G.player.ads=false; PAD.adsing=0; }
 
   // With the bag open the dpad browses it, the same doubling the arrow keys
@@ -19071,10 +19097,10 @@ var LEGEND_MINI=[
 var LEGEND_MINI_PAD=[
   ['L STICK','move'],['LS','sprint'],
   ['RS','crouch'],['B','roll'],
-  ['RT','fire'],['LT','aim'],
-  ['X','reload'],['Y','swap gun'],
+  ['A','fire'],['LT / RT','reach'],
+  ['X','search'],['Y','reload'],
   ['LB / RB','belt'],['D-RIGHT','use it'],
-  ['BACK','bag'],['A','search'],
+  ['BACK','bag'],['D-DOWN','medical'],
   ['D-UP','map'],['START','pause']
 ];
 var SOUNDKEY=[
