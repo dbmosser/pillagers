@@ -24554,3 +24554,45 @@ player, and two rolled huddles can land close to each other or to a station. I c
 the counts and the identities across visits but did not capture the motion, so "reads as
 talking and working" is my judgement of the maths rather than an observation. The wheel
 change is reasoned from the DOM and not driven with a real wheel event over a long list.
+
+## v6.66 - the statue, found in his own flight recorder
+
+His run 74 carried the line pillagerCam:93seen/84still/81statue/0shot, with 85 of those
+samples sitting in the chase state. Eighty-one of the ninety-three pillagers he could
+actually see were standing still and not shooting while supposedly hunting him. The 0
+percent accuracy on runs 73 to 76 is a symptom of the same thing and not a bug of its
+own: run 74 reads firstContact:none, so his 36 shots were fired at motionless figures
+at range, and run 73 met its first enemy at 247s of a 277s raid.
+
+MEASURED IN THE FIXTURE, one raider, two seconds, full alert, weapon ready:
+
+  in band (78..220px), cannot see you   moved 0px    fired 0 shots
+  in band, CAN see you                  moved 36px   fired 8 shots
+  outside band, cannot see you          moved 176px
+
+The chase branch had exactly three ways to move: too far (d > rng*0.85), too close
+(d < rng*0.30), and sidestepping while the weapon cycles (cd > cycle gate). A man who
+has lost sight of you, sits at mid range, and holds a LOADED weapon matches none of
+them, and the firing line below is gated on sight. So he stands there, and keeps
+standing until his alert decays, because the exit rule that sends him back to looting
+only fires once alert reaches zero.
+
+He now closes on the last place he saw you, which is the pair tx/ty that the code has
+always maintained (refreshed every frame sight is held) and that the investigate state
+already steers by. Arriving with nothing to find drops his alert, and the EXISTING exit
+rule twenty lines further down returns him to looting. No new state, no new transition.
+
+AFTER, same three measurements: 226px / 0 shots, 81px / 8 shots, 244px / 0 shots. The
+sighted case still fires its eight rounds. It also moves 81px where it moved 36, because
+a raider that turns away for a few frames mid-fight now advances on those frames instead
+of freezing; that is the same fault in miniature and it should not be preserved.
+
+This is the second time this month a body could not perform the one act its state was
+named for. v6.63 was the crawler and the Listener, whose bodies were wider than their
+own attack range so they could never touch you. The pattern to distrust: a check that
+asks whether a thing can be KILLED never asks whether it can KILL.
+
+Not verified: the statue rate in a real raid on his machine. The fixture proves the dead
+band is gone for a single raider under forced conditions; only his next flight recorder
+can say what pillagerCam reads with a full roster in a live fight, and that number is the
+one that settles it.
