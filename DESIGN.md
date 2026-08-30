@@ -27443,6 +27443,49 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.44 - THE CRAFTING VALUE PASS
+
+His note: "need to be able to craft bandages, grenades. grenades should be high
+cost. take another look at crafting and adjust values. Guns should be more
+expensive than medkit. ammo box probably shouldn't require component kit. etc"
+
+Checked against the current code first, per the standing rule. Two of the asks
+were already true: frag charges (his grenades) have been craftable since v1.06,
+and every gun on the counter already costs more than a medkit - medkit 2340,
+cheapest gun 3600, dearest 27000. Neither moved.
+
+What changed, all inside the v1.72 pricing window (inputs must sell for MORE
+than the output does, or crafting prints money, and LESS than buying the output
+outright, or the recipe is a trap):
+
+2x Bandage is a NEW recipe: wire x2 + scrap x2. That is 140 in materials against
+120 of bandage and 1,320 across the counter - the entry recipe, junk in, aid
+out, and deliberately the only aid you can make without a Component Kit.
+
+2x Ammo Box drops the Component Kit, his exact ask: now cell x2 + scrap x2,
+which is 190 in materials against 180 of ammo and 2,040 bought. The kit it used
+to eat was a third of the kit's own material cost spent on the most routine
+consumable in the game.
+
+Frag Charge is now the dearest thing on the bench, because a lethal should be:
+comp x2 + cell x2 + scrap x2, 430 in materials against 320 sell. And dear across
+the counter too - 1,920 to 2,760, so a grenade now costs more than a medkit
+(2,340) and less than the cheapest gun (3,600). It used to undercut the medkit,
+which made the shop's own price order argue with itself.
+
+The KEEP FOR lines on scrap, wire and comp follow the recipes they describe -
+scrap and wire now mention bandages and ammo, and comp's line stops counting
+("six of the seven") because the count was a maintenance debt that had already
+gone stale once tonight.
+
+Not verified: all three changed recipes were crafted through the REAL trader UI
+(card click, CRAFT button, exact material consumption asserted: 2 wire + 2 scrap
+became 2 bandages, 2 cell + 2 scrap became 2 ammo boxes with the comps untouched,
+2+2+2 became 1 frag) and the 2,760 shows on the counter - but no economy sim ran,
+so whether frag-at-2760 changes what the BOT buys is unmeasured, and the "etc" in
+his note is open-ended: smoke, decoy, plate and medkit recipes were re-checked
+against the window and left alone, which is a judgement he may overrule.
+
 ## v7.43 - FOG YOU CAN SEE
 
 His note, all three orders in one line: "'Fog Bank. you will not see them coming'
