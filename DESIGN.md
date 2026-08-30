@@ -27057,3 +27057,21 @@ assertions, hub and stage render.
 Not verified: a profile that still owns old rig purchases (P.rigs survives as inert
 saved data, read by nothing; his profile bought none as far as the recorder shows); the
 loadout preset snap still stores a rig field that now round-trips to nothing.
+
+## v7.31 - the update log catches up
+
+The NEW IN card still said v6.67, sixty-plus versions behind what he actually gets on
+his next reload. Rewritten for the v7.x wave, biggest first, numbered per his standing
+rule: the bar, the Superhot freeze and its backtick, the HUD size keys, the bag beside
+the belt with belt-to-belt drags, half-for-real, crew pickups on the way out, the
+hairstyle slot, the live carry value, the silent Listener, and rigs gone.
+
+The first screenshot caught my first draft's three longest lines running off both
+screen edges (the card sizes to its longest line and the screen does not); trimmed to
+fit and re-screenshotted clean.
+
+Verified: parse PASS v7.31. Screenshot of the card at 1920x1080 with all ten lines on
+screen. ENTER still dismisses. Four maps at seed 4242, entities exactly 86/87/58/72,
+drawErr null. Three endings with headline assertions, hub and stage render.
+
+Not verified: nothing beyond the screenshots; this is copy on an existing card.

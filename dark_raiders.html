@@ -1053,7 +1053,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.30';
+var VER='7.31';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1064,18 +1064,19 @@ var VER='7.30';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='6.67';
+var WHATSNEW_VER='7.30';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
-  'PILLAGERS THAT LOST SIGHT OF YOU USED TO FREEZE. They hunt you properly now.',
-  'CRAWLERS AND LISTENERS COULD NOT REACH YOU TO HIT YOU. Now they can. Careful.',
-  'EVERYTHING AT THE COUNTER COSTS SIX TIMES WHAT IT DID. Selling pays the same.',
-  'THE TACTICAL BELT WORKS. Drag any gun or item to any key, as many guns as you like.',
-  'THE UNDERCROFT IS BUSIER, and everyone down there is a different person each visit.',
-  'THE ASCENT LIFT ASKS BEFORE IT TAKES YOU UP.',
-  'MENU TEXT IS BIGGER EVERYWHERE. Mouse wheel scrolls a list; CTRL and wheel zooms.',
-  'WEATHER AND TIME OF DAY SAY WHAT THEY ARE, and nothing else.',
-  'ONE SELF-REVIVE PER RAID, on F. No item needed, and only the once.'
+  'THE LAST POUR IS OPEN. A bar in the Undercroft. What you drink rides up the lift with you.',
+  'SUPERHOT IS A TRUE FREEZE NOW. No input, no time. Backtick flips it on and off anywhere.',
+  'MINUS AND EQUALS RESIZE THE WHOLE HUD, everywhere, and it sticks.',
+  'THE BAG OPENS BESIDE THE BELT, belt keys drag onto each other and swap, and clicking the belt no longer fires your gun.',
+  'DYING PAYS HALF YOUR PROGRESS FOR REAL. It was quietly paying two percent.',
+  'YOUR CREW TRIES TO PICK YOU UP ON THE WAY OUT, if you are close to their path.',
+  'HAIRSTYLE IS ITS OWN WARDROBE SLOT: eight cuts, all yours from the start.',
+  'THE RIGHT CORNER SHOWS WHAT YOUR CARRY IS WORTH, live, priced the way the payout prices it.',
+  'THE LISTENER NO LONGER ANNOUNCES ITSELF. You will know.',
+  'RIGS ARE GONE. Everyone ascends with the same 60 armour; plates top it up.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
