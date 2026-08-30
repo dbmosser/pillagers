@@ -430,6 +430,10 @@
   #gamblemodal::before{ inset:50% auto auto 50%; width:1180px; height:620px; transform:translate(-50%,-50%); }
   #gamblemodal .msub, #gamblemodal .plist, #gamblemodal #gamble_line{ max-width:1060px; width:100%; }
   #gamblemodal .plist{ flex:0 1 auto; }
+  #barmodal{ align-items:center; justify-content:center; }
+  #barmodal::before{ inset:50% auto auto 50%; width:1180px; height:640px; transform:translate(-50%,-50%); }
+  #barmodal .msub, #barmodal .plist{ max-width:1060px; width:100%; }
+  #barmodal .plist{ flex:0 1 auto; }
   #settingsmodal .msub{ font-size:12.5px; line-height:1.6; }
   .runline{ display:flex; gap:8px; padding:4px 12px; font-size:11px; border-bottom:1px solid rgba(42,50,61,.3); }
   .runline .o{ width:44px; flex:none; font-weight:700; }
@@ -548,6 +552,16 @@
   <div style="display:flex;gap:8px;margin-top:10px">
     <button id="gamblebtn" style="padding:8px 22px;border-color:var(--amber);color:var(--amber)">Gamble 450c</button>
     <button id="closegamble" style="padding:8px 22px">Leave</button>
+  </div>
+</div>
+
+<div class="modal" id="barmodal">
+  <h3 id="bar_h">The Last Pour</h3>
+  <div class="msub" id="wallet_bar" style="color:var(--amber);font-weight:700"></div>
+  <div class="msub" id="bar_line"></div>
+  <div class="plist" id="barlist" style="border:1px solid var(--steel-hi)"></div>
+  <div style="display:flex;gap:8px;margin-top:10px">
+    <button id="closebar" style="padding:8px 22px">Leave</button>
   </div>
 </div>
 
@@ -1039,7 +1053,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.23';
+var VER='7.24';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11233,6 +11247,21 @@ if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.s
 
   if(mg>0){
     var ox=p.x,oy=p.y;
+    if(!G.sim&&buzzPow('drunk')>0){
+      if(G._veerNext===undefined) G._veerNext=rnd(2,5);
+      G._veerNext-=dt;
+      if(G._veerNext<=0){
+        G._veerT=0.55*Math.min(1.5,buzzPow('drunk'));
+        G._veerA=rnd(0.9,1.9)*(rnd(0,2)<1?-1:1);
+        G._veerNext=rnd(4,8);
+      }
+      if((G._veerT||0)>0){
+        G._veerT-=dt;
+        var _vca=Math.cos(G._veerA),_vsa=Math.sin(G._veerA);
+        var _vnx=mx*_vca-my*_vsa; my=mx*_vsa+my*_vca; mx=_vnx;
+      }
+    }
+    if(!G.sim&&buzzPow('haze')>0) spd*=0.9;
     p.x+=(mx/mg)*spd*ana*dt; p.y+=(my/mg)*spd*ana*dt; p.bob+=dt*(sprint?15:9); p.moving=true;
     p.noiseAcc=(p.noiseAcc||0)+dt;
     // wading defeats crouch entirely: splashing is loud whatever you do
@@ -11258,6 +11287,7 @@ if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.s
     T.distance+=dist({x:ox,y:oy},p);
   } else { p.noiseAcc=0; p.moving=false; p.bob+=dt*1.2; T.tStill+=dt; collide(p,G.map.walls); }
   if(crouch) T.tCrouch+=dt;
+  if(!G.sim) tickBuzz(dt);
   // Once per frame, not once per enemy: 57 bodies each scanning the bush list
   // would be the same answer computed 57 times.
   G.pBush=inBush(p.x,p.y);
@@ -17855,6 +17885,7 @@ wc.drawImage(fogC,0,0);
     }
   }
   drawHUD();
+  drawBuzzFx();
 }
 
 // ================================================================ HUD (2D overlay)
@@ -17862,6 +17893,51 @@ function bar(x,y,w,h,f,c,bg){
   ctx.fillStyle=bg||'rgba(6,9,13,.8)'; ctx.fillRect(x,y,w,h);
   ctx.fillStyle=c; ctx.fillRect(x,y,w*clamp(f,0,1),h);
   ctx.strokeStyle='rgba(127,146,216,.30)'; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,w-1,h-1);
+}
+function drawBuzzFx(){
+  if(!G||G.sim||!P.buzz||!P.buzz.length) return;
+  var t=(G.t||0), cvs=ctx.canvas, RW=cvs.width, RH=cvs.height;
+  var dr=Math.min(buzzPow('drunk'),1.5), ac=Math.min(buzzPow('lsd'),1.5),
+      ck=Math.min(buzzPow('coke'),1.5), hz=Math.min(buzzPow('haze'),1.5);
+  ctx.save();
+  ctx.setTransform(1,0,0,1,0,0);
+  if(dr>0){
+    ctx.globalAlpha=0.34*Math.min(1,dr);
+    ctx.drawImage(cvs,Math.sin(t*1.7)*16*dr,Math.cos(t*1.3)*10*dr);
+    ctx.globalAlpha=1;
+    var bh=Math.ceil(RH/5);
+    for(var b=0;b<5;b++)
+      ctx.drawImage(cvs,0,b*bh,RW,bh,Math.sin(t*2.1+b*1.7)*11*dr,b*bh,RW,bh);
+  }
+  if(hz>0){
+    ctx.globalAlpha=0.55*Math.min(1,hz);
+    try{ ctx.filter='blur(3px)'; ctx.drawImage(cvs,0,0); ctx.filter='none'; }catch(_e){}
+    ctx.globalAlpha=1;
+    ctx.fillStyle='rgba(90,160,90,'+(0.10*hz).toFixed(3)+')';
+    ctx.fillRect(0,0,RW,RH);
+  }
+  if(ac>0){
+    ctx.globalAlpha=0.55*Math.min(1,ac);
+    try{
+      ctx.filter='hue-rotate('+Math.round((t*40)%360)+'deg) saturate(1.7)';
+      ctx.drawImage(cvs,0,0);
+      ctx.filter='none';
+    }catch(_e){}
+    ctx.globalAlpha=1;
+    var bh2=Math.ceil(RH/7);
+    for(var b2=0;b2<7;b2++)
+      ctx.drawImage(cvs,0,b2*bh2,RW,bh2,Math.sin(t*1.2+b2*0.9)*17*ac,b2*bh2,RW,bh2);
+  }
+  if(ck>0){
+    var beat=(t*1.39)%1;
+    var th=(beat<0.12||(beat>0.28&&beat<0.4))?1:0;
+    var vg=(0.24+0.26*th)*Math.min(1,ck);
+    var g=ctx.createRadialGradient(RW/2,RH/2,RH*0.30,RW/2,RH/2,RH*0.72);
+    g.addColorStop(0,'rgba(0,0,0,0)');
+    g.addColorStop(1,'rgba(24,0,0,'+vg.toFixed(3)+')');
+    ctx.fillStyle=g; ctx.fillRect(0,0,RW,RH);
+  }
+  ctx.restore();
 }
 function drawHUD(){
   var p=G.player,T=G.tel,i;
@@ -18144,6 +18220,11 @@ _tgt=G.active; _lbl='EXTRACTION';
     var MW=(G.wx||WEATHER[0]), MT=tod(), rows=[], _clines=[];
     var _hv=0; for(var _hq=0;_hq<G.bag.length;_hq++) _hv+=ival(G.bag[_hq]);
     rows.push({k:'CARRYING',v:'$'+_hv.toLocaleString(),c:'#ffc04a',vc:'#e8f0f6'});
+    var _bzB=P.buzz||[];
+    for(var _bq=0;_bq<_bzB.length;_bq++){
+      var _bzo=boozeById(_bzB[_bq].id);
+      rows.push({k:(_bzo?_bzo.name.toUpperCase():'BUZZ'),v:fmtMS(_bzB[_bq].t)+' left',c:'#d98aff'});
+    }
     var wv=[];
     if(MW.view!==1) wv.push('sight '+(MW.view<1?'-':'+')+Math.round(Math.abs(1-MW.view)*100)+'%');
     // HIS NOTE, v3.57: "shouldn't it be 'all characters are 40% quieter'
@@ -21048,6 +21129,8 @@ acts:{KeyE:['go up',function(){
            KeyF:['racks',   function(){ openOps('mf');  }],
            // v6.50: the fourth tab had no key while the other three did.
            KeyT:['your stats',function(){ openOps('rec'); }]}},
+    {id:'bar',x:590,y:365,r:44,label:'THE LAST POUR',sub:'rotgut, blotter, and worse',c:'#d98aff',
+     acts:{KeyE:['drink',function(){ renderBar(); openModal('barmodal'); }]}},
     (BETA_HIDE_DEV
       ? {id:'dev',x:590,y:255,r:42,label:'SETTINGS',sub:'',c:'#9aa8b2',
          acts:{KeyE:['settings',function(){ openSettings('display'); }]}}
@@ -21650,7 +21733,7 @@ function loop(ts){
   tickZoom(dt);
   pollPad();
   if(state==='hub'){
-    if(HB&&wc&&W>0){ updateHubWorld(dt); drawHubWorld(dt); }
+    if(HB&&wc&&W>0){ tickBuzz(dt); updateHubWorld(dt); drawHubWorld(dt); }
     return;
   }
   if(state!=='raid'||!G||G.sim) return;
@@ -22437,6 +22520,94 @@ function renderMercDetail(rows){
     };
   }
   d.appendChild(b);
+}
+var BOOZE=[
+  {id:'ale',    name:'Undercroft Ale', price:120, dur:180, cd:300, tag:'drunk', pow:0.5,
+   line:'Warm. The room tilts a little.',
+   desc:'A gentle lean. The floor stays mostly where you left it.'},
+  {id:'rotgut', name:'Rotgut',         price:300, dur:240, cd:300, tag:'drunk', pow:1,
+   line:'It burns. The floor moves.',
+   desc:'The full stagger. Your legs take suggestions, not orders.'},
+  {id:'blotter',name:'Blotter',        price:520, dur:240, cd:300, tag:'lsd',   pow:1,
+   line:'The colours arrive.',
+   desc:'The surface stops agreeing about colour, and the walls breathe.'},
+  {id:'powder', name:'Powder',         price:650, dur:150, cd:300, tag:'coke',  pow:1,
+   line:'Your heart is a drum.',
+   desc:'Tunnel eyes, and you can hear your own heart over everything.'},
+  {id:'haze',   name:'Green Haze',     price:200, dur:200, cd:300, tag:'haze',  pow:1,
+   line:'Everything slows down and softens.',
+   desc:'Soft edges, heavy legs, light that trails.'}
+];
+function boozeById(id){ for(var i=0;i<BOOZE.length;i++) if(BOOZE[i].id===id) return BOOZE[i]; return null; }
+function buzzPow(tag){
+  var s=0,B=P.buzz||[];
+  for(var i=0;i<B.length;i++) if(B[i].tag===tag) s+=(B[i].pow||1);
+  return s;
+}
+function sayAny(m){
+  if(typeof state!=='undefined'&&state==='raid'&&G&&!G.sim) say(m);
+  else if(typeof say2==='function') say2(m);
+}
+function tickBuzz(dt){
+  if(G&&G.sim) return;
+  var B=P.buzz||[],changed=false;
+  for(var i=B.length-1;i>=0;i--){
+    B[i].t-=dt;
+    if(B[i].t<=0){
+      var _bo=boozeById(B[i].id);
+      sayAny((_bo?_bo.name:'The buzz')+' wears off.');
+      B.splice(i,1); changed=true;
+    }
+  }
+  var CD=P.buzzCd||{};
+  for(var k in CD){ CD[k]-=dt; if(CD[k]<=0){ delete CD[k]; changed=true; } }
+  if(changed) saveProfile();
+  // the heartbeat. Two thumps, lub dub, while Powder is live and the raid is on.
+  if(buzzPow('coke')>0&&G&&!G.over&&typeof state!=='undefined'&&state==='raid'){
+    G._hbT=(G._hbT||0)-dt;
+    if(G._hbT<=0){ G._hbT=0.72;
+      try{
+        blip('board',0,undefined,0.22);
+        setTimeout(function(){ try{ blip('board',0,undefined,0.5); }catch(_e2){} },140);
+      }catch(_e){}
+    }
+  }
+}
+function renderBar(){
+  var el=document.getElementById('barlist'); if(!el) return;
+  walletLine('wallet_bar','');
+  document.getElementById('bar_line').textContent=
+    'No tab, no credit. What it does to you up top is your own business.';
+  var h='';
+  for(var i=0;i<BOOZE.length;i++){
+    var B=BOOZE[i],cd=(P.buzzCd||{})[B.id]||0;
+    var on=(P.buzz||[]).some(function(x){ return x.id===B.id; });
+    h+='<div class="row"><div style="flex:1"><b>'+B.name+'</b>'+
+       (on?' <span style="color:#d98aff">IN YOUR BLOOD</span>':'')+
+       '<div class="hint">'+B.desc+'  Lasts '+fmtMS(B.dur)+'.</div></div>'+
+       '<span class="vl">$'+B.price.toLocaleString()+'</span>'+
+       '<button data-bz="'+B.id+'" '+((cd>0||P.credits<B.price)?'disabled':'')+' style="padding:6px 14px;min-width:120px">'+
+       (cd>0?('READY IN '+fmtMS(cd).toUpperCase()):'POUR')+'</button></div>';
+  }
+  el.innerHTML=h;
+  var bs=el.querySelectorAll('[data-bz]');
+  for(var q=0;q<bs.length;q++){
+    bs[q].onclick=function(){
+      var B2=boozeById(this.getAttribute('data-bz')); if(!B2) return;
+      if(P.credits<B2.price||((P.buzzCd||{})[B2.id]||0)>0) return;
+      P.credits-=B2.price;
+      P.buzz=P.buzz||[]; P.buzzCd=P.buzzCd||{};
+      var ex=null,Bz=P.buzz;
+      for(var w=0;w<Bz.length;w++) if(Bz[w].id===B2.id) ex=Bz[w];
+      if(ex) ex.t=B2.dur; else Bz.push({id:B2.id,tag:B2.tag,pow:B2.pow,t:B2.dur});
+      P.buzzCd[B2.id]=B2.cd;
+      saveProfile(); blip('pick');
+      say2(B2.line);
+      renderBar();
+    };
+  }
+  var cb=document.getElementById('closebar');
+  if(cb) cb.onclick=function(){ document.getElementById('barmodal').classList.remove('on'); };
 }
 function renderGamble(){
   var el=document.getElementById('gamblelist');

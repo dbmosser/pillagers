@@ -26803,3 +26803,73 @@ Three endings with headline assertions, hub and stage render.
 Not verified: the freeze FEEL in real time (the fixture pane suspends animation frames
 while hidden, so wall clock behaviour is his to confirm); pad input running the clock on
 real hardware.
+
+## THE SEVEN ANSWERS, decided on his order
+
+He answered the recorder's seven standing questions with "answer this shit yourself."
+So, decided, with the reasoning on record:
+
+1. Extraction spreads: KEEP hard maps hard. Evening them out is the samey-maps
+   complaint reborn. GREYWATER stays the meat grinder.
+2. Touchdown crowds: MOVE while it lands. The mechanics already allow leaving the ring
+   while the ship comes down; the game will teach it and the woken pack follows you
+   away. To implement.
+3. Level and Proficiency: FOLD into one number. Dead stats get deleted, the same
+   instinct as his seasons-into-levels call. To implement.
+4. Downed crewmates: CREW must try a revive on the way out. "Pillagers felt dumb" is
+   already a tag he reaches for; stepping over your own crew is why. To implement.
+5. Armour: PERMANENCE with wear, reusing the gun wear system that already exists
+   rather than inventing insurance. Rigs survive death, degrade, and repair at the
+   bench. To implement.
+6. Death progress: HALF for real. The stated rule measures 2 percent; making the
+   design's own sentence true is a bug fix, not a mercy. To implement.
+7. Bodies: STAY removed. Death being final was his explicit order at v5.28; reversing
+   his own order is the one call I will not make for him.
+
+## v7.24 - THE LAST POUR
+
+His ask, nearly verbatim: a bar in the Undercroft with a bartender, get drunk, buy LSD
+and other drugs, screen effects, carry it into the raid through the conditions feature,
+five minute cooldowns, drunk goggles intensity, cocaine with an audible heartbeat, and
+everything mixable. Best practices pulled from the genre first: GTA's stumble and
+double vision, Far Cry's swimmy hue trips, the awareness class goggles he named.
+
+THE STATION. THE LAST POUR sits at the south east corner of the floor, one act, purple
+light, "rotgut, blotter, and worse" on the sign. The crowd already drifts through that
+corner, which is the raiders-at-the-bar he asked for.
+
+THE MENU, five substances, all stackable, each on its own five minute cooldown and its
+own clock, priced so a bad habit is a real line item:
+
+  Undercroft Ale  $120   3 min   half strength drunk
+  Rotgut          $300   4 min   the full stagger
+  Blotter         $520   4 min   colours drift, walls breathe
+  Powder          $650   2m30    tunnel vision, audible heartbeat
+  Green Haze      $200   3m20    soft blur, trailing light, heavy legs
+
+WHAT THEY DO. Drunk: double vision ghosting on a slow orbit, five wave bands swaying
+the room, and every few seconds your legs briefly take a heading you did not ask for.
+Blotter: the whole frame redrawn through a turning hue with seven breathing bands.
+Powder: a pulsing tunnel vignette on the same clock as a two thump heartbeat through
+the blip channel. Haze: full frame blur wash, green tint, nine percent slower legs.
+All of it stacks, the intensities cap at 1.5 per family, and every buzz shows in the
+conditions panel with its remaining time in min sec.
+
+THE RULES. State lives on the profile so it follows you up the lift and back. The bot
+sim is guarded out of every effect, every tick and every veer, so no benchmark ever
+runs drunk. Wear off says so in plain words wherever you are.
+
+Verified: parse PASS v7.24. The station opens through a real walk and E press. Three
+substances bought through real buttons: mixing confirmed (three clocks live at once),
+cooldowns armed and labelled READY IN 5 MIN, wallet debited with the chip re-stamping.
+In raid screenshot shows ghosting, hue shift, vignette and the three conditions rows at
+once. The drunk veer fired during a straight walk and pushed 170 units of sideways
+drift. Clocks tick in raid and in the hub. Powder wear off removed exactly its own
+entry with its message. Four maps at seed 4242, entities exactly 86/87/58/72, drawErr
+null with the effects pass live. Three endings with headline assertions, hub and stage
+render.
+
+Not verified: the heartbeat AUDIO in real ears (the blip call path is the extraction
+board tone repurposed; whether it reads as a heartbeat is his call); the effects at 200
+percent HUD scale; long term cost balance of the five prices; how any of it feels,
+which is the point of a bar.
