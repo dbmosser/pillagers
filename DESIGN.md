@@ -26245,3 +26245,38 @@ Not verified: fog and storm sight is LOWER than 620, so a capped elite can still
 from just outside a weather-shortened view. That is the same trade every ranged enemy in
 the game already makes in bad weather, and the weather line warns about it, so it is left
 as the storm being the storm rather than a fault.
+
+## v7.04 - the death screen said everything twice
+
+This tick's job was eyeballing screens never screenshotted, and the FIRST staged
+screenshot of the KIA outcome earned its keep. The screen is readable, laid out fine, and
+says the same two facts twice:
+
+  headline:  KILLED BY SENTRY, 372M FROM EXTRACTION
+  body:      You died 372m from the beacon
+
+  body:      7 items lost, $1,650 gone
+  body:      7 items went down with you
+
+He has never reported this, but it is exactly the KIND of thing he reports, and the fix on
+a death screen matters more than most screens because he reads it at the moment he is most
+annoyed at the game.
+
+Both echo lines are gone. Then a second staged screenshot caught my own replacement doing
+the same crime: I had kept a summary line, "And 1 weapon off your back", directly under a
+list that already names every lost gun line by line. A count under a list of the same
+things is filler, so it went too. Its rig arm also read G.lostRig, which nothing has set
+since the block that owned it was deleted at v6.91 - so the line was half duplicate, half
+dead code.
+
+The screen now reads: headline states killer and distance once, the itemised list prices
+each lost item, one totals line, and the named gun lines carry the weapon story alone.
+
+Verified: parse PASS v7.04. Staged KIA with a full bag AND a carried field gun,
+screenshot confirms no repeated fact and the gun line renders. Four maps at seed 4242,
+entities exactly 86/87/58/72, drawErr null, __hud clean. All three endings through the
+outcome screen button. Hub steps and frames, stage renders.
+
+Not verified: the EXTRACTED and ABANDONED variants of the outcome body after this edit. The
+deleted lines sat in the death branch, so those screens should be untouched, but I have
+only re-read them in code, not re-screenshotted them.
