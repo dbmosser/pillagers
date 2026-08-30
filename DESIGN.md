@@ -27443,6 +27443,41 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.43 - FOG YOU CAN SEE
+
+His note, all three orders in one line: "'Fog Bank. you will not see them coming'
+change to 'Limited visibility due to fog' -- get rid of lamps out, add an actual
+fog effect."
+
+The line is his line, verbatim with a full stop. The lamps change is a design
+statement as much as a copy fix: fog carried lights:0.85, which put a "lamps 15%
+out" row in the conditions box next to fog's real identity (sight -40%). A
+blackout is the weather about lamps; fog is the weather about distance. Fog now
+carries lights:1 and the lamps row simply never appears for it - the row logic is
+untouched and a blackout still produces it at full strength.
+
+The actual fog effect: a new fog field on the weather entry, blended through
+WXBLEND like every other weather number so it fades in and out across weather
+turns. The renderer draws it in the weather block after rain, in screen space on
+the world canvas: a flat pale haze over the whole frame plus seven large soft
+radial banks drifting slowly on sine paths of G.t - deterministic, no per-frame
+state, no allocation beyond the gradients, and damped at night by the same
+darkness figure rain uses, because pale paint on a dark scene pops harder than at
+noon. It sits above the fog-of-war darkness and below the HUD, which is where
+mist belongs: between you and the world.
+
+The fixture grew nothing: a duplicate __wx probe I added was deleted in the same
+hour once I found mkfixture already exposes __wx.list/.cur/.pick - the existing
+object was defined later in the file and silently clobbered my function, which is
+exactly the two-definitions class the audit exists to catch, in my own tooling.
+
+Not verified: pixel-read proof only - the same 120x120 world-canvas patch reads
+30 percent brighter under pinned fog than under clear at 1920x1080, the blend
+field follows wx() and the screenshot shows banks - but I have not watched a fog
+raid in motion at full speed, so the drift RATE (0.05 x G.t) is untested against
+a human eye and may read as static in play; and the night damping constant
+(0.40) has only been reasoned about, not seen at midnight.
+
 ## v7.42 - WHERE, THEN WHAT YOU CARRY
 
 His order: "make a map selector that comes up when you choose to ascend, before the

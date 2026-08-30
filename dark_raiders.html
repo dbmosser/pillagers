@@ -1055,7 +1055,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.42';
+var VER='7.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3486,8 +3486,8 @@ var WEATHER=[
    line:'Partly cloudy. This will not hold.'},
   {id:'rain',name:'Rainy',view:0.90,noise:0.60,lights:1,rain:1,
    line:'Rain. It covers your noise, and theirs.'},
-  {id:'fog',name:'Foggy',view:0.60,noise:1,lights:0.85,rain:0,
-   line:'Fog bank. You will not see them coming.'},
+  {id:'fog',name:'Foggy',view:0.60,noise:1,lights:1,fog:1,rain:0,
+   line:'Limited visibility due to fog.'},
   {id:'blackout',name:'Blackout',view:1,noise:1,lights:0.18,rain:0,
    line:'Grid is down. Every lamp on the map is dead.'},
   {id:'storm',name:'Storming',view:0.80,noise:0.48,lights:0.55,rain:2,lightning:true,
@@ -3501,12 +3501,13 @@ var WEATHER=[
 // wx() therefore has to be able to return a state that is halfway between two
 // entries, because every vision, noise and lighting query in the game reads it
 // live and a snap would be a jump cut.
-var WXBLEND={id:'turning',name:'TURNING',view:1,noise:1,lights:1,rain:0,line:null};
+var WXBLEND={id:'turning',name:'TURNING',view:1,noise:1,lights:1,rain:0,fog:0,line:null};
 function wxMix(a,b,t){
   WXBLEND.view=a.view+(b.view-a.view)*t;
   WXBLEND.noise=a.noise+(b.noise-a.noise)*t;
   WXBLEND.lights=a.lights+(b.lights-a.lights)*t;
   WXBLEND.rain=a.rain+(b.rain-a.rain)*t;
+  WXBLEND.fog=(a.fog||0)+((b.fog||0)-(a.fog||0))*t;
   WXBLEND.lightning=(t<0.5?a.lightning:b.lightning);
   WXBLEND.id=(t<0.5?a.id:b.id);
   WXBLEND.name=(t<0.5?a.name:b.name);
@@ -17494,6 +17495,30 @@ wc.drawImage(fogC,0,0);
       wc.moveTo(rx,ry); wc.lineTo(rx-rl*0.28,ry+rl);
     }
     wc.stroke();
+  }
+  // v7.43, his order: "add an actual fog effect". Not a darkness, a presence: a
+  // flat haze plus a few banks drifting slowly across the screen, in screen space
+  // like the rain and deterministic from G.t, so no seed ever depends on a frame
+  // rate. Damped at night the same way rain is, because pale paint on a dark
+  // scene pops far harder than at noon. Blends in and out with weather turns
+  // because WX.fog rides WXBLEND like every other weather number.
+  var _fg=WX.fog||0;
+  if(_fg>0.01){
+    var _ft=(G.t||0)*0.05;
+    var _fl=(typeof tod==='function'&&tod())?tod().lights:0;
+    var _fa=_fg*(1-0.40*_fl);
+    wc.fillStyle='rgba(200,210,222,'+(0.09*_fa).toFixed(3)+')';
+    wc.fillRect(0,0,W,H);
+    for(var _fi=0;_fi<7;_fi++){
+      var _fx=((Math.sin(_fi*3.7+_ft*(0.6+_fi*0.11))*0.5+0.5)*(W+700))-350;
+      var _fy=((Math.sin(_fi*9.1+1.7+_ft*(0.45+_fi*0.07))*0.5+0.5)*(H+500))-250;
+      var _fr=340+_fi*55;
+      var _fgd=wc.createRadialGradient(_fx,_fy,_fr*0.15,_fx,_fy,_fr);
+      _fgd.addColorStop(0,'rgba(205,214,226,'+(0.11*_fa).toFixed(3)+')');
+      _fgd.addColorStop(1,'rgba(205,214,226,0)');
+      wc.fillStyle=_fgd;
+      wc.fillRect(_fx-_fr,_fy-_fr,_fr*2,_fr*2);
+    }
   }
   // THE SITE GOING UP. A hard white-out that ramps rather than snapping, so the
   // first frame of it does not read as a dropped frame.
