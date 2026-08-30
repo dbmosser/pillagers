@@ -25769,3 +25769,52 @@ screenshotted at each stage.
 Not verified: craft and hire share the pane rules with buy but hold different amounts, and
 I only looked at buy. If either of them is short enough to float or long enough to clip,
 the same two numbers will show it and I have not taken them.
+
+## v6.91 - dead code out, first batch
+
+He asked "is there other inert code that needs to be removed?" and I owed him an actual
+sweep rather than an opinion. The audit that answered it ran 45 agents: seven finders each
+hunting one class of dead code, then an adversarial pass whose only job was to REFUTE each
+candidate by finding a live reference. 28 survived. TWELVE WERE REFUTED and saved from
+deletion, which is the number worth keeping: a third of what looked dead was alive, and
+without the second pass I would have cut it out.
+
+REMOVED THIS BATCH, each confirmed at zero live references across both the game and
+tools/mkfixture.ps1:
+
+  syncTextSize and its four callers   There is no element with id textsizebtn anywhere in
+                                      the markup, so the function has always been a no-op
+                                      that four call sites politely invoked.
+  the textsizebtn handler             binds to that same absent id
+  the autoexbtn handler               same, for a button removed at v2.98
+  four if(false) blocks               the lost-rig death message for a rig system removed
+                                      at v5.83, an empty stub in the decal pass, the
+                                      "Next unlock" shop line, and the gun-slot picker in
+                                      renderAvatar that guns-as-belt-items replaced
+
+69 lines net. The two handlers are the interesting ones: both were already guarded with
+if(el), added at v2.98 precisely so their absence would not throw, and nobody went back to
+remove the bodies. A guard is not a deletion.
+
+THE if(false) BLOCKS WERE CUT BY MATCHING BRACES, not by anchoring on their last line,
+because an anchor that guesses where a block ends is exactly how the orphaned block earlier
+this month happened. The brace balance of the whole file is compared before and after and
+the script refuses to write if it moved: it held at 0.
+
+NOT REMOVED, DELIBERATELY: the LANDMARKS table. The audit called it dead and it is
+unreferenced, but it is not rot. It holds six hand authored landmark generators, a TOWN
+SQUARE with a monument and market stalls, a COLLAPSED TOWER, a CARGO YARD and three more,
+each with real geometry. Its own comment says it exists to answer "maps feel samey" and
+his verbatim "needs town centers", and it has never once run because the per map landmark
+arrays are named rectangles with no geometry and nothing ever calls build(). That is
+content to CONNECT, not delete, and doing it properly is its own build.
+
+Verified: parse PASS. Four maps at seed 4242 with the bag open, entity counts 86/87/58/72,
+drawErr null, __hud clean. All three endings through the outcome screen and back to the
+hub. Hub frames and stage renders. Settings opens and the stash renders, since both touch
+code this batch cut into.
+
+Not verified: the remaining 20 or so confirmed items, including three unreferenced markup
+ids, four rig branches, a dead CFG dial and five fixture hooks that reference symbols which
+no longer exist. They are all non user facing and come out in the next batch rather than in
+one sweep, because a large deletion is exactly where a silent break hides.

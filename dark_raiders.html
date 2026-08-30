@@ -1016,7 +1016,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.90';
+var VER='6.91';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14458,13 +14458,6 @@ silentExit:T.silentExit||0,
   // rather than a free upgrade.
   // v5.77: rigs are gone as a concept, so a death cannot strip one. Left as a
   // dead branch rather than deleted so the summary counter below keeps its shape.
-  if(false){
-    var lostRig=myRig();
-    G.lostRig=null;
-    lines.push('<span style="color:var(--rust)">'+lostRig.name+' is gone.'+
-      (P.rig==='none'?' You have no rig left, so you ascend next time with zero armour.'
-                     :(' Falling back to the '+myRig().name+'.'))+'</span>');
-  }
   // HAZARD PAY. Only on an extraction: signing for worse conditions and then
   // dying under them is simply a worse day, which is what makes it a bet rather
   // than a difficulty slider.
@@ -16295,7 +16288,6 @@ function render2D(dt){
     wc.globalCompositeOperation='source-over';
   }
   // decals + shells
-if(false){}
 if(G.map.story){
     var _st2=G.map.story;
     shadowE(_st2.x,_st2.y+2,10,4,.35);
@@ -23357,22 +23349,6 @@ try{ renderFreeKit(); }catch(_fk){}
   // v6.57: the shop gates nothing on XP now, so this line has nothing to report on
   // either branch. Hidden rather than emptied, so it takes no space in the column.
   if(_nl){ _nl.textContent=''; _nl.style.display='none'; }
-  if(false){
-    if(_nx){
-      var _nnm=(_nx.kind==='rig')?armorById(_nx.k).name
-        :(_nx.kind==='wep')?WEAPONS[_nx.k].name
-        :(_nx.kind==='pack')?('Backpack Tier '+(_nx.lvl+1))
-        :(ITEMS[_nx.k]?ITEMS[_nx.k].name:_nx.k);
-      var _gap=_nx.rep-P.rep;
-      _nl.textContent='Next unlock: '+_nnm+' at XP '+_nx.rep.toLocaleString()+
-        '.  '+_gap.toLocaleString()+' to go'+
-        (_sv>=_gap&&_sv>0?', and this stash covers it.':'.');
-      _nl.style.color=(_sv>=_gap&&_sv>0)?'var(--coolant)':'';
-    } else {
-      _nl.textContent='Everything the shop gates on XP is unlocked.';
-      _nl.style.color='';
-    }
-  }
   // NOTORIETY WAS A LIVE GATE WITH NO READOUT, v3.25. Same defect family as
   // reputation having no visible source, found by the same sweep.
   // It is earned by shooting someone who is not armed and by killing the
@@ -24571,10 +24547,7 @@ if(P.lastReport==='failed'||P.lastReport==='no drop'){
 // The text size setting he asked for alongside the flat lift. Cycles the five
 // scales; FS() caches are keyed by scale so every canvas string follows on the
 // next frame, and the raid picks it up live.
-function syncTextSize(){
-  var b=document.getElementById('textsizebtn');
-  if(b) b.textContent='Text size: '+Math.round(uiScale()*100)+'%';
-}
+
 function syncMapBtn(){
   var b=document.getElementById('mapbtn');
   if(b) b.textContent='Map: '+FIXED_MAPS[clamp(P.mapIx||0,0,FIXED_MAPS.length-1)].name;
@@ -25329,7 +25302,7 @@ function renderSettings(){
   document.getElementById('set_text').onclick=function(){
     var cur=UISCALES.indexOf(uiScale());
     P.uiScale=UISCALES[(cur+1)%UISCALES.length];
-    saveProfile(); syncTextSize(); renderSettings();
+    saveProfile(); renderSettings();
   };
   document.getElementById('set_music').onclick=function(){
     var cur=MUSIC_MODES.indexOf(musicMode());
@@ -25408,16 +25381,7 @@ document.getElementById('closesettings').onclick=function(){
 // tolerate a missing element rather than throwing at load and taking every
 // handler declared after them down with it. Settings, on the dev box under T,
 // owns both switches now and its own buttons are wired inside renderSettings.
-var _tsb=document.getElementById('textsizebtn');
-if(_tsb) _tsb.onclick=function(){
-  var cur=UISCALES.indexOf(uiScale());
-  P.uiScale=UISCALES[(cur+1)%UISCALES.length];
-  saveProfile(); syncTextSize();
-};
-var _aeb=document.getElementById('autoexbtn');
-if(_aeb) _aeb.onclick=function(){
-  P.autoExport=!P.autoExport; saveProfile(); syncAutoEx();
-};
+
 // APPEARANCE. Every cosmetic in the game, owned or not, with the requirement
 // spelled out on the locked ones. Clicking an owned tile wears it immediately.
 function cosSwatch(c){
@@ -25619,39 +25583,6 @@ function renderAvPicker(pickHost,host){
   // chosen on quick use 1 and 2 now. Left as a guard rather than nothing, so a stale
   // P._avSlot from an older profile cannot fall through into the rig code below.
   if(slot==='wep'||slot==='wep2'){ P._avSlot=null; box.innerHTML=''; return; }
-  if(false){
-    var two=(slot==='wep2');
-    var cur=two?(P.equippedSec||'none'):P.equipped;
-    var other=two?P.equipped:(P.equippedSec||'none');
-    var h='<div class="glab" style="margin-bottom:5px">'+(two?'GUN 2':'GUN 1')+'</div>';
-    // Gun two may be empty. Gun one may not: you always have your hands.
-    var list=(P.weapons||[]).slice();
-    if(two) list.unshift('none'); else list.push('fists');
-    list.forEach(function(gk){
-      var W2=(gk==='none')?null:WEAPONS[gk];
-      if(gk!=='none'&&!W2) return;
-      // The same gun cannot fill both slots, so it is offered in one at a time.
-      var taken=(gk!=='none'&&gk!=='fists'&&gk===other);
-      h+='<div class="avslot'+(taken?' lock':'')+'" data-wep="'+gk+'" data-two="'+(two?1:0)+'">'+
-         '<div class="avsic">'+(W2?'\u2694':'--')+'</div><div>'+
-         '<div class="avsval">'+escHtml(W2?W2.name:'Empty')+
-           (cur===gk?'   EQUIPPED':(taken?'   IN THE OTHER SLOT':''))+'</div>'+
-         '<div class="avslab">'+(W2?((W2.dmg*(W2.pellets||1))+' DMG   '+Math.round(W2.rng/10)+'M')
-                                  :'carry one gun, lighter and quieter')+'</div></div></div>';
-    });
-    box.innerHTML=h;
-    Array.prototype.forEach.call(box.querySelectorAll('[data-wep]'),function(el){
-      el.onclick=function(){
-        var gk=el.getAttribute('data-wep');
-        if(el.className.indexOf('lock')>=0){ try{ sfx('clank'); }catch(e){} return; }
-        if(el.getAttribute('data-two')==='1') P.equippedSec=(gk==='none')?'none':gk;
-        else P.equipped=gk;
-        saveProfile();
-        renderAvatar(hid,pid); try{ renderHub(); }catch(e){} try{ renderStage(); }catch(e){}
-      };
-    });
-    return;
-  }
   // THE RIG PICKER IS GONE, v5.89. v5.83 removed the BODY ARMOUR slot that
   // opened it and left this standing as unreachable code, saying it would come
   // back for it. Nothing reaches it now, and leaving it was a live hazard rather
@@ -25751,7 +25682,7 @@ loadProfile().then(function(){
   syncAutoEx();
   renderRoadmap();
   initBuildPicker();
-  syncTextSize();
+ 
   syncMapBtn();
   // THE TITLE COMES FIRST. showScreen('hub') still does all the work it always
   // did; it simply happens when he presses the button instead of at boot.
