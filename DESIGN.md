@@ -24300,3 +24300,46 @@ leftover c-suffix money and found none visible, but seventy strings is more than
 individually, so a rarely-shown line could still carry the old format. The dollar is a
 prefix on the number only; I did not touch the CREDITS caption under the stash wallet,
 which still spells the word out.
+
+## v6.56 - MY OPEN QUESTIONS TO HIM WERE ON A PLAYER SCREEN
+
+Found by sweeping every panel for leftover c-suffix money, which is not what I was
+looking for. The Mainframe's REWARDS tab carries a SECOND roadmap list, and it renders
+every non-DONE entry, which is the set of questions I wrote for HIM:
+
+  "Armour dies with you: the 900c rig prices out at 318c a raid. One word: PRICE stays,
+   PERMANENCE with wear, or INSURANCE buy-back?"
+  "LVL gates exactly one thing, a hair colour at level 4, and PROFICIENCY gates nothing
+   at all. One word: TROPHIES as-is, FOLD them into reputation, or TEETH..."
+
+Under a heading reading "What I am building next." That is development scaffolding on a
+screen any player reaches with two keys in a build we are shipping, and it carries two
+words that no longer exist in this game besides: the old c-suffix money, and
+"reputation" for XP.
+
+I CHECKED THIS TWICE BEFORE AND CALLED IT HIDDEN. Both times I looked at the copy inside
+the dev modal, which IS display:none, confirmed it was invisible, and stopped. I never
+asked whether anything ELSE drew the same data. My own notes carry the lesson about
+reading hidden DOM and I hit its inverse: proving one copy invisible says nothing about
+the other. The tell was there each time, a truly-visible element at 1783x15 that I read
+as a false positive from my own probe.
+
+BETA_HIDE_DEV already exists to keep developer surfaces out of a player build and
+already hides the dev station. It now hides this too, the list and its heading. The
+Rewards tab keeps everything that belongs to a player: the progress bar and the ten
+reward rows, both confirmed still rendering.
+
+And the last player-facing c-suffix money went with it, on the Racks tab: a Data Core is
+$520 on the shelf rather than 520c.
+
+Verified: parse PASS at v6.56; every panel swept for developer text and for c-suffix
+money with a visibility check that walks ancestors, both now reporting none; the Rewards
+tab still renders ten reward rows and its progress bar at 2,600 / 7,500; four maps
+86/87/58/72 entities and, at seed 4242, 246/193/152/216 containers; all three endings
+through the outcome screen to a drawn hub; hub, renderStage and the export builder; pin
+audit clean.
+
+Not verified: the roadmap is hidden rather than deleted, and it still renders into the
+dev modal when BETA_HIDE_DEV is off, which is correct but means the questions are one
+constant away from a player screen again. I swept the eleven station panels and the
+stash; a surface that only appears mid-raid was not part of this sweep.

@@ -548,7 +548,7 @@
       <div id="seasontext" style="position:absolute;inset:0;text-align:center;font-size:11px;line-height:16px;color:#120e0c;font-weight:700"></div>
     </div>
     <div class="plist" id="seasonlist" style="border:1px solid var(--steel-hi);flex:1;min-height:160px;overflow:auto"></div>
-    <div class="msub" style="margin-top:12px">What I am building next. In order, and it is the actual queue rather than a wish list.</div>
+    <div class="msub" id="roadmaphead" style="margin-top:12px">What I am building next. In order, and it is the actual queue rather than a wish list.</div>
     <div class="plist" id="roadmaplist" style="border:1px solid var(--steel-hi);max-height:170px;overflow:auto"></div>
   </div>
   <div class="tpane" id="opane_mf" style="display:none;flex-direction:column;flex:1;min-height:0">
@@ -960,7 +960,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.55';
+var VER='6.56';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21153,7 +21153,7 @@ function renderMainframe(){
     :'A friend sends you their exported run report, the same file Share runs makes. Name them, pick the file, and a pillager wearing their name, their favourite gun and their real habits joins your raids. Blue on the board.'; }
   if(sh2){ sh2.textContent=P.intel
     ?'Your next raid deploys with intel: every locked-room key and every elite, live on your map. One core, one raid.'
-    :('Spend a Data Core (520c on the shelf) and your next raid deploys knowing things: every locked-room key location and every elite, live on the M map. '+(P.stash.indexOf('core')>=0?'One is in the stash.':'None in the stash right now.')); }
+    :('Spend a Data Core ($520 on the shelf) and your next raid deploys knowing things: every locked-room key location and every elite, live on the M map. '+(P.stash.indexOf('core')>=0?'One is in the stash.':'None in the stash right now.')); }
 }
 function stashCounts(){
   var c={},i;
@@ -21453,6 +21453,15 @@ function renderSeason(){
     el.appendChild(row);
   });
   var rm=document.getElementById('roadmaplist'); rm.innerHTML='';
+  // v6.56: not in a player build. These rows are the open questions I am asking HIM,
+  // and they were showing on the Rewards tab of a shipping game.
+  var _rh=document.getElementById('roadmaphead');
+  if(BETA_HIDE_DEV){
+    rm.style.display='none';
+    if(_rh) _rh.style.display='none';
+    return;
+  }
+  rm.style.display=''; if(_rh) _rh.style.display='';
   ROADMAP.forEach(function(R){
     if(R[0]==='DONE') return;              // the board is what is coming, not a receipt
     var row=document.createElement('div'); row.className='row';
