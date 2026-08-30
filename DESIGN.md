@@ -25573,3 +25573,54 @@ and fires at the right moments, but the thing it is trying to fix is a habit, an
 next few runs can say whether it worked. Also unverified: I did not reproduce the indoor
 lamp before fixing it, so the count of zero is proof the rule holds now rather than proof
 of how often it used to break.
+
+## v6.87 - lightning, and the flash that had never once fired
+
+His note, four parts: he cannot see the flashes; a strike should light the whole map for a
+moment even indoors; it should telegraph with a circle and then land, with a chance of
+hitting him; and a strike that misses should sometimes leave something rare behind.
+
+WHY HE COULD NOT SEE THE FLASHES. G.lightning is initialised to 0 and decremented every
+frame, and NOTHING IN THE FILE EVER SET IT ABOVE ZERO. The entire flash renderer has been
+unreachable since the day it was written. That is the third feature this week that reads
+as finished and has never once run, after gun quality at v6.69 and the LANDMARKS table.
+The lesson is the same each time: a renderer is not evidence, only a measurement is.
+
+WHAT SHIPS. A storm now schedules a strike every five to thirteen seconds, somewhere
+between 180 and 800 units from the player, never on top of him, because a hazard you
+cannot react to is a dice roll rather than a decision. A ring marks the spot and a second
+ring closes inside it, so how long you have is something you can SEE rather than something
+you have to have learned. When it lands: the flash fires, anything inside 118 units takes
+62 damage, and that includes machines and pillagers, so a storm is a hazard for the whole
+map rather than a personal one.
+
+THE FLASH NOW REVEALS. His second part was the interesting one. The existing wash is drawn
+in screen space on top of everything, so it brightened the picture and changed nothing
+about what was HIDDEN: the fog sheet is what hides the map outside your sight cone. A
+flash now lifts that sheet, day and night branches both, so for a quarter of a second the
+room you are standing in and the street outside it are equally visible. It cuts both ways,
+which is the point and what the weather line has always promised.
+
+A MISS CAN PAY. Sixteen percent of strikes that hit nobody fuse something into the ground
+where they landed, drawn from the top of the loot table, tagged FULGURITE. It is the
+reason to walk toward a storm rather than away from it.
+
+Measured over 1600 frames of a forced storm: 396 frames showing a warning ring, 4 strikes
+landed, 84 frames of flash, 1 rare container left behind. Damage checked separately
+because the random strikes never happened to land on him: a strike centred on the player
+takes exactly 62, and one 900 units away takes 0.
+
+Both raid clocks call the strike tick, the live loop and the bot step, so a storm is the
+same hazard in a measurement as it is in his hands. strikeFind is a dial and is pinned in
+__pinDefaults in the same build that introduces it.
+
+Verified: parse PASS. Four maps at seed 4242 with the bag open, entity counts 86/87/58/72,
+drawErr null, __hud clean. All three endings through the outcome screen and back to the
+hub. Hub frames and stage render. Strike scheduling, warning rings, flash frames, hit
+damage, miss damage and the rare drop all measured as above.
+
+Not verified: I could not screenshot the ring. The browser pane timed out on three
+attempts at this canvas size, so every figure above is geometric rather than visual, and
+whether the ring reads clearly against a storming sky is exactly the kind of thing my
+measurements cannot answer. That is the same blind spot that let the ascend dialog pass a
+clean audit while looking terrible, so it is worth him glancing at before I call it done.
