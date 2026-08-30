@@ -24220,3 +24220,41 @@ kill them to get it, that is a real change to what a fighting run pays and it is
 unmeasured. I also did not re-check whether an AI holding a scattergun changes the
 difficulty of a close fight; the carbine and scattergun were chosen over the LMG to keep
 that shift small, but small is not zero and I have not measured it.
+
+## v6.54 - THE UNDERCROFT HAS PEOPLE IN IT
+
+His note: "make some other pillagers hanging out in the undercroft, one next to every
+screen entry (wirt, stash, etc), and then a few spread around randomly in groups of 2-4
+chatting. Every one of them should look different and unique."
+
+Built out of what was already there rather than as a new system. drawOp is the same
+figure drawer the raid uses and it already takes a coat colour, and IDENTITIES already
+holds the pillagers whose tags appear on the raid board, each with its own coat. So the
+crowd IS those people, standing about between raids, and no two share a name or a coat.
+
+Fifteen of them: one beside each of the six stations, offset to the side and below so
+nobody stands on a post or under its floating name, and nine more in three groups of
+three, two and four, turned inward so a group reads as a conversation. Idle motion is a
+slow bob, and the ones in a group shift their stance now and then, which is enough to
+stop them reading as furniture at zero cost.
+
+DETERMINISTIC, NOT RANDOM. The crowd is built from the identity list in order, so the
+Undercroft is the same room every time you come down instead of reshuffling its
+population behind your back.
+
+THEY ARE SCENERY ON PURPOSE. No collision, no interaction, no state. Walking is
+unaffected, measured at 224px of travel on a held W, and the stations still fire.
+Anything more would be a system, and he asked for the room to feel occupied.
+
+Verified: parse PASS at v6.54; fifteen figures with fifteen unique names and fifteen
+unique coats, six beside stations and nine in groups, read back off the live hub object;
+the room captured at 1080p; walking and station interaction driven after the change;
+four maps 86/87/58/72 entities and, at seed 4242, 246/193/152/216 containers; all three
+endings through the outcome screen to a drawn hub; hub, renderStage and the export
+builder; pin audit clean.
+
+Not verified: they are drawn with the same figure as a raid pillager, which includes a
+weapon in hand, and I did not add idle animation beyond the bob and the stance shift, so
+nobody walks around. The group positions are hand-placed against the current room, so
+moving a wall or a station later will not move them with it. I did not check how the
+crowd looks at the smallest supported window, only at 1080p.
