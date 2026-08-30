@@ -25522,3 +25522,54 @@ the immunity now blocks a second stun, but whether seven seconds is the right ga
 question and only he can answer it. Also not verified on real hardware: everything
 controller-related is still driven by a synthetic pad object, and he has already caught me
 once shipping controller work that passed synthetically and failed in his hands.
+
+## v6.86 - his run 79, read properly
+
+REAL TELEMETRY, and the first thing in it is good news: run 79 carries
+wep:Gold Marksman Rifle(field). The gold tier from v6.69 is live in his hands and he
+found one, which also confirms the whole gun quality system is reachable now.
+
+The rest of that run is the problem. He died to killer:timer at 543 seconds of a 540
+second raid, twenty five metres from a way out, with beacon 0 called and 4 MISSED and
+aiExtracted:4. So four extraction ships came and left without him, every one of them
+called by another pillager, and he called none himself.
+
+I CHECKED THE OBVIOUS SUSPECT FIRST AND IT WAS INNOCENT. perCont read 15c, which looks
+like the loot is worthless. Measured across all four maps: crates pay about 90, lockers
+322 to 466, safes 1,564 to 1,950, caches 3,684 to 5,041 and the jackpot 6,700 to 17,100,
+for an average of 554 to 892 a container. The loot is fine. He simply ended the run
+carrying one item, so haul divided by containers opened says nothing about either.
+
+THE WARNINGS WERE NOT MISSING EITHER. They fire every minute from five down, plus thirty
+seconds, and they had all told him the time. What none of them told him is WHERE the way
+out was or WHAT to do at it, which is the only part that would have saved that run. From
+three minutes the countdown now names the nearest extraction, its bearing and its
+distance, and the verb: "3 minutes left. Nearest way out 189m south. Stand in it and hold
+E." Standing in one already gets a different line, because that is a different
+instruction. One reader builds it, so the thirty second line and the minute lines can
+never describe different exits.
+
+A LAMP POST INSIDE A HOUSE, his note. The outdoor post loop picks its spot with freeSpot,
+which only avoids WALLS, and a building's interior is free space. So a post could be
+planted in the middle of a room and then pass the "must stand beside something" test by
+bolting itself to the inside face of that room's own wall. Buildings already get their own
+lights in the pass directly above. Measured after: 153 posts across four maps, none of
+them inside a building.
+
+THE TWO PHASE HEAL HE ASKED FOR ALREADY EXISTED, and I verified it on screen before
+changing anything rather than building it twice. Pressing heal gives a horizontal bar
+above the head with "Applying Bandage..." for 1.5 seconds, then a shrinking ring with the
+seconds remaining while the health climbs. Both phases, both visible, exactly as he
+described wanting them. The apply bar is now 48 by 8 instead of 34 by 6 with an outline,
+because I could only read it comfortably at 3x zoom and he plays at 1.
+
+Verified: parse PASS. Four maps at seed 4242 with the bag open, entity counts 86/87/58/72,
+drawErr null, __hud clean. All three endings through the outcome screen and back to the
+hub. Hub frames and stage render. Container values, lamp placement and the three minute
+warning all measured as above; both heal phases screenshotted.
+
+Not verified: whether naming the exit actually changes his behaviour. The line is correct
+and fires at the right moments, but the thing it is trying to fix is a habit, and only his
+next few runs can say whether it worked. Also unverified: I did not reproduce the indoor
+lamp before fixing it, so the count of zero is proof the rule holds now rather than proof
+of how often it used to break.

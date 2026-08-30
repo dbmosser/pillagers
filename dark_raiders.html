@@ -1005,7 +1005,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.85';
+var VER='6.86';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7560,6 +7560,14 @@ while(caches.length<3) placeCache(WORLD_W*rr(),WORLD_H*rr(),'MERIDIAN CACHE');
     var wantL=Math.round(11*AREA),tries2=0;
     while(lights.length<wantL+map.buildings.length*1.5&&tries2++<wantL*60){
       var lp2=freeSpot(map,30);
+      // v6.86, his note. Outdoors means outdoors: a spot inside any building is rejected
+      // outright, whatever wall it could find to lean on.
+      var _inB=false;
+      for(var _bq=0;_bq<map.buildings.length;_bq++){
+        var _BB=map.buildings[_bq];
+        if(lp2.x>_BB.x&&lp2.x<_BB.x+_BB.w&&lp2.y>_BB.y&&lp2.y<_BB.y+_BB.h){ _inB=true; break; }
+      }
+      if(_inB) continue;
       // A post belongs beside something. Find the nearest wall within 150 and
       // sit against it; if there is nothing out here, this is not a place a
       // lamp would ever have been installed, so skip it.
@@ -16301,10 +16309,12 @@ if(!sc.seen) continue;
   // both mean "committed, wait".
   if(p.prep){
     var _pf=clamp(p.prep.t/p.prep.max,0,1);
-    wc.fillStyle='rgba(6,9,13,.78)';
-    wc.fillRect(p.x-17,p.y-40,34,6);
+    wc.fillStyle='rgba(6,9,13,.85)';
+    wc.fillRect(p.x-24,p.y-42,48,8);
+    wc.strokeStyle='rgba(255,255,255,.22)'; wc.lineWidth=1;
+    wc.strokeRect(p.x-23.5,p.y-41.5,47,7);
     wc.fillStyle=p.prep.kind==='armor'?'#5aa9e6':'#6fe0a0';
-    wc.fillRect(p.x-16,p.y-39,32*_pf,4);
+    wc.fillRect(p.x-23,p.y-41,46*_pf,6);
   }
   // marked ring
   if(G.marked>0){
@@ -21016,6 +21026,31 @@ function askConfirm(q,sub,onYes){
   ASKYES=onYes||null;
   openModal('askmodal');
 }
+// v6.86: WHERE THE WAY OUT IS, in words. His run 79 died to the clock twenty five metres
+// from an extraction he never called, having watched four ships leave. The countdown knew
+// the time and never said the thing he needed.
+function nearestOut(){
+  if(!G||!G.zones||!G.zones.length) return null;
+  var p=G.player,best=null,bd=1e9;
+  for(var i=0;i<G.zones.length;i++){
+    var z=G.zones[i],d=dist(p,z);
+    if(d<bd){ bd=d; best=z; }
+  }
+  return best?{z:best,d:bd}:null;
+}
+function compass8(dx,dy){
+  var a=Math.atan2(dy,dx)*180/Math.PI; if(a<0) a+=360;
+  return ['east','south east','south','south west','west','north west','north','north east'][Math.round(a/45)%8];
+}
+function outHint(urgent){
+  var no=nearestOut();
+  if(!no) return urgent?'The clock kills you.':'';
+  var far=metres(no.d);
+  var dir=compass8(no.z.x-G.player.x,no.z.y-G.player.y);
+  // Standing in it already is a different instruction from walking to it.
+  if(no.d<no.z.r) return 'You are standing in the way out. Hold E to call it.';
+  return 'Nearest way out '+far+'m '+dir+'. Stand in it and hold E.';
+}
 // A place already called "THE something" brings its own article.
 function placeName(n){
   n=String(n).toLowerCase();
@@ -21434,8 +21469,11 @@ function loop(ts){
     if(G.lastWarn===undefined) G.lastWarn=-1;
     if(tlNow!==G.lastWarn){
       var warned=false;
-      if(tlNow===30){ say('THIRTY SECONDS. The clock kills you.'); warned=true; }
-      else if(tlNow>0&&tlNow<=300&&tlNow%60===0){ say((tlNow/60)+' minute'+(tlNow===60?'':'s')+' left.'); warned=true; }
+      if(tlNow===30){ say('THIRTY SECONDS. '+outHint(1)); warned=true; }
+      else if(tlNow>0&&tlNow<=300&&tlNow%60===0){
+        say((tlNow/60)+' minute'+(tlNow===60?'':'s')+' left.'+(tlNow<=180?('  '+outHint(0)):''));
+        warned=true;
+      }
       if(warned){ blip('alarm'); }
       G.lastWarn=tlNow;
     }
