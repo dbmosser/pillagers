@@ -27145,3 +27145,57 @@ drawErr null. Three endings with headline assertions, hub and stage render.
 Not verified: that this matches what HIS eyes saw (the mechanism fits every word of the
 note, but he reported a visual and I diagnosed a buffer); memory cost of 70 extra
 decals, which is negligible by construction.
+
+## v7.34 - THE LAST POUR, rebuilt to his spec
+
+His orders, all landed live while I built: two substances only; no cooldowns; every dose
+stacks and keeps intensifying; nearly unplayable around ten; combinable; the effects
+work in the Undercroft; dying flushes the blood and resets the timers; drunk hands are
+slow hands - pulls, loots and reloads take longer; Green Haze's blur and trails fold
+into LSD; the button says INGEST.
+
+AND HIS BUG REPORT, which was the important one: "the game itself needs to be blurry,
+double vision, unpredictable effects, etc -- not just the huds." He was exactly right,
+and the cause was architectural: the screen is TWO stacked canvases, the world on one
+and the HUD on the other, and v7.24's pass self-drew only the HUD canvas, so every warp
+bent the panels while the world underneath stayed sober. The rework warps the WORLD
+canvas at full strength, the HUD at half, and keeps the colour washes on the overlay
+where they cover everything.
+
+The two substances:
+  LIQUOR  $300, 4 min a glass. Double vision then triple - two frame ghosts on opposite
+          orbits that widen with every glass - waves across the whole screen, a stagger
+          that veers your legs harder and more often per glass, and from the fourth
+          glass a blur that thickens. Slow hands with everything else.
+  BLOTTER $520, 5 min a tab. Researched against the phenomenology (tracers, breathing,
+          drifting, colour shifting) plus the fake-glitch tradition: a feedback tracer
+          buffer that smears the last frame under the next, the whole world through a
+          spinning hue that accelerates per tab, rainbow fringing, the room breathing,
+          vertical and horizontal drift, orbiting neon tint blobs rolling hue to hue,
+          torn-slice glitches, and past three tabs occasional full-frame inversion
+          flashes. Every anomaly is scheduled off the buzz clock through sine hashes -
+          the seeded gameplay stream is never touched, so no dose can desync a seed.
+
+Doses are ENTRIES now, each with its own clock; intensity is the count, uncapped in
+purchase and curve-capped around twelve where the maths saturates. buzzSlow() is
+1 + 0.09 per dose of anything, applied to the reload timer, the loot progress and the
+extraction pull. Death empties the blood and the death screen says so once. Old saves
+migrate: rotgut and ale become liquor, blotter becomes lsd, powder and haze evaporate,
+cooldowns are deleted.
+
+Verified: parse PASS v7.34, all through real paths in the fixture: two rows at the bar,
+five doses stacked through real INGEST clicks with immediate re-pours and live x-count
+badges; the raid screenshot shows the WORLD hue-flipped and washed, not just the HUD;
+the Undercroft screenshot shows the floor tripping with ghosted crowd and the update
+card itself bending; reload with five doses measured 2972.5ms against a 2050 base -
+the 1.45x is exact to the decimal; the extraction pull measured 43 frames sober and 62
+drugged, again exactly 1.45x; dying with doses emptied the blood and printed the line;
+the old-format profile round-tripped through a real save and reload into liquor and lsd
+with powder, haze and every cooldown gone. Four maps at seed 4242, entities exactly
+86/87/58/72, drawErr null. Three endings with headline assertions, hub and stage render.
+
+Not verified: how any of it FEELS at speed (the fixture pane suspends animation frames,
+so the motion of the trip - trails, breathing, glitch cadence - ran only frame by
+frame); performance at ten-plus doses on his machine (the draw count grows with doses
+by design, and "nearly unplayable" is allowed to also mean the framerate); the loot
+slow through a real crate hold (same divisor as the pull, which measured exact).

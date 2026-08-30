@@ -89,6 +89,8 @@ window.__movers={seekPoint:seekPoint,navSeek:navSeek,mkSentry:mkSentry,mkRaider:
 window.__newRaid=function(){ G=buildRaid(true); return G; };
 window.__hub=function(){ return HB; };
 window.__P=function(){ return P; };
+window.__buzzFx=function(){ drawBuzzFx(); };
+window.__buzzT=function(dt){ tickBuzz(dt===undefined?0.033:dt); };
 // v6.19: fire a station's REAL act, the same function its key press calls.
 // __station() with no arguments lists what is there. Without this, a probe can only
 // call the modal openers directly, which skips the station wiring, and the

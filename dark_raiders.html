@@ -1053,7 +1053,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.33';
+var VER='7.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1064,10 +1064,10 @@ var VER='7.33';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='7.30';
+var WHATSNEW_VER='7.34';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
-  'THE LAST POUR IS OPEN. A bar in the Undercroft. What you drink rides up the lift with you.',
+  'THE LAST POUR IS OPEN. Liquor and acid, no cutoff, every dose stacks, dying flushes it.',
   'SUPERHOT IS A TRUE FREEZE NOW. No input, no time. Backtick flips it on and off anywhere.',
   'MINUS AND EQUALS RESIZE THE WHOLE HUD, everywhere, and it sticks.',
   'THE BAG OPENS BESIDE THE BELT, belt keys drag onto each other and swap, and clicking the belt no longer fires your gun.',
@@ -1552,6 +1552,15 @@ function loadProfile(){
 if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={};
 if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
 if(P.cosHat==='pigtails'){ P.cosHat='none'; P.cosCut='pigtails'; }  // v7.26 migration
+if(P.buzzCd) delete P.buzzCd;                                       // v7.34: no cooldowns
+if(P.buzz&&P.buzz.length){                                          // v7.34: two substances
+  for(var _bm=P.buzz.length-1;_bm>=0;_bm--){
+    var _bz=P.buzz[_bm];
+    if(_bz.id==='rotgut'||_bz.id==='ale'){ _bz.id='liquor'; _bz.tag='drunk'; }
+    else if(_bz.id==='blotter'){ _bz.id='lsd'; _bz.tag='lsd'; }
+    else if(_bz.tag!=='drunk'&&_bz.tag!=='lsd') P.buzz.splice(_bm,1);
+  }
+}
 // v6.30: the counters cannot be negative or non-numeric. A damaged save carrying
 // negative credits used to load and print "-5,000c" in the Requisition header. It
 // was never exploitable, because every spend re-checks affordability, but it is a
@@ -10507,7 +10516,7 @@ function tryExtractTick(dt,wantCall){
         // floor", which is the whole difference between the two cases.
         z.pullFloor=p.downed?1:0;
       }
-      z.pullT+=dt;
+      z.pullT+=dt/buzzSlow();
       // The hold itself has a voice, rising with progress, so letting go early
       // is something you HEAR rather than something you notice afterwards.
       z.boardT=(z.boardT||0)+dt;
@@ -11251,13 +11260,14 @@ if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.s
 
   if(mg>0){
     var ox=p.x,oy=p.y;
-    if(!G.sim&&buzzPow('drunk')>0){
+    if(!G.sim&&buzzDoses('drunk')>0){
+      var _dzN=Math.min(buzzDoses('drunk'),12);
       if(G._veerNext===undefined) G._veerNext=rnd(2,5);
       G._veerNext-=dt;
       if(G._veerNext<=0){
-        G._veerT=0.55*Math.min(1.5,buzzPow('drunk'));
-        G._veerA=rnd(0.9,1.9)*(rnd(0,2)<1?-1:1);
-        G._veerNext=rnd(4,8);
+        G._veerT=0.4+0.1*_dzN;
+        G._veerA=rnd(0.6,0.9+0.13*_dzN)*(rnd(0,2)<1?-1:1);
+        G._veerNext=rnd(0.9,Math.max(1.4,7-_dzN*0.55));
       }
       if((G._veerT||0)>0){
         G._veerT-=dt;
@@ -11265,7 +11275,6 @@ if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.s
         var _vnx=mx*_vca-my*_vsa; my=mx*_vsa+my*_vca; mx=_vnx;
       }
     }
-    if(!G.sim&&buzzPow('haze')>0) spd*=0.9;
     p.x+=(mx/mg)*spd*ana*dt; p.y+=(my/mg)*spd*ana*dt; p.bob+=dt*(sprint?15:9); p.moving=true;
     p.noiseAcc=(p.noiseAcc||0)+dt;
     // wading defeats crouch entirely: splashing is loud whatever you do
@@ -11325,12 +11334,12 @@ if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.s
       p.ammo+=take; p.reserve-=take; say('Reloaded');
     }
   }
-  if(keys['KeyR']&&p.reloading<=0&&p.ammo<p.wep.mag&&p.reserve>0){ p.reloading=p.wep.reload; T.reloads++; }
+  if(keys['KeyR']&&p.reloading<=0&&p.ammo<p.wep.mag&&p.reserve>0){ p.reloading=p.wep.reload*buzzSlow(); T.reloads++; }
   // HOLDING THE TRIGGER ON AN EMPTY MAGAZINE RELOADS IT, v5.44, his note. The
   // bot has done this since it was written; the player had to let go and press
   // R. Held only, so a tap on an empty gun still does nothing.
   if(mouse.down&&p.reloading<=0&&p.wep.mag>0&&p.ammo<=0&&p.reserve>0&&!p.downed&&p.jam<=0){
-    p.reloading=p.wep.reload; T.reloads++;
+    p.reloading=p.wep.reload*buzzSlow(); T.reloads++;
     if(!G.sim) say('Reloading.');
   }
 
@@ -11732,7 +11741,7 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
         G.searching=near;
         if(!G.sim&&(near.prog||0)>0) say('Resuming, '+Math.round(100*near.prog/near.time)+'% done.');
       }
-      near.prog=(near.prog||0)+dt;
+      near.prog=(near.prog||0)+dt/buzzSlow();
       // STAGED PULLS, v1.61. His note: "looting feels so uninspired, how can we make it
       // more interesting???" It was one hold, one lump of loot, about twenty one times a
       // raid, with no decision anywhere in it. Items now come out one at a time as the
@@ -14739,6 +14748,10 @@ var _cdone=contractExtract(G.bag,haul);
         ' that you had in your loadout before choosing the freebie kit '+(_kb.length===1?'has':'have')+' been restored.</span>');
     }
     P.kitBeforeFree=null;
+  }
+  if(how==='dead'&&P.buzz&&P.buzz.length){
+    P.buzz.length=0;
+    lines.push('<span style="color:var(--coolant)">Whatever was in your blood went with you.</span>');
   }
   var acc=T.shots?Math.round(T.hits/T.shots*100):0;
   if(_mfLine) lines.push(_mfLine);
@@ -17946,50 +17959,128 @@ function bar(x,y,w,h,f,c,bg){
   ctx.fillStyle=c; ctx.fillRect(x,y,w*clamp(f,0,1),h);
   ctx.strokeStyle='rgba(127,146,216,.30)'; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,w-1,h-1);
 }
-function drawBuzzFx(){
-  if(!G||G.sim||!P.buzz||!P.buzz.length) return;
-  var t=(G.t||0), cvs=ctx.canvas, RW=cvs.width, RH=cvs.height;
-  var dr=Math.min(buzzPow('drunk'),1.5), ac=Math.min(buzzPow('lsd'),1.5),
-      ck=Math.min(buzzPow('coke'),1.5), hz=Math.min(buzzPow('haze'),1.5);
-  ctx.save();
-  ctx.setTransform(1,0,0,1,0,0);
+var BUZZTR=null,BUZZTRC=null;
+function buzzWarp(c2,cnv,t,dr,ac){
+  // the geometric passes, applied to ONE canvas in raw pixels
+  var RW=cnv.width,RH=cnv.height;
+  c2.save(); c2.setTransform(1,0,0,1,0,0);
   if(dr>0){
-    ctx.globalAlpha=0.34*Math.min(1,dr);
-    ctx.drawImage(cvs,Math.sin(t*1.7)*16*dr,Math.cos(t*1.3)*10*dr);
-    ctx.globalAlpha=1;
-    var bh=Math.ceil(RH/5);
-    for(var b=0;b<5;b++)
-      ctx.drawImage(cvs,0,b*bh,RW,bh,Math.sin(t*2.1+b*1.7)*11*dr,b*bh,RW,bh);
-  }
-  if(hz>0){
-    ctx.globalAlpha=0.55*Math.min(1,hz);
-    try{ ctx.filter='blur(3px)'; ctx.drawImage(cvs,0,0); ctx.filter='none'; }catch(_e){}
-    ctx.globalAlpha=1;
-    ctx.fillStyle='rgba(90,160,90,'+(0.10*hz).toFixed(3)+')';
-    ctx.fillRect(0,0,RW,RH);
+    // double vision, then triple: two ghosts on opposite orbits, wider every glass
+    var gA=Math.min(0.20+0.035*dr,0.48), gR=6+5*dr;
+    c2.globalAlpha=gA;
+    c2.drawImage(cnv,Math.sin(t*1.6)*gR,Math.cos(t*1.2)*gR*0.6);
+    if(dr>=2){
+      c2.globalAlpha=gA*0.8;
+      c2.drawImage(cnv,-Math.sin(t*1.35)*gR*0.9,-Math.cos(t*1.05)*gR*0.5);
+    }
+    c2.globalAlpha=1;
+    // waves across the whole screen
+    var bands=6+Math.min(dr,6),bh=Math.ceil(RH/bands);
+    for(var b=0;b<bands;b++)
+      c2.drawImage(cnv,0,b*bh,RW,bh,Math.sin(t*(1.5+0.12*dr)+b*1.4)*(4+3.2*dr),b*bh,RW,bh);
+    // the blur comes on with the fourth glass and thickens
+    if(dr>=4){
+      try{
+        c2.globalAlpha=Math.min(0.25+0.05*dr,0.6);
+        c2.filter='blur('+Math.min(1+0.35*dr,6).toFixed(1)+'px)';
+        c2.drawImage(cnv,0,0); c2.filter='none'; c2.globalAlpha=1;
+      }catch(_e){ c2.globalAlpha=1; }
+    }
   }
   if(ac>0){
-    ctx.globalAlpha=0.55*Math.min(1,ac);
+    // the whole world through a spinning hue, harder and faster per tab
+    c2.globalAlpha=Math.min(0.28+0.055*ac,0.85);
     try{
-      ctx.filter='hue-rotate('+Math.round((t*40)%360)+'deg) saturate(1.7)';
-      ctx.drawImage(cvs,0,0);
-      ctx.filter='none';
-    }catch(_e){}
-    ctx.globalAlpha=1;
-    var bh2=Math.ceil(RH/7);
-    for(var b2=0;b2<7;b2++)
-      ctx.drawImage(cvs,0,b2*bh2,RW,bh2,Math.sin(t*1.2+b2*0.9)*17*ac,b2*bh2,RW,bh2);
+      c2.filter='hue-rotate('+Math.round((t*(30+22*ac))%360)+'deg) saturate('+(1.4+0.22*ac).toFixed(2)+')';
+      c2.drawImage(cnv,0,0); c2.filter='none';
+    }catch(_e2){}
+    c2.globalAlpha=1;
+    // rainbow fringing: two additive passes through opposing hues, offset apart
+    if(ac>=2){
+      try{
+        c2.globalCompositeOperation='lighter';
+        c2.globalAlpha=Math.min(0.05+0.018*ac,0.2);
+        c2.filter='hue-rotate(120deg)'; c2.drawImage(cnv,2+ac*0.8,0);
+        c2.filter='hue-rotate(240deg)'; c2.drawImage(cnv,-(2+ac*0.8),0);
+        c2.filter='none';
+      }catch(_e3){}
+      c2.globalCompositeOperation='source-over'; c2.globalAlpha=1;
+    }
+    // breathing: the room swells and shrinks
+    var brA=1+Math.sin(t*(0.7+0.08*ac))*0.006*Math.min(ac,10);
+    c2.globalAlpha=0.5;
+    c2.drawImage(cnv,RW/2-RW*brA/2,RH/2-RH*brA/2,RW*brA,RH*brA);
+    c2.globalAlpha=1;
+    // vertical drift on top of the horizontal, so straight lines stop being straight
+    var vb=Math.ceil(RW/8);
+    for(var vx=0;vx<8;vx++)
+      c2.drawImage(cnv,vx*vb,0,vb,RH,vx*vb,Math.sin(t*1.1+vx*0.9)*(2.5+2.0*ac),vb,RH);
+    // THE GLITCHES: slices of the frame torn sideways. Scheduled by sine hash of the
+    // clock, so the seeded gameplay stream is never touched and no dose desyncs a seed.
+    var gl=Math.sin(t*3.1)*Math.sin(t*4.7)*Math.sin(t*1.9);
+    if(gl>Math.max(0.5,0.96-0.045*ac)){
+      var nsl=2+Math.min(ac,9);
+      for(var sl=0;sl<nsl;sl++){
+        var sy=(((Math.sin(t*13.7+sl*5.3)+1)/2)*RH)|0;
+        var sh=(8+((Math.sin(t*7.9+sl*3.1)+1)/2)*44)|0;
+        c2.drawImage(cnv,0,sy,RW,sh,Math.sin(t*11.3+sl*2.7)*(18+8*ac),sy,RW,sh);
+      }
+    }
+    // and past three tabs, once in a while the world flashes inside out
+    if(ac>=3&&Math.sin(t*0.9)*Math.sin(t*2.3)>0.985){
+      try{
+        c2.globalAlpha=0.55; c2.filter='invert(1) hue-rotate('+Math.round((t*90)%360)+'deg)';
+        c2.drawImage(cnv,0,0); c2.filter='none'; c2.globalAlpha=1;
+      }catch(_e4){ c2.globalAlpha=1; }
+    }
   }
-  if(ck>0){
-    var beat=(t*1.39)%1;
-    var th=(beat<0.12||(beat>0.28&&beat<0.4))?1:0;
-    var vg=(0.24+0.26*th)*Math.min(1,ck);
-    var g=ctx.createRadialGradient(RW/2,RH/2,RH*0.30,RW/2,RH/2,RH*0.72);
-    g.addColorStop(0,'rgba(0,0,0,0)');
-    g.addColorStop(1,'rgba(24,0,0,'+vg.toFixed(3)+')');
-    ctx.fillStyle=g; ctx.fillRect(0,0,RW,RH);
+  c2.restore();
+}
+function drawBuzzFx(){
+  if(G&&G.sim) return;
+  if(typeof P==='undefined'||!P||!P.buzz||!P.buzz.length) return;
+  var t=BUZZT;
+  var dr=Math.min(buzzDoses('drunk'),14), ac=Math.min(buzzDoses('lsd'),14);
+  if(!dr&&!ac) return;
+  var wcv=wc.canvas, ocv=ctx.canvas;
+  // TRACERS first: last frame's finished image smeared under this one, feeding back on
+  // itself, longer with every tab. This is the trail the eye reports.
+  if(ac>0){
+    if(!BUZZTR){ BUZZTR=document.createElement('canvas'); BUZZTRC=BUZZTR.getContext('2d'); }
+    if(BUZZTR.width!==wcv.width||BUZZTR.height!==wcv.height){ BUZZTR.width=wcv.width; BUZZTR.height=wcv.height; }
+    wc.save(); wc.setTransform(1,0,0,1,0,0);
+    wc.globalAlpha=Math.min(0.10+0.05*ac,0.6);
+    wc.drawImage(BUZZTR,0,0);
+    wc.globalAlpha=1; wc.restore();
+  }
+  // THE WORLD ITSELF warps: his report was that only the HUD moved. Both layers get the
+  // geometry now, the world at full strength and the HUD at half, so panels sway a
+  // little while the ground properly misbehaves.
+  buzzWarp(wc,wcv,t,dr,ac);
+  buzzWarp(ctx,ocv,t*1.13+0.7,dr*0.5,ac*0.4);
+  // the colour washes live on the overlay so they sit over EVERYTHING
+  ctx.save(); ctx.setTransform(1,0,0,1,0,0);
+  var RW=ocv.width,RH=ocv.height;
+  if(ac>0){
+    ctx.globalCompositeOperation='overlay';
+    var nb=Math.min(2+ac,7);
+    for(var tb=0;tb<nb;tb++){
+      var _hx=RW/2+Math.sin(t*0.5+tb*2.1)*RW*0.36;
+      var _hy=RH/2+Math.cos(t*0.4+tb*1.7)*RH*0.36;
+      var hue=Math.round((t*(50+8*ac)+tb*77)%360);
+      var g2=ctx.createRadialGradient(_hx,_hy,0,_hx,_hy,RH*(0.22+0.03*ac));
+      g2.addColorStop(0,'hsla('+hue+',100%,60%,'+Math.min(0.10+0.028*ac,0.42).toFixed(2)+')');
+      g2.addColorStop(1,'hsla('+hue+',100%,60%,0)');
+      ctx.fillStyle=g2; ctx.fillRect(0,0,RW,RH);
+    }
+    ctx.globalCompositeOperation='source-over';
   }
   ctx.restore();
+  if(ac>0){
+    BUZZTRC.setTransform(1,0,0,1,0,0);
+    BUZZTRC.clearRect(0,0,BUZZTR.width,BUZZTR.height);
+    BUZZTRC.drawImage(wcv,0,0);
+  }
 }
 function drawHUD(){
   var p=G.player,T=G.tel,i;
@@ -18272,10 +18363,13 @@ _tgt=G.active; _lbl='EXTRACTION';
     var MW=(G.wx||WEATHER[0]), MT=tod(), rows=[], _clines=[];
     var _hv=0; for(var _hq=0;_hq<G.bag.length;_hq++) _hv+=ival(G.bag[_hq]);
     rows.push({k:'CARRYING',v:'$'+_hv.toLocaleString(),c:'#ffc04a',vc:'#e8f0f6'});
-    var _bzB=P.buzz||[];
-    for(var _bq=0;_bq<_bzB.length;_bq++){
-      var _bzo=boozeById(_bzB[_bq].id);
-      rows.push({k:(_bzo?_bzo.name.toUpperCase():'BUZZ'),v:fmtMS(_bzB[_bq].t)+' left',c:'#d98aff'});
+    var _bzTags=[['drunk','LIQUOR'],['lsd','ACID']];
+    for(var _bq=0;_bq<_bzTags.length;_bq++){
+      var _bn=buzzDoses(_bzTags[_bq][0]);
+      if(!_bn) continue;
+      var _bt=0,_bB=P.buzz||[];
+      for(var _bw=0;_bw<_bB.length;_bw++) if(_bB[_bw].tag===_bzTags[_bq][0]) _bt=Math.max(_bt,_bB[_bw].t);
+      rows.push({k:_bzTags[_bq][1]+(_bn>1?(' \u00d7'+_bn):''),v:fmtMS(_bt)+' left',c:'#d98aff'});
     }
     var wv=[];
     if(MW.view!==1) wv.push('sight '+(MW.view<1?'-':'+')+Math.round(Math.abs(1-MW.view)*100)+'%');
@@ -21794,7 +21888,7 @@ function loop(ts){
   tickZoom(dt);
   pollPad();
   if(state==='hub'){
-    if(HB&&wc&&W>0){ tickBuzz(dt); updateHubWorld(dt); drawHubWorld(dt); }
+    if(HB&&wc&&W>0){ tickBuzz(dt); updateHubWorld(dt); drawHubWorld(dt); drawBuzzFx(); }
     return;
   }
   if(state!=='raid'||!G||G.sim) return;
@@ -22583,87 +22677,68 @@ function renderMercDetail(rows){
   d.appendChild(b);
 }
 var BOOZE=[
-  {id:'ale',    name:'Undercroft Ale', price:120, dur:180, cd:300, tag:'drunk', pow:0.5,
-   line:'Warm. The room tilts a little.',
-   desc:'A gentle lean. The floor stays mostly where you left it.'},
-  {id:'rotgut', name:'Rotgut',         price:300, dur:240, cd:300, tag:'drunk', pow:1,
+  {id:'liquor', name:'Liquor',  price:300, dur:240, tag:'drunk',
    line:'It burns. The floor moves.',
-   desc:'The full stagger. Your legs take suggestions, not orders.'},
-  {id:'blotter',name:'Blotter',        price:520, dur:240, cd:300, tag:'lsd',   pow:1,
+   desc:'Double vision, then triple. Every glass stacks on the last, and your hands slow with your legs.'},
+  {id:'lsd',    name:'Blotter', price:520, dur:300, tag:'lsd',
    line:'The colours arrive.',
-   desc:'The surface stops agreeing about colour, and the walls breathe.'},
-  {id:'powder', name:'Powder',         price:650, dur:150, cd:300, tag:'coke',  pow:1,
-   line:'Your heart is a drum.',
-   desc:'Tunnel eyes, and you can hear your own heart over everything.'},
-  {id:'haze',   name:'Green Haze',     price:200, dur:200, cd:300, tag:'haze',  pow:1,
-   line:'Everything slows down and softens.',
-   desc:'Soft edges, heavy legs, light that trails.'}
+   desc:'The surface stops agreeing with itself. Every tab makes it worse, and there is no ceiling.'}
 ];
 function boozeById(id){ for(var i=0;i<BOOZE.length;i++) if(BOOZE[i].id===id) return BOOZE[i]; return null; }
-function buzzPow(tag){
-  var s=0,B=P.buzz||[];
-  for(var i=0;i<B.length;i++) if(B[i].tag===tag) s+=(B[i].pow||1);
-  return s;
+function buzzDoses(tag){
+  var c=0,B=(typeof P!=='undefined'&&P&&P.buzz)?P.buzz:[];
+  for(var i=0;i<B.length;i++) if(B[i].tag===tag) c++;
+  return c;
+}
+function buzzSlow(){
+  if(G&&G.sim) return 1;
+  var nn=(typeof P!=='undefined'&&P&&P.buzz)?P.buzz.length:0;
+  return 1+Math.min(nn,12)*0.09;
 }
 function sayAny(m){
   if(typeof state!=='undefined'&&state==='raid'&&G&&!G.sim) say(m);
   else if(typeof say2==='function') say2(m);
 }
+var BUZZT=0;
 function tickBuzz(dt){
   if(G&&G.sim) return;
-  var B=P.buzz||[],changed=false;
+  BUZZT+=dt;
+  var B=(P&&P.buzz)?P.buzz:[],changed=false;
   for(var i=B.length-1;i>=0;i--){
     B[i].t-=dt;
     if(B[i].t<=0){
-      var _bo=boozeById(B[i].id);
-      sayAny((_bo?_bo.name:'The buzz')+' wears off.');
+      var _tg=B[i].tag;
       B.splice(i,1); changed=true;
+      if(!buzzDoses(_tg)) sayAny(_tg==='drunk'?'The liquor wears off.':'The colours drain away.');
     }
   }
-  var CD=P.buzzCd||{};
-  for(var k in CD){ CD[k]-=dt; if(CD[k]<=0){ delete CD[k]; changed=true; } }
   if(changed) saveProfile();
-  // the heartbeat. Two thumps, lub dub, while Powder is live and the raid is on.
-  if(buzzPow('coke')>0&&G&&!G.over&&typeof state!=='undefined'&&state==='raid'){
-    G._hbT=(G._hbT||0)-dt;
-    if(G._hbT<=0){ G._hbT=0.72;
-      try{
-        blip('board',0,undefined,0.22);
-        setTimeout(function(){ try{ blip('board',0,undefined,0.5); }catch(_e2){} },140);
-      }catch(_e){}
-    }
-  }
 }
 function renderBar(){
   var el=document.getElementById('barlist'); if(!el) return;
   walletLine('wallet_bar','');
   document.getElementById('bar_line').textContent=
-    'No tab, no credit. What it does to you up top is your own business.';
+    'No tab, no credit, no cutoff. It stacks, and it stops being funny around ten.';
   var h='';
   for(var i=0;i<BOOZE.length;i++){
-    var B=BOOZE[i],cd=(P.buzzCd||{})[B.id]||0;
-    var on=(P.buzz||[]).some(function(x){ return x.id===B.id; });
+    var B=BOOZE[i],nB=buzzDoses(B.tag);
     h+='<div class="row"><div style="flex:1"><b>'+B.name+'</b>'+
-       (on?' <span style="color:#d98aff">IN YOUR BLOOD</span>':'')+
-       '<div class="hint">'+B.desc+'  Lasts '+fmtMS(B.dur)+'.</div></div>'+
+       (nB?' <span style="color:#d98aff">IN YOUR BLOOD \u00d7'+nB+'</span>':'')+
+       '<div class="hint">'+B.desc+'  Each lasts '+fmtMS(B.dur)+'.</div></div>'+
        '<span class="vl">$'+B.price.toLocaleString()+'</span>'+
-       '<button data-bz="'+B.id+'" '+((cd>0||P.credits<B.price)?'disabled':'')+' style="padding:6px 14px;min-width:120px">'+
-       (cd>0?('READY IN '+fmtMS(cd).toUpperCase()):'POUR')+'</button></div>';
+       '<button data-bz="'+B.id+'" '+(P.credits<B.price?'disabled':'')+' style="padding:6px 14px;min-width:120px">INGEST</button></div>';
   }
   el.innerHTML=h;
   var bs=el.querySelectorAll('[data-bz]');
   for(var q=0;q<bs.length;q++){
     bs[q].onclick=function(){
       var B2=boozeById(this.getAttribute('data-bz')); if(!B2) return;
-      if(P.credits<B2.price||((P.buzzCd||{})[B2.id]||0)>0) return;
+      if(P.credits<B2.price) return;
       P.credits-=B2.price;
-      P.buzz=P.buzz||[]; P.buzzCd=P.buzzCd||{};
-      var ex=null,Bz=P.buzz;
-      for(var w=0;w<Bz.length;w++) if(Bz[w].id===B2.id) ex=Bz[w];
-      if(ex) ex.t=B2.dur; else Bz.push({id:B2.id,tag:B2.tag,pow:B2.pow,t:B2.dur});
-      P.buzzCd[B2.id]=B2.cd;
+      P.buzz=P.buzz||[];
+      P.buzz.push({id:B2.id,tag:B2.tag,t:B2.dur});
       saveProfile(); blip('pick');
-      say2(B2.line);
+      say2(B2.line+(buzzDoses(B2.tag)>1?('  That is '+buzzDoses(B2.tag)+'.'):''));
       renderBar();
     };
   }
