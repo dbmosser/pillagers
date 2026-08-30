@@ -23999,3 +23999,39 @@ fight one to a payout there, because the outcome path needs the hooks to reach r
 all three endings are covered on the identical code in the fixture. The dead-control
 sweep can only see handlers assigned as onclick, so a control wired through
 addEventListener with no pointer cursor would not have been flagged.
+
+## SAVE COMPATIBILITY AT v6.48
+
+Nine builds added five new profile fields (three cosmetics, the freebie flag and the
+selected gun slot). The biggest shipping risk is not a new feature failing, it is an
+EXISTING save failing, so this checks that directly.
+
+Written into the save key and loaded by RELOADING THE PAGE, which is the route a
+returning player actually takes.
+
+A PRE-v6.46 SAVE, with no cosmetics fields at all: loads with its own numbers intact,
+5,000 credits, 800 XP, 20 runs; keeps the old cosmetics it did have, Dark hair and a
+Sweat Band; and takes sensible defaults for the three that did not exist when it was
+written, Lean, Fair and Slate. Figure draws, gun cells present, six tabs, ascent check
+and a live raid.
+
+A DELIBERATELY HOSTILE SAVE, with credits as the string "lots", XP at -50, runs null,
+stash a string, weapons an object, equipped the number 99, hotAssign a string, kit a
+number, and garbage in every cosmetic field: repaired to 900 credits, 0 XP, 0 runs,
+fists, arrays where arrays belong, and the default look. Every screen renders, the raid
+runs, and the death path completes through the outcome screen.
+
+MY EIGHTH PROBE FAULT OF THE SESSION preceded this and is why the reload matters. My
+first version wrote each case into the save and called the load hook, then read the
+profile back. All seven wildly different cases returned IDENTICAL values, which is the
+tell: the hook was not replacing the live profile and I was reading the same in-memory
+object seven times. Seven green results, none of them real. Reloading the page instead
+gave seven different answers, which is what a real test looks like.
+
+Verified: as described, at 1920x1080, two cases driven end to end through hub, figure,
+ascent check, raid and death.
+
+Not verified: I checked two saves rather than the twelve the older hostile-profile sweep
+used, choosing the pre-cosmetics case and the everything-wrong case as the two that
+bound the range. A save written by a version BETWEEN v6.43 and v6.46 would sit between
+those two and is untested specifically.
