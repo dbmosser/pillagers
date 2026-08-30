@@ -27369,3 +27369,42 @@ Not verified: tier boundaries for a MID-board profile other than his (the x24 sc
 is exact arithmetic; only his real save exists to test); level pacing acceleration now
 that the richer formula feeds P.xp (levels gate one hair colour, so the blast radius is
 a haircut).
+
+## v7.39 - one map
+
+His orders: "delete the other maps besides the map we've been using here the most" and
+"change contracts so that they aren't specific to one map." The most-used is COLD
+STORAGE beyond argument - sixty-plus of his eighty-one recorded runs - and BETA_ONE_MAP
+had gated the other three OFF since it shipped, so GREYWATER DAM, SUNKEN QUARTER and
+THE QUARRY were twenty-eight thousand characters of unreachable data. They are deleted,
+not parked: the excision was done by index arithmetic on the array literal with marker
+asserts on every boundary, because a Sub spanning thousands of lines is how anchors
+die. The file shrank by 28KB.
+
+CONTRACTS ARE MAP-FREE. New district contracts carry no map field and name only their
+district; the conditions panel's per-map filter and name-stripping are gone; the dedupe
+key drops its map suffix. Standing contracts on old saves shed their map fields and
+any map-name suffixes at load.
+
+SAVES LAND ON THEIR FEET. Cold's seal and fog records lived at index 2 and now live at
+index 0 - and the first cut of that migration had a real bug the verification caught:
+it only moved records into an EMPTY slot 0, but any profile that ever raided the dam
+had a slot 0, so cold's history would have been shadowed by a dead map's. Cold's
+records now win unconditionally and the other maps' records die with their maps.
+
+THE VERIFY PROTOCOL CHANGES PERMANENTLY: one map, entity fingerprint 58 at seed 4242.
+The old four-map 86/87/58/72 line is history as of this build.
+
+The sector picker machinery stays: offeredCount is 1 so the lift goes straight up, and
+the picker returns the moment the successor map (4-5x, next build) exists.
+
+Verified: parse PASS v7.39 on the lighter file. One map at seed 4242: entities exactly
+58, drawn with bag and HUD, drawErr null. Eight fresh contracts rolled with zero map
+names. The lift ascends with no sector modal straight into a live raid. Seal migration:
+index 2 gone, index 0 present. Three endings with headline assertions, hub including a
+park at the lift, stage renders.
+
+Not verified: his real profile's seal/fog migration (his save has dam-era slot 0 data,
+exactly the case the precedence fix addresses - the code path is the one tested, his
+data is not mine to open); any straggler references to the dead maps in comments
+(non-executing).

@@ -1055,7 +1055,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.38';
+var VER='7.39';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1556,6 +1556,17 @@ if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just h
 if(P.cosHat==='pigtails'){ P.cosHat='none'; P.cosCut='pigtails'; }  // v7.26 migration
 if(P.buzzCd) delete P.buzzCd;   // v7.34: no cooldowns
 if(P.sp!==undefined) delete P.sp;   // v7.38: PROGRESS folded into XP; the field is dead
+if(P.seals&&P.seals[2]){ P.seals[0]=P.seals[2]; }                       // v7.39: one map -
+if(P.seals){ delete P.seals[1]; delete P.seals[2]; delete P.seals[3]; } // cold's records win
+if(P.mapSeen&&P.mapSeen[2]){ P.mapSeen[0]=P.mapSeen[2]; }
+if(P.mapSeen){ delete P.mapSeen[1]; delete P.mapSeen[2]; delete P.mapSeen[3]; }
+if(P.contracts) for(var _cm=0;_cm<P.contracts.length;_cm++){
+  var _CC=P.contracts[_cm];
+  if(_CC&&_CC.map!==undefined){ delete _CC.map;
+    if(_CC.desc) _CC.desc=_CC.desc.replace(', GREYWATER DAM','').replace(', SUNKEN QUARTER','')
+      .replace(', COLD STORAGE','').replace(', THE QUARRY','');
+  }
+}
 P.buzz=[];                      // v7.35, his order: quitting the game cuts you off too
 // v6.30: the counters cannot be negative or non-numeric. A damaged save carrying
 // negative credits used to load and print "-5,000c" in the Requisition header. It
@@ -1740,7 +1751,7 @@ function contractKey(c){
   if(!c||!c.type) return '?';
   if(c.type==='kill')     return 'kill:'+c.tgt;
   if(c.type==='open')     return 'open:'+c.ct;
-  if(c.type==='district') return 'district:'+c.d+':'+(c.map===undefined?'any':c.map);
+  if(c.type==='district') return 'district:'+c.d;
   if(c.type==='exItem')   return 'exItem:'+c.item;
   if(c.type==='conduct')  return 'conduct:'+c.ck;
   return c.type;
@@ -1924,9 +1935,8 @@ function genContract(){
     // A district with two buildings in it cannot reasonably be asked for four containers.
     var n3=up(ri(2,4));
     if(pickD.buildings<3) n3=Math.min(n3,2);
-    var _dmi=clamp(P&&P.mapIx!==undefined?P.mapIx:0,0,FIXED_MAPS.length-1);
-    c={type:'district',d:d,n:n3,map:_dmi,prog:0,reward:n3*160,
-       desc:'Search '+n3+' containers in '+DISTRICTS[d].name+', '+FIXED_MAPS[_dmi].name};
+    c={type:'district',d:d,n:n3,prog:0,reward:n3*160,
+       desc:'Search '+n3+' containers in '+DISTRICTS[d].name};
   } else if(roll<.9){
     var it=pick(['board','optic','servo','core']);
     var n4=up(it==='core'?1:2);
@@ -3805,305 +3815,6 @@ function firstOfferedMap(){
 }
 var FIXED_MAPS=[
 {
-id:'dam', name:'GREYWATER DAM', w:5200, h:4000,
-  // v4.20: the ground itself carries the sector's identity. One base colour
-  // served all four maps since the beginning, which is a large part of why
-  // they read as reskins from above. Damp mossy concrete for the dam.
-ground:{day:'#56705A',night:'#111813'},
-  story:{x:2600,y:780,name:'THE DEPARTURE NOTICE',
-    text:'A corroded board notice: "MERIDIAN EXECUTIVE LIFT WINDOW CLOSES 06:00. Seats are non-transferable. The dam will run itself. It has been told to."'},
-  veg:{r:0.90,g:1.05,b:0.95},   // v4.21: lush and damp
-  // REBUILT v1.52. His note: the dam was the weak map. Measured, he was right:
-  // only 10.4 percent of its walkable ground sat inside a named place against
-  // 47.6 on SUNKEN QUARTER, its mean sight line was the longest in the game at 675,
-  // and it had the least interior of the three. It was three widely spaced
-  // things with a field between them.
-  // The rebuild is my own design, worked from what a dam actually IS as a place
-  // to fight in: a hard vertical stack of three worlds that only connect at a
-  // few points. Reservoir on top, the dam body in the middle, and the tailrace
-  // below, with the CREST as the single long exposed crossing between them.
-  // Nine named zones instead of six, and every one of them has something in it.
-  zones:[
-    {name:'THE RESERVOIR',   d:2, x:0,    y:0,    w:5200, h:620 },
-    {name:'THE CREST',       d:1, x:0,    y:620,  w:5200, h:340 },
-    {name:'CONTRACTOR CAMP', d:0, x:0,    y:960,  w:1500, h:1200},
-    {name:'TURBINE HALL',    d:1, x:1500, y:960,  w:1500, h:1200},
-    {name:'SWITCHYARD',      d:3, x:3000, y:960,  w:2200, h:1200},
-    {name:'DROWNED WOOD',    d:2, x:0,    y:2160, w:1400, h:1840},
-    {name:'THE OVERFLOW',    d:0, x:1400, y:2160, w:1000, h:1840},
-    {name:'THE TAILRACE',    d:0, x:2400, y:2160, w:1500, h:1840},
-    {name:'OUTFLOW YARD',    d:3, x:3900, y:2160, w:1300, h:1840}
-  ],
-  water:[
-    {x:120, y:120, w:4960, h:470},                 // the reservoir
-    {x:1660,y:2160,w:460,  h:1840},                // spillway channel, top to bottom
-    {x:2520,y:3160,w:1160, h:620},                 // tailrace pool
-    {x:4120,y:2600,w:150,  h:1200},                // outflow channel west
-    {x:4560,y:2600,w:150,  h:1200}                 // outflow channel east
-  ],
-  // THE CREST. Parapets on both sides make the dam top a corridor rather than a
-  // field, and the gaps are STAGGERED so you cannot run straight across: getting
-  // from the reservoir side to the downstream side means walking the crest for a
-  // while in the open. That is the one deliberately exposed place on the map and
-  // everything else is built to contrast with it.
-  walls:[
-    {x:120, y:590, w:780, h:44,d:1},               // upstream parapet, west of the gap
-    {x:1100,y:590, w:1640,h:44,d:1},               // upstream parapet, gap to powerhouse
-    {x:3560,y:590, w:1520,h:44,d:1},               // upstream parapet, powerhouse to east end
-    {x:120, y:916, w:1780,h:44,d:1},               // downstream parapet, west of the gap
-    {x:2100,y:916, w:640, h:44,d:1},               // downstream parapet, gap to powerhouse
-    {x:3560,y:916, w:840, h:44,d:1},               // downstream parapet, powerhouse to east gap
-    {x:4600,y:916, w:480, h:44,d:1},               // downstream parapet, east end
-    // THE SPILLWAY is a concrete canyon with the water in the bottom of it. Two
-    // long walls with one crossing point each, so it splits the lower map in two
-    // and the crossings are decisions.
-    {x:1560,y:2160,w:56, h:900, d:0},
-    {x:1560,y:3260,w:56, h:740, d:0},
-    {x:2160,y:2160,w:56, h:560, d:0},
-    {x:2160,y:2920,w:56, h:1080,d:0},
-    // SWITCHYARD transformer blocks: heavy, regular, and a maze at ground level.
-    // Rows offset from each other so no straight run exists through the yard.
-    {x:3160,y:1120,w:420,h:70,d:3}, {x:3760,y:1120,w:560,h:70,d:3},
-    {x:4500,y:1120,w:560,h:70,d:3},
-    {x:3160,y:1380,w:640,h:70,d:3}, {x:3980,y:1380,w:420,h:70,d:3},
-    {x:4580,y:1380,w:480,h:70,d:3},
-    {x:3320,y:1640,w:520,h:70,d:3}, {x:4020,y:1640,w:640,h:70,d:3},
-    {x:3160,y:1900,w:420,h:70,d:3}, {x:3760,y:1900,w:520,h:70,d:3},
-    {x:4460,y:1900,w:600,h:70,d:3},
-    // OUTFLOW YARD: the channels are walled, so the ground between them is a set
-    // of parallel lanes you commit to.
-    {x:4060,y:2600,w:50, h:1200,d:3}, {x:4280,y:2600,w:50, h:1200,d:3},
-    {x:4500,y:2600,w:50, h:1200,d:3}, {x:4720,y:2600,w:50, h:1200,d:3}
-  ],
-  buildings:[
-    // THE POWERHOUSE, standing on the crest itself: the map's centrepiece and
-    // the only interior that bridges the reservoir side and the downstream side.
-    {x:2740,y:600, w:820, h:360, d:1, plan:'spine', tag:'POWERHOUSE', big:1},
-    // GATE TOWERS at the two parapet gaps. Small, tall, and they own the
-    // crossings, so the crest has two places worth holding.
-    {x:1180,y:700, w:240, h:160, d:1, plan:'core'},
-    {x:2200,y:700, w:240, h:160, d:1, plan:'cells'},
-    // THE TURBINE HALL. A real complex, not a shed: four connected halls with
-    // different interiors, which is the enclosed high tier heart of the map and
-    // the antidote to the old version's emptiness.
-    {x:1620,y:1060,w:660, h:480, d:1, plan:'spine', big:1},
-    {x:2340,y:1060,w:560, h:480, d:1, plan:'core'},
-    {x:1620,y:1600,w:560, h:460, d:1, plan:'pinwheel'},
-    {x:2240,y:1600,w:660, h:460, d:1, plan:'cells', big:1},
-    // CONTRACTOR CAMP: prefabs and containers on the west shore. Tight, cheap
-    // buildings in a cluster, a completely different texture to the turbine hall.
-    {x:180, y:1060,w:360, h:280, d:0, plan:'cells'},
-    {x:600, y:1060,w:360, h:280, d:0, plan:'lsplit'},
-    {x:1020,y:1060,w:360, h:280, d:0, plan:'open'},
-    {x:180, y:1400,w:360, h:280, d:0, plan:'lsplit'},
-    {x:600, y:1400,w:360, h:280, d:0, plan:'core'},
-    {x:1020,y:1400,w:360, h:280, d:0, plan:'cells'},
-    {x:300, y:1740,w:900, h:300, d:0, plan:'spine', big:1},
-    // SWITCHYARD control houses, sitting inside the transformer maze.
-    {x:3180,y:1235,w:420, h:100, d:3, plan:'open'},
-    {x:4600,y:1495,w:440, h:100, d:3, plan:'open'},
-    {x:3380,y:1755,w:440, h:100, d:3, plan:'open'},
-    {x:4160,y:2020,w:520, h:240, d:3, plan:'lsplit', big:1},
-    // THE DROWNED VILLAGE, half in the reservoir at its western edge. Houses
-    // standing in water, which the floor rule makes dry inside: shelter you have
-    // to wade to.
-    {x:340, y:190, w:300, h:250, d:2, plan:'cells'},
-    {x:740, y:190, w:300, h:250, d:2, plan:'lsplit'},
-    {x:1140,y:190, w:300, h:250, d:2, plan:'core'},
-    {x:1540,y:190, w:300, h:250, d:2, plan:'open'},
-    // TAILRACE pump houses below the dam, on the pool's edge.
-    {x:2520,y:2300,w:520, h:320, d:0, plan:'core', big:1},
-    {x:3180,y:2320,w:420, h:300, d:0, plan:'cells'},
-    {x:2600,y:3860,w:480, h:120, d:0, plan:'open'},
-    // OUTFLOW sheds at the head of the channels.
-    {x:4060,y:2330,w:760, h:200, d:3, plan:'spine', big:1},
-    {x:4780,y:2190,w:290, h:300, d:3, plan:'cells'},
-
-    // THE SPILLWAY had no building in it at all. Gate control houses on both
-    // rims, so the canyon is somewhere to be walked rather than only crossed.
-    {x:1200,y:2280,w:300, h:300, d:0, plan:'core'},
-    {x:2230,y:3500,w:290, h:280, d:0, plan:'lsplit'},
-    {x:1180,y:3420,w:320, h:320, d:0, plan:'cells'},
-    // THE DROWNED WOOD had none either. A ranger station and two flooded
-    // cabins in the trees: the one part of this map where an interior is
-    // somewhere you would not have thought to look.
-    {x:420, y:2560,w:360, h:300, d:2, plan:'lsplit'},
-    {x:880, y:2920,w:340, h:300, d:2, plan:'core'},
-    {x:340, y:3400,w:420, h:340, d:2, plan:'cells', big:1},
-    // Two real buildings in the SWITCHYARD, which was almost all transformer
-    // block and barely any inside.
-
-    {x:2760,y:3480,w:420, h:260, d:0, plan:'spine'},
-    {x:4100,y:3810,w:700, h:150, d:3, plan:'cells'}
-  ],
-  woods:[
-    {x:220, y:2320,w:1080,h:760},                  // drowned wood, upper
-    {x:180, y:3200,w:1120,h:700},                  // drowned wood, lower
-    {x:3240,y:2760,w:600, h:1060}                  // tailrace scrub
-  ],
-  // Catwalks over the two places worth looking down into: the turbine hall
-  // floor and the switchyard. Both run in the OPEN band between building rows,
-  // never across a building, because a platform perimeter crossing a shed cuts
-  // its interior in half.
-  plats:[
-    {x:2560,y:2680,w:1000,h:120,lift:26,name:'TAILRACE WALK'},
-    {x:3180,y:1980,w:860, h:120,lift:26,name:'YARD GANTRY'},
-    {x:1660,y:2960,w:660, h:130,lift:48,name:'OVERFLOW BRIDGE'}
-  ],
-  ramps:[
-    {x:2410,y:2680,w:150,h:120},
-    {x:3980,y:1980,w:150,h:120},
-    {x:1520,y:2960,w:150,h:130},
-    {x:2320,y:2960,w:150,h:130}
-  ],
-  locked:[
-    {id:'dam_turbine', name:'TURBINE ROOM',     x:2420,y:1140, w:220,h:220},
-    {id:'dam_vault',   name:'SUBSTATION VAULT', x:4280,y:2020, w:220,h:220}
-  ],
-  // Seven named places instead of three. The measurement that drove the rebuild
-  // was how little of the map had a name on it, so this is the fix stated
-  // directly: almost anywhere you stand, you are somewhere.
-  landmarks:[
-    {id:'dam_house',   name:'POWERHOUSE',       x:2740,y:600, w:820, h:360, loot:'rare',   dens:1.8},
-    {id:'dam_hall',    name:'TURBINE HALL',     x:1620,y:1060,w:1280,h:1000,loot:'rare',   dens:1.6},
-    {id:'dam_yard',    name:'SWITCHYARD',       x:3160,y:1120,w:1900,h:1140,loot:'ammo',   dens:1.2},
-    {id:'dam_camp',    name:'CONTRACTOR CAMP',  x:180, y:1060,w:1200,h:980, loot:'medical',dens:1.4, arch:'clinic'},
-    {id:'dam_village', name:'DROWNED VILLAGE',  x:340, y:170, w:1500,h:300, loot:'bulk',   dens:1.5, arch:'plaza'},
-    {id:'dam_tail',    name:'THE TAILRACE',     x:2520,y:2300,w:1080,h:1500,loot:'bulk',   dens:1.1},
-    {id:'dam_crest',   name:'THE CREST',        x:120, y:634, w:2600,h:282, loot:'ammo',   dens:0.8}
-  ],
-  spawns:[
-    {x:820, y:2180}, {x:4900,y:2700}, {x:3400,y:3900},
-    {x:1180,y:1010}, {x:3040,y:1010}, {x:4980,y:1720},
-    // v3.69: two far manholes so the v3.66 spawn floor (1150) stops halving
-    // this map's variety. NE switchyard corner at 2721 from the nearest ring,
-    // SW tailwater corner at 2008. Both grid-scanned clear of walls by 60 and
-    // water by 30, and nav-pathed to all three rings before being authored.
-    {x:4840,y:840}, {x:200,y:3560}
-  ],
-  extracts:[
-    {x:1290,y:1900}, {x:4900,y:3560}, {x:3060,y:2900}
-  ]
-},
-{
-  // SPEC 4.3: SUNKEN QUARTER. Desert ruins. The whole identity is one contrast:
-  // a huge open central courtyard with long sightlines that is genuinely
-  // dangerous to cross, ringed by garages and outbuildings that are tight
-  // close quarters clearing. It has to play nothing like the dam, so there is
-  // no verticality anchor and no water: the tension here is exposure, and the
-  // relief is doorways.
-id:'buried', name:'SUNKEN QUARTER', w:4600, h:4600,
-ground:{day:'#75664F',night:'#16140f'},
-  story:{x:2300,y:2170,name:'THE HIGH WATER MARK',
-    text:'A line painted on brick, three metres up: "They raised the water the week they left. The last shuttle overflew the plaza at dawn and did not slow."'},
-  veg:{r:1.00,g:0.96,b:0.78},   // v4.21: murky waterlogged green   // v4.20: flood silt
-  zones:[
-    {name:'THE COURTYARD', d:0, x:1300, y:1300, w:2000, h:2000},
-    {name:'NORTH GARAGES', d:3, x:0,    y:0,    w:4600, h:1300},
-    {name:'SOUTH GARAGES', d:3, x:0,    y:3300, w:4600, h:1300},
-    {name:'WEST TERRACES', d:0, x:0,    y:1300, w:1300, h:2000},
-    {name:'EAST TERRACES', d:2, x:3300, y:1300, w:1300, h:2000}
-  ],
-  water:[],
-  // half buried walls jutting into the courtyard: the only cover out there, and
-  // deliberately not enough of it
-  walls:[
-    {x:1700,y:1750,w:420,h:70,d:0}, {x:2600,y:2050,w:70,h:400,d:0},
-    {x:2100,y:2700,w:520,h:70,d:0}, {x:1520,y:2350,w:70,h:360,d:0},
-    {x:2850,y:1560,w:300,h:70,d:0}
-  ],
-  buildings:[
-    // RE-AUTHORED at v1.65. His in-run note was "every block is the same length, map has
-    // no atmosphere". Measured before touching it: 28 buildings on this map and only FOUR
-    // distinct footprints. Fifteen of them were 420x380, exactly, laid out in two rows on
-    // a fixed 520 pitch at a single shared y. That is not a city, it is a texture, and it
-    // is the single most literal confirmation of his note anywhere in the project.
-    // Every footprint below is now its own size and every row is staggered in depth, so
-    // the eye cannot lock onto a repeating unit. The design intent is unchanged: tight
-    // garage units ringing an exposed courtyard, doors facing in.
-    // Every gap here is >=100 units against the 90 the reachability guarantee needs, and
-    // the result is flood-filled from the spawn to prove it rather than trusted.
-    // NORTH GARAGES: a row of tight units, doors facing the courtyard
-    {x:180, y:240, w:360,h:380,d:3,plan:'cells'},
-    {x:645, y:300, w:480,h:300,d:3,plan:'lsplit'},
-    {x:1230,y:220, w:300,h:440,d:3,plan:'core'},
-    {x:1635,y:280, w:540,h:340,d:3,plan:'cells'},
-    {x:2280,y:230, w:420,h:400,d:3,plan:'lsplit'},
-    {x:2805,y:310, w:380,h:300,d:3,plan:'cells'},
-    {x:3290,y:220, w:500,h:420,d:3,plan:'core'},
-    {x:3895,y:260, w:340,h:360,d:3,plan:'lsplit'},
-    {x:600, y:800, w:640,h:340,d:3,plan:'spine',big:1},
-    {x:1900,y:780, w:520,h:380,d:3,plan:'pinwheel'},
-    {x:3200,y:820, w:720,h:300,d:3,plan:'spine'},
-    // SOUTH GARAGES: the mirror, staggered so it does not read as a copy
-    {x:340, y:3520,w:480,h:360,d:3,plan:'lsplit'},
-    {x:920, y:3500,w:320,h:420,d:3,plan:'cells'},
-    {x:1340,y:3560,w:520,h:300,d:3,plan:'core'},
-    {x:1960,y:3500,w:380,h:460,d:3,plan:'lsplit'},
-    {x:2440,y:3530,w:440,h:340,d:3,plan:'cells'},
-    {x:2980,y:3510,w:300,h:400,d:3,plan:'lsplit'},
-    {x:3380,y:3520,w:500,h:380,d:3,plan:'core'},
-    {x:900, y:3020,w:560,h:380,d:3,plan:'pinwheel'},
-    {x:2400,y:3060,w:720,h:320,d:3,plan:'spine',big:1},
-    // WEST TERRACES: stepped ruins, broken cover
-    {x:200, y:1480,w:560,h:380,d:0,plan:'open'},
-    {x:200, y:2000,w:440,h:460,d:0,plan:'cells'},
-    {x:200, y:2600,w:600,h:400,d:0,plan:'lsplit'},
-    {x:900, y:1860,w:300,h:840,d:0,plan:'spine'},
-    // EAST TERRACES: greener, overgrown ruin
-    {x:3840,y:1480,w:600,h:400,d:2,plan:'core'},
-    {x:3900,y:2000,w:520,h:460,d:2,plan:'open'},
-    {x:3840,y:2620,w:580,h:380,d:2,plan:'cells'},
-    {x:3380,y:1860,w:320,h:840,d:2,plan:'pinwheel'}
-  ],
-  // He asked for woods. The east side is already authored as "greener, overgrown ruin",
-  // so thickening it there is on identity rather than pasting a forest onto a desert.
-  woods:[ {x:3380,y:2740,w:760,h:560}, {x:3320,y:1300,w:520,h:420}, {x:760,y:2560,w:420,h:360} ],
-  // A raised terrace on the courtyard rim: the one place with a commanding view
-  // of the crossing, and the one place everyone knows to check.
-  plats:[
-    {x:1400,y:1180,w:760,h:130,lift:24,name:'HIGH TERRACE'},
-    {x:1600,y:3160,w:560,h:130,lift:24,name:'SOUTH WALL'}
-  ],
-  ramps:[
-    {x:2160,y:1180,w:150,h:130},
-    {x:2160,y:3160,w:150,h:130}
-  ],
-  locked:[
-    {id:'bc_cellar', name:'SEALED CELLAR', x:2080,y:2080, w:220,h:220},
-    {id:'bc_depot',  name:'GARAGE DEPOT',  x:3540,y:3600, w:220,h:220}
-  ],
-  landmarks:[
-    {id:'bc_yard',  name:'THE COURTYARD', x:1300,y:1300,w:2000,h:1740,loot:'bulk',   dens:0.5, arch:'townsq'},
-    {id:'bc_north', name:'NORTH GARAGES', x:180, y:260, w:4060,h:880, loot:'ammo',   dens:1.3},
-{id:'bc_south', name:'SOUTH GARAGES', x:340, y:3060,w:3540,h:840, loot:'medical',dens:1.3},
-    {id:'bc_west',  name:'WEST TERRACES', x:180, y:1440,w:1060,h:1300,loot:'rare',   dens:0.9},
-    {id:'bc_east',  name:'EAST TERRACES', x:3340,y:1440,w:1120,h:1300,loot:'bulk',   dens:1.0}
-  ],
-  spawns:[
-    {x:1180,y:1620}, {x:3420,y:1620}, {x:1180,y:2980},
-    {x:3420,y:2980}, {x:2300,y:180},  {x:2300,y:4400}
-  ],
-  extracts:[
-    {x:2470,y:2470}, {x:640, y:4260}, {x:4400,y:760}
-  ]
-},
-// ============================================================ COLD STORAGE
-// His top complaint, in his own words, is that the maps feel SAMEY, and with
-// two of them he was right by arithmetic before anything else. This third one
-// is authored against both of the others rather than beside them.
-//   GREYWATER DAM is wide horizontal bands split by one long barrier.
-//   SUNKEN QUARTER is a symmetrical ring around one enormous open courtyard.
-//   COLD STORAGE has no open ground at all.
-// It is a packing plant: 4200 by 3400, about a third smaller than either of the
-// others, and every part of it is built to cut sight lines. Rows of racking on
-// the packing floor with the aisle gap staggered every row, so you can see down
-// exactly one aisle and never across them. Nine freezer units in a tight three
-// by three grid with eighty unit alleys. Container rows on the scrap line. The
-// enemy counts do not scale with area, so a smaller map is a denser one: you
-// meet things constantly and you almost never see them coming. That is the
-// answer to TENSE AND FRIGHTENING that geometry can give.
-{
 id:'cold', name:'COLD STORAGE', beta:1, w:4200, h:3400,
 ground:{day:'#55647A',night:'#10151d'},
   story:{x:1900,y:360,name:'THE MANIFEST',
@@ -4219,179 +3930,6 @@ ground:{day:'#55647A',night:'#10151d'},
   // 2,684, which puts COLD STORAGE in line with the other three.
   extracts:[
     {x:850, y:2520}, {x:4020,y:1750}, {x:1700,y:400}
-  ]
-},
-{
-id:'quarry', name:'THE QUARRY', w:4600, h:3600,
-ground:{day:'#836C48',night:'#181410'},
-  story:{x:450,y:360,name:'THE LAST SHIFT LOG',
-    text:'A shift log, open to the final page: "The board took the yield projections and left the diggers running. The pit is eleven metres deeper than when the last human clocked out."'},
-  veg:{r:1.18,g:1.02,b:0.66},   // v4.21: dry scrub   // v4.20: dry ochre dust
-  // THE FOURTH MAP, and the roadmap item that had been sitting at NOW since
-  // v1.52: one built around VERTICALITY. The other three are flat ground with a
-  // catwalk or two bolted on, because that is all the elevation system could
-  // express. Two engine fixes shipped with this map make a real tiered world
-  // possible: a height difference between two touching decks is now a CLIFF
-  // rather than a shared edge, and a ramp now spans the two heights it actually
-  // connects instead of diving to the ground and climbing back out.
-  //
-  // The shape: a stepped open pit. Five terraces dropping 132 units from the
-  // rim to the pit floor, and the ONLY way between them is eight haul ramps cut
-  // into the cliffs, two per drop, staggered from one drop to the next. Getting
-  // down means crossing each bench end to end, in the open, under everything
-  // above you.
-  //
-  // The deal the map makes: the crusher pays best and it is at the bottom of
-  // the hole, and two of the three ways out are at the top.
-  //
-  // ONE HARD RULE runs through every coordinate below: no building comes within
-  // 90 units of anything else. A building's doors are rolled onto one or two of
-  // its four walls, so a shed with 46 units of clearance on its north side is a
-  // shed that seals itself the moment the roll puts its only door there.
-  // Measured on the first draft of this map: the screening plant filled its
-  // band and took 145 cells of its own interior with it, and the conveyor bench
-  // came in at 84 percent reachable.
-  zones:[
-    {name:'THE RIM',        d:2, x:0,    y:0,    w:4600, h:660 },
-    {name:'UPPER BENCH',    d:0, x:0,    y:660,  w:2300, h:620 },
-    {name:'THE MAGAZINE',   d:3, x:2300, y:660,  w:2300, h:620 },
-    {name:'CONVEYOR RUN',   d:1, x:0,    y:1280, w:2800, h:620 },
-    {name:'SCREENING PLANT',d:1, x:2800, y:1280, w:1800, h:620 },
-    {name:'LOWER BENCH',    d:0, x:0,    y:1900, w:2400, h:620 },
-    {name:'THE WORKSHOPS',  d:0, x:2400, y:1900, w:2200, h:620 },
-    {name:'THE SUMP',       d:1, x:0,    y:2520, w:2200, h:1080},
-    {name:'THE PIT',        d:1, x:2200, y:2520, w:2400, h:1080}
-  ],
-  // Water collects at the bottom of a pit, which is the one thing every
-  // abandoned quarry has in common. Wading it is slow and loud.
-  water:[
-    {x:340, y:2760,w:1500,h:640},
-    {x:2260,y:3320,w:900, h:220}
-  ],
-  walls:[
-    // THE CLIFF FACES. A solid band across the map at each drop, broken only
-    // where a ramp is cut. These are what make the benches benches: without
-    // them the five terraces are one field with a colour change.
-    // DROP 1, rim to upper bench. Ramps at x 560 and x 3240.
-    {x:120, y:600, w:426, h:120,d:0}, {x:724, y:600, w:2502,h:120,d:0},
-    {x:3404,y:600, w:1076,h:120,d:0},
-    // DROP 2, upper to conveyor. Ramps at 1760 and 4060, both a long way from
-    // drop 1, so you cross the whole upper bench to keep descending.
-    {x:120, y:1220,w:1626,h:120,d:0}, {x:1924,y:1220,w:2122,h:120,d:0},
-    {x:4224,y:1220,w:256, h:120,d:0},
-    // DROP 3, conveyor to lower. Ramps at 420 and 2720.
-    {x:120, y:1840,w:286, h:120,d:0}, {x:584, y:1840,w:2122,h:120,d:0},
-    {x:2884,y:1840,w:1596,h:120,d:0},
-    // DROP 4, lower bench to the pit floor. Ramps at 1280 and 3660.
-    {x:120, y:2460,w:1146,h:120,d:0}, {x:1444,y:2460,w:2202,h:120,d:0},
-    {x:3824,y:2460,w:656, h:120,d:0},
-    // SPOIL HEAPS on the pit floor. The floor is the largest single piece of
-    // open ground on the map and four benches look down into it, so it needs
-    // something to move between or crossing it is not a decision, it is a death.
-    {x:1450,y:2700,w:300,h:70,d:1}, {x:1600,y:3000,w:70, h:280,d:1},
-    {x:2000,y:3140,w:220,h:70,d:1}, {x:3245,y:2620,w:70, h:220,d:1},
-    {x:1400,y:3380,w:360,h:70,d:1}, {x:820, y:3440,w:70, h:100,d:1},
-    {x:4060,y:3320,w:340,h:70,d:1}, {x:4180,y:2660,w:70, h:300,d:1},
-    // STOCKPILE BUNKERS along the benches: low walls you fight around, and the
-    // only cover a bench has that is not a building. Each one sits in a gap wide
-    // enough to leave 90 units on both sides, same rule as the buildings.
-    {x:2520,y:280, w:70, h:240,d:2}, {x:3610,y:280, w:70, h:240,d:2},
-    {x:2700,y:840, w:70, h:260,d:0}, {x:4180,y:840, w:70, h:260,d:0},
-    {x:2700,y:1460,w:70, h:260,d:1}, {x:4240,y:1460,w:70, h:260,d:1},
-    {x:2660,y:2080,w:70, h:260,d:0}, {x:4300,y:2080,w:70, h:260,d:0}
-  ],
-  buildings:[
-    // THE RIM. Where the quarry was administered, and the one part of a quarry
-    // the trees take back first. Every rim building shares a y and a height, so
-    // the whole terrace reads as one graded surface with a street through it.
-    {x:240, y:224,w:420,h:270,d:2,plan:'cells',  big:1},
-    {x:930, y:224,w:300,h:270,d:2,plan:'open'},
-    {x:1720,y:224,w:400,h:270,d:2,plan:'lsplit'},
-    {x:2390,y:224,w:340,h:270,d:2,plan:'core'},
-    {x:3000,y:224,w:480,h:270,d:2,plan:'spine',  big:1},
-    {x:3750,y:224,w:340,h:270,d:2,plan:'cells'},
-    // UPPER BENCH, with the explosives magazine at its east end. This is the
-    // richest thing on the map that is not at the bottom of the pit, and that
-    // is the choice the whole descent is built around: take the easy tier, or
-    // go down for the crusher.
-    {x:240, y:824,w:400,h:290,d:0,plan:'lsplit'},
-    {x:840, y:824,w:340,h:290,d:0,plan:'cells'},
-    {x:1380,y:824,w:460,h:290,d:0,plan:'spine',  big:1},
-    {x:2040,y:824,w:360,h:290,d:0,plan:'open'},
-    {x:2860,y:824,w:520,h:290,d:3,plan:'cells',  big:1},
-    {x:3580,y:824,w:420,h:290,d:3,plan:'core'},
-    // CONVEYOR RUN. The gallery is a 1700 unit covered corridor, the longest
-    // enclosed run in the game, and the only way to cross this bench without
-    // three terraces watching you do it.
-    {x:300, y:1500,w:1700,h:180,d:1,plan:'spine', big:1},
-    {x:2200,y:1444,w:400,h:290,d:1,plan:'lsplit'},
-    {x:2860,y:1444,w:600,h:290,d:1,plan:'core',   big:1},
-    {x:3660,y:1444,w:420,h:290,d:1,plan:'cells'},
-    // LOWER BENCH and THE WORKSHOPS: the machine shops that kept the plant
-    // running, one drop above the floor.
-    {x:240, y:2064,w:420,h:290,d:0,plan:'spine',  big:1},
-    {x:860, y:2064,w:360,h:290,d:0,plan:'lsplit'},
-    {x:1620,y:2064,w:440,h:290,d:0,plan:'cells'},
-    {x:2260,y:2064,w:340,h:290,d:0,plan:'open'},
-    {x:2800,y:2064,w:700,h:290,d:0,plan:'cells',  big:1},
-    {x:3700,y:2064,w:460,h:290,d:0,plan:'core'},
-    // THE PIT FLOOR. The bottom of the hole and everything worth the trip down.
-    {x:2400,y:2700,w:760,h:460,d:1,plan:'core',   big:1},
-    {x:3400,y:2700,w:520,h:380,d:1,plan:'spine',  big:1},
-    {x:3400,y:3260,w:520,h:280,d:1,plan:'cells'},
-    {x:2400,y:3250,w:560,h:200,d:1,plan:'lsplit', big:1},
-    {x:1880,y:2700,w:340,h:280,d:1,plan:'open'},
-    // A pump house standing in the sump, dry inside, which is shelter you have
-    // to wade to and cannot leave quietly.
-    {x:900, y:2900,w:380,h:300,d:1,plan:'cells'},
-    {x:240, y:3140,w:420,h:320,d:1,plan:'core'}
-  ],
-  woods:[
-    {x:4180,y:150, w:290,h:300},
-    {x:4000,y:2620,w:460,h:520}
-  ],
-  // THE BENCHES. Each one is a single terrace spanning the map, and the height
-  // difference between them is what the cliff bands above are made of.
-  plats:[
-    {x:120,y:120, w:4360,h:480,lift:132,name:'THE RIM'},
-    {x:120,y:720, w:4360,h:500,lift:99, name:'UPPER BENCH'},
-    {x:120,y:1340,w:4360,h:500,lift:66, name:'CONVEYOR BENCH'},
-    {x:120,y:1960,w:4360,h:500,lift:33, name:'LOWER BENCH'}
-  ],
-  // THE HAUL RAMPS. Taller than they are wide so the descent runs along their
-  // long axis, and each one overlaps both benches it joins so the cliff opens
-  // on both sides of it.
-  ramps:[
-    {x:560, y:575, w:150,h:170}, {x:3240,y:575, w:150,h:170},
-    {x:1760,y:1195,w:150,h:170}, {x:4060,y:1195,w:150,h:170},
-    {x:420, y:1815,w:150,h:170}, {x:2720,y:1815,w:150,h:170},
-    {x:1280,y:2435,w:150,h:170}, {x:3660,y:2435,w:150,h:170}
-  ],
-  locked:[
-    // Sat 220 tall inside a 258 tall interior, which left 10 units above it and
-    // 28 below: both strips sealed, and the upper bench came in at 94 percent
-    // reachable. Shorter, and flush with the building's own north face so there
-    // is only one gap to keep clear instead of two.
-    {id:'quarry_mag',   name:'THE MAGAZINE', x:2980,y:840, w:220,h:150},
-    {id:'quarry_assay', name:'ASSAY OFFICE', x:2560,y:2820,w:220,h:220}
-  ],
-  landmarks:[
-    {id:'q_office',  name:'RIM OFFICES',     x:240, y:224, w:420, h:270, loot:'medical',dens:1.4},
-    {id:'q_mag',     name:'THE MAGAZINE',    x:2860,y:824, w:520, h:290, loot:'rare',   dens:1.8},
-    {id:'q_gallery', name:'CONVEYOR GALLERY',x:300, y:1444,w:1700,h:290, loot:'bulk',   dens:1.0},
-    {id:'q_screen',  name:'SCREENING PLANT', x:2860,y:1444,w:600, h:290, loot:'ammo',   dens:1.4, arch:'checkpoint'},
-    {id:'q_shops',   name:'THE WORKSHOPS',   x:2800,y:2064,w:700, h:290, loot:'ammo',   dens:1.3},
-    {id:'q_crusher', name:'THE CRUSHER',     x:2400,y:2700,w:760, h:460, loot:'rare',   dens:1.9, arch:'tower'},
-    {id:'q_drag',    name:'THE DRAGLINE',    x:3400,y:2700,w:520, h:380, loot:'bulk',   dens:1.2},
-    {id:'q_sump',    name:'THE SUMP',        x:340, y:2760,w:1500,h:640, loot:'bulk',   dens:0.9}
-  ],
-  spawns:[
-    {x:800, y:380}, {x:4280,y:520},  {x:2500,y:1000},
-    {x:2100,y:1580},{x:4230,y:2200}, {x:1900,y:3400}
-  ],
-  // Two of the three ways out are UP.
-  extracts:[
-    {x:1470,y:360}, {x:1420,y:2200}, {x:3180,y:3350}
   ]
 }
 ];
@@ -18471,13 +18009,7 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
         if(!CD||CD.type==='conduct'||CD.prog>=CD.n) continue;
         // Work for another site cannot progress here, so it is not a decision you
         // can act on during this raid. It stays on the Mainframe.
-        if(CD.type==='district'&&CD.map!==undefined&&CD.map!==P.mapIx) continue;
         var _cdTxt=(CD.desc||'contract');
-        if(CD.type==='district'&&CD.map!==undefined){
-          // on its own map the site name is the ground under you, so drop it
-          var _cdM=FIXED_MAPS[clamp(CD.map,0,FIXED_MAPS.length-1)].name;
-          _cdTxt=_cdTxt.replace(', '+_cdM,'');
-        }
         _live.push({left:Math.max(0,CD.n-CD.prog),txt:_cdTxt+'  '+CD.prog+'/'+CD.n});
       }
       // Nearest to finishing first: "you are on five of six" is the fact that
@@ -24930,24 +24462,17 @@ document.getElementById('mapbtn').onclick=function(){
 // A sector board that lies is worse than no sector board, because he picks on it.
 // These lines now say only what 640 measured raids support.
 var SECTOR_CHAR=[
-  'Slow, and it hides you longest. Three stacked worlds joined at a handful of crossings, with the crest the only long way across. Trouble finds you later here than anywhere else, and raids run longer for it. Roughly a seventh of a raid is spent wading, which is slower and louder than walking.',
-  'Loud and early. Contact comes soonest of the four, about half the time it takes on the dam, and the fighting is close because the interior is dense. Loot runs slightly thinner per container than elsewhere, so this is a sector you come to for the fight rather than the haul.',
-  'Quiet, then lethal. Long holds down tight aisles where nothing happens for minutes and then all of it happens at once, and machines account for almost every death here. It used to be far and away the deadliest sector; that turned out to be two of its three exits sitting 503 units apart, and with the third moved into the north dock it now walks out about as often as the dam.',
-  'Open, forgiving, and the richest. Long sight lines mean you see trouble coming and can usually walk away from it, and it quietly carries the most containers, the most items and the biggest hauls in the game. The easiest sector to leave alive.'
+  'Quiet, then lethal. Long holds down tight aisles where nothing happens for minutes and then all of it happens at once, and machines account for almost every death here.'
 ];
 // Measured at v2.99 over 160 bot raids per sector, mapIx pinned, simGreed 52,
 // identical seed list on all four. Stated as bot numbers on the board itself
 // because the bot is not him: it dies to machines far more than he does, so read
 // these as the SHAPE of each sector rather than as his own odds.
+// COLD STORAGE remeasured at v3.06 on the SAME 160 seeds after the third extract
+// moved out of the south-west cluster: 4.4 to 15.0 percent, 7 walkouts to 24.
+// v7.31 baseline on the current build: 24.5 percent over 200 seeds.
 var SECTOR_MEAS=[
-  {ext:15.0,fc:105,cont:16.2,haul:8035},
-  {ext:18.8,fc:53, cont:16.7,haul:7250},
-  // COLD STORAGE remeasured at v3.06 on the SAME 160 seeds after the third extract
-  // moved out of the south-west cluster: 4.4 to 15.0 percent, 7 walkouts to 24.
-  // The board carried 4.4 for one build; leaving it would have recreated the exact
-  // fault v3.00 existed to fix, so it moves with the map.
-  {ext:15.0,fc:77, cont:16.3,haul:7775},
-  {ext:23.1,fc:69, cont:16.9,haul:8965}
+  {ext:24.5,fc:77, cont:16.3,haul:7775}
 ];
 function renderSector(){
   var host=document.getElementById('sectorlist');
