@@ -68,10 +68,10 @@ fetch(url).then(function(r){
   if(!r.ok) throw new Error('HTTP '+r.status+' for '+url);
   return r.text();
 }).then(function(t){
-  var m=t.match(/<script\b[^>]*>([\s\S]*?)<\/script>/);
+  var mm=t.match(/<script\b[^>]*>([\s\S]*?)<\/script>/g), m=null; // ALL script tags, concatenated: a second block must not hide from the gate. Blind spot: new Function wraps the source in a function body, so a stray top-level 'return' parses here but breaks a real script.
   var out=document.getElementById('out');
-  if(!m){ out.innerHTML='<p class="bad">no script tag found in '+url+'</p>'; return; }
-  var src=m[1], b=balance(src), du=dupes(src), parse;
+  if(!mm||!mm.length){ out.innerHTML='<p class="bad">no script tag found in '+url+'</p>'; return; }
+  var src=mm.map(function(w){ return w.replace(/^<script\b[^>]*>/,'').replace(/<\/script>$/,''); }).join('\n;\n'), b=balance(src), du=dupes(src), parse;
   try{ new Function(src); parse='OK'; }catch(e){ parse=e.name+': '+e.message; }
   var ver=(src.match(/var VER='([^']+)'/)||[])[1]||'?';
   var pass=(parse==='OK'&&b.par===0&&b.cur===0&&b.sq===0&&du.length===0);

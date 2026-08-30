@@ -613,7 +613,7 @@ main loop       hub UI          wiring          boot</code></pre>
         <li>Rebuild the fixture.</li>
         <li>Load <code>http://localhost:8800/fixture.html</code>.</li>
         <li>Call <code>__forceSize(1280,720)</code> first, or the canvas is zero-sized and <code>drawImage</code> throws.</li>
-        <li>For each of the four maps: <code>__prof().mapIx = n; __startRaid();</code> then step <code>__sim(dt)</code> and <code>__frame(dt)</code> for a few dozen frames.</li>
+        <li>For each of the four maps: <code>__P().mapIx = n; __startRaid();</code> then step <code>__sim(dt)</code> and <code>__frame(dt)</code> for a few dozen frames.</li>
         <li><strong>Assert <code>__state().drawErr</code> is null.</strong> The renderer catches per-entity faults so one bad entity does not kill the frame. A silent <code>drawErr</code> is a real bug a clean console will not show you.</li>
         <li>Run <code>__simBatch(n)</code> for balance numbers. It blocks the main thread for roughly ten seconds per raid, so kick it off with <code>setTimeout</code> and poll a global.</li>
       </ol>

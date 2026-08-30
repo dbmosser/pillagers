@@ -530,7 +530,6 @@ window.__simPaired=function(seeds,dialsA,dialsB){
     exactTwoSidedP:+p.toFixed(4), rows:rows};
 };
 window.__setHot=function(i){ return setHot(i); };
-window.__items=function(){ return ITEMS; };
 window.__loot=function(){ return LOOT; };
 // The item table and its icon renderer, so "does every item draw" can be
 // answered instead of assumed. A blank cell in his stash is a shipped bug.
@@ -648,7 +647,6 @@ window.__zoom={set:setZoom,tick:tickZoom,cur:ZOOM,target:zoomTarget,
   min:function(){return ZMIN;},max:function(){return ZMAX;}};
 window.__roll={try:tryRoll,spd:function(){return ROLLSPD;},stam:function(){return ROLLSTAM;}};
 window.__getZoom=function(){ return ZOOM(); };
-window.__prof=function(){ return P; };
 // v4.18: the board only refills at boot, so a new contract kind could crash card
 // creation and no sweep would ever roll it. This calls the real generator directly.
 window.__genContract=function(){ return genContract(); };
