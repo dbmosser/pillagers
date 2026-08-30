@@ -529,6 +529,7 @@
   </div>
 
   <div class="tpane" id="tpane_hire" style="display:none">
+    <div class="msub" style="color:#ff5a4a;font-weight:800;letter-spacing:.12em">***EXPERIMENTAL / BUGGY***</div>
     <div class="msub" id="wallet_merc" style="color:var(--amber);font-weight:700"></div>
     <div class="vend">
       <div class="vendgrid" id="mercgrid"></div>
@@ -1053,7 +1054,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.34';
+var VER='7.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1552,15 +1553,8 @@ function loadProfile(){
 if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={};
 if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
 if(P.cosHat==='pigtails'){ P.cosHat='none'; P.cosCut='pigtails'; }  // v7.26 migration
-if(P.buzzCd) delete P.buzzCd;                                       // v7.34: no cooldowns
-if(P.buzz&&P.buzz.length){                                          // v7.34: two substances
-  for(var _bm=P.buzz.length-1;_bm>=0;_bm--){
-    var _bz=P.buzz[_bm];
-    if(_bz.id==='rotgut'||_bz.id==='ale'){ _bz.id='liquor'; _bz.tag='drunk'; }
-    else if(_bz.id==='blotter'){ _bz.id='lsd'; _bz.tag='lsd'; }
-    else if(_bz.tag!=='drunk'&&_bz.tag!=='lsd') P.buzz.splice(_bm,1);
-  }
-}
+if(P.buzzCd) delete P.buzzCd;   // v7.34: no cooldowns
+P.buzz=[];                      // v7.35, his order: quitting the game cuts you off too
 // v6.30: the counters cannot be negative or non-numeric. A damaged save carrying
 // negative credits used to load and print "-5,000c" in the Requisition header. It
 // was never exploitable, because every spend re-checks affordability, but it is a
@@ -8121,7 +8115,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   // v6.02: the key panel is for someone learning the keys. After three raids it
   // steps down to the one line hint, and H still cycles all three states.
   legendOn:1,sprinting:false,     // v6.68, his note: always open on arrival. H cycles it.
-    mercOrder:'loot',mercHold:null,
+    mercOrder:'follow',mercHold:null,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
       kills:{sentry:0,crawler:0,raider:0,snitch:0,warden:0,listener:0,howler:0,bulwark:0,choir:0},
       dmg:{sentry:0,crawler:0,raider:0,snitch:0,other:0},
@@ -11260,8 +11254,8 @@ if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.s
 
   if(mg>0){
     var ox=p.x,oy=p.y;
-    if(!G.sim&&buzzDoses('drunk')>0){
-      var _dzN=Math.min(buzzDoses('drunk'),12);
+    if(!G.sim&&buzzLevel('drunk')>0.05){
+      var _dzN=Math.min(buzzLevel('drunk')*1.8,12);
       if(G._veerNext===undefined) G._veerNext=rnd(2,5);
       G._veerNext-=dt;
       if(G._veerNext<=0){
@@ -13580,8 +13574,34 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
     else if(e.kind==='raider'&&e.merc&&!e.downed&&G.mercOrder==='follow'){
       if(!mercEngage(e,dt)){
         var dF=dist(e,p);
-        want=Math.atan2(p.y-e.y,p.x-e.x);
-        if(dF>120) navSeek(e,p.x,p.y,e.spd,dt);
+        if(dF<420&&!p.downed){
+          if(e.mgoal&&(e.mgoal.opened||dist(e,e.mgoal)>280)){ e.mgoal=null; e.mlootT=0; }
+          if(!e.mgoal){
+            for(var _mc=0;_mc<G.containers.length;_mc++){
+              var _CT=G.containers[_mc];
+              if(_CT.opened||_CT.locked||_CT.mine) continue;
+              if(dist(e,_CT)<160&&dist(p,_CT)<420){ e.mgoal=_CT; e.mlootT=0; break; }
+            }
+          }
+        } else { e.mgoal=null; e.mlootT=0; }
+        if(e.mgoal){
+          var dG=dist(e,e.mgoal);
+          want=Math.atan2(e.mgoal.y-e.y,e.mgoal.x-e.x);
+          if(dG>30) navSeek(e,e.mgoal.x,e.mgoal.y,e.spd*.9,dt);
+          else{
+            e.mlootT=(e.mlootT||0)+dt;
+            if(!G.sim&&Math.random()<dt*0.7) blip('pick',dist(e,G.player));
+            if(e.mlootT>2){
+              e.mgoal.opened=true;
+              for(var _mq=0;_mq<e.mgoal.loot.length;_mq++) e.bag.push(e.mgoal.loot[_mq]);
+              e.looted=(e.looted||0)+1;
+              e.mlootT=0; e.mgoal=null; ping(e.x,e.y,80,true,false,'raider','move');
+            }
+          }
+        } else {
+          want=Math.atan2(p.y-e.y,p.x-e.x);
+          if(dF>120) navSeek(e,p.x,p.y,e.spd,dt);
+        }
         e.face+=clamp(angDiff(want,e.face),-5*dt,5*dt);
       }
       collide(e,G.map.walls);
@@ -14749,9 +14769,11 @@ var _cdone=contractExtract(G.bag,haul);
     }
     P.kitBeforeFree=null;
   }
-  if(how==='dead'&&P.buzz&&P.buzz.length){
+  if((how==='dead'||how==='abandon')&&P.buzz&&P.buzz.length){
     P.buzz.length=0;
-    lines.push('<span style="color:var(--coolant)">Whatever was in your blood went with you.</span>');
+    lines.push('<span style="color:var(--coolant)">'+(how==='dead'
+      ?'Whatever was in your blood went with you.'
+      :'The walk down sweated it out.')+'</span>');
   }
   var acc=T.shots?Math.round(T.hits/T.shots*100):0;
   if(_mfLine) lines.push(_mfLine);
@@ -18040,7 +18062,7 @@ function drawBuzzFx(){
   if(G&&G.sim) return;
   if(typeof P==='undefined'||!P||!P.buzz||!P.buzz.length) return;
   var t=BUZZT;
-  var dr=Math.min(buzzDoses('drunk'),14), ac=Math.min(buzzDoses('lsd'),14);
+  var dr=Math.min(buzzLevel('drunk')*1.8,11), ac=Math.min(buzzLevel('lsd')*1.8,11);
   if(!dr&&!ac) return;
   var wcv=wc.canvas, ocv=ctx.canvas;
   // TRACERS first: last frame's finished image smeared under this one, feeding back on
@@ -22464,7 +22486,7 @@ function vendorLine(id){
 // If he dies you owe a death benefit to his family, and it is meant to sting:
 // a bad mercenary run should be able to put you in debt. Standing history
 // discounts the hire, which is the payoff for the whole relationship system.
-var MERC_BASE=2600, MERC_DEATH=3400;
+var MERC_BASE=30000, MERC_DEATH=3400;
 function mercCost(id){
   var rec=idRec(id);
   // good standing makes him cheaper, a grudge makes him refuse outright
@@ -22667,8 +22689,9 @@ function renderMercDetail(rows){
   d.innerHTML=h;
   var b=document.createElement('button');
   b.className='vbuy';
-  b.textContent=hired?'HIRED':(cost===null?'WILL NOT WORK':'HIRE');
-  b.disabled=hired||cost===null||P.credits<cost;
+  var _oneAlready=!!P.merc&&!hired;
+  b.textContent=hired?'HIRED':(_oneAlready?'ONE AT A TIME':(cost===null?'WILL NOT WORK':'HIRE'));
+  b.disabled=hired||_oneAlready||cost===null||P.credits<cost;
   if(!b.disabled){
     b.onclick=function(){
       for(var q=0;q<rows.length;q++) if(rows[q].getAttribute('data-merc')===ID.id){ rows[q].click(); break; }
@@ -22677,10 +22700,10 @@ function renderMercDetail(rows){
   d.appendChild(b);
 }
 var BOOZE=[
-  {id:'liquor', name:'Liquor',  price:300, dur:240, tag:'drunk',
+  {id:'liquor', name:'Liquor',  price:300, dur:180, tag:'drunk',
    line:'It burns. The floor moves.',
    desc:'Double vision, then triple. Every glass stacks on the last, and your hands slow with your legs.'},
-  {id:'lsd',    name:'Blotter', price:520, dur:300, tag:'lsd',
+  {id:'lsd',    name:'Blotter', price:520, dur:180, tag:'lsd',
    line:'The colours arrive.',
    desc:'The surface stops agreeing with itself. Every tab makes it worse, and there is no ceiling.'}
 ];
@@ -22690,10 +22713,22 @@ function buzzDoses(tag){
   for(var i=0;i<B.length;i++) if(B[i].tag===tag) c++;
   return c;
 }
+function buzzEnv(b){
+  // the arc of one dose: on over the first minute, peak through the second, gone by
+  // the end of the third
+  var dur=b.dur||180, age=dur-b.t;
+  if(age<60) return age/60;
+  if(age<120) return 1;
+  return Math.max(0,(dur-age)/60);
+}
+function buzzLevel(tag){
+  var sum=0,B=(typeof P!=='undefined'&&P&&P.buzz)?P.buzz:[];
+  for(var i=0;i<B.length;i++) if(B[i].tag===tag) sum+=buzzEnv(B[i]);
+  return Math.pow(Math.max(0,sum),0.75);
+}
 function buzzSlow(){
   if(G&&G.sim) return 1;
-  var nn=(typeof P!=='undefined'&&P&&P.buzz)?P.buzz.length:0;
-  return 1+Math.min(nn,12)*0.09;
+  return 1+Math.min((buzzLevel('drunk')+buzzLevel('lsd'))*1.8,10)*0.09;
 }
 function sayAny(m){
   if(typeof state!=='undefined'&&state==='raid'&&G&&!G.sim) say(m);
@@ -22721,22 +22756,22 @@ function renderBar(){
     'No tab, no credit, no cutoff. It stacks, and it stops being funny around ten.';
   var h='';
   for(var i=0;i<BOOZE.length;i++){
-    var B=BOOZE[i],nB=buzzDoses(B.tag);
+    var B=BOOZE[i],nB=buzzDoses(B.tag),atCap=nB>=10;
     h+='<div class="row"><div style="flex:1"><b>'+B.name+'</b>'+
        (nB?' <span style="color:#d98aff">IN YOUR BLOOD \u00d7'+nB+'</span>':'')+
        '<div class="hint">'+B.desc+'  Each lasts '+fmtMS(B.dur)+'.</div></div>'+
        '<span class="vl">$'+B.price.toLocaleString()+'</span>'+
-       '<button data-bz="'+B.id+'" '+(P.credits<B.price?'disabled':'')+' style="padding:6px 14px;min-width:120px">INGEST</button></div>';
+       '<button data-bz="'+B.id+'" '+((atCap||P.credits<B.price)?'disabled':'')+' style="padding:6px 14px;min-width:120px">'+(atCap?'AT YOUR LIMIT':'INGEST')+'</button></div>';
   }
   el.innerHTML=h;
   var bs=el.querySelectorAll('[data-bz]');
   for(var q=0;q<bs.length;q++){
     bs[q].onclick=function(){
       var B2=boozeById(this.getAttribute('data-bz')); if(!B2) return;
-      if(P.credits<B2.price) return;
+      if(P.credits<B2.price||buzzDoses(B2.tag)>=10) return;
       P.credits-=B2.price;
       P.buzz=P.buzz||[];
-      P.buzz.push({id:B2.id,tag:B2.tag,t:B2.dur});
+      P.buzz.push({id:B2.id,tag:B2.tag,t:B2.dur,dur:B2.dur});
       saveProfile(); blip('pick');
       say2(B2.line+(buzzDoses(B2.tag)>1?('  That is '+buzzDoses(B2.tag)+'.'):''));
       renderBar();

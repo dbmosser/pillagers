@@ -27199,3 +27199,41 @@ so the motion of the trip - trails, breathing, glitch cadence - ran only frame b
 frame); performance at ten-plus doses on his machine (the draw count grows with doses
 by design, and "nearly unplayable" is allowed to also mean the framerate); the loot
 slow through a real crate hold (same divisor as the pull, which measured exact).
+
+## v7.35 - the hire follows, the dose gets an arc, the bar gets a ceiling
+
+Shipped hot because he was stuck: nine or ten tabs on the old tuning left him unable to
+see, and the doses survived reloads. His orders, all in one build:
+
+THE HIRE, FIXED. "hired player not following you in game." Reproduced in one probe: the
+merc SPAWNS under the loot order and wanders (60 units became 249 behind one sprint).
+The follow order existed the whole time, behind a B key cycle he had no reason to know.
+The default is on-me now, and follow means teammate: he engages threats as before, and
+calm inside the leash he works the containers you walk him past, with the field
+pillagers' own four line consume on tagged fields so the loot state machinery never
+sees him. Hiring costs $30,000 flat, one at a time (the second card's button says ONE
+AT A TIME), and the hire screen wears ***EXPERIMENTAL / BUGGY*** in his letters.
+
+THE DOSE ARC. A dose is three minutes: on over the first, peak through the second, gone
+by the end of the third. Stacks combine through a 0.75 power - five doses feel like
+three and a half - and the ceiling is tuned so ten of anything is heavy but the game
+stays JUST playable, his words. Ten stacks of a substance locks its button at AT YOUR
+LIMIT.
+
+THE FLUSHES. Dying already emptied the blood; abandoning now does too ("The walk down
+sweated it out."), and quitting the game entirely cuts you off: the buzz never survives
+a page load. That last one also frees him from the trip he is stuck in the moment he
+reloads. The v7.34 save migration retired after one version - a boot wipe needs no
+migration.
+
+Verified: parse PASS v7.35. Boot wipe read back after a real reload. The reproduced
+follow bug re-run exactly: 60 units became 101 behind the same sprint, leashed. The
+merc consumed a container en route (looted 1, bag grew). Second hire refused with the
+reason on the button; price read $30,000 on screen; the flag renders. Four maps at
+seed 4242, entities exactly 86/87/58/72, drawErr null. Three endings with headline
+assertions, hub and stage render.
+
+Not verified: the dose arc against a wall clock (envelope maths verified by
+construction, not by three real minutes); merc extract-when-you-do (the existing settle
+logic is untouched and was his earlier spec); how ten stacks feels, which is his to
+judge - and this time the ceiling caps the experiment.
