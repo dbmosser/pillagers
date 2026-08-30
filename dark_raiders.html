@@ -1023,15 +1023,13 @@ function myRig(){ return armorById('std'); }
 var ARMOR_MAX=60;
 var HOTBAR_N=9;
 function armorCap(){ return (G&&G.player&&G.player.armorCap!==undefined)?G.player.armorCap:ARMOR_MAX; }
-// The rig the SIM wears. 'light' is what buildRaid has hardcoded since the bare
-// sim player was found to be measuring a game nobody plays, and it stays the
-// default so no back-catalogue number moves. An unknown id falls back to 'light'
-// rather than throwing, because a typo in a dial should cost a measurement, not
-// the whole batch.
+// The rig the SIM wears. 'std' has been the cfgv-17 default since v7.03, so a
+// missing or typo'd dial must measure the shipped baseline (cap 60), not the
+// old 'light' (cap 35). A bad id costs nothing but the typo, never the batch.
 function simRigId(){
   var r=CFG.simRig;
-  if(!r) return 'light';
-  return armorById(r)&&armorById(r).id===r ? r : 'light';
+  if(!r) return 'std';
+  return armorById(r)&&armorById(r).id===r ? r : 'std';
 }
 // THE RIG'S CAP IS THE CEILING, AND FOR TWO OF THE FOUR RIGS IT WAS NOT, v2.16.
 // The comment above ARMOR_MAX states the intent exactly: "the old flat ceiling is
@@ -1055,7 +1053,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.45';
+var VER='7.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1116,7 +1114,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,superhotSlow:0.06,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,listenRecT:0.55,listenRecSpd:0.30,downResetsPull:1};
+  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,superhotSlow:0.06,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -1557,6 +1555,8 @@ if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just h
 if(P.cosHat==='pigtails'){ P.cosHat='none'; P.cosCut='pigtails'; }  // v7.26 migration
 if(P.buzzCd) delete P.buzzCd;   // v7.34: no cooldowns
 if(P.sp!==undefined) delete P.sp;   // v7.38: PROGRESS folded into XP; the field is dead
+if(P.rig!==undefined) delete P.rig;   // v7.46: rigs left at v5.83; nothing reads these
+if(P.rigs!==undefined) delete P.rigs;
 if(P.seals&&P.seals[2]){ P.seals[0]=P.seals[2]; }                       // v7.39: one map -
 if(P.seals){ delete P.seals[1]; delete P.seals[2]; delete P.seals[3]; } // cold's records win
 if(P.mapSeen&&P.mapSeen[2]){ P.mapSeen[0]=P.mapSeen[2]; }
@@ -6705,16 +6705,7 @@ function pedBuy(ix){
   var st=G.trade.stock[ix];
   if(!st||st.sold) return;
   if((P.credits||0)<st.price){ say('You cannot cover '+'$'+st.price.toLocaleString()+'.'); return; }
-  // A PLATE WITH NO RIG IS THE SHOP DEFECT v2.17 FIXED, AT THE ONE SITE IT DID
-  // NOT COVER. He stocks plates, and with No Rig the ceiling is 0, so the buy was
-  // roughly 646 credits for something that can never be slotted and sells back
-  // for 340. Refused with a reason rather than sold and regretted. The panel
-  // greys the row too, so this is the backstop and not the only warning: a sale
-  // should stand on its own conditions rather than on the state of a row drawn
-  // earlier, which is the same lesson the hub shop learned.
-  if(ITEMS[st.k]&&ITEMS[st.k].use==='armor'&&armorCap()<=0){
-    say('No rig to slot it into. He keeps it.'); return;
-  }
+
   var cap=PACKCAP[P.pack],wt=(ITEMS[st.k]?ITEMS[st.k].wt:1);
   if(bagWeight()+wt>cap){ say('No room in the bag for that.'); return; }
   P.credits-=st.price; saveProfile();
@@ -9932,7 +9923,7 @@ function useArmor(){
   var p=G.player,ix=findArmor();
   if(ix<0) return;
   var cap=armorCap();
-  if(cap<=0){ say('No rig to slot it into.'); return; }
+
   if(p.armor>=cap){ say('Armour is already full.'); return; }
   if(p.prep){ say('Already applying '+(ITEMS[p.prep.key]?ITEMS[p.prep.key].name:'something')+'.'); return; }
   var it=ITEMS[G.bag[ix]],k4=G.bag[ix];
@@ -12563,7 +12554,6 @@ if(e.kind==='stray'){
       }
 if(e.state==='hunt'){
         var _lf=(CFG.listenFair!==0);
-        if(e.recover>0) e.recover-=dt;
         if(CFG.listenLive!==0&&!p.downed&&p.moving&&!G.pCrouch){
           var _lr=(_lf?(G.sprinting?300:210):(G.sprinting?430:290))*(CFG.listenGain===undefined?1.35:CFG.listenGain)/1.35;
           if(dist(e,p)<_lr){ e.heardX=p.x; e.heardY=p.y; e.millT=0; }
@@ -12578,7 +12568,7 @@ if(e.state==='hunt'){
         // so with any separation padding this could never be true.
         if((ld-(e.r+(p.r||11)))<=MELEE_REACH&&e.cd<=0&&!p.downed){
           damagePlayer(e.dmg,'listener',e.name,e.x,e.y); e.cd=0.85;
-          if(_lf){ e.recover=(CFG.listenRecT===undefined?0.55:CFG.listenRecT); if(!G.sim) sfx('alarm',e.x,e.y); }
+          if(_lf&&!G.sim) sfx('alarm',e.x,e.y);
         }
         if(dist(e,{x:e.heardX,y:e.heardY})<40){
           // Arrived at the sound and there is nothing here. It waits, and any
@@ -19609,18 +19599,14 @@ function drawTrade(){
   for(i=0;i<T.stock.length;i++){
     var S=T.stock[i],IT=ITEMS[S.k]||{name:'?',c:'#888'};
     cy+=LH(20);
-    // Armour you have nowhere to put reads as unaffordable rather than as stock,
-    // and says which of the two it is, so the refusal in pedBuy is never a
-    // surprise. v2.17.
-    var noRig=(IT.use==='armor'&&armorCap()<=0);
-    var can=!S.sold&&!noRig&&(P.credits||0)>=S.price;
+    var can=!S.sold&&(P.credits||0)>=S.price;
     ctx.font=FS(TYPE.label);
     if(!S.sold) drawItemIcon(ctx,S.k,x+LH(24),cy-LH(5),LH(18));
     ctx.fillStyle=S.sold?'#4d5762':(can?IT.c:'#8a5a4a');
     ctx.fillText('['+(i+2)+']  '+(S.sold?'sold':IT.name),x+LH(38),cy);
     ctx.textAlign='right';
     ctx.fillStyle=S.sold?'#4d5762':(can?'#ffc04a':'#8a5a4a');
-    ctx.fillText(S.sold?'gone':(noRig?'no rig':('$'+S.price.toLocaleString()+'')),x+PW-14,cy);
+    ctx.fillText(S.sold?'gone':('$'+S.price.toLocaleString()+''),x+PW-14,cy);
     ctx.textAlign='left';
   }
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
@@ -23001,7 +22987,7 @@ try{ renderFreeKit(); }catch(_fk){}
   function tabOf(k){
     var t=ITEMS[k]; if(!t) return 'part';
     if(t.use==='gun') return 'gun';
-    if(t.use==='armor'||t.use==='rig') return 'armor';   // a rig IS body armour, v5.34
+    if(t.use==='armor') return 'armor';   // no ITEMS entry has carried use:'rig' since v5.83
     if(t.use==='key') return 'key';                      // v6.39, his note: keys are their own class
     if(craftPart(k)) return 'part';            // recipes and racks eat these
     if(t.use) return 'use';
@@ -23716,7 +23702,7 @@ function renderShop(){
         saveProfile(); renderShop(); renderHub();
       };
     }
-    var sic=o.kind==='wep'?o.k:(o.kind==='rig'?('rig_'+o.k):(o.kind==='pack'?'pack':o.k));
+    var sic=o.kind==='wep'?o.k:(o.kind==='pack'?'pack':o.k);
     row.appendChild(iconImg(sic,26));
     row.appendChild(nm); row.appendChild(vl); row.appendChild(b);
     row.insertBefore(row.children[0],nm);
@@ -23728,11 +23714,10 @@ function renderShop(){
 // cream panel carrying the name, what it does, the price and a single big button.
 function shopEntryLabel(o){
   if(o.kind==='wep') return WEAPONS[o.k]?WEAPONS[o.k].name:o.k;
-  if(o.kind==='rig'){ var R=armorById(o.k); return R?R.name:o.k; }
   return ITEMS[o.k]?ITEMS[o.k].name:o.k;
 }
 function shopEntryIcon(o){
-  return o.kind==='wep'?o.k:(o.kind==='rig'?('rig_'+o.k):o.k);
+  return o.k;
 }
 function shopEntryRarity(o){
   if(o.kind==='wep') return 'rare';
@@ -23834,7 +23819,7 @@ function renderShopDetail(rows){
   var row=rows?rows[P._shopSel]:null;
   var btn=row?row.querySelector('button'):null;
   var locked=P.rep<o.rep;
-  var cat=(o.kind==='wep')?'WEAPON':(o.kind==='rig')?'BODY ARMOUR':
+  var cat=(o.kind==='wep')?'WEAPON':
     ((ITEMS[o.k]&&ICLASS[ITEMS[o.k].use])?ICLASS[ITEMS[o.k].use].t:'SUPPLY');
   var rar=shopEntryRarity(o);
   var h='<div class="vpills"><span class="vpill">'+escHtml(cat)+'</span>'+
@@ -23863,17 +23848,13 @@ function renderShopDetail(rows){
        'them, and anything can turn up in a container. '+
        '<b style="color:#c9962c">The Whisper and the Meridian Lance are never sold, by '+
        'anyone. Those two are found up top or not at all.</b></div>';
-  } else if(o.kind==='rig'){
-    var R=armorById(o.k);
-    h+='<div class="vdesc">'+R.cap+' armour, absorbing '+Math.round(R.absorb*100)+
-       '% of every hit until it is gone.</div>';
   } else {
     var it=ITEMS[o.k];
     h+='<div class="vdesc">'+escHtml(it?(itemBlurb(o.k)||''):'')+'</div>';
   }
 +'<div class="vdesc" style="color:#8a5a2c">Locked until reputation '+
     o.rep.toLocaleString()+'. You have '+P.rep.toLocaleString()+'.</div>';
-  var stackable=(o.kind!=='wep'&&o.kind!=='rig');
+  var stackable=(o.kind!=='wep');
   if(P._shopQty===undefined||P._shopQty<1) P._shopQty=1;
   var qty=stackable?P._shopQty:1;
   h+='<div class="vprice">PRICE<b>'+'$'+(o.price*qty).toLocaleString()+'</b></div>';
@@ -24584,7 +24565,7 @@ function syncSectorKit(){
   var rig=null;
   try{ rig=myRig(); }catch(_gr){ rig=null; }
   var line='<b>Going up with:</b> '+(w?escHtml(w.name):'an issued sidearm')+
-           ' &middot; '+escHtml((rig&&rig.name)||'No Rig');
+           ' &middot; '+escHtml((rig&&rig.name)||'Body Armour');
   // The terminal already decides whether that is enough and what to do about it.
   // Repeat its verdict rather than writing a second one that can disagree.
   try{
@@ -24762,8 +24743,7 @@ function renderStage(prefill){
     var bits=[];
     bits.push(g1?escHtml(g1.name):'<span style="color:var(--hazard)">no gun of your own, a loaner</span>');
     bits.push(g2?escHtml(g2.name):'<span style="color:var(--ash)">no second gun</span>');
-    bits.push(rg2.cap?(rigCeil(rg2)+' armour')
-                     :'<span style="color:var(--hazard)">no rig, zero armour</span>');
+    bits.push(rigCeil(rg2)+' armour');
     var kn=stageKitLive().length;
     bits.push(kn?(kn+' item'+(kn===1?'':'s')+' packed'):'<span style="color:var(--ash)">nothing packed</span>');
     sw.innerHTML=bits.join('  &middot;  ');
@@ -24921,13 +24901,11 @@ function renderStage(prefill){
   });
 
   // ---- what is wrong with this ascent
-  // rg and w were declared by the loadout rows that moved onto the figure, so
-  // this block now looks them up itself rather than inheriting two variables
-  // from a section that no longer exists.
-  var rg=myRig();
+  // w was declared by the loadout rows that moved onto the figure, so this block
+  // looks it up itself rather than inheriting a variable from a section that no
+  // longer exists.
   var w=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null;
   var warn=[];
-  if(!rg.cap) warn.push('no armour');
   if(!w) warn.push('no gun of your own');
   var hasHeal=kit.some(function(k){ return ITEMS[k]&&(ITEMS[k].use==='heal'||ITEMS[k].use==='stim'); });
   if(!hasHeal) warn.push('nothing to heal with');
@@ -25362,19 +25340,12 @@ function cosSwatch(c){
          'border-radius:6px;background:#1b1f26;border:2px solid #14161b;font-size:15px">'+f+'</span>';
 }
 // WHAT SHE IS WEARING, drawn as her. Hair takes the cosmetic colour, the hat
-// sits on top of it, and the torso takes the colour of the rig so a Breacher
-// Plate is visibly a different object to a Scav Rig at a glance.
-var RIGCOL={none:['#3d4450','#59626f'],light:['#4a5a48','#6d8163'],
-            medium:['#3f4d63','#5d7290'],heavy:['#5a4436','#8a6a4f']};
+// sits on top of it, and the torso takes the FITCOL clothing colour.
 function avatarHTML(){
   var hair=cosWorn('hair'), hat=cosWorn('hat');
   var hc=HAIRCOL[hair]||HAIRCOL.blonde;
-  var rg=myRig();
-  var rc=RIGCOL[rg.id]||RIGCOL.none;
-  var hatGlyph={none:'',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC',visor:'\u25AD',crown:'\u2662',
-                pigtails:'()'}[hat]||'';
-  var hatBg={none:'',band:'#c0503a',phones:'#22262e',mask:'#14161b',visor:'#a9682f',crown:'#c9962c',
-             pigtails:hc[1]}[hat]||'';
+  var hatGlyph={none:'',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC',visor:'\u25AD',crown:'\u2662'}[hat]||'';
+  var hatBg={none:'',band:'#c0503a',phones:'#22262e',mask:'#14161b',visor:'#a9682f',crown:'#c9962c'}[hat]||'';
   var sk=SKINCOL[cosWorn('skin')]||SKINCOL.fair;
   var ft=FITCOL[cosWorn('fit')]||FITCOL.slate;
   var bd=BODYBUILD[cosWorn('build')]||BODYBUILD.lean;
@@ -25435,7 +25406,7 @@ function renderAvatar(host,pickHost){
 // A PRESET IS A SNAPSHOT OF THE THINGS THE ASCENT CHECK CAN CHANGE. Nothing
 // cosmetic: a hat is part of you rather than part of a loadout.
 function loadoutSnap(){
-  return {equipped:P.equipped,equippedSec:(P.equippedSec||'none'),rig:(P.rig||'none'),
+  return {equipped:P.equipped,equippedSec:(P.equippedSec||'none'),
           hotAssign:JSON.parse(JSON.stringify(P.hotAssign||{})),
           kit:(P.kit||[]).slice()};
 }
@@ -25449,7 +25420,7 @@ function loadoutLabel(L){
   var nk=(L.kit||[]).length;
   return g+(sec?(' + '+sec):'')+', '+(nk?(nk+' packed'):'nothing packed');
 }
-// TAKES ONLY WHAT YOU STILL OWN. A preset holding a rig you have since lost
+// TAKES ONLY WHAT YOU STILL OWN. A preset holding a gun you have since lost
 // applies the rest and SAYS what it skipped, rather than failing whole or
 // quietly equipping something that is not in your stash.
 function loadoutApply(L){
@@ -25460,9 +25431,7 @@ function loadoutApply(L){
   if(L.equippedSec==='none'||L.equippedSec==='fists') P.equippedSec='none';
   else if((P.weapons||[]).indexOf(L.equippedSec)>=0) P.equippedSec=L.equippedSec;
   else { P.equippedSec='none'; missing.push(WEAPONS[L.equippedSec]?WEAPONS[L.equippedSec].name:L.equippedSec); }
-  var haveRig=(L.rig==='none')||((P.rigs||[]).indexOf(L.rig)>=0);
-  if(haveRig) P.rig=L.rig;
-  else missing.push(armorById(L.rig).name);
+
   // Only plan a slot for something that exists as an item.
   var ha={};
   for(var k in (L.hotAssign||{})) if(ITEMS[L.hotAssign[k]]) ha[k]=L.hotAssign[k];

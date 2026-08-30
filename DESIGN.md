@@ -27443,6 +27443,51 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.46 - THE RIG GRAVEYARD
+
+Section 3 of the audit, first half: the rig system left the game at v5.83, and
+myRig() has returned the single std entry ever since, which makes every branch
+below provably unreachable. The 13-agent audit confirmed each one and its
+adversarial verifier failed to refute any of them; every anchor was re-grepped
+tonight before the patch.
+
+Deleted: the RIGCOL colour table that was computed and never applied (its
+comment claimed the torso takes rig colour; the torso takes FITCOL and now the
+comment says so); the stale pigtails keys in hatGlyph/hatBg (pigtails has been a
+cut, not a hat, since v7.26); all six kind:'rig' shop branches (SHOP is
+closure-local and has no rig entries - icon pick, label, icon fn, category
+pill, detail branch, and the stackable test which is now simply kind!=='wep');
+the rig field in loadoutSnap and the haveRig block in loadoutApply (a legacy
+preset could still print "applied, without Scav Rig"; legacy L.rig is now
+ignored); and the whole no-rig string family - both "No rig to slot it into"
+refusals, the Peddler panel's noRig greying, the "no rig, zero armour" ternary
+arm, the stage's "no armour" warning, and the use==='rig' test - all behind
+guards that need armorCap()<=0 while the player's cap has been a flat 60 for
+two thousand builds. The ARMORS table rows all stay: they are live for raider
+stats, loot tiers and damage absorb.
+
+P.rig and P.rigs now die at profile load, the same one-line pattern as P.sp and
+P.buzzCd. The bodyRecover writer that could theoretically recreate them is the
+U2 decision-gated chain and was deliberately not touched.
+
+Two live changes rode along, both conservative: simRigId's fallbacks move from
+'light' (cap 35) to 'std' (cap 60), so a missing or typo'd dial measures the
+shipped baseline instead of a game nobody plays - default behaviour is
+identical because the fallbacks only fire on a bad dial. And the listener's
+recover mechanism, whose last reader v7.40 deleted on his order, is now fully
+gone: the e.recover write and decrement, and the listenRecT/listenRecSpd dials
+in the defaults. The alarm bark on its hit stays. cfgv was NOT bumped: no live
+default changed value, the two removed keys were read by nothing, and a bump
+would churn saved settings for zero behavioural difference.
+
+Not verified: every touched surface was driven (avatar hub, shop grid of 48
+cells plus a detail card, stage warnings via __renderStage, both maps, three
+endings, hub, stage) and every banned string grep-counts to zero - but the
+loadout preset apply with a legacy rig was checked only by code shape, not by
+saving and applying an actual pre-v5.83 preset, and the listener's melee was
+re-verified by branch shape (damagePlayer line untouched), not by staging a
+fresh melee kill.
+
 ## v7.45 - THE STRING TRUTH BATCH
 
 Section 2 of the 13-agent audit, shipped as one build: every string here was
