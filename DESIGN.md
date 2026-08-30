@@ -25901,3 +25901,37 @@ render.
 
 Not verified: the 800 unit threshold. It is a judgement about when a closed ring stops
 being information and starts being clutter, and I have picked it rather than measured it.
+
+## v6.94 - the stash grid could never fill, which is why the screen looked messy
+
+He has called the stash screen messy and its text too small more than once, so this pass
+started with a measurement rather than a redesign. With a save carrying 110 items, which
+is what his real profile held, the stash grid was a 932 by 579 box whose contents used 155
+pixels of it: 425 pixels of nothing, on a FULL stash.
+
+THE CAUSE IS THE CELL COUNT, NOT THE BOX. The stash stacks by type, so 110 items render as
+24 cells, and the cell count is bounded by how many DISTINCT item types exist in the game,
+about twenty five, rather than by how much he owns. At 68 pixels a cell that is two rows,
+and it would still be two rows at a thousand items. The grid was sized for a quantity that
+cannot occur.
+
+So the cells grew into the room they actually have: minimum 96 and typically 120 wide, up
+from 68. Measured after: content fills 526 of the 579 pixel box and the empty tail is 53,
+down from 425. A bigger tile is also a bigger icon and a bigger count, which serves the
+complaint he has made more often than any other.
+
+WORTH RECORDING ABOUT THE AUDIT: avpanel and invcols were on its dead list as
+"unreferenced markup ids", and both are visible, working panels on this very screen. That
+category means the id ATTRIBUTE has no reader, not that the element is dead, and deleting
+those elements would have removed real UI. The audit's finder conflated the two and the
+adversarial pass only checked the reference count, so the conflation survived. The ids can
+go someday; the elements stay.
+
+Verified: parse PASS. Four maps at seed 4242, entity counts 86/87/58/72, zero draw errors,
+__hud clean. All three endings through the outcome screen. Hub frames and stage render.
+Stash measured before and after with a 110 item save and screenshotted.
+
+Not verified: the right-hand loadout column, which is now the emptiest region of that
+screen when nothing is packed, and the left operator panel with its 180 pixel tail. Both
+are real content in the wrong proportions rather than dead space with a one-line cause, so
+they are a considered layout pass rather than a cell-size change, and I have not done it.
