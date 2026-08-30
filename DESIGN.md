@@ -26142,3 +26142,40 @@ errors. All three endings through the outcome screen. Hub frames and stage rende
 renamed button read off the live screen.
 
 Not verified: nothing new this build.
+
+## v7.01 - the rare guns walk the map on elite shoulders
+
+His #44: "the rare guns should drop from other pillagers", and at higher rates in
+higher-value locations. Checked against the current code before building, and two of the
+three parts were already true: a dead pillager has dropped the gun he carried since
+v6.53, and a loot:'rare' landmark stocks straight from the SAFE table, which holds all
+six rare guns, so going somewhere valuable already pays better guns. The gap was that
+pillagers only ever CARRIED pistol, smg, rifle, carbine or shotgun, so the rare tier
+could never come off a body no matter how many were killed.
+
+ELITE pillagers now carry the rare pool: dmr, lmg, magnum, whisper, sniper, lance,
+weighted toward the workhorses with the Lance rarest. The purple ring that already marks
+an elite becomes a read, that one is carrying something worth the fight. The engagement
+range and damage move with the weapon, or an elite with a Longshot would keep an SMG's
+range and read as broken.
+
+STREAM DISCIPLINE, the rule blessElite already follows for its own roll: the gun draw is
+made unconditionally for every entity that passes through, elite or not, machine or
+pillager, so eliteRate 0 and 0.08 still produce identical raids everywhere else.
+
+Measured across 24 raids on six seeds: 20 elites, every one carrying a rare gun, spread
+dmr 8, magnum 5, lmg 3, sniper 2, whisper 2; 190 plain pillagers, every one on the old
+pool. And the whole chain, killed one carrying a Longshot: his body held gun_sniper.
+
+A PROBE NOTE: the first kill attempt showed no body, because setting hp to 0 puts a
+raider DOWN under raiderDown, where his crew can revive him; hp read 1 a moment later.
+Body drops happen on real death. The probe now kills through raiderDown 0 and restores
+the dial after.
+
+Verified: parse PASS. Four maps at seed 4242, entity counts 86/87/58/72, zero draw
+errors. All three endings through the outcome screen. Hub frames and stage render.
+eliteGuns pinned in __pinDefaults in the same build that introduces it.
+
+Not verified: the fight itself. An elite with a Longshot at 0.72 of 900 range engages
+from 648 units, much further than any pillager ever has, and whether that reads as a
+sniper duel or as being shot from nowhere is his to judge.
