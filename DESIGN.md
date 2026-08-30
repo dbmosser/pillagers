@@ -24402,3 +24402,62 @@ with two assigned guns are reasoned rather than observed. The old swapped-guns p
 (p.swapped, gunA and gunB) still exists underneath and is now reachable only when nothing
 is assigned; I have not checked what happens if he assigns one gun and then presses X to
 swap.
+
+## v6.62 - THE MENUS WERE GENUINELY TOO SMALL TO READ
+
+His note, twice, the second time with the diagnosis attached: "the text is so damn small
+the player isn't even going to be able to read it on a smaller pc screen, i'm on a huge
+screen and i can hardly read it."
+
+MEASURED BEFORE TOUCHING ANYTHING, across all eleven panels at 1920x1080. 374 pieces of
+visible menu text, and 306 of them, EIGHTY-TWO PERCENT, were under 12px. The smallest was
+7.5px. The median was about 10px. He is not being fussy: that is unreadable on his screen
+and worse on a laptop.
+
+THE CAUSE. Canvas text has scaled with the viewport since v6.23, through FS and uiScale.
+The DOM menus never got the same treatment and carry hardcoded pixel sizes written when
+this game was a much smaller thing.
+
+TWO CHANGES, because either alone falls short. Every declaration under 10px goes to
+10.5px and 10 and 10.5 go to 11; and menuZoom, which already existed, was wheel
+adjustable between 0.7 and 1.6, and defaulted to 1 doing nothing, now defaults to 1.3.
+He can still wheel it to taste and it saves.
+
+AFTER: 2 percent under 12px against 82, the smallest effective size is 10.4px against
+7.5, and the bulk of the menus now sit between 13.7 and 16.3px. Zero clipped text and
+zero off-screen elements across nine panels, checked at 1, 1.15, 1.25 and 1.4 zoom before
+picking the default.
+
+THE LAST SEVEN WERE INVISIBLE TO THE SWEEP. The stash tab strip, ALL, GUNS, ARMOUR,
+PARTS, SALVAGE, CONSUMABLES and KEYS, sets its size in JAVASCRIPT rather than in a style
+declaration, so a text sweep for font-size could not see it. That is a poor list to have
+unreadable, since it is how you find anything in the stash.
+
+ALSO IN THIS BUILD, all his:
+
+  THE FIRST TIME OUT BRIEFING IS DELETED. "get rid of th entire FIRST TIME OUT menu, it
+  is very dated and not helpful." Both routes that raised it on entering the stash are
+  gone with it.
+
+  TWO SETTINGS ROWS DELETED, "auto-equip a better gun" and "autoloot when the bag is
+  full", on his note that neither is needed.
+
+  THE UPDATE LOG SHOWS EVERY TIME HE COMES DOWN. "i want a update log every single time
+  I refresh the game and come into the undercroft." It was once per WHATSNEW_VER, stamped
+  seen on dismissal, so a profile that had read it never saw it again. Now once per PAGE
+  LOAD, held in a module flag rather than the profile, so a refresh always shows it and
+  walking in and out of the stash in one session does not nag.
+
+Verified: parse PASS at v6.62; the size distribution measured before and after across
+eleven panels; zero clipped and zero off-screen at the new default; the three settings
+rows confirmed absent from the live panel; the briefing confirmed not to open from the
+stash; four maps 86/87/58/72 entities and, at seed 4242, 246/193/152/216 containers; all
+three endings through the outcome screen to a drawn hub; hub, renderStage and the export
+builder; pin audit clean; the stash captured at 1080p.
+
+Not verified: menuZoom is a CSS zoom on the whole menu surface, so it scales layout as
+well as text. I checked nine panels for clipping and overflow at 1080p and found none,
+but I did not check a small window, and a laptop at 1366x768 with zoom 1.3 is exactly the
+case he is worried about and exactly the one I have not driven. The primer's three
+functions are now unreachable and still in the file; they come out next rather than in
+the same build that removed their callers.
