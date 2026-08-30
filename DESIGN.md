@@ -27098,3 +27098,23 @@ DIRECTIONALLY RIGHT: his real career rate is 28.4 percent (23 of 81), and the bo
 
 Not verified: which change moved it (unpaired across builds); the older baselines' seed
 lists.
+
+## v7.32 - being shot ends the revive attempt
+
+Closing v7.29's not verified line found the flaw it predicted. Staged: a reviver under
+sustained fire stood still through eight bursts and completed the pickup at 30 health,
+in both the loot and extract states. The v3.17 judgement was that a man in a firefight
+has a better use of the next four seconds; that judgement now also applies when the
+firefight finds HIM mid attempt. The frame he takes a hit, the attempt drops and his
+normal state logic takes over. He comes back for the mate when it is quiet, which the
+staging proved: committed, shot, broke off without finishing, then finished the pickup
+once the fire stopped.
+
+Verified: parse PASS v7.32. The full behavioural sequence through the real entity AI:
+commit, break under fire, no completion while shot, completion after calm, mate up.
+Four maps at seed 4242, entities exactly 86/87/58/72, drawErr null. Three endings with
+headline assertions, hub and stage render.
+
+Not verified: whether this changes the sim baseline (the reviver breaking off under
+fire could shift raider survival slightly; the next 200 seed baseline will say, and the
+determinism check makes any drift attributable).
