@@ -26472,3 +26472,27 @@ modal.
 Not verified: the racks pane in the state where arrays exist and the wall has been
 cleared for a second bank of racks; I screenshotted the 4-of-10-racks state his current
 profile is in, not the post array geometry.
+
+## v7.12 - the rewards board stops claiming more than its own maximum
+
+Two findings from screenshotting the REWARDS tab through the real station key:
+
+THE PROGRESS LABEL READ 9,365 / 7,500. Progress keeps accumulating past the last tier,
+the bar fill was already clamped to full, and the outcome screen already clamps the same
+number (7,500 of 7,500). Only this label showed the raw counter, and a number past its
+own maximum reads as a bug even when it is honest. It clamps now, matching everywhere
+else the number appears.
+
+FULL WIDTH ROWS, third instance. Ten one line rewards stretched across 1920 with the
+CLAIM buttons a screen away from their labels. Same 1080 cap as settings and racks.
+The tally: settings, racks, rewards capped; stats and contracts left full width on
+purpose, because their layouts actually use it.
+
+Verified: parse PASS v7.12. Screenshot through the real path (walk to Mainframe, press
+R): label reads 7,500 / 7,500, rows in a centered column, claim buttons beside their
+labels. Four maps at seed 4242, entities exactly 86/87/58/72, drawErr null. Three endings
+with headline assertions, hub and stage render. Leave closes.
+
+Not verified: the label mid season (progress genuinely below cap, where clamping must
+not change anything; the code path is Math.min and the fixture profile sits past the cap,
+so the below-cap case ran only in my head).
