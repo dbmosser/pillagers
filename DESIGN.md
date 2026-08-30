@@ -27118,3 +27118,30 @@ headline assertions, hub and stage render.
 Not verified: whether this changes the sim baseline (the reviver breaking off under
 fire could shift raider survival slightly; the next 200 seed baseline will say, and the
 determinism check makes any drift attributable).
+
+## v7.33 - the footprint glitch, found on the fourth attempt
+
+His note: "when sprinting vertically sometimes the footprints glitch out." Three
+reproduction attempts found clean trails; the fourth found it. Eight seconds of sprint
+left SIX prints on the ground, all piled within three units of the final position.
+
+The cause is the shared 150 print cap. Thirty pillagers' boots churn it constantly, and
+the cull eats from the oldest end, so a long sprint's wake vanishes in chunks behind
+you while the newest few stack at your feet. "Sometimes" because it needs enough
+pillagers walking near you to flood the cap; "sprinting" because a fast straight run
+lays the longest trail with the oldest tail. Direction was a red herring.
+
+The fix is two budgets: the player's own boots carry a tag and get a 70 print cap that
+no pillager can evict; everyone else shares the old 150.
+
+Measured, same churn both times: before, 6 own prints spanning 4 units; after, 25 own
+prints spanning 368 units of trail with the pillager pool pegged at its own cap and the
+wake fully intact behind the sprint.
+
+Verified: parse PASS v7.33. The reproduction and the fix both measured through the real
+entity and movement paths. Four maps at seed 4242, entities exactly 86/87/58/72,
+drawErr null. Three endings with headline assertions, hub and stage render.
+
+Not verified: that this matches what HIS eyes saw (the mechanism fits every word of the
+note, but he reported a visual and I diagnosed a buffer); memory cost of 70 extra
+decals, which is negligible by construction.
