@@ -24784,3 +24784,51 @@ guess dressed up as a measurement until he shoots something with it. Also not ve
 whether auto-equip being on is welcome in play. It only fires on a strict upgrade, but it
 is a behaviour change he did not ask for, arrived at because the alternative was shipping
 his gold tier inert. If it annoys him the fix is one line.
+
+## v6.70 - two belt bugs, both of them mine, both confirmed before touching anything
+
+His notes: "my guns didn't stay on my hotbar when i ascended. they were in my inventory
+and i had to drag them back to hotbar", and "moving items from one spot on the tactical
+belt to another spot is not working well".
+
+ONE PROBE SHOWED BOTH. Assigning slot 4 to gun_rifle and slot 6 to bandage, then starting
+a raid:
+
+  slot 4 -> throw:frag       the gun assignment was DROPPED
+  slot 5 -> heal             the derived medical slot
+  slot 6 -> item:bandage     the assignment, so the SAME bandages twice on one belt
+
+THE GUN. An assignment is honoured only while you still carry the thing, and "carry" was
+read as "it is in the bag". A gun you actually took is in your HANDS, in p.wep or p.sec,
+and is never in the bag, so every gun assignment was discarded on the first frame of
+every raid. The assignment saved correctly and was thrown away on arrival, which is why
+it looked to him like the belt had forgotten. An equipped gun now satisfies the check and
+the slot shows the gun as it really is: its rolled name, its live ammo, its tint, and
+whether it is the one currently up. A Gold Longshot on the belt reads gold.
+
+Pressing that key also had to work. The assigned branch bailed out whenever the item was
+not in the bag, so the key for a gun in your hands did nothing at all; and the gun case
+called equipFromBag, which cannot find a gun that is not there. The key now brings the
+gun up if you are holding it, and his rule from v6.60 still stands: a belt key changes to
+the gun, it never fires it. Verified by driving all nine keys, which swapped the Auto
+Rifle into hand and threw nothing.
+
+THE DUPLICATE. The bar is derived fresh every frame and the assignment map only
+OVERRIDES one slot, so a bandage dragged to slot 6 stayed visible in the derived medical
+slot at 5 as well. Dragging a thing one place put it in two, which reads exactly like a
+move that did not take. A second pass now clears the derived twin of anything assigned
+elsewhere and leaves a real empty slot behind. It is a separate pass on purpose, so the
+assignment loop stays the only writer of slots.
+
+After: slot 0 empty, slot 4 the assigned rifle with 25 rounds, slot 5 empty, slot 6 the
+bandage. The gun appears once and the bandage appears once.
+
+Verified: parse PASS. Four maps at seed 4242, counts 86/87/58/72 and 246/193/152/216,
+drawErr null. All nine belt keys driven without throwing. All three endings through the
+outcome screen and back to the hub. Hub frames and stage render.
+
+Not verified: dragging on the actual stash screen with a mouse. Everything above was
+driven through hotbarSlots and useHot directly, which is where both faults were, but the
+drag handler that WRITES the assignment was only read, not exercised by pointer. If his
+next note is that dropping still misbehaves, that handler is the place to look and I have
+not yet cleared it.

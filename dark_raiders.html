@@ -968,7 +968,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.69';
+var VER='6.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9834,10 +9834,46 @@ function hotbarSlots(){
     // sitting there as a lie.
     var have=0;
     for(var bi=0;bi<G.bag.length;bi++) if(G.bag[bi]===akey) have++;
-    if(have<=0) continue;
-    out[aix]={k:'item:'+akey,name:ait.name,icon:akey,
-      kind:(ait.use==='heal'?'heal':(ait.use==='armor'?'armor':(ait.use==='gun'?'gun':'item'))),
-      count:have,c:ait.c||'#cdd6dd',assigned:1,itemKey:akey};
+    // v6.70: a gun you took is in your HANDS, not your bag. Counting only the bag
+    // discarded every gun assignment on the first frame of the raid, which is his
+    // "my guns didn't stay on my hotbar when i ascended".
+    var _agk=(ait.use==='gun')?ait.gk:null, _eq=null;
+    if(_agk){
+      if(p.wep&&p.wep.id===_agk)      _eq={w:p.wep,am:p.ammo,   inHand:!sw};
+      else if(p.sec&&p.sec.id===_agk) _eq={w:p.sec,am:p.secAmmo,inHand:sw};
+    }
+    if(have<=0&&!_eq) continue;
+    if(_eq){
+      // Shows the gun as it actually is: its rolled name, its live ammo, its tint, and
+      // whether it is the one currently up, so a Gold Longshot on the belt reads gold.
+      out[aix]={k:'item:'+akey,name:_eq.w.name,icon:_agk,kind:'gun',inHand:_eq.inHand,
+        count:(_eq.w.mag===0?null:_eq.am),c:_eq.w.tint||'#ffd48a',assigned:1,itemKey:akey,equipped:1};
+    } else {
+      out[aix]={k:'item:'+akey,name:ait.name,icon:akey,
+        kind:(ait.use==='heal'?'heal':(ait.use==='armor'?'armor':(ait.use==='gun'?'gun':'item'))),
+        count:have,c:ait.c||'#cdd6dd',assigned:1,itemKey:akey};
+    }
+  }
+  // v6.70, his note that moving a belt item does not work: the bar is DERIVED and an
+  // assignment only overrides one slot, so the thing you dragged stayed visible in the
+  // slot it came from too. Anything now assigned somewhere is cleared from the derived
+  // slot that would otherwise show the same thing, and the freed slot becomes empty.
+  // Done as a second pass so the assignment loop above stays the only writer of slots.
+  for(var di=0;di<out.length;di++){
+    var dsl=out[di];
+    if(!dsl||dsl.assigned) continue;
+    var dupe=false;
+    for(var aj in (G.hotAssign||{})){
+      var ajx=+aj; if(ajx===di||!(ajx>=0&&ajx<out.length)) continue;
+      if(!out[ajx]||!out[ajx].assigned) continue;      // that assignment did not take
+      var ak2=G.hotAssign[aj], ai2=ITEMS[ak2]; if(!ai2) continue;
+      if(ai2.use==='heal'&&dsl.k==='heal') dupe=true;
+      else if(ai2.use==='armor'&&dsl.k==='plate') dupe=true;
+      else if(dsl.k==='throw:'+ak2) dupe=true;
+      else if(ai2.use==='gun'&&(dsl.k==='gunA'||dsl.k==='gunB')&&dsl.icon===ai2.gk) dupe=true;
+      if(dupe) break;
+    }
+    if(dupe) out[di]={k:'empty:'+di,name:'Empty slot',kind:'empty',count:0,c:'#4d5762'};
   }
   return out;
 }
@@ -9896,8 +9932,10 @@ function useHot(){
   // findHeal would have reached for.
   if(s2.assigned&&s2.itemKey){
     var ix=G.bag.indexOf(s2.itemKey);
-    if(ix<0) return;
     var ait=ITEMS[s2.itemKey]; if(!ait) return;
+    // v6.70: an equipped gun is not in the bag, and bailing on that made the belt key
+    // for a gun you are holding do nothing. Everything else still needs the bag.
+    if(ix<0&&!(ait.use==='gun')) return;
     if(ait.use==='heal'){
       // Same inbound-aware guard as useMedical; this path names ONE item so it
       // cannot just delegate, but it must not overfill either.
@@ -9936,7 +9974,16 @@ if(ait.use==='rig'){
     if(ait.use==='armor'){ useArmor(); return; }
     // v6.60, his note: a gun on the belt is used by equipping it, the same as picking
     // it out of the bag, which is the only thing "use" can mean for a gun.
-    if(ait.use==='gun'){ equipFromBag(ix,0); return; }
+    if(ait.use==='gun'){
+      // v6.70: if that gun is already in your hands, the key brings it up rather than
+      // failing to find it in the bag. His rule from v6.60 stands: a belt key changes
+      // to the gun, it never fires it.
+      var _pp2=G.player;
+      if(_pp2.wep&&_pp2.wep.id===ait.gk&&_pp2.swapped) { swapGuns(); return; }
+      if(_pp2.sec&&_pp2.sec.id===ait.gk&&!_pp2.swapped){ swapGuns(); return; }
+      if((_pp2.wep&&_pp2.wep.id===ait.gk)||(_pp2.sec&&_pp2.sec.id===ait.gk)) return;  // already up
+      equipFromBag(ix,0); return;
+    }
     return;   // valuables are carried, not used
   }
   if(s2.kind==='throw') doThrow();
