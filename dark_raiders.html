@@ -402,6 +402,20 @@
     overflow:auto; flex:1; line-height:1.55; white-space:pre-wrap; margin:0; }
   /* REDO slice five: the lists that never got the family border. */
   #setlist,#primerlist,#sectorlist,#contracts,#loglist{ border:1px solid var(--steel-hi); }
+  /* v6.74: YOUR STATS. A card grid rather than four small rows, because his note was
+     that the screen has terribly poor layout, and the fix for that is hierarchy: one
+     big number per card, its label above it, its recent form under it. */
+  #statgrid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+             gap:7px; margin:2px 0 4px 0; }
+  .scard{ border:1px solid var(--steel-hi); background:rgba(255,255,255,.02);
+          padding:8px 10px; border-radius:3px; min-width:0; }
+  .scard .sk{ font-size:11px; letter-spacing:.10em; text-transform:uppercase;
+              color:var(--ash); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .scard .sv{ font-size:23px; line-height:1.15; font-weight:700; color:var(--paper);
+              font-variant-numeric:tabular-nums; margin-top:2px; }
+  .scard .ss{ font-size:12px; color:var(--ash); margin-top:2px; }
+  .scard .ss b{ color:var(--amber); font-weight:600; }
+  .scard.wide{ grid-column:1/-1; }
 </style>
 
 <canvas id="cv"></canvas>
@@ -569,12 +583,10 @@
   </div>
   <div class="tpane" id="opane_rec" style="display:none;flex-direction:column;flex:1;min-height:0">
   <h2>Your stats <em id="logct">0</em></h2>
-  <div class="plist" id="loglist" style="flex:1;min-height:200px;overflow-y:auto"></div>
+  <div id="statgrid"></div>
+  <div class="crlab" style="margin-top:10px">EVERY RUN, NEWEST FIRST</div>
+  <div class="plist" id="loglist" style="flex:1;min-height:150px;overflow-y:auto"></div>
   <div style="border-top:1px solid var(--steel-hi)">
-    <div class="stat"><span>Extract rate</span><b id="s_rate">--</b></div>
-    <div class="stat"><span>Avg haul (extracted)</span><b id="s_avg">--</b></div>
-    <div class="stat"><span>Avg accuracy</span><b id="s_acc">--</b></div>
-    <div class="stat"><span>Most common killer</span><b id="s_killer">--</b></div>
     <div style="padding:7px 0"><button id="devtoolsbtn" style="width:100%">Dev tools and roadmap</button></div>
   </div>
   </div>
@@ -968,7 +980,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.73';
+var VER='6.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23063,21 +23075,96 @@ P.contracts.forEach(function(c,ci){
     em2.innerHTML='No runs logged yet. Every run auto-records stats.<br><b>Play a few, then Export for Claude.</b>';
     ll.appendChild(em2);
   }
-  var extR=P.runs?Math.round(P.ext/P.runs*100):null;
-  document.getElementById('s_rate').textContent=extR===null?'--':extR+'% ('+P.ext+'/'+P.runs+')';
-  var hauls=[],accs=[],killers={};
-  P.log.forEach(function(r){
-    if(r.outcome==='extract') hauls.push(r.haul);
-    if(r.shots>4) accs.push(r.acc);
-    if(r.outcome==='dead'&&r.deathKiller) killers[r.deathKiller]=(killers[r.deathKiller]||0)+1;
+  renderStatCards();
+}
+// ============================================================== YOUR STATS
+// v6.74, his note. One summariser over a list of runs, used for both the whole history
+// and the last ten, so the two can never drift apart the way two hand written blocks
+// would. Everything reads from P.log, which is the same record the exporter sends me.
+function statSummary(rows){
+  var o={n:rows.length,ext:0,dead:0,aband:0,hauls:[],accs:[],durs:[],conts:[],
+         kills:0,downs:0,revives:0,killers:{},maps:{},shots:0,hits:0,banked:0,lost:0};
+  rows.forEach(function(r){
+    if(r.outcome==='extract'){ o.ext++; o.hauls.push(r.haul||0); o.banked+=(r.haul||0); }
+    else if(r.outcome==='dead'){ o.dead++; o.lost+=(r.haul||0);
+      if(r.deathKiller) o.killers[r.deathKiller]=(o.killers[r.deathKiller]||0)+1; }
+    else o.aband++;
+    if((r.shots||0)>4&&r.acc!==undefined) o.accs.push(r.acc);
+    o.shots+=(r.shots||0); o.hits+=(r.hits||0);
+    if(r.dur) o.durs.push(r.dur);
+    if(r.containers!==undefined) o.conts.push(r.containers||0);
+    o.downs+=(r.downs||0); o.revives+=(r.revives||0);
+    if(r.kills) for(var kk in r.kills) o.kills+=(r.kills[kk]||0);
+    if(r.mapName) o.maps[r.mapName]=(o.maps[r.mapName]||0)+1;
   });
-  document.getElementById('s_avg').textContent=hauls.length?
-    '$'+Math.round(hauls.reduce(function(a,b){return a+b;},0)/hauls.length):'--';
-  document.getElementById('s_acc').textContent=accs.length?
-    Math.round(accs.reduce(function(a,b){return a+b;},0)/accs.length)+'%':'--';
-  var bk=null,bn=0;
-  for(var k2 in killers) if(killers[k2]>bn){bn=killers[k2];bk=k2;}
-  document.getElementById('s_killer').textContent=bk?bk+' (x'+bn+')':'--';
+  return o;
+}
+function statMed(a){
+  if(!a.length) return null;
+  var b=a.slice().sort(function(x,y){return x-y;});
+  return b[Math.floor(b.length/2)];
+}
+function statAvg(a){
+  if(!a.length) return null;
+  return a.reduce(function(x,y){return x+y;},0)/a.length;
+}
+function statTop(obj){
+  var k=null,nn=0;
+  for(var q in obj) if(obj[q]>nn){ nn=obj[q]; k=q; }
+  return k?{k:k,n:nn}:null;
+}
+function statMMSS(sec){
+  if(sec===null||sec===undefined) return '--';
+  var m=Math.floor(sec/60), ss=Math.round(sec%60);
+  return m?(m+'m '+ss+'s'):(ss+'s');
+}
+function renderStatCards(){
+  var g=document.getElementById('statgrid');
+  if(!g) return;
+  var all=statSummary(P.log||[]);
+  var last=statSummary((P.log||[]).slice(-10));
+  function card(label,value,sub,wide){
+    return '<div class="scard'+(wide?' wide':'')+'"><div class="sk">'+label+'</div>'+
+           '<div class="sv">'+value+'</div>'+
+           (sub?('<div class="ss">'+sub+'</div>'):'')+'</div>';
+  }
+  function pct(o){ return o.n?Math.round(o.ext/o.n*100)+'%':'--'; }
+  function acc(o){ var v=statAvg(o.accs); return v===null?'--':Math.round(v)+'%'; }
+  function recent(txt){ return 'last 10: <b>'+txt+'</b>'; }
+  var h='';
+  // The two he named first, each with its recent form underneath.
+  h+=card('Extract rate', pct(all),
+          recent(last.n?pct(last):'--')+'  &middot;  '+all.ext+' of '+all.n);
+  h+=card('Accuracy', acc(all), recent(last.n?acc(last):'--'));
+  // What a run is worth, which is the number the whole economy turns on.
+  var mh=statMed(all.hauls), mhl=statMed(last.hauls);
+  h+=card('Median haul out', mh===null?'--':'$'+mh.toLocaleString(),
+          recent(mhl===null?'--':'$'+mhl.toLocaleString()));
+  h+=card('Best haul ever', (P.best||0)?('$'+(P.best||0).toLocaleString()):'--',
+          'across every run you have made');
+  // PROFICIENCY, and what it actually means, which is his complaint about it.
+  h+=card('Net carried out', '$'+((P.prof||0)*1000).toLocaleString(),
+          'what you banked, minus most of what you died holding');
+  h+=card('Experience', 'Level '+(P.xpLevel||1),
+          (P.xp||0).toLocaleString()+' XP earned');
+  // How a run tends to go.
+  h+=card('Typical raid', statMMSS(statMed(all.durs)),
+          recent(statMMSS(statMed(last.durs))));
+  var mc=statMed(all.conts);
+  h+=card('Containers a run', mc===null?'--':mc,
+          recent(statMed(last.conts)===null?'--':statMed(last.conts)));
+  h+=card('Kills a run', all.n?(all.kills/all.n).toFixed(1):'--',
+          all.kills.toLocaleString()+' in total');
+  // How runs end.
+  h+=card('Died', all.n?Math.round(all.dead/all.n*100)+'%':'--',
+          all.dead+' of '+all.n+', and '+all.aband+' walked away');
+  var tk=statTop(all.killers);
+  h+=card('Usually killed by', tk?tk.k:'--', tk?(tk.n+' times'):'nothing has killed you yet');
+  h+=card('Went down', all.downs.toLocaleString(),
+          all.revives.toLocaleString()+' times you got back up');
+  var tm=statTop(all.maps);
+  if(tm) h+=card('Most raided', tm.k, tm.n+' of your '+all.n+' runs');
+  g.innerHTML=h;
 }
 // Run notes are free text Daniel types, and they land in innerHTML below. Without
 // escaping, an ordinary note like "sentry hp <sentry cap> needs work" loses the
@@ -23093,7 +23180,8 @@ function fmtRun(r){
   o.textContent=r.outcome==='extract'?'EXT':(r.outcome==='dead'?'KIA':'ABN');
   var body=document.createElement('div');
   var kills=r.kills?(r.kills.sentry+r.kills.crawler+r.kills.raider+(r.kills.snitch||0)+(r.kills.howler||0)+(r.kills.bulwark||0)):0;
-  var s='#'+r.n+' ['+(r.preset||'?')+'] $'+r.haul+' &middot; '+r.dur+'s &middot; '+kills+'k &middot; '+r.acc+'%';
+  var s='#'+r.n+' ['+(r.preset||'?')+'] $'+(r.haul||0).toLocaleString()+
+        ' &middot; '+statMMSS(r.dur)+' &middot; '+kills+'k &middot; '+r.acc+'%';
   if(r.downs) s+=' &middot; downs '+r.downs;
   if(r.outcome==='dead'&&r.deathKiller) s+=' &middot; by '+escHtml(r.deathKiller);
   if(r.tags&&r.tags.length) s+='<br><span style="color:var(--amber)">'+escHtml(r.tags.join(', '))+'</span>';

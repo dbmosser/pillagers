@@ -25060,3 +25060,56 @@ themes are proven well formed, reachable and arithmetically sound, and that is a
 whether they are any good, and whether they sound like the game, only he can say. Also
 unverified: Superhot in a real firefight, where the interesting question is whether a
 crawler closing on you at six percent speed is tense or tedious.
+
+## v6.74 - YOUR STATS rebuilt, and proficiency finally says what it is
+
+Three of his notes, all about the same screen: "Your stats should give comprehensive
+summary of play -- e.g. all time accuracy, accuracy last 10 games, all time extract
+percentage, extract percentage last 10 games, etc etc come up with more good ones",
+"maybe that's where proficiency rating should live", and "again this is a screen that
+suffers from terribly poor layout and UI".
+
+It was four small rows under a scrolling log. It is now thirteen cards, each one number
+worth reading with its label above and its recent form underneath, so ALL TIME and LAST 10
+sit together and improvement is visible without arithmetic:
+
+  extract rate, accuracy, median haul out, typical raid length, containers a run
+      each with its last-ten figure directly under it
+  best haul ever, net carried out, experience level
+  died percentage, usual killer, times downed against times you got back up
+  most raided map
+
+ONE SUMMARISER does all of it, run over the whole history and over the last ten, so the
+two windows cannot drift apart the way two hand written blocks would.
+
+PROFICIENCY MOVES HERE AND EXPLAINS ITSELF. His complaint was exact: "PROF might be
+proficicency rating, but there's no context -- 19 out of what? is that good or bad?" It is
+not out of anything. addProgress banks your haul on an extract and takes sixty percent of
+it back when you die carrying, so it is net value carried out, in thousands. The card now
+reads NET CARRIED OUT, $19,000, "what you banked, minus most of what you died holding".
+The bare number is gone.
+
+TESTED WITH DELIBERATELY LOPSIDED DATA, per the standing rule that a bag resembling the
+fallback proves nothing: twenty-four runs whose last ten are much better than the first
+fourteen. The cards read extract 33 percent all time against 50 percent recent, and
+accuracy 49 percent against 72 percent. Had the last-ten window been echoing the all-time
+figure, those pairs would have matched, and they do not.
+
+ALSO FIXED, without waiting to be told twice: the run log carried the same two faults he
+already objected to on the extract screen, a raw second count and an unpunctuated amount
+of money. It now reads minutes and seconds, and dollars with separators.
+
+A NOTE ON A FALSE ALARM: my synthetic rows rendered as "#undefined [?]" in the log, which
+looked like a bug in fmtRun. It was my test data missing r.n and r.preset. Checked against
+a real logged run, which reads "#45 [B] $120", before concluding anything.
+
+Verified: parse PASS. Four maps at seed 4242, entity counts 86/87/58/72, drawErr null,
+__hud drawing without throwing. All three endings through the outcome screen and back to
+the hub. Hub frames and stage render. Thirteen cards render with correct arithmetic on
+both windows, reached through the real station key rather than by calling the renderer.
+Screenshotted at 1920x1080.
+
+Not verified: how the grid reflows on a small window. It is auto-fit with a 150px minimum
+so it should collapse to fewer columns, but I only looked at 1920x1080, and his complaint
+about this screen was specifically that text was too small to read, which is a judgement I
+cannot make for him from one width.
