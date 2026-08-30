@@ -26709,3 +26709,34 @@ endings with headline assertions, hub and stage render.
 Not verified: the panel with signed terms rows and a broken conduct contract at the same
 time (the row model handles both, but that exact stack was not staged); the CARRYING
 line against a bag with a windfall item.
+
+## v7.21 - the bag moves in beside the belt, and the belt learns to drag
+
+Two more of his live notes, both about the same distance.
+
+THE BAG OPENS BESIDE THE HOTBAR NOW. "when you open your inventory during a raid, it
+should open near your hotbar so you can transfer items easily." It sat top right, a full
+screen diagonal from the keys you drag to. It now bottom anchors just above the belt,
+still on the right so it never covers the player at screen centre. Same panel, same
+grid, one line of geometry.
+
+THE BELT DRAGS KEY TO KEY. "during a raid you should be able to drag items on your
+hotbar from one key to another." Press on a belt cell and it selects; an assignable item
+arms the same drag the bag uses, so the ghost icon and the cell highlight came free.
+Drop on another key and the two swap, which is what the gesture means when the target is
+occupied; the one item one slot rule still holds. Gun slots select but do not drag,
+because they are built from the equipped pair every frame rather than assigned.
+
+A side effect worth having: a click on the belt no longer fires the gun. Nothing claimed
+those clicks before, so checking your keys mid fight literally discharged your weapon.
+
+Verified: parse PASS v7.21. The swap driven through real mouse events: press key 4,
+move, release on key 5, medkit and frag trade places, message names the move. Screenshot
+shows the bag panel sitting on the belt with the swapped keys visible. Four maps at seed
+4242 with the bag drawn on each, entities exactly 86/87/58/72, drawErr null. Three
+endings with headline assertions, hub and stage render.
+
+Not verified: a drag from the bag grid to the belt at the NEW distance (the handler is
+untouched and the cells are recorded at draw, so only the trip got shorter); the belt
+drag with a very tall bag open where the panel could overlap the belt row on small
+windows.
