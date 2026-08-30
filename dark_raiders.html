@@ -482,10 +482,10 @@
   <h3>RUN PAUSED</h3>
   <div style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">
     MOUSE aim &nbsp; LMB fire &nbsp; RMB steady aim &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT sprint &nbsp; CTRL crouch<br>
-    E search / call beacon &nbsp; R reload &nbsp; F heal/revive &nbsp; Q/G throw &nbsp; TAB bag &nbsp; M map &nbsp; ` superhot &nbsp; SHIFT-` tuning &nbsp; P/ESC pause
+    E search / call extraction &nbsp; R reload &nbsp; F heal/revive &nbsp; Q/G throw &nbsp; TAB bag &nbsp; M map &nbsp; ` superhot &nbsp; SHIFT-` tuning &nbsp; P/ESC pause
   </div>
   <div style="font-size:13.5px;color:var(--ash);margin-top:6px">Note anything that just felt wrong. It goes in the recorder.</div>
-  <textarea id="pausenote" rows="3" style="max-width:560px;font-size:13px" placeholder="e.g. the snitch marked me through a wall, felt unfair"></textarea>
+  <textarea id="pausenote" rows="3" style="max-width:560px;font-size:13px" placeholder="e.g. the crier marked me through a wall, felt unfair"></textarea>
   <div style="display:flex;gap:8px">
     <button id="confirmabandon" style="padding:8px 22px;border-color:var(--rust);color:var(--rust);display:none">YES, abandon it</button>
     <button id="resumebtn" style="padding:8px 22px">Resume run</button>
@@ -1055,7 +1055,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.44';
+var VER='7.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1358,7 +1358,7 @@ stim:{name:'Stim Injector',val:180,wt:1,r:'uncommon',c:'#7fe0d0',use:'stim'},
   // v6.78, his note: plates come in fives. stackN is the most that fits in one stack in
   // the stash grid and the backpack grid. The BELT is deliberately exempt: he asked for
   // it to keep showing every plate he owns.
-  plate:{stackN:5,name:'Armor Plate',val:340,wt:3,r:'uncommon',c:'#5aa9e6',use:'armor',amt:55},
+  plate:{stackN:5,name:'Armour Plate',val:340,wt:3,r:'uncommon',c:'#5aa9e6',use:'armor',amt:55},
   gun_pistol:{name:'Scav Pistol (field)',val:300,wt:3,r:'common',c:'#ffd48a',use:'gun',gk:'pistol'},
   gun_smg:{name:'Compact SMG (field)',val:900,wt:4,r:'uncommon',c:'#ffe0a0',use:'gun',gk:'smg'},
   gun_rifle:{name:'Auto Rifle (field)',val:1500,wt:5,r:'rare',c:'#ffcf7a',use:'gun',gk:'rifle'},
@@ -1474,7 +1474,7 @@ var RECIPES=[
   {name:'Component Kit',out:{comp:1},need:{scrap:3,wire:2}},
   {name:'2x Bandage',out:{bandage:2},need:{wire:2,scrap:2}},
   {name:'2x Ammo Box',out:{ammobox:2},need:{cell:2,scrap:2}},
-  {name:'Armor Plate',out:{plate:1},need:{comp:2,board:1}},
+  {name:'Armour Plate',out:{plate:1},need:{comp:2,board:1}},
   {name:'Medkit',out:{medkit:1},need:{bandage:2,comp:1}},
   // TWO TRAP RECIPES, fixed at v1.72. Materials and credits are fully fungible here,
   // because everything in the stash sells, so a recipe can be priced honestly against the
@@ -9838,7 +9838,7 @@ function hotbarSlots(){
   // refused every single time and a bought plate never reached a raid at all.
   // Only appears when you are actually carrying one, so the slot order does not
   // move for anyone who is not.
-  if(countArmor()>0) out.push({k:'plate',name:'Armor Plate',kind:'armor',icon:'plate',
+  if(countArmor()>0) out.push({k:'plate',name:'Armour Plate',kind:'armor',icon:'plate',
     count:countArmor(),c:'#5aa9e6'});
   out.push({k:'bar',name:'Crowbar',kind:'tool',count:null,c:'#9aa8b2',icon:'bar'});
   // HIS REQUEST, 2026-08-25: "I want the inventory to be physical like minecraft
@@ -10161,8 +10161,8 @@ if(z&&z.beaconT===null&&z.open&&!G.sim&&keys['KeyN']&&!p.downed){
       }
       blip('alarm');
       say(G.timeLeft<CFG.extractWait
-        ? 'Pulled. Inbound '+Math.round(CFG.extractWait)+'s. The raid clock runs out first.'
-        : 'Pulled. Inbound '+Math.round(CFG.extractWait)+'s, then hold E to extract. Everything heard that.');
+        ? 'Pulled. Inbound '+fmtMS(CFG.extractWait)+'. The raid clock runs out first.'
+        : 'Pulled. Inbound '+fmtMS(CFG.extractWait)+', then hold E to extract. Everything heard that.');
     }
     return;
   }
@@ -10584,7 +10584,7 @@ z.hold=Math.min(30,Math.max(3,G.timeLeft-1)); z.holdMax=z.hold;
       // again" pointed at a ship that is no longer there. Name the real action
       // and its price.
       if(dist(p,z)<1400){ blip('clank');
-        say('Extraction left without you. Hold E to call another, '+Math.round(CFG.extractWait)+'s out.'); }
+        say('Extraction left without you. Hold E to call another, '+fmtMS(CFG.extractWait)+' out.'); }
     }
   }
   // THE MIRRORS ARE A VIEW, NOT A CACHE, v2.29. G.beaconT, G.shipHold and
@@ -12546,7 +12546,7 @@ if(e.kind==='stray'){
       if(pdd<440) e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.4*dt,2.4*dt);
       if(!e.hailed&&pdd<240&&!G.sim&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)){
         e.hailed=1;
-        say(pedOpen()?'A trader waves you over.':'The trader turns his back on you.');
+        say(pedOpen()?'The Peddler waves you over.':'The Peddler turns his back on you.');
       }
       continue;
     }
@@ -13816,7 +13816,7 @@ var TERMS=[
   {id:'blackout',name:'BLACKOUT PROTOCOL',pay:0.25,
    desc:'Every lamp on the map stays dark.'},
   {id:'patrols', name:'HEAVY PATROLS',pay:0.30,
-   desc:'Forty percent more of everything out there: machines, pillagers and snitches alike.'},
+   desc:'Forty percent more of everything out there: machines, pillagers and criers alike.'},
   {id:'window',  name:'SHORT WINDOW',pay:0.25,
    desc:'The whole raid clock is cut by a third: about 400 seconds instead of 600.'},
   // NO SAFE POCKET was removed at v5.57. Its only effect was to zero safeSlots,
@@ -14212,7 +14212,7 @@ silentExit:T.silentExit||0,
     if((P.notoriety||0)>0){
       P.notExt=(P.notExt||0)+1;
       if(P.notExt>=4){ P.notExt=0; P.notoriety--;
-        lines.push('<span style="color:var(--ash)">The traders are starting to forget. Notoriety '+P.notoriety+'.</span>'); }
+        lines.push('<span style="color:var(--ash)">The vendors are starting to forget. Notoriety '+P.notoriety+'.</span>'); }
     }
 var _cdone=contractExtract(G.bag,haul);
     for(i=0;i<_cdone.length;i++)
@@ -18970,7 +18970,7 @@ var LEGEND=[
   ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','steady aim'],['R','reload'],['X','swap weapon']]],
   ['GEAR',[['1-9','select hotbar slot'],['FIRE','use selected slot'],['TAB','inventory'],['ENTER','equip gun from bag'],['BKSP','reset cursor']]],
 ['WORLD',[['E','search / call extraction'],['M','hold for map'],['H','cycle this list'],['P','pause']]],
-  ['ALSO',[['CAPS','walk on, hands free'],['N','silent departure, hold'],['+ -','zoom'],['0','reset zoom']]]
+  ['ALSO',[['CAPS','walk on, hands free'],['N','silent departure, hold'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom']]]
 ];
 // SPEC 10.3: the colour language has to be learnable, so it is stated.
 // The twelve keys a player actually presses, two columns, no headings. Anything
@@ -19003,7 +19003,7 @@ var LEGEND_PAD=[
   ['MOVE',[['L STICK','move, analog'],['LS CLICK','sprint'],['RS CLICK','crouch'],['B','dodge roll']]],
   ['FIGHT',[['R STICK','aim'],['RT','fire'],['LT','steady aim'],['X','reload'],['Y','swap weapon']]],
   ['GEAR',[['LB/RB','change slot'],['RB','use selected'],['Y','swap gun'],['VIEW','inventory']]],
-  ['WORLD',[['A','search / call beacon'],['DPAD UP','hold for map'],['DPAD L/R','drop / autoloot'],['MENU','pause']]]
+  ['WORLD',[['A','search / call extraction'],['DPAD UP','hold for map'],['DPAD L/R','drop / autoloot'],['MENU','pause']]]
 ];
 // Every line here used to run past the right edge of its own panel, by 83 to 164
 // pixels on a box only 222 wide, so the rules he asked for spilled out of their
@@ -20523,7 +20523,7 @@ function drawMapOverlay(){
     ctx.beginPath(); ctx.arc(pmx,pmy,4.4,0,6.2832); ctx.fill();
     ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
     ctx.fillStyle=pedOpen()?'#ffc04a':'#8a5a4a';
-    ctx.fillText(pedOpen()?'TRADER':'TRADER (CLOSED)',pmx,pmy-11);
+    ctx.fillText(pedOpen()?'PEDDLER':'PEDDLER (CLOSED)',pmx,pmy-11);
     ctx.textAlign='left';
   }
   for(i=0;i<G.zones.length;i++){
@@ -20893,7 +20893,7 @@ acts:{KeyE:['go up',function(){
            // sends you up, not beside a counter with prices on it.
            KeyT:['the terms',function(){ renderTerms(); openModal('termsmodal'); }]}},
     {id:'trader',x:110,y:255,r:46,label:'SHOP, CRAFT, AND HIRE',sub:'',c:'#ffc04a',vendor:1,
-     acts:{KeyE:['trade',function(){ openTrader('buy'); }],
+     acts:{KeyE:['shop',function(){ openTrader('buy'); }],
            KeyR:['craft',function(){ openTrader('craft'); }],
            KeyF:['hire', function(){ openTrader('hire'); }]}},
     {id:'gamble',x:110,y:110,r:42,label:'WIRT THE GAMBLER',sub:'unmarked goods, flat price',c:'#e0a0ff',vendor:1,
@@ -23464,7 +23464,8 @@ function statTop(obj){
 }
 function statMMSS(sec){
   if(sec===null||sec===undefined) return '--';
-  var m=Math.floor(sec/60), ss=Math.round(sec%60);
+  sec=Math.round(sec);
+  var m=Math.floor(sec/60), ss=sec%60;
   return m?(m+'m '+ss+'s'):(ss+'s');
 }
 function renderStatCards(){
@@ -25119,7 +25120,7 @@ function maybePrimer(){
 // "Few, about half as many out there" is a decision.
 var GAMEOPTS=[
   {k:'superhot', label:'Superhot mode',
-   hint:'Time only moves when you do. Stand still and the surface almost stops; walk, fire, roll or reload and it runs. Aiming and looking around are free.',
+   hint:'Time only moves when you act. Stand still and it stops dead; any key, click or trigger runs it, and holding E runs it at full speed. Moving the mouse to aim is free.',
    opts:[
      {n:'Off', cfg:{superhot:0}},
      {n:'On',  cfg:{superhot:1}}

@@ -27443,6 +27443,41 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.45 - THE STRING TRUTH BATCH
+
+Section 2 of the 13-agent audit, shipped as one build: every string here was
+CONFIRMED lying about the current game or off the one-word-per-thing vocabulary,
+and every anchor was re-grepped tonight before patching because the file has
+moved a dozen builds since the audit ran.
+
+The Superhot settings hint described the pre-v7.23 crawl ("the surface almost
+stops"); it now states the shipped rule - time stops dead, any input runs it,
+holding E runs it at full speed, mouse aim is free. The H legend still credited
++ and - with zoom two versions after v7.18 gave those keys to HUD size; it now
+says NUM + - for zoom and - = for HUD size. "call beacon" survived in the pause
+legend and the pad legend, both now "call extraction". The Peddler was "trader"
+in his hail line, the map label, and the notoriety outcome line (now "vendors",
+since it speaks of all of them). "snitch" survived in the pause-note placeholder
+and the HEAVY PATROLS terms description - the two sites the crier migration
+never reached, the second because TERMS descs render raw. The plate item said
+"Armor Plate" while every v7.x sentence says Armour; the item, its recipe and
+the belt string now agree. The shop station's prompt verb was "trade" under a
+sign that says SHOP. And the last three message-feed sentences that printed raw
+seconds ("25s out") now go through fmtMS like everything else: the
+extraction-left line and both Pulled/Inbound lines.
+
+One real bug rode along: statMMSS rounded after the modulo, so a 119.6-second
+run rendered "1m 60s". It rounds first now, which makes the fault arithmetically
+impossible. Unifying its compact wording with fmtMS's long form is a separate
+cosmetic call and was NOT done.
+
+Not verified: the shop verb, craft-card Armour Plate and stats page were checked
+on the live surfaces, and grep-counts hit zero on every banned string - but the
+three fmtMS sentences were verified by anchor only (triggering "extraction left
+without you" on the play path needs a timed miss I did not stage), the H legend
+and pad legend were not screenshotted, and the 119.6 stats case never surfaced
+on the page because my fake log row did not match the card's field shape.
+
 ## v7.44 - THE CRAFTING VALUE PASS
 
 His note: "need to be able to craft bandages, grenades. grenades should be high
