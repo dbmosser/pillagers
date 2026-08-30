@@ -366,9 +366,9 @@
   textarea:focus{ border-color:var(--amber); }
   .pausebox{ position:absolute; inset:0; background:rgba(8,12,32,.9); z-index:35;
     display:none; flex-direction:column; align-items:center; justify-content:center; gap:11px; }
-  .pausebox::before{ inset:60px 90px; }
+  .pausebox::before{ inset:50% auto auto 50%; width:780px; height:400px; transform:translate(-50%,-50%); }
   .pausebox.on{ display:flex; }
-.pausebox h3{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:20px;
+.pausebox h3{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:25px;
     letter-spacing:.24em; margin:0; color:var(--amber); text-transform:uppercase; }
   .modal{ position:absolute; inset:0; background:rgba(8,12,32,.92); z-index:60;
     display:none; flex-direction:column; padding:22px; }
@@ -454,12 +454,12 @@
 
 <div class="pausebox" id="pausebox">
   <h3>RUN PAUSED</h3>
-  <div style="font-size:11px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.7">
+  <div style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8">
     MOUSE aim &nbsp; LMB fire &nbsp; RMB steady aim &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT sprint &nbsp; CTRL crouch<br>
     E search / call beacon &nbsp; R reload &nbsp; F heal/revive &nbsp; Q/G throw &nbsp; TAB bag &nbsp; M map &nbsp; ` tuning &nbsp; P/ESC pause
   </div>
-  <div style="font-size:11px;color:var(--ash)">Note anything that just felt wrong. It goes in the recorder.</div>
-  <textarea id="pausenote" rows="3" style="max-width:520px" placeholder="e.g. the snitch marked me through a wall, felt unfair"></textarea>
+  <div style="font-size:13.5px;color:var(--ash);margin-top:6px">Note anything that just felt wrong. It goes in the recorder.</div>
+  <textarea id="pausenote" rows="3" style="max-width:560px;font-size:13px" placeholder="e.g. the snitch marked me through a wall, felt unfair"></textarea>
   <div style="display:flex;gap:8px">
     <button id="confirmabandon" style="padding:8px 22px;border-color:var(--rust);color:var(--rust);display:none">YES, abandon it</button>
     <button id="resumebtn" style="padding:8px 22px">Resume run</button>
@@ -1016,7 +1016,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.06';
+var VER='7.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This

@@ -26346,3 +26346,31 @@ Not verified: T.firstContact on a REAL extract. The bot sim arms it via combat, 
 have not watched a live human raid confirm first contact stamps at the moment of first
 being seen rather than first taking damage; if it stamps late, the extract subhead
 understates how early you were made.
+
+## v7.07 - the pause menu stops being a sea of blue
+
+The menus sweep reached the in-raid pause screen, and the screenshot was the ascend menu
+complaint reborn: a framed window inset 60 by 90 pixels from the screen edge, which at
+1920x1080 is a 1740 by 900 window, wrapped around roughly 260 pixels of content. Title,
+two lines of key legend, a note field, two buttons, floating in the middle of a giant
+empty panel. His words on the ascend version of this: SEE ALL THAT BLANK BLUE SPACE??
+THAT IS SHITTY DESIGN.
+
+The frame is now content sized, 780 by 400, centered with a transform, and the game
+stays visible dimmed around it, which a pause screen should want anyway: you are
+checking the field while you think. Text came up from 11px to 13.5px, the title from
+20 to 25, the note field to 13, because the other half of his standing complaint is that
+menu text is always too small.
+
+Measured after: the key legend row is 740px wide inside the 780 window, 20px of margin a
+side, which is why the window is 780 and not the 720 I tried first.
+
+Verified: parse PASS v7.07. Screenshot at 1920x1080: window hugs content, legend fits
+with margin, buttons visible, game dimmed behind. Abandon button shows its YES confirm
+state and Resume actually resumes, both through the real buttons. Four maps at seed 4242,
+entities exactly 86/87/58/72, drawErr null. Three endings with headline assertions,
+hub and stage render.
+
+Not verified: the pause screen on a small window (the 780px frame will overflow below
+about 820px viewport width; the game targets 1920 and nothing else has small-screen
+handling either, so this follows the file's standing assumption).
