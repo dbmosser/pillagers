@@ -26219,3 +26219,29 @@ or the standing audit-and-polish rotation.
 Not verified: the new sliders' ranges are judgements. Elite rate up to 0.3 triples the
 default ceiling, and whether that is a fun upper bound or a massacre is only answerable by
 moving it.
+
+## v7.03 - an elite never opens fire from outside your sight
+
+Closing v7.01's own "not verified" line with a measurement instead of leaving it a worry.
+The player's sight hard-caps at viewFar 620 in clear weather and lower in every other
+condition. An elite carrying a Longshot engaged from 900 times 0.72, which is 648, and a
+Lance carrier from 590, so first contact could be damage arriving from OUTSIDE the
+furthest pixel the player can ever see. In a top-down game with a hard vision circle that
+does not read as a sniper, it reads as random damage.
+
+Elite ENGAGEMENT is capped at 580, inside clear-weather sight, so the muzzle flash of the
+thing shooting you is always on your screen. The GUN keeps its range: the cap rides on
+e.rng, the engagement radius, so a Longshot lifted off the body still reaches 900 in the
+player's hands.
+
+Measured across 16 raids on four seeds: 17 elites, worst engagement radius exactly 580,
+gun spread dmr 7, magnum 4, lmg 2, sniper 2, whisper 2. The dmr's own 547 sits under the
+cap and is untouched.
+
+Verified: parse PASS. Four maps at seed 4242, entity counts 86/87/58/72, zero draw
+errors. All three endings through the outcome screen. Hub frames and stage render.
+
+Not verified: fog and storm sight is LOWER than 620, so a capped elite can still open up
+from just outside a weather-shortened view. That is the same trade every ranged enemy in
+the game already makes in bad weather, and the weather line warns about it, so it is left
+as the storm being the storm rather than a fault.
