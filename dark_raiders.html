@@ -1039,7 +1039,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.17';
+var VER='7.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8400,9 +8400,24 @@ function raidKey(code,repeat,ev){
     P.autoloot=!P.autoloot; saveProfile();
     say('Autoloot '+(P.autoloot?'ON: a full bag sheds its worst':'OFF: a full bag refuses'));
   }
-  // zoom: works in the raid and in the hub, and on both the main and numpad keys
-  if(code==='Equal'||code==='NumpadAdd'){ setZoom(zoomTarget()*1.15); if(G&&!G.over) say('Zoom '+Math.round(ZT*100)+'%'); }
-  if(code==='Minus'||code==='NumpadSubtract'){ setZoom(zoomTarget()/1.15); if(G&&!G.over) say('Zoom '+Math.round(ZT*100)+'%'); }
+  // world zoom keeps the wheel and the numpad pair; - and = now size the HUD (v7.18)
+  if(code==='NumpadAdd'){ setZoom(zoomTarget()*1.15); if(G&&!G.over) say('Zoom '+Math.round(ZT*100)+'%'); }
+  if(code==='NumpadSubtract'){ setZoom(zoomTarget()/1.15); if(G&&!G.over) say('Zoom '+Math.round(ZT*100)+'%'); }
+  if((code==='Minus'||code==='Equal')&&!repeat){
+    var _ud=(code==='Equal')?1:-1;
+    var _uc=uiScale(),_uni=-1;
+    if(_ud>0){ for(var _usi=0;_usi<UISCALES.length;_usi++){ if(UISCALES[_usi]>_uc+0.001){ _uni=_usi; break; } } }
+    else { for(var _usj=UISCALES.length-1;_usj>=0;_usj--){ if(UISCALES[_usj]<_uc-0.001){ _uni=_usj; break; } } }
+    if(_uni<0) _uni=(_ud>0)?UISCALES.length-1:0;
+    if(UISCALES[_uni]!==_uc){
+      P.menuZoom=clamp((P.menuZoom||1)*UISCALES[_uni]/_uc,0.5,3);
+      P.uiScale=UISCALES[_uni];
+      saveProfile(); applyMenuZoom();
+      try{ renderSettings(); }catch(_ue){}
+    }
+    var _ups='HUD size '+Math.round(UISCALES[_uni]*100)+'%';
+    if(G&&!G.over&&!G.sim) say(_ups); else if(typeof say2==='function') say2(_ups);
+  }
   if(code==='Digit0'||code==='Numpad0'){ setZoom(1); if(G&&!G.over) say('Zoom 100%'); }
 }
 // mouse wheel zooms too, which is what anyone will try first

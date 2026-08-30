@@ -26614,3 +26614,32 @@ null, three endings with headline assertions, hub and stage render.
 Not verified: a live raid with a hunting Listener on screen (the deleted block was the
 only reader of that state in the HUD pass, so nothing else can reference it; the sweep
 draws the HUD on all four maps without it).
+
+## v7.18 - minus and equals resize the whole HUD
+
+His note, live: "add keys to increase or decrease the entire hud size including
+inventory, hotbar, minimizable windows, etc.... make the keys - and =". Done exactly as
+asked. The keys walk the same five step ladder as the Settings text size row (100 to
+200 percent), the choice persists to the profile, and the DOM menus ride along by the
+same ratio so one keypress moves the canvas HUD, the bag panel, the hotbar and every
+window together. The message line names the new size each press.
+
+Those keys were on world zoom. His instruction reassigns them; world zoom keeps the
+mouse wheel (which is what anyone tries first, per the comment that shipped it), the
+numpad plus and minus pair, and 0 to reset.
+
+One subtlety: the automatic scale at 1080p is 1.2, which sits BETWEEN ladder rungs, so
+the step logic goes to the next rung strictly beyond the current value rather than
+nearest-then-step, which from 1.2 would have skipped 125 percent entirely.
+
+This also answers his sharper note that the HUD is still too small: he can now set it
+himself, from anywhere, in one keypress, and it stays.
+
+Verified: parse PASS v7.18. Real keypresses through the fixture: auto 1.2 stepped to
+125, then 150, then back down to 125, message rendering each time, menu zoom riding
+along, no draw errors. Four maps at seed 4242, entities exactly 86/87/58/72, drawErr
+null. Three endings with headline assertions, hub and stage render.
+
+Not verified: the top rung (200 percent) against every panel at once; the ladder values
+themselves shipped with the Settings row long ago, but the largest size has only ever
+been screenshotted on the settings screen, not the full in-raid HUD.
