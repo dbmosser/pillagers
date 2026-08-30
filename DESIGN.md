@@ -24103,3 +24103,67 @@ without capturing the pad prompt at a readable size, so "[E] EXTRACT" is confirm
 present and drawn rather than confirmed legible. The seasons-to-levels note from the
 same export is untouched and remains open; it is a design change rather than a rename
 and I did not start it in this tick.
+
+## v6.50 to v6.52 - THE MENU MAP TURNED INTO CHANGES, AND THE ASCENT CHECK IS GONE
+
+He told me to take the map I built and work out how the menus improve logically. Laying
+every station beside every panel it opens showed two things that reading the code one
+function at a time never did.
+
+ONE STATION'S FOUR KEYS OPENED TWO UNRELATED WINDOWS. Shop, Craft and Hire had E, R and
+F opening three tabs of one panel and T opening a separate window called The Terms.
+Every other station opens one thing. So what is The Terms? Read it rather than assumed:
+BLACKOUT PROTOCOL, HEAVY PATROLS, SHORT WINDOW. Hardship you sign for extra pay on the
+raid you are about to take. That is not shopping, it costs nothing, and it has no
+business beside a counter with prices on it. It moved to the ASCENT LIFT, the station
+that sends you up, so everything about the next raid is now on one station.
+
+THREE OF THE MAINFRAME'S FOUR TABS HAD A KEY AND THE FOURTH DID NOT. Your Stats could
+only be reached by opening one of the other three and clicking across. It has T now.
+
+HIS RENAMES, all three checked against the code first: "Back to the floor" is RETURN TO
+THE UNDERCROFT, because the place has a name and the button was describing geometry. The
+title screen's "H every other key", which was a sentence about the list rather than
+about the key, now says "H controls", matching the raid. And the stash header said THE
+MAINFRAME, which was MY error from v6.42: the old header read OPERATOR TERMINAL, I was
+renaming the Operator Terminal PANEL to The Mainframe at the time, and I changed this
+line with it even though it sits on the STASH. Two screens shared one stale word and I
+collapsed them into the wrong one. It says THE STASH.
+
+THREE MORE SHIP WORDS the v6.49 pass missed, all the verb BOARD, two of them on the
+downed player's own prompt, which is when he is reading most carefully. All now EXTRACT.
+
+THE ASCENT CHECK IS GONE, on his order: "get rid of ascent check screen altogether",
+"its not helpful". Worth recording that HE ASKED FOR IT at run #62 back at v4.93:
+"before you deploy, after you pick your map, the game should give one last chance to
+equip items from stash or buy items." That request is now satisfied by the STASH, which
+did none of it when he asked and today carries the operator, the loadout, the quick-use
+row, the safe pocket, a live shop panel and the ASCEND button. The check had become a
+second screen showing the same things one click later.
+
+Four routes led into it and all four now go straight up through ONE function, so quick
+ascent, the lift, the sector page and the ASCEND button cannot drift apart the way the
+check and quick ascent did before v6.18. The map choice still happens first when more
+than one sector is offered.
+
+THE FREEBIE KIT MOVED WITH IT. It was built on the check one build earlier, so without
+this his own feature would have gone with the screen. It sits on the stash now, directly
+above the button row, which is where the decision is actually made.
+
+Verified: parse PASS at v6.50, v6.51 and v6.52; the terms driven from the lift and
+signed, taking hazard pay to +25%, and confirmed gone from the shop; the Mainframe's T
+opening Your Stats; all four deploy routes driven into a live raid with the packed
+medkit carried; the freebie kit driven from its new home, dimming the stash, clearing
+the kit and landing an issued Scav Pistol with two bandages, a plate and one frag; the
+back button, title legend and stash header read off live screens; four maps 86/87/58/72
+entities and, at seed 4242, 246/193/152/216 containers; all three endings through the
+outcome screen to a drawn hub; hub, renderStage and the export builder; pin audit clean.
+
+Not verified: the sector page's own ASCEND button could not be exercised because beta
+offers one sector, so that route is changed and reasoned but not driven. The ascent
+check's markup is still in the file, now unreachable; I left it rather than delete it in
+the same build that rewired four routes, since v5.89 is a standing lesson that
+unreachable code is a hazard and I would rather remove it deliberately next. He also
+reported still seeing "Requisition, the whole counter" on that screen: the phrase is
+gone from the current source, count zero, and his exports say he is playing v6.37, so
+that one is a reload rather than a fix.
