@@ -1054,7 +1054,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.54';
+var VER='7.56';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3513,6 +3513,10 @@ var WEATHER=[
 // entries, because every vision, noise and lighting query in the game reads it
 // live and a snap would be a jump cut.
 var WXBLEND={id:'turning',name:'TURNING',view:1,noise:1,lights:1,rain:0,fog:0,line:null};
+function extLetter(z){
+  var ix=(G&&G.zones)?G.zones.indexOf(z):-1;
+  return ix<0?'?':String.fromCharCode(65+ix);
+}
 function wxMix(a,b,t){
   WXBLEND.view=a.view+(b.view-a.view)*t;
   WXBLEND.noise=a.noise+(b.noise-a.noise)*t;
@@ -18701,15 +18705,11 @@ ctx.restore();
   ctx.textAlign='left';
   if(G.beaconT!==null&&!G.over){
     var inRing=dist(p,G.active)<G.active.r;
+    var _exL=extLetter(G.active);
     ctx.font=FS(TYPE.head); ctx.textAlign='center';
     var holding=G.beaconT<=0&&G.shipHold!==null&&G.shipHold!==undefined;
     ctx.fillStyle=holding?(inRing?'#4de3d0':'#ff5a4a'):(inRing?'#4de3d0':'#ffc04a');
-    ctx.fillText(holding?('EXTRACTION OPEN  '+Math.max(0,Math.ceil(G.shipHold))+'s'):('EXTRACTION INCOMING  '+Math.ceil(G.beaconT)+'s'),W/2,H-140);
-    if(!holding){
-      ctx.font=FS(TYPE.micro); ctx.fillStyle='#9aa8d0';
-      ctx.fillText('You do not have to wait here. Move, and come back for it.',W/2,H-122);
-      ctx.font=FS(TYPE.head);
-    }
+    ctx.fillText(holding?('EXTRACT '+_exL+' OPEN  '+Math.max(0,Math.ceil(G.shipHold))+'s'):('EXTRACT '+_exL+' INCOMING  '+Math.ceil(G.beaconT)+'s'),W/2,H-140);
     // v6.41, his note: no bar. The line above it is already a countdown in seconds.
     if(!inRing){
 var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active));
@@ -20058,7 +20058,7 @@ function drawBag(){
   // identical items stacking with a count badge, unlimited depth with a
   // scrolling window, rarity on the tile border, and the existing drag,
   // keyboard, equip and drop verbs all speaking stack now.
-  var p=G.player,PW=LH(300),x=W-PW-12,y=48,i;
+  var p=G.player,PW=LH(300),x=Math.round((W-PW)/2),y=48,i;
   var stacks=bagStacks();
   var COLS=5; G.bagCols=COLS;
   var TILE=LH(48),GAP=LH(6);
@@ -20274,9 +20274,12 @@ function drawMapOverlay(){
   var _hx=ox+ctx.measureText('SECTOR MAP').width+28;
   MAP_FOG={sc:sc,ox:ox,oy:oy};
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#9aa8d0';
-  var _hsub=G.intel?'elites and keys are live intel':'hostile positions unknown';
-  ctx.fillText(_hsub,_hx,oy-10);
-  _hx+=ctx.measureText(_hsub).width+28;
+  // v7.55, his note: the no-intel shrug told the player what they already know.
+  if(G.intel){
+    var _hsub='elites and keys are live intel';
+    ctx.fillText(_hsub,_hx,oy-10);
+    _hx+=ctx.measureText(_hsub).width+28;
+  }
   ctx.fillStyle='#ffc04a';
   ctx.fillText(G.waypoint?'CLICK set waypoint  ·  RIGHT-CLICK clear':'CLICK to set a waypoint',_hx,oy-10);
   // conditions belong on the map, since they change how far you can see
@@ -21068,8 +21071,8 @@ function askKit(){
   var qq=document.getElementById('askq'), ss=document.getElementById('asksub');
   if(qq) qq.textContent='What are you taking up?';
   if(ss) ss.innerHTML='<b>Your loadout</b>: '+
-    (kitN?('the '+kitN+' item'+(kitN===1?'':'s')+' you packed, plus everything on your belt.')
-         :'whatever is on your belt.')+
+    (kitN?('the '+kitN+' item'+(kitN===1?'':'s')+' you packed, plus your current hotbar belt and inventory.')
+         :'your current hotbar belt and inventory.')+
     '<br><br><b>The freebie kit</b>: '+escHtml(freeKitText());
   ASKYES=function(){ P.freeKit=0; saveProfile(); ascendNow(); };
   ASKALT=function(){

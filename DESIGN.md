@@ -27443,6 +27443,37 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.55 + v7.56 - THE LIVE SESSION, PART TWO
+
+Five more of his notes, shipped as he sent them.
+
+v7.55: the ascend question's loadout line now reads his wording - "your current
+hotbar belt and inventory" (the packed branch says "the N items you packed,
+plus your current hotbar belt and inventory"). The map screen's "hostile
+positions unknown" shrug is gone - the sub-line only draws when there IS live
+intel to report. And the raid inventory panel now pops DIRECTLY ABOVE the
+hotbar: it always stacked itself vertically above the belt, but hugged the
+right screen edge; it centres on the belt now, which is centred on the screen.
+
+v7.56: every extraction ring is lettered by its stable zone order (extLetter,
+A/B/C...), and the HUD headline names the door: "EXTRACT B OPEN 12s" /
+"EXTRACT B INCOMING 8s" instead of the anonymous "EXTRACTION OPEN". And the
+coaching line under it - "You do not have to wait here. Move, and come back
+for it." - is deleted on his order: the player will figure that out.
+
+A verification lesson cost twenty minutes tonight and is recorded so it stops
+costing: the Browser pane serves STALE SCREENSHOTS of this fixture (the same
+fossil frame across reloads and re-fronts - same clock, same player, every
+time). The inventory centring was finally proven by reading the overlay
+canvas's own pixels: panel centre 1920 of 3840, exactly the canvas centre.
+When a pane screenshot looks suspiciously unchanged, read pixels instead.
+
+Not verified: the EXTRACT letter headline was verified by code-path and the
+letter helper's index math, not by reading canvas text (the canvas is where it
+draws); and the map-page half of his extract orders - letters on the rings, a
+close countdown, two-stage flashing - is NOT in these builds, it is queued
+with the map overlay work.
+
 ## v7.54 - NO PLACE YOU CANNOT FIND
 
 Three of his live notes, shipped while he plays.
