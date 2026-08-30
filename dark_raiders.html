@@ -1016,7 +1016,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.99';
+var VER='7.00';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24240,7 +24240,7 @@ document.getElementById('workbtn').onclick=function(){ openTrader('craft'); };
 
 function syncCond(){
   var b=document.getElementById('condbtn');
-  if(b) b.textContent=isDay()?'TIME OF DAY: DAY':'TIME OF DAY: NIGHT';
+  if(b) b.textContent=isDay()?'SURFACE: DAY':'SURFACE: NIGHT';
 }
 document.getElementById('condbtn').onclick=function(){
   P.cond=isDay()?'night':'day';

@@ -26123,3 +26123,22 @@ All three endings through the outcome screen. Hub frames and stage render.
 Not verified: Superhot against a live siege end to end, where the question is pacing
 rather than arithmetic. The clocks are now right; whether the fight FEELS right with time
 surging on the beacon call is his to judge.
+
+## v7.00 - one name per thing, and the loadout column cleared
+
+TWO SYSTEMS WERE BOTH CALLED TIME OF DAY, and my own v6.67 fix caused the clash. The
+in-raid conditions row reads TIME OF DAY with a clock, 8am, noon, 6pm, 8pm, per his
+order. The stash footer button ALSO said TIME OF DAY while toggling something entirely
+different: P.cond, which sets whether raids run in daylight or at night. His vocabulary
+rule is one word per thing, so the toggle now says what it actually governs:
+SURFACE: DAY / SURFACE: NIGHT. Verified on the real button.
+
+AND THE v6.94 OPEN QUESTION CLOSES WITH A MEASUREMENT, not a change: with a packed
+loadout of eight items, the kit column uses 600 of its 610 pixels. The emptiness he saw
+there was the empty state, not the layout, and no change ships for it.
+
+Verified: parse PASS. Four maps at seed 4242, entity counts 86/87/58/72, zero draw
+errors. All three endings through the outcome screen. Hub frames and stage render. The
+renamed button read off the live screen.
+
+Not verified: nothing new this build.
