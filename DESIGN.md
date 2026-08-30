@@ -27443,6 +27443,27 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.50 - THE MOJIBAKE DASHES
+
+Caught by eye on a screenshot of the new sector page: the mile's character line
+rendered "a toll a-circumflex euro quote a gate". The map workflow's JSON
+carried real em-dashes and the v7.41 splice double-encoded them; a byte scan
+found exactly two sites - the sector page's SECTOR_CHAR line and the mile's
+story card (PRIORITY PERISHABLE - HOLD FOR SIGNATURE). Both now carry a plain
+ASCII hyphen, replaced via char-code needles because the patch script itself
+must stay ASCII (the PowerShell 5.1 ANSI trap that put mojibake into the game
+once before, from the other direction).
+
+The screenshot session also confirmed the selector page degrades properly for
+an unraided sector: THE COLD MILE shows "YOU HAVE NEVER RAIDED HERE - 90 by 76
+hectares - 12 named zones - 8 keyed rooms" with no empty measurement slots,
+which was the design intent of the facts-skip guard.
+
+Not verified: the two fixed strings were read back through the live sector
+modal and the byte scan counts zero mojibake file-wide, but the story card
+in-raid (walk to the terminal, read the text) was not re-driven - the fix is a
+pure string replacement inside a literal already proven to render.
+
 ## v7.49 - THE AUDIT CLOSES
 
 The last three unblocked items from the 13-agent audit, and with them the whole
