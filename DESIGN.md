@@ -26179,3 +26179,43 @@ eliteGuns pinned in __pinDefaults in the same build that introduces it.
 Not verified: the fight itself. An elite with a Longshot at 0.72 of 900 range engages
 from 648 units, much further than any pillager ever has, and whether that reads as a
 sniper duel or as being shot from nowhere is his to judge.
+
+## v7.02 - the tuning console review, and the last ledger item closes
+
+His #22: "go back to the tuning console and make sure all those values make sense and
+consider if there's anything else that should be on there or if any of it needs to be
+removed."
+
+CHECKED FIRST, REMOVED NOTHING: every existing row references a dial that is alive in CFG
+and every default sits inside its slider's range. The review's real finding was ABSENCE,
+which is the exact v2.68 fault this table's own comment records: dials the changelog
+called reachable that the console had never heard of. The game has grown six real feel
+levers since the table was last touched, and none was on the surface:
+
+  Elite rate (of spawns)            spawn-time, marked NEXT RAID
+  Vent stun lockout (s)             the v6.85 overheat rhythm
+  Min pillagers alive               the v6.71 population floor
+  Speed in water x                  wadeSpd, which v2.66 built as a dial and never surfaced
+  Superhot: time while still x
+  Lightning fuses loot (chance)
+
+Deliberately NOT added: bot instrumentation (simAim, simFlee and family), one-shot
+telemetry flags, and structural dials like wadeInset whose wrong values produce bug
+reports rather than preferences.
+
+Verified: parse PASS. The console opened through its real Backquote toggle: 38 rows, all
+values in range, all six new dials present, and moving Elite rate through the slider wrote
+0.2 into CFG and read back, per the probe-setter rule. Four maps at seed 4242, entity
+counts 86/87/58/72, zero draw errors. All three endings through the outcome screen. Hub
+frames and stage render.
+
+MY COUNT WAS WRONG AND THE AUDIT CAUGHT IT: I predicted 39 rows from an eyeballed "33
+existing"; the table had 32. The measured audit, not my arithmetic, is the record.
+
+This closes the last concrete item on his request ledger. Everything now open is either
+his to judge by hand (controller on real hardware, the five music tracks, Superhot feel)
+or the standing audit-and-polish rotation.
+
+Not verified: the new sliders' ranges are judgements. Elite rate up to 0.3 triples the
+default ceiling, and whether that is a fun upper bound or a massacre is only answerable by
+moving it.
