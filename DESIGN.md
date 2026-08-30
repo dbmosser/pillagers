@@ -27306,3 +27306,66 @@ headline assertions, hub and stage render.
 Not verified: the short-window frame clamps visually (the pane resists viewport
 emulation mid-session); each remaining hero cut on the floor beyond pigtails (geometry
 shared with the crowd, which draws all eight).
+
+## v7.38 - one currency, a reversal on his order, and the plan on paper
+
+XP IS THE ONLY TRACK NOW. His note, under the progress line: "instead of 'PROGRESS' why
+dont' we just tie all this shit to XP??" The parallel PROGRESS store is dead: every
+source that paid it (kills, loot, doors, walking out, terms) pays XP, the death and
+abandon penalties apply to the WHOLE gain (50 and 75 percent), and the outcome line
+reads in his own words: "+115 XP (50% penalty for failure to extract) - 178,735 of
+180,000". The reward thresholds scaled by exactly 24 so a profile mid-board lands where
+it stood; claims are index-stored and untouched. The rewards tab header says XP and its
+subhead sheds the pre-v7.27 lie ("Dying barely does" - it pays half). The old P.sp
+field is deleted at load - and the first delete DID NOT HOLD, because the v6.30 counter
+sanitizer two lines below re-created it as zero: the two-systems-never-met class,
+caught with a defineProperty trap after the grep hunt found no writer. 'sp' left the
+sanitizer list.
+
+REVERT OF v7.32, ON HIS EXPLICIT ORDER, relayed from his phone in his words: "getting
+shot shouldn't interrupt the revive. If you're getting shot and keep reviving, that is
+fine." Reviving under fire is a choice paid for in health, not one the game takes away.
+The interrupt was my own invention closing a not-verified line, never his ask. DO NOT
+REINSTATE IT from first principles - this paragraph is the record that it was
+considered, shipped, and overruled.
+
+DEVNOW CAUGHT UP. The watchdog field still described a build from weeks ago ("crewmate
+revive" listed as open, shipped at v7.29) - exactly the MAPCONT class of lie its own
+comment warns about, caught by the phone relay session.
+
+KNOWN TENSION, FLAGGED NOT FIXED: the modal header chip labels P.rep as "XP" while the
+level track runs on P.xp - two XP-labelled numbers at different scales. Folding rep
+into xp would move every shop reputation gate, so that is his call, one word: MERGE
+them, or RENAME the chip (standing? reputation?).
+
+## THE PLAN, next 24 hours, in order (written here so it survives the session)
+
+1. Delete every map except COLD STORAGE and make contracts map-free (his order).
+2. Build the new map: COLD STORAGE in spirit, four to five times the ground (his order).
+3. The ascend map selector, shown before the loadout question (his order).
+4. Fog: "Limited visibility due to fog" copy, lamps-out line gone, a real fog visual
+   (his order).
+5. Small batch, his orders: the Listener keeps rushing when shot; the CRAWL TO THE RING
+   prompt only within about 30m; the hired pillager follows in the Undercroft too.
+6. Crafting pass, his order: bandages and grenades craftable, grenades pricey, guns
+   cost more than medkits, ammo box loses the component kit, general value sanity.
+7. Audit worklist Section 2 remainder (lying strings: superhot hint, trade/shop verb,
+   raw seconds in three feed lines, one formatter for durations, wardrobe figure
+   honouring the cut, peddler/crier vocabulary, Armour Plate spelling).
+8. Audit Section 3 (dead code: rig branches in the shop, RIGCOL, no-rig strings,
+   loadout rig round-trip, stale comments) and Section 4 (fixture drift: pin the buzz
+   state, retire rig probes).
+9. BLOCKED ON HIM: the touchdown-crowd escalation (needs his next exports' ringCrowd),
+   the rep-vs-xp naming call above, and every feel judgement (drugs at speed, ten-stack
+   framerate, crew revive under fire, heartbeat audio - the last now moot).
+
+Verified: parse PASS v7.38. Death outcome read back with his exact copy; the rewards
+board reads XP against the x24 cap (178,735 of 180,000); P.sp gone after a clean boot
+WITH the sanitizer fix; the reviver completes through sustained fire again (his
+reversal), mate up. Four maps at seed 4242, entities exactly 86/87/58/72, drawErr null.
+Three endings with headline assertions, hub and stage render.
+
+Not verified: tier boundaries for a MID-board profile other than his (the x24 scaling
+is exact arithmetic; only his real save exists to test); level pacing acceleration now
+that the richer formula feeds P.xp (levels gate one hair colour, so the blast radius is
+a haircut).

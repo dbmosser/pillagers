@@ -626,7 +626,7 @@
   </div>
   <div class="tpane" id="opane_rew" style="display:none;flex-direction:column;flex:1;min-height:0">
     <div id="seasonhead" style="font-size:12px;letter-spacing:.14em;color:var(--amber);padding:0 0 6px"></div>
-    <div class="msub">Walking out feeds this. Dying barely does. Ten rewards, claimed in order, and nothing here ever resets.</div>
+    <div class="msub">Kills, loot, doors and walking out all pay XP. Dying pays half. Ten rewards, claimed in order, and nothing here ever resets.</div>
     <div id="seasonbar" style="height:16px;border:1px solid var(--steel-hi);background:rgba(0,0,0,.35);margin:6px 0 10px 0;position:relative">
       <div id="seasonfill" style="height:100%;width:0%;background:linear-gradient(90deg,#ffc04a,#ffc04a)"></div>
       <div id="seasontext" style="position:absolute;inset:0;text-align:center;font-size:11px;line-height:16px;color:#120e0c;font-weight:700"></div>
@@ -1055,7 +1055,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.37';
+var VER='7.38';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1555,6 +1555,7 @@ if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.h
 if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
 if(P.cosHat==='pigtails'){ P.cosHat='none'; P.cosCut='pigtails'; }  // v7.26 migration
 if(P.buzzCd) delete P.buzzCd;   // v7.34: no cooldowns
+if(P.sp!==undefined) delete P.sp;   // v7.38: PROGRESS folded into XP; the field is dead
 P.buzz=[];                      // v7.35, his order: quitting the game cuts you off too
 // v6.30: the counters cannot be negative or non-numeric. A damaged save carrying
 // negative credits used to load and print "-5,000c" in the Requisition header. It
@@ -1562,7 +1563,7 @@ P.buzz=[];                      // v7.35, his order: quitting the game cuts you 
 // nonsense number in front of him and it belongs with the unknown-key filters that
 // already run here.
 (function(){
-  var _num=['credits','rep','runs','ext','died','best','sp','racks','notoriety','cstand'];
+  var _num=['credits','rep','runs','ext','died','best','racks','notoriety','cstand'];
   for(var _ni=0;_ni<_num.length;_ni++){
     var _k=_num[_ni],_v=P[_k];
     if(typeof _v!=='number'||!isFinite(_v)||_v<0) P[_k]=Math.max(0,(typeof _v==='number'&&isFinite(_v))?_v:0);
@@ -13626,7 +13627,6 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
     // with nothing more urgent goes, which is why this sits inside the loot state:
     // a man in a firefight has a better use of the next four seconds.
     else if((e.state==='loot'||e.state==='extract')&&e.kind==='raider'&&CFG.raiderDown!==0&&(function(){
-      if((e.hitT||0)>0){ e.reviving=null; e.revProg=0; return false; }
       if(e.reviving&&(e.reviving.downed!==1||G.ents.indexOf(e.reviving)<0)) e.reviving=null;
       if(!e.reviving){
         var best=null,bd=(e.state==='extract')?260:760;
@@ -14290,17 +14290,19 @@ function toggleTerm(id){
 // the short one. Ten tiers, every raid feeds it, and finishing it moves the
 // WORLD up rather than just the player, so the next season is richer and harder
 // instead of being the same game with a bigger number attached.
+// v7.38: thresholds are TOTAL XP now (old progress values times exactly 24, so a
+// profile mid-board lands where it already stood).
 var SEASON_TIERS=[
-  {sp:300,  kind:'credits', v:1500, label:'1,500 credits'},
-  {sp:700,  kind:'credits', v:2000, label:'2,000 credits'},
-  {sp:1200, kind:'wep',     v:'carbine'},
-  {sp:1800, kind:'kit',     v:['medkit','medkit','plate','plate'], label:'2 medkits and 2 armour plates to the stash'},
-  {sp:2500, kind:'credits', v:3000, label:'3,000 credits'},
-  {sp:3300, kind:'wep',     v:'shotgun'},
-  {sp:4200, kind:'standing',v:2,    label:'Every pillager out there thinks better of you'},
-  {sp:5200, kind:'credits', v:6000, label:'6,000 credits'},
-  {sp:6300, kind:'wep',     v:'dmr'},
-  {sp:7500, kind:'last',    v:10000,label:'10,000 credits, and the board is finished'}
+  {sp:7200,   kind:'credits', v:1500, label:'1,500 credits'},
+  {sp:16800,  kind:'credits', v:2000, label:'2,000 credits'},
+  {sp:28800,  kind:'wep',     v:'carbine'},
+  {sp:43200,  kind:'kit',     v:['medkit','medkit','plate','plate'], label:'2 medkits and 2 armour plates to the stash'},
+  {sp:60000,  kind:'credits', v:3000, label:'3,000 credits'},
+  {sp:79200,  kind:'wep',     v:'shotgun'},
+  {sp:100800, kind:'standing',v:2,    label:'Every pillager out there thinks better of you'},
+  {sp:124800, kind:'credits', v:6000, label:'6,000 credits'},
+  {sp:151200, kind:'wep',     v:'dmr'},
+  {sp:180000, kind:'last',    v:10000,label:'10,000 credits, and the board is finished'}
 ];
 
 // THE ESCALATING WORLD TIER IS GONE, v5.80, on his note: "get rid of 'escalating
@@ -14341,7 +14343,7 @@ function seasonClaimed(){ if(!Array.isArray(P.spClaimed)) P.spClaimed=[]; return
 function seasonReady(){
   var cl=seasonClaimed(),n=0;
   for(var i=0;i<SEASON_TIERS.length;i++)
-    if((P.sp||0)>=SEASON_TIERS[i].sp&&cl.indexOf(i)<0) n++;
+    if((P.xp||0)>=SEASON_TIERS[i].sp&&cl.indexOf(i)<0) n++;
   return n;
 }
 function tierLabel(T){
@@ -14352,7 +14354,7 @@ function claimTier(ix){
   var T=SEASON_TIERS[ix]; if(!T) return null;
   var cl=seasonClaimed();
   if(cl.indexOf(ix)>=0) return null;
-  if((P.sp||0)<T.sp) return null;
+  if((P.xp||0)<T.sp) return null;
   cl.push(ix);
   var msg='';
   // 'last' pays like 'credits' because it IS a credit reward; the only thing
@@ -14378,11 +14380,13 @@ function claimTier(ix){
   return msg;
 }
 function xpForRun(rec){
-  return 40 + Math.round((rec.containers||0)*4) + Math.round((rec.dist||0)/900);
+  var x=40 + Math.round((rec.containers||0)*4) + Math.round((rec.dist||0)/900);
+  if(rec.outcome==='dead') x*=0.5;
+  else if(rec.outcome==='abandon') x*=0.25;
+  return Math.round(x);
 }
 function addProgress(rec){
-  P.sp=(P.sp||0)+spForRun(rec);
-  P.xp=(P.xp||0)+xpForRun(rec);
+  P.xp=(P.xp||0)+spForRun(rec)+xpForRun(rec);
   P.xpLevel=1+Math.floor(Math.sqrt((P.xp||0)/220));
   // Proficiency: banked value counts, value lost on death counts AGAINST.
   P.profRaw=P.profRaw||0;
@@ -14580,17 +14584,18 @@ silentExit:T.silentExit||0,
   // was quietly worth nothing on the long track.
   var tPay=termsPay();
   (function(){
-    var gained=spForRun({outcome:how,haul:haul,containers:T.containers,kills:T.kills,termPay:tPay,
-      doorsOpened:T.doorsOpened||0,caches:T.cachesOpened||0});
+    var _grec={outcome:how,haul:haul,containers:T.containers,kills:T.kills,termPay:tPay,
+      doorsOpened:T.doorsOpened||0,caches:T.cachesOpened||0,dist:T.distance||0};
+    var gained=spForRun(_grec)+xpForRun(_grec);
     if(gained>0){
       var cap=SEASON_TIERS[SEASON_TIERS.length-1].sp;
       // HIS NOTE, v3.59: "it says Season 1 +84 progress -- but what the hell
       // does that mean? is it rep? not clear". It is not rep. Named and
       // explained at the one place he reads it.
-      lines.push('<span style="color:var(--amber)">PROGRESS +'+gained+
-        (how==='dead'?' (half, for dying)':(how==='abandon'?' (a quarter, for backing out)':''))+
-        '  &middot;  '+Math.min(cap,(P.sp||0)+gained).toLocaleString()+' of '+cap.toLocaleString()+
-        '</span><br><span style="color:var(--ash)">Kills, loot, doors and walking out all add progress, and progress unlocks the ten Mainframe rewards.</span>');
+      lines.push('<span style="color:var(--amber)">+'+gained.toLocaleString()+' XP'+
+        (how==='dead'?' (50% penalty for failure to extract)':(how==='abandon'?' (75% penalty for backing out)':''))+
+        '  &middot;  '+Math.min(cap,(P.xp||0)+gained).toLocaleString()+' of '+cap.toLocaleString()+
+        '</span><br><span style="color:var(--ash)">XP progress unlocks the ten Mainframe rewards.</span>');
     }
   })();
   if(G.strayPaid){
@@ -22386,8 +22391,8 @@ var ROADMAP=[
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
 var DEVNOW={
-  now:'Fixed the ascent check stealing your gun slots, which was mine and broke a raid',
-  next:'His open calls: machine war, street amount, music gap, crewmate revive, Q2 remedy'
+  now:'v7.38: one currency. XP pays and unlocks everything the old PROGRESS did.',
+  next:'His queue: one map only, then a 4-5x bigger one, the ascend map selector, the fog rework, the crafting pass, the Listener rush'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a
@@ -22562,8 +22567,8 @@ function renderTerms(){
 }
 function renderSeason(){
   var head=document.getElementById('seasonhead');
-  head.textContent='PROGRESS';
-  var cap=SEASON_TIERS[SEASON_TIERS.length-1].sp,sp=P.sp||0;
+  head.textContent='XP';
+  var cap=SEASON_TIERS[SEASON_TIERS.length-1].sp,sp=P.xp||0;
   document.getElementById('seasonfill').style.width=clamp(100*sp/cap,0,100)+'%';
   document.getElementById('seasontext').textContent=Math.min(sp,cap).toLocaleString()+' / '+cap.toLocaleString();
   var el=document.getElementById('seasonlist'); el.innerHTML='';
