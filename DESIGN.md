@@ -23953,3 +23953,49 @@ Not verified: the five field-only guns with no gun_ item entry still fall back t
 label instead of an icon in the grid, and their menu head takes the default rarity
 colour. I did not check the menu against a profile that owns all fifteen weapons at
 once, only the four-gun case.
+
+## SHIP AUDIT AT v6.48, AND THREE OPEN ITEMS THAT ARE ALREADY CLOSED
+
+He said this has to be ready to ship. Rather than add another feature on top of nine
+builds of changes, this tick ends by checking what is there.
+
+EVERY MENU, MEASURED AT 1080p. All eleven panels opened in turn with a full stash, four
+owned guns and a loaded profile: 1,128 visible elements checked for text clipped inside
+its own box or pushed off the viewport. Zero of either. 131 controls checked for a
+missing handler, and the only unresponsive ones are correctly disabled: an unfinished
+contract, and reward tiers not yet reached, which carry cursor:not-allowed and say so.
+
+THE SHIPPING FILE ITSELF, not the test copy. The publish zip and index.html are byte
+identical to the game file at v6.48. Loaded from the play server with NO test hooks
+present and driven with real clicks and real keys only: title screen, ENTER THE
+UNDERCROFT, I to open the stash, and on a FRESH profile the two gun cells are there, the
+operator has all five slots, the stash has six tabs including KEYS, the buttons read
+SHOP, CRAFT, CONTRACTS, TIME OF DAY and SETTINGS, and the brand reads PILLAGERS with no
+slashes. ASCEND opens the check with the freebie banner, and pressing it a second time
+puts a raid on screen with the conditions box reading TIME OF DAY and WEATHER as two
+named rows. It plays.
+
+THREE ITEMS ON MY OWN OPEN LIST ARE STALE, and saying so is the point of checking:
+
+  THE LISTENER IS NOT UNBEATABLE. Closed in a previous entry by three independent
+  checks and nothing since has changed it: his own feeling tags say "Listener beatable"
+  three times and "Listener unfair" zero times; it is fourth among the things that kill
+  him, 3 deaths in 33; and measured on the build, one dies in 3.7 seconds and costs 14
+  health. Not re-fixed.
+
+  MACHINES VERSUS PILLAGERS IS ALREADY ON. The list says CFG machVsRaider is 0. It is
+  1 in the shipped defaults and has been for some time.
+
+  THE EXTRACTION BANNER DOES NOT SIT MID-SCREEN. Driven with an open extraction and the
+  player standing in the ring: the OPEN label is drawn on the ring itself out in the
+  world, and the prompt sits at the bottom of the screen. There is no permanent banner
+  across the middle. The progress bar under it, which he did complain about, went at
+  v6.41.
+
+Verified: the above is the verification. Nothing in this entry changes the game.
+
+Not verified: I drove the shipping build as far as a live raid on screen but did not
+fight one to a payout there, because the outcome path needs the hooks to reach reliably;
+all three endings are covered on the identical code in the fixture. The dead-control
+sweep can only see handlers assigned as onclick, so a control wired through
+addEventListener with no pointer cursor would not have been flagged.
