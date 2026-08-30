@@ -48,7 +48,6 @@ window.__mouse=function(){ return mouse; };
 window.__sim=function(dt){ refreshVseg(); updatePlayer(dt); updateEnts(dt); updateThrowables(dt); };
 window.__tickFx=function(dt){
   var i;
-  for(i=G.tracers.length-1;i>=0;i--){ G.tracers[i].t+=dt; if(G.tracers[i].t>G.tracers[i].life) G.tracers.splice(i,1); }
   for(i=G.flashes.length-1;i>=0;i--){ G.flashes[i].t+=dt; if(G.flashes[i].t>G.flashes[i].life) G.flashes.splice(i,1); }
   for(i=G.sparks.length-1;i>=0;i--){ var s=G.sparks[i]; s.t+=dt; if(s.t>s.life) G.sparks.splice(i,1); }
 };

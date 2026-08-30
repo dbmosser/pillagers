@@ -26028,3 +26028,42 @@ extraction case measured directly.
 Not verified: whether he WANTED the quiet route to stop paying entirely, or only the
 readout gone. His words were unambiguous and I have followed them; if the intent was
 narrower, restoring the payout without the readout is a five line revert.
+
+## v6.98 - dead code out, final batch, and the audit closed
+
+The last two items worth acting on from the 28 the audit confirmed:
+
+  BUILDS       a top level array written once by the build archive picker and read by
+               nothing, since the picker renders from its own local. Write-only variables
+               are dead weight. Removed, and the picker verified still populating.
+  __tickFx     a fixture hook iterating G.tracers, a field that has not existed in the
+               game for a long time (zero hits in the file), so the hook THREW the moment
+               anything called it. A verification hook that throws is worse than a missing
+               one, because it reads as a game bug: that is the wolf-crying probe problem
+               in its purest form. The dead array is out of the loop and the hook now runs
+               clean, measured.
+
+NOT REMOVED, WITH REASONS, which closes the audit ledger:
+
+  ICLASS.gun and .key      the audit called them dead; both have plausible live paths
+                           through crafted-item and key items whose use fields reach the
+                           same lookup. Uncertain means keep.
+  VENDOR_LINES.crate       vendorLine(line[2]) takes a computed id, and the dev crate can
+                           plausibly pass 'crate'. Same rule.
+  avpanel, invcols et al   "unreferenced markup id" means the id ATTRIBUTE has no reader,
+                           not that the element is dead; both are visible working panels.
+  LANDMARKS                connected at v6.92 and v6.96 instead of deleted, and is now six
+                           real places on four maps.
+
+The audit's final score: 45 agents, 38 candidates, 12 refuted by the adversarial pass,
+28 confirmed, of which about half were genuinely worth removing, one was a live user
+facing bug (the freekit duplicate id, fixed at v6.81), and one was a whole feature worth
+connecting rather than deleting. That distribution is the argument for never letting a
+finder delete anything on its own say-so.
+
+Verified: parse PASS. Four maps at seed 4242, entity counts 86/87/58/72, zero draw errors,
+__hud clean. All three endings through the outcome screen. Hub frames and stage render.
+__tickFx driven twice without throwing, and the archive picker confirmed still rendering.
+
+Not verified: nothing outstanding from the audit. What remains open on his list is feature
+work, not cleanup.
