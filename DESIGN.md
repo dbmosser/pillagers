@@ -26763,3 +26763,43 @@ render. Fixture scale reset to auto afterwards.
 Not verified: the panel at 200 percent AFTER this fix was not re-screenshotted (the
 width maths is deterministic and the wrap code unchanged); and rungs between default and
 maximum on every panel simultaneously.
+
+## v7.23 - Superhot rebuilt: a true freeze, any input runs it, backtick flips it
+
+Four live notes and one death report, all his, all in one build.
+
+THE FREEZE IS TOTAL NOW. "time should freeze COMPLETELY if the player is not clicking a
+mouse button or keyboard button -- or no input from xbox controller." dt is zero when
+idle, not the old six percent crawl. The superhotSlow dial stays for the console but the
+shipped rule is a stop.
+
+ANY INPUT RUNS TIME. "clicking E to do stuff, like call the extract, should make time
+elapse normally while holding E -- apply the principle globally." One rule replaces the
+hand kept activity list: any held key, mouse button, or pad input runs the clock.
+Holding E to call or search, holding F to heal, holding R: all covered without naming
+any of them.
+
+HIS DEATH WAS A BUG IN THE OLD LIST. "i sprinted then got downed, when i self-revived, i
+stood still but the game kept moving around me and killed me quickly." The old list
+counted healQ>0 as activity, so the self revive's heal over time ran the world while he
+stood still, exactly as reported. Passive clocks (healing, the inbound ship) are off the
+list: they tick only while you feed time, which is the whole game he asked for. Rolls,
+reloads and preps stay active because each is momentum from an input already given.
+
+BACKTICK TOGGLES IT. "make it so i can cut superhot mode on or off with a key -- make it
+` key." The toggle goes through cycleGameOpt so the Settings row, the profile and the
+dial always agree, and the message names the new state. Tuning, which owned that key,
+moves to SHIFT plus backtick; the pause legend says both.
+
+One mistake owned: my first patch for the legend line put a backtick inside a double
+quoted PowerShell string, where it is the escape character, and the assert caught the
+mangled pattern before anything was written.
+
+Verified: parse PASS v7.23. Toggle driven through the real key both ways, message and
+CFG and settings path all agreeing. The freeze rule's inputs read back frozen-idle and
+running-with-E-held. Four maps at seed 4242, entities exactly 86/87/58/72, drawErr null.
+Three endings with headline assertions, hub and stage render.
+
+Not verified: the freeze FEEL in real time (the fixture pane suspends animation frames
+while hidden, so wall clock behaviour is his to confirm); pad input running the clock on
+real hardware.
