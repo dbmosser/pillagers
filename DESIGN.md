@@ -24974,3 +24974,89 @@ Not verified: the settlement copy and the both-out rule were changed by editing 
 settlement branch and the panel text, and I did not play a raid to the ramp with a hired
 man to watch the line print. The friendly fire rule IS measured; the money is not.
 Explosives on a companion are known-uncovered rather than unverified.
+
+## v6.73 - Superhot, two more tracks, the Undercroft gets its controls, and I clean up my own mojibake
+
+FOUR OF THE CRON'S STANDING OPEN ITEMS ARE NOT OPEN, checked against the code rather than
+taken on trust:
+  - machVsRaider is 1, not 0. Machines and pillagers already fight.
+  - "extraction point is open" does not exist as a string anywhere in the file.
+  - cutting music on pause, death and extract is already total: musicWanted returns false
+    whenever a raid object exists, which covers all three, so there is nothing to cut.
+    Music plays in the Undercroft and nowhere else.
+  - the Listener could not attack at all until v6.63, which is the likeliest reading of
+    "it sticks to the player and there's no chance to kill it".
+Seasons are still in the file and that item IS still open.
+
+SUPERHOT MODE, his note twice over, and a settings row for it. One multiplier on dt in the
+raid. Time does not STOP when you stand still, it crawls at six percent, because a hard
+stop makes the reload, the heal and the extraction timer unreachable and freezes an
+extract you have already called. Walking, firing, rolling and reloading all count as
+acting; aiming and turning do not, so looking around is free, which is what makes the mode
+readable. Measured over 120 frames: 1.95 raid seconds normally, 0.11 standing still with
+the mode on, 1.90 walking with it on.
+
+TWO MORE UNDERCROFT TRACKS, THE LAMPLIGHTERS at 120bpm and WHAT THE WATER KEPT at 80,
+taking the rotation from three to five. Written to the idiom he named rather than as
+generic loops: the melody leaps a fourth or a sixth and then walks back down by step, the
+bass moves under a held chord so the harmony shifts without the chord changing, and the
+turns borrow a chord from outside the key so a phrase settles without closing. Validated
+structurally across all five themes and 1280 steps: every chord resolves, every bar has
+sixteen lead slots, every bass and every lead note is a real MIDI value in range, and all
+five come up in the random rotation.
+
+H AND THE DODGE ROLL WORK ON THE FLOOR, both of his notes. H was handled inside raidKey,
+which the hub never calls, and the roll lived entirely in the raid player update. H now
+opens a proper controls panel rather than the one line along the bottom. The roll is
+cosmetic by design: there is nothing to dodge down there, so it carries no invulnerability
+and no stamina cost, but it is the same move under the same key so the muscle memory
+carries. It runs through the same collide and clamp as walking, so it cannot put you
+through a pier. Measured: 149 pixels of travel and the roll ends cleanly.
+
+TWO THINGS I ONLY FOUND BY LOOKING AT A SCREENSHOT, which is the habit he had to ask for
+twice:
+
+MY MOJIBAKE, ON SCREEN. The separator in the status bar and the Undercroft footer was
+rendering as a visible A-circumflex followed by a middot. I did that at v6.69 with an
+inline (Get-Content -Raw) piped to Set-Content -Encoding UTF8: PowerShell 5.1's
+Get-Content defaults to the ANSI codepage, so it read the middot's UTF-8 bytes C2 B7 as
+two Latin-1 characters and wrote them back as UTF-8, giving C3 82 C2 B7. The BOM I
+noticed at the time was only the visible half of that mistake; the real damage was every
+non-ASCII character in the file. The middot is the only one, and all ten instances were
+hit, eight corrupted once and two that were already corrupted beforehand and got a second
+layer. All ten are repaired and the file now contains exactly ten clean C2 B7 middots and
+no other non-ASCII byte. The repair script is pure ASCII and builds the characters from
+code points, per the standing rule that put mojibake in this file once already.
+
+THE UNDERCROFT WAS DRAWING EIGHTY ROWS OF NOTHING under the floor, and I caused that at
+v6.68 by moving the spawn to the lower left lamp. camClamp allows the camera eighty units
+past the world edge, which is right for a raid map thousands of units across. The
+Undercroft is 700 by 470, the vertical view at 1080p is exactly 470 room units, so the
+clamp put the camera at +80 and drew bare floor past the wall. Nobody saw it while the
+spawn was mid-room because the camera never reached the clamp. The hub has its own clamp
+now: centre the room when it fits, hold the edge exactly when it does not. Raid cameras
+are untouched.
+
+Also from the same screenshots: station names ran onto the left wall, so WIRT THE GAMBLER
+read as IRT THE GAMBLER. The label is nudged inward to clear the shell, and the margin is
+34 because hubWall builds that shell at thickness 20 and my first attempt at 12 kept the
+text inside the ROOM while still laying it across the WALL.
+
+CONTAINER COUNTS MOVED, 246/193/152/216 to 245/193/150/205, and it is not a defect.
+Entity counts hold at the invariant 86/87/58/72. I refuted the obvious suspect by
+measurement: stripping the two new guns back out of the loot tables does not move the
+counts at all. The counts are stable and identical across repeated runs and a fresh page
+load, and they track PROFILE state, which is exactly why entities are the invariant and
+container counts are only a fingerprint.
+
+Verified: parse PASS. Four maps at seed 4242, entity counts 86/87/58/72, drawErr null,
+__hud drawing without throwing on all four. All three endings through the outcome screen
+and back to the hub. Hub frames, stage renders, controls panel draws. Superhot, the roll,
+the H panel and the theme rotation all measured as above. Screenshotted at 1920x1080.
+
+Not verified: THE NEW MUSIC HAS NEVER BEEN HEARD. The fixture has no user gesture, so the
+audio context never starts and tickMusic returns before scheduling a single note. The two
+themes are proven well formed, reachable and arithmetically sound, and that is all;
+whether they are any good, and whether they sound like the game, only he can say. Also
+unverified: Superhot in a real firefight, where the interesting question is whether a
+crawler closing on you at six percent speed is tense or tedious.
