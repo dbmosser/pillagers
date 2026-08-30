@@ -417,6 +417,10 @@
   #settingsmodal .tpane{ max-width:1080px; width:100%; margin:0 auto; }
   #opane_mf{ max-width:1080px; width:100%; margin:0 auto; }
   #opane_rew{ max-width:1080px; width:100%; margin:0 auto; }
+  #termsmodal{ align-items:center; justify-content:center; }
+  #termsmodal::before{ inset:50% auto auto 50%; width:1180px; height:600px; transform:translate(-50%,-50%); }
+  #termsmodal .msub, #termsmodal .plist, #termsmodal #termstotal{ max-width:1060px; width:100%; }
+  #termsmodal .plist{ flex:0 1 auto; }
   #settingsmodal .msub{ font-size:12.5px; line-height:1.6; }
   .runline{ display:flex; gap:8px; padding:4px 12px; font-size:11px; border-bottom:1px solid rgba(42,50,61,.3); }
   .runline .o{ width:44px; flex:none; font-weight:700; }
@@ -1026,7 +1030,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.12';
+var VER='7.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21047,7 +21051,7 @@ stations.forEach(function(st){
     // v6.20: the keys come from the acts, like every other station, because this
     // hard-coded pair said "[R] sector" while R has been the quick deploy.
     var ks=Object.keys(stations[0].acts);
-    var keys=ks.map(function(k){ return '['+KEYNAMES[k]+'] '+stations[0].acts[k][0]; }).join('   ');
+    var keys=ks.map(function(k){ return '['+keyLabel(k,KEYNAME_KB[k]||k)+'] '+stations[0].acts[k][0]; }).join('   ');
     // And the destination is the one you will ACTUALLY get. P.mapIx defaults to 0,
     // which is not offered in the beta, and openLift silently corrects it on the way
     // in, so the sign used to name a sector the lift would not take you to.

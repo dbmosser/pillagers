@@ -26496,3 +26496,46 @@ with headline assertions, hub and stage render. Leave closes.
 Not verified: the label mid season (progress genuinely below cap, where clamping must
 not change anything; the code path is Math.min and the fixture profile sits past the cap,
 so the below-cap case ran only in my head).
+
+## v7.13 - the lift sign has been crashing the hub HUD since v6.83
+
+The biggest find of the menus sweep, and it fell out by accident: walking the fixture
+pillager to the Ascent Lift to open the terms card threw ReferenceError, KEYNAMES is not
+defined, from inside the lift's sign function.
+
+What happened: v6.83 moved every station sign to keyLabel()/KEYNAME_KB so controller
+glyphs could appear on signs. The lift is the ONE station that overrides the generic
+sign with its own function, to append the destination sector, and the override kept the
+dead global's name. Nothing catches around drawHubWorld in the main loop, so from the
+moment you step into the lift's radius, the HUD pass died at the exact point where its
+sign should draw. Every frame. Silently. The lift is the station he uses every single
+run, and the sign that died was the one carrying "[E] go up" and the destination, the
+line built at v6.44 specifically because he could not tell which map the lift would take
+him to.
+
+Why nobody reported a crash: the throw happens after the world and stations have drawn,
+so the Undercroft looked alive; what was missing was the sign line itself and whatever
+the HUD draws after it, and a missing line does not look like a crash, it looks like
+nothing. This is the same lesson as the silent wallClip probe: a crash that eats its own
+error message leaves a blank, not a bang.
+
+The fix is the same call every other station already uses, which also finally gives the
+lift sign controller glyphs when a pad is connected.
+
+SECOND FIX IN THE BUILD, the thing I went to the lift for: the terms card was five fixed
+rows at the top of a full height frame, sixty percent blue below, SIGN buttons a screen
+from their labels. Content sized centered window now (1180x600, the row count is fixed so
+a fixed window is safe), rows capped at 1060, the list no longer stretching into height
+it does not use.
+
+Verified: parse PASS v7.13. Thirty hub frames held INSIDE the lift radius with no throw,
+sign text renders "[E] go up  [R] quick ascent  [T] the terms  >  COLD STORAGE",
+screenshot shows the full Undercroft drawing end to end at the lift. Terms card
+screenshot: centered window, buttons beside rows; signed one term (+25% hazard pay
+renders), SIGN NOTHING clears it, Leave closes. Four maps at seed 4242, entities exactly
+86/87/58/72, drawErr null. Three endings with headline assertions, hub check now
+deliberately parks at the lift, stage renders.
+
+Not verified: what the HUD looked like during the broken window (I did not reproduce the
+pre fix visual to see which lines were eaten); and controller glyphs on the lift sign
+with a real pad, same hardware caveat as always.
