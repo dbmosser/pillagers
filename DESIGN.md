@@ -25152,3 +25152,56 @@ and two finished ones, and separately with an empty board. Screenshotted at 1920
 Not verified: how the panel and the bag look together on a narrow window. Both are fixed
 at 300 scaled units against opposite edges, so they cannot overlap at any width I can
 reach, but I only looked at 1920x1080 and his machine is the one that matters.
+
+## v6.76 - the rack wall stops being a dead end
+
+His note: "add way moreprogression to building racks -- like you build 10 then you can
+swap those ten for a super mainframe (come up with a better name but that's the idea),
+and then you can build 10 more and do it again, etc"
+
+The wall held FOUR racks and then said THE WALL IS FULL, permanently. Four racks is $800
+an extraction and that was the entire end of the track, which is the dead end he is
+describing.
+
+THE NAME. He asked me to find a better one than "super mainframe". Ten racks fold into an
+ARRAY: it is the real word for a consolidated bank of racks, it is one word per his
+vocabulary rule, and it sits under MAINFRAME without competing with it. The Mainframe is
+the wall; an Array is what ten racks become.
+
+THE NUMBERS, because consolidating has to be worth doing or the button is decoration:
+
+  a rack      $200 an extraction, so ten of them pay $2,000
+  an Array    $2,600 an extraction, and it empties the wall
+
+So folding pays thirty percent more than the racks it consumed AND lets you start the
+next ten behind it. Arrays have no ceiling, so the track now runs for as long as he keeps
+bringing salvage home.
+
+Driven end to end through the real buttons rather than by calling the functions:
+
+  start                 0 racks, fold disabled, reading 0/10
+  after ten builds      wall full, BUILD disabled, FOLD enabled
+  an eleventh build     refused, still 10
+  after folding         0 racks, 1 array, BUILD live again, fold back to 0/10
+
+and 660 parts consumed from the stash for the ten racks, which is exactly ten times the
+recipe.
+
+The payout reads both and names what paid, measured on the outcome screen:
+  1 array                 "1 array fenced the data. +$2,600, banked."
+  2 arrays and 4 racks    "2 arrays and 4 racks fenced the data. +$6,000, banked."
+  neither                 no mainframe line at all
+
+P.arrays is a new profile field, defaulted on load like every other one. It is additive,
+so an existing save simply starts with none and the salvagerun:profile key is untouched.
+
+Verified: parse PASS. Four maps at seed 4242 with the bag open, entity counts 86/87/58/72,
+drawErr null, __hud clean. All three endings through the outcome screen and back to the
+hub. Hub frames and stage render. The full build-and-fold cycle and all three payout cases
+measured as above.
+
+Not verified: whether $2,600 an extraction is the right size. It is a thirty percent
+premium chosen to make folding obviously worth doing, and against his median extract haul
+of about $2,975 it roughly doubles what a successful run pays, which is a large economic
+change I have not run a seeded batch against. If the economy feels loose when he plays,
+ARRAY_PAY is the one number to move.
