@@ -26539,3 +26539,33 @@ deliberately parks at the lift, stage renders.
 Not verified: what the HUD looked like during the broken window (I did not reproduce the
 pre fix visual to see which lines were eaten); and controller glyphs on the lift sign
 with a real pad, same hardware caveat as always.
+
+## v7.14 - the balance chip finally spends when you do
+
+Wirt's window turned up two things:
+
+THE HEADER CHIP WENT STALE THE MOMENT YOU SPENT. v6.14 put the balance on every station
+screen through the openModal door, stamped once at open. Spend inside the screen and the
+chip kept showing the money you walked in with: three pulls at Wirt left the chip 7,500
+credits rich while the line under it told the truth. The chip is now re-stamped from
+saveProfile, the one call every credit mutation already ends in, so no purchase path,
+current or future, can leave it stale. This fixes the same staleness at the shop, the
+hire desk, the repair bench and the rack builds, none of which re-stamped either.
+
+WIRT'S WINDOW WAS ONE LINE IN A FULL SCREEN FRAME. Or at most eight pull rows, since the
+log shows the last eight. Same centered card treatment as the terms next door, rows
+capped beside their prices.
+
+The family portrait after this pass: pause, outcome, terms and gamble are content sized
+windows; settings, racks and rewards are capped columns inside their full frame; stats
+and contracts keep the full width their layouts genuinely use.
+
+Verified: parse PASS v7.14. Chip read back before and after a real pull through the real
+button: 308,632 to 306,132, matching the wallet line exactly. Screenshot of the centered
+card with four pulls listed. Four maps at seed 4242, entities exactly 86/87/58/72,
+drawErr null. Three endings with headline assertions, hub check includes twenty frames
+parked at the lift, stage renders.
+
+Not verified: the chip during a rack build or gun repair specifically (both spend through
+saveProfile, so they inherit the fix by construction, but I read back only the gamble
+path); and Wirt's window with the full eight row log.
