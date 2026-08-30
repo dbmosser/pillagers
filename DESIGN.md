@@ -26674,3 +26674,38 @@ endings with headline assertions, hub and stage render.
 Not verified: the healing message with a live bandage press (the formula reads the same
 healQ/healRate the ring uses, but I did not drive an F press this build); the grey
 closed ring against every district palette; the restore line's has/have on screen.
+
+## v7.20 - the right corner, redone
+
+His notes: "the value of your entire hotbar and inventory should be shown during a raid"
+and "redo the right hand corner in the hud, it looks like shit". What made it ugly, from
+the screenshot: every contract repeated its own amber CONTRACT header line, and time and
+weather each spent a header line to deliver one word. Eleven rows of chrome around seven
+facts.
+
+The redo, same box, same toggle, same fixed anchor:
+
+  CARRYING  $1,590              new. The bag priced by the same ival() the payout
+                                uses, so this number and the extraction receipt can
+                                never disagree. Updates live as you loot.
+  6pm   Partly Cloudy           one line now; weather effects wrap under it only
+                                when there are any.
+  CONTRACTS                     one header. Each contract is one line below it,
+                                still sorted nearest-to-finishing first, conduct
+                                contracts still going red with LOST the moment
+                                they break.
+
+The bottom right corner got the same number: "6 ITEMS  $1,590" beside the load
+penalties. And by luck the screenshot proved the sum: the rivals panel prices YOU at
+exactly the same figure, two systems reading one function.
+
+The panel is roughly half its former height with identical information.
+
+Verified: parse PASS v7.20. Screenshot with a seeded bag: CARRYING $1,590 top, merged
+time and weather line, seven contracts as single lines under one header, corner value
+present. Four maps at seed 4242, entities exactly 86/87/58/72, drawErr null. Three
+endings with headline assertions, hub and stage render.
+
+Not verified: the panel with signed terms rows and a broken conduct contract at the same
+time (the row model handles both, but that exact stack was not staged); the CARRYING
+line against a bag with a windfall item.
