@@ -26598,3 +26598,19 @@ hub, stage: run under v7.16 below.
 
 Not verified: the packed state of the loadout line (the "N items you packed" branch) on
 screen; and hire tile names against the hire panel he already approved.
+
+## v7.17 - the Listener stops announcing itself
+
+His note, live at the keyboard: "the game always says 'a listener is hunting you' --
+don't give the player that info". The centre screen Listener banner is gone, both states:
+the red warning and the green crouch coaching. The corner MACHINES and PILLAGERS HUNTING
+counters stay, because his note named only the Listener line. The v5.60 lane
+measurements that produced the coaching remain true in the code history; the player just
+has to learn them the way he wants to, by playing.
+
+Verified: parse PASS v7.17, four maps at seed 4242 entities exactly 86/87/58/72 drawErr
+null, three endings with headline assertions, hub and stage render.
+
+Not verified: a live raid with a hunting Listener on screen (the deleted block was the
+only reader of that state in the HUD pass, so nothing else can reference it; the sweep
+draws the HUD on all four maps without it).
