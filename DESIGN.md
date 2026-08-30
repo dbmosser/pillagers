@@ -27442,3 +27442,44 @@ and stage render.
 Not verified: the follower against hub walls (he steps straight lines and can brush
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
+
+## v7.41 - THE COLD MILE
+
+His order: "make a new map that is similar in spirit but approximately 4-5 times as
+large as the one we are currently using." Delivered: THE COLD MILE, 9000 by 7600,
+4.79 times COLD STORAGE's ground, the same frozen logistics identity scaled to a mile.
+
+HOW IT WAS BUILT. Five parallel authors, each owning one concern: the INTAKE quadrant
+(dock bays, tally halls, the first staggered rack fields, the INTAKE GATE checkpoint),
+the DEEP COLD quadrant (two grids of identical cold units, the blast freezer line, the
+frost yard kill lane), the MELT quadrant (sumps, the pump district, sparse broken
+ground), the SCRAP MILE quadrant (container row fields, crane catwalks, the rail
+siding), and an arterial designer owning the two crossing roads, their gated fences,
+six extraction points and twelve spawns. Each returned strict JSON against the map
+schema; an assembler validated every rect against its region, every extract pair
+against a 2,300 unit minimum, every spawn against a 1,500 unit extract clearance - and
+only wrote on zero violations. First run: zero violations. 12 zones, 121 walls, 84
+buildings, 2 catwalks, 6 keyed rooms, 12 landmarks.
+
+FIRST RAID, seed 4242: the map boots, spawns 134 entities (the area scaling working -
+4.8x ground gives 2.3x population), 565 containers, six exits; the bot walked a
+thousand units through it with zero errors; the full frame and HUD drew clean; the
+sector map overlay shows an authored place - staggered racks, COLD NINE, the pump
+row, the manifest cage - not a tile soup.
+
+THE FINGERPRINT: THE COLD MILE is mapIx 1, entities 134 at seed 4242. The verify
+protocol now drives BOTH maps.
+
+The lift's existing sector page returns automatically now that two maps are offered;
+moving that choice BEFORE the loadout question is the next build, per his order.
+
+Verified: parse PASS v7.41. Everything in the paragraph above, through the fixture.
+COLD STORAGE regression: entities still exactly 58 at seed 4242, endings and hub and
+stage all green.
+
+Not verified: PLAY FEEL across a mile of ground (pacing, extract pressure, the raider
+floor at this scale - his eyes needed); the arterial road fences as gameplay (they
+validate geometrically); performance over a long raid at 134 entities (10 sim-seconds
+ran clean; a full 9 minute raid is unmeasured); SECTOR_MEAS carries no bot numbers for
+the new map yet - the board says nothing rather than lying, and a 200 seed baseline
+for mapIx 1 is queued.
