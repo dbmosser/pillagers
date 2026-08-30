@@ -1053,7 +1053,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.25';
+var VER='7.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1550,6 +1550,7 @@ function loadProfile(){
         if(d&&typeof d.credits==='number'){ P=d;
 if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={};
 if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
+if(P.cosHat==='pigtails'){ P.cosHat='none'; P.cosCut='pigtails'; }  // v7.26 migration
 // v6.30: the counters cannot be negative or non-numeric. A damaged save carrying
 // negative credits used to load and print "-5,000c" in the Requisition header. It
 // was never exploitable, because every spend re-checks affordability, but it is a
@@ -15292,8 +15293,16 @@ var COSMETICS=[
   {id:'mask',   name:'Dust Mask',      how:'runs:15',     kind:'hat'},
   {id:'visor',  name:'Cracked Visor',  how:'warden:1',    kind:'hat'},
   {id:'crown',  name:'Meridian Crown', how:'board:1',    kind:'hat'},
-  // v5.66, his note. Owned from the start: this is a look, not a trophy.
-  {id:'pigtails',name:'Pigtails',      how:'always',      kind:'hat'},
+  // v5.66, his note. Owned from the start: this is a look, not a trophy. v7.26: and it
+  // is a HAIRSTYLE, not headgear; it moved to the cut rack with the seven new ones.
+  {id:'long',    name:'Long',          how:'always',      kind:'cut'},
+  {id:'pigtails',name:'Pigtails',      how:'always',      kind:'cut'},
+  {id:'crop',    name:'Crop',          how:'always',      kind:'cut'},
+  {id:'bob',     name:'Bob',           how:'always',      kind:'cut'},
+  {id:'bun',     name:'Bun',           how:'always',      kind:'cut'},
+  {id:'tail',    name:'Tail',          how:'always',      kind:'cut'},
+  {id:'mohawk',  name:'Mohawk',        how:'always',      kind:'cut'},
+  {id:'shaved',  name:'Shaved',        how:'always',      kind:'cut'},
   {id:'blonde', name:'Blonde',         how:'always',      kind:'hair'},
   {id:'dark',   name:'Dark',           how:'runs:3',      kind:'hair'},
   {id:'red',    name:'Rust Red',       how:'extracts:12', kind:'hair'},
@@ -15378,8 +15387,8 @@ function cosFind(id){
 // wiped profile or an edited save cannot leave her in a hat she has not earned.
 // v6.46: five kinds now, so the worn id and the fallback both come from a table
 // instead of a two-way branch with the answer baked into the return.
-var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit'};
-var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate'};
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long'};
 function cosWorn(kind){
   var want=(typeof P!=='undefined'&&P)?P[COSKEY[kind]]:null;
   var c=cosFind(want);
@@ -15512,7 +15521,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var HAT=HERO?cosWorn('hat'):(st.hat||'none');
   // HER HAIR GOES DOWN FIRST, behind everything, so the head sits into it and the
   // mass reads past the shoulders the way it does in the reference.
-  if(HERO){
+  if(HERO&&(_HCUT==='long'||_HCUT==='pigtails')){
     // PIGTAILS, v5.38, on his note. Mass OUTSIDE the head outline, which is the
     // only thing that reads as a hairstyle at this size.
     //
@@ -15524,7 +15533,8 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     // st is rebuilt every frame at the call site, so the lag has to live on the
     // entity itself. st.own is that entity; without one the hair simply does not
     // lag rather than silently pretending to.
-    var _HO=st.own||st;
+    var _HCUT=HERO?cosWorn('cut'):null;
+  var _HO=st.own||st;
     if(_HO.hairLag===undefined) _HO.hairLag=face;
     var _dA=face-_HO.hairLag;
     while(_dA> Math.PI) _dA-=6.2832;
@@ -15538,7 +15548,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     // OPPOSITE phase so the pair reads as a walk cycle rather than a wobble.
     // x is the anchor out from the skull, then each bead steps down and outward.
     var _PIG=[[-1,-9.2],[1,9.2]];
-    if(HAT==='pigtails')
+    if(_HCUT==='pigtails')
     for(var _hp=0;_hp<2;_hp++){
       wc.fillStyle=_hp?HAIRDARK:INK;
       var _pad=_hp?0:0.9;
@@ -15560,7 +15570,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     // The two ties, bright, where each bunch is gathered. At this size a single
     // brighter pixel pair is what makes them read as TIED rather than as lumps.
     wc.fillStyle=HAIRLIT;
-    if(HAT==='pigtails')
+    if(_HCUT==='pigtails')
       for(var _g2=0;_g2<2;_g2++) rrF(_cx+_PIG[_g2][1]-2.4,_cy-2.2,4.8,3.4,1.6);
     // The crown between them, so the top of the head is hair and not scalp.
     wc.fillStyle=HAIRDARK;
@@ -15573,8 +15583,9 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
 
   }
   var _NHC=null,_NCT=null;
-  if(!HERO){
-    _NHC=HAIRCOL[st.hair]||HAIRCOL.dark; _NCT=st.cut||'crop';
+  if(HERO){ _NHC=HAIRCOL[cosWorn('hair')]||HAIRCOL.blonde; _NCT=_HCUT||'long'; }
+  else { _NHC=HAIRCOL[st.hair]||HAIRCOL.dark; _NCT=st.cut||'crop'; }
+  if(!HERO||(_NCT!=='long'&&_NCT!=='pigtails')){
     wc.fillStyle=_NHC[0];
     if(_NCT==='long'){ rrF(hx2-9.6,ty-38.6,19.2,20.5,6); }
     else if(_NCT==='bob'){ rrF(hx2-9.6,ty-38.6,19.2,15.5,6); }
@@ -15585,7 +15596,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   wc.fillStyle=INK; rrF(hx2-8.5,ty-38,17,15,6);
   wc.fillStyle=(st.hero?(SKINCOL[cosWorn('skin')]||SKINCOL.fair)
                        :(SKINCOL[st.skin]||'#f2d2a8')); rrF(hx2-7.5,ty-37,15,13,5);
-  if(!HERO){
+  if(!HERO||(_NCT!=='long'&&_NCT!=='pigtails')){
     if(_NCT==='mohawk'){
       wc.fillStyle=_NHC[1]; rrF(hx2-2.1,ty-41.6,4.2,7.2,1.8); rrF(hx2-2.1,ty-37.4,4.2,4.8,1.8);
     } else if(_NCT==='shaved'){
@@ -15624,8 +15635,10 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     // FRINGE, swept, over the forehead, and SIDE LOCKS down past the jaw. The
     // hair is the whole silhouette at this size, so it is the only thing she
     // wears that is actually hers. Everything else has to be picked up.
-    wc.fillStyle=HAIRLIT; rrF(hx2-7.5,ty-37,15,4,4);
-    wc.fillStyle=HAIRHI;  wc.fillRect(hx2-6.6,ty-36.6,10.4,1.4);
+    if(_HCUT==='long'||_HCUT==='pigtails'){
+      wc.fillStyle=HAIRLIT; rrF(hx2-7.5,ty-37,15,4,4);
+      wc.fillStyle=HAIRHI;  wc.fillRect(hx2-6.6,ty-36.6,10.4,1.4);
+    }
     // HEADGEAR. Sits on top of the fringe and the face because that is where a
     // hat sits. Purely cosmetic: no soak, no slot, no weight, no stat.
     if(HAT==='band'){
@@ -25656,6 +25669,16 @@ document.getElementById('closesettings').onclick=function(){
 // APPEARANCE. Every cosmetic in the game, owned or not, with the requirement
 // spelled out on the locked ones. Clicking an owned tile wears it immediately.
 function cosSwatch(c){
+  if(c.kind==='cut'){
+    var hcc=HAIRCOL[cosWorn('hair')]||HAIRCOL.blonde;
+    var hts={long:30,bob:22,pigtails:26,bun:16,tail:24,mohawk:20,crop:12,shaved:5};
+    var hh=hts[c.id]||14;
+    return '<span style="display:inline-block;width:34px;height:34px;border-radius:8px;'+
+           'background:#14161b;position:relative;overflow:hidden">'+
+           '<span style="position:absolute;left:6px;right:6px;top:2px;height:'+hh+'px;'+
+           'border-radius:8px 8px '+(hh>18?'10px 10px':'3px 3px')+';'+
+           'background:linear-gradient(180deg,'+hcc[2]+','+hcc[1]+' 55%,'+hcc[0]+')"></span></span>';
+  }
   if(c.kind==='hair'){
     var col=HAIRCOL[c.id]||HAIRCOL.blonde;
     return '<span style="display:inline-block;width:34px;height:34px;border-radius:17px;'+
@@ -25729,6 +25752,7 @@ function avatarHTML(){
   h+=slot('hat','HEADGEAR',(cosFind(hat)||{name:'Bare'}).name,hatGlyph||'--');
   h+=slot('hair','HAIR',(cosFind(hair)||{name:'Blonde'}).name,
           '<span style="width:14px;height:14px;border-radius:7px;display:inline-block;background:'+hc[1]+'"></span>');
+  h+=slot('cut','HAIRSTYLE',(cosFind(cosWorn('cut'))||{name:'Long'}).name,'~');
   h+=slot('fit','CLOTHING',(cosFind(cosWorn('fit'))||{name:'Slate'}).name,
           '<span style="width:14px;height:14px;border-radius:3px;display:inline-block;background:'+ft[1]+'"></span>');
   // v5.83: the BODY ARMOUR slot is gone with rigs. Everyone wears the same
@@ -25847,7 +25871,7 @@ function renderAvPicker(pickHost,host){
     wireLoadouts(box,hid,pid);
     return;
   }
-  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'){
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'){
     renderCosmetics(box,slot,hid,pid); return;
   }
   // v6.43: the wep and wep2 branch is gone with the slots that opened it. Guns are
@@ -25866,7 +25890,7 @@ function renderAvPicker(pickHost,host){
 function renderCosmetics(target,kindOnly,hid,pid){
   var box=target||document.getElementById('cosbody'); if(!box) return;
   var H='';
-  var GROUPS=[['build','BUILD'],['skin','SKIN'],['hair','HAIR'],['hat','HEADGEAR'],['fit','CLOTHING']]
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['hair','HAIR'],['cut','HAIRSTYLE'],['hat','HEADGEAR'],['fit','CLOTHING']]
     .filter(function(g){ return !kindOnly||g[0]===kindOnly; });
   GROUPS.forEach(function(g){
     H+='<div style="margin:10px 0 4px 0;letter-spacing:2px;opacity:.7;font-size:12px">'+g[1]+'</div>';

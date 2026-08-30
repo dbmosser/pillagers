@@ -26910,3 +26910,31 @@ and stage render.
 Not verified: each cut inspected close up at full resolution (the floor shot is wide;
 per cut art judgement needs his eyes); the player's own wardrobe does not yet offer the
 new cuts, that is the character-creation half still to build.
+
+## v7.26 - HAIRSTYLE is a wardrobe slot
+
+Second half of his cosmetics note. The crowd got real cuts at v7.25; the player's own
+wardrobe still offered hair only as a colour, and Pigtails was filed under HEADGEAR,
+competing with a dust mask for the same slot.
+
+HAIRSTYLE is now its own slot between HAIR and CLOTHING, with all eight cuts from
+v7.25: Long (the original art, still the default), Pigtails (moved home from the hat
+rack, old saves migrate automatically), Crop, Bob, Bun, Tail, Mohawk and Shaved. All
+owned from the start, the rule his own notes set twice: a look is not a trophy. Each
+tile swatches the cut as a silhouette in your current hair colour, so Bob and Shaved
+read different before you click. The hero renderer draws the ornate long/pigtail art
+for those two and routes every other cut through the same geometry the crowd wears,
+in the player's own colour.
+
+Also found and fixed in the same build: the picker's group list was hand written per
+kind, so the new slot opened to an empty pane until the list learned the word.
+
+Verified: parse PASS v7.26. Through the real stash terminal: HAIRSTYLE slot present,
+eight tiles listed, clicking Bob wears it (profile reads cosCut bob), hub floor renders
+the hero without error, then restored to Long. Four maps at seed 4242, entities exactly
+86/87/58/72, drawErr null. Three endings with headline assertions, hub and stage render.
+
+Not verified: each hero cut eyeballed close up on the floor (the figure is 30 pixels in
+a wide shot; the geometry is shared with the crowd cuts which drew correctly at v7.25);
+the pigtails migration against his real profile (the rule is three lines and runs at
+load; his save has cosHat pigtails only if he ever wore them).
