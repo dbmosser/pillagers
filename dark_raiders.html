@@ -959,7 +959,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.47';
+var VER='6.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21865,6 +21865,50 @@ document.addEventListener('mousedown',function(ev){
   if(IMENU&&!IMENU.contains(ev.target)) closeItemMenu();
 },true);
 document.addEventListener('keydown',function(ev){ if(ev.key==='Escape') closeItemMenu(); });
+// THE GUNS YOU OWN, v6.48. Same panel, same close rules, different rows, because a gun
+// in the armoury has no ITEMS entry to drive the normal menu.
+function openGunMenu(x,y,gk){
+  closeItemMenu();
+  var W=WEAPONS[gk]; if(!W) return;
+  var m=document.createElement('div'); m.className='imenu';
+  var head=document.createElement('div'); head.className='imenuhead';
+  var _ik='gun_'+gk;
+  head.innerHTML='<b class="r-'+((ITEMS[_ik]&&ITEMS[_ik].r)||'uncommon')+'">'+escHtml(W.name)+'</b><em>yours</em>';
+  m.appendChild(head);
+  function row(label,hint,dim,fn){
+    var r=document.createElement('div');
+    r.className='imenurow'+(dim?' dim':'');
+    r.innerHTML='<span>'+escHtml(label)+'</span>'+(hint?'<em>'+escHtml(hint)+'</em>':'');
+    if(!dim) r.onclick=function(){ closeItemMenu(); fn(); };
+    m.appendChild(r);
+  }
+  var inOne=(P.equipped===gk), inTwo=((P.equippedSec||'none')===gk);
+  row('Put in gun 1', inOne?'already there':null, inOne, function(){
+    if((P.equippedSec||'none')===gk) P.equippedSec='none';
+    P.equipped=gk; saveProfile(); try{ sfx('pick'); }catch(e){}
+    renderHub(); try{ renderStage(); }catch(e){}
+  });
+  row('Put in gun 2', inTwo?'already there':null, inTwo, function(){
+    if((P.equipped||'fists')===gk) P.equipped='fists';
+    P.equippedSec=gk; saveProfile(); try{ sfx('pick'); }catch(e){}
+    renderHub(); try{ renderStage(); }catch(e){}
+  });
+  if(inOne||inTwo){
+    row('Take it out of your hands',null,false,function(){
+      if(inOne) P.equipped='fists'; else P.equippedSec='none';
+      saveProfile(); try{ sfx('pick'); }catch(e){}
+      renderHub(); try{ renderStage(); }catch(e){}
+    });
+  }
+  var sep=document.createElement('div'); sep.className='imenusep'; m.appendChild(sep);
+  row((W.dmg*(W.pellets||1))+' damage a shot', Math.round(W.rng/10)+'m', true, function(){});
+  row((W.auto?'Automatic':'Semi automatic'), W.mag+' round magazine', true, function(){});
+  document.body.appendChild(m);
+  var w=m.offsetWidth,h=m.offsetHeight;
+  m.style.left=Math.max(4,Math.min(x,window.innerWidth-w-8))+'px';
+  m.style.top=Math.max(4,Math.min(y,window.innerHeight-h-8))+'px';
+  IMENU=m;
+}
 // Wired onto every cell in the game, wherever the cell was built.
 function menuable(cell,key,ctx,count){
   if(!cell) return;
@@ -22418,6 +22462,11 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
         oc.title=W.name+'\nYours. Drag onto gun 1 or gun 2, or click a gun slot to choose it.'+
           (inSlot?('\nCurrently gun '+inSlot+'.'):'');
         grabbable(oc,'own:'+gk,'weapons',W.name);
+        oc.addEventListener('contextmenu',function(ev){
+          ev.preventDefault(); ev.stopPropagation();
+          openGunMenu(ev.clientX,ev.clientY,gk);
+          return false;
+        });
         oc.addEventListener('mouseenter',function(){
           if(!detail) return;
           detail.innerHTML='<b class="r-'+((ITEMS[_ik]&&ITEMS[_ik].r)||'uncommon')+'">'+escHtml(W.name)+'</b>'+

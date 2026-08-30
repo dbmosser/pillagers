@@ -23922,3 +23922,34 @@ than showing a menu, which is a gap against his "all items should be right click
 note. The five field-only guns that have no gun_ item still fall back to a text label
 rather than an icon. The "3 held" count beside STASH still counts only stash items and
 not the armoury, which I left because those guns are not salvage you can sell.
+
+## v6.48 - AND THE GUNS ANSWER A RIGHT CLICK
+
+Closing the gap I named in the v6.47 entry rather than leaving it for him to find. His
+standing note is "all items should be right clickable to get a context menu and also
+draggable", and v6.47 gave the owned guns the drag half only. Right-clicking one did
+nothing, which on a screen where every other cell answers a right click is worse than
+not showing them at all.
+
+They have a menu of their own now, using the same panel, the same close rules and the
+same styling, because openItemMenu is built around an ITEMS entry and a gun in the
+armoury is not one. The rows are the two things you can actually do with a gun you
+already own, plus the gun's numbers: put it in gun 1, put it in gun 2, take it out of
+your hands if it is already in one, then damage, range, fire mode and magazine.
+
+The slot it is already in is offered greyed with "already there" rather than hidden, the
+same rule the gun picker uses, so the menu tells you where the gun is as well as what
+you can do with it.
+
+Verified: parse PASS at v6.48; the menu driven on a gun that is NOT equipped, where it
+offers both slots, and on one that IS, where slot 1 reads "already there" greyed and a
+third row appears to take it out; every row driven and the profile read back after each,
+including taking a gun out of gun 1 and landing on fists; text colour confirmed as bone
+on the dark panel, so it inherits the v6.38 palette fix; four maps 86/87/58/72 entities
+and, at seed 4242, 246/193/152/216 containers; all three endings through the outcome
+screen to a drawn hub; hub, renderStage and the export builder; pin audit clean.
+
+Not verified: the five field-only guns with no gun_ item entry still fall back to a text
+label instead of an icon in the grid, and their menu head takes the default rarity
+colour. I did not check the menu against a profile that owns all fifteen weapons at
+once, only the four-gun case.
