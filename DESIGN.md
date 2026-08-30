@@ -24167,3 +24167,56 @@ unreachable code is a hazard and I would rather remove it deliberately next. He 
 reported still seeing "Requisition, the whole counter" on that screen: the phrase is
 gone from the current source, count zero, and his exports say he is playing v6.37, so
 that one is a reload rather than a fix.
+
+## v6.53 - THE GUN A PILLAGER CARRIES IS THE GUN HE DROPS, AND THEY ARE PILLAGERS
+
+"dont call them raiders, they ar always pillagers." The board above the HUD already said
+CURRENT PILLAGERS and the settings row already said "Other pillagers", so the old word
+survived in exactly three places, and two of them were the tables every contract and
+every kill counter reads its noun from. That is why a contract could say "kill 6
+raiders" on a screen headed PILLAGERS. The internal kind stays 'raider': renaming a
+field that every save and every spawn path reads, to change a noun on screen, is the
+same trade refused for XP at v6.42.
+
+He also asked for a set of defined terms to standardise the language. Written down as a
+project memory rather than a comment in the file, because it has to govern the NEXT
+string as much as the ones already there: one word per thing, with the losing words
+listed beside each so I can grep for them.
+
+RARE GUNS FROM PILLAGERS, and from richer places.
+
+THE SECOND HALF WAS ALREADY TRUE and I left it alone. The container tables already skew
+hard by value: a crate holds no guns at all, a locker holds the pistol, SMG and carbine,
+and a SAFE is the only place carrying the rifle, the scattergun, the support MG, the
+marksman rifle and both elite guns. Richer container, rarer gun, already.
+
+THE FIRST HALF WAS NOT TRUE AT ALL, twice over. A pillager only ever carried a pistol,
+an SMG or a rifle, and all three are on the shop counter, so no pillager in the game was
+carrying anything you could not simply buy. And his gun did not drop: a dead pillager
+left ONLY what he had looted, so killing an armed man and taking his weapon, the oldest
+contract in this kind of game, did nothing at all.
+
+The pool now runs pistol 3, SMG 2, rifle 2, carbine 1, scattergun 1, measured across 420
+pillagers at 35, 23, 21, 10 and 12 percent, so about one in five carries something the
+counter will not sell. The gun he was holding lands on his body. The old gate was "if he
+had looted something", which meant an armed pillager who had picked nothing up left no
+body to search; that gate now includes the gun, and a pillager with a deliberately
+emptied bag was driven to death and left a body holding exactly one item, his SMG.
+
+The LMG is deliberately not in the pool. It is the heaviest thing in the table and
+handing it to an AI changes how a fight feels, which is a balance decision rather than a
+loot one, and he asked for loot.
+
+Verified: parse PASS at v6.53; 420 pillagers counted across 48 raids for the carry
+distribution; a pillager with an empty bag killed through the real down-and-bleed-out
+path, leaving a body container holding his gun, with the entity count falling by one and
+the container count rising by one; four maps 86/87/58/72 entities and, at seed 4242,
+246/193/152/216 containers; all three endings through the outcome screen to a drawn hub;
+hub, renderStage and the export builder; pin audit clean.
+
+Not verified: I did not measure what the extra guns do to the economy over a full raid.
+Ten pillagers a map now each carry a gun worth 300c to 1,300c, and while you have to
+kill them to get it, that is a real change to what a fighting run pays and it is
+unmeasured. I also did not re-check whether an AI holding a scattergun changes the
+difficulty of a close fight; the carbine and scattergun were chosen over the LMG to keep
+that shift small, but small is not zero and I have not measured it.

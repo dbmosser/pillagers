@@ -960,7 +960,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.52';
+var VER='6.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1653,7 +1653,7 @@ function ensureContracts(){
 // "sentrys" and "snitchs" are not words, and a contract board is the one place
 // in the game he reads a full sentence. There are four unit names and they never
 // change, so spell the plurals rather than bolting an s on the end.
-var UNITPLURAL={sentry:'sentries',crawler:'crawlers',raider:'raiders',snitch:'criers',listener:'listeners'};
+var UNITPLURAL={sentry:'sentries',crawler:'crawlers',raider:'pillagers',snitch:'criers',listener:'listeners'};
 // The most a kill contract may ever ask for, v5.58. 70 percent of the supply on
 // the WORST map, so the contract survives being carried to any map on the board.
 // Measured supply, worst map: sentry 16, crawler 25, raider 7, crier 3.
@@ -1661,7 +1661,7 @@ var KILLCAP={sentry:11,crawler:17,raider:4,snitch:2};
 // The singular was built from the kind string itself, which is an internal id and
 // is not always the name the player knows the thing by. Since v2.97 exactly one
 // of them differs, and that is precisely the case a bare kind string gets wrong.
-var UNITNAME={sentry:'sentry',crawler:'crawler',raider:'raider',snitch:'crier',listener:'listener'};
+var UNITNAME={sentry:'sentry',crawler:'crawler',raider:'pillager',snitch:'crier',listener:'listener'};
 // SPEC 16: contracts that pay in GEAR, not only credits. A board that hands out
 // money and nothing else is a slower version of selling loot, and it made the
 // whole feature something you completed by accident rather than something you
@@ -6535,7 +6535,9 @@ function myRival(){
   return best;
 }
 function mkRaider(x,y,forceId,simBuild){
-  var wk=pick(['pistol','smg','pistol','rifle']);
+  // v6.53, his note. Nine entries: pistol 3, smg 2, rifle 2, carbine 1, scattergun 1,
+  // so about one pillager in five carries something the counter will not sell you.
+  var wk=pick(['pistol','pistol','pistol','smg','smg','rifle','rifle','carbine','shotgun']);
   var ident=forceId||pick(IDENTITIES);
   // THE GUARD WAS READING THE WRONG RAID, fixed v1.96. buildRaid spans lines 4680
   // to 5300 and G is not assigned until 5302, AFTER it returns, so every (G&&G.sim)
@@ -12246,8 +12248,13 @@ if(e.state==='possum'){
         cq.cache=1; cq.time=2.4; cq.tag='CHOIR WRECK'; G.containers.push(cq);
         say(e.name+' has stopped singing.');
         decal(e.x,e.y,'#2a1a3a',rnd(28,40));
-      } else if(e.kind==='raider'&&e.bag.length){
-        var c=setLoot(mkContainer(e.x,e.y,'body'),e.bag.slice()); G.containers.push(c);
+      } else if(e.kind==='raider'&&(e.bag.length||(e.wep&&e.wep.id&&ITEMS['gun_'+e.wep.id]))){
+        // v6.53: what he was holding goes on the body with what he had looted. The
+        // gate above changed with it, or an armed man who had looted nothing still
+        // left no body to search.
+        var _drop=e.bag.slice();
+        if(e.wep&&e.wep.id&&ITEMS['gun_'+e.wep.id]) _drop.push('gun_'+e.wep.id);
+        var c=setLoot(mkContainer(e.x,e.y,'body'),_drop); G.containers.push(c);
         // WHOSE BODY THIS IS, v2.71. A dead raider became an anonymous 'body'
         // container, so a feud aftermath, two corpses in a doorway, read as
         // furniture. The fallen man's name and crew ride on the container; the
@@ -24228,7 +24235,7 @@ var PRIMER=[
   ['A hired merc is a partner now','Hire one at the Bench. B cycles his orders, loot free, follow you, or hold a spot. Stand with him and E searches his bag; drag an item from yours onto him and he will actually use it. Go down and he comes for you.'],
   ['The Undercroft has a radio','Three 16-bit pieces play down here, one picked at random each time you come back. The surface is deliberately silent, and there is no setting that changes that. The Music row in Settings is UNDERCROFT or OFF.'],
   ['One thing out there does not chase you','The Choir. It is bolted to the ground on top of a cache and it never takes a step, but it fires in every direction for about fifty metres. Stand outside that and it cannot touch you. It is not a fight you have to take; it is a question about whether the cache is worth it.'],
-  ['The HUD is yours to arrange','The raider list, the conditions box and the key legend all collapse on their corner glyph and drag anywhere. Positions stick between raids.'],
+  ['The HUD is yours to arrange','The pillager list, the conditions box and the key legend all collapse on their corner glyph and drag anywhere. Positions stick between raids.'],
 ['The Bulwark carries a wall','The big one with the slab. Shooting the slab is close to useless: it eats almost everything and all the noise you make doing it brings company. Its back is soft and it is marked, a hot orange seam you can see from across a street. It walks at you and never stops, so the fight is a circle, not a duel. Or leave it. It is slower than you are.'],
   ['Some contracts judge how you played','Most contracts count things: kill six, open five, carry two out. Some instead set a condition on the whole raid. Walk out without a single heal. Leave without killing anything. Be gone inside three minutes. They pay well because they take away the thing you would normally reach for, and they are only banked if you actually extract.'],
   ['Junk builds the Mainframe','The station in the top-right corner of the Undercroft. Racks are built from scrap, wire, cells and boards, and each pays 200c every time you extract alive. Slot a Data Core there and your next raid deploys with every locked-room key and every elite marked on the map.'],
