@@ -26643,3 +26643,34 @@ null. Three endings with headline assertions, hub and stage render.
 Not verified: the top rung (200 percent) against every panel at once; the ladder values
 themselves shipped with the Settings row long ago, but the largest size has only ever
 been screenshotted on the settings screen, not the full in-raid HUD.
+
+## v7.19 - five of his live notes, shipped as he sent them
+
+He is playing right now and the notes are coming in real time. This build clears the
+copy and colour batch:
+
+1. "instead of 'using bandage', say 'bandage is healing you' and have a countdown".
+   The message is now "Bandage is healing you, 8 sec" with the real time computed from
+   the heal queue and rate; the overhead ring already counted down and now matches the
+   message.
+2. "closed extractions should turn grey instead of blue". The closed ring stroke was
+   faint steel blue, a dimmer open rather than a different state. Neutral grey now.
+3. The freebie restore line, in his exact words: "N items that you had in your loadout
+   before choosing the freebie kit have been restored." (has/have agree with the count.)
+4. "what the fuck is 'it'?" The progress explainer used a pronoun whose antecedent was
+   a heading. Now: "Kills, loot, doors and walking out all add progress, and progress
+   unlocks the ten Mainframe rewards."
+5. "instead of seconds, put everything into x min x sec". One formatter (fmtMS), applied
+   to the outcome subheads, the death feed times and the healing message. Under a minute
+   it stays "34 sec"; over, "1 min 44 sec". The raid clock is already m:ss and the
+   stats line already spells minutes, so those stand. The feed TIME column widened with
+   its rows.
+
+Verified: parse PASS v7.19. Staged death read back: "IN CONTACT 1 MIN 46 SEC, FIRST SEEN
+AT 34 SEC", feed rows "31 sec" and "1 min 44 sec", explainer line confirmed on a fresh
+extract. Four maps at seed 4242, entities exactly 86/87/58/72, drawErr null. Three
+endings with headline assertions, hub and stage render.
+
+Not verified: the healing message with a live bandage press (the formula reads the same
+healQ/healRate the ring uses, but I did not drive an F press this build); the grey
+closed ring against every district palette; the restore line's has/have on screen.

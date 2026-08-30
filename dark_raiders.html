@@ -1039,7 +1039,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.18';
+var VER='7.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8986,6 +8986,11 @@ var FRAG_FUSE=1.1;
 // measuring across.
 var U_PER_M=10;
 function metres(u){ return Math.round(u/U_PER_M); }
+function fmtMS(sec){
+  sec=Math.max(0,Math.round(sec));
+  var m=Math.floor(sec/60), r=sec%60;
+  return m?(m+' min'+(r?(' '+r+' sec'):'')):(r+' sec');
+}
 // The aim, wall-stop and launch half of a throw, split out so the instant path and
 // the cooked path cannot drift apart. It does NOT touch the pouch: whoever calls it
 // has already paid for the grenade.
@@ -9835,7 +9840,9 @@ function tickPrep(dt){
     say(it.name+' slotted. Armour '+Math.round(p.armor)+'.');
   } else {
     applyHeal(PR.key);
-    say(it&&it.hot>0&&CFG.healOverTime!==0?('Using '+it.name+'...'):'Patched up');
+    say(it&&it.hot>0&&CFG.healOverTime!==0
+      ?(it.name+' is healing you, '+fmtMS((p.healQ||0)/(p.healRate||10)))
+      :'Patched up');
   }
   blip('pick');
 }
@@ -14492,7 +14499,7 @@ silentExit:T.silentExit||0,
       lines.push('<span style="color:var(--amber)">PROGRESS +'+gained+
         (how==='dead'?' (half, for dying)':(how==='abandon'?' (a quarter, for backing out)':''))+
         '  &middot;  '+Math.min(cap,(P.sp||0)+gained).toLocaleString()+' of '+cap.toLocaleString()+
-        '</span><br><span style="color:var(--ash)">Kills, loot, doors and walking out all pay it. It unlocks the ten rewards at the Mainframe.</span>');
+        '</span><br><span style="color:var(--ash)">Kills, loot, doors and walking out all add progress, and progress unlocks the ten Mainframe rewards.</span>');
     }
   })();
   if(G.strayPaid){
@@ -14667,8 +14674,8 @@ var _cdone=contractExtract(G.bag,haul);
         if((_have[_kk]||0)>0){ _have[_kk]--; _kb.push(_kk); }
       }
       P.kit=_kb;
-      if(_kb.length) lines.push('<span style="color:var(--coolant)">Your own loadout is packed again, '+
-        _kb.length+' item'+(_kb.length===1?'':'s')+' waiting at the stash.</span>');
+      if(_kb.length) lines.push('<span style="color:var(--coolant)">'+_kb.length+' item'+(_kb.length===1?'':'s')+
+        ' that you had in your loadout before choosing the freebie kit '+(_kb.length===1?'has':'have')+' been restored.</span>');
     }
     P.kitBeforeFree=null;
   }
@@ -14766,7 +14773,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
   if(how==='extract'){ t.textContent='EXTRACTED'; t.style.color='var(--coolant)';
     var _fcE=T.firstContact;
     s.textContent=(_fcE===null||_fcE===undefined)?'OUT CLEAN   \u00b7   NEVER SPOTTED'
-      :'FIRST SEEN AT '+Math.round(_fcE)+'S, AND STILL WALKED OUT';
+      :'FIRST SEEN AT '+fmtMS(_fcE).toUpperCase()+', AND STILL WALKED OUT';
   }
   else if(how==='dead'){ t.textContent='KILLED IN ACTION'; t.style.color='var(--hazard)';
     var kn=(T.lastHitName&&T.deathKiller!=='timer')?T.lastHitName:String(T.deathKiller||'unknown').toUpperCase();
@@ -14784,7 +14791,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
     var _contact=(_fc!==null&&_fc!==undefined)?Math.max(0,Math.round(G.t-_fc)):null;
     s.textContent='KILLED BY '+kn+(T.deathDistExtract?',  '+metres(T.deathDistExtract)+'M FROM EXTRACTION':'');
     if(_contact!==null)
-      s.textContent+='   ·   IN CONTACT '+_contact+'S, FIRST SEEN AT '+Math.round(_fc)+'S';
+      s.textContent+='   ·   IN CONTACT '+fmtMS(_contact).toUpperCase()+', FIRST SEEN AT '+fmtMS(_fc).toUpperCase();
     else s.textContent+='   ·   NEVER SPOTTED';
     // THE FEED. Newest last so it reads forward in time, which is how he will
     // reconstruct the mistake. Health after each hit is the column that makes it
@@ -14796,7 +14803,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
             '<div style="font-size:10.5px;letter-spacing:.2em;color:var(--ash);margin-bottom:6px">HOW IT WENT</div>'+
             '<div style="display:flex;gap:10px;font-size:10.5px;letter-spacing:.14em;'+
             'color:var(--ash);opacity:.75;padding:0 0 3px 0;border-bottom:1px solid rgba(127,146,216,.28);margin-bottom:3px">'+
-            '<span style="width:44px;text-align:right">TIME</span>'+
+            '<span style="width:64px;text-align:right">TIME</span>'+
             '<span style="flex:1">WHAT HIT YOU</span>'+
             '<span style="width:52px;text-align:right">DAMAGE</span>'+
             '<span style="width:58px;text-align:right">HEALTH</span></div>';
@@ -14804,7 +14811,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
         var e=L[i],last=(i===L.length-1);
         h+='<div style="display:flex;gap:10px;font-size:11.5px;padding:2px 0;'+
            (last?'color:var(--hazard);font-weight:700':'color:var(--ash)')+'">'+
-           '<span style="width:44px;text-align:right;opacity:.7">'+e.t+'s</span>'+
+           '<span style="width:64px;text-align:right;opacity:.7">'+fmtMS(e.t)+'</span>'+
            '<span style="flex:1">'+escHtml(e.n)+'</span>'+
            '<span style="width:52px;text-align:right">-'+e.a+'</span>'+
            '<span style="width:58px;text-align:right;opacity:.8">'+e.hp+' left</span></div>';
@@ -16380,7 +16387,7 @@ var sl=G.shells[i];
   // extract zones
   for(i=0;i<G.zones.length;i++){
     var z=G.zones[i],act=!!z.open;
-    wc.strokeStyle=act?'#4de3d0':'rgba(127,146,216,.30)';
+    wc.strokeStyle=act?'#4de3d0':'rgba(148,152,158,.38)';
     wc.lineWidth=act?3:1.5;
     wc.beginPath(); wc.arc(z.x,z.y,z.r,0,6.2832); wc.stroke();
     if(act){
