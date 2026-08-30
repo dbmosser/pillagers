@@ -982,7 +982,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.76';
+var VER='6.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8959,12 +8959,27 @@ function label(x,y,txt,col,delay,big,ik){
   if(G.sim) return;
   // Push off any live label that would land on top of this one. Without this a
   // container holding three items stacks all three lines in the same spot.
+  // One spacing for the test and the placement, and the same rise the renderer uses.
+  var LBL_STEP=15, LBL_RISE=26;
+  // Measure this label the way it will actually be drawn, so a long name is treated as
+  // long. The icon plate sits beside the text, hence the extra allowance.
+  var myW=100;
+  try{
+    wc.save();
+    wc.font=FS((big?'11px':'10px')+' "Titan One","Rubik",sans-serif');
+    myW=wc.measureText(txt).width+(ik?LH(26):0);
+    wc.restore();
+  }catch(_lm){}
   var row=0,tries=0;
-  while(tries++<12){
-    var clash=false,ny=y-row*13;
+  while(tries++<40){
+    var clash=false,ny=y-row*LBL_STEP;
     for(var i=0;i<G.labels.length;i++){
       var o=G.labels[i];
-      if(Math.abs(o.x-x)<100&&Math.abs(o.y-ny)<12){ clash=true; break; }
+      // WHERE THAT LABEL IS NOW, not where it started. Both this and the renderer clamp
+      // the rise at the label's life, so they agree about the position on screen.
+      var oy=o.y-Math.min(Math.max(o.t,0),o.life)*LBL_RISE;
+      var gap=((o.w||100)+myW)/2+8;
+      if(Math.abs(o.x-x)<gap&&Math.abs(oy-ny)<13){ clash=true; break; }
     }
     if(!clash) break;
     row++;
@@ -8975,8 +8990,8 @@ function label(x,y,txt,col,delay,big,ik){
   // name of a thing you now own. A label carrying an item key is by definition
   // a loot name, so that is the one that gets the longer life. Combat and state
   // shouts are untouched.
-G.labels.push({x:x,y:y-row*15,txt:txt,c:col||'#cdd6dd',t:-(delay||0),
-    life:(ik?6.0:1.9),big:!!big,ik:ik||null});
+G.labels.push({x:x,y:y-row*LBL_STEP,txt:txt,c:col||'#cdd6dd',t:-(delay||0),
+    life:(ik?6.0:1.9),big:!!big,ik:ik||null,w:myW});
   if(G.labels.length>40) G.labels.shift();
 }
 // Boot marks live on their own budget. Without this, footsteps evict scorch,

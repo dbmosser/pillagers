@@ -25205,3 +25205,43 @@ premium chosen to make folding obviously worth doing, and against his median ext
 of about $2,975 it roughly doubles what a successful run pays, which is a large economic
 change I have not run a seeded batch against. If the economy feels loose when he plays,
 ARRAY_PAY is the one number to move.
+
+## v6.77 - loot names stop colliding, and there were four faults not one
+
+His note, reported twice: "when i'm looting, multiple items' names are still colliding".
+The anti-overlap code has existed since v2.91 and was wrong in four separate ways, any one
+of which produces what he sees.
+
+1. THE CHECK AND THE PLACEMENT DISAGREED. The search tested row N at y minus row times 13
+   and then placed the label at y minus row times 15. It asked whether one position was
+   free and then used a different one.
+
+2. THE CHECK IGNORED THAT LABELS MOVE. Every label rises at 26 units a second from the
+   moment it is placed. The clash test compared the BASE y of existing labels rather than
+   where they had risen to, so an older label that had drifted up into the space a new one
+   was about to take was invisible to it. This is the fault that produces a collision
+   seconds AFTER the labels were placed apart, which is exactly the case he describes.
+
+3. THE HORIZONTAL TEST WAS A FIXED 100 UNITS BETWEEN CENTRES, whatever the text said.
+   "Meridian Reactor Core" beside "Titanium Cell" overlaps comfortably at 110 units apart
+   and the old test called that clear. Both strings are now measured in the font they will
+   actually be drawn in, with an allowance for the icon plate.
+
+4. THE SEARCH GAVE UP TOO EARLY. Found by measurement after fixing the first three: still
+   3 overlapping pairs at peak. Twelve attempts is not enough once wide names make
+   neighbours clash horizontally as well as vertically, and on failure the label was placed
+   anyway. Raised to 40.
+
+MEASURED, on the case he described: three containers opened at staggered times, one of
+them holding five elite items, 15 labels alive at peak, sampled every frame for 140
+frames. Before the last fix, worst case 3 simultaneous overlapping pairs. After: ZERO,
+across every frame.
+
+Verified: parse PASS. Four maps at seed 4242 with the bag open, entity counts 86/87/58/72,
+drawErr null, __hud clean. All three endings through the outcome screen and back to the
+hub. Hub frames and stage render.
+
+Not verified: I measured overlap geometrically, by comparing each pair's drawn position
+and measured width every frame, rather than by looking at the pixels. Two labels whose
+boxes do not intersect can still read badly if they are close and the eye groups them, and
+that is a judgement only he can make on screen.
