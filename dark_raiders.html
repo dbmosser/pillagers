@@ -959,7 +959,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.45';
+var VER='6.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14669,10 +14669,43 @@ var COSMETICS=[
   // the level is 1+floor(sqrt(xp/220)), so level 6 is about a HUNDRED runs. He
   // has 66 across the whole life of the project. Level 4 lands near forty.
   {id:'white',  name:'Bleached',       how:'level:4',     kind:'hair'},
-  {id:'green',  name:'Moss',           how:'buy:2500',    kind:'hair'}
+  {id:'green',  name:'Moss',           how:'buy:2500',    kind:'hair'},
+  // v6.46, his note. Owned from the start, every one of them: a body and a skin tone
+  // are not rewards, and gating them would mean shipping a character creator that
+  // tells most players they have not earned their own face yet.
+  {id:'lean',      name:'Lean',        how:'always', kind:'build'},
+  {id:'broad',     name:'Broad',       how:'always', kind:'build'},
+  {id:'curved',    name:'Curved',      how:'always', kind:'build'},
+  {id:'porcelain', name:'Porcelain',   how:'always', kind:'skin'},
+  {id:'fair',      name:'Fair',        how:'always', kind:'skin'},
+  {id:'olive',     name:'Olive',       how:'always', kind:'skin'},
+  {id:'tan',       name:'Tan',         how:'always', kind:'skin'},
+  {id:'bronze',    name:'Bronze',      how:'always', kind:'skin'},
+  {id:'umber',     name:'Umber',       how:'always', kind:'skin'},
+  {id:'ebony',     name:'Ebony',       how:'always', kind:'skin'},
+  {id:'slate',     name:'Slate',       how:'always', kind:'fit'},
+  {id:'moss',      name:'Moss Green',  how:'always', kind:'fit'},
+  {id:'rust',      name:'Rust',        how:'always', kind:'fit'},
+  {id:'oxblood',   name:'Oxblood',     how:'always', kind:'fit'},
+  {id:'sand',      name:'Sand',        how:'always', kind:'fit'},
+  {id:'ash',       name:'Ash Grey',    how:'always', kind:'fit'},
+  {id:'indigo',    name:'Indigo',      how:'always', kind:'fit'},
+  {id:'teal',      name:'Teal',        how:'always', kind:'fit'}
 ];
 // dark, lit, highlight. The figure is 15px across, so three tones is the whole
 // range the head has room for.
+// SKIN, seven tones across the range rather than three, because three always means
+// two extremes and one middle and nobody is served by that.
+var SKINCOL={porcelain:'#f7ddc2',fair:'#f2d2a8',olive:'#d8ab7a',tan:'#c08a56',
+             bronze:'#9c6238',umber:'#7a4626',ebony:'#4e2c1b'};
+// CLOTHING. Two stops each, the darker one for the legs, so the figure still reads as
+// lit from above the way the rig colours did.
+var FITCOL={slate:['#3d4450','#59626f'],moss:['#3f5136','#5b7350'],rust:['#5e3326','#875040'],
+            oxblood:['#4a2130','#6b3448'],sand:['#6b5a3c','#907c56'],
+            ash:['#3a3d42','#565a61'],indigo:['#2f3560','#464f87'],teal:['#1f4a49','#31706c']};
+// BUILD changes the silhouette: shoulder width, hip width and how tall the head sits.
+var BODYBUILD={lean:{sh:1.00,hip:1.00,head:1.00},broad:{sh:1.18,hip:0.96,head:1.04},
+            curved:{sh:0.94,hip:1.14,head:0.98}};
 var HAIRCOL={blonde:['#b8913f','#d9b257','#f2d98c'],dark:['#2f2830','#4d4048','#6e5d66'],
              red:['#7d3320','#ad5033','#d47a4e'],white:['#a8a59c','#ddd9cd','#f4f1e6'],
              green:['#4a5f3a','#6d8a52','#9ab472']};
@@ -14709,11 +14742,15 @@ function cosFind(id){
 }
 // What she is actually wearing right now. Never returns something locked, so a
 // wiped profile or an edited save cannot leave her in a hat she has not earned.
+// v6.46: five kinds now, so the worn id and the fallback both come from a table
+// instead of a two-way branch with the answer baked into the return.
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate'};
 function cosWorn(kind){
-  var want=(kind==='hair')?(typeof P!=='undefined'&&P&&P.cosHair):(typeof P!=='undefined'&&P&&P.cosHat);
+  var want=(typeof P!=='undefined'&&P)?P[COSKEY[kind]]:null;
   var c=cosFind(want);
   if(c&&c.kind===kind&&cosOwned(c)) return c.id;
-  return kind==='hair'?'blonde':'none';
+  return COSDEF[kind]||'none';
 }
 // How heavy the darkness sheet is, day and night, before the brightness dial
 // divides it. Named because night being unreadable is a complaint he has made
@@ -14767,7 +14804,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // coat parameter, so all six raider coats get a correct three-step shade for
   // free, and computing cc first keeps the invulnerable override working across
   // every band instead of leaving a seam.
-  var cc=iv>0?'#2a6a5e':coat,cLo=darkHex(cc,.42),cHi=litHex(cc,.20,true);
+  var cc=iv>0?'#2a6a5e':(st.hero?((FITCOL[cosWorn('fit')]||FITCOL.slate)[1]):coat),cLo=darkHex(cc,.42),cHi=litHex(cc,.20,true);
   // Each leg gets its own ink plate, and the boots keep a real gap between them.
   // Drawn as one flush block they read as a single slab, which is the one place
   // the contour treatment fell down. Boot soles still land exactly on ty.
@@ -14902,7 +14939,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
 
   }
   wc.fillStyle=INK; rrF(hx2-8.5,ty-38,17,15,6);
-  wc.fillStyle='#f2d2a8'; rrF(hx2-7.5,ty-37,15,13,5);
+  wc.fillStyle=(st.hero?(SKINCOL[cosWorn('skin')]||SKINCOL.fair):'#f2d2a8'); rrF(hx2-7.5,ty-37,15,13,5);
   if(!HERO) wc.fillStyle=cLo, rrF(hx2-7.5,ty-37,15,4.6,5);
   // eyes: whites, pupils toward the aim, one specular dot each
   var pupX=Math.cos(face)*1.4,pupY=Math.sin(face)*0.9;
@@ -24353,6 +24390,25 @@ function cosSwatch(c){
            'background:linear-gradient(160deg,'+col[2]+' 0%,'+col[1]+' 45%,'+col[0]+' 100%);'+
            'border:2px solid #14161b"></span>';
   }
+  if(c.kind==='skin'){
+    return '<span style="display:inline-block;width:34px;height:34px;border-radius:17px;'+
+           'background:'+(SKINCOL[c.id]||SKINCOL.fair)+';border:2px solid #14161b"></span>';
+  }
+  if(c.kind==='fit'){
+    var fc=FITCOL[c.id]||FITCOL.slate;
+    return '<span style="display:inline-block;width:34px;height:34px;border-radius:6px;'+
+           'background:linear-gradient(180deg,'+fc[1]+','+fc[0]+');border:2px solid #14161b"></span>';
+  }
+  if(c.kind==='build'){
+    var bb=BODYBUILD[c.id]||BODYBUILD.lean;
+    return '<span style="display:inline-block;width:34px;height:34px;border-radius:6px;'+
+           'background:#1b1f26;border:2px solid #14161b;position:relative">'+
+           '<span style="position:absolute;left:50%;top:7px;transform:translateX(-50%);'+
+             'width:'+Math.round(15*bb.sh)+'px;height:9px;background:#7f92d8;border-radius:2px"></span>'+
+           '<span style="position:absolute;left:50%;top:17px;transform:translateX(-50%);'+
+             'width:'+Math.round(13*bb.hip)+'px;height:9px;background:#59626f;border-radius:2px"></span>'+
+           '</span>';
+  }
   var f={none:'--',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC\u25AC',visor:'\u25AD',crown:'\u2662'}[c.id]||'?';
   return '<span style="display:inline-block;width:34px;height:34px;line-height:34px;text-align:center;'+
          'border-radius:6px;background:#1b1f26;border:2px solid #14161b;font-size:15px">'+f+'</span>';
@@ -24371,16 +24427,20 @@ function avatarHTML(){
                 pigtails:'()'}[hat]||'';
   var hatBg={none:'',band:'#c0503a',phones:'#22262e',mask:'#14161b',visor:'#a9682f',crown:'#c9962c',
              pigtails:hc[1]}[hat]||'';
+  var sk=SKINCOL[cosWorn('skin')]||SKINCOL.fair;
+  var ft=FITCOL[cosWorn('fit')]||FITCOL.slate;
+  var bd=BODYBUILD[cosWorn('build')]||BODYBUILD.lean;
   var h='<div class="avfig">'+
-    '<div class="avhead" style="background:#f2d2a8">'+
+    '<div class="avhead" style="background:'+sk+';transform:scale('+bd.head.toFixed(2)+')">'+
       '<div class="avhair" style="background:linear-gradient(180deg,'+hc[2]+','+hc[1]+' 60%,'+hc[0]+')"></div>'+
       (hat!=='none'?'<div class="avhat" style="background:'+hatBg+'">'+hatGlyph+'</div>':'')+
       '<div class="aveyes"><div class="aveye"></div><div class="aveye"></div></div>'+
     '</div>'+
-    '<div class="avtorso" style="background:linear-gradient(180deg,'+rc[1]+','+rc[0]+')">'+
-      (rg.cap>0?'<div class="avplate" style="background:rgba(0,0,0,.28)"></div>':'')+
+    '<div class="avtorso" style="background:linear-gradient(180deg,'+ft[1]+','+ft[0]+');'+
+      'width:'+Math.round(46*bd.sh)+'px">'+
+      '<div class="avplate" style="background:rgba(0,0,0,.28)"></div>'+
     '</div>'+
-    '<div class="avlegs" style="background:'+rc[0]+'"></div>'+
+    '<div class="avlegs" style="background:'+ft[0]+';width:'+Math.round(38*bd.hip)+'px"></div>'+
   '</div>';
   // The four slots. Each one opens its own picker underneath the figure, which
   // is the whole reason the figure is here: you change what she wears by
@@ -24391,9 +24451,14 @@ function avatarHTML(){
       '<div class="avsic">'+ic+'</div>'+
       '<div><div class="avslab">'+label+'</div><div class="avsval">'+escHtml(val)+'</div></div></div>';
   }
+  h+=slot('build','BUILD',(cosFind(cosWorn('build'))||{name:'Lean'}).name,'\u25AF');
+  h+=slot('skin','SKIN',(cosFind(cosWorn('skin'))||{name:'Fair'}).name,
+          '<span style="width:14px;height:14px;border-radius:7px;display:inline-block;background:'+sk+'"></span>');
   h+=slot('hat','HEADGEAR',(cosFind(hat)||{name:'Bare'}).name,hatGlyph||'--');
   h+=slot('hair','HAIR',(cosFind(hair)||{name:'Blonde'}).name,
           '<span style="width:14px;height:14px;border-radius:7px;display:inline-block;background:'+hc[1]+'"></span>');
+  h+=slot('fit','CLOTHING',(cosFind(cosWorn('fit'))||{name:'Slate'}).name,
+          '<span style="width:14px;height:14px;border-radius:3px;display:inline-block;background:'+ft[1]+'"></span>');
   // v5.83: the BODY ARMOUR slot is gone with rigs. Everyone wears the same
   // armour and there is nothing to choose, so a slot here was a control that
   // did nothing. The rig picker below is now unreachable.
@@ -24510,7 +24575,9 @@ function renderAvPicker(pickHost,host){
     wireLoadouts(box,hid,pid);
     return;
   }
-  if(slot==='hat'||slot==='hair'){ renderCosmetics(box,slot,hid,pid); return; }
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'){
+    renderCosmetics(box,slot,hid,pid); return;
+  }
   // v6.43: the wep and wep2 branch is gone with the slots that opened it. Guns are
   // chosen on quick use 1 and 2 now. Left as a guard rather than nothing, so a stale
   // P._avSlot from an older profile cannot fall through into the rig code below.
@@ -24560,7 +24627,8 @@ function renderAvPicker(pickHost,host){
 function renderCosmetics(target,kindOnly,hid,pid){
   var box=target||document.getElementById('cosbody'); if(!box) return;
   var H='';
-  var GROUPS=[['hat','HEADGEAR'],['hair','HAIR']].filter(function(g){ return !kindOnly||g[0]===kindOnly; });
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['hair','HAIR'],['hat','HEADGEAR'],['fit','CLOTHING']]
+    .filter(function(g){ return !kindOnly||g[0]===kindOnly; });
   GROUPS.forEach(function(g){
     H+='<div style="margin:10px 0 4px 0;letter-spacing:2px;opacity:.7;font-size:12px">'+g[1]+'</div>';
     H+='<div style="display:flex;flex-wrap:wrap;gap:8px">';
@@ -24587,7 +24655,7 @@ function renderCosmetics(target,kindOnly,hid,pid){
           try{ sfx('cache'); }catch(e){}
         } else { try{ sfx('clank'); }catch(e){} return; }
       }
-      if(kind==='hair') P.cosHair=id; else P.cosHat=id;
+      P[COSKEY[kind]||'cosHat']=id;
       saveProfile();
       renderCosmetics(target,kindOnly,hid,pid);
       try{ renderAvatar(hid,pid); }catch(e){}

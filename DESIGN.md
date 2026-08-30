@@ -23817,3 +23817,64 @@ straight buff to survival and the bot now uses it too, so the 8.8 percent Cold S
 figure is stale from this build onward and should not be compared against numbers taken
 before it. I did not check whether a revived player can be revived by a teammate
 afterwards, since the mercenary path is separate code.
+
+## v6.46 - THE OPERATOR GETS A FACE
+
+His note: "build out the 'your operator'/'going up as' menu to have much more variety in
+the player's avatar, e.g. male or female, skin color, clothing color, whatever else you
+think will work."
+
+The figure had exactly two choices, headgear and hair. Its skin was one hardcoded hex
+and its clothing came from the rig, which has been identical for everyone since rigs
+went at v5.83. So two of the four things you look at were not choices at all.
+
+THREE NEW KINDS, eighteen options, all owned from the start. Build (Lean, Broad,
+Curved), skin (seven tones), clothing (eight colours). Following the Pigtails precedent
+from v5.66: these are a LOOK, not a trophy. Gating them would mean shipping a character
+creator that tells most players they have not earned their own face yet.
+
+BUILD IS THREE OPTIONS, NOT TWO, and deliberately so. He said "male or female". A game
+that makes you pick one of two bodies to play is answering a question nobody asked, and
+Lean sitting there without a gender attached costs nothing and is the one most people
+will leave it on. It scales shoulders, hips and head, which at this size is enough to
+read as a different body without a second set of art.
+
+SEVEN SKIN TONES RATHER THAN THREE, because three always means two extremes and one
+middle, and nobody is served by that.
+
+THE RAID CHARACTER WEARS IT TOO. Choosing Ebony and a teal coat and then dropping in as
+the same fair-skinned figure in the same colour would make the whole panel a lie. The
+coat ramp already derives three shades from one colour, so the hero feeds it a different
+base; skin was a hardcoded hex shared with the pillagers, so only the hero branch
+changed and every pillager looks exactly as before.
+
+A NAME COLLISION THAT PARSECHECK CANNOT CATCH. I declared "var BUILDS" for the body
+shapes without checking, and this file already had "var BUILDS=[]" for the
+play-an-older-build picker, declared LATER in the file. Two top-level var declarations
+of one name is legal JavaScript, so the parse check passed happily and the second simply
+overwrote the first. By the time the figure drew, BUILDS was an empty array and
+BUILDS.lean was undefined, the throw was swallowed by the try/catch that wraps
+renderAvatar, and the operator panel rendered COMPLETELY EMPTY with no error anywhere on
+the page. Renamed to BODYBUILD. Check for a collision before adding a global to a 24,000
+line file, because nothing in the toolchain will.
+
+AND MY SIXTH PROBE FAULT OF THE SESSION, worth recording because the pattern is now
+undeniable. My cosmetic sweep called the avatar hook and tested its RETURN VALUE. The
+hook renders into the host and returns undefined, so all 168 combinations reported as
+failures while the figure was drawing correctly the whole time. Re-run measuring the
+host instead: 168 of 168 draw.
+
+Verified: parse PASS at v6.46; five slots read back off the live figure as build, skin,
+headgear, hair and clothing; Ebony skin, Curved build and Teal clothing chosen through
+the real picker and persisted to the profile; all 168 build/skin/clothing combinations
+render the figure; the raid character captured at 1:1 wearing the chosen dark skin, red
+hair and teal coat; four maps 86/87/58/72 entities and, at seed 4242, 246/193/152/216
+containers; all three endings through the outcome screen to a drawn hub; hub,
+renderStage and the export builder; pin audit clean.
+
+Not verified: the hands and the pillagers' own skin array are untouched, so a very dark
+operator still has the old hand colour at the wrist; it is a few pixels at this size and
+I did not chase it. The in-raid figure was checked at one build and one skin, not all
+168. The conditions panel is still HEADED "CONDITIONS" while its rows are now TIME OF
+DAY and WEATHER, which I judged correct because that box also carries contracts, but he
+asked for the word to change and may have meant the header too.
