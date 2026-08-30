@@ -1054,7 +1054,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.35';
+var VER='7.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14708,6 +14708,13 @@ var _cdone=contractExtract(G.bag,haul);
       lines.push('<span style="color:'+(RCOL[li2.r]||'#cdd6dd')+'">'+li2.name+'</span>'+
         '<span style="color:var(--rust)">  '+'$'+ival(G.bag[shown[j]]).toLocaleString()+'  GONE</span>');
     }
+    var gone=carriedGuns(G.player);
+    for(j=0;j<gone.length;j++){
+      var wi=P.weapons.indexOf(gone[j].id);
+      if(wi>=0){ P.weapons.splice(wi,1);
+        lines.push('<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>'); }
+      else lines.push('<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST IN THE FIELD</span>');
+    }
     if(lostIdx.length>shown.length) lines.push('<span style="color:var(--ash)">and '+(lostIdx.length-shown.length)+' more, all gone</span>');
     lines.push(lostIdx.length+' items lost, '+'$'+(haul-savedVal).toLocaleString()+' gone');
     if(saved.length) lines.push('Safe pocket held '+saved.length+' item'+(saved.length>1?'s':'')+' ('+'$'+savedVal.toLocaleString()+')');
@@ -14717,12 +14724,7 @@ var _cdone=contractExtract(G.bag,haul);
 
     // Same rule in reverse: holstering your good gun before dying is not a way to
     // save it. Issued kit costs you nothing, so it is not reported as a loss.
-    var gone=carriedGuns(G.player);
-    for(j=0;j<gone.length;j++){
-      var wi=P.weapons.indexOf(gone[j].id);
-      if(wi>=0){ P.weapons.splice(wi,1); lines.push(gone[j].name+' lost'); }
-      else lines.push(gone[j].name+' lost in the field');
-    }
+    // v7.36: the gun losses moved UP into the itemised list, on his note.
     // 'fists' IS EXEMPT, v2.82. This fallback exists for "the gun you had
     // equipped was just lost with your body", but 'fists' is deliberately never
     // in P.weapons, it is the value that means "no deliberate equip, roll me a
@@ -14893,13 +14895,19 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
     // reconstruct the mistake. Health after each hit is the column that makes it
     // a story: it shows the exact hit the run stopped being winnable on.
     (function(){
-      var L=(T.hitLog||[]).slice(-8);
+      var Lraw=(T.hitLog||[]),Lg=[];
+      for(var _lg=0;_lg<Lraw.length;_lg++){
+        var _E=Lraw[_lg],_Gp=Lg[Lg.length-1];
+        if(_Gp&&_Gp.n===_E.n){ _Gp.a+=_E.a; _Gp.hp=_E.hp; _Gp.c++; }
+        else Lg.push({t:_E.t,n:_E.n,a:_E.a,hp:_E.hp,c:1});
+      }
+      var L=Lg.slice(-8);
       if(!L.length) return;
       var h='<div style="margin-top:12px;border-top:1px solid var(--steel-hi);padding-top:9px">'+
             '<div style="font-size:10.5px;letter-spacing:.2em;color:var(--ash);margin-bottom:6px">HOW IT WENT</div>'+
             '<div style="display:flex;gap:10px;font-size:10.5px;letter-spacing:.14em;'+
             'color:var(--ash);opacity:.75;padding:0 0 3px 0;border-bottom:1px solid rgba(127,146,216,.28);margin-bottom:3px">'+
-            '<span style="width:64px;text-align:right">TIME</span>'+
+            '<span style="width:92px;text-align:right">TIME</span>'+
             '<span style="flex:1">WHAT HIT YOU</span>'+
             '<span style="width:52px;text-align:right">DAMAGE</span>'+
             '<span style="width:58px;text-align:right">HEALTH</span></div>';
@@ -14907,8 +14915,8 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
         var e=L[i],last=(i===L.length-1);
         h+='<div style="display:flex;gap:10px;font-size:11.5px;padding:2px 0;'+
            (last?'color:var(--hazard);font-weight:700':'color:var(--ash)')+'">'+
-           '<span style="width:64px;text-align:right;opacity:.7">'+fmtMS(e.t)+'</span>'+
-           '<span style="flex:1">'+escHtml(e.n)+'</span>'+
+           '<span style="width:92px;text-align:right;opacity:.7">'+fmtMS(e.t)+'</span>'+
+           '<span style="flex:1">'+escHtml(e.n)+(e.c>1?(' \u00d7'+e.c):'')+'</span>'+
            '<span style="width:52px;text-align:right">-'+e.a+'</span>'+
            '<span style="width:58px;text-align:right;opacity:.8">'+e.hp+' left</span></div>';
       }

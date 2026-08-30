@@ -27237,3 +27237,33 @@ Not verified: the dose arc against a wall clock (envelope maths verified by
 construction, not by three real minutes); merc extract-when-you-do (the existing settle
 logic is untouched and was his earlier spec); how ten stacks feels, which is his to
 judge - and this time the ceiling caps the experiment.
+
+## v7.36 - the death screen, on his screenshot
+
+Three notes, one screenshot, one build.
+
+THE FEED COLLAPSES. "shouldn't this all be a single line, instead of all these
+different lines just saying he shot us? lol" - consecutive hits from the same attacker
+are now one row: the time of the first hit, the name with a multiplier, the damage
+summed, the final health. His screenshot's eight rows of AimAssistedAlan at -12 each
+become "AimAssistedAlan x8, -96, 0 left". A different attacker still breaks the run, so
+the story of a two way fight keeps its shape.
+
+THE TIME COLUMN STOPS WRAPPING. The same screenshot showed "1 min 22 / sec" broken over
+two lines: the v7.19 min-sec strings outgrew the old 64px column. 92px fits the longest
+form, header and rows together.
+
+THE GUN JOINS THE LIST. "'scav pistol lost in the field' -- this should be up with the
+list of other lost items." The gun losses now sit inside the itemised loss list, styled
+like it (name, then LOST or LOST IN THE FIELD in rust), above the totals line instead
+of dangling after them. The armoury bookkeeping moved with the lines, unchanged.
+
+Verified: parse PASS v7.36. His exact case staged: eight consecutive hits from one
+name plus one earlier hit from another - two rows out, the x8 with summed damage; the
+Scav Pistol renders between the last GONE item and the totals. Four maps at seed 4242,
+entities exactly 86/87/58/72, drawErr null. Three endings with headline assertions, hub
+and stage render.
+
+Not verified: a feed where the SAME attacker returns after an interruption (the
+grouping is consecutive-only by design, so he appears twice, which is the honest
+reading); the x-count against pad-only play.
