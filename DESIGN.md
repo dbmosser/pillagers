@@ -24832,3 +24832,73 @@ driven through hotbarSlots and useHot directly, which is where both faults were,
 drag handler that WRITES the assignment was only read, not exercised by pointer. If his
 next note is that dropping still misbehaves, that handler is the place to look and I have
 not yet cleared it.
+
+## v6.71 - the Organ, an empty rig, a floor under the population, and wading that starts in the water
+
+Four of his notes, and a long detour where I measured the wrong thing three times.
+
+THE CHOIR IS NOW THE ORGAN. It is a drum ringed with pipes, bolted to the ground, that
+sings when it sees you, so Organ is what it already looks and sounds like, and it is one
+word per his vocabulary rule. Only the player facing strings moved: the internal kind
+stays 'choir' because it is a key in the kills tally, in saved profiles and in every
+flight recorder he has already sent me, and renaming it would silently break the
+comparison against his own history. Confirmed in world as ORGAN V-88.
+
+YOU LAND WITH AN EMPTY RIG. His question, asked and never answered by me: "you should
+always start the raid with zero armor hit points, right? and then you have to use armor
+plates to add it?" Yes, and it is what the rest of the file already believed. The rig
+swap says "A fresh rig arrives EMPTY", and the v2.17 note on the plate belt slot records
+that the deploy loadout refused every plate it was ever offered because "You land at
+myRig().cap, which is FULL", so a bought plate never once reached a raid. Landing empty
+is the only reading under which the armour economy does anything. Measured at landing:
+armour 0 of a 60 cap. The bot still lands full on its own dial.
+
+A FLOOR UNDER THE POPULATION, his words: "if there are ever less than 4 pillagers alive,
+start adding additional pillagers". The wave system already trickled one man in every 60
+seconds while fewer than 12 were live, to a budget of 8 for the whole raid, but both of
+those are ceilings on how busy the map gets and neither is a floor under how empty it can
+become. Below four, arrivals now ignore the wait and the budget and come on an eight
+second beat; above four nothing changes at all. Measured: wiped to 1 live pillager, the
+map refilled to exactly 4 over 30 seconds and then stopped, with no runaway. The bot gets
+this too, deliberately: a floor under the population is a difficulty change and the sim
+exists to measure difficulty.
+
+WADING STARTS IN THE WATER, and this is where I went wrong repeatedly. His note: "i
+shouldn't wade till i'm like in the water, it is kinda showing me wading on the grass".
+The movement asked inWater about a single point, his centre, so the slowdown began the
+instant his middle crossed the line with most of him still on the bank. A new inWaterDeep
+shrinks each water rectangle by an inset before asking, and the inset is a dial.
+
+THREE BAD MEASUREMENTS BEFORE A GOOD ONE, all mine:
+  1. I measured the reservoir's left edge, which sits against the map's outer wall, so
+     the slow reading there was collision and not wading at all.
+  2. I called __cfg('wadeSpd', 0.05). __cfg takes an OBJECT. It iterated the STRING and
+     wrote its characters into CFG as keys 0:"w", 1:"a", 2:"d", while wadeSpd never
+     moved. Caught only because the standing rule is to read a setter back, and
+     __resetCfg does not clear those junk keys, so the page needed a reload.
+  3. The big one: __rawStep drives simStep, which runs updateBot, NOT updatePlayer. Every
+     wading number I had taken was the BOT's, which is why driving the inset dial from 0
+     to 70 moved the boundary not at all. That is the sim-is-not-the-game trap, in my own
+     notes, and I walked into it anyway.
+
+Measured properly through __loop, which is the real frame loop:
+  inset  0  ->  wading begins 6px OUTSIDE the water   (his bug, reproduced)
+  inset 11  ->  wading begins 12px inside
+  inset 40  ->  not within 100px of the shore
+So the fix is live on the player and the dial does what it says.
+
+The bot now shares the inset. The comment three lines above the bot's own wading already
+states the principle from the v1.85 water episode: "a sim that ignores a movement rule
+the player cannot ignore is measuring a different game". Giving the player an inset and
+not the bot would have re-opened exactly the divergence that comment was written to close.
+
+Verified: parse PASS. Four maps at seed 4242, counts 86/87/58/72 and 246/193/152/216,
+drawErr null. All three endings through the outcome screen and back to the hub. Hub
+frames and stage render. Armour at landing, the population floor, and the wading boundary
+all measured as above.
+
+Not verified: what the Organ rename looks like on the feedback buttons and in the rules
+panel, which I changed by string and did not open. And no difficulty measurement at all
+for the population floor or the empty rig; both certainly make the game harder and I have
+not run a seeded batch to say by how much. That batch is worth doing before he plays, and
+it is the next thing.
