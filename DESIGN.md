@@ -27075,3 +27075,26 @@ screen. ENTER still dismisses. Four maps at seed 4242, entities exactly 86/87/58
 drawErr null. Three endings with headline assertions, hub and stage render.
 
 Not verified: nothing beyond the screenshots; this is copy on an existing card.
+
+## Measurement note, v7.31 baseline
+
+200 seeds (1000-1199), COLD STORAGE, greed 14, via __pairedBg with identical arms,
+__pinDefaults(2) first: extract rate 24.5 percent, plus or minus 3.0 (49 of 200).
+
+Two facts worth the batch:
+
+DETERMINISM HELD PERFECTLY. The two arms ran identical dials over the same seeds and
+disagreed on ZERO of 200 raids. Every system added this cycle (superhot, the bar, crew
+revives, the buzz effects) either stays out of the sim or behaves identically per seed.
+
+THE RATE MOVED UP, A LOT. v6.72 measured 17.0 (5.2), v6.97 measured 13.5 (4.7), this
+run 24.5 (3.0). The comparison across builds is unpaired and the older seed lists are
+not certainly identical, so this is a flag rather than a verdict; the leading suspect
+is the v7.03 elite sight cap (elites no longer open fire from outside your sight),
+which shipped immediately after the v6.97 number. Worth a paired A/B on eliteGuns/sight
+if the next real exports disagree. Against the standing bot-realism order this is
+DIRECTIONALLY RIGHT: his real career rate is 28.4 percent (23 of 81), and the bot at
+24.5 now tracks him far better than the 13.5 that opened the gap complaint.
+
+Not verified: which change moved it (unpaired across builds); the older baselines' seed
+lists.
