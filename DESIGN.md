@@ -26449,3 +26449,26 @@ Three endings with headline assertions, hub and stage render.
 Not verified: the settings page at UI text scale other than 120%; the cap is in CSS
 pixels so other scales shift the rendered width, and I have only screenshotted his
 current setting.
+
+## v7.11 - the racks pane joins the readable column club
+
+Opened THE MAINFRAME through the real path this time: walked the hub pillager onto the
+station and pressed F, the same keys he uses. The RACKS pane had the settings disease,
+five short rows stretched edge to edge across 1920 with each explainer orphaned from its
+button. Capped at 1080 and centered, same treatment as settings.
+
+Deliberately NOT capped: the other three panes of the same modal. YOUR STATS spreads
+twelve stat cards and a run list across the full width and is better for it, and
+CONTRACTS and REWARDS have their own layouts from earlier passes. The cap is scoped to
+the one pane that needed it (#opane_mf), which is why this is a per pane rule and not a
+per modal one.
+
+Verified: parse PASS v7.11. Screenshots before and after through the real station key:
+racks rows now read as a column, stats tab confirmed untouched. Four maps at seed 4242,
+entities exactly 86/87/58/72, drawErr null. Three endings with headline assertions
+through the outcome button, hub steps and frames, stage renders. Leave button closes the
+modal.
+
+Not verified: the racks pane in the state where arrays exist and the wall has been
+cleared for a second bank of racks; I screenshotted the 4-of-10-racks state his current
+profile is in, not the post array geometry.
