@@ -26084,3 +26084,42 @@ Closing the "not verified: what they look like" lines from v6.92 and v6.96 by ey
 No visual faults found, so no code change ships with this note. The one soft observation
 is the relief station: the camp was already dense, so nine more pieces disappear into it.
 If any landmark assignment gets revisited, that is the weakest of the six.
+
+## v6.99 - two Superhot traps, found by asking what a still player must wait for
+
+The v6.73 act list was walk, fire, roll, reload, chosen so that nothing you cannot finish
+by standing still is out of reach. Two waits slipped through it, and both punished the
+player for doing exactly what the game asks:
+
+  APPLYING A HEAL. The bandage wind-up and the heal-over-time after it run on raid time,
+  and you apply a bandage STANDING STILL, so in Superhot it took about 25 real seconds and
+  a medkit worse. The mode punished the one act it exists to let you take calmly.
+
+  WAITING FOR THE SHIP. Hold E, ship inbound, stand in the ring as instructed: the 25
+  second wait ran at six percent, which is about seven real minutes. The v6.73 comment
+  even NAMES the called extract as the reason time must not hard stop, and then left it
+  crawling.
+
+Both count as acting now: a wind-up or an active heal, and a called beacon anywhere on the
+map. The beacon is map-wide on purpose, because the inbound ship is also the siege clock,
+and a siege that only runs while you stand inside the ring would be a stranger rule than
+time running once you have rung the bell.
+
+MY PROBE LIED TO ME FIRST, which is worth recording. I set healQ and G.beaconT directly
+and measured no change, because the game cleanses both: full health zeroes healQ, and
+G.beaconT is recomputed from ZONE state every frame, so a value written straight onto G
+evaporates before the check reads it. The fix was in and working; the probe was measuring
+its own discarded state. Re-probed through the real paths, hp at 50 and the beacon set on
+the active zone:
+
+  standing still        0.12 raid seconds over 120 frames   crawls, as designed
+  applying a bandage    full speed until the wind-up lands
+  healing over time     1.95                                full speed
+  ship called           1.91                                full speed
+
+Verified: parse PASS. Four maps at seed 4242, entity counts 86/87/58/72, zero draw errors.
+All three endings through the outcome screen. Hub frames and stage render.
+
+Not verified: Superhot against a live siege end to end, where the question is pacing
+rather than arithmetic. The clocks are now right; whether the fight FEELS right with time
+surging on the beacon call is his to judge.
