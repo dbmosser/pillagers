@@ -1022,7 +1022,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.08';
+var VER='7.09';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20219,8 +20219,10 @@ function drawBag(){
   ctx.fillText('DMG '+(p.wep.dmg*(p.wep.pellets||1))+'  RANGE '+Math.round(p.wep.rng/10)+'m  '+(p.wep.auto?'AUTO':'SEMI')+
     (p.wep.mag?('  MAG '+p.wep.mag):''),x+11,cy);
   cy+=LH(16);
+  var _bwP=bagWeight(), _ldP=loadOf(_bwP), _spdP=Math.round((1-_ldP.spd)*100);
   ctx.fillText('Integrity '+Math.round(p.hp)+'/'+p.maxhp+'    Armor '+Math.round(p.armor)+
-    '    BAG '+bagWeight()+'wt  ('+G.bag.length+' items)',x+11,cy);
+    '    BAG '+G.bag.length+' item'+(G.bag.length===1?'':'s')+
+    (_spdP>0?('  '+_spdP+'% slower'):''),x+11,cy);
   cy+=LH(8);
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
   cy+=LH(10);

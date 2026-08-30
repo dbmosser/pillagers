@@ -26401,3 +26401,24 @@ headline assertions through the outcome button, hub and stage render.
 Not verified: the outcome window when the hit feed AND a very long manifest land together
 past 86vh, where the internal scroll takes over - the cap is proven by CSS but I have not
 staged a run long enough to trip it.
+
+## v7.09 - the last place still speaking in weight units
+
+His note killed the weight readout: "i have no use for a weight mechanic". The corner HUD
+was rebuilt then to speak in consequences, N ITEMS, X% SLOWER, Y% LOUDER, amber when it
+bites. But the TAB inventory panel header still printed the internal unit, "BAG 22wt (12
+items)", and today's bag screenshot caught it. Same fact, two vocabularies, and one of
+them is the one he explicitly rejected.
+
+The panel header now matches the corner: "BAG 12 items", with "19% slower" appended only
+once the load actually costs speed. The weight number itself stays internal, where it
+belongs: it still drives the load maths, it just never prints.
+
+Verified: parse PASS v7.09. Screenshot with a 22 item bag staged heavy enough to bite:
+header reads "BAG 22 items 19% slower", corner reads "22 ITEMS 19% SLOWER 40% LOUDER",
+no "wt" anywhere on screen. Four maps at seed 4242 with the bag panel drawn on each,
+entities exactly 86/87/58/72, drawErr null. Three endings with headline assertions, hub
+and stage render.
+
+Not verified: nothing user visible; the one liner is a string swap on a panel proven by
+screenshot.
