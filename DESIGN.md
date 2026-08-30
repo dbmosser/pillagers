@@ -27443,6 +27443,45 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.51 - THE MILE MEASURED
+
+The 200-seed baseline for THE COLD MILE is in, and the sector board's empty row
+is now a real measurement: ext 42.5, fc 62, cont 5.5, haul 2665.
+
+The method matched the cold standard: 200 paired seeds (7013 to 9600, step 13)
+through __pairedBg on the v7.47+ build, __resetCfg then __pinDefaults(1) then
+the explicit fists/no-merc/no-loadout profile pins, both arms on identical
+dials. The run is perfectly deterministic - both arms 42.5 percent, zero
+discordant seeds - which certifies the mile's systems seed-stable the same way
+the cold baseline certified v7.x. First contact and containers come from a
+60-seed instrumented pass on the same seed family, because the paired harness
+keeps only outcome and haul per row.
+
+What the numbers say about the map: the mile is short greedy trips. Contact
+comes EARLIER than cold (62s against 77s) because twelve spawns and 134
+entities put someone near you sooner - but the bot opens a third of the
+containers (5.5 vs 16.3), hauls a third of the credits (2,665 vs 7,775), and
+walks out almost twice as often (42.5 vs 24.5 percent). Median raid is 105
+seconds, ninetieth percentile 185. Six extracts on 90-by-76 hectares means a
+way out is never far, and the bot takes it. Killer table for the 115 deaths:
+sentry 56, raider 35, crawler 10, bulwark 6, listener 4, timer 2, choir 1,
+warden 1 - machines still do most of the killing, same as everywhere.
+
+Whether short-greedy-trips is what he WANTS the big map to feel like is his
+call, not mine: the bot's judgement is calibrated against his runs on cold,
+and a human on the mile may commit deeper and die deeper. The row states what
+the bot does; his next mile session states what he does.
+
+One operational note for the file: the batch ran at a fifth speed while its
+tab sat hidden behind the work tab - fronting the batch tab restored full
+pace. Long batches want the front tab, not merely their own tab.
+
+Not verified: fc and cont ride a 60-seed sample against the 200-seed ext and
+haul (the cold row mixes eras the same way); the mile baseline ran on v7.47
+dials and v7.48-v7.50 changed no sim-reachable code (strings, CSS, comments,
+dead branches, a fixture pin), which I verified by reading the diffs, not by
+re-running 200 seeds on HEAD.
+
 ## v7.50 - THE MOJIBAKE DASHES
 
 Caught by eye on a screenshot of the new sector page: the mile's character line

@@ -1054,7 +1054,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.50';
+var VER='7.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24517,7 +24517,10 @@ var SECTOR_CHAR=[
 // v7.31 baseline on the current build: 24.5 percent over 200 seeds.
 var SECTOR_MEAS=[
   {ext:24.5,fc:77, cont:16.3,haul:7775},
-  {}
+  // v7.51, 200 seeds: the mile is short greedy trips. The bot meets trouble
+  // EARLIER (62s vs 77s), opens a third of the containers, hauls a third of the
+  // credits, and walks out almost twice as often. Median raid 105s, p90 185s.
+  {ext:42.5,fc:62, cont:5.5,haul:2665}
 ];
 function renderSector(){
   var host=document.getElementById('sectorlist');
