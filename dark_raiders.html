@@ -1055,7 +1055,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.41';
+var VER='7.42';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20850,8 +20850,12 @@ function buildHub(){
   var stations=[
     {id:'lift',x:350,y:105,r:48,label:'ASCENT LIFT',sub:'to the surface',c:'#4de3d0',
 acts:{KeyE:['go up',function(){
-             // v6.88, his spec: the choice is asked HERE, at the moment it applies.
-             askKit();
+             // v7.42, his order: destination first, then the loadout question.
+             if(offeredCount()>1){ renderSector(); openModal('sectormodal'); }
+             else {
+               if(!mapOffered(FIXED_MAPS[clamp(P.mapIx||0,0,FIXED_MAPS.length-1)])) P.mapIx=firstOfferedMap();
+               askKit();
+             }
            }],
            // v6.18: quick ascent means skip the SCREEN, not discard what you packed.
            // This called startRaid directly and never set kitChosen, so the
@@ -20920,9 +20924,8 @@ stations.forEach(function(st){
     // hard-coded pair said "[R] sector" while R has been the quick deploy.
     var ks=Object.keys(stations[0].acts);
     var keys=ks.map(function(k){ return '['+keyLabel(k,KEYNAME_KB[k]||k)+'] '+stations[0].acts[k][0]; }).join('   ');
-    // And the destination is the one you will ACTUALLY get. P.mapIx defaults to 0,
-    // which is not offered in the beta, and openLift silently corrects it on the way
-    // in, so the sign used to name a sector the lift would not take you to.
+    // And the destination is the one you will ACTUALLY get: an un-offered P.mapIx is
+    // corrected before the sign reads it, same as the lift corrects it on the way in.
     var mi=clamp(P.mapIx||0,0,FIXED_MAPS.length-1);
     if(!mapOffered(FIXED_MAPS[mi])) mi=firstOfferedMap();
     return keys+'      >  '+FIXED_MAPS[mi].name;
@@ -21042,11 +21045,11 @@ function askKit(){
     (kitN?('the '+kitN+' item'+(kitN===1?'':'s')+' you packed, plus everything on your belt.')
          :'whatever is on your belt.')+
     '<br><br><b>The freebie kit</b>: '+escHtml(freeKitText());
-  ASKYES=function(){ P.freeKit=0; saveProfile(); openLift(); };
+  ASKYES=function(){ P.freeKit=0; saveProfile(); ascendNow(); };
   ASKALT=function(){
     P.freeKit=1; P.kitBeforeFree=null; saveProfile();
     try{ renderStage(); }catch(_e){}
-    openLift();
+    ascendNow();
   };
   var y=document.getElementById('askyes'), a=document.getElementById('askalt');
   if(y) y.textContent='MY LOADOUT';
@@ -24630,15 +24633,7 @@ function offeredCount(){
   for(var i=0;i<FIXED_MAPS.length;i++) if(mapOffered(FIXED_MAPS[i])) c++;
   return c;
 }
-function openLift(){
-  if(offeredCount()>1){
-    renderSector(); openModal('sectormodal'); return;
-  }
-  if(!mapOffered(FIXED_MAPS[clamp(P.mapIx||0,0,FIXED_MAPS.length-1)])) P.mapIx=firstOfferedMap();
-  // v6.51, his order: no ascent check. The stash already is the loadout screen, so a
-  // second one showing the same things was a click between him and the raid.
-  ascendNow();
-}
+
 // THE ONE WAY UP. Every route that used to open the check now calls this, so quick
 // ascent, the lift, the sector page and the ASCEND button cannot drift apart the way
 // the check and the quick ascent did before v6.18.
@@ -24995,8 +24990,9 @@ function commitKit(){
 }
 document.getElementById('stagedrop').onclick=function(){ ascendNow(); };
 document.getElementById('sectordeploy').onclick=function(){
-  // v6.51: straight up from here too. The check it used to open is gone.
-  ascendNow();
+  // v7.42: choosing the sector leads to the loadout question, not straight up.
+  document.getElementById('sectormodal').classList.remove('on');
+  askKit();
 };
 document.getElementById('closesector').onclick=function(){
   document.getElementById('sectormodal').classList.remove('on');

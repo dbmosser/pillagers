@@ -27443,6 +27443,41 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.42 - WHERE, THEN WHAT YOU CARRY
+
+His order: "make a map selector that comes up when you choose to ascend, before the
+'are you sure' phase." With THE COLD MILE live there are two destinations again, and
+the lift previously asked the loadout question first and the destination never - the
+sector page had been orphaned since v6.51 collapsed the ascent flow to one click.
+
+The lift's E now asks the questions in the order they matter: where you are going,
+then what you are carrying, then up. Concretely: E at the lift opens the sector page
+when more than one map is offered (straight to the kit question when only one is);
+picking a sector and pressing its deploy button closes the page and asks the kit
+question; answering the kit question ascends. Quick ascent stays untouched - it
+never asked anything and still does not.
+
+Cleanup in the same build: openLift() lost its last caller in the rewire and is
+deleted. Its one safeguard - correcting a P.mapIx that points at an un-offered map -
+moved into the single-destination branch of the lift act, and the lift sign's
+comment that referenced openLift by name was rewritten to describe the behaviour
+instead of the dead function.
+
+One diagnostic note for the file: during verification the abandon arm briefly read
+KILLED IN ACTION. That was not a regression - it was the v0.45 instant-abandon guard
+(under 1.5s, no movement, no shots, no containers) silently discarding the abandon
+and returning to the hub, leaving the previous outcome's title in the DOM. The probe
+now defeats the guard with tel.shots before abandoning, same as the paired-run
+harness always has.
+
+Not verified: the flow was driven with real key events and real button clicks at
+1920x1080 on the fixture (sector page first, kit question second, raid opened on the
+chosen map with the right entity fingerprint), and both maps, all three endings, hub
+and stage all pass - but I have not watched a human walk into the lift with a
+controller-shaped hand and read the two pages in sequence, and the sector page's
+copy for THE COLD MILE still carries an empty measurement row until the 200-seed
+baseline runs.
+
 ## v7.41 - THE COLD MILE
 
 His order: "make a new map that is similar in spirit but approximately 4-5 times as
