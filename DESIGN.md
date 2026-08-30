@@ -24461,3 +24461,48 @@ but I did not check a small window, and a laptop at 1366x768 with zoom 1.3 is ex
 case he is worried about and exactly the one I have not driven. The primer's three
 functions are now unreachable and still in the file; they come out next rather than in
 the same build that removed their callers.
+
+## v6.63 - THE TWO MELEE MACHINES COULD NOT PHYSICALLY REACH THEIR OWN ATTACK RANGE
+
+His note: "crawler movement seems to be messed up, like they run up on me, but if I stop,
+they don't attack me."
+
+Driven, and it is worse than he described. Put a crawler eighteen units from a stationary
+player and it is pushed out to thirty-one and STAYS there, in chase, with its attack
+cooldown sitting at zero, forever. It never bites once. Not a rare case: the default one.
+
+THE ARITHMETIC IS THE WHOLE BUG. Both melee checks compared CENTRE-TO-CENTRE distance
+against rng:
+
+    crawler   body 15 + player 11 = 26,  rng 26
+    listener  body 14 + player 11 = 25,  rng 26
+
+Bodies are then held apart with a few units of padding on top of that, measured at 31 for
+the crawler. So the distance at which they were allowed to bite was a distance the
+collision rules would never let them occupy. The attack was unreachable by construction,
+for both of them, for as long as those numbers have been what they are.
+
+THIS IS ALMOST CERTAINLY THE LISTENER COMPLAINT AS WELL, from his run #61: "the listener
+is broken, it sticks to the player and there's no chance to kill it." A machine that
+follows you everywhere and never lands a hit is exactly what this produces. And it
+explains the thing that never sat right about closing that item: his later runs tag the
+Listener BEATABLE twice, which is easy when it cannot hurt you. I closed that item on
+three independent checks and every one of them measured whether the Listener could be
+KILLED. Not one asked whether it could kill.
+
+The fix measures the GAP BETWEEN BODIES rather than between centres, with a melee reaching
+ten units past it: measured separation is five, so ten clears it with margin and still
+reads as touching distance. One named constant, MELEE_REACH, so the two agree and a third
+melee thing cannot drift away from them.
+
+Verified: parse PASS at v6.63; the exact repro that produced no damage at all now takes
+6hp from a crawler and 17hp from a Listener over six seconds; four maps 86/87/58/72
+entities and, at seed 4242, 246/193/152/216 containers; all three endings through the
+outcome screen to a drawn hub; hub, renderStage and the export builder; pin audit clean.
+
+Not verified: THIS MAKES THE GAME HARDER AND I HAVE NOT MEASURED BY HOW MUCH. Two
+machines that could never land a hit now can, and the crawler is the most common thing on
+the board at 34 of them. Every extract-rate number taken before this build is measuring a
+game where melee did nothing, so the 8.8 percent Cold Storage figure and everything like
+it is now stale. I also did not check whether the Bulwark, the Warden or the Choir have
+the same centre-versus-body arithmetic anywhere in their own attacks.

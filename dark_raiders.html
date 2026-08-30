@@ -960,7 +960,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.62';
+var VER='6.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1655,6 +1655,11 @@ function ensureContracts(){
 // "sentrys" and "snitchs" are not words, and a contract board is the one place
 // in the game he reads a full sentence. There are four unit names and they never
 // change, so spell the plurals rather than bolting an s on the end.
+// How far a melee machine reaches PAST the two bodies, v6.63. Both melee checks used to
+// compare centre distance against rng, which for a crawler meant 26 against a body sum
+// of 26: unreachable. Measured separation with padding is about 5, so 10 clears it and
+// still reads as touching.
+var MELEE_REACH=10;
 var UNITPLURAL={sentry:'sentries',crawler:'crawlers',raider:'pillagers',snitch:'criers',listener:'listeners'};
 // The most a kill contract may ever ask for, v5.58. 70 percent of the supply on
 // the WORST map, so the contract survives being carried to any map on the board.
@@ -12433,7 +12438,9 @@ if(e.state==='hunt'){
         navSeek(e,e.heardX,e.heardY,e.spd*((_lf&&e.recover>0)?(CFG.listenRecSpd===undefined?0.30:CFG.listenRecSpd):1),dt);
         e.face+=clamp(angDiff(Math.atan2(e.heardY-e.y,e.heardX-e.x),e.face),-6*dt,6*dt);
         var ld=dist(e,p);
-        if(ld<e.rng&&e.cd<=0&&!p.downed){
+        // v6.63: same fix as the crawler. r 14 plus r 11 is 25 against an rng of 26,
+        // so with any separation padding this could never be true.
+        if((ld-(e.r+(p.r||11)))<=MELEE_REACH&&e.cd<=0&&!p.downed){
           damagePlayer(e.dmg,'listener',e.name,e.x,e.y); e.cd=0.85;
           if(_lf){ e.recover=(CFG.listenRecT===undefined?0.55:CFG.listenRecT); if(!G.sim) sfx('alarm',e.x,e.y); }
         }
@@ -12838,7 +12845,10 @@ var _rdS=G.shells[_rdi];
           if(!G.sim) sfx('alarm',e.x,e.y);
         }
 } else if(e.kind==='crawler'){
-        if(d>e.rng) navSeek(e,sees?p.x:e.tx,sees?p.y:e.ty,e.spd,dt);
+        // v6.63: the gap between bodies, not between centres. Centre-to-centre against
+        // rng was a distance collision never allowed, so this never fired.
+        var _cgap=d-(e.r+(p.r||11));
+        if(_cgap>MELEE_REACH) navSeek(e,sees?p.x:e.tx,sees?p.y:e.ty,e.spd,dt);
         else if(e.cd<=0&&!p.downed){ damagePlayer(e.dmg*(e.elite?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1),'crawler',e.name,e.x,e.y); e.cd=.7; }
       } else if(e.kind==='raider'){
         // His answers, 2026-08-22: raiders should FLANK, use COVER, and FLEE
