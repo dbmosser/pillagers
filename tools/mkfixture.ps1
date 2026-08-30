@@ -399,7 +399,7 @@ var want={simGreed:14,simCrouch:0,simSell:0,simPed:0,simSidearm:1,simSwapBack:1,
     // build later than this list's own rule allows. wadeInset is the shoreline inset the
     // player and the bot both wade by; raiderFloorN and raiderFloorGap are the floor
     // under the live pillager count and how fast it refills.
-    wadeInset:11,raiderFloorN:4,raiderFloorGap:8,
+    wadeInset:11,raiderFloorN:4,raiderFloorGap:8,overheatLock:7,superhot:0,superhotSlow:0.06,
     nRaider:10,nSentry:20,nCrawler:34,eDmg:1,raidSec:540};
   for(var k in want){ if(C2[k]!==want[k]){ changed[k]=[C2[k],want[k]]; C2[k]=want[k]; } }
   P2.mapIx=(mapIx===undefined)?1:mapIx;

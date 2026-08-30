@@ -25449,3 +25449,76 @@ Also still outstanding from the same audit: 27 other confirmed-dead items, inclu
 several dead DOM ids, four leftover branches for the rig system removed at v5.83, a dead
 CFG dial, and five fixture hooks that reference symbols which no longer exist. None of
 those is user-facing. They come out next, carefully, rather than in one sweep.
+
+## v6.85 - the controller actually works, and the Organ can fight
+
+Six of his notes from a live session, three of them corrections to work I had just shipped.
+
+THE ORGAN NEVER FIRED BACK, and my first diagnosis was wrong. I measured it out-ranged:
+it answers only inside its own 520 reach, while the Marksman Rifle reaches 760, the Lance
+820 and the Longshot I added at v6.69 reaches 900, so three guns let you shoot an emplaced
+boss that cannot close the distance. He then told me: "i wasn't longshotting the Organ, I
+was right next to it." So that was a real gap but not HIS gap.
+
+At point blank the cause is the weak points. Every armed machine carries an overheat vent,
+and a hit sets overheat to FOUR SECONDS, refreshed to the full four on every hit. The
+Organ is the worst case: it has TWO of them, at ang 0 and ang PI, so one faces you
+whichever side you stand on, radius 10 and 12 on a body of radius 26. Anything automatic
+at point blank re-arms the stun faster than it expires and it never fires a shot. A 1250
+HP boss read as trivial because its weak point was an off switch rather than a window.
+
+The vent still buys the four seconds it promises, but it cannot be chained: a machine that
+has just vented shrugs off the next overheat for seven seconds. Stun, burn, take fire,
+stun again. Both fixes ship: the point-blank one because it is his, and the out-range one
+because a boss bolted to the floor should still answer a sniper, now at twice its reach
+with a wide spread and a slow cycle once it has been hurt.
+
+THE CONTROLLER. "glyphs didn't change when using xbox controller" was two faults. The
+station prompts are composed into a STRING inside buildHub, and the hub is built once and
+cached for the session, so the labels were frozen to keyboard names before a pad could
+ever be seen. The comment three lines below already warned about this exact trap for the
+rewards counter and made THAT a function; the key names needed the same and did not get
+it. They are a function now.
+
+Worse, the labels were describing keys you could not press: the hub branch of pollPad
+mapped A to KeyE and nothing else, so CRAFT, HIRE, REWARDS and the TERMS were unreachable
+on a pad entirely. X, Y and RB now carry the second, third and fourth station action.
+
+"xbox controller not doing anything in menus" was never built at all. pollPad has two
+destinations, the floor and a raid, and a modal is neither: with the shop open the state is
+still 'hub', so the pad fed station keys to a floor you cannot see. Menus are DOM, so the
+pad now moves a focus ring through the real controls, A presses, B backs out through the
+panel's own Leave button so its cleanup still runs. Focus moves GEOMETRICALLY, nearest
+control in the direction pushed, because these panels are grids and document order runs
+across a grid rather than down it. Measured: focus lands on the first tab and D-pad right
+walks BUY, CRAFT, HIRE and on into the item cells.
+
+"player should look the direction they are walking if they are not engaging the right hand
+thumbstick". The aim only moved while the right stick was pushed, so letting go left you
+staring at wherever it last pointed while walking backwards. Measured after: pushing the
+left stick east, south, west and north gives 0, 90, 180 and -90 degrees, and the right
+stick still overrides outright.
+
+ALSO: the raw weight readout is gone from the HUD on his note that he has no use for a
+weight mechanic. The consequence line stays, because "14% SLOWER  9% LOUDER" is the same
+information in words he can act on and it only appears once the load bites. If he meant
+the whole load system, that is CFG.loadPen and one dial turns it off; I have not done that
+unasked because it moves difficulty for the bot too.
+
+The ascend confirm is a centred card rather than a question stranded in a full screen field
+of blue, which he sent me a screenshot of. 560 by 178, centred, at 4.8 percent of the
+screen instead of 100. MY v6.80 MENU AUDIT PASSED THAT SCREEN, because it measured text
+size, overflow and clipping and never asked whether the content was dwarfed by its own
+container. Emptiness is a design fault no per-element measurement can see.
+
+Verified: parse PASS. Four maps at seed 4242 with the bag open, entity counts 86/87/58/72,
+drawErr null, __hud clean. All three endings through the outcome screen and back to the
+hub. Hub frames and stage render. Pad menu focus, pad look direction, and the dodge roll in
+the Undercroft all measured through real key and pad events. overheatLock pinned in
+__pinDefaults in the same build that introduces it.
+
+Not verified: the overheat change against a real fight. I proved the lock existed and that
+the immunity now blocks a second stun, but whether seven seconds is the right gap is a feel
+question and only he can answer it. Also not verified on real hardware: everything
+controller-related is still driven by a synthetic pad object, and he has already caught me
+once shipping controller work that passed synthetically and failed in his hands.
