@@ -26374,3 +26374,30 @@ hub and stage render.
 Not verified: the pause screen on a small window (the 780px frame will overflow below
 about 820px viewport width; the game targets 1920 and nothing else has small-screen
 handling either, so this follows the file's standing assumption).
+
+## v7.08 - the outcome window fits the run it describes
+
+Same disease as the pause menu, harder cure. The outcome screen framed a near fullscreen
+window (inset 56 by 84) whatever the run held, so a short abandon floated five lines in a
+sea of blue. But no fixed frame works here either, because the content swings: an abandon
+is five lines, a death with a full hit feed and an itemised bag is over 700 pixels.
+
+The ::before frame trick is gone on this screen. A real wrapper div (.ocwin) now carries
+the window styling and grows with its content, capped at 86vh with internal scrolling so
+the LOG RUN AND RETURN button can never be pushed off screen by a long feed, which is the
+exact modal rule v5.31 established for the station menus. The game stays dimmed but
+visible behind, matching the pause menu.
+
+Measured: the worst case staged death (eight row hit feed, six item bag, carried field
+gun, feedback tags, note) fills the window and keeps its button on screen. The short
+abandon shrinks the window to 668 by 526. Every child kept its id, so none of the
+population code changed; this is markup wrap plus CSS only.
+
+Verified: parse PASS v7.08. Screenshots of both extremes at 1920x1080: worst case death
+and short abandon, window hugging content in both, v7.06 subheads rendering inside. Four
+maps at seed 4242, entities exactly 86/87/58/72, drawErr null. Three endings with
+headline assertions through the outcome button, hub and stage render.
+
+Not verified: the outcome window when the hit feed AND a very long manifest land together
+past 86vh, where the internal scroll takes over - the cap is proven by CSS but I have not
+staged a run long enough to trip it.
