@@ -980,7 +980,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.74';
+var VER='6.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18656,7 +18656,7 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     drawNoiseMarkers();
     drawLegend();
   }
-  if(G.bagOpen) drawBag();
+  if(G.bagOpen){ drawBag(); drawRaidContracts(); }
   // The item under the cursor while it is being carried. Drawn last so it rides
   // over both the panel and the bar, which is the only way a drag reads as
   // holding something rather than as a highlight moving about.
@@ -19851,6 +19851,55 @@ function bagStacks(){
     return String(ia.name||a.key)<String(ib.name||b.key)?-1:1;
   });
   return st;
+}
+// v6.75, his note. The open contracts, listed beside the bag, because a job you cannot
+// remember is a job you cannot work toward.
+function drawRaidContracts(){
+  var list=(P&&Array.isArray(P.contracts))?P.contracts:[];
+  if(!list.length) return;
+  var PW=LH(300), x=12, y=48;
+  ctx.font=FS(TYPE.label);
+  var lineH=LH(15), pad=LH(10);
+  // Measure first, so the panel is exactly as tall as what it holds.
+  var blocks=[];
+  for(var i=0;i<list.length;i++){
+    var c=list[i];
+    if(!c||c.desc===undefined) continue;
+    var words=String(c.desc).split(' '), lines=[], cur='';
+    for(var w=0;w<words.length;w++){
+      var t=cur?(cur+' '+words[w]):words[w];
+      if(ctx.measureText(t).width>PW-pad*2-LH(4)&&cur){ lines.push(cur); cur=words[w]; }
+      else cur=t;
+    }
+    if(cur) lines.push(cur);
+    if(lines.length>2) lines=[lines[0],lines[1]];
+    blocks.push({c:c,lines:lines});
+  }
+  if(!blocks.length) return;
+  var hh=LH(34)+pad;
+  for(var b=0;b<blocks.length;b++) hh+=blocks[b].lines.length*lineH+lineH+LH(7);
+  hh=Math.min(hh,H-70);
+  ctx.fillStyle='rgba(6,9,13,.96)'; ctx.fillRect(x,y,PW,hh);
+  ctx.strokeStyle='#3a4552'; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,PW-1,hh-1);
+  ctx.textAlign='left';
+  ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
+  ctx.fillText('YOUR CONTRACTS',x+pad,y+LH(21));
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
+  ctx.fillText('progress is banked, and settles when you get out',x+pad,y+LH(32));
+  var yy=y+LH(34)+pad;
+  ctx.font=FS(TYPE.label);
+  for(var k=0;k<blocks.length;k++){
+    var C=blocks[k].c, L=blocks[k].lines;
+    if(yy+L.length*lineH+lineH>y+hh-LH(4)) break;
+    var TT=(typeof CTIER!=='undefined'&&CTIER[C.tier])?CTIER[C.tier]:null;
+    var done=(C.prog>=C.n);
+    ctx.fillStyle=done?'#7fc4a0':(TT?TT.c:'#cdd6dd');
+    for(var li=0;li<L.length;li++){ ctx.fillText(L[li],x+pad,yy); yy+=lineH; }
+    ctx.fillStyle=done?'#7fc4a0':'#8a96a1';
+    ctx.fillText((done?'READY TO CLAIM  ':'')+Math.min(C.prog||0,C.n)+' of '+C.n+
+                 '   $'+(C.reward||0).toLocaleString(),x+pad,yy);
+    yy+=lineH+LH(7);
+  }
 }
 function drawBag(){
   // THE GRID, v2.87. His notes, same afternoon: items should have "good

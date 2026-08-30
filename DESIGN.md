@@ -25113,3 +25113,42 @@ Not verified: how the grid reflows on a small window. It is auto-fit with a 150p
 so it should collapse to fewer columns, but I only looked at 1920x1080, and his complaint
 about this screen was specifically that text was too small to read, which is a judgement I
 cannot make for him from one width.
+
+## v6.75 - your contracts, where you actually need them
+
+His note: "show all the open contracts on the contracts GUD".
+
+I CHECKED THE BOARD FIRST AND IT IS FINE. All eight contracts render and every one of
+them is fully visible without scrolling at 1920x1080, 1600x900, 1366x768 and 1280x720.
+There is no slice, no cap and no hidden row. If the note meant the board, the check finds
+nothing.
+
+WHAT DOES NOT EXIST is any mention of a contract during a raid. You carry eight jobs up
+the lift and the surface never refers to them again, so the only way to know what you are
+collecting for is to have memorised the board before you left. That is the version of his
+note worth acting on.
+
+The list now sits down the left whenever you open your things with TAB, opposite the bag
+on the right. Each row is the job, then its progress and its payout, with anything already
+finished turned green and marked READY TO CLAIM so a trip back down has a reason.
+
+HONEST ABOUT WHAT THE NUMBER MEANS. Contracts settle at extraction, through
+contractExtract, so the figure shown is what you have BANKED and not what is sitting in
+your bag this second. The panel says so in its own subtitle rather than implying a live
+count, because a progress line that looks live and is not is worse than no line at all.
+
+The panel measures its own contents and draws exactly as tall as it needs, wraps a long
+job to two lines, and stops early rather than overflowing when the list is longer than the
+screen. An empty board draws nothing and was tested for explicitly.
+
+Incidentally confirmed while screenshotting this: a live raid printed "THE ORGAN HAS SEEN
+YOU", so the v6.71 rename is real on the play path and not just in the string table.
+
+Verified: parse PASS. Four maps at seed 4242 with the bag open on each, entity counts
+86/87/58/72, drawErr null, __hud clean. All three endings through the outcome screen and
+back to the hub. Hub frames and stage render. The panel drawn with a half-done contract
+and two finished ones, and separately with an empty board. Screenshotted at 1920x1080.
+
+Not verified: how the panel and the bag look together on a narrow window. Both are fixed
+at 300 scaled units against opposite edges, so they cannot overlap at any width I can
+reach, but I only looked at 1920x1080 and his machine is the one that matters.
