@@ -25288,3 +25288,63 @@ Not verified: dragging a partial stack between grids with a mouse. The grouping 
 correct and the existing drag verbs speak stacks already, but I drove the grids by
 rendering them rather than by pointer, so a drag that splits a five into a three and a two
 is untested.
+
+## v6.79 - the bumpers run the belt, prompts speak controller, and I undo my v6.75 mistake
+
+TWO OF HIS NOTES, and one correction of my own work that a screenshot forced.
+
+THE BUMPERS RUN THE BELT. His note: "left and right bumper should change between hotbar
+items". LB was cycle-throwable and RB was use-the-selected-slot. With the bumpers walking
+the whole belt, cycling throwables separately is redundant, because throwables ARE belt
+slots and the bumpers reach them. So both bumpers become selection and the USE action
+moves to D-pad right, which was the autoloot toggle, a feature he called unnecessary and
+had me remove from Settings at v6.62.
+
+  LB            previous belt slot      was: cycle throwable
+  RB            next belt slot          was: use the selected slot
+  D-pad right   use the selected slot   was: toggle autoloot
+
+Measured against a synthetic Xbox pad: RB walked 1,2,3,4,5 and LB walked back 4,3,2, with
+wrapping at both ends. Both were removed from the tap table and stamp their own edge
+state, which was checked.
+
+PROMPTS SPEAK CONTROLLER. His note: "all keys (like 'hold E') should change to xbox
+controller glyphs if controller use is detected". Twelve on-screen prompts named a
+keyboard key outright. They now ask one reader what to say, and with a pad connected the
+container prompt renders "[A] SEARCH LOCKER" instead of "[E] SEARCH LOCKER", confirmed in
+a screenshot. The station prompts in the Undercroft swap the same way, and the in-raid
+legend now teaches the new bumper mapping instead of the old one.
+
+Written as bracketed ASCII rather than circled-letter glyphs ON PURPOSE. Every label here
+has to survive a PowerShell patch script, this file has been mojibaked twice by non-ASCII
+round trips, and one of those reached the screen. [A] and [LB] are the safe spelling.
+
+AND THE THING I GOT WRONG. At v6.75 I read his note "show all the open contracts on the
+contracts GUD", checked the Mainframe board, found all eight visible, searched the raid
+for a contract display, found none, and built one beside the bag.
+
+THERE WAS ALREADY ONE. The conditions panel in the top right has listed contracts since
+v6.13, hard capped at THREE with "+N more at the Mainframe" underneath. That cap is what
+he was looking at when he wrote the note. My v6.75 search missed it because I grepped the
+game state object for contract fields and this panel reads P.contracts directly, so
+nothing on G named it. I found it only by looking at a screenshot taken for a different
+reason.
+
+The cap is gone and the panel lists every contract you can progress here, still sorted
+nearest-to-finishing first. Its existing filters are untouched, so a completed one, a
+conduct one, and another site's work still stay off it. Verified with all eight made
+actionable: eight rows, no footnote.
+
+My v6.75 panel is deleted, along with the function behind it, because two panels listing
+the same jobs is exactly the clutter he objects to and the one he was actually reading is
+the one that had to be right.
+
+Verified: parse PASS. Four maps at seed 4242 with the bag open, entity counts 86/87/58/72,
+drawErr null, __hud clean. All three endings through the outcome screen and back to the
+hub. Hub frames and stage render. Bumpers, prompts and the uncapped panel all measured or
+screenshotted at 1920x1080.
+
+Not verified: a REAL Xbox controller. Everything above was driven through a synthetic
+gamepad object with the standard mapping, which exercises the code but cannot prove the
+button indices match a physical pad in his hands. If A does the wrong thing when he plugs
+one in, the mapping tables are the place to look and the indices are the suspects.

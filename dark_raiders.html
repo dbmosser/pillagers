@@ -982,7 +982,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.78';
+var VER='6.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8436,13 +8436,13 @@ var PAD={on:false,idx:-1,aiming:false,mx:0,my:0,prev:[],announced:false};
 var PADTAP={
   1:'Space',      // B      dodge roll
   3:'KeyX',       // Y      swap weapon
-  4:'KeyQ',       // LB     cycle throwable
-  5:'KeyG',       // RB     throw it
+  // 4 and 5, the bumpers, are handled as belt selection in pollPad rather than as key
+  // taps, because there is no key that means "previous slot".
   8:'Tab',        // View   inventory
   9:'KeyP',       // Menu   pause
   12:'KeyB',      // Dpad up     merc orders
   14:'KeyZ',      // Dpad left   drop selected
-  15:'KeyC'       // Dpad right  autoloot toggle
+  15:'KeyG'       // Dpad right  use the selected belt slot (was autoloot, v6.79)
 };
 var PADHOLD={
   0:'KeyE',       // A      search, and hold to call the dropship
@@ -8451,6 +8451,18 @@ var PADHOLD={
   10:'ShiftLeft', // LS click    sprint
   11:'ControlLeft'// RS click    crouch
 };
+// v6.79: is a controller actually in use. One reader, so every prompt agrees.
+function padOn(){ return !!(typeof PAD!=='undefined'&&PAD&&PAD.on); }
+// The label to show for a keyboard code, swapped for its controller button when a pad is
+// connected. Bracketed ASCII on purpose: circled-letter glyphs are non-ASCII and this
+// file has been corrupted twice by non-ASCII surviving a patch script badly.
+var PADLABEL={KeyE:'A',KeyR:'X',KeyF:'Y',KeyG:'D-RIGHT',KeyX:'Y',KeyQ:'LB',
+              Space:'B',Tab:'BACK',KeyP:'START',KeyB:'D-UP',KeyZ:'D-LEFT',
+              ShiftLeft:'LS',ControlLeft:'RS',KeyM:'D-UP',KeyI:'BACK'};
+function keyLabel(code,fallback){
+  if(padOn()&&PADLABEL[code]) return PADLABEL[code];
+  return fallback===undefined?code:fallback;
+}
 function padAxis(v){
   // Radial deadzone with rescaling, so the first millimetre past the deadzone
   // is a small input and not a jump to 0.22 of full speed.
@@ -8552,6 +8564,17 @@ function pollPad(){
     if(now&&!PAD.prev[n]){ raidKey(PADTAP[n],false,null); keys[PADTAP[n]]=false; }
     PAD.prev[n]=now;
   }
+  // v6.79, his note: the bumpers walk the belt. Wrapping at both ends, because a
+  // selector that stops dead at slot nine is worse than one that comes round.
+  var _lbN=pressed(4), _rbN=pressed(5);
+  if(G&&!G.over&&!G.paused){
+    var _slN=hotbarSlots().length;
+    if(_slN>0){
+      if(_lbN&&!PAD.prev[4]) setHot((hotSel()-1+_slN)%_slN);
+      if(_rbN&&!PAD.prev[5]) setHot((hotSel()+1)%_slN);
+    }
+  }
+  PAD.prev[4]=_lbN; PAD.prev[5]=_rbN;
   if(bagNav){
     var dU=pressed(12),dD=pressed(13);
     if(dU&&!PAD.prev[12]){ raidKey('ArrowUp',false,null); keys['ArrowUp']=false; }
@@ -17885,10 +17908,9 @@ rows.push({k:lost?'CONTRACT LOST':'CONTRACT',v:note,c:lost?'#c0503a':'#7fc4a0'})
       // Nearest to finishing first: "you are on five of six" is the fact that
       // decides whether the sixth is worth crossing the street for.
       _live.sort(function(a,b){ return a.left-b.left; });
-      var _cshow=Math.min(3,_live.length);
-      for(var _cs=0;_cs<_cshow;_cs++) rows.push({k:'CONTRACT',v:_live[_cs].txt,c:'#ffc04a'});
-      if(_live.length>_cshow)
-        rows.push({k:'',v:'+'+(_live.length-_cshow)+' more at the Mainframe',c:'#6b7480'});
+      // v6.79, his note: ALL of them, not three and a footnote. Still sorted nearest to
+      // finishing first, so the one worth crossing the street for is at the top.
+      for(var _cs=0;_cs<_live.length;_cs++) rows.push({k:'CONTRACT',v:_live[_cs].txt,c:'#ffc04a'});
     }
     // THE FIRST CUT PUT THE EFFECT RIGHT ALIGNED ON THE NAME'S OWN LINE and the
     // capture showed why that was wrong: STORM's effects are four clauses long,
@@ -17996,7 +18018,7 @@ ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
       for(var kk in ITEMS){ if(ITEMS[kk].use==='key'&&ITEMS[kk].door===G.nearDoor.id){ kName=ITEMS[kk].name; break; } }
       ctx.font=FS(TYPE.label); ctx.textAlign='center';
       ctx.fillStyle=haveKey?'#7fc4a0':'#ff8a76';
-      ctx.fillText(haveKey?('[E] UNLOCK '+G.nearDoor.name):(G.nearDoor.name+' - LOCKED'),dsc.x,dsc.y);
+      ctx.fillText(haveKey?('['+keyLabel('KeyE','E')+'] UNLOCK '+G.nearDoor.name):(G.nearDoor.name+' - LOCKED'),dsc.x,dsc.y);
       if(!haveKey&&kName){
         ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(255,192,74,.92)';
         ctx.fillText('needs the '+kName,dsc.x,dsc.y+LH(12));
@@ -18011,7 +18033,7 @@ ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
     if(ds3){
       ctx.font=FS(TYPE.label); ctx.textAlign='center';
       ctx.fillStyle='#ffc04a';
-      ctx.fillText('[E] REVIVE '+(G.nearDown.name||'PILLAGER')+
+      ctx.fillText('['+keyLabel('KeyE','E')+'] REVIVE '+(G.nearDown.name||'PILLAGER')+
         '  '+Math.max(0,G.nearDown.downT||0).toFixed(0)+'s',ds3.x,ds3.y);
       ctx.textAlign='left';
     }
@@ -18032,7 +18054,7 @@ ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
       // faded; the search cue itself never disappears, because hiding the
       // interaction while showing the corpse would be worse than the stutter.
       if(nc2.fallen&&(nc2.fellAt===undefined||G.t-nc2.fellAt>2.3)){
-        var _ft='[E] SEARCH '+nc2.fallen.toUpperCase();
+        var _ft='['+keyLabel('KeyE','E')+'] SEARCH '+nc2.fallen.toUpperCase();
         ctx.fillText(_ft,s.x,s.y);
         if(nc2.fallenCrew!==undefined&&CFG.raiderFeud!==0){
           var _fw=ctx.measureText(_ft).width;
@@ -18040,8 +18062,8 @@ ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
           ctx.fillRect(s.x-_fw/2-9,s.y-LH(9),4,LH(11));
         }
       }
-else if(nc2.tag) ctx.fillText('[E] SEARCH '+String(nc2.tag).toUpperCase(),s.x,s.y);
-      else ctx.fillText('[E] SEARCH '+(nc2.mercSrc?(String(nc2.mercSrc.name).toUpperCase()+"'S BAG"):((nc2.type==='safe'&&nc2.camp)?'STRONGBOX':nc2.type.toUpperCase())),s.x,s.y);
+else if(nc2.tag) ctx.fillText('['+keyLabel('KeyE','E')+'] SEARCH '+String(nc2.tag).toUpperCase(),s.x,s.y);
+      else ctx.fillText('['+keyLabel('KeyE','E')+'] SEARCH '+(nc2.mercSrc?(String(nc2.mercSrc.name).toUpperCase()+"'S BAG"):((nc2.type==='safe'&&nc2.camp)?'STRONGBOX':nc2.type.toUpperCase())),s.x,s.y);
       // His #23: item names in the world when you are near them. A single-item
       // crate that YOU dropped or a body someone emptied loot into is not a
       // mystery box, so it says what it holds; multi-item finds stay unsearched
@@ -18073,14 +18095,14 @@ else if(nc2.tag) ctx.fillText('[E] SEARCH '+String(nc2.tag).toUpperCase(),s.x,s.
       } else if(padZ.hold!==undefined&&padZ.hold!==null&&padZ.hold>0){
         ctx.fillStyle='#7fc4a0';
         if(!(G.active===padZ&&!p.downed&&dist(p,padZ)<padZ.r))
-          ctx.fillText('[E] EXTRACT - '+Math.ceil(padZ.hold)+'s',ps.x,ps.y);
+          ctx.fillText('['+keyLabel('KeyE','E')+'] EXTRACT - '+Math.ceil(padZ.hold)+'s',ps.x,ps.y);
         if(padZ.pullT>0) bar(ps.x-30,ps.y+LH(6),60,6,clamp(padZ.pullT/1.4,0,1),'#7fc4a0');
       } else if(padZ.beaconT!==null){
         ctx.fillStyle='#4de3d0';
         ctx.fillText('INBOUND '+Math.ceil(padZ.beaconT)+'s',ps.x,ps.y);
       } else {
 ctx.fillStyle='#4de3d0';
-        ctx.fillText('[E] CALL EXTRACTION',ps.x,ps.y);
+        ctx.fillText('['+keyLabel('KeyE','E')+'] CALL EXTRACTION',ps.x,ps.y);
         ctx.fillStyle=(P.credits>=10000)?'#7fc4a0':'#5a6a70';
         ctx.fillText('[N] SILENT DEPARTURE - 10,000c',ps.x,ps.y+LH(14));
         if(padZ.silT>0) bar(ps.x-30,ps.y+LH(20),60,6,clamp(padZ.silT/6,0,1),'#7fc4a0');
@@ -18490,7 +18512,7 @@ ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
   // the sidearm waiting on X, so the second gun is not a secret
   if(p.sec){
     ctx.font=FS(TYPE.micro); ctx.fillStyle='#7d8894';
-    ctx.fillText('[X] '+p.sec.name+'  '+p.secAmmo,W-16,by-LH(52));
+    ctx.fillText('['+keyLabel('KeyX','X')+'] '+p.sec.name+'  '+p.secAmmo,W-16,by-LH(52));
   }
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
   // A cost you cannot see is not a decision, it is the game feeling wrong for no stated
@@ -18577,7 +18599,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
       if(dist(_se,p)>120) continue;
       var _sp=w2s(_se.x,40,_se.y);
       ctx.font=FS(TYPE.label); ctx.textAlign='center'; ctx.fillStyle='#7fc4a0';
-      ctx.fillText('[E] GIVE '+ITEMS[_se.want].name.toUpperCase(),_sp.x,_sp.y);
+      ctx.fillText('['+keyLabel('KeyE','E')+'] GIVE '+ITEMS[_se.want].name.toUpperCase(),_sp.x,_sp.y);
       ctx.textAlign='left';
       break;
     }
@@ -18599,7 +18621,7 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     ctx.fillText(Math.max(0,Math.ceil(p.downT))+'s',W/2+124,H/2-9);
     ctx.font=FS(TYPE.label); ctx.fillStyle='#e8d5d2';
     ctx.fillText(p.revived?'Self-revive spent. Crawl or bleed out.':
-      '[F] SELF-REVIVE, one per raid',W/2,H/2+6);
+      '['+keyLabel('KeyF','F')+'] SELF-REVIVE, one per raid',W/2,H/2+6);
     // HIS RUN #44: "couldn't call the beacon when downed in the extraction
     // circle". Driven before touching anything: THE CALL WORKS FROM THE FLOOR
     // and has since v2.30, E passes through and 1.6 held seconds set the
@@ -18681,7 +18703,7 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     drawNoiseMarkers();
     drawLegend();
   }
-  if(G.bagOpen){ drawBag(); drawRaidContracts(); }
+  if(G.bagOpen) drawBag();
   // The item under the cursor while it is being carried. Drawn last so it rides
   // over both the panel and the bar, which is the only way a drag reads as
   // holding something rather than as a highlight moving about.
@@ -18812,8 +18834,9 @@ var LEGEND_MINI_PAD=[
   ['RS','crouch'],['B','roll'],
   ['RT','fire'],['LT','aim'],
   ['X','reload'],['Y','swap gun'],
-  ['D-PAD','hotbar'],['BACK','bag'],
-  ['A','search'],['START','map']
+  ['LB / RB','belt'],['D-RIGHT','use it'],
+  ['BACK','bag'],['A','search'],
+  ['D-UP','map'],['START','pause']
 ];
 var SOUNDKEY=[
   ['#ff8a80','robot moving'],['#c62828','robot firing'],
@@ -19396,7 +19419,7 @@ function drawTrade(){
   ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
   ctx.fillText('THE PEDDLER',x+14,cy);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783'; ctx.textAlign='right';
-  ctx.fillText('[E] walk away',x+PW-14,cy); ctx.textAlign='left';
+  ctx.fillText('['+keyLabel('KeyE','E')+'] walk away',x+PW-14,cy); ctx.textAlign='left';
   cy+=LH(9);
   ctx.strokeStyle='#3a3222'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.moveTo(x+14,cy); ctx.lineTo(x+PW-14,cy); ctx.stroke();
@@ -19882,55 +19905,6 @@ function bagStacks(){
     return String(ia.name||a.key)<String(ib.name||b.key)?-1:1;
   });
   return st;
-}
-// v6.75, his note. The open contracts, listed beside the bag, because a job you cannot
-// remember is a job you cannot work toward.
-function drawRaidContracts(){
-  var list=(P&&Array.isArray(P.contracts))?P.contracts:[];
-  if(!list.length) return;
-  var PW=LH(300), x=12, y=48;
-  ctx.font=FS(TYPE.label);
-  var lineH=LH(15), pad=LH(10);
-  // Measure first, so the panel is exactly as tall as what it holds.
-  var blocks=[];
-  for(var i=0;i<list.length;i++){
-    var c=list[i];
-    if(!c||c.desc===undefined) continue;
-    var words=String(c.desc).split(' '), lines=[], cur='';
-    for(var w=0;w<words.length;w++){
-      var t=cur?(cur+' '+words[w]):words[w];
-      if(ctx.measureText(t).width>PW-pad*2-LH(4)&&cur){ lines.push(cur); cur=words[w]; }
-      else cur=t;
-    }
-    if(cur) lines.push(cur);
-    if(lines.length>2) lines=[lines[0],lines[1]];
-    blocks.push({c:c,lines:lines});
-  }
-  if(!blocks.length) return;
-  var hh=LH(34)+pad;
-  for(var b=0;b<blocks.length;b++) hh+=blocks[b].lines.length*lineH+lineH+LH(7);
-  hh=Math.min(hh,H-70);
-  ctx.fillStyle='rgba(6,9,13,.96)'; ctx.fillRect(x,y,PW,hh);
-  ctx.strokeStyle='#3a4552'; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,PW-1,hh-1);
-  ctx.textAlign='left';
-  ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
-  ctx.fillText('YOUR CONTRACTS',x+pad,y+LH(21));
-  ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
-  ctx.fillText('progress is banked, and settles when you get out',x+pad,y+LH(32));
-  var yy=y+LH(34)+pad;
-  ctx.font=FS(TYPE.label);
-  for(var k=0;k<blocks.length;k++){
-    var C=blocks[k].c, L=blocks[k].lines;
-    if(yy+L.length*lineH+lineH>y+hh-LH(4)) break;
-    var TT=(typeof CTIER!=='undefined'&&CTIER[C.tier])?CTIER[C.tier]:null;
-    var done=(C.prog>=C.n);
-    ctx.fillStyle=done?'#7fc4a0':(TT?TT.c:'#cdd6dd');
-    for(var li=0;li<L.length;li++){ ctx.fillText(L[li],x+pad,yy); yy+=lineH; }
-    ctx.fillStyle=done?'#7fc4a0':'#8a96a1';
-    ctx.fillText((done?'READY TO CLAIM  ':'')+Math.min(C.prog||0,C.n)+' of '+C.n+
-                 '   $'+(C.reward||0).toLocaleString(),x+pad,yy);
-    yy+=lineH+LH(7);
-  }
 }
 function drawBag(){
   // THE GRID, v2.87. His notes, same afternoon: items should have "good
@@ -20761,7 +20735,8 @@ acts:{KeyE:['go up',function(){
   ];
   // The sub line is BUILT from the acts, so the keys on screen can never drift
   // from the keys that work; a one-act station keeps its authored flavour line.
-  var KEYNAMES={KeyE:'E',KeyR:'R',KeyF:'F',KeyT:'T'};
+  var KEYNAMES=padOn()?{KeyE:'A',KeyR:'X',KeyF:'Y',KeyT:'START'}
+                      :{KeyE:'E',KeyR:'R',KeyF:'F',KeyT:'T'};
 stations.forEach(function(st){
     var ks=Object.keys(st.acts);
     if(ks.length>1){
@@ -21117,7 +21092,7 @@ function drawHubHUD(ox,oy){
     var s=HB.near;
     ctx.textAlign='center';
     ctx.font=FS(TYPE.head); ctx.fillStyle=s.c;
-    ctx.fillText('[E]  '+s.label,W/2,H-58);
+    ctx.fillText('['+keyLabel('KeyE','E')+']  '+s.label,W/2,H-58);
     ctx.font=FS(TYPE.label); ctx.fillStyle='#8a96a1';
     ctx.fillText(typeof s.sub==='function'?s.sub():s.sub,W/2,H-42);
     ctx.textAlign='left';
