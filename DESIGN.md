@@ -26422,3 +26422,30 @@ and stage render.
 
 Not verified: nothing user visible; the one liner is a string swap on a panel proven by
 screenshot.
+
+## v7.10 - settings rows you can read without turning your head
+
+The menus sweep reached Settings. Two findings from the screenshot, both fixed:
+
+ROWS RAN THE FULL SCREEN. Label hard left, control hard right, 1920 pixels apart, so
+connecting "Machines" to its STANDARD button was a full screen of eye travel per row.
+The pane is now capped at 1080 and centered (which the 130% UI scale renders at 1404 on
+his screen), so a row reads as a row. Scoped to the settings modal alone; the station
+modal had its own layout pass at v6.9x and is untouched.
+
+THE PAGE EXPLAINED ITSELF TWICE. The pane explainer and the THE RAID section hint said
+the same sentence nearly word for word, one directly above the other. The section header
+keeps its label, the duplicate sentence is gone. Same fact once, v7.04 rule, applied to
+copy.
+
+A side effect worth having: with the pane capped, all eleven rows now fit on one screen
+without scrolling, Auto-export included, where before the list cut off mid row.
+
+Verified: parse PASS v7.10. Screenshot: capped centered column, duplicate gone, every row
+on screen at once. SEND PLAY DATA tab still shows its pane through the real tab control.
+Close button works. Four maps at seed 4242, entities exactly 86/87/58/72, drawErr null.
+Three endings with headline assertions, hub and stage render.
+
+Not verified: the settings page at UI text scale other than 120%; the cap is in CSS
+pixels so other scales shift the rendered width, and I have only screenshotted his
+current setting.
