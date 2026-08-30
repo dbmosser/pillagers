@@ -26964,3 +26964,30 @@ PROGRESS line read off the outcome screen. Four maps at seed 4242, entities exac
 Not verified: long run pacing (rewards will be reached faster now that deaths pay
 honestly; the ten reward board is finite and nothing resets, so the worst case is that
 he finishes the board sooner, which is the intended direction of this decision).
+
+## v7.28 - the board stops asking, and the beacon teaches (decisions 1, 2, 3)
+
+Three more of the delegated decisions land, two as records and one as copy.
+
+THE ROADMAP ROWS BECOME DECISIONS. The six open questions his exports have been printing
+under "Priorities, his order" are answered on the board itself now: hard maps stay hard
+(DONE, no code), the fold is recorded as already true in spirit (Level is the one
+number; proficiency only survives as the Net carried out stat card, which v6.41 already
+reduced it to), half-for-real points at v7.27, and the two that still need builds (crew
+revives, rig permanence) sit as NEXT with their decisions attached. His next export
+stops asking him questions he has already delegated.
+
+THE BEACON BANNER TEACHES THE MOVE. Decision two, first step. The measured fact from
+two separate exports: every enemy at the ring at touchdown is one the player's own walk
+woke, and none come from the siege. So while the ship is inbound the banner now says the
+thing the data says: "You do not have to wait here. Move, and come back for it."
+If his ringCrowd numbers do not move over the next exports, deeper coaching (or a
+mechanical nudge) is the follow up, and the board row says so.
+
+Verified: parse PASS v7.28. A staged called beacon drew the banner frame with no draw
+error. Four maps at seed 4242, entities exactly 86/87/58/72, drawErr null. Three endings
+with headline assertions, hub and stage render.
+
+Not verified: the teach line eyeballed on screen (the staged frame verified clean
+through drawErr but the screenshot landed on a later protocol state); whether the line
+actually changes his touchdown behaviour, which only his next exports can say.
