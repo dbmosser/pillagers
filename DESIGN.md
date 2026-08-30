@@ -26312,3 +26312,37 @@ Not verified: the header with a waypoint SET (the longer CLICK set waypoint / RI
 clear string, plus live intel text) at the same width; both branches use the same measured
 cursor so they cannot collide with the title, but the combined line could in principle
 crowd the right aligned weather block on a narrow window.
+
+## v7.06 - the other two subheads now earn their line
+
+Follow-through on v7.04. Re-screenshotting the extracted and abandoned outcome bodies
+(closing v7.04's own not-verified line) showed both clean of the deleted echoes, and
+showed the remaining flab: the death subhead carries killer, distance and contact tempo,
+while the other two just restated their own title. EXTRACTED over "EXTRACTION REACHED".
+ABANDONED over "RUN TERMINATED". Same fact, two phrasings, zero information.
+
+Each now carries a fact shown nowhere else on its screen:
+
+  extract   the contact story the game always knew and never told. T.firstContact null
+            on a walk-out means a GHOST RUN, and it now says so: "OUT CLEAN - NEVER
+            SPOTTED". If you were seen: "FIRST SEEN AT 34S, AND STILL WALKED OUT".
+  abandon   how close you came. T.closestExtract has tracked the closest approach to the
+            ring all run since forever, and it now surfaces at the exact moment of
+            regret: "CLOSEST YOU CAME TO EXTRACTION: 190M". Falls back to RUN TERMINATED
+            if the tracker never armed.
+
+Also learned, at probe cost: an abandon under 1.5 seconds with nothing done skips the
+outcome screen ON PURPOSE (the v0.45 instant-back-out guard) and returns straight to the
+hub. My earlier three-endings checks only asserted the outcome BUTTON existed, which a
+stale screen also satisfies. The sweep now asserts the headline text matches the outcome,
+which would have caught a stale div and now proves each branch actually repopulated.
+
+Verified: parse PASS v7.06. All four subhead branches driven through the real endRaid
+path and read back: extract clean, extract seen, abandon with tracker, dead unchanged.
+Four maps at seed 4242, entities exactly 86/87/58/72, drawErr null. Three endings with
+headline assertions through the outcome button. Hub steps and frames, stage renders.
+
+Not verified: T.firstContact on a REAL extract. The bot sim arms it via combat, but I
+have not watched a live human raid confirm first contact stamps at the moment of first
+being seen rather than first taking damage; if it stamps late, the extract subhead
+understates how early you were made.
