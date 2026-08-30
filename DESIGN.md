@@ -25873,3 +25873,31 @@ Not verified: what any of it LOOKS like. I have proven the geometry exists, is r
 and does not break pathing, and I have not seen a single one of these places on screen.
 Whether the town square reads as a town square is the whole point of the feature and is
 exactly what my measurements cannot tell him.
+
+## v6.93 - a closed extraction stops shouting, and a correction to my own check
+
+The standing list says "extraction point is open" should not sit mid-screen permanently.
+At v6.80 I grepped that phrase, found nothing, and reported the item already fixed. IT IS
+NOT. The game's own string is "EXTRACTION - OPEN", and I only saw it by looking at a
+screenshot taken for something else entirely. Grepping his paraphrase instead of the
+game's words is the same class of mistake as trusting a renderer without running it, and
+it is the second time this week a literal search has let me report a non-fix.
+
+What is actually wrong is narrower than the note suggests, which is worth saying plainly.
+The badge is anchored to each ring in WORLD space, not pinned to the screen, so it appeared
+centred only because the ring was. There is already a v6.57 rule that hides it while you
+stand in the active ring with the banner up.
+
+The real clutter is that a CLOSED ring advertises itself from anywhere on the map, with a
+second line underneath explaining that it will not help you. Three or four of those across
+one view is noise on a screen that already carries a compass to the nearest way out. A
+closed ring now says nothing until you are within 800 units, where it becomes a decision
+again. An open one still calls from any distance, because that is the thing you are
+looking for.
+
+Verified: parse PASS. Four maps at seed 4242, entity counts 86/87/58/72, drawErr null on
+all four, __hud clean. All three endings through the outcome screen. Hub frames and stage
+render.
+
+Not verified: the 800 unit threshold. It is a judgement about when a closed ring stops
+being information and starts being clutter, and I have picked it rather than measured it.
