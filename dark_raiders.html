@@ -1016,7 +1016,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.94';
+var VER='6.95';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9762,8 +9762,7 @@ function useMedical(){
 // decision. One wind-up at a time, and every entry path refuses while one runs.
 function startPrep(kind,key){
   G.player.prep={t:0,
-    max:(kind==='rig'?3.2
-        :kind==='armor'?(CFG.armorPrep===undefined?2:CFG.armorPrep)
+    max:(kind==='armor'?(CFG.armorPrep===undefined?2:CFG.armorPrep)
                        :(CFG.healPrep===undefined?1.5:CFG.healPrep)),
     kind:kind,key:key};
 }
@@ -9774,26 +9773,7 @@ function tickPrep(dt){
   if(p.prep.t<p.prep.max) return;
   var PR=p.prep; p.prep=null;
   var it=ITEMS[PR.key];
-  if(PR.kind==='rig'){
-    // The one you are wearing comes off into the bag, so the swap is reversible.
-    var oldR=armorById(p.rig||'none');
-    if(oldR.id!=='none'){
-      G.bag.push('rig_'+oldR.id);
-      P.rigs=(P.rigs||[]).filter(function(r){ return r!==oldR.id; });
-    }
-    var newId=(it&&it.rk)||'none';
-    p.rig=newId;
-    P.rig=newId;
-    P.rigs=P.rigs||[];
-    if(newId!=='none'&&P.rigs.indexOf(newId)<0) P.rigs.push(newId);
-    // A fresh rig arrives EMPTY. Points do not carry across, which is what makes
-    // swapping mid-firefight a mistake and swapping between them a decision.
-    var nr=armorById(newId);
-    p.armorCap=rigCeil(nr);
-    p.armor=0;
-    saveProfile();
-    say(nr.name+' on. '+p.armorCap+' armour, and it is empty.');
-  } else if(PR.kind==='armor'){
+  if(PR.kind==='armor'){
     var cap=armorCap();
     p.armor=Math.min(cap,p.armor+(it&&it.amt||0));
     say(it.name+' slotted. Armour '+Math.round(p.armor)+'.');
@@ -10340,15 +10320,7 @@ function useHot(){
       G.tel.heals++;
       return;
     }
-if(ait.use==='rig'){
-      if(P.rig===ait.rk){ say('Already wearing that rig.'); return; }
-      G.bag.splice(ix,1);
-      P.rig=ait.rk;
-      var _rga=armorById(ait.rk);
-      say(ait.name+' strapped on. Capacity '+_rga.cap+'.');
-      blip('pick');
-      return;
-    }
+
     if(ait.use==='stim'){
       var _sp3=G.player;
       if(_sp3.stam>=95){ say('Legs are fresh already.'); return; }
@@ -19067,17 +19039,6 @@ function itemRows(key){
     R.push(['RANGE',Math.round(W2.rng/10)+'m']);
     R.push(['ACCURACY',W2.spread<=0.03?'tight':(W2.spread<=0.07?'good':(W2.spread<=0.14?'loose':'scattergun'))]);
     R.push(['NOISE',W2.noise>=300?'very loud':(W2.noise>=200?'loud':(W2.noise>0?'quiet':'silent'))]);
-  } else if(it.use==='rig'&&it.rk){
-    var A2=armorById(it.rk);
-    R.push(['ARMOUR',A2.cap+' points']);
-    R.push(['ABSORBS',Math.round(A2.absorb*100)+'% of a hit']);
-    R.push(['SPEED',A2.spd===1?'no penalty':(Math.round((1-A2.spd)*100)+'% slower')]);
-    R.push(['NOISE',A2.noise===1?'no penalty':('+'+Math.round((A2.noise-1)*100)+'% louder')]);
-    var worn=myRig();
-    if(worn.id===it.rk) R.push(['STATUS','WORN NOW']);
-    else if(A2.cap>worn.cap) R.push(['VERSUS WORN','+'+(A2.cap-worn.cap)+' armour, '+
-      (A2.spd<worn.spd?('slower'):(A2.spd>worn.spd?'faster':'same speed'))]);
-    else if(A2.cap<worn.cap) R.push(['VERSUS WORN','-'+(worn.cap-A2.cap)+' armour']);
   } else if(it.use){
     R.push(['USE',String(it.use).toUpperCase()]);
   }
@@ -20324,7 +20285,7 @@ function drawBag(){
     ctx.fillText((PAD&&PAD.on)?'DPAD select   DPAD L drop'
       :('ARROWS move   Z drop one   drag to hotbar'
         +(isGun?'   ENTER equip   SHIFT+ENTER to back':'')
-        +((sit&&sit.use==='rig')?'   ENTER to put it on':'')),x+11,_ry+LH(3));
+        ),x+11,_ry+LH(3));
   } else {
     ctx.font=FS(TYPE.label); ctx.fillStyle='#6b7783';
     ctx.fillText('Bag is empty.',x+11,hintY);

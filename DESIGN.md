@@ -25935,3 +25935,32 @@ Not verified: the right-hand loadout column, which is now the emptiest region of
 screen when nothing is packed, and the left operator panel with its 180 pixel tail. Both
 are real content in the wrong proportions rather than dead space with a one-line cause, so
 they are a considered layout pass rather than a cell-size change, and I have not done it.
+
+## v6.95 - dead code out, second batch: the wear-a-rig-from-the-bag flow
+
+Verified before cutting rather than taken from the audit on trust: use:'rig' occurs
+exactly once in the whole file and it is a comment saying no such item exists, and
+startPrep has four callers, three saying 'heal' and one saying 'armor'. So five branches
+tested a condition no object in the game can satisfy:
+
+  the 3.2 second wind-up arm for kind 'rig' in startPrep
+  the completion block in tickPrep that swapped the worn rig with a bagged one
+  the belt-slot branch for using a rig out of the bag
+  the tooltip rows for a use:'rig' item, armour, absorb, speed, noise, versus-worn
+  the "ENTER to put it on" hint in the bag panel
+
+WHAT STAYED, deliberately: the shop's rig rows are the LIVE half of the system, kind:'rig'
+not use:'rig', and you still buy and wear rigs there. rig_light and rig_medium still drop
+from safes and caches as sellable valuables. And the categoriser that files a rig under
+armour for sorting purposes is harmless and kept.
+
+Verified: parse PASS. Four maps at seed 4242, entity counts 86/87/58/72, zero draw errors.
+All three endings through the outcome screen. Hub frames and stage render. THE LIVE
+SIBLINGS OF THE CUT CODE WERE EXERCISED, not just compiled: a plate on the belt still runs
+its prep and lands 55 armour, a bandage still runs its prep and heals, and the shop still
+renders 47 cells including the rig rows.
+
+Not verified: the remaining audit items are now the fixture hooks that reference dead
+symbols (__tickFx reading G.tracers among them) and a handful of data-table entries. The
+hooks live in tools/mkfixture.ps1 rather than the game, so they cannot affect him and are
+lowest priority of everything open.
