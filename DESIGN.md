@@ -26740,3 +26740,26 @@ Not verified: a drag from the bag grid to the belt at the NEW distance (the hand
 untouched and the cells are recorded at draw, so only the trip got shorter); the belt
 drag with a very tall bag open where the panel could overlap the belt row on small
 windows.
+
+## v7.22 - the conditions panel scales with its own text
+
+Closing v7.18's not verified line (the 200 percent rung) found a real one: the panel box
+was 214 RAW pixels wide while every string inside scales with the HUD, so at the top
+rung the time and weather header clipped at the box edge and the seven contract lines
+wrapped into a tower tall enough to collide with the corner stack. The box now scales
+with the type (LH(165)), keeping the wrap ratio identical at every rung. At the default
+scale it comes out slightly wider than before, which long contract lines needed anyway.
+
+Also closed this tick, all through real paths: v7.19's healing message (a real F press
+on a bandage says "Bandage is healing you, 6 sec" with the queue live), v7.21's bag to
+belt drag at the new distance (an item pressed in the docked bag, moved, and released on
+key 6 lands there), and v7.15's hire tab (screenshot: every portrait carries its name).
+
+Verified: parse PASS v7.22. Real = keypresses walked the ladder to 200 percent in a live
+raid, message per press, no draw errors at any rung. Four maps at seed 4242, entities
+exactly 86/87/58/72, drawErr null. Three endings with headline assertions, hub and stage
+render. Fixture scale reset to auto afterwards.
+
+Not verified: the panel at 200 percent AFTER this fix was not re-screenshotted (the
+width maths is deterministic and the wrap code unchanged); and rungs between default and
+maximum on every panel simultaneously.
