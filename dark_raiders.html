@@ -1053,7 +1053,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.29';
+var VER='7.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23249,57 +23249,13 @@ try{ renderFreeKit(); }catch(_fk){}
   // someone to buy a thing they cannot afford is noise.
   (function(){
     var rl=document.getElementById('readyline'); if(!rl) return;
+    // v7.30, his order: the concept of rigs is gone. Everyone ascends with the same
+    // standard armour, so this line has exactly one state to describe.
     var RG=myRig(), cap=rigCeil(RG);
-    if(cap<=0){
-      var cost=null;
-      for(var si=0;si<SHOP.length;si++){
-        var so=SHOP[si];
-        if(so.kind==='rig'&&P.rep>=so.rep&&(P.rigs||[]).indexOf(so.k)<0){
-          if(cost===null||so.price<cost) cost=so.price;
-        }
-      }
-      // WHEN HE CANNOT AFFORD ONE, SAY SO, v3.28. The branch above names the
-      // cheapest rig only when he can already pay for it; below that threshold it
-      // appended nothing at all, so the one screen between the stash and the
-      // surface told a broke player he was in trouble and not one thing about it.
-      // MY FIRST VERSION OF THIS WAS BUILT ON A PREMISE I HAD NOT CHECKED, and
-      // the test killed it: I assumed reputation was what kept him rigless, since
-      // his profile reads rep 0 after 35 runs. It is not. The light rig is
-      // {price:900, rep:0}, so armour has never been rep gated at all, he has
-      // held more than 900c throughout, and this screen has been telling him the
-      // price the whole time. The rep branch I wrote could never fire, because
-      // P.rep < 0 is not a thing. It is deleted rather than left in looking
-      // useful, which is the same defect as a stale comment.
-      // What survives is the case that IS reachable and was genuinely silent.
-      var _anyRig=null;
-      for(var sj=0;sj<SHOP.length;sj++){
-        var sq=SHOP[sj];
-        if(sq.kind!=='rig'||(P.rigs||[]).indexOf(sq.k)>=0) continue;
-        if(P.rep<sq.rep) continue;
-        if(_anyRig===null||sq.price<_anyRig) _anyRig=sq.price;
-      }
-      var _fix='';
-      if(cost!==null&&P.credits>=cost){
-        _fix=' The cheapest rig you can wear is '+'$'+cost.toLocaleString()+' in REQUISITION.';
-      } else if(_anyRig!==null){
-        _fix=' You have the standing for one, but it costs '+_anyRig.toLocaleString()+
-          'c and you hold '+'$'+(P.credits||0).toLocaleString()+'.';
-      } else {
-        // Anything else, and there is at least one state I constructed in a test
-        // without showing it can actually happen: owning a rig while wearing
-        // none. Rather than write a branch for a case I have not proven is
-        // reachable, which is exactly the mistake the rep branch above was, this
-        // says the one thing that is true in every remaining state.
-        _fix=' REQUISITION is where rigs come from.';
-      }
-      rl.style.borderColor='#8a5a4a'; rl.style.color='#e0a08a';
-      rl.innerHTML='<b>NO RIG.</b> You ascend with 0 armour, and a plate has nothing to slot into.'+_fix;
-    } else {
-      rl.style.borderColor='var(--steel-hi)'; rl.style.color='var(--ash)';
-      rl.innerHTML='You ascend with <b>'+cap+' armour</b>, absorbing '+
-        Math.round(RG.absorb*100)+'% of every hit until it is gone. It comes back '+
-        'for every raid, and Armour Plates are how you put it back on up there.';
-    }
+    rl.style.borderColor='var(--steel-hi)'; rl.style.color='var(--ash)';
+    rl.innerHTML='You ascend with <b>'+cap+' armour</b>, absorbing '+
+      Math.round(RG.absorb*100)+'% of every hit until it is gone. It comes back '+
+      'for every raid, and Armour Plates are how you put it back on up there.';
   })();
   var sl=document.getElementById('stashgrid'); if(sl) sl.innerHTML='';
   // DEFENCE IN DEPTH, v1.69. loadProfile has filtered unknown stash and armoury keys
@@ -23628,8 +23584,7 @@ try{ renderFreeKit(); }catch(_fk){}
     var _o=SHOP[_q];
     if(!_o.rep) continue;
     var _own=false;
-    if(_o.kind==='rig') _own=(P.rigs||[]).indexOf(_o.k)>=0;
-    else if(_o.kind==='wep') _own=P.weapons.indexOf(_o.k)>=0;
+    if(_o.kind==='wep') _own=P.weapons.indexOf(_o.k)>=0;
     else if(_o.kind==='pack') _own=P.pack>=_o.lvl;
     if(_own) continue;
     if(P.rep>=_o.rep) continue;
@@ -24009,27 +23964,14 @@ function renderShop(){
     var nm=document.createElement('div'); nm.className='nm';
     var locked=P.rep<o.rep;
     var owned=false,label='';
-    if(o.kind==='rig'){
-      var RG=armorById(o.k);
-      label=RG.name+'  ('+RG.cap+' armour, '+Math.round((1-RG.spd)*100)+'% slower, '+
-        Math.round((RG.noise-1)*100)+'% louder)';
-      owned=(P.rigs||[]).indexOf(o.k)>=0;
-    }
-    else if(o.kind==='wep'){ label=WEAPONS[o.k].name; owned=P.weapons.indexOf(o.k)>=0; }
+    if(o.kind==='wep'){ label=WEAPONS[o.k].name; owned=P.weapons.indexOf(o.k)>=0; }
     else if(o.kind==='pack'){ label='Backpack Tier '+(o.lvl+1)+' (-'+Math.round((1-PACKPEN[o.lvl])*100)+'% carry penalty)'; owned=P.pack>=o.lvl; }
     else label=ITEMS[o.k].name;
     nm.textContent=label+(locked?'  [XP '+o.rep+']':'');
     if(locked) nm.style.color='var(--ash)';
     var vl=document.createElement('div'); vl.className='vl'; vl.textContent='$'+o.price.toLocaleString()+'';
     var b=document.createElement('button');
-    if(owned&&o.kind==='rig'){
-      if(P.rig===o.k){ b.textContent='Worn'; b.disabled=true; }
-      else { b.textContent='Wear'; b.onclick=function(){
-        if((P.rigs||[]).indexOf(o.k)<0) return;
-        P.rig=o.k; saveProfile(); renderShop(); renderHub();
-      }; }
-    }
-    else if(owned){ b.textContent='Owned'; b.disabled=true; }
+    if(owned){ b.textContent='Owned'; b.disabled=true; }
     else {
       b.textContent='Buy';
       b.disabled=locked||P.credits<o.price||(o.kind==='pack'&&P.pack!==o.lvl-1);
@@ -24047,11 +23989,10 @@ function renderShop(){
         if(P.rep<o.rep) return;
         if(o.kind==='pack'&&P.pack!==o.lvl-1) return;
         if(o.kind==='wep'&&P.weapons.indexOf(o.k)>=0) return;
-        if(o.kind==='rig'&&(P.rigs||[]).indexOf(o.k)>=0) return;
+
         P.credits-=o.price;
         if(o.kind==='wep'){ P.weapons.push(o.k); P.equipped=o.k; }
         else if(o.kind==='pack'){ P.pack=o.lvl; }
-        else if(o.kind==='rig'){ P.rigs=P.rigs||[]; P.rigs.push(o.k); P.rig=o.k; }
         else P.stash.push(o.k);
         saveProfile(); renderShop(); renderHub();
       };
@@ -25252,25 +25193,21 @@ function renderStage(prefill){
     var label='',owned=false,sub='';
     if(o.kind==='wep'){ label=WEAPONS[o.k].name; owned=(P.weapons||[]).indexOf(o.k)>=0;
       sub='DMG '+WEAPONS[o.k].dmg+' \u00b7 MAG '+(WEAPONS[o.k].mag||'-'); }
-    else if(o.kind==='rig'){ var A=armorById(o.k); label=A.name; owned=(P.rigs||[]).indexOf(o.k)>=0;
-      sub=A.cap+' armour \u00b7 absorbs '+Math.round(A.absorb*100)+'%'; }
     else if(o.kind==='pack'){ label='Backpack Tier '+(o.lvl+1); owned=(P.pack||0)>=o.lvl;
       sub=Math.round((1-PACKPEN[o.lvl])*100)+'% less carry penalty'; }
     else { label=ITEMS[o.k].name; sub=String(ITEMS[o.k].use||'').toUpperCase(); }
     var need=(o.kind==='pack'&&(P.pack||0)!==o.lvl-1);
     var can=P.credits>=o.price&&!owned&&!need;
-    var right=owned?(o.kind==='rig'?'Wear':'Owned')
-             :(need?('Need T'+o.lvl):(can?'Buy':null));
+    var right=owned?'Owned':(need?('Need T'+o.lvl):(can?'Buy':null));
     B.appendChild(stageRow(label,
       sub+'  \u00b7  '+'$'+o.price.toLocaleString()+''+((!can&&!owned&&!need)?('  (you hold '+'$'+P.credits.toLocaleString()+')'):''),
       right,
       function(){
-        if(owned){ if(o.kind==='rig'){ P.rig=o.k; saveProfile(); renderStage(); } return; }
+        if(owned) return;
         if(need||P.credits<o.price) return;
         P.credits-=o.price;
         if(o.kind==='wep'){ P.weapons.push(o.k); P.equipped=o.k; }
         else if(o.kind==='pack'){ P.pack=o.lvl; }
-        else if(o.kind==='rig'){ P.rigs=P.rigs||[]; P.rigs.push(o.k); P.rig=o.k; }
         else { P.stash.push(o.k); if(stageKit().length<DEPLOY_SLOTS) P.kit.push(o.k); }
         saveProfile(); renderStage();
       },owned?'var(--gain)':'var(--amber)'));

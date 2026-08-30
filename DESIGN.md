@@ -27027,3 +27027,33 @@ headline assertions, hub and stage render.
 Not verified: an extracting reviver under fire (the firefight exemption path is shared
 with the loot-state reviver and unchanged, but the combination was not staged); how
 often the 260 radius fires in real play, which his revivedBy telemetry will show.
+
+## v7.30 - the concept of rigs is gone
+
+His order, five words: "the concept of rigs should be gone." The v5.77 collapse already
+made every operator wear the same standard armour under the hood (myRig returns the
+standard unconditionally), but four surfaces still spoke rig, every one of them guarding
+SHOP data that has sold no rigs for months:
+
+  the stage NO RIG warning, an unreachable state complete with shopping advice for a
+  counter that stocks none; the stage buy list's rig label, Wear button and purchase
+  arm; the trader's rig row, Worn/Wear buttons and purchase arm; and the next-unlock
+  scanner's rig ownership check.
+
+All deleted, not parked as dead branches. The stage ready line now has exactly one
+state to describe and says it: you ascend with 60 armour, it absorbs half of every hit,
+it comes back every raid, and plates are how you top it up. The three salvage items
+that used to be wearable rigs were already renamed to plain valuables (Ballistic
+Weave, Plated Panel, Breacher Shell) and are untouched. The bot sim keeps its internal
+simRig dial so no benchmark baseline moves; that is a measurement instrument, not a
+player concept. Raiders keep their internal armour variety for the same reason.
+
+Verified: parse PASS v7.30. Through real paths: the trader lists no rig and no Wear
+button anywhere in its text; the stage ready line reads the single sentence; in raid
+the player wears the standard at cap 60 with plates slotting as before. Four maps at
+seed 4242, entities exactly 86/87/58/72, drawErr null. Three endings with headline
+assertions, hub and stage render.
+
+Not verified: a profile that still owns old rig purchases (P.rigs survives as inert
+saved data, read by nothing; his profile bought none as far as the recorder shows); the
+loadout preset snap still stores a rig field that now round-trips to nothing.
