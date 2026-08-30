@@ -24703,3 +24703,84 @@ armoury line and prints the mainframe line second from last.
 Not verified: how the outcome screen looks with a long contract list and a full mercenary
 settlement at the same time. I moved one line to the bottom of a ledger whose length
 varies a lot, and I have only seen it at the short end.
+
+## v6.69 - gold guns, two new weapons, and the discovery that gun quality was unreachable
+
+His notes: a gold rarity that is actually gold and hits harder, reloads and shoots
+faster, findable only; a magnum that is a beefy Scav Pistol; a sniper that deals a ton of
+damage and shoots very slowly.
+
+THE BIG FIND, and it came out of testing his gold tier rather than looking for it. The
+first probe rolled 3000 gun pickups and got ZERO guns carrying any quality at all. The
+chain, checked rather than assumed:
+
+  grantLoot rolls a quality instance, then
+    if(autoEquipOn() && upgrade)  equip it
+    else                          G.bag.push(key)     <- the roll is DISCARDED
+  equipFromBag, in its own comment: "a bagged gun carries no quality of its own, so it
+    comes back at field grade"
+
+The auto-equip branch is therefore the ONLY route by which Worn, Tuned, Pristine or Gold
+can ever reach your hands, and CFG.autoEquip has been 0 since the feature shipped, which
+v3.26 already recorded as "a real feature shipped switched off". Then at v6.62 I removed
+the settings row on his note that it was not needed, which took away the only way to turn
+it on. A fresh profile could not reach the quality system at all: every gun in the game
+was exactly average, forever.
+
+His own runs show Worn guns because his profile still carries the flag he set before that
+row disappeared. Everyone he sends the itch link to would have seen a game with no gun
+quality in it whatsoever, and the gold tier he just asked for would have been unreachable
+content on the day it shipped.
+
+autoEquipOn now returns true for a human. It only ever fires on a STRICT upgrade, a
+higher tier or the same tier in better condition, so it never takes a better gun out of
+your hands. THE SIM STILL READS THE DIAL, exactly as v3.26 arranged, so every measurement
+in the back catalogue keeps meaning what it said.
+
+GOLD. Two in a hundred. The only tier that touches rof and reload, because he named both,
+and the only one that repaints the gun. Measured against a plain Scav Pistol:
+
+  damage   19    -> 27.6        shot gap  290ms -> 226ms
+  magazine 12    -> 16          reload   1400ms -> 1008ms
+  spread   0.055 -> 0.034       tint      pale  -> gold
+
+tint carries further than its name suggests: it colours the tracer, the muzzle flash, the
+belt swatch and the gun icon, so a gold gun reads gold everywhere it appears.
+
+Distribution measured over 4000 rolls: worn 32.0, field 40.6, tuned 17.7, pristine 7.6,
+gold 2.1, against an intended 32/41/18/7/2. Weights were re-cut to sum to 100 rather than
+appended, so the quality roll moves for every seed and gun-quality fingerprints from
+before v6.69 are not comparable to ones after.
+
+FIELD ONLY IS STRUCTURAL, not a new gate, and I verified it rather than claiming it: the
+counter sells pistol, smg, rifle and dmr and nothing else, and GUNQ is read in exactly one
+function, which only runs on a gun found in the world. Gold cannot be bought or crafted
+because there is no code path that could express it.
+
+THE MAGNUM: damage 46 against the pistol's 19, so two body shots instead of five, paid
+for with half the magazine, a trigger twice as slow and a report loud enough to bring the
+room. THE LONGSHOT: 115 damage at 900 range, five rounds, a 3.2 second reload and 1.6
+seconds between shots, which is by a wide margin the slowest trigger in the game; Scuttle
+at 780ms held that record before. Both were added to WTIER, because a gun missing from
+that table defaults to 0 and ranks below bare hands, which is exactly what happened to
+the Whisper and the Lance at v5.93. Both were seeded into loot tables and confirmed
+present in the world: 12 Magnums and 18 Longshots across 2415 containers on four maps at
+three seeds.
+
+MY MISTAKE THIS BUILD: I bumped VER with an inline PowerShell replace and a Set-Content,
+which broke the patch rule twice, put double quotes inside an inline double-quoted string
+and stamped a UTF-8 BOM onto the front of the file. The BOM is removed. The line ending
+normalisation that came with it is invisible to git, which stores LF either way, and the
+diff is only the intended edits.
+
+Verified: parse PASS. Four maps at seed 4242, counts 86/87/58/72 and 246/193/152/216,
+drawErr null. All three endings through the outcome screen and back to the hub. Hub
+frames and stage render. Quality distribution and gold stats measured as above. Both new
+guns confirmed findable and absent from the shop.
+
+Not verified: how the Longshot actually feels to fire, and whether 1.6 seconds between
+shots is punishing or dead. That is a judgement only he can make, and the number is a
+guess dressed up as a measurement until he shoots something with it. Also not verified:
+whether auto-equip being on is welcome in play. It only fires on a strict upgrade, but it
+is a behaviour change he did not ask for, arrived at because the alternative was shipping
+his gold tier inert. If it annoys him the fix is one line.
