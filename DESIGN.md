@@ -26280,3 +26280,35 @@ outcome screen button. Hub steps and frames, stage renders.
 Not verified: the EXTRACTED and ABANDONED variants of the outcome body after this edit. The
 deleted lines sat in the death branch, so those screens should be untouched, but I have
 only re-read them in code, not re-screenshotted them.
+
+## v7.05 - the sector map header was printing through itself
+
+Second half of the eyeball-what-was-never-screenshotted tick. First ever screenshot of the
+M overlay at 1920x1080, and the header row read:
+
+  SECTOR MAIble positions unknowCLICK to set a waypoint
+
+Three strings, three FIXED x offsets: the title at ox, the intel note at ox+110, the
+waypoint hint at ox+300. The fonts scale with the window and the offsets do not, so on any
+reasonably wide screen the title is wider than 110 pixels and the three print through each
+other. He plays at 1920. Every session, every raid, every time he taps M, the first line
+of the map has been soup.
+
+The header now walks a cursor: each segment starts where ctx.measureText says the previous
+one ended, plus a 28 pixel gap. The weather block stays right aligned and untouched.
+
+The rest of the overlay passed the eyeball: extraction ring labelled in cyan, HOT GROUND
+circle with its warning, locked rooms called out, surveyed percentage bottom left with its
+one line explainer, dim names for unsurveyed landmarks. The TRADER and POWER labels sit
+close mid map but that is the label dodger stacking two genuinely adjacent stations, not a
+collision.
+
+Verified: parse PASS v7.05. Screenshot of the fixed header, all three segments separated.
+Four maps at seed 4242, entities exactly 86/87/58/72, drawErr null, and the map overlay
+DRAWN on all four maps as part of the sweep since that is the code that changed. Three
+endings through the outcome button, hub steps and frames, stage renders.
+
+Not verified: the header with a waypoint SET (the longer CLICK set waypoint / RIGHT-CLICK
+clear string, plus live intel text) at the same width; both branches use the same measured
+cursor so they cannot collide with the title, but the combined line could in principle
+crowd the right aligned weather block on a narrow window.

@@ -1016,7 +1016,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.04';
+var VER='7.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20375,11 +20375,15 @@ function drawMapOverlay(){
   ctx.lineWidth=1;
   ctx.font=FS(TYPE.label); ctx.fillStyle='#ffc04a';
   ctx.fillText('SECTOR MAP',ox,oy-10);
+  // fixed offsets collided with the scaled font; walk a cursor instead
+  var _hx=ox+ctx.measureText('SECTOR MAP').width+28;
   MAP_FOG={sc:sc,ox:ox,oy:oy};
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#9aa8d0';
-  ctx.fillText(G.intel?'elites and keys are live intel':'hostile positions unknown',ox+110,oy-10);
+  var _hsub=G.intel?'elites and keys are live intel':'hostile positions unknown';
+  ctx.fillText(_hsub,_hx,oy-10);
+  _hx+=ctx.measureText(_hsub).width+28;
   ctx.fillStyle='#ffc04a';
-  ctx.fillText(G.waypoint?'CLICK set waypoint  ·  RIGHT-CLICK clear':'CLICK to set a waypoint',ox+300,oy-10);
+  ctx.fillText(G.waypoint?'CLICK set waypoint  ·  RIGHT-CLICK clear':'CLICK to set a waypoint',_hx,oy-10);
   // conditions belong on the map, since they change how far you can see
   ctx.textAlign='right';
   ctx.fillStyle=wx().id==='clear'?'#9aa8d0':'#4de3d0';
