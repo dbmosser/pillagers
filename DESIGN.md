@@ -26067,3 +26067,20 @@ __tickFx driven twice without throwing, and the archive picker confirmed still r
 
 Not verified: nothing outstanding from the audit. What remains open on his list is feature
 work, not cleanup.
+
+## v6.98 addendum - all six landmarks looked at, not just measured
+
+Closing the "not verified: what they look like" lines from v6.92 and v6.96 by eye, at
+1920x1080, standing in each one:
+
+  TOWN SQUARE      reads as a square: walled, monument centre, stalls at the rim
+  FLOODED PLAZA    pillars standing in the drowned village's water strip
+  COLLAPSED TOWER  a broken walled ring around the quarry strongbox
+  CARGO YARD       parallel container corridors across the scrap line
+  RELIEF STATION   absorbed into the contractor camp's grid; nothing broken, though it
+                   reads as more camp rather than as a distinct clinic
+  CHECKPOINT       slab rows across the screening plant approach
+
+No visual faults found, so no code change ships with this note. The one soft observation
+is the relief station: the camp was already dense, so nine more pieces disappear into it.
+If any landmark assignment gets revisited, that is the weakest of the six.
