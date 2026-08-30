@@ -25245,3 +25245,46 @@ Not verified: I measured overlap geometrically, by comparing each pair's drawn p
 and measured width every frame, rather than by looking at the pixels. Two labels whose
 boxes do not intersect can still read badly if they are close and the eye groups them, and
 that is a judgement only he can make on screen.
+
+## v6.78 - plates come in fives, and the belt is deliberately exempt
+
+His note: "armor plates should come in stacks of 5 and if player puts 5 on his belt and
+wants to put more in his backpack, that's fine".
+
+I started building a belt that capped at five and he corrected me mid-build: "THE BELT
+SHOWS EVERY PLATE YOU OWN -- USE THAT SYSTEM, I LIKE THAT." The cap was removed before it
+shipped. The belt stays an aggregate showing everything you carry, which is what it always
+did and what he wants.
+
+WHAT ACTUALLY CHANGED IS THE TWO GRIDS. Nothing in this game had a stack size: an item was
+one flat run of keys and every grid drew the whole pile as a single cell with a total on
+it, so eleven plates looked exactly like two. A stack is now a real declared limit, and
+the stash grid and the backpack grid both obey it while the belt ignores it on his
+instruction.
+
+FIVE IS ONLY ON THE PLATE, because that is what he asked for and a stack size is a
+per-item balance call rather than a global rule. Every other item has no declared limit
+and behaves exactly as before, which was verified rather than assumed.
+
+Measured through the real grids, not by reading the function:
+
+  backpack, 13 plates      3 stacks        (5, 5, 3)
+  backpack, 6 plates       2 stacks
+  backpack, 5 plates       1 stack
+  backpack, 7 bandages     1 stack         unlimited, unchanged
+  backpack, 12 plates and 9 bandages   3 plate stacks, 1 bandage stack
+  stash grid, 13 plates    cells reading 5, 5 and 3
+  belt, 13 plates          one slot reading 13
+
+A FALSE ALARM I CAUGHT: the first belt reading showed no plate slot at all. That was a
+stale hotAssign left on the profile by an earlier test overriding the index the plate slot
+sits at, not a defect. Cleared it and the slot was there with all 13.
+
+Verified: parse PASS. Four maps at seed 4242 with the bag open, entity counts 86/87/58/72,
+drawErr null, __hud clean. All three endings through the outcome screen and back to the
+hub. Hub frames and stage renders. Every stacking case measured as above.
+
+Not verified: dragging a partial stack between grids with a mouse. The grouping is proven
+correct and the existing drag verbs speak stacks already, but I drove the grids by
+rendering them rather than by pointer, so a drag that splits a five into a three and a two
+is untested.

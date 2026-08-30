@@ -982,7 +982,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.77';
+var VER='6.78';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1281,7 +1281,10 @@ stim:{name:'Stim Injector',val:180,wt:1,r:'uncommon',c:'#7fe0d0',use:'stim'},
   rig_medium:{name:'Plated Panel',val:1280,wt:3,r:'rare',c:'#6fa0d8'},
   rig_heavy:{name:'Breacher Shell',val:3120,wt:4,r:'elite',c:'#5a88c8'},
   ammobox:{name:'Ammo Box',val:90,wt:1,r:'common',c:'#c2a35e',use:'ammo',amt:40},
-  plate:{name:'Armor Plate',val:340,wt:3,r:'uncommon',c:'#5aa9e6',use:'armor',amt:55},
+  // v6.78, his note: plates come in fives. stackN is the most that fits in one stack in
+  // the stash grid and the backpack grid. The BELT is deliberately exempt: he asked for
+  // it to keep showing every plate he owns.
+  plate:{stackN:5,name:'Armor Plate',val:340,wt:3,r:'uncommon',c:'#5aa9e6',use:'armor',amt:55},
   gun_pistol:{name:'Scav Pistol (field)',val:300,wt:3,r:'common',c:'#ffd48a',use:'gun',gk:'pistol'},
   gun_smg:{name:'Compact SMG (field)',val:900,wt:4,r:'uncommon',c:'#ffe0a0',use:'gun',gk:'smg'},
   gun_rifle:{name:'Auto Rifle (field)',val:1500,wt:5,r:'rare',c:'#ffcf7a',use:'gun',gk:'rifle'},
@@ -19859,10 +19862,16 @@ function iconImgHTML(key,S){
   S=S||22;
   return '<img class="ic" src="'+itemIconURL(key,S)+'" style="width:'+S+'px;height:'+S+'px">';
 }
+// v6.78: how many of a thing fit in one stack. Undeclared means unlimited, which is every
+// item except the plate, so nothing else changes. Read by the backpack and stash grids;
+// the belt does not use it, on his instruction.
+function stackN(k){ var it=ITEMS[k]; return (it&&it.stackN)?it.stackN:99999; }
 function bagStacks(){
   var st=[],ix={};
   for(var i=0;i<G.bag.length;i++){ var k=G.bag[i];
-    if(ix[k]===undefined){ ix[k]=st.length; st.push({key:k,idxs:[i]}); }
+    // A full stack starts a new one rather than growing past its limit. ix[k] tracks the
+    // stack currently being filled for that key.
+    if(ix[k]===undefined||st[ix[k]].idxs.length>=stackN(k)){ ix[k]=st.length; st.push({key:k,idxs:[i]}); }
     else st[ix[k]].idxs.push(i);
   }
   st.sort(function(a,b){
@@ -24645,12 +24654,21 @@ function renderStage(prefill){
     var free=counts[k]-(taken[k]||0);
     if(free<=0) return;
     any=true;
-    var cell=invCell(k,free,{from:'stash',verb:'click: carry one',
-      act:function(nn){
-        for(var q=0;q<nn&&q<free;q++) P.kit.push(k);
-        saveProfile(); try{ sfx('pick'); }catch(e){} renderStage();
-      }});
-    if(cell) S.appendChild(cell);
+    // v6.78: a pile larger than one stack draws as several stacks, so "five to a stack"
+    // is something you can see rather than a rule stated somewhere.
+    var per=stackN(k), left=free;
+    while(left>0){
+      var thisCell=Math.min(per,left);
+      (function(cnt){
+        var cell=invCell(k,cnt,{from:'stash',verb:'click: carry one',
+          act:function(nn){
+            for(var q=0;q<nn&&q<cnt;q++) P.kit.push(k);
+            saveProfile(); try{ sfx('pick'); }catch(e){} renderStage();
+          }});
+        if(cell) S.appendChild(cell);
+      })(thisCell);
+      left-=thisCell;
+    }
   });
   if(!any) S.innerHTML='<div class="cellempty">Nothing here you can carry. Buy something below, or go up light.</div>';
 
