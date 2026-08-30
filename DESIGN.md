@@ -26938,3 +26938,29 @@ Not verified: each hero cut eyeballed close up on the floor (the figure is 30 pi
 a wide shot; the geometry is shared with the crowd cuts which drew correctly at v7.25);
 the pigtails migration against his real profile (the rule is three lines and runs at
 load; his save has cosHat pigtails only if he ever wore them).
+
+## v7.27 - dying pays half, for real (decision six)
+
+First of the five delegated decisions to ship. The stated rule since the progress track
+was built: "dying still pays half your progress." v5.70 measured the truth at about 2
+percent, and its own comment explains why: the 90 point walk-out bonus and the terms
+multiplier were extract-gated BEFORE the halving line ran, so dying halved only the
+scraps that were left. The half was real and it was applied to almost nothing.
+
+Now the formula is computed in full for every outcome - the walk-out 90, the haul, the
+kills, doors, caches and the terms multiplier - and the outcome multiplier at the end is
+the only thing dying changes: half for dead, a quarter for backing out, exactly as the
+outcome screen has always claimed. The terms multiplier halving with the rest is
+deliberate: hazard terms paid on progress even in death is the same "the run happened"
+principle the rule states.
+
+Measured, same staged stats both arms (three item haul, six containers, two sentries,
+one door): extract +210, dead +105. Exactly half, from two percent.
+
+Verified: parse PASS v7.27. The A/B above through the real endRaid path with the
+PROGRESS line read off the outcome screen. Four maps at seed 4242, entities exactly
+86/87/58/72, drawErr null. Three endings with headline assertions, hub and stage render.
+
+Not verified: long run pacing (rewards will be reached faster now that deaths pay
+honestly; the ten reward board is finite and nothing resets, so the worst case is that
+he finishes the board sooner, which is the intended direction of this decision).
