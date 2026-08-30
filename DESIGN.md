@@ -27443,6 +27443,50 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.48 - THE COMMENT AND CSS SWEEP, AND A HARDER PIN
+
+Section 3's second half plus Section 4, closing the audit worklist except the
+decision-gated U-items.
+
+Code and CSS: _shMove is deleted from the Superhot activator - _shAny already
+scans every key including WASD and the arrows, and the pad clause repeats in
+_shAct, so the expression was provably behaviour-identical without it (the
+block is !G.sim, so no batch number can move). The dead .outcome::before pair
+went together - the frame declaration in the shared rule AND the cancel two
+rules later, because removing only the cancel would have resurrected a
+full-page frame behind the outcome card; the .ocwin child still draws its own
+frame and was verified to. The redundant #gamble_line selector member is gone
+(the element carries class msub). var(--paper) - undefined since birth,
+silently inheriting --bone - now names --bone, a zero-pixel change; whether a
+cream --paper was intended is his call, on the board. And .tpane's
+justify-content gained safe center with a plain-center fallback, so a future
+pane taller than its modal scrolls instead of clipping its top off.
+
+Six lying comments now tell the truth: the Superhot header says stop-dead
+rather than crawl; the v5.77 "left as a dead branch" note no longer defends a
+branch that was later deleted; the glow-branch comment stops citing bodyStash
+(deleted v5.50) and cites the real guard, P.body; the 0.5 comment describes the
+v7.27 half-of-everything formula instead of the 2-percent era; the tpane
+comment stops crediting openTrader with a display:flex it never sets; and the
+minimap YOUR BODY header admits the bm.mine write is unreachable and names the
+Q27 ruling that keeps the chain zeroed rather than deleted.
+
+The fixture pin got three teeth (audit items 39-41): __pinDefaults now grants
+the smg into P2.weapons before equipping it - without ownership the equip
+silently degraded to a per-seed random starter, so "pinned" sims were running
+Tackers and Sputters; it clears P2.buzz so a probe's doses cannot leak into a
+measurement; and it deletes P2.uiScale and resets P2.menuZoom to the 1.3
+default, closing the v7.18 HUD-key persistence hole the CFG-only audit was
+blind to. All three were read back after pinning, per the probe-setters rule.
+SECTOR_MEAS baselines are unaffected: they pin equipped='fists' explicitly on
+top of __pinDefaults, tonight's mile baseline included.
+
+Not verified: the Superhot freeze itself was not re-driven (the live branch
+runs on the rAF loop the fixture cannot step deterministically) - the deletion
+is proven by expression subsumption, not by play; and safe center's fallback
+behaviour was reasoned from the spec, not exercised in an engine without
+safe-position support.
+
 ## v7.47 - THE MILE'S MISSING KEYS (HOTFIX)
 
 The 200-seed COLD MILE baseline died at seed 7234 and the autopsy found a real

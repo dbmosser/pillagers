@@ -338,16 +338,16 @@
   .toprow{ display:flex; justify-content:space-between; align-items:flex-end; }
   .credits{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:22px; color:var(--amber); text-align:right; }
   .credits small{ font-size:10.5px; color:var(--ash); letter-spacing:.28em; display:block; font-weight:400; }
-  /* All three overlays were a flat black wash with content floating loose on it
-     and no frame at all, which is the least like the look being aimed at that
-     anything in the file could be. Each now gets a proper framed window. */
-  .outcome::before,.pausebox::before,.modal::before{
+  /* The pause and modal overlays were a flat black wash with content floating
+     loose on them and no frame at all. Each now gets a proper framed window;
+     the outcome screen frames its .ocwin child instead. */
+  .pausebox::before,.modal::before{
     content:''; position:absolute; z-index:-1; border-radius:6px;
     background:linear-gradient(180deg,var(--win-top),var(--win-bot));
     border:2px solid var(--steel-hi); box-shadow:inset 0 0 0 2px var(--steel); }
   .outcome{ position:absolute; inset:0; background:rgba(8,12,32,.92);
     display:none; flex-direction:column; align-items:center; justify-content:center; z-index:40; }
-    .outcome::before{ content:none; }
+
   .ocwin{ display:flex; flex-direction:column; align-items:center; position:relative;
     padding:30px 52px 26px; border-radius:6px; max-width:880px; max-height:86vh;
     overflow-y:auto; background:linear-gradient(180deg,var(--win-top),var(--win-bot));
@@ -406,10 +406,11 @@
   #askmodal .askrow{ display:flex; gap:10px; align-items:stretch; }
   #askmodal .askrow button{ font-size:14px; letter-spacing:.10em; padding:13px 16px; }
   .modal .tpane{ min-height:0; overflow-y:auto; }
-  /* A shown pane is display:flex from openTrader, but nothing told it to be a COLUMN or
-     to take the height available, so its children sat at their natural size and the rest
-     of the modal was empty. */
-  .modal .tpane{ flex:1; display:flex; flex-direction:column; justify-content:center; }
+  /* openTrader and openSettings CLEAR inline display on the shown pane and this
+     rule supplies the flex; only openOps sets 'flex' inline. The pane is a
+     COLUMN taking the height available; safe center scrolls instead of clipping
+     if a pane ever outgrows the modal. */
+  .modal .tpane{ flex:1; display:flex; flex-direction:column; justify-content:center; justify-content:safe center; }
   /* A pane that genuinely has a screenful of content pushes back to the top by itself,
      because justify-content only has room to act when the content is shorter than the
      box. So this centres the shop and does nothing at all to the stash. */
@@ -429,7 +430,7 @@
   #termsmodal .plist{ flex:0 1 auto; }
   #gamblemodal{ align-items:center; justify-content:center; }
   #gamblemodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(620px,calc(100% - 28px)); transform:translate(-50%,-50%); }
-  #gamblemodal .msub, #gamblemodal .plist, #gamblemodal #gamble_line{ max-width:1060px; width:100%; }
+  #gamblemodal .msub, #gamblemodal .plist{ max-width:1060px; width:100%; }
   #gamblemodal .plist{ flex:0 1 auto; }
   #barmodal{ align-items:center; justify-content:center; }
   #barmodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(640px,calc(100% - 28px)); transform:translate(-50%,-50%); }
@@ -464,7 +465,7 @@
           padding:8px 10px; border-radius:3px; min-width:0; }
   .scard .sk{ font-size:11px; letter-spacing:.10em; text-transform:uppercase;
               color:var(--ash); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .scard .sv{ font-size:23px; line-height:1.15; font-weight:700; color:var(--paper);
+  .scard .sv{ font-size:23px; line-height:1.15; font-weight:700; color:var(--bone);
               font-variant-numeric:tabular-nums; margin-top:2px;
               overflow-wrap:anywhere; }
   /* v6.80: a card holding a NAME rather than a number. The grid is sized for figures, so
@@ -1053,7 +1054,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.47';
+var VER='7.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13881,14 +13882,10 @@ function spForRun(rec){
   sp+=(K.sentry||0)*6+(K.crawler||0)*4+(K.raider||0)*15+(K.snitch||0)*8+(K.warden||0)*60;
   sp+=(rec.doorsOpened||0)*40;
   sp+=(rec.caches||0)*15;
-  // THE 0.5 IS REAL AND IT IS NOT WHERE THE SCORE COMES FROM, measured v5.70.
-  // The 90 for extracting and the 35-per-1,000 of haul are both gone before this
-  // line runs, so it halves the small remainder. Driven on all four maps: 94 SP
-  // extracted against 2 dead on the same seed, which is 2 percent. A busy raid
-  // worked through the formula, 25 containers and a 6,000 haul and ten machines,
-  // is 423 against 61, about 15 percent. The stated aim above this was that
-  // losing should not erase the fact that the run happened, and at these numbers
-  // it does. Whether to pay more on a death is his call and is on the board.
+  // THE 0.5 CHANGED MEANING AT v7.27: it now halves the FULL formula - the 90
+  // for extracting and the per-1,000 haul rate included - so a death pays half
+  // of what the same run pays walking out (measured 210 vs 105 on one seed).
+  // The 2-percent era an older version of this comment described ended there.
   sp=Math.round(sp*tmul);
   if(rec.outcome==='dead') sp=Math.round(sp*0.5);
   else if(rec.outcome==='abandon') sp=Math.round(sp*0.25);
@@ -14165,8 +14162,7 @@ silentExit:T.silentExit||0,
   // SPEC 9.7: the rig goes with everything else you were carrying. It is the
   // same rule the guns live under and it is what makes the Breacher Plate a bet
   // rather than a free upgrade.
-  // v5.77: rigs are gone as a concept, so a death cannot strip one. Left as a
-  // dead branch rather than deleted so the summary counter below keeps its shape.
+  // v5.77: rigs are gone as a concept, so a death cannot strip one.
   // HAZARD PAY. Only on an extraction: signing for worse conditions and then
   // dying under them is simply a worse day, which is what makes it a bet rather
   // than a difficulty slider.
@@ -15951,9 +15947,8 @@ if(ct.cache&&ct.tag&&!ct.strong){
       wc.fillStyle=bgr; wc.beginPath(); wc.arc(ct.x,ct.y-lift,54,0,6.2832); wc.fill();
       wc.restore();
       // The YOUR BODY label was deleted at v5.57. Nothing can carry ct.mine any
-      // more: bodyStash returns null before it does anything and P.body is
-      // cleared on every raid start, so this branch has been unreachable since
-      // v5.28.
+      // more: P.body is cleared on every raid start and nothing recreates it,
+      // so this branch has been unreachable since v5.28.
     }
   }
 }
@@ -20469,8 +20464,9 @@ function drawMapOverlay(){
     ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
     ctx.fillText('STRONGBOX',sbx,sby-15); ctx.textAlign='left';
   }
-  // YOUR BODY. Marked from the moment you deploy, because the entire point is
-  // that you can plan a route to it.
+  // YOUR BODY. The bm.mine write is unreachable (P.body is cleared on every
+  // raid start and nothing recreates it), so this loop marks nothing; it stays
+  // per the Q27 ruling that the body chain is zeroed rather than deleted.
   for(i=0;i<G.containers.length;i++){
     var bm=G.containers[i];
     if(!bm.mine||bm.opened) continue;
@@ -21512,15 +21508,13 @@ function loop(ts){
     return;
   }
   if(state!=='raid'||!G||G.sim) return;
-  // v6.73, his note. Time crawls while you are still and runs while you act.
+  // v6.73, his note; rewritten v7.23: time stops DEAD unless an input is live -
+  // any held key, the mouse button, pad input, or an action already in flight.
   if(CFG.superhot&&G.player&&!G.over&&!G.paused){
     var _shp=G.player;
-    var _shMove=!!(keys['KeyW']||keys['KeyA']||keys['KeyS']||keys['KeyD']||
-                   keys['ArrowUp']||keys['ArrowDown']||keys['ArrowLeft']||keys['ArrowRight']||
-                   (typeof PAD!=='undefined'&&PAD.on&&(PAD.mx||PAD.my)));
     var _shAny=false;
     for(var _shk in keys){ if(keys[_shk]){ _shAny=true; break; } }
-    var _shAct=_shAny||_shMove||(typeof mouse!=='undefined'&&mouse&&mouse.down)||
+    var _shAct=_shAny||(typeof mouse!=='undefined'&&mouse&&mouse.down)||
                (typeof PAD!=='undefined'&&PAD.on&&(PAD.mx||PAD.my||PAD.aiming))||
                (_shp.roll>0)||(_shp.reloading>0)||(!!_shp.prep);
     if(!_shAct) dt=0;

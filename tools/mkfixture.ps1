@@ -406,6 +406,13 @@ var want={simGreed:14,simCrouch:0,simSell:0,simPed:0,simSidearm:1,simSwapBack:1,
   for(var k in want){ if(C2[k]!==want[k]){ changed[k]=[C2[k],want[k]]; C2[k]=want[k]; } }
   P2.mapIx=(mapIx===undefined)?1:mapIx;
   P2.body=null; P2.equipped='smg'; P2.wear=P2.wear||{}; P2.wear['smg']=0;
+  // v7.48, audit items 39-41: the pin was blind to three kinds of state.
+  // Without owning the smg the equip silently degraded to a per-seed random
+  // starter; buzz doses from a probe survived into measurements; and the
+  // v7.18 HUD-size keys persist P.uiScale/P.menuZoom that no pin covered.
+  P2.weapons=P2.weapons||[]; if(P2.weapons.indexOf('smg')<0) P2.weapons.push('smg');
+  P2.buzz=[];
+  delete P2.uiScale; P2.menuZoom=1.3;
   return {pinned:true, mapIx:P2.mapIx, changed:changed};
 };
 // And a sim raid that can be STEPPED from outside, so a diagnostic can sample
