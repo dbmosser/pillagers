@@ -27443,6 +27443,28 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.53 - NOBODY STANDS ON ANYBODY
+
+His live report, verbatim: "people in the undercrof are standing on top of each
+other." Two stackers found by reading the crowd builder. The station-figure
+placement had a fallback that took the preferred spot even when it was ON
+another figure - all five candidates fail, and the body lands regardless, the
+same deterministic stack every visit. And the hired man (v7.40) follows the
+player with no personal space, so he parks inside whoever stands near you.
+
+Two fixes, belt and braces: the fallback now walks rings outward from the post
+until it finds a genuinely free spot, and the crowd update gained one gentle
+separation sweep - any pair closer than 24 units shares a push apart, a few
+pixels a frame, bounds-clamped, with the pace and talk offsets riding on top
+untouched. A stack from ANY cause, including ones I have not thought of,
+dissolves in under a second.
+
+Not verified: the fix was proven by forcing a perfect stack (distance zero) and
+watching it dissolve to 24 units in 90 frames, and the built crowd reads 28
+minimum spacing - but I could not reproduce HIS exact stack first (the builder
+rolls fresh huddles per visit), so which of the two stackers he actually saw is
+inferred, not observed.
+
 ## v7.52 - ONE BOT, ONE FAMILY, ONE BOARD
 
 A comparability check caught the sector board mixing eras, and both rows are

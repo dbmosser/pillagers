@@ -433,6 +433,11 @@ window.__simRaidEnd=function(){
 // with the McNemar arithmetic attached. Start it, poll __pairedPoll(), read the
 // result when done:true. MessageChannel and never setTimeout, because a hidden tab
 // throttles setTimeout to one callback a minute and these batches run unattended.
+// HAZARD, found 2026-08-30: pass BOTH arms' dials EXPLICITLY. With dialsA={}
+// arm A of every pair after the first inherits arm B's dials from the previous
+// pair (the loop writes dialsB last and dialsA={} writes nothing back), so a
+// lone-dial B arm silently turns the whole batch into B-vs-B minus one raid.
+// {} vs {} baselines are unaffected (nothing is ever written).
 window.__pairedBg=function(seeds,dialsA,dialsB,keepRows){
   // keepRows stores {seed, a:{outcome,killer,haul,tod}, b:{...}} per seed. Off by
   // default because 320 full rows is memory nobody reads unless the question is

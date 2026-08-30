@@ -1054,7 +1054,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.52';
+var VER='7.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20787,6 +20787,16 @@ function buildHubCrowd(stations,walls){
     var pick=null;
     for(var ci=0;ci<cands.length&&!pick;ci++)
       if(spotFree(cands[ci].x,cands[ci].y,0,crowd,WALLS,[])) pick=cands[ci];
+    if(!pick){
+      // v7.53: the old fallback took the preferred spot even when it was ON
+      // another figure, which is where the deterministic stack came from. Walk
+      // rings outward until something is genuinely free.
+      for(var fr=52;fr<=160&&!pick;fr+=18)
+        for(var fa=0;fa<10&&!pick;fa++){
+          var fx=st.x+Math.cos(fa*0.628)*fr, fy=st.y+Math.sin(fa*0.628)*fr*0.7;
+          if(spotFree(fx,fy,0,crowd,WALLS,[])) pick={x:fx,y:fy};
+        }
+    }
     if(!pick) pick={x:clamp(st.x+side*40,34,HUBW-34), y:clamp(st.y+26,34,HUBH-34)};
     crowd.push({x:pick.x, y:pick.y,
                 face:side>0?3.14:0, ident:nx.id, coat:nx.id.coat, look:nx.look, t0:i*1.7, talk:0});
@@ -21205,6 +21215,22 @@ function drawHubWorld(dt){
       // ones in a group shift their stance now and then so a conversation reads as a
       // conversation rather than as furniture facing each other.
       var _cw=HB.crowd||[];
+      // v7.53, his live report: nobody stands on anybody. Any pair closer than
+      // 24 units shares a push apart, a few pixels a frame, so a stack melts in
+      // under a second and the hired man cannot merge with a huddle he follows
+      // you into. Bounds-clamped; the pace/talk offsets ride on top untouched.
+      for(var _si2=0;_si2<_cw.length;_si2++){
+        for(var _sj2=_si2+1;_sj2<_cw.length;_sj2++){
+          var _A2=_cw[_si2],_B2=_cw[_sj2];
+          var _sx2=_B2.x-_A2.x,_sy2=_B2.y-_A2.y,_sd2=Math.hypot(_sx2,_sy2);
+          if(_sd2<24){
+            if(_sd2<0.001){ _sx2=Math.cos(_si2*2.4); _sy2=Math.sin(_si2*2.4); _sd2=1; }
+            var _pu2=Math.min(1.4,(24-_sd2)*0.5);
+            _A2.x=clamp(_A2.x-_sx2/_sd2*_pu2,34,HUBW-34); _A2.y=clamp(_A2.y-_sy2/_sd2*_pu2,34,HUBH-34);
+            _B2.x=clamp(_B2.x+_sx2/_sd2*_pu2,34,HUBW-34); _B2.y=clamp(_B2.y+_sy2/_sd2*_pu2,34,HUBH-34);
+          }
+        }
+      }
       for(var _ci=0;_ci<_cw.length;_ci++){
         var _c=_cw[_ci];
         // v6.64, his note: they move. A worker paces a short beat between two points,
