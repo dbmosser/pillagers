@@ -23878,3 +23878,47 @@ I did not chase it. The in-raid figure was checked at one build and one skin, no
 168. The conditions panel is still HEADED "CONDITIONS" while its rows are now TIME OF
 DAY and WEATHER, which I judged correct because that box also carries contracts, but he
 asked for the word to change and may have meant the header too.
+
+## v6.47 - THE GUNS YOU OWN SIT IN THE STASH LIKE EVERYTHING ELSE
+
+The half of his note that v6.43 left open: "guns should be normal inventory items like
+everything else." A gun ITEM lying in the stash already behaved like any other item. A
+gun you already OWNED lived in the armoury, which is not a place, and could only be
+reached through the picker. So the guns were the only things you own that you could not
+see.
+
+They are cells now, drawn from the armoury into the grid under ALL and GUNS, with an
+amber border and a small 1 or 2 badge on whichever two are currently in your hands.
+Drag one onto a gun slot and it moves there. The equipped pair are marked rather than
+hidden, because seeing where a gun went is the whole reason to look at the row.
+
+They carry a key of the form "own:<id>" so nothing downstream can mistake one for a
+stash item and try to splice it out of a list it was never in, and the stash grid
+refuses one dropped back onto it with a reason rather than eating the gesture.
+
+THE TAB COUNTS HAD TO FOLLOW. The strip said ALL 3 above seven visible cells and GUNS 1
+above five, which is the exact class of fault this whole run of notes started with. They
+count the armoury now: ALL 7, GUNS 5.
+
+AND MY SEVENTH MEASUREMENT FAULT OF THE SESSION, which is worth writing down because it
+is the same one my own notes already warn about. The drag reported dead: no ghost, no
+change. The cell was grabbable and the pointer landed on a SELL BUTTON instead, because
+the browser window was still 800x450 from an earlier capture while I had only forced the
+CANVAS to 1920x1080. At that size the stash grid is 74px tall and my new cells wrapped
+outside it onto the button underneath. At 1080p the same drag works first time. The rule
+is already in my notes as "verify every layout at 1920x1080" and I still spent four
+calls on it.
+
+Verified: parse PASS at v6.47; four owned guns rendered as cells alongside stash items
+under both ALL and GUNS; an owned Marksman Rifle dragged onto gun 1 moves there with the
+armoury list and the stash both unchanged; the tab counts read back as ALL 7 and GUNS 5
+against seven visible cells; four maps 86/87/58/72 entities and, at seed 4242,
+246/193/152/216 containers; all three endings through the outcome screen to a drawn hub;
+hub, renderStage and the export builder; pin audit clean; captured at 1080p.
+
+Not verified: an owned gun cell has no right-click menu, because the menu is built
+around ITEMS entries and an owned gun is not one; right-clicking it does nothing rather
+than showing a menu, which is a gap against his "all items should be right clickable"
+note. The five field-only guns that have no gun_ item still fall back to a text label
+rather than an icon. The "3 held" count beside STASH still counts only stash items and
+not the armoury, which I left because those guns are not salvage you can sell.

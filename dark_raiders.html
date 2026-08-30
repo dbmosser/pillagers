@@ -959,7 +959,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.46';
+var VER='6.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22053,6 +22053,17 @@ function wireGunRow(host){
       saveProfile(); renderHub(); try{ renderStage(); }catch(e){}
     };
     dropzone(el,function(key){
+      // A gun you already own, dragged from the stash row. Nothing to buy, nothing to
+      // splice: it just moves into the slot.
+      if(String(key).indexOf('own:')===0){
+        var ogk=String(key).slice(4);
+        if(!WEAPONS[ogk]){ say2('That gun is gone.'); try{ sfx('clank'); }catch(e){} return; }
+        if(gi===0){ if((P.equippedSec||'none')===ogk) P.equippedSec='none'; P.equipped=ogk; }
+        else      { if((P.equipped||'fists')===ogk) P.equipped='fists';     P.equippedSec=ogk; }
+        saveProfile(); try{ sfx('pick'); }catch(e){}
+        renderHub(); try{ renderStage(); }catch(e){}
+        return;
+      }
       var it=ITEMS[key];
       if(!it||it.use!=='gun'||!it.gk||!WEAPONS[it.gk]){
         say2('Only a gun goes in gun 1 or gun 2.'); try{ sfx('clank'); }catch(e){}
@@ -22194,7 +22205,8 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
       var r2=document.createElement('div'); r2.className='invtabs'; r2.style.padding='0';
       TABS.forEach(function(T){
         var cnt=keysArr.filter(function(k){ return T[0]==='all'||tabOf(k)===T[0]; })
-                       .reduce(function(a,k){ return a+counts[k]; },0);
+                       .reduce(function(a,k){ return a+counts[k]; },0)
+                 +((T[0]==='all'||T[0]==='gun')?(P.weapons||[]).length:0);
         var d=document.createElement('div');
         d.className='invtab'+(P.stashTab===T[0]?' on':'');
         d.style.fontSize='8px';
@@ -22247,6 +22259,7 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
   }
   wireGunRow(document.getElementById('hotplanwrap'));
   dropzone(document.getElementById('stashgrid'),function(key,from){
+    if(from==='weapons'){ say2('That gun is already yours. Drop it on gun 1 or gun 2.'); return; }
     if(from!=='kit') return;
     var ixk=P.kit.indexOf(key);
     if(ixk>=0){ P.kit.splice(ixk,1); saveProfile(); try{ sfx('pick'); }catch(e){} renderHub(); }
@@ -22387,7 +22400,38 @@ document.getElementById('reptop').textContent=P.rep.toLocaleString();
     };
     sl.appendChild(cell);
   });
-  if(!shown.length&&sl){
+  // THE ARMOURY, SHOWN, v6.47. Only under ALL and GUNS, because a gun is not salvage
+  // and has no business under PARTS. The equipped pair are marked rather than hidden:
+  // seeing where a gun went is the whole reason to look at this row.
+  if(sl&&(P.stashTab==='all'||P.stashTab==='gun')){
+    var _own=(P.weapons||[]).slice();
+    for(var _oi=0;_oi<_own.length;_oi++){
+      (function(gk){
+        var W=WEAPONS[gk]; if(!W) return;
+        var _ik='gun_'+gk;
+        var inSlot=(P.equipped===gk)?1:((P.equippedSec===gk)?2:0);
+        var oc=document.createElement('div');
+        oc.className='cell c-'+((ITEMS[_ik]&&ITEMS[_ik].r)||'uncommon');
+        oc.style.borderColor=inSlot?'var(--amber)':'';
+        oc.innerHTML=(ITEMS[_ik]?iconImgHTML(_ik,30):('<span style="font-size:9px">'+escHtml(W.name.slice(0,6))+'</span>'))+
+          (inSlot?('<span class="cnt" style="background:var(--amber);color:#0d1435">'+inSlot+'</span>'):'');
+        oc.title=W.name+'\nYours. Drag onto gun 1 or gun 2, or click a gun slot to choose it.'+
+          (inSlot?('\nCurrently gun '+inSlot+'.'):'');
+        grabbable(oc,'own:'+gk,'weapons',W.name);
+        oc.addEventListener('mouseenter',function(){
+          if(!detail) return;
+          detail.innerHTML='<b class="r-'+((ITEMS[_ik]&&ITEMS[_ik].r)||'uncommon')+'">'+escHtml(W.name)+'</b>'+
+            '  &middot;  <span style="color:var(--ash)">yours</span>'+
+            (inSlot?('  &middot;  <span style="color:var(--amber)">GUN '+inSlot+'</span>'):'')+
+            '  &middot;  '+((W.dmg*(W.pellets||1))+' DMG')+
+            '  &middot;  '+Math.round(W.rng/10)+'M';
+        });
+        oc.addEventListener('mouseleave',function(){ if(typeof detailIdle==="function") detailIdle(); });
+        sl.appendChild(oc);
+      })(_own[_oi]);
+    }
+  }
+  if(!shown.length&&sl&&!(P.stashTab==='gun'&&(P.weapons||[]).length)){
     var em2=document.createElement('div'); em2.className='cellempty';
     em2.style.cssText='grid-column:1/-1;padding:14px;text-align:center';
     em2.textContent=(P.stashTab==='all')?'Nothing in the stash. Ascend, pillage, extract.':'Nothing under this tab.';
