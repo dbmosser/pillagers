@@ -27443,6 +27443,38 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.49 - THE AUDIT CLOSES
+
+The last three unblocked items from the 13-agent audit, and with them the whole
+CONFIRMED worklist is shipped except the decision-gated U-items that wait on
+his rulings.
+
+The shop's "Locked until reputation X" line has NEVER rendered - the fragment
+was a statement-level unary-plus expression, evaluated to NaN and thrown away.
+It now attaches to the detail html under the same locked flag the grid cells
+use. Every SHOP entry is rep:0 today, so nothing visibly changes until a rep
+gate ever returns - but the line will actually exist when one does.
+
+The wardrobe figure finally honours the HAIRSTYLE slot: all eight cuts used to
+draw the same 17px hair shape, so buying a haircut changed a swatch and nothing
+else. The figure now scales its hair from cosSwatch's own per-cut height map -
+long 35px down to shaved 6px on the 46x40 head, mohawk pulling its sides in.
+Verified live: long and shaved render distinct computed heights.
+
+And the bar's copy catches up with the v7.35 cap: "no cutoff" and "no ceiling"
+were both false the moment the AT YOUR LIMIT lock shipped at ten doses, and
+"It stacks" had no noun. The counter line now reads "No tab, no credit. Every
+dose stacks on the last, and the bar cuts you off at ten." and the Blotter's
+description ends "up to the ten your body can hold."
+
+Not verified: the locked line's render was verified by code path only (no
+rep-gated entry exists to show it on screen); the mohawk inset and the middle
+six cuts were not individually screenshotted, only the two extremes measured;
+and the U-items still stand open on the board: superhotSlow's label, the
+P.body chain, the buzz overlay under Superhot, pad-only belt assign, the
+'Body Armour' name, compact HUD countdowns, the roadmap DONE row, and whether
+--paper was meant to be cream.
+
 ## v7.48 - THE COMMENT AND CSS SWEEP, AND A HARDER PIN
 
 Section 3's second half plus Section 4, closing the audit worklist except the
