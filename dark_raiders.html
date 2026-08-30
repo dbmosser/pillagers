@@ -236,14 +236,19 @@
     flex:1.5; min-width:0; border:1px solid var(--steel-hi); border-radius:3px; }
   .vcell{ position:relative; aspect-ratio:1/1; border:1px solid var(--steel-hi);
     border-radius:3px; background:rgba(0,0,0,.32); display:flex; align-items:center;
+    flex-direction:column; gap:3px; padding:6px 4px;
     justify-content:center; cursor:pointer; transition:all .1s; }
+  .vcell .vlbl{ font-size:9.5px; line-height:1.15; text-align:center; color:var(--ash);
+    width:100%; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2;
+    -webkit-box-orient:vertical; letter-spacing:.02em; }
+  .vcell.on .vlbl{ color:var(--bone); }
   .vcell:hover{ background:rgba(255,192,74,.10); }
   .vcell.on{ border-color:var(--amber); background:rgba(255,192,74,.15);
     box-shadow:0 0 0 1px var(--amber) inset; }
   .vcell.locked{ opacity:.42; }
-  .vcell .vp{ position:absolute; right:3px; bottom:0; font-size:10.5px; font-weight:700;
+  .vcell .vp{ position:absolute; right:3px; top:1px; font-size:10.5px; font-weight:700;
     color:var(--amber); text-shadow:0 1px 2px #000; }
-  .vcell .vlk{ position:absolute; right:3px; top:1px; font-size:10.5px; color:var(--ash); }
+  .vcell .vlk{ position:absolute; left:3px; top:1px; font-size:10.5px; color:var(--ash); }
   /* The cream panel. Inverted against the whole rest of the UI on purpose: in his
      screenshots it is the one bright thing on screen and it is where the decision
      and the money are. */
@@ -1034,7 +1039,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.14';
+var VER='7.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21177,10 +21182,10 @@ function askKit(){
   var kitN=(P.kit||[]).length;
   var qq=document.getElementById('askq'), ss=document.getElementById('asksub');
   if(qq) qq.textContent='What are you taking up?';
-  if(ss) ss.innerHTML='<b>Your loadout</b> is '+(kitN?(kitN+' item'+(kitN===1?'':'s')+' from the stash'):'nothing packed')+
-    ', and everything on your belt. Lose the run and you lose it.<br><br>'+
-    '<b>The freebie kit</b> is '+escHtml(freeKitText())+' Extract with it and it is yours; '+
-    'die and your own loadout is packed again, untouched.';
+  if(ss) ss.innerHTML='<b>Your loadout</b>: '+
+    (kitN?('the '+kitN+' item'+(kitN===1?'':'s')+' you packed, plus everything on your belt.')
+         :'whatever is on your belt.')+
+    '<br><br><b>The freebie kit</b>: '+escHtml(freeKitText());
   ASKYES=function(){ P.freeKit=0; saveProfile(); openLift(); };
   ASKALT=function(){
     P.freeKit=1; P.kitBeforeFree=null; saveProfile();
@@ -22367,6 +22372,7 @@ function renderMercGrid(){
       var cell=document.createElement('div');
       cell.className='vcell'+(i===P._mercSel?' on':'')+((cost===null)?' locked':'');
       cell.innerHTML=mercImgHTML(ID.id,30)+
+        '<div class="vlbl">'+escHtml(ID.tag)+'</div>'+
         (P.merc===ID.id?'<span class="vp" style="color:var(--coolant)">HIRED</span>':
           (cost===null?'':'<span class="vp">'+cost.toLocaleString()+'</span>'));
       cell.title=ID.tag;
@@ -23898,6 +23904,7 @@ function renderShopGrid(){
     var cell=document.createElement('div');
     cell.className='vcell'+(i===P._shopSel?' on':'')+(locked?' locked':'');
     cell.innerHTML=iconImgHTML(shopEntryIcon(o),28)+
+      '<div class="vlbl">'+escHtml(shopEntryLabel(o))+'</div>'+
       '<span class="vp">'+o.price.toLocaleString()+'</span>'+
       (locked?'<span class="vlk">\u25cf</span>':'');
     cell.title=shopEntryLabel(o)+(locked?('  (needs XP '+o.rep+')'):'');
@@ -24111,7 +24118,7 @@ function renderCraftGrid(){
     }
     var cell=document.createElement('div');
     cell.className='vcell'+(i===sel?' on':'')+((btn&&btn.disabled)?' locked':'');
-    cell.innerHTML=iconImgHTML(icon,28);
+    cell.innerHTML=iconImgHTML(icon,28)+'<div class="vlbl">'+escHtml(label)+'</div>';
     cell.title=label;
     cell.onclick=function(){ P._craftSel=i; renderCraftGrid(); };
     g.appendChild(cell);
@@ -25051,8 +25058,7 @@ document.getElementById('stageback').onclick=function(){
 var FREEKIT=['bandage','bandage','frag','plate'];
 var FREEKIT_GUN='pistol';
 function freeKitText(){
-  return 'A Scav Pistol, two Bandages, one Frag Charge and one Armour Plate. Nothing '+
-         'of your own goes up: no guns, no items, nothing on a key.';
+  return 'A Scav Pistol, two Bandages, one Frag Charge and one Armour Plate.';
 }
 function renderFreeKit(){
   var on=!!P.freeKit;

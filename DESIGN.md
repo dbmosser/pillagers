@@ -26569,3 +26569,32 @@ parked at the lift, stage renders.
 Not verified: the chip during a rack build or gun repair specifically (both spend through
 saveProfile, so they inherit the fix by construction, but I read back only the gamble
 path); and Wirt's window with the full eight row log.
+
+## v7.15 + v7.16 - names on every tile, and the kit card in plain words
+
+v7.15, NAMES ON EVERY VENDOR TILE. The shop, hire and craft grids were icon only tiles
+with the name hidden in a mouse hover tooltip: invisible on a controller, invisible until
+you already knew to hover. Every tile now carries its name under the icon, two line clamp,
+price badge moved top right and the lock dot top left so nothing collides. One CSS block,
+three renderers.
+
+v7.16, HIS TWO NOTES, LIVE, MID SESSION. First: "in the freebie kit screen, the
+descriptions are trash 'your loadout is nothing packed and everything on your belt' --
+wow really". The card glued fragments into non grammar whenever nothing was packed.
+Second, while I was rewriting it: "you don't need to explain the mechanic, just say 'the
+freebie kit is xyz'". So the card now states what each option IS and stops:
+
+  Your loadout: whatever is on your belt.
+  The freebie kit: A Scav Pistol, two Bandages, one Frag Charge and one Armour Plate.
+
+The lose-it/keep-it rules came off the card, and freeKitText dropped its trailing
+lecture, which also shortens the stage screen freebie box that reuses the same line.
+
+Verified: parse PASS v7.16. Kit card screenshot through the real lift key: two plain
+statements, three buttons, no lecture. Vendor tiles screenshot: names under all twelve
+BUY tiles, prices top right. Chip re-stamp confirmed on the SHOP path too (309,532 to
+286,732 across a real BUY click), closing v7.14's not verified line. Four maps, endings,
+hub, stage: run under v7.16 below.
+
+Not verified: the packed state of the loadout line (the "N items you packed" branch) on
+screen; and hire tile names against the hire panel he already approved.
