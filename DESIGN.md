@@ -25624,3 +25624,55 @@ attempts at this canvas size, so every figure above is geometric rather than vis
 whether the ring reads clearly against a storming sky is exactly the kind of thing my
 measurements cannot answer. That is the same blind spot that let the ascend dialog pass a
 clean audit while looking terrible, so it is worth him glancing at before I call it done.
+
+## v6.88 - the freebie kit becomes a real bet
+
+His spec, verbatim: "when a player is about to ascend from the undercroft, they should be
+asked if they want to take their current loadout or the freebie loadout. If they take the
+freebie and extract, then they keep the freebie stuff. if they die, then their current
+loadout (before the freebie) should be re-equipped."
+
+Three things, and only the first was anywhere close to existing.
+
+THE CHOICE MOVES TO THE LIFT. It was a toggle buried on the stash screen, so the decision
+was made minutes before it mattered and was easy to forget you had made. E on the lift now
+asks it at the moment it applies, with three answers, and the card states what each one
+costs: your loadout is N items from the stash plus everything on your belt and you lose it
+if you lose the run; the freebie is the four named pieces, yours if you walk out, and your
+own loadout comes back if you do not.
+
+THE FREEBIE GEAR BECOMES YOURS ON A GOOD RUN. The freebie gun was handed out flagged
+issued, and issued kit is explicitly never banked, so extracting with it kept exactly
+nothing. It is no longer flagged issued, so walking out banks it the way a field gun does
+and dying with it still loses it. Measured with a profile that deliberately did NOT own a
+Scav Pistol: weapons went from [smg] to [smg, pistol] across an extraction.
+
+YOUR PACKED LOADOUT SURVIVES A BAD ONE. commitKit CLEARS P.kit when the freebie is on, so
+the loadout he had assembled was discarded the moment he took the free gear and he had to
+rebuild it after dying. It is now remembered before it is cleared and put back on any
+ending that is not an extraction, filtered against what he still owns, because P.kit is a
+SELECTION out of the stash rather than a move and re-arming something spent since would be
+wrong. On an extraction it is deliberately NOT restored: the run happened, the free gear
+came home, and handing back a loadout he never spent would be a second reward.
+
+Measured end to end: taking the freebie stashed [bandage, medkit, plate] and cleared the
+kit; the raid ran with the Scav Pistol unissued and the freebie bandages in the bag; dying
+printed "Your own loadout is packed again, 3 items waiting at the stash" and restored
+exactly those three; extracting instead restored nothing and banked the gun.
+
+MY MISTAKE THIS BUILD: I wrote the patch that wires the lift to the new dialog, then wrote
+the next patch and ran that one, never executing the first. The build reported success for
+a file that still called the old two-button confirm, and I only caught it because the
+dialog I was testing showed the wrong question. Own it: a patch written is not a patch
+applied, and the check that saved me was driving the real station key rather than reading
+the source.
+
+Verified: parse PASS. Four maps at seed 4242 with the bag open, entity counts 86/87/58/72,
+drawErr null, __hud clean. All three endings through the outcome screen and back to the
+hub. Hub frames and stage render. All three of his rules measured separately as above,
+driven through the real lift key and the real dialog buttons.
+
+Not verified: what happens if he takes the freebie and then ABANDONS. That path restores
+the loadout, same as dying, on the reasoning that he did not complete a run; he has not
+said which he wants and it is a one-line change if backing out should keep the gear
+instead.

@@ -623,6 +623,7 @@
     <div class="msub" id="asksub"></div>
     <div class="askrow">
       <button class="deploy" id="askyes" style="flex:2">YES</button>
+      <button id="askalt" style="flex:2;display:none">FREEBIE KIT</button>
       <button id="askno" style="flex:1">Not yet</button>
     </div>
   </div>
@@ -1005,7 +1006,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.87';
+var VER='6.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8100,7 +8101,10 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
       if(WEAPONS[FREEKIT_GUN]){
         g.player.wep=WEAPONS[FREEKIT_GUN];
         g.player.ammo=g.player.wep.mag;
-        g.player.wepIssued=true; g.player.wepFromArmory=false;
+        // v6.88, his spec: "if they take the freebie and extract, then they keep the
+        // freebie stuff". Issued kit is never banked, so this cannot be flagged issued or
+        // walking out with it would keep nothing. Dying with it still loses it.
+        g.player.wepIssued=false; g.player.wepFromArmory=false;
       }
       g.player.sec=WEAPONS.fists; g.player.secIssued=true;
     }
@@ -14581,6 +14585,25 @@ var _cdone=contractExtract(G.bag,haul);
     }
     lines.push('Run abandoned. '+'$'+haul.toLocaleString()+' left behind.');
   }
+  // v6.88, his spec: "if they die, then their current loadout (before the freebie) should
+  // be re-equipped". commitKit stashed it before the free gear wiped it; put it back on
+  // anything that is not a clean extraction, and clear it either way.
+  if(P.kitBeforeFree&&P.kitBeforeFree.length){
+    if(how!=='extract'){
+      // Only the pieces he still owns: anything spent, sold or lost since is not his to
+      // re-arm, and P.kit is a SELECTION out of the stash rather than a move.
+      var _kb=[],_have={};
+      for(var _ks=0;_ks<P.stash.length;_ks++) _have[P.stash[_ks]]=(_have[P.stash[_ks]]||0)+1;
+      for(var _kf=0;_kf<P.kitBeforeFree.length;_kf++){
+        var _kk=P.kitBeforeFree[_kf];
+        if((_have[_kk]||0)>0){ _have[_kk]--; _kb.push(_kk); }
+      }
+      P.kit=_kb;
+      if(_kb.length) lines.push('<span style="color:var(--coolant)">Your own loadout is packed again, '+
+        _kb.length+' item'+(_kb.length===1?'':'s')+' waiting at the stash.</span>');
+    }
+    P.kitBeforeFree=null;
+  }
   var acc=T.shots?Math.round(T.hits/T.shots*100):0;
   if(_mfLine) lines.push(_mfLine);
   // v6.68, his note: minutes and seconds, not a raw second count.
@@ -20913,10 +20936,8 @@ function buildHub(){
   var stations=[
     {id:'lift',x:350,y:105,r:48,label:'ASCENT LIFT',sub:'to the surface',c:'#4de3d0',
 acts:{KeyE:['go up',function(){
-             // v6.67, his note: the one irreversible button in the room asks first.
-             askConfirm('Are you sure you are ready to ascend?',
-                        'Everything on your belt and in your backpack goes up with you.',
-                        function(){ openLift(); });
+             // v6.88, his spec: the choice is asked HERE, at the moment it applies.
+             askKit();
            }],
            // v6.18: quick ascent means skip the SCREEN, not discard what you packed.
            // This called startRaid directly and never set kitChosen, so the
@@ -21095,14 +21116,40 @@ function updateHubWorld(dt){
   }
   if(!keys['KeyE']&&!keys['KeyR']&&!keys['KeyF']&&!keys['KeyT']) HB.eLock=false;
 }
+// v6.88, his spec: the loadout question, asked at the lift. Three answers, and each one
+// says what it costs. Built on the same card as askConfirm so there is one dialog style.
+function askKit(){
+  var kitN=(P.kit||[]).length;
+  var qq=document.getElementById('askq'), ss=document.getElementById('asksub');
+  if(qq) qq.textContent='What are you taking up?';
+  if(ss) ss.innerHTML='<b>Your loadout</b> is '+(kitN?(kitN+' item'+(kitN===1?'':'s')+' from the stash'):'nothing packed')+
+    ', and everything on your belt. Lose the run and you lose it.<br><br>'+
+    '<b>The freebie kit</b> is '+escHtml(freeKitText())+' Extract with it and it is yours; '+
+    'die and your own loadout is packed again, untouched.';
+  ASKYES=function(){ P.freeKit=0; saveProfile(); openLift(); };
+  ASKALT=function(){
+    P.freeKit=1; P.kitBeforeFree=null; saveProfile();
+    try{ renderStage(); }catch(_e){}
+    openLift();
+  };
+  var y=document.getElementById('askyes'), a=document.getElementById('askalt');
+  if(y) y.textContent='MY LOADOUT';
+  if(a){ a.textContent='FREEBIE KIT'; a.style.display=''; }
+  openModal('askmodal');
+}
 // ASK BEFORE THE DOOR CLOSES, v6.67, his note on the lift. One box for the whole
 // game. onYes runs on YES; anything else just closes, so declining is always safe.
-var ASKYES=null;
+var ASKYES=null, ASKALT=null;
 function askConfirm(q,sub,onYes){
   var qq=document.getElementById('askq'), ss=document.getElementById('asksub');
   if(qq) qq.textContent=q;
   if(ss) ss.textContent=sub||'';
-  ASKYES=onYes||null;
+  ASKYES=onYes||null; ASKALT=null;
+  // Back to two buttons. Without this a plain question inherits the third button from
+  // whichever dialog used the card last.
+  var y=document.getElementById('askyes'), a=document.getElementById('askalt');
+  if(y) y.textContent='YES';
+  if(a) a.style.display='none';
   openModal('askmodal');
 }
 // v6.86: WHERE THE WAY OUT IS, in words. His run 79 died to the clock twenty five metres
@@ -25003,7 +25050,12 @@ function renderFreeKit(){
 function commitKit(){
   // The freebie kit takes nothing out of the stash, so there is nothing to commit.
   // kitChosen is still stamped so the raid does not fall back to the standard kit.
-  if(P.freeKit){ P.dropKit=[]; P.safeUp=null; P.kit=[]; P.kitChosen=1; saveProfile(); return true; }
+  if(P.freeKit){
+    // v6.88, his spec: remember what he had packed before the free gear replaced it, so
+    // a death puts his own loadout back rather than making him rebuild it.
+    P.kitBeforeFree=(P.kit||[]).slice();
+    P.dropKit=[]; P.safeUp=null; P.kit=[]; P.kitChosen=1; saveProfile(); return true;
+  }
   var kit=stageKitLive();
   P.dropKit=[];
   for(var i=0;i<kit.length;i++){
@@ -25036,8 +25088,13 @@ document.getElementById('askyes').onclick=function(){
   if(f) f();
 };
 document.getElementById('askno').onclick=function(){
-  ASKYES=null;
+  ASKYES=null; ASKALT=null;
   document.getElementById('askmodal').classList.remove('on');
+};
+document.getElementById('askalt').onclick=function(){
+  var f=ASKALT; ASKYES=null; ASKALT=null;
+  document.getElementById('askmodal').classList.remove('on');
+  if(f) f();
 };
 
 // HIS NOTE, same message: "maybe we need another thing in the undercroft called
