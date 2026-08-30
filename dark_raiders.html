@@ -960,7 +960,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.54';
+var VER='6.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1829,7 +1829,7 @@ else if(kind==='steady') c={type:'conduct',ck:'steady',n:1,prog:0,reward:Math.ro
       return c;
     }
     var v=Math.round(pick([800,1200,1600])*M.n);
-    c={type:'haul',v:v,n:1,prog:0,reward:Math.round(v*.6),desc:'Extract with a haul worth '+v.toLocaleString()+'c or more'};
+    c={type:'haul',v:v,n:1,prog:0,reward:Math.round(v*.6),desc:'Extract with a haul worth '+'$'+v.toLocaleString()+' or more'};
   }
   c.tier=t;
   c.reward=Math.round(c.reward*M.r);
@@ -6789,7 +6789,7 @@ function strayGive(e){
   }
   saveProfile();
   emoteBubble(e.x,e.y,'nod','#7fc4a0',2.0);
-  label(e.x,e.y-34,'+'+pay+'c','#ffc04a',0.35,false);
+  label(e.x,e.y-34,'+$'+pay,'#ffc04a',0.35,false);
 }
 function pedSellAll(){
   // G.trade is the open stall panel, which only exists in the real game. The bot
@@ -6829,9 +6829,9 @@ function pedSellAll(){
     // not a refusal: he may well still want the certainty, and that is a real
     // reason. It is just no longer a blind one.
     var _full=full;
-    say('Sold '+n+' for '+tot.toLocaleString()+'c, his '+Math.round(pedBuyRate()*100)+
+    say('Sold '+n+' for '+'$'+tot.toLocaleString()+', his '+Math.round(pedBuyRate()*100)+
       ' percent. Banked whatever happens next, and no XP: carried home it was '+
-      _full.toLocaleString()+'c and '+_full.toLocaleString()+' XP.');
+      '$'+_full.toLocaleString()+' and '+_full.toLocaleString()+' XP.');
     blip('pick'); ping(G.trade.x,G.trade.y,190,false,false,'player','move');
   }
 }
@@ -6839,7 +6839,7 @@ function pedBuy(ix){
   if(!G||!G.trade) return;
   var st=G.trade.stock[ix];
   if(!st||st.sold) return;
-  if((P.credits||0)<st.price){ say('You cannot cover '+st.price.toLocaleString()+'c.'); return; }
+  if((P.credits||0)<st.price){ say('You cannot cover '+'$'+st.price.toLocaleString()+'.'); return; }
   // A PLATE WITH NO RIG IS THE SHOP DEFECT v2.17 FIXED, AT THE ONE SITE IT DID
   // NOT COVER. He stocks plates, and with No Rig the ceiling is 0, so the buy was
   // roughly 646 credits for something that can never be slotted and sells back
@@ -6855,7 +6855,7 @@ function pedBuy(ix){
   P.credits-=st.price; saveProfile();
   st.sold=true; G.bag.push(st.k); G.trade.traded=1;
   G.pedBought=(G.pedBought||0)+st.price;
-  say('Bought '+ITEMS[st.k].name+' for '+st.price.toLocaleString()+'c.');
+  say('Bought '+ITEMS[st.k].name+' for '+'$'+st.price.toLocaleString()+'.');
   // The purchase gets the same voice the find would have, v2.72. Buying a gun
   // from the Peddler chirped like picking up scrap while pulling the identical
   // gun from a crate rang like metal, and the difference was only which counter
@@ -9985,10 +9985,10 @@ function tryExtractTick(dt,wantCall){
 if(z&&z.beaconT===null&&z.open&&!G.sim&&keys['KeyN']&&!p.downed){
     var _scost=10000;
     if(P.credits<_scost){
-      if(!G.silSaid||G.t-G.silSaid>3){ G.silSaid=G.t; say('A quiet ride costs '+_scost.toLocaleString()+'c. You have '+P.credits.toLocaleString()+'.'); }
+      if(!G.silSaid||G.t-G.silSaid>3){ G.silSaid=G.t; say('A quiet ride costs '+'$'+_scost.toLocaleString()+'. You have '+P.credits.toLocaleString()+'.'); }
     } else {
       z.silT=(z.silT||0)+dt;
-      if(!G.silSaid||G.t-G.silSaid>3){ G.silSaid=G.t; say('Flying dark. Hold to confirm the '+_scost.toLocaleString()+'c.'); }
+      if(!G.silSaid||G.t-G.silSaid>3){ G.silSaid=G.t; say('Flying dark. Hold to confirm the '+'$'+_scost.toLocaleString()+'.'); }
       if(z.silT>=6){
         P.credits-=_scost;
         T.silentExit=1; T.holdExtract=1;
@@ -13722,7 +13722,7 @@ function claimTier(ix){
   // 'last' pays like 'credits' because it IS a credit reward; the only thing
   // that made it special was the season rollover, and that is gone. The dead
   // 'season' token went with it.
-  if(T.kind==='credits'||T.kind==='last'){ P.credits+=T.v; msg='+'+T.v.toLocaleString()+'c'; }
+  if(T.kind==='credits'||T.kind==='last'){ P.credits+=T.v; msg='+'+'$'+T.v.toLocaleString()+''; }
   if(T.kind==='rep'){ P.rep+=T.v; msg='+'+T.v+' XP'; }
   if(T.kind==='wep'){
     if(P.weapons.indexOf(T.v)<0) P.weapons.push(T.v);
@@ -13878,7 +13878,7 @@ silentExit:T.silentExit||0,
     var _mfPay=(P.racks||0)*RACK_PAY;
     P.credits+=_mfPay;
     if(G.tel) G.tel.rackPay=_mfPay;
-    lines.push('<span style="color:var(--coolant)">MAINFRAME: '+P.racks+' rack'+(P.racks===1?'':'s')+' fenced the data. +'+_mfPay.toLocaleString()+'c, banked.</span>');
+    lines.push('<span style="color:var(--coolant)">MAINFRAME: '+P.racks+' rack'+(P.racks===1?'':'s')+' fenced the data. +'+'$'+_mfPay.toLocaleString()+', banked.</span>');
   }
   if(P.merc&&!G.sim){
     var mercEnt=null;
@@ -13887,7 +13887,7 @@ silentExit:T.silentExit||0,
     for(var mi2=0;mi2<IDENTITIES.length;mi2++) if(IDENTITIES[mi2].id===P.merc) mname=IDENTITIES[mi2].tag;
     if(G.mercDead){
       P.credits-=MERC_DEATH;
-      lines.push('<span style="color:var(--rust)">'+mname+' died. Death benefit '+MERC_DEATH.toLocaleString()+'c owed'+(P.credits<0?', you are in debt':'')+'.</span>');
+      lines.push('<span style="color:var(--rust)">'+mname+' died. Death benefit '+'$'+MERC_DEATH.toLocaleString()+' owed'+(P.credits<0?', you are in debt':'')+'.</span>');
       var mr=idRec(P.merc); mr.standing=Math.min(mr.standing,-1);
     } else if(mercEnt&&how==='extract'){
       // v3.74, partner-merc line three: the settle can now tell HOW he got out.
@@ -13900,7 +13900,7 @@ silentExit:T.silentExit||0,
       var cut=Math.round(mhaul*0.10);
       P.credits+=cut;
       var _mnear=(G.active&&dist(mercEnt,G.active)<260)||dist(mercEnt,G.player)<200;
-      lines.push('<span style="color:var(--coolant)">'+mname+(_mnear?' boards behind you with ':' makes his own way out with ')+mhaul.toLocaleString()+'c. Your cut '+cut.toLocaleString()+'c.</span>');
+      lines.push('<span style="color:var(--coolant)">'+mname+(_mnear?' boards behind you with ':' makes his own way out with ')+'$'+mhaul.toLocaleString()+'. Your cut '+'$'+cut.toLocaleString()+'.</span>');
       var mr2=idRec(P.merc); mr2.standing=(mr2.standing||0)+(_mnear?2:1); mr2.met++;
     } else {
       // A merc who fled low and boarded an EARLIER ship was read as "left out
@@ -13912,7 +13912,7 @@ silentExit:T.silentExit||0,
       if(_mrow&&_mrow.out&&how==='extract'){
         var cut2=Math.round((_mrow.val||0)*0.10);
         P.credits+=cut2;
-        lines.push('<span style="color:var(--coolant)">'+mname+' extracted earlier with '+(_mrow.val||0).toLocaleString()+'c. Your cut '+cut2.toLocaleString()+'c.</span>');
+        lines.push('<span style="color:var(--coolant)">'+mname+' extracted earlier with '+'$'+(_mrow.val||0).toLocaleString()+'. Your cut '+'$'+cut2.toLocaleString()+'.</span>');
         var mr4=idRec(P.merc); mr4.standing=(mr4.standing||0)+1; mr4.met++;
       } else {
         lines.push('<span style="color:var(--ash)">'+mname+' was left out there.</span>');
@@ -13946,13 +13946,13 @@ silentExit:T.silentExit||0,
     }
   })();
   if(G.strayPaid){
-    lines.push('<span style="color:var(--coolant)">The survivor paid you '+G.strayPaid.toLocaleString()+'c, already banked.</span>');
+    lines.push('<span style="color:var(--coolant)">The survivor paid you '+'$'+G.strayPaid.toLocaleString()+', already banked.</span>');
   }
   if(G.pedSold){
-    lines.push('<span style="color:var(--coolant)">Sold at the stall for '+G.pedSold.toLocaleString()+'c, already banked.</span>');
+    lines.push('<span style="color:var(--coolant)">Sold at the stall for '+'$'+G.pedSold.toLocaleString()+', already banked.</span>');
   }
   if(G.pedBought){
-    lines.push('<span style="color:var(--ash)">Spent '+G.pedBought.toLocaleString()+'c at the stall.</span>');
+    lines.push('<span style="color:var(--ash)">Spent '+'$'+G.pedBought.toLocaleString()+' at the stall.</span>');
   }
   // SPEC 9.7: the rig goes with everything else you were carrying. It is the
   // same rule the guns live under and it is what makes the Breacher Plate a bet
@@ -13976,7 +13976,7 @@ silentExit:T.silentExit||0,
     // stays as credits, which is what it was always really for.
     P.credits+=ghost;
     lines.push('<span style="color:#7fc4a0">GHOST RUN. Nothing on this map ever found you: +'+
-      ghost.toLocaleString()+'c.</span>');
+      '$'+ghost.toLocaleString()+'.</span>');
   }
   if(how==='extract'&&tPay>0){
     var bonus=Math.round(haul*tPay);
@@ -13984,7 +13984,7 @@ silentExit:T.silentExit||0,
     var tn=[];
     for(var tq=0;tq<TERMS.length;tq++) if(hasTerm(TERMS[tq].id)) tn.push(TERMS[tq].name);
     lines.push('<span style="color:var(--amber)">Hazard pay +'+Math.round(tPay*100)+
-      '%: '+bonus.toLocaleString()+'c for '+tn.join(', ')+'.</span>');
+      '%: '+'$'+bonus.toLocaleString()+' for '+tn.join(', ')+'.</span>');
   } else if(how==='dead'&&tPay>0){
     lines.push('<span style="color:var(--rust)">You signed for '+Math.round(tPay*100)+
       '% and did not come back for it.</span>');
@@ -14040,7 +14040,7 @@ var _cdone=contractExtract(G.bag,haul);
       for(var q=0;q<G.pouch[tk];q++) P.stash.push(tk);
     }
     if(haul>P.best) P.best=haul;
-    lines.push(G.bag.length+' items secured for '+haul.toLocaleString()+'c');
+    lines.push(G.bag.length+' items secured for '+'$'+haul.toLocaleString()+'');
     lines.push(Math.round(G.player.hp)+'/100 integrity remaining');
   } else if(how==='dead'){
     P.died++;
@@ -14076,11 +14076,11 @@ var _cdone=contractExtract(G.bag,haul);
       var li2=ITEMS[G.bag[shown[j]]];
       if(!li2) continue;
       lines.push('<span style="color:'+(RCOL[li2.r]||'#cdd6dd')+'">'+li2.name+'</span>'+
-        '<span style="color:var(--rust)">  '+ival(G.bag[shown[j]]).toLocaleString()+'c  GONE</span>');
+        '<span style="color:var(--rust)">  '+'$'+ival(G.bag[shown[j]]).toLocaleString()+'  GONE</span>');
     }
     if(lostIdx.length>shown.length) lines.push('<span style="color:var(--ash)">and '+(lostIdx.length-shown.length)+' more, all gone</span>');
-    lines.push(lostIdx.length+' items lost, '+(haul-savedVal).toLocaleString()+'c gone');
-    if(saved.length) lines.push('Safe pocket held '+saved.length+' item'+(saved.length>1?'s':'')+' ('+savedVal.toLocaleString()+'c)');
+    lines.push(lostIdx.length+' items lost, '+'$'+(haul-savedVal).toLocaleString()+' gone');
+    if(saved.length) lines.push('Safe pocket held '+saved.length+' item'+(saved.length>1?'s':'')+' ('+'$'+savedVal.toLocaleString()+')');
     // v6.09: metres, like every other distance in the game. This printed raw world
     // units with an 'm' on the end, so it disagreed with the header above it by a
     // factor of ten on the same screen.
@@ -14122,7 +14122,7 @@ var _cdone=contractExtract(G.bag,haul);
       for(i=0;i<G.spliced.length;i++)
         if(P.weapons.indexOf(G.spliced[i])<0) P.weapons.push(G.spliced[i]);
     }
-    lines.push('Run abandoned. '+haul.toLocaleString()+'c left behind.');
+    lines.push('Run abandoned. '+'$'+haul.toLocaleString()+' left behind.');
   }
   var acc=T.shots?Math.round(T.hits/T.shots*100):0;
   lines.push('<span style="color:var(--ash)">'+T.containers+' containers &middot; '+acc+'% accuracy &middot; '+
@@ -14468,7 +14468,7 @@ function finishSim(res){
   var L=[];
   L.push('BOT SIM: '+n+' raids against config ['+(CFG.preset||'custom')+']');
   L.push('Extract rate: '+Math.round(ext/n*100)+'%  ('+ext+' extracted, '+dead+' died)');
-  if(ext) L.push('Avg haul when extracting: '+Math.round(haulS/ext)+'c');
+  if(ext) L.push('Avg haul when extracting: $'+Math.round(haulS/ext));
   L.push('Avg raid length: '+Math.round(durS/n)+'s of '+CFG.raidSec+'s  |  Avg containers: '+(contS/n).toFixed(1));
   if(fcN) L.push('Avg first enemy contact: '+Math.round(fcS/fcN)+'s  ('+(n-fcN)+' raids with no contact)');
   if(accN) L.push('Bot accuracy: '+Math.round(accS/accN)+'%');
@@ -14741,7 +14741,7 @@ function cosNeed(c){
   if(k==='board')    return 'finish the reward board';
   if(k==='level')    return 'level '+v;
   if(k==='warden')   return 'put a Warden down';
-  if(k==='buy')      return v+'c from the Peddler';
+  if(k==='buy')      return '$'+v+' from the Peddler';
   return '';
 }
 function cosFind(id){
@@ -18947,7 +18947,7 @@ function drawRaiderBoard(){
     var w=rows[i];
     var col=w.st==='EXTRACTED'?'#7fc4a0':(w.st==='DEAD'?'#6b7783':(STATCOL[w.st]||'#cdd6dd'));
     ctx.fillStyle=col;
-    var _rt=(w.val>0?w.val.toLocaleString()+'c':'-')+'  '+w.st;
+    var _rt=(w.val>0?'$'+w.val.toLocaleString()+'':'-')+'  '+w.st;
     var _budget=LW-LH(26)-ctx.measureText(_rt).width-LH(8);
     var _nm=w.name;
     if(ctx.measureText(_nm).width>_budget){
@@ -19146,7 +19146,7 @@ function drawTrade(){
   ctx.font=FS(TYPE.head); ctx.fillStyle=n?'#7fc4a0':'#4d5762';
   ctx.fillText('[1]  SELL BAG  ('+n+')',x+14,cy);
   ctx.textAlign='right'; ctx.fillStyle=n?'#ffc04a':'#4d5762';
-  ctx.fillText('+'+tot.toLocaleString()+'c',x+PW-14,cy); ctx.textAlign='left';
+  ctx.fillText('+'+'$'+tot.toLocaleString()+'',x+PW-14,cy); ctx.textAlign='left';
   cy+=LH(15);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
   ctx.fillText(Math.round(pedBuyRate()*100)+'% of value, paid now. Yours even if you die out there.',x+14,cy);
@@ -19157,7 +19157,7 @@ function drawTrade(){
   if(n){
     cy+=LH(13);
     ctx.fillStyle='#6b7783';
-    ctx.fillText('Carried home: '+fullv.toLocaleString()+'c and '+fullv.toLocaleString()+' XP. He pays no XP.',x+14,cy);
+    ctx.fillText('Carried home: '+'$'+fullv.toLocaleString()+' and '+fullv.toLocaleString()+' XP. He pays no XP.',x+14,cy);
   }
   cy+=LH(17);
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+14,cy); ctx.lineTo(x+PW-14,cy); ctx.stroke();
@@ -19165,7 +19165,7 @@ function drawTrade(){
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
   ctx.fillText('HIS STOCK',x+14,cy);
   ctx.textAlign='right'; ctx.fillStyle='#cdd6dd';
-  ctx.fillText('you hold '+(P.credits||0).toLocaleString()+'c',x+PW-14,cy); ctx.textAlign='left';
+  ctx.fillText('you hold '+'$'+(P.credits||0).toLocaleString()+'',x+PW-14,cy); ctx.textAlign='left';
   for(i=0;i<T.stock.length;i++){
     var S=T.stock[i],IT=ITEMS[S.k]||{name:'?',c:'#888'};
     cy+=LH(20);
@@ -19180,7 +19180,7 @@ function drawTrade(){
     ctx.fillText('['+(i+2)+']  '+(S.sold?'sold':IT.name),x+LH(38),cy);
     ctx.textAlign='right';
     ctx.fillStyle=S.sold?'#4d5762':(can?'#ffc04a':'#8a5a4a');
-    ctx.fillText(S.sold?'gone':(noRig?'no rig':(S.price.toLocaleString()+'c')),x+PW-14,cy);
+    ctx.fillText(S.sold?'gone':(noRig?'no rig':('$'+S.price.toLocaleString()+'')),x+PW-14,cy);
     ctx.textAlign='left';
   }
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783';
@@ -19719,7 +19719,7 @@ function drawBag(){
     ctx.fillStyle=RCOL[sit&&sit.r]||'#cdd6dd';
     ctx.fillText((sit?sit.name:sst.key)+(sst.idxs.length>1?('  x'+sst.idxs.length):''),x+11,hintY);
     ctx.textAlign='right'; ctx.fillStyle='#ffc04a';
-    ctx.fillText(ival(sst.key)+'c each',x+PW-11,hintY);
+    ctx.fillText('$'+ival(sst.key)+' each',x+PW-11,hintY);
     ctx.textAlign='left';
     ctx.font=FS(TYPE.micro); ctx.fillStyle='#9aa8d0';
     var isGun=!!(sit&&sit.use==='gun');
@@ -20657,7 +20657,7 @@ function drawHubHUD(ox,oy){
   ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
   ctx.fillText('THE UNDERCROFT',16,28);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
-  ctx.fillText(P.credits.toLocaleString()+'c  \u00b7  XP '+P.rep.toLocaleString()+
+  ctx.fillText('$'+P.credits.toLocaleString()+'  \u00b7  XP '+P.rep.toLocaleString()+
     '  ·  '+P.stash.length+' item'+(P.stash.length===1?'':'s')+' in stash  ·  '+P.runs+' runs',16,44);
   if(HUBSAY_T>0){
     ctx.textAlign='center';
@@ -21042,7 +21042,7 @@ function buildRack(){
   P.racks=(P.racks||0)+1;
   saveProfile();
   blip('pick');
-  say('Rack '+P.racks+' hums to life. '+(P.racks*RACK_PAY)+'c every time you make it home.');
+  say('Rack '+P.racks+' hums to life. '+'$'+(P.racks*RACK_PAY)+' every time you make it home.');
   renderMainframe(); try{ renderHub(); }catch(e){}
 }
 // THE GHOST FRIEND, v3.83, the last big row on the board. A friend sends the
@@ -21136,11 +21136,11 @@ function renderMainframe(){
   for(var i=0;i<RACK_CAP;i++)
     bars+='<span style="display:inline-block;width:34px;height:12px;margin-right:5px;border:1px solid var(--steel-hi);background:'+(i<r?'rgba(53,214,200,.35)':'rgba(0,0,0,.3)')+'"></span>';
   st.innerHTML=bars+'  <b style="color:var(--coolant)">'+r+' of '+RACK_CAP+' racks</b>'+
-    (r>0?'  <span style="color:var(--amber)">+'+(r*RACK_PAY)+'c per extraction</span>':'');
+    (r>0?'  <span style="color:var(--amber)">+$'+(r*RACK_PAY)+' per extraction</span>':'');
   var bt=document.getElementById('mfbuild'), hn=document.getElementById('mfhint');
   if(bt){ bt.disabled=(r>=RACK_CAP)||!rackAfford(); bt.textContent=(r>=RACK_CAP)?'THE WALL IS FULL':'BUILD A RACK'; }
-  if(hn){ hn.textContent=(r>=RACK_CAP)?'Four racks is the whole wall. They pay '+(RACK_CAP*RACK_PAY)+'c every extraction.'
-    :('A rack costs '+rackCostLine()+'. Each pays '+RACK_PAY+'c every time you extract alive. Junk becomes infrastructure.'); }
+  if(hn){ hn.textContent=(r>=RACK_CAP)?'Four racks is the whole wall. They pay '+'$'+(RACK_CAP*RACK_PAY)+' every extraction.'
+    :('A rack costs '+rackCostLine()+'. Each pays '+'$'+RACK_PAY+' every time you extract alive. Junk becomes infrastructure.'); }
   var sb=document.getElementById('mfslot'), sh2=document.getElementById('mfslothint');
   if(sb){
     var haveCore=P.stash.indexOf('core')>=0;
@@ -21475,8 +21475,8 @@ function renderMerc(){
     var note,col;
     if(cost===null){ note='will not work for you'; col='var(--rust)'; }
     else if(hired){ note='HIRED'; col='var(--coolant)'; }
-    else if(P.credits<cost){ note=cost.toLocaleString()+'c  (short)'; col='var(--ash)'; }
-    else { note=cost.toLocaleString()+'c'; col='var(--amber)'; }
+    else if(P.credits<cost){ note='$'+cost.toLocaleString()+'  (short)'; col='var(--ash)'; }
+    else { note='$'+cost.toLocaleString()+''; col='var(--amber)'; }
     // The man's face, his standing with you spelled out under his tag: a grudge
     // is the reason a price reads "will not work for you", and the bench should
     // say so rather than leaving it a mystery.
@@ -21544,7 +21544,7 @@ function renderMercDetail(rows){
   if(cost===null){
     h+='<div class="vdesc" style="color:#8a3423">He will not work for you at any price.</div>';
   }
-  h+='<div class="vprice">PRICE<b>'+(cost===null?'\u2014':(cost.toLocaleString()+'c'))+'</b></div>';
+  h+='<div class="vprice">PRICE<b>'+(cost===null?'\u2014':('$'+cost.toLocaleString()+''))+'</b></div>';
   d.innerHTML=h;
   var b=document.createElement('button');
   b.className='vbuy';
@@ -21559,20 +21559,20 @@ function renderMercDetail(rows){
 }
 function renderGamble(){
   var el=document.getElementById('gamblelist');
-  walletLine('wallet_gamble',GAMBLE_PRICE.toLocaleString()+'c a go');
+  walletLine('wallet_gamble','$'+GAMBLE_PRICE.toLocaleString()+' a go');
   document.getElementById('gamble_line').textContent=vendorLine('gamble');
   var h='';
   var log=(P.gambleLog||[]).slice(-8).reverse();
-  if(!log.length) h='<div class="hint">Nothing bought yet. '+GAMBLE_PRICE+'c a go.</div>';
+  if(!log.length) h='<div class="hint">Nothing bought yet. $'+GAMBLE_PRICE+' a go.</div>';
   for(var i=0;i<log.length;i++){
     var it=ITEMS[log[i]];
     if(!it) continue;
     h+='<div class="row">'+iconImgHTML(log[i],22)+'<span class="nm" style="color:'+(RCOL[it.r]||'#cdd6dd')+'">'+it.name+'</span>'+
-       '<span class="vl">'+it.val.toLocaleString()+'c</span></div>';
+       '<span class="vl">'+'$'+it.val.toLocaleString()+'</span></div>';
   }
   el.innerHTML=h;
   var b=document.getElementById('gamblebtn');
-  b.textContent='Gamble '+GAMBLE_PRICE+'c';
+  b.textContent='Gamble $'+GAMBLE_PRICE;
   b.disabled=P.credits<GAMBLE_PRICE;
   b.style.opacity=P.credits<GAMBLE_PRICE?0.45:1;
 }
@@ -21601,7 +21601,7 @@ function crateBin(k){
 function walletLine(id,extra){
   var el=document.getElementById(id);
   if(!el) return;
-  el.textContent='You hold '+P.credits.toLocaleString()+'c'+(extra?('  \u00b7  '+extra):'');
+  el.textContent='You hold '+'$'+P.credits.toLocaleString()+''+(extra?('  \u00b7  '+extra):'');
 }
 function renderCrate(){
   var el=document.getElementById('cratelist');
@@ -21866,7 +21866,7 @@ function itemMenuRows(key,ctx,count){
   if(ctx!=='kit'){
     rows.push({sep:1});
     var isJ=(P.junk||{})[key]?true:false;
-    rows.push({label:isJ?'Untag junk':'Tag as junk',hint:isJ?null:ival(key).toLocaleString()+'c each',
+    rows.push({label:isJ?'Untag junk':'Tag as junk',hint:isJ?null:'$'+ival(key).toLocaleString()+' each',
       act:function(){ P.junk=P.junk||{}; if(isJ) delete P.junk[key]; else P.junk[key]=1; saveProfile(); refreshInv(); }});
   }
   return rows;
@@ -22239,10 +22239,10 @@ try{ renderFreeKit(); }catch(_fk){}
       }
       var _fix='';
       if(cost!==null&&P.credits>=cost){
-        _fix=' The cheapest rig you can wear is '+cost.toLocaleString()+'c in REQUISITION.';
+        _fix=' The cheapest rig you can wear is '+'$'+cost.toLocaleString()+' in REQUISITION.';
       } else if(_anyRig!==null){
         _fix=' You have the standing for one, but it costs '+_anyRig.toLocaleString()+
-          'c and you hold '+(P.credits||0).toLocaleString()+'c.';
+          'c and you hold '+'$'+(P.credits||0).toLocaleString()+'.';
       } else {
         // Anything else, and there is at least one state I constructed in a test
         // without showing it can actually happen: owning a rig while wearing
@@ -22425,7 +22425,7 @@ try{ renderFreeKit(); }catch(_fk){}
         : (it.use ? '<span style="color:var(--coolant)">'+escHtml(String(it.use).toUpperCase())+'</span>'
                   : '<span style="color:var(--ash)">salvage, sell it</span>');
       detail.innerHTML='<b class="r-'+(it.r||'common')+'">'+escHtml(it.name)+'</b>  x'+counts[k]+
-        '  &middot;  '+ival(k).toLocaleString()+'c each  &middot;  '+what+
+        '  &middot;  '+'$'+ival(k).toLocaleString()+' each  &middot;  '+what+
         (isJunk?'  &middot;  <span style="color:var(--rust)">TAGGED JUNK</span>':'')+
         '<span id="stashacts" style="margin-left:10px"></span>'+
         // HIS NOTE: guns and rigs have to say what they are, not just that they
@@ -22565,7 +22565,7 @@ try{ renderFreeKit(); }catch(_fk){}
   var _sb=document.getElementById('sellall');
   if(_sb){
     _sb.textContent=_sn
-      ? ('Sell all salvage  \u00b7  '+_sv.toLocaleString()+'c  +'+_sv.toLocaleString()+' XP')
+      ? ('Sell all salvage  \u00b7  '+'$'+_sv.toLocaleString()+'  +'+_sv.toLocaleString()+' XP')
       : 'Nothing to sell';
     _sb.disabled=!_sn;
     _sb.style.opacity=_sn?'':'0.5';
@@ -22688,7 +22688,7 @@ P.contracts.forEach(function(c,ci){
     }
     var cp=document.createElement('div'); cp.className='cp';
     var st=document.createElement('span');
-    st.innerHTML=Math.min(c.prog,c.n)+' / '+c.n+' &middot; <b>'+c.reward.toLocaleString()+'c + XP</b>';
+    st.innerHTML=Math.min(c.prog,c.n)+' / '+c.n+' &middot; <b>'+'$'+c.reward.toLocaleString()+' + XP</b>';
     cp.appendChild(st);
     if(c.prog>=c.n){
       var b=document.createElement('button'); b.textContent='Claim';
@@ -22704,7 +22704,7 @@ P.contracts.forEach(function(c,ci){
         var got=payGear(c.gear);
         var TT2=CTIER[c.tier]||CTIER.std;
         P.cstand=cstand()+TT2.w;
-        say2('Contract paid: '+c.reward.toLocaleString()+'c'+(got?' and '+got:'')+'.');
+        say2('Contract paid: '+'$'+c.reward.toLocaleString()+''+(got?' and '+got:'')+'.');
         P.contracts[ci]=genContract(); saveProfile(); renderHub();
       };
       cp.appendChild(b);
@@ -22734,7 +22734,7 @@ P.contracts.forEach(function(c,ci){
     if(r.outcome==='dead'&&r.deathKiller) killers[r.deathKiller]=(killers[r.deathKiller]||0)+1;
   });
   document.getElementById('s_avg').textContent=hauls.length?
-    Math.round(hauls.reduce(function(a,b){return a+b;},0)/hauls.length)+'c':'--';
+    '$'+Math.round(hauls.reduce(function(a,b){return a+b;},0)/hauls.length):'--';
   document.getElementById('s_acc').textContent=accs.length?
     Math.round(accs.reduce(function(a,b){return a+b;},0)/accs.length)+'%':'--';
   var bk=null,bn=0;
@@ -22755,7 +22755,7 @@ function fmtRun(r){
   o.textContent=r.outcome==='extract'?'EXT':(r.outcome==='dead'?'KIA':'ABN');
   var body=document.createElement('div');
   var kills=r.kills?(r.kills.sentry+r.kills.crawler+r.kills.raider+(r.kills.snitch||0)+(r.kills.howler||0)+(r.kills.bulwark||0)):0;
-  var s='#'+r.n+' ['+(r.preset||'?')+'] '+r.haul+'c &middot; '+r.dur+'s &middot; '+kills+'k &middot; '+r.acc+'%';
+  var s='#'+r.n+' ['+(r.preset||'?')+'] $'+r.haul+' &middot; '+r.dur+'s &middot; '+kills+'k &middot; '+r.acc+'%';
   if(r.downs) s+=' &middot; downs '+r.downs;
   if(r.outcome==='dead'&&r.deathKiller) s+=' &middot; by '+escHtml(r.deathKiller);
   if(r.tags&&r.tags.length) s+='<br><span style="color:var(--amber)">'+escHtml(r.tags.join(', '))+'</span>';
@@ -22915,7 +22915,7 @@ function renderShop(){
     else label=ITEMS[o.k].name;
     nm.textContent=label+(locked?'  [XP '+o.rep+']':'');
     if(locked) nm.style.color='var(--ash)';
-    var vl=document.createElement('div'); vl.className='vl'; vl.textContent=o.price.toLocaleString()+'c';
+    var vl=document.createElement('div'); vl.className='vl'; vl.textContent='$'+o.price.toLocaleString()+'';
     var b=document.createElement('button');
     if(owned&&o.kind==='rig'){
       if(P.rig===o.k){ b.textContent='Worn'; b.disabled=true; }
@@ -23110,7 +23110,7 @@ function renderShopDetail(rows){
   var stackable=(o.kind!=='wep'&&o.kind!=='rig');
   if(P._shopQty===undefined||P._shopQty<1) P._shopQty=1;
   var qty=stackable?P._shopQty:1;
-  h+='<div class="vprice">PRICE<b>'+(o.price*qty).toLocaleString()+'c</b></div>';
+  h+='<div class="vprice">PRICE<b>'+'$'+(o.price*qty).toLocaleString()+'</b></div>';
   d.innerHTML=h;
   if(stackable){
     var st=document.createElement('div'); st.className='vqty';
@@ -23176,7 +23176,7 @@ function renderWork(){
       var nm=document.createElement('div'); nm.className='nm';
       nm.innerHTML=W.name+' <span style="color:'+ST.c+'">'+ST.name+'</span>'+
         '<br><span style="color:var(--ash);font-size:9.5px">'+wearOf(id)+' rounds &middot; '+
-        C.credits.toLocaleString()+'c + '+C.parts+'x '+ITEMS[C.part].name+
+        '$'+C.credits.toLocaleString()+' + '+C.parts+'x '+ITEMS[C.part].name+
         ' ('+(counts[C.part]||0)+')</span>';
       var b=document.createElement('button'); b.textContent='Service';
       b.disabled=(P.credits<C.credits)||((counts[C.part]||0)<C.parts);
@@ -23342,7 +23342,7 @@ document.getElementById('sellall').onclick=function(){
   });
   P.credits+=gained; P.rep+=gained; P.stash=kept;
   saveProfile(); renderHub();
-  say2(sold?('Sold '+sold+' for '+gained.toLocaleString()+'c.'):'Nothing tagged junk, and no loose salvage.');
+  say2(sold?('Sold '+sold+' for '+'$'+gained.toLocaleString()+'.'):'Nothing tagged junk, and no loose salvage.');
 };
 // THE TRADER, one window. renderShop / renderWork / renderMerc are untouched and
 // still fill the same element ids; this only decides which pane is visible.
@@ -23780,7 +23780,7 @@ var _myR=0;
     if(MS.ext!==undefined) facts.push('bot walks out '+MS.ext+'%');
     if(MS.fc!==undefined)  facts.push('first contact ~'+MS.fc+'s');
     if(MS.cont!==undefined)facts.push(MS.cont+' containers a raid');
-    if(MS.haul!==undefined)facts.push('median haul '+MS.haul.toLocaleString()+'c');
+    if(MS.haul!==undefined)facts.push('median haul '+'$'+MS.haul.toLocaleString()+'');
     if(R.tier>0||R.cut>0) facts.push('seal tier '+(R.tier+1)+', '+Math.round(R.cut)+' of '+sealNeed(R.tier)+'s cut');
 
     h+='<div class="row sectorpick" data-map="'+i+'" style="display:block;cursor:pointer;'+
@@ -24137,7 +24137,7 @@ function renderStage(prefill){
     var right=owned?(o.kind==='rig'?'Wear':'Owned')
              :(need?('Need T'+o.lvl):(can?'Buy':null));
     B.appendChild(stageRow(label,
-      sub+'  \u00b7  '+o.price.toLocaleString()+'c'+((!can&&!owned&&!need)?('  (you hold '+P.credits.toLocaleString()+'c)'):''),
+      sub+'  \u00b7  '+'$'+o.price.toLocaleString()+''+((!can&&!owned&&!need)?('  (you hold '+'$'+P.credits.toLocaleString()+')'):''),
       right,
       function(){
         if(owned){ if(o.kind==='rig'){ P.rig=o.k; saveProfile(); renderStage(); } return; }
@@ -24481,7 +24481,7 @@ function renderSettings(){
         loadProfile().then(function(){
           try{ renderHub(); }catch(e4){}
           try{ renderSettings(); }catch(e5){}
-          say('Restored. '+(P.runs||0)+' runs, '+(P.credits||0).toLocaleString()+'c.');
+          say('Restored. '+(P.runs||0)+' runs, '+'$'+(P.credits||0).toLocaleString()+'.');
         });
       };
       rd.readAsText(f);
@@ -24880,7 +24880,7 @@ loadProfile().then(function(){
     document.getElementById('titlever').textContent='v'+VER;
     var sub=document.getElementById('titlesub');
     if(sub) sub.textContent=(P.runs>0)
-      ? (P.runs+' raid'+(P.runs===1?'':'s')+' logged  \u00b7  '+P.credits.toLocaleString()+'c banked')
+      ? (P.runs+' raid'+(P.runs===1?'':'s')+' logged  \u00b7  '+'$'+P.credits.toLocaleString()+' banked')
       : 'First time out. The Undercroft will walk you through it.';
     var go=function(){
       if(!t.classList.contains('on')) return;

@@ -24258,3 +24258,45 @@ weapon in hand, and I did not add idle animation beyond the bob and the stance s
 nobody walks around. The group positions are hand-placed against the current room, so
 moving a wall or a station later will not move them with it. I did not check how the
 crowd looks at the smallest supported window, only at 1080p.
+
+## v6.55 - CREDITS READ AS MONEY
+
+His note: "always put a $ dollar sign next to credits amts."
+
+The game wrote credits as a suffix, 1,234c, in about seventy places. Moving a suffix to
+a prefix is not a find and replace on a letter: the dollar has to land in FRONT of
+whatever expression produced the number, so this captured that expression and rebuilt
+the concatenation around it. Fifty-two came through one sweep and the remaining eighteen
+were done individually.
+
+TWO GUARDS, because this touched seventy strings at once. The c must not be followed by
+a letter, or credits, crew and cache get beheaded into redits, rew and ache. And only
+expressions ending in toLocaleString were swept, which is how every formatted money
+value in this file is built.
+
+WHAT IS DELIBERATELY LEFT ALONE: the flight recorder writes kill counts as "3s/9c/1r",
+where the c is crawlers rather than credits, and the export lines are a file for me
+rather than a screen for him. Those keep their format. The one export-shaped line he can
+actually SEE, the run list on YOUR STATS, took the dollar with everything else.
+
+A BUG OF MINE IN THE SWEEP, caught by parsecheck before it went anywhere. My
+parenthesised pattern was meant to catch a grouping like (c.reward||0).toLocaleString(),
+and it also matched the ARGUMENT LIST OF A CALL, ival(key).toLocaleString(), which left
+the function name stranded outside the string as ival'$'+(key). Three sites, all the
+same shape. This is the second time in two builds that a bulk pattern has been more
+eager than intended, after the blanket key replace at v6.41 that would have rewritten a
+comment, and the lesson is the same one twice: a pattern that matches structure will
+match structure I did not have in mind.
+
+Verified: parse PASS at v6.55, after a FAIL that caught the sweep bug; the shop detail
+read back as PRICE $110, the gambler button as "Gamble $450", and the payout screen
+confirmed to contain dollar amounts and no remaining c-suffix money; four maps
+86/87/58/72 entities and, at seed 4242, 246/193/152/216 containers; all three endings
+through the outcome screen to a drawn hub; hub, renderStage and the export builder; pin
+audit clean.
+
+Not verified: I checked the shop, the gambler, the payout screen and the stash for
+leftover c-suffix money and found none visible, but seventy strings is more than I read
+individually, so a rarely-shown line could still carry the old format. The dollar is a
+prefix on the number only; I did not touch the CREDITS caption under the stash wallet,
+which still spells the word out.
