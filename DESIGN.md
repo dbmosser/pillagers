@@ -27443,6 +27443,47 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.52 - ONE BOT, ONE FAMILY, ONE BOARD
+
+A comparability check caught the sector board mixing eras, and both rows are
+now honest against each other.
+
+The chain of discovery, in order. Cold remeasured fists-armed on the current
+build and today's seed family: 15.0 percent over 200 paired seeds, zero
+discordant - 9.5 points under the board's 24.5. A reproduction of the OLD
+degraded pin (equip an smg you do not own, deploy with a per-seed random
+starter) landed at the same 15, so the arm was not the cause. A listener A/B
+came back with byte-identical arms, which the probe-setters rule says means
+suspect the setter first - and reading the dial back exposed two things: my
+__cfg call never set anything (its argument convention is not key,value; my
+own error, caught by read-back), and the live CFG carries simGreed 14 with
+simFlee, simPick, simCover and simDodgeRing all on. Those are the five
+declared bot-only dials: the bot CALIBRATED to his own measured play, the
+standing-order benchmark, deliberately left alone by every pin. Both of
+today's 200-seed baselines ran that bot. The old 24.5 row was measured in the
+pre-calibration era with a far greedier bot on a different seed family, which
+is why its haul said 7,775 and 16.3 containers - a bot with three times his
+real appetite.
+
+The board now states one comparable truth: 200 paired seeds each, same family
+(7013 to 9600), same build, same calibrated bot, both perfectly deterministic.
+  COLD STORAGE   ext 15.0   fc 72s   cont 5.0   haul 2,495
+  THE COLD MILE  ext 42.5   fc 62s   cont 5.5   haul 2,665
+The bot plays the same appetite on both maps - about five containers, about
+2.5k - and the entire difference is survival: the mile walks out at nearly
+three times cold's rate. His own recorded rate on cold is 28.6 percent over 49
+runs; the calibrated bot's recorded bench in its own era was 20.3 on the
+official family. The 15.0 sits below that bench, and how much of the gap is
+seed family versus real v7.3x-v7.5x drift (the relentless listener among the
+candidates) is NOT attributed - it would need an old-build bisect, which is
+queued as idle work, not assumed.
+
+Not verified: the family-vs-drift attribution above; the listener A/B was
+never actually run (the dial write failed and the correct write goes through
+the game's own setter next time); and fc/cont ride 60-seed instrumented
+passes against the 200-seed ext and haul on both rows, stated once here so
+the board does not have to.
+
 ## v7.51 - THE MILE MEASURED
 
 The 200-seed baseline for THE COLD MILE is in, and the sector board's empty row
