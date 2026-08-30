@@ -26991,3 +26991,39 @@ with headline assertions, hub and stage render.
 Not verified: the teach line eyeballed on screen (the staged frame verified clean
 through drawErr but the screenshot landed on a later protocol state); whether the line
 actually changes his touchdown behaviour, which only his next exports can say.
+
+## v7.29 - the crew tries, and the armour question was already answered (decisions 4, 5)
+
+DECISION FOUR SHIPS. The crew pickup was gated to the loot state, so a pillager running
+for the ring stepped past his own bleeding crewmate, which was the complaint word for
+word. Extract-state raiders now divert too, with one judgement call: the search radius
+on the way out is 260 units against the looter's 760, so he tries a revive for a mate
+practically on his path but does not abandon his exit for a cross-map detour. The
+firefight exemption stands for both: a man being shot at has a better use of the next
+four seconds.
+
+Driven both ways through the real AI: a downed crewmate 120 units from an extracting
+raider was picked up in 3.9 seconds (walk plus the standard 3.2 second revive) with the
+reviver still in his extract state after; a mate 520 units away was correctly ignored
+and stayed down.
+
+DECISION FIVE DISSOLVES. The board question said "armour dies with you: the 900c rig
+prices out at 318c a raid." Checked against current code, then proven in the fixture: a
+worn rig SURVIVES death, owned and still worn after dying, and has since v5.77. The
+question was written against a version two months gone, and the mapping table that
+keeps old question phrasings current preserved the stale premise along with the words.
+No wear system gets built: permanence already shipped, plates are the consumable half
+by his own zero-armour-at-ascent choice, and inventing a new cost uninvited is not what
+"answer this shit yourself" meant. The board row records the finding.
+
+This closes all seven: 1 KEEP (no code), 2 taught at v7.28, 3 already folded, 4 shipped
+here, 5 already true, 6 shipped at v7.27, 7 stays as he ordered.
+
+Verified: parse PASS v7.29. Both revive scenarios through the real entity AI as above,
+crewRevives tally incrementing. The rig permanence test through a real staged death.
+Four maps at seed 4242, entities exactly 86/87/58/72, drawErr null. Three endings with
+headline assertions, hub and stage render.
+
+Not verified: an extracting reviver under fire (the firefight exemption path is shared
+with the loot-state reviver and unchanged, but the combination was not staged); how
+often the 260 radius fires in real play, which his revivedBy telemetry will show.

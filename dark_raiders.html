@@ -1053,7 +1053,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.28';
+var VER='7.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13592,10 +13592,10 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
     // rival watching you bleed is the same rival who put you there. Only a raider
     // with nothing more urgent goes, which is why this sits inside the loot state:
     // a man in a firefight has a better use of the next four seconds.
-    else if(e.state==='loot'&&e.kind==='raider'&&CFG.raiderDown!==0&&(function(){
+    else if((e.state==='loot'||e.state==='extract')&&e.kind==='raider'&&CFG.raiderDown!==0&&(function(){
       if(e.reviving&&(e.reviving.downed!==1||G.ents.indexOf(e.reviving)<0)) e.reviving=null;
       if(!e.reviving){
-        var best=null,bd=760;
+        var best=null,bd=(e.state==='extract')?260:760;
         for(var rv=0;rv<G.ents.length;rv++){
           var RD=G.ents[rv];
           if(RD===e||RD.kind!=='raider'||!RD.downed) continue;
@@ -22195,8 +22195,8 @@ var ROADMAP=[
   ['DONE','DECIDED on his delegation: hard maps stay hard. The extract spread is character, not a bug.'],
   ['NEXT','DECIDED: MOVE while it lands. The beacon banner now teaches it; deeper coaching to follow if the telemetry does not move.'],
   ['DONE','DECIDED: FOLDED. Level is the one number; proficiency lives on only as the Net carried out stat card.'],
-  ['NEXT','DECIDED: CREW must try a revive on the way out. To build.'],
-  ['NEXT','DECIDED: PERMANENCE with wear, on the same wear system guns already use. To build.'],
+  ['DONE','DECIDED and SHIPPED at v7.29: a pillager walking out tries a revive for a crewmate near his path.'],
+  ['DONE','DECIDED, then found ALREADY TRUE: rigs have survived death since v5.77 (proven in the fixture). The 318c-a-raid premise was stale. Plates stay the consumable half.'],
   ['DONE','DECIDED and SHIPPED at v7.27: dying pays half for real. Measured 210 against 105 on identical runs.'],
 ['DONE','THE BULWARK: a walking slab that eats rounds from the front, soft spine behind'],
   ['DONE','Conduct contracts: walk out clean, kill nothing, be gone in three minutes'],
