@@ -24596,3 +24596,64 @@ Not verified: the statue rate in a real raid on his machine. The fixture proves 
 band is gone for a single raider under forced conditions; only his next flight recorder
 can say what pillagerCam reads with a full roster in a live fight, and that number is the
 one that settles it.
+
+## v6.67 - the lift asks, the crowd stops walking into walls, and the sky says what it is
+
+A batch of his notes, and one regression of mine.
+
+THE LIFT ASKS FIRST. E on the Ascent Lift sent you up instantly, which put the one
+irreversible button in the Undercroft under the same key as "open the shop". It now asks
+"Are you sure you are ready to ascend?" through a new general confirm box, so the next
+thing that needs asking does not grow a second style of its own. Not yet closes it and
+starts nothing; YES clears the stored callback before running it, so a double click
+cannot answer the same question twice.
+
+THE UNDERCROFT CROWD WAS WALKING INTO THINGS, AND THAT WAS MINE. At v6.64 I gave the
+loose crowd random ring centres and a pacing offset and checked the result against
+nothing: not the piers, not the counters, not the lift housing, not each other. Placement
+is now rejection sampled against all three, with the pacing amplitude included in the
+test, because a spot that is only clear at the bottom of the walk is the bug he reported.
+
+Then my fix had the same shape of hole as the thing it fixed. buildHubCrowd read the
+walls off the global HB, but the FIRST call comes from inside buildHub, before HB is
+assigned, so on the very first entry to the Undercroft the wall list was empty and the
+crowd was placed blind. Measured: 4 bodies in walls on visit one, then 0 across the next
+198. The walls are an argument now, so the function cannot be called without them.
+Re-measured after: 203 bodies over 12 visits, first visit included, zero in walls, zero
+overlapping each other, zero on a station disc.
+
+HAIR. Five styles became thirteen. The loose crowd rolls freely; the six who work the
+stations still walk the lists in order, so they are the same six in the same places every
+visit, which is what he asked for the first time and has not withdrawn. Verified stable
+across visits.
+
+THE UPDATE LOG is numbered, ENTER dismisses it as well as walking, and the list finally
+describes this build instead of v6.26. I first put the ENTER handler in raidKey, which
+only runs during a raid, so in the Undercroft it could never fire; moved into the hub
+branch of the listener and confirmed by event consumption rather than by eye.
+
+WEATHER AND TIME OF DAY SAY WHAT THEY ARE. Time of day is a clock reading (8am, noon,
+6pm, 8pm) and the row no longer explains that it changes nothing, which was the worst of
+both: it drew the eye and then said not to bother. Weather is Clear, Partly Cloudy,
+Rainy, Foggy, Storming, Blackout.
+
+PARTLY CLOUDY IS NEW AND IT MEANS WHAT HE SAID IT MEANS. pickWeather rolls a WEIGHT
+TABLE, not the WEATHER array, so adding the entry to the array alone would have shipped a
+condition that could never occur; the table is re-cut to 100 with the new entry taking a
+share from clear. Every raid already gets at least one turn, so the promise is not that
+it turns but what it turns into: partly cloudy breaks into rain or storm specifically.
+
+Also: "0/100 integrity remaining" on the extract screen is now "You walked out with N of
+100 health", and "one a raid" is "one per raid".
+
+Verified: parse PASS. All four maps at seed 4242 with entity counts 86/87/58/72 and
+container counts 246/193/152/216, both matching the standing invariants, drawErr null.
+All three endings through the outcome screen and back to the hub. Hub frames and the
+stage render. The lift confirm opened, declined without starting a raid, and accepted
+into a live raid. Partly Cloudy observed rolling in the four-map sweep.
+
+Not verified: the crowd fix under a genuinely crowded room. The rejection sampler gives
+each body 60 tries and then skips it, so a room with far more people than this could
+quietly seat fewer of them than intended, and I have only measured it at the sizes it
+actually produces (13 to 22). The gold guns, the stats screen, the hire panel and the
+Superhot mode he asked for during this session are all untouched and remain open.

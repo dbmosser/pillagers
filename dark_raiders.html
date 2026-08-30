@@ -582,6 +582,14 @@
     <button id="closeop" style="padding:8px 22px">Leave</button>
   </div>
 </div>
+<div class="modal" id="askmodal">
+  <h3 id="askq">Are you sure?</h3>
+  <div class="msub" id="asksub"></div>
+  <div style="display:flex;gap:8px;margin-top:14px">
+    <button class="deploy" id="askyes" style="flex:1.4">YES</button>
+    <button id="askno" style="padding:8px 22px">Not yet</button>
+  </div>
+</div>
 <div class="modal" id="sectormodal">
   <h3>Where are you going?</h3>
   <div class="msub">Sectors are not reskins of each other. Your stash, your credits, your contracts and your seal progress are yours everywhere; what changes is the ground you have to work.</div>
@@ -960,7 +968,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.66';
+var VER='6.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -971,18 +979,18 @@ var VER='6.66';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='6.26';
+var WHATSNEW_VER='6.67';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
-  'YOUR LOADOUT IS NOW ACTUALLY WHAT YOU PACKED. It used to be replaced.',
-  'THE NINE ITEM LIMIT IS GONE. Carry whatever you want up the lift.',
-  'RIGHT CLICK ANY ITEM for everything you can do with it.',
-  'Drag anything anywhere. SHIFT moves a whole stack, ALT splits it.',
-  'Point at an item and press 1 to 9 to put it on that key.',
-  'SAFE POCKET: name one item and it comes home even if you die.',
-  'REQUISITION and the WORKSHOP are rebuilt. Stats, prices, one button.',
-  'The backpack upgrade is off the counter. It never did anything. Refunded.',
-  'CONTRACTS and REWARDS both live at the Mainframe.'
+  'PILLAGERS THAT LOST SIGHT OF YOU USED TO FREEZE. They hunt you properly now.',
+  'CRAWLERS AND LISTENERS COULD NOT REACH YOU TO HIT YOU. Now they can. Careful.',
+  'EVERYTHING AT THE COUNTER COSTS SIX TIMES WHAT IT DID. Selling pays the same.',
+  'THE TACTICAL BELT WORKS. Drag any gun or item to any key, as many guns as you like.',
+  'THE UNDERCROFT IS BUSIER, and everyone down there is a different person each visit.',
+  'THE ASCENT LIFT ASKS BEFORE IT TAKES YOU UP.',
+  'MENU TEXT IS BIGGER EVERYWHERE. Mouse wheel scrolls a list; CTRL and wheel zooms.',
+  'WEATHER AND TIME OF DAY SAY WHAT THEY ARE, and nothing else.',
+  'ONE SELF-REVIVE PER RAID, on F. No item needed, and only the once.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -3295,15 +3303,17 @@ function navReachable(map,x,y){
 // Rain cuts noise BOTH ways, which is the interesting trade: it hides your steps
 // and it hides theirs.
 var WEATHER=[
-  {id:'clear',name:'CLEAR',view:1,noise:1,lights:1,rain:0,
+  {id:'clear',name:'Clear',view:1,noise:1,lights:1,rain:0,
    line:'Still air. Nothing out here is covering you.'},
-  {id:'rain',name:'RAIN',view:0.90,noise:0.60,lights:1,rain:1,
+  {id:'partly',name:'Partly Cloudy',view:1,noise:1,lights:1,rain:0,turns:1,
+   line:'Partly cloudy. This will not hold.'},
+  {id:'rain',name:'Rainy',view:0.90,noise:0.60,lights:1,rain:1,
    line:'Rain. It covers your noise, and theirs.'},
-  {id:'fog',name:'FOG BANK',view:0.60,noise:1,lights:0.85,rain:0,
+  {id:'fog',name:'Foggy',view:0.60,noise:1,lights:0.85,rain:0,
    line:'Fog bank. You will not see them coming.'},
-  {id:'blackout',name:'BLACKOUT',view:1,noise:1,lights:0.18,rain:0,
+  {id:'blackout',name:'Blackout',view:1,noise:1,lights:0.18,rain:0,
    line:'Grid is down. Every lamp on the map is dead.'},
-  {id:'storm',name:'STORM',view:0.80,noise:0.48,lights:0.55,rain:2,lightning:true,
+  {id:'storm',name:'Storming',view:0.80,noise:0.48,lights:0.55,rain:2,lightning:true,
    line:'Storm. The lightning will show you to everything out there.'}
 ];
 // WEATHER THAT TURNS. It was rolled once at the drop and then it was a fact
@@ -3345,6 +3355,13 @@ function wxTick(dt){
   if(G.wxAt>0) return;
   var nw=pickWeather(),guard=0;
   while(nw.id===G.wx.id&&guard++<12) nw=pickWeather();
+  // v6.67, his definition of partly cloudy. The sky it breaks into is rain or storm
+  // rather than whatever the table says, so reading it on the drop actually tells you
+  // something. One extra rr() draw, and only on raids that started partly cloudy.
+  if(G.wx&&G.wx.id==='partly'){
+    var _want=(rr()<0.5)?'rain':'storm';
+    for(var _wi=0;_wi<WEATHER.length;_wi++) if(WEATHER[_wi].id===_want){ nw=WEATHER[_wi]; break; }
+  }
   if(nw.id===G.wx.id) return;
   G.wxNext=nw; G.wxT=0;
   G.wxTurnsLeft--;
@@ -3366,10 +3383,10 @@ function wxTick(dt){
 // variance. Tripled. The rule stands: hue moves a lot, lightness barely at all.
 var TODS=[
   {id:'dawn',name:'DAWN',add:'#4a1a55',addA:.26,dim:'rgba(30,20,50,0.10)',lights:0.7,line:'Dawn. The lamps are still fighting the light.'},
-  {id:'morning',name:'MORNING',add:'#10360e',addA:.16,dim:null,lights:0,line:'Morning. Clean light, long day.'},
-  {id:'noon',name:'NOON',add:'#26260a',addA:.10,dim:null,lights:0,line:null},
-  {id:'golden',name:'GOLDEN HOUR',add:'#5c2c06',addA:.30,dim:null,lights:0.25,line:'Golden hour. Everything glows, including you.'},
-  {id:'dusk',name:'DUSK',add:'#42125c',addA:.24,dim:'rgba(18,10,36,0.18)',lights:1,line:'Dusk. The lamps are coming on.'}
+  {id:'morning',name:'8am',add:'#10360e',addA:.16,dim:null,lights:0,line:null},
+  {id:'noon',name:'noon',add:'#26260a',addA:.10,dim:null,lights:0,line:null},
+  {id:'golden',name:'6pm',add:'#5c2c06',addA:.30,dim:null,lights:0.25,line:null},
+  {id:'dusk',name:'8pm',add:'#42125c',addA:.24,dim:'rgba(18,10,36,0.18)',lights:1,line:null}
 ];
 function tod(){ return (G&&G.tod)||TODS[2]; }
 // HOW LONG HAVE YOU BEEN OUT, v3.47, and it was wrong under one contract term in
@@ -3427,7 +3444,7 @@ function pickTod(wx){
   return t;
 }
 function pickWeather(){
-  var id=rollTable([['clear',34],['rain',22],['fog',18],['blackout',13],['storm',13]]);
+  var id=rollTable([['clear',26],['partly',16],['rain',20],['fog',16],['blackout',10],['storm',12]]);
   for(var i=0;i<WEATHER.length;i++) if(WEATHER[i].id===id) return WEATHER[i];
   return WEATHER[0];
 }
@@ -7951,6 +7968,11 @@ window.addEventListener('keydown',function(e){
   if(e.code==='Backquote'){ e.preventDefault(); toggleTune(); return; }
   if(state==='hub'){
     keys[e.code]=true;
+    // v6.67, his note: ENTER dismisses the update log. Taken before anything else on
+    // the floor, and it returns, so the key cannot also do the thing behind the card.
+    if((e.code==='Enter'||e.code==='NumpadEnter')&&!WNSEEN&&!e.repeat){
+      WNSEEN=1; e.preventDefault(); return;
+    }
     if(['Space','KeyE','Tab','KeyI'].indexOf(e.code)>=0) e.preventDefault();
     // Escape backs out of the terminal panel and returns you to the floor
     if(e.code==='Escape') document.getElementById('hub').classList.remove('on');
@@ -14068,7 +14090,7 @@ var _cdone=contractExtract(G.bag,haul);
     }
     if(haul>P.best) P.best=haul;
     lines.push(G.bag.length+' items secured for '+'$'+haul.toLocaleString()+'');
-    lines.push(Math.round(G.player.hp)+'/100 integrity remaining');
+    lines.push('You walked out with '+Math.round(G.player.hp)+' of 100 health');
   } else if(how==='dead'){
     P.died++;
     T.deathDistExtract=Math.round(dist(G.player,G.active));
@@ -17584,9 +17606,7 @@ _tgt=G.active; _lbl='EXTRACTION';
   // panel that jumps around is worse than one slightly lower down.
   (function(){
     var MW=(G.wx||WEATHER[0]), MT=tod(), rows=[];
-    rows.push({k:'TIME OF DAY',v:MT.name+', '+
-      (MT.lights>=1?'lamps on':(MT.lights>0?'lamps coming on':'full daylight'))+
-      '. Look only, it changes nothing.',c:'#9aa8d0'});
+    rows.push({k:'TIME OF DAY',v:MT.name,c:'#9aa8d0'});
     var wv=[];
     if(MW.view!==1) wv.push('sight '+(MW.view<1?'-':'+')+Math.round(Math.abs(1-MW.view)*100)+'%');
     // HIS NOTE, v3.57: "shouldn't it be 'all characters are 40% quieter'
@@ -18377,7 +18397,7 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     ctx.fillText(Math.max(0,Math.ceil(p.downT))+'s',W/2+124,H/2-9);
     ctx.font=FS(TYPE.label); ctx.fillStyle='#e8d5d2';
     ctx.fillText(p.revived?'Self-revive spent. Crawl or bleed out.':
-      '[F] SELF-REVIVE, one a raid',W/2,H/2+6);
+      '[F] SELF-REVIVE, one per raid',W/2,H/2+6);
     // HIS RUN #44: "couldn't call the beacon when downed in the extraction
     // circle". Driven before touching anything: THE CALL WORKS FROM THE FLOOR
     // and has since v2.30, E passes through and 1.6 held seconds set the
@@ -20311,11 +20331,36 @@ function hubWall(o,x,y,w,h,d){ o.push({x:x,y:y,w:w,h:h,d:d===undefined?0:d}); }
 // random, so the Undercroft looks like the same room every time you come down instead
 // of reshuffling its population behind your back. Idle motion is a slow bob and an
 // occasional turn, driven off HB.t, so they read as alive without any thinking.
-function buildHubCrowd(stations){
+function buildHubCrowd(stations,walls){
   var crowd=[], used=0;
+  // Passed in, never read off the global: the first call happens while HB is still null.
+  var WALLS=walls||[];
   var SKINS=['porcelain','fair','olive','tan','bronze','umber','ebony'];
-  var HAIRS=['blonde','dark','red','white','green'];
+  // v6.67: thirteen, up from five. Colour and cut both, since the draw takes a single
+  // token; anything it does not recognise falls through to its default crop, so a new
+  // name here is safe even before the renderer learns it.
+  var HAIRS=['blonde','dark','red','white','green','shaved','crop','mop','braid',
+             'tail','locs','bun','fringe'];
   var HATS=['none','band','phones','mask','none','visor','pigtails','crown','none'];
+  // Everything a body must not stand on. Walls are grown by the body radius so a
+  // shoulder cannot clip a pier, and the stations keep their whole disc clear.
+  var BODYR=13;
+  function spotFree(x,y,swing,placed,walls,stns){
+    if(x<34||y<34||x>HUBW-34||y>HUBH-34) return false;
+    var pad=BODYR+(swing||0);
+    for(var wI=0;wI<walls.length;wI++){
+      var W2=walls[wI];
+      if(x>W2.x-pad&&x<W2.x+W2.w+pad&&y>W2.y-pad&&y<W2.y+W2.h+pad) return false;
+    }
+    for(var sI=0;sI<stns.length;sI++){
+      var S2=stns[sI];
+      if(Math.hypot(x-S2.x,y-S2.y)<S2.r+BODYR) return false;
+    }
+    for(var pI=0;pI<placed.length;pI++){
+      if(Math.hypot(x-placed[pI].x,y-placed[pI].y)<BODYR*2.1) return false;
+    }
+    return true;
+  }
   // FIXED walks the lists in order, so the six who work the stations are the same six
   // every time you come down. ROLLED picks at random, for everyone just passing through.
   function nextIdent(){
@@ -20335,27 +20380,52 @@ function buildHubCrowd(stations){
   for(var i=0;i<stations.length;i++){
     var st=stations[i], nx=nextIdent();
     var side=(st.x>350)?1:-1;
-    crowd.push({x:clamp(st.x+side*40,30,HUBW-30), y:clamp(st.y+26,30,HUBH-30),
+    // Preferred spot first, then the mirror side, then a short walk around the post.
+    // Deterministic order, so the six stay put between visits the way he asked.
+    var cands=[{x:st.x+side*40,y:st.y+26},{x:st.x-side*40,y:st.y+26},
+               {x:st.x+side*40,y:st.y-26},{x:st.x,y:st.y+44},{x:st.x,y:st.y-44}];
+    var pick=null;
+    for(var ci=0;ci<cands.length&&!pick;ci++)
+      if(spotFree(cands[ci].x,cands[ci].y,0,crowd,WALLS,[])) pick=cands[ci];
+    if(!pick) pick={x:clamp(st.x+side*40,34,HUBW-34), y:clamp(st.y+26,34,HUBH-34)};
+    crowd.push({x:pick.x, y:pick.y,
                 face:side>0?3.14:0, ident:nx.id, coat:nx.id.coat, look:nx.look, t0:i*1.7, talk:0});
   }
   // AND THE LOOSE CROWD, rolled fresh every visit: where the groups stand, how many are
   // in each, who they are and what they look like. Three or four huddles of two to four.
   var nRings=3+((Math.random()*2)|0);
   for(var g=0;g<nRings;g++){
-    var R={x:120+Math.random()*(HUBW-240), y:130+Math.random()*(HUBH-260)},
-        cnt=2+((Math.random()*3)|0), r=20+Math.random()*8;
+    // A ring centre that itself has room. Without this the whole huddle lands on a
+    // counter and every member of it is then rejected one at a time.
+    var R=null;
+    for(var rt=0;rt<60&&!R;rt++){
+      var cx=120+Math.random()*(HUBW-240), cy=130+Math.random()*(HUBH-260);
+      if(spotFree(cx,cy,34,crowd,WALLS,stations)) R={x:cx,y:cy};
+    }
+    if(!R) continue;
+    var cnt=2+((Math.random()*3)|0), r=22+Math.random()*8;
     for(var k=0;k<cnt;k++){
       var a=(k/cnt)*6.2832+Math.random()*0.5;
       var nx2=rolledIdent();
-      crowd.push({x:clamp(R.x+Math.cos(a)*r,30,HUBW-30),
-                  y:clamp(R.y+Math.sin(a)*r*0.6,30,HUBH-30),
+      var amp2=6+Math.random()*10;
+      // Try the ideal spot on the ring, then nudge outward around it. The pacing
+      // amplitude is part of the test, so a body cannot walk into the wall it cleared
+      // while standing still.
+      var px2=null,py2=null;
+      for(var tr=0;tr<60&&px2===null;tr++){
+        var aa=a+(tr?(Math.random()-0.5)*1.6:0), rr2=r+(tr?Math.random()*26:0);
+        var tx2=R.x+Math.cos(aa)*rr2, ty2=R.y+Math.sin(aa)*rr2*0.6;
+        if(spotFree(tx2,ty2,amp2,crowd,WALLS,stations)){ px2=tx2; py2=ty2; }
+      }
+      if(px2===null) continue;
+      crowd.push({x:px2, y:py2,
                   face:a+3.1416, ident:nx2.id, coat:nx2.id.coat, look:nx2.look,
                   t0:Math.random()*6, talk:1,
                   // WHAT THEY ARE DOING, his note. A talker turns and gestures on the
                   // spot; a worker paces a short beat between two points. Both are
                   // driven off HB.t so they cost nothing and need no state machine.
                   job:(Math.random()<0.35)?'work':'talk',
-                  hx:0, hy:0, amp:6+Math.random()*10, rate:0.5+Math.random()*0.5});
+                  hx:0, hy:0, amp:amp2, rate:0.5+Math.random()*0.5});
     }
   }
   return crowd;
@@ -20395,7 +20465,12 @@ function buildHub(){
   // press E" still does the most common thing at every station.
   var stations=[
     {id:'lift',x:350,y:105,r:48,label:'ASCENT LIFT',sub:'to the surface',c:'#4de3d0',
-acts:{KeyE:['go up',function(){ openLift(); }],
+acts:{KeyE:['go up',function(){
+             // v6.67, his note: the one irreversible button in the room asks first.
+             askConfirm('Are you sure you are ready to ascend?',
+                        'Everything on your belt and in your backpack goes up with you.',
+                        function(){ openLift(); });
+           }],
            // v6.18: quick ascent means skip the SCREEN, not discard what you packed.
            // This called startRaid directly and never set kitChosen, so the
            // standard-kit fallback fired and the loadout stayed in the vault. The
@@ -20472,7 +20547,7 @@ stations.forEach(function(st){
   lights.push({x:140,y:390,r:130,c:'#ffc878',i:.20,f:2.2,fl:true});
   lights.push({x:560,y:120,r:130,c:'#ffc878',i:.20,f:4.4,fl:true});
   return {walls:w,segs:segs,stations:stations,lights:lights,
-    crowd:buildHubCrowd(stations),
+    crowd:buildHubCrowd(stations,w),
     player:{x:590,y:400,r:11,face:-1.5708,bob:0,moving:false},
     near:null,t:0,eLock:false};
 }
@@ -20559,6 +20634,16 @@ function updateHubWorld(dt){
     }
   }
   if(!keys['KeyE']&&!keys['KeyR']&&!keys['KeyF']&&!keys['KeyT']) HB.eLock=false;
+}
+// ASK BEFORE THE DOOR CLOSES, v6.67, his note on the lift. One box for the whole
+// game. onYes runs on YES; anything else just closes, so declining is always safe.
+var ASKYES=null;
+function askConfirm(q,sub,onYes){
+  var qq=document.getElementById('askq'), ss=document.getElementById('asksub');
+  if(qq) qq.textContent=q;
+  if(ss) ss.textContent=sub||'';
+  ASKYES=onYes||null;
+  openModal('askmodal');
 }
 // A place already called "THE something" brings its own article.
 function placeName(n){
@@ -20768,7 +20853,7 @@ function drawHubHUD(ox,oy){
   if(!WNSEEN){
     ctx.font=FS(TYPE.label);
     var wnTx=0;
-    for(var wm=0;wm<WHATSNEW.length;wm++) wnTx=Math.max(wnTx,ctx.measureText(WHATSNEW[wm]).width);
+    for(var wm=0;wm<WHATSNEW.length;wm++) wnTx=Math.max(wnTx,ctx.measureText((wm+1)+'. '+WHATSNEW[wm]).width);
     var wnW=Math.min(W-LH(40),Math.max(LH(430),Math.ceil(wnTx)+LH(36)));
     var wnH=LH(56)+WHATSNEW.length*LH(17);
     var wnX=W/2-wnW/2, wnY=H/2-wnH/2-LH(20);
@@ -20785,9 +20870,9 @@ function drawHubHUD(ox,oy){
     ctx.fillText('NEW IN v'+WHATSNEW_VER,W/2,wnY+LH(22));
     ctx.font=FS(TYPE.label); ctx.fillStyle='#cdd6dd';
     for(var wq=0;wq<WHATSNEW.length;wq++)
-      ctx.fillText(WHATSNEW[wq],W/2,wnY+LH(42)+wq*LH(17));
+      ctx.fillText((wq+1)+'. '+WHATSNEW[wq],W/2,wnY+LH(42)+wq*LH(17));
     ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
-    ctx.fillText('walk to dismiss',W/2,wnY+wnH-LH(8));
+    ctx.fillText('press ENTER or walk to dismiss',W/2,wnY+wnH-LH(8));
     ctx.textAlign='left';
     if(p.moving){ WNSEEN=1; }
   }
@@ -20807,7 +20892,7 @@ function showScreen(s){
     // v6.64, his note: the people milling about are different every time you come down.
     // The six who work the stations are rebuilt too and come out the same, because they
     // walk the identity lists in order rather than rolling.
-    else HB.crowd=buildHubCrowd(HB.stations);
+    else HB.crowd=buildHubCrowd(HB.stations,HB.walls);
     if(!hubGround) hubGround=bakeHubGround();
     HB.player.x=350; HB.player.y=250; HB.player.face=-1.5708;
     HB.near=null; HB.eLock=true; keys={};
@@ -24279,6 +24364,17 @@ document.getElementById('sectordeploy').onclick=function(){
 };
 document.getElementById('closesector').onclick=function(){
   document.getElementById('sectormodal').classList.remove('on');
+};
+// v6.67: the confirm box. YES runs the stored callback, and the callback is cleared
+// before it runs so a question can never be answered twice by a double click.
+document.getElementById('askyes').onclick=function(){
+  var f=ASKYES; ASKYES=null;
+  document.getElementById('askmodal').classList.remove('on');
+  if(f) f();
+};
+document.getElementById('askno').onclick=function(){
+  ASKYES=null;
+  document.getElementById('askmodal').classList.remove('on');
 };
 
 // HIS NOTE, same message: "maybe we need another thing in the undercroft called
