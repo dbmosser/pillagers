@@ -24657,3 +24657,49 @@ each body 60 tries and then skips it, so a room with far more people than this c
 quietly seat fewer of them than intended, and I have only measured it at the sizes it
 actually produces (13 to 22). The gold guns, the stats screen, the hire panel and the
 Superhot mode he asked for during this session are all untouched and remain open.
+
+## v6.68 - the outcome screen stops talking like a machine, and you come home to the lamp
+
+Six of his notes, all on what the game says and where it puts you.
+
+WHERE YOU LAND. Coming back from a raid dropped you in the middle of the concourse
+regardless of how the raid ended. You now arrive standing in the lower left light circle
+every time, extract, death or abandon alike. That is the lamp at 140,390 in room units,
+which is the one he meant. Verified at all three endings.
+
+THE SURFACE CONTACT LINE IS GONE. On a clear day the opening line was pure controls
+text, and after v6.67 nulled the time of day prose it was the only thing that branch
+could say. Weather still announces itself, because a storm is a condition to plan around;
+a clear sky now says nothing at all, which is the right amount to say about a clear sky.
+
+THE KEY LEGEND STARTS OPEN. It opened for your first three raids and then hid itself
+forever, which is backwards: the legend is worth most to someone who has been away.
+
+THE MAINFRAME LINE MOVED DOWN. His note: it is a bonus, so it should not be the headline.
+The payout still lands exactly where it did, because it has to be credited before
+anything reads the balance; only the printed line moves, down beside the other totals.
+
+NO MORE "added to your armoury". The gun is still kept, it just stops narrating itself.
+
+TIME READS LIKE TIME. "263s on surface" is now "4 mins 23 seconds on the surface", which
+is his own example and was measured against it. Singulars are handled ("1 min 1 second"),
+and a whole number of minutes drops the seconds after I measured "2 mins 0 seconds",
+which nobody says out loud.
+
+REAL TELEMETRY THIS TICK, and it settles the accuracy question. Runs 77 and 78 on v6.65
+are both extracts at 77% and 46% accuracy, with first contact at 172s and 127s. That is a
+healthy range, and it confirms the 0% on runs 73 to 76 was the statue problem rather than
+a shooting bug: he was firing at motionless figures at range and missing, exactly as he
+should have. Both those runs predate the v6.66 fix, so the fix has not yet been exercised
+by him at all. Also visible: he never crouches in any recorded run, and he was down to
+2,341 credits after the six times price rise, from 128,921.
+
+Verified: parse PASS. Four maps at seed 4242 with entity counts 86/87/58/72 and container
+counts 246/193/152/216, drawErr null on all four. All three endings through the outcome
+screen and back to the hub, each landing in the lamp. Hub frames and stage render. Legend
+reads open on arrival, opening message empty on clear weather, outcome screen carries no
+armoury line and prints the mainframe line second from last.
+
+Not verified: how the outcome screen looks with a long contract list and a full mercenary
+settlement at the same time. I moved one line to the bottom of a ledger whose length
+varies a lot, and I have only seen it at the short end.

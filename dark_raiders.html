@@ -968,7 +968,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='6.67';
+var VER='6.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7823,7 +7823,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
     msg:'',msgT:0,over:null,shake:0,marked:0,nearContainer:null,bagOpen:false,
   // v6.02: the key panel is for someone learning the keys. After three raids it
   // steps down to the one line hint, and H still cycles all three states.
-  legendOn:((P&&P.runs>=3)?0:1),sprinting:false,
+  legendOn:1,sprinting:false,     // v6.68, his note: always open on arrival. H cycles it.
     mercOrder:'loot',mercHold:null,
     tel:{weapon:wep.name,shots:0,hits:0,reloads:0,heals:0,downs:0,revives:0,
       kills:{sentry:0,crawler:0,raider:0,snitch:0,warden:0,listener:0,howler:0,bulwark:0,choir:0},
@@ -7946,9 +7946,9 @@ function startRaid(){
   showScreen('raid');
   // Lead with the weather, because it is a condition you plan around rather
   // than decoration, and the controls line is the same every single raid.
-say(G.wx.id==='clear'
-    ? (G.tod&&G.tod.line?G.tod.line:'Surface contact. TAB for inventory, E to search, M for the map.')
-    : G.wx.line);
+// v6.68, his note: no surface contact line. Weather still announces itself; a clear sky
+// now says nothing at all, which is the correct amount to say about a clear sky.
+if(G.wx.id!=='clear'&&G.wx.line) say(G.wx.line);
   for(var _rv=0;_rv<G.ents.length;_rv++){
     if(G.ents[_rv].rival){
       G.tel.rivalMet=1;
@@ -13923,11 +13923,14 @@ silentExit:T.silentExit||0,
   // either way. A bad mercenary run can genuinely put you in debt.
   // THE MAINFRAME PAYS, v3.80: per extraction, never per hour. The line on the
   // outcome screen is what makes a rack feel like a thing you own.
+  var _mfLine=null;
   if(!G.sim&&how==='extract'&&(P.racks||0)>0){
     var _mfPay=(P.racks||0)*RACK_PAY;
     P.credits+=_mfPay;
     if(G.tel) G.tel.rackPay=_mfPay;
-    lines.push('<span style="color:var(--coolant)">MAINFRAME: '+P.racks+' rack'+(P.racks===1?'':'s')+' fenced the data. +'+'$'+_mfPay.toLocaleString()+', banked.</span>');
+    // v6.68, his note: it is a bonus, so it reads with the totals at the bottom rather
+    // than as the headline. Paid here, printed later.
+    _mfLine='<span style="color:var(--coolant)">MAINFRAME: '+P.racks+' rack'+(P.racks===1?'':'s')+' fenced the data. +'+'$'+_mfPay.toLocaleString()+', banked.</span>';
   }
   if(P.merc&&!G.sim){
     var mercEnt=null;
@@ -14078,10 +14081,8 @@ var _cdone=contractExtract(G.bag,haul);
     // because owning one made it the permanent equipped gun from then on.
     var kept=carriedGuns(G.player);
     for(i=0;i<kept.length;i++){
-      if(P.weapons.indexOf(kept[i].id)<0){
-        P.weapons.push(kept[i].id);
-        lines.push(kept[i].name+' added to your armoury');
-      }
+      // v6.68, his note: no line about it. The gun is still kept, silently.
+      if(P.weapons.indexOf(kept[i].id)<0) P.weapons.push(kept[i].id);
     }
     if(kept.length) P.equipped=kept[0].id;
     for(i=0;i<THROWKEYS.length;i++){
@@ -14174,9 +14175,14 @@ var _cdone=contractExtract(G.bag,haul);
     lines.push('Run abandoned. '+'$'+haul.toLocaleString()+' left behind.');
   }
   var acc=T.shots?Math.round(T.hits/T.shots*100):0;
+  if(_mfLine) lines.push(_mfLine);
+  // v6.68, his note: minutes and seconds, not a raw second count.
+  var _tsec=Math.round(elapsed()), _tm=Math.floor(_tsec/60), _ts=_tsec%60;
+  var _tstr=_tm?(_tm+' min'+(_tm===1?'':'s')+(_ts?(' '+_ts+' second'+(_ts===1?'':'s')):''))
+               :(_ts+' second'+(_ts===1?'':'s'));
   lines.push('<span style="color:var(--ash)">'+T.containers+' containers &middot; '+acc+'% accuracy &middot; '+
     (T.kills.sentry+T.kills.crawler+T.kills.raider+T.kills.snitch)+' kills &middot; '+
-    Math.round(elapsed())+'s on surface</span>');
+    _tstr+' on the surface</span>');
 
   pendingRun={
     // WHICH BUILD THIS RUN WAS PLAYED ON, added v1.90, and it cost a session to
@@ -20894,7 +20900,9 @@ function showScreen(s){
     // walk the identity lists in order rather than rolling.
     else HB.crowd=buildHubCrowd(HB.stations,HB.walls);
     if(!hubGround) hubGround=bakeHubGround();
-    HB.player.x=350; HB.player.y=250; HB.player.face=-1.5708;
+    // v6.68, his note: always the lower left light circle, whether you extracted, died
+    // or walked away. 140,390 is the lamp at that corner, so you arrive standing in it.
+    HB.player.x=140; HB.player.y=390; HB.player.face=-0.9;
     HB.near=null; HB.eLock=true; keys={};
     renderHub();
   }
