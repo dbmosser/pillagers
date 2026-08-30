@@ -25964,3 +25964,29 @@ Not verified: the remaining audit items are now the fixture hooks that reference
 symbols (__tickFx reading G.tracers among them) and a handful of data-table entries. The
 hooks live in tools/mkfixture.ps1 rather than the game, so they cannot affect him and are
 lowest priority of everything open.
+
+## v6.96 - all six landmarks placed
+
+The last two archetypes from the LANDMARKS pool get homes, on the same rule as v6.92:
+character match first, never forced.
+
+  GREYWATER DAM   DROWNED VILLAGE -> FLOODED PLAZA   half in the reservoir already, loot
+                                                     bulk, and the plaza is the one
+                                                     archetype written for standing water:
+                                                     open ground, pillars, nothing to hide
+                                                     behind, crossing it is loud.
+  THE QUARRY      THE CRUSHER     -> COLLAPSED TOWER the broken ring with rubble inside is
+                                                     industrial ruin, and the crusher is
+                                                     already the quarry's centrepiece at
+                                                     density 1.9.
+
+All six hand authored places are now in the world: town square, tower, cargo yard,
+checkpoint, relief station and flooded plaza, spread across the four maps by what each map
+already was. Measured in the built geometry: clinic 9 pieces and plaza 10 on the dam,
+townsq 9 on the quarter, yard 12 on cold storage, checkpoint 9 and tower 13 on the quarry.
+
+Verified: parse PASS. Four maps at seed 4242, entity counts 86/87/58/72, zero draw errors,
+__hud clean. All three endings through the outcome screen. Hub frames and stage render.
+
+Not verified: the same thing as v6.92, what they look like. I saw the town square and it
+reads; the other five exist as geometry I have measured and never looked at.
