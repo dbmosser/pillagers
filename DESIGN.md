@@ -24035,3 +24035,71 @@ Not verified: I checked two saves rather than the twelve the older hostile-profi
 used, choosing the pre-cosmetics case and the everything-wrong case as the two that
 bound the range. A save written by a version BETWEEN v6.43 and v6.46 would sit between
 those two and is untested specifically.
+
+## v6.49 - HIS FLIGHT RECORDER, AND A SHOP FOOTNOTE THAT WAS LYING
+
+Two new exports arrived, 71 and 72 runs, authenticated as real play: durations 27 to 567
+seconds, movement 461 to 26,970, real killers. They carry the whole history, so the new
+material is the tail and the in-run notes. Every note checked against the CURRENT code
+before touching anything, which is the rule, and most of them were already closed.
+
+CLOSED ALREADY, NOT RE-FIXED:
+
+  "BEACON INBOUND, lets change the vernacular to EXTRACTION INCOMING." Done. The only
+  BEACON INBOUND left in the file is inside a comment describing the old wording.
+
+  "If i'm half way through pulling the extraction and i get downed, i should have to
+  start over." Done and switched on: downResetsPull defaults to 1 and fires at the down.
+
+  "The listener is broken, it sticks to the player and there's no chance to kill it."
+  His OWN LATER RUNS overturn this: runs #68 and #69 both carry the tag "Listener
+  beatable", and "Listener unfair" appears zero times in the whole export.
+
+  "The music needs to be more constant and less sporadic when it's actually playing, it
+  should still cut out during combat." Measured rather than assumed. Music is wanted in
+  the Undercroft, NOT wanted in a raid, and NOT wanted on the outcome screen, driven and
+  confirmed in all four states. So it already cuts for pause, death and extract, because
+  it never plays up there at all. And the hub theme cannot be sporadic: the arpeggio
+  sounds on every even sixteenth of every bar, so there is no silent step in the loop.
+  The sporadic music he was describing was the reactive RAID music, deleted at v5.50.
+  Three themes, one picked at random each time, and Settings has a Music row of
+  UNDERCROFT or OFF.
+
+  "There need to be elite guns that you can't buy, you can only find on maps." ALREADY
+  TRUE. Two guns carry rarity elite, the Whisper at 3,400c and the Meridian Lance at
+  4,600c, and they are the two most valuable in the game. The shop stocks four guns and
+  neither is among them; Wirt's pool holds seven and neither is among those. They cannot
+  be bought from anyone. And they are genuinely findable: across 40 generated raids and
+  7,997 containers the Whisper was placed 94 times and the Lance 61.
+
+WHAT WAS ACTUALLY BROKEN, and it is the reason he asked for a feature he already had:
+
+  NOTHING TOLD HIM. The one line in the game that discusses this is the footnote on a
+  weapon in the shop, and it never mentioned either elite gun. WORSE, IT WAS WRONG: it
+  said the heavy end is not stocked and then listed "a Rifle" among the things to go
+  elsewhere for, while the counter sells the Auto Rifle for 3,800c and always has. A
+  player reading that footnote while looking at the Auto Rifle on the shelf was being
+  told it was not there. It now names the three guns Wirt deals and states plainly that
+  the Whisper and the Meridian Lance are never sold by anyone.
+
+NO SHIP, his note at run #61: "get rid of any references to 'ship', i never even said
+the extraction was a ship, use consistent extraction language." Three survived and are
+gone: "The ship left without you" is now "Extraction left without you"; the prompt on
+the pad itself, the most-read extraction string in the game, was "[E] BOARD" and is now
+"[E] EXTRACT", matching the title screen's "3. EXTRACT" and the outcome screen's
+EXTRACTED; and the silent departure's "No beacon, no noise" is now "Nothing called, no
+noise". Zero player-facing uses of the word ship remain.
+
+Verified: parse PASS at v6.49; the shop driven and the Auto Rifle selected, with its
+footnote read back off the live panel naming the two elite guns and no longer claiming
+the Rifle is unstocked; the elite guns counted across 40 raids and 7,997 containers;
+music state driven in hub, raid, outcome screen and back; four maps 86/87/58/72 entities
+and, at seed 4242, 246/193/152/216 containers; all three endings through the outcome
+screen to a drawn hub; hub, renderStage and the export builder; the extraction pad drawn
+in its open state; pin audit clean.
+
+Not verified: I read the new extraction strings out of the source and drew the pad state
+without capturing the pad prompt at a readable size, so "[E] EXTRACT" is confirmed
+present and drawn rather than confirmed legible. The seasons-to-levels note from the
+same export is untouched and remains open; it is a design change rather than a rename
+and I did not start it in this tick.
