@@ -27267,3 +27267,42 @@ and stage render.
 Not verified: a feed where the SAME attacker returns after an interruption (the
 grouping is consecutive-only by design, so he appears twice, which is the honest
 reading); the x-count against pad-only play.
+
+## v7.37 - nine confirmed bugs from the thirteen-agent audit
+
+The idle-policy audit (six finders, six adversarial verifiers, one synthesis) returned
+its worklist; this build ships Section 1, the live-behaviour bugs, every one
+independently CONFIRMED before a line moved.
+
+1. MY REGRESSION, THE WORST: every hero hairstyle was DEAD. v7.26 assigned _HCUT inside
+   the very block whose guard reads it, so the guard tested a hoisted undefined and the
+   hero has drawn no hair since. My own verification checked the worn value, not the
+   pixels, and its Not verified line named exactly this hole. The assignment moved up
+   beside HAT; a red-pigtailed hero now renders on the floor, screenshotted.
+2. The Settings text-size click used indexOf on the CONTINUOUS auto scale (1.2 at
+   1080p), got -1, and the first click SHRANK the text to 100 percent. It now steps the
+   same epsilon ladder as the -/= keys and carries the menus with it (which also makes
+   its own hint honest). Measured: auto 1.2 clicks to 1.25 with menuZoom riding.
+3. Two clamps for one number: the HUD keys allowed menuZoom 0.5-3.0 while the wheel
+   allows 0.7-1.6, so a key-set 2.6 broke the fixed frames and snapped 40 percent on
+   the next wheel tick. The key path honours the wheel's bounds now.
+4. The pause and outcome screens were the only DOM surfaces menu zoom never reached;
+   applyMenuZoom covers them.
+5. The pause controls line rendered 878px wide inside its 780px frame; capped at 730.
+6. #askmodal painted BOTH the full-page window frame and its own card; the frame is
+   cancelled the same way the outcome screen does it.
+7. The tall-viewport media query SHRANK vendor tiles at the 1080p target (96px cap
+   under a 118px base); the line is gone and the base serves every height.
+8. The three fixed 1180px station frames (terms, gamble, bar) clipped without scroll at
+   short windows; clamped to the viewport with min().
+9. (Deferred from the list: the shop locked-line orphan, flagged as possibly born from
+   a mid-audit edit collision - re-reading that region before touching it.)
+
+Verified: parse PASS v7.37. Hero pigtails screenshotted mid-floor in red; the text-size
+click measured 1.2 to 1.25 with menuZoom 1.042; the zoom cap held under key hammering.
+Four maps at seed 4242, entities exactly 86/87/58/72, drawErr null. Three endings with
+headline assertions, hub and stage render.
+
+Not verified: the short-window frame clamps visually (the pane resists viewport
+emulation mid-session); each remaining hero cut on the floor beyond pigtails (geometry
+shared with the crowd, which draws all eight).

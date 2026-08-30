@@ -151,7 +151,7 @@
      upscaling a rasterised icon by 1.4x blurs it and buys nothing. */
   @media (min-height:880px){
     .invgrid{ grid-template-columns:repeat(auto-fill,minmax(112px,1fr)) !important; gap:11px !important; }
-    .vendgrid{ grid-template-columns:repeat(auto-fill,minmax(72px,96px)) !important; gap:9px !important; }
+
     #safegrid{ grid-template-columns:repeat(auto-fill,minmax(66px,1fr)) !important; }
   }
   .invgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr));
@@ -394,6 +394,7 @@
     box-shadow:0 0 0 4px rgba(255,192,74,.22) !important; }
   /* v6.82, his note: a one question dialog is a card, not a page. */
   #askmodal{ align-items:center; justify-content:center; padding:24px; }
+  #askmodal::before{ content:none; }
   #askmodal .askcard{ width:min(560px,90vw); box-sizing:border-box;
     background:linear-gradient(180deg,#141a33,#0f1428);
     border:1px solid var(--steel-hi); border-radius:5px;
@@ -423,15 +424,15 @@
   #opane_mf{ max-width:1080px; width:100%; margin:0 auto; }
   #opane_rew{ max-width:1080px; width:100%; margin:0 auto; }
   #termsmodal{ align-items:center; justify-content:center; }
-  #termsmodal::before{ inset:50% auto auto 50%; width:1180px; height:600px; transform:translate(-50%,-50%); }
+  #termsmodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(600px,calc(100% - 28px)); transform:translate(-50%,-50%); }
   #termsmodal .msub, #termsmodal .plist, #termsmodal #termstotal{ max-width:1060px; width:100%; }
   #termsmodal .plist{ flex:0 1 auto; }
   #gamblemodal{ align-items:center; justify-content:center; }
-  #gamblemodal::before{ inset:50% auto auto 50%; width:1180px; height:620px; transform:translate(-50%,-50%); }
+  #gamblemodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(620px,calc(100% - 28px)); transform:translate(-50%,-50%); }
   #gamblemodal .msub, #gamblemodal .plist, #gamblemodal #gamble_line{ max-width:1060px; width:100%; }
   #gamblemodal .plist{ flex:0 1 auto; }
   #barmodal{ align-items:center; justify-content:center; }
-  #barmodal::before{ inset:50% auto auto 50%; width:1180px; height:640px; transform:translate(-50%,-50%); }
+  #barmodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(640px,calc(100% - 28px)); transform:translate(-50%,-50%); }
   #barmodal .msub, #barmodal .plist{ max-width:1060px; width:100%; }
   #barmodal .plist{ flex:0 1 auto; }
   #settingsmodal .msub{ font-size:12.5px; line-height:1.6; }
@@ -479,7 +480,7 @@
 
 <div class="pausebox" id="pausebox">
   <h3>RUN PAUSED</h3>
-  <div style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8">
+  <div style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">
     MOUSE aim &nbsp; LMB fire &nbsp; RMB steady aim &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT sprint &nbsp; CTRL crouch<br>
     E search / call beacon &nbsp; R reload &nbsp; F heal/revive &nbsp; Q/G throw &nbsp; TAB bag &nbsp; M map &nbsp; ` superhot &nbsp; SHIFT-` tuning &nbsp; P/ESC pause
   </div>
@@ -1054,7 +1055,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.36';
+var VER='7.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8437,7 +8438,7 @@ function raidKey(code,repeat,ev){
     else { for(var _usj=UISCALES.length-1;_usj>=0;_usj--){ if(UISCALES[_usj]<_uc-0.001){ _uni=_usj; break; } } }
     if(_uni<0) _uni=(_ud>0)?UISCALES.length-1:0;
     if(UISCALES[_uni]!==_uc){
-      P.menuZoom=clamp((P.menuZoom||1)*UISCALES[_uni]/_uc,0.5,3);
+      P.menuZoom=clamp((P.menuZoom||1)*UISCALES[_uni]/_uc,0.7,1.6);
       P.uiScale=UISCALES[_uni];
       saveProfile(); applyMenuZoom();
       try{ renderSettings(); }catch(_ue){}
@@ -15566,6 +15567,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var _HC=HAIRCOL[HERO?cosWorn('hair'):(st.hair||'blonde')]||HAIRCOL.blonde;
   var HAIRDARK=_HC[0],HAIRLIT=_HC[1],HAIRHI=_HC[2];
   var HAT=HERO?cosWorn('hat'):(st.hat||'none');
+  var _HCUT=HERO?cosWorn('cut'):null;
   // HER HAIR GOES DOWN FIRST, behind everything, so the head sits into it and the
   // mass reads past the shoulders the way it does in the reference.
   if(HERO&&(_HCUT==='long'||_HCUT==='pigtails')){
@@ -15580,8 +15582,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     // st is rebuilt every frame at the call site, so the lag has to live on the
     // entity itself. st.own is that entity; without one the hair simply does not
     // lag rather than silently pretending to.
-    var _HCUT=HERO?cosWorn('cut'):null;
-  var _HO=st.own||st;
+    var _HO=st.own||st;
     if(_HO.hairLag===undefined) _HO.hairLag=face;
     var _dA=face-_HO.hairLag;
     while(_dA> Math.PI) _dA-=6.2832;
@@ -24657,7 +24658,7 @@ document.addEventListener('keydown',function(e){
 function applyMenuZoom(){
   var z=(P&&P.menuZoom)||1;
   var hb=document.getElementById('hub'); if(hb) hb.style.zoom=z;
-  document.querySelectorAll('.modal').forEach(function(m){ m.style.zoom=z; });
+  document.querySelectorAll('.modal,.pausebox,.outcome').forEach(function(m){ m.style.zoom=z; });
 }
 document.addEventListener('wheel',function(e){
   // ANY menu surface, which is the fix: a modal on its own is enough, and the
@@ -25648,9 +25649,12 @@ function renderSettings(){
     '<div class="row"><div style="flex:1"><b>Mouse cursor</b><div class="hint">The cursor hides while you are aiming and returns with the bag. BACKSPACE forces it back at any time.</div></div>'+
     '<span class="hint">BKSP</span></div>';
   document.getElementById('set_text').onclick=function(){
-    var cur=UISCALES.indexOf(uiScale());
-    P.uiScale=UISCALES[(cur+1)%UISCALES.length];
-    saveProfile(); renderSettings();
+    var _uc=uiScale(),_ni=-1;
+    for(var _ui=0;_ui<UISCALES.length;_ui++){ if(UISCALES[_ui]>_uc+0.001){ _ni=_ui; break; } }
+    if(_ni<0) _ni=0;   // past the top wraps to the bottom, as the cycle always did
+    P.menuZoom=clamp((P.menuZoom||1)*UISCALES[_ni]/_uc,0.7,1.6);
+    P.uiScale=UISCALES[_ni];
+    saveProfile(); applyMenuZoom(); renderSettings();
   };
   document.getElementById('set_music').onclick=function(){
     var cur=MUSIC_MODES.indexOf(musicMode());
