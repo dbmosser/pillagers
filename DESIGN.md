@@ -24343,3 +24343,62 @@ Not verified: the roadmap is hidden rather than deleted, and it still renders in
 dev modal when BETA_HIDE_DEV is off, which is correct but means the questions are one
 constant away from a player screen again. I swept the eleven station panels and the
 stash; a surface that only appears mid-raid was not part of this sweep.
+
+## v6.57 to v6.61 - THE TACTICAL BELT, AND THE TWO PLACES IT WAS STILL A LIE
+
+A run of his notes that arrived one after another, each narrowing the last, until the
+shape was obvious:
+
+  "when something goes in the quickbar, then its no longer in the backpack"
+  "let's call the quick bar like 'tactical belt quickbar'"
+  "the player can have AS MANY OR AS FEW GUNS AS THEY WANT ON THE QUICKBAR"
+  "guns should work just like every other item, the gun selector under the quick use
+   bar in the stash should be removed"
+  "the belt key should change to the gun, not fire it"
+
+So the entire special case for guns is gone. There are no gun slots, no gun picker, and
+no rule about which key a gun may sit on. Nine slots, any item, and what is on the belt
+is not in the backpack. This DELETED more than it added, which is the right shape: v6.43
+built a gun-only control because guns were special, and three days later they are not.
+
+THE GUN PICKER AND ITS WIRING ARE DELETED, 88 lines, not switched off. My first attempt
+put an early return in each and left the bodies, and he was right to call that out: it
+is the same unreachable-code hazard v5.89 already cost us six builds over.
+
+TWO PLACES WHERE THE FEATURE LOOKED DONE AND WAS NOT, both found by driving the drag
+rather than trusting a green parse.
+
+  KEYS 1 AND 2 SILENTLY SWALLOWED EVERYTHING. planPut accepted the drop and wrote the
+  binding, and then hotPlanHTML redrew the belt and DELETED any assignment on those two
+  keys, every time, left over from when they were reserved gun slots. Keys 3 to 9 worked
+  perfectly, which is exactly the shape of bug that ships.
+
+  AND THE RAID DID NOT OBEY THE BELT AT ALL. hotbarSlots rebuilds the bar from scratch
+  each frame and carried an explicit rule that an assignment may never displace a gun,
+  so keys 1 and 2 in a raid were still the deployed primary and sidearm no matter what
+  he had put there. A gun dragged onto key 1 in the Undercroft handed him the issued
+  Scuttle on landing. That rule was written when guns were special and it is gone; an
+  assignment now wins on every slot, and a profile that has assigned nothing still gets
+  the old derived bar, which is what keeps a fresh save sane.
+
+A PATCH-TOOLING FAULT OF MINE, twice, and the fix is in the rules I was given. Two
+multi-line anchors failed to match text that was plainly there. The file has MIXED line
+endings, one LF line inside a mostly-CRLF file, so an exact multi-line anchor cannot
+match. That is precisely what SubRx exists for, splitting the anchor and rejoining with
+\r?\n, and I reached for it only after the second failure. I also wrote one patch with a
+shell heredoc instead of the Write tool, which is the other half of the same rule.
+
+Verified: parse PASS at v6.61; two guns dragged onto keys 1 and 2 and a medkit onto key
+5, all three surviving a redraw, which is the exact thing that used to fail; the backpack
+confirmed to exclude what is on the belt; in a raid, key 1 holding an Auto Rifle switches
+the player from the issued Scuttle to the Auto Rifle rather than firing anything; a
+profile with no assignments still gets the derived bar; four maps 86/87/58/72 entities
+and, at seed 4242, 246/193/152/216 containers; all three endings through the outcome
+screen to a drawn hub; hub, renderStage and the export builder; pin audit clean.
+
+Not verified: I drove the belt in the Undercroft and the switch in a raid, but I did not
+play a full raid using the belt under fire, so ammo counts and the swap-back behaviour
+with two assigned guns are reasoned rather than observed. The old swapped-guns path
+(p.swapped, gunA and gunB) still exists underneath and is now reachable only when nothing
+is assigned; I have not checked what happens if he assigns one gun and then presses X to
+swap.
