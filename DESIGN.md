@@ -27443,6 +27443,37 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## 2026-08-31 ADDENDUM - THE NOT-VERIFIED LINES OF v8.03-v8.05, CLOSED
+
+Same day, next tick, no code changed. The __P()-returns-the-profile
+correction made every previously unstageable check stageable, so all
+three outstanding "Not verified" lines were driven on their real paths:
+
+v8.03's armoury and menu surfaces: an owned Longshot pushed into the
+profile renders c-gold in the armoury row, r-gold in its hover detail,
+r-gold in the openGunMenu header, and a stashed Meridian Lance shows
+r-gold in the openItemMenu header - all read off the live stash screen
+DOM, not the patch.
+
+v8.05's wedge watchdog: the peddler's home was set INSIDE a wall (the
+pathological worst case - unreachable, but navSeek keeps finding
+sideways progress that resets the counter). He wandered the wall face
+for ~12 seconds, ground into a pocket, accumulated the three stuck
+seconds, gave up, and set tx/ty where he stood: trade gate open, stall
+furniture drawn at the new pitch, drawErr null. He can never wedge
+forever; the wander before giving up is bounded by how long the slide
+keeps producing motion.
+
+v8.04's drag flush: staged on the REAL window mouseup path (G.drag set,
+mouse over a live G.hotCells rect). A container-pulled stim auto-pinned
+and marked; a medkit dragged onto an empty cell wrote the profile with
+his placements only - the auto pin stayed raid-local. One intended
+subtlety observed and left alone: dragging a medkit while his plan
+already assigned one MOVED that plan entry, exactly as the one-item-
+one-slot rule above the handler documents.
+
+Findings: zero defects. The three fixes hold on their real paths.
+
 ## v8.05 - THE STALL STAYS PUT WHEN THE PEDDLER RUNS
 
 The audit's peddler findings, plus the auto-jog message. Three changes:
