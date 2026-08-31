@@ -27443,6 +27443,52 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.07 - THE UNDERCROFT CROWD HAS SOMEWHERE TO BE
+
+His order, live: "pillagers in the undercroft should actually be moving to
+and from locations, e.g. different vendors/terminals, then go to the ascent
+lift and disappear ocassionally, etc."
+
+He was right that they were furniture. The whole crowd was fixed positions
+with a draw-time sway - a worker paced a beat of a few pixels, a talker
+swayed - and the only body that ever crossed the floor was the hired man
+following the player. Now the loose crowd runs errands: stand a while at a
+counter, pick another station, amble over at 78 units a second with a real
+walk cycle, stand there a while, and go again. Roughly one errand in nine is
+the trip home instead: they walk into the lift housing, fade out, and are
+gone for ten to thirty-five seconds before the same body comes back down the
+lift wearing a freshly rolled face. The room therefore never empties and
+never doubles, and nothing is created or destroyed mid-frame.
+
+The six who hold the posts still hold them, because a counter with nobody
+behind it reads as closed. That needed defending twice: the separation pass
+and the new foot traffic both nudge bodies, and the first measurement showed
+four of the eight shoved off their counters after two minutes of traffic and
+never coming back. A post holder now remembers his spot and strolls back to
+it when displaced.
+
+Travellers collide with the piers (r:13, the same body radius the placement
+test uses) and are pushed out of station discs, EXCEPT the station they are
+walking to - without that exemption nobody could ever reach the lift bay.
+A wedged traveller gives the errand up after 2.5 seconds and picks another,
+which is the Peddler's lesson from v8.05 applied before it could bite.
+
+The face pools moved to module scope so the lift and the build roll from one
+list; the six deterministic post-holders are unaffected because the arrays
+and their order are identical.
+
+Verified: parse PASS; fingerprints 58 and 276 at seed 4242 (the hub draws
+from Math.random, never the raid stream); three endings through oc_btn with
+overlay-on; hub; stage. Crowd probe over 120 simulated Undercroft seconds:
+all 9 travellers moved more than 40 units from where they started, 1-3 were
+walking at any sampled moment, 1 was up top, and after the post-holder fix
+0 of 8 counters had been vacated (4 of 8 before it).
+
+Not verified: how it LOOKS in motion at 1920x1080 - the browser pane lost its
+forced size at the moment of the screenshot and the eyeball was taken on
+functional state instead; the arrival fade-in and departure fade-out were
+asserted by state (fade/away transitions) rather than by reading pixels.
+
 ## v8.06 - FIVE STRINGS FALL IN LINE WITH THE VOCABULARY
 
 The idle-queue vocabulary sweep: every player-facing string checked
