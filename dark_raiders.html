@@ -1126,7 +1126,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.81';
+var VER='7.82';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1137,19 +1137,19 @@ var VER='7.81';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='7.34';
+var WHATSNEW_VER='7.82';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
-  'THE LAST POUR IS OPEN. Liquor and acid, no cutoff, every dose stacks, dying flushes it.',
-  'SUPERHOT IS A TRUE FREEZE NOW. No input, no time. Backtick flips it on and off anywhere.',
-  'MINUS AND EQUALS RESIZE THE WHOLE HUD, everywhere, and it sticks.',
-  'THE BAG OPENS BESIDE THE BELT, belt keys drag onto each other and swap, and clicking the belt no longer fires your gun.',
-  'DYING PAYS HALF YOUR PROGRESS FOR REAL. It was quietly paying two percent.',
-  'YOUR CREW TRIES TO PICK YOU UP ON THE WAY OUT, if you are close to their path.',
-  'HAIRSTYLE IS ITS OWN WARDROBE SLOT: eight cuts, all yours from the start.',
-  'THE RIGHT CORNER SHOWS WHAT YOUR CARRY IS WORTH, live, priced the way the payout prices it.',
-  'THE LISTENER NO LONGER ANNOUNCES ITSELF. You will know.',
-  'RIGS ARE GONE. You ascend with no armour on; Armour Plates put it on, up to 60.'
+  'EXTRACTS HAVE NAMES. A, B, C on the HUD and the map, countdowns to close, slow flash when called, fast when open.',
+  'THE COLD MILE IS CROWDED NOW. The big map no longer feels deserted.',
+  'EVERY MENU GOT BIGGER. The counter, contracts, terms, bar, settings and the run ledger read at a glance.',
+  'YOUR GUN LOOKS LIKE YOUR GUN. Every family has its own silhouette with its tier colour on the edge. Rivals show theirs too.',
+  'TEN STASH LAYOUTS AND A LAYOUT BUTTON. Big belt, small safe pocket, 6 is the default.',
+  'ONE NUMBER: XP, WITH A HUNDRED MAINFRAME REWARDS BEHIND IT. Reputation folded in at full value; the Lance waits at 100.',
+  'SAVE SLOTS AT BOOT. Continue, create a new save, rename; deleting one makes you type the word.',
+  'THE PEDDLER PAYS POCKET CASH. Stall money rides the raid. Extract it or lose it.',
+  'ACID RIDES SLOWER AND FADES TRUE. Flashes at forty percent speed, and a heavy stack softens past two minutes.',
+  'THE QUIET RIDE IS CANCELLED. The $10k silent extraction is gone; you leave loud like everyone else.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -22235,7 +22235,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.81: no tier edge on unknown guns, and the Undercroft figure holds your real one.',
+  now:'v7.82: the NEW IN card catches up 47 builds, and staleness now fails the build.',
   next:'His queue: save slots and naming at boot, the mile re-baseline at full density, the 2.5d-glitch audit'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

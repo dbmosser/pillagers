@@ -27443,6 +27443,33 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.82 - THE NEW IN CARD CATCHES UP 47 BUILDS
+
+His catch, in his words: "updated log on menu right at the beginning of the
+game that says v7.34 lol sloppy af". The NEW IN card - the once-per-version
+hand-authored list of feel changes - is DESIGNED to lag VER (it moves only
+when the list itself changes, so it never nags), but it had not been touched
+since 7.34 while extract names, the crowded mile, the whole menu rebuild, the
+gun looks, ten stash layouts, the XP merge and the hundred rewards, save
+slots, the peddler pocket cash, the acid pacing and the cancelled quiet ride
+ALL shipped. Every one of those is exactly what the card exists to announce.
+Rewritten to those ten lines, stamped 7.82.
+
+And the same fix that saved DEVNOW: rot now fails the build. parsecheck
+extracts WHATSNEW_VER and FAILS whenever it drifts more than 20 builds behind
+VER - lag stays allowed (that is the card's design), neglect does not. This
+build would have been caught at v7.54 under the new gate.
+
+Verified: parse PASS showing the new WHATSNEW row at drift 0; fingerprints
+58 and 276 at seed 4242; three endings EXTRACTED / KILLED IN ACTION /
+ABANDONED through oc_btn; the card PROVABLY drew "NEW IN v7.82" and its
+first line on a live hub frame (fillText spy with the seen-stamp cleared);
+stage renders.
+
+Not verified: whether ten lines still fits his reading appetite after a
+47-build gap - the card is capped at ten on purpose, and everything cut is
+in DESIGN; and the 0.20 drift ceiling is my number, tightenable on his word.
+
 ## v7.81 - NO TIER EDGE ON A GUN NOBODY IS HOLDING
 
 An audit catch on v7.77. Three figures draw through the same arm dispatch

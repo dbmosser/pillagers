@@ -78,11 +78,18 @@ fetch(url).then(function(r){
   // build. The .now line must name the current VER.
   var devnow=(src.match(/now:'([^']*)'/)||[])[1]||'';
   var devnowOk=devnow.indexOf('v'+ver)>=0;
-  var pass=(parse==='OK'&&b.par===0&&b.cur===0&&b.sq===0&&du.length===0&&devnowOk);
+  // v7.82, his catch: the NEW IN card sat at 7.34 for 47 builds. It is ALLOWED
+  // to lag VER (it moves only when the list changes) but a drift over 20 builds
+  // means nobody is tending it, and that now fails the build.
+  var wnver=(src.match(/WHATSNEW_VER='([^']*)'/)||[])[1]||'0';
+  var wnDrift=Math.round((parseFloat(ver)-parseFloat(wnver))*100)/100;
+  var wnOk=isFinite(wnDrift)&&wnDrift<=0.20;
+  var pass=(parse==='OK'&&b.par===0&&b.cur===0&&b.sq===0&&du.length===0&&devnowOk&&wnOk);
   var h='<table>';
   h+='<tr><td>file</td><td>'+url+'</td></tr>';
   h+='<tr><td>VER</td><td>'+ver+'</td></tr>';
   h+='<tr><td>DEVNOW</td><td class="'+(devnowOk?'ok':'bad')+'">'+(devnowOk?'names v'+ver:('STALE: '+devnow))+'</td></tr>';
+  h+='<tr><td>WHATSNEW</td><td class="'+(wnOk?'ok':'bad')+'">v'+wnver+(wnOk?(' (drift '+wnDrift+')'):(' STALE, drift '+wnDrift+' over 0.20'))+'</td></tr>';
   h+='<tr><td>chars</td><td>'+src.length.toLocaleString()+' in '+b.lines.toLocaleString()+' lines</td></tr>';
   h+='<tr><td>parse</td><td class="'+(parse==='OK'?'ok':'bad')+'">'+parse+'</td></tr>';
   h+='<tr><td>balance</td><td class="'+(b.par||b.cur||b.sq?'bad':'ok')+'">parens '+b.par+', braces '+b.cur+', brackets '+b.sq+
