@@ -27443,6 +27443,37 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.59 - RIPPLES, NOT BOOTPRINTS
+
+His note: "footprints should not be present when wading in water -- water could
+ripple for a moment behind character though."
+
+Bootprints stop landing on water in all three places they could. The player's
+stamps now test the water at the STAMP position (which also closes the 11-unit
+shoreline band where the wading flag is false but the boot lands wet); a
+raider's stamps branch the same way, with both rnd() draws kept in both
+branches so the seeded raid stream is byte-identical wet or dry; and the
+sprint scent-trail changes only its DRAW - the list itself still exists
+untouched because the AI smells it, in the sim too.
+
+In place of a print, a ripple: a new decal type drawing an expanding, fading
+flat ring in the same rgba(180,222,240) family as the existing wading wake, so
+the water speaks one visual language. Ripples compute their own alpha from
+their age (the shared decal fade only softens the last sixth of a life, which
+would make a 0.7-second ring pop off instead of fading out), carry no print
+flag (so they never evict real bootprints from the 150/70 budgets), and expire
+through the existing aging loop with no new cleanup.
+
+Verified on the play path: drove the player through COLD STORAGE's water with
+a real held key - five ripples on the water, ZERO boot-flagged decals on it,
+draw clean, entity fingerprint intact (58), the mile still builds its new 276
+and draws clean, three endings, hub, stage.
+
+Not verified: the ripple in MOTION - expansion rate and alpha were chosen
+against the wake's own numbers but no human eye has watched the ring bloom;
+and raider ripples were verified by code-shape (same branch, same test), not
+by staging a raider walking a shoreline.
+
 ## v7.58 - THE DEV CHEAT BOX
 
 His order, his name for it, placed where he lands: a new hub station at
