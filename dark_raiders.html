@@ -1148,7 +1148,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.24';
+var VER='8.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10382,7 +10382,18 @@ function tryExtractTick(dt,wantCall){
     return;
   }
   if(z){ if(z.pullT===null||z.pullT===undefined||z.pullT===0) z.boardT=0; z.pullT=null; }
-  G.active=z||G.active;
+  // v8.25, audit: never adopt a CLOSED ring. The close loop in
+  // tickExtractPoints re-points G.active at an open one when the active ring
+  // shuts, and this line ran afterwards in the same frame and undid it - so
+  // standing in the ring that just closed pinned the whole game's idea of "the
+  // way out" onto a door that does not open. The bot targets G.active, and so
+  // does every extracting raider.
+  if(z&&z.open) G.active=z;
+  else if(!G.active||!G.active.open){
+    var _aOpen=null;
+    for(var _az=0;_az<G.zones.length;_az++) if(G.zones[_az].open){ _aOpen=G.zones[_az]; break; }
+    G.active=_aOpen||z||G.active;
+  }
   // A refusal has to say what it is refusing, or it reads as a dead button.
   if(z&&wantCall&&!z.open){
     G.extSay=(G.extSay||0)-dt;
@@ -10907,6 +10918,11 @@ z.hold=Math.min(30,Math.max(3,G.timeLeft-1)); z.holdMax=z.hold;
       if(!mz) mz=MZ;
     }
     if(mz){
+      // v8.25, audit: the ring the HUD NAMES is the ring the clock belongs to.
+      // These two were allowed to disagree, which put "HOLD E TO EXTRACT" over
+      // a circle with no ship coming to it. A called beacon is where he is
+      // going, so it wins the pointer as well as the number.
+      if(mz.open||!G.active||!G.active.open) G.active=mz;
       G.beaconT=mz.beaconT;
       var mHold=(mz.beaconT<=0&&mz.hold!==null&&mz.hold!==undefined);
       G.shipHold=mHold?mz.hold:null;
@@ -13814,7 +13830,11 @@ e.lootT=(e.lootT||0)+dt;
             if(!G.sim) say(e.name+' called extraction.');
           }
         }
-        else e.extracting+=dt;
+        // v8.25, audit: only through a door that opens. The guard above gates
+        // the CALL; this branch ran the extraction itself unguarded, so a
+        // raider in a closed ring still walked out with the haul after 14s.
+        else if(z.open||_zin||_zhold) e.extracting+=dt;
+        else e.extracting=0;
         // A RAIDER LEAVING IS SUPPOSED TO BE A CHANCE, v1.73. Measured over 60 raids:
         // eight raiders spawn and SEVEN of them get out, an 88 percent extract rate,
         // against the player's high thirties. They were not better at the game, they were
@@ -22840,7 +22860,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.24: the man you hired finally shoots the pillagers shooting at you.',
+  now:'v8.25: the way out is always a way out - no closed ring can be the one the game points you at.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

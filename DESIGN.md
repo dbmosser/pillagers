@@ -27443,6 +27443,54 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.25 - THE WAY OUT IS ALWAYS A WAY OUT
+
+Three raid-audit findings, all of them the same object: G.active, the one
+ring the HUD names and points at, the bot walks to, and every extracting
+raider targets. All three let it name a ring that cannot be used.
+
+IT COULD PIN ITSELF TO A CLOSED RING. tickExtractPoints runs first, and
+its close loop carefully re-points G.active at an open ring when the
+active one shuts - and then, a few lines later in the same frame,
+`G.active=z||G.active` overwrote that with whatever ring the player was
+standing in, including the one that had just closed. Standing in a ring
+as it shut therefore pinned the entire game's idea of the way out onto a
+door that does not open, for the player, the bot and every raider trying
+to leave. It refuses a closed ring now and falls back to an open one.
+
+THE COUNTDOWN COULD BELONG TO A DIFFERENT RING THAN THE ONE NAMED. The
+beacon mirror recomputes the clock from whichever zone has a live beacon,
+but every consumer pairs that clock with G.active - so the HUD could name
+ring A, point at ring A, and print HOLD E TO EXTRACT over it while the
+ship was inbound to ring B. The ring with his beacon now wins the pointer
+as well as the number, because that is where he is actually going.
+
+AND A RAIDER COULD WALK OUT THROUGH A CLOSED DOOR. The open test gates
+only the beacon CALL; the branch that runs the extraction itself had no
+such check, so a raider standing in a shut ring counted up to fourteen
+seconds and "extracted with the goods" through a door with no ship behind
+it.
+
+A measurement worth recording, because it nearly read as a regression:
+the first check of raider extraction through an OPEN ring returned zero,
+which looks exactly like a broken fix. It was not. The raider arrives,
+finds no beacon, CALLS one - and the call branch resets its own extracting
+timer to zero, which is correct and long-standing. My probe was
+overwriting the ship state every frame and re-triggering that call. Held
+steady, the same raider extracts in three seconds.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. On the real path: standing in
+ring 1 makes it active, and closing that ring under him moves active to an
+open one instead of pinning to the closed one; a raider in a closed ring
+holds at 0.00 extracting and never leaves, while the same raider in an
+open one peaks at 2.99 and is gone; and a full player hold-to-extract
+still completes end to end with the EXTRACTED headline.
+
+Not verified: the beacon-mirror pointer change in a live two-beacon race -
+it is a two-line coherence fix checked by reading and by the extraction
+above, not by staging a raid with beacons live on two rings at once.
+
 ## v8.24 - THE MAN YOU HIRED FINALLY SHOOTS BACK
 
 A hired mercenary could never fire at a pillager. Not rarely - never, in
