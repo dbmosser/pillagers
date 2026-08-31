@@ -27443,6 +27443,66 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.12 - THE WINDOWS STOP LEAKING, AND TWO THINGS THAT ATE YOUR GEAR DO NOT
+
+A twelve-agent adversarial audit over the menu and inventory subsystem -
+the area he named the ship blocker - returned 33 confirmed findings from
+36 raw across six lenses. These are the five worst. Two of them destroyed
+things the player owns; three left the game in a state he could not get
+out of.
+
+THE WINDOW LIST THAT NAMED FIVE OF FIFTEEN. hubModalOpen decides whether
+the Undercroft keeps simulating, and it was a hand-written list: the hub,
+the trader, the tuning console, the sim console, the outcome card. Not the
+Stash, the Mainframe, Settings, the bar, the gamble counter, the terms,
+the ascent check, the cheat box, the dev crate or the ask card. Under any
+of those ten the floor kept running - the player walked around behind an
+opaque window, and the station-act loop fired whatever station he blindly
+arrived at. It asks the DOM now instead of keeping a list, which is the
+only version of this that cannot rot the next time a window is added.
+
+A WINDOW THAT FOLLOWED HIM INTO THE RAID. Nothing on a screen change
+closed the open ones, and .modal sits at z-index 60 - over the raid, with
+its close button unreachable. showScreen closes them now, and sends the
+tuning console through its own toggle so its latch cannot survive.
+
+THE ESCAPE THAT FROZE THE RAID SOLID. The global Escape handler stripped
+.on off whatever window was on top. For the tuning console that left
+tuneOpen latched true, and syncPause then pinned G.paused: the raid
+stopped dead with nothing on screen to explain it and no key that would
+start it again. A window with a latch is now closed through its own door.
+
+THE GUN THAT ATE ITSELF. "Equip as your gun" spliced the item out of the
+stash and only THEN checked whether that model was already in the
+armoury - so equipping a second Compact SMG deleted a sellable gun and
+granted nothing. Two identical copies of it, the right-click menu and the
+hover detail. Both check first now, and say what they did.
+
+THE REWARD THAT PAID NOTHING. claimTier's gun branch consumed the reward
+and printed "X in the armoury" even when the armoury already held that
+model - and reward 5 hands over a gun every profile already owns, so it
+has been hollow for every player who ever reached it. A duplicate now
+arrives as the ITEM, which is worth selling, or pays what the gun is worth
+if it has no item form.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. Each fix on its own real path,
+with staged state chosen so the old behaviour could not produce the
+result: with the BAR open - a window the old list never named - holding D
+for a second moved the player 0 units; a cheat box left open through an
+ascend left 0 windows open in the raid; SHIFT-backquote opened the tuning
+console and paused the raid, and Escape both closed it and returned
+G.paused to false; right-clicking a duplicate Compact SMG in the Stash and
+choosing Equip left the gun in the stash and equipped it; and claiming the
+whole rewards board twice - the second pass entirely duplicates - put 3
+gun items in the stash and paid $4,800 where it used to pay nothing.
+
+Not verified: the other 28 confirmed findings are written up and queued,
+including a click on a belt cell laundering a v8.04 automatic pin into the
+saved profile, the safe pocket having no working click exit, say2 painting
+underneath every modal so menu confirmations are invisible, and a
+controller being unable to operate or leave the Stash screen.
+
 ## v8.11 - PILLAGERS SHOOT LIKE PEOPLE, AND THE BENCHMARK CANNOT SEE IT
 
 His note: "i think maybe fighting pillagers has gotten too hard, remeber,

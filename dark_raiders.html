@@ -1137,7 +1137,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.11';
+var VER='8.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14286,8 +14286,24 @@ function claimTier(ix){
   if(T.kind==='credits'||T.kind==='last'){ P.credits+=T.v; msg='+'+'$'+T.v.toLocaleString()+''; }
 
   if(T.kind==='wep'){
-    if(P.weapons.indexOf(T.v)<0) P.weapons.push(T.v);
-    msg=WEAPONS[T.v].name+' in the armoury';
+    if(P.weapons.indexOf(T.v)<0){
+      P.weapons.push(T.v);
+      msg=WEAPONS[T.v].name+' in the armoury';
+    } else {
+      // v8.12, audit: it used to consume the reward, announce the gun and hand
+      // over nothing at all when the model was already owned - which is every
+      // profile, for reward 5. A duplicate now arrives as the ITEM, which is
+      // worth selling; if there is no item form it pays what the gun is worth.
+      var _dupK='gun_'+T.v;
+      if(ITEMS[_dupK]){
+        P.stash.push(_dupK);
+        msg='a second '+WEAPONS[T.v].name+' to the stash, yours to sell';
+      } else {
+        var _dupV=Math.max(300,Math.round((WEAPONS[T.v].dmg||20)*22));
+        P.credits+=_dupV;
+        msg='you already own the '+WEAPONS[T.v].name+', so it paid '+'$'+_dupV.toLocaleString();
+      }
+    }
   }
   if(T.kind==='kit'){ for(var i=0;i<T.v.length;i++) P.stash.push(T.v[i]); msg='kit to the stash'; }
   if(T.kind==='standing'){
@@ -21609,12 +21625,14 @@ function bakeHubGround(){
   return g;
 }
 function hubModalOpen(){
-  return document.getElementById('hub').classList.contains('on')||
-    document.getElementById('tradermodal').classList.contains('on')||
-    document.getElementById('tunemodal').classList.contains('on')||
-
-    document.getElementById('simmodal').classList.contains('on')||
-    document.getElementById('outcome').classList.contains('on');
+  // v8.12, audit: ASK THE DOM, do not keep a list. The hand-written list named
+  // five windows of fifteen, so under the other ten the floor kept simulating
+  // behind an opaque panel and the station loop fired whatever the player
+  // blindly walked onto. Any .modal that is on counts, plus the two surfaces
+  // that are not .modal: the Stash screen and the outcome card.
+  if(document.getElementById('hub').classList.contains('on')) return true;
+  if(document.getElementById('outcome').classList.contains('on')) return true;
+  return !!document.querySelector('.modal.on');
 }
 function updateHubWorld(dt){
   if(!isFinite(dt)) dt=0.016;
@@ -22058,6 +22076,13 @@ function showScreen(s){
   state=s;
   // The terminal panel is now a station you walk to, not the hub itself.
   document.getElementById('hub').classList.remove('on');
+  // v8.12, audit: and every window with it. A modal opened at a station used to
+  // follow him into the raid and sit over it at z-index 60 with no way to reach
+  // its close button. A screen change closes the windows on the old screen; the
+  // tuning console goes through its own toggle so its latch cannot survive.
+  try{ if(typeof tuneOpen!=='undefined'&&tuneOpen) toggleTune(false); }catch(_tt){}
+  var _openM=document.querySelectorAll('.modal.on');
+  for(var _mi=0;_mi<_openM.length;_mi++) _openM[_mi].classList.remove('on');
   if(s==='hub'){
     if(!HB) HB=buildHub();
     // v6.64, his note: the people milling about are different every time you come down.
@@ -22632,7 +22657,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.11: pillagers shoot like people - the error opens with range, and they need a beat to react.',
+  now:'v8.12: windows stop leaking - the floor holds still under them, none follow you into a raid, and two things that ate your gear do not.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -23382,8 +23407,16 @@ function itemMenuRows(key,ctx,count){
   if(ctx!=='kit'){
     if(it.use==='gun'&&it.gk&&WEAPONS[it.gk]) rows.push({sep:1},{label:'Equip as your gun',act:function(){
       var ix=P.stash.indexOf(key); if(ix<0) return;
+      // v8.12, audit: check BEFORE the splice. This used to remove the item and
+      // then decline to grant anything if the model was already in the armoury,
+      // so equipping a duplicate destroyed a sellable gun for nothing.
+      if(P.weapons.indexOf(it.gk)>=0){
+        P.equipped=it.gk; saveProfile(); refreshInv();
+        say2('That model is already yours, so it stays in the stash to sell. Equipped.');
+        return;
+      }
       P.stash.splice(ix,1);
-      if(P.weapons.indexOf(it.gk)<0) P.weapons.push(it.gk);
+      P.weapons.push(it.gk);
       P.equipped=it.gk; saveProfile(); refreshInv();
     }});
     // No "wear it" row. There is no use:'rig' item in ITEMS; rigs are set from the
@@ -23853,8 +23886,14 @@ try{ renderFreeKit(); }catch(_fk){}
       }
       if(it.use==='gun'&&it.gk&&WEAPONS[it.gk]) act('Equip as your gun',function(){
         var ix=P.stash.indexOf(k); if(ix<0) return;
+        // v8.12, audit: same bug, second copy. See the note in itemMenuRows.
+        if(P.weapons.indexOf(it.gk)>=0){
+          P.equipped=it.gk; saveProfile(); renderHub();
+          say2('That model is already yours, so it stays in the stash to sell. Equipped.');
+          return;
+        }
         P.stash.splice(ix,1);
-        if(P.weapons.indexOf(it.gk)<0) P.weapons.push(it.gk);
+        P.weapons.push(it.gk);
         P.equipped=it.gk; saveProfile(); renderHub();
       });
       // v5.92: 'stim' belongs here. useHot has always known how to use one, but
@@ -24986,7 +25025,13 @@ document.addEventListener('keydown',function(e){
   if(!open.length) return;
   e.preventDefault(); e.stopPropagation();
   // The last one in document order is the one drawn on top.
-  open[open.length-1].classList.remove('on');
+  var _top=open[open.length-1];
+  // v8.12, audit: a window with a LATCH has to be closed through its own door.
+  // Stripping .on off the tuning console left tuneOpen true, and syncPause then
+  // pinned G.paused - the raid froze solid with nothing on screen saying why.
+  if(_top.id==='tunemodal'){ try{ toggleTune(false); }catch(_te){ _top.classList.remove('on'); } }
+  else _top.classList.remove('on');
+  try{ syncPause(); }catch(_se){}
 },true);
 // HIS NOTE, v3.57: "menus should be zoomable with the wheel instead of ctrl and
 // wheel". The wheel over the undercroft scales the menus. A list that can still
