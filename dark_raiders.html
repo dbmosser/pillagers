@@ -1148,7 +1148,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.19';
+var VER='8.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22752,7 +22752,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.19: the last of the small lies - a term that quoted a retired clock, a badge that outlived its rewards, a menu the browser covered.',
+  now:'v8.20: the menu sweep is finished - all thirty-three findings shipped.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -23335,7 +23335,18 @@ var ICLASS={
 // being shown as though it were still coming with you.
 // v6.01: the safe pocket. P.safe names ONE item key; one copy of it comes home if
 // you die carrying it.
-function safeKey(){ return (P&&P.safe&&ITEMS[P.safe])?P.safe:null; }
+// v8.20, audit: and you have to still own it. The pocket names an item you are
+// carrying up; naming a Medkit and then selling it used to leave the cell and
+// its 1/1 badge standing, promising to bring home something he no longer had.
+// commitKit already quietly dropped it at ascent, so the promise was never kept
+// either - this makes the screen agree with what actually happens.
+function safeKey(){
+  if(!P||!P.safe||!ITEMS[P.safe]) return null;
+  var have=0;
+  for(var i=0;i<P.stash.length;i++) if(P.stash[i]===P.safe) have++;
+  for(var j=0;j<(P.kit||[]).length;j++) if(P.kit[j]===P.safe) have++;
+  return have?P.safe:null;
+}
 function setSafe(k){
   if(k&&!ITEMS[k]) return 'That is not a thing you can carry.';
   if(k&&ITEMS[k].use==='gun') return 'A gun does not fit in a safe pocket.';
@@ -23542,7 +23553,11 @@ function itemMenuRows(key,ctx,count){
   // vault and a loadout.
   if(count>1) rows.push({label:'Split stack  (half)',hint:'ALT',act:function(){
     var half=Math.max(1,Math.floor(count/2));
-    if(ctx==='kit') unpackSome(key,half); else packSome(key,half);
+    // v8.20, audit: these two RETURN the reason they refused and it was being
+    // dropped on the floor, so a full stack made this verb do nothing in
+    // silence. Same treatment the Equip row above it already gives.
+    var why=(ctx==='kit')?unpackSome(key,half):packSome(key,half);
+    if(why){ say2(why); try{ sfx('clank'); }catch(e){} }
     refreshInv();
   }});
   // Keys. v8.18, audit: every key, every item. planPut dropped the
@@ -24094,9 +24109,17 @@ try{ renderFreeKit(); }catch(_fk){}
         oc.style.borderColor=inSlot?'var(--amber)':'';
         oc.innerHTML=(ITEMS[_ik]?iconImgHTML(_ik,30):('<span style="font-size:10.5px">'+escHtml(W.name.slice(0,6))+'</span>'))+
           (inSlot?('<span class="cnt" style="background:var(--amber);color:#0d1435">'+inSlot+'</span>'):'');
-        oc.title=W.name+'\nYours. Drag onto gun 1 or gun 2, or click a gun slot to choose it.'+
+        oc.title=W.name+'\nYours. Right-click it to equip it.'+
           (inSlot?('\nCurrently gun '+inSlot+'.'):'');
-        grabbable(oc,'own:'+gk,'weapons',W.name);
+        // v8.20, audit: the item key, not a token nothing parses. 'own:'+gk was
+        // refused by every dropzone in the file, and the refusals it drew named
+        // gun slots deleted at v6.60. _ik is the key the targets expect and is
+        // already computed above; without an item form there is nothing to drag,
+        // so the cell simply is not draggable.
+        // v8.20b: NOT draggable. An owned gun has no stash item behind it, so
+        // planPut has nothing to pack and every target refuses - which is the
+        // dead gesture the audit found, and re-pointing the key only changed
+        // the wording of the refusal. Right-click equips it; that is the verb.
         oc.addEventListener('contextmenu',function(ev){
           ev.preventDefault(); ev.stopPropagation();
           openGunMenu(ev.clientX,ev.clientY,gk);
@@ -25215,6 +25238,13 @@ document.addEventListener('keydown',function(e){
   // Stripping .on off the tuning console left tuneOpen true, and syncPause then
   // pinned G.paused - the raid froze solid with nothing on screen saying why.
   if(_top.id==='tunemodal'){ try{ toggleTune(false); }catch(_te){ _top.classList.remove('on'); } }
+  // v8.20, audit: the primer carries a tick box and stamps primerSeen on close.
+  // Stripping .on discarded both, so "do not show this again" did nothing and
+  // the briefing came back. Routed through its own button.
+  else if(_top.id==='primermodal'){
+    var _cp=document.getElementById('closeprimer');
+    if(_cp) _cp.click(); else _top.classList.remove('on');
+  }
   else _top.classList.remove('on');
   try{ syncPause(); }catch(_se){}
 },true);
@@ -26304,6 +26334,12 @@ function renderSettings(){
   }
 
 }
+// v8.20, audit: the flag hid the station and the rows and left the door. Hidden
+// here at wiring time, so it cannot be reached at all in a beta build.
+(function(){
+  var _dt=document.getElementById('devtoolsbtn');
+  if(_dt&&BETA_HIDE_DEV) _dt.parentNode.style.display='none';
+})();
 document.getElementById('devtoolsbtn').onclick=function(){
   openModal('devmodal');
 };

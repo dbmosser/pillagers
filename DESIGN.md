@@ -27443,6 +27443,59 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.20 - THE MENU SWEEP IS FINISHED
+
+The last five findings, which closes the twelve-agent audit of the menu
+and inventory subsystem: 33 confirmed defects, all 33 now shipped across
+v8.12 to v8.20.
+
+THE BETA FLAG MISSED ITS OWN DOOR. BETA_HIDE_DEV hides the dev station and
+the roadmap rows, and left the button inside THE MAINFRAME that opens the
+dev window - so a beta player could walk straight through to the roadmap
+the flag exists to hide.
+
+ESCAPE THREW AWAY "DO NOT SHOW THIS AGAIN". The global Escape strips the
+class off the top window, which for the field primer skipped its own close
+handler: the tick he had just put in the box was discarded, primerSeen was
+never stamped, and the whole briefing came back next time. It goes through
+its own button now - the same lesson as the tuning console at v8.12, and
+the second window found with state living behind its close button.
+
+THE SAFE POCKET PROMISED AN ITEM HE NO LONGER OWNED. It drew its cell and
+its 1/1 badge from the saved name alone, never checking he still held a
+copy - so naming a Medkit and then selling it left the pocket advertising
+protection for something that did not exist. commitKit already dropped it
+quietly at ascent, so the promise was never kept either; the screen agrees
+with what actually happens now.
+
+"SPLIT STACK (HALF)" WAS SILENT WHEN EVERYTHING WAS ALREADY PACKED. Both
+pack and unpack RETURN the reason they refused, and this row threw it on
+the floor - so the verb did nothing and said nothing, while the Equip row
+two lines above surfaces the same refusal properly.
+
+AND THE ARMOURY'S DEAD DRAG IS GONE RATHER THAN RE-AIMED. Gun cells were
+draggable with a key no dropzone in the file parses, and the refusals it
+produced named gun slots deleted at v6.60. My first cut swapped that token
+for the real item key - and measuring it showed the drag now armed and
+every drop still refused, with "That is not in your stash any more" for a
+gun that was never in the stash. The reason is structural: an owned gun
+has no stash item behind it, and binding a key works by packing a copy, so
+there is nothing any target can do. The cell is simply not draggable now,
+and its tooltip says the verb that works.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. Each fix on its real path: the
+dev button's row computes display none; the safe pocket read 1/1 with a
+cell while the Medkit was held and 0/1 with no cell after it was sold;
+Escape on the primer with the box ticked closed it AND set both primerOff
+and primerSeen; Split stack on a fully packed stack now says "Every one of
+those is already packed."; and an armoury gun no longer arms a drag, while
+right-clicking it still opens its menu on Compact SMG.
+
+Not verified: nothing outstanding from this build. The audit's own
+remaining gaps are recorded against the builds that made them - the craft
+re-point scenario at v8.19 and the controller path at v8.16.
+
 ## v8.19 - THE LAST OF THE SMALL LIES
 
 Four more from the audit. None of them break the game; all four tell the
