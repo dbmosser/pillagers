@@ -1126,7 +1126,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.84';
+var VER='7.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1632,7 +1632,7 @@ function loadProfile(){
       if(r&&r.value){ var d=JSON.parse(r.value);
         if(d&&typeof d.credits==='number'){ P=d;
 if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={};
-if(!P.pname)P.pname='PILLAGER';   // v7.64: named at the title screen
+if(typeof P.pname!=='string'||!P.pname)P.pname='PILLAGER';   // v7.64: named at the title screen; v7.85: typed
 if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
 if(P.cosHat==='pigtails'){ P.cosHat='none'; P.cosCut='pigtails'; }  // v7.26 migration
 if(P.buzzCd) delete P.buzzCd;   // v7.34: no cooldowns
@@ -1660,7 +1660,7 @@ P.buzz=[];                      // v7.35, his order: quitting the game cuts you 
 // nonsense number in front of him and it belongs with the unknown-key filters that
 // already run here.
 (function(){
-  var _num=['credits','runs','ext','died','best','racks','notoriety','cstand'];
+  var _num=['credits','runs','ext','died','best','racks','notoriety','cstand','xp','arrays','pack'];
   for(var _ni=0;_ni<_num.length;_ni++){
     var _k=_num[_ni],_v=P[_k];
     if(typeof _v!=='number'||!isFinite(_v)||_v<0) P[_k]=Math.max(0,(typeof _v==='number'&&isFinite(_v))?_v:0);
@@ -17416,6 +17416,11 @@ var b=G.bullets[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   wc.fillStyle=shft; wc.fillRect(az.x-shW,az.y-150,shW*2,150);
   wc.globalCompositeOperation='source-over';
   wc.restore();
+  // v7.85: absolute reset at the return to screen space. The fault recovery
+  // above can leave the save stack one short (or one long), and without this
+  // the world transform leaks into the light composite and COMPOUNDS on
+  // every later frame until a resize. Same call canvas creation uses.
+  wc.setTransform(DPR,0,0,DPR,0,0);
   // lighting overlay
   lx2.globalCompositeOperation='source-over';
   lx2.clearRect(0,0,W,H);
@@ -22235,7 +22240,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.84: pillagers are pillagers, XP is XP, armour is armour, and the bot stays backstage.',
+  now:'v7.85: a draw fault heals in one frame, and a damaged save cannot poison XP or the slot list.',
   next:'Wrecked cars that read as cars from overhead, maps that read as different places, and his grades on the new menus and gun looks'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -25973,7 +25978,7 @@ loadProfile().then(function(){
         var me=(key===SLOT);
         h+='<div data-slot="'+key+'" style="cursor:pointer;border:1px solid '+(me?'var(--amber)':'var(--steel-hi)')+
            ';border-radius:3px;padding:8px 11px;background:rgba(0,0,0,.28);display:flex;justify-content:space-between;gap:10px;align-items:center">'+
-           '<b style="color:'+(me?'var(--amber)':'var(--bone)')+'">'+(inf?inf.name:'PILLAGER')+
+           '<b style="color:'+(me?'var(--amber)':'var(--bone)')+'">'+escHtml(inf?inf.name:'PILLAGER')+
            (me?' <span style="font-size:10px;letter-spacing:.14em">CONTINUING</span>':'')+'</b>'+
            '<span style="color:var(--ash);font-size:11px">'+
            (inf?(inf.runs+' runs \u00b7 $'+inf.credits.toLocaleString()+' \u00b7 '+inf.xp.toLocaleString()+' XP'):'new')+

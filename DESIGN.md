@@ -27443,6 +27443,46 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.85 - A DRAW FAULT HEALS IN ONE FRAME
+
+The three hardest bugs from the six-lens audit, each adversarially confirmed
+before a line changed.
+
+The bad one first: the v7.70 draw-fault recovery pops one save too many
+whenever the throw happens OUTSIDE a self-saving helper - which is exactly
+the incident class it was written for. That extra pop consumed the WORLD
+save, so the paired restore at the end of the world pass silently no-oped,
+the light and fog composites ran with the world transform still applied,
+and - because nothing between frames ever reset the matrix absolutely -
+every later frame COMPOUNDED the leak until a window resize. The recovery
+meant to lose one entity for one frame instead broke every frame after the
+fault. The fix is structural: at the point the world pass returns to screen
+space, the transform is now reset absolutely (the same call canvas creation
+uses), so any leak in either direction - a pop too many or a save left
+behind - heals at the end of the frame it happened in.
+
+Also: the fields the game does arithmetic on joined the load sanitizer.
+XP was left out of it at the v7.63 merge, so a damaged or hand-edited save
+carrying xp as a string would CONCATENATE forever ("4000"+1517 became
+"40001517..."), poisoning every tier gate and vendor lock that compares
+against it; arrays had the same hole; and the dead 'racks' field was
+protected while the live ones were not. And the pillager's name reaches the
+title-screen slot list as raw markup - a name containing angle brackets
+(sixteen characters is plenty) corrupted the list. Escaped at the sink,
+type-guarded at load.
+
+Verified: parse PASS; fingerprints 58 and 276; three endings through
+oc_btn; hub; stage. Each fix proven live: a context polluted with two stray
+saves and a 3x scale reads absolute identity after ONE frame; a save
+carrying xp:"4000" and arrays:"2" loads as clean numbers through the real
+async loadProfile; a profile named with an img tag booted the real title
+screen with the name shown as literal text and no element injected.
+
+Not verified: the exact in-catch incident (a crawler in the raider branch)
+was not re-staged - the staged fault threw in the sort phase instead - but
+the absolute reset makes the frame self-healing regardless of where inside
+the pass the stack goes wrong, which is the stronger guarantee.
+
 ## v7.84 - ONE WORD PER THING, FOUR FIXES FROM THE SIX-LENS AUDIT
 
 A 32-agent audit swept the file through six lenses (UI overflow after the
