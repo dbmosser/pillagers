@@ -741,11 +741,18 @@
         <input id="pnamein" maxlength="16" autocomplete="off" spellcheck="false"
           style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--steel-hi);border-radius:3px;color:var(--bone);padding:7px 10px;font-size:12px;letter-spacing:.08em"
           placeholder="NAME YOUR PILLAGER">
-        <button class="deploy ghost" id="pnamesave" style="padding:7px 16px">SAVE NAME</button>
+        <button class="deploy ghost" id="pnamesave" style="padding:7px 16px">CHANGE NAME</button>
       </div>
-      <button class="deploy ghost" id="newgame" style="margin-top:8px;padding:8px 16px;width:100%">START A NEW GAME</button>
+      <button class="deploy ghost" id="newgame" style="margin-top:8px;padding:8px 16px;width:100%">CREATE A NEW SAVE</button>
     </div>
   </div>
+</div>
+<div class="modal" id="cheatmodal">
+  <h3>DEV CHEAT BOX</h3>
+  <div class="msub">A free shop. Click a thing and it is in your stash. Nothing here judges you.</div>
+  <button class="deploy ghost" id="cheat100k" style="margin:10px 0;padding:9px 18px;width:100%">TAKE $100,000</button>
+  <div class="vendgrid" id="cheatgrid" style="flex:1;overflow-y:auto"></div>
+  <button class="deploy ghost" onclick="document.getElementById('cheatmodal').classList.remove('on')" style="margin-top:10px;padding:8px 22px">CLOSE</button>
 </div>
 <div class="modal" id="stagemodal">
   <h3 id="stagehead">ASCENT CHECK</h3>
@@ -1065,7 +1072,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.64';
+var VER='7.65';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21021,17 +21028,8 @@ acts:{KeyE:['go up',function(){
            KeyT:['your stats',function(){ openOps('rec'); }]}},
     {id:'bar',x:590,y:365,r:44,label:'THE LAST POUR',sub:'rotgut, blotter, and worse',c:'#d98aff',
      acts:{KeyE:['drink',function(){ renderBar(); openModal('barmodal'); }]}},
-    {id:'cheat',x:230,y:330,r:42,label:'DEV CHEAT BOX',sub:'',c:'#ff8ab0',
-     acts:{KeyE:['take $100,000',function(){
-             P.credits+=100000; saveProfile(); renderHub();
-             say2('$100,000. The box does not judge.'); blip('pick');
-           }],
-           KeyR:['one of every item',function(){
-             var _ck=Object.keys(ITEMS);
-             for(var _ci4=0;_ci4<_ck.length;_ci4++) P.stash.push(_ck[_ci4]);
-             saveProfile(); renderHub();
-             say2(_ck.length+' items dropped into the stash.'); blip('pick');
-           }]}},
+    {id:'cheat',x:78,y:390,r:42,label:'DEV CHEAT BOX',sub:'',c:'#ff8ab0',
+     acts:{KeyE:['open the box',function(){ renderCheat(); openModal('cheatmodal'); }]}},
     (BETA_HIDE_DEV
       ? {id:'dev',x:590,y:255,r:42,label:'SETTINGS',sub:'',c:'#9aa8b2',
          acts:{KeyE:['settings',function(){ openSettings('display'); }]}}
@@ -22121,7 +22119,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.64: saves on the front door. Slots, continue, new game, and a name.',
+  now:'v7.65: saves on the front door. Continue, create a new save, change name.',
   next:'His queue: save slots and naming at boot, the mile re-baseline at full density, the 2.5d-glitch audit'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -22492,6 +22490,30 @@ function tickBuzz(dt){
     }
   }
   if(changed) saveProfile();
+}
+function renderCheat(){
+  var g=document.getElementById('cheatgrid'); if(!g) return;
+  var h='';
+  var ks=Object.keys(ITEMS);
+  for(var i=0;i<ks.length;i++){
+    var it=ITEMS[ks[i]];
+    h+='<div class="vcell" data-ck="'+ks[i]+'" title="'+escHtml(it.name)+'">'+
+       iconImgHTML(ks[i],28)+'<div class="vlbl">'+escHtml(it.name)+'</div></div>';
+  }
+  g.innerHTML=h;
+  var cells=g.querySelectorAll('[data-ck]');
+  for(var c=0;c<cells.length;c++){
+    cells[c].onclick=function(){
+      var k=this.getAttribute('data-ck');
+      P.stash.push(k); saveProfile(); renderHub();
+      say2((ITEMS[k]?ITEMS[k].name:k)+' dropped into the stash.'); blip('pick');
+    };
+  }
+  var cb=document.getElementById('cheat100k');
+  if(cb) cb.onclick=function(){
+    P.credits+=100000; saveProfile(); renderHub();
+    say2('$100,000. The box does not judge.'); blip('pick');
+  };
 }
 function renderBar(){
   var el=document.getElementById('barlist'); if(!el) return;
@@ -25813,23 +25835,55 @@ loadProfile().then(function(){
         if(!inf&&key!==SLOT) continue;
         var me=(key===SLOT);
         h+='<div data-slot="'+key+'" style="cursor:pointer;border:1px solid '+(me?'var(--amber)':'var(--steel-hi)')+
-           ';border-radius:3px;padding:8px 11px;background:rgba(0,0,0,.28);display:flex;justify-content:space-between;gap:10px">'+
+           ';border-radius:3px;padding:8px 11px;background:rgba(0,0,0,.28);display:flex;justify-content:space-between;gap:10px;align-items:center">'+
            '<b style="color:'+(me?'var(--amber)':'var(--bone)')+'">'+(inf?inf.name:'PILLAGER')+
            (me?' <span style="font-size:10px;letter-spacing:.14em">CONTINUING</span>':'')+'</b>'+
            '<span style="color:var(--ash);font-size:11px">'+
            (inf?(inf.runs+' runs \u00b7 $'+inf.credits.toLocaleString()+' \u00b7 '+inf.xp.toLocaleString()+' XP'):'new')+
+           (me?'':' <button data-del="'+key+'" class="deploy ghost" style="margin-left:8px;padding:2px 8px;font-size:10px">DELETE</button>')+
            '</span></div>';
       }
+      // v7.65, his order: delete exists, behind a typed word. The confirm row
+      // appears under the list when a DELETE button arms it.
+      h+='<div id="delconfirm" style="display:none;border:1px solid var(--hazard);border-radius:3px;padding:8px 11px;background:rgba(0,0,0,.28)">'+
+         '<span style="color:var(--hazard);font-size:11px">Type the word delete to erase <b id="delwho"></b> forever.</span>'+
+         '<div style="display:flex;gap:8px;margin-top:6px">'+
+         '<input id="delword" autocomplete="off" spellcheck="false" style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--hazard);border-radius:3px;color:var(--bone);padding:5px 9px;font-size:12px">'+
+         '<button id="delgo" class="deploy ghost" style="padding:5px 12px;border-color:var(--hazard);color:var(--hazard)">ERASE</button>'+
+         '<button id="delno" class="deploy ghost" style="padding:5px 12px">KEEP</button></div></div>';
       host.innerHTML=h;
+      var armed=null;
       var rows=host.querySelectorAll('[data-slot]');
       for(var r=0;r<rows.length;r++){
-        rows[r].onclick=function(){
+        rows[r].onclick=function(ev){
+          if(ev.target&&ev.target.getAttribute&&ev.target.getAttribute('data-del')) return;
           var sn=this.getAttribute('data-slot');
           if(sn===SLOT) return;
           try{ localStorage.setItem('salvagerun:activeSlot',sn); }catch(e){}
           location.reload();
         };
       }
+      var dels=host.querySelectorAll('[data-del]');
+      for(var d=0;d<dels.length;d++){
+        dels[d].onclick=function(ev){
+          ev.stopPropagation();
+          armed=this.getAttribute('data-del');
+          var inf2=slotInfo(armed);
+          document.getElementById('delwho').textContent=(inf2?inf2.name:'PILLAGER')+' (save '+armed+')';
+          document.getElementById('delconfirm').style.display='block';
+          document.getElementById('delword').value='';
+          document.getElementById('delword').focus();
+        };
+      }
+      var dg=document.getElementById('delgo');
+      if(dg) dg.onclick=function(){
+        var w=(document.getElementById('delword').value||'').trim().toLowerCase();
+        if(w!=='delete'||!armed) return;
+        try{ localStorage.removeItem(slotKey(armed)); }catch(e){}
+        armed=null; renderSlots();
+      };
+      var dn=document.getElementById('delno');
+      if(dn) dn.onclick=function(){ armed=null; document.getElementById('delconfirm').style.display='none'; };
     }
     renderSlots();
     var pin=document.getElementById('pnamein');
@@ -25849,7 +25903,7 @@ loadProfile().then(function(){
           location.reload(); return;
         }
       }
-      ng.textContent='ALL EIGHT SLOTS HAVE PILLAGERS IN THEM';
+      ng.textContent='ALL EIGHT SAVES HAVE PILLAGERS IN THEM';
     };
     var go=function(){
       if(!t.classList.contains('on')) return;
@@ -25859,7 +25913,8 @@ loadProfile().then(function(){
     document.getElementById('titlestart').onclick=go;
     // Any key works too - but not while a name is being typed.
     window.addEventListener('keydown',function(e){
-      if(document.activeElement&&document.activeElement.id==='pnamein') return;
+      var _ae=document.activeElement;
+      if(_ae&&(_ae.id==='pnamein'||_ae.id==='delword')) return;
       if(t.classList.contains('on')&&(e.code==='Enter'||e.code==='Space')) go();
     });
   })();

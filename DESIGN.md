@@ -27443,6 +27443,44 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.65 - THE BOX BECOMES A SHOP, THE SAVES LEARN TO DIE POLITELY
+
+Five live notes inside an hour of v7.64 shipping, which is the fastest
+feedback loop this project has had: he was clicking the new panel while the
+build that made it was still warm.
+
+"change 'save name' to 'change name'" and "'start a new game' should be
+'create a new save'" - done verbatim, plus the all-slots-full message says
+SAVES now for consistency.
+
+"make a delete save option, but to delete the save you actually have to go to
+another prompt and type the word delete" - this REVERSES v7.64's no-delete
+rule, recorded here so nobody re-derives the old one: delete now exists, on
+every save row EXCEPT the one you are standing in (switch saves first - the
+active world cannot be erased from inside itself), and the confirm is exactly
+what he specified: a hazard-bordered row naming the save, an input, and the
+word delete typed in full before ERASE does anything. KEEP backs out.
+
+"DEV CHEAT BOX SHOULD BE TO THE LEFT OF THE CHARACTER SPAWN" - moved to
+78,390, one step left of where you land.
+
+"devv cheat box should be a menu where you can get inventory items, like
+basically a free shop" and "and 100k should be one of the choices in that
+menu" - the two-key station becomes one act that opens a modal: a vendgrid of
+every item in the game, one click one grant, with TAKE $100,000 as the top
+row. The grant pattern is unchanged (push, saveProfile, renderHub, say2,
+blip).
+
+Verified: labels read back; menu opened through the real station wiring with
+all 56 items; a click granted a medkit; the money choice paid exactly 100,000;
+DELETE + the typed word erased the test save from v7.64's round-trip; wrong
+words do nothing; the title's any-key listener ignores the delete field; both
+maps' protocol, endings, hub, stage.
+
+Not verified: the delete confirm at pad/controller (keyboard input assumed);
+and the free shop lists ITEMS only - WEAPONS proper (armoury guns) are not in
+it, which matches "inventory items" but is flagged in case he meant guns too.
+
 ## v7.64 - SAVES ON THE FRONT DOOR
 
 His order: "at the beginning of the game, let the player decide to continue,
