@@ -27443,6 +27443,31 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.89 - EVERY WRECK SHOWS ITS FLAT
+
+The wreck draw pair from the six-lens audit. The flat tyre - the one detail
+that makes a wreck read dead rather than parked, per the v1.64 comment - was
+drawn fully BEHIND the body shell on flip=-1 horizontal wrecks: the sag was
+mirrored to the FAR edge where the shell always covers it at those body
+heights, so about 29 percent of all wrecks drew a detail nobody could ever
+see, and read as neatly parked with four good wheels. The flat now always
+sags off the camera-facing long edge; flip still picks which corner, so the
+two variants stay distinct. Its visibility is guaranteed by arithmetic now:
+the sag extends 0.13 x body-height + 3px past the shell for every wreck
+size the placer can roll.
+
+And the contact shadow never consulted the wreck's orientation: a vertical
+wreck stood on the horizontal ellipse - a round puddle at its bumper with
+the top wheel pair on bare ground. The shadow follows the long axis now.
+
+Verified: parse PASS; fingerprints 58 and 276; three endings through
+oc_btn; hub; stage; both orientations located and drawn in live frames with
+no throw; the flat's clearance proven by the draw arithmetic above.
+
+Not verified: a close-up eyeball of the flat at his zoom - the pane
+downscales too far to grade a 6px sag from here; the arithmetic and his
+next raid carry it.
+
 ## v7.88 - THE FIELD PRIMER FINALLY FIRES
 
 Audit C10, and it is the autoEquip incident's failure shape again: a real

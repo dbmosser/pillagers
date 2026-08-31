@@ -1127,7 +1127,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.88';
+var VER='7.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16726,7 +16726,11 @@ var SHD=G.shells[i];
       // whole difference between "sitting on the ground" and "up on a platform".
       wc.fillStyle='rgba(0,0,0,.30)';
       wc.beginPath();
-      wc.ellipse(cx3+cw3/2,cy3+ch3-13,cw3*0.47,Math.max(3,ch3*0.20),0,0,6.2832);
+      // v7.89: the shadow follows the long axis. A vertical wreck used to get
+      // the horizontal ellipse - a puddle at the bumper, top wheels on bare
+      // ground.
+      if(vt) wc.ellipse(cx3+cw3/2,cy3+ch3/2-13,Math.max(3,cw3*0.20),ch3*0.47,0,0,6.2832);
+      else   wc.ellipse(cx3+cw3/2,cy3+ch3-13,cw3*0.47,Math.max(3,ch3*0.20),0,0,6.2832);
       wc.fill();
       // Long axis in local terms, so one piece of code draws both orientations.
       var LEN=vt?ch3:cw3, WID=vt?cw3:ch3;
@@ -16766,7 +16770,8 @@ var SHD=G.shells[i];
       box(1-wOff-wLen,-prod,1-wOff,prod,14,tyre,2.5);
       box(1-wOff-wLen,1-prod,1-wOff,1+prod,14,tyre,2.5);
       // One wheel is always flat, so the thing reads as dead rather than parked.
-      box(1-wOff-wLen,(CR.flip>0?1-prod*0.55:-prod),1-wOff,(CR.flip>0?1+prod*0.55:prod*0.55),11,'rgba(12,10,9,.9)',1.5);
+      if(CR.flip>0) box(1-wOff-wLen,1-prod*0.55,1-wOff,1+prod*0.55,11,'rgba(12,10,9,.9)',1.5);
+      else          box(wOff,1-prod*0.55,wOff+wLen,1+prod*0.55,11,'rgba(12,10,9,.9)',1.5);
       // Body shell, squarer shoulders than a suitcase would have.
       box(-0.01,-0.02,1.01,1.02,15,INK,3);
       box(0,0,1,1,14,CR.hue,2.5);
@@ -22243,7 +22248,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.88: the field primer finally fires - a fresh pillager gets the briefing.',
+  now:'v7.89: every wreck shows its flat tyre, and vertical wrecks stand in their own shadow.',
   next:'Wrecked cars that read as cars from overhead, maps that read as different places, and his grades on the new menus and gun looks'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
