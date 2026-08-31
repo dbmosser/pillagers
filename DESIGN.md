@@ -27443,6 +27443,41 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.21 - THE NEW IN CARD CATCHES UP WITH THE MENU SWEEP
+
+The first thing he sees on the floor was stamped v8.02 while the game had
+been through the entire thirty-three-finding menu sweep - eighteen builds
+of changes it did not mention, and drift 0.18 of the 0.20 the parsecheck
+gate allows. Two more versions and the build would have failed, which is
+the gate doing exactly the job it was given after he caught this rot
+himself at v7.34.
+
+Ten new lines covering v8.03 to v8.20, checked against his vocabulary
+before writing: pillagers shooting like people, the Undercroft crowd
+running errands, both bottom corners and the belt bigger, the board no
+longer reporting what rivals are doing, claim-all on both boards, the
+Undercroft finally being audible, a finished raid banked whatever happens
+to the window, the stash layout surviving the night, the shop price
+meaning what it says with every key bindable, and the plate/rack/cheat-box
+numbers.
+
+One line was written twice. The card's box is measured from its widest
+line, and the first version of line 1 pushed it to the full width of the
+screen with the station names crowded behind it. Same sentence, shorter,
+and the box sits inside the room again - which is only visible by looking
+at it, not by reading the code.
+
+Verified at 1920x1080: parse PASS with drift back to 0; fingerprints 58
+and 276; three endings through oc_btn with overlay-on; hub; stage; and the
+card itself photographed on the Undercroft floor, all ten lines legible
+with WIRT THE GAMBLER, ASCENT LIFT, THE MAINFRAME, THE STASH and THE LAST
+POUR all clear of it.
+
+Also closed this tick, with no code change: the v8.07 "how the crowd LOOKS
+in motion" line. Fifteen simulated seconds in, the floor photographs with
+all eight posts staffed, five travellers walking between counters, one
+body up top, and nobody standing inside anybody.
+
 ## 2026-08-31 ADDENDUM - THE v8.11 AIM CHANGE, MEASURED IN A REAL DUEL
 
 No code changed. v8.11 shipped the human-aim model with its central claim

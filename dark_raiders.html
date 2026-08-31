@@ -1148,7 +1148,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.20';
+var VER='8.21';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1159,19 +1159,19 @@ var VER='8.20';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='8.02';
+var WHATSNEW_VER='8.21';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
-  'THE TWO MAPS LOOK LIKE THEMSELVES. New ground, frost and wreck paint, district concrete, breaker towers and a clinic on the mile.',
-  'GUNS WEAR THEIR RARITY EVERYWHERE. Background, frame and the gun itself - shop, belt, bag, Stash, and in the hands of any pillager.',
-  'PICKUPS BELT THEMSELVES. A gun, heal or grenade grabbed on the surface takes the first empty belt slot.',
-  'HURT THE PEDDLER AND HE RUNS. No trade while he is bleeding; a quiet stretch walks him back to his pitch.',
-  'AUTO-JOG STANDS DOWN WHEN YOU MOVE. Caps Lock walking no longer resumes on its own.',
-  'THE WEIGHT READOUT NAMES ITS CAUSE. Slower and louder is the bag, and the first 20wt ride free.',
-  'EVERY STALL ROW ANSWERS ITS KEY. 2 through 9 buy from the Peddler.',
-  'THE UNDERCROFT CROWD SPREADS OUT. Pillagers separate on what is drawn; nobody stands in anybody.',
-  'THE SECTOR BOARD TELLS THE TRUTH. Freshly measured extraction rates for both maps, on the ascend screen.',
-  'THE SMALL PRINT GOT A PASS. Armour, seal and blood lines rewritten plain, and the rewards lose their shouting.'
+  'PILLAGERS SHOOT LIKE PEOPLE. Their aim opens up with range, and they need a beat to react. Break line of sight and you take that beat back.',
+  'THE UNDERCROFT HAS SOMEWHERE TO BE. People walk between the counters, and now and then one takes the lift up and is gone.',
+  'BOTH BOTTOM CORNERS AND THE BELT ARE BIGGER. Health, armour, stamina, your gun and what you carry all read at a glance.',
+  'THE BOARD NO LONGER TELLS TALES. It lists who is out there and what they are worth. What they are DOING is not yours to see.',
+  'CLAIM ALL. One button on the rewards board and one on contracts.',
+  'THE UNDERCROFT CAN BE HEARD. Every confirmation and refusal now shows above the window that asked for it, instead of behind it.',
+  'A FINISHED RAID IS IN THE RECORD. Your XP is banked the moment the run ends, whatever you do with the window.',
+  'YOUR STASH LAYOUT SURVIVES THE NIGHT, and unpacking an item takes its belt key with it.',
+  'THE SHOP PRICE MEANS WHAT IT SAYS. A five-item order is checked as five, and every key 1 to 9 is yours to bind.',
+  'A PLATE IS WORTH 20 ARMOUR, a rack costs half what it did, and the cheat box says what you took.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -22752,7 +22752,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.20: the menu sweep is finished - all thirty-three findings shipped.',
+  now:'v8.21: the NEW IN card catches up with the menu sweep.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
