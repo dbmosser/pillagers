@@ -1126,7 +1126,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.80';
+var VER='7.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15501,8 +15501,8 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var _wp=(st.own&&st.own.wep&&st.own.wep.id)?st.own.wep:null;
   var _wid=_wp?_wp.id:'rifle';
   var _wt=WTIER[_wid]===undefined?1:WTIER[_wid];
-  var _rc=(_wp&&_wp.q==='gold')?'#ffc72e':
-          (_wt>=5?'#ffc72e':_wt>=4?'#d08ce8':_wt===3?'#7cc4ff':_wt===2?'#7fc4a0':'#cfd8ef');
+  var _rc=!_wp?null:((_wp.q==='gold')?'#ffc72e':
+          (_wt>=5?'#ffc72e':_wt>=4?'#d08ce8':_wt===3?'#7cc4ff':_wt===2?'#7fc4a0':'#cfd8ef'));
   var _L=13,_B=6,_mag=0,_sc=0,_tube=0,_pump=0,_drum=0;
   if(_wid==='pistol'||_wid==='tacker'){ _L=7; _B=4; }
   else if(_wid==='magnum'){ _L=7; _B=6; }
@@ -15519,9 +15519,9 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   if(_mag){ wc.fillStyle='#3c4650'; wc.fillRect(6+ext,1.4,2.8,4.2); }
   if(_drum){ wc.fillStyle='#3c4650'; wc.beginPath(); wc.arc(7+ext,2.6,3,0,6.2832); wc.fill(); }
   if(_pump){ wc.fillStyle='#5c4a34'; wc.fillRect(7+ext,0.6,4.5,2.4); }
-  if(_sc){ wc.fillStyle='#232a31'; wc.fillRect(5+ext,-3.6,5.5,2); wc.fillStyle=_rc; wc.fillRect(9.5+ext,-3.4,1.5,1.6); }
+  if(_sc){ wc.fillStyle='#232a31'; wc.fillRect(5+ext,-3.6,5.5,2); wc.fillStyle=_rc||'#5c6773'; wc.fillRect(9.5+ext,-3.4,1.5,1.6); }
   wc.fillStyle=coat; wc.fillRect(1+ext,-2.4,6,4.8);
-  wc.fillStyle=_rc; wc.fillRect(7+ext,-2.3,Math.max(3,_L-5),0.9);
+  if(_rc){ wc.fillStyle=_rc; wc.fillRect(7+ext,-2.3,Math.max(3,_L-5),0.9); }
   // support hand: rides the handguard, or feeds a magazine mid-reload
   if(rl>0&&reach>0){
     wc.fillStyle='#c8b49a';
@@ -21487,8 +21487,10 @@ function drawHubWorld(dt){
           {hero:0,moving:!!_mv,sprint:false,ads:false,hurt:0,rl:0,
            skin:_lk.skin,hair:_lk.hair,hat:_lk.hat,cut:_lk.cut,faceIx:_lk.faceIx,own:_c});
       }
-      drawOp(p.x,p.y,p.face,p.bob,'#242832',clamp(P.stash.length/24,0,1),0,'',0,
-        {hero:1,moving:p.moving,sprint:false,ads:false,hurt:0,rl:0});
+      drawOp(p.x,p.y,p.face,p.bob,'#242832',clamp(P.stash.length/24,0,1),0,
+        (P.equipped&&P.equipped!=='fists')?'':'none',0,
+        {hero:1,moving:p.moving,sprint:false,ads:false,hurt:0,rl:0,
+         own:{wep:WEAPONS[P.equipped]||null}});
     }
   }
   // station names float above their posts
@@ -22233,7 +22235,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.80: the ascent check speaks up - its warning and summary join the scale.',
+  now:'v7.81: no tier edge on unknown guns, and the Undercroft figure holds your real one.',
   next:'His queue: save slots and naming at boot, the mile re-baseline at full density, the 2.5d-glitch audit'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

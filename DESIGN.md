@@ -27443,6 +27443,29 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.81 - NO TIER EDGE ON A GUN NOBODY IS HOLDING
+
+An audit catch on v7.77. Three figures draw through the same arm dispatch
+without a known weapon - the stray on his planks, the crouched non-threat,
+and the player figure standing in the Undercroft - and the fallback gave all
+three a rifle wearing the TIER THREE BLUE edge: a rarity claim about a gun
+that does not exist. Now the edge (and the scope glass tint) draw only when
+the carried weapon is actually known; an unknown gun is the plain grey slab
+it always was. And the Undercroft player figure stopped being unknown: it
+reads the armoury slot, so the figure on the stash screen holds YOUR equipped
+gun with its true silhouette and true tier - or bare hands if fists are set.
+
+Verified: parse PASS with the DEVNOW assert; fingerprints 58 and 276; the
+gold pixel differential still fires with a Gold Longshot equipped (297 gold
+pixels in the player box); three endings EXTRACTED / KILLED IN ACTION /
+ABANDONED through oc_btn; hub steps and draws with the new figure path;
+stage renders.
+
+Not verified: the stray and crouch figures were fixed by the same one guard
+but not pixel-probed individually; a probe that set the player weapon to
+null threw in an unrelated pre-existing name read - that state is impossible
+in play (you always hold at least fists) so it was left alone.
+
 ## v7.80 - THE ASCENT CHECK SPEAKS UP
 
 This tick's backcheck put eyes on the two pre-raid surfaces the proportion
