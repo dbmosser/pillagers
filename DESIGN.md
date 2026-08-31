@@ -27443,6 +27443,27 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.58 - THE DEV CHEAT BOX
+
+His order, his name for it, placed where he lands: a new hub station at
+230,330 in the wall-free lower-left quadrant, straight up the corridor from
+the spawn at 140,390. The label is DEV CHEAT BOX because that is what he
+called it and it is what it is. E takes $100,000 a press, no limit. R drops
+one of every item in the game into the stash - all 56, keys and elite guns
+included, so any system can be exercised without an hour of scavenging first.
+
+The mechanics are entirely borrowed so they cannot drift: the grant pattern
+is the dev crate's own (push, saveProfile, renderHub, say2, blip), the acts
+sit on E and R only because the hub's key-release lock frees just
+E/R/F/T, and the sub-line is auto-built from the acts like every other
+station. The crowd builder receives the finished stations array, so nobody
+in the crowd will stand inside the new disc.
+
+Not verified: whether he wants it HIDDEN in itch builds later - BETA_HIDE_DEV
+exists for exactly that and the box deliberately does NOT use it (he asked
+for the box while playing the beta, so the beta shows it); flagged for his
+ruling before any public build.
+
 ## v7.57 - THE LIVE SESSION, PART THREE
 
 Five orders in one verified batch, plus one note closed by evidence.
