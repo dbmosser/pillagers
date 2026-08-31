@@ -27443,6 +27443,26 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.86 - THE SAFE POCKET STOPS CLIPPING ITS OWN INSTRUCTIONS
+
+Audit C1, and it shipped as the out-of-box state: in layouts 6, 7 and 10 -
+and 6 is the default - the empty safe pocket's drop hint ("ONE ITEM SURVIVES
+YOUR DEATH. DROP IT HERE.") rendered as a square cell spanning two ~50px
+columns, so it stood about 100px tall inside a strip capped at 74px: the
+caption clipped mid-line behind a stray scrollbar for every fresh profile.
+A filled pocket was fine, which is why it survived the layout-cycling
+session. In those three layouts the empty cell now drops the square
+constraint, spans the full row, and sits at a fixed 52px.
+
+Verified: parse PASS; fingerprints 58 and 276; three endings through
+oc_btn; hub; stage; and measured live in layout 6 with the pocket emptied -
+the hint cell reads 613px wide by 68 screen px tall, no clipping, no
+scrollbar (it was 0-height until the hub screen was actually shown, which
+is the fossil-measurement lesson applied: measure on the visible screen).
+
+Not verified: layouts 8 and 4 keep the base square treatment (their strips
+are tall enough); his eyes on the row-wide hint's look.
+
 ## v7.85 - A DRAW FAULT HEALS IN ONE FRAME
 
 The three hardest bugs from the six-lens audit, each adversarially confirmed
