@@ -27443,6 +27443,53 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.30 - IF YOU STARTED IT, IT IS ON YOUR NAME
+
+Two corrections from him, and the second one exposes a hole the first one
+had already made:
+
+  "frag kills a neutral should def get a point"
+  "shoot a hostile dead -- if he wasn't hostile until we shot at him, then
+   that should get a point, e.g. player was aggressor"
+
+He is right twice. v8.29 let splash off as an accident filter, and I
+argued for that on the grounds that a grenade catching a bystander is bad
+luck rather than intent. What I missed is that a frag which only WOUNDS a
+neutral still turns him hostile - so the sequence "frag him, he turns,
+shoot the now-hostile man" cost nothing at all, start to finish. Exempting
+splash did not forgive an accident; it laundered an aggression, and it
+made throwing the grenade first the cheapest way to murder a neutral.
+
+So the rule is his sentence rather than my weapon list: IF THE PLAYER
+STARTED IT, IT IS ON HIS NAME. One function owns that judgement and every
+way he can lay hands on a pillager who was not fighting him comes through
+it - a bullet, his own charge, or his fists. Once per man however many
+times he does it, and it lands at the FIRST hit, so leaving a man he
+attacked alive is still not cheaper than finishing him.
+
+Two things it deliberately does not do. It does not fire for an ENEMY's
+grenade that catches a bystander, because whose charge it was has been
+known since v8.23 and that one is not his doing. And it does not fire for
+proximity: a pillager turns hostile when you come within 180 units, and
+being walked up to is not being attacked.
+
+The card stopped listing weapons and names the act instead: starting a
+fight with someone who was not fighting you.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. Six cases on the real paths:
+
+  your frag kills a neutral                 1   (was 0 - his correction)
+  your frag wounds him, then you kill him   1   (was 0 ALL THE WAY - the hole)
+  an enemy frag kills a neutral             0
+  he was hostile before you fired           0
+  bare hands on a neutral                   1
+  shoot a neutral, he turns, you finish him 1   (not 2 - one man, one point)
+
+Not verified: whether a 45 percent neutral spawn makes this fire more
+often than he wants in play. The dial for that is the spawn roll rather
+than the rule, and I want his read before touching it.
+
 ## v8.29 - THE SHOT IS WHAT COSTS YOU, NOT THE BODY
 
 "Figure out the best way to do it." Two questions left open at v8.28,
