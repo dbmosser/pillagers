@@ -681,7 +681,7 @@
   </div>
   <div class="tpane" id="opane_rew" style="display:none;flex-direction:column;flex:1;min-height:0">
     <div id="seasonhead" style="font-size:12px;letter-spacing:.14em;color:var(--amber);padding:0 0 6px"></div>
-    <div class="msub">Kills, loot, doors, selling and walking out all pay XP. Dying pays half. A hundred rewards, claimed in order, and nothing here ever resets.</div>
+    <div class="msub">Kills, loot, doors, selling and extracting all pay XP. Dying pays half. A hundred rewards, claimed in order, and nothing here ever resets.</div>
     <div id="seasonbar" style="height:16px;border:1px solid var(--steel-hi);background:rgba(0,0,0,.35);margin:6px 0 10px 0;position:relative">
       <div id="seasonfill" style="height:100%;width:0%;background:linear-gradient(90deg,#ffc04a,#ffc04a)"></div>
       <div id="seasontext" style="position:absolute;inset:0;text-align:center;font-size:11px;line-height:16px;color:#120e0c;font-weight:700"></div>
@@ -1127,7 +1127,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.93';
+var VER='7.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10862,8 +10862,12 @@ function updatePlayer(dt){
   }
 var mg=Math.sqrt(mx*mx+my*my);
   var _cpNow=!!keys['CapsLock'];
-  if(_cpNow&&!p._cpPrev){ p.autoJog=!p.autoJog; if(!G.sim) say(p.autoJog?'Auto-jog on. Tap CAPS to stop.':'Auto-jog off.'); }
+  if(_cpNow&&!p._cpPrev){ p.autoJog=!p.autoJog; if(!G.sim) say(p.autoJog?'Auto-jog on. Tap CAPS or move to stop.':'Auto-jog off.'); }
   p._cpPrev=_cpNow;
+  // v7.94, his bug report: auto-jog used to RESUME after you released the
+  // stick, which read as the character randomly walking off. Touching any
+  // movement input now cancels it outright.
+  if(p.autoJog&&mg>0){ p.autoJog=false; if(!G.sim) say('Auto-jog off.'); }
   if(p.autoJog&&mg===0&&!p.downed){ mx=Math.cos(p.face); my=Math.sin(p.face); mg=1; }
 
   var crouch=!!(keys['ControlLeft']||keys['ControlRight']);
@@ -14061,6 +14065,17 @@ var SEASON_TIERS=[
   {sp:1175000, kind:'credits', v:80000, label:'EIGHTY GRAND'},
   {sp:1200000, kind:'wep', v:'lance', label:'THE LANCE'}
 ];
+// v7.94, his order: no all-caps in the rewards. Sentence-case every label
+// that is fully upper; mixed-case labels are already deliberate.
+(function(){
+  for(var _ti=0;_ti<SEASON_TIERS.length;_ti++){
+    var _tl=SEASON_TIERS[_ti].label;
+    if(_tl&&_tl===_tl.toUpperCase()&&/[A-Z]/.test(_tl)){
+      var _low=_tl.toLowerCase();
+      SEASON_TIERS[_ti].label=_low.charAt(0).toUpperCase()+_low.slice(1);
+    }
+  }
+})();
 
 // THE ESCALATING WORLD TIER IS GONE, v5.80, on his note: "get rid of 'escalating
 // world tier' -- i don't know what that is but i don't like the idea".
@@ -14432,7 +14447,7 @@ var _cdone=contractExtract(G.bag,haul);
     }
     if(haul>P.best) P.best=haul;
     lines.push(G.bag.length+' items secured for '+'$'+haul.toLocaleString()+'');
-    lines.push('You walked out with '+Math.round(G.player.hp)+' of 100 health');
+    lines.push('You extracted with '+Math.round(G.player.hp)+' of 100 health');
   } else if(how==='dead'){
     P.died++;
     T.deathDistExtract=Math.round(dist(G.player,G.active));
@@ -14535,8 +14550,8 @@ var _cdone=contractExtract(G.bag,haul);
   if((how==='dead'||how==='abandon')&&P.buzz&&P.buzz.length){
     P.buzz.length=0;
     lines.push('<span style="color:var(--coolant)">'+(how==='dead'
-      ?'Whatever was in your blood went with you.'
-      :'The walk down sweated it out.')+'</span>');
+      ?'Anything you drank or took is gone.'
+      :'The ride down cleared your head.')+'</span>');
   }
   var acc=T.shots?Math.round(T.hits/T.shots*100):0;
   if(_mfLine) lines.push(_mfLine);
@@ -18001,7 +18016,14 @@ function drawHUD(){
   // come back for anything that is actually clicked, which since v3.02 is the map
   // as well as the inventory: "add cursor when map is up" was part of his note and
   // without it he would be marking waypoints blind.
-  var _wantCur=(!p.downed&&(G.bagOpen||G.mapOpen))?'default':'none';
+  var _overBelt=false;
+  if(!p.downed&&G.hotCells){
+    for(var _ob=0;_ob<G.hotCells.length;_ob++){ var _OB=G.hotCells[_ob];
+      if(mouse.x>=_OB.x&&mouse.x<=_OB.x+_OB.w&&mouse.y>=_OB.y&&mouse.y<=_OB.y+_OB.h){ _overBelt=true; break; } }
+  }
+  // v7.94, his order: the belt is clickable and draggable, so the pointer
+  // says so the moment you are over it.
+  var _wantCur=(!p.downed&&(G.bagOpen||G.mapOpen))?'default':(_overBelt?'pointer':'none');
   if(_curNow!==_wantCur){ _curNow=_wantCur; try{ cv.style.cursor=_wantCur; }catch(e){} }
   // reticle at the cursor
 if(!p.downed&&!G.bagOpen&&!G.mapOpen){
@@ -22244,7 +22266,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.93: towers and a clinic rise, scatter goes per-map - a new stream boundary.',
+  now:'v7.94: auto-jog stops when you move, the belt shows a pointer, five of his live orders.',
   next:'Wrecked cars that read as cars from overhead, maps that read as different places, and his grades on the new menus and gun looks'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -24871,7 +24893,7 @@ var _myR=0;
                (M.locked?M.locked.length:0)+' keyed rooms'];
     // Real numbers, labelled as the bot's, replacing the fabricated loot
     // percentage that came off an inert constant.
-    if(MS.ext!==undefined) facts.push('measured walkout '+MS.ext+'%');
+    if(MS.ext!==undefined) facts.push('measured extraction '+MS.ext+'%');
     if(MS.fc!==undefined)  facts.push('first contact ~'+MS.fc+'s');
     if(MS.cont!==undefined)facts.push(MS.cont+' containers a raid');
     if(MS.haul!==undefined)facts.push('median haul '+'$'+MS.haul.toLocaleString()+'');

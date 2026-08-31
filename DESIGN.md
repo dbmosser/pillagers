@@ -27443,6 +27443,45 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.94 - AUTO-JOG STOPS WHEN YOU MOVE, AND FIVE OF HIS LIVE ORDERS
+
+He is playing this morning and the orders came in live.
+
+HIS BUG, "reload button randomly made character move forward": reproduced
+and root-caused in the fixture before touching anything. Reload moves the
+character exactly ZERO - sixty driven frames of held R, no displacement.
+The culprit is CAPS auto-jog: the key sits next to A, a graze toggles it
+with only a chat line to say so, and - the real trap - it silently RESUMED
+walking the moment you released WASD. That resumption is the "random"
+forward movement, and it happened to coincide with his reload press.
+Auto-jog now cancels outright the moment you touch any movement input,
+announced, and the toggle line says "Tap CAPS or move to stop."
+
+The rest of the batch:
+- "whatever was in your blood went with you - WTF": the death ledger says
+  it plainly now - "Anything you drank or took is gone." (abandon: "The
+  ride down cleared your head.")
+- No all-caps in the rewards: every fully-uppercase Mainframe label is
+  sentence-cased in one data pass ("First armour plates", "$800 credits");
+  mixed-case labels were already deliberate and are untouched. Buttons
+  keep the game-wide uppercase button style.
+- "walking out" is now "extracting" on the surfaces a player reads: the
+  Mainframe XP subheader, the extract ledger health line, and the sector
+  board's measured rate.
+- The reticle becomes a pointer over the belt: the hover reads the same
+  cell rects the click handler reads and joins the same want-cursor line
+  the bag and map already use.
+
+Verified: parse PASS; fingerprints 58 and 276; three endings through
+oc_btn; hub; stage. Each order proven live: auto-jog walks 104 units then
+dies on one tap of W with zero drift after; cursor reads "pointer" over a
+belt cell and "none" off it; a staged death with a buzz prints the new
+line and not the old one; the rewards list renders sentence case.
+
+Not verified: his eyes on the new wordings; and his two bigger orders from
+the same session - auto-equip pickups to the hotbar, and rarity colour on
+every gun surface - are next, not forgotten.
+
 ## v7.93 - TOWERS AND A CLINIC RISE, SCATTER GOES PER-MAP
 
 Samey-maps moves 2 and 3, shipped together on purpose as ONE stream
