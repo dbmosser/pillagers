@@ -1112,7 +1112,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.68';
+var VER='7.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3647,7 +3647,8 @@ function strikeTick(dt){
     G.strikes.splice(i,1);
     G.lightning=0.34;                       // the flash the renderer has always had
     var d=dist(p,S);
-    if(!G.sim){ sfx('alarm',S.x,S.y); ping(S.x,S.y,900,false,false,'env','fire'); }
+    if(!G.sim) sfx('alarm',S.x,S.y);
+    ping(S.x,S.y,900,false,false,'env','fire');
     if(d<STRIKE_R&&!p.downed){
       S.hit=1;
       damagePlayer(STRIKE_DMG,'lightning','the storm',S.x,S.y);
@@ -8914,10 +8915,12 @@ function ping(x,y,s,h,quiet,src,typ,ent){
 }
 function spark(x,y,col,n,spread){
   if(G.sim) return;
+  // v7.69: cosmetic draws come from the cosmetic stream. Live play used to
+  // burn seeded draws here that the sim never saw.
   for(var i=0;i<n;i++){
-    var a=rnd(0,6.283);
-    G.sparks.push({x:x,y:y,vx:Math.cos(a)*rnd(40,spread||220),vy:Math.sin(a)*rnd(40,spread||220),
-      t:0,life:rnd(.2,.5),c:col});
+    var a=fxn(0,6.283);
+    G.sparks.push({x:x,y:y,vx:Math.cos(a)*fxn(40,spread||220),vy:Math.sin(a)*fxn(40,spread||220),
+      t:0,life:fxn(.2,.5),c:col});
   }
 }
 // Short-lived light sources. Muzzle flashes, explosions and the beacon all punch
@@ -8938,7 +8941,7 @@ function dmgNum(x,y,amount,col,kill){
   G.dmgN=G.dmgN||[];
   if(G.dmgN.length>40) G.dmgN.shift();
   G.dmgN.push({x:x,y:y,t:0,life:kill?1.05:0.72,n:amount,c:col||'#FFF6DC',kill:!!kill,
-               vx:rnd(-9,9),vy:-26-rnd(0,10)});
+               vx:fxn(-9,9),vy:-26-fxn(0,10)});
 }
 function tickDmgNums(dt){
   if(!G||!G.dmgN) return;
@@ -9016,8 +9019,8 @@ function pushPrint(d){
 }
 function decal(x,y,col,size){
   if(G.sim) return;
-  var _a0=rnd(.35,.65);
-  G.decals.push({x:x,y:y,c:col,s:size,a:_a0,a0:_a0,rot:rnd(0,3),t:0,life:45});
+  var _a0=fxn(.35,.65);
+  G.decals.push({x:x,y:y,c:col,s:size,a:_a0,a0:_a0,rot:fxn(0,3),t:0,life:45});
   if(G.decals.length>420) G.decals.shift();
 }
 function killPlayer(src){
@@ -12690,8 +12693,9 @@ if(e.kind==='howler'&&e.hearT>0){
     if(e.overheat>0){
       e.overheat-=dt; e.cd=Math.max(e.cd||0,0.35);
       e.moving=false;
-      // Cosmetic only and already fenced off from the sim, so it stays on Math.random():
-        G.puffs.push({x:e.x+rnd(-e.r*.5,e.r*.5),y:e.y-e.r*.4,t:0,life:.8,c:'#c8d4dc',r:e.r*.55});
+      // Cosmetic only and fenced off from the sim, on the cosmetic stream
+      // (v7.69: the code finally matches this comment - it drew SEEDED, unfenced).
+      if(!G.sim) G.puffs.push({x:e.x+fxn(-e.r*.5,e.r*.5),y:e.y-e.r*.4,t:0,life:.8,c:'#c8d4dc',r:e.r*.55});
       collide(e,G.map.walls);
       continue;                       // no sight, no move, no shot, for four seconds
     }
@@ -22184,7 +22188,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.68: seven verified glitch fixes from the 2.5D audit, all stream-safe.',
+  now:'v7.69: the stream boundary - cosmetics off the seeded PRNG, storms heard in the sim.',
   next:'His queue: save slots and naming at boot, the mile re-baseline at full density, the 2.5d-glitch audit'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -27443,6 +27443,45 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.69 - THE STREAM BOUNDARY
+
+The glitch audit's remaining confirmed findings - the ones that genuinely
+move seed streams or sim behaviour - shipped together as ONE measurement
+boundary. Nothing measured before v7.69 is comparable across it; fresh
+200-seed baselines for both maps are running as this entry is written and
+will replace the board rows in the next build.
+
+What changed and why it moves numbers:
+
+spark(), decal() and dmgNum() all early-returned on G.sim and then drew from
+the SEEDED gameplay stream - so live play burned hundreds of seeded draws per
+firefight that the sim never saw, and a real raid on seed S diverged from the
+bot's raid on seed S at the first spark. Their internals now draw from fxn(),
+the cosmetic PRNG that exists for exactly this. Live-vs-sim stream parity is
+now real instead of approximate.
+
+The dormant-machine breath puff carried a comment promising "Math.random...
+fenced off from the sim" while the code drew from the SEEDED stream with no
+fence, in the sim too - both comment claims false at once. The code now
+matches its comment: cosmetic stream, !G.sim fenced. This removes one seeded
+draw per dormant-machine tick from the shared path, which is the stream shift
+that makes this build a boundary.
+
+The lightning bolt's landing ping was fenced out of the sim alongside its
+SOUND - but ping() is gameplay: machines hear it and investigate. Live storms
+scattered patrols; sim storms did not, so every stormy seed measured a calmer
+game than the one being played. The sim now hears the strike land; only the
+sfx stays fenced.
+
+Verified: parse PASS with the DEVNOW assert; the raid BUILD stream is
+untouched by design and the fingerprints prove it (58 cold / 276 mile,
+byte-identical); three endings, hub, stage. The cold re-baseline launched on
+the batch tab before this commit; the mile follows it.
+
+Not verified: the new baselines themselves (in flight); and the four deferred
+safe-but-larger audit items still queued (draw-armour save-stack repair,
+storeSet failure banner, DPR change listener, version stamp on first frame).
+
 ## v7.68 - THE GLITCH AUDIT, AND ITS FIRST SEVEN FIXES
 
 His order: "write a report on common glitches in complex 2.5d HTML games and
