@@ -27443,6 +27443,38 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.01 - THE BOARD RE-MEASURED ON THE NEW GROUND
+
+The 200-seed-per-map re-baseline the v7.93 stream boundary demanded is
+done (7000+s*13 family, calibrated bot, current geometry with the towers,
+the clinic and per-map wreck density):
+
+  COLD STORAGE   ext 18.0%  first contact ~70s  cont 5.3  haul $2,984
+  THE COLD MILE  ext 23.5%  first contact ~34s  cont 5.2  haul $2,662
+  (was 15.0 / 15.0 parity on the pre-boundary ground)
+
+THE FINDING HE SHOULD SEE: the density parity he called at v7.57 is
+broken by the v7.93 changes, in an interesting direction. The mile now
+walks out a THIRD more often than cold while meeting first contact at
+HALF the time - the extra wrecks he ordered are extra COVER, so the mile
+got hotter early and kinder overall, while cold's extra racking made its
+interiors slightly meaner. For his ruling, the levers are: cold's
+wreckDens 0.7 (raising it adds cover), the mile's 1.3, or accepting the
+new shape - a small brutal map and a big map that rewards surviving the
+opening. Nothing moves without his word; the sector board shows the
+honest rows either way.
+
+Verified: parse PASS; fingerprints 58 and 276; three endings through
+oc_btn; hub; stage; and the sector board renders both new measured
+extraction rows on the live ascend screen.
+
+Not verified: fc/cont/haul are computed from the same 200-seed rows
+(median contact, mean containers and haul) rather than the old separate
+instrumented pass - same bot, same seeds, slightly different accounting,
+stated here so the row lineage is honest; and the mile batch's later
+seeds ran after v8.00's peddler flee, which is PRNG-free and invisible to
+the bot but is part of the record.
+
 ## v8.00 - HURT THE PEDDLER AND HE RUNS
 
 His order: "peddler should run when he gets hurt and not sell. If he

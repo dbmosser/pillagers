@@ -1128,7 +1128,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.00';
+var VER='8.01';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22328,7 +22328,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.00: hurt the Peddler and he runs; a quiet dozen seconds walks him back to his pitch.',
+  now:'v8.01: the board re-measured on the new ground - the mile got kinder, cold got meaner.',
   next:'Wrecked cars that read as cars from overhead, maps that read as different places, and his grades on the new menus and gun looks'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -24924,8 +24924,12 @@ var SECTOR_CHAR=[
 // discordant. The two maps kill at the SAME rate now - his density order
 // made the mile cold-lethal (it walked out 42.5 before it filled up).
 var SECTOR_MEAS=[
-  {ext:15.0,fc:72, cont:5.0,haul:2443},
-  {ext:15.0,fc:47, cont:4.9,haul:2423}
+  // v8.01, 200 seeds/map post-v7.93 boundary (towers, clinic, per-map wrecks):
+  // the mile now walks out MORE than cold and meets contact at half the time -
+  // its extra wrecks are extra cover. Parity (his v7.57 call) is broken; the
+  // rows say so honestly and the dial is his.
+  {ext:18.0,fc:70, cont:5.3,haul:2984},
+  {ext:23.5,fc:34, cont:5.2,haul:2662}
 ];
 // v7.54, his note: the size difference stated next to the name. Only the
 // extremes are tagged, so a third mid-sized map would stay untagged.
