@@ -199,6 +199,20 @@
   #hub[data-slayout="10"] #kitcol{ border-left:none !important; border-top:1px solid var(--steel-hi); }
   #hub[data-slayout="10"] .invgrid{ grid-template-columns:repeat(auto-fill,minmax(150px,1fr)) !important; gap:14px !important; }
   #hub[data-slayout="10"] .invgrid .ic{ width:68px !important; height:68px !important; }
+  /* v7.72, his proportions: the belt is the thing you USE - way bigger. The
+     safe pocket holds ONE item - way smaller. */
+  #hub[data-slayout] [data-plan]{ width:48px !important; height:48px !important; }
+  #hub[data-slayout] [data-plan] .ic{ width:30px !important; height:30px !important; }
+  #hub[data-slayout="2"] [data-plan], #hub[data-slayout="3"] [data-plan],
+  #hub[data-slayout="4"] [data-plan], #hub[data-slayout="9"] [data-plan]{ width:62px !important; height:62px !important; }
+  #hub[data-slayout="2"] [data-plan] .ic, #hub[data-slayout="3"] [data-plan] .ic,
+  #hub[data-slayout="4"] [data-plan] .ic, #hub[data-slayout="9"] [data-plan] .ic{ width:40px !important; height:40px !important; }
+  #hub[data-slayout="10"] [data-plan], #hub[data-slayout="6"] [data-plan], #hub[data-slayout="7"] [data-plan]{ width:76px !important; height:76px !important; }
+  #hub[data-slayout="10"] [data-plan] .ic, #hub[data-slayout="6"] [data-plan] .ic, #hub[data-slayout="7"] [data-plan] .ic{ width:48px !important; height:48px !important; }
+  #hub[data-slayout="10"] #safegrid, #hub[data-slayout="6"] #safegrid, #hub[data-slayout="7"] #safegrid{ grid-template-columns:repeat(auto-fill,minmax(46px,52px)) !important; max-height:74px; }
+  #hub[data-slayout="10"] #safegrid .ic, #hub[data-slayout="6"] #safegrid .ic, #hub[data-slayout="7"] #safegrid .ic{ width:26px !important; height:26px !important; }
+  #kitcol .loslab{ padding-right:28px; }
+  #kitcol .lohead{ padding-right:28px; }
   /* ---- THE ITEM CONTEXT MENU, v6.00, his note "all items should be right
      clickable to get a context menu". Dark and tight, sitting at the cursor. */
   /* The balance in the heading of every station, v6.14. Right aligned so the screen
@@ -570,7 +584,7 @@
   </div>
 
   <div class="tpane" id="tpane_hire" style="display:none">
-    <div class="msub" style="color:#ff5a4a;font-weight:800;letter-spacing:.12em">***EXPERIMENTAL / BUGGY***</div>
+    <div style="color:#ff5a4a;font-weight:800;letter-spacing:.14em;font-size:26px;text-align:center;margin:4px 0 8px">***EXPERIMENTAL***</div>
     <div class="msub" id="wallet_merc" style="color:var(--amber);font-weight:700"></div>
     <div class="vend">
       <div class="vendgrid" id="mercgrid"></div>
@@ -1112,7 +1126,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.70';
+var VER='7.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10187,21 +10201,8 @@ function tryExtractTick(dt,wantCall){
     var CZ=G.zones[cz];
     if((CZ!==z||!wantCall)&&CZ.callT>0) CZ.callT=Math.max(0,CZ.callT-dt*1.5);
   }
-if(z&&z.beaconT===null&&z.open&&!G.sim&&keys['KeyN']&&!p.downed){
-    var _scost=10000;
-    if(P.credits<_scost){
-      if(!G.silSaid||G.t-G.silSaid>3){ G.silSaid=G.t; say('A quiet ride costs '+'$'+_scost.toLocaleString()+'. You have '+P.credits.toLocaleString()+'.'); }
-    } else {
-      z.silT=(z.silT||0)+dt;
-      if(!G.silSaid||G.t-G.silSaid>3){ G.silSaid=G.t; say('Flying dark. Hold to confirm the '+'$'+_scost.toLocaleString()+'.'); }
-      if(z.silT>=6){
-        P.credits-=_scost;
-        T.silentExit=1; T.holdExtract=1;
-        say('Nothing called, no noise. Gone.');
-        endRaid('extract'); return;
-      }
-    }
-  } else if(z&&z.silT) z.silT=0;
+  // v7.74, his order: the $10k silent departure is gone. The recorder keeps
+  // reading the old flag off historical runs; nothing sets it any more.
   if(z&&z.beaconT===null&&z.open&&wantCall){
     // the first pull takes a couple of seconds of standing there
     z.callT=(z.callT||0)+dt;
@@ -17856,9 +17857,12 @@ function buzzWarp(c2,cnv,t,dr,ac){
 function drawBuzzFx(){
   if(G&&G.sim) return;
   if(typeof P==='undefined'||!P||!P.buzz||!P.buzz.length) return;
-  var t=BUZZT;
-  var dr=Math.min(buzzLevel('drunk')*1.8,11), ac=Math.min(buzzLevel('lsd')*1.8,11);
-  if(!dr&&!ac) return;
+  var t=BUZZT*0.4;   // v7.73, his note: same trip, slower flashes
+  // v7.73, two of his notes at once: ceiling 8.5 (was a hard 11 - "10 hits of
+  // acid is still unplayable") and asymptotic, so a fading stack softens
+  // instead of pinning at maximum until a cliff.
+  var dr=8.5*(1-Math.exp(-buzzLevel('drunk')*1.8/7)), ac=8.5*(1-Math.exp(-buzzLevel('lsd')*1.8/7));
+  if(dr<0.05&&ac<0.05) return;
   var wcv=wc.canvas, ocv=ctx.canvas;
   // TRACERS first: last frame's finished image smeared under this one, feeding back on
   // itself, longer with every tab. This is the trail the eye reports.
@@ -18460,9 +18464,6 @@ else if(nc2.tag) ctx.fillText('['+keyLabel('KeyE','E')+'] SEARCH '+String(nc2.ta
       } else {
 ctx.fillStyle='#4de3d0';
         ctx.fillText('['+keyLabel('KeyE','E')+'] CALL EXTRACTION',ps.x,ps.y);
-        ctx.fillStyle=(P.credits>=10000)?'#7fc4a0':'#5a6a70';
-        ctx.fillText('[N] SILENT DEPARTURE - 10,000c',ps.x,ps.y+LH(14));
-        if(padZ.silT>0) bar(ps.x-30,ps.y+LH(20),60,6,clamp(padZ.silT/6,0,1),'#7fc4a0');
         if(padZ.callT>0) bar(ps.x-30,ps.y+LH(6),60,6,clamp(padZ.callT/1.6,0,1),'#4de3d0');
       }
       ctx.textAlign='left';
@@ -19151,7 +19152,7 @@ var LEGEND=[
   ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','steady aim'],['R','reload'],['X','swap weapon']]],
   ['GEAR',[['1-9','select hotbar slot'],['FIRE','use selected slot'],['TAB','inventory'],['ENTER','equip gun from bag'],['BKSP','reset cursor']]],
 ['WORLD',[['E','search / call extraction'],['M','hold for map'],['H','cycle this list'],['P','pause']]],
-  ['ALSO',[['CAPS','walk on, hands free'],['N','silent departure, hold'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom']]]
+  ['ALSO',[['CAPS','walk on, hands free'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom']]]
 ];
 // SPEC 10.3: the colour language has to be learnable, so it is stated.
 // The twelve keys a player actually presses, two columns, no headings. Anything
@@ -21484,6 +21485,13 @@ wc.fillStyle=on?s3.c:'rgba(160,172,184,.75)';
       if(_lx2+_lw2/2>HUBW-_lm2)  _lx2=HUBW-_lm2-_lw2/2;
     }
     wc.fillText(s3.label,_lx2,s3.y-46);
+    if(s3.id==='bar'){
+      // v7.74, his order, his asterisks.
+      wc.font=FS(TYPE.micro);
+      wc.fillStyle=on?'#d98aff':'rgba(160,172,184,.65)';
+      wc.fillText('***Experimental***',_lx2,s3.y-35);
+      wc.font=FS(TYPE.label);
+    }
     if(s3.season){
       var _sr=seasonReady();
       if(_sr){
@@ -22201,7 +22209,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.70: the audit closes out - save-stack repair, save-failure warning, DPR re-arm, proof-of-life version stamp.',
+  now:'v7.74: the bar wears its Experimental badge, the quiet ride is cancelled.',
   next:'His queue: save slots and naming at boot, the mile re-baseline at full density, the 2.5d-glitch audit'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -24331,13 +24339,14 @@ document.getElementById('backfloor').onclick=function(){ document.getElementById
 // v7.66, his order: ten layouts and a button. Same DOM, same handlers; the
 // attribute only moves and resizes things.
 function applyStashLayout(){
-  var _ln=clamp(P.stashLayout||1,1,10);
+  // v7.72, his pick (revised in the same hour): 6 is the default until chosen.
+  var _ln=clamp(P.stashLayout||6,1,10);
   document.getElementById('hub').setAttribute('data-slayout',_ln);
   var _lb=document.getElementById('laybtn');
   if(_lb) _lb.textContent='LAYOUT '+_ln+'/10';
 }
 document.getElementById('laybtn').onclick=function(){
-  P.stashLayout=(clamp(P.stashLayout||1,1,10)%10)+1;
+  P.stashLayout=(clamp(P.stashLayout||6,1,10)%10)+1;
   saveProfile(); applyStashLayout();
 };
 applyStashLayout();
@@ -24507,7 +24516,7 @@ document.addEventListener('keydown',function(e){
 function applyMenuZoom(){
   var z=(P&&P.menuZoom)||1;
   var hb=document.getElementById('hub'); if(hb) hb.style.zoom=z;
-  document.querySelectorAll('.modal,.pausebox,.outcome').forEach(function(m){ m.style.zoom=z; });
+  document.querySelectorAll('.modal,.pausebox,.outcome,#hub').forEach(function(m){ m.style.zoom=z; });
 }
 document.addEventListener('wheel',function(e){
   // ANY menu surface, which is the fix: a modal on its own is enough, and the
@@ -24792,11 +24801,12 @@ var SECTOR_CHAR=[
 // The story the comparable rows tell: the bot plays the same appetite on both
 // (about five containers, about 2.5k), and the difference is pure survival -
 // the mile walks out at nearly three times cold's rate.
+// v7.71: post-boundary (v7.69) confirmation, 200 paired seeds each, zero
+// discordant. The two maps kill at the SAME rate now - his density order
+// made the mile cold-lethal (it walked out 42.5 before it filled up).
 var SECTOR_MEAS=[
-  {ext:15.0,fc:72, cont:5.0,haul:2495},
-  // v7.67, 200 seeds at full density: his "feels deserted" order cut the walk-
-  // out rate from 42.5 to 14.5 - the mile now kills like cold does.
-  {ext:14.5,fc:47, cont:4.9,haul:2458}
+  {ext:15.0,fc:72, cont:5.0,haul:2443},
+  {ext:15.0,fc:47, cont:4.9,haul:2423}
 ];
 // v7.54, his note: the size difference stated next to the name. Only the
 // extremes are tagged, so a third mid-sized map would stay untagged.

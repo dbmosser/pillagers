@@ -27443,6 +27443,73 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.74 - THE BAR'S BADGE AND THE CANCELLED QUIET RIDE
+
+Two of his orders and one piece of residue his own verification caught. The
+Last Pour wears a second line under its name now - ***Experimental***, his
+asterisks, drawn bright when the bar is open and dim when it is shut. The hire
+pane's warning grew from a sub-line to a 26px ***EXPERIMENTAL*** banner. And
+the $10k silent extraction is gone entirely: the N hold, its charge, its say
+lines, its legend row - and, caught during this build's verification, the pad
+prompt that still ADVERTISED the deleted option and drew a progress bar for a
+hold that could no longer start. The telemetry recorder keeps reading the
+silentExit flag off historical run reports; nothing sets it any more.
+
+Verified: parse PASS with the DEVNOW assert at v7.74; fingerprints 58 and 276
+at seed 4242; holding N for 8.5 seconds on an open pad with 50,000 credits
+banked moves nothing (credits delta zero, no extraction, no say line); the
+three endings read EXTRACTED / KILLED IN ACTION / ABANDONED through oc_btn and
+land back in the hub each time; the bar's Experimental line drew exactly once
+on a live hub frame (fillText spy); the hire banner is in the pane; the stage
+renders; sixty hub steps and a frame after an extract run clean; the trimmed
+pad prompt draws clean standing on an open pad.
+
+Not verified: the badge's fit against the bar label at every menu zoom step,
+and his read on whether losing the quiet ride changes how he plays high-value
+hauls - that one is his to feel out.
+
+## v7.71 + v7.72 + v7.73 - THE BOARD CONFIRMS, THE STASH GROWS UP, THE ACID CHILLS
+
+v7.71: the post-boundary confirmation landed. Both maps re-ran at 200 paired
+seeds on the v7.69 stream, zero discordant each, and the boundary moved almost
+nothing: cold 15.0 to 15.0 (haul 2,495 to 2,443), the mile 14.5 to 15.0 (one
+seed flipped by the storms the sim now hears; haul 2,458 to 2,423). The board
+carries the post-boundary rows: the two maps kill at the SAME rate now.
+
+v7.72, his verdicts while cycling the ten layouts live: first "layout 10 is
+the best", then "layout 6 is actually better", then "layout 7 is good" - so
+layout 6 is the default and all three favourites carry his stated proportions:
+"Tactical belt should be way bigger, safe pocket should be way smaller." Belt
+slots grew from 34px to 76px with 48px icons in 6/7/10 (62px in the other big
+layouts, 48px floor everywhere); the safe pocket shrank to a small strip.
+
+v7.73, four more from the same session: the WHOLE stash screen now obeys the
+menu zoom (his "zoomed out they are WAYYYY TOO small" - the screen was the one
+surface menuZoom never covered; it renders at his saved 1.3 immediately and
+the - / = keys adjust it); the loadout labels keep clear of the kit column's
+scroll control (his "glitching in upper right"); the acid clock runs at 40
+percent ("acid flashes too fast -- i dig the effects but make it slower" - one
+clock read drives every flash, hue cycle, glitch and invert, so one change
+slows the whole trip); and the intensity envelope answers two orders at once -
+the visual ceiling drops from a hard 11 to an asymptotic 8.5 ("10 hits of acid
+is still unplayable lol") and, because the approach is asymptotic instead of
+clipped, a fading stack now softens visibly through the 2-to-3-minute
+wear-off instead of pinning at maximum until a cliff ("drugs should wear off
+gradually and get less intense after the 2 minute mark, especially if you've
+taken alot"). One dose reads almost the same as before; ten reads about a
+third softer and visibly decays.
+
+Verified: board rows render (checked at v7.71 apply); hub zoom reads 1.3 on
+the live screen; belt cells measure 99 screen pixels in layout 6 (76 times the
+zoom); default cycles 6 to 7; ten acid doses draw clean through the full fx
+pass on a live raid; fingerprint 58; three endings, hub, stage; parse PASS
+with the DEVNOW assert at each of the three versions.
+
+Not verified: the acid pacing and the new ceiling are HIS feel calls - the
+numbers were chosen so one dose barely changes and ten drops by a third, but
+only his eyes grade a trip; and the belt at 76px in the two stacked layouts
+(8 and 4) keeps the smaller 62px treatment pending his word.
+
 ## v7.70 - THE AUDIT CLOSES OUT
 
 The four deferred safe items from the glitch audit.
