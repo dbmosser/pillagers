@@ -27443,6 +27443,51 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.24 - THE MAN YOU HIRED FINALLY SHOOTS BACK
+
+A hired mercenary could never fire at a pillager. Not rarely - never, in
+any raid, since mercs and rival crews have coexisted.
+
+Two independent faults, and the first one alone would have been a
+plausible-looking fix that changed nothing.
+
+THE TARGET LIST REFUSED THEM. mercEngage gates its raider targets on
+feudFoe, and feudFoe bails the moment either side is a merc - correctly,
+because that rule exists so a man he paid for does not wander off to
+settle a crew grudge of his own. But it was the ONLY raider gate, so the
+exclusion swallowed every hostile pillager with it. A hostile pillager is
+now his business by name; feudFoe still governs the grudge case and still
+refuses to let a merc go picking those fights.
+
+AND HE COULD NOT REACH THE TRIGGER ANYWAY. This is the half that only
+measuring found. With the target list opened, a hostile pillager 120 units
+away still drew ZERO rounds, and the merc did not even turn to face him.
+The entity chain branches on STATE before it branches on kind, and a merc
+standing beside a firefight is in 'chase' - so he fell into the generic
+raider branch, and the two order branches at the bottom, which are the
+only callers of mercEngage in the file, were never reached. The man was
+unreachable exactly when a fight started, which is the only time he
+matters. Engagement now runs before the state chain, under the same two
+orders as before.
+
+The v3.72 priority is preserved and was re-measured, because inserting
+anything above that chain risks it: a bleeding client still outranks a
+target.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. On the real path with a hired
+merc and a hostile pillager pinned 120 units away: 16 rounds fired over
+six and a half seconds, facing 0.00 - straight at him - where the same
+setup before this build fired 0 and stayed pointed the other way. Both
+regressions checked: a downed client is still picked up with a hostile
+standing right there, and across 200 frames of firing not one merc round
+was aimed back at the player.
+
+Not verified: how he behaves over a whole raid rather than a pinned
+duel - whether he over-commits, chases, or gets himself killed at a rate
+that makes the $30,000 a bad deal is a play question, and the bot cannot
+answer it because the bot never fights pillagers either.
+
 ## v8.23 - A GRENADE KNOWS WHO THREW IT
 
 Three findings from the raid audit, all the same shape: the game blaming
