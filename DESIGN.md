@@ -27443,6 +27443,31 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.90 - THREE PIECES OF DEAD CODE LEAVE
+
+The dead-code trio from the six-lens audit, deletions only, no behaviour:
+
+- drawMapFog and MAP_FOG - dead since the v7.57 no-blackout order, while
+  three separate comments still claimed it was the live blackout on the
+  sector map. Gone, and all three comments now tell the truth: the sector
+  map has no blackout, the fine grid feeds the SURVEYED percentage and
+  seeds pre-v5.29 charted sectors.
+- superhotSlow - a Tuning Console dial read by NOTHING since the v7.23
+  rewrite made superhot a true freeze on his order. A player could drag a
+  slider that did nothing. Out of the DEF table and the tuner, and
+  scrubbed from the fixture's pin snapshot too (the pin was re-injecting
+  the retired dial straight into CFG past the in-DEF filter).
+- askConfirm - the v6.67 one-dialog-style helper, defined and never
+  called; every ask-card user sets the fields itself. Gone.
+
+Verified: parse PASS; fingerprints 58 and 276 (the pin scrub shifted
+nothing); the sector map overlay draws clean with the fog call sites gone;
+three endings through oc_btn; hub; stage; CFG confirmed clear of
+superhotSlow on a fresh pinned boot.
+
+Not verified: nothing pending - deletions verified by the absence they
+create.
+
 ## v7.89 - EVERY WRECK SHOWS ITS FLAT
 
 The wreck draw pair from the six-lens audit. The flat tyre - the one detail
