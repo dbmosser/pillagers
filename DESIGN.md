@@ -27443,6 +27443,43 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.04 - AUTOMATIC BELT PINS LEARN THEIR PLACE
+
+The audit's second cluster: v7.98's auto-belt made its automatic pins
+indistinguishable from placements HE made, and three failures grew from
+that one root. First, a mid-raid drag flushed the whole assignment map
+into the profile, so a pickup I pinned became part of his saved hub plan
+forever. Second, picking up a duplicate of the gun already in his hands
+pinned its item key, the equipped-gun overlay rendered his LIVE gun on
+that cell, and the dedupe pass blanked slot 1 or 2 under him mid-fight.
+Third, the derived bar GROWS - equip a second gun and Medical slides
+right, pick up a plate and a new cell appears - and an automatic pin
+sitting on the index a derived cell grows into masked that cell for the
+rest of the raid (Medical gone from the belt, only KeyF healing).
+
+One fix: automatic pins are now marked (G.hotAuto, raid-local like the
+map itself). A duplicate of an equipped gun model never takes a slot at
+all. A marked pin YIELDS when a derived cell grows underneath, moving
+itself to the highest empty slot - his own placements still override
+derived cells, exactly as the v6.61 rule demands. And the drag flush
+writes his placements only; a drag ONTO an automatic pin claims that
+slot as his, while a displaced automatic item stays automatic wherever
+it lands.
+
+Verified: parse PASS; fingerprints 58/276; three endings through oc_btn
+with overlay-on; hub; stage. Play-path probes through the REAL container
+pull (__open, staged): a looted Stim Injector pinned to the first empty
+slot with its auto mark while the profile plan's own frag/medkit pins
+stayed unmarked; pushing a plate grew the derived cell into that index
+and the pin moved itself 6 to 8, mark and all, leaving his pins
+untouched; with an SMG in hand, a looted gun_smg went to the bag and
+took no slot.
+
+Not verified: the drag-flush filter itself (HTML5 drag needs a real
+mouse; verified by anchor and the probe-confirmed mark bookkeeping it
+reads); stale auto marks across a raid boundary (G.hotAuto dies with G
+like every raid-local, but no probe asserted it).
+
 ## v8.03 - TEN SURFACES THE RARITY SWEEP MISSED
 
 A fresh 12-agent adversarial audit over the whole v7.91-v8.01 diff (six

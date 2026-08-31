@@ -1128,7 +1128,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.03';
+var VER='8.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8278,12 +8278,27 @@ window.addEventListener('mouseup',function(e){
         // One item, one slot. Dropping something that already lives elsewhere on
         // the bar MOVES it, or the same Medkit ends up on three slots at once.
         var _prevHot=G.hotAssign[HC.i];
+        G.hotAuto=G.hotAuto||{};
+        var _wasAutoT=G.hotAuto[HC.i];
         for(var ok in G.hotAssign) if(G.hotAssign[ok]===d.key) delete G.hotAssign[ok];
         G.hotAssign[HC.i]=d.key;
-        if(d.fromHot!==undefined&&_prevHot&&_prevHot!==d.key) G.hotAssign[d.fromHot]=_prevHot;
+        // v8.04: the drag makes this slot HIS. The auto mark comes off, marks
+        // whose assignment just vanished go with it, and a displaced automatic
+        // item stays automatic where it lands.
+        delete G.hotAuto[HC.i];
+        for(var _oa in G.hotAuto) if(G.hotAssign[_oa]===undefined) delete G.hotAuto[_oa];
+        if(d.fromHot!==undefined&&_prevHot&&_prevHot!==d.key){
+          G.hotAssign[d.fromHot]=_prevHot;
+          if(_wasAutoT) G.hotAuto[d.fromHot]=1;
+        }
         // And the arrangement survives the raid: a drag mid-raid IS building
-        // your hotbar, so it writes the same plan the hub edits.
-        if(!G.sim){ P.hotAssign=JSON.parse(JSON.stringify(G.hotAssign)); saveProfile(); }
+        // your hotbar, so it writes the plan the hub edits - MINUS the automatic
+        // pickup pins (v8.04, audit): the profile holds only what he placed.
+        if(!G.sim){
+          var _flush={};
+          for(var _fk in G.hotAssign) if(!G.hotAuto[_fk]) _flush[_fk]=G.hotAssign[_fk];
+          P.hotAssign=JSON.parse(JSON.stringify(_flush)); saveProfile();
+        }
         G.hot=HC.i;
         blip('pick');
         say((ITEMS[d.key]?ITEMS[d.key].name:'Item')+' to slot '+(HC.i+1));
@@ -9952,12 +9967,23 @@ function autoBelt(key){
   if(!G||G.sim||G.over) return;
   var it=ITEMS[key]; if(!it) return;
   if(it.use!=='gun'&&it.use!=='stim') return;
+  // v8.04, audit: a duplicate of the gun in your HANDS never takes a slot.
+  // The equipped-gun overlay would render your live gun on the pinned cell
+  // and the dedupe pass would blank slot 1 or 2 under you mid-fight.
+  if(it.use==='gun'&&it.gk){
+    var _pb=G.player;
+    if((_pb.wep&&_pb.wep.id===it.gk)||(_pb.sec&&_pb.sec.id===it.gk)) return;
+  }
   G.hotAssign=G.hotAssign||{};
   for(var ai in G.hotAssign) if(G.hotAssign[ai]===key) return;
   var slots=hotbarSlots();
   for(var bi=0;bi<slots.length;bi++){
     if(slots[bi].kind==='empty'&&G.hotAssign[bi]===undefined){
       G.hotAssign[bi]=key;
+      // Marked automatic so a drag can tell his placements from mine: only his
+      // reach the profile, and mine yield to derived cells instead of masking.
+      G.hotAuto=G.hotAuto||{};
+      G.hotAuto[bi]=1;
       say(it.name+' to belt slot '+(bi+1)+'.');
       return;
     }
@@ -10008,6 +10034,26 @@ function hotbarSlots(){
   // makes the extra keys worth having rather than just present.
   while(out.length<HOTBAR_N) out.push({k:'empty:'+out.length,name:'Empty slot',kind:'empty',count:0,c:'#4d5762'});
   if(out.length>HOTBAR_N) out.length=HOTBAR_N;
+  // v8.04, audit: the derived bar GROWS - equip a second gun and Medical slides
+  // right; pick up a plate and a new cell appears. An AUTOMATIC pin sitting on
+  // the index a derived cell grows into would mask that cell for the raid
+  // (Medical vanished, only KeyF healed). Automatic pins yield: they move to
+  // the highest empty slot instead. His own placements still override, as the
+  // v6.61 note above demands.
+  if(G.hotAssign&&G.hotAuto){
+    for(var pa in G.hotAssign){
+      var pax=+pa;
+      if(!G.hotAuto[pa]) continue;
+      if(pax>=0&&pax<out.length&&out[pax].kind!=='empty'){
+        var nix=-1;
+        for(var ni=out.length-1;ni>=0;ni--)
+          if(out[ni].kind==='empty'&&G.hotAssign[ni]===undefined){ nix=ni; break; }
+        var pkey=G.hotAssign[pa];
+        delete G.hotAssign[pa]; delete G.hotAuto[pa];
+        if(nix>=0){ G.hotAssign[nix]=pkey; G.hotAuto[nix]=1; }
+      }
+    }
+  }
   if(G.hotAssign) for(var ai in G.hotAssign){
     var aix=+ai, akey=G.hotAssign[ai];
     if(!(aix>=0&&aix<out.length)) continue;
@@ -22338,7 +22384,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.03: ten surfaces the rarity sweep missed now agree with the rest.',
+  now:'v8.04: automatic belt pins learn their place - they yield, and they stay out of your saved plan.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
