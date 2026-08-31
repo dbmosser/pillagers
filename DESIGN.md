@@ -27443,6 +27443,44 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.62 - THE LISTENER KEEPS ITS DISTANCE, THE STALL PAYS ON THE WAY OUT
+
+Two live orders.
+
+"listener is still doing the thing where you cant hit it because it gets on
+top of you to melee" - it navSeeks straight onto your point, and a shot born
+at the muzzle passes behind a body inside your radius. It now stops AT contact
+distance (radii plus two), which is still well inside its melee reach, so the
+fight is unchanged except that there is always a body in front of you to hit.
+The first patch had the exact bug it existed to fix - at distance ZERO the
+projection guard skipped, so a listener already on top of you stayed there;
+found by my own probe placing it at the player's point, fixed with an explicit
+degenerate branch. Verified both ways: placed exactly on top it steps out to
+27 against a contact minimum of 25, approaching from 200 it stops at 27, and
+in both stagings it still lands its blow and kills - checked deliberately,
+because the last listener item I closed with three checks that never asked if
+it could kill.
+
+"the credits from the peddler should not bank, player has to extract them or
+lose them" - stall money now rides the raid on G.pedCarry: the sale banks
+nothing, the extract branch pays it out, a death loses it where you fell. The
+sale line says so ("The cash rides with you now - walk it out or lose it"),
+and the ledger states the outcome either way ("Stall money carried out: $552,
+banked." / "Stall money lost where you fell: $552."). This is also sim-safe by
+construction - nothing touches the profile until the extract branch, which the
+old design needed a whole comment to promise. The survivor's payment
+(strayPaid) still banks immediately: he ordered the stall changed, not every
+credit source, and that one is a gift, not a trade.
+
+Verified: standoff and kill both stagings; extract banked exactly the carried
+552 on top of the haul, death banked zero of it; the two ledger lines read
+back from the real outcome screen; abandon headline, hub, stage.
+
+Not verified: the listener standoff runs in the SIM too (it is the same hunt
+block), so this is a measurement boundary alongside the density change - the
+queued re-baseline covers both; and the peddler flow was staged by setting the
+carry fields directly rather than walking to the stall and selling.
+
 ## v7.60 + v7.61 - NAMED DOORS, BARE HANDS, AND THE CROWBAR'S FUNERAL
 
 v7.60, his map orders. Every extraction ring on the map page is named EXTRACT

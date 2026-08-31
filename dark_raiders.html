@@ -1054,7 +1054,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.61';
+var VER='7.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6677,13 +6677,10 @@ function pedSellAll(){
   }
   if(!n){ if(!G.sim) say('Nothing in your bag he wants.'); return; }
   G.bag=kept;
-  // SIM SAFE, v1.95. The bot needs to be able to trade so the peddler can finally
-  // be measured, and a sim raid must never touch the saved profile: crediting
-  // P.credits from a headless batch would quietly pay him for raids he never
-  // played, and saveProfile on every sale would write the profile hundreds of
-  // times a batch. The sale still happens and is still recorded on the raid, it
-  // just does not reach the bank.
-  if(!G.sim){ P.credits+=tot; saveProfile(); }
+  // v7.62, his order: stall money is CARRIED, not banked. It rides the raid on
+  // G.pedCarry, pays out only if you walk out, and dies where you fall. This is
+  // also sim-safe for free - nothing touches P until the extract branch.
+  G.pedCarry=(G.pedCarry||0)+tot;
   G.pedSold=(G.pedSold||0)+tot;
   if(G.tel) G.tel.pedSold=G.pedSold;
   if(G.trade) G.trade.traded=1;
@@ -6701,8 +6698,8 @@ function pedSellAll(){
     // reason. It is just no longer a blind one.
     var _full=full;
     say('Sold '+n+' for '+'$'+tot.toLocaleString()+', his '+Math.round(pedBuyRate()*100)+
-      ' percent. Banked whatever happens next, and no XP: carried home it was '+
-      '$'+_full.toLocaleString()+' and '+_full.toLocaleString()+' XP.');
+      ' percent. The cash rides with you now - walk it out or lose it. Carried '+
+      'home whole it was worth '+'$'+_full.toLocaleString()+'.');
     blip('pick'); ping(G.trade.x,G.trade.y,190,false,false,'player','move');
   }
 }
@@ -12562,6 +12559,13 @@ if(e.state==='hunt'){
         // is the only window in the fight. Never fully rooted, so backing off has
         // to be a decision rather than a free reset.
         navSeek(e,e.heardX,e.heardY,e.spd,dt);
+        // v7.62, his report: it climbed INTO you so point-blank shots passed
+        // behind it. It stops at contact distance - melee still reaches.
+        var _lpd=dist(e,p), _lmin=e.r+(p.r||11)+2;
+        if(_lpd<_lmin){
+          if(_lpd<0.001){ e.x=p.x+_lmin; e.y=p.y; }
+          else { e.x=p.x+(e.x-p.x)/_lpd*_lmin; e.y=p.y+(e.y-p.y)/_lpd*_lmin; }
+        }
         e.face+=clamp(angDiff(Math.atan2(e.heardY-e.y,e.heardX-e.x),e.face),-6*dt,6*dt);
         var ld=dist(e,p);
         // v6.63: same fix as the crawler. r 14 plus r 11 is 25 against an rng of 26,
@@ -14150,7 +14154,9 @@ silentExit:T.silentExit||0,
     lines.push('<span style="color:var(--coolant)">The survivor paid you '+'$'+G.strayPaid.toLocaleString()+', already banked.</span>');
   }
   if(G.pedSold){
-    lines.push('<span style="color:var(--coolant)">Sold at the stall for '+'$'+G.pedSold.toLocaleString()+', already banked.</span>');
+    lines.push(how==='extract'
+      ?'<span style="color:var(--coolant)">Stall money carried out: '+'$'+(G.pedCarry||0).toLocaleString()+', banked.</span>'
+      :'<span style="color:var(--rust)">Stall money lost where you fell: '+'$'+(G.pedCarry||0).toLocaleString()+'.</span>');
   }
   if(G.pedBought){
     lines.push('<span style="color:var(--ash)">Spent '+'$'+G.pedBought.toLocaleString()+' at the stall.</span>');
@@ -14208,6 +14214,7 @@ var _cdone=contractExtract(G.bag,haul);
     for(i=0;i<_cdone.length;i++)
       lines.push('<span style="color:#7fc4a0">CONTRACT COMPLETE: '+escHtml(_cdone[i])+'. Claim it at the board.</span>');
     for(i=0;i<G.bag.length;i++){ var bm=bankItem(G.bag[i]); if(bm) lines.push(bm); }
+    if(G.pedCarry&&!G.sim){ P.credits+=G.pedCarry; }
     // Both hands count. Extracting with the sidearm up used to throw away the
     // Marksman Rifle holstered in the other slot. Issued kit is a loaner and is
     // never banked: banking it silently ended the fresh starter roll forever,
