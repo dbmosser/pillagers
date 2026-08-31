@@ -27443,6 +27443,45 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.10 - CLAIM ALL, ON BOTH BOARDS
+
+Two live orders: a claim-all on the Mainframe rewards, and the same on
+contracts.
+
+The rewards button sits above the list and counts what it will take -
+"CLAIM ALL EARNED (5)" - and greys to "NOTHING READY TO CLAIM" when there
+is nothing. It walks the board in order and calls claimTier, which was
+already the only writer and already refuses anything unearned or already
+taken, so this is a loop over the same door rather than a second one. One
+line reports the lot instead of five toasts.
+
+Contracts needed a small repair first. The row's Claim button carried the
+whole payout inline - credits, gear, standing weight, slot refill - and a
+second button doing that again is exactly how the shop and the workshop
+drifted apart in this file before. There is now one writer,
+claimContractAt(ci), which pays or returns null, and both buttons knock on
+it. Claim-all reports one total: "8 contracts paid: $5,180."
+
+Caught in passing: the single-reward toast said "Tier 3: ..." - tier is on
+his Never list with season and battle pass, and the v8.06 vocabulary sweep
+walked straight past it because it was built by concatenation rather than
+written as a literal. It says Reward now.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. On the real station acts, with
+distinctive staged state rather than anything resembling a default: eight
+contracts forced complete, the Mainframe opened through its own KeyE act,
+the button read "CLAIM ALL COMPLETED (8)", one press moved credits +$5,180
+and left zero completed with the button greyed; the rewards board with a
+cleared claim list and 60,000 XP read "CLAIM ALL EARNED (5)", one press
+claimed 5 and paid +$800, +1 gun to the armoury and +15 items to the
+stash, and a SECOND press paid exactly nothing.
+
+Not verified: the button styling at his window size was not eyeballed
+(both are the standard ghost button used everywhere else in the modals);
+the rewards claim-all was exercised at 60,000 XP, so the hundred-reward
+board's upper reaches were not walked in one press.
+
 ## v8.09 - THE CHEAT BOX ANSWERS, A PLATE IS WORTH 20, AND A RACK COSTS HALF
 
 Three live orders.

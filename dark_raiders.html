@@ -681,6 +681,7 @@
   <div class="invtabs" id="optabs" style="padding:0 0 10px 0"></div>
   <div class="tpane" id="opane_con" style="display:flex;flex-direction:column;flex:1;min-height:0">
     <div class="msub">Work you have signed for. Contracts pay on top of your haul, and they do not expire while you are down here.</div>
+    <button class="deploy ghost" id="conclaimall" style="margin:8px 0 0;padding:8px 18px;width:100%">CLAIM ALL COMPLETED</button>
     <div class="vend">
       <div class="plist" id="contracts" style="flex:1.5;min-height:220px;overflow-y:auto;border:1px solid var(--steel-hi);border-radius:3px"></div>
       <div class="vdet" id="condetail"></div>
@@ -693,6 +694,7 @@
       <div id="seasonfill" style="height:100%;width:0%;background:linear-gradient(90deg,#ffc04a,#ffc04a)"></div>
       <div id="seasontext" style="position:absolute;inset:0;text-align:center;font-size:11px;line-height:16px;color:#120e0c;font-weight:700"></div>
     </div>
+    <button class="deploy ghost" id="seasonclaimall" style="margin:0 0 8px;padding:8px 18px;width:100%">CLAIM ALL</button>
     <div class="plist" id="seasonlist" style="border:1px solid var(--steel-hi);flex:1;min-height:160px;overflow:auto"></div>
     <div class="msub" id="roadmaphead" style="margin-top:12px">What I am building next. In order, and it is the actual queue rather than a wish list.</div>
     <div class="plist" id="roadmaplist" style="border:1px solid var(--steel-hi);max-height:170px;overflow:auto"></div>
@@ -1135,7 +1137,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.09';
+var VER='8.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14287,6 +14289,22 @@ function claimTier(ix){
   saveProfile();
   return msg;
 }
+// v8.10, his order: everything earned so far, at once. claimTier is the only
+// writer and it refuses anything unearned or already claimed, so this walks the
+// board in order and lets it say no. Reward, never "tier": the word is on his
+// Never list with season and battle pass.
+function claimAllTiers(){
+  var got=0,last='';
+  for(var ix=0;ix<SEASON_TIERS.length;ix++){
+    var m=claimTier(ix);
+    if(m!==null&&m!==undefined){ got++; last=m; }
+  }
+  if(!got){ say2('Nothing ready to claim yet.'); return; }
+  say2(got===1?('Reward claimed: '+last)
+              :(got+' rewards claimed. The last of them: '+last));
+  try{ renderSeason(); }catch(e){}
+  renderHub();
+}
 function xpForRun(rec){
   var x=40 + Math.round((rec.containers||0)*4) + Math.round((rec.dist||0)/900);
   if(rec.outcome==='dead') x*=0.5;
@@ -22601,7 +22619,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.09: the cheat box says what you took, a plate is worth 20 armour, and a rack costs half what it did.',
+  now:'v8.10: claim all, on the rewards board and on the contracts board.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -22782,6 +22800,13 @@ function renderSeason(){
   document.getElementById('seasonfill').style.width=clamp(100*sp/cap,0,100)+'%';
   document.getElementById('seasontext').textContent=Math.min(sp,cap).toLocaleString()+' / '+cap.toLocaleString();
   var el=document.getElementById('seasonlist'); el.innerHTML='';
+  (function(){
+    var _sb=document.getElementById('seasonclaimall'); if(!_sb) return;
+    var _sr=seasonReady();
+    _sb.textContent=_sr?('CLAIM ALL EARNED  ('+_sr+')'):'NOTHING READY TO CLAIM';
+    _sb.disabled=!_sr;
+    _sb.onclick=claimAllTiers;
+  })();
   var cl=seasonClaimed();
   SEASON_TIERS.forEach(function(T,ix){
     var row=document.createElement('div'); row.className='row';
@@ -22800,7 +22825,9 @@ function renderSeason(){
       b.textContent='Claim';
       b.onclick=function(){
         var m=claimTier(ix);
-        if(m) say2('Tier '+(ix+1)+': '+m);
+        // v8.10: "Reward", not "Tier" - the word is on his Never list, and the
+        // v8.06 vocabulary sweep walked straight past this one.
+        if(m) say2('Reward '+(ix+1)+': '+m);
         renderSeason(); renderHub();
       };
     }
@@ -24055,15 +24082,11 @@ P.contracts.forEach(function(c,ci){
         // Pay only a contract that is actually finished and is still the one in
         // that slot. Same reason as the shop and the workshop: the row was drawn
         // earlier and the claim should not take its word for the state of things.
-        if(c.prog<c.n) return;
         if(P.contracts[ci]!==c) return;
-        // v5.78: a contract pays money, not standing.
-        P.credits+=c.reward;
-        var got=payGear(c.gear);
-        var TT2=CTIER[c.tier]||CTIER.std;
-        P.cstand=cstand()+TT2.w;
-        say2('Contract paid: '+'$'+c.reward.toLocaleString()+''+(got?' and '+got:'')+'.');
-        P.contracts[ci]=genContract(); saveProfile(); renderHub();
+        var r=claimContractAt(ci);
+        if(!r) return;
+        say2('Contract paid: '+'$'+r.pay.toLocaleString()+''+(r.gear?' and '+r.gear:'')+'.');
+        saveProfile(); renderHub();
       };
       cp.appendChild(b);
     }
@@ -24075,6 +24098,17 @@ P.contracts.forEach(function(c,ci){
     row.appendChild(cd); row.appendChild(cp); cl.appendChild(row);
   });
   renderConDetail();
+  (function(){
+    var _cb=document.getElementById('conclaimall'); if(!_cb) return;
+    var _rdy=0;
+    for(var _q=0;_q<P.contracts.length;_q++){
+      var _cc=P.contracts[_q];
+      if(_cc&&typeof _cc.reward==='number'&&_cc.prog>=_cc.n) _rdy++;
+    }
+    _cb.textContent=_rdy?('CLAIM ALL COMPLETED  ('+_rdy+')'):'NOTHING COMPLETED TO CLAIM';
+    _cb.disabled=!_rdy;
+    _cb.onclick=claimAllContracts;
+  })();
   var ll=document.getElementById('loglist'); ll.innerHTML='';
   document.getElementById('logct').textContent=P.log.length;
   for(i=P.log.length-1;i>=0;i--) ll.appendChild(fmtRun(P.log[i]));
@@ -24572,6 +24606,34 @@ function itemBlurb(k){
   if(it.use==='key') return 'Opens one locked room.';
   if(craftPart(k)) return craftUse(k)||'Crafting material.';
   return 'Salvage. Sell it at the terminal for credits and XP.';
+}
+// v8.10: the single writer for a finished contract. Pays, banks the standing
+// weight, and refills the slot. Returns null for anything not actually
+// finished, so every caller inherits the same refusal.
+function claimContractAt(ci){
+  var c=P.contracts[ci];
+  if(!c||typeof c.reward!=='number'||c.prog<c.n) return null;
+  // v5.78: a contract pays money, not standing.
+  P.credits+=c.reward;
+  var got=payGear(c.gear);
+  var TT2=CTIER[c.tier]||CTIER.std;
+  P.cstand=cstand()+TT2.w;
+  P.contracts[ci]=genContract();
+  return {pay:c.reward, gear:got};
+}
+// His order: all of them at once. One pass, one total, one line.
+function claimAllContracts(){
+  var got=0,total=0,gear=[];
+  for(var i=0;i<P.contracts.length;i++){
+    var r=claimContractAt(i);
+    if(!r) continue;
+    got++; total+=r.pay; if(r.gear) gear.push(r.gear);
+  }
+  if(!got){ say2('Nothing finished to claim.'); return; }
+  saveProfile();
+  say2(got+' contract'+(got===1?'':'s')+' paid: '+'$'+total.toLocaleString()+
+       (gear.length?(' and '+gear.join(', ')):'')+'.');
+  renderHub();
 }
 function renderWork(){
   walletLine('wallet_work');
