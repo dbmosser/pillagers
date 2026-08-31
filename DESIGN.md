@@ -27443,6 +27443,59 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.16 - THE UNDERCROFT ANSWERS ITS INPUTS
+
+Four more audit findings, all of them a key or a button going to the wrong
+place.
+
+A CONTROLLER COULD NEITHER USE THE STASH NOR LEAVE IT. padOpenModal only
+ever looked at .modal.on, and the Stash is a .screen - so the pad had
+nothing to focus in the one panel he spends the most time in. And because
+the floor stops simulating while it is open, the stick could not walk him
+out either: a dead end with no exit but a keyboard. It counts the Stash as
+a panel now, checked after the windows so a window opened FROM the Stash
+still wins. The B button's list of ways-out gained "return", because the
+Stash's own exit says RETURN TO THE UNDERCROFT and the blunt fallback was
+skipping whatever that button does.
+
+ESCAPE TOOK THE PANEL AS WELL AS THE MENU. One press closed a right-click
+menu AND the whole Stash behind it. The first attempt at this guarded the
+floor's handler by looking for an open menu - and that failed, because the
+menu's Escape listener is on document and the floor's is on window, so the
+menu had already closed itself by the time the floor looked. Measured, not
+assumed: menuGone=true, stashStillOpen=false. The menu now CLAIMS the key
+it acts on - preventDefault, stopPropagation, stopImmediatePropagation -
+which is what the audit said was missing and the only version that does
+not depend on which listener happens to be registered first.
+
+TAB STRANDED THE MENU. Tab and I checked for an open window before
+toggling the panel, but not for a context menu, so Tab hid the Stash and
+left the menu floating over the Undercroft, still acting on a screen that
+could no longer repaint it. A menu counts as open now.
+
+AND THE FLOOR KEYS STOPPED REACHING THROUGH. H and SPACE were handled
+before any check for something open on top, so SPACE dodge-rolled the
+character behind an open window instead of pressing the control he was
+looking at.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. On the real key path, with
+events carrying both code and key: Tab from the floor opens the Stash;
+right-clicking an item opens its menu; Tab with that menu open leaves the
+panel alone; the first Escape closes the menu and LEAVES the Stash open;
+the second closes the Stash.
+
+A probe lesson worth keeping: my first two attempts at that sequence
+"failed" because my synthetic KeyboardEvents set only `code`, and the
+menu's handler reads `key` - so a menu was left stranded and my own new
+guards then correctly blocked everything that followed. The game was
+right both times; the events were half-built.
+
+Not verified: the controller path itself. padOpenModal returning the Stash
+is a structural change verified by reading the code and by the Stash
+opening and closing correctly around it - driving it needs real pad
+hardware, which this machine does not have.
+
 ## v8.15 - THE LAYOUT SURVIVES THE NIGHT, AND A KEY DIES WITH ITS ITEM
 
 Two more from the menu audit, both of them the kind that make the game

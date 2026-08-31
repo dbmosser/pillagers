@@ -1148,7 +1148,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.15';
+var VER='8.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7965,9 +7965,14 @@ window.addEventListener('keydown',function(e){
     if((e.code==='Enter'||e.code==='NumpadEnter')&&!WNSEEN&&!e.repeat){
       WNSEEN=1; e.preventDefault(); return;
     }
+    // v8.16, audit: nothing on the floor answers a key while something is open
+    // over it. SPACE used to roll the character behind an open window rather
+    // than pressing the control he was looking at.
+    var _hubBusy=!!(document.querySelector('.modal.on')||document.querySelector('.imenu')||
+                    document.getElementById('hub').classList.contains('on'));
     // v6.73, his notes: H shows the controls down here too, and SPACE rolls.
-    if(e.code==='KeyH'&&!e.repeat&&HB){ HB.legend=!HB.legend; e.preventDefault(); return; }
-    if(e.code==='Space'&&!e.repeat&&HB&&HB.player&&!(HB.player.rollT>0)){
+    if(e.code==='KeyH'&&!e.repeat&&HB&&!_hubBusy){ HB.legend=!HB.legend; e.preventDefault(); return; }
+    if(e.code==='Space'&&!e.repeat&&!_hubBusy&&HB&&HB.player&&!(HB.player.rollT>0)){
       var _hp=HB.player;
       var _hmx=(keys['KeyD']?1:0)-(keys['KeyA']?1:0);
       var _hmy=(keys['KeyS']?1:0)-(keys['KeyW']?1:0);
@@ -7979,8 +7984,13 @@ window.addEventListener('keydown',function(e){
       e.preventDefault(); return;
     }
     if(['Space','KeyE','Tab','KeyI'].indexOf(e.code)>=0) e.preventDefault();
-    // Escape backs out of the terminal panel and returns you to the floor
-    if(e.code==='Escape') document.getElementById('hub').classList.remove('on');
+    // Escape backs out of the terminal panel and returns you to the floor.
+    // v8.16, audit: unless something is ON TOP of it. A right-click menu has its
+    // own Escape handler, so one press used to close the menu AND the panel
+    // under it; a window over the Stash had the same problem. Escape belongs to
+    // whatever is in front.
+    if(e.code==='Escape'&&!document.querySelector('.imenu')&&!document.querySelector('.modal.on'))
+      document.getElementById('hub').classList.remove('on');
     // I and TAB open your things from anywhere on the floor, v6.39, his note. The
     // same panel the terminal opens, because there is only one inventory and making
     // the key open a second view of it is how the two drift apart.
@@ -7990,6 +8000,10 @@ window.addEventListener('keydown',function(e){
       for(var _mi=0;_mi<_ms.length;_mi++){
         if(_ms[_mi].classList.contains('on')){ _anyModal=true; break; }
       }
+      // v8.16, audit: a context menu counts. Tab used to hide the panel and
+      // leave the menu floating over the Undercroft, still acting on a screen
+      // that could no longer repaint it.
+      if(document.querySelector('.imenu')) _anyModal=true;
       if(!_anyModal){
         var _hb=document.getElementById('hub');
         if(_hb.classList.contains('on')) _hb.classList.remove('on');
@@ -8417,7 +8431,14 @@ function keyLabel(code,fallback){
 // whole of it; pollPad calls padMenu when a modal is up and returns.
 function padOpenModal(){
   var ms=document.querySelectorAll('.modal.on');
-  return ms.length?ms[ms.length-1]:null;   // the last one opened is the one on top
+  if(ms.length) return ms[ms.length-1];    // the last one opened is the one on top
+  // v8.16, audit: THE STASH IS A PANEL TOO. It is a .screen rather than a
+  // .modal, so the pad found nothing to focus and, because the floor stops
+  // simulating under it, could not walk out either. Checked after the modals,
+  // so a window opened FROM the Stash still wins.
+  var hb=document.getElementById('hub');
+  if(hb&&hb.classList.contains('on')) return hb;
+  return null;
 }
 function padFocusables(root){
   var out=[],q=root.querySelectorAll('button,.cell,.vcell,.crow,.invtab,.scard,.vpill,input,select');
@@ -8480,7 +8501,7 @@ function padMenu(pressed){
     // B backs out: the panel's own Leave or Close if it has one, so any cleanup that
     // button does still runs, and only otherwise the blunt instrument.
     var back=null,bs=md.querySelectorAll('button');
-    for(var i=0;i<bs.length;i++) if(/leave|close|not yet|back|done/i.test(bs[i].textContent||'')) { back=bs[i]; break; }
+    for(var i=0;i<bs.length;i++) if(/leave|close|not yet|back|done|return/i.test(bs[i].textContent||'')) { back=bs[i]; break; }
     if(back) back.click(); else md.classList.remove('on');
     padSetFocus(null); PAD.focus=null;
   }
@@ -22707,7 +22728,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.15: the stash layout you picked survives the night, and unpacking an item takes its belt key with it.',
+  now:'v8.16: the Undercroft answers its inputs - a pad can work the Stash and leave it, and Escape belongs to whatever is in front.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -23565,7 +23586,17 @@ function openItemMenu(x,y,key,ctx,count){
 document.addEventListener('mousedown',function(ev){
   if(IMENU&&!IMENU.contains(ev.target)) closeItemMenu();
 },true);
-document.addEventListener('keydown',function(ev){ if(ev.key==='Escape') closeItemMenu(); });
+document.addEventListener('keydown',function(ev){
+  if(ev.key!=='Escape') return;
+  // v8.16b: only if there is actually a menu to close, and then the key is
+  // SPENT. Without this the floor's own Escape handler - which is on window, so
+  // it runs after this one - saw the menu already gone and closed the whole
+  // Stash behind it, which is one press doing two things he did not ask for.
+  if(!document.querySelector('.imenu')) return;
+  closeItemMenu();
+  ev.preventDefault(); ev.stopPropagation();
+  if(ev.stopImmediatePropagation) ev.stopImmediatePropagation();
+});
 // THE GUNS YOU OWN, v6.48. Same panel, same close rules, different rows, because a gun
 // in the armoury has no ITEMS entry to drive the normal menu.
 function openGunMenu(x,y,gk){
