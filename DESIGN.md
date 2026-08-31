@@ -27443,6 +27443,44 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.87 - DPAD-UP DOES ONE THING, AND THE FIRST MINUTE GETS MEASURED
+
+The controller pair from the six-lens audit. Dpad-up was double-bound: the
+v6.41 map toggle and a leftover merc-orders tap fired on the SAME press, so
+with a merc hired every map check silently reordered him - and with the bag
+open the tap consumed the edge state, so dpad-up bag browsing could never
+fire at all. The leftover tap is gone; merc orders stay on keyboard B, and
+the dpad-up press belongs to the map. And the full controller legend behind
+H still described the pre-v6.89 layout - it told a pad player RT fires and
+X reloads while in the code A fires and X searches; the two legends the H
+key cycles DISAGREED about which button shoots. Rewritten to match the code
+and the mini legend. Same family: the HUD stopped labelling gun swap '[Y]'
+on pad (Y reloads; no pad button swaps guns today), and the keyboard legend
+stopped calling the map a hold (M toggles).
+
+ALSO IN THIS BUILD, THE MEASUREMENT FOR HIS MILE RULING. Sixty seeds per
+map, same seed family as the board, calibrated bot:
+
+  COLD STORAGE   extract 23%   dead inside 60s: 5%    median first contact 64s
+  THE COLD MILE  extract 23%   dead inside 60s: 13%   median first contact 42s
+
+Overall lethality is IDENTICAL - the density parity the board found holds -
+but the mile FRONT-LOADS its danger: first contact comes 22 seconds sooner
+and two and a half times as many runs die before the first minute is out.
+His two sub-minute deaths were the map's real shape, not bad luck. The dial
+is his: if he wants the opening softer without touching overall heat, the
+levers are the mile's spawnClear floor or the raider wave timing; nothing
+moves without his word.
+
+Verified: parse PASS; fingerprints 58 and 276; three endings through
+oc_btn; hub; stage.
+
+Not verified: every number above inherits the calibrated bot (standing
+caveat); the 23% on this 60-seed subset is within normal swing of the
+200-seed board's 15% and the board stays the authority on overall rate -
+this run's job was the within-run first-minute comparison, which paired
+seeds answer cleanly.
+
 ## v7.86 - THE SAFE POCKET STOPS CLIPPING ITS OWN INSTRUCTIONS
 
 Audit C1, and it shipped as the out-of-box state: in layouts 6, 7 and 10 -

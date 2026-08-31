@@ -1127,7 +1127,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.86';
+var VER='7.87';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8303,7 +8303,8 @@ var PADTAP={
   // taps, because there is no key that means "previous slot".
   8:'Tab',        // View   inventory
   9:'KeyP',       // Menu   pause
-  12:'KeyB',      // Dpad up     merc orders
+  // v7.87: 12 (dpad up) removed - it fought the v6.41 map toggle on the same
+  // press and ate bag browsing. Merc orders stay on keyboard B.
   14:'KeyZ',      // Dpad left   drop selected
   15:'KeyG'       // Dpad right  use the selected belt slot (was autoloot, v6.79)
 };
@@ -8320,8 +8321,8 @@ function padOn(){ return !!(typeof PAD!=='undefined'&&PAD&&PAD.on); }
 // The label to show for a keyboard code, swapped for its controller button when a pad is
 // connected. Bracketed ASCII on purpose: circled-letter glyphs are non-ASCII and this
 // file has been corrupted twice by non-ASCII surviving a patch script badly.
-var PADLABEL={KeyE:'X',KeyR:'Y',KeyF:'D-DOWN',KeyT:'RB',KeyG:'D-RIGHT',KeyX:'Y',KeyQ:'LB',
-              Space:'B',Tab:'BACK',KeyP:'START',KeyB:'D-UP',KeyZ:'D-LEFT',
+var PADLABEL={KeyE:'X',KeyR:'Y',KeyF:'D-DOWN',KeyT:'RB',KeyG:'D-RIGHT',KeyQ:'LB',
+              Space:'B',Tab:'BACK',KeyP:'START',KeyZ:'D-LEFT',
               ShiftLeft:'LS',ControlLeft:'RS',KeyM:'D-UP',KeyI:'BACK'};
 // The keyboard half, kept beside the controller half so a station key can never be
 // labelled by one table and pressed by the other.
@@ -19181,7 +19182,7 @@ var LEGEND=[
   ['MOVE',[['WASD','move'],['SHIFT','sprint'],['CTRL','crouch, near silent'],['SPACE','dodge roll']]],
   ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','steady aim'],['R','reload'],['X','swap weapon']]],
   ['GEAR',[['1-9','select hotbar slot'],['FIRE','use selected slot'],['TAB','inventory'],['ENTER','equip gun from bag'],['BKSP','reset cursor']]],
-['WORLD',[['E','search / call extraction'],['M','hold for map'],['H','cycle this list'],['P','pause']]],
+['WORLD',[['E','search / call extraction'],['M','map'],['H','cycle this list'],['P','pause']]],
   ['ALSO',[['CAPS','walk on, hands free'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom']]]
 ];
 // SPEC 10.3: the colour language has to be learnable, so it is stated.
@@ -19213,9 +19214,9 @@ var SOUNDKEY=[
 // a controller player reading key names has to translate every line.
 var LEGEND_PAD=[
   ['MOVE',[['L STICK','move, analog'],['LS CLICK','sprint'],['RS CLICK','crouch'],['B','dodge roll']]],
-  ['FIGHT',[['R STICK','aim'],['RT','fire'],['LT','steady aim'],['X','reload'],['Y','swap weapon']]],
-  ['GEAR',[['LB/RB','change slot'],['RB','use selected'],['Y','swap gun'],['VIEW','inventory']]],
-  ['WORLD',[['A','search / call extraction'],['DPAD UP','hold for map'],['DPAD L/R','drop / autoloot'],['MENU','pause']]]
+  ['FIGHT',[['R STICK','aim'],['A','fire'],['LT / RT','reach, analog'],['Y','reload']]],
+  ['GEAR',[['LB/RB','change belt slot'],['D-RIGHT','use selected'],['D-LEFT','drop selected'],['D-DOWN','use medical'],['VIEW','inventory']]],
+  ['WORLD',[['X','search / call extraction'],['DPAD UP','map'],['MENU','pause']]]
 ];
 // Every line here used to run past the right edge of its own panel, by 83 to 164
 // pixels on a box only 222 wide, so the rules he asked for spilled out of their
@@ -22241,7 +22242,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.86: the empty safe pocket stops clipping its own instructions in the default layout.',
+  now:'v7.87: dpad-up does one thing, and both controller legends tell the truth.',
   next:'Wrecked cars that read as cars from overhead, maps that read as different places, and his grades on the new menus and gun looks'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
