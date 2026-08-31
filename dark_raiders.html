@@ -627,7 +627,7 @@
   </div>
   <div class="tpane" id="opane_rew" style="display:none;flex-direction:column;flex:1;min-height:0">
     <div id="seasonhead" style="font-size:12px;letter-spacing:.14em;color:var(--amber);padding:0 0 6px"></div>
-    <div class="msub">Kills, loot, doors and walking out all pay XP. Dying pays half. Ten rewards, claimed in order, and nothing here ever resets.</div>
+    <div class="msub">Kills, loot, doors, selling and walking out all pay XP. Dying pays half. A hundred rewards, claimed in order, and nothing here ever resets.</div>
     <div id="seasonbar" style="height:16px;border:1px solid var(--steel-hi);background:rgba(0,0,0,.35);margin:6px 0 10px 0;position:relative">
       <div id="seasonfill" style="height:100%;width:0%;background:linear-gradient(90deg,#ffc04a,#ffc04a)"></div>
       <div id="seasontext" style="position:absolute;inset:0;text-align:center;font-size:11px;line-height:16px;color:#120e0c;font-weight:700"></div>
@@ -1054,7 +1054,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.62';
+var VER='7.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1511,7 +1511,7 @@ var THROWKEYS=['smoke','decoy','frag'];
 // armoury for whenever they choose it. Existing profiles are untouched, this is
 // only the literal a NEW profile is born from.
 var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,died:0,best:0,
-  log:[],pack:0,rep:0,contracts:[],cfg:null,lastSim:null,autoExport:true,autoDownload:false,shareRuns:false,iid:null,lastReport:'',cond:'day'};
+  log:[],pack:0,contracts:[],cfg:null,lastSim:null,autoExport:true,autoDownload:false,shareRuns:false,iid:null,lastReport:'',cond:'day'};
 var SKEY='salvagerun:profile';
 function storeSet(v){
   try{
@@ -1556,6 +1556,7 @@ if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just h
 if(P.cosHat==='pigtails'){ P.cosHat='none'; P.cosCut='pigtails'; }  // v7.26 migration
 if(P.buzzCd) delete P.buzzCd;   // v7.34: no cooldowns
 if(P.sp!==undefined) delete P.sp;   // v7.38: PROGRESS folded into XP; the field is dead
+if(P.rep!==undefined){ P.xp=(P.xp||0)+(P.rep||0); delete P.rep; }   // v7.63: MERGE, his word
 if(P.rig!==undefined) delete P.rig;   // v7.46: rigs left at v5.83; nothing reads these
 if(P.rigs!==undefined) delete P.rigs;
 if(P.seals&&P.seals[2]){ P.seals[0]=P.seals[2]; }                       // v7.39: one map -
@@ -1578,7 +1579,7 @@ P.buzz=[];                      // v7.35, his order: quitting the game cuts you 
 // nonsense number in front of him and it belongs with the unknown-key filters that
 // already run here.
 (function(){
-  var _num=['credits','rep','runs','ext','died','best','racks','notoriety','cstand'];
+  var _num=['credits','runs','ext','died','best','racks','notoriety','cstand'];
   for(var _ni=0;_ni<_num.length;_ni++){
     var _k=_num[_ni],_v=P[_k];
     if(typeof _v!=='number'||!isFinite(_v)||_v<0) P[_k]=Math.max(0,(typeof _v==='number'&&isFinite(_v))?_v:0);
@@ -1614,7 +1615,7 @@ if(typeof FIXED_MAPS!=='undefined'&&typeof mapOffered==='function'){
             'A pillager walking out will step past a downed crewmate. Has he earned his exit, or is that not a crew?':'A pillager walking out steps past a downed crewmate. One word: EARNED his exit, or CREW must try a revive?',
             'Armour is lost on death, so the 900c rig costs about 318c a raid to wear. Price, or permanence?':'Armour dies with you: the 900c rig prices out at 318c a raid. One word: PRICE stays, PERMANENCE with wear, or INSURANCE buy-back?'};
           if(Array.isArray(P.roadmapOrder)) P.roadmapOrder=P.roadmapOrder.map(function(_t){return RMV2[_t]||_t;});
-          if(!P.rep)P.rep=0; if(P.autoExport===undefined)P.autoExport=true; if(P.autoDownload===undefined)P.autoDownload=false;
+          if(P.autoExport===undefined)P.autoExport=true; if(P.autoDownload===undefined)P.autoDownload=false;
           // His playtest, 2026-08-22: "MOSTLY FRUSTRATING, ITS TOO JARRING FOR
           // SOMEONE NEW TO THIS GENRE. MAKE IT ALWAYS DAYTIME." Day is now the
           // default and every existing save is migrated to it. Night is still
@@ -13849,16 +13850,106 @@ function toggleTerm(id){
 // v7.38: thresholds are TOTAL XP now (old progress values times exactly 24, so a
 // profile mid-board lands where it already stood).
 var SEASON_TIERS=[
-  {sp:7200,   kind:'credits', v:1500, label:'1,500 credits'},
-  {sp:16800,  kind:'credits', v:2000, label:'2,000 credits'},
-  {sp:28800,  kind:'wep',     v:'carbine'},
-  {sp:43200,  kind:'kit',     v:['medkit','medkit','plate','plate'], label:'2 medkits and 2 armour plates to the stash'},
-  {sp:60000,  kind:'credits', v:3000, label:'3,000 credits'},
-  {sp:79200,  kind:'wep',     v:'shotgun'},
-  {sp:100800, kind:'standing',v:2,    label:'Every pillager out there thinks better of you'},
-  {sp:124800, kind:'credits', v:6000, label:'6,000 credits'},
-  {sp:151200, kind:'wep',     v:'dmr'},
-  {sp:180000, kind:'last',    v:10000,label:'10,000 credits, and the board is finished'}
+  {sp:7200, kind:'kit', v:['bandage','bandage','bandage','bandage','bandage','ammobox'], label:'BANDAGES AND AMMO'},
+  {sp:16800, kind:'credits', v:800, label:'$800 CREDITS'},
+  {sp:28800, kind:'kit', v:['frag','frag','ammobox','ammobox'], label:'FRAGS AND AMMO'},
+  {sp:43200, kind:'kit', v:['medkit','medkit','bandage','bandage','bandage'], label:'MEDKITS AND BANDAGES'},
+  {sp:60000, kind:'wep', v:'pistol', label:'BACKUP PISTOL'},
+  {sp:79200, kind:'kit', v:['scrap','scrap','scrap','scrap','scrap','scrap','wire','wire','wire','wire'], label:'SCRAP AND WIRE'},
+  {sp:100800, kind:'credits', v:1500, label:'$1,500 CREDITS'},
+  {sp:124800, kind:'kit', v:['plate','plate','bandage','bandage'], label:'FIRST ARMOR PLATES'},
+  {sp:151200, kind:'kit', v:['stim','stim','medkit'], label:'STIMS AND A MEDKIT'},
+  {sp:180000, kind:'kit', v:['frag','frag','frag','frag','smoke','smoke'], label:'BAG OF FRAGS'},
+  {sp:183800, kind:'credits', v:2500, label:'$2,500 CREDITS'},
+  {sp:187800, kind:'wep', v:'smg', label:'FACTORY SMG'},
+  {sp:191800, kind:'kit', v:['medkit','medkit','medkit','stim'], label:'MEDKIT THREE-PACK'},
+  {sp:195800, kind:'kit', v:['core','cell','cell'], label:'FIRST DATA CORE'},
+  {sp:200000, kind:'kit', v:['ammobox','ammobox','ammobox','ammobox','plate','plate'], label:'AMMO RESTOCK CRATE'},
+  {sp:204300, kind:'credits', v:3500, label:'$3,500 CREDITS'},
+  {sp:208600, kind:'kit', v:['smoke','smoke','smoke','decoy','decoy','decoy'], label:'SMOKES AND DECOYS'},
+  {sp:213100, kind:'wep', v:'shotgun', label:'A SCATTERGUN'},
+  {sp:217600, kind:'kit', v:['plate','plate','plate','plate','medkit','medkit'], label:'FOUR ARMOR PLATES'},
+  {sp:222200, kind:'kit', v:['core','core'], label:'TWO DATA CORES'},
+  {sp:227000, kind:'credits', v:5000, label:'$5,000 CREDITS'},
+  {sp:231800, kind:'kit', v:['optic','optic','board','board','comp'], label:'OPTICS AND BOARDS'},
+  {sp:236700, kind:'kit', v:['medkit','medkit','medkit','medkit','medkit','plate','plate','plate','ammobox','ammobox'], label:'BIG RESUPPLY CRATE'},
+  {sp:241800, kind:'wep', v:'carbine', label:'SERVICE CARBINE'},
+  {sp:246900, kind:'kit', v:['titan','core','core'], label:'TITAN AND TWO CORES'},
+  {sp:252200, kind:'kit', v:['medkit','medkit','medkit','medkit','bandage','bandage','bandage'], label:'CRATE OF MEDKITS'},
+  {sp:257600, kind:'kit', v:['frag','frag','frag','frag','smoke','smoke'], label:'FRAG BUNDLE'},
+  {sp:263100, kind:'wep', v:'carbine', label:'FREE CARBINE'},
+  {sp:268700, kind:'credits', v:4000, label:'$4,000 CASH'},
+  {sp:274400, kind:'kit', v:['core','scrap','scrap','scrap','scrap'], label:'A DATA CORE AND SCRAP'},
+  {sp:280200, kind:'kit', v:['plate','plate','plate','plate','plate'], label:'FIVE ARMOR PLATES'},
+  {sp:286200, kind:'kit', v:['ammobox','ammobox','ammobox','ammobox','bandage','bandage','bandage','bandage'], label:'AMMO RESUPPLY'},
+  {sp:292300, kind:'credits', v:5000, label:'$5,000 PAYOUT'},
+  {sp:298500, kind:'wep', v:'magnum', label:'MAGNUM SIDEARM'},
+  {sp:304900, kind:'kit', v:['medkit','medkit','medkit','medkit','medkit','stim','stim'], label:'BIG MEDKIT CRATE'},
+  {sp:311400, kind:'kit', v:['core','core'], label:'PAIR OF DATA CORES'},
+  {sp:318000, kind:'credits', v:6500, label:'$6,500 BONUS'},
+  {sp:324800, kind:'kit', v:['wire','wire','wire','wire','wire','wire','cell','cell','cell','cell','board','board','board','scrap','scrap','scrap','scrap','scrap','scrap'], label:'PARTS CRATE'},
+  {sp:331700, kind:'kit', v:['titan','core'], label:'TITAN AND DATA CORE'},
+  {sp:338800, kind:'wep', v:'shotgun', label:'CRATED SCATTERGUN'},
+  {sp:346000, kind:'credits', v:8000, label:'$8,000 CASH DROP'},
+  {sp:353400, kind:'kit', v:['frag','frag','frag','frag','frag','frag','decoy','decoy','decoy'], label:'BIGGER BAG OF FRAGS'},
+  {sp:360900, kind:'kit', v:['coil','cell','cell','cell','cell','cell'], label:'COIL AND POWER CELLS'},
+  {sp:368600, kind:'kit', v:['medkit','medkit','medkit','medkit','medkit','medkit','plate','plate','plate','plate'], label:'MEDKITS AND PLATES'},
+  {sp:376400, kind:'wep', v:'rifle', label:'SERVICE RIFLE'},
+  {sp:384400, kind:'credits', v:9500, label:'$9,500 PAYOUT'},
+  {sp:392600, kind:'kit', v:['core','core','core','optic','optic'], label:'THREE DATA CORES'},
+  {sp:401000, kind:'kit', v:['ledger','relay'], label:'LEDGER AND RELAY'},
+  {sp:409500, kind:'credits', v:12000, label:'$12,000 CASH DROP'},
+  {sp:418300, kind:'wep', v:'lmg', label:'FULL-SIZE LMG'},
+  {sp:427200, kind:'kit', v:['core','core','core','core','core'], label:'FIVE DATA CORES'},
+  {sp:436300, kind:'credits', v:11000, label:'$11,000 CASH DROP'},
+  {sp:445600, kind:'kit', v:['medkit','medkit','medkit','medkit','medkit','medkit','stim','stim','stim','stim','stim','stim'], label:'MEDKITS AND STIMS'},
+  {sp:455100, kind:'wep', v:'rifle', label:'THE RIFLE'},
+  {sp:464800, kind:'kit', v:['titan','titan','titan','titan'], label:'FOUR TITANS'},
+  {sp:474700, kind:'credits', v:13500, label:'$13,500 PAYOUT'},
+  {sp:484800, kind:'kit', v:['plate','plate','plate','plate','plate','plate','frag','frag','frag','frag','frag'], label:'PLATES AND FRAGS'},
+  {sp:495100, kind:'kit', v:['coil','coil','coil','core','core','core'], label:'COILS AND DATA CORES'},
+  {sp:505600, kind:'credits', v:16000, label:'$16,000 BOUNTY'},
+  {sp:516400, kind:'kit', v:['ledger','ledger','ledger'], label:'THREE LEDGERS'},
+  {sp:527400, kind:'wep', v:'lmg', label:'THE LMG'},
+  {sp:538700, kind:'kit', v:['frag','frag','frag','frag','frag','frag','ammobox','ammobox','ammobox','ammobox','ammobox','ammobox','smoke','smoke','smoke','smoke'], label:'HEAVY ORDNANCE CRATE'},
+  {sp:550100, kind:'credits', v:18500, label:'$18,500 SALVAGE SALE'},
+  {sp:561800, kind:'kit', v:['relay','relay','relay'], label:'THREE RELAYS'},
+  {sp:573800, kind:'kit', v:['titan','titan','titan','coil','coil','coil'], label:'TITANS AND COILS'},
+  {sp:586000, kind:'credits', v:21000, label:'$21,000 WAR CHEST'},
+  {sp:598500, kind:'wep', v:'dmr', label:'THE DMR'},
+  {sp:611300, kind:'kit', v:['medkit','medkit','medkit','medkit','medkit','medkit','plate','plate','plate','plate','plate','plate'], label:'SIX MEDKITS SIX PLATES'},
+  {sp:624300, kind:'kit', v:['ledger','ledger','ledger','relay','relay'], label:'LEDGERS AND RELAYS'},
+  {sp:637600, kind:'credits', v:24000, label:'$24,000 SCORE'},
+  {sp:651200, kind:'kit', v:['reactor','reactor','core','core','core','core','core','core'], label:'REACTORS AND DATA CORES'},
+  {sp:665000, kind:'credits', v:27000, label:'$27,000 VAULT CUT'},
+  {sp:679200, kind:'wep', v:'sniper', label:'THE SNIPER'},
+  {sp:693700, kind:'kit', v:['blackbox','blackbox','blackbox','ledger','ledger'], label:'BLACKBOXES AND LEDGERS'},
+  {sp:708500, kind:'credits', v:32000, label:'$32,000 MOTHERLODE'},
+  {sp:723600, kind:'kit', v:['reactor','reactor'], label:'PAIR OF REACTORS'},
+  {sp:739000, kind:'credits', v:25000, label:'TWENTY-FIVE GRAND'},
+  {sp:754700, kind:'wep', v:'sniper', label:'SNIPER RIFLE'},
+  {sp:770800, kind:'kit', v:['medkit','medkit','medkit','medkit','medkit','medkit','stim','stim','stim','stim','plate','plate','plate','plate'], label:'BIG MEDICAL CRATE'},
+  {sp:787200, kind:'kit', v:['blackbox','blackbox','relay','relay'], label:'BLACK BOXES AND RELAYS'},
+  {sp:804000, kind:'credits', v:30000, label:'THIRTY GRAND'},
+  {sp:821100, kind:'kit', v:['core','core','core','core','core','core','core','core','core','core','core','core'], label:'DOZEN DATA CORES'},
+  {sp:838600, kind:'kit', v:['frag','frag','frag','frag','frag','frag','frag','frag','ammobox','ammobox','ammobox','ammobox','ammobox','ammobox','plate','plate','plate','plate','plate','plate'], label:'AMMO AND ARMOR CRATE'},
+  {sp:856500, kind:'credits', v:35000, label:'THIRTY-FIVE GRAND'},
+  {sp:874700, kind:'wep', v:'whisper', label:'THE WHISPER'},
+  {sp:893300, kind:'kit', v:['reactor','reactor','reactor'], label:'THREE REACTORS'},
+  {sp:912400, kind:'kit', v:['wcore','wcore'], label:'TWO WARDEN CORES'},
+  {sp:931800, kind:'credits', v:40000, label:'FORTY GRAND'},
+  {sp:951700, kind:'kit', v:['bloom','bloom','bloom'], label:'THREE BLOOMS'},
+  {sp:971900, kind:'credits', v:50000, label:'FIFTY GRAND'},
+  {sp:992600, kind:'kit', v:['wcore','wcore','blackbox','blackbox'], label:'WARDEN CORES AND BLACK BOXES'},
+  {sp:1013800, kind:'wep', v:'whisper', label:'BACKUP WHISPER'},
+  {sp:1035400, kind:'kit', v:['medkit','medkit','medkit','medkit','medkit','medkit','medkit','medkit','stim','stim','stim','stim','stim','stim','frag','frag','frag','frag','frag','frag','plate','plate','plate','plate','plate','plate'], label:'FULL RESUPPLY CRATE'},
+  {sp:1057400, kind:'credits', v:60000, label:'SIXTY GRAND'},
+  {sp:1080000, kind:'kit', v:['wcore','wcore','wcore'], label:'THREE WARDEN CORES'},
+  {sp:1103000, kind:'kit', v:['reactor','reactor','bloom','bloom','wcore'], label:'HEAVY SALVAGE HAUL'},
+  {sp:1126500, kind:'credits', v:70000, label:'SEVENTY GRAND'},
+  {sp:1150500, kind:'kit', v:['bloom','bloom','wcore','wcore','blackbox','blackbox','relay','relay'], label:'TWO OF EVERYTHING RARE'},
+  {sp:1175000, kind:'credits', v:80000, label:'EIGHTY GRAND'},
+  {sp:1200000, kind:'wep', v:'lance', label:'THE LANCE'}
 ];
 
 // THE ESCALATING WORLD TIER IS GONE, v5.80, on his note: "get rid of 'escalating
@@ -13913,7 +14004,7 @@ function claimTier(ix){
   // that made it special was the season rollover, and that is gone. The dead
   // 'season' token went with it.
   if(T.kind==='credits'||T.kind==='last'){ P.credits+=T.v; msg='+'+'$'+T.v.toLocaleString()+''; }
-  if(T.kind==='rep'){ P.rep+=T.v; msg='+'+T.v+' XP'; }
+
   if(T.kind==='wep'){
     if(P.weapons.indexOf(T.v)<0) P.weapons.push(T.v);
     msg=WEAPONS[T.v].name+' in the armoury';
@@ -14147,7 +14238,7 @@ silentExit:T.silentExit||0,
       lines.push('<span style="color:var(--amber)">+'+gained.toLocaleString()+' XP'+
         (how==='dead'?' (50% penalty for failure to extract)':(how==='abandon'?' (75% penalty for backing out)':''))+
         '  &middot;  '+Math.min(cap,(P.xp||0)+gained).toLocaleString()+' of '+cap.toLocaleString()+
-        '</span><br><span style="color:var(--ash)">XP progress unlocks the ten Mainframe rewards.</span>');
+        '</span><br><span style="color:var(--ash)">XP progress unlocks the Mainframe rewards.</span>');
     }
   })();
   if(G.strayPaid){
@@ -21355,7 +21446,7 @@ function drawHubHUD(ox,oy){
   ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
   ctx.fillText('THE UNDERCROFT',16,28);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
-  ctx.fillText('$'+P.credits.toLocaleString()+'  \u00b7  XP '+P.rep.toLocaleString()+
+  ctx.fillText('$'+P.credits.toLocaleString()+'  \u00b7  XP '+(P.xp||0).toLocaleString()+
     '  ·  '+P.stash.length+' item'+(P.stash.length===1?'':'s')+' in stash  ·  '+P.runs+' runs',16,44);
   if(HUBSAY_T>0){
     ctx.textAlign='center';
@@ -22014,9 +22105,11 @@ var ROADMAP=[
 // is queued behind it. UPDATE IT EVERY BUILD as part of the VER bump, the same
 // ritual as the changelog, or it becomes the MAPCONT class of lie: a screen
 // that looks authoritative and is stale.
+// v7.63: parsecheck now FAILS the build when this field does not name the
+// current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.38: one currency. XP pays and unlocks everything the old PROGRESS did.',
-  next:'His queue: one map only, then a 4-5x bigger one, the ascend map selector, the fog rework, the crafting pass, the Listener rush'
+  now:'v7.63: THE MERGE. One XP number for everything, and a hundred Mainframe rewards.',
+  next:'His queue: save slots and naming at boot, the mile re-baseline at full density, the 2.5d-glitch audit'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a
@@ -22150,7 +22243,7 @@ function stampBalance(el){
     h.appendChild(c);
   }
   c.innerHTML=(P.credits||0).toLocaleString()+'<em>c</em>'+
-    '<i>'+(P.rep||0).toLocaleString()+'<em>XP</em></i>';
+    '<i>'+(P.xp||0).toLocaleString()+'<em>XP</em></i>';
 }
 function openModal(id){
   var el=document.getElementById(id); if(!el) return;
@@ -22992,7 +23085,7 @@ function renderHub(){
   if(typeof applyMenuZoom==='function') applyMenuZoom();
   var i;
   document.getElementById('credits').innerHTML=P.credits.toLocaleString()+'<small>CREDITS</small>';
-document.getElementById('reptop').textContent=P.rep.toLocaleString();
+document.getElementById('reptop').textContent=(P.xp||0).toLocaleString();
 try{ renderFreeKit(); }catch(_fk){}
   try{ syncAutoEx(); }catch(_se3){}
   // THE READINESS LINE. Deliberately states the number rather than nagging: the
@@ -23238,7 +23331,7 @@ try{ renderFreeKit(); }catch(_fk){}
       });
       act('Sell one',function(){
         var ix=P.stash.indexOf(k);
-        if(ix>=0){ P.stash.splice(ix,1); P.credits+=ival(k); P.rep+=ival(k); saveProfile(); renderHub(); }
+        if(ix>=0){ P.stash.splice(ix,1); P.credits+=ival(k); P.xp=(P.xp||0)+ival(k); saveProfile(); renderHub(); }
       });
     };
     // v6.58, his note: no click handler at all. Junk is J while hovering, which is the
@@ -23290,7 +23383,8 @@ try{ renderFreeKit(); }catch(_fk){}
   }
   // REPUTATION HAD NO VISIBLE SOURCE, v3.23, and his own profile is the evidence:
   // 35 runs, 8 extracted, best haul 11,500c, and REP 0. Not low. Zero.
-  // Reading the code for where rep comes from: P.rep is never decremented
+  // (v7.63: P.rep merged into P.xp; this block is the history of the old field.)
+  // Reading the code for where rep came from: P.rep was never decremented
   // anywhere in the file, so it is a lifetime career total, and it is granted in
   // exactly three places, all of them a SALE FROM THE STASH in the Undercroft.
   // Every other way money reaches you pays credits and no rep at all: the Stray
@@ -23339,7 +23433,7 @@ try{ renderFreeKit(); }catch(_fk){}
     if(_o.kind==='wep') _own=P.weapons.indexOf(_o.k)>=0;
     else if(_o.kind==='pack') _own=P.pack>=_o.lvl;
     if(_own) continue;
-    if(P.rep>=_o.rep) continue;
+    if((P.xp||0)>=_o.rep) continue;
     if(!_nx||_o.rep<_nx.rep) _nx=_o;
   }
   var _nl=document.getElementById('nextunlock');
@@ -23580,7 +23674,7 @@ function fmtRun(r){
 function buildExport(){
   var L=[],i;
   L.push('=== PILLAGERS v'+VER+' FLIGHT RECORDER ===');
-  L.push('Profile: '+P.runs+' runs, '+P.ext+' extracted, '+P.died+' died, best haul '+P.best+'c, credits '+P.credits+', XP '+P.rep+', racks '+(P.racks||0)+', pack T'+(P.pack+1)+
+  L.push('Profile: '+P.runs+' runs, '+P.ext+' extracted, '+P.died+' died, best haul '+P.best+'c, credits '+P.credits+', XP '+(P.xp||0)+', racks '+(P.racks||0)+', pack T'+(P.pack+1)+
     ', notoriety '+(P.notoriety||0)+', stash '+P.stash.length);
   // Who and where this came from, so a run pulled off the public endpoint can be
   // separated from his own without guessing. Origin matters because a build served
@@ -23715,7 +23809,7 @@ function renderShop(){
   SHOP.forEach(function(o){
     var row=document.createElement('div'); row.className='row';
     var nm=document.createElement('div'); nm.className='nm';
-    var locked=P.rep<o.rep;
+    var locked=(P.xp||0)<o.rep;
     var owned=false,label='';
     if(o.kind==='wep'){ label=WEAPONS[o.k].name; owned=P.weapons.indexOf(o.k)>=0; }
     else if(o.kind==='pack'){ label='Backpack Tier '+(o.lvl+1)+' (-'+Math.round((1-PACKPEN[o.lvl])*100)+'% carry penalty)'; owned=P.pack>=o.lvl; }
@@ -23739,7 +23833,7 @@ function renderShop(){
         // A sale should still stand on its own conditions rather than on the
         // state of a button drawn earlier.
         if(P.credits<o.price) return;
-        if(P.rep<o.rep) return;
+        if((P.xp||0)<o.rep) return;
         if(o.kind==='pack'&&P.pack!==o.lvl-1) return;
         if(o.kind==='wep'&&P.weapons.indexOf(o.k)>=0) return;
 
@@ -23845,7 +23939,7 @@ function renderShopGrid(){
   SHOP.forEach(function(o,i){
     var row=rows[i]; if(!row) return;
     var btn=row.querySelector('button');
-    var locked=P.rep<o.rep;
+    var locked=(P.xp||0)<o.rep;
     var cell=document.createElement('div');
     cell.className='vcell'+(i===P._shopSel?' on':'')+(locked?' locked':'');
     cell.innerHTML=iconImgHTML(shopEntryIcon(o),28)+
@@ -23866,7 +23960,7 @@ function renderShopDetail(rows){
   var o=SHOP[P._shopSel]; if(!o){ d.innerHTML=''; return; }
   var row=rows?rows[P._shopSel]:null;
   var btn=row?row.querySelector('button'):null;
-  var locked=P.rep<o.rep;
+  var locked=(P.xp||0)<o.rep;
   var cat=(o.kind==='wep')?'WEAPON':
     ((ITEMS[o.k]&&ICLASS[ITEMS[o.k].use])?ICLASS[ITEMS[o.k].use].t:'SUPPLY');
   var rar=shopEntryRarity(o);
@@ -23901,7 +23995,7 @@ function renderShopDetail(rows){
     h+='<div class="vdesc">'+escHtml(it?(itemBlurb(o.k)||''):'')+'</div>';
   }
   if(locked) h+='<div class="vdesc" style="color:#8a5a2c">Locked until reputation '+
-    o.rep.toLocaleString()+'. You have '+P.rep.toLocaleString()+'.</div>';
+    o.rep.toLocaleString()+'. You have '+(P.xp||0).toLocaleString()+'.</div>';
   var stackable=(o.kind!=='wep');
   if(P._shopQty===undefined||P._shopQty<1) P._shopQty=1;
   var qty=stackable?P._shopQty:1;
@@ -24135,7 +24229,7 @@ document.getElementById('sellall').onclick=function(){
   P.stash.forEach(function(k){
     if(sellable(k)){ gained+=ival(k); sold++; } else kept.push(k);
   });
-  P.credits+=gained; P.rep+=gained; P.stash=kept;
+  P.credits+=gained; P.xp=(P.xp||0)+gained; P.stash=kept;
   saveProfile(); renderHub();
   say2(sold?('Sold '+sold+' for '+'$'+gained.toLocaleString()+'.'):'Nothing tagged junk, and no loose salvage.');
 };
@@ -24363,7 +24457,7 @@ function abandonRepCost(el){ return Math.min(400,100+Math.round(el/10)); }
 document.getElementById('confirmabandon').onclick=function(){
   if(G&&!G.over&&elapsed()>60){
     var _rc=abandonRepCost(elapsed());
-    P.rep=Math.max(0,P.rep-_rc);
+    P.xp=Math.max(0,(P.xp||0)-_rc);
     say('Walked out on the job. XP -'+_rc+'.');
   }
   var note=document.getElementById('pausenote').value.trim();
@@ -24946,7 +25040,7 @@ function renderStage(prefill){
   // ---- buying, straight into the kit when there is room
   var B=document.getElementById('stagebuy'); B.innerHTML='';
   SHOP.forEach(function(o){
-    if(P.rep<o.rep) return;
+    if((P.xp||0)<o.rep) return;
     // label and ownership follow the trader's own rules so the two counters can
     // never tell you different things about the same thing
     var label='',owned=false,sub='';

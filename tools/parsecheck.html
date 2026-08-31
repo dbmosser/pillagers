@@ -74,10 +74,15 @@ fetch(url).then(function(r){
   var src=mm.map(function(w){ return w.replace(/^<script\b[^>]*>/,'').replace(/<\/script>$/,''); }).join('\n;\n'), b=balance(src), du=dupes(src), parse;
   try{ new Function(src); parse='OK'; }catch(e){ parse=e.name+': '+e.message; }
   var ver=(src.match(/var VER='([^']+)'/)||[])[1]||'?';
-  var pass=(parse==='OK'&&b.par===0&&b.cur===0&&b.sq===0&&du.length===0);
+  // v7.63, ordered by the relay: DEVNOW rotted twice; now a stale field FAILS the
+  // build. The .now line must name the current VER.
+  var devnow=(src.match(/now:'([^']*)'/)||[])[1]||'';
+  var devnowOk=devnow.indexOf('v'+ver)>=0;
+  var pass=(parse==='OK'&&b.par===0&&b.cur===0&&b.sq===0&&du.length===0&&devnowOk);
   var h='<table>';
   h+='<tr><td>file</td><td>'+url+'</td></tr>';
   h+='<tr><td>VER</td><td>'+ver+'</td></tr>';
+  h+='<tr><td>DEVNOW</td><td class="'+(devnowOk?'ok':'bad')+'">'+(devnowOk?'names v'+ver:('STALE: '+devnow))+'</td></tr>';
   h+='<tr><td>chars</td><td>'+src.length.toLocaleString()+' in '+b.lines.toLocaleString()+' lines</td></tr>';
   h+='<tr><td>parse</td><td class="'+(parse==='OK'?'ok':'bad')+'">'+parse+'</td></tr>';
   h+='<tr><td>balance</td><td class="'+(b.par||b.cur||b.sq?'bad':'ok')+'">parens '+b.par+', braces '+b.cur+', brackets '+b.sq+

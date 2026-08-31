@@ -27443,6 +27443,59 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.63 - THE MERGE, AND A HUNDRED REWARDS
+
+His ruling, relayed in one word: MERGE. And his order from the floor: "change
+it to have 100 mainframe rewards. make them better, like rare guns, packs of
+multiple medpacks, data cores, etc."
+
+THE ONE NUMBER. P.xp is the number; P.rep folded into it at face value and
+stopped existing. The migration is one line in the load ladder, same pattern
+as P.sp and P.buzzCd, and the field's resurrection routes are closed the way
+the sp lesson taught: the init guard, the profile literal and the _num
+sanitizer entry all died with it. Selling from the stash now pays XP equal to
+the credits (both single-sell and sell-all, through the real buttons: one
+click paid $25,225 and +25,225 XP); walking out on a raid past the first
+minute charges XP through the real confirm flow (verified: -110); and all
+seven display sites plus all six gate sites read the one number.
+
+HIS GATES, BEFORE AND AFTER, as the relay demanded. Before: his header showed
+XP 171,628 (that was P.rep) while the Mainframe measured a P.xp that his
+export never carried and his five post-v7.38 runs (all played on v7.33/34
+builds) could not have fed - effectively zero, no tiers eligible. After: his
+one number is 171,628-plus, the first NINE tiers of the board are claimable
+and the tenth (180,000) sits just ahead of him - which is nine rewards for 86
+recorded runs, earned by the selling the old number always counted. Every
+claim he has already made survives verbatim: the first ten thresholds of the
+new ladder are EXACTLY the old ten, so P.spClaimed indexes carry 1:1. The
+shop's o.rep gates are all zero and gate nothing either way.
+
+THE HUNDRED. Four workflow authors wrote 25 tiers each against a strict
+schema (kinds limited to the claim machinery the board already has - credits,
+weapons, stash bundles; whisper held to tier 85+, lance the tier-100 crown;
+no weapon repeated more than twice), a validator passed the set with zero
+errors, and the assembler assigned thresholds - the old ten survive, then
+ninety more rise geometrically to 1,200,000. At his ~3,000-XP-a-run pace that
+is a reward every run or two early and one about every eight runs at the top.
+The dead kind:'rep' claim branch was deleted; kit bundles unroll into the
+stash through the existing kit kind (verified: claiming tier 9 granted its
+exact three items). Labels were vocabulary-checked (an author's "WARP CORES"
+became WARDEN CORES; three duplicate labels renamed). The board copy stops
+counting to ten on his order.
+
+DEVNOW, THIRD ROT, LAST ROT. The field read v7.38 at HEAD v7.63 - fourteen
+builds of drift, reported by the relay with the request to make the ritual
+assert on it. parsecheck now extracts DEVNOW.now and FAILS THE BUILD when it
+does not name the current VER, with its own row in the table. The assert is
+live and green in this build's own PASS.
+
+Not verified: the 100 tiers were each validated for legal ids and value curve
+by machine, but no human eye has read all hundred labels on the board (the
+first screens and samples render correctly); his REAL profile migrates at his
+next load and the arithmetic was verified against a reconstruction from his
+export, not the live localStorage; and the reward pacing against the merged
+accrual rate is design arithmetic, not a measured season.
+
 ## v7.62 - THE LISTENER KEEPS ITS DISTANCE, THE STALL PAYS ON THE WAY OUT
 
 Two live orders.
