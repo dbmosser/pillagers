@@ -108,7 +108,7 @@
   /* THE GRID. Uniform cells, Minecraft rules: every item is one square whatever
      it is, stacks carry a count, and rarity lives on the border so you read the
      value of a whole screen without reading a word of it. */
-  .invtabs{ display:flex; gap:4px; padding:8px 10px 0 10px; flex-wrap:wrap; }
+  .invtabs{ display:flex; gap:8px; padding:8px 10px 0 10px; flex-wrap:wrap; }
 /* HER, on the left of the inventory, built out of blocks rather than drawn on a
    canvas: the hub is HTML and a paper doll made of divs themes itself, scales
    with the menu zoom, and cannot throw the way a canvas figure can. */
@@ -141,8 +141,8 @@
 .costile.lock:hover{border-color:var(--steel-hi);background:rgba(0,0,0,.32)}
 .cosname{margin-top:6px;font-size:12px;letter-spacing:1px}
 .cosreq{margin-top:2px;font-size:11px;opacity:.65;letter-spacing:1px;text-transform:uppercase}
-  .invtab{ font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
-    padding:4px 9px; border:1px solid var(--steel-hi); border-radius:2px;
+  .invtab{ font-size:17px; letter-spacing:.14em; text-transform:uppercase;
+    padding:10px 22px; border:1px solid var(--steel-hi); border-radius:3px;
     color:var(--ash); cursor:pointer; background:rgba(0,0,0,.25); }
   .invtab:hover{ color:var(--bone); border-color:var(--amber); }
   .invtab.on{ color:#0d1435; background:var(--amber); border-color:var(--amber); font-weight:700; }
@@ -217,9 +217,9 @@
      clickable to get a context menu". Dark and tight, sitting at the cursor. */
   /* The balance in the heading of every station, v6.14. Right aligned so the screen
      name stays where the eye starts and the money is where his screenshots put it. */
-  .modcur{ margin-left:auto; display:flex; align-items:baseline; gap:14px;
-    font-size:15px; letter-spacing:.02em; color:var(--amber); font-weight:700; }
-  .modcur em{ font-style:normal; font-size:10.5px; letter-spacing:.14em;
+  .modcur{ margin-left:auto; display:flex; align-items:baseline; gap:18px;
+    font-size:24px; letter-spacing:.02em; color:var(--amber); font-weight:700; }
+  .modcur em{ font-style:normal; font-size:13px; letter-spacing:.14em;
     color:var(--ash); margin-left:3px; font-weight:400; }
   .modcur i{ font-style:normal; color:var(--bone); font-weight:700; }
   .modal h3{ display:flex; align-items:baseline; gap:12px; }
@@ -282,16 +282,16 @@
   /* ---- THE VENDOR, v6.04, off his Arc Raiders screenshots. */
   /* v6.90: the counter FILLS the screen it was given. It used to stop 346px down a 1080
      screen and leave 734px of empty blue underneath. */
-  .vend{ display:flex; gap:14px; min-height:0; flex:0 1 auto; align-items:stretch;
-    max-height:78vh; max-width:1280px; }
-  .vendgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(84px,118px));
-    justify-content:start; gap:10px; padding:12px; overflow-y:auto; align-content:start;
+  .vend{ display:flex; gap:24px; min-height:0; flex:0 1 auto; align-items:stretch;
+    max-height:78vh; max-width:1720px; }
+  .vendgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,190px));
+    justify-content:start; gap:14px; padding:16px; overflow-y:auto; align-content:start;
     flex:1.5; min-width:0; border:1px solid var(--steel-hi); border-radius:3px; }
   .vcell{ position:relative; aspect-ratio:1/1; border:1px solid var(--steel-hi);
     border-radius:3px; background:rgba(0,0,0,.32); display:flex; align-items:center;
-    flex-direction:column; gap:3px; padding:6px 4px;
+    flex-direction:column; gap:8px; padding:12px 8px;
     justify-content:center; cursor:pointer; transition:all .1s; }
-  .vcell .vlbl{ font-size:9.5px; line-height:1.15; text-align:center; color:var(--ash);
+  .vcell .vlbl{ font-size:14.5px; line-height:1.2; text-align:center; color:var(--ash);
     width:100%; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2;
     -webkit-box-orient:vertical; letter-spacing:.02em; }
   .vcell.on .vlbl{ color:var(--bone); }
@@ -299,24 +299,24 @@
   .vcell.on{ border-color:var(--amber); background:rgba(255,192,74,.15);
     box-shadow:0 0 0 1px var(--amber) inset; }
   .vcell.locked{ opacity:.42; }
-  .vcell .vp{ position:absolute; right:3px; top:1px; font-size:10.5px; font-weight:700;
+  .vcell .vp{ position:absolute; right:7px; top:5px; font-size:15px; font-weight:700;
     color:var(--amber); text-shadow:0 1px 2px #000; }
-  .vcell .vlk{ position:absolute; left:3px; top:1px; font-size:10.5px; color:var(--ash); }
+  .vcell .vlk{ position:absolute; left:7px; top:5px; font-size:13px; color:var(--ash); }
   /* The cream panel. Inverted against the whole rest of the UI on purpose: in his
      screenshots it is the one bright thing on screen and it is where the decision
      and the money are. */
-  .vdet{ flex:1; min-width:196px; max-width:310px; background:#f1ebdf; color:#1b1a17;
-    border-radius:5px; padding:14px 15px; display:flex; flex-direction:column;
+  .vdet{ flex:0 0 470px; min-width:300px; max-width:470px; background:#f1ebdf; color:#1b1a17;
+    border-radius:5px; padding:26px 28px; display:flex; flex-direction:column;
     overflow-y:auto; }
-  .vpills{ display:flex; gap:5px; margin-bottom:9px; flex-wrap:wrap; }
-  .vpill{ font-size:10.5px; letter-spacing:.14em; padding:3px 7px; border-radius:2px;
+  .vpills{ display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+  .vpill{ font-size:13px; letter-spacing:.14em; padding:5px 10px; border-radius:2px;
     background:#2f6f9e; color:#fff; font-weight:700; }
   .vpill.r{ background:#8a6a2c; }
-  .vdet h4{ margin:0 0 8px; font-size:16px; letter-spacing:.03em; color:#14130f; }
-  .vdesc{ font-size:11px; line-height:1.5; color:#4c483f; margin-bottom:12px; }
-  .vstat{ display:flex; justify-content:space-between; font-size:11px; color:#4c483f;
+  .vdet h4{ margin:0 0 10px; font-size:26px; letter-spacing:.03em; color:#14130f; }
+  .vdesc{ font-size:16px; line-height:1.5; color:#4c483f; margin-bottom:16px; }
+  .vstat{ display:flex; justify-content:space-between; font-size:13.5px; color:#4c483f;
     letter-spacing:.04em; margin-bottom:3px; }
-  .vbar{ height:4px; background:#d8d1c1; border-radius:2px; margin-bottom:9px; overflow:hidden; }
+  .vbar{ height:6px; background:#d8d1c1; border-radius:2px; margin-bottom:12px; overflow:hidden; }
   .vbar i{ display:block; height:100%; background:#201e19; }
   .crlab{ font-size:10.5px; letter-spacing:.16em; color:#6a655a; margin:4px 0 7px; }
   .crew{ margin-top:auto; padding-top:12px; border-top:1px solid #d8d1c1; }
@@ -334,18 +334,18 @@
   .crn{ font-size:11px; color:#2a2721; flex:1; min-width:0; }
   .crv{ font-size:12px; font-weight:700; letter-spacing:.02em; }
   .crv em{ font-style:normal; font-weight:400; color:#6a655a; }
-  .vprice{ margin-top:auto; padding-top:12px; border-top:1px solid #d8d1c1;
-    font-size:11px; letter-spacing:.12em; color:#6a655a; }
-  .vprice b{ display:block; font-size:19px; color:#14130f; letter-spacing:0; margin-top:2px; }
-  .vqty{ display:flex; align-items:center; gap:8px; margin-top:10px; }
-  .vqty button{ width:30px; height:30px; padding:0; border-radius:15px; border:none;
-    background:#ddd5c4; color:#2a2721; font-size:15px; font-weight:700; cursor:pointer;
+  .vprice{ margin-top:auto; padding-top:14px; border-top:1px solid #d8d1c1;
+    font-size:13px; letter-spacing:.12em; color:#6a655a; }
+  .vprice b{ display:block; font-size:30px; color:#14130f; letter-spacing:0; margin-top:3px; }
+  .vqty{ display:flex; align-items:center; gap:10px; margin-top:12px; }
+  .vqty button{ width:44px; height:44px; padding:0; border-radius:22px; border:none;
+    background:#ddd5c4; color:#2a2721; font-size:20px; font-weight:700; cursor:pointer;
     font-family:inherit; line-height:1; }
   .vqty button:hover{ background:#cbc2ae; }
   .vqty span{ flex:1; text-align:center; background:#e4dccb; border-radius:4px;
-    padding:7px 0; font-size:12px; font-weight:700; color:#2a2721; letter-spacing:.06em; }
-  .vbuy{ width:100%; padding:11px; margin-top:10px; background:var(--amber); color:#14130f;
-    border:none; border-radius:4px; font-weight:700; font-size:11.5px; letter-spacing:.12em;
+    padding:11px 0; font-size:16px; font-weight:700; color:#2a2721; letter-spacing:.06em; }
+  .vbuy{ width:100%; padding:17px; margin-top:12px; background:var(--amber); color:#14130f;
+    border:none; border-radius:4px; font-weight:700; font-size:17px; letter-spacing:.12em;
     cursor:pointer; font-family:inherit; }
   .vbuy:disabled{ background:#cdc5b3; color:#8b8578; cursor:default; }
   .keybar{ display:flex; gap:16px; align-items:center; flex-wrap:wrap;
@@ -372,7 +372,7 @@
     background:linear-gradient(135deg,transparent 46%,var(--rust) 46%,var(--rust) 54%,transparent 54%); }
   .cellempty{ color:var(--ash); font-size:11px; }
   button { font-family:'Rubik',system-ui,sans-serif; background:transparent;
-    border:1px solid var(--steel-hi); color:var(--bone); padding:5px 9px; font-size:11.5px;
+    border:1px solid var(--steel-hi); color:var(--bone); padding:10px 18px; font-size:14px;
     letter-spacing:.06em; cursor:pointer; text-transform:uppercase; transition:all .12s; }
   button:hover:not(:disabled){ border-color:var(--amber); color:var(--amber); background:rgba(255,192,74,.08); }
   button:disabled{ opacity:.3; cursor:not-allowed; }
@@ -467,13 +467,13 @@
   /* A pane that genuinely has a screenful of content pushes back to the top by itself,
      because justify-content only has room to act when the content is shorter than the
      box. So this centres the shop and does nothing at all to the stash. */
-  #tradermodal .vdet, #opmodal .vdet{ max-width:380px; }
+  #tradermodal .vdet, #opmodal .vdet{ max-width:470px; }
   .modal > .plist{ min-height:0; overflow-y:auto; }
-.modal h3{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:14px;
-    letter-spacing:.24em; margin:0 0 4px; color:var(--amber); text-transform:uppercase; }
-  .modal h2{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:14px;
-    letter-spacing:.24em; margin:10px 0 4px; color:var(--amber); text-transform:uppercase; }
-  .msub{ font-size:11px; color:var(--ash); margin-bottom:9px; }
+.modal h3{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:30px;
+    letter-spacing:.24em; margin:0 0 10px; color:var(--amber); text-transform:uppercase; }
+  .modal h2{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:19px;
+    letter-spacing:.24em; margin:12px 0 6px; color:var(--amber); text-transform:uppercase; }
+  .msub{ font-size:15px; color:var(--ash); margin-bottom:12px; }
   #settingsmodal .tpane{ max-width:1080px; width:100%; margin:0 auto; }
   #opane_mf{ max-width:1080px; width:100%; margin:0 auto; }
   #opane_rew{ max-width:1080px; width:100%; margin:0 auto; }
@@ -1126,7 +1126,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.74';
+var VER='7.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22209,7 +22209,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.74: the bar wears its Experimental badge, the quiet ride is cancelled.',
+  now:'v7.75: the counter learned proportion and every menu primitive grew readable.',
   next:'His queue: save slots and naming at boot, the mile re-baseline at full density, the 2.5d-glitch audit'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -22487,7 +22487,7 @@ function renderMercGrid(){
       var ID=IDENTITIES[i],cost=mercCost(ID.id);
       var cell=document.createElement('div');
       cell.className='vcell'+(i===P._mercSel?' on':'')+((cost===null)?' locked':'');
-      cell.innerHTML=mercImgHTML(ID.id,30)+
+      cell.innerHTML=mercImgHTML(ID.id,64)+
         '<div class="vlbl">'+escHtml(ID.tag)+'</div>'+
         (P.merc===ID.id?'<span class="vp" style="color:var(--coolant)">HIRED</span>':
           (cost===null?'':'<span class="vp">'+cost.toLocaleString()+'</span>'));
@@ -22588,7 +22588,7 @@ function renderCheat(){
   for(var i=0;i<ks.length;i++){
     var it=ITEMS[ks[i]];
     h+='<div class="vcell" data-ck="'+ks[i]+'" title="'+escHtml(it.name)+'">'+
-       iconImgHTML(ks[i],28)+'<div class="vlbl">'+escHtml(it.name)+'</div></div>';
+       iconImgHTML(ks[i],56)+'<div class="vlbl">'+escHtml(it.name)+'</div></div>';
   }
   g.innerHTML=h;
   var cells=g.querySelectorAll('[data-ck]');
@@ -24067,7 +24067,7 @@ function renderShopGrid(){
     var locked=(P.xp||0)<o.rep;
     var cell=document.createElement('div');
     cell.className='vcell'+(i===P._shopSel?' on':'')+(locked?' locked':'');
-    cell.innerHTML=iconImgHTML(shopEntryIcon(o),28)+
+    cell.innerHTML=iconImgHTML(shopEntryIcon(o),64)+
       '<div class="vlbl">'+escHtml(shopEntryLabel(o))+'</div>'+
       '<span class="vp">'+o.price.toLocaleString()+'</span>'+
       (locked?'<span class="vlk">\u25cf</span>':'');
@@ -24278,7 +24278,7 @@ function renderCraftGrid(){
     }
     var cell=document.createElement('div');
     cell.className='vcell'+(i===sel?' on':'')+((btn&&btn.disabled)?' locked':'');
-    cell.innerHTML=iconImgHTML(icon,28)+'<div class="vlbl">'+escHtml(label)+'</div>';
+    cell.innerHTML=iconImgHTML(icon,64)+'<div class="vlbl">'+escHtml(label)+'</div>';
     cell.title=label;
     cell.onclick=function(){ P._craftSel=i; renderCraftGrid(); };
     g.appendChild(cell);

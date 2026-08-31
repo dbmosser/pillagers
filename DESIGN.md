@@ -27443,6 +27443,41 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.75 - THE COUNTER LEARNS PROPORTION
+
+His mid-session order, screenshot in hand: "menus like this ... should look
+like this instead ... that design note applies pretty much across all UI and
+menus. stuff just needs to get bigger and have better comparative proportions
+to one another - maybe do some research on best design practices for inventory
+based games." So the research happened first: a background pass over game UI
+sources (accessibility floors, the Tarkov readability failures, master-detail
+conventions, proportion-by-importance in shipped extraction games) distilled
+to numbers - 15px caption floor, roughly 17px body, 150-190px shop tiles with
+the icon dominating, a fixed-width decision card near 470px, primary action
+biggest thing on the panel, content fills the frame instead of floating as an
+island in empty screen.
+
+Then the shared primitives grew, so EVERY menu inherits: modal titles 14 to
+30px, section heads to 19px, sub-lines 11 to 15px, the balance corner 15 to
+24px, every button 11.5 to 14px with real padding, tabs 10.5 to 17px. And the
+vendor counter was rebuilt to his mockup: tiles 84-118 grown to 150-190px with
+64px icons, price 15px in the corner, names 14.5px; the cream card fixed at
+470px wide (flex 0 0 - as the only flex child with a real basis it was eating
+ALL the shrink and pinning at its 300px minimum), 26px item name, 16px
+description, 13px pills, 30px price, 44px stepper buttons, 17px BUY. The DEV
+CHEAT BOX and craft and hire panes ride the same classes and grew with it.
+
+Verified: parse PASS with the DEVNOW assert; fingerprints 58 and 276 at seed
+4242; three endings EXTRACTED / KILLED IN ACTION / ABANDONED through oc_btn
+into the hub; stage renders; hub steps and draws; measured at a real 1920x1080
+viewport with his saved 1.3 menu zoom - modal fills the width, four 247-screen-
+px tile columns, card 611 screen px; screenshots of BUY, CRAFT, HIRE, the
+MAINFRAME, the DEV CHEAT BOX and the title screen all read clean.
+
+Not verified: his eyes on the new proportions - the numbers came from research
+and his mockup, but the verdict is his; and the contract/loot LIST rows are
+still small (next build).
+
 ## v7.74 - THE BAR'S BADGE AND THE CANCELLED QUIET RIDE
 
 Two of his orders and one piece of residue his own verification caught. The
