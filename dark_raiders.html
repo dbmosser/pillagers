@@ -1148,7 +1148,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.18';
+var VER='8.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14163,8 +14163,15 @@ var TERMS=[
    desc:'Every lamp on the map stays dark.'},
   {id:'patrols', name:'HEAVY PATROLS',pay:0.30,
    desc:'Forty percent more of everything out there: machines, pillagers and criers alike.'},
+  // v8.19, audit: computed, not quoted. The old line named 400 and 600 seconds
+  // from a raid clock retired at cfgv 15; the real pair is ~356 and 540, and a
+  // hand-typed number here has now been wrong for six versions.
   {id:'window',  name:'SHORT WINDOW',pay:0.25,
-   desc:'The whole raid clock is cut by a third: about 400 seconds instead of 600.'},
+   desc:function(){
+     var full=(CFG&&CFG.raidSec)||DEF.raidSec;
+     return 'The whole raid clock is cut by a third: about '+Math.round(full*0.66)+
+            ' seconds instead of '+full+'.';
+   }},
   // NO SAFE POCKET was removed at v5.57. Its only effect was to zero safeSlots,
   // and safeSlots has been zero for everyone since v5.32, so it paid 35 percent
   // for no change at all. If safeSlots ever goes back to 1, this term comes back
@@ -22745,7 +22752,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.18: the shop price means what it says, and the right-click menu can reach every key again.',
+  now:'v8.19: the last of the small lies - a term that quoted a retired clock, a badge that outlived its rewards, a menu the browser covered.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -22903,7 +22910,8 @@ function renderTerms(){
     var on=hasTerm(T.id);
     var row=document.createElement('div'); row.className='row';
     var nm=document.createElement('div'); nm.className='nm';
-    nm.innerHTML=T.name+'<div style="font-size:14px;color:var(--ash);font-weight:400">'+T.desc+'</div>';
+    nm.innerHTML=T.name+'<div style="font-size:14px;color:var(--ash);font-weight:400">'+
+      ((typeof T.desc==='function')?T.desc():T.desc)+'</div>';
     if(!on) nm.style.color='var(--ash)';
     var vl=document.createElement('div'); vl.className='vl';
     vl.textContent='+'+Math.round(T.pay*100)+'%';
@@ -22928,6 +22936,7 @@ function renderSeason(){
   document.getElementById('seasonfill').style.width=clamp(100*sp/cap,0,100)+'%';
   document.getElementById('seasontext').textContent=Math.min(sp,cap).toLocaleString()+' / '+cap.toLocaleString();
   var el=document.getElementById('seasonlist'); el.innerHTML='';
+  try{ syncOpsTabs(); }catch(_st){}    // v8.19: the tab badge follows the board
   (function(){
     var _sb=document.getElementById('seasonclaimall'); if(!_sb) return;
     var _sr=seasonReady();
@@ -23562,6 +23571,9 @@ function openItemMenu(x,y,key,ctx,count){
   closeItemMenu();
   var it=ITEMS[key]; if(!it) return;
   var m=document.createElement('div'); m.className='imenu';
+  // v8.19, audit: the menu itself swallows a right-click, or the browser stacks
+  // its own on top of the one he just opened.
+  m.addEventListener('contextmenu',function(_ev){ _ev.preventDefault(); return false; });
   var head=document.createElement('div'); head.className='imenuhead';
   head.innerHTML='<b class="r-'+(dispR(key)||'common')+'">'+escHtml(it.name)+'</b>'+
     (count>1?'<em>x'+count+'</em>':'');
@@ -23622,6 +23634,9 @@ function openGunMenu(x,y,gk){
   closeItemMenu();
   var W=WEAPONS[gk]; if(!W) return;
   var m=document.createElement('div'); m.className='imenu';
+  // v8.19, audit: the menu itself swallows a right-click, or the browser stacks
+  // its own on top of the one he just opened.
+  m.addEventListener('contextmenu',function(_ev){ _ev.preventDefault(); return false; });
   var head=document.createElement('div'); head.className='imenuhead';
   var _ik='gun_'+gk;
   head.innerHTML='<b class="r-'+gunRarity(gk)+'">'+escHtml(W.name)+'</b><em>yours</em>';
@@ -24911,8 +24926,17 @@ function renderCraftGrid(){
     var d0=document.getElementById('craftdetail'); if(d0) d0.innerHTML='';
     return;
   }
-  var sel=P._craftSel;
-  if(sel===undefined||sel>=rows.length) sel=P._craftSel=0;
+  // v8.19, audit: find the row he actually chose. A completed service removes
+  // its own row and re-sorts the rest, so a remembered POSITION quietly became
+  // a different item with the button still under his cursor.
+  var sel=-1;
+  if(P._craftTag){
+    for(var _cs=0;_cs<rows.length;_cs++)
+      if(rows[_cs].getAttribute('data-w')===P._craftTag){ sel=_cs; break; }
+  }
+  if(sel<0){ sel=P._craftSel; if(sel===undefined||sel>=rows.length) sel=0; }
+  P._craftSel=sel;
+  P._craftTag=rows[sel]?rows[sel].getAttribute('data-w'):null;
   Array.prototype.forEach.call(rows,function(row,i){
     var tag=row.getAttribute('data-w');
     var btn=row.querySelector('button');
@@ -24927,7 +24951,7 @@ function renderCraftGrid(){
     cell.className='vcell'+(i===sel?' on':'')+((btn&&btn.disabled)?' locked':'');
     cell.innerHTML=iconImgHTML(icon,64)+'<div class="vlbl">'+escHtml(label)+'</div>';
     cell.title=label;
-    cell.onclick=function(){ P._craftSel=i; renderCraftGrid(); };
+    cell.onclick=function(){ P._craftSel=i; P._craftTag=tag; renderCraftGrid(); };
     g.appendChild(cell);
   });
   renderCraftDetail(rows);
@@ -25023,6 +25047,22 @@ document.getElementById('sellall').onclick=function(){
 // still fill the same element ids; this only decides which pane is visible.
 // THE OPERATOR TERMINAL, three tabs. Contracts first, because that is what he
 // goes there for and it was the thing buried at the bottom.
+// v8.19, audit: one writer for a tab's badge, so claiming a reward can refresh
+// it without rebuilding the strip. It used to be computed inline while the tabs
+// were built and never again, so the count stood there advertising rewards he
+// had already taken until he closed the window and came back.
+function syncOpsTab(d,isOn){
+  if(!d) return;
+  var id=d.getAttribute('data-optab'), lab=d.getAttribute('data-oplabel')||'';
+  var rdy=(id==='rew')?(function(){ try{ return seasonReady(); }catch(e){ return 0; } })():0;
+  d.textContent=lab+(rdy?('  '+rdy):'');
+  d.style.color=rdy?(isOn?'#0d1435':'var(--amber)'):'';
+}
+function syncOpsTabs(){
+  var tb=document.getElementById('optabs'); if(!tb) return;
+  var ds=tb.querySelectorAll('[data-optab]');
+  for(var i=0;i<ds.length;i++) syncOpsTab(ds[i],ds[i].className.indexOf(' on')>=0);
+}
 function openOps(tab){
   var want=tab||'con';
   // The board refills on the way in. ensureContracts is a while-loop up to the
@@ -25040,9 +25080,9 @@ function openOps(tab){
     T.forEach(function(t){
       var d=document.createElement('div');
       d.className='invtab'+(want===t[0]?' on':'');
-      var _rdy=(t[0]==='rew')?(function(){ try{ return seasonReady(); }catch(e){ return 0; } })():0;
-      d.textContent=t[1]+(_rdy?('  '+_rdy):'');
-      if(_rdy) d.style.color=(want===t[0])?'#0d1435':'var(--amber)';
+      d.setAttribute('data-optab',t[0]);
+      d.setAttribute('data-oplabel',t[1]);
+      syncOpsTab(d,want===t[0]);
       d.onclick=function(){ openOps(t[0]); };
       tb.appendChild(d);
     });

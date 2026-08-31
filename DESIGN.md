@@ -27443,6 +27443,52 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.19 - THE LAST OF THE SMALL LIES
+
+Four more from the audit. None of them break the game; all four tell the
+player something untrue.
+
+A TERM THAT QUOTED A RETIRED CLOCK. SHORT WINDOW cuts the raid clock by a
+third, and its description promised "about 400 seconds instead of 600" -
+numbers from a raid length retired at cfgv 15. The real pair is about 356
+against 540, and that line has been wrong for six versions because it was
+typed rather than computed. It reads the constants now, so it cannot drift
+again. That change meant a term's desc can be a function, so the one place
+in the file that prints one had to learn to call it - checked before the
+type changed, because a function printed as a string would have put source
+code on the terms card.
+
+A BADGE THAT OUTLIVED ITS REWARDS. The REWARDS tab's ready-count is
+computed once, while the tab strip is built, and claiming never rebuilt
+it - so the count sat there advertising rewards he had already taken until
+he closed the window and came back. There is one writer for a tab's badge
+now, and the rewards board calls it.
+
+THE BROWSER'S OWN MENU ON TOP OF HIS. A right-click is defaulted-prevented
+on the canvas and on the item cells, but never on the menu those cells
+open, so right-clicking the open menu stacked the browser's context menu
+over it.
+
+AND A CRAFT SELECTION THAT RE-POINTED. P._craftSel is a position in a list
+that re-sorts and loses rows as services complete, so finishing one moved
+the cream panel onto a different entry while the button stayed under his
+cursor. It remembers which ROW he chose now, by its data-w tag, and only
+falls back to the position when that row is genuinely gone.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. On real paths: the terms card
+now reads "The whole raid clock is cut by a third: about 356 seconds
+instead of 540."; the REWARDS tab read "REWARDS  5" and went to "REWARDS"
+the moment claim-all ran, without reopening; and a right-click on an open
+item menu came back defaultPrevented with the menu still up.
+
+Not verified: the craft re-point itself. The selection now stores and
+restores the row tag - measured - but staging the actual failure needs a
+service to COMPLETE and remove its own row, and the worklist regenerates
+from profile state, so deleting a row by hand does not survive the next
+render. The tag lookup is the fix; the scenario that motivated it is
+argued from the audit's trace rather than reproduced here.
+
 ## v8.18 - THE SHOP PRICE MEANS WHAT IT SAYS, AND THE MENU REACHES EVERY KEY
 
 Two more from the audit, both of them a control lying about what it can do.
