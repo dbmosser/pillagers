@@ -27443,6 +27443,48 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.09 - THE CHEAT BOX ANSWERS, A PLATE IS WORTH 20, AND A RACK COSTS HALF
+
+Three live orders.
+
+"IN DEV CHEAT BOX, THERE SHOULD BE A CLEAR INDICATION THAT YOU TOOK AN
+ITEM." The only feedback was a toast on the Undercroft floor - behind the
+modal that was covering it. Now the cell he clicked answers: it lights
+green and stamps TAKEN across itself for seven tenths of a second, and a
+line under the subtitle says what was taken, where it is going, and how
+many he now holds, because "how many" is the question that comes next.
+The stamp clears itself, so a second take on the same cell reads as a
+second take rather than as the first one still sitting there. The $100,000
+button got the same line.
+
+His wording, exactly as given: the subtitle now reads "A free shop. Click
+a thing and it will be transferred to your stash. No judgment." - it said
+"and it is in your stash. Nothing here judges you."
+
+"ARMOR PLAT SHOULD ONLY GIVE 20 ARMOR, NOT 55." Done. Nothing else
+moved: the plate still costs $340 and 3wt, still stacks five, and the
+armour ceiling is untouched, so a plate is now a third of a fill instead
+of most of one and carrying two is a real decision.
+
+"RACKS CRAFTING REQS SHOULD BE REDUCED." Halved across the board: 24/18/
+12/12 becomes 12/9/6/6. The 4:3:2:2 shape is his from v6.65 and is left
+exactly as it was; only the size of it was in the way.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. On the real paths, not the
+code: the cheat box opened through its own station act, a click on the
+Armour Plate cell moved the stash count 0 to 1, left the cell classed
+"vcell took", and printed "Took Armour Plate. It will be transferred to
+your stash. You now hold 1."; a plate pulled from a real container in a
+raid took armour 0 to 20 and a second took it to 40; and the racks page,
+opened through the Mainframe's own KeyF act, reads "12 Scrap Metal (3
+held), 9 Copper Wire (3 held), 6 Cracked Cell (1 held), 6 Circuit Boar...".
+
+Not verified: whether 20 is the right number for the plate in play - it is
+his number, and the extract-rate board predates it, so the 200-seed rows
+now describe a slightly kinder armour economy than the one shipping; the
+TAKEN stamp's 700ms was not eyeballed in motion, only its class asserted.
+
 ## v8.08 - BOTH BOTTOM CORNERS AND THE BELT GET BIGGER, AND THE BOARD STOPS TELLING TALES
 
 Four live orders on the raid HUD, and a reminder that the game is always

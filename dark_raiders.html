@@ -300,6 +300,12 @@
   .vcell.on{ border-color:var(--amber); background:rgba(255,192,74,.15);
     box-shadow:0 0 0 1px var(--amber) inset; }
   .vcell.locked{ opacity:.42; }
+  /* v8.09, his order: a clear indication that you took it. The cell you clicked
+     lights and stamps itself, because that is where the eye already is. */
+  .vcell.took{ border-color:var(--gain); background:rgba(111,224,160,.22); }
+  .vcell.took:after{ content:'TAKEN'; position:absolute; left:0; right:0; top:38%;
+    text-align:center; font-size:13px; letter-spacing:.16em; color:var(--gain);
+    text-shadow:0 1px 3px rgba(6,9,13,.9); }
   .vcell .vp{ position:absolute; right:7px; top:5px; font-size:15px; font-weight:700;
     color:var(--amber); text-shadow:0 1px 2px #000; }
   .vcell .vlk{ position:absolute; left:7px; top:5px; font-size:13px; color:var(--ash); }
@@ -804,7 +810,8 @@
 </div>
 <div class="modal" id="cheatmodal">
   <h3>DEV CHEAT BOX</h3>
-  <div class="msub">A free shop. Click a thing and it is in your stash. Nothing here judges you.</div>
+  <div class="msub">A free shop. Click a thing and it will be transferred to your stash. No judgment.</div>
+  <div id="cheattook" style="margin:8px 0 0;font-size:14px;min-height:20px;color:var(--gain)"></div>
   <button class="deploy ghost" id="cheat100k" style="margin:10px 0;padding:9px 18px;width:100%">TAKE $100,000</button>
   <div class="vendgrid" id="cheatgrid" style="flex:1;overflow-y:auto"></div>
   <button class="deploy ghost" onclick="document.getElementById('cheatmodal').classList.remove('on')" style="margin-top:10px;padding:8px 22px">CLOSE</button>
@@ -1128,7 +1135,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.08';
+var VER='8.09';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1431,7 +1438,7 @@ stim:{name:'Stim Injector',val:180,wt:1,r:'uncommon',c:'#7fe0d0',use:'stim'},
   // v6.78, his note: plates come in fives. stackN is the most that fits in one stack in
   // the stash grid and the backpack grid. The BELT is deliberately exempt: he asked for
   // it to keep showing every plate he owns.
-  plate:{stackN:5,name:'Armour Plate',val:340,wt:3,r:'uncommon',c:'#5aa9e6',use:'armor',amt:55},
+  plate:{stackN:5,name:'Armour Plate',val:340,wt:3,r:'uncommon',c:'#5aa9e6',use:'armor',amt:20},
   gun_pistol:{name:'Scav Pistol (field)',val:300,wt:3,r:'common',c:'#ffd48a',use:'gun',gk:'pistol'},
   gun_smg:{name:'Compact SMG (field)',val:900,wt:4,r:'uncommon',c:'#ffe0a0',use:'gun',gk:'smg'},
   gun_rifle:{name:'Auto Rifle (field)',val:1500,wt:5,r:'rare',c:'#ffcf7a',use:'gun',gk:'rifle'},
@@ -22335,7 +22342,9 @@ if(G.player&&!G.sim){
 // playing, never to waiting, which is the line that keeps passive income from
 // dissolving the reason to deploy. Capped at four racks. Part two adds the
 // data-core intel slot and the visible machines in the undercroft room.
-var RACK_COST={scrap:24,wire:18,cell:12,board:12};   // v6.65: six times, like the counter
+// v8.09, his order: reduced. Halved across the board, ratio untouched - the
+// 4:3:2:2 shape is his from v6.65, only the size of it was in the way.
+var RACK_COST={scrap:12,wire:9,cell:6,board:6};
 var RACK_CAP=10;                 // v6.76, his note: ten, then they fold into an Array
 var RACK_PAY=200;
 // TEN RACKS BECOME ONE ARRAY. It pays more than the ten it replaced, and it empties the
@@ -22592,7 +22601,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.08: both bottom corners and the belt are bigger, and the board no longer tells you what every rival is doing.',
+  now:'v8.09: the cheat box says what you took, a plate is worth 20 armour, and a rack costs half what it did.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -22979,13 +22988,27 @@ function renderCheat(){
     cells[c].onclick=function(){
       var k=this.getAttribute('data-ck');
       P.stash.push(k); saveProfile(); renderHub();
-      say2((ITEMS[k]?ITEMS[k].name:k)+' dropped into the stash.'); blip('pick');
+      var _nm=(ITEMS[k]?ITEMS[k].name:k);
+      // How many of it he now holds, because "taken" without a count is the
+      // question he asks next.
+      var _hd=0; for(var _q=0;_q<P.stash.length;_q++) if(P.stash[_q]===k) _hd++;
+      var _tk=document.getElementById('cheattook');
+      if(_tk) _tk.textContent='Took '+_nm+'. It will be transferred to your stash. You now hold '+_hd+'.';
+      var _cell=this;
+      _cell.classList.add('took');
+      // The stamp clears itself so a second take on the same cell reads as a
+      // second take rather than as the first one still sitting there.
+      if(_cell._tkT) clearTimeout(_cell._tkT);
+      _cell._tkT=setTimeout(function(){ _cell.classList.remove('took'); _cell._tkT=null; },700);
+      say2(_nm+' taken. It will be transferred to your stash.'); blip('pick');
     };
   }
   var cb=document.getElementById('cheat100k');
   if(cb) cb.onclick=function(){
     P.credits+=100000; saveProfile(); renderHub();
-    say2('$100,000. The box does not judge.'); blip('pick');
+    var _tk2=document.getElementById('cheattook');
+    if(_tk2) _tk2.textContent='Took $100,000. You now hold $'+P.credits.toLocaleString()+'.';
+    say2('$100,000 taken. No judgment.'); blip('pick');
   };
 }
 function renderBar(){
