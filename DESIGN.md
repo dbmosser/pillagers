@@ -27443,6 +27443,72 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.22 - NOTHING OPENS FIRE FROM OUTSIDE YOUR SIGHT
+
+A twelve-agent adversarial audit of the RAID subsystem - combat, enemy
+behaviour, extraction, loot, player state, and numbers against the words
+describing them - returned 37 confirmed findings from 48 raw. Three of
+them are one answer to his note that "fighting pillagers has gotten too
+hard", and to run #93: first contact at 37 seconds, dead at 39.
+
+THE LOOTED GUN THAT OUTRANGED HIS EYES. blessElite caps an elite's
+engagement at 580 with the comment "never opens fire from outside your
+sight", because viewFar is 620. raiderUseKit - an ordinary raider picking
+a better gun off a body mid-raid - re-derives that same field with NO cap
+at all. A looted Longshot gave him 648 against a 620 view distance: shot
+for 115 a round by a man who is not on the screen, with nothing the player
+could have done differently. Same cap, same reason.
+
+THE HOWLER THAT NEVER STOPPED. Its shelling was the only fire path in the
+file with no sight test at all, and each shell re-armed its own alert to 3
+- six seconds at the 0.5/s decay, against its own 4.2 to 5.8 second
+cooldown - so a single sighting locked it into accurate bombardment of the
+player's LIVE position, through walls, for the rest of the raid. It now
+shells the last place it actually saw him, and its alert is re-armed to
+2.0, which is shorter than its own cooldown, so it goes quiet instead of
+feeding itself.
+
+THE MAN IN THE RING STILL SHOOTING LIKE v8.10. Return fire from a raider
+standing in an extraction ring is a SECOND firing path, and v8.11's human
+aim model never reached it: fixed 18-unit error at any range, no reaction
+beat. It uses the same model as everyone else now, with the same floor, so
+a point-blank scrap is unchanged. Both rnd draws keep their count.
+
+Two of my own mistakes inside this build, both caught by measuring:
+
+The first Howler fix called canSee with default parameters instead of the
+`sees` value the loop already computes for that machine - its own range,
+its own cone, its own ambient, with the crouch and downed rules applied.
+Measured, that took it from firing blind forever to firing NOTHING even
+in the open. The audit's words were "omits the sees test every other
+machine uses"; the second cut uses exactly that test.
+
+And my measurement itself lied twice. G.shells holds cosmetic brass
+casings as well as mortars, and my filter compared `sh.x0` - which
+casings do not have - so every NaN comparison passed and I was counting
+casings as artillery. Filtering on the mortar flag gave a clean number.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. On the real paths: a raider
+handed a Longshot equipped it through the game's own kit routine and came
+out at 580, inside the 620 he can be seen at, where the same path used to
+produce 648. A Howler with clear sight fires 6 mortars in 30 seconds; the
+same Howler with no line of sight, after the player moves 300 units, fires
+5 that land an average of 107 units from where it LAST SAW him and 884
+from where he actually is - it used to track the live position.
+
+Not verified: the ring-raider aim path, which is the v8.11 model applied
+at a second site - the model itself was measured in a real duel earlier
+today (9.0u to 8.0u at 150, 7.1u to 16.2u at 400), but this particular
+call site was covered by parse and by the shared dials rather than by its
+own duel. And 34 further confirmed findings from this audit are written
+up and queued, several of them serious: raiders and your own hired merc
+shoot the neutral Peddler while YOU are charged the notoriety, enemy
+grenades are reported as "YOUR OWN CHARGE" and credit you with kills, a
+hired merc can never fire at a raider at all, and four cosmetic-only
+draws from the seeded stream mean live play and the bot diverge on the
+same seed.
+
 ## v8.21 - THE NEW IN CARD CATCHES UP WITH THE MENU SWEEP
 
 The first thing he sees on the floor was stamped v8.02 while the game had

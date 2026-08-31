@@ -1148,7 +1148,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.21';
+var VER='8.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10490,7 +10490,11 @@ function raiderUseKit(e,dt){
       var g={}; for(var k in WEAPONS[gk]) g[k]=WEAPONS[gk][k];
       e.bag.splice(bestIx,1);
       if(old&&old.id!=='fists') e.bag.push('gun_'+old.id);
-      e.wep=g; e.dmg=g.dmg; e.rng=g.rng*0.72;
+      // v8.22, audit: the SAME cap blessElite applies at 6230, and for the same
+      // stated reason - never open fire from outside his sight. This path had no
+      // cap at all, so a raider who picked up a Longshot engaged at 648 against
+      // a viewFar of 620: shot by a man who is not on screen.
+      e.wep=g; e.dmg=g.dmg; e.rng=Math.min(g.rng*0.72,580);
       e.kitSwaps=(e.kitSwaps||0)+1;
     }
   }
@@ -13284,16 +13288,30 @@ var _rdS=G.shells[_rdi];
         // Artillery plants. Scatter grows with distance so range is a real
         // defence, and it holds fire under 140 so walking it down is the
         // counterplay the range invites.
-        if(e.cd<=0&&d<e.rng&&d>140&&!p.downed){
+        // v8.22, audit: artillery still has to KNOW where you are. This branch
+        // was the only fire path in the file with no sight test, and because
+        // each shell re-armed alert to 3 (six seconds at the 0.5/s decay,
+        // against its own 4.2-5.8s cooldown) a single sighting kept it firing
+        // on your live position through walls for the rest of the raid. It now
+        // shells the last place it actually saw you, and breaking line of sight
+        // finally means something against it.
+        var _hSee=sees;
+        if(_hSee){ e.tx=p.x; e.ty=p.y; }
+        var _htx=_hSee?p.x:(e.tx===undefined?p.x:e.tx);
+        var _hty=_hSee?p.y:(e.ty===undefined?p.y:e.ty);
+        if(e.cd<=0&&d<e.rng&&d>140&&!p.downed&&(_hSee||e.alert>1.2)){
           var _hsc=Math.min(120,d*0.12);
-          G.shells.push({mortar:1,x0:e.x,y0:e.y,tx:p.x+rnd(-_hsc,_hsc),ty:p.y+rnd(-_hsc,_hsc),
+          G.shells.push({mortar:1,x0:e.x,y0:e.y,tx:_htx+rnd(-_hsc,_hsc),ty:_hty+rnd(-_hsc,_hsc),
             t:0,air:(CFG.howlerAir===undefined?2.1:CFG.howlerAir),
             dmg:e.dmg*(e.elite?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)});
           e.cd=4.2+rnd(0,1.6);
           // v3.87: shelling IS engagement. The Howler never uses sight, so its
           // alert never rose and a fight-picking bot would loot through a
           // barrage. Hot for ~6s past each shell; feeds the threat music too.
-          e.alert=3;
+          // v8.22: 2.0, not 3. At the 0.5/s decay that is four seconds of hot
+          // against a 4.2-5.8s cooldown, so a Howler that has genuinely lost
+          // sight of him falls quiet between shells instead of self-feeding.
+          e.alert=2.0;
           ping(e.x,e.y,620,false,false,'robot','fire',e);
           if(!G.sim) sfx('alarm',e.x,e.y);
         }
@@ -13767,9 +13785,20 @@ e.lootT=(e.lootT||0)+dt;
         // v2.93 was actually about: he has decided to leave and he still leaves,
         // he simply is not a mannequin while he does it. Same weapon, same
         // cooldown, same line of sight test the chase branch uses.
-        if(e.hostile!==false&&e.cd<=0&&!p.downed&&dist(e,p)<e.rng&&
-           canSee(e.x,e.y,e.face,p.x,p.y,G.vseg)){
-          fireWeapon(e,e.wep,p.x+rnd(-18,18),p.y+rnd(-18,18),false);
+        // v8.22, audit: this is a SECOND firing path and v8.11 never reached it,
+        // so the man in the ring kept the old fixed 18-unit error at any range
+        // and needed no beat to react. He aims like everyone else now: the same
+        // angular error opening with distance, the same reaction gate, and the
+        // same floor so a point-blank scrap is unchanged. The two rnd draws keep
+        // their count.
+        var _rSee=(e.hostile!==false&&!p.downed&&dist(e,p)<e.rng&&
+                   canSee(e.x,e.y,e.face,p.x,p.y,G.vseg));
+        e.acqT=_rSee?((e.acqT||0)+dt):0;
+        if(_rSee&&e.cd<=0&&e.acqT>=(CFG.raiderReact===undefined?0.34:CFG.raiderReact)){
+          var _rgk=(CFG.raiderAim===undefined?1:CFG.raiderAim);
+          var _rgd=dist(e,p);
+          var _rgj=Math.max(18,_rgd*_rgk*(0.062+(p.moving?(G.sprinting?0.030:0.018):0)));
+          fireWeapon(e,e.wep,p.x+rnd(-_rgj,_rgj),p.y+rnd(-_rgj,_rgj),false);
           e.cd=(e.wep.rof/1000)*rnd(1.9,3.1);
           e.face=Math.atan2(p.y-e.y,p.x-e.x);
         }
@@ -22752,7 +22781,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.21: the NEW IN card catches up with the menu sweep.',
+  now:'v8.22: nothing opens fire from outside your sight any more - a looted gun, the Howler and the man in the ring all play by the same rules.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
