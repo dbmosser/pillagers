@@ -160,6 +160,45 @@
        the empty space moved below the panel, belonging to nothing. Filling the
        panel is what an inventory is supposed to look like. */
     flex:1; min-height:74px; }
+  /* v7.66: TEN LAYOUTS, one DOM. The LAYOUT button cycles data-slayout on #hub;
+     every variant only moves and resizes - handlers never change. Icons scale
+     with the layout and stay pixelated so the chunk reads as style, not blur. */
+  .invgrid .ic{ image-rendering:pixelated; }
+  #kitgrid{ min-height:56px; }
+  #hub[data-slayout] .invgrid .ic{ width:40px !important; height:40px !important; }
+  #hub[data-slayout="2"] .invgrid{ grid-template-columns:repeat(auto-fill,minmax(140px,1fr)) !important; gap:12px !important; }
+  #hub[data-slayout="2"] .invgrid .ic{ width:64px !important; height:64px !important; }
+  #hub[data-slayout="3"] .invgrid{ grid-template-columns:repeat(auto-fill,minmax(170px,1fr)) !important; gap:13px !important; }
+  #hub[data-slayout="3"] .invgrid .ic{ width:84px !important; height:84px !important; }
+  #hub[data-slayout="3"] #kitcol{ flex:0.7 !important; }
+  #hub[data-slayout="4"] .invgrid{ grid-template-columns:repeat(auto-fill,minmax(200px,1fr)) !important; gap:14px !important; }
+  #hub[data-slayout="4"] .invgrid .ic{ width:110px !important; height:110px !important; }
+  #hub[data-slayout="4"] #avpanel{ display:none; }
+  #hub[data-slayout="4"] .hubgrid{ grid-template-columns:1fr !important; }
+  #hub[data-slayout="4"] #invcols{ flex-direction:column; }
+  #hub[data-slayout="4"] #kitcol{ border-left:none !important; border-top:1px solid var(--steel-hi); }
+  #hub[data-slayout="5"] #kitcol{ order:-1; border-left:none !important; border-right:1px solid var(--steel-hi); }
+  #hub[data-slayout="5"] .invgrid{ grid-template-columns:repeat(auto-fill,minmax(128px,1fr)) !important; }
+  #hub[data-slayout="5"] .invgrid .ic{ width:52px !important; height:52px !important; }
+  #hub[data-slayout="6"] .invgrid{ grid-template-columns:repeat(auto-fill,minmax(230px,1fr)) !important; gap:8px !important; }
+  #hub[data-slayout="6"] .invgrid .ic{ width:56px !important; height:56px !important; }
+  #hub[data-slayout="7"] .invgrid{ grid-template-columns:repeat(auto-fill,minmax(72px,1fr)) !important; gap:6px !important; }
+  #hub[data-slayout="7"] .invgrid .ic{ width:30px !important; height:30px !important; }
+  #hub[data-slayout="8"] #invcols{ flex-direction:column; }
+  #hub[data-slayout="8"] #kitcol{ border-left:none !important; border-top:1px solid var(--steel-hi); }
+  #hub[data-slayout="8"] .invgrid{ grid-template-columns:repeat(auto-fill,minmax(120px,1fr)) !important; }
+  #hub[data-slayout="8"] .invgrid .ic{ width:52px !important; height:52px !important; }
+  #hub[data-slayout="9"] #avpanel{ display:none; }
+  #hub[data-slayout="9"] .hubgrid{ grid-template-columns:1fr !important; }
+  #hub[data-slayout="9"] #kitcol{ order:-1; flex:0.65 !important; border-left:none !important; border-right:1px solid var(--steel-hi); }
+  #hub[data-slayout="9"] .invgrid{ grid-template-columns:repeat(auto-fill,minmax(160px,1fr)) !important; }
+  #hub[data-slayout="9"] .invgrid .ic{ width:72px !important; height:72px !important; }
+  #hub[data-slayout="10"] #avpanel{ display:none; }
+  #hub[data-slayout="10"] .hubgrid{ grid-template-columns:1fr !important; }
+  #hub[data-slayout="10"] #invcols{ flex-direction:column; }
+  #hub[data-slayout="10"] #kitcol{ border-left:none !important; border-top:1px solid var(--steel-hi); }
+  #hub[data-slayout="10"] .invgrid{ grid-template-columns:repeat(auto-fill,minmax(150px,1fr)) !important; gap:14px !important; }
+  #hub[data-slayout="10"] .invgrid .ic{ width:68px !important; height:68px !important; }
   /* ---- THE ITEM CONTEXT MENU, v6.00, his note "all items should be right
      clickable to get a context menu". Dark and tight, sitting at the cursor. */
   /* The balance in the heading of every station, v6.14. Right aligned so the screen
@@ -945,6 +984,7 @@
     <button class="deploy ghost" id="workbtn" style="flex:1">CRAFT</button>
     <button class="deploy ghost" id="opbtn" style="flex:1">CONTRACTS</button>
     <button class="deploy ghost" id="condbtn" style="flex:1">CONDITIONS</button>
+    <button class="deploy ghost" id="laybtn" style="flex:1">LAYOUT 1/10</button>
     <button class="deploy ghost" id="optbtn" style="flex:1">SETTINGS</button>
   </div>
 </div>
@@ -1072,7 +1112,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.65';
+var VER='7.66';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22119,7 +22159,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.65: saves on the front door. Continue, create a new save, change name.',
+  now:'v7.66: the stash rework. Ten layouts, one button, bigger everything.',
   next:'His queue: save slots and naming at boot, the mile re-baseline at full density, the 2.5d-glitch audit'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -24246,6 +24286,19 @@ function renderCraftDetail(rows){
 // was never moved out of the stash and the standard-kit fallback fired instead.
 
 document.getElementById('backfloor').onclick=function(){ document.getElementById('hub').classList.remove('on'); };
+// v7.66, his order: ten layouts and a button. Same DOM, same handlers; the
+// attribute only moves and resizes things.
+function applyStashLayout(){
+  var _ln=clamp(P.stashLayout||1,1,10);
+  document.getElementById('hub').setAttribute('data-slayout',_ln);
+  var _lb=document.getElementById('laybtn');
+  if(_lb) _lb.textContent='LAYOUT '+_ln+'/10';
+}
+document.getElementById('laybtn').onclick=function(){
+  P.stashLayout=(clamp(P.stashLayout||1,1,10)%10)+1;
+  saveProfile(); applyStashLayout();
+};
+applyStashLayout();
 // WHAT THE SELL BUTTON SELLS. The single source of truth for both the label and
 // the click, because when those were two separate expressions they disagreed and
 // the button re-offered a sale it would then refuse to make.

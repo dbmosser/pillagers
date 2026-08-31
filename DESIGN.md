@@ -27443,6 +27443,41 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.66 - TEN STASH LAYOUTS AND A BUTTON
+
+His three notes on the stash screen, together: "guns need bigger and better
+representation via avatars inside their items -- everything should be bigger,
+the stash still kinda looks like shit", "i think you need to rework this
+screen from scratch", "can you do like 10 different layouts of it and a
+button to change layouts?"
+
+The rework is parametric rather than a rewrite: TEN layouts over the same
+working DOM, so every handler he already relies on - drag, right-click
+context menu, shift quick-move, alt split, 1-9 bind - survives byte-for-byte.
+A LAYOUT N/10 button in the bottom row cycles them; the choice persists on
+P.stashLayout. The variants genuinely differ: measured icon sizes run 39px
+(7, DENSE) to 143px (4, GALLERY full-wall with the operator panel hidden and
+the loadout below); 5 and 9 put the loadout on the LEFT; 8 and 10 stack
+stash-over-loadout full width; 3 gives the stash extra room by narrowing the
+loadout column. Even layout 1 more than doubles the old icon size. All icons
+render pixelated on upscale so the chunk reads as style, and the
+empty-backpack hint got a min-height so it stops sitting on the TACTICAL BELT
+label (the overlap visible in his screenshot).
+
+One trap cost a cycle: iconImgHTML writes inline width/height on every icon
+img, and inline beats any stylesheet rule - the first build's ten layouts all
+showed identical icons. Caught by measuring getBoundingClientRect per layout
+instead of trusting the attribute, fixed with !important on the sizing rules.
+
+He lands on LAYOUT 2 (big tiles) and can cycle from there.
+
+Not verified: layouts were verified by measured icon width, avatar-panel
+visibility and column order per variant, not by eye on all ten (the pane
+serves fossil screenshots; pixel probes are the instrument) - his cycling
+hand is the real judge, which is the point of the button; and the belts/safe
+pocket in the two stacked variants may want their own polish once he picks a
+favourite.
+
 ## v7.65 - THE BOX BECOMES A SHOP, THE SAVES LEARN TO DIE POLITELY
 
 Five live notes inside an hour of v7.64 shipping, which is the fastest
