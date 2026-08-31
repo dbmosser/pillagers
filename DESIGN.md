@@ -27443,6 +27443,41 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.99 - A GUN WEARS ITS RARITY EVERYWHERE
+
+His order: "guns should always indicate their rarity level via background
+color, frame color and weapon color - in every instance they are shown -
+shop, hotbar, everywhere - as equipped by players."
+
+Display-layer only, deliberately: the item row's rarity field feeds ival()
+and the whole economy, and a 200-seed re-baseline is mid-flight, so the
+display truth comes straight from the weapon tier table (WTIER) through
+one resolver, and the data does not move. Tier 5 wears a new GOLD class
+above elite, matching the in-raid receiver edge from v7.77 - so the
+Longshot and the Lance read gold on every surface.
+
+What was actually broken, found on the way in: the hotbar's equipped-gun
+slots carry a weapon id, not an item key, so they matched nothing and wore
+NO rarity at all; every shop weapon row claimed a flat 'rare'; and the gun
+items' own rarity fields under-report their tiers (kept as-is for value,
+overridden for display). Now: the gun GLYPH is painted in its rarity by
+the one painter every surface shares (hotbar, shop, stash, bag, drag);
+the hotbar wash and frame resolve gun-aware; the bag panel tiles and name
+line follow; the stash grid border class follows; the shop pill tells the
+tier.
+
+Verified: parse PASS; fingerprints 58 and 276; three endings through
+oc_btn; hub; stage; the shop's Marksman pill reads WEAPON ELITE (was
+'rare'); the stash cell for a Marksman wears c-elite; and a staged raid
+screenshot shows the belt speaking the language - SMG slot green,
+Longshot slot gold, frames matching.
+
+Not verified: his eyes on the glyph colours replacing the old warm golds
+(the old weapon tints are gone from icons in favour of rarity - one line
+per surface reverts if he prefers the tints); a gold-QUALITY roll of a
+low-tier gun shows its tier, not its roll, on menus (the in-raid edge
+still shows the gold roll).
+
 ## v7.98 - A PICKUP TAKES ITS OWN BELT SLOT
 
 His order: "guns, heals, grenades, etc should auto-equip to the hotbar upon

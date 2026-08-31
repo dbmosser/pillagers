@@ -104,7 +104,7 @@
   .row .vl { color:var(--amber); font-size:15px; }
   .swatch { width:3px; height:13px; border-radius:1px; flex:none; }
   .ic { flex:none; image-rendering:auto; vertical-align:middle; margin-right:2px; }
-  .r-common{color:#cfd8ef;} .r-uncommon{color:#7fc4a0;} .r-rare{color:#7cc4ff;} .r-elite{color:#d08ce8;}
+  .r-common{color:#cfd8ef;} .r-uncommon{color:#7fc4a0;} .r-rare{color:#7cc4ff;} .r-elite{color:#d08ce8;} .r-gold{color:#ffc72e;}
   /* THE GRID. Uniform cells, Minecraft rules: every item is one square whatever
      it is, stacks carry a count, and rarity lives on the border so you read the
      value of a whole screen without reading a word of it. */
@@ -364,6 +364,7 @@
   .cell.c-uncommon{ border-color:#7fc4a0; box-shadow:inset 0 0 8px rgba(127,196,160,.16); }
   .cell.c-rare{ border-color:#7cc4ff; box-shadow:inset 0 0 8px rgba(124,196,255,.20); }
   .cell.c-elite{ border-color:#d08ce8; box-shadow:inset 0 0 10px rgba(208,140,232,.26); }
+  .cell.c-gold{ border-color:#ffc72e; box-shadow:inset 0 0 10px rgba(255,199,46,.30); }
   .cell .cnt{ position:absolute; right:3px; bottom:1px; font-size:13px; font-weight:700;
     color:var(--bone); text-shadow:0 1px 2px #000; pointer-events:none; }
   /* JUNK, his Q11: tag it once and sell-all obeys. A tagged cell is dimmed and
@@ -1127,7 +1128,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.98';
+var VER='7.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1451,7 +1452,14 @@ stim:{name:'Stim Injector',val:180,wt:1,r:'uncommon',c:'#7fe0d0',use:'stim'},
 // Mirrored by the .r-* CSS rules; the two have nothing keeping them in sync, so
 // they must always be edited together. Rare moved because #5aa9e6 on a navy
 // panel was a real contrast failure, and rare items are what the stash is for.
-var RCOL={common:'#cfd8ef',uncommon:'#7fc4a0',rare:'#7cc4ff',elite:'#d08ce8'};
+var RCOL={common:'#cfd8ef',uncommon:'#7fc4a0',rare:'#7cc4ff',elite:'#d08ce8',gold:'#ffc72e'};
+// v7.99, his order: a gun ALWAYS shows its rarity, and the truth is the tier
+// table, not the item row (which feeds prices and stays put). Tier 5 wears
+// gold, matching the in-raid receiver edge from v7.77.
+function gunRarity(gk){ var t=WTIER[gk]; if(t===undefined) return 'common';
+  return t>=5?'gold':(t>=4?'elite':(t===3?'rare':(t===2?'uncommon':'common'))); }
+function dispR(key){ var it=ITEMS[key]; if(!it) return null;
+  return (it.use==='gun'&&it.gk)?gunRarity(it.gk):it.r; }
 // HIS NOTE: "in the toolbar, the rarity colors of the items should be shown. Same
 // for the inventory. It should be the entire background, not just the outlining
 // square." Rarity was a 1.2px border, which at hotbar scale is a few pixels of
@@ -1460,7 +1468,7 @@ var RCOL={common:'#cfd8ef',uncommon:'#7fc4a0',rare:'#7cc4ff',elite:'#d08ce8'};
 // is worth. Derived from RCOL rather than written out again, because two colour
 // tables for one concept is exactly how the border and the fill would drift.
 // 'common' is deliberately near-transparent: if everything is tinted, nothing is.
-var RFILL_A={common:0.06,uncommon:0.20,rare:0.24,elite:0.30};
+var RFILL_A={common:0.06,uncommon:0.20,rare:0.24,elite:0.30,gold:0.34};
 function rfill(r){
   var c=RCOL[r]; if(!c) return null;
   var n=parseInt(c.slice(1),16);
@@ -18722,8 +18730,9 @@ ctx.fillStyle='#4de3d0';
       ctx.fillRect(bx,hy,bw,bw);
       // the rarity wash goes OVER the base so a selected slot still reads as
       // selected, and under the icon so it never fights the portrait
-      var _hr=(S.itemKey&&ITEMS[S.itemKey])?ITEMS[S.itemKey].r
-             :((S.icon&&ITEMS[S.icon])?ITEMS[S.icon].r:null);
+      var _hr=(S.itemKey&&ITEMS[S.itemKey])?dispR(S.itemKey)
+             :((S.kind==='gun'&&S.icon&&WEAPONS[S.icon])?gunRarity(S.icon)
+             :((S.icon&&ITEMS[S.icon])?dispR(S.icon):null));
       if(_hr&&!empty){ var _hf=rfill(_hr); if(_hf){ ctx.fillStyle=_hf; ctx.fillRect(bx,hy,bw,bw); } }
       var dragOver=(G.drag&&mouse.x>=bx&&mouse.x<=bx+bw&&mouse.y>=hy&&mouse.y<=hy+bw);
       ctx.strokeStyle=dragOver?'#ffc04a':(on?'#ffc04a':((_hr&&RCOL[_hr]&&!empty)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
@@ -19918,7 +19927,8 @@ function gunIcon(c,id,cx,cy,S,tint){
   // the optic. Drawn in the weapon's tint over a dark under-shadow for pop.
   var W=WEAPONS[id]||WEAPONS.pistol;
   var L=S*clamp((W.rng||300)/760,0.42,1.0);         // barrel reach
-  var col=tint||W.tint||'#ffd48a';
+  // v7.99: rarity IS the weapon colour, everywhere this painter serves.
+  var col=RCOL[gunRarity(W.id)]||tint||W.tint||'#ffd48a';
   c.save(); c.translate(cx,cy);
   c.fillStyle='rgba(0,0,0,.35)';
   c.fillRect(-S*0.5+1.5,-S*0.06+1.5,S*0.5+L*0.5,S*0.12);
@@ -20413,9 +20423,9 @@ function drawBag(){
       var hov=(mouse.x>=tx&&mouse.x<=tx+TILE&&mouse.y>=ty&&mouse.y<=ty+TILE);
       ctx.fillStyle=(si===sel)?'rgba(52,60,84,.9)':(hov?'rgba(34,42,58,.9)':'rgba(18,24,34,.9)');
       ctx.fillRect(tx,ty,TILE,TILE);
-      var _bf=rfill(it&&it.r);
+      var _bf=rfill(it?dispR(stacks[si].key):null);
       if(_bf){ ctx.fillStyle=_bf; ctx.fillRect(tx,ty,TILE,TILE); }
-      ctx.strokeStyle=(si===sel)?'#ffc04a':(RCOL[it&&it.r]||'rgba(90,102,116,.6)');
+      ctx.strokeStyle=(si===sel)?'#ffc04a':(RCOL[it?dispR(stacks[si].key):null]||'rgba(90,102,116,.6)');
       ctx.lineWidth=(si===sel)?2:1.2;
       ctx.strokeRect(tx+.5,ty+.5,TILE-1,TILE-1);
       drawItemIcon(ctx,st.key,tx+TILE/2,ty+TILE/2-LH(2),TILE*0.62);
@@ -20444,7 +20454,7 @@ function drawBag(){
   if(stacks.length){
     var sst=stacks[sel], sit=ITEMS[sst.key];
     ctx.font=FS(TYPE.label);
-    ctx.fillStyle=RCOL[sit&&sit.r]||'#cdd6dd';
+    ctx.fillStyle=RCOL[sit?dispR(sst.key):null]||'#cdd6dd';
     ctx.fillText((sit?sit.name:sst.key)+(sst.idxs.length>1?('  x'+sst.idxs.length):''),x+11,hintY);
     ctx.textAlign='right'; ctx.fillStyle='#ffc04a';
     ctx.fillText('$'+ival(sst.key)+' each',x+PW-11,hintY);
@@ -22287,7 +22297,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.98: a picked-up gun or stim takes the first empty belt slot on its own.',
+  now:'v7.99: a gun wears its rarity everywhere - glyph, frame and wash, shop to hotbar.',
   next:'Wrecked cars that read as cars from overhead, maps that read as different places, and his grades on the new menus and gun looks'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -23426,7 +23436,7 @@ try{ renderFreeKit(); }catch(_fk){}
     // rarity lives on the border so a screen reads at a glance without words.
     var cell=document.createElement('div');
     var isJunk=(P.junk||{})[k]?true:false;
-    cell.className='cell c-'+(it.r||'common')+(isJunk?' junk':'');
+    cell.className='cell c-'+(dispR(k)||'common')+(isJunk?' junk':'');
     // DRAGGABLE, v5.34. The key rides on the drag so the drop target does not
     // have to guess which cell it came from.
     cell.draggable=true;
@@ -24065,8 +24075,8 @@ function shopEntryIcon(o){
   return o.k;
 }
 function shopEntryRarity(o){
-  if(o.kind==='wep') return 'rare';
-  var it=ITEMS[o.k]; return (it&&it.r)||'common';
+  if(o.kind==='wep') return gunRarity(o.k);
+  var it=ITEMS[o.k]; return dispR(o.k)||'common';
 }
 // v6.16, off his quest screenshot: the same cream panel as the counter and the
 // workshop, with a REWARDS strip showing what it actually pays as cells rather
