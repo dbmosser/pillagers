@@ -27443,6 +27443,23 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.83 - THE ROADMAP STOPS NAMING SHIPPED WORK
+
+Second member of the rot class his v7.34 catch exposed. The dev roadmap
+panel's UP NEXT row still promised save slots and naming at boot (shipped),
+the mile re-baseline at full density (landed at v7.71), and the 2.5d-glitch
+audit (completed at v7.68-70). It now names the real queue: wrecked cars
+that read as cars from overhead, maps that read as different places, and
+his grades on the new menus and gun looks.
+
+Verified: parse PASS with the DEVNOW and WHATSNEW asserts; fingerprints 58
+and 276 at seed 4242; three endings EXTRACTED / KILLED IN ACTION / ABANDONED
+through oc_btn; hub steps and draws; stage renders.
+
+Not verified: DEVNOW.next has no mechanical staleness gate the way now: and
+WHATSNEW_VER do - free text about the future cannot be machine-checked, so
+it lives on the tick discipline instead, written into the working memory.
+
 ## v7.82 - THE NEW IN CARD CATCHES UP 47 BUILDS
 
 His catch, in his words: "updated log on menu right at the beginning of the
