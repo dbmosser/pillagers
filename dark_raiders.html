@@ -1127,7 +1127,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.94';
+var VER='7.95';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1822,8 +1822,8 @@ function sealLines(){
   for(var i=0;i<FIXED_MAPS.length;i++){
     var R=sealRec(i);
     if(R.cut<=0&&R.tier<=0) continue;
-    out.push(FIXED_MAPS[i].name+': seal tier '+(R.tier+1)+', '+
-      Math.round(R.cut)+' of '+sealNeed(R.tier)+' seconds cut.');
+    out.push(FIXED_MAPS[i].name+' great door: '+Math.round(R.cut)+' of '+sealNeed(R.tier)+
+      ' seconds of cutting done (tier '+(R.tier+1)+'). Hold E at the sealed door up there; extracting banks your progress.');
   }
   return out;
 }
@@ -22266,7 +22266,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.94: auto-jog stops when you move, the belt shows a pointer, five of his live orders.',
+  now:'v7.95: the armour line reads plainly, and the seal progress explains itself.',
   next:'Wrecked cars that read as cars from overhead, maps that read as different places, and his grades on the new menus and gun looks'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -23280,8 +23280,8 @@ try{ renderFreeKit(); }catch(_fk){}
     // standard armour, so this line has exactly one state to describe.
     var RG=myRig(), cap=rigCeil(RG);
     rl.style.borderColor='var(--steel-hi)'; rl.style.color='var(--ash)';
-    rl.innerHTML='You ascend with <b>no armour on</b>. Armour Plates put it on up '+
-      'there - each absorbs '+Math.round(RG.absorb*100)+'% of every hit until it is '+
+    rl.innerHTML='You ascend with <b>no armour on</b>. Equip Armour Plates on the '+
+      'surface. Each absorbs '+Math.round(RG.absorb*100)+'% of every hit until it is '+
       'gone, up to a cap of '+cap+'.';
   })();
   var sl=document.getElementById('stashgrid'); if(sl) sl.innerHTML='';

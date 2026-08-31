@@ -27443,6 +27443,28 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.95 - TWO MORE LINES SAY WHAT THEY MEAN
+
+Two more live orders from the same play session.
+
+The ascent check's armour line took his exact phrasing: "You ascend with no
+armour on. Equip Armour Plates on the surface. Each absorbs 50% of every
+hit until it is gone, up to a cap of 60." (Was "Armour Plates put it on up
+there".)
+
+And "0 of 65s cut - no idea what that means": the seal progress line on
+the stash contracts panel assumed you knew what the seal is. It explains
+itself now: "COLD STORAGE great door: 0 of 65 seconds of cutting done
+(tier 1). Hold E at the sealed door up there; extracting banks your
+progress."
+
+Verified: parse PASS; fingerprints 58 and 276; three endings through
+oc_btn; hub; stage; the new armour line confirmed present on the rendered
+ascent check.
+
+Not verified: the seal line render with live progress (the fixture profile
+carries none; the string builds from the same fields the old one did).
+
 ## v7.94 - AUTO-JOG STOPS WHEN YOU MOVE, AND FIVE OF HIS LIVE ORDERS
 
 He is playing this morning and the orders came in live.
