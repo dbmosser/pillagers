@@ -1112,7 +1112,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.67';
+var VER='7.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7858,7 +7858,7 @@ if(G.wx.id!=='clear'&&G.wx.line) say(G.wx.line);
   for(var _rv=0;_rv<G.ents.length;_rv++){
     if(G.ents[_rv].rival){
       G.tel.rivalMet=1;
-      setTimeout((function(nm){return function(){ if(G&&!G.over) say('YOUR RIVAL is out here: '+nm+'. He will shoot on sight.'); };})(G.ents[_rv].name),4000);
+      setTimeout((function(nm,g0){return function(){ if(G===g0&&!G.over) say('YOUR RIVAL is out here: '+nm+'. He will shoot on sight.'); };})(G.ents[_rv].name,G),4000);
       break;
     }
   }
@@ -7958,7 +7958,8 @@ function raidKey(code,repeat,ev){
     if(code==='KeyG'||code==='Space'||code==='KeyQ'||code==='KeyC') return;
   }
   if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyX','KeyV','Backspace','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
-  if((code==='Escape'||code==='KeyP')&&G&&!G.over) togglePauseBox(true);
+  if((code==='Escape'||code==='KeyP')&&G&&!G.over)
+    togglePauseBox(!document.getElementById('pausebox').classList.contains('on'));
   // H CYCLES, v2.94. His note: "update the key legend, make it smaller if
   // possible." It was one 480px tall panel down the whole left edge, on by
   // default, listing 18 bindings plus ten gear rules plus the sound key, and it
@@ -8555,6 +8556,17 @@ function togglePauseBox(on){
   syncPause();
   if(on){ keys={}; mouse.down=false; setTimeout(function(){ document.getElementById('pausenote').focus(); },40); }
 }
+// v7.68: Escape closes the pause box even while the note textarea is focused -
+// capture phase, so the box cannot trap the keyboard.
+window.addEventListener('keydown',function(ev){
+  if(ev.code!=='Escape') return;
+  var _pb=document.getElementById('pausebox');
+  if(_pb&&_pb.classList.contains('on')){
+    ev.stopPropagation(); ev.preventDefault();
+    var _ta=document.getElementById('pausenote'); if(_ta) _ta.blur();
+    togglePauseBox(false);
+  }
+},true);
 
 // ================================================================ throwables
 function cycleThrow(){
@@ -16375,29 +16387,37 @@ var SHD=G.shells[i];
     shadowE(_sx3,_sy3+1,4,2,.25);
     wc.fillStyle='#20242c'; wc.beginPath(); wc.arc(_sx3,_sy3-_hgt,3.2,0,6.2832); wc.fill();
   }
-  // landed decoys and armed frags
-  for(i=0;i<G.decoys.length;i++){
-    var dy=G.decoys[i];
-    shadowE(dy.x,dy.y+1,4,2,.3);
-    wc.fillStyle='#3a3a2c'; wc.fillRect(dy.x-3,dy.y-5,6,5);
-    if(Math.sin(dy.t*12)>0){
-      wc.globalCompositeOperation='lighter';
-      wc.fillStyle='#ffe08a'; wc.beginPath(); wc.arc(dy.x,dy.y-7,2,0,6.2832); wc.fill();
-      wc.globalCompositeOperation='source-over';
-    }
-  }
-  for(i=0;i<G.frags.length;i++){
-    var fr=G.frags[i];
-    shadowE(fr.x,fr.y+1,4,2,.3);
-    wc.fillStyle='#5a2418'; wc.beginPath(); wc.arc(fr.x,fr.y-4,3.4,0,6.2832); wc.fill();
-    if(Math.sin(fr.t*26)>0){
-      wc.globalCompositeOperation='lighter';
-      wc.fillStyle='#ff5a3a'; wc.beginPath(); wc.arc(fr.x,fr.y-8,1.8,0,6.2832); wc.fill();
-      wc.globalCompositeOperation='source-over';
-    }
-  }
-  // y-sorted world pass
+  // v7.68: landed decoys and armed frags moved INTO the y-sort (they drew
+  // before it and everything overpainted them). Closures, dispatched first.
   var DR=[];
+  function _pushThrown(){
+    var _ti,_dy2,_fr2;
+    for(_ti=0;_ti<G.decoys.length;_ti++){
+      _dy2=G.decoys[_ti];
+      DR.push({k:_dy2.y,fn:(function(dy){ return function(){
+        shadowE(dy.x,dy.y+1,4,2,.3);
+        wc.fillStyle='#3a3a2c'; wc.fillRect(dy.x-3,dy.y-5,6,5);
+        if(Math.sin(dy.t*12)>0){
+          wc.globalCompositeOperation='lighter';
+          wc.fillStyle='#ffe08a'; wc.beginPath(); wc.arc(dy.x,dy.y-7,2,0,6.2832); wc.fill();
+          wc.globalCompositeOperation='source-over';
+        }
+      };})(_dy2)});
+    }
+    for(_ti=0;_ti<G.frags.length;_ti++){
+      _fr2=G.frags[_ti];
+      DR.push({k:_fr2.y,fn:(function(fr){ return function(){
+        shadowE(fr.x,fr.y+1,4,2,.3);
+        wc.fillStyle='#5a2418'; wc.beginPath(); wc.arc(fr.x,fr.y-4,3.4,0,6.2832); wc.fill();
+        if(Math.sin(fr.t*26)>0){
+          wc.globalCompositeOperation='lighter';
+          wc.fillStyle='#ff5a3a'; wc.beginPath(); wc.arc(fr.x,fr.y-8,1.8,0,6.2832); wc.fill();
+          wc.globalCompositeOperation='source-over';
+        }
+      };})(_fr2)});
+    }
+  }
+  _pushThrown();
   for(i=0;i<G.map.walls.length;i++){
     var wl=G.map.walls[i];
     if(wl.x>ox+VW+40||wl.x+wl.w<ox-40||wl.y>oy+VH+80||wl.y+wl.h<oy-80) continue;
@@ -16412,7 +16432,7 @@ var SHD=G.shells[i];
     var e=G.ents[i];
     if(!e.seen) continue;
     if(e.x<ox-60||e.x>ox+VW+60||e.y<oy-80||e.y>oy+VH+80) continue;
-    DR.push({k:e.y-((G&&G.map&&G.map.liftAt)?G.map.liftAt(e.x,e.y)*0.5:0),e:e});
+    DR.push({k:e.y-drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(e.x,e.y):0),e:e});
   }
   // Bushes sort a little BELOW their centre so a body standing in one is drawn
   // first and the foliage closes over it. That is the whole read: you can see
@@ -16450,7 +16470,7 @@ var SHD=G.shells[i];
     if(!canSee(p.x,p.y,p.face,CW.x,CW.y,G.vseg)) continue;
     DR.push({k:CW.y,cr:CW});
   }
-  DR.push({k:p.y-((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y)*0.5:0),pl:1});
+  DR.push({k:p.y-drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y):0),pl:1});
   DR.sort(function(a,b){return a.k-b.k;});
   var crouchP=keys['ControlLeft']||keys['ControlRight'];
   // His run #3, v1.01: "character not rendering". He was moving and shooting
@@ -16466,6 +16486,7 @@ var SHD=G.shells[i];
   for(i=0;i<DR.length;i++){
     var it=DR[i];
     try{
+    if(it.fn){ it.fn(); } else
     if(it.cr){
       var CT=it.cr,cxw=CT.x,cyw=CT.y-CT.z,fl=CT.face||1;
       // A carcass, drawn before the live shapes so neither branch has to know
@@ -21195,9 +21216,13 @@ function updateHubWorld(dt){
   if(p.rollT>0){
     p.rollT-=dt;
     var _rd=p.rollDir||{x:Math.cos(p.face||0),y:Math.sin(p.face||0)};
-    p.x+=_rd.x*430*dt; p.y+=_rd.y*430*dt;
+    // v7.68: substepped like the raid roll - one 430*dt hop tunneled piers.
+    var _rl2=430*dt,_rsn=Math.max(1,Math.ceil(_rl2/8));
+    for(var _rs2=0;_rs2<_rsn;_rs2++){
+      p.x+=_rd.x*_rl2/_rsn; p.y+=_rd.y*_rl2/_rsn;
+      collide(p,HB.walls);
+    }
     p.bob+=dt*18;
-    collide(p,HB.walls);
     p.x=clamp(p.x,26,HUBW-26); p.y=clamp(p.y,26,HUBH-26);
     p.moving=true;
   } else if(mg>0){
@@ -21387,7 +21412,7 @@ function drawHubWorld(dt){
           var _sx2=_B2.x-_A2.x,_sy2=_B2.y-_A2.y,_sd2=Math.hypot(_sx2,_sy2);
           if(_sd2<24){
             if(_sd2<0.001){ _sx2=Math.cos(_si2*2.4); _sy2=Math.sin(_si2*2.4); _sd2=1; }
-            var _pu2=Math.min(1.4,(24-_sd2)*0.5);
+            var _pu2=Math.min(84*dt,(24-_sd2)*30*dt);
             _A2.x=clamp(_A2.x-_sx2/_sd2*_pu2,34,HUBW-34); _A2.y=clamp(_A2.y-_sy2/_sd2*_pu2,34,HUBH-34);
             _B2.x=clamp(_B2.x+_sx2/_sd2*_pu2,34,HUBW-34); _B2.y=clamp(_B2.y+_sy2/_sd2*_pu2,34,HUBH-34);
           }
@@ -21401,7 +21426,7 @@ function drawHubWorld(dt){
         var _mv=0;
         if(_c.mercTag&&HB.player){
           var _dxm=HB.player.x-_c.x,_dym=HB.player.y-_c.y,_dm=Math.hypot(_dxm,_dym)||1;
-          if(_dm>70){ _c.x+=_dxm/_dm*2.1; _c.y+=_dym/_dm*2.1; _mv=1; }
+          if(_dm>70){ _c.x+=_dxm/_dm*126*dt; _c.y+=_dym/_dm*126*dt; _mv=1; }
           _c.face=Math.atan2(_dym,_dxm);
         }
         if(_c.job==='work'){
@@ -21860,7 +21885,7 @@ function loop(ts){
       if(G.hitMark){ G.hitMark.t+=dt; if(G.hitMark.t>G.hitMark.life) G.hitMark=null; }
       for(i=G.sparks.length-1;i>=0;i--){
         var sp=G.sparks[i]; sp.t+=dt; sp.x+=sp.vx*dt; sp.y+=sp.vy*dt;
-        sp.vx*=.92; sp.vy*=.92;
+        var _dmp=Math.pow(.92,dt*60); sp.vx*=_dmp; sp.vy*=_dmp;
         if(sp.t>sp.life) G.sparks.splice(i,1);
       }
       // Casings PERSIST now, per his answer on litter. A firefight leaves its
@@ -21871,7 +21896,7 @@ function loop(ts){
 var sl=G.shells[i];
         if(sl.mortar||sl.settled) continue;
         sl.t+=dt; sl.x+=sl.vx*dt; sl.y+=sl.vy*dt;
-        sl.vx*=.88; sl.vy*=.88;
+        var _dms=Math.pow(.88,dt*60); sl.vx*=_dms; sl.vy*=_dms;
         if(sl.t>sl.life) sl.settled=true;
       }
       if(G.shells.length>300) G.shells.splice(0,G.shells.length-300);
@@ -22159,7 +22184,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.67: the mile measured at full density - 14.5 percent, cold-lethal now.',
+  now:'v7.68: seven verified glitch fixes from the 2.5D audit, all stream-safe.',
   next:'His queue: save slots and naming at boot, the mile re-baseline at full density, the 2.5d-glitch audit'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

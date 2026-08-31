@@ -27443,6 +27443,66 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.68 - THE GLITCH AUDIT, AND ITS FIRST SEVEN FIXES
+
+His order: "write a report on common glitches in complex 2.5d HTML games and
+then audit for those glitches." Done as a three-phase workflow: two research
+agents (one web-sourced, one first-principles against THIS codebase's shape)
+produced 28 glitch classes; six audit agents checked the code against every
+class with line-level evidence; and every non-clean finding went to an
+adversarial verifier told to refute it. The verifiers rejected FOUR findings
+with detailed counter-evidence (the NaN-feeder claim, a GC-hitch speculation,
+and two seeded-PRNG desync claims whose harm the verifier showed was
+immaterial under the project's own parity standard) and confirmed EIGHTEEN.
+
+THE REPORT, compressed - the classes that matter for a game like this one:
+y-sort anchor errors (the genre's most-reported bug), sub-pixel jitter and
+atlas bleed, per-frame constants instead of dt, delta spikes and the spiral of
+death, background-tab throttling, canvas state leaks across save/restore,
+NaN into draw calls (createRadialGradient throws; most calls no-op silently),
+collision tunneling, stuck keys on focus loss, audio autoplay locks,
+localStorage quota deaths, devicePixelRatio blur and its coordinate double-bug,
+seeded-PRNG stream divergence, sim/live guard misplacement, wall-clock timers
+crossing raid boundaries, and init-order races. The full 28-class report with
+per-class causes and how-to-spot lives in the workflow output; the confirmed
+findings and their anchors are in the audit record.
+
+SEVEN FIXES SHIP TONIGHT, all verified stream-safe (cold fingerprint 58 and
+mile 276 byte-identical after the batch):
+1. Hub crowd separation and the hired man's follow ran on per-frame constants
+   inside a dt-fed function (2.4x too fast at 144Hz, unable to keep up at
+   30fps) - my own v7.40/v7.53 code, now per-second rates.
+2. Spark and shell-casing damping was per-invocation; brass now slows at the
+   same rate at every refresh (pow(k, dt*60)).
+3. The hub roll moved its full 430*dt in one hop then collided - the exact
+   tunneling the raid roll's own comment documents - now substepped at 8 units
+   like the raid.
+4. The keyboard pause was a one-way trap: P/Escape only ever OPENED the box,
+   which then focused its textarea and ate Escape. The key toggles now, and a
+   capture-phase Escape closes the box even from inside the note field.
+5. The y-sort key used HALF the uncapped deck lift while the draw used the
+   FULL capped lift, so lifted bodies popped in front of walls; both now use
+   drawLift, the drawn feet position.
+6. Landed decoys and armed frags drew BEFORE the y-sort and were overpainted
+   by everything; they join the sorted pass as closures.
+7. The rival announcement's 4-second timer checked only that SOME raid was
+   live, so an abandon-and-redeploy made the old raid's rival speak in the new
+   one; it now requires the SAME raid.
+
+STILL OPEN from the confirmed list, queued: the stream-touching family
+(spark/decal/dmgNum internals drawing from the seeded stream live-only, the
+puff whose comment says Math.random while the code draws seeded IN THE SIM
+TOO, and the lightning ping fenced out of the sim) - those genuinely shift
+seed streams or sim behaviour, so they ship together as one measurement
+boundary with a re-baseline, not tonight on top of a fresh board row. Also
+queued as safe-but-larger: the draw-armour save-stack repair, the storeSet
+failure banner, the DPR change listener, and moving the version stamp onto the
+first drawn frame per the v0.98 lesson.
+
+Not verified: the pause capture-listener at pad (keyboard proven); layout
+interactions of fix 6 with the air pass (landed items only - airborne throws
+still deliberately draw on top); and every deferred item above.
+
 ## v7.67 - THE MILE MEASURED AT FULL DENSITY
 
 The v7.57 boundary closes: 200 paired seeds on the v7.66 build, calibrated
