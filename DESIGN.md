@@ -27443,6 +27443,49 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.17 - A RAID YOU CANNOT LOSE, AND A CANCEL THAT SAYS WHAT IT COSTS
+
+Two more audit findings, both of them the game taking something without
+saying so.
+
+THE XP THAT ONLY ONE BUTTON PAID. endRaid banks the credits, the extract
+and death counters and the best haul the moment a raid ends - but the XP
+and the ledger row were written by the outcome screen's single button.
+Leave that screen any other way and the money stayed while the progress
+silently vanished, which is the worst possible split: the raid half
+happened. The run is now committed once, at the moment the outcome card
+goes up, by a function that refuses to do it twice - the guard is on the
+record itself, so no caller can double-pay. The button still collects the
+tags and the note, and attaches them to the row that is already written.
+
+HIRE NOBODY VOIDED $30,000 IN SILENCE. No confirmation, no refund, no
+message: the merc simply stopped existing. It asks first now, names the
+person, and says plainly that cancelling does not refund the fee. The
+refund itself is his call - an economy change is not mine to make - but
+saying nothing at all was a bug.
+
+Two of my own mistakes inside that second fix, both caught by measuring
+rather than by reading: idRec returns the RIVALRY record - kills, deaths,
+standing - and has never carried a name, so the first cut said "your hire
+is off the job" for every hire; and the second cut went to IDENTITIES for
+a `name` field that does not exist there either. The handle he actually
+sees, on the board and in every run report, is `tag`.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. The commit path measured three
+ways, which is what a payout path deserves: through the button, XP moved
+1000 to 1139 exactly once and the button added nothing on top; leaving the
+outcome card WITHOUT its button left the XP banked at 2139 with the ledger
+row written, where it used to lose both; and using the button still
+attached a distinctive note to the row. The merc cancel names
+xX_BeefStuffer69_Xx, keeps the hire until YES, clears it on YES with "the
+fee is spent", and keeps it on Not yet.
+
+Not verified: whether a refund is the right answer for a cancelled hire -
+that is his ruling and the code deliberately does not assume one; and the
+"any other way off the outcome screen" cases were driven by removing the
+card's class directly rather than by finding every real route to it.
+
 ## v8.16 - THE UNDERCROFT ANSWERS ITS INPUTS
 
 Four more audit findings, all of them a key or a button going to the wrong

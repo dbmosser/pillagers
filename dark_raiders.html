@@ -1148,7 +1148,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.16';
+var VER='8.17';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14133,6 +14133,19 @@ G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
 
 // ================================================================ end of run
 var pendingRun=null,selTags=[];
+// v8.17, audit: EXACTLY ONCE, WHEREVER HE LEAVES. The XP and the ledger row
+// used to be written by the outcome button alone, so any other way off that
+// screen kept the credits endRaid had already banked and threw the progress
+// away. The guard is on the record itself, so a second call cannot double-pay.
+function commitRun(rec){
+  if(!rec||rec._committed) return false;
+  rec._committed=1;
+  addProgress(rec);
+  P.log.push(rec);
+  if(P.log.length>60) P.log.shift();
+  saveProfile();
+  return true;
+}
 // SPEC 17: two progression tracks, and NEITHER makes the character stronger.
 // No stat inflation anywhere: power comes from gear and competence, and these
 // are prestige only. Experience counts time invested; Extraction Proficiency
@@ -14895,6 +14908,10 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
   };
   saveProfile();
 
+  // v8.17: banked before the card is even drawn. saveProfile has already run
+  // above for the credits; this puts the XP and the ledger row beside them so
+  // the two halves of a raid can never disagree again.
+  if(!G.sim) commitRun(pendingRun);
   var t=document.getElementById('oc_title'),s=document.getElementById('oc_sub');
   if(how==='extract'){ t.textContent='EXTRACTED'; t.style.color='var(--coolant)';
     var _fcE=T.firstContact;
@@ -22728,7 +22745,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.16: the Undercroft answers its inputs - a pad can work the Stash and leave it, and Escape belongs to whatever is in front.',
+  now:'v8.17: a finished raid is in the record whatever you do with the window, and letting your hire go asks first.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -25056,7 +25073,25 @@ function closeTrader(){
 document.getElementById('shopbtn').onclick=function(){ openTrader('buy'); };
 document.getElementById('closetrader').onclick=closeTrader;
 document.getElementById('mercclear').onclick=function(){
-  P.merc=null; saveProfile(); renderMerc(); renderHub();
+  // v8.17, audit: this used to void a hire he had already paid for with no
+  // confirmation, no refund and nothing said. The refund itself is his call -
+  // an economy change is not mine to make - but silence about it is a bug.
+  if(!P.merc){ say2('Nobody is hired.'); return; }
+  var _mn='your hire';
+  for(var _mq=0;_mq<IDENTITIES.length;_mq++)
+    if(IDENTITIES[_mq].id===P.merc){ _mn=IDENTITIES[_mq].tag||_mn; break; }
+  var _q=document.getElementById('askq'), _s2=document.getElementById('asksub');
+  if(_q) _q.textContent='Let '+_mn+' go?';
+  if(_s2) _s2.innerHTML='You already paid to hire them. <b>Cancelling does not refund it.</b>';
+  ASKYES=function(){
+    P.merc=null; saveProfile(); renderMerc(); renderHub();
+    say2(_mn+' is off the job. The fee is spent.');
+  };
+  ASKALT=null;
+  var _y=document.getElementById('askyes'), _a=document.getElementById('askalt');
+  if(_y) _y.textContent='LET THEM GO';
+  if(_a) _a.style.display='none';
+  openModal('askmodal');
 };
 document.getElementById('closeterms').onclick=function(){
   document.getElementById('termsmodal').classList.remove('on');
@@ -25346,11 +25381,12 @@ function autoExport(){
 }
 document.getElementById('oc_btn').onclick=function(){
   if(pendingRun){
+    // The tags and the note are collected HERE, so they are attached before the
+    // commit when the button is the way out, and patched onto the already
+    // written row when the commit happened without him.
     pendingRun.tags=selTags.slice();
     pendingRun.note=document.getElementById('oc_note').value.trim();
-    addProgress(pendingRun);
-    P.log.push(pendingRun);
-    if(P.log.length>60) P.log.shift();
+    commitRun(pendingRun);
     pendingRun=null;
     saveProfile();
     autoExport();
