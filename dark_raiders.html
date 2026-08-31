@@ -1148,7 +1148,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.17';
+var VER='8.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22745,7 +22745,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.17: a finished raid is in the record whatever you do with the window, and letting your hire go asks first.',
+  now:'v8.18: the shop price means what it says, and the right-click menu can reach every key again.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -23536,11 +23536,13 @@ function itemMenuRows(key,ctx,count){
     if(ctx==='kit') unpackSome(key,half); else packSome(key,half);
     refreshInv();
   }});
-  // Keys. Guns own 1 and 2 and planPut enforces that, so only 3 up is offered.
-  if(it.use!=='gun'){
-    rows.push({sep:1});
-    rows.push({keys:1,label:'Put on key'});
-  }
+  // Keys. v8.18, audit: every key, every item. planPut dropped the
+  // guns-own-1-and-2 rule at v6.60 and the belt has honoured that since, but
+  // this menu still refused slots 1 and 2 and offered nothing at all for a gun -
+  // while hovering the same cell and pressing 1 did it. The comment that used to
+  // sit here claimed planPut enforced a rule planPut had already deleted.
+  rows.push({sep:1});
+  rows.push({keys:1,label:'Put on key'});
   // v6.01: naming the safe pocket is a menu verb as well as a drop target.
   if(it.use!=='gun'){
     var _isSafe=(P.safe===key);
@@ -23569,7 +23571,7 @@ function openItemMenu(x,y,key,ctx,count){
     if(r.keys){
       var kr=document.createElement('div'); kr.className='imenukeys';
       kr.innerHTML='<span>'+escHtml(r.label)+'</span>';
-      for(var sl=2;sl<HOTBAR_N;sl++){
+      for(var sl=0;sl<HOTBAR_N;sl++){    // v8.18: from key 1, not key 3
         (function(slot){
           var b=document.createElement('button');
           b.textContent=String(slot+1);
@@ -24744,17 +24746,29 @@ function renderShopDetail(rows){
   var b=document.createElement('button');
   b.className='vbuy';
   b.textContent=btn?btn.textContent.toUpperCase():'BUY';
-  b.disabled=btn?btn.disabled:true;
-  if(btn&&!btn.disabled) b.onclick=function(){
+  // v8.18, audit: the button answers for the ORDER, not for one unit. The row's
+  // own disabled state still governs everything else it knows about - the XP
+  // lock, being sold out - and the price shown is the price checked.
+  var _canAll=(P.credits>=o.price*qty);
+  b.disabled=(btn?btn.disabled:true)||!_canAll;
+  if(btn&&!btn.disabled&&!_canAll){
+    var _short=(o.price*qty)-P.credits;
+    b.textContent='NEED $'+_short.toLocaleString()+' MORE';
+  }
+  if(btn&&!btn.disabled&&_canAll) b.onclick=function(){
     // Re-find the button between each purchase: buying re-renders the whole list,
     // so the node captured before the loop is detached after the first click.
+    var _got=0;
     for(var q=0;q<qty;q++){
       var rowsNow=document.getElementById('shop').children;
       var rw=rowsNow[P._shopSel]; if(!rw) break;
       var bb=rw.querySelector('button');
       if(!bb||bb.disabled) break;
-      bb.click();
+      bb.click(); _got++;
     }
+    // v8.18: and if it still stopped short - stock ran out, a price moved - it
+    // says so rather than leaving him to count what arrived.
+    if(_got<qty) say2('Bought '+_got+' of '+qty+'. The rest could not be filled.');
   };
   d.appendChild(b);
 }

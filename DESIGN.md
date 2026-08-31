@@ -27443,6 +27443,44 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.18 - THE SHOP PRICE MEANS WHAT IT SAYS, AND THE MENU REACHES EVERY KEY
+
+Two more from the audit, both of them a control lying about what it can do.
+
+THE MULTI-BUY THAT STOPPED HALFWAY IN SILENCE. The BUY button took its
+enabled state from the hidden row behind it, which is gated on affording
+ONE unit - while the panel right beside it advertised the price times the
+quantity. Ask for five with enough for three and the button was live,
+three arrived, and nothing anywhere said what had happened to the other
+two. The button answers for the whole order now: it refuses while the
+order is unaffordable and says exactly how short he is, and if a purchase
+run still stops early - stock gone, a price moved - it reports what
+actually landed instead of leaving him to count.
+
+KEYS 1 AND 2, AND GUNS, GIVEN BACK. planPut dropped the guns-own-1-and-2
+rule at v6.60 - his words were "any item, any slot, as many guns as he
+wants" - and the belt has honoured that ever since. The right-click menu
+never caught up: it offered only keys 3 to 9, and for a gun it hid the row
+completely. So hovering a cell and pressing 1 bound it, while the menu
+that its own tooltip calls "everything you can do with it" could not. The
+comment sitting above that gate claimed planPut enforced a rule planPut
+had already deleted, which is exactly the kind of stale comment this file
+has been bitten by before.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. On the real paths: a Medkit's
+right-click menu now lists keys 1,2,3,4,5,6,7,8,9 (it listed 3-9); a
+Compact SMG in the stash now HAS that row, with all nine, alongside Equip
+and Equip as your gun; and in the shop, with a Bandage at $660, five
+requested and $2,100 in hand, the button reads "NEED $1,200 MORE" and is
+disabled, while at $5,000 it reads BUY, buys five of five, and leaves
+$1,700.
+
+Not verified: the stopped-short message itself - it needs a purchase run
+that fails partway for a reason other than money (sold-out stock), which
+the shop's current stock model does not produce on demand; the code path
+is one line and the affordability case above is now closed before it.
+
 ## v8.17 - A RAID YOU CANNOT LOSE, AND A CANCEL THAT SAYS WHAT IT COSTS
 
 Two more audit findings, both of them the game taking something without
