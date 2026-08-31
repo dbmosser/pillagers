@@ -27443,6 +27443,26 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.76 - THE LISTS CATCH UP
+
+The counter grew at v7.75; the lists were still 11 and 12px text lost in wide
+panels. Now the whole row family rides the same scale: list rows 12.5 to 16px
+with real padding, their amber values 15px, contract rows 11 to 15px with
+13.5px paylines, the hint line that sits under half the game's lists 11 to
+14px, loadout section labels 13px, the tab-note 13px. And the inline stragglers
+on surfaces he actually reads: the terms descriptions 14px, the title screen
+subtitle 14px, the stash header eyebrow 13px, the settings checkbox labels
+13px. The mainframe contract board, the bar, the gambler and the terms were
+all screenshotted at a real 1920x1080 with his 1.3 zoom and read clean.
+
+Verified: parse PASS with the DEVNOW assert; fingerprints 58 and 276 at seed
+4242; three endings EXTRACTED / KILLED IN ACTION / ABANDONED through oc_btn
+into the hub; stage renders; hub steps and draws; terms description measured
+at 14px computed; screenshots of mainframe contracts, bar, gambler, terms.
+
+Not verified: his eyes; the remaining inline 11px sites are dev surfaces
+(sim progress, dev modal) left small on purpose.
+
 ## v7.75 - THE COUNTER LEARNS PROPORTION
 
 His mid-session order, screenshot in hand: "menus like this ... should look
