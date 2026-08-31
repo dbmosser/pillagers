@@ -1128,7 +1128,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.01';
+var VER='8.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1139,19 +1139,19 @@ var VER='8.01';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='7.82';
+var WHATSNEW_VER='8.02';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
-  'EXTRACTS HAVE NAMES. A, B, C on the HUD and the map, countdowns to close, slow flash when called, fast when open.',
-  'THE COLD MILE IS CROWDED NOW. The big map no longer feels deserted.',
-  'EVERY MENU GOT BIGGER. The counter, contracts, terms, bar, settings and the run ledger read at a glance.',
-  'YOUR GUN LOOKS LIKE YOUR GUN. Every family has its own silhouette with its tier colour on the edge. Rivals show theirs too.',
-  'TEN STASH LAYOUTS AND A LAYOUT BUTTON. Big belt, small safe pocket, 6 is the default.',
-  'ONE NUMBER: XP, WITH A HUNDRED MAINFRAME REWARDS BEHIND IT. Reputation folded in at full value; the Lance waits at 100.',
-  'SAVE SLOTS AT BOOT. Continue, create a new save, rename; deleting one makes you type the word.',
-  'THE PEDDLER PAYS POCKET CASH. Stall money rides the raid. Extract it or lose it.',
-  'ACID RIDES SLOWER AND FADES TRUE. Flashes at forty percent speed, and a heavy stack softens past two minutes.',
-  'THE QUIET RIDE IS CANCELLED. The $10k silent extraction is gone; you leave loud like everyone else.'
+  'THE TWO MAPS LOOK LIKE THEMSELVES. New ground, frost and wreck paint, district concrete, breaker towers and a clinic on the mile.',
+  'GUNS WEAR THEIR RARITY EVERYWHERE. Background, frame and the gun itself - shop, belt, bag, Stash, and in the hands of any pillager.',
+  'PICKUPS BELT THEMSELVES. A gun, heal or grenade grabbed on the surface takes the first empty belt slot.',
+  'HURT THE PEDDLER AND HE RUNS. No trade while he is bleeding; a quiet stretch walks him back to his pitch.',
+  'AUTO-JOG STANDS DOWN WHEN YOU MOVE. Caps Lock walking no longer resumes on its own.',
+  'THE WEIGHT READOUT NAMES ITS CAUSE. Slower and louder is the bag, and the first 20wt ride free.',
+  'EVERY STALL ROW ANSWERS ITS KEY. 2 through 9 buy from the Peddler.',
+  'THE UNDERCROFT CROWD SPREADS OUT. Pillagers separate on what is drawn; nobody stands in anybody.',
+  'THE SECTOR BOARD TELLS THE TRUTH. Freshly measured extraction rates for both maps, on the ascend screen.',
+  'THE SMALL PRINT GOT A PASS. Armour, seal and blood lines rewritten plain, and the rewards lose their shouting.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -22328,8 +22328,8 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.01: the board re-measured on the new ground - the mile got kinder, cold got meaner.',
-  next:'Wrecked cars that read as cars from overhead, maps that read as different places, and his grades on the new menus and gun looks'
+  now:'v8.02: the NEW IN card catches up with twenty builds of changes.',
+  next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a

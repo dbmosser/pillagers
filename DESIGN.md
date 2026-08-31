@@ -27443,6 +27443,45 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.02 - THE NEW IN CARD CATCHES UP WITH TWENTY BUILDS
+
+The card he sees first sat at v7.82 while the game reached v8.01 - drift
+0.19 of the 0.20 the parsecheck gate allows, one bump from failing every
+future build, and exactly the rot he caught at v7.34. The list now covers
+v7.83-v8.01 in ten lines, each checked against his vocabulary: the two
+maps looking like themselves, rarity worn everywhere, pickups belting
+themselves, the Peddler running when hurt, auto-jog standing down,
+the weight readout naming its cause, stall keys 2-9, the Undercroft
+crowd spreading out, the honest sector board, and the small-print pass.
+WHATSNEW_VER moves to 8.02, drift back to 0. DEVNOW.next also stops
+claiming "maps that read as different places" is upcoming - it shipped
+at v7.93; next is his grades and the mile-vs-cold ruling.
+
+Also this tick: his two morning runs consumed (a mile death at 88s and
+a $24,010 cold extract at 91% accuracy - his notoriety 1 means he killed
+the Peddler on v7.93, before the flee shipped); the run #92 "down23"
+pillager-cam reading traced to the busy-state counter watching bodies he
+downed in the siege, benign; and a six-lens adversarial audit workflow
+launched over the whole v7.91-v8.01 diff, findings to land next tick.
+
+The three-endings verify got stronger while chasing a ghost: the old
+probe read oc_title without checking the overlay was actually showing,
+so an instant-abandon (deliberately scrubbed, not logged, by the v0.45
+empty-run check) left a stale KILLED IN ACTION headline that the old
+sequence would have called a pass. The verify now advances real time
+under __loop so the abandon is a loggable run, and asserts the outcome
+overlay's on class alongside the headline.
+
+Verified: parse PASS (VER, DEVNOW, WHATSNEW drift 0); fingerprints 58
+and 276 at seed 4242; three endings through oc_btn with overlay-on
+asserted (EXTRACTED / KILLED IN ACTION / ABANDONED); hub frames (which
+draw the new card when unseen); __renderStage.
+
+Not verified: the card's ten lines rendering pixel-for-pixel on a fresh
+profile's first hub visit (drawHubHUD ran under the verify but the WNSEEN
+gate was not separately toggled to eyeball the card itself); the audit
+workflow's findings are still in flight.
+
 ## v8.01 - THE BOARD RE-MEASURED ON THE NEW GROUND
 
 The 200-seed-per-map re-baseline the v7.93 stream boundary demanded is
