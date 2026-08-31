@@ -27443,6 +27443,37 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.77 - EVERY GUN WEARS ITS OWN SHAPE
+
+His order from the flood, the last one still unbuilt: "gun that is equipped in
+a raid should look visually different for each gun and tier/rarity color."
+The equipped weapon was one 13px slab whatever you carried. Now the draw reads
+the carried weapon itself and dispatches a family silhouette: pistols and the
+Tacker short, the Magnum short with a long heavy barrel, SMGs compact with a
+magazine, the scatterguns mid-length with a pump, the Support MG long with a
+drum, the Whisper wearing its suppressor tube, the Marksman long with a scope,
+the Longshot and the Lance longest of all. The top edge of every receiver
+carries the tier colour in the same rarity palette the items use - pale for
+tier one, green tier two, blue tier three, purple tier four, gold for the two
+top guns - and a Gold quality roll repaints the edge in its own paint. Scoped
+guns carry the tier colour in the scope glass too. Rival pillagers hand their
+entity to the same dispatch, so what a rival is holding is now readable at a
+glance, which matters when deciding whether to pick that fight. The muzzle
+flash moved to the actual muzzle per family, and the support hand cannot
+float past a short barrel any more.
+
+Verified: parse PASS with the DEVNOW assert; fingerprints 58 and 276; all
+sixteen weapons drawn frame-by-frame on a live raid with no throw; the gold
+edge proven ON CANVAS by pixel differential (gold Longshot 30 gold pixels in
+the player box, Scav Pistol zero, same box same frame protocol); three
+endings EXTRACTED / KILLED IN ACTION / ABANDONED through oc_btn; hub steps
+and draws; stage renders.
+
+Not verified: readability of the silhouettes at his eye and his zoom - the
+shapes are 7 to 25px on screen and the family tells (mag, pump, drum, tube,
+scope) were chosen to read at that size, but only he can grade it; and the
+rival-pillager edge in a real firefight.
+
 ## v7.76 - THE LISTS CATCH UP
 
 The counter grew at v7.75; the lists were still 11 and 12px text lost in wide
