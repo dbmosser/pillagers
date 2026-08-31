@@ -27443,6 +27443,38 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.88 - THE FIELD PRIMER FINALLY FIRES
+
+Audit C10, and it is the autoEquip incident's failure shape again: a real
+feature shipped switched off. The 18-card field primer - the onboarding a
+fresh profile is supposed to see once, covering extraction, the safe
+pocket, conditions, elites, the merc, all of it - was fully built and fully
+dead: maybePrimer() had no call site anywhere in the file, so the cards,
+the renderer, the modal and the close handler were all unreachable. A
+fresh player learned that heals take time by dying mid-heal.
+
+It fires now on entering the Undercroft, and the guards got the intent
+right on the way in: a profile that has already finished raids is stamped
+QUIETLY instead of being handed an onboarding card late (the old guard
+order would have shown it to every veteran once - including his 90-run
+profile). Stamp on close survives, the never-again box survives. And the
+card's last entry stopped promising Settings rows that do not exist
+(auto-equip toggle, autoloot toggle, a reopen button) - it now says what is
+true: Settings holds the raid dials, H cycles the controls, a better gun
+equips itself.
+
+Verified: parse PASS; fingerprints 58 and 276; three endings through
+oc_btn; hub; stage. Staged live: a fresh profile (runs 0, no stamp)
+entering the hub gets the modal with the full card list rendered; closing
+stamps primerSeen and the modal never returns; a veteran profile entering
+gets no modal and a quiet stamp; the standard protocol runs primer-quiet
+throughout on the pinned veteran profile.
+
+Not verified: the eighteen cards' TEXT was written across many versions and
+was only spot-checked against current systems (the merc, radio, elite and
+conditions cards read true); a full card-by-card truth pass rides the next
+copy sweep.
+
 ## v7.87 - DPAD-UP DOES ONE THING, AND THE FIRST MINUTE GETS MEASURED
 
 The controller pair from the six-lens audit. Dpad-up was double-bound: the

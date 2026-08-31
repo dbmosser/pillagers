@@ -1127,7 +1127,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.87';
+var VER='7.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21683,6 +21683,7 @@ function showScreen(s){
     HB.player.x=140; HB.player.y=390; HB.player.face=-0.9;
     HB.near=null; HB.eLock=true; keys={};
     renderHub();
+    maybePrimer();   // v7.88: the call site the primer never had
   }
 }
 // Two ways the game could be silently broken by the browser, neither of which had
@@ -22242,7 +22243,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.87: dpad-up does one thing, and both controller legends tell the truth.',
+  now:'v7.88: the field primer finally fires - a fresh pillager gets the briefing.',
   next:'Wrecked cars that read as cars from overhead, maps that read as different places, and his grades on the new menus and gun looks'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -25394,7 +25395,7 @@ var PRIMER=[
 ['The Bulwark carries a wall','The big one with the slab. Shooting the slab is close to useless: it eats almost everything and all the noise you make doing it brings company. Its back is soft and it is marked, a hot orange seam you can see from across a street. It walks at you and never stops, so the fight is a circle, not a duel. Or leave it. It is slower than you are.'],
   ['Some contracts judge how you played','Most contracts count things: kill six, open five, carry two out. Some instead set a condition on the whole raid. Walk out without a single heal. Leave without killing anything. Be gone inside three minutes. They pay well because they take away the thing you would normally reach for, and they are only banked if you actually extract.'],
   ['Junk builds the Mainframe','The station in the top-right corner of the Undercroft. Racks are built from scrap, wire, cells and boards, and each pays 200c every time you extract alive. Slot a Data Core there and your next raid deploys with every locked-room key and every elite marked on the map.'],
-  ['Settings are a station in the Undercroft','Walk to SETTINGS and press E. Text size, auto-equip a better gun on pickup, autoloot when your bag is full, and this card again.']
+  ['Settings are a station in the Undercroft','Walk to SETTINGS and press E for the raid dials and display options. In a raid, H cycles the full controls list; picking up a better gun equips it on its own.']
 ];
 function renderPrimer(){
   var host=document.getElementById('primerlist');
@@ -25416,9 +25417,10 @@ function openPrimer(){
 // ticked the box. P.primerSeen is stamped on CLOSE rather than on open, so
 // closing the tab mid-read does not burn it.
 function maybePrimer(){
-  if(P.primerOff) return;
-  if((P.runs||0)>0&&P.primerSeen) return;
-  if(P.primerSeen) return;
+  if(P.primerOff||P.primerSeen) return;
+  // v7.88: a profile that has already finished raids does not need the
+  // onboarding card - stamp it quietly instead of showing it late.
+  if((P.runs||0)>0){ P.primerSeen=1; saveProfile(); return; }
   openPrimer();
 }
 // PLAIN WORDS INSTEAD OF DIALS, v3.41. His note: "can we give the player like all
