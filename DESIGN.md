@@ -27443,6 +27443,54 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.28 - THE STALL NEVER SHUTS, AND A MAN WHO WAS NOT FIGHTING YOU COUNTS
+
+Two rulings from him, an hour after the notoriety card went in.
+
+"NO PEDDLER SHOULD ALWAYS TRADE REGARDLESS OF NOTORIETY." Done, and it
+takes the only hard cliff the system had with it. pedOpen keeps its name
+and its six callers - the map marker, the world prompt, the hail line, the
+deal gate, two colour picks - and simply always says yes, so if something
+should ever close the stall again there is one place to say so.
+
+That ruling made three pieces of copy false, and all three are gone: the
+stats card no longer threatens a closure, the hub line no longer says
+"Peddler refuses you", and the banner clause no longer says one more shuts
+the stall. The RATING NAMES had to change too - "Barred" was chosen at
+v8.27 precisely because two was where the stall shut, and with that gone
+it would have been a word describing nothing. The scale climbs evenly now:
+Clean, Talked about, Known, Notorious. What is left is real: 15 percent on
+every hire per point, and a hostile pillager needing more talking down.
+
+"SHOOTING NON HOSTILE PILLAGER SHOULD ALSO INCREASE NOTORIETY." The third
+source, beside the Peddler and the unarmed survivor. The interesting part
+is WHERE it had to go. Shooting a neutral is what makes him hostile - the
+very next lines flip him - so a check at his death would only ever find
+the hostile man the player's own bullet created, and would never charge
+anything. The mark goes on at the HIT, while he is still neutral, and the
+point is charged at the death, which keeps it consistent with the other
+two sources: a graze he survives costs nothing, and a killing costs one.
+Both the parleyed-friendly path and the never-hostile path set it.
+
+His word was "shooting", and I have read that as "shooting him dead" so an
+accidental round that a man walks away from does not cost a permanent
+point. If he meant the shot itself, that is a one-line move.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. On real paths: at notoriety 5
+the map marker reads "PEDDLER" with no CLOSED anywhere on the frame, and
+the served source reads `function pedOpen(){ return true; }`; the stats
+card at 5 reads "Notorious - Hiring costs +75%. Pillagers need 5 tries to
+stand down instead of 2. 4 more clean extractions sheds a point, or help a
+survivor to shed one now.", with no mention of the stall; and shooting a
+raider to death with the real mouse-and-bullet path charged +1 with the
+stamp "YOU SHOT A PILLAGER WHO WAS NOT FIGHTING" when he started
+non-hostile, and charged nothing at all when he started hostile.
+
+Not verified: the merc case. Killing your own hire is excluded by name
+(!e.merc) rather than tested - he is a non-hostile pillager, so if that
+should cost a point too it is one word.
+
 ## v8.27 - NOTORIETY, WHERE YOU CAN SEE IT
 
 Two orders, an hour apart: "can we include a visible and sensical notoriety

@@ -1148,7 +1148,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.27';
+var VER='8.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6695,19 +6695,27 @@ function pedPrice(k){ return Math.round(ival(k)*1.9); }
 // He closes his stall to you once you have killed one of him. Notoriety is
 // permanent and it is meant to be: shooting the unarmed man is the greediest
 // move available and it should cost something that money cannot fix quickly.
-function pedOpen(){ return (P.notoriety||0)<2; }
+// HIS RULING, v8.28: "peddler should always trade regardless of notoriety."
+// It used to shut at two points, which was the only hard cliff notoriety had.
+// Kept as a function rather than deleted because six call sites ask it - the
+// map colour, the world prompt, the hail line, the deal gate - and one day
+// something else may close the stall. Nothing does today.
+function pedOpen(){ return true; }
 // v8.27: the word for a number. Used by the stats card and by the banner that
 // fires when it changes, so the two can never call the same score two things.
 // 2 gets its own word because 2 is where the stall actually shuts.
 function notoName(n){
   n=n||0;
-  return n<=0?'Clean':(n===1?'Talked about':(n===2?'Barred':'Notorious'));
+  // v8.28: renamed with the stall cliff gone - "Barred" meant the stall, and
+  // nothing is barred any more. What is left is a reputation that costs money
+  // and trust, so the words climb evenly instead of naming a door.
+  return n<=0?'Clean':(n===1?'Talked about':(n===2?'Known':'Notorious'));
 }
 // And what it just cost him, in one clause, for the banner.
 function notoBite(n){
   n=n||0;
   if(n>=2) return 'The Peddler is done with you.';
-  return 'One more and the Peddler shuts the stall.';
+  return 'Hiring costs more and pillagers are slower to trust you.';
 }
 function mkPeddler(x,y,map){
   var pool=PED_STOCK.slice(),stock=[],q,ik;
@@ -11523,6 +11531,8 @@ if(!p.fired||p.wep.auto){
   if(G.trade&&(!ped||p.downed||G.trade.hp<=0)) G.trade=null;
   if(ped&&!crateUnderfoot&&!G.trade&&keys['KeyE']&&!G.pedLock){
     G.pedLock=1;
+    // v8.28: the stall never closes now, so this refusal cannot fire. Left as
+    // the one place that would speak if pedOpen ever means something again.
     if(!pedOpen()) say('He has heard what you did to the last one. No deal.');
     else { G.trade=ped; blip('pick'); }
   }
@@ -12719,6 +12729,16 @@ if(e.state==='possum'){
       if(e.byPlayer){
         T.kills[e.kind]++; contractKill(e.kind);
         if(e.elite) T.eliteKills=(T.eliteKills||0)+1;
+        // v8.28, his order: shooting a pillager who was not fighting you costs
+        // a point, the same as the Peddler and an unarmed survivor. The mark
+        // was set on the first hit, while he was still neutral.
+        if(e.kind==='raider'&&e.shotPeaceful&&!e.merc&&!G.sim){
+          P.notoriety=(P.notoriety||0)+1; saveProfile();
+          if(G.tel) G.tel.peaceKilled=(G.tel.peaceKilled||0)+1;
+          say('He was not fighting you. Notoriety '+P.notoriety+'.');
+          label(e.x,e.y-18,'NOTORIETY +1','#ff6b5a',0,true);
+          notoStamp('YOU SHOT A PILLAGER WHO WAS NOT FIGHTING');
+        }
         // SPEC 8.5 and 5.8: the rivalry ledger. Killing an identity is a
         // permanent grudge; it will be shoot on sight every run from now on.
         if(e.kind==='raider'&&e.ident&&!G.sim){
@@ -13313,6 +13333,11 @@ var _rdS=G.shells[_rdi];
         e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-3*dt,3*dt);
         if(e.hitT>0){
           // Shooting a man who waved at you ends it, permanently.
+          // v8.28, his order: and it is on your name. Marked HERE rather than
+          // at his death, because this is the frame where he stops being
+          // non-hostile - a check at the death block would only ever see the
+          // hostile man your own bullet created, and never charge anything.
+          e.shotPeaceful=1;
           e.friendlyPC=0; e.hostile=true; e.grudge=true;
           if(!G.sim){
             var rb=idRec(e.ident); rb.standing=Math.min((rb.standing||0)-3,-1); saveProfile();
@@ -14124,6 +14149,12 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
                 en.roll=0.38;
                 if(!G.sim) sfx('step',en.x,en.y);
               }
+              // v8.28, his order: a pillager who was NOT fighting you is a
+              // neutral, and shooting one is on your name. Marked here, at the
+              // hit, because the next lines turn him hostile - a check at his
+              // death would only ever find the hostile man this bullet made.
+              if(en.kind==='raider'&&!en.merc&&(en.hostile===false||en.friendlyPC))
+                en.shotPeaceful=1;
               en.byPlayer=en.hp<=0;
               // Same rule for YOUR rounds: shooting a fleeing raider does not
               // talk him back into the fight, v2.93. This is the path his report
@@ -22918,7 +22949,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.27: gaining notoriety stamps the screen and says what you just did.',
+  now:'v8.28: the Peddler always trades, and shooting a pillager who was not fighting you is on your name.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -24388,7 +24419,7 @@ try{ renderFreeKit(); }catch(_fk){}
       var _toGo=4-((P.notExt||0)%4);
       _ntEl.innerHTML='&mdash; NOTORIETY <span style="color:var(--rust)">'+_nt+'</span>'+
         ' <span style="color:var(--ash)">('+
-        (_nt>=2?'Peddler refuses you. ':'')+
+
         'merc hire +'+Math.round(_nt*15)+'%. '+
         _toGo+' more extraction'+(_toGo===1?'':'s')+' sheds a point.)</span>';
     } else _ntEl.innerHTML='';
@@ -24578,8 +24609,8 @@ function renderStatCards(){
       _bits.push('Nobody out there has a problem with you.');
       _bits.push('Shooting the Peddler or an unarmed survivor is what starts it.');
     } else {
-      _bits.push(_n>=2?'The Peddler will not trade with you.'
-                      :'The Peddler still trades, but one more shuts the stall.');
+      // v8.28, his ruling: the Peddler trades whatever you have done, so the
+      // card no longer threatens a closure that cannot happen.
       _bits.push('Hiring costs +'+Math.round(_n*15)+'%.');
       // The parley cost is capped at three points, so say the true number.
       _bits.push('Pillagers need '+(2+clamp(Math.round(_n),0,3))+
