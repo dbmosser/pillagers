@@ -27443,6 +27443,36 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.67 - THE MILE MEASURED AT FULL DENSITY
+
+The v7.57 boundary closes: 200 paired seeds on the v7.66 build, calibrated
+bot, fists, zero discordant, plus the 60-seed instrumented pass for first
+contact and containers. The board row is live and verified on the sector page.
+
+  THE COLD MILE at full density: ext 14.5  fc 47s  cont 4.9  haul $2,458
+  (pre-density, v7.51-52:        ext 42.5  fc 62s  cont 5.5  haul $2,665)
+  (COLD STORAGE, unchanged:      ext 15.0  fc 72s  cont 5.0  haul $2,495)
+
+Stated plainly for him: his "feels deserted" order gave the mile cold-parity
+density, and with it came cold-parity LETHALITY - the walk-out rate fell from
+42.5 to 14.5 percent, first contact moved from 62s to 47s (earlier than cold,
+because twelve spawns and 276 entities put someone close fast), and the two
+maps now play at the same deadliness. Killer table for the 171 deaths: sentry
+66, raider 57 (nearly triple the pre-density 35 - more pillagers means more
+pillager kills, exactly as ordered), crawler 16, LISTENER 14 (the relentless
+listener finally bites at density - it was 4), bulwark 7, warden 2, timer 2.
+The trade the two orders bought: a big map that is no longer the safe one.
+Whether that is the mile he wants is his call - the board now tells him the
+truth either way.
+
+Not verified: same fc/cont-on-60-seeds caveat as every row; the run completed
+across a session-limit window that froze all probing for a stretch (the batch
+itself never stopped - 181/200 when the window lifted, zero errors); and
+v7.58-v7.66 shipped mid-run, none of which touch sim-reachable code (cheat
+box, ripples with rnd-parity, crowbar/hands draw modes, merge, layouts, saves
+- each verified stream-safe in its own entry), which I verified by the entries
+and their fingerprint checks, not by re-running 200 seeds on v7.67.
+
 ## v7.66 - TEN STASH LAYOUTS AND A BUTTON
 
 His three notes on the stash screen, together: "guns need bigger and better

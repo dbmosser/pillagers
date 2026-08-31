@@ -1112,7 +1112,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.66';
+var VER='7.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22159,7 +22159,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.66: the stash rework. Ten layouts, one button, bigger everything.',
+  now:'v7.67: the mile measured at full density - 14.5 percent, cold-lethal now.',
   next:'His queue: save slots and naming at boot, the mile re-baseline at full density, the 2.5d-glitch audit'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -24752,9 +24752,9 @@ var SECTOR_CHAR=[
 // the mile walks out at nearly three times cold's rate.
 var SECTOR_MEAS=[
   {ext:15.0,fc:72, cont:5.0,haul:2495},
-  // v7.57: the mile row is re-measuring. Its v7.51 numbers were taken at the
-  // old density ceiling and stopped being true the moment the map filled up.
-  {}
+  // v7.67, 200 seeds at full density: his "feels deserted" order cut the walk-
+  // out rate from 42.5 to 14.5 - the mile now kills like cold does.
+  {ext:14.5,fc:47, cont:4.9,haul:2458}
 ];
 // v7.54, his note: the size difference stated next to the name. Only the
 // extremes are tagged, so a third mid-sized map would stay untagged.
