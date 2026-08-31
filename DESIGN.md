@@ -27443,6 +27443,33 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.96 - EVERY STALL ROW ANSWERS ITS KEY
+
+Two from his live session.
+
+His bug, "items 5 and 6 from peddler, hitting the key but its not letting
+me buy them": the stall's number-row handler was hard-capped at Digit4 -
+three buy rows - from before the stall grew. Items past the third listened
+to nothing. The range opens to Digit9; pedBuy already bounds-checks, so a
+key past the last row stays a no-op.
+
+His question, "2% slower 5% louder - no idea why this would be the case":
+working as designed - the first 20 weight rides free (the kit you deploy
+with), and everything over costs speed and noise, which is the carry
+pillar - but a readout that does not name its cause reads as a
+malfunction, which is exactly what happened. The corner line now ends with
+"(BAG 24wt, FIRST 20 FREE)" whenever the penalty shows, so the why is on
+screen. The tuning did not move; the free line and the slopes are his
+dials.
+
+Verified: parse PASS; fingerprints 58 and 276; three endings through
+oc_btn; hub; stage; and the stall fix proven through REAL keyboard events -
+Digit6 and Digit7 bought stock rows five and six on a staged six-row
+stall, and Digit9 past the end stayed harmless.
+
+Not verified: the readout suffix length at the smallest HUD scale (it
+appears only while a penalty shows, on the widest line of that corner).
+
 ## v7.95 - TWO MORE LINES SAY WHAT THEY MEAN
 
 Two more live orders from the same play session.

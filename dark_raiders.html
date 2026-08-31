@@ -1127,7 +1127,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.95';
+var VER='7.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7999,7 +7999,9 @@ function raidKey(code,repeat,ev){
     if(code==='Escape'||code==='KeyE'||code==='Tab'||code==='KeyI'){ G.trade=null; G.pedLock=1; return; }
     if(code.indexOf('Digit')===0&&!repeat){
       var td=parseInt(code.slice(5),10);
-      if(td===1) pedSellAll(); else if(td>=2&&td<=4) pedBuy(td-2);
+      // v7.96, his bug: the cap at 4 predates the stall growing past three
+      // rows, so items 5 and 6 ignored their keys. pedBuy bounds-checks.
+      if(td===1) pedSellAll(); else if(td>=2&&td<=9) pedBuy(td-2);
       return;
     }
     if(code==='KeyG'||code==='Space'||code==='KeyQ'||code==='KeyC') return;
@@ -18951,7 +18953,7 @@ ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
   ctx.fillStyle=(_spdPct>=18?'#c8674a':(_spdPct>=7?'#ffc04a':'#8a96a1'));
   var _cv=0; for(var _cq9=0;_cq9<G.bag.length;_cq9++) _cv+=ival(G.bag[_cq9]);
   ctx.fillText(G.bag.length+' ITEM'+(G.bag.length===1?'':'S')+'  $'+_cv.toLocaleString()+
-    (_spdPct>0?('   '+_spdPct+'% SLOWER  '+_noisePct+'% LOUDER'):''),W-16,by);
+    (_spdPct>0?('   '+_spdPct+'% SLOWER  '+_noisePct+'% LOUDER  (BAG '+Math.round(_bw)+'wt, FIRST '+LOAD_FREE+' FREE)'):''),W-16,by);
   // standing cue: the bag was findable only from a dim 14-item legend line
   // HIS NOTE, 2026-08-24: this sat on top of the weapon name. It was the only
   // offset in the whole right-hand stack written in RAW PIXELS while its five
@@ -22266,7 +22268,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.95: the armour line reads plainly, and the seal progress explains itself.',
+  now:'v7.96: every stall row answers its key, and the weight readout names its cause.',
   next:'Wrecked cars that read as cars from overhead, maps that read as different places, and his grades on the new menus and gun looks'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
