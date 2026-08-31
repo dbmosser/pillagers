@@ -1075,13 +1075,13 @@ function mapContMul(){ return CFG.lootNorm?(MAPCONT[P.mapIx]===undefined?1:MAPCO
 // under and it is what makes wearing the Breacher Plate a greed decision rather
 // than an obvious upgrade.
 var ARMORS=[
-  {id:'none',   name:'No Rig',         cap:0,   spd:1.00, noise:1.00, bulk:0, absorb:0.00},
+  {id:'none',   name:'No Armour',      cap:0,   spd:1.00, noise:1.00, bulk:0, absorb:0.00},
   // v5.77, his note. What every operator wears, always. No speed or noise cost,
   // because with rigs gone there is no lighter alternative to trade it against,
   // and a universal penalty is just a slower game. 60 is the old ARMOR_MAX, the
   // flat ceiling this game used before rigs existed at all.
-  {id:'std',    name:'Body Armour',    cap:60,  spd:1.00, noise:1.00, bulk:0, absorb:0.50},
-  {id:'light',  name:'Scav Rig',       cap:35,  spd:1.00, noise:1.02, bulk:1, absorb:0.50},
+  {id:'std',    name:'Armour',         cap:60,  spd:1.00, noise:1.00, bulk:0, absorb:0.50},
+  {id:'light',  name:'Scav Vest',      cap:35,  spd:1.00, noise:1.02, bulk:1, absorb:0.50},
   {id:'medium', name:'Plated Vest',    cap:70,  spd:0.94, noise:1.16, bulk:2, absorb:0.58},
   {id:'heavy',  name:'Breacher Plate', cap:120, spd:0.86, noise:1.34, bulk:3, absorb:0.66}
 ];
@@ -1128,7 +1128,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.05';
+var VER='8.06';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14449,7 +14449,7 @@ silentExit:T.silentExit||0,
       var cut=Math.round(mhaul*0.10);
       P.credits+=cut;
       var _mnear=(G.active&&dist(mercEnt,G.active)<260)||dist(mercEnt,G.player)<200;
-      lines.push('<span style="color:var(--coolant)">'+mname+(_mnear?' boards behind you with ':' makes his own way out with ')+'$'+mhaul.toLocaleString()+'. Your cut '+'$'+cut.toLocaleString()+'.</span>');
+      lines.push('<span style="color:var(--coolant)">'+mname+(_mnear?' extracts behind you with ':' makes his own way out with ')+'$'+mhaul.toLocaleString()+'. Your cut '+'$'+cut.toLocaleString()+'.</span>');
       var mr2=idRec(P.merc); mr2.standing=(mr2.standing||0)+(_mnear?2:1); mr2.met++;
     } else {
       // A merc who fled low and boarded an EARLIER ship was read as "left out
@@ -22409,7 +22409,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.05: the stall stays when the Peddler runs, the walk home paths around walls, and CAPS says why it will not arm mid-stride.',
+  now:'v8.06: five strings fall in line with the vocabulary - nothing boards, nothing is a rig, and standing and tier give way.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -23050,7 +23050,7 @@ function renderKitCol(){
     if(from!=='stash') return;
     if(!key||!ITEMS[key]) return;
     var live=stageKitLive();
-    if(live.length>=DEPLOY_SLOTS){ say2('Inventory is full at '+DEPLOY_SLOTS+'.'); return; }
+    if(live.length>=DEPLOY_SLOTS){ say2('Kit is full at '+DEPLOY_SLOTS+'.'); return; }
     var held=0; for(var i=0;i<P.stash.length;i++) if(P.stash[i]===key) held++;
     var picked=0; for(var j=0;j<live.length;j++) if(live[j]===key) picked++;
     if(picked>=held){ say2('You only have '+held+' of those.'); return; }
@@ -23061,7 +23061,7 @@ function renderKitCol(){
     var key=''; try{ key=ev.dataTransfer.getData('text/plain'); }catch(e){}
     if(!key||!ITEMS[key]) return;
     var live=stageKitLive();
-    if(live.length>=DEPLOY_SLOTS){ say2('Inventory is full at '+DEPLOY_SLOTS+'.'); return; }
+    if(live.length>=DEPLOY_SLOTS){ say2('Kit is full at '+DEPLOY_SLOTS+'.'); return; }
     // One kit entry per stash copy. Counting what is already picked against what
     // the stash holds is the same rule stageKitLive enforces, applied before the
     // pick rather than after it, so the refusal can say why.
@@ -23648,7 +23648,7 @@ try{ renderFreeKit(); }catch(_fk){}
       // one kit entry per stash copy, and never past the deploy cap.
       act('Equip',function(){
         var live=stageKitLive();
-        if(live.length>=DEPLOY_SLOTS){ say2('Inventory is full at '+DEPLOY_SLOTS+'.'); return; }
+        if(live.length>=DEPLOY_SLOTS){ say2('Kit is full at '+DEPLOY_SLOTS+'.'); return; }
         var held=0; for(var _h=0;_h<P.stash.length;_h++) if(P.stash[_h]===k) held++;
         var got=0;  for(var _g=0;_g<live.length;_g++)   if(live[_g]===k) got++;
         if(got>=held){ say2('You only have '+held+' of those.'); return; }
@@ -23806,9 +23806,9 @@ try{ renderFreeKit(); }catch(_fk){}
     cl.appendChild(bh);
   })();
   (function(){
-    var cs=cstand(),nx=cs<3?('HARD work at '+(3-cs)+' more'):(cs<8?('ELITE work at '+(8-cs)+' more'):'every tier open');
+    var cs=cstand(),nx=cs<3?('HARD work at '+(3-cs)+' more'):(cs<8?('ELITE work at '+(8-cs)+' more'):'all work open');
     var h=document.createElement('div'); h.className='hint';
-    h.innerHTML='Contract standing <b>'+cs+'</b> &middot; '+nx;
+    h.innerHTML='Contracts completed <b>'+cs+'</b> &middot; '+nx;
     cl.appendChild(h);
   })();
   // loadProfile guarantees this is an array on a saved profile, but nothing guarantees it
@@ -25075,7 +25075,7 @@ function syncSectorKit(){
   var rig=null;
   try{ rig=myRig(); }catch(_gr){ rig=null; }
   var line='<b>Going up with:</b> '+(w?escHtml(w.name):'an issued sidearm')+
-           ' &middot; '+escHtml((rig&&rig.name)||'Body Armour');
+           ' &middot; '+escHtml((rig&&rig.name)||'Armour');
   // The terminal already decides whether that is enough and what to do about it.
   // Repeat its verdict rather than writing a second one that can disagree.
   try{

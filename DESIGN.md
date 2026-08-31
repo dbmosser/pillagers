@@ -27443,6 +27443,44 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.06 - FIVE STRINGS FALL IN LINE WITH THE VOCABULARY
+
+The idle-queue vocabulary sweep: every player-facing string checked
+against his 2026-08-29 one-word-per-thing list, by grepping each Never
+column word through the file's say/label/innerHTML/title/name sites and
+reading every hit in context. Five violations, all fixed:
+
+A merc who leaves with you "boards behind you" - boarding went at v6.49
+with the ship itself. He extracts behind you now. The deploy column
+refused overfilling with "Inventory is full" in three places - the
+column is the KIT everywhere else, so the refusal says Kit. The armour
+table still carried 'Body Armour', 'No Rig' and 'Scav Rig' as display
+names - body armour and rig are both in the Never column; the one
+reachable entry (std, what myRig always returns) is now plainly
+'Armour', and the unreachable rig-era rows are renamed so bodyRecover
+or any future table read can never leak a banned word. The ascent
+line's fallback said 'Body Armour' directly - now 'Armour'. And the
+contracts hint read "Contract standing 5 - every tier open", two banned
+words in one line (standing is a rep synonym, tier belongs to the
+banned season/tier/battle-pass cluster): now "Contracts completed 5 -
+all work open".
+
+Clean on the rest of the Never columns: no ship, no reputation, no
+money/cash, no options, no enemy, no NPC/bot/AI, no drop-in, no
+season/battle-pass, no snitch, no trader-as-a-name in strings. The
+'(field)' provenance tag on gun names was looked at and left alone -
+it is not the-field-as-a-place, he has read it in forty run reports,
+and renaming provenance is a decision, not a sweep.
+
+Verified: parse PASS; fingerprints 58/276; three endings through oc_btn
+with overlay-on; hub; stage; and the ascent screen read live off the
+DOM: "Going up with: Compact SMG - Armour".
+
+Not verified: the contracts-completed hint and the merc extraction line
+render on states the fixture profile does not carry (active contracts,
+a hired merc who extracts); both were fixed by exact-match anchor and
+covered by parse only.
+
 ## 2026-08-31 ADDENDUM - THE NOT-VERIFIED LINES OF v8.03-v8.05, CLOSED
 
 Same day, next tick, no code changed. The __P()-returns-the-profile
