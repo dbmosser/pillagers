@@ -27443,6 +27443,72 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.11 - PILLAGERS SHOOT LIKE PEOPLE, AND THE BENCHMARK CANNOT SEE IT
+
+His note: "i think maybe fighting pillagers has gotten too hard, remeber,
+they should play like players."
+
+He is right, and the reason was one number. A pillager aimed within a
+FIXED 8 world units of the player's exact centre when planted, 16 when
+not, AT ANY RANGE. A person holding a mouse does not miss like that:
+their error is angular, so it opens up with distance, and it gets worse
+when the target is moving. The fixed radius made them merely good in a
+brawl and inhumanly precise at 500 units, which is where his fights have
+been decided lately.
+
+The old numbers are now the FLOOR, so a close-quarters fight plays exactly
+as it did, and above that the error grows with range and with a target
+that is moving or sprinting - the two things that actually beat a real
+player's aim. At 400 units a planted pillager's error goes from 8 units
+to about 15; at 650, to about 25. Both rnd draws keep their count and only
+their magnitude moves, so the seeded stream is untouched, which is the
+rule the v3.95 note in that block already set.
+
+And they now need a beat before the first shot. There was none: if the
+weapon cooldown happened to be ready on the frame they saw you, the round
+was already gone. A person takes about a third of a second to see, decide
+and pull. It is deterministic, so it adds no draw to the stream, and it
+resets the moment they lose sight of you - which is what finally makes
+breaking line of sight worth doing. Two dials, raiderAim and raiderReact,
+so the next adjustment is a number rather than a code change.
+
+THE FINDING HE SHOULD SEE, and it is a big one. I ran this as a proper
+paired A/B - the new dials at 0 reproduce the old behaviour exactly, so
+the control is the same build - over 32 seeds a side on COLD STORAGE. The
+two arms came back BYTE-IDENTICAL: same outcome on all 32 seeds, same
+mean duration, same downs. That is not a null result, it is the sim
+telling me it never runs this code. The killer table says why: across
+eight simulated raids the bot was killed by a listener, a choir, three
+sentries and a warden, and by NO PILLAGER AT ALL, though seven hostile
+pillagers were in the world each time. The bot does not get into
+gunfights with them.
+
+So every extract-rate number this project has ever quoted - the sector
+board included - describes a bot dying to MACHINES. Pillager combat, the
+thing he is actually complaining about, is invisible to the benchmark.
+That is the v6.x "the sim is not the game" lesson in its most expensive
+form yet, and it means this change can only be judged by him playing it.
+
+Verified: parse PASS; fingerprints 58 and 276 at seed 4242; three endings
+through oc_btn with overlay-on; hub; stage; and the A/B above, whose real
+result is the finding rather than a balance number.
+
+Not verified: the aim change in a live duel. I staged one and the spawn
+area has no clear bearing past 150 units, so the angular term could not be
+exercised on the play path; it is argued from the arithmetic and from the
+sim proving the code is reachable but bot-invisible. And the size of the
+change in his hands is unmeasured for the reason above - if it is now too
+EASY, raiderAim is the one number to turn down.
+
+ALSO FOR HIS RULING: his plate order and this note pull in opposite
+directions. v8.09 took the Armour Plate from 55 to 20 on his instruction,
+which makes every fight harder, and this makes pillagers softer. The
+32-seed batch above ran at 9.4% extraction against the board's 18.0%,
+which is a small and noisy sample on a different scale, but it is a
+warning sign that the plate change bit harder than either of us expected.
+I could not measure the plate directly: ITEMS is not exposed to the
+fixture, so that comparison needs a probe shim first.
+
 ## v8.10 - CLAIM ALL, ON BOTH BOARDS
 
 Two live orders: a claim-all on the Mainframe rewards, and the same on
