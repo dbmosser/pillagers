@@ -27443,6 +27443,43 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.93 - TOWERS AND A CLINIC RISE, SCATTER GOES PER-MAP
+
+Samey-maps moves 2 and 3, shipped together on purpose as ONE stream
+boundary so the board re-baselines once, not twice.
+
+Three finished landmark archetypes had never generated on any shipped map:
+the maps only ever said yard and checkpoint, so four of five landmark draws
+shared the same parallel-container-row geometry. Data-only wiring, one
+word per entry: THE SUMP on cold and BREAKER LINE on the mile raise the
+TOWER (a leaning slab you see before you reach it, marking the rare-loot
+draws), and COLD NINE on the mile becomes the CLINIC (a real interior,
+outer shell with two doors, marking a medical draw). The v6.92 archetype
+loop and its clamps do all the work.
+
+And the scatter layer - which covers more ground than any authored
+feature - reads per-map density now: the mile runs wrecks at 1.3 (a mile
+of truck yards, per its own story text) with racking at 0.85, cold runs
+wrecks at 0.7 with racking at 1.2 so its interior floors stay swept.
+
+THE BOUNDARY, honestly stated: these changes feed the seeded placement
+stream, so raid layouts differ from v7.92 on the same seed and the v7.71
+board rows are STALE until re-measured. The fingerprints survived on their
+own merits - entity counts are dial arithmetic, not stream positions, so
+58 and 276 still stand and the tick protocol is unchanged. A fresh
+200-seed re-baseline per map is running on the batch tab; SECTOR_MEAS
+updates when it lands.
+
+Verified: parse PASS; fingerprints 58 and 276 (confirmed post-boundary);
+the three landmark rects hold generated geometry (35, 98 and 71 walls);
+four full sim raids across both maps complete with normal outcomes and
+durations, so navigation handles the new walls; three endings through
+oc_btn; hub; stage.
+
+Not verified: the new board rows (re-baseline in progress - the old rows
+stay on the sector screen until real numbers replace them); and his eyes
+on the tower and clinic silhouettes.
+
 ## v7.92 - THE DISTRICTS SHOW ON THE GROUND
 
 Samey-maps move 4. The zone-crossing code's own comment made the argument
