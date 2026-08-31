@@ -27443,6 +27443,65 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.08 - BOTH BOTTOM CORNERS AND THE BELT GET BIGGER, AND THE BOARD STOPS TELLING TALES
+
+Four live orders on the raid HUD, and a reminder that the game is always
+played at 1080p or larger.
+
+BIGGER, TWICE. The bars bottom left and the gear stack bottom right were
+laid out in hand-placed pixels. Rather than re-tune thirty numbers and
+hope, each corner now has one dial - HUDZ.body 1.30, HUDZ.gear 1.26 - and
+the block is scaled about the corner it is anchored to, so every element
+keeps its exact relationship to every other. Anything the mouse uses is
+mapped through the same transform, or the thing you click stops being the
+thing you see. The belt is a straight size change instead, LH(46) to
+LH(58) with the row lifted so it still sits the same distance off the
+bottom edge: its cells are recorded as they are drawn, so the drag and
+click targets follow on their own.
+
+Two collisions came out of that scale and both were caught by measuring
+rather than by looking:
+
+  The TERMS badge and the CONCEALED line are drawn INSIDE the same
+  save/translate as the bars, but they live at the top and the right edge
+  of the screen. A corner scale threw both clean off it. The scale now
+  wraps the bars alone.
+
+  The gear stack grew upward into the CONCEALED line - TAB INVENTORY
+  landed at y=900 with CONCEALED at 902, one printed on the other. It now
+  rides up by exactly the height the corner gained. The legend above the
+  bars got the same treatment: its clearance was measured against a
+  104-tall panel in v2.94 and is now computed from HUDZ.body.
+
+AND WHAT EVERY RIVAL IS DOING IS GONE. His order: "the lefthand corner --
+who is hunting you - get rid of that, the player should not have access to
+that information." The CURRENT PILLAGERS board printed each rival's live
+status - LOOTING, HUNTING, FIGHTING - through walls from across the map.
+Names and hauls stay, because that board is the reason to hurry, and so do
+the two outcomes that are genuinely public, EXTRACTED and DEAD. The row
+colour went with the word: it was keyed to the same status and leaked it
+just as loudly.
+
+FOR HIS RULING: the counter reading "3 MACHINES HUNTING YOU" is still
+there. It is the same class of information, but it sits in the TOP RIGHT,
+not the left corner he pointed at, so I have left it alone rather than
+delete a feature he did not ask about. One line removes it if he wants.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. HUD probe with the canvas
+transform read back on every fillText: zero elements off screen, the
+right-hand stack now reads CONCEALED 861, TAB INVENTORY 900, gun 971,
+ammo 1010, carry 1037 with no overlap, the left stack has the legend
+ending at 922 clear of ARMOUR at 993, belt cells measure 90x90 sitting
+19px off the bottom, and the board's rows print hauls with no status
+words while three rivals were in chase.
+
+Not verified: how the new sizes FEEL in his hands - 1.30 and 1.26 are my
+first numbers, and both are one dial each if he wants more; the TERMS
+badge was not on screen during the probe (termsPay was zero) so its
+position is argued from the code and the absence of any off-screen text,
+not measured.
+
 ## v8.07 - THE UNDERCROFT CROWD HAS SOMEWHERE TO BE
 
 His order, live: "pillagers in the undercroft should actually be moving to

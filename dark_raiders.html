@@ -1128,7 +1128,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.07';
+var VER='8.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18827,8 +18827,10 @@ ctx.fillStyle='#4de3d0';
   // cross for medical, and so on - a slot reads at a glance.
   (function(){
     var sl=hotbarSlots(),sel=hotSel();
-    var bw=LH(46),gap=LH(5),tw2=sl.length*bw+(sl.length-1)*gap;
-    var hx=Math.round(W/2-tw2/2),hy=H-LH(58);
+    // v8.08, his order: bigger. LH(46) to LH(58), and hy moves up by the same
+    // amount so the bar still sits LH(12) off the bottom edge.
+    var bw=LH(58),gap=LH(6),tw2=sl.length*bw+(sl.length-1)*gap;
+    var hx=Math.round(W/2-tw2/2),hy=H-LH(70);
     // The rectangles are recorded AS THEY ARE DRAWN rather than recomputed by the
     // mouse code. Two copies of this arithmetic would drift the first time the
     // slot count or the scale changed, and the drop target would stop matching
@@ -18897,7 +18899,11 @@ ctx.fillStyle='#4de3d0';
 var by=H-34;
   var _boB=hudOff('body');
   ctx.save(); ctx.translate(_boB.dx,_boB.dy);
-  HUDBOX.body={x:10+_boB.dx,y:H-104+_boB.dy,w:312,h:100};
+  // The scale is applied lower down, around the bars only: this block also
+  // carries the TERMS badge and the CONCEALED line, which live at the TOP and
+  // the RIGHT of the screen and would be flung off it by a corner scale.
+  // w 380, not 312: the drag box never did cover the 360-wide health bar.
+  HUDBOX.body=hudZoomRect('body',0,H,{x:10+_boB.dx,y:H-104+_boB.dy,w:380,h:100});
   // What you signed for, on screen the whole time. A handicap you have
   // forgotten about reads as the game being broken.
   (function(){
@@ -18948,8 +18954,9 @@ var by=H-34;
     var cw2=ctx.measureText(clab).width;
     ctx.textAlign='right';
     ctx.fillStyle='rgba(6,9,13,.72)';
-    ctx.fillRect(W-16-cw2-8,by-LH(106),cw2+16,LH(20));
-    ctx.fillStyle=ccol; ctx.fillText(clab,W-24,by-LH(92));
+    var _gGrow=Math.round((34+LH(80))*((HUDZ.gear||1)-1));
+    ctx.fillRect(W-16-cw2-8,by-LH(106)-_gGrow,cw2+16,LH(20));
+    ctx.fillStyle=ccol; ctx.fillText(clab,W-24,by-LH(92)-_gGrow);
     ctx.textAlign='left';
   }
   // HIS NOTE, 2026-08-25: "health bar needs to be bigger/more prominent". It was
@@ -18957,6 +18964,7 @@ var by=H-34;
   // width, so the thing that kills you looked like the thing that makes you jog.
   // Now 360 by 26 with the number set in the title face, and armour and stamina
   // stay narrow underneath it so the hierarchy reads at a glance.
+  ctx.save(); hudZoomIn('body',0,H);     // v8.08, his order: bigger, from the corner out
   var HBW=360,HBH=26;
   bar(16,by,HBW,HBH,p.hp/p.maxhp,p.hp>50?'#5fae6f':(p.hp>25?'#d0a13c':'#c8452f'));
   // THE RED BLOCK, his note the same day. Drawn from the current health up to
@@ -19033,10 +19041,12 @@ if(p.armor>0){
   bar(16,by-25,280,12,p.stam/100,_stc);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#0a0e14';
 ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
+  ctx.restore();                          // v8.08: end of the corner scale
   ctx.restore();
   var _boG=hudOff('gear');
   ctx.save(); ctx.translate(_boG.dx,_boG.dy);
-  HUDBOX.gear={x:W-252+_boG.dx,y:by-LH(80)+_boG.dy,w:246,h:LH(80)+38};
+  hudZoomIn('gear',W,H);                 // v8.08: grows up and left from the corner
+  HUDBOX.gear=hudZoomRect('gear',W,H,{x:W-252+_boG.dx,y:by-LH(80)+_boG.dy,w:246,h:LH(80)+38});
   ctx.textAlign='right';
   ctx.font=FS(TYPE.head); ctx.fillStyle='#cdd6dd';
   if(p.wep.wearName&&p.wep.wearName!=='CLEAN'){
@@ -19680,6 +19690,26 @@ if(e.steady) return 'AIMING';
 // toggle; anywhere else on the panel starts a drag. Offsets and the collapsed
 // flag persist on the profile under P.hud.
 var HUDBOX={},HUDDRAG=null;
+// HOW BIG EACH CORNER IS, v8.08, his order. The bars, the gear stack and the
+// belt were laid out in hand-placed pixels at a smaller target; he plays at
+// 1080p or larger and asked for all three bigger. A scale about the corner the
+// block is anchored to grows everything together and cannot shuffle the layout
+// the way thirty separate number bumps would. Anything recorded for the mouse -
+// a drag box, a belt cell - is mapped through the same transform below, or the
+// thing you click stops being the thing you see.
+var HUDZ={body:1.30, gear:1.26};
+// The corner transforms, written once. sx,sy is the anchor the block grows from.
+function hudZoomIn(k,ax,ay){
+  var z=HUDZ[k]||1;
+  ctx.translate(ax,ay); ctx.scale(z,z); ctx.translate(-ax,-ay);
+  return z;
+}
+// A rectangle in unscaled space, mapped to where it actually lands on screen.
+function hudZoomRect(k,ax,ay,r){
+  var z=HUDZ[k]||1;
+  return {x:ax+(r.x-ax)*z, y:ay+(r.y-ay)*z, w:r.w*z, h:r.h*z,
+          tg:r.tg?{x:ax+(r.tg.x-ax)*z, y:ay+(r.tg.y-ay)*z, w:r.tg.w*z, h:r.tg.h*z}:undefined};
+}
 // The draggable strip of a panel: the top edge, as tall as its collapse glyph.
 // Some panels sit their glyph above the box top, so the bar follows the glyph
 // when it does rather than assuming the box origin is the header.
@@ -19789,9 +19819,12 @@ function drawRaiderBoard(){
   var yy=y0+LH(10);
   for(i=0;i<rows.length;i++){
     var w=rows[i];
-    var col=w.st==='EXTRACTED'?'#7fc4a0':(w.st==='DEAD'?'#6b7783':(STATCOL[w.st]||'#cdd6dd'));
+    // v8.08: outcomes only. A living rival gets one neutral colour whatever he
+    // is doing, because the colour leaked the state as loudly as the word did.
+    var _outc=(w.st==='EXTRACTED'||w.st==='DEAD');
+    var col=w.st==='EXTRACTED'?'#7fc4a0':(w.st==='DEAD'?'#6b7783':'#cdd6dd');
     ctx.fillStyle=col;
-    var _rt=(w.val>0?'$'+w.val.toLocaleString()+'':'-')+'  '+w.st;
+    var _rt=(w.val>0?'$'+w.val.toLocaleString()+'':'-')+(_outc?('  '+w.st):'');
     var _budget=LW-LH(26)-ctx.measureText(_rt).width-LH(8);
     var _nm=w.name;
     if(ctx.measureText(_nm).width>_budget){
@@ -19882,7 +19915,7 @@ function drawLegend(){
     var COLW=LH(88),MROW=LH(10),MW=COLW*2+LH(24),MH=MROW*6+LH(16);
     // 118, not 96: the health panel below is about 100 tall and 96 left the
     // legend sitting 12 pixels inside it. Measured, not guessed.
-    var mx=14,my=H-Math.max(LH(64),118)-MH;
+    var mx=14,my=H-Math.max(LH(64),Math.round(104*(HUDZ.body||1))+14)-MH;
     mx=clamp(mx+HOl.dx,4,Math.max(4,W-MW-4));
     my=clamp(my+HOl.dy,LH(14),Math.max(LH(14),H-MH-4));
     ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(mx-8,my-6,MW,MH+10);
@@ -22559,7 +22592,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.07: the Undercroft crowd has somewhere to be - errands between the counters, and the lift takes people up.',
+  now:'v8.08: both bottom corners and the belt are bigger, and the board no longer tells you what every rival is doing.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
