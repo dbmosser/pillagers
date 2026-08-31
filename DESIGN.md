@@ -27443,6 +27443,45 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.70 - THE AUDIT CLOSES OUT
+
+The four deferred safe items from the glitch audit.
+
+The draw armour can finally clean up a mid-item throw completely: a depth
+counter tracks the conditional saves each item takes (deck lift, waterline
+clip, entity lift), and the catch restores exactly that many - which also
+clears any active clip - plus one defensive pop for a throw inside a
+self-saving helper, before the transform reset it already did. Before this, a
+throw between a save and its restore left every later draw that frame lifted
+or clipped.
+
+A failing save says so, once: storeSet swallowed quota errors and blocked
+storage whole, so the game would play on while silently losing every save.
+The first failure now announces "SAVING IS FAILING on this browser" and
+points at the profile export.
+
+devicePixelRatio changes without a resize (browser zoom, dragging to another
+monitor) left the backing store at the old ratio - blurry until the next
+window resize. A self-rearming matchMedia listener now rebuilds on every DPR
+change.
+
+And the version label became proof of life, per the v0.98 lesson the memory
+carries: it used to be stamped at script parse, so a build that died in async
+boot still displayed the right version. It now stamps inside the first boot
+frame - a correct label means a frame actually ran.
+
+Verified: parse PASS with DEVNOW assert; wading clip and lift draws still
+balanced (drove the player into water, clean); fingerprint 58; three endings,
+hub, stage. The label check surfaced its own design honestly: in the hidden
+test pane no rAF ever fires, so the label stays blank there - which is now
+TRUE (no frame has run) where the old stamp would have lied.
+
+Not verified: the save-failure banner (no way to force a quota error here),
+the DPR listener (no ratio change can be staged in the pane), and a real
+mid-draw throw through the new stack repair (the armour path is exercised
+clean every frame; the repair branch waits for a real fault, where before it
+made things worse and now it cannot).
+
 ## v7.69 - THE STREAM BOUNDARY
 
 The glitch audit's remaining confirmed findings - the ones that genuinely

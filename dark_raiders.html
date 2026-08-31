@@ -1112,7 +1112,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.69';
+var VER='7.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1574,9 +1574,16 @@ var SLOT=(function(){ try{ return localStorage.getItem('salvagerun:activeSlot')|
 var SKEY=(SLOT==='1')?'salvagerun:profile':('salvagerun:profile:'+SLOT);
 function storeSet(v){
   try{
-    if(window.storage&&window.storage.set){ window.storage.set(SKEY,v).catch(function(){}); return; }
+    if(window.storage&&window.storage.set){ window.storage.set(SKEY,v).catch(function(){ storeWarn(); }); return; }
   }catch(e){}
-  try{ localStorage.setItem(SKEY,v); }catch(e2){}
+  try{ localStorage.setItem(SKEY,v); }catch(e2){ storeWarn(); }
+}
+// v7.70, audit: a quota or blocked-storage failure used to be swallowed whole -
+// the game played on while silently losing every save. Once per session, say so.
+var _storeWarned=false;
+function storeWarn(){
+  if(_storeWarned) return; _storeWarned=true;
+  try{ say2('SAVING IS FAILING on this browser. Export your profile from Settings before closing.'); }catch(e){}
 }
 function storeGet(){
   try{
@@ -16487,8 +16494,10 @@ var SHD=G.shells[i];
   // The world transform as it stands before any entity draws, kept so a caught
   // fault can put it back rather than leaving the rest of the frame shifted.
   var TBASE=wc.getTransform?wc.getTransform():null;
+  var _svd=0;
   for(i=0;i<DR.length;i++){
     var it=DR[i];
+    _svd=0;
     try{
     if(it.fn){ it.fn(); } else
     if(it.cr){
@@ -16983,7 +16992,7 @@ var SHD=G.shells[i];
       // The y-sort key was computed from the same lift, so a body on the
       // catwalk sorts correctly against everything around and under it.
       var pLift=drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y):0);
-      if(pLift>0){ wc.save(); wc.translate(0,-pLift); }
+      if(pLift>0){ wc.save(); _svd++; wc.translate(0,-pLift); }
       var pmode=p.downed?'down':(p.roll>0?'roll':(crouchP?'crouch':''));
       // HIS NOTE, 2026-08-24: "water should be deeper, go up to character's
       // waist". Wading was a speed number and a splash noise with nothing on
@@ -16994,7 +17003,7 @@ var SHD=G.shells[i];
       // no new sprite, no second draw, no layer.
       var pWet=(!p.downed&&!G.sim&&inWater(p.x,p.y));
       if(pWet){
-        wc.save();
+        wc.save(); _svd++;
         wc.beginPath();
         wc.rect(p.x-40,p.y-90,80,90-WADE_DEPTH);
         wc.clip();
@@ -17006,7 +17015,7 @@ var SHD=G.shells[i];
          healSec:((p.healQ||0)>0&&(p.healRate||0)>0)?((p.healQ)/(p.healRate)):0,
          rl:(p.reloading>0&&p.wep.reload)?clamp(1-p.reloading/p.wep.reload,0,1):0});
       if(pWet){
-        wc.restore();
+        wc.restore(); _svd--;
         // The waterline itself: a dark ellipse where the body enters, a bright
         // meniscus on top of it, and a wake that only exists while you move, so
         // standing still in water is visibly quieter than walking through it.
@@ -17020,11 +17029,11 @@ var SHD=G.shells[i];
           wc.beginPath(); wc.ellipse(p.x,wy+2+wob,20+2.5*Math.sin(G.t*5),6.5,0,0,6.2832); wc.stroke();
         }
       }
-      if(pLift>0) wc.restore();
+      if(pLift>0){ wc.restore(); _svd--; }
     } else {
       var e2=it.e;
       var eLift=drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(e2.x,e2.y):0);
-      if(eLift>0){ wc.save(); wc.translate(0,-eLift); }
+      if(eLift>0){ wc.save(); _svd++; wc.translate(0,-eLift); }
       // ELITE MARKER, v3.62: one site under every kind's sprite, in the same
       // purple the loot pips already use for elite, so the colour is a word
       // the player has met before. Pure time drive, no PRNG touch.
@@ -17108,6 +17117,10 @@ var SHD=G.shells[i];
       // one entity, not to slide the rest of the world. Put the visible state
       // back before carrying on, whatever the item left behind.
       try{
+        // v7.70: pop the saves this item actually took (clears clips too),
+        // plus one defensive pop for a throw inside a self-saving helper.
+        while(_svd>0){ try{ wc.restore(); }catch(_rp){} _svd--; }
+        try{ wc.restore(); }catch(_rp2){}
         if(TBASE&&wc.setTransform) wc.setTransform(TBASE);
         wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
       }catch(rz){}
@@ -22188,7 +22201,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.69: the stream boundary - cosmetics off the seeded PRNG, storms heard in the sim.',
+  now:'v7.70: the audit closes out - save-stack repair, save-failure warning, DPR re-arm, proof-of-life version stamp.',
   next:'His queue: save slots and naming at boot, the mile re-baseline at full density, the 2.5d-glitch audit'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -25876,8 +25889,14 @@ document.getElementById('wipelog').onclick=function(){
 };
 
 // ================================================================ boot
-document.getElementById('verlabel').textContent='v'+VER;
 resize();
+// v7.70, audit: browser zoom or a monitor move changes devicePixelRatio with
+// no resize event; re-arm per value so every change rebuilds the store.
+(function _dprArm(){
+  try{
+    matchMedia('(resolution: '+window.devicePixelRatio+'dppx)').addEventListener('change',function(){ resize(); _dprArm(); },{once:true});
+  }catch(e){}
+})();
 loadProfile().then(function(){
   // Seed both the target and the eased value from the saved profile, or the
   // first frame after loading eases from 1 to the saved zoom for no reason.
@@ -26001,7 +26020,12 @@ loadProfile().then(function(){
     });
   })();
 });
-requestAnimationFrame(function(ts){ lastTs=ts; requestAnimationFrame(loop); });
+requestAnimationFrame(function(ts){
+  lastTs=ts;
+  // v7.70: the label is proof of life now - it stamps only once a frame runs.
+  var _vl=document.getElementById('verlabel'); if(_vl) _vl.textContent='v'+VER;
+  requestAnimationFrame(loop);
+});
 })();
 </script>
 </div>
