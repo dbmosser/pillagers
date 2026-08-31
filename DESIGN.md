@@ -27443,6 +27443,31 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.97 - THE CROWD SEPARATES ON WHAT IS DRAWN
+
+His live report: "pillagers in the undercroft are still standing on top of
+each other and colliding in weird ways" - the second time the crowd has
+needed this, so the fix went for the mechanism, not the symptom. The v7.53
+separation measured BASE positions, but a worker paces up to sixteen units
+off base (the hx/hy swing rides on top of x/y), so two bodies legally 24
+apart at base still overlapped on screen - and the push then fought the
+pacing swing frame by frame, which is exactly the weird colliding he saw.
+
+Separation now measures the DRAWN positions (base plus swing) and pushes
+the bases; the threshold rose to one full body diameter; and placement
+stopped seeding the problem - the pair test now adds both bodies' pacing
+reach, so two pacers cannot be planted with overlapping beats.
+
+Verified: parse PASS; fingerprints 58 and 276; three endings through
+oc_btn; hub; stage; and the invariant measured directly - across 150
+consecutive hub frames the WORST drawn gap between any two of fourteen
+crowd bodies was 53.9 units against a 26-unit body, so no overlap is
+geometrically possible and there is nothing left for the push to fight.
+
+Not verified: the merc-follower plowing into a huddle still shoves bodies
+aside (intended - he is walking to you); if the shove itself reads wrong
+to him, that is a follow-path question, not a separation one.
+
 ## v7.96 - EVERY STALL ROW ANSWERS ITS KEY
 
 Two from his live session.
