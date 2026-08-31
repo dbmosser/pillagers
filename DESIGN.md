@@ -27443,6 +27443,59 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.14 - FOUR WAYS A DRAG WENT WRONG
+
+Four more from the menu audit, all in the dragging he uses constantly.
+
+A CLICK IS NOT A MOVE. Selecting a belt slot before firing armed the drag
+on mousedown, and the window mouseup then found that same cell under the
+cursor and ran the entire drop path on it: it stripped the v8.04 automatic
+mark, wrote the pin into his saved hub plan, and announced "Stim Injector
+to slot 7" for a move that never happened. Back in the Undercroft the belt
+showed a binding he never made, and it came back every raid he carried
+that item. A drop onto the slot the drag started from is now handled first
+and does nothing.
+
+A GUN HE PLANNED IS NOT A LOCKED SLOT. planPut has allowed a gun on any
+slot since v6.60 and the belt honours it - but the drop path tested
+kind==='gun', which is true of an assigned cell as well as the two derived
+ones. So a slot where he had deliberately put a gun refused every
+consumable for the rest of the raid with "Slot 5 is a weapon slot", and
+could not be cleared, because the drag-arm refuses to pick a gun up.
+Worse, dropping a different gun there fell through to the equip branch and
+silently made it his secondary. Only the two DERIVED cells are weapon
+slots now.
+
+A LOST DRAG LETS GO. releaseAllKeys is wired to blur, focus and
+visibilitychange precisely to undo latches, and it cleared the canvas drag
+but never the DOM one. Release the button over the taskbar or a second
+monitor and no mouseup ever arrives: the ghost label kept following the
+cursor with no button held, and the next click inside any dropzone dropped
+an item picked up minutes earlier. It calls grabEnd now.
+
+AND THE SAFE POCKET OPENS. Clicking the pocket to empty it could never
+work: the cell's own click handler is destroyed before the click reaches
+it, because the #safegrid dropzone fires on the same mouseup and rebuilds
+the cell. The pocket's only exit was a right-click menu entry. Releasing a
+drag that STARTED on the pocket now means taking it out, which is the
+gesture the cell's own label already advertises.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. Each fix driven on its real
+path: a stim auto-pinned to slot 6 by a container pull, then select-clicked
+through a genuine mousedown/mouseup pair, left the profile plan at
+{3:frag,5:medkit} and the auto mark intact (it used to gain 6:stim); a
+Medkit dropped on slot 5 while a planned gun_smg sat there was ACCEPTED
+("Medkit to slot 6") instead of refused; a mousedown on a stash cell armed
+the ghost and a window blur cleared it; and the safe pocket went 0/1 to
+1/1 to 0/1 through its own dropzone with "Out of the safe pocket."
+
+Not verified: the second-gun-onto-a-planned-gun-slot case, which the audit
+says silently equipped it - the refusal path is fixed by the same
+_siDerived test but a duplicate-gun drop was not separately staged; and
+the release-outside-window case was driven by dispatching blur rather than
+by an actual alt-tab.
+
 ## v8.13 - THE UNDERCROFT CAN BE HEARD
 
 Two audit findings that were the same wound, and they were poisoning
