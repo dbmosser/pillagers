@@ -27443,6 +27443,70 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.29 - THE SHOT IS WHAT COSTS YOU, NOT THE BODY
+
+"Figure out the best way to do it." Two questions left open at v8.28,
+decided here with the reasoning, because the reasoning is the part he
+should be able to overrule.
+
+THE MODEL FIRST, because both answers fall out of it. A pillager spawns
+hostile if you have killed that identity before, friendly if you have
+earned standing with him, and otherwise on a 55/45 coin flip - and any of
+them turns hostile the moment you come within 180 units or put a round in
+him. So "a pillager who was not fighting you" is not some rare special
+case and it is not every pillager either: it is a man you are shooting
+from further away than he has noticed you. That is precisely the act his
+order names, and the ordinary close fight - and the contracts that ask for
+dead pillagers - are untouched by it.
+
+QUESTION ONE: the shot or the kill? THE SHOT, and the first reason decides
+it on its own.
+
+  The kill-gate had a perverse incentive baked into it. Shooting a man who
+  was not fighting you and LEAVING HIM ALIVE was free; finishing him cost
+  a point. That rewards wounding a neutral and walking away, which is the
+  opposite of what the rule is for.
+
+  In the common case the two rules agree anyway: you shoot him, he turns
+  hostile, you kill him in the fight that follows - one point either way.
+  They differ only when he survives, which is exactly the case the
+  kill-gate got backwards.
+
+  The fiction says the same thing. This is "word gets around", and the man
+  who lived is the one who does the telling.
+
+  And it teaches at the moment of the act instead of thirty seconds later.
+
+Accidents were already filtered for free and I kept it that way: splash
+never reaches this path, so a frag or a mortar that catches a bystander
+costs nothing. Only aimed fire is yours. And it is ONE point per man
+however many rounds you put in him.
+
+QUESTION TWO: your own hire. NO CHANGE, because the case cannot happen -
+the player's bullets pass straight through their own merc
+(`if(en.merc&&!en.downed) continue;`, v6.72's no-friendly-fire rule).
+Adding a charge would be dead code, and overturning that rule to make room
+for one is not what he asked for.
+
+One structural note: the parley branch no longer marks anyone. It fires on
+hitT, which splash sets too, so marking there would let a stray blast
+spend the single charge a man is worth and leave the aimed round that
+followed free. The bullet path is the only writer.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. Four cases driven through the
+real mouse-and-bullet path, plus splash:
+  wound a neutral and leave him alive   notoriety 1   (was 0 - the loophole)
+  shoot a neutral dead                  notoriety 1   (not 2 - no double bill)
+  shoot a HOSTILE dead                  notoriety 0
+  empty a magazine into one neutral     notoriety 1   (one man, one point)
+  your own frag kills a neutral         notoriety 0   (splash is free)
+
+Not verified: how often a 45 percent neutral spawn actually gets shot at
+range in his hands. If it turns out to fire more than it should, the
+cleanest dial is the spawn roll rather than the rule, and I would want his
+read before touching it.
+
 ## v8.28 - THE STALL NEVER SHUTS, AND A MAN WHO WAS NOT FIGHTING YOU COUNTS
 
 Two rulings from him, an hour after the notoriety card went in.

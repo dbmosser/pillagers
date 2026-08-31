@@ -1148,7 +1148,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.28';
+var VER='8.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12729,16 +12729,9 @@ if(e.state==='possum'){
       if(e.byPlayer){
         T.kills[e.kind]++; contractKill(e.kind);
         if(e.elite) T.eliteKills=(T.eliteKills||0)+1;
-        // v8.28, his order: shooting a pillager who was not fighting you costs
-        // a point, the same as the Peddler and an unarmed survivor. The mark
-        // was set on the first hit, while he was still neutral.
-        if(e.kind==='raider'&&e.shotPeaceful&&!e.merc&&!G.sim){
-          P.notoriety=(P.notoriety||0)+1; saveProfile();
-          if(G.tel) G.tel.peaceKilled=(G.tel.peaceKilled||0)+1;
-          say('He was not fighting you. Notoriety '+P.notoriety+'.');
-          label(e.x,e.y-18,'NOTORIETY +1','#ff6b5a',0,true);
-          notoStamp('YOU SHOT A PILLAGER WHO WAS NOT FIGHTING');
-        }
+        // v8.29: the charge for shooting a neutral now lands at the SHOT, not
+        // here - see the bullet path. Billing it again at his death would
+        // charge the same man twice for one decision.
         // SPEC 8.5 and 5.8: the rivalry ledger. Killing an identity is a
         // permanent grudge; it will be shoot on sight every run from now on.
         if(e.kind==='raider'&&e.ident&&!G.sim){
@@ -13333,11 +13326,10 @@ var _rdS=G.shells[_rdi];
         e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-3*dt,3*dt);
         if(e.hitT>0){
           // Shooting a man who waved at you ends it, permanently.
-          // v8.28, his order: and it is on your name. Marked HERE rather than
-          // at his death, because this is the frame where he stops being
-          // non-hostile - a check at the death block would only ever see the
-          // hostile man your own bullet created, and never charge anything.
-          e.shotPeaceful=1;
+          // v8.29: no mark here. The bullet site is the one writer for the
+          // notoriety charge, and this branch fires on hitT, which splash sets
+          // too - marking here would let a stray blast spend the one charge a
+          // man is worth and leave the aimed round that follows free.
           e.friendlyPC=0; e.hostile=true; e.grudge=true;
           if(!G.sim){
             var rb=idRec(e.ident); rb.standing=Math.min((rb.standing||0)-3,-1); saveProfile();
@@ -14149,12 +14141,20 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
                 en.roll=0.38;
                 if(!G.sim) sfx('step',en.x,en.y);
               }
-              // v8.28, his order: a pillager who was NOT fighting you is a
-              // neutral, and shooting one is on your name. Marked here, at the
-              // hit, because the next lines turn him hostile - a check at his
-              // death would only ever find the hostile man this bullet made.
-              if(en.kind==='raider'&&!en.merc&&(en.hostile===false||en.friendlyPC))
-                en.shotPeaceful=1;
+              // v8.29: THE SHOT IS THE THING, not the kill. Charged here, once
+              // per man, while he is still neutral - the lines below turn him
+              // hostile, so this is the only frame that can tell. Splash never
+              // reaches this path, so a frag that catches a bystander is free;
+              // an aimed round is yours.
+              if(en.kind==='raider'&&!en.merc&&!en.notoCharged&&
+                 (en.hostile===false||en.friendlyPC)&&!G.sim){
+                en.notoCharged=1;
+                P.notoriety=(P.notoriety||0)+1; saveProfile();
+                if(G.tel) G.tel.peaceShot=(G.tel.peaceShot||0)+1;
+                say('He was not fighting you. Notoriety '+P.notoriety+'.');
+                label(en.x,en.y-18,'NOTORIETY +1','#ff6b5a',0,true);
+                notoStamp('YOU SHOT A PILLAGER WHO WAS NOT FIGHTING');
+              }
               en.byPlayer=en.hp<=0;
               // Same rule for YOUR rounds: shooting a fleeing raider does not
               // talk him back into the fight, v2.93. This is the path his report
@@ -22949,7 +22949,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.28: the Peddler always trades, and shooting a pillager who was not fighting you is on your name.',
+  now:'v8.29: the shot is what costs you, not the body - one point per man, and splash never counts.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -24607,7 +24607,7 @@ function renderStatCards(){
     var _bits=[];
     if(_n<=0){
       _bits.push('Nobody out there has a problem with you.');
-      _bits.push('Shooting the Peddler or an unarmed survivor is what starts it.');
+      _bits.push('Shooting the Peddler, an unarmed survivor, or a pillager who was not fighting you is what starts it.');
     } else {
       // v8.28, his ruling: the Peddler trades whatever you have done, so the
       // card no longer threatens a closure that cannot happen.
