@@ -27443,6 +27443,46 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## 2026-08-31 ADDENDUM - THE v8.11 AIM CHANGE, MEASURED IN A REAL DUEL
+
+No code changed. v8.11 shipped the human-aim model with its central claim
+unverified: I could not stage a duel, because the spawn area on COLD
+STORAGE has no clear bearing past 150 units, so the angular term was
+argued from arithmetic alone. That line is now closed.
+
+The reason the first attempt failed was my own: I scanned for open ground
+using G.map.w and G.map.h, which do not exist - the world is cols*cw by
+rows*ch. Every sample was NaN, so of course nothing was ever clear. THE
+COLD MILE is 9000 by 7600, and a proper scan found a 640-unit sightline
+at 3349,3981.
+
+Parked there, with the player re-parked every frame (he drifts under the
+real step, which is what spoiled the first run of this), a pillager firing
+a zero-spread rifle from a fixed range, 240 frames per arm, ~80 rounds
+measured per arm, error taken as the angular deviation of each bullet from
+the true bearing times the range:
+
+                     150 units      400 units
+  OLD (flat)            9.0u           7.1u
+  NEW (angular)         8.0u          16.2u
+
+The control arm is the shipped build with raiderAim and raiderReact set to
+0, which reproduces the old fixed 8/16 error exactly - so this is one
+binary measured against itself, not two builds.
+
+That is precisely the shape the change was for. A brawl at 150 units plays
+as it always did - the old numbers are the floor and the measurement says
+so, 9.0 against 8.0 is noise on 80 rounds. At 400 units the error more
+than doubles, where the old model was FLAT: a fixed miss radius subtends a
+smaller and smaller angle as the range grows, which is why a pillager at
+mid range used to be more accurate than anything holding a mouse could
+be.
+
+What this still does not tell us is whether it feels right in his hands,
+and the bot cannot help there - it never fights pillagers at all, which is
+the v8.11 finding. If it now reads as too easy, raiderAim is the one
+number to turn down.
+
 ## v8.20 - THE MENU SWEEP IS FINISHED
 
 The last five findings, which closes the twelve-agent audit of the menu
