@@ -27443,6 +27443,63 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.23 - A GRENADE KNOWS WHO THREW IT
+
+Three findings from the raid audit, all the same shape: the game blaming
+him for what other people did.
+
+A FRAG HAD NO OWNER. Both push sites were anonymous, and explodeFrag
+therefore assumed every blast in the game was his - on a premise its own
+comment states plainly: "Nothing on this map throws anything back, per
+v0.58, so a frag blast is always your own." That stopped being true the
+day raiders got grenades, and raiderKit defaults on. Since then, dying to
+an enemy grenade was reported as YOUR OWN CHARGE, bucketed under 'other',
+and exported with killer 'other' - and because the call passed no
+position, the v4.28 direction ring never pointed at the incoming charge
+either. The thrower rides on the frag now.
+
+AND IT CREDITED HIM WITH OTHER PEOPLE'S KILLS. byPlayer is the sole gate
+on kill counts, contract progress, elite tallies and the permanent rivalry
+ledger, and explodeFrag set it true on everything any blast killed. A frag
+thrown between two feuding crews gave him the kill, the contract tick and
+a permanent shoot-on-sight grudge with a man he never fired at - and it
+ran in the sim too, inflating every benchmark kill count. The aggro line
+had the same fault: an enemy's own grenade turned the dead man's crew onto
+the player. Both now follow the convention the rest of the file already
+keeps for raider-on-raider fire and for lightning.
+
+AND NOTORIETY IS FOR WHAT HE DID. This is the one he should read twice.
+The raider engage loop and the merc loop exclude only 'snitch', so the
+Peddler - who has 150hp, cannot move, and cannot shoot back - and the
+Stray were both valid targets for raiders AND for the man he pays $30,000
+to protect him. When they died, the death block charged HIM a permanent
+notoriety point with no check on who fired. Notoriety never decays below
+what he has earned, closes every stall at two, and raises merc prices.
+Both blocks now check byPlayer, and both engage loops refuse neutrals
+outright, so it cannot happen again.
+
+I OWE HIM A CORRECTION. I told him earlier today that his profile's
+notoriety 1 came from killing the Peddler on v7.93. On this evidence I do
+not know that, and neither did the game: a raider could have shot the
+Peddler and charged him for it. I should not have stated it as fact.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. On the real path, with a
+distinctively named raider so no default could produce the result: an
+enemy frag at his feet took him 150 to 80 and reported "TOXICBUTPOLITE'S
+CHARGE" with the direction ring stamped, while his own frag still says
+"YOUR OWN CHARGE"; a raider's frag that dropped another raider set
+byPlayer FALSE and pointed the survivors at the blast, while his own frag
+set byPlayer TRUE; a raider killing the Peddler left notoriety at 0 and
+said "Someone else did that", while his own kill of the Peddler still
+charges the point and prints the original line.
+
+Not verified: that raiders no longer ENGAGE neutrals over a whole raid -
+the exclusion is two lines in the two target loops and was checked by
+reading, not by watching a raid play out with a Peddler in the open; and
+the merc's own loop shares that fix but its wider problem (it can never
+target a raider at all) is still open and queued.
+
 ## v8.22 - NOTHING OPENS FIRE FROM OUTSIDE YOUR SIGHT
 
 A twelve-agent adversarial audit of the RAID subsystem - combat, enemy
