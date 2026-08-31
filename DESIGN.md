@@ -27443,6 +27443,37 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.00 - HURT THE PEDDLER AND HE RUNS
+
+His order: "peddler should run when he gets hurt and not sell. If he
+doesn't take any damage for a period of time, he should eventually return
+to his spot and start selling."
+
+The Peddler has never moved in his life - zero speed, zero reaction; you
+could shoot him in the leg mid-purchase and he would finish the sale. Now:
+any damage that does not kill him closes the stall and sends him running
+away from you ("The Peddler bolts. No trade while he is bleeding."), the
+trade gate refuses him while afraid or walking home, twelve quiet seconds
+without new damage turn him around, and he walks back to his pitch and
+reopens ("The Peddler is back at his pitch."). Damage is detected off his
+own hp - initialised at spawn after the lazy version swallowed a
+first-frame hit in testing - so every source counts (bullets, frags,
+machines) and the shared damage path is untouched. No PRNG anywhere in
+the behaviour, so the seeded stream is untouched; the sim bot ignores the
+stall by default and nothing measurable moves.
+
+Verified: parse PASS; fingerprints 58 and 276; three endings through
+oc_btn; hub; stage; the full arc staged live - damaged, he fled his pitch
+with the flee flag up and the stall gate closed on that same flag; the
+quiet timer expired; he walked home (distance back under the arrival
+threshold) and the gate reopened.
+
+Not verified: his flee DISTANCE is geometry-limited (the pitch is
+deliberately placed among loot and walls, and he does not pathfind) - he
+scurries rather than sprints when hemmed in; if that reads wrong, giving
+him navSeek is a one-line upgrade for his word. Killing him still drops
+the stock and burns notoriety, unchanged.
+
 ## v7.99 - A GUN WEARS ITS RARITY EVERYWHERE
 
 His order: "guns should always indicate their rarity level via background

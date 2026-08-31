@@ -1128,7 +1128,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.99';
+var VER='8.00';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6680,7 +6680,7 @@ function mkPeddler(x,y,map){
   }
   var _show=pick(['wcore','reactor','bloom','gun_dmr','gun_lmg']);
   stock.push({k:_show,price:Math.round(ival(_show)*3),sold:false,showpiece:1});
-  return {kind:'peddler',x:x,y:y,r:12,hp:150,maxhp:150,face:1.57,
+  return {kind:'peddler',x:x,y:y,r:12,hp:150,maxhp:150,_lastHp:150,face:1.57,
     coat:'#d8a13a',name:'THE PEDDLER',neutral:1,stock:stock,bag:[],
     state:'idle',tx:x,ty:y,cd:0,alert:0,spd:0,dmg:0,rng:0,cone:0,
     hitT:0,step:0,hailed:0,traded:0,goal:null,skips:[],goalT:0,goalD:0,extracting:0};
@@ -11228,7 +11228,7 @@ if(!p.fired||p.wep.auto){
   var ped=null;
   for(var pe=0;pe<G.ents.length;pe++){
     var PE=G.ents[pe];
-    if(PE.kind==='peddler'&&dist(p,PE)<74){ ped=PE; break; }
+    if(PE.kind==='peddler'&&!PE.fleeT&&!PE._back&&dist(p,PE)<74){ ped=PE; break; }
   }
   // PICKING UP AN ENEMY, v3.17. He asked for it and it is the half of the feature
   // that makes the other half matter: "players should be able to revive bots".
@@ -12672,6 +12672,37 @@ if(e.kind==='stray'){
     }
     if(e.kind==='peddler'){
       var pdd=dist(e,p);
+      // v8.00, his order: hurt him and the stall closes and he RUNS. A quiet
+      // stretch brings him back to his pitch. Detected off his own hp so every
+      // damage source counts and the shared damage path stays untouched.
+      if(e._lastHp===undefined) e._lastHp=e.hp;
+      if(e.hp<e._lastHp){
+        if(!e.fleeT&&!G.sim) say('The Peddler bolts. No trade while he is bleeding.');
+        e.fleeT=12;
+      }
+      e._lastHp=e.hp;
+      if(e.fleeT>0){
+        e.fleeT-=dt;
+        if(e.fleeT>0){
+          // run AWAY from the player, home abandoned for now
+          var _fd=Math.max(1,pdd);
+          moveToward(e,e.x+(e.x-p.x)/_fd*260,e.y+(e.y-p.y)/_fd*260,168,dt);
+          e.face=Math.atan2(e.y-p.y,e.x-p.x);
+          e.step=(e.step||0)+dt*6;
+          continue;
+        }
+        e.fleeT=0; e._back=1;
+      }
+      if(e._back){
+        if(dist(e,{x:e.tx,y:e.ty})>10){
+          moveToward(e,e.tx,e.ty,120,dt);
+          e.face=Math.atan2(e.ty-e.y,e.tx-e.x);
+          e.step=(e.step||0)+dt*5;
+          continue;
+        }
+        e._back=0; e.face=1.57;
+        if(!G.sim) say('The Peddler is back at his pitch.');
+      }
       if(pdd<440) e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.4*dt,2.4*dt);
       if(!e.hailed&&pdd<240&&!G.sim&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)){
         e.hailed=1;
@@ -22297,7 +22328,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.99: a gun wears its rarity everywhere - glyph, frame and wash, shop to hotbar.',
+  now:'v8.00: hurt the Peddler and he runs; a quiet dozen seconds walks him back to his pitch.',
   next:'Wrecked cars that read as cars from overhead, maps that read as different places, and his grades on the new menus and gun looks'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
