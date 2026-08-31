@@ -27443,6 +27443,68 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.31 - THE BELT ANSWERS WHAT YOU PICKED
+
+Four raid-audit findings, all in the belt, all felt mid-fight - which is
+the only place the belt matters.
+
+A BELTED STIM WAS CLASSED AS A GUN. The kind map has cases for heal, armour
+and gun and nothing at all for a stim, so a Stim Injector on the belt came
+out as kind 'item' - and the trigger treats 'item' as a held gun. Select
+your stim, pull the trigger, and you FIRED YOUR WEAPON, under a belt
+caption that reads "[FIRE] use". useHot has known how to use a stim since
+v5.92; nothing could ever reach it.
+
+SELECTING A GUN YOU CARRY BUT DO NOT HOLD SWAPPED THE WRONG PAIR. An
+assigned slot showing a gun from your bag also has kind 'gun', with no
+inHand field, so setHot fired swapGuns - which trades the two guns in your
+hands and has nothing to do with the one you picked. It now asks whether
+the slot names a gun you are HOLDING, and tells you where the other one is.
+
+X ASSUMED THE GUNS WERE ALWAYS SLOTS 1 AND 2. swapGuns moved the highlight
+with a hard-coded index, so any assignment covering those slots left X
+selecting a consumable - and the trigger then used it instead of firing. It
+finds the gun wherever it sits now, and if the gun has no cell at all
+(items assigned over both, which v6.61 allows) it leaves the highlight
+alone rather than dropping it on something unrelated.
+
+CLICKING A BELT CELL WAS NOT THE SAME ACT AS PRESSING ITS KEY. It wrote
+G.hot straight in, skipping the swap, the throwable selection and the
+readout - and left the number key dead afterwards, because setHot returns
+early when the slot is already selected.
+
+THE PART THAT MATTERS MOST, and it is not one of the four. None of this was
+testable. hotbarSlots, setHot and useHot all live inside the module, so a
+probe could only infer the belt from side effects - and when I tried, the
+trigger rig in this session would not fire a gun at all. "Ammo unchanged"
+therefore looked exactly like the stim fix working when it proved nothing
+whatsoever, and I nearly reported it as a pass. The fixture now exposes
+__hotbar, __setHot and __useHot, and with them the same session immediately
+caught a REGRESSION I had just written: `equipped` is only stamped on
+assigned cells, never on the two derived ones, so my first cut fixed the
+bagged-gun case and broke the ordinary swap - clicking the other gun cell
+moved the highlight and left the gun alone. The test is whether the slot
+names a gun in your hands, which the derived pair answer by their key.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. Through the new shims and the
+real canvas click:
+  slot with a stim              kind "stim" (was "item"), and using it took
+                                stamina 10 to 100 and one stim from the bag
+                                with the gun's ammo untouched
+  select a bagged gun           gun in hand unchanged, and it says where it is
+  X on a normal bar             highlight lands on the gun now in hand
+  X with both gun cells covered highlight does not move, gun still swaps
+  click the other gun cell      swaps the gun AND moves the highlight
+  press 1 after that click      still works - the key is no longer swallowed
+
+Not verified: the end-to-end mouse trigger. The rig in this session would
+not fire a gun through mouse.down under __rawStep even with a gun slot
+selected, so every trigger claim above is made through __useHot rather than
+by holding the button. What that path proves is what useHot does with the
+selection; what it does not prove is that the trigger reaches useHot in a
+live raid.
+
 ## v8.30 - IF YOU STARTED IT, IT IS ON YOUR NAME
 
 Two corrections from him, and the second one exposes a hole the first one

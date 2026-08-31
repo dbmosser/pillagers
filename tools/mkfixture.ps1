@@ -287,6 +287,14 @@ window.__pedBuy=function(i){ return pedBuy(i); };
 // The weapon table, so shots-to-kill can be varied from the WEAPON side
 // instead of the health side and the two separated causally.
 window.__weapons=function(){ return WEAPONS; };
+// THE BELT, v8.31. hotbarSlots is derived every frame and setHot/useHot carry
+// all the consequences, so without these a test can only guess at the belt from
+// side effects - and a trigger rig that silently does nothing then reads as a
+// pass. __hotbar returns the live slot list, __setHot selects the way the
+// number keys do, __useHot pulls the trigger on whatever is selected.
+window.__hotbar=function(){ return hotbarSlots(); };
+window.__setHot=function(i){ setHot(i); return G?G.hot:null; };
+window.__useHot=function(){ return useHot(); };
 // The pickup-voice chooser and the blip synth, so a rarity ladder can be checked
 // without anything being audible. blip() returns early on a sim raid and the
 // fixture blocks AudioContext, so calling it here stays silent by construction.
