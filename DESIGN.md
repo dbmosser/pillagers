@@ -27443,6 +27443,35 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.92 - THE DISTRICTS SHOW ON THE GROUND
+
+Samey-maps move 4. The zone-crossing code's own comment made the argument
+years of builds ago: "a zone you cannot tell you crossed into is wallpaper" -
+but the only delivery was the say() line. The bake laid ONE uniform base
+colour for the whole map; the district floor hues appeared only as halos
+around buildings. Now, right after the base fill, the bake lays a 9 percent
+alpha district wash, painted per coarse cell through the map's own
+districtAt so every zone representation works, day and night both derived
+the way dcol does. A zone border reads as a change of concrete underfoot,
+and the mile's twelve very different zones finally show on screen. Flat
+rects, baked once, no per-frame cost, no rr() - the seeded stream is
+untouched. On COLD STORAGE the wash is nearly invisible by construction
+(its one named zone shares the fallback district), which is honest: the
+small map is one place; the mile is many.
+
+Verified: parse PASS; fingerprints 58 and 276 UNCHANGED; three endings
+through oc_btn; hub; stage; and the wash proven live on the mile - the
+ground in HOARFROST ROWS reads a channel delta of 65 against THE SUMPS on
+the same map, where the base fill used to be uniform. The probe itself
+earned two lessons: fog reads black where the player has not been, and the
+camera does not follow a teleport under __sim - the live measurement drove
+__loop until the camera arrived.
+
+Not verified: the 9 percent alpha is my number - strong enough to read,
+weak enough to keep the four value bands; his eyes tune it; and whether he
+wants cold's interior zones separated too (they currently share one
+district on purpose in the spec).
+
 ## v7.91 - THE TWO MAPS STOP WEARING THE SAME CLOTHES
 
 His standing complaint, and a real feeling tag: maps feel samey. The audit's
