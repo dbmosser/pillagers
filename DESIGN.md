@@ -27443,6 +27443,47 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.15 - THE LAYOUT SURVIVES THE NIGHT, AND A KEY DIES WITH ITS ITEM
+
+Two more from the menu audit, both of them the kind that make the game
+feel like it forgets things.
+
+THE STASH LAYOUT HE PICKED WAS NEVER LOADED. applyStashLayout() runs once
+at script parse - and the profile arrives on an async promise that has not
+resolved yet, so it always read the default 6, and nothing ever re-applied
+it. The layout button worked perfectly, which is what made this invisible:
+the setting took effect immediately, looked saved, and was quietly thrown
+away by the next boot. It is applied again where the profile actually
+exists.
+
+AND A BELT KEY OUTLIVED ITS ITEM, THREE WAYS. planPut's rule since v5.72
+is that putting something on a key also packs it - the key and the item
+are one action. Three of the four ways to unpack it again did only half
+of that: the kit column's "leave one behind", the ascent check's "put one
+back", and the ascent check's drag-back-to-stash all spliced P.kit and
+left the binding standing. The quick-use row kept drawing the item, the
+Undercroft belt kept counting it, and up top the key was simply dead,
+because the belt only fires a key for something actually carried. The
+right-click route always cleared it, so the same verb behaved differently
+depending on which control he happened to use. All three call clearKeysFor
+now, which only clears when the LAST copy is gone - a stack keeps its key
+while any of it is still packed.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. On real paths with staged
+state the old code could not produce: layout 9 written into the saved
+profile came back as data-slayout="9" with the button reading "LAYOUT
+9/10" after a full page load (it used to read 6 every time); with two
+Medkits packed and key 4 bound to Medkit, unpacking one left the key bound
+(correct - one is still going up), and unpacking the last one through the
+ascent check's drag-back cleared it, leaving hotAssign {}.
+
+Not verified: the kit column's own last-copy case could not be driven from
+that grid, because the belt-bound copy is deliberately spliced out of the
+kit list by the v6.60 rule, so the last one has no cell there to click -
+that path is covered by the same clearKeysFor call and by the ascent-check
+route above, not by a separate probe.
+
 ## v8.14 - FOUR WAYS A DRAG WENT WRONG
 
 Four more from the menu audit, all in the dragging he uses constantly.
