@@ -27443,6 +27443,34 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.78 - THE RECORDER BLAMES THE RIGHT MACHINE
+
+Found in HIS telemetry tonight, not by a probe. Two fresh exports landed at
+22:49 and 22:51 (authenticated real: his 90-run profile, durations, movement,
+real killers) and run #90 reads killer:listener while lastHit says CRAWLER
+A-14. The cause: pendKiller is stamped on every DOWN and was never cleared on
+a revive, so any death after a revive was blamed on whoever downed you the
+PREVIOUS time. Both revive paths - the self-revive and the crew or merc
+pick-up - now clear it, so the death screen and the recorder name what
+actually killed you.
+
+Also read out of the same exports, logged for his ruling rather than acted
+on: his two v7.70 runs on the dense COLD MILE both ended inside a minute
+(abandon at 59s, dead at 38s with first contact at 13 seconds and a hundred
+pillagers sighted). The 276-entity density is his call landing as designed
+and two rushed runs are not a curve, so the dial stays where he set it - but
+the first minute on the mile is now the hottest in the game and he should
+know it when he grades the feel.
+
+Verified: parse PASS with the DEVNOW assert; fingerprints 58 and 276; the
+real KeyF self-revive driven through the live loop clears pendKiller (was
+'listener', reads null after, hp 40, up); three endings EXTRACTED / KILLED IN
+ACTION / ABANDONED through oc_btn; hub steps and draws; stage renders.
+
+Not verified: the crew-revive branch was fixed identically but driven only by
+code reading, not a staged crew pick-up; and the mile first-minute question
+is his to rule on.
+
 ## v7.77 - EVERY GUN WEARS ITS OWN SHAPE
 
 His order from the flood, the last one still unbuilt: "gun that is equipped in
