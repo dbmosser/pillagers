@@ -1128,7 +1128,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.04';
+var VER='8.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10944,7 +10944,13 @@ function updatePlayer(dt){
   }
 var mg=Math.sqrt(mx*mx+my*my);
   var _cpNow=!!keys['CapsLock'];
-  if(_cpNow&&!p._cpPrev){ p.autoJog=!p.autoJog; if(!G.sim) say(p.autoJog?'Auto-jog on. Tap CAPS or move to stop.':'Auto-jog off.'); }
+  if(_cpNow&&!p._cpPrev){
+    // v8.05, audit: arming while holding a movement key toggled on and off in
+    // the same frame, and the only message left standing was 'Auto-jog off.'
+    // for a jog that was never on. Arming now asks for a standstill instead.
+    if(!p.autoJog&&mg>0){ if(!G.sim) say('Auto-jog arms from a standstill. Stop first, then tap CAPS.'); }
+    else { p.autoJog=!p.autoJog; if(!G.sim) say(p.autoJog?'Auto-jog on. Tap CAPS or move to stop.':'Auto-jog off.'); }
+  }
   p._cpPrev=_cpNow;
   // v7.94, his bug report: auto-jog used to RESUME after you released the
   // stick, which read as the character randomly walking off. Touching any
@@ -12750,13 +12756,27 @@ if(e.kind==='stray'){
       }
       if(e._back){
         if(dist(e,{x:e.tx,y:e.ty})>10){
-          moveToward(e,e.tx,e.ty,120,dt);
-          e.face=Math.atan2(e.ty-e.y,e.tx-e.x);
-          e.step=(e.step||0)+dt*5;
-          continue;
+          // v8.05, audit: navSeek, not a straight line - the flee can end
+          // around a corner, and a straight walk home wedges on concave
+          // geometry with the stall closed for the rest of the raid.
+          var _bx=e.x,_by=e.y;
+          navSeek(e,e.tx,e.ty,120,dt);
+          // And a watchdog behind the nav: three stuck seconds and he gives
+          // up the old pitch and sets up shop right where he stands.
+          if(Math.abs(e.x-_bx)+Math.abs(e.y-_by)<30*dt) e._stuckT=(e._stuckT||0)+dt;
+          else e._stuckT=0;
+          if(e._stuckT>3){
+            e._stuckT=0; e._back=0; e.tx=e.x; e.ty=e.y; e.face=1.57;
+            if(!G.sim) say('The Peddler sets up a new pitch where he stands.');
+          } else {
+            e.face=Math.atan2(e.ty-e.y,e.tx-e.x);
+            e.step=(e.step||0)+dt*5;
+            continue;
+          }
+        } else {
+          e._back=0; e.face=1.57;
+          if(!G.sim) say('The Peddler is back at his pitch.');
         }
-        e._back=0; e.face=1.57;
-        if(!G.sim) say('The Peddler is back at his pitch.');
       }
       if(pdd<440) e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.4*dt,2.4*dt);
       if(!e.hailed&&pdd<240&&!G.sim&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)){
@@ -15929,29 +15949,34 @@ function drawCrawlerS(e){
 function drawPeddlerS(e){
   // A stall, not a man standing in a field: table, stock on the table, and the
   // lantern that makes him the one warm thing in the sector.
+  // v8.05, audit: the FURNITURE draws at his pitch (tx/ty), not at him. Before
+  // this the whole market - table, stock, lantern - glided across the map with
+  // him when he fled, frozen mid-stride. Now the table stays, the man runs
+  // with a real walk, and if he claims a new pitch the stall follows tx/ty.
+  var hx=(e.tx!==undefined)?e.tx:e.x, hy=(e.ty!==undefined)?e.ty:e.y;
   wc.fillStyle='rgba(10,8,6,.34)';
-  wc.beginPath(); wc.ellipse(e.x,e.y+5,28,10,0,0,6.2832); wc.fill();
+  wc.beginPath(); wc.ellipse(hx,hy+5,28,10,0,0,6.2832); wc.fill();
   drawOp(e.x,e.y-15,e.face,(e.step||0)*3,e.coat,0.3,0,'',0,
-    {moving:false,sprint:false,ads:false,hurt:e.hitT});
-  wc.fillStyle='#7a5f40'; wc.fillRect(e.x-25,e.y-7,50,6);
-  wc.fillStyle='#5a4530'; wc.fillRect(e.x-25,e.y-1,50,6);
-  wc.fillStyle='#3a2c1e'; wc.fillRect(e.x-23,e.y+5,4,9); wc.fillRect(e.x+19,e.y+5,4,9);
+    {moving:!!(e.fleeT||e._back),sprint:!!e.fleeT,ads:false,hurt:e.hitT});
+  wc.fillStyle='#7a5f40'; wc.fillRect(hx-25,hy-7,50,6);
+  wc.fillStyle='#5a4530'; wc.fillRect(hx-25,hy-1,50,6);
+  wc.fillStyle='#3a2c1e'; wc.fillRect(hx-23,hy+5,4,9); wc.fillRect(hx+19,hy+5,4,9);
   for(var q=0;q<3;q++){
     var S=e.stock&&e.stock[q]; if(!S) continue;
     wc.fillStyle=S.sold?'#3a3630':((ITEMS[S.k]&&ITEMS[S.k].c)||'#c9b458');
-    wc.fillRect(e.x-19+q*13,e.y-15,9,8);
-    wc.fillStyle='rgba(18,14,12,.5)'; wc.fillRect(e.x-19+q*13,e.y-8,9,1);
+    wc.fillRect(hx-19+q*13,hy-15,9,8);
+    wc.fillStyle='rgba(18,14,12,.5)'; wc.fillRect(hx-19+q*13,hy-8,9,1);
   }
   var lp=0.74+0.26*Math.sin((G?G.t:0)*2.2);
   wc.save(); wc.globalCompositeOperation='lighter';
-  var gr=wc.createRadialGradient(e.x+28,e.y-30,2,e.x+28,e.y-30,66);
+  var gr=wc.createRadialGradient(hx+28,hy-30,2,hx+28,hy-30,66);
   gr.addColorStop(0,'rgba(255,196,90,'+(0.40*lp).toFixed(3)+')');
   gr.addColorStop(1,'rgba(255,196,90,0)');
-  wc.fillStyle=gr; wc.beginPath(); wc.arc(e.x+28,e.y-30,66,0,6.2832); wc.fill();
+  wc.fillStyle=gr; wc.beginPath(); wc.arc(hx+28,hy-30,66,0,6.2832); wc.fill();
   wc.restore();
-  wc.fillStyle='#3a2c1e'; wc.fillRect(e.x+27,e.y-24,2,24);
-  wc.fillStyle='#ffc04a'; wc.fillRect(e.x+25,e.y-34,6,8);
-  wc.fillStyle='#fff3c8'; wc.fillRect(e.x+27,e.y-32,2,4);
+  wc.fillStyle='#3a2c1e'; wc.fillRect(hx+27,hy-24,2,24);
+  wc.fillStyle='#ffc04a'; wc.fillRect(hx+25,hy-34,6,8);
+  wc.fillStyle='#fff3c8'; wc.fillRect(hx+27,hy-32,2,4);
 }
 function drawListenerS(e){
   // Nothing else on this map is this shape. Tall, thin, no face, arms too long,
@@ -22384,7 +22409,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.04: automatic belt pins learn their place - they yield, and they stay out of your saved plan.',
+  now:'v8.05: the stall stays when the Peddler runs, the walk home paths around walls, and CAPS says why it will not arm mid-stride.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

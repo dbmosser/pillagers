@@ -27443,6 +27443,49 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.05 - THE STALL STAYS PUT WHEN THE PEDDLER RUNS
+
+The audit's peddler findings, plus the auto-jog message. Three changes:
+
+The stall furniture - table, stock cubes, lantern, ground shadow - now
+draws at his pitch (tx/ty) instead of at him, so when v8.00's flee
+kicks in the market no longer glides across the map with a man frozen
+mid-stride on top of it. The table stays where trade happens; the man
+runs with an actual walk (moving passed to drawOp, sprint while
+fleeing). If he claims a new pitch the stall follows tx/ty there.
+
+The walk home now paths with navSeek instead of a straight line - the
+flee can end around a corner, and moveToward's axis-slide wedges on
+concave geometry, which left _back set forever and the stall closed for
+the rest of the raid while the map still advertised PEDDLER. Behind the
+nav there is a watchdog: three seconds without progress and he gives up
+the old pitch, sets tx/ty to where he stands, and reopens there, with a
+line saying so.
+
+CAPS while moving used to toggle auto-jog on and off in the same frame,
+and the surviving message was "Auto-jog off." for a jog that was never
+on. Arming now asks for a standstill: mid-stride it says "Auto-jog arms
+from a standstill. Stop first, then tap CAPS." and changes nothing.
+
+A probe confession that matters beyond this build: __P() in the fixture
+returns the PROFILE, not the player - it always has. Several probes this
+session read player state off the wrong object (the games own messages
+were the truth the whole time; no shipped code was wrong). The player is
+__state().player, and the ops notes now say so.
+
+Verified: parse PASS; fingerprints 58/276; three endings through oc_btn
+with overlay-on; hub; stage. Play-path probes under __loop: hurt peddler
+fled 344 units from home with the world drawing clean (the new
+furniture-at-home path exercised, drawErr null); quiet period walked him
+back via navSeek to 8 units of his pitch with the arrival line; CAPS
+mid-stride refused with the new message; CAPS at standstill armed,
+jogged 148 units in 800ms, and any movement input cancelled it.
+
+Not verified: the wedge-then-give-up watchdog itself (no concave pocket
+was staged; it is exercised only by its bounded arithmetic); the flee
+looks right visually (furniture/man split was asserted by draw-error
+absence and code, not eyeballed frame by frame).
+
 ## v8.04 - AUTOMATIC BELT PINS LEARN THEIR PLACE
 
 The audit's second cluster: v7.98's auto-belt made its automatic pins
