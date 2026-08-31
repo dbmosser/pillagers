@@ -27443,6 +27443,47 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.64 - SAVES ON THE FRONT DOOR
+
+His order: "at the beginning of the game, let the player decide to continue,
+and show some save slots, or start a new game. Allow the character to name or
+rename themselves at this screen. don't have an option to delete games, just
+start new ones."
+
+The title screen grows a SAVES panel: every existing slot is a row (name, run
+count, credits, XP) with the active one marked CONTINUING; clicking another
+slot switches to it and reboots; START A NEW GAME takes the first empty slot
+of eight and boots it fresh; a name field renames the current pillager (16
+characters, defaults to PILLAGER). There is deliberately NO delete anywhere -
+a slot only ever starts, continues, or is renamed, exactly as ordered. When
+all eight hold pillagers the new-game button says so instead of overwriting
+anything.
+
+The storage design honours the oldest rule in CLAUDE.md without a migration:
+slot 1 IS the sacred salvagerun:profile key, byte-untouched - his existing
+save simply became slot 1. Slots 2-8 live beside it as salvagerun:profile:N,
+and salvagerun:activeSlot picks which one boots. A profile gains one additive
+field, P.pname.
+
+One input subtlety: the any-key-starts-the-game listener now ignores Enter
+and Space while the name field has focus, or typing a name would launch the
+Undercroft mid-word.
+
+Verified end to end on the real controls: the boot title lists the fixture
+profile's slot; renaming through the field and button updates the profile and
+the row live; Enter while typing stays on the title and Enter after blur
+enters the game; START A NEW GAME switched to slot 2 and booted a genuinely
+fresh profile (900 credits, 0 runs) with both slots listed; clicking slot 1
+rebooted back into the full 305-run profile with the original key intact.
+Both endings protocol, hub, stage, cold fingerprint 58, parse PASS with the
+DEVNOW assert green.
+
+Not verified: the web-hardened storage path (window.storage on itch) - the
+slot LISTING reads localStorage directly, so on a host where the game stores
+through window.storage the panel may only show the active slot; the active
+save itself still works through storeGet/storeSet as always. Flagged for the
+next itch publish pass. And eight is my cap, not his - cheap to change.
+
 ## v7.63 - THE MERGE, AND A HUNDRED REWARDS
 
 His ruling, relayed in one word: MERGE. And his order from the floor: "change

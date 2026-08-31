@@ -734,6 +734,17 @@
     <button class="deploy" id="titlestart"
       style="margin-top:26px;padding:13px 46px;font-size:15px;letter-spacing:.2em">ENTER THE UNDERCROFT</button>
     <div id="titlesub" style="margin-top:12px;font-size:11px;color:var(--ash)"></div>
+    <div id="slotpanel" style="margin-top:20px;text-align:left">
+      <div style="font-size:10.5px;letter-spacing:.2em;color:var(--amber)">SAVES</div>
+      <div id="slotlist" style="margin-top:8px;display:grid;gap:6px"></div>
+      <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+        <input id="pnamein" maxlength="16" autocomplete="off" spellcheck="false"
+          style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--steel-hi);border-radius:3px;color:var(--bone);padding:7px 10px;font-size:12px;letter-spacing:.08em"
+          placeholder="NAME YOUR PILLAGER">
+        <button class="deploy ghost" id="pnamesave" style="padding:7px 16px">SAVE NAME</button>
+      </div>
+      <button class="deploy ghost" id="newgame" style="margin-top:8px;padding:8px 16px;width:100%">START A NEW GAME</button>
+    </div>
   </div>
 </div>
 <div class="modal" id="stagemodal">
@@ -1054,7 +1065,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.63';
+var VER='7.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1512,7 +1523,8 @@ var THROWKEYS=['smoke','decoy','frag'];
 // only the literal a NEW profile is born from.
 var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,died:0,best:0,
   log:[],pack:0,contracts:[],cfg:null,lastSim:null,autoExport:true,autoDownload:false,shareRuns:false,iid:null,lastReport:'',cond:'day'};
-var SKEY='salvagerun:profile';
+var SLOT=(function(){ try{ return localStorage.getItem('salvagerun:activeSlot')||'1'; }catch(e){ return '1'; } })();
+var SKEY=(SLOT==='1')?'salvagerun:profile':('salvagerun:profile:'+SLOT);
 function storeSet(v){
   try{
     if(window.storage&&window.storage.set){ window.storage.set(SKEY,v).catch(function(){}); return; }
@@ -1552,6 +1564,7 @@ function loadProfile(){
       if(r&&r.value){ var d=JSON.parse(r.value);
         if(d&&typeof d.credits==='number'){ P=d;
 if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={};
+if(!P.pname)P.pname='PILLAGER';   // v7.64: named at the title screen
 if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
 if(P.cosHat==='pigtails'){ P.cosHat='none'; P.cosCut='pigtails'; }  // v7.26 migration
 if(P.buzzCd) delete P.buzzCd;   // v7.34: no cooldowns
@@ -22108,7 +22121,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.63: THE MERGE. One XP number for everything, and a hundred Mainframe rewards.',
+  now:'v7.64: saves on the front door. Slots, continue, new game, and a name.',
   next:'His queue: save slots and naming at boot, the mile re-baseline at full density, the 2.5d-glitch audit'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -25780,17 +25793,73 @@ loadProfile().then(function(){
     document.getElementById('titlever').textContent='v'+VER;
     var sub=document.getElementById('titlesub');
     if(sub) sub.textContent=(P.runs>0)
-      ? (P.runs+' raid'+(P.runs===1?'':'s')+' logged  \u00b7  '+'$'+P.credits.toLocaleString()+' banked')
+      ? (P.pname+'  \u00b7  '+P.runs+' raid'+(P.runs===1?'':'s')+' logged  \u00b7  '+'$'+P.credits.toLocaleString()+' banked')
       : 'First time out. The Undercroft will walk you through it.';
+    // v7.64, his order: saves on the front door. Slot 1 is the original
+    // profile key; 2..8 sit beside it; the pointer picks which one boots.
+    // There is NO delete - a slot only ever starts, continues, or is renamed.
+    function slotKey(sn){ return sn==='1'?'salvagerun:profile':('salvagerun:profile:'+sn); }
+    function slotInfo(sn){
+      try{ var v=localStorage.getItem(slotKey(sn)); if(!v) return null;
+        var d=JSON.parse(v);
+        return {name:(d.pname||'PILLAGER'),runs:d.runs||0,credits:d.credits||0,xp:d.xp||0};
+      }catch(e){ return null; }
+    }
+    function renderSlots(){
+      var host=document.getElementById('slotlist'); if(!host) return;
+      var h='';
+      for(var sn=1;sn<=8;sn++){
+        var key=String(sn), inf=slotInfo(key);
+        if(!inf&&key!==SLOT) continue;
+        var me=(key===SLOT);
+        h+='<div data-slot="'+key+'" style="cursor:pointer;border:1px solid '+(me?'var(--amber)':'var(--steel-hi)')+
+           ';border-radius:3px;padding:8px 11px;background:rgba(0,0,0,.28);display:flex;justify-content:space-between;gap:10px">'+
+           '<b style="color:'+(me?'var(--amber)':'var(--bone)')+'">'+(inf?inf.name:'PILLAGER')+
+           (me?' <span style="font-size:10px;letter-spacing:.14em">CONTINUING</span>':'')+'</b>'+
+           '<span style="color:var(--ash);font-size:11px">'+
+           (inf?(inf.runs+' runs \u00b7 $'+inf.credits.toLocaleString()+' \u00b7 '+inf.xp.toLocaleString()+' XP'):'new')+
+           '</span></div>';
+      }
+      host.innerHTML=h;
+      var rows=host.querySelectorAll('[data-slot]');
+      for(var r=0;r<rows.length;r++){
+        rows[r].onclick=function(){
+          var sn=this.getAttribute('data-slot');
+          if(sn===SLOT) return;
+          try{ localStorage.setItem('salvagerun:activeSlot',sn); }catch(e){}
+          location.reload();
+        };
+      }
+    }
+    renderSlots();
+    var pin=document.getElementById('pnamein');
+    if(pin) pin.value=P.pname||'';
+    var psv=document.getElementById('pnamesave');
+    if(psv) psv.onclick=function(){
+      var v=(pin&&pin.value||'').trim().slice(0,16);
+      P.pname=v||'PILLAGER'; saveProfile(); renderSlots();
+      if(sub&&P.runs>0) sub.textContent=P.pname+'  \u00b7  '+P.runs+' raid'+(P.runs===1?'':'s')+' logged  \u00b7  '+'$'+P.credits.toLocaleString()+' banked';
+    };
+    var ng=document.getElementById('newgame');
+    if(ng) ng.onclick=function(){
+      for(var sn=1;sn<=8;sn++){
+        var key=String(sn);
+        if(!slotInfo(key)&&key!==SLOT){
+          try{ localStorage.setItem('salvagerun:activeSlot',key); }catch(e){}
+          location.reload(); return;
+        }
+      }
+      ng.textContent='ALL EIGHT SLOTS HAVE PILLAGERS IN THEM';
+    };
     var go=function(){
       if(!t.classList.contains('on')) return;
       t.classList.remove('on');
       ac(); showScreen('hub');
     };
     document.getElementById('titlestart').onclick=go;
-    // Any key works too, because a title screen that only accepts one button is
-    // a title screen people sit on wondering whether the game has frozen.
+    // Any key works too - but not while a name is being typed.
     window.addEventListener('keydown',function(e){
+      if(document.activeElement&&document.activeElement.id==='pnamein') return;
       if(t.classList.contains('on')&&(e.code==='Enter'||e.code==='Space')) go();
     });
   })();
