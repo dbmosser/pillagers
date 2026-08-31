@@ -27443,6 +27443,34 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.98 - A PICKUP TAKES ITS OWN BELT SLOT
+
+His order: "guns, heals, grenades, etc should auto-equip to the hotbar upon
+pickup inside a raid." Checked against the current code first, per the
+standing rule: heals, grenades and plates ALREADY auto-appear - their belt
+slots are derived every frame from what you carry - and an upgrade gun
+already goes straight to your hands. The real gap was a gun that is NOT an
+upgrade, and stims: both landed in the bag with no belt presence, reachable
+only through TAB.
+
+Now any picked-up (or peddler-bought) gun or stim takes the first empty
+belt slot as a raid-local assignment, announced ("Scav Pistol to belt slot
+8."). His 2026-08-24 rule stands untouched: nothing swaps into your HANDS -
+the belt just shows what you carry so a number key can reach it. The
+assignment lives on the raid copy of the plan, so the hub layout he built
+is only ever rewritten when he drags something himself; sims keep their
+null plan by guard.
+
+Verified: parse PASS; fingerprints 58 and 276; three endings through
+oc_btn; hub; stage; and the whole matrix staged live through the real open
+path on a real raid - an upgrade DMR went to hands, a worse pistol went to
+bag AND took belt slot 8, a stim took slot 7, and a sim raid ran to a
+normal outcome with its plan untouched.
+
+Not verified: the belt-full case says nothing (the pickup still lands in
+the bag silently - by design, there is no slot to give it); his eyes on
+the announcement wording.
+
 ## v7.97 - THE CROWD SEPARATES ON WHAT IS DRAWN
 
 His live report: "pillagers in the undercroft are still standing on top of
