@@ -27443,6 +27443,57 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.13 - THE UNDERCROFT CAN BE HEARD
+
+Two audit findings that were the same wound, and they were poisoning
+everything around them: the game answered you, and the answer was drawn
+where you could not see it.
+
+say2 painted onto #hcv, which is z-index 5. Every .screen is 10 and every
+.modal is 60 - so a confirmation or a refusal fired BY a menu was drawn
+UNDERNEATH that menu. "Bag full", "You only have 2 of those", "Nothing to
+put there", every vendor line: all of them fired correctly and all of them
+were invisible at the exact moment they mattered. The line now lives in
+the DOM at z-index 200, above the window that asked for it, and fades
+after five seconds.
+
+And say() writes G.msg, which only the raid HUD reads. Every message from
+a hub station came through it and was thrown away: all eleven Mainframe
+lines, Settings' backup and restore, and IMPORT A FRIEND, which was a
+button that produced no visible effect whatsoever. say() now hands the
+line to the same toast when there is no raid to say it into.
+
+A CONFESSION ABOUT THE HARNESS, because it cost most of this build. The
+first cut called say2 by name from the say() body and the toast stayed
+empty. I probed it four ways - confirmed G was null, confirmed the
+fallback branch was reached, confirmed the toast element existed at
+z-index 200 - and the message still did not arrive. The cause was not in
+the game at all: tools/mkfixture.ps1 OVERRIDES say() with its own copy, and
+that copy still had the old body, so the fixture was dropping the line the
+shipped code was handling correctly. The comment directly above that
+override is a v3.01 note about this exact failure - "the game was fine and
+the harness was lying" - written the last time it happened. The override
+now mirrors the shipped function, so the next person to test a message
+tests the game.
+
+Second lesson kept: both surfaces now go through one writer, hubToast,
+declared where its first caller is. A vendor line and a station refusal
+can no longer end up on two different surfaces.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. On real paths: __say with no
+raid puts the line in the toast; IMPORT A FRIEND with an empty name - the
+button the audit called completely dead - now says "Type what to call them
+first."; a cheat box take still toasts through say2 while its window is
+open, which is the case that was invisible before; and say() inside a live
+raid still writes G.msg and does NOT toast, so the raid HUD is unchanged.
+
+Not verified: how the toast looks in motion at his window size (position
+and fade are asserted from computed style, not eyeballed - the transition
+means opacity reads 0 on the same tick the class is added); and the
+remaining say2 call sites were not individually walked, only the shared
+writer they all now go through.
+
 ## v8.12 - THE WINDOWS STOP LEAKING, AND TWO THINGS THAT ATE YOUR GEAR DO NOT
 
 A twelve-agent adversarial audit over the menu and inventory subsystem -

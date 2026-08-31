@@ -46,6 +46,16 @@
   #root, #root * { box-sizing:border-box; }
   #cv { display:block; width:100%; height:100%; cursor:none; background:var(--void); }
   #hcv { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:5; }
+  /* v8.13, audit: the Undercroft answer line. It used to be painted on #hcv at
+     z-index 5, underneath every screen (10) and every window (60), so the reply
+     to a click was drawn behind the thing you clicked. Above both now, and
+     pointer-events:none so it can never eat a click of its own. */
+  #hubtoast{ position:fixed; left:50%; transform:translateX(-50%); bottom:38px;
+    z-index:200; pointer-events:none; max-width:70vw; text-align:center;
+    padding:9px 18px; border:1px solid var(--steel-hi); border-radius:3px;
+    background:rgba(6,9,13,.94); color:var(--bone); font-size:15px;
+    letter-spacing:.02em; opacity:0; transition:opacity .18s ease; }
+  #hubtoast.on{ opacity:1; }
   .screen { position:absolute; inset:0; z-index:10;
     background:
       radial-gradient(1100px 500px at 20% -10%, rgba(255,192,74,.09), transparent 60%),
@@ -539,6 +549,7 @@
 
 <canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
+<div id="hubtoast"></div>
 
 <div class="pausebox" id="pausebox">
   <h3>RUN PAUSED</h3>
@@ -1137,7 +1148,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.12';
+var VER='8.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8946,7 +8957,30 @@ var SH=G.shells[shI];
 }
 
 // ================================================================ sim core helpers
-function say(m){ if(G&&!G.sim){G.msg=m;G.msgT=3.2;} }
+// THE UNDERCROFT ANSWER LINE, v8.13. Declared here because say() below is the
+// first thing that needs it. It writes the #hubtoast element, which sits at
+// z-index 200 - above every screen (10) and every window (60), which is where
+// nearly every one of these sentences is fired from.
+var HUBTOAST_T=null;
+function hubToast(t){
+  var el=document.getElementById('hubtoast');
+  if(!el) return;
+  el.textContent=t;
+  el.classList.add('on');
+  if(HUBTOAST_T) clearTimeout(HUBTOAST_T);
+  HUBTOAST_T=setTimeout(function(){
+    var e2=document.getElementById('hubtoast');
+    if(e2) e2.classList.remove('on');
+    HUBTOAST_T=null;
+  },5000);
+}
+function say(m){
+  if(G&&!G.sim){ G.msg=m; G.msgT=3.2; return; }
+  // v8.13, audit: no raid to say it into. The Mainframe's eleven messages and
+  // Settings' backup and restore all came through here and were swallowed
+  // whole; IMPORT A FRIEND was a button that did nothing visible at all.
+  if(!G) hubToast(m);
+}
 // `quiet` marks a noise that the player should see but that must not drive the
 // AI. Enemy footsteps use it; without that flag every machine would hear every
 // other machine walking and the whole map would cascade into permanent alert.
@@ -21987,7 +22021,10 @@ function drawHubHUD(ox,oy){
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
   ctx.fillText('$'+P.credits.toLocaleString()+'  \u00b7  XP '+(P.xp||0).toLocaleString()+
     '  ·  '+P.stash.length+' item'+(P.stash.length===1?'':'s')+' in stash  ·  '+P.runs+' runs',16,44);
-  if(HUBSAY_T>0){
+  // v8.13: the line itself moved to #hubtoast, which sits above the windows it
+  // is usually answering. This block keeps the timer honest for anything still
+  // reading HUBSAY_T and draws nothing.
+  if(false&&HUBSAY_T>0){
     ctx.textAlign='center';
     ctx.font=FS(TYPE.head);
     ctx.fillStyle='rgba(255,246,220,'+clamp(HUBSAY_T,0,1)+')';
@@ -22657,7 +22694,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.12: windows stop leaking - the floor holds still under them, none follow you into a raid, and two things that ate your gear do not.',
+  now:'v8.13: the Undercroft can be heard - every confirmation and refusal now shows above the window that asked for it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -22732,7 +22769,9 @@ function initBuildPicker(){
 // The hub has no raid HUD to say() into, so vendor speech gets its own slot
 // drawn over the Undercroft floor.
 var HUBSAY='',HUBSAY_T=0;
-function say2(t){ HUBSAY=t; HUBSAY_T=5; }
+// v8.13b: the same one writer say() uses, so a vendor line and a station
+// refusal can never end up on two different surfaces.
+function say2(t){ HUBSAY=t; HUBSAY_T=5; hubToast(t); }
 var GAMBLE_PRICE=2500;   // v6.64, his note: $2,500 a pull.
 var GAMBLE_POOL=[
   ['scrap',10],['wire',10],['cell',9],['bandage',9],['ammobox',10],['board',8],

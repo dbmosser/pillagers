@@ -706,7 +706,17 @@ try{ blip=function(){}; }catch(e){}
 // the game was fine and the harness was lying. It now does the real thing AND
 // records the last line, so the fixture stays as silent as it ever was and a test
 // can finally read what the game said.
-try{ say=function(m){ window.__lastSay=m; if(G&&!G.sim){ G.msg=m; G.msgT=3.2; } }; }catch(e){}
+// v8.13: AND IT HAD FALLEN BEHIND AGAIN, in exactly the way the paragraph above
+// describes. The shipped say() gained an Undercroft fallback - with no raid to
+// write G.msg into, it hands the line to hubToast - and this override still
+// dropped it on the floor. Two probes reported "the fallback does not fire"
+// while the game did it correctly. An override of a real function has to mirror
+// the real function, or it is a second implementation that tests itself.
+try{ say=function(m){
+  window.__lastSay=m;
+  if(G&&!G.sim){ G.msg=m; G.msgT=3.2; return; }
+  if(!G&&typeof hubToast==='function') hubToast(m);
+}; }catch(e){}
 try{ tickAmbience=function(){}; }catch(e){}
 try{ tickEnemyAudio=function(){}; }catch(e){}
 try{ tickPlayerSteps=function(){}; }catch(e){}
