@@ -27443,6 +27443,28 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.79 - THE LAST SMALL TYPE
+
+The straggler sweep: a systematic pass over every stylesheet font under 13px,
+keeping only the deliberate smalls (the right-click context menu is "dark and
+tight" on purpose and stays). The big one is the outcome ledger - the lines
+he reads after EVERY run (XP earned, items secured, what banked) were 11.5px
+in a 470px column; they are 14.5px in 560px now, with the subtitle at 14, the
+feeling-tag buttons he clicks each run at 13 with real padding, and the
+"anything else?" box he types into at 14. Also grown: stat rows and run
+history lines in YOUR STATS, stack counts on inventory cells, the empty-cell
+note, the equipped weapon's condition line, avatar slot labels, loadout head
+notes, settings descriptions to match the standard sub-line, item tag chips,
+and the reward-card crew lines.
+
+Verified: parse PASS with the DEVNOW assert; fingerprints 58 and 276; three
+endings EXTRACTED / KILLED IN ACTION / ABANDONED through oc_btn into the hub;
+stage renders; hub steps and draws; the extract ledger screenshotted at
+1920x1080 and reads clean at the new sizes.
+
+Not verified: his eyes, as with the whole proportion arc; and the stats tab
+was sized by rule rather than screenshotted this pass.
+
 ## v7.78 - THE RECORDER BLAMES THE RIGHT MACHINE
 
 Found in HIS telemetry tonight, not by a probe. Two fresh exports landed at
