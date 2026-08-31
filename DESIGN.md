@@ -27443,6 +27443,46 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.60 + v7.61 - NAMED DOORS, BARE HANDS, AND THE CROWBAR'S FUNERAL
+
+v7.60, his map orders. Every extraction ring on the map page is named EXTRACT
+A/B/C by its stable zone order (the array is authored order, never sorted; the
+closure shuffle swaps only the timings). Each ring states its situation: a
+countdown to when it closes ("closes in 3 min"), STAYS OPEN for the rings that
+never close (the mile's last three), CLOSED in grey, CALLED Ns while a beacon
+is inbound, OPEN TO EXTRACT Ns while it holds. And the two-stage flashing he
+asked for: a slow pulse the moment anyone - his bot rivals included -
+activates a ring, a fast flash when it is open to walk into. The old pre-fog
+OPEN/CLOSED caption died with it, or every ring would carry two captions now
+that the map blackout is gone. Verified: the overlay draws clean with a called
+ring and a holding ring staged, and three full-canvas pixel sums at advancing
+clock ticks all differ - the flash is real.
+
+v7.61, two orders that share one drawing path. "when i switch to bare hands,
+my gun is still out -- and i don't see any melee animation": drawOp never knew
+what you held - the gun was a hardcoded silhouette and only the mode string
+could remove it. The hero's mode is now weapon-aware: Bare Hands draws the
+empty-hand arm, a swing raises G.punchT and draws a thrust fist for a beat,
+and the fists' existing melee mechanics (the 0.9-rad cone, back-hit bonus) are
+untouched. "can we kill the crowbar concept and remove it entirely": yes -
+nothing mechanically needed it (doors want keys, containers want E, seals want
+holding E; the audit of every reference confirmed it was a WEAPONS entry, a
+hotbar tool slot, a trigger special-case and a contextual visual). All four
+are gone, plus five comments that told crowbar stories. The one real design
+decision inside it: SPEC 7.4's you-can-be-caught-looting telegraph SURVIVES,
+barehanded - working a container or cutting a seal still forces the gun down
+(G.handsT draws empty hands), so looting keeps its cost.
+
+Verified: four hand states (gun, fists, punch, working) hash DIFFERENT pixels
+at the player's actual screen position with a stable baseline; no tool slot
+remains; residual grep shows only the two deletion-record comments; three
+endings, hub, stage, both maps' fingerprints intact (58 / 276).
+
+Not verified: the punch in MOTION at real frame rate (a 0.22-second pose was
+verified as a distinct drawn state, not watched as an animation); whether
+slot numbering shifting up by one where the tool slot used to sit disturbs
+any habit of his (assignments are item-keyed, so only muscle memory moves).
+
 ## v7.59 - RIPPLES, NOT BOOTPRINTS
 
 His note: "footprints should not be present when wading in water -- water could

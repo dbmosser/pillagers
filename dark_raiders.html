@@ -1054,7 +1054,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.59';
+var VER='7.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1149,15 +1149,7 @@ function ival(k){ return Math.round((ITEMS[k]?ITEMS[k].val:0)*CFG.lootMult); }  
 // ================================================================ data
 var WEAPONS={
   fists:{id:'fists',name:'Bare Hands',dmg:6,rof:420,spread:.30,mag:0,reload:0,rng:60,auto:false,noise:0,tint:'#cdd6dd'},
-  // THE CROWBAR SWINGS, v3.56. His note: "7 is supposed to be crowbar but it
-  // still fires the gun -- should melee instead". The first pass at this slot,
-  // v3.41, made the READOUT honest and kept the fall-through; he has now asked
-  // again with a directive, so the fall-through itself is wrong. mag:0 routes it
-  // down the same melee path Bare Hands has always used. noise 0 is the point of
-  // swinging a crowbar: it is the quiet answer to a lone crawler that a gunshot
-  // would advertise. dmg 26 kills a crawler in two swings and a sentry in five,
-  // strong enough to be a real tool, nowhere near replacing a gun.
-  crowbar:{id:'crowbar',name:'Crowbar',dmg:26,rof:520,spread:.20,mag:0,reload:0,rng:66,auto:false,noise:0,tint:'#9aa8b2'},
+
   pistol:{id:'pistol',name:'Scav Pistol',dmg:19,rof:290,spread:.055,mag:12,reload:1400,rng:420,auto:false,noise:330,tint:'#ffd48a'},
   smg:{id:'smg',name:'Compact SMG',dmg:12,rof:88,spread:.115,mag:30,reload:1850,rng:360,auto:true,noise:300,tint:'#ffe0a0'},
   rifle:{optic:1.25,id:'rifle',name:'Auto Rifle',dmg:23,rof:132,spread:.070,mag:25,reload:2050,rng:520,auto:true,noise:420,tint:'#ffcf7a'},
@@ -9732,7 +9724,7 @@ function tickRegen(dt){
   }
 }
 // ================================================================ hotbar
-// SPEC 6.1: a unified hotbar. Guns, heals, throwables and the crowbar all
+// SPEC 6.1: a unified hotbar. Guns, heals and throwables all
 // occupy equal slots, you SELECT a slot and then act with it, and only one item
 // is in hand at a time. This is a deliberate feel change: item selection
 // becomes a decision under pressure rather than three separate always-available
@@ -9843,7 +9835,7 @@ function hotbarSlots(){
   // move for anyone who is not.
   if(countArmor()>0) out.push({k:'plate',name:'Armour Plate',kind:'armor',icon:'plate',
     count:countArmor(),c:'#5aa9e6'});
-  out.push({k:'bar',name:'Crowbar',kind:'tool',count:null,c:'#9aa8b2',icon:'bar'});
+
   // HIS REQUEST, 2026-08-25: "I want the inventory to be physical like minecraft
   // so you can drag icons down to the quick bars". The bar above is DERIVED: it
   // is rebuilt from scratch every frame from what you happen to be carrying, and
@@ -10674,7 +10666,8 @@ function updatePlayer(dt){
   var _aw=mouseWorld();
   p.face=Math.atan2(_aw.y-p.y,_aw.x-p.x);
   if(p.hitFlash>0) p.hitFlash-=dt;
-  if(G.crowbarUp>0) G.crowbarUp-=dt;
+  if(G.punchT>0) G.punchT-=dt;
+  if(G.handsT>0) G.handsT-=dt;
   if(p.recoil>0) p.recoil-=dt*7;
   if(p.muzzle>0) p.muzzle-=dt;
   if(p.iv>0) p.iv-=dt;
@@ -10935,13 +10928,8 @@ if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.s
   // clicking at nothing until you remembered to press 1. An empty slot is not a
   // held item, so the trigger goes back to the gun.
   var HSL=hotbarSlots(), HSC=HSL[hotSel()];
-  // The Crowbar slot is kind 'tool' and is INFORMATIONAL: the bar comes up by
-  // itself while you work a container or cut a seal, and there is no standalone
-  // crowbar action anywhere in the file. useHot has no branch for it either, so
-  // routing the trigger there would silently swallow the fire button for as long
-  // as that slot stayed selected. Tools fall through to the gun.
   // count is tested as "not greater than zero" rather than "=== 0" because a
-  // slot can carry null: the Crowbar does, and so does a magazine-less gun.
+  // slot can carry null: a magazine-less gun does.
   // FULL EQUIP, v2.92. His note: "gun is shooting while i'm trying to heal --
   // gun should fully unequip and healing item, throwable, whatever should fully
   // equip." He is right, and v2.45's fall-through is what shot him. That build
@@ -10954,7 +10942,7 @@ if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.s
   // belongs: spending the last of a stack SELECTS THE GUN, so the trigger is
   // never dead, and the swap happens between clicks rather than during one.
   // Tools and assigned valuables are not held things, so they still yield.
-  var hotGun=(!HSC||HSC.kind==='gun'||HSC.kind==='tool'||HSC.kind==='item');
+  var hotGun=(!HSC||HSC.kind==='gun'||HSC.kind==='item');
   if(mouse.down&&!hotGun){
     // THROWABLES COOK, v3.11. Press pulls the pin and starts the clock in your
     // hand; release throws whatever fuse is left. Everything else on the hotbar
@@ -10978,16 +10966,12 @@ if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.s
       }
     }
   }
-  else if(mouse.down&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>((HSC&&HSC.kind==='tool')?WEAPONS.crowbar:p.wep).rof){
-    // With the Crowbar slot selected the trigger swings the crowbar instead of
-    // falling through to the gun, v3.56. Everything else about the fall-through
-    // stands: an empty consumable slot still hands the trigger to the gun,
-    // because that valve exists for a different reason and he never complained
-    // about it. Only the tool changed sides.
-    var _mw=(HSC&&HSC.kind==='tool')?WEAPONS.crowbar:p.wep;
+  else if(mouse.down&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){
+    var _mw=p.wep;
     if(_mw.mag===0){
       if(_mw.auto||!p.fired){ p.lastShot=now; p.fired=true;
-        if(_mw.id==='crowbar') G.crowbarUp=0.3;
+        // v7.61: the swing shows - a thrust fist for a beat.
+        if(_mw.id==='fists') G.punchT=0.22;
         fireWeapon(p,_mw,p.x+Math.cos(p.face)*100,p.y+Math.sin(p.face)*100,true); }
     }
     else if(p.ammo>0){
@@ -11079,7 +11063,7 @@ if(!p.fired||p.wep.auto){
       var have=SR.cut+G.seal.gained;
       if(have<need){
         G.seal.gained+=dt;
-        G.crowbarUp=0.25;
+        G.handsT=0.25;
         G.sealNoise=(G.sealNoise||0)+dt;
         if(G.sealNoise>0.5){
           G.sealNoise=0;
@@ -11343,9 +11327,9 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
         }
       }
       G.searchT=near.prog;
-      // SPEC 7.4: the crowbar is IN YOUR HANDS while you work, contextually,
-      // not as a hotbar chore. That is the cost: you can be caught holding it.
-      if(!G.sim) G.crowbarUp=0.25;
+      // SPEC 7.4, crowbar deleted v7.61: while you work your gun is DOWN and
+      // your hands are visibly empty. Same cost, stated barehanded.
+      if(!G.sim) G.handsT=0.25;
       // SPEC 10.1: container opening is audible and shows on the visualizer,
       // which is what makes an emptied crate a warning to whoever hears it.
       near.noiseAcc=(near.noiseAcc||0)+dt;
@@ -15315,18 +15299,18 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var gunY=ty-20+(ads?-1:0);
   wc.save(); wc.translate(x+leanX,gunY); wc.rotate(face+fl*drop);
   var ext=ads?2.5:(sprint&&!rl?-3:0);
-  // SPEC 7.4: while you are working a container the crowbar is in your hands
-  // and the gun is not. That is the whole cost of looting: you can be caught
-  // holding a pry bar, and it has to be VISIBLE or the cost is invisible.
+  // SPEC 7.4, barehanded since v7.61: while you are working a container the
+  // gun is DOWN. That is the whole cost of looting - you can be caught with
+  // empty hands, and it has to be VISIBLE or the cost is invisible.
   if(mode==='none'){
     // v6.57, his note: empty hands. Down in the Undercroft nobody is holding a gun,
     // so the arm still swings and there is simply nothing in it.
     wc.fillStyle='#c8b49a'; wc.fillRect(2+ext,-1.6,3.2,3.2);
     wc.restore();
-  } else if(mode==='bar'){
-    wc.fillStyle='#3a4048'; wc.fillRect(1+ext,-1.4,15,2.8);
-    wc.fillStyle='#9aa8b2'; wc.fillRect(2+ext,-1.0,13,1.4);
-    wc.fillStyle='#5c6773'; wc.fillRect(13+ext,-3.4,3.6,3.0);
+  } else if(mode==='fist'){
+    // v7.61: the punch - arm thrust with a fist on the end, skin over sleeve.
+    wc.fillStyle='#c8b49a'; wc.fillRect(2+ext,-1.6,10,3.2);
+    wc.beginPath(); wc.arc(13+ext,0,2.8,0,6.2832); wc.fill();
     wc.restore();
   } else {
   wc.fillStyle='#2c333c'; wc.fillRect(2+ext,-1.6,13,3.2);
@@ -16833,7 +16817,7 @@ var SHD=G.shells[i];
         wc.clip();
       }
       drawOp(p.x,p.y,p.face,p.roll>0?(1-p.roll/.38)*12.6:p.bob,'#242832',
-        clamp((1-loadOf(bagWeight()).spd)/(1-LOAD_FLOOR),0,1),p.muzzle,((G.deathBeat>0||p.hp<=0)?'down':(G.crowbarUp>0?'bar':pmode)),p.iv,
+        clamp((1-loadOf(bagWeight()).spd)/(1-LOAD_FLOOR),0,1),p.muzzle,((G.deathBeat>0||p.hp<=0)?'down':(G.punchT>0?'fist':((pmode===''&&(G.handsT>0||(p.wep&&p.wep.id==='fists')))?'none':pmode))),p.iv,
         {hero:1,own:p,moving:!!p.moving,sprint:!!G.sprinting,ads:!!p.ads,hurt:p.hitFlash,bulk:armorById(p.rig).bulk,
          healLeft:(p.healQ||0),healTot:(p.healAmt0||0),
          healSec:((p.healQ||0)>0&&(p.healRate||0)>0)?((p.healQ)/(p.healRate)):0,
@@ -17813,7 +17797,7 @@ var gap=p.ads?3.5:(8+(p.recoil>0?p.recoil*7:0)+(G.sprinting?5:0));
     // being asked. Suppressed entirely while reloading, because the reload ring
     // already owns that radius and two rings in one place is noise.
     var _HB=hotbarSlots()[hotSel()];
-    var _gunUp=(!_HB||_HB.kind==='gun'||_HB.kind==='tool');
+    var _gunUp=(!_HB||_HB.kind==='gun');
     if(_gunUp&&!rState&&p.wep&&p.wep.mag>0){
       var _mf=clamp(p.ammo/p.wep.mag,0,1);
       var _mr=gap+len+4;
@@ -18422,7 +18406,7 @@ ctx.fillStyle='#4de3d0';
   }
   // SPEC 6.1 and 11: the hotbar, centred at the bottom where the eye goes under
   // pressure. Icons are drawn, not text: a gun silhouette, a throwable sphere, a
-  // cross for medical, a bar for the crowbar, so a slot reads at a glance.
+  // cross for medical, and so on - a slot reads at a glance.
   (function(){
     var sl=hotbarSlots(),sel=hotSel();
     var bw=LH(46),gap=LH(5),tw2=sl.length*bw+(sl.length-1)*gap;
@@ -18651,14 +18635,8 @@ ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
   var _HS=hotbarSlots(), _HH=_HS[hotSel()];
   // HIS NOTE: "what is item 7 supposed to be? when I select it, right hand corner
   // says auto rifle and it shoots my gun, but it has a different graphic."
-  // Slot 7 is the Crowbar. It is deliberately INFORMATIONAL: it comes up by
-  // itself while you work a container, there is no standalone crowbar action, and
-  // tools fall through to the gun so selecting one never swallows your trigger.
-  // That design is fine. The READOUT was not: 'tool' was lumped in with 'gun'
-  // here, so the corner printed the rifle's name over a crowbar icon and the
-  // mismatch read as a bug. A tool now names itself and says where the trigger
-  // actually went, which is the same fall-through, stated.
-  var _isTool=(_HH&&_HH.kind==='tool');
+  // The crowbar and its tool slot were deleted at v7.61 on his order; the
+  // corner readout below covers guns, held items and empty slots only.
   var _heldGun=(!_HH||_HH.kind==='gun');
   ctx.font=FS(TYPE.head); ctx.fillStyle=_heldGun?'#cdd6dd':(_HH.c||'#cdd6dd');
   ctx.fillText(_heldGun
@@ -18666,15 +18644,7 @@ ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
     : _HH.name,
     W-16,by-LH(34));
   ctx.font=FS(TYPE.title);
-  if(_isTool){
-    ctx.font=FS(TYPE.label); ctx.fillStyle='#8a96a1';
-    // Both lines live in the vertical space the single ammo line would have used.
-    // The first cut put the second line at by-LH(4) and the capture showed it
-    // sitting on top of the carry-weight readout underneath.
-    ctx.fillText('MELEE  quiet swing',W-16,by-LH(22));
-    ctx.fillText('opens containers on its own',W-16,by-LH(10));
-  }
-  else if(!_heldGun){
+  if(!_heldGun){
     var _cn=(_HH.count===null||_HH.count===undefined)?null:_HH.count;
     ctx.fillStyle=(_cn===0)?'#ff5a4a':'#cdd6dd';
     ctx.fillText(_HH.kind==='empty'?'EMPTY':(_cn===null?'HELD':(_cn+' held')),W-16,by-LH(14));
@@ -20546,10 +20516,6 @@ function drawMapOverlay(){
     ctx.strokeStyle=act?'#4de3d0':'rgba(127,146,216,.42)'; ctx.lineWidth=act?2:1;
     ctx.beginPath(); ctx.arc(ox+zz.x*sc,oy+zz.y*sc,zz.r*sc+3,0,6.2832); ctx.stroke();
     if(act){ ctx.fillStyle='#4de3d0'; ctx.beginPath(); ctx.arc(ox+zz.x*sc,oy+zz.y*sc,3,0,6.2832); ctx.fill(); }
-    ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
-    ctx.fillStyle=act?'#4de3d0':'rgba(154,168,208,.80)';
-    ctx.fillText(act?'OPEN':'CLOSED',ox+zz.x*sc,oy+zz.y*sc+zz.r*sc+16);
-    ctx.textAlign='left';
   }
   // THE WAYPOINT, v3.02. Drawn before the player marker so his own dot always
   // sits on top of it, and drawn as a ring plus crosshair rather than a filled
@@ -20610,14 +20576,26 @@ if(G.trail&&G.trail.length>1){
   (function(){
     for(var _fz=0;_fz<G.zones.length;_fz++){
       var Z=G.zones[_fz];
-      ctx.strokeStyle=(Z===G.active)?'rgba(77,227,208,.95)':'rgba(77,227,208,.35)';
+      // v7.60, his orders: named rings, a close countdown, two-stage flashing.
+      var _zAct=(Z.beaconT!==null&&Z.beaconT!==undefined);
+      var _zHold=_zAct&&Z.beaconT<=0&&Z.hold!==null&&Z.hold!==undefined;
+      var _fl=1;
+      if(_zHold) _fl=0.55+0.45*Math.sin(G.t*10);
+      else if(_zAct) _fl=0.65+0.35*Math.sin(G.t*4);
+      ctx.strokeStyle=Z.open?('rgba(77,227,208,'+((((Z===G.active)?0.95:0.45))*_fl).toFixed(3)+')'):'rgba(127,146,216,.42)';
       ctx.lineWidth=(Z===G.active)?2:1;
       ctx.beginPath(); ctx.arc(ox+Z.x*sc,oy+Z.y*sc,Math.max(4,Z.r*sc),0,6.2832); ctx.stroke();
-      if(Z===G.active){
-        ctx.fillStyle='#4de3d0'; ctx.font=FS(TYPE.micro); ctx.textAlign='center';
-        ctx.fillText('EXTRACTION',ox+Z.x*sc,oy+Z.y*sc-Math.max(4,Z.r*sc)-4);
-        ctx.textAlign='left';
-      }
+      ctx.font=FS(TYPE.micro); ctx.textAlign='center';
+      ctx.fillStyle=Z.open?('rgba(77,227,208,'+(0.9*_fl).toFixed(3)+')'):'rgba(154,168,208,.80)';
+      ctx.fillText('EXTRACT '+String.fromCharCode(65+_fz),ox+Z.x*sc,oy+Z.y*sc-Math.max(4,Z.r*sc)-14);
+      var _zSub;
+      if(!Z.open) _zSub='CLOSED';
+      else if(_zHold) _zSub='OPEN TO EXTRACT  '+Math.max(0,Math.ceil(Z.hold))+'s';
+      else if(_zAct) _zSub='CALLED  '+Math.max(0,Math.ceil(Z.beaconT))+'s';
+      else if(Z.closeAt===undefined) _zSub='STAYS OPEN';
+      else _zSub='closes in '+fmtMS(Math.max(0,Math.ceil(G.timeLeft-Z.closeAt)));
+      ctx.fillText(_zSub,ox+Z.x*sc,oy+Z.y*sc-Math.max(4,Z.r*sc)-4);
+      ctx.textAlign='left';
     }
   })();
   // your own marker, ringed in ink so a gold dot never disappears into a gold
