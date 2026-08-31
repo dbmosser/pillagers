@@ -1126,7 +1126,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.83';
+var VER='7.84';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10444,7 +10444,7 @@ function tickRaiderWaves(dt){
   G.ents.push(NR);
   G.roster.push({ref:NR,name:NR.name,crew:NR.crew,val:0,out:false});
   G.waveN++;
-  if(!G.sim) say('Another wave of players has entered.');
+  if(!G.sim) say('Another wave of pillagers has entered.');
 }
 function tickExtractPoints(dt){
   var p=G.player,T=G.tel;
@@ -13941,7 +13941,7 @@ var SEASON_TIERS=[
   {sp:60000, kind:'wep', v:'pistol', label:'BACKUP PISTOL'},
   {sp:79200, kind:'kit', v:['scrap','scrap','scrap','scrap','scrap','scrap','wire','wire','wire','wire'], label:'SCRAP AND WIRE'},
   {sp:100800, kind:'credits', v:1500, label:'$1,500 CREDITS'},
-  {sp:124800, kind:'kit', v:['plate','plate','bandage','bandage'], label:'FIRST ARMOR PLATES'},
+  {sp:124800, kind:'kit', v:['plate','plate','bandage','bandage'], label:'FIRST ARMOUR PLATES'},
   {sp:151200, kind:'kit', v:['stim','stim','medkit'], label:'STIMS AND A MEDKIT'},
   {sp:180000, kind:'kit', v:['frag','frag','frag','frag','smoke','smoke'], label:'BAG OF FRAGS'},
   {sp:183800, kind:'credits', v:2500, label:'$2,500 CREDITS'},
@@ -13952,7 +13952,7 @@ var SEASON_TIERS=[
   {sp:204300, kind:'credits', v:3500, label:'$3,500 CREDITS'},
   {sp:208600, kind:'kit', v:['smoke','smoke','smoke','decoy','decoy','decoy'], label:'SMOKES AND DECOYS'},
   {sp:213100, kind:'wep', v:'shotgun', label:'A SCATTERGUN'},
-  {sp:217600, kind:'kit', v:['plate','plate','plate','plate','medkit','medkit'], label:'FOUR ARMOR PLATES'},
+  {sp:217600, kind:'kit', v:['plate','plate','plate','plate','medkit','medkit'], label:'FOUR ARMOUR PLATES'},
   {sp:222200, kind:'kit', v:['core','core'], label:'TWO DATA CORES'},
   {sp:227000, kind:'credits', v:5000, label:'$5,000 CREDITS'},
   {sp:231800, kind:'kit', v:['optic','optic','board','board','comp'], label:'OPTICS AND BOARDS'},
@@ -13964,7 +13964,7 @@ var SEASON_TIERS=[
   {sp:263100, kind:'wep', v:'carbine', label:'FREE CARBINE'},
   {sp:268700, kind:'credits', v:4000, label:'$4,000 CASH'},
   {sp:274400, kind:'kit', v:['core','scrap','scrap','scrap','scrap'], label:'A DATA CORE AND SCRAP'},
-  {sp:280200, kind:'kit', v:['plate','plate','plate','plate','plate'], label:'FIVE ARMOR PLATES'},
+  {sp:280200, kind:'kit', v:['plate','plate','plate','plate','plate'], label:'FIVE ARMOUR PLATES'},
   {sp:286200, kind:'kit', v:['ammobox','ammobox','ammobox','ammobox','bandage','bandage','bandage','bandage'], label:'AMMO RESUPPLY'},
   {sp:292300, kind:'credits', v:5000, label:'$5,000 PAYOUT'},
   {sp:298500, kind:'wep', v:'magnum', label:'MAGNUM SIDEARM'},
@@ -14016,7 +14016,7 @@ var SEASON_TIERS=[
   {sp:787200, kind:'kit', v:['blackbox','blackbox','relay','relay'], label:'BLACK BOXES AND RELAYS'},
   {sp:804000, kind:'credits', v:30000, label:'THIRTY GRAND'},
   {sp:821100, kind:'kit', v:['core','core','core','core','core','core','core','core','core','core','core','core'], label:'DOZEN DATA CORES'},
-  {sp:838600, kind:'kit', v:['frag','frag','frag','frag','frag','frag','frag','frag','ammobox','ammobox','ammobox','ammobox','ammobox','ammobox','plate','plate','plate','plate','plate','plate'], label:'AMMO AND ARMOR CRATE'},
+  {sp:838600, kind:'kit', v:['frag','frag','frag','frag','frag','frag','frag','frag','ammobox','ammobox','ammobox','ammobox','ammobox','ammobox','plate','plate','plate','plate','plate','plate'], label:'AMMO AND ARMOUR CRATE'},
   {sp:856500, kind:'credits', v:35000, label:'THIRTY-FIVE GRAND'},
   {sp:874700, kind:'wep', v:'whisper', label:'THE WHISPER'},
   {sp:893300, kind:'kit', v:['reactor','reactor','reactor'], label:'THREE REACTORS'},
@@ -18829,7 +18829,7 @@ ctx.fillStyle='rgba(190,255,220,.85)';
 if(p.armor>0){
     bar(16,by-46,280,16,p.armor/armorCap(),'#5aa9e6');
     ctx.font=FS(TYPE.label); ctx.fillStyle='#FFF6DC';
-    ctx.fillText('ARMOR  '+Math.round(p.armor),24,by-33);
+    ctx.fillText('ARMOUR  '+Math.round(p.armor),24,by-33);
   }
   var _stc=p.stamLock?'#ff5a4a':(p.stam<35?'#ffc04a':'#8fb5c8');
   bar(16,by-25,280,12,p.stam/100,_stc);
@@ -20312,7 +20312,7 @@ function drawBag(){
     (p.wep.mag?('  MAG '+p.wep.mag):''),x+11,cy);
   cy+=LH(16);
   var _bwP=bagWeight(), _ldP=loadOf(_bwP), _spdP=Math.round((1-_ldP.spd)*100);
-  ctx.fillText('Integrity '+Math.round(p.hp)+'/'+p.maxhp+'    Armor '+Math.round(p.armor)+
+  ctx.fillText('Integrity '+Math.round(p.hp)+'/'+p.maxhp+'    Armour '+Math.round(p.armor)+
     '    BAG '+G.bag.length+' item'+(G.bag.length===1?'':'s')+
     (_spdP>0?('  '+_spdP+'% slower'):''),x+11,cy);
   cy+=LH(8);
@@ -22235,7 +22235,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v7.83: the roadmap UP NEXT row stops naming work that already shipped.',
+  now:'v7.84: pillagers are pillagers, XP is XP, armour is armour, and the bot stays backstage.',
   next:'Wrecked cars that read as cars from overhead, maps that read as different places, and his grades on the new menus and gun looks'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -24145,7 +24145,7 @@ function renderShopDetail(rows){
     var it=ITEMS[o.k];
     h+='<div class="vdesc">'+escHtml(it?(itemBlurb(o.k)||''):'')+'</div>';
   }
-  if(locked) h+='<div class="vdesc" style="color:#8a5a2c">Locked until reputation '+
+  if(locked) h+='<div class="vdesc" style="color:#8a5a2c">Locked until XP '+
     o.rep.toLocaleString()+'. You have '+(P.xp||0).toLocaleString()+'.</div>';
   var stackable=(o.kind!=='wep');
   if(P._shopQty===undefined||P._shopQty<1) P._shopQty=1;
@@ -24862,7 +24862,7 @@ var _myR=0;
                (M.locked?M.locked.length:0)+' keyed rooms'];
     // Real numbers, labelled as the bot's, replacing the fabricated loot
     // percentage that came off an inert constant.
-    if(MS.ext!==undefined) facts.push('bot walks out '+MS.ext+'%');
+    if(MS.ext!==undefined) facts.push('measured walkout '+MS.ext+'%');
     if(MS.fc!==undefined)  facts.push('first contact ~'+MS.fc+'s');
     if(MS.cont!==undefined)facts.push(MS.cont+' containers a raid');
     if(MS.haul!==undefined)facts.push('median haul '+'$'+MS.haul.toLocaleString()+'');

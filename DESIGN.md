@@ -27443,6 +27443,34 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.84 - ONE WORD PER THING, FOUR FIXES FROM THE SIX-LENS AUDIT
+
+A 32-agent audit swept the file through six lenses (UI overflow after the
+proportion growth, player-facing copy, render-crash paths, save integrity,
+dead code, and the samey-maps complaint) with every finding adversarially
+verified: 21 confirmed, 5 refuted. This build takes the copy lens:
+
+- The wave arrival said "Another wave of players has entered" - the one
+  string in the game calling AI pillagers players, and it implied
+  multiplayer. Now pillagers.
+- The shop detail card still gated on "reputation", merged into XP at
+  v7.63; its two sibling labels already said XP. Now XP.
+- The sector board said "bot walks out 15%" on the one screen every deploy
+  passes through. The number was a deliberate honesty choice and stays;
+  the dev word goes: "measured walkout 15%".
+- ARMOR and Armour were both live for the same stat, sometimes in the same
+  run (raid HUD and four Mainframe reward labels vs the Armour Plate item
+  and all the prose). British everywhere now, matching the item name.
+
+Verified: parse PASS with both staleness asserts; fingerprints 58 and 276;
+three endings EXTRACTED / KILLED IN ACTION / ABANDONED through oc_btn; hub
+steps and draws; stage renders. Mid-build the 8800 fixture server died
+silently and was restarted via tools/start-servers.ps1 - his warning about
+that exact failure is why the tick checks it.
+
+Not verified: the "measured walkout" rewording preserves the honesty of a
+deliberate label - if he wants the bot named, one line reverts it.
+
 ## v7.83 - THE ROADMAP STOPS NAMING SHIPPED WORK
 
 Second member of the rot class his v7.34 catch exposed. The dev roadmap
