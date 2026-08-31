@@ -27443,6 +27443,37 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.91 - THE TWO MAPS STOP WEARING THE SAME CLOTHES
+
+His standing complaint, and a real feeling tag: maps feel samey. The audit's
+answer was precise: the maps differ almost entirely in geometry, because
+every surface-treatment channel is byte-identical - the per-map ground and
+vegetation hooks built for exactly this at v4.20/v4.21 hold the same values
+on both maps, and the wreck paint pool is one shared list.
+
+This build is the DRAW-ONLY half, deliberately split so the seeded gameplay
+stream is untouched: THE COLD MILE's floor goes harder steel (day #5A6272,
+night #0d141f against cold's concrete-blue #55647A/#10151d), its vegetation
+frostbites deeper toward blue (veg 0.82/0.90/1.18 vs 0.88/0.92/1.12), and
+its wrecks wear cargo-fleet paint (steels, navies, one faded hi-vis) while
+COLD STORAGE keeps the warmer civilian end of the old pool. The paint pool
+is read off the map spec now with the old list as default, and pick() is
+one rr() draw whatever the list length, so nothing downstream shifts.
+
+The density half (more wrecks on the mile's truck yards, more collapsed
+racking on cold's swept floors) is authored and DEFERRED on purpose: wreck
+counts feed the seeded stream, so that change invalidates the fingerprints
+and the measured board, and it ships together with its own re-baseline.
+
+Verified: parse PASS; fingerprints 58 and 276 UNCHANGED - the stream-safety
+split held; three endings through oc_btn; hub; stage; and the two floors
+measured different on canvas (40x40 average near the player, total channel
+delta 38 where the specs used to be identical).
+
+Not verified: his eyes on the new mile cast - the values follow the
+audit's recommendation and the map's own truck-yard story text; one line
+reverts either palette if it reads wrong.
+
 ## v7.90 - THREE PIECES OF DEAD CODE LEAVE
 
 The dead-code trio from the six-lens audit, deletions only, no behaviour:
