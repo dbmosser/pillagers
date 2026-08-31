@@ -27443,6 +27443,59 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.27 - NOTORIETY, WHERE YOU CAN SEE IT
+
+Two orders, an hour apart: "can we include a visible and sensical notoriety
+rating in the stats page?" and then "when a player does something that
+gains notoriety can we give them a visual indicator?" Both are here. The
+version jumps 8.25 to 8.27 because the stats card was built and verified
+as 8.26 and the indicator landed before it was committed; one build, both
+orders.
+
+WHAT IT ACTUALLY DOES, because the card had to be true before it could be
+useful. Notoriety has three teeth and they were all in the dark:
+  - at 2 the Peddler refuses to trade at all (pedOpen)
+  - every point adds 15 percent to a merc's fee (hireRisk)
+  - every point makes a hostile pillager slower to lower his gun: the
+    parley threshold is 2 + your notoriety, capped at 3 points, minus your
+    standing with him
+And it fades: four clean extractions shed a point, or helping an unarmed
+survivor sheds one on the spot.
+
+THE CARD names the number instead of just printing it - Clean, Talked
+about, Barred, Notorious - and then says what it is costing him right now
+and how to get rid of it. Barred gets its own word because 2 is the only
+hard cliff in the system. At zero it still shows, and says what would
+start it, because a system he cannot see is a system he cannot avoid.
+
+THE INDICATOR. There was one already: a floating world label reading
+"NOTORIETY +2". Two things wrong with it. It competes with a gunfight for
+his attention in the loudest second of the raid, and the number after the
+plus sign was the new TOTAL, not the gain - so a second killing printed
+"+2", which reads as two points for one body. It says +1 now, because one
+is what he gained, and a stamp goes up over the raid for three seconds:
+the score, the rating word, what he just did, and what it costs him. It
+carries a shake and the alarm cue, and it is timestamped off the raid
+clock rather than counted down, so it needs no dt and a paused frame
+cannot leave it hanging.
+
+One writer for the naming, shared by the card and the stamp, so the word
+he reads mid-raid is the word the stats page shows him afterwards.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 and 276; three endings
+through oc_btn with overlay-on; hub; stage. The card read at four scores
+through the Mainframe's own YOUR STATS act: Clean, Talked about at +15%
+with 3 tries to stand down, Barred at +30% with the stall shut, Notorious
+at +60% with 5 tries - every clause matching the expression that enforces
+it. The stamp photographed on the real path: killed the Peddler with my
+own charge at notoriety 1, and the screen reads "NOTORIETY 2 · BARRED /
+YOU KILLED THE PEDDLER / The Peddler is done with you." centred clear of
+the reticle and the belt. A fresh raid starts with the stamp cleared.
+
+Not verified: the stray-killing stamp, which shares the same call and was
+checked by reading rather than by staging a survivor; and how the three
+seconds feel in play, which is his call.
+
 ## v8.25 - THE WAY OUT IS ALWAYS A WAY OUT
 
 Three raid-audit findings, all of them the same object: G.active, the one
