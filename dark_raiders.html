@@ -1128,7 +1128,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.02';
+var VER='8.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6011,14 +6011,17 @@ function mkStrongbox(x,y){
   c.cache=1; c.strong=1; c.time=9.0; c.tag='MERIDIAN STRONGBOX';
   return c;
 }
+var _RRANK={common:0,uncommon:1,rare:2,elite:3,gold:4};
 function bestRarity(loot){
   // Defensive. An unknown key here used to throw inside a death handler and take the
   // whole raid with it, which is far too high a price for a bad loot table entry.
+  // v8.03: ranks by DISPLAYED rarity, so a cache holding a gun glows the colour
+  // the gun will actually wear when it comes out. gold had no rung at all here.
   var best='common';
   for(var j=0;j<loot.length;j++){
     var it=ITEMS[loot[j]]; if(!it) continue;
-    var r=it.r;
-    if(r==='elite'||(r==='rare'&&best!=='elite')||(r==='uncommon'&&best==='common')) best=r;
+    var r=dispR(loot[j])||it.r;
+    if((_RRANK[r]||0)>(_RRANK[best]||0)) best=r;
   }
   return best;
 }
@@ -9422,14 +9425,17 @@ function dropItem(idx){
 }
 // The worst thing in the bag is the one earning its space least, which is value
 // per unit of weight rather than raw value: a heavy cheap thing should go before
-// a light cheap thing. Rare and elite are never candidates, so autoloot can
-// never throw away the run.
+// a light cheap thing. Rare, elite and gold - as DISPLAYED, since v8.03 - are
+// never candidates, so autoloot can never throw away what the UI just called
+// a prize. Before this, a gun labelled RARE on every panel was quietly
+// cullable because its economy row still said uncommon.
 function worstBagIndex(){
   var worst=-1,worstScore=Infinity;
   for(var i=0;i<G.bag.length;i++){
     var it=ITEMS[G.bag[i]];
     if(!it) continue;
-    if(it.r==='rare'||it.r==='elite') continue;
+    var _wr=dispR(G.bag[i])||it.r;
+    if(_wr==='rare'||_wr==='elite'||_wr==='gold') continue;
     var score=ival(G.bag[i])/Math.max(0.5,it.wt);
     if(score<worstScore){ worstScore=score; worst=i; }
   }
@@ -9754,10 +9760,13 @@ function grantLoot(ct,keys){
   for(var l=0;l<keys.length;l++){
     var key=keys[l],itm=ITEMS[key];
     T.items++; T.rar[itm.r]++;
+    // v8.03: the first surface a gun is ever seen on now agrees with every
+    // panel that follows it - tier rarity, not the economy row.
+    var _gdr=dispR(key)||itm.r;
     // one line per item; label() stacks them into a column so they never overlap
     label(ct.x,ct.y-10,
       itm.name+(itm.use==='ammo'?' +'+itm.amt+' ammo':(itm.use==='armor'&&p.armor<armorCap()?' +'+Math.round(Math.min(armorCap()-p.armor,itm.amt))+' armor':' '+ival(key)+'c')),
-      RCOL[itm.r],0,itm.r==='rare'||itm.r==='elite',key);
+      RCOL[_gdr],0,_gdr==='rare'||_gdr==='elite'||_gdr==='gold',key);
     if(itm.use==='ammo') p.reserve+=itm.amt;   // SPEC 6.4: one universal pool
     // A plate is worth 55 but only applied below 20 armour, so deploying with a
     // plate from stash put you at 55 and made every plate you then found dead
@@ -14537,9 +14546,10 @@ var _cdone=contractExtract(G.bag,haul);
     for(j=0;j<saved.length;j++) savedVal+=ival(saved[j]);
     var lostIdx=idx.slice(nSafe),shown=lostIdx.slice(0,7);
     for(j=0;j<shown.length;j++){
-      var li2=ITEMS[G.bag[shown[j]]];
+      var _lk2=G.bag[shown[j]];
+      var li2=ITEMS[_lk2];
       if(!li2) continue;
-      lines.push('<span style="color:'+(RCOL[li2.r]||'#cdd6dd')+'">'+li2.name+'</span>'+
+      lines.push('<span style="color:'+(RCOL[dispR(_lk2)||li2.r]||'#cdd6dd')+'">'+li2.name+'</span>'+
         '<span style="color:var(--rust)">  LOST</span>');
     }
     var gone=carriedGuns(G.player);
@@ -18571,7 +18581,7 @@ else if(nc2.tag) ctx.fillText('['+keyLabel('KeyE','E')+'] SEARCH '+String(nc2.ta
       // secrets, because he explicitly wants searching to mean something.
       if(nc2.loot.length===1&&nc2.dropped){
         var dit=ITEMS[nc2.loot[0]];
-        if(dit){ ctx.fillStyle=RCOL[dit.r]||'#cdd6dd';
+        if(dit){ ctx.fillStyle=RCOL[dispR(nc2.loot[0])||dit.r]||'#cdd6dd';
           ctx.fillText(dit.name,s.x,s.y+LH(13)); }
       }
       ctx.textAlign='left';
@@ -22328,7 +22338,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.02: the NEW IN card catches up with twenty builds of changes.',
+  now:'v8.03: ten surfaces the rarity sweep missed now agree with the rest.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -22765,7 +22775,7 @@ function renderGamble(){
   for(var i=0;i<log.length;i++){
     var it=ITEMS[log[i]];
     if(!it) continue;
-    h+='<div class="row">'+iconImgHTML(log[i],22)+'<span class="nm" style="color:'+(RCOL[it.r]||'#cdd6dd')+'">'+it.name+'</span>'+
+    h+='<div class="row">'+iconImgHTML(log[i],22)+'<span class="nm" style="color:'+(RCOL[dispR(log[i])||it.r]||'#cdd6dd')+'">'+it.name+'</span>'+
        '<span class="vl">'+'$'+it.val.toLocaleString()+'</span></div>';
   }
   el.innerHTML=h;
@@ -22807,7 +22817,7 @@ function renderCrate(){
   for(i=0;i<CRATE_KIT.length;i++){
     var k=CRATE_KIT[i],it=ITEMS[k];
     h+='<div class="row" draggable="true" data-take="'+k+'">'+iconImgHTML(k,22)+
-       '<span class="nm" style="color:'+(RCOL[it.r]||'#cdd6dd')+'">'+it.name+'</span>'+
+       '<span class="nm" style="color:'+(RCOL[dispR(k)||it.r]||'#cdd6dd')+'">'+it.name+'</span>'+
        '<button data-takebtn="'+k+'" style="padding:2px 10px;font-size:11px">Take</button></div>';
   }
   el.innerHTML=h;
@@ -22819,7 +22829,7 @@ function renderCrate(){
       var sit=ITEMS[sk]; if(!sit) continue;
       any=true;
       sh+='<div class="row" draggable="true" data-bin="'+sk+'">'+iconImgHTML(sk,22)+
-          '<span class="nm" style="color:'+(RCOL[sit.r]||'#cdd6dd')+'">'+sit.name+' x'+counts[sk]+'</span>'+
+          '<span class="nm" style="color:'+(RCOL[dispR(sk)||sit.r]||'#cdd6dd')+'">'+sit.name+' x'+counts[sk]+'</span>'+
           '<button data-binbtn="'+sk+'" style="padding:2px 10px;font-size:11px">Bin</button></div>';
     }
     if(!any) sh='<div class="hint">Stash is empty. Drag something over.</div>';
@@ -23098,7 +23108,7 @@ function openItemMenu(x,y,key,ctx,count){
   var it=ITEMS[key]; if(!it) return;
   var m=document.createElement('div'); m.className='imenu';
   var head=document.createElement('div'); head.className='imenuhead';
-  head.innerHTML='<b class="r-'+(it.r||'common')+'">'+escHtml(it.name)+'</b>'+
+  head.innerHTML='<b class="r-'+(dispR(key)||'common')+'">'+escHtml(it.name)+'</b>'+
     (count>1?'<em>x'+count+'</em>':'');
   m.appendChild(head);
   itemMenuRows(key,ctx,count||1).forEach(function(r){
@@ -23149,7 +23159,7 @@ function openGunMenu(x,y,gk){
   var m=document.createElement('div'); m.className='imenu';
   var head=document.createElement('div'); head.className='imenuhead';
   var _ik='gun_'+gk;
-  head.innerHTML='<b class="r-'+((ITEMS[_ik]&&ITEMS[_ik].r)||'uncommon')+'">'+escHtml(W.name)+'</b><em>yours</em>';
+  head.innerHTML='<b class="r-'+gunRarity(gk)+'">'+escHtml(W.name)+'</b><em>yours</em>';
   m.appendChild(head);
   function row(label,hint,dim,fn){
     var r=document.createElement('div');
@@ -23209,7 +23219,7 @@ function invCell(k,count,opt){
   var it=ITEMS[k]; if(!it) return null;
   opt=opt||{};
   var cell=document.createElement('div');
-  cell.className='cell c-'+(it.r||'common')+(opt.junk?' junk':'');
+  cell.className='cell c-'+(dispR(k)||'common')+(opt.junk?' junk':'');
   cell.innerHTML=iconImgHTML(k,30)+(count>1?'<span class="cnt">'+count+'</span>':'');
   // The tooltip is the only place the verbs are written down. They are not
   // narrated on the screen any more, because a control that reads as a control
@@ -23510,7 +23520,7 @@ try{ renderFreeKit(); }catch(_fk){}
         ? '<span style="color:var(--gain)">KEEP &mdash; '+escHtml(craftUse(k))+'</span>'
         : (it.use ? '<span style="color:var(--coolant)">'+escHtml(String(it.use).toUpperCase())+'</span>'
                   : '<span style="color:var(--ash)">salvage, sell it</span>');
-      detail.innerHTML='<b class="r-'+(it.r||'common')+'">'+escHtml(it.name)+'</b>  x'+counts[k]+
+      detail.innerHTML='<b class="r-'+(dispR(k)||'common')+'">'+escHtml(it.name)+'</b>  x'+counts[k]+
         '  &middot;  '+'$'+ival(k).toLocaleString()+' each  &middot;  '+what+
         (isJunk?'  &middot;  <span style="color:var(--rust)">TAGGED JUNK</span>':'')+
         '<span id="stashacts" style="margin-left:10px"></span>'+
@@ -23594,7 +23604,7 @@ try{ renderFreeKit(); }catch(_fk){}
         var _ik='gun_'+gk;
         var inSlot=(P.equipped===gk)?1:((P.equippedSec===gk)?2:0);
         var oc=document.createElement('div');
-        oc.className='cell c-'+((ITEMS[_ik]&&ITEMS[_ik].r)||'uncommon');
+        oc.className='cell c-'+gunRarity(gk);
         oc.style.borderColor=inSlot?'var(--amber)':'';
         oc.innerHTML=(ITEMS[_ik]?iconImgHTML(_ik,30):('<span style="font-size:10.5px">'+escHtml(W.name.slice(0,6))+'</span>'))+
           (inSlot?('<span class="cnt" style="background:var(--amber);color:#0d1435">'+inSlot+'</span>'):'');
@@ -23608,7 +23618,7 @@ try{ renderFreeKit(); }catch(_fk){}
         });
         oc.addEventListener('mouseenter',function(){
           if(!detail) return;
-          detail.innerHTML='<b class="r-'+((ITEMS[_ik]&&ITEMS[_ik].r)||'uncommon')+'">'+escHtml(W.name)+'</b>'+
+          detail.innerHTML='<b class="r-'+gunRarity(gk)+'">'+escHtml(W.name)+'</b>'+
             '  &middot;  <span style="color:var(--ash)">yours</span>'+
             (inSlot?('  &middot;  <span style="color:var(--amber)">GUN '+inSlot+'</span>'):'')+
             '  &middot;  '+((W.dmg*(W.pellets||1))+' DMG')+

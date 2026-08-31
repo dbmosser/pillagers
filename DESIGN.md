@@ -27443,6 +27443,44 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.03 - TEN SURFACES THE RARITY SWEEP MISSED
+
+A fresh 12-agent adversarial audit over the whole v7.91-v8.01 diff (six
+lenses, every claim refuted-or-confirmed against the live file) returned
+23 confirmed findings, 30 raw. The largest cluster: v7.99's "a gun wears
+its rarity everywhere" was only half-true - ten player-facing surfaces
+still coloured guns by the stale economy row (ITEMS.r) instead of the
+tier truth (gunRarity/dispR), so the same Longshot was gold in the bag
+and blue on the very next screen. All ten now resolve through dispR:
+
+  armoury owned-gun cells and their hover detail; openGunMenu and
+  openItemMenu headers; the stash cell hover head (its own border was
+  already right - one element, two rarities); invCell, which builds the
+  safe pocket, kit column, free kit and ascent staging grids; the
+  grantLoot pickup toast (colour AND the big-find pulse, which now also
+  fires on gold); bestRarity, which ranks a cache's glow and progress
+  bar and had NO gold rung at all; the death-screen LOST lines; the
+  dropped-crate floating name; and the gamble log / dev-crate rows.
+
+One behaviour change rode along, stated plainly: worstBagIndex (autoloot
+culling) now protects by DISPLAYED rarity too, so a gun every panel
+calls RARE can no longer be quietly shed by the "never sheds rare or
+elite" promise reading the economy row. Guns only ever became MORE
+protected; nothing became less.
+
+Verified: parse PASS; fingerprints 58/276 at seed 4242; three endings
+through oc_btn with overlay-on asserted; hub; stage; and a play-path
+probe - died carrying a bagged Longshot past the safe pocket and the
+LOST line printed it in gold #ffc72e, a colour the old code could not
+produce on that screen.
+
+Not verified: the armoury/stash/menu surfaces were fixed by exact-match
+anchor and parse only, not individually eyeballed (the fixture profile
+lacks owned guns to stage them quickly); the dev-crate rows are behind
+BETA_HIDE_DEV and unreachable in this build; the autoloot change was not
+re-measured on the board (it only tightens gun protection during culls,
+but the 200-seed rows predate it).
+
 ## v8.02 - THE NEW IN CARD CATCHES UP WITH TWENTY BUILDS
 
 The card he sees first sat at v7.82 while the game reached v8.01 - drift
