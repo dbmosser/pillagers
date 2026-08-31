@@ -27443,6 +27443,58 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.57 - THE LIVE SESSION, PART THREE
+
+Five orders in one verified batch, plus one note closed by evidence.
+
+"get rid of the '$x GONE' and just say 'LOST' in red" - the death ledger's
+per-item lines now read the item name and a red LOST, no price tag. Guns
+already said LOST.
+
+"the big map needs more enemy density and more pillagers -- it feels deserted"
+- and the measurement agreed with him: the entity scaler den=clamp(AREA/4,
+0.45,1.6) CAPPED at 1.6, which gave the mile HALF of cold's per-hectare
+density (0.12 vs 0.25 den-per-AREA). The ceiling rises to 3.4, which is
+cold-parity for the mile's 13.15 AREA. The mile now builds 276 entities at
+seed 4242 (was 134) and draws clean. Cold is untouched (its den is 0.69,
+nowhere near either ceiling). MEASUREMENT BOUNDARY: every mile number in the
+back catalogue predates this; the v7.51 board row is blanked and the fresh
+200-seed baseline is queued.
+
+"hot ground should always be 100% inside the map" - confirmed: freeSpot rolls
+the centre anywhere past a 70-unit margin while the disc is 620, so it could
+overhang by 550. Both roll sites (raid build and the 115-second re-roll) now
+clamp the centre so the full disc sits inside the world. clamp consumes no
+randomness, so seed streams are untouched. Verified inside bounds across four
+seeds on both maps.
+
+"player should start with ZERO ARMOR... add armor via armor plates" - the
+zero start itself shipped at v6.71, but THREE kit paths still auto-applied
+packed plates at the drop, so a freebie run spawned at 55: the drop-kit, the
+freebie kit and the dev crate. All three armor branches are deleted and
+plates fall through to the bag - you land bare and slot them yourself.
+Verified: freebie spawn reads armor 0 with the plate in the bag. Five strings
+stop claiming you ascend wearing 60 (readyline - which the sector strip
+copies verbatim - the PRIMER card, both ascent-check summaries, and the
+WHATSNEW line). The SIM BOT still lands full on its simRig dial - that is the
+calibrated measuring constant, and aligning the bot to bare-start is a
+deliberate re-benching decision queued for the boundary, not a silent edit.
+
+"get rid of the dimmed sector map on the map screen" - the blackout was one
+drawMapFog() call; it is gone and the whole map draws bright. The fog DATA
+stays live: SURVEYED % and the profile's map memory still work.
+
+"enemy bot locations should randomize per-run, not be static" - CHECKED AND
+ALREADY TRUE: play seeds every raid from Math.random, and two seeds share
+ZERO exact sentry positions (1 of 16 even lands within 60 units). What made
+it feel static was almost certainly the deserted mile funnelling every
+contact through the same few chokepoints, which this build fixes.
+
+Not verified: the mile at 276 entities has not been PLAYED - frame rate under
+fire with double the crowd is his judgement; the density boundary invalidates
+the mile board row until the new baseline lands; and the readyline rewrite
+was read back but the sector strip copy of it was not re-opened.
+
 ## v7.55 + v7.56 - THE LIVE SESSION, PART TWO
 
 Five more of his notes, shipped as he sent them.

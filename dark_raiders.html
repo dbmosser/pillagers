@@ -1054,7 +1054,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='7.56';
+var VER='7.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1077,7 +1077,7 @@ var WHATSNEW=[
   'HAIRSTYLE IS ITS OWN WARDROBE SLOT: eight cuts, all yours from the start.',
   'THE RIGHT CORNER SHOWS WHAT YOUR CARRY IS WORTH, live, priced the way the payout prices it.',
   'THE LISTENER NO LONGER ANNOUNCES ITSELF. You will know.',
-  'RIGS ARE GONE. Everyone ascends with the same 60 armour; plates top it up.'
+  'RIGS ARE GONE. You ascend with no armour on; Armour Plates put it on, up to 60.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -7075,7 +7075,8 @@ function buildRaid(sim){
   // WHERE IT IS HOT. Placed away from the spawn so it is a decision to go, and
   // re-rolled on a timer during the raid.
   var _hz=freeSpot(map,60);
-  var hotZone={x:_hz.x,y:_hz.y,r:620,at:0,moves:0};
+  // v7.57, his note: the disc must sit 100% inside the map.
+  var hotZone={x:clamp(_hz.x,620,WORLD_W-620),y:clamp(_hz.y,620,WORLD_H-620),r:620,at:0,moves:0};
   var no=Math.max(2,Math.round(18*AREA*CFG.contDens*mapContMul()));
   for(i=0;i<no;i++){ var sp2=freeSpot(map,30); containers.push(mkContainer(sp2.x,sp2.y,rr()<.7?'crate':'body')); }
   // Nothing is allowed to lie on an extraction pad: within 46 units a container
@@ -7328,7 +7329,7 @@ while(caches.length<3) placeCache(WORLD_W*rr(),WORLD_H*rr(),'MERIDIAN CACHE');
   // The dam is the reference at AREA 4.0, so the two existing maps are untouched
   // (buried comes out at 1.02) and any new map inherits the dam's density. The
   // difference between maps stays what it should be, which is their SHAPE.
-  var den=clamp(AREA/4.0,0.45,1.6);
+  var den=clamp(AREA/4.0,0.45,3.4);
   // HEAVY PATROLS is the one term that changes the map rather than the rules.
   if(!sim&&hasTerm('patrols')) den*=1.40;
   function nOf(n){ return n<=0?0:Math.max(1,Math.round(n*den)); }
@@ -7734,7 +7735,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
         var _dit=ITEMS[_dk[_di]]; if(!_dit) continue;
         if(_dit.use==='throw'){ if(g.pouch[_dk[_di]]!==undefined) g.pouch[_dk[_di]]++; }
         else if(_dit.use==='ammo'){ g.player.reserve+=_dit.amt; }
-        else if(_dit.use==='armor'&&_dcap>0&&g.player.armor<_dcap){ g.player.armor=Math.min(_dcap,g.player.armor+_dit.amt); }
+
         else g.bag.push(_dk[_di]);
       }
       saveProfile();
@@ -7750,9 +7751,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
         var _fi=ITEMS[FREEKIT[_fk]]; if(!_fi) continue;
         if(_fi.use==='throw'){ if(g.pouch[FREEKIT[_fk]]!==undefined) g.pouch[FREEKIT[_fk]]++; }
         else if(_fi.use==='ammo'){ g.player.reserve+=_fi.amt; }
-        else if(_fi.use==='armor'&&_fcap>0&&g.player.armor<_fcap){
-          g.player.armor=Math.min(_fcap,g.player.armor+_fi.amt);
-        }
+
         else g.bag.push(FREEKIT[_fk]);
       }
       if(WEAPONS[FREEKIT_GUN]){
@@ -7769,8 +7768,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
       var DEV=['medkit','medkit','plate','plate','ammobox','ammobox'];
       for(var dk=0;dk<DEV.length;dk++){
         var di=ITEMS[DEV[dk]];
-        if(di.use==='armor') g.player.armor=Math.min((g.player.armorCap===undefined?ARMOR_MAX:g.player.armorCap),g.player.armor+di.amt);
-        else if(di.use==='ammo') g.player.reserve+=di.amt;
+        if(di.use==='ammo') g.player.reserve+=di.amt;
         else g.bag.push(DEV[dk]);
       }
       g.pouch.frag+=2; g.pouch.smoke+=2; g.pouch.decoy+=2;
@@ -14268,7 +14266,7 @@ var _cdone=contractExtract(G.bag,haul);
       var li2=ITEMS[G.bag[shown[j]]];
       if(!li2) continue;
       lines.push('<span style="color:'+(RCOL[li2.r]||'#cdd6dd')+'">'+li2.name+'</span>'+
-        '<span style="color:var(--rust)">  '+'$'+ival(G.bag[shown[j]]).toLocaleString()+'  GONE</span>');
+        '<span style="color:var(--rust)">  LOST</span>');
     }
     var gone=carriedGuns(G.player);
     for(j=0;j<gone.length;j++){
@@ -19182,7 +19180,7 @@ function tickHot(dt){
   if(H.at<HOT_EVERY) return;
   H.at=0; H.moves=(H.moves||0)+1;
   var sp=freeSpot(G.map,60);
-  H.x=sp.x; H.y=sp.y;
+  H.x=clamp(sp.x,H.r,WORLD_W-H.r); H.y=clamp(sp.y,H.r,WORLD_H-H.r);
   if(!G.sim){
     say('The hot ground has moved. Check your map.');
     try{ sfx('charge',G.player.x,G.player.y); }catch(e){}
@@ -20564,9 +20562,8 @@ if(G.trail&&G.trail.length>1){
     ctx.stroke();
     ctx.setLineDash([]);
   }
-  // FOG LAST, over everything the map drew, so nothing that draws a building or
-  // a container has to know fog exists.
-  drawMapFog();
+  // v7.57, his order: no blackout on the map page - the whole map shows. The
+  // fog DATA stays live (fogMark/fogSave feed SURVEYED % and the profile).
   // THE HOT ZONE, over the fog. His Q28 says he must be able to CHOOSE to go or
   // avoid, and a choice you cannot see until you have walked there is not one.
   (function(){
@@ -22988,9 +22985,9 @@ try{ renderFreeKit(); }catch(_fk){}
     // standard armour, so this line has exactly one state to describe.
     var RG=myRig(), cap=rigCeil(RG);
     rl.style.borderColor='var(--steel-hi)'; rl.style.color='var(--ash)';
-    rl.innerHTML='You ascend with <b>'+cap+' armour</b>, absorbing '+
-      Math.round(RG.absorb*100)+'% of every hit until it is gone. It comes back '+
-      'for every raid, and Armour Plates are how you put it back on up there.';
+    rl.innerHTML='You ascend with <b>no armour on</b>. Armour Plates put it on up '+
+      'there - each absorbs '+Math.round(RG.absorb*100)+'% of every hit until it is '+
+      'gone, up to a cap of '+cap+'.';
   })();
   var sl=document.getElementById('stashgrid'); if(sl) sl.innerHTML='';
   // DEFENCE IN DEPTH, v1.69. loadProfile has filtered unknown stash and armoury keys
@@ -24553,7 +24550,9 @@ var SECTOR_CHAR=[
 // the mile walks out at nearly three times cold's rate.
 var SECTOR_MEAS=[
   {ext:15.0,fc:72, cont:5.0,haul:2495},
-  {ext:42.5,fc:62, cont:5.5,haul:2665}
+  // v7.57: the mile row is re-measuring. Its v7.51 numbers were taken at the
+  // old density ceiling and stopped being true the moment the map filled up.
+  {}
 ];
 // v7.54, his note: the size difference stated next to the name. Only the
 // extremes are tagged, so a third mid-sized map would stay untagged.
@@ -24787,7 +24786,7 @@ function renderStage(prefill){
       var _fkg=WEAPONS[FREEKIT_GUN];
       sw.innerHTML='<span style="color:var(--amber)">FREEBIE KIT</span>  &middot;  '+
         escHtml(_fkg?_fkg.name:'Scav Pistol')+' (issued)  &middot;  no second gun  &middot;  '+
-        '60 armour  &middot;  2 Bandages, 1 Frag Charge, 1 Armour Plate';
+        '2 Bandages, 1 Frag Charge, 1 Armour Plate to slot up there';
       return;
     }
     var g1=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null;
@@ -24796,7 +24795,7 @@ function renderStage(prefill){
     var bits=[];
     bits.push(g1?escHtml(g1.name):'<span style="color:var(--hazard)">no gun of your own, a loaner</span>');
     bits.push(g2?escHtml(g2.name):'<span style="color:var(--ash)">no second gun</span>');
-    bits.push(rigCeil(rg2)+' armour');
+    bits.push('armour cap '+rigCeil(rg2));
     var kn=stageKitLive().length;
     bits.push(kn?(kn+' item'+(kn===1?'':'s')+' packed'):'<span style="color:var(--ash)">nothing packed</span>');
     sw.innerHTML=bits.join('  &middot;  ');
@@ -25094,7 +25093,7 @@ var PRIMER=[
   ['Dying costs you everything you carried','There is no body to go back for and no insurance. Your bag and both guns are gone. Credits, XP and anything already in the stash are safe. That is the whole risk, and it is why walking out early is a real decision.'],
   ['One of them is blind','The Listener. It has no eyes at all, so nothing about light, cover or standing still in a bush means anything to it. It hunts the noise you make. Everything else about it you can work out up there, and the screen will tell you when one is on you.'],
   ['You carry TWO guns and the second slot can be empty','Gun 1 and gun 2, chosen on the figure in your stash or on the ascent check, and X swaps between them out there. Leaving gun 2 empty is a real choice: one gun is lighter and quieter.'],
-  ['You always wear body armour','Sixty points of it, absorbing half of every hit until it is gone, and it comes back for every raid. Armour Plates are the way to put it back on out there: put one on a key and use it like a medkit.'],
+  ['You ascend bare','No armour on the way up. Armour Plates put it on out there - put one on a key and use it like a medkit. Each absorbs half of every hit until it is gone, up to a cap of sixty.'],
   ['E is the verb','E searches a container, opens the Peddler, revives a downed pillager, and calls extraction when you stand in a ring. TAB or I is your bag, M toggles the map, H cycles the controls legend.'],
   ['XP is not the same thing as money','XP is what unlocks the shop, and there is exactly one way to earn it: sell salvage at the terminal in the Undercroft, which pays XP equal to the price. Nothing else pays XP. Contracts pay well, but they pay in credits, and the Peddler out in the field pays cash and no XP at all.'],
 
