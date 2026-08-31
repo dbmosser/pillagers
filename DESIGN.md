@@ -27443,6 +27443,24 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v7.80 - THE ASCENT CHECK SPEAKS UP
+
+This tick's backcheck put eyes on the two pre-raid surfaces the proportion
+arc had not screenshotted: the ASCENT CHECK and the pause box. The pause box
+was already clean (and its legend correctly no longer offers the deleted
+silent departure). The ascent check had the arc's last two stragglers: the
+loadout warning ("Going up with nothing to heal with. That is allowed, and it
+is how short raids happen.") and the bottom summary strip (your gun, second
+gun, armour cap, what is packed) were both 11px - on the one screen where a
+wrong read costs a whole raid. Both are 14px now with a touch more padding.
+
+Verified: parse PASS with the DEVNOW assert; fingerprints 58 and 276; three
+endings EXTRACTED / KILLED IN ACTION / ABANDONED through oc_btn; hub steps
+and draws; stage renders with both lines measured at 14px computed.
+
+Not verified: his eyes, as with the whole arc. No new telemetry this tick -
+exports and Downloads checked, nothing new.
+
 ## v7.79 - THE LAST SMALL TYPE
 
 The straggler sweep: a systematic pass over every stylesheet font under 13px,
