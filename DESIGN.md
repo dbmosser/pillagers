@@ -27443,6 +27443,68 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.44 - THE PANEL YOU DRAGGED, AND THREE OTHER THINGS THAT DID NOT MATCH
+
+A DRAGGED HUD PANEL WALKED AWAY FROM ITS OWN HIT BOX. Drawing applies the
+drag offset with a translate and THEN zooms, so a point lands at
+ax+(p-ax)*z+d. The recorded rect folded the offset INTO the rect handed to
+hudZoomRect, which returns ax+(p-ax)*z - so the stored box landed at
+ax+(p-ax)*z + d*z. The hit box moved 1.30 pixels for every pixel the body
+panel moved and 1.26 for the gear panel, and the error compounded with
+every drag because the handler writes a plain 1:1 offset.
+
+The grab strip is fourteen pixels tall, so about forty seven pixels of
+vertical drag put the handle entirely off the panel it belongs to and he
+could not pick it up again. Worse, mousedown RETURNS on any hit inside
+HUDBOX, so the drifted body box (494 by 130) and gear box became invisible
+dead zones where left-clicking did not fire the gun.
+
+EVERY PILLAGER CORPSE HELD HIS GUN TWICE. mkRaider seeds the bag with the
+equipped weapon at spawn, and the death path appended it again from e.wep.
+Every WEAPONS entry carries an id, so the two keys are always identical.
+That is a free second gun on the most common kill in the game: about 1,500
+credits on an Auto Rifle, more on a Marksman.
+
+EVERYONE ELSE HEALED FORTY PERCENT MORE THAN HE DID. healAmt applies
+CFG.healPow, which ships at 0.70, and the player's path queues the scaled
+figure. This site queued the RAW amount while computing the RATE from the
+scaled one, so the two halves of a single rule disagreed with each other
+and with the player. A raider or the hired merc took 28 from a Bandage
+where he takes 20, and 65 from a Medkit where he takes 46. Invisible,
+because nothing prints raider health - every pillager on the map was
+quietly harder to finish than the numbers say.
+
+AND NIGHT DID NOT SURVIVE THE FIRST RELOAD, once, per profile. The v7.x
+migration that forces the condition back to day is stamped inside
+loadProfile only, and the literal a fresh profile is born from did not
+carry the field. So a profile created since that migration shipped still
+met it undefined on its SECOND load and had his choice overwritten. Once
+per profile is the worst possible shape for this: it reads as the button
+not saving rather than as a rule.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both
+maps with no throw and the clock advancing; three endings through oc_btn
+with the overlay on; hub; __renderStage; stream parity still zero.
+  the panels   dragged (100,60): the body box moves exactly (100,60) and
+               the gear box exactly (100,60). They moved (130,78) and
+               (126,76). Dragged (-40,-25) moves (-40,-25). One pixel per
+               pixel, both panels, both directions.
+  the body     a pillager killed with a Riot Scattergun leaves a body
+               holding exactly ONE gun_shotgun among his six items.
+  healing      a raider gains 20 from a Bandage and 46 from a Medkit,
+               which is round(raw x healPow) = round(28 x 0.7) and
+               round(65 x 0.7) - the player's own figures. It was taking
+               the raw 28 and 65.
+  the night    a profile carrying the stamp keeps cond 'night' across two
+               further loads, while an unstamped profile still gets the
+               migration exactly once, which is the control.
+
+Not verified: the player half of the healing comparison. I could not get a
+clean player-side number - with regen off the player's own heal ran to the
+100 cap in both cases, so the probe could not distinguish the two items.
+The raider figures match the scaled arithmetic exactly, which is what the
+fix claims, but I have not stood the two side by side in one measurement.
+
 ## v8.43 - THE SECOND GUN, THE SECOND EYE, THE SECOND BELT KEY
 
 A WORN SIDEARM WAS BILLED FOR AND NEVER WORN. buildRaid bakes the wear band
