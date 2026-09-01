@@ -804,6 +804,175 @@ window.__perfTimes=function(reset){ var r={},k; for(k in _PT) r[k]=+(+_PT[k]).to
 // v8.55: stepSound is the only member here that is NOT a stub. The four tick
 // functions above are emptied at source and ac() is made to throw, so amb/steps/
 // voices call empty functions and always pass - a probe cannot see through them.
+// ======================================================= THE VERIFY CHAIN
+// One call, one result. See the note in mkfixture.ps1 for why this is here
+// rather than retyped per build. Every check returns what it MEASURED, not a
+// bare pass, because a green boolean cannot be cross-examined later.
+// Expected fingerprints are passed in, never hardcoded here: a harness that
+// knows the right answer will eventually assert it against itself.
+window.__verify=function(opt){
+  opt=opt||{};
+  var EXP=opt.ents||{0:58,1:276}, SEED=opt.seed||4242;
+  var R={pass:true,fail:[],notes:[]};
+  function bad(m){ R.pass=false; R.fail.push(m); }
+  function fresh(mi){ __resetCfg(); __pinDefaults(mi); }
+  try{ __forceSize(1920,1080); }catch(e){ bad('forceSize threw: '+e); }
+  // --- 1. map fingerprints. The tripwire for an accidental seeded draw.
+  R.ents={}; R.containers={};
+  [0,1].forEach(function(mi){
+    fresh(mi); __startRaid({mapIx:mi,seed:SEED});
+    var g=__state();
+    R.ents[mi]=g.ents.length; R.containers[mi]=g.containers.length;
+    if(g.ents.length!==EXP[mi]) bad('mapIx '+mi+' ents '+g.ents.length+', expected '+EXP[mi]+' - the seeded stream MOVED');
+  });
+  // --- 2. live vs sim parity. Same seed must build the same world.
+  function sig(mi,sim){
+    fresh(mi); __startRaid({mapIx:mi,seed:SEED,sim:sim});
+    var g=__state();
+    return g.ents.map(function(x){return x.kind+':'+Math.round(x.x)+','+Math.round(x.y);}).join('|')
+         + '#' + g.containers.map(function(x){return x.type+':'+Math.round(x.x)+','+Math.round(x.y);}).join('|');
+  }
+  R.parity={};
+  [0,1].forEach(function(mi){
+    var L=sig(mi,false), S=sig(mi,true);
+    R.parity[mi]=(L===S)?'identical':'MISMATCH';
+    if(L!==S){
+      var i=0; while(i<L.length&&i<S.length&&L[i]===S[i]) i++;
+      bad('mapIx '+mi+' live and sim differ, first at char '+i);
+    }
+  });
+  // --- 3. LOOTING, on the real play path. This is the check that would have
+  // caught v8.34, where a deleted var froze the frame on holding E and shipped
+  // three times. Holding the key through __loop is the whole point: the bot
+  // never touches this code.
+  R.loot={};
+  [0,1].forEach(function(mi){
+    fresh(mi); __startRaid({mapIx:mi,seed:SEED});
+    var g=__state(), p=g.player, best=null, bd=1e9;
+    for(var i=0;i<g.containers.length;i++){
+      var c=g.containers[i], d=Math.hypot(c.x-p.x,c.y-p.y);
+      if(d<bd&&c.loot&&c.loot.length){ bd=d; best=c; }
+    }
+    if(!best){ bad('mapIx '+mi+' has no container with loot in it'); return; }
+    p.x=best.x; p.y=best.y+4;
+    var K=__keysRef(); for(var k in K) K[k]=false; K['KeyE']=true;
+    var t0=g.t, err=null;
+    try{ for(var f=0;f<420;f++) __loop(performance.now()+f*16.7); }
+    catch(e){ err=String(e); }
+    var g2=__state();
+    K['KeyE']=false;
+    R.loot[mi]={thrown:err,clock:(t0.toFixed(1)+'->'+(g2?g2.t.toFixed(1):'gone')),
+                searched:g2?g2.tel.containers:null,items:g2?g2.tel.items:null};
+    if(err) bad('mapIx '+mi+' looting threw: '+err);
+    else if(!g2||g2.t<=t0) bad('mapIx '+mi+' raid clock STALLED while looting');
+    else if(!g2.tel.containers) bad('mapIx '+mi+' held E for 420 frames and searched nothing');
+  });
+  // --- 4. the three endings. endRaid has exactly three outcomes; a crash in the
+  // payout path ships green without this. The abandon needs a REAL run behind it
+  // or it takes the empty-run discard path and never draws a card.
+  R.endings={};
+  [['extract','EXTRACTED'],['dead','KILLED IN ACTION'],['abandon','ABANDONED']].forEach(function(pair){
+    var how=pair[0], want=pair[1];
+    fresh(0); __startRaid({mapIx:0,seed:SEED});
+    var g=__state(), p=g.player;
+    if(how==='abandon'){
+      var best=null,bd=1e9;
+      for(var i=0;i<g.containers.length;i++){
+        var c=g.containers[i], d=Math.hypot(c.x-p.x,c.y-p.y);
+        if(d<bd&&c.loot&&c.loot.length){ bd=d; best=c; }
+      }
+      if(best){
+        p.x=best.x; p.y=best.y+4;
+        var K2=__keysRef(); for(var k2 in K2) K2[k2]=false; K2['KeyE']=true;
+        // Caught, not thrown. Controlled by forcing __loop to throw: without this
+        // the exception escaped __verify and the check crashed instead of failing.
+        try{ for(var f2=0;f2<420;f2++) __loop(performance.now()+f2*16.7); }
+        catch(_pe){ bad('abandon setup threw while looting: '+_pe); }
+        K2['KeyE']=false;
+      }
+    }
+    var err=null;
+    try{ __endRaid(how); for(var f3=0;f3<30;f3++) __loop(performance.now()+f3*16.7); }
+    catch(e){ err=String(e); }
+    var oc=document.getElementById('outcome');
+    var on=!!(oc&&oc.classList.contains('on'));
+    var txt=(document.body.innerText.match(/EXTRACTED|KILLED IN ACTION|ABANDONED/)||['NONE'])[0];
+    R.endings[how]={headline:txt,overlay:on,thrown:err};
+    if(err) bad(how+' threw: '+err);
+    if(txt!==want) bad(how+' showed "'+txt+'", expected "'+want+'"');
+    if(!on) bad(how+' left the outcome overlay off');
+  });
+  // --- 5. the hub, entered the way a player enters it. showScreen('hub') alone
+  // does NOT dismiss the title - only the button handler does - so a probe that
+  // calls it directly renders the hub underneath the title and reports success.
+  R.hub={};
+  try{
+    var ocx=document.getElementById('outcome'); if(ocx) ocx.classList.remove('on');
+    var t=document.getElementById('title');
+    var btn=t?[].slice.call(t.querySelectorAll('button')).filter(function(b){
+      return /UNDERCROFT|ENTER/i.test(b.textContent); })[0]:null;
+    if(btn&&t.classList.contains('on')) btn.click(); else __showScreen('hub');
+    for(var f4=0;f4<30;f4++) __renderStage(performance.now()+f4*16.7);
+    R.hub={titleOn:!!(t&&t.classList.contains('on')),thrown:null};
+    if(t&&t.classList.contains('on')) bad('hub: the title screen is still up');
+  }catch(e){ R.hub={thrown:String(e)}; bad('hub/renderStage threw: '+e); }
+  R.summary=R.pass?'PASS':('FAIL x'+R.fail.length);
+  return R;
+};
+// Every check above is wrapped so a throw inside one is a FAILED check rather
+// than a dead harness. __verify is what a build is judged on; it must always
+// come back with a verdict.
+window.__verifySafe=function(opt){
+  try{ return window.__verify(opt); }
+  catch(e){ return {pass:false,summary:'FAIL - harness threw',fail:['__verify itself threw: '+e+' | '+((e&&e.stack)||'').split('\n').slice(0,3).join(' <- ')]}; }
+};
+// A place for per-fix regression asserts. Each shipped fix adds one entry here
+// so an old bug cannot come back quietly - the frozen-loot bug shipped three
+// times because nothing re-checked it after the build that fixed it.
+window.__REGRESS=[
+  {v:'8.37',what:'holding E must not throw (var cap deleted at v8.34)',
+   run:function(){ return null; }},   // covered by the loot leg of __verify
+  {v:'8.55',what:'the two armoured heavies walk heavy',
+   run:function(){
+     var bad=[];
+     ['sentry','warden','bulwark'].forEach(function(k){ if(__audio.stepSound(k)!=='stepHeavy') bad.push(k+' is not heavy'); });
+     ['crawler','raider','snitch','listener','howler','choir'].forEach(function(k){ if(__audio.stepSound(k)!=='step') bad.push(k+' went heavy'); });
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.55',what:'roads never cross an authored wall',
+   run:function(){
+     var out=[];
+     [0,1].forEach(function(mi){
+       __resetCfg(); __pinDefaults(mi); __startRaid({mapIx:mi,seed:4242});
+       var g=__state(), R=g.map.roadRects||[], W=g.map.walls||[], hit=0;
+       for(var i=0;i<R.length;i++)for(var j=0;j<W.length;j++){
+         var r=R[i],w=W[j];
+         if(w.furn||w.wreck||w.ledge) continue;
+         if(r.x<w.x+w.w&&r.x+r.w>w.x&&r.y<w.y+w.h&&r.y+r.h>w.y){ hit++; break; }
+       }
+       if(hit) out.push('mapIx '+mi+' has '+hit+' roads crossing a wall');
+     });
+     return out.length?out.join('; '):null; }},
+  {v:'8.56',what:'the game counts in English at n=1',
+   run:function(){
+     var bad=[];
+     if(__cos&&__cos.need){
+       if(__cos.need({how:'runs:1'})!=='1 raid run') bad.push('unlock: '+__cos.need({how:'runs:1'}));
+       if(__cos.need({how:'extracts:1'})!=='1 extraction') bad.push('unlock: '+__cos.need({how:'extracts:1'}));
+       if(__cos.need({how:'runs:5'})!=='5 raids run') bad.push('plural broke: '+__cos.need({how:'runs:5'}));
+     }
+     return bad.length?bad.join('; '):null; }}
+];
+window.__regress=function(){
+  var res={pass:true,checked:0,fail:[]};
+  for(var i=0;i<__REGRESS.length;i++){
+    var t=__REGRESS[i], r=null;
+    res.checked++;
+    try{ r=t.run(); }catch(e){ r='threw: '+e; }
+    if(r){ res.pass=false; res.fail.push('v'+t.v+' '+t.what+' -> '+r); }
+  }
+  res.summary=res.pass?('PASS, '+res.checked+' regression checks'):('FAIL x'+res.fail.length);
+  return res;
+};
 window.__audio={amb:tickAmbience,steps:tickEnemyAudio,sfx:sfx,blip:blip,ears:earsOf,stepSound:stepSoundFor,
   bus:bus,ctx:ac,ambObj:function(){ return AMB; }};
 window.__bag={weight:bagWeight,drop:dropItem,worst:worstBagIndex,cull:autoCull,

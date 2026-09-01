@@ -84,7 +84,30 @@ fetch(url).then(function(r){
   var wnver=(src.match(/WHATSNEW_VER='([^']*)'/)||[])[1]||'0';
   var wnDrift=Math.round((parseFloat(ver)-parseFloat(wnver))*100)/100;
   var wnOk=isFinite(wnDrift)&&wnDrift<=0.20;
-  var pass=(parse==='OK'&&b.par===0&&b.cur===0&&b.sq===0&&du.length===0&&devnowOk&&wnOk);
+  // v8.57: non-ASCII outside the embedded font. A .ps1 patch that slips a smart
+  // quote or a middot into the file writes mojibake into player-facing text,
+  // because PowerShell 5.1 reads .ps1 as ANSI. The font is base64 on one line
+  // and is skipped by length; deliberate \uXXXX escapes are ASCII and unaffected.
+  var moji=[], nonAsciiN=0;
+  (function(){
+    // The signature of UTF-8 read as ANSI and written back. A middot comes out as
+    // \u00c2\u00b7, an em dash as \u00e2\u0080\u0094, and \ufffd is the decoder
+    // giving up. Any of these in the file means a patch script corrupted text.
+    var MJ=/[\u00c2\u00c3][\u0080-\u00bf]|\u00e2\u0080[\u0080-\u00bf]|\ufffd/;
+    var ls=src.split('\n');
+    for(var i=0;i<ls.length;i++){
+      if(ls[i].length>2000) continue;               // the embedded font line
+      if(/[^\x09\x0a\x0d\x20-\x7e]/.test(ls[i])) nonAsciiN++;
+      var m=ls[i].match(MJ);
+      if(m&&moji.length<6) moji.push('line '+(i+1)+': '+JSON.stringify(ls[i].substr(Math.max(0,ls[i].indexOf(m[0])-24),52)));
+    }
+  })();
+  // v8.57: debug left in a shipping build. Reported, never failed - a TODO is a
+  // note, not a defect, and failing on one would train me to delete notes.
+  var dbg={log:(src.match(/console\.log\(/g)||[]).length,
+           dbgr:(src.match(/\bdebugger\b/g)||[]).length,
+           todo:(src.match(/TODO|FIXME|XXX(?![a-z])/g)||[]).length};
+  var pass=(parse==='OK'&&b.par===0&&b.cur===0&&b.sq===0&&du.length===0&&devnowOk&&wnOk&&!moji.length&&!dbg.dbgr);
   var h='<table>';
   h+='<tr><td>file</td><td>'+url+'</td></tr>';
   h+='<tr><td>VER</td><td>'+ver+'</td></tr>';
@@ -96,6 +119,11 @@ fetch(url).then(function(r){
      (b.firstNeg?(' <span class="bad">('+b.firstNeg+')</span>'):'')+'</td></tr>';
   h+='<tr><td>duplicate fns</td><td class="'+(du.length?'bad':'ok')+'">'+
      (du.length?du.map(function(d){return d.name+' at lines '+d.first+' and '+d.again;}).join('<br>'):'none')+'</td></tr>';
+  h+='<tr><td>mojibake</td><td class="'+(moji.length?'bad':'ok')+'">'+
+     (moji.length?moji.join('<br>'):('none. '+nonAsciiN+' lines carry deliberate non-ASCII, which is fine in the game file and never in a .ps1'))+'</td></tr>';
+  h+='<tr><td>debug left in</td><td class="'+(dbg.dbgr?'bad':'ok')+'">'+
+     (dbg.dbgr?(dbg.dbgr+' debugger statements'):'no debugger')+
+     ', '+dbg.log+' console.log, '+dbg.todo+' TODO/FIXME</td></tr>';
   h+='</table>';
   h+='<p class="'+(pass?'ok':'bad')+'" style="font-size:18px">'+(pass?'PASS':'FAIL')+'</p>';
   if(!pass) h+='<p class="dim">A non-zero brace count localises the fault better than the parser message. '+

@@ -27443,6 +27443,75 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.57 - ONE CALL INSTEAD OF SEVEN, AND PAST FIXES GET RE-CHECKED
+
+He asked what would make development faster and told me to adopt my own answers.
+This is that build. It changes no gameplay.
+
+THE PROBLEM. The verification chain was retyped as fresh JavaScript on every
+build: fingerprints, live-vs-sim parity, looting on both maps, three endings,
+hub. Seven browser round trips, identical in shape each time, and each one a
+chance to mistype an internal name and get a false negative. That happened five
+times in one session: __los.reach read as a boolean when it returns a distance,
+a contract's `kind` when the field is `type`, `player.bag` when the bag is
+`G.bag`, `__audio.steps` which is bound to a stub, and `renderStatCards` which
+is not global. Twice it made a working feature look broken.
+
+WHAT SHIPPED.
+
+__verify() - the whole chain, written once, returning what it MEASURED rather
+than a bare pass, so a green line can still be argued with. Expected
+fingerprints are passed in, never hardcoded, because a harness that knows the
+right answer will eventually assert it against itself.
+
+__regress() - a place for per-fix assertions. Four so far, covering v8.37,
+v8.55 (twice) and v8.56. The frozen-loot bug shipped three builds running
+because nothing re-checked it after the build that fixed it. One line per fix
+from now on.
+
+THE HARNESS COULD NOT REPORT THE ONE FAILURE IT EXISTS FOR. Controlled by
+forcing __loop to throw the way v8.34 did. The exception escaped __verify
+entirely instead of being recorded, because the abandon leg ran a pre-raid loot
+loop with no try/catch. A crashed check reads as "something is wrong with the
+probe", which is exactly how that bug survived three builds. Now wrapped, plus
+__verifySafe so a throw anywhere is a verdict rather than silence. Re-controlled
+after the fix: FAIL x8, naming both maps and both endings.
+
+PARSE CHECK, two more static checks for the same page load. Mojibake detection
+(a UTF-8 pair read back as ANSI, which is what a .ps1 patch does when it carries
+a non-ASCII character) and a debug sweep for console.log, debugger and TODO.
+
+MY FIRST VERSION OF THAT CHECK WAS WRONG AND FAILED THE BUILD on six deliberate
+middots in UI text that have rendered correctly for dozens of builds. Narrowed
+to the corruption signature. Then my first CONTROL was wrong too: I injected
+bytes C2 B7, which are simply valid UTF-8 for a middot, and the check passed
+correctly. Real mojibake is C3 82 C2 B7. With those bytes it fails and names the
+line. Both directions now confirmed.
+
+AUDIT.md. Findings lived in a 303KB task blob, two memory files and DESIGN.md at
+once, and they disagreed. This tick I picked six "open" items off the old list
+and ALL SIX were already fixed, at v8.41 through v8.47, which I only learned by
+reading the code six times. One table now, with the closing build named beside
+each row, updated in the same commit as the fix.
+
+CHECKED AND FOUND NOTHING, recorded so it is not re-chased: the Crier NaN did
+not reproduce in four raids of 150 seconds across both maps, sweeping every
+numeric field on every entity. And `nRaider:0` is not broken - it removes
+raiders and nothing else, 58 entities to 51, every other kind intact.
+
+Verified: parse PASS at 1,504,909 chars, mojibake none, no debugger. __verify
+PASS in one call: ents 58 and 276, containers 155 and 589, parity identical on
+both maps, looting searched a container and banked items on both with the clock
+advancing, all three endings with the overlay on, hub entered through the title
+button. __regress PASS, 4 checks.
+
+Not verified: __verify's own coverage is only as good as its legs, and it has
+five. It does not look at the HUD, audio, the stash, the shop or anything on the
+hub past the fact that it rendered. The four regression checks cover four fixes
+out of roughly thirty shipped since v8.37; the rest are still only verified by
+the build that shipped them. And the ~85 remaining audit mediums and lows have
+not been triaged into AUDIT.md, so that table is complete only for what it lists.
+
 ## v8.56 - THE CARD CATCHES UP ON THIRTEEN BUILDS, AND THE GAME COUNTS IN ENGLISH
 
 THE WHAT'S-NEW CARD SAID v8.42 AND THE GAME WAS v8.55. That lag is deliberate
