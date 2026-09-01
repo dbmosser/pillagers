@@ -27443,6 +27443,56 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.37 - I BROKE LOOTING AT v8.34 AND SHIPPED IT THREE TIMES
+
+Removing the carry penalty at v8.34, I deleted this line from updatePlayer
+
+    var cap=PACKCAP[P.pack];
+
+because it sat directly above the loadOf call I was removing, and wrote a
+comment saying "nothing here reads the bag any more". Four lines below,
+the container block still read `cap` four times. Reading an undeclared
+identifier throws a ReferenceError, and updatePlayer is not called inside
+a try/catch, so the throw took out the rest of updatePlayer, then
+updateEnts, updateBullets and the whole draw pass for that frame.
+
+Hold E on any container and the game stopped dead: enemies frozen,
+bullets frozen, the canvas holding its last painted frame, until you let
+go. No container could be opened at all. It shipped in v8.34, v8.35 and
+v8.36.
+
+Reproduced before touching it: player placed on an unopened container,
+KeyE held, five frames on the real loop, and the loop threw
+"ReferenceError: cap is not defined".
+
+THE CAP AND THE PENALTY WERE ALWAYS TWO RULES. His 2026-08-22 order made
+the bag unlimited, which is PACKCAP at 99999. His 2026-08-31 ruling
+retired the carry PENALTY. Only the second was meant to go. With the
+declaration restored, the bag-full branch is correctly inert rather than
+fatal - which is exactly what it was before v8.34, and what updateBot has
+been doing correctly the whole time from its own copy of the line.
+
+WHY IT GOT PAST ME, because that matters more than the line itself. The
+v8.34 verify chain measured walking, sprinting, footstep noise, stamina,
+the HUD readouts and the tuning dial, and it never opened a box. My own
+standing note says to verify on the PLAY PATH and names staged pulls
+specifically as the thing that gets skipped. I read that note, quoted its
+lesson in the v8.34 entry, and then did not loot.
+
+The verify chain now loots on both maps, holding E on the real loop for
+seven seconds and asserting no throw, a bag that grows, and a raid clock
+that is still advancing afterwards - because a frozen frame is the actual
+symptom and only the clock proves it is gone.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; LOOT on both
+maps, no throw, COLD STORAGE bag 2 to 3, raid still running at 7.0s;
+three endings through oc_btn with the overlay on; hub; __renderStage.
+
+Not verified: whether anything ELSE v8.34 removed left a reader behind.
+This one was found by an audit, not by my own check, and the same edit
+touched twenty sites. I have grepped the four deleted names and they are
+clean, but a name I did not think to grep would not show up in that.
+
 ## v8.36 - A SHORT RAID NO LONGER STARTS WITH A WAY OUT ALREADY SHUT
 
 The closure schedule was written as absolute SECONDS REMAINING - 360 and

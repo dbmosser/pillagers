@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.36';
+var VER='8.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11252,8 +11252,14 @@ var sprint=!!(keys['ShiftLeft']||keys['ShiftRight'])&&p.stam>2&&!p.stamLock&&!cr
   }
   if(p.ads) sprint=false;
   G.sprinting=sprint;
-  // v8.34: the carry penalty is gone, so nothing here reads the bag any more.
-  // The unused PACKCAP read went with it.
+  // v8.37: RESTORED. v8.34 deleted this line as part of removing the carry
+  // penalty and left four reads of `cap` in the container block below, which
+  // threw on every frame the player held E on a box. The bag CAP and the carry
+  // PENALTY were always two different rules; only the penalty was retired.
+  // With PACKCAP at [99999,99999,99999] the bag-full branch below is correctly
+  // inert, which is his 2026-08-22 order, and this line is what makes it inert
+  // rather than fatal. updateBot has kept its own copy throughout.
+  var cap=PACKCAP[P.pack];
   var wading=inWaterDeep(p.x,p.y,(CFG.wadeInset===undefined?11:CFG.wadeInset));
   if(wading) sprint=false;
   G.sprinting=sprint;
@@ -23057,7 +23063,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.36: a short raid no longer starts with one of the ways out already shut.',
+  now:'v8.37: looting works again. I broke it at v8.34 and it shipped three times.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
