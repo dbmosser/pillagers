@@ -27443,6 +27443,93 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.33 - THE CORNER STOPS TELLING YOU
+
+Three of his orders, taken in one build.
+
+NOTHING IN THE UPPER RIGHT SAYS WHO IS HUNTING YOU. "4 MACHINES HUNTING
+YOU" and "9 PILLAGERS SEARCHING" are gone, both kinds, both states. This
+is the same ruling he made at v8.08 about the bottom left corner, and at
+v7.17 about the Listener banner, now applied to the counters that survived
+both. The v7.17 note reasoned that a COUNT is not a MAP and let them
+stand; he has ruled on the count. Knowing four things are hunting you is
+knowing four things are hunting you, however little it says about where.
+
+The essay above the code is kept, unchanged, because the system it argues
+for was a good one and the next person should not rebuild it thinking
+nobody had tried. It is worth restating what it measured: what climbs
+across a raid is not pursuit but INVESTIGATE, from 0.2 to 15.9 machines,
+at about one entry each. You are not being re-found. You are waking the
+map, one machine at a time, with your own noise. That is still exactly
+what happens; it is simply no longer narrated at you. What is left to tell
+you is what a man in a dark building would actually have - the noise, the
+shape at the edge of the light, and the '?' over something you can already
+see.
+
+The per-frame tally went with the lines. It walked every entity on the map
+every frame to produce two integers, so with the integers gone the walk
+was pure waste. G.attHold and G.attN, the anti-strobe hold for those
+lines, had no other reader.
+
+THE CONDITIONS PANEL TAKES THE CORNER BACK. It deliberately sat at a fixed
+offset two rows below the hunt lines rather than flowing under them,
+because those lines appeared and vanished constantly and a panel that
+jumps around is worse than one sitting slightly low. With the lines gone
+that reserve was just a gap, so the panel moves up to where they started.
+A panel he has dragged himself moves with it: the saved offset is applied
+on top of the base, so his own placement is preserved as a delta.
+
+THE STATS PAGE SAYS WHAT IT IS COUNTING. His wording: "average kills per
+run", "average containers per run", "typical raid length". Two of those
+are renames. The third is not, and it is the part worth stating plainly:
+CONTAINERS A RUN WAS A MEDIAN. Relabelling a median "average" would have
+made the card lie about its own arithmetic, so the card now computes the
+average he asked for. His number will move. A median throws away the one
+raid where he cleared a warehouse; an average does not, which is the
+difference he is likely to notice first.
+
+"Typical raid length" keeps its median, because typical is the honest word
+for a median. It was only ever missing the noun.
+
+AND THE LIFT SAYS WHERE IT GOES. "ASCENT LIFT" is now "ENTER RAID!". The
+station id stays 'lift' - the crowd errands, the leave state and
+hubStationById all key off it and none of that is player facing. The rest
+of the ascent wording is untouched and was checked rather than swept: the
+Undercroft is BELOW, you ascend to raid, and the title screen reads 1.
+Ascend 2. Pillage 3. Extract, so "quick ascent" and the ASCENT CHECK are
+still saying the true thing. What he named is the sign on the door, and a
+sign should say what happens when you walk through it.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 (COLD STORAGE) and 276
+(THE COLD MILE) at seed 4242; three endings through oc_btn with the
+overlay asserted on - EXTRACTED, KILLED IN ACTION, ABANDONED; hub;
+__renderStage. Then, specifically:
+  4 machines forced to CHASE and 9 to INVESTIGATE, then the frame's own
+  fillText calls captured: 87 strings drawn, ZERO matching HUNTING or
+  SEARCHING. The state the counters existed to report, with no counters.
+  CONDITIONS panel top edge at y=47, which is LH(30) - the row the hunt
+  lines used to start on. It was two rows plus a gap lower before.
+  A five run history with containers 2,2,2,2,42, chosen so a mean and a
+  median cannot agree: the card reads 10.0, the mean. A median would have
+  read 2. Kills 0.8 over 5 runs, raid length 5m 0s, the median duration.
+  The live station table reads lift[ENTER RAID!].
+  And the corner captured as an image, six machines in CHASE: nothing
+  above CONDITIONS, no gap where the lines were, no clipping at the top.
+
+  Under a saved drag, which is the case the moved base could have broken:
+  no drag 1647,47; dragged up 400 clamps to y=16, the LH(10) floor;
+  dragged down 300 lands at 347; dragged 900 left lands at 747; dragged
+  off the right clamps back to 1659. It stays on screen in every case.
+
+Not verified: whether the raid is now HARDER in a way that matters. The
+bot never read those lines - it has its own view of the map - so the
+extract rate cannot move because of this change and cannot tell me
+anything about it either. What was removed is information he had and now
+does not, and the only instrument for that is him playing it. If waking
+half the map now feels like being ambushed rather than being warned, that
+is the thing to tell me, and the fix is a sound or a shape at the edge of
+the light rather than putting the counter back.
+
 ## v8.32 - THE GUN THAT COPIED ITSELF
 
 Pick up a field gun in a raid and the one already in your hands is pushed

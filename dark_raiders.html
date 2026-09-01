@@ -1148,7 +1148,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.32';
+var VER='8.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18729,29 +18729,27 @@ _tgt=G.active; _lbl='EXTRACTION';
   // pillagers machines. Neither has ever included the player and neither should:
   // this is a count of what is looking for YOU.
   try{ ghostCheck(); }catch(e){}
-  var _att=0,_hunt=0,_attR=0,_huntR=0;
-  for(var _ai=0;_ai<G.ents.length;_ai++){
-    var _ae=G.ents[_ai],_as=_ae.state,_isR=(_ae.kind==='raider');
-    if(_as==='chase'||_as==='alarm'){ if(_isR) _huntR++; else _hunt++; }
-    else if(_as==='investigate'&&dist(_ae,G.player)<1000){ if(_isR) _attR++; else _att++; }
-  }
-  // Hold the last thing it said for a beat, so a machine flicking in and out of
-  // investigate cannot strobe the line.
-  if(_att>0){ G.attHold=2.5; G.attN=_att; }
-  else if((G.attHold||0)>0){ G.attHold-=DT_LAST; if(G.attHold>0) _att=G.attN||0; }
-  if(_hunt+_att+_huntR+_attR>0){
-    ctx.textAlign='right'; ctx.font=FS(TYPE.micro);
-    var _ax=W-16,_ay=LH(30);
-    function _aline(txt,col){ ctx.fillStyle=col; ctx.fillText(txt,_ax,_ay); _ay+=LH(12); }
-    if(_hunt>0)  _aline(_hunt+(_hunt===1?' MACHINE HUNTING YOU':' MACHINES HUNTING YOU'),'rgba(255,90,74,.95)');
-    if(_huntR>0) _aline(_huntR+(_huntR===1?' PILLAGER HUNTING YOU':' PILLAGERS HUNTING YOU'),'rgba(255,90,74,.95)');
-    if(_att>0)   _aline(_att+(_att===1?' MACHINE SEARCHING':' MACHINES SEARCHING'),'rgba(255,192,74,'+(_att>8?0.95:0.72)+')');
-    if(_attR>0)  _aline(_attR+(_attR===1?' PILLAGER SEARCHING':' PILLAGERS SEARCHING'),'rgba(255,192,74,'+(_attR>8?0.95:0.72)+')');
-    ctx.textAlign='left';
-  }
+  // v8.33, HIS ORDER: "upper right hand corner in raids, get rid of the text
+  // about who is watching you, hunting you, etc - player shouldn't have this
+  // info." Everything the essay above argues for is now GONE, and the essay is
+  // kept only so the next person does not rebuild it thinking it is a good idea
+  // nobody tried. It was a good idea. It is not his game's idea.
+  //
+  // v7.17 removed the Listener banner on the same ruling and left these,
+  // reasoning that a COUNT is not a MAP. He has now ruled on the count itself:
+  // knowing four things are hunting you is knowing four things are hunting you,
+  // however little it says about where they are. What is left to tell you is
+  // what a man in a dark building would actually have - the noise, the shape at
+  // the edge of the light, the '?' over something you can already see.
+  //
+  // The tallying loop went with the lines. It walked every entity every frame
+  // purely to print two numbers, so with the numbers gone the walk is waste.
+  // G.attHold and G.attN were the anti-strobe hold for those lines and have no
+  // other reader in the file.
 
-  // v7.17, his note: "don't give the player that info". The Listener banner that stood
-  // here (v5.45-v5.60) is gone, both states. The corner hunt counters remain.
+  // v7.17, his note: "don't give the player that info". The Listener banner that
+  // stood here (v5.45-v5.60) is gone, both states. v8.33: and so are the corner
+  // hunt counters, on the same ruling.
   ctx.textAlign='left';
   // HIS NOTE: "need a box that shows modifiers, e.g. storm, rain, night etc."
   // The conditions existed and were legible in exactly one place: the map
@@ -18879,7 +18877,8 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
     delete HUDBOX.cond;
     var HOc=hudOff('cond');
     var bh=HOc.c?(pad*2+lh):(pad*2+lh+total*lh);
-    var bx=W-16-bw, by=LH(30)+LH(12)*2+LH(6);
+    var bx=W-16-bw, by=LH(30);   // v8.33: was LH(30)+LH(12)*2+LH(6), reserving
+                                 // two rows for the hunt counters. They are gone.
     bx=clamp(bx+HOc.dx,4,Math.max(4,W-bw-4));
     by=clamp(by+HOc.dy,LH(10),Math.max(LH(10),H-LH(30)));
 ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
@@ -21840,7 +21839,7 @@ function buildHub(){
   // and E always fires the FIRST listed, so the muscle memory of "walk up,
   // press E" still does the most common thing at every station.
   var stations=[
-    {id:'lift',x:350,y:105,r:48,label:'ASCENT LIFT',sub:'to the surface',c:'#4de3d0',
+    {id:'lift',x:350,y:105,r:48,label:'ENTER RAID!',sub:'to the surface',c:'#4de3d0',
 acts:{KeyE:['go up',function(){
              // v7.42, his order: destination first, then the loadout question.
              if(offeredCount()>1){ renderSector(); openModal('sectormodal'); }
@@ -23003,7 +23002,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.32: swapping to a field gun no longer prints a second copy of the one from your armoury.',
+  now:'v8.33: nothing in the corner tells you who is hunting you any more, and the stats page says what it is counting.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -24676,12 +24675,17 @@ function renderStatCards(){
     h+=card('Notoriety', _name, _bits.join(' '), 1);
   })();
   // How a run tends to go.
-  h+=card('Typical raid', statMMSS(statMed(all.durs)),
+  // v8.33, his wording. "Typical" is the honest word for a median, so the
+  // duration card keeps its statistic and gains the noun it was missing.
+  h+=card('Typical raid length', statMMSS(statMed(all.durs)),
           recent(statMMSS(statMed(last.durs))));
-  var mc=statMed(all.conts);
-  h+=card('Containers a run', mc===null?'--':mc,
-          recent(statMed(last.conts)===null?'--':statMed(last.conts)));
-  h+=card('Kills a run', all.n?(all.kills/all.n).toFixed(1):'--',
+  // v8.33: this was a MEDIAN under the old label. He asked for an average, so
+  // it is now an average rather than a median wearing the word - one big
+  // clear-out of a warehouse used to be invisible here and now counts.
+  var mc=statAvg(all.conts), mcl=statAvg(last.conts);
+  h+=card('Average containers per run', mc===null?'--':mc.toFixed(1),
+          recent(mcl===null?'--':mcl.toFixed(1)));
+  h+=card('Average kills per run', all.n?(all.kills/all.n).toFixed(1):'--',
           all.kills.toLocaleString()+' in total');
   // How runs end.
   h+=card('Died', all.n?Math.round(all.dead/all.n*100)+'%':'--',
