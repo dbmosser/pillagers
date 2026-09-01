@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.52';
+var VER='8.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5785,12 +5785,10 @@ function applyWeak(e,W){
 // HIS ORDER, Q27: "once you die, its gone forever." The body no longer persists
 // between raids at all. Zero rather than a deleted system, so every call site
 // keeps working and the grace period is simply over.
-function bodyHere(){
-  var B=P.body;
-  if(!B||!B.items) return null;
-  if(B.map!==clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1)) return null;
-  return B;
-}
+// v8.53, audit: bodyHere deleted. bodyAge nulls P.body unconditionally on every
+// call, so this could only ever return null and everything downstream of it was
+// unreachable. Bodies are gone forever by his Q27 ruling; DESIGN.md is the record,
+// exactly as the note below says about bodyStash.
 // bodyStash was deleted at v5.50. Since v5.28 its entire body sat below an
 // unconditional "return null" and nothing called it, so it was 28 lines of an
 // abandoned recovery rule kept "as a record". DESIGN.md is the record.
@@ -5826,24 +5824,9 @@ function bodyAge(){
   }
   if(!B.items.length&&B.rig==='none') P.body=null;
 }
-function bodyRecover(ct){
-  var B=P.body; if(!B) return;
-  var got=B.items.length,rg=B.rig;
-  // The items are already this container's loot, so openContainer puts them in
-  // the bag with the usual capacity rules, labels and gun auto-equip. Adding
-  // them here as well would hand you two of everything you died with.
-  if(rg&&rg!=='none'){
-    P.rigs=P.rigs||[];
-    if(P.rigs.indexOf(rg)<0) P.rigs.push(rg);
-    P.rig=rg;
-  }
-  P.body=null; saveProfile();
-  G.bodyTaken=1;
-  say('You took it all back. '+got+' item'+(got===1?'':'s')+
-      (rg&&rg!=='none'?(' and the '+armorById(rg).name):'')+'.');
-  label(ct.x,ct.y-22,'RECOVERED','#4de3d0',0,true);
-  blip('pick');
-}
+// v8.53, audit: bodyRecover deleted with the rest of it. Its only call site tested
+// a flag that was never written, and it also wrote P.rig and P.rigs, two fields
+// v7.46 already deletes from every profile on load.
 function bushAtMap(map,x,y){
   var b=(map&&map.bushes)||[];
   for(var i=0;i<b.length;i++){
@@ -7908,16 +7891,10 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   });
   // YOUR BODY. Placed before the run object exists so it is simply another
   // container: nothing else in the raid needs to know it is special.
-  if(!sim) sideStream(seed,6,function(){                // v8.35: side stream
-    bodyAge();
-    var BD=bodyHere();
-    if(BD&&BD.items.length){
-      var bc=mkContainer(BD.x,BD.y,'body',map.districtAt?map.districtAt(BD.x,BD.y):-1);
-      setLoot(bc,BD.items.slice());
-      bc.mine=1; bc.time=2.2; bc.cache=0;
-      containers.push(bc);
-    }
-  });
+  // v8.53, audit: the corpse container could never be placed - bodyHere always
+  // returned null - so this is just the migration clear now. It needs no side
+  // stream because it draws nothing.
+  if(!sim) bodyAge();
   // EVERY CONTAINER THE MAP DRAWS IS ONE YOU CAN REACH, v2.12. Placement asks
   // freeSpot whether a point is clear of walls, which is not the same question
   // as whether a body can GET there, and nothing anywhere checked the second one.
@@ -8073,7 +8050,9 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
       // version shipped with.
       if(P.freeKit&&!g.sim){ P.dropKit=[]; g.freeKit=1; P.freeKit=0; }
       var _dk=(P.dropKit||[]).slice(); P.dropKit=[];
-      var _dcap=(g.player.armorCap===undefined?ARMOR_MAX:g.player.armorCap);
+      // v8.53, audit: the armour ceiling that used to be computed here was never
+      // read. A plate in the drop kit goes into the BAG, per v6.71 - you land with
+      // an empty rig and build armour from plates - so there is nothing to cap.
       for(var _di=0;_di<_dk.length;_di++){
         var _dit=ITEMS[_dk[_di]]; if(!_dit) continue;
         if(_dit.use==='throw'){ if(g.pouch[_dk[_di]]!==undefined) g.pouch[_dk[_di]]++; }
@@ -11959,7 +11938,8 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
           near.prog=0; near.pulled=0; G.searching=null; G.searchT=0;
           say('That is everything '+near.mercSrc.name+' is carrying.');
         } else {
-          if(near.mine&&!near.opened) bodyRecover(near);
+          // v8.53, audit: near.mine was written in exactly one place, on a corpse
+          // container that could never be created, so this call was unreachable.
           openContainer(near); G.searching=null; G.searchT=0; near.prog=0;
         }
       }
@@ -12893,10 +12873,20 @@ if(_se.kind==='raider'&&_se.sprintPool>0&&_se.moving&&!_se.downed){
   // His in-run note at 190s: "not enough enemies, boring". A raid emptied as it
   // went: everything he killed stayed dead and the back half of the clock had
   // less in it than the front. Machines now trickle back in from the map edge,
-  // one every 40 to 70 seconds after the three minute mark, only while the
-  // machine count is below where the raid started. The player is never spawned
-  // on: arrivals land at least 800 out.
-  G.reinfT=(G.reinfT===undefined?rnd(30,50):G.reinfT)-dt;
+  // one every 30 to 50 seconds after the TWO minute mark, only while the machine
+  // count is below where the raid started. The player is never spawned on:
+  // arrivals land at least 800 out.
+  // v8.53, audit: this note said 40 to 70 seconds after THREE minutes, and the
+  // code has always said 30 to 50 after two. The numbers below are the truth and
+  // the note now matches them; whether the slower, later figures the note
+  // described are the ones he wants is a balance question, not a typo, and it is
+  // his. What WAS a defect is fixed on the next line.
+  // v8.53, audit: the clock does not run while the gate is shut. It used to drain
+  // from t=0, so at the two minute mark it was already far past zero and the first
+  // machine arrived on that very frame instead of one interval later. The draw
+  // itself still happens exactly where it did, so no seeded number moves.
+  G.reinfT=(G.reinfT===undefined?rnd(30,50):G.reinfT);
+  if(G.t>120) G.reinfT-=dt;
   if(G.t>120&&G.reinfT<=0){
     G.reinfT=rnd(30,50);
     var mc=0;
@@ -13388,7 +13378,7 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
       if(_cd2<e.rng&&!e.sang){ e.sang=1; if(!G.sim){ say('THE ORGAN HAS SEEN YOU.'); sfx('dish',e.x,e.y); } }
       if(_cd2>e.rng*1.25) e.sang=0;
       if(sees&&_cd2<e.rng){
-        if(!e.seenYou&&G.tel) G.tel.everSeen=1;
+
         e.seenYou=true; e.alert=4;
         e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.2*dt,2.2*dt);
         if(e.overheat<=0&&e.cd<=0){
@@ -13409,7 +13399,7 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
       // anything, for any length of time, and the clean run is over for the rest
       // of the raid. Sight is one way in; being HUNTED is the other, and that is
       // handled where chase and alarm are entered rather than only here.
-      if(sees&&!e.seenYou&&G.tel) G.tel.everSeen=1;
+
       if(sees){ e.seenYou=true; e.tx=p.x; e.ty=p.y; e.alert=4;
         if(!e.announced){ e.announced=true; say('Something very large has noticed you.'); sfx('alarm',e.x,e.y); } }
       var wantW=e.face;
@@ -19049,7 +19039,10 @@ _tgt=G.active; _lbl='EXTRACTION';
   // "9 SEARCHING THE AREA" named nothing and the HUNTING line above it called
   // pillagers machines. Neither has ever included the player and neither should:
   // this is a count of what is looking for YOU.
-  try{ ghostCheck(); }catch(e){}
+  // v8.53, audit: ghostCheck deleted. It walked every entity on the map once a
+  // frame to set G.tel.everSeen, which nothing has ever read - the extraction
+  // card's NEVER SPOTTED line reads firstContact instead. I kept this call at
+  // v8.33 and described it as a state repair pass, which was wrong.
   // v8.33, HIS ORDER: "upper right hand corner in raids, get rid of the text
   // about who is watching you, hunting you, etc - player shouldn't have this
   // info." Everything the essay above argues for is now GONE, and the essay is
@@ -20388,14 +20381,7 @@ function tickNuke(dt){
 // comparison and nothing else. chase and alarm are the two states that mean an
 // entity knows where you are and is coming; investigate deliberately does not
 // count, because shaking off an unresolved noise is the stealth game working.
-function ghostCheck(){
-  if(!G||G.sim||!G.tel||G.tel.everSeen) return;
-  for(var i=0;i<G.ents.length;i++){
-    var e=G.ents[i];
-    if(e.dead||e.kind==='peddler'||e.kind==='stray') continue;
-    if(e.state==='chase'||e.state==='alarm'){ G.tel.everSeen=1; return; }
-  }
-}
+
 function raiderStatus(e){
   if(!e) return 'GONE';
   if(e.downed) return 'DOWN';
@@ -23358,7 +23344,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.52: one caption per locked room, and the benchmark finally tracks footprints the way the game does.',
+  now:'v8.53: reinforcements wait their turn instead of arriving the instant the clock allows it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

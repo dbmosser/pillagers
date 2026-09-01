@@ -27443,6 +27443,78 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.53 - REINFORCEMENTS WAIT THEIR TURN, AND THREE DEAD SYSTEMS GO
+
+REINFORCEMENTS ARRIVED THE INSTANT THE CLOCK ALLOWED IT. The interval timer
+started draining at t=0 while the gate was still shut, so by the two minute
+mark it was already deeply negative and the first machine walked in on that
+very frame, rather than one interval later. The clock does not run while the
+gate is closed now. That changes no seeded draw and no draw order, so the
+stream is untouched.
+
+The tuning note beside it also disagreed with the code: it said "one every 40
+to 70 seconds after the three minute mark" and the code has always used 30 to
+50 after two minutes. The note now states the real numbers. Whether the
+slower, later figures it described are the ones he wants is a balance
+question rather than a typo, and it is his.
+
+THE GHOST RUN HAD NO CONSUMER AND COST A FULL SCAN EVERY FRAME. The comment
+says "One acquisition, by anything, for any length of time, and the clean run
+is over for the rest of the raid." Nothing has ever read the flag. The
+extraction card's NEVER SPOTTED line reads firstContact instead. So a
+function walked every entity on the map once a frame purely to set something
+that is never spent, and its writers already disagreed with each other.
+
+I also got this wrong at v8.33: removing the hunt counters, I kept the
+ghostCheck call and described it as "a state repair pass that happened to be
+called from here". It was not. It only ever set that flag.
+
+YOUR BODY: SIXTY-FIVE LINES WITH NO ENTRY POINT. bodyAge's first statement
+nulls the record and returns, on every call, so everything below it is
+unreachable, bodyHere could only ever return null, the corpse container could
+never be placed, the flag it would have set was never written, and
+bodyRecover - reached only through that flag - could never be called,
+including its "You took it all back." line.
+
+This is not bodies coming back. His Q27 ruling is that once you die it is
+gone forever, and that unconditional clear is what enforces it. Only the
+scaffolding was dead, and this is the third time the file has kept an
+abandoned recovery rule "as a record" - the note beside bodyAge says exactly
+that about bodyStash, deleted at v5.50 for the same reason. bodyRecover also
+wrote P.rig and P.rigs, two fields a v7.46 migration deletes from every
+profile on load.
+
+AND AN ARMOUR CEILING COMPUTED TWICE AND NEVER READ, in both drop-kit loops,
+with the blank line where the armour branch used to sit still there. The
+current behaviour is correct under v6.71 - you land with an empty rig and
+build armour from plates - so it was leftover rather than a missing feature.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both maps
+with no throw; three endings through oc_btn with the overlay on; hub;
+__renderStage; stream parity zero; a full sim raid end to end.
+  the timer   traced through a sim raid: the interval holds steady at 44.6s
+              all the way to t=119.9 and only begins draining at t=120.5.
+  the arrival seed 4242 drew a 44.6s interval and the first machine landed at
+              t=164.7; seed 99 drew 45.5 and landed at 165.5. Both are one
+              full interval past the gate, where it used to be the first
+              frame past it.
+
+AND A BREAK I CAUSED AND CAUGHT: the fixture's own shim still named bodyHere
+and bodyRecover, so deleting them made the whole shim block throw on load and
+every probe hook after it vanished. __pinDefaults coming back undefined is
+what surfaced it. The shim is updated.
+
+Not verified: nothing, on the deletions - I grepped the whole tools directory
+afterwards and the only surviving mentions are my own comments and
+prev_src.html, which is a historical snapshot that never executes.
+
+Not verified: whether the note's original numbers, 40 to 70 seconds after
+three minutes, are the ones he actually wants. The code has used 30 to 50
+after two minutes since it was written, so that is what every measurement to
+date reflects, and I corrected the note rather than quietly retuning the back
+half of every raid to match it. If the note was the intent, it is a two number
+change and a fresh board.
+
 ## v8.52 - ONE CAPTION PER ROOM, AND THE BENCHMARK LEARNS TO TRACK
 
 EVERY LOCKED ROOM ON THE SECTOR MAP WORE TWO CAPTIONS. Two loops walk the
