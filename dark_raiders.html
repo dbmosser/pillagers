@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.42';
+var VER='8.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7140,17 +7140,24 @@ function buildRaid(sim){
   // The equipped gun is a COPY with its wear baked in, so the base weapon table
   // is never mutated and a worn Auto Rifle does not quietly make every Auto
   // Rifle in the game worse.
-  var wep=WEAPONS[P.equipped],wepIssued=false;
-  if(wep&&wearable(P.equipped)){
-    var WS=wearStep(P.equipped),wc2={};
-    for(var wk2 in wep) wc2[wk2]=wep[wk2];
-    wc2.spread=+(wep.spread*WS.spread).toFixed(4);
-    wc2.reload=Math.round(wep.reload*WS.reload);
+  // v8.43: ONE writer for the wear bake, because gun two was not getting it and
+  // was being billed for wear it never carried. Returns a fresh copy so the base
+  // WEAPONS table is never mutated - a worn Auto Rifle must not quietly make every
+  // Auto Rifle in the game worse.
+  function bakeWear(id){
+    var w=WEAPONS[id];
+    if(!w||!wearable(id)) return w;
+    var WS=wearStep(id),wc2={};
+    for(var wk2 in w) wc2[wk2]=w[wk2];
+    wc2.spread=+(w.spread*WS.spread).toFixed(4);
+    wc2.reload=Math.round(w.reload*WS.reload);
     wc2.jam=WS.jam;
     wc2.wearName=WS.name;
-    wc2.name=(WS.at>0?(WS.name.charAt(0)+WS.name.slice(1).toLowerCase()+' '):'')+wep.name;
-    wep=wc2;
+    wc2.name=(WS.at>0?(WS.name.charAt(0)+WS.name.slice(1).toLowerCase()+' '):'')+w.name;
+    return wc2;
   }
+  var wep=WEAPONS[P.equipped],wepIssued=false;
+  if(wep&&wearable(P.equipped)) wep=bakeWear(P.equipped);
   if(!wep||wep.id==='fists'||!P.weapons||P.weapons.indexOf(P.equipped)<0){
     wep=WEAPONS[pick(STARTERS)]; wepIssued=true;
   }
@@ -7163,7 +7170,12 @@ function buildRaid(sim){
   var sec=WEAPONS.fists, secIss=false;
   if(P.equippedSec&&P.equippedSec!=='fists'&&P.equippedSec!=='none'&&WEAPONS[P.equippedSec]&&
      (P.weapons||[]).indexOf(P.equippedSec)>=0&&P.equippedSec!==P.equipped){
-    sec=WEAPONS[P.equippedSec]; secIss=false;
+    // v8.43, audit: THE SAME BAKE. This took the raw table entry, so a sidearm
+    // accrued wear on the profile - fireWeapon tests G.player.wep and a swap makes
+    // the sidearm exactly that - was listed as FAILING in the Workshop and billed
+    // for, and then shot like a clean gun. The comment above promises it "rides
+    // the same rules as your primary"; now it does.
+    sec=bakeWear(P.equippedSec); secIss=false;
   }
   // Never drop the operator into a flooded tile. Water defeats crouch and halves
   // your speed, so a wet spawn means announcing yourself from second zero with
@@ -10508,9 +10520,11 @@ function useHot(){
       // failing to find it in the bag. His rule from v6.60 stands: a belt key changes
       // to the gun, it never fires it.
       var _pp2=G.player;
-      if(_pp2.wep&&_pp2.wep.id===ait.gk&&_pp2.swapped) { swapGuns(); return; }
-      if(_pp2.sec&&_pp2.sec.id===ait.gk&&!_pp2.swapped){ swapGuns(); return; }
-      if((_pp2.wep&&_pp2.wep.id===ait.gk)||(_pp2.sec&&_pp2.sec.id===ait.gk)) return;  // already up
+      // v8.43, audit: p.wep IS the gun in your hands, always; p.swapped only says
+      // which one you deployed with. Testing it here made the key stow the gun you
+      // asked for and do nothing at all for the one you meant.
+      if(_pp2.wep&&_pp2.wep.id===ait.gk) return;                       // already up
+      if(_pp2.sec&&_pp2.sec.id===ait.gk){ swapGuns(); return; }        // stowed: bring it up
       equipFromBag(ix,0); return;
     }
     return;   // valuables are carried, not used
@@ -14098,8 +14112,13 @@ e.lootT=(e.lootT||0)+dt;
         // angular error opening with distance, the same reaction gate, and the
         // same floor so a point-blank scrap is unchanged. The two rnd draws keep
         // their count.
-        var _rSee=(e.hostile!==false&&!p.downed&&dist(e,p)<e.rng&&
-                   canSee(e.x,e.y,e.face,p.x,p.y,G.vseg));
+        // v8.43, audit: USE THE EYES THE REST OF THE LOOP USES. This called canSee
+        // with six arguments, so far/cone/amb defaulted to VF(), CH() and AMBR() -
+        // all three of which read opticMag(), the PLAYER'S scope. His field of view
+        // was therefore a function of the gun pointed at him. It also skipped
+        // concealment, blinding and the hard-crouch rule, all of which live on
+        // `sees`, computed for this same entity earlier in this same frame.
+        var _rSee=(e.hostile!==false&&!p.downed&&dist(e,p)<e.rng&&sees);
         e.acqT=_rSee?((e.acqT||0)+dt):0;
         if(_rSee&&e.cd<=0&&e.acqT>=(CFG.raiderReact===undefined?0.34:CFG.raiderReact)){
           var _rgk=(CFG.raiderAim===undefined?1:CFG.raiderAim);
@@ -19669,7 +19688,12 @@ ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
   // throwable counts live on the hotbar now, not as a second readout
 
 ctx.restore();
-  if(T.notes.length){ ctx.fillStyle='#6b7783'; ctx.fillText(T.notes.length+' note'+(T.notes.length>1?'s':'')+' logged',W-16,26); }
+  // v8.43, audit: RIGHT ALIGNED, on the line itself. W-16 is the right margin, but
+  // textAlign was 'left' here - restored from a state that inherited it - so the
+  // string started at x=1904 on a 1920 canvas and ran off the edge. Set locally
+  // rather than relying on a caller, which is how it got lost in the first place.
+  if(T.notes.length){ ctx.save(); ctx.textAlign='right'; ctx.fillStyle='#6b7783';
+    ctx.fillText(T.notes.length+' note'+(T.notes.length>1?'s':'')+' logged',W-16,26); ctx.restore(); }
   ctx.textAlign='left';
   if(G.beaconT!==null&&!G.over){
     var inRing=dist(p,G.active)<G.active.r;
@@ -23164,7 +23188,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.42: the hard kills finally count, None means none, and a contract no longer advertises XP it never paid.',
+  now:'v8.43: crouching works on the man in the ring, and your second gun wears out like the first.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -27443,6 +27443,81 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.43 - THE SECOND GUN, THE SECOND EYE, THE SECOND BELT KEY
+
+A WORN SIDEARM WAS BILLED FOR AND NEVER WORN. buildRaid bakes the wear band
+into the PRIMARY only: it copies the weapon, multiplies spread, multiplies
+reload, stamps the jam figure and renames it "Failing Auto Rifle". The
+secondary was handed the raw WEAPONS table entry with no bake at all.
+
+But the accrual is slot-agnostic. fireWeapon tests G.player.wep, and after a
+swap the sidearm IS G.player.wep, so every round through gun two was counted
+onto the profile. The Workshop then listed it at 1,600 rounds, called it
+FAILING, and quoted a bill in credits plus two servos - to undo damage that
+had never been applied to the gun you actually carry. A FAILING sidearm shot
+exactly as well as a clean one. The comment three lines above the assignment
+says a chosen sidearm "rides the same rules as your primary".
+
+There is one writer for the bake now, used by both slots, so they cannot
+drift apart again.
+
+THE MAN IN THE EXTRACTION RING SAW YOU THROUGH YOUR OWN SCOPE. That second
+firing path called canSee with six arguments, so far, cone and ambient all
+fell back to their defaults - and every one of those defaults calls
+opticMag(), which returns THE PLAYER'S scope magnification while aiming. So
+his eyesight was computed from the gun pointed at him: scoping in narrowed
+his cone and halved his peripheral range.
+
+The other direction was worse. None of the modifiers the rest of the AI
+applies reached this branch: no concealment, no blinding, and no hard-crouch
+rule - which is applied to `sees`, a variable this branch simply did not
+use. `sees` is computed unconditionally for every entity 869 lines earlier
+in the same frame and already carries all three, so it is used here now
+instead of building a second, wrong answer.
+
+THE BELT KEY ON A GUN SLOT SWAPPED THE WRONG WAY. The same wrong premise
+fixed in the belt display at v8.39, in the input path this time: p.wep is
+the gun in your hands regardless of p.swapped, which only records which one
+you deployed with. So the first test fired when the gun was ALREADY up and
+stowed it, and the case that genuinely needs a swap fell through to the
+"already up" return and did nothing. The comment above it promises "if that
+gun is already in your hands, the key brings it up", which is the opposite
+of what the first line did.
+
+THE RUN-NOTE COUNTER DREW OFF THE RIGHT EDGE OF THE SCREEN. Positioned at
+W-16, the right margin the whole gear stack uses, but with textAlign left by
+the time it ran - restored from a state that had inherited left from the
+hotbar block. On a 1920 canvas it started at x=1904 and ran off. He types run
+notes on the pause screen and the HUD is meant to confirm them; about one
+character was visible. Set on the line itself now, inside a save/restore, so
+a caller cannot lose it again.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both
+maps with no throw and the clock advancing; three endings through oc_btn
+with the overlay on; hub; __renderStage; stream parity zero; a full sim raid
+end to end to an extract.
+  the sidearm  with 1,800 rounds on it: spread 0.105 against a base 0.07,
+               reload 2870 against 2050, named "Failing Auto Rifle". The
+               base table still reads "Auto Rifle" at 0.07, and a clean
+               sidearm comes through identical to base, which is the control.
+  the note     "3 notes logged", right aligned, spanning x 1791 to 1904 on a
+               1920 canvas, fully on screen, and textAlign is back to left
+               after the frame so nothing downstream inherits it.
+  the belt key all four combinations: a slot naming the gun in your hands
+               leaves it there, a slot naming the stowed gun brings it up,
+               with p.swapped false AND true. The old code got the two
+               swapped-true cases exactly backwards.
+
+Not verified: the crouch half of the ring fix. I could establish that the
+branch is still reachable and still fires - his acquisition timer runs to
+1.60s at 90 units - and that `sees` is computed for every entity before the
+state machine, so the substitution is sound. I could NOT build a standing
+against crouched pair for that one man, because the hard-crouch rule only
+hides you beyond 170 units and his effective sight of a target he is not
+facing collapses to the roughly 100 unit ambient radius, which is below it.
+Worth knowing on its own: the man in the ring can only see you at all when
+he happens to be facing you, or when you are within about 100 units.
+
 ## v8.42 - WHAT THE GAME COUNTS, AND WHAT IT SAYS IT COUNTS
 
 THE HARD KILLS WERE WORTH NOTHING, TWICE OVER. G.tel.kills carries nine
