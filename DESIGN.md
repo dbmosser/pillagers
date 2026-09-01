@@ -27443,6 +27443,57 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.71 - THE XP LINE NAMES THE NEXT REWARD INSTEAD OF PROMISING AN UNLOCK
+
+His note: "x of Y EXP -- what happens at Y? Not clear." It was not clear because
+the sentence under it was wrong twice, and a full audit of the XP system says
+exactly how.
+
+WHAT Y ACTUALLY IS. 1,200,000 is not a cap, not a level and not a ceiling. It is
+the threshold typed into the LAST of the 100 rows in SEASON_TIERS, the Meridian
+Lance. The card reads that row and shows it as a target.
+
+WHAT HAPPENS WHEN YOU REACH IT. Nothing, on its own. The only gate in the whole
+XP system is claimTier, which refuses while your XP is under a row threshold. A
+row flips from "n to go" to ready and then waits: you walk to THE MAINFRAME, open
+REWARDS and press Claim before anything is handed over. Past 1,200,000 the number
+keeps rising and only the DISPLAY is clamped, so every card after that reads
+"1,200,000 of 1,200,000" for the rest of the profile.
+
+SO THE OLD SENTENCE LIED TWICE. "unlocks" promises something automatic, and
+nothing is automatic. And "the Mainframe rewards" points at the right window and
+the wrong half of it: THE MAINFRAME has four tabs and XP feeds REWARDS only,
+while RACKS, which is what most people mean by the Mainframe, has nothing to do
+with XP.
+
+Read back from the rendered card at three XP totals:
+  0          Next: Bandages and ammo, reward 1 of 100, 7,055 XP away. Claim it at THE MAINFRAME, REWARDS.
+  250,000    Next: Crate of medkits, reward 26 of 100, 2,055 XP away. Claim it at THE MAINFRAME, REWARDS.
+  1,300,000  All 100 rewards earned. XP keeps counting, but there is nothing left that it pays for.
+
+The "XP away" figure is computed the same way renderSeason computes it, so the
+card and the reward board cannot disagree.
+
+ALSO ESTABLISHED, NOT CHANGED: he asked why there is no proficiency rating. There
+is one. P.prof is still computed on every run, banked haul up and 60 percent of
+haul lost on death down. It was taken off this screen deliberately at v6.41, and
+the note there says why: "LEVEL and PROFICIENCY are off this screen too, same
+reason they came off the Undercroft header. They gate nothing and have no ceiling
+to be read against." The roadmap records it as DECIDED: FOLDED. It survives as
+the career card "Net carried out". Worth knowing before he rules: it measures
+MONEY. It reads nothing about accuracy, stealth, kills or survival, so it was
+never a skill rating. The material for a real one is already instrumented and
+unused, and that is a design decision for him rather than something to slip in.
+
+Verified: parse PASS at 1,517,336 chars, mojibake none. Three XP totals read back
+from the card. __verify PASS: ents 58 and 276, parity identical on both maps,
+looting on both, all three endings, hub. __regress PASS, 17 checks.
+
+Not verified: the new line was read at 1920x1080 only and is longer than the one
+it replaced, so it has not been checked for wrapping on a narrower window. The
+reward NAMES come from tierLabel, which I did not audit for all 100 rows; three
+were sampled. And nothing here touched claiming itself.
+
 ## v8.70 - THE ROLL LOOKS LIKE A ROLL IN THE UNDERCROFT, AND ESC PAUSES DOWN THERE
 
 Two of his Undercroft reports.
