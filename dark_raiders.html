@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.35';
+var VER='8.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7206,9 +7206,21 @@ function buildRaid(sim){
   // SPEC 5.3: all points open at run start and close progressively, leaving one.
   // Closure times are seconds REMAINING on the clock, announced two minutes out.
   var zones=[];
-  var closeSchedule=[360,240,null];   // ~6:00 left, ~4:00 left, last stays open
+  // v8.36: PROPORTIONS OF THE CLOCK, not absolute seconds. These were 360 and
+  // 240 seconds remaining, which is only "about six minutes left" while the raid
+  // happens to be 540 seconds long. Under SHORT WINDOW the clock starts at 356,
+  // so the 360 mark was already behind the player at the drop and the first way
+  // out was shut on frame one, silently, with its own two minute warning also in
+  // the past. Preset C at 480 seconds did the same thing without any term at all.
+  // 360/540 and 240/540, so a default raid is unchanged to the second.
+  var termClock=(!sim&&hasTerm('window'))?0.66:1;
+  var _clockLen=Math.round(CFG.raidSec*termClock);
+  var closeSchedule=[2/3,4/9,null];   // two thirds gone, four ninths gone, last stays open
   for(var z=0;z<map.extracts.length;z++){
-    var cl=closeSchedule[z]===undefined?null:closeSchedule[z];
+    var _cf=closeSchedule[z]===undefined?null:closeSchedule[z];
+    // Never schedule a closure the clock has already passed: a ring that cannot
+    // be reached is worse than one that closes early, because nothing tells you.
+    var cl=(_cf===null)?null:Math.min(Math.round(_clockLen*_cf),_clockLen-1);
     zones.push({x:map.extracts[z].x,y:map.extracts[z].y,r:78,open:true,
       beaconT:null,hold:null,pullT:null,callT:0,warned:0,
       closeAt:(cl===null?undefined:cl),
@@ -7839,7 +7851,9 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
       if(mv){ RC.x=mv.x; RC.y=mv.y; }
     }
   }
-  var termClock=(!sim&&hasTerm('window'))?0.66:1;
+  // v8.36: termClock is computed once, up with the closure schedule that also
+  // needs it. Declaring it twice would let the raid clock and the ring clock
+  // drift apart, which is the exact failure this build is fixing.
   var g={sim:!!sim,seed:seed,grid:buildSegGrid(map.segs,WORLD_W,WORLD_H),wgrid:buildWallGrid(map.walls,WORLD_W,WORLD_H),seal:(sim?null:{x:G_SEAL_SPOT.x,y:G_SEAL_SPOT.y,gained:0}),
     nMach:N_SENTRY+N_CRAWLER,map:map,vegPal:mkVegPal(map),ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:Math.round(CFG.raidSec*termClock),raidLen:Math.round(CFG.raidSec*termClock),paused:false,
     player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,
@@ -23043,7 +23057,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.35: the raid you play is now the same raid the benchmark measures. It was not before.',
+  now:'v8.36: a short raid no longer starts with one of the ways out already shut.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -27443,6 +27443,55 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.36 - A SHORT RAID NO LONGER STARTS WITH A WAY OUT ALREADY SHUT
+
+The closure schedule was written as absolute SECONDS REMAINING - 360 and
+240 - against a clock whose length is a dial. The default raid is 540
+seconds, and SHORT WINDOW multiplies the starting clock by 0.66, which is
+356. A ring told to close "at 360 remaining" is therefore being told to
+close at a moment that passed before the raid began, so it shuts on the
+first frame, silently, and its own two minute warning is also in the past.
+
+It was never only the term. Preset C sets raidSec to 480, and 480 x 0.66 =
+317, so the same thing happens there with no term at all. Preset A sets
+700 and a profile that never took the v5.x migration still carries 600.
+Every one of those numbers silently moved when the first way out shut.
+
+The schedule now says what it always claimed to say: proportions of the
+raid. Two thirds gone and four ninths gone, which at the default clock
+comes out at exactly 360 and 240, so a standard raid is unchanged to the
+second and the bot - which never gets the term - is untouched. A closure
+is also clamped so it can never be scheduled behind the clock again,
+whatever anyone sets raidSec to later.
+
+termClock was being computed twice in the same function, once here and
+once at the run object. It is computed once now. Two copies of the raid
+clock drifting apart is precisely the failure this build is fixing.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; three endings
+through oc_btn with the overlay on; hub; stage; and the live-against-bot
+map parity from v8.35 re-checked and still at zero mismatches.
+  no terms       clock 540s, rings close at 360 and 240, one stays open,
+                 nothing shut on frame 1
+  SHORT WINDOW   clock 356s, rings close at 237 and 158, nothing shut
+  the control    a ring hand-set back to the old 360 under SHORT WINDOW
+                 shuts on frame 1, which is what proves the rest of it
+
+FOR HIS RULING, found while measuring and not changed. The comment above
+this schedule says every point "opens at run start and closes
+progressively, LEAVING ONE". On COLD STORAGE, which has three, that is
+true. THE COLD MILE has six, and only two of them ever close: the other
+four stay open all raid. So on the bigger and supposedly harder map the
+squeeze that is meant to define the back half of a raid barely happens.
+Making it match the comment would mean five of six rings closing, which is
+a large difficulty change on the map that already extracts at 23.5 percent
+against Cold Storage's 18.0, so it is his call rather than mine.
+
+Not verified: the feel of the corrected SHORT WINDOW raid. The ring now
+closes at 237 seconds remaining out of 356 instead of instantly, which is
+arithmetically what the term always intended, but I have not played a
+short raid to see whether the squeeze now lands too early instead.
+
 ## v8.35 - THE RAID YOU PLAY IS NOW THE RAID THAT WAS MEASURED
 
 Every extract rate, every haul figure, every paired A/B I have ever reported
