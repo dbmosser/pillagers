@@ -27443,6 +27443,59 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.47 - FINISHING A CONTRACT NOW SAYS SO
+
+Half the board could never tell you it was done.
+
+Kill, open and district contracts reach their target DURING the raid -
+contractKill and contractOpen increment the moment the kill or the search
+lands. contractExtract's very first line is `if((c.prog||0)>=c.n) continue;`,
+so by the time it runs those three are already finished and are skipped
+before anything can report them.
+
+The result is that finishing "Destroy 6 sentries" produced no feedback
+anywhere at all. contractKill is silent. The live CONDITIONS panel DROPS a
+finished row rather than ticking it, so the line just vanished off the HUD.
+And the extraction report's "CONTRACT COMPLETE: ... Claim it at the board."
+line never fired for it. The player had to notice it on the board later, if
+he noticed at all.
+
+It cost the recorder too. G.tel.contractsBanked was added so that whether
+the board works in the wild would be visible in his exported files, and it
+could only ever see item, haul and conduct - three of six types. The label
+expression could emit 'item', 'haul' or a conduct check and nothing else;
+'kill-*', 'open' and 'district' were unreachable strings.
+
+There is one door now. contractStep is what both mid-raid sites call: it
+increments, and when the count lands it says so out loud where he is
+looking - "CONTRACT DONE: Destroy 1 sentry. Claim it at the board." - and
+remembers it for the report and the recorder. contractExtract appends those
+to its own list, so a run that finished a kill contract in the first minute
+and a haul contract at the ship reports both.
+
+_wasOpen went with it. It was assigned true and never anything else, a
+vestige of a test the `continue` two lines above already performs.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both
+maps with no throw; three endings through oc_btn with the overlay on; hub;
+__renderStage; stream parity zero; a full sim raid end to end.
+  finishing one   a 1-of-1 sentry contract, killed with a real round on the
+                  play path: prog 1/1, said out loud "CONTRACT DONE: Destroy
+                  1 sentry. Claim it at the board.", the extraction report
+                  carries "CONTRACT COMPLETE: Destroy 1 sentry", and the
+                  recorder banks "kill-sentry" - a string that was
+                  unreachable before this build.
+  the control     the same kill against a 5-of-5 contract: progress 1/5,
+                  nothing said, nothing recorded. It only speaks when the
+                  contract is actually done.
+
+Not verified: the live CONDITIONS panel. It still drops a finished row
+rather than showing it ticked, which was the other half of why this was
+invisible. That is a display decision rather than a defect - the panel is
+for work still live - and I have left it alone, but if he would rather see
+a completed row struck through for a few seconds before it goes, that is a
+small change and his call.
+
 ## v8.46 - PAID FOR WHAT HE CARRIED, AND THE STALL STAYS PUT
 
 THE MERCENARY'S CUT WAS PAID FROM A NUMBER ONLY A HUD DRAW UPDATED. Roster

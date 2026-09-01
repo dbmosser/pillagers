@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.46';
+var VER='8.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2123,11 +2123,28 @@ else if(kind==='steady') c={type:'conduct',ck:'steady',n:1,prog:0,reward:Math.ro
   c.gear=rollGear(t);
   return c;
 }
+// v8.47, audit: one door for a contract that finishes DURING a raid. The three
+// mid-raid types - kill, open, district - all crossed their line silently and
+// were then skipped by contractExtract, which returns early on anything already
+// finished. Nothing on screen, nothing in the report, nothing in the recorder.
+function contractStep(c){
+  if(c.prog>=c.n) return;
+  c.prog++;
+  if(c.prog<c.n) return;
+  // It just landed. Say so where he is looking, and remember it for the report.
+  if(G){
+    G.tel=G.tel||{};
+    G.tel.contractsMid=G.tel.contractsMid||[];
+    G.tel.contractsMid.push({desc:c.desc||'contract',
+      label:(c.type==='kill'?('kill-'+c.tgt):c.type)});
+    if(!G.sim) say('CONTRACT DONE: '+(c.desc||'contract')+'. Claim it at the board.');
+  }
+}
 function contractKill(kind){
   if(G&&G.sim) return;
   for(var i=0;i<P.contracts.length;i++){
     var c=P.contracts[i];
-    if(c.type==='kill'&&c.tgt===kind&&c.prog<c.n) c.prog++;
+    if(c.type==='kill'&&c.tgt===kind&&c.prog<c.n) contractStep(c);
   }
 }
 function contractOpen(ct){
@@ -2135,11 +2152,11 @@ function contractOpen(ct){
   if(ct&&ct.dropped) return;   // audit: searching your own discard farmed contracts
   for(var i=0;i<P.contracts.length;i++){
     var c=P.contracts[i];
-    if(c.type==='open'&&c.ct===ct.type&&c.prog<c.n) c.prog++;
+    if(c.type==='open'&&c.ct===ct.type&&c.prog<c.n) contractStep(c);
     // v8.38, audit: THE DISTRICT HAS TO MATCH. c.d and ct.d both existed and
     // neither was ever compared, so this ticked on every container on the map and
     // four district contracts completed together on the same four boxes.
-    if(c.type==='district'&&ct.d===c.d&&c.prog<c.n) c.prog++;
+    if(c.type==='district'&&ct.d===c.d&&c.prog<c.n) contractStep(c);
   }
 }
 // The conduct verdict. Read off G.tel, which is the same record the run report
@@ -2174,7 +2191,6 @@ function contractExtract(bag,haul){
     // with it. Measured: [null,{},{id:'bogus'}] threw on every extraction.
     if(!c||typeof c!=='object'||c.n===undefined||c.type===undefined) continue;
     if((c.prog||0)>=c.n) continue;
-    var _wasOpen=true;
     if(c.type==='exItem'){
       var n=0;
       for(var j=0;j<bag.length;j++) if(bag[j]===c.item) n++;
@@ -2187,12 +2203,21 @@ if(c.type==='haul'&&haul>=c.v) c.prog=c.n;
 if(c.ck==='weak'){ if(((G&&G.tel&&G.tel.weakHits)||0)>=c.n) c.prog=c.n; }
       else if(conductMet(c.ck)) c.prog=c.n;
     }
-if(_wasOpen&&c.prog>=c.n){
+    if(c.prog>=c.n){
       _banked.push(c.type==='conduct'?c.ck:(c.type==='kill'?'kill-'+c.tgt:(c.type==='exItem'?'item':c.type)));
       _done.push(c.desc||'contract');
     }
   }
-if(G&&G.tel&&_banked.length) G.tel.contractsBanked=_banked;
+  // v8.47, audit: and the ones that finished DURING the raid, which this loop
+  // can never see because it skips anything already at its target. They are the
+  // kill, open and district types - half the board - and until now none of them
+  // appeared in the report or in the recorder.
+  var _mid=(G&&G.tel&&G.tel.contractsMid)||[];
+  for(var _mq=0;_mq<_mid.length;_mq++){
+    _banked.push(_mid[_mq].label);
+    _done.push(_mid[_mq].desc);
+  }
+  if(G&&G.tel&&_banked.length) G.tel.contractsBanked=_banked;
   return _done;
 }
 
@@ -23238,7 +23263,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.46: your hire is paid for what he actually carried out, and the Peddler stays at his pitch.',
+  now:'v8.47: finishing a contract tells you so, out loud, the moment it happens.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
