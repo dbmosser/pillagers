@@ -27443,6 +27443,71 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.62 - FOUR REPORTED BUGS CHASED DOWN AND PROVED NOT TO BE BUGS
+
+This build changes no behaviour. It is the result of taking four findings off the
+audit queue, reproducing none of them, and writing down why so that nobody spends
+another night on them. I also wrote a fix for one of them, proved the fix did
+nothing, and took it back out. That last part is the most useful thing here.
+
+"A SENTRY IN CHASE WALKS TO THE PLAYER'S LIVE POSITION WITH NO SIGHT TEST, SO
+NOTHING CAN SHAKE IT." The finding is looking at real code: the role block reads
+p.x and p.y directly for all three of its navigation targets and tests nothing.
+What it missed is the line 130 above it. The whole engagement section sits inside
+`if(sees&&!(e.merc...))`, so it only ever runs while the machine CAN see you, and
+reading the live position is then simply correct.
+
+I believed it and shipped a fix. Two reproductions, both mine to own:
+
+  1. I stepped the world with __rawStep, which plays the BOT, and the bot was
+     shooting the sentry the whole time. Being shot reveals you, correctly, and
+     that is what I measured.
+  2. I then held state='chase' by hand and measured 800 units of "drift". But
+     engagement is gated on SIGHT, not on that flag, so the sentry was patrolling
+     and the 800 units was its random wander target.
+
+What settled it was checking out the v8.61 build, rebuilding it, and running the
+identical test: 800 units of drift and 254 units of movement, on both builds, to
+the same ending coordinates. The patch never executed. An inert change to enemy
+AI, described in a changelog as a difficulty fix, is worse than no change at all,
+so it is reverted and the code carries a note saying it was checked.
+
+THREE MORE, ALREADY FIXED OR NOT REAL:
+
+  - "packCall recruits Criers into the pack, and a Crier can never execute a pack
+    role." It does recruit them. Given the exact treatment packCall applies, a
+    Crier moved 290 units in five seconds with its moving flag set, so it is not
+    frozen. Whether a Crier is a GOOD pack member is a design question, not a bug.
+  - "simStep never calls tickHot, so the hot zone is frozen in every headless
+    sim." Fixed at v8.45, which added the call with a note saying exactly that.
+  - The death screen HEALTH and DAMAGE columns, and grantLoot's tail, were both
+    settled last build as pointing at the wrong code.
+
+WHAT I ALSO REMOVED. The regression check I wrote for the sentry asserted that
+its target stays on the last seen point. It failed on a build with no defect in
+it, because what it was really watching was the patrol wander. A check that fails
+on correct code trains you to ignore checks, so it is gone rather than loosened.
+The suite is back to 12.
+
+THE PATTERN WORTH KEEPING. Three of my last four false starts came from stepping
+the world with __rawStep, which is the BOT playing the game - shooting, moving,
+giving away position - while I read the result as if the player were standing
+still. __sim is the stepper that does not play. That is now the third time it has
+cost me, and it is written into the audit file at the top.
+
+Verified: parse PASS at 1,511,003 chars, mojibake none. __verify PASS: ents 58
+and 276, parity identical on both maps, looting on both with the clock advancing,
+all three endings with the overlay on, hub through the title button. __regress
+PASS, 12 checks. The diff against the previous build is nine lines added and two
+removed, all of them comment and version text, with zero lines of the reverted
+patch left in.
+
+Not verified: I proved the role block does not run without sight by reading the
+enclosing condition and by the v8.61 comparison, not by instrumenting the branch
+itself, so what I have is two independent arguments rather than a direct trace.
+And "a Crier is a poor pack member" is untested as a balance question; all I
+showed is that it moves.
+
 ## v8.61 - THE HOLD THAT GETS YOU ABOARD HAS TO BE DONE IN ONE GO
 
 BOARDING COULD BE PAID IN INSTALMENTS. Extraction is the one moment the game asks
