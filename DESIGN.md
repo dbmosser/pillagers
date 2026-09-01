@@ -27443,6 +27443,78 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.58 - FOUR NUMBERS AND MESSAGES THAT TOLD THE PLAYER SOMETHING UNTRUE
+
+All four reproduced against the running build before anything was changed, and
+each one has a control that fails if the fix is removed.
+
+HOW CLOSE YOU CAME TO AN EXTRACT WAS MEASURED TO THE WRONG RING. Four writers of
+T.closestExtract all measured to G.active, the ring currently TARGETED, and any
+OPEN ring extracts you: that is exactly what v8.25 established when it stopped
+the game pinning to a closed one. So the headline figure on the death card was
+the distance to a ring you were not obliged to use.
+
+Measured at the drop, seed 4242:
+
+  COLD STORAGE    nearest open ring 152m    reported 387m
+  THE COLD MILE   nearest open ring 166m    reported 381m
+
+Both overstate by more than double on the very first frame. It now measures the
+nearest OPEN ring and falls back to G.active when nothing is open, controlled by
+closing every ring: the fallback returns 387m rather than 1e9.
+
+THE SECTOR BOARD WAS WRONG TWICE OVER. It printed M.w/100 by M.h/100 "hectares".
+U_PER_M is 10, so units convert to metres by ten, not a hundred, and a hectare is
+an area of 10,000 square metres and can never be one side of a rectangle. Read
+from the rendered board, before and after:
+
+  COLD STORAGE    "42 by 34 hectares"   ->  "420 by 340 metres, 14.3 hectares"
+  THE COLD MILE   "90 by 76 hectares"   ->  "900 by 760 metres, 68.4 hectares"
+
+This is the board he uses to choose a map.
+
+THE MESSAGE YOU READ WHILE BLEEDING OUT ASKED FOR AN ITEM YOU DO NOT NEED.
+"DOWN. F to self-revive with medical." selfRevive requires no medical and
+consumes none. That is his own v6.45 order and the function's comment says so:
+"no medical required and none consumed. Everyone lands with one of these."
+
+So the single message a player reads while dying gave them a reason not to press
+the key. Controlled: emptied the bag completely, took the player down through the
+real damage path, pressed F. Bag [], down true, then up at 40hp with one revive
+spent. The old line was actively costing runs. It now reads "DOWN. F to get back
+up. You get one a raid."
+
+THE WORKSHOP PROMISED A CONSEQUENCE THAT IS SWITCHED OFF. "A worn gun jams more
+often." The jam mechanic is real and wired end to end - the wear step's jam
+figure is copied onto the weapon and the firing path rolls against it and jams
+the gun for 0.9 seconds - and it can never fire, because all four wear bands
+carry jam:0. The shop charges to service a gun against a downside that does not
+exist.
+
+The TEXT is corrected, not the table. Whether guns should jam is a balance
+decision and his, not a typo with one right answer. The machinery is live and one
+table away from working. The line now names what wear actually costs, which is
+accuracy and reload speed. A regression check watches the table: if a band ever
+gets a real jam figure, it fails and tells me to promise it again.
+
+MY OWN REGRESSION CHECK FAILED ITSELF. It searched the page for the retired
+strings, and the check's own source is in the page and contains them as literals,
+so it reported a correct build as broken. The needles are built at runtime now
+and the search stops at the harness boundary. Controlled by planting the string
+back into the game half of the page: FAIL, then PASS once removed.
+
+Verified: parse PASS at 1,506,954 chars, mojibake none. __verify PASS: ents 58
+and 276, parity identical on both maps, looting searched a container and banked
+items on both with the clock advancing, all three endings with the overlay on,
+hub through the title button. __regress PASS, now 7 checks, up from 4.
+
+Not verified: the workshop line was confirmed by reading the shipped source, not
+by rendering the row - I could not get the workshop tab to draw from the fixture,
+so the string is right in the build but I have not seen it on screen. Whether
+worn guns SHOULD jam is untouched and waiting on him. The extraction-pull
+finding on the raid queue was not settled: my probe could not start a pull at
+all, so it proves nothing either way and stays open.
+
 ## v8.57 - ONE CALL INSTEAD OF SEVEN, AND PAST FIXES GET RE-CHECKED
 
 He asked what would make development faster and told me to adopt my own answers.

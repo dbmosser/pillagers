@@ -952,6 +952,44 @@ window.__REGRESS=[
        if(hit) out.push('mapIx '+mi+' has '+hit+' roads crossing a wall');
      });
      return out.length?out.join('; '):null; }},
+  {v:'8.58',what:'closest-extract measures the nearest OPEN ring, not the targeted one',
+   run:function(){
+     var out=[];
+     [0,1].forEach(function(mi){
+       __resetCfg(); __pinDefaults(mi); __startRaid({mapIx:mi,seed:4242});
+       var g=__state(), p=g.player, near=1e9, act=g.active?dist(p,g.active):null;
+       for(var i=0;i<g.zones.length;i++){ var z=g.zones[i]; if(!z.open) continue;
+         var d=dist(p,z); if(d<near) near=d; }
+       if(near>=1e9) return;
+       for(var f=0;f<6;f++) __loop(performance.now()+f*16.7);
+       var c=__state().tel.closestExtract;
+       if(Math.abs(c-near)>2) out.push('mapIx '+mi+' reported '+Math.round(c)+', nearest open ring is '+Math.round(near));
+     });
+     return out.length?out.join('; '):null; }},
+  {v:'8.58',what:'the sector board reads in metres, not a tenfold hectare',
+   run:function(){
+     try{ __ui.sector(); }catch(e){ return 'renderSector threw: '+e; }
+     var t=(document.getElementById('sectormodal').textContent||'').replace(/\s+/g,' ');
+     if(/\d+ by \d+ hectares/.test(t)) return 'the board still prints a dimension in hectares';
+     if(!/\d+ by \d+ metres/.test(t)) return 'no metre dimension on the board at all';
+     return null; }},
+  {v:'8.58',what:'no message promises something the game does not do',
+   run:function(){
+     var bad=[];
+     // Built at runtime on purpose. Written as literals, these needles appear in
+     // this very function, which is in the page, so the check matched its own
+     // source and failed a build that was correct.
+     var n1='self-revive'+' with '+'medical', n2='jams'+' more '+'often';
+     var src=(document.documentElement&&document.documentElement.innerHTML)||'';
+     var cut=src.split('__REGRESS')[0];       // the game, not this harness
+     if(cut.indexOf(n1)>=0) bad.push('the down message still asks for medical');
+     if(cut.indexOf(n2)>=0) bad.push('the workshop still promises jamming');
+     // And the fact underneath the text: if a wear band ever gets a real jam
+     // figure, this stops being a lie and the workshop line should say so again.
+     var anyJam=false;
+     try{ for(var i=0;i<WEARSTEPS.length;i++) if(WEARSTEPS[i].jam>0) anyJam=true; }catch(e){}
+     if(anyJam) bad.push('a wear band now has a real jam figure - the workshop line should promise it again');
+     return bad.length?bad.join('; '):null; }},
   {v:'8.56',what:'the game counts in English at n=1',
    run:function(){
      var bad=[];
@@ -973,6 +1011,11 @@ window.__regress=function(){
   res.summary=res.pass?('PASS, '+res.checked+' regression checks'):('FAIL x'+res.fail.length);
   return res;
 };
+// v8.58: the DOM panels that COMPUTE their contents, so a probe can read the
+// real rendered text instead of redoing the arithmetic and grading itself.
+window.__ui={sector:function(){ return renderSector(); },
+             hub:function(){ return renderHub(); },
+             stats:function(){ return renderStatCards(); }};
 window.__audio={amb:tickAmbience,steps:tickEnemyAudio,sfx:sfx,blip:blip,ears:earsOf,stepSound:stepSoundFor,
   bus:bus,ctx:ac,ambObj:function(){ return AMB; }};
 window.__bag={weight:bagWeight,drop:dropItem,worst:worstBagIndex,cull:autoCull,

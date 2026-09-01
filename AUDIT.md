@@ -48,6 +48,11 @@ adversarially verified):
 | roads crossed every authored wall (only 10 of 597 blocked one) | v8.55 | 446 and 802 crossings to 0, controlled against the v8.54 build |
 | Warden and Bulwark used the light footstep | v8.55 | `__regress` checks all nine kinds every build |
 | nine player-facing strings said "1 items" | v8.56 | each read back at n=1 and n>1 |
+| a ring pillager's sight came from the PLAYER'S scope, skipping crouch and concealment | v8.43 | read the code: the call now passes the same values the chase branch uses |
+| "closest you came to extraction" measured to the targeted ring, not the nearest open one | v8.58 | 152m vs 387m on cold, 166m vs 381m on the mile |
+| the sector board printed a dimension in hectares, ten times too small | v8.58 | rendered board now reads 420 by 340 metres, 14.3 hectares |
+| the down message asked for medical that self-revive never needed | v8.58 | emptied the bag, went down, F worked: 40hp, one revive |
+| the workshop promised jamming while every wear band is jam 0 | v8.58 | text corrected; a regress check watches the table |
 
 ## Could not reproduce
 
@@ -60,7 +65,14 @@ adversarially verified):
 
 | Finding | Note |
 |---|---|
-| a ring pillager sees you through YOUR scope, and crouch does not hide you from him | not yet investigated |
+| extraction pull `z.pullT` may bank progress when you leave the ring | v8.58: my probe could not START a pull, so it proves nothing either way. Needs a repro that gets pullT above 0. |
+| Melee has no wall/LOS test, no armour, no merc exclusion, no aggro, no break | from the raid audit, not yet reproduced |
+| Howler splash on a possum crawler leaves it at hp<=0 in G.ents forever | from the raid audit, not yet reproduced |
+| beacon investigate overwrites the Listener's hunt | from the raid audit, not yet reproduced |
+| burst echo excluded from wear, fires the OLD gun's stats after a swap | from the raid audit, not yet reproduced |
+| death screen HEALTH/DAMAGE columns record pre-hit, pre-armour values | from the raid audit, not yet reproduced |
+| roll frames skip tickHeal, stalling heal-over-time | from the raid audit, not yet reproduced |
+| closeSchedule absolute seconds vs a scaled raid clock; a ring can close on frame 1 under SHORT WINDOW | from the raid audit, not yet reproduced |
 | ~85 remaining mediums and lows from the full-file audit | not yet triaged into this table |
 
 ## For his ruling, not a defect
@@ -69,3 +81,12 @@ adversarially verified):
   STORAGE (3 rings); THE COLD MILE has 6 and only 2 ever close, so the late-raid
   squeeze barely happens on the bigger map. Matching the comment is a large
   difficulty change on the map that already extracts higher (23.5 vs 18.0).
+
+## For his ruling, added v8.58
+
+- **Should worn guns jam?** The mechanic is built and wired end to end: the wear
+  step's jam figure is copied onto the weapon and the firing path rolls against
+  it and jams the gun for 0.9 seconds. All four wear bands carry `jam:0`, so it
+  has never once fired. The workshop used to advertise it; that text is now
+  corrected rather than the table changed, because turning it on is a balance
+  decision. One table edit switches it on whenever he wants it.

@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.57';
+var VER='8.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9042,6 +9042,21 @@ var FRAG_FUSE=1.1;
 // measuring across.
 var U_PER_M=10;
 function metres(u){ return Math.round(u/U_PER_M); }
+// v8.58, audit: THE NEAREST RING YOU COULD ACTUALLY HAVE USED. The four writers
+// of T.closestExtract all measured to G.active, the ring being TARGETED, and any
+// OPEN ring extracts you - that is the whole point of v8.25. Measured at the drop
+// on COLD STORAGE seed 4242: nearest open ring 152m, G.active 387m. The card
+// reported 387 while a live extract sat 152 away. Falls back to G.active so a
+// raid with nothing open still reports the distance it always did.
+function closestRingDist(p){
+  var best=1e9;
+  if(G&&G.zones) for(var i=0;i<G.zones.length;i++){
+    var z=G.zones[i]; if(!z||!z.open) continue;
+    var d=dist(p,z); if(d<best) best=d;
+  }
+  if(best<1e9) return best;
+  return G&&G.active?dist(p,G.active):1e9;
+}
 function fmtMS(sec){
   sec=Math.max(0,Math.round(sec));
   var m=Math.floor(sec/60), r=sec%60;
@@ -9584,7 +9599,11 @@ p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null;
     // "should damage interrupt a heal" open as his design call, and ordinary
     // hits still do not; being SHOT TO THE FLOOR is not an ordinary hit.
     p.healQ=0; p.healRate=0;
-    G.tel.downs++; say('DOWN. F to self-revive with medical.');
+    // v8.58, audit: it does NOT need medical. selfRevive requires none and
+    // consumes none, by his v6.45 order, and the function's own comment says so.
+    // This told a player bleeding out that they needed an item they do not have
+    // and do not need, which is a reason not to press the key at all.
+    G.tel.downs++; say('DOWN. F to get back up. You get one a raid.');
   }
 }
 // DESTRUCTIBLE ENVIRONMENT, v2.83. His note: "environment should be
@@ -11313,7 +11332,7 @@ function updatePlayer(dt){
     // crawl started. Both figures feed the death reports these builds are tuned
     // from, so they have to count the crawl.
     T.distance+=dist({x:dox,y:doy},p);
-    T.closestExtract=Math.min(T.closestExtract,dist(p,G.active));
+    T.closestExtract=Math.min(T.closestExtract,closestRingDist(p));   // v8.58: the nearest OPEN ring, not the targeted one
     if(keys['KeyF']&&!p.healLock){ p.healLock=true; selfRevive(); }
     if(!keys['KeyF']) p.healLock=false;
     // The beacon countdown lives in here, so going down used to freeze the
@@ -11350,7 +11369,7 @@ function updatePlayer(dt){
     }
     p.bob+=dt*22;
     T.distance+=dist({x:rox,y:roy},p);
-    T.closestExtract=Math.min(T.closestExtract,dist(p,G.active));
+    T.closestExtract=Math.min(T.closestExtract,closestRingDist(p));   // v8.58: the nearest OPEN ring, not the targeted one
     // Recovery has to keep running through a roll. This branch returns before
     // the regen tick, which also drives the out of combat timer that gates it,
     // so dodging quietly held back healing: measured over 40 seconds, standing
@@ -11517,7 +11536,7 @@ if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam+7.5*
     var _lb=wx().lights*(isDay()?tod().lights:1);
     if(_lb>0.05&&dist(p,L)<L.r*.6&&losClear(p.x,p.y,L.x,L.y,G.vseg)){ T.tLit+=dt; break; }
   }
-  T.closestExtract=Math.min(T.closestExtract,dist(p,G.active));
+  T.closestExtract=Math.min(T.closestExtract,closestRingDist(p));   // v8.58: the nearest OPEN ring, not the targeted one
 
   if(p.reloading>0){
     p.reloading-=dt*1000;
@@ -12092,7 +12111,7 @@ function updateBot(dt){
     tryExtractTick(dt,!!G.botWantsOut);
     return;
   }
-  T.closestExtract=Math.min(T.closestExtract,dist(p,G.active));
+  T.closestExtract=Math.min(T.closestExtract,closestRingDist(p));   // v8.58: the nearest OPEN ring, not the targeted one
   if(p.reloading>0){
     p.reloading-=dt*1000;
     if(p.reloading<=0){
@@ -23400,7 +23419,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.57: a build is now verified in one call instead of seven, and past fixes are re-checked on every build.',
+  now:'v8.58: four numbers and messages that told you something untrue, including how close you really got to an extract.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -25695,7 +25714,12 @@ function renderCraftDetail(rows){
     h+='<div class="vpills"><span class="vpill">SERVICE</span>'+
        '<span class="vpill r" style="background:'+ST.c+'">'+escHtml(String(ST.name).toUpperCase())+'</span></div>'+
        '<h4>'+escHtml(W?W.name:id)+'</h4>'+
-       '<div class="vdesc">'+wearOf(id)+' rounds through it. A worn gun jams more often.</div>'+
+       // v8.58, audit: it does not. All four wear bands carry jam:0, so the jam
+       // roll in the firing path can never fire. The machinery is live and one
+       // table away; whether guns SHOULD jam is his call, so the promise is
+       // withdrawn rather than the balance quietly changed. What wear really
+       // costs is accuracy and reload speed, which is what this now says.
+       '<div class="vdesc">'+wearOf(id)+' rounds through it. Wear costs accuracy and reload speed.</div>'+
        '<div class="crlab">REQUIRED RESOURCES</div>'+
        resRow(C.part,(counts[C.part]||0),C.parts)+
        '<div class="cres"><span class="crn" style="margin-left:0">Credits</span>'+
@@ -26281,7 +26305,12 @@ function renderSector(){
 var _myR=0;
     for(var _mr=0;_mr<P.log.length;_mr++) if(P.log[_mr].mapName===M.name) _myR++;
     var facts=[(_myR>0?('you: '+_myR+' run'+(_myR===1?'':'s')+' here'):'YOU HAVE NEVER RAIDED HERE'),
-               Math.round(M.w/100)+' by '+Math.round(M.h/100)+' hectares',
+               // v8.58, audit: metres, and the right magnitude. This divided by
+               // 100 where U_PER_M is 10, and labelled a DIMENSION with an area
+               // unit. COLD STORAGE read "42 by 34 hectares" and is 420 by 340
+               // metres, 14.3 hectares of ground.
+               metres(M.w)+' by '+metres(M.h)+' metres, '+
+                 ((M.w/U_PER_M)*(M.h/U_PER_M)/10000).toFixed(1)+' hectares',
                (M.zones?M.zones.length:0)+' named zones',
                (M.locked?M.locked.length:0)+' keyed rooms'];
     // Real numbers, labelled as the bot's, replacing the fabricated loot
