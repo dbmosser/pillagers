@@ -27443,6 +27443,93 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.41 - TWO FAULTS IN THE INSTRUMENT, TWO IN THE FIGHT
+
+THE BOT PAID FOR WATER TWICE. updateBot works out the wading penalty from
+inWaterDeep and hands the result to botSpd, which clamps it to the speed
+floor. Every one of those calls then goes through moveToward, which applies
+its OWN water penalty. inWaterDeep is a strict subset of inWater - the same
+rectangles, shrunk by an eleven unit inset - so in deep water the two
+stacked: 0.34 x 0.55 = 0.187. The live player never touches moveToward at
+all; updatePlayer moves him inline, so he pays 0.34 once.
+
+Deep water: the player does 53.7 units a second, the bot did 26.6. The
+second penalty also lands AFTER botSpd, so the floor promised one line
+above it - "the same floor the player has, so the Warden promise holds for
+the bot too" - was being silently undone. And in SHALLOW water, inside the
+eleven unit shoreline band that inWaterDeep skips as a puddle, the bot paid
+45 percent while the player paid nothing.
+
+Map 0 is about a fifth water by area with 44 of its containers standing in
+it, so the water maps are exactly where the benchmark was wrong, which is
+the same tilt v2.00 was written to remove.
+
+AND THE CROUCH DISCOUNT TWICE. CNOISE and BRAD are two encodings of the
+same crouch discount, gated on the identical test, both multiplied into the
+same footstep ping: 140 x (72/170) x (72/140) = 30.5, where the comment
+directly above BRAD states the target as 72 - "the step channel's own
+cadence at the step channel's own radius ratio". BRAD is the one that says
+so, so BRAD keeps it and CNOISE is left carrying only the wading factor.
+
+That fixes a second half for free. CNOISE is computed at the top of the
+frame, and the flee, cover and backpedal branches clear botCrouch much
+later, so a bot sprinting away from a melee machine was still collecting a
+crouch discount it had already given up. BRAD is computed after those
+branches, so with the discount carried only there it now clears correctly.
+
+Crouch is described in this file as the single strongest mechanic in the
+game. Every simCrouch measurement ever taken gave it 2.4x more noise
+benefit than the player gets.
+
+A FIREFIGHT YOU ARE NOT IN TURNED THE MACHINES ONTO YOU. In the ENEMY
+bullet path, anything hit that is not a feuding raider, not an extracting
+raider and not a snitch was put into 'chase' - and 'chase' has exactly one
+meaning in this file: chase the player. The two lines above it exempt the
+rival-raider case with a comment saying that being shot by another crew
+"would have aggroed half the map onto the one person who did not fire", and
+the machine case was left sitting in the else.
+
+Pillagers shoot machines constantly by design and machines shoot back, so
+this was routine: every round a pillager put into a sentry handed that
+sentry the player's exact position, across the map, through walls, unseen.
+It also quietly burned the clean-run flag, because ghostCheck sets everSeen
+on anything in 'chase'. Machines get the alert now, which is what turns
+them to answer whoever actually shot them.
+
+SHOOTING A CRIER BEFORE IT SAW YOU BROKE IT PERMANENTLY. The bullet handler
+put a snitch straight into 'alarm' without setting wind, markX or markY.
+mkSnitch has no wind field and the only initialiser sits inside a branch
+that requires the state NOT to be alarm, so it could never run afterwards.
+The countdown was therefore undefined minus dt, which is NaN, and NaN <= 0
+is false forever: the charge sound looped every 0.45 seconds, nothing was
+ever called in, and the marker on screen read "CRIER NaNs".
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both
+maps with no throw and the clock advancing; three endings through oc_btn
+with the overlay on; hub; __renderStage; stream parity still zero; and a
+full sim raid driven end to end to an extract, because two of these four
+change the bot.
+  water        bot on land 142.2 u/s, bot in deep water 48.3 u/s, ratio
+               0.340 to three figures. One penalty is 0.34; two was 0.187.
+  crouch       a sentry parked 55 units BEHIND a crouching bot, where only
+               sound can reach it, now hears it and gives chase. 55 is
+               inside the intended 72 and outside the old 30.5. Control: at
+               200 units it stays on patrol, so the probe is not just
+               always firing.
+  the machine  a pillager put a round into a sentry 3,900 units from the
+               player: the sentry went to INVESTIGATE, not chase, and did
+               not target the player. Control: the player's own round into
+               a sentry still produces chase.
+  the crier    shot from behind before it had seen him: wind is a real
+               number (3.85), markX is set, the alarm RESOLVES within 6.7
+               seconds instead of never, and the frame's own fillText calls
+               contain no NaN anywhere.
+
+Not verified: the new benchmark numbers. Two of these four change how the
+bot moves and how loud it is, deliberately and in the direction of the
+player, so the board is owed a fresh 320 seed paired run and I have not
+made one. Nothing here draws from rr(), so old seeds stay comparable.
+
 ## v8.40 - THE POCKET KEEPS ITS PROMISE, AND THE CHEAT BOX STAYS HOME
 
 The last two high findings from the full-file audit.

@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.40';
+var VER='8.41';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11944,7 +11944,12 @@ function updateBot(dt){
   // only way to find out which is to run the halves separately.
   var CPART=(CFG.crouchParts===undefined?7:CFG.crouchParts);
   var CSPD =(botCrouch&&(CPART&1))?0.52:1;
-  var CNOISE=(botCrouch&&(CPART&2))?(72/170):1;
+  // v8.41, audit: the crouch term is gone from here and lives on BRAD alone. Both
+  // carried it, gated on the same test, and both were multiplied into the same
+  // ping - 140 x (72/170) x (72/140) = 30.5 where BRAD's own comment says 72.
+  // CNOISE now carries only the wading factor applied below, which is the one
+  // thing it is computed early enough to be right about.
+  var CNOISE=1;
   var CCON =!!(botCrouch&&(CPART&4));
   // THE BOT WALKS ON WATER, and did until v2.00. updatePlayer pays 0.34 speed and
   // a 2.6x step-noise radius for wading; updateBot has never referenced inWater at
@@ -12698,7 +12703,13 @@ function moveToward(e,tx,ty,spd,dt){
   // The bot walks through here; measure it where it walks.
   var _mtp=(e===G.player&&G&&G.tel);
   var _mx0=e.x,_my0=e.y;
-  if(inWater(e.x,e.y)) spd*=.55;
+  // v8.41, audit: NOT THE PLAYER. updatePlayer and updateBot each apply their own
+  // wading rule before calling in here, so applying it again made the bot pay
+  // twice - 0.34 x 0.55 = 0.187 against the player's 0.34 - and undid the speed
+  // floor that is applied one step earlier. Only the bot is ever passed as
+  // G.player here; the live player moves inline in updatePlayer and never reaches
+  // this function. Everything else on the map still pays it here, as before.
+  if(e!==G.player&&inWater(e.x,e.y)) spd*=.55;
   var trav=spd*dt,slices=Math.max(1,Math.ceil(trav/8)),leg=trav/slices;
   for(var q=0;q<slices;q++){
     var ox=e.x;
@@ -14325,7 +14336,15 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               // actually came through, since he was the one shooting.
               if(en.kind==='raider'&&en.state==='extract'){ en.alert=2.6; }
               else if(en.kind!=='snitch'){ en.alert=2.6; en.state='chase'; en.tx=p.x; en.ty=p.y; }
-              else { en.state='alarm'; }
+              // v8.41, audit: an alarm has to be STARTED, not just named. Entering
+              // this state without wind/markX/markY left the countdown at NaN, so
+              // it never completed and never called anything in - it just looped
+              // its charge sound and printed "CRIER NaNs" on the marker until it
+              // lost sight of you. Same three fields the sight path sets.
+              else if(en.state!=='alarm'){
+                en.state='alarm'; en.lost=0; en.wind=rnd(3,4);
+                en.markX=p.x; en.markY=p.y;
+              }
               G.tel.hits++;
               // Hit feedback at the reticle. The sprite flash and spark happen out
               // in the dark at range, so a landed shot could read as a miss.
@@ -14400,7 +14419,13 @@ G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
               if(feudFoe(b.owner,en3)){ en3.alert=Math.max(en3.alert||0,2); }
               // A man already running for the ring keeps running, v2.93.
               else if(en3.kind==='raider'&&en3.state==='extract'){ en3.alert=2; }
-              else if(en3.kind!=='snitch'){ en3.state='chase'; en3.alert=2; }
+              // v8.41, audit: A MACHINE SHOT BY A PILLAGER MUST NOT COME AND HUNT
+              // THE PLAYER. Identical to the rival-raider rule three lines up, and
+              // for the identical reason - this is the enemy bullet path, so the
+              // player did not fire this round. It gets the alert, which is what
+              // makes it turn and answer whoever actually shot it, and not a
+              // player-targeted chase.
+              else if(en3.kind!=='snitch'){ en3.alert=Math.max(en3.alert||0,2); }
               spark(b.x,b.y,'#ffc25c',8,200); hit=true; break;
             }
           }
@@ -23126,7 +23151,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.40: the safe pocket works however you deploy, and the cheat box stays on this machine.',
+  now:'v8.41: a fight you are not in no longer sends the machines after you, and the crier you shot early can finish its call.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
