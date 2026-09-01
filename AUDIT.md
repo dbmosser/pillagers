@@ -55,6 +55,9 @@ adversarially verified):
 | the workshop promised jamming while every wear band is jam 0 | v8.58 | text corrected; a regress check watches the table |
 | melee swung with no line of sight test on either the crawler or the Listener | v8.59 | 9 wall-separated geometries inside reach on the mile, all 9 now refused |
 | rolling froze heal-over-time completely | v8.59 | 30 queued points applied 0 while rolling, 30 standing still; now equal |
+| burst echoes skipped wear, so a burst gun wore a third as fast per round | v8.60 | 0.33 per round against 1.00; now 1.00, single-shot control unchanged |
+| a crawler killed while playing dead never died and never dropped | v8.60 | hp -5 and still in the list after 10s; now dies, and the ambush still arms |
+| closeSchedule was absolute seconds against a scaled clock | already correct | it is fractional [2/3, 4/9, null] and clamped; queue row was stale |
 
 ## Could not reproduce
 
@@ -67,14 +70,11 @@ adversarially verified):
 
 | Finding | Note |
 |---|---|
-| the collision push-out can eject a body through a wall thinner than its radius | v8.59: 8 of 1228 thin walls on the mile did it when the player was placed overlapping one. NOT established that real play reaches that overlapped state - the stepper I used also moves the player. |
+| the collision push-out can eject a body through a thin wall | v8.60 CONFIRMED REAL, not a probe artefact: with no bot navigation at all, 8 of 1228 thin walls on the mile eject the player out the far side, 32 to 53 units in one frame. NOT FIXED: unreachable in play (centre never inside a wall over 7200 frames; rolling into them crossed 0 of 1039), and collide runs for every entity every frame. |
 | extraction pull `z.pullT` may bank progress when you leave the ring | v8.58: my probe could not START a pull, so it proves nothing either way. Needs a repro that gets pullT above 0. |
 | melee: no merc exclusion, no aggro, no break | v8.59 closed the wall/LOS half. Armour was already applied by damagePlayer, so that part of the finding was wrong. The rest is unreproduced. |
-| Howler splash on a possum crawler leaves it at hp<=0 in G.ents forever | from the raid audit, not yet reproduced |
 | beacon investigate overwrites the Listener's hunt | from the raid audit, not yet reproduced |
-| burst echo excluded from wear, fires the OLD gun's stats after a swap | from the raid audit, not yet reproduced |
 | death screen HEALTH/DAMAGE columns record pre-hit, pre-armour values | from the raid audit, not yet reproduced |
-| closeSchedule absolute seconds vs a scaled raid clock; a ring can close on frame 1 under SHORT WINDOW | from the raid audit, not yet reproduced |
 | ~85 remaining mediums and lows from the full-file audit | not yet triaged into this table |
 
 ## For his ruling, not a defect

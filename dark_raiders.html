@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.59';
+var VER='8.60';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9263,6 +9263,17 @@ var SH=G.shells[shI];
         if(BE.fromPlayer){
           if(G.player.ammo<=0) continue;
           G.player.ammo--;
+          // v8.60, audit: AND IT COUNTS AS A ROUND. The wear block in fireWeapon
+          // refuses anything with _echo, so a burst booked one round of wear for
+          // three rounds of ammunition - 0.33 per round against 1.00 for a single
+          // shot gun, measured. That exclusion exists for PELLETS, which really
+          // are one magazine round; a burst echo is a separate round and takes one
+          // out of the magazine two lines up. Charged to BE.wep, the gun the round
+          // actually left, so swapping mid burst still bills the right barrel.
+          if(!G.sim&&BE.wep&&BE.wep.id&&wearable(BE.wep.id)){
+            addWear(BE.wep.id,1);
+            G.tel.rounds=(G.tel.rounds||0)+1;
+          }
         }
         var ew={dmg:BE.wep.dmg,spread:BE.wep.spread,rng:BE.wep.rng,noise:0,tint:BE.wep.tint,_echo:1};
         fireWeapon(BE.sh,ew,BE.tx,BE.ty,BE.fromPlayer);
@@ -12986,7 +12997,12 @@ if(e.state==='possum'){
       if(!p.downed&&dist(e,p)<95){
         e.state='chase'; e.alert=4; e.tx=p.x; e.ty=p.y;
         if(!G.sim){ sfx('seen',e.x,e.y); say('It was playing dead.'); }
-      } else { e.moving=false; continue; }
+      // v8.60, audit: unless it is already dead. This skipped straight past the
+      // hp<=0 check below, so a Howler blast or a frag that killed a crawler while
+      // it played dead left it at negative health, not dead, still in the entity
+      // list, worth nothing to a kill contract and dropping no body. Measured at
+      // hp -5 and stepped ten seconds: still there, still pretending.
+      } else if(e.hp>0){ e.moving=false; continue; }
     }
     if(e.kind==='crawler') e.legs+=dt*14;
 
@@ -23439,7 +23455,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.59: nothing melees you through a wall any more, and dodging no longer cancels the bandage you are applying.',
+  now:'v8.60: a burst gun finally wears at the rate it fires, and a machine playing dead can be killed while it does it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

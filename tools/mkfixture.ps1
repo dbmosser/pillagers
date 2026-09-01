@@ -952,6 +952,52 @@ window.__REGRESS=[
        if(hit) out.push('mapIx '+mi+' has '+hit+' roads crossing a wall');
      });
      return out.length?out.join('; '):null; }},
+  {v:'8.60',what:'a burst gun wears once per ROUND, not once per trigger pull',
+   run:function(){
+     function fire(burst){
+       var P=__P();
+       P.weapons=['carbine']; P.wear=P.wear||{}; P.wear.carbine=0;
+       __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       g.ents.length=0;
+       p.wep={id:'carbine',name:'Burst Carbine',dmg:17,burst:burst,rof:360,spread:.055,
+              mag:24,reload:1900,rng:500,auto:false,noise:400,tint:'#ffd88a',qRank:1,q:'field'};
+       p.ammo=24; p.reserve=600; p.wepIssued=false; p.wepFromArmory=false;
+       p.iv=99; p.reloading=0; p.jam=0;
+       var M=__mouse(); M.down=true;
+       var a0=p.ammo+p.reserve;
+       for(var f=0;f<240;f++){ var pp=__state().player; M.down=true; pp.ads=false; __loop(performance.now()+f*16.7); }
+       M.down=false;
+       var g2=__state(), p2=g2.player;
+       return {fired:a0-(p2.ammo+p2.reserve), wear:__P().wear.carbine||0};
+     }
+     var b3=fire(3), b1=fire(1);
+     if(!b3.fired||!b1.fired) return 'the probe fired nothing, so it is testing nothing';
+     var r3=b3.wear/b3.fired, r1=b1.wear/b1.fired;
+     if(Math.abs(r3-r1)>0.05) return 'burst wears '+r3.toFixed(2)+' per round against '+r1.toFixed(2)+' for a single shot';
+     return null; }},
+  {v:'8.60',what:'a machine playing dead can be killed while it does it',
+   run:function(){
+     function go(kill){
+       __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
+       var g=__state(), p=g.player, cr=null;
+       for(var i=0;i<g.ents.length;i++) if(g.ents[i].kind==='crawler'){ cr=g.ents[i]; break; }
+       if(!cr) return null;
+       g.ents.length=0; g.ents.push(cr);
+       cr.possum=1; cr.state='possum'; cr.dead=0;
+       cr.x=p.x+1400; cr.y=p.y+900;
+       if(kill) cr.hp=-5;
+       for(var f=0;f<300;f++) __rawStep(1/60);
+       var g2=__state();
+       for(var j=0;j<g2.ents.length;j++) if(g2.ents[j].kind==='crawler'&&!g2.ents[j].dead) return g2.ents[j];
+       return null;
+     }
+     var dead=go(true), alive=go(false);
+     if(dead) return 'a possum crawler at hp '+dead.hp+' is still in the entity list and not dead';
+     // and the ambush must still arm, or the fix has removed the mechanic
+     if(!alive) return 'a healthy possum crawler vanished - the fix broke the ambush';
+     if(alive.state!=='possum') return 'a healthy possum crawler stopped playing dead on its own';
+     return null; }},
   {v:'8.59',what:'a roll does not freeze the heal you are applying',
    run:function(){
      function go(roll){

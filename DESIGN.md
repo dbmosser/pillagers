@@ -27443,6 +27443,83 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.60 - A BURST GUN WEARS AT THE RATE IT FIRES, AND A MACHINE PLAYING DEAD CAN BE KILLED
+
+A BURST WEAPON WORE AT ONE THIRD THE RATE. Wear is charged once per trigger pull
+rather than once per round. The wear block in fireWeapon refuses anything
+carrying _echo, and the delayed rounds of a burst are echoes. Each echo DOES take
+a round out of the magazine: the note directly above it says so, "a player burst
+now consumes a round per echo and stops mid burst on an empty magazine, like a
+real one". So the Burst Carbine spent three rounds of ammunition and booked one
+round of wear.
+
+The comment justifying that exclusion is about PELLETS - "a shotgun blast is one
+round out of the magazine, not five" - which is correct and is a different thing.
+A shotgun's pellets are one magazine round. A burst's echoes are three.
+
+Measured, same gun, same trigger hold, only the burst count changed:
+
+  burst 3    3 rounds fired, wear +1    0.33 per round
+  burst 1    1 round fired,  wear +1    1.00 per round
+
+After: burst 3 is 1.00 per round and the single-shot control is unchanged at
+1.00. Charged against BE.wep, the gun the round actually left, so swapping in
+the middle of a burst still bills the barrel it came out of.
+
+This matters because wear is what servicing is charged against, and the design
+note calls it "a weapon you love becomes a running cost". A burst gun was running
+at a third price against every other weapon in the game.
+
+A CRAWLER PLAYING DEAD COULD NOT DIE. The possum branch continues to the next
+entity eight lines before the hp<=0 death check. Anything that damages a
+playing-dead crawler to zero reaches it - the Howler's splash loop hits every
+entity in radius with no state test, and a frag does the same - and leaves it at
+negative health, state 'possum', dead flag false, still in the entity list.
+
+Measured: hp set to -5 on a playing-dead crawler, stepped for ten seconds. Still
+in the list, still hp -5, still not dead, no kill recorded, no body dropped. An
+undead machine that stands up and fights if you ever walk within 95 units of it,
+and counts for nothing until you do - not for a kill contract, not for XP.
+
+The fix is to stop skipping the death check when the thing is already dead.
+Controlled in both directions, because the risk here is deleting the ambush: a
+killed possum crawler now leaves the list, and a healthy one left alone is still
+there ten seconds later still playing dead, and still wakes to 'chase' when the
+player walks within 60 units.
+
+WHAT I DID NOT SHIP, AND WHY. Last build left open whether the collision push-out
+can eject a body through a thin wall. It is real: with no bot navigation running
+at all, placing the player overlapping a thin wall ejects them out the far side
+on 8 of 1228 walls on THE COLD MILE, moving 32 to 53 units in a single frame.
+That is a genuine defect in collide, not a probe artefact this time.
+
+I did not fix it. I could not reach it through play: the player's centre was
+never inside a solid wall across 7200 stepped frames, and rolling straight into
+these walls from clear ground crossed none of 1039. It needs a deep overlap that
+nothing in normal play seems to produce. Changing collide touches every entity
+every frame, and I am not willing to make that change mid-loop on a defect I
+cannot demonstrate reaching. It is recorded in AUDIT.md with the measurement.
+
+ALSO CHECKED, NOTHING WRONG: closeSchedule was on the raid queue as absolute
+seconds against a scaled clock, with a ring able to close on frame 1. It is
+fractional - [2/3, 4/9, null] of the raid length - and clamped to _clockLen-1.
+Already correct, queue row was stale.
+
+Verified: parse PASS at 1,510,594 chars, mojibake none. __verify PASS: ents 58
+and 276, parity identical on both maps, looting on both with the clock advancing,
+all three endings, hub through the title button. __regress PASS, now 11 checks.
+Both new checks refuse to pass vacuously: the burst one fails if the probe fires
+nothing, and the possum one fails if a healthy crawler vanishes or stops playing
+dead on its own.
+
+Not verified: the burst wear figure was measured on a synthetic carbine placed
+directly in the player's hands, because the kit system chooses the weapon and I
+could not make it hand over a burst gun. The gun object matches the table entry
+field for field, but it did not come through the armoury path. The Howler splash
+was not itself fired at a possum crawler; I set the health directly, so what is
+proven is that lethal damage from any source now kills it. And the collision
+push-through above is open, not closed.
+
 ## v8.59 - NOTHING SWINGS THROUGH A WALL, AND DODGING NO LONGER CANCELS YOUR BANDAGE
 
 ROLLING FROZE A HEAL COMPLETELY. The roll branch in updatePlayer returns before
