@@ -27443,6 +27443,89 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.38 - THREE THINGS THE GAME TOLD HIM IT WAS DOING AND WAS NOT
+
+The three worst findings in the profile and contract code from the
+full-file audit. Each one is a promise made on screen and broken in the
+code, which is a different and worse category than a bug.
+
+THE MILE FORGOT EVERYTHING, EVERY SESSION. The v7.39 migration that
+folded four maps down to one is unguarded - no stamp - so it ran on every
+single load rather than once. That was harmless while there was one map.
+There are two now, both offered, and index 1 is THE COLD MILE's live seal
+record and explored bitmap. So every load deleted them. He could cut the
+great door on the mile, extract, be told "Seal cut 31 of 40. Banked." by
+the run report and "extracting banks your progress" by the hub, close the
+tab, and find it at zero. The map's explored percentage reset with it.
+COLD STORAGE worked correctly throughout, so it read as random data loss
+rather than a rule anyone could learn.
+
+SERVICING A GUN COST A SIXTH OF WHAT IT SHOULD. replaceCost walks the
+SHOP looking for `o.cost`. Shop rows carry `price`. There is no `cost`
+field anywhere in the file, so the loop could never match and every gun
+fell through to the item-value fallback. The comment directly above the
+function states the intended rule - "The shop price where the shop stocks
+it" - so this is code that has never once done what it says.
+
+An Auto Rifle sells for 22,800 and should service at a ceiling of 13,680;
+it capped at 2,160 and no amount of firing could push it higher. A
+Marksman Rifle capped at 2,880 against an intended 16,200. The whole v1.51
+idea - a favourite gun becomes a running cost you CHOOSE to pay - was
+gutted, because the bill was never large enough to be a decision.
+
+The same line fixes a second fault nobody would ever have guessed at. The
+fallback runs through ival(), which multiplies by CFG.lootMult, so setting
+"How much is out there" to Lean quietly cut every gun service bill by 30
+percent. A gun the shop sells now costs what the shop charges, which no
+setting moves.
+
+A DISTRICT CONTRACT COUNTED EVERY CONTAINER ON THE MAP. The contract
+carries a district in c.d, the container carries one in ct.d, and the
+progress test compared neither. So four district contracts could sit on
+the eight-slot board reading identically - v7.54 had stripped the place
+name - and all four completed on the same four boxes, which is precisely
+what the v5.71 dedup rule exists to prevent. The v1.74 fix that picks a
+district the map actually has was inert, because the district was never
+looked at.
+
+The district is checked now, which means it has to be SAID: "Search 2
+containers in FOUNDRY". The name is already player-facing - the map
+overlay prints it and crossing a boundary announces "Crossing into the
+FOUNDRY" - so this is a place he can be sent to. Contracts already on his
+board are renamed once on load rather than silently becoming errands with
+no stated place.
+
+And the open-ground scatter joins a district. Containers inside buildings
+took the building's district and landmark containers took the landmark's,
+but the loose ones passed nothing at all, so a crate standing in plain
+sight in the Foundry belonged to no district and would not have counted.
+It now takes the district of the ground it stands on, from the same lookup
+the floor paint and the "Crossing into" line use. No draw is added, so the
+seeded stream is untouched, and that was re-checked.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both
+maps with no throw; three endings through oc_btn with the overlay on; hub;
+__renderStage; and v8.35 stream parity still at zero mismatches.
+  the migration   an unmigrated profile still folds correctly - seals[0]
+                  takes seals[2]'s value, seals[2] and [3] deleted,
+                  mapSeen[0] takes mapSeen[2], stamp set. Then mile data
+                  written back survives THREE further loads intact.
+  servicing       pistol 3,600 / smg 13,200 / rifle 22,800 / dmr 27,000,
+                  each now exactly the shop price. Carbine, which the shop
+                  does not stock, still uses the fallback at 2,640, which
+                  is the control. Switching loot to Lean leaves the rifle
+                  at 22,800 where it used to move.
+  the district    a district-0 contract, looted a container in district 1
+                  -> progress stayed 0; looted one in district 0 ->
+                  progress 1. Both through the real loop holding E.
+
+Not verified: whether the restored service prices are the RIGHT prices.
+They are now what the code always said they should be, which is the
+defect fixed, but 13,680 to keep an Auto Rifle alive is a real bill and I
+have not measured what it does to the credit economy over a run of raids.
+If servicing now feels like a punishment rather than a choice, the cap
+ratio is one number.
+
 ## v8.37 - I BROKE LOOTING AT v8.34 AND SHIPPED IT THREE TIMES
 
 Removing the carry penalty at v8.34, I deleted this line from updatePlayer

@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.37';
+var VER='8.38';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1338,7 +1338,7 @@ function replaceCost(id){
   // future caller moved earlier cannot trip over the hoisting.
   if(typeof SHOP!=='undefined'&&SHOP) for(var ri2=0;ri2<SHOP.length;ri2++){
     var o=SHOP[ri2];
-    if(o&&o.k===id&&o.cost) return o.cost;
+    if(o&&o.k===id&&o.price) return o.price;   // v8.38, audit: the field is `price`
   }
   var v=ival('gun_'+id);
   return v?Math.round(v*2.4):900;
@@ -1671,14 +1671,30 @@ if(P.sp!==undefined) delete P.sp;   // v7.38: PROGRESS folded into XP; the field
 if(P.rep!==undefined){ P.xp=(P.xp||0)+(P.rep||0); delete P.rep; }   // v7.63: MERGE, his word
 if(P.rig!==undefined) delete P.rig;   // v7.46: rigs left at v5.83; nothing reads these
 if(P.rigs!==undefined) delete P.rigs;
-if(P.seals&&P.seals[2]){ P.seals[0]=P.seals[2]; }                       // v7.39: one map -
-if(P.seals){ delete P.seals[1]; delete P.seals[2]; delete P.seals[3]; } // cold's records win
-if(P.mapSeen&&P.mapSeen[2]){ P.mapSeen[0]=P.mapSeen[2]; }
-if(P.mapSeen){ delete P.mapSeen[1]; delete P.mapSeen[2]; delete P.mapSeen[3]; }
+// v8.38, audit: STAMPED. This is the v7.39 fold-to-one-map migration and it had
+// no stamp, so it ran on every load rather than once. That was harmless while
+// there was one map. There are two now, both offered, and index 1 is THE COLD
+// MILE's live seal record and explored bitmap - so every load deleted them. He
+// could cut the great door on the mile, extract, be told "Banked" by the run
+// report and "extracting banks your progress" by the hub, and find it at zero
+// the next time he opened the game. Cold Storage worked, so it read as random
+// loss rather than a rule.
+if(!P.mig739){
+  if(P.seals&&P.seals[2]) P.seals[0]=P.seals[2];
+  if(P.seals){ delete P.seals[1]; delete P.seals[2]; delete P.seals[3]; }
+  if(P.mapSeen&&P.mapSeen[2]) P.mapSeen[0]=P.mapSeen[2];
+  if(P.mapSeen){ delete P.mapSeen[1]; delete P.mapSeen[2]; delete P.mapSeen[3]; }
+  P.mig739=1;
+}
 if(P.contracts) for(var _cm=0;_cm<P.contracts.length;_cm++){
   var _CC=P.contracts[_cm];
-  if(_CC&&_CC.type==='district'&&_CC.desc)                             // v7.54: no place names
-    _CC.desc=_CC.desc.replace(/ in [A-Z ]+$/,'');
+  // v8.38, audit: PUT THE NAME BACK. v7.54 stripped place names from district
+  // contracts, which was right while the district went unchecked. It is checked
+  // now, so a contract already sitting on his board would be an errand with no
+  // stated place. Renamed once, in the same shape genContract writes.
+  if(_CC&&_CC.type==='district'&&_CC.desc&&_CC.desc.indexOf(' in ')<0&&
+     typeof DISTRICTS!=='undefined'&&DISTRICTS[_CC.d])
+    _CC.desc=_CC.desc+' in '+DISTRICTS[_CC.d].name;
   if(_CC&&_CC.map!==undefined){ delete _CC.map;
     if(_CC.desc) _CC.desc=_CC.desc.replace(', GREYWATER DAM','').replace(', SUNKEN QUARTER','')
       .replace(', COLD STORAGE','').replace(', THE QUARRY','');
@@ -2053,7 +2069,9 @@ function genContract(){
     var n3=up(ri(2,4));
     if(pickD.buildings<3) n3=Math.min(n3,2);
     c={type:'district',d:d,n:n3,prog:0,reward:n3*160,
-       desc:'Search '+n3+' containers'};
+       // v8.38: named again. The district is checked as of this build, so a
+       // contract that does not say which one is an errand you cannot act on.
+       desc:'Search '+n3+' containers in '+DISTRICTS[d].name};
   } else if(roll<.9){
     var it=pick(['board','optic','servo','core']);
     var n4=up(it==='core'?1:2);
@@ -2114,7 +2132,10 @@ function contractOpen(ct){
   for(var i=0;i<P.contracts.length;i++){
     var c=P.contracts[i];
     if(c.type==='open'&&c.ct===ct.type&&c.prog<c.n) c.prog++;
-    if(c.type==='district'&&c.prog<c.n) c.prog++;
+    // v8.38, audit: THE DISTRICT HAS TO MATCH. c.d and ct.d both existed and
+    // neither was ever compared, so this ticked on every container on the map and
+    // four district contracts completed together on the same four boxes.
+    if(c.type==='district'&&ct.d===c.d&&c.prog<c.n) c.prog++;
   }
 }
 // The conduct verdict. Read off G.tel, which is the same record the run report
@@ -7305,7 +7326,9 @@ function buildRaid(sim){
   // v7.57, his note: the disc must sit 100% inside the map.
   var hotZone={x:clamp(_hz.x,620,WORLD_W-620),y:clamp(_hz.y,620,WORLD_H-620),r:620,at:0,moves:0};
   var no=Math.max(2,Math.round(18*AREA*CFG.contDens*mapContMul()));
-  for(i=0;i<no;i++){ var sp2=freeSpot(map,30); containers.push(mkContainer(sp2.x,sp2.y,rr()<.7?'crate':'body')); }
+  for(i=0;i<no;i++){ var sp2=freeSpot(map,30);
+    containers.push(mkContainer(sp2.x,sp2.y,rr()<.7?'crate':'body',
+      map.districtAt?map.districtAt(sp2.x,sp2.y):-1)); }   // v8.38: it stands somewhere
   // Nothing is allowed to lie on an extraction pad: within 46 units a container
   // eats the E press and the beacon call never runs. Anything already placed
   // there is pushed out past the ring, keeping the loot and losing the trap.
@@ -23063,7 +23086,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.37: looting works again. I broke it at v8.34 and it shipped three times.',
+  now:'v8.38: the mile remembers your seal and your map, servicing a gun costs what it should, and a district contract means a district.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
