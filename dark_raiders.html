@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.68';
+var VER='8.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15191,8 +15191,14 @@ silentExit:T.silentExit||0,
     var _mfWhat=[];
     if(arrayCount()>0) _mfWhat.push(arrayCount()+' array'+(arrayCount()===1?'':'s'));
     if((P.racks||0)>0) _mfWhat.push(P.racks+' rack'+(P.racks===1?'':'s'));
-    _mfLine='<span style="color:var(--coolant)">MAINFRAME: '+_mfWhat.join(' and ')+
-      ' fenced the data. +'+'$'+_mfPay.toLocaleString()+', banked.</span>';
+    // v8.69, his wording: "Mainframe server bonus: $XXX". It used to read
+    // "MAINFRAME: 4 racks fenced the data. +$800, banked.", which buries the
+    // number in a sentence about racks. Dimmed to var(--ash), the same grey as
+    // the summary row it now sits under, because he says it is not that
+    // important. _mfWhat is still built above and is no longer printed; the
+    // count of racks and arrays is a thing he can read at the Mainframe itself.
+    _mfLine='<span style="color:var(--ash)">Mainframe server bonus: $'+
+      _mfPay.toLocaleString()+'</span>';
   }
   if(P.merc&&!G.sim){
     var mercEnt=null;
@@ -15456,7 +15462,10 @@ var _cdone=contractExtract(G.bag,haul);
       :'The ride down cleared your head.')+'</span>');
   }
   var acc=T.shots?Math.round(T.hits/T.shots*100):0;
-  if(_mfLine) lines.push(_mfLine);
+  // v8.69, his order: the Mainframe bonus goes at the BOTTOM. It was pushed
+  // here, above the summary row, and the comment where it is built has claimed
+  // since v6.68 that it "reads with the totals at the bottom". It did not. The
+  // push is now after the summary row below, the last line the card prints.
   // v6.68, his note: minutes and seconds, not a raw second count.
   var _tsec=Math.round(elapsed()), _tm=Math.floor(_tsec/60), _ts=_tsec%60;
   var _tstr=_tm?(_tm+' min'+(_tm===1?'':'s')+(_ts?(' '+_ts+' second'+(_ts===1?'':'s')):''))
@@ -15471,6 +15480,7 @@ var _cdone=contractExtract(G.bag,haul);
     // v8.56, audit: and "1 kills" beside it.
     (function(){ var _kn=0; for(var _kk in T.kills) _kn+=(T.kills[_kk]||0); var _ks=_kn+' kill'+(_kn===1?'':'s'); return _ks; })()+' &middot; '+
     _tstr+' on the surface</span>');
+  if(_mfLine) lines.push(_mfLine);   // v8.69: last line on the card, his order
 
   pendingRun={
     // WHICH BUILD THIS RUN WAS PLAYED ON, added v1.90, and it cost a session to
@@ -23543,7 +23553,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.68: his wording through the extraction screens, and the boarding window says EXTRACTION IN PROGRESS.',
+  now:'v8.69: the Mainframe server bonus is one plain line at the bottom of the card instead of a sentence near the top.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

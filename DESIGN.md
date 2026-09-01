@@ -27443,6 +27443,40 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.69 - THE MAINFRAME SERVER BONUS IS ONE PLAIN LINE AT THE BOTTOM
+
+His order, in three parts, and all three were separate problems.
+
+THE WORDING. It read "MAINFRAME: 4 racks fenced the data. +$800, banked." He asked
+for "Mainframe server bonus: $XXX". The old sentence buried the only number that
+matters inside a line about racks fencing data. It now reads exactly
+"Mainframe server bonus: $800". The rack and array count is still computed above
+and simply no longer printed; that is a thing he can read at the Mainframe.
+
+THE PLACE. He asked for it at the bottom. The comment where the line is built has
+claimed since v6.68 that it "reads with the totals at the bottom rather than as
+the headline", and it did not: it was pushed BEFORE the containers, accuracy,
+kills and time summary row, which is the last line the card prints. Read back
+from the rendered card, it was row 7 of 8 and is now row 8 of 8, directly under
+the summary and immediately above the feedback buttons.
+
+THE COLOUR. It used var(--coolant), the bright cyan this card reserves for things
+that matter. He says it is not that important, so it is now var(--ash), the same
+dim grey as the summary row it sits under. Confirmed by screenshot at 1920x1080,
+per his standing instruction to look at menu changes rather than only measure them.
+
+Verified: parse PASS at 1,515,486 chars, mojibake none. Read back from the
+rendered card with four racks: "Mainframe server bonus: $800", last line, old
+wording gone. __verify PASS: ents 58 and 276, parity identical on both maps,
+looting on both, all three endings, hub. __regress PASS, 17 checks.
+
+Not verified: the bonus was produced by setting P.racks to 4 directly rather than
+by building racks at the Mainframe, so what is proven is the line and its place,
+not the payout arithmetic behind it. The card was read at 1920x1080 only. And the
+two other extraction-screen items he raised, the XP target wording and the
+missing proficiency rating, are still open; an audit of both was running while
+this shipped.
+
 ## v8.68 - HIS WORDING THROUGH THE EXTRACTION SCREENS
 
 Five wording changes, all his, all measured by capturing the text the game
