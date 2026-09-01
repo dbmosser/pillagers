@@ -27443,6 +27443,49 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.70 - THE ROLL LOOKS LIKE A ROLL IN THE UNDERCROFT, AND ESC PAUSES DOWN THERE
+
+Two of his Undercroft reports.
+
+"ROLL GRAPHIC IS WRONG in the Undercroft." SPACE has rolled down there since v6.73
+and the roll really moves you, substepped through collide exactly like the raid
+roll so it cannot tunnel a pier. What it never did was change the POSE. The raid
+draw passes the roll phase into drawOp as p.roll>0?(1-p.roll/.38)*12.6:p.bob; the
+hub draw passed p.bob unconditionally, so the operator crossed the floor doing the
+walking bob. Measured mid-roll after the fix: the draw receives phase 6.0 where
+the walk bob would have been 0.0.
+
+"PLAYER SHOULD BE ABLE TO HIT ESC TO PAUSE IN THE UNDERCROFT." Two things stopped
+it. The key only reaches the pause toggle inside the raid branch, and
+togglePauseBox returned on its first line whenever there was no raid. Both fixed.
+The box is written for a raid, so on the floor it says PAUSED rather than RUN
+PAUSED, the Abandon run button is hidden because there is no run to abandon, and
+Resume run reads "Back to the Undercroft". The floor also stops moving while it
+is open: hubModalOpen asks the DOM which windows are up and the pause box is not
+a .modal, so it had to be named, the same way the Stash screen already is.
+
+MY OWN PROBE WASTED TWENTY MINUTES HERE. ESC appeared not to work while P did,
+through identical code. The cause was my test: I dispatched the key at window,
+and for an event whose target IS window the capture and bubble listeners both
+run at-target in REGISTRATION order, which reverses them. The pause box has a
+capture-phase Escape closer registered after the main handler, so my synthetic
+event opened the box and then immediately closed it. Dispatched at document.body,
+the way a real key press flows, ESC toggles correctly: false, true, false, true.
+Nothing was wrong with the game.
+
+Verified: parse PASS at 1,516,553 chars, mojibake none. ESC and P both toggle the
+box on the floor, the heading reads PAUSED, the abandon control is hidden and the
+resume button reads "Back to the Undercroft". __verify PASS: ents 58 and 276,
+parity identical on both maps, looting on both, all three endings, hub. __regress
+PASS, 17 checks.
+
+Not verified: the roll is proven by the number handed to the draw, not by looking
+at the sprite mid-roll - a 0.38 second animation is not something I can freeze in
+a screenshot from here. The pause box was not checked for whether the Undercroft
+audio or the crowd keep running behind it, only that the player stops. And ESC
+inside a station panel still belongs to that panel, which is deliberate, but I
+did not test every panel.
+
 ## v8.69 - THE MAINFRAME SERVER BONUS IS ONE PLAIN LINE AT THE BOTTOM
 
 His order, in three parts, and all three were separate problems.
