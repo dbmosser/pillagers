@@ -204,6 +204,14 @@ window.__conceal={bushAt:inBush,at:concealAt,mapBush:bushAtMap};
                         return SLIDERS.filter(function(S){ return o[S[0]]; }).map(function(S){ return S[0]; }); },
     overridden:function(){ return (P&&P.tuned)||{}; }
   };
+  // v8.55: the two tests every container placement uses. Without these a probe
+  // about placement has to guess, and __los.reach answers a different question -
+  // it is a line-of-sight DISTANCE, not reachability, and using it as a boolean
+  // reported every point on the map as fine.
+  window.__nav={
+    reachable:function(x,y){ return navReachable(G.map,x,y); },
+    free:function(x,y,pad){ return spotFree(G.map,x,y,pad===undefined?20:pad); }
+  };
   window.__los={
     // straight line between two points, the test the game uses for a shot
     clear:function(ax,ay,bx,by){ refreshVseg(); return losClear(ax,ay,bx,by,G.vseg); },
@@ -706,6 +714,10 @@ window.__isFixture=1;
 // on a gain of zero, because a later build could add a new node that misses the bus.
 try{ sfx=function(){}; }catch(e){}
 try{ blip=function(){}; }catch(e){}
+// v8.55: lets a probe watch which sound a call site actually asks for. The step
+// chooser calls blip through this binding, so without a setter its output was
+// unobservable and any test of it passed by default.
+window.__setBlip=function(f){ blip=f; };
 // say() WAS STUBBED TO A NO-OP HERE AND IT IS NOT AN AUDIO EMITTER. Its whole body
 // is `if(G&&!G.sim){G.msg=m;G.msgT=3.2;}`, a state write with no sound anywhere in
 // it, so silencing it bought nothing and quietly broke every assertion any test
@@ -789,7 +801,10 @@ try{ var _tent=updateEnts; updateEnts=function(){ var t0=performance.now(); var 
 try{ var _tpl=updatePlayer; updatePlayer=function(){ var t0=performance.now(); var r=_tpl.apply(null,arguments); _PT.player+=performance.now()-t0; return r; }; }catch(e){}
 try{ var _tth=updateThrowables; updateThrowables=function(){ var t0=performance.now(); var r=_tth.apply(null,arguments); _PT.thr+=performance.now()-t0; return r; }; }catch(e){}
 window.__perfTimes=function(reset){ var r={},k; for(k in _PT) r[k]=+(+_PT[k]).toFixed(2); if(reset) for(k in _PT) _PT[k]=0; return r; };
-window.__audio={amb:tickAmbience,steps:tickEnemyAudio,sfx:sfx,blip:blip,ears:earsOf,
+// v8.55: stepSound is the only member here that is NOT a stub. The four tick
+// functions above are emptied at source and ac() is made to throw, so amb/steps/
+// voices call empty functions and always pass - a probe cannot see through them.
+window.__audio={amb:tickAmbience,steps:tickEnemyAudio,sfx:sfx,blip:blip,ears:earsOf,stepSound:stepSoundFor,
   bus:bus,ctx:ac,ambObj:function(){ return AMB; }};
 window.__bag={weight:bagWeight,drop:dropItem,worst:worstBagIndex,cull:autoCull,
   cap:function(){ return PACKCAP[P.pack]; },ival:ival,items:function(){ return ITEMS; }};

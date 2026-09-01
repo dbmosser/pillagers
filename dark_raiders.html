@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.54';
+var VER='8.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2741,6 +2741,20 @@ function tickAmbience(dt,threat,alive,dread){
 // fog stops being simply an absence and starts being a thing you listen to.
 // Rate limited hard, because a raid can have three dozen bodies moving at once.
 var STEP_T=0,HEART=0;
+// v8.55, audit: which machines walk heavy. This was an inline expression naming
+// only the sentry, so the Warden and the Bulwark - the two ARMOURED heavies - got
+// the light scuff AND the faster step rate, the Warden stepping quicker than the
+// machine it outweighs, while the machine-voice table beside it describes the
+// Warden as "something very large adjusting its weight". The two audio passes
+// disagreed about the same creature in a game whose stated design is that sound
+// is the primary information channel when you cannot see.
+// It is a named function rather than an inline test because the fixture makes
+// AudioContext throw so probe runs stay silent, and tickEnemyAudio returns on the
+// first line when there is no audio context - so the old inline version could
+// never be observed by any test, and every check of it passed on an empty run.
+function stepSoundFor(kind){
+  return (kind==='sentry'||kind==='warden'||kind==='bulwark')?'stepHeavy':'step';
+}
 function tickEnemyAudio(dt){
   if(!G||G.sim||G.over) return;
   var a=ac(); if(!a) return;
@@ -2758,7 +2772,11 @@ function tickEnemyAudio(dt){
   if(!best) { STEP_T=0.20; return; }
   var ear=earsOf(best.x,best.y);
   // heavier things step slower and lower
-  var heavy=best.kind==='sentry';
+  // v8.55, audit: the two ARMOURED heavies sound heavy too. This named only the
+  // sentry, so the Warden and the Bulwark got the light scuff and the faster step
+  // rate - the Warden stepping quicker than the machine it outweighs - while the
+  // machine-voice table describes it as "something very large adjusting its weight".
+  var heavy=(stepSoundFor(best.kind)==='stepHeavy');
   blip(heavy?'stepHeavy':'step',ear.d*1.35,ear.pan);
   STEP_T=(heavy?0.62:0.44)*(best.state==='chase'?0.72:1);
 }
@@ -3794,10 +3812,33 @@ function strikeTick(dt){
       if(rr()<(CFG.strikeFind===undefined?0.16:CFG.strikeFind)){
         var pool=['titan','core','blackbox','reactor','wcore'];
         var key=pool[Math.min(pool.length-1,Math.floor(rr()*pool.length))];
-        var ct=mkContainer(S.x,S.y,'body',G.map.districtAt?G.map.districtAt(S.x,S.y):-1);
-        ct.loot=[key]; ct.tag='FULGURITE'; ct.time=1.0;
-        G.containers.push(ct);
-        if(!G.sim) say('Something fused in the ground where that landed.');
+        // v8.55, audit: SOMEWHERE YOU CAN ACTUALLY REACH. The strike point is
+        // clamped to the world box and nothing else, so this dropped the rarest
+        // item in the game inside walls, inside ruins and inside sealed locked
+        // rooms. Every other container placement goes through navReachable; the
+        // v2.12 note that added it says "a jackpot you never find is the same as
+        // no jackpot". The ring below is FIXED rather than random because
+        // freeSpot draws from the seeded stream and this block runs in the sim
+        // too, so a draw here would move every number after it.
+        var _fx=S.x,_fy=S.y,_fok=(spotFree(G.map,_fx,_fy,20)&&navReachable(G.map,_fx,_fy));
+        for(var _fr=40;_fr<=200&&!_fok;_fr+=40){
+          for(var _fa=0;_fa<8&&!_fok;_fa++){
+            var _fang=_fa*Math.PI/4;
+            var _cx=clamp(S.x+Math.cos(_fang)*_fr,80,WORLD_W-80);
+            var _cy=clamp(S.y+Math.sin(_fang)*_fr,80,WORLD_H-80);
+            if(spotFree(G.map,_cx,_cy,20)&&navReachable(G.map,_cx,_cy)){ _fx=_cx; _fy=_cy; _fok=true; }
+          }
+        }
+        if(_fok){
+          // v8.55, audit: and it is NOT a corpse. This was built as type 'body',
+          // which the draw pass renders as a prone figure with splayed legs and a
+          // flung-out arm - a dead man on the scorched ground, and bodies were
+          // removed at v5.28 by his order. A cache is what it is.
+          var ct=mkContainer(_fx,_fy,'cache',G.map.districtAt?G.map.districtAt(_fx,_fy):-1);
+          ct.loot=[key]; ct.tag='FULGURITE'; ct.time=1.0; ct.cache=1;
+          G.containers.push(ct);
+          if(!G.sim) say('Something fused in the ground where that landed.');
+        }
       }
     }
     // Machines and pillagers caught under it take it too, so a storm is a hazard for
@@ -4527,7 +4568,12 @@ function buildFixedMap(def){
       RB.push({x:RBb.x-10,y:RBb.y-10,w:RBb.w+20,h:RBb.h+20}); }
     for(i2=0;i2<walls.length;i2++){ var RWw=walls[i2];
       if(RWw.furn||RWw.wreck||RWw.ledge) continue;
-      if(RWw.w>=100&&RWw.h>=100) RB.push({x:RWw.x-10,y:RWw.y-10,w:RWw.w+20,h:RWw.h+20}); }
+      // v8.55, audit: EVERY REAL WALL BLOCKS A ROAD. This demanded 100 units in
+      // both axes, and no authored wall on either map is 100 thick - racking is
+      // 38, shells are 16, ledges 14, the world border 40 - so the only thing that
+      // ever blocked tarmac was a ruin, and roads ran under everything else. The
+      // furniture guard on the line above was unreachable by consequence.
+      RB.push({x:RWw.x-10,y:RWw.y-10,w:RWw.w+20,h:RWw.h+20}); }
     for(i2=0;i2<woodsList.length;i2++){ var RWd=woodsList[i2];
       RB.push({x:RWd.x-10,y:RWd.y-10,w:RWd.w+20,h:RWd.h+20}); }
     function clearR(x,y,w,h){
@@ -23346,7 +23392,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.54: the wind-up bar for a heal or a plate is finally above your head instead of behind it.',
+  now:'v8.55: what the lightning leaves behind is reachable and is not a corpse, and the Warden sounds like the Warden.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

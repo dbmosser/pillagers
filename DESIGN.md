@@ -27443,6 +27443,118 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.55 - WHAT THE LIGHTNING LEAVES BEHIND, AND THE WARDEN SOUNDS LIKE THE WARDEN
+
+THE RAREST DROP IN THE GAME WAS A CORPSE YOU OFTEN COULD NOT REACH. A
+lightning strike in a storm can fuse a fulgurite into the ground, and its
+loot table is the top of the game: titan, core, blackbox, reactor, wcore.
+It was built with container type 'body', and the container draw pass has a
+dedicated body branch whose own comment reads "a prone figure: torso, head,
+splayed legs, one arm flung out, lying flat on the ground". So the scorched
+ground where the bolt missed you rendered as a freshly dead man, while the
+message beside it read "Something fused in the ground where that landed."
+That also put corpses back in the world, which he removed at v5.28 by order.
+
+Worse, it was placed at the raw strike point with no reachability test at
+all. Every other container in the file goes through freeSpot and
+navReachable; the v2.12 note that added that check says 26.3 percent of
+caches were landing where no route reaches, and it ends "a jackpot you never
+find is the same as no jackpot". The strike point is clamped to the world box
+and nothing else.
+
+MEASURED, on COLD STORAGE at seed 4242: of 800 sampled strike points, 197
+(24.6 percent) are inside geometry or cut off from every route. Almost
+exactly the 26.3 percent the v2.12 note found for caches. It now searches a
+ring out to 200 units in 40-unit steps at eight angles, testing spotFree and
+navReachable. Run against those same 197 bad points, all 197 found a spot,
+none was skipped, and the median move was 40 units, so the drop still sits
+beside the scorch mark that made it. The ring is FIXED rather than random
+because freeSpot draws from the seeded stream and this block runs in the sim
+too; a draw here would move every number after it.
+
+ROADS RAN UNDER THE RACKING, AND ALWAYS HAD. RB is the blocklist that stops
+tarmac being laid, and a wall only joined it if it was at least 100 units in
+BOTH axes. No authored wall on either map qualifies: COLD STORAGE's racking
+is 38 thick and its thickest wall is 56, THE COLD MILE's run 24 to 56,
+building and locked-room shells are 16, platform ledges 14, landmark geometry
+18 to 30, and the world border 40. Ten walls out of 597 passed, and every one
+of those was a ruin. The furniture guard on the line above it was therefore
+unreachable by consequence.
+
+This is the same complaint the stop-margin fix directly above it was written
+for. His note, v3.68: "there are instances where roads run into buildings,
+which makes no sense". v2.86 and v3.68 both worked on where a road STOPS
+while the thing deciding what a road may cross was letting it cross
+everything.
+
+MEASURED, both maps at seed 4242, roads crossing an authored wall:
+
+  COLD STORAGE    v8.54: 446    v8.55: 0
+  THE COLD MILE   v8.54: 802    v8.55: 0
+
+Taken against the v8.54 build itself, checked out and rebuilt, not against a
+reading of the source. The remaining overlaps are wrecks and platform ledges,
+which are deliberately excluded: a wrecked car sitting on a road is a wrecked
+car sitting on a road. Tarmac drops 57 percent on COLD STORAGE and 36 percent
+on THE COLD MILE, and all of it is road that was previously under a building
+or through a racking run. The road pass makes zero seeded draws by design, so
+none of this moves the stream, and the map fingerprints confirm it.
+
+THE WARDEN WALKED LIKE A MAN. The heavy footstep was chosen for exactly one
+kind, the sentry. The Warden and the Bulwark, the two armoured heavies, got
+the light scuff instead of the clank, and the step RATE goes with it, so the
+Warden stepped FASTER than the machine it outweighs. The machine-voice table
+twenty lines below already knew better: the Warden's own voice entry is
+hydraulics on the longest range on the map, 900 units, described as something
+very large adjusting its weight. Two audio passes disagreed about the same
+creature, in a game whose stated design is that sound is the primary
+information channel when you cannot see.
+
+THE TEST HARNESS COULD NOT SEE ANY OF THAT, WHICH IS THE MORE IMPORTANT HALF.
+The step choice was an inline expression inside tickEnemyAudio. That function
+returns on its first line when ac() is null, and the fixture makes
+AudioContext throw on purpose so a probe run can never make noise. The
+fixture ALSO stubs tickEnemyAudio to an empty function, and binds __audio.steps
+to the stub. So the hook existed, the probe ran, nothing threw, and the check
+passed without a single line of the real function executing. That is the same
+shape as v2.48, where sounds tested green and never played.
+
+Fixed by naming the decision: stepSoundFor(kind) is a pure function
+tickEnemyAudio calls, and the fixture exposes it. Read back from the running
+game, not from the source: sentry, warden and bulwark return stepHeavy;
+crawler, listener, howler, choir, raider and snitch return step. Both warden
+and bulwark are confirmed present in raids, one of each per raid across ten
+raids on COLD STORAGE. Faking the whole Web Audio API instead would only have
+moved the pretending somewhere harder to see.
+
+Two other probe hooks added while chasing this: __nav.reachable and __nav.free,
+the two tests every container placement in the file uses, and __setBlip to
+replace the silenced blip binding. There was no way to ask the game whether a
+point was reachable, so my first control used __los.reach as a boolean. That
+is a line-of-sight DISTANCE, not reachability, and it reported all 400 sampled
+points as fine. My error, and it is why the control above is quoted from the
+second attempt.
+
+Verified: parse PASS at 1,495,170 chars. Map fingerprints unmoved at seed
+4242, ents 58 on COLD STORAGE and 276 on THE COLD MILE, so nothing here
+touched the seeded stream. Live-vs-sim stream parity identical on both maps.
+Looting works on both maps through the real play path, holding E for 420
+frames of __loop: nothing thrown, raid clock still advancing, one container
+searched and items banked on each. All three endings reached and asserted:
+EXTRACTED, KILLED IN ACTION, ABANDONED. Hub entered through the title button
+and rendered.
+
+Not verified: the fulgurite's new placement has been read back from four
+fulgurites produced by real storms plus the 197-point ring test, not from a
+large sample of live storms, because forcing one costs about two minutes of
+stepped frames each. Nobody has looked at the thinner road network in motion
+at 1080p, only at a plotted overhead of it; the 57 percent tarmac cut on COLD
+STORAGE is measured but its feel is not. The footstep change is verified as a
+DECISION, not as audio: no probe on this machine can hear the game, so I
+cannot tell you the clank is louder than the scuff, only that the Warden and
+the Bulwark now ask for it. And tickEnemyAudio itself is still stubbed to an
+empty function in the fixture, so the rest of that function stays untested.
+
 ## v8.54 - THE WIND-UP BAR IS ABOVE YOUR HEAD INSTEAD OF BEHIND IT
 
 THE BAR HE ASKED FOR WAS MOSTLY HIDDEN BEHIND HIS OWN CHARACTER. His note is
