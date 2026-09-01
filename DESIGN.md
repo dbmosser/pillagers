@@ -27443,6 +27443,77 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.45 - THE HIRE, THE HOT GROUND, AND A PRICE HE WAS NOT TOLD
+
+THE HIRE STOPPED WORKING ON ONE OF HIS THREE ORDERS. G.mercOrder cycles
+follow, hold, LOOT. The exemption keeping a merc out of the hostile branch
+named only follow and hold, so under LOOT a merc who could see the player
+fell into the not-hostile branch, failed the provocation test (which checks
+!e.merc), and hit an else that faces the player, ticks a cooldown and
+CONTINUES. He never reached mercEngage and never reached the loot branch
+below it.
+
+So the order that says "loot on your own" made him do nothing at all
+whenever he was looking at you: would not open a container, would not
+return fire on a pillager shooting you from a hundred units. That is the
+exact failure v8.24b's own comment says it fixed, still live on one order
+of three.
+
+The second half is worse and nobody had noticed it: the flee rule has no
+merc exclusion, so under that order a merc below thirty percent health
+switched to 'extract', ran for the ring and was spliced out with
+T.raidersExtracted++. The man you paid up to thirty thousand for left, and
+was counted as an enemy extraction.
+
+Both gates are now e.merc unconditionally. No order can disarm him.
+
+THE HOT GROUND NEVER MOVED FOR THE BOT. simStep mirrors the live loop's
+world ticks - weather, lightning, vision, entities, bullets, throwables -
+and omitted tickHot. tickHot's only other call site is inside the live raid
+loop, which returns early on G.sim, so the disc was frozen for the whole of
+every headless raid.
+
+The half that DID fire in the sim is the loot bonus: every container inside
+the 620 radius takes two extra safe-table rolls. The half that did not is
+the relocation - four or five times a raid in live play, dragging the two
+nearest idle machines to each new centre. So every sim extract rate and
+every average haul this project is tuned on came from a game where the hot
+ground is one fixed disc and the "danger follows the loot" half of the
+mechanic does not exist.
+
+AND THE HIRE PANEL DESCRIBED A LOSS THAT IS NOT THE LOSS. "If either of you
+does not make it, you get nothing" is the only statement of the failure
+case on the only screen where a hire is bought. The settle path does not
+give you nothing: if HE dies it takes the death benefit off you, on top of
+a fee that can be thirty thousand, and it will put you in debt to do it.
+The sentence now names the real terms and reads the figure from MERC_DEATH
+so it cannot drift away from the charge.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both
+maps with no throw; three endings through oc_btn with the overlay on; hub;
+__renderStage; stream parity zero; a full sim raid end to end to an extract.
+  the hot ground  a headless raid now shows THREE distinct hot-ground
+                  positions and two recorded relocations, from 3538,1129 to
+                  1991,2350. It had exactly one, forever.
+  the hire        with a hostile pillager 180 units away and clear line of
+                  sight, frames with the hire's own rounds in flight:
+                  follow 2, hold 54, LOOT 54. Loot now matches hold.
+  the panel       THE DEAL reads "If YOU do not make it you get nothing. If
+                  HE does not make it you owe his family $3,400 on top of
+                  the fee", and the old sentence is gone.
+
+Not verified: a before-and-after on the hire under LOOT. The fix makes the
+exemption unconditional, so there is no longer any order value that
+reproduces the frozen state, and I could not construct a control inside the
+shipped build. The follow arm reading 2 frames against hold and loot at 54
+is not a defect either - under follow he spends the window closing on the
+player rather than standing and shooting.
+
+Also not verified: what the moving hot ground does to the benchmark. It
+changes both loot placement and machine placement in every sim raid, so the
+320 seed board taken earlier today is already stale. That board was going
+to need re-running anyway.
+
 ## v8.44 - THE PANEL YOU DRAGGED, AND THREE OTHER THINGS THAT DID NOT MATCH
 
 A DRAGGED HUD PANEL WALKED AWAY FROM ITS OWN HIT BOX. Drawing applies the

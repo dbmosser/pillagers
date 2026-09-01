@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.44';
+var VER='8.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13517,7 +13517,13 @@ var _rdS=G.shells[_rdi];
       if(_rdHit){ collide(e,G.map.walls); continue; }
     }
     if(sees&&!(e.merc&&!e.downed&&(
-        (p.downed&&CFG.raiderDown!==0)||G.mercOrder==='follow'||G.mercOrder==='hold'))){
+        // v8.45, audit: ALL THREE ORDERS. This named follow and hold and left
+        // LOOT out, so a merc told to work on his own froze whenever he could see
+        // the player - no looting, no returning fire - and, having no exclusion in
+        // the flee rule either, ran for the ring at low health and was counted as
+        // an enemy extraction. e.merc is the whole test now; no order can disarm
+        // the man you paid for.
+        (p.downed&&CFG.raiderDown!==0)||true))){
       // SPEC 8.4: hostility varies. A passive raider that has not been provoked
       // watches you rather than opening fire, and only turns when you crowd it
       // or shoot it. One you have killed before never gives you that grace.
@@ -13763,7 +13769,8 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
     // did not even turn toward him. A downed client still outranks it below.
     if(e.kind==='raider'&&e.merc&&!e.downed&&
        !(p.downed&&CFG.raiderDown!==0)&&
-       (G.mercOrder==='follow'||G.mercOrder==='hold')&&
+       // v8.45, audit: and he engages under every order, including LOOT.
+       true&&
        mercEngage(e,dt)){
       collide(e,G.map.walls);
       if(e.cd>0) e.cd-=dt;
@@ -15406,7 +15413,12 @@ function buildTags(){
 // ================================================================ headless sim runner
 var simRunning=false;
 function simStep(dt){
-  wxTick(dt); strikeTick(dt);
+  // v8.45, audit: THE HOT GROUND TICKS HERE TOO. tickHot's only other call site
+  // is inside the live raid loop, which returns early on G.sim, so the disc never
+  // moved in a headless run and no machine was ever dragged to a new centre -
+  // while the loot bonus inside the disc fired all the same. Guarded because this
+  // runs thousands of times a batch and a throw here would take the batch with it.
+  wxTick(dt); strikeTick(dt); try{ tickHot(dt); }catch(_th){}
   G.t+=dt; G.timeLeft-=dt;
   if(G.timeLeft<=0){ G.timeLeft=0; G.tel.deathKiller='timer'; G.player.pendKiller='timer'; endRaid('dead'); return; }
   refreshVseg();
@@ -23204,7 +23216,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.44: a dragged HUD panel stays where you can click it, and a body holds one gun instead of two.',
+  now:'v8.45: your hire works under every order, and the hire panel tells you what dying actually costs.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -23519,8 +23531,14 @@ function renderMercDetail(rows){
     '<div class="vdesc">'+escHtml(stand)+'</div>'+
     '<div class="crlab">THE DEAL</div>'+
     '<div class="vdesc">One run, paid up front. He loots for himself, and if you BOTH '+
-    'get out you take ten percent of what he carried. If either of you does not make '+
-    'it, you get nothing. On the surface B cycles his orders. Your shots cannot hurt '+
+    // v8.45, audit: THE REAL TERMS. This said "if either of you does not make it,
+    // you get nothing", and the settle path does not give you nothing - if HE dies
+    // it takes a death benefit off you on top of the fee, and will put you in debt
+    // to do it. The figure is read from MERC_DEATH so the sentence cannot drift
+    // away from the charge.
+    'get out you take ten percent of what he carried. If YOU do not make it you get '+
+    'nothing. If HE does not make it you owe his family '+'$'+MERC_DEATH.toLocaleString()+
+    ' on top of the fee. On the surface B cycles his orders. Your shots cannot hurt '+
     'him. If you go down, he comes for you.</div>';
   if(cost===null){
     h+='<div class="vdesc" style="color:#8a3423">He will not work for you at any price.</div>';
