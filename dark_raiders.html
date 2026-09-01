@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.53';
+var VER='8.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7046,7 +7046,13 @@ function spawnWild(map){
     for(j=0;j<m;j++)
       out.push({k:'deer',x:hs.x+rnd(-70,70),y:hs.y+rnd(-50,50),
                 vx:0,vy:0,st:'idle',t:rnd(0,4),f:rnd(0,6.28),z:0,life:0,
-                face:1,hx:hs.x,hy:hs.y});
+                // v8.54, audit: antlers decided ONCE, here. The draw used to test
+                // sin(hx), and hx is the home point, which wildTick rewrites every
+                // time a spooked deer settles - so the same animal grew and lost
+                // its antlers as it moved. Drawn from the COSMETIC stream: it is a
+                // per-animal visual constant, and putting a draw here would shift
+                // every seeded number after it and move every entity on the map.
+                face:1,hx:hs.x,hy:hs.y,ant:(fxr()<0.45?1:0)});
   }
   return out;
 }
@@ -17204,14 +17210,23 @@ if(!sc.seen) continue;
   // The wind-up bar, above the head, world space so it stays with the body.
   // Amber while filling, the same colour family as the reload thread, because
   // both mean "committed, wait".
+  // v8.54, audit: LIFTED CLEAR OF THE SPRITE. This sat at p.y-42, and the
+  // operator's own head plate starts around p.y-38, so more than half the bar was
+  // behind his hair every single time - and standing in front of a racking run hid
+  // it completely, because a wall at p.y-20 sorts AFTER the player and draws its
+  // top face from p.y-46 down. It is his feature: "heal should have a time-to-apply
+  // that shows in a bar above character", and it was mostly invisible.
+  // Raised rather than pushed into the y-sort, because the sort would still let a
+  // wall cover it and the whole point is that it reads at a glance mid-fight.
   if(p.prep){
     var _pf=clamp(p.prep.t/p.prep.max,0,1);
+    var _py=p.y-62;
     wc.fillStyle='rgba(6,9,13,.85)';
-    wc.fillRect(p.x-24,p.y-42,48,8);
+    wc.fillRect(p.x-24,_py,48,8);
     wc.strokeStyle='rgba(255,255,255,.22)'; wc.lineWidth=1;
-    wc.strokeRect(p.x-23.5,p.y-41.5,47,7);
+    wc.strokeRect(p.x-23.5,_py+0.5,47,7);
     wc.fillStyle=p.prep.kind==='armor'?'#5aa9e6':'#6fe0a0';
-    wc.fillRect(p.x-23,p.y-41,46*_pf,6);
+    wc.fillRect(p.x-23,_py+1,46*_pf,6);
   }
   // marked ring
   if(G.marked>0){
@@ -17436,7 +17451,7 @@ var SHD=G.shells[i];
         wc.fillStyle='#7d6749'; rrF(hx-2.5,hy-3.5,6,6,2);
         // antlers on some of them, decided by the fixed phase so one deer does
         // not grow and lose them frame to frame
-        if(CT.f!==undefined&&Math.sin(CT.hx*0.017)>0.15){
+        if(CT.ant){
           wc.strokeStyle='#4a3f30'; wc.lineWidth=1.5; wc.beginPath();
           wc.moveTo(hx,hy-3); wc.lineTo(hx+fl*3,hy-11); wc.lineTo(hx+fl*7,hy-13);
           wc.moveTo(hx+fl*3,hy-11); wc.lineTo(hx-fl*1,hy-14);
@@ -18195,29 +18210,13 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     wc.globalAlpha=1;
   }
   wc.textAlign='left';
-if(G.map.fixed==='quarry'){
-    var _cbY=1590,_cbX0=380,_cbX1=1920;
-    wc.fillStyle='#3a3a42'; wc.fillRect(_cbX0,_cbY-8,_cbX1-_cbX0,16);
-    var _cOff=(G.t*60)%36;
-    wc.fillStyle='#6a6a74';
-    for(var _cb=_cbX0+_cOff;_cb<_cbX1;_cb+=36) wc.fillRect(_cb,_cbY-6,14,12);
-    for(var _pw2=0;_pw2<2;_pw2++){
-      var _px2=_pw2?_cbX1:_cbX0,_ra2=G.t*2.2;
-      wc.fillStyle='#2b2f36'; wc.beginPath(); wc.arc(_px2,_cbY,13,0,6.2832); wc.fill();
-      wc.strokeStyle='#8a96a1'; wc.lineWidth=2.5;
-      wc.beginPath(); wc.moveTo(_px2-Math.cos(_ra2)*10,_cbY-Math.sin(_ra2)*10);
-      wc.lineTo(_px2+Math.cos(_ra2)*10,_cbY+Math.sin(_ra2)*10); wc.stroke();
-    }
-    var _dgX=3660,_dgY=2890,_dgA=-0.9+Math.sin(G.t*0.16)*0.55;
-    wc.fillStyle='#2b2f36'; wc.fillRect(_dgX-16,_dgY-16,32,32);
-    wc.strokeStyle='#57462f'; wc.lineWidth=7;
-    wc.beginPath(); wc.moveTo(_dgX,_dgY);
-    wc.lineTo(_dgX+Math.cos(_dgA)*190,_dgY+Math.sin(_dgA)*190); wc.stroke();
-    var _bkX=_dgX+Math.cos(_dgA)*190,_bkY=_dgY+Math.sin(_dgA)*190;
-    wc.strokeStyle='#8a96a1'; wc.lineWidth=1.5;
-    wc.beginPath(); wc.moveTo(_bkX,_bkY); wc.lineTo(_bkX,_bkY+26); wc.stroke();
-    wc.fillStyle='#4a3620'; wc.fillRect(_bkX-7,_bkY+26,14,10);
-  }
+// v8.54, audit: the quarry set dressing that stood here is DELETED - a scrolling
+// conveyor belt, two pulleys and a swinging dragline boom, twenty two lines
+// evaluated every frame on a map id that cannot occur. FIXED_MAPS holds two
+// entries and buildFixedMap stamps def.id, so G.map.fixed can only ever be
+// 'cold' or 'mile'. Its coordinates were hardcoded QUARRY ones, so anything that
+// re-enabled the branch would have drawn a conveyor and a dragline through the
+// middle of COLD STORAGE. Per-map dressing belongs behind a def.dressing hook.
   // air pass: bullets, sparks, puffs, throws, smoke
   wc.globalCompositeOperation='lighter';
   for(i=0;i<G.bullets.length;i++){
@@ -18415,7 +18414,7 @@ var b=G.bullets[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
     if(f2<=0) continue;
     var gx2=F2.x,gy2=F2.y,gr2=F2.r*.42*(F2.life>.3?(.4+.6*(1-f2)):1);
     if(gx2<ox-gr2||gx2>ox+VW+gr2||gy2<oy-gr2||gy2>oy+VH+gr2) continue;
-    wc.globalAlpha=.30*f2; wc.fillStyle=F2.c;
+    wc.globalAlpha=.30*f2; wc.fillStyle=F2.c||'#ffc27a';   // v8.54: never undefined
     wc.beginPath(); wc.arc(gx2,gy2,gr2,0,6.2832); wc.fill();
   }
   // hunting machines bleed their eye colour into the air, but only ones you can see
@@ -20362,7 +20361,10 @@ function tickNuke(dt){
       G.nukeAcc=0;
       var ang=rnd(0,6.2832), rad=rnd(120,1500);
       var bx=p.x+Math.cos(ang)*rad, by=p.y+Math.sin(ang)*rad;
-      G.flashes.push({x:bx,y:by,r:rnd(180,340),t:0,life:0.5});
+      // v8.54, audit: with a colour. Without one the read assigns undefined to
+      // fillStyle, which the canvas ignores, so the bloom came out in whatever the
+      // previous pass left set - a district lamp colour.
+      G.flashes.push({x:bx,y:by,r:rnd(180,340),t:0,life:0.5,c:'#ffd6a0'});
       G.shake=Math.min(30,(G.shake||0)+7);
       try{ sfx('boom',bx,by); }catch(e){}
     }
@@ -23344,7 +23346,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.53: reinforcements wait their turn instead of arriving the instant the clock allows it.',
+  now:'v8.54: the wind-up bar for a heal or a plate is finally above your head instead of behind it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

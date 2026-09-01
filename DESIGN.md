@@ -27443,6 +27443,69 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.54 - THE WIND-UP BAR IS ABOVE YOUR HEAD INSTEAD OF BEHIND IT
+
+THE BAR HE ASKED FOR WAS MOSTLY HIDDEN BEHIND HIS OWN CHARACTER. His note is
+explicit: "heal should have a time-to-apply that shows in a bar above
+character before it actually starts healing", then "same for armor plates".
+The bar exists and works. It was painted in the world pass BEFORE the
+depth-sorted pass is even built, so everything in that pass paints over it.
+
+It sat eight pixels tall at p.y-42, and the operator's own head plate starts
+around p.y-38, so more than half of it was behind his hair every single time
+he healed. Standing in front of any racking run hid it completely: a wall at
+p.y-20 sorts after the player and draws its top face from p.y-46 down.
+
+Raised to p.y-62 rather than pushed into the sort, because the sort would
+still let a wall cover it and the entire point of the bar is that it reads at
+a glance while something is shooting at you. Measured: it now sits 62 pixels
+above his feet and clears the head plate.
+
+A DEER GREW AND LOST ITS ANTLERS AS IT MOVED. The antler test read the
+animal's HOME POINT as though it were a fixed per-animal phase. wildTick
+rewrites that field every time a spooked deer's flee timer runs out, and a
+move of a hundred units shifts the argument by 1.7 radians, which flips the
+test either way.
+
+Deer are deliberately big enough to be mistaken for a person at the fog edge,
+so one changing silhouette mid-raid is a real misread. It is decided once at
+spawn now, from the COSMETIC stream - a per-animal visual constant, and
+putting a seeded draw there would have shifted every number after it and
+moved every entity on the map.
+
+TWENTY-TWO LINES OF SET DRESSING FOR A MAP THAT NO LONGER EXISTS. A scrolling
+conveyor belt, two pulleys and a swinging dragline boom, evaluated every frame
+on a map id that cannot occur - FIXED_MAPS holds two entries and buildFixedMap
+stamps def.id, so it can only ever be 'cold' or 'mile'. Deleted rather than
+left, because the coordinates are hardcoded QUARRY ones: anything that
+re-enabled the branch would have drawn a conveyor and a dragline through the
+middle of COLD STORAGE.
+
+AND THE NUKE BLOOMS TOOK THE COLOUR OF THE LAST LAMP DRAWN. Every flash made
+through flash() carries a colour with a warm default; the barrage pushed
+straight into the array without one. Assigning undefined to fillStyle is
+ignored by the canvas, so the bloom came out in whatever was last set, which
+in that loop is a district lamp colour from the pass immediately before it.
+Fixed at the push and made defensive at the read, because a value that is
+never written is exactly the shape that comes back.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both maps
+with no throw; three endings through oc_btn with the overlay on; hub;
+__renderStage; stream parity zero; a full sim raid end to end.
+  the bar    plate now drawn at y 618 to 626 with the player at y 680, so 62
+             pixels up and clear of a head plate that starts about 38 up.
+  the deer   the antler flag is set once and survives its home point moving
+             900 units. CONTROL: the OLD test, evaluated on the same animal
+             as it settles 100 units further each time, flips three times in
+             500 units - antlers, none, none, antlers, antlers, none.
+
+Not verified: the bar at p.y-62 against tall geometry. It now clears the
+player and the racking that was hiding it, but I have not checked it against
+the tallest thing on either map, and a lifted bar can start colliding with a
+nameplate on a body standing directly behind you. The nameplate sits at about
+p.y-60 on the entity, not on the player, so they only meet when someone is
+almost exactly on top of you.
+
 ## v8.53 - REINFORCEMENTS WAIT THEIR TURN, AND THREE DEAD SYSTEMS GO
 
 REINFORCEMENTS ARRIVED THE INSTANT THE CLOCK ALLOWED IT. The interval timer
