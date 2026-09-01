@@ -27443,6 +27443,76 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.39 - NAMES INSIDE THEIR BOXES, THE RIGHT GUN, ONE PRESS
+
+Three more audit findings, all of them things he would have seen or felt
+without being able to name.
+
+EVERY NAME ON SCREEN WAS DRAWN OFF ITS OWN BOX. The backplate, the crew
+colour block and the health pip are all positioned CENTRED on the entity -
+x from ne.x-tw/2-4, width tw+8 - and then the text was drawn at ne.x with
+the canvas in left alignment, so it began at the middle of its own plate
+and ran out past the right edge.
+
+Measured on a live frame by wrapping fillRect and fillText: a name 172.5px
+wide overflowed its plate's right edge by 82.2px and left a 90.2px empty
+gap on the plate's left. Every enemy, the Peddler and the Stray, every
+frame. The floating loot and kill labels had the identical mistake in the
+identical shape.
+
+Fixed by moving the text rather than by setting textAlign, because that
+loop draws several strings and a leaked alignment state is how this class
+of bug gets made in the first place.
+
+THE BELT NAMED ONE GUN WHILE YOUR HANDS HELD THE OTHER. p.wep is ALWAYS
+the gun in your hands and p.sec is always the stowed one; swapGuns
+exchanges the two objects wholesale, and p.swapped is only a label
+recording which of them you deployed with. The derived A/B cells are
+entitled to use !swapped/swapped because they define A as
+swapped?p.sec:p.wep. This branch matched p.wep and p.sec DIRECTLY and then
+copied that convention onto the result, so the moment p.swapped went true
+the two were exactly inverted.
+
+That produces precisely the failure the long note above swapGuns says was
+fixed at v2.94: press the number key for the gun you are holding, and
+setHot reads inHand false, calls swapGuns, and stows the gun you just
+asked for. The other cell then claims to be in hand, so its key does
+nothing at all.
+
+A MENU BUTTON ON A PAD FIRED SIXTY TIMES A SECOND. padMenu does its own
+edge detection against PAD.prev, and padRelease - called on the very next
+line - threw the whole array away, so `was` was undefined on every frame
+and every menu tap was level triggered rather than edge triggered. Hold A
+over a shop row and it bought once per frame. Hold a dpad direction and
+the focus swept the whole panel instead of stepping one control, which is
+exactly what the repeat timer three lines above it exists to prevent.
+
+padRelease's job is releasing held INPUT - keys, the mouse, ads. PAD.prev
+is bookkeeping about physical buttons and is not input, so it is no longer
+cleared there. It is cleared on disconnect, which is the one place where
+"we no longer know what is held" is actually true.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both
+maps with no throw; three endings through oc_btn with the overlay on; hub;
+__renderStage; v8.35 stream parity still zero.
+  nameplate   text 172.5px inside a 180.5px plate, 4.0px padding each
+              side, overflow -4.0px. It was +82.2px.
+  loot label  "Ammo Box +40 ammo", 176.9px inside a 199.9px plate,
+              overflow -4.0px, 19.0px gap on the left which is exactly
+              the icon well.
+  the belt    with p.swapped FALSE and TRUE in turn, the cell for the gun
+              in hand reports inHand true and the stowed one false. Under
+              the old code the swapped case reported both inverted.
+  the pad     a synthetic gamepad with A held for ten polled frames over
+              an open shop panel: ONE activation. The control, which wipes
+              PAD.prev each frame the way padRelease used to, gives TEN -
+              so the rig can tell the two apart.
+
+Not verified: the pad on real hardware. Everything above is a synthetic
+gamepad object fed to navigator.getGamepads, which exercises the same code
+the browser drives but is not a physical controller, and I could not test
+the dpad focus sweep or the B-release behaviour that way.
+
 ## v8.38 - THREE THINGS THE GAME TOLD HIM IT WAS DOING AND WAS NOT
 
 The three worst findings in the profile and contract code from the

@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.38';
+var VER='8.39';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8669,13 +8669,17 @@ function padRelease(){
   if(PAD.held){ for(var c in PAD.held){ if(PAD.held[c]) keys[c]=false; } PAD.held={}; }
   if(PAD.firing){ mouse.down=false; PAD.firing=0; }
   if(PAD.adsing){ if(G&&G.player) G.player.ads=false; PAD.adsing=0; }
-  PAD.prev=[];
+  // v8.39, audit: PAD.prev is NOT input and is no longer wiped here. padMenu
+  // stamps its edge state into this array and padRelease is called on the next
+  // line, so clearing it made every menu button level triggered - about sixty
+  // presses a second for one hold. It is cleared on disconnect instead, where
+  // "we no longer know what is held" is actually true.
 }
 function pollPad(){
   if(!navigator.getGamepads) return;
   var gps=navigator.getGamepads(),gp=null;
   for(var i=0;i<gps.length;i++){ if(gps[i]&&gps[i].connected){ gp=gps[i]; break; } }
-  if(!gp){ if(PAD.on) padRelease(); PAD.on=false; PAD.mx=0; PAD.my=0; return; }
+  if(!gp){ if(PAD.on) padRelease(); PAD.on=false; PAD.prev=[]; PAD.mx=0; PAD.my=0; return; }   // v8.39
   PAD.held=PAD.held||{};
   function padHold(code,down){
     if(down){ keys[code]=true; PAD.held[code]=1; }
@@ -10339,8 +10343,12 @@ function hotbarSlots(){
     // "my guns didn't stay on my hotbar when i ascended".
     var _agk=(ait.use==='gun')?ait.gk:null, _eq=null;
     if(_agk){
-      if(p.wep&&p.wep.id===_agk)      _eq={w:p.wep,am:p.ammo,   inHand:!sw};
-      else if(p.sec&&p.sec.id===_agk) _eq={w:p.sec,am:p.secAmmo,inHand:sw};
+      // v8.39, audit: p.wep IS the gun in your hands and p.sec IS the stowed one,
+      // always. The !sw/sw convention belongs to the DERIVED A/B cells, which
+      // define A as sw?p.sec:p.wep; copying it onto a direct p.wep/p.sec match
+      // inverted both the moment p.swapped went true.
+      if(p.wep&&p.wep.id===_agk)      _eq={w:p.wep,am:p.ammo,   inHand:true};
+      else if(p.sec&&p.sec.id===_agk) _eq={w:p.sec,am:p.secAmmo,inHand:false};
     }
     if(have<=0&&!_eq) continue;
     if(_eq){
@@ -17859,6 +17867,9 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     var ph2=Math.ceil(parseFloat((wc.font.match(/([\d.]+)px/)||[0,12])[1])*1.35);
     wc.fillStyle='rgba(6,9,13,.62)';
     wc.fillRect(ne.x-tw/2-4,ne.y-lift-ph2+3,tw+8,ph2);
+    // v8.39, audit: the plate is centred on the entity and the text was drawn at
+    // ne.x with textAlign left, so it began at the middle of its own box. See
+    // the fillText below, which now starts at the plate's inner left edge.
     if(crewC){
       wc.fillStyle=crewC;
       wc.fillRect(ne.x-tw/2-11,ne.y-lift-ph2+3,5,ph2);
@@ -17873,7 +17884,7 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
       :(ne.state==='chase'||ne.state==='alarm'
         ? (hostile?'#ff6b5a':'#ff9a3c')
         : (hostile?'#e0a89e':'#9aa6b2'))));
-    wc.fillText(plate,ne.x,ne.y-lift);
+    wc.fillText(plate,ne.x-tw/2,ne.y-lift);   // v8.39: inside its plate, not off the right of it
     // health pip so a wounded target reads at a glance
     if(ne.hp<ne.maxhp){
       var fw=clamp(ne.hp/ne.maxhp,0,1);
@@ -17965,7 +17976,10 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     wc.fillRect(lb.x-lw/2-4-icw,lb.y-rise-10,lw+8+icw,13);
     if(lb.ik) drawItemIcon(wc,lb.ik,lb.x-lw/2-icw+3,lb.y-rise-4,13);
     wc.fillStyle=lb.c;
-    wc.fillText(lb.txt,lb.x+icw/2,lb.y-rise);
+    // v8.39, audit: same defect as the nameplate. Box centred, text drawn from
+    // the centre. With an icon the plate is widened to the LEFT (icw), so the
+    // text still starts at lb.x-lw/2 and the icon sits in the space made for it.
+    wc.fillText(lb.txt,lb.x-lw/2,lb.y-rise);
     wc.globalAlpha=1;
   }
   wc.textAlign='left';
@@ -23086,7 +23100,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.38: the mile remembers your seal and your map, servicing a gun costs what it should, and a district contract means a district.',
+  now:'v8.39: names sit inside their own boxes, the belt knows which gun is in your hands, and a pad button presses once.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
