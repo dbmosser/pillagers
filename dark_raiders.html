@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.63';
+var VER='8.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15139,6 +15139,11 @@ silentExit:T.silentExit||0,
   if(how==='abandon'&&el<1.5&&T.distance<8&&T.containers===0&&T.shots===0){
     togglePauseBox(false);
     document.getElementById('outcome').classList.remove('on');
+    // v8.64, audit: the belt lets go here too. This path discards the run as
+    // never having happened, but the kit was spliced out of the stash at commit
+    // and is gone regardless, so the keys were left pointing at it. Whether the
+    // KIT should come back on an instant quit is a separate question and his.
+    if(!G.sim){ dropDeadKeys(); saveProfile(); }
     G=null; keys={};
     showScreen('hub');
     return;
@@ -15530,6 +15535,14 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
     lastHitName:T.lastHitName||null,
     inRunNotes:T.notes.slice(),tags:[],note:''
   };
+  // v8.64, audit: AND THE BELT LETS GO OF WHAT YOU LOST. Every menu route out of
+  // the backpack calls clearKeysFor; the raid itself never did, so dying or
+  // walking away left keys bound to items that are gone. Possession is stash plus
+  // kit, the same test safeKey uses - clearKeysFor asks stageKitLive, which is
+  // empty by now and would strip the keys for everything you brought home too.
+  // Runs here, after every stash mutation and before the save: v8.51 shipped this
+  // same rule one line too early and the key survived it.
+  if(!G.sim) dropDeadKeys();
   saveProfile();
 
   // v8.17: banked before the card is even drawn. saveProfile has already run
@@ -23475,7 +23488,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.63: the safe pocket is proved to work end to end, and the kit you carry up can finally be tested at all.',
+  now:'v8.64: dying no longer leaves your belt keys pointing at gear you lost.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -24233,6 +24246,18 @@ function unpackSome(key,want){
 // Drops any quick-use key bound to an item that is no longer in the loadout. Called
 // wherever something leaves the backpack, so there is one rule rather than one per
 // route out.
+// v8.64, audit: the belt after a raid. clearKeysFor answers "this ONE item left
+// the backpack"; this answers "the raid is over, what is still mine". Possession
+// is stash plus kit, the same test safeKey uses, because clearKeysFor asks
+// stageKitLive, which is empty once a raid ends and would strip the keys for
+// everything you successfully brought home.
+function dropDeadKeys(){
+  if(!P||!P.hotAssign) return;
+  var have={},i,k;
+  for(i=0;i<(P.stash||[]).length;i++) have[P.stash[i]]=1;
+  for(i=0;i<(P.kit||[]).length;i++) have[P.kit[i]]=1;
+  for(k in P.hotAssign) if(!have[P.hotAssign[k]]) delete P.hotAssign[k];
+}
 function clearKeysFor(key){
   if(!P.hotAssign) return;
   var live=stageKitLive(), still=0, i;

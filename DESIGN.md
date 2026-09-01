@@ -27443,6 +27443,80 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.64 - A RAID THAT TAKES YOUR KIT NOW LETS GO OF THE BELT KEYS TOO
+
+clearKeysFor exists for exactly one rule, and its own comment states it: "Drops
+any quick-use key bound to an item that is no longer in the loadout. Called
+wherever something leaves the backpack, so there is one rule rather than one per
+route out." Nine call sites cover the menu routes, four of which were added at
+v8.51 when the same gap turned up there: selling one, selling all, both copies of
+equip as your gun, unstaging, the drag route.
+
+Not one of them covers the commonest way an item leaves you, which is dying with
+it in your bag.
+
+Measured, binding key 1 to a servo carried up in the kit:
+
+  extract    servo comes home, key 1 still servo    correct
+  dead       servo gone,       key 1 still servo    DEAD KEY
+  abandon    servo gone,       key 1 still servo    DEAD KEY
+
+So you come back from a death with a belt still pointing at gear you no longer
+own, and the next servo you ever pick up silently re-arms a binding you did not
+ask for.
+
+Fixed as a named function beside clearKeysFor, which is where the file already
+keeps this rule, and called from both exits a lost raid can take. Possession is
+the stash plus the kit, the same test safeKey uses, rather than clearKeysFor's
+stageKitLive: the kit is empty once a raid ends, so reusing that would have
+stripped the keys for everything you successfully brought home.
+
+Placed after every stash mutation and before the save. v8.51 shipped this exact
+rule one line too early and the key survived it, so the ordering is the fix.
+
+THE INSTANT QUIT NEEDED IT SEPARATELY. Quitting within a second and a half of
+landing takes a discard path that returns early, so the first version of this fix
+still left the keys behind there. That path treats the run as never having
+happened, but the kit was spliced out of the stash at commit and is gone all the
+same. It now drops the keys and saves.
+
+Whether the KIT itself should come back on an instant quit is the separate
+question raised at v8.63 and is still his: returning it lets you deploy, read the
+map, and quit for free.
+
+Controlled in both directions, and the second direction is the one that matters
+here: a fix that clears too eagerly would strip the keys off gear you brought
+home safely.
+
+  extract          keys 1 and 2 both kept, stash holds both items
+  dead             keys cleared
+  abandon instant  keys cleared
+  abandon after 3s keys cleared
+
+The regression check runs all three losing cases AND the extract control, and
+fails if the probe never gets the kit home, which is how this check could go
+quietly hollow.
+
+ALSO CHECKED, NOTHING FOUND. Following the gap I flagged last build, kits
+containing a gun and a plate were run through all three endings with a clean
+armoury. Extracting banks the rifle into the armoury and returns the plate to the
+stash; dying loses both plus the gun you carried up; abandoning loses the stash
+items and returns the armoury exactly as it was before deploy, which is what the
+v8.61 note says it must do. All correct. And there is no three slot limit on the
+kit: DEPLOY_SLOTS is 9999, staging six items sends six up, and no player-facing
+text claims otherwise. The stale "three stash slots" phrase is a code comment.
+
+Verified: parse PASS at 1,511,835 chars, mojibake none. __verify PASS: ents 58
+and 276, parity identical on both maps, looting on both with the clock advancing,
+all three endings with the overlay on, hub through the title button. __regress
+PASS, now 14 checks.
+
+Not verified: the bindings were set by writing P.hotAssign directly rather than
+by pressing a number key over an item in the panel, so what is proven is that the
+raid exits clean up a binding, not that the panel creates one correctly. The belt
+display itself was not looked at, only the stored assignment. And guns were never
+bound to a key in these tests, only plain items.
+
 ## v8.63 - THE KIT YOU CARRY UP CAN FINALLY BE TESTED AT ALL
 
 The audit lists are drained of cheap wins, so this tick went hunting on the

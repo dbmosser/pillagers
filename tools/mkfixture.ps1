@@ -952,6 +952,39 @@ window.__REGRESS=[
        if(hit) out.push('mapIx '+mi+' has '+hit+' roads crossing a wall');
      });
      return out.length?out.join('; '):null; }},
+  {v:'8.64',what:'a raid that takes your kit also lets go of the belt keys',
+   run:function(){
+     function go(how,seconds){
+       var P=__P(); P.weapons=['smg']; P.hotAssign={};
+       __resetCfg(); __pinDefaults(0);
+       var d=__deploy({kit:['servo','scrap','wire'],safe:null,mapIx:0,seed:4242});
+       if(d.error) return {err:d.error};
+       var g=__state(); if(!g) return {err:'no raid'};
+       __P().hotAssign={'1':'servo','2':'scrap'};
+       g.ents.length=0;
+       if(seconds>0){
+         var K=__keysRef(); for(var k in K) K[k]=false; K['KeyD']=true;
+         for(var f=0;f<Math.round(seconds*60);f++) __loop(performance.now()+f*16.7);
+         K['KeyD']=false;
+       }
+       __endRaid(how);
+       var P2=__P(), A=P2.hotAssign||{}, owns=(P2.stash||[]);
+       var dead=[]; for(var kk in A) if(owns.indexOf(A[kk])<0) dead.push(kk+' -> '+A[kk]);
+       return {dead:dead, kept:Object.keys(A).length, owns:owns};
+     }
+     // The three ways a raid can take your kit.
+     var cases=[['dead',0],['abandon',0],['abandon',3]];
+     for(var i=0;i<cases.length;i++){
+       var r=go(cases[i][0],cases[i][1]);
+       if(r.err) return r.err;
+       if(r.dead.length) return cases[i][0]+(cases[i][1]?(' after '+cases[i][1]+'s'):' instant')+' left dead keys: '+r.dead.join(', ');
+     }
+     // And the control: extracting brings the kit home, so the keys must STAY.
+     var ex=go('extract',0);
+     if(ex.err) return ex.err;
+     if(ex.owns.indexOf('servo')<0) return 'the probe never got the kit home, so it is testing nothing';
+     if(ex.kept!==2) return 'extracting stripped keys for gear that came home ('+ex.kept+' of 2 left)';
+     return null; }},
   {v:'8.63',what:'the safe pocket keeps exactly one named item through a death',
    run:function(){
      function die(safeItem){

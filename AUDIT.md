@@ -118,3 +118,16 @@ adversarially verified):
   nothing searched, still destroys the kit, on a path written to discard the run
   as never having happened. NOT changed, because returning the kit on an instant
   quit lets you deploy, read the map and quit for free, repeatedly.
+
+## Closed v8.64
+
+| Finding | Closed by | How it was confirmed |
+|---|---|---|
+| a raid that takes your kit left the belt keys bound to it | v8.64 | dead / instant abandon / abandon after 3s all clear now; extract keeps both keys with both items home |
+
+## Checked v8.64, nothing found
+
+| Finding | What I did | Result |
+|---|---|---|
+| a kit containing a gun or armour leaves the stash by a different route | deployed a rifle and a plate through all three endings with a clean armoury | all correct: extract banks the rifle and returns the plate, dead loses both, abandon restores the armoury exactly as before deploy |
+| the kit has a three slot limit the code does not enforce | staged 1 to 6 items and counted what went up | there is no limit. DEPLOY_SLOTS is 9999 and no player-facing text claims three. The stale phrase is a code comment. |
