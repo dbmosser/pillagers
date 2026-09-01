@@ -27443,6 +27443,65 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.61 - THE HOLD THAT GETS YOU ABOARD HAS TO BE DONE IN ONE GO
+
+BOARDING COULD BE PAID IN INSTALMENTS. Extraction is the one moment the game asks
+you to commit: with the ship on the pad you stand still in the ring and hold for
+1.4 seconds, while everything that heard the beacon comes for you. The hold is
+the entire risk of leaving.
+
+Releasing the key while you stand in the ring cancels it correctly - the else
+branch sets z.pullT to null, and the rising board tone exists so that letting go
+early is something you hear. WALKING OUT did not cancel it. z.pullT lives on the
+ring rather than on you, and none of that code runs for a ring you are no longer
+standing in, so the counter simply stopped where it was and waited.
+
+Measured, ship on the pad and the boarding window open: held to 1.033 of 1.4,
+released the key, walked 900 units clear of the ring, played on for two full
+seconds, came back, and the raid ended 20 frames later. The counter never moved
+off 1.033 the whole time I was away.
+
+So the commitment was optional. Pull for a second, duck out when something comes
+round the corner, walk back when it is quiet and finish in a third of a second.
+
+A pull now belongs to the ring you are STANDING IN, and every other ring's
+counter is cleared, which also covers starting a pull at one ring and running to
+another. This is the rule the release branch already applied; it simply never
+reached the case where you leave. No seeded draw, so nothing in the stream moves.
+
+Controlled both ways, because the risk in this fix is breaking extraction
+outright. Left the ring: the counter reads null on return and 40 more frames of
+holding does not finish it, so the hold restarts. Never left: 0.967 is kept and
+the raid ends 24 frames later, exactly as before.
+
+This one took three ticks to reproduce and the first two failures were mine. The
+pull is a TWO stage thing - a first pull calls the ship, then a second pull
+boards inside a 30 second window - and both earlier probes only ever did the
+first stage, so z.pullT never left null and I twice reported "no reset needed".
+The reproduction needed z.hold set, which is the boarding window being open.
+
+ALSO CHECKED, NOTHING FOUND. Two rows on the raid queue turned out to be pointing
+at the wrong code. The death screen HEALTH and DAMAGE columns recording pre-hit,
+pre-armour values: the only DAMAGE column in the file is the weapon inspect
+panel, and the health figure is stamped after armour is subtracted and after
+p.hp is reduced, so it is the real loss. And grantLoot's tail announcing items
+still in the box: the line at that spot is the auto-equip message for a gun you
+have actually taken. Both rows are marked misidentified rather than open.
+
+Verified: parse PASS at 1,511,540 chars, mojibake none. __verify PASS: ents 58
+and 276, parity identical on both maps, looting on both with the clock advancing,
+all three endings with the overlay on, hub through the title button. __regress
+PASS, now 12 checks. The new one refuses to pass vacuously: it fails if the probe
+never gets the hold above 0.5, which is exactly the mistake that hid this bug
+from me twice.
+
+Not verified: the fix is proven against a boarding window I opened by hand, by
+setting z.hold and z.beaconT directly, rather than by calling the ship and
+waiting the real 30 seconds inbound. The two-stage sequence itself is unchanged
+by this build and was not re-tested end to end. Whether a raider or a merc can
+still shadow someone else's call and ride out on it, which the spec says is
+intended play, is untouched here and unmeasured.
+
 ## v8.60 - A BURST GUN WEARS AT THE RATE IT FIRES, AND A MACHINE PLAYING DEAD CAN BE KILLED
 
 A BURST WEAPON WORE AT ONE THIRD THE RATE. Wear is charged once per trigger pull

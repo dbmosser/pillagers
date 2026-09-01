@@ -952,6 +952,38 @@ window.__REGRESS=[
        if(hit) out.push('mapIx '+mi+' has '+hit+' roads crossing a wall');
      });
      return out.length?out.join('; '):null; }},
+  {v:'8.61',what:'the boarding hold cannot be done in instalments',
+   run:function(){
+     function pull(leave){
+       __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       g.ents.length=0;
+       var z=null; for(var i=0;i<g.zones.length;i++) if(g.zones[i].open){ z=g.zones[i]; break; }
+       if(!z) return null;
+       z.beaconT=0; z.hold=25; z.callT=0;
+       p.x=z.x; p.y=z.y; p.iv=99; p.downed=false;
+       var K=__keysRef(); for(var k in K) K[k]=false; K['KeyE']=true;
+       for(var f=0;f<50&&__state()&&!__state().over;f++) __loop(performance.now()+f*16.7);
+       var got=z.pullT;
+       if(leave){
+         K['KeyE']=false; p.x=z.x+900; p.y=z.y+700;
+         for(var f2=0;f2<120&&__state()&&!__state().over;f2++) __loop(performance.now()+f2*16.7);
+       }
+       var after=z.pullT;
+       p.x=z.x; p.y=z.y; K['KeyE']=true;
+       var fr=0; for(;fr<40&&__state()&&!__state().over;fr++) __loop(performance.now()+fr*16.7);
+       K['KeyE']=false;
+       return {got:got,after:after,extracted:(!__state()||!!__state().over),frames:fr};
+     }
+     var a=pull(true);
+     if(!a) return 'no open ring to test with';
+     // The probe must actually have started a pull, or it is testing nothing.
+     if(!(a.got>0.5)) return 'the probe never got the hold going (reached '+a.got+'), so it is testing nothing';
+     if(a.after!==null&&a.after!==undefined) return 'the hold survived leaving the ring, at '+a.after;
+     if(a.extracted) return 'leaving and returning still completed the boarding in '+a.frames+' frames';
+     var b=pull(false);
+     if(!b.extracted) return 'boarding no longer works at all when you never leave - the fix broke extraction';
+     return null; }},
   {v:'8.60',what:'a burst gun wears once per ROUND, not once per trigger pull',
    run:function(){
      function fire(burst){
