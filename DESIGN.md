@@ -27443,6 +27443,72 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.40 - THE POCKET KEEPS ITS PROMISE, AND THE CHEAT BOX STAYS HOME
+
+The last two high findings from the full-file audit.
+
+THE SAFE POCKET NEVER FIRED ON A NORMAL DEPLOY. Four places disagreed
+about when the drop kit exists. commitKit builds P.dropKit from the STAGED
+kit and then decides P.safeUp from it - but if he staged nothing, dropKit
+is empty, so safeUp becomes null AND kitChosen stays 0. buildRaid then
+sees kitChosen 0 and auto-packs the standard kit out of the stash, AFTER
+the pocket has already been decided against an empty list. endRaid finds
+null and saves nothing.
+
+Meanwhile the hub says the pocket is live the whole time. safeKey counts
+the named item in the stash or the kit, the cell reads "in the safe
+pocket, comes home if you die carrying it", and the empty state reads "ONE
+ITEM SURVIVES YOUR DEATH. DROP IT HERE."
+
+So: name an Armour Plate, then deploy the ordinary way - lift, MY LOADOUT,
+or quick ascent - without dragging anything into the KIT column.
+standardKit picks that very plate first and sends it up. The hub said 1/1.
+You die, and the report lists it LOST. The pocket only ever worked if you
+manually staged the same item first, and nothing on screen said so.
+
+ONE WRITER NOW, at the one moment the kit is finally known: in buildRaid,
+straight after the loop that fills the bag, against _dk - the list that
+actually goes up on every live path, staged or quick or auto-packed. v6.01's
+rule is unchanged and still right; only the moment moved.
+
+THE DEV CHEAT BOX WAS IN THE SHIPPING BUILD. Every other dev surface is
+gated on BETA_HIDE_DEV: the DEV BOX station becomes SETTINGS, the roadmap
+rows hide, and v8.20 hid the Dev tools door "so it cannot be reached at all
+in a beta build". The cheat station sat immediately above that ternary as a
+plain unconditional array element, opening a free-item grid over every key
+in ITEMS plus a TAKE $100,000 button. showScreen drops him at (140,390) and
+the station is at (78,390), so on a build handed to anyone else it is the
+NEAREST thing to where they land, with its name written on the floor.
+
+Not gated on BETA_HIDE_DEV, because that is true in his own build and would
+take the box off him - and he asked for it to be improved as recently as
+v8.09. Gated on the HOST instead: localhost, 127.0.0.1 or a file:// copy
+keep it, anything served from itch or Netlify does not. That also protects
+the run reports he mines from other people, which a cheat box would make
+worthless.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both
+maps with no throw and the raid clock still advancing; three endings
+through oc_btn with the overlay on; hub; __renderStage; stream parity
+still zero.
+  the pocket    named a plate, staged NOTHING, dropped: P.safeUp came back
+                "plate" and the plate was genuinely in the bag. It was null.
+  control       naming an item he is not carrying still arms nothing (null).
+  control       the staged path still arms correctly ("plate").
+  the cheat box present on localhost, and the station list is
+                lift, trader, gamble, term, mf, bar, cheat, dev.
+  control       a build with the host test forced false - which is exactly
+                what itch is served - lists lift, trader, gamble, term, mf,
+                bar, dev. No cheat station, the hub renders, the crowd walks,
+                and acting on the station id does nothing and throws nothing.
+
+Not verified: the real itch build. The control above is the shipping code
+with the host predicate forced to false, loaded and driven, which is the
+same code path a remote build takes - but I cannot serve this game from a
+non-local hostname on this machine, because both local servers bind
+localhost only. If he wants certainty, the answer is to open the itch link
+and walk two steps left from the arrival spot.
+
 ## v8.39 - NAMES INSIDE THEIR BOXES, THE RIGHT GUN, ONE PRESS
 
 Three more audit findings, all of them things he would have seen or felt

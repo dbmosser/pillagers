@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.39';
+var VER='8.40';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3976,6 +3976,16 @@ var BETA_ONE_MAP=true;
 // The tuning console, the dev crate and the bot simulation report are mine, not
 // a playtester's. Flip to false to get them back on the floor.
 var BETA_HIDE_DEV=true;
+// v8.40: is this the machine it is being built on, or a build someone was given?
+// localhost is the play server, 127.0.0.1 the same, and an empty hostname is a
+// file:// copy. Anything else is itch, Netlify or a LAN address, i.e. somebody
+// else's browser.
+var DEV_LOCAL=(function(){
+  try{
+    var h=(location&&location.hostname)||'';
+    return h===''||h==='localhost'||h==='127.0.0.1';
+  }catch(_dl){ return false; }
+})();
 function mapOffered(m){ return !BETA_ONE_MAP||m.beta===1; }
 function firstOfferedMap(){
   for(var i=0;i<FIXED_MAPS.length;i++) if(mapOffered(FIXED_MAPS[i])) return i;
@@ -8000,6 +8010,13 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
 
         else g.bag.push(_dk[_di]);
       }
+      // v8.40, audit: AND HERE IS THE SAFE POCKET, armed against what is actually
+      // going up. _dk is the final kit on every live path - staged, quick ascent,
+      // or auto-packed from the stash a moment ago - so the hub's promise that
+      // the named item "comes home if you die carrying it" is now true whichever
+      // way he deployed. It used to be armed in commitKit, before the auto-pack
+      // had run, and so was null for anyone who never used the staging screen.
+      P.safeUp=(P.safe&&_dk.indexOf(P.safe)>=0)?P.safe:null;
       saveProfile();
     }
     // You never drop in with nothing to patch yourself up. Issued kit, the same
@@ -21971,8 +21988,16 @@ acts:{KeyE:['go up',function(){
            KeyT:['your stats',function(){ openOps('rec'); }]}},
     {id:'bar',x:590,y:365,r:44,label:'THE LAST POUR',sub:'rotgut, blotter, and worse',c:'#d98aff',
      acts:{KeyE:['drink',function(){ renderBar(); openModal('barmodal'); }]}},
-    {id:'cheat',x:78,y:390,r:42,label:'DEV CHEAT BOX',sub:'',c:'#ff8ab0',
-     acts:{KeyE:['open the box',function(){ renderCheat(); openModal('cheatmodal'); }]}},
+    // v8.40, audit: LOCAL ONLY. This was the one dev surface with no gate at all,
+    // and it is the nearest station to where he lands. Not gated on BETA_HIDE_DEV,
+    // which is true in his own build and would take it off him; gated on the host,
+    // so it is there on localhost and on a local file, and absent from anything
+    // served from itch or Netlify. One line to reverse if he wants friends to
+    // have it - though a cheat box also makes their run reports worthless to mine.
+    (DEV_LOCAL
+      ? {id:'cheat',x:78,y:390,r:42,label:'DEV CHEAT BOX',sub:'',c:'#ff8ab0',
+         acts:{KeyE:['open the box',function(){ renderCheat(); openModal('cheatmodal'); }]}}
+      : null),
     (BETA_HIDE_DEV
       ? {id:'dev',x:590,y:255,r:42,label:'SETTINGS',sub:'',c:'#9aa8b2',
          acts:{KeyE:['settings',function(){ openSettings('display'); }]}}
@@ -21983,6 +22008,7 @@ acts:{KeyE:['go up',function(){
   ];
   // The sub line is BUILT from the acts, so the keys on screen can never drift
   // from the keys that work; a one-act station keeps its authored flavour line.
+stations=stations.filter(function(_st){ return !!_st; });   // v8.40: drop the gated-out entries
 stations.forEach(function(st){
     var ks=Object.keys(st.acts);
     if(ks.length>1){
@@ -23100,7 +23126,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.39: names sit inside their own boxes, the belt knows which gun is in your hands, and a pad button presses once.',
+  now:'v8.40: the safe pocket works however you deploy, and the cheat box stays on this machine.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -26411,7 +26437,7 @@ function commitKit(){
     // v6.88, his spec: remember what he had packed before the free gear replaced it, so
     // a death puts his own loadout back rather than making him rebuild it.
     P.kitBeforeFree=(P.kit||[]).slice();
-    P.dropKit=[]; P.safeUp=null; P.kit=[]; P.kitChosen=1; saveProfile(); return true;
+    P.dropKit=[]; P.kit=[]; P.kitChosen=1; saveProfile(); return true;   // v8.40: safeUp is armed in buildRaid
   }
   var kit=stageKitLive();
   P.dropKit=[];
@@ -26419,9 +26445,14 @@ function commitKit(){
     var ix=P.stash.indexOf(kit[i]);
     if(ix>=0){ P.stash.splice(ix,1); P.dropKit.push(kit[i]); }
   }
-  // v6.01: the safe pocket only counts if the named item is genuinely going up.
-  // Naming something you left in the vault protects nothing.
-  P.safeUp=(P.safe&&P.dropKit.indexOf(P.safe)>=0)?P.safe:null;
+  // v8.40, audit: the pocket is NOT armed here any more. v6.01's rule is right -
+  // naming something you left in the vault protects nothing - but this is the
+  // wrong moment to apply it. If he staged nothing, P.dropKit is empty here and
+  // kitChosen stays 0, so buildRaid auto-packs the standard kit out of the stash
+  // AFTERWARDS and the pocket has already been decided against an empty list.
+  // Armed in buildRaid instead, from the list that actually goes up, which makes
+  // one rule true on the staged path, the quick-ascent path and the auto-packed
+  // path alike. See _dk there.
   P.kit=[];
   // Nothing committed means nothing was packed, and kitChosen stays 0 so the raid
   // hands out the standard kit rather than sending him up with an empty bag.
