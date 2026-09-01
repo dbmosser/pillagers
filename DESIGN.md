@@ -27443,6 +27443,62 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.66 - DRAGGING ONTO THE BELT IS UNDER TEST, AND IT IS CORRECT
+
+Second build in a row that found no defect. Saying that plainly is the point of
+it: the two surfaces he named as the ship blocker, the belt and dragging, have
+now been driven through their real input paths and both come out right.
+
+THE KEY HANDLER, which v8.65 left untested. Real keydown events this time, not
+the keys map and not the internal verbs: pressing 2 selects the second gun slot
+and brings the rifle up, pressing 1 brings the smg back, pressing 6 and 5 select
+the medical and frag slots, and none of it fires a shot. That last clause is his
+rule from v6.60, and it now holds through the actual keyboard path rather than
+through the function behind it.
+
+DRAGGING, which is the gesture he named directly and which nothing has ever
+watched. Its drop handler has a history: v8.14, where a drop back onto the slot
+an item came from laundered an automatic pin into his saved belt plan, and his
+run #35, where the gun slots were not drop targets at all and two mismatched
+drops accepted the gesture, announced success and changed nothing.
+
+Driven through the real mouseup handler against the real hit boxes, which only
+exist once the bar has been drawn:
+
+  a bandage onto an empty slot        takes it, and says "Bandage to slot 8"
+  a rifle onto the medical slot       refused: "Guns go in slot 1 or 2, not slot 6."
+  a medkit onto a gun slot            refused: "Slot 1 is a weapon slot. Guns only."
+  moving one already on the bar       moves it, leaving no copy on the old slot
+  dropping one back on its own slot   changes nothing, which is the v8.14 rule
+  swapping two occupied slots         both items end up in the right place
+
+All six correct, and the two refusals name what they are refusing rather than
+silently doing nothing, which is the rule the file already uses for the
+extraction prompt.
+
+Five of these are locked into the suite. Controlled by moving every drop target
+off screen and running it again: the check fails on the first assertion, so it is
+genuinely driving the handler rather than reading a value it set itself. It also
+refuses to run at all if the bar was never drawn or is not the shape it assumes,
+because a drag check against an empty hit box list would pass forever.
+
+WHAT THIS MEANS FOR THE QUEUE. Both audit lists are now drained of anything I can
+reproduce, and the last two builds have found nothing wrong in the areas he named.
+The remaining open items are one design question waiting on him, one confirmed
+defect I cannot reach in play, and about 85 untriaged low-severity findings.
+
+Verified: parse PASS at 1,512,509 chars, mojibake none. __verify PASS: ents 58
+and 276, parity identical on both maps, looting on both with the clock advancing,
+all three endings with the overlay on, hub through the title button. __regress
+PASS, now 17 checks, up from 16, and the suite is repeatable within one page load.
+
+Not verified: the drag is driven by placing the payload and dispatching the
+release, not by pressing a mouse button down over a bag cell and moving, so the
+PICK UP half of a drag is still untested; what is proven is everything from the
+release onward. Nothing here draws the bag panel, so the cells a player actually
+grabs from are unmeasured. And the belt is still never checked visually, only
+structurally, so what the bar LOOKS like remains unverified.
+
 ## v8.65 - THE BELT IS UNDER TEST AT LAST
 
 Following the gap flagged at the end of v8.64: the bindings there were set by

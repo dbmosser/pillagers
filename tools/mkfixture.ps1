@@ -952,6 +952,46 @@ window.__REGRESS=[
        if(hit) out.push('mapIx '+mi+' has '+hit+' roads crossing a wall');
      });
      return out.length?out.join('; '):null; }},
+  {v:'8.66',what:'dragging onto the belt assigns, refuses and moves correctly',
+   run:function(){
+     var P=__P(); P.weapons=['smg','rifle']; P.hotAssign={};
+     __resetCfg(); __pinDefaults(0);
+     var d=__deploy({kit:['bandage','medkit','plate','gun_rifle'],safe:null,mapIx:0,seed:4242});
+     if(d.error) return d.error;
+     var g=__state(); if(!g) return 'no raid';
+     g.ents.length=0; g.player.iv=99;
+     for(var f=0;f<8;f++) __loop(performance.now()+f*16.7);
+     var st=__state();
+     if(!st.hotCells||!st.hotCells.length) return 'the bar was never drawn, so there are no drop targets and this check is testing nothing';
+     function cellFor(ix){ var s=__state(); for(var i=0;i<s.hotCells.length;i++) if(s.hotCells[i].i===ix) return s.hotCells[i]; return null; }
+     function drop(payload,slotIx){
+       var s=__state(), cell=cellFor(slotIx), M=__mouse();
+       if(!cell) return null;
+       M.x=cell.x+cell.w/2; M.y=cell.y+cell.h/2;
+       s.drag=payload;
+       window.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true}));
+       for(var f2=0;f2<6;f2++) __loop(performance.now()+f2*16.7);
+       return JSON.parse(JSON.stringify(__state().hotAssign||{}));
+     }
+     var sl=__belt.slots();
+     if(sl[0].kind!=='gun'||sl[5].kind!=='heal'||sl[7].kind!=='empty')
+       return 'the bar is not the shape this check assumes (0 gun, 5 heal, 7 empty), so it is testing nothing';
+     // A consumable onto an empty slot takes.
+     var a=drop({key:'bandage',bagIx:__state().bag.indexOf('bandage')},7);
+     if(a['7']!=='bandage') return 'a bandage dropped on an empty slot did not stick';
+     // A gun onto a consumable slot is refused, and a consumable onto a gun slot is refused.
+     var b=drop({key:'gun_rifle',bagIx:__state().bag.indexOf('gun_rifle')},5);
+     if(b['5']) return 'a gun was accepted onto the medical slot';
+     var c=drop({key:'medkit',bagIx:__state().bag.indexOf('medkit')},0);
+     if(c['0']) return 'a consumable was accepted onto a gun slot';
+     // Moving one already on the bar must MOVE it, not leave a copy behind.
+     var e2=drop({key:'bandage',fromHot:7},8);
+     if(e2['7']) return 'moving an item off slot 7 left a copy behind';
+     if(e2['8']!=='bandage') return 'moving an item to slot 8 did not land it';
+     // Dropping onto its own slot is a click and must change nothing.
+     var f3=drop({key:'bandage',fromHot:8},8);
+     if(f3['8']!=='bandage') return 'dropping an item back on its own slot lost it';
+     return null; }},
   {v:'8.65',what:'the two gun slots swap weapons and never fire one',
    run:function(){
      var P=__P(); P.weapons=['smg','rifle']; P.hotAssign={};
