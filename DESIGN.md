@@ -27443,6 +27443,88 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.42 - WHAT THE GAME COUNTS, AND WHAT IT SAYS IT COUNTS
+
+THE HARD KILLS WERE WORTH NOTHING, TWICE OVER. G.tel.kills carries nine
+buckets and is filled generically by T.kills[e.kind]++, and two separate
+places then scored a hand-written list of the same five.
+
+The post-raid summary summed sentry, crawler, raider and snitch. Kill the
+Warden - 900 hp, the hardest thing on the map, the enemy that gates a
+cosmetic through P.kills.warden - and the one screen that reports what the
+raid was worth told you "0 kills". Same for a Howler, a Bulwark, a Listener
+or an Organ. It sums every bucket by loop now, so the next enemy kind
+cannot ship invisible.
+
+The XP formula scored those four plus the Warden. Howler, Bulwark, Listener
+and Choir were counted everywhere and paid nothing at all, so clearing the
+two elite machines - the most expensive fights on the map short of the
+Warden - earned exactly what walking past them earned, on both progression
+tracks. The values are interpolated into the ladder the line already used
+rather than invented: crawler 4, sentry 6, snitch 8, listener 10, choir 15,
+raider 15, howler 20, bulwark 25, warden 60. It is a table now, for the
+same reason as the summary.
+
+"OTHER PILLAGERS: NONE" GAVE FOUR PILLAGERS. The Settings option sets
+nRaider 0, which does empty the opening roster. But the roster is still an
+empty ARRAY, so the wave loop's `!G.roster` guard passes, it counts zero
+live pillagers, and `urgent = live < raiderFloorN` is true - which waives
+both of its own ceilings. With raiderFloorGap at eight, one pillager landed
+every eight seconds until four were alive, for the whole raid. The only way
+to actually get none was to also set an unrelated dial, "Heat when you call
+extraction: Light", which turns waves off as a side effect. The option
+turns the waves off itself now.
+
+A CONTRACT ADVERTISED XP IT HAS NEVER PAID. Both surfaces that show a
+contract's payout append "+ XP", and the single writer adds credits, gear
+and standing weight and nothing else, on either the row button or claim
+all. Selling one item at the terminal DOES grant XP, so the inconsistency
+is visible in the same session. The text goes rather than the payout
+arriving: paying XP equal to the credit reward is a real change to the
+progression economy, and that is his call, not something to slip in behind
+a typo fix. Say the word and it becomes true instead.
+
+AND A DIAL THAT COULD NEVER BE SET. applyCfg copies only keys present in
+DEF, and howlerDeaf was not in DEF while being read in three gameplay
+branches - so it was permanently undefined, its off state unreachable even
+through a saved profile, and the export stamped "hear1" on every row
+whether or not anyone had touched it.
+
+THE NEW IN CARD WAS TWENTY ONE BUILDS STALE, and the parsecheck staleness
+gate caught it rather than me: WHATSNEW at v8.21 against a v8.42 build,
+drift 0.21 over its 0.20 threshold. Rewritten to the ten things he would
+actually feel since then, including the looting freeze, which is listed
+plainly as mine.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both
+maps with no throw and the clock advancing; three endings through oc_btn
+with the overlay on; hub; __renderStage; stream parity still zero.
+  kill XP     crawler 4, sentry 6, snitch 8, listener 10, choir 15,
+              raider 15, howler 20, bulwark 25, warden 60, each measured
+              through the real scorer one kind at a time.
+  the summary a raid stamped with a warden, a howler, a bulwark, a
+              listener, an organ and two sentries reports "7 kills". It
+              would have said 2.
+  None        as shipped: 0 pillagers at the drop and 0 after 120 seconds.
+              With the OLD config, same seed: 0 at the drop and FIVE after
+              120 seconds, which is the defect reproduced. Control, at
+              Standard: 7 at the drop, 6 after.
+
+AND A CORRECTION TO v8.38. That entry claimed the loot setting no longer
+moves a gun's service bill, and the check behind it was not a check:
+__cfg takes an OBJECT and I called it with two arguments, so the dial was
+never changed and the "unchanged" result was meaningless. Re-run properly
+here: a rifle, which the shop stocks, costs 22,800 to replace at lootMult
+0.7, 1.0 and 1.6 alike, while a carbine, which the shop does not stock and
+which therefore still uses the item-value fallback, moves from 2,640 to
+4,224 across the same range. That second number is the control the first
+run did not have. The v8.38 claim was right; the evidence for it was not.
+
+Not verified: whether the four new XP values are the RIGHT values. They sit
+inside the ladder the formula already used and no longer pay zero for a
+fight the game spends spawn budget on, but I have not measured what they do
+to the pace of the reward board over a run of raids.
+
 ## v8.41 - TWO FAULTS IN THE INSTRUMENT, TWO IN THE FIGHT
 
 THE BOT PAID FOR WATER TWICE. updateBot works out the wading penalty from

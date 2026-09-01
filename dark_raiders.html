@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.41';
+var VER='8.42';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1161,19 +1161,19 @@ var VER='8.41';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='8.21';
+var WHATSNEW_VER='8.42';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
-  'PILLAGERS SHOOT LIKE PEOPLE. Their aim opens up with range, and they need a beat to react. Break line of sight and you take that beat back.',
-  'THE UNDERCROFT HAS SOMEWHERE TO BE. People walk between the counters, and now and then one takes the lift up and is gone.',
-  'BOTH BOTTOM CORNERS AND THE BELT ARE BIGGER. Health, armour, stamina, your gun and what you carry all read at a glance.',
-  'THE BOARD NO LONGER TELLS TALES. It lists who is out there and what they are worth. What they are DOING is not yours to see.',
-  'CLAIM ALL. One button on the rewards board and one on contracts.',
-  'THE UNDERCROFT CAN BE HEARD. Every confirmation and refusal now shows above the window that asked for it, instead of behind it.',
-  'A FINISHED RAID IS IN THE RECORD. Your XP is banked the moment the run ends, whatever you do with the window.',
-  'YOUR STASH LAYOUT SURVIVES THE NIGHT, and unpacking an item takes its belt key with it.',
-  'THE SHOP PRICE MEANS WHAT IT SAYS. A five-item order is checked as five, and every key 1 to 9 is yours to bind.',
-  'A PLATE IS WORTH 20 ARMOUR, a rack costs half what it did, and the cheat box says what you took.'
+  'NOTHING SLOWS YOU DOWN FOR CARRYING IT. Weight costs you no speed, no noise and no stamina. Take the lot.',
+  'THE CORNERS ARE QUIET. Nothing on screen tells you what is hunting you any more. The noise and the shapes at the edge of the light are what you get.',
+  'THE COLD MILE REMEMBERS YOU. Your cut at the great door and the ground you have walked are kept between sessions, the way Cold Storage always was.',
+  'SERVICING A GUN COSTS WHAT THE GUN IS WORTH. Keeping a favourite alive is a real bill and a real decision again.',
+  'THE HARD KILLS COUNT. A Warden, a Howler, a Bulwark, a Listener and an Organ are each worth XP and each appear in your run summary. They were worth nothing.',
+  'YOUR SAFE POCKET WORKS HOWEVER YOU DEPLOY, not only when you stage the item by hand.',
+  'A FIGHT YOU ARE NOT IN STAYS THAT WAY. A machine shot by a pillager answers the pillager, instead of walking across the map to you.',
+  'A CONTRACT NAMES ITS DISTRICT, and only containers in that district count towards it.',
+  'THE BELT KNOWS WHICH GUN IS IN YOUR HANDS, and a stim on the belt is used instead of firing your weapon.',
+  'LOOTING WORKS. Holding E on a container froze the game for three builds. That was mine, and it is fixed.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -1211,7 +1211,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1};
+  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -14691,7 +14691,13 @@ function spForRun(rec){
   sp+=90;
   sp+=Math.round(((rec.haul||0)/1000)*35);
   sp+=(rec.containers||0)*3;
-  sp+=(K.sentry||0)*6+(K.crawler||0)*4+(K.raider||0)*15+(K.snitch||0)*8+(K.warden||0)*60;
+  // v8.42, audit: a TABLE, not a hand-written sum. The old line scored five of
+  // the nine kinds tel.kills tracks, so a Howler or a Bulwark - the two elites,
+  // and the two most expensive fights short of the Warden - paid exactly what
+  // walking past them paid. The four new values sit inside the ladder the line
+  // already used rather than being invented: crawler 4, sentry 6, snitch 8,
+  // listener 10, choir 15, raider 15, howler 20, bulwark 25, warden 60.
+  for(var _kx in KILLXP) sp+=(K[_kx]||0)*KILLXP[_kx];
   sp+=(rec.doorsOpened||0)*40;
   sp+=(rec.caches||0)*15;
   // THE 0.5 CHANGED MEANING AT v7.27: it now halves the FULL formula - the 90
@@ -14775,6 +14781,10 @@ function claimAllTiers(){
   try{ renderSeason(); }catch(e){}
   renderHub();
 }
+// v8.42: one place that says what a kill is worth. Anything missing from here
+// is worth nothing, which is how howler, bulwark, listener and choir came to pay
+// nothing at all while being counted everywhere else.
+var KILLXP={crawler:4,sentry:6,snitch:8,listener:10,choir:15,raider:15,howler:20,bulwark:25,warden:60};
 function xpForRun(rec){
   var x=40 + Math.round((rec.containers||0)*4) + Math.round((rec.dist||0)/900);
   if(rec.outcome==='dead') x*=0.5;
@@ -15189,7 +15199,10 @@ var _cdone=contractExtract(G.bag,haul);
   var _tstr=_tm?(_tm+' min'+(_tm===1?'':'s')+(_ts?(' '+_ts+' second'+(_ts===1?'':'s')):''))
                :(_ts+' second'+(_ts===1?'':'s'));
   lines.push('<span style="color:var(--ash)">'+T.containers+' containers &middot; '+acc+'% accuracy &middot; '+
-    (T.kills.sentry+T.kills.crawler+T.kills.raider+T.kills.snitch)+' kills &middot; '+
+    // v8.42, audit: EVERY bucket, not a hand-listed four. T.kills has nine and is
+    // filled generically, so warden, listener, howler, bulwark and choir kills
+    // were counted and then left out of the one line that reports the raid.
+    (function(){ var _kn=0; for(var _kk in T.kills) _kn+=(T.kills[_kk]||0); return _kn; })()+' kills &middot; '+
     _tstr+' on the surface</span>');
 
   pendingRun={
@@ -23151,7 +23164,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.41: a fight you are not in no longer sends the machines after you, and the crier you shot early can finish its call.',
+  now:'v8.42: the hard kills finally count, None means none, and a contract no longer advertises XP it never paid.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -24677,7 +24690,11 @@ P.contracts.forEach(function(c,ci){
     }
     var cp=document.createElement('div'); cp.className='cp';
     var st=document.createElement('span');
-    st.innerHTML=Math.min(c.prog,c.n)+' / '+c.n+' &middot; <b>'+'$'+c.reward.toLocaleString()+' + XP</b>';
+    // v8.42, audit: no "+ XP". claimContractAt pays credits, gear and standing
+    // weight, and no XP on any path, so both surfaces were advertising a reward
+    // that has never existed. Making it TRUE instead would be an XP economy
+    // change and that is his call.
+    st.innerHTML=Math.min(c.prog,c.n)+' / '+c.n+' &middot; <b>'+'$'+c.reward.toLocaleString()+'</b>';
     cp.appendChild(st);
     if(c.prog>=c.n){
       var b=document.createElement('button'); b.textContent='Claim';
@@ -25091,7 +25108,7 @@ function renderConDetail(){
   rw.innerHTML='<div class="crlab" style="margin:0 0 7px">REWARDS</div>';
   var line=document.createElement('div'); line.className='crewline';
   var money=document.createElement('div'); money.className='crewc';
-  money.innerHTML=(c.reward||0).toLocaleString()+'<em>c + XP</em>';
+  money.innerHTML=(c.reward||0).toLocaleString()+'<em>c</em>';   // v8.42: see the note on the contract row
   line.appendChild(money);
   var gks=gearKeys(c.gear),seen={};
   for(var gi=0;gi<gks.length;gi++) seen[gks[gi]]=(seen[gks[gi]]||0)+1;
@@ -26602,7 +26619,10 @@ var GAMEOPTS=[
      {n:'Many',     cfg:{nRaider:15}},
      {n:'Standard', cfg:{nRaider:10}},
      {n:'Few',      cfg:{nRaider:5}},
-     {n:'None',     cfg:{nRaider:0}}
+     // v8.42, audit: and the WAVES off with them. nRaider 0 empties the opening
+     // roster, but the wave loop treats an empty map as urgent and waives its own
+     // ceilings, so None was delivering a steady four pillagers all raid.
+     {n:'None',     cfg:{nRaider:0, raiderWaves:0}}
    ], def:1},
   {k:'robots', label:'Machines',
    hint:'Sentries and crawlers. They own the surface and they are what usually kills you.',
