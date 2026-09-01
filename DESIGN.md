@@ -27443,6 +27443,107 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.35 - THE RAID YOU PLAY IS NOW THE RAID THAT WAS MEASURED
+
+Every extract rate, every haul figure, every paired A/B I have ever reported
+was taken on a map that no human being has ever played. Not a slightly
+different map. A different one: different pillager positions, different
+guns, different crews, different containers, on the same seed.
+
+v7.69 built a second random generator, fxr, for exactly this reason, and
+converted decal, spark and dmgNum to use it. It never converted the CALL
+SITES, which kept passing rnd() - a SEEDED draw - as the argument. So the
+parity claim v7.69 made was not true then and has not been true since.
+
+FOUR SEPARATE CAUSES, found by hashing the whole generated map and diffing
+live against the bot on COLD STORAGE seed 4242.
+
+ONE. THE LAMPS, and this is the largest by far. The lamp block in the map
+builder is fenced behind `if(!sim && !hasTerm('blackout'))`, and inside it
+calls spotIn (up to 80 seeded draws per lamp), freeSpot (up to wantL*60
+tries), ri, pick and rr - once per building plus about eleven per unit
+area. On the mile that is thousands of seeded numbers the bot never draws,
+and ENTITY PLACEMENT RUNS AFTER IT IN THE SAME FUNCTION.
+
+Substituting fxn at the call site does not work here, because the draws
+happen inside spotIn and freeSpot, which gameplay placement also calls and
+which must keep using the seeded stream. So the block runs with rr()'s
+state pointed at the cosmetic sequence and restored bit for bit afterwards
+- fxBorrow - and everything called inside follows automatically.
+
+TWO. FIVE LIVE-ONLY PLACEMENTS. The merc, the Peddler and the Stray, the
+seal, the strongbox and your own body from the last death each run a
+placement search that only happens in a live raid. My first cut hoisted
+the searches out of their guards so both arms would draw. That works and
+it is wrong: it moves the BOT's stream, which would have invalidated every
+historical figure at a stroke. The stream that must not move is the bot's.
+
+So each one runs on its own SIDE STREAM, seeded from the raid seed. Inside
+the block everything stays reproducible per seed - the strongbox is still
+in the same place on the same seed, the seal is still the same door - and
+the main stream comes out untouched. Live converges onto the bot. Nothing
+historical is invalidated.
+
+THREE. THE HOSTILITY ROLL, and this is the one that should not have been
+possible. It was drawn INSIDE the ternary that decides how a pillager
+feels about you:
+
+    hostile:(rec.kills>0)?true:((rec.standing>0&&rec.met>0)?false:(rr()<0.55))
+
+In a sim build rec is hardcoded to zeros, so both branches miss and the
+draw always happens. In live play rec is YOUR HISTORY WITH THAT MAN, so a
+pillager you have killed before, or one you have standing with, takes a
+branch that does not draw. The stream therefore depended on the player's
+profile: a fresh player and a veteran got different maps from the same
+seed, neither of them the map the benchmark measured, and it got worse the
+longer you played because the record fills up as you go.
+
+The file already knows this rule and states it THREE TIMES within twenty
+lines of that line - the jam roll at v2.09, the wear rolls, the crew roll -
+each with a comment explaining that drawing inside a test makes the two
+arms different raids rather than the same raid with and without a feature.
+The offending line sits directly beneath the third of those comments.
+
+FOUR. EIGHT COSMETIC CALL SITES still passing seeded draws: brass casings
+(five per shot fired), pillager footprints (two per step of every man
+within 1400 units, the fastest divergence in the file), container litter,
+the drunk veer, the frag and howler scorch marks, damage numbers and the
+wildlife decal. All moved to fxn, plus fxi and fxpick for the integer and
+list cases.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 (COLD STORAGE) and 276
+(THE COLD MILE) at seed 4242, both unchanged; three endings through oc_btn
+with the overlay asserted on; hub; __renderStage; and a ten second live
+raid driven on the real loop so the side streams run in a moving game
+rather than only at build time, drawErr null.
+
+THE PARITY MEASUREMENT ITSELF, live raid against sim raid on seed 4242,
+comparing every entity and container by kind and position:
+  before, COLD STORAGE   4 pillagers, the warden, 2 camp sentries, 2 camp
+                         crawlers and a cache all in different places
+  after,  COLD STORAGE   0 entity mismatches, 0 container mismatches
+  after,  THE COLD MILE  0 entity mismatches, 0 container mismatches
+The only remaining difference is the two neutrals the bot does not get and
+the two containers that belong to live-only systems, which is the design.
+
+AND THE PROFILE TEST, which is what finding three actually broke. The same
+seed built with three different histories against the same seven men:
+  fresh profile          3 of 7 hostile, 0 grudges
+  you killed them all    7 hostile, 7 grudges
+  good standing with all 0 hostile, 0 grudges
+  the map                IDENTICAL in all three
+The first three lines are the control: the history still decides how they
+feel about you, so the divergence was removed rather than the feature.
+
+Not verified: the numbers. The bot's stream is untouched by design, so old
+board figures remain arithmetically comparable, but v8.34 changed how the
+bot MOVES and this build changes nothing about the bot at all - so what
+actually needs re-running is a fresh 320 seed paired standard against
+v8.33, and I have not run it. Also not verified: that no OTHER live-only
+draw exists outside the map builder. I diffed the built map, which catches
+everything that happens before the first frame; a seeded draw taken later
+in a live-only branch mid-raid would not show up in that comparison.
+
 ## v8.34 - THERE IS NO CARRY PENALTY
 
 His ruling, in full: "there shouldn't be a carry penalty, that's a

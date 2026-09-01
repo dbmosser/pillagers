@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.34';
+var VER='8.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3167,6 +3167,31 @@ function fxr(){
   return ((t^(t>>>14))>>>0)/4294967296;
 }
 function fxn(a,b){ return a+fxr()*(b-a); }
+function fxi(a,b){ return Math.floor(fxn(a,b+1)); }
+function fxpick(a){ return a[Math.floor(fxr()*a.length)]; }
+// v8.35: run a purely decorative block on the COSMETIC stream. Substituting fxn
+// at the call site only works when the draw is AT the call site; the lamp block
+// draws inside spotIn and freeSpot, which gameplay placement also calls and which
+// must keep using the seeded stream. So rr()'s state is pointed at the cosmetic
+// sequence for the duration and restored bit for bit, and FXS carries on from
+// wherever the block left it so the next cosmetic draw does not repeat.
+// v8.35: run a LIVE-ONLY placement on its own seeded side stream. The tag keeps
+// two blocks on the same seed from correlating with each other. Positions stay
+// fully reproducible per seed, which the strongbox and the seal both require;
+// what changes is that the block no longer advances the stream the rest of
+// generation reads, so a raid the bot never plays these in comes out identical.
+function sideStream(sd,tag,fn){
+  var _save=RNGS;
+  RNGS=((((sd>>>0)^Math.imul(tag|0,0x9E3779B1))>>>0)||1);
+  try{ fn(); }
+  finally{ RNGS=_save; }
+}
+function fxBorrow(fn){
+  var _save=RNGS;
+  RNGS=FXS;
+  try{ fn(); }
+  finally{ FXS=RNGS>>>0; RNGS=_save; }
+}
 function ri(a,b){return Math.floor(rnd(a,b+1));}
 function pick(a){return a[Math.floor(rr()*a.length)];}
 function clamp(v,a,b){return v<a?a:(v>b?b:v);}
@@ -6602,6 +6627,9 @@ function mkRaider(x,y,forceId,simBuild){
   // raiderWear 0 skips draws that raiderWear 1 takes, and the two arms would be
   // different raids rather than the same raid with and without wear.
   var _wearRoll=rr(), _wearAmt=rr();
+  // v8.35: and the hostility roll, on the same rule. It was drawn inside the
+  // ternary below, where your own history with this man could skip it.
+  var _hostRoll=rr();
   var r={kind:'raider',x:x,y:y,r:11,hp:Math.round(78*CFG.eHp),maxhp:Math.round(78*CFG.eHp),react:rnd(.38,.62),
     face:rnd(0,6.28),state:'loot',tx:x,ty:y,cd:0,alert:0,spd:122,wep:WEAPONS[wk],dmg:WEAPONS[wk].dmg,
     rng:WEAPONS[wk].rng*.72,cone:.8,bag:[],looted:0,goal:null,skips:[],goalT:0,goalD:0,extracting:0,hitT:0,step:0,
@@ -6627,7 +6655,13 @@ coat:ident.coat, ident:ident.id, name:ident.tag,
     // with and without feuds.
     crew:Math.floor(_crewRoll*Math.max(2,CFG.raiderCrews||2)),
     grudge:rec.kills>0, standing:rec.standing,
-    hostile:(rec.kills>0)?true:((rec.standing>0&&(rec.met||0)>0)?false:(rr()<0.55))};
+    // v8.35: DRAWN UNCONDITIONALLY, like the three rolls above it, and for the
+    // reason all three of their comments give. This roll used to sit inside the
+    // ternary, so it was skipped whenever your history with the man decided the
+    // answer - which made the stream depend on YOUR PROFILE. A fresh player and
+    // a veteran got different maps from the same seed, and neither got the map
+    // the benchmark measured. See _hostRoll above.
+    hostile:(rec.kills>0)?true:((rec.standing>0&&(rec.met||0)>0)?false:(_hostRoll<0.55))};
   // A raider you can read before you commit. Better standing and grudge raiders
   // are the ones who have been out here long enough to be wearing something.
   var rrl=rr();
@@ -7428,8 +7462,13 @@ while(caches.length<3) placeCache(WORLD_W*rr(),WORLD_H*rr(),'MERIDIAN CACHE');
   var lights=[];
   // BLACKOUT PROTOCOL. Not dimmer lamps: no lamps. The term is the whole
   // difference between a lit street and a dark one.
+  // v8.35: DECORATION, ON THE DECORATION STREAM. Everything in here is light -
+  // where a lamp hangs, how bright, how much it flickers - and none of it is a
+  // fact about the raid. It was drawing thousands of SEEDED numbers that the bot
+  // never drew, and entity placement runs after it in this same function, so the
+  // played map and the measured map have never been the same map on a seed.
   if(!sim&&!hasTerm('blackout'))
-  {
+  fxBorrow(function(){
     for(i=0;i<map.buildings.length;i++){
       var bb=map.buildings[i],D=DISTRICTS[bb.d];
       for(var q=0;q<ri(1,2);q++){
@@ -7477,12 +7516,14 @@ while(caches.length<3) placeCache(WORLD_W*rr(),WORLD_H*rr(),'MERIDIAN CACHE');
         c:pick(['#ffbe6a','#ffd9a0','#ffcf8a']),i:rnd(.24,.40),
         f:rnd(0,9),fl:rr()<.30,post:1});
     }
-  }
+  });
   // NO LAMPS STANDING IN WATER, v2.86, the same cull family as the map pass:
   // the audit found fifteen lit posts in DAM's reservoir and nine in QUARRY's
   // sumps, an electric lamp planted mid-lake. Filtered AFTER every roll is
   // drawn, so the PRNG stream is untouched; the building-interior exemption in
   // inWaterMap keeps a lamp inside a dry powerhouse alive.
+  // v8.35: and it stays OUTSIDE the borrow above. It draws nothing, and it has
+  // to run whether or not the decorated block did.
   if(CFG.placeCull!==0)
   for(i=lights.length-1;i>=0;i--)
     if(inWaterMap(map,lights[i].x,lights[i].y)) lights.splice(i,1);
@@ -7607,7 +7648,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   }
   // SPEC 3.5: the hired mercenary drops in with you. He is a normal raider in
   // every way except that he will not shoot you and he is tracked for payout.
-  if(!sim&&P.merc){
+  if(!sim&&P.merc) sideStream(seed,1,function(){       // v8.35: side stream
     var mid=null;
     for(var mq=0;mq<IDENTITIES.length;mq++) if(IDENTITIES[mq].id===P.merc) mid=IDENTITIES[mq];
     if(mid){
@@ -7629,7 +7670,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
       M2.merc=1; M2.hostile=false; M2.grudge=false; M2.friendly=1;
       ents.push(M2);
     }
-  }
+  });
   // One Peddler per raid, parked at whichever landmark sits about 1700 out from
   // the drop: far enough that reaching him is a decision, near enough that the
   // decision is live. NOT in the sim unless simSell is on, v1.95. The comment
@@ -7651,7 +7692,11 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   // impossible and was pure stream divergence. Exactly the trap v1.78 hit with
   // windfalls. simPed puts him on the map, simSell decides whether the bot walks
   // over. Turn simPed on in BOTH arms and the comparison is paired again.
-  if(!sim||CFG.simPed||CFG.simSell){
+  // v8.35: SIDE STREAM. The note above is about exactly this defect and warns
+  // about it in one direction - simSell against simPed - while it was live
+  // hiding: the played game against the measured one. Both dials still mean what
+  // they say, and none of the searching in here can move the main stream now.
+  if(!sim||CFG.simPed||CFG.simSell) sideStream(seed,3,function(){
     var lmp=map.landmarks||[],pbest=null,pbd=1e9;
     for(var lp=0;lp<lmp.length;lp++){
       var LP=lmp[lp],lcxx=LP.x+LP.w/2,lcyy=LP.y+LP.h/2;
@@ -7689,7 +7734,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
       if(dist(c2,start)>1100&&dist(c2,psp)>700) ssp=c2;
     }
     if(ssp) ents.push(mkStray(ssp.x,ssp.y));
-  }
+  });
   // THE GUARD DETAIL NEVER SCALED WITH THE GROUND, v2.15. v1.85 established the
   // rule and the reason: "the counts in CFG are flat, so they were really this
   // many bodies per map rather than per acre", and COLD STORAGE being 31 percent
@@ -7715,14 +7760,13 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
     }
   }
   // THE SEAL. Not a container: a door you cut at, in the same place every raid.
-  if(!sim){
-    var sq=sealSpot(map,FIXED_MAPS[mapIx]);
-    G_SEAL_SPOT=sq;
-  }
+  if(!sim) sideStream(seed,4,function(){                // v8.35: side stream
+    G_SEAL_SPOT=sealSpot(map,FIXED_MAPS[mapIx]);
+  });
   // THE STRONGBOX goes wherever is most dangerous: inside a locked room if the
   // map has one, otherwise in an encampment, otherwise as far from any way out
   // as the map allows. Never anywhere convenient.
-  if(!sim){
+  if(!sim) sideStream(seed,5,function(){                // v8.35: side stream
     var sbSpot=null;
     var lkr=map.locked||[];
     if(lkr.length){
@@ -7745,10 +7789,10 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
       }
     }
     if(sbSpot) containers.push(mkStrongbox(sbSpot.x,sbSpot.y));
-  }
+  });
   // YOUR BODY. Placed before the run object exists so it is simply another
   // container: nothing else in the raid needs to know it is special.
-  if(!sim){
+  if(!sim) sideStream(seed,6,function(){                // v8.35: side stream
     bodyAge();
     var BD=bodyHere();
     if(BD&&BD.items.length){
@@ -7757,7 +7801,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
       bc.mine=1; bc.time=2.2; bc.cache=0;
       containers.push(bc);
     }
-  }
+  });
   // EVERY CONTAINER THE MAP DRAWS IS ONE YOU CAN REACH, v2.12. Placement asks
   // freeSpot whether a point is clear of walls, which is not the same question
   // as whether a body can GET there, and nothing anywhere checked the second one.
@@ -8939,7 +8983,7 @@ function explodeFrag(f){
   // worth the slot without reaching the 310 unit flash it already draws.
   var p=G.player,R=(CFG.fragR===undefined?150:CFG.fragR),i;
   sfx("boom",f.x,f.y);
-  if(!G.sim){ spark(f.x,f.y,'#ffcf7a',34,340); decal(f.x,f.y,'#141210',rnd(20,30));
+  if(!G.sim){ spark(f.x,f.y,'#ffcf7a',34,340); decal(f.x,f.y,'#141210',fxn(20,30));   // v8.35
     G.puffs.push({x:f.x,y:f.y,t:0,life:.6,c:'#ffb267',r:52}); }
   G.shake=Math.max(G.shake,9);
   flash(f.x,f.y,310,'#ffb267',.45);
@@ -9006,7 +9050,7 @@ function explodeFrag(f){
 function howlerImpact(SH){
   var p=G.player,R=(CFG.howlerR===undefined?90:CFG.howlerR);
   sfx('boom',SH.tx,SH.ty);
-  if(!G.sim){ spark(SH.tx,SH.ty,'#ff9a5c',22,300); decal(SH.tx,SH.ty,'#181310',rnd(14,20));
+  if(!G.sim){ spark(SH.tx,SH.ty,'#ff9a5c',22,300); decal(SH.tx,SH.ty,'#181310',fxn(14,20));   // v8.35
     G.puffs.push({x:SH.tx,y:SH.ty,t:0,life:.5,c:'#ff9a5c',r:40}); }
   G.shake=Math.max(G.shake,6);
   flash(SH.tx,SH.ty,220,'#ff9a5c',.4);
@@ -9534,8 +9578,10 @@ if(wep.mag===0){
     }
   }
   if(!G.sim&&!melee){
-    var sa=ang-1.5+rnd(-.3,.3);
-    G.shells.push({brass:1,x:sh.x,y:sh.y,vx:Math.cos(sa)*rnd(60,130),vy:Math.sin(sa)*rnd(60,130),t:0,life:rnd(.5,.9),rot:rnd(0,6)});
+    // v8.35: brass is decoration. Five SEEDED draws per shot fired, which the bot
+    // never made, so one exchange of fire put the two on different streams.
+    var sa=ang-1.5+fxn(-.3,.3);
+    G.shells.push({brass:1,x:sh.x,y:sh.y,vx:Math.cos(sa)*fxn(60,130),vy:Math.sin(sa)*fxn(60,130),t:0,life:fxn(.5,.9),rot:fxn(0,6)});
   }
 }
 // ---------------------------------------------------------------- THE COST OF GREED
@@ -9874,10 +9920,10 @@ function openContainer(ct,onlyKeys){
   // LOOKS looted on the walk back, which is his litter answer working as
   // information as well as texture.
   if(!G.sim){
-    for(var lj=0;lj<ri(2,3);lj++){
-      var _ja=rnd(.25,.4);
-      G.decals.push({x:ct.x+rnd(-16,16),y:ct.y+rnd(6,18),
-        c:pick(['#8d9199','#6a5a3c','#4a5a6a']),s:rnd(2.2,3.6),a:_ja,a0:_ja,rot:rnd(0,3),junk:1,t:0,life:45});
+    for(var lj=0;lj<fxi(2,3);lj++){          // v8.35: litter is decoration
+      var _ja=fxn(.25,.4);
+      G.decals.push({x:ct.x+fxn(-16,16),y:ct.y+fxn(6,18),
+        c:fxpick(['#8d9199','#6a5a3c','#4a5a6a']),s:fxn(2.2,3.6),a:_ja,a0:_ja,rot:fxn(0,3),junk:1,t:0,life:45});
     }
     if(G.decals.length>420) G.decals.splice(0,G.decals.length-420);
   }
@@ -11227,12 +11273,14 @@ if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam+7.5*
     var ox=p.x,oy=p.y;
     if(!G.sim&&buzzLevel('drunk')>0.05){
       var _dzN=Math.min(buzzLevel('drunk')*1.8,12);
-      if(G._veerNext===undefined) G._veerNext=rnd(2,5);
+      // v8.35: the drunk veer is a live-only effect and was seeded, so a raid
+      // spent drunk diverged from the same raid measured sober.
+      if(G._veerNext===undefined) G._veerNext=fxn(2,5);
       G._veerNext-=dt;
       if(G._veerNext<=0){
         G._veerT=0.4+0.1*_dzN;
-        G._veerA=rnd(0.6,0.9+0.13*_dzN)*(rnd(0,2)<1?-1:1);
-        G._veerNext=rnd(0.9,Math.max(1.4,7-_dzN*0.55));
+        G._veerA=fxn(0.6,0.9+0.13*_dzN)*(fxn(0,2)<1?-1:1);
+        G._veerNext=fxn(0.9,Math.max(1.4,7-_dzN*0.55));
       }
       if((G._veerT||0)>0){
         G._veerT-=dt;
@@ -14018,7 +14066,10 @@ e.lootT=(e.lootT||0)+dt;
         // sentry is tracked, so a bootprint from either would be a lie.
         if(!G.sim&&e.kind==='raider'&&e.stepAcc>=iv2&&dist(e,p)<1400){
           var _rw=inWater(e.x,e.y);
-          var _rpx=e.x+rnd(-3,3),_rpy=e.y+rnd(2,6);
+          // v8.35: two SEEDED draws per footstep of every pillager within 1400
+          // units, in live play only. On a busy map that is the fastest stream
+          // divergence in the file.
+          var _rpx=e.x+fxn(-3,3),_rpy=e.y+fxn(2,6);
           if(_rw){
             G.decals.push({x:_rpx,y:_rpy,c:'#b4def0',s:6.5,a:.45,a0:.45,rot:0,ripple:1,t:0,life:0.7});
           } else {
@@ -14180,7 +14231,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               if(!G.sim&&CFG.dmgNumbers!==0){
                 var _dn=Math.max(1,Math.round(edmg));
                 var _dc=WK?'#ff8a3c':(edmg>0&&_backShot?'#ffc04a':'#FFF6DC');
-                dmgNum(en.x+rnd(-5,5),en.y-Math.round(en.r*1.1),_dn,_dc,en.hp<=0);
+                dmgNum(en.x+fxn(-5,5),en.y-Math.round(en.r*1.1),_dn,_dc,en.hp<=0);   // v8.35
               }
               // v3.94: he has just been shot at by YOU, and a person answers
               // that by getting off the line. Perpendicular to the incoming
@@ -14246,7 +14297,7 @@ G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
                 if(!G.sim){
                   G.hitMark={t:0,life:.44,kill:true};
                   spark(CW.x,CW.y,'#8e2b1c',16,240);
-                  decal(CW.x,CW.y,'#4a1810',rnd(7,12));
+                  decal(CW.x,CW.y,'#4a1810',fxn(7,12));   // v8.35
                   say(CW.k==='deer'?'The deer goes down.':'You shot a bird.');
                 }
                 // A carcass is worth carrying, but only just: this is texture and
@@ -22992,7 +23043,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.34: a full bag no longer slows you down or makes you loud. Carry what you like.',
+  now:'v8.35: the raid you play is now the same raid the benchmark measures. It was not before.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
