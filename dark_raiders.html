@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.47';
+var VER='8.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2104,7 +2104,11 @@ function genContract(){
         desc:'Extract without killing anything'};
       else if(kind==='swift') c={type:'conduct',ck:'swift',n:1,prog:0,reward:Math.round(1000*M.n),
         desc:'Extract within 3 minutes of landing'};
-      else if(kind==='weak') c={type:'conduct',ck:'weak',n:up(2),prog:0,reward:Math.round(700*M.n)*up(2),
+      // v8.48, audit: the tier lands ONCE. up() already scales the count, and the
+      // tier reward multiplier is applied further down, so putting M.n on the
+      // per-unit base as well paid it three times over. 700 per point, like every
+      // other count-based card uses a flat per-unit rate.
+      else if(kind==='weak') c={type:'conduct',ck:'weak',n:up(2),prog:0,reward:700*up(2),
         desc:'Hit '+up(2)+' machine weak points, then extract'};
 else if(kind==='steady') c={type:'conduct',ck:'steady',n:1,prog:0,reward:Math.round(1100*M.n),
         desc:'Extract without ever being knocked down'};
@@ -6274,12 +6278,18 @@ function mercEngage(e,dt){
 function machHuntRaider(e,dt){
   if(!CFG.machVsRaider||!e||e.downed) return false;
   if(e.kind!=='sentry'&&e.kind!=='crawler') return false;
-  var best=null,bd=e.rng*1.1;
+  // v8.48, audit: SIGHT, not reach. e.rng is a sight range for a sentry (340) and
+  // a BITE REACH for a crawler (26), and using it as the acquisition radius meant
+  // a crawler could only target a pillager already touching it - so it never
+  // charged one, and its own chase branch below was unreachable in practice.
+  // The ambient radius is the floor, which is what every other sight test uses.
+  var _sr=Math.max(e.rng,(CFG.eAmbient===undefined?100:CFG.eAmbient));
+  var best=null,bd=_sr*1.1;
   for(var q=0;q<G.ents.length;q++){
     var r2=G.ents[q];
     if(r2.kind!=='raider'||r2.downed||r2.finished||r2.merc) continue;
     var dq=dist(e,r2);
-    if(dq<bd&&canSee(e.x,e.y,e.face,r2.x,r2.y,G.vseg,e.rng,e.cone,CFG.eAmbient)){ bd=dq; best=r2; }
+    if(dq<bd&&canSee(e.x,e.y,e.face,r2.x,r2.y,G.vseg,_sr,e.cone,CFG.eAmbient)){ bd=dq; best=r2; }
   }
   if(!best) return false;
   e.face+=clamp(angDiff(Math.atan2(best.y-e.y,best.x-e.x),e.face),-4.5*dt,4.5*dt);
@@ -19550,8 +19560,12 @@ var by=H-34;
     ctx.font=FS(TYPE.label);
     var lab='TERMS  +'+Math.round(tp*100)+'%';
     var tw3=ctx.measureText(lab).width;
-    ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(W-tw3-30,48,tw3+16,LH(20));
-    ctx.fillStyle='#ffc04a'; ctx.fillText(lab,W-tw3-22,48+LH(14));
+    // v8.48, audit: DELETED. Measured at 1080p with a term signed, this plate ran
+    // x 1767..1906 y 48..79, squarely inside the CONDITIONS panel at x 1647..1904
+    // y 47..318, and covered that panel's collapse control at x 1873..1904 y 47..72
+    // while leaving it clickable underneath. The panel already names every term it
+    // duplicates, with the pay figure, so this was a second copy printed on top of
+    // the first. The measurement above is kept so nobody re-adds it here.
   })();
   // A hiding mechanic you cannot tell is working is just an inconsistent enemy.
   // CROUCH HAS NO TELL, AND IT IS THE STRONGEST MECHANIC IN THE GAME, v1.97.
@@ -20598,7 +20612,13 @@ var _hL=rows*LH(12);
   // Audit: the legend painted straight over the enlarged meters whenever the
   // bottom clamp engaged. The reserve now covers the full meter block (stamina
   // bottom at H-4 up to the armour label) instead of a pre-v1.12 guess.
-  var top=Math.max(8,H-Math.max(LH(52),96)-boxH);
+  // v8.48, audit: RESERVE WHAT IS ACTUALLY BELOW IT. This reserved 96px for the
+  // bottom-left meters, but the panel is centred horizontally two lines down, so
+  // the meters are not under it - the BELT is. Measured at 1080p with the full
+  // list open: the plate ended at y 988 against a belt caption at y 962, covering
+  // the caption and the top of every cell. The belt top is H-LH(70) and its
+  // caption sits a further LH(6) above that.
+  var top=Math.max(8,H-(LH(70)+LH(20))-boxH);
 var LEGW=LH(412);
   x=Math.max(14,Math.round((W-LEGW)/2));
   ctx.fillStyle='rgba(6,9,13,.82)'; ctx.fillRect(x-8,top-6,LEGW,boxH+10);
@@ -23263,7 +23283,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.47: finishing a contract tells you so, out loud, the moment it happens.',
+  now:'v8.48: nothing is printed on top of the conditions panel or the belt, and a weak point contract pays what it is worth.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

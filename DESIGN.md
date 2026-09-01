@@ -27443,6 +27443,86 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.48 - TWO THINGS PRINTED ON TOP OF OTHER THINGS, AND HALF THE MACHINE WAR
+
+THE TERMS BADGE WAS STAMPED ACROSS THE CONDITIONS PANEL. Measured on a live
+frame at 1920x1080 with one term signed: the badge plate ran x 1767..1906,
+y 48..79. The CONDITIONS panel runs x 1647..1904, y 47..318. The badge sat
+squarely inside it and covered the panel's own collapse control at x
+1873..1904, y 47..72 - which stayed clickable underneath, so the control was
+there but invisible.
+
+The panel already lists every signed term with its pay: "HEAVY PATROLS" and
+"+30% pay", in the same corner. So the badge was a second copy of the same
+sentence, printed on top of the first, obscuring a control. It is deleted,
+and the measurement is kept in the comment so nobody re-adds it there.
+
+THE CONTROL LIST COVERED THE BELT. The panel reserves 96 pixels of vertical
+space, sized for the bottom-left health and armour meters - but two lines
+later it is centred horizontally, so the meters are not underneath it at
+all. The belt is.
+
+Measured at 1080p with H pressed twice, which is what a new player does to
+get the full list: the plate ended at y 988 and the belt's caption line -
+"Compact SMG  [FIRE] use  [V] signal" - sits at y 962. It covered the
+caption completely and the top of every belt cell. The reserve is now taken
+from the belt's own geometry.
+
+THE WEAK POINT CONTRACT PAID THE TIER SCALER THREE TIMES. up(n) is the tier
+COUNT scaler, and every other count-based contract uses a flat per-unit rate
+times the scaled count. This line put the tier multiplier on the per-unit
+BASE as well as on the count, and then the tier's reward multiplier was
+applied on top of that.
+
+At ELITE the card paid round(700 x 2.4) x 5 x 4.0 = 33,600 credits for
+hitting five machine weak points and walking out. The elite "extract without
+killing anything" card - a far harder condition - pays 8,640. An Auto Rifle
+costs 22,800 at the counter, so one weak-point card bought a rifle and a
+half. It was the most profitable thing on the board by roughly four times,
+for the least dangerous ask. It now pays 14,000 at elite, 4,830 at hard,
+1,400 at standard.
+
+AND CRAWLERS NEVER CHARGED A PILLAGER. The machine-versus-pillager
+acquisition used e.rng as both the search radius and the sight limit. For a
+sentry e.rng is 340, its sight, which is correct. For a crawler e.rng is 26
+- its BITE REACH. So a crawler could only ever pick a target already in body
+contact, and its own chase line, `if(bd>e.rng) navSeek(...)`, was reachable
+only in the sliver between 26 and 28.6 units.
+
+Half the war therefore did not exist: sentries shoot pillagers from 340
+units and the melee rushers the design leans on never once ran at one. The
+feature is on by default and a migration forces old profiles on, so this was
+live behaviour rather than a dormant dial.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both
+maps with no throw; three endings through oc_btn with the overlay on; hub;
+__renderStage; stream parity zero; a full sim raid end to end.
+  the badge   plates drawn with a term signed: 0, where there was 1 over
+              the panel. The panel still names the term, and the collapse
+              control at x 1873..1904 is clear.
+  the legend  plate now ends at y 944 against a belt caption at y 962, so
+              18px clear. It ended at 988, i.e. 26px over it.
+  the card    elite 14,000 / hard 4,830 / standard 1,400, against an elite
+              "clean" card at 8,640 for scale. It was 33,600 at elite.
+  the crawler on open ground with clear sight, a crawler 90 units from a
+              pinned pillager closes to 8 units and kills him. With
+              machVsRaider switched off, the same setup leaves the pillager
+              untouched at full health, which is the control.
+
+AND A PROBE THAT POISONED ITS OWN CHAIN, worth recording. My TERMS-badge
+test signed HEAVY PATROLS onto the profile and did not clear it. That term
+multiplies enemy density by 1.40 in a LIVE raid and is ignored by the sim,
+so the verify chain came back with 84 and 381 entities instead of 58 and
+276, and 67 parity mismatches. Nothing was wrong with the build; the probe
+had left a term signed. Cleared, and everything reads correctly. Any probe
+that writes to the profile has to put it back.
+
+Not verified: how the crawler change moves the benchmark. Crawlers now hunt
+pillagers across the map, which changes how many pillagers survive to
+contest extraction and how many machines are busy elsewhere when the player
+arrives. That is a real balance shift and the board is owed a re-run, which
+it already was after the hot-ground fix.
+
 ## v8.47 - FINISHING A CONTRACT NOW SAYS SO
 
 Half the board could never tell you it was done.
