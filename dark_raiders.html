@@ -1064,7 +1064,9 @@ var PACKCAP=[99999,99999,99999];
 // rebalanced: a "backpack" that cannot change how much you carry is a menu entry
 // pretending to be a system. Left as an array so P.pack on an old profile still
 // indexes something, with every entry identical so it cannot matter.
-var PACKPEN=[0.80,0.80,0.80];
+// v8.34: PACKPEN deleted with the carry penalty it discounted. It had been three
+// identical values since v5.99, which is to say a system that had already stopped
+// being one; his ruling retires the thing it was discounting.
 // How far up the operator the waterline sits, in world pixels from the feet.
 // Measured rather than guessed: sampling a pixel column through the player at 2x
 // zoom puts the top of the head 44 screen pixels above the feet, so the sprite is
@@ -1148,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.33';
+var VER='8.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1209,7 +1211,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,loadPen:1,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1};
+  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -9561,24 +9563,16 @@ if(wep.mag===0){
 // that cannot be measured is not a cost, so it is doubled here. 52wt is now 21 percent
 // slower and 53 percent louder, and a 100wt haul is 38 percent slower and more than
 // twice as loud, which is well past what the heavy rig asks and is meant to be.
-var LOAD_FREE=20, LOAD_SPD=150, LOAD_NOISE=60, LOAD_FLOOR=0.62;
-function loadOf(w){
-  // Feel is his call, so the whole penalty sits on one slider. loadPen 0 restores the
-  // v1.58 behaviour exactly, where carrying costs nothing, and 2 makes a big haul
-  // genuinely punishing. If a loaded run feels like wading, this is the one number.
-  var K=(CFG.loadPen===undefined?1:CFG.loadPen)*((typeof P!=='undefined'&&PACKPEN[P.pack]!==undefined)?PACKPEN[P.pack]:1);
-  if(K<=0) return {spd:1,noise:1,stam:1};
-  var over=w-LOAD_FREE; if(over<0) over=0;
-  return {
-    // 40wt costs 13 percent speed, 52wt costs 21, 100wt bottoms out at 38.
-    spd:  clamp(1-(over*K)/LOAD_SPD,LOAD_FLOOR,1),
-    // 40wt is 33 percent louder, 52wt is 53, 100wt is more than double. A full bag
-    // rattles, and the machines hunt noise, so a fortune actively recruits them.
-    noise:1+(over*K)/LOAD_NOISE,
-    // And you cannot simply sprint out from under it.
-    stam: 1+(over*K)/80
-  };
-}
+// v8.34, HIS RULING: "there shouldn't be a carry penalty, that's a deprecated
+// concept." loadOf, LOAD_FREE, LOAD_SPD, LOAD_NOISE, LOAD_FLOOR and the loadPen
+// dial are all DELETED here rather than set to a neutral value, because a dial
+// pinned at no-effect is an inert constant that still has to be read and
+// reasoned about every time someone touches movement. The essay above is kept
+// as the record of what the system was and what it measured; the system itself
+// is gone. Weight is now nothing but a number on an item.
+//
+// The cap is a DIFFERENT rule and is untouched: PACKCAP stays at 99999 on his
+// 2026-08-22 order, so nothing is refused and no pickup is blocked.
 function bagWeight(){ var w=0; for(var i=0;i<G.bag.length;i++) w+=(ITEMS[G.bag[i]]?ITEMS[G.bag[i]].wt:1); return w; }
 // What the bag is WORTH, as against what it weighs. v1.59 made weight cost speed and
 // noise, and measured that it changed nothing: the bot dies to combat, not to mobility,
@@ -11198,14 +11192,12 @@ var sprint=!!(keys['ShiftLeft']||keys['ShiftRight'])&&p.stam>2&&!p.stamLock&&!cr
   }
   if(p.ads) sprint=false;
   G.sprinting=sprint;
-  var cap=PACKCAP[P.pack];
-  // Was a fraction of PACKCAP, which is 99999, so this was pinned at 1 and the whole
-  // cost of carrying was dead. See loadOf.
-  var LD=loadOf(bagWeight()), load=LD.spd;
+  // v8.34: the carry penalty is gone, so nothing here reads the bag any more.
+  // The unused PACKCAP read went with it.
   var wading=inWaterDeep(p.x,p.y,(CFG.wadeInset===undefined?11:CFG.wadeInset));
   if(wading) sprint=false;
   G.sprinting=sprint;
-  var spd=CFG.pSpeed*load*armorById(p.rig).spd; if(crouch) spd*=.52; if(sprint) spd*=1.62;
+  var spd=CFG.pSpeed*armorById(p.rig).spd; if(crouch) spd*=.52; if(sprint) spd*=1.62;
   // "make character much slower". 0.55 was a shrug; deep water you are wading
   // through at waist height should be a commitment, not a texture. A dial so the
   // feel is his to set without going back into the movement code.
@@ -11224,7 +11216,7 @@ var sprint=!!(keys['ShiftLeft']||keys['ShiftRight'])&&p.stam>2&&!p.stamLock&&!cr
   // combinations that would otherwise drop below a walk, so nothing he asked for
   // is undone: wading empty is 53.7 and untouched.
   if(spd<SPEED_FLOOR) spd=SPEED_FLOOR;
-if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.stam+7.5*dt);
+if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam+7.5*dt);
   if(sprint&&p.stam<45&&!G.sim){ p.brT=(p.brT||0)-dt; if(p.brT<=0){ p.brT=0.55; voxBreath(); } }
   // v4.24 HIS NOTE: running dry locks the sprint until the bar is back to 12,
   // so you cannot flutter the key at zero for free bursts.
@@ -11252,7 +11244,7 @@ if(sprint) p.stam=Math.max(0,p.stam-26*LD.stam*dt); else p.stam=Math.min(100,p.s
     p.noiseAcc=(p.noiseAcc||0)+dt;
     // wading defeats crouch entirely: splashing is loud whatever you do
     var iv=wading?.30:(crouch?99:(sprint?.38:.72));
-    if(p.noiseAcc>iv){ p.noiseAcc=0; ping(p.x,p.y,(wading?290:(sprint?250:110))*LD.noise,false,false,'player','move'); }
+    if(p.noiseAcc>iv){ p.noiseAcc=0; ping(p.x,p.y,(wading?290:(sprint?250:110)),false,false,'player','move'); }
     // Footprints. Wet boots leave a dark trail for a while after leaving water,
     // dry boots a faint scuff; either way the ground remembers where you went,
     // which is his litter answer and also free navigation memory.
@@ -11911,7 +11903,7 @@ function updateBot(dt){
         hHold=true;
         // LD is declared further down this function, so at this point it is
         // hoisted and undefined; the load penalty is computed inline instead.
-        moveToward(p,p.x-(hFoe.x-p.x),p.y-(hFoe.y-p.y),botSpd(CFG.pSpeed*.85*loadOf(bagWeight()).spd*BWADE),dt);
+        moveToward(p,p.x-(hFoe.x-p.x),p.y-(hFoe.y-p.y),botSpd(CFG.pSpeed*.85*BWADE),dt);
       }
     }
     if(!hHold&&!p.prep){ var hi=findHeal(); if(hi>=0){ var _hk=G.bag[hi]; G.bag.splice(hi,1); startPrep('heal',_hk); T.heals++; } }
@@ -11964,9 +11956,8 @@ function updateBot(dt){
   p.noiseAcc=(p.noiseAcc||0)+dt;
   var moved=false;
   var cap=PACKCAP[P.pack];
-  // The bot pays the same carry cost the player does, or the sim would be measuring a
-  // player who does not exist and would report a change nobody can feel.
-var LD=loadOf(bagWeight());
+  // v8.34: there is no carry cost left for the bot to pay. cap is still read -
+  // it is the greed test further down, not the penalty.
   // RING DODGE, v4.10, simDodgeRing, DEFAULT OFF. The Howler paints a red ring
   // on the ground for two full seconds before its shell lands, the whole
   // design of the machine being the question "are you moving or not", and the
@@ -11985,7 +11976,7 @@ var _sh=G.shells[_si];
       var _sd=Math.hypot(p.x-_sh.tx,p.y-_sh.ty);
       if(_sd>=RD) continue;
       var _sa=(_sd>0.5)?Math.atan2(p.y-_sh.ty,p.x-_sh.tx):(p.face+3.1416);
-      moveToward(p,_sh.tx+Math.cos(_sa)*(RD+34),_sh.ty+Math.sin(_sa)*(RD+34),botSpd(CFG.pSpeed*1.45*LD.spd*BWADE),dt);
+      moveToward(p,_sh.tx+Math.cos(_sa)*(RD+34),_sh.ty+Math.sin(_sa)*(RD+34),botSpd(CFG.pSpeed*1.45*BWADE),dt);
       moved=true;
       return true;
     }
@@ -12109,7 +12100,7 @@ if(_botRingDodge()){}
 
     if(_flee){
       botCrouch=false;
-      var _fs=botSpd(CFG.pSpeed*(CFG.simFleeSpd===undefined?1.3:CFG.simFleeSpd)*LD.spd*BWADE);
+      var _fs=botSpd(CFG.pSpeed*(CFG.simFleeSpd===undefined?1.3:CFG.simFleeSpd)*BWADE);
       var _fx=p.x,_fy=p.y;
       moveToward(p,p.x-(threat.x-p.x),p.y-(threat.y-p.y),_fs,dt);
       if(Math.hypot(p.x-_fx,p.y-_fy)<_fs*dt*0.35){
@@ -12123,10 +12114,10 @@ if(_botRingDodge()){}
       // the bot goes back to looting while the alert decays, which is exactly
       // the human move: duck, wait it out, move on.
       botCrouch=false;
-      moveToward(p,_cv.x,_cv.y,botSpd(CFG.pSpeed*(CFG.simFleeSpd===undefined?1.3:CFG.simFleeSpd)*LD.spd*BWADE),dt);
+      moveToward(p,_cv.x,_cv.y,botSpd(CFG.pSpeed*(CFG.simFleeSpd===undefined?1.3:CFG.simFleeSpd)*BWADE),dt);
       moved=true;
     }
-    else if(td<110){ botCrouch=false; moveToward(p,p.x-(threat.x-p.x),p.y-(threat.y-p.y),botSpd(CFG.pSpeed*.7*LD.spd*BWADE),dt); moved=true; }
+    else if(td<110){ botCrouch=false; moveToward(p,p.x-(threat.x-p.x),p.y-(threat.y-p.y),botSpd(CFG.pSpeed*.7*BWADE),dt); moved=true; }
   // THE BOT CAN USE THE PEDDLER, v1.95, and until now it could not, so every
   // extract rate this project has quoted is the rate for a player who ignores
   // him. v1.87 measured that his 0.55 beats every survival rate on every map,
@@ -12156,13 +12147,13 @@ if(_botRingDodge()){}
     })()){
     var PD=G.botPed;
     if(dist(p,PD)<70){ pedSellAll(); G.botPed=null; }
-    else { navSeek(p,PD.x,PD.y,botSpd(CFG.pSpeed*.92*LD.spd*CSPD*BWADE),dt); moved=true;
+    else { navSeek(p,PD.x,PD.y,botSpd(CFG.pSpeed*.92*CSPD*BWADE),dt); moved=true;
            p.face=Math.atan2(PD.y-p.y,PD.x-p.x); }
   // leave enough clock to walk there AND sit through the whole inbound wait
   } else if(bagWeight()>=CFG.simGreed||bagWeight()>=cap||G.timeLeft<CFG.extractWait+120||(p.ammo+p.reserve+((CFG.simSidearm!==0&&p.sec)?(p.secAmmo||0):0))<=0){
     var z=G.active;
     G.botWantsOut=true;
-    navSeek(p,z.x,z.y,botSpd(CFG.pSpeed*.95*LD.spd*CSPD*BWADE),dt); moved=true;
+    navSeek(p,z.x,z.y,botSpd(CFG.pSpeed*.95*CSPD*BWADE),dt); moved=true;
     p.face=Math.atan2(z.y-p.y,z.x-p.x);
   } else {
     if(!p.goal||p.goal.opened||p.goal.skip){
@@ -12228,7 +12219,7 @@ if(_botRingDodge()){}
         }
         if(p.searchT>=p.goal.time){ openContainer(p.goal); p.searchT=0; p.searchAcc=0; p.goal=null; }
       } else {
-        navSeek(p,p.goal.x,p.goal.y,botSpd(CFG.pSpeed*.9*LD.spd*CSPD*BWADE),dt); moved=true;
+        navSeek(p,p.goal.x,p.goal.y,botSpd(CFG.pSpeed*.9*CSPD*BWADE),dt); moved=true;
         p.seekT=(p.seekT||0)+dt;
         p.face=Math.atan2(p.goal.y-p.y,p.goal.x-p.x);
         p.searchT=0;
@@ -12259,7 +12250,7 @@ if(_botRingDodge()){}
   var BIV=BWET?(0.6*(0.30/0.72)):0.6;
   var BRAD=botCrouch&&(CPART&2)?(72/140):1;
   if(botCrouch) T.tCrouchBot=(T.tCrouchBot||0)+dt;
-  if(moved&&p.noiseAcc>BIV){ p.noiseAcc=0; ping(p.x,p.y,140*LD.noise*CNOISE*BRAD,false,false,'player','move'); }
+  if(moved&&p.noiseAcc>BIV){ p.noiseAcc=0; ping(p.x,p.y,140*CNOISE*BRAD,false,false,'player','move'); }
   // Give up on a container the bot cannot get to, on two conditions, both of
   // which had to be learned the hard way. It has to be progress and not motion:
   // the original check asked whether the bot had moved at all, and that stopped
@@ -17583,7 +17574,7 @@ var SHD=G.shells[i];
         wc.clip();
       }
       drawOp(p.x,p.y,p.face,p.roll>0?(1-p.roll/.38)*12.6:p.bob,'#242832',
-        clamp((1-loadOf(bagWeight()).spd)/(1-LOAD_FLOOR),0,1),p.muzzle,((G.deathBeat>0||p.hp<=0)?'down':(G.punchT>0?'fist':((pmode===''&&(G.handsT>0||(p.wep&&p.wep.id==='fists')))?'none':pmode))),p.iv,
+        0,p.muzzle,((G.deathBeat>0||p.hp<=0)?'down':(G.punchT>0?'fist':((pmode===''&&(G.handsT>0||(p.wep&&p.wep.id==='fists')))?'none':pmode))),p.iv,
         {hero:1,own:p,moving:!!p.moving,sprint:!!G.sprinting,ads:!!p.ads,hurt:p.hitFlash,bulk:armorById(p.rig).bulk,
          healLeft:(p.healQ||0),healTot:(p.healAmt0||0),
          healSec:((p.healQ||0)>0&&(p.healRate||0)>0)?((p.healQ)/(p.healRate)):0,
@@ -19488,12 +19479,13 @@ ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
   // taking and how much louder it has made you. Amber once it bites, rust once it is
   // genuinely dangerous, so the moment to think about leaving is visible on the HUD
   // rather than being something you infer after dying with a full bag.
-  var _bw=bagWeight(), _ld=loadOf(_bw);
-  var _spdPct=Math.round((1-_ld.spd)*100), _noisePct=Math.round((_ld.noise-1)*100);
-  ctx.fillStyle=(_spdPct>=18?'#c8674a':(_spdPct>=7?'#ffc04a':'#8a96a1'));
+  // v8.34: this used to say how much speed the bag was taking and how much
+  // louder it had made you, in amber once it bit and rust once it was dangerous.
+  // There is no cost to report now, so the line is what you are carrying and
+  // what it is worth.
+  ctx.fillStyle='#8a96a1';
   var _cv=0; for(var _cq9=0;_cq9<G.bag.length;_cq9++) _cv+=ival(G.bag[_cq9]);
-  ctx.fillText(G.bag.length+' ITEM'+(G.bag.length===1?'':'S')+'  $'+_cv.toLocaleString()+
-    (_spdPct>0?('   '+_spdPct+'% SLOWER  '+_noisePct+'% LOUDER  (BAG '+Math.round(_bw)+'wt, FIRST '+LOAD_FREE+' FREE)'):''),W-16,by);
+  ctx.fillText(G.bag.length+' ITEM'+(G.bag.length===1?'':'S')+'  $'+_cv.toLocaleString(),W-16,by);
   // standing cue: the bag was findable only from a dim 14-item legend line
   // HIS NOTE, 2026-08-24: this sat on top of the weapon name. It was the only
   // offset in the whole right-hand stack written in RAW PIXELS while its five
@@ -20935,10 +20927,8 @@ function drawBag(){
   ctx.fillText('DMG '+(p.wep.dmg*(p.wep.pellets||1))+'  RANGE '+Math.round(p.wep.rng/10)+'m  '+(p.wep.auto?'AUTO':'SEMI')+
     (p.wep.mag?('  MAG '+p.wep.mag):''),x+11,cy);
   cy+=LH(16);
-  var _bwP=bagWeight(), _ldP=loadOf(_bwP), _spdP=Math.round((1-_ldP.spd)*100);
   ctx.fillText('Integrity '+Math.round(p.hp)+'/'+p.maxhp+'    Armour '+Math.round(p.armor)+
-    '    BAG '+G.bag.length+' item'+(G.bag.length===1?'':'s')+
-    (_spdP>0?('  '+_spdP+'% slower'):''),x+11,cy);
+    '    BAG '+G.bag.length+' item'+(G.bag.length===1?'':'s'),x+11,cy);   // v8.34
   cy+=LH(8);
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
   cy+=LH(10);
@@ -21474,7 +21464,7 @@ var SLIDERS=[
   // with 19 to 30 items, so the sim has always modelled a far more cautious player than
   // the one holding the mouse, and any change to the cost of carrying would have been
   // invisible in it. Default moved 26 to 52.
-  ['loadPen','Cost of a heavy bag',0,2,0.1,0],
+  // v8.34: the loadPen row is gone. There is no cost of a heavy bag to tune.
   ['machAmmo','Ammo back from a killed sentry',0,1,0.1,0],
   ['ammoTell','Show ammo boxes below this reserve',0,200,5,1],
   ['raiderExtract','Seconds a pillager must hold the ring',3,30,1,1],
@@ -23002,7 +22992,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.33: nothing in the corner tells you who is hunting you any more, and the stats page says what it is counting.',
+  now:'v8.34: a full bag no longer slows you down or makes you loud. Carry what you like.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -24863,7 +24853,7 @@ function renderShop(){
     var locked=(P.xp||0)<o.rep;
     var owned=false,label='';
     if(o.kind==='wep'){ label=WEAPONS[o.k].name; owned=P.weapons.indexOf(o.k)>=0; }
-    else if(o.kind==='pack'){ label='Backpack Tier '+(o.lvl+1)+' (-'+Math.round((1-PACKPEN[o.lvl])*100)+'% carry penalty)'; owned=P.pack>=o.lvl; }
+    else if(o.kind==='pack'){ label='Backpack Tier '+(o.lvl+1); owned=P.pack>=o.lvl; }   // v8.34
     else label=ITEMS[o.k].name;
     nm.textContent=label+(locked?'  [XP '+o.rep+']':'');
     if(locked) nm.style.color='var(--ash)';
@@ -26219,7 +26209,7 @@ function renderStage(prefill){
     if(o.kind==='wep'){ label=WEAPONS[o.k].name; owned=(P.weapons||[]).indexOf(o.k)>=0;
       sub='DMG '+WEAPONS[o.k].dmg+' \u00b7 MAG '+(WEAPONS[o.k].mag||'-'); }
     else if(o.kind==='pack'){ label='Backpack Tier '+(o.lvl+1); owned=(P.pack||0)>=o.lvl;
-      sub=Math.round((1-PACKPEN[o.lvl])*100)+'% less carry penalty'; }
+      sub='retired'; }   // v8.34: was a carry-penalty discount; there is no penalty
     else { label=ITEMS[o.k].name; sub=String(ITEMS[o.k].use||'').toUpperCase(); }
     var need=(o.kind==='pack'&&(P.pack||0)!==o.lvl-1);
     var can=P.credits>=o.price&&!owned&&!need;

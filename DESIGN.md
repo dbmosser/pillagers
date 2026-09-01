@@ -27443,6 +27443,77 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.34 - THERE IS NO CARRY PENALTY
+
+His ruling, in full: "there shouldn't be a carry penalty, that's a
+deprecated concept."
+
+So it comes out rather than down to zero. A dial pinned at no-effect is an
+inert constant that still has to be read, still has to be reasoned about,
+and still sits in a tuning console looking like a live question. Deleted:
+loadOf, LOAD_FREE, LOAD_SPD, LOAD_NOISE, LOAD_FLOOR, the PACKPEN table,
+the loadPen dial, its tuning row, the three multipliers it fed on the
+player, the eight it fed on the bot, the sprite's loaded lean, and both
+HUD readouts that reported the cost.
+
+WHAT IS BEING DELETED, stated properly, because it was not nothing. v1.59
+made weight cost speed and noise. v6.31 doubled it after a 150 raid
+measurement said the first pass was too small to feel: 52wt went to 21
+percent slower and 53 percent louder, and a 100wt haul to 38 percent
+slower and more than twice as loud. The argument was that greed should
+cost something continuously rather than hitting a wall, and it was
+calibrated against the heavy armour rig so that a serious haul cost about
+what a serious armour commitment cost. That argument is now closed by the
+only person entitled to close it.
+
+The CAP is a different rule and is untouched. PACKCAP stays at 99999 on
+his 2026-08-22 order, so nothing is ever refused and no pickup is blocked.
+Weight is now nothing but a number on an item.
+
+TWO DEAD SHOP LABELS came out with it. Both branches priced the backpack
+tiers as a percentage off the carry penalty, and both have been
+unreachable since v5.99 took the tiers off the counter, but they read
+PACKPEN and would have thrown the moment anything reached them.
+
+AND A PROBE THAT WAS WRONG, worth recording because it cost the most time
+in this build. My first speed test walked the player 3 seconds right with
+an empty bag and then with a 480wt bag, and reported 170 units against 75:
+the penalty apparently still live and worse than it had ever been. It was
+not. __rawStep in the fixture calls simStep, the BOT step, so both walks
+were the bot pathing, and the bot with a full bag heads for extraction
+while an empty one goes looting. The keys were doing nothing at all - the
+same numbers came back with no key pressed. The real player loop is
+__loop, and on it the two walks are identical to the unit.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 (COLD STORAGE) and 276
+(THE COLD MILE) at seed 4242; three endings through oc_btn with the
+overlay asserted on; hub; __renderStage. Then, on the real player loop
+with a deliberately extreme 480wt bag - the old rule would have floored
+speed at 0.62, multiplied footstep noise by 7.1 and sprint drain by 5.6,
+so nothing subtle could hide in it:
+  walk 3 seconds      474 units empty, 474 units loaded, 474 again empty
+  sprint 1.5 seconds  stamina 61 empty, 61 loaded
+  footstep noise      a lone sentry parked at 120 units behind him goes to
+                      CHASE in both cases, which is the control proving
+                      the probe can hear anything at all; parked at 400,
+                      inside the old loaded radius and outside the quiet
+                      one, it stays on PATROL at alert 0.00 in both
+  HUD with 480wt      zero strings matching SLOWER, LOUDER, wt or FREE.
+                      The bag line reads "160 ITEMS  $140,800"
+  the dial            CFG has no loadPen key; machAmmo, its neighbour in
+                      the same table, is still there as the control
+
+Not verified: the sim numbers. The bot paid the same carry cost the player
+did, and it no longer does, so the extract rate WILL move and every board
+figure taken before this build is measured against a bot that carried
+differently. I have not re-run the 320 seed paired standard, so I do not
+know by how much or in which direction. Nothing here draws from rr(), so
+the seed stream is intact and old seeds remain comparable. Also not
+verified: the tuning console's rendered row list. The loadPen row is gone
+from the source array and CFG has no such key, so it cannot appear, but
+the console had not built its rows when I looked and the control row was
+equally absent - that check proved nothing either way.
+
 ## v8.33 - THE CORNER STOPS TELLING YOU
 
 Three of his orders, taken in one build.
