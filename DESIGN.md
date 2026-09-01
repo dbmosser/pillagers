@@ -27443,6 +27443,59 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.68 - HIS WORDING THROUGH THE EXTRACTION SCREENS
+
+Five wording changes, all his, all measured by capturing the text the game
+actually paints rather than by reading the source.
+
+"INSTEAD OF 'EXTRACTION - OPEN', DURING THE 30 SECONDS WHEN PLAYERS CAN LEAVE,
+SAY 'EXTRACTION IN PROGRESS!'" Both places said OPEN: the banner across the
+bottom and the label at the ring added an hour earlier in v8.67. Both now read
+"EXTRACTION IN PROGRESS!  A  26s".
+
+THE INBOUND COUNTER, which he reported again during this build. v8.67 had already
+fixed the half he was describing, so this build re-measured all four cases rather
+than assume. With another pillager holding the call and the player never
+involved:
+
+  inbound, standing 320 units outside the ring   ring label and banner both show
+  inbound, standing 2000 units away              both show
+  boarding, 320 units outside                    both show
+  boarding, 2000 units away                      both show
+
+A pillager's call really does set the ring's beacon, and the mirror really does
+carry it to the banner, so what he is seeing is a build from before v8.67. It
+needs a refresh, not another fix.
+
+"'YOU ARE DOWN' SCREEN SHOULD SAY 'NEAREST EXTRACTION IS Xm AWAY'." It said "The
+ring is Xm away", and worse, it measured to the ring the HUD happens to be
+pointing at rather than the nearest one. closestRingDist already existed for
+exactly this mistake, found on the extraction card at v8.58. Read back from the
+game: "Nearest extraction is 178m away".
+
+"CLAIM IT AT THE BOARD" is now "Complete contract at mainframe", in both places
+it appears, mid-raid and on the extraction card.
+
+SUPERHOT: "moving the mouse to aim is free" is gone from the hint.
+
+THE FIRST SEEN LINE ON THE EXTRACTED SCREEN is gone. It read "FIRST SEEN AT 2:14,
+AND STILL WALKED OUT", which is the game congratulating him on his own raid. A
+clean run still says "OUT CLEAN, NEVER SPOTTED", because never being seen is a
+fact about the raid rather than a compliment.
+
+Verified: parse PASS at 1,515,161 chars, mojibake none. __verify PASS: ents 58
+and 276, parity identical on both maps, looting on both, all three endings, hub.
+__regress PASS, 17 checks.
+
+Not verified: every string here was confirmed by capturing what the canvas draws,
+not by looking at where it sits, so none of these has been checked for collisions
+with other labels at 1920x1080. The extracted screen now has an empty subtitle
+for a raid where you were seen, which may want something in it; that is his call.
+And nothing here touches the rest of his queue, which is recorded in AUDIT.md:
+the XP target wording, a proficiency rating, the Mainframe bonus line, belt to
+backpack in the Undercroft, gun crafting, the settings sweep, the inventory model,
+sprint footsteps, ESC to pause in the Undercroft, and the roll graphic there.
+
 ## v8.67 - THE IN-RAID BAG USES THE SCREEN, AND THE SECOND GUN SLOT STOPS DISAPPEARING
 
 Five things, all of them his, reported while this build was in flight.

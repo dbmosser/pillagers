@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.67';
+var VER='8.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2146,7 +2146,8 @@ function contractStep(c){
     G.tel.contractsMid=G.tel.contractsMid||[];
     G.tel.contractsMid.push({desc:c.desc||'contract',
       label:(c.type==='kill'?('kill-'+c.tgt):c.type)});
-    if(!G.sim) say('CONTRACT DONE: '+(c.desc||'contract')+'. Claim it at the board.');
+    // v8.68, his wording.
+    if(!G.sim) say('CONTRACT DONE: '+(c.desc||'contract')+'. Complete contract at mainframe.');
   }
 }
 function contractKill(kind){
@@ -15326,7 +15327,7 @@ silentExit:T.silentExit||0,
     }
 var _cdone=contractExtract(G.bag,haul);
     for(i=0;i<_cdone.length;i++)
-      lines.push('<span style="color:#7fc4a0">CONTRACT COMPLETE: '+escHtml(_cdone[i])+'. Claim it at the board.</span>');
+      lines.push('<span style="color:#7fc4a0">CONTRACT COMPLETE: '+escHtml(_cdone[i])+'. Complete contract at mainframe.</span>');
     for(i=0;i<G.bag.length;i++){ var bm=bankItem(G.bag[i]); if(bm) lines.push(bm); }
     if(G.pedCarry&&!G.sim){ P.credits+=G.pedCarry; }
     // Both hands count. Extracting with the sidearm up used to throw away the
@@ -15566,8 +15567,11 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
   var t=document.getElementById('oc_title'),s=document.getElementById('oc_sub');
   if(how==='extract'){ t.textContent='EXTRACTED'; t.style.color='var(--coolant)';
     var _fcE=T.firstContact;
-    s.textContent=(_fcE===null||_fcE===undefined)?'OUT CLEAN   \u00b7   NEVER SPOTTED'
-      :'FIRST SEEN AT '+fmtMS(_fcE).toUpperCase()+', AND STILL WALKED OUT';
+    // v8.68, his note: the first-seen line on this screen is cheesy, so it is
+    // gone. It read "FIRST SEEN AT 2:14, AND STILL WALKED OUT", which is the
+    // game congratulating him on his own raid. A clean run still states the fact,
+    // because never being seen is a real thing that happened.
+    s.textContent=(_fcE===null||_fcE===undefined)?'OUT CLEAN   \u00b7   NEVER SPOTTED':'';
   }
   else if(how==='dead'){ t.textContent='KILLED IN ACTION'; t.style.color='var(--hazard)';
     var kn=(T.lastHitName&&T.deathKiller!=='timer')?T.lastHitName:String(T.deathKiller||'unknown').toUpperCase();
@@ -19515,9 +19519,10 @@ else if(nc2.tag) ctx.fillText('['+keyLabel('KeyE','E')+'] SEARCH '+String(nc2.ta
     var _rHold=(RZ.hold!==undefined&&RZ.hold!==null&&RZ.hold>0);
     ctx.font=FS(TYPE.label); ctx.textAlign='center';
     ctx.fillStyle=_rHold?'#7fc4a0':'#4de3d0';
-    ctx.fillText('EXTRACT '+extLetter(RZ)+(_rHold?
-      (' OPEN '+Math.max(0,Math.ceil(RZ.hold))+'s'):
-      (' INBOUND '+Math.ceil(RZ.beaconT)+'s')),rs.x,rs.y);
+    // v8.68, his wording, same as the banner.
+    ctx.fillText(_rHold?
+      ('EXTRACTION IN PROGRESS!  '+extLetter(RZ)+'  '+Math.max(0,Math.ceil(RZ.hold))+'s'):
+      ('EXTRACT '+extLetter(RZ)+' INBOUND '+Math.ceil(RZ.beaconT)+'s'),rs.x,rs.y);
     ctx.textAlign='left';
   }
   if(padZ&&!p.downed){
@@ -20028,7 +20033,8 @@ ctx.restore();
     ctx.font=FS(TYPE.head); ctx.textAlign='center';
     var holding=G.beaconT<=0&&G.shipHold!==null&&G.shipHold!==undefined;
     ctx.fillStyle=holding?(inRing?'#4de3d0':'#ff5a4a'):(inRing?'#4de3d0':'#ffc04a');
-    ctx.fillText(holding?('EXTRACT '+_exL+' OPEN  '+Math.max(0,Math.ceil(G.shipHold))+'s'):('EXTRACT '+_exL+' INCOMING  '+Math.ceil(G.beaconT)+'s'),W/2,H-140);
+    // v8.68, his wording: the boarding window is EXTRACTION IN PROGRESS, not OPEN.
+    ctx.fillText(holding?('EXTRACTION IN PROGRESS!  '+_exL+'  '+Math.max(0,Math.ceil(G.shipHold))+'s'):('EXTRACT '+_exL+' INCOMING  '+Math.ceil(G.beaconT)+'s'),W/2,H-140);
     // v6.41, his note: no bar. The line above it is already a countdown in seconds.
     if(!inRing){
 var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active));
@@ -20139,7 +20145,10 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
       else if(_inRing&&_shipDown){ _msg='HOLD E TO EXTRACT'; _sub='Extracting while downed is permitted'; }
       else if(_inRing){ _msg='EXTRACTION INBOUND'; _sub='Stay down. Extracting while downed is permitted'; _col='#ffc04a'; }
       else if((dist(p,G.active)-G.active.r)<=300){ _msg='CRAWL TO THE RING'; _sub=_shipDown?('Extraction closes in '+fmtMS(Math.max(0,Math.ceil(G.shipHold)))):'Extraction inbound'; _col='#ff5a4a'; }
-      else { _msg='YOU ARE DOWN'; _sub='The ring is '+metres(dist(p,G.active))+'m away'; _col='#ff5a4a'; }
+      // v8.68, his wording, and the NEAREST one rather than the one the HUD
+      // happens to be pointing at. closestRingDist is the same helper the
+      // extraction card got at v8.58 for this exact mistake.
+      else { _msg='YOU ARE DOWN'; _sub='Nearest extraction is '+metres(closestRingDist(p))+'m away'; _col='#ff5a4a'; }
     } else if(_shipDown&&_inRing){
       // v6.57: no countdown here. The bottom strip has stated it for the whole window
       // and this line exists to say what to DO, which is the split the comment above
@@ -23534,7 +23543,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.67: the in-raid bag finally uses the screen. Twelve columns instead of five, and bigger tiles.',
+  now:'v8.68: his wording through the extraction screens, and the boarding window says EXTRACTION IN PROGRESS.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -27026,7 +27035,7 @@ function maybePrimer(){
 // "Few, about half as many out there" is a decision.
 var GAMEOPTS=[
   {k:'superhot', label:'Superhot mode',
-   hint:'Time only moves when you act. Stand still and it stops dead; any key, click or trigger runs it, and holding E runs it at full speed. Moving the mouse to aim is free.',
+   hint:'Time only moves when you act. Stand still and it stops dead; any key, click or trigger runs it, and holding E runs it at full speed.',
    opts:[
      {n:'Off', cfg:{superhot:0}},
      {n:'On',  cfg:{superhot:1}}

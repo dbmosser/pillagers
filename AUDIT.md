@@ -163,3 +163,23 @@ adversarially verified):
 | Make sure all the modifiers in the settings menu work as intended | a sweep, not one item |
 | INVENTORY = BACKPACK + HOTBAR. An item is in one or the other, never both | a model change, affects the belt assignment map |
 | Too many footsteps when sprinting | his report, not yet reproduced |
+
+## HIS QUEUE, updated end of v8.68
+
+DONE in v8.68: EXTRACTION IN PROGRESS wording; superhot hint; "Complete contract at mainframe"; first-seen line removed; "Nearest extraction is Xm away" on the downed screen.
+
+STILL OPEN:
+
+| Ask | Note |
+|---|---|
+| Extraction screen: "x of Y XP" does not say what happens at Y | |
+| Extraction screen: why is there no proficiency rating | |
+| Extraction screen: "the Mainframe, 4 racks fenced the data" -> "Mainframe bonus: $XXX", moved to the bottom in a dimmer colour | |
+| Cannot move items from the tactical belt to the backpack in the Undercroft | his report, not yet reproduced |
+| Remove crafting of purple, blue and gold strength guns; Peddler or raid loot only | |
+| Make sure all the modifiers in the settings menu work as intended | a sweep, not one item |
+| INVENTORY = BACKPACK + HOTBAR. An item is in one or the other, never both | model change; affects the belt assignment map |
+| I opens the BACKPACK. Write the matching list of consistent definitions | vocabulary, pairs with pillagers-vocabulary memory |
+| Too many footsteps when sprinting | his report, not yet reproduced |
+| ESC should pause in the Undercroft | |
+| The roll graphic is WRONG in the Undercroft | |
