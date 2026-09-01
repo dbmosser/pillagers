@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.50';
+var VER='8.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20146,8 +20146,12 @@ var LEGEND_PAD=[
 // look like a bug the first time a frag lands short.
 var GEARRULES=[
   ['WEAPONS',function(){ return (PAD&&PAD.on)?'Y swaps primary/sidearm.':'X swaps primary/sidearm.'; }],
-  ['','A better gun auto-equips only'],
-  ['','if you switch it on in Settings.'],
+  // v8.51, audit: this said a better gun equips itself only "if you switch it on
+  // in Settings". autoEquipOn returns the dial for the BOT and true for a human,
+  // deliberately, and Settings has no such row - so the card described a switch
+  // that does not exist, for behaviour that always happens.
+  ['','A better gun you pick up goes'],
+  ['','straight into your hands.'],
   ['','Set both guns on the figure,'],
   ['','in the stash or on the check.'],
   ['ARMOUR','Plates top you up when'],
@@ -21238,7 +21242,10 @@ function drawBag(){
   var rows=Math.min(rowsAll,rowsMax);
   var hh=LH(150)+rows*(TILE+GAP)+LH(64);
   hh=Math.min(hh,H-70);
-  y=Math.max(LH(10),H-LH(58)-LH(8)-hh);
+  // v8.51, audit: reserve the belt's REAL footprint. This reserved one cell plus a
+  // gap, from before v8.08 moved the bar's top to H-LH(70); the caption above it
+  // sits a further LH(6) up. The bag was covering both.
+  y=Math.max(LH(10),H-LH(70)-LH(14)-hh);
   ctx.fillStyle='rgba(6,9,13,.96)'; ctx.fillRect(x,y,PW,hh);
   ctx.strokeStyle='#3a4552'; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,PW-1,hh-1);
 
@@ -23341,7 +23348,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.50: you can stand in front of the great door instead of behind it.',
+  now:'v8.51: selling something clears the key you bound to it, and the bag no longer sits on your belt.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -24134,6 +24141,7 @@ function itemMenuRows(key,ctx,count){
         return;
       }
       P.stash.splice(ix,1);
+      clearKeysFor(k);                 // v8.51, audit: it left the backpack
       P.weapons.push(it.gk);
       P.equipped=it.gk; saveProfile(); refreshInv();
     }});
@@ -24633,6 +24641,7 @@ try{ renderFreeKit(); }catch(_fk){}
           return;
         }
         P.stash.splice(ix,1);
+        clearKeysFor(k);               // v8.51, audit: same rule, second copy
         P.weapons.push(it.gk);
         P.equipped=it.gk; saveProfile(); renderHub();
       });
@@ -24681,7 +24690,9 @@ try{ renderFreeKit(); }catch(_fk){}
       });
       act('Sell one',function(){
         var ix=P.stash.indexOf(k);
-        if(ix>=0){ P.stash.splice(ix,1); P.credits+=ival(k); P.xp=(P.xp||0)+ival(k); saveProfile(); renderHub(); }
+        // v8.51, audit: and the key that pointed at it. This is a route OUT of the
+        // backpack and clearKeysFor is the one rule for those; it was not called.
+        if(ix>=0){ P.stash.splice(ix,1); clearKeysFor(k); P.credits+=ival(k); P.xp=(P.xp||0)+ival(k); saveProfile(); renderHub(); }
       });
     };
     // v6.58, his note: no click handler at all. Junk is J while hovering, which is the
@@ -25692,11 +25703,16 @@ document.getElementById('sellall').onclick=function(){
   // built from. It now clears exactly two things: what he has TAGGED as junk,
   // and loose salvage that has no use at all. Crafting parts are never sold by
   // it, whatever their use field says, and neither is anything usable.
-  var kept=[],gained=0,sold=0;
+  var kept=[],gained=0,sold=0,_soldKeys=[];   // v8.51: remember what left
   P.stash.forEach(function(k){
-    if(sellable(k)){ gained+=ival(k); sold++; } else kept.push(k);
+    if(sellable(k)){ gained+=ival(k); sold++; _soldKeys.push(k); } else kept.push(k);
   });
   P.credits+=gained; P.xp=(P.xp||0)+gained; P.stash=kept;
+  // v8.51, audit: everything sold here left the backpack, so every key bound to
+  // one of them goes with it. AFTER the new stash is written, because clearKeysFor
+  // asks stageKitLive whether the item is still carried and would otherwise still
+  // see it sitting there.
+  for(var _ck=0;_ck<_soldKeys.length;_ck++) clearKeysFor(_soldKeys[_ck]);
   saveProfile(); renderHub();
   say2(sold?('Sold '+sold+' for '+'$'+gained.toLocaleString()+'.'):'Nothing tagged junk, and no loose salvage.');
 };
@@ -26656,6 +26672,11 @@ function renderFreeKit(){
     P.freeKit=1;
     saveProfile();
     try{ sfx('pick'); }catch(e){}
+    // v8.51, audit: REPAINT BOTH SURFACES. This button exists on the ascent check
+    // AND on the Stash screen, and repainted only the ascent check - so pressing it
+    // from the Stash emptied the loadout and the belt plan while that screen went
+    // on drawing the packed cells and the counters. Same pattern refreshInv uses.
+    try{ renderHub(); }catch(_fh){}
     renderStage();
   };
 }

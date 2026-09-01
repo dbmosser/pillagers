@@ -27443,6 +27443,69 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.51 - SELLING SOMETHING CLEARS THE KEY YOU BOUND TO IT
+
+FOUR ROUTES OUT OF THE BACKPACK FORGOT THE KEY. clearKeysFor exists for
+exactly this, and its own comment says so: "Drops any quick-use key bound to
+an item that is no longer in the loadout. Called wherever something leaves
+the backpack, so there is one rule rather than one per route out." Four
+routes out never called it - Sell one, Sell all, and both copies of Equip as
+your gun, which splice the gun out of the stash.
+
+Bind a Medkit to a key, then sell it. The stash copy is gone and the kit
+entry is silently dropped on the next read, but the belt still draws a
+Medkit on that key with the tooltip "Key 3: Medkit, click to clear" and the
+counter still counts it. In the raid the key does nothing at all, because
+the bar only fires for something you are actually carrying.
+
+THE REFERENCE CARD DESCRIBED A SETTING THAT DOES NOT EXIST. It said, in
+plain words, that a better gun equips itself only "if you switch it on in
+Settings". autoEquipOn returns the dial for the BOT and true for a human,
+deliberately - the v6.69 note beside it explains that without it the gun
+quality roll is discarded on every pickup and Worn through Gold are
+unreachable, so the whole system sits inert. And Settings has no such row,
+because the behaviour is not optional. The card now says what happens.
+
+THE BACKPACK PANEL SAT ON THE BELT. Its vertical reserve was one belt cell
+plus a gap, written before v8.08 moved the bar's top to H-LH(70) so it would
+still sit LH(12) off the bottom edge. That change was never propagated here.
+At 1080p the panel bottom landed at 978 against a belt top of 971 and its
+caption at 962, so with the bag open the caption was completely hidden and
+the top of every cell covered - which matters, because the panel's own hint
+tells you to drag to the hotbar and the drop targets were partly under the
+thing you drag from.
+
+AND THE FREEBIE KIT BUTTON REPAINTED THE WRONG SCREEN. That button is
+written into two hosts, one on the ascent check and one on the Stash screen,
+and both get the same handler - which empties the kit and the belt plan and
+then repaints the ascent check only. Press it from the Stash and the LOADOUT
+column, the bound key icons and the "n packed" counters all keep drawing as
+if nothing had happened, until something else happens to repaint the hub.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both
+maps with no throw; three endings through oc_btn with the overlay on; hub;
+__renderStage; stream parity zero; a full sim raid end to end.
+  the keys   sell all with a key bound to a piece of tagged junk: the key is
+             gone afterwards. CONTROL, a key bound to a Medkit the button
+             does NOT sell: still bound. So it clears what left and only
+             what left.
+  the panel  bag open, panel now ends at y 949 against a belt caption at
+             962, so 13px clear. It ended at 978, thirteen past it.
+  the card   no longer mentions Settings anywhere; reads "A better gun you
+             pick up goes straight into your hands."
+
+AND MY OWN ERROR, one line: I put the sell-all key clear BEFORE the new
+stash was written, so clearKeysFor asked whether the item was still carried
+while it was still sitting in the list, and kept the key. Caught by the
+control, moved after the write, re-measured.
+
+Not verified: the freebie kit repaint, behaviourally. The handler now calls
+renderHub before renderStage, which is the pattern refreshInv already uses
+for the same two-surface problem, but driving that button from the Stash
+screen in the fixture needs the stash modal open with a staged kit and I did
+not build that rig. It is a two-line change with a try/catch around the added
+call, so the risk is a repaint that does nothing rather than one that throws.
+
 ## v8.50 - YOU CAN STAND IN FRONT OF THE GREAT DOOR
 
 NOTHING COULD EVER BE DRAWN IN FRONT OF THE SEAL. There is an empty branch
