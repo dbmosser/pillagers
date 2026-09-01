@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.66';
+var VER='8.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8565,10 +8565,14 @@ window.addEventListener('mouseup',function(e){
           say('Slot '+(HC.i+1)+' is a weapon slot. Guns only.');
           dropped=true; break;
         }
-        if(_dit&&_dit.use==='gun'){
-          say('Guns go in slot 1 or 2, not slot '+(HC.i+1)+'.');
-          dropped=true; break;
-        }
+        // v8.67, HIS ORDER: a gun goes on any slot. This used to refuse with
+        // "Guns go in slot 1 or 2", a rule I added and then confirmed as correct
+        // last build instead of asking whether it should exist. It should not:
+        // "i should be able to have 9 guns if i want, they should act the same as
+        // any other equippable". useHot already has a gun branch that brings the
+        // named gun up, and autoBelt has always been willing to pin one, so this
+        // message was the only thing in the way. Slots 1 and 2 still mean the two
+        // guns in your hands, which is his separate two-equipped rule.
         G.hotAssign=G.hotAssign||{};
         // One item, one slot. Dropping something that already lives elsewhere on
         // the bar MOVES it, or the same Medkit ends up on three slots at once.
@@ -10420,8 +10424,15 @@ function hotbarSlots(){
   var B =sw?p.wep:p.sec,      Bam=sw?p.ammo:p.secAmmo;
   out.push({k:'gunA',name:A.name,kind:'gun',inHand:!sw,icon:A.id,
     count:(A.mag===0?null:Aam),c:A.tint||'#ffd48a'});
+  // v8.67, HIS REPORT: the second gun cell is ALWAYS here, vacant when you are
+  // carrying one gun. It used to appear only when a second gun existed, so the
+  // whole bar shifted left the moment you picked one up and there was no empty
+  // gun slot to drop one onto. The comment above promises the keys never move;
+  // this is what makes that true.
   if(B) out.push({k:'gunB',name:B.name,kind:'gun',inHand:sw,icon:B.id,
     count:(B.mag===0?null:Bam),c:B.tint||'#ffd48a'});
+  else out.push({k:'gunB',name:'Second weapon',kind:'gun',inHand:false,icon:null,
+    count:0,c:'#4d5762',vacant:1});
   for(var i=0;i<THROWKEYS.length;i++){
     var tk=THROWKEYS[i];
     out.push({k:'throw:'+tk,name:ITEMS[tk].name,kind:'throw',icon:tk,
@@ -10582,7 +10593,10 @@ function setHot(i){
   // inHand field, so this used to fire swapGuns and trade the pair in your
   // hands instead - the wrong gun came up and the one you chose did not.
   var _inHands=(s2.k==='gunA'||s2.k==='gunB'||s2.equipped);
-  if(s2.kind==='gun'&&_inHands&&!s2.inHand) swapGuns();
+  // v8.67: not into an empty gun slot. The cell is always drawn now, so picking
+  // it when you carry one gun must do nothing rather than swap you to nothing.
+  if(s2.vacant){ if(!G.sim) say('No second weapon. Drag one here to carry it.'); }
+  else if(s2.kind==='gun'&&_inHands&&!s2.inHand) swapGuns();
   else if(s2.kind==='gun'&&!_inHands&&s2.itemKey)
     say(s2.name+' is in your bag. TAB to equip it.');
   if(s2.kind==='throw'){
@@ -19485,6 +19499,27 @@ else if(nc2.tag) ctx.fillText('['+keyLabel('KeyE','E')+'] SEARCH '+String(nc2.ta
   var padZ=null;
   for(i=0;i<G.zones.length;i++){ var PZ=G.zones[i];
     if(dist(p,PZ)<PZ.r){ padZ=PZ; break; } }
+  // v8.67, HIS ORDER: the countdown is ON the ring, whoever called it. This
+  // prompt used to draw only for the ring you are standing inside, so a ship
+  // another pillager called was invisible at the pad until you reached it. The
+  // spec has always said the window is shared and riding out on someone else's
+  // call is intended play; you could not see it to run for it.
+  if(!p.downed) for(i=0;i<G.zones.length;i++){
+    var RZ=G.zones[i];
+    if(RZ===padZ||!RZ.open) continue;
+    var _rLive=(RZ.hold!==undefined&&RZ.hold!==null&&RZ.hold>0)||
+               (RZ.beaconT!==null&&RZ.beaconT!==undefined&&RZ.beaconT>0);
+    if(!_rLive) continue;
+    var rs=w2s(RZ.x,26,RZ.y);
+    if(!rs) continue;
+    var _rHold=(RZ.hold!==undefined&&RZ.hold!==null&&RZ.hold>0);
+    ctx.font=FS(TYPE.label); ctx.textAlign='center';
+    ctx.fillStyle=_rHold?'#7fc4a0':'#4de3d0';
+    ctx.fillText('EXTRACT '+extLetter(RZ)+(_rHold?
+      (' OPEN '+Math.max(0,Math.ceil(RZ.hold))+'s'):
+      (' INBOUND '+Math.ceil(RZ.beaconT)+'s')),rs.x,rs.y);
+    ctx.textAlign='left';
+  }
   if(padZ&&!p.downed){
     var ps=w2s(padZ.x,26,padZ.y);
     if(ps){
@@ -20099,8 +20134,10 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     var _msg=null,_col='#4de3d0',_sub=null;
     if(p.downed){
       if(_inRing&&_shipDown&&CFG.hauledAboard!==0){ _msg='THEY HAVE YOU'; _sub='Pulling you out'; }
-      else if(_inRing&&_shipDown){ _msg='HOLD E TO EXTRACT'; _sub='You can extract from the floor'; }
-      else if(_inRing){ _msg='EXTRACTION INBOUND'; _sub='Stay down, they will pull you out'; _col='#ffc04a'; }
+      // v8.67, his wording. Both of these stated the same rule in two different
+      // sentences one line apart; they now use his.
+      else if(_inRing&&_shipDown){ _msg='HOLD E TO EXTRACT'; _sub='Extracting while downed is permitted'; }
+      else if(_inRing){ _msg='EXTRACTION INBOUND'; _sub='Stay down. Extracting while downed is permitted'; _col='#ffc04a'; }
       else if((dist(p,G.active)-G.active.r)<=300){ _msg='CRAWL TO THE RING'; _sub=_shipDown?('Extraction closes in '+fmtMS(Math.max(0,Math.ceil(G.shipHold)))):'Extraction inbound'; _col='#ff5a4a'; }
       else { _msg='YOU ARE DOWN'; _sub='The ring is '+metres(dist(p,G.active))+'m away'; _col='#ff5a4a'; }
     } else if(_shipDown&&_inRing){
@@ -21372,11 +21409,20 @@ function drawBag(){
   // identical items stacking with a count badge, unlimited depth with a
   // scrolling window, rarity on the tile border, and the existing drag,
   // keyboard, equip and drop verbs all speaking stack now.
-  var p=G.player,PW=LH(300),x=Math.round((W-PW)/2),y=48,i;
+  var p=G.player,y=48,i;
   var stacks=bagStacks();
-  var COLS=5; G.bagCols=COLS;
-  var TILE=LH(48),GAP=LH(6);
+  // v8.67, his note that the in-raid menus only get smaller. The tile and the
+  // column count were fixed numbers that never asked how big the screen was: at
+  // 1920x1080 that put a 411 pixel grid in the middle of the display with 755
+  // pixels of nothing on the left and 754 on the right, five columns wide.
+  // Both now follow the width. MARG is the panel padding either side of the grid.
+  var TILE=LH(58),GAP=LH(7),MARG=LH(30);
+  var COLS=clamp(Math.floor((W*0.66-MARG*2+GAP)/(TILE+GAP)),5,12); G.bagCols=COLS;
   var gridW=COLS*TILE+(COLS-1)*GAP;
+  // The panel is sized to the grid rather than the grid squeezed into a fixed
+  // panel, so the two can never disagree the way they did.
+  var PW=Math.min(W-LH(24),gridW+MARG*2);
+  var x=Math.round((W-PW)/2);
   var gx=x+Math.round((PW-gridW)/2);
   var rowsAll=Math.max(1,Math.ceil(stacks.length/COLS));
   var rowsMax=Math.max(2,Math.floor((H-LH(300))/(TILE+GAP)));
@@ -23488,7 +23534,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.66: dragging things onto the belt is under test now, including the two moves that used to duplicate an item.',
+  now:'v8.67: the in-raid bag finally uses the screen. Twelve columns instead of five, and bigger tiles.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

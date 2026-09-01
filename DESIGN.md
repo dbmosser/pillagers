@@ -27443,6 +27443,81 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.67 - THE IN-RAID BAG USES THE SCREEN, AND THE SECOND GUN SLOT STOPS DISAPPEARING
+
+Five things, all of them his, reported while this build was in flight.
+
+"I HAVE ASKED YOU TO FIX THE IN-RAID MENUS A MILLION TIMES AND IT SEEMS LIKE ALL
+THEY DO IS GET SMALLER." He is right. Measured before touching anything, bag
+open at 1920x1080:
+
+  tile     75 x 75
+  grid     411 x 579, which is 21 percent of the screen width
+  empty    755 pixels of nothing on the left, 754 on the right
+  capacity 5 columns, 35 stacks visible
+
+The panel width was the fixed LH(300) and the column count was the literal 5.
+Neither had ever asked how much screen there was. Both now follow the width: the
+panel takes two thirds, the tile grows, and the columns are derived from what
+fits, clamped between 5 and 12 so it can never come out narrower than it was.
+
+  after    tile 90 x 90, grid 1100 x 595, 57 percent of the width,
+           11 columns, 66 stacks visible at once
+
+Screenshotted at 1920x1080 rather than only measured, on his instruction: "take
+screenshots when you improve menus to make sure you are actually making them
+bigger."
+
+"AUTOEQUIPPING GUNS IS WONKY, I AUTOEQUIPPED AN AUTORIFLE AND IT PUT IT IN SLOT 8
+WHEN SLOT 2 WAS EMPTY." Also right, and the cause is one line: the second gun
+cell was only emitted when a second gun existed. Measured, same kit:
+
+  one gun    1 gun  2 throw  3 throw  4 throw  5 heal  6 armour  7-9 empty
+  two guns   1 gun  2 gun    3 throw  4 throw  5 throw 6 heal    7 armour
+
+So picking up a second gun moved smoke from key 2 to 3, medical from 5 to 6 and
+armour from 6 to 7, under his fingers, mid-raid. The comment directly above that
+code promises "the list order never changes, so the number keys never move",
+which has never been true. And what he read as an empty slot 2 was a throwable.
+
+The cell is now always there, vacant when you carry one gun. Both rows are
+identical after the fix. Dropping a gun onto it already equips it through the
+existing handler, so this also restores the obvious gesture.
+
+"I SHOULD BE ABLE TO HAVE 9 GUNS IF I WANT, THEY SHOULD ACT THE SAME AS ANY OTHER
+EQUIPPABLE." The refusal that blocked this is one I added and then verified as
+CORRECT last build, which was me confirming a rule rather than asking whether the
+rule should exist. It is gone. Guns now drop onto any slot, verified on slots 6,
+8 and 9. Slots 1 and 2 keep their meaning as the two guns in your hands, which is
+his separate two-equipped rule, so a consumable is still refused there.
+
+The v8.66 regression check FAILED on this build, correctly, because it asserted
+the old rule. It now asserts his.
+
+"EXTRACTION COUNTDOWN SHOULD BE SHOWN NEAR THE EXTRACTION EVEN IF PLAYER DID NOT
+INITIATE IT." Half of this already worked and half did not. The screen banner
+already mirrors someone else's call: measured with the player 1800 units away and
+no involvement, it reads "EXTRACT A INCOMING 22s" and later "EXTRACT A OPEN 26s".
+What was missing is the half he asked for, the label AT the ring: that prompt
+only drew for the ring you are standing INSIDE. Every open ring with a live call
+now carries its own countdown in both phases, so a shared window is something you
+can see and run for.
+
+HIS WORDING on the downed line. The rule was stated two different ways one line
+apart; both now read "Extracting while downed is permitted".
+
+Verified: parse PASS at 1,514,662 chars, mojibake none. __verify PASS: ents 58
+and 276, parity identical on both maps, looting on both with the clock advancing,
+all three endings, hub. __regress PASS, 17 checks.
+
+Not verified: the bag was screenshotted at 1920x1080 only, so no other resolution
+has been looked at, and the column clamp of 12 is a judgement rather than a
+measured optimum. The countdown at the ring was verified by capturing the text
+the game paints, not by looking at where it sits on screen, so it may need
+nudging clear of other labels. Nothing here touched the Undercroft inventory, and
+his report that items cannot move from the belt to the backpack there is not yet
+investigated.
+
 ## v8.66 - DRAGGING ONTO THE BELT IS UNDER TEST, AND IT IS CORRECT
 
 Second build in a row that found no defect. Saying that plainly is the point of

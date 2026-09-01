@@ -979,9 +979,10 @@ window.__REGRESS=[
      // A consumable onto an empty slot takes.
      var a=drop({key:'bandage',bagIx:__state().bag.indexOf('bandage')},7);
      if(a['7']!=='bandage') return 'a bandage dropped on an empty slot did not stick';
-     // A gun onto a consumable slot is refused, and a consumable onto a gun slot is refused.
+     // v8.67, his order: a gun goes on ANY slot, same as any other equippable.
      var b=drop({key:'gun_rifle',bagIx:__state().bag.indexOf('gun_rifle')},5);
-     if(b['5']) return 'a gun was accepted onto the medical slot';
+     if(b['5']!=='gun_rifle') return 'a gun was refused from an ordinary belt slot';
+     // A consumable on a GUN slot is still refused: 1 and 2 are the two in your hands.
      var c=drop({key:'medkit',bagIx:__state().bag.indexOf('medkit')},0);
      if(c['0']) return 'a consumable was accepted onto a gun slot';
      // Moving one already on the bar must MOVE it, not leave a copy behind.

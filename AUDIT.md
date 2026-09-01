@@ -147,3 +147,19 @@ adversarially verified):
 |---|---|---|
 | the belt key handler itself might be wrong | real keydown events for digits 1, 2, 5 and 6 | correct: each selects its slot, the gun slots swap weapons, and nothing fires. |
 | dragging onto a belt slot | drove the real mouseup handler against the real hit boxes, six cases | all correct: assigns, refuses a gun on a consumable slot and a consumable on a gun slot with a message that names the refusal, moves without duplicating, treats a drop on its own slot as a click, and swaps two occupied slots cleanly. Five locked into the suite. |
+
+## HIS QUEUE, reported 2026-09-01 during v8.67, NOT yet done
+
+| Ask | Note |
+|---|---|
+| Extraction screen: the "first seen" line is cheesy, remove it | |
+| Extraction screen: "x of Y XP" does not say what happens at Y | |
+| Extraction screen: "Claim it at the board" should read "Complete contract at mainframe" | |
+| Extraction screen: why is there no proficiency rating | |
+| Extraction screen: "the Mainframe, 4 racks fenced the data" should read "Mainframe bonus: $XXX", moved to the bottom in a dimmer colour, it is not that important | |
+| Cannot move items from the tactical belt to the backpack in the Undercroft | his report, not yet reproduced |
+| Remove crafting of purple, blue and gold strength guns; they should only come from the Peddler or raid loot | |
+| Superhot mode: remove the text "moving the mouse to aim is free" | |
+| Make sure all the modifiers in the settings menu work as intended | a sweep, not one item |
+| INVENTORY = BACKPACK + HOTBAR. An item is in one or the other, never both | a model change, affects the belt assignment map |
+| Too many footsteps when sprinting | his report, not yet reproduced |
