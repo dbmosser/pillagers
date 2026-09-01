@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.45';
+var VER='8.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12094,7 +12094,12 @@ function updateBot(dt){
     }
     if(d<TR&&d<td&&losClear(p.x,p.y,e.x,e.y,G.vseg)){ threat=e; td=d; }
   }
-  p.noiseAcc=(p.noiseAcc||0)+dt;
+  // v8.46, audit: the footstep timer runs WHILE MOVING, as the player's does.
+  // This accumulated through every second the bot stood still looting, so the
+  // first frame of every departure was already over the interval and pinged
+  // immediately - once per container, once after every pause in a fight - where
+  // the player has to walk a full interval before his first step is heard. It is
+  // zeroed below when the frame ends without movement.
   var moved=false;
   var cap=PACKCAP[P.pack];
   // v8.34: there is no carry cost left for the bot to pay. cap is still read -
@@ -12391,6 +12396,9 @@ if(_botRingDodge()){}
   var BIV=BWET?(0.6*(0.30/0.72)):0.6;
   var BRAD=botCrouch&&(CPART&2)?(72/140):1;
   if(botCrouch) T.tCrouchBot=(T.tCrouchBot||0)+dt;
+  // v8.46: accumulate only when he actually moved, and reset when he did not,
+  // which is exactly what updatePlayer does.
+  if(moved) p.noiseAcc=(p.noiseAcc||0)+dt; else p.noiseAcc=0;
   if(moved&&p.noiseAcc>BIV){ p.noiseAcc=0; ping(p.x,p.y,140*CNOISE*BRAD,false,false,'player','move'); }
   // Give up on a container the bot cannot get to, on two conditions, both of
   // which had to be learned the hard way. It has to be progress and not motion:
@@ -13433,7 +13441,10 @@ say(sees?'Alarm went out. It kept eyes on you: they know exactly where you are.'
           // one, which is what makes repositioning the counterplay.
           for(var sb=0;sb<G.ents.length;sb++){
             var eb=G.ents[sb];
-if(eb===e||eb.kind==='snitch') continue;
+// v8.46, audit: and never a neutral. tx/ty are the Peddler's PITCH, not a patrol
+// target, so writing an alarm mark onto them moved his stall to wherever the
+// crier was standing and left it there for the raid.
+if(eb===e||eb.kind==='snitch'||eb.neutral||eb.kind==='peddler'||eb.kind==='stray') continue;
             if(dist(eb,{x:e.markX,y:e.markY})>900) continue;
             if(eb.kind==='listener'){
               if(eb.state!=='hunt'){ eb.state='hunt'; eb.wakeT=0.5; eb.millT=0; }
@@ -14148,7 +14159,18 @@ e.lootT=(e.lootT||0)+dt;
         if(e.extracting>rdw){
           say(e.name+' extracted with the goods.'); T.raidersExtracted++;
           if(G.roster){ for(var _rq=0;_rq<G.roster.length;_rq++){
-            if(G.roster[_rq].ref===e){ G.roster[_rq].out=true; G.roster[_rq].outAt=elapsed(); break; } } }
+            if(G.roster[_rq].ref===e){
+              G.roster[_rq].out=true; G.roster[_rq].outAt=elapsed();
+              // v8.46, audit: STAMP THE VALUE HERE. val was written only by
+              // drawRaiderBoard, which is skipped whenever the map or the bag is
+              // open - and neither pauses the raid. A merc who boarded while a
+              // panel was up had his haul frozen at the last drawn frame, and
+              // endRaid pays the player ten percent of that figure. This is the
+              // moment his bag stops changing, so it is the honest place to read it.
+              var _rv=0;
+              for(var _rb=0;_rb<e.bag.length;_rb++) _rv+=ival(e.bag[_rb]);
+              G.roster[_rq].val=_rv;
+              break; } } }
           if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.8,c:'#4de3d0',r:34});
           G.ents.splice(i,1); continue;
         }
@@ -23216,7 +23238,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.45: your hire works under every order, and the hire panel tells you what dying actually costs.',
+  now:'v8.46: your hire is paid for what he actually carried out, and the Peddler stays at his pitch.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

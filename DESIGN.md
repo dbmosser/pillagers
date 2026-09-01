@@ -27443,6 +27443,67 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.46 - PAID FOR WHAT HE CARRIED, AND THE STALL STAYS PUT
+
+THE MERCENARY'S CUT WAS PAID FROM A NUMBER ONLY A HUD DRAW UPDATED. Roster
+rows are created with val:0, and the ONLY writer of a non-zero val sits
+inside drawRaiderBoard - in the HUD - behind a guard that skips it whenever
+the sector map or the backpack is open. endRaid then pays real credits off
+that figure for a merc who extracted early.
+
+Neither the map nor the bag pauses the raid. So open the backpack to sort
+loot in the last stretch, which is exactly when people do it, and he boards
+his ship with his recorded haul frozen at whatever the board last drew.
+Your ten percent is short by a tenth of everything he picked up in that
+window. The other settle branch reads his bag live and is correct, so the
+two paths disagreed about one rule.
+
+It is stamped where he actually leaves now, which is the moment his bag
+stops changing and the honest place to read it. The HUD figure stays as the
+live display.
+
+A CRIER'S ALARM WALKED THE PEDDLER'S STALL ACROSS THE MAP. The
+reinforcement loop that runs when an alarm completes skips the caller and
+other criers and nothing else, so it wrote tx and ty onto the Peddler and
+the Stray. For the Peddler those two fields ARE his pitch: set once at spawn
+and read by his return-home branch. So after any alarm within 900 units of
+the stall, hurting him made him flee and then walk to wherever the alarm was
+marked - up to 900 units away, next to where you had been standing - and
+announce that he was back at his pitch when he arrived. The stall stayed
+there for the rest of the raid.
+
+THE BOT WAS LOUDER THAN THE PLAYER AT EVERY DEPARTURE. updateBot
+accumulated the footstep timer unconditionally, including through every
+second it stood still looting a container or held position in a fight, and
+only TESTED it when it had moved. updatePlayer accumulates only while moving
+and zeroes it the moment he stops.
+
+So the bot emitted a movement ping on the very first frame of every
+departure - roughly once per container, and once after every pause in a
+firefight - where the player must walk a full interval before his first step
+is heard. That ping is not cosmetic: it flips every entity in radius to
+investigate and it is the Listener's only input.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both
+maps with no throw; three endings through oc_btn with the overlay on; hub;
+__renderStage; stream parity zero; a full sim raid end to end to an extract.
+  the payout   a raider carrying core, titan, optic, servo and comp - worth
+               2,060 - leaves the ring and the roster records 2,060 with the
+               backpack OPEN and 2,060 with it closed. The open case is the
+               one that used to record zero.
+  the timer    over 90 seconds of a real sim raid: 361 frames where the bot
+               did not move, and ZERO of them carrying a non-zero footstep
+               timer, highest value 0.000s.
+
+Not verified: the Peddler guard, behaviourally. His pitch is unchanged
+after two seconds with a crier in alarm 300 units from the stall, but I
+could not get the reinforcement loop to fire in the fixture at all - the
+control machine I planted beside the crier was never redirected either, so
+that arm proves nothing about the loop and only the code reads as correct.
+The change is a one-line exclusion in a loop whose other members are
+unaffected, which is the least risky shape available, but it is inspection
+rather than measurement.
+
 ## v8.45 - THE HIRE, THE HOT GROUND, AND A PRICE HE WAS NOT TOLD
 
 THE HIRE STOPPED WORKING ON ONE OF HIS THREE ORDERS. G.mercOrder cycles
