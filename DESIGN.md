@@ -27443,6 +27443,74 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.56 - THE CARD CATCHES UP ON THIRTEEN BUILDS, AND THE GAME COUNTS IN ENGLISH
+
+THE WHAT'S-NEW CARD SAID v8.42 AND THE GAME WAS v8.55. That lag is deliberate
+and the rule is written above the list: the card is keyed to WHATSNEW_VER, not
+VER, so a measurement-only build does not re-show an unchanged list and become
+a card that gets walked through unread. The rule is right. It had simply
+stopped being applied. Thirteen builds landed behind it and eight of them
+shipped something he can feel, and this card is the only thing in the game
+that tells him any of it.
+
+Rewritten to the rule as written: ten lines, only things that change how he
+plays, no fixes-as-fixes and no measurements. Every claim was checked against
+the RUNNING build before it was written down, not against DESIGN.md, because
+the entries are my own account of my own work and that is exactly the sort of
+thing that goes stale quietly. Checking found one error in my own draft: the
+contract test reported the feature dead, and the contract record's field is
+`type`, not `kind`. My probe was wrong. With a real contract shape a district
+contract goes 0/1 to 1/1 mid-raid and stamps contractsMid, so the line stands.
+
+NINE PLACES THE GAME SAID "1 items". Found by sweeping every player-facing
+string that concatenates a count with a word ending in s, then discarding the
+ones that cannot be one - pellets is already guarded, a magazine is never one
+round, and the crew count is a constant.
+
+  the extraction headline       "1 items secured for $60"
+  the summary row under it      "1 containers"  and  "1 kills"
+  cosmetic unlock conditions    "1 raids run"  and  "1 extractions"
+  career stats, killed by       "CRAWLER / 1 times"
+  career stats, went down       "1 times you got back up"
+  career stats, most raided     "1 of your 1 runs"
+  the hub header                "1 runs"
+  the title screen save slot    "1 runs"
+
+Three of these sit next to text that gets it right, which is what makes them
+read as broken rather than as a style. The extraction summary row builds its
+own minutes and seconds by hand, so one raid could print "1 minute 4 seconds"
+and "1 containers" in the same sentence. The hub header pluralises the stash
+count correctly and then says "1 runs" six characters later. The title screen
+subtitle says "1 raid logged" and the save slot directly below it said
+"1 runs".
+
+None of this is subtle and all of it is on the screens a new player sees
+first: the title, their first extraction card, and the stats page they open
+after their first death.
+
+Verified: parse PASS at 1,496,267 chars, WHATSNEW drift 0. Every one of the
+nine read back from the running game at both n=1 and n>1, so the singular is
+confirmed AND the plural is confirmed not to have been broken by the fix.
+"1 item secured" / "2 items secured". "1 container - 1 kill" / "2 containers -
+2 kills". "1 raid run" and "1 extraction" / "5 raids run" and "5 extractions".
+"crawler / 1 time" / "crawler / 5 times". "1 time you got back up".
+"1 of your 1 run" / "5 of your 5 runs". The hub header and the title slot were
+read from a screenshot at 1920x1080 with a one-raid profile, since both are
+drawn to canvas and cannot be read as text.
+
+Map fingerprints unmoved at seed 4242, ents 58 and 276. Live-vs-sim parity
+identical on both maps. Looting works on both maps through __loop, nothing
+thrown and the clock advancing. All three endings asserted. The hub was
+entered through the title button and the new card renders, all ten lines.
+
+Not verified: the card's ten lines are claims about eight earlier builds, and
+while each was checked to still have a live code path and the contract one was
+exercised end to end, I did not replay all eight features. If one of them has
+regressed since it shipped, this card now advertises it. The stats page cards
+were reached by clicking the outcome button with a fabricated run log rather
+than by playing runs, so the aggregation itself is exercised but the log
+entries are synthetic.
+
 ## v8.55 - WHAT THE LIGHTNING LEAVES BEHIND, AND THE WARDEN SOUNDS LIKE THE WARDEN
 
 THE RAREST DROP IN THE GAME WAS A CORPSE YOU OFTEN COULD NOT REACH. A
