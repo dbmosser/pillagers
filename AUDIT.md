@@ -98,3 +98,23 @@ adversarially verified):
   has never once fired. The workshop used to advertise it; that text is now
   corrected rather than the table changed, because turning it on is a balance
   decision. One table edit switches it on whenever he wants it.
+
+## Checked v8.63, nothing found
+
+| Finding | What I did | Result |
+|---|---|---|
+| the Undercroft stations | walked to each and pressed E, the real path | all eight register and open, nothing thrown, no broken text. THE STASH is a screen, not a modal, which is why an earlier sweep read it as opening nothing. |
+| station panels overflowing at 1920x1080 | measured every panel and every child box | three have children outside the panel box (Mainframe, Settings, cheat box), all inside a scroll region with nothing unreachable. |
+| a CFG dial silently switching off a whole system | checked all 18 dials that default to zero | all bot-only or deliberate. safeSlots is the retired pocket implementation, zero for everyone since v5.32, superseded by the named-item one. |
+| the panel promise "ONE ITEM SURVIVES YOUR DEATH" | __deploy with a real kit, then died, both directions | it works. Named item comes home, nothing comes home without one. Now a regression check. |
+
+## For his ruling, added v8.63
+
+- **Should abandoning a raid destroy the kit you carried up?** Measured with a
+  kit of servo, scrap and wire: extract returns all three, dead loses all three,
+  abandon also loses all three. Abandon already carries a 75 percent XP penalty
+  against the 50 percent for death, so walking away is strictly worse than dying.
+  It applies instantly too: quitting one second after landing, nothing moved and
+  nothing searched, still destroys the kit, on a path written to discard the run
+  as never having happened. NOT changed, because returning the kit on an instant
+  quit lets you deploy, read the map and quit for free, repeatedly.

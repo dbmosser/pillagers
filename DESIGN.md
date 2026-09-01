@@ -27443,6 +27443,75 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.63 - THE KIT YOU CARRY UP CAN FINALLY BE TESTED AT ALL
+
+The audit lists are drained of cheap wins, so this tick went hunting on the
+surface he named as the ship blocker: staging, the kit, the stash. It found that
+the harness could not reach any of it, which is why nothing there has ever been
+tested.
+
+__startRaid lands you with whatever the pinned defaults give, which is nothing.
+So the drop kit, what actually goes up, and the safe pocket that buildRaid arms
+against it were all unreachable from a probe. __deploy fixes that: it stages a
+kit the way the staging screen does, runs commitKit so P.dropKit and P.safeUp are
+armed exactly as the lift arms them, and starts the raid.
+
+THE SAFE POCKET IS PROVED TO WORK, for the first time. The inventory panel prints
+"ONE ITEM SURVIVES YOUR DEATH. DROP IT HERE." That promise had never once been
+tested against an actual death, because no probe could get an item into the kit.
+Now, deploying with servo, scrap and wire and naming the servo:
+
+  named safe      armed at deploy: servo, died carrying all three, stash: servo
+  named nothing   armed at deploy: null,  died carrying all three, stash: empty
+
+Both directions, so the pocket keeps exactly the one item and nothing comes home
+without it. Locked in as a regression check that also fails if the kit never
+reaches the bag, which is the way this check could go quietly hollow.
+
+FOUR SWEEPS THAT FOUND NOTHING, recorded so they are not repeated:
+
+  - Every Undercroft station driven through the real path, walking to it and
+    pressing E. All eight register and open, nothing throws, no broken text. THE
+    STASH is a screen rather than a modal, which is why an earlier sweep read it
+    as opening nothing.
+  - Every station panel measured at 1920x1080. Three have children outside the
+    panel box, the Mainframe, Settings and the cheat box, and all three are
+    inside a scroll region with nothing unreachable. Not a defect.
+  - Every CFG dial that defaults to zero, checked for a system it silently
+    switches off. Eighteen of them, and all eighteen are either bot-only dials or
+    deliberate: safeSlots is the old pocket implementation, zero for everyone
+    since v5.32 and superseded by the named-item one that works.
+  - The panel label "Safe pocket 0/1" is accurate: zero named of one slot.
+
+FOR HIS RULING, MEASURED AND NOT CHANGED. Abandoning a raid destroys the kit you
+carried up. Deploying with servo, scrap and wire from the stash:
+
+  extract    stash after: servo, scrap, wire, plus what you found
+  dead       stash after: empty
+  abandon    stash after: empty
+
+So walking away costs exactly what dying costs, and abandon already carries a 75
+percent XP penalty against the 50 percent for death. It applies instantly too:
+quitting one second after landing, with nothing moved and nothing searched, still
+destroys the kit, even though that path is written to discard the run as never
+having happened and logs nothing.
+
+I did not change it, because the obvious fix has an obvious exploit behind it:
+return the kit on an instant quit and you can deploy, read the map, and quit for
+free, over and over. That is his call to make, not mine.
+
+Verified: parse PASS at 1,511,270 chars, mojibake none. __verify PASS: ents 58
+and 276, parity identical on both maps, looting on both with the clock advancing,
+all three endings with the overlay on, hub through the title button. __regress
+PASS, now 13 checks.
+
+Not verified: __deploy stages through commitKit rather than by walking to the
+lift and pressing the button, so the staging SCREEN itself, the dragging, the
+three slot rule, what the panel shows, is still untested; what is now tested is
+everything downstream of the commit. The abandon figures above are from a kit of
+three plain items and were not repeated with a gun or armour in the kit, which
+take different paths out of the stash.
+
 ## v8.62 - FOUR REPORTED BUGS CHASED DOWN AND PROVED NOT TO BE BUGS
 
 This build changes no behaviour. It is the result of taking four findings off the

@@ -952,6 +952,29 @@ window.__REGRESS=[
        if(hit) out.push('mapIx '+mi+' has '+hit+' roads crossing a wall');
      });
      return out.length?out.join('; '):null; }},
+  {v:'8.63',what:'the safe pocket keeps exactly one named item through a death',
+   run:function(){
+     function die(safeItem){
+       __resetCfg(); __pinDefaults(0);
+       var d=__deploy({kit:['servo','scrap','wire'],safe:safeItem,mapIx:0,seed:4242});
+       if(d.error) return {err:d.error};
+       var g=__state(); if(!g) return {err:'no raid'};
+       g.ents.length=0;
+       var carried=g.bag.slice();
+       __endRaid('dead');
+       return {armed:d.safeUp,carried:carried,stash:(__P().stash||[]).slice()};
+     }
+     var a=die('servo');
+     if(a.err) return a.err;
+     // The probe must actually have carried the item up, or it tests nothing.
+     if(a.carried.indexOf('servo')<0) return 'the kit never reached the bag, so this check is testing nothing';
+     if(a.armed!=='servo') return 'the pocket did not arm at deploy (safeUp='+String(a.armed)+')';
+     if(a.stash.indexOf('servo')<0) return 'the named item did NOT survive the death';
+     if(a.stash.length!==1) return 'more than the one named item came home: '+a.stash.join(',');
+     var b=die(null);
+     if(b.err) return b.err;
+     if(b.stash.length) return 'items came home with nothing named as safe: '+b.stash.join(',');
+     return null; }},
   {v:'8.61',what:'the boarding hold cannot be done in instalments',
    run:function(){
      function pull(leave){
@@ -1134,6 +1157,23 @@ window.__regress=function(){
 window.__ui={sector:function(){ return renderSector(); },
              hub:function(){ return renderHub(); },
              stats:function(){ return renderStatCards(); }};
+// v8.63: deploy WITH A KIT, through the real staging path. Puts the named items
+// in the stash, stages them, runs commitKit so P.dropKit and P.safeUp are armed
+// exactly as the lift arms them, then starts the raid. Without this the drop kit
+// and the safe pocket were untestable, because __startRaid lands with nothing.
+window.__deploy=function(o){
+  o=o||{};
+  var kit=o.kit||[];
+  P.stash=(o.stash||kit).slice();
+  P.kit=kit.slice();
+  P.kitChosen=0; P.dropKit=[]; P.freeKit=0;
+  if(o.safe!==undefined) P.safe=o.safe;
+  var ok=false;
+  try{ ok=commitKit(); }catch(e){ return {error:'commitKit threw: '+e}; }
+  __startRaid({mapIx:o.mapIx===undefined?0:o.mapIx,seed:o.seed===undefined?4242:o.seed,sim:!!o.sim});
+  return {committed:ok,dropKit:(P.dropKit||[]).slice(),safeUp:P.safeUp===undefined?null:P.safeUp,
+          stashLeft:(P.stash||[]).slice(),bag:G?G.bag.slice():null};
+};
 window.__audio={amb:tickAmbience,steps:tickEnemyAudio,sfx:sfx,blip:blip,ears:earsOf,stepSound:stepSoundFor,
   bus:bus,ctx:ac,ambObj:function(){ return AMB; }};
 window.__bag={weight:bagWeight,drop:dropItem,worst:worstBagIndex,cull:autoCull,
