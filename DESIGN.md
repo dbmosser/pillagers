@@ -27443,6 +27443,81 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.49 - THE MAN WHO WAVES BACK ACTUALLY HANDS SOMETHING OVER
+
+A LARGE SHARE OF SUCCESSFUL PARLEYS PAID NOTHING. The comment above this
+block says "He gives you something out of his own bag. It is not much and it
+is not nothing." The code took ONE uniform sample of the bag and abandoned
+the entire gift if that sample happened to be a gun. No retry, no fallback,
+and no message on the skip - the player only ever saw "waves back".
+
+Every raider's bag carries his gun at index 0 by construction, so this was
+not a rare miss. With a five item bag it is one parley in five, and worse
+when he is carrying little. You put your weapon down, hail twice, he lowers
+his gun and waves, and nothing appears. That reads as the reward system
+being broken rather than as a die roll, because nothing on screen says a
+gift was even attempted.
+
+The candidate list is built first and drawn from, so the gift is whatever he
+can actually give. If all he has is his gun, he says so.
+
+The draws moved to the cosmetic stream at the same time. This block is
+fenced behind !G.sim, so every parley was consuming seeded numbers the bot
+never consumes - the same parity defect as v8.35, in a place the map diff
+could not see because it only happens mid-raid in response to a player
+action.
+
+THE PEDDLER AND THE STRAY WERE DRAWN HOLDING RIFLES. drawOp only draws empty
+hands for mode 'none' and a fist for 'fist'. Everything else falls into the
+weapon branch, which reads the carried gun from the actor and, when there is
+none, DEFAULTS to a rifle and draws the receiver, magazine, grip and support
+hand. The Peddler is passed mode '' with no owner; the Stray is passed
+'crouch' with no owner. Neither has a weapon. So both were visibly armed.
+
+That is exactly the cue the game uses everywhere else to say this one is
+dangerous, worn by the two characters the whole design says are not. The
+Stray's own comment calls his crouch "most of what tells you he is not a
+threat", and he was crouching with a rifle.
+
+mode carries both pose and hands, and 'crouch' does nothing except lift the
+body five pixels, so the Stray needed a mode that keeps the lift and takes
+the empty-handed branch. Added as its own mode rather than a general "no gun
+means no hands" rule, which would have silently disarmed any armed actor
+drawn without an owner reference.
+
+AND THE ONE LINE THAT EXPLAINS XP TOLD TWO DIFFERENT STORIES. The same
+control, in the same panel, printed one of two mutually exclusive sentences
+depending on whether the stash happened to hold anything sellable. One said
+selling was the ONLY thing that earns XP. The other said finishing a
+contract earns it too. Neither was true: every finished RAID pays XP
+unconditionally, and contracts pay none, which v8.42 confirmed when it
+struck "+ XP" off both payout surfaces. It is one sentence now, and it
+matches the code.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both
+maps with no throw; three endings through oc_btn with the overlay on; hub;
+__renderStage; stream parity zero; a full sim raid end to end.
+  the gift    bag of gun plus four goods: a crate appears holding an
+              Optics Lens, and he waves. Bag of nothing but his gun: no
+              crate, and he says he has nothing to spare but his gun. Empty
+              bag: no crate, and the old outer guard still handles it.
+  the drawing the Peddler, the Stray and a pillager stood side by side in
+              one frame and captured as an image: the pillager visibly
+              holds a grey rifle across his body and the Peddler's hands
+              are empty. The pillager is the control - if the change had
+              gone too far he would have lost his gun too.
+  the sentence both branches now read "Selling salvage here pays XP equal to
+              the price. Finishing a raid pays XP too. The Peddler in the
+              field pays cash only." They agree, no contract claim remains,
+              and the "only thing that earns XP" claim is gone.
+
+Not verified: the Stray specifically, in the capture. The image clearly
+separates the armed pillager from the empty-handed Peddler, which is the
+comparison that matters, but the Stray sits behind the player's own light
+cone in that frame and I did not isolate him. His draw call takes the same
+new mode as the Peddler's, one line apart, so the risk is low - but it is
+inference rather than a picture.
+
 ## v8.48 - TWO THINGS PRINTED ON TOP OF OTHER THINGS, AND HALF THE MACHINE WAR
 
 THE TERMS BADGE WAS STAMPED ACROSS THE CONDITIONS PANEL. Measured on a live

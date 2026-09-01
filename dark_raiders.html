@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.48';
+var VER='8.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5661,12 +5661,27 @@ function doEmote(ix){
       // nothing, and it is the first time in this game that a stranger has been
       // worth more alive.
       if(e.bag.length&&!G.sim){
-        var gi=ri(0,e.bag.length-1),gk=e.bag[gi];
-        if(ITEMS[gk]&&ITEMS[gk].use!=='gun'){
+        // v8.49, audit: PICK FROM WHAT HE CAN ACTUALLY GIVE. This drew one index
+        // at random and gave up entirely if it landed on a gun - and a gun sits at
+        // index 0 of every raider's bag by construction, so a large share of
+        // successful parleys silently paid nothing at all.
+        // The draws are on the cosmetic stream because this block is live-only:
+        // every parley used to consume seeded numbers the bot never consumes.
+        var _gcand=[];
+        for(var _gq=0;_gq<e.bag.length;_gq++){
+          var _gi2=ITEMS[e.bag[_gq]];
+          if(_gi2&&_gi2.use!=='gun') _gcand.push(_gq);
+        }
+        if(_gcand.length){
+          var gi=_gcand[fxi(0,_gcand.length-1)],gk=e.bag[gi];
           e.bag.splice(gi,1);
-          var gc=setLoot(mkContainer(e.x+rnd(-16,16),e.y+rnd(10,22),'crate'),[gk]);
+          var gc=setLoot(mkContainer(e.x+fxn(-16,16),e.y+fxn(10,22),'crate'),[gk]);
           gc.time=0.5; gc.gift=1; G.containers.push(gc);
           label(e.x,e.y-20,'GIFT: '+ITEMS[gk].name,'#7fc4a0',0,true);
+        } else {
+          // He has nothing but his gun, and he is not handing that over. Say so,
+          // rather than leaving the player to wonder whether the system works.
+          say(e.name+' has nothing to spare but his gun.');
         }
       }
       if(!G.sim){
@@ -15992,7 +16007,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     return;
   }
   st=st||{};
-  var lift=mode==='crouch'?5:0;
+  var lift=(mode==='crouch'||mode==='crouchnone')?5:0;   // v8.49: crouched AND empty handed
   var moving=!!st.moving,sprint=!!st.sprint,ads=!!st.ads,rl=st.rl||0;
 
   // Walk cycle. Each leg swings along screen x and lifts on its forward half,
@@ -16269,7 +16284,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // SPEC 7.4, barehanded since v7.61: while you are working a container the
   // gun is DOWN. That is the whole cost of looting - you can be caught with
   // empty hands, and it has to be VISIBLE or the cost is invisible.
-  if(mode==='none'){
+  if(mode==='none'||mode==='crouchnone'){
     // v6.57, his note: empty hands. Down in the Undercroft nobody is holding a gun,
     // so the arm still swings and there is simply nothing in it.
     wc.fillStyle='#c8b49a'; wc.fillRect(2+ext,-1.6,3.2,3.2);
@@ -16566,7 +16581,10 @@ function drawPeddlerS(e){
   var hx=(e.tx!==undefined)?e.tx:e.x, hy=(e.ty!==undefined)?e.ty:e.y;
   wc.fillStyle='rgba(10,8,6,.34)';
   wc.beginPath(); wc.ellipse(hx,hy+5,28,10,0,0,6.2832); wc.fill();
-  drawOp(e.x,e.y-15,e.face,(e.step||0)*3,e.coat,0.3,0,'',0,
+  // v8.49, audit: 'none', not ''. An empty string falls through drawOp's mode
+  // chain into the WEAPON branch, which defaults to a rifle when the actor has no
+  // wep - so the merchant behind his stall was drawn holding one.
+  drawOp(e.x,e.y-15,e.face,(e.step||0)*3,e.coat,0.3,0,'none',0,
     {moving:!!(e.fleeT||e._back),sprint:!!e.fleeT,ads:false,hurt:e.hitT});
   wc.fillStyle='#7a5f40'; wc.fillRect(hx-25,hy-7,50,6);
   wc.fillStyle='#5a4530'; wc.fillRect(hx-25,hy-1,50,6);
@@ -17877,7 +17895,10 @@ var SHD=G.shells[i];
       else if(e2.kind==='stray'){
         // Crouched and drab. He is not posed like anything else on the map,
         // which is most of what tells you he is not a threat.
-        drawOp(e2.x,e2.y,e2.face,0,e2.coat,0,0,'crouch',0,
+        // v8.49, audit: crouched and EMPTY HANDED. 'crouch' only lifts the body;
+        // the hands still fell through to the weapon branch and its rifle default,
+        // so the wounded survivor was drawn armed.
+        drawOp(e2.x,e2.y,e2.face,0,e2.coat,0,0,'crouchnone',0,
           {moving:false,sprint:false,ads:false,hurt:e2.hitT,bulk:0});
         if(!e2.helped){
           var sp2=0.6+0.4*Math.sin(G.t*2.4+e2.x*0.01);
@@ -23283,7 +23304,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.48: nothing is printed on top of the conditions panel or the belt, and a weak point contract pays what it is worth.',
+  now:'v8.49: a pillager who waves back actually hands something over, and the Peddler is not holding a rifle.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -24714,8 +24735,12 @@ try{ renderFreeKit(); }catch(_fk){}
   var _sh=document.getElementById('sellhint');
   if(_sh){
     _sh.textContent=_sn
-      ? 'Selling here is the only thing that earns XP, and it pays it equal to the price. The Peddler in the field pays cash and no XP.'
-      : 'Selling salvage here pays XP equal to the price, and so does finishing a contract. The Peddler pays cash only.';
+      // v8.49, audit: ONE sentence, and a true one. These two branches contradicted
+      // each other on the same control - one said selling was the only XP source,
+      // the other said contracts paid it too - and neither matched the code, which
+      // pays XP for selling and for finishing a raid, and none for a contract.
+      ? 'Selling salvage here pays XP equal to the price. Finishing a raid pays XP too. The Peddler in the field pays cash only.'
+      : 'Selling salvage here pays XP equal to the price. Finishing a raid pays XP too. The Peddler in the field pays cash only.';
   }
   // AND WHAT THE REP IS FOR, v3.24. v3.23 told him where reputation comes from,
   // which was the missing half of the loop; this is the other half. "rep 0"
