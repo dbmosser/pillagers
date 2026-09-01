@@ -952,6 +952,56 @@ window.__REGRESS=[
        if(hit) out.push('mapIx '+mi+' has '+hit+' roads crossing a wall');
      });
      return out.length?out.join('; '):null; }},
+  {v:'8.65',what:'the two gun slots swap weapons and never fire one',
+   run:function(){
+     var P=__P(); P.weapons=['smg','rifle']; P.hotAssign={};
+     __resetCfg(); __pinDefaults(0);
+     var d=__deploy({kit:['bandage'],safe:null,mapIx:0,seed:4242});
+     if(d.error) return d.error;
+     var g=__state(); if(!g) return 'no raid';
+     g.ents.length=0; g.player.iv=99;
+     var sl=__belt.slots();
+     if(!(sl[0]&&sl[0].kind==='gun'&&sl[1]&&sl[1].kind==='gun'))
+       return 'the first two slots are not both guns, so this check is testing nothing';
+     var hand0=g.player.wep&&g.player.wep.id, sec0=g.player.sec&&g.player.sec.id;
+     if(!sec0) return 'no second gun was stowed, so the swap cannot be tested';
+     __belt.set(1);
+     for(var f=0;f<6;f++) __loop(performance.now()+f*16.7);
+     var s1=__state();
+     if((s1.player.wep&&s1.player.wep.id)!==sec0) return 'picking the stowed gun did not bring it up';
+     __belt.set(0);
+     for(var f2=0;f2<6;f2++) __loop(performance.now()+f2*16.7);
+     var s2=__state();
+     if((s2.player.wep&&s2.player.wep.id)!==hand0) return 'picking the first gun back did not restore it';
+     if(s2.tel.shots>0) return 'a belt key FIRED the gun; it must only change weapon';
+     return null; }},
+  {v:'8.65',what:'the heal and plate slots spend the right item',
+   run:function(){
+     var P=__P(); P.weapons=['smg']; P.hotAssign={};
+     __resetCfg(); __pinDefaults(0);
+     var d=__deploy({kit:['bandage','medkit','plate'],safe:null,mapIx:0,seed:4242});
+     if(d.error) return d.error;
+     var g=__state(); if(!g) return 'no raid';
+     g.ents.length=0; g.player.iv=99; g.player.hp=40; g.player.armor=0;
+     var sl=__belt.slots(), hi=-1, pi=-1;
+     sl.forEach(function(x,i){ if(x.kind==='heal') hi=i; if(x.kind==='armor') pi=i; });
+     if(hi<0||pi<0) return 'no heal or armour slot on the belt, so this check is testing nothing';
+     // The heal slot names the SMALLEST heal carried, which is the bandage here.
+     if(sl[hi].icon!=='bandage') return 'the heal slot named '+sl[hi].icon+' with a bandage in the bag';
+     __belt.set(hi); __belt.use();
+     for(var f=0;f<200;f++) __loop(performance.now()+f*16.7);
+     var s1=__state();
+     if(s1.player.hp<=40) return 'using the heal slot healed nothing';
+     if(s1.bag.indexOf('bandage')>=0) return 'the bandage was not spent';
+     var sl2=__belt.slots(), pi2=-1;
+     sl2.forEach(function(x,i){ if(x.kind==='armor') pi2=i; });
+     if(pi2<0) return 'the armour slot vanished after healing';
+     __belt.set(pi2); __belt.use();
+     for(var f2=0;f2<200;f2++) __loop(performance.now()+f2*16.7);
+     var s2=__state();
+     if(s2.player.armor<=0) return 'using the plate slot applied no armour';
+     if(s2.bag.indexOf('plate')>=0) return 'the plate was not spent';
+     return null; }},
   {v:'8.64',what:'a raid that takes your kit also lets go of the belt keys',
    run:function(){
      function go(how,seconds){
@@ -1207,6 +1257,15 @@ window.__deploy=function(o){
   return {committed:ok,dropKit:(P.dropKit||[]).slice(),safeUp:P.safeUp===undefined?null:P.safeUp,
           stashLeft:(P.stash||[]).slice(),bag:G?G.bag.slice():null};
 };
+// v8.65: the belt, readable. slots() is what the hotbar actually holds, sel() is
+// which one is live, set() and use() are the two verbs the keys drive. Without
+// these a belt check has to infer the state from the HUD and usually infers it
+// wrong.
+window.__belt={slots:function(){ return hotbarSlots(); },
+               sel:function(){ return hotSel(); },
+               set:function(i){ return setHot(i); },
+               use:function(){ return useHot(); },
+               assign:function(){ return P.hotAssign||{}; }};
 window.__audio={amb:tickAmbience,steps:tickEnemyAudio,sfx:sfx,blip:blip,ears:earsOf,stepSound:stepSoundFor,
   bus:bus,ctx:ac,ambObj:function(){ return AMB; }};
 window.__bag={weight:bagWeight,drop:dropItem,worst:worstBagIndex,cull:autoCull,

@@ -27443,6 +27443,64 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.65 - THE BELT IS UNDER TEST AT LAST
+
+Following the gap flagged at the end of v8.64: the bindings there were set by
+writing the profile directly, so nothing had ever exercised the belt itself. The
+belt is the surface he named as the ship blocker, it has had four input bugs of
+its own at v8.31 and an inverted in-hand test at v8.43, and not one line of the
+regression suite watched it.
+
+It could not be watched, because it could not be read. Every belt check I have
+written until now was me guessing field names from outside and getting silence
+back, and this build repeated that mistake twice before fixing the cause. First I
+drove the number keys through the keys map, and the digit handler runs on the key
+EVENT, so nothing happened. Then I dispatched real key events and still saw
+nothing, because in a raid a digit SELECTS a belt slot and the shoot button or G
+spends it, and setHot returns immediately when the slot asked for is the one
+already selected.
+
+__belt exposes what the hotbar actually holds, which slot is live, and the two
+verbs the keys drive. With it the belt reads plainly for the first time: nine
+slots, the two guns first, then the three throwables, then medical, then armour
+if you are carrying a plate, then real empty cells.
+
+THREE RULES MEASURED AND LOCKED IN. All three assert what the running game did,
+not what the source says.
+
+  the two gun slots     picking the stowed gun brings it up and stows the other,
+                        picking the first brings it back, and neither fires a
+                        shot. That last clause is his rule from v6.60: a belt key
+                        changes weapon, it never fires it.
+  the medical slot      names the SMALLEST heal you carry, a bandage over a
+                        medkit, spends that one and heals.
+  the armour slot       spends a plate and applies it.
+
+Controlled by disabling the belt selector and running the suite again: both new
+checks fail, naming the exact step that stopped working. Restored, both pass, and
+the suite is repeatable within one page load.
+
+CHECKED, NOTHING WRONG. Four more belt behaviours came out correct and are
+recorded so they are not re-chased. A gun bound to a belt slot never fires from
+that key. The in-raid assignment map is a per-raid copy of the stored one and
+only MANUAL pins are written back, which is why automatic pins do not persist and
+should not. Automatic pins yield to a derived slot that grows into their index,
+manual ones deliberately do not, which is the v6.61 rule. And a plate applies 20
+against a rig cap of 60, so nothing is being wasted; the 55 figure in an old
+comment is stale text, not live behaviour.
+
+Verified: parse PASS at 1,512,043 chars, mojibake none. __verify PASS: ents 58
+and 276, parity identical on both maps, looting on both with the clock advancing,
+all three endings with the overlay on, hub through the title button. __regress
+PASS, now 16 checks, up from 14.
+
+Not verified: the checks drive the belt through setHot and useHot rather than
+through a keypress, so the key HANDLER is still untested; what is proven is that
+the verbs behind the keys are correct. The belt is also never drawn in these
+checks, so what the player SEES on the bar is unmeasured, only what the bar
+holds. And dragging an item onto a slot, which is how a binding is actually made,
+is still untested: I set the assignment map directly again.
+
 ## v8.64 - A RAID THAT TAKES YOUR KIT NOW LETS GO OF THE BELT KEYS TOO
 
 clearKeysFor exists for exactly one rule, and its own comment states it: "Drops
