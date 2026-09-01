@@ -27443,6 +27443,76 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.50 - YOU CAN STAND IN FRONT OF THE GREAT DOOR
+
+NOTHING COULD EVER BE DRAWN IN FRONT OF THE SEAL. There is an empty branch
+in the container pass, `if(ct.seal){}`, whose comment says the seal is
+"drawn from the container pass so it y-sorts with everything else". It is
+not. ct.seal is never set on any container, and the slab is actually drawn
+AFTER the depth-sorted pass has finished, so it lands on top of every wall,
+container, body and machine unconditionally.
+
+Measured standing on the near side of the door: the slab drew at fillRect
+call 4327 of 4335 and the operator's own body at call 1941. Walk up to the
+seal from the camera side and your torso and head disappear behind it, and
+so does anything standing between you and it.
+
+It is pushed into the sort now as its own item, keyed on the slab's own y
+like everything else, and the branch that claimed this was already happening
+is gone.
+
+THE LAST REWARD ON THE BOARD SAID NOTHING SPECIAL. The closing line - "That
+is the whole board. Nothing resets and nothing gets harder." - was written
+to fire on a reward of kind 'last'. No entry in the table has that kind; all
+hundred are kit, credits or wep. So claiming the final reward at 1,200,000
+XP announced itself as an ordinary gun, and the one line written to answer
+"does this reset or get harder?" could never be shown. It is marked on the
+row itself now rather than on a kind that does not exist.
+
+A BATCH ROW RECORDS THE TERMS IT RAN UNDER. G.simResult stamps a fourteen
+dial fingerprint precisely so a contaminated measurement cannot pass as a
+clean one, and it recorded no terms at all - while SILENT RUNNING reaches
+sim raids UNGUARDED, adding a Listener and widening every Listener's hearing
+by half. A 320 raid batch taken from a profile with that term signed is
+measurably harder than the same build from a clean profile, and nothing on
+the row said so.
+
+AND A DEAD TEST GUARDING A VALUE THAT WAS ALREADY ZERO. hasTerm('pockets')
+tests for a term removed at v5.57, guarding a slot count that DEF sets to 0
+and a migration forces back to 0. The other copy of the same expression has
+only the CFG half, so the two had already drifted apart; they match now.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both
+maps with no throw; three endings through oc_btn with the overlay on; hub;
+__renderStage; stream parity zero; a full sim raid end to end.
+  the seal    standing IN FRONT of the slab, it draws at call 1305 and the
+              player at 1970, so the player is in front. Standing BEHIND it,
+              the slab draws at 1482 and the player at 1475, so the player
+              is behind. Both directions, which is the control - it sorts
+              rather than simply moving to the back.
+  the closer  claiming the final reward gives "Meridian Lance in the
+              armoury. That is the whole board. Nothing resets and nothing
+              gets harder." Claiming the one before it gives "+$80,000" with
+              no closing line, which is the control.
+  the row     a sim raid from a clean profile records terms "none"; the same
+              seed from a profile with SILENT RUNNING signed records
+              "silence". A contaminated batch can no longer look clean.
+
+NOT CHANGED, AND FLAGGED FOR HIM: which terms should reach the sim at all.
+Four of the five are fenced out of it - blackout's lamps, heavy patrols,
+they-know-you and the short window - and SILENT RUNNING is not, while
+blackout is applied HALF, its lamp suppression fenced and its time-of-day
+forcing not. The v2.06 comment beside the silence line argues terms should
+apply whole in both arms; the other four sites do the opposite. That is a
+measurement decision rather than a defect with one right answer: a benchmark
+that inherits whatever contract he happens to have signed cannot compare two
+builds. I have made the contamination visible rather than picking for him.
+
+Not verified: whether the seal now sorts correctly against WALLS specifically.
+The two-way check above is against the player, which is the case in the
+finding. A wall drawn at a y between the player and the slab is a third
+ordering I did not construct.
+
 ## v8.49 - THE MAN WHO WAVES BACK ACTUALLY HANDS SOMETHING OVER
 
 A LARGE SHARE OF SUCCESSFUL PARLEYS PAID NOTHING. The comment above this

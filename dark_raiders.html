@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.49';
+var VER='8.50';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14767,7 +14767,7 @@ var SEASON_TIERS=[
   {sp:1126500, kind:'credits', v:70000, label:'SEVENTY GRAND'},
   {sp:1150500, kind:'kit', v:['bloom','bloom','wcore','wcore','blackbox','blackbox','relay','relay'], label:'TWO OF EVERYTHING RARE'},
   {sp:1175000, kind:'credits', v:80000, label:'EIGHTY GRAND'},
-  {sp:1200000, kind:'wep', v:'lance', label:'THE LANCE'}
+  {sp:1200000, kind:'wep', v:'lance', label:'THE LANCE', closer:1}   // v8.50: the last one, and it says so
 ];
 // v7.94, his order: no all-caps in the rewards. Sentence-case every label
 // that is fully upper; mixed-case labels are already deliberate.
@@ -14865,9 +14865,11 @@ function claimTier(ix){
     for(var j=0;j<IDENTITIES.length;j++){ var r=idRec(IDENTITIES[j].id); r.standing=(r.standing||0)+T.v; }
     msg='you stand better with all '+IDENTITIES.length+' crews out there';
   }
-  if(T.kind==='last'){
-    // msg is already '+10,000c' from the credits branch above, so this appends
-    // rather than starting a sentence with a full stop.
+  // v8.50, audit: ON THE ROW, not on a kind that does not exist. This tested
+  // T.kind==='last' and no reward in the table has that kind, so the closing line
+  // could never be shown - the final reward at 1,200,000 XP announced itself as
+  // an ordinary gun. It appends to whatever the reward's own message was.
+  if(T.closer){
     msg+='. That is the whole board. Nothing resets and nothing gets harder.';
   }
   saveProfile();
@@ -14966,6 +14968,9 @@ function endRaid(how){
 
   if(G.sim){
     G.simResult={outcome:how,seed:G.seed,dur:Math.round(elapsed()),haul:haul,items:G.bag.length,
+      // v8.50, audit: WHICH TERMS WERE LIVE. SILENT RUNNING reaches sim raids
+      // unguarded and makes them harder, and the row recorded nothing about it.
+      terms:(function(){ try{ return termsOn().join('+')||'none'; }catch(_te){ return 'unknown'; } })(),
       containers:T.containers,windfalls:T.windfalls||0,pedSold:T.pedSold||0,wepSource:(function(){ var W=G.player&&G.player.wep; if(!W) return 'none'; if(G.player.wepIssued) return 'issued'; return wearable(W.id)?'owned':'field'; })(),crouched:T.tCrouchBot?Math.round(T.tCrouchBot):0,siegeArrivals:T.siegeArrivals||0,siegeNoSpot:T.siegeNoSpot||0,killer:T.deathKiller,firstContact:T.firstContact===null?null:Math.round(T.firstContact),
       shots:T.shots,hits:T.hits,kills:T.kills,jams:T.jams||0,closest:Math.round(T.closestExtract),
 downs:T.downs,revives:T.revives,raidersExt:T.raidersExtracted,
@@ -15203,7 +15208,7 @@ var _cdone=contractExtract(G.bag,haul);
     var saved=[],idx=[],j;
     for(i=0;i<G.bag.length;i++) idx.push(i);
     idx.sort(function(a,b){ return ival(G.bag[b])-ival(G.bag[a]); });
-    var nSafe=hasTerm('pockets')?0:Math.min(Math.round(CFG.safeSlots),idx.length);
+    var nSafe=Math.min(Math.round(CFG.safeSlots),idx.length);   // v8.50: 'pockets' left at v5.57
     for(j=0;j<nSafe;j++){ saved.push(G.bag[idx[j]]); bankItem(G.bag[idx[j]]); }
     // v6.01, his spec "ONE safe-pocket item survives death". Checked against the
     // BAG, so an item you named and then used or lost is not conjured back.
@@ -16934,9 +16939,10 @@ if(ct.cache&&ct.tag&&!ct.strong){
       wc.fillStyle='#e6b4ff'; wc.fillText(ct.tag,ct.x,ct.y-lift-d2-26);
       wc.textAlign='left';
     }
-    if(ct.seal){
-      // drawn from the container pass so it y-sorts with everything else
-    }
+    // v8.50, audit: the empty `if(ct.seal){}` that used to sit here claimed the
+    // seal y-sorted with everything else. ct.seal was never set on any container
+    // and the slab drew after the sorted pass, so it was painted over the player.
+    // It is pushed into DR as its own item now, next to the container pushes.
     if(ct.strong&&!ct.opened){
       var spl=0.5+0.5*Math.sin(G.t*2.2);
       wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.34*spl;
@@ -17234,6 +17240,33 @@ var SHD=G.shells[i];
   // v7.68: landed decoys and armed frags moved INTO the y-sort (they drew
   // before it and everything overpainted them). Closures, dispatched first.
   var DR=[];
+  // v8.50, audit: the great door, drawn from the sort rather than over it. Body
+  // moved verbatim from the old post-sort block; the only change is that it is
+  // reachable from DR and so obeys the same y ordering as every other solid thing.
+  function drawSealSlab(){
+    if(!G.seal) return;
+    var SW=G.seal,SRw=sealHere(),needW=sealNeed(SRw.tier);
+    var pctW=clamp((SRw.cut+SW.gained)/needW,0,1);
+    var swx=SW.x,swy=SW.y;
+    wc.fillStyle='rgba(10,8,6,.40)';
+    wc.beginPath(); wc.ellipse(swx,swy+4,30,11,0,0,6.2832); wc.fill();
+    wc.fillStyle=INK; rrF(swx-26,swy-52,52,56,4);
+    wc.fillStyle=SW.done?'#5a4a26':'#2f3844'; rrF(swx-24,swy-50,48,52,3);
+    wc.fillStyle=SW.done?'#8a7038':'#465262'; wc.fillRect(swx-24,swy-50,48,4);
+    wc.fillStyle='rgba(12,10,16,.6)'; wc.fillRect(swx-18,swy-40,36,3);
+    wc.fillRect(swx-18,swy-24,36,3);
+    wc.fillStyle=SW.done?'#ffc04a':'#4de3d0';
+    wc.fillRect(swx-20,swy-6-44*pctW,40,Math.max(2,44*pctW));
+    wc.globalAlpha=0.5;
+    wc.fillStyle=SW.done?'#ffc04a':'#8fd0ff';
+    wc.fillRect(swx-20,swy-8-44*pctW,40,2);
+    wc.globalAlpha=1;
+    wc.textAlign='center'; wc.font=FS(TYPE.label);
+    wc.fillStyle=INK; wc.fillText(SW.done?'SEAL BROKEN':('THE SEAL  '+Math.round(pctW*100)+'%'),swx+1,swy-59);
+    wc.fillStyle=SW.done?'#ffc04a':'#8fd0ff';
+    wc.fillText(SW.done?'SEAL BROKEN':('THE SEAL  '+Math.round(pctW*100)+'%'),swx,swy-60);
+    wc.textAlign='left';
+  }
   function _pushThrown(){
     var _ti,_dy2,_fr2;
     for(_ti=0;_ti<G.decoys.length;_ti++){
@@ -17272,6 +17305,9 @@ var SHD=G.shells[i];
     if(ct.x<ox-40||ct.x>ox+VW+40||ct.y<oy-60||ct.y>oy+VH+60) continue;
     DR.push({k:ct.y,c:ct});
   }
+  // v8.50: THE GREAT DOOR SORTS WITH THE WORLD. Keyed on the slab's own y, so
+  // standing in front of it puts you in front of it.
+  if(G.seal) DR.push({k:G.seal.y,fn:drawSealSlab});
   for(i=0;i<G.ents.length;i++){
     var e=G.ents[i];
     if(!e.seen) continue;
@@ -18067,7 +18103,8 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     }
   }
   // THE SEAL, in the world. A slab with a progress band cut into it.
-  if(G.seal){
+  // v8.50: the slab is drawn from the depth sort now, in drawSealSlab below.
+  if(false){
     var SW=G.seal,SRw=sealHere(),needW=sealNeed(SRw.tier);
     var pctW=clamp((SRw.cut+SW.gained)/needW,0,1);
     var swx=SW.x,swy=SW.y;
@@ -23304,7 +23341,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.49: a pillager who waves back actually hands something over, and the Peddler is not holding a rifle.',
+  now:'v8.50: you can stand in front of the great door instead of behind it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
