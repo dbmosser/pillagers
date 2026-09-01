@@ -952,6 +952,46 @@ window.__REGRESS=[
        if(hit) out.push('mapIx '+mi+' has '+hit+' roads crossing a wall');
      });
      return out.length?out.join('; '):null; }},
+  {v:'8.59',what:'a roll does not freeze the heal you are applying',
+   run:function(){
+     function go(roll){
+       __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       g.ents.length=0;
+       p.hp=40; p.armor=0; p.iv=99; p.combatT=99; p.healQ=30; p.prep=null;
+       for(var f=0;f<180;f++){
+         var pp=__state().player;
+         if(roll){ pp.roll=0.5; pp.rollDir={x:1,y:0}; }
+         __loop(performance.now()+f*16.7);
+       }
+       return __state().player.healQ||0;
+     }
+     var a=go(false), b=go(true);
+     if(b>a+1) return 'rolling left '+b.toFixed(1)+' of the heal unapplied against '+a.toFixed(1)+' standing still';
+     return null; }},
+  {v:'8.59',what:'melee cannot swing through a wall',
+   run:function(){
+     __resetCfg(); __pinDefaults(1); __startRaid({mapIx:1,seed:4242});
+     var g=__state();
+     var solid=g.map.walls.filter(function(w){return !w.furn&&!w.wreck&&!w.ledge;});
+     solid.sort(function(a,b){return Math.min(a.w,a.h)-Math.min(b.w,b.h);});
+     var reach=0, allowed=0;
+     for(var k=0;k<solid.length;k++){
+       var w=solid[k], t=Math.min(w.w,w.h);
+       if(t>20) break;
+       var thin=(w.w<w.h), cx=w.x+w.w/2, cy=w.y+w.h/2;
+       var d=t/2+11.5, d2=t/2+13.5;
+       var px=thin?cx-d:cx, py=thin?cy:cy-d;
+       var qx=thin?cx+d2:cx, qy=thin?cy:cy+d2;
+       if(Math.hypot(qx-px,qy-py)-24>MELEE_REACH) continue;
+       reach++;
+       refreshVseg();
+       if(losClear(px,py,qx,qy,G.vseg)) allowed++;
+     }
+     // The map must still HAVE such geometries, or this check is watching nothing.
+     if(!reach) return 'no wall-separated geometry inside melee reach - this check has stopped testing anything';
+     if(allowed) return allowed+' of '+reach+' wall-separated pairs would still allow a swing';
+     return null; }},
   {v:'8.58',what:'closest-extract measures the nearest OPEN ring, not the targeted one',
    run:function(){
      var out=[];

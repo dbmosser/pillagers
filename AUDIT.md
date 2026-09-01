@@ -53,6 +53,8 @@ adversarially verified):
 | the sector board printed a dimension in hectares, ten times too small | v8.58 | rendered board now reads 420 by 340 metres, 14.3 hectares |
 | the down message asked for medical that self-revive never needed | v8.58 | emptied the bag, went down, F worked: 40hp, one revive |
 | the workshop promised jamming while every wear band is jam 0 | v8.58 | text corrected; a regress check watches the table |
+| melee swung with no line of sight test on either the crawler or the Listener | v8.59 | 9 wall-separated geometries inside reach on the mile, all 9 now refused |
+| rolling froze heal-over-time completely | v8.59 | 30 queued points applied 0 while rolling, 30 standing still; now equal |
 
 ## Could not reproduce
 
@@ -65,13 +67,13 @@ adversarially verified):
 
 | Finding | Note |
 |---|---|
+| the collision push-out can eject a body through a wall thinner than its radius | v8.59: 8 of 1228 thin walls on the mile did it when the player was placed overlapping one. NOT established that real play reaches that overlapped state - the stepper I used also moves the player. |
 | extraction pull `z.pullT` may bank progress when you leave the ring | v8.58: my probe could not START a pull, so it proves nothing either way. Needs a repro that gets pullT above 0. |
-| Melee has no wall/LOS test, no armour, no merc exclusion, no aggro, no break | from the raid audit, not yet reproduced |
+| melee: no merc exclusion, no aggro, no break | v8.59 closed the wall/LOS half. Armour was already applied by damagePlayer, so that part of the finding was wrong. The rest is unreproduced. |
 | Howler splash on a possum crawler leaves it at hp<=0 in G.ents forever | from the raid audit, not yet reproduced |
 | beacon investigate overwrites the Listener's hunt | from the raid audit, not yet reproduced |
 | burst echo excluded from wear, fires the OLD gun's stats after a swap | from the raid audit, not yet reproduced |
 | death screen HEALTH/DAMAGE columns record pre-hit, pre-armour values | from the raid audit, not yet reproduced |
-| roll frames skip tickHeal, stalling heal-over-time | from the raid audit, not yet reproduced |
 | closeSchedule absolute seconds vs a scaled raid clock; a ring can close on frame 1 under SHORT WINDOW | from the raid audit, not yet reproduced |
 | ~85 remaining mediums and lows from the full-file audit | not yet triaged into this table |
 

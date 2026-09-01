@@ -27443,6 +27443,66 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.59 - NOTHING SWINGS THROUGH A WALL, AND DODGING NO LONGER CANCELS YOUR BANDAGE
+
+ROLLING FROZE A HEAL COMPLETELY. The roll branch in updatePlayer returns before
+the rest of the frame. A previous build caught half of this and carried tickRegen
+and tryExtractTick past the return, with a comment reading "Nothing in the design
+says a defensive move should cost you healing". tickHeal was left out, and
+tickHeal is the thing that actually applies a bandage.
+
+Measured over 3 seconds with 30 points queued, starting at 40 health:
+
+  standing still   40 -> 71    queue fully applied
+  rolling          40 -> 41    queue still 30, nothing applied at all
+
+Not reduced. Zero. The heal you started because you are under fire stopped the
+instant you dodged, and dodging is the whole reason you are under fire and
+healing. After the fix both cases read 40 -> 71 with the queue empty. tickHeal
+makes no seeded draw, so nothing in the stream moves.
+
+MELEE HAD NO LINE OF SIGHT TEST. Both melee sites - the crawler and the Listener -
+compared the gap between bodies against MELEE_REACH and swung, with nothing
+asking whether anything was in the way.
+
+COLD STORAGE is safe from this by accident rather than by design: its thinnest
+solid wall is 9.42 units, which holds two bodies 10.4 apart, just outside the 10
+unit reach. THE COLD MILE has solid walls down to 2.80 units. Counting every
+thin wall on the mile where two bodies can sit on opposite faces and still be
+inside the reach: 9 such geometries exist, and before this build all 9 permitted
+a swing. All 9 are now refused. A blocked crawler keeps PATHING rather than
+standing still, or it would stop at a wall instead of walking around it.
+
+I OWE A CORRECTION ON HOW I MEASURED THAT. My first probe reported the player
+being damaged through walls in 7 of 170 geometries, and that number was an
+artefact of my own setup: I pinned the player overlapping the wall, the collision
+push-out ejected them out the far face, and the crawler then hit them
+legitimately from four units away with clear sight. Instrumenting the moment of
+damage is what showed it. The 9-geometry count above is the honest one, and it is
+a count of what the guard now refuses rather than a rate at which it bit in real
+play.
+
+That accident did surface something else, which is NOT fixed here and is recorded
+in AUDIT.md as open: standing overlapped with a wall thinner than the body
+radius, the collision push-out can eject a body out the far side. Measured 8 such
+walls out of 1228 on the mile. I could not establish whether real play ever
+reaches that overlapped state, because the stepper I was using also moves the
+player, so it is written down rather than fixed.
+
+Verified: parse PASS at 1,509,111 chars, mojibake none. __verify PASS: ents 58
+and 276, parity identical on both maps, looting on both with the clock advancing,
+all three endings with the overlay on, hub through the title button. __regress
+PASS, now 9 checks, up from 7. The melee check asserts that such geometries still
+EXIST before asserting they are refused, so it fails rather than passing silently
+if a future map has none.
+
+Not verified: the melee guard is proven at the level of the condition, on the 9
+geometries where a wall can sit between two bodies inside the reach. I did not
+measure how often a machine is actually in that position during a played raid,
+and the bot never fights well enough to answer it. The Listener's melee was fixed
+by the same reasoning as the crawler's but has no separate measurement of its
+own. And the collision push-through above is unresolved, not closed.
+
 ## v8.58 - FOUR NUMBERS AND MESSAGES THAT TOLD THE PLAYER SOMETHING UNTRUE
 
 All four reproduced against the running build before anything was changed, and

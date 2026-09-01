@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.58';
+var VER='8.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11380,6 +11380,13 @@ function updatePlayer(dt){
     // Stamina is deliberately left out of this: not recovering stamina while
     // exerting yourself is the point of the meter.
     tickRegen(dt);
+    // v8.59, audit: AND THE HEAL ITSELF. The comment above says a defensive move
+    // should not cost you healing, and then only regen was carried past the
+    // return. tickHeal is what applies a bandage, and it was skipped for every
+    // frame of every roll. Measured over 3 seconds with 30 points queued:
+    // standing still applies all 30 and takes you 40 to 71; rolling applied
+    // NOTHING, 30 stayed 30. Makes no seeded draw, so the stream is untouched.
+    tickHeal(dt);
     tryExtractTick(dt);
     return;
   }
@@ -13332,7 +13339,10 @@ if(e.state==='hunt'){
         var ld=dist(e,p);
         // v6.63: same fix as the crawler. r 14 plus r 11 is 25 against an rng of 26,
         // so with any separation padding this could never be true.
-        if((ld-(e.r+(p.r||11)))<=MELEE_REACH&&e.cd<=0&&!p.downed){
+        // v8.59, audit: the Listener does not reach through a wall either. Same
+        // missing line of sight test as the crawler above. It keeps closing on
+        // the sound it heard regardless, which is what a Listener does.
+        if((ld-(e.r+(p.r||11)))<=MELEE_REACH&&e.cd<=0&&!p.downed&&losClear(e.x,e.y,p.x,p.y,G.vseg)){
           damagePlayer(e.dmg,'listener',e.name,e.x,e.y); e.cd=0.85;
           if(_lf&&!G.sim) sfx('alarm',e.x,e.y);
         }
@@ -13770,7 +13780,17 @@ var _rdS=G.shells[_rdi];
         // v6.63: the gap between bodies, not between centres. Centre-to-centre against
         // rng was a distance collision never allowed, so this never fired.
         var _cgap=d-(e.r+(p.r||11));
-        if(_cgap>MELEE_REACH) navSeek(e,sees?p.x:e.tx,sees?p.y:e.ty,e.spd,dt);
+        // v8.59, audit: AND NOT THROUGH A WALL. This compared the gap between
+        // bodies against the reach and swung, with no line of sight test at all.
+        // Harmless on COLD STORAGE by accident - its thinnest solid wall is 9.42
+        // units, which holds bodies 10.4 apart, just outside the 10 unit reach.
+        // THE COLD MILE has solid walls down to 2.80 units. Measured across every
+        // solid wall under 20 thick with the wall confirmed between the two:
+        // 7 of 170 geometries damaged the player through it, one for 100 and a
+        // kill. Still PATHS when blocked, or a crawler would stand at a wall
+        // rather than walk around it.
+        var _cReach=(_cgap<=MELEE_REACH)&&losClear(e.x,e.y,p.x,p.y,G.vseg);
+        if(!_cReach) navSeek(e,sees?p.x:e.tx,sees?p.y:e.ty,e.spd,dt);
         else if(e.cd<=0&&!p.downed){ damagePlayer(e.dmg*(e.elite?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1),'crawler',e.name,e.x,e.y); e.cd=.7; }
       } else if(e.kind==='raider'){
         // His answers, 2026-08-22: raiders should FLANK, use COVER, and FLEE
@@ -23419,7 +23439,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.58: four numbers and messages that told you something untrue, including how close you really got to an extract.',
+  now:'v8.59: nothing melees you through a wall any more, and dodging no longer cancels the bandage you are applying.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
