@@ -27443,6 +27443,48 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.32 - THE GUN THAT COPIED ITSELF
+
+Pick up a field gun in a raid and the one already in your hands is pushed
+into the bag as an item. That is right for a gun you found up there: you
+swapped, and you are carrying both, and both are at risk. It is a
+DUPLICATION for a gun out of your own armoury, because owning it is what
+the armoury means and P.weapons never stopped listing it. Swap your own
+SMG out for a rifle you found, extract, and the stash now holds a second
+sellable SMG while the armoury still holds the first.
+
+It was also free money rather than a gamble, which is the part that
+mattered. carriedGuns is what death uses to take your guns off you, and it
+reads your two HANDS and nothing else, so the bagged twin was not exposed
+to the rule that is supposed to pay for carrying a gun at all. Die and you
+keep the gun. Live and you sell the copy.
+
+The right answer was already three lines up. An issued gun is not yours,
+so it is left behind rather than bagged. An armoury gun IS yours, so it
+goes back to the armoury, which is where it lives whenever you are not
+holding it, and you are told so. A gun you found on the floor still goes
+in the bag, unchanged, because it is loot and the risk is the point.
+
+The check is deliberately narrow: the armoury flag AND the model still
+listed in P.weapons. A gun that carries the flag but has since been sold
+out of the armoury is nobody's, so it is bagged like loot rather than
+vanishing.
+
+Verified at 1920x1080: parse PASS; fingerprints 58 (COLD STORAGE) and 276
+(THE COLD MILE) at seed 4242; three endings through oc_btn with the
+overlay asserted on - EXTRACTED, KILLED IN ACTION, ABANDONED; hub;
+__renderStage. Driven through the fixture's own equip door, four cases:
+  armoury gun in hands      0 copies bagged, still owned, rifle in hand
+  gun found on the floor    1 copy bagged, unchanged
+  issued kit                0 copies bagged, unchanged
+  armoury gun, since sold   1 copy bagged, so nothing is destroyed
+
+Not verified: the extraction end of it. Every case above is measured on
+the bag at the moment of the swap, which is where the copy was made; I did
+not drive a full raid to a successful extraction and count stash rows
+afterwards, so the claim is that the second copy is never created, not
+that banking behaves differently than it did.
+
 ## v8.31 - THE BELT ANSWERS WHAT YOU PICKED
 
 Four raid-audit findings, all in the belt, all felt mid-fight - which is

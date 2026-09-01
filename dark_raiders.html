@@ -1148,7 +1148,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.31';
+var VER='8.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10132,9 +10132,15 @@ function equipFromBag(ix,slot){
   var toSec=(slot===2);
   var oldW=toSec?p.sec:p.wep;
   var oldIssued=toSec?p.secIssued:p.wepIssued;
+  var oldArm=toSec?p.secFromArmory:p.wepFromArmory;
   G.bag.splice(ix,1);
   if(oldW&&oldW.id!=='fists'){
     if(oldIssued) say(oldW.name+' was issued kit, left behind.');
+    // v8.32, audit: a gun from your OWN armoury is not loot. Bagging it made a
+    // second sellable copy of something P.weapons still lists, and carriedGuns
+    // reads your hands only - so the copy dodged the death rule that is meant
+    // to pay for carrying a gun at all. It goes back where it lives.
+    else if(oldArm&&P.weapons.indexOf(oldW.id)>=0) say(oldW.name+' is yours; it goes back to the armoury.');
     else G.bag.push('gun_'+oldW.id);
   }
   if(toSec){ p.sec=g; p.secAmmo=Math.ceil(g.mag/2); p.secIssued=false; p.secFromArmory=false; }
@@ -22997,7 +23003,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.31: the belt answers what you picked - a stim is used, a click is the same as the key, and X finds the gun wherever it sits.',
+  now:'v8.32: swapping to a field gun no longer prints a second copy of the one from your armoury.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
