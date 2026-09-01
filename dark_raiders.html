@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.51';
+var VER='8.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1267,9 +1267,14 @@ var WEAPONS={
   carbine:{id:'carbine',name:'Burst Carbine',dmg:17,burst:3,rof:360,spread:.055,mag:24,reload:1900,rng:500,auto:false,noise:400,tint:'#ffd88a'},
   shotgun:{id:'shotgun',name:'Riot Scattergun',dmg:12,pellets:6,rof:650,spread:.170,mag:7,reload:2400,rng:260,auto:false,noise:500,tint:'#ffbe7a'},
   lmg:{optic:1.15,id:'lmg',name:'Support MG',dmg:16,rof:105,spread:.105,mag:60,reload:3400,rng:540,auto:true,noise:460,tint:'#ffca90'},
-  // FOUND, NEVER SOLD, v5.46. Neither appears in SHOP, in the seal rewards, or
-  // in PED_GUNS. The only way to hold one is to pull it out of a cache, a safe
-  // or a jackpot, which is the whole point of his note.
+  // NEVER SOLD, v5.46, corrected at v8.52. Neither is stocked by the shop or by
+  // the Peddler, and neither is a seal payout. You get one out of a cache, a safe
+  // or a jackpot, off an elite's body, or from three late rows on the reward board
+  // - the Whisper at 874,700 and again at 1,013,800 XP, the Lance at 1,200,000.
+  // The old wording here said a cache, a safe or a jackpot were the ONLY ways,
+  // which the board has contradicted since those rows were added: a reward grants
+  // the bare MODEL into the armoury, so it is owned, and an owned gun is wearable
+  // and enters the wear and repair economy a field-only gun stays out of.
   whisper:{optic:1.1,id:'whisper',name:'Whisper',dmg:14,rof:520,spread:.048,mag:30,reload:2100,rng:430,auto:true,noise:90,tint:'#a8d8c0'},
   lance:{optic:1.6,id:'lance',name:'Meridian Lance',dmg:96,rof:60,spread:.010,mag:3,reload:4000,rng:820,auto:false,noise:620,tint:'#d8b4ff'}
 };
@@ -9456,7 +9461,9 @@ function damagePlayer(amt,src,srcName,sx,sy){
   // v4.28: the direction of the hit, stamped for the ring around the body.
   if(G&&sx!==undefined&&G.player) G.player.hitFrom={ang:Math.atan2(sy-G.player.y,sx-G.player.x),at:G.t};
   if(G&&!G.sim&&G.player&&G.player.iv<=0) voxGrunt(amt>18);
-  if(G){ G.musHitT=G.t; G.combatT=G.t; }              // v3.90: being hit is news the music wants
+  // v8.52, audit: the musHitT and combatT stamps that stood here fed the combat
+  // radio, which was deleted at v5.50 along with its own dials. Nothing has read
+  // either field since.
   var p=G.player;
   if(p.iv>0) return;
   p.combatT=0;
@@ -9627,8 +9634,7 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
   // 80 units of where he stands; a raider shooting a machine across the map is
   // not his fight and does not touch his music.
   if(G&&!G.sim){
-    if(fromPlayer) G.combatT=G.t;
-    else { var _cp=G.player; if(_cp&&Math.hypot(tx-_cp.x,ty-_cp.y)<80) G.combatT=G.t; }
+    // v8.52, audit: two more combatT stamps for the deleted radio. See damagePlayer.
   }
 var spx=wep.spread*(((fromPlayer&&G.player.ads)||(!fromPlayer&&sh&&sh.steady))?0.4:1);
   // v4.38 HIS ANSWER 7: the Compact SMG climbs on a held trigger. Short taps
@@ -12843,7 +12849,12 @@ if(!_se.downed&&!_se.finished&&!_se.neutral&&_se.maxhp&&_se.hp<_se.maxhp&&
         }
       }
     }
-if(_se.kind==='raider'&&_se.sprintPool>0&&_se.moving&&!_se.downed&&!G.sim){
+// v8.52, audit: the !G.sim fence is off. The CONSUMER of these prints was never
+// fenced, so leaving the producer fenced meant the tracker existed in the played
+// game and not in the measured one. No rr() draw is involved, so the seeded
+// stream is unaffected; what changes is that pillager trails now pull machines
+// onto a route in a sim raid the way they always have in a live one.
+if(_se.kind==='raider'&&_se.sprintPool>0&&_se.moving&&!_se.downed){
       G.prints=G.prints||[];
       var _rlp=G.prints.length?G.prints[G.prints.length-1]:null;
       if(!_rlp||dist(_se,_rlp)>34){
@@ -21490,14 +21501,12 @@ function drawMapOverlay(){
   ctx.textAlign='left';
   // SPEC 7.6 and 11.1: locked rooms display on the map so the route can be
   // planned, and they show whether you have already opened them.
-  for(i=0;i<(G.map.locked||[]).length;i++){
-    var LM3=G.map.locked[i];
-    var lx3=ox+LM3.x*sc,ly3=oy+LM3.y*sc;
-    ctx.strokeStyle=LM3.open?'rgba(127,196,160,.8)':'#ffc04a';
-    ctx.lineWidth=2;
-    ctx.strokeRect(lx3,ly3,LM3.w*sc,LM3.h*sc);
-    mapLabel(LM3.open?'OPEN':'LOCKED',lx3+LM3.w*sc/2,ly3-6,LM3.open?'#7fc4a0':'#ffc04a');
-  }
+  // v8.52, audit: THIS LOOP IS GONE. It stroked every locked room and captioned it
+  // "LOCKED", and the v3.65 loop further down strokes the identical rectangle in
+  // the same colour at the same width and captions it with the room's real NAME
+  // plus the same word. Two different strings at the same anchor, so mapLabel's
+  // same-text suppressor could not collapse them and its collision walker stacked
+  // them instead: measured, five lock captions for two rooms.
   // SPEC 4.5: manholes on the sector map, so the fixed spawn set is learnable.
   for(i=0;i<(G.map.spawns||[]).length;i++){
     var SM=G.map.spawns[i];
@@ -22954,7 +22963,8 @@ function loop(ts){
         var wde=G.ents[wdi];
         if(wde.kind==='warden'){ var wdd=dist(pp,wde); if(wdd<700){ wdread=Math.max(wdread,1-wdd/700); G.tel.wardenMet=1; } }
       }
-      G.musThreat=th;                 // v3.90: the radio reads this next frame
+      // v8.52, audit: musThreat had no reader either; th itself is still needed
+      // below, so only the stamp goes.
       tickAmbience(dt,th,!pp.downed,wdread);
       tickEnemyAudio(dt);
       tickMachineVoices(dt);
@@ -23348,7 +23358,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.51: selling something clears the key you bound to it, and the bag no longer sits on your belt.',
+  now:'v8.52: one caption per locked room, and the benchmark finally tracks footprints the way the game does.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

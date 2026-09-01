@@ -27443,6 +27443,81 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.52 - ONE CAPTION PER ROOM, AND THE BENCHMARK LEARNS TO TRACK
+
+EVERY LOCKED ROOM ON THE SECTOR MAP WORE TWO CAPTIONS. Two loops walk the
+same list. The older one strokes the room and writes a bare "LOCKED"; the
+v3.65 one strokes the IDENTICAL rectangle, same colour, same line width, at
+the same anchor, and writes the room's real name plus the same word with a
+keyhole. Because the two strings differ, mapLabel's same-text suppressor
+cannot collapse them, so its collision walker stacks them instead.
+
+Measured on COLD STORAGE: two locked rooms, five lock captions. "LOCKED" at
+1484,396 with "BLAST FREEZER . LOCKED" shoved seventeen pixels above it, and
+the same again for the FOREMAN OFFICE, plus the extraction ring's own label.
+That ladder of near-duplicate text is the "names of areas make no sense"
+complaint the mapLabel comment was written to answer, produced by the fix
+itself never deleting what it replaced.
+
+FOOTPRINT TRACKING DID NOT EXIST IN THE BENCHMARK. G.prints has two
+producers and one consumer. The CONSUMER - the block that puts any sentry,
+crawler, raider or snitch within 170 units of a print younger than four
+seconds into 'investigate' - is not fenced at all. Both producers are: the
+player's own sprint push lives in updatePlayer, which the bot never runs
+because the sim calls updateBot instead, and the pillager push was fenced
+behind !G.sim outright.
+
+So in every sim raid the print list stayed empty and the whole tracker sat
+inert. In live play, sprinting lays a trail that pulls machines onto your
+route for six seconds. Every extract rate and every sprint-versus-walk
+conclusion this project has drawn was measured against a world where that
+was switched off.
+
+This is a behavioural divergence rather than the cosmetic-draw kind: no rr()
+is involved, so the seeded stream is untouched, and what changes is which
+entities change state.
+
+AND THREE STAMPS FEEDING A RADIO DELETED AT v5.50. damagePlayer stamped
+musHitT and combatT, fireWeapon stamped combatT twice more, and the main loop
+stamped musThreat once a frame. Nothing has read any of them since v5.50,
+when inCombat and musIntensity went along with musicCombat, musicCombatGap
+and musicTail. Three comments still asserted a reader that had not existed
+for fifty builds.
+
+A COMMENT THAT STATED A RULE THE GAME BREAKS THREE TIMES. The data region
+declares that the Whisper and the Lance appear in no shop, no seal reward and
+no Peddler stock, and that a cache, a safe or a jackpot is the ONLY way to
+hold one. The reward board hands out the Whisper twice and the Lance once, as
+owned models, and elites carry both. The rewards are deliberate and honestly
+labelled on the board; the comment is what was wrong, and it matters because
+it is the only statement of the rule - a reward grants the bare MODEL, so it
+is owned, and an owned gun is wearable and enters the wear and repair economy
+that the field-only framing was written to keep it out of.
+
+Verified at 1920x1080: parse PASS; 58 and 276 at seed 4242; loot on both maps
+with no throw; three endings through oc_btn with the overlay on; hub;
+__renderStage; stream parity zero; a full sim raid end to end.
+  the map      three lock captions for two rooms, one named caption each -
+                "BLAST FREEZER . LOCKED" and "FOREMAN OFFICE . LOCKED" - and
+                no bare "LOCKED" left anywhere. It was five.
+  the prints   a 90 second sim raid with pillagers present reaches 29 prints
+                alive at once and ends with 38 machines investigating.
+                CONTROL: the same raid with no pillagers reaches 0 prints,
+                because the pillager push is the only producer a sim has.
+
+Not verified: the BOT'S OWN footprints. This build gives the sim the pillager
+trails it never had, and the consumer was always live, so machines now react
+to a route in a measured raid the way they do in a played one. The bot itself
+still lays none, because the player's push lives in updatePlayer and the sim
+runs updateBot. Closing that gap means deciding when the bot counts as
+sprinting, which it has no concept of today, so it is a design question
+rather than a missing line and I have left it.
+
+Also not verified: what any of this does to the board. Machines investigating
+pillager trails is a real behavioural change in every sim raid, so the 320
+seed figures are stale again - as they already were after the hot ground and
+the crawlers.
+
 ## v8.51 - SELLING SOMETHING CLEARS THE KEY YOU BOUND TO IT
 
 FOUR ROUTES OUT OF THE BACKPACK FORGOT THE KEY. clearKeysFor exists for
