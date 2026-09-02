@@ -1185,7 +1185,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.05';
+var VER='9.06';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1757,7 +1757,20 @@ if(P.contracts) for(var _cm=0;_cm<P.contracts.length;_cm++){
   // stated place. Renamed once, in the same shape genContract writes.
   if(_CC&&_CC.type==='district'&&_CC.desc&&_CC.desc.indexOf(' in ')<0&&
      typeof DISTRICTS!=='undefined'&&DISTRICTS[_CC.d])
-    _CC.desc=_CC.desc+' in '+DISTRICTS[_CC.d].name;
+    _CC.desc=_CC.desc+' in '+districtPlaceName(_CC.d);
+  // v9.06: and the ones already sitting on his board naming a palette. The four
+  // words below are colour schemes, not places, and he has asked what one of
+  // them meant. Rewritten in place so the board stops referring to somewhere he
+  // cannot find rather than waiting for the contract to expire.
+  if(_CC&&_CC.type==='district'&&_CC.desc&&_CC.d!==undefined){
+    var _PAL=['RUST YARD','FOUNDRY','GREENBELT','BLOCKHOUSE'];
+    for(var _pi=0;_pi<_PAL.length;_pi++){
+      if(_CC.desc.indexOf(' in '+_PAL[_pi])>=0){
+        _CC.desc=_CC.desc.replace(' in '+_PAL[_pi],' in '+districtPlaceName(_CC.d));
+        break;
+      }
+    }
+  }
   if(_CC&&_CC.map!==undefined){ delete _CC.map;
     if(_CC.desc) _CC.desc=_CC.desc.replace(', GREYWATER DAM','').replace(', SUNKEN QUARTER','')
       .replace(', COLD STORAGE','').replace(', THE QUARRY','');
@@ -2058,6 +2071,28 @@ function districtsOnMap(){
   for(var k in seen) out.push({d:+k,buildings:seen[k]});
   return out;
 }
+// v9.06, HIS NOTE: "one of the in-raid contracts says to do something in
+// 'Greenbelt' -- wtf is that? an old map?" It was a palette name. DISTRICTS is
+// the table that decides what COLOUR a building is painted, and its four words
+// have never been shown to him anywhere else in the game. The places he is told
+// about, walking, are the ZONES: "Crossing into the sump."
+// So a contract names zones now. One palette can cover two zones on a map, which
+// is why this can return a pair.
+function districtPlaceName(d){
+  var mi=clamp(P&&P.mapIx!==undefined?P.mapIx:0,0,FIXED_MAPS.length-1);
+  var Z=FIXED_MAPS[mi].zones||[], out=[];
+  for(var i=0;i<Z.length;i++){
+    if((Z[i].d===undefined?0:Z[i].d)!==d) continue;
+    if(!Z[i].name) continue;
+    var nm=String(Z[i].name).toUpperCase();
+    if(out.indexOf(nm)<0) out.push(nm);
+  }
+  // A map with no zone for this palette falls back to the palette word rather
+  // than to nothing, so a contract can never lose its place entirely.
+  if(!out.length) return (typeof DISTRICTS!=='undefined'&&DISTRICTS[d])?DISTRICTS[d].name:'THE SECTOR';
+  if(out.length===1) return out[0];
+  return out.slice(0,2).join(' or ');
+}
 function contractTier(){
   var cs=cstand(),r=rr();
   if(cs>=8&&r<0.25) return 'elite';
@@ -2134,7 +2169,8 @@ function genContract(){
     c={type:'district',d:d,n:n3,prog:0,reward:n3*160,
        // v8.38: named again. The district is checked as of this build, so a
        // contract that does not say which one is an errand you cannot act on.
-       desc:'Search '+n3+' containers in '+DISTRICTS[d].name};
+       // v9.06: the ZONE he is told about while walking, not the palette word.
+       desc:'Search '+n3+' containers in '+districtPlaceName(d)};
   } else if(roll<.9){
     var it=pick(['board','optic','servo','core']);
     var n4=up(it==='core'?1:2);
@@ -24221,7 +24257,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.05: COLD STORAGE drops you in one of ten places now, not one of four, so the walk to the first crate is a different walk.',
+  now:'v9.06: contracts name the place you are actually told about. No more being sent to GREENBELT, which was never a place, only a colour.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

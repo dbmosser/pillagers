@@ -27443,6 +27443,65 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.06 - CONTRACTS NAME A PLACE, NOT A COLOUR
+
+His note: "one of the in-raid contracts says to do something in 'Greenbelt' --
+wtf is that? an old map?"
+
+It is not an old map. It is a COLOUR SCHEME. DISTRICTS is a table of four
+entries, RUST YARD, FOUNDRY, GREENBELT and BLOCKHOUSE, and all it decides is what
+hue a building's floor, walls and roof are painted. Zones carry an index into it.
+Not one of those four words has ever been shown to him anywhere in the game.
+
+What the game does tell him is the ZONE, spoken as he crosses into it: "Crossing
+into the sump."
+
+REPRODUCED by lining the two lists up on COLD STORAGE:
+
+    palette 0  RUST YARD   is really THE LONG DOCK and SCRAP LINE
+    palette 1  FOUNDRY     is really PACKING FLOOR
+    palette 2  GREENBELT   is really THE SUMP
+    palette 3  BLOCKHOUSE  is really CHILL ROW
+
+So "Search 3 containers in GREENBELT" sent him to a place whose name appears on
+no map, on no HUD, and in nothing the game says out loud. He was right to ask
+what it was.
+
+THE FIX NAMES THE GROUND HE WALKS ON. A district contract is now described with
+the zone names the current map uses for that palette, joined with "or" where one
+palette covers two zones, so the same contract now reads "Search 2 containers in
+THE LONG DOCK or SCRAP LINE". The palette word survives only as a fallback for a
+map that declares no zones at all, which no shipping map does.
+
+HIS BOARD IS REWRITTEN TOO. Contracts are stored on the profile, so the ones
+sitting there right now still said GREENBELT. They are renamed on load rather
+than left to expire, because the one he asked about is probably still on it.
+
+Verified: parse PASS v9.06. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276, LOOT driven on both maps with the raid clock still
+advancing and nothing thrown, live-vs-sim stream parity identical on both, all
+three endings reading EXTRACTED, KILLED IN ACTION and ABANDONED with the overlay
+up, hub and stage render. 49 regression checks pass, none skipped.
+
+The check reads the contract text, which every build writes, so it runs anywhere,
+and it fails on a fixture built from v9.05 with "10 of 10 district contracts still
+name a palette, e.g. Search 2 containers in RUST YARD". Two controls: a district
+contract must still state a place, so stripping the location cannot pass, which is
+what v7.54 did and v8.38 had to undo; and the palette table must still have its
+four entries, so deleting the colours cannot masquerade as this fix.
+
+ALSO CHECKED, AND FOUND NOTHING. His answer 8 says he should be able to fire while
+looting. He already can: holding the search key and the trigger together fired 31
+rounds across 240 frames while the search bar kept filling. No change was needed
+and none was made.
+
+Not verified: how the two-zone wording reads on his screen, since "in THE LONG
+DOCK or SCRAP LINE" is longer than the palette word it replaced and the contract
+row has a fixed width I did not measure; whether a contract generated on one map
+and carried to the other now names a zone from the wrong map, which the old
+palette wording hid by being equally wrong everywhere; the district contract's own
+progress counting is untouched by this and was not re-measured.
+
 ## v9.05 - TEN WAYS INTO COLD STORAGE, NOT FOUR
 
 His answer 44: COLD STORAGE should have about TEN start points. He has raised the

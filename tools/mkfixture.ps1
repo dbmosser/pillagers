@@ -223,7 +223,13 @@ window.__conceal={bushAt:inBush,at:concealAt,mapBush:bushAtMap};
       return m; }
   };
 window.__emote={do:doEmote,list:EMOTES,down:weaponDown,ids:function(){return IDENTITIES;},rec:idRec};
-window.__con={gen:genContract,label:gearLabel,pay:payGear,tier:contractTier,tiers:CTIER,gear:CGEAR,stand:cstand,render:renderHub};
+window.__con={gen:genContract,label:gearLabel,pay:payGear,tier:contractTier,tiers:CTIER,gear:CGEAR,stand:cstand,render:renderHub,
+  // v9.06: the palette table and the zone list, so a check can prove a contract
+  // names somewhere he is actually told about rather than a colour scheme.
+  districts:function(){ return DISTRICTS; },
+  place:function(d){ return districtPlaceName(d); },
+  zones:function(mi){ return (FIXED_MAPS[mi].zones||[]).map(function(z){ return {name:z.name,d:(z.d===undefined?0:z.d)}; }); },
+  reload:function(){ return loadProfile(); }};
 window.__arm={list:ARMORS,by:armorById,mine:myRig,cap:armorCap,ping:ping,hurt:damagePlayer,shop:renderShop,SHOP:SHOP};
 window.__weak={pts:WEAKPTS,of:weakOf,pos:weakPos,hit:weakHit,apply:applyWeak};
 window.__bullets=function(dt){ updateBullets(dt); };
@@ -2514,6 +2520,66 @@ window.__REGRESS=[
      __startRaid({mapIx:1,seed:4242});
      var D2=__state().spawnDbg;
      if(!D2||D2.pool<12) bad.push('control: THE COLD MILE pool is '+(D2?D2.pool:'unknown')+', it should still be all 12');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.06',what:'a contract names a place he is told about, never a colour scheme',
+   run:function(){
+     __resetCfg(); __pinDefaults(0);
+     var bad=[];
+     // The four words in DISTRICTS are PALETTES. They set what colour a building
+     // is painted and are shown to him nowhere. "Greenbelt" is one of them, and
+     // he asked what it was.
+     var PAL={}, DL=__con.districts();
+     for(var i=0;i<DL.length;i++) PAL[String(DL[i].name).toUpperCase()]=i;
+     // THE CONTRACT TEXT FIRST, because that is what he reads and every build
+     // writes it. Asking a helper that only the fixed build has would make this
+     // check pass or throw rather than measure.
+     __P().mapIx=0;
+     var seen=0, badDesc=[];
+     for(var t=0;t<60;t++){
+       var c=__con.gen();
+       if(!c||c.type!=='district'||!c.desc) continue;
+       seen++;
+       var m=/ in (.+)$/.exec(c.desc);
+       if(!m){ badDesc.push('a district contract with no place: '+c.desc); continue; }
+       var pl=m[1].toUpperCase().split(' OR ');
+       for(var pq=0;pq<pl.length;pq++)
+         if(PAL[pl[pq]]!==undefined) badDesc.push(c.desc);
+     }
+     if(!seen) bad.push('no district contract was generated in 60 rolls, so this proved nothing');
+     if(badDesc.length) bad.push(badDesc.length+' of '+seen+' district contracts still name a palette, e.g. "'+badDesc[0]+'"');
+     // CONTROL 1: it must still SAY a place. A fix that stripped the location
+     // would pass every line above and leave him an errand with no destination,
+     // which is exactly what v7.54 did and v8.38 had to undo.
+     var withPlace=0;
+     for(var t2=0;t2<60;t2++){
+       var c2=__con.gen();
+       if(c2&&c2.type==='district'&&c2.desc&&/ in \S/.test(c2.desc)) withPlace++;
+     }
+     if(!withPlace) bad.push('control: no district contract names a place at all any more');
+     // CONTROL 2: the palette table must still exist and still have four entries.
+     // The colours are not the problem and deleting them would be a large change
+     // wearing this one's clothes.
+     if(DL.length!==4) bad.push('control: the district palette table has '+DL.length+' entries, it should still have 4');
+     // And, only where the build offers it, the same rule stated per district on
+     // both maps: whatever a district is called must be one of that map's zones.
+     if(__con.place&&__con.zones){
+       [0,1].forEach(function(mi){
+         __P().mapIx=mi;
+         var Z=__con.zones(mi), names={};
+         for(var z=0;z<Z.length;z++) names[String(Z[z].name).toUpperCase()]=1;
+         for(var d=0;d<DL.length;d++){
+           var got;
+           try{ got=String(__con.place(d)).toUpperCase(); }catch(_e){ return; }
+           var parts=got.split(' OR ');
+           for(var q=0;q<parts.length;q++){
+             var one=parts[q].replace(/^\s+|\s+$/g,'');
+             if(!names[one])
+               bad.push('map '+mi+' district '+d+' is described as "'+one+'", which is not a zone on that map');
+           }
+         }
+       });
+       __P().mapIx=0;
+     }
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
