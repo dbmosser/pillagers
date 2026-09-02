@@ -4082,6 +4082,51 @@ window.__REGRESS=[
      if(!moved.err&&(moved.slot6!==moved.key||moved.slot5!==undefined))
        bad.push('control: moving '+moved.key+' from slot 5 to slot 6 did not move it, slot5='+
                 moved.slot5+' slot6='+moved.slot6);
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.32',what:'you can see the item in your hand while you drag it round the Undercroft backpack',
+   run:function(){
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, so nothing can be measured in pixels';
+     __forceSize(1920,1080);
+     if(!__hubEnter()) return 'could not reach the Undercroft floor';
+     var P=__P();
+     P.kit=['medkit','plate','servo','scrap','bandage']; P.hotAssign={};
+     var K=__keysRef(); for(var k in K) delete K[k];
+     __hubBag(false);
+     document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));
+     __hubStep(1/60); __hubStep(1/60);
+     var L=__hubBagLive();
+     if(!L) return 'the Undercroft backpack kept no state to drag with';
+     var bc=L.bagCells||[], hc=L.hotCells||[];
+     if(!bc.length||hc.length<5) return 'SKIP: the Undercroft backpack drew no cells to measure against';
+     var M=__mouse(), cv=document.getElementById('hcv'), cx=cv.getContext('2d');
+     function box(x,y,r){
+       var d=cx.getImageData(Math.round(x-r),Math.round(y-r),r*2,r*2).data, s=0;
+       for(var i=0;i<d.length;i+=4) s+=d[i]+d[i+1]+d[i+2];
+       return s;
+     }
+     // THE HUB DRAWS ON ITS OWN STEP. __renderStage does not redraw this screen,
+     // and measuring through it said the fix had not worked when it had. The
+     // control below is what caught that and it stays in for good.
+     function draw(){ __hubStep(1/60); }
+     var bad=[];
+     // CONTROL FIRST, deliberately: hovering a belt cell WITH something in hand
+     // highlights it, and that has worked since v8.96. If this does not respond
+     // the panel is not being redrawn and every reading below is meaningless.
+     var hot=hc[4];
+     M.x=hot.x+hot.w/2; M.y=hot.y+hot.h/2;
+     L.drag=null; draw(); var h0=box(M.x,M.y,20);
+     L.drag={key:'medkit',bagIx:0}; draw(); var h1=box(M.x,M.y,20);
+     if(h0===h1){ L.drag=null; draw();
+       return 'SKIP: the Undercroft backpack is not redrawing, so nothing here can be measured'; }
+     // HIS 11, the other half. Measured on v9.31: identical pixels with and
+     // without something in hand, so between picking an item up and putting it
+     // down there was no sign you were holding anything.
+     var cell=bc[0];
+     M.x=cell.x+cell.w*0.5; M.y=cell.y-70;      // open floor above the panel
+     L.drag=null; draw(); var g0=box(M.x,M.y,26);
+     L.drag={key:'medkit',bagIx:0}; draw(); var g1=box(M.x,M.y,26);
+     if(g0===g1) bad.push('nothing is drawn at the cursor while an item is in hand on the Undercroft floor');
+     L.drag=null; draw();
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

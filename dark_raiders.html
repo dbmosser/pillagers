@@ -1209,7 +1209,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.31';
+var VER='9.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21130,19 +21130,7 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
   // The item under the cursor while it is being carried. Drawn last so it rides
   // over both the panel and the bar, which is the only way a drag reads as
   // holding something rather than as a highlight moving about.
-  if(G.drag&&ITEMS[G.drag.key]){
-    var DI=ITEMS[G.drag.key], ds=LH(26);
-    ctx.globalAlpha=.92;
-    ctx.fillStyle='rgba(10,14,19,.86)';
-    ctx.fillRect(mouse.x-ds/2,mouse.y-ds/2,ds,ds);
-    ctx.strokeStyle='#7fc4a0'; ctx.lineWidth=1.5;
-    ctx.strokeRect(mouse.x-ds/2+.5,mouse.y-ds/2+.5,ds-1,ds-1);
-    drawItemIcon(ctx,G.drag.key,mouse.x,mouse.y,ds*0.72);
-    ctx.globalAlpha=1;
-    ctx.font=FS(TYPE.micro); ctx.fillStyle='#cdd6dd'; ctx.textAlign='center';
-    ctx.fillText(DI.name,mouse.x,mouse.y+ds);
-    ctx.textAlign='left';
-  }
+  drawDragGhost();
   if(G.trade) drawTrade();
   // The emote bar. Deliberately a strip and not a wheel: a wheel wants a mouse
   // you are already using to aim, and this has to be usable while something is
@@ -22511,10 +22499,30 @@ function hubBagState(){
 }
 // G is restored in a finally, so a throw in here can never leave the game
 // pointed at a raid that does not exist.
+// v9.32: THE ITEM IN YOUR HAND, wherever the hand is. This was written inline at
+// the end of the HUD pass, which meant it existed in a raid and nowhere else. It
+// reads G.drag, so swapping G to the Undercroft backpack around it is all the
+// second screen needs.
+function drawDragGhost(){
+  if(!G||!G.drag||!ITEMS[G.drag.key]) return;
+  var DI=ITEMS[G.drag.key], ds=LH(26);
+  ctx.globalAlpha=.92;
+  ctx.fillStyle='rgba(10,14,19,.86)';
+  ctx.fillRect(mouse.x-ds/2,mouse.y-ds/2,ds,ds);
+  ctx.strokeStyle='#7fc4a0'; ctx.lineWidth=1.5;
+  ctx.strokeRect(mouse.x-ds/2+.5,mouse.y-ds/2+.5,ds-1,ds-1);
+  drawItemIcon(ctx,G.drag.key,mouse.x,mouse.y,ds*0.72);
+  ctx.globalAlpha=1;
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#cdd6dd'; ctx.textAlign='center';
+  ctx.fillText(DI.name,mouse.x,mouse.y+ds);
+  ctx.textAlign='left';
+}
 function drawHubBag(){
   if(!hubBagG) hubBagG=hubBagState();
   var old=G;
-  try{ G=hubBagG; drawBag(); drawBelt(); }
+  // The ghost goes LAST and inside the swap, so it rides over the panel and the
+  // belt exactly as it does in a raid and reads the Undercroft bag's own drag.
+  try{ G=hubBagG; drawBag(); drawBelt(); drawDragGhost(); }
   catch(_hb){}
   finally{ G=old; }
 }
@@ -24773,7 +24781,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.31: you can take an item back off the belt during a raid. Until now it only came off down in the Undercroft.',
+  now:'v9.32: you can see what you are carrying while you drag it around the Undercroft backpack. It used to be invisible in your hand.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

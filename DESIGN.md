@@ -27443,6 +27443,50 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.32 - YOU CAN SEE WHAT IS IN YOUR HAND ON THE UNDERCROFT FLOOR
+
+HIS 11, the other half. v9.31 made an item come back off the belt in a raid. This
+is the part where the item you are dragging around the Undercroft backpack was
+invisible while you dragged it.
+
+REPRODUCED: with something in hand, a box at the cursor is pixel for pixel
+identical to the same box with nothing in hand. The target cell still lights up,
+so a drop reads, but between picking an item up and putting it down there was no
+sign at all that you were carrying anything.
+
+The cursor ghost was written inline at the end of the HUD pass, and the Undercroft
+backpack calls drawBag and drawBelt and nothing else. Same shape of omission as
+v8.95 and v8.96 on the same screen: the panel came over, and one of the things
+that makes the panel usable did not. It is a function now, called from both, so
+there is one drag ghost in the game rather than one that exists on one screen.
+
+AND I HAD TO THROW MY FIRST MEASUREMENT AWAY. Both the reproduction and the first
+check of the fix used __renderStage to redraw, which does not redraw this screen
+at all, so the fix appeared to do nothing when it was working. What caught it was
+asking a question I already knew the answer to: hovering a belt cell with
+something in hand highlights it, and has since v8.96. When that did not respond
+either, the instrument was the suspect rather than the build. Driving the hub's
+own step made both respond.
+
+That control is now the first thing the regression check does, and it returns SKIP
+rather than a pass if the panel is not redrawing. A check that cannot see the
+thing must say so instead of reporting green.
+
+Verified: parse PASS v9.32. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 85 and 369 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 74 regression checks
+pass in sequence, none skipped. The HUD draw path is touched, so the full run. The
+new check fails on a v9.31 fixture with "nothing is drawn at the cursor while an
+item is in hand on the Undercroft floor", and its own instrument control passes
+there, which is what makes that failure trustworthy.
+
+Not verified: how the ghost reads while the cursor is moving fast, which no
+measurement here can answer. It is the same sprite, the same size and the same
+colours the raid has used for a long time, so it should look like what he already
+knows.
+
 ## v9.31 - AN ITEM COMES BACK OFF THE BELT DURING A RAID
 
 HIS 11: move items TO AND FROM the hotbar with the backpack open. The "to" half
