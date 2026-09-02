@@ -27443,6 +27443,70 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.14 - THE WRITING ON THE SECTOR MAP FOLLOWS THE MONITOR
+
+Same family as the backpack at v9.13, this time on the surface he navigates by.
+
+REPRODUCED at both resolutions:
+
+    1920x1080   the world is drawn 1161 x 940, map scale 0.276
+    3840x2160   the world is drawn 2495 x 2020, map scale 0.594
+    so the MAP grew 2.15x
+    label 18.7px at both, micro 15.6px at both, head 23.4px at both
+    so the WRITING grew 1.00x
+
+The map geometry already asks how big the screen is, because mapProj divides by W
+and H, which is why this looked handled. Every string on it goes through FS, which
+applies the TEXT SIZE dial and knows nothing about the screen. So on a 4K monitor
+he gets a map twice the size carrying region names, cache and encampment markers,
+the legend and the intel line at less than half the relative size they have at
+1080p.
+
+ONE SHADOW, NOT FOURTEEN EDITS. drawMapOverlay calls FS fourteen times, eleven of
+them with an identical spec, so fourteen near-identical patches would have been
+fragile and unreviewable. The function declares its own FS which defers to the
+global one with the screen factor folded in. It shadows for this function only,
+all fourteen call sites pick it up, and there is one place to look next time.
+
+THE SCALE GOES INTO THE SPEC, not onto FS's output. FS caches on the spec string
+plus the text size, so scaling the result would have stored a 4K font under a
+1080p key and handed it to every other panel in the game. That is the kind of
+fault that surfaces two builds later somewhere unrelated, so the check below
+guards it directly.
+
+MEASURED AFTER, off the drawn amber heading rather than the type table: 326x16 at
+1080p and 624x33 at 4K, so 1.91x wider and 2.06x taller against a map that grew
+2.15x. The writing now tracks the map.
+
+Verified: parse PASS v9.14. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 57 regression checks
+pass in sequence, none skipped.
+
+The check fails on a fixture built from v9.13 with "the map heading is only 1.00x
+taller at 4K while the map is 2.15x bigger; the map heading is only 1.00x wider at
+4K". Three controls. 1080p must still measure 326x16, so a 4K fix cannot disturb
+the layout he already has. Then the one that matters: after the map has drawn at
+4K, the global label and micro roles must still be 18.7 and 15.6 back at 1080p AND
+the vitals panel must still be 532px wide, which is what catches the map font
+leaking into the rest of the HUD through the cache. And the enlarged heading must
+still fit on the screen.
+
+ALSO CHECKED, AND FOUND NOTHING. I swept every in-raid HUD panel for the same
+defect first: vitals, gear, conditions, legend and the pillager board all measure
+exactly 2.00x at 4K. The belt grows 1.73x rather than 2, and that is deliberate
+rather than broken: since v8.81 it sizes itself to the room between the corner
+blocks, and those doubled, so the gap it fills grew by slightly less than double.
+
+Not verified: how the map reads on his actual 4K screen, since this is measured as
+pixel bounding boxes rather than looked at; the marker dots and the frame line
+widths on the map are still fixed pixel sizes and were not touched, so at 4K the
+text now scales while the dots do not; and whether the bigger labels crowd each
+other on a busy map, since the label declutter pass walks labels apart and I
+measured only the heading.
+
 ## v9.13 - THE BACKPACK FOLLOWS THE MONITOR
 
 His note, twice: "these menus are still WAY TOO SMALL -- need to be twice as

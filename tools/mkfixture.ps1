@@ -3081,6 +3081,66 @@ window.__REGRESS=[
          if(hb.w/ha.w<1.7) bad.push('the Undercroft backpack is only '+(hb.w/ha.w).toFixed(2)+'x wider at 4K');
        }
      }
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.14',what:'the writing on the sector map follows the monitor, like the map itself does',
+   run:function(){
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, there are no pixels to read';
+     var bad=[], hc=document.getElementById('hcv');
+     if(!hc) return 'no HUD canvas to read';
+     // Measures the AMBER heading drawn above the map frame, because that is the
+     // drawn result. Reading the type roles instead would report the global font
+     // and miss the whole thing, which is how this defect survived this long.
+     function mapText(W2,H2){
+       __forceSize(W2,H2); __resetCfg(); __pinDefaults(0); __zoom.set(1,true);
+       __deploy({kit:['medkit'],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.ents.length=0; g.player.iv=99;
+       for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
+       var m=g.map, WW=m.cols*m.cw, WH=m.rows*m.ch;
+       var pad=70, sc=Math.min((W2-pad*2)/WW,(H2-pad*2)/WH);
+       var ox=(W2-WW*sc)/2, oy=(H2-WH*sc)/2;
+       __mapOverlay();
+       var x0=Math.max(0,Math.round(ox-4)), w=Math.min(1500,W2-x0);
+       var y0=Math.max(0,Math.round(oy-56)), hgt=Math.min(H2-y0,54);
+       var d=hc.getContext('2d').getImageData(x0,y0,w,hgt).data;
+       var minX=1e9,maxX=-1,minY=1e9,maxY=-1;
+       for(var yy=0;yy<hgt;yy++) for(var xx=0;xx<w;xx++){
+         var i=(yy*w+xx)*4;
+         if(d[i]>180&&d[i+1]>140&&d[i+2]<130&&d[i+3]>60){
+           if(xx<minX)minX=xx; if(xx>maxX)maxX=xx; if(yy<minY)minY=yy; if(yy>maxY)maxY=yy; }
+       }
+       return {mapW:Math.round(WW*sc), mapH:Math.round(WH*sc),
+               tw:maxX<0?0:(maxX-minX+1), th:maxY<0?0:(maxY-minY+1)};
+     }
+     var a=mapText(1920,1080), b=mapText(3840,2160);
+     __forceSize(1920,1080);
+     if(!a.tw||!a.th) return 'no map heading was found at 1080p, so there is nothing to compare';
+     // Measured before v9.14: the map went 1161x940 to 2495x2020, a growth of
+     // 2.15, while every string on it stayed at exactly its 1080p pixel size.
+     var mg=b.mapW/a.mapW, tg=b.th/a.th;
+     if(mg<1.7) bad.push('the map itself stopped scaling, only '+mg.toFixed(2)+'x at 4K');
+     if(tg<1.7) bad.push('the map heading is only '+tg.toFixed(2)+'x taller at 4K while the map is '+mg.toFixed(2)+'x bigger');
+     if(b.tw/a.tw<1.7) bad.push('the map heading is only '+(b.tw/a.tw).toFixed(2)+'x wider at 4K');
+     // CONTROL 1: 1080p must not have moved. This was a 4K complaint and he has a
+     // working layout there.
+     if(Math.abs(a.tw-326)>18||Math.abs(a.th-16)>3)
+       bad.push('control: the 1080p map heading changed to '+a.tw+'x'+a.th+', it was 326x16');
+     // CONTROL 2, AND IT IS THE ONE THAT MATTERS. The map scales its text by
+     // handing FS a modified spec. If that ever leaks into the global font cache,
+     // every panel in the game inherits a 4K font at 1080p. So: draw the map at
+     // 4K, come back to 1080p, and check the ordinary roles are what they always
+     // were and a normal HUD panel is still its normal size.
+     var lab=__type.px('label'), mic=__type.px('micro');
+     if(Math.abs(lab-18.7)>0.6) bad.push('control: the global label role is '+lab+'px at 1080p after the map drew at 4K, it should be 18.7');
+     if(Math.abs(mic-15.6)>0.6) bad.push('control: the global micro role is '+mic+'px at 1080p after the map drew at 4K, it should be 15.6');
+     __P().hud={};
+     __deploy({kit:['medkit','plate'],safe:null,mapIx:0,seed:4242});
+     var g2=__state(); g2.ents.length=0; g2.player.iv=99;
+     for(var f2=0;f2<6;f2++) __loop(performance.now()+f2*16.7);
+     var vb=__hud().box.body;
+     if(!vb||Math.abs(vb.w-532)>10)
+       bad.push('control: the vitals panel is '+(vb?Math.round(vb.w):'missing')+'px wide at 1080p, it should be 532 - the map font has leaked into the HUD');
+     // CONTROL 3: bigger writing must still fit on the screen it is drawn on.
+     if(b.tw>3840) bad.push('control: the 4K map heading is wider than the screen');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

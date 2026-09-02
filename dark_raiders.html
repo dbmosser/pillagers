@@ -1186,7 +1186,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.13';
+var VER='9.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5178,6 +5178,16 @@ var TYPE={
   title:'800 20px "Rubik",system-ui,sans-serif',  // 26.0 rendered: screen titles
   huge: '800 30px "Rubik",system-ui,sans-serif'   // 39.0 rendered: the one big number
 };
+// v9.14: the same spec at a screen-scaled size. The multiplier goes into the
+// SOURCE px and the result is handed to FS as an ordinary spec, so the cache key
+// still matches the string it describes. Scaling FS's output instead would have
+// returned a 4K font for a 1080p cache entry.
+function FSz(spec,z){
+  if(!(z>1.005)) return FS(spec);
+  return FS(String(spec).replace(/([\d.]+)px/,function(m,nn){
+    return (Math.round(parseFloat(nn)*z*100)/100)+'px';
+  }));
+}
 function FS(spec){
   var k=spec+'|'+uiScale(),hit=_fs[k];
   if(hit) return hit;
@@ -22478,6 +22488,16 @@ function mapLabel(txt,x,y,col,font){
 // order. The fine grid is still marked every raid - it feeds the SURVEYED
 // percentage and seeds pre-v5.29 charted sectors via fogLoad.
 function drawMapOverlay(){
+  // v9.14: EVERY STRING ON THIS SCREEN FOLLOWS THE MONITOR. The map itself
+  // already does, because mapProj divides by W and H, but the writing on it went
+  // through the global FS, which knows about the text size dial and nothing
+  // about the screen. Measured before this: the drawn world went from 1161x940
+  // to 2495x2020 between 1080p and 4K while every label stayed at 18.7px.
+  // Declared here so it shadows the global for this function only. All fourteen
+  // font calls below pick it up, and there is one place to change it rather than
+  // fourteen. hudRes() is exactly 1 at 1920x1080, so that screen is unchanged.
+  var _MZ=hudRes();
+  function FS(spec){ return FSz(spec,_MZ); }
   mapLabelReset();
   var p=G.player,i;
   // The sector map was the last full screen surface still wearing the old grey
@@ -24476,7 +24496,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.13: the backpack follows your monitor. On a 4K screen it is drawn twice the size instead of at its 1080p size.',
+  now:'v9.14: the writing on the sector map follows your monitor too. The map grew with the screen and its labels never did.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
