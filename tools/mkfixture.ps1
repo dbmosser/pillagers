@@ -1855,6 +1855,50 @@ window.__REGRESS=[
      if(leak>0) bad.push('a pillager ripple behind a wall drew '+leak+' pixels');
      // CONTROL: your own wake must still draw, or the fix was to delete ripples.
      if(trial(hid.x,hid.y,true)<=0) bad.push('control: your own ripples stopped drawing too');
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.91',what:'the three in-raid panels are twice the size, at every resolution, and never touch',
+   run:function(){
+     // His answer 25 is "TWICE AS LARGE RELATIVE TO THE SCREEN" and 26 is that it
+     // has to look right at 1080p, 1440p and 4K, so all three are checked.
+     var SIZES=[[1920,1080],[2560,1440],[3840,2160]];
+     // Sizes before v8.91, measured at 1920x1080. None of these three were ever
+     // in HUDZ, so the two builds that grew the HUD both walked straight past
+     // them. Every size below is expressed as a SHARE of the screen, because a
+     // pixel count would pass on a 4K panel while looking half the size.
+     var was={raiders:[334,176],legend:[311,131],cond:[257,203]};
+     var bad=[];
+     function ov(a,b){ return !!(a&&b)&&a.x<b.right&&a.right>b.x&&a.y<b.bottom&&a.bottom>b.y; }
+     for(var si=0;si<SIZES.length;si++){
+       var SW=SIZES[si][0], SH=SIZES[si][1], tag=SW+'x'+SH;
+       __forceSize(SW,SH);
+       __resetCfg(); __pinDefaults(0);
+       __deploy({kit:['medkit'],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.player.iv=99;
+       for(var f=0;f<20;f++) __loop(performance.now()+f*16.7);
+       var B=__hud().box;
+       if(!B.raiders||!B.legend||!B.cond){ bad.push('at '+tag+' one of the three panels did not draw'); continue; }
+       ['raiders','legend','cond'].forEach(function(k){
+         var got=B[k];
+         // the old share of a 1920x1080 screen, doubled, is the bar
+         var wantW=(was[k][0]/1920)*SW*1.9, wantH=(was[k][1]/1080)*SH*1.9;
+         if(got.w<wantW||got.h<wantH)
+           bad.push(k+' at '+tag+' is '+got.w+'x'+got.h+', under twice its old share of the screen');
+       });
+       // CONTROL ONE: doubling two panels that grow toward each other made them
+       // overlap by 106px on my first attempt. Any touching pair fails.
+       [['raiders','legend'],['raiders','cond'],['legend','cond'],
+        ['legend','body'],['cond','gear'],['raiders','body']].forEach(function(pr){
+         if(ov(B[pr[0]],B[pr[1]])) bad.push(pr[0]+' overlaps '+pr[1]+' at '+tag);
+       });
+       // CONTROL TWO: bigger must not mean partly off screen, which is the other
+       // obvious way to satisfy the size bar and be worse than before.
+       ['raiders','legend','cond'].forEach(function(k){
+         var r=B[k];
+         if(r.x<0||r.y<0||r.right>SW||r.bottom>SH)
+           bad.push(k+' is off screen at '+tag+', '+r.x+','+r.y+' to '+r.right+','+r.bottom);
+       });
+     }
+     __forceSize(1920,1080);
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

@@ -27443,6 +27443,69 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.91 - THE THREE IN-RAID PANELS ARE TWICE THE SIZE
+
+His note, with three screenshots: "these menus are still WAY TOO SMALL -- need to
+be twice as large as they are now". The three he photographed are the pillager
+board, the controls legend and the conditions panel, and none of them were ever
+in HUDZ at all. v8.08 scaled the vitals and the gear stack, v8.81 added the belt
+and a screen factor, and both builds walked straight past these three.
+
+Measured at 1920x1080, before and after:
+
+    pillager board   334 x 176  ->  668 x 352
+    legend           311 x 131  ->  622 x 262
+    conditions       257 x 203  ->  514 x 406
+
+His answer 25 to the questions was "TWICE AS LARGE RELATIVE TO THE SCREEN", so
+the 2.0 goes through the same screen factor the other blocks use and the check
+asks for twice the old SHARE of the screen at 1080p, 1440p and 4K rather than
+twice the pixel count, which would pass on a 4K panel while looking half as big.
+
+All three are wrapped at their CALL SITES rather than inside their bodies,
+because all three return early when collapsed and a return past a ctx.save leaves
+the canvas transform corrupted for everything drawn afterwards.
+
+TWO LAYOUT BUGS, BOTH CAUGHT BY MEASURING RATHER THAN BY LOOKING.
+First, doubling the board and the legend made them collide by 106px: the board
+grows down from the top corner and the legend, anchored to the bottom of the
+screen, was lifted up into it. The legend does not want to grow from the bottom
+of the screen, it wants to grow from its own bottom edge.
+Second, and this one would have shipped: pinning it to its own bottom cleared the
+vitals at 1080p by ten pixels, and ten pixels was luck. The vitals grow at 1.40
+times the screen factor while a fixed bottom does not move with it, so at 1440p
+and again at 4K the legend sat on the health bar. It is pinned to the TOP OF THE
+VITALS now, which is the thing it actually has to clear, so the gap holds at
+every resolution instead of being a coincidence at one. Both anchors read boxes
+the panels record for their own mouse handling rather than a second copy of their
+placement arithmetic.
+
+Final layout at 1920x1080: board 260 to 612, legend 659 to 921, vitals from 934.
+Conditions 94 to 500 on the right, clear of the gear stack at 864.
+
+Also his note "don't need to tell them what the next reward is on the KIA
+screen". Gone from the death screen only; the extraction screen still shows it.
+
+Verified: parse PASS. Both sectors to their fingerprints, entities 58 and 276 and
+containers 155 and 589. Streams identical live and sim. Looting on both with no
+throw and the clock advancing. Three endings correct. Hub renders. Screenshot at
+1920x1080 with all three panels visibly larger and separated. 34 regression
+checks pass, none failed and none skipped, including a new one that walks all
+three resolutions and carries both an overlap control and an off-screen control.
+
+HIS FIFTY ANSWERS came in during this build and are recorded in full in AUDIT.md
+and in memory. Several retire systems that currently exist, and none of them are
+in this build: guns are to stop wearing and jamming entirely, the concept of gun
+CONDITION goes away with them so strength comes from rarity alone, COLD STORAGE
+wants about ten start points rather than four, and he has finally named the
+broken wall: go right from the start and there is a long container-looking
+structure whose top wall can be walked through. He also set the working rule for
+everything after this, which is one thing verified deeply per build rather than
+several, and told me to stop reporting sim extract rates.
+
+Not verified: I did not photograph the panels at 1440p or 4K, only measured their
+boxes there. The collapsed state of each panel is also only measured at 1080p in
+passing, not deliberately checked at the larger sizes.
 ## v8.90 - THE SAME CORNER, AGAIN, BECAUSE v8.82 WAS HALF A FIX
 
 His note: "still spawning at the same place in cold storage with the same damn

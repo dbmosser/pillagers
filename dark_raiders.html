@@ -1185,7 +1185,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.90';
+var VER='8.91';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15458,8 +15458,11 @@ silentExit:T.silentExit||0,
         '</span><br><span style="color:var(--ash)">'+
         (_nx===null
           ? 'All '+SEASON_TIERS.length+' rewards earned. XP keeps counting, but there is nothing left that it pays for.'
-          : 'Next: '+escHtml(tierLabel(SEASON_TIERS[_nx]))+', reward '+(_nx+1)+' of '+SEASON_TIERS.length+
-            ', '+(SEASON_TIERS[_nx].sp-_xa).toLocaleString()+' XP away. Claim it at the Mainframe.')+
+          // v8.91, his note: not on a death screen. A man reading KILLED IN
+          // ACTION does not need to be told what the next reward is.
+          : (how==='dead' ? ''
+            : 'Next: '+escHtml(tierLabel(SEASON_TIERS[_nx]))+', reward '+(_nx+1)+' of '+SEASON_TIERS.length+
+              ', '+(SEASON_TIERS[_nx].sp-_xa).toLocaleString()+' XP away. Claim it at the Mainframe.'))+
         '</span>');
     }
   })();
@@ -19456,6 +19459,10 @@ _tgt=G.active; _lbl='EXTRACTION';
   // Sits under the HUNTING and SEARCHING lines at a FIXED offset rather than
   // flowing after them, because those two appear and disappear constantly and a
   // panel that jumps around is worse than one slightly lower down.
+  // v8.91: the conditions and contracts panel, grown from the top right corner
+  // it is anchored to. Wrapped around the call rather than inside it because the
+  // collapsed state returns early and would skip the restore.
+  ctx.save(); hudZoomIn('cond',W,0);
   (function(){
     var MW=(G.wx||WEATHER[0]), MT=tod(), rows=[], _clines=[];
 
@@ -19592,6 +19599,8 @@ ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
       for(var _lq=0;_lq<R2.wrapped.length;_lq++){ ctx.fillText(R2.wrapped[_lq],bx+pad+6,ry); ry+=lh; }
     }
   })();
+  ctx.restore();
+  if(HUDBOX.cond) HUDBOX.cond=hudZoomRect('cond',W,0,HUDBOX.cond);
   if(G.msgT>0){
     ctx.font=FS(TYPE.label);
     ctx.fillStyle='rgba(205,214,221,'+clamp(G.msgT,0,1)+')';
@@ -20429,7 +20438,26 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
   }
   if(!p.downed){
     drawNoiseMarkers();
+    // v8.91: anchored BOTTOM left. The legend sits directly above the vitals
+    // block, so growing it downward would push it through the health bar.
+    // Where the bottom of the legend has to land: just above the vitals, which
+    // is what it must clear. HUDBOX.body is set earlier in this same frame.
+    var _legTarget=(HUDBOX.body?HUDBOX.body.y:H)-LH(8);
+    var _legUB=(typeof _legAnchorY==='number'&&_legAnchorY>0)?_legAnchorY:_legTarget;
+    var _legShift=_legTarget-_legUB;
+    ctx.save();
+    ctx.translate(0,_legShift);          // put its bottom on the target
+    hudZoomIn('legend',0,_legTarget);    // then grow upward from there
     drawLegend();
+    ctx.restore();
+    if(HUDBOX.legend){
+      // Still unscaled here, which is the number the next frame anchors on.
+      _legAnchorY=HUDBOX.legend.y+HUDBOX.legend.h;
+      HUDBOX.legend=hudZoomRect('legend',0,_legTarget,
+        {x:HUDBOX.legend.x,y:HUDBOX.legend.y+_legShift,w:HUDBOX.legend.w,h:HUDBOX.legend.h,
+         tg:HUDBOX.legend.tg?{x:HUDBOX.legend.tg.x,y:HUDBOX.legend.tg.y+_legShift,
+                              w:HUDBOX.legend.tg.w,h:HUDBOX.legend.tg.h}:undefined});
+    }
   }
   if(G.bagOpen) drawBag();
   // The item under the cursor while it is being carried. Drawn last so it rides
@@ -20473,7 +20501,13 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     }
   }
   drawCrierMarkers();
-  if(!G.mapOpen&&!G.bagOpen) drawRaiderBoard();
+  if(!G.mapOpen&&!G.bagOpen){
+    // v8.91: grows from the top left corner it already sits in.
+    ctx.save(); hudZoomIn('raiders',0,0);
+    drawRaiderBoard();
+    ctx.restore();
+    if(HUDBOX.raiders) HUDBOX.raiders=hudZoomRect('raiders',0,0,HUDBOX.raiders);
+  }
   if(G.mapOpen) drawMapOverlay();
 }
 // EVERYTHING KNOWN ABOUT AN ITEM, as [label,value] rows. Shared by the stash
@@ -20846,7 +20880,16 @@ var HUDBOX={},HUDDRAG=null;
 // the way thirty separate number bumps would. Anything recorded for the mouse -
 // a drag box, a belt cell - is mapped through the same transform below, or the
 // thing you click stops being the thing you see.
-var HUDZ={body:1.40, gear:1.36};
+// v8.91, his note: the pillager board, the legend and the conditions panel were
+// never in this table at all, so the two builds that made the HUD bigger both
+// walked past them. He asked for twice, so twice, and the screen factor below
+// still multiplies it on a larger monitor.
+var HUDZ={body:1.40, gear:1.36, raiders:2.0, legend:2.0, cond:2.0};
+// v8.91: where the legend grows FROM. Its own bottom edge, taken from the box it
+// records for the mouse, so it rises into the gap above the vitals instead of
+// being lifted off the bottom of the screen into the pillager board. Null on the
+// first frame only, which anchors that one frame to the screen bottom.
+var _legAnchorY=null;
 // v8.81: AND THE SCREEN ITSELF COUNTS. Everything above is in pixels chosen at
 // 1080p, so the HUD was the same absolute size on a 4K panel and therefore half
 // the relative size. This multiplies every corner block by how much bigger the
@@ -23863,7 +23906,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.90: COLD STORAGE has four starts and picks between them evenly. v8.82 still put you on the same corner one raid in three.',
+  now:'v8.91: the pillager board, the legend and the conditions panel are twice the size. They were never in the table the other panels grew from.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

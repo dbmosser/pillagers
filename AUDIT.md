@@ -262,3 +262,38 @@ OPEN, in the order he sent them:
   CONFOUNDED: moved only 6801 units in 183s and he was sending menu screenshots
   throughout, so he was probably testing UI, not looting. Do NOT retune on this.
   If the next real play session also shows cont:0, that is the top item.
+
+## HIS 50 ANSWERS, 2026-09-01. BINDING.
+1 crawler damage feels good. 2 house occupancy about right; house = any indoor
+structure. 3 never more than 3 per house. 4 he never sees sentries. 5 crawler
+count = houses x 2.5, keep some outside. 6 he does not know what a siege is;
+nothing should be meant to end the raid. 7 one revive only. 8 time-vs-value
+question closed, balance feels good. 9 no. 10 no. 11 move items to and from the
+hotbar while the backpack is open. 12 NO bag limit, no weight, unlimited. 13 yes
+abandoning destroys the kit, obvious. 14 REMOVE wear and jam entirely. 15 belt
+persists between raids. 16 emptied belt slot goes darker, still shows the item,
+indicates none left. 17 Gilded is fine. 18 REMOVE the concept of gun CONDITION;
+strength by rarity only. 19 any number of guns. 20 Peddler sells purple and
+below, no gilded. 21 I in the Undercroft opens the backpack, same as in raid.
+22 hotbar visible in the Undercroft. 23 YES you can roll in the Undercroft.
+24 the Undercroft is both a place and a menu. 25 menus twice as large RELATIVE TO
+THE SCREEN. 26 must look good and big at 1080p, 1440p and 4K. 27 panels remember
+collapsed. 28 off centre is fine. 29 keep all panel content, do not modify.
+30 same. 31 XP ceiling: leave for now. 32 death screen should show lost bag
+value. 33 proficiency = money extracted, extract vs die rate, times downed,
+accuracy, damage per raid, mixed. 34 Mainframe bonus already decided, stop
+asking. 35 keep contracts on the extraction screen. 36 pillagers team up.
+37 reviving a pillager pays a gun or a rare item. 38 board shows pillagers never
+seen. 39 pillagers "just stood there after getting attacked". 40 criers must not
+IDLE in houses. 41 machines never open containers. 42 the Warden is beatable.
+43 two sectors, deeper. 44 COLD STORAGE needs about TEN starts. 45 THE BROKEN
+WALL: go right from the start, a long container-looking structure, its TOP WALL
+is glitched and can be walked through. 46 samey maps: not a worry now.
+47 first quote is current, second is the replacement. 48 ONE THING VERIFIED
+DEEPLY per build. 49 stop reporting sim extract rates, stop rebalancing.
+50 what makes him quit: menu size or functionality glitches, inventory glitches
+and limitations.
+- ZOOM IN CLOSER: "need to be able to zoom in closer on player with mouse wheel
+  during raids", "2-3 times as close as current version". ZMAX is 3.0 as of
+  v8.79; he wants roughly 6 to 9. Check the renderer holds at that zoom before
+  raising it, and that the sprite and fog still read.
