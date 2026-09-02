@@ -1210,7 +1210,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.44';
+var VER='9.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1534,9 +1534,10 @@ medkit:{name:'Medkit',val:210,wt:2,r:'uncommon',c:'#e05c5c',use:'heal',amt:65,ho
   // v4.37 HIS ANSWER 18: instant legs. Fills the bar and clears the winded
   // lockout the moment it is used; no channel, no prep.
 stim:{name:'Stim Injector',val:180,wt:1,r:'uncommon',c:'#7fe0d0',use:'stim'},
-  rig_light:{name:'Ballistic Weave',val:360,wt:2,r:'rare',c:'#8fb5c8'},
-  rig_medium:{name:'Plated Panel',val:1280,wt:3,r:'rare',c:'#6fa0d8'},
-  rig_heavy:{name:'Breacher Shell',val:3120,wt:4,r:'elite',c:'#5a88c8'},
+  // v9.45, HIS INSTRUCTION: rigs are out. Unwearable since v5.83 and dropping as
+  // rare and elite loot ever since, which is a rarity signal that promises power
+  // for something that was only ever money. The values live on in RIG_PAYOUT
+  // below, which is the one thing that still needs them.
   ammobox:{name:'Ammo Box',val:90,wt:1,r:'common',c:'#c2a35e',use:'ammo',amt:40},
   // v6.78, his note: plates come in fives. stackN is the most that fits in one stack in
   // the stash grid and the backpack grid. The BELT is deliberately exempt: he asked for
@@ -1607,16 +1608,16 @@ var SHOP=[
 var LOOT={
   crate:[['scrap',32],['wire',22],['cell',13],['bandage',11],['ammobox',15],['board',5],['comp',3],['optic',2]],
   locker:[['wire',15],['cell',13],['board',15],['optic',11],['bandage',7],['ammobox',13],['plate',7],['servo',6],['smoke',4],['decoy',3],['frag',4],['stim',5],['gun_pistol',4],['gun_smg',2],['gun_carbine',2],['gun_magnum',2],['core',2]],
-  safe:[['core',20],['titan',14],['optic',11],['servo',10],['board',9],['plate',10],['medkit',7],['comp',6],['frag',5],['rig_light',3],['rig_medium',1],['gun_rifle',5],['gun_shotgun',4],['gun_lmg',3],['gun_dmr',2],['gun_sniper',2],['blackbox',2],['KEY',4],['gun_whisper',2],['gun_lance',1]],
+  safe:[['core',20],['titan',14],['optic',11],['servo',10],['board',9],['plate',10],['medkit',7],['comp',6],['frag',5],['gun_rifle',5],['gun_shotgun',4],['gun_lmg',3],['gun_dmr',2],['gun_sniper',2],['blackbox',2],['KEY',4],['gun_whisper',2],['gun_lance',1]],
   body:[['ammobox',13],['bandage',10],['medkit',11],['plate',11],['stim',8],['frag',6],['smoke',4],
         ['gun_pistol',7],['gun_smg',5],['gun_carbine',3],['optic',6],['servo',5],['board',4],
-        ['cell',4],['core',5],['comp',4],['titan',2],['rig_light',2]],
+        ['cell',4],['core',5],['comp',4],['titan',2]],
   // Caches hold no junk at all. Every entry here is rare or elite, so opening one
   // is always worth the 4.6 seconds it pins you in place.
 botwreck:[['ammobox',34],['scrap',20],['wire',12],['cell',10],['board',9],['comp',6],['stim',4],['optic',5]],
   jackpot:[['reactor',16],['wcore',14],['codex',13],['bloom',14],['blackbox',12],['relay',10],['titan',6],['core',5],
            ['gun_lance',7],['gun_whisper',7]],
-  cache:[['blackbox',12],['reactor',10],['codex',10],['bloom',7],['relay',11],['rig_medium',4],['rig_heavy',2],
+  cache:[['blackbox',12],['reactor',10],['codex',10],['bloom',7],['relay',11],
          ['titan',14],['core',12],['ledger',10],['coil',10],['gun_dmr',8],['gun_rifle',7],['gun_lmg',6],['gun_shotgun',5],['medkit',6],['KEY',7],
          ['gun_whisper',4],['gun_lance',3]]
 };
@@ -1759,6 +1760,25 @@ function saveProfile(){ P.cfg=CFG; P.cfgv=17; storeSet(JSON.stringify(P));
   var _mOpen=document.querySelector('.modal.on');
   if(_mOpen) stampBalance(_mOpen);
 }
+// v9.45, HIS INSTRUCTION: rigs are out of the game. Anything he already owns is
+// bought back at exactly what the terminal would have paid for it, once. Without
+// this a saved stash keeps a key with no row in the item table and every panel
+// that draws it reads undefined.
+// A NAMED FUNCTION AT FILE SCOPE, not an inline block inside loadProfile, so a
+// check can drive it against a synthetic profile instead of reloading the page
+// and hoping the migration ran. My first cut put it inside loadProfile and the
+// check correctly reported that the build had no buyback at all.
+var RIG_PAYOUT={rig_light:360,rig_medium:1280,rig_heavy:3120};
+function rigBuyback(pr){
+  var paid=0,n=0,i,j;
+  if(pr.stash&&pr.stash.length) for(i=pr.stash.length-1;i>=0;i--){
+    var k=pr.stash[i];
+    if(RIG_PAYOUT[k]!==undefined){ paid+=RIG_PAYOUT[k]; n++; pr.stash.splice(i,1); }
+  }
+  if(pr.junk) for(j in RIG_PAYOUT) if(pr.junk[j]!==undefined) delete pr.junk[j];
+  if(n){ pr.credits=(pr.credits||0)+paid; pr.rigBuyback={n:n,c:paid}; }
+  return {n:n,credits:paid};
+}
 function loadProfile(){
   try{
     return storeGet().then(function(r){
@@ -1773,6 +1793,12 @@ if(P.sp!==undefined) delete P.sp;   // v7.38: PROGRESS folded into XP; the field
 if(P.rep!==undefined){ P.xp=(P.xp||0)+(P.rep||0); delete P.rep; }   // v7.63: MERGE, his word
 if(P.rig!==undefined) delete P.rig;   // v7.46: rigs left at v5.83; nothing reads these
 if(P.rigs!==undefined) delete P.rigs;
+// v9.45, HIS INSTRUCTION: rigs are out of the game. Anything he already owns is
+// bought back at exactly what the terminal would have paid for it, once. Without
+// this a saved stash keeps a key with no row in the item table and every panel
+// that draws it reads undefined.
+// rigBuyback is declared above loadProfile, not in it, so anything can call it.
+if(!P.mig945){ rigBuyback(P); P.mig945=1; saveProfile(); }
 // v8.38, audit: STAMPED. This is the v7.39 fold-to-one-map migration and it had
 // no stamp, so it ran on every load rather than once. That was harmless while
 // there was one map. There are two now, both offered, and index 1 is THE COLD
@@ -22160,10 +22186,11 @@ function gunIcon(c,id,cx,cy,S,tint){
   c.restore();
 }
 function drawItemIcon(c,key,cx,cy,S){
-  // Shop pseudo-keys: rigs and backpacks are not ITEMS, but they deserve faces
-  // in the rows that sell them. rig_light|rig_medium|rig_heavy draw a vest that
-  // thickens with the tier; 'pack' draws the backpack.
-  if(key&&key.indexOf('rig_')===0){
+  // Shop pseudo-keys: the backpack is not an ITEM but it deserves a face in the
+  // row that sells it.
+  // v9.45: the rig branch is gone with the rigs. Its own comment said it existed
+  // "for the rows that sell them", and no row has sold a rig since v5.99.
+  if(false){
     var tier=key.slice(4), tc=tier==='heavy'?'#7a8ea0':(tier==='medium'?'#6a9ab0':'#5aa9e6');
     var th=tier==='heavy'?1.0:(tier==='medium'?0.8:0.62);
     c.save(); c.translate(cx,cy);
@@ -24901,7 +24928,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.44: Wirt stops selling you a loss. Every item on his 10,000 counter was worth 1,700 to 4,600; every lot is now worth more than he charges.',
+  now:'v9.45: rigs are out of the game, as you asked. They stopped being wearable at v5.83 and kept dropping as rare and elite loot for fifty builds; anything you already owned is bought back at full value.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

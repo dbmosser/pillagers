@@ -751,6 +751,16 @@ window.__drawIcon=function(c,k,x,y,s){ return drawItemIcon(c,k,x,y,s); };
 // Container stocking, so "a body should be worth more than a crate" can be
 // MEASURED over thousands of rolls instead of eyeballed from the weight tables.
 window.__mkContainer=function(t){ return mkContainer(0,0,t); };
+// __ival is defined TWICE in this file, at 355 and 754, so it is not an anchor.
+// Seventh duplicate shim I have tripped over here. Grep before you name one, and
+// grep before you ANCHOR on one.
+// v9.45: the buyback, so a check can drive it against a profile it built rather
+// than reloading the page and hoping the migration ran. Returns null on a build
+// that has no buyback, which is how the falsifying control tells the two apart.
+window.__rigs={buyback:function(pr){ return (typeof rigBuyback==='function')?rigBuyback(pr):null; },
+               armorCap:function(){ return rigCeil(myRig()); },
+               wornId:function(){ return myRig().id; },
+               armorTable:function(){ return ARMORS.map(function(a){ return {id:a.id,cap:a.cap}; }); }};
 window.__ival=function(k){ return ival(k); };
 // v3.26: the auto-equip preference resolver and the settings renderer, so the
 // precedence rule (bot obeys the dial, player obeys his setting) can be driven
@@ -4650,6 +4660,73 @@ window.__REGRESS=[
      // safe cannot leave the panel understating it.
      if(survivesDeath&&/walk it out|have to walk/i.test(promise))
        bad.push('the sell panel says you have to walk the money out, and dying kept it');
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.45',what:'rigs are out of the game, and what he already owned was paid for',
+   run:function(){
+     var bad=[];
+     __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var RIGS=['rig_light','rig_medium','rig_heavy'];
+     var I=__items();
+     // THE ITEMS THEMSELVES.
+     for(var r=0;r<RIGS.length;r++) if(I[RIGS[r]]) bad.push(RIGS[r]+' is still in the item table as '+I[RIGS[r]].name);
+     // AND WHAT ACTUALLY DROPS, rolled through the real container maker rather
+     // than read off the weight tables, because a table is not what stocks a raid.
+     // Measured on v9.44: 96 rigs in 4,449 loot keys, 2.16 percent. Safes 3.65,
+     // caches 4.59, bodies 1.30. Roughly one thing in 46 was armour he could not
+     // put on.
+     var kinds=['safe','body','cache','locker','crate'], rigs=0, keys=0, where=[];
+     for(var t=0;t<kinds.length;t++){
+       var kr=0,kk=0;
+       for(var i=0;i<300;i++){
+         var c=__mkContainer(kinds[t]), L=(c&&c.loot)||[];
+         for(var j=0;j<L.length;j++){ kk++; if(String(L[j]).indexOf('rig_')===0) kr++; }
+       }
+       rigs+=kr; keys+=kk;
+       if(kr) where.push(kinds[t]+' '+kr+' of '+kk);
+     }
+     if(rigs) bad.push(rigs+' rigs still dropped across '+keys+' loot keys: '+where.join(', '));
+     // CONTROL ONE: the containers must still be putting things in themselves. An
+     // empty loot table would satisfy every line above.
+     if(keys<2000) bad.push('control: 1,500 containers produced only '+keys+' items, so nothing is being stocked');
+     // CONTROL TWO, AND THE IMPORTANT ONE: ARMOUR IS NOT RIGS. The rig ITEMS are
+     // out; the armour ceiling every operator wears is not, and deleting it would
+     // take armour out of the game rather than rigs out of the loot.
+     if(window.__rigs){
+       if(__rigs.wornId()!=='std') bad.push('control: the operator is wearing '+__rigs.wornId()+' rather than the standard armour');
+       if(!(__rigs.armorCap()>0)) bad.push('control: the armour ceiling is '+__rigs.armorCap()+', so armour is gone as well as rigs');
+       var AT=__rigs.armorTable();
+       if(AT.length<2) bad.push('control: the armour table has '+AT.length+' entries left');
+     }
+     // WHAT HE ALREADY OWNED. Distinctive amounts, so a fallback that pays a flat
+     // rate or pays nothing cannot look like a pass: one of each, 360 + 1,280 +
+     // 3,120 = 4,760, plus one thing that is not a rig and must survive untouched.
+     if(window.__rigs&&__rigs.buyback){
+       var fake={credits:77,stash:['relay','rig_light','gun_lance','rig_medium','rig_heavy','relay'],junk:{rig_heavy:1,relay:1}};
+       var got=__rigs.buyback(fake);
+       if(got===null) bad.push('this build has no buyback at all, so a saved stash keeps three keys with no row in the item table');
+       else {
+         if(got.n!==3) bad.push('the buyback took '+got.n+' rigs out of a stash holding 3');
+         if(got.credits!==4760) bad.push('the buyback paid '+got.credits+' for one of each rig, which were worth 360, 1,280 and 3,120');
+         if(fake.credits!==77+4760) bad.push('the credits went 77 to '+fake.credits+' and should have gone to '+(77+4760));
+         for(var q=0;q<fake.stash.length;q++)
+           if(String(fake.stash[q]).indexOf('rig_')===0) bad.push('a rig survived the buyback in the stash');
+         // CONTROL THREE: it must take ONLY the rigs. A buyback that empties the
+         // stash would satisfy every line above and rob him.
+         var relays=0, lances=0;
+         for(var q2=0;q2<fake.stash.length;q2++){
+           if(fake.stash[q2]==='relay') relays++;
+           if(fake.stash[q2]==='gun_lance') lances++;
+         }
+         if(relays!==2||lances!==1)
+           bad.push('control: the buyback also took '+(2-relays)+' relays and '+(1-lances)+' guns out of the stash');
+         if(fake.junk&&fake.junk.rig_heavy!==undefined) bad.push('the junk tag for a rig outlived the rig');
+         if(!(fake.junk&&fake.junk.relay!==undefined)) bad.push('control: the buyback cleared a junk tag that was not a rig');
+         // AND IT MUST NOT PAY TWICE. Running it again on the same profile is the
+         // shape a missing stamp takes.
+         var again=__rigs.buyback(fake);
+         if(again&&(again.n||again.credits)) bad.push('running the buyback a second time paid another '+again.credits);
+       }
      }
      return bad.length?bad.join('; '):null; }},
   {v:'9.44',what:'Wirt does not sell you a loss on his ten thousand credit counter',

@@ -27443,6 +27443,110 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.45 - RIGS ARE OUT OF THE GAME
+
+### His instruction, and he had given it before
+
+"rigs should be out of the game", 2026-09-02, followed by "i feel like i've told
+you that multiple times". He had, and he is right. The record:
+
+- **v1.39** built them: three tiers, bought, worn and switched through the shop,
+  every point of protection paid for in speed and noise.
+- **v5.83** stopped them being wearable. `myRig()` has returned a hardcoded 'std'
+  ever since.
+- **v5.99** took them off the counter, with the note that the two backpack tiers
+  were "never anything but a price tag".
+- **v7.46** deleted `P.rig` and `P.rigs` from the profile, with the note "rigs
+  left at v5.83; nothing reads these".
+
+Three passes, each removing one more layer, and not one of them removed the
+items. So Ballistic Weave, Plated Panel and Breacher Shell went on dropping for
+fifty builds as rare and elite loot that could not be put on.
+
+### What that actually cost
+
+Measured by rolling the real container maker 400 times per kind rather than
+reading the weight tables, because a table is not what stocks a raid:
+
+| container | rigs | of loot keys | share |
+| --- | --- | --- | --- |
+| cache | 46 | 1,002 | 4.59% |
+| safe | 37 | 1,015 | 3.65% |
+| body | 13 | 1,003 | 1.30% |
+| locker | 0 | 824 | none |
+| crate | 0 | 605 | none |
+| **all** | **96** | **4,449** | **2.16%** |
+
+Roughly one thing in every 46 you picked up was armour you could not wear, at
+elite and rare rarity, which is a signal that promises power. The game's own
+blurb for them already said "Salvage. Sell it at the terminal", so it was not
+lying to you exactly. It was just carrying fifty builds of dead weight with an
+armour's name on it.
+
+### What is out and what stays
+
+Out: the three ITEMS, their entries in the safe, body and cache loot tables, and
+the icon branch that drew them, whose own comment said it existed "for the rows
+that sell them" on a screen where no row has sold one since v5.99.
+
+**ARMORS STAYS.** That table is the armour ceiling system: 'std' is what every
+operator wears, cap 60 is the bar on your HUD, and Armour Plates still restore
+it. Deleting it would have taken armour out of the game rather than rigs out of
+the loot, and there is a control in the check that fails if it ever does.
+
+### What you already own is bought back
+
+`rigBuyback` pays out any rig in a saved stash at exactly what the terminal would
+have paid: 360, 1,280 and 3,120. Once, stamped as `mig945`, in the same block as
+every other migration. Without it a saved stash keeps three keys with no row in
+the item table and every panel that draws one reads undefined.
+
+I put that function inside `loadProfile` on the first cut, which scoped it to
+that function, and the check reported "this build has no buyback at all" against
+a build that had one. It is at file scope now.
+
+### What it costs you at the terminal
+
+Nothing. 3,000 containers rolled on each build:
+
+| | v9.44 | v9.45 |
+| --- | --- | --- |
+| loot keys | 6,632 | 6,584 |
+| total sell value | 4,224,210 | 4,218,165 |
+| value per key | 637 | 641 |
+
+A difference of 0.14 percent on the total. The per-container numbers move by 3 to
+6 percent either way, and the size of that noise is set by the locker, which
+never held a rig and still moved 6 percent, so nothing in the per-container
+column is a real effect. A raid pays what it paid.
+
+### How it is checked
+
+- no rig key survives in the item table
+- 1,500 containers rolled through the real maker produce zero rigs
+- the buyback pays exactly 4,760 for one of each, takes exactly three items, and
+  clears the junk tag on a rig
+- it must not pay twice, which is the shape a missing stamp takes
+
+Five controls, green on the old build as well as the new one:
+
+- 1,500 containers must still produce over 2,000 items, or an emptied loot table
+  would satisfy every line above
+- the operator must still be wearing 'std' with a ceiling above zero, and the
+  armour table must still have more than one entry
+- the buyback must leave the two relays and the gun in the stash untouched, or it
+  is robbing him rather than paying him
+- it must NOT clear a junk tag that is not a rig
+
+Fails on a v9.44 fixture naming all three items, the measured 72 rigs in 3,332
+loot keys, and the absent buyback. 87 of 87 with nothing skipped.
+
+Not verified: what a live profile that has already banked rigs sees on its next
+load, beyond that the function does the right thing to a profile shaped like one.
+Not verified: whether removing 2.16 percent of loot keys changes the sim's
+extract rate, which no paired run covers because there is no dial to pair on; the
+loot value measurement above is the reason I did not think it worth the run.
+
 ## v9.44 - WIRT STOPS SELLING YOU A LOSS
 
 ### What was wrong
