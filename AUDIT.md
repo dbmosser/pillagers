@@ -486,15 +486,19 @@ AND THE SECOND HALF OF THE STRETCH:
 | "maps feel samey": one cause with a number on it | v9.48 | all 104 buildings on both maps wore the identical floor, and 54 percent of the ones on THE COLD MILE are the same 320x240 box. Five floors now, fixed per building so the map is still learnable. Districts were checked first and are innocent: largest share 37.5 percent |
 | the pillager board covered the health bar and every key binding | v9.49 | on THE COLD MILE it was 927 pixels tall on a 1080 screen, overlapping the vitals by 496x193 and the legend by 467x196, and hanging 42 pixels off the bottom. Found by screenshotting a raid, not by reading code |
 | HIS INSTRUCTION: say what the game wants to run in | v9.50 | a note under the version line, and the title screen tightened so it still fits at 720p, where it had been overflowing by 8 pixels since v9.18 and by 28 once the note went on |
+| machines converged on the last sighting the way pillagers used to | v9.51 | four sentries in chase, none able to see him, all four steering at 400,660 TO THE UNIT and every one of them holding the role pin. The sector picker is one function at file scope now instead of a copy in each branch |
 
 STILL OPEN, and this is now the whole list:
+- the v8.85 footprint check is FLAKY. It failed once in a full corpus run on
+  v9.51 and passed in every other setting: alone on v9.50, alone on v9.51, after
+  the exact prefix of the 27 checks that precede it, and on a second full run of
+  93 of 93. It reads canvas pixels and carries its own guard about the renderer
+  not being deterministic at dt 0, so it is timing sensitive. A check that fails
+  one run in two is worse than no check, because it teaches you to ignore red
 - the footprint repetition itself: 54 percent of the buildings on THE COLD MILE
   are the same 320x240 box and not one building on either map carries an
   archetype. v9.48 painted them differently; it did not change their shapes,
   because moving building geometry moves every container and spawn on the map
-- machines converge on the last sighting the way pillagers used to. Sentries and
-  snitches run the role block, not the branch v9.47 fixed, and their pack roles
-  spread them a little but not deliberately
 - town centres and destroyed buildings from his map notes (hills, verticality and
   woods stay vetoed)
 - FOR HIS RULING: the raid punishes time spent rather than value carried
