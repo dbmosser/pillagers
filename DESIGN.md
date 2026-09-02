@@ -27443,6 +27443,57 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.98 - THE EXTRACTION READOUT COMES OFF THE BELT
+
+His screenshot: "text colliding with hotbar", showing EXTRACT A INCOMING 16s and
+the distance arrow drawn straight through the belt cells.
+
+REPRODUCED at three sizes, measuring each line against where the belt actually
+drew. Positive means the text is inside the belt row:
+
+    1920x1080    banner 19 above the belt      arrow 16 INSIDE it
+    2560x1440    banner 19 INSIDE              arrow 54 INSIDE
+    3840x2160    banner 55 INSIDE              arrow 90 INSIDE
+
+He plays at 4K, where the entire readout is painted on the belt.
+
+WHY, and it is the same shape as v8.94 and for the same reason. Six lines are
+placed a fixed number of pixels off the bottom of the screen: H-140 for the
+banner, H-105 for the arrow, H-100 for the distance, H-108 for the converging
+count, H-70 for HOLD E TO CALL EXTRACTION, H-62 for its bar. The belt stopped
+being a fixed height at v8.81 when it began sizing itself to the room between the
+corner blocks, so it is 101 tall at 1080p and 175 at 4K, and it grew up past all
+six of them.
+
+They stack up FROM THE BELT now, read from the cells the belt records this frame,
+which is the same source the backpack has used since v8.94 so the three cannot
+disagree. Measured after: the banner sits 75 above the belt and the distance row
+41 above it, identical at 1080p, 1440p and 4K, and both clear the weapon prompt
+line that lives between them.
+
+THE PARSE GATE FAILED THIS BUILD AND IT WAS RIGHT TO. Not the syntax, which was
+clean with balanced braces and no mojibake: the NEW IN card had not moved in
+twenty one builds, WHATSNEW_VER 8.77 against VER 8.98, drift 0.21 over its 0.20
+limit. Twenty one builds is most of a night and a lot of it is his own notes, so
+the card was simply lying about being current. Rewritten to the rule above the
+list, that a line only earns its place if it changes how he plays: the crawler
+that hit every frame, houses holding crawlers, four starts on COLD STORAGE, no
+tracking a pillager through a wall, the HUD following the monitor, the resize
+grips, the closer zoom, the working Undercroft backpack, nothing drawn on the
+belt, and one item in one place.
+
+Verified: parse PASS. Both sectors to their fingerprints, entities 58 and 276 and
+containers 155 and 589. Streams identical live and sim. Looting on both with no
+throw and the clock advancing. Three endings correct. Hub renders. 41 regression
+checks pass, none failed and none skipped, including a new one that walks the
+three resolutions and carries the control that the fix must not be achieved by
+pushing the readout into the top half of the screen.
+
+Not verified: not photographed, at any resolution. The numbers come from the same
+belt rectangle the drawing uses, but I have not seen it and he is the one looking
+at it. I also did not check the readout against the RESIZED belt: he can now drag
+the corner of the vitals and the gear stack, which changes how much room the belt
+has, and I have only measured it at the default sizes.
 ## v8.97 - THE STANDING CHIP STOPS TOUCHING THE STAMINA BAR
 
 His note, twice, the second time with a screenshot: "standing is colliding on top

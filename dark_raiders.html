@@ -1185,7 +1185,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.97';
+var VER='8.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1196,19 +1196,19 @@ var VER='8.97';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='8.77';
+var WHATSNEW_VER='8.98';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
-  'THE BAG USES THE SCREEN. It was eleven columns wide on a 1920 screen and showing thirty five stacks; it was five columns and 21 percent of the width, with 755 pixels of nothing either side of it.',
-  'THE SECOND GUN SLOT IS ALWAYS THERE. It only existed when you had a second gun, so picking one up slid every other key one place right, mid-raid.',
-  'A GUN GOES ON ANY BELT SLOT, as many as you want. Every slot is the same slot.',
-  'SPRINT STOPPED STUTTERING. Holding it through exhaustion switched it on and off twenty five times in twenty seconds; that flicker was the footstep noise you were hearing.',
-  'YOUR SETTINGS ACTUALLY APPLY. Nudging one slider in the tuning console killed the matching Settings row for good, while it carried on cycling and saving as if it worked.',
-  'TEXT SIZE SCALES THE MENUS TOO, all the way up. Above 150 percent only the game text grew and the panels stayed put.',
-  'YOU CAN DRAG SOMETHING OFF THE BELT AND BACK INTO THE BACKPACK. There was no way out of a belt slot except a click nobody tries first.',
-  'DYING LETS GO OF YOUR BELT KEYS. They stayed bound to gear you had just lost, and re-armed on the next one you found.',
-  'DODGING NO LONGER CANCELS A BANDAGE. Rolling stopped a heal dead: thirty points queued applied nothing at all until you stood still.',
-  'THE EXTRACTION COUNTDOWN IS ON THE RING, whoever called it. Both halves of it, the wait and the window, and you can ride out on someone else pull.'
+  'A CRAWLER IN REACH WAS HITTING YOU EVERY SINGLE FRAME. Measured: 240 hits in 240 frames where the code intends one every 0.7 seconds, which is 1,446 damage a second at a 100 hp operator.',
+  'EVERY HOUSE IS A GAMBLE NOW. Two thirds of them hold a crawler, some hold three, and a few are empty. It was one in six.',
+  'YOU START SOMEWHERE DIFFERENT. COLD STORAGE used one corner of the map for every raid, and now has four starts it picks between evenly.',
+  'A PILLAGER CANNOT BE TRACKED THROUGH A WALL. His boot prints and the rings he leaves in water were drawn whether or not you could see him.',
+  'THE HUD FOLLOWS YOUR MONITOR. It was the same absolute size on a 4K panel as on a laptop, so it was half the size where it mattered.',
+  'DRAG THE CORNER OF ANY PANEL TO SIZE IT, and it remembers. The pillager board, the legend, the conditions, the bars and the belt.',
+  'THE WHEEL ZOOMS THREE TIMES CLOSER. Everything past the old limit was quietly ignored.',
+  'YOUR BACKPACK IS IN THE UNDERCROFT, the same one from the raid, with your belt under it, and you can drag between them.',
+  'NOTHING IS DRAWN ON TOP OF YOUR BELT ANY MORE. The backpack, the extraction countdown and the distance arrow all sat on it at 1440p and 4K.',
+  'AN ITEM IS IN YOUR BACKPACK OR ON YOUR BELT, never in both. It used to be drawn in both places and it was the same object.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -20380,6 +20380,13 @@ ctx.restore();
   if(T.notes.length){ ctx.save(); ctx.textAlign='right'; ctx.fillStyle='#6b7783';
     ctx.fillText(T.notes.length+' note'+(T.notes.length>1?'s':'')+' logged',W-16,26); ctx.restore(); }
   ctx.textAlign='left';
+  // v8.98: everything below stacks UP FROM THE BELT rather than up from the
+  // bottom of the screen. The belt has sized itself to the screen since v8.81
+  // and these six lines never followed it, so at 4K they were drawn on top of
+  // it. G.hotCells is written by the belt earlier in this frame.
+  var _exBelt=(G.hotCells&&G.hotCells.length)?G.hotCells[0].y:(H-LH(70));
+  var _exRow=_exBelt-LH(26);   // the arrow, the distance, the converging count
+  var _exBan=_exBelt-LH(48);   // the headline above it
   if(G.beaconT!==null&&!G.over){
     var inRing=dist(p,G.active)<G.active.r;
     var _exL=extLetter(G.active);
@@ -20387,16 +20394,16 @@ ctx.restore();
     var holding=G.beaconT<=0&&G.shipHold!==null&&G.shipHold!==undefined;
     ctx.fillStyle=holding?(inRing?'#4de3d0':'#ff5a4a'):(inRing?'#4de3d0':'#ffc04a');
     // v8.68, his wording: the boarding window is EXTRACTION IN PROGRESS, not OPEN.
-    ctx.fillText(holding?('EXTRACTION IN PROGRESS!  '+_exL+'  '+Math.max(0,Math.ceil(G.shipHold))+'s'):('EXTRACT '+_exL+' INCOMING  '+Math.ceil(G.beaconT)+'s'),W/2,H-140);
+    ctx.fillText(holding?('EXTRACTION IN PROGRESS!  '+_exL+'  '+Math.max(0,Math.ceil(G.shipHold))+'s'):('EXTRACT '+_exL+' INCOMING  '+Math.ceil(G.beaconT)+'s'),W/2,_exBan);
     // v6.41, his note: no bar. The line above it is already a countdown in seconds.
     if(!inRing){
 var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active));
-      ctx.save(); ctx.translate(W/2-28,H-105); ctx.rotate(_ea+Math.PI/2);
+      ctx.save(); ctx.translate(W/2-28,_exRow-LH(4)); ctx.rotate(_ea+Math.PI/2);
       ctx.fillStyle='#ffc04a';
       ctx.beginPath(); ctx.moveTo(0,-10); ctx.lineTo(-6,6); ctx.lineTo(6,6); ctx.closePath(); ctx.fill();
       ctx.restore();
       ctx.font=FS(TYPE.label); ctx.fillStyle='#ffc04a';
-      ctx.fillText(metres(_ed)+'m',W/2+14,H-100);
+      ctx.fillText(metres(_ed)+'m',W/2+14,_exRow);
     } else {
       // count what is actually converging, because a number climbing while you
       // stand still is the tension the wait was missing
@@ -20410,17 +20417,17 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
       if(inbound){
         ctx.font=FS(TYPE.label);
         ctx.fillStyle=inbound>4?'#ff5a4a':'#ffc04a';
-        ctx.fillText(inbound+' converging on the ring',W/2,H-108);
+        ctx.fillText(inbound+' converging on the ring',W/2,_exRow);
       }
     }
     ctx.textAlign='left';
   } else if(!G.over&&dist(p,G.active)<G.active.r){
     ctx.font=FS(TYPE.head); ctx.textAlign='center';
-    ctx.fillStyle='#4de3d0'; ctx.fillText('HOLD E TO CALL EXTRACTION',W/2,H-70);
+    ctx.fillStyle='#4de3d0'; ctx.fillText('HOLD E TO CALL EXTRACTION',W/2,_exRow);
     // The 1.6 second hold is VISIBLE now. It had a tiny bar on the ring marker
     // and nothing where you are actually looking, so letting go at a second
     // read as the button not working.
-    if(G.active.callT>0) bar(W/2-70,H-62,140,7,clamp(G.active.callT/1.6,0,1),'#4de3d0');
+    if(G.active.callT>0) bar(W/2-70,_exRow+LH(5),140,7,clamp(G.active.callT/1.6,0,1),'#4de3d0');
     ctx.textAlign='left';
   }
   // HIS NOTE, v3.58: "THE SEAL NEEDS some sort of visual indicator to tell you
@@ -24133,7 +24140,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.97: the STANDING chip stops touching the stamina bar. It had one pixel of clearance and now has a real gap at every text size.',
+  now:'v8.98: the extraction countdown and the distance arrow stop being drawn on top of your belt.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

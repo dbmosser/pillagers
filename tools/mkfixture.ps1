@@ -2169,6 +2169,38 @@ window.__REGRESS=[
        });
      });
      P.uiScale=keep;
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.98',what:'nothing in the extraction readout is drawn on top of the belt',
+   run:function(){
+     var bad=[];
+     // He plays at 4K. Every line of this readout was placed a fixed number of
+     // pixels off the bottom of the screen while the belt has sized itself to
+     // the screen since v8.81. Measured before: the arrow 16px inside the belt
+     // at 1080p, the banner 55 and the arrow 90 inside it at 4K.
+     [[1920,1080],[2560,1440],[3840,2160]].forEach(function(SZ){
+       var W2=SZ[0],H2=SZ[1],tag=W2+'x'+H2;
+       __forceSize(W2,H2);
+       var P=__P(); P.hud={};
+       __resetCfg(); __pinDefaults(0);
+       __deploy({kit:['medkit'],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.ents.length=0; g.player.iv=99;
+       for(var f=0;f<12;f++) __loop(performance.now()+f*16.7);
+       var hc=__state().hotCells||[];
+       if(!hc.length){ bad.push('at '+tag+' the belt drew no cells to measure against'); return; }
+       var bt=hc[0].y, LH=__type.lh;
+       // The three rows the readout uses, in the order they stack upward.
+       var row=bt-LH(26), ban=bt-LH(48), prompt=bt-LH(6);
+       if(row>=bt) bad.push('at '+tag+' the distance row is drawn inside the belt');
+       if(ban>=bt) bad.push('at '+tag+' the extraction banner is drawn inside the belt');
+       // They must also not sit on the weapon prompt line, which is its own row
+       // just above the cells and was the other half of what he photographed.
+       if(row>=prompt) bad.push('at '+tag+' the distance row is on the weapon prompt line');
+       if(ban>=row) bad.push('at '+tag+' the banner is on the distance row');
+       // CONTROL: it must not have been fixed by shoving the readout to the top
+       // of the screen, which would satisfy every line above and be useless.
+       if(ban<H2*0.5) bad.push('at '+tag+' the banner has been pushed into the top half of the screen');
+     });
+     __forceSize(1920,1080);
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
