@@ -27443,6 +27443,58 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.23 - A TICK THAT FOUND NOTHING, AND SAYS SO
+
+Nothing about how the game plays changes here. The version moves because every
+build moves it, including this kind.
+
+FOUR SUSPECTED FAULTS CHASED, NONE OF THEM REAL.
+
+The burst echo firing the OLD gun's stats after a weapon swap. It captures the
+weapon it was fired from and uses that, which is correct: the burst that left the
+barrel belongs to the gun that fired it.
+
+Jamming. Both jam paths are gated on the weapon's own jam figure and every one of
+those is zero since v9.01 took wear out, so the JAMMED readout and the jam
+reticle are unreachable. Dead code, not something he can see, and not worth a
+build on its own.
+
+The extraction pull dragging a Listener off its hunt. Driven properly this time
+by exposing the extraction tick and calling it directly with a two and a half
+second step: the conscription pass ran and took three machines and the Listener
+was not one of them. What moves is its heard position, to the ring, and that is
+its own ears working as documented.
+
+A dead zone at point blank on crates. This one was mine. A probe of it reported
+that standing ON a container and holding E did nothing, with reach only working
+from 8 units out. Run three times from a clean config it works at 0, 4, 8 and 20,
+and the sight test is clear even standing on the box. The first reading came from
+a harness that inherited its config between runs.
+
+AND A CHECK I WROTE THREE TIMES AND PULLED. I tried to pin the crate reach so the
+question could never be re-litigated. Version one asked whether A container was in
+reach, so the crate next door answered the far-edge case. Version two asked for
+identity, which failed because a reachable box is searched and OPENED inside the
+frames, after which the pointer honestly moves on. Version three asked the box for
+its own progress and still disagreed with itself depending on what had run before
+it. A check that cannot hold still is worse than no check, because the next person
+to see it red will assume the game moved. It is gone and the corpus is back to 65.
+
+Verified: parse PASS v9.23. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 65 regression checks
+pass in sequence, none skipped. The harness file is byte for byte what it was
+before this tick.
+
+Not verified, and it is the open thread: the same crate reach measurement taken
+AFTER the whole regression corpus has run disagrees with itself, failing at 0 and
+44 while still passing at 20. Something earlier in the corpus changes the result
+and I did not find what. Nothing in the game was changed on the strength of any
+of it, so the disagreement is in my instrument rather than in play, but it is not
+settled and it is why there is no check.
+
 ## v9.22 - TAKING ONE THING NO LONGER READS OUT THE REST OF THE BOX
 
 REPRODUCED by pulling a single item from a container holding three:

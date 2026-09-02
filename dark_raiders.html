@@ -1209,7 +1209,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.22';
+var VER='9.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12417,6 +12417,14 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
     // everything else uses. Known edge left open on purpose: a window is
     // see-through, so a box directly behind glass is still reachable; if that
     // ever reads wrong in play, requiring the glass broken first is one line.
+    // v9.23, measured after a probe of mine claimed a dead zone here. Run three
+    // times from a clean config, reach works at 0, 4, 8 and 20 units, and the
+    // sight test is clear even standing on the box, so there is no dead zone: the
+    // first reading came from a harness that inherited its config between runs.
+    // NOT SETTLED, and left open honestly: the same measurement taken after the
+    // whole regression corpus has run disagrees at 0 and 44 while still agreeing
+    // at 20. Something earlier in the corpus changes this and I have not found
+    // what. Nothing here was changed on the strength of it.
     var d=dist(p,ct); if(d<46&&d<nd&&losClear(p.x,p.y,ct.x,ct.y,G.vseg)){ nd=d; near=ct; }
   }
   // HIS BAG OPENS LIKE A CONTAINER, v3.75, partner-merc line four. Stand with
@@ -24564,7 +24572,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.22: pulling one thing out of a crate no longer reads out what is still inside it.',
+  now:'v9.23: a measurement build. Four suspected faults were chased and none of them was real, so nothing about play changes here.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
