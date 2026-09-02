@@ -957,6 +957,28 @@ window.__REGRESS=[
        if(hit) out.push('mapIx '+mi+' has '+hit+' roads crossing a wall');
      });
      return out.length?out.join('; '):null; }},
+  {v:'8.75',what:'BACKSPACE rescues a latched key on the Undercroft floor as well as in a raid',
+   run:function(){
+     function press(){
+       document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Backspace',key:'Backspace',bubbles:true,cancelable:true}));
+       document.body.dispatchEvent(new KeyboardEvent('keyup',{code:'Backspace',key:'Backspace',bubbles:true,cancelable:true}));
+     }
+     __showScreen('hub');
+     var K=__keysRef();
+     for(var k in K) K[k]=false;
+     K['KeyW']=true; K['ShiftLeft']=true;
+     if(!Object.keys(__keysRef()).filter(function(x){return __keysRef()[x];}).length)
+       return 'the probe could not latch a key, so it is testing nothing';
+     press();
+     var still=Object.keys(__keysRef()).filter(function(x){return __keysRef()[x];});
+     if(still.length) return 'on the hub floor BACKSPACE left '+still.join(',')+' latched';
+     // and it must not have stopped working inside a raid
+     __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
+     var K2=__keysRef(); K2['KeyA']=true;
+     press();
+     var still2=Object.keys(__keysRef()).filter(function(x){return __keysRef()[x];});
+     if(still2.length) return 'in a raid BACKSPACE left '+still2.join(',')+' latched';
+     return null; }},
   {v:'8.74',what:'the settings menu actually applies what it says',
    run:function(){
      var P=__P(), bad=[];

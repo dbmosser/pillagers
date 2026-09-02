@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.74';
+var VER='8.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4988,7 +4988,10 @@ function litHex(hex,amt,warm){
 // the game passes through FS(), which applies a floor and a user multiplier.
 // The research brief puts the absolute readable floor at 18px on 1080p and calls
 // every 8, 9, 9.5, 10 and 11px string in this file a bug. They were most of them.
-var UISCALES=[1.0,1.25,1.5,1.75,2.0];
+// v8.75, his menu-size complaint from a third direction: 1.25 is now 1.2 because
+// uiScale falls back to exactly 1.2 at 1080p, and 1.2 was not a step - the first
+// press jumped to 125 and the shipped default became unreachable for good.
+var UISCALES=[1.0,1.2,1.5,1.75,2.0];
 // One knob, used by both the font strings and the layout steps. The first cut
 // of this shipped a 1.55 lift AND a 1.35 default user scale, which multiplied
 // to 2.09x: the key legend swallowed the screen and lines printed over each
@@ -8218,6 +8221,12 @@ window.addEventListener('keydown',function(e){
     }
     return;
   }
+  // v8.75: BACKSPACE works ANYWHERE, which is what its own hint promises and what
+  // restoreCursor's comment already claimed. Its only call used to sit inside
+  // raidKey, past the raid gate, so on the Undercroft floor the rescue key did
+  // nothing - and the floor is the one place a latched key has nothing else to
+  // clear it. Above the hub branch, because that branch returns at its own end.
+  if(e.code==='Backspace'&&!e.repeat){ restoreCursor(); e.preventDefault(); return; }
   if(state==='hub'){
     keys[e.code]=true;
     // v6.67, his note: ENTER dismisses the update log. Taken before anything else on
@@ -8412,7 +8421,7 @@ function raidKey(code,repeat,ev){
     else { for(var _usj=UISCALES.length-1;_usj>=0;_usj--){ if(UISCALES[_usj]<_uc-0.001){ _uni=_usj; break; } } }
     if(_uni<0) _uni=(_ud>0)?UISCALES.length-1:0;
     if(UISCALES[_uni]!==_uc){
-      P.menuZoom=clamp((P.menuZoom||1)*UISCALES[_uni]/_uc,0.7,1.6);
+      P.menuZoom=clamp((P.menuZoom||1)*UISCALES[_uni]/_uc,0.7,2.2);
       P.uiScale=UISCALES[_uni];
       saveProfile(); applyMenuZoom();
       try{ renderSettings(); }catch(_ue){}
@@ -23618,7 +23627,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.74: the counter no longer sells blue or purple guns. Above green, you find them or you buy them out in the field.',
+  now:'v8.75: the text size setting scales the menus all the way up now, and BACKSPACE rescues the cursor in the Undercroft too.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -26244,7 +26253,9 @@ document.addEventListener('wheel',function(e){
   }
   e.preventDefault();
   var z=((P&&P.menuZoom)||1)+(e.deltaY<0?0.08:-0.08);
-  P.menuZoom=Math.max(0.7,Math.min(1.6,Math.round(z*100)/100));
+  // v8.75: 1.6 stopped the panels growing at 175 and 200 percent while the canvas
+  // text kept going, which is exactly the "menus only get smaller" complaint.
+  P.menuZoom=Math.max(0.7,Math.min(2.2,Math.round(z*100)/100));
   saveProfile(); applyMenuZoom();
 },{passive:false});
 document.getElementById('closetune').onclick=function(){ toggleTune(false); };
@@ -27172,7 +27183,11 @@ hint:'Damage taken from everything on the surface. Standard is how the game has 
      {n:'Short',    cfg:{raidSec:360}}
    ], def:1},
   {k:'loot', label:'How much is out there',
-   hint:'What every container is worth. Lean makes a good haul rarer rather than smaller.',
+   // v8.75: this said "Lean makes a good haul rarer rather than smaller", which is
+   // backwards. lootMult is read once, inside ival(), and never touches what
+   // spawns: the same items at the same rate, each worth less. And because it
+   // applies when a value is READ, it also moves what your banked stash sells for.
+   hint:'What everything is WORTH, including the stash you have already banked. The same items still turn up just as often.',
    opts:[
      {n:'Rich',     cfg:{lootMult:1.35}},
      {n:'Standard', cfg:{lootMult:1}},
@@ -27255,9 +27270,14 @@ function renderSettings(){
     '<button id="set_text" style="padding:6px 12px">'+Math.round(uiScale()*100)+'%</button></div>'+
     '<div class="row"><div style="flex:1"><b>Music</b><div class="hint">A faint 16-bit loop, three pieces, one picked at random each time you come back down. UNDERCROFT plays it, OFF is silence. The surface is deliberately silent either way.</div></div>'+
     '<button id="set_music" style="padding:6px 12px;min-width:110px">'+MUSIC_NAMES[musicMode()]+'</button></div>'+
-    '<div class="row"><div style="flex:1"><b>Auto-export the flight recorder</b><div class="hint">Writes a run report to your Downloads at the end of every raid.</div></div>'+
+    // v8.75: it is every SECOND raid, not every raid, and on this machine the
+    // report goes to the local collector instead while it is running.
+    '<div class="row"><div style="flex:1"><b>Auto-export the flight recorder</b><div class="hint">Writes a run report to your Downloads every second raid. Each file carries the whole log, so nothing is lost. While the local recorder is running it receives the report instead.</div></div>'+
     '<button id="set_auto" style="padding:6px 12px">'+(P.autoExport?'ON':'OFF')+'</button></div>'+
-    '<div class="row"><div style="flex:1"><b>Share runs with the developer</b><div class="hint">Off by default. When on, the same run report you can already export is sent to the developer so the game can be tuned on real play. It carries your raids, loadouts and any notes you type, plus an anonymous install id, and nothing else about you. Switch it off any time.</div></div>'+
+    // v8.75: PUBLIC_DROP is null in this build, so the consent branch in
+    // telemetryDest can never fire and nothing has ever left the machine through
+    // this switch. The sentence said otherwise. It now describes what is true.
+    '<div class="row"><div style="flex:1"><b>Share runs with the developer</b><div class="hint">There is no upload address in this build, so nothing is sent anywhere and this switch changes nothing yet. When one exists, turning this on would send the same run report you can already export yourself: your raids, loadouts and any notes you type, plus an anonymous install id, and nothing else about you.</div></div>'+
     '<button id="set_share" style="padding:6px 12px">'+(P.shareRuns?'ON':'OFF')+'</button></div>'+
     '<div class="row"><div style="flex:1"><b>Back up your progress</b><div class="hint">Everything you own lives in this browser, and one browser cleanup erases it forever. This saves it all to a file in your Downloads. Do it once in a while.</div></div>'+
     '<button id="set_backup" style="padding:6px 12px">SAVE FILE</button></div>'+
@@ -27271,7 +27291,7 @@ function renderSettings(){
     var _uc=uiScale(),_ni=-1;
     for(var _ui=0;_ui<UISCALES.length;_ui++){ if(UISCALES[_ui]>_uc+0.001){ _ni=_ui; break; } }
     if(_ni<0) _ni=0;   // past the top wraps to the bottom, as the cycle always did
-    P.menuZoom=clamp((P.menuZoom||1)*UISCALES[_ni]/_uc,0.7,1.6);
+    P.menuZoom=clamp((P.menuZoom||1)*UISCALES[_ni]/_uc,0.7,2.2);
     P.uiScale=UISCALES[_ni];
     saveProfile(); applyMenuZoom(); renderSettings();
   };

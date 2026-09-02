@@ -27443,6 +27443,61 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.75 - THE TEXT SIZE SETTING SCALES THE MENUS ALL THE WAY UP, AND BACKSPACE WORKS ON THE FLOOR
+
+Four more from the settings sweep. The first is his menu-size complaint again,
+arriving from a direction I had not looked at.
+
+THE TEXT SIZE SETTING STOPPED SCALING THE MENUS AT 150 PERCENT. Two faults, both
+at 1080p. The panel half was clamped to 1.6, so from the 120 percent default the
+cycle ran 1.354, then 1.625 which clamped to 1.6, and then STAYED pinned at 1.6
+for both 175 and 200 percent: the canvas text kept growing and the menus stopped
+dead. The row hint says it scales "every string on every canvas and in every
+panel", and above 150 that was false.
+And the shipped default was unreachable. uiScale falls back to exactly 1.2 at
+1080p and 1.2 was not one of the steps, so the first press jumped to 125 percent
+and 120 was gone until the profile was wiped.
+Measured through the real Settings button after the fix: 120 -> 150 -> 175 -> 200
+-> 100 -> 120, with menuZoom running 1.3, 1.625, 1.896, 2.167 instead of pinning.
+Screenshotted at 200 percent: the panel really is large.
+
+BACKSPACE, THE CURSOR RESCUE, DID NOT WORK WHERE IT IS NEEDED MOST. Its only call
+sat inside raidKey, past the raid gate, so on the Undercroft floor - including on
+the Settings page that PRINTS "BACKSPACE forces it back at any time" - the key
+did nothing. restoreCursor own comment claims the opposite. What is lost down
+there is not the arrow, which the hub forces anyway, but releaseAllKeys and the
+mouse re-centre, so a key latched on the floor had no rescue at all, which is the
+exact fault the feature exists for.
+I put the fix one gate too late on the first attempt and the probe caught it:
+three keys latched before, the same three after. The hub branch returns at its
+own end, well above the raid gate, so the handler had to go above the hub branch
+entirely. After: three latched keys become none, and the raid case still clears.
+
+THE LOOT HINT WAS BACKWARDS. "Lean makes a good haul rarer rather than smaller"
+is the opposite of what the dial does. lootMult is read ONCE, inside ival, and
+never touches what spawns: the roll tables and the rarity ranking are untouched,
+so you find exactly the same items at exactly the same rate and each is worth
+less. And because it applies when a value is READ, it also moves what the stash
+you already banked will sell for, which nothing told him.
+
+TWO ROWS DESCRIBED BEHAVIOUR THIS BUILD DOES NOT HAVE. Auto-export says "at the
+end of every raid" and the fallback rate-limits itself to every SECOND raid, and
+on this machine the report is POSTed to the local recorder instead. Share runs
+promises a destination that does not exist: PUBLIC_DROP is hardcoded null, so the
+consent branch can never fire and nothing has ever left the machine through that
+switch. Both sentences now say what is true. The local recorder is deliberately
+not gated on consent because it is his own machine, and that is left alone.
+
+Verified: parse PASS at 1,525,079 chars, mojibake none. Text size cycled through
+the real Settings button and screenshotted at 200 percent. BACKSPACE verified on
+the floor AND in a raid. __verify PASS: ents 58 and 276, parity identical on both
+maps, looting on both, all three endings, hub. __regress PASS, now 21 checks.
+
+Not verified: raising the panel clamp to 2.2 was checked for the Settings panel
+only. The Stash, Mainframe and shop panels are built by the same zoom and have
+not been looked at above 150 percent, so one of them may now overflow. Ten more
+rows from the sweep are still broken or mislabelled and are not fixed here.
+
 ## v8.74 - THE SETTINGS MENU ACTUALLY APPLIES, AND THE COUNTER STOPS SELLING BLUE AND PURPLE GUNS
 
 Two of his orders. The settings half is the one that matters and it has probably
