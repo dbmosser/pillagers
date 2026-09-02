@@ -841,6 +841,24 @@
   <div class="vendgrid" id="cheatgrid" style="flex:1;overflow-y:auto"></div>
   <button class="deploy ghost" onclick="document.getElementById('cheatmodal').classList.remove('on')" style="margin-top:10px;padding:8px 22px">CLOSE</button>
 </div>
+<!-- v8.84, his note: I on the Undercroft floor opens THIS, not the terminal.
+     Deliberately small: what you are carrying and what is on your belt. Every
+     other thing down here is a station you walk to. -->
+<div class="modal" id="carrymodal">
+  <h3>BACKPACK</h3>
+  <div class="msub">Your inventory is your backpack plus your belt. An item is in one or the other, never both.</div>
+  <div class="panel" style="margin-top:10px">
+    <h2>Backpack <em id="carrybpct"></em></h2>
+    <div class="invgrid" id="carrybp" style="min-height:96px"></div>
+  </div>
+  <div class="panel" style="margin-top:10px">
+    <h2>Tactical belt</h2>
+    <div id="carrybelt" style="display:flex;gap:6px;flex-wrap:wrap;padding:10px"></div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:12px">
+    <button class="deploy ghost" id="carryclose" style="flex:1">CLOSE</button>
+  </div>
+</div>
 <div class="modal" id="stagemodal">
   <h3 id="stagehead">ASCENT CHECK</h3>
   <div class="msub" id="stagewhere"></div>
@@ -1162,7 +1180,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.83';
+var VER='8.84';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8298,12 +8316,23 @@ window.addEventListener('keydown',function(e){
     // own Escape handler, so one press used to close the menu AND the panel
     // under it; a window over the Stash had the same problem. Escape belongs to
     // whatever is in front.
+    // v8.84: the backpack is a modal, so it has to be taken before the line
+    // below, which only fires when nothing is on top of the terminal.
+    if(e.code==='Escape'&&!document.querySelector('.imenu')){
+      var _cm2=document.getElementById('carrymodal');
+      if(_cm2&&_cm2.classList.contains('on')){ toggleCarry(false); e.preventDefault(); return; }
+    }
     if(e.code==='Escape'&&!document.querySelector('.imenu')&&!document.querySelector('.modal.on'))
       document.getElementById('hub').classList.remove('on');
-    // I and TAB open your things from anywhere on the floor, v6.39, his note. The
-    // same panel the terminal opens, because there is only one inventory and making
-    // the key open a second view of it is how the two drift apart.
+    // I and TAB open your things from anywhere on the floor, v6.39, his note.
+    // v8.84, his note three times over: "I in undercroft should pull up simple
+    // inventory, not 'the stash'". It used to open the whole terminal. It opens
+    // the backpack now, which is what I opens upstairs and what his own
+    // vocabulary note says the key means. The terminal is untouched and is still
+    // a station you walk to.
     if((e.code==='KeyI'||e.code==='Tab')&&!e.repeat){
+      var _cm=document.getElementById('carrymodal');
+      if(_cm&&_cm.classList.contains('on')){ toggleCarry(false); e.preventDefault(); return; }
       var _anyModal=false;
       var _ms=document.querySelectorAll('.modal');
       for(var _mi=0;_mi<_ms.length;_mi++){
@@ -8315,8 +8344,10 @@ window.addEventListener('keydown',function(e){
       if(document.querySelector('.imenu')) _anyModal=true;
       if(!_anyModal){
         var _hb=document.getElementById('hub');
+        // The terminal being open means he is reading it; the key closes it and
+        // puts him back on the floor rather than stacking a panel on a panel.
         if(_hb.classList.contains('on')) _hb.classList.remove('on');
-        else { renderHub(); _hb.classList.add('on'); }
+        else toggleCarry(true);
       }
     }
     return;
@@ -23763,7 +23794,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.83: rolling in the Undercroft draws the ball, the same as it does upstairs. My earlier fix changed the speed and not the shape.',
+  now:'v8.84: I in the Undercroft opens your backpack and belt, not the whole terminal. The terminal is still the station you walk to.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -23901,6 +23932,69 @@ function stampBalance(el){
   }
   c.innerHTML=(P.credits||0).toLocaleString()+'<em>c</em>'+
     '<i>'+(P.xp||0).toLocaleString()+'<em>XP</em></i>';
+}
+// v8.84: THE SIMPLE INVENTORY, the one he has asked for three times. P.kit is
+// the backpack down here and P.hotAssign is the belt, which is the same pair the
+// raid derives its bar from. Built out of invCell and stackCounts so it cannot
+// drift into a second way of drawing an item.
+function renderCarry(){
+  if(typeof applyMenuZoom==='function') applyMenuZoom();
+  var kit=(P.kit||[]).slice();
+  // v8.78's rule, held here too: a copy a belt slot has claimed is on the belt
+  // INSTEAD of in the backpack, counted per key so binding one of three medkits
+  // leaves two behind.
+  var claim={};
+  if(P.hotAssign) for(var a in P.hotAssign){ var ck=P.hotAssign[a]; if(ck) claim[ck]=(claim[ck]||0)+1; }
+  var shown=[];
+  for(var i=0;i<kit.length;i++){
+    var k=kit[i];
+    if(claim[k]>0){ claim[k]--; continue; }
+    shown.push(k);
+  }
+  var BP=document.getElementById('carrybp'); if(!BP) return;
+  BP.innerHTML='';
+  document.getElementById('carrybpct').textContent=shown.length+(shown.length===1?' item':' items');
+  if(!shown.length){
+    BP.innerHTML='<div class="cellempty">Nothing packed. You go up with your gun and whatever you find.</div>';
+  } else {
+    var CS=stackCounts(shown);
+    Object.keys(CS).forEach(function(k2){
+      var cell=invCell(k2,CS[k2],{from:'carry',verb:'pack this at the Stash'});
+      if(cell) BP.appendChild(cell);
+    });
+  }
+  // The belt. Slots one and two are the two guns in your hands, which is the
+  // rule the raid bar uses, and the rest is whatever you have bound.
+  var BL=document.getElementById('carrybelt'); BL.innerHTML='';
+  var guns=(P.weapons||[]).slice();
+  for(var sl=0;sl<9;sl++){
+    var box=document.createElement('div');
+    var lab='',name='',filled=false;
+    if(sl===0){ lab='1'; name=(WEAPONS[P.equipped]&&WEAPONS[P.equipped].name)||'Bare hands'; filled=!!WEAPONS[P.equipped]; }
+    else if(sl===1){
+      lab='2';
+      var second=null;
+      for(var gq=0;gq<guns.length;gq++) if(guns[gq]!==P.equipped){ second=guns[gq]; break; }
+      name=second?((WEAPONS[second]&&WEAPONS[second].name)||second):'Empty';
+      filled=!!second;
+    } else {
+      lab=String(sl+1);
+      var hk=P.hotAssign?P.hotAssign[sl]:null;
+      name=(hk&&ITEMS[hk])?ITEMS[hk].name:'Empty';
+      filled=!!(hk&&ITEMS[hk]);
+    }
+    box.style.cssText='flex:0 0 auto;min-width:88px;padding:7px 9px;border-radius:3px;'+
+      'border:1px solid var(--steel-hi);font-size:11.5px;'+
+      (filled?'color:var(--bone)':'color:var(--ash);opacity:.6');
+    box.innerHTML='<b style="opacity:.7">'+lab+'</b><br>'+name;
+    BL.appendChild(box);
+  }
+}
+function toggleCarry(on){
+  var el=document.getElementById('carrymodal'); if(!el) return;
+  var want=(on===undefined)?!el.classList.contains('on'):!!on;
+  if(want){ try{ renderCarry(); }catch(_rc){} openModal('carrymodal'); }
+  else el.classList.remove('on');
 }
 function openModal(id){
   var el=document.getElementById(id); if(!el) return;
@@ -26132,6 +26226,7 @@ function renderCraftDetail(rows){
 // was never moved out of the stash and the standard-kit fallback fired instead.
 
 document.getElementById('backfloor').onclick=function(){ document.getElementById('hub').classList.remove('on'); };
+document.getElementById('carryclose').onclick=function(){ toggleCarry(false); };
 // v7.66, his order: ten layouts and a button. Same DOM, same handlers; the
 // attribute only moves and resizes things.
 function applyStashLayout(){

@@ -1597,6 +1597,39 @@ window.__REGRESS=[
      // THE CONTROL: hardcoding the ball would pass the line above and be worse.
      if(standing.filter(function(m){ return m==='roll'; }).length)
        bad.push('a standing operator is being drawn as a ball');
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.84',what:'I in the Undercroft opens the backpack, not the terminal, and obeys the one-place rule',
+   run:function(){
+     if(!__hubEnter()) return 'could not reach the Undercroft floor';
+     // Entering the Undercroft unpacks your kit, so it has to be staged AFTER.
+     // My first probe staged it before and read an empty grid as a bug.
+     var P=__P();
+     P.kit=['medkit','medkit','medkit','plate','servo'];
+     P.hotAssign={7:'medkit',8:'plate'};
+     var K=__keysRef(); for(var kk in K) delete K[kk];
+     var cm=document.getElementById('carrymodal');
+     var hub=document.getElementById('hub');
+     if(!cm) return 'the backpack panel is not in the page at all';
+     cm.classList.remove('on'); hub.classList.remove('on');
+     document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));
+     var bad=[];
+     if(!cm.classList.contains('on')) bad.push('I did not open the backpack');
+     // The whole point of his note: it used to open the terminal, whose first
+     // words are THE STASH.
+     if(hub.classList.contains('on')) bad.push('I opened the terminal as well');
+     var names=[].slice.call(document.getElementById('carrybp').querySelectorAll('.cell'))
+                 .map(function(c){ return (c.title||'').split('\n')[0]; }).join(' | ');
+     // One of three medkits is on the belt, so two must still be in the bag.
+     if(names.indexOf('Medkit')<0) bad.push('binding one of three medkits hid all of them');
+     if(names.indexOf('x2')<0) bad.push('the backpack is not showing 2 of the 3 medkits, it shows: '+names);
+     // The only plate is on the belt, so it must not also be in the bag.
+     if(names.indexOf('Plate')>=0) bad.push('a belt-bound plate is still drawn in the backpack');
+     // THE CONTROL: an item nothing has claimed must still be there. Without it
+     // a panel that simply drew nothing would pass every line above.
+     if(names.indexOf('Servo')<0) bad.push('control: an unbound item is missing from the backpack');
+     // And the key closes it again rather than stacking panels.
+     document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));
+     if(cm.classList.contains('on')) bad.push('I did not close the backpack again');
      return bad.length?bad.join('; '):null; }}
 ];
 window.__regress=function(){

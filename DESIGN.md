@@ -27443,6 +27443,56 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.84 - I IN THE UNDERCROFT OPENS YOUR BACKPACK, NOT THE WHOLE TERMINAL
+
+His note, third time: "I in undercroft should pull up simple inventory, not 'the
+stash'".
+
+REPRODUCED by pressing I on the Undercroft floor and reading what came up. The
+first words of it: "THE UNDERCROFT, THE STASH, XP 1,317,037, 644,720 CREDITS,
+Your operator, BUILD Lean, SKIN Fair, HEADGEAR Bare...". So I opened the entire
+terminal: credits, experience, the readiness line, the free kit, the stash and
+the avatar editor. He asked for a simple inventory and got the deepest screen in
+the game.
+
+His own vocabulary note is the spec for what it should be: "I opens the BACKPACK
+(inventory includes the hotbar remember)". So the new panel is exactly that and
+nothing else. What you are carrying, and what is on your belt.
+
+It obeys the v8.78 rule as well, because that rule is about the whole game and
+not just the in-raid grid: INVENTORY = BACKPACK + BELT, and an item is in one or
+the other, never both. Measured with three medkits, one plate and a servo packed,
+one medkit and the plate bound to belt slots 8 and 9:
+
+    backpack   Medkit x2, Servo Actuator      3 items
+    belt       8 Medkit, 9 Armour Plate
+
+Two of the three medkits, because one is on the belt. No plate at all, because
+its only copy is. The servo, untouched, because nothing claimed it.
+
+The terminal has not changed and has not moved. It is a station you walk to,
+which is what the note above showScreen has said since the stations went in.
+
+TWO MISTAKES, both caught before this shipped. I staged the test kit before
+entering the Undercroft and read the empty grid as a bug in the panel; entering
+the Undercroft unpacks your kit back into the stash, so it has to be staged
+after, and the regression check now says so in a comment. And I capped the
+panel's width at 760px, which the screenshot showed sitting against the left edge
+with the Undercroft visible on the right: a modal here is a full screen overlay,
+so capping its width caps the overlay rather than the content. It fills the screen
+like every other panel now, measured 1 to 1919 at 1920 wide.
+
+Verified: parse PASS. Both sectors to their fingerprints, 58 and 276. Streams
+identical live and sim. Looting on both with no throw and the clock advancing.
+Three endings correct. Hub renders. Screenshot of the panel at 1920x1080. 28
+regression checks pass, including a new one that presses the real key and carries
+its control: an unclaimed item must still be drawn, so a panel that simply drew
+nothing could not pass.
+
+Not verified: the panel is read only. You cannot pack, unpack or rebind from it,
+because those verbs live at the Stash and I did not want to build a second place
+that edits your kit. If he wants it to act as well as show, that is the next
+step. I also did not check it at 175 or 200 percent text size.
 ## v8.83 - THE UNDERCROFT ROLL DRAWS THE BALL, AND A PROBE CAN FINALLY STAND DOWN THERE
 
 His third report of the same thing: "rolling in the undercroft is still broken",
