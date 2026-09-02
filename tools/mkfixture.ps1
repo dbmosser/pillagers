@@ -284,7 +284,13 @@ window.__voice={tick:tickMachineVoices,map:VOICE,budget:function(){return VOICE_
 window.__terms={list:TERMS,on:termsOn,has:hasTerm,pay:termsPay,toggle:toggleTerm,render:renderTerms};
 window.__pack={call:packCall,scatter:packScatter,R:packR,max:packMax};
 window.__seal={rec:sealRec,need:sealNeed,here:sealHere,spot:sealSpot,pay:sealPayout,lines:sealLines};
-window.__wear={steps:WEARSTEPS,of:wearOf,step:wearStep,add:addWear,able:wearable,cost:repairCost,repair:repairGun,work:renderWork};
+// This object is REDEFINED forty lines below and everything here is dead. Its
+// live half survives as window.__repair and window.__work; the rest was reachable
+// by nobody. Six name collisions in this file now, so: grep before you name one.
+window.__work=function(){ return renderWork(); };
+window.__stashRules={sellable:function(k){ return !!sellable(k); },
+                     craftPart:function(k){ return !!craftPart(k); },
+                     use:function(k){ return craftUse(k); }};
 // updateEnts alone, so a detection test can pin the player's stance instead of
 // having updatePlayer recompute it from keys that are not held.
 window.__ents=function(dt){ refreshVseg(); updateEnts(dt); };
@@ -4624,6 +4630,83 @@ window.__REGRESS=[
      // safe cannot leave the panel understating it.
      if(survivesDeath&&/walk it out|have to walk/i.test(promise))
        bad.push('the sell panel says you have to walk the money out, and dying kept it');
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.43',what:'the workshop does not charge for servicing a gun that cannot wear',
+   run:function(){
+     var bad=[];
+     __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P=__P(), T=__guns.tiers(), guns=[], k;
+     for(k in T) if(k!=='fists') guns.push(k);
+     if(!guns.length) return 'SKIP: no guns in the table';
+     P.weapons=guns.slice();
+     P.wear=P.wear||{};
+     // MEASURE THE GUN FIRST, then read the bill. A gun that genuinely gets worse
+     // with use has earned its repair, and this check has nothing to say about it.
+     var anyMoves=false;
+     for(var i=0;i<guns.length;i++){
+       var a=__wear.at(guns[i],0), z=__wear.at(guns[i],4000);
+       if(a.spread!==z.spread||a.reload!==z.reload||a.band!==z.band||z.jam) anyMoves=true;
+     }
+     if(anyMoves) return 'SKIP: some gun still changes with use, so servicing buys something';
+     // THE FINDING. Measured on v9.42: every one of the fifteen guns billed, and
+     // the Tacker asked 540 credits and two Servo Actuators against a replacement
+     // cost of 900.
+     var billed=[];
+     for(var j=0;j<guns.length;j++){
+       P.wear[guns[j]]=1600;
+       var c=__repair.cost(guns[j]);
+       P.wear[guns[j]]=0;
+       if(c&&(c.credits>0||c.parts>0))
+         billed.push(guns[j]+' '+c.credits+'c + '+c.parts+'x '+c.part+
+                     ' against '+__repair.replace(guns[j])+' to replace it');
+     }
+     if(billed.length)
+       bad.push(billed.length+' guns are billed for a service that changes nothing about them: '+
+                billed.slice(0,3).join(', '));
+     // AND THE BUTTON, not just the price function. renderWork is the thing he
+     // actually looks at, so the check reads the panel the game draws.
+     for(var m=0;m<guns.length;m++) P.wear[guns[m]]=1600;
+     var html='';
+     try{ __showScreen('hub'); __work(); var el=document.getElementById('worklist');
+          html=el?el.innerHTML:''; }catch(e){ return 'SKIP: the workshop panel would not draw, '+e; }
+     for(var m2=0;m2<guns.length;m2++) P.wear[guns[m2]]=0;
+     if(/REPAIRS/.test(html)) bad.push('the workshop still draws a REPAIRS section');
+     if(/Service/.test(html)) bad.push('the workshop still draws a Service button');
+     // THE SECOND HALF, and it is the case a new player is actually in. The
+     // CRAFTING heading was written INSIDE the repairs block, after its early
+     // return, so a profile with no wear on any gun got the recipe rows with
+     // nothing over them saying what they were. Setting wear first, as the arm
+     // above does, hides this: the heading appears on the old build too.
+     var fresh='';
+     try{ __work(); var el0=document.getElementById('worklist');
+          fresh=el0?el0.innerHTML:''; }catch(e){ return 'SKIP: the clean workshop would not draw, '+e; }
+     if(!/CRAFTING/.test(fresh))
+       bad.push('a profile with no wear on any gun gets the recipe rows with no CRAFTING heading over them');
+     if((fresh.match(/class="row"/g)||[]).length<4)
+       bad.push('control: the clean workshop drew fewer than four rows, so there was nothing to head');
+     // CONTROL ONE: the panel has to still BE the workshop. Returning early from
+     // renderWork would satisfy both lines above and delete crafting with it.
+     if(!/CRAFTING/.test(html)) bad.push('control: the workshop no longer draws its CRAFTING heading');
+     if((html.match(/class="row"/g)||[]).length<4)
+       bad.push('control: the workshop drew fewer than four rows, so crafting is gone too');
+     // CONTROL TWO: the guard has to be the WEAR TABLE, not a hardcoded false, or
+     // restoring wear later would silently leave the repair economy switched off.
+     var bands=__wear.steps().length;
+     if(bands!==1) bad.push('control: the wear table has '+bands+' bands, so this scene is not the one being tested');
+     // THE SERVO. Its only use was this repair, and being a craft part is what made
+     // SELL ALL refuse it and the stash tell him to keep it.
+     if(window.__stashRules){
+       if(!__stashRules.sellable('servo'))
+         bad.push('the Servo Actuator is still withheld from SELL ALL for a repair that no longer exists');
+       if(__stashRules.craftPart('servo'))
+         bad.push('the Servo Actuator is still classed as a crafting part and appears in no recipe');
+       // CONTROL THREE: a real crafting part must still be protected, or this was
+       // done by breaking the keep rule for everything.
+       if(__stashRules.sellable('scrap'))
+         bad.push('control: SELL ALL would now sell scrap, which five recipes and the racks need');
+       if(!__stashRules.craftPart('comp'))
+         bad.push('control: the Component Kit stopped being a crafting part and it is in five recipes');
      }
      return bad.length?bad.join('; '):null; }},
   {v:'9.42',what:'breaking line of sight sends a chase to the last place it SAW you',

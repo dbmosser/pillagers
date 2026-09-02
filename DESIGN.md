@@ -27443,6 +27443,94 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.43 - THE WORKSHOP STOPS BILLING YOU FOR A SERVICE THAT DOES NOTHING
+
+### What was wrong
+
+Your answer 14 was "guns should not wear or jam. remove both concepts." v9.01 did
+exactly that, and it works. Measured on all fifteen owned guns at 800, 1,600 and
+4,000 rounds: not one number moves. A pistol at 1,600 rounds is the same pistol as
+a clean one, spread 0.055 against 0.055, reload 1400 against 1400, band CLEAN,
+jam 0.
+
+The BILL never went away.
+
+| gun | replace | service at 800 | at 1,600 | at 4,000 |
+| --- | --- | --- | --- | --- |
+| Tacker | 900 | 540 + 1 comp | 540 + 2 servo | 540 + 2 servo |
+| Scav Pistol | 3,600 | 972 + 1 comp | 1,944 + 2 servo | 2,160 + 2 servo |
+| Auto Rifle | 3,600 | 1,476 + 1 comp | 2,160 + 2 servo | 2,160 + 2 servo |
+| Compact SMG | 13,200 | 1,224 + 1 comp | 2,448 + 2 servo | 6,120 + 2 servo |
+| Meridian Lance | 11,040 | 1,980 + 1 comp | 3,960 + 2 servo | 6,624 + 2 servo |
+
+The Tacker costs 900 to replace and 540 to service. Sixty percent of a new gun to
+reset a counter that changes nothing. And the row printed the condition band right
+next to the price, which since v9.01 is always CLEAN, so the workshop offered to
+clean a gun it had just told you was clean.
+
+### Three more things came out of the same block
+
+**The CRAFTING heading was trapped inside the repairs section.** It was written
+after the early return, so a profile with no wear on any gun got the recipe rows
+with nothing over them saying what they were. Since v9.01 that is every profile
+that starts fresh.
+
+**The Servo Actuator's only use in the entire file was this repair.** It is in no
+recipe and in no mainframe rack. But the game classed it as a crafting part, and
+being a crafting part is what makes SELL ALL refuse an item and makes the stash
+tell you KEEP FOR repairing your better guns. So the one item whose entire purpose
+had been deleted was also the one item the game insisted you hoard. It is salvage
+now, worth 310, and the sell button will take it.
+
+**The Component Kit's description still listed "cheap gun repair"** among its
+uses. It has five real ones and they are untouched.
+
+### The fix
+
+One function, `wearLive()`, asks whether the wear table is doing anything: one
+band means it is not. That question is asked once instead of answered in four
+places, so putting a second band back into WEARSTEPS restores the repair economy,
+the bill, the workshop row and the servo all at once, by itself.
+
+`repairCost` refuses at the source, so every caller inherits it including any
+future one. `addWear` stops accruing, because that ledger is saved to your profile
+and without this it grows forever for a number nothing will read again.
+
+### How it is checked
+
+The check measures the gun before it reads the price. It walks every gun at 0 and
+4,000 rounds and returns SKIP if any of them still changes with use, because a gun
+that genuinely gets worse has earned its repair and there would be nothing to say.
+Only then does it read the bill.
+
+Then it draws the real workshop panel, twice: once with wear on every gun, which
+is the arm that catches the REPAIRS section and the Service button, and once on a
+clean profile, which is the arm that catches the missing CRAFTING heading. The
+first cut of this check only did the first, and the heading was present on the old
+build too, so it could not see half of what I had fixed.
+
+Five controls, all green on the old build as well as the new one, so the check can
+only fail for the reasons it names:
+
+- the workshop must still draw its CRAFTING heading and at least four rows, or
+  this was done by returning early and deleting crafting with it
+- the wear table must still have exactly one band, or the scene under test is not
+  the one being tested
+- SELL ALL must still refuse scrap, which five recipes and the racks need
+- the Component Kit must still be a crafting part
+
+Fails on a v9.42 fixture with all five defects named and every control still
+green there. 85 of 85 with nothing skipped.
+
+Not verified: no balance run. Nothing here touches a raid, the sim never opens the
+Workshop, and a paired A/B would have measured noise. What it does change is the
+Undercroft economy, and the direction is one way: you stop paying up to 6,624
+credits and two Servo Actuators for nothing, and you can now sell a part that had
+been piling up with no use. Not verified: what happens to a profile that has
+already banked a large wear ledger, beyond that it is now inert and stops growing.
+Not verified: whether any surface outside the Workshop still names gun servicing,
+since the check reads the Workshop panel and the two stash rules and nothing else.
+
 ## v9.42 - BREAKING LINE OF SIGHT NOW ACTUALLY SHAKES A CHASE
 
 ### What was wrong
