@@ -27443,6 +27443,70 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.13 - THE BACKPACK FOLLOWS THE MONITOR
+
+His note, twice: "these menus are still WAY TOO SMALL -- need to be twice as
+large as they are now", and "i am playing at 4k btw". The in-raid HUD panels got
+the screen factor at v8.81, the downed screen at v9.08 and the pointers at v9.09.
+The BACKPACK, which is the biggest menu in the game and the one he singled out
+with a screenshot, never did.
+
+REPRODUCED off the panel rectangle the draw records for itself:
+
+    1920x1080   1194 x 435, which is 62 percent of the screen width
+    3840x2160   1295 x 435, which is 34 percent of the width and 20 of the height
+    growth      1.08 wide, 1.00 tall, against a screen with four times the area
+
+Identical in a raid and in the Undercroft, because since v8.95 both draw through
+the same function.
+
+WHY. The panel width does ask how wide the screen is, so that part looked right.
+But the TILE is LH(58), and LH follows the TEXT SIZE dial and not the screen. So a
+bigger monitor bought MORE TILES rather than bigger ones, and the column count is
+clamped at 12, which is exactly where the 1.08 came from. Every tile, gap, margin
+and padding stayed its 1080p size.
+
+ONE FACTOR, APPLIED TO ALL OF IT. The tile, the gaps, the margins, the header and
+footer padding and the belt reserve all scale together, so it is the same layout
+at twice the size rather than a different layout. It is hudRes(), the same
+function the rest of the HUD has used since v8.81, not a new idea, and it is
+exactly 1 at 1920x1080 so that layout does not move by a pixel.
+
+MEASURED AFTER: 2388 x 870 at 4K against 1194 x 435 at 1080p. Exactly 2.00x in
+both directions, the same 11 columns at both sizes, still 62 percent of the screen
+width at both, and the gap above the belt scaled from 34px to 68px rather than
+being eaten. The Undercroft panel scales identically, 1194 to 2388.
+
+Verified: parse PASS v9.13. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 56 regression checks
+pass in sequence, none skipped.
+
+The check fails on a fixture built from v9.12 with "the backpack is only 1.08x
+wider on a 4K screen than at 1080p; only 1.00x taller; the grid changed shape
+rather than size, 11 columns at 1080p and 12 at 4K; the Undercroft backpack is
+only 1.08x wider". Four controls: 1080p must still measure 1194x435, so a 4K fix
+cannot disturb the layout he already has; the panel must not overlap the belt at
+either size, which is a collision he has reported before and which doubling a
+panel above the belt is the obvious way to cause; the panel must still fit on the
+4K screen; and the column count must be the same at both sizes, so growing by
+adding columns cannot pass as growing.
+
+ALSO CHECKED, AND FOUND NOTHING, three more times. The audit note that contract
+payouts print "+ XP" while nothing pays it: the sell button says "pays XP equal to
+the price" and the handler does P.xp+=gained, so the text is true. The note that
+nRaider:0 produces an empty map rather than what the row says: the row reads "AI
+pillagers", range 0 to 20, and 0 correctly gives none. Both are stale.
+
+Not verified: how it looks on his actual 4K screen, since this is measured as
+rectangles and column counts rather than looked at; whether 11 columns of
+double-size tiles is the right shape at 4K or whether he would rather have more
+columns AND bigger tiles, which is a taste question I answered by keeping his
+1080p layout; the stash and workshop panels in the Undercroft are separate HTML
+and are untouched by this.
+
 ## v9.12 - A PANEL YOU DRAG OFF THE EDGE IS NOT LOST ANY MORE
 
 Found while checking three old audit notes that all turned out to be already

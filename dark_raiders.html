@@ -1186,7 +1186,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.12';
+var VER='9.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22260,19 +22260,29 @@ function drawBag(){
   // 1920x1080 that put a 411 pixel grid in the middle of the display with 755
   // pixels of nothing on the left and 754 on the right, five columns wide.
   // Both now follow the width. MARG is the panel padding either side of the grid.
-  var TILE=LH(58),GAP=LH(7),MARG=LH(30);
+  // v9.13: AND THE SCREEN, not just the text setting. LH follows the TEXT SIZE
+  // dial only, so on a 4K monitor every tile here was drawn at its 1080p size and
+  // a bigger screen simply bought MORE tiles, up to the 12 column clamp. Measured
+  // before this: 1194x435 at 1080p and 1295x435 at 4K, a growth of 1.08 wide and
+  // 1.00 tall against four times the screen area. BZ is the same hudRes() the
+  // rest of the HUD has scaled by since v8.81, and it is exactly 1 at 1920x1080,
+  // so that layout does not move.
+  var BZ=hudRes();
+  var TILE=LH(58)*BZ,GAP=LH(7)*BZ,MARG=LH(30)*BZ;
   var COLS=clamp(Math.floor((W*0.66-MARG*2+GAP)/(TILE+GAP)),5,12); G.bagCols=COLS;
   var gridW=COLS*TILE+(COLS-1)*GAP;
   // The panel is sized to the grid rather than the grid squeezed into a fixed
   // panel, so the two can never disagree the way they did.
-  var PW=Math.min(W-LH(24),gridW+MARG*2);
+  var PW=Math.min(W-LH(24)*BZ,gridW+MARG*2);
   var x=Math.round((W-PW)/2);
   var gx=x+Math.round((PW-gridW)/2);
   var rowsAll=Math.max(1,Math.ceil(stacks.length/COLS));
-  var rowsMax=Math.max(2,Math.floor((H-LH(300))/(TILE+GAP)));
+  // v9.13: the vertical paddings scale with the tile, or a grid of double-sized
+  // tiles would sit in a header and footer built for the small ones.
+  var rowsMax=Math.max(2,Math.floor((H-LH(300)*BZ)/(TILE+GAP)));
   var rows=Math.min(rowsAll,rowsMax);
-  var hh=LH(150)+rows*(TILE+GAP)+LH(64);
-  hh=Math.min(hh,H-70);
+  var hh=LH(150)*BZ+rows*(TILE+GAP)+LH(64)*BZ;
+  hh=Math.min(hh,H-70*BZ);
   // v8.51, audit: reserve the belt's REAL footprint. v8.94: and MEASURE it
   // rather than assert it. LH(70)+LH(14) is 131px at every resolution, because
   // LH follows the text size and not the screen, but the belt has sized itself
@@ -22284,9 +22294,11 @@ function drawBag(){
   var _beltTop=(G.hotCells&&G.hotCells.length)?G.hotCells[0].y:(H-LH(70));
   // LH(22) rather than LH(14): the weapon and prompt line sits above the cells,
   // and it was the other half of what the panel was covering.
-  var _bagRoom=_beltTop-LH(22)-LH(10);
-  if(hh>_bagRoom) hh=Math.max(LH(120),_bagRoom);
-  y=Math.max(LH(10),_beltTop-LH(22)-hh);
+  // v9.13: the belt reserve scales too. The belt has followed the screen since
+  // v8.81, so a fixed gap above it drifts by exactly the amount the belt grew.
+  var _bagRoom=_beltTop-LH(22)*BZ-LH(10)*BZ;
+  if(hh>_bagRoom) hh=Math.max(LH(120)*BZ,_bagRoom);
+  y=Math.max(LH(10)*BZ,_beltTop-LH(22)*BZ-hh);
   // v8.94: recorded as it is drawn, like G.hotCells. Without this the only way
   // to ask where the panel is was to repeat its placement maths somewhere else,
   // which is exactly how its belt reserve drifted out of date for three builds.
@@ -24464,7 +24476,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.12: a HUD panel you drag off the edge cannot be lost any more. It keeps a handle on screen so you can always pull it back.',
+  now:'v9.13: the backpack follows your monitor. On a 4K screen it is drawn twice the size instead of at its 1080p size.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

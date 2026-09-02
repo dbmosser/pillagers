@@ -3027,6 +3027,60 @@ window.__REGRESS=[
      if(untouched&&untouched2&&(Math.round(untouched.x)!==Math.round(untouched2.x)||Math.round(untouched.y)!==Math.round(untouched2.y)))
        bad.push('control: rescuing one panel moved another that was never dragged');
      __P().hud={};
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.13',what:'the backpack follows the monitor instead of staying its 1080p size',
+   run:function(){
+     var bad=[];
+     function raidBag(W2,H2){
+       __forceSize(W2,H2); __resetCfg(); __pinDefaults(0); __zoom.set(1,true);
+       __deploy({kit:['medkit','plate','servo','scrap','core'],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.ents.length=0; g.player.iv=99; g.bagOpen=true;
+       for(var f=0;f<6;f++) __loop(performance.now()+f*16.7);
+       var bp=g.bagPanel, belt=(g.hotCells&&g.hotCells.length)?g.hotCells[0]:null;
+       return {p:bp?{x:bp.x,y:bp.y,w:bp.w,h:bp.h}:null, cols:g.bagCols,
+               gap:(bp&&belt)?(belt.y-(bp.y+bp.h)):null};
+     }
+     var a=raidBag(1920,1080), b=raidBag(3840,2160);
+     __forceSize(1920,1080);
+     if(!a.p||!b.p) return 'the backpack panel did not record itself, so there is nothing to measure';
+     // HIS NOTE, twice: the menus are too small and he plays at 4K. Measured
+     // before v9.13: 1194x435 at 1080p and 1295x435 at 4K, growth 1.08 and 1.00
+     // against a screen with four times the area.
+     var gw=b.p.w/a.p.w, gh=b.p.h/a.p.h;
+     if(gw<1.7) bad.push('the backpack is only '+gw.toFixed(2)+'x wider on a 4K screen than at 1080p');
+     if(gh<1.7) bad.push('the backpack is only '+gh.toFixed(2)+'x taller on a 4K screen than at 1080p');
+     // SAME LAYOUT, BIGGER. Growing by adding columns is what it used to do and
+     // is not what he asked for: he asked for the same menu, larger.
+     if(a.cols!==b.cols) bad.push('the grid changed shape rather than size, '+a.cols+' columns at 1080p and '+b.cols+' at 4K');
+     // CONTROL 1: 1080p must not have moved. He has a working layout there and
+     // this was a 4K complaint.
+     if(Math.abs(a.p.w-1194)>6||Math.abs(a.p.h-435)>6)
+       bad.push('control: the 1080p panel changed to '+Math.round(a.p.w)+'x'+Math.round(a.p.h)+', it was 1194x435');
+     // CONTROL 2: it must still clear the belt at BOTH sizes. Doubling a panel
+     // that sits above the belt is exactly how it lands on the belt, which is a
+     // thing he has already reported once.
+     if(a.gap!==null&&a.gap<0) bad.push('control: at 1080p the backpack overlaps the belt by '+Math.round(-a.gap)+'px');
+     if(b.gap!==null&&b.gap<0) bad.push('control: at 4K the backpack overlaps the belt by '+Math.round(-b.gap)+'px');
+     // CONTROL 3: and it must still fit on the screen it is drawn on.
+     if(b.p.x<0||b.p.x+b.p.w>3840) bad.push('control: at 4K the panel runs off the screen, x '+Math.round(b.p.x)+' width '+Math.round(b.p.w));
+     if(b.p.y<0||b.p.y+b.p.h>2160) bad.push('control: at 4K the panel runs off the bottom, y '+Math.round(b.p.y)+' height '+Math.round(b.p.h));
+     // AND THE UNDERCROFT DRAWS THE SAME PANEL, which is the whole point of
+     // v8.95. If only the raid one scaled, his I key would open a small one.
+     if(__vpAlive()&&__hubEnter&&__drawBagWith&&__hubBagState){
+       function hubBag(W2,H2){
+         __forceSize(W2,H2); __resetCfg(); __pinDefaults(0);
+         __hubEnter();
+         var P2=__P(); P2.kit=['medkit','plate','servo','scrap','core']; P2.hotAssign={};
+         __hubBag(false);
+         var r=__drawBagWith(__hubBagState());
+         return (r&&r.recorded)?r.recorded.panel:null;
+       }
+       var ha=hubBag(1920,1080), hb=hubBag(3840,2160);
+       __forceSize(1920,1080);
+       if(ha&&hb){
+         if(hb.w/ha.w<1.7) bad.push('the Undercroft backpack is only '+(hb.w/ha.w).toFixed(2)+'x wider at 4K');
+       }
+     }
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
