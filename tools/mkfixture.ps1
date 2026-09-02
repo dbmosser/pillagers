@@ -1511,6 +1511,34 @@ window.__REGRESS=[
        if(r[1].gapL<0) bad.push('at '+r[0]+' the belt overlaps the vitals by '+(-r[1].gapL)+'px');
        if(r[1].gapR<0) bad.push('at '+r[0]+' the belt overlaps the gear stack by '+(-r[1].gapR)+'px');
      });
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.82',what:'neither sector starts you in the same place every raid, and never beside an extract',
+   run:function(){
+     function sample(mapIx,n){
+       var seen={},nearest=1e9;
+       for(var i=0;i<n;i++){
+         __resetCfg(); __pinDefaults(mapIx);
+         __startRaid({mapIx:mapIx,seed:1000+i*777});
+         var g=__state(),m=g.map,p=g.player,d=1e9;
+         for(var e=0;e<m.extracts.length;e++)
+           d=Math.min(d,Math.hypot(m.extracts[e].x-p.x,m.extracts[e].y-p.y));
+         if(d<nearest) nearest=d;
+         seen[Math.round(p.x)+','+Math.round(p.y)]=1;
+       }
+       return {distinct:Object.keys(seen).length,nearest:Math.round(nearest)};
+     }
+     var a=sample(0,12), b=sample(1,12);
+     var bad=[];
+     // COLD STORAGE gave exactly ONE spawn across every seed before v8.82,
+     // because only one of its six cleared the 1500 bar.
+     if(a.distinct<3) bad.push('COLD STORAGE offers only '+a.distinct+' start(s) across 12 seeds');
+     if(b.distinct<4) bad.push('THE COLD MILE offers only '+b.distinct+' start(s) across 12 seeds');
+     // THE CONTROL. Widening the choice must not be achieved by dropping his
+     // run #37 rule: "i just spawned right next to an extraction, that should
+     // never happen." The two spawns this rule rejects on COLD STORAGE sit 290
+     // and 286 out, so anything under 900 means the rule has been thrown away.
+     if(a.nearest<900) bad.push('COLD STORAGE started a raid '+a.nearest+' from an extract');
+     if(b.nearest<900) bad.push('THE COLD MILE started a raid '+b.nearest+' from an extract');
      return bad.length?bad.join('; '):null; }}
 ];
 window.__regress=function(){

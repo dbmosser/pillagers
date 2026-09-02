@@ -213,3 +213,16 @@ OPEN, in the order he sent them:
 - EXTRACTED SCREEN: "Claim it at the Mainframe".
 - EXTRACTED/DEATH SCREEN: drop "Anything you drank or took is gone".
 - XP CEILING: "what happens at 1.2m XP? death screen isn't clear".
+- TITLE SCREEN WASTES THE SCREEN. His shot on a wide monitor: the whole thing is
+  a narrow column in the middle with empty space either side. It is DOM, so the
+  v8.81 canvas HUD scaling does not touch it.
+- SOMETHING AT THE START OF COLD STORAGE IS BROKEN. His screenshot shows a long
+  trench/wall run. Note he saw it every raid because of the v8.82 spawn bug, so
+  re-ask him which part is broken now that the start point moves.
+- FOOTPRINTS THROUGH WALLS. "i can see pillager footprints when i can't see the
+  pillager -- intentional? I wanted sound visualization for stuff we couldn't
+  see". So: footprint DECALS should be gated on sight; the sound ping is the
+  thing that is meant to show through.
+- I IN THE UNDERCROFT still wrong, and ROLLING IN THE UNDERCROFT still broken.
+  Both reported three times now. Whatever I changed before was not it: reproduce
+  on the Undercroft floor itself before touching anything.

@@ -27443,6 +27443,60 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.82 - COLD STORAGE STARTED YOU IN THE SAME CORNER EVERY SINGLE RAID
+
+His note: "why do i always spawn in the same place, it's supposed to change".
+
+REPRODUCED, ten different seeds, reading the player position the moment the raid
+starts:
+
+    COLD STORAGE    1 distinct spawn out of 10 raids, always exactly 300,680
+    THE COLD MILE   8 distinct spawns out of the same 10 seeds
+
+Not the roll and not the seed. It is that map, and it is the map he plays: both
+of his runs tonight were COLD STORAGE.
+
+WHY. COLD STORAGE authors SIX spawns. The rule that places you, which he asked
+for himself on run #37 ("i just spawned right next to an extraction, that should
+never happen"), throws away any spawn nearer than spawnClear to an extract and
+remaps the roll over whatever survives. spawnClear ships at 1500. Those six
+spawns sit 1522, 290, 1090, 286, 1348 and 1406 from their nearest extract, so
+exactly ONE clears 1500 and every raid on the map lands on it. Measured on the
+same map: a bar of 1500 leaves one spawn, 1200 leaves three, 900 leaves four. THE
+COLD MILE never had the problem because its twelve spawns are all 1596 or
+further out, so all twelve survive.
+
+A rule that leaves one answer is not a rule, it is a constant. It also quietly
+made the map memorised, which is very likely the other thing he noticed tonight:
+he has been looking at the same building at the start of every raid.
+
+THE FIX keeps his rule and gives it a floor. If the bar leaves fewer than three
+places to start, it takes the three FURTHEST spawns instead, which is the same
+preference the rule already expresses. His dial is untouched, no extra random
+number is drawn so the seeded stream is identical, and a map whose spawns all
+clear the bar does not change at all.
+
+MEASURED AFTER, twenty raids a map:
+
+    COLD STORAGE    3 distinct starts, split 6 / 9 / 5
+    THE COLD MILE   13 distinct starts, unchanged
+
+THE CONTROL, and it is the one that matters here, because widening the choice by
+simply deleting his rule would look identical in the variety number: the closest
+any raid now starts to an extract is 1348 on COLD STORAGE and 1554 on THE COLD
+MILE. The two spawns the rule rejects sit 290 and 286 out, and neither was ever
+used. The regression check fails on anything under 900.
+
+Verified: parse PASS. Both sectors to their fingerprints, 58 and 276, which also
+says the seeded stream did not move. Streams identical live and sim on both.
+Looting on both with no throw and the clock advancing. Three endings correct. Hub
+renders. 26 regression checks pass, including the new one with its control.
+
+Not verified: I did not check the other four sectors in the map table, only the
+two the harness drives, so another map could have the same single-survivor shape
+and I have not looked. I also have not asked him whether three starts is enough
+variety for a map that size, or whether COLD STORAGE should simply be authored
+more spawns.
 ## v8.81 - THE HUD FOLLOWS THE SCREEN, AND THE BELT WAS NEVER SCALED AT ALL
 
 Three of his notes are one bug. "all this shit needs to be bigger on screen",
