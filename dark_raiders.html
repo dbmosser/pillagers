@@ -1211,7 +1211,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.54';
+var VER='9.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16360,7 +16360,13 @@ var _cdone=contractExtract(G.bag,haul);
       var wi=P.weapons.indexOf(gone[j].id);
       if(wi>=0){ P.weapons.splice(wi,1);
         lines.push('<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>'); }
-      else lines.push('<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST IN THE FIELD</span>');
+      // v9.55, HIS QUESTION: "KIA screen -- why is the gun different from the
+      // others?" This branch is a gun picked up during the raid and never banked,
+      // against the branch above which is one out of your armoury. The difference
+      // is real, and it is also not actionable and not explained, and every loot
+      // item beside it, picked up in the same raid, says LOST. One word, one
+      // outcome.
+      else lines.push('<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>');
     }
     if(lostIdx.length>shown.length) lines.push('<span style="color:var(--ash)">and '+(lostIdx.length-shown.length)+' more, all gone</span>');
     lines.push(lostIdx.length+' items lost, '+'$'+(haul-savedVal).toLocaleString()+' gone');
@@ -22410,6 +22416,28 @@ function drawItemIcon(c,key,cx,cy,S){
     c.fillRect(-S*.1,S*.12,S*.2,S*.16);
     c.restore(); return;
   }
+  // v9.55, HIS QUESTION: "why does hotbar spot 2 show a gun even when no gun is
+  // equipped?" Because fists are in WEAPONS, and the line below sends anything in
+  // WEAPONS to gunIcon. You always have a second weapon; with no second gun it is
+  // your bare hands, and they were drawn as a pistol in the hotbar, the bag and
+  // every other place an item gets a face. A fist is not a gun.
+  if(key==='fists'){
+    var fc='#cdd6dd', fd=darkHex(fc,0.55);
+    c.save(); c.translate(cx,cy);
+    c.fillStyle='rgba(0,0,0,.35)';
+    c.fillRect(-S*.26+1.5,-S*.24+1.5,S*.52,S*.46);
+    c.fillStyle=fc; c.fillRect(-S*.26,-S*.24,S*.52,S*.46);   // the fist
+    c.fillStyle=fd;
+    // four knuckles across the top, so it reads as a hand and not as a box
+    c.fillRect(-S*.26,-S*.24,S*.52,S*.07);
+    c.fillRect(-S*.13,-S*.24,S*.03,S*.20);
+    c.fillRect(-S*.01,-S*.24,S*.03,S*.20);
+    c.fillRect( S*.11,-S*.24,S*.03,S*.20);
+    c.fillStyle=fc; c.fillRect(-S*.36,-S*.06,S*.12,S*.20);   // the thumb
+    c.fillStyle=fd; c.fillRect(-S*.36,-S*.06,S*.12,S*.05);
+    c.fillStyle=fd; c.fillRect(-S*.20,S*.22,S*.40,S*.10);    // the wrist
+    c.restore(); return;
+  }
   var it=ITEMS[key];
   // Weapon ids arrive from the hotbar; field guns arrive as gun_* items.
   if(WEAPONS[key]) return gunIcon(c,key,cx,cy,S);
@@ -25123,7 +25151,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.54: the crawler was blind in front and sighted behind. It looked 26 units through its own cone, which is its bite reach rather than a sight range, and 100 out of the corner of its eye, so it could not see you until it was already touching you. It has eyes now.',
+  now:'v9.55: two things the interface was saying that were not true. Your bare hands were drawn as a pistol everywhere an item has a face, because fists are filed under weapons, and the death screen had two different words for losing a gun and one for losing anything else.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

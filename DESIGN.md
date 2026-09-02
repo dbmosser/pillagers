@@ -39100,12 +39100,88 @@ notices him at 40 and 80.
 control: with the floor off, the crawler must still be blind at 40, which is what
 proves the dial is live rather than decorative.
 
-Not verified: the balance. The 320 seed paired run is still going as this is
-committed and the number goes into this entry when it lands. At 130 seeds it is
-leaning toward the game getting **easier**, 21 seeds extracted with eyes against
-11 without, which is the opposite of what I expected and has an obvious reading:
-a crawler that sees you at 100 units charges from 100 units, and a bot that
-shoots well kills it on the way in, where a blind one used to arrive at contact
-already biting. Not verified, and more importantly: **that number describes the
-bot, which extracts 69 percent against his 30.** Whether a sighted crawler is
-worse for *him* is not a thing the sim can answer.
+### The balance, 320 paired seeds
+
+**The extract rate did not move: 20.3 percent with eyes against 19.7 without,
+p 0.90.** I expected the game to get harder and it did not.
+
+The killer table is where the change shows, and it is the better result:
+
+| killed by | eyes on | eyes off |
+| --- | --- | --- |
+| **crawler** | **126** | **83** |
+| sentry | 75 | 107 |
+| warden | 8 | 19 |
+| listener | 12 | 12 |
+| choir | 16 | 18 |
+| raider | 11 | 10 |
+
+**Crawlers kill 52 percent more people and the raid is exactly as lethal**,
+because the ones they kill are the ones the sentries and the warden used to get
+first. A blind crawler was not making the game easier, it was donating its kills
+to the ranged machines. The danger redistributed toward the thing that is
+supposed to be chasing you.
+
+Not verified, and it matters: **that number describes the bot, which extracts 69
+percent against his 30.** Whether a sighted crawler is worse for HIM is not a
+question the sim can answer, and he is the one who has to say.
+
+## v9.55 - YOUR BARE HANDS WERE DRAWN AS A PISTOL
+
+Two of his, both about the interface saying something that is not true.
+
+### "why does hotbar spot 2 show a gun even when no gun is equipped?"
+
+**I got this wrong first, and my own check is what caught me.** My reading was
+the vacant second weapon cell: it is built with `icon:null` and `vacant:1`, and
+the icon painter only asks whether the slot is a gun slot, so I concluded it drew
+the fallback gun glyph. I wrote the fix, wrote a check for it, and ran the check
+against the build that was meant to have the bug. **It passed.** The vacant cell
+draws zero pixels, its brightest pixel darker than a genuinely empty slot.
+
+So I stopped reading code and looked at his screenshot properly. **Slot 2 is
+selected in it and the readout beside it says "Bare Hands MELEE".** That is not
+the vacant slot at all. You are never without a second weapon: with no second gun
+you are carrying your fists, and the slot holds them.
+
+And the icon painter has this line:
+
+    if(WEAPONS[key]) return gunIcon(c,key,cx,cy,S);
+
+**`fists` is in WEAPONS.** It is a real weapon, damage 6, range 60, that you can
+select and swing. It is not a gun, and there was no artwork for it, so every
+place that draws an item drew his bare hands as a pistol. Measured: 534 lit
+pixels in that cell, and `drawItemIcon('fists')` came back **pixel for pixel
+identical** to `gunIcon('fists')`.
+
+They get a fist now: a blocky hand with knuckle grooves, a thumb and a wrist. Not
+nothing, because bare hands are a weapon you can pick, and a slot you can select
+should show what is in it.
+
+### "KIA screen -- why is the gun different from the others?"
+
+The loss list had two words for guns and one for everything else. A gun out of
+your armoury printed LOST; a gun picked up during the raid and never banked
+printed a longer phrase of its own. The loot items beside it, picked up in the
+same raid, all printed LOST. The distinction is real and it is also not
+actionable and not explained: either way it is gone. One word, one outcome.
+
+### The check, and a second mistake inside it
+
+The check draws the icon both ways and compares, because the question is not what
+the fists icon looks like but whether it **is** the gun icon, and that cannot be
+fooled by a threshold I picked. Two controls: a pistol drawn as an item and drawn
+as a gun must stay pixel identical, so guns still route to the gun painter; and
+the fist must draw at least 60 pixels, because drawing nothing would pass the
+finding and would also be wrong.
+
+The death-screen half greps the page source, **and the page source includes the
+check**, so my first cut matched its own error message and reported the phrase
+still present on the build that had just removed it. The needle is assembled from
+two pieces now and the phrase is written nowhere in the check.
+
+Not verified: how the fist reads at the smallest icon sizes. I drew it at 190
+pixels to look at it and at 64 in the check; the hotbar draws it near 65 and the
+bag smaller than that, and I did not inspect those by eye. Not verified: whether
+any other WEAPONS entry has the same problem. `fists` is the only one that is not
+a gun today, but nothing stops the next one.

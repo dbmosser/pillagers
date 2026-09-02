@@ -748,6 +748,8 @@ window.__grant=function(ct,keys,delay0){ return grantLoot(ct,keys,delay0); };
 // answered instead of assumed. A blank cell in his stash is a shipped bug.
 window.__items=function(){ return ITEMS; };
 window.__drawIcon=function(c,k,x,y,s){ return drawItemIcon(c,k,x,y,s); };
+window.__gunIcon=function(c,k,x,y,s){ return gunIcon(c,k,x,y,s); };
+window.__hotbar=function(){ return hotbarSlots(); };
 // Container stocking, so "a body should be worth more than a crate" can be
 // MEASURED over thousands of rolls instead of eyeballed from the weight tables.
 window.__mkContainer=function(t){ return mkContainer(0,0,t); };
@@ -5051,6 +5053,70 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.55',what:'bare hands are not drawn as a gun, and one word for one outcome on the death screen',
+   run:function(){
+     var bad=[];
+     if(!(window.__gunIcon&&window.__drawIcon))
+       return 'SKIP: this build cannot draw the two icons separately for comparison';
+     // THE QUESTION IS NOT what the fists icon looks like, it is whether the
+     // fists icon IS the gun icon. So draw both and compare them, which cannot
+     // be fooled by a threshold I picked.
+     var SZ=64;
+     function shot(fn,key){
+       var cv2=document.createElement('canvas'); cv2.width=SZ; cv2.height=SZ;
+       var c2=cv2.getContext('2d');
+       c2.fillStyle='#000'; c2.fillRect(0,0,SZ,SZ);
+       try{ fn(c2,key,SZ/2,SZ/2,SZ*0.8); }catch(e){ return null; }
+       return c2.getImageData(0,0,SZ,SZ).data;
+     }
+     function diff(a,b){
+       if(!a||!b) return -1;
+       var d=0;
+       for(var i=0;i<a.length;i+=4){
+         if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>8) d++;
+       }
+       return d;
+     }
+     var fistItem=shot(__drawIcon,'fists'), fistGun=shot(__gunIcon,'fists');
+     var pistItem=shot(__drawIcon,'pistol'), pistGun=shot(__gunIcon,'pistol');
+     if(fistItem===null||fistGun===null||pistItem===null||pistGun===null)
+       return 'SKIP: one of the four icon draws threw';
+     // CONTROL ONE: a real gun must still go straight to the gun painter, or a
+     // pass below would only mean the comparison is broken. These two must be
+     // pixel identical.
+     var pd=diff(pistItem,pistGun);
+     if(pd!==0)
+       bad.push('control: a pistol drawn as an item and drawn as a gun differ in '+pd+
+                ' pixels, so guns no longer route to the gun painter and this comparison proves nothing');
+     // CONTROL TWO: the fist has to be SOMETHING. Drawing nothing at all would
+     // pass the finding below and would also be wrong, because bare hands are a
+     // weapon you can select and swing.
+     var blank=shot(function(c2){ c2.fillStyle='#000'; c2.fillRect(0,0,SZ,SZ); },'x');
+     var fistInk=diff(fistItem,blank);
+     if(fistInk<60)
+       bad.push('control: the bare hands icon drew only '+fistInk+
+                ' pixels, and an empty cell is not an answer for a weapon you can select');
+     // THE FINDING. fists is in WEAPONS, and drawItemIcon sent anything in
+     // WEAPONS to gunIcon, so his bare hands were drawn as a pistol in the
+     // hotbar and everywhere else an item has a face. Measured on v9.54: these
+     // two came back pixel identical.
+     var fd=diff(fistItem,fistGun);
+     if(fd===0)
+       bad.push('bare hands are drawn with the gun painter, pixel for pixel, so the second weapon slot shows a gun when you are carrying no gun');
+     // AND THE DEATH SCREEN. His question: "KIA screen -- why is the gun
+     // different from the others?" A gun lost from the armoury said LOST and a
+     // gun picked up in the raid got a longer phrase of its own, while every
+     // item beside it, picked up in the same raid, said LOST.
+     // The phrase itself is deliberately not written anywhere in this check, for
+     // the reason given below: this greps the page, and the page includes this.
+     // THE NEEDLE IS BUILT, NOT WRITTEN. This greps the page source, and the page
+     // source includes this check, so a literal here matches itself: the first
+     // cut of this reported the phrase still present on the build that had just
+     // removed it. The message below must not contain it either.
+     var src=(document.documentElement&&document.documentElement.innerHTML)||'';
+     if(src.indexOf('LOST IN THE'+' FIELD')>=0)
+       bad.push('the death screen still has a second phrase for losing a gun, while every item lost in the same raid says LOST');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.54',what:'a crawler can see a man standing in front of it',
    run:function(){
      var bad=[];
