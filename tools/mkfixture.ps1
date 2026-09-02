@@ -952,6 +952,38 @@ window.__REGRESS=[
        if(hit) out.push('mapIx '+mi+' has '+hit+' roads crossing a wall');
      });
      return out.length?out.join('; '):null; }},
+  {v:'8.72',what:'an item can be dragged OFF the Undercroft belt and back into the backpack',
+   run:function(){
+     __showScreen('hub');
+     var H=__hub(); if(!H) return 'no hub';
+     var st=null; for(var i=0;i<H.stations.length;i++) if(H.stations[i].id==='term') st=H.stations[i];
+     if(!st) return 'no stash station';
+     var P=__P();
+     P.stash=['servo','scrap','wire','medkit']; P.kit=['servo']; P.hotAssign={0:'servo'}; P.kitChosen=0;
+     H.player.x=st.x; H.player.y=st.y; H.near=null; H.eLock=false;
+     var K=__keysRef(); for(var k in K) K[k]=false;
+     for(var f=0;f<12;f++) __hubStep(1/60);
+     K['KeyE']=true; for(var f2=0;f2<12;f2++) __hubStep(1/60); K['KeyE']=false;
+     function visCell(ix){
+       var all=[].slice.call(document.querySelectorAll('[data-plan="'+ix+'"]'));
+       for(var j=0;j<all.length;j++){ var r=all[j].getBoundingClientRect(); if(r.width>0&&r.height>0) return all[j]; }
+       return null;
+     }
+     var grid=document.getElementById('stashgrid');
+     var cell=visCell(0);
+     // If the panel is not actually laid out there is nothing to test, and a
+     // check that silently passes on an invisible panel is worse than none.
+     if(!grid||!cell) return 'the stash screen did not open, so this check is testing nothing';
+     var gr=grid.getBoundingClientRect(), cr=cell.getBoundingClientRect();
+     if(!(gr.width>0&&cr.width>0)) return 'the stash panel has no layout, so this check is testing nothing';
+     cell.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true,clientX:cr.left+cr.width/2,clientY:cr.top+cr.height/2}));
+     document.dispatchEvent(new MouseEvent('mousemove',{bubbles:true,clientX:gr.left+40,clientY:gr.top+40}));
+     document.dispatchEvent(new MouseEvent('mouseup',{bubbles:true,clientX:gr.left+40,clientY:gr.top+40}));
+     var P2=__P();
+     if(P2.hotAssign&&P2.hotAssign[0]!==undefined) return 'the belt slot still holds the item after dragging it to the backpack';
+     if((P2.kit||[]).indexOf('servo')>=0) return 'the item is still in the kit going up';
+     if((P2.stash||[]).indexOf('servo')<0) return 'the item vanished from the stash entirely';
+     return null; }},
   {v:'8.66',what:'dragging onto the belt assigns, refuses and moves correctly',
    run:function(){
      var P=__P(); P.weapons=['smg','rifle']; P.hotAssign={};

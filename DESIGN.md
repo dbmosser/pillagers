@@ -27443,6 +27443,57 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.72 - YOU CAN DRAG AN ITEM OFF THE TACTICAL BELT AND BACK INTO THE BACKPACK
+
+His report: "I do not understand why I cannot move items from the tactical belt to
+the backpack in the undercroft."
+
+Because the belt cells down there are drop TARGETS and nothing else. Every inbound
+route is wired - dropzone, dragover, dragleave, drop - and there is no outbound
+one at all: no grabbable, no dragstart, nothing. The only way to empty a slot was
+to CLICK it. The tooltip does say "click to clear", and clicking is not what
+anybody tries first.
+
+So a drag off the belt did nothing, silently. That is the exact failure the file
+already names as the worst kind, in the comment on the belt drop refusals: "a
+gesture that silently does nothing teaches you the feature is missing."
+
+The far end was equally one-way. The stash grid accepts a drop only when the
+source is the kit, so even a working drag would have been ignored on arrival.
+
+Both ends are fixed. A FILLED belt cell is a drag source now, carrying its slot
+index in the source label so the drop end knows which key to clear. Dropping it
+on the stash does exactly what dropping a kit item there already does: the item
+leaves the inventory going up and its key goes with it.
+
+Measured through real mouse events on the open Stash screen, dragging a servo
+from belt slot 1 onto the backpack: hotAssign {"0":"servo"} became {}, kit
+["servo"] became [], and the stash still holds the servo.
+
+Controlled in two directions, because the risk in a change like this is doing too
+much. An EMPTY belt cell is still not draggable: the same drag on slot 4 changes
+nothing. And belt to belt still MOVES rather than duplicates: slot 1 to slot 6
+leaves {"5":"servo"} and nothing on slot 1.
+
+HIS TELEMETRY ARRIVED DURING THIS BUILD. Four real runs on v8.66, profile 95 to
+98, two extractions and two deaths, both deaths to a crawler and both inside the
+siege. He went DOWN two or three times in every single one of the four. Two of
+the four also show missed beacons, 2 missed in run 95 and 1 in run 96, which is
+the boarding window closing before he reached it - the exact thing the countdown
+work in v8.67 and v8.68 was aimed at, shipped after these runs were played. No
+new written notes were attached to any of the four.
+
+Verified: parse PASS at 1,518,743 chars, mojibake none. The drag measured through
+real mouse events, both controls held. __verify PASS: ents 58 and 276, parity
+identical on both maps, looting on both, all three endings, hub. __regress PASS,
+now 18 checks; the new one refuses to run if the Stash panel has no layout.
+
+Not verified: only the Stash screen copy of the belt was exercised. The panel is
+built twice, once there and once on the ascent check, and the second copy was not
+dragged from. Nothing here addresses his larger rule that INVENTORY = BACKPACK +
+HOTBAR with an item in one or the other and never both; today an item on the belt
+is still in the kit as well, which is the model change he asked for separately.
+
 ## v8.71 - THE XP LINE NAMES THE NEXT REWARD INSTEAD OF PROMISING AN UNLOCK
 
 His note: "x of Y EXP -- what happens at Y? Not clear." It was not clear because
