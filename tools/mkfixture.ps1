@@ -223,6 +223,17 @@ window.__conceal={bushAt:inBush,at:concealAt,mapBush:bushAtMap};
       return m; }
   };
 window.__emote={do:doEmote,list:EMOTES,down:weaponDown,ids:function(){return IDENTITIES;},rec:idRec};
+// v9.11: Wirt's counter. The key function is exposed with its time argument so a
+// check can walk the clock forward instead of waiting an hour to find out whether
+// the lot rotates.
+window.__wirt={key:function(t){ return wirtLotKey(t); },
+               left:function(t){ return wirtLotLeft(t); },
+               hour:function(t){ return wirtLotHour(t); },
+               price:function(){ return WIRT_LOT_PRICE; },
+               pool:function(){ return WIRT_LOT_POOL.slice(); },
+               render:function(){ return renderGamble(); },
+               val:function(k){ return (ITEMS[k]||{}).val||0; },
+               rar:function(k){ return (ITEMS[k]||{}).r||null; }};
 window.__con={gen:genContract,label:gearLabel,pay:payGear,tier:contractTier,tiers:CTIER,gear:CGEAR,stand:cstand,render:renderHub,
   // v9.06: the palette table and the zone list, so a check can prove a contract
   // names somewhere he is actually told about rather than a colour scheme.
@@ -2883,6 +2894,76 @@ window.__REGRESS=[
          if(!hasGun) bad.push('control: a pillager nobody revived no longer drops his gun');
        }
      }
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.11',what:'Wirt keeps one good thing on the counter at a flat 10,000 that changes every hour',
+   run:function(){
+     var bad=[], HR=3600000, base=Date.now();
+     // HIS ANSWER 48, MEASURED THE WAY HE WOULD SEE IT FIRST: open the stall and
+     // read the buttons. Before v9.11 there were exactly two, Gamble and Leave,
+     // and the panel never mentioned an hour or a price other than the pull.
+     if(__vpAlive()){
+       __hubEnter();
+       try{ if(window.__wirt&&__wirt.render) __wirt.render(); }catch(_r){}
+       var _m=document.getElementById('gamblemodal');
+       if(_m){
+         var _txt=_m.textContent.replace(/\s+/g,' ');
+         var _buys=0, _bl=_m.querySelectorAll('button');
+         for(var _b=0;_b<_bl.length;_b++) if(/10,?000/.test(_bl[_b].textContent)) _buys++;
+         if(!_buys) bad.push('Wirt has nothing on the counter: no 10,000 offer among his '+_bl.length+' buttons');
+         if(!/hour/i.test(_txt)) bad.push('the stall never says the lot changes by the hour');
+       }
+     }
+     // Everything below needs the build to actually have the counter behind it.
+     var _live=false;
+     try{ _live=(window.__wirt&&__wirt.price()>0); }catch(_e){ _live=false; }
+     if(!_live) return bad.length?bad.join('; '):'this build has no counter at Wirt at all';
+     if(__wirt.price()!==10000) bad.push('the lot costs '+__wirt.price()+', he said 10k');
+     var pool=__wirt.pool();
+     if(pool.length<4) bad.push('the counter draws from only '+pool.length+' things');
+     // IT MUST BE WORTH WALKING DOWN FOR. A 10,000 counter stocked with scrap is
+     // the letter of his answer and none of the point.
+     for(var q=0;q<pool.length;q++){
+       var r=__wirt.rar(pool[q]);
+       if(r!=='elite'&&r!=='rare') bad.push('the counter can stock '+pool[q]+', which is '+r);
+     }
+     // IT CHANGES BY THE HOUR, walked forward rather than waited for.
+     var seq=[]; for(var h=0;h<48;h++) seq.push(__wirt.key(base+h*HR));
+     var seen={}; for(var i=0;i<seq.length;i++) seen[seq[i]]=1;
+     var nSeen=0; for(var kk in seen) nSeen++;
+     var changes=0; for(var c=1;c<seq.length;c++) if(seq[c]!==seq[c-1]) changes++;
+     if(changes<20) bad.push('the lot changed only '+changes+' times across 48 hours');
+     if(nSeen<4) bad.push('only '+nSeen+' different things came up across 48 hours');
+     // AND IT HOLDS FOR THE WHOLE HOUR. A lot that rerolls while he is deciding,
+     // or every time he walks back in, is a different and worse thing.
+     var h0=Math.floor(base/HR)*HR;
+     var a=__wirt.key(h0+1), b=__wirt.key(h0+900000), c2=__wirt.key(h0+1800000), d=__wirt.key(h0+3599000);
+     if(!(a===b&&b===c2&&c2===d)) bad.push('the lot changes inside a single hour: '+a+', '+b+', '+c2+', '+d);
+     // THE COUNTER ITSELF, drawn, with a real button on it.
+     if(!__vpAlive()) return bad.length?bad.join('; '):'SKIP: the pane has no layout, the stall cannot be drawn';
+     __hubEnter();
+     var P=__P(), cred0=P.credits, stash0=(P.stash||[]).slice();
+     P.credits=25000; P.stash=[];
+     __wirt.render();
+     var el=document.getElementById('wirtlot');
+     if(!el||!el.textContent||el.textContent.length<8) bad.push('nothing is drawn on the counter');
+     var btn=document.getElementById('wirtlotbtn');
+     if(!btn) bad.push('the counter has no buy button');
+     else {
+       var want=__wirt.key();
+       btn.click();
+       if(P.credits!==15000) bad.push('buying the lot moved credits 25000 to '+P.credits+', it should cost exactly 10,000');
+       if((P.stash||[]).indexOf(want)<0) bad.push('paid for '+want+' and it did not reach the stash');
+       // CONTROL: he must not be able to buy it with money he does not have.
+       P.credits=500; __wirt.render();
+       var b2=document.getElementById('wirtlotbtn');
+       if(b2){
+         if(!b2.disabled) bad.push('control: the buy button is live at $500 against a $10,000 price');
+         var st=(P.stash||[]).length; b2.click();
+         if(P.credits!==500||(P.stash||[]).length!==st)
+           bad.push('control: clicking it while broke still took '+(500-P.credits)+' credits');
+       }
+     }
+     P.credits=cred0; P.stash=stash0;
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

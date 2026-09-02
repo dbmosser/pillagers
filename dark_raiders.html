@@ -635,6 +635,7 @@
   <div class="msub" id="wallet_gamble" style="color:var(--amber);font-weight:700"></div>
   <div class="msub" id="gamble_line">Something in the pile, same price whatever it is. No refunds, no complaints.</div>
   <div class="msub" style="color:var(--coolant)">Whatever you pull goes straight to your stash. You do not have to carry it out of here.</div>
+  <div id="wirtlot" style="border:1px solid var(--amber);padding:9px 11px;margin:8px 0;display:flex;align-items:center;gap:10px"></div>
   <div class="plist" id="gamblelist" style="border:1px solid var(--steel-hi)"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
     <button id="gamblebtn" style="padding:8px 22px;border-color:var(--amber);color:var(--amber)">Gamble 450c</button>
@@ -1185,7 +1186,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.10';
+var VER='9.11';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24430,7 +24431,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.10: picking a downed pillager back up pays. He hands you his gun, or the best thing in his pockets, out of his own kit.',
+  now:'v9.11: Wirt keeps one good thing on the counter at a flat $10,000, and it changes every hour.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -24509,6 +24510,31 @@ var HUBSAY='',HUBSAY_T=0;
 // refusal can never end up on two different surfaces.
 function say2(t){ HUBSAY=t; HUBSAY_T=5; hubToast(t); }
 var GAMBLE_PRICE=2500;   // v6.64, his note: $2,500 a pull.
+// v9.11, HIS ANSWER 48: "Wirt sells one special 10k item that changes hourly."
+// The top of the table only. A 2,500 pull is a lottery ticket; this is the
+// counter, and what is on it has to be worth walking down for.
+var WIRT_LOT_PRICE=10000;
+var WIRT_LOT_POOL=['wcore','bloom','reactor','codex','blackbox','relay','gun_lance','gun_sniper'];
+// Which hour it is. Kept as its own function so the check can drive it forward
+// without waiting an hour to find out whether the lot actually changes.
+function wirtLotHour(t){ return Math.floor((t===undefined?Date.now():t)/3600000); }
+// THE CLOCK PICKS IT, not rr(). No seeded draw is spent here, so nothing in a
+// raid moves because of the shop, and the same hour always shows the same item
+// however many times he walks in and out.
+function wirtLotKey(t){
+  var h=wirtLotHour(t)>>>0;
+  // A mix, not a modulo of the raw hour: consecutive hours should jump around
+  // the list rather than walk down it in order.
+  h=Math.imul(h^(h>>>15),2246822507)>>>0;
+  h=Math.imul(h^(h>>>13),3266489909)>>>0;
+  h=(h^(h>>>16))>>>0;
+  return WIRT_LOT_POOL[h%WIRT_LOT_POOL.length];
+}
+// How long the current one stands, for the line under it.
+function wirtLotLeft(t){
+  var now=(t===undefined?Date.now():t);
+  return Math.max(0,Math.ceil((3600000-(now%3600000))/1000));
+}
 var GAMBLE_POOL=[
   ['scrap',10],['wire',10],['cell',9],['bandage',9],['ammobox',10],['board',8],
   ['optic',7],['plate',6],['servo',6],['comp',6],['medkit',5],['smoke',4],['decoy',3],['frag',3],
@@ -24965,6 +24991,41 @@ function renderGamble(){
   b.textContent='Gamble $'+GAMBLE_PRICE;
   b.disabled=P.credits<GAMBLE_PRICE;
   b.style.opacity=P.credits<GAMBLE_PRICE?0.45:1;
+  renderWirtLot();
+}
+// v9.11: the one thing on the counter. Named, priced and visible before he pays,
+// which is the whole difference between this and the pull.
+function renderWirtLot(){
+  var el=document.getElementById('wirtlot'); if(!el) return;
+  var k=wirtLotKey(), it=ITEMS[k];
+  if(!it){ el.innerHTML='<span class="hint">The counter is empty.</span>'; return; }
+  var left=wirtLotLeft(), mins=Math.floor(left/60);
+  var col=RCOL[dispR(k)||it.r]||'#cdd6dd';
+  var afford=(P.credits>=WIRT_LOT_PRICE);
+  el.innerHTML=iconImgHTML(k,26)+
+    '<span style="flex:1">'+
+      '<span style="color:'+col+';font-weight:700">'+it.name+'</span>'+
+      '<span class="hint" style="display:block">On the counter for the hour. '+
+      (mins>0?('New lot in '+mins+' min'):'New lot in under a minute')+'.</span>'+
+    '</span>'+
+    '<button id="wirtlotbtn" style="padding:7px 16px;border-color:var(--amber);color:var(--amber);'+
+      (afford?'':'opacity:.45')+'">Buy $'+WIRT_LOT_PRICE.toLocaleString()+'</button>';
+  var lb=document.getElementById('wirtlotbtn');
+  if(lb){
+    lb.disabled=!afford;
+    lb.onclick=function(){
+      if(P.credits<WIRT_LOT_PRICE) return;
+      var key=wirtLotKey();
+      if(!ITEMS[key]) return;
+      P.credits-=WIRT_LOT_PRICE;
+      P.stash.push(key);
+      P.gambleLog=P.gambleLog||[]; P.gambleLog.push(key);
+      if(P.gambleLog.length>40) P.gambleLog.shift();
+      saveProfile(); renderGamble(); renderHub();
+      ac(); blip('pick');
+      say2('Wirt hands over the '+ITEMS[key].name+'.');
+    };
+  }
 }
 // DRAG IT ACROSS, v2.92. His note: "i don't understand how to move stuff from
 // the dev box to my inventory -- again, needs to be dragable ala diablo,

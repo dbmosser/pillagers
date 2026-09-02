@@ -27443,6 +27443,67 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.11 - WIRT KEEPS ONE GOOD THING ON THE COUNTER
+
+His answer 48: Wirt sells one special 10k item that changes hourly.
+
+REPRODUCED by opening the stall and reading it. Two buttons, Gamble and Leave.
+No fixed item, no price other than the 2,500 pull, and the word "hour" appears
+nowhere in the panel. Wirt has only ever sold randomness.
+
+THE LOT OF THE HOUR. One named item, on the counter, at a flat 10,000, the same
+for the whole hour and different the next. It is drawn from the top of the table
+only: the Warden Core, the Bloom Sample, the Reactor Core, the Sealed Codex, the
+Black Box, the Orbital Relay, the Meridian Lance and the Longshot. Against a
+2,500 pull that usually returns scrap, the trade is a guaranteed top-tier thing
+for four pulls' money, and he can see exactly what it is before he pays.
+
+CHOSEN BY THE CLOCK, NOT BY A ROLL, which matters twice. It spends no random draw
+at all, so nothing in the seeded stream moves and both map fingerprints are
+untouched. And because it is a hash of the hour rather than a pick, it is stable
+across a reload: walking out of the Undercroft and back in does not reroll the
+thing he was deciding about, which a random pick would have.
+
+The hour is mixed rather than taken modulo, so consecutive hours jump around the
+list instead of walking down it in order.
+
+MEASURED AFTER: the counter reads "Longshot (field). On the counter for the hour.
+New lot in 10 min. Buy $10,000", and the stall now has three buttons instead of
+two. Walking the clock forward 48 hours: all eight items come up, the lot changes
+on 37 of the 47 hour boundaries, and sampling four points inside one hour returns
+the same item every time. Buying it takes exactly 10,000 and puts exactly that
+item in the stash.
+
+Verified: parse PASS v9.11. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 54 regression checks
+pass in sequence, none skipped.
+
+The check fails on a fixture built from v9.10 with "Wirt has nothing on the
+counter: no 10,000 offer among his 2 buttons; the stall never says the lot
+changes by the hour". Controls: every item the counter can stock must be rare or
+elite, so a 10,000 price on scrap cannot pass; the lot must hold for the whole
+hour, so one that rerolls while he is deciding cannot pass; and the buy button
+must be dead at $500, so a 10,000 item cannot be bought with money he does not
+have.
+
+ONE CORRECTION TO MY OWN CHECK, and it is the third time in five builds I have
+made it. The fixture shim exists on the previous build too, because mkfixture
+writes it, but every function in it throws there, so the check died with a
+ReferenceError instead of saying what was wrong. What he would actually see is
+the stall, and that reads on any build, so the panel is measured first now and
+the mechanics come after.
+
+Not verified: whether 10,000 is the right price, which is his to judge. It is
+roughly twice the resale value of the best thing in the pool, which is the
+premium for choosing instead of gambling, and I have not modelled it against how
+fast he actually earns. The lot is the same for every profile on the machine
+rather than per-save, since it is a function of the clock alone. The hour rolls
+over on the real clock, so a session that straddles the hour will see the counter
+change under him at the next render.
+
 ## v9.10 - SAVING A PILLAGER PAYS
 
 His answer 37: reviving a pillager should pay a gun or a rare item.
