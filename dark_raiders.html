@@ -1185,7 +1185,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.88';
+var VER='8.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1201,7 +1201,7 @@ var WNSEEN=0;          // v6.62, his note: one showing per page load, not per ve
 var WHATSNEW=[
   'THE BAG USES THE SCREEN. It was eleven columns wide on a 1920 screen and showing thirty five stacks; it was five columns and 21 percent of the width, with 755 pixels of nothing either side of it.',
   'THE SECOND GUN SLOT IS ALWAYS THERE. It only existed when you had a second gun, so picking one up slid every other key one place right, mid-raid.',
-  'A GUN GOES ON ANY BELT SLOT, as many as you want. Slots 1 and 2 are still the two in your hands.',
+  'A GUN GOES ON ANY BELT SLOT, as many as you want. Every slot is the same slot.',
   'SPRINT STOPPED STUTTERING. Holding it through exhaustion switched it on and off twenty five times in twenty seconds; that flicker was the footstep noise you were hearing.',
   'YOUR SETTINGS ACTUALLY APPLY. Nudging one slider in the tuning console killed the matching Settings row for good, while it carried on cycling and saving as if it worked.',
   'TEXT SIZE SCALES THE MENUS TOO, all the way up. Above 150 percent only the game text grew and the panels stayed put.',
@@ -11723,7 +11723,8 @@ if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam+7.5*
       // DARKER, LARGER, MORE OBVIOUS, v5.31, his words. Wet boots track a real
       // stain; dry boots still scuff the dirt visibly instead of almost not.
       if(inWater(ppx,ppy)){
-        G.decals.push({x:ppx,y:ppy,c:'#b4def0',s:7,a:.5,a0:.5,rot:0,ripple:1,t:0,life:0.7});
+        // v8.89: mine, so the sight gate on ripples never hides your own wake.
+        G.decals.push({x:ppx,y:ppy,c:'#b4def0',s:7,a:.5,a0:.5,rot:0,ripple:1,mine:1,t:0,life:0.7});
       } else {
         pushPrint({x:ppx,y:ppy,c:p.wetT>0?'#141d26':'#241f16',s:p.wetT>0?7:5.5,
           a:p.wetT>0?.62:.34,a0:p.wetT>0?.62:.34,rot:pma,print:1,mine:1,t:0,life:6});
@@ -17484,7 +17485,11 @@ if(G.map.story){
     // purpose, so the cost is at most a screenful rather than the whole 150.
     // Only prints: blood, scorch and container litter are marks on ground you
     // have already been standing on, and yours are exempt by the mine flag.
-    if(dc.print&&!dc.mine&&!canSee(p.x,p.y,p.face,dc.x,dc.y,G.vseg)) continue;
+    // v8.89: AND THE RINGS IN THE WATER. v8.85 gated boot marks and said in its
+    // own entry that ripples were a different branch and had not been checked.
+    // They leaked exactly the same way: 1,323 pixels drawn through a wall the
+    // pillager himself could not be seen through.
+    if((dc.print||dc.ripple)&&!dc.mine&&!canSee(p.x,p.y,p.face,dc.x,dc.y,G.vseg)) continue;
     wc.save(); wc.translate(dc.x,dc.y); wc.rotate(dc.rot);
     wc.globalAlpha=dc.a; wc.fillStyle=dc.c;
     if(dc.print){
@@ -23866,7 +23871,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.88: the title screen uses your monitor and obeys the text size setting. It was 660 pixels wide on every screen ever made.',
+  now:'v8.89: a pillager wading out of sight no longer draws rings in the water you can follow. Your own wake still shows.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -24038,23 +24043,17 @@ function renderCarry(){
   // The belt. Slots one and two are the two guns in your hands, which is the
   // rule the raid bar uses, and the rest is whatever you have bound.
   var BL=document.getElementById('carrybelt'); BL.innerHTML='';
-  var guns=(P.weapons||[]).slice();
+  // v8.89, HIS CORRECTION: "every slot should be equal". I wrote slots 1 and 2
+  // as the two guns in your hands, which is the rule he retired at v6.60 and has
+  // now told me about twice. Every slot reads from hotAssign, the same way, and
+  // a gun sitting in one is just an item sitting in one.
   for(var sl=0;sl<9;sl++){
     var box=document.createElement('div');
-    var lab='',name='',filled=false;
-    if(sl===0){ lab='1'; name=(WEAPONS[P.equipped]&&WEAPONS[P.equipped].name)||'Bare hands'; filled=!!WEAPONS[P.equipped]; }
-    else if(sl===1){
-      lab='2';
-      var second=null;
-      for(var gq=0;gq<guns.length;gq++) if(guns[gq]!==P.equipped){ second=guns[gq]; break; }
-      name=second?((WEAPONS[second]&&WEAPONS[second].name)||second):'Empty';
-      filled=!!second;
-    } else {
-      lab=String(sl+1);
-      var hk=P.hotAssign?P.hotAssign[sl]:null;
-      name=(hk&&ITEMS[hk])?ITEMS[hk].name:'Empty';
-      filled=!!(hk&&ITEMS[hk]);
-    }
+    var lab=String(sl+1),name='',filled=false;
+    var hk=P.hotAssign?P.hotAssign[sl]:null;
+    if(hk&&ITEMS[hk]){ name=ITEMS[hk].name; filled=true; }
+    else if(hk&&WEAPONS[hk]){ name=WEAPONS[hk].name; filled=true; }
+    else { name='Empty'; filled=false; }
     box.style.cssText='flex:0 0 auto;min-width:88px;padding:7px 9px;border-radius:3px;'+
       'border:1px solid var(--steel-hi);font-size:11.5px;'+
       (filled?'color:var(--bone)':'color:var(--ash);opacity:.6');
@@ -28019,6 +28018,12 @@ loadProfile().then(function(){
   // boot and his saved choice was silently thrown away. Applied again here,
   // where the profile actually exists.
   try{ applyStashLayout(); }catch(_al){}
+  // v8.89, HIS REPORT: the title screen opened small and then jumped to full
+  // size on the first wheel notch. v8.88 taught applyMenuZoom about the title
+  // screen but nothing calls applyMenuZoom at boot, so it stayed at zoom 1 until
+  // something else happened to trigger it. The profile exists by here, which is
+  // the whole reason this block is at the bottom of the load.
+  try{ applyMenuZoom(); }catch(_am){}
   ensureContracts();
   saveProfile();
   syncCond();

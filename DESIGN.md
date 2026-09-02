@@ -27443,6 +27443,68 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.89 - I TOLD HIM A BUG WAS REAL AND IT WAS MY OWN DEAD VIEWPORT
+
+Start with the correction, because I put it in his hands last tick. At v8.88 I
+reported that the Undercroft belt drag was broken and that v8.72 had never fixed
+it. That was wrong. The belt drag works.
+
+The browser pane here runs collapsed. window.innerWidth and innerHeight are 0,
+and with a 0x0 viewport document.elementFromPoint returns null for every point on
+the page. The drop handler resolves its target with elementFromPoint, so no drop
+target is ever found and no drag can land, on any build. Given a real 1920x1080
+viewport that check passes twice in a row. I had a note to myself about exactly
+this ("a 0x0 pane makes every measurement void") and I did not apply it.
+
+TWO FIXES SO IT CANNOT HAPPEN AGAIN. The corpus now understands a check that
+CANNOT RUN as separate from a check that FAILED: a check may answer "SKIP: why",
+and the summary counts and names those instead of condemning the build. Before
+this the only way to say anything was to return a string and every string was a
+failure. And the drag check asks __vpAlive() first, which is the honest question:
+is the page laid out, and does a hit test at 2,2 find anything at all.
+
+THE HALF OF v8.85 I FLAGGED AND DID NOT DO. That build gated pillager footprints
+on line of sight and its own entry said ripples were a different branch I had not
+checked. They leaked identically. Measured at the same hidden point, a walkable
+spot with a wall between and the game's own losClear confirming no sight:
+    pillager ripples behind that wall   1,323 pixels drawn
+    pillager footprints, gated at v8.85         0 pixels
+A man wading out of sight drew a line of rings you could follow. Gated the same
+way, with your own wake exempt by the same mine flag, and a control that fails if
+your own ripples stop drawing.
+
+HIS REPORT ON v8.88, an hour after I shipped it: "i'm still getting the small
+screen at the beginning, then if i scroll my mouse wheel, it gets gigantic, with
+no inbetween". Mine, and it is one missing call rather than bad sizing. v8.88
+taught applyMenuZoom about the title screen, but NOTHING CALLS applyMenuZoom AT
+BOOT: its callers are renderHub, renderStage, renderCarry and the settings rows,
+and none of those run while you are looking at the title screen. So it sat at
+zoom 1, which is the small screen he opens on, and his first wheel notch called
+applyMenuZoom for the first time and snapped it straight to his saved size. That
+snap IS the "no inbetween"; the wheel step is 0.08, which is as fine as it gets.
+It is applied at the end of the profile load now, where the profile exists.
+Measured straight after boot: zoom 1.3, against "(none)" before.
+
+HIS CORRECTION: "'slots 1 and 2 are still the 2 in your hands' -- no, every slot
+should be equal". Second time he has told me; the first was "i should be able to
+have 9 guns if i want, they should act the same as any other equippable". The
+raid bar has been equal since v6.60, whose own comment says every slot on the
+belt is the same slot. Two places still disagreed: the belt on the backpack panel
+I built at v8.84, which hardcoded slot 1 and slot 2 as the guns, and the card
+that told him so. Both now read every slot the same way.
+
+Verified: parse PASS. Both sectors to their fingerprints, entities 58 and 276 and
+containers 155 and 589. Streams identical live and sim. Looting on both with no
+throw and the clock advancing. Three endings correct. Hub renders. 33 regression
+checks pass, none failed and none skipped, which is also the belt drag passing on
+its own merits at a live viewport.
+
+Not verified: I have not re-photographed the title screen on his actual monitor,
+only measured the zoom value at boot, so the size he sees on next launch is
+inferred from that number. I also did not touch the three collapsible in-raid
+panels he sent screenshots of while this build was running, the pillager board,
+the legend and the conditions panel; they were never in HUDZ at all and are the
+next build.
 ## v8.88 - THE TITLE SCREEN USES YOUR MONITOR, AND A CHECK THAT WAS CRYING WOLF
 
 His note, with a screenshot of a very wide monitor: "look at all this wasted

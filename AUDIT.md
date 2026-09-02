@@ -234,3 +234,16 @@ OPEN, in the order he sent them:
   because the stash panel had not opened. Made deterministic at v8.88 and it now
   fails on v8.88 AND on v8.87 alike: the belt slot still holds the item after the
   drag. NEXT BUILD. Reproduce the drag by hand before touching the fix.
+- STANDING LABEL COLLIDES WITH STAMINA. His screenshot, v8.89. The status chip is
+  placed with raw pixel offsets (_up = 22 with no armour, 44 with) while its own
+  box height is LH-scaled, so the two stop clearing each other as the text size
+  grows. Measure both rects at several text sizes before touching it. NEXT.
+- THE THREE IN-RAID PANELS ARE TOO SMALL. His words: "these menus are still WAY
+  TOO SMALL -- need to be twice as large as they are now", with shots of the
+  CURRENT PILLAGERS board, the controls legend, and the CONDITIONS/CONTRACTS
+  panel. None of them are in HUDZ, so v8.81 never touched them. He has named the
+  target: twice the size. NEXT BUILD.
+- 'EXTRACT CACHE' should be called 'ELITE CACHE'. His words, confusing name.
+- CRIERS SHOULD NOT ENTER HOUSES unless chasing a pillager, and should leave the
+  house once done. Note this interacts with v8.86, which moved most crawlers
+  indoors; check what a crier does around an occupied building before changing it.

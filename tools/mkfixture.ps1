@@ -1099,6 +1099,11 @@ window.__REGRESS=[
      return null; }},
   {v:'8.72',what:'an item can be dragged OFF the Undercroft belt and back into the backpack',
    run:function(){
+     // The drop end resolves its target with document.elementFromPoint, which
+     // returns null for every point when the pane is collapsed to 0x0. That is
+     // not a broken belt, it is a dead viewport, and it cost him a false bug
+     // report at v8.88.
+     if(!__vpAlive()) return 'SKIP: the pane has no layout ('+window.innerWidth+'x'+window.innerHeight+'), so no drag can land';
      __showScreen('hub');
      var H=__hub(); if(!H) return 'no hub';
      var st=null; for(var i=0;i<H.stations.length;i++) if(H.stations[i].id==='term') st=H.stations[i];
@@ -1806,17 +1811,68 @@ window.__REGRESS=[
      var ov=getComputedStyle(t).overflowY;
      if(ov!=='auto'&&ov!=='scroll') bad.push('the title screen cannot scroll, overflowY is '+ov+', so a tall one clips its own footer');
      P.menuZoom=keepZ; __forceSize(keepW||1920,keepH||1080); applyMenuZoom();
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.89',what:'a pillager wading out of sight draws no rings in the water',
+   run:function(){
+     __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(),p=g.player;
+     g.ents.length=0; p.iv=99;
+     var cv=document.getElementById('cv'); if(!cv) return 'no canvas to read';
+     var c2=cv.getContext('2d');
+     function shot(){ __frame(0); return c2.getImageData(0,0,cv.width,cv.height).data; }
+     function diff(a,b){ var d=0;
+       for(var i=0;i<a.length;i+=4){
+         if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>8) d++; }
+       return d; }
+     g.decals.length=0;
+     if(diff(shot(),shot())!==0) return 'the renderer is not deterministic at dt 0, this check cannot measure anything';
+     function trial(x,y,mine){
+       g.decals.length=0; var base=shot();
+       for(var k=0;k<8;k++) g.decals.push({x:x+k*3,y:y+k*2,c:'#b4def0',s:7,a:.5,a0:.5,
+         rot:0,ripple:1,mine:mine?1:0,t:0,life:45});
+       var w=shot(); g.decals.length=0; return diff(base,w);
+     }
+     var hid=null;
+     for(var r=60;r<500&&!hid;r+=25){
+       for(var a=0;a<6.28&&!hid;a+=0.09){
+         var qx=Math.round(p.x+Math.cos(a)*r), qy=Math.round(p.y+Math.sin(a)*r);
+         if(!__nav.free(qx,qy,10)) continue;
+         if(__los.clear(p.x,p.y,qx,qy)) continue;
+         if(trial(qx,qy,true)>150) hid={x:qx,y:qy};   // mine bypasses the gate
+       }
+     }
+     if(!hid) return 'could not find a hidden spot where a ripple is drawable at all';
+     var bad=[];
+     var leak=trial(hid.x,hid.y,false);
+     if(leak>0) bad.push('a pillager ripple behind a wall drew '+leak+' pixels');
+     // CONTROL: your own wake must still draw, or the fix was to delete ripples.
+     if(trial(hid.x,hid.y,true)<=0) bad.push('control: your own ripples stopped drawing too');
      return bad.length?bad.join('; '):null; }}
 ];
+// Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
+// document.elementFromPoint then returns null everywhere, which silently breaks
+// every drag, click and hit test. Checks that need the DOM ask this first.
+window.__vpAlive=function(){
+  if(!window.innerWidth||!window.innerHeight) return false;
+  return !!document.elementFromPoint(2,2);
+};
 window.__regress=function(){
-  var res={pass:true,checked:0,fail:[]};
+  var res={pass:true,checked:0,fail:[],skipped:[]};
   for(var i=0;i<__REGRESS.length;i++){
     var t=__REGRESS[i], r=null;
     res.checked++;
     try{ r=t.run(); }catch(e){ r='threw: '+e; }
+    // A check that cannot run says so instead of condemning the build. Before
+    // this, the only way to report anything was to return a string and every
+    // string was a failure, which is how a 0x0 viewport made me tell him the
+    // belt drag was broken when it was not.
+    if(r&&r.indexOf('SKIP: ')===0){ res.skipped.push('v'+t.v+' '+t.what+' -> '+r.slice(6)); continue; }
     if(r){ res.pass=false; res.fail.push('v'+t.v+' '+t.what+' -> '+r); }
   }
-  res.summary=res.pass?('PASS, '+res.checked+' regression checks'):('FAIL x'+res.fail.length);
+  var ran=res.checked-res.skipped.length;
+  res.summary=res.pass?('PASS, '+ran+' regression checks'+(res.skipped.length?(' ('+res.skipped.length+' could not run)'):''))
+                      :('FAIL x'+res.fail.length);
   return res;
 };
 // v8.58: the DOM panels that COMPUTE their contents, so a probe can read the
