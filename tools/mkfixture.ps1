@@ -4686,6 +4686,127 @@ window.__REGRESS=[
        bad.push('the sell panel says you have to walk the money out, and dying kept it');
      }
      return bad.length?bad.join('; '):null; }},
+  {v:'9.47',what:'a crew that loses you searches as a crew, not as a queue',
+   run:function(){
+     var bad=[];
+     __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+     var g=__state(), m=g.map, WW=m.cols*m.cw, WH=m.rows*m.ch;
+     // AN ARENA BUILT FROM THE MAP. An open stand with four clear bearings at 240
+     // units, and a spot hidden from ALL FOUR posts, not merely from the stand.
+     // My first cut only hid him from the stand and three men walked straight at
+     // him because they could still see him from where they were standing.
+     var A=null;
+     for(var px=400; px<WW-400 && !A; px+=130){
+      for(var py=400; py<WH-400 && !A; py+=130){
+       if(!__nav.free(px,py,18)||!__nav.reachable(px,py)) continue;
+       var open=[],a,th,ex,ey;
+       for(a=0;a<16&&open.length<4;a++){
+         th=a*Math.PI/8; ex=px+Math.cos(th)*240; ey=py+Math.sin(th)*240;
+         if(ex<70||ey<70||ex>WW-70||ey>WH-70) continue;
+         if(!__nav.free(ex,ey,16)||!__nav.reachable(ex,ey)) continue;
+         if(!__los.clear(px,py,ex,ey)) continue;
+         open.push({x:ex,y:ey});
+       }
+       if(open.length<4) continue;
+       var hid=null;
+       for(a=0;a<32&&!hid;a++){
+         var t2=a*Math.PI/16;
+         for(var r=300;r<=560;r+=30){
+           var hx=px+Math.cos(t2)*r, hy=py+Math.sin(t2)*r;
+           if(hx<70||hy<70||hx>WW-70||hy>WH-70) continue;
+           if(!__nav.free(hx,hy,16)||!__nav.reachable(hx,hy)) continue;
+           var blind=true;
+           for(var q=0;q<open.length;q++) if(__los.clear(open[q].x,open[q].y,hx,hy)){ blind=false; break; }
+           if(blind){ hid={x:hx,y:hy}; break; }
+         }
+       }
+       if(hid) A={px:px,py:py,posts:open,hid:hid};
+      }
+     }
+     if(!A) return 'SKIP: this map has no open stand with four clear bearings and a spot hidden from all of them';
+     function run(dial){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       if(dial!==null) __cfg({crewSearch:dial});
+       var G2=__state(), pp=G2.player, crew=[], i;
+       for(i=0;i<G2.ents.length&&crew.length<4;i++) if(G2.ents[i].kind==='raider') crew.push(G2.ents[i]);
+       if(crew.length<4) return {skip:'only '+crew.length+' pillagers on this map'};
+       G2.ents.length=0; for(i=0;i<crew.length;i++) G2.ents.push(crew[i]);
+       pp.x=A.px; pp.y=A.py; pp.iv=9999; pp.downed=false; G2.pCrouch=false;
+       for(i=0;i<crew.length;i++){
+         var e=crew[i];
+         e.x=A.posts[i].x; e.y=A.posts[i].y;
+         e.hostile=true; e.merc=false; e.friendlyPC=0; e.downed=false; e.grudge=true;
+         e.state='patrol'; e.alert=0; e.cd=0;
+         if(e.crewArc!==undefined) delete e.crewArc;
+         if(e.searchArc!==undefined) delete e.searchArc;
+         e.face=Math.atan2(pp.y-e.y,pp.x-e.x);
+       }
+       for(var f=0;f<25;f++) __ents(1/60);
+       var chasing=[];
+       for(i=0;i<crew.length;i++) if(crew[i].state==='chase') chasing.push(crew[i]);
+       if(chasing.length<3) return {skip:'only '+chasing.length+' of 4 entered chase from a clear 240 unit sighting'};
+       pp.x=A.hid.x; pp.y=A.hid.y;
+       var sighted=0;
+       for(i=0;i<chasing.length;i++) if(__los.clear(chasing[i].x,chasing[i].y,pp.x,pp.y)) sighted++;
+       if(sighted) return {skip:sighted+' of them can still see the hidden spot'};
+       // A few frames so each man has decided where to look, then read the
+       // DECISIONS. Positions cannot answer this: they start 184 units apart on
+       // their posts and close on the sighting, so any spread measured from where
+       // they stand is measuring my arena and not the game.
+       for(var f2=0;f2<30;f2++) __ents(1/60);
+       var tgts=[], np=0, pts={};
+       for(i=0;i<chasing.length;i++){
+         var e2=chasing[i];
+         var tx2=(e2.searchX===undefined)?e2.tx:e2.searchX;
+         var ty2=(e2.searchY===undefined)?e2.ty:e2.searchY;
+         tgts.push({x:tx2,y:ty2});
+         var key=Math.round(tx2/60)+':'+Math.round(ty2/60);
+         if(!pts[key]){ pts[key]=1; np++; }
+       }
+       var closest=1e9;
+       for(i=0;i<tgts.length;i++) for(var j=i+1;j<tgts.length;j++){
+         var d=Math.hypot(tgts[i].x-tgts[j].x,tgts[i].y-tgts[j].y);
+         if(d<closest) closest=d;
+       }
+       // And they have to actually GO there, or a decision nobody acts on is not a
+       // behaviour. Distance closed on his own chosen point over 60 more frames.
+       var before=[], after=[];
+       for(i=0;i<chasing.length;i++) before.push(Math.hypot(chasing[i].x-tgts[i].x,chasing[i].y-tgts[i].y));
+       for(var f3=0;f3<60;f3++) __ents(1/60);
+       for(i=0;i<chasing.length;i++) after.push(Math.hypot(chasing[i].x-tgts[i].x,chasing[i].y-tgts[i].y));
+       var closedOn=0;
+       for(i=0;i<before.length;i++) if(after[i]<before[i]-20) closedOn++;
+       return {n:chasing.length, closestPair:Math.round(closest), distinctSpots:np,
+               walkedToIt:closedOn, readBack:(dial===null?null:__cfg().crewSearch)};
+     }
+     var on=run(1);
+     if(on.skip) return 'SKIP: '+on.skip;
+     var off=run(0);
+     if(off.skip) return 'SKIP: '+off.skip;
+     // CONTROL FIRST, AND IT IS THE ONE THAT MATTERS: the dial has to be live. If
+     // both arms agree, suspect the setter before the design - it has cost a build
+     // before. crewSearch 0 must reproduce the old queue exactly.
+     if(off.readBack!==0||on.readBack!==1)
+       bad.push('control: the dial did not read back, on='+on.readBack+' off='+off.readBack);
+     if(off.closestPair>20)
+       bad.push('control: with the fan switched off the crew chose points '+off.closestPair+
+                ' units apart, and the old behaviour sends every man to the same one');
+     // THE FINDING. Measured on v9.46: three men, all targeting one point to the
+     // unit, finishing 22, 29 and 53 units apart.
+     if(on.closestPair<=100)
+       bad.push(on.n+' pillagers lost him and the two closest chose points '+on.closestPair+
+                ' units apart, which is the queue slice 2 was written to remove');
+     if(on.walkedToIt<2)
+       bad.push('only '+on.walkedToIt+' of '+on.n+' actually walked toward the place they chose');
+     if(on.distinctSpots<2)
+       bad.push(on.n+' pillagers searched '+on.distinctSpots+' place between them');
+     // CONTROL TWO: they must still GO somewhere. A fan that sends everyone home
+     // is not a search, and standing still would satisfy the spread test.
+     if(on.closestPair>700)
+       bad.push('control: the crew chose points '+on.closestPair+' units apart, which is scattering rather than searching');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.46',what:'the controls legend can be clicked where it is drawn',
    run:function(){
      var bad=[];

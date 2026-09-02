@@ -27443,6 +27443,110 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.47 - HIS 36, SLICE 3: A CREW THAT LOSES YOU SEARCHES AS A CREW
+
+### What was wrong
+
+Slice 1 at v9.28 made a crew answer a shout. Slice 2 at v9.29 gave each man who
+answered his own station instead of a place in a queue. v9.42 then made losing
+line of sight mean something for the first time, and that immediately exposed the
+third slice: **the moment they lose you the stations stop and every man walks to
+the identical point.**
+
+Measured on THE COLD MILE at seed 4242, four pillagers placed on four clear
+bearings 240 units out, the player then moved to a spot none of the four can see
+from where they stand:
+
+- three of the four entered chase
+- none of them could see him afterwards
+- all three targeted the same point, 400,660, **to the unit**
+- they finished 22, 29 and 53 units apart, then gave up
+
+Three men standing on one square metre is exactly the queue slice 2 was written
+to get rid of, coming back the moment the shooting stops.
+
+### The fix
+
+Each man now sweeps his own sector of the last known position rather than the
+point itself. The bearing starts from where HE was when he lost you, at half
+weight so he tends to search the side he came from, and is then stepped by the
+golden angle so any number of men spread evenly and no two draw the same sector.
+It is a counter, not a dice roll, so the seeded stream is untouched and every
+historical number stays reproducible.
+
+`crewSearch` is the dial, 1 by default, 0 restores v9.46 exactly.
+`crewSearchR` is the radius, 130.
+
+### Two mistakes of mine on the way, both caught by measurement
+
+**The first fan put two men in the same sector.** Arcs 1.84, -1.06 and 2.02, so
+two of the three were 0.18 radians apart, which is 23 units on a 130 radius: they
+searched the same patch. The offset was too small against how close their own
+bearings already were. The golden angle replaced it.
+
+**Two sectors in three landed inside a wall,** and a blocked sector fell back to
+the shared point, so those two men behaved exactly as they had before. The A/B
+arms were then identical to the unit for two of the three, which is what a dead
+code path looks like. Each man now tries his sector, then half a radian either
+side, then a quarter turn either side, then a shorter radius, and takes the first
+that is open ground; only if all six are solid does he fall back to the point.
+Computed once when sight breaks and stored, not six checks a frame.
+
+### And a mistake in the check
+
+My first measurement was "the widest separation reached while at least three are
+hunting". It peaked on the FIRST frame, before anyone had taken a step, because
+they begin on posts 184 units apart and then close on the last sighting. It was
+measuring my arena, not the game, and it could never have shown a search.
+
+What the fix changes is where they are GOING, so that is what is measured now:
+the distance between the places three men have decided to look. On the old build
+that distance is zero, because every man goes to the same point. It then runs 60
+more frames and requires at least two of the three to have actually closed on the
+point they chose, because a decision nobody acts on is not a behaviour.
+
+### How it is checked
+
+Both arms of the dial, on the same arena, in one build:
+
+- with the fan ON, the two closest men must choose points more than 100 units
+  apart, and at least two of three must walk toward their own
+- with the fan OFF, they must choose points within 20 units of each other, which
+  is the old behaviour and is the control that says the scene is real
+- the dial must read back 1 and 0, because identical arms mean suspect the setter
+  first and that has cost a build before
+- they must not choose points more than 700 units apart, which would be
+  scattering rather than searching
+
+The arena is built from the map: an open stand with four clear bearings at 240
+units and a spot hidden from ALL FOUR POSTS, not merely from the stand. My first
+cut only hid him from the stand and three men walked straight at him because they
+could still see him from where they were standing.
+
+Fails on a v9.46 fixture with "the two closest chose points 0 units apart" and
+"3 pillagers searched 1 place between them". 89 of 89 with nothing skipped.
+
+### What it costs you
+
+Measurement still running as this is committed, and the number goes into this
+entry when it lands: 320 seeds on THE COLD MILE, paired per seed, crewSearch 1
+against crewSearch 0 which is v9.46 to the digit.
+
+Read whatever it says carefully. The sim bot barely fights pillagers at all: every
+extract-rate number this project produces describes MACHINE combat, and machines
+do not run this branch. So the run can only show whether the change costs anything
+by accident. Whether a crew that actually searches is better to play against is a
+question about a person in a chair, and no bot here can answer it.
+
+Not verified: the machines. Sentries, snitches and bulwarks run the role block,
+not this branch, and they still converge on the last sighting; their pack roles
+spread them a little but not deliberately. That is a separate build. Not verified:
+what a crew of two does, or a crew of six, beyond that the golden angle spreads
+any count evenly by construction. Not verified: how it reads in the chair, which
+is the only question that matters for a behaviour like this and which no bot can
+answer.
+
+
 ## v9.46 - AT 4K THE CONTROLS LEGEND COULD NOT BE CLICKED AT ALL
 
 ### What was wrong
