@@ -428,3 +428,37 @@ an actual line of sight.
 Still open from his 50, unchanged: 6 the siege and the lethal raid clock, 11
 dragging an item off the belt during a raid, 33 proficiency using the five things
 he named rather than money alone, 36 slice 3.
+
+## 2026-09-02 evening, the second absence
+
+He asked me to follow my own productivity report. What that produced:
+
+| Item | Build | Evidence |
+| --- | --- | --- |
+| His 6: he does not know what a siege is | v9.34 | the line explaining it was written and overwritten in the same frame; an empty bag and a bag worth 37,500 were told the same two sentences. Now named and counted, and the count matches what arrives to the unit |
+| His 6: nothing should be meant to end the raid | v9.35 | the clock slider bottomed out at two minutes with no off. Zero now reads OFF: no expiry, no rings closing, elapsed time still recorded. The clock still kills you at 15 seconds if you leave it on |
+| A REGRESSION I SHIPPED AT v9.30 | v9.36 | HEAVY PATROLS raised sentries 44 percent and crawlers 4 percent, because my house-derived crawler floor overwrote the term. Now 42 and 39. He pays 30 percent hazard pay for that term |
+| Abandoning while bleeding out kept both guns | v9.37 | the pause box offered Abandon run for the whole 17 second bleed-out, and the abandon branch never strips the armoury. Closed, with the handler refusing as well as the button hiding |
+| Shooting a Listener switched it off | v9.38 | 9 hits and 306 damage left alone, 0 and 0 after a round put it into a state its own block has no branch for. Fixed in the Listener, so the frag path is covered too |
+| The harness was lying in two separate ways | tooling | the device pixel ratio made eight checks read a quarter of the canvas and report "nothing was drawn"; my own v9.36 check leaked HEAVY PATROLS into the SAVED profile and denied two shooting checks a firing line. Ratio pinned, profile cleaned before every check |
+
+MINING IS DONE BY WORKFLOW NOW, not by hand. Eight agents read one subsystem each
+against the live file, then skeptics tried to refute every high-impact finding.
+That produced the v9.37 and v9.38 builds and a vetted queue, and it caught my own
+v9.30 regression, which two full corpus runs had missed because nothing in the
+corpus had ever signed a term.
+
+STILL OPEN from that queue, in value order:
+- the last-minutes warnings send you to an extraction ring that is already shut,
+  and can say "you are standing in the way out" while you stand in a closed one
+- breaking line of sight does not shake a chase at range: the chase block is a
+  sibling of the sight gate, not inside it, so machines route to your live
+  position through walls for about five seconds. An in-file comment calls this
+  refuted and its stated reason is wrong
+- the Peddler's panel says stall money is "yours even if you die" and the death
+  screen says the opposite
+- the workshop charges credits and parts to service guns that wear was removed
+  from at v9.01
+- the new-player card says raids pay no XP and that XP unlocks the shop; both are
+  false and the rewards screen says so
+- Wirt's flat 10,000 lot is salvage worth 1,700 to 3,800 six times in eight
