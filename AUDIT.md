@@ -21,6 +21,7 @@ adversarially verified):
 
 | Finding | Closed by | How it was confirmed closed |
 |---|---|---|
+| Sector map chrome: frame and markers stayed 1080p-sized at 4K (frame reached 4px out at both) while the map grew 2.15x | v9.15 | frame, cache ring, encampment, locked-door and key markers scale by the same hudRes the text uses; check fails on a v9.14 fixture |
 | Sector map: the map grew 2.15x at 4K while every label stayed at its 1080p pixel size (18.7/15.6/23.4 at both) | v9.14 | drawMapOverlay shadows FS with the screen factor; heading now 1.91x wide and 2.06x tall at 4K; check fails on a v9.13 fixture and guards the font cache from leaking |
 | The BACKPACK never scaled with the screen: 1194x435 at 1080p and 1295x435 at 4K (1.08x wide, 1.00x tall) | v9.13 | tile/gaps/margins/paddings scale by hudRes; exactly 2.00x at 4K, same 11 columns, 1080p unmoved; check fails on a v9.12 fixture |
 | Contract "+ XP" text lying, and nRaider:0 producing an empty map | not defects | checked v9.13: the sell handler does pay XP, and the row reads "AI pillagers 0-20" where 0 correctly means none |
