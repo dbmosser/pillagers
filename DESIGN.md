@@ -39297,12 +39297,23 @@ purpose is to leave the lethality alone should fail if it quietly softened it.
 
 ### The sim cannot see this one, and I am saying so rather than dressing it up
 
-The 320 seed paired run is still going as this is committed. At 113 seeds it has
-produced **exactly zero discordant pairs**: every seed ends the same way with the
-windup on and off. That is not a shortage of seeds, it is the instrument. The
-earlier v9.54 run recorded 12 Listener kills per 320 seeds, about four percent of
-outcomes, and the bot that dies to one is already dead in every branch: half a
-second of warning is worth nothing to something that does not flinch.
+The 320 seed paired run finished and it is not merely null, it is **identical**.
+Zero discordant pairs, both arms at 20.3 percent, and the killer tables match
+figure for figure: sentry 75 and 75, crawler 126 and 126, listener 12 and 12,
+warden 8 and 8, every row.
+
+I went and found out why rather than calling it noise. **The sim steps at 0.15
+seconds** (`simStep(.15)`), so a 0.45 second windup is three steps: perfectly
+representable, not rounded away. What the windup does to the bot is delay each
+death by three steps, and a bot that was going to die still dies. The outcome is
+over-determined, so the instrument cannot register the change even though the
+change is real and directly measured above.
+
+**This is a general limitation and it applies to every timing change I make from
+here.** A sub-second delay will not move a paired outcome table unless it is
+enough to alter what the bot does, and the bot does not flinch, take cover on a
+tell, or back out of a swing. Timing that exists to give a human a chance to
+react is invisible to it by construction.
 
 **This change is for him, and only he can report on it.** The measurements above
 are of the machine's behaviour, which is where a fix like this can be proved; the
@@ -39316,3 +39327,50 @@ recovery animation and no visible swing, so the feedback for a successful dodge
 is the absence of damage. Not verified: whether the Listener is the real problem
 at all. His two deaths to one are two runs, and the recorder shows eight runs
 with zero extractions across six different killers.
+
+## v9.58 - THE TITLE SCREEN HAD BEEN RECOMMENDING FULLSCREEN WITH NO WAY TO GET THERE
+
+His instruction: **"there should be a clear button to enter fullscreen mode."**
+
+v9.50 put a line on the title screen on his order, telling him the game plays
+best in fullscreen at 1080p, 1440p or 4K. **It has been saying that for eight
+builds while the file contained no fullscreen call at all.** Grep the whole
+thing for `requestFullscreen` before this and you get nothing back. The advice
+and the action were in different places, and one of those places was his
+keyboard.
+
+The button sits directly beside that line, because the line is the reason to
+press it. It reads **GO FULLSCREEN**, and once you are in, **LEAVE FULLSCREEN**.
+
+### Two details that are not decoration
+
+**The label follows the real state, not the click.** Escape leaves fullscreen
+without ever touching the button, and so does the browser's own chrome, so a
+label flipped optimistically on click would then be lying about what it does
+next. It is driven off the `fullscreenchange` events, all four spellings of
+them. The check proves this by intercepting the request so it never completes
+and then requiring the label **not** to have changed.
+
+**It cannot push the title screen off the bottom**, which is the thing v9.53
+fixed and the thing an extra row on this screen is most likely to undo. Entering
+fullscreen changes the window size, which fires resize, which calls
+`applyMenuZoom`, which re-measures the title against the room it now has. No
+special case: the title fits a fullscreen window for the same reason it fits any
+other. The check asserts the overflow is still zero.
+
+The prefixed spellings are still in there because this ships as one file to a
+browser I do not choose, and Safari has never shipped the unprefixed element
+property. If the API is missing entirely the button hides itself rather than
+sitting there doing nothing.
+
+Against the archived v9.57 the check reports "the title screen has no fullscreen
+button, and it has been telling him to play fullscreen since v9.50". On this
+build it is silent.
+
+Not verified: that fullscreen actually engages. The harness cannot enter it,
+because the request needs a real user gesture and the pane refuses one, so what
+is proved is that one click asks for it exactly once, that the label tracks the
+state rather than the click, and that the button is a real 178 by 31 box inside
+the title screen. Whether his browser then goes fullscreen is between him and
+his browser. Not verified: how it looks in the pause menu or mid raid, because
+it is not there. He asked for it on the title screen and that is where it is.

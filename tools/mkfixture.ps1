@@ -5054,6 +5054,59 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.58',what:'the title screen has a fullscreen button and it actually calls for fullscreen',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing can be clicked or measured';
+     var ti=document.getElementById('title');
+     if(!ti) return 'SKIP: no title screen in this build';
+     var b=document.getElementById('titlefs');
+     if(!b){
+       return 'the title screen has no fullscreen button, and it has been telling him to play fullscreen since v9.50';
+     }
+     // IT HAS TO BE SOMEWHERE HE CAN SEE AND HIT. A button with no box is not a
+     // button, and one outside the title screen is not on the title screen.
+     var r=b.getBoundingClientRect();
+     if(!(r.width>40&&r.height>12))
+       bad.push('the fullscreen button measures '+Math.round(r.width)+'x'+Math.round(r.height)+
+                ', which is not something he can hit');
+     if(!ti.contains(b))
+       bad.push('the fullscreen button is not inside the title screen');
+     if(!/FULLSCREEN/.test(b.textContent||''))
+       bad.push('the button reads "'+(b.textContent||'')+'", which does not say what it does');
+     // AND IT HAS TO ACTUALLY ASK. A button that looks right and calls nothing is
+     // the exact failure this build exists to end: the advice was already there
+     // for seven builds with no call behind it.
+     var proto=Element.prototype;
+     var keep={r:proto.requestFullscreen,w:proto.webkitRequestFullscreen,
+               m:proto.mozRequestFullScreen,s:proto.msRequestFullscreen};
+     var asked=0;
+     function spy(){ asked++; return {then:function(){return this;},catch:function(){return this;}}; }
+     proto.requestFullscreen=spy; proto.webkitRequestFullscreen=spy;
+     proto.mozRequestFullScreen=spy; proto.msRequestFullscreen=spy;
+     var labelBefore=b.textContent;
+     try{ b.click(); }catch(e){}
+     var labelAfter=b.textContent;
+     proto.requestFullscreen=keep.r; proto.webkitRequestFullscreen=keep.w;
+     proto.mozRequestFullScreen=keep.m; proto.msRequestFullscreen=keep.s;
+     if(asked!==1)
+       bad.push('clicking the fullscreen button asked for fullscreen '+asked+' times rather than once');
+     // THE LABEL FOLLOWS THE REAL STATE, NOT THE CLICK. Escape leaves fullscreen
+     // without ever touching this button, so a label flipped on click would then
+     // be lying. The request above was intercepted and never happened, so the
+     // label must not have changed.
+     if(labelAfter!==labelBefore)
+       bad.push('the label went from "'+labelBefore+'" to "'+labelAfter+'" on a request that never completed, '+
+                'so it is following the click rather than whether he is actually fullscreen');
+     // AND IT MUST NOT HAVE PUSHED THE TITLE OFF THE BOTTOM, which is the thing
+     // v9.53 fixed and the thing an extra row on this screen would undo.
+     var col=ti.querySelector('.titlecol');
+     if(col){
+       var z=+getComputedStyle(ti).zoom||1;
+       var over=Math.round(col.scrollHeight*z-window.innerHeight);
+       if(over>0) bad.push('the title screen now runs '+over+' pixels past the bottom');
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'9.57',what:'a Listener winds up before it swings, and swings at nothing if you have gone',
    run:function(){
      var bad=[];
