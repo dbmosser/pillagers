@@ -1210,7 +1210,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.39';
+var VER='9.40';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7091,6 +7091,13 @@ function pedPrice(k){ return Math.round(ival(k)*1.9); }
 // map colour, the world prompt, the hail line, the deal gate - and one day
 // something else may close the stall. Nothing does today.
 function pedOpen(){ return true; }
+// v9.40: the terms of the sale, in one place. It used to be written inline in the
+// draw and promised the money survived your death, which stopped being true when
+// stall money moved onto G.pedCarry and became payable only on extraction. The
+// death screen has said "Stall money lost where you fell" the whole time.
+function pedSellPromise(){
+  return Math.round(pedBuyRate()*100)+'% of value, paid now. You still have to walk it out.';
+}
 // v8.27: the word for a number. Used by the stats card and by the banner that
 // fires when it changes, so the two can never call the same score two things.
 // 2 gets its own word because 2 is where the stall actually shuts.
@@ -22037,7 +22044,7 @@ function drawTrade(){
   ctx.fillText('+'+'$'+tot.toLocaleString()+'',x+PW-14,cy); ctx.textAlign='left';
   cy+=LH(15);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
-  ctx.fillText(Math.round(pedBuyRate()*100)+'% of value, paid now. Yours even if you die out there.',x+14,cy);
+  ctx.fillText(pedSellPromise(),x+14,cy);
   // BOTH SIDES OF THE TRADE, v3.27. The panel quoted his offer and the upside of
   // certainty and stopped there. What it never said is what the same bag is worth
   // carried home, or that fencing earns no reputation at all, which is the only
@@ -24854,7 +24861,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.39: the last-minute warnings send you to a way out that is actually open. They used to name the nearest one even when it was shut.',
+  now:'v9.40: the Peddler stops promising your money is safe if you die. It never was, and the death screen always said so.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

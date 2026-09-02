@@ -27443,6 +27443,62 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.40 - THE PEDDLER STOPS PROMISING YOUR MONEY SURVIVES YOUR DEATH
+
+The line under SELL BAG read:
+
+  55% of value, paid now. Yours even if you die out there.
+
+That is the one sentence a player reads while deciding whether to fence a bag at a
+discount for certainty, and it is the entire reason to accept the discount.
+
+It was true once. v7.62 moved stall money onto a carried balance that is credited
+ONLY in the extract branch, and the death screen has printed the opposite in as
+many words ever since: "Stall money lost where you fell: $X." The toast after a
+sale was updated at the time and tells the truth, "The cash rides with you now,
+walk it out or lose it". The drawn panel was missed, so the panel and the toast
+contradicted each other inside the same transaction, and the panel is the one
+shown BEFORE you commit.
+
+MEASURED rather than read: five thousand credits of stall money, then endRaid.
+Extracting banks the five thousand. Dying banks nothing. The panel was wrong and
+the death screen was right.
+
+It now says: 55% of value, paid now. You still have to walk it out.
+
+THE SENTENCE LIVES IN ONE FUNCTION NOW rather than inline in the draw, and that is
+part of the fix rather than tidying. Terms written inline in a draw call cannot be
+checked against what the game does, which is exactly how the promise and the
+behaviour drifted apart for several versions without anything noticing. The check
+reads the real sentence the panel prints, measures both outcomes, and fails in
+either direction: if the panel promises survival while dying loses the money, and
+also if the money ever becomes genuinely safe while the panel still says you have
+to walk it out.
+
+On a build where the terms are still inline the check fails with "the sell terms
+are not in one place, so nothing can check them against what dying actually does",
+which is the honest thing for it to say.
+
+AND A THIRD NAME COLLISION IN ONE SESSION. My first cut added window.__ped for the
+check to read through, and the fixture already had a window.__ped forty lines
+further down, which silently overwrote mine; the check then threw "promise is not a
+function" on a build where the promise exists. After the __P collision and the belt
+plan, the rule I had written down was too narrow: it is not "avoid __P", it is
+check whether the name is already taken.
+
+Verified: parse PASS v9.40. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 85 and 369 and containers 157 and 589, LOOT driven on both
+maps, stream parity identical, all three endings, hub and stage render. 82
+regression checks pass in sequence, none skipped, ratio pinned and profile cleaned
+before every check.
+
+Not verified: whether the discount should be what it is. The Peddler pays 55
+percent for certainty that turns out not to be certainty at all, and now that the
+panel says so plainly the trade may read as a bad one. That is a balance question
+and it is his, not mine. Also not verified: the other two places the stall balance
+is mentioned, the sale toast and the death screen, which I read and believe agree
+with the new line but did not drive.
+
 ## v9.39 - THE LAST MINUTE WARNINGS NAME A WAY OUT THAT IS ACTUALLY OPEN
 
 nearestOut had no open test, and it is the source of every clock warning: the

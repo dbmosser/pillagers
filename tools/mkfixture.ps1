@@ -247,6 +247,7 @@ window.__emote={do:doEmote,list:EMOTES,down:weaponDown,ids:function(){return IDE
 // the lot rotates.
 // v9.19: the words the game puts on screen, so a check can hold them to his
 // vocabulary list instead of me grepping the source by hand every few builds.
+
 window.__prof={parts:function(rows){ return profParts(rows); }, weights:function(){ return PROFW; }};
 window.__words={cacheTags:function(){ var o=[]; if(G&&G.containers)
                   for(var i=0;i<G.containers.length;i++) if(G.containers[i].cache&&G.containers[i].tag) o.push(G.containers[i].tag);
@@ -289,7 +290,11 @@ window.__wear={steps:WEARSTEPS,of:wearOf,step:wearStep,add:addWear,able:wearable
 window.__ents=function(dt){ refreshVseg(); updateEnts(dt); };
 window.__space={at:spaceAt,surf:surfAt,verb:verb,tick:tickVerb,rev:function(){return REV;},
   name:function(){return SPACE_N;},steps:tickPlayerSteps,pstep:function(){return PSTEP;}};
-window.__ped={open:pedOpen,sell:pedSellAll,buy:pedBuy,make:mkPeddler,draw:drawTrade};
+// promise is the exact sentence the sell panel prints, not a copy of it, so a
+// check cannot pass against a duplicate that has drifted from what is drawn.
+window.__ped={open:pedOpen,sell:pedSellAll,buy:pedBuy,make:mkPeddler,draw:drawTrade,
+              promise:function(){ return (typeof pedSellPromise==='function')?pedSellPromise():null; },
+              carry:function(){ return (G&&G.pedCarry)||0; }};
 window.__raidKey=function(c){ raidKey(c,false,null); };
 // The button driven bot sim hands control back through setTimeout, which the
 // browser pane freezes whenever it is not being displayed. This runs the exact
@@ -4574,6 +4579,52 @@ window.__REGRESS=[
      if(shut.told!==null&&shut.openAt!==null&&Math.abs(shut.told-shut.openAt)>260)
        bad.push('control: it said '+Math.round(shut.told/10)+
                 'm when the nearest OPEN ring was '+Math.round(shut.openAt/10)+'m');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.40',what:'the Peddler does not promise your money survives your death',
+   run:function(){
+     var bad=[];
+     // MEASURE WHAT HAPPENS FIRST, then read what he was told. The other way round
+     // grades a sentence against my opinion instead of against the game.
+     __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player;
+     g.ents.length=0; p.iv=99;
+     var P=__P(), before=P.credits||0;
+     // Stall money, exactly as a sale would leave it.
+     g.pedCarry=5000;
+     __endRaid('dead');
+     var afterDeath=(__P().credits||0)-before;
+     // And the other outcome, from a clean raid, so the comparison is real.
+     __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g2=__state(); g2.ents.length=0; g2.player.iv=99;
+     var before2=(__P().credits||0);
+     g2.pedCarry=5000;
+     __endRaid('extract');
+     var afterExtract=(__P().credits||0)-before2;
+     // CONTROL FIRST: extracting has to pay it, or this scene is not wired up and
+     // the promise cannot be judged against anything.
+     if(afterExtract<5000)
+       return 'SKIP: walking out did not bank the stall money either, so this scene is not measuring the promise';
+     var survivesDeath=(afterDeath>=5000);
+     var promise=window.__ped?window.__ped.promise():null;
+     // NOT A SKIP. A sell panel whose terms are written inline in the draw cannot
+     // be checked against what the game actually does, and that is exactly how the
+     // promise and the behaviour drifted apart in the first place. The terms
+     // living in one readable place is part of the fix, so its absence is a
+     // failure rather than an excuse.
+     if(promise===null)
+       bad.push('the sell terms are not in one place, so nothing can check them against what dying actually does');
+     else {
+     // THE FINDING. The panel used to say "Yours even if you die out there" while
+     // the death screen said "Stall money lost where you fell".
+     if(!survivesDeath&&/even if you die/i.test(promise))
+       bad.push('the sell panel promises "'+promise+'" and dying loses every credit of it');
+     // AND THE OTHER WAY ROUND, so a later change that makes the money genuinely
+     // safe cannot leave the panel understating it.
+     if(survivesDeath&&/walk it out|have to walk/i.test(promise))
+       bad.push('the sell panel says you have to walk the money out, and dying kept it');
+     }
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
