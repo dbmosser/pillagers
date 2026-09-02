@@ -458,6 +458,13 @@
      three rules a tall pane grows past inset:0 and the Leave button goes with
      it. Lists scroll inside themselves instead, so the footer is always there. */
   .modal{ overflow:hidden; }
+  /* v8.76: THE MAP PICKER OBEYS THE SAME RULE. Raising the zoom clamp at v8.75
+     made this the one panel whose list pushed its own footer off the bottom:
+     at 200 percent text the loadout summary and the "no armour on" warning sat
+     162px below the fold with nothing to scroll them back. It scrolls inside
+     itself now, exactly as the v5.31 note above says every list should. */
+  #sectormodal #sectorlist{ flex:1 1 auto; min-height:0; overflow-y:auto; }
+  #sectormodal #sectorkit{ flex:0 0 auto; }
   /* v6.84: where the controller is pointing. Bright enough to find at a glance on a
      panel that is already busy, and it never changes layout, so nothing reflows as it
      moves. */
@@ -754,7 +761,12 @@
 </div>
 <div class="modal" id="sectormodal">
   <h3>Where are you going?</h3>
-  <div class="msub">Sectors are not reskins of each other. Your stash, your credits, your contracts and your seal progress are yours everywhere; what changes is the ground you have to work.</div>
+  <!-- v8.76, his question: "seal progress? doesn't that reset across raids?" The
+       old line listed the seal beside the stash, credits and contracts, which all
+       survive a death, and the seal does not: measured, cutting is banked only on
+       an extraction and is lost on a death or an abandon. It is also per sector,
+       so it is not "yours everywhere" in the sense the other three are. -->
+  <div class="msub">Sectors are not reskins of each other. Your stash, your credits and your contracts follow you everywhere. The seal belongs to its own sector and only banks the seconds you cut if you walk out alive. What changes is the ground you have to work.</div>
   <div id="sectorlist"></div>
   <div id="sectorkit" style="margin-top:11px;font-size:11px;padding:8px 10px;
        border:1px solid var(--steel-hi);border-radius:3px"></div>
@@ -1150,7 +1162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.75';
+var VER='8.76';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23627,7 +23639,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.75: the text size setting scales the menus all the way up now, and BACKSPACE rescues the cursor in the Undercroft too.',
+  now:'v8.76: the map picker keeps its loadout line and its no-armour warning on screen at every text size.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

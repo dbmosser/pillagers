@@ -27443,6 +27443,53 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.76 - THE MAP PICKER KEEPS ITS FOOTER ON SCREEN, AND STOPS MISDESCRIBING THE SEAL
+
+A REGRESSION I SHIPPED IN v8.75, CAUGHT BY THE RISK I FLAGGED IN THE SAME ENTRY.
+Raising the panel zoom clamp from 1.6 to 2.2 let the menus keep growing at 175
+and 200 percent, which is what he asked for. I wrote that I had only checked the
+Settings panel and that another might overflow. One did.
+
+At 200 percent text the MAP PICKER pushed six things off the bottom with nothing
+to scroll them back, the worst 162 pixels below the fold:
+  "Going up with: Compact SMG, Armour ..."   the loadout summary
+  "You ascend with no armour on. Equip ..."  the warning
+So at the largest text size the screen that tells you what you are carrying, and
+warns you that you have no armour, was simply not there. Controlled at the old
+clamp of 1.6: zero unreachable. At 2.167: six.
+
+The file already had the rule this broke, written above the modal CSS at v5.31:
+"A MODAL MUST NEVER PUSH ITS OWN FOOTER OFF THE SCREEN. Lists scroll inside
+themselves instead, so the footer is always there." The sector list was the one
+list that never got it. It scrolls inside itself now. After: zero unreachable at
+either zoom, the ASCEND button sits at y=1031 and the loadout line at y=921, and
+the screenshot at 200 percent shows the list scrolling with the footer intact.
+
+HIS QUESTION, asked while reading that panel: "seal progress? doesn t that reset
+across raids?" He is half right, and the sentence is what made him ask.
+Measured, twelve seconds of cutting done in a raid:
+  extract   banked cut 0 -> 12   KEPT
+  dead      banked cut 0 -> 0    LOST
+  abandon   banked cut 0 -> 0    LOST
+So banked progress is permanent and does not reset - but it only banks when you
+walk out alive, and every second cut in a raid you die in goes with you. The old
+line listed the seal beside the stash, the credits and the contracts, all three
+of which survive a death, which invites exactly his reading. It is also PER
+SECTOR: sealHere indexes by map, so the seal on COLD STORAGE is not the seal on
+THE COLD MILE, and "yours everywhere" was the wrong shape for it twice over.
+The line now says what is true.
+
+Verified: parse PASS at 1,526,072 chars, mojibake none. Map picker measured at
+both zooms and screenshotted at 200 percent. Seal persistence measured across all
+three endings. __verify PASS: ents 58 and 276, parity identical on both maps,
+looting on both, all three endings, hub. __regress PASS, 21 checks.
+
+Not verified: the scroll rule was added to the sector list only. The Stash and
+Mainframe panels have their own scroll regions already and came back with zero
+unreachable at 200 percent, but the shop and gambler panels were measured only
+for overflow, not opened and read at that size. And the seal figures come from
+setting the cut directly rather than by standing at a seal and cutting it.
+
 ## v8.75 - THE TEXT SIZE SETTING SCALES THE MENUS ALL THE WAY UP, AND BACKSPACE WORKS ON THE FLOOR
 
 Four more from the settings sweep. The first is his menu-size complaint again,
