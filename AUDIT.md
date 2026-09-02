@@ -21,6 +21,7 @@ adversarially verified):
 
 | Finding | Closed by | How it was confirmed closed |
 |---|---|---|
+| His EXTRACT CACHE rename (outstanding since 2026-08-29), four rewards reading CASH against his vocabulary, and a WHATSNEW card 21 builds stale | v9.19 | ELITE CACHE on both maps, rewards say CREDITS, card rewritten and bumped; check fails on a v9.18 fixture naming all three |
 | Title screen scrolled at menu text size 1.3 on a short screen (21px at 1720x720); fixed rhythm never asked how tall the screen was | v9.18 | height-gated tightening below 820; 0px overflow at 1.3, 1080/1440/2160 unchanged; check fails on a v9.17 fixture |
 | His ultrawide screenshot: the title column was a hard 820px, 50 pct of a 1720 screen, with ~430px empty each side and a scrollbar | v9.17 | base width moved to CSS, aspect-gated override above 19/10 grows it to 74 pct; 16:9 still exactly 820px; check fails on a v9.16 fixture |
 | The WORLD never scaled with the monitor: ZOOM() returned the dial alone, so 4K showed 2.13x more ground (1920 units vs 4090) at half the size | v9.16 | ZOOM() is dial x hudRes; 1.05x now, projection exactly 1.000 at 1080p and 2.000 at 4K, pointer round trip 0-1px; check fails on a v9.15 fixture |
