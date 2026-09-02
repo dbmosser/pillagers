@@ -27443,6 +27443,104 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.48 - EVERY BUILDING ON BOTH MAPS WORE THE IDENTICAL FLOOR
+
+### One measurable cause of "maps feel samey"
+
+His oldest open complaint, and this is one cause of it with a number attached.
+Measured on the shipped maps at seed 4242:
+
+| map | buildings | commonest footprint | share |
+| --- | --- | --- | --- |
+| COLD STORAGE | 20 | 400x360, nine of them | 45% |
+| THE COLD MILE | 84 | 320x240, forty-five of them | 54% |
+
+and **every single one of the 104, on both maps, was painted by the identical
+five lines**: a dark rectangle, an accent inset, a 46 pixel grid both ways, a
+hazard stripe along the bottom edge, and a big faded number in the middle. So
+more than half the buildings on the big map are the same box wearing the same
+floor.
+
+**Districts are not the cause and were checked first.** All four are used on both
+maps and the largest share is 37.5 percent on one and 35.2 on the other, which is
+a healthy spread. The floor treatment is the cause.
+
+### The fix
+
+Five floors, chosen by a hash of the building's own corner:
+
+- **the original**, a 46 pixel grid both ways, with the hazard stripe
+- **racking**, long bays down the building's long axis and nothing across them, so
+  it reads as a warehouse aisle rather than as graph paper
+- **open floor**, no grid at all, a wider border and two large stains
+- **tiled**, a fine 24 pixel grid, which reads as a floor rather than a plan
+- **dock**, three wide bays and a chevron, with the hazard stripe
+
+A hash and not `rnd()` for two separate reasons. The seeded stream must not move,
+and a building has to wear the same floor in every raid or the map stops being
+learnable, which is the whole argument for fixed geography in the first place.
+
+The hazard stripe is now on two floors in five rather than all of them, which is
+what makes it mean something when you see it. The district wash and the building
+number stay on all five: the wash is how you know where you are and the number is
+how you tell one shed from another on the sector map.
+
+Spread on THE COLD MILE: 19, 13, 19, 19 and 14 buildings across the five, so the
+largest share is 23 percent against 100 before.
+
+Nothing here touches a collider, a container, an entity or a seed. It is paint.
+
+### Three wrong measurements of mine before the right one
+
+**Line count is the building's size, not its floor.** My first signature counted
+how many dark lines a scanline crossed. That scales with width, so on a build
+where every floor was the same 46 pixel grid the count still ran from 4 to 9 and
+the check reported plenty of variety. It passed on the OLD build, which is the
+only reason I caught it.
+
+**Pitch does not survive the rest of the bake.** I switched the signature to
+pitch, which is size independent, and it still reported 39 different treatments on
+the uniform build. The ground canvas carries interior walls, furniture, wrecks and
+stains as well as the floor, so a scanline across a building crosses 22 dark
+features where the grid has 12.
+
+**A pixel diff cannot answer this either.** Two buildings of the same footprint
+sit in different places, so the district gradient, the stains, the interior walls
+and the furniture all differ too. They came back 100 percent different on a build
+where their floors were identical. That control is removed rather than tuned into
+looking like it works.
+
+### How it is checked
+
+The distribution and the stability, which are the parts that can be measured
+honestly:
+
+- both maps must use at least three of the five floors
+- no floor may take more than 55 percent of a map's buildings
+- two raids on the same seed must give every building the same floor, or the map
+  is not learnable
+- at least two buildings of the same footprint must wear different floors, or the
+  variety exists in the table and never on the screen
+
+A build with no per-building floor at all now FAILS rather than skipping. It
+returned SKIP first, and a skip reads as green in the summary, which is worse than
+a failure: a build with no idea of a per-building floor is a build where every
+building wears the same one, which is precisely what this check exists to refuse.
+
+Fails on a v9.47 fixture with "every building on both maps draws the identical
+floor". 90 of 90 with nothing skipped.
+
+Not verified, and this is the important one: **whether it actually reads as less
+samey.** No check here can tell you that. What is measured is that 104 buildings
+that used to wear one floor now wear five, evenly, and that each keeps its own
+across raids. Whether that is enough is a question for the chair. Not verified:
+the footprint repetition itself, which is the other half of the finding and which
+I have not touched, because moving building geometry moves every container and
+every spawn on the map and that is a much larger change than a coat of paint. Not
+verified: how the five read at night or in fog, since the bake is sampled at the
+default weather.
+
+
 ## v9.47 - HIS 36, SLICE 3: A CREW THAT LOSES YOU SEARCHES AS A CREW
 
 ### What was wrong

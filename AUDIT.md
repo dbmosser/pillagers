@@ -470,12 +470,31 @@ gear panel's box padding overhangs the bottom edge by 11 pixels; no text is draw
 below the screen anywhere, and the resize grip is still grabbable at the last
 on-screen pixel, so it costs nothing.
 
+AND TWO MORE, from the list he said was still unfulfilled:
+
+| Item | Build | Evidence |
+| --- | --- | --- |
+| HIS 36 slice 3: a crew that loses you searches as a crew | v9.47 | v9.42 made losing sight matter and immediately exposed this: three pillagers in chase, none able to see him, all three targeting 400,660 TO THE UNIT and finishing 22 units apart. Each man now sweeps his own sector, spread by the golden angle |
+| "maps feel samey": one cause with a number on it | v9.48 | all 104 buildings on both maps wore the identical floor, and 54 percent of the ones on THE COLD MILE are the same 320x240 box. Five floors now, fixed per building so the map is still learnable. Districts were checked first and are innocent: largest share 37.5 percent |
+
 STILL OPEN, and this is now the whole list:
-- HIS 36 slice 3: pillagers teaming up. Slices 1 and 2 shipped at v9.28 and v9.29
-- wrecked cars still read as suitcases from directly overhead
-- maps feel samey
+- the footprint repetition itself: 54 percent of the buildings on THE COLD MILE
+  are the same 320x240 box and not one building on either map carries an
+  archetype. v9.48 painted them differently; it did not change their shapes,
+  because moving building geometry moves every container and spawn on the map
+- machines converge on the last sighting the way pillagers used to. Sentries and
+  snitches run the role block, not the branch v9.47 fixed, and their pack roles
+  spread them a little but not deliberately
 - town centres and destroyed buildings from his map notes (hills, verticality and
   woods stay vetoed)
 - FOR HIS RULING: the raid punishes time spent rather than value carried
 - FOR HIS RULING: the extraction squeeze barely happens on THE COLD MILE, which
   has 6 rings and closes 2, against COLD STORAGE which has 3 and closes 2
+
+COULD NOT REPRODUCE, said plainly. "Wrecked cars read as suitcases from directly
+overhead" was rebuilt at v1.64 and the rebuild is in place and working: four
+wheels proud of the body on both sides, a hood, cabin and boot stepping along the
+long axis, and 209 of the 487 wrecks on THE COLD MILE standing vertical against
+278 horizontal, so they are not all lined up like luggage either. Looked at on
+screen as well as measured. If they still read wrong to him it is a contrast and
+scale question, not the silhouette that note describes.

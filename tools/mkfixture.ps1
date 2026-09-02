@@ -752,6 +752,10 @@ window.__drawIcon=function(c,k,x,y,s){ return drawItemIcon(c,k,x,y,s); };
 // MEASURED over thousands of rolls instead of eyeballed from the weight tables.
 window.__mkContainer=function(t){ return mkContainer(0,0,t); };
 window.__hudHit=function(x,y){ return hudHit(x,y); };
+// v9.48: which floor a building wears. Returns null on a build that has no such
+// idea, which is how the falsifying control tells the two apart - the shim itself
+// exists on every build the fixture is made from.
+window.__bld={floor:function(b){ return (typeof bldFloor==='function')?bldFloor(b):null; }};
 window.__textTrace=function(fn){
   var proto=CanvasRenderingContext2D.prototype, orig=proto.fillText, out=[];
   proto.fillText=function(t,x,y){
@@ -4686,6 +4690,73 @@ window.__REGRESS=[
        bad.push('the sell panel says you have to walk the money out, and dying kept it');
      }
      return bad.length?bad.join('; '):null; }},
+  {v:'9.48',what:'buildings do not all wear the identical floor',
+   run:function(){
+     var bad=[];
+     __resetCfg(); __pinDefaults(0); __cleanProfile();
+
+     // I TRIED TO READ THIS OFF THE BAKED PIXELS ALONE and it does not work: the
+     // ground canvas carries interior walls, furniture, wrecks and stains as well
+     // as the floor, so a scanline across a building crosses 22 dark features
+     // where the grid has 12. On a build where EVERY floor was the same 46 pixel
+     // grid my first signature reported 39 different treatments. It passed on the
+     // OLD build, which is the only reason I caught it.
+     // So: the mechanism for the distribution, and a real pixel diff between two
+     // buildings of the SAME footprint for the part that has to be visual.
+     function survey(mapIx){
+       __deploy({kit:[],safe:null,mapIx:mapIx,seed:4242});
+       var g=__state(), m=g.map, gr=g.ground, B=m.buildings||[], out=[];
+       for(var i=0;i<B.length;i++){
+         var b=B[i]; if(b.w<60||b.h<60) continue;
+         out.push({i:i,wh:Math.round(b.w)+'x'+Math.round(b.h),f:__bld.floor(b),
+                   x:b.x,y:b.y,w:b.w,h:b.h});
+       }
+       return {list:out,ground:gr};
+     }
+     var s0=survey(0), s1=survey(1);
+     if(s0.list.length<8||s1.list.length<20)
+       return 'SKIP: only '+s0.list.length+' and '+s1.list.length+' buildings big enough to read';
+     if(!(window.__bld&&window.__bld.floor)||s1.list[0].f===null)
+       return 'every building on both maps draws the identical floor: this build has no per-building floor at all';
+     // THE FINDING. Measured on v9.47: all 104 buildings on both maps drew the
+     // identical 46 pixel grid both ways and the identical hazard stripe, and 45
+     // of the 84 on THE COLD MILE are the same 320x240 box as well.
+     [{s:s0,name:'COLD STORAGE'},{s:s1,name:'THE COLD MILE'}].forEach(function(q){
+       var c={}, kinds=0, top=0;
+       for(var i=0;i<q.s.list.length;i++){ var k=q.s.list[i].f;
+         if(c[k]===undefined){ c[k]=0; kinds++; } c[k]++; if(c[k]>top) top=c[k]; }
+       var share=100*top/q.s.list.length;
+       if(kinds<3) bad.push(q.name+' paints '+q.s.list.length+' buildings with '+kinds+' floor'+(kinds===1?'':'s'));
+       if(share>55) bad.push(q.name+' gives '+share.toFixed(0)+' percent of its buildings the same floor');
+     });
+     // AND THE SAME EVERY RAID, or the map stops being learnable, which is the
+     // whole reason the geography is fixed rather than generated.
+     var again=survey(1), moved=0;
+     for(var i=0;i<Math.min(again.list.length,s1.list.length);i++)
+       if(again.list[i].f!==s1.list[i].f) moved++;
+     if(moved) bad.push(moved+' buildings changed their floor between two raids on the same seed');
+     // AND IT HAS TO BE VISIBLE. Two buildings of the SAME footprint with
+     // DIFFERENT floors, diffed pixel for pixel in the canvas the game actually
+     // bakes. Same size, so any difference is the floor and not the geometry.
+     var byWh={}, pair=null;
+     for(i=0;i<s1.list.length;i++){
+       var b=s1.list[i];
+       if(!byWh[b.wh]) byWh[b.wh]=[];
+       byWh[b.wh].push(b);
+     }
+     for(var wh in byWh){
+       var arr=byWh[wh];
+       for(i=0;i<arr.length&&!pair;i++) for(var j=i+1;j<arr.length;j++)
+         if(arr[i].f!==arr[j].f){ pair=[arr[i],arr[j]]; break; }
+       if(pair) break;
+     }
+     // A PIXEL DIFF CANNOT ANSWER THIS and I tried. Two buildings of the same
+     // footprint sit in different places, so the district gradient, the stains,
+     // the interior walls and the furniture all differ too: they came back 100
+     // percent different on a build where their floors were identical. What IS
+     // worth asserting is that the variety is reachable at all, which is a
+     // property of the hash and not of my opinion.
+     if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
   {v:'9.47',what:'a crew that loses you searches as a crew, not as a queue',
    run:function(){
      var bad=[];
