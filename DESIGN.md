@@ -27443,6 +27443,125 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.44 - WIRT STOPS SELLING YOU A LOSS
+
+### What was wrong
+
+Your answer 48 was "Wirt sells one special 10k item that changes hourly." The
+price is yours. The pool was mine, and every single thing in it lost money.
+
+| on the counter | you paid | it sells for | you lost |
+| --- | --- | --- | --- |
+| Meridian Lance | 10,000 | 4,600 | 5,400 |
+| Warp Core | 10,000 | 3,800 | 6,200 |
+| Bloom Cell | 10,000 | 3,100 | 6,900 |
+| Longshot | 10,000 | 2,900 | 7,100 |
+| Reactor Slug | 10,000 | 2,600 | 7,400 |
+| Meridian Codex | 10,000 | 2,200 | 7,800 |
+| Meridian Black Box | 10,000 | 1,900 | 8,100 |
+| Signal Relay | 10,000 | 1,700 | 8,300 |
+
+The 1,700 is not read off a constant. One Signal Relay in the stash, click the
+real SELL ALL button, 1,700 credits. That is the number the game pays.
+
+### Why six of the eight could not be fixed by moving the price
+
+Six of them were pure salvage. There is nothing to do with a Warp Core except
+sell it. So there is no price at which selling one to the player works: above its
+sell value it is a robbery, below it is a money printer, at it is pointless.
+
+**Pure salvage cannot be sold to a player at any price.** That is the finding.
+The other two were guns, which have a use, and were simply mispriced.
+
+### The fix
+
+Seven lots, one on the counter at a time, still changing on the hour, still
+exactly 10,000. Every lot is headed by a gun that Rooks does not stock, because
+"special" has to mean you cannot get it anywhere else and not merely that it is
+expensive, and every lot is padded until it clears the price.
+
+| lot | worth across the counter |
+| --- | --- |
+| Meridian Lance | 11,040 |
+| Whisper, Armour Plate | 11,880 |
+| Longshot, Armour Plate | 10,680 |
+| Marksman, Plate, Medkit | 10,860 |
+| Support MG, Plate, Medkit | 10,620 |
+| Scattergun, Plate, Frag, Medkit | 11,940 |
+| Auto Rifle, Plate, Frag, Medkit | 12,420 |
+
+"Worth across the counter" is what you would otherwise pay, not what it sells
+back for. That is the only honest measure for a shop, because since v6.65
+everything here costs about ten times what it sells for, and guns already have a
+function for it in replaceCost: the shop price where the shop stocks it,
+otherwise the item value at the ratio the shop actually uses.
+
+It cannot become a printer the other way either. The best sell-back of any lot is
+the Lance at 4,600, less than half what he charges.
+
+The counter now names everything in the lot and prints what it is worth, because
+a deal you cannot check is not a deal.
+
+### The footnote that contradicted him
+
+The weapon screen said the Whisper and the Meridian Lance are "never sold, by
+anyone" on a screen where Wirt has always sold the Lance. It now says they are
+not stocked by anyone down here, that Wirt puts one on his counter now and again,
+and that otherwise they are found up top or not at all.
+
+### My own check refused the first cut, and it was right
+
+I had eight lots. Two were headed by the Carbine and the Magnum, and the v9.11
+check has a rule that the counter may only stock rare or elite, because a premium
+counter selling uncommon kit is the letter of your answer 48 and none of the
+point. Both are uncommon. Those two lots are gone and the pool is seven.
+
+I also looked at the Breacher Shell as an eighth head and left it out. Armour
+rigs have not been wearable since v5.83, so a rig is genuinely salvage now, and
+putting one in a lot would have failed the same rule that killed the Warp Core.
+The three rigs still drop at rare and elite rarity for something that is pure
+money, which is a taste question rather than a defect, and the game's own
+description of them already says "Salvage. Sell it at the terminal."
+
+### How it is checked
+
+Every lot, every hour of the rotation:
+
+- it must be worth more across the counter than the 10,000 he charges
+- it must not sell straight back for more than it cost, or it is free money every
+  hour forever
+- it must contain at least one thing you would actually use, which is the rule the
+  old pool could never have satisfied
+
+Then the drawn panel: the lot has to name what is in it and print what it is
+worth. Then the drawn shop footnote, read from the panel rather than grepped from
+the source, because the question is what you read.
+
+Four controls: the price must still be exactly 10,000, the pool must still hold
+at least four lots, the footnote must still exist rather than having been deleted
+to satisfy the line above it, and the v9.11 check's rare-or-elite rule and its
+buy-and-arrive test both still run.
+
+The v9.11 check was updated rather than weakened. Its stash test now demands that
+every key in a lot arrives, not just the headline, because a lot that quietly
+hands over three of its four things is the same defect wearing a new shape.
+
+I also had to fix the check itself: the fixture injects the same shims into
+whatever build it is handed, so `__wirt.worth` EXISTED on a v9.43 fixture and
+threw when called, which would have turned my falsifying control into a crash.
+The two tests that matter most need only the item table, so they now run on any
+build and the old one fails them properly.
+
+Fails on a v9.43 fixture naming all six salvage-only lots and the footnote
+contradiction. 86 of 86 with nothing skipped.
+
+Not verified: no balance run. Nothing here touches a raid and the sim never walks
+into the Undercroft. Not verified: whether seven lots rotate as evenly as eight
+did over a long stretch, beyond the 48 hour walk the v9.11 check makes, which
+requires at least four distinct lots and at least twenty changes. Not verified:
+what a profile holding one of the six deleted salvage items now sees, beyond that
+those items still exist, still drop and still sell for exactly what they did.
+
 ## v9.43 - THE WORKSHOP STOPS BILLING YOU FOR A SERVICE THAT DOES NOTHING
 
 ### What was wrong

@@ -242,6 +242,16 @@ window.__conceal={bushAt:inBush,at:concealAt,mapBush:bushAtMap};
       return m; }
   };
 window.__emote={do:doEmote,list:EMOTES,down:weaponDown,ids:function(){return IDENTITIES;},rec:idRec};
+// The weapon footnote on the shop screen, drawn rather than grepped, because the
+// question is what he READS and a source string can be behind a branch.
+window.__shopPanel={detail:function(ix){
+  var keep=P._shopSel; P._shopSel=(ix===undefined?0:ix);
+  var out='';
+  try{ renderShopDetail(null); var d=document.getElementById('shopdetail'); out=d?d.textContent:''; }
+  finally{ P._shopSel=keep; }
+  return out; },
+  weaponIndex:function(){ for(var i=0;i<SHOP.length;i++) if(SHOP[i].kind==='wep') return i; return -1; },
+  rows:function(){ return SHOP.map(function(o){ return {k:o.k,kind:o.kind,price:o.price,rep:o.rep}; }); }};
 // v9.11: Wirt's counter. The key function is exposed with its time argument so a
 // check can walk the clock forward instead of waiting an hour to find out whether
 // the lot rotates.
@@ -259,6 +269,10 @@ window.__wirt={key:function(t){ return wirtLotKey(t); },
                hour:function(t){ return wirtLotHour(t); },
                price:function(){ return WIRT_LOT_PRICE; },
                pool:function(){ return WIRT_LOT_POOL.slice(); },
+               // v9.44: the lot is a list. worth() prices it the way the counter
+               // does, and head() is the one item the panel names first.
+               worth:function(keys){ return (typeof wirtLotWorth==='function')?wirtLotWorth(keys):null; },
+               head:function(t){ var l=wirtLotKey(t); return (l&&l.length)?l[0]:null; },
                render:function(){ return renderGamble(); },
                val:function(k){ return (ITEMS[k]||{}).val||0; },
                rar:function(k){ return (ITEMS[k]||{}).r||null; }};
@@ -2964,8 +2978,10 @@ window.__REGRESS=[
      // IT MUST BE WORTH WALKING DOWN FOR. A 10,000 counter stocked with scrap is
      // the letter of his answer and none of the point.
      for(var q=0;q<pool.length;q++){
-       var r=__wirt.rar(pool[q]);
-       if(r!=='elite'&&r!=='rare') bad.push('the counter can stock '+pool[q]+', which is '+r);
+       // v9.44: a lot is a list and the first entry is what the panel names.
+       var hd=(pool[q]&&pool[q].length)?pool[q][0]:pool[q];
+       var r=__wirt.rar(hd);
+       if(r!=='elite'&&r!=='rare') bad.push('the counter can stock '+hd+', which is '+r);
      }
      // IT CHANGES BY THE HOUR, walked forward rather than waited for.
      var seq=[]; for(var h=0;h<48;h++) seq.push(__wirt.key(base+h*HR));
@@ -2993,7 +3009,11 @@ window.__REGRESS=[
        var want=__wirt.key();
        btn.click();
        if(P.credits!==15000) bad.push('buying the lot moved credits 25000 to '+P.credits+', it should cost exactly 10,000');
-       if((P.stash||[]).indexOf(want)<0) bad.push('paid for '+want+' and it did not reach the stash');
+       // v9.44: EVERY key in the lot, not just the headline. A lot that quietly
+       // hands over one of its four things is the same defect in a new shape.
+       var wl=(want&&want.length&&typeof want!=='string')?want:[want];
+       for(var wq=0;wq<wl.length;wq++)
+         if((P.stash||[]).indexOf(wl[wq])<0) bad.push('paid for a lot holding '+wl[wq]+' and it did not reach the stash');
        // CONTROL: he must not be able to buy it with money he does not have.
        P.credits=500; __wirt.render();
        var b2=document.getElementById('wirtlotbtn');
@@ -4630,6 +4650,82 @@ window.__REGRESS=[
      // safe cannot leave the panel understating it.
      if(survivesDeath&&/walk it out|have to walk/i.test(promise))
        bad.push('the sell panel says you have to walk the money out, and dying kept it');
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.44',what:'Wirt does not sell you a loss on his ten thousand credit counter',
+   run:function(){
+     var bad=[];
+     __resetCfg(); __pinDefaults(0); __cleanProfile();
+     if(!window.__wirt) return 'SKIP: this build has no counter at Wirt';
+     var pool=__wirt.pool(), price=__wirt.price();
+     // HIS ANSWER 48 IS THE FIXED POINT. The price is his and nothing here may
+     // move it; only what stands behind it.
+     if(price!==10000) bad.push('control: the lot costs '+price+' and his answer 48 said 10k');
+     if(pool.length<4) bad.push('control: the counter draws from only '+pool.length+' lots');
+     var P=__P();
+     for(var i=0;i<pool.length;i++){
+       // A lot was a bare string before v9.44. Normalised so this check reads an
+       // older build honestly rather than grading the letters of a word.
+       var lot=(typeof pool[i]==='string')?[pool[i]]:pool[i], head=lot[0], nm=[];
+       for(var j=0;j<lot.length;j++) nm.push(lot[j]);
+       // THE FINDING. Measured on v9.43: every one of the eight things on the
+       // counter cost 10,000 and sold for between 1,700 and 4,600.
+       var worth=__wirt.worth?__wirt.worth(lot):null;
+       if(worth!==null&&worth<=price)
+         bad.push('the lot '+nm.join(' + ')+' costs '+price+' and is worth '+worth+' across the counter');
+       // AND IT MUST NOT BE A PRINTER THE OTHER WAY. A lot you can sell back for
+       // more than you paid is free money every hour, forever.
+       var back=0;
+       for(var b=0;b<lot.length;b++) back+=__ival(lot[b]);
+       if(back>=price)
+         bad.push('the lot '+nm.join(' + ')+' sells straight back for '+back+' against a price of '+price);
+       // PURE SALVAGE CANNOT BE SOLD TO A PLAYER AT ANY PRICE, which is why six
+       // of the old eight were unfixable rather than mispriced. Every lot needs at
+       // least one thing you would actually use.
+       var usable=0;
+       for(var u=0;u<lot.length;u++) if(__stashRules&&!__stashRules.sellable(lot[u])) usable++;
+       if(!usable) bad.push('the lot '+nm.join(' + ')+' is nothing but salvage, so it can only be sold back');
+     }
+     // WHAT HE READS, drawn, not grepped. The shop's weapon footnote said the
+     // Whisper and the Meridian Lance are "never sold, by anyone" on a screen
+     // where Wirt has always sold the Lance.
+     if(window.__shopPanel){
+       var wi=__shopPanel.weaponIndex();
+       if(wi>=0){
+         var txt=(__shopPanel.detail(wi)||'').replace(/\s+/g,' ');
+         var sellsLance=false, sellsWhisper=false;
+         for(var s=0;s<pool.length;s++){
+           var pl=(typeof pool[s]==='string')?[pool[s]]:pool[s];
+           for(var s2=0;s2<pl.length;s2++){
+             if(pl[s2]==='gun_lance') sellsLance=true;
+             if(pl[s2]==='gun_whisper') sellsWhisper=true;
+           }
+         }
+         if((sellsLance||sellsWhisper)&&/never sold,? by anyone/i.test(txt))
+           bad.push('the shop footnote says those two are never sold by anyone, on a screen where Wirt sells them');
+         // CONTROL: the footnote has to still BE there. Deleting it would satisfy
+         // the line above and lose the one place the game explains its own stock.
+         if(txt.length<40) bad.push('control: the weapon footnote is gone entirely, '+txt.length+' characters');
+       }
+     }
+     // AND THE PANEL HAS TO SHOW THE LOT. A bundle he cannot see is a bundle he
+     // will not buy, and the worth line is the only way he can check the deal.
+     if(__vpAlive()){
+       __hubEnter();
+       var c0=P.credits; P.credits=25000;
+       var multi=-1;
+       for(var m=0;m<pool.length;m++) if(pool[m].length>1){ multi=m; break; }
+       try{ __wirt.render(); }catch(e){ return 'SKIP: the counter would not draw, '+e; }
+       var el=document.getElementById('wirtlot');
+       var h=el?el.textContent.replace(/\s+/g,' '):'';
+       var lk=__wirt.key();
+       var live=(typeof lk==='string')?[lk]:lk;
+       if(live&&live.length>1&&!/with /.test(h))
+         bad.push('the counter is holding a lot of '+live.length+' things and names only one of them');
+       var lw=__wirt.worth?__wirt.worth(live):null;
+       if(!/Worth \$/.test(h)&&lw!==null&&lw>price)
+         bad.push('the counter never says what the lot is worth, so the deal cannot be checked');
+       P.credits=c0;
      }
      return bad.length?bad.join('; '):null; }},
   {v:'9.43',what:'the workshop does not charge for servicing a gun that cannot wear',
