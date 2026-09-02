@@ -27443,6 +27443,71 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.17 - THE TITLE SCREEN USES AN ULTRAWIDE
+
+His note, with an ultrawide screenshot: "look at all this wasted screen space..."
+
+REPRODUCED at a real 21:9 viewport, and the first attempt was worthless. I tried
+to measure it with __forceSize, which moves the CANVAS and leaves the DOM at the
+pane's real size, so the title screen reported the same 1918px at 1080p, at 4K and
+at ultrawide. That number meant nothing. Resizing the actual viewport is the only
+honest instrument for a DOM screen.
+
+At a true 1720x720, aspect 2.39, in CSS pixels:
+
+    the content column   860 wide on a 1720 screen, 50 percent
+    empty either side    about 430 pixels each
+    the column           taller than the box, so the screen scrolled
+
+So on a wide short screen the title is squeezed vertically until it needs a
+scrollbar while half the display sits empty beside it. That is his screenshot.
+
+WHY. The column carries a hard max-width of 820px. It is the right number for
+16:9 and it is the only width the layout knows: nothing about it asks how wide
+the screen actually is.
+
+ONLY WIDER THAN 16:9 CHANGES. The new rule is gated at min-aspect-ratio 19/10, and
+1920x1080, 2560x1440 and 3840x2160 are all exactly 1.778, so none of them match:
+those three layouts are untouched to the pixel, confirmed by measuring at 1600x900
+where the cap is still exactly 820px. An ultrawide gets a column that grows with
+the screen, capped at 1320px so a line never runs the whole width of a 21:9
+display, which is its own kind of unreadable.
+
+THE BASE WIDTH MOVED INTO CSS, because it was inline and an inline style beats a
+media query, so the override would have been silently ignored. Everything else
+about the element stays inline exactly as it was.
+
+MEASURED AFTER at the same 1720x720: the column is 1266px, 74 percent of the
+width, up from 50, with 454 pixels of margin in total instead of 860.
+
+Verified: parse PASS v9.17. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 60 regression checks
+pass in sequence with a live 1920x1080 viewport, none skipped.
+
+The check fails on a fixture built from v9.16 with "the title column has no class
+to target, so no screen wider than 16:9 can be given more room". It asks the
+browser which rule should be in force at the live aspect via matchMedia rather
+than assuming, so it measures whatever shape the pane actually is. Three controls:
+at 16:9 the cap must still be exactly 820px, so the three sizes he plays at cannot
+drift; both halves of the rule must still exist in the stylesheet, so deleting
+either fails here rather than silently reverting his screen; and the column must
+never exceed 90 percent of the width.
+
+ALSO CHECKED, AND FOUND NOTHING. The Undercroft scales exactly 2.00x at 4K
+(1609px of room to 3217px) and fills 84 percent of the width at both 16:9 sizes,
+so it did not need this. On ultrawide it fills 62 percent, and that is not a
+defect: the room is a fixed-aspect scene and the slack is inherent to drawing a
+1.49 room on a 2.39 screen.
+
+Not verified: the title screen still scrolls by about 21 pixels at 1720x720, so
+the widening helped but did not fully remove the overflow on a very short screen,
+and I did not chase it; how the wider column looks to him, since this is measured
+in CSS pixels rather than looked at; every other .screen panel keeps its own
+layout and only the title was measured.
+
 ## v9.16 - THE WORLD ITSELF FOLLOWS THE MONITOR
 
 The last four builds gave the screen factor to the HUD panels, the downed screen,

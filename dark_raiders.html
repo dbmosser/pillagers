@@ -68,6 +68,16 @@
      NEW SAVE button are the last things on it. Same rule as the v5.31 note
      above the modal CSS: a panel never pushes its own footer off the screen. */
   #title{ overflow-y:auto; }
+  /* v9.17, HIS NOTE with an ultrawide screenshot: "look at all this wasted screen
+     space". Measured at a real 1720x720: the column was 1066 of 1720 across, 62
+     percent, with about 650 pixels empty either side, and 750 tall in a 718 box,
+     so it overflowed into a scroll while the room it needed sat unused beside it.
+     820 is the base and stays the base. The override is gated ABOVE 16:9, so
+     1080p, 1440p and 4K are all 1.778 and keep the layout he already has. */
+  #title .titlecol{ max-width:820px; }
+  @media (min-aspect-ratio: 19/10){
+    #title .titlecol{ max-width:min(1320px,82vw); }
+  }
   /* the CRT scanline overlay is gone: it is the loudest terminal signal in the
      file and has no equivalent in the look being aimed at */
   .brand { font-family:'Titan One','Rubik',sans-serif; font-weight:800; font-size:13px;
@@ -783,7 +793,7 @@
   </div>
 </div>
 <div class="screen on" id="title">
-  <div style="margin:auto;max-width:820px;width:100%;text-align:center;padding:0 20px">
+  <div class="titlecol" style="margin:auto;width:100%;text-align:center;padding:0 20px">
     <div style="font-family:'Titan One','Rubik',sans-serif;font-size:58px;letter-spacing:.14em;
          color:var(--amber);line-height:1;text-shadow:0 3px 0 rgba(0,0,0,.55)">PILLAGERS</div>
     <div style="margin-top:9px;font-size:11px;letter-spacing:.34em;color:var(--ash)">
@@ -1186,7 +1196,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.16';
+var VER='9.17';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24508,7 +24518,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.16: the world itself follows your monitor. On a 4K screen you were seeing twice the ground at half the size.',
+  now:'v9.17: the title screen uses an ultrawide monitor instead of leaving two thirds of it empty and scrolling.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

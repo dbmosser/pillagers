@@ -3236,6 +3236,52 @@ window.__REGRESS=[
      __zoom.set(1,true);
      if(!(z3>z1*2.5)) bad.push('control: turning the dial from 1 to 3 moved the projection from '+z1+' to '+z3);
      if(Math.abs(zmax-__zoom.max())>0.001) bad.push('control: the dial no longer clamps at its maximum, it reached '+zmax);
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.17',what:'the title screen uses an ultrawide screen instead of leaving two thirds of it empty',
+   run:function(){
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, the title screen cannot be measured';
+     var bad=[];
+     var t=document.getElementById('title');
+     if(!t) return 'there is no title screen to measure';
+     var col=t.querySelector('.titlecol');
+     // Measured before v9.17 at a real 1720x720: the column was 50 percent of the
+     // width with about 650 pixels empty either side, and it overflowed into a
+     // scroll while that room sat unused. The width was a hard 820px inline, so
+     // there was nothing for a wider screen to target.
+     if(!col) return 'the title column has no class to target, so no screen wider than 16:9 can be given more room';
+     var cs=getComputedStyle(col), mw=cs.maxWidth;
+     // THE LIVE ASPECT DECIDES which rule should be in force, and this asks the
+     // browser rather than assuming: matchMedia evaluates the same query the
+     // stylesheet uses, at whatever shape the pane actually is right now.
+     var wide=window.matchMedia('(min-aspect-ratio: 19/10)').matches;
+     var asp=window.innerWidth/Math.max(1,window.innerHeight);
+     if(wide){
+       if(mw==='820px') bad.push('at aspect '+asp.toFixed(2)+' the column is still capped at 820px, the ultrawide rule is not in force');
+       if(col.offsetWidth<=860) bad.push('at aspect '+asp.toFixed(2)+' the column is only '+col.offsetWidth+'px wide');
+     } else {
+       // CONTROL 1: 16:9 must be untouched. 1080p, 1440p and 4K are all exactly
+       // 1.778 and must keep the layout he already has.
+       if(mw!=='820px') bad.push('control: at aspect '+asp.toFixed(2)+', which is not ultrawide, the column cap is '+mw+' rather than 820px');
+       if(col.offsetWidth>860) bad.push('control: at aspect '+asp.toFixed(2)+' the column is '+col.offsetWidth+'px, wider than the 820 base');
+     }
+     // CONTROL 2: both halves of the rule must still exist in the stylesheet, so
+     // deleting either one fails here rather than silently reverting his screen.
+     var base=false, gated=false;
+     for(var i=0;i<document.styleSheets.length;i++){
+       var rules; try{ rules=document.styleSheets[i].cssRules; }catch(e){ continue; }
+       for(var j=0;j<rules.length;j++){
+         var tx=rules[j].cssText||'';
+         if(tx.indexOf('titlecol')<0) continue;
+         if(tx.indexOf('@media')===0){ if(/min-aspect-ratio/.test(tx)) gated=true; }
+         else if(/max-width:\s*820px/.test(tx)) base=true;
+       }
+     }
+     if(!base)  bad.push('the 820px base width is gone, so 16:9 is no longer pinned');
+     if(!gated) bad.push('the aspect-gated rule is gone, so an ultrawide gets nothing');
+     // CONTROL 3: the column must never be allowed to run the whole width of an
+     // ultrawide, which is its own kind of unreadable.
+     if(col.offsetWidth>window.innerWidth*0.9)
+       bad.push('control: the column is '+Math.round(col.offsetWidth/window.innerWidth*100)+' percent of the screen, lines that wide are unreadable');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
