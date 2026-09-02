@@ -27443,6 +27443,60 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## HARNESS - THE FOUR RED CHECKS AT v9.36 WERE ALL MINE, AND THEY ARE FIXED
+
+CORRECTING WHAT I WROTE IN THE v9.36 ENTRY. That entry says the run was not clean,
+names four checks, and says of two of them "I cannot explain that". I can now, all
+four were the harness, and with both faults fixed the corpus is 78 of 78 with
+nothing skipped and no change to the game. The v9.36 entry stands as the record of
+what I believed at the time; this is what turned out to be true.
+
+TWO SEPARATE FAULTS, both in the measuring apparatus.
+
+ONE, THE DEVICE PIXEL RATIO. The game sizes its canvas backing store to CSS pixels
+times the device pixel ratio, capped at 2. Every pixel check in this harness
+samples getImageData in CSS coordinates. When the browser reported a ratio of 2,
+and later 2.5, the canvas was 3840x2160 behind a 1920x1080 layout and every sample
+read the top-left quarter of the buffer, which is empty ground. Eight checks went
+red at once, every one of them saying "nothing was drawn" or "not found". Eight
+simultaneous regressions in unrelated systems is not a thing that happens; one
+broken ruler is. Measurement runs now pin the ratio to 1 and refuse to measure if
+they cannot. Six of the eight went green immediately and the run time fell from
+sixteen minutes to six.
+
+TWO, MY OWN CHECK POISONING THE TWO AFTER IT. The v9.36 check signs HEAVY PATROLS
+to measure what the term buys, and restored whatever had been in the profile
+before it. On the first run that was already the term, so it faithfully restored
+the contamination, and terms are SAVED, so it sat in localStorage for the rest of
+the session and survived every reload. With the term set this build makes COLD
+STORAGE 74 crawlers instead of 52, and the two shooting checks could no longer
+find an open firing line and reported SKIP. I compared builds and pinned pixel
+ratios looking for a cause that was sitting in the saved profile the whole time.
+Clearing the term made both pass instantly.
+
+That is the same shape as the belt plan leak found at v9.31. A check that writes
+the saved profile and does not clean up is not a check, it is a trap for the next
+one, and the trap outlives the page. __resetCfg has never reached any of it: it
+resets CFG, and terms, the belt plan and the text size are all profile state.
+
+So the runner now cleans the profile before EVERY check rather than trusting each
+check to tidy up, because a habit that can be forgotten is not a guarantee. The
+v9.36 check also restores terms to nothing rather than to what it found.
+
+A SKIP IS STILL NOT A PASS, and this is the second time in two days that a skip
+turned out to be the harness rather than the build. The runner reports skips
+separately and the summary names them, which is what made this findable at all.
+
+Verified: 78 of 78 regression checks pass in sequence, none skipped, and the saved
+profile is clean at the end of the run, which the runner now asserts and reports.
+Full verify PASS at 1920x1080. No game file changed in this commit.
+
+Not verified: whether the device pixel ratio pin should be permanent rather than
+per-run. The shipped game still renders at whatever ratio the monitor has and
+nothing here touches that, but the harness now measures in a condition the player
+never plays in, and a defect that only appears at a ratio of 2 would be invisible
+to it. That is a real gap and it is the price of the fix.
+
 ## v9.36 - HEAVY PATROLS BUYS THE CRAWLERS IT CHARGES FOR AGAIN
 
 A REGRESSION I SHIPPED THREE BUILDS AGO, at v9.30, and it broke something he pays

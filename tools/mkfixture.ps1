@@ -87,6 +87,16 @@ window.__forceSize=function(w,h){
 // v9.36 harness: pin the canvas backing store to CSS pixels for measurement.
 // Returns what it actually achieved so a caller can refuse to measure rather than
 // measure the wrong quarter of a buffer.
+// Everything a check can leave behind in the SAVED profile that changes what the
+// next check measures. CFG is not enough; __resetCfg has never reached any of it.
+window.__cleanProfile=function(){
+  var was={terms:(P.terms||[]).slice(), hotAssign:P.hotAssign, uiScale:P.uiScale};
+  P.terms=[];
+  P.hotAssign={};
+  delete P.uiScale;
+  try{ saveProfile(); }catch(e){}
+  return was;
+};
 window.__pinDPR=function(v){
   DPR=(v===undefined?1:v);
   try{ resize(); }catch(e){}
@@ -4345,12 +4355,15 @@ window.__REGRESS=[
      // pillagers 7 to 10 on COLD STORAGE, and crawlers 52 to 54.
      function count(mapIx,onTerm){
        __resetCfg(); __pinDefaults(mapIx);
-       var P=__P(), had=(P.terms||[]).slice();
+       // NOT restored to what was there: restored to NOTHING. Handing back a
+       // contaminated value is how this leaked in the first place.
+       var P=__P();
        P.terms = onTerm?['patrols']:[];
        __startRaid({mapIx:mapIx,seed:4242});
        var g=__state(), c={};
        for(var i=0;i<g.ents.length;i++){ var k=g.ents[i].kind; c[k]=(c[k]||0)+1; }
-       P.terms=had; __resetCfg();
+       P.terms=[]; try{ saveProfile(); }catch(e){}
+       __resetCfg();
        return c;
      }
      var maps=[{ix:0,name:'COLD STORAGE'},{ix:1,name:'THE COLD MILE'}];
