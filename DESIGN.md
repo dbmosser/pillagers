@@ -27443,6 +27443,64 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.87 - A GUN IS NO LONGER CALLED GOLD WHILE BEING DRAWN BLUE
+
+His note: "i have a weapon of blue rarity but it says its a 'gold burst carbine'
+-- obviously these should match".
+
+GOLD WAS IN TWO DIFFERENT LISTS. It is the top CONDITION a gun can roll, two in a
+hundred, and it prefixed the name with "Gold ". It is also the top RARITY a gun
+can be, and it paints the tile #ffc72e. Two different scales, one word, and
+nothing keeping them apart.
+
+REPRODUCED across the whole gun table rather than on his one example. Named at
+the gold condition, 14 of the 16 guns contradict themselves:
+
+    Gold Burst Carbine      rarity rare       drawn #7cc4ff  blue
+    Gold Scav Pistol        rarity common     drawn #cfd8ef  white
+    Gold Marksman Rifle     rarity elite      drawn #d08ce8  purple
+
+Only Longshot and Meridian Lance agreed, and only because they happen to be the
+two tier 5 guns.
+
+I FIXED THE WORD AND NOT THE COLOUR, and since either direction would satisfy
+"these should match" it is worth saying why. The colour tells you the gun's
+CLASS. The prefix tells you its CONDITION. Both are worth knowing and they are
+not the same fact. Merging them would mean a gold-condition Scav Pistol paints
+identically to a Meridian Lance, which throws away the more valuable of the two
+and would have been a worse game for a tidier sentence.
+
+So the condition took a word that is not also a rarity. GILDED, because that is
+exactly what this tier does: it is the only condition that repaints the weapon,
+and the paint is gold. The internal key stays 'gold', so the receiver paint and
+every weapon already sitting in his armoury still match on it.
+
+AFTER: zero guns contradicting, down from 14. Gilded Burst Carbine, rare, blue,
+and nothing about that is a lie. The regression check is written in the general
+form, so no future condition can be named after a rarity either, and it carries
+two controls: the ladder must still be five deep with the gold key intact, and
+gold must still be a rarity colour, because deleting either would satisfy the
+first half and be a worse bug.
+
+THREE OF HIS WORDING NOTES IN THE SAME BUILD.
+"Crawl or bleed out" becomes "You are bleeding out. Crawl to an open extraction
+point if possible." The old line opened with what he had just used up; this one
+opens with what he can still do about it.
+"Anything you drank or took is gone" is gone, on his word that it does not need
+saying. The abandon version of that line stays, because it is flavour rather than
+bookkeeping.
+"Claim it at THE MAINFRAME, REWARDS" becomes "Claim it at the Mainframe."
+
+Verified: parse PASS. Both sectors to their fingerprints, entities 58 and 276 and
+containers 155 and 589. Streams identical live and sim. Looting on both with no
+throw and the clock advancing. Three endings correct. Hub renders. 31 regression
+checks pass.
+
+Not verified: I did not check whether the word Gold appears in any saved data he
+already has, for instance a weapon name written into a past run in the flight
+recorder, so old entries in the log will still read "Gold" while new ones read
+"Gilded". I also did not see the new down-screen line rendered; it is asserted
+present in the page, not photographed on the death overlay.
 ## v8.86 - EVERY HOUSE IS A GAMBLE NOW
 
 His note: "need crawlers to spawn indoors more often", then "every house should

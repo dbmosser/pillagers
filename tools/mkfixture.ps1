@@ -552,6 +552,20 @@ window.__simPaired=function(seeds,dialsA,dialsB){
 };
 window.__setHot=function(i){ return setHot(i); };
 window.__loot=function(){ return LOOT; };
+window.__guns={
+  tiers:function(){ var o={}; for(var k in WEAPONS) o[k]={name:WEAPONS[k].name,tier:WTIER[k]}; return o; },
+  quality:function(){ return GUNQ.map(function(q){ return {q:q.q,rank:q.rank,weight:q.w,prefix:q.pre}; }); },
+  rarityOf:function(gk){ return gunRarity(gk); },
+  colourOf:function(r){ return RCOL[r]; },
+  // the name the game builds for a gun of this key at this quality, and the
+  // colour the belt and the bag give that same gun
+  nameAt:function(gk,qk){
+    var Q=null; for(var i=0;i<GUNQ.length;i++) if(GUNQ[i].q===qk) Q=GUNQ[i];
+    if(!Q||!WEAPONS[gk]) return null;
+    return {name:Q.pre+WEAPONS[gk].name, rarity:gunRarity(gk), colour:RCOL[gunRarity(gk)],
+            qualityTint:Q.tint||null};
+  }
+};
 // v8.83: STAND ON THE UNDERCROFT FLOOR. showScreen('hub') is the real entry the
 // game uses, so this is the play path and not a rebuilt copy of it.
 window.__hubEnter=function(){ showScreen('hub'); return !!HB; };
@@ -1725,6 +1739,37 @@ window.__REGRESS=[
      // the change reads as "crawlers moved" rather than "houses got dangerous".
      if(a.pctIn>92) bad.push('COLD STORAGE moved '+a.pctIn.toFixed(1)+' percent of crawlers indoors, the street is empty');
      if(b.pctIn>92) bad.push('THE COLD MILE moved '+b.pctIn.toFixed(1)+' percent of crawlers indoors');
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.87',what:'no gun is named after a rarity it is not drawn as',
+   run:function(){
+     var RAR=['common','uncommon','rare','elite','gold'];
+     var T=__guns.tiers(), Q=__guns.quality(), bad=[];
+     // The bug was one word living in two scales: gold was the top CONDITION
+     // (prefix "Gold ") and also the top RARITY (colour #ffc72e), so 14 of the
+     // 16 guns could be called Gold something and drawn blue, white or purple.
+     // This is the general form, so a future condition cannot reopen it.
+     for(var qi=0;qi<Q.length;qi++){
+       var pre=(Q[qi].prefix||'').trim().toLowerCase();
+       if(!pre) continue;
+       if(RAR.indexOf(pre)>=0)
+         bad.push('the "'+Q[qi].prefix.trim()+'" condition is named after the '+pre+' rarity');
+     }
+     // And the specific case, checked through the names the game builds.
+     for(var k in T){
+       var g=__guns.nameAt(k,'gold');
+       if(!g) continue;
+       var first=g.name.split(' ')[0].toLowerCase();
+       if(RAR.indexOf(first)>=0&&first!==g.rarity)
+         bad.push(g.name+' is drawn '+g.rarity+', not '+first);
+     }
+     // CONTROL ONE: the top condition must still be there. Deleting it would
+     // satisfy every line above and lose the rarest roll in the game.
+     if(Q.length!==5) bad.push('the condition ladder is no longer five deep, it is '+Q.length);
+     if(!Q.filter(function(q){ return q.q==='gold'; }).length)
+       bad.push('the internal gold condition key is gone, saved weapons will not match it');
+     // CONTROL TWO: gold must still be a RARITY, or the fix was to delete the
+     // colour rather than to stop the collision.
+     if(__guns.colourOf('gold')!=='#ffc72e') bad.push('gold is no longer a rarity colour');
      return bad.length?bad.join('; '):null; }}
 ];
 window.__regress=function(){
