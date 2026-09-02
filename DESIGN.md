@@ -38862,3 +38862,112 @@ validate geometrically); performance over a long raid at 134 entities (10 sim-se
 ran clean; a full 9 minute raid is unmeasured); SECTOR_MEAS carries no bot numbers for
 the new map yet - the board says nothing rather than lying, and a 200 seed baseline
 for mapIx 1 is queued.
+
+## v9.52 - THE FAN I SHIPPED THREE BUILDS AGO WAS NOT ACTUALLY A FAN
+
+v9.47 gave the pillagers a fan: four men who lose sight of you split up and each
+sweeps his own sector instead of queueing at the last place they saw you. v9.51
+gave the machines the same thing. **Neither one guaranteed the split.** One crew
+in three sent two men to the same ground.
+
+### How I found it, which was not by reading the code
+
+I was testing an unrelated change to the buildings, and the v9.47 crew check
+failed on it, the same way every time. I guessed the new walls were blocking
+search sectors and widened the sector picker to look harder. **It made no
+difference, so my guess was wrong**, and I stopped guessing and printed what the
+four men actually chose:
+
+| man | arc | chose |
+| --- | --- | --- |
+| 1 | 9.49 | 294, 585 |
+| 2 | 7.44 | 452, 779 |
+| 3 | 5.11 | 505, 584 |
+| 4 | 3.19 | 292, 587 |
+
+Men 1 and 4 are **2.8 units apart**. Their arcs differ by 6.30 and a full turn is
+6.283, so those two men were handed the same bearing. The building change did not
+cause this. It moved the test to a different stand, and at that stand the
+collision happened to fire. It was always possible.
+
+### Why it collided
+
+The bearing each man searched on was a sum of two things:
+
+    searchArc = atan2(y - ty, x - tx) * 0.5  +  k * 2.39996323
+
+The second term is the golden angle, and it is what separates the men: at four
+men it opens gaps of about 0.92 radians. The first term then shifts each man by
+his own approach bearing, and since atan2 covers a full turn, that shift covers
+**half a turn, 3.14 radians**. A term three times larger than the gap it is
+perturbing does not perturb that gap, it erases it.
+
+### How often, measured
+
+I built a probe that finds every usable stand on THE COLD MILE, puts four men on
+each one, lets them lose sight, and measures how far apart the two closest
+choices are. Twelve stands, seed 4242:
+
+| | v9.51 | v9.52 |
+| --- | --- | --- |
+| stands where two men chose points 100 units apart or less | **4 of 12** | **0 of 12** |
+| closest pair anywhere | **14 units** | **134 units** |
+| median closest pair | 189 units | 153 units |
+
+**The single stand the v9.47 check uses came out clean on v9.51**, which is why
+this shipped and sat there for three builds.
+
+### The fix: slots that get claimed, not angles that get added
+
+I worked out what a small enough bias would have to be. The check wants the
+closest pair above 100 units at a 130 unit radius, which is 0.79 radians, and the
+golden gap at four men is 0.92, so the bias would have to stay inside 0.13
+radians. That is not a bias, that is a rounding error, and it would not survive a
+fifth man. So the sum is gone.
+
+There are now **five fixed sectors around the last sighting, 72 degrees apart.**
+Each man claims the free one nearest the way he wants to look, and **a claimed
+sector cannot be claimed twice.** Separation stopped being an outcome of
+arithmetic and became a property of the structure, so nothing can eat it.
+
+**And he looks the right way now.** The old first term was an atan2 halved, which
+is not a bearing at all, it is half of one, and it pointed nowhere in particular.
+A man arrives at the last sighting from somewhere, and the one direction the
+player cannot have gone is back past that man, because then he would still be
+looking at him. Each man now prefers **the far side from where he stands.**
+
+**Blocked floor is answered with distance, never with angle.** The old picker
+tried its bearing and then swung up to 1.35 radians either way hunting for open
+ground, which is wider than a whole sector, so a man whose spot was blocked
+wandered into his neighbour's and put the collision straight back. It searches
+along its own ray now, at six distances from 91 to 185 units. Two men on
+neighbouring sectors are therefore at worst 107 units apart even when both are
+pushed as close to the sighting as the picker will go.
+
+### The check that should have caught it
+
+v9.47 built one arena and read one crew. The thing it is testing varies with the
+bearings the four men happen to stand on, and **a single sample of a
+geometry-dependent property is not a check, it is a coin toss that has been
+coming up heads.** The new v9.52 check runs the same measurement over every
+usable stand it can find and fails if any of them folds.
+
+Built against the archived v9.51 it reports **"3 of 7 stands folded the fan,
+closest pairs 60, 14, 24 units apart"**. On this build it is silent. Both control
+arms still hold: the dial reads back, and switching the fan off still sends every
+man to one point.
+
+### On the v9.51 balance number
+
+The 320 seed paired run comparing the machines searching against not searching
+was measured on **this folding fan**, so whatever it says understates a fan that
+works. I am reporting it as a v9.51 measurement and it will need redoing.
+
+Not verified: whether five sectors is the right number rather than four or six. I
+picked five because it holds the 100 unit separation with margin at the 130 unit
+radius while leaving room for a fifth man, and I have not tested how it feels to
+be hunted by it. Not verified: the sixth man and beyond, who fall through to the
+old golden angle as an overflow. I reasoned that it degrades evenly rather than
+stacking, and I did not build a stand with six pillagers to watch it. Not
+verified: any effect on how hard the game is. The measurement above is about
+where men choose to look, not about whether you get away.

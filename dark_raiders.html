@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.51';
+var VER='9.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5384,15 +5384,42 @@ function mkVegPal(map){
 function searchSector(e){
   if(e.searchX!==undefined) return;
   if(e.tx===undefined||e.ty===undefined){ e.searchX=e.x; e.searchY=e.y; return; }
+  // v9.52: FIVE SLOTS, CLAIMED. The v9.51 arc was a sum of a golden angle and the
+  // man's own bearing, and the second term was three times larger than the gap the
+  // first one opens, so it closed it: two men measured 6.30 radians apart in arc,
+  // one full turn, chose points 2.8 units apart. Separation is structural now.
+  var SLOTS=5, STEP=6.28318530718/SLOTS;
+  // One claim set per sighting. A sighting more than 90 units from the last one is
+  // a new episode and the slots are free again, which also cleans up after a raid
+  // without needing anything to reset it.
+  if(!G.searchSlot||G.searchSlotX===undefined||
+     Math.abs(G.searchSlotX-e.tx)>90||Math.abs(G.searchSlotY-e.ty)>90){
+    G.searchSlot={}; G.searchSlotX=e.tx; G.searchSlotY=e.ty;
+  }
+  // THE FAR SIDE. He came from somewhere, and that is the one direction the player
+  // cannot have gone, or this man would still be able to see him.
+  var own=Math.atan2(e.y-e.ty,e.x-e.tx)+Math.PI;
+  var base=Math.round(own/STEP), got=-1;
+  for(var s=0;s<SLOTS;s++){
+    // nearest slot first, then alternating outward: 0, -1, +1, -2, +2
+    var cand=base+((s%2)?-1:1)*Math.ceil(s/2);
+    var idx=((cand%SLOTS)+SLOTS)%SLOTS;
+    if(!G.searchSlot[idx]){ got=idx; break; }
+  }
   G.searchTick=(G.searchTick||0)+1;
-  var k=G.searchTick;
-  e.searchArc=Math.atan2(e.y-e.ty,e.x-e.tx)*0.5+k*2.39996323;
+  // Six men and up on one sighting is past what five slots can separate. The
+  // golden angle is the right overflow: it degrades evenly instead of stacking.
+  if(got<0) e.searchArc=G.searchTick*2.39996323;
+  else { G.searchSlot[got]=1; e.searchArc=got*STEP; }
   var R=(CFG.crewSearchR===undefined?130:CFG.crewSearchR);
-  var off=[0,0.55,-0.55,1.35,-1.35,0], rad=[1,1,1,1,1,0.55];
+  // BLOCKED FLOOR IS ANSWERED WITH DISTANCE, NEVER WITH ANGLE. The v9.51 picker
+  // swung 1.35 radians looking for a clear spot, which is wider than a whole slot,
+  // so a blocked man walked into his neighbour's sector. Along the ray only.
+  var rad=[1,1.22,0.82,1.42,0.70,1.0];
   e.searchX=e.tx; e.searchY=e.ty;
   for(var i=0;i<6;i++){
-    var cx=e.tx+Math.cos(e.searchArc+off[i])*R*rad[i];
-    var cy=e.ty+Math.sin(e.searchArc+off[i])*R*rad[i];
+    var cx=e.tx+Math.cos(e.searchArc)*R*rad[i];
+    var cy=e.ty+Math.sin(e.searchArc)*R*rad[i];
     if(spotFree(G.map,cx,cy,12)){ e.searchX=cx; e.searchY=cy; break; }
   }
 }
@@ -25064,7 +25091,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.51: the machines search the way the pillagers learned to at v9.47. Four sentries that lost you used to steer at one point to the unit; each one now sweeps its own side of where it last saw you.',
+  now:'v9.52: the fan a crew opens when it loses you was not guaranteed to be a fan. Two men could be handed the same bearing and search the same ground; they claim one of five sectors each now, and each takes the far side from where he stands.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

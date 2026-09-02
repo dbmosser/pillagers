@@ -487,6 +487,7 @@ AND THE SECOND HALF OF THE STRETCH:
 | the pillager board covered the health bar and every key binding | v9.49 | on THE COLD MILE it was 927 pixels tall on a 1080 screen, overlapping the vitals by 496x193 and the legend by 467x196, and hanging 42 pixels off the bottom. Found by screenshotting a raid, not by reading code |
 | HIS INSTRUCTION: say what the game wants to run in | v9.50 | a note under the version line, and the title screen tightened so it still fits at 720p, where it had been overflowing by 8 pixels since v9.18 and by 28 once the note went on |
 | machines converged on the last sighting the way pillagers used to | v9.51 | four sentries in chase, none able to see him, all four steering at 400,660 TO THE UNIT and every one of them holding the role pin. The sector picker is one function at file scope now instead of a copy in each branch |
+| the crew fan opened at v9.47 did not guarantee a fan | v9.52 | 4 of 12 stands on THE COLD MILE sent two men to points 100 units apart or less, worst pair 14 units, because the arc summed a golden angle with a term three times larger than the gap it opens. Five claimable sectors now. The v9.47 check had been passing it on a single lucky stand |
 
 STILL OPEN, and this is now the whole list:
 - THE GAME DEMOLISHES A FIFTH OF ITS OWN BUILDINGS. 16 of the 84 on THE COLD MILE

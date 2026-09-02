@@ -5051,6 +5051,100 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.52',what:'the crew fan holds at EVERY stand on the map, not just the one v9.47 picks',
+   run:function(){
+     var bad=[];
+     // Shared arena builder. Same shape as v9.47 but it keeps going and collects
+     // several, because the thing under test varies with the bearings the men
+     // stand on and one sample cannot see that.
+     function arenas(want){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       var g=__state(), m=g.map, WW=m.cols*m.cw, WH=m.rows*m.ch, got=[];
+       for(var px=400; px<WW-400 && got.length<want; px+=190){
+        for(var py=400; py<WH-400 && got.length<want; py+=190){
+         if(!__nav.free(px,py,18)||!__nav.reachable(px,py)) continue;
+         var open=[],a,th,ex,ey;
+         for(a=0;a<16&&open.length<4;a++){ th=a*Math.PI/8; ex=px+Math.cos(th)*240; ey=py+Math.sin(th)*240;
+           if(ex<70||ey<70||ex>WW-70||ey>WH-70) continue;
+           if(!__nav.free(ex,ey,16)||!__nav.reachable(ex,ey)) continue;
+           if(!__los.clear(px,py,ex,ey)) continue; open.push({x:ex,y:ey}); }
+         if(open.length<4) continue;
+         var hid=null;
+         for(a=0;a<32&&!hid;a++){ var t2=a*Math.PI/16;
+           for(var r=300;r<=560;r+=30){ var hx=px+Math.cos(t2)*r, hy=py+Math.sin(t2)*r;
+             if(hx<70||hy<70||hx>WW-70||hy>WH-70) continue;
+             if(!__nav.free(hx,hy,16)||!__nav.reachable(hx,hy)) continue;
+             var blind=true;
+             for(var q=0;q<open.length;q++) if(__los.clear(open[q].x,open[q].y,hx,hy)){ blind=false; break; }
+             if(blind){ hid={x:hx,y:hy}; break; } } }
+         if(hid) got.push({px:px,py:py,posts:open,hid:hid});
+        } }
+       return got;
+     }
+     // One arena, one reading: how far apart are the two closest points the crew
+     // chose. Returns null when the arena did not set up cleanly, which is not a
+     // failure, it is a stand this check cannot use.
+     function fanAt(ar,dial){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       __cfg({crewSearch:dial});
+       var G2=__state(), pp=G2.player, crew=[], i;
+       for(i=0;i<G2.ents.length&&crew.length<4;i++) if(G2.ents[i].kind==='raider') crew.push(G2.ents[i]);
+       if(crew.length<4) return null;
+       G2.ents.length=0; for(i=0;i<crew.length;i++) G2.ents.push(crew[i]);
+       pp.x=ar.px; pp.y=ar.py; pp.iv=9999; pp.downed=false; G2.pCrouch=false;
+       for(i=0;i<crew.length;i++){ var e=crew[i]; e.x=ar.posts[i].x; e.y=ar.posts[i].y;
+        e.hostile=true; e.merc=false; e.friendlyPC=0; e.downed=false; e.grudge=true;
+        e.state='patrol'; e.alert=0; e.cd=0;
+        if(e.crewArc!==undefined) delete e.crewArc;
+        if(e.searchX!==undefined){ delete e.searchX; delete e.searchY; delete e.searchArc; }
+        e.face=Math.atan2(pp.y-e.y,pp.x-e.x); }
+       for(var f=0;f<25;f++) __ents(1/60);
+       var ch=crew.filter(function(x){return x.state==='chase';});
+       if(ch.length<3) return null;
+       pp.x=ar.hid.x; pp.y=ar.hid.y;
+       var seen=0; for(i=0;i<ch.length;i++) if(__los.clear(ch[i].x,ch[i].y,pp.x,pp.y)) seen++;
+       if(seen) return null;
+       for(var f2=0;f2<30;f2++) __ents(1/60);
+       var t=[]; for(i=0;i<ch.length;i++){ var e2=ch[i];
+         t.push({x:(e2.searchX===undefined?e2.tx:e2.searchX), y:(e2.searchY===undefined?e2.ty:e2.searchY)}); }
+       var cl=1e9;
+       for(i=0;i<t.length;i++) for(var j=i+1;j<t.length;j++){
+         var d=Math.hypot(t[i].x-t[j].x,t[i].y-t[j].y); if(d<cl) cl=d; }
+       return {closest:Math.round(cl), n:ch.length, readBack:__cfg().crewSearch};
+     }
+     var A=arenas(8);
+     if(A.length<4) return 'SKIP: only '+A.length+' usable stands on this map, too few to say anything';
+     var on=[], off=[], i2;
+     for(i2=0;i2<A.length;i2++){ var r1=fanAt(A[i2],1); if(r1) on.push(r1); }
+     if(on.length<4) return 'SKIP: only '+on.length+' of '+A.length+' stands produced a crew that lost sight';
+     // CONTROL, AND IT RUNS FIRST. The dial has to be live and switching it off
+     // has to reproduce the old queue, or a green result here means nothing.
+     for(i2=0;i2<2;i2++){ var r0=fanAt(A[i2],0); if(r0) off.push(r0); }
+     if(!off.length) return 'SKIP: the control arm produced no usable stand';
+     if(off[0].readBack!==0||on[0].readBack!==1)
+       bad.push('control: the dial did not read back, on='+on[0].readBack+' off='+off[0].readBack);
+     var offFold=0; for(i2=0;i2<off.length;i2++) if(off[i2].closest<=20) offFold++;
+     if(offFold!==off.length)
+       bad.push('control: with the fan switched off only '+offFold+' of '+off.length+
+                ' stands sent the crew to one point, and that is what the old behaviour did');
+     // THE FINDING. Measured on v9.51: 4 of 12 stands folded, the worst pair 14
+     // units apart, while the single stand v9.47 uses came out clean.
+     var fold=[], worst=1e9;
+     for(i2=0;i2<on.length;i2++){
+       if(on[i2].closest<worst) worst=on[i2].closest;
+       if(on[i2].closest<=100) fold.push(on[i2].closest);
+     }
+     if(fold.length)
+       bad.push(fold.length+' of '+on.length+' stands folded the fan, closest pairs '+
+                fold.join(', ')+' units apart, and the whole point of the fan is that they split up');
+     // CONTROL TWO: a fan that scatters everyone to the horizon would pass the
+     // test above and would not be a search either.
+     if(worst>700)
+       bad.push('control: the closest pair anywhere was '+worst+
+                ' units, which is scattering rather than searching');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.47',what:'a crew that loses you searches as a crew, not as a queue',
    run:function(){
      var bad=[];
