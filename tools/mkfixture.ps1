@@ -4503,6 +4503,77 @@ window.__REGRESS=[
      if(shot&&shot.hits<1)
        bad.push('a Listener put into the state a landed round gives it stopped attacking entirely: '+
                 alone.hits+' hits when left alone, '+shot.hits+' after being shot');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.39',what:'the last-minute warnings name a way out that is actually open',
+   run:function(){
+     var bad=[];
+     // The rings close on fractions of the clock REMAINING, two thirds and four
+     // ninths, so on the default 540 second raid they shut with 360 and 240 left
+     // while the warnings only speak at 180, 120, 60 and 30. Every warning lands
+     // after both closures, so a shut ring is always a candidate and whether it
+     // gets named depends only on where he is standing.
+     function warn(closeTheNearOne){
+       __resetCfg(); __pinDefaults(0);
+       __startRaid({mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       g.ents.length=0; p.iv=99; p.maxhp=100000; p.hp=100000;
+       var near=null,nd=1e9;
+       for(var i=0;i<g.zones.length;i++){
+         var d=Math.hypot(g.zones[i].x-p.x,g.zones[i].y-p.y);
+         if(d<nd){ nd=d; near=g.zones[i]; } }
+       if(!near||g.zones.length<2) return null;
+       for(var j=0;j<g.zones.length;j++) g.zones[j].open=true;
+       if(closeTheNearOne) near.open=false;
+       // The nearest OPEN ring, worked out here rather than asked of the game, so
+       // the check is not grading the thing it is testing.
+       var openD=1e9;
+       for(var q=0;q<g.zones.length;q++) if(g.zones[q].open!==false)
+         openD=Math.min(openD,Math.hypot(g.zones[q].x-p.x,g.zones[q].y-p.y));
+       g.timeLeft=31; g.lastWarn=-1; g.msg='';
+       var K=__keysRef(); for(var k in K) delete K[k];
+       var said='';
+       for(var f=0;f<140;f++){
+         __loop(performance.now()+f*16.7);
+         var m=String(g.msg||'');
+         if(/THIRTY SECONDS/i.test(m)){ said=m; break; }
+       }
+       // AFTER, not before. The rings close on the clock, so anything forced open
+       // at 31 seconds is shut again on the next frame.
+       var openAfter=1e9, closedAfter=1e9, nOpen=0;
+       for(var r2=0;r2<g.zones.length;r2++){
+         var Z2=g.zones[r2], d2=Math.hypot(Z2.x-p.x,Z2.y-p.y);
+         if(Z2.open===false) closedAfter=Math.min(closedAfter,d2);
+         else { nOpen++; openAfter=Math.min(openAfter,d2); }
+       }
+       var told=(/([0-9]+)m/.exec(said)||[])[1];
+       return {said:said, told:(told?+told*10:null),
+               closedAt:(closedAfter<1e9?Math.round(closedAfter):null),
+               openAt:(openAfter<1e9?Math.round(openAfter):null),
+               openCount:nOpen};
+     }
+     var shut=warn(true);
+     if(!shut) return 'SKIP: this map and seed does not have two extraction rings to choose between';
+     // CONTROL FIRST: the warning has to fire, or nothing below is being measured.
+     if(!shut.said) return 'SKIP: the thirty second warning never fired, so there is no hint to grade';
+     if(shut.openAt===null||shut.closedAt===null)
+       return 'SKIP: at thirty seconds this seed did not leave one ring open and one shut, so there is nothing to choose between';
+     if(shut.told===null) bad.push('the thirty second warning names no distance at all: "'+shut.said+'"');
+     else {
+       // THE FINDING. Measured before the fix: closed ring 1,406 units away, nearest
+       // open one 2,612, and it said 141m, which is the closed one, with thirty
+       // seconds left and no time to correct the mistake.
+       var toOpen=Math.abs(shut.told-shut.openAt), toClosed=Math.abs(shut.told-shut.closedAt);
+       if(toClosed<toOpen)
+         bad.push('with thirty seconds left it points at the CLOSED ring: it said '+
+                  Math.round(shut.told/10)+'m, the shut ring is '+Math.round(shut.closedAt/10)+
+                  'm away and the nearest open one is '+Math.round(shut.openAt/10)+'m');
+     }
+     // CONTROL: it must name the nearest OPEN ring, not merely any open one. A fix
+     // of "always pick the furthest" would pass the line above and be no better.
+     // Graded against the rings that were actually open when it spoke.
+     if(shut.told!==null&&shut.openAt!==null&&Math.abs(shut.told-shut.openAt)>260)
+       bad.push('control: it said '+Math.round(shut.told/10)+
+                'm when the nearest OPEN ring was '+Math.round(shut.openAt/10)+'m');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

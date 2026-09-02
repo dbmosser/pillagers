@@ -27443,6 +27443,70 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.39 - THE LAST MINUTE WARNINGS NAME A WAY OUT THAT IS ACTUALLY OPEN
+
+nearestOut had no open test, and it is the source of every clock warning: the
+three, two and one minute calls append it and the thirty second alarm leads with
+it.
+
+The timing makes it near unavoidable rather than occasional. The rings close on
+fractions of the clock REMAINING, two thirds and four ninths, so on the default
+540 second raid they shut with 360 and 240 seconds left, while the warnings only
+ever speak at 180, 120, 60 and 30. Every single warning lands after both closures,
+so a shut ring is always among the candidates and whether it gets named depends
+only on where you happen to be standing.
+
+REPRODUCED at seed 4242 with the near ring shut and a further one open:
+
+  closed ring          1,406 units away
+  nearest open ring    2,612 units away
+  what it said         "THIRTY SECONDS. Nearest way out 141m north west."
+
+141 metres is the closed one. With thirty seconds left the game sent him to a door
+that does not open, and at thirty seconds there is no time to correct that.
+
+Worse, the line above it can read "You are standing in the way out. Hold E to call
+it." while you stand inside a closed ring, and holding E there produces "This point
+is CLOSED."
+
+AFTER: the same scene says 261m north, which is the open ring, 80 units off the
+figure I compute independently and 1,204 units away from the closed one.
+
+The helper for this has existed since v8.58, when the same mistake was found and
+fixed for the closest-extract telemetry. It was never applied here. That is the
+third time in this project that a fix landed on one caller of a bad idea and left
+the others standing.
+
+When every ring is shut, which one ring never doing so should prevent, it now says
+"Every extraction point is closed." rather than naming a door.
+
+Verified: parse PASS v9.39. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 85 and 369 and containers 157 and 589, LOOT driven on both
+maps, stream parity identical, all three endings, hub and stage render. 81
+regression checks pass in sequence, none skipped, ratio pinned and profile cleaned
+before every check. The new check fails on a v9.38 fixture with "it said 141m, the
+shut ring is 141m away and the nearest open one is 253m", and its control confirms
+that with every ring open it still names the genuinely nearest.
+
+AND MY OWN CONTROL ASKED FOR SOMETHING THE GAME IS RIGHT TO REFUSE. The second arm
+forced every ring open and then set the clock to thirty seconds, and the rings
+close ON the clock: with 31 seconds left both closing rings shut again on the very
+next frame, so the "every ring open" arm was never open, and the control then
+demanded that the hint name the nearest ring, which by then was shut. The game was
+correct and the check was wrong. It now reads which rings are open AFTER the
+frames have run and grades the sentence against the world the sentence was
+produced in.
+
+That is the third time today a control of mine reported a fault it had created
+itself, and all three were caught the same way: by asking whether the thing I was
+measuring could possibly be true.
+
+Not verified: the "You are standing in the way out" line specifically. It reads
+through the same helper so a closed ring can no longer be what it is talking
+about, but I have not driven a scene that stands the player inside a shut ring and
+read that exact sentence back. Also not verified: whether the map's own CLOSED
+label and the refusal message agree with the new hint in every case.
+
 ## v9.38 - SHOOTING A LISTENER NO LONGER SWITCHES IT OFF
 
 The Listener's entire behaviour lives behind one state, 'hunt'. Every other state
