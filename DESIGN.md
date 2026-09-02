@@ -27443,6 +27443,75 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.08 - THE DOWNED SCREEN STOPS FLASHING AND STARTS SCALING
+
+His note on the downed screen: the flashing CRAWL TO THE RING is unnecessary, and
+the text around it is too small.
+
+REPRODUCED, both halves, with the renderer held still.
+
+THE FLASHING. Sampling only the box the message sits in and nothing else: at a
+fixed clock the box is byte-identical across redraws, so the reading is sound.
+Moving only the raid clock, the same box swings between 41.96 and 53.19 mean
+brightness, a 21.1 percent swing cycling roughly every 1.2 seconds. That is a
+line pulsing in and out at him while he bleeds to death.
+
+THE SIZE. The big word is TYPE.huge. Everything else on that screen is
+TYPE.label, the same role used for crate labels out in the world: the bleed-out
+countdown, "You are bleeding out. Crawl to an open extraction point if possible",
+the self-revive prompt and the line under the message. And none of that block
+scales with the SCREEN. The bleed bar is a literal 220 by 10 pixels and the type
+roles follow the TEXT SIZE setting only, so at 4K the whole thing is drawn at its
+1080p pixel size while every panel around it has doubled.
+
+THREE CHANGES.
+
+No pulse while he is down. Standing, the prompt keeps its pulse: that is a calm
+screen, he never complained about it, and the reason it exists is that a static
+line on a calm screen stops being read after two seconds. A man on the floor is
+already looking at it.
+
+The supporting lines go up one role, label to head.
+
+The whole downed block is drawn inside one transform scaled by hudRes(), so it
+follows the monitor as well as the text setting. One transform rather than
+arithmetic on nine coordinates, so the bar, the gaps and the type keep their
+relationship. The red wash stays outside the transform, because a fillRect over
+the whole screen under a 2x scale about the centre covers a quarter of it.
+
+MEASURED AFTER: the message box swings 0.0 percent across the clock, down from
+21.1, while still drawing (the rows through the message read 75, 76, 79, 35, 12,
+57 and 41 mean brightness, so it is present, not blanked). The bleed bar is 253px
+at 1080p and 506px at 4K, exactly double. hudRes() is 1 at 1920x1080, so 1080p is
+unchanged by the scaling and only the role bump moves there.
+
+Verified: parse PASS v9.08. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 51 regression checks
+pass in sequence, none skipped.
+
+The check fails on a fixture built from v9.07 with "the downed message still
+pulses, 18.8 percent brightness swing; the downed screen barely grows on a bigger
+monitor: bar 249px at 1080p and 136px at 4K". Three controls: the standing prompt
+must STILL pulse, so deleting the pulse everywhere cannot pass; the message box
+must still have content, so blanking it cannot read as calm; and the bar must not
+have grown at 1080p, where the layout was already right.
+
+TWO CORRECTIONS TO MY OWN CHECK, both found by running it against the previous
+build rather than by reasoning. The box I sampled was so much larger than the
+message that a real 21 percent pulse diluted to under 3, so the check passed the
+build it was written to catch. And the standing control drew nothing, because
+__loop runs the beacon itself and puts beaconT back, so that state has to be set
+after the frames rather than before.
+
+Not verified: how it looks on his actual 4K screen, since hudRes clamps at 2.2
+and I have only compared 1920x1080 against 3840x2160; whether the enlarged block
+now crowds the self-revive and beacon lines at 4K, which are inside the same
+transform and so grew with it but were not measured for overlap; the standing
+prompt's own size is untouched and he did not ask about it.
+
 ## v9.07 - YOU CAN SEE NOISE NOW
 
 His note: "i can see pillager footprints when i can't see the pillager --

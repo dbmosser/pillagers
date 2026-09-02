@@ -2643,6 +2643,90 @@ window.__REGRESS=[
      for(var q=0;q<60;q++) __audio.sfx('shot', NX+q, NY, 'rifle');
      if(__noise.list().length>22) bad.push('the ring list is uncapped, '+__noise.list().length+' live after 60 noises');
      __noise.clear();
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.08',what:'the downed screen does not flash at you and grows with the monitor',
+   run:function(){
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, there are no pixels to compare';
+     var bad=[];
+     var hc=document.getElementById('hcv');
+     if(!hc) return 'no HUD canvas to read';
+     // Puts him on the floor next to an open ring with a ship inbound, which is
+     // the state that draws CRAWL TO THE RING.
+     function setup(W2,H2,down){
+       __forceSize(W2,H2); __resetCfg(); __pinDefaults(0); __zoom.set(1,true);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player; g.ents.length=0;
+       p.downed=down?1:0; p.downT=12; p.revived=1; p.iv=99;
+       var z=g.zones&&g.zones[0];
+       if(!z) return null;
+       g.active=z; z.open=true; p.x=z.x+z.r+120; p.y=z.y; g.beaconT=20;
+       for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
+       return g;
+     }
+     function boxMean(x,y,w,h){ __frame(0);
+       var d=hc.getContext('2d').getImageData(x,y,w,h).data,s=0;
+       for(var i=0;i<d.length;i+=4) s+=(d[i]+d[i+1]+d[i+2])/3*(d[i+3]/255);
+       return s/(d.length/4); }
+     // How much a box swings as ONLY the raid clock moves, which is what drives
+     // the pulse. Measured on the message box and nothing else.
+     // TIGHT ON THE MESSAGE. A generous box drowns the pulse in static pixels:
+     // the first version of this used a 720x90 box and read a real 21 percent
+     // swing as 2, so it passed the build it was written to catch.
+     function swing(g,y0,h0){
+       var t=g.timeLeft, vals=[];
+       for(var k=0;k<12;k++){ g.timeLeft=t+k*0.15; vals.push(boxMean(700,y0,520,h0)); }
+       g.timeLeft=t;
+       var mn=Math.min.apply(null,vals), mx=Math.max.apply(null,vals);
+       return {mn:mn,mx:mx,pct:mx>0.01?((mx-mn)/mx*100):0};
+     }
+     var gd=setup(1920,1080,true);
+     if(!gd) return 'no extraction zone to stand next to';
+     // The measurement is only worth anything if a fixed clock is stable.
+     gd.beaconT=20;
+     var s1=boxMean(700,570,520,60), s2=boxMean(700,570,520,60);
+     if(Math.abs(s1-s2)>0.01) return 'the same clock draws two different boxes, so no brightness reading here means anything';
+     // It has to actually be drawing the message, or a blank box passes as calm.
+     if(s1<3) bad.push('the downed message box is nearly empty at '+s1.toFixed(2)+', nothing is being drawn there');
+     var dn=swing(gd,570,60);
+     // Measured before v9.08: 21.1 percent, cycling every 1.2 seconds, while he
+     // is bleeding to death.
+     if(dn.pct>3) bad.push('the downed message still pulses, '+dn.pct.toFixed(1)+' percent brightness swing');
+     // CONTROL 1: STANDING, the pulse must survive. Deleting it everywhere would
+     // pass the line above and quietly kill a prompt that exists because a static
+     // line on a calm screen stops being read.
+     var gs=setup(1920,1080,false);
+     if(gs){
+       var g2=__state(), p2=g2.player, z2=g2.active;
+       p2.x=z2.x; p2.y=z2.y;                       // inside the ring: HOLD E TO EXTRACT
+       for(var f2=0;f2<4;f2++) __loop(performance.now()+f2*16.7);
+       // AFTER the frames, not before. __loop runs the beacon itself and puts
+       // beaconT back, so setting it first drew no prompt at all and the control
+       // reported "not drawing" against a build where it draws fine.
+       g2.shipHold=8; g2.beaconT=0;
+       var up=swing(g2,375,55);
+       if(up.mx<3) bad.push('control: the standing prompt is not drawing at all, so its pulse cannot be judged');
+       else if(up.pct<3) bad.push('control: the standing prompt stopped pulsing too, swing '+up.pct.toFixed(1)+' percent');
+     }
+     // AND THE SIZE. The bleed bar is the easiest thing to measure: scan the row
+     // it sits on and count how wide the lit run is.
+     function barWidth(W2,H2){
+       var g3=setup(W2,H2,true); if(!g3) return 0;
+       __frame(0);
+       var sc=(W2>=3840?2:1);
+       var y=Math.round(H2/2-18*sc);
+       var d=hc.getContext('2d').getImageData(0,y,W2,1).data;
+       var first=-1,last=-1;
+       for(var x=0;x<W2;x++){ var i=x*4, lum=(d[i]+d[i+1]+d[i+2])/3*(d[i+3]/255);
+         if(lum>28){ if(first<0) first=x; last=x; } }
+       return first<0?0:(last-first+1);
+     }
+     var b1=barWidth(1920,1080), b4=barWidth(3840,2160);
+     __forceSize(1920,1080);
+     if(!b1) bad.push('the bleed-out bar did not draw at 1080p');
+     else if(b4/b1<1.7) bad.push('the downed screen barely grows on a bigger monitor: bar '+b1+'px at 1080p and '+b4+'px at 4K');
+     // CONTROL 2: and it must NOT have grown at 1080p, which is where he already
+     // had a working layout. hudRes is 1 there, so the block is the size it was.
+     if(b1>340) bad.push('control: the bleed bar is '+b1+'px at 1080p, the block has been inflated where it was already right');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
