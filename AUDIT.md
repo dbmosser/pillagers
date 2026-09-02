@@ -375,3 +375,30 @@ HE CORRECTED ME, THESE ARE NEW WORK:
 - 41. Loot and enemy spawns must change every raid.
 - 47. Contract is completed in the raid, the reward is claimed at the Mainframe.
 - 48. WIRT should sell one special item for 10k that changes HOURLY.
+
+## 2026-09-02, checked against the live code rather than my notes
+
+Eighteen of HIS 50 ANSWERS were verified against dark_raiders.html directly. My
+memory notes disagreed with this file on the numbering of 38, 39 and 41, so the
+numbers below are this file's.
+
+| His ask | Status | Where it stands |
+| --- | --- | --- |
+| 39 pillagers stood there after being attacked | SHIPPED v9.25 | One aimed round never set the hostile flag; the bullet path now does. Reproduced first with one shot then eighteen seconds of silence. |
+| 45 the broken wall | FOUND, NOT YET FIXED | No wall is missing. Every structure is drawn about 26 units above its collider, so on the long container rows east of the COLD STORAGE start you walk a body width into the visible top and vanish behind it. The wall-clip tripwire tests for the centre being INSIDE the collider, which this bug never does, which is why it stayed silent for six builds. |
+| 6 siege, and nothing ending the raid | NOT BUILT | The siege is real and scales with carried loot; the game never uses the word anywhere the player can read it. Timer expiry is endRaid('dead') with full loss and the slider has no off position. Both halves are design changes, not defects. |
+| 2, 3, 5 house occupancy | PARTIAL | The three per house cap holds at defaults. Crawler count is a flat dial scaled by map size: about 0.7 per house on COLD STORAGE and 1.3 on THE COLD MILE, against the 2.5 he asked for. |
+| 36 pillagers team up | PARTIAL | Crews decide who a pillager fights among his own kind and who he picks up. Nothing coordinates them against the player. Only machines team up. |
+| 33 proficiency | PARTIAL | Exists but is money only, and is labelled "Net carried out". Accuracy, times downed, damage and extract-vs-die rate are recorded per run and none of them enters the formula. |
+| 11 hotbar with the backpack open | PARTIAL | Drag onto the belt works in both places. Dragging OFF the belt back into the backpack works only in the Undercroft. The dragged item is also invisible in the Undercroft. |
+| 4 sentries | ALREADY BUILT | About 14 on COLD STORAGE and 66 on THE COLD MILE, nothing culls or hides them. The maps are large enough that meeting one is a coin flip. |
+| 7 one revive | ALREADY BUILT | Self revive is one a raid. Reviving others is unlimited and, since v9.24, free. |
+| 15 belt persists | ALREADY BUILT | Saved to the profile; only slots holding something you no longer own clear. |
+| 19 any number of guns | ALREADY BUILT | Nothing counts or caps weapons. |
+| 20 peddler purple and below | ALREADY BUILT | Tops out at elite; gilded no longer exists anywhere in the game. |
+| 23 roll in the Undercroft | ALREADY BUILT | SPACE rolls and the ball is drawn. |
+| 27 panels remember collapsed | ALREADY BUILT | Saved immediately, though only three panels have a collapse glyph. |
+| 38 board shows pillagers never seen | ALREADY BUILT | The board lists every pillager on the map with no "have you met him" gate. |
+| 41 machines never open containers | ALREADY BUILT | Every container-open path is the player's own search or an AI branch gated on the entity being a raider. |
+| 42 Warden beatable | ALREADY BUILT | 900 health, no armour, no shield, no healing, slower than the player; the back seam does triple damage and freezes it for four seconds. |
+| 43 two sectors, deeper | ALREADY BUILT | Exactly two. THE COLD MILE is 900 by 760 metres against COLD STORAGE at 420 by 340, nearly five times the area. |
