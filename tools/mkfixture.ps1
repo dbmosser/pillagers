@@ -764,7 +764,8 @@ window.__textTrace=function(fn){
     try{
       var T=this.getTransform();
       out.push({t:String(t),x:T.a*x+T.c*y+T.e,y:T.b*x+T.d*y+T.f,
-                w:this.measureText(String(t)).width*T.a,align:this.textAlign});
+                w:this.measureText(String(t)).width*T.a,align:this.textAlign,
+                font:this.font,px:(function(f){ var m=/([\d.]+)px/.exec(f); return m?+m[1]*T.a:0; })(this.font)});
     }catch(e){}
     return orig.apply(this,arguments);
   };
@@ -5053,6 +5054,64 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.56',what:'the clock and the extract distance do not sit on top of each other, and they grow with the monitor',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(!window.__textTrace) return 'SKIP: this build cannot report where it drew its text';
+     __pinDPR(1); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     // Reads WHERE THE GAME DREW, not the constants it drew from. The constants
+     // were the bug, so a check that read them would have agreed with it.
+     function top(W2,H2){
+       __forceSize(W2,H2);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.ents.length=0; g.player.iv=99; g.marked=3;
+       for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
+       var draws=__textTrace(function(){ __frame(0.016); });
+       var clk=null,ext=null,mk=null;
+       for(var i=0;i<draws.length;i++){
+         var d=draws[i];
+         if(!clk&&/^\d+:\d\d$/.test(d.t)) clk=d;
+         if(!ext&&/^(EXTRACT|EXTRACTION|WAYPOINT) /.test(d.t)) ext=d;
+         if(!mk&&d.t.indexOf('MARKED')===0) mk=d;
+       }
+       if(!clk||!ext) return null;
+       // Cap above the baseline, descent below. 0.75 and 0.25 of the em is the
+       // usual split and it only has to be consistent, because the question is
+       // whether two boxes touch and both are measured the same way.
+       function box(d){ return {y:d.y, px:d.px, top:d.y-d.px*0.75, bot:d.y+d.px*0.25}; }
+       var A=box(clk), B=box(ext), C=mk?box(mk):null;
+       return {clockY:Math.round(A.y), clockPx:Math.round(A.px),
+               extY:Math.round(B.y),
+               clockIntoExt:Math.round(Math.max(0,A.bot-B.top)),
+               extIntoMark:C?Math.round(Math.max(0,B.bot-C.top)):0};
+     }
+     var a=top(1920,1080), b=top(3840,2160);
+     __forceSize(1920,1080);
+     if(!a||!b) return 'SKIP: the clock or the compass line was not drawn, so there is nothing to compare';
+     // THE FIRST HALF OF HIS REPORT: "colliding". Measured on v9.55: the clock
+     // baseline sat at 30 and the compass line at 46, sixteen apart, carrying a
+     // font that renders at 31, so the clock ran 6 pixels into the line below it
+     // at EVERY screen size.
+     if(a.clockIntoExt>0)
+       bad.push('at 1080p the clock overlaps the extract line by '+a.clockIntoExt+' pixels');
+     if(b.clockIntoExt>0)
+       bad.push('at 4K the clock overlaps the extract line by '+b.clockIntoExt+' pixels');
+     if(a.extIntoMark>0||b.extIntoMark>0)
+       bad.push('the extract line overlaps the MARKED banner by '+
+                Math.max(a.extIntoMark,b.extIntoMark)+' pixels');
+     // THE SECOND HALF: "way too tiny". Measured on v9.55 the clock came out at
+     // 31 pixels on a 1080p screen AND on a 4K one, because the whole block was
+     // drawn at literal baselines that do not know how big the monitor is.
+     if(b.clockPx<a.clockPx*1.5)
+       bad.push('the clock is '+b.clockPx+' pixels tall at 4K against '+a.clockPx+
+                ' at 1080p, so it is not following the monitor');
+     // CONTROL: 1080p must not have run away. He has a working layout there and
+     // the clock has sat near the top of it for the whole project; a fix that
+     // relocates it is not a fix.
+     if(a.clockY<24||a.clockY>52)
+       bad.push('control: the 1080p clock moved to y='+a.clockY+', which is not near where it has always been');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.55',what:'bare hands are not drawn as a gun, and one word for one outcome on the death screen',
    run:function(){
      var bad=[];

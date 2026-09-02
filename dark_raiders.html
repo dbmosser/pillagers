@@ -1211,7 +1211,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.55';
+var VER='9.56';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20352,7 +20352,25 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
     }
   }
   // timer + compass
-  ctx.font=FS(TYPE.title); ctx.textAlign='center';
+  // v9.56, HIS REPORT: "numbers and text at the top are way too tiny and
+  // colliding lol". Both, and both from the same place: this block was drawn at
+  // the literal baselines 30, 46, 60 and 82. Literals do not grow with the
+  // screen, so at 4K it sat in the top 82 pixels at its 1080p size; and 30 to 46
+  // is sixteen pixels for a font that renders at twenty four, so the clock's
+  // descent has been running into the line beneath it at every size since the
+  // text scale went above 1.
+  // It stacks from the size of its own type now. _yClk works out to exactly 30 at
+  // 1920x1080, which is where the clock has always been.
+  var _tz=hudRes();
+  var _fClk=FSz(TYPE.title,_tz), _fCmp=FSz(TYPE.label,_tz), _fMk=FSz(TYPE.head,_tz);
+  function _fpx(f){ var m=/([\d.]+)px/.exec(f); return m?+m[1]:12; }
+  var _hClk=_fpx(_fClk), _hCmp=_fpx(_fCmp), _hMk=_fpx(_fMk);
+  var _yClk=Math.round(6*_tz+_hClk);
+  // 0.30 of the line above is its descent, which is the part that was overlapping.
+  var _yCmp=Math.round(_yClk+_hClk*0.30+_hCmp);
+  var _yArw=Math.round(_yCmp+_hCmp*0.90);
+  var _yMk =Math.round(_yArw+_hMk*1.30);
+  ctx.font=_fClk; ctx.textAlign='center';
   // v9.35: with the clock off there is nothing to count down to, so the readout
   // counts UP instead. Leaving it frozen at the starting figure would have looked
   // like a broken timer rather than an absent one.
@@ -20360,7 +20378,7 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
   var _tSrc=_noClk?(G.t||0):G.timeLeft;
   var mm=Math.floor(_tSrc/60),ss=Math.floor(_tSrc%60);
   ctx.fillStyle=(!_noClk&&G.timeLeft<45)?'#ff5a4a':'#cdd6dd';
-  ctx.fillText(mm+':'+(ss<10?'0':'')+ss,W/2,30);
+  ctx.fillText(mm+':'+(ss<10?'0':'')+ss,W/2,_yClk);
   // HIS NOTE, 2026-08-26: "can you make it point to the NEAREST extraction instead,
   // and make it switch any time the player finds a nearer extraction -- also ...
   // the beacon indicator should change to like 'Marked Waypoint' and point to that
@@ -20391,17 +20409,18 @@ _tgt=G.active; _lbl='EXTRACTION';
   }
   if(_tgt){
     var za=Math.atan2(_tgt.y-p.y,_tgt.x-p.x),zd=Math.round(dist(p,_tgt));
-    ctx.font=FS(TYPE.label); ctx.fillStyle=_col;
-    ctx.fillText(_lbl+' '+metres(zd)+'m',W/2,46);
-    ctx.save(); ctx.translate(W/2,60); ctx.rotate(za+Math.PI/2);
+    ctx.font=_fCmp; ctx.fillStyle=_col;
+    ctx.fillText(_lbl+' '+metres(zd)+'m',W/2,_yCmp);
+    ctx.save(); ctx.translate(W/2,_yArw); ctx.rotate(za+Math.PI/2);
     ctx.fillStyle=_col;
-    ctx.beginPath(); ctx.moveTo(0,-8); ctx.lineTo(-5,5); ctx.lineTo(5,5); ctx.closePath(); ctx.fill();
+    // the arrow is geometry, so it scales with the screen like the type does
+    ctx.beginPath(); ctx.moveTo(0,-8*_tz); ctx.lineTo(-5*_tz,5*_tz); ctx.lineTo(5*_tz,5*_tz); ctx.closePath(); ctx.fill();
     ctx.restore();
   }
   if(G.marked>0){
-    ctx.font=FS(TYPE.head);
+    ctx.font=_fMk;
     ctx.fillStyle='rgba(255,60,40,'+(.6+.4*Math.sin(G.t*10))+')';
-    ctx.fillText('MARKED - THEY KNOW WHERE YOU ARE',W/2,82);
+    ctx.fillText('MARKED - THEY KNOW WHERE YOU ARE',W/2,_yMk);
   }
   // ATTENTION, v3.10, and it exists because of a measurement that corrected me.
   // v3.09 found hazard rising ninefold across a raid and I described the cause as
@@ -25151,7 +25170,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.55: two things the interface was saying that were not true. Your bare hands were drawn as a pistol everywhere an item has a face, because fists are filed under weapons, and the death screen had two different words for losing a gun and one for losing anything else.',
+  now:'v9.56: the clock and the extract distance at the top of the screen were drawn at four literal pixel positions, so they never grew with the monitor and they sat sixteen pixels apart carrying a twenty four pixel font. They stack from the size of their own type now.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

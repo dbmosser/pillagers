@@ -39185,3 +39185,53 @@ pixels to look at it and at 64 in the check; the hotbar draws it near 65 and the
 bag smaller than that, and I did not inspect those by eye. Not verified: whether
 any other WEAPONS entry has the same problem. `fists` is the only one that is not
 a gun today, but nothing stops the next one.
+
+## v9.56 - THE CLOCK WAS SITTING ON THE EXTRACT DISTANCE, AT EVERY SIZE
+
+His report: **"numbers and text at the top are way too tiny and colliding lol"**.
+Both halves, and both from the same cause. The whole top centre block was drawn
+at four literal pixel baselines:
+
+    the clock          y = 30
+    EXTRACT nnn m      y = 46
+    the compass arrow  y = 60
+    MARKED             y = 82
+
+**Tiny**, because a literal is a literal. Those numbers do not move when the
+monitor does, so on a 4K screen the readout sat in the top 82 pixels of a 2160
+pixel display at its 1080p size, while every other part of the HUD has been
+multiplied by `hudRes()` since v8.81. This is the reticle fault from v9.53 in a
+second place.
+
+**Colliding**, because 30 and 46 are **sixteen pixels apart** and the clock is
+drawn in `TYPE.title`, which renders at **thirty one** pixels once the text scale
+is applied. A 31 pixel font in a 16 pixel slot overlaps whatever the screen is.
+The spacing was authored for the unscaled source size and the 1.2 text scale
+already broke it, so this has been wrong at every resolution for a long time.
+
+Measured, reading where the game actually drew rather than the constants it drew
+from:
+
+| | v9.55 | v9.56 |
+| --- | --- | --- |
+| clock overlaps the extract line, 1080p | **6 px** | **0** |
+| clock overlaps the extract line, 1440p | **6 px** | **0** |
+| clock overlaps the extract line, 4K | **6 px** | **0** |
+| clock font at 1080p / 1440p / 4K | 31 / 31 / 31 | **31 / 42 / 62** |
+
+The block stacks itself from the size of its own type now. The clock still lands
+on **exactly y=30 at 1920x1080**, six pixels of top margin plus a 31 pixel cap,
+which is where it has always been; everything below it moves down far enough to
+clear the line above, and the whole stack follows the monitor.
+
+The check reads the drawn text through the tracer, which now carries the font
+size as well as the position, because "do these two overlap" cannot be answered
+from a baseline alone. Its control holds the 1080p clock near where it has always
+sat, so a fix that relocated the readout would fail rather than pass.
+
+Not verified: the rest of the HUD. This block is fixed; the conditions panel, the
+pillager board and the contracts list were not touched and he has already said
+the first two should be smaller than everything else. Not verified: how the
+0.75/0.25 split of the em box compares to the real glyph extents of Rubik. It
+only has to be consistent, because both boxes are measured the same way, but a
+face with unusual overshoot could make a 1 pixel touch read as clear.
