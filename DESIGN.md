@@ -27443,6 +27443,95 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## INVESTIGATION - THE GAME DEMOLISHES A FIFTH OF ITS OWN BUILDINGS, AND MY FIX HAD TO BE REVERTED
+
+No version bump. **Nothing shipped.** The game file is byte-identical to v9.51.
+This entry exists so the next attempt starts from the evidence instead of
+rediscovering it.
+
+### A correction to v9.48 first
+
+That entry says 45 of the 84 buildings on THE COLD MILE are the same 320x240 box,
+54 percent. **That number is wrong and it is my fault.** I bucketed footprints to
+the nearest 40 units and then reported the bucket as if it were an exact size,
+which merged three different footprints into one figure.
+
+The real numbers, exact footprints, seed 4242:
+
+| footprint | count |
+| --- | --- |
+| 300x220 | 27 of 84 |
+| 320x240 | 9 of 84 |
+| 320x250 | 9 of 84 |
+
+So the repetition is 32 percent, not 54.
+
+### What is actually wrong, measured
+
+| | COLD STORAGE | THE COLD MILE |
+| --- | --- | --- |
+| buildings | 20 | 84 |
+| with no interior at all | 2 | 31 |
+| **of those, stripped by the repair pass** | **2** | **16** |
+
+**Sixteen buildings on the mile, nineteen percent, are built with an interior and
+then have it demolished at load time.** The sealed-room repair pass removes every
+wall tagged with that building and rewrites its plan to 'open'. Both of the empty
+buildings on COLD STORAGE got that way the same way.
+
+The pass exists for a good reason: a partition or a piece of furniture can seal a
+pocket of floor nothing can reach, and a sealed room is a loot pocket you can
+never open. It tries furniture first, twice. When that is not enough it takes
+everything, and there is nothing after it.
+
+**Every building in the game is authored.** 84 plans in JSON on the mile, 20 in
+the source on cold storage. So a designer chose 'cells' or 'core' for each of
+these sixteen and the game throws that choice away silently, on every load.
+
+### What I tried, and why it is not in the build
+
+**First attempt, dead code.** I added a new interior plan to the size-gated
+chooser. It changed nothing, and I only found out by forcing the chooser to emit
+nothing but that plan and watching the map come back identical. Every building is
+authored, so `forcePlan` wins and **the chooser never runs for a single building
+in the game.** I had been reading a code path that cannot execute.
+
+**Second attempt, real but it broke two things.** I moved the new plan to the
+repair pass, so a stripped building gets two short walls that cannot seal
+anything instead of being left bare. It worked exactly as intended: empty
+buildings on the mile went 31 to 15, on cold storage 2 to 0.
+
+It also broke two checks, deterministically, in isolation:
+
+- **v9.47**, the crew search: four pillagers that lost sight chose points 3 units
+  apart, which is the queue that build exists to remove
+- **v9.14**, the sector map heading: the 1080p heading went from 326x16 to
+  1038x18
+
+I guessed the crew failure was the new walls blocking search sectors and widened
+the sector picker from six candidates to twelve across two radii. **It made no
+difference**, so my explanation was wrong and I do not yet know the cause.
+
+At that point I reverted. A build that fixes nineteen percent of the buildings
+and breaks the crew search is not an improvement, and shipping it to find out
+would have been the wrong call.
+
+### What the next attempt should know
+
+- the seeded stream MOVES: ents go 85/369 to 85/372 and containers 157/589 to
+  147/592. That is expected for a geometry change and `__verify` will need its
+  fingerprint updated, the way v9.30 did
+- widening the sector picker is not the answer to the v9.47 failure
+- the v9.14 heading change is unexplained and may be the more revealing of the two
+
+Not verified: why either check broke. I measured that both fail deterministically
+on the change and pass on the revert, and that one obvious explanation is wrong.
+That is where it stands. Not verified: whether the stub walls are the right answer
+at all, as opposed to making the repair pass remove partitions one at a time until
+the floor is connected, which would keep most of the authored interior instead of
+replacing it.
+
+
 ## HARNESS - THE SECOND PIXEL CHECK, AND IT WAS NOT THE SAME FAULT
 
 No version bump: the game file is byte-identical to v9.51. This is the harness.

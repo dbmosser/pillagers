@@ -489,6 +489,18 @@ AND THE SECOND HALF OF THE STRETCH:
 | machines converged on the last sighting the way pillagers used to | v9.51 | four sentries in chase, none able to see him, all four steering at 400,660 TO THE UNIT and every one of them holding the role pin. The sector picker is one function at file scope now instead of a copy in each branch |
 
 STILL OPEN, and this is now the whole list:
+- THE GAME DEMOLISHES A FIFTH OF ITS OWN BUILDINGS. 16 of the 84 on THE COLD MILE
+  and both of the two empty ones on COLD STORAGE are built with an authored
+  interior and then stripped at load by the sealed-room repair pass, which
+  rewrites their plan to 'open' and leaves a bare room. Every building in the game
+  is authored, so a designer's choice is being discarded silently on every load.
+  I tried the fix and REVERTED it: giving a stripped building two stub walls works
+  (empty buildings 31 to 15 on the mile) but broke v9.47 and v9.14
+  deterministically, and my explanation for the v9.47 break was wrong. Full
+  evidence in the DESIGN.md investigation entry
+- and a correction: v9.48 says 45 of 84 buildings share the same footprint, 54
+  percent. Wrong, and mine: I bucketed sizes to the nearest 40 and reported the
+  bucket as an exact size. The real commonest footprint is 300x220 at 27 of 84
 - the nine canvas checks other than v8.85 and v8.89 have had six clean runs each
   in one sweep and nothing more. Six runs is evidence, not proof, and none of them
   has had its thresholds read the way those two now have. v8.99 ned<60,
