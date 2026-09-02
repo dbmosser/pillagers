@@ -27443,6 +27443,73 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## HARNESS - A CHECK THAT PASSED ONCE PER PAGE AND CRIED WOLF AFTER THAT
+
+No version bump: the game file is byte-identical to v9.51. This is the harness.
+
+### What was wrong
+
+The v8.85 footprint check failed one full corpus run on v9.51 and passed
+everywhere else I put it: alone on v9.50, alone on v9.51, after the exact 27
+checks that precede it, and on a second full run. I called it flaky and logged
+it. That was not good enough, so I ran it ten times back to back on one page:
+
+| run | result |
+| --- | --- |
+| 1 | pass |
+| 2 to 10 | "could not find a hidden spot where a print is drawable at all" |
+
+One pass in ten. It was not flaky, it was **broken every run after the first**,
+and it had been telling me PASS on runs where it measured nothing at all.
+
+### The cause, measured
+
+Three things ruled out first, because a pixel check has three obvious suspects:
+
+- the renderer IS deterministic at dt 0: the null diff is exactly 0, every time
+- the camera does NOT move between runs: 1061,2402 on all three
+- a print DOES draw: 123 pixels on the player, identically on three runs
+
+Then the actual number. The biggest pixel count a print draws anywhere in the
+ring this check scans is **144, 143, 144** across three runs. **The threshold it
+compares against is 150.** Whether the check can find a spot at all comes down to
+a one pixel wobble, and it lands on the wrong side of it nine times in ten.
+
+So the check has been reporting PASS on a page where it never found a spot, and
+on the one run where it did find a marginal spot it went on to fail its own
+control and blame the game.
+
+### The fix
+
+**Calibrate, do not guess.** The check measures what a print actually draws in a
+place that cannot fail, on the player himself, who is always on screen and always
+lit. Candidates then have to reach 45 percent of that, and the control has to
+reach 30 percent of it. If the reference itself comes back under 40 pixels the
+check SKIPS and says so, because then nothing can be measured.
+
+The two measurements at the chosen spot are now taken **back to back**, so
+nothing can drift between choosing a spot and grading it. The old code took its
+control several hundred canvas reads after the selection.
+
+### The proof, both directions
+
+| | before | after |
+| --- | --- | --- |
+| ten runs on the fixed build | 1 pass | **10 passes** |
+| three runs on v8.84, the build before the footprint fix | not reachable | **3 catches: "a pillager print behind a wall drew 150 pixels"** |
+
+The second row is the one that matters. A threshold made softer is worthless if
+it stops catching the defect, so the calibrated check was run against the build
+that genuinely leaks, and it caught it every time.
+
+Not verified: the other pixel checks in the corpus. v8.85 is the one that failed,
+and I fixed it rather than sweeping every check that reads a canvas for a typed-in
+threshold. There are several, and any of them could have the same fault; that is
+its own piece of work and it is now on the open list. Not verified: whether the
+144 figure holds at other resolutions, since the reference is measured fresh on
+every run and the threshold follows it, which is the point of the change.
+
+
 ## v9.51 - THE MACHINES SEARCH THE WAY THE PILLAGERS LEARNED TO
 
 ### What was wrong

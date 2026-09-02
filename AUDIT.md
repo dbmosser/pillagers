@@ -489,12 +489,13 @@ AND THE SECOND HALF OF THE STRETCH:
 | machines converged on the last sighting the way pillagers used to | v9.51 | four sentries in chase, none able to see him, all four steering at 400,660 TO THE UNIT and every one of them holding the role pin. The sector picker is one function at file scope now instead of a copy in each branch |
 
 STILL OPEN, and this is now the whole list:
-- the v8.85 footprint check is FLAKY. It failed once in a full corpus run on
-  v9.51 and passed in every other setting: alone on v9.50, alone on v9.51, after
-  the exact prefix of the 27 checks that precede it, and on a second full run of
-  93 of 93. It reads canvas pixels and carries its own guard about the renderer
-  not being deterministic at dt 0, so it is timing sensitive. A check that fails
-  one run in two is worse than no check, because it teaches you to ignore red
+- ELEVEN CHECKS IN THE CORPUS READ CANVAS PIXELS and at least four of them grade
+  against a number I typed in rather than one they measured: v8.99 ned<60,
+  v9.07 heardPix<20, v9.08 k<12, v9.15 f<12. v8.85 had exactly this fault and it
+  was provably wrong: its threshold was 150 against a real signal of 144, so it
+  passed once per page and measured nothing on every run after. The other ten
+  have not been checked. Each needs its threshold derived from a reference it
+  takes at run time, the way v8.85 does now
 - the footprint repetition itself: 54 percent of the buildings on THE COLD MILE
   are the same 320x240 box and not one building on either map carries an
   archetype. v9.48 painted them differently; it did not change their shapes,

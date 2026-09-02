@@ -1794,6 +1794,16 @@ window.__REGRESS=[
          rot:0.6,print:1,mine:mine?1:0,t:0,life:45});
        var withP=shot(); g.decals.length=0; return diff(base,withP);
      }
+     // HOW BIG IS A PRINT, IN THIS BUILD, ON THIS SCREEN? Measured on the player
+     // himself, who is always on screen and always lit, so this number cannot be
+     // zero for any reason except prints being broken.
+     // The old code compared candidates against a typed-in 150 and the real
+     // figure is 144, so the check found a spot on its first run and never again:
+     // ten runs back to back gave one pass and nine "could not find a hidden
+     // spot". A threshold has to come from the signal, not from my memory of it.
+     var REF=trial(p.x,p.y,true);
+     if(REF<40) return 'SKIP: a print on the player himself draws only '+REF+' pixels, so nothing here can be measured';
+     var NEED=Math.max(20,Math.round(REF*0.45));
      // A spot that is walkable, out of line of sight, and where a print is
      // genuinely drawable. That last part matters: a point inside a wall draws
      // nothing either way and would pass this check while proving nothing.
@@ -1803,28 +1813,35 @@ window.__REGRESS=[
          var qx=Math.round(p.x+Math.cos(a)*r), qy=Math.round(p.y+Math.sin(a)*r);
          if(!__nav.free(qx,qy,10)) continue;
          if(__los.clear(p.x,p.y,qx,qy)) continue;
-         if(trial(qx,qy,true)>150) hid={x:qx,y:qy};   // mine bypasses the gate
+         if(trial(qx,qy,true)>NEED) hid={x:qx,y:qy};   // mine bypasses the gate
        }
      }
-     if(!hid) return 'could not find a hidden spot where a print is drawable at all';
+     if(!hid) return 'could not find a hidden spot where a print draws at least '+NEED+' pixels, against '+REF+' on the player';
      var vis=null;
      for(var r2=40;r2<220&&!vis;r2+=10){
        for(var a2=0;a2<6.28&&!vis;a2+=0.09){
          var vx=Math.round(p.x+Math.cos(a2)*r2), vy=Math.round(p.y+Math.sin(a2)*r2);
          if(!__nav.free(vx,vy,10)) continue;
          if(!__los.see(p.x,p.y,p.face,vx,vy)) continue;
-         if(trial(vx,vy,false)>150) vis={x:vx,y:vy};
+         if(trial(vx,vy,false)>NEED) vis={x:vx,y:vy};
        }
      }
      var bad=[];
-     // THE BUG: a pillager print behind a wall must draw nothing.
+     // BOTH MEASUREMENTS AT THE SAME SPOT, BACK TO BACK, so nothing can drift
+     // between choosing the spot and grading it. The old code took the control
+     // several hundred canvas reads after the selection.
+     var mineNow=trial(hid.x,hid.y,true);
      var leak=trial(hid.x,hid.y,false);
+     // THE BUG: a pillager print behind a wall must draw nothing.
      if(leak>0) bad.push('a pillager print behind a wall drew '+leak+' pixels');
      // CONTROL ONE: it must still draw where you can see it, or the fix is just
      // "delete footprints" and would pass the line above.
      if(!vis) bad.push('control: no visible spot where a pillager print draws at all');
      // CONTROL TWO: your own prints are exempt, which is what the mine flag is for.
-     if(trial(hid.x,hid.y,true)<=0) bad.push('control: your own prints stopped drawing too');
+     // Graded against the calibrated size rather than against zero, so a print
+     // that has faded to a handful of pixels is caught too.
+     if(mineNow<Math.round(REF*0.3))
+       bad.push('control: your own print at that spot drew '+mineNow+' pixels against '+REF+' on the player');
      return bad.length?bad.join('; '):null; }},
   {v:'8.86',what:'a house is a gamble: most hold a crawler, some hold three, and some are still empty',
    run:function(){
