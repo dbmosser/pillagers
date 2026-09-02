@@ -448,17 +448,21 @@ That produced the v9.37 and v9.38 builds and a vetted queue, and it caught my ow
 v9.30 regression, which two full corpus runs had missed because nothing in the
 corpus had ever signed a term.
 
+FOUR OF THAT QUEUE ARE NOW SHIPPED. What the vetted list produced:
+
+| Item | Build | Evidence |
+| --- | --- | --- |
+| the last-minutes warnings sent you to a ring that was already shut | v9.39 | nearestOut walked every ring and never read the open flag. It now skips shut ones, and with all of them shut it says so instead of naming one |
+| the Peddler promised your stall money survives your death | v9.40 | a 5,000 credit stall balance and a death: 0 credits banked, while the panel said "Yours even if you die out there" and the death screen said "Stall money lost where you fell". The panel now says what the game does |
+| the new-player card said raids pay no XP | v9.41 | one raid, nothing sold: 134 XP extracted, 67 died, exactly half. The card said "Nothing else pays XP" and claimed XP gates the shop, whose highest gate is 2 |
+| breaking line of sight did not shake a chase at range | v9.42 | a pillager hidden 567 units off and 95 degrees from the last sighting was walked 218 units at cosine 0.996 STRAIGHT AT him with no frame of sight; the same pillager at 189 units did it right. v8.62 called this refuted and gave a reason that is not true of the file |
+
 STILL OPEN from that queue, in value order:
-- the last-minutes warnings send you to an extraction ring that is already shut,
-  and can say "you are standing in the way out" while you stand in a closed one
-- breaking line of sight does not shake a chase at range: the chase block is a
-  sibling of the sight gate, not inside it, so machines route to your live
-  position through walls for about five seconds. An in-file comment calls this
-  refuted and its stated reason is wrong
-- the Peddler's panel says stall money is "yours even if you die" and the death
-  screen says the opposite
 - the workshop charges credits and parts to service guns that wear was removed
-  from at v9.01
-- the new-player card says raids pay no XP and that XP unlocks the shop; both are
-  false and the rewards screen says so
-- Wirt's flat 10,000 lot is salvage worth 1,700 to 3,800 six times in eight
+  from at v9.01, so you pay to repair a number that no longer moves
+- Wirt's flat 10,000 credit lot is salvage worth 1,700 to 3,800 six times in
+  eight, so the headline deal of the shop is a loss most weeks
+- the shop footnote says the Meridian Lance is "never sold, by anyone" on a
+  screen where Wirt sells it
+- HUD collisions at 4K: the legend runs off the bottom of the screen and the
+  CONCEALED chip sits on top of the gear stack

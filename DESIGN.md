@@ -27443,6 +27443,133 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.42 - BREAKING LINE OF SIGHT NOW ACTUALLY SHAKES A CHASE
+
+### What was wrong
+
+Duck behind a wall at range and the thing hunting you walked straight to where
+you really were, not to where it last saw you. It had no way of knowing you were
+there. It knew anyway, for about five seconds, every time.
+
+Close quarters was always right, which is why this survived so long. Inside 85
+percent of a pillager's weapon range he goes to the last place he saw you, gets
+there, finds nothing and gives up, exactly as intended. Past that range a
+different branch won the chain and it read your live position with no sight test
+at all.
+
+### Where it is
+
+The chase block is a SIBLING of the sight gate, not a child of it. `if(sees&&...)`
+closes at `var want=e.face;` and `if(e.state==='chase')` starts on the very next
+line. That part is right and deliberate: a chase has to keep running after sight
+is lost or nothing would ever hunt you. What was wrong was where it went while it
+was blind.
+
+Three places read the player directly with no sight test:
+
+- the facing, so a sentry behind a wall tracked you through it
+- the pillager's flanking approach point, `fx3`, whenever range was past 85
+  percent of his weapon
+- every target in the role block, which is sentries, snitches and bulwarks: the
+  flanker's arc point, the pinner's back-off vector, and the plain close-the-gap
+  seek
+
+### The measurement, before the fix
+
+THE COLD MILE at seed 4242, one machine on the map and nothing else, the GAME
+writing the last-known position from a real sighting rather than me setting it by
+hand, and the player then moved behind a wall with no frame of sight regained for
+110 frames. Cosine 1.0 means it walked exactly at the hidden man, 0.0 means
+exactly at right angles to him.
+
+| arm | hidden at | angle off last sighting | walked | at the man | at the last sighting |
+| --- | --- | --- | --- | --- | --- |
+| pillager, far | 567 units | 95 degrees | 218 units | 0.996 | -0.188 |
+| pillager, close | 189 units | 174 degrees | 128 units | -0.999 | 0.988 |
+| sentry, far | 590 units | 90 degrees | 89.6 units | 1.000 | 0.000 |
+
+The middle row is the control and it is the whole proof. Same entity, same map,
+same code, one number changed: at close range he does it right, and he has always
+done it right. That is the band, and it is why this was never visible in a brawl.
+
+### The v8.62 note in the file said REFUTED and gave a wrong reason
+
+The old comment claimed the role block sits inside `if(sees&&...)` so it only
+runs while the machine can see you. It does not sit inside it, and the sentry row
+above is a measurement of it running with sight false. The comment is replaced
+with the measurement rather than deleted, because the next person to look at this
+deserves to know it was checked twice.
+
+### The fix
+
+A ghost pair, `_gx`/`_gy`, at the top of the chase block. While sight holds they
+ARE the live position to the unit, because the sighting branch above rewrites
+tx/ty every single frame it can see you, so nothing about a fight you can see
+changes by a hair. The frame sight breaks they freeze on the last sighting.
+
+Every RANGE test still uses the real distance. How close a machine wants to be
+has not moved.
+
+The pillager's branch needed only `sees&&` in front of it, which hands the chain
+to the branch written at v6.66 for exactly this case and which could never be
+reached above 85 percent of his weapon range.
+
+One chase entry in the file set no last-known position at all: a crawler biting a
+pillager puts that pillager into chase, and his tx/ty was then whatever waypoint
+he was walking to before the fight, so a blind bitten pillager would have set off
+across the map. He now holds where he stands.
+
+`chaseGhost` is the dial. 1 is the new behaviour and the default; 0 restores
+v9.41 exactly, which is how the balance below was measured and how every
+historical number stays reproducible. The dial was read back before it was
+trusted: arm 0 reproduced 218.2 units at cosine 0.996 to the digit.
+
+### What it costs you
+
+Nothing, on the sim's average. 320 seeds on THE COLD MILE, paired per seed, the
+new behaviour against chaseGhost 0 which is v9.41 to the digit:
+
+  extract rate    33.4 percent both arms, 107 of 320 each
+  discordant      52 the new way, 52 the old way. Dead level, p = 1.0
+  median haul     1,460 against 1,435
+  killer mix      sentry 81/76, crawler 71/75, choir 17/18, listener 15/17
+
+But 104 of the 320 raids, a third of them, ENDED DIFFERENTLY. This changes
+individual raids constantly and the average not at all.
+
+Read that carefully, because it is not "no effect". The sim bot does not know
+this mechanic exists: it never deliberately breaks line of sight, so it cannot
+collect the benefit. What the 320 seeds actually prove is that giving machines an
+honest memory costs nothing by accident. Whether it is worth anything on purpose
+is a question about a player, and no bot on this machine can answer it.
+
+### How it is checked
+
+Three arms, and two of them are controls that were green before the fix as well
+as after, so the check can only fail for the one reason:
+
+- a pillager standing in the open with a clear view of the player must still
+  close on him. If this worked by blinding everything it would be worthless.
+- a blind pillager at close range must still walk to the last place he saw the
+  player. That band was never broken and must not become broken.
+- a blind pillager and a blind sentry at range must not walk at the player.
+
+The arena is built from the map itself: a post, a spot visible from it, a spot
+not visible from it at least a right angle away, and a third spot as far out as
+the hidden one but in plain view, so the control differs from the test by line of
+sight and by nothing else. Nothing is a typed-in coordinate.
+
+Fails on a v9.41 fixture with both real numbers quoted and both controls still
+green there.
+
+Not verified: whether this changes how a real player experiences being hunted,
+which no bot can answer, because the sim bot never fights pillagers and its
+pursuit is machine pursuit only. Not verified: the snitch, which never entered
+chase from a clear sighting in this arena and so was never measured, though it
+runs the same role block as the sentry. Not verified: what the change does to the
+Warden, the Choir or the Listener, all of which have their own blocks above this
+one and were not touched.
+
 ## v9.41 - THE FIRST THING A NEW PLAYER IS TOLD ABOUT XP WAS WRONG
 
 The primer opens by itself for any profile with no runs, and one of its cards read:

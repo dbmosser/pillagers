@@ -4626,6 +4626,124 @@ window.__REGRESS=[
        bad.push('the sell panel says you have to walk the money out, and dying kept it');
      }
      return bad.length?bad.join('; '):null; }},
+  {v:'9.42',what:'breaking line of sight sends a chase to the last place it SAW you',
+   run:function(){
+     var bad=[];
+     __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+     var g=__state(), m=g.map, WW=m.cols*m.cw, WH=m.rows*m.ch;
+     // Build the arena from the MAP, not from numbers I typed in. A post, a spot
+     // the machine can see from it, and a spot it cannot, at least a right angle
+     // apart so the two answers can never be confused for one another.
+     function arena(loR,hiR){
+       for(var mx=300; mx<WW-300; mx+=130){
+        for(var my=300; my<WH-300; my+=130){
+         if(!__nav.free(mx,my,16)||!__nav.reachable(mx,my)) continue;
+         var hid=null,vis=null,a,b,r,r2,th,th2,dth,hx,hy,vx,vy;
+         for(a=0;a<32&&!hid;a++){ th=a*Math.PI/16;
+           for(r=loR;r<=hiR;r+=30){
+             hx=mx+Math.cos(th)*r; hy=my+Math.sin(th)*r;
+             if(hx<70||hy<70||hx>WW-70||hy>WH-70) continue;
+             if(!__nav.free(hx,hy,16)||!__nav.reachable(hx,hy)) continue;
+             if(__los.clear(mx,my,hx,hy)) continue;
+             hid={x:hx,y:hy,th:th,r:r}; break; } }
+         if(!hid) continue;
+         for(b=0;b<32&&!vis;b++){ th2=b*Math.PI/16;
+           dth=Math.abs(Math.atan2(Math.sin(th2-hid.th),Math.cos(th2-hid.th)));
+           if(dth<1.45) continue;
+           for(r2=250;r2<=320;r2+=20){
+             vx=mx+Math.cos(th2)*r2; vy=my+Math.sin(th2)*r2;
+             if(vx<70||vy<70||vx>WW-70||vy>WH-70) continue;
+             if(!__nav.free(vx,vy,16)||!__nav.reachable(vx,vy)) continue;
+             if(!__los.clear(mx,my,vx,vy)) continue;
+             vis={x:vx,y:vy,th:th2,r:r2}; break; } }
+         if(!vis) continue;
+         // And a third spot: as far out as the hidden one but in plain view, so
+         // the control differs from the test by sight and by nothing else.
+         var opn=null;
+         for(var r3=420;r3<=490&&!opn;r3+=20){
+           var ox=mx+Math.cos(vis.th)*r3, oy=my+Math.sin(vis.th)*r3;
+           if(ox<70||oy<70||ox>WW-70||oy>WH-70) continue;
+           if(!__nav.free(ox,oy,16)||!__nav.reachable(ox,oy)) continue;
+           if(!__los.clear(mx,my,ox,oy)) continue;
+           opn={x:ox,y:oy,r:r3};
+         }
+         if(opn) return {mx:mx,my:my,hid:hid,vis:vis,opn:opn};
+        } }
+       return null;
+     }
+     // A is the far band, where the defect lived. B is close quarters, where the
+     // game was always right, which is the control that says the probe can tell
+     // the difference. hide false leaves the player in the open, the control that
+     // says a machine that CAN see you still comes for you.
+     function run(kind,A,to){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       var G2=__state(), pp=G2.player, src=null, i;
+       for(i=0;i<G2.ents.length;i++) if(G2.ents[i].kind===kind){ src=G2.ents[i]; break; }
+       if(!src) return {skip:'no '+kind+' on this map'};
+       G2.ents.length=0; G2.ents.push(src);
+       src.hostile=true; src.merc=false; src.friendlyPC=0; src.downed=false; src.grudge=true;
+       src.x=A.mx; src.y=A.my; src.state='patrol'; src.alert=0; src.cd=0; src.role=null;
+       src.face=Math.atan2(A.vis.y-A.my,A.vis.x-A.mx);
+       pp.x=A.vis.x; pp.y=A.vis.y; pp.downed=false; pp.iv=9999; pp.hp=pp.maxhp; G2.pCrouch=false;
+       // THE GAME writes the last-known position, from a real sighting. I never
+       // set tx/ty by hand; a probe that does is grading its own homework.
+       for(var f=0;f<25;f++) __ents(1/60);
+       if(src.state!=='chase') return {skip:kind+' never entered chase from a clear sighting'};
+       var tx0=src.tx, ty0=src.ty;
+       // Second position. The blind arms must be blind and the open arm must be
+       // seen, and both are asserted rather than assumed.
+       pp.x=to.x; pp.y=to.y;
+       var wantBlind=(to===A.hid);
+       if(wantBlind&&__los.clear(src.x,src.y,pp.x,pp.y)) return {skip:'the machine can still see the hidden spot'};
+       if(!wantBlind&&!__los.clear(src.x,src.y,pp.x,pp.y)) return {skip:'the open spot is not actually in view'};
+       var sx=src.x, sy=src.y;
+       var uPx=pp.x-sx, uPy=pp.y-sy, uLx=tx0-sx, uLy=ty0-sy;
+       var nP=Math.hypot(uPx,uPy), nL=Math.hypot(uLx,uLy);
+       if(nL<25||nP<25) return {skip:'the two answers are on top of the machine'};
+       var blind=true;
+       for(var f2=0;f2<110;f2++){
+         __ents(1/60);
+         if(__los.clear(src.x,src.y,pp.x,pp.y)) blind=false;
+         if(wantBlind&&!blind) break;
+         if(src.state!=='chase') break;
+       }
+       var dx=src.x-sx, dy=src.y-sy, mv=Math.hypot(dx,dy);
+       return {kind:kind, moved:+mv.toFixed(1), blind:blind, state:src.state,
+               atPlayer: mv>0.5?+((dx*uPx+dy*uPy)/(mv*nP)).toFixed(3):null,
+               atLastSeen: mv>0.5?+((dx*uLx+dy*uLy)/(mv*nL)).toFixed(3):null,
+               closed:+(nP-Math.hypot(pp.x-src.x,pp.y-src.y)).toFixed(1)};
+     }
+     var far=arena(500,700), near=arena(190,300);
+     if(!far||!near) return 'SKIP: this map has no wall with open ground on both sides of it';
+     // CONTROL ONE, and the one that matters most: a machine that can SEE you must
+     // still come for you. If this fix worked by blinding everything it is worthless.
+     var open=run('raider',far,far.opn);
+     if(open.skip) return 'SKIP: '+open.skip;
+     if(!(open.closed>40&&open.atPlayer>0.7))
+       bad.push('control: a raider standing '+Math.round(far.opn.r)+
+                ' units off with a clear view of the player closed only '+open.closed+
+                ' units at cosine '+open.atPlayer+', so pursuit itself is broken');
+     // CONTROL TWO: close quarters was always right and has to stay right.
+     var rn=run('raider',near,near.hid);
+     if(rn.skip) return 'SKIP: '+rn.skip;
+     if(!(rn.atLastSeen>0.7))
+       bad.push('control: a blind raider at close range walked at cosine '+rn.atLastSeen+
+                ' toward the last place he saw the player, and that band was never broken');
+     // THE FINDING. Measured before the fix: 218 units at cosine 0.996 straight at
+     // a man the raider had never seen there, and 89.6 at cosine 1.000 for a sentry.
+     var rf=run('raider',far,far.hid), sf=run('sentry',far,far.hid);
+     if(rf.skip||sf.skip) return 'SKIP: '+(rf.skip||sf.skip);
+     if(rf.blind&&rf.moved>4&&rf.atPlayer>0.5)
+       bad.push('a raider that had not seen the player for '+rf.moved.toFixed(0)+
+                ' units of walking went at him anyway, cosine '+rf.atPlayer+
+                ' toward where he really was against '+rf.atLastSeen+' toward where it saw him');
+     if(sf.blind&&sf.moved>4&&sf.atPlayer>0.5)
+       bad.push('a sentry that had not seen the player for '+sf.moved.toFixed(0)+
+                ' units of walking went at him anyway, cosine '+sf.atPlayer+
+                ' toward where he really was against '+sf.atLastSeen+' toward where it saw him');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.41',what:'the card new players read about XP matches what raids actually pay',
    run:function(){
      var bad=[];
