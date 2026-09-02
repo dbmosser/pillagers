@@ -27443,6 +27443,64 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.00 - WINDFALLS ARE GONE, AND HIS BROKEN WALL IS NOT WHERE I LOOKED
+
+TWO THINGS, and the first one is a search that found nothing.
+
+HIS BROKEN WALL, which he has now named three times, most recently in detail: "if
+I go right, there's a long container looking structure/house, and the top wall is
+glitched, can pass through it". I found the structure. It is the pair of 880 long
+rails at x720, y620 and y716 on COLD STORAGE, right of the first start, with a
+cap at one end, which is exactly a long container shape. Then I tested three ways
+it could be broken and it was none of them:
+
+    can you stand inside any solid wall?     0 of 402
+    can you stand on any building edge?      0 of 20 buildings
+    can you see through a solid wall?        45 of 326, and every one is
+                                             flagged win=1, a window by design
+    are the rails passable?                  no, all six ledges block movement
+
+So I have not reproduced it and I am not going to invent a cause. A screenshot of
+that wall with the operator next to it would settle it in seconds.
+
+WINDFALLS ARE GONE, which is his answer 10: asked whether a windfall should feel
+rare at about one container in twenty, he answered "NO WINDFALL". The roll gave an
+ordinary container a second, better item on top of its contents at the moment of
+opening. Removed whole: the roll, the odds function that weighed how deep in the
+map you were and how long you had been out, and the table of nine items it drew
+from. WINDFALL_ELITE stays, because two other things draw from that list and
+neither is a windfall.
+
+The telemetry field stays and reads zero. His recorder has carried a windfalls
+count in every run he has exported and deleting the column would rewrite history
+rather than record that the thing stopped.
+
+THE SEEDED STREAM MOVES, deliberately, for the first time in many builds: this
+removes one draw per ordinary container opened, so loot after the first container
+of a raid differs from every previous build. Map building never touched it, so
+both sector fingerprints hold at 58 and 276 and 155 and 589, and the live game
+and the sim lose the same draw so they stay identical to each other.
+
+I BROKE THE HARNESS AND THE HARNESS CAUGHT IT. Three things in the fixture still
+reached for what I had deleted, so the whole thing threw on load and every shim
+vanished. The parse gate passed, because an undefined function is a runtime fault
+and not a syntax one; what actually caught it was __verifySafe itself being
+undefined. Then my new check failed twice more and was wrong both times: the HOT
+ZONE legitimately pushes two extra items into a container as it opens and is not
+a windfall, and the telemetry field was always created lazily rather than
+initialised, so the right question is what the export writes and not whether the
+field exists.
+
+Verified: parse PASS. Both sectors to their fingerprints. Streams identical live
+and sim. Looting on both with no throw and the clock advancing. Three endings
+correct. Hub renders. 42 regression checks pass, none failed and none skipped,
+including a new one that opens sixty ordinary containers and compares what came
+out against what each was built holding, with a control that they must still be
+granting things at all.
+
+Not verified: the broken wall, as above. I also have not measured what removing
+windfalls does to a raid's total haul, and I am not going to, because he told me
+at answer 49 to stop reporting sim balance numbers and that the balance is good.
 ## v8.99 - AN UNOPENED BOX STOPS TELLING YOU WHAT IS IN IT
 
 His note: "there are 2 bars when I loot -- yellow and red -- unnecessary, should

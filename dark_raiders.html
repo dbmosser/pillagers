@@ -1185,7 +1185,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.99';
+var VER='9.00';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6173,41 +6173,16 @@ function sealPayout(tier){
 // That is the greed pillar expressed as a probability instead of a lecture.
 // A windfall on an ordinary crate is usually superb and occasionally merely
 // very good, which is what makes opening the next one worth doing.
-var WINDFALL=['blackbox','reactor','codex','bloom','relay','wcore','titan','coil','ledger'];
+// v9.00: the WINDFALL table is gone with the roll that was its only reader.
+// WINDFALL_ELITE below stays: two other things draw from it and neither is a
+// windfall.
 // The Strongbox pays ELITE ONLY. Nine seconds pinned in place, screaming loud
 // enough to reach a district, is not worth three rare items: the first build of
 // this rolled a Coil and a Payroll Ledger into it and that is a bad dare.
 var WINDFALL_ELITE=['blackbox','reactor','codex','bloom','relay','wcore'];
-function windfallOdds(x,y){
-  if(!G||!G.zones) return 0;
-  var odds=0.04;
-  // How far is the nearest way out? Deep in the map is worth more.
-  var near=1e9;
-  for(var i=0;i<G.zones.length;i++){
-    var d=dist({x:x,y:y},G.zones[i]);
-    if(d<near) near=d;
-  }
-  odds+=clamp(near/2600,0,1)*0.10;
-  // How long have you been out? Past four minutes the map starts paying you for
-  // the nerve, which is the other half of the extract-too-easy answer.
-  var out=elapsed();
-  odds+=clamp((out-240)/420,0,1)*0.08;
-  // And is anything near enough to kill you for it? IT HAS TO BE ABLE TO SEE THE
-  // CONTAINER, fixed at v1.78. Proximity alone fired on 65 percent of every
-  // container on all four maps, and 62 percent of those were an enemy standing on
-  // the other side of a wall. That is not danger, it is population density, and a
-  // bonus that pays on two thirds of the map is a baseline wearing a costume.
-  // Requiring line of sight cuts it to about a quarter of containers, which is the
-  // spike it was always meant to be, so the payout goes up to match.
-  var danger=0;
-  for(var e2=0;e2<G.ents.length;e2++){
-    var E=G.ents[e2];
-    if(E.kind==='raider'||E.kind==='peddler'||E.kind==='stray') continue;
-    if(dist({x:x,y:y},E)<340&&losClear(x,y,E.x,E.y,G.vseg||G.map.segs)){ danger=1; break; }
-  }
-  if(danger) odds+=0.10;
-  return clamp(odds,0,0.28);
-}
+// v9.00: windfallOdds is gone with the roll it existed for. It weighed how
+// deep in the map you were, how long you had been out and what was near
+// enough to punish you for the pause. Nothing else ever called it.
 // THE MERIDIAN STRONGBOX. One per raid, in the worst place on the map, and it takes
 // nine seconds to crack while screaming the whole time. It is the discrete
 // version of the same idea: a set piece you can choose to be greedy about.
@@ -10390,25 +10365,14 @@ function openContainer(ct,onlyKeys){
   // seeded raid in the sim was never the same raid as that seed played live.
   // Seeds stay comparable sim to sim, and are now comparable to the real thing.
   // Only the presentation is skipped.
-  if(!ct.strong&&!ct.dropped&&!ct.mine){
-    var wo=windfallOdds(ct.x,ct.y);
-    if(rr()<wo){
-      var wk=pick(WINDFALL);
-      ct.loot=ct.loot.concat([wk]);
-      ct.windfall=1;
-      T.windfalls=(T.windfalls||0)+1;
-      // v8.79: hold it back far enough to clear the last staged item, which is
-      // granted on the very frame the search bar fills, which is this frame.
-      _wnDelay=0.55;
-      if(!G.sim){
-        say('There is something under it.');
-        // v8.79, his note: the shouted WINDFALL caption is gone. The sound and
-        // the sparks stay, which is the part he said could stay.
-        spark(ct.x,ct.y,'#ffc04a',30,320);
-        sfx('charge',ct.x,ct.y);
-      }
-    }
-  }
+  // v9.00, HIS ANSWER 10: "NO WINDFALL". The roll that used to sit here gave an
+  // ordinary container a second, better item on top of its contents. It is gone
+  // whole: the roll, its odds, and the table it drew from. A container now holds
+  // exactly what it was built holding.
+  // The rr() draw goes with it, so loot rolled after the first container of a
+  // raid differs from every build before this one. That is deliberate. Map
+  // building never touched this, so both sector fingerprints are unchanged, and
+  // the live game and the sim lose the same draw so they stay in step.
   grantLoot(ct,ct.loot,_wnDelay);
 }
 function grantLoot(ct,keys,delay0){
@@ -24148,7 +24112,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.99: one progress bar while you search, not two, and an unopened box no longer shows the rarity of what is in it.',
+  now:'v9.00: windfalls are gone. A container holds what it holds, with no second better item rolled on top when you open it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

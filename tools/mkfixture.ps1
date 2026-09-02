@@ -231,7 +231,9 @@ window.__optic={mag:opticMag,CH:CH,VF:VF,AMBR:AMBR};
 window.__stray={make:mkStray,give:strayGive,reveal:strayReveal,wants:STRAY_WANTS};
 window.__body={age:bodyAge,line:bodyLine,RAIDS:0};   // v8.53: here/recover deleted with the dead recovery scaffolding
 window.__listen={make:mkListener,hear:listenersHear,R:LISTEN_R};
-window.__spike={odds:windfallOdds,box:mkStrongbox,pool:WINDFALL,open:openContainer};
+// v9.00: was {odds:windfallOdds, pool:WINDFALL, ...}. Both are gone with the
+// windfall roll, so this keeps only the two halves that still exist.
+window.__spike={box:mkStrongbox,open:openContainer};
 window.__wxturn={tick:wxTick,mix:wxMix,list:WEATHER,TURN:WX_TURN,cur:wx};
 window.__voice={tick:tickMachineVoices,map:VOICE,budget:function(){return VOICE_BUDGET;},blip:blip};
 window.__terms={list:TERMS,on:termsOn,has:hasTerm,pay:termsPay,toggle:toggleTerm,render:renderTerms};
@@ -667,35 +669,9 @@ window.__simSeedsFull=function(seeds){
   return out;
 };
 window.__world=function(){ return {w:WORLD_W,h:WORLD_H}; };
-// WINDFALL PROBE. Reports windfallOdds broken into its three terms at every
-// container on the current raid, so the promise ("odds rise with distance from a
-// way out, time on the surface, and danger") can be checked against real geometry
-// rather than against the comment that describes it.
-window.__wf=function(atSec){
-  if(!G) return null;
-  var save=G.timeLeft;
-  if(atSec!==undefined&&atSec!==null) G.timeLeft=CFG.raidSec-atSec;
-  var rows=[];
-  for(var i=0;i<G.containers.length;i++){
-    var c=G.containers[i];
-    var near=1e9;
-    for(var z=0;z<G.zones.length;z++){ var d=dist(c,G.zones[z]); if(d<near) near=d; }
-    var danger=0,dLos=0,dAware=0,dAlive=0;
-    for(var e=0;e<G.ents.length;e++){
-      var E=G.ents[e];
-      if(E.kind==='raider'||E.kind==='peddler'||E.kind==='stray') continue;
-      if(dist(c,E)<340&&losClear(c.x,c.y,E.x,E.y,G.vseg||G.map.segs)){ danger=1; if(!E.dead) dAlive=1; if(losClear(c.x,c.y,E.x,E.y,G.vseg||G.map.segs)) dLos=1; if(E.alert||E.state==='chase'||E.state==='hunt'||E.state==='search') dAware=1; break; }
-    }
-    var out=CFG.raidSec-G.timeLeft;
-    rows.push({kind:c.kind,near:Math.round(near),
-      tDist:+(clamp(near/2600,0,1)*0.10).toFixed(4),
-      tTime:+(clamp((out-240)/420,0,1)*0.08).toFixed(4),
-      tDang:danger?0.10:0,dLos:dLos,dAware:dAware,dAlive:dAlive,
-      odds:+windfallOdds(c.x,c.y).toFixed(4)});
-  }
-  G.timeLeft=save;
-  return {raidSec:CFG.raidSec,zones:G.zones.length,cons:rows.length,rows:rows};
-};
+// v9.00: the WINDFALL PROBE is gone with the thing it measured. It broke
+// windfallOdds into its distance, time and danger terms so the promise could be
+// checked against real geometry. There are no windfalls to measure now.
 // Paired A/B. Runs an explicit list of seeds so the SAME raids can be put through
 // two builds and compared pairwise. Unpaired 30v30 comparisons are close to a coin
 // flip; the sign of a paired difference is right about 95 percent of the time at 100
@@ -1498,37 +1474,11 @@ window.__REGRESS=[
      // The store itself is never touched by any of this.
      if((__state().bag||[]).length!==5) bad.push('the bag store lost items, it should only be the DRAW that changes');
      return bad.length?bad.join('; '):null; }},
-  {v:'8.79',what:'a windfall item lands clear of the item the search bar was already delivering',
-   run:function(){
-     __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
-     var g=__state(); g.sim=0; g.labels.length=0;
-     var ct=null;
-     for(var i=0;i<g.containers.length;i++) if((g.containers[i].loot||[]).length>=2){ ct=g.containers[i]; break; }
-     if(!ct) return 'no container with 2 items to test with';
-     var bad=[];
-     // Control first: a plain grant with no windfall must still start at once,
-     // so this cannot pass by delaying everything.
-     g.labels.length=0;
-     // Real keys, taken from the game's own tables rather than typed from
-     // memory. My first version invented two and threw on ITEMS[key].r.
-     var K3=[],WK=null;
-     for(var ik in ITEMS){ if(K3.length<3) K3.push(ik); }
-     for(var wi=0;wi<WINDFALL.length;wi++) if(ITEMS[WINDFALL[wi]]){ WK=WINDFALL[wi]; break; }
-     if(K3.length<3||!WK) return 'could not find real item keys to test with';
-     __grant(ct,[K3[0]],0);
-     if(!g.labels.length) return 'control: a plain grant drew no label at all';
-     if(g.labels[0].t>0.01) bad.push('a plain single item is being delayed, it should be immediate');
-     // Several keys in one grant must be dealt out, not dumped on one frame.
-     g.labels.length=0;
-     __grant(ct,K3,0);
-     if(g.labels.length===3&&Math.abs(g.labels[2].t-g.labels[0].t)<0.2)
-       bad.push('three items in one grant all start together');
-     // And the windfall case: a starting delay must actually reach the label.
-     g.labels.length=0;
-     __grant(ct,[WK],0.55);
-     if(g.labels.length&&g.labels[0].t>-0.5)
-       bad.push('the windfall delay is not reaching the label, t='+g.labels[0].t);
-     return bad.length?bad.join('; '):null; }},
+  // v9.00: the v8.79 check is retired. It proved a windfall item landed clear of
+  // the item the search bar was already delivering, and his answer 10 removed
+  // windfalls entirely. The half of it worth keeping, that several items in one
+  // grant are dealt out rather than dumped on one frame, is asserted by the
+  // v9.00 check at the end of this list.
   {v:'8.80',what:'a crawler waits between swings instead of hitting every frame',
    run:function(){
      __resetCfg(); __pinDefaults(0);
@@ -2252,6 +2202,46 @@ window.__REGRESS=[
      // check a camera it did not ask for. That is exactly how this check broke
      // the two visibility checks above it the first time it ran.
      __zoom.set(1,true);
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.00',what:'a container grants exactly what it was built holding, with no windfall on top',
+   run:function(){
+     __zoom.set(1,true);
+     __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); g.ents.length=0; g.player.iv=99; g.sim=0;
+     var bad=[];
+     // Open a lot of ordinary containers and compare what came out against what
+     // each was holding. A windfall appended a tenth item to the list at the
+     // moment of opening, so any surplus is one.
+     var opened=0, surplus=0, deep=null;
+     for(var i=0;i<g.containers.length&&opened<60;i++){
+       var ct=g.containers[i];
+       if(ct.strong||ct.dropped||ct.mine||ct.opened) continue;
+       var held=(ct.loot||[]).length;
+       if(!held) continue;
+       // furthest from a way out is where the old odds paid best, so hold on to
+       // one for the second half of this check
+       if(!deep) deep=ct;
+       __openFull(ct);
+       opened++;
+       // The hot zone pushes two items in at open time and says so with
+       // hotPaid. That is a different system and not a windfall.
+       if(ct.hotPaid) continue;
+       var got=(ct.loot||[]).length;
+       if(got>held) surplus+=(got-held);
+     }
+     if(opened<10) return 'only '+opened+' ordinary containers to open, that is too few to say anything';
+     if(surplus>0) bad.push(opened+' containers granted '+surplus+' items more than they held');
+     // His recorder has carried a windfalls count in every run he has exported.
+     // It was always created lazily by the roll and written out as
+     // (T.windfalls||0), so the question is what the EXPORT says, not whether
+     // the field exists on the object.
+     var T=g.tel;
+     if((T.windfalls||0)!==0) bad.push('the recorder counted '+T.windfalls+' windfalls');
+     // CONTROL: the containers must still be GIVING things, or a fix of "grant
+     // nothing" would satisfy every line above.
+     var bagN=(g.bag||[]).length;
+     if(bagN<5) bad.push('control: '+opened+' containers put only '+bagN+' items in the bag');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
