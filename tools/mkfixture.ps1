@@ -3738,6 +3738,66 @@ window.__REGRESS=[
      if(c&&c.dialStuck!==undefined) bad.push('control: missWake did not take, it read back '+c.dialStuck);
      else if(c&&c.hostile) bad.push('control: with missWake off a miss still turned him, so something else is doing it');
      __resetCfg();
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.27',what:'standing behind a container roof draws you through it instead of swallowing you',
+   run:function(){
+     var bad=[];
+     __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
+     var g=__state(), W=g.map.walls;
+     // HIS #45, the long container east of the COLD STORAGE starts. Found by
+     // shape rather than by index so a map edit moves the check instead of
+     // breaking it.
+     var wl=null;
+     for(var i=0;i<W.length;i++){ var w=W[i];
+       if(w.furn||w.wreck||w.ledge||w.win) continue;
+       if(w.w>=900&&w.h<=50&&w.x>2500){ wl=w; break; } }
+     if(!wl) return 'SKIP: COLD STORAGE no longer has the long container this was measured on';
+     var LIFT=wl.lift||((wl.w<=60&&wl.h<=60)?14:26);
+     var cx0=wl.x+wl.w*0.5;
+     var inBand=Math.round(wl.y-LIFT*0.5);      // inside the drawn roof, north of solid
+     // THE DIAL IS THE ONLY THING THAT MOVES. Player, camera, wall and frame are
+     // identical between the two reads, which is what makes this a measurement of
+     // the ghost rather than of the scenery. Every other way I tried moved the
+     // camera with the player and compared two different pictures.
+     function ghostPct(py){
+       __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
+       var gg=__state(), pp=gg.player;
+       gg.ents.length=0; pp.iv=99;
+       pp.x=cx0; pp.y=py;
+       var K=__keysRef(); for(var k in K) delete K[k];
+       for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
+       var moved=Math.round(Math.hypot(pp.x-cx0,pp.y-py));
+       var s=__proj.w2s(pp.x,pp.y);
+       var R=14, bx=Math.round(s.x-R), by=Math.round(s.y-R*1.9), bw=R*2, bh=Math.round(R*2.5);
+       var cv=__canvases().world, cx=cv.getContext('2d');
+       __cfg({seeThrough:1}); __frame(0);
+       var A=cx.getImageData(bx,by,bw,bh).data;
+       __cfg({seeThrough:0}); __frame(0);
+       var B=cx.getImageData(bx,by,bw,bh).data;
+       __cfg({seeThrough:1});
+       var diff=0, n=A.length/4;
+       for(var q=0;q<A.length;q+=4)
+         if(Math.abs(A[q]-B[q])+Math.abs(A[q+1]-B[q+1])+Math.abs(A[q+2]-B[q+2])>24) diff++;
+       return {pct:Math.round(diff/n*100), pushed:moved};
+     }
+     var band=ghostPct(inBand);
+     // If a later build widens the colliders to match the art, this ground stops
+     // being reachable and the whole question goes away. Say so rather than
+     // failing, because that would be a fix too, just a much bigger one.
+     if(band.pushed>6)
+       return 'SKIP: the drawn roof is solid now, this ground is no longer reachable, so there is nothing to draw through';
+     if(band.pct<15)
+       bad.push('standing '+Math.round(LIFT*0.5)+' units inside the container roof, nothing is drawn through it: '+
+                band.pct+' percent of the box responds to the dial');
+     // CONTROL 1: IN FRONT OF IT, where he is plainly visible already, the ghost
+     // must not fire. A version that simply drew a second operator every frame
+     // would satisfy the line above and look wrong everywhere.
+     var front=ghostPct(wl.y+wl.h+18);
+     if(front.pct>4) bad.push('control: standing in front of the container, something is still drawn through it ('+front.pct+' percent)');
+     // CONTROL 2: and well clear to the north, where the art never reaches.
+     var clear=ghostPct(wl.y-LIFT-18);
+     if(clear.pct>4) bad.push('control: standing clear of the container, something is still drawn through it ('+clear.pct+' percent)');
+     __resetCfg();
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

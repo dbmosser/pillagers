@@ -27443,6 +27443,72 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.27 - HIS BROKEN WALL, FOUND, AND YOU STOP VANISHING INTO IT
+
+HIS #45: "go right from the start on COLD STORAGE, there is a long
+container-looking structure whose top wall is glitched and can be walked
+through." Six builds of looking never found it. It is real, and nothing is
+missing from the map.
+
+Every solid in the game draws two faces around its lift: a front face at
+y+h-LIFT and a TOP face at y-LIFT. Collision is y to y+h. So the strip from
+y-LIFT to y is drawn as part of the structure and is not solid, twenty six units
+of it on anything bigger than sixty square.
+
+MEASURED on the container he named, the 1080 by 44 row at x2940 y3260:
+
+  standing 13 units inside the visible top     not blocked, you just walk in
+  walking into the solid part from the south   ejected to y3249, which is INSIDE
+                                               that same drawn strip
+  moving the art off that spot                 changes 68 percent of a box
+                                               centred on the operator
+  standing where the art never reaches         changes 0 percent
+
+So he was partly swallowed by the container rather than fully erased, which is
+exactly what walking through the top wall looks like from the outside. The strip
+is 26 walkable units deep, and 9.4 percent of all walkable ground on COLD STORAGE
+has a roof drawn over it.
+
+WHY THE PROBE NEVER FIRED. The wall-clip tripwire asks whether the player's
+CENTRE is inside a collider. This defect never puts it there. Six builds of
+silence from an instrument that could not see the thing, and I read the silence
+as absence. That is the second time this exact shape has cost me a week.
+
+WHAT THIS BUILD DOES NOT DO, deliberately. The colliders are not widened to match
+the art. In this projection the ground footprint IS y to y+h and the roof is
+drawn lifted to fake height, so walking north of the footprint means walking
+BEHIND the structure, which is correct and is how the whole world is built.
+Widening every collider by 26 would change pathing on both maps, could seal
+doorways, and is a far larger change than the one he reported.
+
+WHAT WAS ACTUALLY WRONG is that walking behind something made you disappear with
+no cue at all. So the operator is now drawn through whatever is covering him, at
+half alpha in a single flat colour, using the real sprite rather than a hand
+drawn blob so the ghost can never drift from what he actually looks like. Only
+the player: a pillager hidden behind a roof is cover working as intended.
+
+The test is the renderer's own arithmetic rather than a guess. A wall paints
+after the player when its sort key y+h is greater than his y-lift key, and it
+covers him when its drawn top face contains where he was painted. It uses the
+same lift fallback the wall draw uses, so the two cannot disagree.
+
+Verified: parse PASS v9.27. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 69 regression checks
+pass in sequence, none skipped. This one touches the render path, so it got the
+full run rather than the batch he approved today. The new check toggles only the
+dial, so the player, camera, wall and frame are identical between the two reads,
+and it fails on a v9.26 fixture with "standing 13 units inside the container
+roof, nothing is drawn through it: 0 percent of the box responds to the dial".
+
+Not verified: how the ghost reads in motion, and whether half alpha is the right
+weight. Neither is measurable here, both are things he will see in one raid. It
+is on a dial called seeThrough if it is wrong. Also not verified: the same strip
+exists on every wall in the game and on THE COLD MILE too, and the fix is
+general, but only the COLD STORAGE container he named was measured.
+
 ## v9.26 - A ROUND THAT GOES PAST HIM COUNTS AS SHOOTING AT HIM
 
 HIS INSTRUCTION: "pillagers should go hostile after first shot".
