@@ -2964,6 +2964,69 @@ window.__REGRESS=[
        }
      }
      P.credits=cred0; P.stash=stash0;
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.12',what:'a HUD panel cannot be dragged off the screen and lost',
+   run:function(){
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, no drag can land';
+     __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __zoom.set(1,true);
+     __deploy({kit:['medkit','plate'],safe:null,mapIx:0,seed:4242});
+     __P().hud={};
+     var g=__state(); g.ents.length=0; g.player.iv=99;
+     for(var f=0;f<6;f++) __loop(performance.now()+f*16.7);
+     var bad=[], cv=document.getElementById('cv');
+     if(!cv) return 'no canvas to drag on';
+     var H=__hud(), B=H.box&&H.box.body;
+     if(!B) return 'the vitals panel did not draw, so there is nothing to drag';
+     function frames(t){ for(var q=0;q<6;q++) __loop(performance.now()+t+q*16.7); }
+     function reachable(b){
+       // Some of the panel has to be on screen AND the strip he drags it by has
+       // to be hit-testable by a real pointer.
+       if(!(b.right>0&&b.bottom>0&&b.x<1920&&b.y<1080)) return false;
+       var hx=Math.max(6,Math.min(1914,Math.round(b.x+Math.min(b.w/2,40))));
+       var hy=Math.max(4,Math.min(1076,Math.round(b.y+6)));
+       var part=__hud().hitAt?__hud().hitAt(hx,hy):null;
+       return part==='bar'||part==='glyph'||part==='grip'||part==='body';
+     }
+     // THE FLICK, through the real mouse path: down on the bar, one big move,
+     // up. Measured before v9.12: x -886 with the right edge at -354, saved to
+     // the profile, and no reset control anywhere in the game.
+     var r=cv.getBoundingClientRect();
+     function ev(t,x,y){ cv.dispatchEvent(new MouseEvent(t,{clientX:r.left+x,clientY:r.top+y,button:0,bubbles:true})); }
+     var bx=Math.round(B.x+60), by=Math.round(B.y+6);
+     ev('mousemove',bx,by); ev('mousedown',bx,by);
+     ev('mousemove',bx-900,by-1000); ev('mouseup',bx-900,by-1000);
+     frames(300);
+     var A=__hud().box.body;
+     if(!reachable(A)) bad.push('one flick put the vitals panel at x '+Math.round(A.x)+', right '+Math.round(A.right)+', with no way to grab it back');
+     // AND IT REPAIRS a profile that is already broken, which a clamp living only
+     // in the drag handler would not do.
+     __P().hud={body:{dx:-3000,dy:-3000}};
+     frames(900);
+     var R2=__hud().box.body;
+     if(!reachable(R2)) bad.push('a panel already saved off screen stayed off screen at x '+Math.round(R2.x));
+     // CONTROL 1: it must still MOVE. A clamp that pinned every panel to its
+     // default would pass both lines above and take away the thing he asked for.
+     __P().hud={};
+     frames(1500);
+     var home=__hud().box.body;
+     __P().hud={body:{dx:-140,dy:-220}};
+     frames(2100);
+     var moved=__hud().box.body;
+     if(Math.round(moved.x)===Math.round(home.x)&&Math.round(moved.y)===Math.round(home.y))
+       bad.push('control: a modest drag no longer moves the panel at all');
+     if(Math.abs((moved.x-home.x)-(-140))>2||Math.abs((moved.y-home.y)-(-220))>2)
+       bad.push('control: a modest drag was altered, moved by '+Math.round(moved.x-home.x)+','+Math.round(moved.y-home.y)+' instead of -140,-220');
+     // CONTROL 2: a panel he never touched must be left exactly where it was, so
+     // the clamp cannot quietly reposition the default layout.
+     __P().hud={};
+     frames(2700);
+     var untouched=__hud().box.gear;
+     __P().hud={body:{dx:-3000,dy:-3000}};
+     frames(3300);
+     var untouched2=__hud().box.gear;
+     if(untouched&&untouched2&&(Math.round(untouched.x)!==Math.round(untouched2.x)||Math.round(untouched.y)!==Math.round(untouched2.y)))
+       bad.push('control: rescuing one panel moved another that was never dragged');
+     __P().hud={};
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

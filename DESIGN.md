@@ -27443,6 +27443,71 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.12 - A PANEL YOU DRAG OFF THE EDGE IS NOT LOST ANY MORE
+
+Found while checking three old audit notes that all turned out to be already
+fixed. This one was not, and it is worse than any of them.
+
+REPRODUCED through the real mouse path: mousedown on the vitals bar, one
+mousemove 900 left and 1000 up, mouseup.
+
+    before   x 14, right 546, on screen
+    after    x -886, right -354, entirely off the left edge
+    saved    P.hud.body = {dx:-900, dy:-1000}
+
+The drag writes the offset straight from the pointer with no bound of any kind,
+and mouseup saves it to the profile, so it survives the raid, the session and the
+game. There is no reset-panels control anywhere in the file. One careless flick
+and the health bar is gone for good, and the only way back would be wiping the
+save.
+
+THE PANEL KEEPS ITS HANDLE ON SCREEN. Not the whole panel: he asked for these to
+be movable, and shoving one mostly off the edge is a legitimate way to get it out
+of the way. What must stay reachable is the strip he drags it BY, so there is
+always something to pull it back with.
+
+IT REPAIRS AS WELL AS BOUNDS. The clamp runs off the boxes the previous frame
+drew, at the top of drawHUD, so a profile that already has a panel pushed into
+the void walks it back the moment the HUD renders. A clamp living only in the
+drag handler would have bounded new drags and left an already-lost panel lost,
+which is the case that actually matters if he has done this to himself already.
+The repaired offset is saved, or the panel he rescued would be gone again on the
+next load.
+
+MEASURED AFTER: the same flick now leaves the panel at x -485 with its right edge
+at 47, and a pointer at x 5, 20 or 40 hit-tests as "bar", so it can be grabbed
+and dragged back. A profile carrying dx -3000, dy -3000 is walked back to the
+same reachable position.
+
+Verified: parse PASS v9.12. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 55 regression checks
+pass in sequence, none skipped.
+
+The check fails on a fixture built from v9.11 with "one flick put the vitals
+panel at x -886, right -354, with no way to grab it back; a panel already saved
+off screen stayed off screen at x -2986". Two controls: a modest drag of -140,
+-220 must still move the panel by exactly that, so a clamp that pinned everything
+to its default would fail rather than quietly removing the feature he asked for;
+and rescuing one panel must not move a panel he never touched.
+
+ALSO CHECKED, AND FOUND NOTHING, three times. The audit note that the bot pays
+the water speed penalty twice: fixed at v8.41, and moveToward is the only path
+the bot moves through. The note that the notes-logged counter draws off the right
+edge: fixed at v8.43. The note that the HUD drag offset is applied differently in
+drawing and in hit-testing: they agree, measured by dragging a panel and hitting
+its new corner. I also measured the bot at 14.5 units a second in water against
+107 on land and thought I had the double penalty in hand; that ratio is the bot
+pathing around water, not a second multiplier, and I was wrong to read it as one.
+
+Not verified: the clamp keeps LH(30) of the bar reachable, about 47 pixels at
+1080p, which I chose rather than measured against a real pointer flick; whether
+47 pixels is comfortable to grab on his 4K screen is his to judge, and LH follows
+the text size setting rather than the screen. Panels in the Undercroft are not
+draggable and are untouched.
+
 ## v9.11 - WIRT KEEPS ONE GOOD THING ON THE COUNTER
 
 His answer 48: Wirt sells one special 10k item that changes hourly.

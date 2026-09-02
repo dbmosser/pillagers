@@ -1186,7 +1186,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.11';
+var VER='9.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19563,8 +19563,41 @@ function drawBuzzFx(){
     ctx.textAlign='left';
   }
 
+// v9.12: A PANEL MUST KEEP ITS HANDLE ON SCREEN. The drag writes P.hud[id].dx/dy
+// straight from the pointer with no bound, and mouseup saves it, so one flick put
+// the vitals block at x -886 and there is no reset control in the game to get it
+// back. This walks any panel whose drag bar has left the screen back to the edge.
+// It reads the boxes the LAST frame drew, which is what lets it repair a profile
+// that is already broken rather than only bounding new drags.
+function hudClampAll(){
+  if(!P||!P.hud||!W||!H) return;
+  var pad=LH(30);            // how much of the bar has to stay reachable
+  for(var k in HUDBOX){
+    var B=HUDBOX[k]; if(!B) continue;
+    var o=P.hud[k]; if(!o) continue;
+    if(!o.dx&&!o.dy) continue;
+    var bar=hudBar(B); if(!bar) continue;
+    var nx=0,ny=0;
+    // Horizontally it may hang off either edge, but not so far that there is
+    // nothing left to grab.
+    if(bar.x+bar.w<pad)      nx=pad-(bar.x+bar.w);
+    else if(bar.x>W-pad)     nx=(W-pad)-bar.x;
+    // Vertically the bar itself must be on screen, because that is the only part
+    // a drag can start from. Off the top is the case that loses a panel for good.
+    if(bar.y+bar.h<pad)      ny=pad-(bar.y+bar.h);
+    else if(bar.y>H-pad)     ny=(H-pad)-bar.y;
+    if(nx||ny){
+      o.dx=(o.dx||0)+nx;
+      o.dy=(o.dy||0)+ny;
+      // Repairing a stored offset is worth persisting: otherwise a panel he
+      // rescued is lost again the next time he loads.
+      if(!G||!G.sim){ try{ saveProfile(); }catch(_hc){} }
+    }
+  }
+}
 function drawHUD(){
   var p=G.player,T=G.tel,i;
+  hudClampAll();
   ctx.clearRect(0,0,W,H);
   var vg=ctx.createRadialGradient(W/2,H/2,H*.42,W/2,H/2,H*.85);
   vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,.45)');
@@ -24431,7 +24464,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.11: Wirt keeps one good thing on the counter at a flat $10,000, and it changes every hour.',
+  now:'v9.12: a HUD panel you drag off the edge cannot be lost any more. It keeps a handle on screen so you can always pull it back.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
