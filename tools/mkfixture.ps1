@@ -1687,6 +1687,44 @@ window.__REGRESS=[
      if(!vis) bad.push('control: no visible spot where a pillager print draws at all');
      // CONTROL TWO: your own prints are exempt, which is what the mine flag is for.
      if(trial(hid.x,hid.y,true)<=0) bad.push('control: your own prints stopped drawing too');
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.86',what:'a house is a gamble: most hold a crawler, some hold three, and some are still empty',
+   run:function(){
+     function survey(mapIx,seeds){
+       var tot=0,inside=0,bTot=0,bWith=0,b3=0;
+       for(var s=0;s<seeds;s++){
+         __resetCfg(); __pinDefaults(mapIx);
+         __startRaid({mapIx:mapIx,seed:2000+s*613});
+         var g=__state(),B=(g.map.buildings||[]);
+         var cnt=new Array(B.length); for(var q=0;q<B.length;q++) cnt[q]=0;
+         for(var e=0;e<g.ents.length;e++){
+           var E=g.ents[e]; if(E.kind!=='crawler') continue;
+           tot++;
+           for(var b=0;b<B.length;b++){ var Bb=B[b];
+             if(E.x>Bb.x&&E.x<Bb.x+Bb.w&&E.y>Bb.y&&E.y<Bb.y+Bb.h){ inside++; cnt[b]++; break; } }
+         }
+         bTot+=B.length;
+         for(var q2=0;q2<B.length;q2++){ if(cnt[q2]>0) bWith++; if(cnt[q2]>=3) b3++; }
+       }
+       return {pctIn:inside/tot*100, pctOcc:bWith/bTot*100, withThree:b3, buildings:bTot};
+     }
+     var a=survey(0,5), b=survey(1,5);
+     var bad=[];
+     // Before v8.86: 15.6 percent of buildings occupied on COLD STORAGE, 14 on
+     // THE COLD MILE. Walking into a house was safe five times out of six.
+     if(a.pctOcc<45) bad.push('COLD STORAGE houses only '+a.pctOcc.toFixed(1)+' percent occupied');
+     if(b.pctOcc<45) bad.push('THE COLD MILE houses only '+b.pctOcc.toFixed(1)+' percent occupied');
+     // "a crawler or 3": the threes have to actually happen.
+     if(!a.withThree) bad.push('no COLD STORAGE house held three crawlers across five raids');
+     // CONTROL ONE: some houses must still be EMPTY, or there is no gamble in it,
+     // just a tax. This is the line that a fix of "put a crawler in every
+     // building" would fail.
+     if(a.pctOcc>90) bad.push('COLD STORAGE houses are '+a.pctOcc.toFixed(1)+' percent occupied, that is a tax and not a gamble');
+     if(b.pctOcc>90) bad.push('THE COLD MILE houses are '+b.pctOcc.toFixed(1)+' percent occupied');
+     // CONTROL TWO: the street cannot go quiet. Some crawlers stay outside, or
+     // the change reads as "crawlers moved" rather than "houses got dangerous".
+     if(a.pctIn>92) bad.push('COLD STORAGE moved '+a.pctIn.toFixed(1)+' percent of crawlers indoors, the street is empty');
+     if(b.pctIn>92) bad.push('THE COLD MILE moved '+b.pctIn.toFixed(1)+' percent of crawlers indoors');
      return bad.length?bad.join('; '):null; }}
 ];
 window.__regress=function(){

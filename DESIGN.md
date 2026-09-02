@@ -27443,6 +27443,63 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.86 - EVERY HOUSE IS A GAMBLE NOW
+
+His note: "need crawlers to spawn indoors more often", then "every house should
+be a gamble bc likely to be a crawler or 3 in there".
+
+MEASURED FIRST, eight seeds a map, every crawler tested against every building
+rectangle:
+
+    COLD STORAGE    19.0 percent of crawlers indoors.  25 of 160 buildings
+                    occupied. 135 of them held nothing at all.
+    THE COLD MILE   12.3 percent indoors.  94 of 672 occupied.
+
+So walking into a house was safe five times out of six, and there was no gamble
+in it to take. The cause is plain: crawlers were placed at any free spot on the
+map, with no preference for inside or out.
+
+WHAT CHANGED. Most crawlers are now moved into a building after they roll their
+spot. Buildings are eligible if they are big enough to fight inside and far
+enough from where he lands that this cannot become a spawn trap, and they are
+walked in a fixed hash order rather than left to right, so the occupied ones are
+spread over the map instead of filling one district. How many go in each house
+cycles through 1, 1, 2, 1, 3, 1, 1, 2: the threes are what make a doorway worth
+being careful about, the ones are what stop every house being a fight.
+
+NOT ONE EXTRA RANDOM NUMBER IS DRAWN. Each crawler still rolls its spot exactly
+as before; what changed is that it is then moved by INDEX, which is the same
+trick the possum branch already uses to put a crawler by a wreck. The proof is in
+the fingerprints: containers still come out at 155 and 589 and entities at 58 and
+276, identical to every build before this one, so the seeded stream is untouched
+and old paired measurements still line up.
+
+RESULT, same eight seeds:
+
+                        crawlers indoors     houses holding one
+    COLD STORAGE        19.0 -> 76.0         15.6 -> 66.9 percent
+    THE COLD MILE       12.3 -> 68.3         14.0 -> 65.6 percent
+
+And the shape of it is his sentence, on COLD STORAGE: 53 houses empty, 73 with
+one crawler, 23 with two, 11 with three or more.
+
+TWO CONTROLS, both in the regression check, because this fix has two obvious
+wrong versions that would both look like a win in the occupancy number. A house
+must still sometimes be EMPTY, or it is a tax and not a gamble, so over 90
+percent occupied fails. And the street cannot go quiet, so moving more than 92
+percent of crawlers indoors fails: the change has to read as houses getting
+dangerous, not as crawlers relocating.
+
+Verified: parse PASS. Both sectors to their fingerprints, entities and containers
+both. Streams identical live and sim. Looting on both with no throw and the clock
+advancing. Three endings correct. Hub renders. 30 regression checks pass.
+
+Not verified, and it is the big one: what this does to the extract rate. Crawlers
+were his killer in both runs tonight, v8.80 changed how hard they hit, and this
+changes where they are. The sim bot does not enter buildings the way he does, so
+its number would not describe his experience anyway. This is a deliberate
+difficulty increase of unmeasured size and he should tell me if it is too much. I
+also did not check the other four sectors, only the two the harness drives.
 ## v8.85 - A PILLAGER FOOTPRINT NO LONGER SHOWS THROUGH A WALL
 
 His note: "i can see pillager footprints when i can't see the pillager --

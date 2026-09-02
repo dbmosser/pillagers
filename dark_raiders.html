@@ -1180,7 +1180,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.85';
+var VER='8.86';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7769,7 +7769,50 @@ while(caches.length<3) placeCache(WORLD_W*rr(),WORLD_H*rr(),'MERIDIAN CACHE');
   var N_SENTRY=nOf(CFG.nSentry),N_CRAWLER=nOf(CFG.nCrawler),
       N_SNITCH=nOf(CFG.nSnitch),N_RAIDER=nOf(CFG.nRaider);
   for(i=0;i<N_SENTRY;i++){ var s1=far(freeSpot(map,30),880); ents.push(mkSentry(s1.x,s1.y)); }
+  // v8.86, HIS NOTE: "every house should be a gamble bc likely to be a crawler
+  // or 3 in there". Candidate buildings: big enough to fight inside, and far
+  // enough from where he lands that this does not become a spawn trap. Ordered
+  // by a fixed hash of position rather than left to right, so the occupied ones
+  // are spread over the map instead of filling one district first. No draw.
+  var _hb2=[];
+  for(var _bi=0;_bi<(map.buildings||[]).length;_bi++){
+    var _B2=map.buildings[_bi];
+    if(_B2.w<80||_B2.h<80) continue;
+    var _bcx=_B2.x+_B2.w/2,_bcy=_B2.y+_B2.h/2;
+    if(Math.hypot(_bcx-start.x,_bcy-start.y)<780) continue;
+    _hb2.push(_B2);
+  }
+  _hb2.sort(function(a,b){
+    var ka=(Math.round(a.x)*7919+Math.round(a.y)*104729)%99991;
+    var kb=(Math.round(b.x)*7919+Math.round(b.y)*104729)%99991;
+    return ka-kb;
+  });
+  // How many go in each house, cycled. The threes are what make it worth being
+  // careful about a doorway; the ones are what stop every house being a fight.
+  var _HGRP=[1,1,2,1,3,1,1,2];
+  var _hgi=0,_hgn=0,_hbi=0;
+  // Where inside, in order of preference. Fractions of the building so a big
+  // shed and a small one both place sensibly.
+  var _HOFF=[[0,0],[-0.24,-0.2],[0.24,0.2],[-0.22,0.22],[0.2,-0.24]];
 for(i=0;i<N_CRAWLER;i++){ var s2=far(freeSpot(map,26),780); var _cw=mkCrawler(s2.x,s2.y);
+    // Possum crawlers keep their wreck below, and roughly one in six stays on
+    // the street, or the outside of the map goes quiet and the change reads as
+    // "crawlers moved" rather than "houses got dangerous".
+    if(i%7!==3&&i%6!==5&&_hb2.length){
+      var _HB2=_hb2[_hbi%_hb2.length];
+      for(var _oi=0;_oi<_HOFF.length;_oi++){
+        var _hx=_HB2.x+_HB2.w*(0.5+_HOFF[_oi][0]);
+        var _hy=_HB2.y+_HB2.h*(0.5+_HOFF[_oi][1]);
+        if(spotFree(map,_hx,_hy,12)){
+          _cw.x=_hx; _cw.y=_hy; _cw.tx=_hx; _cw.ty=_hy;
+          break;
+        }
+      }
+      // A house that could not take one just does not get one; the crawler
+      // stays exactly where it rolled.
+      _hgn++;
+      if(_hgn>=_HGRP[_hgi%_HGRP.length]){ _hgn=0; _hgi++; _hbi++; }
+    }
     if(i%7===3){
       var _bw2=null,_bd2=1e9;
       for(var _w3=0;_w3<map.walls.length;_w3++){ var _W3=map.walls[_w3];
@@ -23807,7 +23850,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.85: a pillager footprint no longer shows through a wall. Your own boots still leave marks you can always see.',
+  now:'v8.86: houses are a gamble now. Most crawlers wait inside one instead of standing in the street.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
