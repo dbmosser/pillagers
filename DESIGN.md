@@ -27443,6 +27443,60 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.02 - GUN CONDITION IS GONE
+
+His answer 18: "I have no idea what 'condition' is -- guns should only change in
+strength by rarity, i don't think we need the concept of 'condition'".
+
+REPRODUCED by rolling four hundred Auto Rifles and looking at what came back. One
+gun, five different weapons:
+
+    field       dmg 23.0     172 of 400
+    worn        dmg 20.2     117
+    tuned       dmg 25.3      78
+    pristine    dmg 28.5      22
+    gilded      dmg 33.4      11
+
+A 65 percent damage spread on the same weapon, under five different names,
+decided by a hidden roll at the moment you picked it up. That is a second
+strength axis sitting on top of the tier that is supposed to answer how good a
+gun is, which is exactly his objection.
+
+THE LADDER IS ONE RUNG NOW. Every found gun is its base weapon: base damage, base
+spread, base magazine, base rate of fire, base reload, and its own name with
+nothing in front of it. Strength comes from the tier alone.
+
+THE ROLL ITSELF STAYS. rollFieldGun still draws its random number and still picks
+from the table; the table has one row. That is deliberate. Taking the draw out
+would shift every seeded raid after the first gun pickup, and this change has no
+business moving the stream. Both fingerprints held, 58 and 276 and 155 and 589.
+
+THIS ALSO RETIRES v8.87. That build spent itself renaming the top condition from
+Gold to Gilded, because "Gold Burst Carbine" was being drawn blue and he asked
+for the name and the colour to match. The whole rung is gone now, so the
+collision cannot happen. The check from that build is not deleted: the reason it
+existed, that no gun may be named after a rarity, is exactly what it still asks.
+
+TWO CHECKS FAILED AND BOTH WERE MINE. I asserted a rolled gun must carry no
+special paint, when most weapons carry their own tint in the weapon table and
+always have; what had to go was the paint the CONDITION added on top, so it now
+compares the rolled gun against its own base. And the panel size check went red
+because the conditions panel lost 26 pixels of height: these panels are as tall
+as they have things to say, and this build gave that one fewer things to say.
+Height was never a measure of scale. It asks about width now, which is.
+
+Verified: parse PASS. Both sectors to their fingerprints. Streams identical live
+and sim. Looting on both with no throw and the clock advancing. Three endings
+correct. Hub renders. 44 regression checks pass, none failed and none skipped,
+including a new one that rolls 120 of every gun in the table and requires exactly
+one damage and one name each, with the control that the guns must still DIFFER
+from each other, so flattening the tier table as well could not pass.
+
+Not verified: what his existing armoury looks like now. Guns already saved on his
+profile keep whatever q and name they were rolled with, so a Pristine Support MG
+in his stash stays a Pristine Support MG until it is replaced; only newly found
+guns come out plain. I have not written a migration and I am not sure he wants
+one, because it would silently rewrite weapons he already owns.
 ## v9.01 - GUNS DO NOT WEAR OUT
 
 His answer 14: "guns should not wear or jam. remove both concepts."

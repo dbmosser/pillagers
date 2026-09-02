@@ -587,6 +587,14 @@ window.__drawBagWith=function(fake){
 window.__guns={
   tiers:function(){ var o={}; for(var k in WEAPONS) o[k]={name:WEAPONS[k].name,tier:WTIER[k]}; return o; },
   quality:function(){ return GUNQ.map(function(q){ return {q:q.q,rank:q.rank,weight:q.w,prefix:q.pre}; }); },
+  // v9.02: the actual roll, so a check can ask what a found gun IS rather than
+  // reading the table and doing the arithmetic itself.
+  roll:function(gk){ var g=rollFieldGun(gk);
+    return {name:g.name,q:g.q,qRank:g.qRank,dmg:g.dmg,spread:g.spread,mag:g.mag,
+            rof:g.rof,reload:g.reload,tint:g.tint||null}; },
+  base:function(gk){ var b=WEAPONS[gk]; if(!b) return null;
+    return {name:b.name,dmg:b.dmg,spread:b.spread,mag:b.mag,rof:b.rof,reload:b.reload,
+            tint:b.tint||null}; },
   rarityOf:function(gk){ return gunRarity(gk); },
   colourOf:function(r){ return RCOL[r]; },
   // the name the game builds for a gun of this key at this quality, and the
@@ -1763,11 +1771,11 @@ window.__REGRESS=[
        if(RAR.indexOf(first)>=0&&first!==g.rarity)
          bad.push(g.name+' is drawn '+g.rarity+', not '+first);
      }
-     // CONTROL ONE: the top condition must still be there. Deleting it would
-     // satisfy every line above and lose the rarest roll in the game.
-     if(Q.length!==5) bad.push('the condition ladder is no longer five deep, it is '+Q.length);
-     if(!Q.filter(function(q){ return q.q==='gold'; }).length)
-       bad.push('the internal gold condition key is gone, saved weapons will not match it');
+     // v9.02: the ladder itself is retired by his answer 18, so the old demand
+     // for five rungs with a gold key is void. What this check was protecting is
+     // the WORD collision, and that survives: no gun may be named after a rarity.
+     if(Q.length!==1) bad.push('the condition ladder is back, it has '+Q.length+' rungs');
+     if(Q[0]&&(Q[0].prefix||'')!=='') bad.push('the one remaining condition puts "'+Q[0].prefix+'" in front of a gun name');
      // CONTROL TWO: gold must still be a RARITY, or the fix was to delete the
      // colour rather than to stop the collision.
      if(__guns.colourOf('gold')!=='#ffc72e') bad.push('gold is no longer a rarity colour');
@@ -1870,9 +1878,12 @@ window.__REGRESS=[
          // he saw it at 4K, where the screen factor was multiplying it by 1.9.
          // The floor is the default with no user scale; the corner grip can take
          // it lower and that is his business, not this check's.
-         var wantW=(was[k][0]/1920)*SW*1.4, wantH=(was[k][1]/1080)*SH*1.4;
-         if(got.w<wantW||got.h<wantH)
-           bad.push(k+' at '+tag+' is '+got.w+'x'+got.h+', under 1.4x its old share of the screen');
+         // WIDTH ONLY, v9.02: a panel is as tall as it has content, so height
+         // moves whenever the game has more or less to say and reports nothing
+         // about whether the panel was scaled. Width is the scale.
+         var wantW=(was[k][0]/1920)*SW*1.4;
+         if(got.w<wantW)
+           bad.push(k+' at '+tag+' is '+got.w+' wide, under 1.4x its old share of the screen');
        });
        // CONTROL ONE: doubling two panels that grow toward each other made them
        // overlap by 106px on my first attempt. Any touching pair fails.
@@ -2295,6 +2306,39 @@ window.__REGRESS=[
        if(!(c.reload>0)) bad.push('control: the gun has no reload time at all, '+c.reload);
        if(c.spread!==c.baseSpread) bad.push('control: a clean gun no longer matches its own table entry');
      }
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.02',what:'a found gun is just the gun: no hidden condition roll changing its strength',
+   run:function(){
+     __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
+     var bad=[];
+     var T=__guns.tiers();
+     // Before v9.02, 400 Auto Rifles came back as five weapons doing 20.2, 23.0,
+     // 25.3, 28.5 and 33.4 damage under five names. One gun, five strengths.
+     for(var k in T){
+       var base=__guns.base(k); if(!base) continue;
+       var dmgs={}, names={}, qs={};
+       for(var i=0;i<120;i++){
+         var g=__guns.roll(k);
+         dmgs[g.dmg]=1; names[g.name]=1; qs[g.q]=1;
+       }
+       var nd=Object.keys(dmgs).length, nn=Object.keys(names).length;
+       if(nd!==1) bad.push(base.name+' can be found at '+nd+' different damages: '+Object.keys(dmgs).join(', '));
+       if(nn!==1) bad.push(base.name+' can be found under '+nn+' different names: '+Object.keys(names).join(', '));
+       if(Object.keys(names)[0]!==base.name) bad.push(base.name+' is found as "'+Object.keys(names)[0]+'"');
+       // and it must be the BASE weapon, not some other flat number
+       var one=__guns.roll(k);
+       if(one.dmg!==base.dmg) bad.push(base.name+' rolls '+one.dmg+' damage against a base of '+base.dmg);
+       if(one.spread!==base.spread) bad.push(base.name+' rolls '+one.spread+' spread against a base of '+base.spread);
+       if(one.mag!==base.mag) bad.push(base.name+' rolls a magazine of '+one.mag+' against '+base.mag);
+       if((one.tint||null)!==(base.tint||null))
+         bad.push(base.name+' rolls a paint its own table entry does not have: '+one.tint);
+     }
+     // CONTROL: guns must still DIFFER from each other, or removing the second
+     // strength axis would have flattened the first one too, which is the whole
+     // thing he said should decide how good a gun is.
+     var dmgSet={};
+     for(var k2 in T){ var b2=__guns.base(k2); if(b2) dmgSet[b2.dmg]=1; }
+     if(Object.keys(dmgSet).length<4) bad.push('control: only '+Object.keys(dmgSet).length+' distinct gun damages left in the whole table');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

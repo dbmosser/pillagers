@@ -1185,7 +1185,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.01';
+var VER='9.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1325,21 +1325,23 @@ var WTIER={fists:0,tacker:1,pistol:1,sputter:2,scuttle:2,smg:2,chatter:2,magnum:
 // a week apart different events. Quality lives on the field instance only.
 // Banking a gun stores the bare model: a Pristine roll is a reason to fight
 // with it NOW, this raid, which is the greed half of risk versus greed.
+// v9.02, HIS ANSWER 18: "I have no idea what 'condition' is -- guns should only
+// change in strength by rarity, i don't think we need the concept of
+// 'condition'". So there is one rung and it changes nothing.
+// Measured before this, rolling 400 Auto Rifles: the same gun came back as five
+// weapons doing 20.2, 23.0, 25.3, 28.5 and 33.4 damage under five names, decided
+// by a hidden roll as you picked it up. That was a second strength axis sitting
+// on top of the tier that is meant to answer how good a gun is.
+// The single row keeps its weight at 100 and every multiplier at 1, so the roll
+// below still draws its number and still lands somewhere. Removing the draw
+// would move every seeded raid after the first gun pickup, and this change has
+// no business touching the stream.
 var GUNQ=[
-  {q:'worn',    rank:0, w:32, dmg:0.88, spread:1.25, mag:1,    pre:'Worn '},
-  {q:'field',   rank:1, w:41, dmg:1,    spread:1,    mag:1,    pre:''},
-  {q:'tuned',   rank:2, w:18, dmg:1.10, spread:0.82, mag:1,    pre:'Tuned '},
-  {q:'pristine',rank:3, w:7,  dmg:1.24, spread:0.70, mag:1.25, pre:'Pristine '},
-  // v6.69, his note. Two in a hundred. The only tier that touches rof and reload,
-  // because he asked for both, and the only one that repaints the gun.
-  {q:'gold',    rank:4, w:2,  dmg:1.45, spread:0.62, mag:1.35, rof:0.78, reload:0.72,
-   // v8.87, his note: the prefix was "Gold ", and gold is ALSO the name of the
-   // top rarity, so a rare tier gun rolling this condition was called a Gold
-   // Burst Carbine and drawn blue. 14 of the 16 guns could contradict themselves
-   // that way. Gilded says the same thing about the finish without borrowing a
-   // word the rarity colours already own. The key below stays 'gold' on purpose:
-   // it is what the receiver paint and every saved weapon already match on.
-   pre:'Gilded ', tint:'#ffc72e'}
+  {q:'field',   rank:1, w:100, dmg:1,   spread:1,    mag:1,    pre:''}
+  // v9.02: the gilded row is gone with the rest of the ladder. It was the only
+  // condition that touched rate of fire and reload and the only one that
+  // repainted the weapon, and at v8.87 it cost a build just to stop its name
+  // colliding with the gold RARITY. His answer 18 retires the whole idea.
 ];
 // ================================================================ WEAR
 // Guns already rolled a CONDITION when you found one in the field, and then it
@@ -16738,6 +16740,9 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var _wp=(st.own&&st.own.wep&&st.own.wep.id)?st.own.wep:null;
   var _wid=_wp?_wp.id:'rifle';
   var _wt=WTIER[_wid]===undefined?1:WTIER[_wid];
+  // v9.02: no gun can be gilded any more, so this first branch is unreachable.
+  // Left standing rather than cut, because it is the one place that would paint a
+  // special receiver again if a second condition were ever added back.
   var _rc=!_wp?null:((_wp.q==='gold')?'#ffc72e':
           (_wt>=5?'#ffc72e':_wt>=4?'#d08ce8':_wt===3?'#7cc4ff':_wt===2?'#7fc4a0':'#cfd8ef'));
   var _L=13,_B=6,_mag=0,_sc=0,_tube=0,_pump=0,_drum=0;
@@ -24120,7 +24125,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.01: guns do not wear out any more. A gun you have carried for a thousand rounds shoots exactly like the day you found it.',
+  now:'v9.02: gun condition is gone. An Auto Rifle is an Auto Rifle; how good a gun is comes from what it is, not a hidden roll when you pick it up.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
