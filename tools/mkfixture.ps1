@@ -3441,10 +3441,13 @@ window.__REGRESS=[
        // CONTROL 1: his screen must not tighten. 1080, 1440 and 2160 are all
        // taller than the cut-off and must keep the rhythm they had.
        if(pad!=='18px') bad.push('control: at '+window.innerHeight+'px tall the screen padding is '+pad+', it should still be 18px');
-       if(col&&col.children.length>2){
-         var m2=getComputedStyle(col.children[2]).marginTop;
-         if(m2!=='26px') bad.push('control: at '+window.innerHeight+'px tall a block margin is '+m2+', it should still be 26px');
-       }
+       var story=null;
+       if(col) for(var _ci=0;_ci<col.children.length;_ci++)
+         if(/^\s*The elites/.test(col.children[_ci].textContent||'')){ story=col.children[_ci]; break; }
+       if(story){
+         var m2=getComputedStyle(story).marginTop;
+         if(m2!=='26px') bad.push('control: at '+window.innerHeight+'px tall the story block margin is '+m2+', it should still be 26px');
+       } else bad.push('control: the story block is gone from the title screen');
      } else {
        if(pad==='18px') bad.push('at '+window.innerHeight+'px tall the screen is still using the full 18px padding, the short-screen rule is not in force');
      }
@@ -4689,6 +4692,58 @@ window.__REGRESS=[
      if(survivesDeath&&/walk it out|have to walk/i.test(promise))
        bad.push('the sell panel says you have to walk the money out, and dying kept it');
      }
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.50',what:'the title screen says what the game wants to run in, and still fits',
+   run:function(){
+     var bad=[];
+     var t=document.getElementById('title');
+     if(!t) return 'there is no title screen';
+     var note=document.getElementById('titleres');
+     // HIS INSTRUCTION, 2026-09-02: "make a note on the title screen telling them
+     // that the game plays best in fullscreen at 1080p, 1440p, or 4k resolution."
+     if(!note) return 'the title screen carries no note about what to run the game in';
+     var txt=(note.textContent||'').replace(/\s+/g,' ').trim();
+     ['fullscreen','1080','1440','4K'].forEach(function(w){
+       if(txt.toLowerCase().indexOf(w.toLowerCase())<0)
+         bad.push('the note does not mention '+w+': "'+txt+'"');
+     });
+     // AND IT HAS TO BE ON THE SCREEN, not merely in the document. A note in a
+     // hidden element is not a note.
+     var wasOn=t.classList.contains('on');
+     var mz0=null, restored=false;
+     function putBack(){
+       if(restored) return; restored=true;
+       try{ if(mz0!==null&&window.__menuZoom) __menuZoom.set(mz0); }catch(_r1){}
+       try{ if(!wasOn) t.classList.remove('on'); }catch(_r2){}
+     }
+     t.classList.add('on');
+     var cs=getComputedStyle(note);
+     if(cs.display==='none'||cs.visibility==='hidden'||parseFloat(cs.opacity||'1')<0.2)
+       bad.push('the note is in the page but not visible: display '+cs.display+', opacity '+cs.opacity);
+     var r=note.getBoundingClientRect();
+     if(r.height<4||r.width<40) bad.push('the note draws a '+Math.round(r.width)+'x'+Math.round(r.height)+' box');
+     // AND IT MUST NOT HAVE PUSHED THE SCREEN OFF ITS OWN BOTTOM. This is the
+     // whole reason the note and the fit are one build: v9.18 already overflowed
+     // by 8 pixels at 1280x720 and adding a line took it to 28.
+     if(!__vpAlive()){ putBack(); return bad.length?bad.join('; '):'SKIP: no layout to measure the fit'; }
+     try{
+       __forceSize(window.innerWidth,window.innerHeight);
+       if(window.__menuZoom){ mz0=__menuZoom.get(); __menuZoom.set(1.3); }
+     }catch(_e){}
+     var over=t.scrollHeight-t.clientHeight;
+     if(over>1)
+       bad.push('the title screen scrolls by '+over+'px at '+window.innerWidth+'x'+window.innerHeight+
+                ', so the note pushed the saves list off the bottom');
+     // CONTROL: the saves panel has to still BE there and have height. Hiding it
+     // would stop the overflow and lose the only way to pick a profile.
+     var sp=document.getElementById('slotpanel');
+     if(!sp||sp.getBoundingClientRect().height<40)
+       bad.push('control: the saves panel is '+(sp?Math.round(sp.getBoundingClientRect().height):0)+' tall');
+     // CONTROL: and so does the button that starts the game.
+     var st=document.getElementById('titlestart');
+     if(!st||st.getBoundingClientRect().height<20)
+       bad.push('control: the ENTER THE UNDERCROFT button is '+(st?Math.round(st.getBoundingClientRect().height):0)+' tall');
+     putBack();
      return bad.length?bad.join('; '):null; }},
   {v:'9.49',what:'the pillager board does not cover the health bar and the controls',
    run:function(){

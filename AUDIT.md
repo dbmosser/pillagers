@@ -477,6 +477,16 @@ AND TWO MORE, from the list he said was still unfulfilled:
 | HIS 36 slice 3: a crew that loses you searches as a crew | v9.47 | v9.42 made losing sight matter and immediately exposed this: three pillagers in chase, none able to see him, all three targeting 400,660 TO THE UNIT and finishing 22 units apart. Each man now sweeps his own sector, spread by the golden angle |
 | "maps feel samey": one cause with a number on it | v9.48 | all 104 buildings on both maps wore the identical floor, and 54 percent of the ones on THE COLD MILE are the same 320x240 box. Five floors now, fixed per building so the map is still learnable. Districts were checked first and are innocent: largest share 37.5 percent |
 
+AND THE SECOND HALF OF THE STRETCH:
+
+| Item | Build | Evidence |
+| --- | --- | --- |
+| at 4K the controls legend could not be clicked at all | v9.46 | it painted at y 1898-2216 and the game recorded it at 1356-1749, so clicking the legend hit the health panel and clicking empty air 400 pixels above it grabbed the legend. Its last line sat 58 pixels off the bottom, permanently. The shift was applied outside the zoom when drawing and inside it when recording |
+| HIS 36 slice 3: a crew that loses you searches as a crew | v9.47 | three pillagers in chase, none able to see him, all three targeting 400,660 TO THE UNIT and finishing 22 units apart. Each man now sweeps his own sector, spread by the golden angle |
+| "maps feel samey": one cause with a number on it | v9.48 | all 104 buildings on both maps wore the identical floor, and 54 percent of the ones on THE COLD MILE are the same 320x240 box. Five floors now, fixed per building so the map is still learnable. Districts were checked first and are innocent: largest share 37.5 percent |
+| the pillager board covered the health bar and every key binding | v9.49 | on THE COLD MILE it was 927 pixels tall on a 1080 screen, overlapping the vitals by 496x193 and the legend by 467x196, and hanging 42 pixels off the bottom. Found by screenshotting a raid, not by reading code |
+| HIS INSTRUCTION: say what the game wants to run in | v9.50 | a note under the version line, and the title screen tightened so it still fits at 720p, where it had been overflowing by 8 pixels since v9.18 and by 28 once the note went on |
+
 STILL OPEN, and this is now the whole list:
 - the footprint repetition itself: 54 percent of the buildings on THE COLD MILE
   are the same 320x240 box and not one building on either map carries an

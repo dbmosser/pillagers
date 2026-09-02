@@ -27443,6 +27443,96 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.50 - THE TITLE SCREEN SAYS WHAT THE GAME WANTS TO RUN IN
+
+### His instruction
+
+"make a note on the title screen telling them that the game plays best in
+fullscreen at 1080p, 1440p, or 4k resolution."
+
+It sits directly under the version line, in the muted steel the subtitle uses:
+
+> BEST IN FULLSCREEN AT 1080p, 1440p OR 4K
+
+### Why the fit is part of the same build
+
+My own v9.18 check has been failing at 1280x720 since before any of today's work:
+the title screen overflows its own box by 8 pixels at a 1.3 menu zoom, so you have
+to scroll to reach your saves. It is invisible to the corpus because the corpus
+runs at 1920x1080, which is the target viewport, and I only found it because I had
+left a tab at 720p to take screenshots.
+
+Adding a line to a screen that already overflows makes it overflow further, and it
+did: 8 pixels became 28. So the note and the fit are one build.
+
+### The mistake I made first
+
+I trimmed five inline margins. **That did nothing where the problem is and changed
+the look where there was no problem.** There is already a media query for short
+screens, written at v9.18, which sets every one of those margins to 14px with
+`!important` - so it beat all five of my inline edits at 720p, and my edits applied
+only at 1080p and above, which was the one place nothing was wrong.
+
+The inline margins are back to what they were. The tightening lives in the one
+place that already asks how tall the screen is: ten instead of fourteen across
+nine gaps, a smaller wordmark, and a shorter button, all inside
+`@media (max-height: 820px)`.
+
+That gate is worth naming: 1080, 1440 and 2160 do not match it, so the three sizes
+the new note tells you to play at are untouched by every pixel of this.
+
+Measured at 1280x720 before and after: overflow 28 to 0. At 1920x1080 the screen is
+byte-identical to v9.49 apart from the note.
+
+### How it is checked
+
+- the note must exist, and must name fullscreen, 1080, 1440 and 4K
+- it must be visible, with a real box, not merely present in the document
+- the title screen must not overflow its own height at the tab's size with the
+  menu zoom at 1.3, which is the case v9.18 was written for
+
+Two controls, because the cheapest way to stop an overflow is to delete something:
+
+- the saves panel must still be at least 40 pixels tall
+- the ENTER THE UNDERCROFT button must still be at least 20 pixels tall
+
+Fails on a v9.49 fixture with "the title screen carries no note about what to run
+the game in".
+
+Not verified: how it reads below 720p tall. The media query has one breakpoint and
+I measured at 720; a 600 tall window may still overflow, and the note now tells
+anyone in that position what to do about it. Not verified: whether the browser is
+actually fullscreen, which the game cannot see and does not try to.
+
+
+### The run that told me my ruler was wrong
+
+The first corpus run on this build came back FAIL, 10 of 92, and nine of the ten
+said "nothing was drawn", "0 pixels", "not found" or "0 percent". That is one
+broken instrument, not nine bugs, and I have a note to myself saying exactly that.
+
+**`__pinDPR(1)` had already told me and I did not read it.** It returns
+`{DPR, buffer, css, oneToOne}` and it was returning `oneToOne:false`: the canvas
+was 3840x2160 behind a 1920x1080 viewport, so every check that reads pixels was
+measuring a quarter of the screen. The cause is that a Browser pane tab with an
+emulated viewport reports devicePixelRatio 2 while it is in the BACKGROUND;
+fronting the same tab gives 1.
+
+**The corpus launcher now refuses to start** unless the pin reports one to one and
+the viewport is at least 1900x1060. A run on a bad ruler is worse than no run,
+because it produces ten plausible findings that all point at innocent code.
+
+**And one of the ten was mine, twice over.** My own check set the menu zoom to 1.3
+and restored it only on the happy path, so everything behind it measured a screen
+at the wrong zoom; it now restores in a `putBack()` called on every exit. And the
+v9.18 control read `children[2]` by POSITION to check a margin, and the note is
+the new child 2, so it graded the note's 7px against the story block's 26 and
+called the game broken. It finds the story block by its own text now, which is the
+same correction the v9.09 check needed this morning for the same reason.
+
+After all of that: one build, one real failure, and it was a control I had made
+brittle rather than anything in the game.
+
 ## v9.49 - THE PILLAGER BOARD COVERED THE HEALTH BAR AND EVERY KEY BINDING
 
 ### What was wrong
