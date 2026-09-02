@@ -5054,6 +5054,84 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.57',what:'a Listener winds up before it swings, and swings at nothing if you have gone',
+   run:function(){
+     var bad=[];
+     // Puts one at contact on a man at full health who does not fight back, and
+     // reads two things: when the first blow lands, and whether stepping out of
+     // reach mid swing saves him. His telemetry is why: two runs in a row killed
+     // by a Listener, the second of them two metres from the extraction.
+     function bite(dial){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       __cfg({listenTell:dial});
+       var g=__state(), p=g.player, i, E=null;
+       for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='listener'){ E=g.ents[i]; break; }
+       if(!E) return null;
+       g.ents.length=0; g.ents.push(E);
+       p.iv=0; p.downed=false; p.hp=100; g.pCrouch=false;
+       E.x=p.x+(E.r+(p.r||11)+2); E.y=p.y;
+       E.hostile=true; E.downed=false; E.cd=0; E.windup=null;
+       E.state='hunt'; E.alert=3; E.heardX=p.x; E.heardY=p.y;
+       var died=-1, first=-1, fx=p.x, fy=p.y, hp0=p.hp;
+       for(var f=0;f<600&&died<0;f++){
+         p.x=fx; p.y=fy; p.moving=false;
+         __ents(1/60);
+         if(first<0&&p.hp<hp0) first=f;
+         if(p.hp<=0||p.downed) died=f;
+       }
+       return {readBack:__cfg().listenTell, dmg:E.dmg,
+               firstHit:first<0?null:first/60, kill:died<0?null:died/60};
+     }
+     // The point of a windup is that it can be walked out of. One frame in
+     // contact, then he is gone. Teleported rather than run, so this measures the
+     // blow and not sprint, stamina and collision on top of it.
+     function dodge(dial){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       __cfg({listenTell:dial});
+       var g=__state(), p=g.player, i, E=null;
+       for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='listener'){ E=g.ents[i]; break; }
+       if(!E) return null;
+       g.ents.length=0; g.ents.push(E);
+       p.iv=0; p.downed=false; p.hp=100; g.pCrouch=false;
+       E.x=p.x+(E.r+(p.r||11)+2); E.y=p.y;
+       E.hostile=true; E.downed=false; E.cd=0; E.windup=null;
+       E.state='hunt'; E.alert=3; E.heardX=p.x; E.heardY=p.y;
+       var hp0=p.hp;
+       __ents(1/60);
+       p.x=p.x+900; p.moving=true; E.heardX=p.x; E.heardY=p.y;
+       for(var f=0;f<90;f++) __ents(1/60);
+       return {hurt:(p.hp<hp0)};
+     }
+     var on=bite(1), off=bite(0);
+     if(!on||!off) return 'SKIP: no Listener on this map to measure';
+     var dOn=dodge(1), dOff=dodge(0);
+     if(!dOn||!dOff) return 'SKIP: the dodge arm found no Listener';
+     // CONTROLS FIRST. The dial has to be live and switching it off has to put
+     // the old instant blow back, or a green result here means nothing at all.
+     if(on.readBack!==1||off.readBack!==0)
+       bad.push('control: the dial did not read back, on='+on.readBack+' off='+off.readBack);
+     if(off.firstHit===null||off.firstHit>0.05)
+       bad.push('control: with the tell switched off the first blow did not land immediately, '+
+                'so this check is not measuring what it was written for');
+     if(!dOff.hurt)
+       bad.push('control: with the tell switched off, stepping away still avoided the blow, '+
+                'so the dodge arm proves nothing');
+     if(on.dmg!==34)
+       bad.push('the Listener now hits for '+on.dmg+' rather than 34, and this build was not supposed to change how hard it hits');
+     // THE FINDING. Measured on v9.56: the first blow landed on frame zero,
+     // because e.cd starts at zero and the hit fires the instant the reach test
+     // passes, and a Listener killed a man on full health in 1.7 seconds against
+     // 4.9 for a crawler.
+     if(on.firstHit===null||on.firstHit<0.30)
+       bad.push('the first blow lands after '+(on.firstHit===null?'no':on.firstHit.toFixed(2))+
+                ' seconds, which is no warning at all');
+     if(dOn.hurt)
+       bad.push('stepping out of its reach while it swings still took damage, so the windup is not a window');
+     if(on.kill!==null&&off.kill!==null&&on.kill<off.kill+0.5)
+       bad.push('it still kills in '+on.kill.toFixed(1)+' seconds against '+off.kill.toFixed(1)+' before');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.56',what:'the clock and the extract distance do not sit on top of each other, and they grow with the monitor',
    run:function(){
      var bad=[];

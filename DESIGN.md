@@ -39235,3 +39235,84 @@ the first two should be smaller than everything else. Not verified: how the
 0.75/0.25 split of the em box compares to the real glyph extents of Rubik. It
 only has to be consistent, because both boxes are measured the same way, but a
 face with unusual overshoot could make a 1 pixel touch read as clear.
+
+## v9.57 - A LISTENER KILLED HIM IN 1.7 SECONDS AND NEVER TOLD HIM IT WAS ABOUT TO
+
+**This one came from his own machine, not from my queue.** Two flight recorder
+exports landed: **8 runs, 0 extracted, 7 dead**, and the last two were both
+killed by a Listener.
+
+Run 8, verbatim from the recorder:
+
+> v9.52 DEAD, THE COLD MILE, Longshot, dur 420s, haul **5455c**, 27 items, 19
+> containers, kills 2 sentries and **17 crawlers**, 5 elites, **closestExt:2m**,
+> **killer:listener**, diedInSiege:1
+
+**Seven minutes of work, fifty five hundred credits in the bag, two metres from
+the way out.**
+
+### What a Listener is, beside what it stands next to
+
+Measured at contact, player on full health, not fighting back:
+
+| machine | damage | speed | health | seconds to kill you |
+| --- | --- | --- | --- | --- |
+| crawler | 13 | 150 | 52 | 4.9 |
+| sentry | 14 | 70 | 330 | ranged, never melees |
+| **listener** | **34** | **196** | 120 | **1.7** |
+
+The player walks at 158, so a Listener is **faster than you unless you are
+sprinting**, and it hits for two and a half times what anything else in melee
+does.
+
+### The part that made it unfair rather than hard
+
+**There was no tell.** The blow landed on the first frame it was in reach,
+because `e.cd` starts at zero and the hit fires the instant the reach test
+passes. Three blows 0.85 apart and you are down.
+
+Every other heavy hitter in this game telegraphs. The warden sets a 0.4 second
+windup and plays a charge sound before it swings, deliberately, and its own
+comment says the threat is a tide rather than a sprinter so avoiding it is always
+a live option. The Listener had neither.
+
+### What changed, and what did not
+
+**Nothing about how hard it hits.** Same 34 damage, same 196 speed, same 120
+health. The blow winds up for 0.45 seconds with the same charge sound the warden
+uses, and **if you are out of its reach when the blow lands, it hits nothing.**
+
+| | v9.57 | v9.56 |
+| --- | --- | --- |
+| first blow lands at | 0.47s | **0.00s, the frame it arrives** |
+| kills you from full health at | 3.1s | 1.7s |
+| stepped out of reach while it swung | **took nothing, 100hp** | took 34, down to 66 |
+
+That is the whole fix: it turns a death you could not have avoided into one you
+could. `listenTell 0` puts the instant blow back, and the check uses it as its
+control, so a green result cannot come from a dial that does nothing.
+
+The check also asserts the damage is still 34, because a build whose stated
+purpose is to leave the lethality alone should fail if it quietly softened it.
+
+### The sim cannot see this one, and I am saying so rather than dressing it up
+
+The 320 seed paired run is still going as this is committed. At 113 seeds it has
+produced **exactly zero discordant pairs**: every seed ends the same way with the
+windup on and off. That is not a shortage of seeds, it is the instrument. The
+earlier v9.54 run recorded 12 Listener kills per 320 seeds, about four percent of
+outcomes, and the bot that dies to one is already dead in every branch: half a
+second of warning is worth nothing to something that does not flinch.
+
+**This change is for him, and only he can report on it.** The measurements above
+are of the machine's behaviour, which is where a fix like this can be proved; the
+question of whether the raid now feels fair at the extraction ring is his.
+
+Not verified: whether the windup is long enough. 0.45 seconds is the warden's 0.4
+plus a little, chosen because the Listener is faster and hits harder, and I have
+not played against it. Not verified: whether a Listener that misses reads as
+having missed. It plays the charge sound and then nothing happens; there is no
+recovery animation and no visible swing, so the feedback for a successful dodge
+is the absence of damage. Not verified: whether the Listener is the real problem
+at all. His two deaths to one are two runs, and the recorder shows eight runs
+with zero extractions across six different killers.
