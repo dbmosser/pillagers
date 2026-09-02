@@ -27443,6 +27443,67 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.21 - THE RECORDER COUNTS THE DAMAGE THAT REACHED HIM
+
+v9.20 fixed the table he reads and its own "Not verified" line said the flight
+recorder's totals were still taken before the multiplier and before armour, and
+were therefore now inconsistent with the screen. This is that, and it matters more
+than I gave it credit for: those totals are the numbers I answer his balance
+questions with.
+
+REPRODUCED on one hit:
+
+    100 health, 40 armour, hit for 30
+    he actually loses    15
+    the table says       15   (correct since v9.20)
+    the recorder said    30
+
+So every export I have ever read overstated what reached him by exactly what his
+plate absorbed, and the same screen carried two different answers for one hit.
+"Crawler doing too much damage" was answered from figures of this kind.
+
+ONE NUMBER, WRITTEN ONCE, IN THE PLACE THAT ALREADY KNOWS THE TRUTH. The
+accumulation moved inside the row-writing helper v9.20 put at the moment the hit
+lands, so the table and the recorder cannot disagree again: they are the same
+value.
+
+IT STILL COUNTS UNDER THE BOT. The old line ran in the sim too, and the sim is
+where every balance batch comes from, so the accumulation sits ABOVE the
+not-a-sim guard rather than inside it. Below it, every batch would have reported
+no damage at all and read exactly like a fix.
+
+MEASURED AFTER: he loses 15, the table says 15 and the recorder says 15. Under the
+bot, a 20 hit still records 20.
+
+Verified: parse PASS v9.21. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 64 regression checks
+pass in sequence, none skipped.
+
+The check fails on a fixture built from v9.20 with "the recorder logs 30 where he
+actually lost 15; the recorder says 30 and the table on the same screen says 15".
+Three controls. With no armour it must still be the FULL hit, so a recorder that
+simply reported smaller numbers cannot pass. Under the bot a hit must still be
+counted, which catches the obvious way to break the batches. And two different
+attackers must still be counted separately, or one total says nothing about what
+is killing him.
+
+COULD NOT REPRODUCE, and I am saying so rather than shipping a guess. The audit
+note that the extraction pull overwrites a Listener's hunt reads correctly in the
+source: the noise path excludes Listeners explicitly and the pull loop has no such
+guard. But I could not get the pull to fire on a Listener in three attempts. It
+runs on a siege re-ping that my setup never reached: the pull counter stayed at
+zero and the Listener never lost its hunt across two hundred frames. The source
+looks wrong and the game would not show it to me, so it stays open.
+
+Not verified: past exports are unchanged and still describe damage thrown, so any
+number I quoted him before this build is inflated by whatever armour he was
+wearing, and comparisons across this version boundary are not like for like; the
+per-source totals now mean damage taken while the kill counts beside them are
+unchanged, which is correct but worth knowing when reading an export.
+
 ## v9.20 - THE DEATH SCREEN TABLE TELLS THE TRUTH
 
 The HOW IT WENT table exists to answer "how did that happen", and its own note

@@ -1209,7 +1209,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.20';
+var VER='9.21';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9919,7 +9919,10 @@ function damagePlayer(amt,src,srcName,sx,sy){
   // unreadable, and it is a Math.max against the current shake so a frag going off
   // in the same frame still owns the screen.
   if(!G.sim) G.shake=Math.max(G.shake,Math.min(6,1.8+amt*0.16));
-  G.tel.dmg[src]=(G.tel.dmg[src]||0)+amt;
+  // v9.21: MOVED into _logHit below, where the amount is what actually came off
+  // his health. It stood here, ahead of the difficulty multiplier and ahead of
+  // armour, so the recorder credited every attacker with the damage the plate ate
+  // and disagreed with the table on the same screen: 30 against 15 on one hit.
   // CLEARED, NOT JUST SET, v2.23. An unnamed source used to leave the previous
   // name standing, which is how a stale machine name reached the death screen.
   // Assigning unconditionally means the last hit is always the last hit.
@@ -9933,6 +9936,10 @@ function damagePlayer(amt,src,srcName,sx,sy){
   // armour hit for 30 actually loses 15 and read "DAMAGE 30, HEALTH 100", and the
   // hit that put him on the floor read "HEALTH 20" instead of nothing.
   function _logHit(dealt,left){
+    // ABOVE the sim guard on purpose. The balance batches run under G.sim and
+    // they are the whole reason this number exists; below the guard every batch
+    // would report no damage at all and read like a fix.
+    G.tel.dmg[src]=(G.tel.dmg[src]||0)+dealt;
     if(G.sim) return;
     G.tel.hitLog=G.tel.hitLog||[];
     if(G.tel.hitLog.length>24) G.tel.hitLog.shift();
@@ -24551,7 +24558,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.20: the HOW IT WENT table on the death screen tells the truth. It was crediting hits with the damage your armour ate.',
+  now:'v9.21: the run recorder counts the damage that actually reached you, so the numbers behind balance changes are the real ones.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

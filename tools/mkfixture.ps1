@@ -3466,6 +3466,45 @@ window.__REGRESS=[
      if(!(g.tel.hitLog||[]).length) bad.push('control: a hit taken while downed is missing from the table');
      else if(g.tel.hitLog[g.tel.hitLog.length-1].hp!==0)
        bad.push('control: a hit taken while downed reports health he does not have');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.21',what:'the run recorder counts the damage that actually reached him',
+   run:function(){
+     var bad=[];
+     __resetCfg(); __pinDefaults(0);
+     __deploy({kit:['plate'],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player; g.ents.length=0;
+     function hit(hp0,armor0,amount,src,sim){
+       p.hp=hp0; p.maxhp=100; p.armor=armor0; p.iv=0; p.downed=0;
+       g.tel.dmg={}; g.tel.hitLog=[];
+       var was=g.sim; if(sim) g.sim=1;
+       __arm.hurt(amount,src,src.toUpperCase(),p.x+20,p.y);
+       g.sim=was;
+       var rows=g.tel.hitLog||[];
+       return {recorder:g.tel.dmg[src]||0, table:rows.length?rows[rows.length-1].a:null,
+               lost:Math.round(hp0-Math.max(0,p.hp))};
+     }
+     // THROUGH ARMOUR. Measured before v9.21: he loses 15, the table says 15 and
+     // the recorder said 30, so every export overstated what reached him by
+     // exactly what the plate absorbed.
+     var a=hit(100,40,30,'crawler',false);
+     if(a.recorder!==a.lost) bad.push('the recorder logs '+a.recorder+' where he actually lost '+a.lost);
+     if(a.recorder!==a.table) bad.push('the recorder says '+a.recorder+' and the table on the same screen says '+a.table);
+     // CONTROL 1: with no armour it must still be the FULL hit. A recorder that
+     // simply reported a smaller number would satisfy the line above.
+     var b=hit(100,0,24,'crawler',false);
+     if(b.recorder!==24) bad.push('control: with no armour a 24 hit is recorded as '+b.recorder);
+     // CONTROL 2, AND IT IS THE ONE THAT MATTERS. This counter exists for the
+     // balance batches, which run under the bot. Moving it below a not-a-sim
+     // guard would zero every batch and read exactly like a fix.
+     var c=hit(100,0,20,'sentry',true);
+     if(c.recorder!==20) bad.push('control: under the bot a 20 hit is recorded as '+c.recorder+', the batches would report no damage');
+     // CONTROL 3: it must still be counted PER SOURCE, or one total tells me
+     // nothing about what is actually killing him.
+     p.hp=100; p.armor=0; p.iv=0; p.downed=0; g.tel.dmg={};
+     __arm.hurt(10,'crawler','CRAWLER',p.x+20,p.y);
+     p.iv=0; __arm.hurt(10,'sentry','SENTRY',p.x+20,p.y);
+     var keys=0; for(var k in g.tel.dmg) keys++;
+     if(keys<2) bad.push('control: two different attackers collapsed into '+keys+' entry in the recorder');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
