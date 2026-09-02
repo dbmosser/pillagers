@@ -4625,6 +4625,52 @@ window.__REGRESS=[
      if(survivesDeath&&/walk it out|have to walk/i.test(promise))
        bad.push('the sell panel says you have to walk the money out, and dying kept it');
      }
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.41',what:'the card new players read about XP matches what raids actually pay',
+   run:function(){
+     var bad=[];
+     // MEASURE WHAT A RAID PAYS FIRST, with nothing sold, then read what the card
+     // claims. The other way round grades a sentence against my opinion.
+     __resetCfg(); __pinDefaults(0);
+     var P=__P(); P.xp=0; P.log=[];
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); g.ents.length=0; g.player.iv=99;
+     __endRaid('extract');
+     var xpNoSelling=(__P().xp||0);
+     __resetCfg(); __pinDefaults(0);
+     __P().xp=0;
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g2=__state(); g2.ents.length=0; g2.player.iv=99;
+     __endRaid('dead');
+     var xpDeath=(__P().xp||0);
+     // CONTROL FIRST: if a raid genuinely paid nothing, the old card was right and
+     // this check has nothing to say.
+     if(xpNoSelling<=0)
+       return 'SKIP: a raid with nothing sold paid no XP at all, so the card was right and there is nothing to check';
+     // The fixture ALREADY has a __primer whose list() returns this array. My
+     // duplicate was defined earlier and silently overwritten, which is the fourth
+     // name collision today. Grep before naming a shim.
+     var cards=(window.__primer&&window.__primer.list)?window.__primer.list():null;
+     if(!cards) return 'SKIP: the primer cards are not reachable from this fixture';
+     var text='';
+     for(var i=0;i<cards.length;i++) text+=' '+String(cards[i][0])+' '+String(cards[i][1]);
+     // THE FINDING. Measured: 134 XP from one extract with nothing sold, and 67
+     // from a death, while the card said "Nothing else pays XP."
+     if(/nothing else pays xp/i.test(text))
+       bad.push('a new player is told "Nothing else pays XP" and one raid with nothing sold paid '+
+                xpNoSelling+' of it');
+     if(/exactly one way to earn it/i.test(text))
+       bad.push('a new player is told there is exactly one way to earn XP, and simply finishing a raid is another');
+     // AND THE SHOP GATE IT CLAIMED. Rows carry rep 0, 1 or 2 against xp < rep, so
+     // one finished raid clears the lot before anything is sold.
+     if(/XP is what unlocks the shop/i.test(text)&&xpNoSelling>=2)
+       bad.push('a new player is told XP unlocks the shop, and one raid pays '+xpNoSelling+
+                ' against a highest gate of 2, so it gates nothing they will ever meet');
+     // CONTROL: the death halving is the one number the card still states, so it
+     // has to be true or the replacement is wrong in a new way.
+     if(Math.abs(xpDeath*2-xpNoSelling)>2)
+       bad.push('control: the card says dying pays half and a death paid '+xpDeath+
+                ' against '+xpNoSelling+' for the same raid extracted');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

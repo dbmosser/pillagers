@@ -27443,6 +27443,61 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.41 - THE FIRST THING A NEW PLAYER IS TOLD ABOUT XP WAS WRONG
+
+The primer opens by itself for any profile with no runs, and one of its cards read:
+
+  "XP is what unlocks the shop, and there is exactly one way to earn it: sell
+   salvage at the terminal in the Undercroft... Nothing else pays XP."
+
+Both halves are false, and the game's own REWARDS pane says so twenty thousand
+lines away: "Kills, loot, doors, selling and extracting all pay XP. Dying pays
+half."
+
+MEASURED, one raid, nothing sold at all:
+
+  extracted     134 XP
+  died           67 XP, exactly half
+
+Every raid pays forty for going at all, four for every container opened, and more
+the further you walked.
+
+AND THE SHOP GATE IT PROMISED DOES NOT EXIST IN PRACTICE. Shop rows carry rep 0, 1
+or 2 against a check of xp below rep, so the entire gate is cleared by the first
+raid you finish, before you have sold anything. Price is the only real cost in
+that shop.
+
+So the card sent a new player to the terminal believing it was the only thing that
+mattered, and told them the shop was gated behind an economy that does not gate
+it. The replacement says what actually happens, in the same terms the REWARDS pane
+uses, so the two screens agree. It also keeps the one thing the Peddler is
+genuinely for, which is cash with no XP, and names that as what he really sells:
+the certainty of getting something out.
+
+THE CHECK MEASURES BEFORE IT READS. It runs a raid with nothing sold, banks it,
+reads the XP, and only then looks at the card. If a raid ever genuinely paid
+nothing it returns SKIP and says the old card was right, because a check that
+assumes its own conclusion is not a check. It also pins the death halving, which
+is the one number the new card still states.
+
+AND A FOURTH NAME COLLISION. My first cut added a window.__primer shim, and the
+fixture already had one whose list() returns the very array I wanted, defined
+later, so mine was silently overwritten and the check threw. That is __P, the belt
+plan, __ped and now __primer in a single session. The rule is not a list of names
+to avoid; it is to grep for the name before using it.
+
+Verified: parse PASS v9.41. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 85 and 369 and containers 157 and 589, LOOT driven on both
+maps, stream parity identical, all three endings, hub and stage render. 83
+regression checks pass in sequence, none skipped, ratio pinned and profile cleaned
+before every check. The new check fails on a v9.40 fixture with all three false
+claims quoted and the measured 134 beside them.
+
+Not verified: the rest of the primer. I read the XP card because a workflow flagged
+it and I checked the two claims it makes; the other cards were not audited and at
+least one of them was written before several systems changed. That is a sweep
+worth doing and it is not this build.
+
 ## v9.40 - THE PEDDLER STOPS PROMISING YOUR MONEY SURVIVES YOUR DEATH
 
 The line under SELL BAG read:
