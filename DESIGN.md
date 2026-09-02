@@ -27443,6 +27443,54 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.37 - YOU CANNOT BACK OUT OF A RUN FROM THE FLOOR
+
+FREE INSURANCE, discovered at exactly the moment a player is most motivated to go
+looking for one.
+
+Being downed does not end the raid. You bleed out over seventeen seconds and there
+is a death beat after that, and the over flag is only set inside endRaid, so for
+that whole stretch the game still thinks a run is in progress. ESC opens the pause
+box, the box offers Abandon run because it only checks whether a raid exists, and
+abandoning runs a completely different branch from dying.
+
+WHAT IT SAVED YOU. The death branch strips both carried weapons out of the
+armoury. The abandon branch does not. It also does not count the death and does
+not dock proficiency the sixty percent of haul a death costs. The bag is lost
+either way, so the entire price of turning a death into a walk-away was the XP
+fee, a few hundred against a rifle worth thousands.
+
+That hollows out the one loss the whole raid loop is built on, so the way out is
+closed while you are on the floor: no abandon controls, and a line saying why,
+because a control that quietly vanishes teaches nothing. The button handler
+refuses as well as the button hiding, because presentation is not a rule and the
+box can already be open when you go down.
+
+NOT MADE HARSHER. Abandoning on your feet is unchanged, and being downed is still
+survivable: F still picks you up, a crewmate still can, and crawling into a ring
+still extracts you.
+
+MY OWN CHECK LIED TO ME FIRST. The Abandon button is a toggle, so pressing it a
+second time disarms the confirm. The check ran the downed case first, left the
+confirm armed, and the on-your-feet case then pressed the same button and
+cancelled it, reporting that backing out was broken on a build where it works.
+The stage resets the pair before it starts. Second time in one session that a
+control of mine reported a fault it had created itself.
+
+Verified: parse PASS v9.37. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 85 and 369 and containers 157 and 589, LOOT driven on both
+maps, stream parity identical, all three endings, hub and stage render. 79
+regression checks pass in sequence, none skipped, with the device pixel ratio
+pinned and the saved profile cleaned before every check. The new check fails on a
+v9.36 fixture with "the pause box still offers Abandon run while you are bleeding
+out" and "pressing Abandon while bleeding out still arms the confirm".
+
+Not verified: whether anything else reaches endRaid while downed. The pause box
+was the route I found and closed; a gamepad button, a stale click or some other
+path would have to be found the same way, and the handler guard covers any of
+them that go through the confirm. What is NOT covered is any other caller of
+endRaid('abandon'), and I have not audited those.
+
 ## HARNESS - THE FOUR RED CHECKS AT v9.36 WERE ALL MINE, AND THEY ARE FIXED
 
 CORRECTING WHAT I WROTE IN THE v9.36 ENTRY. That entry says the run was not clean,

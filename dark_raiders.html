@@ -599,6 +599,7 @@
     <button id="resumebtn" style="padding:8px 22px">Resume run</button>
     <button id="abandonbtn" style="padding:8px 22px;border-color:var(--rust);color:var(--rust)">Abandon run</button>
   </div>
+  <div id="pausebleed" style="display:none;font-size:13.5px;color:var(--rust);margin-top:8px;text-align:center;max-width:620px;line-height:1.7">YOU ARE ON THE FLOOR. There is no backing out from here. Get up, get carried, or crawl to a ring.</div>
 </div>
 
 <div class="outcome" id="outcome">
@@ -1209,7 +1210,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.36';
+var VER='9.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9446,11 +9447,18 @@ function togglePauseBox(on){
   // nothing is paused but the room, so it says so and drops the abandon controls.
   (function(){
     var _inRaid=!!G;
+    // v9.37: AND YOU CANNOT BACK OUT FROM THE FLOOR. Being downed does not set
+    // G.over, so for the whole seventeen second bleed-out the box happily offered
+    // a way to turn a death into an abandon, which kept both guns the death would
+    // have taken and cost only the XP fee.
+    var _bleed=!!(G&&G.player&&(G.player.downed||G.player.hp<=0||(G.deathBeat||0)>0));
     var _h3=document.querySelector('#pausebox h3');
-    if(_h3) _h3.textContent=_inRaid?'RUN PAUSED':'PAUSED';
+    if(_h3) _h3.textContent=_inRaid?(_bleed?'BLEEDING OUT':'RUN PAUSED'):'PAUSED';
     var _ab=document.getElementById('abandonbtn'), _ca=document.getElementById('confirmabandon');
-    if(_ab) _ab.style.display=_inRaid?'':'none';
-    if(_ca&&!_inRaid) _ca.style.display='none';
+    if(_ab) _ab.style.display=(_inRaid&&!_bleed)?'':'none';
+    if(_ca&&(!_inRaid||_bleed)) _ca.style.display='none';
+    var _bl=document.getElementById('pausebleed');
+    if(_bl) _bl.style.display=(_inRaid&&_bleed)?'':'none';
     var _rb=document.getElementById('resumebtn');
     if(_rb) _rb.textContent=_inRaid?'Resume run':'Back to the Undercroft';
   })();
@@ -24829,7 +24837,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.36: HEAVY PATROLS buys the extra crawlers it charges for again. I broke that at v9.30 and it was the biggest population on the map.',
+  now:'v9.37: you cannot abandon a run while you are bleeding out. Doing that turned a death into a walk-away and kept both your guns.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -27689,6 +27697,13 @@ document.getElementById('resumebtn').onclick=function(){
 // double-click lands on a button that has already changed roles harmlessly.
 // Resuming or reopening the pause box disarms it.
 document.getElementById('abandonbtn').onclick=function(){
+  // v9.37: the handler refuses as well as the button hiding. Presentation is not
+  // a rule, and the box can already be open when you go down.
+  if(G&&G.player&&(G.player.downed||G.player.hp<=0||(G.deathBeat||0)>0)){
+    var _blq=document.getElementById('pausebleed');
+    if(_blq) _blq.style.display='';
+    return;
+  }
   var cb=document.getElementById('confirmabandon');
   if(cb.style.display==='none'){
     cb.style.display='inline-block';

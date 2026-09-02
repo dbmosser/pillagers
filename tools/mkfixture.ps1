@@ -4400,6 +4400,63 @@ window.__REGRESS=[
      if(pool&&(plain.crawler/pool)<2.2)
        bad.push('control: with no term the crawler count fell back to '+
                 (Math.round(plain.crawler/pool*100)/100)+' per house, and his figure is 2.5');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.37',what:'you cannot abandon a run while you are bleeding out, and you still can on your feet',
+   run:function(){
+     var bad=[];
+     // FREE INSURANCE. Being downed does not set G.over, so for the whole
+     // seventeen second bleed-out the pause box still offered Abandon run, and
+     // abandoning runs a different branch from dying: the death branch strips both
+     // carried weapons out of the armoury and the abandon branch does not. The
+     // entire price of turning a death into a walk-away was the XP fee.
+     function stage(down){
+       __resetCfg(); __pinDefaults(0);
+       var P=__P();
+       P.weapons=['pistol'];
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       g.ents.length=0;
+       if(down){ p.downed=true; p.downT=15; p.hp=0; }
+       else { p.downed=false; p.hp=p.maxhp; p.iv=99; }
+       try{ togglePauseBox(true); }catch(e){ return {err:'the pause box would not open: '+e}; }
+       var ab=document.getElementById('abandonbtn');
+       var ca=document.getElementById('confirmabandon');
+       var bl=document.getElementById('pausebleed');
+       // THE BUTTON IS A TOGGLE: armed once, the next press disarms. Without this
+       // the second stage cancelled what the first stage had armed and reported
+       // that backing out was broken on a build where it works.
+       if(ca) ca.style.display='none';
+       if(ab) ab.textContent='Abandon run';
+       var shown=!!(ab&&ab.style.display!=='none');
+       // Press it. Hiding a control is presentation; the handler is the rule, and
+       // the box can already be open when you go down.
+       if(ab) try{ ab.click(); }catch(e2){}
+       var armed=!!(ca&&ca.style.display!=='none');
+       var told=!!(bl&&bl.style.display!=='none');
+       var over=!!g.over;
+       try{ togglePauseBox(false); }catch(e3){}
+       __resetCfg();
+       return {abandonShown:shown, confirmArmed:armed, toldWhy:told, raidOver:over};
+     }
+     var downed=stage(true);
+     if(downed.err) return 'SKIP: '+downed.err;
+     // THE FINDING.
+     if(downed.abandonShown)
+       bad.push('the pause box still offers Abandon run while you are bleeding out');
+     if(downed.confirmArmed)
+       bad.push('pressing Abandon while bleeding out still arms the confirm, so the run can be walked away from on the floor');
+     // A control that silently vanishes teaches nothing, so it has to say why.
+     if(!downed.abandonShown&&!downed.toldWhy&&document.getElementById('pausebleed'))
+       bad.push('the abandon controls are gone while downed but nothing on screen says why');
+     // CONTROL: ON YOUR FEET IT MUST STILL WORK. Without this the fix could be
+     // "abandoning is gone", which would be a different and much worse change.
+     var up=stage(false);
+     if(!up.err){
+       if(!up.abandonShown)
+         bad.push('control: Abandon run is missing even when you are on your feet and unhurt');
+       if(!up.confirmArmed)
+         bad.push('control: pressing Abandon on your feet no longer arms the confirm, so backing out is broken');
+     }
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
