@@ -84,6 +84,15 @@ window.__forceSize=function(w,h){
   resize();
   return {W:W,H:H,dpr:DPR,cv:[cv.width,cv.height]};
 };
+// v9.36 harness: pin the canvas backing store to CSS pixels for measurement.
+// Returns what it actually achieved so a caller can refuse to measure rather than
+// measure the wrong quarter of a buffer.
+window.__pinDPR=function(v){
+  DPR=(v===undefined?1:v);
+  try{ resize(); }catch(e){}
+  return {DPR:DPR, buffer:[cv.width,cv.height], css:[cv.offsetWidth,cv.offsetHeight],
+          oneToOne:(cv.offsetWidth>0&&cv.width===cv.offsetWidth&&hcv.width===hcv.offsetWidth)};
+};
 window.__canvases=function(){ return {world:cv,overlay:hcv}; };
 window.__movers={seekPoint:seekPoint,navSeek:navSeek,mkSentry:mkSentry,mkRaider:mkRaider,dist:dist,buildNav:buildNav};
 window.__newRaid=function(){ G=buildRaid(true); return G; };
@@ -4323,6 +4332,61 @@ window.__REGRESS=[
        bad.push('control: a 15 second raid timer never ran out across 1600 frames, so the clock is simply gone');
      else if(on.killer!=='timer')
        bad.push('control: the timer ran out and the killer was recorded as '+on.killer+' rather than the timer');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.36',what:'HEAVY PATROLS buys forty percent more crawlers, the same as it buys of everything else',
+   run:function(){
+     var bad=[];
+     // A REGRESSION I SHIPPED AT v9.30. The term promises "forty percent more of
+     // everything out there" and he pays thirty percent hazard pay for it. The
+     // crawler floor added at v9.30 took the larger of the area figure and a
+     // house-derived one, and the house one knew nothing about terms, so it
+     // overwrote the term for the largest population on both maps.
+     // Measured before the fix, plain against the term: sentries 16 to 23 and
+     // pillagers 7 to 10 on COLD STORAGE, and crawlers 52 to 54.
+     function count(mapIx,onTerm){
+       __resetCfg(); __pinDefaults(mapIx);
+       var P=__P(), had=(P.terms||[]).slice();
+       P.terms = onTerm?['patrols']:[];
+       __startRaid({mapIx:mapIx,seed:4242});
+       var g=__state(), c={};
+       for(var i=0;i<g.ents.length;i++){ var k=g.ents[i].kind; c[k]=(c[k]||0)+1; }
+       P.terms=had; __resetCfg();
+       return c;
+     }
+     var maps=[{ix:0,name:'COLD STORAGE'},{ix:1,name:'THE COLD MILE'}];
+     for(var m=0;m<maps.length;m++){
+       var off=count(maps[m].ix,false), on=count(maps[m].ix,true);
+       if(!off.crawler||!off.sentry){ bad.push(maps[m].name+' built no crawlers or no sentries to compare'); continue; }
+       var cUp=(on.crawler-off.crawler)/off.crawler;
+       var sUp=(on.sentry-off.sentry)/off.sentry;
+       // CONTROL FIRST: the term has to be doing anything at all, or a broken
+       // fixture would read as a broken game. Sentries were never affected by the
+       // v9.30 floor, so they are the honest yardstick.
+       if(sUp<0.25){
+         bad.push('control: HEAVY PATROLS only raised sentries on '+maps[m].name+' by '+
+                  Math.round(sUp*100)+' percent, so the term is not being applied and nothing below means anything');
+         continue;
+       }
+       // THE FINDING. 25 percent rather than 40 because the counts are whole
+       // machines against a house pool that shifts with the landing, but the
+       // defect showed 4 percent and 2 percent, so there is no overlap.
+       if(cUp<0.25)
+         bad.push('on '+maps[m].name+' HEAVY PATROLS raised sentries by '+Math.round(sUp*100)+
+                  ' percent and crawlers by only '+Math.round(cUp*100)+
+                  ' percent, so the term is not buying the crawlers it charges for');
+     }
+     // CONTROL: and with the term OFF the crawler count must still follow the
+     // houses, which is what v9.30 was for. Multiplying the floor must not have
+     // quietly replaced it.
+     var plain=count(0,false);
+     var g2=null;
+     __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242}); g2=__state();
+     var pool=0, B=g2.map.buildings||[];
+     for(var b=0;b<B.length;b++) if(B[b].w>=80&&B[b].h>=80) pool++;
+     __resetCfg();
+     if(pool&&(plain.crawler/pool)<2.2)
+       bad.push('control: with no term the crawler count fell back to '+
+                (Math.round(plain.crawler/pool*100)/100)+' per house, and his figure is 2.5');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

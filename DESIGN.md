@@ -27443,6 +27443,91 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.36 - HEAVY PATROLS BUYS THE CRAWLERS IT CHARGES FOR AGAIN
+
+A REGRESSION I SHIPPED THREE BUILDS AGO, at v9.30, and it broke something he pays
+credits for.
+
+HEAVY PATROLS is a term he signs before a raid for thirty percent hazard pay, and
+its own text promises "Forty percent more of everything out there: machines,
+pillagers and criers alike". The multiplier is applied to the density figure every
+population is derived from. Then v9.30 added a floor derived from the number of
+houses and took the larger of the two, and that floor knew nothing about terms, so
+it simply overwrote the term for the largest population on both maps.
+
+MEASURED at seed 4242, plain against the term:
+
+                  plain    HEAVY PATROLS
+  COLD STORAGE    sentries    16 -> 23   (+44 percent)
+                  pillagers    7 -> 10   (+43 percent)
+                  crawlers    52 -> 54   (+4 percent)
+  THE COLD MILE   sentries    80 -> 110  (+38 percent)
+                  pillagers   33 -> 46   (+39 percent)
+                  crawlers   219 -> 223  (+2 percent)
+
+Everything else moved by about forty percent. Crawlers moved by four and two, and
+crawlers outnumber everything else on both maps by a wide margin, so the most
+expensive term on the board was quietly buying almost none of what it charges for.
+
+AFTER: crawlers rise 42 percent on COLD STORAGE and 39 on THE COLD MILE, against
+sentries at 44 and 38 in the same runs.
+
+The floor now carries the same term multiplier the rest of the map does. It still
+ignores the area scaling on purpose, because that is the whole point of it: the
+count follows the number of houses rather than the number of square metres.
+
+HOW IT GOT PAST ME. v9.30 ran the full corpus and passed 72 checks, because
+nothing in the corpus had ever set a term. The check added here is the one that
+would have caught it, and it is built the right way round: it confirms the term is
+moving SENTRIES first, and only then asks about crawlers, so a fixture that failed
+to apply the term at all reports itself rather than blaming the game.
+
+Verified: parse PASS v9.36. The fix itself is measured directly and the numbers
+are above: crawlers now rise 42 percent on COLD STORAGE and 39 on THE COLD MILE
+under HEAVY PATROLS, against sentries at 44 and 38 in the same runs, and 4 and 2
+percent before. Full verify PASS at 1920x1080 - both maps at seed 4242 with
+entities 85 and 369 and containers 157 and 589, LOOT driven on both maps, stream
+parity identical, all three endings, hub and stage render.
+
+NOT A CLEAN CORPUS RUN, AND I AM NOT GOING TO PRETEND IT WAS. 74 of 78 checks
+pass. Four do not, and here is exactly what I established about each:
+
+  v8.93 panel sizing and v9.08 the downed screen. These fail with byte-identical
+  numbers on a v9.35 fixture, which is the build before this one, so v9.36 did not
+  cause them. They passed earlier today in a different browser tab. They are
+  measuring DOM sizes that depend on uiScale, which this environment computes as
+  1.2 rather than 1.0, and neither pinning the device pixel ratio to 1 nor forcing
+  the canvas to exactly 1920x1080 changed them.
+
+  v9.25 and v9.26, the two shooting checks. These PASS on the v9.35 fixture in the
+  same tab, in the same session, with the same pin, and SKIP on v9.36. I cannot
+  explain that. With no term signed the two builds should generate identical maps,
+  because the only arithmetic change is a multiplication by one. It is unresolved
+  and I am recording it as unresolved rather than guessing.
+
+WHAT I FOUND AND FIXED IN THE HARNESS ALONG THE WAY. The first run of this build
+reported EIGHT failures, every one of them saying "nothing was drawn" or "not
+found". Eight simultaneous regressions in unrelated systems is not a thing that
+happens; one broken ruler is. The game sizes its canvas to CSS times the device
+pixel ratio, capped at 2, and every pixel check in the harness samples in CSS
+coordinates, so when the browser reported a ratio of 2 and then 2.5 the checks
+were reading the top-left quarter of a buffer and finding empty ground. A shim
+now pins the ratio to 1 for measurement runs and refuses to measure if it cannot.
+Six of the eight went green immediately and the run time fell from sixteen
+minutes to six.
+
+I am committing this anyway, and the reason is that it repairs a regression I
+shipped at v9.30 which is live in his game right now. Leaving a paid term broken
+while I chase four unstable checks would be the wrong trade. The next build is
+the harness, because until those four are trustworthy I cannot honestly certify
+anything.
+
+Not verified: whether forty percent more crawlers on top of the v9.30 increase is
+too many with the term signed. THE COLD MILE now builds 305 crawlers under HEAVY
+PATROLS against 112 before v9.30. That is a lot of machines, it is what the term
+says it sells, and the bot CAN measure it because the bot does fight machines. It
+has not been measured here.
+
 ## v9.35 - THE RAID CLOCK HAS AN OFF POSITION
 
 HIS 6, second half: "nothing should be meant to end the raid."
