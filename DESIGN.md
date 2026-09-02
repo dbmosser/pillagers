@@ -27443,6 +27443,56 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.96 - THE UNDERCROFT BACKPACK ACTUALLY WORKS
+
+His answer 11: "yes you should be able to move stuff to and from the hotbar when
+the backpack is open", and answer 22, the hotbar is visible in the Undercroft.
+v8.95 put the raid backpack on the Undercroft floor and I flagged at the end of
+it that the thing was a VIEW. It was: the pick-up handler runs only under
+"G && !G.over && G.bagOpen && G.bagCells", and down there G is either absent or a
+finished raid, and the belt was not drawn at all, so there was nothing to drag
+and nowhere to drag it.
+
+WHAT CHANGED. v8.95 rebuilt the substitute state every frame and threw it away,
+which is fine for drawing and useless for dragging, because a drag is state that
+has to survive from mousedown to mouseup. It is made once when he opens the
+backpack, kept until he closes it, used by both the draw and the mouse, and
+written back to the profile on every release as well as on close. And the belt is
+drawn from the same state, so there is somewhere to drop things.
+
+The belt became a function so both screens use one copy of it. That is the same
+reason drawBag is shared: two implementations of one bar is how the two would
+start disagreeing.
+
+PROVED WITH REAL MOUSE EVENTS ON THE UNDERCROFT FLOOR, both directions:
+    drag a plate from the backpack onto belt slot 8
+        belt becomes {7:plate}, profile the same, backpack drops 5 cells to 4
+    drag it back off the belt onto the grid
+        belt empty, profile empty, backpack back to 5 cells, kit still 5 items
+That last number is the control: moving a thing between two places he owns must
+never destroy it.
+
+TWO OF MY OWN MISTAKES, BOTH CAUGHT BY MEASURING.
+The belt ended up a function declaration INSIDE drawHUD, which makes it invisible
+to the Undercroft: the hub called it, got a ReferenceError, and my catch swallowed
+it. The probe said five backpack cells and zero belt cells, which is exactly what
+a silently missing belt looks like. It is at file scope now, after checking the
+block reads no locals of drawHUD at all.
+And the fixture's hub stepper was a copy of the game's hub frame written at
+v8.83, so it was stepping a version of the Undercroft that stopped existing at
+v8.95. A stale copy of a frame is a probe that measures a game you are no longer
+shipping. It runs the same two lines the real frame runs now.
+
+Verified: parse PASS. Both sectors to their fingerprints, entities 58 and 276 and
+containers 155 and 589. Streams identical live and sim. Looting on both with no
+throw and the clock advancing. Three endings correct. Hub renders. 39 regression
+checks pass, none failed and none skipped.
+
+Not verified: I did not photograph the belt sitting under the Undercroft
+backpack, only measured its nine slots and dragged to them. Right-click menus and
+the keyboard number keys are also not wired down there, so the belt is
+drag-driven only for now. And the retired full screen panel from v8.84 is still
+in the page, unused by any key.
 ## v8.95 - THE UNDERCROFT BACKPACK IS THE RAID BACKPACK
 
 His note: "when player hits I in the undercroft, they should get this exact same

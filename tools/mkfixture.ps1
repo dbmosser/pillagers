@@ -583,11 +583,18 @@ window.__hubP=function(){ return HB?HB.player:null; };
 window.__hubStep=function(dt){
   if(!HB||!wc||!(W>0)) return false;
   tickBuzz(dt); updateHubWorld(dt); drawHubWorld(dt); drawBuzzFx();
+  // v8.96: the same two lines the real hub frame runs. Without them this shim
+  // steps a version of the Undercroft that stopped existing at v8.95.
+  try{ ctx.clearRect(0,0,W,H); if(hubBagOpen) drawHubBag(); }catch(_hs){}
   return true;
 };
 window.__hubPanelOn=function(){ return document.getElementById('hub').classList.contains('on'); };
 window.__hubBag=function(v){ if(v!==undefined) hubBagOpen=!!v; return hubBagOpen; };
 window.__hubBagState=function(){ return hubBagState(); };
+// v8.96: the LIVE Undercroft backpack state, the one the draw and the mouse both
+// use. A probe that rebuilt it would be measuring its own copy and not the panel
+// he can actually click on.
+window.__hubBagLive=function(){ return hubBagG; };
 // The operator drawing calls, recorded as they happen. The pose is an argument
 // to drawOp, so this is the only way to see what the Undercroft actually asks
 // for rather than what I believe it asks for.
@@ -2079,6 +2086,64 @@ window.__REGRESS=[
      // And the key closes it again.
      document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));
      if(__hubBag()) bad.push('I did not close the Undercroft backpack again');
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.96',what:'the Undercroft backpack has a belt and you can drag items onto it and off it',
+   run:function(){
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, canvas rects are zero and no drag can land';
+     __forceSize(1920,1080);
+     if(!__hubEnter()) return 'could not reach the Undercroft floor';
+     var P=__P();
+     P.kit=['medkit','plate','servo','scrap','bandage'];
+     P.hotAssign={};
+     var K=__keysRef(); for(var k in K) delete K[k];
+     __hubBag(false);
+     document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));
+     __hubStep(1/60); __hubStep(1/60);
+     var L=__hubBagLive();
+     if(!L) return 'the Undercroft backpack kept no state to drag with';
+     var bc=L.bagCells||[], hc=L.hotCells||[];
+     var bad=[];
+     // v8.95 drew the panel and nothing else. The belt is what a drag needs
+     // somewhere to land on, and it is his answer 22 in its own right.
+     if(hc.length!==9) bad.push('the Undercroft belt drew '+hc.length+' slots, it should be 9');
+     if(bc.length!==5) bad.push('the Undercroft backpack drew '+bc.length+' cells for 5 packed items');
+     if(!hc.length||!bc.length) return bad.join('; ');
+     var cv=document.getElementById('cv'), r=cv.getBoundingClientRect();
+     function ev(t,x,y,tgt){ (tgt||cv).dispatchEvent(new MouseEvent(t,
+       {button:0,bubbles:true,clientX:r.left+x,clientY:r.top+y})); }
+     function drag(a,b){
+       ev('mousemove',a.x+a.w/2,a.y+a.h/2);
+       ev('mousedown',a.x+a.w/2,a.y+a.h/2);
+       ev('mousemove',b.x+b.w/2,b.y+b.h/2);
+       ev('mouseup',b.x+b.w/2,b.y+b.h/2,window);
+       __hubStep(1/60);
+     }
+     // ONTO the belt.
+     var key=bc[0].key;
+     drag(bc[0],hc[7]);
+     var live=__hubBagLive();
+     if(!live||(live.hotAssign||{})[7]!==key)
+       bad.push('dragging '+key+' onto belt slot 8 did not bind it');
+     if(((__P().hotAssign||{})[7])!==key)
+       bad.push('the new binding was not written to the profile');
+     // And it must have LEFT the backpack, which is the v8.78 rule holding here
+     // too rather than being reimplemented for this screen.
+     if((live.bagCells||[]).length!==4)
+       bad.push('the backpack still draws '+(live.bagCells||[]).length+' cells after one went to the belt');
+     // OFF the belt again, which is his v8.72 note.
+     var hc2=live.hotCells||[], bc2=live.bagCells||[];
+     if(hc2.length>7&&bc2.length){
+       drag(hc2[7],bc2[0]);
+       var live2=__hubBagLive();
+       if((live2.hotAssign||{})[7]!==undefined) bad.push('dragging off the belt did not release the slot');
+       if(((__P().hotAssign||{})[7])!==undefined) bad.push('the released slot was not written to the profile');
+       if((live2.bagCells||[]).length!==5) bad.push('the item did not come back into the backpack');
+     }
+     // CONTROL: none of this may consume the kit. Moving a thing between two
+     // places he owns must never destroy it, which is the obvious way to make
+     // every line above pass and lose his gear.
+     if((__P().kit||[]).length!==5) bad.push('the kit lost items during the drags, it holds '+(__P().kit||[]).length);
+     document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

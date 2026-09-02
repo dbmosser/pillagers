@@ -1185,7 +1185,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.95';
+var VER='8.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8368,7 +8368,7 @@ window.addEventListener('keydown',function(e){
       var _cm2=document.getElementById('carrymodal');
       if(_cm2&&_cm2.classList.contains('on')){ toggleCarry(false); e.preventDefault(); return; }
       // v8.95: the Undercroft backpack takes Escape before the terminal does.
-      if(hubBagOpen){ hubBagOpen=false; e.preventDefault(); return; }
+      if(hubBagOpen){ hubBagOpenSet(false); e.preventDefault(); return; }
     }
     if(e.code==='Escape'&&!document.querySelector('.imenu')&&!document.querySelector('.modal.on'))
       document.getElementById('hub').classList.remove('on');
@@ -8382,7 +8382,7 @@ window.addEventListener('keydown',function(e){
       var _cm=document.getElementById('carrymodal');
       if(_cm&&_cm.classList.contains('on')){ toggleCarry(false); e.preventDefault(); return; }
       // v8.95: and the Undercroft backpack closes on the same key.
-      if(hubBagOpen){ hubBagOpen=false; e.preventDefault(); return; }
+      if(hubBagOpen){ hubBagOpenSet(false); e.preventDefault(); return; }
       var _anyModal=false;
       var _ms=document.querySelectorAll('.modal');
       for(var _mi=0;_mi<_ms.length;_mi++){
@@ -8400,7 +8400,7 @@ window.addEventListener('keydown',function(e){
         // v8.95, his note: "they should get this exact same menu, NOT a
         // fullscreen one". The v8.84 panel was both fullscreen and a second
         // inventory. This is the raid backpack, drawn by the same function.
-        else hubBagOpen=!hubBagOpen;
+        else hubBagOpenSet(!hubBagOpen);
       }
     }
     return;
@@ -8597,6 +8597,33 @@ cv.addEventListener('mousedown',function(e){
     }
   }
   if(e.button===2){ if(G&&!G.over) G.player.ads=true; return; }
+  // v8.96: on the Undercroft floor the same two handlers below run against the
+  // backpack's own state instead of a raid. Answer 11, moving things to and from
+  // the hotbar with the backpack open.
+  if(state==='hub'&&hubBagOpen&&hubBagG){
+    var _hbDone=false;
+    withHubBag(function(){
+      var GB=G.bagCells||[];
+      for(var _q=0;_q<GB.length;_q++){
+        var _C=GB[_q];
+        if(mouse.x>=_C.x&&mouse.x<=_C.x+_C.w&&mouse.y>=_C.y&&mouse.y<=_C.y+_C.h){
+          G.drag={key:_C.key,bagIx:_C.bagIx};
+          G.bagSel=(_C.stackIx!==undefined?_C.stackIx:_C.bagIx);
+          blip('pick'); _hbDone=true; return;
+        }
+      }
+      var HCq=G.hotCells||[];
+      for(var _q2=0;_q2<HCq.length;_q2++){
+        var _H=HCq[_q2];
+        if(mouse.x>=_H.x&&mouse.x<=_H.x+_H.w&&mouse.y>=_H.y&&mouse.y<=_H.y+_H.h){
+          var _sl=hotbarSlots()[_H.i];
+          if(_sl&&_sl.itemKey){ G.drag={key:_sl.itemKey,fromHot:_H.i}; blip('pick'); }
+          _hbDone=true; return;
+        }
+      }
+    });
+    if(_hbDone) return;
+  }
   // PICK UP AN ITEM. Only while the inventory is open, and the drag is claimed
   // here so the same click cannot also pull the trigger.
   if(G&&!G.over&&G.bagOpen&&G.bagCells){
@@ -8674,6 +8701,32 @@ cv.addEventListener('mousedown',function(e){
 window.addEventListener('mouseup',function(e){
   if(HUDDRAG){ HUDDRAG=null; try{ saveProfile(); }catch(_e2){} }
   if(HUDRESIZE){ HUDRESIZE=null; try{ saveProfile(); }catch(_e3){} }
+  // v8.96: releasing over a belt cell on the Undercroft binds it, and releasing
+  // anywhere else lets go, which is the same pair of outcomes the raid has.
+  if(state==='hub'&&hubBagOpen&&hubBagG&&hubBagG.drag){
+    withHubBag(function(){
+      var d=G.drag; G.drag=null;
+      if(!d) return;
+      var HCq=G.hotCells||[];
+      for(var _q3=0;_q3<HCq.length;_q3++){
+        var _H=HCq[_q3];
+        if(mouse.x>=_H.x&&mouse.x<=_H.x+_H.w&&mouse.y>=_H.y&&mouse.y<=_H.y+_H.h){
+          G.hotAssign=G.hotAssign||{};
+          if(d.fromHot!==undefined&&d.fromHot!==_H.i) delete G.hotAssign[d.fromHot];
+          G.hotAssign[_H.i]=d.key;
+          blip('pick');
+          return;
+        }
+      }
+      // Dropped off the belt entirely: the binding is released and the item goes
+      // back to being just something in the backpack, which is his v8.72 note.
+      if(d.fromHot!==undefined&&G.hotAssign) delete G.hotAssign[d.fromHot];
+    });
+    // Written through on every release, so closing is not the only way to keep it.
+    P.kit=(hubBagG.bag||[]).slice();
+    P.hotAssign=hubBagG.hotAssign||{};
+    try{ saveProfile(); }catch(_hs2){}
+  }
   if(e.button===2){ if(G) G.player.ads=false; }
   // DROP. Released over a quickbar cell, the item is assigned to that slot;
   // released anywhere else the drag is simply abandoned, which is what every
@@ -19209,6 +19262,99 @@ function drawBuzzFx(){
     BUZZTRC.drawImage(wcv,0,0);
   }
 }
+// v8.96: AT FILE SCOPE, not inside drawHUD. It was a declaration inside that
+// function, which made it invisible to the Undercroft: the hub called it, got a
+// ReferenceError, and the catch swallowed it. The probe read five backpack cells
+// and zero belt cells, which is what a silently missing belt looks like.
+  // v8.96: the belt is a function now rather than an anonymous block, because
+  // the Undercroft needs the same one. Answer 22: the hotbar is visible down
+  // there, and answer 11: he can move things to and from it while the backpack
+  // is open, which needs somewhere to drop them.
+  function drawBelt(){
+    var sl=hotbarSlots(),sel=hotSel();
+    // v8.08, his order: bigger. LH(46) to LH(58), and hy moves up by the same
+    // amount so the bar still sits LH(12) off the bottom edge.
+    // v8.81: sized to the room between the two bottom corner blocks rather than
+    // a fixed number. The vitals grow from x 0 and the gear stack from x W, so
+    // their inner edges are the box constants times their own zoom. Cells stay
+    // square and everything inside one is already drawn as a fraction of bw, so
+    // the icons grow with the cell.
+    var gap=LH(6);
+    var _hz=hudRes();
+    var _bR=390*(HUDZ.body||1)*_hz;        // vitals block, inner edge
+    var _gL=W-252*(HUDZ.gear||1)*_hz;      // gear stack, inner edge
+    var _room=(_gL-LH(14))-(_bR+LH(14));
+    var bw=Math.floor((_room-(sl.length-1)*gap)/sl.length);
+    bw=clamp(bw,LH(52),LH(112));
+    var tw2=sl.length*bw+(sl.length-1)*gap;
+    // Centred in the room, not on the screen. Screen-centred cannot grow here:
+    // the left neighbour reaches further in than the right one, so the tighter
+    // side would cap this below the size it already was.
+    var _rL=_bR+LH(14);
+    var hx=Math.round(_rL+(_room-tw2)/2),hy=H-bw-LH(13);
+    if(hx<_rL) hx=Math.round(_rL);
+    // The rectangles are recorded AS THEY ARE DRAWN rather than recomputed by the
+    // mouse code. Two copies of this arithmetic would drift the first time the
+    // slot count or the scale changed, and the drop target would stop matching
+    // the thing on screen.
+    G.hotCells=[];
+    for(var q=0;q<sl.length;q++){
+      var S=sl[q],bx=hx+q*(bw+gap),on=q===sel;
+      G.hotCells.push({x:bx,y:hy,w:bw,h:bw,i:q});
+      var empty=(S.count===0);
+      ctx.fillStyle=on?'rgba(38,32,20,.94)':'rgba(6,9,13,.80)';
+      ctx.fillRect(bx,hy,bw,bw);
+      // the rarity wash goes OVER the base so a selected slot still reads as
+      // selected, and under the icon so it never fights the portrait
+      var _hr=(S.itemKey&&ITEMS[S.itemKey])?dispR(S.itemKey)
+             :((S.kind==='gun'&&S.icon&&WEAPONS[S.icon])?gunRarity(S.icon)
+             :((S.icon&&ITEMS[S.icon])?dispR(S.icon):null));
+      if(_hr&&!empty){ var _hf=rfill(_hr); if(_hf){ ctx.fillStyle=_hf; ctx.fillRect(bx,hy,bw,bw); } }
+      var dragOver=(G.drag&&mouse.x>=bx&&mouse.x<=bx+bw&&mouse.y>=hy&&mouse.y<=hy+bw);
+      ctx.strokeStyle=dragOver?'#ffc04a':(on?'#ffc04a':((_hr&&RCOL[_hr]&&!empty)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
+      ctx.lineWidth=(dragOver||on)?2:1;
+      ctx.strokeRect(bx+.5,hy+.5,bw-1,bw-1);
+      var cx2=bx+bw/2,cy2=hy+bw*0.45;
+      ctx.globalAlpha=empty?.28:1;
+      ctx.fillStyle=S.c;
+      // Real item portraits, v2.87: the slot draws the same icon the inventory
+      // and the shops use, so a Kettle looks like a Kettle everywhere. The old
+      // four-glyph fallback survives for any slot without an icon key.
+      if(S.icon){ drawItemIcon(ctx,S.icon,cx2,cy2,bw*0.64); }
+      else if(S.kind==='gun'){
+        ctx.fillRect(cx2-bw*0.28,cy2-bw*0.05,bw*0.46,bw*0.11);
+        ctx.fillRect(cx2+bw*0.10,cy2-bw*0.13,bw*0.10,bw*0.09);
+        ctx.fillRect(cx2-bw*0.20,cy2+bw*0.06,bw*0.09,bw*0.14);
+      } else if(S.kind==='throw'){
+        ctx.beginPath(); ctx.arc(cx2,cy2,bw*0.17,0,6.2832); ctx.fill();
+        ctx.fillRect(cx2-bw*0.03,cy2-bw*0.28,bw*0.06,bw*0.10);
+      } else if(S.kind==='heal'){
+        ctx.fillRect(cx2-bw*0.06,cy2-bw*0.18,bw*0.12,bw*0.36);
+        ctx.fillRect(cx2-bw*0.18,cy2-bw*0.06,bw*0.36,bw*0.12);
+      } else {
+        ctx.fillRect(cx2-bw*0.05,cy2-bw*0.20,bw*0.10,bw*0.34);
+        ctx.fillRect(cx2-bw*0.16,cy2-bw*0.22,bw*0.22,bw*0.09);
+      }
+      ctx.globalAlpha=1;
+      ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(160,172,184,.8)';
+      ctx.fillText(String(q+1),bx+LH(4),hy+LH(11));
+      // A slot he arranged himself is marked, so an assigned bar can be told from
+      // the default one at a glance.
+      if(S.assigned){
+        ctx.fillStyle='#7fc4a0';
+        ctx.fillRect(bx+bw-LH(7),hy+LH(3),LH(4),LH(4));
+      }
+      if(S.count!==null&&S.count!==undefined){
+        ctx.font=FS(TYPE.micro);
+        ctx.fillStyle=empty?'#7a5040':'#FFF6DC';
+        ctx.textAlign='right'; ctx.fillText(String(S.count),bx+bw-LH(4),hy+bw-LH(5)); ctx.textAlign='left';
+      }
+    }
+    ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1'; ctx.textAlign='center';
+    ctx.fillText(sl[sel].name+'   [FIRE] use    [V] signal',W/2,hy-LH(6));
+    ctx.textAlign='left';
+  }
+
 function drawHUD(){
   var p=G.player,T=G.tel,i;
   ctx.clearRect(0,0,W,H);
@@ -19976,90 +20122,7 @@ ctx.fillStyle='#4de3d0';
   // SPEC 6.1 and 11: the hotbar, centred at the bottom where the eye goes under
   // pressure. Icons are drawn, not text: a gun silhouette, a throwable sphere, a
   // cross for medical, and so on - a slot reads at a glance.
-  (function(){
-    var sl=hotbarSlots(),sel=hotSel();
-    // v8.08, his order: bigger. LH(46) to LH(58), and hy moves up by the same
-    // amount so the bar still sits LH(12) off the bottom edge.
-    // v8.81: sized to the room between the two bottom corner blocks rather than
-    // a fixed number. The vitals grow from x 0 and the gear stack from x W, so
-    // their inner edges are the box constants times their own zoom. Cells stay
-    // square and everything inside one is already drawn as a fraction of bw, so
-    // the icons grow with the cell.
-    var gap=LH(6);
-    var _hz=hudRes();
-    var _bR=390*(HUDZ.body||1)*_hz;        // vitals block, inner edge
-    var _gL=W-252*(HUDZ.gear||1)*_hz;      // gear stack, inner edge
-    var _room=(_gL-LH(14))-(_bR+LH(14));
-    var bw=Math.floor((_room-(sl.length-1)*gap)/sl.length);
-    bw=clamp(bw,LH(52),LH(112));
-    var tw2=sl.length*bw+(sl.length-1)*gap;
-    // Centred in the room, not on the screen. Screen-centred cannot grow here:
-    // the left neighbour reaches further in than the right one, so the tighter
-    // side would cap this below the size it already was.
-    var _rL=_bR+LH(14);
-    var hx=Math.round(_rL+(_room-tw2)/2),hy=H-bw-LH(13);
-    if(hx<_rL) hx=Math.round(_rL);
-    // The rectangles are recorded AS THEY ARE DRAWN rather than recomputed by the
-    // mouse code. Two copies of this arithmetic would drift the first time the
-    // slot count or the scale changed, and the drop target would stop matching
-    // the thing on screen.
-    G.hotCells=[];
-    for(var q=0;q<sl.length;q++){
-      var S=sl[q],bx=hx+q*(bw+gap),on=q===sel;
-      G.hotCells.push({x:bx,y:hy,w:bw,h:bw,i:q});
-      var empty=(S.count===0);
-      ctx.fillStyle=on?'rgba(38,32,20,.94)':'rgba(6,9,13,.80)';
-      ctx.fillRect(bx,hy,bw,bw);
-      // the rarity wash goes OVER the base so a selected slot still reads as
-      // selected, and under the icon so it never fights the portrait
-      var _hr=(S.itemKey&&ITEMS[S.itemKey])?dispR(S.itemKey)
-             :((S.kind==='gun'&&S.icon&&WEAPONS[S.icon])?gunRarity(S.icon)
-             :((S.icon&&ITEMS[S.icon])?dispR(S.icon):null));
-      if(_hr&&!empty){ var _hf=rfill(_hr); if(_hf){ ctx.fillStyle=_hf; ctx.fillRect(bx,hy,bw,bw); } }
-      var dragOver=(G.drag&&mouse.x>=bx&&mouse.x<=bx+bw&&mouse.y>=hy&&mouse.y<=hy+bw);
-      ctx.strokeStyle=dragOver?'#ffc04a':(on?'#ffc04a':((_hr&&RCOL[_hr]&&!empty)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
-      ctx.lineWidth=(dragOver||on)?2:1;
-      ctx.strokeRect(bx+.5,hy+.5,bw-1,bw-1);
-      var cx2=bx+bw/2,cy2=hy+bw*0.45;
-      ctx.globalAlpha=empty?.28:1;
-      ctx.fillStyle=S.c;
-      // Real item portraits, v2.87: the slot draws the same icon the inventory
-      // and the shops use, so a Kettle looks like a Kettle everywhere. The old
-      // four-glyph fallback survives for any slot without an icon key.
-      if(S.icon){ drawItemIcon(ctx,S.icon,cx2,cy2,bw*0.64); }
-      else if(S.kind==='gun'){
-        ctx.fillRect(cx2-bw*0.28,cy2-bw*0.05,bw*0.46,bw*0.11);
-        ctx.fillRect(cx2+bw*0.10,cy2-bw*0.13,bw*0.10,bw*0.09);
-        ctx.fillRect(cx2-bw*0.20,cy2+bw*0.06,bw*0.09,bw*0.14);
-      } else if(S.kind==='throw'){
-        ctx.beginPath(); ctx.arc(cx2,cy2,bw*0.17,0,6.2832); ctx.fill();
-        ctx.fillRect(cx2-bw*0.03,cy2-bw*0.28,bw*0.06,bw*0.10);
-      } else if(S.kind==='heal'){
-        ctx.fillRect(cx2-bw*0.06,cy2-bw*0.18,bw*0.12,bw*0.36);
-        ctx.fillRect(cx2-bw*0.18,cy2-bw*0.06,bw*0.36,bw*0.12);
-      } else {
-        ctx.fillRect(cx2-bw*0.05,cy2-bw*0.20,bw*0.10,bw*0.34);
-        ctx.fillRect(cx2-bw*0.16,cy2-bw*0.22,bw*0.22,bw*0.09);
-      }
-      ctx.globalAlpha=1;
-      ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(160,172,184,.8)';
-      ctx.fillText(String(q+1),bx+LH(4),hy+LH(11));
-      // A slot he arranged himself is marked, so an assigned bar can be told from
-      // the default one at a glance.
-      if(S.assigned){
-        ctx.fillStyle='#7fc4a0';
-        ctx.fillRect(bx+bw-LH(7),hy+LH(3),LH(4),LH(4));
-      }
-      if(S.count!==null&&S.count!==undefined){
-        ctx.font=FS(TYPE.micro);
-        ctx.fillStyle=empty?'#7a5040':'#FFF6DC';
-        ctx.textAlign='right'; ctx.fillText(String(S.count),bx+bw-LH(4),hy+bw-LH(5)); ctx.textAlign='left';
-      }
-    }
-    ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1'; ctx.textAlign='center';
-    ctx.fillText(sl[sel].name+'   [FIRE] use    [V] signal',W/2,hy-LH(6));
-    ctx.textAlign='left';
-  })();
+  drawBelt();
   // Bars, at a size you can read in a firefight. His answers, twice: the HUD
   // should be BIGGER and the health bar "NEEDS TO BE LARGER". 150x10 grew to
   // 280x18 with the number inside the bar itself where your eye already is,
@@ -21790,6 +21853,25 @@ function bagStacks(){
 // belt claim, the layout and the header all stay inside drawBag, so the two
 // screens cannot say different things about the same bag.
 var hubBagOpen=false;
+// v8.96: kept while the panel is open, not rebuilt per frame. A drag is state
+// that has to survive from mousedown to mouseup, so a state thrown away every
+// frame can be looked at and never touched, which is what v8.95 shipped.
+var hubBagG=null;
+function hubBagOpenSet(on){
+  if(on){
+    if(!hubBagG) hubBagG=hubBagState();
+    hubBagOpen=true;
+  } else {
+    // Closing is the commit. The panel edits its own copy and the profile takes
+    // it, so a half finished drag can never write a broken bag.
+    if(hubBagG){
+      P.kit=(hubBagG.bag||[]).slice();
+      P.hotAssign=hubBagG.hotAssign||{};
+      try{ saveProfile(); }catch(_hs){}
+    }
+    hubBagG=null; hubBagOpen=false;
+  }
+}
 function hubBagState(){
   var wep=WEAPONS[P.equipped]||WEAPONS.fists;
   return {
@@ -21806,10 +21888,22 @@ function hubBagState(){
 // G is restored in a finally, so a throw in here can never leave the game
 // pointed at a raid that does not exist.
 function drawHubBag(){
+  if(!hubBagG) hubBagG=hubBagState();
   var old=G;
-  try{ G=hubBagState(); drawBag(); }
+  try{ G=hubBagG; drawBag(); drawBelt(); }
   catch(_hb){}
   finally{ G=old; }
+}
+// v8.96: run any function with the Undercroft backpack standing in for the raid.
+// The mouse handlers are written against G and do not need to know which screen
+// they are on; this is the only place that decides.
+function withHubBag(fn){
+  if(!hubBagOpen||!hubBagG) return false;
+  var old=G, ran=false;
+  try{ G=hubBagG; fn(); ran=true; }
+  catch(_wb){}
+  finally{ G=old; }
+  return ran;
 }
 function drawBag(){
   // THE GRID, v2.87. His notes, same afternoon: items should have "good
@@ -23442,7 +23536,7 @@ function showScreen(s){
   var _openM=document.querySelectorAll('.modal.on');
   for(var _mi=0;_mi<_openM.length;_mi++) _openM[_mi].classList.remove('on');
   if(s==='hub'){
-    hubBagOpen=false;   // v8.95: never arrive on the floor with it already up
+    hubBagOpen=false; hubBagG=null;   // v8.95: never arrive on the floor with it up
     if(!HB) HB=buildHub();
     // v6.64, his note: the people milling about are different every time you come down.
     // The six who work the stations are rebuilt too and come out the same, because they
@@ -24030,7 +24124,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.95: I in the Undercroft opens the same backpack you use in a raid, drawn by the same code, not a second one.',
+  now:'v8.96: the Undercroft backpack works. Your belt is down there too, and you can drag things onto it and off it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
