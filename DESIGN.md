@@ -27443,6 +27443,73 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.74 - THE SETTINGS MENU ACTUALLY APPLIES, AND THE COUNTER STOPS SELLING BLUE AND PURPLE GUNS
+
+Two of his orders. The settings half is the one that matters and it has probably
+been costing him for months.
+
+"MAKE SURE ALL THE MODIFIERS IN THE SETTINGS MENU WORK AS INTENDED." A six agent
+sweep traced all 57 rows across the three panels. 36 are honest. Four of the
+broken ones are fixed here, and the first is the serious one.
+
+A SETTINGS ROW DIES THE MOMENT YOU TOUCH ITS SLIDER IN THE TUNING CONSOLE.
+Dragging a console slider stamps that CFG key into P.tuned, and applyGameOpts
+then refuses to write it ever again. The intent is right - a dial set by hand
+should not be stomped on every load - but nothing ever cleared the claim except
+the console own Reset all button. So one nudge of "Enemy damage" permanently
+disconnects "How hard they hit": the row still cycles Brutal, Hardened, Standard,
+Forgiving, still saves the choice, still shows it back, and eDmg never moves
+again, with nothing on the row saying it has been overruled. He lives in that
+console. Most of his Settings rows were probably already dead.
+A deliberate click is a decision and now wins: cycling a row releases the
+console claim on the keys that row owns. Measured: with eDmg claimed, one click
+moved it 1 to 0.7 and the claim was gone.
+
+"OTHER PILLAGERS: NONE" DID NOT MEAN NONE. The roster starts empty and then they
+walk back in. The rows are applied in array order: the pillager row is index 1
+and its None option writes raiderWaves 0; the extraction-heat row is index 6, the
+LAST, and its Standard option writes raiderWaves 1 straight back on the next
+iteration. Standard is that row default, so the kill switch was overwritten on
+every load, and reinforcement then dropped a pillager every eight seconds
+announcing itself. The pillager row now gets the last word. Measured: nRaider 0
+and raiderWaves 0.
+
+"HEAT WHEN YOU CALL EXTRACTION: LIGHT" EMPTIED THE WHOLE MAP. The row writes two
+keys. siegeVol is honest and scales what lands at the ring. raiderWaves has
+nothing to do with extraction: it is ticked every frame from the first second of
+the raid, beacon or no beacon. So Light silently switched off pillager
+reinforcement for the entire run. It now only scales siegeVol, which is the only
+thing the label describes. Measured: siegeVol 0.6, raiderWaves 1.
+
+THE PRESETS THREW AWAY HIS SETTINGS. applyPreset rebuilds CFG from DEF plus the
+overlay and never called applyGameOpts, which the console own Reset all correctly
+does. Every game option snapped back to default for the session, silently, while
+CFG.preset still reported the preset name into the run log and the export header.
+His telemetry says "Active config [B]" on every row. Measured: with Brutal set,
+eDmg is 1.4 before pressing Preset A and 1.4 after.
+
+AND HIS GUN ORDER. "get rid of crafting purple, blue, and gold strength guns..
+they should only be found at the peddler or in raid loot." There are no gun
+recipes - the crafting table is seven consumables - so the counter is what he
+means. Rarity comes from WTIER through gunRarity: rifle is tier 3, rare and BLUE,
+at 22,800; dmr is tier 4, elite and PURPLE, at 27,000. Both were sold outright.
+Both are gone. Gold was never on the counter. What is left is a common and a
+green, which is the floor you can always buy back to after a bad run. Safe to
+remove: replaceCost already falls back to ival times 2.4 for anything not listed,
+so servicing a rifle or a DMR still prices.
+
+Verified: parse PASS at 1,522,684 chars, mojibake none. All four settings fixes
+read back from the running config. The counter lists pistol common and smg green,
+zero blue, purple or gold. __verify PASS: ents 58 and 276, parity identical on
+both maps, looting on both, all three endings, hub. __regress PASS, now 20 checks.
+
+Not verified: 15 more settings rows came back from the sweep as broken or
+mislabelled and are NOT fixed here, including the awareness-radius slider whose
+range cannot express its own default. The four chosen are the ones that silently
+change what a raid IS. The settings checks read CFG rather than playing a raid
+under each option, so what is proven is that the dials move, not that every dial
+has the effect its label promises downstream.
+
 ## v8.73 - SPRINT STOPS STUTTERING ON AND OFF WHEN YOU HOLD THE KEY
 
 His report: "too many footstep glitch is happening when sprinting."

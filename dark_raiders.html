@@ -1150,7 +1150,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.73';
+var VER='8.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1512,8 +1512,14 @@ var SHOP=[
   // v5.99: the two backpack tiers are gone from the counter. PACKPEN was three
   // identical values, so they were never anything but a price tag.
   // v6.57, his note: the shop gates nothing behind XP. Price is the only cost.
-  {k:'pistol',kind:'wep',price:3600,rep:0},{k:'smg',kind:'wep',price:13200,rep:0},
-  {k:'rifle',kind:'wep',price:22800,rep:0},{k:'dmr',kind:'wep',price:27000,rep:0}
+  // v8.74, HIS ORDER: no blue, purple or gold guns across the counter. "they
+  // should only be found at the peddler or in raid loot". rifle is tier 3, which
+  // gunRarity calls rare/BLUE, and dmr is tier 4, elite/PURPLE; both used to sit
+  // here at 22,800 and 27,000. Gold was never on the counter. What is left is a
+  // common and a green, which is the floor you can always buy back to.
+  // replaceCost falls back to ival*2.4 for anything not listed here, so a rifle
+  // and a DMR still price for servicing.
+  {k:'pistol',kind:'wep',price:3600,rep:0},{k:'smg',kind:'wep',price:13200,rep:0}
 ];
 var LOOT={
   crate:[['scrap',32],['wire',22],['cell',13],['bandage',11],['ammobox',15],['board',5],['comp',3],['optic',2]],
@@ -22119,6 +22125,11 @@ function applyPreset(k){
   var keepBright=CFG.bright;
   applyCfg(DEF,PRESETS[k]); CFG.preset=k;
   if(keepBright!==undefined) CFG.bright=keepBright;
+  // v8.74, his order: a preset must not silently discard the Settings menu.
+  // applyCfg rebuilds CFG from DEF, so every game option went back to default
+  // until the next reload - and the reload then re-applied them OVER the preset,
+  // leaving a run labelled with a preset it was only half running.
+  try{ applyGameOpts(); }catch(_ag){}
   saveProfile(); buildTune();
 }
 
@@ -23607,7 +23618,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.73: sprint stops stuttering on and off when you hold the key through exhaustion.',
+  now:'v8.74: the counter no longer sells blue or purple guns. Above green, you find them or you buy them out in the field.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -27172,7 +27183,11 @@ hint:'Damage taken from everything on the surface. Standard is how the game has 
    opts:[
      {n:'Heavy',    cfg:{siegeVol:1.4, raiderWaves:1}},
      {n:'Standard', cfg:{siegeVol:1,   raiderWaves:1}},
-     {n:'Light',    cfg:{siegeVol:0.6, raiderWaves:0}}
+     // v8.74, his order: this row is about the RING. raiderWaves:0 used to ride
+     // along here and it is whole-raid pillager reinforcement, ticked every frame
+     // from the first second of the raid, so Light silently emptied the map for
+     // the entire run. siegeVol is the only key this label describes.
+     {n:'Light',    cfg:{siegeVol:0.6}}
    ], def:1}
 ];
 function gameOptIx(k){
@@ -27196,6 +27211,12 @@ function applyGameOpts(){
     // every load and the change vanished with no message.
     for(var c in sel.cfg) if(!tk[c]) CFG[c]=sel.cfg[c];
   }
+  // v8.74, his order: NONE means none. The rows are applied in order and the
+  // extraction-heat row sits AFTER the pillager row, so its Standard option wrote
+  // raiderWaves back to 1 on every load and reinforcements kept arriving into a
+  // map he had emptied. The pillager row is the one that owns whether pillagers
+  // exist at all, so it gets the last word.
+  if(gameOptIx('raiders')===3&&!tk.raiderWaves) CFG.raiderWaves=0;
 }
 function cycleGameOpt(k){
   var row=null;
@@ -27203,6 +27224,14 @@ function cycleGameOpt(k){
   if(!row) return;
   P.gameOpts=P.gameOpts||{};
   P.gameOpts[k]=(gameOptIx(k)+1)%row.opts.length;
+  // v8.74, his order that the settings work: clicking a row RELEASES the tuning
+  // console's claim on the keys that row owns. Without this, once a slider had
+  // been dragged the matching Settings row was dead forever - it still cycled and
+  // still saved, and the dial never moved again, with nothing saying so.
+  (function(){
+    var tk=tunedKeys(), o;
+    for(var oi=0;oi<row.opts.length;oi++) for(o in row.opts[oi].cfg) delete tk[o];
+  })();
   applyGameOpts();
   saveProfile();
 }

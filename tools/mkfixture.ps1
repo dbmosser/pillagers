@@ -957,6 +957,32 @@ window.__REGRESS=[
        if(hit) out.push('mapIx '+mi+' has '+hit+' roads crossing a wall');
      });
      return out.length?out.join('; '):null; }},
+  {v:'8.74',what:'the settings menu actually applies what it says',
+   run:function(){
+     var P=__P(), bad=[];
+     var keepT=P.tuned, keepG=P.gameOpts;
+     // 1. A row whose dial was touched in the tuning console must still work.
+     P.tuned={eDmg:1}; P.gameOpts={}; __resetCfg();
+     var b1=__cfg().eDmg;
+     __opts.cycle('hits');
+     if(__cfg().eDmg===b1) bad.push('a Settings row is dead once its slider has been touched in the console');
+     if(__opts.tuned().eDmg!==undefined) bad.push('clicking the row did not release the console claim');
+     // 2. Other pillagers = None must survive the rows applied after it.
+     P.tuned={}; P.gameOpts={raiders:3}; __resetCfg(); __opts.apply();
+     if(__cfg().nRaider!==0) bad.push('None left nRaider at '+__cfg().nRaider);
+     if(__cfg().raiderWaves!==0) bad.push('None still reinforces: raiderWaves '+__cfg().raiderWaves);
+     // 3. Light extraction heat must scale the ring, not empty the whole map.
+     P.tuned={}; P.gameOpts={ext:2}; __resetCfg(); __opts.apply();
+     if(__cfg().siegeVol!==0.6) bad.push('Light did not scale siegeVol');
+     if(__cfg().raiderWaves!==1) bad.push('Light switched off whole-raid reinforcement');
+     // 4. A preset must not silently throw away the Settings choices.
+     P.tuned={}; P.gameOpts={hits:0}; __resetCfg(); __opts.apply();
+     var brutal=__cfg().eDmg;
+     if(brutal===1) bad.push('the Brutal option is not writing eDmg, so this check is testing nothing');
+     __opts.preset('A');
+     if(__cfg().eDmg!==brutal) bad.push('a preset discarded the Settings choice: eDmg '+brutal+' became '+__cfg().eDmg);
+     P.tuned=keepT||{}; P.gameOpts=keepG||{}; __resetCfg();
+     return bad.length?bad.join('; '):null; }},
   {v:'8.73',what:'holding sprint through exhaustion does not stutter it on and off',
    run:function(){
      function hold(secs,release){
@@ -1376,6 +1402,15 @@ window.__belt={slots:function(){ return hotbarSlots(); },
                set:function(i){ return setHot(i); },
                use:function(){ return useHot(); },
                assign:function(){ return P.hotAssign||{}; }};
+// v8.74: the settings menu, so "make sure all the modifiers work as intended"
+// can be a check rather than a reading of the source. rows is the table the
+// panel is built from, cycle is what a click does, apply is what a load does.
+window.__opts={rows:function(){ return GAMEOPTS; },
+               cycle:function(k){ return cycleGameOpt(k); },
+               apply:function(){ return applyGameOpts(); },
+               ix:function(k){ return gameOptIx(k); },
+               tuned:function(){ return tunedKeys(); },
+               preset:function(k){ return applyPreset(k); }};
 window.__audio={amb:tickAmbience,steps:tickEnemyAudio,sfx:sfx,blip:blip,ears:earsOf,stepSound:stepSoundFor,
   bus:bus,ctx:ac,ambObj:function(){ return AMB; }};
 window.__bag={weight:bagWeight,drop:dropItem,worst:worstBagIndex,cull:autoCull,
