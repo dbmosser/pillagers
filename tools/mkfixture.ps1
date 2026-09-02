@@ -3650,6 +3650,94 @@ window.__REGRESS=[
      var b2=shoot('ally');
      if(b2&&b2.landed>=1&&b2.tgt.hostile)
        bad.push('control: a stray round turned a pillager who was fighting alongside you');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.26',what:'a round that goes past a pillager counts as shooting at him',
+   run:function(){
+     var bad=[];
+     // THE MISS, not the hit. v9.25 already covers the round that connects.
+     //
+     // THE TARGET IS PINNED, and that is the whole reason this check holds still.
+     // A peaceful pillager wanders while he loots, so an unpinned version of this
+     // measured a different pass distance every run and said "he turned" and "he
+     // did not turn" minutes apart. Pinning him makes the geometry exact: he
+     // stands at TX,TY, the player stands 300 east, and the shot is aimed 30 south
+     // of him, which puts the round through a corridor about 23 units off his
+     // shoulder. That is wider than the 14 that would hit him and inside the 51
+     // that counts as being shot at, every single time.
+     function miss(mode, wake){
+       __resetCfg(); __pinDefaults(0);
+       // The setter takes an OBJECT. Passing a name and a value spreads the name
+       // string into CFG one character at a time and changes nothing, which cost
+       // me a control that reported a dial as stuck when it was never set.
+       if(wake!==undefined){
+         __cfg({missWake:wake});
+         if(__cfg().missWake!==wake) return {dialStuck:__cfg().missWake};
+       }
+       __startRaid({mapIx:0,seed:4242});
+       var g=__state(), p=g.player, tgt=null;
+       for(var i=0;i<g.ents.length;i++){ var e=g.ents[i];
+         if(e.kind==='raider'&&e.hostile===false&&!e.merc&&!e.friendlyPC&&!e.downed){ tgt=e; break; } }
+       if(!tgt) return null;
+       if(mode==='ally') tgt.friendlyPC=true;
+       g.ents=[tgt]; p.iv=99; p.hp=p.maxhp;
+       // Semi automatic on purpose, pulsed, so this is a handful of aimed shots
+       // going past him rather than a wall of noise.
+       var gun=__gun.roll('dmr');
+       for(var kk in gun) p.wep[kk]=gun[kk];
+       p.ammo=gun.mag; p.jam=0;
+       // He must survive, so a round that does land can be reported rather than
+       // silently measured on a corpse.
+       tgt.maxhp=100000; tgt.hp=100000;
+       var TX=tgt.x, TY=tgt.y;
+       // A CHANGE, NOT A LEVEL. Notoriety is saved in the profile and the corpus
+       // shares one, so an absolute test would pass on an earlier check.
+       var noto0=(__P?(__P().notoriety||0):0);
+       var M=__mouse(); M.init=true;
+       var K=__keysRef(); for(var k in K) delete K[k];
+       var hpPrev=tgt.hp, landed=0, hostileAt=-1, fired=0, ammoPrev=p.ammo, closest=1e9;
+       for(var f=0;f<420;f++){
+         tgt.x=TX; tgt.y=TY; p.x=TX+300; p.y=TY;
+         var s=__proj.w2s(TX, TY+30); M.x=s.x; M.y=s.y; M.down=((f%10)<2);
+         if(p.ammo<ammoPrev) fired+=(ammoPrev-p.ammo);
+         if(p.ammo<=0) p.ammo=gun.mag;
+         ammoPrev=p.ammo;
+         __loop(performance.now()+f*16.7);
+         tgt.x=TX; tgt.y=TY;
+         for(var b=0;b<(g.bullets||[]).length;b++){ var bu=g.bullets[b];
+           if(bu.player){ var d=Math.hypot(bu.x-TX,bu.y-TY); if(d<closest) closest=d; } }
+         if(tgt.hp<hpPrev){ landed++; hpPrev=tgt.hp; }
+         if(hostileAt<0&&tgt.hostile) hostileAt=f;
+       }
+       M.down=false;
+       return {fired:fired, landed:landed, closest:Math.round(closest), hostileAt:hostileAt,
+               hostile:!!tgt.hostile, notoGained:((__P?(__P().notoriety||0):0)-noto0),
+               alert:tgt.alert||0};
+     }
+     var a=miss('peaceful');
+     if(!a) return 'no peaceful pillager on this map and seed';
+     if(a.fired<5) return 'SKIP: the player never fired, nothing to judge';
+     if(a.landed>0) return 'SKIP: a round landed, which is the v9.25 case, not this one';
+     if(a.closest>50) return 'SKIP: the nearest round passed '+a.closest+' units away, too wide to be a near miss';
+     // THE MEASUREMENT. Nothing touched him, and he turned anyway.
+     if(a.hostileAt<0)
+       bad.push(a.fired+' rounds went past him, nearest '+a.closest+' units off, and none landed: '+
+                'he never turned, alert only reached '+(Math.round(a.alert*10)/10));
+     // CONTROL 1: it must still cost you. Setting the flag one line above
+     // notoAggress would delete the charge for starting on a man who was not
+     // fighting you, and nothing else in the game would notice.
+     if(a.notoGained<1) bad.push('control: shooting at a peaceful pillager and missing costs no notoriety');
+     // CONTROL 2: a pillager fighting ALONGSIDE you must not be turned by rounds
+     // going past him, or every firefight beside an ally ends with him on the
+     // other side.
+     var b3=miss('ally');
+     if(b3&&b3.hostile) bad.push('control: rounds past a pillager fighting alongside you turned him');
+     // CONTROL 3: THE DIAL MUST BE THE THING DOING IT. With missWake at zero the
+     // old behaviour has to come back exactly, or this check is passing on some
+     // other route into hostility rather than on the line this build added.
+     var c=miss('peaceful',0);
+     if(c&&c.dialStuck!==undefined) bad.push('control: missWake did not take, it read back '+c.dialStuck);
+     else if(c&&c.hostile) bad.push('control: with missWake off a miss still turned him, so something else is doing it');
+     __resetCfg();
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

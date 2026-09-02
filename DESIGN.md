@@ -27443,6 +27443,66 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.26 - A ROUND THAT GOES PAST HIM COUNTS AS SHOOTING AT HIM
+
+HIS INSTRUCTION: "pillagers should go hostile after first shot".
+
+v9.25 did the half where the shot connects. This is the other half, and it was
+the larger hole. Nothing in the game treated a round going PAST a man as being
+shot at. The only two doors into hostility were a hit and walking inside 180
+units, so you could empty a magazine into the dirt beside a pillager and he would
+carry on looting.
+
+REPRODUCED, with the target pinned so the geometry is exact: eleven aimed rounds
+from 300 units, the nearest passing 26 units off his shoulder, none of them
+landing. He never turned, and his alert reached 1.2, which is what a dropped can
+gets.
+
+WHAT CHANGED: a round passing within CFG.missWake of a peaceful pillager wakes
+him, measured from his edge. The default is 40, so about three body widths. It is
+a dial because this is a number he will want to feel rather than be told, and
+because it is the one setting that could make a busy firefight turn half a street
+against you.
+
+It sits ABOVE the roll skip on purpose. That skip exists so a man cannot take
+damage during the invulnerable part of his dodge; it was never meant to make him
+deaf. And it calls notoAggress first, for the same reason as v9.25: that call is
+what charges you for starting on a man who was not fighting you, and it only
+fires while he is still peaceful.
+
+THREE FAULTS IN MY OWN HARNESS BEFORE THE CHECK HELD STILL, none of them the
+game's. I aimed 900 units off target and called it a near miss; the rounds passed
+365 units away, so of course nothing happened. I called the config setter as a
+name and a value when it takes an object, so it spread the name into the settings
+one character at a time and my control reported a dial as stuck that had never
+been set. And I left the pillager free to wander, so the pass distance was luck:
+the same check said "he turned" and "he did not turn" minutes apart. Pinning him
+made it repeat exactly, twice in a row, to the frame.
+
+THE CHECK'S THIRD CONTROL IS THE ONE THAT MATTERS. With missWake set to zero the
+old behaviour must come back exactly. Without it the check would pass on any
+other route into hostility that happened to exist, rather than on the line this
+build added.
+
+Verified: parse PASS v9.26. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 68 regression checks
+pass in sequence, none skipped. He agreed today that the corpus can be batched
+rather than run in full every build; this one changes enemy behaviour for every
+entity in the game, so it got the full run anyway. The new check was run against
+a v9.25 fixture first, where it fails with "11 rounds went past him, nearest 26
+units off, and none landed: he never turned".
+
+Not verified: what this does to a raid in aggregate, and it is the thing most
+likely to bite. The sim bot never fights pillagers, so nothing here measures
+whether waking the peaceful half of the map on a near miss makes raids harder or
+turns a two-sided fight into a street-wide one. missWake is the dial to turn down
+if it does. Also not verified: whether machine rounds passing a pillager should
+wake him the same way, which this build deliberately does not touch, since that
+is the enemy bullet path and the player did not fire it.
+
 ## v9.25 - SHOOT A MAN WHO WAS NOT FIGHTING YOU AND HE FIGHTS BACK
 
 HIS NOTE: pillagers "just stood there after getting attacked".
