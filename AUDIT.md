@@ -247,3 +247,18 @@ OPEN, in the order he sent them:
 - CRIERS SHOULD NOT ENTER HOUSES unless chasing a pillager, and should leave the
   house once done. Note this interacts with v8.86, which moved most crawlers
   indoors; check what a crier does around an occupied building before changing it.
+- DOWNED OVERLAY: the big flashing "CRAWL TO THE RING" is unnecessary, and the
+  text around it is too small. Invert the emphasis.
+- KIA SCREEN: drop the "Next: <reward>, reward N of 100, X XP away" line. He does
+  not need the next reward while reading a death screen.
+- PANEL SIZES (measured 1920x1080, none are in HUDZ): pillagers board 334x176,
+  legend 311x131, conditions 257x203. He wants them TWICE this size. Anchors that
+  work without collisions: raiders top-left (0,0), conditions top-right (W,0),
+  legend bottom-left (0,H) so it grows up and clears the vitals block at y934.
+  Wrap the CALL SITES (drawRaiderBoard, drawLegend, the cond IIFE) rather than
+  the bodies, because all three have early returns that would skip a restore.
+- TELEMETRY WATCH, runs 3/4/5 (v8.81, v8.81, v8.89): cont:0 on all three, haul
+  equal to the kit he took up, firstLoot none. Run 5 ran 183s and opened nothing.
+  CONFOUNDED: moved only 6801 units in 183s and he was sending menu screenshots
+  throughout, so he was probably testing UI, not looting. Do NOT retune on this.
+  If the next real play session also shows cont:0, that is the top item.

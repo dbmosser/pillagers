@@ -1185,7 +1185,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.89';
+var VER='8.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7339,62 +7339,54 @@ function buildRaid(sim){
   // among those that clear spawnClear, and if none clear it, it takes the
   // furthest anyway rather than refusing to start a raid. Deterministic given
   // the roll, and the roll is still drawn so the PRNG stream is unchanged.
-  var _spIx=ri(0,map.spawns.length-1);
-  var spawnPt=map.spawns[_spIx];
+  // v8.90: THE ELIGIBLE SET IS CHOSEN BEFORE THE ROLL, not after it. Rolling
+  // first and remapping only the bad rolls is what left him on one corner a third
+  // of the time: that corner was both the only spawn clearing the bar, so a roll
+  // of 0 kept it, and the target the modulo sent index 3 back to.
+  var _spawnPool=map.spawns;
   if(CFG.spawnClear!==0&&map.extracts&&map.extracts.length){
-    var _minD=(CFG.spawnClear===undefined?900:CFG.spawnClear);
-    function _nearestExt(q){
+    var _minD0=(CFG.spawnClear===undefined?900:CFG.spawnClear);
+    var _nE=function(q){
       var d=1e9;
-      for(var _e=0;_e<map.extracts.length;_e++) d=Math.min(d,Math.hypot(map.extracts[_e].x-q.x,map.extracts[_e].y-q.y));
+      for(var _e0=0;_e0<map.extracts.length;_e0++) d=Math.min(d,Math.hypot(map.extracts[_e0].x-q.x,map.extracts[_e0].y-q.y));
       return d;
+    };
+    var _pick=function(bar){
+      var out=[];
+      for(var _s0=0;_s0<map.spawns.length;_s0++) if(_nE(map.spawns[_s0])>=bar) out.push(map.spawns[_s0]);
+      return out;
+    };
+    var _pool=_pick(_minD0);
+    // Four places to start is the floor for a map to stop feeling memorised.
+    // The relaxed bar still honours his run #37 rule: on COLD STORAGE the two
+    // spawns it keeps out sit 290 and 286 from an extract, and everything it
+    // lets in is 1090 or further.
+    if(_pool.length<4){
+      var _relaxed=Math.max(700,Math.round(_minD0*0.6));
+      var _wider=_pick(_relaxed);
+      if(_wider.length>_pool.length) _pool=_wider;
     }
-    if(_nearestExt(spawnPt)<_minD){
-      // UNIFORM OVER THE CLEARING SET, v3.69. The scan-forward this replaces
-      // (v3.4x) fixed the furthest-always funnel and then built its own: every
-      // roll landing on a non-clearing manhole walked forward to the NEXT
-      // clearing index in array order, so whichever manhole followed a run of
-      // bad ones absorbed all of their probability. Measured on GREYWATER with
-      // four of eight clearing: one lid took 27 of 40 raids. The same single
-      // ri() draw is now remapped over the clearing manholes only, so each gets
-      // an equal share and the stream is untouched: one draw either way.
-      var _clear2=[];
-      for(var _sq2=0;_sq2<map.spawns.length;_sq2++){
-        if(_nearestExt(map.spawns[_sq2])>=_minD) _clear2.push(map.spawns[_sq2]);
-      }
-      // v8.82: AND THE BAR CAN NEVER LEAVE YOU ONE PLACE TO STAND. On COLD
-      // STORAGE the six authored spawns sit 1522, 290, 1090, 286, 1348 and 1406
-      // from their nearest extract, so at the shipped bar of 1500 exactly one
-      // survives and every raid remapped onto it: measured, one distinct spawn
-      // across ten seeds, always 300,680, while THE COLD MILE gave eight.
-      // Falling back to the three furthest is the same preference this rule
-      // already expresses, so it cannot start you on top of an extract; it just
-      // refuses to collapse to a constant. No draw is added, so the stream is
-      // unchanged, and a map whose spawns all clear the bar is untouched.
-      var _SPMIN=3;
-      if(_clear2.length<_SPMIN&&map.spawns.length){
-        var _rank=[];
-        for(var _sq4=0;_sq4<map.spawns.length;_sq4++)
-          _rank.push({s:map.spawns[_sq4],d:_nearestExt(map.spawns[_sq4]),i:_sq4});
-        // furthest first, index breaking ties so this is deterministic whatever
-        // the engine sort does with equal keys
-        _rank.sort(function(a,b){ return (b.d-a.d)||(a.i-b.i); });
-        _clear2=[];
-        for(var _sq5=0;_sq5<Math.min(_SPMIN,_rank.length);_sq5++) _clear2.push(_rank[_sq5].s);
-      }
-      var _found=_clear2.length?_clear2[_spIx%_clear2.length]:null;
-      // Nothing on this map clears the bar: take the furthest rather than refuse
-      // to start, because a compromised spawn beats no raid.
-      if(!_found){
-        var _bestSp=spawnPt,_bestD=_nearestExt(spawnPt);
-        for(var _sq3=0;_sq3<map.spawns.length;_sq3++){
-          var _d3=_nearestExt(map.spawns[_sq3]);
-          if(_d3>_bestD){ _bestD=_d3; _bestSp=map.spawns[_sq3]; }
-        }
-        _found=_bestSp;
-      }
-      spawnPt=_found;
+    // And if a map simply cannot offer three, take its three furthest rather
+    // than collapse to one.
+    if(_pool.length<3&&map.spawns.length){
+      var _rank=[];
+      for(var _s1=0;_s1<map.spawns.length;_s1++) _rank.push({s:map.spawns[_s1],d:_nE(map.spawns[_s1]),i:_s1});
+      _rank.sort(function(a,b){ return (b.d-a.d)||(a.i-b.i); });
+      _pool=[];
+      for(var _s2=0;_s2<Math.min(3,_rank.length);_s2++) _pool.push(_rank[_s2].s);
     }
+    if(_pool.length) _spawnPool=_pool;
   }
+  // One draw, as before, but over the places that are actually allowed, so every
+  // one of them comes up equally often.
+  var _spIx=ri(0,_spawnPool.length-1);
+  var spawnPt=_spawnPool[_spIx];
+  // v8.90: the remap that used to live here is gone. It rolled first and fixed
+  // up bad rolls afterwards, and once the pool above became the eligible set it
+  // was second-guessing a correct decision with a modulo over a different list:
+  // measured, it put him back on that same corner 16 raids in 32. Choosing the
+  // pool before the roll is the whole fix, and it makes the choice uniform by
+  // construction rather than by arithmetic that has now been wrong twice.
   var start={x:spawnPt.x,y:spawnPt.y};
   // A hand placed spawn can land inside geometry as the layout is edited, and a
   // blocked spawn is a raid that starts stuck. Verified per map in testing, but
@@ -23871,7 +23863,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.89: a pillager wading out of sight no longer draws rings in the water you can follow. Your own wake still shows.',
+  now:'v8.90: COLD STORAGE has four starts and picks between them evenly. v8.82 still put you on the same corner one raid in three.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

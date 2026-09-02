@@ -1581,14 +1581,21 @@ window.__REGRESS=[
          if(d<nearest) nearest=d;
          seen[Math.round(p.x)+','+Math.round(p.y)]=1;
        }
-       return {distinct:Object.keys(seen).length,nearest:Math.round(nearest)};
+       var counts=Object.keys(seen).map(function(k){ return seen[k]; });
+       return {distinct:Object.keys(seen).length,nearest:Math.round(nearest),
+               topShare:Math.max.apply(null,counts)/n};
      }
-     var a=sample(0,12), b=sample(1,12);
+     var a=sample(0,16), b=sample(1,16);
      var bad=[];
      // COLD STORAGE gave exactly ONE spawn across every seed before v8.82,
      // because only one of its six cleared the 1500 bar.
-     if(a.distinct<3) bad.push('COLD STORAGE offers only '+a.distinct+' start(s) across 12 seeds');
-     if(b.distinct<4) bad.push('THE COLD MILE offers only '+b.distinct+' start(s) across 12 seeds');
+     if(a.distinct<4) bad.push('COLD STORAGE offers only '+a.distinct+' start(s)');
+     if(b.distinct<4) bad.push('THE COLD MILE offers only '+b.distinct+' start(s)');
+     // v8.90: AND NO ONE START MAY DOMINATE. v8.82 satisfied the count above and
+     // still opened him on the same corner 45 percent of the time, which is what
+     // he reported as "still spawning at the same place". A count is not variety.
+     if(a.topShare>0.5) bad.push('one COLD STORAGE start takes '+Math.round(a.topShare*100)+' percent of raids');
+     if(b.topShare>0.5) bad.push('one THE COLD MILE start takes '+Math.round(b.topShare*100)+' percent of raids');
      // THE CONTROL. Widening the choice must not be achieved by dropping his
      // run #37 rule: "i just spawned right next to an extraction, that should
      // never happen." The two spawns this rule rejects on COLD STORAGE sit 290

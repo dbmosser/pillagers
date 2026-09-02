@@ -27443,6 +27443,67 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.90 - THE SAME CORNER, AGAIN, BECAUSE v8.82 WAS HALF A FIX
+
+His note: "still spawning at the same place in cold storage with the same damn
+broken wall".
+
+Two things were true and only one of them is bad luck. He has had exactly ONE
+raid on a build containing the v8.82 fix: his recorder shows runs 3 and 4 on
+v8.81 and only run 5 on v8.89. But v8.82 also left him landing on that corner
+about one raid in three, measured 6 of 20 at the time, and one in three is often
+enough to read as always. A count of available starts was never the thing he
+could feel.
+
+WHY IT WAS STILL THAT OFTEN. The old shape rolled a spawn over all six and only
+remapped it when the roll landed too near an extract. That corner is both the one
+spawn clearing the 1500 bar, so a roll of zero kept it, and the place the modulo
+remap sent another index back to. Two paths to the same doorstep.
+
+THE NEW SHAPE picks the eligible spawns FIRST and rolls over those, which is
+uniform by construction rather than by arithmetic. It also widens the set. His
+rule is "never spawn right next to an extraction" and the two spawns that break
+it sit 290 and 286 from one. The rest are 1522, 1090, 1348 and 1406, all a long
+walk out, and there was no reason to use one and refuse the other three. So: take
+everything clearing the bar; if that leaves fewer than four places to start,
+relax to a wider bar that still honours the rule; only if that still leaves fewer
+than three, fall back to the three furthest. One draw either way.
+
+I BROKE IT WORSE IN THE MIDDLE AND THE MEASUREMENT CAUGHT IT. I added the new
+choice and left the old remap running underneath, so the two fought: the pool
+index was fed into a modulo over a different three item list that starts with
+that same corner. Measured straight after: 16 raids in 32 on it, worse than the
+45 percent I was fixing. The old block is gone.
+
+RESULT over 32 raids a sector:
+
+    COLD STORAGE   4 distinct starts, split 12 / 8 / 8 / 4, top share 37.5 pct
+                   (was 3 starts and 45 pct at v8.82)
+    THE COLD MILE  16 distinct starts, top share 21.9 pct, unchanged
+
+The control that matters is unchanged too: the closest any raid now begins to an
+extraction is 1090 on COLD STORAGE and 1578 on THE COLD MILE. The two spawns his
+rule rejects, at 290 and 286, are still never used. The regression check now asks
+about the SHARE as well as the count, because the count is what passed a build he
+then reported.
+
+Verified: parse PASS. Both sectors to their fingerprints, entities 58 and 276 and
+containers 155 and 589. Streams identical live and sim. Looting on both with no
+throw and the clock advancing. Three endings correct. Hub renders. 33 regression
+checks pass, none failed and none skipped.
+
+TELEMETRY, five runs, and one number is worth watching. Runs 3, 4 and 5 all show
+cont:0 and a haul equal to the kit he carried up; run 5 was out 183 seconds and
+opened nothing. That would be alarming except it is confounded: he moved 6,801
+units in those 183 seconds, which is about 43 seconds of walking, and he was
+sending me menu screenshots throughout. He was testing the interface, not
+looting. I have not retuned anything on it and have logged it to check against
+his next real session.
+
+Not verified: the broken wall itself. He has now mentioned it twice and I still
+do not know which piece of geometry he means; four starts means he will at least
+stop opening his eyes on the same one. The three in-raid panels he wants at twice
+the size are also still untouched, and are the next build.
 ## v8.89 - I TOLD HIM A BUG WAS REAL AND IT WAS MY OWN DEAD VIEWPORT
 
 Start with the correction, because I put it in his hands last tick. At v8.88 I
