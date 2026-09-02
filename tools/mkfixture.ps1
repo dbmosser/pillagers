@@ -2428,6 +2428,48 @@ window.__REGRESS=[
      g.bag=['medkit']; run(1800);
      var back=cell(4);
      if(stocked>0&&back/stocked<0.75) bad.push('control: restocking left the slot at '+Math.round(back/stocked*100)+' percent, so the slot is dark whatever he carries');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.04',what:'criers keep to the street and are not found standing inside houses',
+   run:function(){
+     __resetCfg(); __pinDefaults(0);
+     var bad=[];
+     function inB(m,x,y){ var B=m.buildings||[];
+       for(var i=0;i<B.length;i++){ var b=B[i]; if(x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h) return true; }
+       return false; }
+     [0,1].forEach(function(mi){
+       __startRaid({mapIx:mi,seed:4242});
+       var g=__state(), m=g.map;
+       var sn=[], cr=[];
+       for(var i=0;i<g.ents.length;i++){
+         if(g.ents[i].kind==='snitch') sn.push(g.ents[i]);
+         else if(g.ents[i].kind==='crawler') cr.push(g.ents[i]);
+       }
+       if(!sn.length){ bad.push('map '+mi+' has no criers to measure'); return; }
+       // Nobody is being chased: the player is parked off the map, so every
+       // sample below is a crier on patrol with nothing to answer.
+       var spawnIn=0;
+       for(var s=0;s<sn.length;s++) if(inB(m,sn[s].x,sn[s].y)) spawnIn++;
+       if(spawnIn) bad.push('map '+mi+': '+spawnIn+' criers spawned inside a house');
+       g.player.x=-99999; g.player.y=-99999;
+       var samp=0,ins=0,csamp=0,cins=0;
+       for(var f=0;f<900;f++){ __rawStep(1/60);
+         if(f%10) continue;
+         for(var a=0;a<sn.length;a++) if(sn[a].state==='patrol'){ samp++; if(inB(m,sn[a].x,sn[a].y)) ins++; }
+         for(var b2=0;b2<cr.length;b2++) if(cr[b2].state==='patrol'){ csamp++; if(inB(m,cr[b2].x,cr[b2].y)) cins++; }
+       }
+       var pct=ins/Math.max(1,samp)*100;
+       // Measured before the fix: 46.3 percent on COLD STORAGE and 24.7 on THE
+       // COLD MILE, with two criers indoors for the whole run.
+       if(pct>6) bad.push('map '+mi+': a patrolling crier is inside a house '+pct.toFixed(1)+' percent of the time');
+       // CONTROL, and it is the one that matters. His v8.86 rule is that every
+       // house should be a gamble because there is likely a crawler in it. A fix
+       // that emptied the houses, or that simply stopped every machine walking
+       // indoors, would pass the line above and wreck the thing he asked for.
+       if(cr.length){
+         var cpct=cins/Math.max(1,csamp)*100;
+         if(cpct<25) bad.push('control: map '+mi+' crawlers are only indoors '+cpct.toFixed(1)+' percent of the time, the houses have been emptied');
+       }
+     });
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

@@ -27443,6 +27443,71 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.04 - CRIERS KEEP TO THE STREET
+
+His note, given twice: "criers shouldn't go inside houses unless chasing a
+pillager, and then should leave the house when done."
+
+REPRODUCED FIRST, with the player parked far off the map so nothing was being
+chased and every sample is a crier with nothing to answer. Sampled every crier
+every tenth frame for thirty seconds:
+
+    COLD STORAGE    a patrolling crier is inside a house 46.3 percent of the time
+    THE COLD MILE   24.7 percent, and 3 of the 16 SPAWN inside one
+
+They are not wandering in and out. One crier on COLD STORAGE was indoors for 171
+of its 180 samples, and on THE COLD MILE two of them moved 24 and 30 units in
+thirty seconds. They live in there.
+
+WHY, and there are two separate causes. The idle wander branch picks its next
+target with freeSpot(G.map,24), which means any spot the map will accept, and
+the inside of a house is a spot the map will accept; nothing had ever told a
+crier that a building is not its ground. Then the movement in that branch is
+moveToward, a straight line, so a crier that started indoors walked into the
+inside of a wall and stood against it for the rest of the raid. The first cause
+puts them in, the second keeps them there.
+
+FOUR PIECES, and together they are his sentence. A crier's wander target is
+pushed out of a building. A crier that spawns in one is pushed out at map build.
+A crier on patrol that is inside a building heads for the nearest outside wall.
+And that one walk uses navSeek, the router the rest of the loop uses, because a
+straight line cannot leave a room.
+
+NO NEW RANDOM DRAWS, deliberately. Every one of those is a projection of a point
+that has already been drawn, never a re-roll. Both sector fingerprints are
+unchanged and live-vs-sim parity is identical, which is the proof that the draw
+count did not move.
+
+MEASURED AFTER, same probe, same seed:
+
+    COLD STORAGE    46.3 percent indoors -> 0.2
+    THE COLD MILE   24.7 percent indoors -> 0.4
+    spawned inside  0 and 3 -> 0 and 0
+
+Verified: parse PASS v9.04. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 155 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 47 regression checks
+pass, none skipped.
+
+The new check was run against a fixture built from the v9.03 commit and fails
+there with the defect: "map 0: a patrolling crier is inside a house 30.0 percent
+of the time; map 1: 3 criers spawned inside a house". It carries the control
+that matters: his v8.86 rule is that every house should be a gamble because
+there is likely a crawler in it, so the check also requires crawlers to still be
+indoors. Crawlers measure 80.6 and 60.4 percent, so a fix that emptied the
+houses, or that stopped every machine walking indoors, would fail.
+
+Not verified: what this does to how often he actually gets called in, since the
+crier's job is unchanged and only its idle ground moved; whether a crier that
+followed a noise indoors then leaves promptly (investigate is deliberately still
+allowed inside and only the return to patrol triggers the walk out, which is
+untested against a live noise); the nav budget is one route search per frame and
+criers now occasionally spend it, and the crawler indoor share moved 62.1 to
+60.4 on THE COLD MILE, which is inside the noise of a single run but was not
+measured over many seeds.
+
 ## v9.03 - A BELT KEY STOPS TURNING INTO A DIFFERENT ITEM
 
 His answer 16, on what an emptied belt slot should do: "It should go darker but
