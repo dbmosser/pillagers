@@ -21,6 +21,7 @@ adversarially verified):
 
 | Finding | Closed by | How it was confirmed closed |
 |---|---|---|
+| The WORLD never scaled with the monitor: ZOOM() returned the dial alone, so 4K showed 2.13x more ground (1920 units vs 4090) at half the size | v9.16 | ZOOM() is dial x hudRes; 1.05x now, projection exactly 1.000 at 1080p and 2.000 at 4K, pointer round trip 0-1px; check fails on a v9.15 fixture |
 | Sector map chrome: frame and markers stayed 1080p-sized at 4K (frame reached 4px out at both) while the map grew 2.15x | v9.15 | frame, cache ring, encampment, locked-door and key markers scale by the same hudRes the text uses; check fails on a v9.14 fixture |
 | Sector map: the map grew 2.15x at 4K while every label stayed at its 1080p pixel size (18.7/15.6/23.4 at both) | v9.14 | drawMapOverlay shadows FS with the screen factor; heading now 1.91x wide and 2.06x tall at 4K; check fails on a v9.13 fixture and guards the font cache from leaking |
 | The BACKPACK never scaled with the screen: 1194x435 at 1080p and 1295x435 at 4K (1.08x wide, 1.00x tall) | v9.13 | tile/gaps/margins/paddings scale by hudRes; exactly 2.00x at 4K, same 11 columns, 1080p unmoved; check fails on a v9.12 fixture |
