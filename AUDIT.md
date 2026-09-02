@@ -226,3 +226,11 @@ OPEN, in the order he sent them:
 - I IN THE UNDERCROFT still wrong, and ROLLING IN THE UNDERCROFT still broken.
   Both reported three times now. Whatever I changed before was not it: reproduce
   on the Undercroft floor itself before touching anything.
+
+## OPEN AND RED, as of v8.88
+- THE UNDERCROFT BELT DRAG DOES NOT WORK. His note: "I don't understand why I
+  can't move items from the tactical belt to the backpack in the undercroft".
+  v8.72 claimed to fix it; the check that passed it was silently testing nothing
+  because the stash panel had not opened. Made deterministic at v8.88 and it now
+  fails on v8.88 AND on v8.87 alike: the belt slot still holds the item after the
+  drag. NEXT BUILD. Reproduce the drag by hand before touching the fix.

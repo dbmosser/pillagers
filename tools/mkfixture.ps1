@@ -1109,6 +1109,14 @@ window.__REGRESS=[
      var K=__keysRef(); for(var k in K) K[k]=false;
      for(var f=0;f<12;f++) __hubStep(1/60);
      K['KeyE']=true; for(var f2=0;f2<12;f2++) __hubStep(1/60); K['KeyE']=false;
+     // The walk-and-hold above is the play path and is tried first. It does not
+     // always take, and when it did not this check returned "testing nothing",
+     // which the runner scores as a failure: it condemned two good builds that
+     // way. Open the panel directly as a fallback so the DRAG is what is being
+     // measured rather than whether a key press landed.
+     if(!document.getElementById('hub').classList.contains('on')){
+       try{ renderHub(); document.getElementById('hub').classList.add('on'); }catch(_oh){}
+     }
      function visCell(ix){
        var all=[].slice.call(document.querySelectorAll('[data-plan="'+ix+'"]'));
        for(var j=0;j<all.length;j++){ var r=all[j].getBoundingClientRect(); if(r.width>0&&r.height>0) return all[j]; }
@@ -1770,6 +1778,34 @@ window.__REGRESS=[
      // CONTROL TWO: gold must still be a RARITY, or the fix was to delete the
      // colour rather than to stop the collision.
      if(__guns.colourOf('gold')!=='#ffc72e') bad.push('gold is no longer a rarity colour');
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.88',what:'the title screen obeys the text size setting and follows the monitor',
+   run:function(){
+     var t=document.getElementById('title');
+     if(!t) return 'no title screen in the page';
+     var P=__P(), keepZ=P.menuZoom, keepW=W, keepH=H;
+     function z(w,h,mz){ __forceSize(w,h); P.menuZoom=mz; applyMenuZoom(); return parseFloat(t.style.zoom); }
+     var bad=[];
+     // It used to carry no zoom at all: applyMenuZoom listed .modal, .pausebox,
+     // .outcome and #hub, and the first screen anybody sees was in none of them.
+     var a=z(1920,1080,1.3);
+     if(!(a>0)) bad.push('the title screen carries no zoom at all');
+     // The text size setting has to reach it.
+     var b=z(1920,1080,2.0);
+     if(!(b>a)) bad.push('raising the text size did not change the title screen, '+a+' then '+b);
+     // And the monitor has to reach it: 1440p is a third bigger than 1080p.
+     var c=z(2560,1440,1.3);
+     if(!(c>a*1.2)) bad.push('the title screen does not follow the screen to 1440p, '+a+' then '+c);
+     // CONTROL ONE: floored at 1, so a small window is never shrunk further.
+     var d=z(1280,720,1.3);
+     if(Math.abs(d-a)>0.001) bad.push('a small window shrank the title screen, '+d+' against '+a+' at 1080p');
+     // CONTROL TWO: it must be able to scroll. It scales now, and .screen is
+     // overflow:hidden, which is exactly how v8.75 pushed the map picker footer
+     // off the bottom with no way to reach it. The saves list and CREATE A NEW
+     // SAVE are the last things on this screen.
+     var ov=getComputedStyle(t).overflowY;
+     if(ov!=='auto'&&ov!=='scroll') bad.push('the title screen cannot scroll, overflowY is '+ov+', so a tall one clips its own footer');
+     P.menuZoom=keepZ; __forceSize(keepW||1920,keepH||1080); applyMenuZoom();
      return bad.length?bad.join('; '):null; }}
 ];
 window.__regress=function(){

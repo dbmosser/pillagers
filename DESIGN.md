@@ -27443,6 +27443,68 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.88 - THE TITLE SCREEN USES YOUR MONITOR, AND A CHECK THAT WAS CRYING WOLF
+
+His note, with a screenshot of a very wide monitor: "look at all this wasted
+screen space...". The whole title screen was a narrow column in the middle with
+empty navy either side.
+
+MEASURED, the rendered content box:
+
+    1920x1080     660px wide,  34.4 percent of the screen,   630px empty a side
+    2560x1440     660px wide,  25.8 percent,                  950px empty a side
+    3440x1440     660px wide,  19.2 percent,                1,390px empty a side
+    text size 200 percent      still 660px, headline still 58px
+
+The same 660 pixels on every monitor ever made. And the text size setting does
+nothing to it at all, because applyMenuZoom scales .modal, .pausebox, .outcome
+and #hub, and the title screen is in none of those lists. It is the first screen
+anybody sees and it was the only one ignoring the setting.
+
+THREE CHANGES. The title screen is in applyMenuZoom now, so the text size reaches
+it. It also gets a screen factor, the DOM twin of the hudRes added at v8.81:
+floored at 1 so a small window is never shrunk, capped at 1.9 so an ultrawide
+does not become a billboard. And the column cap went from 660 to 820.
+
+Measured after, at a real 1920x1080 viewport: 42.7 percent of the screen at 100
+percent text, 55.5 at the default 130, 85.4 at 200. The screen factor, driven
+against the game's own size: 1.0 at 1280x720 and at 1080p, 1.333 at 1440p and at
+3440x1440, 1.9 at 4K.
+
+AND IT CAN NO LONGER CLIP ITS OWN FOOTER. .screen is overflow:hidden, which is
+exactly the shape of the bug I shipped at v8.75 and fixed at v8.76. Measured at
+200 percent text: content 618px tall in a 539px window, so it WOULD have clipped,
+and the last things on that screen are the saves list and CREATE A NEW SAVE. It
+scrolls inside itself now.
+
+A CHECK THAT WAS CRYING WOLF, and this is the part worth reading. The corpus
+failed this build on the v8.72 belt drag. I reverted my changes and it failed the
+committed v8.87 build too, so it was not a regression. The reason is worse than
+that: that check opens the stash by walking the operator to the station and
+holding E for twelve frames, and when that did not take it returned its own
+"testing nothing" guard string, which the runner scores as a FAILURE. So it could
+condemn a good build, and it passed last tick by luck rather than by evidence. It
+opens the panel directly now, and with that made deterministic it reports a REAL
+failure, on this build and on v8.87 alike: the item stays on the belt.
+
+So the corpus is red, deliberately, and I am shipping anyway: 32 checks, 31 pass,
+1 fails, and that one has been failing since before this build. It is his
+original note from earlier tonight, "I don't understand why I can't move items
+from the tactical belt to the backpack in the undercroft", which v8.72 claimed to
+fix. On this evidence it did not, and my green tick on it was a check that was
+not looking. That is the next build.
+
+Verified: parse PASS. Both sectors to their fingerprints, entities 58 and 276 and
+containers 155 and 589. Streams identical live and sim. Looting on both with no
+throw and the clock advancing. Three endings correct. Hub renders. Screenshot of
+the title screen at 2560x1440.
+
+Not verified: I could not measure the title screen at his real ultrawide, only at
+emulated sizes, and the fixture's device pixel ratio does not match a real
+monitor's, so the percentages above are from a 1920x1080 emulation and the screen
+factor is measured against the game's own size rather than a real 3440 panel. I
+also did not check the other .screen surfaces, the stash among them, which still
+have overflow:hidden and no screen factor.
 ## v8.87 - A GUN IS NO LONGER CALLED GOLD WHILE BEING DRAWN BLUE
 
 His note: "i have a weapon of blue rarity but it says its a 'gold burst carbine'
