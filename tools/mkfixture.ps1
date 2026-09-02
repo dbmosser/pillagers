@@ -3282,6 +3282,97 @@ window.__REGRESS=[
      // ultrawide, which is its own kind of unreadable.
      if(col.offsetWidth>window.innerWidth*0.9)
        bad.push('control: the column is '+Math.round(col.offsetWidth/window.innerWidth*100)+' percent of the screen, lines that wide are unreadable');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.18',what:'the title screen never makes you scroll to reach your saves',
+   run:function(){
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, the title screen cannot be measured';
+     var bad=[];
+     var t=document.getElementById('title');
+     if(!t) return 'there is no title screen to measure';
+     // OWN THE BOX FIRST. .screen is absolute inside the wrapper and the wrapper
+     // follows the CANVAS, so this inherits the last __forceSize any other check
+     // happened to leave. Measured that way it read a 436px tall screen on a 1080
+     // window and called it an overflow.
+     // OWN THE ZOOM AS WELL AS THE BOX. This screen scales itself by menuZoom
+     // times titleRes, both of which earlier checks move, and a 1080 tall box at
+     // zoom 2.47 is 436 layout pixels: measured that way it reported an overflow
+     // that only my own harness had created.
+     var mz0=null;
+     try{
+       __forceSize(window.innerWidth,window.innerHeight);
+       // 1.3, not 1. At 1 this screen fits on every size and the check would be
+       // measuring a case that was never broken.
+       if(window.__menuZoom){ mz0=__menuZoom.get(); __menuZoom.set(1.3); }
+     }catch(_fz){}
+     var wasOn=t.classList.contains('on');
+     t.classList.add('on');
+     // OWN THE INPUT. The saves list is the one part of this screen whose height
+     // is data, and a full list is MEANT to scroll. Emptied to a single row so
+     // this measures the screen he sees on an ordinary day, then put back.
+     var host=document.getElementById('slotlist');
+     var savedHTML=host?host.innerHTML:null;
+     if(host) host.innerHTML='<div style="padding:7px 10px;border:1px solid #3a4552">PILLAGER</div>';
+     var col=t.querySelector('.titlecol');
+     // CSS pixels only. getBoundingClientRect returns pane-SCALED numbers in this
+     // harness and I read those as layout twice before noticing, so everything
+     // here uses scrollHeight, clientHeight and computed styles.
+     var over=t.scrollHeight-t.clientHeight;
+     // Measured before v9.18 at 1720x720: scrollHeight 573 against clientHeight
+     // 552, so the first screen in the game asked him to scroll to his saves.
+     if(over>2) bad.push('the title screen scrolls by '+over+'px at '+window.innerWidth+'x'+window.innerHeight);
+     // and the last block, which is the saves list, has to be reachable without it
+     if(col&&col.children.length){
+       var last=col.children[col.children.length-1];
+       var lr=last.getBoundingClientRect(), tr=t.getBoundingClientRect();
+       // both scaled the same way, so their RATIO is still meaningful
+       if(tr.height>0&&(lr.top+lr.height)>tr.top+tr.height+2)
+         bad.push('the last block on the title screen runs past the bottom of it');
+     }
+     // AND AT THE ORDINARY SETTING TOO, so a fix that only helped the raised one
+     // would still be caught if it broke the default.
+     if(window.__menuZoom){
+       __menuZoom.set(1);
+       var o1=t.scrollHeight-t.clientHeight;
+       if(o1>2) bad.push('at menu zoom 1 the title screen scrolls by '+o1+'px');
+       __menuZoom.set(1.3);
+     }
+     var pad=getComputedStyle(t).paddingTop;
+     var tall=(window.innerHeight>820);
+     if(tall){
+       // CONTROL 1: his screen must not tighten. 1080, 1440 and 2160 are all
+       // taller than the cut-off and must keep the rhythm they had.
+       if(pad!=='18px') bad.push('control: at '+window.innerHeight+'px tall the screen padding is '+pad+', it should still be 18px');
+       if(col&&col.children.length>2){
+         var m2=getComputedStyle(col.children[2]).marginTop;
+         if(m2!=='26px') bad.push('control: at '+window.innerHeight+'px tall a block margin is '+m2+', it should still be 26px');
+       }
+     } else {
+       if(pad==='18px') bad.push('at '+window.innerHeight+'px tall the screen is still using the full 18px padding, the short-screen rule is not in force');
+     }
+     // CONTROL 2: both rules must still exist, so deleting either fails here
+     // rather than quietly putting the scrollbar back.
+     var gated=false;
+     for(var i=0;i<document.styleSheets.length;i++){
+       var rules; try{ rules=document.styleSheets[i].cssRules; }catch(e){ continue; }
+       for(var j=0;j<rules.length;j++){
+         var tx=rules[j].cssText||'';
+         if(tx.indexOf('@media')===0&&/max-height/.test(tx)&&tx.indexOf('title')>=0) gated=true;
+       }
+     }
+     if(!gated) bad.push('the short-screen rule is gone, so a short monitor scrolls again');
+     // CONTROL: a FULL saves list is allowed to scroll, and must, or the panel
+     // would clip rows he cannot reach. Eight rows is the cap the game enforces.
+     if(host){
+       host.innerHTML=savedHTML===null?'':savedHTML;
+       var many='';
+       for(var q=0;q<8;q++) many+='<div style="padding:7px 10px;border:1px solid #3a4552">PILLAGER '+q+'</div>';
+       host.innerHTML=many;
+       if(window.innerHeight<=820&&t.scrollHeight<=t.clientHeight+2)
+         bad.push('control: a full saves list does not scroll on a short screen, so rows are being clipped');
+       host.innerHTML=savedHTML===null?'':savedHTML;
+     }
+     if(!wasOn) t.classList.remove('on');
+     if(mz0!==null){ try{ __menuZoom.set(mz0); }catch(_mz){} }
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
@@ -3331,6 +3422,13 @@ window.__type={
 };
 // v9.16: the projection, both ways, so a check can prove the picture and the
 // pointer agree rather than eyeballing one of them.
+// v9.18: the DOM menu zoom, so a check can pin it instead of inheriting whatever
+// the last check left. titleRes is the screen half of it and menuZoom is his
+// text-size choice; the title screen multiplies the two.
+window.__menuZoom={apply:function(){ return applyMenuZoom(); },
+                   titleRes:function(){ return titleRes(); },
+                   get:function(){ return (P&&P.menuZoom)||1; },
+                   set:function(v){ P.menuZoom=v; applyMenuZoom(); }};
 window.__proj={w2s:function(x,y,h){ return w2s(x,(h===undefined?0:h),y); },
                mouseWorld:function(){ return mouseWorld(); },
                zoom:function(){ return ZOOM(); },

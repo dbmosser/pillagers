@@ -78,6 +78,19 @@
   @media (min-aspect-ratio: 19/10){
     #title .titlecol{ max-width:min(1320px,82vw); }
   }
+  /* v9.18: and it must not SCROLL on a short screen. Measured at 1720x720:
+     scrollHeight 573 against clientHeight 552, so the first screen in the game
+     asked him to scroll to reach the saves list. The rhythm is fixed - 18px of
+     screen padding and top margins of 9, 26, 26, 22, 26, 12 and 20 - and none of
+     it asks how tall the screen is.
+     Gated at 820px tall, so 1080, 1440 and 2160 do not match and the screen he
+     plays on is untouched. The margins are inline, which beats a plain rule, so
+     the override needs !important; it is contained to this one block. */
+  @media (max-height: 820px){
+    #title{ padding:8px 22px; }
+    #title .titlecol > div{ margin-top:14px !important; }
+    #title .titlecol > div:first-child{ margin-top:0 !important; }
+  }
   /* the CRT scanline overlay is gone: it is the loudest terminal signal in the
      file and has no equivalent in the look being aimed at */
   .brand { font-family:'Titan One','Rubik',sans-serif; font-weight:800; font-size:13px;
@@ -1196,7 +1209,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.17';
+var VER='9.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24518,7 +24531,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.17: the title screen uses an ultrawide monitor instead of leaving two thirds of it empty and scrolling.',
+  now:'v9.18: the title screen no longer makes you scroll to reach your saves on a short monitor.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

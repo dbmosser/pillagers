@@ -27443,6 +27443,69 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.18 - THE TITLE SCREEN STOPS SCROLLING WHEN YOU RAISE THE TEXT SIZE
+
+v9.17 widened the title column on an ultrawide, and its own "Not verified" line
+said the screen still scrolled by about 21 pixels at 1720x720. This is that,
+and chasing it turned up the actual condition, which is not the one I assumed.
+
+REPRODUCED, and the shape of it matters. At 1720x720 on the previous build:
+
+    menu text size 1     no overflow
+    menu text size 1.15  no overflow
+    menu text size 1.3   scrolls by 21 pixels
+
+So it is not short screens as such. It is a short screen belonging to somebody
+who has turned the menu text UP, which is the person who least wants to hunt for
+a scrollbar to reach his own saves list.
+
+WHY. The vertical rhythm is fixed: 18px of screen padding top and bottom, and
+per-block top margins of 9, 26, 26, 22, 26, 12 and 20. None of it asks how tall
+the screen is, so raising the text size multiplies content the box cannot grow to
+hold.
+
+GATED ON HEIGHT, so nothing he plays on changes. 1080, 1440 and 2160 are all
+taller than the 820 cut-off and do not match; only a short screen tightens. At
+1920x1080 the padding is still 18px and the block margins are still 0, 9, 26, 26,
+22, 26, 12, 20, measured after the change.
+
+MEASURED AFTER at 1720x720: 21 pixels of overflow at text size 1.3 becomes 0, and
+the saves list sits fully on screen. Text size 1 and 1.15 were fine before and are
+still fine.
+
+I ALSO SWEPT EVERY OTHER PANEL for the same fault and found nothing. At 1720x720
+the hub does not overflow and none of the sixteen modals do either; their content
+sits between 30 and 690 of a 720 screen. Only the title.
+
+Verified: parse PASS v9.18. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 61 regression checks
+pass in sequence with a live 1920x1080 viewport, none skipped.
+
+The check fails on a fixture built from v9.17 with "the title screen scrolls by
+20px at 1720x720". Controls: at the ordinary text size it must also not scroll, so
+a fix aimed only at the raised setting cannot break the default; above the 820
+cut-off the padding must still be 18px and a block margin still 26px, so his own
+screen cannot tighten; the rule must still exist in the stylesheet; and a FULL
+saves list must still be allowed to scroll, because clipping rows he cannot reach
+would be worse than a scrollbar.
+
+THREE CORRECTIONS TO MY OWN CHECK, all mine, all found by running it rather than
+reasoning about it. It measured a title screen 436 pixels tall on a 1080 window
+and called that an overflow: this screen scales itself with CSS zoom, menu size
+times screen size, and it had inherited a zoom of 2.47 from an earlier check. It
+blamed the saves list, which sixty earlier checks had filled, when a long list is
+MEANT to scroll. And once I pinned the zoom to 1 to make it deterministic, it
+stopped being able to see the defect at all, because at 1 there is nothing to see.
+
+Not verified: how the tightened rhythm looks on a short screen, since this is
+measured in CSS pixels rather than looked at; the cut-off at 820 tall and the
+14px compressed margin are both my choice and not measured against anything;
+1440p and 4K are above the cut-off so they were confirmed unchanged rather than
+improved.
+
 ## v9.17 - THE TITLE SCREEN USES AN ULTRAWIDE
 
 His note, with an ultrawide screenshot: "look at all this wasted screen space..."
