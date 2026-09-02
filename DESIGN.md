@@ -39035,3 +39035,77 @@ conservative one, but it is not the same as him looking at it. Not verified: the
 1440p and 4K appearance of every other menu that now gets the screen factor. I
 checked that the sector page fills the viewport exactly and that all 94 corpus
 checks still pass at 1080p; I did not open each of the other panels at each size.
+
+## v9.54 - THE CRAWLER WAS BLIND IN FRONT AND SIGHTED BEHIND
+
+His report: **"crawlers aren't hitting me when i stand still in some instances."**
+
+### Five things it is not, each ruled out by measurement
+
+I was wrong five times before I found it, and each wrong idea cost a probe.
+
+| I thought | I measured | result |
+| --- | --- | --- |
+| the state machine: a crawler only swings inside `chase` | put one in contact in patrol, investigate, hunt and loot | all five went to chase on frame 1 and did 91 damage |
+| it never closes the last few units | approaches from 40, 90, 160 and 300 | closed and hit every time |
+| a thin wall blocks the bite (v8.59 added that test) | set one up across a 13 unit wall | it walked around and did 65 damage |
+| the reach margin: every approach settles at gap 9 against a reach of 10 | 24 stands across THE COLD MILE | **24 of 24 hit** |
+| standing still matters as such | all of the above | it never mattered once |
+
+### What it actually is
+
+`canSee` takes **two** ranges: how far you see inside your vision cone, and how
+far you see out of the corner of your eye. The call site passed `e.rng` as the
+cone range and `CFG.eAmbient`, about 100, as the peripheral one.
+
+A **sentry** has `rng` 340, which is a sight range. A **crawler** has `rng` 26,
+and 26 is not a sight range, it is its **bite reach**: crawler body 15 plus
+player 11 is 26, the distance at which the two are already touching.
+
+**So a crawler saw 26 units through its 86 degree cone and 100 units out of the
+corner of its eye. It was more likely to notice him standing behind it than in
+front of it, and in front of it, it could not see him at all until it was already
+on him.**
+
+Measured on v9.53, held still, pointed straight at him, in the open with a clear
+line:
+
+| range | 40 | 80 | 120 | 160 | 200 | 260 | 340 | 440 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| noticed him | no | no | no | no | no | no | no | no |
+
+That is his report exactly. Nothing about a crawler ever brought it to him. It
+wandered past on patrol and reacted only if it blundered into him, and holding
+still is precisely when nothing else drags it in.
+
+### I did not find this first
+
+**v8.48 found the same value doing the same damage** and fixed only half of it.
+Its comment names both numbers: *"e.rng is a sight range for a sentry (340) and a
+BITE REACH for a crawler (26), and using it as the acquisition radius meant a
+crawler could only target a pillager already touching it"*. That fix floored the
+value with the ambient radius for machine-versus-pillager acquisition. The sight
+test against **the player**, eleven hundred lines away, was left as it was.
+
+### The fix is general, not a crawler special case
+
+An eye whose cone reaches less far than its own periphery is backwards for
+anything, so the cone range is floored by the ambient range for every kind. A
+sentry at 340 is untouched because 340 is already the larger. The Listener is
+untouched because its cone is zero wide, so it only ever uses the ambient number.
+**The crawler is the only thing on either map this moves.** On this build it
+notices him at 40 and 80.
+
+`crawlerEyes 0` restores the old number, and the new v9.54 check uses it as its
+control: with the floor off, the crawler must still be blind at 40, which is what
+proves the dial is live rather than decorative.
+
+Not verified: the balance. The 320 seed paired run is still going as this is
+committed and the number goes into this entry when it lands. At 130 seeds it is
+leaning toward the game getting **easier**, 21 seeds extracted with eyes against
+11 without, which is the opposite of what I expected and has an obvious reading:
+a crawler that sees you at 100 units charges from 100 units, and a bot that
+shoots well kills it on the way in, where a blind one used to arrive at contact
+already biting. Not verified, and more importantly: **that number describes the
+bot, which extracts 69 percent against his 30.** Whether a sighted crawler is
+worse for *him* is not a thing the sim can answer.

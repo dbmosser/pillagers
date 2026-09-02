@@ -5051,6 +5051,66 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.54',what:'a crawler can see a man standing in front of it',
+   run:function(){
+     var bad=[];
+     // Holds the crawler still and pointed at him and asks ONE question: at what
+     // range does it notice. Everything moves in the real thing, which is exactly
+     // why the measurement has to pin both of them; a wandering crawler answers
+     // "did it happen to bump into him" instead.
+     function look(dist,dial){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       __cfg({crawlerEyes:dial});
+       var g=__state(), cr=null, i;
+       for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='crawler'){ cr=g.ents[i]; break; }
+       if(!cr) return null;
+       g.ents.length=0; g.ents.push(cr);
+       var p=g.player;
+       p.iv=0; p.downed=false; p.hp=100; g.pCrouch=false;
+       var ok=false;
+       for(var a=0;a<32&&!ok;a++){
+         var th=a*Math.PI/16, qx=p.x+Math.cos(th)*dist, qy=p.y+Math.sin(th)*dist;
+         if(!__nav.free(qx,qy,14)||!__nav.reachable(qx,qy)) continue;
+         if(!__los.clear(qx,qy,p.x,p.y)) continue;
+         cr.x=qx; cr.y=qy; ok=true;
+       }
+       if(!ok) return null;
+       cr.hostile=true; cr.downed=false; cr.cd=0; cr.state='patrol'; cr.alert=0;
+       var fx=p.x, fy=p.y, saw=false;
+       for(var f=0;f<240;f++){
+         p.x=fx; p.y=fy;
+         cr.face=Math.atan2(p.y-cr.y,p.x-cr.x);
+         var bx=cr.x, by=cr.y;
+         __ents(1/60);
+         cr.x=bx; cr.y=by;
+         if(cr.state==='chase'){ saw=true; break; }
+       }
+       return {saw:saw, rng:cr.rng, readBack:__cfg().crawlerEyes};
+     }
+     var on40=look(40,1), on80=look(80,1);
+     if(!on40||!on80) return 'SKIP: no crawler with a clear bearing on this map';
+     var off40=look(40,0);
+     if(!off40) return 'SKIP: the control arm found no clear bearing';
+     // CONTROL FIRST. The dial has to be live, or a green result means nothing.
+     if(on40.readBack!==1||off40.readBack!==0)
+       bad.push('control: the dial did not read back, on='+on40.readBack+' off='+off40.readBack);
+     // CONTROL TWO, AND IT IS THE POINT OF THE BUILD: with the floor switched off
+     // this must reproduce the old blindness exactly. Measured on v9.53: blind at
+     // 40, 80, 120, 160, 200, 260, 340 and 440.
+     if(off40.saw)
+       bad.push('control: with the sight floor off the crawler still noticed him at 40 units, '+
+                'so this check is not measuring the thing it was written for');
+     // THE FINDING. e.rng is 26 for a crawler and that is its BITE REACH, not a
+     // sight range: crawler body 15 plus player 11 is 26, so it could only see him
+     // once it was already touching him, while its PERIPHERAL vision reached 100.
+     if(on40.rng!==26)
+       bad.push('the crawler bite reach is '+on40.rng+' rather than 26, so the numbers in this check are stale');
+     if(!on40.saw)
+       bad.push('a crawler held still and pointed straight at a man 40 units away never noticed him');
+     if(!on80.saw)
+       bad.push('a crawler held still and pointed straight at a man 80 units away never noticed him');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.52',what:'the crew fan holds at EVERY stand on the map, not just the one v9.47 picks',
    run:function(){
      var bad=[];
