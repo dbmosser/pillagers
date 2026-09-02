@@ -938,7 +938,11 @@ window.__perfTimes=function(reset){ var r={},k; for(k in _PT) r[k]=+(+_PT[k]).to
 // knows the right answer will eventually assert it against itself.
 window.__verify=function(opt){
   opt=opt||{};
-  var EXP=opt.ents||{0:58,1:276}, SEED=opt.seed||4242;
+  // v9.30: 58 and 276 until the crawler count started following the house count.
+  // The change is +27 on COLD STORAGE and +93 on THE COLD MILE, which is exactly
+  // the number of crawlers each map gained, so every new entity is accounted for
+  // and the containers are still 157 and 589.
+  var EXP=opt.ents||{0:85,1:369}, SEED=opt.seed||4242;
   var R={pass:true,fail:[],notes:[]};
   function bad(m){ R.pass=false; R.fail.push(m); }
   function fresh(mi){ __resetCfg(); __pinDefaults(mi); }
@@ -3617,7 +3621,18 @@ window.__REGRESS=[
        // He must SURVIVE to be able to answer. A pillager on his own 78 health
        // dies inside the window and then the question cannot be asked at all.
        tgt.maxhp=100000; tgt.hp=100000;
-       p.x=tgt.x+400; p.y=tgt.y;
+       // A LINE TO HIM, not a compass direction. Due east was open on the map
+       // this was written against and had a wall across it once v9.30 changed the
+       // spawn counts, which silently turned this check into a skip.
+       (function(){
+         var R=400, ok=false;
+         for(var a=0;a<24&&!ok;a++){
+           var th=a/24*Math.PI*2, px=tgt.x+Math.cos(th)*R, py=tgt.y+Math.sin(th)*R;
+           if(window.__los&&!__los.clear(px,py,tgt.x,tgt.y)) continue;
+           p.x=px; p.y=py; ok=true;
+         }
+         if(!ok){ p.x=tgt.x+R; p.y=tgt.y; }
+       })();
        var M=__mouse(); M.init=true;
        var K=__keysRef(); for(var k in K) delete K[k];
        var landed=0, hpPrev=tgt.hp, hitAt=-1, hostileAt=-1, backAt=-1, stopAt=-1;
@@ -3689,6 +3704,20 @@ window.__REGRESS=[
        // silently measured on a corpse.
        tgt.maxhp=100000; tgt.hp=100000;
        var TX=tgt.x, TY=tgt.y;
+       // A LINE TO HIM, chosen the same way and for the same reason as in the
+       // v9.25 check. The player is pinned to this bearing every frame below.
+       var _SA=0;
+       for(var _ai=0;_ai<24;_ai++){
+         var _th=_ai/24*Math.PI*2;
+         var _px=TX+Math.cos(_th)*300, _py=TY+Math.sin(_th)*300;
+         if(window.__los&&!__los.clear(_px,_py,TX,TY)) continue;
+         _SA=_th; break;
+       }
+       var _SPX=TX+Math.cos(_SA)*300, _SPY=TY+Math.sin(_SA)*300;
+       // Thirty units to the side of him, measured PERPENDICULAR to the firing
+       // line rather than always southward, so the miss stays a near miss
+       // whatever bearing the open ground turned out to be on.
+       var _AX=TX-Math.sin(_SA)*30, _AY=TY+Math.cos(_SA)*30;
        // A CHANGE, NOT A LEVEL. Notoriety is saved in the profile and the corpus
        // shares one, so an absolute test would pass on an earlier check.
        var noto0=(__P?(__P().notoriety||0):0);
@@ -3696,8 +3725,8 @@ window.__REGRESS=[
        var K=__keysRef(); for(var k in K) delete K[k];
        var hpPrev=tgt.hp, landed=0, hostileAt=-1, fired=0, ammoPrev=p.ammo, closest=1e9;
        for(var f=0;f<420;f++){
-         tgt.x=TX; tgt.y=TY; p.x=TX+300; p.y=TY;
-         var s=__proj.w2s(TX, TY+30); M.x=s.x; M.y=s.y; M.down=((f%10)<2);
+         tgt.x=TX; tgt.y=TY; p.x=_SPX; p.y=_SPY;
+         var s=__proj.w2s(_AX, _AY); M.x=s.x; M.y=s.y; M.down=((f%10)<2);
          if(p.ammo<ammoPrev) fired+=(ammoPrev-p.ammo);
          if(p.ammo<=0) p.ammo=gun.mag;
          ammoPrev=p.ammo;
@@ -3926,6 +3955,71 @@ window.__REGRESS=[
      if((on.sep-off.sep)<40)
        bad.push('a called crew still arrives in single file: furthest man is '+on.sep+
                 ' degrees off the spotter with stations on and '+off.sep+' with them off');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.30',what:'the crawler count follows the houses, the surplus is outside, and no house holds four',
+   run:function(){
+     var bad=[];
+     // HIS ANSWERS 2, 3 AND 5 TOGETHER, because they only make sense together:
+     //   "2 house occupancy about right; house = any indoor structure."
+     //   "3 never more than 3 per house."
+     //   "5 crawler count = houses x 2.5, keep some outside."
+     // Leave the insides alone, put the difference on the street.
+     function survey(mapIx,perHouse){
+       __resetCfg(); __pinDefaults(mapIx);
+       if(perHouse!==undefined){
+         __cfg({crawlerPerHouse:perHouse});
+         if(__cfg().crawlerPerHouse!==perHouse) return {dialStuck:__cfg().crawlerPerHouse};
+       }
+       __startRaid({mapIx:mapIx,seed:4242});
+       var g=__state(), B=g.map.buildings||[], pool=[];
+       for(var i=0;i<B.length;i++){ var b=B[i]; if(b.w>=80&&b.h>=80) pool.push(b); }
+       if(!pool.length) return null;
+       var craw=0, inside=0, per={};
+       for(var j=0;j<g.ents.length;j++){ var e=g.ents[j];
+         if(e.kind!=='crawler') continue;
+         craw++;
+         for(var k=0;k<pool.length;k++){ var bb=pool[k];
+           if(e.x>bb.x&&e.x<bb.x+bb.w&&e.y>bb.y&&e.y<bb.y+bb.h){ inside++; per[k]=(per[k]||0)+1; break; } }
+       }
+       var occ=0, most=0;
+       for(var q in per){ occ++; if(per[q]>most) most=per[q]; }
+       __resetCfg();
+       return {houses:pool.length, crawlers:craw, per:craw/pool.length,
+               inside:inside, outside:craw-inside, pctOcc:Math.round(occ/pool.length*100), most:most};
+     }
+     var maps=[{ix:0,name:'COLD STORAGE'},{ix:1,name:'THE COLD MILE'}];
+     for(var m=0;m<maps.length;m++){
+       var a=survey(maps[m].ix);
+       if(!a) return 'SKIP: '+maps[m].name+' has no buildings big enough to count as houses';
+       if(a.dialStuck!==undefined) return 'control: crawlerPerHouse did not take, it read back '+a.dialStuck;
+       // HIS 5, the count. 2.2 rather than 2.5 because the placer works in whole
+       // crawlers against a house pool that excludes anything near the landing,
+       // so the ratio measured against every big building lands a little under.
+       if(a.per<2.2)
+         bad.push(maps[m].name+' has '+a.crawlers+' crawlers for '+a.houses+' houses, '+
+                  (Math.round(a.per*100)/100)+' each, and he asked for 2.5');
+       // HIS 5 again, the other half: "keep some outside". Most of the extra ones
+       // must be on the street, not stuffed into more houses.
+       if(a.outside<a.inside)
+         bad.push(maps[m].name+' put '+a.inside+' crawlers indoors and only '+a.outside+
+                  ' outside, so the count went into the houses rather than the streets');
+       // HIS 3. This is the one the higher count could break, and did on the first
+       // cut: a house held four.
+       if(a.most>3)
+         bad.push(maps[m].name+' has a house holding '+a.most+' crawlers, and he said never more than 3');
+       // HIS 2, and the line my own v8.86 check calls a tax rather than a gamble.
+       // A building you clear and find nothing in is what makes the next one worth
+       // being careful about.
+       if(a.pctOcc>90)
+         bad.push(maps[m].name+' is '+a.pctOcc+' percent occupied, so there are no empty houses left to find');
+     }
+     // CONTROL: THE DIAL MUST BE THE THING DOING IT. With crawlerPerHouse off the
+     // count falls back to the old area figure, which proves this check is reading
+     // the new rule and not some unrelated change to how many machines spawn.
+     var off=survey(0,0);
+     if(off&&off.per>2.0)
+       bad.push('control: with crawlerPerHouse off the count is still '+
+                (Math.round(off.per*100)/100)+' per house, so something else is setting it');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

@@ -402,3 +402,29 @@ numbers below are this file's.
 | 41 machines never open containers | ALREADY BUILT | Every container-open path is the player's own search or an AI branch gated on the entity being a raider. |
 | 42 Warden beatable | ALREADY BUILT | 900 health, no armour, no shield, no healing, slower than the player; the back seam does triple damage and freezes it for four seconds. |
 | 43 two sectors, deeper | ALREADY BUILT | Exactly two. THE COLD MILE is 900 by 760 metres against COLD STORAGE at 420 by 340, nearly five times the area. |
+
+## 2026-09-02, the overnight run he asked me to plan
+
+He asked for a plan for a 10 to 12 hour absence and got one: pick a big thing,
+work in committed slices, batch the corpus, stop mining a dead queue. He approved
+batching the same day. What follows is what that plan produced.
+
+| Item | Build | Evidence |
+| --- | --- | --- |
+| His instruction: reviving a pillager should be free | v9.24 | empty bag was refused with "No medical to revive him with"; now free, still 40 percent health, still friendly, still pays his gun. The v9.10 check that demanded the cost was turned around rather than deleted |
+| His 39: pillagers stood there after being attacked | v9.25 | one aimed round from 400 units, trigger released, eighteen seconds watched: never turned, never fired back. The bullet set STATE and nothing ever set the hostile FLAG |
+| His instruction: hostile after the first shot, including a miss | v9.26 | 11 rounds past him at 26 units, none landing, no reaction at all. missWake 40, measured from his edge. notoriety still charged, allies still excluded |
+| His 45: the broken wall | v9.27 | no wall is missing. Every solid draws its top face 26 units above its collider, so you walk a body width into the visible container and are partly swallowed. Colliders untouched; the operator is drawn through whatever covers him |
+| His 36: pillagers team up, slice 1 | v9.28 | crew of four, one spots you, one comes. The shout existed and called nobody. Now up to crewMax crewmates in earshot answer it |
+| His 36, slice 2 | v9.29 | they arrived on bearings 13, 10 and -1, three degrees apart, in single file. Each called man now takes his own station: 146 degrees off the spotter against 52 |
+| His 2, 3 and 5: crawler count and house occupancy | v9.30 | 1.25 and 1.50 per house against his 2.5. Now 2.60 and 2.61, the surplus outdoors, occupancy unchanged at 70 percent, never more than 3 in a house |
+| Every build archived | tools | builds/ had stopped at v0.x, 92 of 846. archive-build.ps1 now runs every build; restore-build.ps1 pulls any version back out of git; 220 playable on disk |
+
+Two of my own checks began SKIPPING when v9.30 changed the spawn counts, because
+they stood the player due east and assumed open ground. A skip reads as green in
+the summary, which makes it worse than a failure. Both now scan for a bearing with
+an actual line of sight.
+
+Still open from his 50, unchanged: 6 the siege and the lethal raid clock, 11
+dragging an item off the belt during a raid, 33 proficiency using the five things
+he named rather than money alone, 36 slice 3.

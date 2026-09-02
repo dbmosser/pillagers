@@ -27443,6 +27443,83 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.30 - THE CRAWLER COUNT FOLLOWS THE HOUSES, AND THE STREETS FILL UP
+
+HIS ANSWERS 2, 3 AND 5, in his own words:
+
+  "2 house occupancy about right; house = any indoor structure.
+   3 never more than 3 per house.
+   5 crawler count = houses x 2.5, keep some outside."
+
+These only look contradictory if you assume every crawler goes indoors. Read
+together they say: leave the insides of the houses alone, and put the difference
+on the street.
+
+MEASURED BEFORE, at seed 4242, using the placer's own building test:
+
+  COLD STORAGE    20 buildings, 25 crawlers, 1.25 each. 19 in, 6 out.
+                  70 percent of houses occupied, most in one house 3.
+  THE COLD MILE   84 buildings, 126 crawlers, 1.50 each. 83 in, 43 out.
+                  64 percent occupied, most in one house 3.
+
+So the cap he asked for already held, the occupancy he called about right was one
+to three with a good number empty, and only the TOTAL was wrong.
+
+MEASURED AFTER:
+
+  COLD STORAGE    52 crawlers, 2.60 each. 21 in, 31 out. 70 percent occupied,
+                  6 houses empty, most in one house 3, none with four.
+  THE COLD MILE   219 crawlers, 2.61 each. 88 in, 131 out. 70 percent occupied,
+                  25 houses empty, most in one house 3, none with four.
+
+The occupancy figure is the same 70 percent it was before, which is the point:
+his 2 said it was already right.
+
+RAISING THE COUNT BROKE TWO OF HIS OTHER ANSWERS FIRST, and both were caught by
+measuring rather than by reasoning.
+
+One: a COLD STORAGE house held FOUR. The indoor pass was not the culprit; it
+stops when the houses are full. The surplus was. A crawler that stays outside is
+placed at any free spot, and plenty of free spots are INSIDE a building the
+indoor pass had deliberately skipped, either because it sits too near the landing
+or because its group was already placed. The men meant to fill the streets were
+quietly filling the houses. A crawler not being placed indoors now has to
+actually be outdoors, with a bounded twelve tries so a thin seed cannot hang a
+map build.
+
+Two: with enough crawlers to give every house its group, every house got one.
+Occupancy went to 100 percent on COLD STORAGE and 98 on THE COLD MILE. My own
+v8.86 check calls that out in as many words, "that is a tax and not a gamble",
+and it is right: a building you clear and find nothing in is what makes the next
+one worth being careful about. The indoor pass now fills 72 percent of the houses
+and the rest of the crawlers go outside, which is what his 5 asked for anyway.
+
+AND A WRAP THAT WOULD HAVE BITTEN. The indoor pass walked the house list modulo
+its length, so once indoor crawlers outnumbered the slots it came back round and
+seeded houses that were already full. That is the one route past his three per
+house rule. It was unreachable at the old count and would have become reachable
+the moment the count went up. It now stops when every house has had its group.
+
+Raid build time is unchanged in any way that matters: THE COLD MILE goes from
+3204ms to 3312ms and COLD STORAGE from 265ms to 268ms. Worth saying plainly that
+three and a bit seconds to build the big map is slow, but it was slow before this
+and is not this build's doing.
+
+Verified: parse PASS v9.30. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 72 regression checks
+pass in sequence, none skipped. Map generation changed, so the full run rather
+than the batch.
+
+Not verified: whether twice the machines is the right amount to fight. The bot
+does fight machines, so unlike the crew work this one IS measurable, and it is
+not measured here because a paired seed run is a job of its own rather than a
+line in a build. The dials are crawlerPerHouse and houseFill. What I can say is
+that the extra men are outside, where you can see them coming, rather than behind
+doors.
+
 ## v9.29 - THEY COME AROUND YOU, NOT AT YOU IN A LINE
 
 HIS 36, slice two of three. v9.28 made the shout carry. This makes the men who
