@@ -1185,7 +1185,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.02';
+var VER='9.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10723,7 +10723,15 @@ function hotbarSlots(){
       if(p.wep&&p.wep.id===_agk)      _eq={w:p.wep,am:p.ammo,   inHand:true};
       else if(p.sec&&p.sec.id===_agk) _eq={w:p.sec,am:p.secAmmo,inHand:false};
     }
-    if(have<=0&&!_eq) continue;
+    // v9.03, HIS ANSWER 16. This used to be "continue", handing the slot back to
+    // the derived bar the moment you spent the last one, which is how binding a
+    // Medkit to key 5 left a Frag Charge on key 5. A key he learned must not
+    // become a different item while he is playing. The slot keeps what he put
+    // there, drawn dark with a count of none, and comes back to life by itself
+    // the moment he picks another one up.
+    // Guns are the exception and always were: an assignment for a gun he is not
+    // holding has nothing to show, so it still falls away.
+    if(have<=0&&!_eq&&ait.use==='gun') continue;
     if(_eq){
       // Shows the gun as it actually is: its rolled name, its live ammo, its tint, and
       // whether it is the one currently up, so a Gold Longshot on the belt reads gold.
@@ -10737,7 +10745,10 @@ function hotbarSlots(){
         // caption that says [FIRE] use. useHot has handled stims since v5.92.
         kind:(ait.use==='heal'?'heal':(ait.use==='armor'?'armor':
              (ait.use==='stim'?'stim':(ait.use==='gun'?'gun':'item')))),
-        count:have,c:ait.c||'#cdd6dd',assigned:1,itemKey:akey};
+        // count 0 is the point, not a bug: the belt draws a zero-count cell at 28
+        // percent alpha already, so an emptied slot reads as the item he bound,
+        // greyed, with none left.
+        count:have,c:ait.c||'#cdd6dd',assigned:1,itemKey:akey,empty:(have<=0)?1:0};
     }
   }
   // v6.70, his note that moving a belt item does not work: the bar is DERIVED and an
@@ -24125,7 +24136,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.02: gun condition is gone. An Auto Rifle is an Auto Rifle; how good a gun is comes from what it is, not a hidden roll when you pick it up.',
+  now:'v9.03: spending your last medkit no longer turns that belt key into a grenade. The slot stays yours, greyed out, with none left.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

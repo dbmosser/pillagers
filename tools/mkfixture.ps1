@@ -2339,6 +2339,95 @@ window.__REGRESS=[
      var dmgSet={};
      for(var k2 in T){ var b2=__guns.base(k2); if(b2) dmgSet[b2.dmg]=1; }
      if(Object.keys(dmgSet).length<4) bad.push('control: only '+Object.keys(dmgSet).length+' distinct gun damages left in the whole table');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.03',what:'spending the last of a belted item leaves the slot dark and empty, never a different item',
+   run:function(){
+     __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
+     var bad=[], g=__state();
+     // Distinctive on purpose: the derived bar would put a THROWABLE on these
+     // slots, so if the fix is absent the slot does not read "empty", it reads
+     // Frag Charge. Two different items so one lucky match cannot pass this.
+     g.bag=["medkit","medkit","bandage","frag","frag","frag"];
+     g.hotAssign={4:"medkit",5:"bandage"};
+     g.hotAuto=null;
+     var before=__belt.slots();
+     if(!before[4]||before[4].itemKey!=="medkit") bad.push("setup: slot 5 did not take the medkit binding");
+     if(!before[5]||before[5].itemKey!=="bandage") bad.push("setup: slot 6 did not take the bandage binding");
+     var c4=before[4]&&before[4].count, c5=before[5]&&before[5].count;
+     if(c4!==2) bad.push("setup: slot 5 counted "+c4+" medkits, not 2");
+     // Now spend every one of both, which is the thing he described.
+     g.bag=["frag","frag","frag"];
+     var after=__belt.slots();
+     var a4=after[4]||{}, a5=after[5]||{};
+     // HIS ANSWER 16: still the item he put there, and it says none left.
+     if(a4.itemKey!=="medkit") bad.push("slot 5 stopped being the medkit and became "+(a4.name||"nothing"));
+     if(a5.itemKey!=="bandage") bad.push("slot 6 stopped being the bandage and became "+(a5.name||"nothing"));
+     if(a4.count!==0) bad.push("an emptied slot 5 reads a count of "+a4.count+" rather than none");
+     if(!a4.empty) bad.push("an emptied slot 5 is not flagged empty, so the belt will not grey it");
+     if(a5.empty!==1) bad.push("an emptied slot 6 is not flagged empty");
+     // and it comes back to life on its own when he picks another one up
+     g.bag=["frag","medkit"];
+     var back=__belt.slots()[4]||{};
+     if(back.count!==1||back.empty) bad.push("picking a medkit back up left slot 5 reading "+back.count+" empty="+back.empty);
+     // CONTROL 1, and it is the one that matters: a slot he never bound must
+     // STILL derive normally. Without this, a fix of "never re-derive anything"
+     // would pass every assertion above and break the whole bar.
+     g.hotAssign={};
+     var derived=__belt.slots();
+     var live=0;
+     for(var i=0;i<derived.length;i++) if(derived[i]&&derived[i].kind!=="empty") live++;
+     if(live<1) bad.push("control: with nothing bound the bar derived "+live+" live slots, so the derived path is dead");
+     // CONTROL 2: a gun binding for a gun he is NOT carrying must still fall
+     // away, which is the one case that keeps the old behaviour on purpose.
+     // He keeps his fists here: the derived bar reads p.wep every frame, so
+     // emptying his hands throws instead of measuring anything.
+     var held={};
+     if(g.player.wep&&g.player.wep.id) held[g.player.wep.id]=1;
+     if(g.player.sec&&g.player.sec.id) held[g.player.sec.id]=1;
+     var absent=null, TT=__guns.tiers();
+     for(var gk in TT) if(!held[gk]){ absent=gk; break; }
+     if(!absent) bad.push("control: could not find a gun he is not carrying");
+     else {
+       g.bag=[]; g.hotAssign={}; g.hotAssign[3]=absent;
+       var gone=__belt.slots()[3]||{};
+       if(gone.itemKey===absent) bad.push("control: a "+absent+" he is not carrying held its belt slot");
+     }
+     return bad.length?bad.join("; "):null; }},
+  {v:'9.03',what:'an emptied belt slot is actually drawn darker, not just marked empty',
+   run:function(){
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, the HUD canvas has no pixels to read';
+     __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __zoom.set(1,true);
+     __deploy({kit:['medkit','medkit'],safe:null,mapIx:0,seed:4242});
+     var g=__state(); g.ents.length=0; g.player.iv=99;
+     g.hotAssign={4:'medkit'}; g.hotAuto=null;
+     function run(n){ for(var f=0;f<6;f++) __loop(performance.now()+n+f*16.7); }
+     g.bag=['medkit','medkit']; run(0);
+     var b=__hud().belt;
+     if(!b) return 'the belt did not draw, so there is nothing to measure';
+     // The HUD draws to hcv. Sampling the world canvas returns the same number
+     // whatever the belt does, which is a check that can never fail.
+     var cv=document.getElementById('hcv');
+     if(!cv) return 'no HUD canvas to read';
+     function cell(ix){
+       var bb=__hud().belt;
+       var x=Math.round(bb.x+bb.cellW*ix)+4, y=Math.round(bb.y)+4, w=Math.max(4,Math.round(bb.cellW)-8);
+       var d=cv.getContext('2d').getImageData(x,y,w,w).data, s=0;
+       for(var i=0;i<d.length;i+=4) s+=(d[i]+d[i+1]+d[i+2])/3;
+       return s/(d.length/4);
+     }
+     var stocked=cell(4);
+     g.bag=[]; run(900);
+     var emptied=cell(4);
+     var bad=[];
+     if(!(stocked>0)) bad.push('the stocked slot measured '+stocked.toFixed(1)+', so nothing is being drawn there');
+     // The cell is drawn at 28 percent alpha when its count is zero. Anything
+     // near 1.0 means it is not dimming at all, which was the state he described.
+     else if(emptied/stocked>0.75) bad.push('an emptied slot is drawn at '+Math.round(emptied/stocked*100)+' percent of a stocked one, so it does not read as darker');
+     // CONTROL: picking one back up must bring the brightness back. Without this
+     // a belt that drew every slot dark would pass the assertion above.
+     g.bag=['medkit']; run(1800);
+     var back=cell(4);
+     if(stocked>0&&back/stocked<0.75) bad.push('control: restocking left the slot at '+Math.round(back/stocked*100)+' percent, so the slot is dark whatever he carries');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

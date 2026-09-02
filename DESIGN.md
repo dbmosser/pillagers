@@ -27443,6 +27443,66 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.03 - A BELT KEY STOPS TURNING INTO A DIFFERENT ITEM
+
+His answer 16, on what an emptied belt slot should do: "It should go darker but
+still show the item that you had there and indicate there are none left (this
+might be current behavior already, not sure)."
+
+It was not current behaviour, and what it actually did is worse than nothing.
+
+REPRODUCED FIRST. Bind a Medkit to key 5 and a Bandage to key 6, then spend the
+last of both:
+
+    key 5 with medkits          Medkit,      count 1
+    key 5 after the last one    Frag Charge, count 0
+    key 6 after the last one    Medical,     count 0
+
+The slot does not dim and wait. It hands itself back to the derived bar, which
+puts a completely different item there. A key he learned as heal becomes a key
+that throws a grenade, mid raid, with nothing to tell him it changed. He named
+this class of thing at answer 50 as the sort of inventory surprise that makes
+him stop playing.
+
+WHY IT DID THAT, and it was a decision rather than an accident. The line that
+did it carried its own reasoning: "An assignment is only live while you are
+still carrying the thing. Spend your last Medkit and the slot goes back to
+whatever it was, rather than sitting there as a lie." The intent is sound and
+the outcome is the opposite of it. An empty medkit slot is not a lie; a slot
+that silently becomes a grenade is.
+
+WHAT CHANGED. One line in hotbarSlots. An assignment now holds its slot when
+the count reaches zero, and the slot reports count 0 plus an explicit empty
+flag. The belt already draws any zero-count cell at 28 percent alpha with the
+count in dark brown, so the greying his answer asks for needed no new drawing
+code. Pick another one up and the slot fills itself back in.
+
+GUNS KEEP THE OLD RULE ON PURPOSE. A gun assignment for a gun that is not in
+your hands or stowed has nothing to show, so it still falls away. That is the
+one case the original line was right about.
+
+Verified: parse PASS v9.03. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 155 and 589, LOOT driven on both
+maps through held KeyE with the raid clock still advancing and nothing thrown,
+live-vs-sim stream parity identical on both, all three endings through oc_btn
+reading EXTRACTED, KILLED IN ACTION and ABANDONED with the overlay up, hub and
+stage render. 46 regression checks pass, none skipped.
+
+The control is the part worth stating. The new check was run against a fixture
+built from the v9.02 commit and it fails there with exactly the defect: "slot 5
+stopped being the medkit and became Frag Charge; slot 6 stopped being the
+bandage and became Medical". It passes on v9.03. The check also carries two
+controls of its own that fail a lazy fix: a slot with no assignment must still
+derive normally, so "never re-derive anything" cannot pass, and a gun he is not
+carrying must still lose its slot.
+
+Not verified: the drawn-darker check passes on v9.02 as well and does not
+discriminate this fix - a zero count already drew dark there, it was simply a
+zero count on the wrong item, so that check guards the dimming rule rather than
+this change; how the greyed slot reads at 4K on his monitor (measured only at
+1920x1080, where the cell drops to 38 percent of a stocked cell's brightness);
+the Undercroft belt was not re-measured for this, only the raid belt.
+
 ## v9.02 - GUN CONDITION IS GONE
 
 His answer 18: "I have no idea what 'condition' is -- guns should only change in
