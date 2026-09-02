@@ -27443,6 +27443,67 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.19 - THE NAMES ON SCREEN ARE HIS NAMES
+
+Three player-facing strings that were not his, one of them an instruction I had
+left outstanding since 2026-08-29.
+
+HIS INSTRUCTION: "'EXTRACT CACHE' -- confusing name -- lets call it a 'ELITE
+CACHE'".
+
+REPRODUCED by reading the tags a built raid actually carries rather than the
+source. COLD STORAGE at seed 4242 tags its four caches:
+
+    EXTRACT CACHE
+    THE LONG DOCK CACHE
+    CHILL ROW CACHE
+    MERIDIAN STRONGBOX
+
+Every other one is named for the place it sits in. That one named a mechanic,
+which is what makes it read as a different KIND of thing when it is the same
+container with the same contents.
+
+HIS OWN VOCABULARY LIST, which says Credits and never money or cash. Four rewards
+on the progress screen read "$4,000 CASH", "$8,000 CASH DROP", "$12,000 CASH DROP"
+and "$11,000 CASH DROP". They are printed by tierLabel onto the rewards list and
+into the "Next:" line, so he reads them. DROP went with CASH: the lore rule is
+that you ascend and never drop, so that word was doing no work either.
+
+AND THE PARSE GATE CAUGHT SOMETHING I HAD BEEN LETTING SLIDE. It fails on
+WHATSNEW drift as well as on syntax, and it reported "WHATSNEW v8.98 STALE, drift
+0.21 over 0.20". The card that greets him in the Undercroft had not moved in
+twenty-one builds: it was still announcing the crawler fix and the four spawn
+points while the noise rings, the belt keys, the revive payout, Wirt's counter and
+every one of the monitor-scaling builds went unannounced. It is rewritten to ten
+lines of what he will actually feel, each one checked against his vocabulary.
+
+Nothing but strings changed. The cache is the same container, the rewards pay the
+same credits.
+
+Verified: parse PASS v9.19. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 62 regression checks
+pass in sequence, none skipped.
+
+The check reads the tags off a built raid on BOTH maps and the labels out of the
+reward table, so it measures what is drawn rather than what the source says. It
+fails on a fixture built from v9.18 with every one of them named: two maps still
+tagging EXTRACT CACHE, four rewards still reading cash, and the card at v8.98
+against a build at v9.18. Two controls: the cache must still be NAMED, so deleting
+the tag cannot pass as renaming it, and four rewards must still say what they pay,
+so renaming them to nothing cannot pass either. The card check now fails at 0.15
+of drift, tighter than the parse gate's 0.20, so it complains a build before the
+gate does.
+
+Not verified: whether ELITE CACHE reads better to him in play than EXTRACT CACHE
+did, which is his to judge and the reason he named it; the other three cache tags
+are unchanged and were not part of his instruction; I swept the file for the rest
+of his banned words and the only other hits are internal identifiers, old poll
+questions in his own words, and "vault" in door-key names, which his list bans only
+as a synonym for the Stash.
+
 ## v9.18 - THE TITLE SCREEN STOPS SCROLLING WHEN YOU RAISE THE TEXT SIZE
 
 v9.17 widened the title column on an ultrawide, and its own "Not verified" line

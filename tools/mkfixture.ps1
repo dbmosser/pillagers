@@ -226,6 +226,13 @@ window.__emote={do:doEmote,list:EMOTES,down:weaponDown,ids:function(){return IDE
 // v9.11: Wirt's counter. The key function is exposed with its time argument so a
 // check can walk the clock forward instead of waiting an hour to find out whether
 // the lot rotates.
+// v9.19: the words the game puts on screen, so a check can hold them to his
+// vocabulary list instead of me grepping the source by hand every few builds.
+window.__words={cacheTags:function(){ var o=[]; if(G&&G.containers)
+                  for(var i=0;i<G.containers.length;i++) if(G.containers[i].cache&&G.containers[i].tag) o.push(G.containers[i].tag);
+                  return o; },
+                rewardLabels:function(){ var o=[]; for(var i=0;i<SEASON_TIERS.length;i++) o.push(tierLabel(SEASON_TIERS[i])); return o; },
+                whatsnew:function(){ return {ver:WHATSNEW_VER, lines:WHATSNEW.slice(), build:VER}; }};
 window.__wirt={key:function(t){ return wirtLotKey(t); },
                left:function(t){ return wirtLotLeft(t); },
                hour:function(t){ return wirtLotHour(t); },
@@ -3360,6 +3367,7 @@ window.__REGRESS=[
        }
      }
      if(!gated) bad.push('the short-screen rule is gone, so a short monitor scrolls again');
+     // (the v9.19 vocabulary check lives on its own below)
      // CONTROL: a FULL saves list is allowed to scroll, and must, or the panel
      // would clip rows he cannot reach. Eight rows is the cap the game enforces.
      if(host){
@@ -3373,6 +3381,47 @@ window.__REGRESS=[
      }
      if(!wasOn) t.classList.remove('on');
      if(mz0!==null){ try{ __menuZoom.set(mz0); }catch(_mz){} }
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.19',what:'the names on screen are his names, not the ones I reached for',
+   run:function(){
+     if(!window.__words) return 'this build cannot report its own on-screen words';
+     var bad=[];
+     __resetCfg(); __pinDefaults(0);
+     // HIS INSTRUCTION: "'EXTRACT CACHE' -- confusing name -- lets call it a
+     // 'ELITE CACHE'". Read off a built raid rather than the source, on both maps.
+     [0,1].forEach(function(mi){
+       __startRaid({mapIx:mi,seed:4242});
+       var tags=__words.cacheTags();
+       if(!tags.length){ bad.push('map '+mi+' built no tagged caches, so nothing was checked'); return; }
+       for(var i=0;i<tags.length;i++){
+         if(/EXTRACT CACHE/.test(tags[i])) bad.push('map '+mi+' still tags a cache "'+tags[i]+'"');
+       }
+       // CONTROL: and it must still be NAMED. Dropping the tag entirely would
+       // satisfy the line above and leave an unlabelled crate.
+       var elite=false;
+       for(var j=0;j<tags.length;j++) if(/ELITE CACHE/.test(tags[j])) elite=true;
+       if(!elite) bad.push('map '+mi+' has no ELITE CACHE at all, the tag was dropped rather than renamed');
+     });
+     // HIS VOCABULARY LIST: Credits, never cash.
+     var labs=__words.rewardLabels();
+     if(!labs.length) bad.push('there are no reward labels to check');
+     for(var k=0;k<labs.length;k++){
+       if(/CASH/i.test(labs[k])) bad.push('a reward still reads "'+labs[k]+'"');
+     }
+     // CONTROL: the money rewards must still say what they pay, or renaming them
+     // to nothing would pass the line above.
+     var paid=0;
+     for(var m=0;m<labs.length;m++) if(/CREDITS/i.test(labs[m])) paid++;
+     if(paid<4) bad.push('control: only '+paid+' rewards name credits, there should be four');
+     // AND THE WHAT IS NEW CARD MUST NOT GO STALE AGAIN. The parse gate fails at
+     // 0.20 of drift and it had reached 0.21 before this build, which means the
+     // card in front of him was twenty-one builds out of date.
+     var wn=__words.whatsnew();
+     var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
+     var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
+     if(vNow&&vCard&&(vNow-vCard)>0.15)
+       bad.push('the what-is-new card is at v'+wn.ver+' against a build at v'+wn.build);
+     if(!wn.lines.length) bad.push('the what-is-new card has no lines');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

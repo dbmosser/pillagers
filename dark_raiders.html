@@ -1209,7 +1209,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.18';
+var VER='9.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1220,19 +1220,19 @@ var VER='9.18';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='8.98';
+var WHATSNEW_VER='9.19';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
-  'A CRAWLER IN REACH WAS HITTING YOU EVERY SINGLE FRAME. Measured: 240 hits in 240 frames where the code intends one every 0.7 seconds, which is 1,446 damage a second at a 100 hp operator.',
-  'EVERY HOUSE IS A GAMBLE NOW. Two thirds of them hold a crawler, some hold three, and a few are empty. It was one in six.',
-  'YOU START SOMEWHERE DIFFERENT. COLD STORAGE used one corner of the map for every raid, and now has four starts it picks between evenly.',
-  'A PILLAGER CANNOT BE TRACKED THROUGH A WALL. His boot prints and the rings he leaves in water were drawn whether or not you could see him.',
-  'THE HUD FOLLOWS YOUR MONITOR. It was the same absolute size on a 4K panel as on a laptop, so it was half the size where it mattered.',
-  'DRAG THE CORNER OF ANY PANEL TO SIZE IT, and it remembers. The pillager board, the legend, the conditions, the bars and the belt.',
-  'THE WHEEL ZOOMS THREE TIMES CLOSER. Everything past the old limit was quietly ignored.',
-  'YOUR BACKPACK IS IN THE UNDERCROFT, the same one from the raid, with your belt under it, and you can drag between them.',
-  'NOTHING IS DRAWN ON TOP OF YOUR BELT ANY MORE. The backpack, the extraction countdown and the distance arrow all sat on it at 1440p and 4K.',
-  'AN ITEM IS IN YOUR BACKPACK OR ON YOUR BELT, never in both. It used to be drawn in both places and it was the same object.'
+  'THE WHOLE GAME FOLLOWS YOUR MONITOR NOW. On a 4K screen you were seeing twice as much ground with everything on it drawn half the size. The world, the backpack and the sector map all scale to the screen you are on.',
+  'YOU CAN SEE NOISE. A sound you can hear but cannot see leaves a red ring on the ground where it came from.',
+  'A BELT KEY KEEPS WHAT YOU PUT ON IT. Spending your last medkit used to turn that key into a grenade; now the slot stays yours, greyed out, until you pick another one up.',
+  'PICKING A DOWNED PILLAGER BACK UP PAYS. He hands you his gun, or the best thing in his pockets, out of his own kit.',
+  'CRIERS KEEP TO THE STREET. They were setting up inside houses and staying there for the whole raid.',
+  'COLD STORAGE DROPS YOU IN ONE OF TEN PLACES, not one of four, so the walk to the first crate is a different walk.',
+  'CONTRACTS NAME A PLACE YOU ARE TOLD ABOUT. They used to send you to GREENBELT, which was never a place, only a colour scheme.',
+  'WIRT KEEPS ONE GOOD THING ON THE COUNTER at a flat 10,000 credits, and it changes every hour.',
+  'THE POINTER SAYS WHAT A PANEL EDGE WILL DO. Move, resize or minimise, instead of the aiming cross over everything.',
+  'A PANEL DRAGGED OFF THE EDGE CANNOT BE LOST. It keeps a handle on screen so you can always pull it back.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -7687,7 +7687,10 @@ function buildRaid(sim){
     cc.cache=1; cc.tag=tag;
     containers.push(cc); caches.push({x:use.x,y:use.y,tag:tag});
   }
-  placeCache(active.x,active.y,'EXTRACT CACHE');
+  // v9.19, HIS INSTRUCTION: "'EXTRACT CACHE' -- confusing name -- lets call it a
+  // 'ELITE CACHE'". Every other cache on the map is named for where it is; this
+  // one named a mechanic and read as a different kind of thing.
+  placeCache(active.x,active.y,'ELITE CACHE');
   for(var lcx=0;lcx<map.landmarks.length&&caches.length<3;lcx++){
     var LX=map.landmarks[lcx];
     placeCache(LX.x+LX.w/2,LX.y+LX.h/2,String(LX.name).toUpperCase()+' CACHE');
@@ -15315,7 +15318,10 @@ var SEASON_TIERS=[
   {sp:252200, kind:'kit', v:['medkit','medkit','medkit','medkit','bandage','bandage','bandage'], label:'CRATE OF MEDKITS'},
   {sp:257600, kind:'kit', v:['frag','frag','frag','frag','smoke','smoke'], label:'FRAG BUNDLE'},
   {sp:263100, kind:'wep', v:'carbine', label:'FREE CARBINE'},
-  {sp:268700, kind:'credits', v:4000, label:'$4,000 CASH'},
+  // v9.19: CREDITS, which is the word the rest of the game uses. His vocabulary
+  // list says Credits and never cash; DROP goes with it, because the lore rule is
+  // that you ascend and never drop.
+  {sp:268700, kind:'credits', v:4000, label:'$4,000 CREDITS'},
   {sp:274400, kind:'kit', v:['core','scrap','scrap','scrap','scrap'], label:'A DATA CORE AND SCRAP'},
   {sp:280200, kind:'kit', v:['plate','plate','plate','plate','plate'], label:'FIVE ARMOUR PLATES'},
   {sp:286200, kind:'kit', v:['ammobox','ammobox','ammobox','ammobox','bandage','bandage','bandage','bandage'], label:'AMMO RESUPPLY'},
@@ -15327,7 +15333,7 @@ var SEASON_TIERS=[
   {sp:324800, kind:'kit', v:['wire','wire','wire','wire','wire','wire','cell','cell','cell','cell','board','board','board','scrap','scrap','scrap','scrap','scrap','scrap'], label:'PARTS CRATE'},
   {sp:331700, kind:'kit', v:['titan','core'], label:'TITAN AND DATA CORE'},
   {sp:338800, kind:'wep', v:'shotgun', label:'CRATED SCATTERGUN'},
-  {sp:346000, kind:'credits', v:8000, label:'$8,000 CASH DROP'},
+  {sp:346000, kind:'credits', v:8000, label:'$8,000 CREDITS'},
   {sp:353400, kind:'kit', v:['frag','frag','frag','frag','frag','frag','decoy','decoy','decoy'], label:'BIGGER BAG OF FRAGS'},
   {sp:360900, kind:'kit', v:['coil','cell','cell','cell','cell','cell'], label:'COIL AND POWER CELLS'},
   {sp:368600, kind:'kit', v:['medkit','medkit','medkit','medkit','medkit','medkit','plate','plate','plate','plate'], label:'MEDKITS AND PLATES'},
@@ -15335,10 +15341,10 @@ var SEASON_TIERS=[
   {sp:384400, kind:'credits', v:9500, label:'$9,500 PAYOUT'},
   {sp:392600, kind:'kit', v:['core','core','core','optic','optic'], label:'THREE DATA CORES'},
   {sp:401000, kind:'kit', v:['ledger','relay'], label:'LEDGER AND RELAY'},
-  {sp:409500, kind:'credits', v:12000, label:'$12,000 CASH DROP'},
+  {sp:409500, kind:'credits', v:12000, label:'$12,000 CREDITS'},
   {sp:418300, kind:'wep', v:'lmg', label:'FULL-SIZE LMG'},
   {sp:427200, kind:'kit', v:['core','core','core','core','core'], label:'FIVE DATA CORES'},
-  {sp:436300, kind:'credits', v:11000, label:'$11,000 CASH DROP'},
+  {sp:436300, kind:'credits', v:11000, label:'$11,000 CREDITS'},
   {sp:445600, kind:'kit', v:['medkit','medkit','medkit','medkit','medkit','medkit','stim','stim','stim','stim','stim','stim'], label:'MEDKITS AND STIMS'},
   {sp:455100, kind:'wep', v:'rifle', label:'THE RIFLE'},
   {sp:464800, kind:'kit', v:['titan','titan','titan','titan'], label:'FOUR TITANS'},
@@ -24531,7 +24537,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.18: the title screen no longer makes you scroll to reach your saves on a short monitor.',
+  now:'v9.19: the cache by the extraction is called the ELITE CACHE now, and rewards say credits instead of cash.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
