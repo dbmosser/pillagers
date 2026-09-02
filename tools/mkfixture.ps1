@@ -739,6 +739,11 @@ try{ say=function(m){
 }; }catch(e){}
 try{ tickAmbience=function(){}; }catch(e){}
 try{ tickEnemyAudio=function(){}; }catch(e){}
+try{ window.__stepsReal=tickPlayerSteps; }catch(e){}
+// v8.73: and a way to put the real one back, so his "too many footsteps when
+// sprinting" can be measured on the REAL frame rather than by calling the tick by
+// hand. blip is stubbed anyway, so nothing becomes audible.
+try{ window.__setSteps=function(f){ tickPlayerSteps=f||function(){}; }; }catch(e){}
 try{ tickPlayerSteps=function(){}; }catch(e){}
 try{ tickMachineVoices=function(){}; }catch(e){}
 // tickMusic is DELIBERATELY not stubbed here, departing from stub-at-source:
@@ -952,6 +957,38 @@ window.__REGRESS=[
        if(hit) out.push('mapIx '+mi+' has '+hit+' roads crossing a wall');
      });
      return out.length?out.join('; '):null; }},
+  {v:'8.73',what:'holding sprint through exhaustion does not stutter it on and off',
+   run:function(){
+     function hold(secs,release){
+       __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
+       var g=__state(); if(!g) return null;
+       var p=g.player; g.ents.length=0; p.iv=99; p.stam=100;
+       var K=__keysRef(); for(var k in K) K[k]=false;
+       K['KeyD']=true; K['ShiftLeft']=true;
+       var flips=0, prev=null, everSprinted=false;
+       for(var f=0;f<secs*60;f++){
+         if(!__state()||__state().over) break;
+         if(release&&f===300) K['ShiftLeft']=false;
+         if(release&&f===420) K['ShiftLeft']=true;
+         __loop(performance.now()+f*16.7);
+         var sp=!!__state().sprinting;
+         if(sp) everSprinted=true;
+         if(prev!==null&&sp!==prev) flips++;
+         prev=sp;
+       }
+       for(var k2 in K) K[k2]=false;
+       return {flips:flips, everSprinted:everSprinted};
+     }
+     var a=hold(10,false);
+     if(!a) return 'no raid';
+     // The probe must actually have sprinted, or it is testing nothing.
+     if(!a.everSprinted) return 'the probe never sprinted at all, so this check is testing nothing';
+     if(a.flips>2) return 'sprint switched state '+a.flips+' times while the key was simply held';
+     // And the latch must not disable sprint forever: letting go and pressing
+     // again has to give another one.
+     var b=hold(10,true);
+     if(b.flips<2) return 'releasing and pressing sprint again did not give a second sprint';
+     return null; }},
   {v:'8.72',what:'an item can be dragged OFF the Undercroft belt and back into the backpack',
    run:function(){
      __showScreen('hub');

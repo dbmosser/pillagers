@@ -27443,6 +27443,58 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.73 - SPRINT STOPS STUTTERING ON AND OFF WHEN YOU HOLD THE KEY
+
+His report: "too many footstep glitch is happening when sprinting."
+
+THE FOOTSTEP CODE IS FINE. Measured on the real frame with the real tick, which
+meant un-stubbing it in the fixture first because every audio tick is silenced
+there. Ten seconds of continuous movement: walking steps land 0.451 to 0.475
+apart, sprinting 0.31 to 0.33, and not one gap under 200 milliseconds in twenty
+seconds. The sound itself is about 30 milliseconds long so nothing overlaps, and
+the volume at distance zero works out to 1.0 rather than anything degenerate.
+
+WHAT IS BROKEN IS SPRINT. Holding shift for twenty seconds without ever letting
+go, sprint switched state TWENTY FIVE TIMES:
+  t3.81 off stam2   t5.22 ON stam12   t5.61 off stam2   t6.96 ON stam12 ...
+a sawtooth with a 1.4 second period, forever.
+
+The arithmetic makes it inevitable. Sprint drains 26 stamina a second, the bar
+recovers 7.5 a second, and the lock added at v4.24 releases at 12. Twelve stamina
+buys 0.46 seconds of sprinting, which drains straight back to the 2 point floor,
+re-locks, refills to 12 in 1.3 seconds, and does it again.
+
+The footsteps are what he HEARS of that, and they are the perfect tell, because
+the step interval flips between 0.31 and 0.45 AND the volume flips between full
+and 0.8. The recorded pattern while holding one key:
+  LOUD soft soft soft LOUD soft soft soft LOUD soft soft soft LOUD
+One loud sprint step every second and a half among walking steps. The glitch is
+not in the audio at all.
+
+THE FIX MOVES NO NUMBERS. The note on the lock says it exists "so you cannot
+flutter the key at zero for free bursts", and holding the key was doing exactly
+that flutter automatically. A lock is something you clear deliberately, so it now
+needs the key RELEASED before sprint returns. 2, 12, 26 and 7.5 are all his and
+all untouched. Hold shift after running dry and you walk, which is the behaviour
+the lock always described.
+
+After: holding shift for twenty seconds gives ONE state change instead of 25, and
+the footsteps read LOUD twelve times then soft, a single clean tempo change.
+Controlled the other way too, because a latch like this can easily disable sprint
+for good: letting go and pressing again gives a second sprint, 3 state changes.
+
+Verified: parse PASS at 1,520,268 chars, mojibake none. __verify PASS: ents 58
+and 276, parity identical on both maps, looting on both, all three endings, hub.
+__regress PASS, now 19 checks. The new one fails if the probe never sprinted at
+all, and it runs 10 second holds rather than 20 because two 20 second holds took
+the whole suite past the probe timeout.
+
+Not verified: this is the sprint LATCH, not the stamina economy. Whether 26 a
+second down and 7.5 a second up is the right pair is untouched and his; all this
+does is stop the game deciding for him 25 times a minute. The footstep audio was
+measured as timing and volume, never listened to, because nothing here can hear
+the game.
+
 ## v8.72 - YOU CAN DRAG AN ITEM OFF THE TACTICAL BELT AND BACK INTO THE BACKPACK
 
 His report: "I do not understand why I cannot move items from the tactical belt to
