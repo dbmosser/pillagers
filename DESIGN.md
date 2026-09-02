@@ -27810,15 +27810,25 @@ Fails on a v9.46 fixture with "the two closest chose points 0 units apart" and
 
 ### What it costs you
 
-Measurement still running as this is committed, and the number goes into this
-entry when it lands: 320 seeds on THE COLD MILE, paired per seed, crewSearch 1
-against crewSearch 0 which is v9.46 to the digit.
+**THE RESULT, 320 paired seeds on THE COLD MILE, crewSearch 1 against crewSearch
+0 which is v9.46 to the digit:**
 
-Read whatever it says carefully. The sim bot barely fights pillagers at all: every
-extract-rate number this project produces describes MACHINE combat, and machines
-do not run this branch. So the run can only show whether the change costs anything
-by accident. Whether a crew that actually searches is better to play against is a
-question about a person in a chair, and no bot here can answer it.
+| | new | old |
+| --- | --- | --- |
+| extracted | 102 of 320, 31.9 percent | 93 of 320, 29.1 percent |
+| discordant | 52 seeds the new way | 43 the old way |
+
+McNemar on 95 discordant pairs: chi-square 0.85, **p = 0.36**. That is not a
+result. The direction leans toward the player by 2.8 points and 95 of the 320
+raids ended differently, but at this sample the difference is indistinguishable
+from noise and I am not going to dress it up as anything else.
+
+Read it for what it can say rather than what it cannot. The sim bot barely fights
+pillagers at all: every extract-rate number this project produces describes
+MACHINE combat, and machines do not run this branch. So what 320 seeds actually
+establish is that giving a crew an honest search costs nothing by accident.
+Whether a crew that spreads out is better to play against is a question about a
+person in a chair, and no bot here can answer it.
 
 Not verified: the machines. Sentries, snitches and bulwarks run the role block,
 not this branch, and they still converge on the last sighting; their pack roles
