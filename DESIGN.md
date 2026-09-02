@@ -27443,6 +27443,90 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.51 - THE MACHINES SEARCH THE WAY THE PILLAGERS LEARNED TO
+
+### What was wrong
+
+v9.42 made losing line of sight mean something. v9.47 taught a crew of pillagers
+to search as a crew instead of queueing on the last sighting. The machines were
+never touched, and they run a different branch of the same function.
+
+Measured on THE COLD MILE at seed 4242, four sentries on four clear bearings 230
+units out, the player then moved to a spot none of the four can see from where
+they stand:
+
+- all four entered chase
+- none could see him afterwards
+- **all four steered at the identical point, 400,660, to the unit**
+- one distinct target between them, closest pair 0 units apart
+- and every one of them held the role `pin`
+
+`packCall` hands out at most two `flank` roles and everything else pins, and a
+pinner walks at the point itself. So a pack that loses you stares at one spot
+together, which is exactly the defect v9.47 fixed for men.
+
+### The fix, and a simplification that came with it
+
+**One mechanism now, not two.** The sector picker that v9.47 wrote inside the
+pillager branch is lifted out to file scope as `searchSector(e)`, and the ghost
+pair itself becomes the searcher's own sector while it is blind. So the facing,
+the pillager's search and the role block all steer at the same answer, and there
+is one piece of code to be wrong instead of two. The pillager branch loses the
+twenty lines it was carrying.
+
+A hired man and a man who has waved at you are excluded: neither is hunting you
+and neither should fan out looking for you.
+
+`packSearch` is the dial for the machine half, 1 by default, 0 restores v9.50
+exactly. `crewSearch` still gates the men and `crewSearchR` is still the radius.
+
+Measured after, same arena, both arms in one build:
+
+| | machines | distinct places | closest pair |
+| --- | --- | --- | --- |
+| packSearch 1 | 4 | 4 | 54 units |
+| packSearch 0 | 4 | 1 | 0 units |
+
+### How it is checked
+
+Both arms of the dial, on an arena built from the map: a stand with four clear
+bearings at 230 units, which is inside a sentry's 340 of sight, and a spot hidden
+from all four posts rather than merely from the stand.
+
+- with the fan on, four machines must choose at least three distinct places and
+  the two closest must be more than 40 units apart
+- with the fan off they must choose one place within 20 units, which is the old
+  behaviour and the control that says the scene is real
+- the dial must read back 1 and 0, because identical arms mean suspect the setter
+  first and that has cost a build before
+- they must not choose points more than 700 units apart, which is scattering
+
+It measures where they have DECIDED to look, not where they are standing. They
+start on posts 176 units apart and a pinner barely moves, so any spread read off
+their positions would be measuring the arena rather than the game. That was the
+mistake in the first cut of the v9.47 check and it is not repeated here.
+
+Fails on a v9.50 fixture with "the two closest chose points 0 units apart" and "4
+machines searched 1 place between them". The v9.42, v9.47, v9.28 and v9.29 checks
+all still pass, which is what says the refactor did not disturb the men.
+
+Not verified: the balance. 320 paired seeds on THE COLD MILE, packSearch 1 against
+packSearch 0, is still running as this is committed and the number goes into this
+entry when it lands.
+
+This one should actually say something, unlike v9.47. The sim bot barely fights
+pillagers, so that run could only show the change was harmless. Machines are what
+the bot DOES fight, and a pack that spreads out to look for you covers ground a
+pack staring at one spot does not, so the extract rate has a real reason to move.
+Whichever way it goes, it goes in.
+
+Not verified: the crawlers, which have their own branch and a sight range of 26,
+so they are almost never the ones who lose you. Not verified: what a pack of two
+does, or of eight, beyond that the golden angle spreads any count evenly by
+construction. Not verified: how it reads in the chair, which is the only question
+that matters for a behaviour like this.
+
+
 ## v9.50 - THE TITLE SCREEN SAYS WHAT THE GAME WANTS TO RUN IN
 
 ### His instruction

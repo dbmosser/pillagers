@@ -4693,6 +4693,99 @@ window.__REGRESS=[
        bad.push('the sell panel says you have to walk the money out, and dying kept it');
      }
      return bad.length?bad.join('; '):null; }},
+  {v:'9.51',what:'a pack of machines that loses you searches, it does not stare at one spot',
+   run:function(){
+     var bad=[];
+     __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+     var g=__state(), m=g.map, WW=m.cols*m.cw, WH=m.rows*m.ch, A=null;
+     // The arena comes from the map. A stand with four clear bearings at 230
+     // units, which is inside a sentry's 340 of sight, and a spot hidden from ALL
+     // FOUR POSTS rather than merely from the stand.
+     for(var px=400; px<WW-400 && !A; px+=130){
+      for(var py=400; py<WH-400 && !A; py+=130){
+       if(!__nav.free(px,py,18)||!__nav.reachable(px,py)) continue;
+       var open=[],a,th,ex,ey;
+       for(a=0;a<16&&open.length<4;a++){ th=a*Math.PI/8; ex=px+Math.cos(th)*230; ey=py+Math.sin(th)*230;
+         if(ex<70||ey<70||ex>WW-70||ey>WH-70) continue;
+         if(!__nav.free(ex,ey,16)||!__nav.reachable(ex,ey)) continue;
+         if(!__los.clear(px,py,ex,ey)) continue; open.push({x:ex,y:ey}); }
+       if(open.length<4) continue;
+       var hid=null;
+       for(a=0;a<32&&!hid;a++){ var t2=a*Math.PI/16;
+         for(var r=300;r<=560;r+=30){ var hx=px+Math.cos(t2)*r, hy=py+Math.sin(t2)*r;
+           if(hx<70||hy<70||hx>WW-70||hy>WH-70) continue;
+           if(!__nav.free(hx,hy,16)||!__nav.reachable(hx,hy)) continue;
+           var blind=true;
+           for(var q=0;q<open.length;q++) if(__los.clear(open[q].x,open[q].y,hx,hy)){ blind=false; break; }
+           if(blind){ hid={x:hx,y:hy}; break; } } }
+       if(hid) A={px:px,py:py,posts:open,hid:hid};
+      } }
+     if(!A) return 'SKIP: this map has no stand with four clear bearings and a spot hidden from all of them';
+     function arm(dial){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       __cfg({packSearch:dial});
+       var G2=__state(), pp=G2.player, pack=[], i;
+       for(i=0;i<G2.ents.length&&pack.length<4;i++) if(G2.ents[i].kind==='sentry') pack.push(G2.ents[i]);
+       if(pack.length<4) return {skip:'only '+pack.length+' sentries on this map'};
+       G2.ents.length=0; for(i=0;i<pack.length;i++) G2.ents.push(pack[i]);
+       G2.searchTick=0;
+       pp.x=A.px; pp.y=A.py; pp.iv=9999; pp.downed=false; G2.pCrouch=false;
+       for(i=0;i<pack.length;i++){ var e=pack[i];
+         e.x=A.posts[i].x; e.y=A.posts[i].y;
+         e.state='patrol'; e.alert=0; e.cd=0; e.role=null; e.roleT=0;
+         if(e.searchX!==undefined){ delete e.searchX; delete e.searchY; delete e.searchArc; }
+         e.face=Math.atan2(pp.y-e.y,pp.x-e.x); }
+       for(var f=0;f<25;f++) __ents(1/60);
+       var ch=[];
+       for(i=0;i<pack.length;i++) if(pack[i].state==='chase') ch.push(pack[i]);
+       if(ch.length<3) return {skip:'only '+ch.length+' of 4 entered chase from a clear 230 unit sighting'};
+       pp.x=A.hid.x; pp.y=A.hid.y;
+       var sighted=0;
+       for(i=0;i<ch.length;i++) if(__los.clear(ch[i].x,ch[i].y,pp.x,pp.y)) sighted++;
+       if(sighted) return {skip:sighted+' of them can still see the hidden spot'};
+       for(var f2=0;f2<30;f2++) __ents(1/60);
+       // WHERE EACH ONE HAS DECIDED TO LOOK. Positions cannot answer this: they
+       // start on posts 176 units apart and a pinner barely moves, so any spread
+       // read off where they stand is measuring my arena and not the game.
+       var tg=[], pts={}, np=0;
+       for(i=0;i<ch.length;i++){
+         var e2=ch[i];
+         var tx=(e2.searchX===undefined)?e2.tx:e2.searchX;
+         var ty=(e2.searchY===undefined)?e2.ty:e2.searchY;
+         tg.push({x:tx,y:ty});
+         var key=Math.round(tx/60)+':'+Math.round(ty/60);
+         if(!pts[key]){ pts[key]=1; np++; }
+       }
+       var closest=1e9;
+       for(i=0;i<tg.length;i++) for(var j=i+1;j<tg.length;j++){
+         var dd=Math.hypot(tg[i].x-tg[j].x,tg[i].y-tg[j].y);
+         if(dd<closest) closest=dd;
+       }
+       return {n:ch.length, distinct:np, closest:Math.round(closest), readBack:__cfg().packSearch};
+     }
+     var on=arm(1); if(on.skip) return 'SKIP: '+on.skip;
+     var off=arm(0); if(off.skip) return 'SKIP: '+off.skip;
+     // CONTROL FIRST: the dial has to be live. Identical arms mean suspect the
+     // setter before the design, and that has cost a build before.
+     if(on.readBack!==1||off.readBack!==0)
+       bad.push('control: the dial did not read back, on='+on.readBack+' off='+off.readBack);
+     if(off.closest>20||off.distinct>1)
+       bad.push('control: with the fan off the pack chose '+off.distinct+' places '+off.closest+
+                ' units apart, and the old behaviour sends every machine to one point');
+     // THE FINDING. Measured on v9.50: four sentries, all four in chase, none of
+     // them able to see him, all four steering at 400,660 to the unit, one
+     // distinct target between them and every one of them holding the role 'pin'.
+     if(on.closest<=40)
+       bad.push(on.n+' machines lost him and the two closest chose points '+on.closest+
+                ' units apart, which is the pack staring at one spot');
+     if(on.distinct<3)
+       bad.push(on.n+' machines searched '+on.distinct+' place'+(on.distinct===1?'':'s')+' between them');
+     // CONTROL TWO: a fan that scatters them across the map is not a search.
+     if(on.closest>700)
+       bad.push('control: they chose points '+on.closest+' units apart, which is scattering rather than searching');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.50',what:'the title screen says what the game wants to run in, and still fits',
    run:function(){
      var bad=[];
