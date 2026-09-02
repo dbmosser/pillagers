@@ -27443,6 +27443,69 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.29 - THEY COME AROUND YOU, NOT AT YOU IN A LINE
+
+HIS 36, slice two of three. v9.28 made the shout carry. This makes the men who
+answer it arrive from different directions.
+
+REPRODUCED on the v9.28 build, same staged crew: after 420 frames the three men in
+the fight sat on bearings of 13, 10 and -1 degrees from the player, the closest
+pair THREE degrees apart. They had walked to one point in single file. That is the
+exact failure the machine version of this warns about in its own comment, and it
+is worse than useless: a queue hands you the whole crew one at a time down the
+same corridor, which is easier than fighting them separately and reads as a bug
+rather than as men working together.
+
+THE EXISTING FLANK COULD NOT HAVE FIXED IT. A raider takes a side from one global
+counter that alternates across the whole map and is assigned once and never
+revisited, so two crewmates can and do hold the same side. Nothing about it is
+crew aware.
+
+Each man called now gets his own bearing to take up around you, sides alternating
+and the arc opening wider down the list, decided at the one moment the crew exists
+as a group. The man who shouted holds the ground he is on: if he flanked too,
+nobody would be holding your attention while the others moved.
+
+GIVING THEM A STATION WAS NOT ENOUGH, and the first measurement said so. Stations
+of 0, -54 and +83 degrees were handed out correctly and the three men still ended
+up three degrees apart. The flank point is only walked to while a man is outside
+0.85 of his own weapon range, and a man called from 780 units away is inside that
+the moment he closes, so he abandoned the station he was given and held wherever
+he happened to be, which was on the line he approached along. A man who was CALLED
+now walks to his station even when already in range, and behaves like any other
+raider once he is within seventy units of it.
+
+Measured after: the furthest man sits 146 degrees off the spotter, against 52 with
+the stations off.
+
+THE STATIONS HAVE THEIR OWN DIAL, and the reason is measurement rather than play.
+On a freshly loaded page this reads a stable 146 against 52, identical every run.
+Run after the other seventy checks it wandered between 57 and 165: stable alone,
+unstable in company, which is the same shape as the crate reach check I had to
+pull at v9.23. With a dial the check never needs a stable absolute. It measures
+the same scene twice in the same session, once with stations and once without, and
+asks only that the one with stations is wider by forty degrees. Whatever the
+corpus is doing to the world, it is doing to both arms. The clock is fixed rather
+than wall time for the same reason.
+
+Verified: parse PASS v9.29. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 71 regression checks
+pass in sequence, none skipped. This closes the crew slice, which is the boundary
+he and I agreed the full corpus runs at. The new check fails on a v9.28 fixture
+with "a called crew still arrives in single file: furthest man is 52 degrees off
+the spotter with stations on and 52 with them off", which is what a dial that does
+nothing yet looks like.
+
+Not verified: whether being surrounded is fun or simply lethal. It is strictly
+harder than a queue, and nothing in this project can measure pillager combat
+because the bot never fights them. A man walking to his station is also not taking
+cover while he walks, which is a real cost to him that no number here captures. If
+it plays badly the dial is crewSpread, and crewMax 1 or crewCall 0 back it out
+further.
+
 ## v9.28 - THE SHOUT NOW CARRIES
 
 HIS 36: pillagers should team up. This is slice one of three.

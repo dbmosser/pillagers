@@ -3864,6 +3864,68 @@ window.__REGRESS=[
      // CONTROL 5: EARSHOT. A shout must not cross the map.
      var far=stage('faraway',180);
      if(far&&far.called>0) bad.push('control: the shout carried 3000 units and called '+far.called+' men');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.29',what:'a called crew comes at you from different sides instead of in single file',
+   run:function(){
+     var bad=[];
+     // PAIRED, and that is the point of it. On a freshly loaded page this reads a
+     // stable 146 degrees against 52 with the stations off, identical every run.
+     // Run after seventy other checks it wandered between 57 and 165, which is the
+     // same shape as the crate reach check I had to pull at v9.23: stable alone,
+     // unstable in company. So the check never asks for an absolute. It measures
+     // the same scene twice in the same session and asks only that the arm with
+     // stations is wider. Whatever the corpus does to the world, it does to both.
+     // The clock is fixed rather than wall time for the same reason.
+     function sep(spread){
+       __resetCfg(); __pinDefaults(0);
+       __cfg({crewSpread:spread});
+       if(__cfg().crewSpread!==spread) return {dialStuck:__cfg().crewSpread};
+       __startRaid({mapIx:0,seed:4242});
+       var g=__state(), p=g.player, byCrew={};
+       for(var i=0;i<g.ents.length;i++){ var e=g.ents[i];
+         if(e.kind==='raider'&&!e.merc){ (byCrew[e.crew]=byCrew[e.crew]||[]).push(e); } }
+       var best=null;
+       for(var k in byCrew) if(!best||byCrew[k].length>best.length) best=byCrew[k];
+       if(!best||best.length<3) return null;
+       g.ents=best.slice(); p.iv=99;
+       // He must survive the whole engagement or the scene ends early and the
+       // question of where they stood cannot be asked.
+       p.maxhp=100000; p.hp=100000;
+       var sp=g.ents[0];
+       sp.x=p.x+300; sp.y=p.y; sp.hostile=true; sp.state='loot';
+       sp.face=Math.atan2(p.y-sp.y,p.x-sp.x);
+       for(var q=1;q<g.ents.length;q++){ var m=g.ents[q];
+         m.x=p.x+780+(q*14); m.y=p.y+(q%2?60:-60); m.hostile=true; m.state='loot';
+         m.face=Math.atan2(-1,0); }
+       var PX=p.x, PY=p.y;
+       var K=__keysRef(); for(var k2 in K) delete K[k2];
+       // He is pinned. A player who backs away turns this into a measurement of
+       // his own retreat rather than of their approach.
+       for(var f=0;f<600;f++){ p.x=PX; p.y=PY; __loop(100000+f*16.7); }
+       var spB=Math.atan2(sp.y-PY,sp.x-PX)*57.3, maxSep=0, n=0;
+       for(var r=0;r<g.ents.length;r++){ var e2=g.ents[r];
+         if(e2===sp||e2.state!=='chase') continue;
+         n++;
+         var b=Math.atan2(e2.y-PY,e2.x-PX)*57.3, dd=Math.abs(b-spB);
+         if(dd>180) dd=360-dd; if(dd>maxSep) maxSep=dd; }
+       __resetCfg();
+       return {called:n, sep:Math.round(maxSep)};
+     }
+     var on=sep(1);
+     if(!on) return 'SKIP: no crew of three on this map and seed to stage the call with';
+     if(on.dialStuck!==undefined) return 'control: crewSpread did not take, it read back '+on.dialStuck;
+     var off=sep(0);
+     if(off&&off.dialStuck!==undefined) return 'control: crewSpread did not take, it read back '+off.dialStuck;
+     // Both arms must actually have men in the fight, or there is nothing to
+     // compare and a silent zero would read as a pass.
+     if(on.called<1||!off||off.called<1)
+       return 'SKIP: the shout called nobody in one of the arms, so there is no formation to measure';
+     // HIS 36, the half about arriving as a crew rather than as a line. Measured
+     // before the stations went in: three men on bearings 13, 10 and -1, with the
+     // closest pair three degrees apart, walking to one point in single file.
+     if((on.sep-off.sep)<40)
+       bad.push('a called crew still arrives in single file: furthest man is '+on.sep+
+                ' degrees off the spotter with stations on and '+off.sep+' with them off');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
