@@ -1186,7 +1186,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.15';
+var VER='9.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16406,7 +16406,17 @@ var ZMIN=0.85,ZMAX=9.0;   // v8.79 set 0.85; v8.92 raised the ceiling from 3.0
 //      were zooming. That is the jank you could feel.
 // ZT is the target the input sets, ZC is the eased value the renderer reads.
 var ZT=1,ZC=1,zoomSaveT=0;
-function ZOOM(){ return ZC; }
+// v9.16: THE DIAL TIMES THE SCREEN. This returned the dial alone, so one world
+// unit was one screen pixel on every monitor and a 4K player saw 2.13x more
+// ground than a 1080p one, with everything on it drawn half the relative size.
+// Measured at the centre of THE COLD MILE with the dial at 1: 1920 world units
+// across at 1080p against 4090 at 4K.
+// Every consumer of the projection reads this one function - w2s, mouseWorld,
+// the pad aiming and the camera viewport - so the picture and the pointer move
+// together. The dial itself is untouched, so ZMIN and ZMAX still clamp what he
+// chose and his saved zoom still means the same framing.
+// hudRes() is exactly 1 at 1920x1080.
+function ZOOM(){ return ZC*hudRes(); }
 function zoomTarget(){ return ZT; }
 function setZoom(z,instant){
   ZT=clamp(z,ZMIN,ZMAX);
@@ -24498,7 +24508,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.15: the sector map markers and frame follow your monitor as well, so the whole map scales together now.',
+  now:'v9.16: the world itself follows your monitor. On a 4K screen you were seeing twice the ground at half the size.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

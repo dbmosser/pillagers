@@ -3190,6 +3190,52 @@ window.__REGRESS=[
      // CONTROL 3: the map itself must still scale, or a frame that grew while the
      // map stopped would satisfy the ratio above and be a worse screen.
      if(mg<1.7) bad.push('control: the map itself stopped scaling, only '+mg.toFixed(2)+'x at 4K');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.16',what:'the world is drawn the same size on any monitor, and the pointer agrees with it',
+   run:function(){
+     if(!window.__proj) return 'this build cannot report its own projection, so this cannot be measured';
+     var bad=[];
+     // Parked at the centre of the big map so the camera is nowhere near a clamp,
+     // with the dial at 1 on both screens.
+     function look(W2,H2){
+       __forceSize(W2,H2); __resetCfg(); __pinDefaults(0); __zoom.set(1,true);
+       __deploy({kit:['medkit'],safe:null,mapIx:1,seed:4242});
+       var g=__state(); g.ents.length=0; g.player.iv=99;
+       var m=g.map; g.player.x=m.cols*m.cw/2; g.player.y=m.rows*m.ch/2;
+       for(var f=0;f<12;f++) __loop(performance.now()+f*16.7);
+       var mo=__mouse(); mo.x=Math.round(W2*0.62); mo.y=Math.round(H2*0.38); mo.init=true;
+       for(var f2=0;f2<2;f2++) __loop(performance.now()+400+f2*16.7);
+       var mw=__proj.mouseWorld(), back=__proj.w2s(mw.x,mw.y,0);
+       return {z:__proj.zoom(), dial:__proj.dial(), res:__proj.res(),
+               across:W2/__proj.zoom(),
+               errX:Math.abs(back.x-mo.x), errY:Math.abs(back.y-mo.y)};
+     }
+     var a=look(1920,1080), b=look(3840,2160);
+     __forceSize(1920,1080);
+     // Measured before v9.16: 1920 world units across at 1080p and 4090 at 4K, so
+     // a 4K player saw 2.13x more ground with everything on it half the size.
+     var grow=b.across/a.across;
+     if(grow>1.25) bad.push('a 4K screen still shows '+grow.toFixed(2)+'x more ground than 1080p, '+Math.round(a.across)+' units against '+Math.round(b.across));
+     // CONTROL 1: 1080p must be untouched. The dial is 1 there and one world unit
+     // was one screen pixel, and it still should be.
+     if(Math.abs(a.z-1)>0.001) bad.push('control: the 1080p projection is '+a.z+', it should be exactly 1');
+     if(Math.abs(a.across-1920)>4) bad.push('control: 1080p now shows '+Math.round(a.across)+' units across, it showed 1920');
+     // CONTROL 2, AND IT IS THE ONE THAT COULD BREAK. Folding a factor into the
+     // projection moves the PICTURE and the POINTER. If they ever disagree, every
+     // shot lands somewhere other than where he aimed. Round trip: screen point
+     // to world and back.
+     if(a.errX>2||a.errY>2) bad.push('control: at 1080p the pointer round trip is off by '+Math.round(a.errX)+','+Math.round(a.errY)+' pixels');
+     if(b.errX>2||b.errY>2) bad.push('control: at 4K the pointer round trip is off by '+Math.round(b.errX)+','+Math.round(b.errY)+' pixels');
+     // CONTROL 3: the wheel must still do what it did. The dial is his setting and
+     // folding the screen in must not have swallowed it.
+     __forceSize(1920,1080); __resetCfg(); __pinDefaults(0);
+     __deploy({kit:['medkit'],safe:null,mapIx:0,seed:4242});
+     __zoom.set(1,true); var z1=__proj.zoom();
+     __zoom.set(3,true); var z3=__proj.zoom();
+     __zoom.set(__zoom.max()+50,true); var zmax=__proj.dial();
+     __zoom.set(1,true);
+     if(!(z3>z1*2.5)) bad.push('control: turning the dial from 1 to 3 moved the projection from '+z1+' to '+z3);
+     if(Math.abs(zmax-__zoom.max())>0.001) bad.push('control: the dial no longer clamps at its maximum, it reached '+zmax);
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
@@ -3237,6 +3283,13 @@ window.__type={
   whatsnew:function(){ return WHATSNEW.slice(); },
   ver:function(){ return WHATSNEW_VER; }
 };
+// v9.16: the projection, both ways, so a check can prove the picture and the
+// pointer agree rather than eyeballing one of them.
+window.__proj={w2s:function(x,y,h){ return w2s(x,(h===undefined?0:h),y); },
+               mouseWorld:function(){ return mouseWorld(); },
+               zoom:function(){ return ZOOM(); },
+               dial:function(){ return zoomTarget(); },
+               res:function(){ return hudRes(); }};
 window.__zoom={min:function(){ return ZMIN; },max:function(){ return ZMAX; },
                get:function(){ return zoomTarget(); },
                set:function(z){ setZoom(z,true); return zoomTarget(); },

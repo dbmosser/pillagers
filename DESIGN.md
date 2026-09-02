@@ -27443,6 +27443,65 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.16 - THE WORLD ITSELF FOLLOWS THE MONITOR
+
+The last four builds gave the screen factor to the HUD panels, the downed screen,
+the pointers, the backpack and the sector map. This is the thing underneath all of
+them: the game world.
+
+REPRODUCED by deriving the world-to-screen factor from the camera rather than
+trusting the dial. Player parked at the centre of THE COLD MILE so the camera is
+nowhere near a clamp, zoom dial 1 on both screens:
+
+    1920x1080   1920 world units across the screen
+    3840x2160   4090 world units across the screen
+    so a 4K screen showed 2.13x MORE GROUND
+
+ZOOM() returned the dial and nothing else, so one world unit was one screen pixel
+on every monitor. The operator, the pillagers, the crates and the floating loot
+labels were all drawn at their 1080p pixel size on a screen with four times the
+area, which is his "all this shit needs to be bigger on screen" applied to the
+game rather than to the menus.
+
+AND IT IS NOT ONLY READABILITY. Seeing 2.13x more ground is a real advantage in a
+game whose sight rules are all written in world units: a 4K player watches a
+pillager cross a street that a 1080p player cannot see at all.
+
+ONE TERM, IN THE ONE FUNCTION EVERYTHING ALREADY GOES THROUGH. w2s, mouseWorld,
+the pad aiming and the camera viewport all read ZOOM(), so folding the screen
+factor in there moves the picture and the pointer together and they cannot drift
+apart. The DIAL is untouched: ZMIN and ZMAX still clamp what he chose, his wheel
+still spans the same range of framings, and his saved preference still means the
+same thing.
+
+MEASURED AFTER: 1920 units across at 1080p and 2019 at 4K, so 1.05x instead of
+2.13x. The effective projection is exactly 1.000 at 1080p and 2.000 at 4K with the
+dial at 1 in both.
+
+Verified: parse PASS v9.16. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 59 regression checks
+pass in sequence, none skipped.
+
+The check fails on a fixture built from v9.15 with "a 4K screen still shows 2.00x
+more ground than 1080p, 1920 units against 3840". Three controls, and the second
+is the one that could really hurt. 1080p must be untouched: the projection there
+must be exactly 1 and the view exactly 1920 units. The POINTER must still agree
+with the PICTURE: a screen point is taken to the world and projected back, and it
+has to land where it started, because a factor folded into the projection moves
+both and every shot lands wrong if they disagree. Measured error is 0 pixels at
+1080p and 1 pixel at 4K. And the wheel must still work: turning the dial from 1 to
+3 must still move the projection, and it must still clamp at its maximum.
+
+Not verified: how the new framing feels to play at 4K, which is his to judge. He
+now sees the same ground a 1080p player sees, which is the fair answer and the
+readable one, but it is less ground than he saw yesterday and he may prefer the
+wider view; the dial is his if so. Nothing about the simulation changed, so extract
+rates are unaffected, but I did not run a seeded batch to confirm that empirically.
+The Undercroft is drawn by hubScale and is untouched by this.
+
 ## v9.15 - THE REST OF THE SECTOR MAP FOLLOWS THE MONITOR
 
 v9.14 scaled the writing on the sector map, and that entry said plainly that the
