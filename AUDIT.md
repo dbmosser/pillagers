@@ -21,6 +21,7 @@ adversarially verified):
 
 | Finding | Closed by | How it was confirmed closed |
 |---|---|---|
+| Death screen HOW IT WENT table logged pre-armour damage and pre-hit health (30/100 for a hit that cost 15 and left 85; killing blow read HEALTH 20) | v9.20 | row written when the hit lands; 15/85 and 0 on the killing blow; check fails on a v9.19 fixture naming all four |
 | His EXTRACT CACHE rename (outstanding since 2026-08-29), four rewards reading CASH against his vocabulary, and a WHATSNEW card 21 builds stale | v9.19 | ELITE CACHE on both maps, rewards say CREDITS, card rewritten and bumped; check fails on a v9.18 fixture naming all three |
 | Title screen scrolled at menu text size 1.3 on a short screen (21px at 1720x720); fixed rhythm never asked how tall the screen was | v9.18 | height-gated tightening below 820; 0px overflow at 1.3, 1080/1440/2160 unchanged; check fails on a v9.17 fixture |
 | His ultrawide screenshot: the title column was a hard 820px, 50 pct of a 1720 screen, with ~430px empty each side and a scrollbar | v9.17 | base width moved to CSS, aspect-gated override above 19/10 grows it to 74 pct; 16:9 still exactly 820px; check fails on a v9.16 fixture |
