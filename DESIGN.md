@@ -27443,6 +27443,50 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.78 - AN ITEM IS IN THE BACKPACK OR ON THE BELT, NEVER IN BOTH
+
+Your rule, verbatim: "INVENTORY = BACKPACK + HOTBAR. Items can be in one or the
+other, never both." They were in both. Measured in a raid, carrying five things
+with a medkit bound to belt slot 8:
+
+    bag store       medkit, plate, servo, scrap, bandage
+    belt slot 8     medkit
+    BACKPACK GRID   plate, bandage, medkit, scrap, servo
+
+The same medkit, drawn twice, in two places, and the same object either way.
+That is the thing underneath your belt report two builds ago: you could not
+"move it back to the backpack" because by your model it had never left, and by
+the game's model it was in both places at once.
+
+What changed. G.bag stays the single store, because moving items between two
+real arrays would touch every loot, drop, sell, death and extraction path in the
+file and that blast radius is not worth it. What changed is what the BACKPACK
+DRAWS: a copy that is spoken for by a belt slot is no longer drawn in the grid.
+It is counted per key, so binding one of three medkits leaves two in the
+backpack rather than hiding the lot.
+
+And a contradiction this created one line higher, which the screenshot caught.
+The panel header printed the whole store, so with the medkit on the belt it read
+"BAG 5 items" directly above a grid drawing four. Same double count, moved up a
+line. It names both halves now, "BACKPACK 4    BELT 1", counted the same way the
+grid claims them so the two can never disagree. The two numbers add to the
+inventory, which is what your rule says on screen.
+
+Verified: parse check PASS. Both sectors at seed 4242 to their fingerprints, 58
+and 276. Live and sim streams identical on both. Looting on both maps with no
+throw and the raid clock advancing, 10.1s and 12.5s. All three endings correct
+with the overlay up. 22 regression checks pass, including a new permanent one
+that carries its own control: unbound kit must still draw, one of three medkits
+bound must leave two drawing, all three bound must leave none, and the bag store
+must still hold five, so a future over-eager version that empties the whole
+backpack fails there. Screenshot at 1920x1080 confirms the medkit on belt slot 8
+and absent from the grid, with the header reading BACKPACK 4 BELT 1.
+
+Not verified: I did not test this against the Undercroft stash screens, only the
+in-raid backpack, so if the stash draws its own grid from G.bag it may still
+double-count a belt-bound item down there. I also did not check whether dropping
+or selling the last unbound copy of an item that is ALSO belt-bound leaves the
+grid correct, only that binding and unbinding does.
 ## v8.77 - ARMING CLEAR RECORDER AND WALKING AWAY NO LONGER LEAVES A ONE-CLICK WIPE
 
 Three more from the settings sweep, and the parse check failed the build once on

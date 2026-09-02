@@ -1380,6 +1380,31 @@ window.__REGRESS=[
        if(__cos.need({how:'extracts:1'})!=='1 extraction') bad.push('unlock: '+__cos.need({how:'extracts:1'}));
        if(__cos.need({how:'runs:5'})!=='5 raids run') bad.push('plural broke: '+__cos.need({how:'runs:5'}));
      }
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.78',what:'an item is in the backpack OR on the belt, never in both',
+   run:function(){
+     function grid(bind){
+       var P=__P(); P.weapons=['smg']; P.hotAssign={};
+       __resetCfg(); __pinDefaults(0);
+       __deploy({kit:['medkit','medkit','medkit','plate','servo'],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.ents.length=0; g.player.iv=99; g.bagOpen=true;
+       for(var f=0;f<8;f++) __loop(performance.now()+f*16.7);
+       if(bind) __state().hotAssign=bind;
+       for(var f2=0;f2<8;f2++) __loop(performance.now()+f2*16.7);
+       return (__state().bagCells||[]).map(function(c){ return c.key; }).sort().join(',');
+     }
+     var bad=[];
+     // The control comes first. Nothing bound, everything shows. If this line
+     // ever fails the harness is broken, not the rule.
+     if(grid(null)!=='medkit,plate,servo') bad.push('control: unbound kit does not draw, got '+grid(null));
+     // The rule. One plate carried, one plate bound, so no plate in the backpack.
+     if(grid({8:'plate'}).indexOf('plate')>=0) bad.push('a bound plate is still in the backpack');
+     // And the counter-control, so a fix that hides the whole stack fails here:
+     // one of three medkits bound leaves two, which still draw.
+     if(grid({7:'medkit'}).indexOf('medkit')<0) bad.push('binding 1 of 3 medkits hid all three');
+     if(grid({7:'medkit',6:'medkit',5:'medkit'}).indexOf('medkit')>=0) bad.push('all three bound and a medkit still draws');
+     // The store itself is never touched by any of this.
+     if((__state().bag||[]).length!==5) bad.push('the bag store lost items, it should only be the DRAW that changes');
      return bad.length?bad.join('; '):null; }}
 ];
 window.__regress=function(){

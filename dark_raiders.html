@@ -1162,7 +1162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.77';
+var VER='8.78';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21476,7 +21476,18 @@ function iconImgHTML(key,S){
 function stackN(k){ var it=ITEMS[k]; return (it&&it.stackN)?it.stackN:99999; }
 function bagStacks(){
   var st=[],ix={};
+  // v8.78, HIS RULE: INVENTORY = BACKPACK + HOTBAR, and an item is in one or the
+  // other, never both. A copy claimed by a hotbar slot is not in the backpack any
+  // more, so it is not drawn there. Counted per key, so binding one of three
+  // medkits leaves two behind rather than hiding the lot.
+  var _hbClaim={};
+  if(G.hotAssign) for(var _ha in G.hotAssign){
+    var _hk=G.hotAssign[_ha];
+    if(_hk) _hbClaim[_hk]=(_hbClaim[_hk]||0)+1;
+  }
   for(var i=0;i<G.bag.length;i++){ var k=G.bag[i];
+    // This copy is the one on the belt. It is on the belt INSTEAD of in here.
+    if(_hbClaim[k]>0){ _hbClaim[k]--; continue; }
     // A full stack starts a new one rather than growing past its limit. ix[k] tracks the
     // stack currently being filled for that key.
     if(ix[k]===undefined||st[ix[k]].idxs.length>=stackN(k)){ ix[k]=st.length; st.push({key:k,idxs:[i]}); }
@@ -21552,8 +21563,17 @@ function drawBag(){
   ctx.fillText('DMG '+(p.wep.dmg*(p.wep.pellets||1))+'  RANGE '+Math.round(p.wep.rng/10)+'m  '+(p.wep.auto?'AUTO':'SEMI')+
     (p.wep.mag?('  MAG '+p.wep.mag):''),x+11,cy);
   cy+=LH(16);
+  // v8.78: this counted the whole store, so the instant an item went to the belt
+  // it printed "BAG 5 items" over a grid of four. Splitting it is the honest
+  // form: BACKPACK plus BELT is the inventory, and neither number claims the
+  // other's items. Counted the same way the grid claims them, per key, so it
+  // cannot drift from what is drawn below it.
+  var _bpN=0,_bltN=0,_clm={};
+  if(G.hotAssign) for(var _ck in G.hotAssign){ var _cv=G.hotAssign[_ck]; if(_cv) _clm[_cv]=(_clm[_cv]||0)+1; }
+  for(var _ci=0;_ci<G.bag.length;_ci++){ var _ck2=G.bag[_ci];
+    if(_clm[_ck2]>0){ _clm[_ck2]--; _bltN++; } else _bpN++; }
   ctx.fillText('Integrity '+Math.round(p.hp)+'/'+p.maxhp+'    Armour '+Math.round(p.armor)+
-    '    BAG '+G.bag.length+' item'+(G.bag.length===1?'':'s'),x+11,cy);   // v8.34
+    '    BACKPACK '+_bpN+'    BELT '+_bltN,x+11,cy);   // v8.34, split at v8.78
   cy+=LH(8);
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
   cy+=LH(10);
@@ -23643,7 +23663,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.77: arming Clear recorder and walking away no longer leaves a one-click wipe of your whole run log waiting.',
+  now:'v8.78: an item on the hotbar is no longer also sitting in the backpack. It is in one place or the other.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
