@@ -27443,6 +27443,100 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.49 - THE PILLAGER BOARD COVERED THE HEALTH BAR AND EVERY KEY BINDING
+
+### What was wrong
+
+Found by taking a screenshot of a real raid rather than by reading code, and it
+is the most visible thing that has been wrong with this HUD.
+
+THE COLD MILE spawns 33 pillagers. The board draws one row per name with no
+ceiling of any kind: `boxH = LH(20) + rows.length*LH1 + LH(6)`.
+
+Measured at 1920x1080 on the default map, ten frames so every anchor has settled,
+every HUD box compared against every other:
+
+| | |
+| --- | --- |
+| the board | y 195 to 1122, **927 pixels tall on a 1080 screen** |
+| overlaps the vitals | 496 x 193, which is the entire health panel |
+| overlaps the controls legend | 467 x 196, which is the entire legend |
+| and | runs 42 pixels off the bottom |
+
+So on the map you play, at the resolution you play it, a list of names covers your
+health, your armour, your stamina and every key binding in the game. The
+screenshot shows the legend's words printing straight through the list.
+
+The ten second rule that drops dead and extracted names, which you asked for at
+v5.74, works and is not the problem: **living names never age out**, and
+thirty-three of them are alive at the start of every raid on that map.
+
+### The fix, and the mistake I made in it
+
+A ceiling, not a cull. The board keeps its existing order, YOU first, then the
+living, then the recently dead, so a truncation drops the names that matter least,
+and it spends one row saying how many it dropped. The heading count is taken
+BEFORE the truncation, so "CURRENT PILLAGERS 33" stays true whatever fits.
+
+**My first cut budgeted screen pixels against unscaled ones,** which is exactly
+the mistake v9.46 was about, three builds earlier. The panel is drawn inside its
+own zoom, so the box computed here is multiplied by z before it lands. 26 rows got
+through where 13 fit and the board still covered the whole legend: 195 to 918
+against a legend at 673 to 869. The budget is now divided by the same z the box
+will be multiplied by.
+
+After: the board runs 195 to 587, 392 pixels instead of 927, and there is **not a
+single overlap between any two HUD panels**. It shows twelve names and then "+22
+more out here", with the legend clear beneath it.
+
+### How it is checked
+
+On THE COLD MILE at 1920x1080, because COLD STORAGE has too few pillagers to show
+this and would have hidden it:
+
+- the board must not overlap the legend, the vitals or the gear stack
+- it must not run off the bottom of the screen
+- the heading must name the number of pillagers actually on the map, not the
+  number that happened to fit
+- if it hid any, it must say how many
+
+Three controls:
+
+- fewer than twelve pillagers and the check SKIPS, because the board fits without
+  a ceiling and there is nothing to measure
+- the board must still draw a heading and at least six lines inside its own box, or
+  a ceiling that shows nothing would clear every line above and be worse than the
+  overlap it replaced
+- with more than twenty on the roster there must BE a dropped-count line, so a
+  silent truncation cannot pass
+
+Fails on a v9.48 fixture naming all four defects with their measured sizes.
+
+Not verified: how it behaves once the panel has been dragged or resized by hand.
+The ceiling reads the user's own zoom, so it should follow, but the check runs on
+a clean profile with the panel where the game puts it. Not verified: whether
+twelve names is the right number to show. It is whatever fits above the legend,
+which is a rule rather than a judgement, and the panel is draggable and resizable
+if you want more.
+
+
+### Two things the run turned up that were not this build
+
+The corpus came back FAIL, 2 of 91, and neither was v9.49.
+
+**The what-is-new card had drifted fifteen builds behind the game.** My v9.19
+check said so plainly: "the what-is-new card is at v9.34 against a build at
+v9.49". Eight builds have shipped since it was last written and it still opened
+on the v9.30 crawler density. Rewritten to what has actually changed, in the
+order you would notice it, and the parse gate now reads drift 0.
+
+**The title screen scrolls by 8 pixels at 1280x720.** This one is NOT mine: it
+fails on a v9.48 fixture too. It has never been caught because the corpus runs at
+1920x1080, which is the target viewport, and I only saw it because I had left a
+tab at 720p for screenshots. It passes at 1080p. Logged as its own build rather
+than smuggled in here, and it is worth noting that a whole class of layout defect
+is invisible to a corpus that only ever runs at one size.
+
 ## v9.48 - EVERY BUILDING ON BOTH MAPS WORE THE IDENTICAL FLOOR
 
 ### One measurable cause of "maps feel samey"

@@ -1210,7 +1210,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.48';
+var VER='9.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1221,19 +1221,19 @@ var VER='9.48';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='9.34';
+var WHATSNEW_VER='9.49';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
-  'PILLAGERS FIGHT BACK. Shoot at a man who was not fighting you, hit or miss, and he turns on you. One aimed shot used to leave him standing there for good.',
-  'THEY CALL THEIR CREW, AND THE CREW COMES. A pillager who spots you shouts, and his crewmates in earshot turn up from different sides instead of walking to one spot in single file.',
-  'THE BROKEN WALL. You no longer disappear into the side of a container when you walk behind it. You are drawn through whatever is covering you.',
-  'PICKING A MAN UP OFF THE FLOOR IS FREE. It used to cost a medkit, and with an empty bag you could not help him at all.',
-  'THE STREETS ARE NOT EMPTY. There are two and a half crawlers for every building now, and the extra ones are outside where you can see them coming.',
-  'THE SIEGE HAS A NAME. Calling the ship tells you it is coming and roughly how many are on their way, and your bag is what decides that number.',
-  'PROFICIENCY IS FIVE THINGS. Money out, getting out, staying on your feet, your aim and the punishment you take, with every part shown so you can see which one is dragging.',
-  'YOU CAN TAKE THINGS BACK OFF THE BELT MID RAID. Before this the only way out of a slot was to spend it, drop it, or walk back down to the Undercroft.',
-  'AND YOU CAN SEE WHAT IS IN YOUR HAND down there while you drag it, which was invisible until now.',
-  'EVERY BUILD IS KEPT. There is a folder of playable versions and a way to pull any older one back out.'
+  'BREAKING LINE OF SIGHT WORKS NOW. Duck behind something at range and whatever is hunting you goes to where it last SAW you, not to where you actually are. It used to know, for about five seconds, every time.',
+  'AND A CREW THAT LOSES YOU SPREADS OUT. Three men used to walk to the same square metre and give up together. Each one sweeps his own side of where he last saw you.',
+  'THE PILLAGER BOARD NO LONGER COVERS YOUR HEALTH BAR. On the mile it was 927 pixels tall on a 1080 screen and sat on top of your vitals and every key binding in the game.',
+  'THE CONTROLS LEGEND CAN BE CLICKED. At 4K its hit box was 467 pixels above where it was drawn, so clicking it grabbed your health panel instead.',
+  'BUILDINGS DO NOT ALL LOOK THE SAME. Every one of them wore the identical floor. There are five now, and each building keeps its own so the map is still something you can learn.',
+  'WIRT STOPS SELLING YOU A LOSS. Every item on his ten thousand counter was worth between 1,700 and 4,600. Every lot is now worth more than he charges, and it tells you how much.',
+  'THE WORKSHOP STOPS CHARGING FOR NOTHING. Guns have not worn since v9.01 and it was still billing up to 6,624 credits and two Servo Actuators to service one.',
+  'RIGS ARE GONE, as you asked. They stopped being wearable a long time ago and kept dropping as rare loot. Anything you owned has been bought back at full value.',
+  'THE PEDDLER AND THE PRIMER STOP LYING. Stall money never survived your death, and raids have always paid XP whatever the card said.',
+  'THE RAID CLOCK CAN BE TURNED OFF, and the last-minute warnings no longer send you to an extraction ring that is already shut.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -21976,7 +21976,22 @@ function drawRaiderBoard(){
   var LW=LH(214),LH1=LH(11);
   PADX=clamp(PADX+HOr.dx,4,Math.max(4,W-LW-4));
   y0=clamp(y0+HOr.dy,LH(20),Math.max(LH(20),H-LH(30)));
-  var boxH=HOr.c?LH(18):(LH(20)+rows.length*LH1+LH(6));
+  // v9.49: A CEILING. Fifty eight percent of the screen from where the board
+  // starts, which leaves the bottom for the legend and the vitals - the two
+  // panels it was drawing straight through. At least three rows whatever
+  // happens, so a small window shows something rather than an empty frame.
+  var _rz=(HUDZ.raiders||1)*hudRes()*hudUserZ('raiders');
+  var _rMax=Math.max(LH(60),Math.round((H*0.56)/(_rz||1))-(y0-LH(13)));
+  var _rFit=Math.max(3,Math.floor((_rMax-LH(26))/LH1));
+  var _rHid=0;
+  if(!HOr.c&&rows.length>_rFit){
+    // One row is spent saying how many are not shown, so the board is never a
+    // lie by omission.
+    _rHid=rows.length-(_rFit-1);
+    rows=rows.slice(0,_rFit-1);
+  }
+  var _rShown=rows.length+(_rHid?1:0);
+  var boxH=HOr.c?LH(18):(LH(20)+_rShown*LH1+LH(6));
   ctx.fillStyle='rgba(6,9,13,.72)';
   ctx.fillRect(PADX-8,y0-LH(13),LW,boxH);
   ctx.strokeStyle='rgba(127,146,216,.40)'; ctx.lineWidth=1;
@@ -22012,6 +22027,13 @@ function drawRaiderBoard(){
     ctx.textAlign='right';
     ctx.fillText(_rt,PADX+LW-LH(18),yy);
     ctx.textAlign='left';
+    yy+=LH1;
+  }
+  // v9.49: and what did not fit, drawn in the row the ceiling reserved for it,
+  // so the box height and the content can never disagree.
+  if(_rHid){
+    ctx.fillStyle='rgba(140,152,163,.75)';
+    ctx.fillText('+'+_rHid+' more out here',PADX,yy);
     yy+=LH1;
   }
   if(out+dead>0){
@@ -25024,7 +25046,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.48: every building on both maps wore the identical floor, and 54 percent of the ones on THE COLD MILE are the same box. Five floors now, fixed per building so the map is still learnable.',
+  now:'v9.49: on THE COLD MILE the pillager board was 927 pixels tall on a 1080 screen and covered your entire health panel and every key binding in the game. It has a ceiling now.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

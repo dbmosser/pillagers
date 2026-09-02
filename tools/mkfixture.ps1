@@ -4690,6 +4690,61 @@ window.__REGRESS=[
        bad.push('the sell panel says you have to walk the money out, and dying kept it');
      }
      return bad.length?bad.join('; '):null; }},
+  {v:'9.49',what:'the pillager board does not cover the health bar and the controls',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, no panel can be placed';
+     __pinDPR(1); __forceSize(1920,1080);
+     __resetCfg(); __pinDefaults(0); __cleanProfile();
+     // THE COLD MILE, which is the map with 33 pillagers on it and therefore the
+     // one where this shows. On COLD STORAGE the board is short enough to hide it.
+     __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+     var g=__state(); g.legendOn=1; g.player.iv=9999;
+     for(var f=0;f<10;f++) __frame(0.016);
+     var B=__hudBox(), R=B.raiders;
+     if(!R) return 'SKIP: the pillager board did not draw at all';
+     var roster=(g.roster||[]).length;
+     // CONTROL FIRST: there have to be enough names for the board to be a problem.
+     if(roster<12) return 'SKIP: only '+roster+' pillagers on the map, which fits without a ceiling';
+     var cv=document.querySelector('canvas'), H=cv.height;
+     // THE FINDING. Measured on v9.48 at 1920x1080: the board ran y 195 to 1122,
+     // 927 pixels tall on a 1080 screen, overlapping the vitals by 496x193 and the
+     // legend by 467x196, which is the whole of both, and hanging 42 pixels off
+     // the bottom.
+     ['legend','body','gear'].forEach(function(k){
+       var O=B[k]; if(!O) return;
+       var ox=Math.min(R.x+R.w,O.x+O.w)-Math.max(R.x,O.x);
+       var oy=Math.min(R.y+R.h,O.y+O.h)-Math.max(R.y,O.y);
+       if(ox>2&&oy>2)
+         bad.push('the pillager board covers '+Math.round(ox)+'x'+Math.round(oy)+' pixels of the '+k+' panel');
+     });
+     if(R.y+R.h>H+1)
+       bad.push('the pillager board runs '+Math.round(R.y+R.h-H)+' pixels off the bottom of the screen');
+     // AND IT MUST STILL BE A BOARD. A ceiling that shows nothing would clear
+     // every line above and be worse than the overlap.
+     var draws=__textTrace(function(){ __frame(0.016); });
+     var head=null, more=null, names=0, i;
+     for(i=0;i<draws.length;i++){
+       var t=draws[i].t;
+       if(/^CURRENT PILLAGERS/.test(t)) head=t;
+       else if(/^\+\d+ more out here$/.test(t)) more=t;
+       else if(draws[i].x<R.x+R.w&&draws[i].x>=R.x-4&&draws[i].y>R.y&&draws[i].y<R.y+R.h) names++;
+     }
+     if(!head) bad.push('control: the board drew no heading, so nothing here is measuring a board');
+     if(names<6) bad.push('control: the board drew only '+names+' lines inside its own box');
+     // AND THE COUNT MUST NOT LIE. The heading is taken before the truncation, so
+     // it says how many are out there and not how many happened to fit.
+     if(head){
+       var hn=parseInt(String(head).replace(/[^0-9]/g,''),10);
+       var alive=0;
+       for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='raider') alive++;
+       if(hn!==alive)
+         bad.push('the board says '+hn+' pillagers and '+alive+' are on the map');
+     }
+     // AND IF IT HID ANY, IT HAS TO SAY SO.
+     if(!more&&roster>20)
+       bad.push('the board is showing '+roster+' pillagers with no ceiling and no count of what it dropped');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.48',what:'buildings do not all wear the identical floor',
    run:function(){
      var bad=[];
