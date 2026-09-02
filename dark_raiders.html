@@ -1209,7 +1209,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.24';
+var VER='9.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15101,6 +15101,22 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               // he was not fighting you.
               notoAggress(en);
               en.byPlayer=en.hp<=0;
+              // v9.25, HIS NOTE: pillagers "just stood there after getting
+              // attacked". Being shot now turns a peaceful pillager hostile on
+              // the round that hits him, rather than leaving it to whether a
+              // 0.16s hit flag happens to outlive the 0.38s dodge roll the same
+              // round started. Measured before this line existed: one aimed shot
+              // from 400 units, then eighteen seconds of watching, and he never
+              // turned and never fired back.
+              // It sits BELOW notoAggress on purpose. That call is what charges
+              // you for shooting a man who was not fighting you, and it only
+              // fires while he is still peaceful, so setting the flag above it
+              // would quietly delete the notoriety penalty.
+              // Mercs and pillagers who have thrown in with you are excluded,
+              // the same two exclusions the raider tick's own test uses, so a
+              // stray round into someone fighting alongside you still does not
+              // turn him on you.
+              if(en.kind==='raider'&&en.hostile===false&&!en.merc&&!en.friendlyPC) en.hostile=true;
               // Same rule for YOUR rounds: shooting a fleeing raider does not
               // talk him back into the fight, v2.93. This is the path his report
               // actually came through, since he was the one shooting.
@@ -24577,7 +24593,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.24: picking a downed pillager up is free. It used to cost you a medkit, and with an empty bag you could not help him at all.',
+  now:'v9.25: shoot a pillager who was not fighting you and he fights back. One aimed shot used to leave him standing there for good.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

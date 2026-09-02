@@ -27443,6 +27443,69 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.25 - SHOOT A MAN WHO WAS NOT FIGHTING YOU AND HE FIGHTS BACK
+
+HIS NOTE: pillagers "just stood there after getting attacked".
+
+REPRODUCED on the play path, and it took four goes to reproduce it honestly.
+
+One marksman round into a peaceful pillager from 400 units, then the trigger
+released and 1076 frames, eighteen seconds, of watching him:
+
+  turned hostile   never
+  fired back       never
+  state            'chase' the whole time
+
+He is written into the chase state by the bullet that hits him and thrown back
+out of it every single frame afterwards, because the peaceful branch in the
+raider tick reads the hostile FLAG, and nothing ever set that flag. The state the
+bullet wrote was read and discarded sixty times a second.
+
+WHY IT LOOKED FINE WHENEVER I CHECKED IT BEFORE. The only thing that could wake
+him was the 0.16 second hit flag, racing against the 0.38 second dodge roll that
+the same round starts and which returns early. Hold an automatic rifle on him and
+a later round eventually lands in a window where he is not rolling, and he wakes
+about four tenths of a second late. That is why sustained fire always looked
+correct. Fire one aimed shot and stop, which is the shot a marksman rifle is for
+and the shot he was describing, and nothing wakes him at all.
+
+FOUR MEASUREMENTS I HAD TO THROW AWAY FIRST, all of them mine, none of them the
+game's fault. An SMG that will not reach past 200 units, so no round ever landed.
+A marksman rifle held down like an automatic, which fires once because it is semi
+automatic. A target healed mid test, which flipped him into the fleeing state and
+answered a different question. And a "is this spot open" guard built on __hitWall,
+which takes a wall index rather than a point, so it rejected every firing position
+I offered it. The one that finally held still is the one in the check.
+
+WHAT CHANGED: one line. Being shot sets the hostile flag on the round that hits.
+It sits below notoAggress on purpose, because that call is what charges you for
+shooting a man who was not fighting you and it only fires while he is still
+peaceful. Setting the flag one line earlier would have deleted the notoriety
+penalty in silence, so the check pins that too. Mercs and pillagers who have
+thrown in with you are excluded, the same two exclusions the raider tick already
+uses, so a stray round into someone fighting alongside you still does not turn
+him.
+
+THE COMMENT ABOVE THAT CALL HAS BEEN WRONG FOR A WHILE. It says the notoriety
+check sits there "before the lines below turn him hostile". The lines below only
+ever set state. It was describing an intention rather than the code.
+
+Verified: parse PASS v9.25. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 67 regression checks
+pass in sequence, none skipped. The new check was run against the v9.24 fixture
+first, where it fails with "shot once from 400 units and watched 430 frames: he
+never turned on you".
+
+Not verified: whether this changes how a raid plays out in aggregate. The sim bot
+never fights pillagers, so no number here measures whether waking the peaceful
+half of the map on the first round makes raids harder, and it plausibly does.
+Also not verified: the same question for machines, which are always hostile and
+so were never affected, and for a pillager hit by a rival's round, which goes
+through a different path that deliberately does not aggro him onto the player.
+
 ## v9.24 - PICKING A MAN UP OFF THE FLOOR IS FREE
 
 HIS INSTRUCTION, in his words: "REVIVING ANOTHER PILLAGER SHOULD BE FREE, IT

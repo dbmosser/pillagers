@@ -3594,6 +3594,62 @@ window.__REGRESS=[
      for(var f4=0;f4<6;f4++) __loop(performance.now()+800+f4*16.7);
      for(var k4 in K3) delete K3[k4];
      if(firstUse&&!p2.downed) bad.push('control: his own self-revive works twice in one raid now, it is meant to be one');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.25',what:'a pillager who was not fighting you fights back the moment you shoot him',
+   run:function(){
+     var bad=[];
+     // ONE ROUND, THEN THE TRIGGER RELEASED. Automatic fire is deliberately not
+     // used: the old behaviour woke him only by luck, when some later round
+     // happened to land in a window where he was not rolling. One aimed shot and
+     // then silence is the case he actually reported, and it is the case that
+     // never woke him at all.
+     function shoot(mode){
+       __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
+       var g=__state(), p=g.player, tgt=null;
+       for(var i=0;i<g.ents.length;i++){ var e=g.ents[i];
+         if(e.kind==='raider'&&e.hostile===false&&!e.merc&&!e.friendlyPC&&!e.downed){ tgt=e; break; } }
+       if(!tgt) return null;
+       if(mode==='ally') tgt.friendlyPC=true;
+       g.ents=[tgt]; p.iv=99; p.hp=p.maxhp;
+       var gun=__gun.roll('rifle');
+       for(var kk in gun) p.wep[kk]=gun[kk];
+       p.ammo=gun.mag; p.jam=0;
+       // He must SURVIVE to be able to answer. A pillager on his own 78 health
+       // dies inside the window and then the question cannot be asked at all.
+       tgt.maxhp=100000; tgt.hp=100000;
+       p.x=tgt.x+400; p.y=tgt.y;
+       var M=__mouse(); M.init=true;
+       var K=__keysRef(); for(var k in K) delete K[k];
+       var landed=0, hpPrev=tgt.hp, hitAt=-1, hostileAt=-1, backAt=-1, stopAt=-1;
+       for(var f=0;f<520;f++){
+         var s=__proj.w2s(tgt.x,tgt.y); M.x=s.x; M.y=s.y;
+         if(landed<1){ M.down=true; } else { if(stopAt<0) stopAt=f; M.down=false; }
+         if(p.ammo<=0) p.ammo=gun.mag;
+         __loop(performance.now()+f*16.7);
+         if(tgt.hp<hpPrev){ landed++; if(hitAt<0) hitAt=f; hpPrev=tgt.hp; }
+         if(hostileAt<0&&tgt.hostile) hostileAt=f;
+         if(backAt<0) for(var b=0;b<(g.bullets||[]).length;b++) if(g.bullets[b].owner===tgt) backAt=f;
+       }
+       M.down=false;
+       return {landed:landed,hitAt:hitAt,hostileAt:hostileAt,backAt:backAt,stopAt:stopAt,
+               watched:(stopAt>=0?520-stopAt:0),noto:(__P?(__P().notoriety||0):0),tgt:tgt};
+     }
+     var a=shoot('peaceful');
+     if(!a) return 'no peaceful pillager on this map and seed';
+     if(a.landed<1) return 'SKIP: could not land a round on him in 520 frames';
+     if(a.hostileAt<0)
+       bad.push('shot once from 400 units and watched '+a.watched+' frames: he never turned on you');
+     else if(a.backAt<0)
+       bad.push('he turned hostile but never fired back in '+a.watched+' frames');
+     // CONTROL 1: the notoriety charge for shooting a man who was not fighting
+     // you must survive. notoAggress only fires while he is still peaceful, so
+     // setting the flag one line too early would delete the penalty in silence.
+     if(a.noto<1) bad.push('control: shooting a peaceful pillager no longer costs notoriety');
+     // CONTROL 2: a pillager fighting ALONGSIDE you must not be turned by a
+     // stray round, or the fix reads as "any hit makes anyone an enemy".
+     var b2=shoot('ally');
+     if(b2&&b2.landed>=1&&b2.tgt.hostile)
+       bad.push('control: a stray round turned a pillager who was fighting alongside you');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
