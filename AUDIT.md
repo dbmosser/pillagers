@@ -21,6 +21,7 @@ adversarially verified):
 
 | Finding | Closed by | How it was confirmed closed |
 |---|---|---|
+| His answer 48: Wirt had no special item at all, only the 2,500 gamble (two buttons, no hourly anything) | v9.11 | Lot of the Hour, flat 10,000, hashed from the clock so no seeded draw moves; check fails on a v9.10 fixture |
 | His answer 37: reviving a pillager cost a medkit and paid nothing carryable (his bag unchanged, +0 credits) | v9.10 | he hands over his gun or best item, removed from his bag and stamped so the body cannot pay it twice; check fails on a v9.09 fixture |
 | His answer 38: the resize corner drew the aiming reticle, and drag and minimise drew the same undifferentiated arrow | v9.09 | four pointers (move/resize/minimise/reticle), hudHit gained a grip part; check fails on a v9.08 fixture |
 | Downed screen: CRAWL TO THE RING flashed (21.1 pct brightness swing every 1.2s) and the block never scaled with the screen | v9.08 | pulse gone while downed (0.0 pct), block scales with hudRes (bar 253px at 1080p, 506px at 4K); check fails on a v9.07 fixture |
