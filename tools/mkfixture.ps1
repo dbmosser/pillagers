@@ -4457,6 +4457,52 @@ window.__REGRESS=[
        if(!up.confirmArmed)
          bad.push('control: pressing Abandon on your feet no longer arms the confirm, so backing out is broken');
      }
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.38',what:'shooting a Listener does not switch it off',
+   run:function(){
+     var bad=[];
+     // The Listener's whole behaviour lives behind state 'hunt'. Every other state
+     // falls into an else that stops it moving, which is right for 'dormant' and
+     // wrong for 'chase' - a state the bullet path and the frag path both write on
+     // anything that is not a raider or a snitch. So one round used to freeze the
+     // one enemy built around not being seen coming.
+     function stand(putInChase){
+       __resetCfg(); __pinDefaults(0);
+       __startRaid({mapIx:0,seed:4242});
+       var g=__state(), p=g.player, L=null;
+       for(var i=0;i<g.ents.length;i++) if(g.ents[i].kind==='listener'){ L=g.ents[i]; break; }
+       if(!L) return null;
+       g.ents=[L];
+       // He must be hittable and must survive, so the only thing the count can be
+       // measuring is whether the Listener swings.
+       p.iv=0; p.maxhp=100000; p.hp=100000;
+       var PX=L.x-(L.r+11+2), PY=L.y;      // just inside its reach
+       p.x=PX; p.y=PY;
+       L.state='hunt'; L.wakeT=0; L.heardX=PX; L.heardY=PY;
+       L.maxhp=100000; L.hp=100000; L.cd=0;
+       var K=__keysRef(); for(var k in K) delete K[k];
+       // This is exactly what a landed round does to it.
+       if(putInChase){ L.state='chase'; L.tx=PX; L.ty=PY; }
+       var hits=0, hpPrev=p.hp;
+       for(var f=0;f<420;f++){
+         // Pinned, or the measurement becomes about his retreat.
+         p.x=PX; p.y=PY; p.iv=0;
+         __loop(performance.now()+f*16.7);
+         if(p.hp<hpPrev){ hits++; hpPrev=p.hp; }
+       }
+       return {hits:hits, state:L.state};
+     }
+     // CONTROL FIRST: a Listener left alone at this range must land blows, or the
+     // staging is wrong and nothing below means anything.
+     var alone=stand(false);
+     if(!alone) return 'SKIP: no Listener on this map and seed to stand next to';
+     if(alone.hits<1)
+       return 'SKIP: a Listener that was never shot landed nothing either, so this scene is not measuring its attacks';
+     // THE FINDING. Measured before the fix: 9 hits left alone, 0 after a round.
+     var shot=stand(true);
+     if(shot&&shot.hits<1)
+       bad.push('a Listener put into the state a landed round gives it stopped attacking entirely: '+
+                alone.hits+' hits when left alone, '+shot.hits+' after being shot');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

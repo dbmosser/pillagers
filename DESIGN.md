@@ -27443,6 +27443,55 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.38 - SHOOTING A LISTENER NO LONGER SWITCHES IT OFF
+
+The Listener's entire behaviour lives behind one state, 'hunt'. Every other state
+falls into an else three lines from the end of its block which sets moving to
+false, zeroes its mill timer and continues: no movement, no facing, no swing. That
+is correct for 'dormant', which is what the else was written for.
+
+But the player bullet path writes state 'chase' onto anything that is not a raider
+or a crier, and the frag path writes the same. 'chase' is a state the Listener has
+no branch for, so the one enemy in this game built around not being seen coming
+became a statue on the frame your round landed, and stayed one until some
+unrelated noise happened to put it back into 'hunt'.
+
+MEASURED, the same Listener on the same spot with the player pinned just inside
+its reach for 420 frames:
+
+  left alone            9 hits, 306 damage
+  put into 'chase'      0 hits, 0 damage, moved 0 units
+
+AFTER: both arms land 9 hits for 306 damage. Shooting it changes nothing about
+whether it fights, which is the point.
+
+FIXED IN THE LISTENER, NOT IN THE BULLET. The bullet path is not the only door:
+the frag path writes the same state, and anything added later that reaches for
+'chase' would hit the same wall. A Listener that finds itself in 'chase' now goes
+hunting the place the shot came from, which is exactly what it already does with
+a noise, so no new behaviour was invented for it.
+
+THIS IS THE SECOND TIME THIS ENEMY HAS FOOLED ME. My own note from an earlier
+session reads: "The Listener could not attack, and I closed that item with three
+checks that all asked if it could be KILLED, never if it could KILL." The check
+written here asks the only question that matters about a melee enemy, which is
+whether it lands blows, and it asks the control version first: a Listener that was
+never shot must land blows at this range or the scene is not measuring anything.
+
+Verified: parse PASS v9.38. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 85 and 369 and containers 157 and 589, LOOT driven on both
+maps, stream parity identical, all three endings, hub and stage render. 80
+regression checks pass in sequence, none skipped, with the device pixel ratio
+pinned and the saved profile cleaned before every check. The new check fails on a
+v9.37 fixture with "9 hits when left alone, 0 after being shot".
+
+Not verified: whether any OTHER enemy kind has states written onto it that its own
+block cannot handle. The Listener is the only one whose behaviour sits behind a
+single state name, so it is the most exposed, but I have not swept the others and
+this exact shape is worth a sweep. Also not verified: what a Listener does when a
+round hits it from outside its hearing range, since the hunt target it is given is
+the shot's origin and that may be further than it would ever have walked.
+
 ## v9.37 - YOU CANNOT BACK OUT OF A RUN FROM THE FLOOR
 
 FREE INSURANCE, discovered at exactly the moment a player is most motivated to go
