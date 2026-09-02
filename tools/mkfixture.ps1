@@ -1994,6 +1994,44 @@ window.__REGRESS=[
      if(B3.w>1920) bad.push('an absurd saved scale drew a panel wider than the screen, '+B3.w);
      if(B4.w<60) bad.push('a tiny saved scale collapsed the panel to '+B4.w+'px');
      P.hud={};
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.94',what:'the backpack never sits on the belt, at any resolution, and is called the backpack',
+   run:function(){
+     var bad=[];
+     // He plays at 4K. The old reserve was LH(70)+LH(14), which is 131px at
+     // every resolution because LH follows the text size, while the belt has
+     // sized itself to the screen since v8.81. Measured before the fix: clear by
+     // 10 at 1080p, 28 into the belt at 1440p, 64 into it at 4K.
+     [[1920,1080],[2560,1440],[3840,2160]].forEach(function(SZ){
+       var W2=SZ[0],H2=SZ[1],tag=W2+'x'+H2;
+       __forceSize(W2,H2);
+       var P=__P(); P.hud={};
+       __resetCfg(); __pinDefaults(0);
+       __deploy({kit:['medkit','plate','servo','scrap','bandage'],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.ents.length=0; g.player.iv=99; g.bagOpen=true;
+       for(var f=0;f<12;f++) __loop(performance.now()+f*16.7);
+       var st=__state(), hc=st.hotCells||[], bp=st.bagPanel;
+       if(!bp){ bad.push('at '+tag+' the backpack panel recorded no rectangle'); return; }
+       if(!hc.length){ bad.push('at '+tag+' the belt drew no cells to measure against'); return; }
+       var gap=hc[0].y-(bp.y+bp.h);
+       if(gap<0) bad.push('at '+tag+' the backpack covers the belt by '+Math.round(-gap)+'px');
+       // The prompt line lives above the cells and was the other half of what it
+       // was covering, so a gap of nearly nothing is not good enough.
+       if(gap<12) bad.push('at '+tag+' the backpack leaves only '+Math.round(gap)+'px above the belt');
+       // CONTROL ONE: it must still be a usable panel. Shrinking it to a sliver
+       // would satisfy every line above and be a worse bug.
+       if(bp.h<200||bp.w<400) bad.push('at '+tag+' the backpack shrank to '+Math.round(bp.w)+'x'+Math.round(bp.h));
+       if(bp.y<0) bad.push('at '+tag+' the backpack top ran off the screen');
+       // CONTROL TWO: it must still be DRAWING the things it holds.
+       if(!(st.bagCells||[]).length) bad.push('at '+tag+' the backpack drew no item cells');
+     });
+     __forceSize(1920,1080);
+     // His word for it. Inventory means the backpack plus the belt; this panel is
+     // the backpack.
+     var src=(document.documentElement&&document.documentElement.innerHTML)||'';
+     var cut=src.split('__REGRESS')[0];
+     var needle='fillText('+String.fromCharCode(39)+'INVENTORY'+String.fromCharCode(39);
+     if(cut.indexOf(needle)>=0) bad.push('the panel is still headed INVENTORY');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

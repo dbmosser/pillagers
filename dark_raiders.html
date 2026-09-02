@@ -1185,7 +1185,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.93';
+var VER='8.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21807,16 +21807,32 @@ function drawBag(){
   var rows=Math.min(rowsAll,rowsMax);
   var hh=LH(150)+rows*(TILE+GAP)+LH(64);
   hh=Math.min(hh,H-70);
-  // v8.51, audit: reserve the belt's REAL footprint. This reserved one cell plus a
-  // gap, from before v8.08 moved the bar's top to H-LH(70); the caption above it
-  // sits a further LH(6) up. The bag was covering both.
-  y=Math.max(LH(10),H-LH(70)-LH(14)-hh);
+  // v8.51, audit: reserve the belt's REAL footprint. v8.94: and MEASURE it
+  // rather than assert it. LH(70)+LH(14) is 131px at every resolution, because
+  // LH follows the text size and not the screen, but the belt has sized itself
+  // to the room between the corner blocks since v8.81: 101 tall at 1080p, 175 at
+  // 4K. Measured overlap of the old number against the real belt: clear by 10 at
+  // 1080p, 28 into it at 1440p, 64 into it at 4K, which is his screenshot.
+  // G.hotCells is written by the belt draw earlier in this same frame, so this is
+  // the same rectangle the mouse hit-tests against and they cannot drift.
+  var _beltTop=(G.hotCells&&G.hotCells.length)?G.hotCells[0].y:(H-LH(70));
+  // LH(22) rather than LH(14): the weapon and prompt line sits above the cells,
+  // and it was the other half of what the panel was covering.
+  var _bagRoom=_beltTop-LH(22)-LH(10);
+  if(hh>_bagRoom) hh=Math.max(LH(120),_bagRoom);
+  y=Math.max(LH(10),_beltTop-LH(22)-hh);
+  // v8.94: recorded as it is drawn, like G.hotCells. Without this the only way
+  // to ask where the panel is was to repeat its placement maths somewhere else,
+  // which is exactly how its belt reserve drifted out of date for three builds.
+  G.bagPanel={x:x,y:y,w:PW,h:hh};
   ctx.fillStyle='rgba(6,9,13,.96)'; ctx.fillRect(x,y,PW,hh);
   ctx.strokeStyle='#3a4552'; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,PW-1,hh-1);
 
   var cy=y+LH(19);
   ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
-  ctx.fillText('INVENTORY',x+11,cy);
+  // v8.94, his note: BACKPACK, not INVENTORY. His vocabulary: I opens the
+  // BACKPACK, and inventory means the backpack plus the belt together.
+  ctx.fillText('BACKPACK',x+11,cy);
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#6b7783'; ctx.textAlign='right';
   ctx.fillText((PAD&&PAD.on)?'VIEW to close':'TAB or I to close',x+PW-11,cy); ctx.textAlign='left';
   cy+=LH(8);
@@ -23971,7 +23987,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.93: drag the corner of any HUD panel to size it yourself, and it remembers. The three big ones start a quarter smaller.',
+  now:'v8.94: the backpack no longer sits on top of your belt, and it is called the backpack.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

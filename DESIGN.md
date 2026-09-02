@@ -27443,6 +27443,56 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.94 - THE BACKPACK STOPS SITTING ON THE BELT
+
+His screenshot at 4K, with "rename this box BACKPACK instead of inventory -- and
+note that it is colliding with the hotbar/belt".
+
+REPRODUCED at three sizes, comparing where the panel puts its bottom against
+where the belt actually drew its cells that frame:
+
+    1920x1080    belt top 959    panel bottom 949     clear by 10
+    2560x1440    belt top 1281   panel bottom 1309    OVERLAP 28
+    3840x2160    belt top 1965   panel bottom 2029    OVERLAP 64
+
+The reserve was LH(70)+LH(14), which is 131 pixels at every resolution, because
+LH follows the TEXT SIZE and not the screen. The belt stopped being that height
+at v8.81, when it began sizing itself to the room between the corner blocks: it
+is 101 tall at 1080p and 175 at 4K. So the panel was reserving room for a 1080p
+belt, and he plays at 4K.
+
+The comment sitting directly above that line, written at v8.51, already said the
+right thing: "reserve the belt's REAL footprint". Then it hardcoded a number. It
+reads the belt now, from the cells the belt records earlier in the same frame,
+which is the same rectangle the mouse hit-tests, so the two cannot drift apart
+again. The reserve also went from LH(14) to LH(22), because the weapon and prompt
+line sits above the cells and was the other half of what was being covered.
+
+AFTER: a 34 pixel gap above the belt at 1920x1080, 2560x1440 and 3840x2160
+alike, instead of minus 10, plus 28 and plus 64.
+
+The panel also had no recorded rectangle at all, so the only way to ask where it
+was was to redo its placement arithmetic somewhere else, which is precisely how
+this drifted for three builds. It records G.bagPanel as it draws now, the same
+way the belt records G.hotCells, and the check reads that rather than recomputing
+anything.
+
+And it is called the BACKPACK. His vocabulary: I opens the backpack, and
+inventory means the backpack plus the belt together, which is the rule v8.78
+already enforces on what this grid draws.
+
+Verified: parse PASS. Both sectors to their fingerprints, entities 58 and 276 and
+containers 155 and 589. Streams identical live and sim. Looting on both with no
+throw and the clock advancing. Three endings correct. Hub renders. Screenshot at
+1920x1080 showing the header and the clearance. 37 regression checks pass, none
+failed and none skipped, including a new one that walks all three resolutions and
+carries controls against the two obvious wrong fixes: shrinking the panel to a
+sliver, and leaving it drawing no items.
+
+Not verified: photographed only at 1080p, and the 4K result is measured rather
+than seen, which is the same gap that let v8.91 ship too big. I also have not
+done the other half of his note, that I in the Undercroft should open THIS panel
+rather than the full screen one I built at v8.84.
 ## v8.93 - THE PANEL SIZE IS HIS NOW, NOT MINE
 
 His note: "now these are TOO BIG, can you make it where I can just grab the corner
