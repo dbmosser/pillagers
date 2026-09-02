@@ -21,6 +21,8 @@ adversarially verified):
 
 | Finding | Closed by | How it was confirmed closed |
 |---|---|---|
+| The BACKPACK never scaled with the screen: 1194x435 at 1080p and 1295x435 at 4K (1.08x wide, 1.00x tall) | v9.13 | tile/gaps/margins/paddings scale by hudRes; exactly 2.00x at 4K, same 11 columns, 1080p unmoved; check fails on a v9.12 fixture |
+| Contract "+ XP" text lying, and nRaider:0 producing an empty map | not defects | checked v9.13: the sell handler does pay XP, and the row reads "AI pillagers 0-20" where 0 correctly means none |
 | HUD panels could be dragged fully off screen and saved there, with no reset control anywhere (one flick put vitals at x -886) | v9.12 | clamp at the top of drawHUD keeps the drag bar reachable and repairs an already-broken profile; check fails on a v9.11 fixture |
 | Bot water double-penalty, notes counter off the right edge, drag offset drawing-vs-hit mismatch | not defects | checked v9.12: fixed at v8.41, v8.43, and drawing agrees with hit-testing |
 | His answer 48: Wirt had no special item at all, only the 2,500 gamble (two buttons, no hourly anything) | v9.11 | Lot of the Hour, flat 10,000, hashed from the clock so no seeded draw moves; check fails on a v9.10 fixture |
