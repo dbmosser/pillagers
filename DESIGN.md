@@ -27443,6 +27443,64 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.81 - THE HUD FOLLOWS THE SCREEN, AND THE BELT WAS NEVER SCALED AT ALL
+
+Three of his notes are one bug. "all this shit needs to be bigger on screen",
+"hotbar needs to be bigger too", and "game needs to be playable at 1080p, 1440p
+or 4k".
+
+MEASURED, the belt cell width, read from the rectangles the game records for its
+own mouse handling rather than worked out from the source:
+
+    1920x1080    90px      12px of room left of it, 201px right
+    2560x1440    90px     332px of room left of it, 521px right
+    3840x2160    90px     972px of room left of it, 1161px right
+
+The HUD does not grow with the screen at all. On a 4K panel it is the same
+absolute size it is at 1080p, so it is half the relative size. That is his third
+note, and it is the whole of it.
+
+The belt was also never scaled once. The note above HUDZ, written at v8.08 on his
+order, says it covers "the bars, the gear stack and the belt". HUDZ has two
+entries: body and gear. The belt is not one of them and never calls the zoom, so
+while the other two corners have been at 1.30 and 1.26 since v8.08, the belt has
+sat at 1.0 the entire time.
+
+TWO CHANGES. Every corner block is now multiplied by how much bigger the screen
+is than 1080p, floored at 1 so 1080p is untouched by it and capped so a very wide
+screen does not turn the corners into billboards. And the belt sizes itself to
+the room actually left between the two bottom corner blocks instead of a fixed
+number, so it can never overlap either one however big they get.
+
+I got the placement wrong first and the control caught it. Sizing the belt to the
+room while still centring it on the SCREEN drove it 76px into the health bar at
+1080p and 109px at 1440p, because the centre of the screen is not the centre of
+the room: the vitals block reaches much further in than the gear stack does. It
+is centred in the room now, which is the only placement that can grow down there
+at all. Screen-centred, the tighter side caps a nine slot bar at 89px, smaller
+than what it already was. The cost is that the bar sits about 100px right of dead
+centre at 1080p, which is 5 percent of the width. Say the word and I will take
+the size back instead.
+
+RESULT, before and after:
+
+                 belt cell      vitals block
+    1080p        90 -> 101      494 -> 532
+    1440p        90 -> 139      494 -> 709
+    4K           90 -> 175      494 -> 1064
+
+Verified: parse PASS. Both sectors to their fingerprints, 58 and 276. Streams
+identical live and sim on both. Looting on both with no throw and the clock
+advancing. Three endings correct. Hub renders. Screenshot at 1920x1080 with the
+bars and the belt both visibly larger. 25 regression checks pass, including a new
+one that reads the boxes at all three resolutions and carries the exact control
+that caught my first attempt: any negative gap between the belt and a corner
+block fails it.
+
+Not verified: I did not check the HUD at 175 or 200 percent text size, where the
+text lift and this screen multiplier compound and could be too much together. I
+also did not check the two collapsible panels, the pillager board and the legend,
+which are positioned separately and may now sit against blocks that grew.
 ## v8.80 - A CRAWLER IN REACH WAS HITTING YOU EVERY SINGLE FRAME
 
 His note: "crawler doing too much damage now", then "its like crawlers hit

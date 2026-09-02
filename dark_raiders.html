@@ -1162,7 +1162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.80';
+var VER='8.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19818,8 +19818,25 @@ ctx.fillStyle='#4de3d0';
     var sl=hotbarSlots(),sel=hotSel();
     // v8.08, his order: bigger. LH(46) to LH(58), and hy moves up by the same
     // amount so the bar still sits LH(12) off the bottom edge.
-    var bw=LH(58),gap=LH(6),tw2=sl.length*bw+(sl.length-1)*gap;
-    var hx=Math.round(W/2-tw2/2),hy=H-LH(70);
+    // v8.81: sized to the room between the two bottom corner blocks rather than
+    // a fixed number. The vitals grow from x 0 and the gear stack from x W, so
+    // their inner edges are the box constants times their own zoom. Cells stay
+    // square and everything inside one is already drawn as a fraction of bw, so
+    // the icons grow with the cell.
+    var gap=LH(6);
+    var _hz=hudRes();
+    var _bR=390*(HUDZ.body||1)*_hz;        // vitals block, inner edge
+    var _gL=W-252*(HUDZ.gear||1)*_hz;      // gear stack, inner edge
+    var _room=(_gL-LH(14))-(_bR+LH(14));
+    var bw=Math.floor((_room-(sl.length-1)*gap)/sl.length);
+    bw=clamp(bw,LH(52),LH(112));
+    var tw2=sl.length*bw+(sl.length-1)*gap;
+    // Centred in the room, not on the screen. Screen-centred cannot grow here:
+    // the left neighbour reaches further in than the right one, so the tighter
+    // side would cap this below the size it already was.
+    var _rL=_bR+LH(14);
+    var hx=Math.round(_rL+(_room-tw2)/2),hy=H-bw-LH(13);
+    if(hx<_rL) hx=Math.round(_rL);
     // The rectangles are recorded AS THEY ARE DRAWN rather than recomputed by the
     // mouse code. Two copies of this arithmetic would drift the first time the
     // slot count or the scale changed, and the drop target would stop matching
@@ -20709,16 +20726,26 @@ var HUDBOX={},HUDDRAG=null;
 // the way thirty separate number bumps would. Anything recorded for the mouse -
 // a drag box, a belt cell - is mapped through the same transform below, or the
 // thing you click stops being the thing you see.
-var HUDZ={body:1.30, gear:1.26};
+var HUDZ={body:1.40, gear:1.36};
+// v8.81: AND THE SCREEN ITSELF COUNTS. Everything above is in pixels chosen at
+// 1080p, so the HUD was the same absolute size on a 4K panel and therefore half
+// the relative size. This multiplies every corner block by how much bigger the
+// screen is than 1080p. Never below 1, so 1080p is unchanged by it and smaller
+// windows do not shrink the HUD into nothing; capped so a very wide screen does
+// not turn the corners into billboards.
+function hudRes(){
+  if(!W||!H) return 1;
+  return clamp(Math.min(W/1920,H/1080),1,2.2);
+}
 // The corner transforms, written once. sx,sy is the anchor the block grows from.
 function hudZoomIn(k,ax,ay){
-  var z=HUDZ[k]||1;
+  var z=(HUDZ[k]||1)*hudRes();
   ctx.translate(ax,ay); ctx.scale(z,z); ctx.translate(-ax,-ay);
   return z;
 }
 // A rectangle in unscaled space, mapped to where it actually lands on screen.
 function hudZoomRect(k,ax,ay,r){
-  var z=HUDZ[k]||1;
+  var z=(HUDZ[k]||1)*hudRes();
   return {x:ax+(r.x-ax)*z, y:ay+(r.y-ay)*z, w:r.w*z, h:r.h*z,
           tg:r.tg?{x:ax+(r.tg.x-ax)*z, y:ay+(r.tg.y-ay)*z, w:r.tg.w*z, h:r.tg.h*z}:undefined};
 }
@@ -23712,7 +23739,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.80: a crawler in reach was hitting you every single frame instead of once every 0.7 seconds. It now waits between swings.',
+  now:'v8.81: the HUD grows with your screen, and the belt is sized to the room it actually has instead of a number picked at 1080p.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

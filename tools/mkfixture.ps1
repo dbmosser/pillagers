@@ -552,6 +552,18 @@ window.__simPaired=function(seeds,dialsA,dialsB){
 };
 window.__setHot=function(i){ return setHot(i); };
 window.__loot=function(){ return LOOT; };
+window.__hud=function(){
+  var out={z:{},box:{}};
+  for(var k in HUDZ) out.z[k]=HUDZ[k];
+  for(var b in HUDBOX){ var r=HUDBOX[b]; if(!r) continue;
+    out.box[b]={x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.w),h:Math.round(r.h),
+                right:Math.round(r.x+r.w),bottom:Math.round(r.y+r.h)}; }
+  var hc=(G&&G.hotCells)||[];
+  if(hc.length) out.belt={cells:hc.length,cellW:Math.round(hc[0].w),
+    x:Math.round(hc[0].x),right:Math.round(hc[hc.length-1].x+hc[hc.length-1].w),
+    y:Math.round(hc[0].y),bottom:Math.round(hc[0].y+hc[0].h)};
+  return out;
+};
 // v8.79: the FULL open, the path that rolls a windfall. Named __openFull rather
 // than __open so it cannot be confused with the staged pull, which is what live
 // play actually uses and which grants one key at a time.
@@ -1466,6 +1478,39 @@ window.__REGRESS=[
      // The bug was a 1 frame gap, about 0.02s. 0.7 is what the melee line asks for.
      if(med<0.45) bad.push('a single crawler is swinging every '+med.toFixed(3)+'s, the melee cooldown is 0.7');
      if(med>1.2) bad.push('a single crawler has gone passive, '+med.toFixed(3)+'s between swings');
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.81',what:'the HUD grows with the screen and the belt never sits on the health bar',
+   run:function(){
+     function at(w,h){
+       __forceSize(w,h);
+       __resetCfg(); __pinDefaults(0);
+       __deploy({kit:['medkit','plate'],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.ents.length=0; g.player.iv=99; g.player.armor=20;
+       for(var f=0;f<8;f++) __loop(performance.now()+f*16.7);
+       var H2=__hud();
+       if(!H2.belt||!H2.box.body||!H2.box.gear) return null;
+       return {cell:H2.belt.cellW,
+               gapL:H2.belt.x-H2.box.body.right,
+               gapR:H2.box.gear.x-H2.belt.right,
+               vitals:H2.box.body.w};
+     }
+     var a=at(1920,1080),b=at(2560,1440),c=at(3840,2160);
+     __forceSize(1920,1080);
+     if(!a||!b||!c) return 'could not read the HUD boxes at one of the three sizes';
+     var bad=[];
+     // The belt used to be 90px at all three. It must be bigger than that now,
+     // and it must actually follow the screen.
+     if(a.cell<=90) bad.push('the belt did not grow at 1080p, cell '+a.cell);
+     if(b.cell<=a.cell) bad.push('the belt does not follow the screen to 1440p, '+a.cell+' then '+b.cell);
+     if(c.cell<=b.cell) bad.push('the belt does not follow the screen to 4K, '+b.cell+' then '+c.cell);
+     if(b.vitals<=a.vitals) bad.push('the vitals block does not follow the screen, '+a.vitals+' then '+b.vitals);
+     // THE CONTROL that caught my first attempt: sizing the belt to the room but
+     // centring it on the SCREEN put it 76px on top of the health bar. Any
+     // negative gap here means the belt is overlapping a corner block again.
+     [['1080p',a],['1440p',b],['4K',c]].forEach(function(r){
+       if(r[1].gapL<0) bad.push('at '+r[0]+' the belt overlaps the vitals by '+(-r[1].gapL)+'px');
+       if(r[1].gapR<0) bad.push('at '+r[0]+' the belt overlaps the gear stack by '+(-r[1].gapR)+'px');
+     });
      return bad.length?bad.join('; '):null; }}
 ];
 window.__regress=function(){
