@@ -1210,7 +1210,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.45';
+var VER='9.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21247,12 +21247,25 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     drawLegend();
     ctx.restore();
     if(HUDBOX.legend){
-      // Still unscaled here, which is the number the next frame anchors on.
-      _legAnchorY=HUDBOX.legend.y+HUDBOX.legend.h;
-      HUDBOX.legend=hudZoomRect('legend',0,_legTarget,
-        {x:HUDBOX.legend.x,y:HUDBOX.legend.y+_legShift,w:HUDBOX.legend.w,h:HUDBOX.legend.h,
-         tg:HUDBOX.legend.tg?{x:HUDBOX.legend.tg.x,y:HUDBOX.legend.tg.y+_legShift,
-                              w:HUDBOX.legend.tg.w,h:HUDBOX.legend.tg.h}:undefined});
+      // v9.46: SCREEN SPACE, and the shift added the way the draw adds it.
+      // The rect is converted with NO shift in it, because the draw applies the
+      // shift with a translate that sits OUTSIDE the zoom - so it is a screen
+      // pixel offset, not a local one, and folding it into the rect beforehand
+      // multiplied it by the zoom. Measured at 4K before this: the legend painted
+      // at y 1898-2216 and the game recorded it at 1356-1749, so clicking the
+      // legend hit the health panel and clicking empty air 400 pixels higher
+      // grabbed the legend.
+      var _lz=hudZoomRect('legend',0,_legTarget,
+        {x:HUDBOX.legend.x,y:HUDBOX.legend.y,w:HUDBOX.legend.w,h:HUDBOX.legend.h,
+         tg:HUDBOX.legend.tg});
+      // Where its bottom lands with no shift at all, in the SAME space as
+      // _legTarget. The old line took this from the unscaled rect and compared it
+      // against a screen position, so every frame's correction was wrong by the
+      // zoom factor and the panel never settled onto its target.
+      _legAnchorY=_lz.y+_lz.h;
+      _lz.y+=_legShift;
+      if(_lz.tg) _lz.tg={x:_lz.tg.x,y:_lz.tg.y+_legShift,w:_lz.tg.w,h:_lz.tg.h};
+      HUDBOX.legend=_lz;
     }
   }
   if(G.bagOpen) drawBag();
@@ -24928,7 +24941,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.45: rigs are out of the game, as you asked. They stopped being wearable at v5.83 and kept dropping as rare and elite loot for fifty builds; anything you already owned is bought back at full value.',
+  now:'v9.46: at 4K the controls legend could not be clicked at all, and its last line sat 58 pixels off the bottom of the screen. Its hit box was 467 pixels above where it was painted.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

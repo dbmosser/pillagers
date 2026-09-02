@@ -27443,6 +27443,141 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.46 - AT 4K THE CONTROLS LEGEND COULD NOT BE CLICKED AT ALL
+
+### What was wrong
+
+Measured at 3840x2160, ten frames so the panel's anchor had settled, and asked
+with the game's own `hudHit` rather than a copy of its rule:
+
+| | |
+| --- | --- |
+| the legend PAINTS | y 1898 to 2216 |
+| the game RECORDS it | y 1356 to 1749 |
+| clicking the middle of the visible legend | **body** — the health panel |
+| clicking blank screen 400 pixels above it | **legend** |
+
+So at 4K you could not click the legend, dragging where it sits grabbed your
+vitals instead, and there was an invisible legend-shaped hole in the air above
+it. And because the same number decides where the panel is placed, its last line,
+"H  full list", landed at y 2216 on a 2158 tall canvas: 58 pixels off the bottom
+of the screen, on every frame, permanently. Twelve frames watched, never settled.
+
+At 1920x1080 the same error is 8 pixels and clicking the last line answers
+nothing. At 2560x1440 it is 95. It scales with resolution, which is why no check
+had ever caught it and why it reads as a 4K problem.
+
+### The cause: one line, two spaces
+
+The panel is drawn like this:
+
+```
+ctx.translate(0,_legShift);        // screen pixels
+hudZoomIn('legend',0,_legTarget);  // then scale by z about the anchor
+drawLegend();
+```
+
+so a local y lands at `_legShift + zoom(y)`. **The shift is outside the zoom.**
+
+The hit box was then built like this:
+
+```
+hudZoomRect('legend',0,_legTarget,{ y: HUDBOX.legend.y + _legShift })
+```
+
+which puts the shift **inside** the zoom and produces `zoom(y) + _legShift*z`.
+
+The box is wrong by `_legShift * (z-1)` every frame. `_legShift` is negative,
+because the legend is pushed upward to sit above the vitals, and z is greater
+than 1, so the box lands above the paint and the gap grows with both the zoom and
+the resolution.
+
+The second half of the same mistake is the anchor. `_legAnchorY` was taken from
+the unscaled rect and then compared against `_legTarget`, which is a screen
+position read off `HUDBOX.body`. Two different spaces, so every frame's
+correction was wrong by the zoom factor. That is why the legend never settled
+onto its target at 4K and its last line stayed off the bottom forever, while at
+1080p it settled in one frame.
+
+### The fix
+
+Both come out of one change. Convert the **unshifted** rect to screen space, take
+the anchor from that, then add the shift in screen pixels exactly the way the
+draw adds it.
+
+After, at 3840x2160: painted 1407 to 1710, recorded 1356 to 1749, so the box
+contains the paint with 39 pixels to spare, the footer is 448 pixels clear of the
+bottom, clicking the middle answers legend and clicking the top row answers the
+drag bar. At 1920x1080: painted 696 to 848, recorded 671 to 867, 20 pixels of
+padding, and the last line is clickable where it was not before.
+
+### How it is checked
+
+The check draws ten frames so the anchor settles, then traces the eleventh and
+finds the legend by its own words, so the vitals text sitting directly beneath it
+cannot contaminate the extent. Then it asks the game what is under three pixels:
+the middle of the painted panel, its last line, and the middle of every other
+panel.
+
+`__textTrace` is new: it wraps `fillText` for the duration of one call, applies
+the current transform to the coordinates, and puts the original back in a
+`finally`, so a throw inside the callback cannot leave every later check drawing
+through a wrapper.
+
+Four controls:
+
+- if the legend drew fewer than 10 of its 13 rows the check SKIPS, because every
+  assertion below it would pass on an empty screen
+- the hit box must not be more than half the screen tall, or "make the box huge"
+  would satisfy every line above
+- the middle of every other panel must still answer for itself, or this was fixed
+  by covering the rest of the HUD with the legend
+- the box must not run off the bottom either
+
+Fails on a v9.45 fixture at 1920x1080, which is the resolution the corpus runs
+at, naming the 8 pixel overhang and the dead last line. 88 of 88 with nothing
+skipped.
+
+Not verified: the other four panels. The gear stack's own box runs 11 pixels off
+the bottom at 4K, which is a different anchor with a different sum and gets its
+own build. Not verified: whether the same shift-inside-the-zoom mistake exists in
+any panel other than the legend, since the legend is the only one that applies a
+translate before its zoom. Not verified: any of this with a real pointer. The
+check asks the function that mousedown asks, which is the same answer, but it is
+not a click.
+
+
+### It exposed a check that had been green for the wrong reason
+
+The full corpus came back FAIL, 1 of 88, on v9.09: "the drag bar and the minimise
+glyph still draw the same pointer". That check passes on v9.45 and fails on
+v9.46, on a clean page, first check run, so it is mine.
+
+It is not a regression in the game. The v9.09 check pointed at the VITALS panel
+and sampled its top right corner expecting the minimise glyph. **The vitals panel
+has no minimise glyph.** Only three of the five have one: conditions, legend and
+raiders, which AUDIT.md has recorded since his answer 27. So both of its samples
+landed on the drag bar, both correctly drew the same pointer, and that assertion
+should have failed from the day it was written.
+
+It passed because the legend's painted bottom reached into the 60 by 60 pixel
+region around the BAR sample and not the one around the glyph sample, and the
+legend highlights under the pointer. The two signatures differed because of a
+hover effect on a completely different panel. v9.46 moved the legend's paint 27
+pixels up, the contamination went away, and the check finally said what was
+always true.
+
+The check now finds a panel that actually has a glyph by asking `hudHit` at the
+exact pixel it is about to sample, and SKIPS if none does, so it can never again
+grade a panel that has none. It passes on v9.45 and on v9.46, and it names which
+panel it tested.
+
+This is the second time this session that a check was green for a reason that had
+nothing to do with what it claimed to measure. The first was my own v9.44 control,
+which read a shim that existed on both builds and threw on one. Both were caught
+by running the check against the PREVIOUS build rather than only against the new
+one, which is the only step that can tell a real pass from a lucky one.
+
 ## v9.45 - RIGS ARE OUT OF THE GAME
 
 ### His instruction, and he had given it before

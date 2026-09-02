@@ -448,21 +448,34 @@ That produced the v9.37 and v9.38 builds and a vetted queue, and it caught my ow
 v9.30 regression, which two full corpus runs had missed because nothing in the
 corpus had ever signed a term.
 
-FOUR OF THAT QUEUE ARE NOW SHIPPED. What the vetted list produced:
+THE WHOLE VETTED QUEUE IS NOW SHIPPED. What it produced:
 
 | Item | Build | Evidence |
 | --- | --- | --- |
 | the last-minutes warnings sent you to a ring that was already shut | v9.39 | nearestOut walked every ring and never read the open flag. It now skips shut ones, and with all of them shut it says so instead of naming one |
-| the Peddler promised your stall money survives your death | v9.40 | a 5,000 credit stall balance and a death: 0 credits banked, while the panel said "Yours even if you die out there" and the death screen said "Stall money lost where you fell". The panel now says what the game does |
+| the Peddler promised your stall money survives your death | v9.40 | a 5,000 credit stall balance and a death: 0 credits banked, while the panel said "Yours even if you die out there" and the death screen said "Stall money lost where you fell" |
 | the new-player card said raids pay no XP | v9.41 | one raid, nothing sold: 134 XP extracted, 67 died, exactly half. The card said "Nothing else pays XP" and claimed XP gates the shop, whose highest gate is 2 |
-| breaking line of sight did not shake a chase at range | v9.42 | a pillager hidden 567 units off and 95 degrees from the last sighting was walked 218 units at cosine 0.996 STRAIGHT AT him with no frame of sight; the same pillager at 189 units did it right. v8.62 called this refuted and gave a reason that is not true of the file |
+| breaking line of sight did not shake a chase at range | v9.42 | a pillager hidden 567 units off and 95 degrees from the last sighting walked 218 units at cosine 0.996 STRAIGHT AT him with no frame of sight; the same pillager at 189 units did it right. v8.62 called this refuted and its stated reason is not true of the file |
+| the workshop billed for servicing guns that cannot wear | v9.43 | a pistol at 1,600 rounds is identical to a clean one and the bill was 1,944 credits and two Servo Actuators. The Tacker: 900 to replace, 540 to service. Three more defects fell out of the same block |
+| Wirt's 10,000 counter was a guaranteed loss | v9.44 | eight of eight items lost between 5,400 and 8,300. Six were pure salvage, which cannot be sold to a player at any price. Seven lots now, every one worth 10,620 to 12,420 across the counter |
+| HIS INSTRUCTION: rigs out of the game | v9.45 | unwearable since v5.83 and still 2.16 percent of every loot key, one thing in 46. He had asked more than once and three earlier passes each removed one layer and left the items |
+| at 4K the controls legend could not be clicked at all | v9.46 | it painted at y 1898-2216 and the game recorded it at 1356-1749, so clicking the legend hit the health panel and clicking empty air 400 pixels above it grabbed the legend. Its last line sat 58 pixels off the bottom, permanently. The shift was applied outside the zoom when drawing and inside it when recording |
 
-STILL OPEN from that queue, in value order:
-- the workshop charges credits and parts to service guns that wear was removed
-  from at v9.01, so you pay to repair a number that no longer moves
-- Wirt's flat 10,000 credit lot is salvage worth 1,700 to 3,800 six times in
-  eight, so the headline deal of the shop is a loss most weeks
-- the shop footnote says the Meridian Lance is "never sold, by anyone" on a
-  screen where Wirt sells it
-- HUD collisions at 4K: the legend runs off the bottom of the screen and the
-  CONCEALED chip sits on top of the gear stack
+COULD NOT REPRODUCE, said plainly: the "CONCEALED chip sits over the gear stack"
+report. Measured at 1920x1080, 2560x1440 and 3840x2160, crouched and concealed,
+with every HUD box compared pairwise: no panel overlaps any other at any of the
+three. The concealment readout is drawn INSIDE the gear panel, at its top, which
+is where it is meant to be. After v9.46 the only remaining 4K anomaly is that the
+gear panel's box padding overhangs the bottom edge by 11 pixels; no text is drawn
+below the screen anywhere, and the resize grip is still grabbable at the last
+on-screen pixel, so it costs nothing.
+
+STILL OPEN, and this is now the whole list:
+- HIS 36 slice 3: pillagers teaming up. Slices 1 and 2 shipped at v9.28 and v9.29
+- wrecked cars still read as suitcases from directly overhead
+- maps feel samey
+- town centres and destroyed buildings from his map notes (hills, verticality and
+  woods stay vetoed)
+- FOR HIS RULING: the raid punishes time spent rather than value carried
+- FOR HIS RULING: the extraction squeeze barely happens on THE COLD MILE, which
+  has 6 rings and closes 2, against COLD STORAGE which has 3 and closes 2

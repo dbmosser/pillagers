@@ -751,6 +751,20 @@ window.__drawIcon=function(c,k,x,y,s){ return drawItemIcon(c,k,x,y,s); };
 // Container stocking, so "a body should be worth more than a crate" can be
 // MEASURED over thousands of rolls instead of eyeballed from the weight tables.
 window.__mkContainer=function(t){ return mkContainer(0,0,t); };
+window.__hudHit=function(x,y){ return hudHit(x,y); };
+window.__textTrace=function(fn){
+  var proto=CanvasRenderingContext2D.prototype, orig=proto.fillText, out=[];
+  proto.fillText=function(t,x,y){
+    try{
+      var T=this.getTransform();
+      out.push({t:String(t),x:T.a*x+T.c*y+T.e,y:T.b*x+T.d*y+T.f,
+                w:this.measureText(String(t)).width*T.a,align:this.textAlign});
+    }catch(e){}
+    return orig.apply(this,arguments);
+  };
+  try{ fn(); } finally { proto.fillText=orig; }
+  return out;
+};
 // __ival is defined TWICE in this file, at 355 and 754, so it is not an anchor.
 // Seventh duplicate shim I have tripped over here. Grep before you name one, and
 // grep before you ANCHOR on one.
@@ -2824,8 +2838,18 @@ window.__REGRESS=[
      var g=__state(); g.ents.length=0; g.player.iv=99;
      for(var f=0;f<6;f++) __loop(performance.now()+f*16.7);
      var hc=document.getElementById('hcv'); if(!hc) return 'no HUD canvas to read';
-     var m=__mouse(), H=__hud(), B=H.box&&H.box.body;
-     if(!B) return 'the vitals panel did not draw, so there is no panel to point at';
+     var m=__mouse(), H=__hud();
+     // v9.46: the panel under test has to HAVE a minimise glyph. Asked of the
+     // game, at the exact pixel the samples below use, rather than assumed.
+     var B=null, Bname=null;
+     if(H.box&&window.__hudHit){
+       for(var _pk in H.box){
+         var _r=H.box[_pk]; if(!_r) continue;
+         var _h=__hudHit(Math.round(_r.x+_r.w-12),Math.round(_r.y+8));
+         if(_h&&_h.id===_pk&&_h.part==='glyph'){ B=_r; Bname=_pk; break; }
+       }
+     }
+     if(!B) return 'SKIP: no panel drew a minimise glyph at its top right, so there is nothing to tell apart';
      var bad=[];
      // WHICH PIXELS THE POINTER ITSELF PUTS DOWN: the same region rendered with
      // the pointer parked far away, then with it here. Reading the drawn cursor
@@ -2854,7 +2878,7 @@ window.__REGRESS=[
      if(!world.n) return 'nothing is drawn at the pointer at all, so this cannot be measured';
      // HIS ANSWER 38. Measured before v9.09: bar and glyph drew byte-identical
      // arrows, and the grip drew the aiming reticle.
-     if(bar.k===glyph.k) bad.push('the drag bar and the minimise glyph still draw the same pointer');
+     if(bar.k===glyph.k) bad.push('on the '+Bname+' panel the drag bar and the minimise glyph still draw the same pointer');
      if(grip.n>=world.n*0.8) bad.push('the resize corner still draws the aiming reticle, footprint '+grip.n+' against '+world.n+' on open ground');
      if(grip.k===bar.k) bad.push('the resize corner and the drag bar draw the same pointer');
      if(grip.k===body.k) bad.push('the resize corner draws whatever the panel body draws');
@@ -4660,6 +4684,63 @@ window.__REGRESS=[
      // safe cannot leave the panel understating it.
      if(survivesDeath&&/walk it out|have to walk/i.test(promise))
        bad.push('the sell panel says you have to walk the money out, and dying kept it');
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.46',what:'the controls legend can be clicked where it is drawn',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing can be drawn or hit';
+     if(!(window.__textTrace&&window.__hudHit&&window.__hudBox))
+       return 'SKIP: this build cannot report where it drew or what it would hit';
+     __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     __state().legendOn=1;
+     // The panel anchors off LAST frame's measurement, so one frame proves
+     // nothing. Ten, then measure the eleventh.
+     for(var f=0;f<10;f++) __frame(0.016);
+     var draws=__textTrace(function(){ __frame(0.016); });
+     var cv=document.querySelector('canvas'), H=cv.height;
+     // Found by the legend's OWN words, so the vitals text sitting directly
+     // below it cannot contaminate the extent.
+     var LBL=['move','sprint','crouch','roll','fire','aim','reload','swap gun',
+              'hotbar','bag','search','map','H  full list'];
+     var leg=[], i;
+     for(i=0;i<draws.length;i++) if(LBL.indexOf(draws[i].t)>=0) leg.push(draws[i]);
+     // CONTROL FIRST: if the legend did not draw, there is nothing to grade and
+     // every assertion below would pass on an empty screen.
+     if(leg.length<10) return 'SKIP: the legend drew only '+leg.length+' of its 13 rows';
+     var top=leg[0].y, bot=leg[0].y;
+     for(i=1;i<leg.length;i++){ if(leg[i].y<top) top=leg[i].y; if(leg[i].y>bot) bot=leg[i].y; }
+     var box=__hudBox().legend;
+     if(!box) return 'SKIP: this build records no hit box for the legend';
+     function ask(x,y){ var h=__hudHit(x,y); return h?h.id:'nothing'; }
+     var lx=Math.round(leg[0].x)+4;
+     // THE FINDING. Measured on v9.45 at 3840x2160: painted 1898 to 2216,
+     // recorded 1356 to 1749, clicking the visible legend answered body and
+     // clicking empty air 400 pixels above it answered legend. At 1920x1080 the
+     // same error is 8 pixels, which is why no check had ever caught it.
+     if(bot>box.y+box.h+2)
+       bad.push('the legend paints down to '+Math.round(bot)+' and its hit box ends at '+
+                Math.round(box.y+box.h)+', so its last '+Math.round(bot-(box.y+box.h))+' pixels are not clickable');
+     if(top<box.y-2)
+       bad.push('the legend paints from '+Math.round(top)+' and its hit box starts at '+Math.round(box.y));
+     // ASK THE GAME, not my copy of its rule.
+     var atMid=ask(lx,Math.round((top+bot)/2)), atFoot=ask(lx,Math.round(bot)-2);
+     if(atMid!=='legend') bad.push('clicking the middle of the drawn legend answers '+atMid);
+     if(atFoot!=='legend') bad.push('clicking its last line answers '+atFoot);
+     // AND IT HAS TO BE ON THE SCREEN AT ALL.
+     if(bot>H) bad.push('the legend last line is drawn '+Math.round(bot-H)+' pixels below the bottom of the screen');
+     if(box.y+box.h>H+2) bad.push('the legend hit box runs '+Math.round(box.y+box.h-H)+' pixels off the bottom');
+     // CONTROL TWO: a hit box big enough to swallow the screen would satisfy
+     // every line above and break every other panel.
+     if(box.h>H*0.5) bad.push('control: the legend hit box is '+Math.round(box.h)+' tall on a '+H+' screen');
+     // CONTROL THREE: the OTHER panels must still answer for themselves. If the
+     // legend now covers them, this was fixed by breaking the rest of the HUD.
+     var B=__hudBox(), k;
+     for(k in B){
+       if(k==='legend'||!B[k]) continue;
+       var who=ask(Math.round(B[k].x+B[k].w/2),Math.round(B[k].y+B[k].h/2));
+       if(who==='legend') bad.push('control: the middle of the '+k+' panel now answers legend');
      }
      return bad.length?bad.join('; '):null; }},
   {v:'9.45',what:'rigs are out of the game, and what he already owned was paid for',
