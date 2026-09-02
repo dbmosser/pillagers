@@ -27443,6 +27443,54 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.97 - THE STANDING CHIP STOPS TOUCHING THE STAMINA BAR
+
+His note, twice, the second time with a screenshot: "standing is colliding on top
+of 'stamina' -- why?!?"
+
+REPRODUCED by computing both rectangles from the game's own line height at every
+text size. The clear space under the chip:
+
+    text 100 pct    1px with no armour    2px with armour
+    text 120 pct    2px                   3px
+    text 150 pct    3px                   4px
+    text 175 pct    4px                   5px
+    text 200 pct    5px                   6px
+
+One pixel is not a gap, it is a coincidence.
+
+WHY. The chip is held up by a raw number, 22 above the bars or 44 when there is
+an armour bar in the way, while its own height and offset are LH(14) and LH(17),
+which follow the text size. So the box grows downward as the text grows and the
+number holding it up never moves. What is left is a remainder, which works out to
+_up + LH(3) - 25, and that is why it drifts by exactly one pixel per text step
+rather than being a number anybody chose.
+
+THE FIX STATES THE GAP instead of leaving it as change. Written as the position
+of the bar it must clear plus a stated LH(5), the raw parts cancel and the clear
+space is exactly LH(8) at every text size. Measured after: 11, 13, 16, 18 and 21
+pixels across the five text sizes, and now identical whether or not armour is on,
+where before armour changed it.
+
+I got the second half wrong first and the measurement caught it. Raising the chip
+pushes it above the block's own rectangle, which is the mouse target and the
+thing the legend pins its bottom to. My first box height still left the chip 13
+pixels outside it at 200 percent text with armour on. It is tall enough now, with
+five pixels to spare at the worst case, and the check fails if the chip ever
+leaves its block again.
+
+Verified: parse PASS. Both sectors to their fingerprints, entities 58 and 276 and
+containers 155 and 589. Streams identical live and sim. Looting on both with no
+throw and the clock advancing. Three endings correct. Hub renders. 40 regression
+checks pass, none failed and none skipped, including a new one that walks all
+five text sizes with and without armour and carries the control that the fix must
+not be achieved by pushing the chip out of its own panel.
+
+Not verified: I did not photograph this, at any text size. The rectangles are
+computed from the same line height the drawing uses, which is why the numbers are
+exact, but I have not seen the result and he is the one looking at it. The other
+two collisions he reported in the same breath, the prompt line over the belt and
+the extraction banner over it, are also untouched.
 ## v8.96 - THE UNDERCROFT BACKPACK ACTUALLY WORKS
 
 His answer 11: "yes you should be able to move stuff to and from the hotbar when

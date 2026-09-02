@@ -2144,6 +2144,31 @@ window.__REGRESS=[
      // every line above pass and lose his gear.
      if((__P().kit||[]).length!==5) bad.push('the kit lost items during the drags, it holds '+(__P().kit||[]).length);
      document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.97',what:'the STANDING chip keeps real clearance above the bars at every text size',
+   run:function(){
+     var P=__P(), keep=P.uiScale, bad=[];
+     var by=1080-34;
+     // These are the two numbers drawHUD uses. Written here so the check fails
+     // if either the chip offset or the bar positions move without the other.
+     [1.0,1.2,1.5,1.75,2.0].forEach(function(sc){
+       P.uiScale=sc;
+       var LH=__type.lh;
+       [0,20].forEach(function(armor){
+         var up=(armor>0)?(46+LH(5)):(25+LH(5));
+         var chipTop=by-up-LH(17), chipBot=chipTop+LH(14);
+         var nextTop=(armor>0)?(by-46):(by-25);
+         var gap=nextTop-chipBot;
+         // Before v8.97 this was a REMAINDER of 1 to 6 pixels and he reported it
+         // twice as a collision. A gap has to be stated, not left over.
+         if(gap<8) bad.push('at text '+sc+' with armour '+armor+' the chip leaves '+Math.round(gap)+'px above the bar');
+         // CONTROL: it must not have been fixed by shoving the chip off the top
+         // of the block it belongs to. The box is the mouse target and the thing
+         // the legend pins itself above.
+         if(chipTop<1080-142) bad.push('at text '+sc+' with armour '+armor+' the chip sits above its own block by '+Math.round((1080-142)-chipTop)+'px');
+       });
+     });
+     P.uiScale=keep;
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
