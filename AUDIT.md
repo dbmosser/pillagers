@@ -21,6 +21,8 @@ adversarially verified):
 
 | Finding | Closed by | How it was confirmed closed |
 |---|---|---|
+| Staged pulls announced the containers CONTENTS, not what was taken: pulling one item named all three and spoiled the box | v9.22 | announce the granted keys; full open unchanged since it passes contents as keys; check fails on a v9.21 fixture |
+| Extraction pull dragging a Listener off its hunt | not a defect | checked v9.22 by calling the extraction tick directly: pull took 3 machines, Listener not among them; its heard position moves via its own ears, which the code documents |
 | Flight recorder counted damage THROWN not TAKEN (30 logged for a hit that cost 15), so every balance number I quoted was inflated by armour | v9.21 | accumulation moved into the row helper at the moment the hit lands, above the sim guard; 15/15/15; check fails on a v9.20 fixture |
 | Death screen HOW IT WENT table logged pre-armour damage and pre-hit health (30/100 for a hit that cost 15 and left 85; killing blow read HEALTH 20) | v9.20 | row written when the hit lands; 15/85 and 0 on the killing blow; check fails on a v9.19 fixture naming all four |
 | His EXTRACT CACHE rename (outstanding since 2026-08-29), four rewards reading CASH against his vocabulary, and a WHATSNEW card 21 builds stale | v9.19 | ELITE CACHE on both maps, rewards say CREDITS, card rewritten and bumped; check fails on a v9.18 fixture naming all three |
