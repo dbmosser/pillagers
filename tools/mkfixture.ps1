@@ -1677,6 +1677,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'8.85',what:'a pillager footprint does not draw through a wall, and a visible one still does',
    run:function(){
+     __zoom.set(1,true);   // a render check owns the camera; setZoom persists
      __resetCfg(); __pinDefaults(0);
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(),p=g.player;
@@ -1831,6 +1832,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'8.89',what:'a pillager wading out of sight draws no rings in the water',
    run:function(){
+     __zoom.set(1,true);   // same reason as v8.85
      __resetCfg(); __pinDefaults(0);
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(),p=g.player;
@@ -2201,6 +2203,55 @@ window.__REGRESS=[
        if(ban<H2*0.5) bad.push('at '+tag+' the banner has been pushed into the top half of the screen');
      });
      __forceSize(1920,1080);
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.99',what:'an unopened container shows neither its rarity nor a second bar while you search it',
+   run:function(){
+     __forceSize(1920,1080);
+     __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); g.ents.length=0; g.player.iv=99;
+     var ct=null;
+     for(var i=0;i<g.containers.length;i++) if((g.containers[i].loot||[]).length>=3){ ct=g.containers[i]; break; }
+     if(!ct) return 'no container with three items to test with';
+     g.player.x=ct.x; g.player.y=ct.y+10;
+     __zoom.set(6,true);
+     ct.prog=ct.time*0.5; ct.opened=false;
+     var cv=document.getElementById('cv'); if(!cv) return 'no canvas to read';
+     var c2=cv.getContext('2d');
+     // __frame(0) redraws without advancing the clock, so the ONLY thing that
+     // differs between two shots is what the test changed.
+     function shot(){ __frame(0); return c2.getImageData(0,0,cv.width,cv.height).data; }
+     function diff(a,b){ var d=0;
+       for(var q=0;q<a.length;q+=4){
+         if(Math.abs(a[q]-b[q])+Math.abs(a[q+1]-b[q+1])+Math.abs(a[q+2]-b[q+2])>8) d++; }
+       return d; }
+     if(diff(shot(),shot())!==0) return 'the renderer is not deterministic at dt 0, this check cannot measure anything';
+     var bad=[];
+     g.searching=null;
+     ct.best='common'; var A=shot();
+     ct.best='elite';  var B=shot();
+     ct.best='gold';   var C=shot();
+     // HIS RULE, 2026-08-26: a box must not tell you what it is worth before you
+     // open it. Measured before v8.99: 2,691 pixels moved between common and
+     // elite, because the progress bar took RCOL[ct.best].
+     var leak=diff(A,B)+diff(B,C);
+     if(leak>0) bad.push('an unopened container changes '+leak+' pixels when only the hidden rarity changes');
+     // HIS NOTE: one bar while looting, not two. The cursor already carries one
+     // for the container under it.
+     g.searching=ct; var D=shot();
+     g.searching=null; var E=shot();
+     var barPx=diff(D,E);
+     if(barPx<=0) bad.push('the container bar is not drawn at all, even for one he walked away from');
+     // CONTROL: it must still be there for a container he LEFT part way, which
+     // is the whole reason that bar exists. Deleting it would satisfy the line
+     // above about two bars and lose the thing SPEC 7.4 is for.
+     ct.prog=0; var F=shot();
+     ct.prog=ct.time*0.5; var Gs=shot();
+     if(diff(F,Gs)<=0) bad.push('control: a half searched container shows no progress at all');
+     // setZoom writes to the profile, so leaving it at 6 would hand every later
+     // check a camera it did not ask for. That is exactly how this check broke
+     // the two visibility checks above it the first time it ran.
+     __zoom.set(1,true);
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

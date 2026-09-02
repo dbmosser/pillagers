@@ -27443,6 +27443,51 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.99 - AN UNOPENED BOX STOPS TELLING YOU WHAT IS IN IT
+
+His note: "there are 2 bars when I loot -- yellow and red -- unnecessary, should
+only have one, make it yellow".
+
+I COULD NOT REPRODUCE A RED BAR and I am saying so rather than inventing a cause.
+I scanned the whole canvas mid-search for strongly red pixels and found none, and
+neither bar is red in the source: the one at the cursor is amber, and the one on
+the container takes a colour from RCOL, which has no red in it.
+
+WHAT I FOUND WHILE LOOKING is worse than the colour, and it is a rule he set
+himself. The progress bar drawn ON an unopened container was coloured
+RCOL[ct.best], the rarity of the BEST THING INSIDE IT. Three lines below it sits
+his note from 2026-08-26, quoted in the file: "the loot boxes shouldn't tell you
+the value of loot BEFORE you open them lol that kills the gamble". That build
+neutralised the coloured PULSE around the box and walked straight past this.
+
+PROVED IN PIXELS with the renderer held still, so the only thing that moved was a
+number he cannot see: redrawing one identical frame with the hidden rarity
+changed from common to elite moved 2,691 pixels, and elite to gold another 2,701.
+After: zero, at both steps.
+
+AND ONE BAR, WHICH IS WHAT HE ASKED FOR. The container's own bar is no longer
+drawn for the container you are currently searching, because the cursor already
+carries one for it. A container you walked away from half open keeps its bar,
+which is the entire point of that bar and is not the case he is complaining
+about. The check has a control for exactly that: a half searched container must
+still show progress, so deleting the bar cannot pass.
+
+TWO CHECKS FAILED AND NEITHER HAD A BUG. Both the footprint and the ripple checks
+went red, and the cause was mine: setZoom SAVES to the profile, so a zoom of 6
+that I set by hand while investigating persisted, and every later run of the
+corpus started zoomed in with the searched-for spot off screen. A check that
+renders has to own the camera, so those two pin it now and this one puts it back.
+
+Verified: parse PASS. Both sectors to their fingerprints, entities 58 and 276 and
+containers 155 and 589. Streams identical live and sim. Looting on both with no
+throw and the clock advancing. Three endings correct. Hub renders. 42 regression
+checks pass, none failed and none skipped.
+
+Not verified: the red bar he actually saw. I have found and fixed a real defect
+in the same place, and made the search show one bar rather than two, but if there
+is still a red one in his game then I have not found it and a screenshot of the
+moment would settle it. I also did not check whether any OTHER unopened-container
+drawing still reads ct.best; I fixed the one that does the progress.
 ## v8.98 - THE EXTRACTION READOUT COMES OFF THE BELT
 
 His screenshot: "text colliding with hotbar", showing EXTRACT A INCOMING 16s and
