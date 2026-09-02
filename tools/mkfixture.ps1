@@ -1782,17 +1782,51 @@ window.__REGRESS=[
      // moving, not footprints, and it reported a leak of 23,239 pixels that was
      // entirely noise. This null control is what proves the method works at all.
      function shot(){ __frame(0); return c2.getImageData(0,0,cv.width,cv.height).data; }
+     // COUNT ONLY WHERE THE THING LANDS. A print at a world point changes pixels
+     // near that point on screen; a change spread over the whole frame is
+     // something else and this check has no business counting it. Measured: one
+     // run in six reported 1400-plus pixels at spots where 24 out of 24 leak
+     // exactly zero, and a null pair taken at the same moment agreed exactly, so
+     // it is not a background animation either.
+     var BOX=200;
+     function diffNear(a,b,sx,sy){
+       var W=cv.width,H=cv.height,d=0;
+       var x0=Math.max(0,Math.round(sx-BOX)), x1=Math.min(W,Math.round(sx+BOX));
+       var y0=Math.max(0,Math.round(sy-BOX)), y1=Math.min(H,Math.round(sy+BOX));
+       for(var y=y0;y<y1;y++){
+         var row=y*W*4;
+         for(var x=x0;x<x1;x++){
+           var i=row+x*4;
+           if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>8) d++;
+         }
+       }
+       return d;
+     }
      function diff(a,b){ var d=0;
        for(var i=0;i<a.length;i+=4){
          if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>8) d++; }
        return d; }
      g.decals.length=0;
      if(diff(shot(),shot())!==0) return 'the renderer is not deterministic at dt 0, this check cannot measure anything';
+     var NOISE=0;
      function trial(x,y,mine){
-       g.decals.length=0; var base=shot();
+       g.decals.length=0;
+       var n1=shot(), n2=shot();
+       var sp=__w2s(x,y);
+       NOISE=sp?diffNear(n1,n2,sp.x,sp.y):diff(n1,n2);
        for(var k=0;k<8;k++) g.decals.push({x:x+k*3,y:y+k*2,c:'#241a10',s:5,a:.55,a0:.55,
          rot:0.6,print:1,mine:mine?1:0,t:0,life:45});
-       var withP=shot(); g.decals.length=0; return diff(base,withP);
+       var withP=shot(); g.decals.length=0;
+       return sp?diffNear(n2,withP,sp.x,sp.y):diff(n2,withP);
+     }
+     // One reading, one retry, then say so. A number taken through noise is worse
+     // than no number because it looks like a finding.
+     function steady(x,y,mine){
+       var a=trial(x,y,mine), b=trial(x,y,mine);
+       if(a===b) return a;
+       var c=trial(x,y,mine);
+       if(c===a||c===b) return c;
+       return null;
      }
      // HOW BIG IS A PRINT, IN THIS BUILD, ON THIS SCREEN? Measured on the player
      // himself, who is always on screen and always lit, so this number cannot be
@@ -1830,8 +1864,10 @@ window.__REGRESS=[
      // BOTH MEASUREMENTS AT THE SAME SPOT, BACK TO BACK, so nothing can drift
      // between choosing the spot and grading it. The old code took the control
      // several hundred canvas reads after the selection.
-     var mineNow=trial(hid.x,hid.y,true);
-     var leak=trial(hid.x,hid.y,false);
+     var mineNow=steady(hid.x,hid.y,true);
+     var leak=steady(hid.x,hid.y,false);
+     if(mineNow===null||leak===null)
+       return 'SKIP: three readings at the same spot disagreed, so the renderer would not hold still';
      // THE BUG: a pillager print behind a wall must draw nothing.
      if(leak>0) bad.push('a pillager print behind a wall drew '+leak+' pixels');
      // CONTROL ONE: it must still draw where you can see it, or the fix is just
@@ -1950,33 +1986,71 @@ window.__REGRESS=[
      var cv=document.getElementById('cv'); if(!cv) return 'no canvas to read';
      var c2=cv.getContext('2d');
      function shot(){ __frame(0); return c2.getImageData(0,0,cv.width,cv.height).data; }
+     // Same window as v8.85: count only near where the ripple lands.
+     var BOX=200;
+     function diffNear(a,b,sx,sy){
+       var W=cv.width,H=cv.height,d=0;
+       var x0=Math.max(0,Math.round(sx-BOX)), x1=Math.min(W,Math.round(sx+BOX));
+       var y0=Math.max(0,Math.round(sy-BOX)), y1=Math.min(H,Math.round(sy+BOX));
+       for(var y=y0;y<y1;y++){
+         var row=y*W*4;
+         for(var x=x0;x<x1;x++){
+           var i=row+x*4;
+           if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>8) d++;
+         }
+       }
+       return d;
+     }
      function diff(a,b){ var d=0;
        for(var i=0;i<a.length;i+=4){
          if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>8) d++; }
        return d; }
      g.decals.length=0;
      if(diff(shot(),shot())!==0) return 'the renderer is not deterministic at dt 0, this check cannot measure anything';
+     var NOISE=0;
      function trial(x,y,mine){
-       g.decals.length=0; var base=shot();
+       g.decals.length=0;
+       var n1=shot(), n2=shot();
+       var sp=__w2s(x,y);
+       NOISE=sp?diffNear(n1,n2,sp.x,sp.y):diff(n1,n2);
        for(var k=0;k<8;k++) g.decals.push({x:x+k*3,y:y+k*2,c:'#b4def0',s:7,a:.5,a0:.5,
          rot:0,ripple:1,mine:mine?1:0,t:0,life:45});
-       var w=shot(); g.decals.length=0; return diff(base,w);
+       var w=shot(); g.decals.length=0;
+       return sp?diffNear(n2,w,sp.x,sp.y):diff(n2,w);
      }
+     function steady(x,y,mine){
+       var a=trial(x,y,mine), b=trial(x,y,mine);
+       if(a===b) return a;
+       var c=trial(x,y,mine);
+       if(c===a||c===b) return c;
+       return null;
+     }
+     // CALIBRATE, the same as v8.85. A ripple draws 174 on the player and up to
+     // 186 in this ring, so the typed-in 150 happens to be safe here, but a
+     // number that happens to be safe is still a number nobody measured.
+     var REF=trial(p.x,p.y,true);
+     if(REF<40) return 'SKIP: a ripple on the player himself draws only '+REF+' pixels, so nothing here can be measured';
+     var NEED=Math.max(20,Math.round(REF*0.45));
      var hid=null;
      for(var r=60;r<500&&!hid;r+=25){
        for(var a=0;a<6.28&&!hid;a+=0.09){
          var qx=Math.round(p.x+Math.cos(a)*r), qy=Math.round(p.y+Math.sin(a)*r);
          if(!__nav.free(qx,qy,10)) continue;
          if(__los.clear(p.x,p.y,qx,qy)) continue;
-         if(trial(qx,qy,true)>150) hid={x:qx,y:qy};   // mine bypasses the gate
+         if(trial(qx,qy,true)>NEED) hid={x:qx,y:qy};   // mine bypasses the gate
        }
      }
-     if(!hid) return 'could not find a hidden spot where a ripple is drawable at all';
+     if(!hid) return 'could not find a hidden spot where a ripple draws at least '+NEED+' pixels, against '+REF+' on the player';
      var bad=[];
-     var leak=trial(hid.x,hid.y,false);
+     // Back to back, both through the noise guard.
+     var mineNow=steady(hid.x,hid.y,true);
+     var leak=steady(hid.x,hid.y,false);
+     if(mineNow===null||leak===null)
+       return 'SKIP: three readings at the same spot disagreed, so the renderer would not hold still';
      if(leak>0) bad.push('a pillager ripple behind a wall drew '+leak+' pixels');
      // CONTROL: your own wake must still draw, or the fix was to delete ripples.
-     if(trial(hid.x,hid.y,true)<=0) bad.push('control: your own ripples stopped drawing too');
+     if(mineNow<Math.round(REF*0.3))
+       bad.push('control: your own ripple at that spot drew '+mineNow+' pixels against '+REF+' on the player');
      return bad.length?bad.join('; '):null; }},
   {v:'8.91',what:'the three in-raid panels are twice the size, at every resolution, and never touch',
    run:function(){

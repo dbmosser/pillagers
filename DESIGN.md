@@ -27443,6 +27443,76 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## HARNESS - THE SECOND PIXEL CHECK, AND IT WAS NOT THE SAME FAULT
+
+No version bump: the game file is byte-identical to v9.51. This is the harness.
+
+### The audit I promised
+
+Last tick I fixed one canvas check and said eleven of them read pixels and at
+least four more graded against numbers I had typed in. So I ran **every one of the
+eleven six times back to back** on one page and looked for the disease.
+
+**Ten came back clean.** v8.89 failed one run in six:
+
+> a pillager ripple behind a wall drew 1136 pixels
+
+### It was not the v8.85 fault, and it was not a real leak either
+
+Both had to be ruled out before touching anything.
+
+**Not the threshold.** A ripple draws 174 pixels on the player and up to 186 in
+the ring this check scans, against its typed-in 150. The margin is comfortable,
+unlike v8.85 where 150 sat above a real signal of 144.
+
+**Not the game.** I enumerated the hidden spots the check can pick and measured a
+pillager decal at every one: **24 spots for ripples and 30 for footprints, zero
+leaked.** Every single one: 186 for your own wake, 0 for a pillager's.
+
+So 1136 pixels changed between two shots and the decal was not what changed them.
+The check could not tell those two cases apart, so it blamed the game.
+
+### Three attempts, and only the third one worked
+
+**A null pair at the same moment.** Two shots with an empty decal list taken
+immediately before the one that matters, and throw the reading away if they
+disagree. The very next replay produced "drew 1470 pixels" with the null pair
+agreeing exactly. So it is not a background animation; it is something that
+happens when the decals go in.
+
+**Count only near the decal.** A print at a world point changes pixels near that
+point on screen, so the diff now runs inside a 200 pixel box around where the
+decal lands. That cut the false reading from 1470 to 327, and the check still
+failed one run in ten.
+
+**Require the reading to repeat.** A real leak is deterministic: the game either
+draws through a wall or it does not, so a genuine reading comes back identical
+every time. Contamination does not. The check now takes two measurements and
+believes them only if they agree, with a third to break a tie, and otherwise says
+the renderer would not hold still.
+
+I stopped chasing the contaminant at that point. Three separate measurements say
+the game is clean, and the rule above cannot hide a real leak.
+
+### The proof, both directions, on both checks
+
+| | v8.85 | v8.89 |
+| --- | --- | --- |
+| twelve runs on the current build | **12 pass** | **12 pass** |
+| four runs on v8.84, before the leak was fixed | **4 catches, "drew 150 pixels"** | **4 catches, "drew 186 pixels"** |
+
+The second row is the whole argument. Every catch reports the identical number,
+which is exactly why a rule that demands a repeat cannot soften a real finding.
+
+Not verified: what is actually contaminating the frame. Three lines of evidence
+say it is not the game and not the threshold, and the check now refuses to report
+a number it cannot reproduce, but I do not know what draws those pixels. If it
+ever turns out to matter it will show as a SKIP rather than as a false finding,
+which is the outcome I wanted. Not verified: the nine other canvas checks beyond
+the six runs each they got in the sweep. Six clean runs is evidence, not proof,
+and none of them has had its thresholds read the way these two now have.
+
+
 ## HARNESS - A CHECK THAT PASSED ONCE PER PAGE AND CRIED WOLF AFTER THAT
 
 No version bump: the game file is byte-identical to v9.51. This is the harness.
