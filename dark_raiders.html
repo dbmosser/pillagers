@@ -1162,7 +1162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.78';
+var VER='8.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10162,6 +10162,7 @@ function findHeal(){
 // it always did and finishes the job, so every existing caller is untouched.
 function openContainer(ct,onlyKeys){
   if(onlyKeys){ grantLoot(ct,onlyKeys); return; }
+  var _wnDelay=0;   // v8.79: set by the windfall roll below, read by the grant
   // Searching is messy. Two or three bits of discarded packing hit the ground
   // beside every container you rifle through, and they stay: a looted district
   // LOOKS looted on the walk back, which is his litter answer working as
@@ -10216,17 +10217,21 @@ function openContainer(ct,onlyKeys){
       ct.loot=ct.loot.concat([wk]);
       ct.windfall=1;
       T.windfalls=(T.windfalls||0)+1;
+      // v8.79: hold it back far enough to clear the last staged item, which is
+      // granted on the very frame the search bar fills, which is this frame.
+      _wnDelay=0.55;
       if(!G.sim){
         say('There is something under it.');
-        label(ct.x,ct.y-30,'WINDFALL','#ffc04a',0,true);
+        // v8.79, his note: the shouted WINDFALL caption is gone. The sound and
+        // the sparks stay, which is the part he said could stay.
         spark(ct.x,ct.y,'#ffc04a',30,320);
         sfx('charge',ct.x,ct.y);
       }
     }
   }
-  grantLoot(ct,ct.loot);
+  grantLoot(ct,ct.loot,_wnDelay);
 }
-function grantLoot(ct,keys){
+function grantLoot(ct,keys,delay0){
   var p=G.player,T=G.tel;
   for(var l=0;l<keys.length;l++){
     var key=keys[l],itm=ITEMS[key];
@@ -10235,9 +10240,13 @@ function grantLoot(ct,keys){
     // panel that follows it - tier rarity, not the economy row.
     var _gdr=dispR(key)||itm.r;
     // one line per item; label() stacks them into a column so they never overlap
+    // v8.79: l*0.34, not 0. These all fired on the same frame and arrived as a
+    // block; they are dealt one at a time now. The windfall extra is appended to
+    // the loot array, so it lands last and on its own, which is the case he
+    // called out by name.
     label(ct.x,ct.y-10,
       itm.name+(itm.use==='ammo'?' +'+itm.amt+' ammo':(itm.use==='armor'&&p.armor<armorCap()?' +'+Math.round(Math.min(armorCap()-p.armor,itm.amt))+' armor':' '+ival(key)+'c')),
-      RCOL[_gdr],0,_gdr==='rare'||_gdr==='elite'||_gdr==='gold',key);
+      RCOL[_gdr],(delay0||0)+l*0.34,_gdr==='rare'||_gdr==='elite'||_gdr==='gold',key);
     if(itm.use==='ammo') p.reserve+=itm.amt;   // SPEC 6.4: one universal pool
     // A plate is worth 55 but only applied below 20 armour, so deploying with a
     // plate from stash put you at 55 and made every plate you then found dead
@@ -13113,7 +13122,10 @@ if(e.state==='possum'){
         e.downed=1; e.downT=RAIDER_DOWN_T; e.hp=1;
         e.state='down'; e.alert=0; e.goal=null; e.cd=Math.max(e.cd||0,1);
         if(!G.sim){
-          label(e.x,e.y-16,(e.name||'PILLAGER')+' IS DOWN','#ffc04a',0,true);
+          // v8.79, his wording: DOWNED here, ELIMINATED on the kill below. These
+          // were "IS DOWN" and "DOWN", which is the same word for a man who can
+          // be picked back up and a man who cannot.
+          label(e.x,e.y-16,(e.name||'PILLAGER')+' DOWNED','#ffc04a',0,true);
           blip('hit');
         }
         continue;
@@ -13266,7 +13278,7 @@ if(e.state==='possum'){
       // shoot each other, so an ungated label prints readable text through walls
       // telling you something died and exactly where.
       if(canSee(p.x,p.y,p.face,e.x,e.y,G.vseg))
-        label(e.x,e.y-16,(e.name||e.kind.toUpperCase())+' DOWN',e.kind==='raider'?'#ff5a4a':'#ffc04a',0,true);
+        label(e.x,e.y-16,(e.name||e.kind.toUpperCase())+(e.kind==='raider'?' ELIMINATED':' DOWN'),e.kind==='raider'?'#ff5a4a':'#ffc04a',0,true);
       if(e.kind!=='raider') decal(e.x,e.y,'#241a10',rnd(14,22));
       spark(e.x,e.y,e.kind==='raider'?'#c8452f':'#ffc04a',22,300);
       if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:e.kind==='raider'?'#c8452f':'#ffc04a',r:26});
@@ -15988,7 +16000,7 @@ function w2s(x,h,z){ var q=ZOOM(); return {x:(x-VX)*q,y:(z-VY)*q-h}; }
 // Camera zoom. Stored on the profile so it survives between raids, since it is
 // a comfort setting rather than a per-raid choice. 1 is the framing every build
 // before this shipped with.
-var ZMIN=0.65,ZMAX=2.0;
+var ZMIN=0.85,ZMAX=3.0;   // v8.79: was 0.65 and 2.0, both ends per his note
 // Wheel zoom was three separate problems wearing one coat, all of which read as
 // "not fluid":
 //   1. Every notch snapped. setZoom wrote straight to the value the renderer
@@ -20225,7 +20237,8 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
       // v8.67, his wording. Both of these stated the same rule in two different
       // sentences one line apart; they now use his.
       else if(_inRing&&_shipDown){ _msg='HOLD E TO EXTRACT'; _sub='Extracting while downed is permitted'; }
-      else if(_inRing){ _msg='EXTRACTION INBOUND'; _sub='Stay down. Extracting while downed is permitted'; _col='#ffc04a'; }
+      // v8.79, his note: "when extracting and down, get rid of 'stay down'".
+      else if(_inRing){ _msg='EXTRACTION INBOUND'; _sub='Extracting while downed is permitted'; _col='#ffc04a'; }
       else if((dist(p,G.active)-G.active.r)<=300){ _msg='CRAWL TO THE RING'; _sub=_shipDown?('Extraction closes in '+fmtMS(Math.max(0,Math.ceil(G.shipHold)))):'Extraction inbound'; _col='#ff5a4a'; }
       // v8.68, his wording, and the NEAREST one rather than the one the HUD
       // happens to be pointing at. closestRingDist is the same helper the
@@ -23015,28 +23028,56 @@ function drawHubHUD(ox,oy){
   // itself current silently and never sees the card; the card greets the player
   // it was written for, the one coming back.
   if(!WNSEEN){
-    ctx.font=FS(TYPE.label);
-    var wnTx=0;
-    for(var wm=0;wm<WHATSNEW.length;wm++) wnTx=Math.max(wnTx,ctx.measureText((wm+1)+'. '+WHATSNEW[wm]).width);
-    var wnW=Math.min(W-LH(40),Math.max(LH(430),Math.ceil(wnTx)+LH(36)));
-    var wnH=LH(56)+WHATSNEW.length*LH(17);
-    var wnX=W/2-wnW/2, wnY=H/2-wnH/2-LH(20);
+    // v8.79, HIS NOTE: "the NEW IN vXXX text is too small". Two sizes up on the
+    // heading and one on the body, which is only possible because the entries
+    // wrap now instead of each being one unbroken centred line. Two passes: try
+    // the bigger body size, and if the wrapped block would not fit the screen,
+    // fall back one size. That fallback is the reason this cannot overflow the
+    // bottom the way the old card overflowed the sides.
+    var wnRole='head',wnRows=[],wnW=0,wnH=0,wnLH=0,wnGaps=0;
+    for(var wtry=0;wtry<2;wtry++){
+      wnRole=wtry?'label':'head';
+      wnLH=wtry?LH(20):LH(25);
+      ctx.font=FS(TYPE[wnRole]);
+      wnW=Math.min(W-LH(60),LH(1000));
+      wnRows=[]; wnGaps=0;
+      for(var wm=0;wm<WHATSNEW.length;wm++){
+        var wWords=((wm+1)+'. '+WHATSNEW[wm]).split(' '),wLine='',wFirst=1;
+        for(var ww=0;ww<wWords.length;ww++){
+          var wCand=wLine?(wLine+' '+wWords[ww]):wWords[ww];
+          if(wLine&&ctx.measureText(wCand).width>wnW-LH(44)){
+            wnRows.push({t:wLine,gap:!!(wFirst&&wm)}); if(wFirst&&wm) wnGaps++;
+            wFirst=0; wLine=wWords[ww];
+          } else wLine=wCand;
+        }
+        if(wLine){ wnRows.push({t:wLine,gap:!!(wFirst&&wm)}); if(wFirst&&wm) wnGaps++; }
+      }
+      wnH=LH(90)+wnRows.length*wnLH+wnGaps*LH(7);
+      if(wnH<=H-LH(60)) break;
+    }
+    var wnX=W/2-wnW/2, wnY=H/2-wnH/2-LH(10);
     ctx.fillStyle='rgba(6,9,13,.94)'; ctx.fillRect(wnX,wnY,wnW,wnH);
     ctx.strokeStyle='#3a4552'; ctx.lineWidth=1; ctx.strokeRect(wnX+.5,wnY+.5,wnW-1,wnH-1);
     ctx.textAlign='center';
-    ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
+    ctx.font=FS(TYPE.title); ctx.fillStyle='#ffc04a';
     // WHATSNEW_VER, not VER: the list belongs to the build that last changed it,
     // and naming the current build made the card claim these were its changes.
     // "NEW IN", not "UPDATED TO", v6.35: WHATSNEW_VER deliberately lags VER, so
     // "UPDATED TO v6.26" was read by a v6.34 player as a claim about THEIR build,
     // and it was false. "NEW IN" says the same thing about the list instead, which
     // is what the number actually describes, and cannot go stale.
-    ctx.fillText('NEW IN v'+WHATSNEW_VER,W/2,wnY+LH(22));
-    ctx.font=FS(TYPE.label); ctx.fillStyle='#cdd6dd';
-    for(var wq=0;wq<WHATSNEW.length;wq++)
-      ctx.fillText((wq+1)+'. '+WHATSNEW[wq],W/2,wnY+LH(42)+wq*LH(17));
+    ctx.fillText('NEW IN v'+WHATSNEW_VER,W/2,wnY+LH(32));
+    ctx.textAlign='left';
+    ctx.font=FS(TYPE[wnRole]); ctx.fillStyle='#cdd6dd';
+    var wnCy=wnY+LH(52);
+    for(var wq=0;wq<wnRows.length;wq++){
+      if(wnRows[wq].gap) wnCy+=LH(7);
+      wnCy+=wnLH;
+      ctx.fillText(wnRows[wq].t,wnX+LH(22),wnCy);
+    }
+    ctx.textAlign='center';
     ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
-    ctx.fillText('press ENTER or walk to dismiss',W/2,wnY+wnH-LH(8));
+    ctx.fillText('press ENTER or walk to dismiss',W/2,wnY+wnH-LH(12));
     ctx.textAlign='left';
     if(p.moving){ WNSEEN=1; }
   }
@@ -23663,7 +23704,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.78: an item on the hotbar is no longer also sitting in the backpack. It is in one place or the other.',
+  now:'v8.79: looted items are dealt one at a time, the NEW IN card is readable, and the mouse zoom goes closer in and less far out.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

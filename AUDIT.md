@@ -183,3 +183,33 @@ STILL OPEN:
 | Too many footsteps when sprinting | his report, not yet reproduced |
 | ESC should pause in the Undercroft | |
 | The roll graphic is WRONG in the Undercroft | |
+
+## HIS NOTES, 2026-09-01 session, live queue
+Shipped v8.79: NEW IN card too small; mouse zoom range; WINDFALL caption;
+loot items popping all at once; DOWN/DOWN instead of DOWNED/ELIMINATED.
+
+OPEN, in the order he sent them:
+- CRAWLERS INDOORS. "need crawlers to spawn indoors more often" and "every house
+  should be a gamble bc likely to be a crawler or 3 in there".
+- GUN NAME AND RARITY DISAGREE. "i have a weapon of blue rarity but it says its a
+  'gold burst carbine'". His screenshot shows two blue belt tiles and the prompt
+  line reading Gold Burst Carbine. Suspect the quality word and the tier colour
+  are two different scales sharing one noun.
+- THE HUD IS TOO SMALL. "all this shit needs to be bigger on screen", with
+  screenshots of the vitals block (STANDING / ARMOUR / STAMINA / HP) and the belt
+  row with the prompt line above it.
+- RESOLUTION. "game needs to be playable at 1080p, 1440p or 4k".
+- CRAWLER DAMAGE. "crawler doing too much damage now" and "its like crawlers hit
+  multiple times in too rapid a succession". Read that second line first: it is a
+  hit CADENCE report, not a damage-per-hit report, so measure the interval
+  between a crawler's landed hits before touching any damage number.
+- HOTBAR BIGGER, and VISIBLE IN THE UNDERCROFT.
+- I IN THE UNDERCROFT should open the simple inventory, not the stash.
+- ROLL GRAPHIC IN THE UNDERCROFT still wrong: "player doesn't turn into a rolly
+  ball" on space. Third time he has reported this; whatever I fixed was not it.
+- DOWN SCREEN WORDING, his exact replacements:
+  "Crawl or bleed out" and
+  "You are bleeding out.  Crawl to open extraction point if possible"
+- EXTRACTED SCREEN: "Claim it at the Mainframe".
+- EXTRACTED/DEATH SCREEN: drop "Anything you drank or took is gone".
+- XP CEILING: "what happens at 1.2m XP? death screen isn't clear".

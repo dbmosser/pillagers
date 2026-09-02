@@ -27443,6 +27443,62 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.79 - SIX OF HIS NOTES FROM ONE SITTING
+
+**"the NEW IN vXXX text is too small".** It was, and it could not simply be
+enlarged. Measured at 1920x1080: the longest entry rendered 1799px wide inside a
+card whose own cap is 1858px. The card was already touching both edges of the
+screen, and one size up would have run 2286px, off the side. Nothing wrapped, so
+each entry was a single centred line, the entries set the width, and the width
+forced the smallest readable font in the game. It wraps now, left aligned, and
+the card went from 18.7px text in a 1858x357 strip to 23.4px in a 1560x902
+panel. If the wrapped block will not fit the screen it steps back down one size,
+which is why this cannot overflow the bottom the way the old one ran off the
+sides.
+
+**"the 'zoom with mouse' zooms out too far and doesn't zoom in close enough".**
+Measured across a 1920 screen: 5.6 map cells at the old floor of 0.65, 3.7 at 1,
+1.8 at the old ceiling of 2.0. Now 0.85 to 3.0, which is 4.3 cells at the far end
+and 1.2 at the close end. No migration: a profile saved at the old floor is
+clamped into the new range by the line that already reads P.zoom through the same
+limits.
+
+**"get rid of the 'WINDFALL' text when looting -- noise for rare loot can stay
+tho".** The caption is gone. The sound, the sparks and the "something under it"
+line stay.
+
+**"items should always pop one at a time when looting, i don't like how the
+'windfall' gives both at the same time".** My first pass at this was wrong and I
+caught it on the play path: a three item crate ALREADY deals one at a time, at
+frames 35, 72 and 108, because staged pulls call the open once per key. The
+windfall is the exception. It is rolled by the FULL open, which runs the instant
+the search bar fills, and the last staged item is granted on that same frame, so
+the two arrive together. That is the case he named, and a per-item stagger could
+never reach it because those calls carry one key each. The grant takes a starting
+delay now and the windfall uses it, so it lands clear of the item already on its
+way out.
+
+**"pillagers get 'DOWNED' then 'ELIMINATED' -- not 'DOWN' and 'DOWN'".** Two
+different events printed the same word: going to the floor said "NAME IS DOWN",
+being killed said "NAME DOWN". Machines keep DOWN, since a machine is not
+eliminated.
+
+**"when extracting and down, get rid of 'stay down'".** Gone. It sat in front of
+the only line on that screen doing work.
+
+Verified: parse PASS. Both sectors to their fingerprints, 58 and 276. Streams
+identical live and sim on both. Looting on both with no throw and the clock
+advancing. Three endings correct. Real frames drawn on both maps at 0.85, 1 and
+3.0 with nothing thrown, which is the check that matters for raising the zoom
+ceiling. 23 regression checks pass, including a new one for the windfall timing
+that carries its own control: a plain single item must still be immediate, so it
+cannot pass by delaying everything.
+
+Not verified: I could not photograph the NEW IN card, because it draws on the
+Undercroft floor and the fixture cannot get through the door; its size is
+measured rather than seen. I also did not re-check the card at 175 and 200
+percent text size, though the step-down pass exists precisely for that and it
+fits at 120 percent with 84px to spare.
 ## v8.78 - AN ITEM IS IN THE BACKPACK OR ON THE BELT, NEVER IN BOTH
 
 Your rule, verbatim: "INVENTORY = BACKPACK + HOTBAR. Items can be in one or the

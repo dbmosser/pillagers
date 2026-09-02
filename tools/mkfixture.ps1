@@ -552,6 +552,11 @@ window.__simPaired=function(seeds,dialsA,dialsB){
 };
 window.__setHot=function(i){ return setHot(i); };
 window.__loot=function(){ return LOOT; };
+// v8.79: the FULL open, the path that rolls a windfall. Named __openFull rather
+// than __open so it cannot be confused with the staged pull, which is what live
+// play actually uses and which grants one key at a time.
+window.__openFull=function(ct){ return openContainer(ct); };
+window.__grant=function(ct,keys,delay0){ return grantLoot(ct,keys,delay0); };
 // The item table and its icon renderer, so "does every item draw" can be
 // answered instead of assumed. A blank cell in his stash is a shipped bug.
 window.__items=function(){ return ITEMS; };
@@ -1405,6 +1410,37 @@ window.__REGRESS=[
      if(grid({7:'medkit',6:'medkit',5:'medkit'}).indexOf('medkit')>=0) bad.push('all three bound and a medkit still draws');
      // The store itself is never touched by any of this.
      if((__state().bag||[]).length!==5) bad.push('the bag store lost items, it should only be the DRAW that changes');
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.79',what:'a windfall item lands clear of the item the search bar was already delivering',
+   run:function(){
+     __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
+     var g=__state(); g.sim=0; g.labels.length=0;
+     var ct=null;
+     for(var i=0;i<g.containers.length;i++) if((g.containers[i].loot||[]).length>=2){ ct=g.containers[i]; break; }
+     if(!ct) return 'no container with 2 items to test with';
+     var bad=[];
+     // Control first: a plain grant with no windfall must still start at once,
+     // so this cannot pass by delaying everything.
+     g.labels.length=0;
+     // Real keys, taken from the game's own tables rather than typed from
+     // memory. My first version invented two and threw on ITEMS[key].r.
+     var K3=[],WK=null;
+     for(var ik in ITEMS){ if(K3.length<3) K3.push(ik); }
+     for(var wi=0;wi<WINDFALL.length;wi++) if(ITEMS[WINDFALL[wi]]){ WK=WINDFALL[wi]; break; }
+     if(K3.length<3||!WK) return 'could not find real item keys to test with';
+     __grant(ct,[K3[0]],0);
+     if(!g.labels.length) return 'control: a plain grant drew no label at all';
+     if(g.labels[0].t>0.01) bad.push('a plain single item is being delayed, it should be immediate');
+     // Several keys in one grant must be dealt out, not dumped on one frame.
+     g.labels.length=0;
+     __grant(ct,K3,0);
+     if(g.labels.length===3&&Math.abs(g.labels[2].t-g.labels[0].t)<0.2)
+       bad.push('three items in one grant all start together');
+     // And the windfall case: a starting delay must actually reach the label.
+     g.labels.length=0;
+     __grant(ct,[WK],0.55);
+     if(g.labels.length&&g.labels[0].t>-0.5)
+       bad.push('the windfall delay is not reaching the label, t='+g.labels[0].t);
      return bad.length?bad.join('; '):null; }}
 ];
 window.__regress=function(){
@@ -1420,6 +1456,30 @@ window.__regress=function(){
 };
 // v8.58: the DOM panels that COMPUTE their contents, so a probe can read the
 // real rendered text instead of redoing the arithmetic and grading itself.
+window.__type={
+  // the rendered px of a TYPE role at the current text size, not the source px
+  px:function(role){ var m=/([\d.]+)px/.exec(FS(TYPE[role])); return m?+m[1]:null; },
+  lh:function(n){ return LH(n); },
+  scale:function(){ return uiScale(); },
+  // how wide the widest line of a list of strings renders in a given role
+  widest:function(role,arr,pre){
+    var c=document.createElement('canvas').getContext('2d');
+    c.font=FS(TYPE[role]); var m=0,who=-1;
+    for(var i=0;i<arr.length;i++){
+      var w=c.measureText((pre?((i+1)+'. '):'')+arr[i]).width;
+      if(w>m){ m=w; who=i; }
+    }
+    return {px:Math.round(m),line:who+1,n:arr.length};
+  },
+  whatsnew:function(){ return WHATSNEW.slice(); },
+  ver:function(){ return WHATSNEW_VER; }
+};
+window.__zoom={min:function(){ return ZMIN; },max:function(){ return ZMAX; },
+               get:function(){ return zoomTarget(); },
+               set:function(z){ setZoom(z,true); return zoomTarget(); },
+               // how many map tiles fit across the screen at a given zoom
+               tiles:function(z){ var g=__state(); if(!g||!g.map) return null;
+                 return +( (cv.width/(window.devicePixelRatio||1)) /z/g.map.cw ).toFixed(1); }};
 window.__ui={sector:function(){ return renderSector(); },
              hub:function(){ return renderHub(); },
              stats:function(){ return renderStatCards(); }};
