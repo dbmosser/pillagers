@@ -27443,6 +27443,63 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.22 - TAKING ONE THING NO LONGER READS OUT THE REST OF THE BOX
+
+REPRODUCED by pulling a single item from a container holding three:
+
+    the box holds   Meridian Black Box, Meridian Reactor Core, Sealed Codex
+    he pulls        the Black Box, and only the Black Box reaches his bag
+    the game says   "Found: Meridian Black Box, Meridian Reactor Core, Sealed Codex"
+
+It names the two he has not taken.
+
+THAT IS THE WHOLE STAGED PULL GIVEN AWAY. v1.61 built staged pulls so that
+"breaking off early keeps everything you have already pulled and leaves the best
+thing in the box", and its own note says this "makes every container a small
+version of the raid: one more thing, or get out". There is no decision left once
+the game has read out what is still inside. It is the same rule as his note behind
+v8.99: a box must not tell you what it is worth before you open it.
+
+WHY. The line announced ct.loot, the container's CONTENTS, rather than keys, the
+things actually handed over. The comment above it assumed those are the same
+because "after staged pulls the list is usually empty by the time the full open
+runs". True of the full open. False of every staged pull, which is the path that
+runs twenty times a raid.
+
+THE FULL OPEN IS UNCHANGED BY CONSTRUCTION, because it passes ct.loot in as the
+keys, so it prints the identical string it always printed.
+
+MEASURED AFTER: pulling the Black Box says "Found: Meridian Black Box" and nothing
+else. A full open of a servo and some scrap still says both.
+
+Verified: parse PASS v9.22. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 65 regression checks
+pass in sequence, none skipped.
+
+The check fails on a fixture built from v9.21 with the message quoted back at it.
+Three controls: it must still name what he DID take, so going silent cannot pass;
+the item must still reach his bag; and a full open must still list everything it
+gave, so a fix that only ever named one thing would gut the ordinary open.
+
+TWO THINGS CHECKED AND CLOSED, neither of them a defect. The audit note that the
+extraction pull drags a Listener off its hunt: I could not drive the pull from
+frames last tick, so this time I exposed the extraction tick and called it
+directly. The conscription pass ran and took three machines, and the Listener was
+not one of them: its pull marker stayed empty and it kept hunting. What DID move
+was its heard position, to the ring, and that is its own ears working exactly as
+documented - the comment beside them names the beacon and the siege as two of the
+four sounds loud enough to reach a Listener. Not a defect, and the note is closed.
+
+Not verified: the container's own on-screen label is untouched, so anything it
+showed before it is opened is unchanged by this; I drove grantLoot directly for
+the measurement because a held-key search would not engage in my setup, so the
+message is proved at the function that writes it rather than through a live hold
+of E; the voice cue now picks its sound from what was taken rather than from the
+box, which is the same correction but was not listened to.
+
 ## v9.21 - THE RECORDER COUNTS THE DAMAGE THAT REACHED HIM
 
 v9.20 fixed the table he reads and its own "Not verified" line said the flight

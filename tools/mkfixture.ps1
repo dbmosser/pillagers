@@ -3505,6 +3505,42 @@ window.__REGRESS=[
      p.iv=0; __arm.hurt(10,'sentry','SENTRY',p.x+20,p.y);
      var keys=0; for(var k in g.tel.dmg) keys++;
      if(keys<2) bad.push('control: two different attackers collapsed into '+keys+' entry in the recorder');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.22',what:'taking one thing out of a crate does not read out what is still inside',
+   run:function(){
+     var bad=[];
+     __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player; g.ents.length=0; p.iv=99;
+     function box(){ for(var i=0;i<g.containers.length;i++) if(g.containers[i].loot&&!g.containers[i].opened) return g.containers[i]; return null; }
+     var ct=box();
+     if(!ct) return 'no unopened container to pull from';
+     // DISTINCTIVE ON PURPOSE: three elites nothing else would produce, so a
+     // message naming the wrong ones cannot be mistaken for a coincidence.
+     ct.loot=['blackbox','reactor','codex']; ct.opened=false;
+     g.msg=''; g.bag=[];
+     __grant(ct,['blackbox']);
+     var said=String(g.msg||'');
+     // Measured before v9.22: pulling the Black Box alone printed
+     // "Found: Meridian Black Box, Meridian Reactor Core, Sealed Codex".
+     if(/Reactor Core/.test(said)) bad.push('a single pull still names the Reactor Core left in the box: "'+said+'"');
+     if(/Sealed Codex/.test(said))  bad.push('a single pull still names the Sealed Codex left in the box: "'+said+'"');
+     // CONTROL 1: it must still say what he DID take, or going silent would pass
+     // both lines above and take away the only feedback a pull has.
+     if(!/Black Box/.test(said)) bad.push('control: the pull no longer names the thing he actually took: "'+said+'"');
+     if(g.bag.indexOf('blackbox')<0) bad.push('control: the pull did not reach his bag at all');
+     // CONTROL 2: THE FULL OPEN IS UNCHANGED. It hands the whole contents in as
+     // the keys, so it must still read out every item. A fix that only ever named
+     // one thing would satisfy everything above and gut the ordinary open.
+     var ct2=box();
+     if(ct2){
+       ct2.loot=['servo','scrap']; ct2.opened=false;
+       g.msg=''; g.bag=[];
+       __grant(ct2,ct2.loot);
+       var said2=String(g.msg||'');
+       if(!/Servo/.test(said2)||!/Scrap/.test(said2))
+         bad.push('control: a full open no longer lists everything it gave: "'+said2+'"');
+     }
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
@@ -3557,6 +3593,10 @@ window.__type={
 // v9.18: the DOM menu zoom, so a check can pin it instead of inheriting whatever
 // the last check left. titleRes is the screen half of it and menuZoom is his
 // text-size choice; the title screen multiplies the two.
+// v9.22: the extraction tick, so the siege and its conscription pass can be
+// driven directly. Stepping frames never reached it: __loop rewrites the beacon
+// clock every frame, so the two second re-ping never came due.
+window.__extract={tick:function(dt){ return tickExtractPoints(dt===undefined?1/60:dt); }};
 window.__menuZoom={apply:function(){ return applyMenuZoom(); },
                    titleRes:function(){ return titleRes(); },
                    get:function(){ return (P&&P.menuZoom)||1; },
