@@ -309,3 +309,43 @@ and limitations.
   [FIRE] use [V] signal" line are drawn over the belt cells.
 - TEXT COLLIDING WITH THE STAMINA BAR: STANDING chip sits on the STAMINA bar.
   Confirmed again at 4K with a screenshot.
+- GREENBELT: his question "wtf is that? an old map?". It is a live DISTRICT
+  palette name (one of several) and contracts reference it, but the name appears
+  exactly once in the file, in the colour table. The game never labels a district
+  anywhere he can see, so "Search 2 containers in GREENBELT" names a place he has
+  no way to find. Either show district names in the world and on the map, or stop
+  writing them into contracts.
+
+## HIS 50 CONFIRMATIONS, 2026-09-01. What NOT to touch, and what he corrected.
+CONFIRMED, DO NOT WORK ON: shooting is loud (4); rolling is for dodging (6);
+grenades situational (7); stuck in place while looting (8, but see below); one
+item at a time (9); loot fully or walk away (11); litter marks a looted
+container (13); extraction is the loudest thing (14); 30s window (15); extract
+while downed (16); ride someone else pull (17); death loses the bag (18);
+pillagers are competitors (19); their haul is a reason to hunt (20); they extract
+without you (21); silly handles (22); revive a pillager (23); Undercroft is a
+place you walk (24); stations not one terminal (25); unlimited stash (26); ascent
+screen (28); grid inventory (29); rarity colour on the tile (30); nine belt slots
+(31); dragging is primary (32); right click menu (33); vitals bottom left (34);
+belt bottom centre, off centre is fine (35); board top left (36); conditions top
+right (37); two sectors (40); hand-authored maps (41); water (43); weather (44);
+credits and XP separate (45); guns found not bought (46); no tutorial popup (49);
+the death sequence is good (50).
+
+HE CORRECTED ME, THESE ARE NEW WORK:
+- 1. What kills him is PILLAGERS and MULTI-ENEMY ATTACKS AT EXTRACTS, not crawlers.
+- 2. Three crawlers should NOT necessarily beat him.
+- 3. Sentries should be FIGHTABLE, and he never sees them.
+- 5. The chase-breaker is crouching IN A BUSH specifically.
+- 8. HE SHOULD BE ABLE TO FIRE WHILE LOOTING.
+- 10. NO WINDFALL. Remove the windfall system entirely.
+- 12. Any container can spawn any item; only the probabilities change by type.
+- 27. THE PEDDLER IS INSIDE THE RAIDS. I had him in the Undercroft.
+- 38. Panels resizable by the corners (shipped v8.93) AND the cursor must become
+  a CONTEXTUAL SYMBOL over a panel: drag, resize, minimise, normal pointer,
+  instead of staying the aiming reticle.
+- 39. He never sees the noise visualiser. He wants it real: a crawler on the far
+  side of a wall should show LITTLE RED CIRCLES marking the noise.
+- 41. Loot and enemy spawns must change every raid.
+- 47. Contract is completed in the raid, the reward is claimed at the Mainframe.
+- 48. WIRT should sell one special item for 10k that changes HOURLY.

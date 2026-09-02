@@ -1185,7 +1185,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.92';
+var VER='8.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8562,6 +8562,13 @@ cv.addEventListener('mousemove',function(e){
     HD.dx=HUDDRAG.dx+(mouse.x-HUDDRAG.mx);
     HD.dy=HUDDRAG.dy+(mouse.y-HUDDRAG.my);
   }
+  // v8.93: dragging the corner grip. The new size is the old size times how much
+  // further the pointer is from the panel origin than it was when he grabbed.
+  if(HUDRESIZE){
+    P.hud=P.hud||{}; var HR=P.hud[HUDRESIZE.id]=P.hud[HUDRESIZE.id]||{};
+    var _d=Math.max(8,Math.hypot(mouse.x-HUDRESIZE.ox,mouse.y-HUDRESIZE.oy));
+    HR.z=clamp(HUDRESIZE.z0*(_d/HUDRESIZE.d0),0.5,2.5);
+  }
 });
 cv.addEventListener('mousedown',function(e){
   // MARK A WAYPOINT. While the map is up the click belongs to the map and must
@@ -8625,6 +8632,21 @@ cv.addEventListener('mousedown',function(e){
       var HB2=HUDBOX[hk];
       if(!HB2) continue;
       if(inRect(HB2,mouse.x,mouse.y)){
+        // v8.93: the resize corner wins, because it is the smallest target on
+        // the panel and anything that beat it would make the grip feel dead.
+        if(HUDZ[hk]!==undefined){
+          var _gs=hudGripS();
+          var _gx=HB2.x+HB2.w,_gy=HB2.y+HB2.h;
+          if(mouse.x>=_gx-_gs&&mouse.x<=_gx&&mouse.y>=_gy-_gs&&mouse.y<=_gy){
+            // The diagonal from the panel origin to the pointer IS the size, so
+            // the panel tracks the corner under his hand rather than a guess.
+            HUDRESIZE={id:hk,z0:hudUserZ(hk),
+              d0:Math.max(8,Math.hypot(mouse.x-HB2.x,mouse.y-HB2.y)),
+              ox:HB2.x,oy:HB2.y};
+            blip('pick');
+            return;
+          }
+        }
         if(inRect(HB2.tg,mouse.x,mouse.y)){
           P.hud=P.hud||{}; P.hud[hk]=P.hud[hk]||{};
           P.hud[hk].c=!P.hud[hk].c; saveProfile(); blip('pick');
@@ -8644,6 +8666,7 @@ cv.addEventListener('mousedown',function(e){
 });
 window.addEventListener('mouseup',function(e){
   if(HUDDRAG){ HUDDRAG=null; try{ saveProfile(); }catch(_e2){} }
+  if(HUDRESIZE){ HUDRESIZE=null; try{ saveProfile(); }catch(_e3){} }
   if(e.button===2){ if(G) G.player.ads=false; }
   // DROP. Released over a quickbar cell, the item is assigned to that slot;
   // released anywhere else the drag is simply abandoned, which is what every
@@ -20513,6 +20536,29 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     ctx.restore();
     if(HUDBOX.raiders) HUDBOX.raiders=hudZoomRect('raiders',0,0,HUDBOX.raiders);
   }
+  // v8.93: the resize grips. Every panel that can be scaled gets three short
+  // diagonal strokes in its bottom right corner, which is the shape every window
+  // in every program has used for this since before he was born. Drawn from
+  // HUDBOX, which is already in screen space, so this needs no transform of its
+  // own and cannot disagree with where the mouse thinks the corner is.
+  (function(){
+    var gs=hudGripS();
+    for(var gk in HUDZ){
+      var GB=HUDBOX[gk]; if(!GB) continue;
+      if(hudOff(gk).c) continue;              // collapsed panels have no corner
+      var gx=GB.x+GB.w, gy=GB.y+GB.h;
+      var hot=(HUDRESIZE&&HUDRESIZE.id===gk)||
+              (mouse.x>=gx-gs&&mouse.x<=gx&&mouse.y>=gy-gs&&mouse.y<=gy);
+      ctx.strokeStyle=hot?'rgba(255,192,74,.95)':'rgba(140,152,163,.45)';
+      ctx.lineWidth=Math.max(1,gs*0.075);
+      for(var gi=1;gi<=3;gi++){
+        var f=gi/4*gs;
+        ctx.beginPath();
+        ctx.moveTo(gx-f,gy-2); ctx.lineTo(gx-2,gy-f);
+        ctx.stroke();
+      }
+    }
+  })();
   if(G.mapOpen) drawMapOverlay();
 }
 // EVERYTHING KNOWN ABOUT AN ITEM, as [label,value] rows. Shared by the stash
@@ -20877,7 +20923,7 @@ if(e.steady) return 'AIMING';
 // shot over furniture that is not there. The [-]/[+] glyph is the collapse
 // toggle; anywhere else on the panel starts a drag. Offsets and the collapsed
 // flag persist on the profile under P.hud.
-var HUDBOX={},HUDDRAG=null;
+var HUDBOX={},HUDDRAG=null,HUDRESIZE=null;
 // HOW BIG EACH CORNER IS, v8.08, his order. The bars, the gear stack and the
 // belt were laid out in hand-placed pixels at a smaller target; he plays at
 // 1080p or larger and asked for all three bigger. A scale about the corner the
@@ -20889,7 +20935,21 @@ var HUDBOX={},HUDDRAG=null;
 // never in this table at all, so the two builds that made the HUD bigger both
 // walked past them. He asked for twice, so twice, and the screen factor below
 // still multiplies it on a larger monitor.
-var HUDZ={body:1.40, gear:1.36, raiders:2.0, legend:2.0, cond:2.0};
+// v8.93: the three panels drop from 2.0 to 1.5, which is the 75 percent he
+// asked for. He plays at 4K, where the screen factor multiplies this by 1.9, so
+// 2.0 was landing as 3.8 while I was measuring 2.0 at 1080p.
+var HUDZ={body:1.40, gear:1.36, raiders:1.5, legend:1.5, cond:1.5};
+// v8.93: and the size is his, not mine. A grip in the bottom right corner of any
+// panel scales it, saved on the profile beside the position and the collapsed
+// flag. Clamped so a panel cannot be shrunk into nothing or grown off the screen.
+function hudUserZ(k){
+  var o=(P&&P.hud&&P.hud[k])||{};
+  var z=(typeof o.z==='number'&&o.z>0)?o.z:1;
+  return clamp(z,0.5,2.5);
+}
+// How big the corner grip is, in screen pixels, and how far in from the edge the
+// hit box reaches. Generous, because a grip you cannot grab is not a grip.
+function hudGripS(){ return LH(20); }
 // v8.91: where the legend grows FROM. Its own bottom edge, taken from the box it
 // records for the mouse, so it rises into the gap above the vitals instead of
 // being lifted off the bottom of the screen into the pillager board. Null on the
@@ -20907,13 +20967,13 @@ function hudRes(){
 }
 // The corner transforms, written once. sx,sy is the anchor the block grows from.
 function hudZoomIn(k,ax,ay){
-  var z=(HUDZ[k]||1)*hudRes();
+  var z=(HUDZ[k]||1)*hudRes()*hudUserZ(k);
   ctx.translate(ax,ay); ctx.scale(z,z); ctx.translate(-ax,-ay);
   return z;
 }
 // A rectangle in unscaled space, mapped to where it actually lands on screen.
 function hudZoomRect(k,ax,ay,r){
-  var z=(HUDZ[k]||1)*hudRes();
+  var z=(HUDZ[k]||1)*hudRes()*hudUserZ(k);
   return {x:ax+(r.x-ax)*z, y:ay+(r.y-ay)*z, w:r.w*z, h:r.h*z,
           tg:r.tg?{x:ax+(r.tg.x-ax)*z, y:ay+(r.tg.y-ay)*z, w:r.tg.w*z, h:r.tg.h*z}:undefined};
 }
@@ -23911,7 +23971,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.92: the mouse wheel goes three times closer than it could. The old ceiling put 640 world units on screen and would not budge.',
+  now:'v8.93: drag the corner of any HUD panel to size it yourself, and it remembers. The three big ones start a quarter smaller.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

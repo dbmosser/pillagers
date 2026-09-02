@@ -27443,6 +27443,60 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.93 - THE PANEL SIZE IS HIS NOW, NOT MINE
+
+His note: "now these are TOO BIG, can you make it where I can just grab the corner
+and adjust it and the size changes accordingly? default should only be about 75%
+of current size."
+
+HE PLAYS AT 4K, which he told me in the same breath and which is the whole story.
+v8.91 set those three panels to 2.0, and the screen factor added at v8.81
+multiplies by 1.9 on a 4K panel, so what he actually received was 3.8 times the
+old size while I was measuring 2.0 at 1080p and calling it verified. Every layout
+number I have quoted at him this session has been a 1080p number.
+
+TWO CHANGES. The base drops to 1.5, which is his 75 percent. And the size stops
+being my decision: every panel with an entry in the scale table now has a grip in
+its bottom right corner, drawn as the three diagonal strokes every window in
+every program has used for this, and dragging it scales the panel. The scale is
+saved on the profile beside the position and the collapsed flag those panels
+already keep.
+
+Measured, the pillager board:
+    v8.91 default at 1080p     668 x 352
+    now, default at 1080p      501 x 264      exactly 75 percent
+    now, default at 4K        1002 x 528      was 1904 x 1003 at v8.91
+    now, grip at its minimum   251 x 132
+    now, grip at its maximum  1253 x 660
+
+The grip is proven on the play path with real mouse events: grab the corner, drag
+out, and the board goes 501x264 to 704x371 with the scale saved to the profile.
+Three controls. Dragging the MIDDLE of the panel must not resize it, or the grip
+is not a grip and every reposition would rescale by accident. An absurd saved
+scale must not draw a panel wider than the screen. A tiny one must not collapse
+it to nothing.
+
+I read a working grip as broken once during this build. The handler is gated on
+the bag and the map being closed, and a leftover bagOpen from an earlier probe
+was blocking the whole HUD mouse path. The control that found it was clicking the
+collapse glyph, which has worked since v3.64: it fired, so the events were
+landing and the fault was in my setup rather than the code.
+
+The v8.91 size check failed this build and it was right to. It demanded twice the
+old share and the target moved to 1.5 on his instruction, so the check moved with
+it to 1.4 rather than being deleted, and it now clears any saved user scale first
+so the previous check's grip drag cannot decide its verdict.
+
+Verified: parse PASS. Both sectors to their fingerprints, entities 58 and 276 and
+containers 155 and 589. Streams identical live and sim. Looting on both with no
+throw and the clock advancing. Three endings correct. Hub renders. 36 regression
+checks pass, none failed and none skipped.
+
+Not verified: I did not photograph this at 4K, only measured the boxes, which is
+the exact gap that let v8.91 ship too big. The grip is also only proven on the
+pillager board; the other four panels share the code path but were not each
+dragged. And the cursor does not change shape over a panel yet, which he asked
+for in the same breath as confirming the grip.
 ## v8.92 - THE WHEEL GOES THREE TIMES CLOSER
 
 His note: "need to be able to zoom in closer on player with mouse wheel during

@@ -1871,6 +1871,10 @@ window.__REGRESS=[
      for(var si=0;si<SIZES.length;si++){
        var SW=SIZES[si][0], SH=SIZES[si][1], tag=SW+'x'+SH;
        __forceSize(SW,SH);
+       // v8.93 added a per-panel user scale saved on the profile. This check is
+       // about the DEFAULT, so clear it, or the previous check's grip drag picks
+       // the answer.
+       var _P=__P(); _P.hud={};
        __resetCfg(); __pinDefaults(0);
        __deploy({kit:['medkit'],safe:null,mapIx:0,seed:4242});
        var g=__state(); g.player.iv=99;
@@ -1880,9 +1884,13 @@ window.__REGRESS=[
        ['raiders','legend','cond'].forEach(function(k){
          var got=B[k];
          // the old share of a 1920x1080 screen, doubled, is the bar
-         var wantW=(was[k][0]/1920)*SW*1.9, wantH=(was[k][1]/1080)*SH*1.9;
+         // 1.4, not 1.9: he asked at v8.93 for 75 percent of the v8.91 size once
+         // he saw it at 4K, where the screen factor was multiplying it by 1.9.
+         // The floor is the default with no user scale; the corner grip can take
+         // it lower and that is his business, not this check's.
+         var wantW=(was[k][0]/1920)*SW*1.4, wantH=(was[k][1]/1080)*SH*1.4;
          if(got.w<wantW||got.h<wantH)
-           bad.push(k+' at '+tag+' is '+got.w+'x'+got.h+', under twice its old share of the screen');
+           bad.push(k+' at '+tag+' is '+got.w+'x'+got.h+', under 1.4x its old share of the screen');
        });
        // CONTROL ONE: doubling two panels that grow toward each other made them
        // overlap by 106px on my first attempt. Any touching pair fails.
@@ -1932,6 +1940,60 @@ window.__REGRESS=[
        for(var f3=0;f3<6;f3++) __loop(performance.now()+f3*16.7);
      });
      __zoom.set(1);
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.93',what:'a HUD panel can be resized by its corner grip, and the default dropped to 75 percent',
+   run:function(){
+     // Real mouse events against real canvas coordinates, so a collapsed pane
+     // with a zero sized canvas rect would measure nothing.
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, canvas rects are zero and no click can land';
+     __forceSize(1920,1080);
+     var P=__P(); P.hud={};
+     __resetCfg(); __pinDefaults(0);
+     __deploy({kit:['medkit'],safe:null,mapIx:0,seed:4242});
+     var g=__state(); g.player.iv=99;
+     // Leftover bagOpen from an earlier check blocks the whole HUD mouse path,
+     // which is what made me read a working grip as broken the first time.
+     g.bagOpen=false; g.mapOpen=false;
+     for(var f=0;f<20;f++) __loop(performance.now()+f*16.7);
+     var B=__hud().box.raiders;
+     if(!B) return 'the pillager board did not draw';
+     var bad=[];
+     // v8.91 shipped these at 2.0 and he said too big at 4K; 1.5 is his 75 pct.
+     if(Math.abs(B.w-501)>12||Math.abs(B.h-264)>12)
+       bad.push('the default board is '+B.w+'x'+B.h+', it should be about 501x264');
+     var cv=document.getElementById('cv'), r=cv.getBoundingClientRect();
+     function ev(t,x,y,tgt){ (tgt||cv).dispatchEvent(new MouseEvent(t,
+       {button:0,bubbles:true,clientX:r.left+x,clientY:r.top+y})); }
+     function drag(fx,fy,tx,ty){
+       ev('mousemove',fx,fy); ev('mousedown',fx,fy);
+       ev('mousemove',tx,ty); ev('mouseup',tx,ty,window);
+       for(var q=0;q<8;q++) __loop(performance.now()+q*16.7);
+     }
+     // THE GRIP: grab the bottom right corner and pull out.
+     drag(B.right-6,B.bottom-6,B.right+200,B.bottom+105);
+     var z1=(__P().hud.raiders||{}).z, B1=__hud().box.raiders;
+     if(!(z1>1.05)) bad.push('dragging the corner did not scale the panel, z is '+z1);
+     if(!(B1.w>B.w+40)) bad.push('the panel did not actually get bigger, '+B.w+' then '+B1.w);
+     // AND IT IS REMEMBERED, which is the half that makes it worth having.
+     if(!((__P().hud.raiders||{}).z>1.05)) bad.push('the new size was not saved on the profile');
+     // CONTROL ONE: the middle of the panel must NOT resize it, or the grip is
+     // not a grip and every drag of the panel would rescale it by accident.
+     P.hud={};
+     for(var f2=0;f2<12;f2++) __loop(performance.now()+f2*16.7);
+     var B2=__hud().box.raiders;
+     drag(B2.x+B2.w/2,B2.y+B2.h/2,B2.x+B2.w/2+160,B2.y+B2.h/2+90);
+     if(((__P().hud.raiders||{}).z||1)!==1) bad.push('control: dragging the middle of the panel resized it');
+     // CONTROL TWO: it is clamped, so the wheel of a big pull cannot make a
+     // panel that swallows the screen or vanishes.
+     P.hud={raiders:{z:99}};
+     for(var f3=0;f3<12;f3++) __loop(performance.now()+f3*16.7);
+     var B3=__hud().box.raiders;
+     P.hud={raiders:{z:0.001}};
+     for(var f4=0;f4<12;f4++) __loop(performance.now()+f4*16.7);
+     var B4=__hud().box.raiders;
+     if(B3.w>1920) bad.push('an absurd saved scale drew a panel wider than the screen, '+B3.w);
+     if(B4.w<60) bad.push('a tiny saved scale collapsed the panel to '+B4.w+'px');
+     P.hud={};
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
