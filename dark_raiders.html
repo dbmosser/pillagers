@@ -792,12 +792,10 @@
 </div>
 <div class="modal" id="sectormodal">
   <h3>Where are you going?</h3>
-  <!-- v8.76, his question: "seal progress? doesn't that reset across raids?" The
-       old line listed the seal beside the stash, credits and contracts, which all
-       survive a death, and the seal does not: measured, cutting is banked only on
-       an extraction and is lost on a death or an abandon. It is also per sector,
-       so it is not "yours everywhere" in the sense the other three are. -->
-  <div class="msub">Sectors are not reskins of each other. Your stash, your credits and your contracts follow you everywhere. The seal belongs to its own sector and only banks the seconds you cut if you walk out alive. What changes is the ground you have to work.</div>
+  <!-- v9.53, his instruction, verbatim: "this language is useless, delete it
+       completely". The blurb that stood here since v8.76 is gone. The two sector
+       cards below carry their own description and their own measured numbers,
+       which is the part he reads. -->
   <div id="sectorlist"></div>
   <div id="sectorkit" style="margin-top:11px;font-size:11px;padding:8px 10px;
        border:1px solid var(--steel-hi);border-radius:3px"></div>
@@ -1213,7 +1211,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.52';
+var VER='9.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5218,6 +5216,13 @@ function uiScale(){
   // canvas CSS height kept by resize(), so this is a variable read rather than a
   // layout-forcing measurement.
   var h=(typeof H==='number'&&H>0)?H:720;
+  // v9.53: THE 1.2 CEILING STAYS, and it is not an oversight. Everything drawn
+  // in the HUD is already multiplied by hudRes(), which is 2 on a 4K screen, so
+  // letting this rise as well counts the screen twice. I tried raising it to 1.9
+  // and the backpack came back 11 columns wide at 1080p and 7 at 4K, because the
+  // tiles grew 3x inside a window that grew 2x and the grid reflowed to fit. The
+  // reticle, which is what he was actually reporting, was never scaled by this
+  // or by anything else: see the hudRes() applied to it directly.
   return clamp(1+(h-720)/720*0.4,1,1.2);
 }
 var _fs={};
@@ -16855,6 +16860,13 @@ function resize(){
   // canvas: the reticle is drawn off-screen and there is no cursor anywhere,
   // with the game otherwise looking completely normal. Clamped on every resize.
   mouse.x=clamp(mouse.x,0,W); mouse.y=clamp(mouse.y,0,H);
+  // v9.53: the fit is measured, so it has to be re-measured when the room
+  // changes. Without this, going fullscreen leaves the title at the size it was
+  // computed for in a window. Guarded: applyMenuZoom writes widths, a width can
+  // move a scrollbar, and a scrollbar can fire resize, which is a loop.
+  if(typeof applyMenuZoom==='function'&&!resize._in){
+    resize._in=1; try{ applyMenuZoom(); }catch(_mz){} resize._in=0;
+  }
 }
 window.addEventListener('resize',resize);
 // World to screen for the HUD layer, which is always drawn unscaled on top.
@@ -20207,10 +20219,18 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
             :rState==='empty'?'rgba(255,192,74,.95)'
             :rState==='reload'?'rgba(255,192,74,.85)'
             :(p.ads?'rgba(255,190,90,.95)':'rgba(230,240,246,.85)');
-var gap=p.ads?3.5:(8+(p.recoil>0?p.recoil*7:0)+(G.sprinting?5:0));
-    if(rState) gap=Math.max(gap,11);
-    var len=p.ads?5:7;
-    ctx.strokeStyle=rCol; ctx.lineWidth=rState?2:1.6;
+    // v9.53, HIS REPORT AT 4K: "reticule is tiny". It was drawn from literal
+    // pixel numbers, an arm 7 long and a gap of 8, scaled by nothing whatsoever,
+    // so on a 3840 wide screen the thing you aim with was seven pixels of line.
+    // It gets the screen factor the rest of the HUD has had since v8.81, which
+    // is exactly 1 at 1920x1080, so the reticle does not move at the size the
+    // last fifty builds were tested at. The line width goes with it, or the arms
+    // get longer while staying hairlines.
+    var _rz=hudRes();
+    var gap=(p.ads?3.5:(8+(p.recoil>0?p.recoil*7:0)+(G.sprinting?5:0)))*_rz;
+    if(rState) gap=Math.max(gap,11*_rz);
+    var len=(p.ads?5:7)*_rz;
+    ctx.strokeStyle=rCol; ctx.lineWidth=(rState?2:1.6)*_rz;
     ctx.beginPath();
     ctx.moveTo(rx0-gap-len,ry0); ctx.lineTo(rx0-gap,ry0);
     ctx.moveTo(rx0+gap,ry0); ctx.lineTo(rx0+gap+len,ry0);
@@ -20237,7 +20257,7 @@ var gap=p.ads?3.5:(8+(p.recoil>0?p.recoil*7:0)+(G.sprinting?5:0));
     var _gunUp=(!_HB||_HB.kind==='gun');
     if(_gunUp&&!rState&&p.wep&&p.wep.mag>0){
       var _mf=clamp(p.ammo/p.wep.mag,0,1);
-      var _mr=gap+len+4;
+      var _mr=gap+len+4*_rz;
       var _mc=_mf>0.5?'230,240,246':(_mf>0.25?'255,192,74':'224,72,58');
 // v4.05 HIS NOTE: "amt of bullets in clip shown on mouse cursor needs to
       // be thicker/more obvious/more animated". Three answers in one: the ring
@@ -25091,7 +25111,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.52: the fan a crew opens when it loses you was not guaranteed to be a fan. Two men could be handed the same bearing and search the same ground; they claim one of five sectors each now, and each takes the far side from where he stands.',
+  now:'v9.53: the interface stopped growing at 1080p. The reticule and the whole HUD were drawn laptop-sized on a 4K screen, the menus were 1.9 times smaller than the title screen behind them, and the title screen ran off the bottom. All three scale with the screen now.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -27933,14 +27953,41 @@ function titleRes(){
 }
 function applyMenuZoom(){
   var z=(P&&P.menuZoom)||1;
-  var hb=document.getElementById('hub'); if(hb) hb.style.zoom=z;
-  document.querySelectorAll('.modal,.pausebox,.outcome,#hub').forEach(function(m){ m.style.zoom=z; });
+  // v9.53: THE MENUS GET THE SCREEN FACTOR TOO. v8.88 gave it to the title
+  // screen alone, so at 4K the title was 1.9 times the size of every menu behind
+  // it and his sector page came out unreadable at maximum browser zoom.
+  // A modal is inset:0, so it is already exactly the screen and zooming it would
+  // make it larger than the screen. An element at zoom Z fills the viewport when
+  // it is 100/Z percent of it, so the zoom and the size go on together.
+  // A modal is inset:0 and a percentage resolves in the element's own zoomed
+  // space, so it still fills the screen exactly at any zoom and the zoom only
+  // scales what is inside it. Which is the whole thing that was wanted. My first
+  // cut of this divided the width by the zoom to compensate for an overflow that
+  // does not happen, and shrank every menu to three quarters of the window.
+  var _sf=z*titleRes();
+  document.querySelectorAll('.modal,.pausebox,.outcome,#hub').forEach(function(m){
+    m.style.zoom=_sf;
+  });
   // v8.88, his note: the title screen was in none of those lists, so the first
   // screen anybody sees was the one screen that ignored the text size setting.
   // It also gets the screen factor, because it is fixed pixels all the way down
   // and was therefore the same size on a 1080p laptop and a 34 inch ultrawide.
+  // v9.53: AND IT HAS TO FIT. His report: "when I enter the title screen, I
+  // don't want to have to scroll down to see the bottom. I am testing in 4k."
+  // Measured on a fresh profile the content ran 192 pixels past the bottom at
+  // 4K and 10 past it at 1440p, and his screenshot has a saves list under the
+  // fold, so the height is not even a constant. The zoom is asked for, then
+  // measured against the room there is, and reduced until it fits.
   var _ti=document.getElementById('title');
-  if(_ti) _ti.style.zoom=z*titleRes();
+  if(_ti){
+    var _want=z*titleRes(), _col=_ti.querySelector('.titlecol');
+    if(_col){
+      _ti.style.zoom=1;
+      var _nat=_col.scrollHeight, _room=(window.innerHeight||1080)*0.985;
+      if(_nat>0&&_nat*_want>_room) _want=Math.max(0.7,_room/_nat);
+    }
+    _ti.style.zoom=_want;
+  }
 }
 document.addEventListener('wheel',function(e){
   // ANY menu surface, which is the fix: a modal on its own is enough, and the

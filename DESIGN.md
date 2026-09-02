@@ -38971,3 +38971,67 @@ old golden angle as an overflow. I reasoned that it degrades evenly rather than
 stacking, and I did not build a stand with six pillagers to watch it. Not
 verified: any effect on how hard the game is. The measurement above is about
 where men choose to look, not about whether you get away.
+
+## v9.53 - THE INTERFACE STOPPED GROWING AT 1080p AND HE PLAYS AT 4K
+
+Four of his reports in one sitting, all at 4K with the browser already at
+maximum zoom: the sector page text is tiny, the reticule is tiny, the title
+screen needs scrolling, and one line of copy had to go. Measured first, fresh
+profile:
+
+| screen | uiScale | title zoom | modal zoom | title overflows by |
+| --- | --- | --- | --- | --- |
+| 1920x1080 | 1.20 | 1.30 | 1.30 | 0 |
+| 2560x1440 | 1.20 | 1.73 | 1.30 | 10 px |
+| 3840x2160 | 1.20 | 2.47 | 1.30 | **192 px** |
+
+### The menus never got the screen factor
+
+v8.88 gave the title screen a `titleRes()` multiplier and gave it to nothing
+else, so **at 4K the title screen was 1.9 times the size of every menu behind
+it.** That is the sector page he screenshotted. The modals get it now.
+
+**My own mistake, caught by looking rather than reasoning.** I thought an
+element at zoom Z would need to be 100/Z percent wide to still fill the screen,
+wrote that, measured 1475 wide on a 1920 screen, and a screenshot showed the
+sector page occupying three quarters of the window with dead space down the
+right. A percentage width resolves in the element's own zoomed space, so 100
+percent already fills the parent at any zoom. The compensation is gone and the
+modal now measures 1918x1078 on a 1920x1080 screen.
+
+### The title screen now measures itself
+
+The zoom was applied blind and nothing checked the result still fit, and the
+saves list means the content height is not even a constant. It is measured
+against the room available and reduced until it fits, so **the title screen
+cannot scroll at any resolution with any number of saves.**
+
+### The reticule, and the lever I pulled first was wrong
+
+I raised the `uiScale` ceiling from 1.2 to 1.9 to answer "reticule is tiny", and
+the v9.13 check failed: **the backpack came back 11 columns at 1080p and 7 at
+4K.** That check exists to enforce same shape, bigger, and it was right. The 1.2
+clamp is not an oversight: everything in the HUD is already multiplied by
+`hudRes()`, which is 2 at 4K, so raising uiScale as well grows the UI 3x inside a
+window that grew 2x and the grid reflows to fit.
+
+**The reticle was never scaled by anything at all.** Its arms are literal
+numbers, a length of 7 and a gap of 8, touched by neither knob. Seven pixels of
+line on a 3840 wide screen. It gets `hudRes()` now, which is exactly 1 at
+1920x1080, so nothing moves at the size the last fifty builds were tested at.
+
+### And the line he wanted gone
+
+His instruction, verbatim: "this language is useless, delete it completely". The
+sector blurb that stood since v8.76 is deleted. The two sector cards below it
+carry their own description and their own measured numbers, which is the part
+he reads.
+
+Not verified: how any of this looks on a real 4K monitor. Every number here was
+measured through the forced-size harness on a 1920x1080 pane, which moves the
+game's own W and H but not the browser's window, so the title fit was proved
+against a 1080 tall viewport rather than a 2160 one. That direction is the
+conservative one, but it is not the same as him looking at it. Not verified: the
+1440p and 4K appearance of every other menu that now gets the screen factor. I
+checked that the sector page fills the viewport exactly and that all 94 corpus
+checks still pass at 1080p; I did not open each of the other panels at each size.

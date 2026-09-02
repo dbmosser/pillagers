@@ -5777,6 +5777,14 @@ window.__zoom={min:function(){ return ZMIN; },max:function(){ return ZMAX; },
                // how many map tiles fit across the screen at a given zoom
                tiles:function(z){ var g=__state(); if(!g||!g.map) return null;
                  return +( (cv.width/(window.devicePixelRatio||1)) /z/g.map.cw ).toFixed(1); }};
+// The size knobs, readable. uiScale drives everything drawn on the canvas, which
+// includes the reticule and the HUD; titleRes is the screen factor and until now
+// only the title screen was given it.
+window.__scale={ui:function(){ return uiScale(); },
+                title:function(){ return titleRes(); },
+                apply:function(){ applyMenuZoom(); },
+                lift:function(){ return TEXTLIFT; },
+                px:function(spec){ return FS(spec); }};
 window.__ui={sector:function(){ return renderSector(); },
              hub:function(){ return renderHub(); },
              stats:function(){ return renderStatCards(); }};

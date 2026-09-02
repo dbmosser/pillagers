@@ -488,6 +488,7 @@ AND THE SECOND HALF OF THE STRETCH:
 | HIS INSTRUCTION: say what the game wants to run in | v9.50 | a note under the version line, and the title screen tightened so it still fits at 720p, where it had been overflowing by 8 pixels since v9.18 and by 28 once the note went on |
 | machines converged on the last sighting the way pillagers used to | v9.51 | four sentries in chase, none able to see him, all four steering at 400,660 TO THE UNIT and every one of them holding the role pin. The sector picker is one function at file scope now instead of a copy in each branch |
 | the crew fan opened at v9.47 did not guarantee a fan | v9.52 | 4 of 12 stands on THE COLD MILE sent two men to points 100 units apart or less, worst pair 14 units, because the arc summed a golden angle with a term three times larger than the gap it opens. Five claimable sectors now. The v9.47 check had been passing it on a single lucky stand |
+| the interface stopped growing at 1080p | v9.53 | the menus never got the screen factor the title screen got, so at 4K they were 1.9x smaller than the title in front of them; the title screen ran 192px off the bottom; and the reticle was drawn from literal numbers scaled by nothing, seven pixels of line on a 3840 screen. My first cut raised uiScale instead and the v9.13 backpack check caught it: 11 columns at 1080p, 7 at 4K, because the HUD already multiplies by hudRes |
 
 STILL OPEN, and this is now the whole list:
 - THE GAME DEMOLISHES A FIFTH OF ITS OWN BUILDINGS. 16 of the 84 on THE COLD MILE
