@@ -27443,6 +27443,65 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.15 - THE REST OF THE SECTOR MAP FOLLOWS THE MONITOR
+
+v9.14 scaled the writing on the sector map, and that entry said plainly that the
+marker dots and the frame lines were still fixed pixel sizes and untouched. This
+is that, finished.
+
+REPRODUCED, and it took three attempts to measure honestly, which is worth
+recording because two of them looked like answers. Scanning for the purple cache
+ring caught the purple label sitting beside it. Scanning across the frame caught
+the district fill behind it. The clean signal is the strip of frame that sits
+OUTSIDE the map rectangle, where nothing else is drawn at all:
+
+    1920x1080   the frame reaches 4 pixels out, offsets -4,-3,-2,-1
+    3840x2160   the frame reaches 4 pixels out, offsets -4,-3,-2,-1
+    the frame   1.00x
+    the map     2.15x
+
+So the map was more than twice the size on a 4K screen with its frame, its cache
+rings, its encampment and locked-door markers and the key dot all still drawn at
+their 1080p pixel size.
+
+THE SAME FACTOR THE TEXT ALREADY USES. _MZ is the hudRes() that v9.14 put at the
+top of this function, so the chrome and the writing now scale together and there
+is one number governing the whole surface rather than two ideas about it. It is
+exactly 1 at 1920x1080, so that screen does not move.
+
+MEASURED AFTER: the frame reaches 4 pixels out at 1080p and 9 at 4K, so 2.25x
+against a map that grew 2.15x.
+
+Verified: parse PASS v9.15. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 58 regression checks
+pass in sequence, none skipped.
+
+The check fails on a fixture built from v9.14 with "the map frame reaches 4px out
+at 1080p and 4px at 4K, only 1.00x, on a map that grew 2.15x; the cache ring is
+still a fixed 9px radius; the encampment marker is still a fixed 5px radius; the
+key marker is still a fixed 3.2px radius". Three controls: 1080p must still reach
+exactly 4 pixels, so a 4K fix cannot disturb the screen he already has; the three
+marker radii are asserted individually, so scaling the frame alone and leaving
+half the chrome at 1080p cannot pass; and the map itself must still scale, or a
+frame that grew while the map stopped would satisfy the ratio and be a worse
+screen than before.
+
+THE MARKERS ARE CHECKED BY READING THE FUNCTION, not by pixels, and that is a
+deliberate weaker choice rather than an oversight. A marker ring cannot be
+isolated in pixels with a label of the same colour beside it, which is exactly
+what defeated two of my three measurement attempts. The frame is measured in
+pixels and the markers are asserted against the source of the one function that
+draws them.
+
+Not verified: how the map reads on his actual screen, since this is measured as
+pixel reach and source text rather than looked at; whether the bigger markers now
+crowd each other or their labels on a busy map, which the declutter pass walks
+apart but which I did not measure; the district fills and water rectangles always
+scaled with the map and were not part of this.
+
 ## v9.14 - THE WRITING ON THE SECTOR MAP FOLLOWS THE MONITOR
 
 Same family as the backpack at v9.13, this time on the surface he navigates by.

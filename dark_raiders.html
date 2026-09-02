@@ -1186,7 +1186,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.14';
+var VER='9.15';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22508,11 +22508,13 @@ function drawMapOverlay(){
   ctx.fillStyle='rgba(9,12,34,.94)'; ctx.fillRect(0,0,W,H);
   var _MP=mapProj(),sc=_MP.sc,ox=_MP.ox,oy=_MP.oy;
   // double frame, matching the windows in the terminal
-  ctx.strokeStyle='#2f4394'; ctx.lineWidth=3;
-  ctx.strokeRect(ox-3,oy-3,WORLD_W*sc+6,WORLD_H*sc+6);
-  ctx.strokeStyle='#7f92d8'; ctx.lineWidth=1.5;
+  // v9.15: the frame follows the screen too. Measured before this: 4 pixels
+  // thick outside the map rect at 1080p AND at 4K, on a map that grew 2.15x.
+  ctx.strokeStyle='#2f4394'; ctx.lineWidth=3*_MZ;
+  ctx.strokeRect(ox-3*_MZ,oy-3*_MZ,WORLD_W*sc+6*_MZ,WORLD_H*sc+6*_MZ);
+  ctx.strokeStyle='#7f92d8'; ctx.lineWidth=1.5*_MZ;
   ctx.strokeRect(ox,oy,WORLD_W*sc,WORLD_H*sc);
-  ctx.lineWidth=1;
+  ctx.lineWidth=1*_MZ;
   ctx.font=FS(TYPE.label); ctx.fillStyle='#ffc04a';
   ctx.fillText('SECTOR MAP',ox,oy-10);
   // fixed offsets collided with the scaled font; walk a cursor instead
@@ -22588,8 +22590,8 @@ function drawMapOverlay(){
   for(i=0;i<(G.map.spawns||[]).length;i++){
     var SM=G.map.spawns[i];
     var mx3=ox+SM.x*sc,my3=oy+SM.y*sc;
-    ctx.strokeStyle='rgba(180,196,210,.55)'; ctx.lineWidth=1.5;
-    ctx.beginPath(); ctx.arc(mx3,my3,5,0,6.2832); ctx.stroke();
+    ctx.strokeStyle='rgba(180,196,210,.55)'; ctx.lineWidth=1.5*_MZ;
+    ctx.beginPath(); ctx.arc(mx3,my3,5*_MZ,0,6.2832); ctx.stroke();
   }
   // Meridian caches are marked, because a guaranteed jackpot you never find is the
   // same as no jackpot. Marked whether or not you have been there, so the route
@@ -22601,10 +22603,10 @@ function drawMapOverlay(){
     var qx=ox+CQ.x*sc, qy=oy+CQ.y*sc;
     var qp=.6+.4*Math.sin(G.t*2.6+i);
     ctx.globalAlpha=CQ.opened?.35:1;
-    ctx.strokeStyle='#e0a0ff'; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.arc(qx,qy,9+2*qp,0,6.2832); ctx.stroke();
+    ctx.strokeStyle='#e0a0ff'; ctx.lineWidth=2*_MZ;
+    ctx.beginPath(); ctx.arc(qx,qy,(9+2*qp)*_MZ,0,6.2832); ctx.stroke();
     ctx.fillStyle='#e6b4ff';
-    ctx.beginPath(); ctx.arc(qx,qy,3.5,0,6.2832); ctx.fill();
+    ctx.beginPath(); ctx.arc(qx,qy,3.5*_MZ,0,6.2832); ctx.fill();
     mapLabel(CQ.opened?'LOOTED':'CACHE',qx,qy-15,'#e6b4ff');
     ctx.globalAlpha=1;
   }
@@ -22613,7 +22615,7 @@ function drawMapOverlay(){
   for(i=0;i<(G.camps||[]).length;i++){
     var CM=G.camps[i];
     var cqx=ox+CM.x*sc,cqy=oy+CM.y*sc;
-    ctx.strokeStyle='#ff5040'; ctx.lineWidth=2;
+    ctx.strokeStyle='#ff5040'; ctx.lineWidth=2*_MZ;
     ctx.beginPath();
     ctx.moveTo(cqx,cqy-9); ctx.lineTo(cqx+9,cqy); ctx.lineTo(cqx,cqy+9); ctx.lineTo(cqx-9,cqy); ctx.closePath();
     ctx.stroke();
@@ -22627,12 +22629,12 @@ function drawMapOverlay(){
   for(i=0;i<lkm.length;i++){
     var LKM=lkm[i];
     var lqx=ox+LKM.x*sc,lqy=oy+LKM.y*sc,lqw=LKM.w*sc,lqh=LKM.h*sc;
-    ctx.strokeStyle=LKM.open?'rgba(127,196,160,.8)':'#ffc04a'; ctx.lineWidth=2;
+    ctx.strokeStyle=LKM.open?'rgba(127,196,160,.8)':'#ffc04a'; ctx.lineWidth=2*_MZ;
     ctx.strokeRect(lqx,lqy,lqw,lqh);
     ctx.lineWidth=1;
     var kcx=lqx+lqw/2,kcy=lqy+lqh/2-3;
     ctx.fillStyle=LKM.open?'rgba(127,196,160,.9)':'#ffc04a';
-    ctx.beginPath(); ctx.arc(kcx,kcy,3.2,0,6.2832); ctx.fill();
+    ctx.beginPath(); ctx.arc(kcx,kcy,3.2*_MZ,0,6.2832); ctx.fill();
     ctx.beginPath(); ctx.moveTo(kcx-2.2,kcy+7.5); ctx.lineTo(kcx+2.2,kcy+7.5); ctx.lineTo(kcx,kcy+1); ctx.closePath(); ctx.fill();
     mapLabel((LKM.name||'LOCKED ROOM')+(LKM.open?'  ·  OPEN':'  ·  LOCKED'),lqx+lqw/2,lqy-6,LKM.open?'#7fc4a0':'#ffc04a');
   }
@@ -24496,7 +24498,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.14: the writing on the sector map follows your monitor too. The map grew with the screen and its labels never did.',
+  now:'v9.15: the sector map markers and frame follow your monitor as well, so the whole map scales together now.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

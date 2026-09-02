@@ -3141,6 +3141,55 @@ window.__REGRESS=[
        bad.push('control: the vitals panel is '+(vb?Math.round(vb.w):'missing')+'px wide at 1080p, it should be 532 - the map font has leaked into the HUD');
      // CONTROL 3: bigger writing must still fit on the screen it is drawn on.
      if(b.tw>3840) bad.push('control: the 4K map heading is wider than the screen');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.15',what:'the sector map markers and frame scale with the monitor, like its writing does',
+   run:function(){
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, there are no pixels to read';
+     var bad=[];
+     // HOW FAR THE FRAME REACHES OUTSIDE THE MAP RECTANGLE. That strip is the one
+     // place on this screen with nothing else drawn in it: scanning across the
+     // frame catches the district fill behind it and scanning for a marker ring
+     // catches the label beside it, both of which fooled me before I found this.
+     function frameReach(W2,H2){
+       __forceSize(W2,H2); __resetCfg(); __pinDefaults(0); __zoom.set(1,true);
+       __deploy({kit:['medkit'],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.ents.length=0; g.player.iv=99;
+       for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
+       __mapOverlay();
+       var m=g.map, WW=m.cols*m.cw, WH=m.rows*m.ch;
+       var pad=70, sc=Math.min((W2-pad*2)/WW,(H2-pad*2)/WH);
+       var ox=(W2-WW*sc)/2, oy=(H2-WH*sc)/2;
+       var y=Math.round(oy+WH*sc/2), x0=Math.max(0,Math.round(ox)-40), w=Math.min(40,W2-x0);
+       var d=document.getElementById('hcv').getContext('2d').getImageData(x0,y,w,1).data;
+       var far=0;
+       for(var x=0;x<w;x++){ var i=x*4;
+         if(d[i+3]>60&&d[i+2]>d[i]+20&&d[i+2]>90){
+           var off=Math.round(ox)-(x0+x);
+           if(off>0&&off>far) far=off; } }
+       return {reach:far, scale:sc};
+     }
+     var a=frameReach(1920,1080), b=frameReach(3840,2160);
+     __forceSize(1920,1080);
+     if(!a.reach) return 'the map frame was not found at 1080p, so there is nothing to compare';
+     var mg=b.scale/a.scale, fg=b.reach/a.reach;
+     // Measured before v9.15: the frame reached exactly 4 pixels out at BOTH
+     // resolutions while the map itself grew 2.15x.
+     if(fg<1.7) bad.push('the map frame reaches '+a.reach+'px out at 1080p and '+b.reach+'px at 4K, only '+fg.toFixed(2)+'x, on a map that grew '+mg.toFixed(2)+'x');
+     // CONTROL 1: 1080p unchanged. It was 4 pixels before this build and after it.
+     if(a.reach!==4) bad.push('control: the 1080p frame reaches '+a.reach+'px, it was 4');
+     // CONTROL 2: the markers must scale too, not just the frame, or half the
+     // chrome is still stuck at 1080p. Read off the source of the one function
+     // that draws them, because a marker ring cannot be isolated in pixels with
+     // a label sitting next to it.
+     var src=(typeof drawMapOverlay==='function')?String(drawMapOverlay):'';
+     if(src){
+       if(/arc\(qx,qy,9\+2\*qp,/.test(src)) bad.push('the cache ring is still a fixed 9px radius');
+       if(/arc\(mx3,my3,5,/.test(src))      bad.push('the encampment marker is still a fixed 5px radius');
+       if(/arc\(kcx,kcy,3\.2,/.test(src))   bad.push('the key marker is still a fixed 3.2px radius');
+     }
+     // CONTROL 3: the map itself must still scale, or a frame that grew while the
+     // map stopped would satisfy the ratio above and be a worse screen.
+     if(mg<1.7) bad.push('control: the map itself stopped scaling, only '+mg.toFixed(2)+'x at 4K');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
