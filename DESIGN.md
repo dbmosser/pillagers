@@ -27443,6 +27443,60 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.10 - SAVING A PILLAGER PAYS
+
+His answer 37: reviving a pillager should pay a gun or a rare item.
+
+REPRODUCED on the play path, holding E over a downed pillager and letting the
+real interaction tick run:
+
+    your bag    medkit, medkit          ->  medkit
+    his bag     gun_shotgun, plate, ammobox  ->  unchanged
+    credits     +0
+    revives     1, so the revive itself worked fine
+
+You spend a scarce medical item to put a man back on his feet, and he keeps his
+shotgun, his plate and his ammunition. What you got was +3 standing with him,
+which is real and does flip a stranger friendly, but it is invisible and it is
+not something you can carry out.
+
+HE PAYS OUT OF HIS OWN POCKETS NOW, which is his sentence and is also the only
+version of this that cannot be farmed into free money. His gun first, because
+that is the word he used and it is the thing the man is actually carrying. If he
+has no gun in his kit, the best thing in his bag by value. If his bag is somehow
+empty, the weapon in his hands.
+
+AND IT LEAVES HIS BAG. That matters more than it looks. The death path re-adds
+the held weapon to any body that is not already carrying it, so handing you the
+shotgun and then shooting him would have paid the same weapon twice. He is
+stamped as having settled up and the body path honours the stamp.
+
+No new random draws anywhere: every branch reads what he is already carrying.
+
+MEASURED AFTER, same probe: your bag goes medkit,medkit to medkit,gun_shotgun.
+His bag goes gun_shotgun,plate,ammobox to plate,ammobox. Killing him immediately
+afterwards leaves a body holding ammobox and plate, with no second shotgun.
+
+Verified: parse PASS v9.10. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 53 regression checks
+pass in sequence, none skipped.
+
+The check fails on a fixture built from v9.09 with "reviving him paid nothing at
+all". It carries three controls. The revive must still COST a medical item, so a
+payout with no price cannot pass. Revive-then-kill must not yield the same gun
+twice, which is the obvious farm. And a pillager nobody revived must STILL drop
+his gun, so stamping every body as paid would fail rather than quietly deleting
+the most common payout in the game.
+
+Not verified: whether a gun is the right size of reward, which is his to judge.
+A shotgun off a revived man is worth roughly what a good container is, and I did
+not price it against the cost of the medkit across a batch of raids. The merc
+revive at 14367 is a separate path and is untouched, so reviving your hired man
+still pays nothing; he did not ask about that one.
+
 ## v9.09 - THE POINTER SAYS WHAT THE PANEL EDGE DOES
 
 His answer 38: the cursor over a panel should say what it will do there, drag,

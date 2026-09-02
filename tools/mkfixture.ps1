@@ -2801,6 +2801,88 @@ window.__REGRESS=[
        if(pb!=='bar'&&pb!=='glyph') bad.push('control: the drag bar hit-tests as "'+pb+'"');
      }
      m.x=960; m.y=300;
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.10',what:'picking a downed pillager up pays you out of his own kit, once',
+   run:function(){
+     var bad=[];
+     // Puts a pillager on the floor at his feet and holds E, which is the play
+     // path: the same key, the same lock, the same medical cost.
+     function downOne(){
+       __resetCfg(); __pinDefaults(0);
+       __deploy({kit:['medkit','medkit'],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player; p.iv=99;
+       var rd=null;
+       for(var i=0;i<g.ents.length;i++) if(g.ents[i].kind==='raider'&&!g.ents[i].merc){ rd=g.ents[i]; break; }
+       if(!rd) return null;
+       rd.downed=1; rd.downT=30; rd.hp=1; rd.state='down'; rd.x=p.x+20; rd.y=p.y;
+       return {g:g,p:p,rd:rd};
+     }
+     function bodyAfterKill(S){
+       var K=__keysRef(); for(var k in K) delete K[k];
+       S.rd.hp=0; S.rd.downed=0; S.rd.finished=1; S.rd.byPlayer=true;
+       for(var f=0;f<6;f++) __loop(performance.now()+400+f*16.7);
+       for(var c=S.g.containers.length-1;c>=0;c--)
+         if(S.g.containers[c].type==='body') return (S.g.containers[c].loot||[]).slice();
+       return null;
+     }
+     var A=downOne();
+     if(!A) return 'no pillager on the map to put down';
+     var hisBefore=(A.rd.bag||[]).slice(), yourBefore=A.g.bag.slice();
+     var K=__keysRef(); for(var k in K) delete K[k];
+     A.g.revLock=0; K['KeyE']=true;
+     for(var f=0;f<10;f++) __loop(performance.now()+f*16.7);
+     for(var k2 in K) delete K[k2];
+     if(A.rd.downed) return 'the revive itself did not happen, so the payout cannot be judged';
+     // HIS ANSWER 37. Measured before v9.10: your bag went medkit,medkit ->
+     // medkit and his bag did not change at all.
+     var gained=[], after=A.g.bag.slice(), tmp=yourBefore.slice();
+     for(var q=0;q<after.length;q++){ var ix=tmp.indexOf(after[q]); if(ix<0) gained.push(after[q]); else tmp.splice(ix,1); }
+     if(!gained.length) bad.push('reviving him paid nothing at all');
+     else {
+       var got=gained[0];
+       // It has to be a gun or something worth carrying, which is his sentence.
+       if(String(got).indexOf('gun_')!==0&&__con&&typeof ival==='undefined'){ /* value checked below */ }
+       if(hisBefore.indexOf(got)<0&&String(got).indexOf('gun_')!==0)
+         bad.push('he paid "'+got+'", which was never in his kit');
+       // and it has to LEAVE him, or it is conjured rather than handed over
+       var stillHas=((A.rd.bag||[]).indexOf(got)>=0);
+       if(stillHas&&hisBefore.indexOf(got)>=0) bad.push('he handed over '+got+' and still has one');
+     }
+     // The cost must remain. A payout with no price is not the trade he described.
+     var spent=false;
+     for(var s=0;s<yourBefore.length;s++){
+       if(yourBefore[s]==='medkit'){
+         var cA=0,cB=0;
+         for(var a1=0;a1<yourBefore.length;a1++) if(yourBefore[a1]==='medkit') cA++;
+         for(var b1=0;b1<after.length;b1++) if(after[b1]==='medkit') cB++;
+         spent=(cB<cA); break;
+       }
+     }
+     if(!spent) bad.push('the revive no longer costs a medical item');
+     // CONTROL 1: THE OBVIOUS FARM. Revive him for his gun, then shoot him, and
+     // the body must not carry the same gun a second time.
+     var loot1=bodyAfterKill(A);
+     if(loot1===null) bad.push('control: killing him after the revive left no body to search');
+     else {
+       var dupe=0;
+       for(var d=0;d<loot1.length;d++) if(String(loot1[d]).indexOf('gun_')===0) dupe++;
+       if(dupe&&gained.length&&String(gained[0]).indexOf('gun_')===0&&loot1.indexOf(gained[0])>=0)
+         bad.push('the body paid the same gun again: revive then kill is worth two weapons');
+     }
+     // CONTROL 2, and it is the one that stops a lazy fix: a pillager you did NOT
+     // revive must STILL drop his gun. Stamping every body as paid would satisfy
+     // control 1 and quietly delete the most common payout in the game.
+     var B=downOne();
+     if(!B) bad.push('control: could not stage a second pillager');
+     else {
+       var loot2=bodyAfterKill(B);
+       if(loot2===null) bad.push('control: an unrevived pillager left no body at all');
+       else {
+         var hasGun=false;
+         for(var d2=0;d2<loot2.length;d2++) if(String(loot2[d2]).indexOf('gun_')===0) hasGun=true;
+         if(!hasGun) bad.push('control: a pillager nobody revived no longer drops his gun');
+       }
+     }
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
