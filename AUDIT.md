@@ -21,6 +21,8 @@ adversarially verified):
 
 | Finding | Closed by | How it was confirmed closed |
 |---|---|---|
+| HUD panels could be dragged fully off screen and saved there, with no reset control anywhere (one flick put vitals at x -886) | v9.12 | clamp at the top of drawHUD keeps the drag bar reachable and repairs an already-broken profile; check fails on a v9.11 fixture |
+| Bot water double-penalty, notes counter off the right edge, drag offset drawing-vs-hit mismatch | not defects | checked v9.12: fixed at v8.41, v8.43, and drawing agrees with hit-testing |
 | His answer 48: Wirt had no special item at all, only the 2,500 gamble (two buttons, no hourly anything) | v9.11 | Lot of the Hour, flat 10,000, hashed from the clock so no seeded draw moves; check fails on a v9.10 fixture |
 | His answer 37: reviving a pillager cost a medkit and paid nothing carryable (his bag unchanged, +0 credits) | v9.10 | he hands over his gun or best item, removed from his bag and stamped so the body cannot pay it twice; check fails on a v9.09 fixture |
 | His answer 38: the resize corner drew the aiming reticle, and drag and minimise drew the same undifferentiated arrow | v9.09 | four pointers (move/resize/minimise/reticle), hudHit gained a grip part; check fails on a v9.08 fixture |
