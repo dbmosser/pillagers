@@ -4268,6 +4268,61 @@ window.__REGRESS=[
      // exactly what the old build did.
      if(light&&light.msg===heavy.msg)
        bad.push('control: an empty bag and a full one are told word for word the same thing');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.35',what:'the raid clock has an off position, and still kills you when it is on',
+   run:function(){
+     var bad=[];
+     // HIS 6, second half: "nothing should be meant to end the raid." The clock is
+     // the one thing whose whole purpose is to end it, the code called expiry
+     // "death and full loss", and the slider bottomed out at two minutes.
+     function run(sec,frames){
+       __resetCfg(); __pinDefaults(0);
+       __cfg({raidSec:sec});
+       if(__cfg().raidSec!==sec) return {dialStuck:__cfg().raidSec};
+       __startRaid({mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       // He must not die of anything else, or the reading is about a crawler.
+       p.iv=99; p.maxhp=100000; p.hp=100000;
+       g.ents.length=0;
+       var K=__keysRef(); for(var k in K) delete K[k];
+       var ended=-1;
+       for(var f=0;f<frames;f++){
+         __loop(performance.now()+f*16.7);
+         if(ended<0&&(g.over||g.nuking)) ended=f;
+       }
+       var closed=0;
+       for(var z=0;z<g.zones.length;z++) if(g.zones[z].open===false) closed++;
+       var out={endedAt:ended, over:!!g.over, nuking:!!g.nuking, gT:Math.round(g.t),
+                killer:(g.tel&&g.tel.deathKiller)||null, ringsClosed:closed, zones:g.zones.length};
+       __resetCfg();
+       return out;
+     }
+     // OFF. Twenty seven seconds of raid, which is nearly twice the shortest clock
+     // the slider used to allow, and nothing may end it.
+     var off=run(0,1600);
+     if(off.dialStuck!==undefined) return 'control: raidSec did not take, it read back '+off.dialStuck;
+     if(off.endedAt>=0)
+       bad.push('with the raid timer OFF the raid still ended at frame '+off.endedAt+
+                (off.killer?(' with the killer recorded as '+off.killer):''));
+     // AND THE RINGS MUST STAY OPEN. Their closing times are measured against the
+     // clock, so a clock that does not move must not close them. Without this a
+     // "fix" that only stopped the death would still squeeze him off the map.
+     if(off.ringsClosed>0)
+       bad.push('with the timer OFF, '+off.ringsClosed+' of '+off.zones+' extraction rings closed anyway');
+     // AND THE RUN MUST STILL KNOW HOW LONG IT TOOK. Duration is read off the
+     // clock everywhere else, so holding the clock still could have reported every
+     // raid as instantaneous.
+     if(off.gT<10)
+       bad.push('with the timer OFF the raid recorded only '+off.gT+' seconds of elapsed time');
+     // CONTROL: THE CLOCK MUST STILL WORK. This is the line that stops the fix
+     // being "the timer is gone", which is not what he asked for. Fifteen seconds
+     // of clock has to run out and it has to be fatal, exactly as before.
+     var on=run(15,1600);
+     if(on.dialStuck!==undefined) return 'control: raidSec did not take, it read back '+on.dialStuck;
+     if(on.endedAt<0)
+       bad.push('control: a 15 second raid timer never ran out across 1600 frames, so the clock is simply gone');
+     else if(on.killer!=='timer')
+       bad.push('control: the timer ran out and the killer was recorded as '+on.killer+' rather than the timer');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

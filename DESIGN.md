@@ -27443,6 +27443,71 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.35 - THE RAID CLOCK HAS AN OFF POSITION
+
+HIS 6, second half: "nothing should be meant to end the raid."
+
+The raid clock is the one thing in this game whose entire purpose is to end the
+raid, and it ended it in the harshest way there is. The code said so in its own
+words: "Timer expiry is death and full loss." There was no way to switch it off.
+The slider ran from 120 to 900 seconds, so the shortest raid he could ask for was
+two minutes and the longest fifteen, and neither of those is "no clock".
+
+I HAVE NOT DELETED THE CLOCK, and that is a deliberate reading of what he said.
+He said nothing should be MEANT to end the raid. He did not say the clock should
+stop existing for anyone who wants it, and taking it away outright would rewrite
+the pace of a game he has played hundreds of raids of. What was missing was the
+switch. The slider goes down to zero now and zero reads OFF, which makes it his
+decision rather than mine.
+
+WHAT OFF MEANS, measured rather than described:
+
+  raid timer 0     1600 frames, twenty seven seconds, nothing ended the raid,
+                   no killer recorded, none of the three extraction rings closed,
+                   and the run still recorded 32 seconds of elapsed time
+  raid timer 15    ended at frame 740 with the killer recorded as the timer, and
+                   two of the three rings had already closed
+
+So the clock still does exactly what it did for anyone who leaves it on.
+
+GATING THE TICK WAS NOT ENOUGH, and my own first measurement said so in one line:
+with the timer at zero the raid ended on FRAME ZERO with the killer recorded as
+the timer. The clock is initialised from the same dial, so a zero starts the
+countdown at zero, and every expiry branch tests for the clock being at or below
+zero. I had held the clock still at precisely the number that means expired. All
+three expiry branches now ask whether there IS a clock before asking whether it
+has run out.
+
+The rings closing falls out of the same change rather than needing its own: their
+closing times are measured against the clock, so a clock that does not move never
+reaches them. That matters, because a fix that only stopped the death would still
+have squeezed him off the map on a timer.
+
+Elapsed time is read off the raid's own accumulator now rather than by subtracting
+from the clock, or every clockless raid would have been recorded as instantaneous.
+
+Verified: parse PASS v9.35. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 85 and 369 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 77 regression checks
+pass in sequence, none skipped. This changes when a raid can end, so it got the
+full run rather than the batch. The new check fails on a v9.34 fixture with "with
+the raid timer OFF the raid still ended at frame 0 with the killer recorded as
+timer".
+
+The bot is untouched. Its stepper is a different function, the benchmark never
+sets this dial to zero, and every extract-rate number this project has produced
+still means what it meant.
+
+Not verified: how a raid with no clock actually plays. It is the change most
+likely to alter the feel of the whole game and nothing here can tell me whether an
+untimed raid is tense or aimless. That is exactly why it is a switch he sets
+rather than a default I chose: the game still ships with the clock on at 540
+seconds, unchanged. Also not verified: whether the OTHER squeeze he did not
+mention, the siege at the extraction ring, should also be optional. He named the
+siege and the clock in one breath and I have only touched the clock.
+
 ## v9.34 - THE SIEGE HAS A NAME, AND A NUMBER YOU CAN COUNT
 
 HIS 6, first half: "he does not know what a siege is."

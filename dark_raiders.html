@@ -1209,7 +1209,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.34';
+var VER='9.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4034,7 +4034,14 @@ function tod(){ return (G&&G.tod)||TODS[2]; }
 // notes on a SHORT WINDOW raid have all been stamped 204 seconds late.
 // G.raidLen is what the clock actually started at, so this is right whatever
 // scales it: the term, the Raid length setting, or anything added later.
-function elapsed(){ return (G?((G.raidLen===undefined?CFG.raidSec:G.raidLen)-G.timeLeft):0); }
+// v9.35: with the clock off, timeLeft never moves, so the subtraction below would
+// report every raid as having taken no time at all. G.t counts up on its own and
+// is the honest answer in both cases.
+function elapsed(){
+  if(!G) return 0;
+  if(CFG.raidSec<=0) return G.t||0;
+  return (G.raidLen===undefined?CFG.raidSec:G.raidLen)-G.timeLeft;
+}
 // BLACKOUT PROTOCOL WAS PAYING 25 PERCENT FOR NOTHING, FOUR RAIDS IN TEN, v3.44.
 // The term reads "Every lamp on the map stays dark" and it does exactly that: it
 // skips the lamp placement pass entirely. The defect is one layer over, in what
@@ -16389,7 +16396,9 @@ function simStep(dt){
   // runs thousands of times a batch and a throw here would take the batch with it.
   wxTick(dt); strikeTick(dt); try{ tickHot(dt); }catch(_th){}
   G.t+=dt; G.timeLeft-=dt;
-  if(G.timeLeft<=0){ G.timeLeft=0; G.tel.deathKiller='timer'; G.player.pendKiller='timer'; endRaid('dead'); return; }
+  // v9.35: no clock, no expiry. raidSec 0 starts timeLeft at 0, so this tested
+  // true on the first frame of a raid that was never meant to be timed.
+  if(CFG.raidSec>0&&G.timeLeft<=0){ G.timeLeft=0; G.tel.deathKiller='timer'; G.player.pendKiller='timer'; endRaid('dead'); return; }
   refreshVseg();
   updateBot(dt); if(G.over) return;
   updateEnts(dt); if(G.over) return;
@@ -20081,8 +20090,13 @@ var gap=p.ads?3.5:(8+(p.recoil>0?p.recoil*7:0)+(G.sprinting?5:0));
   }
   // timer + compass
   ctx.font=FS(TYPE.title); ctx.textAlign='center';
-  var mm=Math.floor(G.timeLeft/60),ss=Math.floor(G.timeLeft%60);
-  ctx.fillStyle=G.timeLeft<45?'#ff5a4a':'#cdd6dd';
+  // v9.35: with the clock off there is nothing to count down to, so the readout
+  // counts UP instead. Leaving it frozen at the starting figure would have looked
+  // like a broken timer rather than an absent one.
+  var _noClk=(CFG.raidSec<=0);
+  var _tSrc=_noClk?(G.t||0):G.timeLeft;
+  var mm=Math.floor(_tSrc/60),ss=Math.floor(_tSrc%60);
+  ctx.fillStyle=(!_noClk&&G.timeLeft<45)?'#ff5a4a':'#cdd6dd';
   ctx.fillText(mm+':'+(ss<10?'0':'')+ss,W/2,30);
   // HIS NOTE, 2026-08-26: "can you make it point to the NEAREST extraction instead,
   // and make it switch any time the player finds a nearer extraction -- also ...
@@ -23182,7 +23196,8 @@ var SLIDERS=[
   ['ambient','Your awareness radius',50,220,5,1],
   ['eAmbient','Enemy rear awareness',40,200,5,1],
   ['pSpeed','Move speed',110,220,2,1],
-  ['raidSec','Raid timer (s)',120,900,15,0],
+  // v9.35: bottoms out at OFF rather than at two minutes.
+  ['raidSec','Raid timer (s)',0,900,15,0],
   ['extractWait','Extract inbound wait (s)',8,60,1,1],
   ['nSentry','Sentries',0,40,1,0],
   ['nCrawler','Crawlers',0,60,1,0],
@@ -23239,9 +23254,13 @@ function buildTune(){
     if(!S[5]){ var nx=document.createElement('span'); nx.className='nx'; nx.textContent='NEXT RAID'; lab.appendChild(nx); }
     var rg=document.createElement('input');
     rg.type='range'; rg.min=S[2]; rg.max=S[3]; rg.step=S[4]; rg.value=CFG[k];
-    var tv=document.createElement('div'); tv.className='tv'; tv.textContent=fmtV(CFG[k]);
+    // v9.35: a zero on the raid timer is not a zero second raid, it is no raid
+    // clock at all, and the readout has to say which. Any other dial reading zero
+    // still just reads zero.
+    function _sv(v){ return (k==='raidSec'&&v<=0)?'OFF':fmtV(v); }
+    var tv=document.createElement('div'); tv.className='tv'; tv.textContent=_sv(CFG[k]);
     rg.oninput=function(){
-      CFG[k]=parseFloat(rg.value); tv.textContent=fmtV(CFG[k]);
+      CFG[k]=parseFloat(rg.value); tv.textContent=_sv(CFG[k]);
       // Moving a slider claims that dial from Settings, or applyGameOpts would
       // put it back on the next load and the tuning would be lost silently.
       tunedKeys()[k]=1;
@@ -24353,9 +24372,11 @@ function loop(ts){
     if(G.deathBeat<=0){ endRaid('dead'); }
   }
   else if(!G.paused&&!G.over){
-    G.t+=dt; G.timeLeft-=dt;
-    // SPEC 5.1: warning at 5:00, every minute after, and at 0:30. Timer expiry
-    // is death and full loss, so the clock has to be impossible to lose track of.
+    G.t+=dt;
+    // v9.35, HIS 6: a clock set to zero does not run. Everything below this line
+    // is driven by timeLeft falling, so holding it still turns off the warnings,
+    // the burning of the site, and the rings closing, all in one place.
+    if(CFG.raidSec>0) G.timeLeft-=dt;
     var tlNow=Math.ceil(G.timeLeft);
     if(G.lastWarn===undefined) G.lastWarn=-1;
     if(tlNow!==G.lastWarn){
@@ -24368,10 +24389,12 @@ function loop(ts){
       if(warned){ blip('alarm'); }
       G.lastWarn=tlNow;
     }
-    if(G.timeLeft<=0&&!G.nuking&&(G.sim||G.beaconT!==null)){
+    // v9.35: both branches ask whether there IS a clock before asking whether it
+    // has run out, for the same reason as the sim path above.
+    if(CFG.raidSec>0&&G.timeLeft<=0&&!G.nuking&&(G.sim||G.beaconT!==null)){
       // Sim, or a beacon already called: end exactly as before.
       G.timeLeft=0; G.tel.deathKiller='timer'; G.player.pendKiller='timer'; endRaid('dead');
-    } else if(G.timeLeft<=0&&!G.nuking){
+    } else if(CFG.raidSec>0&&G.timeLeft<=0&&!G.nuking){
       G.timeLeft=0; G.nuking=1; G.nukeT=0;
       G.tel.deathKiller='timer'; G.player.pendKiller='timer';
       say('MERIDIAN IS BURNING THE SITE.');
@@ -24799,7 +24822,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.34: calling the ship now names the siege and says how many are coming. The line explaining it used to be erased before you could read it.',
+  now:'v9.35: the raid clock has an OFF position. Nothing then exists whose job is to end the raid, which is what he asked for.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
