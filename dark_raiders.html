@@ -1162,7 +1162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.82';
+var VER='8.83';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22965,8 +22965,12 @@ function drawHubWorld(dt){
       // happening, so the operator crossed the floor doing the walk cycle. Same
       // phase expression the raid uses at the equivalent call, against the hub's
       // own rollT, which has the same 0.38 duration.
+      // v8.83: THE POSE, not just the phase. v8.70 changed the phase argument
+      // and left this one, so the roll animated at roll speed while still
+      // drawing the walk cycle. 'roll' is the mode that returns the ball, and it
+      // is what the raid passes at its equivalent call.
       drawOp(p.x,p.y,p.face,(p.rollT>0)?(1-p.rollT/.38)*12.6:p.bob,'#242832',clamp(P.stash.length/24,0,1),0,
-        (P.equipped&&P.equipped!=='fists')?'':'none',0,
+        (p.rollT>0)?'roll':((P.equipped&&P.equipped!=='fists')?'':'none'),0,
         {hero:1,moving:p.moving,sprint:false,ads:false,hurt:0,rl:0,
          own:{wep:WEAPONS[P.equipped]||null}});
     }
@@ -23759,7 +23763,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.82: COLD STORAGE started you in the same corner every single raid. It has three starts now, and the rule that caused it still holds.',
+  now:'v8.83: rolling in the Undercroft draws the ball, the same as it does upstairs. My earlier fix changed the speed and not the shape.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

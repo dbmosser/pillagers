@@ -27443,6 +27443,51 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.83 - THE UNDERCROFT ROLL DRAWS THE BALL, AND A PROBE CAN FINALLY STAND DOWN THERE
+
+His third report of the same thing: "rolling in the undercroft is still broken",
+"player doesn't turn into a rolly ball". It is still broken because my v8.70 fix
+aimed at the wrong argument, and that is mine to own.
+
+drawOp takes a PHASE and a POSE. The ball is the POSE: mode 'roll' returns early
+and draws a contoured disc. v8.70 read his report as an animation timing problem,
+changed the phase to run off the hub's own roll timer, and never touched the
+pose. So the operator crossed the floor doing a very fast walk cycle, which is
+precisely what he described both times.
+
+WHY IT SURVIVED TWO FIXES. No probe has ever stood in the Undercroft. Every check
+of that screen has been me reading source, and reading source is how I convinced
+myself twice that the fix was correct. The harness can enter it now, through
+showScreen('hub'), which is the same door the game uses, and it can spy on drawOp
+itself and record the arguments each frame.
+
+REPRODUCED that way, fourteen frames of a live roll on the Undercroft floor:
+
+    roll timer   0.38 counting down to 0.147, so the roll IS running
+    phase        0.55, 1.11, 1.66 ... 7.74, so v8.70 works exactly as written
+    pose         "" on every single frame
+
+The raid passes 'roll' at its equivalent call. The Undercroft passed the
+empty-hands-or-gun string and never mentioned rolling at all.
+
+AFTER: 'roll' on all fourteen frames, and a screenshot of the Undercroft with the
+ball on the floor. The control is the half that matters, because hardcoding the
+ball would satisfy the first check and be a worse bug: a standing operator draws
+"" on all ten frames and is never a ball.
+
+Verified: parse PASS. Both sectors to their fingerprints, 58 and 276. Streams
+identical live and sim. Looting on both with no throw and the clock advancing.
+Three endings correct. Hub renders. 27 regression checks pass, including a new
+one carrying both halves above.
+
+Not verified, and it is the other half of what he asked for tonight: I in the
+Undercroft still opens the terminal rather than a simple inventory. I did not
+change it, because the two things down there that could serve are the full
+terminal and the ascent screen, and pointing the key at either would be the third
+crowded panel in a row rather than the simple one he asked for. That needs a
+small panel of its own, showing what you are carrying, and it is the next build.
+I also did not check whether the Undercroft roll MOVES you the same distance the
+raid roll does, only that it now looks right.
 ## v8.82 - COLD STORAGE STARTED YOU IN THE SAME CORNER EVERY SINGLE RAID
 
 His note: "why do i always spawn in the same place, it's supposed to change".

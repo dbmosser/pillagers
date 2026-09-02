@@ -552,6 +552,35 @@ window.__simPaired=function(seeds,dialsA,dialsB){
 };
 window.__setHot=function(i){ return setHot(i); };
 window.__loot=function(){ return LOOT; };
+// v8.83: STAND ON THE UNDERCROFT FLOOR. showScreen('hub') is the real entry the
+// game uses, so this is the play path and not a rebuilt copy of it.
+window.__hubEnter=function(){ showScreen('hub'); return !!HB; };
+window.__hubP=function(){ return HB?HB.player:null; };
+window.__hubStep=function(dt){
+  if(!HB||!wc||!(W>0)) return false;
+  tickBuzz(dt); updateHubWorld(dt); drawHubWorld(dt); drawBuzzFx();
+  return true;
+};
+window.__hubPanelOn=function(){ return document.getElementById('hub').classList.contains('on'); };
+// The operator drawing calls, recorded as they happen. The pose is an argument
+// to drawOp, so this is the only way to see what the Undercroft actually asks
+// for rather than what I believe it asks for.
+window.__opCalls=null;
+window.__spyOps=function(on){
+  if(on){
+    window.__opCalls=[];
+    if(!drawOp.__spied){
+      var _o=drawOp;
+      drawOp=function(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
+        if(window.__opCalls) window.__opCalls.push(
+          {mode:mode,ph:+(ph||0).toFixed(2),hero:!!(st&&st.hero)});
+        return _o.apply(null,arguments);
+      };
+      drawOp.__spied=_o;
+    }
+  } else if(drawOp.__spied){ drawOp=drawOp.__spied; }
+  return window.__opCalls;
+};
 window.__hud=function(){
   var out={z:{},box:{}};
   for(var k in HUDZ) out.z[k]=HUDZ[k];
@@ -1539,6 +1568,35 @@ window.__REGRESS=[
      // and 286 out, so anything under 900 means the rule has been thrown away.
      if(a.nearest<900) bad.push('COLD STORAGE started a raid '+a.nearest+' from an extract');
      if(b.nearest<900) bad.push('THE COLD MILE started a raid '+b.nearest+' from an extract');
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.83',what:'rolling in the Undercroft draws the ball, the same as it does upstairs',
+   run:function(){
+     if(!__hubEnter()) return 'could not reach the Undercroft floor';
+     var hp=__hubP(); if(!hp) return 'no operator on the Undercroft floor';
+     __spyOps(true);
+     function poses(rolling){
+       var out=[];
+       if(rolling){ hp.rollDir={x:1,y:0}; hp.rollT=0.38; } else { hp.rollT=0; }
+       for(var f=0;f<10;f++){
+         window.__opCalls=[];
+         __hubStep(1/60);
+         var hero=(window.__opCalls||[]).filter(function(c){ return c.hero; });
+         if(hero.length) out.push(hero[0].mode);
+       }
+       return out;
+     }
+     var rolling=poses(true), standing=poses(false);
+     __spyOps(false);
+     var bad=[];
+     if(!rolling.length) return 'the Undercroft drew no operator at all';
+     // v8.70 passed the roll PHASE and left the pose as the walk cycle, which is
+     // what "player doesn't turn into a rolly ball" was describing. The pose is
+     // the argument that matters.
+     if(rolling.filter(function(m){ return m==='roll'; }).length<rolling.length)
+       bad.push('a rolling operator is not drawn as a ball, poses '+JSON.stringify(rolling));
+     // THE CONTROL: hardcoding the ball would pass the line above and be worse.
+     if(standing.filter(function(m){ return m==='roll'; }).length)
+       bad.push('a standing operator is being drawn as a ball');
      return bad.length?bad.join('; '):null; }}
 ];
 window.__regress=function(){
