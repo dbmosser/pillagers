@@ -1209,7 +1209,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.33';
+var VER='9.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1220,19 +1220,19 @@ var VER='9.33';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='9.19';
+var WHATSNEW_VER='9.34';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
-  'THE WHOLE GAME FOLLOWS YOUR MONITOR NOW. On a 4K screen you were seeing twice as much ground with everything on it drawn half the size. The world, the backpack and the sector map all scale to the screen you are on.',
-  'YOU CAN SEE NOISE. A sound you can hear but cannot see leaves a red ring on the ground where it came from.',
-  'A BELT KEY KEEPS WHAT YOU PUT ON IT. Spending your last medkit used to turn that key into a grenade; now the slot stays yours, greyed out, until you pick another one up.',
-  'PICKING A DOWNED PILLAGER BACK UP PAYS. He hands you his gun, or the best thing in his pockets, out of his own kit.',
-  'CRIERS KEEP TO THE STREET. They were setting up inside houses and staying there for the whole raid.',
-  'COLD STORAGE DROPS YOU IN ONE OF TEN PLACES, not one of four, so the walk to the first crate is a different walk.',
-  'CONTRACTS NAME A PLACE YOU ARE TOLD ABOUT. They used to send you to GREENBELT, which was never a place, only a colour scheme.',
-  'WIRT KEEPS ONE GOOD THING ON THE COUNTER at a flat 10,000 credits, and it changes every hour.',
-  'THE POINTER SAYS WHAT A PANEL EDGE WILL DO. Move, resize or minimise, instead of the aiming cross over everything.',
-  'A PANEL DRAGGED OFF THE EDGE CANNOT BE LOST. It keeps a handle on screen so you can always pull it back.'
+  'PILLAGERS FIGHT BACK. Shoot at a man who was not fighting you, hit or miss, and he turns on you. One aimed shot used to leave him standing there for good.',
+  'THEY CALL THEIR CREW, AND THE CREW COMES. A pillager who spots you shouts, and his crewmates in earshot turn up from different sides instead of walking to one spot in single file.',
+  'THE BROKEN WALL. You no longer disappear into the side of a container when you walk behind it. You are drawn through whatever is covering you.',
+  'PICKING A MAN UP OFF THE FLOOR IS FREE. It used to cost a medkit, and with an empty bag you could not help him at all.',
+  'THE STREETS ARE NOT EMPTY. There are two and a half crawlers for every building now, and the extra ones are outside where you can see them coming.',
+  'THE SIEGE HAS A NAME. Calling the ship tells you it is coming and roughly how many are on their way, and your bag is what decides that number.',
+  'PROFICIENCY IS FIVE THINGS. Money out, getting out, staying on your feet, your aim and the punishment you take, with every part shown so you can see which one is dragging.',
+  'YOU CAN TAKE THINGS BACK OFF THE BELT MID RAID. Before this the only way out of a slot was to spend it, drop it, or walk back down to the Undercroft.',
+  'AND YOU CAN SEE WHAT IS IN YOUR HAND down there while you drag it, which was invisible until now.',
+  'EVERY BUILD IS KEPT. There is a folder of playable versions and a way to pull any older one back out.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -11335,8 +11335,10 @@ function tryExtractTick(dt,wantCall){
       // ambush. The line names what the bag did.
       var _g=greedOf();
       T.callGreed=Math.round(bagValue());
-      if(_g>=0.66) say('They heard THAT. You are carrying too much to be quiet about it.');
-      else if(_g>=0.33) say('Called. That is a heavy bag to be standing still with.');
+      // v9.34: these two lines used to be said HERE and then overwritten in the
+      // same frame by the "Pulled." line below, because say() replaces rather
+      // than queues. They are folded into that one message now. See the note at
+      // the bottom of this block.
       // Calling the ship is the loudest thing you do all raid, and it should be
       // the moment the raid turns. His own playtest tagged extraction "too
       // easy": he pressed a key and stood in a circle for 25 quiet seconds with
@@ -11354,9 +11356,25 @@ function tryExtractTick(dt,wantCall){
         se.state='investigate'; se.tx=z.x+rnd(-40,40); se.ty=z.y+rnd(-40,40);
       }
       blip('alarm');
-      say(G.timeLeft<CFG.extractWait
-        ? 'Pulled. Inbound '+fmtMS(CFG.extractWait)+'. The raid clock runs out first.'
-        : 'Pulled. Inbound '+fmtMS(CFG.extractWait)+', then hold E to extract. Everything heard that.');
+      // v9.34, HIS 6: THE SIEGE, NAMED, AND HOW BIG IT WILL BE.
+      // The count is the same expression tickExtractPoints uses, so what he is
+      // promised here and what actually walks in cannot drift apart. Rounded to
+      // "about", because arrivals stop when the ship lands and a precise figure
+      // he does not always see would read as a lie.
+      // The ceiling, which is what the tick will refuse to go past...
+      var _scap=Math.round((6+8*_g)*(CFG.siegeVol===undefined?1:CFG.siegeVol));
+      // ...and how many the wait actually has room for, one every siegeIv
+      // seconds. This is the smaller of the two in every configuration the game
+      // ships with, and it is the one he will count. A long hold at the ring can
+      // bring more, up to the ceiling, which is why the line says "about".
+      var _siv=8-4.6*_g;
+      var _sc=Math.max(1,Math.min(_scap,Math.floor(CFG.extractWait/Math.max(0.1,_siv))));
+      var _why=(_g>=0.66)?' They heard THAT: you are carrying too much to be quiet about it.'
+              :((_g>=0.33)?' That is a heavy bag to be standing still with.'
+                          :' A light bag brings the fewest of them.');
+      say('Pulled. Inbound '+fmtMS(CFG.extractWait)+
+          (G.timeLeft<CFG.extractWait?'. The raid clock runs out first.':', then hold E to extract.')+
+          ' THE SIEGE: about '+_sc+' machines are coming to this ring.'+_why);
     }
     return;
   }
@@ -24781,7 +24799,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.33: proficiency is the five things he named, not just money. It shows what every part of it is doing.',
+  now:'v9.34: calling the ship now names the siege and says how many are coming. The line explaining it used to be erased before you could read it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

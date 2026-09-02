@@ -4200,6 +4200,74 @@ window.__REGRESS=[
      var W=window.__prof.weights(), sum=0;
      for(var w in W) sum+=W[w];
      if(sum<=0) bad.push('control: the weights sum to '+sum+', so the score is not out of anything');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.34',what:'calling the ship names the siege, and the number it promises is the number that arrives',
+   run:function(){
+     var bad=[];
+     // HIS 6: "he does not know what a siege is". He could not have: the line
+     // explaining it was written and then overwritten in the same frame, because
+     // say() replaces rather than queues. Measured before this build, an empty bag
+     // and a bag worth 37,500 were told exactly the same two sentences.
+     function call(rich,thenRun){
+       __resetCfg(); __pinDefaults(0);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player; p.iv=99; p.maxhp=100000; p.hp=100000;
+       g.ents.length=0;
+       // DISTINCTIVE, not plausible: the two most expensive guns in the game, ten
+       // of them, against nothing at all. Anything that ignores the bag gives
+       // itself away across a gap that wide.
+       g.bag=rich?['gun_lance','gun_sniper','gun_lance','gun_sniper','gun_lance',
+                   'gun_sniper','gun_lance','gun_sniper','gun_lance','gun_sniper']:[];
+       var z=null,bd=1e9;
+       for(var i=0;i<g.zones.length;i++){
+         var d=Math.hypot(g.zones[i].x-p.x,g.zones[i].y-p.y);
+         if(d<bd){ bd=d; z=g.zones[i]; } }
+       if(!z) return null;
+       p.x=z.x; p.y=z.y;
+       var K=__keysRef(); for(var k in K) delete K[k];
+       K['KeyE']=true;
+       for(var f=0;f<200;f++){
+         __loop(performance.now()+f*16.7);
+         if(z.beaconT!==null&&z.beaconT!==undefined&&f>30) break; }
+       var msg=String(g.msg||'');
+       var out={called:(z.beaconT!==null&&z.beaconT!==undefined), msg:msg,
+                greed:(g.tel&&g.tel.callGreed)||0,
+                promised:((/about (\d+) machines/.exec(msg)||[])[1]||null)};
+       if(out.promised) out.promised=+out.promised;
+       if(thenRun){
+         // Stand in the ring and let the whole siege run in.
+         for(var f2=0;f2<2600;f2++){ p.x=z.x; p.y=z.y; __loop(performance.now()+4000+f2*16.7); }
+         var m=0;
+         for(var e=0;e<g.ents.length;e++){ var kk=g.ents[e].kind; if(kk!=='raider'&&kk!=='stray') m++; }
+         out.arrived=m;
+       }
+       for(var k2 in K) delete K[k2];
+       return out;
+     }
+     var heavy=call(true,true);
+     if(!heavy) return 'SKIP: no extraction ring on this map and seed to call from';
+     if(!heavy.called) return 'SKIP: holding E in the ring did not call the ship';
+     // HIS 6, the word itself.
+     if(!/siege/i.test(heavy.msg))
+       bad.push('calling the ship still never uses the word siege: "'+heavy.msg.slice(0,80)+'"');
+     // AND A NUMBER HE CAN COUNT.
+     if(heavy.promised===null)
+       bad.push('the call says nothing about how many are coming');
+     // THE CONTROL THAT MATTERS MOST, and the one that caught my own first cut
+     // promising exactly twice what turned up: the number in the warning has to be
+     // the number he will see, or the warning teaches him to ignore warnings.
+     else if(heavy.arrived!==undefined&&Math.abs(heavy.arrived-heavy.promised)>1)
+       bad.push('the call promised '+heavy.promised+' machines and '+heavy.arrived+' arrived');
+     // CONTROL: the bag has to change the number, or it is a decoration rather
+     // than the price of what he is carrying.
+     var light=call(false,false);
+     if(light&&light.promised!==null&&heavy.promised!==null&&light.promised>=heavy.promised)
+       bad.push('control: an empty bag is promised '+light.promised+' machines and a bag worth '+
+                heavy.greed+' is promised '+heavy.promised+', so what he carries changes nothing');
+     // CONTROL: and the two bags must not be told the same sentence, which is
+     // exactly what the old build did.
+     if(light&&light.msg===heavy.msg)
+       bad.push('control: an empty bag and a full one are told word for word the same thing');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

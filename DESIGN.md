@@ -27443,6 +27443,70 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.34 - THE SIEGE HAS A NAME, AND A NUMBER YOU CAN COUNT
+
+HIS 6, first half: "he does not know what a siege is."
+
+HE COULD NOT HAVE KNOWN. The game does explain it, in a line written the moment
+you call the ship, and then overwrites that line in the same frame with the next
+one. say() sets the message and returns; it does not queue. So the sequence was:
+write "You are carrying too much to be quiet about it", write "Pulled. Inbound 25
+sec", and show only the second.
+
+REPRODUCED with the two bags as far apart as this game allows:
+
+  bag worth 37,500   "Entering the sump." then "Pulled. Inbound 25 sec, then
+                     hold E to extract. Everything heard that."
+  bag worth 0        exactly the same two lines
+
+The most expensive haul in the game and an empty bag were told word for word the
+same thing. The word siege had never appeared anywhere he can read it, only in
+telemetry and in dev dials.
+
+ONE MESSAGE NOW. It names the siege, says roughly how many are coming, and says
+why that number is what it is:
+
+  loaded   THE SIEGE: about 7 machines are coming to this ring. They heard THAT:
+           you are carrying too much to be quiet about it.
+  empty    THE SIEGE: about 3 machines are coming to this ring. A light bag
+           brings the fewest of them.
+
+AND I PROMISED TWICE WHAT ARRIVES IN THE FIRST CUT. The control caught it: the
+message said 14 and seven walked in, said 6 and three walked in. siegeCap is a
+CEILING, not an expected count, and the beacon window is not long enough to reach
+it. They arrive one every siegeIv seconds, which is 3.4 at maximum greed and 8.0
+at none, against a 25 second wait: seven and three, exactly what turned up. The
+line reports the window figure now, still held under the ceiling, and it matched
+the measurement on both bags to the unit.
+
+A number in a warning has to be the number he will see, or the warning teaches him
+to ignore warnings. That is the assertion the regression check is built around: it
+calls the ship, reads the promise, then stands in the ring and counts what
+actually arrives.
+
+Verified: parse PASS v9.34. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 85 and 369 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 76 regression checks
+pass in sequence, none skipped. The new check fails on a v9.33 fixture with
+"calling the ship still never uses the word siege", "the call says nothing about
+how many are coming", and "an empty bag and a full one are told word for word the
+same thing".
+
+Not verified, and it is the OTHER half of his 6: he also said nothing should be
+meant to end the raid. The raid clock still runs out into endRaid('dead') with
+full loss, the code says so in as many words, and the slider has no off position.
+That is a design change rather than a defect and it is a bigger one than this, so
+it is deliberately not in this build. Also not verified: whether a long hold at
+the ring pushes arrivals past the number promised. It can, up to the ceiling,
+which is why the line says "about" rather than a flat figure.
+
+AND THE WHAT IS NEW CARD WAS FIFTEEN BUILDS STALE, which the v9.19 check caught
+in the same run. It is the first thing on the title screen, so leaving it at v9.19
+tells him the last two nights did not happen. Rewritten for the v9.24 to v9.34
+run, in the order he would care about rather than the order they were built.
+
 ## v9.33 - PROFICIENCY IS THE FIVE THINGS HE NAMED
 
 HIS 33. He was asked what proficiency should be and answered: "money extracted,
