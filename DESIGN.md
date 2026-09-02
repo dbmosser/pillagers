@@ -27443,6 +27443,61 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.28 - THE SHOUT NOW CARRIES
+
+HIS 36: pillagers should team up. This is slice one of three.
+
+REPRODUCED, deterministically. A crew of four on COLD STORAGE at seed 4242. One
+of them stands 300 units from the player looking straight at him. The other three
+huddle 780 units from the player, which is past the 620 they can see, and 480
+from the spotter, which is well inside a shout. After 180 frames exactly ONE of
+them was in the fight. The other three carried on looting a street away.
+
+THE SHOUT ALREADY EXISTED AND CALLED NOBODY. A pillager who sees you says "I see
+you!" or "Contact, right there!" in a bubble over his head, with an ear ping that
+other things can hear. That has been pure theatre since it went in. Crews have
+existed for a while and decided exactly two things: which other pillagers a man
+will fight, and which downed man he will pick up. Nothing ever pointed a crew at
+the player, which is why the machines were the only enemies in the game that
+teamed up.
+
+WHAT THIS SLICE DOES: the shout carries. Crewmates inside crewR who are not
+already in the fight turn and come to the position the caller reports. That is
+deliberately the dumbest version that is true. They do not share a firing line,
+they do not cover each other, and the caller reports where he SAW you rather than
+where you are, so breaking contact still works exactly as it did.
+
+Measured after: three of four in the fight, two of them called, closing from 780
+to 352 and 420 units.
+
+CAPPED AT TWO, AND ON A DIAL. This is the change most likely to make the game
+harder in a way nothing in this project can measure. The bot never fights
+pillagers, so every extract number this codebase has ever produced is blind to
+it. crewMax 2 means a sighting becomes at most three men rather than a street,
+and crewCall 0 turns the whole thing off.
+
+FIVE CONTROLS, because a call that fires too widely would be worse than no call.
+The dial must be the thing doing it. The cap must hold. It must reach his crew
+and not every pillager. It must not conscript a man who was not fighting you,
+which would quietly undo v9.25 and v9.26. And it must not cross the map: at 3000
+units nobody comes.
+
+Verified: parse PASS v9.28. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 70 regression checks
+pass in sequence, none skipped. Enemy behaviour again, so the full run rather
+than the batch. The new check fails on a v9.27 fixture with "a pillager shouted
+that he had found you and nobody came: 1 of 4 in the fight".
+
+Not verified, and it is the whole risk of this build: whether three men is fun or
+punishing. Nothing here can tell me. The crew distribution says it will be
+occasional rather than constant - on COLD STORAGE there are seven pillagers in
+two crews with only one pair inside shout range of each other, and on THE COLD
+MILE thirty three in two crews with nine such pairs - so most sightings will
+still bring one man. He will know inside two raids whether crewMax should be 1.
+
 ## v9.27 - HIS BROKEN WALL, FOUND, AND YOU STOP VANISHING INTO IT
 
 HIS #45: "go right from the start on COLD STORAGE, there is a long

@@ -3798,6 +3798,72 @@ window.__REGRESS=[
      var clear=ghostPct(wl.y-LIFT-18);
      if(clear.pct>4) bad.push('control: standing clear of the container, something is still drawn through it ('+clear.pct+' percent)');
      __resetCfg();
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.28',what:'a pillager who spots you calls his crew, and only his crew, and only in earshot',
+   run:function(){
+     var bad=[];
+     // THE STAGE. One crew, nobody else on the map. The SPOTTER stands 300 units
+     // from the player looking straight at him. The rest huddle 780 from the
+     // player, which is past the 620 they can see, and 480 from the spotter,
+     // which is well inside a shout. So the only thing that can involve them is
+     // the call. Measured before this build: exactly one man came.
+     function stage(mode,frames){
+       __resetCfg(); __pinDefaults(0);
+       if(mode==='off')   __cfg({crewCall:0});
+       if(mode==='cap1')  __cfg({crewMax:1});
+       __startRaid({mapIx:0,seed:4242});
+       var g=__state(), p=g.player, byCrew={};
+       for(var i=0;i<g.ents.length;i++){ var e=g.ents[i];
+         if(e.kind==='raider'&&!e.merc){ (byCrew[e.crew]=byCrew[e.crew]||[]).push(e); } }
+       var best=null;
+       for(var k in byCrew) if(!best||byCrew[k].length>best.length) best=byCrew[k];
+       if(!best||best.length<3) return null;
+       g.ents=best.slice(); p.iv=99; p.hp=p.maxhp;
+       var sp=g.ents[0];
+       sp.x=p.x+300; sp.y=p.y; sp.hostile=true; sp.state='loot';
+       sp.face=Math.atan2(p.y-sp.y,p.x-sp.x);
+       for(var q=1;q<g.ents.length;q++){
+         var m=g.ents[q];
+         m.x=p.x+780+(q*14); m.y=p.y+(q%2?60:-60); m.state='loot';
+         m.face=Math.atan2(-1,0);
+         m.hostile=(mode==='peaceful')?false:true;
+         if(mode==='othercrew') m.crew=sp.crew+7;
+         if(mode==='faraway'){ m.x=p.x+3000; m.y=p.y+3000; }
+       }
+       var K=__keysRef(); for(var k2 in K) delete K[k2];
+       for(var f=0;f<frames;f++) __loop(performance.now()+f*16.7);
+       var chasing=0;
+       for(var r=0;r<g.ents.length;r++) if(g.ents[r].state==='chase') chasing++;
+       var out={crewSize:g.ents.length, chasing:chasing, called:(g.tel&&g.tel.crewCalls)||0};
+       __resetCfg();
+       return out;
+     }
+     var a=stage('normal',180);
+     if(!a) return 'SKIP: no crew of three on this map and seed to stage the call with';
+     // HIS 36. The shout has to actually carry.
+     if(a.called<1)
+       bad.push('a pillager shouted that he had found you and nobody came: '+a.chasing+' of '+a.crewSize+' in the fight');
+     // CONTROL 1: THE DIAL MUST BE THE THING DOING IT, or this passes on some
+     // other route into the fight rather than on the call.
+     var off=stage('off',180);
+     if(off&&off.called>0) bad.push('control: with crewCall off the shout still called '+off.called+' men');
+     if(off&&off.chasing>1) bad.push('control: with crewCall off, '+off.chasing+' men are in the fight, so something else is pulling them');
+     // CONTROL 2: THE CAP IS REAL. Without this the fix could be "the whole map
+     // comes", which is a different game and not what he asked for.
+     var cap=stage('cap1',180);
+     if(cap&&cap.called>1) bad.push('control: crewMax 1 still called '+cap.called+' men');
+     // CONTROL 3: HIS CREW, NOT EVERY PILLAGER. Crews are the whole point; a call
+     // that pulls strangers would delete the distinction.
+     var other=stage('othercrew',180);
+     if(other&&other.called>0) bad.push('control: the shout pulled '+other.called+' men from a different crew');
+     // CONTROL 4: A PEACEFUL MAN IS NOT IN YOUR FIGHT. Being conscripted by a
+     // crewmate's shout would turn every sighting into a brawl with people who
+     // had no quarrel with you, and would quietly undo v9.25 and v9.26.
+     var peace=stage('peaceful',180);
+     if(peace&&peace.called>0) bad.push('control: the shout conscripted '+peace.called+' pillagers who were not fighting you');
+     // CONTROL 5: EARSHOT. A shout must not cross the map.
+     var far=stage('faraway',180);
+     if(far&&far.called>0) bad.push('control: the shout carried 3000 units and called '+far.called+' men');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
