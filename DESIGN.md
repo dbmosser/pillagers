@@ -27443,6 +27443,80 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.07 - YOU CAN SEE NOISE NOW
+
+His note: "i can see pillager footprints when i can't see the pillager --
+intentional? I wanted sound visualization for stuff we couldn't see..." and his
+answer 39, which asks for red circles for sounds through walls.
+
+REPRODUCED IN PIXELS, which is the only honest way to prove an absence. With the
+renderer held still so two identical redraws differ by zero, firing a rifle
+behind the player and redrawing the same frame changed EXACTLY 0 pixels. The
+game had no noise visualisation of any kind and never had one.
+
+WHAT THIS ADDS. Any sound that happens at a place on the map, that he is close
+enough to hear and CANNOT SEE, leaves an expanding red ring on the ground where
+it happened, fading as it grows. A gunshot two rooms over, an alarm behind a
+wall, a crawler swinging at something out of the cone: he gets a position, once,
+and it fades in just over a second.
+
+THE RULES IT KEEPS.
+
+It uses the game's own eyes. canSee is the same test the pillagers, the
+footprints and the kill labels use, so something he can plainly see never draws a
+ring, and the cone counts, so a noise behind him is unseen even in the open.
+
+It draws NO random numbers, seeded or cosmetic. The ring's size comes from the
+sound's own loudness and how far away it was, both of which already exist. The
+seeded stream keeps every draw it had, both fingerprints are unchanged and
+live-vs-sim parity is still identical.
+
+It is independent of the audio device, deliberately, and sits ahead of it in the
+function. A muted game still shows the rings, because this is something he reads,
+not something he hears.
+
+It is capped at 22 live rings, so a firefight cannot turn the screen red, and
+there is a noiseSee dial to switch it off.
+
+MEASURED AFTER, same still-renderer method: a shot he cannot see makes 1 ring and
+changes 120 pixels. A shot in plain sight makes 0 rings and changes 0 pixels.
+
+TWO CORRECTIONS, both mine, both in the harness rather than the game. The fixture
+replaces sfx with a no-op so a headless tab never opens an audio context, and
+this feature lives inside sfx, so my first measurement read zero and I nearly
+blamed the build. The stub now passes the world position through and still drops
+the audio. Then the check failed only when run after the other 49: since v9.05
+this seed can start the player near the bottom edge of the camera, so my "behind
+him" noise landed off screen and the pixel count was honestly zero. The check now
+pins his facing, puts the noise toward the middle of the frame, and refuses to
+believe a pixel count at all if the ring is outside the camera.
+
+Verified: parse PASS v9.07. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 50 regression checks
+pass in sequence, none skipped.
+
+The check fails on a fixture built from v9.06 with "a gunshot he cannot see left
+no ring; the ring changed only 0 pixels". Three controls: a noise in plain sight
+must draw nothing, so "always draw a ring" cannot pass; the ring must expire, so
+a permanent red circle cannot pass; and sixty noises at once must not exceed the
+cap.
+
+ALSO CHECKED, AND FOUND NOTHING. His answer 8, firing while looting, already
+works, measured last build. His answer 32, the death screen showing what the bag
+was worth, is already there: a KIA screen with five valuables in the bag lists
+every item as LOST and prints "5 items lost, $7,450 gone". Neither needed a
+change and neither got one.
+
+Not verified: how loud the rings feel in a real firefight, which is his call. The
+cap stops the screen filling but 22 rings at once is still a lot of red and I have
+only seen it in a still frame. The loudness-to-radius table is my judgement, not
+measured against anything. Footsteps are in the table but enemy footsteps only
+call this when they are already audible, so a machine walking quietly two rooms
+away still shows nothing.
+
 ## v9.06 - CONTRACTS NAME A PLACE, NOT A COLOUR
 
 His note: "one of the in-raid contracts says to do something in 'Greenbelt' --

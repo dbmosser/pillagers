@@ -524,6 +524,13 @@ window.__pairedPoll=function(){
   return out;
 };
 window.__blip=function(t){ return blip(t); };
+// v9.07: the noise rings, so a check can count them rather than only look for
+// red pixels. list() is what is live right now; mark() drives the real entry
+// point the game uses.
+window.__noise={list:function(){ return (G&&G.noiseRings)?G.noiseRings.slice():[]; },
+                clear:function(){ if(G) G.noiseRings=[]; },
+                mark:function(t,x,y){ return noiseMark(t,x,y); },
+                table:function(){ return NOISEMARK; }};
 // PAIRED ARMS AND THE TEST THAT GOES WITH THEM, v2.42. Two arms run over one seed
 // list are PAIRED, and comparing their extract rates as if they were independent
 // samples throws the pairing away and reads far more into a gap than is there.
@@ -801,7 +808,7 @@ window.__isFixture=1;
 // played all of it out loud on Daniel's PC while he was trying to work. He should never
 // be able to hear my tests. Every emitter is stubbed at the source rather than relying
 // on a gain of zero, because a later build could add a new node that misses the bus.
-try{ sfx=function(){}; }catch(e){}
+try{ sfx=function(t,x,y){ try{ if(typeof noiseMark==='function') noiseMark(t,x,y); }catch(_ns){} }; }catch(e){}
 try{ blip=function(){}; }catch(e){}
 // v8.55: lets a probe watch which sound a call site actually asks for. The step
 // chooser calls blip through this binding, so without a setter its output was
@@ -2580,6 +2587,62 @@ window.__REGRESS=[
        });
        __P().mapIx=0;
      }
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.07',what:'a noise you cannot see leaves a ring on the ground, and one you can see does not',
+   run:function(){
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, there are no pixels to compare';
+     __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __zoom.set(1,true);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player; g.ents.length=0; p.iv=99;
+     // PINNED, not inherited. Face north, so due south of him is outside the
+     // cone and is heard rather than seen whatever an earlier check left behind.
+     p.face=Math.PI/2;
+     for(var f=0;f<6;f++) __loop(performance.now()+f*16.7);
+     p.face=Math.PI/2;
+     if(!__noise) return 'this build has no noise rings at all';
+     var cv=document.getElementById('cv');
+     if(!cv) return 'no world canvas to read';
+     function snap(){ __frame(0); return cv.getContext('2d').getImageData(0,0,1920,1080).data; }
+     function diff(a,b){ var n=0; for(var i=0;i<a.length;i+=4) if(a[i]!==b[i]||a[i+1]!==b[i+1]||a[i+2]!==b[i+2]) n++; return n; }
+     var bad=[];
+     __noise.clear();
+     var base=snap(), ctrl=snap();
+     // A renderer that is not still makes every number below meaningless, so it
+     // is proved still first.
+     if(diff(base,ctrl)!==0) return 'two identical redraws differ, so no pixel measurement here means anything';
+     // He faces north out of __deploy, so a point south of him is outside the
+     // cone: heard, not seen. Measured before v9.07: 0 pixels, always.
+     var NX=p.x, NY=p.y-260;
+     __audio.sfx('shot', NX, NY, 'rifle');
+     var heard=__noise.list().length, heardPix=diff(base,snap());
+     if(heard<1) bad.push('a gunshot he cannot see left no ring');
+     // A ring drawn outside the camera changes no pixels for an honest reason,
+     // and reading that as "not drawn" is how this check lied to me twice.
+     var _cm=__cam?__cam():null;
+     if(_cm&&(NX<_cm.x||NX>_cm.x+1920||NY<_cm.y||NY>_cm.y+1080))
+       return 'SKIP: the noise landed outside the camera at '+Math.round(NX)+','+Math.round(NY)+', so pixels prove nothing';
+     if(heardPix<20) bad.push('the ring changed only '+heardPix+' pixels, so nothing was actually drawn');
+     // CONTROL 1, and it is the whole point of the feature: a noise he can SEE
+     // must not draw anything. Without this, "always draw a ring" passes above
+     // and litters the screen with circles on things standing in front of him.
+     __noise.clear();
+     var b2=snap();
+     __audio.sfx('shot', p.x+8, p.y+40, 'rifle');
+     var seen=__noise.list().length, seenPix=diff(b2,snap());
+     if(seen!==0) bad.push('a gunshot in plain sight drew '+seen+' rings');
+     if(seenPix!==0) bad.push('a gunshot in plain sight changed '+seenPix+' pixels');
+     // CONTROL 2: it must expire. A marker that never dies is a permanent red
+     // circle on the map and would still pass every line above.
+     __noise.clear();
+     __audio.sfx('boom', NX, NY);
+     var t0=performance.now();
+     for(var f2=0;f2<80;f2++) __loop(t0+f2*16.7);
+     if(__noise.list().length!==0) bad.push('the ring never expired, '+__noise.list().length+' still live after 80 frames');
+     // CONTROL 3: it must not be able to fill the screen.
+     __noise.clear();
+     for(var q=0;q<60;q++) __audio.sfx('shot', NX+q, NY, 'rifle');
+     if(__noise.list().length>22) bad.push('the ring list is uncapped, '+__noise.list().length+' live after 60 noises');
+     __noise.clear();
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
