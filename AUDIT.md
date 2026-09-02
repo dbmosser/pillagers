@@ -21,6 +21,7 @@ adversarially verified):
 
 | Finding | Closed by | How it was confirmed closed |
 |---|---|---|
+| His answer 44: COLD STORAGE offered only 4 eligible start points, so he kept landing in the same corners | v9.05 | 6 new spawns; pool 4 to 10, distinct starts 4 to 10 over 60 seeds, top share 40 pct to 16.7; check fails on a v9.04 fixture |
 | His crier note: criers idled inside houses (46.3 pct of patrol time on COLD STORAGE, 3 of 16 spawning indoors on THE COLD MILE) | v9.04 | new regress check fails on a v9.03 fixture; after, 0.2 and 0.4 pct, crawlers still 80.6/60.4 pct indoors |
 | Answer 16: an emptied belt key became a DIFFERENT item (medkit slot became Frag Charge) instead of greying | v9.03 | new regress check fails on a v9.02 fixture with the exact defect, passes on v9.03 |
 | `var cap` deleted while four readers remained; holding E threw | v8.37 | loot leg of `__verify` |
