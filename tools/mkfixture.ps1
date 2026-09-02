@@ -4020,6 +4020,68 @@ window.__REGRESS=[
      if(off&&off.per>2.0)
        bad.push('control: with crawlerPerHouse off the count is still '+
                 (Math.round(off.per*100)/100)+' per house, so something else is setting it');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.31',what:'an item can be taken back off the belt during a raid, and a click on its own slot is not that',
+   run:function(){
+     var bad=[];
+     // HIS 11, the half that only ever worked in the Undercroft. Driven with real
+     // keyboard and mouse events rather than by calling into the drag state, so
+     // this is the gesture and not a description of it.
+     function drag(mode){
+       __resetCfg(); __pinDefaults(0);
+       // THE BELT PLAN IS SAVED IN THE PROFILE. Without clearing it each run
+       // inherits the last one, and the second measurement is of the first. This
+       // cost me a reading that said the unbind fired when it had not.
+       try{ __P().hotAssign={}; }catch(_pe){}
+       __deploy({kit:['bandage','medkit'],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player; p.iv=99;
+       g.hotAssign={}; g.hotAuto={};
+       var K=__keysRef(); for(var k in K) delete K[k];
+       window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));
+       window.dispatchEvent(new KeyboardEvent('keyup',{code:'KeyI',bubbles:true}));
+       for(var f=0;f<8;f++) __loop(performance.now()+f*16.7);
+       __frame(0);
+       if(!g.bagOpen) return {err:'the backpack did not open on I'};
+       if(!(g.bagCells||[]).length||!(g.hotCells||[]).length) return {err:'no cells laid out'};
+       var M=__mouse(), hcv=document.getElementById('hcv'), cv=document.getElementById('cv');
+       function at(c){ M.x=c.x+c.w/2; M.y=c.y+c.h/2; }
+       // The press is on a canvas and the release is on the window, which is how
+       // the game binds them; sending the press to all three is simply belt and
+       // braces against that changing.
+       function down(){ [hcv,cv,window].forEach(function(t){ try{ t.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true})); }catch(_de){} }); }
+       function up(){ window.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true})); }
+       var bagCell=g.bagCells[0], slot=g.hotCells[4], other=g.hotCells[5], key=bagCell.key;
+       at(bagCell); down(); at(slot); up(); __frame(0);
+       var assigned=((g.hotAssign||{})[4]===key);
+       if(mode==='sameSlot'){ at(slot); down(); at(slot); up(); }
+       if(mode==='otherSlot'){ at(slot); down(); at(other); up(); }
+       if(mode==='toBag'){ at(slot); down(); at(bagCell); up(); }
+       __frame(0);
+       var a=g.hotAssign||{};
+       return {key:key, assigned:assigned, slot5:a[4], slot6:a[5], inBag:(g.bag.indexOf(key)>=0)};
+     }
+     var off=drag('toBag');
+     if(off.err) return 'SKIP: '+off.err;
+     // The other half has to work first, or nothing below means anything.
+     if(!off.assigned) return 'the drag ONTO the belt stopped working, so the drag off cannot be judged';
+     // HIS 11. Measured before this build: the slot still read the item.
+     if(off.slot5!==undefined)
+       bad.push('dragging '+off.key+' off the belt into the backpack left slot 5 still holding it');
+     // CONTROL 1: it must come off the BELT, not out of existence. An unbind that
+     // ate the item would satisfy the line above.
+     if(!off.inBag) bad.push('control: the item vanished from the backpack instead of just leaving the belt');
+     // CONTROL 2: PICKING IT UP AND PUTTING IT STRAIGHT BACK IS A CLICK. v8.14
+     // established that and my own first cut of this build broke it, clearing the
+     // slot on a gesture that is meant to select.
+     var same=drag('sameSlot');
+     if(!same.err&&same.slot5!==same.key)
+       bad.push('control: dropping '+same.key+' back on its own slot cleared it, and that gesture is a click');
+     // CONTROL 3: A MOVE IS STILL A MOVE. Dropping on a different slot must
+     // relocate rather than unbind, or the fix has eaten rearranging the bar.
+     var moved=drag('otherSlot');
+     if(!moved.err&&(moved.slot6!==moved.key||moved.slot5!==undefined))
+       bad.push('control: moving '+moved.key+' from slot 5 to slot 6 did not move it, slot5='+
+                moved.slot5+' slot6='+moved.slot6);
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

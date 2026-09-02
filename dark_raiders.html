@@ -1209,7 +1209,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.30';
+var VER='9.31';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8971,9 +8971,16 @@ window.addEventListener('mouseup',function(e){
   if(e.button===0&&G&&G.drag){
     var d=G.drag; G.drag=null;
     var dropped=false;
+    // v9.31: did the release land on a belt cell at all? `dropped` cannot answer
+    // that, because handing an item to a merc sets it too and that one is meant to
+    // come off the belt. Every belt outcome - assign, move, refuse, and the
+    // put-it-back-where-it-came-from click - already writes the bar correctly by
+    // itself and must not be second guessed below.
+    var _onBelt=false;
     if(G.hotCells) for(var hc=0;hc<G.hotCells.length;hc++){
       var HC=G.hotCells[hc];
       if(mouse.x>=HC.x&&mouse.x<=HC.x+HC.w&&mouse.y>=HC.y&&mouse.y<=HC.y+HC.h){
+        _onBelt=true;
         // HIS RUN #35 NOTE: "i was unable to swap the scav pitol in inventory slot
         // 2 with the smg that i picked up off of a dead raider in my inventory."
         // Correct, and it was two separate failures pointing the same way.
@@ -9082,6 +9089,27 @@ window.addEventListener('mouseup',function(e){
           }
         }
         break;
+      }
+    }
+    // v9.31, HIS 11: LET GO ANYWHERE ELSE AND IT COMES OFF THE BELT. The other
+    // half of the drag that has worked since v8.72 in one place and nowhere else.
+    // It sits after the give, so handing an item to your merc takes it off the
+    // belt on the way out rather than leaving a slot pointing at something you no
+    // longer own.
+    // The profile is written the same way the assign path writes it, minus the
+    // automatic pins, so taking something off mid-raid is remembered exactly as
+    // putting something on is.
+    if(!_onBelt&&d&&d.fromHot!==undefined&&G.hotAssign&&G.hotAssign[d.fromHot]!==undefined){
+      var _wasKey=G.hotAssign[d.fromHot];
+      delete G.hotAssign[d.fromHot];
+      if(G.hotAuto) delete G.hotAuto[d.fromHot];
+      if(!G.sim){
+        var _uf={};
+        for(var _uk in G.hotAssign) if(!G.hotAuto||!G.hotAuto[_uk]) _uf[_uk]=G.hotAssign[_uk];
+        P.hotAssign=JSON.parse(JSON.stringify(_uf));
+        try{ saveProfile(); }catch(_ue){}
+        blip('pick');
+        say((ITEMS[_wasKey]?ITEMS[_wasKey].name:'Item')+' off slot '+(d.fromHot+1)+'.');
       }
     }
     if(!dropped) mouse.down=false;
@@ -24745,7 +24773,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.30: the crawler count follows the houses now, at his 2.5 each. The extra ones are outside, so the streets are no longer empty.',
+  now:'v9.31: you can take an item back off the belt during a raid. Until now it only came off down in the Undercroft.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

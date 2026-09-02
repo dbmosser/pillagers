@@ -27443,6 +27443,62 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.31 - AN ITEM COMES BACK OFF THE BELT DURING A RAID
+
+HIS 11: move items TO AND FROM the hotbar with the backpack open. The "to" half
+has worked for a while. The "from" half has only ever worked in the Undercroft.
+
+REPRODUCED with real keyboard and mouse events on the play path: opened the
+backpack with I, dragged a medkit onto belt slot 5, which took, then dragged it
+back off the belt into the backpack. The drag itself was correct and knew where it
+came from. The binding survived anyway, and slot 5 still read medkit.
+
+The Undercroft has done this properly since v8.96 and says so in its own comment:
+"releasing over a belt cell binds it, and releasing anywhere else lets go, which
+is the same pair of outcomes the raid has." It was not the same pair of outcomes.
+The raid only ever had one.
+
+Mid-raid that left you unable to take anything off the belt at all. The only ways
+out of a slot were to spend the item, drop it, or go back down and edit the bar on
+the Undercroft floor, which is exactly the trip his answer was asking not to have
+to make.
+
+MY FIRST CUT UNBOUND TOO MUCH, and the control caught it before it shipped:
+picking an item up off its slot and putting it straight back down cleared the
+slot. That gesture is a click, not a move; v8.14 established it and handles it by
+leaving the belt loop before anything is written, and my unbind then ran anyway
+and deleted the binding. The obvious flag could not tell the two apart, because
+handing an item to your merc also counts as a completed drop and that one SHOULD
+come off the belt. The belt loop now says plainly whether the release landed on a
+belt cell, and only a release that did not unbinds. Handing something to a merc
+therefore takes it off the bar on the way out, rather than leaving a slot pointing
+at something you no longer own.
+
+The bar is written to the profile the same way the assign path writes it, minus
+the automatic pins, so taking something off mid-raid is remembered exactly as
+putting something on already was. The game says which slot it came off, because a
+gesture that silently does nothing is what this build is about.
+
+AND A FAULT IN MY OWN HARNESS, worth writing down because it produced a confident
+wrong reading first: the belt plan lives in the saved profile, so each run of the
+check inherited the previous run's bar and the second measurement was really of
+the first. Cleared per run now.
+
+Verified: parse PASS v9.31. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 85 and 369 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 73 regression checks
+pass in sequence, none skipped. Inventory is touched, so the full run rather than
+the batch. The new check fails on a v9.30 fixture with "dragging bandage off the
+belt into the backpack left slot 5 still holding it".
+
+Not verified: the second half of his 11, which is that the item you are dragging
+is invisible while you carry it across the Undercroft backpack. The ghost that
+follows the cursor is drawn inside the HUD pass and the Undercroft bag does not
+call it. The target cell still highlights, so the drop reads, but nothing is in
+hand. It is a separate build and it is still open.
+
 ## v9.30 - THE CRAWLER COUNT FOLLOWS THE HOUSES, AND THE STREETS FILL UP
 
 HIS ANSWERS 2, 3 AND 5, in his own words:
