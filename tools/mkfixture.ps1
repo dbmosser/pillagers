@@ -1630,6 +1630,63 @@ window.__REGRESS=[
      // And the key closes it again rather than stacking panels.
      document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));
      if(cm.classList.contains('on')) bad.push('I did not close the backpack again');
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.85',what:'a pillager footprint does not draw through a wall, and a visible one still does',
+   run:function(){
+     __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(),p=g.player;
+     g.ents.length=0; p.iv=99;
+     var cv=document.getElementById('cv'); if(!cv) return 'no canvas to read';
+     var c2=cv.getContext('2d');
+     // __frame(0) redraws WITHOUT advancing the clock. That matters: my first
+     // probe stepped __loop between shots, so the diff was rain and lighting
+     // moving, not footprints, and it reported a leak of 23,239 pixels that was
+     // entirely noise. This null control is what proves the method works at all.
+     function shot(){ __frame(0); return c2.getImageData(0,0,cv.width,cv.height).data; }
+     function diff(a,b){ var d=0;
+       for(var i=0;i<a.length;i+=4){
+         if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>8) d++; }
+       return d; }
+     g.decals.length=0;
+     if(diff(shot(),shot())!==0) return 'the renderer is not deterministic at dt 0, this check cannot measure anything';
+     function trial(x,y,mine){
+       g.decals.length=0; var base=shot();
+       for(var k=0;k<8;k++) g.decals.push({x:x+k*3,y:y+k*2,c:'#241a10',s:5,a:.55,a0:.55,
+         rot:0.6,print:1,mine:mine?1:0,t:0,life:45});
+       var withP=shot(); g.decals.length=0; return diff(base,withP);
+     }
+     // A spot that is walkable, out of line of sight, and where a print is
+     // genuinely drawable. That last part matters: a point inside a wall draws
+     // nothing either way and would pass this check while proving nothing.
+     var hid=null;
+     for(var r=60;r<500&&!hid;r+=25){
+       for(var a=0;a<6.28&&!hid;a+=0.09){
+         var qx=Math.round(p.x+Math.cos(a)*r), qy=Math.round(p.y+Math.sin(a)*r);
+         if(!__nav.free(qx,qy,10)) continue;
+         if(__los.clear(p.x,p.y,qx,qy)) continue;
+         if(trial(qx,qy,true)>150) hid={x:qx,y:qy};   // mine bypasses the gate
+       }
+     }
+     if(!hid) return 'could not find a hidden spot where a print is drawable at all';
+     var vis=null;
+     for(var r2=40;r2<220&&!vis;r2+=10){
+       for(var a2=0;a2<6.28&&!vis;a2+=0.09){
+         var vx=Math.round(p.x+Math.cos(a2)*r2), vy=Math.round(p.y+Math.sin(a2)*r2);
+         if(!__nav.free(vx,vy,10)) continue;
+         if(!__los.see(p.x,p.y,p.face,vx,vy)) continue;
+         if(trial(vx,vy,false)>150) vis={x:vx,y:vy};
+       }
+     }
+     var bad=[];
+     // THE BUG: a pillager print behind a wall must draw nothing.
+     var leak=trial(hid.x,hid.y,false);
+     if(leak>0) bad.push('a pillager print behind a wall drew '+leak+' pixels');
+     // CONTROL ONE: it must still draw where you can see it, or the fix is just
+     // "delete footprints" and would pass the line above.
+     if(!vis) bad.push('control: no visible spot where a pillager print draws at all');
+     // CONTROL TWO: your own prints are exempt, which is what the mine flag is for.
+     if(trial(hid.x,hid.y,true)<=0) bad.push('control: your own prints stopped drawing too');
      return bad.length?bad.join('; '):null; }}
 ];
 window.__regress=function(){

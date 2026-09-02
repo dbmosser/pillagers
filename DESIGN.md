@@ -27443,6 +27443,59 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.85 - A PILLAGER FOOTPRINT NO LONGER SHOWS THROUGH A WALL
+
+His note: "i can see pillager footprints when i can't see the pillager --
+intentional? I wanted sound visualization for stuff we couldn't see..."
+
+Not intentional. Every pillager within 1400 units drops boot prints, and the
+decal loop that draws them had nothing in front of it but an off-screen cull. So
+you could follow a man you had no line of sight to, which is the one thing the
+stealth layer exists to prevent, and it is strictly BETTER information than the
+noise map he actually asked for: a footprint says where, a sound says roughly
+where.
+
+I GOT THE MEASUREMENT WRONG FIRST AND HAVE TO SAY SO. My reproduction rendered a
+frame, added prints, rendered again and diffed the canvas, but each render
+stepped the game three frames, so the rain, the water shimmer and the lighting
+all moved between the two shots. It reported 23,239 pixels changed behind a wall
+and 18,472 in the open, and every one of those pixels was weather. The number
+looked like a smoking gun and measured nothing. It also survived the fix
+unchanged, which is what exposed it.
+
+THE VALID PROBE uses __frame(0), which redraws without advancing the clock. Two
+identical renders differ by 0 pixels, and that null control is what makes the
+rest mean anything. Then the pre-fix behaviour can be reproduced exactly, because
+your own prints carry a mine flag that bypasses the new gate, and ungated is what
+every print used to be. At a walkable point 135 units from the player with a wall
+between, the game's own losClear confirming no line of sight:
+
+    ungated, which is what every print used to be     1,148 pixels drawn
+    gated, a pillager print                                   0 pixels
+    a pillager print somewhere you CAN see                1,173 pixels
+
+A point had to be found where a print is drawable at all, not merely hidden. My
+first candidate sat inside a wall and drew nothing either way, which would have
+passed a careless check while proving nothing.
+
+THE GATE IS THE GAME'S OWN RULE. Every pillager and machine is put through
+ev.seen = canSee(...) and drawn only if it passes; their footprints go through
+the same call now. It sits after the off-screen cull on purpose, so the cost is
+at most a screenful rather than all 150 prints. Only prints are gated: blood,
+scorch and container litter are marks on ground you have already stood on. The
+sprint trail in G.prints is gated the same way, and your own sprint points are
+tagged mine so your trail is never hidden from you.
+
+Verified: parse PASS. Both sectors to their fingerprints, 58 and 276. Streams
+identical live and sim. Looting on both with no throw and the clock advancing.
+Three endings correct. Hub renders. 29 regression checks pass, including a new
+one that carries the null control, the leak, and both of the controls above.
+
+Not verified: I did not measure the frame cost of up to a screenful of canSee
+calls, because this environment can time script but not drawing, so the claim
+that culling first keeps it cheap rests on doing less work and not on a number.
+I also did not check whether a pillager's water ripples leak the same way; they
+are a different branch and I only gated the boot marks and the sprint trail.
 ## v8.84 - I IN THE UNDERCROFT OPENS YOUR BACKPACK, NOT THE WHOLE TERMINAL
 
 His note, third time: "I in undercroft should pull up simple inventory, not 'the
