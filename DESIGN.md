@@ -27443,6 +27443,63 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.80 - A CRAWLER IN REACH WAS HITTING YOU EVERY SINGLE FRAME
+
+His note: "crawler doing too much damage now", then "its like crawlers hit
+multiple times in too rapid a succession". Read the second line first: that is a
+report about CADENCE, not about a damage number, and it is exactly right.
+
+Both of his runs tonight, on v8.78, end the same way. killer:crawler,
+diedInSiege:1, closestExt:1m. One of them had been out 386 seconds and was
+carrying 19455c.
+
+REPRODUCED on an untouched crawler with the player standing still. No cloned
+entity, no edited fields, the real player frame:
+
+    hits in 240 frames    240
+    gap between hits      1 frame
+    gap the code intends  42 frames, the 0.7s melee cooldown
+    damage per second     1446, at a 100 hp player
+
+So a crawler that reached you killed you in about four hundredths of a second.
+It is not that the damage is too high. It swings every frame, forever.
+
+WHY. updateEnts runs two if/else chains back to back. The first is the state
+machine, and a chasing crawler swings there and sets its cooldown to 0.7. The
+second chain is about raiders: merc orders, looting, extracting. A crawler
+matches none of those arms, so it falls through to that chain's final else,
+which is the IDLE WANDER branch, and the last line of that branch is "if you have
+arrived at your wander point, clear your cooldown". A crawler standing on top of
+you is standing on its own stale wander point, so the cooldown it set a moment
+earlier was wiped before it could ever be read. I proved it by putting a setter
+on the field, which named both writers in the same frame: the swing at the melee
+line, then the wipe in the wander branch. That branch was also drifting the
+crawler toward a travel target while the chase code was moving it at you.
+
+THE FIX gates the idle wander branch so an entity already chasing or
+investigating does not also run it. No damage number changed. The crawler simply
+waits between swings the way the melee line always said it would.
+
+MEASURED AFTER, one crawler alone on the map so the gaps describe the rule and
+not the crowd: 16 swings, median gap 0.706s, spread 0.669 to 0.716, against the
+0.7 the code asks for. Before it was one frame.
+
+Controls, because a gate that broke the chase outright would also produce a
+quiet, clean-looking number: the crawler must still land at least four hits in
+ten seconds, and idle enemies must still wander. 58 entities left alone for four
+seconds, and the only crawlers that did not move were three in the possum state,
+which is playing dead on purpose and which this gate does not touch.
+
+Verified: parse PASS. Both sectors to their fingerprints, 58 and 276. Streams
+identical live and sim on both. Looting on both with no throw and the clock
+advancing. Three endings correct with the overlay up. Hub renders. 24 regression
+checks pass, including a new one carrying both controls above.
+
+Not verified: I did not measure what this does to the extract rate, so the
+difficulty change is unquantified and the sim numbers in the roadmap are all from
+builds with the bug in them. I also did not check whether the same fall-through
+was breaking anything else in that wander branch beyond the cooldown wipe and the
+stray movement, only that those two are gone.
 ## v8.79 - SIX OF HIS NOTES FROM ONE SITTING
 
 **"the NEW IN vXXX text is too small".** It was, and it could not simply be

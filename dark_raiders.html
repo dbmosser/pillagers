@@ -1162,7 +1162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.79';
+var VER='8.80';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14441,7 +14441,15 @@ e.lootT=(e.lootT||0)+dt;
         }
       }
     }
-    else {
+    // v8.80: NOT WHILE IT IS CHASING YOU. This else is the idle wander branch,
+    // and it sits at the end of a SECOND if/else chain whose every other arm is
+    // about raiders looting, extracting or taking merc orders. Anything that is
+    // not a raider doing one of those things fell in here every frame, including
+    // a crawler in the middle of hitting you, and the last line of this branch
+    // clears the attack cooldown. Measured: 240 hits in 240 frames, a 1 frame gap
+    // where the melee line intends 42, 1446 damage a second at a 100 hp player.
+    // Both of his deaths tonight were to a crawler.
+    else if(e.state!=='chase'&&e.state!=='investigate'){
       // cd is decremented once per frame below; do not tick it here as well
       if(e.cd<=0){
         // Camp guards patrol their post, not the map. Their whole job is to be
@@ -23704,7 +23712,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.79: looted items are dealt one at a time, the NEW IN card is readable, and the mouse zoom goes closer in and less far out.',
+  now:'v8.80: a crawler in reach was hitting you every single frame instead of once every 0.7 seconds. It now waits between swings.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

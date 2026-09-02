@@ -1441,6 +1441,31 @@ window.__REGRESS=[
      __grant(ct,[WK],0.55);
      if(g.labels.length&&g.labels[0].t>-0.5)
        bad.push('the windfall delay is not reaching the label, t='+g.labels[0].t);
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.80',what:'a crawler waits between swings instead of hitting every frame',
+   run:function(){
+     __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(),p=g.player,c=null;
+     for(var i=0;i<g.ents.length;i++) if(g.ents[i].kind==='crawler'&&!g.ents[i].elite){ c=g.ents[i]; break; }
+     if(!c) return 'no plain crawler on the map to test with';
+     // ONE crawler and nothing else, or the gaps measure the crowd, not the rule.
+     g.ents.length=0; g.ents.push(c);
+     p.x=c.x+14; p.y=c.y; p.hp=100000; p.maxhp=100000; p.armor=0; p.iv=0;
+     var K=__keysRef(); for(var kk in K) delete K[kk];
+     var last=p.hp,times=[];
+     for(var f=0;f<600;f++){ __loop(performance.now()+f*16.7); if(p.hp<last){ times.push(g.t); last=p.hp; } }
+     var bad=[];
+     // CONTROL: it must still be able to hit at all. A gate that stopped the
+     // chase outright would give a perfect zero here and look like a pass.
+     if(times.length<4) return 'control: the crawler barely attacked at all, '+times.length+' hits in 10s';
+     var gaps=[];
+     for(var h=1;h<times.length;h++) gaps.push(times[h]-times[h-1]);
+     gaps.sort(function(a,b){ return a-b; });
+     var med=gaps[Math.floor(gaps.length/2)];
+     // The bug was a 1 frame gap, about 0.02s. 0.7 is what the melee line asks for.
+     if(med<0.45) bad.push('a single crawler is swinging every '+med.toFixed(3)+'s, the melee cooldown is 0.7');
+     if(med>1.2) bad.push('a single crawler has gone passive, '+med.toFixed(3)+'s between swings');
      return bad.length?bad.join('; '):null; }}
 ];
 window.__regress=function(){
