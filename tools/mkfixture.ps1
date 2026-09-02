@@ -667,6 +667,13 @@ window.__hud=function(){
   if(hc.length) out.belt={cells:hc.length,cellW:Math.round(hc[0].w),
     x:Math.round(hc[0].x),right:Math.round(hc[hc.length-1].x+hc[hc.length-1].w),
     y:Math.round(hc[0].y),bottom:Math.round(hc[0].y+hc[0].h)};
+  // v9.09: what the HUD thinks is under a point, and what a click there actually
+  // started. A pointer that promises resize where the click drags is worse than
+  // no pointer, so a check has to be able to compare the two.
+  out.hitAt=function(x,y){ var h=hudHit(x,y); return h?h.part:null; };
+  out.grip=hudGripS();
+  out.dragging=function(){ return HUDDRAG?HUDDRAG.id:null; };
+  out.resizing=function(){ return HUDRESIZE?HUDRESIZE.id:null; };
   return out;
 };
 // v8.79: the FULL open, the path that rolls a windfall. Named __openFull rather
@@ -2727,6 +2734,73 @@ window.__REGRESS=[
      // CONTROL 2: and it must NOT have grown at 1080p, which is where he already
      // had a working layout. hudRes is 1 there, so the block is the size it was.
      if(b1>340) bad.push('control: the bleed bar is '+b1+'px at 1080p, the block has been inflated where it was already right');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.09',what:'the pointer says what a panel edge does: move, resize or minimise',
+   run:function(){
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, there are no pixels to compare';
+     __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __zoom.set(1,true);
+     __deploy({kit:['medkit','plate'],safe:null,mapIx:0,seed:4242});
+     // OWN PRECONDITIONS. An earlier check can leave a panel collapsed or resized
+     // on the profile, and a collapsed panel has no resize corner at all, which
+     // reads exactly like the defect this is looking for.
+     __P().hud={};
+     var g=__state(); g.ents.length=0; g.player.iv=99;
+     for(var f=0;f<6;f++) __loop(performance.now()+f*16.7);
+     var hc=document.getElementById('hcv'); if(!hc) return 'no HUD canvas to read';
+     var m=__mouse(), H=__hud(), B=H.box&&H.box.body;
+     if(!B) return 'the vitals panel did not draw, so there is no panel to point at';
+     var bad=[];
+     // WHICH PIXELS THE POINTER ITSELF PUTS DOWN: the same region rendered with
+     // the pointer parked far away, then with it here. Reading the drawn cursor
+     // rather than the code that chose it.
+     function sig(px,py){
+       m.x=960; m.y=300; __frame(0);
+       var far=hc.getContext('2d').getImageData(px-30,py-30,60,60).data;
+       m.x=px; m.y=py; __frame(0);
+       var here=hc.getContext('2d').getImageData(px-30,py-30,60,60).data;
+       var stem=0,total=0,key=[];
+       for(var y=0;y<60;y++) for(var x=0;x<60;x++){
+         var i=(y*60+x)*4;
+         if(far[i]!==here[i]||far[i+1]!==here[i+1]||far[i+2]!==here[i+2]||far[i+3]!==here[i+3]){
+           total++;
+           if(x>=26&&x<=34&&y>=4&&y<=24) stem++;   // the reticle's top arm
+           if(key.length<400) key.push(x+':'+y);
+         }
+       }
+       return {n:total, stem:stem, k:key.join(',')};
+     }
+     var world=sig(1400,400);
+     var body =sig(Math.round(B.x+B.w/2), Math.round(B.y+B.h/2));
+     var bar  =sig(Math.round(B.x+50),    Math.round(B.y+8));
+     var glyph=sig(Math.round(B.right-12),Math.round(B.y+8));
+     var grip =sig(Math.round(B.x+B.w-8), Math.round(B.y+B.h-8));
+     if(!world.n) return 'nothing is drawn at the pointer at all, so this cannot be measured';
+     // HIS ANSWER 38. Measured before v9.09: bar and glyph drew byte-identical
+     // arrows, and the grip drew the aiming reticle.
+     if(bar.k===glyph.k) bad.push('the drag bar and the minimise glyph still draw the same pointer');
+     if(grip.n>=world.n*0.8) bad.push('the resize corner still draws the aiming reticle, footprint '+grip.n+' against '+world.n+' on open ground');
+     if(grip.k===bar.k) bad.push('the resize corner and the drag bar draw the same pointer');
+     if(grip.k===body.k) bad.push('the resize corner draws whatever the panel body draws');
+     // CONTROL 1: the reticle must SURVIVE where it belongs. Replacing the
+     // pointer everywhere would satisfy every line above and take his aiming
+     // cross away in a firefight.
+     if(!body.stem) bad.push('control: the panel body no longer draws the aiming reticle');
+     if(!world.stem) bad.push('control: open ground no longer draws the aiming reticle');
+     // Same SHAPE, not the same pixels: the reticle drawn over a lit panel
+     // antialiases against a different background, so a strict pixel comparison
+     // fails on every build including the fixed one.
+     if(Math.abs(body.n-world.n)>world.n*0.25)
+       bad.push('control: the pointer over a panel body is a different size from the one on open ground, '+body.n+' against '+world.n);
+     // CONTROL 2, and it is the one that keeps this honest: the pointer must
+     // agree with what a click there actually does. A resize pointer over a spot
+     // that starts a DRAG is a worse lie than the reticle was.
+     if(H.hitAt){
+       var pg=H.hitAt(Math.round(B.x+B.w-8), Math.round(B.y+B.h-8));
+       if(pg!=='grip') bad.push('control: the corner the resize pointer is drawn on hit-tests as "'+pg+'"');
+       var pb=H.hitAt(Math.round(B.x+50), Math.round(B.y+8));
+       if(pb!=='bar'&&pb!=='glyph') bad.push('control: the drag bar hit-tests as "'+pb+'"');
+     }
+     m.x=960; m.y=300;
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

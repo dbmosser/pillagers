@@ -1185,7 +1185,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.08';
+var VER='9.09';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19580,13 +19580,13 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
     // nothing else. Over the body of a panel you keep the reticle, because the
     // body is not something you can pick up.
     var _hh=hudHit(rx0,ry0);
-    var _overBox=!!(_hh&&(_hh.part==='bar'||_hh.part==='glyph'));
+    var _hpart=_hh?_hh.part:null;
+    var _overBox=(_hpart==='bar'||_hpart==='glyph'||_hpart==='grip');
     if(_overBox){
-      ctx.fillStyle='rgba(230,240,246,.95)';
-      ctx.beginPath();
-      ctx.moveTo(rx0,ry0); ctx.lineTo(rx0+11,ry0+11); ctx.lineTo(rx0+5,ry0+11); ctx.lineTo(rx0+2,ry0+15);
-      ctx.closePath(); ctx.fill();
-      ctx.strokeStyle='rgba(10,14,20,.9)'; ctx.lineWidth=1; ctx.stroke();
+      // v9.09, HIS ANSWER 38: the pointer says which of the three things this
+      // spot does. Before this, drag and minimise drew the same arrow and the
+      // resize corner drew the aiming reticle.
+      hudCursor(_hpart,rx0,ry0);
     } else {
     // THE RETICLE CARRIES THE GUN'S STATE. His note, 2026-08-23: "when you are
     // out of ammo, the mouse cursour should indicate same instead of
@@ -21234,6 +21234,52 @@ function hudUserZ(k){
 // How big the corner grip is, in screen pixels, and how far in from the edge the
 // hit box reaches. Generous, because a grip you cannot grab is not a grip.
 function hudGripS(){ return LH(20); }
+// v9.09, HIS ANSWER 38. Three pointers, one per thing a panel edge can do. Each
+// is stroked twice, a dark pass under a light one, so it reads on a bright HUD
+// panel and on dark ground without a drop shadow.
+// Scaled by hudRes() for the reason v9.08 scaled the downed screen: an 11 pixel
+// arrow on a 4K screen is half the size of everything around it. hudRes() is
+// exactly 1 at 1920x1080, so this is unchanged there.
+function hudCursor(part,x,y){
+  var s=hudRes();
+  function shape(){
+    ctx.beginPath();
+    if(part==='grip'){
+      // A diagonal double-headed arrow, the corner it actually drags.
+      var a=4*s, b=13*s;
+      ctx.moveTo(x-b,y-b); ctx.lineTo(x+b,y+b);
+      ctx.moveTo(x-b,y-b); ctx.lineTo(x-b+a,y-b);
+      ctx.moveTo(x-b,y-b); ctx.lineTo(x-b,y-b+a);
+      ctx.moveTo(x+b,y+b); ctx.lineTo(x+b-a,y+b);
+      ctx.moveTo(x+b,y+b); ctx.lineTo(x+b,y+b-a);
+    } else if(part==='bar'){
+      // A four-way move cross: this whole panel comes with you.
+      var r=12*s, h=4*s;
+      ctx.moveTo(x-r,y); ctx.lineTo(x+r,y);
+      ctx.moveTo(x,y-r); ctx.lineTo(x,y+r);
+      ctx.moveTo(x-r,y); ctx.lineTo(x-r+h,y-h);
+      ctx.moveTo(x-r,y); ctx.lineTo(x-r+h,y+h);
+      ctx.moveTo(x+r,y); ctx.lineTo(x+r-h,y-h);
+      ctx.moveTo(x+r,y); ctx.lineTo(x+r-h,y+h);
+      ctx.moveTo(x,y-r); ctx.lineTo(x-h,y-r+h);
+      ctx.moveTo(x,y-r); ctx.lineTo(x+h,y-r+h);
+      ctx.moveTo(x,y+r); ctx.lineTo(x-h,y+r-h);
+      ctx.moveTo(x,y+r); ctx.lineTo(x+h,y+r-h);
+    } else {
+      // The minimise glyph: a pointing arrow with the minimise bar beneath it,
+      // so it is not the same shape as the move cross at a glance.
+      ctx.moveTo(x,y); ctx.lineTo(x+11*s,y+11*s); ctx.lineTo(x+5*s,y+11*s); ctx.lineTo(x+2*s,y+15*s);
+      ctx.closePath();
+      ctx.moveTo(x+2*s,y+19*s); ctx.lineTo(x+14*s,y+19*s);
+    }
+  }
+  ctx.save();
+  ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.strokeStyle='rgba(10,14,20,.92)'; ctx.lineWidth=Math.max(3,4*s); shape(); ctx.stroke();
+  ctx.strokeStyle='rgba(230,240,246,.97)'; ctx.lineWidth=Math.max(1.4,2*s); shape(); ctx.stroke();
+  if(part==='glyph'){ ctx.fillStyle='rgba(230,240,246,.97)'; shape(); ctx.fill(); }
+  ctx.restore();
+}
 // v8.91: where the legend grows FROM. Its own bottom edge, taken from the box it
 // records for the mouse, so it rises into the gap above the vitals instead of
 // being lifted off the bottom of the screen into the pillager board. Null on the
@@ -21277,6 +21323,15 @@ function inRect(r,mx,my){ return !!r&&mx>=r.x&&mx<=r.x+r.w&&my>=r.y&&my<=r.y+r.h
 function hudHit(mx,my){
   for(var k in HUDBOX){
     var HB=HUDBOX[k]; if(!HB) continue;
+    // v9.09: THE RESIZE CORNER FIRST, and in the same order mousedown uses.
+    // It is the smallest target on the panel, so anything that beat it here
+    // would report a part the click will not act on, and the pointer would
+    // promise something that does not happen.
+    if(HUDZ[k]!==undefined&&!hudOff(k).c){
+      var _gk=hudGripS();
+      if(mx>=HB.x+HB.w-_gk&&mx<=HB.x+HB.w&&my>=HB.y+HB.h-_gk&&my<=HB.y+HB.h)
+        return {id:k,part:'grip'};
+    }
     if(inRect(HB.tg,mx,my)) return {id:k,part:'glyph'};
     if(inRect(hudBar(HB),mx,my)) return {id:k,part:'bar'};
     if(inRect(HB,mx,my)) return {id:k,part:'body'};
@@ -24339,7 +24394,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.08: the downed screen stops flashing at you and is readable. It scales with your monitor now instead of staying 1080p sized.',
+  now:'v9.09: the pointer tells you what a panel edge will do. Move, resize or minimise, instead of the aiming cross over everything.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

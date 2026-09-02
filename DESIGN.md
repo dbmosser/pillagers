@@ -27443,6 +27443,76 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.09 - THE POINTER SAYS WHAT THE PANEL EDGE DOES
+
+His answer 38: the cursor over a panel should say what it will do there, drag,
+resize, minimise or normal, instead of staying the aiming reticle.
+
+REPRODUCED by measuring the drawn pointer rather than reading the code that
+chooses it. For each spot: render with the pointer parked far away, render with
+it there, and count which pixels changed.
+
+    over open world       576 changed, 53 of them in the stem directly ABOVE the
+                          point, which is the reticle's top arm
+    over a panel body     580 changed, 53 in the stem. The reticle.
+    over the RESIZE grip  571 changed, 94 in the stem. Still the reticle, on the
+                          one control that most needs a pointer of its own.
+    over the drag bar      91 changed, 0 in the stem
+    over the minimise      91 changed, 0 in the stem, and the changed pixels
+      glyph                start at the identical offsets. One undifferentiated
+                           arrow doing duty for two different actions.
+
+FOUR POINTERS NOW, which is his list.
+
+    the drag bar      a four-way move cross
+    the minimise      an arrow with the minimise bar under it
+      glyph
+    the resize grip   a diagonal double-headed arrow, north-west to south-east
+    everywhere else   the reticle, untouched
+
+hudHit learned a fourth part, grip, and it is tested FIRST, in the same order the
+mousedown handler already uses. That ordering is the point: the grip is the
+smallest target on a panel, and a pointer that promised resize on a spot the
+click treats as body would be a worse lie than the reticle was.
+
+The three glyphs scale with hudRes(), for the same reason v9.08 scaled the downed
+screen: an 11 pixel arrow on a 4K monitor is half the size of everything near it.
+hudRes() is exactly 1 at 1920x1080, so nothing moves there.
+
+MEASURED AFTER: the drag bar, the minimise glyph and the resize corner all draw
+three different shapes, none of them equal to each other and none equal to the
+reticle. Open world and panel body are unchanged.
+
+Verified: parse PASS v9.09. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 52 regression checks
+pass in sequence, none skipped.
+
+The check fails on a fixture built from v9.08 with "the drag bar and the minimise
+glyph still draw the same pointer; the resize corner still draws the aiming
+reticle, footprint 571 against 576 on open ground". Controls: the reticle must
+survive on open ground and on a panel body, so replacing the pointer everywhere
+cannot pass; and the corner the resize pointer is drawn on must hit-test as grip,
+so a pointer that promises one thing while the click does another cannot pass.
+
+THREE CORRECTIONS TO MY OWN CHECK, all found by running it rather than reasoning
+about it. It demanded the reticle over a panel be pixel-identical to the one over
+open ground, which is false on every build because the same shape antialiases
+against a different background. It inherited whatever panel state the previous 51
+checks left behind, and a collapsed panel has no resize corner at all, which reads
+exactly like the defect. And its stem heuristic could not judge the grip, because
+arriving there also lights the grip's own hover highlight, whose lines run up and
+left through the very window the stem test reads; the pointer's total footprint
+separates them cleanly instead.
+
+Not verified: how the three glyphs look on his 4K screen, since they were
+measured as pixel counts and not looked at; whether the move cross reads as
+"drag" to him rather than as a compass, which is a judgement I made and he may
+disagree with; the pointer over the Undercroft panels is untouched, since this
+whole block only runs in a raid.
+
 ## v9.08 - THE DOWNED SCREEN STOPS FLASHING AND STARTS SCALING
 
 His note on the downed screen: the flashing CRAWL TO THE RING is unnecessary, and
