@@ -1209,7 +1209,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.23';
+var VER='9.24';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12227,13 +12227,19 @@ if(!p.fired||p.wep.auto){
   }
   // PICKING UP AN ENEMY, v3.17. He asked for it and it is the half of the feature
   // that makes the other half matter: "players should be able to revive bots".
-  // It costs a medical item, exactly as reviving yourself does, so it is a real
-  // decision made out of a finite supply while something is probably shooting at
-  // you. What it buys is not gratitude in the abstract, it is an entry in the
-  // ledger this game has had since SPEC 8.4: standing goes UP by three, which is
-  // enough to flip a stranger friendly and to start digging out of a grudge you
-  // earned by killing him last week. He gets up on 40 percent health, the same
-  // figure the player's own self-revive gives.
+  // v9.24, HIS INSTRUCTION: "REVIVING ANOTHER PILLAGER SHOULD BE FREE, IT SHOULD
+  // NOT COST A MEDKIT". It used to spend one, and the note here argued that the
+  // cost was what made it a real decision out of a finite supply. That was my
+  // argument and he has overruled it, so it is gone rather than left standing
+  // above the code looking like a rule.
+  // Measured before the change: with one bandage in the bag the man got up and
+  // the bandage was gone; with an empty bag he could not be helped at all and the
+  // game said "No medical to revive him with."
+  // What it buys is unchanged: an entry in the ledger this game has had since
+  // SPEC 8.4, standing UP by three, which is enough to flip a stranger friendly
+  // and to start digging out of a grudge you earned by killing him last week. He
+  // gets up on 40 percent health, the same figure the player's own self-revive
+  // gives, and since v9.10 he hands over his gun for it.
   // Checked before the stall and before crates so that a man bleeding at your feet
   // outranks shopping, which is the correct priority for a key that does several
   // things.
@@ -12245,10 +12251,9 @@ if(!p.fired||p.wep.auto){
   G.nearDown=downRdr;
   if(downRdr&&keys['KeyE']&&!G.revLock){
     G.revLock=1;
-    var hIx=findHeal();
-    if(hIx<0) say('No medical to revive him with.');
-    else{
-      G.bag.splice(hIx,1);
+    // v9.24: no medical is looked for and none is spent. Picking a man up off the
+    // floor costs you the seconds you stand still doing it and nothing else.
+    {
       downRdr.downed=0; downRdr.state='loot'; downRdr.hp=Math.round(downRdr.maxhp*0.4);
       // friendlyPC, not just hostile=false. That flag already means "made friendly
       // by something you did, and it holds", with its own branch that keeps him
@@ -24572,7 +24577,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.23: a measurement build. Four suspected faults were chased and none of them was real, so nothing about play changes here.',
+  now:'v9.24: picking a downed pillager up is free. It used to cost you a medkit, and with an empty bag you could not help him at all.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -2,30 +2,30 @@
 > built or measured and waiting on a word from you. Answer any of them in a
 > run note or a message, as short as you like.
 >
-> **1. The machine war** — machines hunt raiders, not just you. Measured: it
+> **1. The machine war** â€” machines hunt raiders, not just you. Measured: it
 > rewrites a quarter of all raids at roughly the same average difficulty,
 > shifts who kills you toward raiders (like your own record), and pays
 > slightly better. Say **"war on"** to flip it.
 >
-> **2. Street variety amount** — the blocks are already off the grid, but the
+> **2. Street variety amount** â€” the blocks are already off the grid, but the
 > effect is subtle at play zoom. Say **"double the streets"** for a bolder
 > irregularity, or nothing to keep it as is.
 >
-> **3. Music silence after combat** — currently the music stays away until
+> **3. Music silence after combat** â€” currently the music stays away until
 > you've had four calm seconds. Say a number ("music 6") to change it.
 >
-> **4. Crewmate revive (your roadmap Q4)** — raiders now roll, aim, crouch,
+> **4. Crewmate revive (your roadmap Q4)** â€” raiders now roll, aim, crouch,
 > sprint and dodge like you; the one ability I did not hand down is reviving
 > a downed crewmate, because you asked the question and I won't answer it for
 > you. Say **"revive yes/no"**.
 >
-> **5. Map spread (your roadmap Q1), fresh numbers** — robot extraction rate:
+> **5. Map spread (your roadmap Q1), fresh numbers** â€” robot extraction rate:
 > GREYWATER 20.9, SUNKEN 15.0, QUARRY 14.1, COLD STORAGE 13.1. Your own COLD
 > rate: 34.8. COLD is hardest because raider contact is highest there and the
 > Bulwark nearly triples its kills in tight aisles. Say **"even them out"**
 > or **"hard maps stay hard"**.
 >
-> **New fact for your Q2** — measured at touchdown: about 7 of 8 bodies at
+> **New fact for your Q2** â€” measured at touchdown: about 7 of 8 bodies at
 > your ring woke on your walk there; the siege share concentrates in the
 > landings that kill. Say **"quieter"**, **"shorter beacon"**, or
 > **"move while it lands"**.
@@ -48,8 +48,8 @@
 > build).
 >
 > Standing benchmark: the test robot now plays with your greed, aim, fight
-> selection, kiting, wall cover and artillery dodge — 20.9% survival to your
-> 28.6 — and every number above was measured by it over 320 raids per test.
+> selection, kiting, wall cover and artillery dodge â€” 20.9% survival to your
+> 28.6 â€” and every number above was measured by it over 320 raids per test.
 
 > **SUPERSEDED, 2026-08-22.** `C:\Users\User1\Desktop\DARK_RAIDERS_SPEC.md` is now the definitive design document and governs wherever it conflicts with anything below. This file is retained as the build history and the record of what was measured and why. New design decisions live in the spec; this remains the changelog.
 # DARK RAIDERS Design Bible
@@ -364,7 +364,7 @@ Three things, none of which should be built without him saying so.
   - Cost is irrelevant here and worth stating so it is not re-examined: the overlay is only drawn while M is held, and it measures 0.2ms. Frame script is unchanged at 2.5ms of a 16.7ms budget and the sim is unaffected, this being an overlay-only change.
   - **Running note on the method.** Three consecutive real defects have now come from capturing a surface and looking at it: the tuning button clipped out of reach at narrow widths, the key legend painted over the health bars, and this. None were findable by reading the code, because none of them are wrong in isolation; they are only wrong in combination or in context. The remaining never-captured states are combat with muzzle flash and tracers, the downed crawl, the inventory panel and smoke.
 - **v0.89 (opened it in his own Chrome, which found two things immediately):** Daniel asked to play it in Chrome rather than the preview pane. Two faults were visible in the first screenshot, neither of which any amount of code reading had turned up.
-  - **The header separator was mis-encoded.** "900c Â· REP 0 Â· 0 in stash" rendered on every hub frame. The bytes were C3 82 C2 B7, a double encoded middle dot, in three places. Repaired at byte level to a single U+00B7. This was flagged in the v0.84 art plan and not acted on then; seeing it on screen is what made it real.
+  - **The header separator was mis-encoded.** "900c Ã‚Â· REP 0 Ã‚Â· 0 in stash" rendered on every hub frame. The bytes were C3 82 C2 B7, a double encoded middle dot, in three places. Repaired at byte level to a single U+00B7. This was flagged in the v0.84 art plan and not acted on then; seeing it on screen is what made it real.
   - **The game did not fit the window.** `#root` was a fixed `height:720px` while his Chrome viewport was 551, so the health bar, the meters and the entire bottom button row sat below the fold behind a scrollbar. It is now `100vh` with a 520 floor, and the page's own default margin, which was leaving 18px of overflow and putting the scrollbar back, is zeroed. Verified fitting exactly with no scroll.
   - **Process failure, mine.** He was playing while I was working, and I reloaded his tab twice to pick up fixes. That killed a raid mid beacon countdown and he reasonably reported it as a beacon bug. His profile confirmed the cause: zero runs logged and credits untouched, so the raid was cut off rather than completed. The beacon itself was then verified independently in a separate copy: four extractions, each waiting 25.0 to 25.1 seconds against a 25 second setting, all ending correctly. **Standing rule from this: never navigate or reload a tab he is playing in. Read it with script if state is needed, and let him refresh when he chooses.**
 - **v0.90 (first real playtest data, and it says the raid had no tension in it at all):** His v0.89 run: extracted in 314s with 4345c and 30 items, 18 containers, 7 shots fired, one crawler killed, no downs, no heals, **first enemy contact: NONE**, zero seconds crouched, nine seconds sprinting, and all four AI raiders extracted. Tagged "Loot boring" and "Extract too easy". He never met a single enemy in a five minute raid, which is why nothing was tense. That is the direct consequence of my own earlier work: he asked for sparser enemies on a bigger map and got 26 bodies spread over 20.8 million square units, so crossing paths with one became unlikely.
@@ -10164,11 +10164,11 @@ deliberately, because whether fencing to the Peddler SHOULD cost you standing is
 real design question and it is his. What changed is that the loop is now legible from
 both ends:
 
-  the button   "Sell all salvage  �  12,480c  +12,480 REP", live, and it disables
+  the button   "Sell all salvage  ï¿½  12,480c  +12,480 REP", live, and it disables
                itself and reads "Nothing to sell" when there is nothing
   under it     "Selling here is the ONLY thing that earns REP. The Peddler pays
                cash, not standing."
-  the shop     "You hold 1,926c � rep 0 � REP comes from selling salvage in the
+  the shop     "You hold 1,926c ï¿½ rep 0 ï¿½ REP comes from selling salvage in the
                Undercroft."
 
 The button counts only what will actually be sold. sellall keeps anything with a use,
@@ -18631,7 +18631,7 @@ is the better one because you can see what you are choosing.
 A SUMMARY LINE sits above the ASCEND button, because everything above it is a
 control and this is the sentence you read on the way out:
 
-  Burst Carbine  ·  no second gun  ·  Scav Rig, 35 armour  ·  3 items packed
+  Burst Carbine  Â·  no second gun  Â·  Scav Rig, 35 armour  Â·  3 items packed
 
 An empty second gun is now impossible to miss, which is the whole point of the
 slot existing.
@@ -27443,6 +27443,58 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.24 - PICKING A MAN UP OFF THE FLOOR IS FREE
+
+HIS INSTRUCTION, in his words: "REVIVING ANOTHER PILLAGER SHOULD BE FREE, IT
+SHOULD NOT COST A MEDKIT".
+
+REPRODUCED on the play path first, standing over a downed pillager and holding E:
+
+  bag holds one bandage    he gets up, and the bandage is gone
+  bag holds nothing        he is refused outright, and the game says
+                           "No medical to revive him with."
+
+So it charged a medical item every single time, and with an empty bag the man on
+the floor could not be helped at all. That second line is the worse half. The
+moment you most want an ally back on his feet is late in a bad raid, which is
+exactly when your bag has no medical left in it.
+
+IT IS FREE NOW. No item is looked for and none is spent. Everything else about
+the revive is untouched and was checked rather than assumed: he still gets up on
+40 percent health, he still turns friendly, standing still goes up by three, and
+since v9.10 he still hands over his gun for it. Free to give and still paying out
+is the trade.
+
+THE COST WAS MY IDEA, NOT HIS. The comment that stood above this code argued that
+the medical item was what made the revive "a real decision made out of a finite
+supply while something is probably shooting at you". That was my argument, he has
+overruled it, and it goes with the code rather than being left sitting there
+looking like a rule.
+
+AND THE CORPUS CAUGHT MY OWN CHECK. The v9.10 check, written when the payout was
+added, asserted that the revive must keep costing a medical item. It went red the
+instant I obeyed him, which is the harness doing its job. I did not delete it, I
+turned it around: it now counts the same two medkits and fails if either one goes
+missing, while still requiring the gun payout. One check, both halves of the
+trade, so neither can quietly come back.
+
+Verified: parse PASS v9.24. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 66 regression checks
+pass in sequence, none skipped. The new check drives the real key over a real
+downed pillager twice, once with an empty bag and once with a bandage, and it was
+run against a v9.23 build first, where it fails with "with an empty bag the man on
+the floor still cannot be helped: No medical to revive him with; the refusal is
+still there; reviving still spends a medical item, 0 left of 1".
+
+Not verified: whether an ally revived with no medical cost changes how a fight
+resolves in practice. The sim bot never fights pillagers at all, so the balance
+of a cheaper ally is not something any number here measures, and it stays a
+question for him. Also not verified: reviving while a machine is actively firing
+at you, since the check clears the entity list to isolate the revive.
+
 ## v9.23 - A TICK THAT FOUND NOTHING, AND SAYS SO
 
 Nothing about how the game plays changes here. The version moves because every
@@ -33359,7 +33411,7 @@ through the Mainframe's own YOUR STATS act: Clean, Talked about at +15%
 with 3 tries to stand down, Barred at +30% with the stall shut, Notorious
 at +60% with 5 tries - every clause matching the expression that enforces
 it. The stamp photographed on the real path: killed the Peddler with my
-own charge at notoriety 1, and the screen reads "NOTORIETY 2 · BARRED /
+own charge at notoriety 1, and the screen reads "NOTORIETY 2 Â· BARRED /
 YOU KILLED THE PEDDLER / The Peddler is done with you." centred clear of
 the reticle and the belt. A fresh raid starts with the stamp cleared.
 

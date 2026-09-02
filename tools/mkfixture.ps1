@@ -2824,7 +2824,7 @@ window.__REGRESS=[
    run:function(){
      var bad=[];
      // Puts a pillager on the floor at his feet and holds E, which is the play
-     // path: the same key, the same lock, the same medical cost.
+     // path: the same key and the same lock the player uses.
      function downOne(){
        __resetCfg(); __pinDefaults(0);
        __deploy({kit:['medkit','medkit'],safe:null,mapIx:0,seed:4242});
@@ -2866,17 +2866,16 @@ window.__REGRESS=[
        var stillHas=((A.rd.bag||[]).indexOf(got)>=0);
        if(stillHas&&hisBefore.indexOf(got)>=0) bad.push('he handed over '+got+' and still has one');
      }
-     // The cost must remain. A payout with no price is not the trade he described.
-     var spent=false;
-     for(var s=0;s<yourBefore.length;s++){
-       if(yourBefore[s]==='medkit'){
-         var cA=0,cB=0;
-         for(var a1=0;a1<yourBefore.length;a1++) if(yourBefore[a1]==='medkit') cA++;
-         for(var b1=0;b1<after.length;b1++) if(after[b1]==='medkit') cB++;
-         spent=(cB<cA); break;
-       }
-     }
-     if(!spent) bad.push('the revive no longer costs a medical item');
+     // v9.24 TURNED THIS LINE AROUND. It used to demand the medical cost stay,
+     // and it went red the moment I obeyed him. HIS INSTRUCTION: "REVIVING
+     // ANOTHER PILLAGER SHOULD BE FREE, IT SHOULD NOT COST A MEDKIT". So the same
+     // count is asserted the other way now: both medkits must still be in the bag
+     // afterwards, while the payout above must still have happened. Free AND
+     // paying out is the trade, and this check now pins both halves at once.
+     var cA=0,cB=0;
+     for(var a1=0;a1<yourBefore.length;a1++) if(yourBefore[a1]==='medkit') cA++;
+     for(var b1=0;b1<after.length;b1++) if(after[b1]==='medkit') cB++;
+     if(cB<cA) bad.push('the revive is charging a medical item again, '+cB+' medkits left of '+cA);
      // CONTROL 1: THE OBVIOUS FARM. Revive him for his gun, then shoot him, and
      // the body must not carry the same gun a second time.
      var loot1=bodyAfterKill(A);
@@ -3541,6 +3540,60 @@ window.__REGRESS=[
        if(!/Servo/.test(said2)||!/Scrap/.test(said2))
          bad.push('control: a full open no longer lists everything it gave: "'+said2+'"');
      }
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.24',what:'picking a downed pillager up is free and costs no medical',
+   run:function(){
+     var bad=[];
+     // The play path: a man on the floor at his feet and the key held down.
+     function revive(bag){
+       __resetCfg(); __pinDefaults(0);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player; p.iv=99;
+       g.bag=bag.slice();
+       var rd=null;
+       for(var i=0;i<g.ents.length;i++) if(g.ents[i].kind==='raider'&&!g.ents[i].merc){ rd=g.ents[i]; break; }
+       if(!rd) return null;
+       rd.downed=1; rd.downT=30; rd.hp=1; rd.state='down'; rd.x=p.x+20; rd.y=p.y;
+       var K=__keysRef(); for(var k in K) delete K[k];
+       g.revLock=0; g.msg=''; K['KeyE']=true;
+       for(var f=0;f<10;f++) __loop(performance.now()+f*16.7);
+       for(var k2 in K) delete K[k2];
+       var meds=0; for(var b=0;b<g.bag.length;b++) if(g.bag[b]==='bandage'||g.bag[b]==='medkit') meds++;
+       return {up:!rd.downed, said:String(g.msg||''), meds:meds, bag:g.bag.slice(),
+               friendly:(rd.hostile===false), hpPct:Math.round(rd.hp/rd.maxhp*100), ent:rd, g:g};
+     }
+     // HIS INSTRUCTION. Measured before v9.24: an empty bag was refused outright
+     // with "No medical to revive him with", and a bandage in the bag was spent.
+     var empty=revive([]);
+     if(!empty) return 'no pillager on the map to put down';
+     if(!empty.up) bad.push('with an empty bag the man on the floor still cannot be helped: "'+empty.said+'"');
+     if(/No medical/i.test(empty.said)) bad.push('the refusal is still there: "'+empty.said+'"');
+     var withMed=revive(['bandage']);
+     if(withMed.meds!==1) bad.push('reviving still spends a medical item, '+withMed.meds+' left of 1');
+     // CONTROL 1: it must still WORK, not merely be free. A revive that quietly
+     // stopped happening would satisfy both lines above.
+     if(!withMed.up) bad.push('control: the revive did not happen at all');
+     if(withMed.hpPct<30||withMed.hpPct>50) bad.push('control: he got up on '+withMed.hpPct+' percent health, it should be 40');
+     if(!withMed.friendly) bad.push('control: he got up still hostile');
+     // CONTROL 2: and it must still PAY, which is his answer 37 from v9.10. Free
+     // to give and nothing in return would be a different change from the one he
+     // asked for.
+     var paid=false;
+     for(var q=0;q<withMed.bag.length;q++) if(String(withMed.bag[q]).indexOf('gun_')===0) paid=true;
+     if(!paid) bad.push('control: he no longer hands anything over for it');
+     // CONTROL 3: his OWN self-revive is a separate thing and is still one a raid.
+     // Making one free must not have made the other unlimited.
+     var g2=withMed.g, p2=g2.player;
+     p2.downed=1; p2.downT=10; p2.revived=false; g2.msg='';
+     var K3=__keysRef(); for(var k3 in K3) delete K3[k3];
+     K3['KeyF']=true; p2.healLock=false;
+     for(var f3=0;f3<6;f3++) __loop(performance.now()+400+f3*16.7);
+     var firstUse=!p2.downed;
+     p2.downed=1; p2.downT=10; g2.msg='';
+     p2.healLock=false;
+     for(var f4=0;f4<6;f4++) __loop(performance.now()+800+f4*16.7);
+     for(var k4 in K3) delete K3[k4];
+     if(firstUse&&!p2.downed) bad.push('control: his own self-revive works twice in one raid now, it is meant to be one');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
