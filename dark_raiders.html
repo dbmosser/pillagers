@@ -1162,7 +1162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.76';
+var VER='8.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1173,19 +1173,19 @@ var VER='8.76';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='8.56';
+var WHATSNEW_VER='8.77';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
-  'THE WIND-UP BAR IS WHERE YOU CAN SEE IT. The bar for a heal or a plate was painted behind your own head, and any wall in front of you hid it completely.',
-  'A CONTRACT TELLS YOU WHEN IT IS DONE. Kill, search and district contracts finish DURING the raid, and half the board could never say so.',
-  'YOUR SECOND GUN WEARS OUT LIKE THE FIRST. The sidearm was billed for wear it never actually carried.',
-  'THE HIRE LOOTS WHEN YOU TELL HIM TO, and his cut is what he really carried out rather than whatever a HUD draw last wrote down.',
-  'A PARLEY HANDS SOMETHING OVER. Most successful ones paid you nothing at all and never said why.',
-  'YOU CAN STAND IN FRONT OF THE GREAT DOOR. Its slab drew over every wall, machine and person on the map, including you.',
-  'SELLING SOMETHING CLEARS THE KEY YOU BOUND TO IT. Four ways out of the backpack left a dead key behind.',
-  'WHAT THE LIGHTNING LEAVES BEHIND IS REACHABLE. The rarest drop in the game could land inside a wall or a locked room, and it looked like a corpse.',
-  'THE WARDEN SOUNDS LIKE THE WARDEN. The two armoured heavies walked with the quick light step of something far smaller.',
-  'THE GAME COUNTS IN ENGLISH. Nine places said things like "1 items secured" and "1 times you got back up".'
+  'THE BAG USES THE SCREEN. It was eleven columns wide on a 1920 screen and showing thirty five stacks; it was five columns and 21 percent of the width, with 755 pixels of nothing either side of it.',
+  'THE SECOND GUN SLOT IS ALWAYS THERE. It only existed when you had a second gun, so picking one up slid every other key one place right, mid-raid.',
+  'A GUN GOES ON ANY BELT SLOT, as many as you want. Slots 1 and 2 are still the two in your hands.',
+  'SPRINT STOPPED STUTTERING. Holding it through exhaustion switched it on and off twenty five times in twenty seconds; that flicker was the footstep noise you were hearing.',
+  'YOUR SETTINGS ACTUALLY APPLY. Nudging one slider in the tuning console killed the matching Settings row for good, while it carried on cycling and saving as if it worked.',
+  'TEXT SIZE SCALES THE MENUS TOO, all the way up. Above 150 percent only the game text grew and the panels stayed put.',
+  'YOU CAN DRAG SOMETHING OFF THE BELT AND BACK INTO THE BACKPACK. There was no way out of a belt slot except a click nobody tries first.',
+  'DYING LETS GO OF YOUR BELT KEYS. They stayed bound to gear you had just lost, and re-armed on the next one you found.',
+  'DODGING NO LONGER CANCELS A BANDAGE. Rolling stopped a heal dead: thirty points queued applied nothing at all until you stood still.',
+  'THE EXTRACTION COUNTDOWN IS ON THE RING, whoever called it. Both halves of it, the wait and the window, and you can ride out on someone else pull.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -22062,7 +22062,11 @@ if(G.trail&&G.trail.length>1){
 var SLIDERS=[
   ['coneDeg','Vision cone (deg)',40,180,2,1],
   ['viewFar','View distance',250,650,10,1],
-  ['ambient','Your awareness radius',50,180,5,1],
+  // v8.77: the top of this range was 180 and the shipped default is 190, so the
+  // thumb clamped to 180 while the readout printed 190 - the control opened
+  // showing a position it was not at, and touching it dropped the value without
+  // being asked. 220 leaves headroom above the default instead.
+  ['ambient','Your awareness radius',50,220,5,1],
   ['eAmbient','Enemy rear awareness',40,200,5,1],
   ['pSpeed','Move speed',110,220,2,1],
   ['raidSec','Raid timer (s)',120,900,15,0],
@@ -23639,7 +23643,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.76: the map picker keeps its loadout line and its no-armour warning on screen at every text size.',
+  now:'v8.77: arming Clear recorder and walking away no longer leaves a one-click wipe of your whole run log waiting.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -27280,7 +27284,8 @@ function renderSettings(){
   host.innerHTML=_go+
     '<div class="row"><div style="flex:1"><b>Text size</b><div class="hint">Scales every string on every canvas and in every panel.</div></div>'+
     '<button id="set_text" style="padding:6px 12px">'+Math.round(uiScale()*100)+'%</button></div>'+
-    '<div class="row"><div style="flex:1"><b>Music</b><div class="hint">A faint 16-bit loop, three pieces, one picked at random each time you come back down. UNDERCROFT plays it, OFF is silence. The surface is deliberately silent either way.</div></div>'+
+    // v8.77: MUS_THEMES holds FIVE and musPick draws uniformly from all of them.
+    '<div class="row"><div style="flex:1"><b>Music</b><div class="hint">A faint 16-bit loop, five pieces, one picked at random each time you come back down. UNDERCROFT plays it, OFF is silence. The surface is deliberately silent either way.</div></div>'+
     '<button id="set_music" style="padding:6px 12px;min-width:110px">'+MUSIC_NAMES[musicMode()]+'</button></div>'+
     // v8.75: it is every SECOND raid, not every raid, and on this machine the
     // report goes to the local collector instead while it is running.
@@ -27651,6 +27656,15 @@ function renderCosmetics(target,kindOnly,hid,pid){
 // buildExport are untouched and still fill the same elements.
 function openSettings(tab){
   var want=tab||'display';
+  // v8.77: DISARM THE WIPE. The confirm state lived on the button's dataset and
+  // the button is static markup that is never rebuilt, so arming it and walking
+  // away left a one-click, no-warning wipe of the whole flight recorder waiting
+  // for the next visit. Measured: close Settings and reopen, and it still read
+  // "Click again to confirm". A confirm that outlives its screen is not a confirm.
+  try{
+    var _wl=document.getElementById('wipelog');
+    if(_wl){ delete _wl.dataset.armed; _wl.textContent='Clear recorder'; }
+  }catch(_wx){}
   try{ renderSettings(); }catch(e){}
   try{ document.getElementById('exporttext').value=buildExport(); }catch(e){}
   var T=[['display','DISPLAY'],['rec','SEND PLAY DATA']];

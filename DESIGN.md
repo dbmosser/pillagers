@@ -27443,6 +27443,54 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.77 - ARMING CLEAR RECORDER AND WALKING AWAY NO LONGER LEAVES A ONE-CLICK WIPE
+
+Three more from the settings sweep, and the parse check failed the build once on
+its own account, which is worth recording because it was right to.
+
+"CLEAR RECORDER" STAYED ARMED AFTER YOU WALKED AWAY FROM IT. The confirm state is
+stored on the button own dataset and the button is static markup that is never
+rebuilt, so nothing cleared it: not closing the panel, not leaving the station,
+not opening Settings again.
+Measured with a three row log: click once and it reads "Click again to confirm";
+close Settings; reopen Settings; it STILL reads "Click again to confirm" and is
+still armed. So anyone who clicks it, thinks better of it and walks away has left
+a one-click, no-warning wipe of the whole flight recorder waiting for next time.
+His log is 98 runs deep and it is the only record of how this game actually
+plays. A confirm that outlives the screen it was asked on is not a confirm.
+After: the button reads "Clear recorder" and is disarmed on reopen, the three row
+log survives the round trip, and the control still holds - two clicks in one
+sitting wipe it, which is what the button is for.
+
+THE MUSIC ROW UNDERSOLD THE GAME BY TWO TRACKS. The hint said "three pieces".
+MUS_THEMES holds five and musPick draws uniformly from all five. The code own
+comments disagree with each other about it as well, one saying three and another
+four.
+
+A SLIDER WHOSE RANGE COULD NOT EXPRESS ITS OWN DEFAULT. Awareness radius ships at
+190 and the slider ran 50 to 180. The thumb clamps to 180 while the readout still
+prints 190, so the control opened showing a position it was not at, and the first
+touch of it dropped the value by at least ten without being asked. The range now
+runs to 220, leaving headroom above the default.
+
+AND THE PARSE CHECK FAILED THIS BUILD, CORRECTLY. Not the parse - that was clean,
+braces balanced, no mojibake - but the what is new drift gate, 0.21 over its 0.20
+limit. Twenty one builds have landed since that card last moved and eleven of
+them shipped something he can feel, so the card was a year out of date by its own
+measure. Rewritten to the rule above the list: only lines that change how he
+plays. Every claim on the new card is a number measured in its own build entry.
+
+Verified: parse PASS at 1,552,815 chars, WHATSNEW drift 0, mojibake none. The
+wipe button measured across a close and reopen AND controlled with two clicks in
+one sitting. __verify PASS: ents 58 and 276, parity identical on both maps,
+looting on both, all three endings, hub. __regress PASS, 21 checks.
+
+Not verified: the awareness range change was made from the slider definition, not
+by dragging the rendered thumb, so what is proven is that the range now contains
+the default rather than that the control feels right. The music count comes from
+the theme array rather than from hearing five distinct pieces. And the new what
+is new card has not been read on screen at any text size.
+
 ## v8.76 - THE MAP PICKER KEEPS ITS FOOTER ON SCREEN, AND STOPS MISDESCRIBING THE SEAL
 
 A REGRESSION I SHIPPED IN v8.75, CAUGHT BY THE RISK I FLAGGED IN THE SAME ENTRY.
