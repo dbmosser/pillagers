@@ -554,6 +554,26 @@ window.__simPaired=function(seeds,dialsA,dialsB){
 };
 window.__setHot=function(i){ return setHot(i); };
 window.__loot=function(){ return LOOT; };
+// v9.01: the wear system, readable. Asking the deploy path what a worn gun feels
+// like does not work, because it issues a starter when the gun is not owned in
+// the way it expects, so every answer came back Compact SMG. These are the two
+// functions that decide, plus the table they read.
+window.__wear={
+  steps:function(){ return WEARSTEPS.map(function(w){
+    return {at:w.at,name:w.name,spread:w.spread,reload:w.reload,jam:w.jam}; }); },
+  wearable:function(id){ return !!wearable(id); },
+  // what the gun BECOMES after this many rounds, which is what he holds
+  at:function(id,rounds){
+    P.wear=P.wear||{}; var keep=P.wear[id];
+    P.wear[id]=rounds;
+    var base=WEAPONS[id], st=wearStep(id);
+    var out={band:st.name, spread:+(base.spread*st.spread).toFixed(4),
+             reload:Math.round(base.reload*st.reload), jam:st.jam,
+             baseSpread:base.spread, baseReload:base.reload};
+    if(keep===undefined) delete P.wear[id]; else P.wear[id]=keep;
+    return out;
+  }
+};
 // v8.95: draw the real backpack panel against a substitute state, and hand back
 // what it recorded. G is restored whatever happens, so a throw cannot leave the
 // game pointed at a fake raid.
@@ -2242,6 +2262,39 @@ window.__REGRESS=[
      // nothing" would satisfy every line above.
      var bagN=(g.bag||[]).length;
      if(bagN<5) bad.push('control: '+opened+' containers put only '+bagN+' items in the bag');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.01',what:'a gun never wears out and never jams, however many rounds go through it',
+   run:function(){
+     var bad=[];
+     var T=__guns.tiers();
+     var worn=[];
+     for(var k in T) if(__wear.wearable(k)) worn.push(k);
+     // Before v9.01 the SMG at 1,600 rounds shot 0.1725 against a clean 0.115,
+     // and reloaded in 2590ms against 1850. Two guns wore; nothing else did.
+     for(var i=0;i<worn.length;i++){
+       var id=worn[i];
+       var a=__wear.at(id,0), b=__wear.at(id,4000);
+       if(a.spread!==b.spread) bad.push(id+' spread changes with use, '+a.spread+' to '+b.spread);
+       if(a.reload!==b.reload) bad.push(id+' reload changes with use, '+a.reload+' to '+b.reload);
+       if(b.band!=='CLEAN') bad.push(id+' reaches band '+b.band+' after 4,000 rounds');
+       if(b.jam) bad.push(id+' can jam, jam='+b.jam);
+     }
+     // The whole table, so a second row cannot creep back in without failing here.
+     var steps=__wear.steps();
+     if(steps.length!==1) bad.push('the wear table has '+steps.length+' bands, it should have one');
+     steps.forEach(function(w){
+       if(w.spread!==1) bad.push('band '+w.name+' still multiplies spread by '+w.spread);
+       if(w.reload!==1) bad.push('band '+w.name+' still multiplies reload by '+w.reload);
+       if(w.jam) bad.push('band '+w.name+' can jam');
+     });
+     // CONTROL: the gun must still HAVE its stats. Zeroing the table by making
+     // every gun spreadless would satisfy every line above and be a worse game.
+     if(worn.length){
+       var c=__wear.at(worn[0],0);
+       if(!(c.spread>0)) bad.push('control: the gun has no spread at all, '+c.spread);
+       if(!(c.reload>0)) bad.push('control: the gun has no reload time at all, '+c.reload);
+       if(c.spread!==c.baseSpread) bad.push('control: a clean gun no longer matches its own table entry');
+     }
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

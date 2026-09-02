@@ -1185,7 +1185,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.00';
+var VER='9.01';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1351,11 +1351,16 @@ var GUNQ=[
 // gun is the one falling apart. That is the point of it: a weapon you love
 // becomes a running cost, and the question of whether the good gun is worth
 // taking on a routine run becomes a real one.
+// v9.01, HIS ANSWER 14: "guns should not wear or jam. remove both concepts."
+// One band, and it never changes. Measured before this, on the SMG: at 1,600
+// rounds the spread went 0.115 to 0.1725 and the reload 1850ms to 2590ms, so a
+// gun he had carried a while shot 50 percent wider and reloaded 40 percent
+// slower. Jamming was already zero on every band.
+// The table is kept as a table of one rather than torn out, because bakeWear,
+// the workshop and the readouts all read it, and a single neutral row turns the
+// whole system off at the source instead of in four places.
 var WEARSTEPS=[
-  {at:0,    name:'CLEAN',   spread:1.00, reload:1.00, jam:0,     c:'#7fc4a0'},
-  {at:420,  name:'WORN',    spread:1.12, reload:1.08, jam:0,     c:'#cdd6dd'},
-  {at:950,  name:'FOULED',  spread:1.30, reload:1.22, jam:0,     c:'#ffc04a'},
-  {at:1600, name:'FAILING', spread:1.50, reload:1.40, jam:0,     c:'#ff5a4a'}
+  {at:0,    name:'CLEAN',   spread:1.00, reload:1.00, jam:0,     c:'#7fc4a0'}
 ];
 function wearOf(id){ P.wear=P.wear||{}; return P.wear[id]||0; }
 function wearStep(id){
@@ -20271,6 +20276,9 @@ ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
     R.x+=_boG.dx; R.y+=_boG.dy; return R; })();   // v8.44: see the note on HUDBOX.body
   ctx.textAlign='right';
   ctx.font=FS(TYPE.head); ctx.fillStyle='#cdd6dd';
+  // v9.01: no gun is ever anything but CLEAN now, so this can never draw. Left
+  // as a guard rather than deleted, because it is the one place that would show
+  // wear again the moment anyone puts a second row back in the table.
   if(p.wep.wearName&&p.wep.wearName!=='CLEAN'){
     var WSC=WEARSTEPS[0];
     for(var wq=0;wq<WEARSTEPS.length;wq++) if(WEARSTEPS[wq].name===p.wep.wearName) WSC=WEARSTEPS[wq];
@@ -24080,7 +24088,7 @@ var ROADMAP=[
   ['DONE','THE QUARRY: a fourth map that is five terraces and eight ramps'],
   ['DONE','A world that looks lived in and left: wrecks, ruins, kitchens, birds and deer'],
   ['DONE','GREYWATER DAM rebuilt: nine zones, seven landmarks, a real crest'],
-  ['DONE','Guns wear with use and Merrit services them'],
+  ['DONE','Guns do not wear and do not jam. His call, and both concepts are gone'],
   ['DONE','THE SEAL: a door too big to cut in one raid, per map'],
   ['DONE','Machines that answer a call and take roles: pin, flank, rush'],
   ['DONE','THE TERMS: sign for worse odds and Meridian pays better'],
@@ -24112,7 +24120,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.00: windfalls are gone. A container holds what it holds, with no second better item rolled on top when you open it.',
+  now:'v9.01: guns do not wear out any more. A gun you have carried for a thousand rounds shoots exactly like the day you found it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

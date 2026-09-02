@@ -27443,6 +27443,52 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.01 - GUNS DO NOT WEAR OUT
+
+His answer 14: "guns should not wear or jam. remove both concepts."
+
+REPRODUCED, and only after I stopped trusting the deploy path. Asking it to equip
+a rifle and reporting what came out answered "Compact SMG" to every question,
+because it issues a starter when the gun is not owned the way it expects, so five
+different guns all measured identical. The two functions that actually decide are
+readable now, and they say:
+
+    CLEAN      spread 0.1150   reload 1850ms
+    WORN       spread 0.1288   reload 1998ms       420 rounds
+    FOULED     spread 0.1495   reload 2257ms       950 rounds
+    FAILING    spread 0.1725   reload 2590ms     1,600 rounds
+
+So a gun he had carried a while shot 50 percent wider and reloaded 40 percent
+slower. Two weapons were affected, the SMG and the Support MG, and nothing else
+in the table wears at all, which is its own oddity and part of why the system
+never formed a clear picture for him.
+
+JAMMING WAS ALREADY GONE and had been for some time: every band carries jam 0,
+and the v8.58 check exists precisely to fail anyone who puts a real number back.
+So half his answer was already true and the other half was not.
+
+THE TABLE IS ONE BAND NOW. Every gun is CLEAN forever, both multipliers are 1.0,
+and the bake becomes an identity: no spread penalty, no reload penalty, no name
+prefix, no jam. It is a table of one rather than torn out, because the bake, the
+workshop and the readouts all read it, and one neutral row turns the system off at
+the source instead of in four separate places. The rounds counter keeps ticking
+harmlessly on his profile rather than being deleted out of his save, and the
+roadmap line that promised the system has been corrected rather than left lying.
+
+Verified: parse PASS. Both sectors to their fingerprints, entities 58 and 276 and
+containers 155 and 589. Streams identical live and sim. Looting on both with no
+throw and the clock advancing. Three endings correct. Hub renders. 43 regression
+checks pass, none failed and none skipped, including a new one that walks every
+wearable gun to 4,000 rounds and carries the control that a clean gun must still
+HAVE spread and a reload time, so zeroing the table cannot pass.
+
+Not verified: his answer 18, which is the other half of the same thought. He said
+he has no idea what "condition" is and that guns should change in strength by
+rarity alone, which retires the Worn / Tuned / Pristine / Gilded ladder including
+the naming work from v8.87. That is a bigger removal than this one, it touches
+what every gun in his armoury is called, and it is the next build. I also have not
+checked what the Workshop screen now offers, since servicing a gun that cannot
+wear is a station selling nothing.
 ## v9.00 - WINDFALLS ARE GONE, AND HIS BROKEN WALL IS NOT WHERE I LOOKED
 
 TWO THINGS, and the first one is a search that found nothing.
