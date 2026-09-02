@@ -21,6 +21,7 @@ adversarially verified):
 
 | Finding | Closed by | How it was confirmed closed |
 |---|---|---|
+| Answer 16: an emptied belt key became a DIFFERENT item (medkit slot became Frag Charge) instead of greying | v9.03 | new regress check fails on a v9.02 fixture with the exact defect, passes on v9.03 |
 | `var cap` deleted while four readers remained; holding E threw | v8.37 | loot leg of `__verify` |
 | v7.39 migration ran unstamped every load, wiping the mile's seal and fog | v8.38 | |
 | `replaceCost` read `o.cost`, SHOP rows carry `price`; servicing ~6x too cheap | v8.38 | |
