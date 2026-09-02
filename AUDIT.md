@@ -21,6 +21,7 @@ adversarially verified):
 
 | Finding | Closed by | How it was confirmed closed |
 |---|---|---|
+| His answer 37: reviving a pillager cost a medkit and paid nothing carryable (his bag unchanged, +0 credits) | v9.10 | he hands over his gun or best item, removed from his bag and stamped so the body cannot pay it twice; check fails on a v9.09 fixture |
 | His answer 38: the resize corner drew the aiming reticle, and drag and minimise drew the same undifferentiated arrow | v9.09 | four pointers (move/resize/minimise/reticle), hudHit gained a grip part; check fails on a v9.08 fixture |
 | Downed screen: CRAWL TO THE RING flashed (21.1 pct brightness swing every 1.2s) and the block never scaled with the screen | v9.08 | pulse gone while downed (0.0 pct), block scales with hudRes (bar 253px at 1080p, 506px at 4K); check fails on a v9.07 fixture |
 | His answer 39 / sound visualisation: no noise visualisation existed at all (measured 0 pixels changed by an unseen gunshot) | v9.07 | red rings for unseen sounds; 1 ring and 120 px for unseen, 0 and 0 for seen; check fails on a v9.06 fixture |
