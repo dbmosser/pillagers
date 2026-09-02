@@ -27443,6 +27443,62 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.20 - THE DEATH SCREEN TABLE TELLS THE TRUTH
+
+The HOW IT WENT table exists to answer "how did that happen", and its own note
+says the health column "shows the exact hit the run stopped being winnable on".
+It was reporting neither of the two numbers it prints.
+
+REPRODUCED through the real damage path, twice.
+
+    100 health, 40 armour, hit for 30
+      actually   the plate soaks 15, health goes 100 to 85, so he lost FIFTEEN
+      table said DAMAGE 30, HEALTH 100
+
+    20 health, no armour, hit for 60, the blow that puts him on the floor
+      actually   health reaches 0 and he goes down
+      table said DAMAGE 60, HEALTH 20
+
+WHY. The row was written at the top of damagePlayer, before the difficulty
+multiplier, before armour absorbed anything and before p.hp moved. So every
+attacker was credited with the damage his plate ate, and the last row of a fatal
+run printed the health he had BEFORE the killing blow rather than the nothing he
+had after it. Reading that table back, a crawler that chipped him for 15 looked
+like it hit for 30, and the run looked like it ended while he still had health.
+
+THE ROW IS WRITTEN WHEN THE HIT LANDS NOW. Damage is what actually came off his
+health and health is what he had left, which is what both column headings say.
+The downed case keeps its own row, logged before killPlayer so the blow that
+finishes him is not missing from the table that explains it: a hit on the floor
+costs seconds rather than health, so it is recorded against the health he does not
+have.
+
+MEASURED AFTER: with armour, 15 damage and 85 health, matching the actual loss
+exactly. The killing blow reads 0.
+
+Verified: parse PASS v9.20. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 63 regression checks
+pass in sequence, none skipped.
+
+The check fails on a fixture built from v9.19 with all four numbers named: 30
+damage where he lost 15, 100 health where he had 85, 20 health on the killing
+blow, and 100 health left after an unarmoured hit that should read 76. Three
+controls. The row must still carry a name and a damage figure, or an empty table
+satisfies every assertion. With NO armour the logged damage must equal the FULL
+incoming hit, which is the one that matters: a fix that simply reported a smaller
+number, or halved everything, would pass the armour case and fail here. And a hit
+taken while already down must still appear, because that branch returns early and
+is the one the row had to be moved across.
+
+Not verified: the telemetry recorder's own damage totals are a separate counter
+and were already taken before the multiplier; I did not change them, so the
+exported dmg-by-source figures still describe damage thrown rather than damage
+taken, and that is now inconsistent with the table he reads. Whether that matters
+is his call, since the exports are for me and the table is for him.
+
 ## v9.19 - THE NAMES ON SCREEN ARE HIS NAMES
 
 Three player-facing strings that were not his, one of them an instruction I had

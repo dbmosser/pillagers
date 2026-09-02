@@ -1209,7 +1209,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.19';
+var VER='9.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9926,15 +9926,26 @@ function damagePlayer(amt,src,srcName,sx,sy){
   G.tel.lastHitName=srcName||null;
   // HIS Q43. The log is the answer to "how did that happen", which the single
   // killer line has never been able to give.
-  if(!G.sim){
+  // v9.20: WRITTEN WHEN THE HIT LANDS, not before it. This used to be pushed up
+  // here, ahead of the difficulty multiplier, ahead of armour and ahead of p.hp
+  // moving, so it credited every attacker with the damage the plate ate and
+  // printed the health he had BEFORE the blow. Measured: 100 health and 40
+  // armour hit for 30 actually loses 15 and read "DAMAGE 30, HEALTH 100", and the
+  // hit that put him on the floor read "HEALTH 20" instead of nothing.
+  function _logHit(dealt,left){
+    if(G.sim) return;
     G.tel.hitLog=G.tel.hitLog||[];
     if(G.tel.hitLog.length>24) G.tel.hitLog.shift();
     G.tel.hitLog.push({n:srcName||String(src||'?').toUpperCase(),
-                       a:Math.max(1,Math.round(amt)),
+                       a:Math.max(1,Math.round(dealt)),
                        t:Math.round(G.t),
-                       hp:Math.max(0,Math.round(p.hp))});
+                       hp:Math.max(0,Math.round(left))});
   }
   if(p.downed){
+    // A hit on the floor costs seconds, not health, so it is recorded against the
+    // health he does not have. Logged before killPlayer, or the blow that
+    // finishes him would be missing from the table that explains it.
+    _logHit(amt,0);
     p.downT-=3; blip('hit');
     if(p.downT<=0) killPlayer(src);
     return;
@@ -9959,6 +9970,9 @@ function damagePlayer(amt,src,srcName,sx,sy){
   // untouched and no PRNG draw is added.
   var _pre=p.hp;
   p.hp-=amt;
+  // v9.20: now that both numbers are true, this is the row. amt is what got
+  // through the multiplier and the plate, and p.hp is what he has left.
+  _logHit(amt,Math.max(0,p.hp));
   if(amt>0){
     // A second hit while the red is still showing extends the same block rather
     // than restarting from the lower value, or a burst reads as one small hit.
@@ -24537,7 +24551,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.19: the cache by the extraction is called the ELITE CACHE now, and rewards say credits instead of cash.',
+  now:'v9.20: the HOW IT WENT table on the death screen tells the truth. It was crediting hits with the damage your armour ate.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

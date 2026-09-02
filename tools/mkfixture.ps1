@@ -3422,6 +3422,50 @@ window.__REGRESS=[
      if(vNow&&vCard&&(vNow-vCard)>0.15)
        bad.push('the what-is-new card is at v'+wn.ver+' against a build at v'+wn.build);
      if(!wn.lines.length) bad.push('the what-is-new card has no lines');
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.20',what:'the death screen table reports what the hit actually did, not what was thrown',
+   run:function(){
+     var bad=[];
+     __resetCfg(); __pinDefaults(0);
+     __deploy({kit:['plate'],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player; g.ents.length=0;
+     function hit(hp0,armor0,amount,name){
+       p.hp=hp0; p.maxhp=100; p.armor=armor0; p.iv=0; p.downed=0;
+       g.tel.hitLog=[];
+       __arm.hurt(amount,'crawler',name,p.x+20,p.y);
+       var rows=g.tel.hitLog||[];
+       return {row:rows[rows.length-1]||null, hpAfter:Math.max(0,Math.round(p.hp)),
+               lost:Math.round(hp0-Math.max(0,p.hp)), downed:!!p.downed};
+     }
+     // THROUGH ARMOUR. Measured before v9.20: 100 health and 40 armour hit for 30
+     // actually loses 15, and the table read DAMAGE 30, HEALTH 100.
+     var a=hit(100,40,30,'CRAWLER');
+     if(!a.row) return 'no row was written at all, so there is nothing to check';
+     if(a.row.a!==a.lost) bad.push('with armour the table says '+a.row.a+' damage where he actually lost '+a.lost);
+     if(a.row.hp!==a.hpAfter) bad.push('with armour the table says '+a.row.hp+' health where he actually has '+a.hpAfter);
+     // THE KILLING BLOW. Its own note says this column shows the hit the run
+     // stopped being winnable on, and it used to print the health he had BEFORE it.
+     var b=hit(20,0,60,'PILLAGER');
+     if(!b.downed) bad.push('the lethal hit did not put him down, so the killing row cannot be judged');
+     else if(b.row.hp!==0) bad.push('the killing blow prints '+b.row.hp+' health, it should print nothing left');
+     // CONTROL 1: it must still be LOGGING, with the name, or an empty table
+     // satisfies every line above.
+     if(!b.row.n) bad.push('control: the row carries no attacker name');
+     if(b.row.a<=0) bad.push('control: the row carries no damage');
+     // CONTROL 2, AND IT IS THE ONE THAT MATTERS: with NO armour the logged
+     // damage must still equal the FULL incoming hit. A fix that simply always
+     // reported a smaller number, or halved everything, would satisfy the armour
+     // case above and be wrong here.
+     var c=hit(100,0,24,'CRAWLER');
+     if(c.row.a!==24) bad.push('control: with no armour a 24 hit is logged as '+c.row.a+', it should be the full 24');
+     if(c.row.hp!==76) bad.push('control: with no armour a 24 hit leaves '+c.row.hp+' in the table, it should be 76');
+     // CONTROL 3: a hit taken while already down must still appear. That branch
+     // returns early and is the one the row was moved across.
+     p.hp=0; p.armor=0; p.downed=true; p.downT=12; g.tel.hitLog=[];
+     __arm.hurt(9,'crawler','CRAWLER',p.x+20,p.y);
+     if(!(g.tel.hitLog||[]).length) bad.push('control: a hit taken while downed is missing from the table');
+     else if(g.tel.hitLog[g.tel.hitLog.length-1].hp!==0)
+       bad.push('control: a hit taken while downed reports health he does not have');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
