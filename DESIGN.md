@@ -27443,6 +27443,78 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.05 - TEN WAYS INTO COLD STORAGE, NOT FOUR
+
+His answer 44: COLD STORAGE should have about TEN start points. He has raised the
+same-corner complaint three separate times, and v8.82 and v8.90 both fixed part
+of it. This is the number itself.
+
+WHAT I GOT WRONG FIRST, and it cost the first half of the tick. I opened
+believing the spawn was pinned again, because forty seeds in a row started at
+300,680. That reading was contaminated by state an earlier probe left in the same
+tab; on a clean reload the choice moves normally. v8.90 is intact. I have said
+this here rather than quietly moving on because the same mistaken reading would
+otherwise have been "fixed" a third time.
+
+WHAT IS ACTUALLY TRUE, measured with the diagnostic this build adds. The map
+authors six spawn points. One clears the 1500 unit bar that keeps a start away
+from an exit; four clear the relaxed 900 fallback. So the roll picks from FOUR.
+
+    300,680    1522 from the nearest extract    eligible
+    2110,660    290                             out, sits next to an exit
+    4000,660   1090                             eligible
+    1080,2350   286                             out
+    2180,2300  1348                             eligible
+    2020,3300  1406                             eligible
+
+SIX NEW POINTS, chosen by scanning the whole 4200x3400 map on a 50 unit grid and
+keeping only points at least 1000 units from every extract, at least 700 from
+every other spawn, and clear of every building, wall and water rectangle by 30
+units. 661 points qualified. The six written down are the ones that spread the
+map rather than the ones that scored highest: the west side had one start and now
+has two, the north-east had one and now has two, and the south-east had none at
+all and now has one.
+
+AND THE FLOOR IS RAISED, four to eight. Four was chosen when this map had six
+spawns to offer. Left alone, if two more spawns had happened to clear the strict
+bar the pool would have snapped back to those few and he would have been in the
+same corners again with twelve spawns authored. Eight makes his answer a rule
+instead of a coincidence of this list. THE COLD MILE is unaffected: its pool is
+already all 12 of its 12.
+
+MEASURED AFTER, 60 raids on 60 seeds:
+
+    eligible pool     4 -> 10
+    distinct starts   4 -> 10, every one of them used
+    biggest share     40 percent of raids -> 16.7
+    relocated starts  0, so all six new points are on legal ground
+
+Verified: parse PASS v9.05. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 58 and 276, LOOT driven on both maps with the raid clock still
+advancing and nothing thrown, live-vs-sim stream parity identical on both, all
+three endings reading EXTRACTED, KILLED IN ACTION and ABANDONED with the overlay
+up, hub and stage render. 48 regression checks pass, none skipped.
+
+The new check measures where the player actually lands, so it runs on any build,
+and it fails on a fixture built from v9.04 with "only 4 different starts came up
+in 30 raids; one start took 40 percent of 30 raids". Two controls: every eligible
+start must still be at least 900 units from an extract, so scattering starts
+around the map cannot pass, and THE COLD MILE's pool must still be all 12, so the
+shared floor change cannot quietly alter the other map.
+
+THE COLD STORAGE CONTAINER FINGERPRINT MOVED, 155 to 157 at seed 4242, and it is
+expected rather than a surprise. The start position feeds later placement, so
+choosing a different one of ten changes how many placement attempts are rejected.
+The asserted fingerprint is the entity count, which is unchanged at 58, and
+live-vs-sim parity is still identical because both arms make the same choice.
+
+Not verified: how the ten starts feel to play, which is his call and not
+measurable here - the two furthest new points put him a long way from the dense
+middle and that may read as a slow raid rather than a fresh one; the extract rate
+per start, since no seeded batch was run for this build; whether any new start
+sits somewhere visually poor, since they were validated geometrically and by the
+game's own relocation guard rather than by looking at them.
+
 ## v9.04 - CRIERS KEEP TO THE STREET
 
 His note, given twice: "criers shouldn't go inside houses unless chasing a

@@ -2470,6 +2470,50 @@ window.__REGRESS=[
          if(cpct<25) bad.push('control: map '+mi+' crawlers are only indoors '+cpct.toFixed(1)+' percent of the time, the houses have been emptied');
        }
      });
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.05',what:'COLD STORAGE drops you in one of about ten places, not one of four',
+   run:function(){
+     __resetCfg(); __pinDefaults(0);
+     var bad=[], counts={}, pool=0, relocated=0, N=30, D0=false;
+     for(var i=0;i<N;i++){
+       __startRaid({mapIx:0,seed:11000+i*97});
+       var g=__state(), D=g.spawnDbg;
+       // WHERE HE LANDS is the measurement, and it works on any build. The
+       // diagnostic is used only for the two things it alone can see.
+       var at=Math.round(g.player.x)+','+Math.round(g.player.y);
+       if(D){
+         D0=true; pool=D.pool;
+         // Every authored start must be legal ground. If the guard had to
+         // relocate one, the point was written down badly and he starts
+         // somewhere nobody chose.
+         if(at!==(D.pt.x+','+D.pt.y)) relocated++;
+       }
+       counts[at]=(counts[at]||0)+1;
+     }
+     var keys=Object.keys(counts), top=0;
+     for(var k in counts) if(counts[k]>top) top=counts[k];
+     // HIS ANSWER 44. Before this the pool was four and he said so three times.
+     if(D0&&pool<8) bad.push('the eligible pool is '+pool+' starts, he asked for about ten');
+     if(keys.length<7) bad.push('only '+keys.length+' different starts came up in '+N+' raids');
+     if(top/N>0.35) bad.push('one start took '+Math.round(top/N*100)+' percent of '+N+' raids');
+     if(relocated) bad.push(relocated+' of '+N+' starts had to be relocated, so an authored spawn is not on clear ground');
+     // CONTROL 1: his run #37 rule. Spawns must not creep towards the exits.
+     // Scattering starts anywhere would satisfy every line above and quietly
+     // hand him a raid that begins next to the way out.
+     var g2=__state(), m=g2.map, worst=1e9, worstAt=null;
+     for(var s=0;s<m.spawns.length;s++){
+       var q=m.spawns[s], d=1e9;
+       for(var e=0;e<m.extracts.length;e++) d=Math.min(d,Math.hypot(m.extracts[e].x-q.x,m.extracts[e].y-q.y));
+       // only the ones that can actually be chosen: two authored spawns sit
+       // close to an exit on purpose and the pool has always excluded them.
+       if(d>=900&&d<worst){ worst=d; worstAt=Math.round(q.x)+','+Math.round(q.y); }
+     }
+     if(worst<900) bad.push('control: an eligible start sits '+Math.round(worst)+' from an extract at '+worstAt);
+     // CONTROL 2: the pool floor is shared, so the other map must be unmoved.
+     __resetCfg(); __pinDefaults(1);
+     __startRaid({mapIx:1,seed:4242});
+     var D2=__state().spawnDbg;
+     if(!D2||D2.pool<12) bad.push('control: THE COLD MILE pool is '+(D2?D2.pool:'unknown')+', it should still be all 12');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
