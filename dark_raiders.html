@@ -1209,7 +1209,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.32';
+var VER='9.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24781,7 +24781,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.32: you can see what you are carrying while you drag it around the Undercroft backpack. It used to be invisible in your hand.',
+  now:'v9.33: proficiency is the five things he named, not just money. It shows what every part of it is doing.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -26527,6 +26527,53 @@ P.contracts.forEach(function(c,ci){
 // v6.74, his note. One summariser over a list of runs, used for both the whole history
 // and the last ten, so the two can never drift apart the way two hand written blocks
 // would. Everything reads from P.log, which is the same record the exporter sends me.
+// v9.33, HIS 33. Five parts, each scored out of one, then weighted. Every input
+// comes off the run log, so the whole thing recomputes from scratch every time it
+// is read and a bad stretch pulls it down again.
+// The reference figures are the honest part to argue with: 12,000 a raid as a
+// good median haul, one and a half downs a raid as bad, and 260 damage taken a
+// raid as bad. They are what turn a raw number into a score out of one and they
+// are chosen rather than measured, so they are named here where they can be found.
+var PROFW={money:30,out:30,up:15,aim:15,hurt:10};
+function profParts(rows){
+  if(!rows||!rows.length) return null;
+  var o=statSummary(rows);
+  var ext=o.ext, dead=o.dead;
+  // MONEY EXTRACTED. Median rather than mean, so one enormous run does not buy a
+  // rating the rest of the log does not support.
+  var med=statMed(o.hauls);
+  var money=clamp((med===null?0:med)/12000,0,1);
+  // EXTRACT VERSUS DIE. Abandons are neither, so they are left out of the ratio
+  // rather than counted as failures: backing out is a decision, not a death.
+  var decided=ext+dead;
+  // NO EVIDENCE IS NOT FAILURE. A log of nothing but abandons says nothing about
+  // whether he can get out, so it sits in the middle rather than at the bottom.
+  var out=decided?clamp(ext/decided,0,1):0.5;
+  // TIMES DOWNED, per raid, inverted.
+  var dpr=o.downs/o.n;
+  var up=clamp(1-dpr/1.5,0,1);
+  // ACCURACY. Only runs where he fired enough for the number to mean anything are
+  // in accs, which statSummary already decides at more than four shots.
+  var av=statAvg(o.accs);
+  var aim=clamp((av===null?0:av)/100,0,1);
+  // DAMAGE PER RAID. The only per-raid damage this game records is what reached
+  // HIM, so this scores absorbing less of it. See the note above: if he meant
+  // damage dealt, this is the part that changes.
+  var tot=0,seen=0;
+  for(var i=0;i<rows.length;i++){
+    var D=rows[i].dmg; if(!D) continue;
+    var sum=0; for(var k in D) sum+=(D[k]||0);
+    tot+=sum; seen++;
+  }
+  var hpr=seen?tot/seen:0;
+  var hurt=seen?clamp(1-hpr/260,0,1):0.5;
+  var parts={money:money,out:out,up:up,aim:aim,hurt:hurt};
+  var score=0, wsum=0;
+  for(var w in PROFW){ score+=parts[w]*PROFW[w]; wsum+=PROFW[w]; }
+  return {score:Math.round(score/wsum*100), parts:parts, n:o.n,
+          medHaul:med, extPct:Math.round(out*100), downsPerRaid:Math.round(dpr*100)/100,
+          accPct:av===null?null:Math.round(av), hurtPerRaid:Math.round(hpr)};
+}
 function statSummary(rows){
   var o={n:rows.length,ext:0,dead:0,aband:0,hauls:[],accs:[],durs:[],conts:[],
          kills:0,downs:0,revives:0,killers:{},maps:{},shots:0,hits:0,banked:0,lost:0};
@@ -26592,7 +26639,24 @@ function renderStatCards(){
           recent(mhl===null?'--':'$'+mhl.toLocaleString()));
   h+=card('Best haul ever', (P.best||0)?('$'+(P.best||0).toLocaleString()):'--',
           'across every run you have made');
-  // PROFICIENCY, and what it actually means, which is his complaint about it.
+  // PROFICIENCY, v9.33, and it is his five things now rather than one of them.
+  // The subtitle names every part and where it stands, because a single number
+  // with no working shown is exactly the thing he could not read before.
+  (function(){
+    var PR=profParts(P.log||[]);
+    if(!PR){
+      h+=card('Proficiency','--','make a run and this fills in');
+    } else {
+      var pcts=function(v){ return Math.round(v*100)+'%'; };
+      h+=card('Proficiency', PR.score+' / 100',
+        'money '+pcts(PR.parts.money)+
+        '  &middot;  getting out '+pcts(PR.parts.out)+
+        '  &middot;  staying up '+pcts(PR.parts.up)+
+        '  &middot;  aim '+pcts(PR.parts.aim)+
+        '  &middot;  punishment taken '+pcts(PR.parts.hurt)+
+        '<br>across your last '+PR.n+' run'+(PR.n===1?'':'s'));
+    }
+  })();
   h+=card('Net carried out', '$'+((P.prof||0)*1000).toLocaleString(),
           'what you banked, minus most of what you died holding');
   h+=card('Experience', 'Level '+(P.xpLevel||1),

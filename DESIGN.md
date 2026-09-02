@@ -27443,6 +27443,70 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v9.33 - PROFICIENCY IS THE FIVE THINGS HE NAMED
+
+HIS 33. He was asked what proficiency should be and answered: "money extracted,
+extract-vs-die rate, times downed, accuracy, and damage per raid, mixed."
+
+WHAT IT ACTUALLY WAS: money, and only money. Extracting added your haul, dying
+subtracted sixty percent of it, divide by a thousand. Four of his five never
+entered it, even though every one of them has been recorded on every run for a
+long time. The screen did not even use the word: the card read "Net carried out",
+which is an honest name for what the number was and no answer at all to what he
+asked for.
+
+IT IS FIVE PARTS NOW, each scored out of one and then weighted:
+
+  money extracted     median haul out of a raid, against 12,000 as good
+  getting out         extracts against extracts plus deaths
+  staying up          times downed per raid, against 1.5 as bad
+  aim                 mean accuracy across runs where you fired enough to count
+  punishment taken    damage that reached you per raid, against 260 as bad
+
+Weights are 30, 30, 15, 15 and 10. The card shows all five percentages under the
+score, because a single number with no working shown is exactly what he could not
+read before.
+
+IT IS COMPUTED FROM THE RUN LOG, not accumulated. An accumulated score cannot be
+corrected when the formula changes and cannot fall when you play badly, and this
+one has to do both.
+
+TWO THINGS HE SHOULD OVERRULE IF THEY ARE WRONG, both mine rather than his.
+
+The weights: he said "mixed" and did not say in what proportion. Carrying value
+out is what the whole economy turns on and it is the name of the rating, so money
+and getting out take sixty of the hundred between them.
+
+The reading of "damage per raid": it could mean damage you deal or damage you
+take. The only per-raid damage this game has ever recorded is what REACHED YOU,
+broken down by what dealt it, so that is what this uses, inverted, and the card
+calls it "punishment taken" rather than pretending to be neutral about it. If he
+meant damage dealt, that is a different build and it needs a tally that does not
+exist yet.
+
+AND A CONTROL CAUGHT MY OWN FORMULA. Ten raids backed out of scored exactly the
+same as ten raids died in. Excluding abandons from the ratio was right; scoring
+the resulting no-evidence case as a flat zero was not, because it reads a man who
+has never died as having never survived either. Unknown sits in the middle now,
+which is how the damage part already treated a log with nothing to go on.
+
+Verified: parse PASS v9.33. Full verify PASS at 1920x1080 - both maps at seed
+4242 with entities 85 and 369 and containers 157 and 589, LOOT driven on both
+maps with the raid clock still advancing and nothing thrown, live-vs-sim stream
+parity identical on both, all three endings reading EXTRACTED, KILLED IN ACTION
+and ABANDONED with the overlay up, hub and stage render. 75 regression checks
+pass in sequence, none skipped. The new check feeds ten flawless runs and expects
+95 or better, ten runs that failed at everything and expects 8 or worse, and then
+five probes that are perfect except for one ingredient each, so a part that is not
+wired in shows up as a score that did not move.
+
+Not verified: whether the reference figures are the right ones. 12,000 a raid,
+1.5 downs and 260 damage are chosen rather than measured, and they are what turn a
+raw number into a score. They are named in the code where they can be found and
+argued with. Also not verified: how the rating reads over a long career, since
+the log holds sixty runs and a rating computed from a rolling window will move
+under him in a way an accumulating one never did.
+
 ## v9.32 - YOU CAN SEE WHAT IS IN YOUR HAND ON THE UNDERCROFT FLOOR
 
 HIS 11, the other half. v9.31 made an item come back off the belt in a raid. This

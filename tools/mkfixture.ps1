@@ -228,6 +228,7 @@ window.__emote={do:doEmote,list:EMOTES,down:weaponDown,ids:function(){return IDE
 // the lot rotates.
 // v9.19: the words the game puts on screen, so a check can hold them to his
 // vocabulary list instead of me grepping the source by hand every few builds.
+window.__prof={parts:function(rows){ return profParts(rows); }, weights:function(){ return PROFW; }};
 window.__words={cacheTags:function(){ var o=[]; if(G&&G.containers)
                   for(var i=0;i<G.containers.length;i++) if(G.containers[i].cache&&G.containers[i].tag) o.push(G.containers[i].tag);
                   return o; },
@@ -4127,6 +4128,78 @@ window.__REGRESS=[
      L.drag={key:'medkit',bagIx:0}; draw(); var g1=box(M.x,M.y,26);
      if(g0===g1) bad.push('nothing is drawn at the cursor while an item is in hand on the Undercroft floor');
      L.drag=null; draw();
+     return bad.length?bad.join('; '):null; }},
+  {v:'9.33',what:'proficiency is his five things mixed, and each one of them moves it',
+   run:function(){
+     var bad=[];
+     // WHAT HE WOULD SEE, before anything else. The old build shows a card called
+     // "Net carried out" and never uses the word proficiency anywhere.
+     var _cardTxt='';
+     try{
+       __P().log=[{outcome:'extract',haul:9000,shots:50,hits:30,acc:60,downs:0,
+                   dmg:{sentry:40,crawler:0,raider:0,snitch:0,other:0}}];
+       // The cards are built when the hub is shown; there is no separate stats screen,
+       // and asking for one returned an empty grid that silently skipped this test.
+       if(typeof __showScreen==='function') __showScreen('hub');
+       var _g=document.getElementById('statgrid');
+       _cardTxt=_g?(_g.textContent||''):'';
+     }catch(_ce){}
+     if(_cardTxt&&!/proficiency/i.test(_cardTxt))
+       bad.push('the stats screen still never says proficiency: it reads "'+
+                _cardTxt.replace(/\s+/g,' ').slice(0,90)+'"');
+     if(!window.__prof)
+       return bad.length?bad.join('; '):'SKIP: the screen looks right but the fixture has no handle on the arithmetic';
+     // DISTINCTIVE RUNS, not plausible ones. Every figure below is picked so that
+     // a formula ignoring the part under test would give itself away: the good log
+     // is good at everything and the probes are each bad at exactly one thing.
+     function run(o){
+       return {outcome:o.outcome||'extract', haul:(o.haul===undefined?12000:o.haul),
+               shots:100, hits:(o.hits===undefined?100:o.hits),
+               acc:(o.acc===undefined?100:o.acc),
+               downs:(o.downs===undefined?0:o.downs),
+               dmg:{sentry:(o.hurt===undefined?0:o.hurt),crawler:0,raider:0,snitch:0,other:0}};
+     }
+     function log(n,o){ var a=[]; for(var i=0;i<n;i++) a.push(run(o)); return a; }
+     var perfect=null;
+     try{ perfect=window.__prof.parts(log(10,{})); }catch(_pe){}
+     if(!perfect) return bad.length?bad.join('; '):'the rating returned nothing for ten clean runs';
+     if(perfect.score<95)
+       bad.push('ten flawless runs score only '+perfect.score+' out of 100');
+     // AND THE FLOOR. Without this, a formula that always returns 100 passes.
+     var awful=window.__prof.parts(log(10,{outcome:'dead',haul:0,hits:0,acc:0,downs:3,hurt:900}));
+     if(awful.score>8)
+       bad.push('ten runs that failed at everything still score '+awful.score+' out of 100');
+     // HIS FIVE, ONE AT A TIME. Each probe is perfect except for one ingredient,
+     // so a part that is not wired in shows up as a score that did not move.
+     var probes=[
+       {k:'money extracted',   o:{haul:0},                    w:'money'},
+       {k:'extract versus die',o:{outcome:'dead'},            w:'out'},
+       {k:'times downed',      o:{downs:3},                   w:'up'},
+       {k:'accuracy',          o:{hits:0,acc:0},              w:'aim'},
+       {k:'damage per raid',   o:{hurt:900},                  w:'hurt'}
+     ];
+     for(var i=0;i<probes.length;i++){
+       var pr=window.__prof.parts(log(10,probes[i].o));
+       if(!pr){ bad.push('the rating returned nothing for the '+probes[i].k+' probe'); continue; }
+       if(pr.score>=perfect.score)
+         bad.push('being bad at '+probes[i].k+' did not lower the rating at all: '+
+                  pr.score+' against '+perfect.score);
+       if(pr.parts[probes[i].w]>0.35)
+         bad.push('the '+probes[i].k+' part still reads '+Math.round(pr.parts[probes[i].w]*100)+
+                  ' percent when that is the one thing the runs were bad at');
+     }
+     // CONTROL: ABANDONING IS NOT DYING. He can back out of a raid and that is a
+     // decision, not a failure, so it must not be counted against the extract
+     // ratio the way a death is.
+     var quit=window.__prof.parts(log(10,{outcome:'abandon'}));
+     var died=window.__prof.parts(log(10,{outcome:'dead'}));
+     if(quit&&died&&quit.parts.out<=died.parts.out)
+       bad.push('control: backing out of ten raids is scored no better than dying in ten');
+     // CONTROL: the weights must still add up to something the score is divided
+     // by, or the number stops being out of a hundred.
+     var W=window.__prof.weights(), sum=0;
+     for(var w in W) sum+=W[w];
+     if(sum<=0) bad.push('control: the weights sum to '+sum+', so the score is not out of anything');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
