@@ -27443,6 +27443,37 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.92 - THE WHEEL GOES THREE TIMES CLOSER
+
+His note: "need to be able to zoom in closer on player with mouse wheel during
+raids", then "2-3 times as close as current version".
+
+REPRODUCED by asking for a zoom and READING BACK what the game holds, because
+setZoom clamps silently and a probe that only asks is measuring its own input.
+At 1920 wide: asked 3 got 3.0, asked 4 got 3.0, asked 6 got 3.0, asked 9 got 3.0,
+asked 12 got 3.0. So 640 world units across was as close as the game had ever let
+him get, and the wheel did nothing past that point.
+
+The ceiling goes to 9.0, the far end of what he asked for, which puts 213 units
+on screen, about nineteen player radii. The floor stays at 0.85 because he said
+at v8.79 that the wide end was right and this note is only about the near one.
+
+Verified on both sectors with real frames drawn at 0.85, 1, 3, 6 and 9, every
+value read back rather than assumed, nothing thrown at any of them. Screenshot at
+zoom 9 with the operator large and cleanly drawn. Two controls in the regression
+check: asking for 400 must still be refused, so removing the clamp cannot pass
+it, and the wide end must still read exactly 0.85, so widening it accidentally
+cannot pass either.
+
+Verified: parse PASS. Both sectors to their fingerprints, entities 58 and 276 and
+containers 155 and 589. Streams identical live and sim. Looting on both with no
+throw and the clock advancing. Three endings correct. Hub renders. 35 regression
+checks pass, none failed and none skipped.
+
+Not verified: performance at zoom 9. This environment can time script but not
+drawing, so I cannot say what the frame cost is of the much larger sprites and
+the shorter cull distance. I also did not check how the fog and the sight cone
+read at that zoom, only that they draw without throwing.
 ## v8.91 - THE THREE IN-RAID PANELS ARE TWICE THE SIZE
 
 His note, with three screenshots: "these menus are still WAY TOO SMALL -- need to

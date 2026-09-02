@@ -1899,6 +1899,39 @@ window.__REGRESS=[
        });
      }
      __forceSize(1920,1080);
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.92',what:'the wheel zooms three times closer than it used to, and both ends still hold',
+   run:function(){
+     var bad=[];
+     // Every value is READ BACK. setZoom clamps silently, so a check that only
+     // asks is measuring its own input, which is how I first "proved" the game
+     // rendered at zoom 9 when it had quietly held at 3.
+     [0,1].forEach(function(mi){
+       __resetCfg(); __pinDefaults(mi);
+       __deploy({kit:['medkit'],safe:null,mapIx:mi,seed:4242});
+       var g=__state(); g.player.iv=99;
+       // The close end he asked for: 2 to 3 times nearer than the old 3.0.
+       try{
+         __zoom.set(6);
+         if(__zoom.get()<6) bad.push('map '+mi+' will not go to 6, it held at '+__zoom.get());
+         for(var f=0;f<8;f++) __loop(performance.now()+f*16.7);
+       }catch(e){ bad.push('map '+mi+' threw while drawing at zoom 6: '+e); }
+       try{
+         __zoom.set(9);
+         if(__zoom.get()<9) bad.push('map '+mi+' will not go to 9, it held at '+__zoom.get());
+         for(var f2=0;f2<8;f2++) __loop(performance.now()+f2*16.7);
+       }catch(e2){ bad.push('map '+mi+' threw while drawing at zoom 9: '+e2); }
+       // CONTROL ONE: there must still BE a ceiling. Removing the clamp would
+       // satisfy every line above and let the wheel run away to nothing.
+       __zoom.set(400);
+       if(__zoom.get()>__zoom.max()) bad.push('map '+mi+' let the zoom past its own ceiling');
+       // CONTROL TWO: the far end is untouched. He said at v8.79 that the wide
+       // end was right, so widening it here would be an unasked change.
+       __zoom.set(0.1);
+       if(Math.abs(__zoom.get()-0.85)>0.001) bad.push('the wide end moved, it is now '+__zoom.get()+' and should be 0.85');
+       for(var f3=0;f3<6;f3++) __loop(performance.now()+f3*16.7);
+     });
+     __zoom.set(1);
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and

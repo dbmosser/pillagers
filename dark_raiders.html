@@ -1185,7 +1185,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.91';
+var VER='8.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16114,7 +16114,12 @@ function w2s(x,h,z){ var q=ZOOM(); return {x:(x-VX)*q,y:(z-VY)*q-h}; }
 // Camera zoom. Stored on the profile so it survives between raids, since it is
 // a comfort setting rather than a per-raid choice. 1 is the framing every build
 // before this shipped with.
-var ZMIN=0.85,ZMAX=3.0;   // v8.79: was 0.65 and 2.0, both ends per his note
+// v8.92, his note: "2-3 times as close as current version". The ceiling was 3.0,
+// which is 640 world units across a 1920 screen, and everything above it clamped
+// silently. 9.0 is the far end of what he asked for and puts 213 units on screen,
+// roughly nineteen player radii. The floor is left where v8.79 put it, because he
+// said the far end was right and this note is only about the near one.
+var ZMIN=0.85,ZMAX=9.0;   // v8.79 set 0.85; v8.92 raised the ceiling from 3.0
 // Wheel zoom was three separate problems wearing one coat, all of which read as
 // "not fluid":
 //   1. Every notch snapped. setZoom wrote straight to the value the renderer
@@ -23906,7 +23911,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.91: the pillager board, the legend and the conditions panel are twice the size. They were never in the table the other panels grew from.',
+  now:'v8.92: the mouse wheel goes three times closer than it could. The old ceiling put 640 world units on screen and would not budge.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

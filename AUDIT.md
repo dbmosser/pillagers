@@ -297,3 +297,15 @@ and limitations.
   during raids", "2-3 times as close as current version". ZMAX is 3.0 as of
   v8.79; he wants roughly 6 to 9. Check the renderer holds at that zoom before
   raising it, and that the sprite and fog still read.
+
+## HE PLAYS AT 4K. Every layout number I quote at 1080p is multiplied by the
+## screen factor on his actual screen. v8.91 shipped panels at 2.0, which is 3.8
+## at 4K, and he says they are now too big.
+- PANELS TOO BIG at 4K. Default should be about 75 percent of current, so the
+  base drops from 2.0 to 1.5. HE ALSO WANTS A DRAG HANDLE: grab the corner of a
+  panel and resize it, size changes accordingly, and it should persist.
+- TWO BARS WHEN LOOTING, yellow and red. Should be ONE, yellow.
+- TEXT COLLIDING WITH THE HOTBAR: "EXTRACT A INCOMING 16s" and the "Scav Pistol
+  [FIRE] use [V] signal" line are drawn over the belt cells.
+- TEXT COLLIDING WITH THE STAMINA BAR: STANDING chip sits on the STAMINA bar.
+  Confirmed again at 4K with a screenshot.
