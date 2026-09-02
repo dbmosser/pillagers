@@ -27443,6 +27443,56 @@ Not verified: the follower against hub walls (he steps straight lines and can br
 posts; cosmetic, and the Undercroft has no stakes); the YOU ARE DOWN text on screen
 (branch drawn clean, copy not screenshotted).
 
+## v8.95 - THE UNDERCROFT BACKPACK IS THE RAID BACKPACK
+
+His note: "when player hits I in the undercroft, they should get this exact same
+menu, NOT a fullscreen one."
+
+At v8.84 I built a separate full screen panel for the Undercroft, because the
+in-raid one is drawn on the raid canvas out of raid state and there is no raid
+down there. That was the wrong answer twice: it is fullscreen, which he did not
+want, and it is a SECOND inventory, which is exactly how two views of one thing
+drift apart. He has told me before that there is only one inventory.
+
+FEASIBILITY PROVED BEFORE ANY OF IT WAS WRITTEN, because guessing would have cost
+a build. I handed the real drawBag a state built only from what the Undercroft
+has and read back what it recorded: no throw, a 1194x435 panel, and four cells
+from five packed items, because one of them is claimed by a belt slot. That last
+number is the point: the v8.78 one-place rule held without being reimplemented,
+which is what "the same menu" has to mean.
+
+So the same function draws both. The Undercroft builds a substitute state out of
+the profile, the bag from P.kit and the belt from P.hotAssign, and hands it to
+drawBag. G is restored in a finally, so a throw in there cannot leave the game
+pointed at a raid that does not exist. The HUD canvas is also cleared every
+Undercroft frame now, because that branch never touched it and it was holding
+whatever the last raid painted.
+
+The first screenshot caught the ammo readout drawing the word "undefined",
+because the substitute gave the gun no magazine. A full magazine and no spare
+rounds is also the literal truth of standing down there before you pack any ammo.
+
+TWO CHECKS FAILED AND BOTH WERE MINE. The v8.84 check asserts the full screen
+panel this build retired on his instruction, so it condemned a correct build. Its
+INTENT survives and is what it asks now: one inventory on I, and the terminal left
+alone. And my new check asserted that no raid state exists while the Undercroft
+backpack draws, when G holds whatever raid the previous check left there; the real
+question is whether the draw hands G back as the SAME object, which is identity
+and not emptiness. It tests that instead.
+
+Verified: parse PASS. Both sectors to their fingerprints, entities 58 and 276 and
+containers 155 and 589. Streams identical live and sim. Looting on both with no
+throw and the clock advancing. Three endings correct. Hub renders. Screenshot of
+the Undercroft floor with the panel on it, headed BACKPACK, reading BACKPACK 4
+BELT 1. 38 regression checks pass, none failed and none skipped, including a new
+one that presses the real key, refuses a fullscreen result, and requires the belt
+claim rule to be visible in the drawn cell count.
+
+Not verified: you cannot yet DRAG items in the Undercroft backpack. The raid mouse
+handlers are gated on a live raid, so the panel is currently a view. That is his
+answer 11, "you should be able to move stuff to and from the hotbar when the
+backpack is open", and it is the next build. The v8.84 full screen panel also
+still exists in the page, unused by any key.
 ## v8.94 - THE BACKPACK STOPS SITTING ON THE BELT
 
 His screenshot at 4K, with "rename this box BACKPACK instead of inventory -- and

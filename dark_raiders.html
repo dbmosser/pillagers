@@ -1185,7 +1185,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='8.94';
+var VER='8.95';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8367,6 +8367,8 @@ window.addEventListener('keydown',function(e){
     if(e.code==='Escape'&&!document.querySelector('.imenu')){
       var _cm2=document.getElementById('carrymodal');
       if(_cm2&&_cm2.classList.contains('on')){ toggleCarry(false); e.preventDefault(); return; }
+      // v8.95: the Undercroft backpack takes Escape before the terminal does.
+      if(hubBagOpen){ hubBagOpen=false; e.preventDefault(); return; }
     }
     if(e.code==='Escape'&&!document.querySelector('.imenu')&&!document.querySelector('.modal.on'))
       document.getElementById('hub').classList.remove('on');
@@ -8379,6 +8381,8 @@ window.addEventListener('keydown',function(e){
     if((e.code==='KeyI'||e.code==='Tab')&&!e.repeat){
       var _cm=document.getElementById('carrymodal');
       if(_cm&&_cm.classList.contains('on')){ toggleCarry(false); e.preventDefault(); return; }
+      // v8.95: and the Undercroft backpack closes on the same key.
+      if(hubBagOpen){ hubBagOpen=false; e.preventDefault(); return; }
       var _anyModal=false;
       var _ms=document.querySelectorAll('.modal');
       for(var _mi=0;_mi<_ms.length;_mi++){
@@ -8393,7 +8397,10 @@ window.addEventListener('keydown',function(e){
         // The terminal being open means he is reading it; the key closes it and
         // puts him back on the floor rather than stacking a panel on a panel.
         if(_hb.classList.contains('on')) _hb.classList.remove('on');
-        else toggleCarry(true);
+        // v8.95, his note: "they should get this exact same menu, NOT a
+        // fullscreen one". The v8.84 panel was both fullscreen and a second
+        // inventory. This is the raid backpack, drawn by the same function.
+        else hubBagOpen=!hubBagOpen;
       }
     }
     return;
@@ -21778,6 +21785,32 @@ function bagStacks(){
   });
   return st;
 }
+// v8.95: the Undercroft backpack. drawBag reads a raid; down here there is no
+// raid, so this is the same shape built out of the profile. The stacking, the
+// belt claim, the layout and the header all stay inside drawBag, so the two
+// screens cannot say different things about the same bag.
+var hubBagOpen=false;
+function hubBagState(){
+  var wep=WEAPONS[P.equipped]||WEAPONS.fists;
+  return {
+    bag:(P.kit||[]).slice(),
+    hotAssign:P.hotAssign||{},
+    bagSel:0, bagCells:[], hotCells:[], bagCols:0, bagPanel:null,
+    bagOpen:true, over:false, sim:0, t:0, pouch:{},
+    // A loaded magazine and no spare rounds, which is what you are actually
+    // holding down here until you pack ammo. Without the mag the readout drew
+    // the word undefined, which the first screenshot caught.
+    player:{wep:wep, ammo:(wep&&wep.mag)||0, hp:100, maxhp:100, armor:0, reserve:0, r:11}
+  };
+}
+// G is restored in a finally, so a throw in here can never leave the game
+// pointed at a raid that does not exist.
+function drawHubBag(){
+  var old=G;
+  try{ G=hubBagState(); drawBag(); }
+  catch(_hb){}
+  finally{ G=old; }
+}
 function drawBag(){
   // THE GRID, v2.87. His notes, same afternoon: items should have "good
   // images/graphics" everywhere, and the inventory "should move to like a
@@ -23409,6 +23442,7 @@ function showScreen(s){
   var _openM=document.querySelectorAll('.modal.on');
   for(var _mi=0;_mi<_openM.length;_mi++) _openM[_mi].classList.remove('on');
   if(s==='hub'){
+    hubBagOpen=false;   // v8.95: never arrive on the floor with it already up
     if(!HB) HB=buildHub();
     // v6.64, his note: the people milling about are different every time you come down.
     // The six who work the stations are rebuilt too and come out the same, because they
@@ -23517,7 +23551,16 @@ function loop(ts){
   tickZoom(dt);
   pollPad();
   if(state==='hub'){
-    if(HB&&wc&&W>0){ tickBuzz(dt); updateHubWorld(dt); drawHubWorld(dt); drawBuzzFx(); }
+    if(HB&&wc&&W>0){
+      tickBuzz(dt); updateHubWorld(dt); drawHubWorld(dt); drawBuzzFx();
+      // v8.95: the HUD canvas is never drawn on the Undercroft, so it is holding
+      // whatever the last raid left there. Cleared every frame, and the backpack
+      // painted onto it when he asks for it.
+      try{
+        ctx.clearRect(0,0,W,H);
+        if(hubBagOpen) drawHubBag();
+      }catch(_hbd){}
+    }
     return;
   }
   if(state!=='raid'||!G||G.sim) return;
@@ -23987,7 +24030,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v8.94: the backpack no longer sits on top of your belt, and it is called the backpack.',
+  now:'v8.95: I in the Undercroft opens the same backpack you use in a raid, drawn by the same code, not a second one.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

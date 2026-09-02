@@ -552,6 +552,16 @@ window.__simPaired=function(seeds,dialsA,dialsB){
 };
 window.__setHot=function(i){ return setHot(i); };
 window.__loot=function(){ return LOOT; };
+// v8.95: draw the real backpack panel against a substitute state, and hand back
+// what it recorded. G is restored whatever happens, so a throw cannot leave the
+// game pointed at a fake raid.
+window.__drawBagWith=function(fake){
+  var old=G, err=null, out=null;
+  try{ G=fake; drawBag(); out={panel:G.bagPanel,cells:(G.bagCells||[]).length,cols:G.bagCols}; }
+  catch(e){ err=''+e; }
+  finally{ G=old; }
+  return {threw:err, recorded:out};
+};
 window.__guns={
   tiers:function(){ var o={}; for(var k in WEAPONS) o[k]={name:WEAPONS[k].name,tier:WTIER[k]}; return o; },
   quality:function(){ return GUNQ.map(function(q){ return {q:q.q,rank:q.rank,weight:q.w,prefix:q.pre}; }); },
@@ -576,6 +586,8 @@ window.__hubStep=function(dt){
   return true;
 };
 window.__hubPanelOn=function(){ return document.getElementById('hub').classList.contains('on'); };
+window.__hubBag=function(v){ if(v!==undefined) hubBagOpen=!!v; return hubBagOpen; };
+window.__hubBagState=function(){ return hubBagState(); };
 // The operator drawing calls, recorded as they happen. The pose is an argument
 // to drawOp, so this is the only way to see what the Undercroft actually asks
 // for rather than what I believe it asks for.
@@ -1632,7 +1644,7 @@ window.__REGRESS=[
      if(standing.filter(function(m){ return m==='roll'; }).length)
        bad.push('a standing operator is being drawn as a ball');
      return bad.length?bad.join('; '):null; }},
-  {v:'8.84',what:'I in the Undercroft opens the backpack, not the terminal, and obeys the one-place rule',
+  {v:'8.84',what:'I in the Undercroft opens neither the terminal nor the retired full screen panel',
    run:function(){
      if(!__hubEnter()) return 'could not reach the Undercroft floor';
      // Entering the Undercroft unpacks your kit, so it has to be staged AFTER.
@@ -1643,27 +1655,18 @@ window.__REGRESS=[
      var K=__keysRef(); for(var kk in K) delete K[kk];
      var cm=document.getElementById('carrymodal');
      var hub=document.getElementById('hub');
-     if(!cm) return 'the backpack panel is not in the page at all';
-     cm.classList.remove('on'); hub.classList.remove('on');
+     cm&&cm.classList.remove('on'); hub.classList.remove('on');
+     __hubBag(false);
      document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));
      var bad=[];
-     if(!cm.classList.contains('on')) bad.push('I did not open the backpack');
-     // The whole point of his note: it used to open the terminal, whose first
-     // words are THE STASH.
+     // v8.95 replaced the full screen panel this check was written for, on his
+     // note "they should get this exact same menu, NOT a fullscreen one". The
+     // intent it was protecting survives: ONE inventory, opened by I, and the
+     // terminal left alone. Where that inventory is drawn is the v8.95 check.
+     if(cm&&cm.classList.contains('on')) bad.push('the retired full screen panel still opens on I');
      if(hub.classList.contains('on')) bad.push('I opened the terminal as well');
-     var names=[].slice.call(document.getElementById('carrybp').querySelectorAll('.cell'))
-                 .map(function(c){ return (c.title||'').split('\n')[0]; }).join(' | ');
-     // One of three medkits is on the belt, so two must still be in the bag.
-     if(names.indexOf('Medkit')<0) bad.push('binding one of three medkits hid all of them');
-     if(names.indexOf('x2')<0) bad.push('the backpack is not showing 2 of the 3 medkits, it shows: '+names);
-     // The only plate is on the belt, so it must not also be in the bag.
-     if(names.indexOf('Plate')>=0) bad.push('a belt-bound plate is still drawn in the backpack');
-     // THE CONTROL: an item nothing has claimed must still be there. Without it
-     // a panel that simply drew nothing would pass every line above.
-     if(names.indexOf('Servo')<0) bad.push('control: an unbound item is missing from the backpack');
-     // And the key closes it again rather than stacking panels.
+     if(!__hubBag()) bad.push('I opened no backpack at all');
      document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));
-     if(cm.classList.contains('on')) bad.push('I did not close the backpack again');
      return bad.length?bad.join('; '):null; }},
   {v:'8.85',what:'a pillager footprint does not draw through a wall, and a visible one still does',
    run:function(){
@@ -2032,6 +2035,50 @@ window.__REGRESS=[
      var cut=src.split('__REGRESS')[0];
      var needle='fillText('+String.fromCharCode(39)+'INVENTORY'+String.fromCharCode(39);
      if(cut.indexOf(needle)>=0) bad.push('the panel is still headed INVENTORY');
+     return bad.length?bad.join('; '):null; }},
+  {v:'8.95',what:'I in the Undercroft opens the raid backpack itself, not a second one',
+   run:function(){
+     if(!__hubEnter()) return 'could not reach the Undercroft floor';
+     var P=__P();
+     // Distinctive: five packed, one of two medkits on the belt, so the drawn
+     // grid can only be right if the v8.78 claim rule ran inside drawBag.
+     P.kit=['medkit','medkit','plate','servo','scrap'];
+     P.hotAssign={7:'medkit'};
+     var bad=[];
+     var cm=document.getElementById('carrymodal');
+     if(cm) cm.classList.remove('on');
+     document.getElementById('hub').classList.remove('on');
+     __hubBag(false);
+     var K=__keysRef(); for(var k in K) delete K[k];
+     document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));
+     if(!__hubBag()) bad.push('I did not open the Undercroft backpack');
+     // The two things he did NOT want.
+     if(cm&&cm.classList.contains('on')) bad.push('the v8.84 fullscreen panel opened as well');
+     if(__hubPanelOn()) bad.push('the terminal opened as well');
+     // It has to be the RAID panel, so it must record the same rectangle that
+     // panel records, and it must be a panel rather than the whole screen.
+     __hubStep(1/60);
+     // The substitute state is swapped in and out around the draw, so the test
+     // is that G comes back as the SAME object, not that it is empty: the corpus
+     // leaves a finished raid in there and my first version read that as a leak.
+     var gBefore=__state();
+     var fake=__hubBagState();
+     var r=__drawBagWith(fake);
+     if(__state()!==gBefore) bad.push('the shared draw did not hand the raid state back unchanged');
+     if(r.threw) bad.push('the shared backpack draw threw on Undercroft data: '+r.threw);
+     else if(!r.recorded||!r.recorded.panel) bad.push('the shared draw recorded no panel');
+     else {
+       var pn=r.recorded.panel;
+       // NOT fullscreen, which is the whole of his note.
+       if(pn.w>=1900||pn.h>=1000) bad.push('the Undercroft backpack is fullscreen at '+Math.round(pn.w)+'x'+Math.round(pn.h));
+       if(pn.w<400||pn.h<200) bad.push('the Undercroft backpack drew as a sliver');
+       // CONTROL: the belt claim rule has to be running, or this is a different
+       // grid wearing the same name. Five packed, one on the belt, so four.
+       if(r.recorded.cells!==4) bad.push('the grid drew '+r.recorded.cells+' cells, five packed with one on the belt should be four');
+     }
+     // And the key closes it again.
+     document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));
+     if(__hubBag()) bad.push('I did not close the Undercroft backpack again');
      return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
