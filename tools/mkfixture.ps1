@@ -5221,6 +5221,45 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.33',what:'GLOVES is an eleventh rack, and bare hands take the skin colour on the sprite',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(typeof COSMETICS==='undefined'||typeof cosSwatch!=='function') return 'SKIP: no racks in this build';
+     var gloves=COSMETICS.filter(function(c){ return c.kind==='gloves'; });
+     // THE FINDING. On v10.32 there was no gloves kind, and every hand was one tan.
+     if(gloves.length<5) return 'the racks hold '+gloves.length+' pairs of gloves, not five';
+     if(!gloves.some(function(c){ return c.how==='always'; })) bad.push('no hands are owned from the start');
+     if(gloves.some(function(c){ return String(c.how).indexOf('buy:')===0; })) bad.push('a pair of gloves costs credits, against his answer 16');
+     if(!COSKEY.gloves||!COSDEF.gloves) bad.push('the profile has no gloves key or default');
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000;
+     var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,cosGloves:P2.cosGloves,cosSkin:P2.cosSkin};
+     P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.xpLevel=99;
+     var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
+     // the whole sprite, since the hands ride the aim
+     function body(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(50,Math.min(cvs.width-50,sx)); sy=Math.max(60,Math.min(cvs.height-20,sy)); return wctx.getImageData(sx-50,sy-60,100,80).data; }
+     function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>30) d++; return d; }
+     P2.cosGloves='barehands'; P2.cosSkin='fair'; var bare=body(), flat=[];
+     gloves.forEach(function(c){ if(c.id==='barehands') return; P2.cosGloves=c.id; if(diff(body(),bare)<3) flat.push(c.id); });
+     if(flat.length) bad.push('gloves that draw no differently from bare hands on the sprite: '+flat.join(', '));
+     // Bare hands follow the skin: ebony against fair must differ at the hands.
+     P2.cosGloves='barehands'; P2.cosSkin='ebony'; var dark=body();
+     if(diff(dark,bare)<3) bad.push('bare hands do not follow the skin colour');
+     for(var k in keep) P2[k]=keep[k];
+     var html=(typeof avatarHTML==='function')?avatarHTML():'';
+     if(html.indexOf('data-av="gloves"')<0) bad.push('the figure has no GLOVES slot');
+     if(html.indexOf('avhand')<0) bad.push('the figure draws no hands');
+     var qm=gloves.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     if(qm.length) bad.push('gloves with no swatch: '+qm.join(', '));
+     // CONTROL: the seed fingerprint stands and pillagers have hands from the rack.
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
+     if(g.ents.length!==85||g.containers.length!==165) bad.push('control: the seed fingerprint moved to '+g.ents.length+'/'+g.containers.length);
+     var raiders=g.ents.filter(function(e){ return e.kind==='raider'; });
+     if(raiders.length&&raiders.some(function(e){ return !e.gloves||!cosFind(e.gloves); })) bad.push('control: a pillager has no gloves entry from the rack');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.32',what:'BOOTS is a tenth rack: five pairs on the sprite feet and the figure, with a swatch, and the pillagers wear them',
    run:function(){
      var bad=[];

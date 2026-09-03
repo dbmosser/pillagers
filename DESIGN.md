@@ -40024,6 +40024,36 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.33 - GLOVES, THE ELEVENTH RACK, AND HANDS THAT MATCH THE SKIN
+
+His answer 14, 2026-09-03, fifth of his categories: **gloves**.
+
+Bare Hands, owned from the start, and four pairs of gloves, earned: Work
+Gloves at three runs, Black at seven, Grey at level two, Red at nine extracts.
+Found on the way: the sprite's hands were one fixed tan whatever skin he
+chose, so an operator with ebony skin had pale hands, in every one of the
+four places a hand is drawn: the empty hand, the fist, the support hand on
+the handguard, and the hand feeding a magazine. Bare hands take the skin
+colour now and gloves take theirs, at all four. The figure grows a pair of
+hands beside its torso, the racks show a hand in its colour, and the
+pillagers draw from the rack. An eleventh slot, an eleventh key, part of a
+look and of SURPRISE ME.
+
+### Measured
+
+The check requires five entries with one owned and none priced, a key and a
+default, reads the whole sprite for each pair of gloves against bare hands
+and requires every one to differ, then sets the skin to ebony with bare hands
+and requires the sprite to differ again, which is the hands following the
+skin; it requires the GLOVES slot and the hands on the figure and a swatch for
+each, and as controls the seed fingerprint at 4242 unmoved and every pillager
+with a gloves entry from the rack. On v10.32 there was no gloves kind, which
+is the finding, and the hands were tan on every skin, which is the one I did
+not know about until this build.
+
+Not verified: the support hand while sprinting, which the sprite does not
+draw at all; that is as it was.
+
 ## v10.32 - BOOTS, THE TENTH RACK
 
 His answer 14, 2026-09-03, fourth of his categories: **boots**.
