@@ -40024,6 +40024,77 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.85 - HEAVY EXTRACTION HEAT WAS WORTH ONE MACHINE, OR NONE
+
+v9.84 ended with three settings rows verified only as far as the number arriving
+in CFG. This closes all three. Two are honest. The third is the same fault v9.84
+found, in a second place.
+
+### THE TWO THAT ARE HONEST, DRIVEN PROPERLY
+  how hard they hit   20 points of damage lands as 28, 24, 20 and 14 for Brutal,
+                      Hardened, Standard and Forgiving, through the real damage
+                      path with armour off.
+  raid length         900, 540 and 360 reach the raid clock as both timeLeft and
+                      raidLen.
+
+### THE THIRD, MEASURED BY LAYING A REAL SIEGE
+A beacon called at a real ring, the siege ticked for its whole window, counting
+what walks in:
+
+                        light bag     full bag
+      Heavy              6             15
+      Standard           6             14
+      Light              4              8
+
+Light is a real choice, a third fewer. HEAVY IS NOT: it buys ONE machine with a
+full bag and NONE AT ALL with a light one, while the row is labelled Heavy and
+its hint promises more of the map coming to the ring.
+
+### THE CAUSE, WHICH IS v9.84's CAUSE AGAIN
+siegeVol raises a CEILING, and the ceiling is not what limits a siege. The
+arrival interval is: one machine every 8 minus 4.6 times your greed, seconds. The
+window has room for about six of them with a light bag, so raising the cap from 6
+to 8 changes nothing at all. Lowering it to 4 does bite, and that is exactly why
+Light worked and Heavy did not, and why nobody noticed.
+
+Two builds running, two dials that arrived in CFG, were read, and were then
+overruled one line later by a limit nobody had checked against them.
+
+### THE FIX
+The dial scales the RATE as well as the ceiling, so Heavy means they come faster
+and more of them can come. Standard divides by one and does not move.
+
+Changed in both places, because the beacon announcement computes the same two
+numbers to tell him how bad it is about to be, and its own comment says what he
+is promised and what walks in must not drift apart.
+
+                        light bag     full bag
+      Heavy              8             20
+      Standard           6             14
+      Light              4              8
+
+Heavy is now 43 percent above standard with a full bag. Standard is untouched to
+the machine, and so is Light, whose cap was already the binding limit.
+
+### THE CHECK AND ITS TEETH
+Run against a fixture built from v9.84 it fails with "Heavy brings 15 against a
+standard 14, under a quarter more, which is too small to be a choice". Against
+this build it returns null.
+
+Four controls: the row must still ask for three different volumes; a standard
+siege on a full bag must actually bring at least six, or zero equals zero; a
+standard siege must still bring exactly 6 and 14, because that is what the game
+is balanced on; and Light must still bring exactly 4 and 8, because it already
+worked and a rate scaled the wrong way would show up there first.
+
+### NOT VERIFIED
+What Heavy now does to a real raid. Twenty machines converging on a ring instead
+of fifteen is a large change to the hardest moment in the game, and I have
+measured the arrivals, not the outcome. Standard is untouched, so nothing he
+plays by default has moved. Not verified either: whether the beacon's spoken
+promise now matches, since I changed both expressions together but read the
+arrivals rather than the sentence he hears.
+
 ## v9.84 - THE MACHINES SETTING ONLY MOVED HALF THE MACHINES
 
 His standing item is "make sure all the modifiers in the settings menu work as

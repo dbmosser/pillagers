@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.84';
+var VER='9.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12187,7 +12187,13 @@ function tryExtractTick(dt,wantCall){
       // seconds. This is the smaller of the two in every configuration the game
       // ships with, and it is the one he will count. A long hold at the ring can
       // bring more, up to the ceiling, which is why the line says "about".
-      var _siv=8-4.6*_g;
+      // v9.85: THE RATE MOVES WITH THE DIAL TOO. siegeVol only raised the
+      // ceiling, and the ceiling is not what limits a siege; this interval is. On
+      // v9.84 Heavy delivered 6 and 15 machines against Standard 6 and 14, so the
+      // loudest option on the row was worth one machine or none. Divided here and
+      // at the tick by the same dial, so the promise and the arrivals stay in
+      // step, and Standard divides by 1 and does not move.
+      var _siv=(8-4.6*_g)/(CFG.siegeVol===undefined?1:CFG.siegeVol);
       var _sc=Math.max(1,Math.min(_scap,Math.floor(CFG.extractWait/Math.max(0.1,_siv))));
       var _why=(_g>=0.66)?' They heard THAT: you are carrying too much to be quiet about it.'
               :((_g>=0.33)?' That is a heavy bag to be standing still with.'
@@ -12452,7 +12458,11 @@ function tickExtractPoints(dt){
   // that empties as you drop things mid siege must not quietly call the machines off.
   if(z.siegeGreed===undefined||z.siegeGreed===null) z.siegeGreed=greedOf();
   var GR=z.siegeGreed;
-  var siegeIv=8-4.6*GR, siegeCap=Math.round((6+8*GR)*(CFG.siegeVol===undefined?1:CFG.siegeVol));
+  // v9.85: the dial scales the RATE as well as the ceiling. See the note at the
+  // beacon announcement: raising the cap alone did nothing because the window
+  // never had room to reach it.
+  var _sv85=(CFG.siegeVol===undefined?1:CFG.siegeVol);
+  var siegeIv=(8-4.6*GR)/_sv85, siegeCap=Math.round((6+8*GR)*_sv85);
   // THE SIEGE CLOCK IS PER CALL, v2.27, and it was global inside a per-zone loop.
   // Every line around it is per zone: z.beaconT, z.hold, and z.siegeGreed, which
   // is read three lines up so the price is fixed per call. The counter and the
@@ -26090,7 +26100,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.84: the Machines setting moves the crawlers now, not just the sentries. Many, Standard and Few all gave you exactly 52 crawlers on COLD STORAGE and 224 on THE COLD MILE, and crawlers are most of what is out there, so choosing Few was buying eleven fewer sentries and nothing else.',
+  now:'v9.85: Heavy extraction heat is now actually heavy. Choosing it brought you one more machine than Standard with a full bag and none at all with a light one, because the setting raised a ceiling the siege never had time to reach. It now sends them faster as well.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

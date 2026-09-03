@@ -5196,6 +5196,73 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.85',what:'extraction heat is a real choice at Heavy, not just at Light',
+   run:function(){
+     var bad=[];
+     if(!(window.__opts&&window.__opts.apply&&window.__extract&&window.__extract.tick))
+       return 'SKIP: this build cannot apply its settings or tick a siege';
+     __pinDPR(1); __forceSize(1920,1080);
+     // Drives a real beacon at a real ring and counts what walks in, rather than
+     // reading the ceiling out of CFG. The ceiling is exactly what was wrong: it
+     // was raised and the siege never had time to reach it.
+     function siege(ix,greed){
+       __cleanProfile(); __resetCfg(); __pinDefaults(0);
+       var P2=__P(); P2.gameOpts={ext:ix};
+       __opts.apply();
+       var C=__cfg();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       if(!g||!g.zones||!g.zones.length) return null;
+       var z=g.zones[0];
+       g.player.x=z.x; g.player.y=z.y;
+       z.open=true; z.beaconT=C.extractWait; z.hold=null;
+       z.siegeSpawned=0; z.siegeSpawnT=0; z.siegeGreed=greed; z.pullN=1;
+       for(var t=0;t<60;t+=0.15) __extract.tick(0.15);
+       return {vol:C.siegeVol, n:z.siegeSpawned||0};
+     }
+     var HL=siege(0,0), SL=siege(1,0), LL=siege(2,0);
+     var HH=siege(0,1), SH=siege(1,1), LH2=siege(2,1);
+     if(!HL||!SL||!LL||!HH||!SH||!LH2)
+       return 'SKIP: the map built no extraction zone to lay a siege on';
+     // CONTROL ONE: the row must be asking for three different volumes, or there
+     // is nothing to deliver and everything below passes for free.
+     if(!(HL.vol>SL.vol&&SL.vol>LL.vol))
+       return 'SKIP: the extraction-heat row no longer asks for three volumes';
+     // CONTROL TWO: a siege has to actually happen, or zero equals zero.
+     if(SH.n<6)
+       return 'SKIP: a standard siege on a full bag brought only '+SH.n+', so nothing is being measured';
+     // THE FINDING. Measured on v9.84: Heavy 6 and 15 against Standard 6 and 14.
+     // The loudest option on the row bought ONE machine with a full bag and NONE
+     // with a light one, because siegeVol raised a ceiling and the ceiling is not
+     // what limits a siege; the arrival interval is. Lowering it does bite, which
+     // is why Light worked and Heavy did not.
+     if(HH.n<=SH.n)
+       bad.push('with a full bag Heavy brings '+HH.n+' against Standard '+SH.n+
+                ', so the loudest setting on the row is worth nothing');
+     if(HL.n<=LL.n||SL.n<=LL.n)
+       bad.push('with a light bag Heavy, Standard and Light bring '+HL.n+', '+SL.n+' and '+LL.n+
+                ', which is not an ordered choice');
+     // AND THE GAP HAS TO BE WORTH PICKING. One machine satisfies "more" and is
+     // nothing a player could feel. Measured after the fix: 20 against 14, which
+     // is 43 percent, and 8 against 14, which is 57 percent of standard.
+     if(HH.n<SH.n*1.25)
+       bad.push('Heavy brings '+HH.n+' against a standard '+SH.n+
+                ', under a quarter more, which is too small to be a choice');
+     if(LH2.n>SH.n*0.75)
+       bad.push('Light brings '+LH2.n+' against a standard '+SH.n+
+                ', so the quiet option is not quiet');
+     // CONTROL THREE, AND IT IS THE ONE THAT MATTERS. Standard is what the game
+     // is balanced on and what every other number here is measured against, so it
+     // must not have moved by a single machine.
+     if(SL.n!==6||SH.n!==14)
+       bad.push('control: a standard siege now brings '+SL.n+' and '+SH.n+
+                ' rather than 6 and 14, so the default extraction moved');
+     // CONTROL FOUR: and neither did Light, which already worked. A fix that
+     // scaled the rate the wrong way would show up here first.
+     if(LL.n!==4||LH2.n!==8)
+       bad.push('control: a light siege now brings '+LL.n+' and '+LH2.n+
+                ' rather than 4 and 8, so the option that already worked moved');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.84',what:'the Machines setting moves the crawlers, not just the sentries',
    run:function(){
      var bad=[];
