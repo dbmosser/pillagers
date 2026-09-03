@@ -894,6 +894,13 @@ window.__musDry=function(steps){
 };
 window.__musTheme=function(){ return {theme:HUB_THEME,chords:HUB_CHORDS,themes:MUS_THEMES,live:musTrk(),pick:function(){ MUS.trk=null; return musTrk(); }}; };
 window.__musWanted=function(){ return musicWanted(); };
+try{ window.__musDarkInfo=function(T){
+  var o={};
+  try{ o.stepSec=musStepSec(T); }catch(e1){ o.stepSec=null; }
+  try{ o.lpHz=musLpHz(); }catch(e2){ o.lpHz=null; }
+  return o;
+}; }catch(e){}
+window.__musUse=function(T){ MUS.trk=T; return MUS.trk; };
 // The drop check: the last screen before a raid, so it can be driven like every
 // other one instead of only through a click path.
 window.__stage={ render:function(pf){ return renderStage(pf); },
@@ -5206,6 +5213,99 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.87',what:'the Undercroft music schedules low, dark and slow, not high, bright and walking',
+   run:function(){
+     var bad=[];
+     if(!(window.__musTheme&&window.__musDry&&window.__musUse))
+       return 'SKIP: this fixture cannot read what the music schedules';
+     var MT=__musTheme(), all=MT.themes;
+     if(!all||all.length<5) return 'SKIP: fewer than five themes to read';
+     __resetCfg(); __pinDefaults(0);
+     function stats(xs){
+       if(!xs.length) return {n:0,mean:0,min:0,max:0};
+       var s=0,mn=1e9,mx=-1e9;
+       for(var i=0;i<xs.length;i++){ s+=xs[i]; if(xs[i]<mn) mn=xs[i]; if(xs[i]>mx) mx=xs[i]; }
+       return {n:xs.length,mean:s/xs.length,min:mn,max:mx};
+     }
+     // HIS NOTE, 2026-09-03: "music needs more of a dark and low tone -- it
+     // sounds too friendly". Nobody here can hear it, so this reads what every
+     // piece SCHEDULES. Measured on v9.86: the tune in all five pieces averaged
+     // 73 to 76 and peaked at 81 to 84, the arpeggio lifted a note to 79 in every
+     // group, the filter sat open at 3200, two pieces ran at 120 and 130, and one
+     // was written in C major and called bright and walking in its own comment.
+     var names=[];
+     for(var ti=0;ti<all.length;ti++){
+       var T=all[ti]; names.push(T.name);
+       __musUse(T);
+       var rec=__musDry(T.bars.length*16);
+       var lead=[],arp=[],bass=[];
+       for(var i=0;i<rec.length;i++){
+         var r=rec[i];
+         if(r.type==='square') lead.push(r.midi);
+         else if(r.vol>=0.2) bass.push(r.midi);
+         else if(r.dur<0.5) arp.push(r.midi);
+       }
+       var L=stats(lead), A=stats(arp), B=stats(bass);
+       // CONTROL: the piece must still HAVE a tune, an arpeggio and a bass, or a
+       // build that silenced a voice would pass every register test below.
+       if(!L.n||!A.n||!B.n){
+         bad.push(T.name+' schedules '+L.n+' tune notes, '+A.n+' arpeggio notes and '+B.n+
+                  ' bass notes, so a voice has gone missing');
+         continue;
+       }
+       // REGISTER. The tune averaged 73 to 76; it is 61 to 64 now. 66 is the
+       // line: below it is an octave down, above it is where he heard it.
+       if(L.mean>66)
+         bad.push(T.name+' tune averages '+L.mean.toFixed(1)+', which is the register he called friendly');
+       // SHIMMER. The arpeggio peaked at 79 in every piece; it peaks at 53 to 55
+       // now. 60 catches the octave lift coming back.
+       if(A.max>60)
+         bad.push(T.name+' arpeggio reaches '+A.max+', so the octave lift is back');
+       // THE FLOOR. The bass was never the problem and must not have moved down
+       // with everything else, or the whole mix collapses onto one octave.
+       if(B.mean<24)
+         bad.push(T.name+' bass averages '+B.mean.toFixed(1)+', which has followed the tune down');
+       // PACE. Nothing down here above 100 a minute: 0.15 s a sixteenth.
+       if(window.__musDarkInfo){
+         var info=__musDarkInfo(T);
+         if(info.stepSec===null) bad.push('this build cannot report the tempo it plays '+T.name+' at');
+         else if(info.stepSec<0.1499)
+           bad.push(T.name+' plays a sixteenth every '+info.stepSec.toFixed(4)+' s, faster than 100 a minute');
+       } else bad.push('this fixture has no tempo readback, so the pace cap cannot be checked');
+     }
+     // FILTER. 3200 was the open corner he heard; 1500 is the dark one.
+     if(window.__musDarkInfo){
+       var lp=__musDarkInfo(all[0]).lpHz;
+       if(lp===null) bad.push('this build cannot report its lowpass corner');
+       else if(lp>2000) bad.push('the lowpass corner is '+lp+' Hz, which is the open filter he heard');
+     }
+     // THE MAJOR PIECE. Written in C major, played in A minor: its bass roots
+     // must be the minor roots 33, 26 and 28 and never the major 36, 29 and 31.
+     var lamps=null;
+     for(var q=0;q<all.length;q++) if(/LAMPLIGHTERS/.test(all[q].name)) lamps=all[q];
+     if(lamps){
+       __musUse(lamps);
+       var rec2=__musDry(lamps.bars.length*16), roots={};
+       for(var j=0;j<rec2.length;j++) if(rec2[j].vol>=0.2) roots[rec2[j].midi]=1;
+       if(roots[36]||roots[29]||roots[31])
+         bad.push('THE LAMPLIGHTERS still plays its major bass roots, so it is still in C major');
+       if(!(roots[33]&&roots[26]&&roots[28]))
+         bad.push('THE LAMPLIGHTERS is not playing the relative minor roots 33, 26 and 28');
+     } else bad.push('control: THE LAMPLIGHTERS is not among the themes, so the major piece is untested');
+     // CONTROL: the dial puts everything back. A darkening that cannot be turned
+     // off is not a setting, and this is also what proves the test is reading
+     // the dial rather than a table that happens to have changed.
+     __cfg({musDark:0});
+     __musUse(all[0]);
+     var rec3=__musDry(all[0].bars.length*16), old=[];
+     for(var k=0;k<rec3.length;k++) if(rec3[k].type==='square') old.push(rec3[k].midi);
+     var O=stats(old);
+     __cfg({musDark:1});
+     if(O.mean<70)
+       bad.push('control: with musDark off the first tune averages '+O.mean.toFixed(1)+
+                ', so the old register cannot be restored and the test may be reading the table');
+     MT.pick();
+     return bad.length?bad.join('; '):null; }},
   {v:'9.86',what:'calling the ship does not call off whatever is already hunting you',
    run:function(){
      var bad=[];

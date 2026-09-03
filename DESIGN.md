@@ -40024,6 +40024,100 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.87 - HIS NOTE: THE MUSIC WAS TOO FRIENDLY
+
+Sent mid-tick, minutes after the model switch: "music needs more of a dark and
+low tone -- it sounds too friendly -- game is supposed to be post-apocalyptic".
+His note outranks the queue, so this is the build.
+
+I cannot hear the game and neither can the harness, which replaces the
+AudioContext with a throw. So the only honest thing to change is what the music
+SCHEDULES, the only honest proof is reading that back, and what it sounds like
+is his to judge. The fixture has had a dry recorder for exactly this since the
+v5.49 tunes were written; it records every voice the theme would have started,
+with its pitch, waveform, volume and length, and never makes a sound.
+
+### WHAT HE HEARD, MEASURED ON v9.86
+Every one of the five pieces, read back over its whole loop:
+
+                          bpm   tune mean / peak   arpeggio peak   key
+    THE UNDERCROFT        110     73.0 / 81            79          A minor
+    TIN AND WIRE          130     74.3 / 83            79          E minor, "the quick one"
+    THE DEEP SHELF         84     74.6 / 81            79          D minor
+    THE LAMPLIGHTERS      120     74.9 / 84            79          C MAJOR, "bright and walking"
+    WHAT THE WATER KEPT    80     75.6 / 81            79          A minor
+
+MIDI 72 is C5. The tune of every piece lives two octaves up and peaks at 81 to
+84; the arpeggio lifts its top note an octave to 79 in every group of every
+piece, which is the single brightest thing in the mix; the whole of it runs
+through a lowpass left open at 3200 Hz; two of the five run at 120 and 130 beats
+a minute in a room full of tins; and one is written in a major key and describes
+itself in its own comment as bright and walking. Three of the five are in minor
+keys and it did not help, because register, filter and pace are what the ear
+takes as mood before it takes the key. He is right.
+
+### FOUR LEVERS, ONE DIAL
+musDark, on by default; 0 plays everything exactly as it was, which is the
+control.
+
+    REGISTER   the tune and the arpeggio drop an octave. The bass does not move;
+               it is already the lowest thing in the room.
+    SHIMMER    the arpeggio no longer lifts its top note an octave, and it is
+               quieter, 0.06 against 0.085.
+    FILTER     the lowpass corner comes down from 3200 to 1500 Hz. With the tune
+               an octave lower its fundamental sits near 330 Hz, so the square
+               keeps its first two harmonics and loses the fizz above them.
+    PACE       nothing in the Undercroft runs faster than 100 beats a minute. The
+               two fast pieces slow to 100; the three slow ones are untouched.
+
+### AND THE ONE MAJOR PIECE
+THE LAMPLIGHTERS is played in its relative minor. C major and A minor share
+every note, so the tune does not change; the chords under it do, C to Am, F to
+Dm, G to Em, and the bass roots go with them, 36 to 33, 29 to 26, 31 to 28. It is
+flagged on the piece and applied at play time, so the written table is untouched
+and musDark 0 plays it exactly as composed.
+
+### AFTER, READ BACK THE SAME WAY
+                          tune mean / peak   arpeggio peak   bass mean   notes
+    THE UNDERCROFT          61.0 / 69            55            44.4      unchanged
+    TIN AND WIRE            62.3 / 71            55            38.3      unchanged
+    THE DEEP SHELF          62.6 / 69            55            35.1      unchanged
+    THE LAMPLIGHTERS        62.9 / 72            53            32.3      re-rooted
+    WHAT THE WATER KEPT     63.6 / 69            55            40.6      unchanged
+
+Every tune down exactly twelve, the arpeggio ceiling from 79 to 55, the bass
+where it was except the re-rooted major piece, and the count of notes in every
+voice of every piece identical to before, so nothing was dropped to get there.
+
+### THE CHECK AND ITS TEETH
+It reads every piece back through the dry recorder and requires: a tune, an
+arpeggio and a bass all present; the tune averaging below 66; the arpeggio
+peaking below 60; the bass averaging above 24, so the mix has not collapsed onto
+one octave; a sixteenth no shorter than 0.15 s; the filter corner at or below
+2000; THE LAMPLIGHTERS playing bass roots 33, 26 and 28 and never 36, 29 or 31;
+and, with musDark set to 0, the first tune back above 70, which is what proves
+the check is reading the dial rather than a table that happens to have changed.
+
+Run against a fixture built from v9.86 it fails on all five pieces at once,
+"tune averages 73.0, which is the register he called friendly; arpeggio reaches
+79, so the octave lift is back", plus the major roots, plus the two readbacks
+that build cannot make. Against this build it returns null.
+
+Two fixture additions made it possible: __musUse, because musPick rolls
+Math.random and a check must not, and __musDarkInfo, because the tempo and the
+filter corner are not in the recorder. The corner had to become a named
+function in the game to be readable at all, since the filter node is only
+created when there is a real speaker.
+
+### NOT VERIFIED
+What it sounds like. Every number above is what the pieces schedule; whether an
+octave down, a 1500 Hz corner and a 100 a minute cap read as post-apocalyptic
+rather than merely muffled is his call, and the dial is there for it. Not
+verified either: the relative-minor treatment of THE LAMPLIGHTERS beyond the
+roots. The tune is unchanged by construction and the arpeggio now draws its notes
+from Am, Dm and Em, but I have read that back as pitch statistics, not listened
+for whether a line written over C major sits well over A minor at every bar.
+
 ## v9.86 - CALLING THE SHIP CALLED OFF WHATEVER WAS HUNTING YOU
 
 From the raid audit, listed and never worked: "beacon investigate overwrites the
