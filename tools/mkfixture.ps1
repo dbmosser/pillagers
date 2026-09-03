@@ -5216,6 +5216,49 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.99',what:'Appearance is a station of its own, opening a screen with the figure and the whole wardrobe',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!(window.__hubEnter&&window.__station)) return 'SKIP: this build cannot be driven into the Undercroft';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P();
+     __hubEnter();
+     // ONE: the station exists and opens its own screen.
+     var r=null; try{ r=__station('mirror'); }catch(e1){ r={err:String(e1)}; }
+     if(!r||r.err) return 'there is no Appearance station on the floor: '+(r&&r.err);
+     var md=document.getElementById('appearmodal');
+     if(!(md&&md.classList.contains('on'))) return 'the Appearance station opened nothing';
+     function vis(el){ if(!el) return false; var q=el.getBoundingClientRect(); return q.width>0&&q.height>0; }
+     // TWO: the figure with its six slots, and the wardrobe with every group
+     // showing before anything is clicked.
+     var slots=md.querySelectorAll('#appavatar .avslot');
+     if(slots.length!==6) bad.push('the figure has '+slots.length+' slots, not six');
+     var tiles=md.querySelectorAll('#appavatarpicker .costile');
+     if(!tiles.length) bad.push('the wardrobe is empty before a slot is clicked');
+     var groups=['BUILD','SKIN','HAIR','HAIRSTYLE','HEADGEAR','CLOTHING'], missing=[];
+     var wt=(document.getElementById('appavatarpicker')||{}).textContent||'';
+     for(var g=0;g<groups.length;g++) if(wt.indexOf(groups[g])<0) missing.push(groups[g]);
+     if(missing.length) bad.push('the wardrobe does not show '+missing.join(', '));
+     if(md.querySelector('[data-save],[data-load]')) bad.push('the loadout saves are on the Appearance screen, where they do not belong');
+     // THREE: a tile changes what he wears. Pick an owned, unworn tile.
+     var pick=null;
+     for(var i=0;i<tiles.length;i++){ var t=tiles[i]; if(!/\block\b/.test(t.className)&&!/\bon\b/.test(t.className)){ pick=t; break; } }
+     if(!pick) bad.push('no owned, unworn tile to try');
+     else {
+       var kind=pick.getAttribute('data-kind'), id=pick.getAttribute('data-id');
+       var key=(typeof COSKEY!=='undefined'&&COSKEY[kind])?COSKEY[kind]:null;
+       var before=key?P2[key]:null;
+       pick.click();
+       if(!key) bad.push('cannot read the profile key for '+kind);
+       else if(P2[key]!==id) bad.push('clicking the '+kind+' tile '+id+' left him wearing '+P2[key]+' (was '+before+')');
+     }
+     // FOUR: it closes.
+     var cl=document.getElementById('closeappear');
+     if(!vis(cl)) bad.push('there is no Leave on the Appearance screen');
+     else { cl.click(); if(md.classList.contains('on')) bad.push('Leave did not close the Appearance screen'); }
+     md.classList.remove('on');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.98',what:'the stash screen is five things: stash, backpack, hotbar, safe pocket, freebie kit, with one way out',
    run:function(){
      var bad=[];

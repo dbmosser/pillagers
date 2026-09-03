@@ -40024,6 +40024,46 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.99 - DISCOUNT FASHION DEPOT
+
+His note, 2026-09-03: **"Cosmetics should move to their own screen and their
+place in the Undercroft, maybe call it 'Appearance'"**, and his answers 11 and
+12 the same morning: **the word is DISCOUNT FASHION DEPOT, a new station of
+that name.**
+
+### Where cosmetics were
+
+In the operator column of the stash screen, which v9.98 removed on his order,
+and in the same column on the ascent check, where they still are. Neither was
+a place. Both were a corner of a screen about something else, and the picker
+under the figure showed the loadout saves until a slot was clicked, so the
+racks were invisible until you knew to look.
+
+### Where they are
+
+A station on the Undercroft floor, DISCOUNT FASHION DEPOT, bottom left between
+the cheat box and the stash terminal, with its own screen. The figure stands on
+the left with its six slots. The racks on the right show every group at once,
+BUILD, SKIN, HAIR, HAIRSTYLE, HEADGEAR and CLOTHING, owned, worn and locked
+alike, so nothing has to be clicked to see what there is; clicking a slot
+narrows them to that group as before. The loadout saves are not on this screen.
+The ascent check keeps its operator panel until the build that removes the
+loadout saves everywhere (his answer 5) takes that column with it.
+
+### Measured
+
+The check fires the station's real act on a clean profile, requires the screen
+to open, six slots on the figure, tiles on the racks before any slot is clicked
+with all six group headings present, no loadout save rows, clicks an owned
+unworn tile and requires the profile to wear it, and requires CLOSE to close
+the screen. On v9.98 there is no such station, which is the finding.
+
+Not verified: how the station reads on the floor beside the terminal; the
+label and colour were chosen from the list and not looked at, and the floor
+draws it the way it draws the others. Not verified: the rest of his answers 13
+to 20, which are the next builds: every category he listed, earned only, a
+randomiser, three saved looks, and pillagers dressed from the same racks.
+
 ## v9.98 - THE STASH SCREEN IS FIVE THINGS
 
 His note, 2026-09-03: **"the stash screen is way too busy -- SCRAP it entirely

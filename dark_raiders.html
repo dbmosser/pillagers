@@ -675,6 +675,25 @@
   </div>
 </div>
 
+<!-- v9.99, HIS NOTE and his answers 11 and 12: Discount Fashion Depot. The
+     figure and its slots on the left, the whole of the racks on the right. -->
+<div class="modal" id="appearmodal">
+  <h3>Discount Fashion Depot</h3>
+  <div class="msub">Everything here is how you look and nothing about how you play. Click a slot to narrow the racks to it; click it again to see them all.</div>
+  <div class="hubgrid" style="grid-template-columns:260px 1fr;margin-top:6px">
+    <div class="panel">
+      <h2>Your operator</h2>
+      <div id="appavatar"></div>
+    </div>
+    <div class="panel">
+      <h2>The racks</h2>
+      <div id="appavatarpicker" style="padding:8px 12px;flex:1;min-height:0;max-height:520px;overflow-y:auto"></div>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:10px">
+    <button id="closeappear" style="padding:8px 22px">CLOSE</button>
+  </div>
+</div>
 <div class="modal" id="barmodal">
   <h3 id="bar_h">The Last Pour</h3>
   <div class="msub" id="wallet_bar" style="color:var(--amber);font-weight:700"></div>
@@ -1215,7 +1234,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.98';
+var VER='9.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24988,6 +25007,10 @@ acts:{KeyE:['go up',function(){
            KeyT:['your stats',function(){ openOps('rec'); }]}},
     {id:'bar',x:590,y:365,r:44,label:'THE LAST POUR',sub:'rotgut, blotter, and worse',c:'#d98aff',
      acts:{KeyE:['drink',function(){ renderBar(); openModal('barmodal'); }]}},
+    // v9.99, HIS NOTE and his answers 11 and 12: cosmetics have a place of
+    // their own, and its name is his.
+    {id:'mirror',x:230,y:400,r:42,label:'DISCOUNT FASHION DEPOT',sub:'a cracked mirror and a change of clothes',c:'#f2c9a0',
+     acts:{KeyE:['browse the racks',function(){ P._avSlot=null; renderAvatar('appavatar','appavatarpicker'); openModal('appearmodal'); }]}},
     // v8.40, audit: LOCAL ONLY. This was the one dev surface with no gate at all,
     // and it is the nearest station to where he lands. Not gated on BETA_HIDE_DEV,
     // which is true in his own build and would take it off him; gated on the host,
@@ -26193,7 +26216,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.98: the stash screen is five things now: the stash, your backpack, your hotbar, the safe pocket and the freebie kit. The operator column, the armour line and the row of buttons along the bottom are gone. CLOSE is top right; TAB and ESC still close it.',
+  now:'v9.99: the Discount Fashion Depot. A new station on the Undercroft floor, bottom left, opens a screen of its own: your operator on the left, the whole of the racks on the right, every build, skin, hair, hairstyle, headgear and clothing at once. Cosmetics live there now.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30002,6 +30025,9 @@ document.getElementById('sectordeploy').onclick=function(){
 document.getElementById('closesector').onclick=function(){
   document.getElementById('sectormodal').classList.remove('on');
 };
+document.getElementById('closeappear').onclick=function(){
+  document.getElementById('appearmodal').classList.remove('on');
+};
 // v6.67: the confirm box. YES runs the stored callback, and the callback is cleared
 // before it runs so a question can never be answered twice by a double click.
 document.getElementById('askyes').onclick=function(){
@@ -30566,6 +30592,9 @@ function renderAvPicker(pickHost,host){
   var pid=pickHost||'avpicker', hid=host||'avatar';
   var box=document.getElementById(pid); if(!box) return;
   var slot=P._avSlot;
+  // v9.99: at the Discount Fashion Depot, no slot chosen means the whole of
+  // the racks, not the loadout saves, which are the ascent check's business.
+  if(!slot&&pid==='appavatarpicker'){ renderCosmetics(box,null,hid,pid); return; }
   if(!slot){
     box.innerHTML='<div class="hint" style="font-size:11px;line-height:1.4">'+
       'Click a slot to change it. Headgear and hair are earned and change nothing about how you play.</div>'+
