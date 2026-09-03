@@ -1261,12 +1261,17 @@ window.__REGRESS=[
        var g=__state(); if(!g) return null;
        var p=g.player; g.ents.length=0; p.iv=99; p.stam=100;
        var K=__keysRef(); for(var k in K) K[k]=false;
-       K['KeyD']=true; K['ShiftLeft']=true;
+       // v10.07: sprint is a toggle; press SHIFT through the real handler.
+       function pressShift(){
+         try{ document.dispatchEvent(new KeyboardEvent('keydown',{code:'ShiftLeft',key:'Shift',bubbles:true,cancelable:true})); }catch(_e1){}
+         try{ document.dispatchEvent(new KeyboardEvent('keyup',{code:'ShiftLeft',key:'Shift',bubbles:true,cancelable:true})); }catch(_e2){}
+       }
+       K['KeyD']=true; g.sprintTog=false; pressShift();
        var flips=0, prev=null, everSprinted=false;
        for(var f=0;f<secs*60;f++){
          if(!__state()||__state().over) break;
-         if(release&&f===300) K['ShiftLeft']=false;
-         if(release&&f===420) K['ShiftLeft']=true;
+         // after exhaustion has cleared the toggle, press again for a second sprint
+         if(release&&f===420&&!__state().sprinting) pressShift();
          __loop(performance.now()+f*16.7);
          var sp=!!__state().sprinting;
          if(sp) everSprinted=true;
@@ -5793,7 +5798,7 @@ window.__REGRESS=[
      if(!sawRmb) bad.push('control: the compact legend never drew an RMB row');
      if(rowsOut.length) bad.push('compact legend text runs out of its panel: '+rowsOut.join(', '));
      return bad.length?bad.join('; '):null; }},
-  {v:'9.92',what:'C crouches, exactly as CTRL does, and the legends say so',
+  {v:'9.92',what:'C and CTRL toggle crouch, one press down and the next up, and the legends say so',
    run:function(){
      var bad=[];
      if(!__vpAlive()) return 'SKIP: the pane has no layout';
@@ -5811,13 +5816,22 @@ window.__REGRESS=[
      // Walk one direction for a fixed number of real-loop frames and measure how
      // far he got. Crouch is a speed multiplier of .52 in the movement step, so
      // the ratio between a held crouch key and none is the whole finding.
+     // v10.07: crouch is a toggle. A press through the real handler turns it
+     // on; a second press after the walk turns it off again.
+     function press(code){
+       try{ document.dispatchEvent(new KeyboardEvent('keydown',{code:code,key:code,bubbles:true,cancelable:true})); }catch(_e1){}
+       try{ document.dispatchEvent(new KeyboardEvent('keyup',{code:code,key:code,bubbles:true,cancelable:true})); }catch(_e2){}
+     }
      function walk(dir,held){
        clearKeys();
        p.x=ox; p.y=oy; p.vx=0; p.vy=0; p.roll=0; p.downed=0; p.ads=false; p.stam=100; p.stamLock=0; p.stamRelease=0;
-       var k=K(); k[dir]=true; if(held) k[held]=true;
+       g.crouchTog=false; g.sprintTog=false;
+       if(held) press(held);
+       var k=K(); k[dir]=true;
        var t0=performance.now();
        for(var f=0;f<24;f++) __loop(t0+f*16.7);
        clearKeys();
+       if(held) press(held);
        return Math.sqrt((p.x-ox)*(p.x-ox)+(p.y-oy)*(p.y-oy));
      }
      // Find a direction he can actually move in from the spawn.
@@ -5833,6 +5847,11 @@ window.__REGRESS=[
      // the finding above could not pass by movement being broken outright.
      if(rCtrl>0.8) bad.push('control: with CTRL held he walked at '+Math.round(rCtrl*100)+'%, so CTRL no longer crouches');
      if(Math.abs(rC-rCtrl)>0.08) bad.push('C and CTRL crouch at different speeds, '+Math.round(rC*100)+'% against '+Math.round(rCtrl*100)+'%');
+     // v10.07: and the second press stands him up. After walk() pressed twice
+     // he must be at full speed with no key held at all.
+     g.crouchTog=false; press('KeyC'); press('KeyC');
+     var again=walk(dir,null);
+     if(again/base<0.8) bad.push('two presses of C left him crouched, walking at '+Math.round(again/base*100)+'%');
      // C must not still flip autoloot. Press it through the real key handler.
      var was=!!__P().autoloot;
      try{ document.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyC',key:'c',bubbles:true,cancelable:true})); }catch(_e1){}

@@ -590,7 +590,7 @@
 <div class="pausebox" id="pausebox">
   <h3>RUN PAUSED</h3>
   <div style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">
-    MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT sprint &nbsp; CTRL / C crouch<br>
+    MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT sprint on/off &nbsp; CTRL / C crouch on/off<br>
     E search / call for extraction &nbsp; R reload &nbsp; F heal/revive &nbsp; Q/G throw &nbsp; TAB bag &nbsp; M map &nbsp; ` superhot &nbsp; SHIFT-` tuning &nbsp; P/ESC pause
   </div>
   <div style="font-size:13.5px;color:var(--ash);margin-top:6px">Note anything that just felt wrong. It goes in the recorder.</div>
@@ -1234,7 +1234,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.06';
+var VER='10.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3079,7 +3079,9 @@ function surfAt(x,y){
 var PSTEP=0;
 // v9.92, HIS NOTE: crouch is CTRL or C. One reader for the three places that
 // ask, so the binding cannot drift apart again.
-function crouchHeld(){ return !!(keys['ControlLeft']||keys['ControlRight']||keys['KeyC']); }
+// v10.07, his answer 33: a toggle. The keydown handler flips G.crouchTog; this
+// is still the one reader for the three places that ask.
+function crouchHeld(){ return !!(G&&G.crouchTog); }
 function tickPlayerSteps(dt){
   if(!G||G.sim||G.over) return;
   var p=G.player;
@@ -9499,6 +9501,14 @@ function raidKey(code,repeat,ev){
   }
   // v6.41, his note: M is a toggle, not a hold.
   if(code==='KeyM'&&G&&!G.over&&!repeat){ G.mapOpen=!G.mapOpen; }
+  // v10.07, his answers 33 and 35: crouch and sprint are toggles, and they
+  // exclude each other.
+  if((code==='ControlLeft'||code==='ControlRight'||code==='KeyC')&&G&&!G.over&&!G.sim&&!repeat){
+    G.crouchTog=!G.crouchTog; if(G.crouchTog) G.sprintTog=false;
+  }
+  if((code==='ShiftLeft'||code==='ShiftRight')&&G&&!G.over&&!G.sim&&!repeat){
+    G.sprintTog=!G.sprintTog; if(G.sprintTog) G.crouchTog=false;
+  }
   if(code==='KeyV'&&G&&!G.over&&!G.paused&&!G.trade&&!repeat){
     if(ev) ev.preventDefault();
     G.emoteBar=!G.emoteBar;
@@ -12965,7 +12975,10 @@ if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
   // 0.46 seconds of sprinting before it drained back to the floor - a sawtooth
   // that flipped sprint on and off 25 times in 20 seconds and made the footsteps
   // stutter between two tempos and two volumes. Releasing the key clears it.
-  var _shHeld=!!(keys['ShiftLeft']||keys['ShiftRight']);
+  // v10.07, his answer 35: sprint is a toggle. Running out of breath clears
+  // it, so the v8.73 sawtooth cannot happen and he presses again when he can.
+  if(G.sprintTog&&(p.stamLock||p.stam<=2)) G.sprintTog=false;
+  var _shHeld=!!G.sprintTog;
   if(!_shHeld) p.stamRelease=0;
 var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
   if(sprint&&mg>0){
@@ -22613,7 +22626,7 @@ function safeSet(){
 // of those three have no key at all: they are automatic. A key list alone would
 // have left him hunting, so the panel states the keyless rules as well.
 var LEGEND=[
-  ['MOVE',[['WASD','move'],['SHIFT','sprint'],['CTRL / C','crouch, near silent'],['SPACE','dodge roll']]],
+  ['MOVE',[['WASD','move'],['SHIFT','sprint on/off'],['CTRL / C','crouch on/off, near silent'],['SPACE','dodge roll']]],
   ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','aim down sights'],['R','reload'],['X','swap weapon']]],
   ['GEAR',[['1-9','select hotbar slot'],['FIRE','use selected slot'],['TAB','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],
 ['WORLD',[['E','search / call for extraction'],['M','map'],['H','cycle this list'],['P','pause']]],
@@ -26270,7 +26283,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.06: a night raid pays 1.2 times the XP. The sector page says so beside NIGHT, and the run record now remembers whether you went up in the dark.',
+  now:'v10.07: crouch and sprint are toggles. One press of CTRL or C crouches, the next stands you up; one press of SHIFT sprints, the next walks, and running out of breath walks you too. Aim down sights on RMB is still a hold.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

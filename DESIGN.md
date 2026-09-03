@@ -40024,6 +40024,35 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.07 - CROUCH AND SPRINT ARE TOGGLES
+
+His answers 33, 34 and 35, 2026-09-03: crouch on CTRL and C, **TOGGLE**; aim
+down sights on RMB, **HOLD**; sprint on SHIFT, **TOGGLE**.
+
+Both were holds. One press of CTRL or C crouches now and the next stands you
+up; one press of SHIFT sprints and the next walks. The two exclude each other,
+so turning one on turns the other off. Running out of breath clears the sprint
+toggle, which is the v8.73 rule, a lock you clear by letting go, in toggle
+form: you press again when you have the breath. The toggles live on the raid,
+so every raid starts standing and walking. Aim down sights is untouched. The
+pause screen and the full legend say on/off.
+
+### Measured
+
+Two checks that held keys through the key table had to press them instead,
+because with a toggle a held key is nothing and a press is everything. The
+crouch check presses C through the real handler, walks 24 real-loop frames
+and requires half speed, the same for CTRL, and then two presses and a walk
+at full speed with nothing held. The sprint check presses SHIFT once and
+requires sprint to switch state at most twice while nothing else is pressed,
+then presses again after exhaustion and requires a second sprint. On v10.06 a
+single press of C did nothing to his speed, which is the finding.
+
+Not verified: the controller, whose stick-click crouch and sprint go through
+the pad code and not the keyboard handler; they are holds until told
+otherwise. Not verified: whether he wants the crouch toggle to survive a dodge
+roll; it does, since the roll reads nothing of it.
+
 ## v10.06 - A NIGHT RAID PAYS 1.2 TIMES THE XP
 
 His answer 22, 2026-09-03: **"NIGHT IS ALREADY JARRING, MAYBE IT SHOULD GIVE
