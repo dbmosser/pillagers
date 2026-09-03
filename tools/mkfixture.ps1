@@ -914,7 +914,8 @@ window.__isFixture=1;
 // be able to hear my tests. Every emitter is stubbed at the source rather than relying
 // on a gain of zero, because a later build could add a new node that misses the bus.
 try{ sfx=function(t,x,y){ try{ if(typeof noiseMark==='function') noiseMark(t,x,y); }catch(_ns){} }; }catch(e){}
-try{ blip=function(){}; }catch(e){}
+var _realBlip=null;
+try{ _realBlip=blip; blip=function(){}; }catch(e){}
 // v8.55: lets a probe watch which sound a call site actually asks for. The step
 // chooser calls blip through this binding, so without a setter its output was
 // unobservable and any test of it passed by default.
@@ -5084,6 +5085,50 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.68',what:'calling extraction is three times longer, has a second voice, and wavers',
+   run:function(){
+     var bad=[];
+     if(!(window.__audio&&__audio.record&&__audio.blipRaw))
+       return 'SKIP: this build cannot record what a sound schedules';
+     // NOTHING IS EVER AUDIBLE HERE. The fixture blocks AudioContext and replaces
+     // blip with a no-op on purpose; this swaps in a recording stand-in for the
+     // length of one call and reads the schedule the sound wrote into it.
+     function sched(kind){
+       var log=__audio.record(function(){ __audio.blipRaw(kind); });
+       var done=log.osc.filter(function(r){ return r.t0!==null&&r.t1!==null; });
+       var span=0;
+       for(var i=0;i<done.length;i++){ var d=done[i].t1-done[i].t0; if(d>span) span=d; }
+       return {voices:done.length, seconds:span, mod:log.paramConnections};
+     }
+     var call=sched('beacon');
+     // CONTROL ONE: the recorder has to be recording. A stand-in that captured
+     // nothing would report zero voices and pass every "at least" test below by
+     // being empty, which is how a check quietly measures nothing. My first cut
+     // of this DID report zero, because the fixture had already replaced blip
+     // with a silent stub and the shim captured the stub.
+     if(call.voices<1)
+       return 'SKIP: the recorder captured no oscillators at all, so it is not reading the sound';
+     // CONTROL TWO: a different sound must come back DIFFERENT, or the recorder
+     // is returning the same canned answer whatever it is asked.
+     var other=sched('touchdown');
+     if(other.voices===call.voices&&Math.abs(other.seconds-call.seconds)<0.001)
+       bad.push('control: the extraction call and the touchdown schedule identically, '+
+                'so the recorder is not reading the sound it was given');
+     // THE FINDING, and his three words. Measured on v9.67: one oscillator, 0.31
+     // seconds, no modulation at all.
+     if(call.seconds<0.85)
+       bad.push('the call runs for '+call.seconds.toFixed(2)+
+                ' seconds, and it was 0.31 before, so it is not three times longer');
+     if(call.voices<2)
+       bad.push('the call is '+call.voices+' voice, so there is nothing underneath it');
+     if(call.mod<1)
+       bad.push('nothing is wired into a frequency, so the tone does not waver');
+     // CONTROL THREE: not so long that it runs into what follows it. The four
+     // sounds after this one are a sequence and the call has to end before the
+     // next state change can plausibly arrive.
+     if(call.seconds>1.6)
+       bad.push('the call runs for '+call.seconds.toFixed(2)+' seconds, which is long enough to sit on top of the sound after it');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.67',what:'the wheel resizes the text at a station, and shift still scrolls the list',
    run:function(){
      var bad=[];
@@ -5450,10 +5495,17 @@ window.__REGRESS=[
        bad.push('control: a pillager firing '+spots[i].d+' units away made no noise ping at all, so there is nothing to draw');
      if(on[0].readBack!==1||off[0].readBack!==0)
        bad.push('control: the dial did not read back, on='+on[0].readBack+' off='+off[0].readBack);
-     var offRed=0; for(i=0;i<off.length;i++) offRed+=off[i].red;
-     if(offRed>40)
-       bad.push('control: with the mark switched off there were still '+offRed+
-                ' red pixels, so this check is not measuring the mark');
+     var offRed=0, onRed=0;
+     for(i=0;i<off.length;i++) offRed+=off[i].red;
+     for(i=0;i<on.length;i++) onRed+=on[i].red;
+     // COMPARATIVE, NOT ABSOLUTE. This used to demand almost no red with the mark
+     // off, which was true when it was written and stopped being true at v9.65:
+     // the new skips, barriers and pallets carry rust blooms in the same reds, and
+     // a rusty pallet in the sample box is a hundred pixels of correct scenery.
+     // What matters is the difference the mark makes, not the colour of the yard.
+     if(onRed < offRed*3+400)
+       bad.push('control: the mark on gives '+onRed+' red pixels against '+offRed+
+                ' with it off, which is not a difference this check can attribute to the mark');
      // THE FINDING. His request: "if i can hear another pillager shooting, i
      // should also have a red circle visualization of where their shots are
      // coming from". Measured on v9.62 at three hidden spots, 290, 315 and 340
@@ -6841,7 +6893,49 @@ window.__opts={rows:function(){ return GAMEOPTS; },
                tuned:function(){ return tunedKeys(); },
                preset:function(k){ return applyPreset(k); }};
 window.__audio={amb:tickAmbience,steps:tickEnemyAudio,sfx:sfx,blip:blip,ears:earsOf,stepSound:stepSoundFor,
-  bus:bus,ctx:ac,ambObj:function(){ return AMB; }};
+  bus:bus,ctx:ac,ambObj:function(){ return AMB; },
+  // The sound itself, not the silent stub the fixture swapped in above. Only a
+  // recording context should ever be pointed at this.
+  blipRaw:function(){ return _realBlip?_realBlip.apply(null,arguments):null; },
+  // v9.68: run fn against a recording stand-in for the audio context and give
+  // back what the sound scheduled. Restores the real state on every exit path.
+  record:function(fn){
+    var log={osc:[],paramConnections:0};
+    function P(v){ return {value:v,
+      setValueAtTime:function(x,t){ log.osc.length; return this; },
+      linearRampToValueAtTime:function(){ return this; },
+      exponentialRampToValueAtTime:function(){ return this; }}; }
+    function node(extra){
+      var o={connect:function(d){ if(d&&d.__isParam) log.paramConnections++; return d; },
+             disconnect:function(){}};
+      if(extra) for(var k in extra) o[k]=extra[k];
+      return o;
+    }
+    function param(){ var q=P(0); q.__isParam=true; return q; }
+    var fake={ currentTime:0, sampleRate:48000, state:'running',
+      destination:node(), resume:function(){},
+      createOscillator:function(){
+        var r={type:'',t0:null,t1:null}; log.osc.push(r);
+        return node({ get type(){ return r.type; }, set type(v){ r.type=v; },
+          frequency:param(), detune:param(),
+          start:function(t){ r.t0=t; }, stop:function(t){ r.t1=t; } });
+      },
+      createGain:function(){ return node({gain:param()}); },
+      createBiquadFilter:function(){ return node({frequency:param(),Q:param(),type:''}); },
+      createStereoPanner:function(){ return node({pan:param()}); },
+      createBufferSource:function(){ return node({buffer:null,playbackRate:param(),loop:false,start:function(){},stop:function(){}}); },
+      createBuffer:function(ch,len,sr){ return {length:len,numberOfChannels:ch,sampleRate:sr,
+        getChannelData:function(){ return new Float32Array(len); }}; },
+      createConvolver:function(){ return node({buffer:null,normalize:true}); },
+      createDelay:function(){ return node({delayTime:param()}); },
+      createDynamicsCompressor:function(){ return node({threshold:param(),knee:param(),ratio:param(),attack:param(),release:param()}); },
+      createWaveShaper:function(){ return node({curve:null,oversample:''}); }
+    };
+    var oldAC=AC, oldBUS=BUS;
+    AC=fake; BUS=null;
+    try{ fn(); } finally { AC=oldAC; BUS=oldBUS; }
+    return log;
+  }};
 window.__bag={weight:bagWeight,drop:dropItem,worst:worstBagIndex,cull:autoCull,
   cap:function(){ return PACKCAP[P.pack]; },ival:ival,items:function(){ return ITEMS; }};
 // ================================================================ boot

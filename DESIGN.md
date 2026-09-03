@@ -39958,3 +39958,68 @@ its default behaviour and I have not driven a scrollTop to confirm it. Not
 verified: how the Undercroft reads one notch smaller. He asked for slightly
 smaller and 0.92 is slightly smaller; whether that is the right amount is his,
 and it is now a dial he can turn on the spot.
+
+## v9.68 - CALLING EXTRACTION SOUNDED LIKE A BEEP
+
+His note: **"sound when you call extact should be 3x logner and more epic,
+undulating tone"**.
+
+What it was, read off its own schedule: **one square oscillator, 420 Hz for a
+tenth of a second, then 630, gone by 0.30. Three hundred and ten milliseconds**
+for the loudest decision in the raid.
+
+His three words each name a thing, and each one is now measurable:
+
+| | v9.67 | v9.68 |
+| --- | --- | --- |
+| **3x longer** | 0.31s | **0.96s** |
+| **more epic** | 1 voice | **3** |
+| **undulating** | 0 modulation | **2 wired into a frequency** |
+
+- **Longer**: 0.96 seconds, and the pitch climbs in three steps rather than two,
+  so the extra time is more signal and not more tail.
+- **Epic**: a second voice an octave underneath, triangle against the square, so
+  the call has a body under it instead of being a beep.
+- **Undulating**: one LFO at 5.5 Hz feeding both voices, deeper on the lead, so
+  what wavers is the **tone** and not the volume.
+
+What is kept: the v8.28 note says the five extraction voices are deliberately a
+family, same timbre and rising pitch as the sequence progresses. The square is
+still the lead and it still climbs, so the call still belongs to the four sounds
+that follow it.
+
+### The harness could not hear anything at all, so now it can
+
+**This project has never had a check that could say a single thing about a
+sound.** The fixture blocks `AudioContext` and replaces `blip` with a no-op so a
+headless run is silent, which is right and stays.
+
+`__audio.record(fn)` swaps in a **recording stand-in** for the length of one
+call: the sound writes its schedule into the fake, the fake keeps it, and the
+real silence is restored on every exit path. Nothing is ever audible; the
+schedule is now readable. Its controls are that the recorder captured something
+at all, and that a **different** sound comes back different, so a stand-in
+returning one canned answer fails.
+
+**My own note warned me about the thing that cost me the most time here.** The
+shim captured `blip` at definition, and the fixture had already replaced it with
+the silent stub, so the first three attempts recorded zero oscillators on both
+builds. `dark-raiders-fixture-overrides-say` says exactly this and names `blip`;
+the real function is kept aside now.
+
+### And a check of mine measured the world instead of the thing
+
+The v9.63 control required almost no red pixels with the pillager-fire mark
+switched off. That was true when it was written and stopped being true at v9.65:
+the new skips, barriers and pallets carry rust blooms in the same reds, and **a
+rusty pallet in the sample box is 109 pixels of perfectly correct scenery.** An
+absolute floor on the background was the wrong shape. The control is comparative
+now - the mark on must carry far more red than the mark off - and still catches
+v9.62.
+
+Not verified: how it sounds. Every number above is what the call schedules, not
+what it does to a speaker: three voices, 0.96 seconds, two modulation routes. I
+cannot hear it and neither can the harness. Whether 5.5 Hz reads as epic or as a
+wobble is his. Not verified: the other four extraction voices. The call is the
+one he named; touchdown, inbound, lastcall and board are untouched, so the family
+may now be led by a sound three times the length of its siblings.
