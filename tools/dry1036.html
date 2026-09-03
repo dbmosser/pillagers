@@ -18215,7 +18215,7 @@ var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cos
 var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown',patch:'patchnone',tattoo:'tatnone'};
 // v10.25: patch colours, the ground and the mark.
 var PATCHCOL={patchcross:['#f2f2f2','#c82828'],patchskull:['#14161b','#e8e2d2'],patchstar:['#1e2a5a','#ffd24a'],patchchev:['#3a3a2a','#e0c060'],patchflag:['#1e3a6a','#d8d8d8'],
-              patchowl:['#1a1f3a','#f0d060'],patchhunt:['#2a1a1a','#e05040'],patchchain:['#1e2e2a','#a8f0c8']};   // v10.35
+              patchowl:['#1a1f3a','#f0d060'],patchhunt:['#4a1e1e','#e05040'],patchchain:['#1e2e2a','#a8f0c8']};   // v10.35
 function drawPatch(c,id,x,y,s){
   var pc=PATCHCOL[id]; if(!pc) return;
   c.fillStyle='#0a0c10'; c.fillRect(x-0.5,y-0.5,s+1,s+1);
@@ -18226,9 +18226,13 @@ function drawPatch(c,id,x,y,s){
   else if(id==='patchstar'){ c.fillRect(x+s*0.42,y+s*0.1,s*0.16,s*0.8); c.fillRect(x+s*0.1,y+s*0.42,s*0.8,s*0.16); c.fillRect(x+s*0.28,y+s*0.28,s*0.44,s*0.44); }
   else if(id==='patchchev'){ c.fillRect(x+s*0.15,y+s*0.25,s*0.7,s*0.18); c.fillRect(x+s*0.15,y+s*0.55,s*0.7,s*0.18); }
   else if(id==='patchflag'){ c.fillRect(x+s*0.15,y+s*0.2,s*0.7,s*0.2); c.fillRect(x+s*0.15,y+s*0.6,s*0.7,s*0.2); }
+  // v10.35: two eyes for the owl, a crosshair for the hunter, two links for the chain.
+  else if(id==='patchowl'){ c.fillRect(x+s*0.15,y+s*0.25,s*0.28,s*0.28); c.fillRect(x+s*0.57,y+s*0.25,s*0.28,s*0.28); c.fillRect(x+s*0.4,y+s*0.6,s*0.2,s*0.25); }
+  else if(id==='patchhunt'){ c.fillRect(x+s*0.42,y+s*0.1,s*0.16,s*0.8); c.fillRect(x+s*0.1,y+s*0.42,s*0.8,s*0.16); c.fillStyle=pc[0]; c.fillRect(x+s*0.38,y+s*0.38,s*0.24,s*0.24); }
+  else if(id==='patchchain'){ c.fillRect(x+s*0.1,y+s*0.3,s*0.4,s*0.4); c.fillRect(x+s*0.5,y+s*0.3,s*0.4,s*0.4); c.fillStyle=pc[0]; c.fillRect(x+s*0.2,y+s*0.4,s*0.2,s*0.2); c.fillRect(x+s*0.6,y+s*0.4,s*0.2,s*0.2); }
 }
 // v10.24: the pack colours.
-var PACKCOL={packbrown:'#5c4a34',packolive:'#3e4a30',packblack:'#1e2228',packrust:'#6a3a2a',packsand:'#8a7a52'};
+var PACKCOL={packbrown:'#5c4a34',packolive:'#3a5a2c',packblack:'#1e2228',packrust:'#6a3a2a',packsand:'#8a7a52'};
 // v10.23: glove colours; bare hands are the skin.
 var GLOVECOL={glovetan:'#8a6438',gloveblack:'#1c2028',glovegrey:'#6a727c',glovered:'#8a2a2a'};
 function handColour(st){
@@ -18336,17 +18340,15 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     // v10.30: the number 23 jersey. Black side panels, and a pale 2 and 3 in
     // one-pixel strokes across the chest, five tall.
     var _jx=x-6.5+leanX;
-    wc.fillStyle='#14161b'; wc.fillRect(_jx,ty-21.4,2,10); wc.fillRect(_jx+11,ty-21.4,2,10);
+    wc.fillStyle='#14161b'; wc.fillRect(_jx,ty-21.4,2.4,10); wc.fillRect(_jx+10.6,ty-21.4,2.4,10);
     wc.fillStyle='#f4f2ec';
     var _jy=ty-20;
-    wc.fillRect(_jx+3,_jy,3,1); wc.fillRect(_jx+5,_jy,1,2.4); wc.fillRect(_jx+3,_jy+2,3,1); wc.fillRect(_jx+3,_jy+2,1,2.4); wc.fillRect(_jx+3,_jy+4,3,1);
-    wc.fillRect(_jx+7.5,_jy,3,1); wc.fillRect(_jx+9.5,_jy,1,5); wc.fillRect(_jx+7.5,_jy+2,3,1); wc.fillRect(_jx+7.5,_jy+4,3,1);
+    wc.fillRect(_jx+2.6,_jy,3.4,1.5); wc.fillRect(_jx+4.5,_jy,1.5,2.6); wc.fillRect(_jx+2.6,_jy+1.9,3.4,1.5); wc.fillRect(_jx+2.6,_jy+1.9,1.5,2.6); wc.fillRect(_jx+2.6,_jy+3.8,3.4,1.5);
+    wc.fillRect(_jx+7.2,_jy,3.4,1.5); wc.fillRect(_jx+9.1,_jy,1.5,5.3); wc.fillRect(_jx+7.2,_jy+1.9,3.4,1.5); wc.fillRect(_jx+7.2,_jy+3.8,3.4,1.5);
   }
   // chest rig, and a hit shimmer when recently hurt
   wc.fillStyle='rgba(16,21,27,.85)';
   wc.fillRect(x-6.5+leanX,ty-18,13,2.4);
-  // v10.25: the patch, on the chest above the rig
-  (function(){ var _pid=st.hero?cosWorn('patch'):(st.patch||'patchnone'); if(_pid&&_pid!=='patchnone') drawPatch(wc,_pid,x+1.5+leanX,ty-22.6,3.6); })();
   // SPEC 9.7: the rig has to be READABLE. Armour is drawn in a cool steel ramp
   // rather than in the coat colour, so it reads as armour on all six raider
   // coats and on the operator, and each tier is a different silhouette rather
@@ -18373,6 +18375,11 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillStyle=aLo; wc.fillRect(x+leanX-1.1,ty-19,2.2,7.4);
     }
   }
+  // v10.25: the patch, on the chest on the side away from the gun. Drawn after
+  // the armour, because a patch goes on the plate carrier. Measured: the gun
+  // arm covers the chest on its own side from the second row down, and a
+  // patch there showed one row of itself.
+  (function(){ var _pid=st.hero?cosWorn('patch'):(st.patch||'patchnone'); if(_pid&&_pid!=='patchnone') drawPatch(wc,_pid,x-fl*3.6-1.8+leanX,ty-21.8,3.6); })();
   if(st.hurt>0){
     wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,70,56,'+clamp(st.hurt*2,0,.8)+')';
@@ -18531,7 +18538,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       var _tid=HERO?cosWorn('tattoo'):(st.tattoo||'tatnone'); if(!_tid||_tid==='tatnone') return;
       wc.fillStyle='rgba(20,28,44,.85)';
       if(_tid==='tattear'){ wc.fillRect(hx2+2.6,ty-27.2,1.2,1.8); }
-      else if(_tid==='tatring'){ wc.fillRect(hx2-4.2,ty-23.4,8.4,1.1); }
+      else if(_tid==='tatring'){ wc.fillRect(hx2-4.2,ty-25.0,8.4,1.1); }
       else if(_tid==='tattribal'){ wc.fillRect(hx2-6.2,ty-31.6,2.2,0.9); wc.fillRect(hx2-6.6,ty-29.8,2.8,0.9); wc.fillRect(hx2-6.2,ty-28,2.2,0.9); }
       else if(_tid==='tatanchor'){ wc.fillRect(hx2+2.2,ty-24.6,0.9,3); wc.fillRect(hx2+1,ty-22.4,3.3,0.9); wc.fillRect(hx2+1.4,ty-24.8,2.5,0.8); }
       else if(_tid==='tatspider'){ wc.fillRect(hx2+4.4,ty-34.6,1.8,1.8); wc.fillRect(hx2+3.2,ty-35.4,4.2,0.7); wc.fillRect(hx2+3.2,ty-33,4.2,0.7); }
@@ -18597,17 +18604,17 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillStyle='#14161b'; rrF(hx2-6.6,ty-35.2,13.2,5.4,3);
     } else if(HAT==='spartan'){
       // v10.29: a full green helmet over the whole head, gold visor across the eyes.
-      wc.fillStyle=INK;       rrF(hx2-10.2,ty-42.2,20.4,17.6,6);
-      wc.fillStyle='#3f6a3a'; rrF(hx2-9.6,ty-41.7,19.2,16.6,5.4);
+      wc.fillStyle=INK;       rrF(hx2-10.2,ty-42.2,20.4,20.8,6);
+      wc.fillStyle='#3f6a3a'; rrF(hx2-9.6,ty-41.7,19.2,19.8,5.4);
       wc.fillStyle='#55874c'; rrF(hx2-8.6,ty-41.2,17.2,4.4,4);
-      wc.fillStyle='#2a4a28'; rrF(hx2-9.2,ty-29.4,18.4,3.6,1.6);
+      wc.fillStyle='#2a4a28'; rrF(hx2-9.2,ty-26.2,18.4,3.8,1.6);   // the chin guard, over where a beard would be
       wc.fillStyle=INK;       rrF(hx2-8.2,ty-35.6,16.4,5.2,2.2);
       wc.fillStyle='#d9a52a'; rrF(hx2-7.6,ty-35.1,15.2,4.2,1.8);
       wc.fillStyle='#f5d47a'; wc.fillRect(hx2-6.4,ty-34.7,6.2,1.1);
     } else if(HAT==='ghostmask'){
       // a white ghost mask: a long pale face with black hollows for eyes and a mouth.
-      wc.fillStyle=INK;       rrF(hx2-8.4,ty-38.6,16.8,15,6);
-      wc.fillStyle='#f0ede4'; rrF(hx2-7.8,ty-38.1,15.6,14,5.4);
+      wc.fillStyle=INK;       rrF(hx2-8.4,ty-38.6,16.8,17.4,6);
+      wc.fillStyle='#f0ede4'; rrF(hx2-7.8,ty-38.1,15.6,16.4,5.4);   // down past the chin, over a beard
       wc.fillStyle='#0a0c10';
       wc.beginPath(); wc.ellipse(hx2-3.6,ty-32.6,2.2,3.2,-0.3,0,6.2832); wc.fill();
       wc.beginPath(); wc.ellipse(hx2+3.6,ty-32.6,2.2,3.2,0.3,0,6.2832); wc.fill();
@@ -36496,11 +36503,12 @@ window.__REGRESS=[
      if(locked.length) bad.push('staging: with every counter maxed these hairs stay locked: '+locked.map(function(c){ return c.id; }).join(', '));
      else if(!cosOwned(cap)) bad.push('every other hair is owned and the capstone is not');
      // TWO: one hair still locked, the capstone stays locked, and the next-piece line counts one piece left.
-     P2.xpLevel=1;   // Violet needs level 3
-     if(cosOwned(cosFind('violet'))) bad.push('staging: Violet is owned at level 1');
+     P2.xpLevel=1;   // the level-gated hairs lock again
+     var lockedNow=others.filter(function(c){ return !cosOwned(c); }).length;
+     if(!lockedNow) bad.push('staging: no hair locks at level 1');
      else {
-       if(cosOwned(cap)) bad.push('the capstone is owned with Violet still locked');
-       var d=cosDist(cap); if(!d||d.need-d.cur!==1) bad.push('the distance to the capstone is not one piece ('+JSON.stringify(d)+')');
+       if(cosOwned(cap)) bad.push('the capstone is owned with '+lockedNow+' hair(s) still locked');
+       var d=cosDist(cap); if(!d||d.need-d.cur!==lockedNow) bad.push('the distance to the capstone is '+(d?d.need-d.cur:'?')+' pieces, not the '+lockedNow+' locked ('+JSON.stringify(d)+')');
      }
      // CONTROL: the plain gates still read as they did.
      P2.runs=7; if(cosOwned(cosFind('ashen'))) bad.push('control: Ash is owned at seven raids');
@@ -36537,9 +36545,10 @@ window.__REGRESS=[
      __endRaid('extract'); ob=document.getElementById('oc_btn'); if(ob) ob.click();
      if((P2.extStreak||0)!==2||(P2.bestStreak||0)!==2) bad.push('two in a row read streak '+P2.extStreak+', best '+P2.bestStreak);
      __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state(); if(g) g.ents.length=0;
-     __endRaid('abandon'); ob=document.getElementById('oc_btn'); if(ob) ob.click();
-     if((P2.extStreak||0)!==0) bad.push('an abandon did not end the streak ('+P2.extStreak+')');
-     if((P2.bestStreak||0)!==2) bad.push('the best streak was lost with the abandon ('+P2.bestStreak+')');
+     // A death ends it. (An abandon with nothing looted records no run at all, and touches nothing.)
+     __endRaid('dead'); ob=document.getElementById('oc_btn'); if(ob) ob.click();
+     if((P2.extStreak||0)!==0) bad.push('a death did not end the streak ('+P2.extStreak+')');
+     if((P2.bestStreak||0)!==2) bad.push('the best streak was lost with the death ('+P2.bestStreak+')');
      // CONTROL: the older gates still read as they did.
      P2.ext=20; if(!cosOwned(cosFind('spartan')||{how:'extracts:20'})) bad.push('control: twenty extractions no longer earn the Spartan helmet');
      for(var k in keep) P2[k]=keep[k];
@@ -36550,8 +36559,12 @@ window.__REGRESS=[
      if(!__vpAlive()) return 'SKIP: the pane has no layout';
      if(typeof COSMETICS==='undefined'||!cosFind('spartan')) return 'SKIP: no Spartan helmet on the racks in this build';
      __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
-     var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,spClaimed:P2.spClaimed};
-     P2.runs=0; P2.ext=19; P2.kills={}; P2.xpLevel=1; P2.spClaimed=[];
+     var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,spClaimed:P2.spClaimed,nightExt:P2.nightExt,bestStreak:P2.bestStreak,extStreak:P2.extStreak};
+     // Every gate but the extraction count is already past, so the only piece a
+     // raid can earn is one the twentieth extraction earns. (The first draft
+     // started from zero and the second raid earned a run-gated face.)
+     P2.runs=500; P2.ext=19; P2.kills={warden:99,crawler:999}; P2.xpLevel=99; P2.spClaimed=(typeof SEASON_TIERS!=='undefined')?SEASON_TIERS.map(function(t,i){ return i; }):[];
+     P2.nightExt=99; P2.bestStreak=99; P2.extStreak=99;
      // ONE: the twentieth extraction earns the Spartan helmet, and the card says so.
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
@@ -36566,10 +36579,12 @@ window.__REGRESS=[
      else if(txt.indexOf('EARNED THIS RAID')<0||txt.indexOf('SPARTAN HELMET')<0) bad.push('the card does not name the helmet the extraction earned: "'+txt+'"');
      if(/OLIVE DRAB|BLACK BOOTS|SLATE/.test(txt)) bad.push('the card lists pieces owned from the start: "'+txt+'"');
      var ob=document.getElementById('oc_btn'); if(ob) ob.click();
-     // CONTROL: the next raid earns nothing new, and the line is empty.
+     // CONTROL: the next raid earns nothing new, and the line is empty. It ends in
+     // a death, which always writes a card; an abandon with nothing looted writes
+     // no card at all and would leave the last one's text standing.
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      g=__state(); if(g) g.ents.length=0;
-     __endRaid('abandon');
+     __endRaid('dead');
      var el2=document.getElementById('oc_earned'), txt2=el2?el2.textContent:'';
      if(txt2.replace(/\s/g,'').length) bad.push('control: a raid that earned nothing still lists "'+txt2+'"');
      var ob2=document.getElementById('oc_btn'); if(ob2) ob2.click();
@@ -36583,7 +36598,7 @@ window.__REGRESS=[
      // THE FINDING. On v10.32 nothing named the next piece anywhere.
      if(typeof cosNextLine!=='function') return 'nothing names the next piece';
      __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
-     var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,spClaimed:P2.spClaimed};
+     var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,spClaimed:P2.spClaimed,nightExt:P2.nightExt,bestStreak:P2.bestStreak,extStreak:P2.extStreak};
      // ONE: with nineteen extractions the Spartan helmet (twenty) is one away and must be the piece named.
      P2.runs=0; P2.ext=19; P2.kills={}; P2.xpLevel=1; P2.spClaimed=[];
      var line=cosNextLine();
@@ -36609,7 +36624,8 @@ window.__REGRESS=[
      else if(on.textContent.indexOf('SPARTAN HELMET')>=0&&(P2.ext||0)>=20) bad.push('the card still names the helmet after the extraction that earned it: "'+on.textContent+'"');
      var ob=document.getElementById('oc_btn'); if(ob) ob.click();
      // CONTROL: with everything earned the line says the racks are complete, not a piece.
-     P2.runs=999; P2.ext=999; P2.kills={warden:99}; P2.xpLevel=99; P2.spClaimed=(typeof SEASON_TIERS!=='undefined')?SEASON_TIERS.map(function(t,i){ return i; }):[];
+     P2.runs=999; P2.ext=999; P2.kills={warden:99,crawler:999}; P2.xpLevel=99; P2.spClaimed=(typeof SEASON_TIERS!=='undefined')?SEASON_TIERS.map(function(t,i){ return i; }):[];
+     P2.nightExt=99; P2.bestStreak=99; P2.extStreak=99;   // the play-style gates too, once they exist
      var full=cosNextLine();
      if(full.indexOf('NEXT ON THE RACKS')>=0) bad.push('control: with everything earned it still names a piece: "'+full+'"');
      for(var k in keep) P2[k]=keep[k];
@@ -36710,7 +36726,11 @@ window.__REGRESS=[
      var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
      function torso(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(20,Math.min(cvs.width-20,sx)); sy=Math.max(40,Math.min(cvs.height-4,sy)); return wctx.getImageData(sx-20,sy-40,40,36).data; }
      function cnt(px,fn){ var n=0; for(var i=0;i<px.length;i+=4) if(px[i+3]>40&&fn(px[i],px[i+1],px[i+2])) n++; return n; }
-     var isRed=function(r,gg,b){ return r>120&&r>gg*2.2&&r>b*2.2; }, isPale=function(r,gg,b){ return r>225&&gg>225&&b>215; }, isInk=function(r,gg,b){ return r<30&&gg<32&&b<40; };
+     // The raid is lit dark: white lands near 209 on the canvas and black above 30,
+     // so pale and ink are read as bright-and-unsaturated and as dim, against slate.
+     var isRed=function(r,gg,b){ return r>120&&r>gg*2.2&&r>b*2.2; };
+     var isPale=function(r,gg,b){ var L=(r+gg+b)/3, sat=Math.max(r,gg,b)-Math.min(r,gg,b); return sat<28&&L>150; };
+     var isInk=function(r,gg,b){ return (r+gg+b)/3<55; };
      P2.cosFit='slate'; var sl=torso();
      P2.cosFit='jersey'; var jr=torso();
      if(cnt(jr,isRed)-cnt(sl,isRed)<20) bad.push('the jersey is not red on the sprite ('+(cnt(jr,isRed)-cnt(sl,isRed))+' red px more than slate)');
@@ -36744,7 +36764,9 @@ window.__REGRESS=[
      function head(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(40,Math.min(cvs.width-40,sx)); sy=Math.max(90,Math.min(cvs.height-20,sy)); return wctx.getImageData(sx-40,sy-90,80,110).data; }
      function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>40) d++; return d; }
      function greenish(px){ var n=0; for(var i=0;i<px.length;i+=4) if(px[i+3]>40&&px[i+1]>px[i]+20&&px[i+1]>px[i+2]+20) n++; return n; }
-     function pale(px){ var n=0; for(var i=0;i<px.length;i+=4) if(px[i+3]>40&&px[i]>215&&px[i+1]>212&&px[i+2]>200) n++; return n; }
+     // The raid is lit dark, so white never reads above 215 on the canvas; pale is
+     // measured as bright and unsaturated, against the bare head.
+     function pale(px){ var n=0; for(var i=0;i<px.length;i+=4){ if(px[i+3]<40) continue; var r=px[i],gg=px[i+1],b=px[i+2],L=(r+gg+b)/3,sat=Math.max(r,gg,b)-Math.min(r,gg,b); if(sat<28&&L>150) n++; } return n; }
      P2.cosHat='none'; P2.cosBeard='clean'; P2.cosFace='faceplain'; var bare=head();
      P2.cosHat='spartan'; var sp=head();
      if(diff(sp,bare)<40) bad.push('the Spartan helmet draws almost nothing ('+diff(sp,bare)+' px)');
@@ -36757,14 +36779,16 @@ window.__REGRESS=[
      if(diff(gm,gmB)>8) bad.push('a beard shows through the ghost mask ('+diff(gm,gmB)+' px)');
      P2.cosHat='spartan'; var spB=head();
      if(diff(sp,spB)>8) bad.push('a beard shows through the Spartan helmet ('+diff(sp,spB)+' px)');
-     for(var k in keep) P2[k]=keep[k];
-     // Swatches and the figure glyph exist.
+     // Swatches and the figure glyph exist. (Everything stays earned until the end:
+     // cosWorn falls back to Bare for a locked hat, and the first draft restored the
+     // counters here and then blamed the figure.)
      want.forEach(function(id){ if(/>\?</.test(cosSwatch(cosFind(id)))) bad.push(id+' has no swatch'); });
-     var html=(typeof avatarHTML==='function')?(function(){ var k0=P2.cosHat; P2.cosHat='ghostmask'; var h=avatarHTML(); P2.cosHat=k0; return h; })():'';
+     P2.cosHat='ghostmask'; var html=(typeof avatarHTML==='function')?avatarHTML():'';
      if(html.indexOf('avhat')<0) bad.push('the figure does not draw the ghost mask');
      // CONTROL: the older headgear still draws.
-     P2.runs=999; P2.cosHat='visor'; var vs=head(); P2.cosHat=keep.cosHat; P2.runs=keep.runs;
+     P2.cosBeard='clean'; P2.cosHat='visor'; var vs=head();
      if(diff(vs,bare)<6) bad.push('control: the visor no longer draws');
+     for(var k in keep) P2[k]=keep[k];
      return bad.length?bad.join('; '):null; }},
   {v:'10.28',what:'the full controls list is centred, on the screen and clear of the conditions panel at 1080p, 1440p and 4K',
    run:function(){
@@ -36837,7 +36861,8 @@ window.__REGRESS=[
      // CONTROL: it stays centred, and at 1080p it is where it always was.
      if(Math.abs(a.x-960)>4) bad.push('control: at 1080p the message is centred at x='+Math.round(a.x)+', not 960');
      if(Math.abs(b.x-1920)>6) bad.push('control: at 4K the message is centred at x='+Math.round(b.x)+', not 1920');
-     if(a.y<80||a.y>140) bad.push('control: at 1080p the message sits at y='+Math.round(a.y)+', not near 109');
+     // LH carries a fixed 1.5625 factor on top of the monitor scale, so LH(109) lands at 170 at 1080p; measured on v10.18.
+     if(a.y<150||a.y>190) bad.push('control: at 1080p the message sits at y='+Math.round(a.y)+', not near 170');
      return bad.length?bad.join('; '):null; }},
   {v:'10.26',what:'TATTOO is a fourteenth rack: five inks on the sprite face and neck and the figure, with a swatch',
    run:function(){
@@ -36891,8 +36916,9 @@ window.__REGRESS=[
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
      var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000; p.armor=0;
-     var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,cosPatch:P2.cosPatch};
-     P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.xpLevel=99;
+     var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,cosPatch:P2.cosPatch,nightExt:P2.nightExt,bestStreak:P2.bestStreak};
+     // Every gate a patch can hang on, including the play-style ones that came later.
+     P2.runs=999; P2.ext=999; P2.kills={warden:9,crawler:60}; P2.xpLevel=99; P2.nightExt=9; P2.bestStreak=9;
      var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
      function body(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(50,Math.min(cvs.width-50,sx)); sy=Math.max(60,Math.min(cvs.height-20,sy)); return wctx.getImageData(sx-50,sy-60,100,80).data; }
      function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>30) d++; return d; }
@@ -37129,6 +37155,7 @@ window.__REGRESS=[
   {v:'10.18',what:'pillagers dress from the racks, varied, without spending a seeded roll',
    run:function(){
      var bad=[];
+     if(typeof raiderLook!=='function') return 'pillagers do not draw from the racks: there is no raiderLook';   // THE FINDING on v10.17
      __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      // THE CONTROL FIRST, because it is the one that matters most: the seed
      // fingerprint. Dressing a pillager must not spend a roll, so the counts at

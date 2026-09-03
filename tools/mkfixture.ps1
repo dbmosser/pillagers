@@ -5221,6 +5221,39 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.18',what:'pillagers dress from the racks, varied, without spending a seeded roll',
+   run:function(){
+     var bad=[];
+     if(typeof raiderLook!=='function') return 'pillagers do not draw from the racks: there is no raiderLook';   // THE FINDING on v10.17
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     // THE CONTROL FIRST, because it is the one that matters most: the seed
+     // fingerprint. Dressing a pillager must not spend a roll, so the counts at
+     // seed 4242 stay exactly what they have been since v9.30.
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var ents0=g.ents.length, cont0=g.containers.length;
+     if(ents0!==85||cont0!==165) bad.push('control: the seed fingerprint moved, map 0 at 4242 is '+ents0+' ents and '+cont0+' containers, not 85 and 165; a roll was spent dressing someone');
+     // THE FINDING. On v10.17 every pillager had the same look: no hair, hat,
+     // cut, skin or beard set at all.
+     var R=g.ents.filter(function(e){ return e.kind==='raider'; });
+     if(R.length<4) return bad.length?bad.join('; '):'SKIP: only '+R.length+' pillagers on this map';
+     function distinct(field){ var seen={}; R.forEach(function(e){ seen[String(e[field])]=1; }); return Object.keys(seen); }
+     var hairs=distinct('hair'), hats=distinct('hat'), skins=distinct('skin'), cuts=distinct('cut'), beards=distinct('beard');
+     if(hairs.length<3||hairs.indexOf('undefined')>=0) bad.push('pillager hair: '+hairs.join(', '));
+     if(hats.length<3) bad.push('pillager headgear: '+hats.join(', '));
+     if(hats.indexOf('crown')>=0) bad.push('a pillager is wearing the crown, which is his alone');
+     if(skins.length<3||skins.indexOf('undefined')>=0) bad.push('pillager skin: '+skins.join(', '));
+     if(cuts.length<3||cuts.indexOf('undefined')>=0) bad.push('pillager hairstyles: '+cuts.join(', '));
+     if(beards.length<2||beards.indexOf('undefined')>=0) bad.push('pillager beards: '+beards.join(', '));
+     // Every id handed out is a real thing on the racks.
+     var badIds=[];
+     R.forEach(function(e){ ['hair','hat','cut','skin','beard'].forEach(function(k){ var c=(typeof cosFind==='function')?cosFind(e[k]):null; if(!c||c.kind!==k) badIds.push(k+':'+e[k]); }); });
+     if(badIds.length) bad.push('looks that are not on the racks: '+badIds.slice(0,5).join(', '));
+     // And the same man in the same place looks the same every time: no roll,
+     // no drift between a build and its control.
+     var a=raiderLook?raiderLook('wall',100,200):null, b=raiderLook?raiderLook('wall',100,200):null;
+     if(a&&b&&JSON.stringify(a)!==JSON.stringify(b)) bad.push('the same pillager dressed differently on two calls');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.17',what:'BEARD is a seventh rack: five beards, drawn on the sprite and the figure, with a slot and a swatch',
    run:function(){
      var bad=[];

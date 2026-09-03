@@ -40024,6 +40024,37 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.18 - THE PILLAGERS DRESS FROM THE RACKS
+
+His answer 20, 2026-09-03, to whether other pillagers should draw from the
+same cosmetic pool: **YES**.
+
+A pillager was made with a coat colour and a name and nothing else; the
+sprite read his hair, hairstyle, headgear, skin and beard off fields nobody
+set, so every pillager on the map had the same blonde crop, bare head and
+fair skin, and only the coat told them apart. Each is dressed from the racks
+at the Discount Fashion Depot at the moment he is made now: hair, hairstyle,
+headgear, skin and beard, a third of them bareheaded, and never the crown,
+which is his alone.
+
+### Not one seeded roll
+
+The look is a hash of who he is and where he was made, not a draw from the
+raid's random stream, because every container count, every paired A/B on
+seeds, and every check that stages a pillager at seed 4242 rests on that
+stream not moving by a single roll. The check's first line is that control:
+map 0 at seed 4242 must still be 85 entities and 165 containers, the numbers
+it has had since v9.30. Then it reads the pillagers on that map and requires
+at least three hair colours, three headgear, three skins, three hairstyles
+and two beards among them, every one a real thing on the racks, no crown,
+and the same man in the same place dressed the same on two calls. On v10.17
+every field is undefined, which is the finding.
+
+Not verified: clothing, which is still the coat, one colour per pillager
+identity, because the coat is how a named pillager is told apart at range
+and his answer did not say to lose it. Not verified: the Undercroft crowd,
+which has its own small tables and is not in a raid.
+
 ## v10.17 - BEARD, THE SEVENTH RACK
 
 His answer 14, 2026-09-03, to which new categories to add: **"ADD ALL OF THIS

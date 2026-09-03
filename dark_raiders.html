@@ -1239,7 +1239,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.17';
+var VER='10.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7694,6 +7694,23 @@ function myRival(){
   }
   return best;
 }
+// v10.18, his answer 20: a pillager's look, drawn from the racks without
+// spending a seeded roll. A small integer hash of his identity and birthplace
+// picks from each rack; the crown, his prestige hat, is never handed out.
+function raiderLook(identId,x,y){
+  var h=2166136261>>>0, str=String(identId)+':'+Math.round(x)+':'+Math.round(y);
+  for(var i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619)>>>0; }
+  function pick(kind,skipIds){
+    var pool=COSMETICS.filter(function(c){ return c.kind===kind&&(!skipIds||skipIds.indexOf(c.id)<0); });
+    if(!pool.length) return null;
+    h=Math.imul(h^(h>>>13),1274126177)>>>0;
+    return pool[h%pool.length].id;
+  }
+  var hat=pick('hat',['crown']);
+  h=Math.imul(h^(h>>>11),2246822507)>>>0;
+  if((h%3)===0) hat='none';                   // a third go bareheaded
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard')};
+}
 function mkRaider(x,y,forceId,simBuild){
   // v6.53, his note. Nine entries: pistol 3, smg 2, rifle 2, carbine 1, scattergun 1,
   // so about one pillager in five carries something the counter will not sell you.
@@ -7742,10 +7759,12 @@ function mkRaider(x,y,forceId,simBuild){
   // v8.35: and the hostility roll, on the same rule. It was drawn inside the
   // ternary below, where your own history with this man could skip it.
   var _hostRoll=rr();
+  var _look=raiderLook(ident.id,x,y);          // v10.18: no seeded roll spent
   var r={kind:'raider',x:x,y:y,r:11,hp:Math.round(78*CFG.eHp),maxhp:Math.round(78*CFG.eHp),react:rnd(.38,.62),
     face:rnd(0,6.28),state:'loot',tx:x,ty:y,cd:0,alert:0,spd:122,wep:WEAPONS[wk],dmg:WEAPONS[wk].dmg,
     rng:WEAPONS[wk].rng*.72,cone:.8,bag:[],looted:0,goal:null,skips:[],goalT:0,goalD:0,extracting:0,hitT:0,step:0,
 coat:ident.coat, ident:ident.id, name:ident.tag,
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard,   // v10.18, his answer 20
     rival:(!simBuild&&ident.id===myRival())?1:0,
     // SPEC 8.4: varying hostility. A raider you have killed before is shoot on
     // sight with no negotiation; one you have good standing with is passive
@@ -26378,7 +26397,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.17: a seventh rack at the Discount Fashion Depot: BEARD. Stubble, a goatee, a full beard and mutton chops, earned, drawn on you in the raid and on the figure. A dust mask covers it, as it would.',
+  now:'v10.18: the pillagers dress from the same racks you do. Every one of them used to have the same blonde crop and bare head; now each has his own hair, hairstyle, headgear, skin and beard, and no two crews look alike.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
