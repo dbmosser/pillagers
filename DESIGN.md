@@ -39630,10 +39630,75 @@ Against the archived v9.61 the check now reports four real findings, including a
 bandage from 80 reaching 100 and the picker choosing a bandage at 90 with a
 medkit available. On this build it is silent.
 
-Not verified: the balance. The 320 seed paired run is still going and at 133
-seeds has produced zero discordant pairs, which I expect to hold: `simRetreatHeal`
-is 0 by default, so the bot barely heals mid-raid and almost never from above 85.
-Like the Listener windup at v9.57, this is a rule for a human and the sim is the
-wrong instrument for it. Not verified: whether 85 is the right number or whether
+### The balance, 320 paired seeds
+
+**20.6 percent either way, p = 1.0, zero discordant pairs.** I predicted that
+before it finished and the reason still holds: `simRetreatHeal` is 0 by default,
+so the bot barely heals mid-raid and almost never from above 85. Like the
+Listener windup at v9.57, this is a rule for a human and the sim is the wrong
+instrument for it. The measurements that matter are the five rows above. Not verified: whether 85 is the right number or whether
 the Medkit is now too important. He named 85 and I have implemented 85; how it
 feels to be stuck at 85 with a bag full of bandages is his to report.
+
+## v9.63 - THE MARK FOR A PILLAGER SHOOTING AT YOU WAS INVISIBLE
+
+His request: **"if i can hear another pillager shooting, i should also have a red
+circle visualization of where their shots are coming from"**.
+
+**There was already a ring for it**, and that is exactly why this was worth
+measuring rather than assuming. A pillager firing does ping, with `src:'raider'`
+and `typ:'fire'`, and the in-world ring loop does draw it. So I put one out of
+sight, fired through the real weapon path, and counted the red pixels that
+reached the screen:
+
+| shooter, out of sight | ping made | red pixels on screen |
+| --- | --- | --- |
+| 290 units | yes | **0** |
+| 315 units | yes | **0** |
+| 340 units | yes | **0** |
+
+**Nothing reached the screen in the one case the mark exists for.** The ring was
+drawn and it was invisible: a radius **eight** circle at **twenty two percent**
+opacity. It was that faint for two reasons, and one of them points the wrong way:
+
+    near = 1 - 220/495 = 0.56    fades with distance, which is fine
+    occ  = 0.42                  BECAUSE THERE IS A WALL IN THE WAY
+
+The occlusion multiplier halves the cue precisely when the shooter is hidden,
+which is precisely when the cue is the only thing he has. **A muffled shot is
+harder to place, not less important to know about.** The ring is not modelling
+loudness; it is telling him where to look.
+
+### What it is now
+
+A pillager's gunfire, and only that, gets a mark built to be seen: it starts at
+radius 26 instead of 8, grows on its own rather than on the occlusion, has a
+thicker line, has a floor under its opacity so distance and walls can dim it but
+cannot delete it, and it is **red**, which is the word he used. Machine fire,
+footsteps and every other ping are untouched. It is still suppressed when he can
+see the shooter, because a ring over a man you are looking at is clutter.
+
+Same three spots, after: **352, 365 and 359 red pixels.**
+
+### Three faults in my own measurement, and the third invalidated everything
+
+1. My colour test required blue under 70 and the real pixel came back at 76, so I
+   read a ring that was drawing as "nothing drawn".
+2. I concluded the shooter was off screen at 320 units and dropped the case. He
+   was not.
+3. **`w2s` reads the view origin, which is only set during a render.** I searched
+   for screen positions before drawing a frame, so it returned world coordinates
+   unchanged, my "is it on screen" test compared world units against canvas
+   pixels, and the pixel box I read was a region of the canvas unrelated to the
+   shooter. Every number before that point was measured with an identity
+   transform. The probe draws a frame first now, and the check says why in a
+   comment so the next person does not spend the same hour.
+
+Not verified: how it looks in motion. The measurement is of one frame at
+`t = 0`; the mark grows and fades over 1.1 seconds and I have not watched it do
+that. Not verified: whether a red circle is right for a pillager specifically
+when machine fire is already a dark red, `#c62828`. His word was red and the
+pillager mark is now the brighter `#ff3b30`, but two reds on one screen is a
+distinction he may not want to have to make. Not verified: the case where the
+shooter is off the edge of the screen entirely, which is the edge arrow's job and
+which this build does not touch.

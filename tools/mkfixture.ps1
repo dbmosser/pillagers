@@ -5067,6 +5067,91 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.63',what:'a pillager you cannot see, shooting, leaves a red mark you can',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, there are no pixels to read';
+     if(!(window.__gun&&window.__w2s&&window.__los&&window.__nav))
+       return 'SKIP: this build cannot be driven through the firing path';
+     __pinDPR(1); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __forceSize(1920,1080);
+     __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+     var g=__state(), p=g.player, i, R=null;
+     for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='raider'){ R=g.ents[i]; break; }
+     if(!R) return 'SKIP: no pillager on this map to fire a shot';
+     g.ents.length=0; g.ents.push(R);
+     p.iv=9999; p.downed=false; p.hp=100;
+     // Clear weather, so this measures the mark and not the rain. Rain multiplies
+     // every noise by 0.60 and a storm by 0.48, which is its own thing.
+     g.wx={id:'clear',name:'Clear',view:1,noise:1,lights:1,rain:0}; g.wxNext=null;
+     var cv=document.getElementById('cv');
+     if(!cv) return 'no world canvas to read';
+     var c2=cv.getContext('2d');
+     R.x=p.x+40; R.y=p.y;
+     // A FRAME FIRST. w2s reads the view origin and that is only set during a
+     // render, so anything asked of it before the first frame comes back as world
+     // coordinates unchanged. My first cut of this searched for screen positions
+     // before drawing and rejected the whole map on an identity transform.
+     __frame(0.016);
+     var spots=[];
+     for(var a=0;a<40&&spots.length<3;a++){
+       var th=a*Math.PI/20;
+       for(var D=140;D<=340&&spots.length<3;D+=25){
+         var qx=p.x+Math.cos(th)*D, qy=p.y+Math.sin(th)*D;
+         if(!__nav.free(qx,qy,14)) continue;
+         if(__los.clear(qx,qy,p.x,p.y)) continue;          // OUT OF SIGHT: the case it is for
+         var s0=__w2s(qx,qy);
+         if(!s0||s0.x<200||s0.y<200||s0.x>cv.width-200||s0.y>cv.height-200) continue;
+         spots.push({x:qx,y:qy,d:Math.round(D)});
+       }
+     }
+     if(spots.length<2) return 'SKIP: fewer than two spots on this map are both hidden and on screen';
+     function shotAt(sp0,dial){
+       __resetCfg(); __pinDefaults(0);
+       if(dial!==undefined) __cfg({pilFireRing:dial});
+       R.x=sp0.x; R.y=sp0.y; R.kind='raider'; R.hostile=true; R.downed=false;
+       g.pings.length=0;
+       __gun.fire(R,__gun.weapons.pistol,p.x,p.y,false);
+       var made=g.pings.length;
+       __frame(0.016);
+       var sp=__w2s(R.x,R.y);
+       var bx=Math.max(0,Math.round(sp.x-170)), by=Math.max(0,Math.round(sp.y-170));
+       var bw=Math.min(cv.width-bx,340), bh=Math.min(cv.height-by,340);
+       if(bw<8||bh<8) return null;
+       var d=c2.getImageData(bx,by,bw,bh).data, red=0;
+       // strongly red, and bright enough to actually see on a dark map
+       for(var q=0;q<d.length;q+=4) if(d[q]>140&&(d[q]-d[q+2])>60) red++;
+       return {made:made, red:red, readBack:__cfg().pilFireRing};
+     }
+     var on=[], off=[];
+     for(i=0;i<spots.length;i++){
+       var a1=shotAt(spots[i],1), a0=shotAt(spots[i],0);
+       if(a1) on.push(a1);
+       if(a0) off.push(a0);
+     }
+     if(on.length<2||off.length<2) return 'SKIP: the pixel box fell off the canvas at these spots';
+     // CONTROLS FIRST. The shot has to be heard at all, and the dial has to be
+     // live, or a green result here is about neither.
+     for(i=0;i<on.length;i++) if(!on[i].made)
+       bad.push('control: a pillager firing '+spots[i].d+' units away made no noise ping at all, so there is nothing to draw');
+     if(on[0].readBack!==1||off[0].readBack!==0)
+       bad.push('control: the dial did not read back, on='+on[0].readBack+' off='+off[0].readBack);
+     var offRed=0; for(i=0;i<off.length;i++) offRed+=off[i].red;
+     if(offRed>40)
+       bad.push('control: with the mark switched off there were still '+offRed+
+                ' red pixels, so this check is not measuring the mark');
+     // THE FINDING. His request: "if i can hear another pillager shooting, i
+     // should also have a red circle visualization of where their shots are
+     // coming from". Measured on v9.62 at three hidden spots, 290, 315 and 340
+     // units out in clear weather: the ping was made every time and ZERO red
+     // pixels reached the screen. The ring existed and was radius 8 at 22 percent
+     // opacity, half of that 22 being the occlusion multiplier, which dims the
+     // mark BECAUSE a wall is hiding the shooter.
+     var thin=[];
+     for(i=0;i<on.length;i++) if(on[i].red<120) thin.push(spots[i].d+' units gave '+on[i].red+' pixels');
+     if(thin.length)
+       bad.push('a pillager shooting from cover left almost nothing on screen: '+thin.join(', '));
+     return bad.length?bad.join('; '):null; }},
   {v:'9.62',what:'a bandage stops at 85 and only a medkit takes you back to 100',
    run:function(){
      var bad=[];
