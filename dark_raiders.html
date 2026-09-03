@@ -152,6 +152,8 @@
    canvas: the hub is HTML and a paper doll made of divs themes itself, scales
    with the menu zoom, and cannot throw the way a canvas figure can. */
 .avfig{ display:flex; flex-direction:column; align-items:center; padding:14px 0 10px; }
+.avcv{ display:block; margin:6px auto 2px auto; border-radius:8px;
+  background:radial-gradient(ellipse at 50% 70%, rgba(255,192,74,.10), rgba(0,0,0,0) 70%); }   /* v10.25: the painter's canvas */
 .avhead{ width:46px; height:40px; border-radius:7px; position:relative;
   border:2px solid #14161b; display:flex; align-items:flex-start; justify-content:center; }
 .avhair{ position:absolute; left:-5px; right:-5px; top:-4px; height:17px; border-radius:8px 8px 3px 3px; }
@@ -1239,7 +1241,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.24';
+var VER='10.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26449,7 +26451,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.24: the crowd in the Undercroft dresses from the racks, eyes, beards and faces included, the way pillagers do in the raid; nobody wears the default any more.',
+  now:'v10.25: the figure at the Depot is drawn by the raid itself, five times raid size, so what you see there is exactly what you see in the raid: the same hair, eyes, beard, face and hat.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30717,7 +30719,11 @@ function avatarHTML(){
   var sk=SKINCOL[cosWorn('skin')]||SKINCOL.fair;
   var ft=FITCOL[cosWorn('fit')]||FITCOL.slate;
   var bd=BODYBUILD[cosWorn('build')]||BODYBUILD.lean;
-  var h='<div class="avfig">'+
+  // v10.25, his note: she is drawn by the raid's own painter, on the canvas
+  // below, five times raid size. The doll under it is hidden and kept for
+  // the pieces that still read it; nobody sees it.
+  var h='<canvas class="avcv" id="avcv" width="200" height="320"></canvas>'+
+    '<div class="avfig" style="display:none">'+
     '<div class="avhead" style="background:'+sk+';transform:scale('+bd.head.toFixed(2)+')">'+
       (function(){
         var _ct=cosWorn('cut');
@@ -30838,10 +30844,25 @@ function renderLooks(hid,pid){
     };
   });
 }
+// v10.25: THE FIGURE IS THE SPRITE. The world painter draws onto whatever wc
+// points at, so it is pointed at the Depot's canvas for one call and put
+// back. Facing right, standing, no gun: the pose of the raid's first frame.
+function drawAvatarCanvas(){
+  var c=document.getElementById('avcv'); if(!c||typeof drawOp!=='function') return;
+  var x2=c.getContext('2d'); if(!x2) return;
+  x2.setTransform(1,0,0,1,0,0); x2.clearRect(0,0,c.width,c.height);
+  var S=5.2;
+  x2.save(); x2.translate(c.width/2,c.height-16); x2.scale(S,S);
+  var keep=wc; wc=x2;
+  try{ drawOp(0,0,0,0,'#242832',0,0,'none',0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}}); }
+  catch(e){}
+  wc=keep; x2.restore();
+}
 function renderAvatar(host,pickHost){
   var hid=host||'avatar', pid=pickHost||(host?host+'picker':'avpicker');
   var a=document.getElementById(hid); if(!a) return;
   a.innerHTML=avatarHTML();
+  drawAvatarCanvas();   // v10.25: the painter, not the doll
   if(hid==='appavatar') renderLooks(hid,pid);     // v10.16: only at the Depot
   Array.prototype.forEach.call(a.querySelectorAll('.avslot'),function(el){
     el.onclick=function(){

@@ -178,6 +178,7 @@
 .avfigwrap{ display:flex; align-items:center; justify-content:center; min-height:300px; align-self:stretch;
   background:radial-gradient(ellipse at 50% 60%, rgba(255,192,74,.07), rgba(0,0,0,0) 70%); border-radius:6px; }
 .avfigwrap .avfig{ transform:scale(1.7); transform-origin:50% 50%; padding:0; }
+.avfigwrap .avcv{ max-width:100%; height:auto; }   /* the painter's canvas (v10.25) fits between the tiles */
 .avslot{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:4px 2px; cursor:pointer;
   width:74px; height:72px; box-sizing:border-box; border:1px solid var(--steel-hi); border-radius:4px; background:rgba(0,0,0,.35); }
 .avslot:hover{ background:rgba(255,192,74,.10); border-color:var(--amber); }
@@ -700,7 +701,7 @@
   <h3>Discount Fashion Depot</h3>
   <div class="msub">Everything here is how you look and nothing about how you play. Click a slot to narrow the racks to it; click it again to see them all.</div>
   <div id="appnext" class="msub" style="color:var(--amber);letter-spacing:.1em"></div>   <!-- v10.43: the next piece -->
-  <div class="hubgrid" style="grid-template-columns:352px 1fr;margin-top:6px">
+  <div class="hubgrid" style="grid-template-columns:420px 1fr;margin-top:6px">
     <div class="panel">
       <h2>Your operator</h2>
       <div id="appavatar"></div>
@@ -986,11 +987,11 @@
 <!-- v10.29, his note: the WELCOME PACK, offered once to a new character. -->
 <div class="modal" id="welcomemodal">
   <h3>WELCOME PACK</h3>
-  <div class="msub">A few things to play with before your first climb, straight into your stash: a green gun and a blue one, heals, plates and grenades. Nothing here is bought. It is yours for turning up.</div>
+  <div class="msub">A few things to play with before your first climb, straight into your stash: a green gun and a blue one, heals, plates and grenades. Nothing here is bought. It is yours for turning up. Take it, or close this and go without; it is offered once.</div>
   <div id="welcomelist" class="plist" style="border:1px solid var(--steel-hi);padding:6px 12px"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
     <button id="welcometake" class="deploy" style="padding:8px 22px">TAKE THE PACK</button>
-    <button id="welcomeno" data-esc="1" style="padding:8px 22px;margin-left:auto">NO THANKS</button>
+    <button id="welcomeno" data-esc="1" style="padding:8px 22px;margin-left:auto">CLOSE</button>
   </div>
 </div>
 <div class="modal" id="primermodal">
@@ -36846,7 +36847,8 @@ window.__REGRESS=[
      // THE FINDING. On v10.41 the slots were rows stacked under the figure, no doll.
      var doll=av&&av.querySelector('.avdoll'), cols=av?av.querySelectorAll('.avcol'):[];
      if(!doll||cols.length!==2) return 'the operator panel is a list, not a doll ('+(doll?cols.length+' columns':'no doll')+')';
-     var fig=av.querySelector('.avfig'); if(!fig) return 'no figure on the doll';
+     // v10.25 made the visible figure the painter's canvas; the div doll is hidden under it.
+     var fig=av.querySelector('#avcv')||av.querySelector('.avfig'); if(!fig) return 'no figure on the doll';
      var fq=fig.getBoundingClientRect(), mq=md.getBoundingClientRect(), pq=av.getBoundingClientRect();
      var L=cols[0].querySelectorAll('.avslot'), R=cols[1].querySelectorAll('.avslot');
      if(L.length<3||R.length<3) bad.push('the doll has '+L.length+' tiles left and '+R.length+' right');
@@ -37341,13 +37343,13 @@ window.__REGRESS=[
      if(P2.welcomed!==1) bad.push('taking the pack did not stamp the profile');
      // Offered once: a second entry shows nothing.
      __hubEnter(); if(md.classList.contains('on')) bad.push('the pack was offered a second time');
-     // NO THANKS stamps too, and gives nothing.
+     // CLOSE stamps too, and gives nothing.
      fresh(); __hubEnter();
      if(!md.classList.contains('on')) bad.push('a second fresh character was not offered the pack');
      var no=document.getElementById('welcomeno'); if(no) no.click();
-     if(md.classList.contains('on')) bad.push('NO THANKS did not close the window');
-     if(P2.stash.length||P2.weapons.length!==1) bad.push('NO THANKS gave something anyway');
-     if(P2.welcomed!==1) bad.push('NO THANKS did not stamp the profile');
+     if(md.classList.contains('on')) bad.push('CLOSE did not close the window');
+     if(P2.stash.length||P2.weapons.length!==1) bad.push('CLOSE gave something anyway');
+     if(P2.welcomed!==1) bad.push('CLOSE did not stamp the profile');
      // CONTROL: a character who has climbed is never offered it, and is stamped quietly.
      delete P2.welcomed; P2.runs=3; P2.stash=[]; P2.weapons=['pistol']; __hubEnter();
      if(md.classList.contains('on')) bad.push('control: a character with three runs was offered the pack');
@@ -37403,20 +37405,27 @@ window.__REGRESS=[
      // move the loot multiplier and a constant read beforehand disagrees.
      // ONE: in with a medkit and a frag, out with the same: earnings zero, and the record knows both numbers.
      __deploy({kit:['medkit','frag'],safe:null,mapIx:0,seed:4242}); var g=__state(); if(!g) return 'SKIP: no raid'; g.ents.length=0;
-     var inV=ival('medkit')+ival('frag'); if(!(inV>0)) return 'SKIP: the items this check values are worth nothing';
+     // The value is the BAG's, as the haul is: a frag in the kit goes to the tactical
+     // belt at landing and is valued on neither side, so the bag is read as landed.
+     var inV=0; for(var bi=0;bi<g.bag.length;bi++) inV+=ival(g.bag[bi]);
+     if(!(inV>0)) return 'SKIP: the bag landed empty or worthless';
      if(Math.round(g.carriedIn||0)!==inV) bad.push('the lift landed with '+inV+' of kit and the raid recorded '+g.carriedIn+' carried in');
      __endRaid('extract'); var ob=document.getElementById('oc_btn'); if(ob) ob.click();
      var r1=P2.log[P2.log.length-1]||{};
      if(r1.carriedIn!==inV) bad.push('the record carries '+r1.carriedIn+' in, not '+inV);
      if(P2.netEarn!==0) bad.push('in and out with the same bag, earnings read '+P2.netEarn+', not 0');
-     // TWO: die holding a plate: minus the plate.
-     __deploy({kit:['plate'],safe:null,mapIx:0,seed:4242}); g=__state(); g.ents.length=0; var plate=ival('plate');
+     // TWO: die holding what landed with a plate in the kit: minus the whole landed bag.
+     // (The lift adds a bandage or two of its own to any kit; the bag is read as landed.)
+     __deploy({kit:['plate'],safe:null,mapIx:0,seed:4242}); g=__state(); g.ents.length=0;
+     var in2=0; for(var b2=0;b2<g.bag.length;b2++) in2+=ival(g.bag[b2]);
+     if(!(in2>0)) bad.push('staging: the second bag landed worthless');
      __endRaid('dead'); ob=document.getElementById('oc_btn'); if(ob) ob.click();
-     if(P2.netEarn!==-plate) bad.push('dying with a plate reads '+P2.netEarn+', not '+(-plate));
-     // THREE: pick up scrap and walk out: plus the scrap.
+     if(P2.netEarn!==-in2) bad.push('dying with a bag worth '+in2+' reads '+P2.netEarn+', not '+(-in2));
+     // THREE: pick up scrap and walk out with the landed bag plus the scrap: plus the scrap.
      __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state(); g.ents.length=0; g.bag.push('scrap'); var scrap=ival('scrap');
      __endRaid('extract'); ob=document.getElementById('oc_btn'); if(ob) ob.click();
-     if(P2.netEarn!==-plate+scrap) bad.push('three runs read '+P2.netEarn+', not '+(-plate+scrap));
+     if(P2.netEarn!==-in2+scrap) bad.push('three runs read '+P2.netEarn+', not '+(-in2+scrap));
+     var plate=in2;
      // FOUR: the card says what it is, with that number.
      var html=''; if(typeof renderStatCards==='function'){ renderStatCards(); html=(document.getElementById('statgrid')||{}).innerHTML||''; }
      if(html.indexOf('Net lifetime earnings')<0) bad.push('the card is not called Net lifetime earnings');
@@ -37526,6 +37535,7 @@ window.__REGRESS=[
   {v:'10.23',what:'no two station names on the Undercroft floor overlap, and every name is on the screen',
    run:function(){
      var bad=[];
+     var _P0=__P(), _keepDev=_P0.devBox; _P0.devBox=1; HB=null;   // v10.30: the box is behind a switch; put it on the floor for this
      if(!__vpAlive()) return 'SKIP: the pane has no layout';
      if(!(window.__hubEnter&&window.__textTrace&&window.__hubFrame)) return 'SKIP: this build cannot trace the floor';
      __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -37546,6 +37556,7 @@ window.__REGRESS=[
      var md=document.getElementById('appearmodal');
      if(!rr||rr.err||!(md&&md.classList.contains('on'))) bad.push('control: the Depot did not open');
      var cl=document.getElementById('closeappear'); if(cl) cl.click();
+     if(_keepDev===undefined) delete _P0.devBox; else _P0.devBox=_keepDev; HB=null;   // v10.30
      return bad.length?bad.join('; '):null; }},
   {v:'10.22',what:'the menu size never goes below 1.0, on the wheel, the Settings steps or the saved profile, and the wheel says what it did',
    run:function(){

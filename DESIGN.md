@@ -40024,6 +40024,44 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.25 - THE FIGURE AT THE DEPOT IS THE SPRITE
+
+His note, 2026-09-03 about 17:20: **"eyes don't look like they do in the
+raid, and the ones in the raid look wayyy better -- hair doesn't render
+properly inside the fashion depot, its just all over the operators face"**.
+
+### Measured
+
+The Depot's figure was a paper doll of divs: a second drawing of her, taught
+every rack by hand, that never matched the first. Its hair was a block laid
+over the head from the top, so a long cut ran down over the eyes; its eyes
+were two rounded rectangles with a ring of white, nothing like the painter's
+whites, iris, pupil and specular dot. Every rack shipped twice, once for the
+raid and once for the doll, and the doll was always the poorer.
+
+### Now
+
+The raid's own painter draws her onto a canvas at five times raid size: the
+same hair, eyes, beard, face, hat and coat he sees in the raid, from the same
+code, facing right, standing, no gun. What the Depot shows is what the raid
+shows, and a rack added later needs nothing here. The doll stays in the page
+unseen, because a dozen checks and the racks still to come read its slots;
+nobody sees it.
+
+### Measured again
+
+The check opens the Depot and requires the canvas painted, a cap, blue eyes,
+a full beard and violet hair each to change what is painted, the doll to
+have no height on screen and the canvas to have plenty; the control is the
+slots still beside her. On v10.24 there was no canvas, only the doll, which
+is the finding.
+
+Not verified: how she reads at his 4K, where the canvas scales with the menu
+zoom like the rest of the window; the canvas is drawn at five times raid
+size before that zoom, so it should stay crisp. Not verified: the paper doll
+build still queued, which wraps whatever the figure is and puts the tiles
+either side of it; the canvas is that figure now.
+
 ## v10.24 - THE CROWD DRESSES FROM THE RACKS
 
 His note, 2026-09-03 about 17:20: **"Everyone in undercroft has blue eyes"**.

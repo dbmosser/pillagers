@@ -5221,6 +5221,37 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.25',what:'the Depot figure is painted by the raid painter on a canvas, and changes with every piece she wears',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!(window.__hubEnter&&window.__station)) return 'SKIP: this build cannot be driven into the Undercroft';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,cosHat:P2.cosHat,cosEyes:P2.cosEyes,cosBeard:P2.cosBeard,cosHair:P2.cosHair};
+     P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.xpLevel=99; P2.cosHat='none'; P2.cosBeard='clean'; P2.cosEyes='eyebrown'; P2.cosHair='blonde';
+     __hubEnter(); var r=null; try{ r=__station('mirror'); }catch(e1){ r={err:String(e1)}; }
+     if(!r||r.err) return 'SKIP: the Depot did not open';
+     // THE FINDING. On v10.24 the figure was a doll of divs and no canvas.
+     var cv=document.getElementById('avcv');
+     if(!cv) return 'the Depot has no painted figure, only the doll of divs';
+     function px(){ if(typeof renderAvatar==='function') renderAvatar('appavatar','appavatarpicker'); var c=document.getElementById('avcv'); return c.getContext('2d').getImageData(0,0,c.width,c.height).data; }
+     function painted(d){ var n=0; for(var i=3;i<d.length;i+=4) if(d[i]>40) n++; return n; }
+     function diff(a,b){ var n=0; for(var i=0;i<a.length;i+=4){ if(a[i+3]<40&&b[i+3]<40) continue; if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])+Math.abs(a[i+3]-b[i+3])>40) n++; } return n; }
+     var base=px();
+     if(painted(base)<400) bad.push('the canvas holds '+painted(base)+' painted pixels; she is not drawn');
+     P2.cosHat='cap'; var hat=px(); if(diff(hat,base)<40) bad.push('a cap changes the figure by '+diff(hat,base)+' pixels');
+     P2.cosHat='none'; P2.cosEyes='eyeblue'; var eyes=px(); if(diff(eyes,base)<4) bad.push('blue eyes change the figure by '+diff(eyes,base)+' pixels');
+     P2.cosEyes='eyebrown'; P2.cosBeard='fullbeard'; var bd=px(); if(diff(bd,base)<20) bad.push('a full beard changes the figure by '+diff(bd,base)+' pixels');
+     P2.cosBeard='clean'; P2.cosHair='violet'; var hr=px(); if(diff(hr,base)<20) bad.push('violet hair changes the figure by '+diff(hr,base)+' pixels');
+     // The doll of divs is not what he sees.
+     var doll=document.querySelector('#appavatar .avfig'); if(doll){ var q=doll.getBoundingClientRect(); if(q.height>0) bad.push('the doll of divs is still visible, '+Math.round(q.height)+' tall'); }
+     // Re-query: every render replaces the canvas, and a detached one measures 0x0.
+     var cvNow=document.getElementById('avcv')||cv, cq=cvNow.getBoundingClientRect(); if(cq.width<80||cq.height<120) bad.push('the painted figure is '+Math.round(cq.width)+'x'+Math.round(cq.height)+' on screen');
+     // CONTROL: the slots are still there to click.
+     var slots=document.querySelectorAll('#appavatar .avslot'); if(slots.length<6) bad.push('control: only '+slots.length+' slots beside the figure');
+     var cl=document.getElementById('closeappear'); if(cl) cl.click();
+     for(var k in keep) P2[k]=keep[k];
+     return bad.length?bad.join('; '):null; }},
   {v:'10.24',what:'the Undercroft crowd dresses from every rack, eyes, beards and faces included, and the floor draws more than one eye colour',
    run:function(){
      var bad=[];
