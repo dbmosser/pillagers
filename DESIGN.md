@@ -40024,6 +40024,32 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.32 - BOOTS, THE TENTH RACK
+
+His answer 14, 2026-09-03, fourth of his categories: **boots**.
+
+Five pairs: Black, owned from the start; Tan at five runs; Olive at fourteen;
+Oxblood at eight extracts; Bleached at level three. Earned, never bought. The
+sprite's boots were two fixed greys, one for the far leg and one for the
+near; they take the pair's two colours now. The figure grows a pair of boots
+under its legs, and the racks show a boot in its colour. A tenth slot, a tenth
+key, part of a look and of SURPRISE ME, and the pillagers draw boots from the
+rack as they do the rest.
+
+### Measured
+
+The check requires five pairs with one owned and none priced, a key, a
+default and a colour for each, reads the pixels around the sprite's feet for
+each pair against Black and requires every one to differ, requires the BOOTS
+slot and the boots on the figure and a swatch for each, and as controls
+requires the seed fingerprint at 4242 unmoved and every pillager on that map
+to have boots from the rack. On v10.31 there was no boots kind, which is the
+finding.
+
+Not verified: the bleached pair against pale ground at noon, which is a
+contrast question for his eye; the ink plates under the boots are unchanged
+and keep the silhouette.
+
 ## v10.31 - THE BLOTTER MELTS, AND NEVER THE SAME WAY TWICE
 
 His note, 2026-09-03 about 17:45: **"acid needs more visual waves/melting
