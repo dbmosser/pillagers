@@ -894,6 +894,7 @@ window.__musDry=function(steps){
 };
 window.__musTheme=function(){ return {theme:HUB_THEME,chords:HUB_CHORDS,themes:MUS_THEMES,live:musTrk(),pick:function(){ MUS.trk=null; return musTrk(); }}; };
 window.__musWanted=function(){ return musicWanted(); };
+try{ window.__hubBelt=function(){ return (typeof HUBBELT!=='undefined')?HUBBELT:null; }; }catch(e){}
 try{ window.__musDarkInfo=function(T){
   var o={};
   try{ o.stepSec=musStepSec(T); }catch(e1){ o.stepSec=null; }
@@ -5213,6 +5214,81 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.88',what:'the belt is drawn on the Undercroft floor, not only inside the opened backpack',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, so nothing is drawn';
+     if(!(window.__hubEnter&&window.__loop&&window.__hubBag&&window.__hubBagLive))
+       return 'SKIP: this fixture cannot open the Undercroft or its backpack';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P();
+     // Distinctive: two items on two odd slots, so a belt drawn from a default or
+     // an empty plan could not produce these cells.
+     P2.stash=['frag','frag','medkit']; P2.kit=['frag','medkit']; P2.hotAssign={2:'frag',4:'medkit'};
+     __hubEnter();
+     var shut=['stagemodal','sectormodal','outcome','title','pausebox','hub'], was={};
+     for(var si=0;si<shut.length;si++){ var se=document.getElementById(shut[si]);
+       was[shut[si]]=!!(se&&se.classList.contains('on')); if(se) se.classList.remove('on'); }
+     function done(v){
+       // Put the page back, bag closed and panels as they were: a check that
+       // cleans owes the same duty as one that dirties.
+       try{ if(__hubBag()) document.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true})); }catch(e1){}
+       for(var q=0;q<shut.length;q++){ var e2=document.getElementById(shut[q]);
+         if(!e2) continue; if(was[shut[q]]) e2.classList.add('on'); else e2.classList.remove('on'); }
+       try{ __cfg({hubBelt:1}); }catch(e3){}
+       return v;
+     }
+     var K=__keysRef(); for(var k in K) K[k]=false;
+     // THE REAL LOOP AND THE HUD CANVAS. The fixture's own hub frame only draws
+     // the world, and the belt goes on the HUD canvas: a probe that read the world
+     // canvas through that frame reported zero pixels for a belt that was there.
+     var hcv=document.getElementById('hcv'); if(!hcv) return done('SKIP: no HUD canvas');
+     var hctx=hcv.getContext('2d'), W=hcv.width, H=hcv.height;
+     function opaqueIn(r){ var d=hctx.getImageData(Math.max(0,Math.round(r.x)),Math.max(0,Math.round(r.y)),Math.max(1,Math.round(r.w)),Math.max(1,Math.round(r.h))).data, c=0;
+       for(var i=3;i<d.length;i+=4) if(d[i]>20) c++; return c; }
+     function frames(t0){ for(var f=0;f<8;f++) __loop(t0+f*16.7); }
+     // Bag CLOSED, floor: the finding.
+     if(__hubBag()) return done('SKIP: the backpack is already open on entry');
+     frames(performance.now());
+     var hb=__hubBelt();
+     // Measured on v9.87: zero cells and zero opaque pixels on the entire HUD
+     // canvas with the backpack closed. v8.96 claimed answer 22 and delivered it
+     // only inside the opened backpack.
+     if(!hb||!hb.cells||!hb.cells.length)
+       bad.push('with the backpack closed the floor records no belt cells at all');
+     else {
+       if(hb.cells.length!==9)
+         bad.push('the floor belt records '+hb.cells.length+' cells rather than the 9 slots the raid belt has');
+       var painted=0;
+       for(var c=0;c<hb.cells.length;c++) painted+=opaqueIn(hb.cells[c]);
+       if(painted<hb.cells.length*200)
+         bad.push('the floor belt records cells but paints only '+painted+' opaque pixels inside them');
+       var cell2=hb.cells[2], cell4=hb.cells[4];
+       if(cell2&&cell4&&opaqueIn(cell2)<opaqueIn(hb.cells[0])) bad.push('slot 3, which carries the Frag Charge, paints less than an empty slot');
+     }
+     // CONTROL ONE: the dial empties the floor again. This is also what proves the
+     // pixels above are the belt and not something else on the HUD canvas.
+     __cfg({hubBelt:0}); frames(performance.now()+500);
+     var hb0=__hubBelt();
+     if(hb0&&hb0.cells&&hb0.cells.length)
+       bad.push('control: with hubBelt off the floor still records '+hb0.cells.length+' cells');
+     if(opaqueIn({x:0,y:H-170,w:W,h:160})>0)
+       bad.push('control: with hubBelt off the bottom of the HUD canvas still holds paint');
+     __cfg({hubBelt:1});
+     // CONTROL TWO: the opened backpack still draws its own belt exactly as before,
+     // and the floor belt is not drawn underneath it a second time.
+     document.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyI',bubbles:true}));
+     frames(performance.now()+1000);
+     if(!__hubBag()) return done('SKIP: I did not open the backpack');
+     var live=__hubBagLive();
+     if(!live||!live.hotCells||live.hotCells.length!==9)
+       bad.push('control: with the backpack open the panel belt records '+
+                ((live&&live.hotCells)?live.hotCells.length:0)+' cells rather than 9');
+     var hbOpen=__hubBelt();
+     if(hbOpen&&hbOpen.cells&&hbOpen.cells.length&&live&&live.hotCells&&live.hotCells.length&&
+        Math.abs(hbOpen.cells[0].y-live.hotCells[0].y)>1&&opaqueIn(hbOpen.cells[0])>0)
+       bad.push('control: the floor belt is still being painted underneath the open backpack');
+     return done(bad.length?bad.join('; '):null); }},
   {v:'9.87',what:'the Undercroft music schedules low, dark and slow, not high, bright and walking',
    run:function(){
      var bad=[];

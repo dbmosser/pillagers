@@ -40024,6 +40024,76 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.88 - HIS ANSWER 22: THE HOTBAR IS VISIBLE IN THE UNDERCROFT
+
+Answer 22 of his fifty is four words: "hotbar visible in the Undercroft". It sits
+between 21, "I in the Undercroft opens the backpack", and 23, "you can roll in
+the Undercroft", both of which are about the floor. v8.96 claimed it in its own
+comment and delivered it only inside the opened backpack.
+
+### MEASURED FIRST, ON v9.87
+At 1920x1080, through the real loop, reading the HUD canvas:
+
+    Undercroft floor, backpack closed     0 opaque pixels on the entire HUD canvas
+    backpack open                         9 belt cells, 100,047 opaque pixels in
+                                          the bottom band, first cell at 571,959
+
+In a raid the belt is always on screen. Down here it was a page inside a panel
+he has to open. His answer had no row in the status table at all.
+
+### TWO WAYS I MEASURED IT WRONG BEFORE I MEASURED IT RIGHT
+The tick before, looking at a neighbouring answer, my probe reported the drag
+ghost as invisible in the Undercroft. It was reading the WORLD canvas through
+the fixture's own hub frame. The ghost, the bag and the belt are all drawn on
+the HUD canvas by the main loop, which that frame never calls. Read on the right
+canvas through the real loop, the ghost paints 1,764 pixels under the cursor and
+its label with them, and his "invisible" note turned out to be stale. The same
+two mistakes would have made this build's before and after both read zero, so
+the check drives the real loop and reads the HUD canvas, and says so.
+
+### THE FIX
+drawBelt has been a file-scope function since v8.96 and reads only G, so the
+floor draws it exactly as the panel does: a transient state built by
+hubBagState, which is pure and reads P.kit and P.hotAssign, swapped in as G for
+the one call and restored in a finally. hubBagG is deliberately not touched. It
+must stay null while the backpack is closed, because closing the backpack is
+what commits it to the profile, and a floor belt that borrowed it would turn
+every frame into a commit.
+
+The floor draws the belt only while the backpack is closed; the opened backpack
+draws its own copy as before, so exactly one belt is ever on screen. The cells
+the floor belt draws are recorded on HUBBELT, for the fixture now and for
+anyone who later wants the floor belt to take a click. Editing the belt stays
+where it is, inside the opened backpack, which is answer 11 and works both ways.
+The floor belt shows what is going up; it does not take a drop.
+
+hubBelt 0 empties the floor again, which is the control.
+
+### AFTER
+    Undercroft floor, backpack closed     9 cells recorded, paint inside every one
+    backpack open                         9 cells, unchanged, one belt on screen
+
+### THE CHECK AND ITS TEETH
+Run against a fixture built from v9.87 it fails with "with the backpack closed
+the floor records no belt cells at all". Against this build it returns null.
+
+It stages a Frag Charge on slot 3 and a Medkit on slot 5, distinctive, so a belt
+drawn from a default could not produce these cells. It requires nine cells on
+the floor with real paint inside them, the loaded slot painting no less than an
+empty one, the dial emptying the floor and the bottom of the HUD canvas with it,
+which is what proves the pixels are the belt, and the opened backpack still
+recording its own nine cells with the floor belt not painted underneath it. It
+closes the backpack and restores every panel it touched on the way out.
+
+### NOT VERIFIED
+Whether he wants the floor belt to be clickable. It is display only: the raid
+belt's click selects a slot, and on the floor there is no raid for a selection
+to act on, so a click does nothing. The cells are recorded so that can change in
+one build if he asks. Not verified either: how it sits against the Undercroft's
+own bottom of screen at 1440p and 4K. drawBelt sizes itself between the vitals
+block and the gear stack, neither of which is drawn on the floor, so it takes the
+room it would have in a raid; I measured 1080p only.
+
 ## v9.87 - HIS NOTE: THE MUSIC WAS TOO FRIENDLY
 
 Sent mid-tick, minutes after the model switch: "music needs more of a dark and
