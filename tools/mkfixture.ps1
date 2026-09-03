@@ -5187,6 +5187,77 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.80',what:'a wall with a window cut into it still belongs to the building it divides',
+   run:function(){
+     var bad=[];
+     function survey(mapIx){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:mapIx,seed:4242});
+       var g=__state(), B=g.map.buildings||[], W=g.map.walls||[], t=16, i, b;
+       function insideAny(w){
+         var cx=w.x+w.w/2, cy=w.y+w.h/2;
+         for(var q=0;q<B.length;q++){
+           var bb=B[q];
+           if(cx>bb.x+t&&cx<bb.x+bb.w-t&&cy>bb.y+t&&cy<bb.y+bb.h-t) return q;
+         }
+         return -1;
+       }
+       var owned={}, parts=0, orphanWin=0, windows=0;
+       for(i=0;i<W.length;i++){
+         var w=W[i];
+         if(w.ib!==undefined&&!w.furn){ parts++; owned[w.ib]=(owned[w.ib]||0)+1; }
+         if(!w.win) continue;
+         windows++;
+         // A window carved into a wall INSIDE a building is a carved partition.
+         // A window in a shell wall is not, and is left alone.
+         if(w.lockWall||w.lm) continue;
+         if(insideAny(w)>=0&&w.ib===undefined) orphanWin++;
+       }
+       var lying=[];
+       for(b=0;b<B.length;b++){
+         var bb2=B[b];
+         if(bb2.plan&&bb2.plan!=='open'&&!(owned[b]||0)) lying.push(b+':'+bb2.plan);
+       }
+       return {buildings:B.length, partitions:parts, windows:windows,
+               ownerlessCarvedPartitions:orphanWin, plansWithNoWalls:lying, ents:g.ents.length};
+     }
+     var mile=survey(1), cold=survey(0);
+     // CONTROL ONE: both maps have to have built, or every count is zero for the
+     // wrong reason.
+     if(mile.buildings!==84||cold.buildings!==20)
+       return 'SKIP: the maps did not build their usual 84 and 20 buildings';
+     // CONTROL TWO: there have to BE windows, or this build is about nothing and
+     // every test below passes by there being nothing carved.
+     if(mile.windows<10||cold.windows<5)
+       return 'SKIP: barely any windows on these maps, nothing has been carved';
+     // THE FINDING. carveWindows replaces one wall with three and wrote x, y, w,
+     // h, d, the window flag and _bw, dropping ib. A partition that got a window
+     // stopped belonging to the building it divides, and repairInteriors only
+     // removes walls carrying a building id, so it could never take one out
+     // however badly it sealed a room. Measured on v9.79: six of them standing
+     // inside building 9 on THE COLD MILE.
+     if(mile.ownerlessCarvedPartitions>0)
+       bad.push(mile.ownerlessCarvedPartitions+' interior walls on THE COLD MILE have a window cut '+
+                'into them and belong to no building, so nothing can ever remove them');
+     if(cold.ownerlessCarvedPartitions>0)
+       bad.push(cold.ownerlessCarvedPartitions+' interior walls on COLD STORAGE belong to no building');
+     // AND THE SYMPTOM HE WOULD SEE. A building whose every partition lost its
+     // owner reports an empty floor while calling itself something else.
+     if(mile.plansWithNoWalls.length)
+       bad.push('buildings ['+mile.plansWithNoWalls.join(', ')+'] on THE COLD MILE name a floor plan '+
+                'and have no interior wall at all');
+     if(cold.plansWithNoWalls.length)
+       bad.push('buildings ['+cold.plansWithNoWalls.join(', ')+'] on COLD STORAGE name a floor plan and have none');
+     // CONTROL THREE: the walls were not ADDED, their ownership was restored. A
+     // fix that simply stopped carving windows would satisfy everything above
+     // and take the windows out of the game.
+     if(mile.windows<10)
+       bad.push('control: only '+mile.windows+' windows left on the mile, so the carve was disabled rather than fixed');
+     // CONTROL FOUR: the world did not move.
+     if(mile.ents!==374||cold.ents!==85)
+       bad.push('control: the maps spawn '+mile.ents+' and '+cold.ents+
+                ' rather than 374 and 85, so the seeded stream moved');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.79',what:'no building on either map loses its interior, and none holds floor nothing can reach',
    run:function(){
      var bad=[];

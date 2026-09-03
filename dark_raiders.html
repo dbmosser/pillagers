@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.79';
+var VER='9.80';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1224,19 +1224,19 @@ var VER='9.79';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='9.64';
+var WHATSNEW_VER='9.80';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
-  'YOU CAN WALK AWAY FROM A LISTENER. It moved at 196 against your 158, so it closed on you at thirty eight units a second and there was no escaping one at all. It moves at 142 now. It still hits for 34 and still ends you in three blows if you let it reach you.',
-  'AND ITS BLOW WINDS UP FIRST. It used to land on the very frame it reached you, with no warning of any kind, killing you from full health in 1.7 seconds. There is a moment and a sound now, and if you are out of its reach when the blow lands it hits nothing.',
-  'A PILLAGER SHOOTING AT YOU FROM COVER LEAVES A RED CIRCLE where the shot came from. There was always a mark and you could not see it: eight pixels across at twenty two percent opacity, dimmed hardest by the very wall that was hiding him.',
-  'THE INTERFACE GROWS WITH YOUR MONITOR. At 4K the reticule was seven pixels of line, the menus were nearly half the size of the title screen in front of them, and the title screen itself ran off the bottom of the display.',
-  'THE CLOCK IS NOT SITTING ON THE EXTRACT DISTANCE. Those two lines were sixteen pixels apart carrying a font that renders at thirty one, so they have been overlapping at every screen size for a long time.',
-  'THE PILLAGER BOARD IS RANKED BY WHAT EACH MAN IS CARRYING, richest first, and it reorders the moment one haul passes another. It was in spawn order, so the ten names it had room for were ten arbitrary ones.',
-  'CRAWLERS CAN SEE YOU. A crawler looked 26 units through its own cone, which is its bite reach and not a sight range, and 100 out of the corner of its eye. It was likelier to notice you standing behind it than in front of it.',
-  'A BANDAGE STOPS AT 85 HEALTH. It heals exactly what it always did; what it can no longer do is take you the last fifteen points. Only a Medkit does that now.',
-  'THE DOWNED SCREEN IS ONE PANEL. It used to be two that did not know about each other: one said DOWN and the other said YOU ARE DOWN underneath it, the bleed-out timer sat on top of the self-revive line, and only half of it grew with your monitor.',
-  'THERE IS A FULLSCREEN BUTTON ON THE TITLE SCREEN, and your bare hands are drawn as a fist rather than as a pistol.'
+  'YOU CAN REWRITE EVERY WORD IN THE GAME. Turn on Edit the words in Settings, click any line, in a menu or on screen mid raid, and type over it. Enter saves, clear the box and press Enter to put the original back. Your wording is saved with your profile and follows the phrase wherever it appears.',
+  'AND YOUR WORDING SURVIVES THE NUMBERS MOVING. Nearly half the lines on screen carry a number, so renaming one of those used to last until the number changed and then quietly revert. An edit now follows the shape of the line and carries the number through it.',
+  'EVERY BUILDING ON BOTH MAPS IS ENTERABLE, and not one of them holds a room you cannot walk into. The yard walls were being drawn straight through the houses, sealing rooms in places whose own front doors were wide open.',
+  'AND THEY KEEP THE INSIDES THEY WERE BUILT WITH. A fifth of the buildings on the mile were having their floor plans torn out as they loaded: one blocked doorway used to cost a building everything inside it, a locked strongroom counted as a fault, and a doorway was judged on a grid too coarse to see it.',
+  'HOLD SPACE TO SURRENDER once your self revive is gone. There was no way off the floor but the full seventeen second bleed or a crawl, which from across a map is not a decision. It will not fire while you are lying inside a landed extraction.',
+  'THE RED FLASH AT LOW HEALTH SLOWS TO HALF SPEED when nothing is hunting you. It ran at one rate forever, as urgent alone in a corridor as with three machines on you.',
+  'CALLING EXTRACTION SOUNDS LIKE CALLING EXTRACTION. It was one square beep of three hundred milliseconds for the loudest decision in the raid. It runs for nearly a second now, climbs in three steps, and has an octave underneath it.',
+  'THE DEATH CARD HAS STOPPED PRINTING A SECOND CLOCK you never asked for, and the contract that wants you to stay on your feet now says which contract it is instead of paying you a compliment.',
+  'NO HOUSE HOLDS MORE THAN THREE CRAWLERS. That was always the rule and it was only ever true by luck: the men who could not fit in their own house were left standing wherever they landed, including inside somebody elses.',
+  'YOU CAN WALK AWAY FROM A LISTENER, and its blow winds up before it lands. It moved at 196 against your 158, and it used to strike on the very frame it reached you.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -5541,14 +5541,21 @@ function carveWindows(walls){
     var span=len-96-ww;
     if(span<10){ out.push(w); continue; }
     var st=Math.round(48+rP*span);
+    // v9.80: THE PIECES INHERIT WHOSE WALL THIS WAS. Dropping ib here made a
+    // carved partition belong to nobody, and repairInteriors only removes walls
+    // carrying a building id, so such a wall could never be taken out however
+    // badly it sealed a room. Measured: six of them standing inside building 9
+    // on THE COLD MILE while it reported an empty floor.
+    var _ib=w.ib, _fn=w.furn;
+    function _pc(o){ if(_ib!==undefined) o.ib=_ib; if(_fn) o.furn=_fn; return o; }
     if(horiz){
-      out.push({x:w.x,y:w.y,w:st,h:w.h,d:w.d,_bw:1});
-      out.push({x:w.x+st,y:w.y,w:ww,h:w.h,d:w.d,win:1,_bw:1});
-      out.push({x:w.x+st+ww,y:w.y,w:len-st-ww,h:w.h,d:w.d,_bw:1});
+      out.push(_pc({x:w.x,y:w.y,w:st,h:w.h,d:w.d,_bw:1}));
+      out.push(_pc({x:w.x+st,y:w.y,w:ww,h:w.h,d:w.d,win:1,_bw:1}));
+      out.push(_pc({x:w.x+st+ww,y:w.y,w:len-st-ww,h:w.h,d:w.d,_bw:1}));
     } else {
-      out.push({x:w.x,y:w.y,w:w.w,h:st,d:w.d,_bw:1});
-      out.push({x:w.x,y:w.y+st,w:w.w,h:ww,d:w.d,win:1,_bw:1});
-      out.push({x:w.x,y:w.y+st+ww,w:w.w,h:len-st-ww,d:w.d,_bw:1});
+      out.push(_pc({x:w.x,y:w.y,w:w.w,h:st,d:w.d,_bw:1}));
+      out.push(_pc({x:w.x,y:w.y+st,w:w.w,h:ww,d:w.d,win:1,_bw:1}));
+      out.push(_pc({x:w.x,y:w.y+st+ww,w:w.w,h:len-st-ww,d:w.d,_bw:1}));
     }
   }
   return out;
@@ -26041,7 +26048,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.79: every building on both maps is enterable again. The yard walls were being drawn straight through the houses, sealing rooms in places whose own front doors were wide open, and the repair pass could only answer by gutting the house and leaving the room shut anyway.',
+  now:'v9.80: cutting a window into a wall made that wall belong to nobody. Six walls inside one of the biggest houses on the mile had no owner, which meant the pass that keeps rooms reachable could never have removed them however badly they sealed something.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

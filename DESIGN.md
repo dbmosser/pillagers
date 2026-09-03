@@ -40024,6 +40024,95 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.80 - CUTTING A WINDOW INTO A WALL MADE IT BELONG TO NOBODY
+
+A one line bug with a long shadow, found by chasing a building that was lying
+about what was inside it.
+
+### WHAT I WAS LOOKING AT
+
+Building 9 on THE COLD MILE is 760 by 520, the biggest kind on the map, authored
+as CELLS, and it reported **not one interior wall**. Looking at what actually
+stands inside it, there are six, in the carved triples of solid, window, solid
+that carveWindows produces, and **every one of them carries no building id**.
+
+`carveWindows` replaces one wall with three. The three it writes carry x, y, w,
+h, d, the window flag and `_bw`. The `ib` is dropped.
+
+### WHY THAT MATTERS MORE THAN A WRONG LABEL
+
+`repairInteriors` only ever removes walls carrying a building id. **A partition
+that gets a window in it can therefore never be removed by it, however badly it
+seals a room.** That is the identical hole the yard walls had, the one that took
+five builds to find and close at v9.79, sitting in a second place the whole time.
+
+It also makes the plan field lie, which is what put me onto it: anything reading
+`plan`, and the drawing does, was being told a room full of alcoves stood in an
+empty hall.
+
+Measured across both maps at seed 4242:
+
+    ownerless carved interior walls   THE COLD MILE 25    COLD STORAGE 7
+    buildings naming a plan with no wall at all         building 9
+
+The fix is that the three pieces inherit what the wall they came from was.
+
+    partitions correctly owned   THE COLD MILE 214 -> 292   COLD STORAGE 62 -> 82
+
+Entity counts unchanged at 374 and 85, and the windows are all still there: this
+restores ownership, it does not stop anything being carved.
+
+The walls left with no owner are the ones that should have none: ten locked-room
+shells on the mile, which belong to a room rather than a building, and five small
+authored fragments.
+
+
+### AND THE CARD ON THE TITLE SCREEN WAS SIXTEEN BUILDS STALE
+
+The v9.19 check caught it the moment the drift passed its limit: the what-is-new
+card was still at v9.64 against a build at v9.80. It was telling him about the
+Listener and the bandage cap and said nothing about being able to rewrite the
+game's own words, which is the largest thing to land since.
+
+Rewritten, newest first: editing the text, edits surviving the numbers moving,
+every building enterable and keeping its insides, holding SPACE to surrender, the
+slower flash at low health, the extraction call, the death card, the crawler cap
+per house.
+
+That check is doing exactly the job it was written for, and it is the only reason
+the card was not still stale a month from now.
+
+### TWO THINGS I CHASED FIRST THAT WERE NOT IT
+
+**The plan picker.** Small buildings draw from a list with 'open' in it twice, so
+half of them should be empty boxes by design, and 27 of the 84 on the mile share
+the one small footprint. That looked like the cause of "maps feel samey" until I
+checked whether the picker runs at all: **the plans are authored in the map
+data**, 33 cells, 16 core, 16 open, 8 spine, 7 lsplit, 4 pinwheel, matching the
+built map exactly. The picker is bypassed on both maps and changing it would have
+done nothing. The 16 empty boxes on the mile are a content decision, not a bug,
+and they are his to keep or change.
+
+**A label fix that fixed nothing.** Before finding the carve I wrote a pass that
+relabels any building left with no interior walls as an open plan. It changed
+nothing at all, because the walls were there and simply had no owner, and I very
+nearly shipped it. A change that measures as doing nothing is a change that
+should not ship, so it went in the bin rather than in the build.
+
+### AND A THRESHOLD MEASURED AT LAST
+
+One of the four "numbers nobody measured" on the open list: v9.07 fails a noise
+ring that changes fewer than 20 pixels. **Measured: a ring at birth changes 120.**
+Six times the threshold, so that gate is sound.
+
+Two of the other three on that list were my own error: v9.08's "k<12" and v9.15's
+"f<12" are frame-loop counts, not thresholds at all. The note has been corrected.
+
+Not verified: whether any room in the game was actually sealed by a carved
+partition. The hole was real and is closed, but the demolition count was already
+zero at v9.79, so nothing was visibly broken by it today. What it was, was a
+second door left open for exactly the fault that cost five builds to find.
+
 ## v9.79 - EVERY BUILDING ON BOTH MAPS IS ENTERABLE AGAIN
 
 The finding from v9.78, shipped, once the thing that blocked it turned out to be
