@@ -40024,6 +40024,84 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.74 - EVERY LINE IN THE GAME IS NOW SOMETHING YOU CAN TYPE OVER
+
+His ask, and it is the right one: "can you make all text fields in the game
+editable so i can just edit them in game???"
+
+He has been sending wording notes for weeks. This language is useless, delete it
+completely. Get rid of first seen. Why does it say still on your feet. Every one
+of them costs a whole build to answer and a day of waiting. This is him asking
+for the tool instead of the fix.
+
+### THE ONE IDEA IT IS BUILT ON
+
+**An override is keyed by the string, not by where the string is drawn.**
+
+Keying by position would mean an id or a path for all 172 fillText calls and
+every panel the game rebuilds from innerHTML, and it would break the first time
+a panel was re-laid-out. Keying by the string itself needs no ids at all,
+survives every rebuild, and has a property worth having on its own: correcting a
+phrase in a menu also corrects it where the HUD paints it.
+
+There are exactly two doors the game's text goes through, so there are two places
+to stand:
+
+- **Canvas.** `ctx.fillText` is wrapped once on the prototype. That covers all
+  172 call sites and anything added later without touching one of them.
+- **Menus.** A MutationObserver on `#root`, so a panel rebuilt from innerHTML has
+  his wording put back the instant it appears. The original is parked on each
+  text node, so re-running it is idempotent however many times a panel redraws.
+
+### HOW HE USES IT
+
+Settings, first row, **Edit the words**, Off by default. Turn it on and the
+cursor becomes a text cursor. Click any phrase, in a menu or on the screen
+mid-raid, and type over it. Enter commits. Escape cancels. **Clear the box and
+press Enter to put the original back**, which matters because after a few edits
+he will not remember what a line used to say.
+
+The click never reaches the game underneath, so editing a word does not fire his
+gun. His wording is saved with his profile, in a new field on an object that is
+serialised whole, so nothing needed migrating and the storage key is untouched.
+
+On the canvas there are no elements to ask where a word is, so a click is
+answered by recording one frame of fillText calls with their measured boxes and
+hit-testing them, honouring the alignment each string was drawn with.
+
+### THE BUG MY OWN CHECK WALKED PAST
+
+The check passed, and then I drove the gesture by hand and it did nothing on the
+HUD. **`elementFromPoint` over the HUD does not return the canvas.** It returns
+whatever transparent panel is stacked above it, and my first cut treated "a panel
+with no text in it" as "nothing here" and gave up. Every string the HUD paints
+was unreachable by an actual click while the engine underneath worked perfectly
+and my check said so, because the check was driving the engine and not the thing
+his mouse talks to.
+
+A panel with nothing to edit is not an answer, it is the absence of one, so it
+falls through to the canvas now. The check goes through `txClick` as well, and
+was proved against a build carrying the engine WITH the bug put back: it reports
+"a click on 8:59 was answered with nothing at all". Against v9.73, which has no
+engine, it reports a SKIP, which is the honest reading of a feature that does not
+exist yet rather than a pass.
+
+Six controls: the recorder must see the frame at all; the edited line must be
+painted AND the original must not still be painted beside it; clearing must
+restore; a click in the middle of a word must find that word; a click in the
+corner must find nothing; and the same map must reach a menu and come back.
+
+Not verified: the real mouse path end to end. The click handler waits two
+animation frames before hit-testing, and the browser pane this is checked in
+stops painting when it is hidden, so the frames it waits for never arrive here.
+Every part of that path is driven and green except the two frames themselves, and
+the DOM half of the gesture, which needs no frames, was driven all the way from
+click to typed text to saved override to restored original. Also not verified:
+what happens when he edits a string the game builds by joining pieces together,
+like a number followed by a word. Those are separate strings to this system and
+he will only be able to edit the fixed part, which I expect will be the first
+thing he runs into.
+
 ## v9.73 - A BUILDING WAS LOSING ITS INTERIOR AS A PUNISHMENT FOR HAVING A SAFE IN IT
 
 ### FIRST, A CORRECTION TO THE v9.72 NOTES

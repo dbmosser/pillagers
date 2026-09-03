@@ -986,6 +986,14 @@ window.__keysRef=function(){ return keys; };
 // be observed through a whole raid, which is how I twice guessed at why it folds
 // instead of driving the thing that folds it.
 window.__searchSector=function(e){ return searchSector(e); };
+// v9.74: the editable-text engine. record() runs a draw with the recorder on and
+// returns every string that was painted with its measured box, which is the only
+// way to ask what a click would land on without a real mouse.
+try{
+  window.__tx={record:txRecord,find:txFind,box:txBox,set:txSet,map:txMap,dom:txDom,
+               click:txClick,get:TX,close:txClose,
+               hits:function(){ return TXHIT; }};
+}catch(e){ window.__tx=null; }
 window.__wx={list:function(){ return WEATHER; },cur:wx,VF:VF,AMBR:AMBR,ping:ping,pick:pickWeather};
 window.__music=function(){ tickMusic(); return {mode:musicMode(),wanted:musicWanted(),started:!!MUS.g,step:MUS.step,trkName:(MUS.trk?MUS.trk.name:null),themes:MUS_THEMES.length}; };
 window.__hudBox=function(){ return HUDBOX; };
@@ -5093,6 +5101,106 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.74',what:'every line of text can be clicked and typed over, on the canvas and in the menus',
+   run:function(){
+     var bad=[];
+     if(!window.__tx) return 'SKIP: this build has no text engine to drive';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     __pinDPR(1); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __forceSize(1920,1080);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); g.ents.length=0; g.player.iv=9999;
+     for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
+     // CONTROL ONE: the recorder has to see the frame at all. A recorder that
+     // captures nothing would satisfy every test below by being empty, which is
+     // the shape of a check that proves nothing.
+     var hits=__tx.record(function(){ __frame(0.016); });
+     if(hits.length<8)
+       return 'SKIP: only '+hits.length+' strings were recorded, so the frame did not draw';
+     // Pick a string with a real box, and one nothing else on screen shares, so
+     // the override below cannot be credited to the wrong line.
+     var pick=null;
+     for(var i=0;i<hits.length;i++){
+       var h=hits[i];
+       if(!h.o||h.o.length<4||h.w<12) continue;
+       var seen=0;
+       for(var j=0;j<hits.length;j++) if(hits[j].o===h.o) seen++;
+       if(seen===1){ pick=h; break; }
+     }
+     if(!pick) return 'SKIP: no string on this frame is unique enough to test with';
+     // THE FINDING, PART ONE: an override must reach the canvas. This is the
+     // whole feature, and it is asserted on what fillText actually painted
+     // rather than on the map having a key in it.
+     var want='ZQX EDITED '+pick.o.length;
+     __tx.set(pick.o,want);
+     var after=__tx.record(function(){ __frame(0.016); });
+     var found=0, still=0;
+     for(var k=0;k<after.length;k++){
+       if(after[k].t===want) found++;
+       if(after[k].t===pick.o) still++;
+     }
+     if(!found)
+       bad.push('the canvas still does not show an edited line: "'+pick.o+'" was replaced and nothing drew it');
+     if(still)
+       bad.push('the original "'+pick.o+'" is still being painted alongside the edit');
+     // CONTROL TWO: clearing it puts the original back, which is his only way
+     // home once he has forgotten what a line used to say.
+     __tx.set(pick.o,'');
+     var back=__tx.record(function(){ __frame(0.016); });
+     var restored=0;
+     for(var m=0;m<back.length;m++) if(back[m].t===pick.o) restored++;
+     if(!restored)
+       bad.push('control: clearing the edit did not put "'+pick.o+'" back, so there is no way to undo one');
+     // THE FINDING, PART TWO: a click has to find the line. The box is computed
+     // from the alignment the string was drawn with, and getting that wrong is
+     // silent: every click just misses.
+     var box=__tx.box(pick);
+     var cv=pick.cv, r=cv.getBoundingClientRect();
+     var cx=r.left+(box.x+box.w/2)*(r.width/cv.width);
+     var cy=r.top+(box.y+box.h/2)*(r.height/cv.height);
+     __tx.record(function(){ __frame(0.016); });
+     var hit=__tx.find(cx,cy);
+     if(!hit)
+       bad.push('a click in the middle of "'+pick.o+'" found no text at all, so nothing on the canvas can be edited');
+     else if(hit.o!==pick.o)
+       bad.push('a click in the middle of "'+pick.o+'" found "'+hit.o+'" instead');
+     // CONTROL THREE: and it must MISS when it should. A hit test that returns
+     // the nearest string wherever you click would pass the test above and make
+     // the feature unusable.
+     var far=__tx.find(r.left+4,r.top+4);
+     if(far&&far.o===pick.o)
+       bad.push('control: a click in the corner of the screen also found "'+pick.o+
+                '", so the hit test is not testing anything');
+     // AND THROUGH THE GESTURE, not just the engine. My first cut of this check
+     // drove find() directly and passed on a build where every HUD string was
+     // unreachable by a real click, because elementFromPoint hands back the
+     // transparent panel stacked over the canvas rather than the canvas.
+     __cfg({textEdit:1});
+     var gest=__tx.click(cx,cy);
+     __cfg({textEdit:0});
+     if(!gest)
+       bad.push('a click on "'+pick.o+'" was answered with nothing at all, so the HUD cannot be edited by clicking it');
+     else if(gest.kind!=='canvas'&&gest.kind!=='dom')
+       bad.push('a click on "'+pick.o+'" came back as '+gest.kind+', which is neither door');
+     // THE DOM DOOR. The same map has to reach a panel, or half the words in the
+     // game are still out of his reach.
+     if(document.getElementById('root')){
+       var probe=document.createElement('div');
+       probe.textContent='ZQX ORIGINAL LINE';
+       document.getElementById('root').appendChild(probe);
+       __tx.set('ZQX ORIGINAL LINE','ZQX HIS WORDS');
+       __tx.dom(document.getElementById('root'));
+       var got=probe.textContent;
+       __tx.set('ZQX ORIGINAL LINE','');
+       __tx.dom(document.getElementById('root'));
+       var back2=probe.textContent;
+       if(probe.parentNode) probe.parentNode.removeChild(probe);
+       if(got!=='ZQX HIS WORDS')
+         bad.push('a panel line did not take the edit, it still reads "'+got+'"');
+       if(back2!=='ZQX ORIGINAL LINE')
+         bad.push('control: clearing the edit left the panel reading "'+back2+'" rather than the original');
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'9.73',what:'a locked room is not a fault, so a building keeps its interior for having one',
    run:function(){
      var bad=[];
