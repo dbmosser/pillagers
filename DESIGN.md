@@ -40024,6 +40024,37 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.35 - PATCH, THE THIRTEENTH RACK
+
+His answer 14, 2026-09-03, seventh of his categories: **patches or badges**.
+
+A patch is a small mark on the chest, over the coat, in its own two colours:
+none, owned from the start; a Red Cross at four runs; a Skull at nine; a Star
+at five extracts; a Chevron at eleven; a Flag for a Warden. Earned, never
+bought. One painter draws every patch, and it draws it in three places at
+three sizes: on the sprite's chest on the side away from the gun arm, on the racks as a painted
+swatch, and, in its two colours, as a square on the figure's torso. A
+thirteenth slot, a thirteenth key, part of a look and of SURPRISE ME, and the
+pillagers draw from it.
+
+### Measured
+
+The check requires six entries with one owned and none priced, a key and a
+default, reads the sprite for each patch against none and requires every one
+to draw on the chest, requires the PATCH slot on the figure and a painted
+swatch for each, and as controls requires the seed fingerprint at 4242
+unmoved and every pillager with a patch entry. On v10.34 there was no patch
+kind, which is the finding.
+
+Measured before shipping: the first draft put the patch on the right chest
+under the rig, and the gun arm covered it from the second row down, so six
+of eight patches showed one row of themselves; the plate covered the rest
+when he wore armour. It sits on the chest on the side away from the gun
+now, drawn after the plate, since a patch goes on the plate carrier.
+
+Not verified: a patch on a pillager facing you square on, where neither
+side is away from the gun; it takes the left.
+
 ## v10.34 - BACKPACK COLOUR, THE TWELFTH RACK
 
 His answer 14, 2026-09-03, sixth of his categories: **backpack colour**.

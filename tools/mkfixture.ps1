@@ -5221,6 +5221,41 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.35',what:'PATCH is a thirteenth rack: five marks on the sprite chest and the figure, painted swatches',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(typeof COSMETICS==='undefined'||typeof cosSwatch!=='function') return 'SKIP: no racks in this build';
+     var patches=COSMETICS.filter(function(c){ return c.kind==='patch'; });
+     // THE FINDING. On v10.34 there was no patch kind.
+     if(patches.length<6) return 'the racks hold '+patches.length+' patches, not six';
+     if(!patches.some(function(c){ return c.how==='always'; })) bad.push('no patch entry is owned from the start');
+     if(patches.some(function(c){ return String(c.how).indexOf('buy:')===0; })) bad.push('a patch costs credits, against his answer 16');
+     if(!COSKEY.patch||!COSDEF.patch) bad.push('the profile has no patch key or default');
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000; p.armor=0;
+     var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,cosPatch:P2.cosPatch,nightExt:P2.nightExt,bestStreak:P2.bestStreak};
+     // Every gate a patch can hang on, including the play-style ones that came later.
+     P2.runs=999; P2.ext=999; P2.kills={warden:9,crawler:60}; P2.xpLevel=99; P2.nightExt=9; P2.bestStreak=9;
+     var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
+     function body(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(50,Math.min(cvs.width-50,sx)); sy=Math.max(60,Math.min(cvs.height-20,sy)); return wctx.getImageData(sx-50,sy-60,100,80).data; }
+     function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>30) d++; return d; }
+     P2.cosPatch='patchnone'; var none=body(), flat=[];
+     patches.forEach(function(c){ if(c.id==='patchnone') return; P2.cosPatch=c.id; if(diff(body(),none)<3) flat.push(c.id); });
+     if(flat.length) bad.push('patches that draw nothing on the sprite chest: '+flat.join(', '));
+     for(var k in keep) P2[k]=keep[k];
+     var html=(typeof avatarHTML==='function')?avatarHTML():'';
+     if(html.indexOf('data-av="patch"')<0) bad.push('the figure has no PATCH slot');
+     var qm=patches.filter(function(c){ return c.id!=='patchnone'&&!/data:image/.test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     if(qm.length) bad.push('patches with no painted swatch: '+qm.join(', '));
+     // CONTROL: the seed fingerprint stands and pillagers carry a patch entry.
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
+     if(g.ents.length!==85||g.containers.length!==165) bad.push('control: the seed fingerprint moved to '+g.ents.length+'/'+g.containers.length);
+     var raiders=g.ents.filter(function(e){ return e.kind==='raider'; });
+     if(raiders.length&&raiders.some(function(e){ return !e.patch||!cosFind(e.patch); })) bad.push('control: a pillager has no patch entry from the rack');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.34',what:'BACKPACK colour is a twelfth rack: five packs on the sprite back and a strap on the figure',
    run:function(){
      var bad=[];
