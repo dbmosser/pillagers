@@ -40024,6 +40024,45 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.04 - A DOWNED PILLAGER STARTS AT FIFTY AND BLEEDS
+
+His answer 44, 2026-09-03: **"START AT 50 THAT WAY IT TAKES 3 SHOTS PLUS A LIL
+BIT OF TICKDOWN -- HEALTH SHOULD BE TICKING DOWN AS PART OF THEIR DOWNED
+COUNT"**.
+
+v9.91 gave a downed pillager forty points that sat still until the sixteen
+second bleed clock ran out. Fifty now, and the points fall with the clock,
+fifty over sixteen seconds, so a man left alone bleeds to nothing exactly when
+his clock does, and every round you put in him shortens what is left instead
+of resetting anything. The clock stays the ceiling; the points reaching zero
+first ends him the same way the clock does. The dial, raiderDownHp, is fifty.
+
+### Measured
+
+The check downs a man through the game's own path and reads fifty at the
+down, then runs four seconds of the real loop without a shot and requires
+between eight and eighteen points gone (twelve and a half is the line), then
+runs the rest of the bleed and requires him finished. The control is two
+rounds into a fresh downed man leaving about twelve, and a third finishing
+him. On v10.03 he went down with forty and four seconds took nothing off him.
+
+### The wheel check, found by replaying the corpus in order
+
+The full run could not run one check, v9.67, the station wheel, for the
+second build running, while it passed alone every time. I replayed the 120
+checks that come before it in the run and then looked: the stash grid held
+three cells and did not scroll. The fill it uses, sixty scrap, is ONE cell,
+because the stash stacks; alone it had passed on whatever an earlier probe
+had left in the panel. It fills the stash with one of every item now, on a
+short viewport, so the grid overflows whatever came before, and puts the
+viewport back. One thing I got wrong twice: I fixed that check by guessing,
+at v9.98 and again at v10.00, instead of reproducing the run's order first.
+
+Not verified: how the bleed reads on the pillager board, which shows his
+state and not his points. Not verified: whether "a lil bit of tickdown" means
+he wants two rounds and a wait to be a real option; at fifty over sixteen
+seconds, two rounds leave twelve, which is four seconds of waiting.
+
 ## v10.03 - WIRT NAMES WHAT IS ON THE COUNTER
 
 His answer 38, 2026-09-03, to "should the offer print the item's name as

@@ -5216,6 +5216,54 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.04',what:'a downed pillager starts at fifty and his points bleed away with his clock',
+   run:function(){
+     var bad=[];
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var p=g.player; p.iv=99; p.hp=100000; p.maxhp=100000;
+     var R=null;
+     for(var i=0;i<g.ents.length;i++){ var e=g.ents[i]; if(e.kind==='raider'&&!e.merc){ R=e; break; } }
+     if(!R) return 'SKIP: no pillager on this map and seed';
+     g.ents.length=0; g.ents.push(R);
+     function stage(){
+       R.x=p.x+120; R.y=p.y; R.hostile=true; R.downed=0; R.finished=false; R.roll=0;
+       R.hp=1; R.maxhp=R.maxhp||100; R.state='chase'; R.tx=p.x; R.ty=p.y;
+       if(g.ents.indexOf(R)<0) g.ents.push(R);
+       g.bullets.length=0;
+     }
+     function shoot(){
+       g.bullets.push({x:R.x-6,y:R.y,vx:1180,vy:0,dmg:19,life:0.2,player:true,owner:p,tint:'#ffd48a'});
+       for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
+     }
+     function present(){ return g.ents.indexOf(R)>=0; }
+     stage(); shoot();
+     if(!present()||!R.downed) return 'SKIP: the man was not downed by a round at one health';
+     // THE FINDING, part one: fifty at the down. On v10.03 he had forty.
+     var hp0=R.hp;
+     if(Math.abs(hp0-50)>1.5) bad.push('he went down with '+Math.round(hp0)+' health, not fifty');
+     // Part two: left alone for four seconds of real loop, the points fall
+     // with the clock: fifty over sixteen seconds is 12.5 in four. On v10.03
+     // they sat at forty until the clock ran out.
+     var t0=performance.now(), frames=Math.round(4/0.0167);
+     for(var f2=0;f2<frames;f2++) __loop(t0+f2*16.7);
+     if(!present()) return bad.concat(['he was gone after four seconds down, before his clock']).join('; ');
+     var fell=hp0-R.hp;
+     if(fell<8) bad.push('four seconds down took only '+fell.toFixed(1)+' points off him; they should bleed away with the clock');
+     if(fell>18) bad.push('four seconds down took '+fell.toFixed(1)+' points, faster than fifty over the bleed');
+     // Part three: the clock is still the ceiling. Sixteen more seconds and he is finished.
+     var t1=performance.now(), frames2=Math.round(17/0.0167);
+     for(var f3=0;f3<frames2&&present();f3++) __loop(t1+f3*16.7);
+     if(present()&&R.downed) bad.push('he is still down after the whole bleed, at '+Math.round(R.hp)+' health');
+     // CONTROL: a round still shortens it. Fresh down, two rounds, then he must
+     // have less than fifty minus thirty-eight left, and a third finishes him.
+     stage(); shoot();                              // the round that downs him
+     shoot(); shoot();                              // two into the downed man
+     if(present()&&R.downed&&R.hp>14) bad.push('control: two rounds into a downed man left '+Math.round(R.hp)+', more than the twelve or so they should');
+     shoot();
+     if(present()) bad.push('control: three rounds did not finish a downed man at fifty');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.01',what:'every HUD panel box sits inside the screen at 1080p, 1440p and 4K, and none overlap',
    run:function(){
      var bad=[];
@@ -7534,7 +7582,10 @@ window.__REGRESS=[
      __forceSize(1920,1080);
      // v9.98 took the operator column and its scrolling picker off the stash
      // screen. Fill the stash so its own grid is the scrolling list.
-     (function(){ var P2=__P(); P2.stash=[]; for(var q=0;q<60;q++) P2.stash.push('scrap'); P2.kit=[]; P2.hotAssign={}; P2.stashTab='all'; })();
+     // One of every item, not sixty of one: the stash stacks, so sixty scrap is a
+     // single cell. A short viewport makes the grid overflow whatever came before.
+     (function(){ var P2=__P(); P2.stash=[]; for(var _ik in ITEMS) if(ITEMS.hasOwnProperty(_ik)) P2.stash.push(_ik); P2.kit=[]; P2.hotAssign={}; P2.stashTab='all'; })();
+     __forceSize(1920,720);
      __hubEnter();
      function spin(el,x,y,shift){
        var before=__P().menuZoom;
@@ -7608,6 +7659,7 @@ window.__REGRESS=[
        var sh=spin(b.el,b.x,b.y,true);
        if(sh.changed) shiftBroke.push(sts[si].id);
      }
+     __forceSize(1920,1080);
      if(!tested) return 'SKIP: no station opened a panel with a scrolling list in it';
      if(grew.length)
        bad.push('the wheel over the scrolling list resized the text at '+grew.length+' of '+tested+
