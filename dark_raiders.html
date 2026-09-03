@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.89';
+var VER='9.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7989,7 +7989,7 @@ function pedSellAll(){
     if(ITEMS[k]&&ITEMS[k].use==='key'){ kept.push(k); continue; }
     tot+=Math.round(ival(k)*pedBuyRate()); full+=ival(k); n++;
   }
-  if(!n){ if(!G.sim) say('Nothing in your bag he wants.'); return; }
+  if(!n){ if(!G.sim) say('Nothing in your backpack he wants.'); return; }
   G.bag=kept;
   // v7.62, his order: stall money is CARRIED, not banked. It rides the raid on
   // G.pedCarry, pays out only if you walk out, and dies where you fall. This is
@@ -8024,7 +8024,7 @@ function pedBuy(ix){
   if((P.credits||0)<st.price){ say('You cannot cover '+'$'+st.price.toLocaleString()+'.'); return; }
 
   var cap=PACKCAP[P.pack],wt=(ITEMS[st.k]?ITEMS[st.k].wt:1);
-  if(bagWeight()+wt>cap){ say('No room in the bag for that.'); return; }
+  if(bagWeight()+wt>cap){ say('No room in the backpack for that.'); return; }
   P.credits-=st.price; saveProfile();
   st.sold=true; G.bag.push(st.k); autoBelt(st.k); G.trade.traded=1;
   G.pedBought=(G.pedBought||0)+st.price;
@@ -11992,7 +11992,7 @@ function setHot(i){
   if(s2.vacant){ if(!G.sim) say('No second weapon. Drag one here to carry it.'); }
   else if(s2.kind==='gun'&&_inHands&&!s2.inHand) swapGuns();
   else if(s2.kind==='gun'&&!_inHands&&s2.itemKey)
-    say(s2.name+' is in your bag. TAB to equip it.');
+    say(s2.name+' is in your backpack. TAB to equip it.');
   if(s2.kind==='throw'){
     var tk2=s2.k.split(':')[1],ix=THROWKEYS.indexOf(tk2);
     if(ix>=0) G.tsel=ix;
@@ -21609,7 +21609,7 @@ ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(bx,by,bw,bh);
         }
       }
 else if(nc2.tag) ctx.fillText('['+keyLabel('KeyE','E')+'] SEARCH '+String(nc2.tag).toUpperCase(),s.x,s.y);
-      else ctx.fillText('['+keyLabel('KeyE','E')+'] SEARCH '+(nc2.mercSrc?(String(nc2.mercSrc.name).toUpperCase()+"'S BAG"):((nc2.type==='safe'&&nc2.camp)?'STRONGBOX':nc2.type.toUpperCase())),s.x,s.y);
+      else ctx.fillText('['+keyLabel('KeyE','E')+'] SEARCH '+(nc2.mercSrc?(String(nc2.mercSrc.name).toUpperCase()+"'S BACKPACK"):((nc2.type==='safe'&&nc2.camp)?'STRONGBOX':nc2.type.toUpperCase())),s.x,s.y);
       // His #23: item names in the world when you are near them. A single-item
       // crate that YOU dropped or a body someone emptied loot into is not a
       // mystery box, so it says what it holds; multi-item finds stay unsearched
@@ -22083,7 +22083,7 @@ ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
   // moved clear of the tallest line in the stack.
   if(!G.bagOpen){
     ctx.font=FS(TYPE.label); ctx.fillStyle='#ffc04a';
-    ctx.fillText('TAB  INVENTORY',W-16,by-LH(70));
+    ctx.fillText('TAB  BACKPACK',W-16,by-LH(70));
   }
   var pl2=[],tsn=THROWKEYS[G.tsel];
   for(i=0;i<3;i++){
@@ -22529,7 +22529,7 @@ function safeSet(){
 var LEGEND=[
   ['MOVE',[['WASD','move'],['SHIFT','sprint'],['CTRL','crouch, near silent'],['SPACE','dodge roll']]],
   ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','steady aim'],['R','reload'],['X','swap weapon']]],
-  ['GEAR',[['1-9','select hotbar slot'],['FIRE','use selected slot'],['TAB','inventory'],['ENTER','equip gun from bag'],['BKSP','reset cursor']]],
+  ['GEAR',[['1-9','select hotbar slot'],['FIRE','use selected slot'],['TAB','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],
 ['WORLD',[['E','search / call for extraction'],['M','map'],['H','cycle this list'],['P','pause']]],
   ['ALSO',[['CAPS','walk on, hands free'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom']]]
 ];
@@ -22541,7 +22541,7 @@ var LEGEND_MINI=[
   ['CTRL','crouch'],['SPACE','roll'],
   ['LMB','fire'],['RMB','aim'],
   ['R','reload'],['X','swap gun'],
-  ['1-9','hotbar'],['TAB','bag'],
+  ['1-9','hotbar'],['TAB','backpack'],
   ['E','search'],['M','map']
 ];
 var LEGEND_MINI_PAD=[
@@ -22549,8 +22549,8 @@ var LEGEND_MINI_PAD=[
   ['RS','crouch'],['B','roll'],
   ['A','fire'],['LT / RT','reach'],
   ['X','search'],['Y','reload'],
-  ['LB / RB','belt'],['D-RIGHT','use it'],
-  ['BACK','bag'],['D-DOWN','medical'],
+  ['LB / RB','hotbar'],['D-RIGHT','use it'],
+  ['BACK','backpack'],['D-DOWN','medical'],
   ['D-UP','map'],['START','pause']
 ];
 var SOUNDKEY=[
@@ -22563,7 +22563,7 @@ var SOUNDKEY=[
 var LEGEND_PAD=[
   ['MOVE',[['L STICK','move, analog'],['LS CLICK','sprint'],['RS CLICK','crouch'],['B','dodge roll']]],
   ['FIGHT',[['R STICK','aim'],['A','fire'],['LT / RT','reach, analog'],['Y','reload']]],
-  ['GEAR',[['LB/RB','change belt slot'],['D-RIGHT','use selected'],['D-LEFT','drop selected'],['D-DOWN','use medical'],['VIEW','inventory']]],
+  ['GEAR',[['LB/RB','change hotbar slot'],['D-RIGHT','use selected'],['D-LEFT','drop selected'],['D-DOWN','use medical'],['VIEW','backpack']]],
   ['WORLD',[['X','search / call for extraction'],['DPAD UP','map'],['MENU','pause']]]
 ];
 // Every line here used to run past the right edge of its own panel, by 83 to 164
@@ -22585,7 +22585,7 @@ var GEARRULES=[
   ['','in the stash or on the check.'],
   ['ARMOUR','Plates top you up when'],
   ['','you pick one up. When armour is'],
-  ['','full they go to the bag instead,'],
+  ['','full they go to the backpack,'],
   ['','so keep one on a key.'],
   ['HOTBAR','1-9 selects, FIRE uses it.'],
   ['','Only one item in hand.'],
@@ -23317,7 +23317,7 @@ function drawTrade(){
   }
   cy+=LH(21);
   ctx.font=FS(TYPE.head); ctx.fillStyle=n?'#7fc4a0':'#4d5762';
-  ctx.fillText('[1]  SELL BAG  ('+n+')',x+14,cy);
+  ctx.fillText('[1]  SELL BACKPACK  ('+n+')',x+14,cy);
   ctx.textAlign='right'; ctx.fillStyle=n?'#ffc04a':'#4d5762';
   ctx.fillText('+'+'$'+tot.toLocaleString()+'',x+PW-14,cy); ctx.textAlign='left';
   cy+=LH(15);
@@ -26179,7 +26179,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.89: one word for the hotbar. The same nine keys were called the hotbar in the legend, the tactical belt on two panels, and the bar in one prompt. It is the hotbar everywhere now, which is the word you use and the word the keys already had.',
+  now:'v9.90: one word for the backpack. The thing you carry was called your inventory, your bag, your kit and your backpack depending on which line you were reading, and the controller legends still called the hotbar a belt. It is the backpack and the hotbar everywhere now.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -27051,7 +27051,7 @@ function renderKitCol(){
       if(P.kit.indexOf(key)<0){
         if(stageKitLive().length>=DEPLOY_SLOTS){
           P.hotAssign[_bs]=key;
-          say2('Inventory is full at '+DEPLOY_SLOTS+', so there is no room in the backpack.');
+          say2('Backpack is full at '+DEPLOY_SLOTS+'.');
           try{ sfx('clank'); }catch(e){}
           return;
         }
@@ -27065,7 +27065,7 @@ function renderKitCol(){
     if(from!=='stash') return;
     if(!key||!ITEMS[key]) return;
     var live=stageKitLive();
-    if(live.length>=DEPLOY_SLOTS){ say2('Kit is full at '+DEPLOY_SLOTS+'.'); return; }
+    if(live.length>=DEPLOY_SLOTS){ say2('Backpack is full at '+DEPLOY_SLOTS+'.'); return; }
     var held=0; for(var i=0;i<P.stash.length;i++) if(P.stash[i]===key) held++;
     var picked=0; for(var j=0;j<live.length;j++) if(live[j]===key) picked++;
     if(picked>=held){ say2('You only have '+held+' of those.'); return; }
@@ -27076,7 +27076,7 @@ function renderKitCol(){
     var key=''; try{ key=ev.dataTransfer.getData('text/plain'); }catch(e){}
     if(!key||!ITEMS[key]) return;
     var live=stageKitLive();
-    if(live.length>=DEPLOY_SLOTS){ say2('Kit is full at '+DEPLOY_SLOTS+'.'); return; }
+    if(live.length>=DEPLOY_SLOTS){ say2('Backpack is full at '+DEPLOY_SLOTS+'.'); return; }
     // One kit entry per stash copy. Counting what is already picked against what
     // the stash holds is the same rule stageKitLive enforces, applied before the
     // pick rather than after it, so the refusal can say why.
@@ -27416,7 +27416,7 @@ function planPut(slot,key){
   var picked=0; for(var j=0;j<live.length;j++) if(live[j]===key) picked++;
   // Only claim another inventory slot if this item is not already coming.
   if(picked<1){
-    if(live.length>=DEPLOY_SLOTS) return 'Inventory is full at '+DEPLOY_SLOTS+', so there is no room to carry that.';
+    if(live.length>=DEPLOY_SLOTS) return 'Backpack is full at '+DEPLOY_SLOTS+', so there is no room to carry that.';
     P.kit.push(key);
   }
   P.hotAssign=P.hotAssign||{};
@@ -27736,7 +27736,7 @@ try{ renderFreeKit(); }catch(_fk){}
       // one kit entry per stash copy, and never past the deploy cap.
       act('Equip',function(){
         var live=stageKitLive();
-        if(live.length>=DEPLOY_SLOTS){ say2('Kit is full at '+DEPLOY_SLOTS+'.'); return; }
+        if(live.length>=DEPLOY_SLOTS){ say2('Backpack is full at '+DEPLOY_SLOTS+'.'); return; }
         var held=0; for(var _h=0;_h<P.stash.length;_h++) if(P.stash[_h]===k) held++;
         var got=0;  for(var _g=0;_g<live.length;_g++)   if(live[_g]===k) got++;
         if(got>=held){ say2('You only have '+held+' of those.'); return; }
@@ -28584,7 +28584,7 @@ function itemBlurb(k){
   if(it.use==='heal') return 'Heals you in the field.';
   if(it.use==='armor') return 'Restores '+(it.amt||0)+' armour.';
   if(it.use==='throw') return 'Thrown. Goes on a hotbar key.';
-  if(it.use==='ammo') return 'Refills a magazine from your bag.';
+  if(it.use==='ammo') return 'Refills a magazine from your backpack.';
   if(it.use==='stim') return 'Refills stamina and clears winded.';
   if(it.use==='key') return 'Opens one locked room.';
   if(craftPart(k)) return craftUse(k)||'Crafting material.';
@@ -29997,10 +29997,10 @@ var PRIMER=[
   ['One of them is blind','The Listener. It has no eyes at all, so nothing about light, cover or standing still in a bush means anything to it. It hunts the noise you make. Everything else about it you can work out up there, and the screen will tell you when one is on you.'],
   ['You carry TWO guns and the second slot can be empty','Gun 1 and gun 2, chosen on the figure in your stash or on the ascent check, and X swaps between them out there. Leaving gun 2 empty is a real choice: one gun is lighter and quieter.'],
   ['You ascend bare','No armour on the way up. Armour Plates put it on out there - put one on a key and use it like a medkit. Each absorbs half of every hit until it is gone, up to a cap of sixty.'],
-  ['E is the verb','E searches a container, opens the Peddler, revives a downed pillager, and calls extraction when you stand in a ring. TAB or I is your bag, M toggles the map, H cycles the controls legend.'],
+  ['E is the verb','E searches a container, opens the Peddler, revives a downed pillager, and calls extraction when you stand in a ring. TAB or I is your backpack, M toggles the map, H cycles the controls legend.'],
   ['XP is not the same thing as money','Credits buy things. XP is the record of what you have done, and it is what the season rewards read. Every raid pays XP whatever else happens: forty for going at all, four for every container you open, and more the further you walk. Dying pays half of that and backing out pays a quarter. Selling salvage at the terminal pays XP on top, which is why the walk to the terminal is worth making, but it is not the only thing that pays. The Peddler out in the field pays cash and no XP, so what he really sells you is the certainty of getting SOMETHING out.'],
 
-  ['Calling extraction is the loudest thing you do','Hold E in an extraction ring to call it, wait, then hold E again to extract. The heavier your bag, the more of the map comes to meet you. Going down in the ring is not the end of it: you can extract from the floor, the screen says HOLD E TO EXTRACT, and nobody comes to pick you up, so you have to do it before you bleed out.'],
+  ['Calling extraction is the loudest thing you do','Hold E in an extraction ring to call it, wait, then hold E again to extract. The heavier your backpack, the more of the map comes to meet you. Going down in the ring is not the end of it: you can extract from the floor, the screen says HOLD E TO EXTRACT, and nobody comes to pick you up, so you have to do it before you bleed out.'],
   ['The conditions box is telling you something','Top right of the screen. Fog cuts how far you see, rain and storm cut how far you are HEARD, a blackout kills the lamps. It states the actual numbers, not the mood.'],
   ['A purple ring means elite','About one machine or pillager in twelve is elite: twice the health, harder hits, a purple ring at its feet, and a deeper bag when it falls. The colour is the same purple the loot pips use for elite, on purpose.'],
   ['A hired merc is a partner now','Hire one at the Bench. B cycles his orders, loot free, follow you, or hold a spot. Stand with him and E searches his bag; drag an item from yours onto him and he will actually use it. Go down and he comes for you.'],
@@ -30232,7 +30232,7 @@ function renderSettings(){
     '<button id="set_restore" style="padding:6px 12px">PICK FILE</button></div>'+
     '<div class="row"><div style="flex:1"><b>Controls legend</b><div class="hint">H in a raid cycles compact, full and off. Compact is the default.</div></div>'+
     '<span class="hint">H</span></div>'+
-    '<div class="row"><div style="flex:1"><b>Mouse cursor</b><div class="hint">The cursor hides while you are aiming and returns with the bag. BACKSPACE forces it back at any time.</div></div>'+
+    '<div class="row"><div style="flex:1"><b>Mouse cursor</b><div class="hint">The cursor hides while you are aiming and returns with the backpack. BACKSPACE forces it back at any time.</div></div>'+
     '<span class="hint">BKSP</span></div>';
   document.getElementById('set_text').onclick=function(){
     var _uc=uiScale(),_ni=-1;

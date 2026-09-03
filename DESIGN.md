@@ -40024,6 +40024,69 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.90 - ONE WORD FOR THE BACKPACK, AND THE HOTBAR RENAME FINISHED
+
+v9.89 gave the hotbar one name and its own Not verified line said the compact
+legend still called the backpack a bag. Read off every surface on v9.89, the
+thing you carry was named FOUR ways to the player, which is worse than the
+hotbar was.
+
+### WHAT THE PLAYER READ, ON v9.89
+    inventory   the full legend, TAB row; the controller legend, VIEW row; the
+                HUD hint beside the health bar, "TAB  INVENTORY"; two refusals,
+                "Inventory is full at N"
+    bag         the compact legend, TAB row, and the controller one, BACK row;
+                the full legend, "equip gun from bag"; the armour rule card,
+                "they go to the bag instead"; "No room in the bag"; "is in your
+                bag. TAB to equip it"; "Nothing in your bag he wants"; "Refills
+                a magazine from your bag"; the Peddler, "[1]  SELL BAG"; a
+                searched pillager, "'S BAG"; two guide cards; a settings hint
+    kit         three refusals, "Kit is full at N"
+    backpack    the raid panel title, the Undercroft column, and everything
+                v9.89 wrote
+
+And the two controller legends still said BELT for the hotbar, "LB / RB  belt"
+and "change belt slot", which v9.89 missed.
+
+### THE WORD
+BACKPACK: his word, "I opens the BACKPACK", and the panel's word. Twenty two
+strings changed, nothing that reads a profile, nothing that draws, nothing in
+the sim.
+
+Two things are deliberately left alone. BAG OF FRAGS and BIGGER BAG OF FRAGS
+are the names of two Progress rewards and are a literal bag. The frozen
+clipboard in the lore reads "Inventory, year one after departure" and is a
+document in the world, not the game speaking.
+
+One line is measured, not guessed: the armour rule card was measured line by
+line into its box at v8.4x, and "full they go to the backpack," is 29 characters
+against the 32 it replaces, so it stays inside.
+
+### THE CHECK AND ITS TEETH
+It draws the compact legend and reads its rows, draws the full legend and its
+rule cards and reads them, reads the HUD hint beside the vitals, reads the
+controller legend table, and reads the raid backpack panel headings as a control
+that v9.89 was not undone. Every old word is assembled from halves.
+
+Run against a fixture built from v9.89 it fails on all four surfaces at once:
+"the compact legend still has a row that reads bag; the full legend still says
+inventory; the full legend or its rule cards still say bag; the HUD hint still
+reads TAB  INVENTORY; the controller legend still calls the hotbar a belt; the
+controller legend still calls the backpack the inventory". Against this build it
+returns null. The v9.46 legend check, which finds the compact legend by its own
+words, learned the new word and kept the old one, which is harmless.
+
+### NOT VERIFIED
+The seven spoken strings and the three panel labels outside the legends are
+changed by the patch and not read back by the check: the four refusals, the
+Peddler's sell line, the searched pillager's label, the ammo detail, the two
+guide cards and the settings hint. The compact controller legend table is not
+exposed to the fixture and is patch-inferred too. Ten of the twenty two changes
+are proven on screen; the other twelve are the same edit applied to strings the
+harness has no cheap way to raise. Not verified either: the armour rule card's
+fit at 1440p and 4K; 29 characters against 32 is a saving at every size, but I
+measured none of them.
+
 ## v9.89 - ONE WORD FOR THE HOTBAR
 
 His rule of 2026-08-29: one word per thing, and his open line, "I opens the

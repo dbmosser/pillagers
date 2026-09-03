@@ -5214,6 +5214,60 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.90',what:'the backpack has one name on every surface that names it, and the pad legend says hotbar',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(!(window.__textTrace&&window.__deploy&&window.__frame))
+       return 'SKIP: this fixture cannot read what the HUD draws';
+     // NEEDLES FROM HALVES, never whole: this page embeds the source it tests.
+     var BAG=['b','ag'].join(''), INV=['inven','tory'].join(''), KIT=['Kit is ','full'].join('');
+     var BELT=['bel','t'].join(''), TABINV=['TAB  ','INVENTORY'].join('');
+     function lc(s){ return String(s||'').toLowerCase(); }
+     function isWord(text,w){ return new RegExp('(^|[^a-z])'+w+'([^a-z]|$)','i').test(String(text||'')); }
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var keepLeg=g.legendOn;
+     function drawn(mode){
+       g.legendOn=mode;
+       for(var f=0;f<10;f++) __frame(0.016);
+       return __textTrace(function(){ __frame(0.016); }).map(function(d){ return String(d.t); });
+     }
+     // ONE: the compact legend. On v9.89 its TAB row read "bag".
+     var mini=drawn(1);
+     var miniRows=mini.filter(function(t){ return /^(move|sprint|crouch|roll|fire|aim|reload|swap gun|hotbar|search|map|bag|backpack)$/.test(t); });
+     if(miniRows.length<10) return (function(){ g.legendOn=keepLeg; return 'SKIP: the compact legend drew only '+miniRows.length+' rows'; })();
+     if(mini.indexOf(BAG)>=0) bad.push('the compact legend still has a row that reads '+BAG);
+     if(mini.indexOf('backpack')<0) bad.push('the compact legend has no row that reads backpack');
+     // TWO: the full legend and the rule cards. On v9.89: "TAB inventory",
+     // "equip gun from bag", "they go to the bag instead".
+     var full=drawn(2).join(' | ');
+     if(isWord(full,INV)) bad.push('the full legend still says '+INV);
+     if(isWord(full,BAG)) bad.push('the full legend or its rule cards still say '+BAG);
+     if(!/backpack/i.test(full)) bad.push('the full legend never says backpack');
+     // THREE: the HUD hint beside the vitals, "TAB  INVENTORY" on v9.89.
+     var hud=drawn(0).join(' | ');
+     if(hud.indexOf(TABINV)>=0) bad.push('the HUD hint still reads '+TABINV);
+     if(hud.indexOf(['TAB  ','BACKPACK'].join(''))<0) bad.push('the HUD hint does not read TAB  BACKPACK');
+     g.legendOn=keepLeg;
+     // FOUR: the controller legend table, which v9.89 missed entirely.
+     if(window.__pad&&__pad.legend){
+       var padL=__pad.legend(), padTxt=[];
+       for(var a=0;a<padL.length;a++) for(var b=0;b<padL[a][1].length;b++) padTxt.push(padL[a][1][b][1]);
+       var pj=padTxt.join(' | ');
+       if(isWord(pj,BELT)) bad.push('the controller legend still calls the hotbar a '+BELT);
+       if(isWord(pj,INV)) bad.push('the controller legend still calls the backpack the '+INV);
+       if(!/hotbar/i.test(pj)||!/backpack/i.test(pj)) bad.push('the controller legend does not say both hotbar and backpack');
+     } else bad.push('this fixture cannot read the controller legend');
+     // FIVE: the raid backpack panel and the Undercroft column, already renamed
+     // at v9.89, must still say Backpack and Hotbar. A control that this build
+     // did not undo last build's work.
+     var cm=document.getElementById('carrymodal');
+     var heads=cm?[].map.call(cm.querySelectorAll('h2,h3'),function(h){ return h.textContent.trim(); }):[];
+     if(!heads.some(function(h){ return /^backpack/i.test(h); })||!heads.some(function(h){ return /^hotbar$/i.test(h); }))
+       bad.push('control: the raid backpack panel headings read ['+heads.join(', ')+']');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.89',what:'the hotbar has one name on every surface that names it',
    run:function(){
      var bad=[];
@@ -8128,7 +8182,7 @@ window.__REGRESS=[
      // Found by the legend's OWN words, so the vitals text sitting directly
      // below it cannot contaminate the extent.
      var LBL=['move','sprint','crouch','roll','fire','aim','reload','swap gun',
-              'hotbar','bag','search','map','H  full list'];
+              'hotbar','bag','backpack','search','map','H  full list'];
      var leg=[], i;
      for(i=0;i<draws.length;i++) if(LBL.indexOf(draws[i].t)>=0) leg.push(draws[i]);
      // CONTROL FIRST: if the legend did not draw, there is nothing to grade and
