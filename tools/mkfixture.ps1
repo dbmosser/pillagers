@@ -5450,7 +5450,7 @@ window.__REGRESS=[
      var dep=document.getElementById('sectordeploy');
      if(dep){ dep.click(); if(!(ask&&ask.classList.contains('on'))&&!document.getElementById('stagemodal').classList.contains('on')) bad.push('control: ASCEND on the sector page no longer leads to the loadout question'); }
      return done(bad.length?bad.join('; '):null); }},
-  {v:'9.96',what:'a dose from the bar pays more XP per dose while it lasts, on the run and on a sale',
+  {v:'9.96',what:'a dose from the bar pays 2.5 percent more raid XP per dose while it lasts, and nothing on a sale',
    run:function(){
      var bad=[];
      if(typeof addProgress!=='function'||typeof spForRun!=='function'||typeof xpForRun!=='function') return 'SKIP: no progress functions in this build';
@@ -5471,9 +5471,9 @@ window.__REGRESS=[
      if(sober!==base) bad.push('sober, the run paid '+sober+' against the '+base+' the rules add up to');
      if(two<=sober) bad.push('with two doses in his blood the run paid '+two+', the same as sober');
      else {
-       var want2=Math.round(base*1.10);
-       if(Math.abs(two-want2)>1) bad.push('two doses paid '+two+', not the '+want2+' that five percent a dose gives');
-       var want10=Math.round(base*1.50);
+       var want2=Math.round(base*1.05);
+       if(Math.abs(two-want2)>1) bad.push('two doses paid '+two+', not the '+want2+' that two and a half percent a dose gives');
+       var want10=Math.round(base*1.25);
        if(Math.abs(ten-want10)>1) bad.push('ten doses paid '+ten+', not '+want10);
        if(twelve!==ten) bad.push('twelve doses paid '+twelve+' against ten paying '+ten+', so the bonus does not stop at ten');
      }
@@ -5481,8 +5481,8 @@ window.__REGRESS=[
      __cfg({buzzXp:0});
      var off=runPays(2);
      if(off!==sober) bad.push('control: with the dial at 0 two doses still paid '+off+' against '+sober);
-     __cfg({buzzXp:0.05});
-     // A SALE pays the same bonus. Sell all, one loose scrap, two doses.
+     __cfg({buzzXp:0.025});
+     // A SALE pays NO bonus, his answer 42. Sell all, one loose piece, two doses.
      P2.buzz=[{id:'liquor',tag:'drunk',t:120,dur:180},{id:'liquor',tag:'drunk',t:120,dur:180}];
      // Whatever the button's own rule will sell: loose salvage with no use and
      // not a crafting part. Scrap is a part and the button refuses it on purpose.
@@ -5496,13 +5496,13 @@ window.__REGRESS=[
        try{ sb.onclick(); }catch(e1){ bad.push('sell all threw: '+e1); }
        var got=(P2.xp||0)-1000;
        if(P2.credits!==v) bad.push('sell all paid $'+P2.credits+' for '+pick+' worth $'+v+', so this probe did not sell what it staged');
-       else if(got!==Math.round(v*1.10)) bad.push('selling '+pick+' worth '+v+' with two doses paid '+got+' XP, not '+Math.round(v*1.10));
+       else if(got!==v) bad.push('selling '+pick+' worth '+v+' with two doses paid '+got+' XP, not its plain '+v+'; sales take no bar bonus');
      } else bad.push('no sell-all button to drive, or nothing the button would sell');
      // The bar says so. Two doses of liquor: IN YOUR BLOOD x2, XP +10%.
      if(typeof renderBar==='function'){
        try{ renderBar(); }catch(e2){}
        var bl=document.getElementById('barlist'), bt=(bl&&bl.textContent)||'';
-       if(bt.indexOf('XP +10%')<0) bad.push('the bar does not say XP +10% beside two doses of liquor');
+       if(bt.indexOf('XP +5%')<0) bad.push('the bar does not say XP +5% beside two doses of liquor');
      }
      P2.buzz=[];
      return bad.length?bad.join('; '):null; }},

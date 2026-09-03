@@ -40024,6 +40024,28 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.02 - THE BAR PAYS TWO AND A HALF PERCENT, ON RAIDS ONLY
+
+His answers 41 and 42, 2026-09-03: **"make it 2.5% per dose/liquor shot"** and
+**"NO, only XP earned in raids."**
+
+v9.96 paid five percent a dose on the run and on both salvage sales in the
+stash. Half that now, and the two sales pay their plain price in XP again;
+only the run takes the bar's bonus. The bar's line and its IN YOUR BLOOD tag
+say RAID XP and 2.5% a dose, and the sell-all line no longer mentions the bar.
+
+### Measured
+
+The v9.96 check grades his numbers now: the same run record sober, at two
+doses, ten and twelve, requiring five percent, twenty-five, and no more past
+ten; the dial at zero as the control; then a sale of one loose piece with two
+doses in the blood, requiring its plain price in XP and not a point more; and
+the bar's tag reading XP +5% beside two doses. It fails on the v10.01 control
+at the first number.
+
+Not verified: whether a quarter more at ten doses is still worth the slowed
+hands; he set the number and the number is what shipped.
+
 ## v10.01 - THE HUD MEASURED, AND THE GEAR PANEL BROUGHT INSIDE THE SCREEN
 
 His note, 2026-09-03: **"menus and hud in the raid are still wonky, can you
