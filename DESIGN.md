@@ -40024,6 +40024,90 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.84 - THE MACHINES SETTING ONLY MOVED HALF THE MACHINES
+
+His standing item is "make sure all the modifiers in the settings menu work as
+intended". I swept all eight rows. Seven are honest. This one moves the sentries
+and leaves the crawlers exactly where they were.
+
+### THE SWEEP
+Every option of every row, set through the profile and applied the way a load
+applies it, then read back out of CFG: all 24 options write the keys they claim,
+with no exceptions.
+
+Then the same again, counting the built world rather than reading the dial, which
+is the only question that matters. A dial that arrives in CFG and changes nothing
+is the exact shape of the MAPCONT fault from v2.x.
+
+  loot          Rich values an item at 34, Lean at 18. Honest.
+  pillagers     Many 10, Standard 7, Few 3, None 0 at spawn, and None is still 0
+                after 120 simulated seconds, so the waves stay off too. Honest,
+                and that closes the "nRaider 0 producing an empty map" item my
+                audit notes have carried as unknown since v8.42.
+  machines      sentries 21, 16, 10. Crawlers 52, 52, 52.
+
+### THE FINDING, AT SEED 4242
+
+                        Many        Standard    Few
+    asked for           28 / 46     20 / 34     12 / 20
+    COLD STORAGE        21 / 52     16 / 52     10 / 52
+    THE COLD MILE      106 / 224    80 / 224    53 / 224
+
+Not one crawler moves. Seed 99 says the same: 47 for Many and 47 for Few. And
+crawlers are most of what is out there, 52 of the 73 machines on COLD STORAGE and
+224 of 330 on the mile, so choosing Few was buying eleven fewer sentries and
+calling it a difficulty setting. The row's own hint calls the machines "what
+usually kills you".
+
+### THE CAUSE
+HIS 5 asked for a crawler count that follows how many HOUSES a map has rather
+than how many square metres, so that every house is a gamble. That was built as a
+floor:
+
+    var _wantC = round(houses * crawlerPerHouse * patrolMul);
+    if(_wantC > N_CRAWLER) N_CRAWLER = _wantC;
+
+raised only, never lowered, which is correct on its own terms. But the floor
+lands at 52 on COLD STORAGE and 224 on the mile, and that is above all three of
+the numbers this row offers, so the row never got a word in.
+
+### THE FIX
+The row already owns nSentry and nCrawler, so it owns the per-house rate too, and
+the floor moves with his choice instead of standing over it. Standard keeps 2.5,
+the value the maps are balanced on, and Many and Few take the same ratio their
+crawler counts already carry, 46/34 and 20/34.
+
+                        Many        Standard    Few
+    COLD STORAGE        70          52          32
+    THE COLD MILE       300         224         140
+    seed 99, cold       63          -           29
+
+The floor still beats the area figure at every setting, which is the design HIS 5
+asked for. What changed is that it is now a floor per setting rather than one
+floor for all three.
+
+### THE CHECK AND ITS TEETH
+Run against a fixture built from v9.83 it fails and prints the flat rows: 52, 52
+and 52 on one map and 224, 224 and 224 on the other. Against this build it
+returns null.
+
+Four controls. The row must still ASK for three different counts, or there is
+nothing to deliver; the maps must have built; the sentries, which were already
+correct, must still respond; and Standard must still produce exactly 52 crawlers
+in 85 entities and 224 in 374, because every other check and every balance number
+in this project is measured there and the default world must not move by one.
+
+### NOT VERIFIED
+Whether Many is now too many. 70 crawlers on COLD STORAGE against 52 today is a
+35 percent harder map at that setting, and 300 on the mile, and I have not
+measured what either does to the extract rate. Standard is untouched and that is
+what everything is balanced on, so nothing he plays by default has changed. Not
+verified either: the remaining three rows I did not drive to a world consequence,
+which are how hard they hit, raid length and extraction heat. All three write
+their keys, and those keys are read in 1, 16 and 2 places in the file
+respectively, but I confirmed only that the numbers arrive, not that the felt
+effect matches the label.
+
 ## v9.83 - THE CONTROLS LEGEND DID NOT GO WHERE YOU DRAGGED IT
 
 It remembered the drag and then ignored half of it, which is worse than not

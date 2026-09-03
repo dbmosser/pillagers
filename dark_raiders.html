@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.83';
+var VER='9.84';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26090,7 +26090,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.83: the controls legend goes where you drag it. It was remembering the drag and ignoring half of it: sideways it moved half again as far as your hand, and up or down it did not move at all, because the panel is pinned above the health bar and that pin was cancelling you every frame.',
+  now:'v9.84: the Machines setting moves the crawlers now, not just the sentries. Many, Standard and Few all gave you exactly 52 crawlers on COLD STORAGE and 224 on THE COLD MILE, and crawlers are most of what is out there, so choosing Few was buying eleven fewer sentries and nothing else.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29990,9 +29990,16 @@ var GAMEOPTS=[
   {k:'robots', label:'Machines',
    hint:'Sentries and crawlers. They own the surface and they are what usually kills you.',
    opts:[
-     {n:'Many',     cfg:{nSentry:28, nCrawler:46}},
-     {n:'Standard', cfg:{nSentry:20, nCrawler:34}},
-     {n:'Few',      cfg:{nSentry:12, nCrawler:20}}
+     // v9.84: AND THE PER-HOUSE RATE, or this row only moves half the machines.
+     // The crawler count is floored at houses times this rate (HIS 5: every house
+     // a gamble), and that floor sat above all three of the counts below, so
+     // crawlers measured 52 on COLD STORAGE and 224 on the mile whichever of
+     // these he picked. The rate now carries the same ratio the counts do, 46/34
+     // and 20/34 of the 2.5 the maps are balanced on, and Standard is unchanged
+     // so the default world does not move by one entity.
+     {n:'Many',     cfg:{nSentry:28, nCrawler:46, crawlerPerHouse:3.4}},
+     {n:'Standard', cfg:{nSentry:20, nCrawler:34, crawlerPerHouse:2.5}},
+     {n:'Few',      cfg:{nSentry:12, nCrawler:20, crawlerPerHouse:1.5}}
    ], def:1},
   {k:'hits', label:'How hard they hit',
 hint:'Damage taken from everything on the surface. Standard is how the game has always actually played; Hardened is the old design intent, a fifth harder.',

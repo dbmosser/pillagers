@@ -5196,6 +5196,69 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.84',what:'the Machines setting moves the crawlers, not just the sentries',
+   run:function(){
+     var bad=[];
+     if(!(window.__opts&&window.__opts.rows&&window.__opts.apply))
+       return 'SKIP: this build cannot report or apply its settings rows';
+     __pinDPR(1); __forceSize(1920,1080);
+     // Every option this row offers, on both maps, counted off the built world
+     // rather than read out of CFG. A dial that arrives in CFG and changes
+     // nothing is exactly the fault this build is about.
+     function build(ix,mapIx,seed){
+       __cleanProfile(); __resetCfg(); __pinDefaults(0);
+       var P2=__P(); P2.gameOpts={robots:ix};
+       __opts.apply();
+       var C=__cfg();
+       __deploy({kit:[],safe:null,mapIx:mapIx,seed:seed});
+       var g=__state(), s=0, c=0;
+       for(var i=0;i<g.ents.length;i++){
+         var k=g.ents[i].kind||'';
+         if(k==='sentry') s++; else if(k==='crawler') c++;
+       }
+       return {sentry:s, crawler:c, ents:g.ents.length,
+               askedS:C.nSentry, askedC:C.nCrawler, perHouse:C.crawlerPerHouse};
+     }
+     var A=build(0,0,4242), B=build(1,0,4242), D=build(2,0,4242);
+     var A1=build(0,1,4242), B1=build(1,1,4242), D1=build(2,1,4242);
+     // CONTROL ONE: the row has to be asking for three different numbers, or
+     // there is nothing here to deliver and everything below passes for free.
+     if(!(A.askedC>B.askedC&&B.askedC>D.askedC))
+       return 'SKIP: the Machines row no longer asks for three different crawler counts';
+     // CONTROL TWO: the maps have to have built.
+     if(!(B.ents>50&&B1.ents>200))
+       return 'SKIP: the maps did not build, '+B.ents+' and '+B1.ents+' entities';
+     // THE FINDING. Measured on v9.83, all three options: COLD STORAGE 52, 52
+     // and 52 crawlers; THE COLD MILE 224, 224 and 224. The per-house floor from
+     // HIS 5 is raised-only and it lands above every count this row offers, so
+     // the row never got a word in. Crawlers are most of what is out there, 52 of
+     // the 73 machines on COLD STORAGE, and the row's hint calls the machines
+     // what usually kills you.
+     if(!(A.crawler>B.crawler&&B.crawler>D.crawler))
+       bad.push('COLD STORAGE gives '+A.crawler+', '+B.crawler+' and '+D.crawler+
+                ' crawlers for Many, Standard and Few, so the setting does not reach them');
+     if(!(A1.crawler>B1.crawler&&B1.crawler>D1.crawler))
+       bad.push('THE COLD MILE gives '+A1.crawler+', '+B1.crawler+' and '+D1.crawler+
+                ' crawlers for Many, Standard and Few, so the setting does not reach them');
+     // AND THE GAP HAS TO BE WORTH PICKING. One crawler between Many and Few is
+     // a difference that satisfies the test above and nothing a player could feel.
+     if(D.crawler>B.crawler*0.85||A.crawler<B.crawler*1.15)
+       bad.push('COLD STORAGE moves only '+D.crawler+' to '+A.crawler+' against a standard of '+
+                B.crawler+', which is too small a spread to be a choice');
+     // CONTROL THREE: the half that already worked still works.
+     if(!(A.sentry>B.sentry&&B.sentry>D.sentry))
+       bad.push('control: sentries now read '+A.sentry+', '+B.sentry+' and '+D.sentry+
+                ', so the fix broke the half of this row that was correct');
+     // CONTROL FOUR, AND IT IS THE ONE THAT MATTERS. Standard is what every other
+     // check and every balance number in the project is measured on, so the
+     // default world must not have moved by a single entity.
+     if(B.crawler!==52||B.ents!==85)
+       bad.push('control: COLD STORAGE at Standard now holds '+B.crawler+' crawlers and '+
+                B.ents+' entities rather than 52 and 85, so the default world moved');
+     if(B1.crawler!==224||B1.ents!==374)
+       bad.push('control: THE COLD MILE at Standard now holds '+B1.crawler+' crawlers and '+
+                B1.ents+' entities rather than 224 and 374, so the default world moved');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.83',what:'the controls legend goes exactly where you drag it, in both axes',
    run:function(){
      var bad=[];
