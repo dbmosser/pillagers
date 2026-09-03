@@ -40024,6 +40024,70 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.98 - THE STASH SCREEN IS FIVE THINGS
+
+His note, 2026-09-03: **"the stash screen is way too busy -- SCRAP it entirely
+-- change it so it just has 1. Stash inventory 2. Player backpack 3. Player
+hotbar 4. Safe Pocket 5. Freebie Kit Selection. Get rid of the stuff marked out
+in white in the image"**, with a screenshot of the v9.90 screen.
+
+### What he struck out
+
+The whole YOUR OPERATOR column on the left: the figure, the six cosmetic slots,
+the numbered loadout saves. The armour line above the buttons. The entire
+bottom row: RETURN TO THE UNDERCROFT, SHOP, CRAFT, CONTRACTS, SURFACE, LAYOUT,
+SETTINGS. What he did not strike out stays, because it is the stash inventory's
+own: the category tabs, the drag hint line, the detail readout and the sell bar.
+
+### What it is now
+
+One column: the stash grid on the left, Backpack, Hotbar and Safe pocket
+stacked on the right, the freebie kit along the bottom, and a single CLOSE at
+the top right beside the credits. TAB and ESC close it as they always did.
+
+The operator column leaves this screen only; the ascent check keeps its copy
+until Appearance exists, which is his next note, so nothing is lost in between.
+Day or night went to the sector page at v9.97. SHOP, CRAFT, CONTRACTS and
+SETTINGS duplicated stations that stand on the floor a few steps away. LAYOUT
+cycled ten arrangements of the same DOM; the arrangement is fixed at the
+default now and the CSS for the other nine stays, inert. The armour line was a
+warning with exactly one state since v7.30, "you ascend with no armour on".
+
+### Measured
+
+The check opens the stash from the terminal on a clean profile with three
+things in it, requires every struck-out element to be absent or undrawn, the
+loadout save rows gone, no YOUR OPERATOR and no "ascend with" in the text,
+requires his five parts drawn with nine hotbar cells, clicks CLOSE and requires
+the screen gone, and as a control renders the ascent check and requires its
+operator panel still there. On v9.97 every struck-out element is present, which
+is the finding.
+
+### A check that asked the whole page for a hotbar cell
+
+The v9.89 check went silent after this build: it asked the document for hotbar
+cell 5 and clicked it, and the hotbar cells exist twice, once on the stash
+screen and once on the ascent check, which comes first in the document. It had
+only ever got the stash one because nothing before it rendered the ascent
+check; this build's control does. The stash cell still says its line, measured
+directly. The check now asks the stash screen for its own cell, and the control
+puts the ascent check's cells back as it found them.
+
+### And a check that scrolled the column that is gone
+
+The full run passed 137 checks and could not run one: v9.67, the station wheel
+check, found its scrolling list in the operator column's picker, a 230px box of
+loadout rows, and with the column gone a clean profile has nothing on the stash
+screen that overflows. It fills the stash with sixty pieces of scrap first now,
+so the stash grid itself is the list it spins over, which is the list his
+pointer is actually on at that station.
+
+Not verified: the ten layout rules against a fixed default, since nothing
+cycles them now; if the default reads wrong on his monitor the fix is a number
+in applyStashLayout. Not verified: his answers to questions 1 to 10, which
+could add a search box, drop the tabs, or move the sell bar; this build is the
+literal reading of his note and his white marks.
+
 ## v9.97 - DAY OR NIGHT IS CHOSEN ON THE WAY UP
 
 His note, 2026-09-03: **"day vs. night selection should move to map selection

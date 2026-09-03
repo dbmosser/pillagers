@@ -301,6 +301,86 @@ Taken as: the machines kill him, not the pillagers; the Listener and the sentry
 are the two to look at when the balance work comes up after his notes. Question
 46 and 47 of QUESTIONS-2026-09-03.md ask him for the target rate and his own
 read of what kills him. The file is renamed consumed-.
+
+## HIS FIFTY ANSWERS, 2026-09-03, about 10:40, to QUESTIONS-2026-09-03.md. BINDING.
+He wrote: "YOU FIGURE OUT THE ORDER, I WILL RETURN IN 5-6 HOURS." Then: "we
+desperately need to improve the graphics for the guns, its hard to even tell
+what they are." Then: "ok cya in 5-6 hours."
+
+The stash screen
+1. Every menu screen in the game has a CLOSE button, and ESC works on every menu screen.
+2. Tabs: KEEP, "super helpful", reorganised into Guns, Consumables (armour plates, heals, grenades), Parts, Salvage, Keys, Other if needed.
+3. Sell bar: KEEP ON STASH.
+4. One-line control hint: KEEP.
+5. Numbered loadout SAVE slots: REMOVE, not needed.
+6. Freebie kit: keep the single selection option as it is, nothing more.
+7. The armour warning goes on the ASCEND MAP SCREEN (the sector page), not the stash.
+8. Backpack on the stash screen: a GRID OF FIXED CELLS.
+9. Arrangement as now, unless I see a way to materially improve it.
+10. No search box.
+
+Discount Fashion Depot (he renamed Appearance)
+11. The word: "DISCOUNT FASHION DEPOT".
+12. A new station on the floor called DISCOUNT FASHION DEPOT.
+13. Drop none of the six categories.
+14. ADD ALL of: face paint or scars, eyes, beard, gloves, boots, backpack colour, patches or badges, tattoos; also different clothing, more variety, anything else I can think of.
+15. Cosmetics are EARNED.
+16. No cosmetic costs credits.
+17. The chosen look is ALWAYS visible on your character in the raid.
+18. Randomiser button: YES.
+19. Saved looks, three named presets: YES.
+20. Other pillagers in the raid draw from the same cosmetic pool: YES.
+
+Ascension and day or night
+21. One prominent toggle on the map screen.
+22. Night: "already jarring"; give more XP, a multiplier "just like 1.2".
+23. Two choices only, and DAY gives a random time of day: morning, noon, afternoon or evening.
+24. Default to DAY every ascent.
+
+The raid HUD and menus
+25. Bothers him most: CONTROLS (legend), CONDITIONS, PILLAGER BOARD, and ON-HUD MESSAGING.
+26. Keep panel dragging and resizing; the mouse must CLEARLY indicate resize when over a corner.
+27. Controls legend shown by default.
+28. The Undercroft stash screen should incorporate the EXISTING RAID BACKPACK appearance, not the other way round.
+29. Only PAUSE stops time; the map and the backpack keep the raid running.
+30. He plays at 4K; the game must be accessible at 1080p, 1440p and 4K.
+31. No minimap needed; M opens the map.
+32. Messages: not sure how a stack works in practice, would have to see it; messages should FADE eventually.
+
+Controls
+33. Crouch on CTRL and C: TOGGLE.
+34. Aim down sights on RMB: HOLD.
+35. Sprint on SHIFT: TOGGLE.
+36. No other key changes named.
+
+Wirt and the economy
+37. Limited Time Offer stays a flat $10,000.
+38. The offer prints the item's name as well: "YES OF COURSE".
+39. The $2,500 gamble should have a chance at the top items.
+40. Credits and XP at the top of every menu screen, consistently.
+
+The bar and XP
+41. XP bonus: 2.5 percent per dose or liquor shot.
+42. The bonus applies only to XP earned in raids, not to sales.
+43. The dose clock keeps running in the Undercroft.
+
+Pillagers and combat
+44. A downed pillager starts at 50 health, and health TICKS DOWN during the downed count, so it takes three shots plus a little tick-down.
+45. Downed pillagers CRAWL toward cover: "they should always play like real players, remember?"
+46. No balance tuning: "30% is fine, I am just playtesting... it feels good for now."
+47. Sentries and pillagers kill him most, "which is what it should be". Unrelated: RENAME THE ORGAN.
+
+Sound
+48. (blank)
+49. MUSIC SHOULD NEVER PLAY IN A RAID, only in the Undercroft.
+
+Order
+50. I decide the order. He returns in 5 to 6 hours.
+
+Plus, after the answers: "we desperately need to improve the graphics for the guns, its hard to even tell what they are."
+
+MY ORDER, one thing per build, decided 2026-09-03 10:45:
+v9.98 stash cut (in flight) -> v9.99 Discount Fashion Depot -> v10.00 more cosmetics, earned -> v10.01 gear panel inside the screen -> then his answers cheapest and most binding first: 41/42 bar bonus 2.5 percent, raids only; 38 the offer names its item; 44 downed pillager 50 and ticking down; 49 no music in a raid; 24 day by default; 22 night pays 1.2x XP; 23 day is a random time of day; 33/35 crouch and sprint toggle; 5 loadout saves removed from the ascent check; 7 armour warning on the sector page; 2 the tabs reorganised; 8/28 the stash backpack as a grid of cells in the raid backpack's style; 1 CLOSE and ESC on every menu; 40 credits and XP on every menu; 47 rename the organ; the guns' graphics; then 14/18/19/20 the wardrobe categories, randomiser, presets and pillagers' looks; then 25/26/32 the four HUD panels, the resize cursor and message fade; 29 map and backpack do not pause; 39 confirm the gamble reaches the top items. Then audit and clean.
 ## THE QUEUES ARE EMPTY, 2026-09-03 after v9.90
 The raid audit queue, the full-file audit's named items, and his fifty answers are
 all shipped, decided, superseded, or not reproduced, with one design item left
@@ -653,6 +733,7 @@ AND THE SECOND HALF OF THE STRETCH:
 | THE WHEEL: ZOOM, CTRL-WHEEL HUD SIZE, MENUS SCROLL | v9.95 | his two wheel notes. Read off v9.94: the canvas wheel zoomed with any modifier; the document listener's scroll rule was off in the whole Undercroft since v9.67, so station lists (the HIRE grid in his screenshot) resized instead of scrolling. Now hudSizeStep(dir) is the one step Minus and Equal take, ctrl-wheel on the canvas calls it and does not zoom; the document listener lets any scrollable box under the pointer scroll, floor or not. Check dispatches real wheel events: ctrl-wheel steps the HUD one index and leaves zoom alone, plain wheel zooms and leaves the HUD alone; Wirt's list overflowed, wheel over it leaves menuZoom unchanged and the event unswallowed; wheel on the floor still sizes. Fails on a v9.94 fixture |
 | A DOSE FROM THE BAR PAYS | v9.96 | his note: "using Liquor or Blotter should give a small XP boost per stack while the effect is occurring". Read off v9.95: XP written at three sites (run progress, sell one, sell all), none reading the buzz. Now addXp is the one writer, multiplied by 1 + 0.05 per live dose, both kinds together, ten at most (dial buzzXp); shown on the bar's IN YOUR BLOOD tag, the raid conditions row, and the sell-all line. Check runs one record sober, at two, ten and twelve doses (110, 150, capped), dial at zero as control, sells a scrap at two doses for 10 percent more, and reads XP +10% off the bar. Fails on a v9.95 fixture |
 | DAY OR NIGHT IS CHOSEN ON THE WAY UP | v9.97 | his note: "day vs. night selection should move to map selection screen that occurs upon ascension". Read off v9.96: one SURFACE: DAY button in the stash screen's bottom row toggled P.cond; the sector page opened only with more than one map offered, so a choice placed there would be unreachable with one map. Now the sector page has SURFACE, DAY and NIGHT under the map list, chosen one drawn amber with a line saying which you go up in, and the lift always opens the page. The stash button stays one more build and follows. Check takes the lift on a clean profile, requires the sector page (not the loadout question), clicks NIGHT and DAY reading P.cond and isDay(), requires the buttons to differ once chosen, the old button to follow, and ASCEND to still reach the loadout question. Fails on a v9.96 fixture: "the sector page has no DAY and NIGHT buttons" |
+| THE STASH SCREEN IS FIVE THINGS | v9.98 | his note with the white-marked screenshot: scrap it, five parts only. Removed from the stash screen: the YOUR OPERATOR column (figure, six cosmetic slots, loadout saves), the armour line, and the whole bottom row (RETURN, SHOP, CRAFT, CONTRACTS, SURFACE, LAYOUT, SETTINGS). Kept, as the stash inventory's own: tabs, drag hint, detail, sell bar. One CLOSE top right; TAB and ESC still close. The ascent check keeps its operator panel until Appearance exists. Check opens the stash from the terminal, requires every struck element absent, the five parts drawn with nine hotbar cells, CLOSE to work, and the ascent check's operator panel still there as control. Fails on a v9.97 fixture |
 | ONE WORD FOR THE BACKPACK, AND THE HOTBAR RENAME FINISHED | v9.90 | v9.89's own Not verified line said the compact legend still called the backpack a bag. Read off every surface on v9.89 the thing you carry was named FOUR ways: "inventory" (full legend TAB row, controller VIEW row, the HUD hint "TAB  INVENTORY", two refusals), "bag" (compact legend, controller BACK row, "equip gun from bag", the armour rule card, five spoken lines, the Peddler's "SELL BAG", a searched pillager's "'S BAG", two guide cards, a settings hint), "kit" (three refusals "Kit is full"), and "backpack". And both controller legends still called the hotbar a BELT, which v9.89 missed. THE WORD IS BACKPACK, his word and the panel's. Twenty two strings, nothing that reads a profile or draws. Left alone on purpose: BAG OF FRAGS and BIGGER BAG OF FRAGS, which are Progress rewards and a literal bag, and the lore clipboard "Inventory, year one", a document in the world. The armour card line is 29 characters against the 32 it replaces, inside the box v8.4x measured. Check reads the compact legend, the full legend, the HUD hint, the controller table and the panel headings, needles from halves, and fails on a v9.89 fixture on all four surfaces at once. Ten of the 22 strings are proven on screen; the other twelve are spoken lines the harness has no cheap way to raise |
 | ONE WORD FOR THE HOTBAR | v9.89 | his rule, one word per thing, and his open line "I opens the BACKPACK, write the matching list of consistent definitions". On v9.88 the same nine keyed cells were named THREE ways to the player: "hotbar" in the legend, the bag hint, the item detail and his own answers 11 and 22; "Tactical belt" on the raid backpack heading and the Undercroft column heading, "your backpack plus your belt" under the raid backpack title, "off the belt and into the backpack" on the drag-off message, and "hotbar belt and inventory" on the ascent summary; "the bar" in the empty-slot prompt. THE WORD IS HOTBAR: his word, the legend's word, the keys' word. Six strings changed, nothing that reads a profile or draws. Belt stays inside the code, the raider-and-snitch trade. The vocabulary memory gains a section for what you carry. The check reads the surfaces as rendered text with needles assembled from halves, and fails on a v9.88 fixture on five surfaces at once |
 | HIS ANSWER 22: THE HOTBAR IS VISIBLE IN THE UNDERCROFT | v9.88 | four words of his, between two other floor answers, and it had no row in the status table. v8.96 claimed it in its own comment and delivered it only INSIDE the opened backpack. MEASURED on v9.87 through the real loop on the HUD canvas: backpack closed, 0 opaque pixels on the entire HUD canvas; backpack open, 9 belt cells and 100,047 opaque pixels in the bottom band. FIX: drawHubBelt draws the same file-scope drawBelt against a transient hubBagState swapped in as G for one call, only while the backpack is closed, so exactly one belt is ever on screen; hubBagG is deliberately untouched because closing the backpack is the commit. Cells recorded on HUBBELT for the fixture and for a future click. Display only: editing stays in the opened backpack, answer 11. hubBelt 0 is the control. Check fails on a v9.87 fixture with "with the backpack closed the floor records no belt cells at all" |

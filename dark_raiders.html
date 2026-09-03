@@ -1028,14 +1028,11 @@
       <div style="font-size:13px;color:var(--ash);letter-spacing:.14em;margin-top:4px">THE UNDERCROFT &mdash; THE STASH &mdash; XP <span id="reptop" style="color:var(--amber)">0</span> <span id="notoline"></span></div>
     </div>
     <div class="credits" id="credits">0<small>CREDITS</small></div>
+    <button class="deploy ghost" id="stashclose" style="padding:8px 18px;margin-left:14px;align-self:center">CLOSE</button>
   </div>
-  <div class="hubgrid" style="grid-template-columns:232px 1fr">
-    <div class="panel" id="avpanel">
-      <h2>Your operator</h2>
-      <div id="avatar"></div>
-      <div id="avpicker" style="border-top:1px solid var(--steel-hi);padding:8px 10px;
-           max-height:230px;overflow-y:auto"></div>
-    </div>
+  <!-- v9.98, HIS NOTE: five parts and nothing else. The operator column that
+       stood here, cosmetics and loadout saves, is gone from this screen. -->
+  <div class="hubgrid" style="grid-template-columns:1fr">
     <div class="panel">
       <div class="invtabs" id="stashtabs"></div>
       <div id="invcols" style="display:flex;gap:0;flex:1;min-height:0">
@@ -1086,20 +1083,11 @@
        This is the one screen between the stash and the surface, so it is where
        it belongs. -->
 <div id="hubfreekit"></div>
-<div id="readyline" style="margin-top:11px;font-size:11px;padding:7px 10px;
-       border:1px solid var(--steel-hi);border-radius:3px"></div>
+  <!-- v9.98, HIS NOTE: the armour line and the button row he struck out are
+       gone. The shop, craft, contracts and settings stand on the floor as
+       stations; day or night moved to the sector page at v9.97. -->
   <div id="reportline" style="margin-top:8px;font-size:11px;padding:7px 10px;display:none;
        border:1px solid var(--hazard);border-radius:3px;color:var(--hazard)"></div>
-  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:11px">
-    <button class="deploy" id="backfloor" style="flex:1.6">&larr; RETURN TO THE UNDERCROFT</button>
-
-    <button class="deploy ghost" id="shopbtn" style="flex:1">SHOP</button>
-    <button class="deploy ghost" id="workbtn" style="flex:1">CRAFT</button>
-    <button class="deploy ghost" id="opbtn" style="flex:1">CONTRACTS</button>
-    <button class="deploy ghost" id="condbtn" style="flex:1">CONDITIONS</button>
-    <button class="deploy ghost" id="laybtn" style="flex:1">LAYOUT 1/10</button>
-    <button class="deploy ghost" id="optbtn" style="flex:1">SETTINGS</button>
-  </div>
 </div>
 <script>
 (function(){
@@ -1227,7 +1215,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.97';
+var VER='9.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26205,7 +26193,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.97: day or night is chosen on the way up. The sector page you see when you take the lift has DAY and NIGHT under the map list, and it opens every time now, even when only one map is on offer.',
+  now:'v9.98: the stash screen is five things now: the stash, your backpack, your hotbar, the safe pocket and the freebie kit. The operator column, the armour line and the row of buttons along the bottom are gone. CLOSE is top right; TAB and ESC still close it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -28848,7 +28836,7 @@ function renderCraftDetail(rows){
 // which skipped the sector page and the ascent check, so the loadout he had packed
 // was never moved out of the stash and the standard-kit fallback fired instead.
 
-document.getElementById('backfloor').onclick=function(){ document.getElementById('hub').classList.remove('on'); };
+document.getElementById('stashclose').onclick=function(){ document.getElementById('hub').classList.remove('on'); };
 document.getElementById('carryclose').onclick=function(){ toggleCarry(false); };
 // v7.66, his order: ten layouts and a button. Same DOM, same handlers; the
 // attribute only moves and resizes things.
@@ -28859,10 +28847,8 @@ function applyStashLayout(){
   var _lb=document.getElementById('laybtn');
   if(_lb) _lb.textContent='LAYOUT '+_ln+'/10';
 }
-document.getElementById('laybtn').onclick=function(){
-  P.stashLayout=(clamp(P.stashLayout||6,1,10)%10)+1;
-  saveProfile(); applyStashLayout();
-};
+// v9.98: the LAYOUT button went with the button row. The arrangement stays at
+// the default and the other nine rules in the CSS are inert.
 applyStashLayout();
 // WHAT THE SELL BUTTON SELLS. The single source of truth for both the label and
 // the click, because when those were two separate expressions they disagreed and
@@ -28972,7 +28958,6 @@ function closeTrader(){
   document.getElementById('tradermodal').classList.remove('on');
   renderHub();
 }
-document.getElementById('shopbtn').onclick=function(){ openTrader('buy'); };
 document.getElementById('closetrader').onclick=closeTrader;
 document.getElementById('mercclear').onclick=function(){
   // v8.17, audit: this used to void a hire he had already paid for with no
@@ -29024,26 +29009,20 @@ document.getElementById('closecrate').onclick=function(){
   document.getElementById('cratemodal').classList.remove('on');
 };
 
-document.getElementById('workbtn').onclick=function(){ openTrader('craft'); };
-
+// v9.98: the stash screen's SURFACE button is gone; the choice lives on the
+// sector page since v9.97. syncCond stays as a harmless no-op for its callers.
 function syncCond(){
   var b=document.getElementById('condbtn');
   if(b) b.textContent=isDay()?'SURFACE: DAY':'SURFACE: NIGHT';
 }
-document.getElementById('condbtn').onclick=function(){
-  P.cond=isDay()?'night':'day';
-  saveProfile(); syncCond();
-  // the ground is baked once per raid, so the next deploy picks up the palette
-  hubGround=null;
-};
 // HIS NOTE, v3.58: "tuning is still too much -- needs simple toggles instead".
 // The hub button is now OPTIONS and opens the settings card, which is the
 // simple-toggle surface built for exactly this request at v3.42. The dial
 // console is instrumentation, so it lives with the instrumentation: a button in
 // Dev tools, and the same keyboard route it always had.
-document.getElementById('optbtn').onclick=function(){ openSettings('display'); };
+
 (function(){ var t2=document.getElementById('tunebtn2'); if(t2) t2.onclick=function(){ document.getElementById('devmodal').classList.remove('on'); toggleTune(true); }; })();
-document.getElementById('opbtn').onclick=function(){ openOps('con'); };
+
 document.getElementById('mfbuild').onclick=function(){ buildRack(); };
 document.getElementById('mfarray').onclick=function(){ buildArray(); };
 document.getElementById('mfslot').onclick=function(){ slotCore(); };

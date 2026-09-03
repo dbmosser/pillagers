@@ -5216,6 +5216,50 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.98',what:'the stash screen is five things: stash, backpack, hotbar, safe pocket, freebie kit, with one way out',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!(window.__hubEnter&&window.__station)) return 'SKIP: this build cannot be driven into the Undercroft';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(); P2.stash=['frag','frag','plate']; P2.kit=['frag']; P2.hotAssign={};
+     __hubEnter();
+     var hub=document.getElementById('hub');
+     if(!hub) return 'SKIP: no stash screen in the page';
+     try{ __station('term'); }catch(e1){ return 'the stash terminal threw: '+e1; }
+     if(!hub.classList.contains('on')) return 'the stash terminal did not open the stash screen';
+     function vis(el){ if(!el) return false; var r=el.getBoundingClientRect(); return r.width>0&&r.height>0; }
+     // ONE: what he struck out is gone from this screen.
+     var gone=['avpanel','avatar','avpicker','readyline','backfloor','shopbtn','workbtn','opbtn','condbtn','laybtn','optbtn'];
+     var still=[];
+     for(var i=0;i<gone.length;i++){ var g=hub.querySelector('#'+gone[i]); if(g&&vis(g)) still.push(gone[i]); }
+     if(still.length) bad.push('still on the stash screen: '+still.join(', '));
+     if(hub.querySelector('[data-save],[data-load]')) bad.push('the loadout save rows are still on the stash screen');
+     if(/YOUR OPERATOR/i.test(hub.textContent)) bad.push('the stash screen still says YOUR OPERATOR');
+     if(/ascend with/i.test(hub.textContent)) bad.push('the armour line is still on the stash screen');
+     // TWO: his five parts are there and drawn.
+     var need={stash:'#stashgrid',backpack:'#kitgrid',hotbar:'#hotplanwrap',safe:'#safegrid',freebie:'#hubfreekit .fkbtn'};
+     for(var k in need){ var el=hub.querySelector(need[k]); if(!vis(el)) bad.push('the '+k+' part is missing or not drawn'); }
+     var cells=hub.querySelectorAll('[data-plan]');
+     if(cells.length!==9) bad.push('the hotbar has '+cells.length+' cells, not nine');
+     // THREE: one way out with the mouse, and it works.
+     var cl=hub.querySelector('#stashclose');
+     if(!vis(cl)) bad.push('there is no CLOSE on the stash screen');
+     else { cl.click(); if(hub.classList.contains('on')) bad.push('CLOSE did not close the stash screen'); }
+     // CONTROL: the ascent check still has its operator panel, so cosmetics are
+     // not lost before Appearance exists.
+     var st=document.getElementById('stagemodal');
+     if(st){
+       var sp=document.getElementById('stageplan'), spWas=sp?sp.innerHTML:null;
+       try{ if(window.__renderStage) __renderStage(); }catch(e2){}
+       if(!document.getElementById('stageavatar')) bad.push('control: the ascent check lost its operator panel too');
+       st.classList.remove('on');
+       // Leave the ascent check as found: its hotbar cells come first in the
+       // document and a later check that asks for cell 5 would get them.
+       if(sp&&spWas!==null) sp.innerHTML=spWas;
+     }
+     hub.classList.remove('on');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.97',what:'day or night is chosen on the sector page, and the lift opens that page every time',
    run:function(){
      var bad=[];
@@ -5700,7 +5744,9 @@ window.__REGRESS=[
        return v;
      }
      __showScreen('hub'); if(hub) hub.classList.add('on');
-     var cell=document.querySelector('[data-plan="5"]');
+     // The ascent check has the same cells earlier in the document: ask the
+     // stash screen for ITS cell.
+     var cell=(hub||document).querySelector('[data-plan="5"]');
      if(!cell) return done('SKIP: the Undercroft column drew no hotbar cell');
      window.__lastSay=null;
      (function(){ var _t0=document.getElementById('hubtoast')||document.getElementById('toast')||document.getElementById('say2'); if(_t0) _t0.textContent=''; })();
@@ -5724,7 +5770,7 @@ window.__REGRESS=[
      // v9.82 check drives, read off the toast it produces.
      P2.stash=['frag','frag']; P2.kit=['frag']; P2.hotAssign={5:'frag'};
      __showScreen('hub'); if(hub) hub.classList.add('on');
-     var c2=document.querySelector('[data-plan="5"]'), sg=document.getElementById('stashgrid');
+     var c2=(hub||document).querySelector('[data-plan="5"]'), sg=document.getElementById('stashgrid');
      if(c2&&sg){
        var cr=c2.getBoundingClientRect(), sr=sg.getBoundingClientRect();
        function ev(t,x,y,el){ var e=new MouseEvent(t,{bubbles:true,cancelable:true,clientX:x,clientY:y,button:0}); (el||document).dispatchEvent(e); }
@@ -7329,6 +7375,9 @@ window.__REGRESS=[
        return 'SKIP: this build cannot be driven into the Undercroft';
      __pinDPR(1); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __forceSize(1920,1080);
+     // v9.98 took the operator column and its scrolling picker off the stash
+     // screen. Fill the stash so its own grid is the scrolling list.
+     (function(){ var P2=__P(); P2.stash=[]; for(var q=0;q<60;q++) P2.stash.push('scrap'); P2.kit=[]; P2.hotAssign={}; })();
      __hubEnter();
      function spin(el,x,y,shift){
        var before=__P().menuZoom;
