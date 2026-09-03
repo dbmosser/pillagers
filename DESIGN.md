@@ -40024,6 +40024,61 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.49 - THE WORDS HE CHANGES IN THE GAME ARE PICKED UP PERMANENTLY
+
+His order, 2026-09-03 about 19:35: **"IF i EDIT TEXT USING THE IN GAME TEXT
+EDITOR, YOU SHOULD PICK IT UP PERMANENTLY, UNDERSTOOD??"** Understood.
+
+### What it was
+
+The in-game editor (v9.75, the Edit the words switch in Settings) keeps every
+edit on the profile as original to new, P.txt, with a second map of number
+shapes beside it, P.txp, so an edit survives the number in a line changing.
+Nothing carried them off his machine. The run report did not list them, and
+his browser's storage is his browser's: the play page inside this app's
+browser pane is a different browser with a different profile, so reading it
+there reads nothing of his.
+
+### Now
+
+Every run report carries a TEXT EDITS line and a TEXT PATTERNS line, each
+the map as JSON, whenever the profile holds any. On his machine the report
+posts to the local collector as each raid ends and lands in exports/. Two
+tools finish the loop: tools/textdoc/pull-edits.ps1 reads every report in
+exports/, newest last so a later edit of a line wins, and writes the merged
+map to edits-pending.json; import-text.ps1 -Map takes that map, matches
+each original to a row of the text manifest by its text, and replaces it in
+the source everywhere it appears with the same escaping the Word path uses.
+An original no row matches is replaced as the exact string, first as it
+stands and then as a script literal. From this build on, every tick reads
+exports/ for edits before anything else and bakes what it finds into the
+source as a build of its own, so an edit he makes once is in the game for
+good.
+
+Two more things in the same build, both his words within the hour. "i want to
+start modifying in game text but I want to make sure you are actually going
+to retain it": the moment an edit is committed with Enter the profile is saved
+and a report goes out, so the edit reaches exports/ within the second rather
+than at the end of the next raid. "when we ship beta we should disable this
+feature bc we don't want friends modifying in game text": the Edit the words
+row is his machine only now, like the cheat box, and the editor refuses to
+open anywhere else even if the dial is on in a saved config.
+
+### Measured
+
+The check sets a probe edit and a probe shape on the profile, builds the run
+report, and requires both lines present and reading back to the same maps;
+clears both and requires no line, with the report header still present as
+the control. On v10.48 the report carried no TEXT EDITS line, which is the
+finding. The pull tool and the importer's map path were run on a made-up
+report in a scratch folder: one edit read, matched to its manifest row,
+replaced twice in the source in a dry run.
+
+Not verified: an edit made through the editor on a line the exporter never
+listed (a single word inside the script, or a line the filter mistook for
+code), which the map path replaces as an exact string and cannot match to a
+row; and the pattern map, which is carried but not yet baked, because a
+shape with its numbers blanked is not a source string.
 ## v10.48 - NIGHT IS DENSER
 
 His note, 2026-09-03 about 19:15: **"night mode should have more enemy

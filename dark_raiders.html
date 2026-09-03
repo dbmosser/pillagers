@@ -1262,7 +1262,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.48';
+var VER='10.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1875,6 +1875,10 @@ function TX(s){
 function txSet(orig,next){
   var m=txMap(), pm=txPatMap();
   var so=txSplit(orig);
+  // v10.49: the edit leaves the machine the moment it is made, not at the end
+  // of the next raid. saveProfile so it survives a refresh; autoExport so the
+  // report with the TEXT EDITS line reaches the collector now.
+  try{ setTimeout(function(){ try{ saveProfile(); if(typeof autoExport==='function') autoExport(); }catch(_ae){} },0); }catch(_st){}
   if(typeof next!=='string'||next===''||next===orig){
     delete m[orig];
     delete pm[so.pat];
@@ -2022,7 +2026,7 @@ function txOpen(orig,shown,px,py,pw,ph){
 // is not a canvas is a panel and gets the DOM answer; a canvas gets one recorded
 // frame and a hit test against what that frame actually painted.
 function txClick(cx,cy){
-  if(CFG.textEdit!==1) return null;
+  if(CFG.textEdit!==1||!DEV_LOCAL) return null;   // v10.49: never away from his machine
   var el=document.elementFromPoint(cx,cy);
   if(el&&el.tagName&&el.tagName.toLowerCase()==='input') return null;
   if(el&&el.tagName&&el.tagName.toLowerCase()!=='canvas'){
@@ -2048,7 +2052,7 @@ function txClick(cx,cy){
 (function(){
   try{
     document.addEventListener('mousedown',function(ev){
-      if(CFG.textEdit!==1) return;
+      if(CFG.textEdit!==1||!DEV_LOCAL) return;   // v10.49: never away from his machine
       if(TXBOX&&ev.target===TXBOX) return;
       var r=txClick(ev.clientX,ev.clientY);
       if(!r){ txClose(); return; }
@@ -26703,7 +26707,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.48: night is denser. Night pays 1.2x XP and used to spawn exactly what day spawns; the machines now come out 1.35 times as many after dark, on the bot too. Day is untouched. The pillagers keep their own count.',
+  now:'v10.49: the words you change with the in-game editor ride in every run report, so they are picked up and made permanent in the game itself. Before this an edit lived only in your browser.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -28786,6 +28790,13 @@ function buildExport(){
       L.push('  v'+c.v+' '+when+' '+c.kind+' on '+c.screen+(c.n>1?' x'+c.n:'')+': '+c.msg+(c.where?'  @ '+c.where:''));
     });
   }
+  // v10.49, his order: his in-game text edits ride in every report, as JSON,
+  // original to new, plus the number-shape map the editor keeps beside them.
+  // The tick reads them out of exports/ and bakes them into the source.
+  try{
+    if(P.txt&&typeof P.txt==='object'&&Object.keys(P.txt).length) L.push('TEXT EDITS: '+JSON.stringify(P.txt));
+    if(P.txp&&typeof P.txp==='object'&&Object.keys(P.txp).length) L.push('TEXT PATTERNS: '+JSON.stringify(P.txp));
+  }catch(_te){}
   L.push('Active config ['+(CFG.preset||'custom')+']: '+JSON.stringify(CFG));
   // HIS PRIORITY ORDER RIDES IN EVERY EXPORT, v3.63. The dev box lets him drag
   // the open roadmap questions into his own order; this line is how that order
@@ -30873,6 +30884,7 @@ function renderSettings(){
     // clicked. A slider moved in the console lands here as the option it matches,
     // or as CUSTOM when it matches none.
     var _gr=GAMEOPTS[_gq], _lv=gameOptLive(_gr.k), _gs=(_lv>=0)?_gr.opts[_lv]:null;
+    if(_gr.k==='textEdit'&&!DEV_LOCAL) continue;   // v10.49, his note: the editor is his machine only
     var _dflt=(_lv===_gr.def);
     _go+='<div class="row"><div style="flex:1"><b>'+_gr.label+'</b>'+
       '<div class="hint">'+_gr.hint+(_gs?'':' Set by hand in the tuning console; click to put a word back on it.')+'</div></div>'+

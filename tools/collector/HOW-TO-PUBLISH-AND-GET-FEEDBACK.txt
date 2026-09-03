@@ -1,0 +1,127 @@
+# Publishing the Pillagers alpha so friends can send feedback from inside the game
+
+Written 2026-09-03 for a non-developer. Every click is spelled out. Do the parts in order. Part A takes about fifteen minutes, Part B about ten, Part C is what your friends do. Nothing here costs money.
+
+## What you are setting up, in one paragraph
+
+The game already collects feedback by itself: the note a friend types in the pause box, the tags and note on the end-of-raid card, and any crash. All of that is written into a "run report" the moment a raid ends. What the game does not have yet is somewhere to SEND that report. You are going to create a tiny mailbox on the internet (Cloudflare calls it a Worker), tell me its address, and I put the address into the game. From then on every friend who says YES to the question the game asks on arrival has their reports sent to the mailbox automatically. I read the mailbox every tick and act on what is in it. Friends never touch a file.
+
+## Part A: create the mailbox on Cloudflare (once, about fifteen minutes)
+
+### A1. Make the account
+
+1. Open a browser and go to https://dash.cloudflare.com/sign-up
+2. Type your email address and choose a password. Click the sign-up button.
+3. Cloudflare sends you an email. Open it and click the verify link. If you do not see it within two minutes, check your spam folder.
+4. You land on the Cloudflare dashboard. If it asks you to add a website or pick a plan, do not add anything and do not pay for anything. Look for a link that says Skip, or simply go to https://dash.cloudflare.com again. The free plan is all we need.
+
+### A2. Create the Worker
+
+1. On the left side of the dashboard there is a menu. Find the entry called Workers & Pages (it may be under a heading called Compute or Build). Click it.
+2. Click the blue button that says Create (it may say Create application or Create Worker).
+3. If it offers templates, pick the plain one: Start with Hello World! or Create Worker. Do not pick a framework or a template with a name.
+4. It asks for a name. Delete whatever it suggests and type exactly: pillagers-runs
+5. Click Deploy. Wait for the page that says the worker was deployed. Somewhere on that page is the worker's address. It looks like https://pillagers-runs.SOMETHING.workers.dev where SOMETHING is a word Cloudflare picked for your account. Copy that whole address into a note; you will send it to me at the end.
+
+### A3. Put my code into the Worker
+
+1. On the worker's page click Edit code (a button near the top right).
+2. An editor opens showing some example code. Click anywhere inside the code, press Ctrl and A together to select all of it, then press Delete. The editor should now be empty.
+3. On your computer open the file C:\claudecode\dark raiders\tools\collector\worker.js with Notepad (right click the file, Open with, Notepad).
+4. In Notepad press Ctrl and A, then Ctrl and C. That copies the whole file.
+5. Back in the Cloudflare editor click inside the empty editor and press Ctrl and V. The code appears.
+6. Click Deploy (top right of the editor). If it asks to confirm, confirm. Wait for the message that says deployed.
+7. Check it worked: open a new browser tab and go to the worker address you copied in A2 step 5. The page should show just the word ok. If it shows an error, the paste went wrong: go back to Edit code and repeat steps 2 to 6.
+
+### A4. Create the storage (called a KV namespace)
+
+1. Go back to the dashboard (https://dash.cloudflare.com). In the left menu find Storage & Databases (it may just say Storage). Click it, then click KV.
+2. Click Create a namespace (or Create instance).
+3. It asks for a name. Type exactly: pillagers-runs
+4. Click Add or Create. You now see it in a list. Nothing else to do here.
+
+### A5. Connect the storage to the Worker
+
+1. In the left menu click Workers & Pages again, then click your worker, pillagers-runs.
+2. Click the Settings tab (near the top of the worker's page).
+3. Find the section called Bindings (it may be under Variables and Secrets or listed on its own). Click Add (or Add binding).
+4. Choose KV Namespace from the list of binding types.
+5. It asks for a Variable name. Type exactly, in capitals: RUNS
+6. It asks which namespace. Pick pillagers-runs from the dropdown.
+7. Click Save (or Deploy). If it offers to deploy, deploy.
+
+### A6. Set the secret password that lets me read the reports
+
+1. Still in the worker's Settings, find Variables and Secrets. Click Add.
+2. Set the Type to Secret (not Text, not plain variable).
+3. Variable name, exactly, in capitals: READ_KEY
+4. Value: make up a long password, twenty or more letters and numbers, no spaces. Write it in your note next to the worker address. Example of the shape, do not use this one: pillagers-alpha-2026-k9v3m7q2
+5. Click Save (or Deploy). If it offers to deploy, deploy.
+
+### A7. Check the whole thing
+
+1. In a browser tab go to the worker address followed by /list?key= and then your READ_KEY, all in one line, for example https://pillagers-runs.SOMETHING.workers.dev/list?key=YOURKEY
+2. It should show an empty page or nothing at all (there are no reports yet). If it shows the word no, the READ_KEY in the address does not match the secret you saved: repeat A6.
+3. Paste two things into the chat with me: the worker address, and the READ_KEY. That is the end of your part for the mailbox.
+
+## Part B: put the game on itch (once, about ten minutes; repeat step B4 whenever I give you a new zip)
+
+### B1. The account
+
+1. Go to https://itch.io/register and make a free account (username, email, password). Verify the email.
+
+### B2. Create the game page
+
+1. Log in. At the top right click your username (or the arrow next to it) and choose Upload new project (it may say Create new project).
+2. Title: whatever you like, for example PILLAGERS alpha.
+3. Classification: Games. Kind of project: HTML. This one matters: it must be HTML so the game plays in the browser.
+4. Release status: In development is fine.
+5. Pricing: No payments.
+
+### B3. Upload the game file
+
+1. Scroll to Uploads. Click Upload files.
+2. Pick this file on your computer: C:\claudecode\dark raiders\tools\publish\dark_raiders_web.zip
+3. After it uploads, tick the box that says This file will be played in the browser.
+4. Under Embed options (or Viewport dimensions) set the size to 1920 wide and 1080 tall, or as large as it allows, and tick Fullscreen button. Also tick Mobile friendly off; it is a mouse and keyboard game.
+5. Scroll down to Visibility & access. Choose Restricted, which means only people with the secret link can see it. Do not choose Public yet.
+6. Scroll to the bottom and click Save & view page.
+
+### B4. Get the link and share it
+
+1. On your game page click Edit game (top of the page). Near the top there is a Share section or a Secret URL. Copy that link.
+2. Send the link to your friends. That is the whole invitation. They do not need an itch account to play a Restricted page with the secret link.
+3. Paste the page description: open C:\claudecode\dark raiders\tools\PUBLISH.md, copy the text under Page text for the alpha, and paste it into the Description box of the game page (Edit game, scroll to Details). It tells friends what an alpha is and what the game does with their notes.
+
+### B5. When I give you a new build
+
+1. Edit game, scroll to Uploads, click the small pencil or Replace file next to the old zip, upload the new dark_raiders_web.zip from the same folder, Save.
+2. Friends refresh the page. Same link, new game. Their progress is kept in their own browser, not in the file, so an update never wipes them.
+
+## Part C: what your friends do
+
+1. They open the link, click into the game, and press the FULLSCREEN button on the title screen.
+2. The first time they go down to the Undercroft the game offers the welcome pack, then asks: SEND YOUR RUN REPORTS? If they click YES, SEND THEM, every report goes to your mailbox by itself. If they click CLOSE, reports go to their own Downloads folder instead, and they would have to send you the files. Tell them YES is the useful answer.
+3. To give feedback during a raid: press P or ESC to pause, type in the box under Please provide feedback anything that went or felt wrong, and resume. The note is stamped with the raid clock.
+4. To give feedback at the end of a raid: on the EXTRACTED or KILLED IN ACTION card, click the feeling tags and type in the note box, then click the button to return.
+5. If the game breaks, it says so on screen and writes the crash into the same report. They do not need to do anything.
+6. Nothing else is needed from them. No files, no emails, no forms.
+
+## What happens on my side
+
+Every tick I read the mailbox, list the new reports, read each one, and quote each friend's notes in AUDIT.md the way I quote yours. Crashes go to the top of the queue. Notes become builds. When the address goes into the game I also start reading your own text edits and the run reports from your machine the same way.
+
+## If Cloudflare feels like too much: the Discord alternative
+
+1. Make a private Discord server (the plus button in Discord, Create My Own, For me and my friends).
+2. Make a text channel called run-reports.
+3. Click the gear next to the channel name (Edit Channel), then Integrations, then Webhooks, then New Webhook. Click Copy Webhook URL.
+4. Paste that URL to me. I add a small branch to the game so each report posts into the channel as a file (one build). You drag the files into C:\claudecode\dark raiders\exports\ for me, or let me know and I will build a reader.
+5. The downside: it is manual for you every day. Cloudflare is automatic.
+
+## If something goes wrong
+
+- The worker page shows an error instead of ok: the code paste failed; redo A3.
+- The list page shows no: the READ_KEY in the address does not match; redo A6.
+- Friends say the game asks nothing about reports: the address is not in the game yet, or they are on the old zip; do B5.
+- You are not sure which step you are on: paste me a screenshot and say which part, I will tell you the next click.

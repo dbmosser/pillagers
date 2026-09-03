@@ -1875,6 +1875,10 @@ function TX(s){
 function txSet(orig,next){
   var m=txMap(), pm=txPatMap();
   var so=txSplit(orig);
+  // v10.49: the edit leaves the machine the moment it is made, not at the end
+  // of the next raid. saveProfile so it survives a refresh; autoExport so the
+  // report with the TEXT EDITS line reaches the collector now.
+  try{ setTimeout(function(){ try{ saveProfile(); if(typeof autoExport==='function') autoExport(); }catch(_ae){} },0); }catch(_st){}
   if(typeof next!=='string'||next===''||next===orig){
     delete m[orig];
     delete pm[so.pat];
@@ -18489,7 +18493,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       // starts under the band now (ty-26.5); the full beard reaches the chin.
       if(BEARD==='stubble'){ wc.globalAlpha=0.55; rrF(hx2-5.6,ty-26.2,11.2,3.6,1.6); wc.globalAlpha=1; }
       else if(BEARD==='goatee'){ rrF(hx2-2.4,ty-26.4,4.8,4.6,1.4); }
-      else if(BEARD==='fullbeard'){ rrF(hx2-6.4,ty-26.6,12.8,5.8,2.4); }
+      else if(BEARD==='fullbeard'){ rrF(hx2-6.4,ty-26.2,12.8,5.8,2.4); }
       else if(BEARD==='chops'){ rrF(hx2-7.2,ty-33,2.8,7.4,1.2); rrF(hx2+4.4,ty-33,2.8,7.4,1.2); }
     }
     // HEADGEAR. Sits on top of the fringe and the face because that is where a
@@ -18504,8 +18508,8 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillStyle=INK;       rrF(hx2-8.6,ty-39.2,17.2,2.8,1.2);
       wc.fillStyle='#3c424e'; wc.fillRect(hx2-7.6,ty-38.8,15.2,1.2);
     } else if(HAT==='mask'){
-      wc.fillStyle=INK;       rrF(hx2-8,ty-29.4,16,6.2,2.6);
-      wc.fillStyle='#14161b'; rrF(hx2-7.4,ty-28.9,14.8,5.2,2.2);
+      wc.fillStyle=INK;       rrF(hx2-8,ty-29.4,16,9.4,2.6);     // v10.50: down to the chin, over the lower beards
+      wc.fillStyle='#14161b'; rrF(hx2-7.4,ty-28.9,14.8,8.4,2.2);
       wc.fillStyle='#2b2f38'; wc.fillRect(hx2-6.6,ty-28.6,13.2,1.1);
     } else if(HAT==='visor'){
       wc.fillStyle=INK;       rrF(hx2-9,ty-40.6,18,5.4,2.2);

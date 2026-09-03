@@ -5222,6 +5222,31 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.49',what:'the run report carries his in-game text edits as JSON that reads back to the same maps, and nothing when there are none',
+   run:function(){
+     var bad=[];
+     if(typeof buildExport!=='function') return 'SKIP: no run report builder in this build';
+     var P2=__P(); var keepT=P2.txt, keepP=P2.txp;
+     try{
+       // THE FINDING. On v10.48 the report had no line for the edits.
+       P2.txt={'probe original 4242':'probe changed 4242'};
+       P2.txp={'probe shape \u0001 wide':'probe shape \u0001 broad'};
+       var rep=buildExport();
+       var mE=/^TEXT EDITS: (.*)$/m.exec(rep), mP=/^TEXT PATTERNS: (.*)$/m.exec(rep);
+       if(!mE) return 'the run report carries no TEXT EDITS line, so an edit lives and dies in the browser';
+       var back=null; try{ back=JSON.parse(mE[1]); }catch(_j){}
+       if(!back||back['probe original 4242']!=='probe changed 4242') bad.push('the TEXT EDITS line does not read back to the map: '+mE[1].slice(0,80));
+       if(!mP) bad.push('the run report carries no TEXT PATTERNS line');
+       else { var backP=null; try{ backP=JSON.parse(mP[1]); }catch(_k){} if(!backP||backP['probe shape \u0001 wide']!=='probe shape \u0001 broad') bad.push('the TEXT PATTERNS line does not read back to the map'); }
+       // CONTROL: with nothing edited there is no line, so a report is not padded.
+       P2.txt={}; P2.txp={};
+       var rep2=buildExport();
+       if(/^TEXT EDITS:/m.test(rep2)||/^TEXT PATTERNS:/m.test(rep2)) bad.push('control: an empty edit map still writes a line');
+       if(rep2.indexOf('FLIGHT RECORDER')<0) bad.push('control: the report lost its header');
+     } finally {
+       P2.txt=keepT; P2.txp=keepP;
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.48',what:'night spawns more machines than day, the pillagers keep their count, day keeps the fingerprint, and the dial is live',
    run:function(){
      var bad=[];
