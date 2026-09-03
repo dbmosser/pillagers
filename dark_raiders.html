@@ -1234,7 +1234,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.08';
+var VER='10.09';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23461,39 +23461,93 @@ function drawTrade(){
 // the charter forbids asset files: every surface that shows an item calls
 // drawItemIcon and gets the same picture of it, so a Frag Charge in the bag,
 // on the hotbar and in a shop row is recognisably one object.
+// v10.09, HIS NOTE: "its hard to even tell what they are". One painter used to
+// draw every gun from the same five rectangles. This one draws by family, each
+// with the shape people know it by, outlined dark so it reads at 22 pixels.
+var GUN_FAMILY={pistol:'hand',tacker:'hand',magnum:'revolver',
+                smg:'smg',sputter:'smg',chatter:'smg',
+                carbine:'rifle',rifle:'rifle',whisper:'rifle',
+                shotgun:'shotgun',scuttle:'shotgun',
+                lmg:'lmg',dmr:'marksman',sniper:'marksman',lance:'lance'};
 function gunIcon(c,id,cx,cy,S,tint){
-  // Side profiles facing right, proportioned from each weapon's own character:
-  // barrel length tracks range, the drum tracks the magazine, the scope tracks
-  // the optic. Drawn in the weapon's tint over a dark under-shadow for pop.
-  var W=WEAPONS[id]||WEAPONS.pistol;
-  var L=S*clamp((W.rng||300)/760,0.42,1.0);         // barrel reach
+  var W=WEAPONS[id]||WEAPONS.pistol, fam=GUN_FAMILY[id]||'rifle';
   // v7.99: rarity IS the weapon colour, everywhere this painter serves.
   var col=RCOL[gunRarity(W.id)]||tint||W.tint||'#ffd48a';
+  var dk=darkHex(col,0.55), ink='#0a0c10', wood='#7a4a28', glass='#bfe8ff';
   c.save(); c.translate(cx,cy);
-  c.fillStyle='rgba(0,0,0,.35)';
-  c.fillRect(-S*0.5+1.5,-S*0.06+1.5,S*0.5+L*0.5,S*0.12);
-  c.fillStyle=col;
-  // receiver
-  c.fillRect(-S*0.28,-S*0.09,S*0.34,S*0.18);
-  // barrel
-  c.fillRect(S*0.06,-S*0.05,L*0.55,S*0.10);
-  // stock (long guns) or grip-only (pistols)
-  if(id!=='pistol'&&id!=='tacker') c.fillRect(-S*0.5,-S*0.06,S*0.24,S*0.12);
-  // grip
-  c.fillRect(-S*0.16,S*0.07,S*0.10,S*0.20);
-  // magazine: drum for the lmg, long stick for smg family, box otherwise
-  if(id==='lmg'){ c.beginPath(); c.arc(-S*0.02,S*0.16,S*0.13,0,6.2832); c.fill(); }
-  else if(id==='smg'||id==='sputter'||id==='chatter') c.fillRect(0,S*0.07,S*0.09,S*0.26);
-  else if(W.mag>0) c.fillRect(0,S*0.07,S*0.10,S*0.16);
-  // pump / foregrip on the scatterguns
-  if(id==='shotgun'||id==='scuttle') c.fillRect(S*0.16,S*0.03,S*0.16,S*0.09);
-  // optic
-  if(W.optic){ c.fillStyle=darkHex(col,0.5);
-    c.fillRect(-S*0.10,-S*0.20,S*0.22,S*0.09);
-    c.fillStyle='#bfe8ff'; c.fillRect(S*0.08,-S*0.185,S*0.035,S*0.06); }
-  // muzzle tip
-  c.fillStyle=darkHex(col,0.55);
-  c.fillRect(S*0.06+L*0.55-S*0.04,-S*0.05,S*0.04,S*0.10);
+  // Every part is a rounded rect drawn twice: the outline one unit bigger in
+  // ink, then the fill. That outline is what makes a shape a shape at 22px.
+  var parts=[];
+  function part(x,y,w,h,fill){ parts.push([x,y,w,h,fill]); }
+  function rr(x,y,w,h,r){ c.beginPath(); c.moveTo(x+r,y); c.lineTo(x+w-r,y); c.quadraticCurveTo(x+w,y,x+w,y+r); c.lineTo(x+w,y+h-r); c.quadraticCurveTo(x+w,y+h,x+w-r,y+h); c.lineTo(x+r,y+h); c.quadraticCurveTo(x,y+h,x,y+h-r); c.lineTo(x,y+r); c.quadraticCurveTo(x,y,x+r,y); c.closePath(); c.fill(); }
+  var u=S/40;                                   // one unit: the icon is 40 wide
+  if(fam==='hand'||fam==='revolver'){
+    var rev=(fam==='revolver');
+    part(-14*u,-7*u,(rev?30:26)*u,7*u,col);          // slide
+    part(-12*u,-2*u,14*u,4*u,dk);                    // frame
+    part(-10*u,1*u,7*u,13*u,dk);                     // grip, raked back
+    part(-3*u,1*u,4*u,4*u,ink);                      // trigger guard
+    if(rev) part(-6*u,-3*u,9*u,8*u,dk);              // cylinder
+    else part(-14*u,-5*u,5*u,3*u,dk);                // slide serrations
+    part((rev?12:8)*u,-6*u,4*u,3*u,dk);              // front sight
+  } else if(fam==='smg'){
+    part(-19*u,-3*u,8*u,5*u,dk);                     // folded stock
+    part(-12*u,-7*u,22*u,10*u,col);                  // stubby receiver
+    part(9*u,-4*u,9*u,4*u,dk);                       // short barrel
+    part(-5*u,3*u,5*u,15*u,dk);                      // long stick magazine
+    part(-11*u,3*u,4*u,8*u,dk);                      // grip
+    part(2*u,3*u,4*u,6*u,dk);                        // foregrip
+  } else if(fam==='rifle'){
+    var can=(id==='whisper');
+    part(-20*u,-5*u,9*u,9*u,dk);                     // full stock
+    part(-11*u,-7*u,18*u,10*u,col);                  // receiver
+    part(6*u,-4*u,(can?8:14)*u,4*u,dk);              // barrel
+    if(can) part(13*u,-6*u,8*u,8*u,ink);             // the Whisper's fat can
+    part(-2*u,3*u,5*u,9*u,dk);                       // curved box magazine
+    part(-1*u,10*u,6*u,4*u,dk);
+    part(-9*u,3*u,4*u,9*u,dk);                       // pistol grip
+    if(W.optic&&W.optic>1.2) part(-8*u,-11*u,12*u,4*u,dk);   // low optic
+  } else if(fam==='shotgun'){
+    part(-20*u,-4*u,10*u,9*u,wood);                  // wood stock
+    part(-11*u,-6*u,12*u,9*u,col);                   // receiver
+    part(0*u,-5*u,20*u,3*u,dk);                      // long barrel
+    part(0*u,0*u,16*u,3*u,dk);                       // tube magazine under it
+    part(4*u,-1*u,7*u,6*u,wood);                     // pump
+    part(-8*u,3*u,4*u,8*u,dk);                       // grip
+  } else if(fam==='lmg'){
+    part(-20*u,-5*u,8*u,9*u,dk);                     // stock
+    part(-13*u,-8*u,20*u,11*u,col);                  // big receiver
+    part(-6*u,-12*u,10*u,3*u,dk);                    // carry handle
+    part(6*u,-5*u,14*u,4*u,dk);                      // barrel
+    part(-7*u,2*u,11*u,11*u,dk);                     // drum
+    part(-4*u,4*u,5*u,5*u,col);                      // drum face
+    part(8*u,-1*u,2*u,10*u,ink); part(13*u,-1*u,2*u,10*u,ink);   // bipod
+    part(-11*u,3*u,4*u,8*u,dk);                      // grip
+  } else if(fam==='marksman'){
+    var sn=(id==='sniper');
+    part(-20*u,-4*u,9*u,8*u,dk);                     // stock with cheek riser
+    part(-19*u,-6*u,6*u,3*u,dk);
+    part(-12*u,-6*u,14*u,8*u,col);                   // receiver
+    part(1*u,-4*u,19*u,3*u,dk);                      // long barrel
+    if(sn) part(17*u,-6*u,4*u,7*u,ink);              // muzzle brake
+    part(-9*u,-12*u,14*u,5*u,dk);                    // big scope
+    part(2*u,-11*u,3*u,3*u,glass);                   // scope glass
+    part(-4*u,2*u,5*u,8*u,dk);                       // magazine
+    part(-10*u,2*u,4*u,8*u,dk);                      // grip
+    if(sn){ part(7*u,-1*u,2*u,9*u,ink); part(12*u,-1*u,2*u,9*u,ink); }   // bipod
+  } else {                                           // lance: a rail with a lit tip
+    part(-18*u,-4*u,8*u,7*u,dk);                     // stock
+    part(-11*u,-6*u,14*u,9*u,col);                   // body
+    part(2*u,-3*u,16*u,4*u,dk);                      // rail
+    part(-6*u,-10*u,10*u,4*u,dk);                    // optic
+    part(0*u,-9*u,3*u,2*u,glass);
+    part(16*u,-5*u,5*u,8*u,'#e6c8ff');               // the lit tip
+    part(-8*u,3*u,4*u,8*u,dk);                       // grip
+  }
+  // outline pass, then the fills, so every edge is dark against anything
+  c.fillStyle=ink;
+  for(var i=0;i<parts.length;i++){ var q=parts[i]; rr(q[0]-u,q[1]-u,q[2]+2*u,q[3]+2*u,1.5*u); }
+  for(var j=0;j<parts.length;j++){ var g=parts[j]; c.fillStyle=g[4]; rr(g[0],g[1],g[2],g[3],1.2*u); }
   c.restore();
 }
 function drawItemIcon(c,key,cx,cy,S){
@@ -26283,7 +26337,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.08: the Organ is the Pillbox. Same machine, bolted to the ground over a cache, firing in every direction to fifty metres; a name that says what it is. Its guns are its slits and what it leaves is a pillbox wreck.',
+  now:'v10.09: you can tell the guns apart. Every gun icon is drawn by its family now, handgun, revolver, submachine gun, rifle, scattergun, machine gun, marksman rifle and the Lance, each with the shape you know it by and a dark outline so it reads small.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,53 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.09 - YOU CAN TELL THE GUNS APART
+
+His note, 2026-09-03, after his answers: **"we desperately need to improve the
+graphics for the guns, its hard to even tell what they are"**.
+
+### What the icons were
+
+One painter drew every gun from the same five rectangles, receiver, barrel,
+stock, grip and magazine, and told them apart by a barrel length taken from
+the weapon's range, a drum for the machine gun and a stick for the submachine
+guns. A carbine, a rifle and the Whisper differed by a few pixels of barrel.
+No edge: flat rarity colour over a soft shadow, so at twenty-two pixels the
+shape melted into the cell behind it. Sixteen weapons, one silhouette.
+
+### What they are
+
+The painter draws by family, each with the shape people know it by:
+
+| family | weapons | the shape |
+| --- | --- | --- |
+| handgun | Scav Pistol, Tacker | short slide, raked grip, no stock |
+| revolver | Magnum | the same with a cylinder and a longer barrel |
+| submachine gun | Compact SMG, Sputter, Chatter | stubby, folded stock, long stick magazine, foregrip |
+| rifle | Burst Carbine, Auto Rifle, Whisper | full stock, curved magazine, pistol grip; the Whisper wears a fat can |
+| scattergun | Riot Scattergun, Scuttle | long barrel over a tube magazine, a pump, wood stock |
+| machine gun | Support MG | big receiver, carry handle, drum, bipod |
+| marksman | Marksman Rifle, Longshot | long barrel, big scope, cheek riser; the Longshot adds a brake and a bipod |
+| lance | Meridian Lance | a rail with a lit tip |
+
+Every part is drawn twice, first one unit larger in ink and then in its
+colour, so every edge is dark against whatever is behind it. Colour stays the
+rarity colour, the rule since v7.99. The icons use the full width of the cell.
+
+### Measured
+
+The check paints every weapon at twenty-six pixels through the same painter
+the hotbar and the stash use, requires each to draw and to carry a dark
+outline, and requires every pair from different families to differ in at
+least a fifth of the pixels either draws; the control is that the icon cache
+still serves an image for the pistol. On v10.08 no icon had an outline and
+eleven cross-family pairs were near-identical, which is the finding.
+
+Not verified: how they read to him at raid zoom and on the 4K monitor, which
+is the only test that matters and is his; the check proves shape and edge,
+not recognition. Not verified: the weapon drawn in the operator's hands on the
+sprite, which is a different painter and a different build if he wants it.
+
 ## v10.08 - THE ORGAN IS THE PILLBOX
 
 His answer 47, 2026-09-03, an unrelated note at the end of it: **"RENAME THE

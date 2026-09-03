@@ -5221,6 +5221,51 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.09',what:'gun icons are told apart by family, outlined, and every one draws',
+   run:function(){
+     var bad=[];
+     if(typeof gunIcon!=='function'||typeof WEAPONS==='undefined') return 'SKIP: no gun painter in this build';
+     var S=26, ids=[];
+     for(var k in WEAPONS) if(WEAPONS.hasOwnProperty(k)&&k!=='fists') ids.push(k);
+     function paint(id){
+       var cv2=document.createElement('canvas'); cv2.width=S; cv2.height=S;
+       var c2=cv2.getContext('2d');
+       try{ gunIcon(c2,id,S/2,S/2,S*0.82); }catch(e){ return null; }
+       return c2.getImageData(0,0,S,S).data;
+     }
+     var px={}, drawn={}, ink={};
+     for(var i=0;i<ids.length;i++){
+       var d=paint(ids[i]); if(!d){ bad.push('painting '+ids[i]+' threw'); continue; }
+       px[ids[i]]=d; var on=0, dark=0;
+       for(var q=0;q<d.length;q+=4){ if(d[q+3]>40){ on++; if(d[q]+d[q+1]+d[q+2]<90) dark++; } }
+       drawn[ids[i]]=on; ink[ids[i]]=dark;
+       if(on<40) bad.push(ids[i]+' draws only '+on+' pixels at 26');
+     }
+     // THE FINDING, part one: a dark outline. On v10.08 the icons were flat
+     // rarity colour on a soft shadow, no edge, so they melted into the cell.
+     var noEdge=[];
+     for(var e=0;e<ids.length;e++) if(px[ids[e]]&&ink[ids[e]]<15) noEdge.push(ids[e]+' ('+ink[ids[e]]+')');
+     if(noEdge.length) bad.push('icons with no dark outline: '+noEdge.join(', '));
+     // Part two: different families look different. Pairs across families
+     // must differ in at least a fifth of the pixels either draws.
+     var FAM=(typeof GUN_FAMILY!=='undefined')?GUN_FAMILY:null;
+     var same=[];
+     for(var a=0;a<ids.length;a++) for(var b=a+1;b<ids.length;b++){
+       var A=px[ids[a]], B=px[ids[b]]; if(!A||!B) continue;
+       var fa=FAM?FAM[ids[a]]:null, fb=FAM?FAM[ids[b]]:null;
+       if(FAM&&fa===fb) continue;
+       var diff=0; for(var t=0;t<A.length;t+=4){ var oa=A[t+3]>40, ob=B[t+3]>40; if(oa!==ob||(oa&&Math.abs(A[t]-B[t])+Math.abs(A[t+1]-B[t+1])+Math.abs(A[t+2]-B[t+2])>60)) diff++; }
+       var need=Math.max(20,Math.round(Math.max(drawn[ids[a]],drawn[ids[b]])*0.2));
+       if(diff<need) same.push(ids[a]+' vs '+ids[b]+' ('+diff+' px)');
+     }
+     if(same.length) bad.push('guns that look the same: '+same.slice(0,8).join(', ')+(same.length>8?(' and '+(same.length-8)+' more'):''));
+     // CONTROL: the icon cache still serves these, so the hotbar and the stash
+     // get the new faces and not a stale data URL.
+     if(typeof itemIconURL==='function'){
+       var u=itemIconURL('gun_pistol',S);
+       if(!/^data:image/.test(String(u))) bad.push('control: the icon cache did not return an image for the pistol');
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.08',what:'the Organ is the Pillbox on every surface that names it',
    run:function(){
      var bad=[];
