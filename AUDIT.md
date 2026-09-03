@@ -418,6 +418,34 @@ his answers 15 and 16. Names stay descriptive rather than brands.
   piece named with its distance on the Depot and the outcome card, play-style
   gates (kills by weapon, streaks, night extracts), a capstone per rack.
   Challenges are a new system and wait on him.
+
+## PRE-VERIFICATION OF THE QUEUE, 2026-09-03 about 16:00
+
+Every drafted build from v10.19 to v10.36 was applied in order to scratch
+copies, a fixture was built from the end state, parsed, and every queued
+check was run on it from a second origin. Found and fixed before any of them
+shipped:
+
+- three anchor drifts (the jersey's torso anchor, then two cascades);
+- seven checks whose `return /regex/.test()` the parse page's balance
+  counter misreads as a division (parenthesised; the game compiled fine);
+- the what-is-new card would have gone stale again at v10.30 (rewritten
+  inside v10.29);
+- the Spartan helmet and the ghost mask left a beard showing under the chin
+  (both extended down over it);
+- the jersey's one-pixel numeral and panels did not register at raid zoom
+  under the dark tint (bolder, and the tests read brightness and saturation
+  rather than absolute white and black);
+- the chest patch sat on the gun-arm side and showed one row of itself
+  (moved to the side away from the gun, drawn after the plate); three new
+  patches had no mark and read as nothing (given marks);
+- the neck ring tattoo lay under the torso's outline (lifted);
+- the olive pack was 34 channel-units from the default canvas, below any
+  eye's notice (recoloured);
+- six checks whose staging assumed the counters as they were before the
+  later gates existed (the next-piece control, earned-this-raid's second
+  raid, the streak breaker, the capstone's locked count, the patch rack's
+  ownership, the message line's baseline of 170 not 109).
 The raid audit queue, the full-file audit's named items, and his fifty answers are
 all shipped, decided, superseded, or not reproduced, with one design item left
 that needs his word (an item is in the backpack or the hotbar, never both). A
@@ -790,6 +818,7 @@ AND THE SECOND HALF OF THE STRETCH:
 | SURPRISE ME, AND THREE LOOKS | v10.16 | his answers 18 and 19. Under the Depot figure: SURPRISE ME dresses the operator in a random owned thing from every rack; three LOOKS with SAVE and CLICK TO WEAR keep the six cosmetic keys (P.looks). Check earns everything, opens the Depot, requires SURPRISE ME to change the outfit and dress only in owned things, saves look 2, changes, wears it back, and requires three rows and six slots as controls. Fails on a v10.15 fixture: "there is no SURPRISE ME at the Depot" |
 | BEARD, THE SEVENTH RACK | v10.17 | his answer 14, first category of eight. Five beards (Clean Shaven owned; Stubble, Goatee, Full Beard, Mutton Chops earned), drawn on the sprite under the face before the headgear so a mask covers it, on the figure, and as a swatch; seventh slot, profile key cosBeard, part of a look and of SURPRISE ME. Check requires five on the racks, one owned and none priced, every beard to change the sprite's head pixels, a mask to cover the full beard, the figure slot and swatches; control: headgear rack whole; the two six-slot checks now count at least six. Fails on a v10.16 fixture: "the racks hold 0 beards, not five" |
 | THE PILLAGERS DRESS FROM THE RACKS | v10.18 | his answer 20. Pillagers had a coat and a name; the sprite read hair, hairstyle, headgear, skin and beard off unset fields, so all looked alike. Now raiderLook(ident,x,y) hashes who and where into picks from every rack, a third bareheaded, never the crown, spending no seeded roll. Check: the seed fingerprint at 4242 stays 85 ents and 165 containers (the control that matters), then at least three hairs, hats, skins, cuts and two beards among the map's pillagers, all real rack ids, no crown, and the same man dressed the same twice. Fails on a v10.17 fixture: "pillagers do not draw from the racks: there is no raiderLook" |
+| EYES, THE EIGHTH RACK | v10.19 | his answer 14, second category. Six colours (Brown owned; Hazel, Blue, Green, Grey, Amber earned), the iris drawn in colour under the pupil on the sprite, the figure's eyes tinted, an eye swatch, an eighth slot and key, part of a look, and pillagers draw eyes from it. Check: six on the racks, one owned, none priced, key, default and colour for each, every colour changes the sprite's eye pixels against Brown, the slot and swatches; controls: seed fingerprint unmoved, every pillager has eyes. Fails on a v10.18 fixture: "the racks hold 0 eye colours, not six" |
 | ONE WORD FOR THE BACKPACK, AND THE HOTBAR RENAME FINISHED | v9.90 | v9.89's own Not verified line said the compact legend still called the backpack a bag. Read off every surface on v9.89 the thing you carry was named FOUR ways: "inventory" (full legend TAB row, controller VIEW row, the HUD hint "TAB  INVENTORY", two refusals), "bag" (compact legend, controller BACK row, "equip gun from bag", the armour rule card, five spoken lines, the Peddler's "SELL BAG", a searched pillager's "'S BAG", two guide cards, a settings hint), "kit" (three refusals "Kit is full"), and "backpack". And both controller legends still called the hotbar a BELT, which v9.89 missed. THE WORD IS BACKPACK, his word and the panel's. Twenty two strings, nothing that reads a profile or draws. Left alone on purpose: BAG OF FRAGS and BIGGER BAG OF FRAGS, which are Progress rewards and a literal bag, and the lore clipboard "Inventory, year one", a document in the world. The armour card line is 29 characters against the 32 it replaces, inside the box v8.4x measured. Check reads the compact legend, the full legend, the HUD hint, the controller table and the panel headings, needles from halves, and fails on a v9.89 fixture on all four surfaces at once. Ten of the 22 strings are proven on screen; the other twelve are spoken lines the harness has no cheap way to raise |
 | ONE WORD FOR THE HOTBAR | v9.89 | his rule, one word per thing, and his open line "I opens the BACKPACK, write the matching list of consistent definitions". On v9.88 the same nine keyed cells were named THREE ways to the player: "hotbar" in the legend, the bag hint, the item detail and his own answers 11 and 22; "Tactical belt" on the raid backpack heading and the Undercroft column heading, "your backpack plus your belt" under the raid backpack title, "off the belt and into the backpack" on the drag-off message, and "hotbar belt and inventory" on the ascent summary; "the bar" in the empty-slot prompt. THE WORD IS HOTBAR: his word, the legend's word, the keys' word. Six strings changed, nothing that reads a profile or draws. Belt stays inside the code, the raider-and-snitch trade. The vocabulary memory gains a section for what you carry. The check reads the surfaces as rendered text with needles assembled from halves, and fails on a v9.88 fixture on five surfaces at once |
 | HIS ANSWER 22: THE HOTBAR IS VISIBLE IN THE UNDERCROFT | v9.88 | four words of his, between two other floor answers, and it had no row in the status table. v8.96 claimed it in its own comment and delivered it only INSIDE the opened backpack. MEASURED on v9.87 through the real loop on the HUD canvas: backpack closed, 0 opaque pixels on the entire HUD canvas; backpack open, 9 belt cells and 100,047 opaque pixels in the bottom band. FIX: drawHubBelt draws the same file-scope drawBelt against a transient hubBagState swapped in as G for one call, only while the backpack is closed, so exactly one belt is ever on screen; hubBagG is deliberately untouched because closing the backpack is the commit. Cells recorded on HUBBELT for the fixture and for a future click. Display only: editing stays in the opened backpack, answer 11. hubBelt 0 is the control. Check fails on a v9.87 fixture with "with the backpack closed the floor records no belt cells at all" |

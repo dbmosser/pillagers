@@ -40024,6 +40024,31 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.19 - EYES, THE EIGHTH RACK
+
+His answer 14, 2026-09-03, second of his categories: **eyes**.
+
+Six eye colours: Brown, owned from the start; Hazel at four runs; Blue at
+eight; Green at six extracts; Grey at level two; Amber for a Warden. Earned,
+never bought. On the sprite the iris is drawn in the colour between the white
+and the pupil, a ring a unit wide at raid size that reads as a tint of the eye;
+on the figure the two eyes take the colour with a white rim; on the racks an
+eye with the iris in its colour. An eighth slot on the figure, an eighth
+profile key, part of a look and of SURPRISE ME, and the pillagers draw eyes
+from it too through the same hash as the rest of their look.
+
+### Measured
+
+The check requires six eye colours with one owned and none priced, a key, a
+default and a colour for each, reads the sprite's head pixels for each colour
+against Brown and requires every one to differ, requires the EYES slot on the
+figure and a swatch for each, and as controls requires the seed fingerprint at
+4242 unmoved and every pillager on that map to have eyes. On v10.18 there was
+no eyes kind, which is the finding.
+
+Not verified: whether an iris a unit wide is visible to him at raid zoom on
+4K; it is drawn and measured, and whether it reads is his to say.
+
 ## v10.18 - THE PILLAGERS DRESS FROM THE RACKS
 
 His answer 20, 2026-09-03, to whether other pillagers should draw from the

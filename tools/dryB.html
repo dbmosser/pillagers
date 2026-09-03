@@ -18104,7 +18104,7 @@ function drawPatch(c,id,x,y,s){
   else if(id==='patchflag'){ c.fillRect(x+s*0.15,y+s*0.2,s*0.7,s*0.2); c.fillRect(x+s*0.15,y+s*0.6,s*0.7,s*0.2); }
 }
 // v10.24: the pack colours.
-var PACKCOL={packbrown:'#5c4a34',packolive:'#3e4a30',packblack:'#1e2228',packrust:'#6a3a2a',packsand:'#8a7a52'};
+var PACKCOL={packbrown:'#5c4a34',packolive:'#3a5a2c',packblack:'#1e2228',packrust:'#6a3a2a',packsand:'#8a7a52'};
 // v10.23: glove colours; bare hands are the skin.
 var GLOVECOL={glovetan:'#8a6438',gloveblack:'#1c2028',glovegrey:'#6a727c',glovered:'#8a2a2a'};
 function handColour(st){
@@ -18203,8 +18203,6 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // chest rig, and a hit shimmer when recently hurt
   wc.fillStyle='rgba(16,21,27,.85)';
   wc.fillRect(x-6.5+leanX,ty-18,13,2.4);
-  // v10.25: the patch, on the chest above the rig
-  (function(){ var _pid=st.hero?cosWorn('patch'):(st.patch||'patchnone'); if(_pid&&_pid!=='patchnone') drawPatch(wc,_pid,x+1.5+leanX,ty-22.6,3.6); })();
   // SPEC 9.7: the rig has to be READABLE. Armour is drawn in a cool steel ramp
   // rather than in the coat colour, so it reads as armour on all six raider
   // coats and on the operator, and each tier is a different silhouette rather
@@ -18231,6 +18229,11 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillStyle=aLo; wc.fillRect(x+leanX-1.1,ty-19,2.2,7.4);
     }
   }
+  // v10.25: the patch, on the chest on the side away from the gun. Drawn after
+  // the armour, because a patch goes on the plate carrier. Measured: the gun
+  // arm covers the chest on its own side from the second row down, and a
+  // patch there showed one row of itself.
+  (function(){ var _pid=st.hero?cosWorn('patch'):(st.patch||'patchnone'); if(_pid&&_pid!=='patchnone') drawPatch(wc,_pid,x-fl*3.6-1.8+leanX,ty-21.8,3.6); })();
   if(st.hurt>0){
     wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,70,56,'+clamp(st.hurt*2,0,.8)+')';
@@ -18389,7 +18392,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       var _tid=HERO?cosWorn('tattoo'):(st.tattoo||'tatnone'); if(!_tid||_tid==='tatnone') return;
       wc.fillStyle='rgba(20,28,44,.85)';
       if(_tid==='tattear'){ wc.fillRect(hx2+2.6,ty-27.2,1.2,1.8); }
-      else if(_tid==='tatring'){ wc.fillRect(hx2-4.2,ty-23.4,8.4,1.1); }
+      else if(_tid==='tatring'){ wc.fillRect(hx2-4.2,ty-25.0,8.4,1.1); }
       else if(_tid==='tattribal'){ wc.fillRect(hx2-6.2,ty-31.6,2.2,0.9); wc.fillRect(hx2-6.6,ty-29.8,2.8,0.9); wc.fillRect(hx2-6.2,ty-28,2.2,0.9); }
       else if(_tid==='tatanchor'){ wc.fillRect(hx2+2.2,ty-24.6,0.9,3); wc.fillRect(hx2+1,ty-22.4,3.3,0.9); wc.fillRect(hx2+1.4,ty-24.8,2.5,0.8); }
       else if(_tid==='tatspider'){ wc.fillRect(hx2+4.4,ty-34.6,1.8,1.8); wc.fillRect(hx2+3.2,ty-35.4,4.2,0.7); wc.fillRect(hx2+3.2,ty-33,4.2,0.7); }
@@ -36368,7 +36371,8 @@ window.__REGRESS=[
      // CONTROL: it stays centred, and at 1080p it is where it always was.
      if(Math.abs(a.x-960)>4) bad.push('control: at 1080p the message is centred at x='+Math.round(a.x)+', not 960');
      if(Math.abs(b.x-1920)>6) bad.push('control: at 4K the message is centred at x='+Math.round(b.x)+', not 1920');
-     if(a.y<80||a.y>140) bad.push('control: at 1080p the message sits at y='+Math.round(a.y)+', not near 109');
+     // LH carries a fixed 1.5625 factor on top of the monitor scale, so LH(109) lands at 170 at 1080p; measured on v10.18.
+     if(a.y<150||a.y>190) bad.push('control: at 1080p the message sits at y='+Math.round(a.y)+', not near 170');
      return bad.length?bad.join('; '):null; }},
   {v:'10.26',what:'TATTOO is a fourteenth rack: five inks on the sprite face and neck and the figure, with a swatch',
    run:function(){
@@ -36396,7 +36400,7 @@ window.__REGRESS=[
      for(var k in keep) P2[k]=keep[k];
      var html=(typeof avatarHTML==='function')?avatarHTML():'';
      if(html.indexOf('data-av="tattoo"')<0) bad.push('the figure has no TATTOO slot');
-     var qm=tats.filter(function(c){ return />\?</.test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     var qm=tats.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
      if(qm.length) bad.push('tattoos with no swatch: '+qm.join(', '));
      // CONTROL: the seed fingerprint stands and pillagers have a tattoo entry; and
      // the count of racks is his eight plus the six that were there: fourteen kinds.
@@ -36422,8 +36426,9 @@ window.__REGRESS=[
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
      var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000; p.armor=0;
-     var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,cosPatch:P2.cosPatch};
-     P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.xpLevel=99;
+     var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,cosPatch:P2.cosPatch,nightExt:P2.nightExt,bestStreak:P2.bestStreak};
+     // Every gate a patch can hang on, including the play-style ones that came later.
+     P2.runs=999; P2.ext=999; P2.kills={warden:9,crawler:60}; P2.xpLevel=99; P2.nightExt=9; P2.bestStreak=9;
      var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
      function body(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(50,Math.min(cvs.width-50,sx)); sy=Math.max(60,Math.min(cvs.height-20,sy)); return wctx.getImageData(sx-50,sy-60,100,80).data; }
      function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>30) d++; return d; }
@@ -36469,7 +36474,7 @@ window.__REGRESS=[
      var html=(typeof avatarHTML==='function')?avatarHTML():'';
      if(html.indexOf('data-av="pack"')<0) bad.push('the figure has no BACKPACK slot');
      if(html.indexOf('avstrap')<0) bad.push('the figure draws no pack strap');
-     var qm=packs.filter(function(c){ return />\?</.test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     var qm=packs.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
      if(qm.length) bad.push('packs with no swatch: '+qm.join(', '));
      // CONTROL: the seed fingerprint stands and pillagers carry a pack from the rack.
      __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
@@ -36508,7 +36513,7 @@ window.__REGRESS=[
      var html=(typeof avatarHTML==='function')?avatarHTML():'';
      if(html.indexOf('data-av="gloves"')<0) bad.push('the figure has no GLOVES slot');
      if(html.indexOf('avhand')<0) bad.push('the figure draws no hands');
-     var qm=gloves.filter(function(c){ return />\?</.test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     var qm=gloves.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
      if(qm.length) bad.push('gloves with no swatch: '+qm.join(', '));
      // CONTROL: the seed fingerprint stands and pillagers have hands from the rack.
      __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
@@ -36545,7 +36550,7 @@ window.__REGRESS=[
      var html=(typeof avatarHTML==='function')?avatarHTML():'';
      if(html.indexOf('data-av="boots"')<0) bad.push('the figure has no BOOTS slot');
      if(html.indexOf('avboots')<0) bad.push('the figure draws no boots');
-     var qm=boots.filter(function(c){ return />\?</.test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     var qm=boots.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
      if(qm.length) bad.push('boots with no swatch: '+qm.join(', '));
      // CONTROL: the seed fingerprint stands and pillagers have boots from the rack.
      __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
@@ -36579,7 +36584,7 @@ window.__REGRESS=[
      for(var k in keep) P2[k]=keep[k];
      var html=(typeof avatarHTML==='function')?avatarHTML():'';
      if(html.indexOf('data-av="face"')<0) bad.push('the figure has no FACE slot');
-     var qm=faces.filter(function(c){ return />\?</.test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     var qm=faces.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
      if(qm.length) bad.push('faces with no swatch: '+qm.join(', '));
      // CONTROL: the seed fingerprint stands and pillagers have faces from the rack.
      __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
@@ -36649,7 +36654,7 @@ window.__REGRESS=[
      // The figure has an EYES slot and the racks a swatch for each.
      var html=(typeof avatarHTML==='function')?avatarHTML():'';
      if(html.indexOf('data-av="eyes"')<0) bad.push('the figure has no EYES slot');
-     var qm=eyes.filter(function(c){ return />\?</.test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     var qm=eyes.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
      if(qm.length) bad.push('eye colours with no swatch: '+qm.join(', '));
      // CONTROL: pillagers get eyes too, and the seed fingerprint still stands.
      var R=g.ents; __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
@@ -36660,6 +36665,7 @@ window.__REGRESS=[
   {v:'10.18',what:'pillagers dress from the racks, varied, without spending a seeded roll',
    run:function(){
      var bad=[];
+     if(typeof raiderLook!=='function') return 'pillagers do not draw from the racks: there is no raiderLook';   // THE FINDING on v10.17
      __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      // THE CONTROL FIRST, because it is the one that matters most: the seed
      // fingerprint. Dressing a pillager must not spend a roll, so the counts at
@@ -36720,7 +36726,7 @@ window.__REGRESS=[
      // The figure has a BEARD slot; the racks have a swatch for each.
      var html=(typeof avatarHTML==='function')?avatarHTML():'';
      if(html.indexOf('data-av="beard"')<0) bad.push('the figure has no BEARD slot');
-     var qm=beards.filter(function(c){ return />\?</.test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     var qm=beards.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
      if(qm.length) bad.push('beards with no swatch: '+qm.join(', '));
      // CONTROL: the other six racks are still there and still sized.
      if(COSMETICS.filter(function(c){ return c.kind==='hat'; }).length<10) bad.push('control: the headgear rack shrank');
