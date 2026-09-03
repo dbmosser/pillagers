@@ -5101,6 +5101,79 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.75',what:'an edit survives the number in the line changing, and carries the number through',
+   run:function(){
+     var bad=[];
+     if(!window.__tx) return 'SKIP: this build has no text engine to drive';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     __pinDPR(1); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __forceSize(1920,1080);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player; g.ents.length=0; p.iv=9999;
+     for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
+     function drawn(){ return __tx.record(function(){ __frame(0.016); }).map(function(x){ return x.t; }); }
+     var before=drawn(), target=null, i;
+     for(i=0;i<before.length;i++) if(/^EXTRACT \d+m$/.test(before[i])){ target=before[i]; break; }
+     // CONTROL ONE: the line this is about has to be on screen. Without it every
+     // test below is about nothing, which is how a check quietly passes.
+     if(!target) return 'SKIP: the extraction distance line was not drawn this frame';
+     var mine='ZQX RUN FOR THE RING '+target.replace(/^EXTRACT /,'');
+     __tx.set(target,mine);
+     var now=drawn(), immediate=null;
+     for(i=0;i<now.length;i++) if(/^ZQX RUN FOR THE RING \d+m$/.test(now[i])){ immediate=now[i]; break; }
+     if(!immediate)
+       bad.push('the edit did not even apply to the line it was made on');
+     // Five steps, which is all it takes for the metres to change.
+     p.x+=40; p.y+=40;
+     for(var f2=0;f2<3;f2++) __loop(performance.now()+1000+f2*16.7);
+     var after=drawn(), kept=null, stale=null;
+     for(i=0;i<after.length;i++){
+       if(/^ZQX RUN FOR THE RING \d+m$/.test(after[i])) kept=after[i];
+       if(/^EXTRACT \d+m$/.test(after[i])) stale=after[i];
+     }
+     // THE FINDING. Measured on v9.74: his wording lasted until the metres moved
+     // and then the line read EXTRACT again. 42 of the 91 strings the HUD paints
+     // in one frame carry a number, so this is half the text in the game.
+     if(!kept)
+       bad.push('his wording was gone as soon as the number changed, the line reads "'+stale+'" again');
+     if(stale)
+       bad.push('the original wording is still being drawn as "'+stale+'" after the edit');
+     // CONTROL TWO: the number must be CARRIED, not frozen. An edit that pins the
+     // old number would satisfy the test above and lie about the distance.
+     if(kept&&immediate&&kept===immediate)
+       bad.push('the line still reads "'+kept+'" after moving, so the number is frozen at what it was when he typed it');
+     // CONTROL THREE: clearing still puts the original back, which is his only
+     // way home from an edit he cannot remember.
+     __tx.set(target,'');
+     var back=drawn(), restored=null;
+     for(i=0;i<back.length;i++) if(/^EXTRACT \d+m$/.test(back[i])){ restored=back[i]; break; }
+     if(!restored)
+       bad.push('control: clearing the edit did not put the original line back');
+     // CONTROL FOUR: digits HE typed are his and must not move. Without this the
+     // feature would rewrite a number he wrote as prose every time the real one
+     // changed, which is worse than not carrying numbers at all.
+     __tx.set('Destroy 2 criers  0/2','ZQX kill 2 criers, top 3 pay  0/2');
+     var moved=__tx.get('Destroy 5 criers  3/5');
+     __tx.set('Destroy 2 criers  0/2','');
+     if(moved.indexOf('top 3 pay')<0)
+       bad.push('control: a number he typed himself was rewritten, the line came back as "'+moved+'"');
+     if(moved.indexOf('kill 5 criers')<0||moved.indexOf('3/5')<0)
+       bad.push('control: the real numbers were not carried into "'+moved+'"');
+     // CONTROL FIVE: a numbered line he has NOT edited must be untouched. A shape
+     // map that matches too widely would rewrite half the HUD from one edit.
+     var untouched=__tx.get('THE SEAL  0%');
+     if(untouched!=='THE SEAL  0%')
+       bad.push('control: an unedited line came back as "'+untouched+'", so the shape match is too wide');
+     // CONTROL SIX: the plain path from v9.74 still works, and still clears.
+     __tx.set('CONDITIONS','ZQX WEATHER');
+     var plain=__tx.get('CONDITIONS');
+     __tx.set('CONDITIONS','');
+     var plainBack=__tx.get('CONDITIONS');
+     if(plain!=='ZQX WEATHER')
+       bad.push('control: a line with no numbers in it stopped taking edits, it reads "'+plain+'"');
+     if(plainBack!=='CONDITIONS')
+       bad.push('control: a line with no numbers did not clear, it reads "'+plainBack+'"');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.74',what:'every line of text can be clicked and typed over, on the canvas and in the menus',
    run:function(){
      var bad=[];

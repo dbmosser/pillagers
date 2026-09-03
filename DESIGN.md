@@ -40024,6 +40024,72 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.75 - THE EDITS NOW SURVIVE THE NUMBERS MOVING
+
+A hole in what I shipped yesterday, found by using it.
+
+### WHAT WAS WRONG
+
+v9.74 remembers an edit by the exact words. Measured on it: **42 of the 91
+strings the HUD paints in a single frame contain a number.** Nearly half the text
+in the game.
+
+Driven end to end on v9.74: he edits "EXTRACT 141m" to "RUN FOR THE RING 141m",
+it applies, he takes five steps, and the line reads "EXTRACT 146m" again. His
+wording is not lost, it is filed under a phrase that will never be drawn again.
+
+That is worse than not having the feature. It works just long enough to look like
+it works, and then quietly stops, which is exactly the kind of thing he would
+have to report to me to get fixed.
+
+### WHAT IT DOES NOW
+
+The same idea, one step looser. **An edit is remembered by the SHAPE of the line
+rather than the exact words**: every run of digits becomes a blank, so
+"EXTRACT 141m" and "EXTRACT 146m" are the same line with a different number in
+it.
+
+The numbers he keeps are carried through. When he types his replacement, a number
+in it that matches the next number from the original, in order, is recorded as a
+blank to be filled in later. Anything else he typed is his and stays exactly as
+typed, digits included.
+
+    he edits     EXTRACT 141m          to   RUN FOR THE RING 141m
+    stored as    EXTRACT [blank]m      to   RUN FOR THE RING [blank]m
+    five steps later                        RUN FOR THE RING 146m
+
+    he edits     Destroy 2 criers  0/2 to   Kill 2 criers, top 3 pay  0/2
+    later reads                             Kill 5 criers, top 3 pay  3/5
+
+That second one is the case worth having: the criers count and the 0/2 tracker
+follow the game, and the 3 he typed as prose stays a 3 forever. If he deletes the
+number altogether, it stays deleted at every reading.
+
+The exact map from v9.74 stays and is consulted first, because it is one lookup
+and it is the whole answer for the half of the game's text with no numbers in it.
+The shape map is only consulted when the exact one misses, the string has a digit,
+and he has actually made a shaped edit, so a profile with no edits costs exactly
+what it cost yesterday.
+
+### THE CHECK
+
+Against v9.74 it reports four things at once: the wording gone as soon as the
+number changed, the original still being drawn, and both halves of the
+typed-digits case failing. Against v9.75 it is silent.
+
+Six controls, and two of them are about not overreaching: a number HE typed must
+not move, and a numbered line he has NOT edited must come back untouched, because
+a shape match that is too wide would rewrite half the HUD from one edit. The
+others: the edit must apply at all, the number must be carried rather than frozen
+at what it was when he typed it, clearing must still restore the original, and
+the plain no-numbers path from v9.74 must still work and still clear.
+
+Not verified: what happens when two different lines share a shape. "8:59" and any
+other clock reduce to the same blanks, and I think that is right, since a change
+to how a clock reads should apply to clocks. But I have not gone looking for two
+lines that share a shape and should NOT share an edit, and if one exists he will
+find it before I do.
+
 ## v9.74 - EVERY LINE IN THE GAME IS NOW SOMETHING YOU CAN TYPE OVER
 
 His ask, and it is the right one: "can you make all text fields in the game

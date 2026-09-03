@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.74';
+var VER='9.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1764,18 +1764,62 @@ function autoEquipOn(){
 // ================================================ v9.74 EDITABLE TEXT, HIS ASK
 // Keyed by the string, never by where it is drawn. See the build notes.
 function txMap(){ if(!P.txt||typeof P.txt!=='object') P.txt={}; return P.txt; }
+// v9.75: the SHAPE of a line, which is the line with every run of digits taken
+// out and remembered separately. This is what makes an edit survive the number
+// changing, and 42 of the 91 strings the HUD paints in one frame carry a number.
+function txPatMap(){ if(!P.txp||typeof P.txp!=='object') P.txp={}; return P.txp; }
+var TXBLANK='\u0001';
+function txSplit(s){
+  var nums=[];
+  var pat=s.replace(/-?\d+(?:[.,]\d+)*/g,function(mm){ nums.push(mm); return TXBLANK; });
+  return {pat:pat,nums:nums};
+}
+// Fills a stored shape back in with the numbers from the line being drawn now.
+// A blank with no number left for it disappears rather than printing a control
+// character at him.
+function txFill(pat,nums){
+  var i=0;
+  return pat.replace(/\u0001/g,function(){ var v=nums[i++]; return (v===undefined)?'':v; });
+}
+var TXPANY=0;
 function TX(s){
   if(typeof s!=='string'||!s) return s;
   var m=P&&P.txt; if(!m) return s;
   var v=m[s];
-  return (typeof v==='string')?v:s;
+  if(typeof v==='string') return v;
+  // Only now, and only if there is anything shaped to match against. A profile
+  // with no edits pays one property read per drawn string, the same as v9.74.
+  if(!TXPANY||!P.txp) return s;
+  if(s.indexOf('0')<0&&!/\d/.test(s)) return s;
+  var sp=txSplit(s);
+  if(!sp.nums.length) return s;
+  var pv=P.txp[sp.pat];
+  return (typeof pv==='string')?txFill(pv,sp.nums):s;
 }
 // An empty replacement is how he gets the original back, which matters because
 // after a few edits he will not remember what the original said.
 function txSet(orig,next){
-  var m=txMap();
-  if(typeof next!=='string'||next===''||next===orig) delete m[orig];
-  else m[orig]=next;
+  var m=txMap(), pm=txPatMap();
+  var so=txSplit(orig);
+  if(typeof next!=='string'||next===''||next===orig){
+    delete m[orig];
+    delete pm[so.pat];
+  } else {
+    m[orig]=next;
+    // The shape he typed. A number he kept, in the order the original had them,
+    // becomes a blank to be filled in from whatever the line says next time.
+    // Anything else he typed is his and is left exactly as typed, including
+    // digits, so writing "top 3 hauls" does not turn 3 into a moving number.
+    if(so.nums.length){
+      var k=0;
+      var np=next.replace(/-?\d+(?:[.,]\d+)*/g,function(mm){
+        if(k<so.nums.length&&mm===so.nums[k]){ k++; return TXBLANK; }
+        return mm;
+      });
+      pm[so.pat]=np;
+    }
+  }
+  TXPANY=0; for(var q in pm){ TXPANY=1; break; }
   try{ saveProfile(); }catch(e){}
   try{ txDom(document.getElementById('root')); }catch(e){}
   return m[orig];
@@ -25892,7 +25936,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.74: every line of text in the game is now something you can click and type over. Turn on Edit the words in Settings, click any phrase in a menu or on screen, and rewrite it. Clear the box and press Enter to put the original back.',
+  now:'v9.75: your edits now survive the numbers changing. Nearly half the lines on screen carry a number, and rewriting one of those used to last until the number moved and then quietly revert. An edit is remembered by the shape of the line now, and the numbers are carried through it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29834,6 +29878,13 @@ function applyGameOpts(){
   if(gameOptIx('raiders')===3&&!tk.raiderWaves) CFG.raiderWaves=0;
   // v9.74: the text watcher starts here because this is the one function the
   // game already calls after the profile is loaded and again on every change.
+  try{
+    // v9.75: a profile loaded with shaped edits already in it must arm the
+    // lookup, or every edit he made in an earlier session is silently ignored
+    // until he happens to make a new one.
+    TXPANY=0;
+    if(P&&P.txp) for(var _tq in P.txp){ TXPANY=1; break; }
+  }catch(e){}
   try{ txWatch(); }catch(e){}
   try{
     var _rt=document.getElementById('root');
