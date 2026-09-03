@@ -5221,6 +5221,49 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.16',what:'SURPRISE ME dresses the operator from every rack, and three LOOKS keep and wear an outfit',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!(window.__hubEnter&&window.__station)) return 'SKIP: this build cannot be driven into the Undercroft';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P();
+     // Earn everything so the racks are full, then open the Depot.
+     var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,spClaimed:P2.spClaimed,xpLevel:P2.xpLevel,looks:P2.looks,
+               cosHat:P2.cosHat,cosHair:P2.cosHair,cosCut:P2.cosCut,cosFit:P2.cosFit,cosSkin:P2.cosSkin,cosBuild:P2.cosBuild};
+     P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.xpLevel=99; P2.looks=[null,null,null];
+     P2.spClaimed=[]; for(var sc=0;sc<((typeof SEASON_TIERS!=='undefined')?SEASON_TIERS.length:0);sc++) P2.spClaimed.push(sc);
+     function restore(v){ for(var k in keep) P2[k]=keep[k]; var md=document.getElementById('appearmodal'); if(md) md.classList.remove('on'); return v; }
+     __hubEnter();
+     var r=null; try{ r=__station('mirror'); }catch(e1){ r={err:String(e1)}; }
+     if(!r||r.err) return restore('no Depot station: '+(r&&r.err));
+     var md=document.getElementById('appearmodal');
+     if(!(md&&md.classList.contains('on'))) return restore('the Depot did not open');
+     // ONE: SURPRISE ME exists and changes the outfit. Ten presses; with the
+     // racks this full the odds of nothing changing are nil.
+     var sb=md.querySelector('#looksurprise');
+     if(!sb) return restore('there is no SURPRISE ME at the Depot');
+     function outfit(){ return [P2.cosHat,P2.cosHair,P2.cosCut,P2.cosFit,P2.cosSkin,P2.cosBuild].join('|'); }
+     var before=outfit(), changed=false;
+     for(var i=0;i<10&&!changed;i++){ md.querySelector('#looksurprise').click(); if(outfit()!==before) changed=true; }
+     if(!changed) bad.push('ten presses of SURPRISE ME changed nothing');
+     // everything worn must be owned
+     var worn=lookSnap?lookSnap():null;
+     if(worn){ for(var k2 in worn){ var c=cosFind(worn[k2]); if(c&&!cosOwned(c)) bad.push('SURPRISE ME dressed him in '+c.name+', which he has not earned'); } }
+     // TWO: save look 1, change everything, wear look 1, and it is back.
+     var s1=md.querySelector('[data-looksave="1"]'); if(!s1) return restore(bad.concat(['no SAVE on a look']).join('; '));
+     s1.click();
+     var saved=outfit();
+     for(var j=0;j<10&&outfit()===saved;j++) md.querySelector('#looksurprise').click();
+     if(outfit()===saved) bad.push('could not change the outfit after saving, so WEAR cannot be tested');
+     var w1=md.querySelector('[data-lookwear="1"]'); if(!w1) return restore(bad.concat(['no look row to wear']).join('; '));
+     w1.click();
+     if(outfit()!==saved) bad.push('wearing look 2 did not put the saved outfit back: '+outfit()+' against '+saved);
+     if(!/CLICK TO WEAR/.test(md.querySelector('[data-lookwear="1"]').textContent)) bad.push('a saved look does not say CLICK TO WEAR');
+     // CONTROL: three looks, and the figure still has its six slots.
+     if(md.querySelectorAll('[data-lookwear]').length!==3) bad.push('control: '+md.querySelectorAll('[data-lookwear]').length+' looks, not three');
+     if(md.querySelectorAll('#appavatar .avslot').length!==6) bad.push('control: the figure lost its slots');
+     return restore(bad.length?bad.join('; '):null); }},
   {v:'10.15',what:'a downed pillager crawls for cover you cannot see him behind',
    run:function(){
      var bad=[];

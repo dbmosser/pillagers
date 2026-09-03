@@ -1,0 +1,139 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+# ============ HIS ANSWER 14, 2026-09-03, second category: EYES.
+#
+# An eighth rack. Six eye colours, Brown owned from the start and the rest
+# earned. On the sprite the iris is drawn in the colour between the white and
+# the pupil, which at raid size is a ring a unit wide and reads as a tint; on
+# the figure the two eyes take the colour; on the racks a swatch. Pillagers
+# draw from it too, through raiderLook.
+
+SubRx @'
+  {id:'chops',    name:'Mutton Chops', how:'warden:1',    kind:'beard'},
+'@ @'
+  {id:'chops',    name:'Mutton Chops', how:'warden:1',    kind:'beard'},
+  // v10.19, his answer 14: EYES, the eighth rack.
+  {id:'eyebrown', name:'Brown',        how:'always',      kind:'eyes'},
+  {id:'eyehazel', name:'Hazel',        how:'runs:4',      kind:'eyes'},
+  {id:'eyeblue',  name:'Blue',         how:'runs:8',      kind:'eyes'},
+  {id:'eyegreen', name:'Green',        how:'extracts:6',  kind:'eyes'},
+  {id:'eyegrey',  name:'Grey',         how:'level:2',     kind:'eyes'},
+  {id:'eyeamber', name:'Amber',        how:'warden:1',    kind:'eyes'},
+'@
+
+SubRx @'
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean'};
+'@ @'
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown'};
+// v10.19: the iris colours.
+var EYECOL={eyebrown:'#5a3a22',eyehazel:'#8a6a34',eyeblue:'#4a7ab8',eyegreen:'#4a8a5a',eyegrey:'#8a949c',eyeamber:'#c88a2a'};
+'@
+
+SubRx @'
+  wc.fillStyle=INK;
+  wc.beginPath(); wc.arc(hx2-3.4+pupX,ty-29.3+pupY,1.25,0,6.2832); wc.fill();
+  wc.beginPath(); wc.arc(hx2+3.4+pupX,ty-29.3+pupY,1.25,0,6.2832); wc.fill();
+'@ @'
+  // v10.19: the iris, in the eye colour, under the pupil.
+  var _EYE=EYECOL[HERO?cosWorn('eyes'):(st.eyes||'eyebrown')]||EYECOL.eyebrown;
+  wc.fillStyle=_EYE;
+  wc.beginPath(); wc.arc(hx2-3.4+pupX,ty-29.3+pupY,1.9,0,6.2832); wc.fill();
+  wc.beginPath(); wc.arc(hx2+3.4+pupX,ty-29.3+pupY,1.9,0,6.2832); wc.fill();
+  wc.fillStyle=INK;
+  wc.beginPath(); wc.arc(hx2-3.4+pupX,ty-29.3+pupY,1.0,0,6.2832); wc.fill();
+  wc.beginPath(); wc.arc(hx2+3.4+pupX,ty-29.3+pupY,1.0,0,6.2832); wc.fill();
+'@
+
+SubRx @'
+      '<div class="aveyes"><div class="aveye"></div><div class="aveye"></div></div>'+
+      (function(){ // v10.17: the beard on the figure
+'@ @'
+      '<div class="aveyes"><div class="aveye" style="background:'+(EYECOL[cosWorn('eyes')]||EYECOL.eyebrown)+';box-shadow:inset 0 0 0 1.5px #FFF6DC"></div><div class="aveye" style="background:'+(EYECOL[cosWorn('eyes')]||EYECOL.eyebrown)+';box-shadow:inset 0 0 0 1.5px #FFF6DC"></div></div>'+
+      (function(){ // v10.17: the beard on the figure
+'@
+
+SubRx @'
+  h+=slot('beard','BEARD',(cosFind(cosWorn('beard'))||{name:'Clean Shaven'}).name,'\u25BE');   // v10.17
+'@ @'
+  h+=slot('beard','BEARD',(cosFind(cosWorn('beard'))||{name:'Clean Shaven'}).name,'\u25BE');   // v10.17
+  h+=slot('eyes','EYES',(cosFind(cosWorn('eyes'))||{name:'Brown'}).name,
+          '<span style="width:14px;height:14px;border-radius:7px;display:inline-block;background:'+(EYECOL[cosWorn('eyes')]||EYECOL.eyebrown)+'"></span>');   // v10.19
+'@
+
+SubRx @'
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'){
+'@ @'
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'){
+'@
+
+SubRx @'
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING']]
+'@ @'
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING']]
+'@
+
+SubRx @'
+  if(c.kind==='skin'){
+    return '<span style="display:inline-block;width:34px;height:34px;border-radius:17px;'+
+           'background:'+(SKINCOL[c.id]||SKINCOL.fair)+';border:2px solid #14161b"></span>';
+  }
+'@ @'
+  if(c.kind==='skin'){
+    return '<span style="display:inline-block;width:34px;height:34px;border-radius:17px;'+
+           'background:'+(SKINCOL[c.id]||SKINCOL.fair)+';border:2px solid #14161b"></span>';
+  }
+  if(c.kind==='eyes'){   // v10.19: an eye, the iris in its colour
+    return '<span style="display:inline-block;width:34px;height:34px;border-radius:17px;background:#FFF6DC;'+
+           'border:2px solid #14161b;position:relative"><span style="position:absolute;left:9px;top:9px;width:16px;height:16px;'+
+           'border-radius:8px;background:'+(EYECOL[c.id]||EYECOL.eyebrown)+'"></span><span style="position:absolute;left:13px;top:13px;'+
+           'width:8px;height:8px;border-radius:4px;background:#0a0c10"></span></span>';
+  }
+'@
+
+SubRx @'
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard'];
+'@ @'
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes'];
+'@
+
+SubRx @'
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard')};
+'@ @'
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes')};
+'@
+
+SubRx @'
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard,   // v10.18, his answer 20
+'@ @'
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes,   // v10.18, his answer 20
+'@
+
+SubRx @'
+var VER='10.18';
+'@ @'
+var VER='10.19';
+'@
+SubRx @'
+  now:'v10.18: the pillagers dress from the same racks you do. Every one of them used to have the same blonde crop and bare head; now each has his own hair, hairstyle, headgear, skin and beard, and no two crews look alike.',
+'@ @'
+  now:'v10.19: an eighth rack: EYES. Brown, hazel, blue, green, grey and amber, drawn in the iris on your sprite and on the figure, and the pillagers have eyes of their own too.',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"

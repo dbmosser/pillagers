@@ -1,0 +1,64 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\tools\mkfixture.ps1'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+SubRx @'
+  {v:'10.31',what:'three pairs of sneakers are on the boots rack, each drawn with its own sole on the sprite and the figure',
+'@ @'
+  {v:'10.32',what:'the Depot is a paper doll: a tile per slot on either side of the figure, head things left, body things right, all inside the window',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!(window.__hubEnter&&window.__station)) return 'SKIP: this build cannot be driven into the Undercroft';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(); P2._avSlot=null;
+     __hubEnter();
+     var r=null; try{ r=__station('mirror'); }catch(e1){ r={err:String(e1)}; }
+     if(!r||r.err) return 'SKIP: there is no Depot on the floor: '+(r&&r.err);
+     var md=document.getElementById('appearmodal');
+     if(!(md&&md.classList.contains('on'))) return 'SKIP: the Depot opened nothing';
+     var av=document.getElementById('appavatar');
+     // THE FINDING. On v10.31 the slots were rows stacked under the figure, no doll.
+     var doll=av&&av.querySelector('.avdoll'), cols=av?av.querySelectorAll('.avcol'):[];
+     if(!doll||cols.length!==2) return 'the operator panel is a list, not a doll ('+(doll?cols.length+' columns':'no doll')+')';
+     var fig=av.querySelector('.avfig'); if(!fig) return 'no figure on the doll';
+     var fq=fig.getBoundingClientRect(), mq=md.getBoundingClientRect(), pq=av.getBoundingClientRect();
+     var L=cols[0].querySelectorAll('.avslot'), R=cols[1].querySelectorAll('.avslot');
+     if(L.length<3||R.length<3) bad.push('the doll has '+L.length+' tiles left and '+R.length+' right');
+     var kinds=function(list){ return Array.prototype.map.call(list,function(el){ return el.getAttribute('data-av'); }); };
+     var lk=kinds(L), rk=kinds(R);
+     ['hat','hair','cut'].forEach(function(k){ if(lk.indexOf(k)<0) bad.push(k+' is not on the left, with the head'); });
+     ['build','skin','fit'].forEach(function(k){ if(rk.indexOf(k)<0) bad.push(k+' is not on the right, with the body'); });
+     // Every tile is beside the figure, not under it, and inside the panel and the window.
+     Array.prototype.forEach.call(L,function(el){ var q=el.getBoundingClientRect(); if(q.right>fq.left+2) bad.push(el.getAttribute('data-av')+' tile is not left of the figure'); if(q.left<pq.left-1||q.right>pq.right+1||q.bottom>mq.bottom+1||q.top<mq.top-1) bad.push(el.getAttribute('data-av')+' tile is outside the window'); });
+     Array.prototype.forEach.call(R,function(el){ var q=el.getBoundingClientRect(); if(q.left<fq.right-2) bad.push(el.getAttribute('data-av')+' tile is not right of the figure'); if(q.left<pq.left-1||q.right>pq.right+1||q.bottom>mq.bottom+1||q.top<mq.top-1) bad.push(el.getAttribute('data-av')+' tile is outside the window'); });
+     if(fq.width<60||fq.height<120) bad.push('the figure is small ('+Math.round(fq.width)+'x'+Math.round(fq.height)+')');
+     // A tile still narrows the racks to its slot, and a second click opens them all.
+     var t=R[0]; if(t){ t.click(); var pk=document.getElementById('appavatarpicker'), txt=pk?pk.textContent:''; var want=t.getAttribute('data-av');
+       var GN={build:'BUILD',skin:'SKIN',fit:'CLOTHING'}[want]; if(GN&&txt.indexOf(GN)<0) bad.push('clicking the '+want+' tile did not show its rack');
+       if(GN&&txt.indexOf('HEADGEAR')>=0) bad.push('clicking the '+want+' tile still shows every rack');
+       var t2=document.querySelector('#appavatar .avslot[data-av="'+want+'"]'); if(t2) t2.click(); var txt2=(document.getElementById('appavatarpicker')||{}).textContent||'';
+       if(txt2.indexOf('HEADGEAR')<0) bad.push('a second click did not bring every rack back'); }
+     // CONTROL: the racks panel is still there, on the right, with tiles.
+     var pk2=document.getElementById('appavatarpicker'); if(!pk2||!pk2.querySelectorAll('.costile').length) bad.push('control: the racks are empty');
+     else { var kq=pk2.getBoundingClientRect(); if(kq.left<pq.right-2) bad.push('control: the racks are not to the right of the operator'); }
+     var cl=document.getElementById('closeappear'); if(cl) cl.click();
+     P2._avSlot=null;
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.31',what:'three pairs of sneakers are on the boots rack, each drawn with its own sole on the sprite and the figure',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"

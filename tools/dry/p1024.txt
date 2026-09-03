@@ -1,0 +1,134 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+# ============ HIS ANSWER 14, 2026-09-03, sixth category: BACKPACK COLOUR.
+#
+# A twelfth rack. The pack on the sprite's back was one fixed brown; it takes
+# the rack's colour now. Five: Canvas Brown, owned; Olive, Black, Rust Red and
+# Sand, earned. On the figure, a strap across the torso in the pack's colour,
+# since the figure faces you and the pack is behind; on the racks, a pack.
+# The pillagers draw from it too.
+
+SubRx @'
+  {id:'glovered',  name:'Red Gloves',     how:'extracts:9',  kind:'gloves'},
+'@ @'
+  {id:'glovered',  name:'Red Gloves',     how:'extracts:9',  kind:'gloves'},
+  // v10.24, his answer 14: BACKPACK, the twelfth rack. The colour of the pack on your back.
+  {id:'packbrown', name:'Canvas Pack',    how:'always',      kind:'pack'},
+  {id:'packolive', name:'Olive Pack',     how:'runs:6',      kind:'pack'},
+  {id:'packblack', name:'Black Pack',     how:'runs:16',     kind:'pack'},
+  {id:'packrust',  name:'Rust Pack',      how:'extracts:7',  kind:'pack'},
+  {id:'packsand',  name:'Sand Pack',      how:'level:3',     kind:'pack'},
+'@
+
+SubRx @'
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands'};
+'@ @'
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves',pack:'cosPack'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown'};
+// v10.24: the pack colours.
+var PACKCOL={packbrown:'#5c4a34',packolive:'#3e4a30',packblack:'#1e2228',packrust:'#6a3a2a',packsand:'#8a7a52'};
+'@
+
+SubRx @'
+  wc.fillStyle='#5c4a34'; rrF(x-fl*9-pw/2+leanX,ty-21,pw,9,2);
+'@ @'
+  wc.fillStyle=PACKCOL[st.hero?cosWorn('pack'):(st.pack||'packbrown')]||PACKCOL.packbrown;   // v10.24
+  rrF(x-fl*9-pw/2+leanX,ty-21,pw,9,2);
+'@
+
+SubRx @'
+      '<div class="avplate" style="background:rgba(0,0,0,.28)"></div>'+
+      '<div class="avhand" style="left:-11px;background:'+handColour({hero:1})+'"></div>'+   // v10.23
+'@ @'
+      '<div class="avplate" style="background:rgba(0,0,0,.28)"></div>'+
+      '<div class="avstrap" style="background:'+(PACKCOL[cosWorn('pack')]||PACKCOL.packbrown)+'"></div>'+   // v10.24: the pack strap
+      '<div class="avhand" style="left:-11px;background:'+handColour({hero:1})+'"></div>'+   // v10.23
+'@
+
+SubRx @'
+.avhand{ position:absolute; bottom:-2px; width:9px; height:9px; border-radius:3px; border:2px solid #14161b; }   /* v10.23 */
+'@ @'
+.avhand{ position:absolute; bottom:-2px; width:9px; height:9px; border-radius:3px; border:2px solid #14161b; }   /* v10.23 */
+.avstrap{ position:absolute; left:6px; top:-2px; width:6px; height:26px; border-radius:2px; opacity:.9; }   /* v10.24 */
+'@
+
+SubRx @'
+  h+=slot('gloves','GLOVES',(cosFind(cosWorn('gloves'))||{name:'Bare Hands'}).name,
+          '<span style="width:12px;height:12px;border-radius:3px;display:inline-block;background:'+handColour({hero:1})+'"></span>');   // v10.23
+'@ @'
+  h+=slot('gloves','GLOVES',(cosFind(cosWorn('gloves'))||{name:'Bare Hands'}).name,
+          '<span style="width:12px;height:12px;border-radius:3px;display:inline-block;background:'+handColour({hero:1})+'"></span>');   // v10.23
+  h+=slot('pack','BACKPACK',(cosFind(cosWorn('pack'))||{name:'Canvas Pack'}).name,
+          '<span style="width:11px;height:14px;border-radius:3px 3px 4px 4px;display:inline-block;background:'+(PACKCOL[cosWorn('pack')]||PACKCOL.packbrown)+'"></span>');   // v10.24
+'@
+
+SubRx @'
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'){
+'@ @'
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'||slot==='pack'){
+'@
+
+SubRx @'
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['gloves','GLOVES'],['boots','BOOTS']]
+'@ @'
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]
+'@
+
+SubRx @'
+  if(c.kind==='gloves'){   // v10.23: a hand, in the glove colour or the skin
+'@ @'
+  if(c.kind==='pack'){   // v10.24: a pack, in its colour
+    var pcol=PACKCOL[c.id]||PACKCOL.packbrown;
+    return '<span style="display:inline-block;width:34px;height:34px;border-radius:6px;background:#1b1f26;border:2px solid #14161b;position:relative">'+
+           '<span style="position:absolute;left:8px;top:5px;width:18px;height:22px;border-radius:4px 4px 6px 6px;background:'+pcol+'"></span>'+
+           '<span style="position:absolute;left:11px;top:12px;width:12px;height:2px;background:#14161b;opacity:.6"></span></span>';
+  }
+  if(c.kind==='gloves'){   // v10.23: a hand, in the glove colour or the skin
+'@
+
+SubRx @'
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots','gloves'];
+'@ @'
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots','gloves','pack'];
+'@
+
+SubRx @'
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes'),face:pick('face'),boots:pick('boots'),gloves:pick('gloves')};
+'@ @'
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes'),face:pick('face'),boots:pick('boots'),gloves:pick('gloves'),pack:pick('pack')};
+'@
+
+SubRx @'
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, face:_look.face, boots:_look.boots, gloves:_look.gloves,   // v10.18, his answer 20
+'@ @'
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, face:_look.face, boots:_look.boots, gloves:_look.gloves, pack:_look.pack,   // v10.18, his answer 20
+'@
+
+SubRx @'
+var VER='10.23';
+'@ @'
+var VER='10.24';
+'@
+SubRx @'
+  now:'v10.23: an eleventh rack: GLOVES. Work, black, grey and red gloves, earned, on your hands in the raid and on the figure. Bare hands match your skin now; they used to be one tan for everyone.',
+'@ @'
+  now:'v10.24: a twelfth rack: BACKPACK. The pack on your back was one brown for everyone; it comes in canvas, olive, black, rust and sand now, on you and on the pillagers.',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"

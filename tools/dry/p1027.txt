@@ -1,0 +1,66 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+# ============ HIS ANSWER 25, 2026-09-03: what bothers him most on the HUD
+# ============ includes "ON-HUD MESSAGING"; answer 30: he plays at 4K.
+#
+# MEASURED on v10.09 with the text trace: every panel scales with the monitor
+# through hudRes, so at 3840x2160 the body panel's text is 44 to 87 pixels
+# against 22 to 44 at 1080p. The message line, the one line the game uses to
+# talk to him, was 19 pixels at 1080p and 19 pixels at 4K. It scaled with his
+# HUD size dial and not with the monitor, so on his screen it was a third the
+# height of everything around it. It is drawn inside the same monitor scale
+# as the panels now, anchored to the top centre, and grows with them.
+
+SubRx @'
+  if(G.msgT>0){
+    ctx.font=FS(TYPE.label);
+    ctx.fillStyle='rgba(205,214,221,'+clamp(G.msgT,0,1)+')';
+'@ @'
+  if(G.msgT>0){
+    // v10.27, his answers 25 and 30: the message line scales with the monitor
+    // like every panel, anchored at the top centre. It was 19px at 4K.
+    ctx.save(); hudZoomIn('msg',W/2,0);
+    ctx.font=FS(TYPE.label);
+    ctx.fillStyle='rgba(205,214,221,'+clamp(G.msgT,0,1)+')';
+'@
+
+SubRx @'
+    ctx.fillStyle='rgba(232,240,246,'+clamp(G.msgT,0,1)+')';
+    ctx.fillText(G.msg,W/2,LH(109));
+    ctx.textAlign='left';
+  }
+'@ @'
+    ctx.fillStyle='rgba(232,240,246,'+clamp(G.msgT,0,1)+')';
+    ctx.fillText(G.msg,W/2,LH(109));
+    ctx.textAlign='left';
+    ctx.restore();                              // v10.27: end of the message scale
+  }
+'@
+
+SubRx @'
+var VER='10.26';
+'@ @'
+var VER='10.27';
+'@
+SubRx @'
+  now:'v10.26: a fourteenth rack: TATTOO, the last of the eight you listed. A teardrop, a neck ring, tribal bars, an anchor or a spider, earned, inked on your face and neck in the raid and on the figure, and on the pillagers.',
+'@ @'
+  now:'v10.27: the message line grows with the monitor. On a 4K screen it was nineteen pixels tall while every panel around it had doubled; it scales with them now.',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"

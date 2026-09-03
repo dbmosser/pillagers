@@ -1,0 +1,80 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+# ============ HIS ANSWER 20, 2026-09-03: other pillagers in the raid draw from
+# ============ the same cosmetic pool, "YES".
+#
+# A pillager was made with a coat colour and a name and nothing else; the
+# sprite read his hair, hairstyle, headgear, skin and beard off fields nobody
+# set, so every pillager on the map had the same blonde crop, bare head and
+# fair skin. Now each is dressed from the racks at the Discount Fashion Depot
+# at the moment he is made. STREAM DISCIPLINE: not one seeded roll is spent on
+# it. The look is a hash of who he is and where he was made, so the PRNG
+# stream that every container count and every paired A/B rests on does not
+# move by a single draw. The crown stays his alone; pillagers never wear it.
+
+SubRx @'
+function mkRaider(x,y,forceId,simBuild){
+'@ @'
+// v10.18, his answer 20: a pillager's look, drawn from the racks without
+// spending a seeded roll. A small integer hash of his identity and birthplace
+// picks from each rack; the crown, his prestige hat, is never handed out.
+function raiderLook(identId,x,y){
+  var h=2166136261>>>0, str=String(identId)+':'+Math.round(x)+':'+Math.round(y);
+  for(var i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619)>>>0; }
+  function pick(kind,skipIds){
+    var pool=COSMETICS.filter(function(c){ return c.kind===kind&&(!skipIds||skipIds.indexOf(c.id)<0); });
+    if(!pool.length) return null;
+    h=Math.imul(h^(h>>>13),1274126177)>>>0;
+    return pool[h%pool.length].id;
+  }
+  var hat=pick('hat',['crown']);
+  h=Math.imul(h^(h>>>11),2246822507)>>>0;
+  if((h%3)===0) hat='none';                   // a third go bareheaded
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard')};
+}
+function mkRaider(x,y,forceId,simBuild){
+'@
+
+SubRx @'
+coat:ident.coat, ident:ident.id, name:ident.tag,
+'@ @'
+coat:ident.coat, ident:ident.id, name:ident.tag,
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard,   // v10.18, his answer 20
+'@
+
+SubRx @'
+  var _hostRoll=rr();
+  var r={kind:'raider',x:x,y:y,r:11,hp:Math.round(78*CFG.eHp),maxhp:Math.round(78*CFG.eHp),react:rnd(.38,.62),
+'@ @'
+  var _hostRoll=rr();
+  var _look=raiderLook(ident.id,x,y);          // v10.18: no seeded roll spent
+  var r={kind:'raider',x:x,y:y,r:11,hp:Math.round(78*CFG.eHp),maxhp:Math.round(78*CFG.eHp),react:rnd(.38,.62),
+'@
+
+SubRx @'
+var VER='10.17';
+'@ @'
+var VER='10.18';
+'@
+SubRx @'
+  now:'v10.17: a seventh rack at the Discount Fashion Depot: BEARD. Stubble, a goatee, a full beard and mutton chops, earned, drawn on you in the raid and on the figure. A dust mask covers it, as it would.',
+'@ @'
+  now:'v10.18: the pillagers dress from the same racks you do. Every one of them used to have the same blonde crop and bare head; now each has his own hair, hairstyle, headgear, skin and beard, and no two crews look alike.',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"

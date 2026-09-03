@@ -1,0 +1,137 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+# ============ HIS ANSWER 14, 2026-09-03, third category: FACE PAINT OR SCARS.
+#
+# A ninth rack, FACE. Six faces: Plain, owned; a Scar, Freckles, Mud, War
+# Paint and a Black Eye, earned. The pillagers already had five face variants
+# drawn from an index nobody could choose; the hero's face was always plain.
+# Now the rack decides the hero's face, the same painter draws it, and the
+# pillagers draw from the rack too. On the figure, a mark on the head; on the
+# racks, a glyph.
+
+SubRx @'
+  {id:'eyeamber', name:'Amber',        how:'warden:1',    kind:'eyes'},
+'@ @'
+  {id:'eyeamber', name:'Amber',        how:'warden:1',    kind:'eyes'},
+  // v10.21, his answer 14: FACE, the ninth rack. Paint, scars and worse.
+  {id:'faceplain',   name:'Plain',      how:'always',      kind:'face'},
+  {id:'facescar',    name:'Scar',       how:'runs:6',      kind:'face'},
+  {id:'facefreckles',name:'Freckles',   how:'runs:2',      kind:'face'},
+  {id:'facemud',     name:'Mud',        how:'extracts:4',  kind:'face'},
+  {id:'facepaint',   name:'War Paint',  how:'extracts:12', kind:'face'},
+  {id:'faceshiner',  name:'Black Eye',  how:'warden:1',    kind:'face'},
+'@
+
+SubRx @'
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown'};
+'@ @'
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain'};
+'@
+
+SubRx @'
+  if(!HERO){
+    var _fx=st.faceIx===undefined?0:st.faceIx;
+    if(_fx===1){ wc.fillStyle=INK; wc.fillRect(hx2-5.6,ty-33.4,4.4,1.1); wc.fillRect(hx2+1.2,ty-33.4,4.4,1.1); }
+'@ @'
+  // v10.21: the FACE rack. The hero's face comes from the racks; a pillager's
+  // from his look, or from the old index if he has none.
+  {
+    var _FACE=HERO?cosWorn('face'):(st.face||null);
+    var _fx=st.faceIx===undefined?0:st.faceIx;
+    if(_FACE){ _fx={faceplain:0,facescar:6,facefreckles:5,facemud:4,facepaint:7,faceshiner:8}[_FACE]||0; }
+    if(_fx===6){ wc.fillStyle='#a04a3a'; wc.fillRect(hx2+2.2,ty-33.6,1.1,6.4); wc.fillStyle='#d47a6a'; wc.fillRect(hx2+2.2,ty-31.2,1.1,1); }
+    else if(_fx===7){ wc.fillStyle='rgba(20,22,30,.75)'; wc.fillRect(hx2-7,ty-31.6,14,1.6); wc.fillStyle='rgba(200,40,40,.8)'; wc.fillRect(hx2-7,ty-29.6,14,1.4); }
+    else if(_fx===8){ wc.fillStyle='rgba(70,40,90,.55)'; wc.beginPath(); wc.ellipse(hx2+3.4,ty-29.5,3.2,3.6,0,0,6.2832); wc.fill(); }
+    if(_fx===1){ wc.fillStyle=INK; wc.fillRect(hx2-5.6,ty-33.4,4.4,1.1); wc.fillRect(hx2+1.2,ty-33.4,4.4,1.1); }
+'@
+
+SubRx @'
+  h+=slot('eyes','EYES',(cosFind(cosWorn('eyes'))||{name:'Brown'}).name,
+          '<span style="width:14px;height:14px;border-radius:7px;display:inline-block;background:'+(EYECOL[cosWorn('eyes')]||EYECOL.eyebrown)+'"></span>');   // v10.19
+'@ @'
+  h+=slot('eyes','EYES',(cosFind(cosWorn('eyes'))||{name:'Brown'}).name,
+          '<span style="width:14px;height:14px;border-radius:7px;display:inline-block;background:'+(EYECOL[cosWorn('eyes')]||EYECOL.eyebrown)+'"></span>');   // v10.19
+  h+=slot('face','FACE',(cosFind(cosWorn('face'))||{name:'Plain'}).name,'\u25CC');   // v10.21
+'@
+
+SubRx @'
+      (function(){ // v10.17: the beard on the figure
+'@ @'
+      (function(){ // v10.21: the face mark on the figure
+        var _f=cosWorn('face'); if(!_f||_f==='faceplain') return '';
+        var _fs={facescar:'right:13px;top:8px;width:2px;height:14px;background:#a04a3a',
+                 facefreckles:'left:12px;right:12px;top:22px;height:4px;background:repeating-linear-gradient(90deg,#9a5a3a 0 2px,transparent 2px 5px)',
+                 facemud:'left:6px;right:6px;top:24px;height:8px;border-radius:4px;background:rgba(40,32,28,.45)',
+                 facepaint:'left:5px;right:5px;top:13px;height:3px;background:#c82828;box-shadow:0 5px 0 #14161b',
+                 faceshiner:'right:9px;top:14px;width:11px;height:11px;border-radius:6px;background:rgba(70,40,90,.6)'}[_f]||'';
+        return '<div style="position:absolute;'+_fs+'"></div>';
+      })()+
+      (function(){ // v10.17: the beard on the figure
+'@
+
+SubRx @'
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'){
+'@ @'
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'){
+'@
+
+SubRx @'
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING']]
+'@ @'
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING']]
+'@
+
+SubRx @'
+         clean:'--',stubble:'\u2591',goatee:'\u25BE',fullbeard:'\u25BC',chops:'\u2016'}[c.id]||'?';
+'@ @'
+         clean:'--',stubble:'\u2591',goatee:'\u25BE',fullbeard:'\u25BC',chops:'\u2016',
+         faceplain:'--',facescar:'/',facefreckles:'\u2234',facemud:'\u2591',facepaint:'\u2261',faceshiner:'\u25CF'}[c.id]||'?';
+'@
+
+SubRx @'
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes'];
+'@ @'
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face'];
+'@
+
+SubRx @'
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes')};
+'@ @'
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes'),face:pick('face')};
+'@
+
+SubRx @'
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes,   // v10.18, his answer 20
+'@ @'
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, face:_look.face,   // v10.18, his answer 20
+'@
+
+SubRx @'
+var VER='10.20';
+'@ @'
+var VER='10.21';
+'@
+SubRx @'
+  now:'v10.20: the mouse says what a panel corner does. Over a resize corner it is the diagonal double arrow, over a drag bar the move cross, over the minimise glyph the hand; away from the panels it is the reticle as before.',
+'@ @'
+  now:'v10.21: a ninth rack: FACE. A scar, freckles, mud, war paint and a black eye, earned, drawn on your face in the raid and on the figure; the pillagers wear them too.',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"

@@ -1,0 +1,51 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+# ============ HIS ANSWER 26, 2026-09-03: keep panel dragging and resizing,
+# ============ "MOUSE SHOULD CLEARLY INDICATE RESIZE AS AN OPTION WHEN I MOUSE
+# ============ OVER A CORNER".
+#
+# v9.09 drew a small glyph beside the reticle to say what a panel edge does,
+# and the OS pointer stayed hidden, because in a raid the reticle is the
+# pointer. He says that is not clear. The OS pointer now comes back over a
+# panel's parts, with the shape everyone knows: the diagonal double arrow
+# over a resize corner, the move cross over the drag bar, the hand over the
+# minimise glyph. The drawn glyph stays; the two agree because both read
+# hudHit, the one answer for what is under the pointer.
+
+SubRx @'
+  var _wantCur=(!p.downed&&(G.bagOpen||G.mapOpen))?'default':(_overBelt?'pointer':'none');
+'@ @'
+  // v10.20, his answer 26: over a panel's corner the pointer is the resize
+  // arrow, over its bar the move cross, over its glyph the hand.
+  var _hudPart=(!p.downed&&!G.bagOpen&&!G.mapOpen&&typeof hudHit==='function')?hudHit(mouse.x,mouse.y):null;
+  var _hudCur=_hudPart?({grip:'nwse-resize',bar:'move',glyph:'pointer'}[_hudPart.part]||null):null;
+  var _wantCur=(!p.downed&&(G.bagOpen||G.mapOpen))?'default':(_hudCur?_hudCur:(_overBelt?'pointer':'none'));
+'@
+
+SubRx @'
+var VER='10.19';
+'@ @'
+var VER='10.20';
+'@
+SubRx @'
+  now:'v10.19: an eighth rack: EYES. Brown, hazel, blue, green, grey and amber, drawn in the iris on your sprite and on the figure, and the pillagers have eyes of their own too.',
+'@ @'
+  now:'v10.20: the mouse says what a panel corner does. Over a resize corner it is the diagonal double arrow, over a drag bar the move cross, over the minimise glyph the hand; away from the panels it is the reticle as before.',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"

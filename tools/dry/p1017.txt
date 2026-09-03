@@ -1,0 +1,144 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+# ============ HIS ANSWER 14, 2026-09-03: new categories, "ADD ALL OF THIS
+# ============ STUFF": face paint or scars, eyes, beard, gloves, boots, backpack
+# ============ colour, patches or badges, tattoos, more clothing, more variety.
+# ============ One category a build. This one: BEARD.
+#
+# A seventh rack. Five beards, Clean Shaven owned from the start and the rest
+# earned, his answer 15. Drawn on the sprite under the face and before the
+# headgear so a dust mask covers it, on the figure as a chin under the eyes,
+# and on the racks as a glyph. A seventh slot on the figure, a seventh key in
+# the profile, a seventh part of a look.
+
+SubRx @'
+  {id:'hood',   name:'Hood',           how:'warden:2',    kind:'hat'},
+'@ @'
+  {id:'hood',   name:'Hood',           how:'warden:2',    kind:'hat'},
+  // v10.17, his answer 14: BEARD, the seventh rack.
+  {id:'clean',    name:'Clean Shaven', how:'always',      kind:'beard'},
+  {id:'stubble',  name:'Stubble',      how:'runs:3',      kind:'beard'},
+  {id:'goatee',   name:'Goatee',       how:'runs:12',     kind:'beard'},
+  {id:'fullbeard',name:'Full Beard',   how:'extracts:10', kind:'beard'},
+  {id:'chops',    name:'Mutton Chops', how:'warden:1',    kind:'beard'},
+'@
+
+SubRx @'
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long'};
+'@ @'
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean'};
+'@
+
+SubRx @'
+  var HAT=HERO?cosWorn('hat'):(st.hat||'none');
+'@ @'
+  var HAT=HERO?cosWorn('hat'):(st.hat||'none');
+  var BEARD=HERO?cosWorn('beard'):(st.beard||'clean');   // v10.17
+'@
+
+SubRx @'
+    // HEADGEAR. Sits on top of the fringe and the face because that is where a
+    // hat sits. Purely cosmetic: no soak, no slot, no weight, no stat.
+    if(HAT==='band'){
+'@ @'
+    // v10.17: BEARD, under the face, drawn before the headgear so a mask covers it.
+    if(BEARD&&BEARD!=='clean'){
+      var _bc=(HAIRCOL[HERO?cosWorn('hair'):(st.hair||'dark')]||HAIRCOL.dark)[0];
+      wc.fillStyle=_bc;
+      if(BEARD==='stubble'){ wc.globalAlpha=0.55; rrF(hx2-5.6,ty-28.2,11.2,3.6,1.6); wc.globalAlpha=1; }
+      else if(BEARD==='goatee'){ rrF(hx2-2.4,ty-27.8,4.8,4.6,1.4); }
+      else if(BEARD==='fullbeard'){ rrF(hx2-6.4,ty-29,12.8,6.2,2.4); }
+      else if(BEARD==='chops'){ rrF(hx2-7.2,ty-33,2.8,7.4,1.2); rrF(hx2+4.4,ty-33,2.8,7.4,1.2); }
+    }
+    // HEADGEAR. Sits on top of the fringe and the face because that is where a
+    // hat sits. Purely cosmetic: no soak, no slot, no weight, no stat.
+    if(HAT==='band'){
+'@
+
+SubRx @'
+      '<div class="aveyes"><div class="aveye"></div><div class="aveye"></div></div>'+
+    '</div>'+
+'@ @'
+      '<div class="aveyes"><div class="aveye"></div><div class="aveye"></div></div>'+
+      (function(){ // v10.17: the beard on the figure
+        var _b=cosWorn('beard'); if(!_b||_b==='clean') return '';
+        var _st={stubble:'left:9px;right:9px;height:6px;opacity:.55',goatee:'left:18px;right:18px;height:8px',fullbeard:'left:7px;right:7px;height:11px',chops:'left:4px;right:4px;height:9px;background:transparent;border-left:5px solid '+hc[0]+';border-right:5px solid '+hc[0]}[_b]||'';
+        return '<div class="avbeard" style="background:'+hc[0]+';'+_st+'"></div>';
+      })()+
+    '</div>'+
+'@
+
+SubRx @'
+  h+=slot('cut','HAIRSTYLE',(cosFind(cosWorn('cut'))||{name:'Long'}).name,'~');
+'@ @'
+  h+=slot('cut','HAIRSTYLE',(cosFind(cosWorn('cut'))||{name:'Long'}).name,'~');
+  h+=slot('beard','BEARD',(cosFind(cosWorn('beard'))||{name:'Clean Shaven'}).name,'\u25BE');   // v10.17
+'@
+
+SubRx @'
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'){
+    renderCosmetics(box,slot,hid,pid); return;
+  }
+'@ @'
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'){
+    renderCosmetics(box,slot,hid,pid); return;
+  }
+'@
+
+SubRx @'
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['hair','HAIR'],['cut','HAIRSTYLE'],['hat','HEADGEAR'],['fit','CLOTHING']]
+'@ @'
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING']]
+'@
+
+SubRx @'
+  var f={none:'--',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC\u25AC',visor:'\u25AD',crown:'\u2662',
+         beanie:'\u2229',cap:'\u25E2',bandana:'\u25AC',hood:'\u2229'}[c.id]||'?';
+'@ @'
+  var f={none:'--',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC\u25AC',visor:'\u25AD',crown:'\u2662',
+         beanie:'\u2229',cap:'\u25E2',bandana:'\u25AC',hood:'\u2229',
+         clean:'--',stubble:'\u2591',goatee:'\u25BE',fullbeard:'\u25BC',chops:'\u2016'}[c.id]||'?';
+'@
+
+SubRx @'
+.aveye{ width:6px; height:7px; border-radius:3px; background:#FFF6DC; }
+'@ @'
+.aveye{ width:6px; height:7px; border-radius:3px; background:#FFF6DC; }
+.avbeard{ position:absolute; bottom:-1px; border-radius:2px 2px 8px 8px; }   /* v10.17 */
+'@
+
+SubRx @'
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit'];
+'@ @'
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard'];
+'@
+
+SubRx @'
+var VER='10.16';
+'@ @'
+var VER='10.17';
+'@
+SubRx @'
+  now:'v10.16: SURPRISE ME at the Discount Fashion Depot dresses you in a random owned thing from every rack, and three LOOKS under the figure keep an outfit and put it back with one click.',
+'@ @'
+  now:'v10.17: a seventh rack at the Discount Fashion Depot: BEARD. Stubble, a goatee, a full beard and mutton chops, earned, drawn on you in the raid and on the figure. A dust mask covers it, as it would.',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"

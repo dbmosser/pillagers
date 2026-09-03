@@ -40024,6 +40024,33 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.16 - SURPRISE ME, AND THREE LOOKS
+
+His answers 18 and 19, 2026-09-03: a randomiser button, **YES**; saved looks,
+three named presets, **YES**.
+
+The Discount Fashion Depot has a row under the figure now. SURPRISE ME dresses
+the operator in a random owned thing from every rack at once, build, skin,
+hair, hairstyle, headgear and clothing, and never in anything unearned. Three
+LOOKS, each with SAVE and a row that says CLICK TO WEAR once it holds
+something, keep the six cosmetic choices and put them back with one click. A
+look is nothing but cosmetics; the loadout saves v10.12 removed were a
+different thing and stay gone. Stored in P.looks, three slots.
+
+### Measured
+
+The check earns everything so the racks are full, opens the Depot through
+its station, presses SURPRISE ME up to ten times and requires the outfit to
+change and everything worn to be owned, saves look 2, changes the outfit
+again, wears look 2 and requires the saved outfit back, and requires the
+saved row to say CLICK TO WEAR. The controls are three look rows and the
+figure's six slots still there. On v10.15 there is no SURPRISE ME, which is
+the finding.
+
+Not verified: the names on the looks, which are the first three things in
+the outfit; he said "named presets" and may want to type a name, which is a
+text box and a build of its own if he says so.
+
 ## v10.15 - A DOWNED PILLAGER CRAWLS FOR COVER
 
 His answer 45, 2026-09-03, to whether downed pillagers should crawl toward

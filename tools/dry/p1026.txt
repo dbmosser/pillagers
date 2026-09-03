@@ -1,0 +1,136 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+# ============ HIS ANSWER 14, 2026-09-03, eighth and last category: TATTOOS.
+#
+# A fourteenth rack, and the last of the eight he listed. A tattoo is ink on
+# skin, and at this size the skin that shows is the face and the neck: none,
+# owned; a teardrop under the eye, a neck ring, tribal bars on the cheek, an
+# anchor on the neck and a spider on the temple, earned. Drawn on the sprite
+# after the face and before the beard and headgear, on the figure as a mark
+# on the head, and on the racks as a glyph. The pillagers draw from it too.
+
+SubRx @'
+  {id:'patchflag', name:'Flag',           how:'warden:1',    kind:'patch'},
+'@ @'
+  {id:'patchflag', name:'Flag',           how:'warden:1',    kind:'patch'},
+  // v10.26, his answer 14: TATTOO, the fourteenth rack and the last of his eight.
+  {id:'tatnone',   name:'No Ink',         how:'always',      kind:'tattoo'},
+  {id:'tattear',   name:'Teardrop',       how:'runs:5',      kind:'tattoo'},
+  {id:'tatring',   name:'Neck Ring',      how:'runs:11',     kind:'tattoo'},
+  {id:'tattribal', name:'Tribal',         how:'extracts:6',  kind:'tattoo'},
+  {id:'tatanchor', name:'Anchor',         how:'extracts:14', kind:'tattoo'},
+  {id:'tatspider', name:'Spider',         how:'warden:2',    kind:'tattoo'},
+'@
+
+SubRx @'
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves',pack:'cosPack',patch:'cosPatch'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown',patch:'patchnone'};
+'@ @'
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves',pack:'cosPack',patch:'cosPatch',tattoo:'cosTattoo'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown',patch:'patchnone',tattoo:'tatnone'};
+'@
+
+SubRx @'
+    // v10.17: BEARD, under the face, drawn before the headgear so a mask covers it.
+    if(BEARD&&BEARD!=='clean'){
+'@ @'
+    // v10.26: TATTOO, ink on the face and neck, before the beard and headgear.
+    (function(){
+      var _tid=HERO?cosWorn('tattoo'):(st.tattoo||'tatnone'); if(!_tid||_tid==='tatnone') return;
+      wc.fillStyle='rgba(20,28,44,.85)';
+      if(_tid==='tattear'){ wc.fillRect(hx2+2.6,ty-27.2,1.2,1.8); }
+      else if(_tid==='tatring'){ wc.fillRect(hx2-4.2,ty-23.4,8.4,1.1); }
+      else if(_tid==='tattribal'){ wc.fillRect(hx2-6.2,ty-31.6,2.2,0.9); wc.fillRect(hx2-6.6,ty-29.8,2.8,0.9); wc.fillRect(hx2-6.2,ty-28,2.2,0.9); }
+      else if(_tid==='tatanchor'){ wc.fillRect(hx2+2.2,ty-24.6,0.9,3); wc.fillRect(hx2+1,ty-22.4,3.3,0.9); wc.fillRect(hx2+1.4,ty-24.8,2.5,0.8); }
+      else if(_tid==='tatspider'){ wc.fillRect(hx2+4.4,ty-34.6,1.8,1.8); wc.fillRect(hx2+3.2,ty-35.4,4.2,0.7); wc.fillRect(hx2+3.2,ty-33,4.2,0.7); }
+    })();
+    // v10.17: BEARD, under the face, drawn before the headgear so a mask covers it.
+    if(BEARD&&BEARD!=='clean'){
+'@
+
+SubRx @'
+      (function(){ // v10.21: the face mark on the figure
+'@ @'
+      (function(){ // v10.26: the tattoo on the figure
+        var _t=cosWorn('tattoo'); if(!_t||_t==='tatnone') return '';
+        var _ts={tattear:'right:14px;top:22px;width:3px;height:5px;border-radius:2px',
+                 tatring:'left:10px;right:10px;bottom:1px;height:2px',
+                 tattribal:'left:5px;top:16px;width:9px;height:9px;background:repeating-linear-gradient(0deg,#1c2a44 0 2px,transparent 2px 4px)',
+                 tatanchor:'right:9px;bottom:3px;width:3px;height:9px;box-shadow:-3px 6px 0 -1px #1c2a44,3px 6px 0 -1px #1c2a44',
+                 tatspider:'right:6px;top:4px;width:6px;height:6px;border-radius:3px;box-shadow:-3px -2px 0 -1px #1c2a44,3px -2px 0 -1px #1c2a44,-3px 2px 0 -1px #1c2a44,3px 2px 0 -1px #1c2a44'}[_t]||'';
+        return '<div style="position:absolute;background:#1c2a44;opacity:.85;'+_ts+'"></div>';
+      })()+
+      (function(){ // v10.21: the face mark on the figure
+'@
+
+SubRx @'
+  h+=slot('patch','PATCH',(cosFind(cosWorn('patch'))||{name:'No Patch'}).name,'\u25A3');   // v10.25
+'@ @'
+  h+=slot('patch','PATCH',(cosFind(cosWorn('patch'))||{name:'No Patch'}).name,'\u25A3');   // v10.25
+  h+=slot('tattoo','TATTOO',(cosFind(cosWorn('tattoo'))||{name:'No Ink'}).name,'\u2727');   // v10.26
+'@
+
+SubRx @'
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'||slot==='pack'||slot==='patch'){
+'@ @'
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'||slot==='pack'||slot==='patch'||slot==='tattoo'){
+'@
+
+SubRx @'
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['patch','PATCH'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]
+'@ @'
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['tattoo','TATTOO'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['patch','PATCH'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]
+'@
+
+SubRx @'
+         faceplain:'--',facescar:'/',facefreckles:'\u2234',facemud:'\u2591',facepaint:'\u2261',faceshiner:'\u25CF'}[c.id]||'?';
+'@ @'
+         faceplain:'--',facescar:'/',facefreckles:'\u2234',facemud:'\u2591',facepaint:'\u2261',faceshiner:'\u25CF',
+         tatnone:'--',tattear:'\u2022',tatring:'\u25CB',tattribal:'\u2630',tatanchor:'\u2693',tatspider:'\u2731'}[c.id]||'?';
+'@
+
+SubRx @'
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots','gloves','pack','patch'];
+'@ @'
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots','gloves','pack','patch','tattoo'];
+'@
+
+SubRx @'
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes'),face:pick('face'),boots:pick('boots'),gloves:pick('gloves'),pack:pick('pack'),patch:pick('patch')};
+'@ @'
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes'),face:pick('face'),boots:pick('boots'),gloves:pick('gloves'),pack:pick('pack'),patch:pick('patch'),tattoo:pick('tattoo')};
+'@
+
+SubRx @'
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, face:_look.face, boots:_look.boots, gloves:_look.gloves, pack:_look.pack, patch:_look.patch,   // v10.18, his answer 20
+'@ @'
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, face:_look.face, boots:_look.boots, gloves:_look.gloves, pack:_look.pack, patch:_look.patch, tattoo:_look.tattoo,   // v10.18, his answer 20
+'@
+
+SubRx @'
+var VER='10.25';
+'@ @'
+var VER='10.26';
+'@
+SubRx @'
+  now:'v10.25: a thirteenth rack: PATCH. A red cross, a skull, a star, a chevron or a flag on your chest, earned, on you in the raid and on the figure, and on the pillagers.',
+'@ @'
+  now:'v10.26: a fourteenth rack: TATTOO, the last of the eight you listed. A teardrop, a neck ring, tribal bars, an anchor or a spider, earned, inked on your face and neck in the raid and on the figure, and on the pillagers.',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"

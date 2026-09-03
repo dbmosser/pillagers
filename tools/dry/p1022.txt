@@ -1,0 +1,142 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+# ============ HIS ANSWER 14, 2026-09-03, fourth category: BOOTS.
+#
+# A tenth rack. Five pairs: Black, owned; Tan, Olive, Oxblood and Bleached,
+# earned. The sprite's boots were two fixed greys; they take the pair's
+# colours now, and the figure grows a pair of boots under its legs. The
+# pillagers draw boots from the rack too.
+
+SubRx @'
+  {id:'faceshiner',  name:'Black Eye',  how:'warden:1',    kind:'face'},
+'@ @'
+  {id:'faceshiner',  name:'Black Eye',  how:'warden:1',    kind:'face'},
+  // v10.22, his answer 14: BOOTS, the tenth rack.
+  {id:'bootblack', name:'Black Boots',    how:'always',      kind:'boots'},
+  {id:'boottan',   name:'Tan Boots',      how:'runs:5',      kind:'boots'},
+  {id:'bootolive', name:'Olive Boots',    how:'runs:14',     kind:'boots'},
+  {id:'bootox',    name:'Oxblood Boots',  how:'extracts:8',  kind:'boots'},
+  {id:'bootbone',  name:'Bleached Boots', how:'level:3',     kind:'boots'},
+'@
+
+SubRx @'
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain'};
+'@ @'
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack'};
+// v10.22: boot colours, the far leg and the near leg.
+var BOOTCOL={bootblack:['#191f26','#232a32'],boottan:['#6a4a2a','#8a6438'],bootolive:['#36402a','#4a5638'],bootox:['#4a2028','#663038'],bootbone:['#8a8270','#a89e88']};
+'@
+
+SubRx @'
+  wc.fillStyle='#191f26';
+  rrF(x-6.3+swing2*.5,ty-11,4.6,7.5-liftB*.5,1);
+  rrF(x-6.5+swing2,ty-4.5-liftB,5.4,4.5,1);
+  wc.fillStyle='#232a32';
+  rrF(x+1.7+swing*.5,ty-11,4.6,7.5-liftA*.5,1);
+  rrF(x+1.1+swing,ty-4.5-liftA,5.4,4.5,1);
+'@ @'
+  // v10.22: the boots take their colour from the racks.
+  var _BT=BOOTCOL[st.hero?cosWorn('boots'):(st.boots||'bootblack')]||BOOTCOL.bootblack;
+  wc.fillStyle=_BT[0];
+  rrF(x-6.3+swing2*.5,ty-11,4.6,7.5-liftB*.5,1);
+  rrF(x-6.5+swing2,ty-4.5-liftB,5.4,4.5,1);
+  wc.fillStyle=_BT[1];
+  rrF(x+1.7+swing*.5,ty-11,4.6,7.5-liftA*.5,1);
+  rrF(x+1.1+swing,ty-4.5-liftA,5.4,4.5,1);
+'@
+
+SubRx @'
+    '<div class="avlegs" style="background:'+ft[0]+';width:'+Math.round(38*bd.hip)+'px"></div>'+
+  '</div>';
+'@ @'
+    '<div class="avlegs" style="background:'+ft[0]+';width:'+Math.round(38*bd.hip)+'px"></div>'+
+    '<div class="avboots" style="background:'+((BOOTCOL[cosWorn('boots')]||BOOTCOL.bootblack)[1])+';width:'+Math.round(42*bd.hip)+'px"></div>'+   // v10.22
+  '</div>';
+'@
+
+SubRx @'
+.avlegs{ width:38px; height:20px; border-radius:0 0 5px 5px; border:2px solid #14161b; border-top:0; }
+'@ @'
+.avlegs{ width:38px; height:20px; border-radius:0 0 5px 5px; border:2px solid #14161b; border-top:0; }
+.avboots{ width:42px; height:8px; border-radius:0 0 4px 4px; border:2px solid #14161b; border-top:0; margin-top:-1px; }   /* v10.22 */
+'@
+
+SubRx @'
+  h+=slot('face','FACE',(cosFind(cosWorn('face'))||{name:'Plain'}).name,'\u25CC');   // v10.21
+'@ @'
+  h+=slot('face','FACE',(cosFind(cosWorn('face'))||{name:'Plain'}).name,'\u25CC');   // v10.21
+  h+=slot('boots','BOOTS',(cosFind(cosWorn('boots'))||{name:'Black Boots'}).name,
+          '<span style="width:14px;height:10px;border-radius:0 0 4px 4px;display:inline-block;background:'+((BOOTCOL[cosWorn('boots')]||BOOTCOL.bootblack)[1])+'"></span>');   // v10.22
+'@
+
+SubRx @'
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'){
+'@ @'
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'){
+'@
+
+SubRx @'
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING']]
+'@ @'
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['boots','BOOTS']]
+'@
+
+SubRx @'
+  if(c.kind==='eyes'){   // v10.19: an eye, the iris in its colour
+'@ @'
+  if(c.kind==='boots'){   // v10.22: a boot, in its colour
+    var bc=BOOTCOL[c.id]||BOOTCOL.bootblack;
+    return '<span style="display:inline-block;width:34px;height:34px;border-radius:6px;background:#1b1f26;border:2px solid #14161b;position:relative">'+
+           '<span style="position:absolute;left:8px;top:6px;width:12px;height:16px;border-radius:2px 2px 0 0;background:'+bc[1]+'"></span>'+
+           '<span style="position:absolute;left:6px;top:20px;width:20px;height:7px;border-radius:0 3px 3px 3px;background:'+bc[0]+'"></span></span>';
+  }
+  if(c.kind==='eyes'){   // v10.19: an eye, the iris in its colour
+'@
+
+SubRx @'
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face'];
+'@ @'
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots'];
+'@
+
+SubRx @'
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes'),face:pick('face')};
+'@ @'
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes'),face:pick('face'),boots:pick('boots')};
+'@
+
+SubRx @'
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, face:_look.face,   // v10.18, his answer 20
+'@ @'
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, face:_look.face, boots:_look.boots,   // v10.18, his answer 20
+'@
+
+SubRx @'
+var VER='10.21';
+'@ @'
+var VER='10.22';
+'@
+SubRx @'
+  now:'v10.21: a ninth rack: FACE. A scar, freckles, mud, war paint and a black eye, earned, drawn on your face in the raid and on the figure; the pillagers wear them too.',
+'@ @'
+  now:'v10.22: a tenth rack: BOOTS. Black, tan, olive, oxblood and bleached, on your feet in the raid and on the figure, and on the pillagers.',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"

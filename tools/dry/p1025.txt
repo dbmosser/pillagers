@@ -1,0 +1,149 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+# ============ HIS ANSWER 14, 2026-09-03, seventh category: PATCHES OR BADGES.
+#
+# A thirteenth rack. A patch is a small mark on the chest, over the coat, in
+# its own colour: none, owned; a red cross, a skull, a star, a chevron and a
+# flag, earned. Drawn on the sprite's torso beside the chest rig, on the
+# figure as a square on the torso, and on the racks as a glyph. Pillagers
+# draw from it too.
+
+SubRx @'
+  {id:'packsand',  name:'Sand Pack',      how:'level:3',     kind:'pack'},
+'@ @'
+  {id:'packsand',  name:'Sand Pack',      how:'level:3',     kind:'pack'},
+  // v10.25, his answer 14: PATCH, the thirteenth rack. A mark on the chest.
+  {id:'patchnone', name:'No Patch',       how:'always',      kind:'patch'},
+  {id:'patchcross',name:'Red Cross',      how:'runs:4',      kind:'patch'},
+  {id:'patchskull',name:'Skull',          how:'runs:9',      kind:'patch'},
+  {id:'patchstar', name:'Star',           how:'extracts:5',  kind:'patch'},
+  {id:'patchchev', name:'Chevron',        how:'extracts:11', kind:'patch'},
+  {id:'patchflag', name:'Flag',           how:'warden:1',    kind:'patch'},
+'@
+
+SubRx @'
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves',pack:'cosPack'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown'};
+'@ @'
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves',pack:'cosPack',patch:'cosPatch'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown',patch:'patchnone'};
+// v10.25: patch colours, the ground and the mark.
+var PATCHCOL={patchcross:['#f2f2f2','#c82828'],patchskull:['#14161b','#e8e2d2'],patchstar:['#1e2a5a','#ffd24a'],patchchev:['#3a3a2a','#e0c060'],patchflag:['#1e3a6a','#d8d8d8']};
+function drawPatch(c,id,x,y,s){
+  var pc=PATCHCOL[id]; if(!pc) return;
+  c.fillStyle='#0a0c10'; c.fillRect(x-0.5,y-0.5,s+1,s+1);
+  c.fillStyle=pc[0]; c.fillRect(x,y,s,s);
+  c.fillStyle=pc[1];
+  if(id==='patchcross'){ c.fillRect(x+s*0.4,y+s*0.15,s*0.2,s*0.7); c.fillRect(x+s*0.15,y+s*0.4,s*0.7,s*0.2); }
+  else if(id==='patchskull'){ c.fillRect(x+s*0.25,y+s*0.15,s*0.5,s*0.45); c.fillRect(x+s*0.32,y+s*0.62,s*0.36,s*0.2); c.fillStyle=pc[0]; c.fillRect(x+s*0.34,y+s*0.3,s*0.12,s*0.14); c.fillRect(x+s*0.54,y+s*0.3,s*0.12,s*0.14); }
+  else if(id==='patchstar'){ c.fillRect(x+s*0.42,y+s*0.1,s*0.16,s*0.8); c.fillRect(x+s*0.1,y+s*0.42,s*0.8,s*0.16); c.fillRect(x+s*0.28,y+s*0.28,s*0.44,s*0.44); }
+  else if(id==='patchchev'){ c.fillRect(x+s*0.15,y+s*0.25,s*0.7,s*0.18); c.fillRect(x+s*0.15,y+s*0.55,s*0.7,s*0.18); }
+  else if(id==='patchflag'){ c.fillRect(x+s*0.15,y+s*0.2,s*0.7,s*0.2); c.fillRect(x+s*0.15,y+s*0.6,s*0.7,s*0.2); }
+}
+'@
+
+SubRx @'
+  // chest rig, and a hit shimmer when recently hurt
+  wc.fillStyle='rgba(16,21,27,.85)';
+  wc.fillRect(x-6.5+leanX,ty-18,13,2.4);
+'@ @'
+  // chest rig, and a hit shimmer when recently hurt
+  wc.fillStyle='rgba(16,21,27,.85)';
+  wc.fillRect(x-6.5+leanX,ty-18,13,2.4);
+  // v10.25: the patch, on the chest above the rig
+  (function(){ var _pid=st.hero?cosWorn('patch'):(st.patch||'patchnone'); if(_pid&&_pid!=='patchnone') drawPatch(wc,_pid,x+1.5+leanX,ty-22.6,3.6); })();
+'@
+
+SubRx @'
+      '<div class="avstrap" style="background:'+(PACKCOL[cosWorn('pack')]||PACKCOL.packbrown)+'"></div>'+   // v10.24: the pack strap
+'@ @'
+      '<div class="avstrap" style="background:'+(PACKCOL[cosWorn('pack')]||PACKCOL.packbrown)+'"></div>'+   // v10.24: the pack strap
+      (function(){ var _pp=cosWorn('patch'), _pc=PATCHCOL[_pp]; if(!_pc) return ''; return '<div class="avpatch" style="background:'+_pc[0]+';box-shadow:inset 0 0 0 2px '+_pc[1]+'"></div>'; })()+   // v10.25
+'@
+
+SubRx @'
+.avstrap{ position:absolute; left:6px; top:-2px; width:6px; height:26px; border-radius:2px; opacity:.9; }   /* v10.24 */
+'@ @'
+.avstrap{ position:absolute; left:6px; top:-2px; width:6px; height:26px; border-radius:2px; opacity:.9; }   /* v10.24 */
+.avpatch{ position:absolute; right:7px; top:4px; width:9px; height:9px; border-radius:2px; border:1px solid #14161b; }   /* v10.25 */
+'@
+
+SubRx @'
+  h+=slot('pack','BACKPACK',(cosFind(cosWorn('pack'))||{name:'Canvas Pack'}).name,
+          '<span style="width:11px;height:14px;border-radius:3px 3px 4px 4px;display:inline-block;background:'+(PACKCOL[cosWorn('pack')]||PACKCOL.packbrown)+'"></span>');   // v10.24
+'@ @'
+  h+=slot('pack','BACKPACK',(cosFind(cosWorn('pack'))||{name:'Canvas Pack'}).name,
+          '<span style="width:11px;height:14px;border-radius:3px 3px 4px 4px;display:inline-block;background:'+(PACKCOL[cosWorn('pack')]||PACKCOL.packbrown)+'"></span>');   // v10.24
+  h+=slot('patch','PATCH',(cosFind(cosWorn('patch'))||{name:'No Patch'}).name,'\u25A3');   // v10.25
+'@
+
+SubRx @'
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'||slot==='pack'){
+'@ @'
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'||slot==='pack'||slot==='patch'){
+'@
+
+SubRx @'
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]
+'@ @'
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['patch','PATCH'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]
+'@
+
+SubRx @'
+  if(c.kind==='pack'){   // v10.24: a pack, in its colour
+'@ @'
+  if(c.kind==='patch'){   // v10.25: the patch itself, painted
+    var pcv=document.createElement('canvas'); pcv.width=34; pcv.height=34;
+    var pcx=pcv.getContext('2d'); pcx.fillStyle='#1b1f26'; pcx.fillRect(0,0,34,34);
+    if(PATCHCOL[c.id]) drawPatch(pcx,c.id,7,7,20);
+    else { pcx.fillStyle='#8a96a1'; pcx.font='14px sans-serif'; pcx.textAlign='center'; pcx.fillText('--',17,22); }
+    return '<img style="width:34px;height:34px;border-radius:6px;border:2px solid #14161b" src="'+pcv.toDataURL()+'">';
+  }
+  if(c.kind==='pack'){   // v10.24: a pack, in its colour
+'@
+
+SubRx @'
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots','gloves','pack'];
+'@ @'
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots','gloves','pack','patch'];
+'@
+
+SubRx @'
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes'),face:pick('face'),boots:pick('boots'),gloves:pick('gloves'),pack:pick('pack')};
+'@ @'
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes'),face:pick('face'),boots:pick('boots'),gloves:pick('gloves'),pack:pick('pack'),patch:pick('patch')};
+'@
+
+SubRx @'
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, face:_look.face, boots:_look.boots, gloves:_look.gloves, pack:_look.pack,   // v10.18, his answer 20
+'@ @'
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, face:_look.face, boots:_look.boots, gloves:_look.gloves, pack:_look.pack, patch:_look.patch,   // v10.18, his answer 20
+'@
+
+SubRx @'
+var VER='10.24';
+'@ @'
+var VER='10.25';
+'@
+SubRx @'
+  now:'v10.24: a twelfth rack: BACKPACK. The pack on your back was one brown for everyone; it comes in canvas, olive, black, rust and sand now, on you and on the pillagers.',
+'@ @'
+  now:'v10.25: a thirteenth rack: PATCH. A red cross, a skull, a star, a chevron or a flag on your chest, earned, on you in the raid and on the figure, and on the pillagers.',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"

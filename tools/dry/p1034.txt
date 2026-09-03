@@ -1,0 +1,89 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+# ============ HIS NOTE, 2026-09-03 about 14:10, and the Reach research: "when
+# ============ I ranked up new items would pop up". A raid that earns a piece
+# ============ should say so where the raid ends.
+#
+# The racks are snapshotted when the lift moves; when the outcome card is
+# written, after the run is banked, whatever is owned now and was not then is
+# named on the card in the extraction colour, above the next piece. A raid
+# that earned nothing shows nothing.
+
+SubRx @'
+function startRaid(){
+  G=buildRaid(false);
+'@ @'
+function startRaid(){
+  G=buildRaid(false);
+  G.cosAtStart=cosOwnedIds();   // v10.34: what the racks held when the lift moved
+'@
+
+SubRx @'
+  var rack=(function(k){ var G={hat:'HEADGEAR',hair:'HAIR',cut:'HAIRSTYLE',beard:'BEARD',eyes:'EYES',face:'FACE',tattoo:'TATTOO',build:'BUILD',skin:'SKIN',fit:'CLOTHING',patch:'PATCH',gloves:'GLOVES',boots:'BOOTS',pack:'BACKPACK'}; return G[k]||k.toUpperCase(); })(nx.c.kind);
+  return 'NEXT ON THE RACKS: '+nx.c.name.toUpperCase()+' ('+rack+'), '+what+'.';
+}
+'@ @'
+  return 'NEXT ON THE RACKS: '+nx.c.name.toUpperCase()+' ('+cosRackName(nx.c.kind)+'), '+what+'.';
+}
+function cosRackName(k){
+  var G={hat:'HEADGEAR',hair:'HAIR',cut:'HAIRSTYLE',beard:'BEARD',eyes:'EYES',face:'FACE',tattoo:'TATTOO',build:'BUILD',skin:'SKIN',fit:'CLOTHING',patch:'PATCH',gloves:'GLOVES',boots:'BOOTS',pack:'BACKPACK'};
+  return G[k]||String(k).toUpperCase();
+}
+// v10.34: what the racks hold now, and what a raid just added to them.
+function cosOwnedIds(){ var o=[]; for(var i=0;i<COSMETICS.length;i++) if(cosOwned(COSMETICS[i])) o.push(COSMETICS[i].id); return o; }
+function cosEarnedSince(ids){
+  var was={}; for(var j=0;j<(ids||[]).length;j++) was[ids[j]]=1;
+  var out=[];
+  for(var i=0;i<COSMETICS.length;i++){ var c=COSMETICS[i]; if(c.how!=='always'&&!was[c.id]&&cosOwned(c)) out.push(c); }
+  return out;
+}
+function cosEarnedLine(ids){
+  if(!ids) return '';
+  var e=cosEarnedSince(ids); if(!e.length) return '';
+  var names=[]; for(var i=0;i<e.length;i++) names.push(e[i].name.toUpperCase()+' ('+cosRackName(e[i].kind)+')');
+  return 'EARNED THIS RAID: '+names.join(', ')+'. ON YOUR RACK AT THE DEPOT.';
+}
+'@
+
+SubRx @'
+  <div id="oc_next" style="margin-top:12px;font-size:11.5px;letter-spacing:.14em;color:var(--amber)"></div>   <!-- v10.33: the next piece -->
+'@ @'
+  <div id="oc_earned" style="margin-top:12px;font-size:12px;letter-spacing:.14em;color:var(--coolant)"></div>   <!-- v10.34: earned this raid -->
+  <div id="oc_next" style="margin-top:6px;font-size:11.5px;letter-spacing:.14em;color:var(--amber)"></div>   <!-- v10.33: the next piece -->
+'@
+
+SubRx @'
+  (function(){ var _nx=document.getElementById('oc_next'); if(_nx) _nx.textContent=(typeof cosNextLine==='function')?cosNextLine():''; })();
+'@ @'
+  (function(){ var _nx=document.getElementById('oc_next'); if(_nx) _nx.textContent=(typeof cosNextLine==='function')?cosNextLine():'';
+    // v10.34: and what this raid earned, against the racks as they were when the lift moved.
+    var _ne=document.getElementById('oc_earned'); if(_ne) _ne.textContent=(typeof cosEarnedLine==='function')?cosEarnedLine(G.cosAtStart):''; })();
+'@
+
+SubRx @'
+var VER='10.33';
+'@ @'
+var VER='10.34';
+'@
+SubRx @'
+  now:'v10.33: the next piece. The Depot and the outcome card both name the piece on the racks closest to earned and how far off it is, so every raid ends with something coming.',
+'@ @'
+  now:'v10.34: a raid that earns a piece says so. The outcome card names every piece the racks gained during the raid, above the next one coming.',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"

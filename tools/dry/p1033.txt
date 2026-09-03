@@ -1,0 +1,122 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+# ============ HIS NOTE, 2026-09-03 about 14:10: cosmetics as what keeps people
+# ============ coming back for the long haul, Reach's earn system as the model.
+#
+# The research (tools/audits/reach-cosmetics-research-2026-09-03.md): the
+# thing players named first was seeing what was coming. "When I ranked up new
+# items would pop up." Every locked piece here already prints its gate on the
+# racks, but nothing tells him which piece is NEXT or how far off it is, and
+# the outcome card, the one screen every raid ends on, says nothing about the
+# racks at all. So: one line, THE NEXT PIECE and the distance to it, chosen
+# as the locked piece closest to being earned, on the Depot under the heading
+# and on the outcome card under the manifest. A raid always has a piece at
+# the end of it.
+
+SubRx @'
+function cosFind(id){
+  for(var i=0;i<COSMETICS.length;i++) if(COSMETICS[i].id===id) return COSMETICS[i];
+  return null;
+}
+'@ @'
+function cosFind(id){
+  for(var i=0;i<COSMETICS.length;i++) if(COSMETICS[i].id===id) return COSMETICS[i];
+  return null;
+}
+// v10.33: THE NEXT PIECE. How far a locked piece is from being earned, as the
+// counter it waits on, where it stands, and what it needs.
+function cosDist(c){
+  if(!c||c.how==='always'||typeof P==='undefined'||!P) return null;
+  var bits=String(c.how).split(':'),k=bits[0],v=+bits[1];
+  if(k==='runs')     return {k:k,cur:P.runs||0,need:v,unit:'raid'};
+  if(k==='extracts') return {k:k,cur:P.ext||0,need:v,unit:'extraction'};
+  if(k==='level')    return {k:k,cur:P.xpLevel||1,need:v,unit:'level'};
+  if(k==='warden')   return {k:k,cur:(P.kills&&P.kills.warden)||0,need:v,unit:'Warden'};
+  if(k==='board')    return {k:k,cur:(P.spClaimed||[]).length,need:SEASON_TIERS.length,unit:'board reward'};
+  return null;
+}
+// The locked piece closest to earned: the smallest share of its gate still to
+// go, ties to the fewer left. Null when the racks are complete.
+function cosNext(){
+  var best=null,bs=9;
+  for(var i=0;i<COSMETICS.length;i++){
+    var c=COSMETICS[i]; if(cosOwned(c)) continue;
+    var d=cosDist(c); if(!d||!d.need) continue;
+    var left=Math.max(0,d.need-d.cur), sc=left/d.need+left*1e-4;
+    if(sc<bs){ bs=sc; best={c:c,d:d,left:left}; }
+  }
+  return best;
+}
+function cosNextLine(){
+  var nx=cosNext();
+  if(!nx) return 'THE RACKS ARE COMPLETE. EVERYTHING HERE IS YOURS.';
+  var d=nx.d, left=nx.left, what;
+  if(d.k==='level') what='LEVEL '+d.need+' ('+left+' TO GO)';
+  else if(d.k==='board') what=left+' MORE BOARD REWARD'+(left===1?'':'S');
+  else what=left+' MORE '+d.unit.toUpperCase()+(left===1?'':'S');
+  var rack=(function(k){ var G={hat:'HEADGEAR',hair:'HAIR',cut:'HAIRSTYLE',beard:'BEARD',eyes:'EYES',face:'FACE',tattoo:'TATTOO',build:'BUILD',skin:'SKIN',fit:'CLOTHING',patch:'PATCH',gloves:'GLOVES',boots:'BOOTS',pack:'BACKPACK'}; return G[k]||k.toUpperCase(); })(nx.c.kind);
+  return 'NEXT ON THE RACKS: '+nx.c.name.toUpperCase()+' ('+rack+'), '+what+'.';
+}
+'@
+
+SubRx @'
+  <div class="manifest" id="oc_manifest"></div>
+'@ @'
+  <div class="manifest" id="oc_manifest"></div>
+  <div id="oc_next" style="margin-top:12px;font-size:11.5px;letter-spacing:.14em;color:var(--amber)"></div>   <!-- v10.33: the next piece -->
+'@
+
+SubRx @'
+  if(!G.sim) commitRun(pendingRun);
+  var t=document.getElementById('oc_title'),s=document.getElementById('oc_sub');
+'@ @'
+  if(!G.sim) commitRun(pendingRun);
+  var t=document.getElementById('oc_title'),s=document.getElementById('oc_sub');
+  // v10.33: every raid ends on a piece. Written after the run is banked, so the
+  // counters it reads are the ones this raid moved.
+  (function(){ var _nx=document.getElementById('oc_next'); if(_nx) _nx.textContent=(typeof cosNextLine==='function')?cosNextLine():''; })();
+'@
+
+SubRx @'
+  <div class="msub">Everything here is how you look and nothing about how you play. Click a slot to narrow the racks to it; click it again to see them all.</div>
+'@ @'
+  <div class="msub">Everything here is how you look and nothing about how you play. Click a slot to narrow the racks to it; click it again to see them all.</div>
+  <div id="appnext" class="msub" style="color:var(--amber);letter-spacing:.1em"></div>   <!-- v10.33: the next piece -->
+'@
+
+SubRx @'
+  var a=document.getElementById(hid); if(!a) return;
+  a.innerHTML=avatarHTML();
+'@ @'
+  var a=document.getElementById(hid); if(!a) return;
+  a.innerHTML=avatarHTML();
+  if(hid==='appavatar'){ var _an=document.getElementById('appnext'); if(_an) _an.textContent=cosNextLine(); }   // v10.33
+'@
+
+SubRx @'
+var VER='10.32';
+'@ @'
+var VER='10.33';
+'@
+SubRx @'
+  now:'v10.32: the Depot is laid out like an equipment screen. Your operator stands in the middle, larger, with a tile for every slot on either side: head things on the left, body things on the right. Click a tile to see its rack.',
+'@ @'
+  now:'v10.33: the next piece. The Depot and the outcome card both name the piece on the racks closest to earned and how far off it is, so every raid ends with something coming.',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"

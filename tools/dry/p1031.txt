@@ -1,0 +1,87 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+# ============ HIS NOTES, 2026-09-03 about 14:00: "I want different shoes as
+# ============ options -- jordan 1, jordan 11, etc".
+#
+# Three pairs of sneakers on the boots rack, each a two-tone shoe with a sole
+# in its own colour and a band at the collar: a red and white high-top, a
+# black and white low-top with a pale patent panel, and a black and red
+# high-top. The boot colours grow a third and fourth stop, the sole and the
+# collar band; boots have neither and draw as before. Earned, and named for
+# what they look like.
+
+SubRx @'
+  {id:'bootbone',  name:'Bleached Boots', how:'level:3',     kind:'boots'},
+'@ @'
+  {id:'bootbone',  name:'Bleached Boots', how:'level:3',     kind:'boots'},
+  // v10.31, his notes: sneakers. Two-tone, a sole and a collar band.
+  {id:'sneakchi',  name:'Chicago High-Tops', how:'runs:20',     kind:'boots'},
+  {id:'sneakcon',  name:'Concord Low-Tops',  how:'extracts:12', kind:'boots'},
+  {id:'sneakbred', name:'Bred High-Tops',    how:'level:5',     kind:'boots'},
+'@
+
+SubRx @'
+var BOOTCOL={bootblack:['#191f26','#232a32'],boottan:['#6a4a2a','#8a6438'],bootolive:['#36402a','#4a5638'],bootox:['#4a2028','#663038'],bootbone:['#8a8270','#a89e88']};
+'@ @'
+var BOOTCOL={bootblack:['#191f26','#232a32'],boottan:['#6a4a2a','#8a6438'],bootolive:['#36402a','#4a5638'],bootox:['#4a2028','#663038'],bootbone:['#8a8270','#a89e88'],
+             // v10.31: sneakers carry a third stop, the sole, and a fourth, the collar band.
+             sneakchi:['#a81a1a','#cc2424','#f2f0ea','#14161b'],sneakcon:['#14161b','#1f2227','#f2f0ea','#e6e3da'],sneakbred:['#14161b','#1f2227','#c41e1e','#c41e1e']};
+'@
+
+SubRx @'
+  wc.fillStyle=_BT[1];
+  rrF(x+1.7+swing*.5,ty-11,4.6,7.5-liftA*.5,1);
+  rrF(x+1.1+swing,ty-4.5-liftA,5.4,4.5,1);
+'@ @'
+  wc.fillStyle=_BT[1];
+  rrF(x+1.7+swing*.5,ty-11,4.6,7.5-liftA*.5,1);
+  rrF(x+1.1+swing,ty-4.5-liftA,5.4,4.5,1);
+  if(_BT[2]){   // v10.31: sneakers, a sole under each foot and a band at the collar
+    wc.fillStyle=_BT[3]||_BT[2];
+    wc.fillRect(x-6.5+swing2,ty-4.5-liftB,5.4,1.3); wc.fillRect(x+1.1+swing,ty-4.5-liftA,5.4,1.3);
+    wc.fillStyle=_BT[2];
+    rrF(x-6.7+swing2,ty-1.7-liftB,5.8,1.7,.6); rrF(x+.9+swing,ty-1.7-liftA,5.8,1.7,.6);
+  }
+'@
+
+SubRx @'
+    '<div class="avboots" style="background:'+((BOOTCOL[cosWorn('boots')]||BOOTCOL.bootblack)[1])+';width:'+Math.round(42*bd.hip)+'px"></div>'+   // v10.22
+'@ @'
+    (function(){ var _ab=BOOTCOL[cosWorn('boots')]||BOOTCOL.bootblack;   // v10.22; v10.31: a sole under sneakers
+      return '<div class="avboots" style="background:'+_ab[1]+(_ab[2]?';border-bottom:4px solid '+_ab[2]:'')+';width:'+Math.round(42*bd.hip)+'px"></div>'; })()+
+'@
+
+SubRx @'
+           '<span style="position:absolute;left:6px;top:20px;width:20px;height:7px;border-radius:0 3px 3px 3px;background:'+bc[0]+'"></span></span>';
+'@ @'
+           '<span style="position:absolute;left:6px;top:20px;width:20px;height:7px;border-radius:0 3px 3px 3px;background:'+bc[0]+'"></span>'+
+           (bc[2]?'<span style="position:absolute;left:6px;top:25px;width:20px;height:3px;border-radius:0 0 3px 3px;background:'+bc[2]+'"></span>':'')+'</span>';   // v10.31: the sole
+'@
+
+SubRx @'
+var VER='10.30';
+'@ @'
+var VER='10.31';
+'@
+SubRx @'
+  now:'v10.30: a red and black number 23 jersey on the clothing rack, earned at level four.',
+'@ @'
+  now:'v10.31: sneakers on the boots rack: red and white high-tops, black and white low-tops, black and red high-tops. Each has its own sole. Earned.',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"
