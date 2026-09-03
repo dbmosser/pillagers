@@ -40023,3 +40023,59 @@ cannot hear it and neither can the harness. Whether 5.5 Hz reads as epic or as a
 wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
+
+## v9.69 - THE LOW HEALTH FLASH NEVER STOPPED SHOUTING
+
+His note: **"red flashing for low health should slow down 2x when not in
+combat"**.
+
+The flash is one line: under 32 health the whole screen takes a red wash whose
+alpha runs on `Math.sin(G.t*6)`. **A cycle every 1.05 seconds, and it never
+changed for anything** - the same urgency with three machines on him as standing
+alone in a corridor deciding what to do next.
+
+### The game had no idea what combat was
+
+This is the part that made the build bigger than the note. `v8.52` records that
+the last two combat stamps were deleted at v5.50 along with the combat radio, and
+that **nothing has read either field since**. So there was no answer to "is he in
+a fight" anywhere in the file.
+
+Rather than invent a second opinion, it uses the one the game already has. Any of
+these and the flash keeps its old urgency:
+
+| | |
+| --- | --- |
+| something is **hunting** him | the same chase, alarm or hunt states the pillager board calls FIGHTING, within 900 units |
+| he has **fired** | within 4 seconds |
+| he has been **hit** | within 5 seconds |
+
+The third needed one stamp put back, in the same function v8.52 took two out of.
+
+### Measured off the screen, not out of a variable
+
+Reading the rate back from my own arithmetic would grade my own arithmetic, so
+the check samples the red channel of the HUD across a fixed 2.08 seconds of raid
+clock and counts cycles of the drawn wash:
+
+| | drawn red, sampled every 0.26s |
+| --- | --- |
+| **calm** | 40, 61, **69**, 61, 40, 17, 4, 15, 40 - one cycle |
+| **hunted** | 40, **69**, 40, 4, 40, **69**, 42, 4, 38 - two cycles |
+| calm, dial off | identical to hunted |
+
+Exactly half speed. Its controls are that the wash moves at all, so a flat screen
+cannot pass by having no cycles, and that `calmFlash 0` puts the single old rate
+back.
+
+**My first attempt at that measurement reported the calm flash running twice as
+FAST**, which is impossible, and the fault was my peak detector finding spurious
+maxima in quantised data rather than anything in the game. Sampling at fixed
+points and counting cycles across a known window is what the check does now.
+
+Not verified: whether 900 units is the right radius for "something is hunting
+me". It is the same distance the crew shout carries, which is the nearest thing
+to a precedent, but a machine hunting him from 890 units away through three walls
+now keeps the fast flash on. Not verified: how the slow rate feels. He asked for
+2x and 2x is what the screen does; whether a two second swell still reads as a
+warning rather than as ambience is his to say.

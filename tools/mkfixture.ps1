@@ -5085,6 +5085,67 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.69',what:'the low health flash runs at half speed when nothing is hunting him',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, there are no pixels to read';
+     __pinDPR(1); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __forceSize(1920,1080);
+     var hc=document.getElementById('hcv');
+     if(!hc) return 'no HUD canvas to read';
+     var c2=hc.getContext('2d');
+     // Counts CYCLES OF THE DRAWN WASH over a fixed 2.08 seconds of raid clock,
+     // by sampling the red channel of a corner. Reading the rate out of a
+     // variable would be grading my own arithmetic; this reads the screen.
+     // The clock is set directly and survives a frame, which was checked.
+     function cycles(hunted,dial){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       if(dial!==undefined) __cfg({calmFlash:dial});
+       var g=__state(), p=g.player, i, keep=null;
+       for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='crawler'){ keep=g.ents[i]; break; }
+       g.ents.length=0;
+       p.hp=20; p.downed=false; p.iv=9999;
+       if(hunted){
+         if(!keep) return null;
+         g.ents.push(keep);
+         keep.x=p.x+200; keep.y=p.y; keep.state='chase'; keep.alert=3; keep.downed=false;
+       }
+       var vals=[];
+       for(var k=0;k<=8;k++){
+         g.t=k*0.26;
+         if(!hunted){ p.lastShot=-1e9; p.hurtAt=-99; }   // nothing but the hunter decides
+         __frame(0.016);
+         var d=c2.getImageData(6,6,3,3).data, r=0;
+         for(var q=0;q<d.length;q+=4) r+=d[q];
+         vals.push(r/(d.length/4));
+       }
+       var peaks=0;
+       for(i=1;i<vals.length-1;i++) if(vals[i]>vals[i-1]&&vals[i]>=vals[i+1]) peaks++;
+       var mn=Math.min.apply(null,vals), mx=Math.max.apply(null,vals);
+       return {peaks:peaks, swing:Math.round(mx-mn)};
+     }
+     var calm=cycles(false), hunt=cycles(true), off=cycles(false,0);
+     if(!calm||!hunt||!off) return 'SKIP: no crawler on this map to be hunted by';
+     // CONTROL ONE: the wash has to be drawn at all. A flat reading has no peaks
+     // and would satisfy "fewer peaks when calm" by being nothing.
+     if(calm.swing<25||hunt.swing<25)
+       bad.push('control: the low health wash barely moves, swing '+calm.swing+' calm and '+
+                hunt.swing+' hunted, so there is nothing here to time');
+     // CONTROL TWO: switching the dial off must reproduce the single old rate.
+     if(off.peaks!==hunt.peaks)
+       bad.push('control: with calmFlash off the calm flash showed '+off.peaks+
+                ' cycles against '+hunt.peaks+' hunted, so the dial is not restoring one rate');
+     // THE FINDING. His note: "red flashing for low health should slow down 2x
+     // when not in combat". Measured on v9.68: two cycles in 2.08 seconds whether
+     // anything was hunting him or not.
+     if(hunt.peaks<2)
+       bad.push('with something hunting him the flash showed '+hunt.peaks+
+                ' cycles in 2.08 seconds, and it has always been two');
+     if(calm.peaks>=hunt.peaks)
+       bad.push('the flash runs at '+calm.peaks+' cycles calm against '+hunt.peaks+
+                ' hunted, so it does not slow down when nothing is after him');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.68',what:'calling extraction is three times longer, has a second voice, and wavers',
    run:function(){
      var bad=[];
