@@ -5054,6 +5054,100 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.60',what:'a man walking away from a Listener actually gets away from it',
+   run:function(){
+     var bad=[];
+     // OPEN GROUND FIRST. The question is whether he outpaces it, so the test has
+     // to happen somewhere a wall cannot answer it for him. Finds a stand with a
+     // long clear run in a straight line, then walks him down it.
+     function flee(dial){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       // null means LEAVE IT ALONE and measure what this build ships. Only the
+       // control arm forces a number, and it forces the old one.
+       if(dial!==null) __cfg({listenSpd:dial});
+       var g=__state(), p=g.player, i, L=null;
+       for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='listener'){ L=g.ents[i]; break; }
+       if(!L) return null;
+       // The dial is read at map generation, so a listener already built carries
+       // whatever it was born with. The CONTROL arm has to overwrite it to put the
+       // old speed back; the measured arm must not, or this tests my own
+       // assignment instead of the build. My first cut set it in both arms and
+       // went green on the build that had the defect.
+       if(dial!==null) L.spd=dial;
+       g.ents.length=0; g.ents.push(L);
+       var m=g.map, WW=m.cols*m.cw, WH=m.rows*m.ch;
+       // a stand with 700 units of clear straight floor on some bearing
+       var run=null;
+       for(var sx=400; sx<WW-400 && !run; sx+=190){
+        for(var sy=400; sy<WH-400 && !run; sy+=190){
+         if(!__nav.free(sx,sy,14)||!__nav.reachable(sx,sy)) continue;
+         for(var a=0;a<16;a++){
+           var th=a*Math.PI/8, ok=true;
+           for(var r=-160;r<=700;r+=40){
+             var qx=sx+Math.cos(th)*r, qy=sy+Math.sin(th)*r;
+             if(qx<60||qy<60||qx>WW-60||qy>WH-60||!__nav.free(qx,qy,13)){ ok=false; break; }
+           }
+           if(ok){ run={x:sx,y:sy,th:th}; break; }   // 700 clear, and only 474 is used
+         }
+        } }
+       if(!run) return null;
+       p.iv=9999; p.downed=false; p.hp=100;
+       p.x=run.x; p.y=run.y;
+       // It starts behind him, on the line, already hunting and already on him.
+       L.x=run.x-Math.cos(run.th)*130; L.y=run.y-Math.sin(run.th)*130;
+       L.hostile=true; L.downed=false; L.cd=0; L.windup=null;
+       L.state='hunt'; L.alert=3; L.heardX=p.x; L.heardY=p.y;
+       var walk=__cfg().pSpeed, gap0=Math.hypot(L.x-p.x,L.y-p.y);
+       var lx0=L.x, ly0=L.y, lTravel=0;
+       // THREE seconds, which is 474 units at a walk, comfortably inside the 700
+       // this corridor was proved clear for. Five seconds walked him off the end
+       // of it and measured two entities snagging on a wall.
+       for(var f=0;f<180;f++){
+         var bx=L.x, by=L.y;
+         // straight down the clear line at exactly a walk, which is what the game
+         // would move him at out here with nothing in the way
+         p.x+=Math.cos(run.th)*walk/60;
+         p.y+=Math.sin(run.th)*walk/60;
+         p.moving=true;
+         L.heardX=p.x; L.heardY=p.y;
+         __ents(1/60);
+         lTravel+=Math.hypot(L.x-bx,L.y-by);
+       }
+       var gap1=Math.hypot(L.x-p.x,L.y-p.y);
+       return {spd:L.spd, walk:walk, readBack:__cfg().listenSpd,
+               gained:Math.round(gap1-gap0), gapEnd:Math.round(gap1),
+               listenerTravelled:Math.round(lTravel)};
+     }
+     var on=flee(null), off=flee(196);
+     if(!on||!off) return 'SKIP: no Listener, or no 700 unit clear run on this map to measure in';
+     // CONTROLS FIRST. The dial has to be live, and putting the old number back
+     // has to reproduce the old trap, or a green result here means nothing.
+     if(off.readBack!==196||off.spd!==196)
+       bad.push('control: the old speed did not go back on, dial='+off.readBack+' actual='+off.spd);
+     // POSITIVE CONTROL: the Listener has to have actually chased. A stuck one
+     // travels nothing and reads exactly like a slow one, which is the failure
+     // my first cut of this shipped.
+     if(on.listenerTravelled<300||off.listenerTravelled<300)
+       bad.push('control: the Listener travelled '+on.listenerTravelled+' and '+off.listenerTravelled+
+                ' units in three seconds, so it was stuck rather than chasing and nothing here is a measurement');
+     if(off.gained>=0)
+       bad.push('control: at the old speed he still gained '+off.gained+
+                ' units over three seconds, so this check is not measuring a chase');
+     // THE FINDING. His instruction: "player should jog faster than listener can
+     // run, e.g. player has chance to get away", and his own tag on run 10:
+     // "Listener unfair". Measured before this: 196 against a 158 walk.
+     if(on.spd>=on.walk)
+       bad.push('the Listener moves at '+on.spd+' against a walk of '+on.walk+
+                ', so he still cannot walk away from one');
+     if(on.gained<=0)
+       bad.push('walking flat out in the open for three seconds he gained '+on.gained+
+                ' units on it, which is not getting away');
+     // CONTROL TWO: it must still be coming. A Listener that falls behind by the
+     // whole map has stopped being a threat rather than become a fair one.
+     if(on.gained>260)
+       bad.push('control: he gained '+on.gained+' units in three seconds, which is not a stalker, that is a bystander');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.59',what:'the game says call FOR extraction, in the place he actually reads it',
    run:function(){
      var bad=[];

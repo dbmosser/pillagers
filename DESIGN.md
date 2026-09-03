@@ -39426,3 +39426,64 @@ present in the build but not proved to render without wrapping or clipping at
 his text size. Not verified: whether he wanted the casing changed too. I have
 kept the existing convention and said so; if he meant sentence case on the HUD
 callouts that is one line from him.
+
+## v9.60 - YOU CAN WALK AWAY FROM A LISTENER NOW
+
+His instruction: **"player should jog faster than listener can run, e.g. player
+has chance to get away."** And his own tag, typed into the recorder on run 10:
+**"Listener unfair"**.
+
+Two more exports arrived with it. **10 runs, 0 extracted, 9 dead**, and a
+Listener killed him on runs 7, 8 and 10 - three of his last four deaths. Run 8
+was two metres from the extraction carrying 5455 credits. Run 10 he was 26 metres
+out with 12 crawlers down and it took him at 188 seconds.
+
+### The number he was feeling
+
+| | speed |
+| --- | --- |
+| his walk | **158** (pSpeed 158, and the std rig multiplier is exactly 1.00) |
+| a crawler | 150, already below his walk |
+| **a Listener** | **196, twenty four percent faster than he can walk** |
+
+**There was no getting away from one.** Not slowly, not with a head start, not
+ever: it closed at 38 units a second whatever he did. Measured on v9.59, walking
+flat out in the open for three seconds with a 130 unit head start, **he lost 103
+units of ground.** The only outs were sprint, which drains, or killing 120 health
+while it hits for 34. v9.57 gave its blow a window you can step out of, and
+stepping out of the way of something faster than you buys one blow, not an
+escape.
+
+**142.** Sixteen under his walk, so he opens about a metre a second and a five
+second lead is real ground rather than rounding. Eight under a crawler, which
+puts the Listener where it reads: the slow blind thing that hunts by sound and
+that you have to walk into. **Everything else about it stands.** It still tracks
+him live inside 210 units, still has 120 health, still hits for 34, and still
+ends him in three blows if he lets it reach him.
+
+### Three faults in my own check, and the third is the one that matters
+
+1. I walked him for five seconds, 790 units, down a corridor I had proved clear
+   for 700. He ran off the end into geometry and so did the Listener. Both arms
+   reported an identical 859 unit gain.
+2. The corridor was proved clear **ahead** of him and the Listener starts 130
+   units **behind**. It was spawning inside a wall and travelling 109 units in
+   three seconds. Caught by a positive control I had just added for fault 1.
+3. **The check passed on the build with the defect.** I was forcing the
+   Listener's speed to the dial in *both* arms, so it tested the dial rather than
+   the build, and v9.59 with its 196 went green because I had set it to 142
+   myself. The measured arm now takes whatever the build ships and touches
+   nothing; only the control arm forces a number, and it forces the old one.
+
+Fault 3 is the one worth remembering. A control that can only ever agree with you
+is not a control.
+
+Not verified: whether 142 is the right number or merely a number below his walk.
+He asked for a chance to get away and 142 gives him one metre a second; whether
+that feels like escaping or like dragging a shadow around the map is his call and
+I have not played it. Not verified: what this does to the Listener's job. It is
+the thing you are supposed to blunder into, and something you can always outwalk
+may stop being frightening. The 320 seed paired run is still going as this is
+committed and its number goes in when it lands, but note what it will and will
+not tell me: the bot does not fear anything, so a threat becoming less frightening
+is not a thing it can report.
