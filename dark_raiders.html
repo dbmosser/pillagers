@@ -159,6 +159,7 @@
   display:flex; align-items:center; justify-content:center; font-size:11px; color:#0d1435; }
 .aveyes{ position:absolute; top:17px; width:100%; display:flex; justify-content:center; gap:9px; }
 .aveye{ width:6px; height:7px; border-radius:3px; background:#FFF6DC; }
+.avbeard{ position:absolute; bottom:-1px; border-radius:2px 2px 8px 8px; }   /* v10.17 */
 .avtorso{ width:54px; height:46px; margin-top:-4px; border-radius:6px 6px 4px 4px;
   border:2px solid #14161b; position:relative; }
 .avplate{ position:absolute; left:6px; right:6px; top:8px; height:14px; border-radius:2px; }
@@ -1238,7 +1239,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.16';
+var VER='10.17';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17906,6 +17907,12 @@ var COSMETICS=[
   {id:'cap',    name:'Field Cap',      how:'extracts:8',  kind:'hat'},
   {id:'bandana',name:'Bandana',        how:'extracts:15', kind:'hat'},
   {id:'hood',   name:'Hood',           how:'warden:2',    kind:'hat'},
+  // v10.17, his answer 14: BEARD, the seventh rack.
+  {id:'clean',    name:'Clean Shaven', how:'always',      kind:'beard'},
+  {id:'stubble',  name:'Stubble',      how:'runs:3',      kind:'beard'},
+  {id:'goatee',   name:'Goatee',       how:'runs:12',     kind:'beard'},
+  {id:'fullbeard',name:'Full Beard',   how:'extracts:10', kind:'beard'},
+  {id:'chops',    name:'Mutton Chops', how:'warden:1',    kind:'beard'},
   // v5.66, his note. Owned from the start: this is a look, not a trophy. v7.26: and it
   // is a HAIRSTYLE, not headgear; it moved to the cut rack with the seven new ones.
   {id:'long',    name:'Long',          how:'always',      kind:'cut'},
@@ -18012,8 +18019,8 @@ function cosFind(id){
 // wiped profile or an edited save cannot leave her in a hat she has not earned.
 // v6.46: five kinds now, so the worn id and the fallback both come from a table
 // instead of a two-way branch with the answer baked into the return.
-var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut'};
-var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long'};
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean'};
 function cosWorn(kind){
   var want=(typeof P!=='undefined'&&P)?P[COSKEY[kind]]:null;
   var c=cosFind(want);
@@ -18144,6 +18151,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var _HC=HAIRCOL[HERO?cosWorn('hair'):(st.hair||'blonde')]||HAIRCOL.blonde;
   var HAIRDARK=_HC[0],HAIRLIT=_HC[1],HAIRHI=_HC[2];
   var HAT=HERO?cosWorn('hat'):(st.hat||'none');
+  var BEARD=HERO?cosWorn('beard'):(st.beard||'clean');   // v10.17
   var _HCUT=HERO?cosWorn('cut'):null;
   // HER HAIR GOES DOWN FIRST, behind everything, so the head sits into it and the
   // mass reads past the shoulders the way it does in the reference.
@@ -18263,6 +18271,15 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     if(_HCUT==='long'||_HCUT==='pigtails'){
       wc.fillStyle=HAIRLIT; rrF(hx2-7.5,ty-37,15,4,4);
       wc.fillStyle=HAIRHI;  wc.fillRect(hx2-6.6,ty-36.6,10.4,1.4);
+    }
+    // v10.17: BEARD, under the face, drawn before the headgear so a mask covers it.
+    if(BEARD&&BEARD!=='clean'){
+      var _bc=(HAIRCOL[HERO?cosWorn('hair'):(st.hair||'dark')]||HAIRCOL.dark)[0];
+      wc.fillStyle=_bc;
+      if(BEARD==='stubble'){ wc.globalAlpha=0.55; rrF(hx2-5.6,ty-28.2,11.2,3.6,1.6); wc.globalAlpha=1; }
+      else if(BEARD==='goatee'){ rrF(hx2-2.4,ty-27.8,4.8,4.6,1.4); }
+      else if(BEARD==='fullbeard'){ rrF(hx2-6.4,ty-29,12.8,6.2,2.4); }
+      else if(BEARD==='chops'){ rrF(hx2-7.2,ty-33,2.8,7.4,1.2); rrF(hx2+4.4,ty-33,2.8,7.4,1.2); }
     }
     // HEADGEAR. Sits on top of the fringe and the face because that is where a
     // hat sits. Purely cosmetic: no soak, no slot, no weight, no stat.
@@ -26361,7 +26378,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.16: SURPRISE ME at the Discount Fashion Depot dresses you in a random owned thing from every rack, and three LOOKS under the figure keep an outfit and put it back with one click.',
+  now:'v10.17: a seventh rack at the Discount Fashion Depot: BEARD. Stubble, a goatee, a full beard and mutton chops, earned, drawn on you in the raid and on the figure. A dust mask covers it, as it would.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30596,7 +30613,8 @@ function cosSwatch(c){
            '</span>';
   }
   var f={none:'--',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC\u25AC',visor:'\u25AD',crown:'\u2662',
-         beanie:'\u2229',cap:'\u25E2',bandana:'\u25AC',hood:'\u2229'}[c.id]||'?';
+         beanie:'\u2229',cap:'\u25E2',bandana:'\u25AC',hood:'\u2229',
+         clean:'--',stubble:'\u2591',goatee:'\u25BE',fullbeard:'\u25BC',chops:'\u2016'}[c.id]||'?';
   var fbg={beanie:'#4a4f5a',cap:'#5a5a3e',bandana:'#8a2a2a',hood:'#2e3238'}[c.id]||'#1b1f26';
   if(c.kind==='hat'&&fbg!=='#1b1f26')
     return '<span style="display:inline-block;width:34px;height:34px;line-height:34px;text-align:center;'+
@@ -30627,6 +30645,11 @@ function avatarHTML(){
       })()+
       (hat!=='none'?'<div class="avhat" style="background:'+hatBg+'">'+hatGlyph+'</div>':'')+
       '<div class="aveyes"><div class="aveye"></div><div class="aveye"></div></div>'+
+      (function(){ // v10.17: the beard on the figure
+        var _b=cosWorn('beard'); if(!_b||_b==='clean') return '';
+        var _st={stubble:'left:9px;right:9px;height:6px;opacity:.55',goatee:'left:18px;right:18px;height:8px',fullbeard:'left:7px;right:7px;height:11px',chops:'left:4px;right:4px;height:9px;background:transparent;border-left:5px solid '+hc[0]+';border-right:5px solid '+hc[0]}[_b]||'';
+        return '<div class="avbeard" style="background:'+hc[0]+';'+_st+'"></div>';
+      })()+
     '</div>'+
     '<div class="avtorso" style="background:linear-gradient(180deg,'+ft[1]+','+ft[0]+');'+
       'width:'+Math.round(46*bd.sh)+'px">'+
@@ -30650,6 +30673,7 @@ function avatarHTML(){
   h+=slot('hair','HAIR',(cosFind(hair)||{name:'Blonde'}).name,
           '<span style="width:14px;height:14px;border-radius:7px;display:inline-block;background:'+hc[1]+'"></span>');
   h+=slot('cut','HAIRSTYLE',(cosFind(cosWorn('cut'))||{name:'Long'}).name,'~');
+  h+=slot('beard','BEARD',(cosFind(cosWorn('beard'))||{name:'Clean Shaven'}).name,'\u25BE');   // v10.17
   h+=slot('fit','CLOTHING',(cosFind(cosWorn('fit'))||{name:'Slate'}).name,
           '<span style="width:14px;height:14px;border-radius:3px;display:inline-block;background:'+ft[1]+'"></span>');
   // v5.83: the BODY ARMOUR slot is gone with rigs. Everyone wears the same
@@ -30662,7 +30686,7 @@ function avatarHTML(){
 }
 // v10.16, his answers 18 and 19. A look is the six cosmetic keys and nothing
 // else. SURPRISE ME picks an owned thing from every rack.
-var LOOK_KINDS=['build','skin','hair','cut','hat','fit'];
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard'];
 function lookSnap(){ var L={}; for(var i=0;i<LOOK_KINDS.length;i++) L[LOOK_KINDS[i]]=cosWorn(LOOK_KINDS[i]); return L; }
 function lookWear(L){
   if(!L) return false;
@@ -30750,7 +30774,7 @@ function renderAvPicker(pickHost,host){
       'Click a slot to change it. Headgear and hair are earned and change nothing about how you play.</div>';
     return;
   }
-  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'){
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'){
     renderCosmetics(box,slot,hid,pid); return;
   }
   // v6.43: the wep and wep2 branch is gone with the slots that opened it. Guns are
@@ -30769,7 +30793,7 @@ function renderAvPicker(pickHost,host){
 function renderCosmetics(target,kindOnly,hid,pid){
   var box=target||document.getElementById('cosbody'); if(!box) return;
   var H='';
-  var GROUPS=[['build','BUILD'],['skin','SKIN'],['hair','HAIR'],['cut','HAIRSTYLE'],['hat','HEADGEAR'],['fit','CLOTHING']]
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING']]
     .filter(function(g){ return !kindOnly||g[0]===kindOnly; });
   GROUPS.forEach(function(g){
     H+='<div style="margin:10px 0 4px 0;letter-spacing:2px;opacity:.7;font-size:12px">'+g[1]+'</div>';

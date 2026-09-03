@@ -40024,6 +40024,37 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.17 - BEARD, THE SEVENTH RACK
+
+His answer 14, 2026-09-03, to which new categories to add: **"ADD ALL OF THIS
+STUFF, ALSO DIFFERENT CLOTHING, MORE VARIETY, ANYTHING ELSE YOU CAN THINK TO
+ADD"**, the list being face paint or scars, eyes, beard, gloves, boots,
+backpack colour, patches or badges, tattoos. One category a build; this is
+the first, BEARD.
+
+Five beards: Clean Shaven, owned from the start; Stubble at three runs; a
+Goatee at twelve; a Full Beard at ten extracts; Mutton Chops for a Warden.
+Earned, never bought, his answers 15 and 16. Each is drawn in the hair
+colour on the sprite under the face, before the headgear, so a dust mask
+covers it the way a mask would; on the figure as a chin under the eyes; and
+on the racks as a glyph. A seventh slot on the figure, a seventh key in the
+profile, a seventh part of a saved look, and SURPRISE ME draws from it.
+
+### Measured
+
+The check requires five beards on the racks with one owned from the start and
+none priced, a profile key and default, reads the sprite's head pixels for
+each beard against Clean Shaven and requires every one to draw, puts a dust
+mask on and requires the full beard to vanish under it, requires the BEARD
+slot on the figure and a swatch for every beard, and as a control requires
+the headgear rack still whole. Two older checks that counted exactly six
+slots on the figure count at least six now, since the racks grow from here.
+On v10.16 there was no beard kind at all, which is the finding.
+
+Not verified: the beard on the Undercroft crowd and on pillagers, who draw
+from their own small look tables until his answer 20 is built. Not verified:
+the goatee at raid zoom, which is five units wide.
+
 ## v10.16 - SURPRISE ME, AND THREE LOOKS
 
 His answers 18 and 19, 2026-09-03: a randomiser button, **YES**; saved looks,

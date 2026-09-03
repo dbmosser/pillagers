@@ -1265,9 +1265,15 @@ var VER='10.36';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='10.14';
+var WHATSNEW_VER='10.29';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
+  'THE DISCOUNT FASHION DEPOT HAS FOURTEEN RACKS: build, skin, eyes, face, tattoo, hair, hairstyle, beard, headgear, clothing, patch, gloves, boots and backpack. Every piece is earned by playing. SURPRISE ME dresses you from every rack and three LOOKS keep an outfit.',
+  'A GREEN SPARTAN HELMET AND A WHITE GHOST MASK are on the headgear rack. Both cover the face.',
+  'PILLAGERS DRESS FROM THE SAME RACKS you do, hair, hats, beards and all, so no two look alike.',
+  'A DOWNED PILLAGER CRAWLS FOR COVER, dragging himself to the nearest spot you cannot see, bleeding all the way.',
+  'THE FULL CONTROLS LIST FITS THE SCREEN. Press H twice: it is centred and on the screen at any monitor size, and the message line scales with the panels.',
+  'THE MOUSE SAYS WHAT A PANEL WILL DO: a resize arrow at a corner, a move hand on a grip, a pointer on a button.',
   'THE STASH IS FIVE THINGS: the stash, your backpack, your hotbar, the safe pocket and the freebie kit. Everything else that crowded it is gone. The backpack is a grid of twelve cells there and in the raid, empty cells drawn.',
   'DAY OR NIGHT IS CHOSEN ON THE SECTOR PAGE at the lift, and every ascent starts on day. A night extraction pays twenty percent more XP. The armour warning is on that page too.',
   'THE DISCOUNT FASHION DEPOT is its own station in the Undercroft. Everything there is how you look, earned by playing and never bought; four new hats, two hair colours and three fits joined the racks.',
@@ -36859,7 +36865,7 @@ window.__REGRESS=[
      for(var k in keep) P2[k]=keep[k];
      var html=(typeof avatarHTML==='function')?avatarHTML():'';
      if(html.indexOf('data-av="tattoo"')<0) bad.push('the figure has no TATTOO slot');
-     var qm=tats.filter(function(c){ return />\?</.test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     var qm=tats.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
      if(qm.length) bad.push('tattoos with no swatch: '+qm.join(', '));
      // CONTROL: the seed fingerprint stands and pillagers have a tattoo entry; and
      // the count of racks is his eight plus the six that were there: fourteen kinds.
@@ -36932,7 +36938,7 @@ window.__REGRESS=[
      var html=(typeof avatarHTML==='function')?avatarHTML():'';
      if(html.indexOf('data-av="pack"')<0) bad.push('the figure has no BACKPACK slot');
      if(html.indexOf('avstrap')<0) bad.push('the figure draws no pack strap');
-     var qm=packs.filter(function(c){ return />\?</.test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     var qm=packs.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
      if(qm.length) bad.push('packs with no swatch: '+qm.join(', '));
      // CONTROL: the seed fingerprint stands and pillagers carry a pack from the rack.
      __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
@@ -36971,7 +36977,7 @@ window.__REGRESS=[
      var html=(typeof avatarHTML==='function')?avatarHTML():'';
      if(html.indexOf('data-av="gloves"')<0) bad.push('the figure has no GLOVES slot');
      if(html.indexOf('avhand')<0) bad.push('the figure draws no hands');
-     var qm=gloves.filter(function(c){ return />\?</.test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     var qm=gloves.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
      if(qm.length) bad.push('gloves with no swatch: '+qm.join(', '));
      // CONTROL: the seed fingerprint stands and pillagers have hands from the rack.
      __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
@@ -37008,7 +37014,7 @@ window.__REGRESS=[
      var html=(typeof avatarHTML==='function')?avatarHTML():'';
      if(html.indexOf('data-av="boots"')<0) bad.push('the figure has no BOOTS slot');
      if(html.indexOf('avboots')<0) bad.push('the figure draws no boots');
-     var qm=boots.filter(function(c){ return />\?</.test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     var qm=boots.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
      if(qm.length) bad.push('boots with no swatch: '+qm.join(', '));
      // CONTROL: the seed fingerprint stands and pillagers have boots from the rack.
      __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
@@ -37042,7 +37048,7 @@ window.__REGRESS=[
      for(var k in keep) P2[k]=keep[k];
      var html=(typeof avatarHTML==='function')?avatarHTML():'';
      if(html.indexOf('data-av="face"')<0) bad.push('the figure has no FACE slot');
-     var qm=faces.filter(function(c){ return />\?</.test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     var qm=faces.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
      if(qm.length) bad.push('faces with no swatch: '+qm.join(', '));
      // CONTROL: the seed fingerprint stands and pillagers have faces from the rack.
      __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
@@ -37112,7 +37118,7 @@ window.__REGRESS=[
      // The figure has an EYES slot and the racks a swatch for each.
      var html=(typeof avatarHTML==='function')?avatarHTML():'';
      if(html.indexOf('data-av="eyes"')<0) bad.push('the figure has no EYES slot');
-     var qm=eyes.filter(function(c){ return />\?</.test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     var qm=eyes.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
      if(qm.length) bad.push('eye colours with no swatch: '+qm.join(', '));
      // CONTROL: pillagers get eyes too, and the seed fingerprint still stands.
      var R=g.ents; __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
@@ -37183,7 +37189,7 @@ window.__REGRESS=[
      // The figure has a BEARD slot; the racks have a swatch for each.
      var html=(typeof avatarHTML==='function')?avatarHTML():'';
      if(html.indexOf('data-av="beard"')<0) bad.push('the figure has no BEARD slot');
-     var qm=beards.filter(function(c){ return />\?</.test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     var qm=beards.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
      if(qm.length) bad.push('beards with no swatch: '+qm.join(', '));
      // CONTROL: the other six racks are still there and still sized.
      if(COSMETICS.filter(function(c){ return c.kind==='hat'; }).length<10) bad.push('control: the headgear rack shrank');
