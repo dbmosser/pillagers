@@ -968,6 +968,16 @@
     <div class="credits" id="stagecred" style="margin-left:auto"></div>
   </div>
 </div>
+<!-- v10.29, his note: the WELCOME PACK, offered once to a new character. -->
+<div class="modal" id="welcomemodal">
+  <h3>WELCOME PACK</h3>
+  <div class="msub">A few things to play with before your first climb, straight into your stash: a green gun and a blue one, heals, plates and grenades. Nothing here is bought. It is yours for turning up. Take it, or close this and go without; it is offered once.</div>
+  <div id="welcomelist" class="plist" style="border:1px solid var(--steel-hi);padding:6px 12px"></div>
+  <div style="display:flex;gap:8px;margin-top:10px">
+    <button id="welcometake" class="deploy" style="padding:8px 22px">TAKE THE PACK</button>
+    <button id="welcomeno" data-esc="1" style="padding:8px 22px;margin-left:auto">CLOSE</button>
+  </div>
+</div>
 <div class="modal" id="primermodal">
   <h3>FIRST TIME OUT</h3>
   <div class="msub">What is worth knowing before you take the lift up. The first three are the ones that get people killed. You can bring this back any time from Settings.</div>
@@ -1241,7 +1251,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.28';
+var VER='10.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25879,6 +25889,7 @@ function showScreen(s){
     HB.near=null; HB.eLock=true; keys={};
     renderHub();
     maybePrimer();   // v7.88: the call site the primer never had
+    maybeWelcome();  // v10.29: and the welcome pack, once, over it
   }
 }
 // Two ways the game could be silently broken by the browser, neither of which had
@@ -26461,7 +26472,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.28: the tuning console is a row in Settings with an OPEN button, and the Settings rows read the live dials: a slider moved in the console shows on its row as the option it matches, or as CUSTOM.',
+  now:'v10.29: a new character is offered a WELCOME PACK the first time down: a green gun and a blue one, heals, plates and grenades, into the stash, to play with before the first climb.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30368,6 +30379,39 @@ function openPrimer(){
 // Shown once, to a profile that has never finished a raid, and only if he has not
 // ticked the box. P.primerSeen is stamped on CLOSE rather than on open, so
 // closing the tab mid-read does not burn it.
+// v10.29, his note: the welcome pack. Two guns a tier apart, so the difference
+// between green and blue is there to feel, and the consumables a first raid
+// actually uses.
+var WELCOME_PACK={guns:['smg','carbine'],items:['medkit','medkit','bandage','bandage','bandage','plate','plate','frag','frag','smoke']};
+function welcomeFresh(){
+  return !P.welcomed&&(P.runs||0)===0&&!(P.stash&&P.stash.length)&&(!P.weapons||P.weapons.length<=1);
+}
+function maybeWelcome(){
+  if(P.welcomed) return;
+  if(!welcomeFresh()){ P.welcomed=1; saveProfile(); return; }
+  var box=document.getElementById('welcomelist'), md=document.getElementById('welcomemodal');
+  if(!box||!md) return;
+  var rows='';
+  for(var g=0;g<WELCOME_PACK.guns.length;g++){ var W=WEAPONS[WELCOME_PACK.guns[g]]; if(!W) continue;
+    var rr2=(typeof gunRarity==='function')?gunRarity(W.id):'common';
+    rows+='<div class="row"><div style="flex:1"><b class="r-'+rr2+'">'+W.name+'</b><div class="hint">'+rr2+' gun, to your armoury</div></div></div>'; }
+  var counts={}; for(var i=0;i<WELCOME_PACK.items.length;i++) counts[WELCOME_PACK.items[i]]=(counts[WELCOME_PACK.items[i]]||0)+1;
+  for(var k in counts){ var it=ITEMS[k]; if(!it) continue;
+    rows+='<div class="row"><div style="flex:1"><b class="r-'+(it.r||'common')+'">'+it.name+(counts[k]>1?' x'+counts[k]:'')+'</b><div class="hint">to your stash</div></div></div>'; }
+  box.innerHTML=rows;
+  document.getElementById('welcometake').onclick=function(){
+    P.weapons=P.weapons||[];
+    for(var g2=0;g2<WELCOME_PACK.guns.length;g2++) if(WEAPONS[WELCOME_PACK.guns[g2]]&&P.weapons.indexOf(WELCOME_PACK.guns[g2])<0) P.weapons.push(WELCOME_PACK.guns[g2]);
+    P.stash=P.stash||[];
+    for(var i2=0;i2<WELCOME_PACK.items.length;i2++) if(ITEMS[WELCOME_PACK.items[i2]]) P.stash.push(WELCOME_PACK.items[i2]);
+    P.welcomed=1; saveProfile();
+    md.classList.remove('on');
+    try{ if(typeof renderHub==='function') renderHub(); }catch(e){}
+    try{ say2('The welcome pack is in your stash.'); }catch(e2){}
+  };
+  document.getElementById('welcomeno').onclick=function(){ P.welcomed=1; saveProfile(); md.classList.remove('on'); };
+  openModal('welcomemodal');
+}
 function maybePrimer(){
   if(P.primerOff||P.primerSeen) return;
   // v7.88: a profile that has already finished raids does not need the

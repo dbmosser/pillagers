@@ -5221,6 +5221,45 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.29',what:'a new character is offered the welcome pack once, a green gun, a blue gun, heals, plates and grenades into the stash',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!window.__hubEnter) return 'SKIP: this build cannot be driven into the Undercroft';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(); var keep={welcomed:P2.welcomed,runs:P2.runs,stash:P2.stash,weapons:P2.weapons,primerSeen:P2.primerSeen};
+     function fresh(){ P2.welcomed=undefined; delete P2.welcomed; P2.runs=0; P2.stash=[]; P2.weapons=['pistol']; P2.primerSeen=1; }
+     fresh(); __hubEnter();
+     var md=document.getElementById('welcomemodal');
+     // THE FINDING. On v10.28 a new character landed with a pistol and nothing else, and nobody offered anything.
+     if(!md) return 'there is no welcome pack window';
+     if(!md.classList.contains('on')) return 'a new character is not offered the welcome pack';
+     var list=(document.getElementById('welcomelist')||{}).textContent||'';
+     if(!/Compact SMG/.test(list)||!/Burst Carbine/.test(list)) bad.push('the pack does not list a green gun and a blue gun ("'+list.slice(0,60)+'")');
+     if(!/Medkit/.test(list)||!/Frag/.test(list)||!/Plate/.test(list)) bad.push('the pack does not list heals, plates and grenades');
+     var take=document.getElementById('welcometake'); if(!take) bad.push('no TAKE button'); else take.click();
+     if(md.classList.contains('on')) bad.push('taking the pack did not close the window');
+     if(P2.weapons.indexOf('smg')<0||P2.weapons.indexOf('carbine')<0) bad.push('the guns did not reach the armoury: '+P2.weapons.join(','));
+     var have={}; P2.stash.forEach(function(k){ have[k]=(have[k]||0)+1; });
+     if(!(have.medkit>=2&&have.bandage>=3&&have.plate>=2&&have.frag>=2&&have.smoke>=1)) bad.push('the stash did not get the pack: '+JSON.stringify(have));
+     if(gunRarity('smg')!=='uncommon'||gunRarity('carbine')!=='rare') bad.push('the guns are not one green and one blue: '+gunRarity('smg')+', '+gunRarity('carbine'));
+     if(P2.welcomed!==1) bad.push('taking the pack did not stamp the profile');
+     // Offered once: a second entry shows nothing.
+     __hubEnter(); if(md.classList.contains('on')) bad.push('the pack was offered a second time');
+     // CLOSE stamps too, and gives nothing.
+     fresh(); __hubEnter();
+     if(!md.classList.contains('on')) bad.push('a second fresh character was not offered the pack');
+     var no=document.getElementById('welcomeno'); if(no) no.click();
+     if(md.classList.contains('on')) bad.push('CLOSE did not close the window');
+     if(P2.stash.length||P2.weapons.length!==1) bad.push('CLOSE gave something anyway');
+     if(P2.welcomed!==1) bad.push('CLOSE did not stamp the profile');
+     // CONTROL: a character who has climbed is never offered it, and is stamped quietly.
+     delete P2.welcomed; P2.runs=3; P2.stash=[]; P2.weapons=['pistol']; __hubEnter();
+     if(md.classList.contains('on')) bad.push('control: a character with three runs was offered the pack');
+     if(P2.welcomed!==1) bad.push('control: a character with three runs was not stamped');
+     md.classList.remove('on');
+     for(var k in keep){ if(keep[k]===undefined) delete P2[k]; else P2[k]=keep[k]; }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.28',what:'the tuning console opens from a Settings row, and the Settings rows read the live dials: an option when they match one, CUSTOM when they do not',
    run:function(){
      var bad=[];

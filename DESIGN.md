@@ -40024,6 +40024,42 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.29 - THE WELCOME PACK
+
+His note, 2026-09-03 about 17:40: **"when a new character is started, they
+should get a prompt that gives them a welcome pack with a few blue and green
+guns, heals, grenades etc to their stash so they can play around with some
+of the gear."**
+
+A new profile landed in the Undercroft with a Scav Pistol and nine hundred
+credits, and nothing offered. Now, the first time down, a window offers the
+WELCOME PACK and says what it is and that nothing in it is bought:
+
+| | |
+| --- | --- |
+| guns | the Compact SMG (tier two, green) and the Burst Carbine (tier three, blue), into the armoury |
+| heals | two Medkits and three Bandages |
+| plates | two |
+| grenades | two Frags and a Smoke |
+
+TAKE THE PACK puts it all in the stash and says so; CLOSE declines, and
+ESC does the same. Either way it is offered once. A profile that has already
+climbed, or already owns anything, is stamped without a word.
+
+### Measured
+
+The check makes a fresh character and enters the Undercroft and requires the
+window with both guns and the consumables listed, takes it and requires the
+guns in the armoury and every item in the stash, one gun green and one blue,
+the profile stamped, and no second offer; makes another fresh character,
+closes it instead, and requires nothing given and the stamp set; the control is a
+character with three runs never offered it and stamped quietly. On v10.28
+nobody offered a new character anything, which is the finding.
+
+Not verified: the pack's size against his sense of a fair start; two guns a
+tier apart and a raid's worth of consumables is a guess he can resize by
+editing one list.
+
 ## v10.28 - THE TUNING CONSOLE IS A ROW IN SETTINGS, AND THE ROWS READ THE DIALS
 
 His note, 2026-09-03 about 17:30: **"Add the tuning console as a window
