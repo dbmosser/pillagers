@@ -5221,6 +5221,30 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.26',what:'the hotbar is the TACTICAL BELT everywhere a player reads it, and the old word is gone from every surface',
+   run:function(){
+     var bad=[];
+     var OLDW=['hot','bar'].join(''), NEWW=['tactical ','belt'].join('');
+     function has(t,w){ return String(t||'').toLowerCase().indexOf(w)>=0; }
+     // ONE: the legends and the pause rows, read from the tables the HUD draws from.
+     var tables={LEGEND:(typeof LEGEND!=='undefined')?LEGEND:null,LEGEND_PAD:(typeof LEGEND_PAD!=='undefined')?LEGEND_PAD:null,GEARRULES:(typeof GEARRULES!=='undefined')?GEARRULES:null};
+     var anyNew=false;
+     for(var k in tables){ var t=tables[k]; if(!t) continue; var txt=JSON.stringify(t); if(has(txt,OLDW)) bad.push(k+' still says '+OLDW); if(has(txt,NEWW)) anyNew=true; }
+     // THE FINDING. On v10.25 every legend said the old word and none said his.
+     if(!anyNew) return 'no legend says '+NEWW+'; the old word stands everywhere';
+     // TWO: the markup a player reads: the raid backpack panel and the stash loadout column.
+     var cm=document.getElementById('carrymodal'); if(cm&&has(cm.textContent,OLDW)) bad.push('the raid backpack panel still says '+OLDW);
+     var labs=[].map.call(document.querySelectorAll('.loslab'),function(l){ return l.textContent; }).join(' | ');
+     if(has(labs,OLDW)) bad.push('the stash loadout column still says '+OLDW);
+     if(!has(labs,NEWW)) bad.push('the stash loadout column does not say '+NEWW);
+     // THREE: the throwable hint and the what-is-new card.
+     if(typeof itemUseHint==='function'){ var hint=itemUseHint(ITEMS.frag||{use:'throw'}); if(has(hint,OLDW)) bad.push('the throwable hint still says '+OLDW); }
+     if(typeof WHATSNEW!=='undefined'){ var wn=WHATSNEW.join(' '); if(!has(wn,NEWW)) bad.push('the what-is-new card does not name the '+NEWW); }
+     // FOUR: the primer card.
+     var pm=document.getElementById('primermodal'); if(pm&&has(pm.textContent,OLDW)) bad.push('the primer still says '+OLDW);
+     // CONTROL: the backpack keeps its name beside it.
+     if(cm&&!has(cm.textContent,'backpack')) bad.push('control: the raid panel no longer says backpack');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.25',what:'the Depot figure is painted by the raid painter on a canvas, and changes with every piece she wears',
    run:function(){
      var bad=[];
@@ -6600,7 +6624,7 @@ window.__REGRESS=[
        if(present()) bad.push('control: a 60 damage round did not finish a downed man at 40 health');
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'9.90',what:'the backpack has one name on every surface that names it, and the pad legend says hotbar',
+  {v:'9.90',what:'the backpack has one name on every surface that names it, and the pad legend says tactical belt',
    run:function(){
      var bad=[];
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
@@ -6622,7 +6646,7 @@ window.__REGRESS=[
      }
      // ONE: the compact legend. On v9.89 its TAB row read "bag".
      var mini=drawn(1);
-     var miniRows=mini.filter(function(t){ return /^(move|sprint|crouch|roll|fire|aim|reload|swap gun|hotbar|search|map|bag|backpack)$/.test(t); });
+     var miniRows=mini.filter(function(t){ return /^(move|sprint|crouch|roll|fire|aim|reload|swap gun|tactical belt|hotbar|search|map|bag|backpack)$/.test(t); });
      if(miniRows.length<10) return (function(){ g.legendOn=keepLeg; return 'SKIP: the compact legend drew only '+miniRows.length+' rows'; })();
      if(mini.indexOf(BAG)>=0) bad.push('the compact legend still has a row that reads '+BAG);
      if(mini.indexOf('backpack')<0) bad.push('the compact legend has no row that reads backpack');
@@ -6642,19 +6666,20 @@ window.__REGRESS=[
        var padL=__pad.legend(), padTxt=[];
        for(var a=0;a<padL.length;a++) for(var b=0;b<padL[a][1].length;b++) padTxt.push(padL[a][1][b][1]);
        var pj=padTxt.join(' | ');
-       if(isWord(pj,BELT)) bad.push('the controller legend still calls the hotbar a '+BELT);
+       // v10.26: his word for it is tactical belt, so a bare belt is no longer the old name; the old name is hotbar.
+       if(/hotbar/i.test(pj)) bad.push('the controller legend still says hotbar');
        if(isWord(pj,INV)) bad.push('the controller legend still calls the backpack the '+INV);
-       if(!/hotbar/i.test(pj)||!/backpack/i.test(pj)) bad.push('the controller legend does not say both hotbar and backpack');
+       if(!/tactical belt/i.test(pj)||!/backpack/i.test(pj)) bad.push('the controller legend does not say both tactical belt and backpack');   // v10.26
      } else bad.push('this fixture cannot read the controller legend');
      // FIVE: the raid backpack panel and the Undercroft column, already renamed
      // at v9.89, must still say Backpack and Hotbar. A control that this build
      // did not undo last build's work.
      var cm=document.getElementById('carrymodal');
      var heads=cm?[].map.call(cm.querySelectorAll('h2,h3'),function(h){ return h.textContent.trim(); }):[];
-     if(!heads.some(function(h){ return /^backpack/i.test(h); })||!heads.some(function(h){ return /^hotbar$/i.test(h); }))
+     if(!heads.some(function(h){ return /^backpack/i.test(h); })||!heads.some(function(h){ return /^tactical belt$/i.test(h); }))
        bad.push('control: the raid backpack panel headings read ['+heads.join(', ')+']');
      return bad.length?bad.join('; '):null; }},
-  {v:'9.89',what:'the hotbar has one name on every surface that names it',
+  {v:'9.89',what:'the tactical belt has one name on every surface that names it (his word since v10.26; it was hotbar from v9.89)',
    run:function(){
      var bad=[];
      if(!__vpAlive()) return 'SKIP: the pane has no layout, so no gesture can be aimed';
@@ -6673,12 +6698,13 @@ window.__REGRESS=[
      var msub=(cm.querySelector('.msub')||{}).textContent||'';
      var labs=[].map.call(document.querySelectorAll('.loslab'),function(l){ return l.textContent.trim(); });
      var all=heads.concat([msub]).concat(labs).join(' | ');
-     if(has(all,TACT)) bad.push('a panel heading still says '+TACT);
+     var OLDW=['hot','bar'].join('');
+     if(has(all,OLDW)) bad.push('a panel heading still says '+OLDW);
      if(has(msub,PLUSBELT)) bad.push('the backpack subtitle still says '+PLUSBELT);
-     if(!heads.some(function(h){ return /^hotbar$/i.test(h); }))
-       bad.push('the raid backpack panel has no heading that reads Hotbar, it has ['+heads.join(', ')+']');
-     if(!labs.some(function(l){ return /^hotbar/i.test(l); }))
-       bad.push('the Undercroft loadout column has no label that starts with Hotbar, it has ['+labs.join(', ')+']');
+     if(!heads.some(function(h){ return /^tactical belt$/i.test(h); }))
+       bad.push('the raid backpack panel has no heading that reads Tactical belt, it has ['+heads.join(', ')+']');
+     if(!labs.some(function(l){ return /^tactical belt/i.test(l); }))
+       bad.push('the Undercroft loadout column has no label that starts with Tactical belt, it has ['+labs.join(', ')+']');
      // TWO: the prompt behind clicking an EMPTY hotbar cell in the Undercroft.
      __pinDPR(1); __forceSize(1920,1080); __cleanProfile();
      var P2=__P(); P2.stash=['frag']; P2.kit=[]; P2.hotAssign={};
@@ -6706,9 +6732,10 @@ window.__REGRESS=[
      var toast=document.getElementById('hubtoast')||document.getElementById('toast')||document.getElementById('say2');
      hubToastText=(toast&&toast.textContent)||'';
      var said=String(window.__lastSay||'')+' '+hubToastText;
-     if(!/hotbar/i.test(said)&&!has(said,BAR))
-       return done('SKIP: clicking an empty hotbar cell said nothing this check can read: ['+said.trim().slice(0,80)+']');
-     if(has(said,BAR)) bad.push('clicking an empty hotbar cell still says '+BAR);
+     if(!/tactical belt/i.test(said)&&!has(said,OLDW)&&!has(said,BAR))
+       return done('SKIP: clicking an empty belt cell said nothing this check can read: ['+said.trim().slice(0,80)+']');
+     if(has(said,BAR)) bad.push('clicking an empty belt cell still says '+BAR);
+     if(has(said,OLDW)) bad.push('clicking an empty belt cell still says '+OLDW);
      // THREE: the ascent summary sentence, which named both in one breath.
      var st=null; try{ st=__renderStage&&__renderStage(); }catch(e2){}
      var stage=document.getElementById('stagemodal');

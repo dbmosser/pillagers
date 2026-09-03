@@ -919,13 +919,13 @@
      other thing down here is a station you walk to. -->
 <div class="modal" id="carrymodal">
   <h3>BACKPACK</h3>
-  <div class="msub">Your inventory is your backpack plus your hotbar. An item is in one or the other, never both.</div>
+  <div class="msub">Your inventory is your backpack plus your tactical belt. An item is in one or the other, never both.</div>
   <div class="panel" style="margin-top:10px">
     <h2>Backpack <em id="carrybpct"></em></h2>
     <div class="invgrid" id="carrybp" style="min-height:96px"></div>
   </div>
   <div class="panel" style="margin-top:10px">
-    <h2>Hotbar</h2>
+    <h2>Tactical belt</h2>
     <div id="carrybelt" style="display:flex;gap:6px;flex-wrap:wrap;padding:10px"></div>
   </div>
   <div style="display:flex;gap:8px;margin-top:12px">
@@ -1073,7 +1073,7 @@
             <div class="invgrid" id="kitgrid"></div>
           </div>
           <div class="losec">
-            <div class="loslab">Hotbar<b><span id="quickn">0</span> on keys</b></div>
+            <div class="loslab">Tactical belt<b><span id="quickn">0</span> on keys</b></div>
             <div id="hotplanwrap"></div>
           </div>
           <div class="losec">
@@ -1241,7 +1241,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.25';
+var VER='10.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1260,7 +1260,8 @@ var WHATSNEW=[
   'THE PILLAGERS DRESS FROM THE SAME RACKS you do, hair, hats, beards, eyes and faces, so no two look alike.',
   'A DOWNED PILLAGER CRAWLS FOR COVER, dragging himself to the nearest spot you cannot see, bleeding all the way.',
   'THE MOUSE SAYS WHAT A PANEL WILL DO: a resize arrow at a corner, a move hand on a grip, a pointer on a button.',
-  'THE STASH IS FIVE THINGS: the stash, your backpack, your hotbar, the safe pocket and the freebie kit. Everything else that crowded it is gone. The backpack is a grid of twelve cells there and in the raid, empty cells drawn.',
+  'THE HOTBAR IS THE TACTICAL BELT, everywhere a word names it: the stash, the raid, the legends, the pause screen, the primer.',
+  'THE STASH IS FIVE THINGS: the stash, your backpack, your tactical belt, the safe pocket and the freebie kit. Everything else that crowded it is gone. The backpack is a grid of twelve cells there and in the raid, empty cells drawn.',
   'DAY OR NIGHT IS CHOSEN ON THE SECTOR PAGE at the lift, and every ascent starts on day. A night extraction pays twenty percent more XP. The armour warning is on that page too.',
   'THE DISCOUNT FASHION DEPOT is its own station in the Undercroft. Everything there is how you look, earned by playing and never bought; four new hats, two hair colours and three fits joined the racks.',
   'THE GUNS LOOK LIKE GUNS. Every gun icon is redrawn by family, outlined part by part, so a rifle reads as a rifle and a shotgun as a shotgun at a glance.',
@@ -22727,7 +22728,7 @@ function safeSet(){
 var LEGEND=[
   ['MOVE',[['WASD','move'],['SHIFT','sprint on/off'],['CTRL / C','crouch on/off, near silent'],['SPACE','dodge roll']]],
   ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','aim down sights'],['R','reload'],['X','swap weapon']]],
-  ['GEAR',[['1-9','select hotbar slot'],['FIRE','use selected slot'],['TAB','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],
+  ['GEAR',[['1-9','select tactical belt slot'],['FIRE','use selected slot'],['TAB','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],
 ['WORLD',[['E','search / call for extraction'],['M','map'],['H','cycle this list'],['P','pause']]],
   ['ALSO',[['CAPS','walk on, hands free'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom']]]
 ];
@@ -22739,7 +22740,7 @@ var LEGEND_MINI=[
   ['CTRL / C','crouch'],['SPACE','roll'],
   ['LMB','fire'],['RMB','sights'],
   ['R','reload'],['X','swap gun'],
-  ['1-9','hotbar'],['TAB','backpack'],
+  ['1-9','tactical belt'],['TAB','backpack'],
   ['E','search'],['M','map']
 ];
 var LEGEND_MINI_PAD=[
@@ -22747,7 +22748,7 @@ var LEGEND_MINI_PAD=[
   ['RS','crouch'],['B','roll'],
   ['A','fire'],['LT / RT','reach'],
   ['X','search'],['Y','reload'],
-  ['LB / RB','hotbar'],['D-RIGHT','use it'],
+  ['LB / RB','tactical belt'],['D-RIGHT','use it'],
   ['BACK','backpack'],['D-DOWN','medical'],
   ['D-UP','map'],['START','pause']
 ];
@@ -22761,7 +22762,7 @@ var SOUNDKEY=[
 var LEGEND_PAD=[
   ['MOVE',[['L STICK','move, analog'],['LS CLICK','sprint'],['RS CLICK','crouch'],['B','dodge roll']]],
   ['FIGHT',[['R STICK','aim'],['A','fire'],['LT / RT','reach, analog'],['Y','reload']]],
-  ['GEAR',[['LB/RB','change hotbar slot'],['D-RIGHT','use selected'],['D-LEFT','drop selected'],['D-DOWN','use medical'],['VIEW','backpack']]],
+  ['GEAR',[['LB/RB','change tactical belt slot'],['D-RIGHT','use selected'],['D-LEFT','drop selected'],['D-DOWN','use medical'],['VIEW','backpack']]],
   ['WORLD',[['X','search / call for extraction'],['DPAD UP','map'],['MENU','pause']]]
 ];
 // Every line here used to run past the right edge of its own panel, by 83 to 164
@@ -22785,7 +22786,7 @@ var GEARRULES=[
   ['','you pick one up. When armour is'],
   ['','full they go to the backpack,'],
   ['','so keep one on a key.'],
-  ['HOTBAR','1-9 selects, FIRE uses it.'],
+  ['TACTICAL BELT','1-9 selects, FIRE uses it.'],
   ['','Only one item in hand.'],
   ['WATER','Slows you and is loud.'],
   ['','Crouch will not quiet a splash.'],
@@ -24340,7 +24341,7 @@ function drawBag(){
     }
     ctx.fillStyle='#9aa8d0';
     ctx.fillText((PAD&&PAD.on)?'DPAD select   DPAD L drop'
-      :('ARROWS move   Z drop one   drag to hotbar'
+      :('ARROWS move   Z drop one   drag to tactical belt'
         +(isGun?'   ENTER equip   SHIFT+ENTER to back':'')
         ),x+11,_ry+LH(3));
   } else {
@@ -25422,8 +25423,8 @@ function askKit(){
   var qq=document.getElementById('askq'), ss=document.getElementById('asksub');
   if(qq) qq.textContent='What are you taking up?';
   if(ss) ss.innerHTML='<b>Your loadout</b>: '+
-    (kitN?('the '+kitN+' item'+(kitN===1?'':'s')+' you packed, plus your current hotbar and backpack.')
-         :'your current hotbar and backpack.')+
+    (kitN?('the '+kitN+' item'+(kitN===1?'':'s')+' you packed, plus your current tactical belt and backpack.')
+         :'your current tactical belt and backpack.')+
     '<br><br><b>The freebie kit</b>: '+escHtml(freeKitText());
   ASKYES=function(){ P.freeKit=0; saveProfile(); ascendNow(); };
   ASKALT=function(){
@@ -26451,7 +26452,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.25: the figure at the Depot is drawn by the raid itself, five times raid size, so what you see there is exactly what you see in the raid: the same hair, eyes, beard, face and hat.',
+  now:'v10.26: the hotbar is the TACTICAL BELT, everywhere a word names it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -27355,7 +27356,7 @@ function renderKitCol(){
         P.kit.push(key);
       }
       saveProfile(); try{ sfx('pick'); }catch(e){}
-      say2((ITEMS[key]?ITEMS[key].name:key)+' off the hotbar and into the backpack.');
+      say2((ITEMS[key]?ITEMS[key].name:key)+' off the tactical belt and into the backpack.');
       renderHub();
       return;
     }
@@ -27861,7 +27862,7 @@ try{ renderFreeKit(); }catch(_fk){}
         if((P.hotAssign||{})[ix]!==undefined){
           delete P.hotAssign[ix]; saveProfile(); renderHub();
         } else {
-          say2('Point at an item in the stash, then press its key number on the hotbar below.');
+          say2('Point at an item in the stash, then press its key number on the tactical belt below.');
         }
       };
       // v8.72, HIS REPORT: you can drag an item OFF the belt now. These cells have
@@ -28890,7 +28891,7 @@ function itemBlurb(k){
   var it=ITEMS[k]; if(!it) return '';
   if(it.use==='heal') return 'Heals you in the field.';
   if(it.use==='armor') return 'Restores '+(it.amt||0)+' armour.';
-  if(it.use==='throw') return 'Thrown. Goes on a hotbar key.';
+  if(it.use==='throw') return 'Thrown. Goes on a tactical belt key.';
   if(it.use==='ammo') return 'Refills a magazine from your backpack.';
   if(it.use==='stim') return 'Refills stamina and clears winded.';
   if(it.use==='key') return 'Opens one locked room.';

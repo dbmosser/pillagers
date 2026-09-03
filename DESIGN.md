@@ -40024,6 +40024,37 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.26 - THE HOTBAR IS THE TACTICAL BELT
+
+His note, 2026-09-03 about 17:20: **"In stash, instead of hotbar, let's
+call it 'tactical belt', across the entire game"**.
+
+One word per thing, his rule, and the word is his. Fourteen places a player
+could read the old name now read TACTICAL BELT: the raid backpack panel's
+heading and subtitle, the stash loadout column, the controls legend and the
+pad legend, the pause screen's gear rows on keyboard and pad, the primer
+card, the search prompt at the stash, the ascent summary sentence, the toast
+for an item dragged off the belt, the throwable hint, and the what-is-new
+card, which also says the word changed. Code keeps its names.
+
+The two checks that held the old word turned round: v9.89 required Hotbar
+on every surface and forbade Tactical belt, since v9.89 was the build that
+removed the older belt names; v9.90 required hotbar in the pad legend. Both
+require his word now and forbid the old one.
+
+### Measured
+
+The check reads the three legend tables and requires none to hold the old
+word and at least one to hold his; reads the raid backpack panel, the stash
+loadout column, the throwable hint, the what-is-new card and the primer the
+same way; the control is the backpack still named beside it. On v10.25 every
+legend said the old word and none said his, which is the finding.
+
+Not verified: any surface built from a string the grep did not catch, such
+as a message assembled from halves; the corpus greps the page for the old
+word in its assembled form, so one that survives will show up as the toast
+it is.
+
 ## v10.25 - THE FIGURE AT THE DEPOT IS THE SPRITE
 
 His note, 2026-09-03 about 17:20: **"eyes don't look like they do in the
