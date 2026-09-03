@@ -40024,6 +40024,32 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.06 - A NIGHT RAID PAYS 1.2 TIMES THE XP
+
+His answer 22, 2026-09-03: **"NIGHT IS ALREADY JARRING, MAYBE IT SHOULD GIVE
+MORE XP MULTIPLER, JUST LIKE 1.2?"**
+
+The run record carried the weather and the time of day and never the one
+choice he makes on the sector page. It carries night now, stamped at the end
+of the raid from the same flag the raid drew by, and a night run's XP is
+multiplied by 1.2 before the bar's bonus. The sector page says so beside
+NIGHT: "You go up in the dark. XP pays 1.2x." A dial, nightXp, so the number
+is his to move.
+
+### Measured
+
+The check runs the same record as a day run and as a night run and requires
+the night one to pay 1.2 times, with the dial at 1 as the control giving the
+day number back; then it deploys a raid with the surface at night, extracts through the
+game's own end (an abandon with nothing looted is discarded and writes no
+record, which cost me two tries), and requires the record it wrote to say
+night.
+On v10.05 a night run paid the same as a day run, which is the finding.
+
+Not verified: whether 1.2 is enough to make night worth its jarring, which is
+his to feel. Not verified: the record's night flag against runs that started
+before this build, which have none and pay as day.
+
 ## v10.05 - EVERY ASCENT STARTS AT DAY
 
 His answer 24, 2026-09-03: **"DEFAULT TO DAY."**

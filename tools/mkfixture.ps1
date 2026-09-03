@@ -5216,6 +5216,46 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.06',what:'a night raid pays 1.2 times the XP, and the run record knows it was night',
+   run:function(){
+     var bad=[];
+     if(typeof addProgress!=='function'||typeof spForRun!=='function'||typeof xpForRun!=='function') return 'SKIP: no progress functions in this build';
+     __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(); P2.buzz=[];
+     var rec={outcome:'extract',containers:6,dist:3000,haul:1200,kills:{}};
+     function pays(night){
+       var r2={}; for(var k in rec) r2[k]=rec[k]; r2.night=night?1:0;
+       P2.xp=1000; P2.profRaw=0; addProgress(r2); return (P2.xp||0)-1000;
+     }
+     var base=spForRun(rec)+xpForRun(rec);
+     if(!(base>0)) return 'SKIP: the run record is worth nothing';
+     var day=pays(0), night=pays(1);
+     // THE FINDING. On v10.05 a night run paid the same as a day run.
+     if(day!==base) bad.push('a day run paid '+day+' against the '+base+' the rules add up to');
+     if(night<=day) bad.push('a night run paid '+night+', no more than a day run at '+day);
+     else if(Math.abs(night-Math.round(base*1.2))>1) bad.push('a night run paid '+night+', not the '+Math.round(base*1.2)+' that 1.2 gives');
+     // CONTROL: the dial at one is the old game.
+     __cfg({nightXp:1}); var flat=pays(1); __cfg({nightXp:1.2});
+     if(flat!==day) bad.push('control: with the dial at 1 a night run still paid '+flat+' against '+day);
+     // THE RECORD KNOWS. A raid deployed at night and abandoned must log night:1.
+     if(window.__deploy&&window.__endRaid){
+       var keepCond=P2.cond;
+       P2.cond='night';
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       if(g){
+         // An abandon with nothing looted is discarded and writes no record;
+         // an extract always does.
+         var before=(P2.log||[]).length;
+         try{ __endRaid('extract'); for(var f3=0;f3<10;f3++) __loop(performance.now()+f3*16.7); }catch(e1){ bad.push('ending the raid threw: '+e1); }
+         var last=(typeof pendingRun!=='undefined'&&pendingRun)?pendingRun:(((P2.log||[]).length>before)?P2.log[P2.log.length-1]:null);
+         if(!last) bad.push('no run record was built for the night raid');
+         else if(!last.night) bad.push('the record of a raid deployed at night says night:'+last.night);
+         var oc=document.getElementById('outcome'); if(oc) oc.classList.remove('on');
+       }
+       P2.cond=keepCond;
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.05',what:'every ascent starts at DAY, whatever the last raid was',
    run:function(){
      var bad=[];
