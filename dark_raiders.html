@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.60';
+var VER='9.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21331,6 +21331,27 @@ var _slp=w2s(p.x,66,p.y);
     bar(_slp.x-70,_slp.y+LH(6),140,7,clamp((_SRh.cut+G.seal.gained)/Math.max(1,sealNeed(_SRh.tier)),0,1),'#ffc04a');
     ctx.textAlign='left';
   }
+  // v9.61: THE VERB THE SECOND CENTRE BLOCK USED TO OWN. Worked out here so the
+  // downed overlay can draw it in its own stack, in its own coordinate system.
+  // Before this the two blocks were independent, one scaled by hudRes and one
+  // not, which is why his 4K screen showed one panel in three different sizes.
+  function downedVerb(){
+    if(G.over||G.beaconT===null||!G.active) return null;
+    var _sd=(G.beaconT<=0&&G.shipHold!==null&&G.shipHold!==undefined);
+    var _ir=dist(p,G.active)<G.active.r;
+    if(_ir&&_sd&&CFG.hauledAboard!==0) return {msg:'THEY HAVE YOU',sub:'Pulling you out',col:'#4de3d0'};
+    if(_ir&&_sd) return {msg:'HOLD E TO EXTRACT',sub:'Extracting while downed is permitted',col:'#4de3d0'};
+    if(_ir) return {msg:'EXTRACTION INBOUND',sub:'Extracting while downed is permitted',col:'#ffc04a'};
+    if((dist(p,G.active)-G.active.r)<=300)
+      return {msg:'CRAWL TO THE RING',
+              sub:_sd?('Extraction closes in '+fmtMS(Math.max(0,Math.ceil(G.shipHold)))):'Extraction inbound',
+              col:'#ff5a4a'};
+    // HIS REPORT: "unnecessary repetition of down". This case used to print YOU
+    // ARE DOWN directly under a DOWN that is twice its size. It had nothing to
+    // add but the state, and the state is already the headline, so only the one
+    // fact it actually carries survives.
+    return {msg:null,sub:'Nearest extraction is '+metres(closestRingDist(p))+'m away',col:'#ff5a4a'};
+  }
   if(p.downed){
     // THE WASH IS DRAWN OUTSIDE THE SCALE, deliberately. It has to cover the
     // whole screen, and a fillRect(0,0,W,H) under a 2x scale about the centre
@@ -21346,18 +21367,45 @@ var _slp=w2s(p.x,66,p.y);
     ctx.save();
     var _dwz=hudRes();
     ctx.translate(W/2,H/2); ctx.scale(_dwz,_dwz); ctx.translate(-W/2,-H/2);
-    ctx.font=FS(TYPE.huge); ctx.textAlign='center';
-    ctx.fillStyle='#ff5a4a'; ctx.fillText('DOWN',W/2,H/2-34);
-bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
-    // v9.08: head, not label. This is the number telling him how long he has
-    // left to live and it was the same size as a crate label.
-    ctx.font=FS(TYPE.head); ctx.fillStyle='#ffb0a0';
-    ctx.fillText(Math.max(0,Math.ceil(p.downT))+'s',W/2+124,H/2-9);
-    ctx.font=FS(TYPE.head); ctx.fillStyle='#e8d5d2';
+    // v9.61: STACKED FROM THE HEIGHT OF ITS OWN TYPE, not from nine literal
+    // offsets. The timer used to sit at H/2-9 with the line under it at H/2+6,
+    // and both render at 23, so the timer was inside that line by 8 pixels at
+    // 1080p and 17 at 4K. Rows are a full line apart now and cannot touch.
+    var _fH=FS(TYPE.huge), _fD=FS(TYPE.head);
+    function _dpx(f){ var m=/([\d.]+)px/.exec(f); return m?+m[1]:14; }
+    var _hH=_dpx(_fH), _hD=_dpx(_fD);
+    ctx.font=_fH; ctx.textAlign='center';
+    var _dy=H/2-34;                                  // unchanged at 1920x1080
+    ctx.fillStyle='#ff5a4a'; ctx.fillText('DOWN',W/2,_dy);
+    // The bar clears DOWN by its descent, and is narrower so the timer beside it
+    // has room of its own instead of leaning on the line below.
+    var _barY=_dy+Math.round(_hH*0.42);
+    bar(W/2-100,_barY,200,10,p.downT/CFG.downTime,'#c8452f');
+    ctx.font=_fD; ctx.fillStyle='#ffb0a0';
+    ctx.fillText(Math.max(0,Math.ceil(p.downT))+'s',W/2+130,_barY+9);
+    var _rowY=_barY+10+Math.round(_hD*1.15);
+    ctx.font=_fD; ctx.fillStyle='#e8d5d2';
     // v8.87, his wording. The old line opened with what he had just used up.
     // This opens with what he can still do about it.
     ctx.fillText(p.revived?'You are bleeding out. Crawl to an open extraction point if possible.':
-      '['+keyLabel('KeyF','F')+'] SELF-REVIVE, one per raid',W/2,H/2+6);
+      '['+keyLabel('KeyF','F')+'] SELF-REVIVE, one per raid',W/2,_rowY);
+    // The verb, in the same stack and the same coordinate system as everything
+    // above it. This used to be a separate block drawn afterwards at an unscaled
+    // H/2+64.
+    var _dv=downedVerb();
+    if(_dv){
+      if(_dv.msg){
+        _rowY+=Math.round(_hD*1.5);
+        ctx.font=_fH; ctx.fillStyle=_dv.col;
+        ctx.fillText(_dv.msg,W/2,_rowY);
+        _rowY+=Math.round(_hH*0.30);
+      }
+      if(_dv.sub){
+        _rowY+=Math.round(_hD*1.35);
+        ctx.font=_fD; ctx.fillStyle='#e8e2d5';
+        ctx.fillText(_dv.sub,W/2,_rowY);
+      }
+    }
     // HIS RUN #44: "couldn't call the beacon when downed in the extraction
     // circle". Driven before touching anything: THE CALL WORKS FROM THE FLOOR
     // and has since v2.30, E passes through and 1.6 held seconds set the
@@ -21366,9 +21414,10 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     // holding a dead-feeling key for a second with no response concludes it
     // does not work, and he is right to.
     if(G.beaconT===null&&G.active&&G.active.open&&dist(p,G.active)<G.active.r){
-      ctx.fillStyle='#4de3d0';
-      ctx.fillText('HOLD E TO CALL FOR EXTRACTION',W/2,H/2+LH(26));
-      if(G.active.callT>0) bar(W/2-70,H/2+LH(33),140,7,clamp(G.active.callT/1.6,0,1),'#4de3d0');
+      _rowY+=Math.round(_hD*1.35);
+      ctx.font=_fD; ctx.fillStyle='#4de3d0';
+      ctx.fillText('HOLD E TO CALL FOR EXTRACTION',W/2,_rowY);
+      if(G.active.callT>0) bar(W/2-70,_rowY+Math.round(_hD*0.45),140,7,clamp(G.active.callT/1.6,0,1),'#4de3d0');
     }
     ctx.textAlign='left';
     ctx.restore();
@@ -21393,19 +21442,13 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     var _shipDown=(G.beaconT<=0&&G.shipHold!==null&&G.shipHold!==undefined);
     var _inRing=dist(p,G.active)<G.active.r;
     var _msg=null,_col='#4de3d0',_sub=null;
-    if(p.downed){
-      if(_inRing&&_shipDown&&CFG.hauledAboard!==0){ _msg='THEY HAVE YOU'; _sub='Pulling you out'; }
-      // v8.67, his wording. Both of these stated the same rule in two different
-      // sentences one line apart; they now use his.
-      else if(_inRing&&_shipDown){ _msg='HOLD E TO EXTRACT'; _sub='Extracting while downed is permitted'; }
-      // v8.79, his note: "when extracting and down, get rid of 'stay down'".
-      else if(_inRing){ _msg='EXTRACTION INBOUND'; _sub='Extracting while downed is permitted'; _col='#ffc04a'; }
-      else if((dist(p,G.active)-G.active.r)<=300){ _msg='CRAWL TO THE RING'; _sub=_shipDown?('Extraction closes in '+fmtMS(Math.max(0,Math.ceil(G.shipHold)))):'Extraction inbound'; _col='#ff5a4a'; }
-      // v8.68, his wording, and the NEAREST one rather than the one the HUD
-      // happens to be pointing at. closestRingDist is the same helper the
-      // extraction card got at v8.58 for this exact mistake.
-      else { _msg='YOU ARE DOWN'; _sub='Nearest extraction is '+metres(closestRingDist(p))+'m away'; _col='#ff5a4a'; }
-    } else if(_shipDown&&_inRing){
+    // v9.61: THE DOWNED CASES ARE GONE FROM HERE. They are computed by
+    // downedVerb() and drawn inside the downed overlay, in the overlay's own
+    // coordinate system. This block scaled by nothing while that one scaled by
+    // hudRes, which is how his 4K screen ended up showing one panel at 94 pixels,
+    // 47 and 23 all at once, with DOWN and YOU ARE DOWN one under the other.
+    if(p.downed){ /* drawn by the downed overlay above, in one stack */ }
+    else if(_shipDown&&_inRing){
       // v6.57: no countdown here. The bottom strip has stated it for the whole window
       // and this line exists to say what to DO, which is the split the comment above
       // already describes.
@@ -25204,7 +25247,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.60: you can walk away from a Listener now. It moved at 196 against your 158, so it closed on you at thirty eight units a second and there was no escaping one; it moves at 142. It still hits for 34 and still ends you in three blows if you let it reach you.',
+  now:'v9.61: the downed screen was two panels that did not know about each other. One said DOWN and the other said YOU ARE DOWN underneath it, the bleed-out timer sat on top of the self-revive line, and only half of it grew with the monitor. It is one panel now.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -39481,9 +39481,93 @@ is not a control.
 Not verified: whether 142 is the right number or merely a number below his walk.
 He asked for a chance to get away and 142 gives him one metre a second; whether
 that feels like escaping or like dragging a shadow around the map is his call and
-I have not played it. Not verified: what this does to the Listener's job. It is
-the thing you are supposed to blunder into, and something you can always outwalk
-may stop being frightening. The 320 seed paired run is still going as this is
-committed and its number goes in when it lands, but note what it will and will
-not tell me: the bot does not fear anything, so a threat becoming less frightening
-is not a thing it can report.
+I have not played it.
+
+### The balance, 320 paired seeds
+
+**The raid is exactly as lethal and the Listener stopped being the one ending
+it.** Extract rate 20.6 percent at 142 against 20.9 at 196, p = 1.0, which is as
+flat as that measurement gets.
+
+| killed by | 142 | 196 |
+| --- | --- | --- |
+| **listener** | **5** | **11** |
+| crawler | 130 | 124 |
+| sentry | 80 | 75 |
+| choir | 13 | 17 |
+| warden | 7 | 8 |
+
+**Listener kills more than halved**, and the crawlers and sentries picked up the
+difference almost exactly. That is the shape I wanted: the game did not get
+easier, the thing he could not escape from stopped being the thing that ended his
+runs, and the machines he CAN fight took those kills instead.
+
+Not verified: what this does to the Listener's job. It is the thing you are meant
+to blunder into, and something you can always outwalk may stop being frightening
+rather than becoming fair. The sim cannot answer that: the bot does not fear
+anything, so a threat becoming less frightening is not a thing it can report.
+
+## v9.61 - THE DOWNED SCREEN WAS TWO PANELS THAT DID NOT KNOW ABOUT EACH OTHER
+
+His report: **"screen when you are Downed is ugly, messy af, has unnecessary
+repetition of 'down', has collisions"**. All three, and one cause. Measured
+before touching anything, by reading what the game actually drew:
+
+| | 1920x1080 | 3840x2160 |
+| --- | --- | --- |
+| "DOWN" | y506, 47px | y1012, **94px** |
+| "YOU ARE DOWN" | y604, 47px | y1144, **47px** |
+| "Nearest extraction is 316m away" | 23px | **23px** |
+| the timer sitting on the self-revive line | **8px overlap** | **17px overlap** |
+
+**The repetition is two blocks.** The downed overlay prints DOWN in the largest
+type on the screen, and a completely separate centre block prints YOU ARE DOWN
+ninety eight pixels under it. Neither knew the other existed.
+
+**The collision is the bleed-out timer.** It was drawn at H/2-9 and the
+self-revive line at H/2+6, both in a type that renders at 23, so the timer's
+descent has been sitting inside the line beneath it at every screen size for as
+long as both have existed.
+
+**And the ugly is two coordinate systems.** The overlay scales by `hudRes` about
+the centre; the second block does not scale at all. So on his 4K screen one
+panel was drawn at 94 pixels, 47 and 23 **at the same time**.
+
+### One panel
+
+The verb the second block was computing is now worked out **before** the overlay
+draws and handed to it, so there is one panel in one coordinate system, stacked
+from the measured height of its own type the way the top-centre readout was at
+v9.56. The second block keeps only the standing case, which was never the
+problem.
+
+And the headline is said once. In the single case where the second block had
+nothing to add but the state - too far from any ring to be told to crawl to one -
+its big line is gone and only its distance survives. DOWN has already been said,
+in the largest type on the screen, three lines above.
+
+After: zero overlaps at both sizes, one line saying DOWN, and every line of the
+panel at 47px on the 4K screen instead of 94/47/23.
+
+### The v9.08 check was encoding the old layout
+
+It scanned the single row `H/2 - 18*sc`, because that is where a literal put the
+bleed bar in v9.08. This build stacks the panel instead of placing it, the bar
+moved, and the check read the DOWN glyphs on an empty row and reported the bar
+growing 36 to 49.
+
+It finds the bar now instead of assuming where it is: the longest **contiguous**
+lit run in the middle band, which is the bar, because text has gaps between its
+glyphs. **My first cut of that scanned the full width and both builds came back
+with an identical 501**, which was a side panel's background. Restricted to the
+centre column, it passes on v9.60 and v9.61 alike, which is what a check that
+measures the bar rather than the layout should do.
+
+Not verified: how the panel looks. Everything above is geometry - what was drawn,
+where, and how big - and none of it is a judgement about whether the result is
+handsome. He called the old one ugly and I have removed the three things that
+were measurably wrong with it; whether what is left reads well is his call. Not
+verified: the downed panel in the other three verb states. The measurement stands
+him far from any ring, which is the case that carried the repetition; THEY HAVE
+YOU, HOLD E TO EXTRACT and CRAWL TO THE RING now draw through the same stack and
+are covered by the no-overlap assertion only in the state the check sets up.

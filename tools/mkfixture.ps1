@@ -2909,12 +2909,21 @@ window.__REGRESS=[
        var g3=setup(W2,H2,true); if(!g3) return 0;
        __frame(0);
        var sc=(W2>=3840?2:1);
-       var y=Math.round(H2/2-18*sc);
-       var d=hc.getContext('2d').getImageData(0,y,W2,1).data;
-       var first=-1,last=-1;
-       for(var x=0;x<W2;x++){ var i=x*4, lum=(d[i]+d[i+1]+d[i+2])/3*(d[i+3]/255);
-         if(lum>28){ if(first<0) first=x; last=x; } }
-       return first<0?0:(last-first+1);
+       var y0=Math.round(H2/2-90*sc), hh=Math.round(180*sc);
+       if(y0<0){ hh+=y0; y0=0; }
+       if(y0+hh>H2) hh=H2-y0;
+       var x0=Math.max(0,Math.round(W2/2-260*sc)), ww=Math.min(W2-x0,Math.round(520*sc));
+       var d=hc.getContext('2d').getImageData(x0,y0,ww,hh).data;
+       var best=0;
+       for(var ry=0;ry<hh;ry++){
+         var run=0, row=ry*ww*4;
+         for(var x=0;x<ww;x++){
+           var i=row+x*4, lum=(d[i]+d[i+1]+d[i+2])/3*(d[i+3]/255);
+           if(lum>28){ run++; if(run>best) best=run; }
+           else run=0;
+         }
+       }
+       return best;
      }
      var b1=barWidth(1920,1080), b4=barWidth(3840,2160);
      __forceSize(1920,1080);
@@ -5054,6 +5063,85 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.61',what:'the downed screen is one panel, says DOWN once, and nothing sits on anything',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(!window.__textTrace) return 'SKIP: this build cannot report the text it drew';
+     __pinDPR(1); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     // Reads what the game DREW while downed, at two screen sizes, because the
+     // fault was two blocks in two different coordinate systems and only a
+     // drawn-pixel reading can see that at all.
+     function downScreen(W2,H2){
+       __forceSize(W2,H2);
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       var g=__state(), p=g.player;
+       g.ents.length=0;
+       for(var f=0;f<3;f++) __loop(performance.now()+f*16.7);
+       // AFTER the loop, or the loop clears the beacon back out and the second
+       // block never runs, which is the block this build exists to fold in.
+       p.hp=0; p.downed=true; p.downT=12; p.revived=false; g.over=false;
+       if(!g.zones||!g.zones.length) return null;
+       var z=g.zones[0]; z.open=true;
+       g.active=z; g.beaconT=8; g.shipHold=null;
+       p.x=z.x+2600; p.y=z.y+2600;             // far from any ring
+       var draws=__textTrace(function(){ __frame(0.016); });
+       var mid=[];
+       for(var i=0;i<draws.length;i++){
+         var d=draws[i];
+         if(!d.t||!d.t.trim()) continue;
+         if(Math.abs(d.y-H2/2)>H2*0.22) continue;
+         var l=(d.align==='center')?d.x-d.w/2:d.x, r=l+d.w;
+         // the centre COLUMN, so the side panels are not mistaken for this one
+         if(Math.abs((l+r)/2-W2/2)>W2*0.30) continue;
+         mid.push({t:d.t,y:d.y,px:d.px,l:l,r:r});
+       }
+       return mid;
+     }
+     var a=downScreen(1920,1080), b=downScreen(3840,2160);
+     __forceSize(1920,1080);
+     if(!a||!b) return 'SKIP: no extraction rings on this map, so the downed verb never runs';
+     function saysDown(m){ return m.filter(function(x){ return /\bDOWN\b/i.test(x.t); }); }
+     function overlaps(m){
+       var o=[];
+       for(var i=0;i<m.length;i++) for(var j=i+1;j<m.length;j++){
+         var A=m[i],B=m[j];
+         var vo=Math.min(A.y+A.px*0.25,B.y+B.px*0.25)-Math.max(A.y-A.px*0.75,B.y-B.px*0.75);
+         var ho=Math.min(A.r,B.r)-Math.max(A.l,B.l);
+         if(vo>0&&ho>0) o.push('"'+A.t+'" on "'+B.t+'" by '+Math.round(vo)+' pixels');
+       }
+       return o;
+     }
+     // CONTROL: it must have found the panel at all. An empty reading passes
+     // every test below and means nothing.
+     if(a.length<3||b.length<3)
+       return 'SKIP: only '+a.length+' and '+b.length+' centre lines drawn, the downed panel did not render';
+     // THE FINDING, part one. His words: "unnecessary repetition of down".
+     // Measured on v9.60: DOWN in the largest type on the screen and YOU ARE DOWN
+     // ninety eight pixels under it, from a second block that did not know the
+     // first existed.
+     var dA=saysDown(a), dB=saysDown(b);
+     if(dA.length!==1)
+       bad.push('the downed screen says DOWN '+dA.length+' times at 1080p: '+
+                dA.map(function(x){return '"'+x.t+'"';}).join(' and '));
+     if(dB.length!==1)
+       bad.push('the downed screen says DOWN '+dB.length+' times at 4K: '+
+                dB.map(function(x){return '"'+x.t+'"';}).join(' and '));
+     // PART TWO. His words: "has collisions". Measured on v9.60: the bleed-out
+     // timer sat inside the self-revive line by 8 pixels at 1080p and 17 at 4K.
+     var oA=overlaps(a), oB=overlaps(b);
+     if(oA.length) bad.push('at 1080p '+oA.join('; '));
+     if(oB.length) bad.push('at 4K '+oB.join('; '));
+     // PART THREE. His words: "ugly, messy af". The two blocks were in different
+     // coordinate systems, so on a 4K screen one panel was drawn at 94 pixels, 47
+     // and 23 at the same time. Every line of one panel scales together or it is
+     // not one panel.
+     var smallA=Math.min.apply(null,a.map(function(x){return x.px;}));
+     var smallB=Math.min.apply(null,b.map(function(x){return x.px;}));
+     if(smallB < smallA*1.5)
+       bad.push('the smallest line of the downed panel is '+Math.round(smallB)+
+                ' pixels at 4K against '+Math.round(smallA)+' at 1080p, so part of the panel is not following the monitor');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.60',what:'a man walking away from a Listener actually gets away from it',
    run:function(){
      var bad=[];
