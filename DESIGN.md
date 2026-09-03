@@ -39837,3 +39837,72 @@ bundle on screen to look at; the check proves it draws differently from the othe
 four, not that it looks like tube. Not verified: whether five kinds is enough for
 "maps feel samey", which is a bigger complaint than this build answers. This is
 the outdoor cover only; the buildings, the ground and the layout are untouched.
+
+## v9.66 - THE TWO PANELS HE WANTED SMALLER WERE THE LARGEST ON THE SCREEN
+
+His note: **"current pillagers and conditions should be smaller in the hud
+compared to the other stuff."**
+
+**Measured first, because the obvious reading is wrong.** The TEXT in those two
+panels was already the smallest on screen: median 23 pixels against 25 for the
+gear panel and 26 for the vitals. If he had meant type size the game already
+agreed with him.
+
+What he is actually looking at is how much screen they take:
+
+| panel | drawn box | area |
+| --- | --- | --- |
+| **raiders** | 501 x 392 | **196,392** |
+| **cond** | 386 x 279 | **107,694** |
+| body | 532 x 193 | 102,676 |
+| legend | 467 x 197 | 91,999 |
+| gear | 335 x 222 | 74,370 |
+
+The cause was not subtle. `HUDZ`, the per-panel scale, read
+`{body:1.40, gear:1.36, raiders:1.5, legend:1.5, cond:1.5}`: **the two he named
+were the largest of the five.** Both are 1.15 now, under the gear panel, which is
+the smallest of the others.
+
+**That alone would not have worked**, and it is the part I would have got wrong
+by editing only the constant. The board's height is not set by its scale, it is
+set by the v9.49 ceiling, which is 56 percent of the screen **divided by** that
+scale. Shrink the scale and the ceiling grows to match, more rows fit, and the
+panel ends up exactly as tall with smaller writing in it. The ceiling comes down
+to 38 percent so the board is genuinely shorter rather than merely denser.
+
+| panel | before | after |
+| --- | --- | --- |
+| raiders | 196,392 | **92,544**, down 53 percent |
+| cond | 107,694 | **63,344**, down 41 percent |
+| body, gear, legend | unchanged | unchanged |
+
+Conditions is now the smallest panel on the HUD; the board is below the vitals
+and level with the legend.
+
+### This reverses an instruction of his, and the checks moved rather than the instruction
+
+**Two checks failed, and both were right to.** v8.91 exists because of his answer
+25, *"TWICE AS LARGE RELATIVE TO THE SCREEN"*, and holds three panels at 1.4x
+their pre-v8.91 share; v8.93 pins the default board at 501x264 for the same
+reason. Two of those three panels are named in his new note.
+
+Both updated, and narrowly. **The legend keeps its 1.4x floor** because he has
+not mentioned it. The two he did name keep a floor of their own: they must still
+be at least their pre-v8.91 size, so a build that shrinks them to nothing fails.
+For the record, they are still **larger than they were before he asked for
+larger** - the board was 334 wide then and is 384 now - they are simply no longer
+twice everything else.
+
+**And a third check was quietly about to switch itself off.** The v9.64 board
+check paired rows by a magic x coordinate, and traced positions are in the
+panel's own scaled space, so changing the board scale moved the value column from
+x 960 to x 736. Its filter of 500 excluded both, which would have turned a
+failing check into a SKIP. Rows are paired on what they are now - a name against
+a value or an outcome - rather than on where they land.
+
+Not verified: how it reads to him. Everything above is area and pixel size; I
+have made the two panels he named smaller than the rest, which is what he asked
+for, but not judged whether the board is now too small to use at a glance. Not
+verified: the conditions panel at 1440p and 4K by eye. The v8.91 check measures
+its width at all three and the new rule measures its area at 1080p, so it is
+proved smaller and proved to still draw, not proved to look right.

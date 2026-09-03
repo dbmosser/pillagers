@@ -2086,6 +2086,18 @@ window.__REGRESS=[
        if(!B.raiders||!B.legend||!B.cond){ bad.push('at '+tag+' one of the three panels did not draw'); continue; }
        ['raiders','legend','cond'].forEach(function(k){
          var got=B[k];
+         // v9.66, HIS NEW INSTRUCTION: "current pillagers and conditions should be
+         // smaller in the hud compared to the other stuff". That reverses his
+         // answer 25 for these two panels and only these two, so they come out of
+         // the 1.4x rule and get a floor of their own: still no smaller than they
+         // were before v8.91 ever grew them. The legend is untouched because he
+         // has not mentioned it.
+         if(k==='raiders'||k==='cond'){
+           var floorW=(was[k][0]/1920)*SW;
+           if(got.w<floorW)
+             bad.push(k+' at '+tag+' is '+got.w+' wide, smaller than it was before v8.91 grew it');
+           return;
+         }
          // the old share of a 1920x1080 screen, doubled, is the bar
          // 1.4, not 1.9: he asked at v8.93 for 75 percent of the v8.91 size once
          // he saw it at 4K, where the screen factor was multiplying it by 1.9.
@@ -2164,9 +2176,14 @@ window.__REGRESS=[
      var B=__hud().box.raiders;
      if(!B) return 'the pillager board did not draw';
      var bad=[];
-     // v8.91 shipped these at 2.0 and he said too big at 4K; 1.5 is his 75 pct.
-     if(Math.abs(B.w-501)>12||Math.abs(B.h-264)>12)
-       bad.push('the default board is '+B.w+'x'+B.h+', it should be about 501x264');
+     // v8.91 shipped these at 2.0 and he said too big at 4K; 1.5 was his 75 pct.
+     // v9.66, and it is his again: "current pillagers and conditions should be
+     // smaller in the hud compared to the other stuff". The board scale went 1.5
+     // to 1.15 and its row ceiling 56 percent of the screen to 38, so the default
+     // is 384x202 rather than 501x264. This number exists to catch the DEFAULT
+     // drifting by accident, so it moves with a deliberate change and not before.
+     if(Math.abs(B.w-384)>12||Math.abs(B.h-202)>14)
+       bad.push('the default board is '+B.w+'x'+B.h+', it should be about 384x202');
      var cv=document.getElementById('cv'), r=cv.getBoundingClientRect();
      function ev(t,x,y,tgt){ (tgt||cv).dispatchEvent(new MouseEvent(t,
        {button:0,bubbles:true,clientX:r.left+x,clientY:r.top+y})); }
@@ -5067,6 +5084,51 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.66',what:'the pillager board and the conditions panel are smaller than the rest of the HUD',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(!window.__hudBox) return 'SKIP: this build cannot report where its panels are';
+     __pinDPR(1); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __forceSize(1920,1080);
+     __deploy({kit:['medkit','plate'],safe:null,mapIx:1,seed:4242});
+     var g=__state(), p=g.player;
+     p.iv=9999; p.downed=false; p.hp=72;
+     g.legendOn=1;
+     for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
+     __frame(0.016);
+     var B=__hudBox();
+     var need=['raiders','cond','body','gear'];
+     for(var i=0;i<need.length;i++) if(!B[need[i]])
+       return 'SKIP: the '+need[i]+' panel did not record where it drew';
+     function area(k){ return Math.round(B[k].w*B[k].h); }
+     var A={raiders:area('raiders'),cond:area('cond'),body:area('body'),gear:area('gear')};
+     if(B.legend) A.legend=area('legend');
+     // CONTROL: every panel has to have actually drawn. A collapsed or missing
+     // panel is a tiny box, and tiny boxes pass a smaller-than test for the wrong
+     // reason, which is exactly the shape of a check that proves nothing.
+     var tiny=[];
+     for(var k in A) if(A[k]<20000) tiny.push(k+' '+A[k]);
+     if(tiny.length)
+       bad.push('control: these panels barely drew at all, so a size comparison means nothing: '+tiny.join(', '));
+     // THE FINDING. His note: "current pillagers and conditions should be smaller
+     // in the hud compared to the other stuff". Measured on v9.65: raiders 196,392
+     // square pixels and cond 107,694 against body 102,676, legend 91,999 and gear
+     // 74,370, because HUDZ had those two at 1.5 and everything else at 1.36 to
+     // 1.40. They were the two LARGEST of the five.
+     if(A.raiders>=A.body)
+       bad.push('the pillager board is '+A.raiders+' square pixels against '+A.body+
+                ' for the vitals, so it is not smaller than the other stuff');
+     if(A.cond>=A.body)
+       bad.push('the conditions panel is '+A.cond+' square pixels against '+A.body+
+                ' for the vitals, so it is not smaller than the other stuff');
+     // AND THE BOARD MUST NOT HAVE BEEN SHRUNK INTO UNREADABILITY, which is the
+     // way to satisfy the two lines above and make the game worse. It still has to
+     // list several men.
+     var rows=Math.max(0,Math.round((B.raiders.h-40)/26));
+     if(rows<4)
+       bad.push('the board now has room for about '+rows+' rows, which is not a board');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.65',what:'the outdoor cover is five different things, and not one wall moved',
    run:function(){
      var bad=[];
@@ -5180,11 +5242,15 @@ window.__REGRESS=[
        var byY={};
        for(i=0;i<draws.length;i++){
          var d=draws[i];
-         if(d.x>500) continue;                       // the board sits on the left
+         // NOT A MAGIC X. Traced positions are in the panel's own scaled space,
+         // so the value column moved from x 960 to x 736 when v9.66 changed the
+         // board scale, and the 500 this used to test would have excluded both
+         // and turned the check into a SKIP. A board row is a name on the left
+         // and a value or an outcome on the right; that is what it is paired on.
          var k=Math.round(d.y);
          if(!byY[k]) byY[k]={left:null,right:null};
-         if(d.align==='right') byY[k].right=d.t;
-         else if(byY[k].left===null) byY[k].left=d.t;
+         if(d.align==='right'){ if(/^\$|DEAD|EXTRACTED/.test(d.t)) byY[k].right=d.t; }
+         else if(byY[k].left===null&&d.x<900) byY[k].left=d.t;
        }
        var rows=[];
        Object.keys(byY).map(Number).sort(function(a,b){return a-b;}).forEach(function(k){

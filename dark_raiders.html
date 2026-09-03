@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.65';
+var VER='9.66';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22104,7 +22104,12 @@ var HUDBOX={},HUDDRAG=null,HUDRESIZE=null;
 // v8.93: the three panels drop from 2.0 to 1.5, which is the 75 percent he
 // asked for. He plays at 4K, where the screen factor multiplies this by 1.9, so
 // 2.0 was landing as 3.8 while I was measuring 2.0 at 1080p.
-var HUDZ={body:1.40, gear:1.36, raiders:1.5, legend:1.5, cond:1.5};
+// v9.66, HIS NOTE: "current pillagers and conditions should be smaller in the hud
+// compared to the other stuff". They were the two LARGEST of the five at 1.5,
+// against 1.40 for the vitals and 1.36 for the gear panel. Measured drawn areas
+// before this: raiders 196,392 square pixels, cond 107,694, body 102,676,
+// legend 91,999, gear 74,370. Both now sit under the smallest of the others.
+var HUDZ={body:1.40, gear:1.36, raiders:1.15, legend:1.5, cond:1.15};
 // v8.93: and the size is his, not mine. A grip in the bottom right corner of any
 // panel scales it, saved on the profile beside the position and the collapsed
 // flag. Clamped so a panel cannot be shrunk into nothing or grown off the screen.
@@ -22309,7 +22314,11 @@ function drawRaiderBoard(){
   // panels it was drawing straight through. At least three rows whatever
   // happens, so a small window shows something rather than an empty frame.
   var _rz=(HUDZ.raiders||1)*hudRes()*hudUserZ('raiders');
-  var _rMax=Math.max(LH(60),Math.round((H*0.56)/(_rz||1))-(y0-LH(13)));
+  // v9.66: 38 percent, not 56. The ceiling is divided by the panel scale, so
+  // shrinking the scale alone would have GROWN the row budget to match and left
+  // the board exactly as tall with smaller writing in it. This is the half of his
+  // note that the constant above cannot deliver on its own.
+  var _rMax=Math.max(LH(60),Math.round((H*0.38)/(_rz||1))-(y0-LH(13)));
   var _rFit=Math.max(3,Math.floor((_rMax-LH(26))/LH1));
   var _rHid=0;
   if(!HOr.c&&rows.length>_rFit){
@@ -25396,7 +25405,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.65: the outdoor cover on the mile was 487 wrecked cars and nothing else. It is skips, concrete barriers, pipe bundles, stacked pallets and a few cars now. Not one wall moved: only what is drawn on it changed.',
+  now:'v9.66: the pillager board and the conditions panel were the two largest things on the HUD, not the smallest. The board alone took nearly twice the screen of anything else. Both are smaller than the vitals and the gear panel now.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
