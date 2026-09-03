@@ -804,6 +804,13 @@
        cards below carry their own description and their own measured numbers,
        which is the part he reads. -->
   <div id="sectorlist"></div>
+  <!-- v9.97, HIS NOTE: day or night is chosen here, on the way up. -->
+  <div id="sectorcond" style="display:flex;align-items:center;gap:8px;margin-top:11px">
+    <span style="font-size:11px;letter-spacing:.14em;color:var(--ash)">SURFACE</span>
+    <button class="deploy ghost" id="condday" data-cond="day" style="flex:0 0 auto;padding:7px 18px">DAY</button>
+    <button class="deploy ghost" id="condnight" data-cond="night" style="flex:0 0 auto;padding:7px 18px">NIGHT</button>
+    <span id="condhint" style="font-size:11px;color:var(--ash)"></span>
+  </div>
   <div id="sectorkit" style="margin-top:11px;font-size:11px;padding:8px 10px;
        border:1px solid var(--steel-hi);border-radius:3px"></div>
 
@@ -1220,7 +1227,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.96';
+var VER='9.97';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24963,11 +24970,10 @@ function buildHub(){
     {id:'lift',x:350,y:105,r:48,label:'ENTER RAID!',sub:'to the surface',c:'#4de3d0',
 acts:{KeyE:['go up',function(){
              // v7.42, his order: destination first, then the loadout question.
-             if(offeredCount()>1){ renderSector(); openModal('sectormodal'); }
-             else {
-               if(!mapOffered(FIXED_MAPS[clamp(P.mapIx||0,0,FIXED_MAPS.length-1)])) P.mapIx=firstOfferedMap();
-               askKit();
-             }
+             // v9.97, his note: the sector page carries day or night now, so it
+             // opens every time, even when only one map is offered.
+             if(!mapOffered(FIXED_MAPS[clamp(P.mapIx||0,0,FIXED_MAPS.length-1)])) P.mapIx=firstOfferedMap();
+             renderSector(); openModal('sectormodal');
            }],
            // v6.18: quick ascent means skip the SCREEN, not discard what you packed.
            // This called startRaid directly and never set kitChosen, so the
@@ -26199,7 +26205,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.96: a dose from the bar pays. While Liquor or Blotter is in your blood, every XP you earn pays five percent more per dose, up to the ten the bar allows, on the run and on what you sell. The bar, the conditions row and the sell line all say so.',
+  now:'v9.97: day or night is chosen on the way up. The sector page you see when you take the lift has DAY and NIGHT under the map list, and it opens every time now, even when only one map is on offer.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29530,8 +29536,32 @@ var _myR=0;
       saveProfile(); syncMapBtn(); renderSector();
     };
   }
+  syncSectorCond();
   syncSectorKit();
 }
+// v9.97, HIS NOTE: day or night is chosen on the sector page. The chosen one
+// is drawn the way the chosen map is, amber, so the page reads as one choice
+// of where and one of when.
+function syncSectorCond(){
+  var d=document.getElementById('condday'), nt=document.getElementById('condnight'), hint=document.getElementById('condhint');
+  if(!d||!nt) return;
+  var day=isDay();
+  d.style.borderColor=day?'var(--amber)':''; d.style.color=day?'var(--amber)':'';
+  d.style.background=day?'rgba(255,192,74,.10)':'';
+  nt.style.borderColor=!day?'var(--amber)':''; nt.style.color=!day?'var(--amber)':'';
+  nt.style.background=!day?'rgba(255,192,74,.10)':'';
+  if(hint) hint.textContent=day?'You go up in daylight.':'You go up in the dark.';
+}
+(function(){
+  var bs=[document.getElementById('condday'),document.getElementById('condnight')];
+  for(var i=0;i<bs.length;i++) if(bs[i]) bs[i].onclick=function(){
+    P.cond=(this.getAttribute('data-cond')==='night')?'night':'day';
+    saveProfile(); syncSectorCond();
+    try{ syncCond(); }catch(_sc){}
+    // the ground is baked once per raid, so the next deploy picks up the palette
+    hubGround=null;
+  };
+})();
 // What he is actually taking up there, stated at the last moment he can change it.
 function syncSectorKit(){
   var el=document.getElementById('sectorkit');

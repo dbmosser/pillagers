@@ -5216,6 +5216,42 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.97',what:'day or night is chosen on the sector page, and the lift opens that page every time',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!(window.__hubEnter&&window.__station)) return 'SKIP: this build cannot be driven into the Undercroft';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(); var keepCond=P2.cond; P2.cond='day';
+     __hubEnter();
+     var sm=document.getElementById('sectormodal'), ask=document.getElementById('askmodal');
+     function shut(){ if(sm) sm.classList.remove('on'); if(ask) ask.classList.remove('on'); var st=document.getElementById('stagemodal'); if(st) st.classList.remove('on'); }
+     function done(v){ shut(); P2.cond=keepCond; return v; }
+     shut();
+     // ONE: the lift opens the sector page, whatever the map count.
+     try{ __station('lift'); }catch(e1){ return done('the lift threw: '+e1); }
+     if(!(sm&&sm.classList.contains('on'))){
+       bad.push('taking the lift did not open the sector page'+((ask&&ask.classList.contains('on'))?', it went straight to the loadout question':''));
+       return done(bad.join('; '));
+     }
+     // TWO: the choice is on it, and it works both ways.
+     var d=document.getElementById('condday'), nt=document.getElementById('condnight');
+     if(!d||!nt) return done('the sector page has no DAY and NIGHT buttons');
+     if(!/^DAY$/.test(d.textContent.trim())||!/^NIGHT$/.test(nt.textContent.trim())) bad.push('the buttons read ['+d.textContent.trim()+'] and ['+nt.textContent.trim()+']');
+     nt.click();
+     if(P2.cond!=='night') bad.push('clicking NIGHT left the surface at '+P2.cond);
+     if(typeof isDay==='function'&&isDay()) bad.push('after NIGHT the game still says it is day');
+     var nc=getComputedStyle(nt).borderColor, dc=getComputedStyle(d).borderColor;
+     if(nc===dc) bad.push('after NIGHT the two buttons look the same, so the choice is not shown');
+     d.click();
+     if(P2.cond!=='day') bad.push('clicking DAY left the surface at '+P2.cond);
+     // THREE: the old stash button, while it still exists, stays in step.
+     var cb=document.getElementById('condbtn');
+     if(cb){ nt.click(); if(!/NIGHT/.test(cb.textContent)) bad.push('the stash button did not follow the sector page to NIGHT'); d.click(); }
+     // CONTROL: the sector page still leads to the loadout question.
+     var dep=document.getElementById('sectordeploy');
+     if(dep){ dep.click(); if(!(ask&&ask.classList.contains('on'))&&!document.getElementById('stagemodal').classList.contains('on')) bad.push('control: ASCEND on the sector page no longer leads to the loadout question'); }
+     return done(bad.length?bad.join('; '):null); }},
   {v:'9.96',what:'a dose from the bar pays more XP per dose while it lasts, on the run and on a sale',
    run:function(){
      var bad=[];

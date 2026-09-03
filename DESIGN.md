@@ -40024,6 +40024,43 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.97 - DAY OR NIGHT IS CHOSEN ON THE WAY UP
+
+His note, 2026-09-03: **"day vs. night selection should move to map selection
+screen that occurs upon ascension."**
+
+### Where it was
+
+One button in the stash screen's bottom row, SURFACE: DAY, toggling P.cond. It
+sat beside SHOP, CRAFT and SETTINGS, which is to say nowhere near the decision
+it belongs to.
+
+### Where it is
+
+The sector page, the one the lift opens, has SURFACE, DAY and NIGHT under the
+map list, with the chosen one drawn amber the way the chosen map is, and a
+line that says which you are going up in. The lift opens that page every time
+now. Before this it opened only when more than one map was offered, and with
+one map went straight to the loadout question, so a choice placed on the page
+would have been unreachable for anyone the beta offers one map. The stash
+button stays for this one build and follows the page; it goes with the rest of
+the button row in the next build, which is the stash screen cut.
+
+### Measured
+
+The check takes the lift on a clean profile, requires the sector page to open
+rather than the loadout question, clicks NIGHT and reads P.cond and isDay(),
+requires the two buttons to look different once one is chosen, clicks DAY
+back, requires the old stash button to follow while it exists, and then presses
+ASCEND to prove the page still leads to the loadout question. On v9.96 the
+sector page had no DAY and NIGHT buttons, which is the finding as measured;
+the fixture profile has both maps offered, so the lift opened the page there.
+
+Not verified: the ground palette on the next raid, which is baked once per
+raid off hubGround and was already the case for the old button; the check
+reads the flag, not the paint. Not verified: whether he wants night to be
+harder and pay more, which question 22 asks.
+
 ## v9.96 - A DOSE FROM THE BAR PAYS
 
 His note, 2026-09-03: **"using Liquor or Blotter should give a small XP boost
