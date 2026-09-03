@@ -40024,6 +40024,37 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.45 - THE SPARTAN HELMET AND THE GHOST MASK
+
+His notes, 2026-09-03 about 14:00: **"i want a master chief esque green halo
+helmet as one of the cosmetic options"** and **"ghostface from scream as a
+helmet/head option"**.
+
+Two more on the headgear rack. The Spartan Helmet is a full green helmet over
+the whole head with a gold visor across the eyes and a darker chin guard,
+earned at twenty extracts. The Ghost Mask is a long pale face with black
+hollows for eyes and a mouth and a dark band at the brow, earned for three
+Wardens. Both cover the face, so a beard and any face mark go under them,
+which is the order the headgear branch has always drawn in. They are named
+for what they are rather than for where they came from, since neither name
+is ours to print. Earned, never bought, his answers 15 and 16.
+
+### Measured
+
+The check requires both on the rack and earned, reads the sprite's head
+pixels for each against a bare head and requires a large change, requires
+the helmet to be green and the mask to be pale by counting pixels of those
+colours, puts a full beard on under each and requires it not to show, and
+requires a swatch for each and the mask drawn on the figure; the control is
+that the older visor still draws. On v10.44 neither was on the rack, which is
+the finding.
+
+Not verified: how either reads at raid zoom on his 4K, which is his to say;
+the helmet is the largest thing the head painter has drawn and may need
+trimming at the sides if it crowds the ears. Not verified: whether he wants
+the helmet to be the Spartan green of the reference or a darker olive; it is
+the brighter one.
+
 ## v10.44 - THE FULL CONTROLS LIST IS ON THE SCREEN
 
 His answer 25, 2026-09-03: the controls legend is one of the four HUD things
