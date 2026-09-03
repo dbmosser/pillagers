@@ -40024,6 +40024,88 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.83 - THE CONTROLS LEGEND DID NOT GO WHERE YOU DRAGGED IT
+
+It remembered the drag and then ignored half of it, which is worse than not
+remembering, because the offset was saved to his profile and did nothing forever.
+
+### REPRODUCED WITH THE GESTURE, AT 1920x1080
+Mouse down on the legend's drag bar, move 80 right and 150 up, release:
+
+  what the game stored      dx 78.75, dy -151.2     correct, to the pixel
+  how far the panel moved   120 right, 0 up
+
+Sideways it moved half again as far as the hand. Vertically it did not move at
+all: dy of -300, -60, +60 and +300 all left the panel and its hit box on exactly
+the same pixel row.
+
+I measured the first version of that gesture in a mixed coordinate space and got
+118 instead of 120. The listener does clientX minus the canvas rect, so setting
+mouse.x by hand AND dispatching an event gives two different numbers. Driven
+properly, in the game's own pointer space, on both builds.
+
+### TWO CAUSES, BOTH IN HOW THE DRAG REACHES THE PANEL
+VERTICAL. v8.91 anchors the legend's bottom just above the vitals block so it
+grows upward instead of painting over the health bar, and it does that by
+measuring where the bottom landed last frame and translating the panel so the
+bottom sits on the target. That correction runs every frame, so whatever vertical
+position the panel worked out for itself is cancelled before anyone sees it. The
+dy inside drawLegend never survives a single frame.
+
+HORIZONTAL. drawLegend adds dx in its own unscaled space, and the whole panel is
+then scaled by 1.5 about x=0, so 80 pixels of hand became 120 pixels of panel.
+The thing being dragged slid out from under the cursor dragging it.
+
+### THE FIX
+The drag is recorded in screen pixels, so it is applied in screen pixels: one
+translate outside the zoom, both axes, which is exactly what v9.46 had to do for
+the anchor correction itself. The anchor keeps doing its job and the drag rides
+on top of it rather than fighting it. The dx and dy come out of drawLegend
+entirely, because two places applying the same offset is what made this hard to
+see: each looked correct on its own.
+
+Clamped against last frame's measured rect so at least 70 pixels of panel stay on
+screen, and the clamped value is written back to the profile, so a flick cannot
+save an offset he has no way to undo.
+
+  after, same gesture       80 right, 150 up, to the pixel
+
+### THE CHECK AND ITS TEETH
+Run against a fixture built from v9.82 it fails and names both halves: moved 120
+for 80 sideways, moved 0 for 150 vertically. Against this build it returns null.
+
+Five controls, because almost every way of breaking this passes a naive test: the
+legend must actually draw a box; the v8.91 anchor must still hold its bottom just
+above the vitals, or the fix has traded one fault for a worse one; the drag must
+still be RECORDED as 80,-150, or a build that stopped storing it would move zero
+and match a cursor that never moved; the panel must be CLICKABLE at its new
+middle, which is the exact fault v9.46 found on this same panel; and a 4000 pixel
+drag must not put it off the screen.
+
+### WHAT I LOOKED AT FIRST AND FOUND NOTHING
+Three items I checked before this one, all of which are already correct on this
+build and are recorded so nobody re-treads them:
+
+  rolling in the Undercroft       his report, three times. It WORKS: SPACE sets
+                                  the roll, the operator draws as a disc measuring
+                                  46 by 51 with a fill ratio of 0.78 against a
+                                  perfect circle's 0.785, and he travels 43 units.
+  I in the Undercroft             opens the backpack, not the terminal, and closes
+                                  it again on the same key.
+  the HUD drag offset             named as unknown in my audit notes. Draw and hit
+                                  test agree to the pixel on all five panels at
+                                  1080p, 1440p and 2160p.
+
+### NOT VERIFIED
+The other four panels. The raiders board overshoots by its own zoom in the same
+way the legend did sideways, measured 113 for a 100 pixel drag, and the
+conditions panel barely moves horizontally because it is clamped against the
+right edge it is anchored to. Both are recorded in AUDIT.md as open. This build
+deliberately changes the legend only, because it is the panel that could not be
+moved at all and the one whose anchor made the cause specific to it. Not verified
+either: whether the full list, which H opens, should be draggable. It records no
+hit box at all and never has, and it is a centred overlay rather than a panel.
+
 ## v9.82 - HIS REPORT: NOTHING WOULD COME OFF THE TACTICAL BELT INTO THE BACKPACK
 
 One of his open notes, sitting unreproduced in AUDIT.md. It is real, it is one

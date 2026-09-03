@@ -208,7 +208,7 @@ STILL OPEN:
 | I opens the BACKPACK. Write the matching list of consistent definitions | vocabulary, pairs with pillagers-vocabulary memory |
 | Too many footsteps when sprinting | his report, not yet reproduced |
 | ESC should pause in the Undercroft | |
-| The roll graphic is WRONG in the Undercroft | |
+| ~~The roll graphic is WRONG in the Undercroft~~ | NOT REPRODUCED at v9.83: it draws a disc, fill 0.78 against a circle 0.785, and travels 43 units |
 
 ## HIS NOTES, 2026-09-01 session, live queue
 Shipped v8.79: NEW IN card too small; mouse zoom range; WINDFALL caption;
@@ -230,9 +230,14 @@ OPEN, in the order he sent them:
   hit CADENCE report, not a damage-per-hit report, so measure the interval
   between a crawler's landed hits before touching any damage number.
 - HOTBAR BIGGER, and VISIBLE IN THE UNDERCROFT.
-- I IN THE UNDERCROFT should open the simple inventory, not the stash.
-- ROLL GRAPHIC IN THE UNDERCROFT still wrong: "player doesn't turn into a rolly
-  ball" on space. Third time he has reported this; whatever I fixed was not it.
+- I IN THE UNDERCROFT: NOT REPRODUCED at v9.83. I opens the BACKPACK, not the
+  terminal, and closes it again on the same key. Driven with a real keypress.
+- ROLL GRAPHIC IN THE UNDERCROFT: NOT REPRODUCED at v9.83. Measured on the floor:
+  SPACE sets the roll, the operator draws as a DISC 46x51 with a fill ratio of
+  0.78 against a perfect circle's 0.785, and he travels 43 units. Whatever was
+  wrong when he reported it three times is fixed; v8.70 corrected the phase and
+  v8.83 the pose. If he still sees a figure rather than a ball, it is a different
+  gesture or a different screen and I need to see it.
 - DOWN SCREEN WORDING, his exact replacements:
   "Crawl or bleed out" and
   "You are bleeding out.  Crawl to open extraction point if possible"
@@ -249,9 +254,12 @@ OPEN, in the order he sent them:
   pillager -- intentional? I wanted sound visualization for stuff we couldn't
   see". So: footprint DECALS should be gated on sight; the sound ping is the
   thing that is meant to show through.
-- I IN THE UNDERCROFT still wrong, and ROLLING IN THE UNDERCROFT still broken.
-  Both reported three times now. Whatever I changed before was not it: reproduce
-  on the Undercroft floor itself before touching anything.
+- I AND ROLLING IN THE UNDERCROFT: BOTH CHECKED ON THE FLOOR AT v9.83 AND NEITHER
+  REPRODUCES. I opens the backpack and closes it on the same key. SPACE rolls:
+  the operator draws as a disc 46x51, fill ratio 0.78 against a circle's 0.785,
+  and travels 43 units. He reported these three times and I fixed the roll twice,
+  at v8.70 and v8.83; the second one took. Nothing more to change without seeing
+  what he is seeing.
 
 ## OPEN AND RED, as of v8.88
 - THE UNDERCROFT BELT DRAG. CLOSED AT v9.82. His note: "I don't understand why I
@@ -527,6 +535,9 @@ AND THE SECOND HALF OF THE STRETCH:
 | FINGERPRINT: outdoor cover on the mile, 487 to 484 | v9.77 | deliberate and understood. Cover is placed by asking spotFree against the wall list, and this build keeps three more buildings' interior walls, so three candidate spots are refused. ENTITIES ARE STILL 374, which is the half of the fingerprint that says the seeded stream did not move, and building footprints are identical |
 | STILL OPEN, with names now: the demolition achieves nothing for four buildings | OPEN | 14, 15, 20 and 21 on THE COLD MILE hold unreachable floor at every resolution including 4, so they are not the grid bug, and they are STILL sealed after their interiors are destroyed. The v9.72 finding that the repair does not repair, with four names on it |
 | CLOSED AT v9.79: THE COMPOUND WALLS WERE DRAWN THROUGH THE BUILDINGS | v9.79 | building 14 is 300x220 at 3380,2450 and two landmark walls cross its inside, 3013,2502 550x18 and 3478,2520 18x134, leaving a sealed pocket of 72x124 in a house whose shell has a good door. Building 21 loses 204x124. THE REPAIR PASS COULD NEVER HELP: it only removes walls carrying a building id and a landmark wall carries none, so it guts the house and the room stays shut. Landmark walls are now cut against the INSIDE of any building they cross. MILE 7 demolished to 0 and sealed 14,15,20,21 to NONE; COLD STORAGE 1 to 0 and 17 to NONE; entity counts unchanged; yard walls cut not deleted, 62 pieces to 64. CLOSES THE DEMOLITION THREAD across v9.72, v9.73, v9.77 and v9.79 |
+| THE CONTROLS LEGEND DID NOT GO WHERE YOU DRAGGED IT | v9.83 | REPRODUCED with the gesture at 1920x1080: drag the legend bar 80 right and 150 up and the game stores dx 78.75 dy -151.2 correctly and moves the panel 120 right and 0 UP. It remembered the drag and ignored half of it, so the offset sat in his profile doing nothing forever. TWO CAUSES: vertically, v8.91 pins the legend bottom just above the vitals by measuring last frame and translating, and that correction cancels any dy the panel computes for itself, every frame; horizontally, drawLegend added dx in its own unscaled space and the panel is then scaled 1.5 about x=0, so 80 pixels of hand moved it 120. FIX: the drag is recorded in screen pixels so it is applied in screen pixels, one translate outside the zoom, both axes, riding on top of the anchor instead of fighting it, with dx and dy removed from inside drawLegend. Clamped against last frame's rect to keep 70 pixels on screen and the clamp written back to the profile. After: 80 and -150 exactly. Check fails on a v9.82 fixture naming both halves |
+| STILL OPEN, measured: the raiders board runs ahead of the cursor | OPEN | same family as v9.83 but a different panel: a 100 pixel drag moves the CURRENT PILLAGERS board 113, its own 1.15 zoom, because the offset is applied inside the panel and then scaled. body and gear track 1:1 and are correct. The conditions panel moves only 13 of 40 horizontally because it is anchored to the right edge and clamped against it. Neither is as bad as the legend was, which could not be moved at all |
+| NOTHING FOUND, three of his items are already correct at v9.83 | v9.83 | ROLLING IN THE UNDERCROFT, his report three times: it WORKS. SPACE sets rollT 0.38, the operator draws as a disc 46x51 with fill ratio 0.78 against a perfect circle's 0.785, and he travels 43 units. I IN THE UNDERCROFT: opens the backpack, not the terminal, and closes on the same key. THE HUD DRAG OFFSET applied differently in drawing versus hit testing, named as unknown in the full-file audit notes: draw and hit agree to the pixel on all five panels at 1080p, 1440p and 2160p. The legend fault above is drag versus DRAWING, which is a different pair |
 | HIS REPORT, CLOSED: items would not come off the tactical belt into the backpack | v9.82 | REPRODUCED with the gesture first, at 1920x1080 with a Frag Charge on belt slot 5: the ghost appears so the drag really starts, the release really resolves to kitcol, and NOTHING happens, with no message and no clank, so it reads as a broken drag rather than a refused one. CAUSE, one line: the backpack column handler opens with if(from!=='stash') return, so a drag off the belt arriving as plan:5 is dropped on the floor. IT IS THE MISSING HALF OF v8.72, which made the belt cells drag sources and taught only the STASH to catch what came off them; the same gesture to the stash works today, which proves the gesture and the harness. planPut always pushes into P.kit when it claims a slot, so a belt item is already going up and the backpack list just hides one copy per binding: the move is one thing, release the key, no capacity change. After: key 5 clear, item still in the kit, backpack drawing the cell, counters 1 packed and 0 on keys. The check drives the real gesture and reads BOTH ends off the page before running it; on a v9.81 fixture it fails naming his symptom |
 | MY ERROR, same build: the new check passed alone and SKIPPED in the full run, and I guessed twice | v9.82 | first guess, the belt is drawn TWICE by hotPlanHTML() and hotPlanHTML('stage') so querySelector can take the wrong cell: true, worth fixing, NOT the cause. Second guess, a stale menu zoom: not the cause. MEASURED by running the 86 checks that precede it and dumping the page instead of running it: hub on, viewport 1920x1080 alive, exactly one belt cell at the right place, and the element under its centre is `outcome`. AN EARLIER CHECK LEAVES THE EXTRACTION CARD ON TOP, and showScreen cannot clear it because it only closes .modal.on and the outcome panel is not a modal; the title screen keeps its on class too. Staging now closes stagemodal, sectormodal, outcome, title and pausebox first, takes the cell that is on screen, and the failure message NAMES what is covering the cell instead of saying it could not aim |
 | AND MY FIX FOR IT POISONED THE NEXT CHECK | v9.82 | closing those panels cleared the skip and broke v9.58, which measures the fullscreen button on the title screen and read 0x0 because I had just shut it. The harness poisoning itself in the direction I had not thought about: a check that CLEANS the page owes the same duty as one that dirties it. Every panel this check closes is now recorded before it opens the Undercroft and restored on every path out, skips included |

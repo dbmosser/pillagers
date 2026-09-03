@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.82';
+var VER='9.83';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22289,8 +22289,27 @@ var _slp=w2s(p.x,66,p.y);
     var _legTarget=(HUDBOX.body?HUDBOX.body.y:H)-LH(8);
     var _legUB=(typeof _legAnchorY==='number'&&_legAnchorY>0)?_legAnchorY:_legTarget;
     var _legShift=_legTarget-_legUB;
+    // v9.83: AND HIS DRAG RIDES ON TOP OF THE ANCHOR. The anchor above forces
+    // the legend's bottom onto its target every frame, so any vertical position
+    // the panel worked out for itself was cancelled before it could be seen: the
+    // legend could be dragged sideways and not up or down at all. The drag is
+    // recorded in screen pixels, so it is applied here in screen pixels, outside
+    // the zoom, which is the same thing v9.46 had to do for the correction
+    // itself. Sideways too: applied inside, dx was multiplied by the 1.5 zoom
+    // and 80 pixels of hand moved the panel 118.
+    var HOL=hudOff('legend');
+    var _legDX=HOL.dx||0,_legDY=HOL.dy||0;
+    if(_legBase){
+      // Keep a grabbable strip on screen, measured against last frame's rect,
+      // which is the same one-frame lag the anchor already runs on. Written back
+      // so a drag off the edge cannot save a number he can never undo.
+      var _legKeep=70;
+      _legDX=clamp(_legDX,-(_legBase.x+_legBase.w-_legKeep),W-_legBase.x-_legKeep);
+      _legDY=clamp(_legDY,-(_legBase.y+_legBase.h-_legKeep),H-_legBase.y-_legKeep);
+      if(P.hud&&P.hud.legend){ P.hud.legend.dx=_legDX; P.hud.legend.dy=_legDY; }
+    }
     ctx.save();
-    ctx.translate(0,_legShift);          // put its bottom on the target
+    ctx.translate(_legDX,_legShift+_legDY);   // bottom on the target, plus his drag
     hudZoomIn('legend',0,_legTarget);    // then grow upward from there
     drawLegend();
     ctx.restore();
@@ -22311,8 +22330,13 @@ var _slp=w2s(p.x,66,p.y);
       // against a screen position, so every frame's correction was wrong by the
       // zoom factor and the panel never settled onto its target.
       _legAnchorY=_lz.y+_lz.h;
-      _lz.y+=_legShift;
-      if(_lz.tg) _lz.tg={x:_lz.tg.x,y:_lz.tg.y+_legShift,w:_lz.tg.w,h:_lz.tg.h};
+      // Where the panel sits with the anchor applied and his drag NOT applied.
+      // The clamp above measures against this, so dragging never feeds back into
+      // its own limit.
+      _legBase={x:_lz.x,y:_lz.y+_legShift,w:_lz.w,h:_lz.h};
+      _lz.x+=_legDX;
+      _lz.y+=_legShift+_legDY;
+      if(_lz.tg) _lz.tg={x:_lz.tg.x+_legDX,y:_lz.tg.y+_legShift+_legDY,w:_lz.tg.w,h:_lz.tg.h};
       HUDBOX.legend=_lz;
     }
   }
@@ -22827,7 +22851,7 @@ function hudCursor(part,x,y){
 // records for the mouse, so it rises into the gap above the vitals instead of
 // being lifted off the bottom of the screen into the pillager board. Null on the
 // first frame only, which anchors that one frame to the screen bottom.
-var _legAnchorY=null;
+var _legAnchorY=null,_legBase=null;
 // v8.81: AND THE SCREEN ITSELF COUNTS. Everything above is in pixels chosen at
 // 1080p, so the HUD was the same absolute size on a 4K panel and therefore half
 // the relative size. This multiplies every corner block by how much bigger the
@@ -23085,7 +23109,9 @@ function drawLegend(){
   // The collapse click and the H key are two doors to the same room: c forces
   // the one-line hint whatever mode H last chose, and clicking it reopens.
   if(HOl.c){
-    var _lx=clamp(14+HOl.dx,4,Math.max(4,W-LH(90))),_ly=clamp(H-14+HOl.dy,LH(14),H-4);
+    // v9.83: no offset here. The drag is applied as a screen translate around
+    // the whole panel, so adding it again would move the collapsed line twice.
+    var _lx=clamp(14,4,Math.max(4,W-LH(90))),_ly=clamp(H-14,LH(14),H-4);
     ctx.font=MONO; ctx.fillStyle='rgba(140,152,163,.55)';
     ctx.fillText('controls  [+]',_lx,_ly);
     HUDBOX.legend={x:_lx-4,y:_ly-LH(11),w:LH(90),h:LH(15),
@@ -23105,8 +23131,11 @@ function drawLegend(){
     // 118, not 96: the health panel below is about 100 tall and 96 left the
     // legend sitting 12 pixels inside it. Measured, not guessed.
     var mx=14,my=H-Math.max(LH(64),Math.round(104*(HUDZ.body||1))+14)-MH;
-    mx=clamp(mx+HOl.dx,4,Math.max(4,W-MW-4));
-    my=clamp(my+HOl.dy,LH(14),Math.max(LH(14),H-MH-4));
+    // v9.83: no offset here either. dx was added in this unscaled space and then
+    // multiplied by the panel zoom, and dy was cancelled by the bottom anchor a
+    // frame later. Both now ride outside the zoom with the anchor.
+    mx=clamp(mx,4,Math.max(4,W-MW-4));
+    my=clamp(my,LH(14),Math.max(LH(14),H-MH-4));
     ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(mx-8,my-6,MW,MH+10);
     ctx.strokeStyle='rgba(127,146,216,.40)'; ctx.lineWidth=1;
     ctx.strokeRect(mx-7.5,my-5.5,MW-1,MH+9);
@@ -26061,7 +26090,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.82: your report, items would not come off the tactical belt into the backpack. The drag started and the release landed in the right place and nothing happened, with no message either, because the backpack was written to accept things from the stash and nothing else.',
+  now:'v9.83: the controls legend goes where you drag it. It was remembering the drag and ignoring half of it: sideways it moved half again as far as your hand, and up or down it did not move at all, because the panel is pinned above the health bar and that pin was cancelling you every frame.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

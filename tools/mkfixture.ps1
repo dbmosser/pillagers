@@ -5196,6 +5196,96 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.83',what:'the controls legend goes exactly where you drag it, in both axes',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, so no drag can be aimed';
+     if(!(window.__hudBox&&window.__hudHit&&window.__mouse))
+       return 'SKIP: this build cannot report its hit boxes';
+     __pinDPR(1); __forceSize(1920,1080);
+     __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid to draw a HUD into';
+     var keepLeg=g.legendOn; g.legendOn=1;
+     var P2=__P(), keepHud=P2.hud; P2.hud={};
+     var cv=document.querySelector('canvas');
+     if(!cv) return 'SKIP: no canvas';
+     var R=cv.getBoundingClientRect();
+     // The panel anchors off LAST frame's measurement, so one frame proves
+     // nothing. The whole point of this check is a loop that runs every frame.
+     function settle(){ for(var f=0;f<12;f++) __frame(0.016); }
+     // Drive it in the game own pointer space: the listener does
+     // clientX-rect.left, so an offset from the canvas corner IS mouse.x. Setting
+     // mouse.x by hand AND dispatching gives two different numbers and I measured
+     // a contaminated figure that way once already today.
+     function ev(t,gx,gy){
+       cv.dispatchEvent(new MouseEvent(t,{bubbles:true,clientX:R.left+gx,clientY:R.top+gy,button:0}));
+     }
+     function grab(){
+       var B=__hudBox().legend; if(!B) return null;
+       var h=(B.tg&&B.tg.h)?B.tg.h:14;
+       var y=(B.tg&&B.tg.y<B.y)?B.tg.y:B.y;
+       return {x:B.x+B.w/2,y:y+h/2};
+     }
+     function drag(dx,dy){
+       var G2=grab(); if(!G2) return false;
+       ev('mousemove',G2.x,G2.y); ev('mousedown',G2.x,G2.y);
+       ev('mousemove',G2.x+dx,G2.y+dy); ev('mouseup',G2.x+dx,G2.y+dy);
+       settle(); return true;
+     }
+     function fin(v){
+       P2.hud=keepHud; g.legendOn=keepLeg; settle();
+       return v;
+     }
+     settle();
+     var b0=__hudBox().legend;
+     // CONTROL ONE: it has to be drawn, with a real box, or every number below is
+     // measured against nothing.
+     if(!b0||!(b0.w>40&&b0.h>40))
+       return fin('SKIP: the compact legend drew no usable box');
+     // CONTROL TWO: the anchor still does its job with no drag applied. v8.91
+     // pins the legend bottom just above the vitals so it cannot paint over the
+     // health bar, and this build moves the drag OUT of the panel and on top of
+     // that anchor. If the anchor broke, the fix traded one fault for a worse one.
+     var body=__hudBox().body;
+     if(body&&Math.abs((b0.y+b0.h)-body.y)>26)
+       bad.push('with no drag the legend bottom sits at '+Math.round(b0.y+b0.h)+
+                ' against the vitals top at '+Math.round(body.y)+', so the anchor is broken');
+     // THE FINDING. Measured on v9.82: a drag of 80 right and 150 up moved the
+     // panel 120 right and 0 up, while the game stored 80 and -150 correctly. It
+     // remembered the drag and ignored half of it. Sideways the offset was added
+     // inside the panel and then multiplied by its 1.5 zoom; vertically the
+     // bottom anchor cancelled it every frame.
+     if(!drag(80,-150)) return fin('SKIP: no drag bar to grab');
+     var b1=__hudBox().legend;
+     var mx=b1.x-b0.x, my=b1.y-b0.y;
+     var st=P2.hud.legend||{};
+     // CONTROL THREE: the drag was RECORDED. A build that stopped storing the
+     // offset would move the panel zero and match a cursor that never moved.
+     if(Math.round(st.dx||0)!==80||Math.round(st.dy||0)!==-150)
+       bad.push('control: the drag stored '+Math.round(st.dx||0)+','+Math.round(st.dy||0)+
+                ' rather than 80,-150, so the gesture never reached the panel');
+     if(Math.abs(mx-80)>2)
+       bad.push('dragging the legend 80 right moved it '+Math.round(mx)+
+                ', so the panel does not follow the hand sideways');
+     if(Math.abs(my+150)>2)
+       bad.push('dragging the legend 150 up moved it '+Math.round(my)+
+                ', so the panel does not follow the hand vertically');
+     // CONTROL FOUR: and it is CLICKABLE where it now sits. Moving the paint
+     // without moving the hit box is the exact fault v9.46 found on this panel.
+     var hitC=__hudHit(b1.x+b1.w/2,b1.y+b1.h/2);
+     if(!hitC||hitC.id!=='legend')
+       bad.push('after the drag the middle of the legend answers ['+(hitC?hitC.id:'nothing')+
+                '], so it is drawn in one place and clickable in another');
+     // CONTROL FIVE: it cannot be thrown off the screen. The drag records raw
+     // pointer deltas, so without a limit one flick saves an offset to his
+     // profile that he can never undo.
+     drag(4000,4000);
+     var b2=__hudBox().legend;
+     if(b2.x>1920-40||b2.y>1080-40||b2.x+b2.w<40||b2.y+b2.h<40)
+       bad.push('a 4000 pixel drag left the legend at '+Math.round(b2.x)+','+Math.round(b2.y)+
+                ', which is off the screen with no way back');
+     return fin(bad.length?bad.join('; '):null); }},
   {v:'9.82',what:'an item drags off the tactical belt into the backpack, and to the stash',
    run:function(){
      var bad=[];
