@@ -5221,6 +5221,30 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.23',what:'no two station names on the Undercroft floor overlap, and every name is on the screen',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!(window.__hubEnter&&window.__textTrace&&window.__hubFrame)) return 'SKIP: this build cannot trace the floor';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __hubEnter(); for(var f=0;f<10;f++) __hubFrame(0.016);
+     var tr=__textTrace(function(){ __hubFrame(0.016); });
+     var names=['DISCOUNT FASHION DEPOT','DEV CHEAT BOX','THE STASH','SHOP, CRAFT, AND HIRE','THE LAST POUR','THE MAINFRAME','WIRT THE GAMBLER','SETTINGS','DEV BOX'];
+     var got={};
+     for(var i=0;i<tr.length;i++){ var d=tr[i]; if(names.indexOf(String(d.t))>=0) got[d.t]={x:d.x-d.w/2,y:d.y-d.px,w:d.w,h:d.px*1.15}; }
+     if(!got['DISCOUNT FASHION DEPOT']) return 'SKIP: the Depot is not on the floor';
+     if(!got['DEV CHEAT BOX']) return 'SKIP: the cheat box is not on this floor (it shows on localhost only)';
+     function hit(a,b){ return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y; }
+     var keys=Object.keys(got);
+     // THE FINDING. On v10.22 the Depot's name ran into the cheat box's.
+     for(var a=0;a<keys.length;a++) for(var b=a+1;b<keys.length;b++) if(hit(got[keys[a]],got[keys[b]])) bad.push(keys[a]+' runs into '+keys[b]);
+     for(var k in got){ var r=got[k]; if(r.x<0||r.x+r.w>W||r.y<0||r.y+r.h>H) bad.push(k+' is off the screen at '+Math.round(r.x)+','+Math.round(r.y)); }
+     // CONTROL: the Depot still opens from where it stands.
+     var rr=null; try{ rr=__station('mirror'); }catch(e1){ rr={err:String(e1)}; }
+     var md=document.getElementById('appearmodal');
+     if(!rr||rr.err||!(md&&md.classList.contains('on'))) bad.push('control: the Depot did not open');
+     var cl=document.getElementById('closeappear'); if(cl) cl.click();
+     return bad.length?bad.join('; '):null; }},
   {v:'10.22',what:'the menu size never goes below 1.0, on the wheel, the Settings steps or the saved profile, and the wheel says what it did',
    run:function(){
      var bad=[];

@@ -40024,6 +40024,38 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.23 - THE DEPOT AND THE CHEAT BOX NO LONGER SHARE A NAME PLATE
+
+His note, 2026-09-03 about 17:20: **"in the undercroft, 'discount fashion
+depot' text needs to be lower so that it doesn't run into the Dev Cheat Box
+text"**.
+
+### Measured
+
+At 1080p the floor draws DISCOUNT FASHION DEPOT at (685, 813), 569 wide,
+and DEV CHEAT BOX at (402, 790), 336 wide: twenty-three pixels apart in
+height with plates thirty-six tall, and overlapping from 400 to 570. Station
+names are drawn above their stations, and the Depot stands at (230, 400) on
+a floor whose bottom wall begins at 450, so its name cannot go lower without
+standing in the wall; his fix as worded does not fit the room.
+
+### Now
+
+A station can carry its name under it instead of over it. The cheat box, the
+dev-only station beside the Depot, does: its name sits under its circle,
+inside the floor with room to spare, and the two names are ninety-one units
+apart. The Depot's name stays where every other station's is.
+
+### Measured again
+
+The check traces every station name on the floor with the cheat box present
+and requires no two to intersect and every one on the screen; the control is
+the Depot still opening. On v10.22 the Depot's name ran into the cheat box's,
+which is the finding.
+
+Not verified: the cheat box's name under it at 4K by eye; it is the same
+plate at the same scale as every other name, ten units further down.
+
 ## v10.22 - THE MENU SIZE NEVER GOES BELOW THE SCREEN, AND THE WHEEL SAYS WHAT IT DID
 
 His note, 2026-09-03 about 17:25, with a screenshot of THE STASH on his 4K
