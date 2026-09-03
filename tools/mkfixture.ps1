@@ -5067,6 +5067,89 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.64',what:'the pillager board is ranked by what each man is carrying',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(!window.__textTrace) return 'SKIP: this build cannot report the text it drew';
+     __pinDPR(1); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __forceSize(1920,1080);
+     // Reads the ORDER THE GAME DREW, pairing each name with the value drawn on
+     // the same row. The board is the only place this is visible, and reading the
+     // roster array instead would have graded my own sort rather than the screen.
+     function board(dial){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       if(dial!==undefined) __cfg({boardRank:dial});
+       var g=__state(), p=g.player, i;
+       p.iv=9999; p.downed=false;
+       // KNOWN HAULS, ASCENDING IN ROSTER ORDER, so a board still in spawn order
+       // reads exactly backwards and cannot be mistaken for a sorted one.
+       var live=[];
+       for(i=0;i<g.roster.length;i++){
+         var r=g.roster[i];
+         if(r.ref&&g.ents.indexOf(r.ref)>=0&&!r.out) live.push(r);
+       }
+       var want=Math.min(8,live.length);
+       for(i=0;i<want;i++){
+         live[i].ref.bag=[];
+         for(var q=0;q<=i;q++) live[i].ref.bag.push('medkit');
+       }
+       for(var f=0;f<3;f++) __loop(performance.now()+f*16.7);
+       var draws=__textTrace(function(){ __frame(0.016); });
+       var byY={};
+       for(i=0;i<draws.length;i++){
+         var d=draws[i];
+         if(d.x>500) continue;                       // the board sits on the left
+         var k=Math.round(d.y);
+         if(!byY[k]) byY[k]={left:null,right:null};
+         if(d.align==='right') byY[k].right=d.t;
+         else if(byY[k].left===null) byY[k].left=d.t;
+       }
+       var rows=[];
+       Object.keys(byY).map(Number).sort(function(a,b){return a-b;}).forEach(function(k){
+         var r3=byY[k];
+         if(!r3.left||!r3.right) return;
+         if(/CURRENT PILLAGERS/.test(r3.left)) return;   // the header, not a row
+         var m=/\$([\d,]+)/.exec(r3.right);
+         rows.push({name:r3.left, val:m?+m[1].replace(/,/g,''):0});
+       });
+       return {rows:rows, readBack:__cfg().boardRank, live:live.length};
+     }
+     var on=board(1), off=board(0);
+     if(on.rows.length<5||off.rows.length<5)
+       return 'SKIP: the board drew only '+on.rows.length+' readable rows, too few to judge an order';
+     // CONTROLS FIRST. The dial has to be live, and the off arm has to reproduce
+     // the old arbitrary order, or a green result here is about neither.
+     if(on.readBack!==1||off.readBack!==0)
+       bad.push('control: the dial did not read back, on='+on.readBack+' off='+off.readBack);
+     var offSorted=true;
+     for(var i2=2;i2<off.rows.length;i2++) if(off.rows[i2].val>off.rows[i2-1].val){ offSorted=false; break; }
+     if(offSorted)
+       bad.push('control: with ranking switched off the board came back in value order anyway, '+
+                'so this check is not measuring the sort');
+     // YOU STAYS PINNED. His ruling at v3.53, and this build does not reopen it.
+     if(on.rows[0].name!=='YOU')
+       bad.push('the first row is '+on.rows[0].name+' rather than YOU');
+     // THE FINDING. His instruction: "rank pillagers with the one with the most
+     // value inventory at the top". Measured on v9.63 the board came back in
+     // SPAWN order, which on the mile meant the ten men carrying the least were
+     // shown and the richest were hidden behind the more-out-here line.
+     var wrong=[];
+     for(i2=2;i2<on.rows.length;i2++){
+       if(on.rows[i2].val>on.rows[i2-1].val)
+         wrong.push(on.rows[i2-1].name+' $'+on.rows[i2-1].val+' above '+on.rows[i2].name+' $'+on.rows[i2].val);
+     }
+     if(wrong.length)
+       bad.push('the board is not ranked by haul: '+wrong.slice(0,3).join('; '));
+     // AND THE RICHEST MAN IS ON IT, which is the whole point of ranking a list
+     // that has a ceiling. A sort nobody can see because the top row is cut off
+     // would satisfy the test above.
+     var best=0;
+     for(i2=1;i2<on.rows.length;i2++) if(on.rows[i2].val>best) best=on.rows[i2].val;
+     if(on.rows.length>2&&on.rows[1].val!==best)
+       bad.push('the top pillager row shows $'+on.rows[1].val+' while $'+best+' is further down');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.63',what:'a pillager you cannot see, shooting, leaves a red mark you can',
    run:function(){
      var bad=[];

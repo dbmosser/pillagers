@@ -39702,3 +39702,62 @@ pillager mark is now the brighter `#ff3b30`, but two reds on one screen is a
 distinction he may not want to have to make. Not verified: the case where the
 shooter is off the edge of the screen entirely, which is the edge arrow's job and
 which this build does not touch.
+
+## v9.64 - THE PILLAGER BOARD IS RANKED BY WHAT EACH MAN IS CARRYING
+
+His instruction: **"in the current pillagers menu, rank pillagers with the one
+with the most value inventory at the top, make them reorganize in real time if
+one pillager's inventory jumps anothers."**
+
+The board was in **roster order**, which is the order the map happened to spawn
+them in and carries no information at all. The value column was already there and
+already live: `r.val` is recomputed every frame for anyone still out there, so
+the numbers were right and their arrangement was arbitrary.
+
+### Why the order matters more than it looks
+
+The board has had a ceiling since v9.49, and on THE COLD MILE there are 33
+pillagers against about a dozen rows of space. Measured, same seed, same hauls,
+reading the order the game actually drew:
+
+| | the board reads |
+| --- | --- |
+| **v9.63** | YOU, $210, $420, $420, $840, $1050, $1260, $1470, $1680... |
+| **v9.64** | YOU, $5370, $3240, $2870, $2760, $2125, $2090, $2060... |
+
+**It was showing the men carrying the least and hiding the richest behind "+22
+more out here."** Sorted, the dozen it shows are the dozen worth crossing the map
+for, and the line underneath stops being an apology and becomes a fact about the
+tail.
+
+**Real time came free**, and that is worth saying because it is the half of his
+instruction that needed no code: the board is rebuilt from scratch every frame
+off the live bag values, so sorting it here IS sorting it live. The moment one
+man's haul passes another's, the next frame has them the other way round.
+
+**Ties break on name**, which is not decoration. Thirty men carrying nothing is
+the normal state of this board at the start of a raid, and an unstable sort over
+thirty equal keys makes it flicker every frame. Name is arbitrary but constant.
+
+**YOU stays pinned at the top.** He asked about that directly at v3.53, "does
+that include the player?", and the answer shipped as a permanent first row. He
+has not reopened it, so his old ruling stands over my reading of this one.
+
+### And the what-is-new card was fifteen builds behind
+
+Caught by the v9.19 check inside this same build: *"the what-is-new card is at
+v9.49 against a build at v9.64"*. Not something this build broke - the drift
+threshold simply crossed - but the card had been stale since v9.50, and **almost
+everything it was failing to mention is work he asked for by name**: the
+interface not scaling on his 4K monitor, the Listener he could not outrun, the
+downed screen he called messy, the bandage ceiling, the mark for a pillager
+shooting at him from cover. The one card whose whole job is to tell him what
+changed was the one thing not telling him. Rewritten to the ten that matter.
+
+Not verified: how the reordering reads in motion. The measurement is two static
+frames with known hauls, and his instruction says the board should reorganise as
+one haul passes another; I have proved the order is correct on any given frame
+and that the input is live, not that the movement between frames looks like
+anything but a jump. Not verified: whether pinning YOU first is still what he
+wants now that the rest is ranked. His v3.53 ruling says yes and I have not
+reopened it, but he may have meant the whole list.
