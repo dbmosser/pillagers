@@ -1234,7 +1234,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.07';
+var VER='10.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1673,7 +1673,7 @@ var TAGS=['Felt great','Too easy','Too hard','Too dark',
   // v5.72: the two music tags went where the music went. These two are the live
   // unknowns instead: the Listener teaching was rewritten at v5.60 and nobody
   // has tested it on a human, and the Choir has never been fought at all.
-  'Listener beatable','Listener unfair','Organ worth it','Organ a chore',
+  'Listener beatable','Listener unfair','Pillbox worth it','Pillbox a chore',
   'Bulwark great','Bulwark unfair',
   'Howler great','Howler unfair','Pillagers felt human','Pillagers felt dumb',
   'Extract too easy','Extract too tense','Loot boring','Loot exciting',
@@ -6710,7 +6710,7 @@ var WEAKPTS={
   // THE CHOIR, v5.52. It cannot move, so both openings are reachable by
   // POSITIONING rather than by outrunning it, which is the only skill it tests.
   choir:[
-    {id:'mouth',name:'ORGAN MOUTH', ang:0,       rf:0.66, rad:10, mult:2.4, eff:'overheat', c:'#ff8a3c'},
+    {id:'mouth',name:'PILLBOX SLIT', ang:0,       rf:0.66, rad:10, mult:2.4, eff:'overheat', c:'#ff8a3c'},
     {id:'spine',name:'DORSAL SPINE',ang:Math.PI, rf:0.60, rad:12, mult:3.6, eff:'overheat', c:'#e0a0ff'}
   ]
 };
@@ -7567,7 +7567,7 @@ var CHOIR_HP=1250, CHOIR_RNG=520;
 function mkChoir(x,y){
   var _chp=Math.round(CHOIR_HP*CFG.eHp);
   return {kind:'choir',x:x,y:y,r:26,hp:_chp,maxhp:_chp,
-    name:mkName('ORGAN',['A','M','R','V']),
+    name:mkName('PILLBOX',['A','M','R','V']),   // v10.08, his answer 47: renamed from ORGAN
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,homeX:x,homeY:y,
     cd:0,alert:0,spd:0,dmg:22,rng:CHOIR_RNG,cone:6.2832,
     hitT:0,seenYou:false,windup:0,overheat:0,sang:0};
@@ -14718,7 +14718,7 @@ if(e.state==='possum'){
         var cq=setLoot(mkContainer(e.x,e.y,'cache'),
           [pick(['relay','codex','bloom']),pick(['titan','core','coil']),
            pick(['gun_whisper','gun_lance']),'servo']);
-        cq.cache=1; cq.time=2.4; cq.tag='ORGAN WRECK'; G.containers.push(cq);
+        cq.cache=1; cq.time=2.4; cq.tag='PILLBOX WRECK'; G.containers.push(cq);
         say(e.name+' has stopped singing.');
         decal(e.x,e.y,'#2a1a3a',rnd(28,40));
       } else if(e.kind==='raider'&&(e.bag.length||(e.wep&&e.wep.id&&ITEMS['gun_'+e.wep.id]))){
@@ -15132,7 +15132,7 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
       var _cd2=dist(e,p);
       // It sings once when you first come inside its reach: the telegraph his
       // Q32 asks for, and the only warning you get.
-      if(_cd2<e.rng&&!e.sang){ e.sang=1; if(!G.sim){ say('THE ORGAN HAS SEEN YOU.'); sfx('dish',e.x,e.y); } }
+      if(_cd2<e.rng&&!e.sang){ e.sang=1; if(!G.sim){ say('THE PILLBOX HAS SEEN YOU.'); sfx('dish',e.x,e.y); } }
       if(_cd2>e.rng*1.25) e.sang=0;
       if(sees&&_cd2<e.rng){
 
@@ -26283,7 +26283,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.07: crouch and sprint are toggles. One press of CTRL or C crouches, the next stands you up; one press of SHIFT sprints, the next walks, and running out of breath walks you too. Aim down sights on RMB is still a hold.',
+  now:'v10.08: the Organ is the Pillbox. Same machine, bolted to the ground over a cache, firing in every direction to fifty metres; a name that says what it is. Its guns are its slits and what it leaves is a pillbox wreck.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30147,7 +30147,7 @@ var PRIMER=[
   ['A purple ring means elite','About one machine or pillager in twelve is elite: twice the health, harder hits, a purple ring at its feet, and a deeper bag when it falls. The colour is the same purple the loot pips use for elite, on purpose.'],
   ['A hired merc is a partner now','Hire one at the Bench. B cycles his orders, loot free, follow you, or hold a spot. Stand with him and E searches his bag; drag an item from yours onto him and he will actually use it. Go down and he comes for you.'],
   ['The Undercroft has a radio','Three 16-bit pieces play down here, one picked at random each time you come back. The surface is deliberately silent, and there is no setting that changes that. The Music row in Settings is UNDERCROFT or OFF.'],
-  ['One thing out there does not chase you','The Organ. It is bolted to the ground on top of a cache and it never takes a step, but it fires in every direction for about fifty metres. Stand outside that and it cannot touch you. It is not a fight you have to take; it is a question about whether the cache is worth it.'],
+  ['One thing out there does not chase you','The Pillbox. It is bolted to the ground on top of a cache and it never takes a step, but it fires in every direction for about fifty metres. Stand outside that and it cannot touch you. It is not a fight you have to take; it is a question about whether the cache is worth it.'],
   ['The HUD is yours to arrange','The pillager list, the conditions box and the key legend all collapse on their corner glyph and drag anywhere. Positions stick between raids.'],
 ['The Bulwark carries a wall','The big one with the slab. Shooting the slab is close to useless: it eats almost everything and all the noise you make doing it brings company. Its back is soft and it is marked, a hot orange seam you can see from across a street. It walks at you and never stops, so the fight is a circle, not a duel. Or leave it. It is slower than you are.'],
   ['Some contracts judge how you played','Most contracts count things: kill six, open five, carry two out. Some instead set a condition on the whole raid. Walk out without a single heal. Leave without killing anything. Be gone inside three minutes. They pay well because they take away the thing you would normally reach for, and they are only banked if you actually extract.'],

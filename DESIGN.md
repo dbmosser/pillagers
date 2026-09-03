@@ -40024,6 +40024,35 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.08 - THE ORGAN IS THE PILLBOX
+
+His answer 47, 2026-09-03, an unrelated note at the end of it: **"RENAME THE
+ORGAN"**.
+
+The machine is the emplacement bolted to the ground over a cache that fires in
+every direction to about fifty metres: kind 'choir' in the code, ORGAN to the
+player, with ORGAN MOUTHs for its guns and an ORGAN WRECK for what it leaves.
+He did not say what to. The word has to say what the thing is at a glance,
+which ORGAN never did; a PILLBOX is a fixed gun emplacement you cannot walk up
+to, which is exactly this. Its guns are its SLITS, what it leaves is a PILLBOX
+WRECK, the line when it sees you is THE PILLBOX HAS SEEN YOU, the guide card
+says the Pillbox, and the two feeling tags say Pillbox. The code's kind stays
+'choir', so nothing that reads it moves.
+
+### Measured
+
+The check builds the machine through its own maker and reads its name, reads
+the guide cards and the feeling tags as data for the old word, then stands
+one beside the operator in a real raid and drives the loop until it speaks,
+and requires PILLBOX in the line and not the old word. The control is that
+the kind is unchanged. On v10.07 the machine is named ORGAN and says THE
+ORGAN HAS SEEN YOU, which is the finding.
+
+Not verified: his own older exports, which carry "Organ worth it" as a tag
+name and will not match the new tag; the recorder keeps whatever string the
+run was tagged with, so nothing breaks, but the two spellings will sit side
+by side in the tag totals until the old runs age out.
+
 ## v10.07 - CROUCH AND SPRINT ARE TOGGLES
 
 His answers 33, 34 and 35, 2026-09-03: crouch on CTRL and C, **TOGGLE**; aim

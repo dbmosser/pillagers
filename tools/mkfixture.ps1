@@ -5221,6 +5221,42 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.08',what:'the Organ is the Pillbox on every surface that names it',
+   run:function(){
+     var bad=[];
+     if(typeof mkChoir!=='function') return 'SKIP: no emplacement in this build';
+     // Needles from halves: this page embeds the source it tests.
+     var OLD=['OR','GAN'].join(''), OLDL=['Or','gan'].join('');
+     function isWord(text,w){ return new RegExp('(^|[^A-Za-z])'+w+'([^A-Za-z]|$)').test(String(text||'')); }
+     // ONE: the machine's own name, its guns, its wreck and its line.
+     var e=mkChoir(100,100);
+     if(!/^PILLBOX/.test(String(e.name))) bad.push('the emplacement is named ['+e.name+']');
+     var src=[];
+     try{ src.push(JSON.stringify((typeof WEAKPTS!=='undefined')?WEAKPTS:{})); }catch(_e1){}
+     // The guide card and the feeling tags are read as data.
+     var cards=(typeof PRIMER!=='undefined')?JSON.stringify(PRIMER):'';
+     var tags=(typeof TAGS!=='undefined')?JSON.stringify(TAGS):'';
+     if(!cards||!tags) bad.push('this fixture could not read the guide cards or the feeling tags');
+     if(cards&&isWord(cards,OLDL)) bad.push('a guide card still says '+OLDL);
+     if(tags&&isWord(tags,OLDL)) bad.push('a feeling tag still says '+OLDL);
+     // TWO: what the raid says when it sees you. Drive the emplacement's own
+     // sighting line through the real loop.
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var p=g.player; p.iv=99; p.hp=100000; p.maxhp=100000;
+     g.ents.length=0;
+     var C=mkChoir(p.x+200,p.y); g.ents.push(C);
+     window.__lastSay=null; g.msg='';
+     for(var f=0;f<12;f++) __loop(performance.now()+f*16.7);
+     var said=String(g.msg||window.__lastSay||'');
+     if(!said) return bad.length?bad.join('; '):'SKIP: the emplacement said nothing when it saw him';
+     if(isWord(said.toUpperCase(),OLD)) bad.push('the sighting line still says '+OLD+': ['+said+']');
+     if(!/PILLBOX/.test(said)) bad.push('the sighting line does not say PILLBOX: ['+said+']');
+     // CONTROL: the machine is still the machine. Kind unchanged, guns present.
+     if(C.kind!=='choir') bad.push('control: the kind moved, nothing that reads it will find it');
+     var wp=(typeof weakPtsFor==='function')?weakPtsFor(C):null;
+     return bad.length?bad.join('; '):null; }},
   {v:'10.06',what:'a night raid pays 1.2 times the XP, and the run record knows it was night',
    run:function(){
      var bad=[];
