@@ -5221,6 +5221,59 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.15',what:'a downed pillager crawls for cover you cannot see him behind',
+   run:function(){
+     var bad=[];
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var p=g.player; p.iv=99; p.hp=100000; p.maxhp=100000;
+     var R=null;
+     for(var i=0;i<g.ents.length;i++){ var e=g.ents[i]; if(e.kind==='raider'&&!e.merc){ R=e; break; } }
+     if(!R) return 'SKIP: no pillager on this map and seed';
+     g.ents.length=0; g.ents.push(R);
+     // A downed man beside an interior wall, in the player's sight, with a hiding
+     // place he can reach within two body lengths. The first draft of this check
+     // stood him beside the map's border, a 3400 unit slab with nothing to hide
+     // behind, and blamed the game.
+     var W=g.map.walls||[], spot=null;
+     for(var w=0;w<W.length&&!spot;w++){
+       var wl=W[w]; if(!wl||wl.w<40||wl.h<40||wl.w>420||wl.h>420||wl.furn) continue;
+       var cx=wl.x-40, cy=wl.y+wl.h/2, px=wl.x-260, py=cy;
+       if(cx<40||px<40) continue;
+       p.x=px; p.y=py; if(typeof refreshVseg==='function') refreshVseg();
+       if(!losClear(px,py,cx,cy,g.vseg)) continue;
+       var hid=false;
+       for(var _r=70;_r<=140&&!hid;_r+=70) for(var _a=0;_a<8&&!hid;_a++){
+         var th=Math.atan2(cy-py,cx-px)+_a*0.7854, hx=cx+Math.cos(th)*_r, hy=cy+Math.sin(th)*_r;
+         if(losClear(cx,cy,hx,hy,g.vseg)&&!losClear(px,py,hx,hy,g.vseg)) hid=true;
+       }
+       if(hid) spot={rx:cx,ry:cy,px:px,py:py};
+     }
+     if(!spot) return 'SKIP: no interior wall with a hiding place beside it was found on this map';
+     function stage(){
+       p.x=spot.px; p.y=spot.py; R.x=spot.rx; R.y=spot.ry; R.hostile=true; R.roll=0; R.finished=false;
+       R.downed=1; R.downT=16; R.hp=50; R.maxhp=R.maxhp||100; R.state='chase'; R.crawlTo=null; R.crawlChk=0;
+       if(g.ents.indexOf(R)<0) g.ents.push(R);
+     }
+     stage();
+     var x0=R.x, y0=R.y, t0=performance.now();
+     for(var f=0;f<180;f++) __loop(t0+f*16.7);        // three seconds down
+     var moved=Math.hypot(R.x-x0,R.y-y0);
+     // THE FINDING. On v10.14 a downed man did not move at all.
+     if(moved<15) bad.push('a downed pillager beside a wall crawled '+moved.toFixed(1)+' units in three seconds');
+     else if(losClear(p.x,p.y,R.x,R.y,g.vseg)&&moved<40) bad.push('he crawled '+moved.toFixed(1)+' units and is still in plain sight');
+     // CONTROL ONE: the dial off is the old game.
+     __cfg({raiderCrawl:0}); stage();
+     var x1=R.x, y1=R.y, t1=performance.now();
+     for(var f1=0;f1<120;f1++) __loop(t1+f1*16.7);
+     if(Math.hypot(R.x-x1,R.y-y1)>2) bad.push('control: with the dial off a downed man still crawled');
+     __cfg({raiderCrawl:1});
+     // CONTROL TWO: he still bleeds and finishes on his clock while crawling.
+     stage(); var t2=performance.now();
+     for(var f2=0;f2<17/0.0167&&g.ents.indexOf(R)>=0;f2++) __loop(t2+f2*16.7);
+     if(g.ents.indexOf(R)>=0&&R.downed) bad.push('control: a crawling man did not finish on his bleed clock');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.14',what:'the backpack is a grid of fixed cells on the stash screen and in the raid, empty slots drawn',
    run:function(){
      var bad=[];

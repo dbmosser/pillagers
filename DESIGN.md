@@ -40024,6 +40024,41 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.15 - A DOWNED PILLAGER CRAWLS FOR COVER
+
+His answer 45, 2026-09-03, to whether downed pillagers should crawl toward
+cover or lie where they fell: **"CRAWL -- THEY SHOULD ALWAYS PLAY LIKE REAL
+PLAYERS, REMEMBER?"**
+
+A downed pillager lay where he fell and did nothing but bleed. A real player
+on the floor crawls for the nearest thing that breaks your line of sight. The
+downed branch looks for one now, with two rings of eight points, seventy and a
+hundred and forty units out, a point he can reach that you cannot see, looked for
+again every second and a half while you can see him and are within seven
+hundred units, and crawls to it at a quarter of his speed, bleeding all the
+way. Nothing found, he lies still. The bot sim is left alone, so no sim number
+moves. A dial, raiderCrawl, 1 on and 0 off.
+
+### Measured
+
+The check walks the map's walls for one with open ground on the near side,
+stands the operator two hundred and sixty units off it in plain sight and
+downs a pillager forty units from the wall, then runs three seconds of the
+real loop and requires him to have crawled at least fifteen units, and, if he
+is still in sight, forty. The controls are the dial off, where he must not
+move, and the bleed clock, which must still finish him while he crawls. On
+v10.14 a downed man crawled nothing at all, which is the finding.
+
+The first draft searched one ring at seventy units and my first check stood
+him beside the map border, a 3400 unit slab, where every point on that ring
+was inside the wall or in plain view; he never moved and the check blamed the
+game. The check stands him beside an interior wall with a hiding place he can
+reach, and the search has two rings.
+
+Not verified: what the crawl looks like, since the downed sprite is drawn
+lying and now slides; a crawl frame is a drawing build if he wants it. Not
+verified: a downed man in a doorway, whose sixteen points may all be walls.
+
 ## v10.14 - THE BACKPACK IS A GRID OF CELLS, IN BOTH PLACES
 
 His answers 8 and 28, 2026-09-03: the backpack on the stash screen is **"a
