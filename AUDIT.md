@@ -356,8 +356,8 @@ Controls
 Wirt and the economy
 37. Limited Time Offer stays a flat $10,000.
 38. The offer prints the item's name as well: "YES OF COURSE".
-39. The $2,500 gamble should have a chance at the top items.
-40. Credits and XP at the top of every menu screen, consistently. (Checked against the code: openModal stamps credits and XP into every window heading since v6.14 (stampBalance), and the stash screen carries its own; to verify by probe, not to build.)
+39. The $2,500 gamble should have a chance at the top items. (Checked against the code: the pull is rollTable(GAMBLE_POOL) and the pool carries blackbox, relay, codex, reactor and bloom at weight 1 each against a total near 130, so the top items come up about one pull in 26. Already so; nothing to build unless he wants the odds moved.)
+40. Credits and XP at the top of every menu screen, consistently. (Checked against the code and then driven on v10.14: every station window, the trader, Wirt, the Depot, the bar, the terms, the contracts, the sector page, the cheat box and the settings, opens with credits and XP stamped into its heading (stampBalance in openModal since v6.14), and the stash screen carries its own header. Already so; nothing to build.)
 
 The bar and XP
 41. XP bonus: 2.5 percent per dose or liquor shot.
@@ -381,7 +381,43 @@ Plus, after the answers: "we desperately need to improve the graphics for the gu
 
 MY ORDER, one thing per build, decided 2026-09-03 10:45:
 v9.98 stash cut (in flight) -> v9.99 Discount Fashion Depot -> v10.00 more cosmetics, earned -> v10.01 gear panel inside the screen -> then his answers cheapest and most binding first: 41/42 bar bonus 2.5 percent, raids only; 38 the offer names its item; 44 downed pillager 50 and ticking down; 49 no music in a raid; 24 day by default; 22 night pays 1.2x XP; 23 day is a random time of day; 33/35 crouch and sprint toggle; 5 loadout saves removed from the ascent check; 7 armour warning on the sector page; 2 the tabs reorganised; 8/28 the stash backpack as a grid of cells in the raid backpack's style; 1 CLOSE and ESC on every menu; 40 credits and XP on every menu; 47 rename the organ; the guns' graphics; then 14/18/19/20 the wardrobe categories, randomiser, presets and pillagers' looks; then 25/26/32 the four HUD panels, the resize cursor and message fade; 29 map and backpack do not pause; 39 confirm the gamble reaches the top items. Then audit and clean.
+
+## HIS NOTES, 2026-09-03 about 14:00, then "keep at it, be back in 4 hours"
+- "i want a master chief esque green halo helmet as one of the cosmetic options"
+- "and ghostface from scream as a helmet/head option"
+- "i want a red and black 23 jersey (MJ) as a clothing option"
+- "I want different shoes as options -- jordan 1, jordan 11, etc"
+Taken as four rack additions after the drafted queue: two headgear (a green
+Spartan-style helmet with a gold visor; a white Ghostface-style mask), one
+clothing (a red and black number 23 jersey), and shoes on the BOOTS rack (a
+Chicago-style red, white and black high-top; a Concord-style black and white
+patent low-top; a Bred-style black and red high-top). Earned, never bought,
+his answers 15 and 16. Names stay descriptive rather than brands.
 ## THE QUEUES ARE EMPTY, 2026-09-03 after v9.90
+- "i want cosmetics to be a major part of what keeps people coming back for the
+  long haul -- poke around community forums and read about what people say
+  about Halo Reach because that game had the perfect 'earn cosmetics' system --
+  we can add other pieces as you see fit -- outfits, gloves -- i would love to
+  make the cosmetics screen kinda look like how you equip your character in
+  diablo" (about 14:10). Taken as: (a) research first, a background pass over
+  what players praise in Reach's Armory (credits from every match, rank tiers,
+  challenges, commendations, pieces you can see coming, nothing random, nothing
+  bought); (b) then the Depot becomes a paper doll, the figure in the middle
+  with a slot per body part around it, Diablo-style; (c) then a visible ladder:
+  what the next piece is and what earns it, on the screen and after a raid.
+- RESEARCH DONE (about 14:30): what players praise in Reach's Armory, what
+  they hated, and the Diablo layouts, with a dozen quoted statements, in
+  tools/audits/reach-cosmetics-research-2026-09-03.md. Short form: credits
+  after every game in every mode; buy in any order, nothing random; rank is
+  lifetime earnings and never falls; new pieces appear when you rank up;
+  daily and weekly challenges were the log-in hook; commendations tracked how
+  you play; everything visible on your Spartan; a capstone gated on owning
+  every helmet. Hated: the daily cap, the grind at the top, dead money, the
+  double gate, the MCC re-do with fixed unlock order. For Pillagers, with
+  buying ruled out by his answers 15 and 16: every ending pays, the NEXT
+  piece named with its distance on the Depot and the outcome card, play-style
+  gates (kills by weapon, streaks, night extracts), a capstone per rack.
+  Challenges are a new system and wait on him.
 The raid audit queue, the full-file audit's named items, and his fifty answers are
 all shipped, decided, superseded, or not reproduced, with one design item left
 that needs his word (an item is in the backpack or the hotbar, never both). A
@@ -749,6 +785,7 @@ AND THE SECOND HALF OF THE STRETCH:
 | THE STASH TABS ARE HIS SIX, IN HIS ORDER | v10.11 | his answer 2: keep the tabs, reorganise into Guns, Consumables (plates, heals, grenades), Parts, Salvage, Keys, Other if needed. Was ALL, GUNS, ARMOUR, PARTS, SALVAGE, CONSUMABLES, KEYS. Now ALL, GUNS, CONSUMABLES, PARTS, SALVAGE, KEYS, with plates under CONSUMABLES and OTHER drawn only when non-empty. Check stocks one of each, reads the row, clicks CONSUMABLES for the plate and the medkit, ALL count as control. Fails on a v10.10 fixture: "the tabs read [ALL, GUNS, ARMOUR, PARTS, SALVAGE, CONSUMABLES, KEYS]" |
 | THE LOADOUT SAVES ARE GONE | v10.12 | his answer 5: "REMOVE IT, NOT NEEDED". The three numbered saves under the operator on the ascent check, five functions and a picker branch, removed; the picker shows its hint until a slot is clicked; P.loadouts left inert. Check renders the ascent check and requires no save or load rows, no LOADOUTS heading, no loadout functions; control: the headgear slot still opens its racks. Fails on a v10.11 fixture: "the loadout save rows are still under the operator on the ascent check" |
 | THE ARMOUR WARNING IS ON THE SECTOR PAGE | v10.13 | his answer 7. The warning was the stash screen's readiness line, copied by the sector page on open (via a full renderHub); v9.98 removed the line and the warning had been nowhere since, which I missed. Now written on the sector page under "Going up with" from the same rig numbers; the dead writer in renderHub removed; no renderHub call from the sector page. Check takes the lift and requires "no armour on", "Armour Plates" and the cap on the sector page; control: not back on the stash. Fails on a v10.12 fixture: "the sector page does not warn about armour" |
+| THE BACKPACK IS A GRID OF CELLS, IN BOTH PLACES | v10.14 | his answers 8 and 28. Both backpacks used the same cells and both collapsed to a sentence when empty. Now twelve slots drawn whatever is in them (padSlots, BACKPACK_SLOTS), packed cells first, dashed empty slots after, growing past twelve as needed; the raid look kept. Check: empty stash backpack has twelve empty slots and no sentence; two packed give two filled and ten empty; the raid backpack the same; control: a packed cell is draggable with the item in its title. Fails on a v10.13 fixture: "the empty backpack draws 0 cells" |
 | ONE WORD FOR THE BACKPACK, AND THE HOTBAR RENAME FINISHED | v9.90 | v9.89's own Not verified line said the compact legend still called the backpack a bag. Read off every surface on v9.89 the thing you carry was named FOUR ways: "inventory" (full legend TAB row, controller VIEW row, the HUD hint "TAB  INVENTORY", two refusals), "bag" (compact legend, controller BACK row, "equip gun from bag", the armour rule card, five spoken lines, the Peddler's "SELL BAG", a searched pillager's "'S BAG", two guide cards, a settings hint), "kit" (three refusals "Kit is full"), and "backpack". And both controller legends still called the hotbar a BELT, which v9.89 missed. THE WORD IS BACKPACK, his word and the panel's. Twenty two strings, nothing that reads a profile or draws. Left alone on purpose: BAG OF FRAGS and BIGGER BAG OF FRAGS, which are Progress rewards and a literal bag, and the lore clipboard "Inventory, year one", a document in the world. The armour card line is 29 characters against the 32 it replaces, inside the box v8.4x measured. Check reads the compact legend, the full legend, the HUD hint, the controller table and the panel headings, needles from halves, and fails on a v9.89 fixture on all four surfaces at once. Ten of the 22 strings are proven on screen; the other twelve are spoken lines the harness has no cheap way to raise |
 | ONE WORD FOR THE HOTBAR | v9.89 | his rule, one word per thing, and his open line "I opens the BACKPACK, write the matching list of consistent definitions". On v9.88 the same nine keyed cells were named THREE ways to the player: "hotbar" in the legend, the bag hint, the item detail and his own answers 11 and 22; "Tactical belt" on the raid backpack heading and the Undercroft column heading, "your backpack plus your belt" under the raid backpack title, "off the belt and into the backpack" on the drag-off message, and "hotbar belt and inventory" on the ascent summary; "the bar" in the empty-slot prompt. THE WORD IS HOTBAR: his word, the legend's word, the keys' word. Six strings changed, nothing that reads a profile or draws. Belt stays inside the code, the raider-and-snitch trade. The vocabulary memory gains a section for what you carry. The check reads the surfaces as rendered text with needles assembled from halves, and fails on a v9.88 fixture on five surfaces at once |
 | HIS ANSWER 22: THE HOTBAR IS VISIBLE IN THE UNDERCROFT | v9.88 | four words of his, between two other floor answers, and it had no row in the status table. v8.96 claimed it in its own comment and delivered it only INSIDE the opened backpack. MEASURED on v9.87 through the real loop on the HUD canvas: backpack closed, 0 opaque pixels on the entire HUD canvas; backpack open, 9 belt cells and 100,047 opaque pixels in the bottom band. FIX: drawHubBelt draws the same file-scope drawBelt against a transient hubBagState swapped in as G for one call, only while the backpack is closed, so exactly one belt is ever on screen; hubBagG is deliberately untouched because closing the backpack is the commit. Cells recorded on HUBBELT for the fixture and for a future click. Display only: editing stays in the opened backpack, answer 11. hubBelt 0 is the control. Check fails on a v9.87 fixture with "with the backpack closed the floor records no belt cells at all" |

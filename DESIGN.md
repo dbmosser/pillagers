@@ -40024,6 +40024,40 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.14 - THE BACKPACK IS A GRID OF CELLS, IN BOTH PLACES
+
+His answers 8 and 28, 2026-09-03: the backpack on the stash screen is **"a
+GRID OF FIXED CELLS"**, and **"ideally the Undercroft stash screen would
+incorporate the existing backpack appearance rather than vice versa"**.
+
+Both backpacks, the stash screen's and the raid's, were built from the same
+cells already, one inventory cell in one inventory grid, and both collapsed to
+a sentence when empty: "Nothing picked. Drag from the stash." and "Nothing
+packed. You go up with your gun and whatever you find." A grid that turns into
+a sentence is not a grid. Both draw twelve slots now whatever is in them,
+packed things first and dashed empty slots after, and grow past twelve as the
+backpack does, because the backpack is unlimited by his 2026-08-22 order. Same
+cells, same slots, in both places; the raid's look was the one to keep and it
+is the one kept.
+
+### Measured
+
+The check opens the stash with nothing packed and requires at least twelve
+cells, all empty slots and no sentence; packs two things and requires two
+filled cells with at least ten empty slots still drawn; renders the raid
+backpack empty and requires the same twelve slots there; and as a control
+requires a packed cell to be a real inventory cell, draggable, with the item
+in its title. On v10.13 the empty backpack drew no cells and a sentence,
+which is the finding.
+
+The full run also caught the what-is-new card eighteen builds stale (the v9.19
+check: card at v9.96 against a build at v10.14); the card is rewritten with
+everything he can see since v9.96, ten lines, and stamped v10.14.
+
+Not verified: how the dashed slots read at his 4K against the filled ones,
+which is a look and his to judge; they are drawn at forty-five percent so
+the packed cells stand out.
+
 ## v10.13 - THE ARMOUR WARNING IS ON THE SECTOR PAGE
 
 His answer 7, 2026-09-03: **"THE ARMOR WARNING NEEDS TO BE ON THE ASCEND MAP

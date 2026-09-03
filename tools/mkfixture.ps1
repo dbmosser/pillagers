@@ -5221,6 +5221,52 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.14',what:'the backpack is a grid of fixed cells on the stash screen and in the raid, empty slots drawn',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!(window.__hubEnter&&window.__station)) return 'SKIP: this build cannot be driven into the Undercroft';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P();
+     function count(sel){ var g=document.querySelector(sel); return g?{all:g.querySelectorAll('.cell').length,empty:g.querySelectorAll('.cell.slotempty').length,text:(g.textContent||'').trim().slice(0,60)}:null; }
+     // ONE: the stash screen's backpack with nothing packed is a grid of empty
+     // slots, not a sentence. On v10.13 it was the sentence.
+     P2.stash=['medkit','frag']; P2.kit=[]; P2.hotAssign={}; P2.stashTab='all';
+     __hubEnter();
+     try{ __station('term'); }catch(e1){ return 'the stash terminal threw: '+e1; }
+     var hub=document.getElementById('hub'); if(!hub||!hub.classList.contains('on')) return 'the stash screen did not open';
+     var c0=count('#kitgrid');
+     if(!c0) bad.push('no backpack grid on the stash screen');
+     else {
+       if(c0.all<12) bad.push('the empty backpack draws '+c0.all+' cells, not a grid of at least twelve');
+       if(c0.empty<12) bad.push('the empty backpack draws '+c0.empty+' empty slots');
+       if(/Nothing picked/.test(c0.text)) bad.push('the empty backpack is still a sentence: ['+c0.text+']');
+     }
+     // TWO: two things packed fill two cells and the rest stay empty slots.
+     P2.kit=['medkit','frag'];
+     try{ __station('term'); }catch(e2){}
+     var c1=count('#kitgrid');
+     if(c1){
+       if(c1.all-c1.empty!==2) bad.push('two packed things drew '+(c1.all-c1.empty)+' filled cells');
+       if(c1.empty<10) bad.push('with two packed only '+c1.empty+' empty slots remain drawn');
+     }
+     hub.classList.remove('on');
+     // THREE: the raid backpack is the same grid. Its look is the one to copy,
+     // his answer 28, so it must draw the same empty slots.
+     if(typeof renderCarry==='function'){
+       P2.kit=[]; try{ renderCarry(); }catch(e3){ bad.push('renderCarry threw: '+e3); }
+       var c2=count('#carrybp');
+       if(c2&&c2.empty<12) bad.push('the raid backpack draws '+c2.empty+' empty slots when empty');
+       if(c2&&/Nothing packed/.test(c2.text)) bad.push('the raid backpack is still a sentence when empty');
+     }
+     // CONTROL: a packed cell is a real cell, draggable, with the item in its title.
+     P2.kit=['medkit'];
+     try{ __station('term'); }catch(e4){}
+     var filled=hub.querySelector('#kitgrid .cell:not(.slotempty)');
+     if(!filled) bad.push('control: no filled cell for a packed medkit');
+     else if(!/Medkit|medkit/.test(filled.title||'')||!filled.draggable) bad.push('control: the packed cell is not a real inventory cell');
+     hub.classList.remove('on');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.13',what:'the armour warning is on the sector page, under what you are going up with',
    run:function(){
      var bad=[];

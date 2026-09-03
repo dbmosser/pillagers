@@ -410,6 +410,8 @@
   .cell.c-rare{ border-color:#7cc4ff; box-shadow:inset 0 0 8px rgba(124,196,255,.20); }
   .cell.c-elite{ border-color:#d08ce8; box-shadow:inset 0 0 10px rgba(208,140,232,.26); }
   .cell.c-gold{ border-color:#ffc72e; box-shadow:inset 0 0 10px rgba(255,199,46,.30); }
+  /* v10.14: an empty backpack slot, drawn so the grid reads as a grid */
+  .cell.slotempty{ border:1px dashed var(--steel-hi); opacity:.45; box-shadow:none; cursor:default; }
   .cell .cnt{ position:absolute; right:3px; bottom:1px; font-size:13px; font-weight:700;
     color:var(--bone); text-shadow:0 1px 2px #000; pointer-events:none; }
   /* JUNK, his Q11: tag it once and sell-all obeys. A tagged cell is dimmed and
@@ -1234,7 +1236,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.13';
+var VER='10.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1245,18 +1247,19 @@ var VER='10.13';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='9.96';
+var WHATSNEW_VER='10.14';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
-  'THE MUSIC IS DARK AND LOW. It was the same four chords in a major key, bright as a lobby. It sits in the minor now, an octave down, slower, with the top rolled off, and it stays that way through the Undercroft and the raid.',
-  'ONE WORD FOR EACH THING YOU CARRY. The backpack is the backpack on every screen, hint and legend, and the hotbar is the hotbar; they were also your inventory, your bag, your kit and your belt depending on which line you read.',
-  'A DOWNED PILLAGER TAKES THREE SCAV PISTOL ROUNDS TO FINISH, or two of anything heavier. He went down with one point of health, so any hit at all ended him. He still bleeds out on his own clock.',
-  'C CROUCHES, AS CTRL DOES. C used to flip an autoloot switch that has done nothing since the backpack became unlimited. The pause screen and both legends say CTRL / C.',
-  'RMB AIMS DOWN SIGHTS, and the pause screen and the legend say so in those words.',
-  'WIRT HAS TWO COUNTERS. THE GAMBLE at $2,500 per roll, and a LIMITED TIME OFFER that changes every five minutes and says only what it is worth and when the next one comes.',
-  'THE WHEEL ZOOMS THE RAID, CTRL AND THE WHEEL SIZE THE HUD, the same steps as - and =. Inside the scrolling part of any menu the wheel scrolls it instead of resizing the menu.',
-  'A DRINK PAYS. While Liquor or Blotter is in your blood, every XP you earn pays five percent more per dose, up to the ten the bar allows, on the run and on what you sell.',
-  'THE CONTROLS LEGEND CAN BE DRAGGED like every other panel and stays where you put it, and the robots setting in Settings (Few, Standard, Many) now changes how many machines you meet.'
+  'THE STASH IS FIVE THINGS: the stash, your backpack, your hotbar, the safe pocket and the freebie kit. Everything else that crowded it is gone. The backpack is a grid of twelve cells there and in the raid, empty cells drawn.',
+  'DAY OR NIGHT IS CHOSEN ON THE SECTOR PAGE at the lift, and every ascent starts on day. A night extraction pays twenty percent more XP. The armour warning is on that page too.',
+  'THE DISCOUNT FASHION DEPOT is its own station in the Undercroft. Everything there is how you look, earned by playing and never bought; four new hats, two hair colours and three fits joined the racks.',
+  'THE GUNS LOOK LIKE GUNS. Every gun icon is redrawn by family, outlined part by part, so a rifle reads as a rifle and a shotgun as a shotgun at a glance.',
+  'CLOSE ON EVERY WINDOW, AND ESC CLOSES THE TOP ONE, anywhere: the stash, the lift, the bar, the Depot, Settings, the primer.',
+  'THE STASH TABS ARE GUNS, CONSUMABLES, PARTS, SALVAGE, KEYS AND OTHER. Plates, heals and grenades are consumables. The three loadout saves are gone.',
+  'CROUCH AND SPRINT ARE TOGGLES. Press CTRL or C once to crouch and once to stand; press SHIFT once to run. Aiming down sights is held on RMB.',
+  'A DOWNED PILLAGER HAS FIFTY HEALTH TICKING DOWN over sixteen seconds. Three scav pistol rounds finish him, or two of anything heavier.',
+  'THE PILLBOX. The listening machine in the walls has its name: PILLBOX, its slits, its wrecks and its line in the primer.',
+  'A DRINK PAYS TWO AND A HALF PERCENT PER DOSE, on raid XP only, while Liquor or Blotter is in your blood. Wirt\u2019s offer names the item.'
 ];
 // ---------------------------------------------------------------- seeded randomness
 // Every gameplay roll in the file draws from here instead of Math.random(), so a
@@ -26337,7 +26340,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.13: the armour warning is on the sector page, under what you are going up with, where the decision is. It had been nowhere since the stash screen was cut.',
+  now:'v10.14: the backpack is a grid of cells, on the stash screen and in the raid: twelve slots drawn whether or not anything is in them, and the same cells in both places.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -26554,15 +26557,14 @@ function renderCarry(){
   var BP=document.getElementById('carrybp'); if(!BP) return;
   BP.innerHTML='';
   document.getElementById('carrybpct').textContent=shown.length+(shown.length===1?' item':' items');
-  if(!shown.length){
-    BP.innerHTML='<div class="cellempty">Nothing packed. You go up with your gun and whatever you find.</div>';
-  } else {
-    var CS=stackCounts(shown);
-    Object.keys(CS).forEach(function(k2){
-      var cell=invCell(k2,CS[k2],{from:'carry',verb:'pack this at the Stash'});
-      if(cell) BP.appendChild(cell);
-    });
-  }
+  // v10.14, his answer 8: the same grid of slots as the stash screen, empty
+  // slots drawn rather than a sentence.
+  var CS=stackCounts(shown);
+  Object.keys(CS).forEach(function(k2){
+    var cell=invCell(k2,CS[k2],{from:'carry',verb:'pack this at the Stash'});
+    if(cell) BP.appendChild(cell);
+  });
+  padSlots(BP,BACKPACK_SLOTS);
   // The belt. Slots one and two are the two guns in your hands, which is the
   // rule the raid bar uses, and the rest is whatever you have bound.
   var BL=document.getElementById('carrybelt'); BL.innerHTML='';
@@ -27190,11 +27192,7 @@ function renderKitCol(){
   kg.innerHTML='';
   // v6.60: the gun cells added here one build ago are gone again. A gun that is on the
   // belt is shown on the belt, and this column is what is NOT on it.
-  if(!K.length){
-    var em=document.createElement('div'); em.className='cellempty';
-    em.textContent='Nothing picked. Drag from the stash.';
-    kg.appendChild(em);
-  }
+  // v10.14: no sentence for an empty backpack; the empty slots say it.
   // v5.98: stacked, like the stash beside it and like all three reference games.
   var KC=stackCounts(K);
   Object.keys(KC).forEach(function(k){
@@ -27209,6 +27207,7 @@ function renderKitCol(){
       }});
     if(cell) kg.appendChild(cell);
   });
+  padSlots(kg,BACKPACK_SLOTS);                  // v10.14: a grid of fixed cells
   // THE DROP TARGET. The whole column takes a drop, not just the grid, because a
   // column with two items in it is mostly empty space and aiming at the space
   // between cells is not a thing anyone should have to do.
@@ -27530,6 +27529,19 @@ function stackCounts(list){
   var c={},i;
   for(i=0;i<list.length;i++) c[list[i]]=(c[list[i]]||0)+1;
   return c;
+}
+// v10.14, his answers 8 and 28: a backpack is a grid of slots, drawn whether
+// or not anything is in them. Twelve at least; more as the backpack grows.
+var BACKPACK_SLOTS=12;
+function padSlots(grid,min){
+  if(!grid) return;
+  var have=grid.querySelectorAll('.cell').length;
+  for(var i=have;i<(min||BACKPACK_SLOTS);i++){
+    var e=document.createElement('div');
+    e.className='cell slotempty';
+    e.title='Empty slot. Drag from the stash.';
+    grid.appendChild(e);
+  }
 }
 function invCell(k,count,opt){
   var it=ITEMS[k]; if(!it) return null;
