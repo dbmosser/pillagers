@@ -5221,6 +5221,39 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.20',what:'the OS pointer is the resize arrow over a panel corner, the move cross over its bar, the hand over its glyph',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(!(window.__hudBox&&window.__hudHit&&window.__deploy&&window.__frame)) return 'SKIP: this fixture cannot read the HUD boxes';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:['medkit'],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var p=g.player; p.hp=100000; p.maxhp=100000; g.ents.length=0;
+     for(var f=0;f<6;f++) __frame(0.016);
+     var boxes=__hudBox()||{}, box=null, id=null;
+     for(var k in boxes){ var b=boxes[k]; if(b&&b.w>60&&b.h>40&&__hudHit(Math.round(b.x+b.w-3),Math.round(b.y+b.h-3))&&__hudHit(Math.round(b.x+b.w-3),Math.round(b.y+b.h-3)).part==='grip'){ box=b; id=k; break; } }
+     if(!box) return 'SKIP: no panel reports a resize corner at its bottom right';
+     var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv');
+     var M=(window.__mouse&&__mouse())||null;
+     function at(x,y){
+       // move the game's own mouse and draw a frame so the cursor chooser runs
+       var r=cvs.getBoundingClientRect();
+       cvs.dispatchEvent(new MouseEvent('mousemove',{clientX:r.left+x,clientY:r.top+y,bubbles:true}));
+       for(var q=0;q<2;q++) __frame(0.016);
+       return cvs.style.cursor;
+     }
+     // THE FINDING. On v10.19 the pointer over a resize corner stayed hidden.
+     var cGrip=at(Math.round(box.x+box.w-3),Math.round(box.y+box.h-3));
+     if(cGrip!=='nwse-resize') bad.push('over the '+id+' panel resize corner the pointer is ['+cGrip+'], not the resize arrow');
+     var bar=__hudHit(Math.round(box.x+8),Math.round(box.y+4));
+     if(bar&&bar.part==='bar'){ var cBar=at(Math.round(box.x+8),Math.round(box.y+4)); if(cBar!=='move') bad.push('over the '+id+' panel drag bar the pointer is ['+cBar+'], not the move cross'); }
+     // CONTROL: away from every panel the reticle is the pointer and the OS one is hidden.
+     var cx=Math.round(cvs.width/2), cy=Math.round(cvs.height/2);
+     if(__hudHit(cx,cy)) cy=Math.round(cvs.height*0.35);
+     var cOff=at(cx,cy);
+     if(cOff!=='none') bad.push('control: away from the panels the pointer is ['+cOff+'], not hidden behind the reticle');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.19',what:'EYES is an eighth rack: six colours in the iris on the sprite and the figure, with a swatch',
    run:function(){
      var bad=[];

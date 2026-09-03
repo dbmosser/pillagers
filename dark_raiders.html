@@ -1239,7 +1239,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.19';
+var VER='10.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21252,7 +21252,11 @@ function drawHUD(){
   }
   // v7.94, his order: the belt is clickable and draggable, so the pointer
   // says so the moment you are over it.
-  var _wantCur=(!p.downed&&(G.bagOpen||G.mapOpen))?'default':(_overBelt?'pointer':'none');
+  // v10.20, his answer 26: over a panel's corner the pointer is the resize
+  // arrow, over its bar the move cross, over its glyph the hand.
+  var _hudPart=(!p.downed&&!G.bagOpen&&!G.mapOpen&&typeof hudHit==='function')?hudHit(mouse.x,mouse.y):null;
+  var _hudCur=_hudPart?({grip:'nwse-resize',bar:'move',glyph:'pointer'}[_hudPart.part]||null):null;
+  var _wantCur=(!p.downed&&(G.bagOpen||G.mapOpen))?'default':(_hudCur?_hudCur:(_overBelt?'pointer':'none'));
   if(_curNow!==_wantCur){ _curNow=_wantCur; try{ cv.style.cursor=_wantCur; }catch(e){} }
   // reticle at the cursor
 if(!p.downed&&!G.bagOpen&&!G.mapOpen){
@@ -26411,7 +26415,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.19: an eighth rack: EYES. Brown, hazel, blue, green, grey and amber, drawn in the iris on your sprite and on the figure, and the pillagers have eyes of their own too.',
+  now:'v10.20: the mouse says what a panel corner does. Over a resize corner it is the diagonal double arrow, over a drag bar the move cross, over the minimise glyph the hand; away from the panels it is the reticle as before.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,33 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.20 - THE MOUSE SAYS WHAT A PANEL CORNER DOES
+
+His answer 26, 2026-09-03: keep panel dragging and resizing, and **"MOUSE
+SHOULD CLEARLY INDICATE RESIZE AS AN OPTION WHEN I MOUSE OVER A CORNER"**.
+
+v9.09 drew a small glyph beside the reticle to say what a panel edge does, and
+the OS pointer stayed hidden, because in a raid the reticle is the pointer. He
+says that is not clear, and he is right: a glyph beside a crosshair is a hint,
+and a diagonal double arrow is the thing everyone already knows. The OS
+pointer comes back over a panel's parts now, with the shape it has everywhere
+else: the resize arrow over a corner, the move cross over the drag bar, the
+hand over the minimise glyph. The drawn glyph stays; the two cannot disagree
+because both read hudHit, the one answer for what is under the pointer. Away
+from the panels the pointer is hidden behind the reticle as before.
+
+### Measured
+
+The check deploys a raid, finds a panel that reports a resize corner, moves
+the game's own mouse onto that corner through a real mousemove and draws a
+frame, and reads the canvas cursor: it must be the resize arrow; on the drag
+bar the move cross; and as a control, away from every panel, hidden. On
+v10.19 the corner gave a hidden pointer, which is the finding.
+
+Not verified: how the arrow reads against the reticle on his 4K, since the
+OS draws it and the game draws the reticle beside it; if the two fight he
+will say so.
+
 ## v10.19 - EYES, THE EIGHTH RACK
 
 His answer 14, 2026-09-03, second of his categories: **eyes**.
