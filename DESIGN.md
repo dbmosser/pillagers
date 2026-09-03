@@ -40024,6 +40024,44 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.31 - THE BLOTTER MELTS, AND NEVER THE SAME WAY TWICE
+
+His note, 2026-09-03 about 17:45: **"acid needs more visual waves/melting
+effects, varied visual effects, should be inconsistent and random,
+chaotic,"** then **"(blotter)"**.
+
+### What it was
+
+The Blotter's warp was a fixed score: the same sines at the same rates on
+every dose, the tracers, the hue spin, the breathing and the glitch slices
+all timed from one clock. Once seen it was known, which is the opposite of
+what a dose should be.
+
+### Now
+
+Eight numbers are rolled fresh with every Blotter dose. They drive a MELT
+pass: the frame pours downward in five to nine strips that sway and stretch
+on their own clocks, and the amount of pouring breathes on a second, slower,
+rolled clock, so the same trip is calm one moment and running down the
+screen the next. The tracers, hue spin, breathing and glitches stay under
+it. The rolls come from Math.random, not the seeded stream: this is paint,
+and no dose may move a seed.
+
+### Measured
+
+The check takes two doses and captures the frame at two moments half a
+second apart, then the same first moment on a different roll, against a
+still scene with no dose, and requires the two moments to differ and the
+two rolls to differ, each by at least three times the still scene's own
+drift and at least fifteen hundred sampled pixels; requires a fresh dose to
+roll the clocks; the control is the frame near still with no dose. On v10.30
+there were no rolled clocks at all, which is the finding.
+
+Not verified: whether the melt is enough for him by eye; it is one more pass
+on top of six, and the dose count still scales all of them. Not verified:
+the bar's own dose button path, which the check drives through the same
+function the button calls.
+
 ## v10.30 - THE CHEAT BOX IS BEHIND A SWITCH THAT UNLOCKS AFTER ONE EXTRACTION
 
 His note, 2026-09-03 about 17:40: **"Make it so the dev cheat box has to be

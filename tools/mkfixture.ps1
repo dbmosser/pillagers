@@ -5221,6 +5221,39 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.31',what:'the Blotter melts the frame on clocks rolled with the dose, so two doses never warp alike and one dose never holds still',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(typeof BUZZRND==='undefined') return 'the Blotter has no rolled clocks; every trip is the same score';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000;
+     var P2=__P(); var keepBuzz=P2.buzz, keepR=BUZZRND, keepT=BUZZT;
+     var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
+     function grab(t){ BUZZT=t; for(var f=0;f<2;f++) __frame(0.016); return wctx.getImageData(0,0,cvs.width,cvs.height).data; }
+     function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=16) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>40) d++; return d; }
+     var dose=function(){ return {id:'lsd',tag:'lsd',t:150,dur:180}; };
+     // No dose: the still scene, the yardstick.
+     P2.buzz=[]; var c1=grab(3.0), c2=grab(3.5); var still=diff(c1,c2);
+     // Two doses, one roll: the frame moves with time.
+     P2.buzz=[dose(),dose()]; BUZZRND=[0.12,0.88,0.41,0.67,0.95,0.23,0.58,0.34];
+     var a1=grab(3.0), a2=grab(3.5); var moved=diff(a1,a2);
+     // The same moment on a different roll: a different picture.
+     BUZZRND=[0.79,0.16,0.93,0.28,0.05,0.71,0.44,0.62];
+     var b1=grab(3.0); var rolled=diff(a1,b1);
+     // THE FINDING. On v10.30 the warp was the same score on every dose.
+     if(rolled<Math.max(1500,still*3)) bad.push('two doses at the same moment differ by '+rolled+' sampled pixels against a still scene of '+still+'; the trip is the same score every time');
+     if(moved<Math.max(1500,still*3)) bad.push('half a second of trip moved '+moved+' sampled pixels against a still scene of '+still);
+     // A dose rolls the clocks.
+     var before=BUZZRND.slice(); var _BS=(typeof BUZZ!=='undefined')?BUZZ:null; var B2=null;
+     if(_BS) for(var i=0;i<_BS.length;i++) if(_BS[i].tag==='lsd') B2=_BS[i];
+     if(typeof takeBuzz==='function'&&B2){ try{ takeBuzz(B2); }catch(e){} if(JSON.stringify(BUZZRND)===JSON.stringify(before)) bad.push('a fresh dose did not roll the clocks'); }
+     // CONTROL: with no dose the two frames are near still.
+     P2.buzz=[]; var d1=grab(3.0), d2=grab(3.5); if(diff(d1,d2)>Math.max(600,moved/4)) bad.push('control: with no dose the frame still moved '+diff(d1,d2)+' sampled pixels');
+     P2.buzz=keepBuzz||[]; BUZZRND=keepR; BUZZT=keepT;
+     return bad.length?bad.join('; '):null; }},
   {v:'10.30',what:'the dev cheat box stands on the floor only when a Settings switch says so, and the switch is locked until one extraction',
    run:function(){
      var bad=[];

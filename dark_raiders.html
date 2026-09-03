@@ -1251,7 +1251,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.30';
+var VER='10.31';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20969,6 +20969,7 @@ function bar(x,y,w,h,f,c,bg){
   ctx.strokeStyle='rgba(127,146,216,.30)'; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,w-1,h-1);
 }
 var BUZZTR=null,BUZZTRC=null;
+var BUZZRND=[0.37,0.71,0.13,0.59,0.83,0.29,0.47,0.91];   // v10.31: eight numbers rolled fresh with every Blotter dose
 function buzzWarp(c2,cnv,t,dr,ac){
   // the geometric passes, applied to ONE canvas in raw pixels
   var RW=cnv.width,RH=cnv.height;
@@ -21024,6 +21025,21 @@ function buzzWarp(c2,cnv,t,dr,ac){
     var vb=Math.ceil(RW/8);
     for(var vx=0;vx<8;vx++)
       c2.drawImage(cnv,vx*vb,0,vb,RH,vx*vb,Math.sin(t*1.1+vx*0.9)*(2.5+2.0*ac),vb,RH);
+    // v10.31, his note: WAVES AND MELTING, never the same twice. Eight numbers
+    // rolled with the dose drive the columns, so no two trips pour alike, and
+    // the amount itself breathes on a second, slower, rolled clock, so the same
+    // trip is calm one moment and pouring the next.
+    var R=(BUZZRND&&BUZZRND.length>=8)?BUZZRND:[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5];
+    var pour=0.5+0.5*Math.sin(t*(0.23+0.3*R[0])+R[1]*6.2832)*Math.sin(t*(0.11+0.2*R[2])+R[3]*6.2832);
+    var cols=5+((R[4]*5)|0), cw=Math.ceil(RW/cols);
+    for(var mc=0;mc<cols;mc++){
+      var ph=R[(mc+5)%8]*6.2832, sp=0.6+R[(mc+2)%8]*1.4;
+      var stretch=1+pour*(0.02+0.012*ac)*(0.4+Math.abs(Math.sin(t*sp+ph)));
+      var sway=Math.sin(t*(0.9+0.5*R[(mc+3)%8])+ph)*(3+2.5*ac)*pour;
+      c2.globalAlpha=0.55+0.3*pour;
+      c2.drawImage(cnv,mc*cw,0,cw,RH,mc*cw+sway,-RH*(stretch-1)*R[(mc+1)%8],cw,RH*stretch);
+    }
+    c2.globalAlpha=1;
     // THE GLITCHES: slices of the frame torn sideways. Scheduled by sine hash of the
     // clock, so the seeded gameplay stream is never touched and no dose desyncs a seed.
     var gl=Math.sin(t*3.1)*Math.sin(t*4.7)*Math.sin(t*1.9);
@@ -26472,7 +26488,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.30: the dev cheat box is off the floor unless a Settings switch puts it there, and the switch is locked until you have extracted once.',
+  now:'v10.31: the Blotter melts. The frame pours downward in strips that sway and stretch on clocks rolled fresh with every dose, and the pouring comes and goes, so no two trips look alike.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -27064,6 +27080,8 @@ function renderBar(){
       P.credits-=B2.price;
       P.buzz=P.buzz||[];
       P.buzz.push({id:B2.id,tag:B2.tag,t:B2.dur,dur:B2.dur});
+      // v10.31, his note: never the same trip twice. Paint only, so Math.random.
+      if(B2.tag==='lsd'){ BUZZRND=[]; for(var _br=0;_br<8;_br++) BUZZRND.push(Math.random()); }
       saveProfile(); blip('pick');
       say2(B2.line+(buzzDoses(B2.tag)>1?('  That is '+buzzDoses(B2.tag)+'.'):''));
       renderBar();
