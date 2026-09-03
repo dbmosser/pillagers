@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.80';
+var VER='9.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5585,17 +5585,30 @@ function reconcileWindows(walls){
       }
       if(!cut){ out.push(w); continue; }
       changed=true;
+      // v9.81: THE PIECES ARE THE WALL, CUT. Writing them from scratch threw
+      // away everything the wall was: its building id, that it is a building
+      // wall at all, that it belongs to a locked room, that it is a yard wall,
+      // and every prop flag. See the v9.80 notes for what that costs; this is
+      // the same fault in a third place and it keeps even less than carveWindows
+      // did. A piece is a clone with new geometry, which is what a split is.
+      function _rcut(src,bx,by,bw,bh,isWin){
+        var o={},k;
+        for(k in src) if(Object.prototype.hasOwnProperty.call(src,k)) o[k]=src[k];
+        o.x=bx; o.y=by; o.w=bw; o.h=bh;
+        if(isWin) o.win=1; else delete o.win;
+        return o;
+      }
       var horiz=w.w>w.h;
       if(horiz){
         var a0=Math.max(w.x,cut.x), a1=Math.min(w.x+w.w,cut.x+cut.w);
-        if(a0>w.x) out.push({x:w.x,y:w.y,w:a0-w.x,h:w.h,d:w.d});
-        out.push({x:a0,y:w.y,w:Math.max(1,a1-a0),h:w.h,d:w.d,win:1});
-        if(w.x+w.w>a1) out.push({x:a1,y:w.y,w:w.x+w.w-a1,h:w.h,d:w.d});
+        if(a0>w.x) out.push(_rcut(w,w.x,w.y,a0-w.x,w.h,false));
+        out.push(_rcut(w,a0,w.y,Math.max(1,a1-a0),w.h,true));
+        if(w.x+w.w>a1) out.push(_rcut(w,a1,w.y,w.x+w.w-a1,w.h,false));
       } else {
         var b0=Math.max(w.y,cut.y), b1=Math.min(w.y+w.h,cut.y+cut.h);
-        if(b0>w.y) out.push({x:w.x,y:w.y,w:w.w,h:b0-w.y,d:w.d});
-        out.push({x:w.x,y:b0,w:w.w,h:Math.max(1,b1-b0),d:w.d,win:1});
-        if(w.y+w.h>b1) out.push({x:w.x,y:b1,w:w.w,h:w.y+w.h-b1,d:w.d});
+        if(b0>w.y) out.push(_rcut(w,w.x,w.y,w.w,b0-w.y,false));
+        out.push(_rcut(w,w.x,b0,w.w,Math.max(1,b1-b0),true));
+        if(w.y+w.h>b1) out.push(_rcut(w,w.x,b1,w.w,w.y+w.h-b1,false));
       }
     }
     walls=out;
@@ -26048,7 +26061,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.80: cutting a window into a wall made that wall belong to nobody. Six walls inside one of the biggest houses on the mile had no owner, which meant the pass that keeps rooms reachable could never have removed them however badly they sealed something.',
+  now:'v9.81: the same fault in a third place, and worse. Squaring a window up against the wall behind it rebuilt that wall from nothing but its shape, so it forgot which building it divided, that it was a building wall at all, and even that it belonged to a locked room.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -986,6 +986,8 @@ window.__keysRef=function(){ return keys; };
 // be observed through a whole raid, which is how I twice guessed at why it folds
 // instead of driving the thing that folds it.
 window.__searchSector=function(e){ return searchSector(e); };
+try{ window.__wallHp=function(w){ return wallHp(w); }; }catch(e){}
+try{ window.__pen=function(w){ return penFactor(w); }; }catch(e){}
 // v9.74: the editable-text engine. record() runs a draw with the recorder on and
 // returns every string that was painted with its measured box, which is the only
 // way to ask what a click would land on without a real mouse.
@@ -5187,6 +5189,85 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.81',what:'no wall anywhere inside a building has forgotten what it is',
+   run:function(){
+     var bad=[];
+     __pinDPR(1); __forceSize(1920,1080);
+     if(typeof __wallHp!=='function')
+       return 'SKIP: this fixture has no wallHp hook, so the game cannot be asked what a wall is';
+     function survey(mapIx){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:mapIx,seed:4242});
+       var g=__state(), B=g.map.buildings||[], W=g.map.walls||[], t=16, i, b;
+       var lost=[], wins=0, tough=0;
+       for(i=0;i<W.length;i++){
+         var w=W[i];
+         if(w.win) wins++;
+         // Every wall standing inside a building is SOMETHING: its shell or a
+         // partition (ib, _bw), furniture, a locked room, a yard wall crossing
+         // it, or a prop. One carrying nothing at all is one that was rebuilt by
+         // a split and had its identity thrown away.
+         if(w.ib!==undefined||w._bw||w.lockWall||w.lm||w.wreck||w.tree||w.furn||
+            w.ledge||w.door||w.noDes) continue;
+         var cx=w.x+w.w/2, cy=w.y+w.h/2;
+         for(b=0;b<B.length;b++){
+           var bb=B[b];
+           if(cx>bb.x+t&&cx<bb.x+bb.w-t&&cy>bb.y+t&&cy<bb.y+bb.h-t){
+             lost.push(b+' at '+Math.round(w.x)+','+Math.round(w.y)+' takes '+__wallHp(w));
+             if(__wallHp(w)===700) tough++;
+             break;
+           }
+         }
+       }
+       return {buildings:B.length, walls:W.length, windows:wins,
+               lost:lost, terrainToughInside:tough, ents:g.ents.length};
+     }
+     var mile=survey(1), cold=survey(0);
+     // CONTROL ONE: both maps have to have built, or an empty list means nothing.
+     if(mile.buildings!==84||cold.buildings!==20)
+       return 'SKIP: the maps did not build their usual 84 and 20 buildings';
+     // CONTROL TWO: there have to BE windows. Everything below is about what
+     // happens when a wall is cut, and with nothing cut it all passes for free.
+     if(mile.windows<10||cold.windows<5)
+       return 'SKIP: barely any windows on these maps, nothing has been cut';
+     // THE FINDING. reconcileWindows squares a window up against a solid wall
+     // lying across it by cutting that wall into three, and it wrote each piece
+     // as nothing but a shape. The pieces forgot the building they divide, that
+     // they were building walls at all, and every prop and locked-room flag. The
+     // ray caster then drops the middle piece back to solid when it cannot clear
+     // the sight line, leaving three anonymous fragments standing in a room.
+     // Measured on v9.80 at seed 4242: four of them inside building 10 on COLD
+     // STORAGE and three inside building 7 on THE COLD MILE, and the game
+     // answered 700 hit points for every one, which is its number for terrain.
+     if(mile.lost.length)
+       bad.push(mile.lost.length+' walls inside buildings on THE COLD MILE carry no identity at all ['+
+                mile.lost.slice(0,4).join('; ')+']');
+     if(cold.lost.length)
+       bad.push(cold.lost.length+' walls inside buildings on COLD STORAGE carry no identity at all ['+
+                cold.lost.slice(0,4).join('; ')+']');
+     // AND WHAT IT COST, in the game own units. A building wall takes 320 and a
+     // stick of furniture takes 60 and lets a round through at 0.55. Anonymous,
+     // all of them answered 700, the number reserved for terrain: more than twice
+     // the work to breach a wall, nearly twelve times to break a table, and the
+     // table stopped bullets dead.
+     if(mile.terrainToughInside||cold.terrainToughInside)
+       bad.push((mile.terrainToughInside+cold.terrainToughInside)+
+                ' walls indoors are as hard to break as terrain at 700 hit points');
+     // CONTROL THREE: the windows were not taken out of the game. A fix that
+     // stopped cutting walls would satisfy every test above and cost the maps
+     // every window they have.
+     if(mile.windows<10||cold.windows<5)
+       bad.push('control: only '+mile.windows+' and '+cold.windows+
+                ' windows left, so the carve was disabled rather than fixed');
+     // CONTROL FOUR: not one wall moved. This build only restores what a wall
+     // already was, so the wall counts and the seeded world must be untouched.
+     if(mile.walls!==2461||cold.walls!==616)
+       bad.push('control: the maps hold '+mile.walls+' and '+cold.walls+
+                ' walls rather than 2461 and 616, so the split geometry moved');
+     if(mile.ents!==374||cold.ents!==85)
+       bad.push('control: the maps spawn '+mile.ents+' and '+cold.ents+
+                ' rather than 374 and 85, so the seeded stream moved');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.80',what:'a wall with a window cut into it still belongs to the building it divides',
    run:function(){
      var bad=[];
@@ -5292,8 +5373,8 @@ window.__REGRESS=[
            if(px>K.x&&px<K.x+K.w&&py>K.y&&py<K.y+K.h) return true; }
          return false;
        }
-       var stuck=[], demo=0, lmw=0, parts=0;
-       for(i=0;i<W.length;i++){ if(W[i].lm) lmw++;
+       var stuck=[], demo=0, lmw=0, parts=0, lmlen=0;
+       for(i=0;i<W.length;i++){ if(W[i].lm){ lmw++; lmlen+=Math.max(W[i].w,W[i].h); }
          if(W[i].ib!==undefined&&!W[i].furn) parts++; }
        for(var b=0;b<B.length;b++){
          var bb=B[b], un=0;
@@ -5308,7 +5389,7 @@ window.__REGRESS=[
          if(un) stuck.push(b);
        }
        return {buildings:B.length, demolished:demo, sealed:stuck.join(','),
-               landmarkWalls:lmw, parts:parts, ents:g.ents.length};
+               landmarkWalls:lmw, landmarkLength:lmlen, parts:parts, ents:g.ents.length};
      }
      var mOn=survey(1,1), mOff=survey(1,0);
      var cOn=survey(0,1), cOff=survey(0,0);
@@ -5340,11 +5421,23 @@ window.__REGRESS=[
        bad.push('control: with lmCut off the mile demolished '+mOff.demolished+
                 ' and sealed ['+mOff.sealed+'], which is not the fault this build is about');
      // CONTROL FOUR: no interior was bought by deleting the landmark. The yard
-     // walls must still be there, just cut, so the count goes UP rather than to
-     // nothing.
-     if(mOn.landmarkWalls<mOff.landmarkWalls)
-       bad.push('control: the mile has '+mOn.landmarkWalls+' landmark walls against '+
-                mOff.landmarkWalls+', so the yards were deleted rather than cut');
+     // walls must still be there, just trimmed where they cross a house.
+     // v9.81: THIS ASKS ABOUT LENGTH, NOT PIECES. It used to require more pieces
+     // with the cut on than off, which sounds right and is not: with the cut off
+     // the yard walls run through the houses, lie across their window walls, and
+     // reconcileWindows chops them into fragments. Those fragments used to lose
+     // their lm flag, holding the off arm artificially low, and v9.81 gave it
+     // back, so the off arm now legitimately holds MORE pieces. Measured on
+     // v9.81: mile 66 pieces cut against 82 uncut, but 14648 units of yard wall
+     // against 19489, which is 75 percent kept. Cold storage keeps 89 percent.
+     // The quarter that goes IS the cut, being the span crossing a house. A fix
+     // that deleted the yards would read near zero here.
+     if(!mOn.landmarkLength||mOn.landmarkLength<mOff.landmarkLength*0.6)
+       bad.push('control: the mile keeps '+mOn.landmarkLength+' units of yard wall against '+
+                mOff.landmarkLength+' uncut, so the yards were deleted rather than trimmed');
+     if(!cOn.landmarkLength||cOn.landmarkLength<cOff.landmarkLength*0.6)
+       bad.push('control: COLD STORAGE keeps '+cOn.landmarkLength+' units of yard wall against '+
+                cOff.landmarkLength+' uncut, so the yards were deleted rather than trimmed');
      // CONTROL FIVE: the world did not move.
      if(mOn.ents!==mOff.ents||cOn.ents!==cOff.ents)
        bad.push('control: the maps spawn '+mOn.ents+'/'+cOn.ents+' with it on and '+

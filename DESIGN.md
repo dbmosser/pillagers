@@ -40023,6 +40023,111 @@ cannot hear it and neither can the harness. Whether 5.5 Hz reads as epic or as a
 wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
+## v9.81 - THE SAME FAULT IN A THIRD PLACE, AND IT KEPT EVEN LESS
+
+v9.80 ended with a rule: anything that REPLACES a wall must carry that wall's
+tags forward, or the wall falls out of every system that works by tag. This is
+that rule applied to the one remaining place that rebuilds walls, and the damage
+there was worse, because it kept nothing at all.
+
+### WHERE IT WAS
+reconcileWindows exists because makeBuilding lays overlapping wall runs, so an
+outer shell and an inner run can sit on the same line. Carving a window into one
+of them leaves the other standing in the hole, and a window you cannot see
+through is worse than no window because the wall LOOKS open. The function cuts
+the same span out of the solid wall behind, and then, if the real ray caster
+still cannot clear the sight line, drops the middle piece back to solid rather
+than shipping a lie. All of that is right and stays.
+
+What was wrong is how it wrote the pieces. Each one was built from scratch as
+{x, y, w, h, d} plus win on the middle, so every piece lost:
+
+  ib        the building it divides, so repairInteriors, which only removes
+            walls carrying a building id, could never take it out
+  _bw       that it is a building wall at all, so carveWindows will never
+            consider it for a window again
+  lockWall  that it belongs to a locked room, which v9.73 exempts from repair
+            and carveWindows refuses to cut
+  lm        that it is a yard wall, which v9.79 cuts against buildings
+  furn, wreck, tree, ledge, and the streak decoration
+
+And because the ray caster then demotes the middle piece back to solid, the
+usual end state is not a window at all: it is three anonymous fragments standing
+in a room, which is exactly the shape I found.
+
+### THE REPRODUCTION, IN THE GAME OWN NUMBERS
+Both builds were built as fixtures from the same mkfixture and surveyed wall for
+wall by index at seed 4242, so the arms are paired and nothing is inferred.
+
+  geometry moved                                     0 walls
+  wall totals                     616 and 2461 in both arms
+  entities                            85 and 374 in both arms
+  windows                             34 and 134 in both arms
+
+  walls that got their identity back      8 on COLD STORAGE, 7 on THE COLD MILE
+  of those, standing inside a building    4 in building 10, 3 in building 7
+  yard walls that had lost the lm flag                        2 on each map
+  furniture that had stopped being furniture                 3 on the mile
+
+Then the two functions that answer for a wall, wallHp and penFactor, asked
+directly through new fixture hooks:
+
+  6 walls on COLD STORAGE            700 hit points  ->  320
+  2 walls on THE COLD MILE           700 hit points  ->  320
+  3 sticks of furniture on the mile  700 hit points  ->   60
+  those same 3                       bulletproof     ->  rounds pass at 0.55
+
+700 is the game number for terrain. A building wall is 320 and a stick of
+furniture is 60. So an anonymous fragment took more than twice the work to
+breach if it was a wall, nearly twelve times if it was a table, and a table you
+have always been able to shoot through stopped rounds dead.
+
+### THE FIX
+A piece IS the wall, cut. It is now written as a clone of the source with new
+geometry, and win set or deleted explicitly, which is what a split is and what
+writing them from scratch was never going to be.
+
+### THE CHECK, AND ITS TEETH
+The check does not test reconcileWindows. It tests the rule, so it will catch
+the next function that breaks it: no wall standing inside a building footprint
+may carry no identity at all, and none may answer 700 hit points indoors.
+
+Run against a fixture built from v9.80 it fails loudly and names all seven walls
+and their coordinates. Run against this build it returns null. Controls: both
+maps must build their 84 and 20 buildings, there must still be windows to cut,
+the wall totals must still be 616 and 2461 so a fix cannot pass by deleting
+geometry, and the entity counts must still be 85 and 374.
+
+### A CONTROL THAT WAS RESTING ON THE BUG
+The full corpus came back FAIL x1, and it was the v9.79 check's fourth control:
+it requires more yard-wall pieces with the cut on than with it off, on the
+reasoning that a cut splits one wall into two. Measured here: 66 pieces cut
+against 82 uncut, so it failed.
+
+It is not a regression. With the cut OFF the yard walls run straight through the
+houses, so they lie across those houses' window walls and reconcileWindows chops
+them into fragments: 28 short pieces off against 16 on. Every one of those
+fragments used to lose its lm flag, which is what held the off arm down near 62
+when the control was written. This build hands the flag back, so the off arm now
+reads 82, which is the truth and always was. The control was counting a number
+the bug was deflating.
+
+Rewritten to ask the question it actually wanted answered, which is whether the
+yards were deleted, and that is about length rather than about how many pieces
+the length is in. The mile keeps 14648 of 19489 units of yard wall, 75 percent,
+and cold storage 5801 of 6543, 89 percent; the missing quarter IS the cut, being
+the span that was crossing the inside of a house. The floor is 60 percent,
+measured rather than remembered, and a fix that deleted the yards would read near
+zero. It passes on a v9.80 fixture as well, so it is not build-specific.
+
+### NOT VERIFIED
+Whether any of the fifteen walls was in a place a player would have noticed. The
+three on the mile are furniture in building 7 and were bulletproof, which is the
+kind of thing that reads as the game cheating, but I did not stand in that room
+and shoot at them. No claim is made that anything was visibly broken today; the
+fault, its cost in the game own units, and its removal are all measured, and the
+player-facing consequence is inferred from those numbers rather than observed.
+
 
 ## v9.80 - CUTTING A WINDOW INTO A WALL MADE IT BELONG TO NOBODY
 
