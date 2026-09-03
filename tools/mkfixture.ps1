@@ -5221,6 +5221,47 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.37',what:'an uncaught error or an unhandled rejection is written to the profile and the run report, counted, capped, and told once',
+   run:function(){
+     var bad=[];
+     var P2=__P();
+     // THE FINDING. On v10.36 the profile had no list and nothing listened.
+     if(!Array.isArray(P2.crashes)) return 'the profile has no crashes list, so a fault on a friend machine records nothing';
+     if(typeof buildExport!=='function') return 'SKIP: no run report builder in this build';
+     var keep=P2.crashes.slice(); P2.crashes.length=0;
+     var tag='probe alpha crash 4242';
+     function fire(m){ window.dispatchEvent(new ErrorEvent('error',{message:m,error:new Error(m),filename:'probe.js',lineno:7})); }
+     fire(tag);
+     if(P2.crashes.length!==1) bad.push('one uncaught error made '+P2.crashes.length+' entries');
+     var c=P2.crashes[0]||{};
+     if(c.msg!==tag) bad.push('the entry says "'+c.msg+'" and not the message thrown');
+     if(c.v!==VER) bad.push('the entry is stamped v'+c.v+' and not v'+VER);
+     if(!c.screen||c.screen==='?') bad.push('the entry names no screen: "'+c.screen+'"');
+     if(!/Error|probe\.js/.test(c.where||'')) bad.push('the entry carries no stack and no file: "'+c.where+'"');
+     var rep=buildExport();
+     if(rep.indexOf('CRASHES')<0||rep.indexOf(tag)<0) bad.push('the run report does not carry the crash');
+     // THE SAME FAULT EVERY FRAME COUNTS ON ONE LINE, it does not fill the list.
+     fire(tag); fire(tag); fire(tag);
+     if(P2.crashes.length!==1) bad.push('the same message four times made '+P2.crashes.length+' entries');
+     if((P2.crashes[0]||{}).n!==4) bad.push('the repeat count reads '+(P2.crashes[0]||{}).n+' and not 4');
+     // A REJECTION IS CAUGHT TOO.
+     var rtag='probe alpha rejection 4242';
+     var pr=Promise.reject(new Error(rtag)); pr.catch(function(){});
+     try{ window.dispatchEvent(new PromiseRejectionEvent('unhandledrejection',{promise:pr,reason:new Error(rtag)})); }
+     catch(_e){ bad.push('could not raise a rejection event: '+_e.message); }
+     if(!P2.crashes.some(function(x){ return x.kind==='rejection'&&x.msg===rtag; })) bad.push('an unhandled rejection was not recorded');
+     // THE LIST KEEPS ITS NEWEST TWELVE.
+     for(var i=0;i<20;i++) fire('probe distinct '+i+' 4242');
+     if(P2.crashes.length>12) bad.push('the list grew to '+P2.crashes.length+', past twelve');
+     var newest=P2.crashes[P2.crashes.length-1]||{};
+     if(newest.msg!=='probe distinct 19 4242') bad.push('the cap dropped the newest entry rather than the oldest: last is "'+newest.msg+'"');
+     // A RESOURCE ERROR WITH NO MESSAGE AND NO ERROR IS NOT A CRASH.
+     var before=P2.crashes.length; window.dispatchEvent(new ErrorEvent('error',{}));
+     if(P2.crashes.length!==before) bad.push('an empty error event was recorded as a crash');
+     // CONTROL: the report still opens with its header, so the section was added, not substituted.
+     if(rep.indexOf('FLIGHT RECORDER')<0) bad.push('control: the report lost its header');
+     P2.crashes.length=0; keep.forEach(function(x){ P2.crashes.push(x); });
+     return bad.length?bad.join('; '):null; }},
   {v:'10.36',what:'TATTOO is a fourteenth rack: five inks on the sprite face and neck and the figure, with a swatch',
    run:function(){
      var bad=[];

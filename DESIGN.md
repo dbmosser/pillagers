@@ -40024,6 +40024,55 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.37 - THE ALPHA, FIRST BUILD: A CRASH IS CAUGHT AND WRITTEN DOWN
+
+His ask, 2026-09-03 about 16:45: **"i want to ship an alpha build of this
+game to my friends in 72 hours from now -- what do we need to do to get
+there?"** and, minutes later, **"i am just going to upload it to itch"**.
+
+### What it was
+
+Nothing caught an uncaught error. There was no onerror handler, no
+unhandledrejection handler, and no line for either in the run report. The
+frame loop re-arms itself before it runs, so a throw inside a frame never
+stopped the game; it simply threw again on the next frame, silently, and the
+report at the end of the raid read as if everything had been fine. On his own
+machine the console shows it. On a friend's machine on itch the console is
+closed, and the only thing that ever comes back is the run report.
+
+### Now
+
+Every uncaught error and every unhandled promise rejection is written to the
+profile as a crash entry: the build, the screen it happened on, the message
+and the top two lines of the stack. The same message inside five seconds is
+counted on the one entry rather than filling the list, so a fault that throws
+every frame makes one line with a count. The list keeps its newest twelve.
+The run report carries a CRASHES section right under the install line,
+oldest first, so a report that would otherwise read as clean says what broke
+first. The player is told once per sitting, in the raid or in the Undercroft:
+"Something broke: <message>. It was written into your run report." An error
+event with no message and no error object is a resource that failed to load,
+which a one-file game does not have, and is ignored. An old profile gets the
+list on load.
+
+### Measured
+
+The check dispatches a real error event with a distinctive message and
+requires one entry stamped with the build, a screen name, the message and the
+file or stack, and the run report to carry a CRASHES section with that
+message; fires the same message three more times and requires still one
+entry with a count of four; raises an unhandled rejection event and requires
+it recorded with its kind; fires twenty distinct messages and requires the
+list held at twelve with the newest kept; fires an empty error event and
+requires nothing recorded; the control is the report's own header still at
+the top. On v10.36 the profile had no crashes list, which is the finding. The
+check puts back whatever the list held.
+
+Not verified: a real throw from inside the frame loop on a friend's browser,
+which arrives through the same window error event but with the browser's own
+message and stack rather than the check's; and what the say() line looks like
+on the title screen, where there is no raid and no Undercroft toast to carry
+it.
 ## v10.36 - TATTOO, THE FOURTEENTH RACK, AND THE LAST OF HIS EIGHT
 
 His answer 14, 2026-09-03, eighth and last of his categories: **tattoos**.
