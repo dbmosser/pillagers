@@ -166,6 +166,7 @@
   border:2px solid #14161b; position:relative; }
 .avplate{ position:absolute; left:6px; right:6px; top:8px; height:14px; border-radius:2px; }
 .avhand{ position:absolute; bottom:-2px; width:9px; height:9px; border-radius:3px; border:2px solid #14161b; }   /* v10.33 */
+.avstrap{ position:absolute; left:6px; top:-2px; width:6px; height:26px; border-radius:2px; opacity:.9; }   /* v10.34 */
 .avlegs{ width:38px; height:20px; border-radius:0 0 5px 5px; border:2px solid #14161b; border-top:0; }
 .avboots{ width:42px; height:8px; border-radius:0 0 4px 4px; border:2px solid #14161b; border-top:0; margin-top:-1px; }   /* v10.32 */
 .avslot{ display:flex; align-items:center; gap:8px; padding:5px 10px; cursor:pointer;
@@ -1253,7 +1254,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.33';
+var VER='10.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7730,7 +7731,7 @@ function raiderLook(identId,x,y){
   var hat=pick('hat',['crown']);
   h=Math.imul(h^(h>>>11),2246822507)>>>0;
   if((h%3)===0) hat='none';                   // a third go bareheaded
-  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes'),face:pick('face'),boots:pick('boots'),gloves:pick('gloves')};
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes'),face:pick('face'),boots:pick('boots'),gloves:pick('gloves'),pack:pick('pack')};
 }
 function mkRaider(x,y,forceId,simBuild){
   // v6.53, his note. Nine entries: pistol 3, smg 2, rifle 2, carbine 1, scattergun 1,
@@ -7785,7 +7786,7 @@ function mkRaider(x,y,forceId,simBuild){
     face:rnd(0,6.28),state:'loot',tx:x,ty:y,cd:0,alert:0,spd:122,wep:WEAPONS[wk],dmg:WEAPONS[wk].dmg,
     rng:WEAPONS[wk].rng*.72,cone:.8,bag:[],looted:0,goal:null,skips:[],goalT:0,goalD:0,extracting:0,hitT:0,step:0,
 coat:ident.coat, ident:ident.id, name:ident.tag,
-    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, faceMark:_look.face, boots:_look.boots, gloves:_look.gloves,   // v10.18, his answer 20; v10.21: faceMark, because e.face is the facing angle and a string there stopped every pillager firing
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, faceMark:_look.face, boots:_look.boots, gloves:_look.gloves, pack:_look.pack,   // v10.18, his answer 20; v10.21: faceMark, because e.face is the facing angle and a string there stopped every pillager firing
     rival:(!simBuild&&ident.id===myRival())?1:0,
     // SPEC 8.4: varying hostility. A raider you have killed before is shoot on
     // sight with no negotiation; one you have good standing with is passive
@@ -17985,6 +17986,12 @@ var COSMETICS=[
   {id:'gloveblack',name:'Black Gloves',   how:'runs:7',      kind:'gloves'},
   {id:'glovegrey', name:'Grey Gloves',    how:'level:2',     kind:'gloves'},
   {id:'glovered',  name:'Red Gloves',     how:'extracts:9',  kind:'gloves'},
+  // v10.34, his answer 14: BACKPACK, the twelfth rack. The colour of the pack on your back.
+  {id:'packbrown', name:'Canvas Pack',    how:'always',      kind:'pack'},
+  {id:'packolive', name:'Olive Pack',     how:'runs:6',      kind:'pack'},
+  {id:'packblack', name:'Black Pack',     how:'runs:16',     kind:'pack'},
+  {id:'packrust',  name:'Rust Pack',      how:'extracts:7',  kind:'pack'},
+  {id:'packsand',  name:'Sand Pack',      how:'level:3',     kind:'pack'},
   // v5.66, his note. Owned from the start: this is a look, not a trophy. v7.26: and it
   // is a HAIRSTYLE, not headgear; it moved to the cut rack with the seven new ones.
   {id:'long',    name:'Long',          how:'always',      kind:'cut'},
@@ -18091,8 +18098,10 @@ function cosFind(id){
 // wiped profile or an edited save cannot leave her in a hat she has not earned.
 // v6.46: five kinds now, so the worn id and the fallback both come from a table
 // instead of a two-way branch with the answer baked into the return.
-var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves'};
-var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands'};
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves',pack:'cosPack'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown'};
+// v10.34: the pack colours.
+var PACKCOL={packbrown:'#5c4a34',packolive:'#3a5a2c',packblack:'#1e2228',packrust:'#6a3a2a',packsand:'#8a7a52'};
 // v10.33: glove colours; bare hands are the skin.
 var GLOVECOL={glovetan:'#8a6438',gloveblack:'#1c2028',glovegrey:'#6a727c',glovered:'#8a2a2a'};
 function handColour(st){
@@ -18182,7 +18191,8 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
 
   var pw=6+pk*5;
   wc.fillStyle=INK; rrF(x-fl*9-pw/2+leanX-1,ty-22,pw+2,11,3);
-  wc.fillStyle='#5c4a34'; rrF(x-fl*9-pw/2+leanX,ty-21,pw,9,2);
+  wc.fillStyle=PACKCOL[st.hero?cosWorn('pack'):(st.pack||'packbrown')]||PACKCOL.packbrown;   // v10.34
+  rrF(x-fl*9-pw/2+leanX,ty-21,pw,9,2);
   wc.fillStyle=INK; rrF(x-7.5+leanX,ty-23,15,13,4);
   wc.fillStyle=cc; rrF(x-6.5+leanX,ty-22,13,11,3);
   wc.fillStyle=cHi; wc.fillRect(x-5.7+leanX,ty-22,11.4,3);
@@ -26514,7 +26524,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.33: an eleventh rack: GLOVES. Work, black, grey and red gloves, earned, on your hands in the raid and on the figure. Bare hands match your skin now; they used to be one tan for everyone.',
+  now:'v10.34: a twelfth rack: BACKPACK. The pack on your back was one brown for everyone; it comes in canvas, olive, black, rust and sand now, on you and on the pillagers.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30811,6 +30821,12 @@ function cosSwatch(c){
     return '<span style="display:inline-block;width:34px;height:34px;border-radius:17px;'+
            'background:'+(SKINCOL[c.id]||SKINCOL.fair)+';border:2px solid #14161b"></span>';
   }
+  if(c.kind==='pack'){   // v10.34: a pack, in its colour
+    var pcol=PACKCOL[c.id]||PACKCOL.packbrown;
+    return '<span style="display:inline-block;width:34px;height:34px;border-radius:6px;background:#1b1f26;border:2px solid #14161b;position:relative">'+
+           '<span style="position:absolute;left:8px;top:5px;width:18px;height:22px;border-radius:4px 4px 6px 6px;background:'+pcol+'"></span>'+
+           '<span style="position:absolute;left:11px;top:12px;width:12px;height:2px;background:#14161b;opacity:.6"></span></span>';
+  }
   if(c.kind==='gloves'){   // v10.33: a hand, in the glove colour or the skin
     var gcol=GLOVECOL[c.id]||(SKINCOL[cosWorn('skin')]||SKINCOL.fair);
     return '<span style="display:inline-block;width:34px;height:34px;border-radius:6px;background:#1b1f26;border:2px solid #14161b;position:relative">'+
@@ -30900,6 +30916,7 @@ function avatarHTML(){
     '<div class="avtorso" style="background:linear-gradient(180deg,'+ft[1]+','+ft[0]+');'+
       'width:'+Math.round(46*bd.sh)+'px">'+
       '<div class="avplate" style="background:rgba(0,0,0,.28)"></div>'+
+      '<div class="avstrap" style="background:'+(PACKCOL[cosWorn('pack')]||PACKCOL.packbrown)+'"></div>'+   // v10.34: the pack strap
       '<div class="avhand" style="left:-11px;background:'+handColour({hero:1})+'"></div>'+   // v10.33
       '<div class="avhand" style="right:-11px;background:'+handColour({hero:1})+'"></div>'+
     '</div>'+
@@ -30930,6 +30947,8 @@ function avatarHTML(){
           '<span style="width:14px;height:10px;border-radius:0 0 4px 4px;display:inline-block;background:'+((BOOTCOL[cosWorn('boots')]||BOOTCOL.bootblack)[1])+'"></span>');   // v10.32
   h+=slot('gloves','GLOVES',(cosFind(cosWorn('gloves'))||{name:'Bare Hands'}).name,
           '<span style="width:12px;height:12px;border-radius:3px;display:inline-block;background:'+handColour({hero:1})+'"></span>');   // v10.33
+  h+=slot('pack','BACKPACK',(cosFind(cosWorn('pack'))||{name:'Canvas Pack'}).name,
+          '<span style="width:11px;height:14px;border-radius:3px 3px 4px 4px;display:inline-block;background:'+(PACKCOL[cosWorn('pack')]||PACKCOL.packbrown)+'"></span>');   // v10.34
   h+=slot('fit','CLOTHING',(cosFind(cosWorn('fit'))||{name:'Slate'}).name,
           '<span style="width:14px;height:14px;border-radius:3px;display:inline-block;background:'+ft[1]+'"></span>');
   // v5.83: the BODY ARMOUR slot is gone with rigs. Everyone wears the same
@@ -30942,7 +30961,7 @@ function avatarHTML(){
 }
 // v10.16, his answers 18 and 19. A look is the six cosmetic keys and nothing
 // else. SURPRISE ME picks an owned thing from every rack.
-var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots','gloves'];
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots','gloves','pack'];
 function lookSnap(){ var L={}; for(var i=0;i<LOOK_KINDS.length;i++) L[LOOK_KINDS[i]]=cosWorn(LOOK_KINDS[i]); return L; }
 function lookWear(L){
   if(!L) return false;
@@ -31045,7 +31064,7 @@ function renderAvPicker(pickHost,host){
       'Click a slot to change it. Headgear and hair are earned and change nothing about how you play.</div>';
     return;
   }
-  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'){
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'||slot==='pack'){
     renderCosmetics(box,slot,hid,pid); return;
   }
   // v6.43: the wep and wep2 branch is gone with the slots that opened it. Guns are
@@ -31064,7 +31083,7 @@ function renderAvPicker(pickHost,host){
 function renderCosmetics(target,kindOnly,hid,pid){
   var box=target||document.getElementById('cosbody'); if(!box) return;
   var H='';
-  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['gloves','GLOVES'],['boots','BOOTS']]
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]
     .filter(function(g){ return !kindOnly||g[0]===kindOnly; });
   GROUPS.forEach(function(g){
     H+='<div style="margin:10px 0 4px 0;letter-spacing:2px;opacity:.7;font-size:12px">'+g[1]+'</div>';

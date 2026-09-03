@@ -5221,6 +5221,42 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.34',what:'BACKPACK colour is a twelfth rack: five packs on the sprite back and a strap on the figure',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(typeof COSMETICS==='undefined'||typeof cosSwatch!=='function') return 'SKIP: no racks in this build';
+     var packs=COSMETICS.filter(function(c){ return c.kind==='pack'; });
+     // THE FINDING. On v10.33 there was no pack kind and the pack was one brown.
+     if(packs.length<5) return 'the racks hold '+packs.length+' packs, not five';
+     if(!packs.some(function(c){ return c.how==='always'; })) bad.push('no pack is owned from the start');
+     if(packs.some(function(c){ return String(c.how).indexOf('buy:')===0; })) bad.push('a pack costs credits, against his answer 16');
+     if(!COSKEY.pack||!COSDEF.pack) bad.push('the profile has no pack key or default');
+     if(typeof PACKCOL==='undefined'||packs.some(function(c){ return !PACKCOL[c.id]; })) bad.push('a pack has no colour');
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000;
+     var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,cosPack:P2.cosPack};
+     P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.xpLevel=99;
+     var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
+     function body(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(50,Math.min(cvs.width-50,sx)); sy=Math.max(60,Math.min(cvs.height-20,sy)); return wctx.getImageData(sx-50,sy-60,100,80).data; }
+     function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>30) d++; return d; }
+     P2.cosPack='packbrown'; var brown=body(), flat=[];
+     packs.forEach(function(c){ if(c.id==='packbrown') return; P2.cosPack=c.id; if(diff(body(),brown)<4) flat.push(c.id); });
+     if(flat.length) bad.push('packs that draw no differently from canvas on the sprite: '+flat.join(', '));
+     for(var k in keep) P2[k]=keep[k];
+     var html=(typeof avatarHTML==='function')?avatarHTML():'';
+     if(html.indexOf('data-av="pack"')<0) bad.push('the figure has no BACKPACK slot');
+     if(html.indexOf('avstrap')<0) bad.push('the figure draws no pack strap');
+     var qm=packs.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     if(qm.length) bad.push('packs with no swatch: '+qm.join(', '));
+     // CONTROL: the seed fingerprint stands and pillagers carry a pack from the rack.
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
+     if(g.ents.length!==85||g.containers.length!==165) bad.push('control: the seed fingerprint moved to '+g.ents.length+'/'+g.containers.length);
+     var raiders=g.ents.filter(function(e){ return e.kind==='raider'; });
+     if(raiders.length&&raiders.some(function(e){ return !e.pack||!PACKCOL[e.pack]; })) bad.push('control: a pillager has no pack from the rack');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.33',what:'GLOVES is an eleventh rack, and bare hands take the skin colour on the sprite',
    run:function(){
      var bad=[];
@@ -9336,6 +9372,13 @@ window.__REGRESS=[
      if(!b){
        return 'the title screen has no fullscreen button, and it has been telling him to play fullscreen since v9.50';
      }
+     // v10.34: THE TITLE IS ONLY 'on' WHILE THE GAME IS SHOWING IT. By the time
+     // this check runs the corpus has been through the hub and a dozen raids, so
+     // the title sits display:none under whatever was shown last and the button
+     // measures 0x0 through no fault of the build. Put the screen on for the
+     // measurement and put it back, the way v9.50 does. Found when the v10.34
+     // corpus failed here and the same build passed on a fresh load.
+     var wasOn=ti.classList.contains('on'); ti.classList.add('on');
      // IT HAS TO BE SOMEWHERE HE CAN SEE AND HIT. A button with no box is not a
      // button, and one outside the title screen is not on the title screen.
      var r=b.getBoundingClientRect();
@@ -9378,6 +9421,7 @@ window.__REGRESS=[
        var over=Math.round(col.scrollHeight*z-window.innerHeight);
        if(over>0) bad.push('the title screen now runs '+over+' pixels past the bottom');
      }
+     if(!wasOn) ti.classList.remove('on');
      return bad.length?bad.join('; '):null; }},
   {v:'9.57',what:'a Listener winds up before it swings, and swings at nothing if you have gone',
    run:function(){

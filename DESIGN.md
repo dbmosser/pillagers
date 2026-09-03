@@ -40024,6 +40024,41 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.34 - BACKPACK COLOUR, THE TWELFTH RACK
+
+His answer 14, 2026-09-03, sixth of his categories: **backpack colour**.
+
+The pack on the sprite's back was one fixed brown for everyone. Five now:
+Canvas, owned from the start; Olive at six runs; Black at sixteen; Rust at
+seven extracts; Sand at level three. Earned, never bought. The sprite's pack
+takes the colour; the figure, which faces you with the pack behind, shows a
+strap across the torso in the pack's colour; the racks show a pack. A twelfth
+slot, a twelfth key, part of a look and of SURPRISE ME, and the pillagers draw
+from it.
+
+### Measured
+
+The check requires five packs with one owned and none priced, a key, a
+default and a colour for each, reads the sprite for each pack against Canvas
+and requires every one to differ, requires the BACKPACK slot and the strap on
+the figure and a swatch for each, and as controls the seed fingerprint at 4242
+unmoved and every pillager with a pack from the rack. On v10.33 there was no
+pack kind, which is the finding.
+
+The first full corpus on this build failed one check that this build never
+touches: v9.58, the title screen's fullscreen button, measured 0x0. On a
+fresh load the same build passed it with a 178x31 button. The title screen
+is only switched on while the game is showing it, and by the time that check
+ran the corpus had been through the hub and a dozen raids, so the title sat
+hidden under whatever was shown last and the check measured a hidden button.
+That check now switches the title on for its measurement and puts it back,
+the way the v9.50 check has always done. The harness was wrong, not the
+build; the fix is in the check.
+
+Not verified: the pack under a plate carrier, which is drawn over it; the
+pack shows at the sides and the strap is the figure's honest version of the
+same thing.
+
 ## v10.33 - GLOVES, THE ELEVENTH RACK, AND HANDS THAT MATCH THE SKIN
 
 His answer 14, 2026-09-03, fifth of his categories: **gloves**.
