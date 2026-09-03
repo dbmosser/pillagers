@@ -1234,7 +1234,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.12';
+var VER='10.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26337,7 +26337,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.12: the three numbered loadout saves are gone from under the operator on the ascent check. You said they were not needed. What you pack is what you take.',
+  now:'v10.13: the armour warning is on the sector page, under what you are going up with, where the decision is. It had been nowhere since the stash screen was cut.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -27662,16 +27662,8 @@ try{ renderFreeKit(); }catch(_fk){}
   // rig's cap IS the armour you land with, so "0 armour" is the whole warning.
   // The price is only shown when he can actually cover it, because telling
   // someone to buy a thing they cannot afford is noise.
-  (function(){
-    var rl=document.getElementById('readyline'); if(!rl) return;
-    // v7.30, his order: the concept of rigs is gone. Everyone ascends with the same
-    // standard armour, so this line has exactly one state to describe.
-    var RG=myRig(), cap=rigCeil(RG);
-    rl.style.borderColor='var(--steel-hi)'; rl.style.color='var(--ash)';
-    rl.innerHTML='You ascend with <b>no armour on</b>. Equip Armour Plates on the '+
-      'surface. Each absorbs '+Math.round(RG.absorb*100)+'% of every hit until it is '+
-      'gone, up to a cap of '+cap+'.';
-  })();
+  // v10.13: the readiness line left the stash screen at v9.98 and is written
+  // on the sector page now (syncSectorKit). The writer that fed it is gone.
   var sl=document.getElementById('stashgrid'); if(sl) sl.innerHTML='';
   // DEFENCE IN DEPTH, v1.69. loadProfile has filtered unknown stash and armoury keys
   // since v0.48, and that is the right place to repair a save. It is not enough on its
@@ -29708,12 +29700,13 @@ function syncSectorKit(){
   try{ rig=myRig(); }catch(_gr){ rig=null; }
   var line='<b>Going up with:</b> '+(w?escHtml(w.name):'an issued sidearm')+
            ' &middot; '+escHtml((rig&&rig.name)||'Armour');
-  // The terminal already decides whether that is enough and what to do about it.
-  // Repeat its verdict rather than writing a second one that can disagree.
+  // v10.13, his answer 7: the armour warning lives here, on the way up. It
+  // used to be copied off the stash screen's readiness line, which v9.98
+  // removed, so it had been nowhere since. Same numbers as the line had.
   try{
-    renderHub();
-    var rl=document.getElementById('readyline');
-    if(rl&&rl.innerHTML) line+='<div style="margin-top:5px">'+rl.innerHTML+'</div>';
+    var RG=myRig(), cap=rigCeil(RG);
+    line+='<div style="margin-top:5px;color:var(--amber)">You ascend with <b>no armour on</b>. Equip Armour Plates on the '+
+      'surface. Each absorbs '+Math.round(RG.absorb*100)+'% of every hit until it is gone, up to a cap of '+cap+'.</div>';
   }catch(_rh){}
   el.innerHTML=line;
 }

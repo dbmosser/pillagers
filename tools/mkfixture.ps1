@@ -5221,6 +5221,32 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.13',what:'the armour warning is on the sector page, under what you are going up with',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!(window.__hubEnter&&window.__station)) return 'SKIP: this build cannot be driven into the Undercroft';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __hubEnter();
+     var sm=document.getElementById('sectormodal'); if(!sm) return 'SKIP: no sector page';
+     sm.classList.remove('on');
+     try{ __station('lift'); }catch(e1){ return 'the lift threw: '+e1; }
+     if(!sm.classList.contains('on')) return 'taking the lift did not open the sector page';
+     var kit=document.getElementById('sectorkit'), txt=(kit&&kit.textContent)||'';
+     // THE FINDING. On v10.12 the sector page said only what you were going up
+     // with; the armour line had been nowhere since v9.98.
+     if(!/no armour on/i.test(txt)) bad.push('the sector page does not warn about armour: ['+txt.slice(0,100)+']');
+     if(!/Armour Plates/.test(txt)) bad.push('the sector page does not say to equip Armour Plates');
+     if(!/cap of \d+/.test(txt)) bad.push('the sector page does not state the armour cap');
+     // CONTROL: the stash screen no longer carries it, per v9.98, and still opens.
+     var hub=document.getElementById('hub');
+     sm.classList.remove('on');
+     try{ __station('term'); }catch(e2){}
+     if(hub&&hub.classList.contains('on')){
+       if(/no armour on/i.test(hub.textContent)) bad.push('control: the armour line is back on the stash screen');
+       hub.classList.remove('on');
+     } else bad.push('control: the stash screen did not open');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.12',what:'the numbered loadout saves are gone from the ascent check, and the cosmetic slots still open',
    run:function(){
      var bad=[];

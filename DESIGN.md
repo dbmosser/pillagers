@@ -40024,6 +40024,33 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.13 - THE ARMOUR WARNING IS ON THE SECTOR PAGE
+
+His answer 7, 2026-09-03: **"THE ARMOR WARNING NEEDS TO BE ON THE ASCEND MAP
+SCREEN, NOT THE STASH"**.
+
+The warning, "You ascend with no armour on. Equip Armour Plates on the
+surface...", was written into the stash screen's readiness line, and the
+sector page copied that line's HTML when it opened, calling the whole stash
+renderer first to fill it. v9.98 removed the line from the stash on his order,
+so since then the sector page had nothing to copy and the warning was nowhere.
+One thing I got wrong: I did not notice that when I cut the stash screen. It
+is written on the sector page itself now, in amber under "Going up with", from
+the same rig numbers, and the sector page no longer re-renders the stash
+screen to get it. The dead writer in the stash renderer is gone.
+
+### Measured
+
+The check takes the lift on a clean profile and requires the sector page's
+kit line to warn about no armour on, name Armour Plates, and state the cap;
+the control opens the stash and requires the line not to have come back
+there. On v10.12 the sector page said only what you were going up with, which
+is the finding.
+
+Not verified: the ascent check, which follows the sector page and has its own
+warning box for other things; whether he wants the armour line repeated there
+too is a question I have not asked.
+
 ## v10.12 - THE LOADOUT SAVES ARE GONE
 
 His answer 5, 2026-09-03, to the numbered loadout SAVE slots: **"REMOVE IT,
