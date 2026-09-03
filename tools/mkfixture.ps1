@@ -5216,6 +5216,70 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.00',what:'every headgear in the wardrobe is drawn on the operator, and every hair and clothing colour has a swatch',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(typeof COSMETICS==='undefined'||typeof cosSwatch!=='function') return 'SKIP: no wardrobe in this build';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000;
+     var P2=__P(); var keepHat=P2.cosHat;
+     // EARN EVERYTHING FIRST. cosWorn refuses a locked hat and draws Bare
+     // instead, so an unearned crown or hood would read as "draws nothing".
+     var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,spClaimed:P2.spClaimed,xpLevel:P2.xpLevel};
+     P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.xpLevel=99;
+     P2.spClaimed=[]; for(var sc=0;sc<((typeof SEASON_TIERS!=='undefined')?SEASON_TIERS.length:0);sc++) P2.spClaimed.push(sc);
+     function unearn(){ P2.runs=keep.runs; P2.ext=keep.ext; P2.kills=keep.kills; P2.spClaimed=keep.spClaimed; P2.xpLevel=keep.xpLevel; }
+     // The head of the operator sprite, read off the world canvas after a real
+     // frame. Each headgear must change those pixels against Bare; on v9.99
+     // the four new ids fell through every branch and drew nothing.
+     var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv');
+     var wctx=cvs.getContext('2d');
+     function headPixels(){
+       for(var f=0;f<3;f++) __frame(0.016);
+       // Where he actually draws: his world position less the camera, which
+       // leads him. Measured at 1026,900 on a 1920x1080 frame, head at 865.
+       var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0));
+       sx=Math.max(40,Math.min(cvs.width-40,sx)); sy=Math.max(90,Math.min(cvs.height-20,sy));
+       return wctx.getImageData(sx-40,sy-90,80,110).data;
+     }
+     function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>40) d++; return d; }
+     P2.cosHat='none'; var bare=headPixels();
+     var hats=COSMETICS.filter(function(c){ return c.kind==='hat'&&c.id!=='none'; }), flat=[], drawn=0;
+     for(var i=0;i<hats.length;i++){
+       P2.cosHat=hats[i].id;
+       var px=headPixels(), d=diff(px,bare);
+       if(d<6) flat.push(hats[i].id+' ('+d+' px)'); else drawn++;
+     }
+     P2.cosHat=keepHat; unearn();
+     if(!drawn) return 'SKIP: no headgear changed the sprite at all, so the hero is not where this check looks';
+     if(flat.length) bad.push('headgear that draws nothing on the operator: '+flat.join(', '));
+     // Every hair and clothing colour has a colour in its table, so the swatch
+     // and the sprite have something to paint.
+     var noCol=[];
+     COSMETICS.forEach(function(c){
+       if(c.kind==='hair'&&!HAIRCOL[c.id]) noCol.push('hair '+c.id);
+       if(c.kind==='fit'&&!FITCOL[c.id]) noCol.push('clothing '+c.id);
+       if(c.kind==='skin'&&!SKINCOL[c.id]) noCol.push('skin '+c.id);
+     });
+     if(noCol.length) bad.push('wardrobe entries with no colour to paint: '+noCol.join(', '));
+     // And the other way: a colour in the table that the wardrobe never offers
+     // is a thing nobody can wear. On v9.99 that was ash and violet hair.
+     var orphan=[];
+     for(var hk in HAIRCOL) if(HAIRCOL.hasOwnProperty(hk)&&!COSMETICS.some(function(c){ return c.kind==='hair'&&c.id===hk; })) orphan.push('hair '+hk);
+     for(var fk in FITCOL) if(FITCOL.hasOwnProperty(fk)&&!COSMETICS.some(function(c){ return c.kind==='fit'&&c.id===fk; })) orphan.push('clothing '+fk);
+     if(orphan.length) bad.push('colours nobody can wear: '+orphan.join(', '));
+     // Every headgear has a swatch that is not the question mark, and a figure glyph.
+     var qm=[];
+     hats.forEach(function(c){ if(/>\?</.test(cosSwatch(c))) qm.push(c.id); });
+     if(qm.length) bad.push('headgear with no swatch, drawn as a question mark: '+qm.join(', '));
+     // CONTROL: the wardrobe grew. Fewer than nine headgear or seven hair
+     // colours means this build did not add what it says it added.
+     if(hats.length<9) bad.push('control: only '+hats.length+' headgear besides Bare');
+     if(COSMETICS.filter(function(c){ return c.kind==='hair'; }).length<7) bad.push('control: fewer than seven hair colours');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.99',what:'Appearance is a station of its own, opening a screen with the figure and the whole wardrobe',
    run:function(){
      var bad=[];
@@ -7420,7 +7484,7 @@ window.__REGRESS=[
      __forceSize(1920,1080);
      // v9.98 took the operator column and its scrolling picker off the stash
      // screen. Fill the stash so its own grid is the scrolling list.
-     (function(){ var P2=__P(); P2.stash=[]; for(var q=0;q<60;q++) P2.stash.push('scrap'); P2.kit=[]; P2.hotAssign={}; })();
+     (function(){ var P2=__P(); P2.stash=[]; for(var q=0;q<60;q++) P2.stash.push('scrap'); P2.kit=[]; P2.hotAssign={}; P2.stashTab='all'; })();
      __hubEnter();
      function spin(el,x,y,shift){
        var before=__P().menuZoom;

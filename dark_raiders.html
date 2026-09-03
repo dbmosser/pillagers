@@ -1234,7 +1234,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.99';
+var VER='10.00';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17854,6 +17854,11 @@ var COSMETICS=[
   {id:'mask',   name:'Dust Mask',      how:'runs:15',     kind:'hat'},
   {id:'visor',  name:'Cracked Visor',  how:'warden:1',    kind:'hat'},
   {id:'crown',  name:'Meridian Crown', how:'board:1',    kind:'hat'},
+  // v10.00, HIS NOTE: more of it.
+  {id:'beanie', name:'Watch Cap',      how:'runs:10',     kind:'hat'},
+  {id:'cap',    name:'Field Cap',      how:'extracts:8',  kind:'hat'},
+  {id:'bandana',name:'Bandana',        how:'extracts:15', kind:'hat'},
+  {id:'hood',   name:'Hood',           how:'warden:2',    kind:'hat'},
   // v5.66, his note. Owned from the start: this is a look, not a trophy. v7.26: and it
   // is a HAIRSTYLE, not headgear; it moved to the cut rack with the seven new ones.
   {id:'long',    name:'Long',          how:'always',      kind:'cut'},
@@ -17871,7 +17876,12 @@ var COSMETICS=[
   // the level is 1+floor(sqrt(xp/220)), so level 6 is about a HUNDRED runs. He
   // has 66 across the whole life of the project. Level 4 lands near forty.
   {id:'white',  name:'Bleached',       how:'level:4',     kind:'hair'},
-  {id:'green',  name:'Moss',           how:'buy:2500',    kind:'hair'},
+  {id:'green',  name:'Moss',           how:'runs:25',     kind:'hair'},
+  // v10.00: two colours that were in the table and never on the racks.
+  // 'ashen', not 'ash': cosFind looks an id up across every kind, and the
+  // clothing rack already has an 'ash'.
+  {id:'ashen',  name:'Ash',            how:'runs:8',      kind:'hair'},
+  {id:'violet', name:'Violet',         how:'level:3',     kind:'hair'},
   // v6.46, his note. Owned from the start, every one of them: a body and a skin tone
   // are not rewards, and gating them would mean shipping a character creator that
   // tells most players they have not earned their own face yet.
@@ -17892,7 +17902,11 @@ var COSMETICS=[
   {id:'sand',      name:'Sand',        how:'always', kind:'fit'},
   {id:'ash',       name:'Ash Grey',    how:'always', kind:'fit'},
   {id:'indigo',    name:'Indigo',      how:'always', kind:'fit'},
-  {id:'teal',      name:'Teal',        how:'always', kind:'fit'}
+  {id:'teal',      name:'Teal',        how:'always', kind:'fit'},
+  // v10.00: three more, owned from the start like the rest of the clothing.
+  {id:'drab',      name:'Olive Drab',  how:'always', kind:'fit'},   // 'olive' is a skin
+  {id:'charcoal',  name:'Charcoal',    how:'always', kind:'fit'},
+  {id:'bone',      name:'Bone',        how:'always', kind:'fit'}
 ];
 // dark, lit, highlight. The figure is 15px across, so three tones is the whole
 // range the head has room for.
@@ -17904,14 +17918,15 @@ var SKINCOL={porcelain:'#f7ddc2',fair:'#f2d2a8',olive:'#d8ab7a',tan:'#c08a56',
 // lit from above the way the rig colours did.
 var FITCOL={slate:['#3d4450','#59626f'],moss:['#3f5136','#5b7350'],rust:['#5e3326','#875040'],
             oxblood:['#4a2130','#6b3448'],sand:['#6b5a3c','#907c56'],
-            ash:['#3a3d42','#565a61'],indigo:['#2f3560','#464f87'],teal:['#1f4a49','#31706c']};
+            ash:['#3a3d42','#565a61'],indigo:['#2f3560','#464f87'],teal:['#1f4a49','#31706c'],
+            drab:['#4a4a2e','#6b6b44'],charcoal:['#24262b','#3a3d44'],bone:['#8c8570','#b5ac93']};
 // BUILD changes the silhouette: shoulder width, hip width and how tall the head sits.
 var BODYBUILD={lean:{sh:1.00,hip:1.00,head:1.00},broad:{sh:1.18,hip:0.96,head:1.04},
             curved:{sh:0.94,hip:1.14,head:0.98}};
 var HAIRCOL={blonde:['#b8913f','#d9b257','#f2d98c'],dark:['#2f2830','#4d4048','#6e5d66'],
              red:['#7d3320','#ad5033','#d47a4e'],white:['#a8a59c','#ddd9cd','#f4f1e6'],
              green:['#4a5f3a','#6d8a52','#9ab472'],
-             ash:['#5a5350','#7d746f','#a29a93'],
+             ashen:['#5a5350','#7d746f','#a29a93'],
              violet:['#4b2f63','#6d4790','#9b6fc4']};
 function cosOwned(c){
   if(!c) return false;
@@ -18227,6 +18242,31 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillStyle='#c9962c'; rrF(hx2-7.2,ty-40.1,14.4,3.8,1);
       wc.fillStyle='#ffdc80'; wc.fillRect(hx2-6.4,ty-39.9,12.8,1.1);
       wc.fillStyle='#fff4cc'; wc.fillRect(hx2-1.6,ty-40.4,3.2,1.6);
+    } else if(HAT==='beanie'){
+      // v10.00: a knitted cap, a dome over the crown with a rolled brim.
+      wc.fillStyle=INK;       rrF(hx2-8.6,ty-41.4,17.2,7.2,5);
+      wc.fillStyle='#4a4f5a'; rrF(hx2-8,ty-40.9,16,6.2,4.4);
+      wc.fillStyle='#5c6270'; rrF(hx2-8.2,ty-36.4,16.4,2.2,1);
+      wc.fillStyle='#6f7684'; wc.fillRect(hx2-5.8,ty-40.3,4.4,0.9);
+    } else if(HAT==='cap'){
+      // a field cap: a low crown and a peak forward.
+      wc.fillStyle=INK;       rrF(hx2-8.4,ty-40.2,16.8,4.8,1.8);
+      wc.fillStyle='#5a5a3e'; rrF(hx2-7.8,ty-39.7,15.6,3.8,1.4);
+      wc.fillStyle=INK;       rrF(hx2-9.6,ty-36.6,10,2,1);
+      wc.fillStyle='#4a4a32'; rrF(hx2-9.2,ty-36.3,9.2,1.4,0.8);
+      wc.fillStyle='#7a7a56'; wc.fillRect(hx2-6.8,ty-39.4,5,0.9);
+    } else if(HAT==='bandana'){
+      // a bandana tied at the back: a band with a knot tail.
+      wc.fillStyle=INK;       rrF(hx2-8.4,ty-38.4,16.8,4.8,1.6);
+      wc.fillStyle='#8a2a2a'; rrF(hx2-7.8,ty-37.9,15.6,3.8,1.2);
+      wc.fillStyle='#b84040'; wc.fillRect(hx2-6.8,ty-37.6,6,1);
+      wc.fillStyle='#8a2a2a'; rrF(hx2+6.2,ty-36.2,3.4,4.6,1);
+    } else if(HAT==='hood'){
+      // a hood up: a hooded shape that wraps past the ears.
+      wc.fillStyle=INK;       rrF(hx2-10.4,ty-41.6,20.8,12.2,6);
+      wc.fillStyle='#2e3238'; rrF(hx2-9.8,ty-41.1,19.6,11.2,5.4);
+      wc.fillStyle='#3d424b'; rrF(hx2-9.2,ty-40.6,18.4,3,4);
+      wc.fillStyle='#14161b'; rrF(hx2-6.6,ty-35.2,13.2,5.4,3);
     }
 
   }
@@ -24689,7 +24729,7 @@ function hubWall(o,x,y,w,h,d){ o.push({x:x,y:y,w:w,h:h,d:d===undefined?0:d}); }
 // the build and the lift draw from exactly one list; two copies of these is how
 // the arriving faces would quietly drift from the standing ones.
 var HUB_SKINS=['porcelain','fair','olive','tan','bronze','umber','ebony'];
-var HUB_HAIRS=['blonde','dark','red','white','green','ash','violet'];
+var HUB_HAIRS=['blonde','dark','red','white','green','ashen','violet'];
 var HUB_CUTS=['crop','bob','long','bun','pigtails','mohawk','shaved','tail'];
 var HUB_HATS=['none','band','phones','mask','none','visor','pigtails','crown','none'];
 var HUB_FACEN=6;
@@ -26216,7 +26256,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.99: the Discount Fashion Depot. A new station on the Undercroft floor, bottom left, opens a screen of its own: your operator on the left, the whole of the racks on the right, every build, skin, hair, hairstyle, headgear and clothing at once. Cosmetics live there now.',
+  now:'v10.00: nine more things on the racks at the Discount Fashion Depot. A watch cap, a field cap, a bandana and a hood; Ash and Violet hair, which were in the game and never on the racks; Olive Drab, Charcoal and Bone clothing. Every one is drawn on you in the raid, on the figure, and on the racks. All of it is earned; nothing costs credits.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30435,7 +30475,12 @@ function cosSwatch(c){
              'width:'+Math.round(13*bb.hip)+'px;height:9px;background:#59626f;border-radius:2px"></span>'+
            '</span>';
   }
-  var f={none:'--',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC\u25AC',visor:'\u25AD',crown:'\u2662'}[c.id]||'?';
+  var f={none:'--',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC\u25AC',visor:'\u25AD',crown:'\u2662',
+         beanie:'\u2229',cap:'\u25E2',bandana:'\u25AC',hood:'\u2229'}[c.id]||'?';
+  var fbg={beanie:'#4a4f5a',cap:'#5a5a3e',bandana:'#8a2a2a',hood:'#2e3238'}[c.id]||'#1b1f26';
+  if(c.kind==='hat'&&fbg!=='#1b1f26')
+    return '<span style="display:inline-block;width:34px;height:34px;line-height:34px;text-align:center;'+
+           'border-radius:6px;background:'+fbg+';border:2px solid #14161b;font-size:15px;color:#e8e2d2">'+f+'</span>';
   return '<span style="display:inline-block;width:34px;height:34px;line-height:34px;text-align:center;'+
          'border-radius:6px;background:#1b1f26;border:2px solid #14161b;font-size:15px">'+f+'</span>';
 }
@@ -30444,8 +30489,10 @@ function cosSwatch(c){
 function avatarHTML(){
   var hair=cosWorn('hair'), hat=cosWorn('hat');
   var hc=HAIRCOL[hair]||HAIRCOL.blonde;
-  var hatGlyph={none:'',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC',visor:'\u25AD',crown:'\u2662'}[hat]||'';
-  var hatBg={none:'',band:'#c0503a',phones:'#22262e',mask:'#14161b',visor:'#a9682f',crown:'#c9962c'}[hat]||'';
+  var hatGlyph={none:'',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC',visor:'\u25AD',crown:'\u2662',
+                beanie:'\u2229',cap:'\u25E2',bandana:'\u25AC',hood:'\u2229'}[hat]||'';
+  var hatBg={none:'',band:'#c0503a',phones:'#22262e',mask:'#14161b',visor:'#a9682f',crown:'#c9962c',
+             beanie:'#4a4f5a',cap:'#5a5a3e',bandana:'#8a2a2a',hood:'#2e3238'}[hat]||'';
   var sk=SKINCOL[cosWorn('skin')]||SKINCOL.fair;
   var ft=FITCOL[cosWorn('fit')]||FITCOL.slate;
   var bd=BODYBUILD[cosWorn('build')]||BODYBUILD.lean;

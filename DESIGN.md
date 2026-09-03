@@ -40024,6 +40024,66 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.00 - NINE MORE THINGS TO WEAR
+
+His note, 2026-09-03: **"Build out the cosmetics system even more"**.
+
+### What there was
+
+Six headgear, one of them Bare. Five hair colours in the wardrobe, and two
+more, ash and violet, sitting in the colour table with no wardrobe entry, so
+nothing could ever wear them. Eight clothing colours. Three builds and seven
+skins, owned from the start by his v6.46 order, which stand.
+
+### What there is
+
+Nine more, and every one drawn in all three places a cosmetic shows: the
+operator sprite in the raid and on the Undercroft floor, the figure on the
+Appearance screen, and the wardrobe swatch.
+
+| kind | added | how |
+| --- | --- | --- |
+| headgear | Watch Cap, Field Cap, Bandana, Hood | ten runs; eight extracts; fifteen extracts; two Wardens |
+| hair | Ash, Violet | eight runs; level 3 |
+| clothing | Olive Drab, Charcoal, Bone | owned, like all clothing |
+
+His answers 15 and 16, the same morning: cosmetics are earned and nothing
+costs credits. So everything new is earned, and Moss hair, the one thing on
+the racks with a price since v6.46, is earned now too, at twenty-five runs.
+Clothing stays owned from the start, like the builds and the skins, by his
+v6.46 order.
+
+### Measured
+
+The check deploys a raid, clears the map, and reads the pixels around the
+operator's head off the world canvas after a real frame, once with Bare and
+once with each headgear in the wardrobe; any headgear that changes fewer than
+six pixels against Bare draws nothing; the profile is made to have earned
+everything first, because cosWorn draws Bare for a locked hat. On v9.99 the
+finding as measured is two colours nobody could wear, ash and violet, and five
+headgear besides Bare; the drawing test is what keeps the four new hats honest,
+and it took two tries to aim it, first at the screen centre where the hero is
+not, then at hats the profile had not earned. It also
+requires every hair, skin and clothing entry to have a colour in its table,
+every colour in the hair and clothing tables to be wearable, and every headgear
+to have a swatch that is not the question mark; the controls are the counts,
+which fail on any build that did not add what this one says it added.
+
+### The full run
+
+139 of 140 passed. The one that could not run was v9.67, the station wheel
+check, which filled the stash with sixty scrap since v9.98 and still found
+nothing to scroll: an earlier check in the run leaves the stash tab on GUNS,
+and sixty scrap under GUNS is an empty grid. It passes alone. The fill sets
+the tab to ALL now, and the check ran green again on its own before this
+build was committed.
+
+Not verified: how the four hats read at raid zoom on his monitor; they are
+built from the same rounded rectangles as the visor and the crown, at the same
+size, and the check proves they draw, not that they look like what they are
+named. Not verified: the gates, which are mine; he said earned and did not say
+how much.
+
 ## v9.99 - DISCOUNT FASHION DEPOT
 
 His note, 2026-09-03: **"Cosmetics should move to their own screen and their
