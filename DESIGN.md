@@ -40024,6 +40024,48 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.96 - A DOSE FROM THE BAR PAYS
+
+His note, 2026-09-03: **"using Liquor or Blotter should give a small XP boost
+per stack while the effect is occurring"**.
+
+### What a dose did
+
+XP was written in three places, the run's progress at the end of a raid and the
+two salvage sales in the stash, and none of them asked what was in his blood.
+A dose slowed his hands and bent his aim and paid nothing.
+
+### What it does
+
+One writer, addXp, takes every grant and multiplies it by the bar's bonus: five
+percent a dose, liquor and blotter counted together, ten doses at most, so the
+ceiling is half again. It is only ever more than one while a dose is live,
+because buzzDoses counts what tickBuzz has not yet expired. It is a dial,
+buzzXp. He sees it in three places: the bar's IN YOUR BLOOD tag says XP +N%,
+the raid's conditions row says it beside each dose's clock, and the sell-all
+line says what it paid when it paid more.
+
+### Measured
+
+The check runs the same run record sober, with two doses, ten and twelve, and
+requires 10 percent, 50 percent, and no more past ten; the dial at zero must
+give the sober number back. Then it sells one loose scrap with two doses in the
+blood and requires the sale to pay 10 percent more XP. Then it reads the bar
+and requires XP +10% beside two doses of liquor. On v9.95 the run paid the same
+with two doses as sober, which is the finding.
+
+### Also in this build: the what-is-new card
+
+The full run failed one check, v9.19: the card he sees on first load stood at
+v9.80 against a build at v9.96, sixteen builds stale, because I had been
+writing the one-line "now" and never the card. It is rewritten for what he will
+feel since v9.80, nine lines in the card's own voice, and keyed to this build.
+
+Not verified: whether five percent is the "small" he meant, or whether he wants
+the bonus to bite harder to make the bar worth the slowed hands. Not verified:
+the conditions row's new text against its column width at 4K, which the v9.56
+family of checks measures for the clock but not for this row.
+
 ## v9.95 - THE WHEEL: ZOOM, CTRL-WHEEL HUD SIZE, AND MENUS THAT SCROLL
 
 His notes, 2026-09-03: **"during a raid, mouse wheel should zoom, but ctrl and

@@ -5216,6 +5216,62 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.96',what:'a dose from the bar pays more XP per dose while it lasts, on the run and on a sale',
+   run:function(){
+     var bad=[];
+     if(typeof addProgress!=='function'||typeof spForRun!=='function'||typeof xpForRun!=='function') return 'SKIP: no progress functions in this build';
+     __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P();
+     var rec={outcome:'extract',containers:6,dist:3000,haul:1200,kills:{}};
+     function runPays(doses){
+       P2.buzz=[]; for(var i=0;i<doses;i++) P2.buzz.push({id:(i%2?'lsd':'liquor'),tag:(i%2?'lsd':'drunk'),t:120,dur:180});
+       P2.xp=1000; P2.profRaw=0;
+       var r2={}; for(var k in rec) r2[k]=rec[k];
+       addProgress(r2);
+       return (P2.xp||0)-1000;
+     }
+     var base=spForRun(rec)+xpForRun(rec);
+     if(!(base>0)) return 'SKIP: the run record is worth nothing, so nothing can be multiplied';
+     var sober=runPays(0), two=runPays(2), ten=runPays(10), twelve=runPays(12);
+     // THE FINDING. On v9.95 a run paid the same with two doses in his blood as sober.
+     if(sober!==base) bad.push('sober, the run paid '+sober+' against the '+base+' the rules add up to');
+     if(two<=sober) bad.push('with two doses in his blood the run paid '+two+', the same as sober');
+     else {
+       var want2=Math.round(base*1.10);
+       if(Math.abs(two-want2)>1) bad.push('two doses paid '+two+', not the '+want2+' that five percent a dose gives');
+       var want10=Math.round(base*1.50);
+       if(Math.abs(ten-want10)>1) bad.push('ten doses paid '+ten+', not '+want10);
+       if(twelve!==ten) bad.push('twelve doses paid '+twelve+' against ten paying '+ten+', so the bonus does not stop at ten');
+     }
+     // CONTROL: the dial at zero is the old game.
+     __cfg({buzzXp:0});
+     var off=runPays(2);
+     if(off!==sober) bad.push('control: with the dial at 0 two doses still paid '+off+' against '+sober);
+     __cfg({buzzXp:0.05});
+     // A SALE pays the same bonus. Sell all, one loose scrap, two doses.
+     P2.buzz=[{id:'liquor',tag:'drunk',t:120,dur:180},{id:'liquor',tag:'drunk',t:120,dur:180}];
+     // Whatever the button's own rule will sell: loose salvage with no use and
+     // not a crafting part. Scrap is a part and the button refuses it on purpose.
+     var pick=null;
+     if(typeof sellable==='function'&&typeof ival==='function')
+       for(var pk in ITEMS) if(ITEMS.hasOwnProperty(pk)&&sellable(pk)&&ival(pk)>0){ pick=pk; break; }
+     P2.stash=pick?[pick]:[]; P2.kit=[]; P2.hotAssign={}; P2.junk=[]; P2.xp=1000; P2.credits=0;
+     var sb=document.getElementById('sellall');
+     if(sb&&pick){
+       var v=ival(pick);
+       try{ sb.onclick(); }catch(e1){ bad.push('sell all threw: '+e1); }
+       var got=(P2.xp||0)-1000;
+       if(P2.credits!==v) bad.push('sell all paid $'+P2.credits+' for '+pick+' worth $'+v+', so this probe did not sell what it staged');
+       else if(got!==Math.round(v*1.10)) bad.push('selling '+pick+' worth '+v+' with two doses paid '+got+' XP, not '+Math.round(v*1.10));
+     } else bad.push('no sell-all button to drive, or nothing the button would sell');
+     // The bar says so. Two doses of liquor: IN YOUR BLOOD x2, XP +10%.
+     if(typeof renderBar==='function'){
+       try{ renderBar(); }catch(e2){}
+       var bl=document.getElementById('barlist'), bt=(bl&&bl.textContent)||'';
+       if(bt.indexOf('XP +10%')<0) bad.push('the bar does not say XP +10% beside two doses of liquor');
+     }
+     P2.buzz=[];
+     return bad.length?bad.join('; '):null; }},
   {v:'9.95',what:'in a raid the wheel zooms and ctrl-wheel sizes the HUD; inside a scrolling menu the wheel scrolls',
    run:function(){
      var bad=[];
