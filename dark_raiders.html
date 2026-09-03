@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.64';
+var VER='9.65';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4284,6 +4284,8 @@ id:'cold', name:'COLD STORAGE', beta:1, w:4200, h:3400,
 ground:{day:'#55647A',night:'#10151d'},
 wreckHues:['#7a3f38','#6d6a52','#8a6a3a','#5a6068','#46564a'],   // v7.91: warmer, civilian
 wreckDens:0.7, ruinDens:1.2,   // v7.93: swept floors, more collapsed racking
+  // Fewer vehicles inside a cold store, more of what a store keeps in its yard.
+  wreckMix:['car','skip','pallets','pallets','pipes','barrier'],
   story:{x:1900,y:360,name:'THE MANIFEST',
     text:'A clipboard, frozen to the desk: "Inventory, year one after departure: forty thousand tonnes of provisions, ownerless. The machines keep the cold chain unbroken. Nobody has told them to stop."'},
   veg:{r:0.88,g:0.92,b:1.12},   // v4.21: frost-bitten   // v4.20: cold blue concrete
@@ -4419,6 +4421,10 @@ ground:{day:'#5A6272',night:'#0d141f'},   // v7.91: harder steel than cold's con
   veg:{r:0.82,g:0.90,b:1.18},   // v7.91: deeper frost than cold storage
   wreckHues:['#3f5a6b','#2f4450','#46564a','#5a6068','#8a6a3a','#7a8a94','#33424e'],   // v7.91: cargo fleet
   wreckDens:1.3, ruinDens:0.85,   // v7.93: a mile of truck yards
+  // v9.65, his note, and he named this map: 487 wrecks and every one of them a
+  // car. A yard is skips, barriers, pipe stock and pallets with a few dead cars
+  // in it, not five hundred cars.
+  wreckMix:['car','skip','skip','barrier','pipes','pallets','pallets','barrier'],
   zones:[{"name":"RECEIVING APRON","d":0,"x":120,"y":120,"w":4180,"h":1040},{"name":"TALLY HALLS","d":1,"x":120,"y":1160,"w":4180,"h":1100},{"name":"FIRST RACKS","d":1,"x":120,"y":2260,"w":4180,"h":1340},{"name":"HOARFROST ROWS","d":0,"x":4640,"y":60,"w":1860,"h":3600},{"name":"FROST YARD","d":1,"x":6500,"y":60,"w":1140,"h":3600},{"name":"BLASTLINE","d":2,"x":7640,"y":60,"w":1300,"h":3600},{"name":"PUMP ROW","d":2,"x":60,"y":3940,"w":4300,"h":1200},{"name":"THE SUMPS","d":3,"x":60,"y":5140,"w":2300,"h":2400},{"name":"BRINE FLATS","d":1,"x":2360,"y":5140,"w":2000,"h":2400},{"name":"GANTRY YARD","d":2,"x":4640,"y":3940,"w":2300,"h":2400},{"name":"BREAKER ROWS","d":1,"x":6940,"y":3940,"w":2000,"h":2400},{"name":"THE OUTRAIL","d":3,"x":4640,"y":6340,"w":4300,"h":1200}],
   water:[{"x":1900,"y":1960,"w":340,"h":180},{"x":420,"y":3300,"w":340,"h":160},{"x":6800,"y":2050,"w":380,"h":300},{"x":4880,"y":3050,"w":500,"h":340},{"x":700,"y":5900,"w":900,"h":700},{"x":2500,"y":6420,"w":800,"h":480},{"x":6480,"y":5450,"w":300,"h":220},{"x":8520,"y":5750,"w":320,"h":240}],
   walls:[{"x":660,"y":770,"w":300,"h":52,"d":0},{"x":1080,"y":770,"w":260,"h":52,"d":0},{"x":1460,"y":770,"w":300,"h":52,"d":0},{"x":800,"y":930,"w":280,"h":48,"d":0},{"x":1200,"y":930,"w":300,"h":48,"d":0},{"x":1620,"y":930,"w":260,"h":48,"d":0},{"x":2300,"y":800,"w":300,"h":50,"d":0},{"x":2720,"y":800,"w":280,"h":50,"d":0},{"x":2470,"y":960,"w":320,"h":44,"d":0},{"x":2910,"y":960,"w":280,"h":44,"d":0},{"x":200,"y":2450,"w":900,"h":38,"d":1},{"x":1220,"y":2450,"w":800,"h":38,"d":1},{"x":2140,"y":2450,"w":520,"h":38,"d":1},{"x":200,"y":2600,"w":500,"h":38,"d":1},{"x":820,"y":2600,"w":900,"h":38,"d":1},{"x":1840,"y":2600,"w":760,"h":38,"d":1},{"x":340,"y":2750,"w":760,"h":38,"d":1},{"x":1220,"y":2750,"w":620,"h":38,"d":1},{"x":1960,"y":2750,"w":700,"h":38,"d":1},{"x":200,"y":2900,"w":640,"h":38,"d":1},{"x":960,"y":2900,"w":1040,"h":38,"d":1},{"x":2120,"y":2900,"w":360,"h":38,"d":1},{"x":300,"y":3050,"w":860,"h":38,"d":1},{"x":1280,"y":3050,"w":840,"h":38,"d":1},{"x":2240,"y":3050,"w":420,"h":38,"d":1},{"x":150,"y":2270,"w":1300,"h":30,"d":1},{"x":1590,"y":2270,"w":1200,"h":30,"d":1},{"x":2790,"y":2300,"w":30,"h":600,"d":1},{"x":2790,"y":3050,"w":30,"h":430,"d":1},{"x":7650,"y":240,"w":26,"h":560,"d":2},{"x":7650,"y":910,"w":26,"h":520,"d":2},{"x":7650,"y":1542,"w":26,"h":480,"d":2},{"x":4850,"y":1900,"w":480,"h":38,"d":0},{"x":5440,"y":1900,"w":460,"h":38,"d":0},{"x":4850,"y":2042,"w":260,"h":38,"d":0},{"x":5222,"y":2042,"w":678,"h":38,"d":0},{"x":4850,"y":2184,"w":560,"h":38,"d":0},{"x":5518,"y":2184,"w":382,"h":38,"d":0},{"x":4850,"y":2326,"w":300,"h":38,"d":0},{"x":5266,"y":2326,"w":634,"h":38,"d":0},{"x":4850,"y":2468,"w":520,"h":38,"d":0},{"x":5474,"y":2468,"w":426,"h":38,"d":0},{"x":6700,"y":1000,"w":420,"h":52,"d":1},{"x":7050,"y":1450,"w":380,"h":48,"d":1},{"x":6750,"y":2460,"w":460,"h":56,"d":1},{"x":7260,"y":300,"w":300,"h":44,"d":1},{"x":6650,"y":400,"w":500,"h":54,"d":1},{"x":4850,"y":1450,"w":600,"h":50,"d":0},{"x":5560,"y":1430,"w":520,"h":46,"d":0},{"x":5950,"y":2900,"w":500,"h":52,"d":0},{"x":5990,"y":3120,"w":460,"h":48,"d":0},{"x":6560,"y":2760,"w":480,"h":26,"d":1},{"x":7160,"y":2760,"w":440,"h":26,"d":1},{"x":7700,"y":3330,"w":540,"h":50,"d":2},{"x":8350,"y":3350,"w":440,"h":46,"d":2},{"x":130,"y":4088,"w":900,"h":38,"d":2},{"x":1160,"y":4088,"w":1100,"h":38,"d":2},{"x":2400,"y":4088,"w":1300,"h":38,"d":2},{"x":3820,"y":4088,"w":380,"h":38,"d":2},{"x":3450,"y":4700,"w":320,"h":38,"d":2},{"x":3900,"y":4700,"w":250,"h":38,"d":2},{"x":3450,"y":4850,"w":180,"h":38,"d":2},{"x":3750,"y":4850,"w":400,"h":38,"d":2},{"x":3450,"y":5000,"w":420,"h":38,"d":2},{"x":3980,"y":5000,"w":170,"h":38,"d":2},{"x":240,"y":5200,"w":560,"h":52,"d":3},{"x":950,"y":5200,"w":700,"h":52,"d":3},{"x":1830,"y":5200,"w":480,"h":52,"d":3},{"x":2100,"y":5500,"w":50,"h":480,"d":3},{"x":2100,"y":6120,"w":50,"h":380,"d":3},{"x":2380,"y":6440,"w":500,"h":38,"d":1},{"x":3000,"y":6440,"w":450,"h":38,"d":1},{"x":2380,"y":6600,"w":300,"h":38,"d":1},{"x":2810,"y":6600,"w":640,"h":38,"d":1},{"x":2380,"y":6760,"w":670,"h":38,"d":1},{"x":3170,"y":6760,"w":280,"h":38,"d":1},{"x":2460,"y":7050,"w":520,"h":46,"d":1},{"x":3120,"y":7050,"w":340,"h":46,"d":1},{"x":620,"y":6740,"w":38,"h":360,"d":3},{"x":620,"y":7230,"w":38,"h":210,"d":3},{"x":4860,"y":4560,"w":540,"h":52,"d":2},{"x":5540,"y":4560,"w":680,"h":52,"d":2},{"x":6360,"y":4560,"w":420,"h":52,"d":2},{"x":4980,"y":4760,"w":640,"h":44,"d":2},{"x":5770,"y":4760,"w":520,"h":44,"d":2},{"x":6410,"y":4760,"w":370,"h":44,"d":2},{"x":4820,"y":4960,"w":460,"h":56,"d":2},{"x":5420,"y":4960,"w":700,"h":56,"d":2},{"x":6280,"y":4960,"w":500,"h":56,"d":2},{"x":4920,"y":5170,"w":560,"h":48,"d":2},{"x":5610,"y":5170,"w":480,"h":48,"d":2},{"x":6240,"y":5170,"w":540,"h":48,"d":2},{"x":8320,"y":4200,"w":480,"h":38,"d":1},{"x":8400,"y":4360,"w":460,"h":38,"d":1},{"x":8320,"y":4520,"w":420,"h":38,"d":1},{"x":8440,"y":4680,"w":420,"h":38,"d":1},{"x":6892,"y":4100,"w":28,"h":900,"d":1},{"x":6892,"y":5140,"w":28,"h":800,"d":1},{"x":4820,"y":6440,"w":1400,"h":26,"d":3},{"x":6370,"y":6440,"w":1300,"h":26,"d":3},{"x":7810,"y":6440,"w":1000,"h":26,"d":3},{"x":4900,"y":7260,"w":1500,"h":30,"d":3},{"x":6560,"y":7260,"w":1300,"h":30,"d":3},{"x":8000,"y":7260,"w":840,"h":30,"d":3},{"x":4820,"y":7420,"w":1200,"h":30,"d":3},{"x":6200,"y":7420,"w":1500,"h":30,"d":3},{"x":7850,"y":7420,"w":990,"h":30,"d":3},{"x":4332,"y":360,"w":24,"h":1560,"d":0},{"x":4332,"y":2100,"w":24,"h":1500,"d":0},{"x":4332,"y":4000,"w":24,"h":1650,"d":2},{"x":4332,"y":5810,"w":24,"h":1430,"d":2},{"x":4644,"y":520,"w":24,"h":1280,"d":1},{"x":4644,"y":1950,"w":24,"h":1660,"d":1},{"x":4644,"y":3990,"w":24,"h":1360,"d":3},{"x":4644,"y":5540,"w":24,"h":1620,"d":3},{"x":480,"y":3632,"w":1700,"h":24,"d":0},{"x":2360,"y":3632,"w":1900,"h":24,"d":0},{"x":4740,"y":3632,"w":1560,"h":24,"d":1},{"x":3040,"y":3944,"w":1200,"h":24,"d":2},{"x":4760,"y":3944,"w":1900,"h":24,"d":3},{"x":6840,"y":3944,"w":1640,"h":24,"d":3}],
@@ -4628,7 +4634,20 @@ function buildFixedMap(def){
     for(q3=0;q3<wrecks.length;q3++){ var PW3=wrecks[q3];
       if(wx3<PW3.x+PW3.w+40&&wx3+ww3>PW3.x-40&&wy3<PW3.y+PW3.h+40&&wy3+wh3>PW3.y-40){ okW=false; break; } }
     if(!okW) continue;
-    var wrk={x:wx3,y:wy3,w:ww3,h:wh3,d:1,wreck:1,
+    // v9.65: WHAT THIS PIECE OF COVER ACTUALLY IS. From a hash of where it sits,
+    // never from rnd(), because the map is a pure function of its seed and one
+    // extra draw here would move every container and every machine placed after
+    // it. Same trick as bldFloor at v9.48.
+    // Math.imul, not *, and this is not a style preference. A plain multiply of
+    // two 32 bit values passes 2^53 and JavaScript rounds the LOW bits away, so
+    // the first cut of this put 485 of the 487 wrecks on the mile into the first
+    // slot of the list. imul keeps all 32 bits, which is the whole reason it is
+    // in the language.
+    var _wh=(Math.imul(Math.round(wx3),374761393)^Math.imul(Math.round(wy3),668265263))>>>0;
+    _wh=Math.imul(_wh^(_wh>>>15),2246822519)>>>0;
+    _wh=(_wh^(_wh>>>13))>>>0;
+    var _WKINDS=def.wreckMix||['car','car','skip','barrier','pipes','pallets'];
+    var wrk={x:wx3,y:wy3,w:ww3,h:wh3,d:1,wreck:1,kind:_WKINDS[_wh%_WKINDS.length],
              // Warm mid browns read as leather at this size. Automotive paint, faded.
              hue:pick(def.wreckHues||['#7a3f38','#3f5a6b','#5a6068','#2f4450','#6d6a52','#8a6a3a','#46564a']),
              rust:rnd(0,1),flip:rr()<.5?1:-1,vert:wVert};
@@ -18876,6 +18895,65 @@ var SHD=G.shells[i];
         var x=Math.min(xa,xb),y=Math.min(ya,yb),w=Math.abs(xb-xa),h=Math.abs(yb-ya);
         wc.fillStyle=col; rrF(x,y-lift,w,h,rad===undefined?2:rad);
       }
+      // v9.65: FIVE KINDS OF COVER, not one. His note: "too many old cars on map,
+      // create more unique outdoor cover pieces instead". Everything above this
+      // line is shared, because a skip and a car cast the same contact shadow and
+      // live on the same local axes; only the thing drawn on top differs.
+      var _WK=CR.kind||'car';
+      if(_WK==='skip'){
+        // A STEEL SKIP. No wheels at all, which is the whole silhouette argument:
+        // the car reads as a car because of four studs poking out of its sides, so
+        // the thing that must not read as a car has none.
+        box(-0.01,-0.02,1.01,1.02,15,INK,2);
+        box(0,0,1,1,14,darkHex(CR.hue,0.30),1.5);
+        box(0.02,0.05,0.98,0.95,17,darkHex(CR.hue,0.12),1);
+        // ribs across the short axis, which is what a skip has and a car does not
+        for(var _sr=0.14;_sr<0.92;_sr+=0.155) box(_sr,0.03,_sr+0.035,0.97,18,'rgba(16,14,12,.42)',0);
+        // the lip at the open end, and the rim all the way round
+        box(0,0,0.10,1,20,darkHex(CR.hue,0.05),1);
+        box(0,0,1,0.055,19,'rgba(255,250,240,.10)',0);
+        box(0,0.945,1,1,19,'rgba(16,14,12,.35)',0);
+        box(0.18,0.20,0.62,0.66,18,'rgba(150,80,40,'+(0.14+0.30*CR.rust).toFixed(2)+')',2);
+      } else if(_WK==='barrier'){
+        // CONCRETE BARRIERS, three of them in a row with dark joints. Pale, which
+        // is the point: everything else out here is a dark warm mass and this is
+        // the one piece of cover that reads at a glance in bad light.
+        box(-0.01,-0.02,1.01,1.02,11,INK,1.5);
+        for(var _bi=0;_bi<3;_bi++){
+          var _b0=_bi/3+0.012, _b1=(_bi+1)/3-0.012;
+          box(_b0,0.02,_b1,0.98,10,'#8e8b82',1.5);
+          box(_b0,0.02,_b1,0.30,12,'#a5a299',1);      // the sloped face catching light
+          box(_b0,0.80,_b1,0.98,10,'rgba(16,14,12,.30)',1);
+        }
+        box(0.30,0.34,0.52,0.60,12,'rgba(150,80,40,'+(0.10+0.22*CR.rust).toFixed(2)+')',1);
+      } else if(_WK==='pipes'){
+        // A BUNDLE OF PIPE. Three capsules along the long axis with dark open
+        // ends, so from overhead it is unmistakably tube and not bodywork.
+        box(-0.01,-0.02,1.01,1.02,9,INK,3);
+        var _pc=darkHex(CR.hue,0.18), _pl='rgba(255,250,240,.13)';
+        for(var _pi=0;_pi<3;_pi++){
+          var _v0=_pi/3+0.02, _v1=(_pi+1)/3-0.02;
+          box(0.01,_v0,0.99,_v1,10+_pi*2,_pc,6);
+          box(0.03,_v0+0.03,0.97,_v0+0.09,11+_pi*2,_pl,3);      // the top of the curve
+          box(0.005,_v0+0.02,0.055,_v1-0.02,11+_pi*2,'rgba(10,9,8,.85)',3);   // open end
+          box(0.945,_v0+0.02,0.995,_v1-0.02,11+_pi*2,'rgba(10,9,8,.85)',3);
+        }
+        box(0.44,-0.02,0.50,1.02,17,'rgba(40,34,28,.75)',0);    // the strap holding it
+      } else if(_WK==='pallets'){
+        // STACKED CRATES ON A PALLET. An eight square grid with strapping across
+        // it: nothing else in this world is a regular grid from above.
+        box(-0.01,-0.02,1.01,1.02,9,INK,1.5);
+        box(0,0,1,1,8,'#5a4a34',1);                              // the pallet
+        for(var _gx=0;_gx<4;_gx++) for(var _gy=0;_gy<2;_gy++){
+          var _c0=_gx/4+0.02, _c1=(_gx+1)/4-0.02;
+          var _d0=_gy/2+0.04, _d1=(_gy+1)/2-0.04;
+          box(_c0,_d0,_c1,_d1,15+((_gx+_gy)%2)*2,'#8a6a42',1.5);
+          box(_c0+0.01,_d0+0.03,_c1-0.01,_d0+0.10,16+((_gx+_gy)%2)*2,'rgba(255,250,240,.12)',1);
+        }
+        box(-0.01,0.44,1.01,0.50,19,'rgba(30,26,22,.7)',0);      // strapping
+        box(0.24,-0.01,0.30,1.01,19,'rgba(30,26,22,.7)',0);
+        box(0.70,-0.01,0.76,1.01,19,'rgba(30,26,22,.7)',0);
+      } else {
       // Wheels FIRST, under the body, and deliberately proud of it on both sides so the
       // silhouette from straight above is unmistakably a vehicle.
       // Captured a frame of the first attempt and only TWO wheels were visible, sitting
@@ -18925,6 +19003,7 @@ var SHD=G.shells[i];
       // Roof highlight, one strip along the top so the deck reads as metal.
       // darkHex only darkens, so a highlight has to be an overlay rather than a shade.
       box(cabA+0.02,0.16,cabB-0.02,0.24,21,'rgba(255,252,244,.13)',1);
+      }
     } else if(it.w&&it.w.furn){
       // Furniture: a table (top face on legs) or a shelf unit (tall face with
       // strata). Same three-value language as everything else.
@@ -25317,7 +25396,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.64: the pillager board is ranked by what each man is carrying, richest first, and it reorders the moment one haul passes another. It was in spawn order, so on the mile the ten names it had room for were ten arbitrary ones.',
+  now:'v9.65: the outdoor cover on the mile was 487 wrecked cars and nothing else. It is skips, concrete barriers, pipe bundles, stacked pallets and a few cars now. Not one wall moved: only what is drawn on it changed.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

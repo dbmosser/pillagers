@@ -39761,3 +39761,79 @@ and that the input is live, not that the movement between frames looks like
 anything but a jump. Not verified: whether pinning YOU first is still what he
 wants now that the rest is ranked. His v3.53 ruling says yes and I have not
 reopened it, but he may have meant the whole list.
+
+## v9.65 - THE OUTDOOR COVER WAS 487 CARS AND NOTHING ELSE
+
+His report: **"too many old cars on map, create more unique outdoor cover pieces
+instead (on the mile map)"**.
+
+Counted, seed 4242:
+
+| | wrecks | ruins |
+| --- | --- | --- |
+| **THE COLD MILE** | **487** | 101 |
+| COLD STORAGE | 56 | 23 |
+
+Four hundred and eighty seven cars, and every one of them the same object: a
+rectangle between 46 and 62 long by 23 and 28 wide, in one of seven paint
+colours, drawn by one branch of the renderer. All the variety it had was
+orientation, a size inside a narrow band, and a hue. **That is not five hundred
+pieces of cover, it is one piece of cover five hundred times.**
+
+### Five kinds now, and the car is one of them
+
+| kind | what it is |
+| --- | --- |
+| car | the existing drawing, wheels proud of the body, hood and boot |
+| skip | a ribbed steel box with a lip and **no wheels at all** |
+| barrier | three pale concrete blocks with dark joints |
+| pipes | a bundle of three capsules with dark open ends |
+| pallets | stacked crates, an eight square grid under strapping |
+
+After, on the same seed:
+
+| | skip | barrier | pallets | car | pipes |
+| --- | --- | --- | --- | --- | --- |
+| **THE COLD MILE** | 136 | 129 | 122 | 55 | 45 |
+| COLD STORAGE | 8 | 6 | 23 | 7 | 12 |
+
+The mile gets a yard mix, weighted to skips, barriers and pallets. Cold storage
+gets what a cold store keeps: pallets and pipe stock.
+
+### Not one wall moved, and that is the whole reason this was safe to ship
+
+Map generation is a pure function of its seed, and every container, machine and
+pillager is drawn from the same stream **after** the wrecks. Change a footprint
+and the collision rejections change, the number of draws changes, and the entire
+world moves: ents 85 and 369 and containers 157 and 589 stop meaning anything and
+every historical measurement in this project loses its baseline.
+
+So the **kind** comes from a hash of the wreck's own position, the way v9.48
+picks a building's floor, and it costs the stream nothing. Only what is drawn on
+the rectangle changed. Verified after: **ents 85 and 369, containers 157 and 589,
+487 and 56 pieces**, all unchanged.
+
+**My hash did not distribute on the first attempt: 485 of the 487 came back as
+the first entry in the list.** A plain `*` on two 32 bit values passes 2^53 and
+JavaScript rounds the low bits away, so `% 8` was almost always 0. `bldFloor` got
+away with the same shape because `% 5` reads higher bits. `Math.imul` keeps all
+32, which is what it is in the language for.
+
+### The check proves difference rather than my taste
+
+Data alone would pass a build where all five labels rendered the same car, which
+is exactly the bug he reported. So it draws the same rectangle as each of the
+five kinds in turn and requires every pair to differ by at least 250 pixels, with
+a control that the same kind drawn twice is identical. On v9.64 all ten pairs
+differ by **zero**.
+
+**My own control failed on both builds first**, because I reset the camera zoom
+between the samples and the control shot and compared a zoom-1 frame against
+zoom-5 ones.
+
+Not verified: whether the pipe bundle reads as pipes. I confirmed the car, the
+skip, the barrier and the pallets by eye in the world and could not find a pipe
+bundle on screen to look at; the check proves it draws differently from the other
+four, not that it looks like tube. Not verified: whether five kinds is enough for
+"maps feel samey", which is a bigger complaint than this build answers. This is
+the outdoor cover only; the buildings, the ground and the layout are untouched.

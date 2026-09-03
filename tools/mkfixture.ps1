@@ -5067,6 +5067,86 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.65',what:'the outdoor cover is five different things, and not one wall moved',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     __pinDPR(1); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __forceSize(1920,1080);
+     __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+     var g=__state(), m=g.map, p=g.player, i;
+     // PART ONE: THE MIX. Measured on v9.64: 487 wrecks on the mile and every
+     // single one of them a car.
+     var kinds={}, wrecks=[], W;
+     for(i=0;i<m.walls.length;i++){
+       W=m.walls[i];
+       if(!W.wreck) continue;
+       wrecks.push(W);
+       var k=W.kind||'car';
+       kinds[k]=(kinds[k]||0)+1;
+     }
+     if(wrecks.length<50) return 'SKIP: only '+wrecks.length+' wrecks on this map to judge a mix by';
+     var names=Object.keys(kinds);
+     if(names.length<4)
+       bad.push('the outdoor cover is '+names.length+' kind'+(names.length===1?'':'s')+
+                ' across '+wrecks.length+' pieces: '+names.map(function(k2){return k2+' '+kinds[k2];}).join(', '));
+     // AND NO KIND MAY SWAMP THE REST, which is the actual complaint. One kind at
+     // ninety percent is the thing he was looking at.
+     var top=0, topN='';
+     for(i=0;i<names.length;i++) if(kinds[names[i]]>top){ top=kinds[names[i]]; topN=names[i]; }
+     if(top>wrecks.length*0.6)
+       bad.push(topN+' is '+Math.round(top/wrecks.length*100)+' percent of all outdoor cover on this map');
+     // PART TWO: NOT ONE WALL MOVED. Map generation is a pure function of its
+     // seed and every container and machine is drawn from the same stream after
+     // the wrecks, so a footprint change here moves the whole world. These are
+     // the numbers this project has measured against since v9.30.
+     if(wrecks.length!==487)
+       bad.push('the mile has '+wrecks.length+' pieces of outdoor cover rather than 487, so a footprint moved');
+     if(g.ents.length!==369)
+       bad.push('the mile has '+g.ents.length+' entities rather than 369, so the seeded stream moved');
+     // PART THREE, AND IT IS THE ONE THAT MATTERS: the kinds have to DRAW
+     // differently. A mix of five labels that all render as the same car would
+     // pass everything above it and would be exactly the bug he reported.
+     var cv=document.getElementById('cv');
+     if(!cv) return 'no world canvas to read';
+     var c2=cv.getContext('2d');
+     var sub=wrecks[0];
+     p.x=sub.x+sub.w/2; p.y=sub.y+sub.h/2+60;
+     g.ents.length=0; p.iv=9999; p.downed=false;
+     __zoom.set(5.0,true);
+     __frame(0.016);
+     var sp=__w2s(sub.x+sub.w/2,sub.y+sub.h/2);
+     if(!sp) return 'SKIP: the sample piece did not land on screen';
+     var bx=Math.max(0,Math.round(sp.x-150)), by=Math.max(0,Math.round(sp.y-150));
+     var bw=Math.min(cv.width-bx,300), bh=Math.min(cv.height-by,300);
+     if(bw<40||bh<40) return 'SKIP: the sample box fell off the canvas';
+     var KS=['car','skip','barrier','pipes','pallets'], shots={}, ok=true;
+     for(i=0;i<KS.length;i++){
+       sub.kind=KS[i];
+       __frame(0.016);
+       shots[KS[i]]=c2.getImageData(bx,by,bw,bh).data;
+     }
+     function diff(a,b){
+       var d=0;
+       for(var q=0;q<a.length;q+=4)
+         if(Math.abs(a[q]-b[q])+Math.abs(a[q+1]-b[q+1])+Math.abs(a[q+2]-b[q+2])>18) d++;
+       return d;
+     }
+     // CONTROL: the same kind drawn twice must be identical, or every number
+     // below is noise and any two kinds would look different.
+     sub.kind='car'; __frame(0.016);
+     var again=c2.getImageData(bx,by,bw,bh).data;
+     __zoom.set(1,true);          // restored only now, with every reading taken
+     if(diff(shots.car,again)!==0)
+       bad.push('control: the same piece drawn twice differs, so nothing here is a measurement');
+     var same=[];
+     for(i=0;i<KS.length;i++) for(var j=i+1;j<KS.length;j++){
+       var dd=diff(shots[KS[i]],shots[KS[j]]);
+       if(dd<250) same.push(KS[i]+' and '+KS[j]+' differ by only '+dd+' pixels');
+     }
+     if(same.length)
+       bad.push('kinds that draw the same: '+same.join(', '));
+     return bad.length?bad.join('; '):null; }},
   {v:'9.64',what:'the pillager board is ranked by what each man is carrying',
    run:function(){
      var bad=[];
