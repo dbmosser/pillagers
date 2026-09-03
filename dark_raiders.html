@@ -1239,7 +1239,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.21';
+var VER='10.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1250,9 +1250,14 @@ var VER='10.21';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='10.14';
+var WHATSNEW_VER='10.22';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
+  'THE MENUS NEVER SHRINK BELOW THE SCREEN. The wheel still sizes them, and now says so, MENU SIZE 130%; the size cannot go below 1.0, so on a 4K monitor nothing is ever smaller than 1.9 times its 1080p size.',
+  'THREE NEW RACKS AT THE DEPOT: BEARD, EYES and FACE. Stubble, a goatee, a full beard, chops; six eye colours; a scar, freckles, mud, war paint, a black eye. Earned. SURPRISE ME dresses you from every rack and three LOOKS keep an outfit.',
+  'THE PILLAGERS DRESS FROM THE SAME RACKS you do, hair, hats, beards, eyes and faces, so no two look alike.',
+  'A DOWNED PILLAGER CRAWLS FOR COVER, dragging himself to the nearest spot you cannot see, bleeding all the way.',
+  'THE MOUSE SAYS WHAT A PANEL WILL DO: a resize arrow at a corner, a move hand on a grip, a pointer on a button.',
   'THE STASH IS FIVE THINGS: the stash, your backpack, your hotbar, the safe pocket and the freebie kit. Everything else that crowded it is gone. The backpack is a grid of twelve cells there and in the raid, empty cells drawn.',
   'DAY OR NIGHT IS CHOSEN ON THE SECTOR PAGE at the lift, and every ascent starts on day. A night extraction pays twenty percent more XP. The armour warning is on that page too.',
   'THE DISCOUNT FASHION DEPOT is its own station in the Undercroft. Everything there is how you look, earned by playing and never bought; four new hats, two hair colours and three fits joined the racks.',
@@ -2140,7 +2145,7 @@ if(!P.packRefund&&P.pack>0){
 // v5.18: the v5.17 drop check wrote the whole bar from the drop kit and saved it.
 // That plan is not a plan he made, so it goes, once. Guns are separately
 // protected in hotbarSlots so nothing like it can bite again.
-if(P.hotAssignAuto){ P.hotAssign={}; delete P.hotAssignAuto; } if(!P.menuZoom)P.menuZoom=1.3; if(!Array.isArray(P.kit))P.kit=[]; if(!Array.isArray(P.dropKit))P.dropKit=[];
+if(P.hotAssignAuto){ P.hotAssign={}; delete P.hotAssignAuto; } if(!P.menuZoom)P.menuZoom=1.3; if(P.menuZoom<1)P.menuZoom=1;   /* v10.22: never below the screen */ if(!Array.isArray(P.kit))P.kit=[]; if(!Array.isArray(P.dropKit))P.dropKit=[];
 // BETA v1: one sector is offered, so a profile pointing at any other is moved
 // to the one that is. Not a display filter - the stored destination itself.
 if(typeof FIXED_MAPS!=='undefined'&&typeof mapOffered==='function'){
@@ -9649,7 +9654,7 @@ function hudSizeStep(dir){
   else { for(var _usj=UISCALES.length-1;_usj>=0;_usj--){ if(UISCALES[_usj]<_uc-0.001){ _uni=_usj; break; } } }
   if(_uni<0) _uni=(_ud>0)?UISCALES.length-1:0;
   if(UISCALES[_uni]!==_uc){
-    P.menuZoom=clamp((P.menuZoom||1)*UISCALES[_uni]/_uc,0.7,2.2);
+    P.menuZoom=clamp((P.menuZoom||1)*UISCALES[_uni]/_uc,1.0,2.2);   // v10.22: floor 1.0
     P.uiScale=UISCALES[_uni];
     saveProfile(); applyMenuZoom();
     try{ renderSettings(); }catch(_ue){}
@@ -26429,7 +26434,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.21: a ninth rack: FACE. A scar, freckles, mud, war paint and a black eye, earned, drawn on your face in the raid and on the figure; the pillagers wear them too.',
+  now:'v10.22: the menu size never goes below 1.0, so nothing in the Undercroft is ever smaller than the screen factor; the wheel says what size it set.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29352,7 +29357,9 @@ function fsSync(){
   b.textContent=fsOn()?'LEAVE FULLSCREEN':'GO FULLSCREEN';
 }
 function applyMenuZoom(){
-  var z=(P&&P.menuZoom)||1;
+  // v10.22, his note: never below 1.0, so nothing is ever smaller than the
+  // screen factor alone. His 4K stash was drawn at a size near 0.8.
+  var z=Math.max(1,(P&&P.menuZoom)||1);
   // v9.53: THE MENUS GET THE SCREEN FACTOR TOO. v8.88 gave it to the title
   // screen alone, so at 4K the title was 1.9 times the size of every menu behind
   // it and his sector page came out unreadable at maximum browser zoom.
@@ -29429,8 +29436,11 @@ document.addEventListener('wheel',function(e){
   var z=((P&&P.menuZoom)||1)+(e.deltaY<0?0.08:-0.08);
   // v8.75: 1.6 stopped the panels growing at 175 and 200 percent while the canvas
   // text kept going, which is exactly the "menus only get smaller" complaint.
-  P.menuZoom=Math.max(0.7,Math.min(2.2,Math.round(z*100)/100));
+  P.menuZoom=Math.max(1.0,Math.min(2.2,Math.round(z*100)/100));   // v10.22: floor 1.0
   saveProfile(); applyMenuZoom();
+  // v10.22: and say so. A notch over an empty stash shrank every menu without a
+  // word, and his profile kept it.
+  if(typeof hubToast==='function') hubToast('MENU SIZE '+Math.round(P.menuZoom*100)+'%');
 },{passive:false});
 document.getElementById('closetune').onclick=function(){ toggleTune(false); };
 document.getElementById('preA').onclick=function(){ applyPreset('A'); };
@@ -30537,7 +30547,7 @@ function renderSettings(){
     var _uc=uiScale(),_ni=-1;
     for(var _ui=0;_ui<UISCALES.length;_ui++){ if(UISCALES[_ui]>_uc+0.001){ _ni=_ui; break; } }
     if(_ni<0) _ni=0;   // past the top wraps to the bottom, as the cycle always did
-    P.menuZoom=clamp((P.menuZoom||1)*UISCALES[_ni]/_uc,0.7,2.2);
+    P.menuZoom=clamp((P.menuZoom||1)*UISCALES[_ni]/_uc,1.0,2.2);   // v10.22: floor 1.0
     P.uiScale=UISCALES[_ni];
     saveProfile(); applyMenuZoom(); renderSettings();
   };

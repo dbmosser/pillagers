@@ -5221,6 +5221,42 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.22',what:'the menu size never goes below 1.0, on the wheel, the Settings steps or the saved profile, and the wheel says what it did',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!(window.__hubEnter&&window.__P)) return 'SKIP: this build cannot be driven into the Undercroft';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(), keepMZ=P2.menuZoom, keepUI=P2.uiScale;
+     __hubEnter();
+     var hub=document.getElementById('hub');
+     function spin(dy){ var ev=new WheelEvent('wheel',{deltaY:dy,bubbles:true,cancelable:true,clientX:960,clientY:540}); document.body.dispatchEvent(ev); return P2.menuZoom; }
+     // THE FINDING. On v10.21 the wheel took the size down to 0.7 and the saved
+     // profile kept it there, and his stash at 4K was drawn at about 1.5 of 1080p.
+     P2.menuZoom=1.0; applyMenuZoom();
+     var down=spin(120);
+     if(down<1) bad.push('the wheel took the menu size below 1.0, to '+down);
+     P2.menuZoom=0.7; applyMenuZoom();
+     var z=parseFloat(hub.style.zoom)||0, tr=(typeof titleRes==='function')?titleRes():1;
+     if(z<tr*0.92-0.01) bad.push('a saved size of 0.7 draws the Undercroft at '+z.toFixed(2)+', below the screen factor '+(tr*0.92).toFixed(2));
+     // The profile itself: loading a size below 1.0 reads as 1.0.
+     // The loader is asynchronous (it reads storage and resolves later), so the floor it applies is read from its source rather than awaited.
+     if(String(loadProfile).indexOf(['menuZoom','<1)P.menuZoom=1'].join(''))<0) bad.push('the profile loader has no floor: a saved size below 1.0 would load as it was');
+     // The Settings steps: from the smallest UI step downward the size stays at or above 1.0.
+     P2.menuZoom=1.0; P2.uiScale=UISCALES[0];
+     if(typeof hudSizeStep==='function'){ try{ hudSizeStep(-1); }catch(e2){} if((P2.menuZoom||0)<1) bad.push('a size step took the size to '+P2.menuZoom); }
+     else bad.push('staging: no hudSizeStep to step the size with');
+     // The wheel says what it did.
+     P2.menuZoom=1.0; applyMenuZoom(); var t0=(typeof HUBSAY!=='undefined')?HUBSAY:null;
+     var up=spin(-120);
+     var tt=document.getElementById('hubtoast'); var said=(tt&&tt.textContent)||((typeof HUBSAY!=='undefined')?HUBSAY:'')||'';
+     if(!/MENU SIZE\s*\d+%/.test(said)) bad.push('the wheel changed the size and said nothing ("'+String(said).slice(0,40)+'")');
+     // CONTROL: upward still works, by the old notch, and the floor draws at the size asked for.
+     if(Math.abs(up-1.08)>0.001) bad.push('control: the wheel up from 1.0 gave '+up+', not 1.08');
+     P2.menuZoom=1.5; applyMenuZoom(); var z2=parseFloat(hub.style.zoom)||0;
+     if(Math.abs(z2-1.5*tr*0.92)>0.02) bad.push('control: a size of 1.5 draws the Undercroft at '+z2.toFixed(2)+', not '+(1.5*tr*0.92).toFixed(2));
+     P2.menuZoom=keepMZ||1.3; P2.uiScale=keepUI; try{ saveProfile(); }catch(e3){} applyMenuZoom();
+     return bad.length?bad.join('; '):null; }},
   {v:'10.21',what:'FACE is a ninth rack: six faces drawn on the sprite and the figure, with a swatch, and the pillagers wear them',
    run:function(){
      var bad=[];
@@ -6215,7 +6251,7 @@ window.__REGRESS=[
      gm.classList.remove('on');
      var floor=document.getElementById('hub')||document.body;
      var mz2=(__P().menuZoom||1);
-     wheel(floor,100,false);
+     wheel(floor,-100,false);   // v10.22: upward, because the size floors at 1.0 and this check starts there
      var mz3=(__P().menuZoom||1);
      if(Math.abs(mz3-mz2)<1e-6) bad.push('control: the wheel on the Undercroft floor no longer sizes the menus');
      return restore(bad.length?bad.join('; '):null); }},

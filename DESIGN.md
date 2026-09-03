@@ -40024,6 +40024,55 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.22 - THE MENU SIZE NEVER GOES BELOW THE SCREEN, AND THE WHEEL SAYS WHAT IT DID
+
+His note, 2026-09-03 about 17:25, with a screenshot of THE STASH on his 4K
+monitor: **"this text is still wayy to small"**. Every label on it is eleven
+to thirteen pixels on a 3840-wide screen.
+
+### Measured
+
+The Undercroft is zoomed by his menu size times the screen factor (1.9 at
+4K), so on a fresh profile the stash reads at about 2.3 times its 1080p
+size there. His screenshot shows it at about 1.5, which is a menu size near
+0.8: the floor was 0.7. The way down is the wheel, which he asked for at
+v3.57 and v9.67 and which stays: over any part of a menu that has no list
+to scroll, a notch resizes the menus by 0.08, and his screenshot is an empty
+stash, which has no list. Scrolling nothing shrank everything, silently, and
+the profile saved it.
+
+### Now
+
+- The size cannot go below 1.0: not from the wheel, not from the Settings
+  steps, and a saved profile below it loads as 1.0. Nothing is ever smaller
+  than the screen factor alone, which at 4K is 1.9 times 1080p size. His
+  0.8 reads as 1.0 the next time the game loads.
+- When the wheel changes the size, the Undercroft says so: MENU SIZE 130%.
+  A shrink is no longer silent.
+- The what-is-new card moves to v10.22 with everything since v10.14.
+
+The wheel itself is untouched: a list still scrolls, the floor and the
+headings still resize, SHIFT still scrolls, as his three notes on it asked.
+
+### Measured again
+
+The check drives the wheel down from 1.0 and requires the size to stay at
+1.0, sets 0.7 and requires the Undercroft drawn no smaller than the screen
+factor, saves 0.7 and requires it to load as 1.0, steps Settings downward and
+requires the same, requires the wheel's toast to name the size, and as the
+control requires the wheel up to give 1.08 and a size of 1.5 to draw at 1.5
+times the screen factor. On v10.21 the wheel took the size to 0.92 and kept
+going, which is the finding.
+
+Two older checks moved with it: v9.95's floor control now spins the wheel
+upward, since it started at 1.0 and the floor is 1.0; and the loader's floor
+is read from its source, because loadProfile resolves asynchronously and a
+synchronous check cannot await it.
+
+Not verified: what his menu size is on his profile, which I cannot read from
+here. If the text is still small for him at 1.0 or above, the default of
+1.3 needs raising at 4K and that is the next build in this line.
+
 ## v10.21 - FACE, THE NINTH RACK
 
 His answer 14, 2026-09-03, third of his categories: **face paint or scars**.
