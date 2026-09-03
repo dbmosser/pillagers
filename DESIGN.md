@@ -40024,6 +40024,142 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.73 - A BUILDING WAS LOSING ITS INTERIOR AS A PUNISHMENT FOR HAVING A SAFE IN IT
+
+### FIRST, A CORRECTION TO THE v9.72 NOTES
+
+I wrote there that something was bricking up doorways with a wall exactly the
+width of the gap, and named DOOR, the 68 unit interior doorway constant. That
+was wrong. The segment I measured was a WINDOW, and its 68 units came from
+`rnd(52,84)` in carveWindows. Windows are carved INTO a wall and never fill a
+gap, and the wall I was looking at had no doorway in it to fill.
+
+Building 6 was wrong too, and the fault was my ruler: I counted unreachable
+cells across the whole footprint including the wall band itself. Measured
+properly, flooding from the player's start at a cell size of 8, building 6 is
+entirely reachable, 617 interior cells and none unreachable.
+
+### WHAT IS ACTUALLY THERE
+
+Buildings 2 and 11 on THE COLD MILE are mostly reachable and hold one pocket
+each that is not: 484 cells and 625 cells. Every wall enclosing those pockets
+carries `lockWall`, and the rectangles match `map.locked` exactly.
+
+They are **THE BOND ROOM** and **THE DEEP FREEZE**. Authored, named, with a door
+you open with a key, and being shut is the entire point of them.
+
+`carveWindows` already knows this and refuses to put a window in a locked-room
+shell. The repair pass does not. It floods, finds floor it cannot walk to, and
+concludes the building is broken, so it deletes every partition that building
+owns and rewrites its plan to open. **A building was losing its authored
+interior as a punishment for containing a strongroom, and the strongroom was
+still locked afterwards, so the demolition achieved precisely nothing.**
+
+THE COLD MILE has 8 locked rooms. COLD STORAGE has 2.
+
+The fix is one sentence: a cell inside a locked room is not unreachable floor,
+it is a locked room. Measured at seed 4242:
+
+    THE COLD MILE   interiors demolished  12 -> 10    interior walls  180 -> 188
+
+
+
+### AND THE CREW FAN, WHICH TOOK FOUR ATTEMPTS AND THREE WRONG ANSWERS
+
+The re-baselined map re-sampled the v9.52 check onto different stands and it went
+red: 1 of 7 stands folded the fan, closest pair 60 units apart.
+
+**I guessed at the cause three times, and each guess was a plausible-looking part
+of the function rather than the part that was doing it.** The number came back as
+exactly 60 after every one of them, which should have told me sooner: a
+measurement that does not move when the thing it measures does is a measurement
+of something else.
+
+What finally worked was exposing `searchSector` to the harness so the picker
+could be driven directly with invented sightings, instead of only ever being
+observed through a whole raid. That took the guessing out of it, and it found two
+real faults on the way to the third.
+
+**FAULT ONE, real and fixed.** The claim set is one per sighting, and the
+sighting it was keyed to was whichever man reset it last. Each man carries his
+own last-seen point, and a crew that watched the same player from four positions
+has four of them tens of units apart, so every man past the first wiped the set,
+re-anchored it on himself, and took slot 0 again. Driven directly:
+
+    spread 0     arcs 1.257, 0, 2.513, 5.027   four slots     closest 134
+    spread 40    arcs 1.257, 0, 2.513, 0       two share 0    closest 80
+    spread 150   arcs 1.257, 0, 0, 0           three share 0  closest 205
+
+**FAULT TWO, real and fixed.** Giving every man his own slot fixed the arcs and
+not the distances, because the fan was drawn around EACH MAN'S OWN last-seen
+point. Five angles around four different centres is not a fan, it is four small
+fans that can overlap anywhere, and measured they did: four men with distinct
+slots still came out 42 units apart. The fan is now drawn around the episode's
+shared sighting, which is what "one claim set per sighting" was reaching for all
+along. After both: closest 134 at spreads of 0, 40 and 150 alike.
+
+**FAULT THREE, and it was mine.** Neither of those moved the stand. The
+diagnostic finally printed the folding pair: both men on the shared anchor, arcs
+3.770 and 16.8. 3.770 is slot 3. 16.8 is not a slot at all, it is
+`searchTick * 2.39996`, the golden-angle overflow a man gets when all five slots
+are already claimed.
+
+Four men cannot claim five slots once. They claim them repeatedly: a man who
+reaches his search point has `searchX` cleared and asks again, and the code
+handed him a NEW slot every time. **It never showed before because the drifting
+anchor used to wipe the set every few men, recycling slots by accident. Fixing
+fault one correctly removed that accident and let the set run dry.** A slot now
+belongs to a man for the length of the episode and he gets his own one back when
+he asks again. The overflow stays for a genuine sixth man.
+
+One more change, kept and honestly labelled: the last resort when all six radii
+along a man's ray are blocked used to be the sighting point itself, which every
+man in the crew shares. It is now half a radius along his own slot. I could not
+produce a stand where that was the cause of a fold, so it is a correction on
+principle rather than a measured fix, and `fanFloor 0` restores it.
+
+### AND ONE HUD RULE THE RE-BASELINE BROKE
+
+His rule from v9.66: "current pillagers and conditions should be smaller in the
+hud compared to the other stuff". On the moved map the conditions panel measured
+**103,664 square pixels against 102,782 for the vitals**, over the line by under
+one percent.
+
+That is invisible on screen and it is still a broken rule, and the reason it
+moved at all is that the panel is sized by its CONTENT. A rule that only holds
+while the contract list happens to be short is not being held at all.
+
+Its zoom goes 1.15 to 1.05, which puts it about 16 percent under the vitals, so
+ordinary variation in how much the panel has to say cannot push it back over.
+
+### THE COST, AND IT IS THE BIGGEST ONE THIS MONTH
+
+**The landing spot on THE COLD MILE moved from 8798,5698 to 350,3400**, the far
+corner of the same map, and the entity count went from 369 to 374.
+
+Traced rather than guessed. The landing spot is chosen against the wall list;
+this build keeps 8 more interior walls, so it picks differently. 84 buildings
+then sit far enough from the new spot to qualify as houses where 82 did before,
+and the crawler count is houses times 2.5. That is exactly the five extra
+bodies, and all five are crawlers: 219 to 224.
+
+So the seed 4242 fingerprint is re-baselined here, deliberately, for the third
+time: v9.30 for crawlers, v9.72 for containers, v9.73 for entities and the
+landing spot. **It is now ents 85 and 374, containers 157 and 576.** The gate
+exists to catch the stream moving BY ACCIDENT; this one is understood,
+reproduced in both directions with the dial, and written down.
+
+What that costs him: every seeded number I have ever quoted for THE COLD MILE
+was measured from a different starting corner and is no longer comparable. If
+that is a worse trade than two buildings keeping their walls, `lockedOk 0` puts
+all of it back exactly as it was, and he should say so.
+
+Not verified: whether the new landing corner is a good place to start a raid. It
+passed the same spawnClear rule the old one did, so it is a legal spot with the
+required distance from the extractions, but "legal" and "a good opening" are not
+the same thing and only he can say which this is. Also not verified: I have not
+walked into the two rescued buildings to see whether their interiors read better.
+
 ## v9.72 - ONE BLOCKED DOORWAY USED TO COST A BUILDING ITS WHOLE INTERIOR
 
 This is the standing finding that the game demolishes a fifth of its own

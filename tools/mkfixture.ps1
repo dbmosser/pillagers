@@ -982,6 +982,10 @@ window.__mouseState=function(){ return mouse; };
 //    hp, clear downed and set iv every step when the point of the test is the mechanic
 //    rather than the fight.
 window.__keysRef=function(){ return keys; };
+// v9.73: the crew search picker, callable on its own. The fan can otherwise only
+// be observed through a whole raid, which is how I twice guessed at why it folds
+// instead of driving the thing that folds it.
+window.__searchSector=function(e){ return searchSector(e); };
 window.__wx={list:function(){ return WEATHER; },cur:wx,VF:VF,AMBR:AMBR,ping:ping,pick:pickWeather};
 window.__music=function(){ tickMusic(); return {mode:musicMode(),wanted:musicWanted(),started:!!MUS.g,step:MUS.step,trkName:(MUS.trk?MUS.trk.name:null),themes:MUS_THEMES.length}; };
 window.__hudBox=function(){ return HUDBOX; };
@@ -1023,7 +1027,11 @@ window.__verify=function(opt){
   // The change is +27 on COLD STORAGE and +93 on THE COLD MILE, which is exactly
   // the number of crawlers each map gained, so every new entity is accounted for
   // and the containers are still 157 and 589.
-  var EXP=opt.ents||{0:85,1:369}, SEED=opt.seed||4242;
+  // v9.73: 369 to 374 on THE COLD MILE, deliberately. The locked-room fix keeps
+  // 8 more interior walls, the landing spot is chosen against the wall list and
+  // moved from 8798,5698 to 350,3400, so 84 buildings qualify as houses instead
+  // of 82, and crawlers are houses times 2.5. Five more bodies, all crawlers.
+  var EXP=opt.ents||{0:85,1:374}, SEED=opt.seed||4242;
   var R={pass:true,fail:[],notes:[]};
   function bad(m){ R.pass=false; R.fail.push(m); }
   function fresh(mi){ __resetCfg(); __pinDefaults(mi); }
@@ -5085,6 +5093,57 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.73',what:'a locked room is not a fault, so a building keeps its interior for having one',
+   run:function(){
+     var bad=[];
+     if(!(window.__movers&&__movers.buildNav)) return 'SKIP: no buildNav, the floor cannot be flooded';
+     __pinDPR(1); __forceSize(1920,1080);
+     function survey(dial){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __cfg({lockedOk:dial});
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       var g=__state(), B=g.map.buildings||[], WL=g.map.walls||[], LK=g.map.locked||[];
+       var parts=0, strip=0, stripWithLock=0;
+       for(var i=0;i<WL.length;i++) if(WL[i].ib!==undefined&&!WL[i].furn) parts++;
+       for(var b=0;b<B.length;b++){
+         var bb=B[b];
+         if(!bb.repaired) continue;
+         strip++;
+         // Does this stripped building actually contain one of the named rooms?
+         for(var l=0;l<LK.length;l++){
+           var L=LK[l];
+           if(L.x>=bb.x&&L.x+L.w<=bb.x+bb.w&&L.y>=bb.y&&L.y+L.h<=bb.y+bb.h){ stripWithLock++; break; }
+         }
+       }
+       return {buildings:B.length, stripped:strip, strippedHoldingALockedRoom:stripWithLock,
+               parts:parts, locked:LK.length};
+     }
+     var on=survey(1), off=survey(0);
+     // CONTROL ONE: both arms have to be the same map, or nothing below compares.
+     if(on.buildings!==84||off.buildings!==84)
+       return 'SKIP: THE COLD MILE did not build its 84 buildings';
+     // CONTROL TWO: there have to be locked rooms to be wrong about. If this map
+     // ever stops having them, every test below passes by being about nothing.
+     if(on.locked<1)
+       return 'SKIP: this map has no locked rooms, so there is nothing here to protect';
+     // THE FINDING. Measured on v9.72: buildings 2 and 11 on this map are mostly
+     // reachable and hold one pocket each that is not, 484 and 625 cells, walled
+     // by lockWall segments matching THE BOND ROOM and THE DEEP FREEZE exactly.
+     // The pass read a strongroom as a fault and tore out the whole floor plan.
+     if(on.strippedHoldingALockedRoom>0)
+       bad.push(on.strippedHoldingALockedRoom+' buildings still lose their interior while '+
+                'holding a locked room, which is a room that is shut on purpose');
+     // CONTROL THREE: the old behaviour must be reproducible, and it must be the
+     // thing being fixed. If the dial off does not strip MORE, this check is not
+     // measuring the locked rooms at all.
+     if(!(off.stripped>on.stripped))
+       bad.push('control: '+off.stripped+' buildings lose their interior with lockedOk off '+
+                'against '+on.stripped+' with it on, so the locked rooms are not what changed it');
+     // CONTROL FOUR: rescued means walls survived, not a flag flipped.
+     if(!(on.parts>off.parts))
+       bad.push('control: the map keeps '+on.parts+' interior walls with the fix on against '+
+                off.parts+' with it off, so nothing actually survived');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.72',what:'a blocked doorway costs one wall now, not the whole authored floor plan',
    run:function(){
      var bad=[];
@@ -5585,8 +5644,8 @@ window.__REGRESS=[
      // the numbers this project has measured against since v9.30.
      if(wrecks.length!==487)
        bad.push('the mile has '+wrecks.length+' pieces of outdoor cover rather than 487, so a footprint moved');
-     if(g.ents.length!==369)
-       bad.push('the mile has '+g.ents.length+' entities rather than 369, so the seeded stream moved');
+     if(g.ents.length!==374)
+       bad.push('the mile has '+g.ents.length+' entities rather than 374, so the seeded stream moved');
      // PART THREE, AND IT IS THE ONE THAT MATTERS: the kinds have to DRAW
      // differently. A mix of five labels that all render as the same car would
      // pass everything above it and would be exactly the bug he reported.
@@ -6467,12 +6526,19 @@ window.__REGRESS=[
        var seen=0; for(i=0;i<ch.length;i++) if(__los.clear(ch[i].x,ch[i].y,pp.x,pp.y)) seen++;
        if(seen) return null;
        for(var f2=0;f2<30;f2++) __ents(1/60);
-       var t=[]; for(i=0;i<ch.length;i++){ var e2=ch[i];
-         t.push({x:(e2.searchX===undefined?e2.tx:e2.searchX), y:(e2.searchY===undefined?e2.ty:e2.searchY)}); }
-       var cl=1e9;
+       var t=[], noPick=0;
+       for(i=0;i<ch.length;i++){ var e2=ch[i];
+         if(e2.searchX===undefined) noPick++;
+         t.push({x:(e2.searchX===undefined?e2.tx:e2.searchX), y:(e2.searchY===undefined?e2.ty:e2.searchY),
+                 arc:(e2.searchArc===undefined?null:+e2.searchArc.toFixed(3)),
+                 tx:Math.round(e2.tx), ty:Math.round(e2.ty)}); }
+       var cl=1e9, pair=null;
        for(i=0;i<t.length;i++) for(var j=i+1;j<t.length;j++){
-         var d=Math.hypot(t[i].x-t[j].x,t[i].y-t[j].y); if(d<cl) cl=d; }
-       return {closest:Math.round(cl), n:ch.length, readBack:__cfg().crewSearch};
+         var d=Math.hypot(t[i].x-t[j].x,t[i].y-t[j].y);
+         if(d<cl){ cl=d; pair=[t[i],t[j]]; } }
+       var G3=__state();
+       return {closest:Math.round(cl), n:ch.length, noPick:noPick, readBack:__cfg().crewSearch,
+               pair:pair, anchor:{x:Math.round(G3.searchSlotX),y:Math.round(G3.searchSlotY)}};
      }
      var A=arenas(8);
      if(A.length<4) return 'SKIP: only '+A.length+' usable stands on this map, too few to say anything';
@@ -6496,9 +6562,15 @@ window.__REGRESS=[
        if(on[i2].closest<worst) worst=on[i2].closest;
        if(on[i2].closest<=100) fold.push(on[i2].closest);
      }
+     var noPickTotal=0;
+     for(i2=0;i2<on.length;i2++) noPickTotal+=(on[i2].noPick||0);
+     var worstPair=null, wp=1e9;
+     for(i2=0;i2<on.length;i2++) if(on[i2].closest<wp){ wp=on[i2].closest; worstPair=on[i2]; }
      if(fold.length)
        bad.push(fold.length+' of '+on.length+' stands folded the fan, closest pairs '+
-                fold.join(', ')+' units apart, and the whole point of the fan is that they split up');
+                fold.join(', ')+' units apart, and the whole point of the fan is that they split up'+
+                ' (unchosen: '+noPickTotal+'; worst pair '+JSON.stringify(worstPair&&worstPair.pair)+
+                ' anchor '+JSON.stringify(worstPair&&worstPair.anchor)+')');
      // CONTROL TWO: a fan that scatters everyone to the horizon would pass the
      // test above and would not be a search either.
      if(worst>700)
