@@ -927,6 +927,7 @@ AND THE SECOND HALF OF THE STRETCH:
 | SNEAKERS ON THE BOOTS RACK | v10.47 | his note about 14:00: different shoes, Jordan 1, Jordan 11 and so on. Three pairs on the boots rack, earned: Chicago High-Tops (red, white sole, twenty runs), Concord Low-Tops (black, pale collar, white sole, twelve extracts), Bred High-Tops (black, red sole, level five). Boot colours grew a sole stop and a collar stop; the sprite draws them; the figure gets a sole border; swatches a sole strip. Check: on the rack, earned, sole colours, feet pixels red and pale as expected, figure and swatch soles; control: black boots draw no sole. Fails on a v10.46 fixture: "the boots rack is missing sneakchi, sneakcon, sneakbred" |
 | NIGHT IS DENSER | v10.48 | his note about 19:15, "night mode should have more enemy density since it pays better". Night paid 1.2x XP and spawned what day spawned. Now the machines come out nightDens times as many after dark, 1.35 by default, the crawler house floor included (as HEAVY PATROLS already does); day untouched, the pillagers keep their count, the bot takes the night too. At seed 4242 THE COLD MILE goes 337 to 445 machines (374 to 482 entities), COLD STORAGE 74 to 101. Check: day fingerprint 374, night at least 1.15x machines and 1.25x sentries with pillagers equal, dial at 1 equals day; the v9.30 house rule run by night. Fails on a v10.47 fixture: "night spawns 337 machines against 337 by day; it is not denser" |
 | HIS IN-GAME TEXT EDITS ARE PICKED UP PERMANENTLY | v10.49 | his order about 19:35, "IF i EDIT TEXT USING THE IN GAME TEXT EDITOR, YOU SHOULD PICK IT UP PERMANENTLY". The editor kept edits on the profile (P.txt, P.txp) and nothing carried them off his machine. The run report now carries TEXT EDITS and TEXT PATTERNS as JSON; the local collector lands it in exports/; tools/textdoc/pull-edits.ps1 merges the maps and import-text.ps1 -Map bakes them into the source by manifest row, or as the exact string. An edit sends a report the moment Enter is pressed; the Edit the words row and the editor are DEV_LOCAL only, so friends never see it. Every tick reads exports/ for edits first. Check: probe maps present and reading back, empty maps write nothing, header as control. Fails on a v10.48 fixture: "the run report carries no TEXT EDITS line, so an edit lives and dies in the browser" |
+| FACE MARKS AND BEARDS CLEAR OF THE EYES, BOOTS ARE BOOTS | v10.50 | his note about 19:20 on the Depot. Measured against the eye band (32.5 to 26.5 units up): freckles at 27.8 and 27.2 inside it, the scar 33.6 to 27.2 through the right eye, the stubble 1.7 into it, the goatee and the mud clipping it; the boots were the whole lower leg. Now freckles on the cheeks at 26.0 and 25.4, the scar on the outer cheek at 6.2 right, mud from 26.4, every beard from 26.2 or lower, the dust mask down to the chin, trousers a darker cut of the coat with the boot colour on the foot and a collar. Check: the eye band read off the whites, marks and beards below it, the scar outside it, two boot colours differing over at most 44 of 57 rows; control: the band itself. Fails on a v10.49 fixture: "the freckles start at row 145, inside the eye band that ends at row 165" |
 | STILL OPEN, from v10.40: niches plugged by furniture | OPEN | on THE COLD MILE a cells or spine plan sometimes leaves a pocket of interior floor behind a piece of furniture, 12x12 to 84x28 units, one per building on 13 of 15 seeds; the coarse repair cannot see anything narrower than 40 units. Cosmetic for a player; a fine detection with a size floor and the furniture layer would clear them. Not the sealed-building fault, which is closed |
 | ONE WORD FOR THE BACKPACK, AND THE HOTBAR RENAME FINISHED | v9.90 | v9.89's own Not verified line said the compact legend still called the backpack a bag. Read off every surface on v9.89 the thing you carry was named FOUR ways: "inventory" (full legend TAB row, controller VIEW row, the HUD hint "TAB  INVENTORY", two refusals), "bag" (compact legend, controller BACK row, "equip gun from bag", the armour rule card, five spoken lines, the Peddler's "SELL BAG", a searched pillager's "'S BAG", two guide cards, a settings hint), "kit" (three refusals "Kit is full"), and "backpack". And both controller legends still called the hotbar a BELT, which v9.89 missed. THE WORD IS BACKPACK, his word and the panel's. Twenty two strings, nothing that reads a profile or draws. Left alone on purpose: BAG OF FRAGS and BIGGER BAG OF FRAGS, which are Progress rewards and a literal bag, and the lore clipboard "Inventory, year one", a document in the world. The armour card line is 29 characters against the 32 it replaces, inside the box v8.4x measured. Check reads the compact legend, the full legend, the HUD hint, the controller table and the panel headings, needles from halves, and fails on a v9.89 fixture on all four surfaces at once. Ten of the 22 strings are proven on screen; the other twelve are spoken lines the harness has no cheap way to raise |
 | ONE WORD FOR THE HOTBAR | v9.89 | his rule, one word per thing, and his open line "I opens the BACKPACK, write the matching list of consistent definitions". On v9.88 the same nine keyed cells were named THREE ways to the player: "hotbar" in the legend, the bag hint, the item detail and his own answers 11 and 22; "Tactical belt" on the raid backpack heading and the Undercroft column heading, "your backpack plus your belt" under the raid backpack title, "off the belt and into the backpack" on the drag-off message, and "hotbar belt and inventory" on the ascent summary; "the bar" in the empty-slot prompt. THE WORD IS HOTBAR: his word, the legend's word, the keys' word. Six strings changed, nothing that reads a profile or draws. Belt stays inside the code, the raider-and-snitch trade. The vocabulary memory gains a section for what you carry. The check reads the surfaces as rendered text with needles assembled from halves, and fails on a v9.88 fixture on five surfaces at once |
@@ -1055,3 +1056,77 @@ Folded into the terminal build (v10.51): a sweep of the operator across the whol
 Verbatim: "(and obviously when we ship beta we should disable this feature bc we don't want friends modifying in game text)"
 
 Folded into v10.49: the Edit the words switch is his machine only (DEV_LOCAL), and the dial is forced off anywhere else, so a friend on itch never sees the editor.
+
+### HIS NOTE, 2026-09-03 about 19:40 (sound): "also work on improving sound whenever you get a chance -- guns, footsteps, robots, etc -- everything should sound unique and crisp like a triple-A game"
+
+Standing order, not a single build. Every sound the game makes is synthesised
+in the page (no files), so "unique and crisp" means one recipe per gun, per
+surface underfoot, per machine, with attack, body and tail that differ; not
+one bleep with a pitch dial. Queue: audit what each event schedules now
+(v2.48 taught that a sound can test green and never play, so the check is
+what the play path schedules, never the ear), then rebuild them one family
+per build: guns first (each gun its own voice), footsteps by surface (the
+fixture stubs tickPlayerSteps; restore before measuring), then the machines
+(crawler, sentry, the Listener), then hits, containers, UI. He is not asked
+to judge until a family ships.
+
+### HIS NOTE, 2026-09-03 about 19:50 (outfits): "add some fuill-body outfits to the cosmetics that overrule everything else -- like a skeleton, a robot, and a halo spartan"
+
+A new cosmetic slot, OUTFIT, above every other slot: when one is worn the
+painter draws the suit instead of skin, hair, beard, face marks, coat, legs
+and boots (hats and the mask are the open question; a helmet is part of the
+suit). Three to start: a skeleton (bone on black), a robot (plate and joints,
+one eye light), and an armoured trooper with a visored helmet (his word is
+spartan; the game's own design, not anyone's licensed suit). Each is a rack
+item in the Depot, earned like the rest, and the ALL COSMETICS cheat toggle
+(his 19:40 note) must cover them. Queued behind the terminal plinth fix and
+the cheat toggle, because the toggle is how he will try them.
+
+### HIS NOTE, 2026-09-03 about 19:55 (outfits, more): "2b from nier automata, lara croft, micheal jordan, 2pac"
+
+Four more for the OUTFIT slot. Two are licensed characters and two are real
+people, so the game gets its own versions of what they stand for, drawn by
+its painter and named in its own words: an android in a black dress and
+visor, a tomb explorer in a tank top with a braid and twin holsters, a
+baller in a red jersey and shorts, and a rapper in a bandana and vest. No
+licensed suit, no real person's face or name.
+
+### HIS NOTE, 2026-09-03 about 20:00: "'Search Crate, 1 Item left -- this text is too small"
+
+The container prompt in the raid. Queue: measure the label's rendered size at
+1920x1080 against the HUD scale rule (v10.4x) and raise it to the body size.
+
+### HIS NOTE, 2026-09-03 about 20:00: "sprint footprint glitch is still happening"
+
+"Still": a fix shipped earlier and did not take, or fixed the wrong thing.
+Queue: find the earlier footprint fix in DESIGN.md, reproduce the glitch on
+the play path with the live stepper (the fixture stubs tickPlayerSteps and
+the sim never draws prints), then fix the cause, with a control.
+
+### SOUND AUDIT, 2026-09-03 (from his 19:40 note): what the game plays today
+
+All audio is one synth, blip(type,d,pan,arg), lines ~3417-3823, 26 hand-written
+recipes, no shared envelope, no compressor or limiter, no master or SFX volume
+(BUS gain is a literal 1). Music has its own chain and plays only in the hub.
+- GUNS: 16 weapons, an FV table of 13 voices inside blip('shot'); magnum and
+  sniper have no entry and fall back to the rifle, so the two loudest guns are
+  the mid rifle. pistol/tacker, smg/sputter, shotgun/scuttle differ only by a
+  lowpass corner. Fixed pitch, no randomisation. No reload, dry-fire, or jam
+  sound exists at all.
+- FOOTSTEPS: tickPlayerSteps ~3134; five surfaces (stone, wood, metal, leaf,
+  water) in an SF table, fixed cadence (sprint .31, crouch .64, walk .45), the
+  only randomness is the metal ring. Enemy steps are two recipes (step,
+  stepHeavy) with no surface at all, one nearest enemy only.
+- MACHINES: VOICE table ~3354 (sentry servo, crawler skitter, snitch drone,
+  warden hydraul, listener dish, raider clank); bulwark has no voice; no enemy
+  death sound (clank only when the corpse is over 620 away); enemy hit = the
+  player's own hit sound.
+- OVERLOADED: pick (~70 sites: loot, doors, heals, every menu click), clank
+  (~35: grenades, roll, ricochet, refused action), alarm (spotted, siege,
+  touchdown, clock warning, nuke), hit (dealing and receiving), boom (frag,
+  howler, nuke, the player's death), charge (six telegraphs).
+- BUG: sfx('cache') at ~31285 and ~31380 names no recipe and plays nothing.
+Plan, one family per build: guns (own voice per gun, pitch jitter, reload and
+dry-fire), then footsteps (jitter, enemy surfaces), then machines (death, hit,
+bulwark), then the overloaded four split by event. Verified by what the play
+path schedules (oscillator types, frequencies, durations), never by ear.

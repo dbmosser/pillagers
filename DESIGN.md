@@ -40024,6 +40024,54 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.50 - THE FACE MARKS AND THE BEARDS SIT CLEAR OF THE EYES, AND BOOTS ARE BOOTS
+
+His note, 2026-09-03 about 19:20: **"some of the cosmetics look bad, atleast
+in the discount fashion depot (didn't test in other screens) -- freckles
+collide with eyes, scar collides with eyes, beard stubble is too high,
+collides with eyes -- shoes should be separate from pants"**.
+
+### What it was
+
+The painter draws the eyes as two ellipses centred 29.5 units above the feet
+with a half height of 3, so the eye band runs from 32.5 to 26.5 units up and
+5.9 units either side of the head's centre. Measured against that band: the
+freckles sat at 27.8 and 27.2 units, inside it; the scar ran from 33.6 to
+27.2 units at 2.2 units right of centre, straight through the right eye; the
+stubble started at 28.2 units, 1.7 into the band; the goatee at 27.8 and the
+mud at 27.6 clipped it too. The Depot shows the figure at 5.2 times raid size
+(v10.25), which is why he saw it there first; the raid draws the same thing
+smaller. And the boots were the whole lower leg from 11 units up to the
+ground, so a red boot was a pair of red trousers.
+
+### Now
+
+The freckles sit on the cheeks at 26.0 and 25.4 units, the scar stands on
+the outer cheek beside the eye at 6.2 units right of centre, the mud covers
+the cheeks and jaw from 26.4 down, and every beard starts under the band:
+stubble and the full beard at 26.2, the goatee at 26.4, the chops untouched
+at the sides. The full beard reaches the chin. The dust mask reaches the chin
+too, so it still covers a beard that starts lower, which the v10.17 rule
+demands. The lower leg is trousers, a darker cut of the coat colour, and the
+boot colour paints the foot and a collar two units tall above it. War paint
+and the black eye are untouched: those belong across and on the eye.
+
+### Measured
+
+The check paints the figure the Depot's way, the raid painter at 5.2 on its
+own canvas, reads the eye band off the whites, then requires the freckles,
+the mud and each beard to start below the band's last row, the scar to put
+no pixel inside it, and two boot colours to differ over at most 44 rows of
+the 57 the leg spans; the control is the band itself, about 31 rows tall.
+On v10.49 the freckles, the scar and the stubble all landed inside the band,
+which is the finding. The first cut of this build put the full beard's top
+on the band's last row and the dust mask short of the lowered beards; the
+dry run caught both before anything shipped.
+
+Not verified: the pillagers in a raid, who take the same painter and so the
+same offsets but were not measured at raid size; and the look of the
+trousers on every fit colour, which is a darker cut of each coat and was
+judged on the slate fit alone.
 ## v10.49 - THE WORDS HE CHANGES IN THE GAME ARE PICKED UP PERMANENTLY
 
 His order, 2026-09-03 about 19:35: **"IF i EDIT TEXT USING THE IN GAME TEXT
