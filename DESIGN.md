@@ -40024,6 +40024,81 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.86 - CALLING THE SHIP CALLED OFF WHATEVER WAS HUNTING YOU
+
+From the raid audit, listed and never worked: "beacon investigate overwrites the
+Listener's hunt, never applied to the beacon". It is real, and it made the
+loudest decision in the raid double as a button that turned off your pursuit.
+
+### REPRODUCED
+A Listener hunting the player and a sentry with the alarm up, both staged well
+away from the ring so neither can simply see him and re-acquire, then E held on
+the pad to call the ship:
+
+    before the call     listener hunt        sentry alarm
+    after the call      listener INVESTIGATE, sent to 862,2485 with the player
+                        standing at 850,2530
+                        sentry   INVESTIGATE
+
+The Listener is the one machine the game says punishes moving badly. It hunts by
+sound, so once it is knocked off there is nothing for it to re-acquire from: the
+hunt is simply over. A sentry usually survives because it can see you, which is
+exactly why this has gone unnoticed.
+
+### THE CAUSE
+The beacon wakes everything within 2,200 units and writes state='investigate' on
+all of it. Six thousand lines up, the noise waker has always had the rule:
+
+    if(e.state==='patrol'||e.state==='loot'){ e.state='investigate'; ... }
+
+pull in the idle, never overwrite something already on you. The beacon does the
+same job and never got it.
+
+TWO PLACES, because fixing one alone does nothing: the call writes the state
+once, and the ongoing pull runs EVERY FRAME for as long as the beacon burns or
+the ship holds, so it would re-cancel the hunt on the next frame.
+
+### MY FIRST GUARD WAS INERT FOR THE MACHINE THE FINDING NAMED
+I wrote state!=='chase' and measured no change, because a Listener does not use
+'chase'. It hunts in 'hunt', and a sentry with the alarm up sits in 'alarm'.
+Worse, my first staging put a crawler on 'chase' and it kept it, which looked
+like the fix working: it kept it because it had eyes on the player the whole
+time and re-acquired every frame.
+
+The file already agrees on what already-on-you means, spelled out by hand in four
+places as chase, alarm or hunt. It is one function now, called by both beacon
+sites, because the same rule written out five times is how it went missing from
+the fifth.
+
+### AFTER
+    at the call and three seconds later
+    listener hunt, still targeting the player     sentry alarm     idle crawler investigate
+
+The siege is not quieter. Everything idle is still pulled in and every alert is
+still raised; only a machine already coming for you is left to keep coming.
+
+### THE CHECK AND ITS TEETH
+Run against a fixture built from v9.85 it fails with "the Listener was hunting
+and the call left it in [investigate], so calling the ship called off the hunt;
+the sentry had the alarm up and the call left it in [investigate]". Against this
+build it returns null.
+
+Four controls: the call must actually have happened; the Listener must not merely
+keep the WORD hunt while its target moves to the ring; the idle crawler must
+still be pulled to investigate, or a fix that stopped the call waking anything
+would pass everything above and empty the siege; and the staging puts all three
+far enough out that none of them can re-acquire by sight, which is what made an
+earlier staging lie to me.
+
+### NOT VERIFIED
+What this does to how hard the extraction is. A Listener that keeps its hunt
+through the call is a machine arriving on you during the siege that used to
+wander to the ring instead, and I have measured the states rather than the
+outcome. Not verified either: the other two places that write investigate near
+the ring. The siege spawner at 12509 is correct, since a machine born for the
+siege has nothing to overwrite, and the raider pull at 12590 now shares the
+guard, but I drove the beacon call and the beacon pull only.
+
 ## 2026-09-03, A TICK THAT FOUND NOTHING, AND ONE FIX THAT WAS MINE
 
 No game change. Three candidate defects investigated, none of them real, and one

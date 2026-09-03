@@ -5206,6 +5206,69 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.86',what:'calling the ship does not call off whatever is already hunting you',
+   run:function(){
+     var bad=[];
+     if(!window.__keysRef) return 'SKIP: this fixture cannot drive the call';
+     __pinDPR(1); __forceSize(1920,1080);
+     __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g||!g.zones||!g.zones.length) return 'SKIP: no ring to call from';
+     var p=g.player; p.iv=99; p.hp=100000; p.maxhp=100000;
+     var z=g.zones[0]; p.x=z.x; p.y=z.y;
+     // One of each state that means ALREADY ON YOU, plus one idle machine as the
+     // control. A Listener hunts in 'hunt' and a sentry that has raised the alarm
+     // sits in 'alarm'; neither uses 'chase', which is why a guard written
+     // against 'chase' alone was inert for both of them.
+     var L=null,S=null,C=null;
+     for(var i=0;i<g.ents.length;i++){
+       var e=g.ents[i];
+       if(e.kind==='listener'&&!L) L=e;
+       if(e.kind==='sentry'&&!S) S=e;
+       if(e.kind==='crawler'&&!C) C=e;
+     }
+     if(!L||!S||!C) return 'SKIP: this map and seed has no listener, sentry and crawler to stage';
+     g.ents.length=0; g.ents.push(L); g.ents.push(S); g.ents.push(C);
+     // Far enough out that none of them can simply SEE him and re-acquire, which
+     // is what hid this from an earlier staging: a crawler put on chase kept it
+     // only because it had eyes on the player the whole time.
+     L.x=z.x+520; L.y=z.y+380; L.state='hunt';  L.wakeT=0; L.tx=p.x; L.ty=p.y; L.alert=6;
+     S.x=z.x+560; S.y=z.y+420; S.state='alarm'; S.tx=p.x; S.ty=p.y; S.alert=6;
+     C.x=z.x+900; C.y=z.y+700; C.state='patrol'; C.alert=0;
+     var K=__keysRef(); for(var k in K) K[k]=false;
+     K['KeyE']=true;
+     for(var f=0;f<200;f++){
+       __loop(performance.now()+f*16.7);
+       if(z.beaconT!==null&&z.beaconT!==undefined&&f>30) break;
+     }
+     var called=(z.beaconT!==null&&z.beaconT!==undefined);
+     // Three more seconds, because the pull runs EVERY FRAME while the beacon
+     // burns: guarding the call alone would be undone on the next one.
+     for(var f2=0;f2<180;f2++) __loop(performance.now()+5000+f2*16.7);
+     for(var k2 in K) K[k2]=false;
+     // CONTROL ONE: the call has to have happened.
+     if(!called) return 'SKIP: holding E on the ring did not call the ship';
+     // THE FINDING. Measured on v9.85: the Listener went from hunt to investigate
+     // and was sent to 862,2485 with the player standing at 850,2530, and the
+     // sentry went from alarm to investigate. The one machine the game says
+     // punishes moving badly was switched off by pressing E.
+     if(L.state!=='hunt')
+       bad.push('the Listener was hunting and the call left it in ['+L.state+
+                '], so calling the ship called off the hunt');
+     if(S.state!=='alarm')
+       bad.push('the sentry had the alarm up and the call left it in ['+S.state+']');
+     // CONTROL TWO: and it is still coming for HIM, not for the ring.
+     if(L.state==='hunt'&&!(Math.abs(L.tx-p.x)<120&&Math.abs(L.ty-p.y)<120))
+       bad.push('the Listener kept the word hunt but its target moved to '+
+                Math.round(L.tx)+','+Math.round(L.ty)+' with the player at '+
+                Math.round(p.x)+','+Math.round(p.y));
+     // CONTROL THREE, AND IT IS THE POINT OF THE BEACON. An idle machine must
+     // still be pulled in. A fix that simply stopped the call waking anything
+     // would satisfy everything above and empty the siege.
+     if(C.state!=='investigate')
+       bad.push('control: the idle crawler is in ['+C.state+
+                '] rather than investigate, so the call has stopped bringing anything');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.85',what:'extraction heat is a real choice at Heavy, not just at Light',
    run:function(){
      var bad=[];
