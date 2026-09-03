@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.69';
+var VER='9.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16695,11 +16695,17 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
     // putting in front of him at the moment of death is not what killed him, which
     // he watched, but how long the fight had been going and how early it started.
     // That is the difference between an epitaph and feedback.
+    // v9.70, HIS INSTRUCTION, and the second time he has given it: "KIA/Extracted
+    // screen -- get rid of 'first seen'". v8.68 took it off the extracted card and
+    // left this one. The v3.08 argument above is for ONE number, how long the
+    // fight had been going; first contact was the evidence for printing that, not
+    // a second clock to print next to it. It is still read, because the contact
+    // duration below is measured from it.
     var _fc=T.firstContact;
     var _contact=(_fc!==null&&_fc!==undefined)?Math.max(0,Math.round(G.t-_fc)):null;
     s.textContent='KILLED BY '+kn+(T.deathDistExtract?',  '+metres(T.deathDistExtract)+'M FROM EXTRACTION':'');
     if(_contact!==null)
-      s.textContent+='   ·   IN CONTACT '+fmtMS(_contact).toUpperCase()+', FIRST SEEN AT '+fmtMS(_fc).toUpperCase();
+      s.textContent+='   ·   IN CONTACT '+fmtMS(_contact).toUpperCase();
     else s.textContent+='   ·   NEVER SPOTTED';
     // THE FEED. Newest last so it reads forward in time, which is how he will
     // reconstruct the mistake. Health after each hit is the column that makes it
@@ -20771,7 +20777,12 @@ _tgt=G.active; _lbl='EXTRACTION';
           note=lost?'BROKEN, past three minutes':(_left+'s left to be gone');
         }
 else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no elite killed yet'; }
-        else if(CC.ck==='steady'){ lost=(T.downs||0)>0; note=lost?'BROKEN, you went down':'still on your feet'; }
+        // v9.70, HIS QUESTION: "why does it say 'still on your feet' under
+        // contracts inside the raid?" Because nothing on the panel said what it
+        // belonged to. Every other conduct note names its subject - no heals yet,
+        // nothing killed yet, 2 of 4 weak points hit - and this one named nothing
+        // while he was keeping the rule. Same shape as the two above it now.
+        else if(CC.ck==='steady'){ lost=(T.downs||0)>0; note=lost?'BROKEN, you went down':'no downs yet'; }
         else if(CC.ck==='far'){ note=Math.round((T.distance||0)/1000)+'k of 14k covered'; }
         else if(CC.ck==='weak'){ note=((T.weakHits||0))+' of '+CC.n+' weak points hit'; }
         _clines.push({v:(lost?'LOST   ':'')+note,vc:lost?'#c0503a':'#7fc4a0'});
@@ -25468,7 +25479,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.69: the red flash at low health slows to half speed when nothing is hunting you. It ran at one rate forever, as urgent standing alone in a corridor as with three machines on you, and the game had no idea what combat was until now.',
+  now:'v9.70: two lines that did not say what they meant. The death card has stopped printing a second clock you never asked for, and the contract that wants you to stay on your feet now says which contract it is.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

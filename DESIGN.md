@@ -40024,6 +40024,69 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.70 - TWO LINES THAT DID NOT SAY WHAT THEY MEANT
+
+Two of his notes, both about a line of text that is technically correct and
+tells him nothing. Neither is a system change. Both are the kind of thing that
+makes a screen feel unfinished, and one of them is the second time he has asked.
+
+### ONE. "KIA/Extracted screen -- get rid of 'first seen'"
+
+He said this once before. v8.68 took the first-seen line off the EXTRACTED card,
+on his note that it read as cheesy, and left the death card alone, so the KIA
+card kept printing:
+
+    KILLED BY SENTRY K-36,  253M FROM EXTRACTION   .   IN CONTACT 48 SEC, FIRST SEEN AT 12 SEC
+
+Two clocks on a card he reads for one second while he is annoyed. The comment
+above that line is a v3.08 note built on a 400 raid measurement, and reading it
+carefully, it argues for ONE figure: how long the fight had been going before it
+killed him. First contact is the EVIDENCE for printing that figure, and the
+duration is measured from it, so it is still recorded and still read. It just
+does not get a column of its own on the card.
+
+### TWO. "why does it say 'still on your feet' under contracts inside the raid?"
+
+Because it does, and nothing on that panel said what it belonged to. Lined up,
+the seven conduct notes make the odd one out obvious:
+
+    clean    no heals yet
+    quiet    nothing killed yet
+    swift    45s left to be gone
+    elite    no elite killed yet
+    far      3k of 14k covered
+    weak     2 of 4 weak points hit
+    steady   STILL ON YOUR FEET
+
+Six name their subject. One is a compliment. Its BROKEN form already says "you
+went down", so the rule was only invisible while he was keeping it, which is
+exactly when he needs to know it is there. It now reads "no downs yet", the same
+shape as the two rows above it, so there is no seventh phrasing to learn.
+
+### THE CHECK, AND WHAT IT COST TO MAKE IT HONEST
+
+Both halves read the screen, not the source. The death card is driven through a
+real ending and read off the element the player looks at, because a grep would
+pass on a string nothing reaches. The contract note is read out of a text trace
+of the drawn frame.
+
+The contract half SKIPPED on both builds first time round. I had injected a
+contract of my own invention, {ck, n, name, cond}, and the panel tests
+CC.type!=='conduct' before it looks at anything else, so my row was filtered out
+before it could be drawn and the check measured an empty panel. A SKIP is not a
+PASS. It now injects the shape the game itself builds at line 2278.
+
+Controls: the death card must still print the contact clock that stays, or a
+blank card would pass a not-present test by being blank; and the conduct note
+must be on screen at all before either text test means anything.
+
+Against v9.69 the check names both findings. Against v9.70 it is silent.
+
+Not verified: whether he wants the contact duration on the death card either. It
+survives here because a measurement argued for it and he has never objected to
+that half; if he wants a bare cause of death, that is a one line change and he
+should say so.
+
 ## v9.69 - THE LOW HEALTH FLASH NEVER STOPPED SHOUTING
 
 His note: **"red flashing for low health should slow down 2x when not in

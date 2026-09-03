@@ -5085,6 +5085,66 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.70',what:'the death card drops the second clock, and the steady contract says what it is',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     __pinDPR(1); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __forceSize(1920,1080);
+     // PART ONE: THE DEATH CARD. Driven through the real ending, and read off the
+     // element the player looks at rather than out of the source, because a grep
+     // would pass on a string nothing reaches.
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player;
+     g.ents.length=0; p.iv=9999;
+     // He has to have BEEN in contact, or the card takes its never-spotted branch
+     // and there is no clock on it at all to check.
+     g.tel.firstContact=12; g.t=Math.max(g.t,60);
+     g.tel.lastHitName='SENTRY K-36'; g.tel.deathKiller='sentry';
+     __endRaid('dead');
+     var sub=document.getElementById('oc_sub');
+     var title=document.getElementById('oc_title');
+     if(!sub||!title) return 'SKIP: the outcome card did not render';
+     var txt=sub.textContent||'';
+     // CONTROL: it has to be the death card, and it has to have drawn the clock
+     // that stays. An empty card passes a not-present test by being empty.
+     if((title.textContent||'').indexOf('KILLED')<0)
+       return 'SKIP: the ending did not come out as a death, so this is not the card';
+     if(txt.indexOf('IN CONTACT')<0)
+       bad.push('control: the death card no longer says how long he was in contact, '+
+                'which is the number the v3.08 measurement put there and this build keeps');
+     // THE FINDING. His instruction, given twice: v8.68 took this off the
+     // extracted card and left the death card printing a second clock.
+     if(/FIRST\s+SEEN/i.test(txt))
+       bad.push('the death card still prints a first-seen clock: "'+txt+'"');
+     // PART TWO: THE CONTRACT NOTE. Reads what the HUD actually drew.
+     if(!window.__textTrace) return bad.length?bad.join('; '):'SKIP: cannot read the drawn contract note';
+     __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g2=__state(), pr=__P();
+     g2.ents.length=0; g2.player.iv=9999;
+     // The shape the game builds for this contract, not an approximation of it.
+     // The panel filters on type first, so a missing type is an invisible row and
+     // my first cut of this SKIPPED on both builds because of it.
+     pr.contracts=[{type:'conduct',ck:'steady',n:1,prog:0,reward:1100,
+                    desc:'Extract without ever being knocked down'}];
+     g2.tel.downs=0;
+     for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
+     var draws=__textTrace(function(){ __frame(0.016); });
+     var joined=draws.map(function(d){ return d.t||''; }).join(' | ');
+     // CONTROL: the conduct note has to be on screen at all, or neither test below
+     // is about anything. The other six notes all end in "yet" or a count; this
+     // looks for the one this contract produces.
+     if(joined.indexOf('no downs yet')<0&&!/on your feet/i.test(joined))
+       return bad.length?bad.join('; ')
+         :'SKIP: the steady contract drew no conduct note, so there is nothing to read';
+     // THE FINDING. His question: the note named nothing while he was keeping it,
+     // where all six of its neighbours name their subject.
+     if(/still on your feet/i.test(joined))
+       bad.push('the contracts panel still says the line that does not name its contract');
+     if(joined.indexOf('no downs yet')<0)
+       bad.push('the steady contract does not say what it is about while it is intact');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.69',what:'the low health flash runs at half speed when nothing is hunting him',
    run:function(){
      var bad=[];
