@@ -999,3 +999,9 @@ long axis, and 209 of the 487 wrecks on THE COLD MILE standing vertical against
 278 horizontal, so they are not all lined up like luggage either. Looked at on
 screen as well as measured. If they still read wrong to him it is a contrast and
 scale question, not the silhouette that note describes.
+
+## HIS NOTE, 2026-09-03 about 16:45 (machine clock): AN ALPHA FOR HIS FRIENDS
+
+Verbatim: "i want to ship an alpha build of this game to my friends in 72 hours from now -- what do we need to do to get there?"
+
+Deadline by that clock: 2026-09-06 about 16:45. Facts checked at v10.36: DEV_LOCAL is true only on localhost, so the cheat box and the local telemetry drop switch off on itch by themselves; BETA_ONE_MAP is true; PUBLIC_DROP is null, so on the web every second raid downloads a run file into the player's Downloads with no explanation; there is no window.onerror catcher; the publish zip is rebuilt every build (tools/PUBLISH.md). The proposed order is in the report of this tick and in memory (pillagers-alpha-in-72-hours).
