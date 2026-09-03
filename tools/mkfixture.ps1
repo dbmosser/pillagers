@@ -5106,6 +5106,91 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.77',what:'a building is not condemned because a doorway fell badly across the grid',
+   run:function(){
+     var bad=[];
+     if(!(window.__movers&&__movers.buildNav)) return 'SKIP: no buildNav to flood with';
+     __pinDPR(1); __forceSize(1920,1080);
+     // Floods the FINISHED map on a grid of 8, which is finer than the pass uses,
+     // and returns which buildings still hold floor nothing can walk to. Locked
+     // rooms are skipped: they are shut on purpose, which v9.73 established.
+     function survey(dial){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __cfg({fineSeal:dial});
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       var g=__state(), B=g.map.buildings||[], W=g.map.walls||[], L=g.map.locked||[];
+       // 4, not 8. A doorway is 64 units and the player walks it by collision
+       // rather than by cells, so a grid of 8 is still coarse enough to close a
+       // door that is open: it called buildings 6 and 71 sealed when a grid of 4
+       // walks straight into both. The check was catching itself in the very
+       // fault it exists to catch.
+       var WW=g.map.cols*g.map.cw, HH=g.map.rows*g.map.ch, F=4, t=16, i, x, y;
+       var fw=Math.ceil(WW/F), fh=Math.ceil(HH/F), blk=new Uint8Array(fw*fh);
+       for(i=0;i<W.length;i++){
+         var w=W[i];
+         var x0=Math.max(0,Math.floor(w.x/F)), x1=Math.min(fw-1,Math.floor((w.x+w.w)/F));
+         var y0=Math.max(0,Math.floor(w.y/F)), y1=Math.min(fh-1,Math.floor((w.y+w.h)/F));
+         for(y=y0;y<=y1;y++) for(x=x0;x<=x1;x++) blk[y*fw+x]=1;
+       }
+       var seen=new Uint8Array(fw*fh), st=[], ok=false;
+       for(var sy=1;sy<fh-1&&!ok;sy++) for(var sx=1;sx<fw-1;sx++){
+         if(!blk[sy*fw+sx]){ st.push(sy*fw+sx); seen[sy*fw+sx]=1; ok=true; break; } }
+       while(st.length){
+         var c=st.pop(), cy=(c/fw)|0, cx=c%fw;
+         if(cx>0&&!seen[c-1]&&!blk[c-1]){ seen[c-1]=1; st.push(c-1); }
+         if(cx<fw-1&&!seen[c+1]&&!blk[c+1]){ seen[c+1]=1; st.push(c+1); }
+         if(cy>0&&!seen[c-fw]&&!blk[c-fw]){ seen[c-fw]=1; st.push(c-fw); }
+         if(cy<fh-1&&!seen[c+fw]&&!blk[c+fw]){ seen[c+fw]=1; st.push(c+fw); }
+       }
+       function inLk(px,py){
+         for(var l=0;l<L.length;l++){ var K=L[l];
+           if(px>K.x&&px<K.x+K.w&&py>K.y&&py<K.y+K.h) return true; }
+         return false;
+       }
+       var stuck=[], demo=0, parts=0;
+       for(i=0;i<W.length;i++) if(W[i].ib!==undefined&&!W[i].furn) parts++;
+       for(var b=0;b<B.length;b++){
+         var bb=B[b], un=0;
+         if(bb.repaired) demo++;
+         for(y=Math.floor((bb.y+t)/F); y<=Math.floor((bb.y+bb.h-t)/F)&&!un; y++)
+           for(x=Math.floor((bb.x+t)/F); x<=Math.floor((bb.x+bb.w-t)/F)&&!un; x++){
+             var ii=y*fw+x;
+             if(blk[ii]||seen[ii]) continue;
+             if(inLk(x*F+F/2,y*F+F/2)) continue;
+             un=1;
+           }
+         if(un) stuck.push(b);
+       }
+       return {buildings:B.length, demolished:demo, parts:parts, ents:g.ents.length, stuck:stuck.join(',')};
+     }
+     var on=survey(1), off=survey(0);
+     // CONTROL ONE: both arms have to be the same map or nothing compares.
+     if(on.buildings!==84||off.buildings!==84)
+       return 'SKIP: THE COLD MILE did not build its 84 buildings';
+     // THE FINDING. Measured on v9.76: the pass judges on a nav cell of 16
+     // against a doorway of 64, so whether a door exists depends on where it
+     // falls. Flooding the finished map at 16, 8 and 4 gave three different
+     // answers, and buildings 6 and 53 are not sealed at any honest resolution.
+     if(!(on.demolished<off.demolished))
+       bad.push('the same '+on.demolished+' buildings lose their interior with the finer look on '+
+                'as with it off, so no building was spared a rounding error');
+     // CONTROL TWO: spared means GEOMETRY SURVIVED, not a flag flipped.
+     if(!(on.parts>off.parts))
+       bad.push('the map keeps '+on.parts+' interior walls against '+off.parts+
+                ', so nothing actually survived');
+     // CONTROL THREE, AND IT IS THE ONE THAT MATTERS. A sealed room is loot
+     // nobody can ever reach, which is the whole reason this pass exists. Sparing
+     // a building must not leave one single piece of floor stranded, so the set
+     // of buildings still holding unreachable floor must be IDENTICAL either way.
+     if(on.stuck!==off.stuck)
+       bad.push('buildings holding floor nothing can reach differ: ['+on.stuck+'] with the '+
+                'finer look on against ['+off.stuck+'] with it off, so it has traded a '+
+                'floor plan for a dead room');
+     // CONTROL FOUR: the world did not move. Changing which walls survive must
+     // not shift what the map spawns.
+     if(on.ents!==off.ents)
+       bad.push('the map spawns '+on.ents+' with it on and '+off.ents+' with it off, so the fix moved the world');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.76',what:'an edit only follows a line to others of the same shape when that shape has a word in it',
    run:function(){
      var bad=[];
@@ -5900,8 +5985,13 @@ window.__REGRESS=[
      // seed and every container and machine is drawn from the same stream after
      // the wrecks, so a footprint change here moves the whole world. These are
      // the numbers this project has measured against since v9.30.
-     if(wrecks.length!==487)
-       bad.push('the mile has '+wrecks.length+' pieces of outdoor cover rather than 487, so a footprint moved');
+     // v9.77: 487 to 484. Cover is placed by asking spotFree against the wall
+     // list, and this build keeps the interior walls of three more buildings, so
+     // three candidate spots are refused. Entities are still 374 on the line
+     // below, which is the half of this fingerprint that says the seeded stream
+     // itself did not move, and it has not.
+     if(wrecks.length!==484)
+       bad.push('the mile has '+wrecks.length+' pieces of outdoor cover rather than 484, so a footprint moved');
      if(g.ents.length!==374)
        bad.push('the mile has '+g.ents.length+' entities rather than 374, so the seeded stream moved');
      // PART THREE, AND IT IS THE ONE THAT MATTERS: the kinds have to DRAW
@@ -6845,9 +6935,12 @@ window.__REGRESS=[
      // units, and a spot hidden from ALL FOUR posts, not merely from the stand.
      // My first cut only hid him from the stand and three men walked straight at
      // him because they could still see him from where they were standing.
-     var A=null;
-     for(var px=400; px<WW-400 && !A; px+=130){
-      for(var py=400; py<WH-400 && !A; py+=130){
+     // v9.77: SEVERAL ARENAS, NOT ONE. A spot hidden from where four men START
+     // can be in plain view from where they end up 25 frames later, and this
+     // check used to skip when that happened rather than try anywhere else.
+     var ARENAS=[], A=null;
+     for(var px=400; px<WW-400 && ARENAS.length<6; px+=130){
+      for(var py=400; py<WH-400 && ARENAS.length<6; py+=130){
        if(!__nav.free(px,py,18)||!__nav.reachable(px,py)) continue;
        var open=[],a,th,ex,ey;
        for(a=0;a<16&&open.length<4;a++){
@@ -6870,10 +6963,11 @@ window.__REGRESS=[
            if(blind){ hid={x:hx,y:hy}; break; }
          }
        }
-       if(hid) A={px:px,py:py,posts:open,hid:hid};
+       if(hid) ARENAS.push({px:px,py:py,posts:open,hid:hid});
       }
      }
-     if(!A) return 'SKIP: this map has no open stand with four clear bearings and a spot hidden from all of them';
+     if(!ARENAS.length) return 'SKIP: this map has no open stand with four clear bearings and a spot hidden from all of them';
+     A=ARENAS[0];
      function run(dial){
        __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:1,seed:4242});
@@ -6930,7 +7024,17 @@ window.__REGRESS=[
        return {n:chasing.length, closestPair:Math.round(closest), distinctSpots:np,
                walkedToIt:closedOn, readBack:(dial===null?null:__cfg().crewSearch)};
      }
-     var on=run(1);
+     // Try each arena until one survives the chase itself. The reasons a stand
+     // fails are all about that arena and not about the game: too few men enter
+     // chase from it, or one of them can still see the hidden spot once they have
+     // moved. Anything else is a real answer and is taken as one.
+     var on=null, tried=0;
+     for(var ai=0; ai<ARENAS.length; ai++){
+       A=ARENAS[ai]; tried++;
+       on=run(1);
+       if(!on.skip) break;
+     }
+     if(on&&on.skip) return 'SKIP: none of '+tried+' stands on this map held up, last said: '+on.skip;
      if(on.skip) return 'SKIP: '+on.skip;
      var off=run(0);
      if(off.skip) return 'SKIP: '+off.skip;
@@ -7242,7 +7346,10 @@ window.__REGRESS=[
      // Build the arena from the MAP, not from numbers I typed in. A post, a spot
      // the machine can see from it, and a spot it cannot, at least a right angle
      // apart so the two answers can never be confused for one another.
-     function arena(loR,hiR){
+     // v9.77: the Nth stand that fits, not always the first. A stand can fail for
+     // reasons that are about the stand, so the caller walks down the list.
+     function arena(loR,hiR,skip){
+       var pass=0;
        for(var mx=300; mx<WW-300; mx+=130){
         for(var my=300; my<WH-300; my+=130){
          if(!__nav.free(mx,my,16)||!__nav.reachable(mx,my)) continue;
@@ -7258,7 +7365,7 @@ window.__REGRESS=[
          for(b=0;b<32&&!vis;b++){ th2=b*Math.PI/16;
            dth=Math.abs(Math.atan2(Math.sin(th2-hid.th),Math.cos(th2-hid.th)));
            if(dth<1.45) continue;
-           for(r2=250;r2<=320;r2+=20){
+           for(r2=150;r2<=210;r2+=20){
              vx=mx+Math.cos(th2)*r2; vy=my+Math.sin(th2)*r2;
              if(vx<70||vy<70||vx>WW-70||vy>WH-70) continue;
              if(!__nav.free(vx,vy,16)||!__nav.reachable(vx,vy)) continue;
@@ -7275,7 +7382,10 @@ window.__REGRESS=[
            if(!__los.clear(mx,my,ox,oy)) continue;
            opn={x:ox,y:oy,r:r3};
          }
-         if(opn) return {mx:mx,my:my,hid:hid,vis:vis,opn:opn};
+         if(opn){
+           if(pass<(skip||0)){ pass++; continue; }
+           return {mx:mx,my:my,hid:hid,vis:vis,opn:opn};
+         }
         } }
        return null;
      }
@@ -7287,8 +7397,21 @@ window.__REGRESS=[
        __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:1,seed:4242});
        var G2=__state(), pp=G2.player, src=null, i;
-       for(i=0;i<G2.ents.length;i++) if(G2.ents[i].kind===kind){ src=G2.ents[i]; break; }
+       // v9.77: a man who can actually SEE that far. Sight runs 187 to 580 across
+       // the raiders on this map and the sighting below is 250 to 320 out, so
+       // taking whoever happens to be first in the list was testing his eyesight
+       // rather than the game.
+       // Sight is dynamic: 302 at spawn, 187 while patrolling. Ask for the
+       // patrolling figure with margin rather than the spawn one.
+       var need=Math.hypot(A.vis.x-A.mx,A.vis.y-A.my)+24;
+       for(i=0;i<G2.ents.length;i++){
+         var E0=G2.ents[i];
+         if(E0.kind!==kind) continue;
+         if(!src) src=E0;
+         if((E0.rng||0)>=need){ src=E0; break; }
+       }
        if(!src) return {skip:'no '+kind+' on this map'};
+       if((src.rng||0)<need) return {skip:'no '+kind+' on this map can see '+Math.round(need)+' units'};
        G2.ents.length=0; G2.ents.push(src);
        src.hostile=true; src.merc=false; src.friendlyPC=0; src.downed=false; src.grudge=true;
        src.x=A.mx; src.y=A.my; src.state='patrol'; src.alert=0; src.cd=0; src.role=null;
@@ -7325,7 +7448,7 @@ window.__REGRESS=[
                atLastSeen: mv>0.5?+((dx*uLx+dy*uLy)/(mv*nL)).toFixed(3):null,
                closed:+(nP-Math.hypot(pp.x-src.x,pp.y-src.y)).toFixed(1)};
      }
-     var far=arena(500,700), near=arena(190,300);
+     var far=arena(500,700,0), near=arena(190,300,0);
      if(!far||!near) return 'SKIP: this map has no wall with open ground on both sides of it';
      // CONTROL ONE, and the one that matters most: a machine that can SEE you must
      // still come for you. If this fix worked by blinding everything it is worthless.
@@ -7336,8 +7459,18 @@ window.__REGRESS=[
      // 434 units and SHOT him. Shooting from where it stands is one of the ways a
      // machine comes for you, and the thing this control guards against, a fix
      // that works by blinding everything, produces neither closing nor shooting.
-     var open=run('raider',far,far.opn);
-     if(open.skip) return 'SKIP: '+open.skip;
+     // Walk down the stands until one of them actually produces a chase. A stand
+     // where nobody gives chase says nothing about whether a chase goes to the
+     // last place it SAW you, which is what this check is for.
+     var open=null, tried=0;
+     for(var fi=0; fi<6; fi++){
+       var cand=arena(500,700,fi);
+       if(!cand) break;
+       far=cand; tried++;
+       open=run('raider',far,far.opn);
+       if(!open.skip) break;
+     }
+     if(!open||open.skip) return 'SKIP: none of '+tried+' stands produced a chase, last said: '+(open?open.skip:'no stand at all');
      if(!((open.closed>40&&open.atPlayer>0.7)||open.shots>0))
        bad.push('control: a raider standing '+Math.round(far.opn.r)+
                 ' units off with a clear view of the player closed only '+open.closed+

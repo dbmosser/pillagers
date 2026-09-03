@@ -40024,6 +40024,124 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.77 - CONDEMNED BY A GRID TOO COARSE TO SEE THEIR DOORS
+
+The tail of the demolition thread, and it turns out to be the oldest fault in it.
+
+### WHAT WAS WRONG
+
+`repairInteriors` judges whether a building can be walked into using the nav
+grid, whose cell is **16 units**. A doorway is **64**. Whether a 64 unit gap
+survives being chopped into 16 unit cells depends entirely on where it happens to
+fall, and when it does not survive, the pass sees a building with no way in and
+tears its interior out.
+
+Measured on v9.76, THE COLD MILE at seed 4242, flooding the finished map at three
+resolutions:
+
+    cell 16   sealed: 2, 6, 11, 14, 15, 20, 21, 53
+    cell 8    sealed: 2, 11, 14, 15, 20, 21, 31
+    cell 4    sealed: 2, 11, 14, 15, 20, 21
+
+Three resolutions, three answers. Buildings 6 and 53 are not sealed at any honest
+one: they have doors a player walks straight through and a grid cannot.
+
+**This project has been fooled by this exact thing twice before, and the DESIGN
+entries say so in as many words:** "a 10 pixel flood fill reported 1.4 percent of
+buildings sealed and that was quantisation in the doorways again, the same false
+alarm as before; I re-ran at 4 pixels before reporting anything." Both times I
+re-ran MY OWN measurement at a finer grid and moved on. **The game never got the
+same correction**, and it has been demolishing buildings on the coarse answer
+ever since.
+
+### WHAT IT DOES NOW
+
+A second opinion, not a finer nav grid. Rebuilding the whole nav at cell 4 would
+be five million cells on this map to answer a question about ten buildings.
+Instead, a building the coarse pass wants to condemn is re-tested on its own: a
+local grid at cell 4 covering the building plus 96 units of the street around it,
+flooded inward from the edge of that box. If every piece of its floor is reached,
+the coarse verdict was a rounding error and the building keeps its interior.
+Locked rooms are skipped there too, or this would undo v9.73.
+
+    THE COLD MILE   interiors demolished  10 -> 7    interior walls  188 -> 192
+
+Buildings 6, 17 and 18 keep their floor plans. Entity counts are unchanged at 374
+and 85, so the fingerprint holds and nothing downstream moved.
+
+Fewer than the six I predicted from the finished map, and the reason is worth
+writing down: demolition is a cascade. Tearing one building's walls out changes
+what the flood can reach next, so a count taken on the already-demolished map
+overstates what sparing them will actually save.
+
+### THE CHECK, WHICH CAUGHT ITSELF IN THE SAME FAULT
+
+The control that matters is that sparing a building must not leave one piece of
+floor stranded, so the set of buildings still holding unreachable floor has to be
+IDENTICAL with the finer look on and off.
+
+My first cut of that control flooded at cell 8 and reported buildings 6 and 71 as
+holding dead floor. **At cell 4 a player walks straight into both.** The check
+was being fooled by the very quantisation it exists to catch. It asks at 4 now,
+which is the resolution the earlier measurement had already shown to be honest,
+and the two sets come back identical.
+
+Against v9.76 it reports the same ten buildings demolished either way and the
+same 188 interior walls, so nothing was spared. Against v9.77 it is silent.
+
+
+
+### AND A THIRD CHECK RE-SAMPLED ONTO WORSE GROUND
+
+v9.47 went to SKIP: "1 of them can still see the hidden spot". It builds its
+arena from the map, picks the FIRST stand that fits, and hides a spot from the
+four posts the men start on. The men then move during the chase, so a spot hidden
+from where they started can be in plain view from where they end up.
+
+A SKIP is not a PASS, so it had to be answered rather than noted. It is the third
+check this month to be re-sampled onto worse ground by a build that moves walls,
+which is a pattern rather than an accident, so rather than nudge one arena it now
+collects up to six and takes the first that survives the whole way through.
+Nothing it asserts changed.
+
+
+### AND A FOURTH, WHICH HAD BEEN PASSING ON LUCK SINCE IT WAS WRITTEN
+
+v9.42 went to SKIP: "raider never entered chase from a clear sighting". Six
+different stands, all the same, so it was not the ground.
+
+Driven: **a raider's sight reads 302 at spawn and 187 while he is patrolling.**
+Sight is dynamic, and the spawn number is not the one that matters. That check
+stood the player **250 to 320 units out for the first sighting**, which is past
+187, so whether it worked at all came down to which raider happened to be first
+in the entity list and how the arena fell. It passed on v9.76 by luck and this
+build changed the luck.
+
+The sighting is now 150 to 210, inside a patrolling man's sight with room to
+spare, and it prefers a man whose sight covers the distance rather than taking
+whoever is first. The hidden spot stays at 500 to 700, which is the band the
+original defect lived in and the whole point of the check.
+
+### THE ONE COST
+
+THE COLD MILE places **484 pieces of outdoor cover where it placed 487**, three
+fewer. Outdoor cover is placed by asking whether a spot is clear of the wall
+list, and this build keeps the interior walls of three more buildings, so three
+candidate spots are refused.
+
+Entity counts are unchanged at 374 and 85, which is the half of the seed
+fingerprint that says the stream itself did not move. The buildings did not move
+either: their footprints are identical, only their insides survive.
+
+Container count on the mile also moves with this, 576 to 572, for the same reason as the cover: three more buildings keep their interior walls and containers stand on free interior floor.
+
+Not verified: whether the four buildings still demolished on the mile after this
+(14, 15, 20, 21) are genuinely unenterable or a fifth thing I have not thought
+of. They hold unreachable floor at every resolution I have tried, including 4, so
+they are not this bug. But they are also still sealed AFTER their interiors are
+destroyed, which means the demolition achieves nothing for them either, and that
+is the v9.72 finding still standing with four names on it now.
+
 ## v9.76 - ONE EDIT WAS REWRITING EVERY NUMBER ON THE SCREEN
 
 I ended the v9.75 notes saying I had not gone looking for two lines that share a
