@@ -94,6 +94,7 @@ window.__cleanProfile=function(){
   P.terms=[];
   P.hotAssign={};
   delete P.uiScale;
+  P.cond='day';   // v10.48: a night a check left in the SAVED profile ran every fingerprint after it after dark
   try{ saveProfile(); }catch(e){}
   return was;
 };
@@ -5221,6 +5222,39 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.48',what:'night spawns more machines than day, the pillagers keep their count, day keeps the fingerprint, and the dial is live',
+   run:function(){
+     var bad=[];
+     if(!window.__deploy||!window.__state) return 'SKIP: this fixture cannot build a raid';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(); var cond0=P2.cond;
+     var MACH={sentry:1,crawler:1,snitch:1,howler:1,bulwark:1,listener:1};
+     function census(cond){
+       P2.cond=cond;
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       var g=__state(), m=0, r=0, by={};
+       for(var i=0;i<g.ents.length;i++){ var k=g.ents[i].kind; by[k]=(by[k]||0)+1; if(MACH[k]) m++; else if(k==='raider') r++; }
+       return {ents:g.ents.length, machines:m, raiders:r, by:by};
+     }
+     try{
+       var day=census('day');
+       // CONTROL ONE: day is the fingerprint, 374 at seed 4242 on THE COLD MILE.
+       if(day.ents!==374) return 'SKIP: day at seed 4242 builds '+day.ents+' entities, not the 374 fingerprint, so the map moved under this check';
+       var night=census('night');
+       // THE FINDING. On v10.47 night spawned exactly what day spawned.
+       if(night.machines<=day.machines) return 'night spawns '+night.machines+' machines against '+day.machines+' by day; it is not denser';
+       if(night.machines<Math.round(day.machines*1.15)) bad.push('night spawns '+night.machines+' machines against '+day.machines+' by day, under the 1.15 the dial promises at its floor');
+       if((night.by.sentry||0)<Math.round((day.by.sentry||0)*1.25)) bad.push('sentries '+(night.by.sentry||0)+' at night against '+(day.by.sentry||0)+' by day');
+       // THE PILLAGERS KEEP THEIR COUNT: their number is his separate dial.
+       if(night.raiders!==day.raiders) bad.push('the pillagers moved from '+day.raiders+' to '+night.raiders+' at night; only the machines should');
+       // CONTROL TWO: the dial is live. At 1 the night is the day.
+       __cfg({nightDens:1});
+       var flat=census('night');
+       if(flat.machines!==day.machines) bad.push('control: with the dial at 1 night spawns '+flat.machines+' machines against '+day.machines+' by day, so the dial is not what moves them');
+     } finally {
+       P2.cond='day'; try{ saveProfile(); }catch(_sv){} __resetCfg();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.47',what:'three pairs of sneakers are on the boots rack, each drawn with its own sole on the sprite and the figure',
    run:function(){
      var bad=[];

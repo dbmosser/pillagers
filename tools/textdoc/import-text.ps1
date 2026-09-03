@@ -13,13 +13,18 @@
 param(
   [string]$Doc = '',
   [string]$Tsv = '',
+  [string]$Map = '',
   [string]$Manifest = '',
   [string]$Game = 'C:\claudecode\dark raiders\dark_raiders.html',
   [switch]$Apply
 )
 # -Tsv takes a tab separated file with the same three columns (ID, WHERE, TEXT)
 # and a header row, which is what a table pasted out of the document looks like.
-if ($Doc -eq '' -and $Tsv -eq '') { throw 'pass -Doc <file.docx> or -Tsv <file.tsv>' }
+# -Map takes a JSON object of original text to new text, which is what the
+# in-game editor keeps and pull-edits.ps1 gathers out of the run reports; each
+# original is matched to a manifest row by its TEXT, so the same escaping and
+# the same everywhere-replacement apply. An original no row matches is reported.
+if ($Doc -eq '' -and $Tsv -eq '' -and $Map -eq '') { throw 'pass -Doc <file.docx>, -Tsv <file.tsv> or -Map <edits.json>' }
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -51,6 +56,22 @@ if ($Doc -ne '') {
     }
     if ($cells.Count -ge 3) { $rows += ,@($cells[0].Trim(), $cells[1].Trim(), $cells[2]) }
   }
+} elseif ($Map -ne '') {
+  $byText = @{}
+  foreach ($e in $man) { if (-not $byText.ContainsKey($e.text)) { $byText[$e.text] = $e } }
+  $obj = Get-Content $Map -Raw -Encoding UTF8 | ConvertFrom-Json
+  $rawN = 0
+  foreach ($prop in $obj.PSObject.Properties) {
+    $orig = $prop.Name; $new = [string]$prop.Value
+    if ($byText.ContainsKey($orig)) { $rows += ,@($byText[$orig].id, 'map', $new) }
+    else {
+      # no manifest row has this text: replace the exact string where it stands
+      $rawN++
+      $rid = 'raw' + $rawN.ToString('00000')
+      $byId[$rid] = [pscustomobject]@{ id = $rid; line = 0; kind = 'raw'; quote = ''; raw = $orig; text = $orig }
+      $rows += ,@($rid, 'map-raw', $new)
+    }
+  }
 } else {
   foreach ($ln in [IO.File]::ReadAllLines($Tsv, [Text.Encoding]::UTF8)) {
     if ($ln.Trim() -eq '') { continue }
@@ -62,7 +83,7 @@ if ($Doc -ne '') {
     $rows += ,@($id, $where, $text)
   }
 }
-$rows = $rows | Where-Object { $_[0] -match '^[0-9a-f]{8}$' }
+$rows = $rows | Where-Object { $_[0] -match '^[0-9a-f]{8}$' -or $_[0] -match '^raw\d{5}$' }
 Write-Output ("rows in the document: " + $rows.Count + "   lines in the manifest: " + $man.Count)
 
 function Plain([string]$t) {
@@ -90,6 +111,13 @@ foreach ($r in $rows) {
   if ($new -eq '') { $log += ("SKIP empty replacement for " + $id + " (" + $e.text + ")"); continue }
   if ($e.kind -eq 'markup' -or $e.kind -eq 'markup-attr') {
     $old = $e.raw; $rep = [System.Security.SecurityElement]::Escape($new) -replace '&apos;', "'"
+  } elseif ($e.kind -eq 'raw') {
+    # the editor's original is the text as shown; in the source it may sit in
+    # markup (as is) or in a script literal (quotes escaped). Try as is first.
+    $old = $e.raw; $rep = $new
+    if (([regex]::Matches($s, [regex]::Escape($old))).Count -eq 0) {
+      $old = $e.raw -replace "'", "\'"; $rep = ToLiteral $new "'"
+    }
   } else {
     $old = $e.raw; $rep = ToLiteral $new $e.quote
   }

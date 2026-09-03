@@ -40024,6 +40024,50 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.48 - NIGHT IS DENSER
+
+His note, 2026-09-03 about 19:15: **"night mode should have more enemy
+density since it pays better"**.
+
+### What it was
+
+Night has paid twenty percent more XP since v10.06 (his answer 22, the
+nightXp dial at 1.2) and spawned exactly what day spawns. The only thing the
+dark changed was the light. A player choosing night on the sector page was
+choosing more XP for nothing.
+
+### Now
+
+The machines come out nightDens times as many after dark, 1.35 by default:
+sentries, crawlers, snitches, howlers, bulwarks and listeners. The crawler
+house floor takes the night too, the way HEAVY PATROLS already multiplies
+it, because without that the floor sat above the rolled count both day and
+night and the whole rise was ten percent. Day is untouched, so the seed
+fingerprint holds. The pillagers keep their own count: their number drives
+the board and the waves and is his separate dial. The bot's raids take the
+night too, so the sim can measure it.
+
+Measured at seed 4242:
+
+    THE COLD MILE   day 337 machines, 374 entities   night 445 machines, 482 entities
+                    sentries 80 to 103, crawlers 224 to 298, snitches 16 to 22,
+                    howlers 7 to 9, listeners 7 to 9, bulwarks 3 to 4, pillagers 33 both
+    COLD STORAGE    day 74 machines, 85 entities     night 101 machines, 112 entities
+
+### Measured
+
+The check builds THE COLD MILE at seed 4242 by day and requires the 374
+fingerprint; builds it by night and requires more machines, at least 1.15
+times as many and sentries at least 1.25 times, with the pillagers equal;
+then sets the dial to 1 and requires night to spawn exactly what day does.
+On v10.47 night spawned what day spawned, which is the finding. The v9.30
+house rule (no house holds more than three crawlers) was run by night on the
+dry build as well.
+
+Not verified: what 1.35 does to the extract rate. The bot will be run day
+against night on paired seeds after this commits and the number goes in the
+report; if night turns out to be a wall, the dial is the lever and 1.35 is
+his to move.
 ## v10.47 - SNEAKERS ON THE BOOTS RACK
 
 His note, 2026-09-03 about 14:00: **"I want different shoes as options --
