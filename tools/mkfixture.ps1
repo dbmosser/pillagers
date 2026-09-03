@@ -5216,6 +5216,58 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.93',what:'the pause screen and the legends say RMB aims down sights, and the compact row stays inside its column',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(!(window.__textTrace&&window.__deploy&&window.__frame&&window.__hudBox))
+       return 'SKIP: this fixture cannot read what the HUD draws';
+     // Needles from halves: this page embeds the source it tests.
+     var STEADY=['steady',' aim'].join('');
+     // ONE: the pause box, which is what he named.
+     var pb=document.getElementById('pausebox'), pbt=(pb&&pb.textContent)||'';
+     if(!/RMB\s+aim down sights/i.test(pbt)) bad.push('the pause screen does not say RMB aim down sights');
+     if(new RegExp('RMB\\s+'+STEADY,'i').test(pbt)) bad.push('the pause screen still says RMB '+STEADY);
+     // TWO: the two legend tables, read as data.
+     function rowVal(tbl,key){
+       if(!tbl) return null;
+       for(var a=0;a<tbl.length;a++){
+         var r=tbl[a];
+         if(r&&r.length===2&&typeof r[1]==='string'){ if(r[0]===key) return r[1]; }
+         else if(r&&r[1]&&r[1].length) for(var b=0;b<r[1].length;b++) if(r[1][b][0]===key) return r[1][b][1];
+       }
+       return null;
+     }
+     var LEG=(typeof LEGEND!=='undefined')?LEGEND:null, MINI=(typeof LEGEND_MINI!=='undefined')?LEGEND_MINI:null;
+     var fv=rowVal(LEG,'RMB'), mv=rowVal(MINI,'RMB');
+     if(fv===null||mv===null) bad.push('this fixture could not read the RMB row from the legends');
+     else {
+       if(fv!=='aim down sights') bad.push('the full legend RMB row reads ['+fv+']');
+       if(mv!=='sights') bad.push('the compact legend RMB row reads ['+mv+']');
+     }
+     // THREE, the control that keeps this honest: the compact row as DRAWN must
+     // end inside the legend panel. The whole phrase measures wider than the
+     // column, which is the reason the compact row is one word.
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var keepLeg=g.legendOn; g.legendOn=1;
+     for(var f=0;f<10;f++) __frame(0.016);
+     var tr=__textTrace(function(){ __frame(0.016); });
+     var box=(__hudBox()||{}).legend;
+     g.legendOn=keepLeg;
+     if(!box) return 'SKIP: the compact legend drew no panel box';
+     var rowsOut=[], sawRmb=false;
+     for(var i=0;i<tr.length;i++){
+       var d=tr[i];
+       if(d.t==='RMB') sawRmb=true;
+       if(d.y<box.y||d.y>box.y+box.h||d.x<box.x-1) continue;
+       if(d.align==='right') continue;
+       if(d.x+d.w>box.x+box.w+0.5) rowsOut.push(d.t+' ends '+Math.round(d.x+d.w-(box.x+box.w))+' past the panel edge');
+     }
+     if(!sawRmb) bad.push('control: the compact legend never drew an RMB row');
+     if(rowsOut.length) bad.push('compact legend text runs out of its panel: '+rowsOut.join(', '));
+     return bad.length?bad.join('; '):null; }},
   {v:'9.92',what:'C crouches, exactly as CTRL does, and the legends say so',
    run:function(){
      var bad=[];
@@ -8798,6 +8850,29 @@ window.__regress=function(){
   res.summary=res.pass?('PASS, '+ran+' regression checks'+(res.skipped.length?(' ('+res.skipped.length+' could not run)'):''))
                       :('FAIL x'+res.fail.length);
   return res;
+};
+// v9.93: the same corpus, one check per MessageChannel message, so a long run
+// survives a hidden tab and can be polled on window.__PROG. Give it its own
+// tab: navigating the tab kills it.
+window.__regressBg=function(){
+  var res={pass:true,checked:0,fail:[],skipped:[]}, i=0;
+  window.__PROG={done:0,total:__REGRESS.length,cur:'',finished:false,res:null};
+  var ch=new MessageChannel();
+  ch.port1.onmessage=function(){
+    if(i>=__REGRESS.length){
+      var ran=res.checked-res.skipped.length;
+      res.summary=res.pass?('PASS, '+ran+' checks, '+res.skipped.length+' could not run'):('FAIL x'+res.fail.length);
+      __PROG.res=res; __PROG.finished=true; return;
+    }
+    var t=__REGRESS[i], r=null;
+    __PROG.cur='v'+t.v; res.checked++;
+    try{ r=t.run(); }catch(e){ r='threw: '+(e&&e.stack||e); }
+    if(r&&String(r).indexOf('SKIP: ')===0) res.skipped.push('v'+t.v+' '+t.what+' -> '+String(r).slice(6));
+    else if(r){ res.pass=false; res.fail.push('v'+t.v+' '+t.what+' -> '+r); }
+    i++; __PROG.done=i; ch.port2.postMessage(0);
+  };
+  ch.port2.postMessage(0);
+  return 'started '+__REGRESS.length;
 };
 // v8.58: the DOM panels that COMPUTE their contents, so a probe can read the
 // real rendered text instead of redoing the arithmetic and grading itself.

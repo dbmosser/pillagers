@@ -40024,6 +40024,49 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.93 - RMB AIMS DOWN SIGHTS
+
+His note, 2026-09-03: **"on pause screen text --- RMB = 'aim down sights'"**.
+
+The pause screen said RMB steady aim. The full legend said steady aim and the
+compact legend said aim. His words are aim down sights, and the pause screen and
+the full legend take them whole.
+
+### The compact legend is measured, not wished
+
+The compact legend's value column is 58 units wide at 1080p and its font is
+600 10px Rubik. In that font "aim down sights" measures 79.4, so it would run
+out of its column and through the panel edge. "sights" measures 30.6 and fits.
+That panel already compresses every long binding the same way, roll for dodge
+roll and swap gun for swap weapon, so the compact row says sights.
+
+| in the compact legend's own font | width |
+| --- | --- |
+| aim down sights | 79.4 |
+| steady aim | 53.4 |
+| sights | 30.6 |
+| column | 58 |
+
+### Measured
+
+The check reads the pause box text, reads the RMB row out of both legend tables
+as data, and then draws the compact legend and requires every left-aligned row
+to end inside the panel box the HUD reports for it. That last part is the
+control: it is the reason the compact row is one word, and it would fail if the
+whole phrase were put there.
+
+### Also in this build
+
+The chunked full run of the corpus, one check per MessageChannel message with
+progress on window.__PROG, was an injected script that I lost at every
+compaction. It is a fixture function now, __regressBg(), so the next session
+finds it in the tool and not in my memory.
+
+Not verified: the controller legends, which say reach for the trigger and were
+not in his note. Not verified: whether "sights" alone reads as the right button
+to someone who has never seen the full legend; the pause screen says it in full
+and is one keypress away.
+
 ## v9.92 - C CROUCHES
 
 His note, 2026-09-03: **"crouch should be default bound key to each of ctrl and

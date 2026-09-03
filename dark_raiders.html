@@ -590,7 +590,7 @@
 <div class="pausebox" id="pausebox">
   <h3>RUN PAUSED</h3>
   <div style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">
-    MOUSE aim &nbsp; LMB fire &nbsp; RMB steady aim &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT sprint &nbsp; CTRL / C crouch<br>
+    MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT sprint &nbsp; CTRL / C crouch<br>
     E search / call for extraction &nbsp; R reload &nbsp; F heal/revive &nbsp; Q/G throw &nbsp; TAB bag &nbsp; M map &nbsp; ` superhot &nbsp; SHIFT-` tuning &nbsp; P/ESC pause
   </div>
   <div style="font-size:13.5px;color:var(--ash);margin-top:6px">Note anything that just felt wrong. It goes in the recorder.</div>
@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.92';
+var VER='9.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22534,7 +22534,7 @@ function safeSet(){
 // have left him hunting, so the panel states the keyless rules as well.
 var LEGEND=[
   ['MOVE',[['WASD','move'],['SHIFT','sprint'],['CTRL / C','crouch, near silent'],['SPACE','dodge roll']]],
-  ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','steady aim'],['R','reload'],['X','swap weapon']]],
+  ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','aim down sights'],['R','reload'],['X','swap weapon']]],
   ['GEAR',[['1-9','select hotbar slot'],['FIRE','use selected slot'],['TAB','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],
 ['WORLD',[['E','search / call for extraction'],['M','map'],['H','cycle this list'],['P','pause']]],
   ['ALSO',[['CAPS','walk on, hands free'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom']]]
@@ -22545,7 +22545,7 @@ var LEGEND=[
 var LEGEND_MINI=[
   ['WASD','move'],['SHIFT','sprint'],
   ['CTRL / C','crouch'],['SPACE','roll'],
-  ['LMB','fire'],['RMB','aim'],
+  ['LMB','fire'],['RMB','sights'],
   ['R','reload'],['X','swap gun'],
   ['1-9','hotbar'],['TAB','backpack'],
   ['E','search'],['M','map']
@@ -26185,7 +26185,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.92: C crouches. CTRL still does, and C does the same thing now instead of flipping an autoloot switch that has done nothing since the backpack became unlimited. The pause screen and both legends say CTRL / C.',
+  now:'v9.93: the pause screen says RMB aim down sights, which is what the right button does. The full legend says the same; the compact one says sights, because the whole phrase is wider than its column.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
