@@ -4165,79 +4165,77 @@ function repairInteriors(walls,buildings,locked){
   // have called every rescued building an open plan.
   for(var bz in bad){ var bzz=buildings[bz]; if(bzz){ bzz.plan='open'; bzz.repaired=1; } }
   for(wi=walls.length-1;wi>=0;wi--) if(walls[wi].ib!==undefined&&bad[walls[wi].ib]) walls.splice(wi,1);
-  // v10.40: THE SAFETY NET NEVER CHECKED ITS OWN WORK. The strip above assumes
-  // a building with no interior is a building you can enter, and for four
-  // buildings on THE COLD MILE it is not: their one or two doors face a
-  // neighbour a few units away, so the street never reaches the doorway, the
-  // interior is torn out for nothing, and the building stays a solid block
-  // (v9.72 found it, v9.77 named them: 14, 15, 20, 21). Flood once more, and any
-  // building still holding floor nothing can reach gets a doorway punched
-  // through its OWN shell, on a side whose street is reachable, the standard 64
-  // wide. Shell walls carry no tag, so a shell is found by geometry: an untagged
-  // wall lying along this building's own perimeter, which cannot be a
-  // neighbour's. The cut clones the segment with every field it had, so a split
-  // wall keeps whatever it carried (the v9.9x lesson). Locked rooms are never
-  // opened into. The dial holds the whole thing off for the check.
+  // v10.40: THE PASS ONLY EVER LOOKED AT THE BUILDINGS IT HAD FLAGGED, and it
+  // flags on the coarse nav, cell 16 padded by 12, where a small sealed interior
+  // shows no free cell at all and so counts as nothing to repair. Measured on
+  // v10.39 across fifteen seeds of THE COLD MILE: thirteen leave one to four
+  // buildings holding floor nothing can reach, and the pass flagged none of
+  // them. Their doors face a neighbour a few units away, so the street never
+  // reaches the doorway and the building is a solid block. So, last of all,
+  // every building is asked the fine question, and any that fails gets a
+  // doorway punched through its OWN shell, on a side whose street the coarse
+  // flood reaches, the standard 64 wide. Shell walls carry no tag, so a shell
+  // is found by geometry: an untagged wall lying along this building's own
+  // perimeter, which cannot be a neighbour's. The cut clones the segment with
+  // every field it had, so a split wall keeps whatever it carried. Locked rooms
+  // are never opened into. The dial holds the whole thing off for the check.
   if(CFG.doorPunch!==0){
-    var R3=stillSealed(bad);
-    if(R3.any){
-      var t3=16, gap3=64, C3=R3.nav.c, nvA=R3.nav, snA=R3.seen;
-      function cellAt(px,py){ var gx=Math.floor(px/C3), gy=Math.floor(py/C3); if(gx<0||gy<0||gx>=nvA.w||gy>=nvA.h) return -1; return gy*nvA.w+gx; }
-      function reach(px,py){ var ix=cellAt(px,py); return ix>=0&&!nvA.blk[ix]&&!!snA[ix]; }
-      function open(px,py){ var ix=cellAt(px,py); return ix>=0&&!nvA.blk[ix]; }
-      function shellOf(b){
-        var out=[];
-        for(var i=0;i<walls.length;i++){
-          var w=walls[i]; if(w.ib!==undefined||w.furn) continue;
-          var top=Math.abs(w.y-b.y)<1&&w.h<=t3+0.5, bot=Math.abs(w.y+w.h-(b.y+b.h))<1&&w.h<=t3+0.5;
-          var lef=Math.abs(w.x-b.x)<1&&w.w<=t3+0.5, rig=Math.abs(w.x+w.w-(b.x+b.w))<1&&w.w<=t3+0.5;
-          if((top||bot)&&w.x>=b.x-1&&w.x+w.w<=b.x+b.w+1) out.push({i:i,side:top?0:1});
-          else if((lef||rig)&&w.y>=b.y-1&&w.y+w.h<=b.y+b.h+1) out.push({i:i,side:lef?2:3});
-        }
-        return out;
+    var nvA=buildNav(walls), snA=floodNav(nvA);
+    var t3=16, gap3=64, C3=nvA.c;
+    function cellAt(px,py){ var gx=Math.floor(px/C3), gy=Math.floor(py/C3); if(gx<0||gy<0||gx>=nvA.w||gy>=nvA.h) return -1; return gy*nvA.w+gx; }
+    function reach(px,py){ var ix=cellAt(px,py); return ix>=0&&!nvA.blk[ix]&&!!snA[ix]; }
+    function shellOf(b){
+      var out=[];
+      for(var i=0;i<walls.length;i++){
+        var w=walls[i]; if(w.ib!==undefined||w.furn) continue;
+        var top=Math.abs(w.y-b.y)<1&&w.h<=t3+0.5, bot=Math.abs(w.y+w.h-(b.y+b.h))<1&&w.h<=t3+0.5;
+        var lef=Math.abs(w.x-b.x)<1&&w.w<=t3+0.5, rig=Math.abs(w.x+w.w-(b.x+b.w))<1&&w.w<=t3+0.5;
+        if((top||bot)&&w.x>=b.x-1&&w.x+w.w<=b.x+b.w+1) out.push({i:i,side:top?0:1});
+        else if((lef||rig)&&w.y>=b.y-1&&w.y+w.h<=b.y+b.h+1) out.push({i:i,side:lef?2:3});
       }
-      function cut(b,side,a){
-        var sh=shellOf(b), idx=[];
-        for(var k=0;k<sh.length;k++){
-          if(sh[k].side!==side) continue;
-          var w=walls[sh[k].i], lo=(side<2)?w.x:w.y, hi=(side<2)?w.x+w.w:w.y+w.h;
-          if(hi<=a||lo>=a+gap3) continue;
-          idx.push(sh[k].i);
-        }
-        if(!idx.length) return false;
-        idx.sort(function(p,q){ return q-p; });
-        for(var m=0;m<idx.length;m++){
-          var w2=walls[idx[m]]; walls.splice(idx[m],1);
-          var pieces=(side<2)
-            ?[[w2.x,w2.y,a-w2.x,w2.h],[a+gap3,w2.y,w2.x+w2.w-(a+gap3),w2.h]]
-            :[[w2.x,w2.y,w2.w,a-w2.y],[w2.x,a+gap3,w2.w,w2.y+w2.h-(a+gap3)]];
-          for(var pc=0;pc<2;pc++){
-            var pz=pieces[pc]; if(pz[2]<3||pz[3]<3) continue;
-            var cl={}; for(var kk in w2) cl[kk]=w2[kk];
-            cl.x=pz[0]; cl.y=pz[1]; cl.w=pz[2]; cl.h=pz[3];
-            walls.push(cl);
-          }
-        }
-        return true;
+      return out;
+    }
+    function cut(b,side,a){
+      var sh=shellOf(b), idx=[];
+      for(var k=0;k<sh.length;k++){
+        if(sh[k].side!==side) continue;
+        var w=walls[sh[k].i], lo=(side<2)?w.x:w.y, hi=(side<2)?w.x+w.w:w.y+w.h;
+        if(hi<=a||lo>=a+gap3) continue;
+        idx.push(sh[k].i);
       }
-      for(var pb2 in R3.bad){
-        var B3=buildings[pb2]; if(!B3) continue;
-        var done=false;
-        for(var side=0;side<4&&!done;side++){
-          var len=(side<2)?B3.w:B3.h, base=(side<2)?B3.x:B3.y;
-          for(var a=base+30; a+gap3<=base+len-30&&!done; a+=8){
-            var okOut=true, okIn=true;
-            for(var s=a+4; s<a+gap3&&okOut&&okIn; s+=8){
-              var ox,oy,ix2,iy2;
-              if(side===0){ ox=s; oy=B3.y-C3*1.5; ix2=s; iy2=B3.y+t3+C3*1.5; }
-              else if(side===1){ ox=s; oy=B3.y+B3.h+C3*1.5; ix2=s; iy2=B3.y+B3.h-t3-C3*1.5; }
-              else if(side===2){ ox=B3.x-C3*1.5; oy=s; ix2=B3.x+t3+C3*1.5; iy2=s; }
-              else { ox=B3.x+B3.w+C3*1.5; oy=s; ix2=B3.x+B3.w-t3-C3*1.5; iy2=s; }
-              if(!reach(ox,oy)) okOut=false;
-              if(!open(ix2,iy2)||inLocked(ix2,iy2)) okIn=false;
-            }
-            if(okOut&&okIn&&cut(B3,side,a)){ B3.punched=side+1; done=true; }
+      if(!idx.length) return false;
+      idx.sort(function(p,q){ return q-p; });
+      for(var m=0;m<idx.length;m++){
+        var w2=walls[idx[m]]; walls.splice(idx[m],1);
+        var pieces=(side<2)
+          ?[[w2.x,w2.y,a-w2.x,w2.h],[a+gap3,w2.y,w2.x+w2.w-(a+gap3),w2.h]]
+          :[[w2.x,w2.y,w2.w,a-w2.y],[w2.x,a+gap3,w2.w,w2.y+w2.h-(a+gap3)]];
+        for(var pc=0;pc<2;pc++){
+          var pz=pieces[pc]; if(pz[2]<3||pz[3]<3) continue;
+          var cl={}; for(var kk in w2) cl[kk]=w2[kk];
+          cl.x=pz[0]; cl.y=pz[1]; cl.w=pz[2]; cl.h=pz[3];
+          walls.push(cl);
+        }
+      }
+      return true;
+    }
+    for(var pb2=0;pb2<buildings.length;pb2++){
+      var B3=buildings[pb2]; if(!B3||!fineSealed(B3)) continue;
+      var done=false;
+      for(var side=0;side<4&&!done;side++){
+        var len=(side<2)?B3.w:B3.h, base=(side<2)?B3.x:B3.y;
+        for(var a=base+30; a+gap3<=base+len-30&&!done; a+=8){
+          var okOut=true, okIn=true;
+          for(var s3=a+4; s3<a+gap3&&okOut&&okIn; s3+=8){
+            var ox,oy,ix2,iy2;
+            if(side===0){ ox=s3; oy=B3.y-C3*1.5; ix2=s3; iy2=B3.y+t3+C3*1.5; }
+            else if(side===1){ ox=s3; oy=B3.y+B3.h+C3*1.5; ix2=s3; iy2=B3.y+B3.h-t3-C3*1.5; }
+            else if(side===2){ ox=B3.x-C3*1.5; oy=s3; ix2=B3.x+t3+C3*1.5; iy2=s3; }
+            else { ox=B3.x+B3.w+C3*1.5; oy=s3; ix2=B3.x+B3.w-t3-C3*1.5; iy2=s3; }
+            if(!reach(ox,oy)) okOut=false;
+            if(inLocked(ix2,iy2)) okIn=false;
           }
+          if(okOut&&okIn&&cut(B3,side,a)){ B3.punched=side+1; done=true; }
         }
       }
     }
@@ -26701,7 +26699,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.40: the alpha, fourth build. Four buildings on THE COLD MILE were solid blocks: their doors faced a neighbour a few units away, the repair tore their interiors out and never checked that it helped. Any building still sealed at the end of the repair now gets a doorway punched through its own shell on a side the street reaches.',
+  now:'v10.40: the alpha, fourth build. On most seeds THE COLD MILE left one to four buildings as solid blocks: their doors faced a neighbour a few units away and the repair never saw them. Every building is now asked the fine question last of all, and one that fails gets a doorway punched through its own shell on a side the street reaches.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36616,11 +36614,12 @@ window.__REGRESS=[
      __pinDPR(1); __forceSize(1920,1080);
      // The v9.77 survey: flood the FINISHED map at a cell of 4 and name every
      // building still holding floor nothing can walk to. Locked rooms are shut
-     // on purpose and skipped.
-     function survey(dial){
+     // on purpose and skipped. Seed 4 is the one where four buildings seal on
+     // v10.39; seed 4242 is the fingerprint seed and seals none.
+     function survey(seed,dial){
        __resetCfg(); __pinDefaults(0); __cleanProfile();
        __cfg({doorPunch:dial, fineSeal:1, lmCut:1});
-       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       __deploy({kit:[],safe:null,mapIx:1,seed:seed});
        var g=__state(), B=g.map.buildings||[], W=g.map.walls||[], L=g.map.locked||[];
        var WW=g.map.cols*g.map.cw, HH=g.map.rows*g.map.ch, F=4, t=16, i, x, y;
        var fw=Math.ceil(WW/F), fh=Math.ceil(HH/F), blk=new Uint8Array(fw*fh);
@@ -36675,25 +36674,28 @@ window.__REGRESS=[
            gaps.push(b+':'+Math.round(widest));
          }
        }
-       return {buildings:B.length, ents:g.ents.length, stuck:stuck, punched:punched, gaps:gaps, walls:W.length};
+       return {buildings:B.length, ents:g.ents.length, stuck:stuck, punched:punched, gaps:gaps};
      }
-     var on=survey(1), off=survey(0);
-     if(on.buildings!==84||off.buildings!==84) return 'SKIP: THE COLD MILE did not build its 84 buildings';
-     // THE FINDING. On v10.39 buildings 14, 15, 20 and 21 held floor nothing
-     // could reach after the repair, and the dial did not exist.
-     if(on.stuck.length) return 'buildings still solid with the punch on: '+on.stuck.join(', ');
-     // CONTROL ONE: the dial is live. With it off the same map still seals
-     // buildings; two empty arms would mean the map changed or the setter
-     // ignored its argument, not that anything was fixed.
-     if(!off.stuck.length) bad.push('control: with the punch off no building is sealed either, so the dial or the map is not what this check thinks');
+     var off=survey(4,0);
+     if(off.buildings!==84) return 'SKIP: THE COLD MILE did not build its 84 buildings';
+     // CONTROL ONE: the dial is live and the seed still seals. Measured on
+     // v10.39: buildings 0, 12, 72 and 82 hold floor nothing can reach at seed
+     // 4. If nothing seals with the punch off, the map moved under the check.
+     if(!off.stuck.length) return 'SKIP: seed 4 no longer seals any building with the punch off, so this seed cannot show the fix';
+     var on=survey(4,1);
+     // THE FINDING. On v10.39 the dial did not exist and the same buildings
+     // stayed solid.
+     if(on.stuck.length) return 'buildings still solid with the punch on: '+on.stuck.join(', ')+' (sealed with it off: '+off.stuck.join(', ')+')';
      if(!on.punched.length) bad.push('no building carries a punched door, yet none is sealed');
      // CONTROL TWO: every punched building has a real doorway, the standard 64
      // wide, in its own shell. A wall deleted whole would leave a gap of the
      // whole side; a gap of zero means the flag was set and nothing was cut.
      on.gaps.forEach(function(gtxt){ var wdt=+gtxt.split(':')[1]; if(!(wdt>=60&&wdt<=68)) bad.push('building '+gtxt.split(':')[0]+' has a gap of '+wdt+' where a doorway is 64'); });
-     // CONTROL THREE: the world did not move. The entity stream is the half of
-     // the seed fingerprint that says so.
-     if(on.ents!==off.ents) bad.push('the entity count moved from '+off.ents+' to '+on.ents+', so the stream shifted');
+     // CONTROL THREE: the world did not move. The entity stream on the
+     // fingerprint seed is the half of the fingerprint that says so.
+     var fp=survey(4242,1);
+     if(fp.ents!==374) bad.push('the entity count at seed 4242 reads '+fp.ents+', not the 374 the fingerprint holds');
+     if(fp.stuck.length) bad.push('seed 4242 seals '+fp.stuck.join(', ')+' with the punch on');
      return bad.length?bad.join('; '):null; }},
   {v:'10.39',what:'a player is asked once, in plain words, whether run reports may be sent, and only when there is somewhere to send them',
    run:function(){

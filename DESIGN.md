@@ -40024,6 +40024,61 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.39 - THE ALPHA, THIRD BUILD: THE GAME ASKS BEFORE IT SENDS
+
+His question, 2026-09-03 about 16:55: **"is there a better place to upload
+it that would allow them to push feedback to us somehow??"** and, on cost:
+**"i don't mind paying for a good service as long as its simple enough for me
+and you to figure out together"**.
+
+### What it was
+
+The game has had a place to send every player's run report since the public
+drop was built: PUBLIC_DROP, an https address, null in every build so far.
+Sending needs consent, and the only consent in the game was a Settings switch
+under a hint that said the switch did nothing. A friend on itch never reaches
+Settings before their first raid, so the report of that raid went to their
+Downloads folder, and the question was never put to anyone.
+
+### Now
+
+On arrival in the Undercroft, after the welcome pack, the game asks once:
+SEND YOUR RUN REPORTS? The window says what a report is (what happened in
+the raid, what you carried, any note you type, an anonymous install id,
+nothing else about you), that YES sends each one to the developer as the raid
+ends, that CLOSE keeps them in your Downloads where you can send them
+yourself, and that Settings can change it either way. CLOSE is no and still
+counts as answered; ESC reaches it. It is asked only when PUBLIC_DROP is set,
+because with nowhere to send a report there is nothing to ask, so nothing
+changes for anyone until the address goes in. The Settings hint now reads
+whether an address exists and says the true thing either way.
+
+The address itself is the other half. tools/collector/worker.js is a forty
+line Cloudflare Worker that stores each posted report and lists them behind a
+secret; tools/collector/README.md is his seven steps, about fifteen minutes,
+on the free tier. When he pastes the worker URL and the secret, PUBLIC_DROP
+takes the URL in a one line build and the loop reads new reports every tick.
+A Discord webhook is the fallback if that feels heavy: reports appear in a
+channel as files and he drags them into exports/.
+
+The WHAT IS NEW card gains a line saying the question exists, YES sends and
+CLOSE keeps them in Downloads, and the card moves to v10.39 with it.
+
+### Measured
+
+The check requires no question with PUBLIC_DROP null; with an address, the
+window open with Downloads and Settings named, a CLOSE that carries data-esc;
+YES switching sharing on, marking the question answered, closing the window,
+and no second asking; CLOSE leaving sharing off, marking it answered and
+closing; arrival through maybeWelcome on a character that already has its
+pack asking; and the Settings row reading "sends" with an address and "no
+upload address" without. The control is the welcome pack window still in the
+page. On v10.38 there was no question window, which is the finding. The check
+restores the address and the three profile fields it touched.
+
+Not verified: the real post to a real worker from an itch page, which waits
+on his URL; and what the window looks like at 4K, where every other modal has
+been measured and this one has not.
 ## v10.38 - THE ALPHA, SECOND BUILD: THE WHAT IS NEW CARD IS CURRENT
 
 His ask, 2026-09-03 about 16:45: an alpha for his friends on itch. The first

@@ -982,6 +982,15 @@
     <button id="welcomeno" data-esc="1" style="padding:8px 22px;margin-left:auto">CLOSE</button>
   </div>
 </div>
+<!-- v10.39, the alpha: asked once, and only when there is somewhere to send it. -->
+<div class="modal" id="sharemodal">
+  <h3>SEND YOUR RUN REPORTS?</h3>
+  <div class="msub">Every raid ends with a run report: what happened in the raid, what you carried, any note you type, and an anonymous install id. Nothing else about you. Say YES and each report is sent to the developer as the raid ends, so the game gets better from what happened to you. Close this and it stays in your Downloads folder instead, where you can send it yourself. You can change your mind any time in Settings.</div>
+  <div style="display:flex;gap:8px;margin-top:10px">
+    <button id="shareyes" class="deploy" style="padding:8px 22px">YES, SEND THEM</button>
+    <button id="shareno" data-esc="1" style="padding:8px 22px;margin-left:auto">CLOSE</button>
+  </div>
+</div>
 <div class="modal" id="primermodal">
   <h3>FIRST TIME OUT</h3>
   <div class="msub">What is worth knowing before you take the lift up. The first three are the ones that get people killed. You can bring this back any time from Settings.</div>
@@ -1255,7 +1264,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.38';
+var VER='10.39';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1266,11 +1275,12 @@ var VER='10.38';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='10.38';
+var WHATSNEW_VER='10.39';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'A NEW CHARACTER GETS A WELCOME PACK: a green gun and a blue one, heals, plates and grenades, offered once, the first time down.',
+  'THE GAME ASKS ONCE WHETHER YOUR RUN REPORTS MAY BE SENT to the developer. YES sends each one as the raid ends; CLOSE keeps them in your Downloads. Settings changes it either way.',
   'THE MENUS NEVER SHRINK BELOW THE SCREEN. The wheel still sizes them, and now says so, MENU SIZE 130%; the size cannot go below 1.0, so on a 4K monitor nothing is ever smaller than 1.9 times its 1080p size.',
   'THE DISCOUNT FASHION DEPOT HAS FOURTEEN RACKS: build, skin, eyes, face, tattoo, hair, hairstyle, beard, headgear, clothing, patch, gloves, boots and backpack. Every piece is earned by playing, never bought. SURPRISE ME dresses you from every rack and three LOOKS keep an outfit.',
   'THE FIGURE AT THE DEPOT IS DRAWN BY THE RAID PAINTER, five times raid size, so what you see there is what you see in the raid; the crowd in the Undercroft dresses from the same racks, eyes and all.',
@@ -26614,7 +26624,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.38: the alpha, second build. The WHAT IS NEW card is current again: it opens with what an alpha is, then the welcome pack, the fourteen racks, the Depot figure, net lifetime earnings, the tuning row, the Blotter, and the rest. It had stood at v10.22.',
+  now:'v10.39: the alpha, third build. On arrival in the Undercroft the game asks once, in plain words, whether your run reports may be sent to the developer, and only when there is an address to send them to. CLOSE keeps them in your Downloads. Settings can change it either way, and its hint now says what is true.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30539,9 +30549,32 @@ var WELCOME_PACK={guns:['smg','carbine'],items:['medkit','medkit','bandage','ban
 function welcomeFresh(){
   return !P.welcomed&&(P.runs||0)===0&&!(P.stash&&P.stash.length)&&(!P.weapons||P.weapons.length<=1);
 }
+// v10.39: THE CONSENT QUESTION. The public drop has needed consent since it
+// existed, and the only consent there was is a Settings switch under a hint
+// that said the switch did nothing. A friend on itch never reaches Settings
+// before their first raid, so the report of that raid went to their Downloads
+// and the question was never put. It is put here, once, on arrival in the
+// Undercroft, after the welcome pack, and only when PUBLIC_DROP is set: with
+// nowhere to send a report there is nothing to ask. CLOSE is no, and it still
+// counts as answered; Settings can change it either way.
+function maybeShareAsk(){
+  if(P.shareAsked) return;
+  if(!PUBLIC_DROP) return;
+  var md=document.getElementById('sharemodal'); if(!md) return;
+  document.getElementById('shareyes').onclick=function(){
+    P.shareRuns=true; P.shareAsked=1; installId(); saveProfile();
+    md.classList.remove('on');
+    try{ say2('Run reports will be sent as each raid ends. Settings can turn it off.'); }catch(_sy){}
+  };
+  document.getElementById('shareno').onclick=function(){
+    P.shareRuns=false; P.shareAsked=1; saveProfile();
+    md.classList.remove('on');
+  };
+  openModal('sharemodal');
+}
 function maybeWelcome(){
-  if(P.welcomed) return;
-  if(!welcomeFresh()){ P.welcomed=1; saveProfile(); return; }
+  if(P.welcomed){ maybeShareAsk(); return; }
+  if(!welcomeFresh()){ P.welcomed=1; saveProfile(); maybeShareAsk(); return; }
   var box=document.getElementById('welcomelist'), md=document.getElementById('welcomemodal');
   if(!box||!md) return;
   var rows='';
@@ -30561,8 +30594,9 @@ function maybeWelcome(){
     md.classList.remove('on');
     try{ if(typeof renderHub==='function') renderHub(); }catch(e){}
     try{ say2('The welcome pack is in your stash.'); }catch(e2){}
+    maybeShareAsk();   // v10.39: the question follows the pack
   };
-  document.getElementById('welcomeno').onclick=function(){ P.welcomed=1; saveProfile(); md.classList.remove('on'); };
+  document.getElementById('welcomeno').onclick=function(){ P.welcomed=1; saveProfile(); md.classList.remove('on'); maybeShareAsk(); };
   openModal('welcomemodal');
 }
 function maybePrimer(){
@@ -30778,7 +30812,12 @@ function renderSettings(){
     // v8.75: PUBLIC_DROP is null in this build, so the consent branch in
     // telemetryDest can never fire and nothing has ever left the machine through
     // this switch. The sentence said otherwise. It now describes what is true.
-    '<div class="row"><div style="flex:1"><b>Share runs with the developer</b><div class="hint">There is no upload address in this build, so nothing is sent anywhere and this switch changes nothing yet. When one exists, turning this on would send the same run report you can already export yourself: your raids, loadouts and any notes you type, plus an anonymous install id, and nothing else about you.</div></div>'+
+    // v10.39: and now it reads whether an address exists, because it is about
+    // to, and a hint that says "nothing is sent" over a switch that sends would
+    // be the exact lie v8.75 removed, the other way round.
+    '<div class="row"><div style="flex:1"><b>Share runs with the developer</b><div class="hint">'+(PUBLIC_DROP
+      ?'ON sends the same run report you can already export yourself, as each raid ends: your raids, loadouts and any notes you type, plus an anonymous install id, and nothing else about you. OFF keeps it in your Downloads.'
+      :'There is no upload address in this build, so nothing is sent anywhere and this switch changes nothing yet. When one exists, turning this on would send the same run report you can already export yourself: your raids, loadouts and any notes you type, plus an anonymous install id, and nothing else about you.')+'</div></div>'+
     '<button id="set_share" style="padding:6px 12px">'+(P.shareRuns?'ON':'OFF')+'</button></div>'+
     '<div class="row"><div style="flex:1"><b>Back up your progress</b><div class="hint">Everything you own lives in this browser, and one browser cleanup erases it forever. This saves it all to a file in your Downloads. Do it once in a while.</div></div>'+
     '<button id="set_backup" style="padding:6px 12px">SAVE FILE</button></div>'+

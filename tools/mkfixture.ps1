@@ -5221,6 +5221,76 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.39',what:'a player is asked once, in plain words, whether run reports may be sent, and only when there is somewhere to send them',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!window.__hubEnter) return 'SKIP: this build cannot be driven into the Undercroft';
+     var md=document.getElementById('sharemodal');
+     // THE FINDING. On v10.38 there was no question anywhere; a friend was never asked.
+     if(!md) return 'there is no question window; a friend on itch is never asked whether reports may be sent';
+     if(typeof maybeShareAsk!=='function') return 'there is a window but no code that asks';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(); var keep={shareAsked:P2.shareAsked,shareRuns:P2.shareRuns,welcomed:P2.welcomed};
+     var drop0=PUBLIC_DROP;
+     function rowText(){ var b=document.getElementById('set_share'); var row=b&&b.parentNode; return row?(row.textContent||''):''; }
+     try{
+       // WITH NO ADDRESS THERE IS NO QUESTION.
+       PUBLIC_DROP=null; P2.shareAsked=undefined; P2.shareRuns=false; P2.welcomed=1;
+       maybeShareAsk();
+       if(md.classList.contains('on')) bad.push('asked with nowhere to send the report');
+       // WITH AN ADDRESS, ASKED, IN WORDS THAT SAY WHERE A NO GOES.
+       PUBLIC_DROP='https://probe-4242.example/run';
+       maybeShareAsk();
+       if(!md.classList.contains('on')) bad.push('not asked although an address exists');
+       var txt=(md.textContent||'').replace(/\s+/g,' ');
+       if(!/Downloads/.test(txt)) bad.push('the question does not say where a report goes if they say no');
+       if(!/Settings/.test(txt)) bad.push('the question does not say it can be changed in Settings');
+       var yes=document.getElementById('shareyes'), no=document.getElementById('shareno');
+       if(!yes||!no) bad.push('the window lacks its YES or its CLOSE');
+       if(no&&no.textContent.trim()!=='CLOSE') bad.push('the way out reads "'+no.textContent.trim()+'" and not CLOSE');
+       if(no&&!no.hasAttribute('data-esc')) bad.push('ESC does not reach the CLOSE');
+       // YES MEANS YES, ONCE.
+       if(yes) yes.click();
+       if(P2.shareRuns!==true) bad.push('YES did not switch sharing on');
+       if(P2.shareAsked!==1) bad.push('YES did not mark the question answered');
+       if(md.classList.contains('on')) bad.push('the window stayed open after YES');
+       maybeShareAsk();
+       if(md.classList.contains('on')) bad.push('asked a second time after an answer');
+       // CLOSE MEANS NO, AND IT STILL COUNTS AS ANSWERED.
+       P2.shareAsked=undefined; P2.shareRuns=false;
+       maybeShareAsk();
+       if(!md.classList.contains('on')) bad.push('not asked on a profile that has not answered');
+       if(no) no.click();
+       if(P2.shareRuns!==false) bad.push('CLOSE switched sharing on');
+       if(P2.shareAsked!==1) bad.push('CLOSE did not mark the question answered');
+       if(md.classList.contains('on')) bad.push('the window stayed open after CLOSE');
+       // IT COMES THROUGH THE WELCOME, so a character that already has its pack meets it on arrival.
+       P2.shareAsked=undefined; P2.welcomed=1;
+       if(typeof maybeWelcome==='function'){
+         maybeWelcome();
+         if(!md.classList.contains('on')) bad.push('arriving with the pack already answered did not ask');
+         md.classList.remove('on');
+       }
+       // THE SETTINGS HINT SAYS WHAT IS TRUE, both ways.
+       if(typeof renderSettings==='function'){
+         __hubEnter(); renderSettings();
+         var h1=rowText();
+         if(!/sends/.test(h1)) bad.push('with an address the Settings row still says nothing is sent: "'+h1.slice(0,90)+'"');
+         PUBLIC_DROP=null; renderSettings();
+         var h2=rowText();
+         if(!/no upload address/.test(h2)) bad.push('with no address the Settings row claims to send: "'+h2.slice(0,90)+'"');
+       }
+       // AND THE CARD SAYS THE QUESTION EXISTS, so a friend who closed it knows where to find it.
+       if(window.__words&&typeof __words.whatsnew==='function'){ var wl=__words.whatsnew().lines||[]; if(!wl.some(function(l){ return /RUN REPORTS MAY BE SENT/.test(l); })) bad.push('the WHAT IS NEW card does not say the question exists'); }
+       // CONTROL: the welcome pack window is still there.
+       if(!document.getElementById('welcomemodal')) bad.push('control: the welcome pack window is gone');
+     } finally {
+       PUBLIC_DROP=drop0; md.classList.remove('on');
+       P2.shareAsked=keep.shareAsked; P2.shareRuns=keep.shareRuns; P2.welcomed=keep.welcomed;
+       var _m=document.querySelectorAll('.modal.on'); for(var _i=0;_i<_m.length;_i++) _m[_i].classList.remove('on');
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.38',what:'the WHAT IS NEW card is current, opens with what an alpha is, and names what a friend will meet first',
    run:function(){
      var bad=[];
