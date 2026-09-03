@@ -40024,6 +40024,51 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.10 - EVERY WINDOW SAYS CLOSE, AND ESC GOES THROUGH IT
+
+His answer 1, 2026-09-03: **"every menu screen in the game should have a
+'CLOSE' button and esc should also work on every menu screen in the game."**
+
+### What was there, measured after I had written it up wrong
+
+Seventeen windows. Every one had a way out with the mouse, labelled five
+different ways: Leave, Close, CLOSE, Back, Got it; the loadout question's is
+its NO. And ESC already closed the window in front, everywhere, through a
+capture-phase handler that has been there since v8.1x. I had written, from
+reading one branch of the Undercroft key handler, that ESC over an open
+window did nothing; the control build, driven, closed Wirt and the bar on ESC
+without my change. One thing I got wrong: I described the old behaviour from
+the code instead of driving it first.
+
+What that handler actually did was strip the window's .on class, except for
+two windows it had learned the hard way to close through their own doors: the
+tuning console (v8.12, a latch left the raid frozen) and the primer (v8.20, a
+tick box was discarded). Every other window with a way out of its own, the
+trader closing its stall, the raid backpack, the ascent check going back to
+the sector page, the confirm box, still had ESC bypass it.
+
+### What it is
+
+Every window's way out says CLOSE; five wordings are one. ESC presses the
+front window's own CLOSE for every window, not two, so whatever a window does
+on the way out it does on ESC. The loadout question's is its NO and the
+tuning console's is its latch.
+
+### Measured
+
+The check reads every window in the page for a way out and requires the word
+to be CLOSE, then opens Wirt, the bar, the sector page, the cheat box and the
+primer through the game's own openers and presses ESC through the real
+handler, requiring each to close; the control is that ESC still closes the
+stash screen. On v10.09 twelve windows said Leave, Close or Back and the
+primer said Got it, which is the finding as measured; the ESC part passes on
+both builds and stands as a guard.
+
+Not verified: a window whose own CLOSE is disabled at the moment ESC is
+pressed, which falls back to stripping the class as before. Not verified:
+whether he wants the pause screen's RESUME to read CLOSE; it is not a window
+in the sense above and was left alone.
+
 ## v10.09 - YOU CAN TELL THE GUNS APART
 
 His note, 2026-09-03, after his answers: **"we desperately need to improve the

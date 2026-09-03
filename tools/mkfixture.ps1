@@ -5221,6 +5221,50 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.10',what:'every window has a CLOSE and ESC closes the window in front',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!window.__hubEnter) return 'SKIP: this build cannot be driven into the Undercroft';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __hubEnter();
+     // ONE: every modal has a way out that says CLOSE (the loadout question's is NO).
+     var ms=document.querySelectorAll('.modal'), noClose=[], wrongWord=[];
+     for(var i=0;i<ms.length;i++){
+       var m=ms[i], id=m.id||('modal'+i);
+       if(id==='askmodal'){ if(!m.querySelector('#askno')) noClose.push(id); continue; }
+       var bs=m.querySelectorAll('button'), found=null;
+       for(var b=0;b<bs.length;b++){ var t=bs[b].textContent.trim(); if(/^(CLOSE|Close|Leave|Back|Done)$/i.test(t)){ found=t; break; } }
+       if(!found) noClose.push(id);
+       else if(found!=='CLOSE') wrongWord.push(id+' says '+found);
+     }
+     if(noClose.length) bad.push('windows with no way out: '+noClose.join(', '));
+     if(wrongWord.length) bad.push('windows whose way out is not CLOSE: '+wrongWord.join(', '));
+     // TWO: ESC over an open window closes it. Open a few through the game's
+     // own openers and press ESC through the real handler.
+     function esc(){ document.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true})); }
+     var opened=[], stuck=[];
+     var tries=[['gamblemodal',function(){ if(typeof renderGamble==='function') renderGamble(); openModal('gamblemodal'); }],
+                ['barmodal',function(){ if(typeof renderBar==='function') renderBar(); openModal('barmodal'); }],
+                ['sectormodal',function(){ if(typeof renderSector==='function') renderSector(); openModal('sectormodal'); }],
+                ['cheatmodal',function(){ if(typeof renderCheat==='function') renderCheat(); openModal('cheatmodal'); }],
+                ['primermodal',function(){ openModal('primermodal'); }]];
+     for(var t2=0;t2<tries.length;t2++){
+       var mid=tries[t2][0], el=document.getElementById(mid); if(!el) continue;
+       try{ tries[t2][1](); }catch(e1){ continue; }
+       if(!el.classList.contains('on')) continue;
+       opened.push(mid);
+       esc();
+       if(el.classList.contains('on')){ stuck.push(mid); el.classList.remove('on'); }
+     }
+     if(!opened.length) return bad.length?bad.join('; '):'SKIP: no window would open to test ESC on';
+     if(stuck.length) bad.push('ESC did not close: '+stuck.join(', '));
+     // CONTROL: ESC with nothing open still does what it did, and the stash
+     // screen still closes on ESC.
+     var hub=document.getElementById('hub');
+     if(hub){ hub.classList.add('on'); esc(); if(hub.classList.contains('on')){ bad.push('control: ESC no longer closes the stash screen'); hub.classList.remove('on'); } }
+     var pb=document.getElementById('pausebox'); if(pb) pb.classList.remove('on');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.09',what:'gun icons are told apart by family, outlined, and every one draws',
    run:function(){
      var bad=[];
