@@ -39906,3 +39906,55 @@ for, but not judged whether the board is now too small to use at a glance. Not
 verified: the conditions panel at 1440p and 4K by eye. The v8.91 check measures
 its width at all three and the new rule measures its area at 1080p, so it is
 proved smaller and proved to still draw, not proved to look right.
+
+## v9.67 - THE WHEEL DID NOTHING AT A STATION, WHICH IS WHERE THE WORDS ARE
+
+His note: **"reduce text size in the undercroft only slightly. spinning mouse
+wheel in undercroft should increase or decrease text size."**
+
+Measured before touching anything. **On the Undercroft floor it already worked**:
+a spin took the text scale from 1.30 to 1.38. At a station it did nothing at all:
+
+| station | pointer over | text scale |
+| --- | --- | --- |
+| term | stashgrid | 1.38 to 1.38 |
+| mf | stashgrid | 1.38 to 1.38 |
+| bar | stashgrid | 1.38 to 1.38 |
+| cheat | stashgrid | 1.38 to 1.38 |
+| dev | stashgrid | 1.38 to 1.38 |
+
+**And a station is where he is when he is reading anything down there.** The
+floor is where he walks; the panel is where the words are, which is why he
+reported this as the wheel not working when by one measure it did.
+
+The cause is a rule from v6.64 that is right everywhere else: if the pointer is
+over anything that can scroll, the wheel scrolls it and the zoom stays out of the
+way. **Every station panel is built around a scrolling list**, so in the
+Undercroft that rule swallowed the wheel completely.
+
+So the rule stops applying in the Undercroft, and **shift scrolls instead**.
+Shift already returned early in this handler, which means the browser does its
+normal thing with it, so the scroll he loses on the plain wheel comes back on
+shift without a line of new code. The scrollbar and a drag are untouched.
+
+After: the plain wheel resizes at all five stations, and shift+wheel resizes at
+none of them, which is what proves the list is still scrollable.
+
+### And "only slightly"
+
+The Undercroft panel alone gets 0.92 of what every other menu gets: measured
+1.6376 against 1.78. **One notch of the wheel is 0.08**, so this is exactly one
+notch smaller, and now that the wheel reaches it down there he can put it back
+without leaving the room.
+
+The check holds it between 0.85 and 0.98 of a modal, so "not reduced at all" and
+"more than slightly" both fail. Against v9.66 it reports the wheel dead at five
+of five stations and the panel at 1.000 of a modal.
+
+Not verified: that shift+wheel actually scrolls the list, as opposed to merely
+not resizing it. The check proves the resize does not fire, which is the half
+that could have been broken by this change; whether the browser then scrolls is
+its default behaviour and I have not driven a scrollTop to confirm it. Not
+verified: how the Undercroft reads one notch smaller. He asked for slightly
+smaller and 0.92 is slightly smaller; whether that is the right amount is his,
+and it is now a dial he can turn on the spot.

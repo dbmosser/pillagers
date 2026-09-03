@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.66';
+var VER='9.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25405,7 +25405,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.66: the pillager board and the conditions panel were the two largest things on the HUD, not the smallest. The board alone took nearly twice the screen of anything else. Both are smaller than the vitals and the gear panel now.',
+  now:'v9.67: the mouse wheel resizes the text at a station in the Undercroft. It always worked on the floor and did nothing at any of the five station panels, because they are all built around a scrolling list and the wheel was going to the list. Hold shift to scroll.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -28295,7 +28295,10 @@ function applyMenuZoom(){
   // does not happen, and shrank every menu to three quarters of the window.
   var _sf=z*titleRes();
   document.querySelectorAll('.modal,.pausebox,.outcome,#hub').forEach(function(m){
-    m.style.zoom=_sf;
+    // v9.67, his note: "reduce text size in the undercroft only slightly". The
+    // station panel alone, at 0.92, which is one notch of the wheel. He can put
+    // it back without leaving the room now that the wheel reaches it down there.
+    m.style.zoom=(m.id==='hub')?(_sf*0.92):_sf;
   });
   // v8.88, his note: the title screen was in none of those lists, so the first
   // screen anybody sees was the one screen that ignored the text size setting.
@@ -28329,7 +28332,16 @@ document.addEventListener('wheel',function(e){
   // v6.64, his note. If the pointer is over anything that can actually scroll, the wheel
   // scrolls it and the zoom stays out of the way. Walk up from the target because the
   // scrollable box is usually an ancestor of the row under the cursor.
-  if(!e.ctrlKey){
+  // v9.67, HIS NOTE: "spinning mouse wheel in undercroft should increase or
+  // decrease text size". The v6.64 rule below is right everywhere else, but every
+  // station panel in the Undercroft is built around a scrolling list, so down
+  // there it swallowed the wheel completely. Measured before this: the floor took
+  // the scale 1.30 to 1.38 and all five station panels went 1.38 to 1.38.
+  // A station is where he is when he is reading anything, so the rule stops
+  // applying there. SHIFT still scrolls, because shift returns early a few lines
+  // above and the browser then does its normal thing with the wheel.
+  var _inHub=(typeof state!=='undefined'&&state==='hub');
+  if(!e.ctrlKey&&!_inHub){
     var _sc=e.target;
     while(_sc&&_sc!==document.body){
       if(_sc.scrollHeight-_sc.clientHeight>2){

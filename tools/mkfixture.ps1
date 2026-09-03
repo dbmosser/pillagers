@@ -5084,6 +5084,91 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.67',what:'the wheel resizes the text at a station, and shift still scrolls the list',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing can be pointed at';
+     if(!(window.__hubEnter&&window.__station&&window.__hubPanelOn))
+       return 'SKIP: this build cannot be driven into the Undercroft';
+     __pinDPR(1); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __forceSize(1920,1080);
+     __hubEnter();
+     function spin(el,x,y,shift){
+       var before=__P().menuZoom;
+       var ev=new WheelEvent('wheel',{deltaY:-120,bubbles:true,cancelable:true,
+         clientX:x,clientY:y,shiftKey:!!shift});
+       el.dispatchEvent(ev);
+       return {before:before, after:__P().menuZoom, changed:(before!==__P().menuZoom)};
+     }
+     // The biggest scrolling box inside the open panel, which is what his pointer
+     // is over when he is reading anything at a station.
+     function biggestScroller(){
+       var hub=document.getElementById('hub');
+       if(!hub) return null;
+       var all=hub.querySelectorAll('*'), best=null;
+       for(var i=0;i<all.length;i++){
+         var el=all[i];
+         if(el.scrollHeight-el.clientHeight<=2) continue;
+         var cs=getComputedStyle(el);
+         if(cs.overflowY!=='auto'&&cs.overflowY!=='scroll') continue;
+         var r=el.getBoundingClientRect();
+         if(r.width<60||r.height<60) continue;
+         if(!best||r.width*r.height>best.a)
+           best={el:el,a:r.width*r.height,x:Math.round(r.x+r.width/2),y:Math.round(r.y+r.height/2),
+                 id:el.id||el.className||el.tagName};
+       }
+       return best;
+     }
+     // CONTROL: on the FLOOR it always worked, and it must still. A build that
+     // broke the wheel everywhere would satisfy nothing and this catches it.
+     var floor=spin(document.body,960,540,false);
+     if(!floor.changed)
+       bad.push('control: the wheel no longer resizes the text on the Undercroft floor either, where it always worked');
+     var tested=0, dead=[], shiftBroke=[];
+     var sts=__station();
+     for(var si=0;si<sts.length;si++){
+       try{ __station(sts[si].id); }catch(e){ continue; }
+       if(!__hubPanelOn()) continue;
+       var b=biggestScroller();
+       if(!b) continue;
+       tested++;
+       // THE FINDING. Measured on v9.66: the floor took the scale 1.30 to 1.38 and
+       // every one of the five station panels went 1.38 to 1.38, because a rule
+       // from v6.64 hands the wheel to anything scrollable and every station panel
+       // is built around a scrolling list.
+       var plain=spin(b.el,b.x,b.y,false);
+       if(!plain.changed) dead.push(sts[si].id+' over '+b.id);
+       // AND SHIFT MUST STILL SCROLL, which means it must NOT resize. Taking the
+       // wheel away from the list without leaving him a way to scroll it would be
+       // a worse bug than the one being fixed.
+       var sh=spin(b.el,b.x,b.y,true);
+       if(sh.changed) shiftBroke.push(sts[si].id);
+     }
+     if(!tested) return 'SKIP: no station opened a panel with a scrolling list in it';
+     if(dead.length)
+       bad.push('the wheel does nothing to the text size at '+dead.length+' of '+tested+
+                ' stations: '+dead.join(', '));
+     if(shiftBroke.length)
+       bad.push('shift and the wheel resized the text at '+shiftBroke.join(', ')+
+                ', so he has no way left to scroll the list');
+     // AND THE OTHER HALF OF HIS NOTE: "reduce text size in the undercroft only
+     // slightly". The station panel against a modal, which is everything else.
+     var hub=document.getElementById('hub'), sm=document.getElementById('sectormodal');
+     if(hub&&sm&&window.__scale){
+       var was=sm.className; sm.className='modal on';
+       __scale.apply();
+       var hz=+getComputedStyle(hub).zoom, mz=+getComputedStyle(sm).zoom;
+       sm.className=was;
+       if(!(hz>0&&mz>0)) bad.push('control: could not read both zooms, hub='+hz+' modal='+mz);
+       else {
+         var ratio=hz/mz;
+         if(ratio>0.98) bad.push('the Undercroft panel is '+ratio.toFixed(3)+
+                                 ' of a modal, so it was not reduced at all');
+         if(ratio<0.85) bad.push('the Undercroft panel is '+ratio.toFixed(3)+
+                                 ' of a modal, which is more than slightly smaller');
+       }
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'9.66',what:'the pillager board and the conditions panel are smaller than the rest of the HUD',
    run:function(){
      var bad=[];
