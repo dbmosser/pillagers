@@ -7785,7 +7785,7 @@ function mkRaider(x,y,forceId,simBuild){
     face:rnd(0,6.28),state:'loot',tx:x,ty:y,cd:0,alert:0,spd:122,wep:WEAPONS[wk],dmg:WEAPONS[wk].dmg,
     rng:WEAPONS[wk].rng*.72,cone:.8,bag:[],looted:0,goal:null,skips:[],goalT:0,goalD:0,extracting:0,hitT:0,step:0,
 coat:ident.coat, ident:ident.id, name:ident.tag,
-    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, face:_look.face, boots:_look.boots, gloves:_look.gloves, pack:_look.pack, patch:_look.patch, tattoo:_look.tattoo,   // v10.18, his answer 20
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, faceMark:_look.face, boots:_look.boots, gloves:_look.gloves, pack:_look.pack, patch:_look.patch, tattoo:_look.tattoo,   // v10.18, his answer 20; v10.21: faceMark, because e.face is the facing angle and a string there stopped every pillager firing
     rival:(!simBuild&&ident.id===myRival())?1:0,
     // SPEC 8.4: varying hostility. A raider you have killed before is shoot on
     // sight with no negotiation; one you have good standing with is passive
@@ -18516,7 +18516,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // v10.21: the FACE rack. The hero's face comes from the racks; a pillager's
   // from his look, or from the old index if he has none.
   {
-    var _FACE=HERO?cosWorn('face'):(st.face||null);
+    var _FACE=HERO?cosWorn('face'):(st.faceMark||null);   // faceMark, never face: e.face is the facing angle
     var _fx=st.faceIx===undefined?0:st.faceIx;
     if(_FACE){ _fx={faceplain:0,facescar:6,facefreckles:5,facemud:4,facepaint:7,faceshiner:8}[_FACE]||0; }
     if(_fx===6){ wc.fillStyle='#a04a3a'; wc.fillRect(hx2+2.2,ty-33.6,1.1,6.4); wc.fillStyle='#d47a6a'; wc.fillRect(hx2+2.2,ty-31.2,1.1,1); }
@@ -37124,7 +37124,7 @@ window.__REGRESS=[
      __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
      if(g.ents.length!==85||g.containers.length!==165) bad.push('control: the seed fingerprint moved to '+g.ents.length+'/'+g.containers.length);
      var raiders=g.ents.filter(function(e){ return e.kind==='raider'; });
-     if(raiders.length&&raiders.some(function(e){ return !e.face||!cosFind(e.face)||cosFind(e.face).kind!=='face'; })) bad.push('control: a pillager has no face from the rack');
+     if(raiders.length&&raiders.some(function(e){ return !e.faceMark||!cosFind(e.faceMark)||cosFind(e.faceMark).kind!=='face'; })) bad.push('control: a pillager has no face from the rack');
      return bad.length?bad.join('; '):null; }},
   {v:'10.20',what:'the OS pointer is the resize arrow over a panel corner, the move cross over its bar, the hand over its glyph',
    run:function(){

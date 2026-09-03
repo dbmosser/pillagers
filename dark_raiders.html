@@ -1239,7 +1239,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.20';
+var VER='10.21';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7709,7 +7709,7 @@ function raiderLook(identId,x,y){
   var hat=pick('hat',['crown']);
   h=Math.imul(h^(h>>>11),2246822507)>>>0;
   if((h%3)===0) hat='none';                   // a third go bareheaded
-  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes')};
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes'),face:pick('face')};
 }
 function mkRaider(x,y,forceId,simBuild){
   // v6.53, his note. Nine entries: pistol 3, smg 2, rifle 2, carbine 1, scattergun 1,
@@ -7764,7 +7764,7 @@ function mkRaider(x,y,forceId,simBuild){
     face:rnd(0,6.28),state:'loot',tx:x,ty:y,cd:0,alert:0,spd:122,wep:WEAPONS[wk],dmg:WEAPONS[wk].dmg,
     rng:WEAPONS[wk].rng*.72,cone:.8,bag:[],looted:0,goal:null,skips:[],goalT:0,goalD:0,extracting:0,hitT:0,step:0,
 coat:ident.coat, ident:ident.id, name:ident.tag,
-    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes,   // v10.18, his answer 20
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, faceMark:_look.face,   // v10.18, his answer 20; v10.21: faceMark, because e.face is the facing angle and a string there stopped every pillager firing
     rival:(!simBuild&&ident.id===myRival())?1:0,
     // SPEC 8.4: varying hostility. A raider you have killed before is shoot on
     // sight with no negotiation; one you have good standing with is passive
@@ -17939,6 +17939,13 @@ var COSMETICS=[
   {id:'eyegreen', name:'Green',        how:'extracts:6',  kind:'eyes'},
   {id:'eyegrey',  name:'Grey',         how:'level:2',     kind:'eyes'},
   {id:'eyeamber', name:'Amber',        how:'warden:1',    kind:'eyes'},
+  // v10.21, his answer 14: FACE, the ninth rack. Paint, scars and worse.
+  {id:'faceplain',   name:'Plain',      how:'always',      kind:'face'},
+  {id:'facescar',    name:'Scar',       how:'runs:6',      kind:'face'},
+  {id:'facefreckles',name:'Freckles',   how:'runs:2',      kind:'face'},
+  {id:'facemud',     name:'Mud',        how:'extracts:4',  kind:'face'},
+  {id:'facepaint',   name:'War Paint',  how:'extracts:12', kind:'face'},
+  {id:'faceshiner',  name:'Black Eye',  how:'warden:1',    kind:'face'},
   // v5.66, his note. Owned from the start: this is a look, not a trophy. v7.26: and it
   // is a HAIRSTYLE, not headgear; it moved to the cut rack with the seven new ones.
   {id:'long',    name:'Long',          how:'always',      kind:'cut'},
@@ -18045,8 +18052,8 @@ function cosFind(id){
 // wiped profile or an edited save cannot leave her in a hat she has not earned.
 // v6.46: five kinds now, so the worn id and the fallback both come from a table
 // instead of a two-way branch with the answer baked into the return.
-var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes'};
-var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown'};
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain'};
 // v10.19: the iris colours.
 var EYECOL={eyebrown:'#5a3a22',eyehazel:'#8a6a34',eyeblue:'#4a7ab8',eyegreen:'#4a8a5a',eyegrey:'#8a949c',eyeamber:'#c88a2a'};
 function cosWorn(kind){
@@ -18287,8 +18294,15 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   wc.fillStyle='#FFF6DC';
   wc.fillRect(hx2-4.1+pupX,ty-30.2+pupY,0.8,0.8);
   wc.fillRect(hx2+2.7+pupX,ty-30.2+pupY,0.8,0.8);
-  if(!HERO){
+  // v10.21: the FACE rack. The hero's face comes from the racks; a pillager's
+  // from his look, or from the old index if he has none.
+  {
+    var _FACE=HERO?cosWorn('face'):(st.faceMark||null);   // faceMark, never face: e.face is the facing angle
     var _fx=st.faceIx===undefined?0:st.faceIx;
+    if(_FACE){ _fx={faceplain:0,facescar:6,facefreckles:5,facemud:4,facepaint:7,faceshiner:8}[_FACE]||0; }
+    if(_fx===6){ wc.fillStyle='#a04a3a'; wc.fillRect(hx2+2.2,ty-33.6,1.1,6.4); wc.fillStyle='#d47a6a'; wc.fillRect(hx2+2.2,ty-31.2,1.1,1); }
+    else if(_fx===7){ wc.fillStyle='rgba(20,22,30,.75)'; wc.fillRect(hx2-7,ty-31.6,14,1.6); wc.fillStyle='rgba(200,40,40,.8)'; wc.fillRect(hx2-7,ty-29.6,14,1.4); }
+    else if(_fx===8){ wc.fillStyle='rgba(70,40,90,.55)'; wc.beginPath(); wc.ellipse(hx2+3.4,ty-29.5,3.2,3.6,0,0,6.2832); wc.fill(); }
     if(_fx===1){ wc.fillStyle=INK; wc.fillRect(hx2-5.6,ty-33.4,4.4,1.1); wc.fillRect(hx2+1.2,ty-33.4,4.4,1.1); }
     else if(_fx===2){ wc.fillStyle=INK; wc.fillRect(hx2-5.6,ty-33.0,4.4,1.1); wc.fillRect(hx2+1.2,ty-33.8,4.4,1.1); }
     else if(_fx===3){ wc.fillStyle=INK; wc.fillRect(hx2-5.8,ty-32.8,4.8,0.9); wc.fillRect(hx2+1.0,ty-32.8,4.8,0.9); }
@@ -26415,7 +26429,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.20: the mouse says what a panel corner does. Over a resize corner it is the diagonal double arrow, over a drag bar the move cross, over the minimise glyph the hand; away from the panels it is the reticle as before.',
+  now:'v10.21: a ninth rack: FACE. A scar, freckles, mud, war paint and a black eye, earned, drawn on your face in the raid and on the figure; the pillagers wear them too.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30657,7 +30671,8 @@ function cosSwatch(c){
   }
   var f={none:'--',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC\u25AC',visor:'\u25AD',crown:'\u2662',
          beanie:'\u2229',cap:'\u25E2',bandana:'\u25AC',hood:'\u2229',
-         clean:'--',stubble:'\u2591',goatee:'\u25BE',fullbeard:'\u25BC',chops:'\u2016'}[c.id]||'?';
+         clean:'--',stubble:'\u2591',goatee:'\u25BE',fullbeard:'\u25BC',chops:'\u2016',
+         faceplain:'--',facescar:'/',facefreckles:'\u2234',facemud:'\u2591',facepaint:'\u2261',faceshiner:'\u25CF'}[c.id]||'?';
   var fbg={beanie:'#4a4f5a',cap:'#5a5a3e',bandana:'#8a2a2a',hood:'#2e3238'}[c.id]||'#1b1f26';
   if(c.kind==='hat'&&fbg!=='#1b1f26')
     return '<span style="display:inline-block;width:34px;height:34px;line-height:34px;text-align:center;'+
@@ -30688,6 +30703,15 @@ function avatarHTML(){
       })()+
       (hat!=='none'?'<div class="avhat" style="background:'+hatBg+'">'+hatGlyph+'</div>':'')+
       '<div class="aveyes"><div class="aveye" style="background:'+(EYECOL[cosWorn('eyes')]||EYECOL.eyebrown)+';box-shadow:inset 0 0 0 1.5px #FFF6DC"></div><div class="aveye" style="background:'+(EYECOL[cosWorn('eyes')]||EYECOL.eyebrown)+';box-shadow:inset 0 0 0 1.5px #FFF6DC"></div></div>'+
+      (function(){ // v10.21: the face mark on the figure
+        var _f=cosWorn('face'); if(!_f||_f==='faceplain') return '';
+        var _fs={facescar:'right:13px;top:8px;width:2px;height:14px;background:#a04a3a',
+                 facefreckles:'left:12px;right:12px;top:22px;height:4px;background:repeating-linear-gradient(90deg,#9a5a3a 0 2px,transparent 2px 5px)',
+                 facemud:'left:6px;right:6px;top:24px;height:8px;border-radius:4px;background:rgba(40,32,28,.45)',
+                 facepaint:'left:5px;right:5px;top:13px;height:3px;background:#c82828;box-shadow:0 5px 0 #14161b',
+                 faceshiner:'right:9px;top:14px;width:11px;height:11px;border-radius:6px;background:rgba(70,40,90,.6)'}[_f]||'';
+        return '<div style="position:absolute;'+_fs+'"></div>';
+      })()+
       (function(){ // v10.17: the beard on the figure
         var _b=cosWorn('beard'); if(!_b||_b==='clean') return '';
         var _st={stubble:'left:9px;right:9px;height:6px;opacity:.55',goatee:'left:18px;right:18px;height:8px',fullbeard:'left:7px;right:7px;height:11px',chops:'left:4px;right:4px;height:9px;background:transparent;border-left:5px solid '+hc[0]+';border-right:5px solid '+hc[0]}[_b]||'';
@@ -30719,6 +30743,7 @@ function avatarHTML(){
   h+=slot('beard','BEARD',(cosFind(cosWorn('beard'))||{name:'Clean Shaven'}).name,'\u25BE');   // v10.17
   h+=slot('eyes','EYES',(cosFind(cosWorn('eyes'))||{name:'Brown'}).name,
           '<span style="width:14px;height:14px;border-radius:7px;display:inline-block;background:'+(EYECOL[cosWorn('eyes')]||EYECOL.eyebrown)+'"></span>');   // v10.19
+  h+=slot('face','FACE',(cosFind(cosWorn('face'))||{name:'Plain'}).name,'\u25CC');   // v10.21
   h+=slot('fit','CLOTHING',(cosFind(cosWorn('fit'))||{name:'Slate'}).name,
           '<span style="width:14px;height:14px;border-radius:3px;display:inline-block;background:'+ft[1]+'"></span>');
   // v5.83: the BODY ARMOUR slot is gone with rigs. Everyone wears the same
@@ -30731,7 +30756,7 @@ function avatarHTML(){
 }
 // v10.16, his answers 18 and 19. A look is the six cosmetic keys and nothing
 // else. SURPRISE ME picks an owned thing from every rack.
-var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes'];
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face'];
 function lookSnap(){ var L={}; for(var i=0;i<LOOK_KINDS.length;i++) L[LOOK_KINDS[i]]=cosWorn(LOOK_KINDS[i]); return L; }
 function lookWear(L){
   if(!L) return false;
@@ -30819,7 +30844,7 @@ function renderAvPicker(pickHost,host){
       'Click a slot to change it. Headgear and hair are earned and change nothing about how you play.</div>';
     return;
   }
-  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'){
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'){
     renderCosmetics(box,slot,hid,pid); return;
   }
   // v6.43: the wep and wep2 branch is gone with the slots that opened it. Guns are
@@ -30838,7 +30863,7 @@ function renderAvPicker(pickHost,host){
 function renderCosmetics(target,kindOnly,hid,pid){
   var box=target||document.getElementById('cosbody'); if(!box) return;
   var H='';
-  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING']]
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING']]
     .filter(function(g){ return !kindOnly||g[0]===kindOnly; });
   GROUPS.forEach(function(g){
     H+='<div style="margin:10px 0 4px 0;letter-spacing:2px;opacity:.7;font-size:12px">'+g[1]+'</div>';

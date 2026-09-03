@@ -5221,6 +5221,40 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.21',what:'FACE is a ninth rack: six faces drawn on the sprite and the figure, with a swatch, and the pillagers wear them',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(typeof COSMETICS==='undefined'||typeof cosSwatch!=='function') return 'SKIP: no racks in this build';
+     var faces=COSMETICS.filter(function(c){ return c.kind==='face'; });
+     // THE FINDING. On v10.20 there was no face kind.
+     if(faces.length<6) return 'the racks hold '+faces.length+' faces, not six';
+     if(!faces.some(function(c){ return c.how==='always'; })) bad.push('no face is owned from the start');
+     if(faces.some(function(c){ return String(c.how).indexOf('buy:')===0; })) bad.push('a face costs credits, against his answer 16');
+     if(!COSKEY.face||!COSDEF.face) bad.push('the profile has no face key or default');
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000;
+     var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,cosFace:P2.cosFace,cosHat:P2.cosHat,cosBeard:P2.cosBeard};
+     P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.cosHat='none'; P2.cosBeard='clean';   // a beard left worn by an earlier check hid mud and freckles
+     var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
+     function head(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(40,Math.min(cvs.width-40,sx)); sy=Math.max(90,Math.min(cvs.height-20,sy)); return wctx.getImageData(sx-40,sy-90,80,110).data; }
+     function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>30) d++; return d; }
+     P2.cosFace='faceplain'; var plain=head(), flat=[];
+     faces.forEach(function(c){ if(c.id==='faceplain') return; P2.cosFace=c.id; if(diff(head(),plain)<3) flat.push(c.id); });
+     if(flat.length) bad.push('faces that draw nothing on the sprite: '+flat.join(', '));
+     for(var k in keep) P2[k]=keep[k];
+     var html=(typeof avatarHTML==='function')?avatarHTML():'';
+     if(html.indexOf('data-av="face"')<0) bad.push('the figure has no FACE slot');
+     var qm=faces.filter(function(c){ return (/>\?</).test(cosSwatch(c)); }).map(function(c){ return c.id; });
+     if(qm.length) bad.push('faces with no swatch: '+qm.join(', '));
+     // CONTROL: the seed fingerprint stands and pillagers have faces from the rack.
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
+     if(g.ents.length!==85||g.containers.length!==165) bad.push('control: the seed fingerprint moved to '+g.ents.length+'/'+g.containers.length);
+     var raiders=g.ents.filter(function(e){ return e.kind==='raider'; });
+     if(raiders.length&&raiders.some(function(e){ return !e.faceMark||!cosFind(e.faceMark)||cosFind(e.faceMark).kind!=='face'; })) bad.push('control: a pillager has no face from the rack');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.20',what:'the OS pointer is the resize arrow over a panel corner, the move cross over its bar, the hand over its glyph',
    run:function(){
      var bad=[];

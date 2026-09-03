@@ -446,6 +446,64 @@ shipped:
   later gates existed (the next-piece control, earned-this-raid's second
   raid, the streak breaker, the capstone's locked count, the patch rack's
   ownership, the message line's baseline of 170 not 109).
+
+## HIS NOTES, 2026-09-03 about 17:20 (on the build he played, v10.20 or v10.21)
+
+- "notes on fashion depot in last build -- eyes don't look like they do in
+  the raid, and the ones in the raid look wayyy better -- hair doesn't render
+  properly inside the fashion depot, its just all over the operators face"
+- "in the undercroft, 'discount fashion depot' text needs to be lower so that
+  it doesn't run into the Dev Cheat Box text"
+- "Everyone in undercroft has blue eyes"
+- "In stash, instead of hotbar, let's call it 'tactical belt', across the
+  entire game"
+
+Taken as, in this order, ahead of the queued cosmetics builds: the station
+label moved clear of the cheat box; the Undercroft's eyes; the Depot figure
+drawn by the raid's own sprite painter, so it looks exactly as she does in
+the raid and every rack shows the same way in both places; and TACTICAL BELT
+replacing hotbar everywhere a player can read it (vocabulary: one word per
+thing).
+- "this text is still wayy to small" (about 17:25), with a screenshot of THE
+  STASH at v10.20 on his 4K monitor: tab labels, headings, hints and buttons
+  at eleven to thirteen pixels on a 3840-wide screen. Taken as: the Undercroft
+  scales with the monitor the way the HUD does, on top of his own zoom.
+- "Add the tuning console as a window option inside settings -- consider how
+  that interacts with the toggle buttions inside settings, e.g. should a
+  change to the toggle result in a change to the tunting value" (about
+  17:30). Taken as: a TUNING CONSOLE button in Settings; the console reads the
+  live dials when it opens, so a toggle's change shows there; a console edit
+  that lands on a toggle's value shows in the toggle.
+- "in the mainframe - your stats -- the 'net carried out' explanation makes
+  no sense-- should be 'everything you've extracted'  -- should be called
+  'Net lifetime earnings' and it should be calculated as the sum of, for all
+  games, everything extracted, minus everything carried in (including stuff
+  carried in and then lost via KIA or abandoned, e.g not extracted)" (about
+  17:35). Taken as: the stat card is NET LIFETIME EARNINGS, its explanation
+  says exactly that, and its number is the sum over every logged run of
+  value extracted minus value carried in, a run that died or was abandoned
+  counting its carried-in value as lost.
+- "when a new character is started, they should get a prompt that gives them
+  a welcome pack with a few blue and green guns, heals, grenades etc to their
+  stash so they can play around with some of the gear." (about 17:40)
+- "Make it so the dev cheat box has to be enabled in settings in order to use
+  the terminal/access it, so maybe players don't find it right away.  also
+  make it where you have to successfully extract from atleast one game before
+  you can turn on the setting that enables the dev cheat box." (about 17:40)
+
+The order for his notes, ahead of the queued cosmetics builds: v10.22 the
+menus resize only with CTRL and the wheel and never below the screen's
+size; v10.23 the Depot's station label clear of the cheat box; v10.24 the
+Undercroft crowd dresses from the racks, eyes included; v10.25 the Depot
+figure drawn by the raid's own painter; v10.26 TACTICAL BELT; v10.27 NET
+LIFETIME EARNINGS; v10.28 the tuning console inside Settings; v10.29 the
+welcome pack; v10.30 the dev cheat box behind a switch that unlocks after
+a first extraction. The queued cosmetics builds move to v10.31 onward.
+- "acid needs more visual waves/melting effects, varied visual effects,
+  should be inconsistent and random, chaotic," then "(blotter)" (about
+  17:45). Taken as v10.31: the Blotter's screen effect gets waves and melting
+  that vary from dose to dose and second to second, never the same twice.
+  The queued cosmetics builds move to v10.32 onward.
 The raid audit queue, the full-file audit's named items, and his fifty answers are
 all shipped, decided, superseded, or not reproduced, with one design item left
 that needs his word (an item is in the backpack or the hotbar, never both). A
@@ -820,6 +878,7 @@ AND THE SECOND HALF OF THE STRETCH:
 | THE PILLAGERS DRESS FROM THE RACKS | v10.18 | his answer 20. Pillagers had a coat and a name; the sprite read hair, hairstyle, headgear, skin and beard off unset fields, so all looked alike. Now raiderLook(ident,x,y) hashes who and where into picks from every rack, a third bareheaded, never the crown, spending no seeded roll. Check: the seed fingerprint at 4242 stays 85 ents and 165 containers (the control that matters), then at least three hairs, hats, skins, cuts and two beards among the map's pillagers, all real rack ids, no crown, and the same man dressed the same twice. Fails on a v10.17 fixture: "pillagers do not draw from the racks: there is no raiderLook" |
 | EYES, THE EIGHTH RACK | v10.19 | his answer 14, second category. Six colours (Brown owned; Hazel, Blue, Green, Grey, Amber earned), the iris drawn in colour under the pupil on the sprite, the figure's eyes tinted, an eye swatch, an eighth slot and key, part of a look, and pillagers draw eyes from it. Check: six on the racks, one owned, none priced, key, default and colour for each, every colour changes the sprite's eye pixels against Brown, the slot and swatches; controls: seed fingerprint unmoved, every pillager has eyes. Fails on a v10.18 fixture: "the racks hold 0 eye colours, not six" |
 | THE MOUSE SAYS WHAT A PANEL CORNER DOES | v10.20 | his answer 26. v9.09's drawn glyph stayed and the OS pointer was hidden in a raid. Now over a panel's resize corner the OS pointer is the diagonal double arrow, over its drag bar the move cross, over its minimise glyph the hand, from the same hudHit the glyph reads; away from panels it is hidden behind the reticle. Check moves the game's mouse onto a real corner and bar through mousemove and reads the canvas cursor; control: hidden away from the panels. Fails on a v10.19 fixture: "over the body panel resize corner the pointer is [none]" |
+| FACE, THE NINTH RACK | v10.21 | his answer 14, third category. Six faces (Plain owned; Freckles, Scar, Mud, War Paint, Black Eye earned), drawn by the sprite's face painter with three new marks, a mark on the figure, a glyph swatch; ninth slot and key, part of a look, and pillagers draw a face from the rack. Check: six on the racks, one owned, none priced, every face changes the sprite's head pixels against Plain, the slot and swatches; controls: seed fingerprint unmoved, every pillager has a rack face. The raider field is faceMark, because e.face is the facing angle; the first draft named it face and every pillager stopped firing, caught by the end-state corpus. Fails on a v10.20 fixture: "the racks hold 0 faces, not six" |
 | ONE WORD FOR THE BACKPACK, AND THE HOTBAR RENAME FINISHED | v9.90 | v9.89's own Not verified line said the compact legend still called the backpack a bag. Read off every surface on v9.89 the thing you carry was named FOUR ways: "inventory" (full legend TAB row, controller VIEW row, the HUD hint "TAB  INVENTORY", two refusals), "bag" (compact legend, controller BACK row, "equip gun from bag", the armour rule card, five spoken lines, the Peddler's "SELL BAG", a searched pillager's "'S BAG", two guide cards, a settings hint), "kit" (three refusals "Kit is full"), and "backpack". And both controller legends still called the hotbar a BELT, which v9.89 missed. THE WORD IS BACKPACK, his word and the panel's. Twenty two strings, nothing that reads a profile or draws. Left alone on purpose: BAG OF FRAGS and BIGGER BAG OF FRAGS, which are Progress rewards and a literal bag, and the lore clipboard "Inventory, year one", a document in the world. The armour card line is 29 characters against the 32 it replaces, inside the box v8.4x measured. Check reads the compact legend, the full legend, the HUD hint, the controller table and the panel headings, needles from halves, and fails on a v9.89 fixture on all four surfaces at once. Ten of the 22 strings are proven on screen; the other twelve are spoken lines the harness has no cheap way to raise |
 | ONE WORD FOR THE HOTBAR | v9.89 | his rule, one word per thing, and his open line "I opens the BACKPACK, write the matching list of consistent definitions". On v9.88 the same nine keyed cells were named THREE ways to the player: "hotbar" in the legend, the bag hint, the item detail and his own answers 11 and 22; "Tactical belt" on the raid backpack heading and the Undercroft column heading, "your backpack plus your belt" under the raid backpack title, "off the belt and into the backpack" on the drag-off message, and "hotbar belt and inventory" on the ascent summary; "the bar" in the empty-slot prompt. THE WORD IS HOTBAR: his word, the legend's word, the keys' word. Six strings changed, nothing that reads a profile or draws. Belt stays inside the code, the raider-and-snitch trade. The vocabulary memory gains a section for what you carry. The check reads the surfaces as rendered text with needles assembled from halves, and fails on a v9.88 fixture on five surfaces at once |
 | HIS ANSWER 22: THE HOTBAR IS VISIBLE IN THE UNDERCROFT | v9.88 | four words of his, between two other floor answers, and it had no row in the status table. v8.96 claimed it in its own comment and delivered it only INSIDE the opened backpack. MEASURED on v9.87 through the real loop on the HUD canvas: backpack closed, 0 opaque pixels on the entire HUD canvas; backpack open, 9 belt cells and 100,047 opaque pixels in the bottom band. FIX: drawHubBelt draws the same file-scope drawBelt against a transient hubBagState swapped in as G for one call, only while the backpack is closed, so exactly one belt is ever on screen; hubBagG is deliberately untouched because closing the backpack is the commit. Cells recorded on HUBBELT for the fixture and for a future click. Display only: editing stays in the opened backpack, answer 11. hubBelt 0 is the control. Check fails on a v9.87 fixture with "with the backpack closed the floor records no belt cells at all" |

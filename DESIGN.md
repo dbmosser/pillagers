@@ -40024,6 +40024,41 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.21 - FACE, THE NINTH RACK
+
+His answer 14, 2026-09-03, third of his categories: **face paint or scars**.
+
+Six faces: Plain, owned from the start; Freckles at two runs; a Scar at six;
+Mud at four extracts; War Paint at twelve; a Black Eye for a Warden. Earned,
+never bought. The pillagers already had five face variants drawn from an
+index nobody could choose, eyebrows, a smear and freckles; the hero's face was
+always plain. The rack decides the hero's face now, the same painter draws it
+with three new marks, the scar down the right cheek, two bars of paint across
+the eyes, the bruise round one eye, and the pillagers draw their faces from
+the rack as they do the rest of their look. On the figure, a mark on the
+head; on the racks, a glyph. A ninth slot, a ninth key, part of a look and of
+SURPRISE ME.
+
+### Measured
+
+The check requires six faces with one owned and none priced, a key and a
+default, reads the sprite's head pixels for each face against Plain and
+requires every one to draw, requires the FACE slot on the figure and a swatch
+for each, and as controls requires the seed fingerprint at 4242 unmoved and
+every pillager on that map to carry a face from the rack. On v10.20 there
+was no face kind, which is the finding.
+
+The pillager side of it is named faceMark on the entity, not face: e.face is
+the facing angle, and the first draft wrote the face id there, which turned
+every pillager mute and motionless the moment he was shot. The queue dry run
+caught it (an old check, a peaceful pillager fires back when shot) before
+this build came up. The check also dresses her clean-shaven first, because a
+beard left worn by an earlier check hid the mud and the freckles.
+
+Not verified: the pillagers' old five variants, which their index still
+selects when a look gives no face; every pillager made through mkRaider has
+one now, so the index path is only for anything made another way.
+
 ## v10.20 - THE MOUSE SAYS WHAT A PANEL CORNER DOES
 
 His answer 26, 2026-09-03: keep panel dragging and resizing, and **"MOUSE
