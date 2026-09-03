@@ -5221,6 +5221,54 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.41',what:'his words, first batch, read back off the screens: the pause box, the downed line, the abandon button, the Depot and Wirt',
+   run:function(){
+     var bad=[];
+     function txt(id){ var el=document.getElementById(id); return el?(el.textContent||'').replace(/\s+/g,' ').trim():null; }
+     function has(id,re,name){ var t=txt(id); if(t===null){ bad.push(name+' is not in the page'); return; } if(!re.test(t)) bad.push(name+' reads "'+t.slice(0,70)+'"'); }
+     // THE FINDING. On v10.40 the pause box still said RUN PAUSED.
+     var pb=document.querySelector('.pausebox');
+     var pbt=pb?(pb.textContent||'').replace(/\s+/g,' '):'';
+     if(!pb) return 'SKIP: no pause box in this build';
+     if(!/RAID PAUSED/.test(pbt)) return 'the pause box does not say RAID PAUSED, it says "'+pbt.slice(0,40)+'"';
+     if(!/E interact/.test(pbt)) bad.push('the pause box controls line does not say E interact');
+     if(!/CTRL \/ C crouch toggle/.test(pbt)) bad.push('the pause box does not say CTRL / C crouch toggle');
+     if(!/Please provide feedback/.test(pbt)) bad.push('the pause box feedback line is not his');
+     has('pausebleed',/YOU ARE DOWNED\./,'the downed line');
+     has('pausebleed',/You can extract while downed/,'the downed line');
+     // The claim in that line, that extraction while downed is permitted, was
+     // read off the extraction prompt table (his run 44) rather than driven here.
+     // THE CONFIRM BUTTON IS WRITTEN AT CLICK TIME, with the XP cost; the markup
+     // is a placeholder. Click the abandon button once outside a raid to make
+     // it write, read it, and click again to put it back.
+     var abtn=document.getElementById('abandonbtn'), cb=document.getElementById('confirmabandon');
+     if(!abtn||!cb) bad.push('the pause box has no abandon or confirm button');
+     else {
+       var wasShown=cb.style.display;
+       if(cb.style.display!=='none'){ abtn.click(); }
+       abtn.click();
+       var live=cb.textContent.trim();
+       if(!/^YES, ABANDON THIS RUN/.test(live)) bad.push('the live abandon confirm reads "'+live+'"');
+       abtn.click();
+       cb.style.display=wasShown||'none';
+     }
+     // THE DEPOT AND WIRT. Wirt's line is drawn from a pool by renderGamble, so
+     // the pool must hold his sentence and the drawn line must come from the pool.
+     var dep=Array.prototype.filter.call(document.querySelectorAll('.msub'),function(d){ return /Cosmetics do not impact game mechanics\./.test(d.textContent); }).length;
+     if(!dep) bad.push('the Depot does not say cosmetics do not impact game mechanics');
+     if(typeof VENDOR_LINES==='undefined'||!VENDOR_LINES.gamble||!VENDOR_LINES.gamble.some(function(l){ return l==='Gamble with Wirt. No refunds, no complaints.'; })) bad.push('Wirt\'s pool of lines does not hold "Gamble with Wirt. No refunds, no complaints."');
+     try{ if(typeof renderGamble==='function') renderGamble(); }catch(_rg){}
+     var gl=document.getElementById('gamble_line');
+     if(!gl) bad.push('Wirt has no line');
+     else if(typeof VENDOR_LINES!=='undefined'&&VENDOR_LINES.gamble&&VENDOR_LINES.gamble.indexOf(gl.textContent.trim())<0) bad.push('Wirt says "'+gl.textContent.trim()+'", which is not in his pool');
+     var gb=document.getElementById('gamblebtn');
+     if(gb&&!/2500/.test(gb.textContent)) bad.push('the gamble button reads "'+gb.textContent+'" and the price is 2500');
+     // CONTROL: the three lines he sent back empty are untouched.
+     var sn=document.getElementById('termsclear');
+     if(!sn||sn.textContent.trim()!=='Sign nothing') bad.push('control: the Sign nothing button changed, and that row came back empty');
+     var pn=document.getElementById('pausenote');
+     if(!pn||!/crier marked me/.test(pn.getAttribute('placeholder')||'')) bad.push('control: the feedback placeholder changed, and that row came back empty');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.40',what:'no building on THE COLD MILE holds a room bigger than a player that nothing can reach, on five seeds, and the guard sees one when it is there',
    run:function(){
      var bad=[];

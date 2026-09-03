@@ -11,17 +11,21 @@
 # file stays clean. Apostrophes and quotes are escaped to match the literal
 # they sit in. Nothing is written unless -Apply is given.
 param(
-  [Parameter(Mandatory=$true)][string]$Doc,
+  [string]$Doc = '',
+  [string]$Tsv = '',
   [string]$Manifest = '',
   [string]$Game = 'C:\claudecode\dark raiders\dark_raiders.html',
   [switch]$Apply
 )
+# -Tsv takes a tab separated file with the same three columns (ID, WHERE, TEXT)
+# and a header row, which is what a table pasted out of the document looks like.
+if ($Doc -eq '' -and $Tsv -eq '') { throw 'pass -Doc <file.docx> or -Tsv <file.tsv>' }
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 if ($Manifest -eq '') {
-  $dir = Split-Path $Doc
+  $dir = if ($Doc -ne '') { Split-Path $Doc } else { Split-Path $PSCommandPath }
   $cand = Get-ChildItem (Join-Path $dir 'manifest-v*.json') | Sort-Object LastWriteTime -Descending | Select-Object -First 1
   if (-not $cand) { throw 'no manifest beside the document; pass -Manifest' }
   $Manifest = $cand.FullName
@@ -30,21 +34,33 @@ $man = Get-Content $Manifest -Raw | ConvertFrom-Json
 $byId = @{}
 foreach ($e in $man) { $byId[$e.id] = $e }
 
-# 1. the rows out of the document
-$zip = [System.IO.Compression.ZipFile]::OpenRead($Doc)
-$entry = $zip.GetEntry('word/document.xml')
-$sr = New-Object IO.StreamReader($entry.Open(), [Text.Encoding]::UTF8)
-$xml = $sr.ReadToEnd(); $sr.Close(); $zip.Dispose()
+# 1. the rows, out of the document or out of a pasted table
 $rows = @()
-foreach ($tr in [regex]::Matches($xml, '(?s)<w:tr[ >].*?</w:tr>')) {
-  $cells = @()
-  foreach ($tc in [regex]::Matches($tr.Value, '(?s)<w:tc[ >].*?</w:tc>')) {
-    $txt = ''
-    foreach ($t in [regex]::Matches($tc.Value, '(?s)<w:t(?: [^>]*)?>(.*?)</w:t>')) { $txt += $t.Groups[1].Value }
-    $txt = [System.Net.WebUtility]::HtmlDecode($txt)
-    $cells += ,$txt
+if ($Doc -ne '') {
+  $zip = [System.IO.Compression.ZipFile]::OpenRead($Doc)
+  $entry = $zip.GetEntry('word/document.xml')
+  $sr = New-Object IO.StreamReader($entry.Open(), [Text.Encoding]::UTF8)
+  $xml = $sr.ReadToEnd(); $sr.Close(); $zip.Dispose()
+  foreach ($tr in [regex]::Matches($xml, '(?s)<w:tr[ >].*?</w:tr>')) {
+    $cells = @()
+    foreach ($tc in [regex]::Matches($tr.Value, '(?s)<w:tc[ >].*?</w:tc>')) {
+      $txt = ''
+      foreach ($t in [regex]::Matches($tc.Value, '(?s)<w:t(?: [^>]*)?>(.*?)</w:t>')) { $txt += $t.Groups[1].Value }
+      $txt = [System.Net.WebUtility]::HtmlDecode($txt)
+      $cells += ,$txt
+    }
+    if ($cells.Count -ge 3) { $rows += ,@($cells[0].Trim(), $cells[1].Trim(), $cells[2]) }
   }
-  if ($cells.Count -ge 3) { $rows += ,@($cells[0].Trim(), $cells[1].Trim(), $cells[2]) }
+} else {
+  foreach ($ln in [IO.File]::ReadAllLines($Tsv, [Text.Encoding]::UTF8)) {
+    if ($ln.Trim() -eq '') { continue }
+    $parts = $ln -split "`t", 3
+    $id = $parts[0].Trim()
+    if ($id -notmatch '^[0-9a-f]{8}$') { continue }
+    $where = if ($parts.Count -ge 2) { $parts[1].Trim() } else { '' }
+    $text = if ($parts.Count -ge 3) { $parts[2] } else { '' }
+    $rows += ,@($id, $where, $text)
+  }
 }
 $rows = $rows | Where-Object { $_[0] -match '^[0-9a-f]{8}$' }
 Write-Output ("rows in the document: " + $rows.Count + "   lines in the manifest: " + $man.Count)

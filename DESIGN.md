@@ -40024,6 +40024,66 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.41 - HIS WORDS, FIRST BATCH
+
+He asked, 2026-09-03 about 17:15: **"give me all the text that appears in
+the game as a word document that i can modify and return to you"**. The
+document went out at v10.39 (tools/textdoc, 1,698 lines with an ID each) and
+his first thirty two rows came back as a pasted table within the hour.
+
+### What changed
+
+Nine rows differed from the game and went in through the importer, by exact
+replacement everywhere the line appears:
+
+- RUN PAUSED is RAID PAUSED, in both places it stood.
+- The pause box controls: CTRL / C crouch toggle; E interact instead of E
+  search / call for extraction; the backquote is superhot mode and SHIFT
+  backquote is tuning sliders.
+- The feedback line: "Please provide feedback anything that went or felt
+  wrong."
+- YES, abandon it is YES, ABANDON THIS RUN.
+- The downed line: "YOU ARE DOWNED. You can extract while downed." It is
+  true: the extraction prompt has said "Extracting while downed is permitted"
+  since his run 44.
+- Wirt: "Gamble with Wirt. No refunds, no complaints." and the button reads
+  Gamble 2500c. The static label had said 450c for as long as the price has
+  been 2,500; nobody ever saw it, because renderGamble writes the real price
+  over it, so this is the markup agreeing with the code for the first time.
+- The Depot: "Cosmetics do not impact game mechanics."
+
+Twenty rows read exactly as he sent them and needed nothing.
+
+Two of the nine were placeholders the code writes over, which the full corpus
+caught: on a fresh load his words showed, and after a raid had been abandoned
+and Wirt opened, the old ones were back. The abandon confirm is built at
+click time with the XP cost, and Wirt's line is drawn from a pool of three
+pitches. His words went into those writers too: the confirm reads YES,
+ABANDON THIS RUN with the cost note kept, and his sentence is the first of
+Wirt's three lines. The check reads the live text now, not the placeholder.
+
+### Held back
+
+Three rows came back with an empty TEXT cell: the feedback box hint ("e.g.
+the crier marked me through a wall, felt unfair"), The Terms description
+("Sign for worse conditions and Meridian pays better..."), and the Sign
+nothing button. An empty button is not something he would ask for, so the
+importer skips empties by design and the three stand as they were until he
+says whether empty means delete.
+
+### Measured
+
+The check reads the pause box for RAID PAUSED, E interact, the crouch toggle
+and the feedback line; the downed line for both sentences; the abandon
+button; the Depot and Wirt sentences; the gamble button carrying 2500; and as
+controls the two held-back lines unchanged. On v10.40 the pause box still
+read RUN PAUSED, which is the finding. The importer's own dry run listed nine
+changes, no missing lines and no unknown IDs before writing.
+
+Not verified: the pause box at 4K with the longer controls line, which the
+v9.53 fit was measured against the old wording; and whether "E interact" is
+the word he wants on the HUD prompt too, which still says the specific thing
+(search, call for extraction) and is not in this batch.
 ## v10.40 - THE ALPHA, FOURTH BUILD: THE FOUR SEALED BUILDINGS ARE OPEN, AND A GUARD
 
 The live STILL OPEN line with names on it: **"the demolition achieves nothing
