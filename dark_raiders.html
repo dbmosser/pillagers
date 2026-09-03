@@ -659,11 +659,18 @@
   <h3 id="gamble_h">Wirt the Gambler</h3>
   <div class="msub" id="wallet_gamble" style="color:var(--amber);font-weight:700"></div>
   <div class="msub" id="gamble_line">Something in the pile, same price whatever it is. No refunds, no complaints.</div>
-  <div class="msub" style="color:var(--coolant)">Whatever you pull goes straight to your stash. You do not have to carry it out of here.</div>
-  <div id="wirtlot" style="border:1px solid var(--amber);padding:9px 11px;margin:8px 0;display:flex;align-items:center;gap:10px"></div>
-  <div class="plist" id="gamblelist" style="border:1px solid var(--steel-hi)"></div>
-  <div style="display:flex;gap:8px;margin-top:10px">
-    <button id="gamblebtn" style="padding:8px 22px;border-color:var(--amber);color:var(--amber)">Gamble 450c</button>
+  <div id="wirtsec_gamble" style="border:1px solid var(--steel-hi);padding:10px 12px;margin:6px 0 0">
+    <div style="font-size:12px;letter-spacing:.14em;color:var(--steel-hi);font-weight:700;margin-bottom:6px">THE GAMBLE</div>
+    <div class="plist" id="gamblelist" style="border:1px solid var(--steel);max-height:220px"></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button id="gamblebtn" style="padding:8px 22px;border-color:var(--amber);color:var(--amber)">Gamble 450c</button>
+    </div>
+  </div>
+  <div id="wirtsec_offer" style="border:1px solid var(--amber);padding:10px 12px;margin:14px 0 0;background:rgba(255,192,74,.05)">
+    <div style="font-size:12px;letter-spacing:.14em;color:var(--amber);font-weight:700;margin-bottom:6px">LIMITED TIME OFFER</div>
+    <div id="wirtlot" style="display:flex;align-items:center;gap:12px"></div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:14px">
     <button id="closegamble" style="padding:8px 22px">Leave</button>
   </div>
 </div>
@@ -1213,7 +1220,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.93';
+var VER='9.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26185,7 +26192,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.93: the pause screen says RMB aim down sights, which is what the right button does. The full legend says the same; the compact one says sights, because the whole phrase is wider than its column.',
+  now:'v9.94: Wirt has two counters now, THE GAMBLE at $2,500 per roll and a LIMITED TIME OFFER that changes every five minutes and says only what it is worth and when the next one comes. The sentence about not carrying it out is gone.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -26301,7 +26308,9 @@ function wirtLotWorth(keys){
 }
 // Which hour it is. Kept as its own function so the check can drive it forward
 // without waiting an hour to find out whether the lot actually changes.
-function wirtLotHour(t){ return Math.floor((t===undefined?Date.now():t)/3600000); }
+// v9.94, HIS NOTE: every five minutes, not every hour. WIRT_LOT_MS is the period.
+var WIRT_LOT_MS=300000;
+function wirtLotHour(t){ return Math.floor((t===undefined?Date.now():t)/WIRT_LOT_MS); }
 // THE CLOCK PICKS IT, not rr(). No seeded draw is spent here, so nothing in a
 // raid moves because of the shop, and the same hour always shows the same item
 // however many times he walks in and out.
@@ -26317,7 +26326,7 @@ function wirtLotKey(t){
 // How long the current one stands, for the line under it.
 function wirtLotLeft(t){
   var now=(t===undefined?Date.now():t);
-  return Math.max(0,Math.ceil((3600000-(now%3600000))/1000));
+  return Math.max(0,Math.ceil((WIRT_LOT_MS-(now%WIRT_LOT_MS))/1000));
 }
 var GAMBLE_POOL=[
   ['scrap',10],['wire',10],['cell',9],['bandage',9],['ammobox',10],['board',8],
@@ -26759,11 +26768,11 @@ function renderBar(){
 }
 function renderGamble(){
   var el=document.getElementById('gamblelist');
-  walletLine('wallet_gamble','$'+GAMBLE_PRICE.toLocaleString()+' a go');
+  walletLine('wallet_gamble','$'+GAMBLE_PRICE.toLocaleString()+' per roll');
   document.getElementById('gamble_line').textContent=vendorLine('gamble');
   var h='';
   var log=(P.gambleLog||[]).slice(-8).reverse();
-  if(!log.length) h='<div class="hint">Nothing bought yet. $'+GAMBLE_PRICE+' a go.</div>';
+  if(!log.length) h='<div class="hint">Nothing rolled yet. $'+GAMBLE_PRICE.toLocaleString()+' per roll.</div>';
   for(var i=0;i<log.length;i++){
     var it=ITEMS[log[i]];
     if(!it) continue;
@@ -26783,22 +26792,20 @@ function renderWirtLot(){
   var el=document.getElementById('wirtlot'); if(!el) return;
   var lot=wirtLotKey(), k=lot[0], it=ITEMS[k];
   if(!it){ el.innerHTML='<span class="hint">The counter is empty.</span>'; return; }
-  var left=wirtLotLeft(), mins=Math.floor(left/60);
+  var left=wirtLotLeft(), mins=Math.ceil(left/60);
   var col=RCOL[dispR(k)||it.r]||'#cdd6dd';
   var afford=(P.credits>=WIRT_LOT_PRICE);
-  // v9.44: name everything in the lot and print what it would cost at the
-  // counter, because a deal you cannot check is not a deal.
-  var rest=[];
-  for(var wi=1;wi<lot.length;wi++) if(ITEMS[lot[wi]]) rest.push(ITEMS[lot[wi]].name);
+  // v9.94, HIS NOTE: three lines and nothing else. "Limited Time Offer", what it
+  // is worth across the counter, and when the next one comes. The names ride on
+  // the icon's title for anyone who hovers.
+  var names=[];
+  for(var wi=0;wi<lot.length;wi++) if(ITEMS[lot[wi]]) names.push(ITEMS[lot[wi]].name);
   var worth=wirtLotWorth(lot);
-  el.innerHTML=iconImgHTML(k,26)+
-    '<span style="flex:1">'+
-      '<span style="color:'+col+';font-weight:700">'+it.name+'</span>'+
-      (rest.length?('<span style="color:var(--ash)"> with '+rest.join(', ')+'</span>'):'')+
-      '<span class="hint" style="display:block">'+
-      (worth>WIRT_LOT_PRICE?('Worth $'+worth.toLocaleString()+' across the counter. '):'')+
-      'On the counter for the hour. '+
-      (mins>0?('New lot in '+mins+' min'):'New lot in under a minute')+'.</span>'+
+  el.innerHTML='<span title="'+escHtml(names.join(', '))+'" style="display:inline-flex">'+iconImgHTML(k,34)+'</span>'+
+    '<span style="flex:1;line-height:1.5">'+
+      '<span style="color:'+col+';font-weight:700;font-size:16px;display:block">Limited Time Offer</span>'+
+      '<span style="color:var(--bone);display:block">Worth $'+worth.toLocaleString()+'</span>'+
+      '<span style="color:var(--ash);display:block">New item in '+mins+' minute'+(mins===1?'':'s')+'</span>'+
     '</span>'+
     '<button id="wirtlotbtn" style="padding:7px 16px;border-color:var(--amber);color:var(--amber);'+
       (afford?'':'opacity:.45')+'">Buy $'+WIRT_LOT_PRICE.toLocaleString()+'</button>';

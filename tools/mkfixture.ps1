@@ -3165,7 +3165,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'9.11',what:'Wirt keeps one good thing on the counter at a flat 10,000 that changes every hour',
    run:function(){
-     var bad=[], HR=3600000, base=Date.now();
+     var bad=[], HR=300000, base=Date.now();   // v9.94: five minutes, his note
      // HIS ANSWER 48, MEASURED THE WAY HE WOULD SEE IT FIRST: open the stall and
      // read the buttons. Before v9.11 there were exactly two, Gamble and Leave,
      // and the panel never mentioned an hour or a price other than the pull.
@@ -3178,7 +3178,7 @@ window.__REGRESS=[
          var _buys=0, _bl=_m.querySelectorAll('button');
          for(var _b=0;_b<_bl.length;_b++) if(/10,?000/.test(_bl[_b].textContent)) _buys++;
          if(!_buys) bad.push('Wirt has nothing on the counter: no 10,000 offer among his '+_bl.length+' buttons');
-         if(!/hour/i.test(_txt)) bad.push('the stall never says the lot changes by the hour');
+         if(!/minute/i.test(_txt)) bad.push('the stall never says when the next offer comes, in minutes');
        }
      }
      // Everything below needs the build to actually have the counter behind it.
@@ -3201,13 +3201,13 @@ window.__REGRESS=[
      var seen={}; for(var i=0;i<seq.length;i++) seen[seq[i]]=1;
      var nSeen=0; for(var kk in seen) nSeen++;
      var changes=0; for(var c=1;c<seq.length;c++) if(seq[c]!==seq[c-1]) changes++;
-     if(changes<20) bad.push('the lot changed only '+changes+' times across 48 hours');
-     if(nSeen<4) bad.push('only '+nSeen+' different things came up across 48 hours');
+     if(changes<20) bad.push('the lot changed only '+changes+' times across 48 windows');
+     if(nSeen<4) bad.push('only '+nSeen+' different things came up across 48 windows');
      // AND IT HOLDS FOR THE WHOLE HOUR. A lot that rerolls while he is deciding,
      // or every time he walks back in, is a different and worse thing.
      var h0=Math.floor(base/HR)*HR;
-     var a=__wirt.key(h0+1), b=__wirt.key(h0+900000), c2=__wirt.key(h0+1800000), d=__wirt.key(h0+3599000);
-     if(!(a===b&&b===c2&&c2===d)) bad.push('the lot changes inside a single hour: '+a+', '+b+', '+c2+', '+d);
+     var a=__wirt.key(h0+1), b=__wirt.key(h0+75000), c2=__wirt.key(h0+150000), d=__wirt.key(h0+299000);
+     if(!(a===b&&b===c2&&c2===d)) bad.push('the lot changes inside a single five-minute window: '+a+', '+b+', '+c2+', '+d);
      // THE COUNTER ITSELF, drawn, with a real button on it.
      if(!__vpAlive()) return bad.length?bad.join('; '):'SKIP: the pane has no layout, the stall cannot be drawn';
      __hubEnter();
@@ -5216,6 +5216,63 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.94',what:'Wirt has two counters, per roll and a five minute Limited Time Offer that says three things',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is measured';
+     if(typeof renderGamble!=='function'||typeof wirtLotKey!=='function') return 'SKIP: no Wirt in this build';
+     // Needles from halves: this page embeds the source it tests.
+     var AGO=[' a',' go'].join(''), CARRY=['carry it ','out of here'].join(''), HOUR=['for the ','hour'].join('');
+     __pinDPR(1); __forceSize(1920,1080); __cleanProfile();
+     var P2=__P(); P2.credits=50000; P2.gambleLog=[]; P2.stash=[];
+     var gm=document.getElementById('gamblemodal'); if(!gm) return 'SKIP: no Wirt panel in the page';
+     var wasOn=gm.classList.contains('on'); gm.classList.add('on');
+     try{ renderGamble(); }catch(e0){ gm.classList.toggle('on',wasOn); return 'renderGamble threw: '+e0; }
+     var txt=gm.textContent||'';
+     // ONE: the two strings he named.
+     if(txt.indexOf('$2,500 per roll')<0&&txt.indexOf('$2500 per roll')<0) bad.push('the wallet line does not say $2,500 per roll');
+     if(new RegExp('\\$2,?500'+AGO+'\\b').test(txt)) bad.push('the screen still says $2,500'+AGO);
+     if(txt.indexOf(CARRY)>=0) bad.push('the sentence about not having to '+CARRY+' is still there');
+     // TWO: the offer card says three things and nothing else.
+     var lot=document.getElementById('wirtlot');
+     if(!lot) bad.push('no offer card');
+     else {
+       var lines=[].map.call(lot.querySelectorAll('span[style*="display:block"],span[style*="display: block"]'),function(s){ return s.textContent.trim(); });
+       if(lines.length!==3) bad.push('the offer card has '+lines.length+' lines, ['+lines.join(' | ')+'], not three');
+       else {
+         if(lines[0]!=='Limited Time Offer') bad.push('line one reads ['+lines[0]+']');
+         if(!/^Worth \$[\d,]+$/.test(lines[1])) bad.push('line two reads ['+lines[1]+']');
+         if(!/^New item in \d+ minutes?$/.test(lines[2])) bad.push('line three reads ['+lines[2]+']');
+         var m=/New item in (\d+)/.exec(lines[2]); if(m&&+m[1]>5) bad.push('the card promises a new item in '+m[1]+' minutes, more than five');
+       }
+       if((lot.textContent||'').indexOf(HOUR)>=0) bad.push('the card still says on the counter '+HOUR);
+     }
+     // THREE: the delineation, measured. Two boxes, one headed THE GAMBLE and
+     // one LIMITED TIME OFFER, each with its own border, and clear air between.
+     var sg=document.getElementById('wirtsec_gamble'), so=document.getElementById('wirtsec_offer');
+     if(!sg||!so) bad.push('the two sections are not there as their own boxes');
+     else {
+       var rg=sg.getBoundingClientRect(), ro=so.getBoundingClientRect();
+       var cg=getComputedStyle(sg), co=getComputedStyle(so);
+       // A computed border width is divided by the modal's zoom, so 1px reads
+       // 0.769px at zoom 1.3: test the style and a positive width, not 1.
+       if(cg.borderTopStyle!=='solid'||!(parseFloat(cg.borderTopWidth)>0)||co.borderTopStyle!=='solid'||!(parseFloat(co.borderTopWidth)>0)) bad.push('a section has no border of its own');
+       if(cg.borderTopColor===co.borderTopColor) bad.push('both sections share one border colour, so nothing tells them apart');
+       var gap=ro.top-rg.bottom;
+       if(!(gap>=8)) bad.push('the two sections are '+Math.round(gap)+' px apart, which is not clear air');
+       if(!/THE GAMBLE/.test(sg.textContent)||!/LIMITED TIME OFFER/.test(so.textContent)) bad.push('the section heads are not THE GAMBLE and LIMITED TIME OFFER');
+       if(!sg.querySelector('#gamblebtn')) bad.push('the Gamble button is not inside THE GAMBLE');
+       if(!so.querySelector('#wirtlot')) bad.push('the offer card is not inside LIMITED TIME OFFER');
+     }
+     // FOUR: the clock. Same key across one five-minute window, a different
+     // draw is at least possible across it, and the countdown never exceeds it.
+     var t0=Math.floor(1750000000000/300000)*300000, K0=wirtLotKey(t0)[0];
+     if(wirtLotKey(t0+299000)[0]!==K0) bad.push('the offer changed inside its own five minutes');
+     var changed=false; for(var q=1;q<=6;q++) if(wirtLotKey(t0+q*300000)[0]!==K0){ changed=true; break; }
+     if(!changed) bad.push('the offer never changed across thirty minutes');
+     if(wirtLotLeft(t0+1000)>300) bad.push('the countdown is '+wirtLotLeft(t0+1000)+' seconds, longer than five minutes');
+     if(!wasOn) gm.classList.remove('on');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.93',what:'the pause screen and the legends say RMB aims down sights, and the compact row stays inside its column',
    run:function(){
      var bad=[];
@@ -5490,6 +5547,7 @@ window.__REGRESS=[
      var cell=document.querySelector('[data-plan="5"]');
      if(!cell) return done('SKIP: the Undercroft column drew no hotbar cell');
      window.__lastSay=null;
+     (function(){ var _t0=document.getElementById('hubtoast')||document.getElementById('toast')||document.getElementById('say2'); if(_t0) _t0.textContent=''; })();
      var hubToastText='';
      try{ cell.click(); }catch(e1){}
      // say2 writes to the hub toast; read whatever it wrote, and the fixture's
@@ -8537,8 +8595,13 @@ window.__REGRESS=[
        var h=el?el.textContent.replace(/\s+/g,' '):'';
        var lk=__wirt.key();
        var live=(typeof lk==='string')?[lk]:lk;
-       if(live&&live.length>1&&!/with /.test(h))
-         bad.push('the counter is holding a lot of '+live.length+' things and names only one of them');
+       // v9.94: the card prints three lines and no names; the names are on the
+       // icon's title. Either place counts, as long as every item is named.
+       var ttl=el?[].map.call(el.querySelectorAll('[title]'),function(x){ return x.getAttribute('title')||''; }).join(' '):'';
+       var named=0;
+       for(var ln=0;ln<(live||[]).length;ln++){ var nmv=(ITEMS[live[ln]]||{}).name||''; if(nmv&&(h.indexOf(nmv)>=0||ttl.indexOf(nmv)>=0)) named++; }
+       if(live&&live.length>1&&named<live.length)
+         bad.push('the counter is holding a lot of '+live.length+' things and names only '+named+' of them, on the card or its icon title');
        var lw=__wirt.worth?__wirt.worth(live):null;
        if(!/Worth \$/.test(h)&&lw!==null&&lw>price)
          bad.push('the counter never says what the lot is worth, so the deal cannot be checked');

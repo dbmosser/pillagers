@@ -40024,6 +40024,63 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.94 - WIRT HAS TWO COUNTERS
+
+His notes, 2026-09-03, five in a row on Wirt the Gambler's screen: **"$2500 a
+go" to "$2500 per roll"**; **"You do not have to carry it out of here" DELETE,
+not helpful**; the buyable item should read **"Limited Time Offer. Worth X. New
+item in X minutes", "thats the only text we need there"**; **"a more clear
+delineation between the gamble and the Limited Time Offer item"**; and the
+offer **"should change every 5 minutes"**.
+
+### What the screen was
+
+One column: the wallet line, Wirt's line, a coolant sentence about the stash,
+the lot card with a name, a with-list, a worth, "On the counter for the hour"
+and a minute count, then the pull log and the Gamble button. The lot changed
+on the hour.
+
+### What it is
+
+Two headed boxes with clear air between them. THE GAMBLE, in the steel border,
+holds the price per roll, the log and the Gamble button. LIMITED TIME OFFER, in
+the amber border on a faint amber ground, holds the card, and the card says
+exactly three things beside the icon and the Buy button: Limited Time Offer,
+Worth $X, New item in N minutes. The item names ride on the icon's hover title
+for anyone who wants them; he said three lines and three lines it is. The
+period is five minutes, one constant, WIRT_LOT_MS, read by both the picker and
+the countdown. Leave sits under both boxes.
+
+### Measured
+
+The check renders the screen, reads the wallet line for "per roll", requires
+the old phrasing and the deleted sentence to be gone, counts the card's lines
+and requires exactly three in the words he gave, requires the countdown never
+to promise more than five minutes, and measures the delineation rather than
+trusting it: two boxes each with its own border, different border colours, at
+least eight pixels of air between them, the Gamble button inside the first and
+the card inside the second. The clock is driven by hand: the same offer across
+one five-minute window, a different one somewhere in the next thirty minutes,
+and a countdown never above 300 seconds.
+
+### Two older checks learned the new order
+
+v9.11's check asked the stall to say "hour" and to hold the lot for an hour,
+because his answer 48 said hourly; v9.44's asked the card to print every item's
+name. Both now grade his 2026-09-03 note instead: minutes on the card, the lot
+held across one five-minute window and changed across forty-eight of them, and
+every item named on the card or on the icon's hover title. On the v9.93 control
+the updated v9.11 fails exactly where it should, "the lot changed only 4 times
+across 48 windows". One thing I got wrong on the first pass: a computed border
+width comes back divided by the modal's zoom, so a 1px border read 0.769px at
+zoom 1.3 and my own check called it borderless; it tests the style and a
+positive width now, and its clock probe starts on a window boundary.
+
+Not verified: how the amber ground reads on his monitor against the modal's
+blue; it is five percent amber and may be too faint to register as a second
+counter. Not verified: whether five minutes is too fast to be worth walking
+down for, since the pool has seven lots and the same one will come round often.
+
 ## v9.93 - RMB AIMS DOWN SIGHTS
 
 His note, 2026-09-03: **"on pause screen text --- RMB = 'aim down sights'"**.
