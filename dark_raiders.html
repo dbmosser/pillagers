@@ -1234,7 +1234,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.04';
+var VER='10.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25028,6 +25028,8 @@ acts:{KeyE:['go up',function(){
              // v9.97, his note: the sector page carries day or night now, so it
              // opens every time, even when only one map is offered.
              if(!mapOffered(FIXED_MAPS[clamp(P.mapIx||0,0,FIXED_MAPS.length-1)])) P.mapIx=firstOfferedMap();
+             // v10.05, his answer 24: day by default, every ascent.
+             if(P.cond!=='day'){ P.cond='day'; hubGround=null; saveProfile(); }
              renderSector(); openModal('sectormodal');
            }],
            // v6.18: quick ascent means skip the SCREEN, not discard what you packed.
@@ -26264,7 +26266,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.04: a downed pillager has fifty points and they bleed away with his clock, fifty over the sixteen seconds. Three Scav Pistol rounds, or two and a little waiting.',
+  now:'v10.05: every ascent starts at DAY. Night is something you choose on the sector page on the way up, not something the last raid leaves switched on.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -5216,6 +5216,29 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.05',what:'every ascent starts at DAY, whatever the last raid was',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!(window.__hubEnter&&window.__station)) return 'SKIP: this build cannot be driven into the Undercroft';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(); var keepCond=P2.cond;
+     __hubEnter();
+     var sm=document.getElementById('sectormodal'), ask=document.getElementById('askmodal');
+     function shut(){ if(sm) sm.classList.remove('on'); if(ask) ask.classList.remove('on'); var st=document.getElementById('stagemodal'); if(st) st.classList.remove('on'); }
+     function done(v){ shut(); P2.cond=keepCond; return v; }
+     shut();
+     // Last raid was at night. Take the lift.
+     P2.cond='night';
+     try{ __station('lift'); }catch(e1){ return done('the lift threw: '+e1); }
+     if(!(sm&&sm.classList.contains('on'))) return done('taking the lift did not open the sector page');
+     // THE FINDING. On v10.04 the page opened still set to night.
+     if(P2.cond!=='day') bad.push('the sector page opened with the surface at '+P2.cond+', not day');
+     var d=document.getElementById('condday'), nt=document.getElementById('condnight');
+     if(d&&nt&&getComputedStyle(d).borderColor===getComputedStyle(nt).borderColor) bad.push('neither button is drawn as chosen');
+     // CONTROL: choosing NIGHT on the page still sticks for this ascent.
+     if(nt){ nt.click(); if(P2.cond!=='night') bad.push('control: NIGHT on the page no longer takes'); }
+     return done(bad.length?bad.join('; '):null); }},
   {v:'10.04',what:'a downed pillager starts at fifty and his points bleed away with his clock',
    run:function(){
      var bad=[];

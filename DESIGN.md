@@ -40024,6 +40024,28 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.05 - EVERY ASCENT STARTS AT DAY
+
+His answer 24, 2026-09-03: **"DEFAULT TO DAY."**
+
+v9.97 put DAY and NIGHT on the sector page and remembered the last choice, so
+a night raid made the next one night unless he noticed the button. The lift
+resets the choice to day every time it opens the page. Night is a thing you
+choose on the way up, never a thing you inherit from the last raid. The ground
+cache is cleared with it, so the next raid bakes the right palette.
+
+### Measured
+
+The check sets the surface to night, takes the lift on a clean profile, and
+requires the sector page to open at day with the DAY button drawn as chosen;
+the control clicks NIGHT and requires it to take for this ascent. On v10.04
+the page opened still set to night, which is the finding.
+
+Not verified: his answer 22, that night should pay more XP, which is the next
+build and needs the run to remember it went up in the dark. Not verified:
+his answer 23, which the code already does; pickTod draws one of five times of
+day on every raid, and night is a layer on top.
+
 ## v10.04 - A DOWNED PILLAGER STARTS AT FIFTY AND BLEEDS
 
 His answer 44, 2026-09-03: **"START AT 50 THAT WAY IT TAKES 3 SHOTS PLUS A LIL
