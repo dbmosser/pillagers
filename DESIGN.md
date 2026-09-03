@@ -39571,3 +39571,69 @@ verified: the downed panel in the other three verb states. The measurement stand
 him far from any ring, which is the case that carried the repetition; THEY HAVE
 YOU, HOLD E TO EXTRACT and CRAWL TO THE RING now draw through the same stack and
 are covered by the no-overlap assertion only in the state the check sets up.
+
+## v9.62 - A BANDAGE STOPS AT 85
+
+His rule: **"bandages should only heal player to 85 health max -- only medkit
+will take player back to 100."**
+
+A ceiling is not the same thing as a smaller heal, and the difference is the
+point. A Bandage is worth 20 health after `healPow`, so from 50 it takes you to
+70 either way. **The ceiling only bites at the top**, which is exactly where it
+should: the last fifteen points cannot be bought with the cheap item at any
+price, so a Medkit stops being a bigger Bandage and becomes the only way back to
+full.
+
+Measured, with the raid's own regeneration pinned off so the readings are exact:
+
+| you are at | in the bag | it reaches for | you end at |
+| --- | --- | --- | --- |
+| 50 | bandage | bandage | 70 |
+| 80 | bandage | bandage | **85** |
+| 90 | bandage only | **nothing, refused** | 90 |
+| 90 | bandage + medkit | **medkit** | **100** |
+| 80 | bandage, ceilings off | bandage | 100 |
+
+That last row is the control: with `healCaps 0` the old uncapped bandage comes
+straight back, which is what proves the dial is live rather than decorative.
+
+### Five places, because health arrives over seconds
+
+The item carries its own ceiling; `applyHeal` clamps the instant path; the
+over-time path stores the ceiling **on the player**, because the drain runs for
+seconds afterwards and has no idea which item started it; the drain clamps to
+that instead of to full health; and `findHeal` skips anything that cannot raise
+you.
+
+That last one matters more than it looks. **The picker takes the cheapest heal**,
+so at 90 health it would have reached for a Bandage, found it useless, and told
+him he had no medical supplies while a Medkit sat in the bag. It now skips past
+it, and if only bandages remain it says so and names the reason instead of
+lying.
+
+**A ceiling never takes health away.** Above 85 with a Bandage the heal is
+refused, not applied downward, which is the obvious way to write this wrong and
+is one of the things the check asserts.
+
+### Three faults in my own harness
+
+1. The shim named `healCeil`, and the fixture injects every shim into every
+   build, so it **threw** on the old one instead of reporting a fact.
+2. I read the bandage ceiling **after** the control arm had switched ceilings
+   off, so the build that has the ceiling reported not having one.
+3. My patch to fix 2 left a **dangling else-if**: the ceiling test and its
+   message sit fifteen lines apart in the check, and the message ended up firing
+   unconditionally. The correct build reported "the bandage ceiling is 85 rather
+   than 85".
+
+Against the archived v9.61 the check now reports four real findings, including a
+bandage from 80 reaching 100 and the picker choosing a bandage at 90 with a
+medkit available. On this build it is silent.
+
+Not verified: the balance. The 320 seed paired run is still going and at 133
+seeds has produced zero discordant pairs, which I expect to hold: `simRetreatHeal`
+is 0 by default, so the bot barely heals mid-raid and almost never from above 85.
+Like the Listener windup at v9.57, this is a rule for a human and the sim is the
+wrong instrument for it. Not verified: whether 85 is the right number or whether
+the Medkit is now too important. He named 85 and I have implemented 85; how it
+feels to be stuck at 85 with a bag full of bandages is his to report.

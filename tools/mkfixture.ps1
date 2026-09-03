@@ -749,6 +749,10 @@ window.__grant=function(ct,keys,delay0){ return grantLoot(ct,keys,delay0); };
 window.__items=function(){ return ITEMS; };
 window.__drawIcon=function(c,k,x,y,s){ return drawItemIcon(c,k,x,y,s); };
 window.__gunIcon=function(c,k,x,y,s){ return gunIcon(c,k,x,y,s); };
+window.__heal={use:function(){ return useMedical(); },
+               ceil:function(k){ return (typeof healCeil==='function')?healCeil(ITEMS[k]):null; },
+               amt:function(k){ return healAmt(ITEMS[k]); },
+               pick:function(){ var i=findHeal(); return i<0?null:G.bag[i]; }};
 window.__hotbar=function(){ return hotbarSlots(); };
 // Container stocking, so "a body should be worth more than a crate" can be
 // MEASURED over thousands of rolls instead of eyeballed from the weight tables.
@@ -5063,6 +5067,71 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.62',what:'a bandage stops at 85 and only a medkit takes you back to 100',
+   run:function(){
+     var bad=[];
+     if(!window.__heal) return 'SKIP: this build cannot drive the heal verb';
+     // Drives useMedical, the verb his F key calls, rather than reimplementing
+     // the arithmetic and grading my own copy of it.
+     function run(startHp,bag,dial){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       // REGEN OFF. The raid heals him on its own and it put 2 points on every
+       // reading, which is enough to hide a ceiling that is off by one.
+       __cfg({regenSec:0,regenDelay:9999});
+       if(dial!==undefined) __cfg({healCaps:dial});
+       var g=__state(), p=g.player;
+       g.ents.length=0; g.bag.length=0;
+       for(var i=0;i<bag.length;i++) g.bag.push(bag[i]);
+       p.hp=startHp; p.healQ=0; p.healRate=0; p.healCap=undefined; p.prep=null; p.downed=false;
+       var picked=__heal.pick();
+       var ok=__heal.use();
+       // long enough for the whole over-time cycle to finish draining
+       for(var f=0;f<900;f++) __loop(performance.now()+f*16.7);
+       return {picked:picked, accepted:!!ok, end:Math.round(p.hp), readBack:__cfg().healCaps};
+     }
+     var lowB   = run(50,['bandage']);
+     var highB  = run(80,['bandage']);
+     var fullB  = run(90,['bandage']);
+     var withMed= run(90,['bandage','medkit']);
+     var offB   = run(80,['bandage'],0);
+     // With the dial back ON. The control arm above leaves healCaps 0 behind and
+     // the first cut of this read the ceiling through it, so the build that HAS
+     // the ceiling reported not having one.
+     __resetCfg(); __pinDefaults(0);
+     var cap=__heal.ceil('bandage');
+     if(cap===null) bad.push('this build has no healing ceilings at all, so a bandage still takes him to full');
+     else if(cap!==85) bad.push('the bandage ceiling is '+cap+' rather than 85');
+     // CONTROLS FIRST. The dial has to be live and switching it off has to put
+     // the old uncapped bandage back, or nothing below means anything.
+     if(offB.readBack!==0||lowB.readBack!==1)
+       bad.push('control: the dial did not read back, on='+lowB.readBack+' off='+offB.readBack);
+     if(offB.end<99)
+       bad.push('control: with the ceilings off a bandage from 80 reached only '+offB.end+
+                ', so this check is not measuring a ceiling');
+     // CONTROL TWO: it must still HEAL. A ceiling that stopped bandages working
+     // at all would pass every finding below and would be a different bug.
+     if(lowB.end<=52||!lowB.accepted)
+       bad.push('control: a bandage from 50 reached '+lowB.end+', so it has stopped healing rather than stopped at a ceiling');
+     // THE FINDING. His rule: "bandages should only heal player to 85 health max
+     // -- only medkit will take player back to 100".
+     if(highB.end>85)
+       bad.push('a bandage from 80 took him to '+highB.end+', past the 85 he asked for');
+     if(highB.end<85)
+       bad.push('a bandage from 80 reached only '+highB.end+', short of its own ceiling');
+     // A CEILING NEVER TAKES HEALTH AWAY, which is the obvious way to write this
+     // wrong: clamping downward would have read 90 as 85.
+     if(fullB.end<90)
+       bad.push('at 90 health a bandage pulled him DOWN to '+fullB.end);
+     if(fullB.accepted)
+       bad.push('at 90 health a bandage was still spent on him, and it cannot help there');
+     // AND THE MEDKIT IS THE WAY BACK. With one in the bag the picker must reach
+     // for it rather than the cheapest item, which is what it used to do.
+     if(withMed.picked!=='medkit')
+       bad.push('at 90 health with a medkit in the bag he reached for '+withMed.picked+' instead');
+     if(withMed.end<100)
+       bad.push('a medkit from 90 reached only '+withMed.end+' rather than full health');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.61',what:'the downed screen is one panel, says DOWN once, and nothing sits on anything',
    run:function(){
      var bad=[];
