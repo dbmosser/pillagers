@@ -1241,7 +1241,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.27';
+var VER='10.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24882,6 +24882,8 @@ function toggleTune(force){
   if(tuneOpen) buildTune();
   document.getElementById('tunemodal').classList.toggle('on',tuneOpen);
   syncPause();
+  // v10.28: the rows read the dials, so a console closed over Settings redraws them.
+  if(!tuneOpen){ var _sm=document.getElementById('settingsmodal'); if(_sm&&_sm.classList.contains('on')&&typeof renderSettings==='function') renderSettings(); }
 }
 function applyPreset(k){
   // Brightness is a display preference, not a difficulty setting, so a preset
@@ -26459,7 +26461,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.27: the mainframe card is NET LIFETIME EARNINGS: everything you have extracted minus everything you carried in, over every run, a death or an abandon counting what it carried as lost.',
+  now:'v10.28: the tuning console is a row in Settings with an OPEN button, and the Settings rows read the live dials: a slider moved in the console shows on its row as the option it matches, or as CUSTOM.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30463,6 +30465,20 @@ hint:'Damage taken from everything on the surface. Standard is how the game has 
      {n:'Light',    cfg:{siegeVol:0.6}}
    ], def:1}
 ];
+// v10.28: which option the LIVE dials match, or -1 when a slider has put them
+// somewhere no option names. The rows show this; the stored choice is the
+// fallback when nothing has been tuned by hand.
+function gameOptLive(k){
+  var row=null;
+  for(var i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k===k) row=GAMEOPTS[i];
+  if(!row) return -1;
+  for(var oi=0;oi<row.opts.length;oi++){
+    var cfg=row.opts[oi].cfg, all=true;
+    for(var c in cfg) if(CFG[c]!==cfg[c]){ all=false; break; }
+    if(all) return oi;
+  }
+  return -1;
+}
 function gameOptIx(k){
   var row=null;
   for(var i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k===k) row=GAMEOPTS[i];
@@ -30519,7 +30535,10 @@ function cycleGameOpt(k){
   for(var i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k===k) row=GAMEOPTS[i];
   if(!row) return;
   P.gameOpts=P.gameOpts||{};
-  P.gameOpts[k]=(gameOptIx(k)+1)%row.opts.length;
+  // v10.28: the next option after the one the dials show, so a click always
+  // moves the row he is looking at by one step.
+  var _cur=gameOptLive(k); if(_cur<0) _cur=gameOptIx(k);
+  P.gameOpts[k]=(_cur+1)%row.opts.length;
   // v8.74, his order that the settings work: clicking a row RELEASES the tuning
   // console's claim on the keys that row owns. Without this, once a slider had
   // been dragged the matching Settings row was dead forever - it still cycled and
@@ -30539,12 +30558,15 @@ function renderSettings(){
   // opposite of the ease of use he asked for.
   var _go='<div class="row" style="opacity:.7"><div style="flex:1"><b>THE RAID</b></div></div>';
   for(var _gq=0;_gq<GAMEOPTS.length;_gq++){
-    var _gr=GAMEOPTS[_gq], _gs=_gr.opts[gameOptIx(_gr.k)];
-    var _dflt=(gameOptIx(_gr.k)===_gr.def);
+    // v10.28, his note: the row shows what the dials SAY, not what was last
+    // clicked. A slider moved in the console lands here as the option it matches,
+    // or as CUSTOM when it matches none.
+    var _gr=GAMEOPTS[_gq], _lv=gameOptLive(_gr.k), _gs=(_lv>=0)?_gr.opts[_lv]:null;
+    var _dflt=(_lv===_gr.def);
     _go+='<div class="row"><div style="flex:1"><b>'+_gr.label+'</b>'+
-      '<div class="hint">'+_gr.hint+'</div></div>'+
+      '<div class="hint">'+_gr.hint+(_gs?'':' Set by hand in the tuning console; click to put a word back on it.')+'</div></div>'+
       '<button id="go_'+_gr.k+'" style="padding:6px 12px;min-width:92px'+
-      (_dflt?'':';color:var(--amber)')+'">'+_gs.n+'</button></div>';
+      (_dflt?'':';color:var(--amber)')+'">'+(_gs?_gs.n:'CUSTOM')+'</button></div>';
   }
   host.innerHTML=_go+
     '<div class="row"><div style="flex:1"><b>Text size</b><div class="hint">Scales every string on every canvas and in every panel.</div></div>'+
@@ -30568,7 +30590,11 @@ function renderSettings(){
     '<div class="row"><div style="flex:1"><b>Controls legend</b><div class="hint">H in a raid cycles compact, full and off. Compact is the default.</div></div>'+
     '<span class="hint">H</span></div>'+
     '<div class="row"><div style="flex:1"><b>Mouse cursor</b><div class="hint">The cursor hides while you are aiming and returns with the backpack. BACKSPACE forces it back at any time.</div></div>'+
-    '<span class="hint">BKSP</span></div>';
+    '<span class="hint">BKSP</span></div>'+
+    // v10.28, his note: the console is a window option here, not a secret key.
+    '<div class="row"><div style="flex:1"><b>Tuning console</b><div class="hint">Every dial the rows above set, and the rest of them, as live sliders. A slider you move is yours until you click its row again. SHIFT and the backquote key open it too.</div></div>'+
+    '<button id="set_tune" style="padding:6px 12px">OPEN</button></div>';
+  document.getElementById('set_tune').onclick=function(){ toggleTune(true); };
   document.getElementById('set_text').onclick=function(){
     var _uc=uiScale(),_ni=-1;
     for(var _ui=0;_ui<UISCALES.length;_ui++){ if(UISCALES[_ui]>_uc+0.001){ _ni=_ui; break; } }

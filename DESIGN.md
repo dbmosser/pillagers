@@ -40024,6 +40024,48 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.28 - THE TUNING CONSOLE IS A ROW IN SETTINGS, AND THE ROWS READ THE DIALS
+
+His note, 2026-09-03 about 17:30: **"Add the tuning console as a window
+option inside settings -- consider how that interacts with the toggle
+buttions inside settings, e.g. should a change to the toggle result in a
+change to the tunting value"**.
+
+### What it was
+
+The console opened on the backquote key and nowhere else. A Settings row's
+click has always written its dials, and since v8.74 it also releases the
+console's claim on them; but the row showed the option last clicked, not
+the dials, so a slider moved in the console left the row saying a word that
+was no longer true.
+
+### Now
+
+- A row in Settings, TUNING CONSOLE, with an OPEN button. The backquote key
+  still works.
+- The rows read the live dials. A row shows the option its dials match, or
+  CUSTOM, in amber, with a line saying it was set by hand in the console and
+  that a click puts a word back on it. Closing the console over Settings
+  redraws the rows, so what he just slid is what he sees.
+- A click steps from what the row shows, so it always moves the row he is
+  looking at by one, and writes its dials as before.
+
+So the answer to his question is both ways: the toggle writes the dials, and
+the dials write the toggle's word.
+
+### Measured
+
+The check opens Settings, requires the row and its button to open the
+console, sets a sentry count no option names and requires the Machines row
+to read CUSTOM after the console closes, sets the dials to an option's
+values and requires the row to read that option, clicks and requires the
+next option's dials written and shown; the control is the backquote key
+still opening the console. On v10.27 Settings had no way to the console and
+the rows showed the last click, which is the finding.
+
+Not verified: rows whose options share some dials, which read as the first
+option that matches every one of its own; none do today.
+
 ## v10.27 - NET LIFETIME EARNINGS
 
 His note, 2026-09-03 about 17:35: **"the 'net carried out' explanation makes

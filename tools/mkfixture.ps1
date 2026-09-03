@@ -5221,6 +5221,43 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.28',what:'the tuning console opens from a Settings row, and the Settings rows read the live dials: an option when they match one, CUSTOM when they do not',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(); var keepOpts=JSON.stringify(P2.gameOpts||{}), keepTuned=JSON.stringify(P2.tuned||{});
+     P2.gameOpts={}; P2.tuned={}; try{ applyGameOpts(); }catch(e0){}
+     var sm=document.getElementById('settingsmodal'); if(!sm) return 'SKIP: no Settings window';
+     sm.classList.add('on'); renderSettings();
+     // THE FINDING. On v10.27 Settings had no way to the console and the rows showed the last click, not the dials.
+     var bt=document.getElementById('set_tune');
+     if(!bt) return 'Settings has no row for the tuning console';
+     var tm=document.getElementById('tunemodal');
+     bt.click(); if(!(tm&&tm.classList.contains('on'))) bad.push('the OPEN button did not open the console');
+     // A dial moved by hand: the row says CUSTOM, and a matching set of dials says the option.
+     var row=null; for(var i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k==='robots') row=GAMEOPTS[i];
+     if(!row) bad.push('staging: no Machines row');
+     else {
+       CFG.nSentry=99; P2.tuned.nSentry=1;
+       toggleTune(false);   // closing the console redraws the rows
+       var b=document.getElementById('go_robots'); var t1=b?b.textContent.trim():'';
+       if(t1!=='CUSTOM') bad.push('with a sentry count no option names, the Machines row reads "'+t1+'", not CUSTOM');
+       var opt=row.opts[0]; for(var c in opt.cfg) CFG[c]=opt.cfg[c];
+       renderSettings(); b=document.getElementById('go_robots'); var t2=b?b.textContent.trim():'';
+       if(t2!==opt.n) bad.push('with the dials at the '+opt.n+' values, the row reads "'+t2+'"');
+       // Clicking the row steps from what it shows, and writes the dials.
+       b.click(); var nx=row.opts[1%row.opts.length];
+       for(var c2 in nx.cfg) if(CFG[c2]!==nx.cfg[c2]) bad.push('after a click the dial '+c2+' is '+CFG[c2]+', not the '+nx.n+' value '+nx.cfg[c2]);
+       var b3=document.getElementById('go_robots'); if(b3&&b3.textContent.trim()!==nx.n) bad.push('after a click the row reads "'+b3.textContent.trim()+'", not '+nx.n);
+     }
+     // CONTROL: shift and the backquote key still open it.
+     toggleTune(false);
+     document.dispatchEvent(new KeyboardEvent('keydown',{code:'Backquote',key:'~',shiftKey:true,bubbles:true,cancelable:true}));
+     if(!(tm&&tm.classList.contains('on'))) bad.push('control: shift and the backquote key no longer open the console');
+     toggleTune(false); sm.classList.remove('on');
+     P2.gameOpts=JSON.parse(keepOpts); P2.tuned=JSON.parse(keepTuned); try{ applyGameOpts(); }catch(e1){} __resetCfg();
+     return bad.length?bad.join('; '):null; }},
   {v:'10.27',what:'the mainframe card is NET LIFETIME EARNINGS, the sum over every run of extracted minus carried in, a death losing what it carried',
    run:function(){
      var bad=[];
