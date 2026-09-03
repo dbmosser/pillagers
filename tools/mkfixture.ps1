@@ -5221,6 +5221,98 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.40',what:'no building on THE COLD MILE holds a room bigger than a player that nothing can reach, on five seeds, and the guard sees one when it is there',
+   run:function(){
+     var bad=[];
+     if(!(window.__movers&&__movers.buildNav)) return 'SKIP: no buildNav to flood with';
+     __pinDPR(1); __forceSize(1920,1080);
+     // A fine flood of the finished map, cell 4, from where the player stands.
+     // A building is flagged only when the floor nothing reaches spans at least
+     // ROOM by ROOM units, which is a space a man could stand in; the slivers
+     // behind furniture and the 28 deep niches measured on v10.39 are not.
+     var ROOM=32;
+     function survey(seed, brick){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:1,seed:seed});
+       var g=__state(), B=g.map.buildings||[], W=g.map.walls||[], L=g.map.locked||[];
+       var added=0;
+       if(brick!==undefined&&B[brick]){
+         // THE CONTROL: brick up every doorway in this building's own shell, so
+         // its interior is truly unreachable, and require the guard to say so.
+         var b0=B[brick], t0=16;
+         function segsOn(side){ var out=[]; for(var i=0;i<W.length;i++){ var q=W[i]; if(q.ib!==undefined||q.furn) continue;
+           var on=(side===0&&Math.abs(q.y-b0.y)<1)||(side===1&&Math.abs(q.y+q.h-(b0.y+b0.h))<1)||(side===2&&Math.abs(q.x-b0.x)<1)||(side===3&&Math.abs(q.x+q.w-(b0.x+b0.w))<1);
+           if(!on) continue;
+           if(side<2){ if(q.x<b0.x-1||q.x+q.w>b0.x+b0.w+1) continue; out.push([q.x,q.x+q.w]); }
+           else { if(q.y<b0.y-1||q.y+q.h>b0.y+b0.h+1) continue; out.push([q.y,q.y+q.h]); } }
+           out.sort(function(p,q2){ return p[0]-q2[0]; }); return out; }
+         for(var side=0;side<4;side++){
+           var sg=segsOn(side), lo=(side<2)?b0.x:b0.y, hi=(side<2)?b0.x+b0.w:b0.y+b0.h, cur=lo;
+           for(var k=0;k<=sg.length;k++){
+             var nx=(k<sg.length)?sg[k][0]:hi;
+             if(nx-cur>2){
+               if(side===0) W.push({x:cur,y:b0.y,w:nx-cur,h:t0,d:0,probeBrick:1});
+               else if(side===1) W.push({x:cur,y:b0.y+b0.h-t0,w:nx-cur,h:t0,d:0,probeBrick:1});
+               else if(side===2) W.push({x:b0.x,y:cur,w:t0,h:nx-cur,d:0,probeBrick:1});
+               else W.push({x:b0.x+b0.w-t0,y:cur,w:t0,h:nx-cur,d:0,probeBrick:1});
+               added++;
+             }
+             if(k<sg.length) cur=Math.max(cur,sg[k][1]);
+           }
+         }
+       }
+       var WW=g.map.cols*g.map.cw, HH=g.map.rows*g.map.ch, F=4, t=16, i, x, y;
+       var fw=Math.ceil(WW/F), fh=Math.ceil(HH/F), blk=new Uint8Array(fw*fh);
+       for(i=0;i<W.length;i++){
+         var w=W[i];
+         var x0=Math.max(0,Math.floor(w.x/F)), x1=Math.min(fw-1,Math.floor((w.x+w.w)/F));
+         var y0=Math.max(0,Math.floor(w.y/F)), y1=Math.min(fh-1,Math.floor((w.y+w.h)/F));
+         for(y=y0;y<=y1;y++) for(x=x0;x<=x1;x++) blk[y*fw+x]=1;
+       }
+       var pl=g.player, seed0=Math.floor(pl.y/F)*fw+Math.floor(pl.x/F);
+       var seen=new Uint8Array(fw*fh), st=[seed0]; seen[seed0]=1;
+       while(st.length){
+         var c=st.pop(), cy=(c/fw)|0, cx=c%fw;
+         if(cx>0&&!seen[c-1]&&!blk[c-1]){ seen[c-1]=1; st.push(c-1); }
+         if(cx<fw-1&&!seen[c+1]&&!blk[c+1]){ seen[c+1]=1; st.push(c+1); }
+         if(cy>0&&!seen[c-fw]&&!blk[c-fw]){ seen[c-fw]=1; st.push(c-fw); }
+         if(cy<fh-1&&!seen[c+fw]&&!blk[c+fw]){ seen[c+fw]=1; st.push(c+fw); }
+       }
+       function inLk(px,py){ for(var l=0;l<L.length;l++){ var K=L[l]; if(px>K.x&&px<K.x+K.w&&py>K.y&&py<K.y+K.h) return true; } return false; }
+       var rooms=[], widest=0;
+       for(var b=0;b<B.length;b++){
+         var bb=B[b], minx=1e9,maxx=-1,miny=1e9,maxy=-1, un=0;
+         for(y=Math.floor((bb.y+t)/F); y<=Math.floor((bb.y+bb.h-t)/F); y++)
+           for(x=Math.floor((bb.x+t)/F); x<=Math.floor((bb.x+bb.w-t)/F); x++){
+             var ii=y*fw+x;
+             if(blk[ii]||seen[ii]) continue;
+             if(inLk(x*F+F/2,y*F+F/2)) continue;
+             un++; if(x<minx)minx=x; if(x>maxx)maxx=x; if(y<miny)miny=y; if(y>maxy)maxy=y;
+           }
+         if(!un) continue;
+         var bw=(maxx-minx+1)*F, bh=(maxy-miny+1)*F;
+         widest=Math.max(widest, Math.min(bw,bh));
+         if(bw>=ROOM&&bh>=ROOM) rooms.push(b+'('+bw+'x'+bh+')');
+       }
+       // put the bricks back in the bag: the map is shared by the checks after this one
+       if(added){ for(i=W.length-1;i>=0;i--) if(W[i].probeBrick) W.splice(i,1); }
+       return {buildings:B.length, rooms:rooms, narrowest:widest, ents:g.ents.length};
+     }
+     // THE GUARD, on the fingerprint seed and the four seeds that showed the
+     // most unreachable floor on v10.39 (4, 2, 9, 6).
+     var seeds=[4242,4,2,9,6], found=[];
+     for(var si=0;si<seeds.length;si++){
+       var r=survey(seeds[si]);
+       if(r.buildings!==84) return 'SKIP: THE COLD MILE did not build its 84 buildings at seed '+seeds[si];
+       if(r.rooms.length) found.push('seed '+seeds[si]+': '+r.rooms.join(', '));
+       if(seeds[si]===4242&&r.ents!==374) bad.push('the entity count at seed 4242 reads '+r.ents+', not the 374 the fingerprint holds');
+     }
+     if(found.length) bad.push('rooms a player could stand in that nothing can reach: '+found.join('; '));
+     // THE CONTROL: brick building 0 on the fingerprint seed and require the guard to name it.
+     var ctl=survey(4242, 0);
+     if(!ctl.rooms.some(function(x){ return x.indexOf('0(')===0; }))
+       bad.push('control: building 0 was bricked up on purpose and the guard did not see it (it saw: '+(ctl.rooms.join(', ')||'nothing')+')');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.39',what:'a player is asked once, in plain words, whether run reports may be sent, and only when there is somewhere to send them',
    run:function(){
      var bad=[];

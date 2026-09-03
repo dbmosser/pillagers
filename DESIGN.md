@@ -40024,6 +40024,63 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.40 - THE ALPHA, FOURTH BUILD: THE FOUR SEALED BUILDINGS ARE OPEN, AND A GUARD
+
+The live STILL OPEN line with names on it: **"the demolition achieves nothing
+for four buildings: 14, 15, 20 and 21 on THE COLD MILE hold unreachable floor
+at every resolution including 4, and they are STILL sealed after their
+interiors are destroyed"** (v9.72, named at v9.77). A friend on itch meeting
+a building that cannot be entered is the kind of thing an alpha is judged on,
+so it was next.
+
+### What I found, before touching anything
+
+Measured on v10.39 with the v9.77 survey, a flood of the finished map at a
+cell of 4. At seed 4242, THE COLD MILE holds no building with floor nothing
+can reach: 14, 15, 20 and 21 are enterable, and have been since some build
+between v9.78 and now that moved walls without saying so. The line was stale.
+
+Then the same survey over fifteen seeds, because his friends will never play
+seed 4242: thirteen of them flag one to four buildings each. That looked like
+the defect at scale, and I drafted the fix v9.72 had written down, a doorway
+punched through the shell of any building still sealed at the end. It fired
+on three seeds and opened nothing, which was the instrument telling me the
+flagged buildings were not sealed at all. Measured properly at seed 4: all
+four flagged buildings have open doors, reachable centres and street on every
+side; what the survey found was floor inside them, in pockets of 12 by 12 to
+40 by 28 units, one per building, behind furniture. Across seeds 4, 2, 9 and
+6 the pockets run from 16 by 4 to 84 by 28; only the last is a space at all,
+a cells-plan niche whose mouth a piece of furniture plugs. The coarse repair
+cannot see any of them: its nav cell is 16 padded by 12, so a niche narrower
+than 40 units shows no free cell and reads as nothing to repair.
+
+None of that is a sealed building. It is slivers, and one shallow niche per
+seed at worst. The door punch was thrown away rather than shipped as dead
+code.
+
+### Now
+
+No game code changes. The line closes with the measurement above, and a
+guard goes in so a real sealed room cannot come back unseen: on five seeds
+(4242 and the four that showed the most unreachable floor), no building may
+hold unreachable interior floor whose extent is 32 by 32 units or more, the
+space a man could stand in. The niches measured are all below it.
+
+### Measured
+
+The check floods THE COLD MILE at cell 4 from where the player stands on
+seeds 4242, 4, 2, 9 and 6, skips locked rooms, and requires no building with
+a reachable-nothing pocket of 32 by 32 or more; the entity count at 4242
+still 374. The control bricks up every doorway in building 0's own shell on
+seed 4242, floods again, and requires the guard to name building 0 with a
+room the size of its interior; the bricks are then taken out of the wall list
+so the checks after it see the real map. On v10.39 the guard passes on all
+five seeds, and it is the control that gives the check its teeth: a guard
+blind to a bricked doorway would fail it.
+
+Not verified: the niche behind furniture, which stays as it is and is now a
+STILL OPEN line of its own with its sizes; and the other map, whose seed 1
+showed one building with unreachable floor of unmeasured size.
 ## v10.39 - THE ALPHA, THIRD BUILD: THE GAME ASKS BEFORE IT SENDS
 
 His question, 2026-09-03 about 16:55: **"is there a better place to upload
