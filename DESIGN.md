@@ -40024,6 +40024,32 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.11 - THE STASH TABS ARE HIS SIX, IN HIS ORDER
+
+His answer 2, 2026-09-03, to whether the category tabs stay: **"KEEP THEM,
+super helpful -- but reorganize them into these categories, ie Guns,
+Consumables (includes armor plates, heals, grenades), Parts, Salvage, Keys,
+Other [if needed?]"**.
+
+The row read ALL, GUNS, ARMOUR, PARTS, SALVAGE, CONSUMABLES, KEYS. It reads
+ALL, GUNS, CONSUMABLES, PARTS, SALVAGE, KEYS now, with armour plates under
+CONSUMABLES beside the heals and the grenades, and OTHER drawn only when
+something has nowhere else to go, which with today's item table is never. ALL
+stays first because it is the view the screen opens on and the one that shows
+the whole stash; he listed six and did not say to lose it.
+
+### Measured
+
+The check stocks a stash with one of each kind, opens the terminal, reads the
+tab row and requires his six in his order with no ARMOUR and no empty OTHER,
+clicks CONSUMABLES and requires the plate and the medkit both drawn under it,
+and as a control requires the ALL count to be the whole stash. On v10.10 the
+row had ARMOUR third and CONSUMABLES sixth, which is the finding.
+
+Not verified: OTHER with something in it, since nothing in the item table
+lands there today; the tab is drawn from the same rule as the rest and would
+appear the moment an item did.
+
 ## v10.10 - EVERY WINDOW SAYS CLOSE, AND ESC GOES THROUGH IT
 
 His answer 1, 2026-09-03: **"every menu screen in the game should have a

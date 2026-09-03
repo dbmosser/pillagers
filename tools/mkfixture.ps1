@@ -5221,6 +5221,45 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.11',what:'the stash tabs are his six in his order, with armour plates under CONSUMABLES',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!(window.__hubEnter&&window.__station)) return 'SKIP: this build cannot be driven into the Undercroft';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P();
+     // One of each kind, so every tab has a count to show.
+     P2.stash=['plate','medkit','frag','scrap','ledger','KEY']; P2.kit=[]; P2.hotAssign={}; P2.stashTab='all';
+     if(!ITEMS['KEY']) P2.stash.pop();
+     __hubEnter();
+     try{ __station('term'); }catch(e1){ return 'the stash terminal threw: '+e1; }
+     var hub=document.getElementById('hub'); if(!hub||!hub.classList.contains('on')) return 'the stash screen did not open';
+     var tabs=[].map.call(hub.querySelectorAll('#stashtabs .invtab'),function(d){ return d.textContent.trim().replace(/\s+\d+$/,''); });
+     var want=['ALL','GUNS','CONSUMABLES','PARTS','SALVAGE','KEYS'];
+     // THE FINDING. On v10.10 the row read ALL, GUNS, ARMOUR, PARTS, SALVAGE, CONSUMABLES, KEYS.
+     var got=tabs.filter(function(t){ return t!=='OTHER'; });
+     if(got.join(',')!==want.join(',')) bad.push('the tabs read ['+tabs.join(', ')+'], not ['+want.join(', ')+']');
+     if(tabs.indexOf('ARMOUR')>=0) bad.push('there is still an ARMOUR tab');
+     // Armour plates live under CONSUMABLES: click it and require the plate drawn.
+     var cons=[].filter.call(hub.querySelectorAll('#stashtabs .invtab'),function(d){ return /^CONSUMABLES/.test(d.textContent.trim()); })[0];
+     if(!cons) bad.push('no CONSUMABLES tab to click');
+     else {
+       cons.click();
+       // a stash cell carries the item's name in its title
+       var titles=[].map.call(hub.querySelectorAll('#stashgrid .cell'),function(c){ return String(c.title||''); }).join(' | ');
+       var plateName=(ITEMS.plate||{}).name||'Armour Plate', medName=(ITEMS.medkit||{}).name||'Medkit';
+       if(titles.indexOf(plateName)<0) bad.push('the CONSUMABLES tab does not show the armour plate: ['+titles.slice(0,120)+']');
+       if(titles.indexOf(medName)<0) bad.push('the CONSUMABLES tab does not show the medkit');
+     }
+     // OTHER shows only when something falls into it: with this stash, nothing.
+     if(tabs.indexOf('OTHER')>=0) bad.push('an OTHER tab is drawn with nothing in it');
+     // CONTROL: the ALL count is the whole stash.
+     var all=[].filter.call(hub.querySelectorAll('#stashtabs .invtab'),function(d){ return /^ALL/.test(d.textContent.trim()); })[0];
+     var m=all?/(\d+)\s*$/.exec(all.textContent.trim()):null;
+     var wantAll=P2.stash.length+((P2.weapons||[]).length);   // ALL counts the guns you own too, its rule since the tabs were built
+     if(!m||+m[1]!==wantAll) bad.push('control: ALL counts '+(m?m[1]:'nothing')+' against a stash of '+P2.stash.length+' plus '+((P2.weapons||[]).length)+' owned guns');
+     P2.stashTab='all'; hub.classList.remove('on');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.10',what:'every window has a CLOSE and ESC closes the window in front',
    run:function(){
      var bad=[];

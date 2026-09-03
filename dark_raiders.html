@@ -1234,7 +1234,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.10';
+var VER='10.11';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26337,7 +26337,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.10: every window says CLOSE where it used to say Leave, Close, Back or Got it, and ESC closes the window in front through that same CLOSE, so a window that does something on the way out does it on ESC too.',
+  now:'v10.11: the stash tabs are GUNS, CONSUMABLES, PARTS, SALVAGE and KEYS, in that order, with armour plates under CONSUMABLES beside the heals and the grenades. ALL is still first, and OTHER appears only if something has nowhere else to go.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -27693,12 +27693,14 @@ try{ renderFreeKit(); }catch(_fk){}
   // so you can see there is nothing under PARTS without clicking PARTS.
   // HIS THREE PLACES, then the category filters as a second row inside STASH.
   // P.invTab went with the three exclusive tabs at v5.64. Nothing reads it.
-  var TABS=[['all','ALL'],['gun','GUNS'],['armor','ARMOUR'],['part','PARTS'],
-            ['salvage','SALVAGE'],['use','CONSUMABLES'],['key','KEYS']];
+  // v10.11, his answer 2: Guns, Consumables (plates, heals, grenades), Parts,
+  // Salvage, Keys, Other if needed. ALL first, because it is the whole stash.
+  var TABS=[['all','ALL'],['gun','GUNS'],['use','CONSUMABLES'],['part','PARTS'],
+            ['salvage','SALVAGE'],['key','KEYS'],['other','OTHER']];
   function tabOf(k){
-    var t=ITEMS[k]; if(!t) return 'part';
+    var t=ITEMS[k]; if(!t) return 'other';
     if(t.use==='gun') return 'gun';
-    if(t.use==='armor') return 'armor';   // no ITEMS entry has carried use:'rig' since v5.83
+    if(t.use==='armor') return 'use';     // v10.11: armour plates are consumables, his answer 2
     if(t.use==='key') return 'key';                      // v6.39, his note: keys are their own class
     if(craftPart(k)) return 'part';            // recipes and racks eat these
     if(t.use) return 'use';
@@ -27718,6 +27720,8 @@ try{ renderFreeKit(); }catch(_fk){}
         var cnt=keysArr.filter(function(k){ return T[0]==='all'||tabOf(k)===T[0]; })
                        .reduce(function(a,k){ return a+counts[k]; },0)
                  +((T[0]==='all'||T[0]==='gun')?(P.weapons||[]).length:0);
+        // v10.11: OTHER only when something falls into it.
+        if(T[0]==='other'&&!cnt){ if(P.stashTab==='other') P.stashTab='all'; return; }
         var d=document.createElement('div');
         d.className='invtab'+(P.stashTab===T[0]?' on':'');
         d.style.fontSize='10.5px';
