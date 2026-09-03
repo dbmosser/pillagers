@@ -40024,6 +40024,85 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.71 - A SEVENTEEN SECOND WAIT WITH AN ANSWER HE ALREADY KNEW
+
+His note: "should be able to hold space bar to surrender when player is downed
+and player has already blown his self-revive previously".
+
+### WHAT IT WAS
+
+Measured on v9.70 before touching anything: downed, self-revive spent, SPACE
+held for two and a half seconds. Nothing. downT ran 17.0 down to 13.4 and the
+raid carried on. There was no field for it and no key that could do it.
+
+The two exits from the floor were the full 17 second bleed and a crawl at 30
+units per second. From the far side of a map with the revive gone and nothing in
+reach, that is not a decision. He already knows how it ends and the game makes
+him sit and watch it happen.
+
+### WHAT IT IS NOW
+
+Hold SPACE for a second and a half and the raid ends, filed as the death it is,
+under whatever put him down. Not a tap, because every other irreversible key in
+this game is a hold and this one ends the raid.
+
+**Gated on the revive being spent.** That is his condition, and it is also what
+makes the key safe to bind at all: while he still holds a self-revive, SPACE
+cannot end his raid, so the surrender only exists in the state he described.
+
+**One guard he did not ask for.** It will not fire while he is lying inside a
+landed extraction. That same overlay already advertises that extracting while
+downed is permitted, and a hand resting on the space bar must not throw away a
+full bag in the one situation where being down is about to end well. Measured:
+200 frames of holding SPACE inside a landed ring, hp never moved off 100.
+
+The prompt appears on the downed screen only once the revive is gone, greyed
+until he touches the key and lit while he holds it, with a 200 wide bar under it
+so it reads as the same instrument as the bleed bar above.
+
+### THE CHECK, AND A MISTAKE THAT COST ME THE FIRST MEASUREMENT
+
+My first reproduction set `__keys['Space']=true`. `__keys` is a FUNCTION that
+returns the key object, not the object, so I set a property on a function and
+measured nothing at all. It read as the defect because the defect was also
+nothing. The fixture's own comment at line 979 says to call `__keysRef()` fresh
+inside every step, and once I did the reproduction was real.
+
+Six controls, because a check about a key that ends raids has more ways to lie
+than most:
+
+1. **The gate.** Revive still in hand, hold three seconds. Must not fire. This
+   is his condition and the whole safety of the binding.
+2. **A hold, not a tap.** One second must not be enough.
+3. **The key is what does it.** Same setup, hand off the bar, three seconds. If
+   this fired the check would be timing a bleed-out and calling it a surrender.
+4. **The dial.** giveUp 0 restores the old behaviour.
+5. **The extraction guard.** Lying inside a landed ring, three seconds, no fire.
+6. **The trace is reading the overlay.** DOWN must be on the drawn frame before
+   any test of what else is written there means anything.
+
+Every state is re-pinned every frame rather than once at the top, for two
+reasons the fixture learned the hard way: showScreen replaces the keys object
+outright, and a downed player left alone bleeds out on his own, which would read
+as a surrender that worked.
+
+The hold was confirmed to be a real second and a half of game time, not a frame
+count that happened to land near it: giveT peaked at 1.498 before it fired.
+
+Layout measured on the drawn frame in the crowded case, bar showing and a verb
+underneath: DOWN, the bleed line, the surrender prompt, CRAWL TO THE RING, and
+its subtitle, gaps of 114, 58, 106 and 92 against type heights of 94 and 47. No
+row touches another.
+
+Against v9.70 the check names both findings. Against v9.71 it is silent.
+
+Not verified: how it feels to reach for. A second and a half is the number every
+other hold in this game uses and it is the reason it was chosen, but whether
+that is the right patience when he is bleeding and angry is a thing only he can
+say. Say a number and it moves. Also not verified: whether he wants the guard at
+all. If he would rather SPACE always work, even inside a landed extraction, that
+is four lines gone.
+
 ## v9.70 - TWO LINES THAT DID NOT SAY WHAT THEY MEANT
 
 Two of his notes, both about a line of text that is technically correct and

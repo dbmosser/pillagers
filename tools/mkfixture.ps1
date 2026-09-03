@@ -5085,6 +5085,104 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.71',what:'holding space surrenders once the self-revive is gone, and only then',
+   run:function(){
+     var bad=[];
+     if(!window.__keysRef) return 'SKIP: no key reference, nothing can be held down';
+     __pinDPR(1); __forceSize(1920,1080);
+     // Runs a downed player for a fixed stretch and reports when he stopped being
+     // alive. Every state is re-pinned EVERY FRAME rather than once at the top:
+     // showScreen replaces the keys object outright, and a downed player left
+     // alone bleeds out on his own, which would read as a surrender that worked.
+     function trial(o){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       if(o.dial!==undefined) __cfg({giveUp:o.dial});
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, z=(g.zones&&g.zones[0])||null;
+       g.ents.length=0;
+       if(o.landed&&!z) return null;
+       var fr=Math.round((o.secs||2.5)/0.016), at=-1, peak=0;
+       for(var i=0;i<fr;i++){
+         if(p.hp<=0){ at=i; break; }
+         // downT is pushed back up so the 17 second bleed can never be what ends
+         // this, and iv is pinned so nothing on the map can either.
+         p.iv=9999; p.downed=true; if(p.downT<5) p.downT=17;
+         p.revived=o.spent; p.pendKiller='sentry';
+         if(o.landed){ g.active=z; z.open=true; g.beaconT=0; g.shipHold=20; p.x=z.x; p.y=z.y; }
+         var K=__keysRef(); for(var k in K) K[k]=false; if(o.hold) K['Space']=true;
+         __loop(performance.now()+i*16.7);
+         if((p.giveT||0)>peak) peak=p.giveT;
+       }
+       var S=__state();
+       return {fired:S.player.hp<=0, killer:(S.tel||{}).deathKiller||null, peak:+peak.toFixed(2)};
+     }
+     var fire=trial({spent:true,hold:true,secs:2.5});
+     if(!fire) return 'SKIP: could not set up a downed player to test';
+     // THE FINDING. His note: "should be able to hold space bar to surrender when
+     // player is downed and player has already blown his self-revive previously".
+     // Measured on v9.70: SPACE held for 2.5 seconds with the revive gone did
+     // nothing at all, and there was no field for it.
+     if(!fire.fired)
+       bad.push('with the self-revive gone, holding space for 2.5 seconds does not end it');
+     else if(fire.killer!=='sentry')
+       bad.push('the surrender filed the death under '+fire.killer+
+                ' rather than what put him down');
+     // CONTROL ONE, HIS CONDITION and the whole reason this key is safe to bind:
+     // while he still holds a self-revive, space must not be able to end his raid.
+     var keep=trial({spent:false,hold:true,secs:3});
+     if(keep&&keep.fired)
+       bad.push('control: space ended the raid while he still had his self-revive, '+
+                'which is the one state he said it must not work in');
+     // CONTROL TWO: a hold, not a tap. One second must not be enough.
+     var tap=trial({spent:true,hold:true,secs:1.0});
+     if(tap&&tap.fired)
+       bad.push('control: a one second press was enough, so it is a tap and not a hold');
+     // CONTROL THREE: the key is what does it. Same setup, hand off the bar. If
+     // this fired, the harness would be measuring a bleed-out and calling it a
+     // surrender, which is how a check quietly passes on nothing.
+     var idle=trial({spent:true,hold:false,secs:3});
+     if(idle&&idle.fired)
+       bad.push('control: it ended with nothing held down, so the space bar is not what does it');
+     // CONTROL FOUR: the dial puts the old behaviour back.
+     var off=trial({spent:true,hold:true,secs:3,dial:0});
+     if(off&&off.fired)
+       bad.push('control: with giveUp off the hold still ended the raid, so the dial is inert');
+     // CONTROL FIVE, the guard: not while he is lying inside a landed extraction.
+     // That overlay advertises that extracting while downed is permitted, and a
+     // hand resting on the bar must not throw away a full bag there.
+     var pull=trial({spent:true,hold:true,secs:3,landed:true});
+     if(pull===null) bad.push('control: no extraction to lie inside, so the guard is untested');
+     else if(pull.fired)
+       bad.push('control: he surrendered while inside a landed extraction, '+
+                'which throws away the raid in the one place being down ends well');
+     // THE PROMPT. Read off the drawn frame, not the source: a string nothing
+     // reaches would pass a grep and tell him nothing on the floor.
+     if(window.__textTrace){
+       function drawn(spent){
+         __resetCfg(); __pinDefaults(0); __cleanProfile();
+         __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+         var g=__state(), p=g.player; g.ents.length=0;
+         p.iv=9999; p.downed=true; p.downT=17; p.revived=spent; p.pendKiller='sentry';
+         var K=__keysRef(); for(var k in K) K[k]=false;
+         for(var f=0;f<3;f++) __loop(performance.now()+f*16.7);
+         var d=__textTrace(function(){ __frame(0.016); });
+         return d.map(function(x){ return x.t||''; }).join(' | ');
+       }
+       // Assembled, never written whole. A check that spells out the phrase it is
+       // looking for can match its own source, which has cost three builds.
+       var need='TO '+'SURRE'+'NDER';
+       var spentTxt=drawn(true), keepTxt=drawn(false);
+       // CONTROL SIX: the trace has to be reading the downed overlay at all.
+       if(spentTxt.indexOf('DOWN')<0&&keepTxt.indexOf('DOWN')<0)
+         bad.push('control: the downed overlay was never drawn, so the prompt test reads nothing');
+       else {
+         if(spentTxt.indexOf(need)<0)
+           bad.push('nothing on the downed screen offers the surrender once the revive is gone');
+         if(keepTxt.indexOf(need)>=0)
+           bad.push('the downed screen offers the surrender while he still holds a self-revive');
+       }
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'9.70',what:'the death card drops the second clock, and the steady contract says what it is',
    run:function(){
      var bad=[];
