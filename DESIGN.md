@@ -40024,6 +40024,44 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.38 - THE ALPHA, SECOND BUILD: THE WHAT IS NEW CARD IS CURRENT
+
+His ask, 2026-09-03 about 16:45: an alpha for his friends on itch. The first
+thing a friend reads on their first visit to the Undercroft is the WHAT IS
+NEW card.
+
+### What it was
+
+The card stood at v10.22 against a v10.37 build, fifteen builds out of date.
+It said nothing about the welcome pack, the crash
+catcher, the eleven racks added since, the Depot figure, net lifetime
+earnings, the tuning row or the Blotter. The parse gate fails the build at a
+drift of twenty and the v9.19 check at fifteen, so three more builds would
+have stopped the loop on it anyway.
+
+### Now
+
+The card is at v10.38 and opens with what an alpha is: things will break, and
+when they do the game writes it into your run report and tells you so. Then
+the welcome pack, the menu floor, the fourteen racks with
+every piece earned and never bought, the Depot figure drawn by the raid
+painter, the pillagers dressing from the same racks, net lifetime earnings,
+the tuning console row and the cheat box switch, the Blotter, and the lines
+from v10.22 that still hold. Every line names the tactical belt as the belt.
+
+### Measured
+
+The check reads the card through the game's own words shim and requires the
+card version within two hundredths of the build, at least ten lines, ALPHA in
+the first line, lines naming the welcome pack, the
+fourteen racks, net lifetime earnings and the tactical belt, no line calling
+the belt a hotbar on its own, no dashes, and the once-per-load latch still
+present as the control. On v10.37 the card was at v10.22, which is the
+finding.
+
+Not verified: the card's height at 4K with three more lines than before,
+where the v9.05 fit was measured on the old list; and whether "THIS IS AN
+ALPHA" is the line he wants first, which is his call.
 ## v10.37 - THE ALPHA, FIRST BUILD: A CRASH IS CAUGHT AND WRITTEN DOWN
 
 His ask, 2026-09-03 about 16:45: **"i want to ship an alpha build of this

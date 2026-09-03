@@ -5221,6 +5221,28 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.38',what:'the WHAT IS NEW card is current, opens with what an alpha is, and names what a friend will meet first',
+   run:function(){
+     var bad=[];
+     if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
+     var wn=__words.whatsnew();
+     var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
+     var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
+     // THE FINDING. On v10.37 the card stood at v10.22, fifteen builds behind.
+     if(vNow-vCard>0.02) return 'the card is at v'+wn.ver+' against a build at v'+wn.build+', so a friend reads news that is '+Math.round((vNow-vCard)*100)+' builds old';
+     var L=wn.lines||[];
+     if(L.length<10) bad.push('the card has only '+L.length+' lines');
+     if(!/ALPHA/.test(L[0]||'')) bad.push('the first line does not say it is an alpha: "'+String(L[0]).slice(0,60)+'"');
+     [['WELCOME PACK',/WELCOME PACK/],['the fourteen racks',/FOURTEEN RACKS/],['net lifetime earnings',/NET LIFETIME EARNINGS/],['the tactical belt',/TACTICAL BELT/]].forEach(function(w){
+       if(!L.some(function(l){ return w[1].test(l); })) bad.push('no line names '+w[0]);
+     });
+     // ONE WORD PER THING: the belt is named as the belt, never as a hotbar on its own.
+     L.forEach(function(l,i){ if(/HOTBAR/.test(l)&&!/TACTICAL BELT/.test(l)) bad.push('line '+(i+1)+' calls the belt a hotbar'); });
+     // NO DASHES, his rule for every line he reads.
+     L.forEach(function(l,i){ if(/[\u2013\u2014]/.test(l)) bad.push('line '+(i+1)+' carries a dash'); });
+     // CONTROL: the card is still the thing the hub shows once per version.
+     if(typeof WNSEEN==='undefined') bad.push('control: the once-per-load latch is gone');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.37',what:'an uncaught error or an unhandled rejection is written to the profile and the run report, counted, capped, and told once',
    run:function(){
      var bad=[];
