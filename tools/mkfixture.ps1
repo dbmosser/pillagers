@@ -98,7 +98,9 @@ window.__cleanProfile=function(){
   return was;
 };
 window.__pinDPR=function(v){
-  DPR=(v===undefined?1:v);
+  v=(v===undefined?1:v);
+  try{ Object.defineProperty(window,'devicePixelRatio',{configurable:true,get:function(){ return v; }}); }catch(e0){}
+  DPR=v;
   try{ resize(); }catch(e){}
   return {DPR:DPR, buffer:[cv.width,cv.height], css:[cv.offsetWidth,cv.offsetHeight],
           oneToOne:(cv.offsetWidth>0&&cv.width===cv.offsetWidth&&hcv.width===hcv.offsetWidth)};
@@ -5214,6 +5216,72 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.92',what:'C crouches, exactly as CTRL does, and the legends say so',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!(window.__keysRef&&window.__loop&&window.__deploy)) return 'SKIP: this fixture cannot hold a key';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var p=g.player; p.iv=99; p.hp=100000; p.maxhp=100000; p.stam=100;
+     g.ents.length=0;                      // nobody to bump into or be shot by
+     var ox=p.x, oy=p.y;
+     // A key table read FRESH every time: showScreen replaces the object, and a
+     // latched key from an earlier probe has made ENTER look broken twice.
+     function K(){ return __keysRef(); }
+     function clearKeys(){ var k=K(); for(var q in k) if(k.hasOwnProperty(q)) k[q]=false; }
+     // Walk one direction for a fixed number of real-loop frames and measure how
+     // far he got. Crouch is a speed multiplier of .52 in the movement step, so
+     // the ratio between a held crouch key and none is the whole finding.
+     function walk(dir,held){
+       clearKeys();
+       p.x=ox; p.y=oy; p.vx=0; p.vy=0; p.roll=0; p.downed=0; p.ads=false; p.stam=100; p.stamLock=0; p.stamRelease=0;
+       var k=K(); k[dir]=true; if(held) k[held]=true;
+       var t0=performance.now();
+       for(var f=0;f<24;f++) __loop(t0+f*16.7);
+       clearKeys();
+       return Math.sqrt((p.x-ox)*(p.x-ox)+(p.y-oy)*(p.y-oy));
+     }
+     // Find a direction he can actually move in from the spawn.
+     var dirs=['KeyD','KeyA','KeyS','KeyW'], dir=null, base=0;
+     for(var d=0;d<dirs.length;d++){ var dd=walk(dirs[d],null); if(dd>40){ dir=dirs[d]; base=dd; break; } }
+     if(!dir) return 'SKIP: the player could not walk from the spawn in any direction';
+     var withCtrl=walk(dir,'ControlLeft'), withC=walk(dir,'KeyC');
+     var rC=withC/base, rCtrl=withCtrl/base;
+     // THE FINDING. On v9.91 KeyC was autoloot, so he walked at full speed with C
+     // held: ratio one. Crouched he walks at about half.
+     if(rC>0.8) bad.push('with C held he still walked at '+Math.round(rC*100)+'% of full speed, so C is not crouch');
+     // CONTROL: CTRL still crouches, and crouch is still slower than walking, so
+     // the finding above could not pass by movement being broken outright.
+     if(rCtrl>0.8) bad.push('control: with CTRL held he walked at '+Math.round(rCtrl*100)+'%, so CTRL no longer crouches');
+     if(Math.abs(rC-rCtrl)>0.08) bad.push('C and CTRL crouch at different speeds, '+Math.round(rC*100)+'% against '+Math.round(rCtrl*100)+'%');
+     // C must not still flip autoloot. Press it through the real key handler.
+     var was=!!__P().autoloot;
+     try{ document.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyC',key:'c',bubbles:true,cancelable:true})); }catch(_e1){}
+     try{ document.dispatchEvent(new KeyboardEvent('keyup',{code:'KeyC',key:'c',bubbles:true,cancelable:true})); }catch(_e2){}
+     if(!!__P().autoloot!==was) bad.push('pressing C still toggles autoloot');
+     clearKeys();
+     // The surfaces that name the key: the pause box, and both legends.
+     var pb=document.getElementById('pausebox'), pbt=(pb&&pb.textContent)||'';
+     if(!/CTRL\s*\/\s*C\s+crouch/i.test(pbt)) bad.push('the pause screen does not say CTRL / C crouch');
+     var LEG=(typeof LEGEND!=='undefined')?LEGEND:null, MINI=(typeof LEGEND_MINI!=='undefined')?LEGEND_MINI:null;
+     function rowKey(tbl,word){
+       if(!tbl) return null;
+       for(var a=0;a<tbl.length;a++){
+         var r=tbl[a];
+         if(r&&r.length===2&&typeof r[1]==='string'){ if(new RegExp('^'+word).test(r[1])) return r[0]; }
+         else if(r&&r[1]&&r[1].length) for(var b=0;b<r[1].length;b++) if(new RegExp('^'+word).test(r[1][b][1])) return r[1][b][0];
+       }
+       return null;
+     }
+     var fk=rowKey(LEG,'crouch'), mk=rowKey(MINI,'crouch');
+     if(fk===null||mk===null) bad.push('this fixture could not read the crouch row from the legends');
+     else {
+       if(!/CTRL\s*\/\s*C/i.test(fk)) bad.push('the full legend crouch row reads ['+fk+']');
+       if(!/CTRL\s*\/\s*C/i.test(mk)) bad.push('the compact legend crouch row reads ['+mk+']');
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'9.91',what:'a downed pillager takes more than one Scav Pistol round to finish',
    run:function(){
      var bad=[];

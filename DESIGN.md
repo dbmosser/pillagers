@@ -40024,6 +40024,57 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.92 - C CROUCHES
+
+His note, 2026-09-03: **"crouch should be default bound key to each of ctrl and
+c"**.
+
+### What C did
+
+Crouch was read in three places, the movement step, the footstep generator and
+the draw pass, and all three read exactly ControlLeft or ControlRight. C did
+something else: it flipped an autoloot switch and said "Autoloot ON: a full bag
+sheds its worst". Autoloot only ever acted when the bag was full, and the bag has
+been unlimited since 2026-08-22, so the key printed a message and changed nothing
+he could see. It was a dead key with a live label.
+
+### One reader
+
+`crouchHeld()` answers CTRL or C, and the three sites call it instead of holding
+their own copy of the key list, so the binding cannot drift apart again. C joins
+the list of keys the browser is not allowed to keep. The autoloot toggle is gone,
+and the one hint that told him to press C for it, on the bag-full refusal, says
+TAB instead; that line is inert while the bag is unlimited but a hint for a dead
+key is a lie whichever branch it lives in. The pause screen and both legends
+say CTRL / C.
+
+### Measured
+
+The check holds one key and walks him for 24 real-loop frames from the spawn,
+then does it again with C held and again with CTRL held. On v9.91 he covered
+the same distance with C held as with nothing: ratio one. Crouched he covers
+about half. The controls are that CTRL still halves him and that C and CTRL
+land within eight points of each other, so the finding cannot pass by movement
+being broken. It also presses C through the real key handler and requires the
+autoloot flag not to move, and reads the crouch row out of both legend tables.
+
+### Also in this build: the pin that could not hold
+
+The first full run of this corpus came back with fourteen pixel checks reading
+zero, then eleven. The build was fine: a fresh load of the same fixture passed
+every one of them. With the browser pane hidden, the app scales the emulated
+1920x1080 viewport to fit, window.devicePixelRatio drifted from 1 to 2.5 part
+way through the run, the game's resize() took 2 of it, and every canvas became
+3840x2160 under checks that measure at 1:1. __pinDPR(1) could not hold it
+because resize() re-reads devicePixelRatio on its first line. The fixture's pin
+now owns window.devicePixelRatio, and the run was repeated: 132 checks, none
+skipped, none failed.
+
+Not verified: whether the C on a controller-aware label should ever show,
+because keyLabel only substitutes a pad label when a pad is on and the legend
+rows are strings. Not verified: anyone who used C for autoloot, since there is
+no one to ask and nothing in the exports has ever recorded the key.
+
 ## v9.91 - A DOWNED PILLAGER TAKES MORE THAN ONE SCAV PISTOL ROUND
 
 His note, the first of six he sent in ten minutes before leaving for the day:

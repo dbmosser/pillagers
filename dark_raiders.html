@@ -590,7 +590,7 @@
 <div class="pausebox" id="pausebox">
   <h3>RUN PAUSED</h3>
   <div style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">
-    MOUSE aim &nbsp; LMB fire &nbsp; RMB steady aim &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT sprint &nbsp; CTRL crouch<br>
+    MOUSE aim &nbsp; LMB fire &nbsp; RMB steady aim &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT sprint &nbsp; CTRL / C crouch<br>
     E search / call for extraction &nbsp; R reload &nbsp; F heal/revive &nbsp; Q/G throw &nbsp; TAB bag &nbsp; M map &nbsp; ` superhot &nbsp; SHIFT-` tuning &nbsp; P/ESC pause
   </div>
   <div style="font-size:13.5px;color:var(--ash);margin-top:6px">Note anything that just felt wrong. It goes in the recorder.</div>
@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.91';
+var VER='9.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3057,13 +3057,16 @@ function surfAt(x,y){
 // which is backwards: your own footsteps are the thing that tells you you are
 // making noise, and crouching is meaningless if it does not sound quieter.
 var PSTEP=0;
+// v9.92, HIS NOTE: crouch is CTRL or C. One reader for the three places that
+// ask, so the binding cannot drift apart again.
+function crouchHeld(){ return !!(keys['ControlLeft']||keys['ControlRight']||keys['KeyC']); }
 function tickPlayerSteps(dt){
   if(!G||G.sim||G.over) return;
   var p=G.player;
   PSTEP-=dt;
   if(!p.moving||p.downed||p.roll>0){ if(PSTEP<0) PSTEP=0; return; }
   if(PSTEP>0) return;
-  var crouch=!!(keys['ControlLeft']||keys['ControlRight']);
+  var crouch=crouchHeld();
   // Distance is the volume control here, so a crouched step is played as though
   // it happened further away. Same generator, quieter result.
   var bsh=G.pBush,surf=bsh?'leaf':surfAt(p.x,p.y);
@@ -9495,7 +9498,7 @@ function raidKey(code,repeat,ev){
     }
     if(code==='KeyG'||code==='Space'||code==='KeyQ'||code==='KeyC') return;
   }
-  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyX','KeyV','Backspace','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
+  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyX','KeyV','KeyC','Backspace','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
   if((code==='Escape'||code==='KeyP')&&G&&!G.over)
     togglePauseBox(!document.getElementById('pausebox').classList.contains('on'));
   // H CYCLES, v2.94. His note: "update the key legend, make it smaller if
@@ -9574,10 +9577,8 @@ function raidKey(code,repeat,ev){
       if(ev) ev.preventDefault();
     }
   }
-  if(code==='KeyC'&&G&&!G.over&&!repeat){
-    P.autoloot=!P.autoloot; saveProfile();
-    say('Autoloot '+(P.autoloot?'ON: a full bag sheds its worst':'OFF: a full bag refuses'));
-  }
+  // v9.92: C is crouch now, read from the held-key table like CTRL. The autoloot
+  // toggle that lived here has been inert since the bag became unlimited.
   // world zoom keeps the wheel and the numpad pair; - and = now size the HUD (v7.18)
   if(code==='NumpadAdd'){ setZoom(zoomTarget()*1.15); if(G&&!G.over) say('Zoom '+Math.round(ZT*100)+'%'); }
   if(code==='NumpadSubtract'){ setZoom(zoomTarget()/1.15); if(G&&!G.over) say('Zoom '+Math.round(ZT*100)+'%'); }
@@ -12929,7 +12930,7 @@ var mg=Math.sqrt(mx*mx+my*my);
   if(p.autoJog&&mg>0){ p.autoJog=false; if(!G.sim) say('Auto-jog off.'); }
   if(p.autoJog&&mg===0&&!p.downed){ mx=Math.cos(p.face); my=Math.sin(p.face); mg=1; }
 
-  var crouch=!!(keys['ControlLeft']||keys['ControlRight']);
+  var crouch=crouchHeld();
   // sprint requires actual movement input: holding shift while standing must not burn stamina
 if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
   else p.fireHold=Math.max(0,(p.fireHold||0)-dt*3);
@@ -13508,7 +13509,7 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
     if(bagWeight()>=cap&&P.autoloot) autoCull(cap);
     if(bagWeight()>=cap){
       say(P.autoloot?('Bag full ('+cap+') and nothing left worth dropping.')
-                    :('Bag full ('+cap+'). C for autoloot, or TAB to drop something.'));
+                    :('Bag full ('+cap+'). TAB to drop something.'));
       G.searching=null; G.searchT=0;
     }
     else {
@@ -19334,7 +19335,7 @@ var SHD=G.shells[i];
   }
   DR.push({k:p.y-drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y):0),pl:1});
   DR.sort(function(a,b){return a.k-b.k;});
-  var crouchP=keys['ControlLeft']||keys['ControlRight'];
+  var crouchP=crouchHeld();
   // His run #3, v1.01: "character not rendering". He was moving and shooting
   // with no operator on screen, which is the signature of an entity EARLIER in
   // the y-sort throwing mid-draw and killing everything after it in the list,
@@ -22532,7 +22533,7 @@ function safeSet(){
 // of those three have no key at all: they are automatic. A key list alone would
 // have left him hunting, so the panel states the keyless rules as well.
 var LEGEND=[
-  ['MOVE',[['WASD','move'],['SHIFT','sprint'],['CTRL','crouch, near silent'],['SPACE','dodge roll']]],
+  ['MOVE',[['WASD','move'],['SHIFT','sprint'],['CTRL / C','crouch, near silent'],['SPACE','dodge roll']]],
   ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','steady aim'],['R','reload'],['X','swap weapon']]],
   ['GEAR',[['1-9','select hotbar slot'],['FIRE','use selected slot'],['TAB','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],
 ['WORLD',[['E','search / call for extraction'],['M','map'],['H','cycle this list'],['P','pause']]],
@@ -22543,7 +22544,7 @@ var LEGEND=[
 // that is a rule rather than a binding lives in the full list behind H.
 var LEGEND_MINI=[
   ['WASD','move'],['SHIFT','sprint'],
-  ['CTRL','crouch'],['SPACE','roll'],
+  ['CTRL / C','crouch'],['SPACE','roll'],
   ['LMB','fire'],['RMB','aim'],
   ['R','reload'],['X','swap gun'],
   ['1-9','hotbar'],['TAB','backpack'],
@@ -26184,7 +26185,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.91: a downed pillager takes more than one Scav Pistol round to finish. He went down with one point of health left, so any hit at all ended him. He has forty now, three pistol rounds or two of anything heavier, and he still bleeds out on his own clock.',
+  now:'v9.92: C crouches. CTRL still does, and C does the same thing now instead of flipping an autoloot switch that has done nothing since the backpack became unlimited. The pause screen and both legends say CTRL / C.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
