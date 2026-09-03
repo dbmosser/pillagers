@@ -38,3 +38,27 @@ Same URL; friends just refresh.
 https://app.netlify.com/drop  ->  drag the `tools/publish` folder in  ->
 instant URL (free account to keep it). itch's secret link + game page fits
 "share with friends" better.
+
+## Page text for the alpha (paste into the itch page description)
+
+PILLAGERS, alpha. Ascend, pillage, extract.
+
+This is an alpha: things will break. When something does, the game writes
+it into your run report and tells you so. On your first visit the game asks
+whether your run reports may be sent to the developer; YES means each report
+goes out by itself as a raid ends, and you never have to do anything. If you
+say no, the report lands in your Downloads folder as dark_raiders_runN.txt
+every second raid, and you can send it by hand.
+
+Play in fullscreen (the title screen has a button). 1080p or bigger looks
+best; a laptop screen works.
+
+Controls: WASD move, mouse aim, LMB fire, RMB aim down sights, E interact,
+R reload, F heal or revive, Q and G throw, TAB backpack, M map, SHIFT sprint
+on and off, CTRL or C crouch on and off, SPACE dodge roll, P or ESC pause.
+
+Your operator lives in this browser. Clearing browser data erases it.
+Settings has a Back up your progress button that saves it to a file.
+
+Known: some rooms have a sliver of floor behind furniture you cannot reach.
+That is cosmetic. Tell us about anything else.

@@ -40024,6 +40024,57 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.42 - THE PILLAGER BOARD AND THE CONDITIONS PANEL FOLLOW THE HAND
+
+The STILL OPEN line: **"the raiders board runs ahead of the cursor: a 100
+pixel drag moves the CURRENT PILLAGERS board 113, its own 1.15 zoom, because
+the offset is applied inside the panel and then scaled. The conditions panel
+moves only 13 of 40 horizontally because it is anchored to the right edge and
+clamped against it."** Dragging panels is one of the first things a friend
+will try.
+
+### What it was
+
+A drag is recorded in screen pixels, which v9.83 wrote down when it fixed the
+legend. The board and the conditions panel both added the drag to their
+position INSIDE their zoomed space, where a unit is worth the panel's zoom in
+screen pixels, so the board moved 1.15 times the hand and the panel 1.05
+times. The clamps that keep them on screen were in the same wrong space: the
+board's right bound used the screen width as if it were unzoomed, and the
+panel's left bound of 4 was a screen position off the left edge at any zoom
+above one. The 13 of 40 in the line is not a fault: the panel starts 16
+pixels from the right edge and the clamp holds it 4 from the edge, so 12
+inside is all the room there is, which came out as 13 on screen for the same
+zoom reason.
+
+### Now
+
+Both panels divide the drag by their own zoom before adding it, and their
+bounds are the screen edges brought into the same space. The board's scale is
+computed before the clamps because the clamps need it; nothing else about it
+moved. A 100 pixel drag moves each of them 100.
+
+### Measured
+
+The check deploys, draws, records each panel's screen rectangle, writes a
+drag of 100 pixels onto the profile as the mouse would, draws again and
+requires the board and the panel to have moved 100 sideways and 80 or 60
+down, within a pixel; drags each 9,000 pixels off its far edge and requires
+its handle held on the screen, which is the v9.12 rule (a tall board may hang
+below the bottom edge with its bar in reach); and as the control drags the vitals block, which was
+already right, and requires 100 for 100. On v10.41 the board moved 115 (the audit line said 113, measured at a
+different user zoom), which is the finding. The profile's panel offsets are put back afterwards.
+
+The full corpus on this build failed one check and it was mine: the v10.38
+card check asked the card to sit within two builds of the game, which is not
+the rule (the card moves only when its list changes, and the v9.19 gate
+allows fifteen). It tripped here three builds after the card moved, with
+nothing new to say. It asks the game's own rule now.
+
+Not verified: the legend and the gear stack, which v9.83 and v8.08 measured
+and which this build does not touch; and a resized panel (the corner grip)
+dragged at a user zoom other than one, where the same division applies by
+construction but was not driven.
 ## v10.41 - HIS WORDS, FIRST BATCH
 
 He asked, 2026-09-03 about 17:15: **"give me all the text that appears in

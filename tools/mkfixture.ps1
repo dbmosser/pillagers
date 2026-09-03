@@ -5221,6 +5221,54 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.42',what:'the pillager board and the conditions panel move as far as the hand that drags them, and stay on the screen',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!(window.__hudBox&&window.__deploy&&window.__frame)) return 'SKIP: this fixture cannot read the HUD boxes';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(); var keep=P2.hud?JSON.parse(JSON.stringify(P2.hud)):null;
+     P2.hud={};
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     g.ents.length=0; g.player.hp=100000; g.player.maxhp=100000;
+     // The board needs a roster to draw at all.
+     if(!g.roster||!g.roster.length) g.roster=[{name:'PROBE_4242',val:0,ref:null,out:false,crew:null}];
+     function rect(k){ for(var f=0;f<2;f++) __frame(0.016); var b=__hudBox()[k]; return b?{x:b.x,y:b.y,w:b.w,h:b.h}:null; }
+     function moved(k,dx,dy){
+       P2.hud[k]={}; var a=rect(k); if(!a) return null;
+       P2.hud[k]={dx:dx,dy:dy}; var b=rect(k); if(!b) return null;
+       P2.hud[k]={};
+       return {dx:Math.round(b.x-a.x), dy:Math.round(b.y-a.y), a:a, b:b};
+     }
+     try{
+       // THE FINDING. On v10.41 a 100 pixel drag moved the board 113.
+       var r=moved('raiders',100,0);
+       if(!r) return 'SKIP: the pillager board did not draw';
+       if(Math.abs(r.dx-100)>1) return 'a 100 pixel drag moved the pillager board '+r.dx+' pixels';
+       var r2=moved('raiders',0,80);
+       if(r2&&Math.abs(r2.dy-80)>1) bad.push('an 80 pixel drag down moved the pillager board '+r2.dy);
+       // THE CONDITIONS PANEL, which is anchored at the right edge: drag it left and down.
+       var c=moved('cond',-100,0);
+       if(!c) bad.push('the conditions panel did not draw');
+       else if(Math.abs(c.dx+100)>1) bad.push('a 100 pixel drag left moved the conditions panel '+c.dx);
+       var c2=moved('cond',0,60);
+       if(c2&&Math.abs(c2.dy-60)>1) bad.push('a 60 pixel drag down moved the conditions panel '+c2.dy);
+       // AND THEY STAY ON THE SCREEN: a drag off the edge is held at the edge.
+       P2.hud.raiders={dx:9000,dy:9000}; var far=rect('raiders'); P2.hud.raiders={};
+       // v9.12's rule: the HANDLE stays on screen, not the whole box; a tall
+       // board may hang below the bottom edge with its bar still in reach.
+       if(far&&(far.x+far.w>W+2||far.y>H-8||far.y<-2)) bad.push('the pillager board can be dragged off the screen: right '+Math.round(far.x+far.w)+' top '+Math.round(far.y)+' of '+W+'x'+H);
+       P2.hud.cond={dx:-9000,dy:9000}; var farc=rect('cond'); P2.hud.cond={};
+       if(farc&&(farc.x<-2||farc.y>H-8||farc.y<-2)) bad.push('the conditions panel can be dragged off the screen: left '+Math.round(farc.x)+' top '+Math.round(farc.y));
+       // CONTROL: the vitals block, which was right already, still moves 100 for 100.
+       var bd=moved('body',100,0);
+       if(!bd) bad.push('control: the vitals block did not draw');
+       else if(Math.abs(bd.dx-100)>1) bad.push('control: the vitals block moved '+bd.dx+' for a 100 pixel drag');
+     } finally {
+       P2.hud=keep||{};
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.41',what:'his words, first batch, read back off the screens: the pause box, the downed line, the abandon button, the Depot and Wirt',
    run:function(){
      var bad=[];
@@ -5439,7 +5487,9 @@ window.__REGRESS=[
      var vNow=parseFloat(String(wn.build||'0').replace(/[^0-9.]/g,''))||0;
      var vCard=parseFloat(String(wn.ver||'0').replace(/[^0-9.]/g,''))||0;
      // THE FINDING. On v10.37 the card stood at v10.22, fifteen builds behind.
-     if(vNow-vCard>0.02) return 'the card is at v'+wn.ver+' against a build at v'+wn.build+', so a friend reads news that is '+Math.round((vNow-vCard)*100)+' builds old';
+     // v10.42: the card moves only when the list changes (v2.77), so the rule
+     // is the v9.19 gate, fifteen builds, not two; two tripped on nothing.
+     if(vNow-vCard>0.15) return 'the card is at v'+wn.ver+' against a build at v'+wn.build+', so a friend reads news that is '+Math.round((vNow-vCard)*100)+' builds old';
      var L=wn.lines||[];
      if(L.length<10) bad.push('the card has only '+L.length+' lines');
      if(!/ALPHA/.test(L[0]||'')) bad.push('the first line does not say it is an alpha: "'+String(L[0]).slice(0,60)+'"');
