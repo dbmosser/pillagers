@@ -40024,6 +40024,87 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## 2026-09-03, A TICK THAT FOUND NOTHING, AND ONE FIX THAT WAS MINE
+
+No game change. Three candidate defects investigated, none of them real, and one
+of my own making found and reverted before it shipped. Recorded in full because
+the next person to look at these will otherwise look again.
+
+### HIS REPORT: TOO MANY FOOTSTEPS WHEN SPRINTING. DOES NOT REPRODUCE.
+Measured on the floor with the real footstep code running:
+
+    walking      2.2 sounds a second
+    sprinting    3.2
+    crouched     1.6
+    holding shift for ten seconds     2.5 average, because stamina cuts it short
+
+The sprint interval is the same rate the game already uses for a machine chasing
+you, so it is internally consistent. I also tested the one mechanism that could
+produce a flood: the timer is clamped when you stop, so every restart fires a
+step immediately, and a player who stops and starts constantly might get bursts.
+Tapping movement gives FEWER steps than holding it, not more, because the free
+step on restart costs less than the time spent stopped. And the stutter he
+reported before this, sprint flicking on and off as stamina refilled, was fixed
+at v8.73.
+
+### THE HARNESS COULD NOT SEE A SINGLE SOUND
+Answering that at all needed a fixture fix. tools/mkfixture.ps1 replaces
+tickPlayerSteps with an empty function and stubs blip to a no-op, so no check has
+ever been able to observe a footstep, and nothing in the corpus could count any
+sound the game makes. I spent several probes staring at a silence that was mine.
+
+The stub now records what it was asked to play, and __blipCount reads it back.
+__setSteps(__stepsReal) was already there and undocumented.
+
+### THE ONE I NEARLY SHIPPED, AND IT WAS WRONG
+I built v9.86 on the belief that the beacon under-promises: it says "about 3
+machines are coming to this ring" and I had measured six arriving. The fix made
+the promise count the ship's hold as well as the inbound wait, and every setting
+then agreed to the machine: 8 and 8, 6 and 6, 4 and 4.
+
+The full corpus failed it. A v9.34 check, which drives the REAL loop rather than
+ticking the siege by hand, said the call promised 14 and 7 arrived.
+
+It was right and I was wrong. Traced on the real loop: the siege spawns THREE
+machines, all of them during the 25 second beacon, and it STOPS the moment the
+ship lands. Spawned sits at 3 from twenty seconds to sixty while the hold runs.
+My probe had driven __extract.tick by hand with the beacon reset and the hold
+never engaging, so it kept a siege running for eighty seconds that the game ends
+after twenty five. I measured an artefact and then corrected the game to match it.
+
+Reverted. The promise of 3 was correct all along. It also means v9.85's arrival
+figures, 6 and 14 and so on, describe that same artefact rather than a real raid;
+what v9.85 CHANGED is still right, because the interval it scales is read by both
+the promise and the spawner and the v9.34 pairing check stayed green, but the
+absolute numbers in that entry should not be quoted as what a raid delivers.
+
+### TWO MORE THAT LOOKED REAL AND WERE NOT
+The ship's hold appeared frozen at 29 seconds for forty seconds. It is not: the
+ship waits while you are standing on the pad, and away from the ring it counts
+down 25, 19, 13, 6, 0 and clears. That is deliberate.
+
+The beacon timer runs to minus thirty while the ship holds, and three markers
+print Math.ceil(beaconT) with no floor at zero. Checked by reading every string
+the frame actually draws: no negative countdown reaches the screen, because those
+markers are not drawn once the ship is holding.
+
+### A CHECK I WROTE AND THREW AWAY
+I wrote a check to pin the three footstep cadences, since nothing had ever been
+able to see them. It failed against itself: run five times it passed, failed,
+passed, passed, failed. Three causes found and fixed in turn, and each one is a
+harness lesson: stamina left empty by the previous run, so v8.73's exhaustion lock
+made the second sprint a walk; the key object held across runs, which the game
+replaces on a screen change, so clearing shift wrote to a dead object; and the
+player walking into whatever was in front of him, so a blocked frame is not a
+step. Even pinned to one spot with fresh keys and a full bar it still wobbled
+between 1.5 and 3.5 a second. A flaky check is worse than no check, because it
+teaches me to ignore failures, so it is not in the corpus.
+
+Not verified: what makes that cadence measurement wobble. Three causes are fixed
+and a fourth is still in there. Until it is found, the footstep rates above are
+single measurements rather than something the corpus will defend, and his report
+is answered by them rather than closed by a check.
+
 ## v9.85 - HEAVY EXTRACTION HEAT WAS WORTH ONE MACHINE, OR NONE
 
 v9.84 ended with three settings rows verified only as far as the number arriving

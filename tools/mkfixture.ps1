@@ -915,7 +915,17 @@ window.__isFixture=1;
 // on a gain of zero, because a later build could add a new node that misses the bus.
 try{ sfx=function(t,x,y){ try{ if(typeof noiseMark==='function') noiseMark(t,x,y); }catch(_ns){} }; }catch(e){}
 var _realBlip=null;
-try{ _realBlip=blip; blip=function(){}; }catch(e){}
+try{ _realBlip=blip; blip=function(t){
+  try{
+    if(!window.__BLIPS) window.__BLIPS={};
+    window.__BLIPS[t]=(window.__BLIPS[t]||0)+1;
+  }catch(_bl){}
+}; }catch(e){}
+window.__blipCount=function(reset){
+  var b=window.__BLIPS||{};
+  if(reset) window.__BLIPS={};
+  return b;
+};
 // v8.55: lets a probe watch which sound a call site actually asks for. The step
 // chooser calls blip through this binding, so without a setter its output was
 // unobservable and any test of it passed by default.
