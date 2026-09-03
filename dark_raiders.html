@@ -1261,7 +1261,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.43';
+var VER='10.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22714,8 +22714,23 @@ var _slp=w2s(p.x,66,p.y);
       if(P.hud&&P.hud.legend){ P.hud.legend.dx=_legDX; P.hud.legend.dy=_legDY; }
     }
     ctx.save();
-    ctx.translate(_legDX,_legShift+_legDY);   // bottom on the target, plus his drag
-    hudZoomIn('legend',0,_legTarget);    // then grow upward from there
+    if(G.legendOn===2){
+      // v10.44, his answer 25: THE FULL LIST IS CENTRED, AND IT FITS. The corner
+      // zoom below is right for the compact panel in the bottom left; the full
+      // list centres itself on W, and a zoom about the left edge threw that
+      // centre to W*z/2, off the right of a 4K screen, while its height ran
+      // off the top. Scaled about the bottom centre instead, capped so the
+      // whole list is on screen at any size.
+      var _fz=hudRes()*hudUserZ('legend');
+      var _fRows=0, _fLEG=(PAD&&PAD.on)?LEGEND_PAD:LEGEND;
+      for(var _fi=0;_fi<_fLEG.length;_fi++) _fRows+=1+_fLEG[_fi][1].length;
+      var _fBox=Math.max(_fRows*LH(12),GEARRULES.length*LH(11)+SOUNDKEY.length*LH(10)+LH(30))+LH(26);
+      _fz=Math.min(_fz,Math.max(0.5,(H-LH(12))/(_fBox+LH(96))));
+      ctx.translate(W/2,H); ctx.scale(_fz,_fz); ctx.translate(-W/2,-H);
+    } else {
+      ctx.translate(_legDX,_legShift+_legDY);   // bottom on the target, plus his drag
+      hudZoomIn('legend',0,_legTarget);    // then grow upward from there
+    }
     drawLegend();
     ctx.restore();
     if(HUDBOX.legend){
@@ -26633,7 +26648,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.43: the message line grows with the monitor. On a 4K screen it was nineteen pixels tall while every panel around it had doubled; it scales with them now.',
+  now:'v10.44: the full controls list is on the screen. Press H twice and the whole list is centred and fits, at any monitor size; on a 4K screen it used to be drawn off the right edge entirely, and at 1080p its rule cards sat under the conditions panel.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
