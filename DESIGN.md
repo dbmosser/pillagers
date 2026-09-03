@@ -40024,6 +40024,58 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.95 - THE WHEEL: ZOOM, CTRL-WHEEL HUD SIZE, AND MENUS THAT SCROLL
+
+His notes, 2026-09-03: **"during a raid, mouse wheel should zoom, but ctrl and
+mouse wheel should change the hud size, just like the - and = keys do"**, and
+**"when a mouse wheel is used inside a scrollable menu, it should scroll up and
+down, NOT modify the menu size"**, then **"inside the scrollable portion,
+rather"**, with a screenshot of the HIRE tab and its scrollbar.
+
+### What the wheel did
+
+The canvas wheel zoomed the world whatever was held. The document wheel sized
+the menus, and its v6.64 rule, let a scrollable box under the pointer scroll,
+had been switched off inside the Undercroft at v9.67 so the floor could size
+its text. That also switched it off inside every station panel down there,
+which is exactly the HIRE grid in his screenshot: the wheel over the list grew
+the panel instead of scrolling it.
+
+### What it does
+
+The step that Minus and Equal perform is one function now, hudSizeStep, and
+the canvas wheel calls it with ctrl held: one notch, one step, up or down, and
+the world does not zoom. Without ctrl the wheel zooms as before. The document
+listener keeps the v9.67 floor behaviour but lets the wheel scroll whenever the
+pointer is over a scrollable box, Undercroft or not. The floor has no scrollable
+box under the pointer, so it still sizes; the station panels stop swallowing
+the wheel.
+
+### Measured
+
+The check dispatches real wheel events. On the raid canvas with ctrl, the HUD
+size moves exactly one step up and the world zoom does not move; a second
+notch steps it back. The control is the plain wheel, which must still zoom and
+must not touch the HUD size. In the Undercroft it fills Wirt's log until the
+list overflows, wheels over a row and requires the menu zoom unchanged and the
+event not swallowed; then it wheels on the floor with nothing scrollable under
+the pointer and requires the menu zoom to move, which is the v9.67 promise kept.
+
+### The v9.67 check learned the new order
+
+v9.67 was his earlier note, "spinning mouse wheel in undercroft should increase
+or decrease text size", and its check spun the wheel over the biggest scrolling
+list in every station panel and required the text to grow. His note today says
+the opposite for exactly that spot, so the check now requires the wheel over
+the list to scroll and not resize, and the wheel over the panel's own heading,
+which scrolls nothing, to resize as before. Both of his notes hold at once,
+and on the v9.94 control the updated check fails where it should.
+
+Not verified: a trackpad, which reports ctrl-wheel as a pinch and may fire many
+small notches, each of which is now a whole HUD step. Not verified: the raid's
+own scrollable panels, if any exist in the HTML overlays, since the canvas
+handler runs before the document one and takes the event.
+
 ## v9.94 - WIRT HAS TWO COUNTERS
 
 His notes, 2026-09-03, five in a row on Wirt the Gambler's screen: **"$2500 a

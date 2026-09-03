@@ -5216,6 +5216,70 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.95',what:'in a raid the wheel zooms and ctrl-wheel sizes the HUD; inside a scrolling menu the wheel scrolls',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, no wheel can be aimed';
+     if(typeof UISCALES==='undefined'||typeof uiScale!=='function'||typeof zoomTarget!=='function') return 'SKIP: this build has no HUD size steps';
+     function wheel(el,dy,ctrl){
+       var ev=new WheelEvent('wheel',{deltaY:dy,deltaMode:0,bubbles:true,cancelable:true,ctrlKey:!!ctrl});
+       el.dispatchEvent(ev); return ev;
+     }
+     function idxOf(v){ for(var i=0;i<UISCALES.length;i++) if(Math.abs(UISCALES[i]-v)<0.001) return i; return -1; }
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(); var keepScale=P2.uiScale, keepMZ=P2.menuZoom;
+     // Start from the middle of the table so a step either way is possible.
+     P2.uiScale=UISCALES[Math.floor(UISCALES.length/2)]; P2.menuZoom=1;
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     function done(v){ P2.uiScale=keepScale; P2.menuZoom=keepMZ; try{ applyMenuZoom(); }catch(_e){} return v; }
+     // ONE: ctrl-wheel up in a raid is one HUD step up, and the world does not zoom.
+     var i0=idxOf(uiScale()), z0=zoomTarget();
+     wheel(cv,-100,true);
+     var i1=idxOf(uiScale()), z1=zoomTarget();
+     if(i1!==i0+1) bad.push('ctrl-wheel up moved the HUD size from step '+i0+' to '+i1+', not one step up');
+     if(Math.abs(z1-z0)>1e-6) bad.push('ctrl-wheel also zoomed the world, '+z0.toFixed(3)+' to '+z1.toFixed(3));
+     // and one step back down.
+     wheel(cv,100,true);
+     if(idxOf(uiScale())!==i0) bad.push('ctrl-wheel down did not step the HUD back');
+     // CONTROL: the plain wheel still zooms and leaves the HUD alone.
+     var zb=zoomTarget(), ib=idxOf(uiScale());
+     wheel(cv,-100,false);
+     if(!(zoomTarget()>zb)) bad.push('control: the plain wheel no longer zooms in');
+     if(idxOf(uiScale())!==ib) bad.push('control: the plain wheel changed the HUD size');
+     // TWO: the Undercroft. Wirt's list made scrollable, the wheel over it must
+     // scroll, not size the menus. The floor beside it must still size them.
+     var shut=['stagemodal','sectormodal','outcome','title','pausebox'], was={};
+     for(var si=0;si<shut.length;si++){ var se=document.getElementById(shut[si]); was[shut[si]]=!!(se&&se.classList.contains('on')); if(se) se.classList.remove('on'); }
+     var hub=document.getElementById('hub'), hubWas=!!(hub&&hub.classList.contains('on'));
+     function restore(v){
+       for(var q=0;q<shut.length;q++){ var e2=document.getElementById(shut[q]); if(!e2) continue; if(was[shut[q]]) e2.classList.add('on'); else e2.classList.remove('on'); }
+       if(hub){ if(hubWas) hub.classList.add('on'); else hub.classList.remove('on'); }
+       var gm2=document.getElementById('gamblemodal'); if(gm2) gm2.classList.remove('on');
+       return done(v);
+     }
+     __showScreen('hub'); if(hub) hub.classList.add('on');
+     var gm=document.getElementById('gamblemodal'), list=document.getElementById('gamblelist');
+     if(!gm||!list||typeof renderGamble!=='function') return restore(bad.length?bad.join('; '):'SKIP: no Wirt list to scroll');
+     P2.credits=50000; P2.gambleLog=[]; for(var k=0;k<40;k++) P2.gambleLog.push('scrap');
+     gm.classList.add('on');
+     try{ renderGamble(); }catch(e1){ return restore('renderGamble threw: '+e1); }
+     if(!(list.scrollHeight-list.clientHeight>2)) return restore(bad.length?bad.join('; '):'SKIP: the list did not overflow, so there is nothing to scroll');
+     var row=list.firstElementChild||list;
+     var mz0=(__P().menuZoom||1);
+     var ev1=wheel(row,100,false);
+     var mz1=(__P().menuZoom||1);
+     if(Math.abs(mz1-mz0)>1e-6) bad.push('the wheel over the scrolling list resized the menus, '+mz0+' to '+mz1);
+     if(ev1.defaultPrevented) bad.push('the wheel over the scrolling list was swallowed, so it cannot scroll');
+     // CONTROL: on the floor, with no scrollable box under the pointer, the wheel
+     // still sizes the menus.
+     gm.classList.remove('on');
+     var floor=document.getElementById('hub')||document.body;
+     var mz2=(__P().menuZoom||1);
+     wheel(floor,100,false);
+     var mz3=(__P().menuZoom||1);
+     if(Math.abs(mz3-mz2)<1e-6) bad.push('control: the wheel on the Undercroft floor no longer sizes the menus');
+     return restore(bad.length?bad.join('; '):null); }},
   {v:'9.94',what:'Wirt has two counters, per roll and a five minute Limited Time Offer that says three things',
    run:function(){
      var bad=[];
@@ -7165,7 +7229,7 @@ window.__REGRESS=[
      if(call.seconds>1.6)
        bad.push('the call runs for '+call.seconds.toFixed(2)+' seconds, which is long enough to sit on top of the sound after it');
      return bad.length?bad.join('; '):null; }},
-  {v:'9.67',what:'the wheel resizes the text at a station, and shift still scrolls the list',
+  {v:'9.67',what:'the wheel resizes the text at a station heading, scrolls its list, and shift still scrolls',
    run:function(){
      var bad=[];
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing can be pointed at';
@@ -7179,7 +7243,26 @@ window.__REGRESS=[
        var ev=new WheelEvent('wheel',{deltaY:-120,bubbles:true,cancelable:true,
          clientX:x,clientY:y,shiftKey:!!shift});
        el.dispatchEvent(ev);
-       return {before:before, after:__P().menuZoom, changed:(before!==__P().menuZoom)};
+       return {before:before, after:__P().menuZoom, changed:(before!==__P().menuZoom), prevented:ev.defaultPrevented};
+     }
+     // v9.95: the spot in the same panel that scrolls nothing, its heading.
+     function headingOf(scroller){
+       var box=scroller.closest?scroller.closest('.panel, .modal, .screen'):null;
+       if(!box) return null;
+       var hs=box.querySelectorAll('.toprow, .lohead, h2, h3');
+       for(var i=0;i<hs.length;i++){
+         var r=hs[i].getBoundingClientRect();
+         if(r.width<20||r.height<8) continue;
+         var el=hs[i], inScroll=false;
+         while(el&&el!==document.body){
+           var cs=getComputedStyle(el);
+           if(el.scrollHeight-el.clientHeight>2&&(cs.overflowY==='auto'||cs.overflowY==='scroll')){ inScroll=true; break; }
+           el=el.parentElement;
+         }
+         if(inScroll) continue;
+         return {el:hs[i],x:Math.round(r.x+r.width/2),y:Math.round(r.y+r.height/2),id:hs[i].id||hs[i].className||hs[i].tagName};
+       }
+       return null;
      }
      // The biggest scrolling box inside the open panel, which is what his pointer
      // is over when he is reading anything at a station.
@@ -7205,7 +7288,7 @@ window.__REGRESS=[
      var floor=spin(document.body,960,540,false);
      if(!floor.changed)
        bad.push('control: the wheel no longer resizes the text on the Undercroft floor either, where it always worked');
-     var tested=0, dead=[], shiftBroke=[];
+     var tested=0, dead=[], shiftBroke=[], grew=[], ate=[];
      var sts=__station();
      for(var si=0;si<sts.length;si++){
        try{ __station(sts[si].id); }catch(e){ continue; }
@@ -7213,12 +7296,14 @@ window.__REGRESS=[
        var b=biggestScroller();
        if(!b) continue;
        tested++;
-       // THE FINDING. Measured on v9.66: the floor took the scale 1.30 to 1.38 and
-       // every one of the five station panels went 1.38 to 1.38, because a rule
-       // from v6.64 hands the wheel to anything scrollable and every station panel
-       // is built around a scrolling list.
+       // THE FINDING, as of v9.95 and his note of 2026-09-03: over the LIST the
+       // wheel scrolls it and does not resize; over the panel HEADING, which
+       // scrolls nothing, it resizes, which is what v9.67 was for.
        var plain=spin(b.el,b.x,b.y,false);
-       if(!plain.changed) dead.push(sts[si].id+' over '+b.id);
+       if(plain.changed) grew.push(sts[si].id+' over '+b.id);
+       if(plain.prevented) ate.push(sts[si].id+' over '+b.id);
+       var hd=headingOf(b.el);
+       if(hd){ var hp=spin(hd.el,hd.x,hd.y,false); if(!hp.changed) dead.push(sts[si].id+' over '+hd.id); }
        // AND SHIFT MUST STILL SCROLL, which means it must NOT resize. Taking the
        // wheel away from the list without leaving him a way to scroll it would be
        // a worse bug than the one being fixed.
@@ -7226,8 +7311,13 @@ window.__REGRESS=[
        if(sh.changed) shiftBroke.push(sts[si].id);
      }
      if(!tested) return 'SKIP: no station opened a panel with a scrolling list in it';
+     if(grew.length)
+       bad.push('the wheel over the scrolling list resized the text at '+grew.length+' of '+tested+
+                ' stations, which his note forbids: '+grew.join(', '));
+     if(ate.length)
+       bad.push('the wheel over the scrolling list was swallowed at '+ate.join(', ')+', so the list cannot scroll');
      if(dead.length)
-       bad.push('the wheel does nothing to the text size at '+dead.length+' of '+tested+
+       bad.push('the wheel does nothing to the text size at the panel heading at '+dead.length+' of '+tested+
                 ' stations: '+dead.join(', '));
      if(shiftBroke.length)
        bad.push('shift and the wheel resized the text at '+shiftBroke.join(', ')+
