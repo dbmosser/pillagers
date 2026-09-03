@@ -3863,16 +3863,30 @@ window.__REGRESS=[
        // this was written against and had a wall across it once v9.30 changed the
        // spawn counts, which silently turned this check into a skip.
        (function(){
-         var R=400, ok=false;
-         for(var a=0;a<24&&!ok;a++){
-           var th=a/24*Math.PI*2, px=tgt.x+Math.cos(th)*R, py=tgt.y+Math.sin(th)*R;
-           if(window.__los&&!__los.clear(px,py,tgt.x,tgt.y)) continue;
-           p.x=px; p.y=py; ok=true;
+         // Inside his sight, with margin. He cannot shoot back at something he
+         // cannot see, and reading that as the game failing is how v9.42 spent
+         // three builds being wrong.
+         var _rmax=Math.max(150,Math.min(400,(tgt.rng||300)-45));
+         var RS=[110, 150, 90, Math.round(_rmax*0.58), _rmax], ok=false;
+         for(var ri=0;ri<RS.length&&!ok;ri++){
+           var R=RS[ri];
+           for(var a=0;a<24&&!ok;a++){
+             var th=a/24*Math.PI*2, px=tgt.x+Math.cos(th)*R, py=tgt.y+Math.sin(th)*R;
+             if(window.__los&&!__los.clear(px,py,tgt.x,tgt.y)) continue;
+             // v9.78: AND SOMEWHERE TO STAND. A clear line from inside a wall is
+             // still a clear line, and rounds fired from inside geometry go
+             // nowhere, which read as the game failing to answer being shot at.
+             if(window.__nav&&__nav.free&&!__nav.free(px,py,16)) continue;
+             p.x=px; p.y=py; ok=true;
+           }
          }
-         if(!ok){ p.x=tgt.x+R; p.y=tgt.y; }
+         if(!ok){ p.x=tgt.x+400; p.y=tgt.y; }
        })();
        var M=__mouse(); M.init=true;
        var K=__keysRef(); for(var k in K) delete K[k];
+       // Walk down the ladder until he actually answers. A stand he cannot shoot
+       // from says nothing about whether he fights back, and the whole ladder is
+       // inside his own sight so nothing here is unfair to him.
        var landed=0, hpPrev=tgt.hp, hitAt=-1, hostileAt=-1, backAt=-1, stopAt=-1;
        for(var f=0;f<520;f++){
          var s=__proj.w2s(tgt.x,tgt.y); M.x=s.x; M.y=s.y;

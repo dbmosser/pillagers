@@ -40024,6 +40024,91 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.78 - A FINDING I DID NOT SHIP, AND A CHECK THAT WAS ASKING THE IMPOSSIBLE
+
+**Nothing in the game changed this build.** I found the cause of the last four
+demolished buildings, wrote the fix, measured it, and then it broke something
+else that I could not explain in the time I had, so I took it back out. What
+follows is everything the next build needs.
+
+### THE FINDING: THE COMPOUND WALLS ARE DRAWN THROUGH THE BUILDINGS
+
+Four buildings on THE COLD MILE are sealed at every resolution, so they are not
+the v9.77 grid fault, and they are still sealed AFTER their interiors are
+destroyed, so the demolition does nothing for them either.
+
+Building 14 stands at 3380,2450 and is 300 by 220. Two landmark walls cross it:
+
+    3013,2502   550 x 18   east to west, straight through its inside
+    3478,2520    18 x 134  north to south, straight through its inside
+
+That leaves a sealed pocket of 72 by 124 in a building whose own shell has a
+perfectly good 64 unit door. Building 21 loses 204 by 124, nearly its whole
+floor. Six buildings sit inside that walled yard and the yard walls are laid over
+the top of them.
+
+**The repair pass could never have helped.** It sees the sealed floor. Its only
+remedy is deleting the building's own partitions, and it removes walls carrying a
+building id, which a landmark wall does not have. So it tears out an interior,
+achieves nothing, and the room stays shut. That is the whole of the "the repair
+does not repair" finding, with a cause at last.
+
+### THE FIX, WHICH WORKS, AND WHY IT IS NOT IN THE BUILD
+
+Cutting each landmark wall against the INSIDE of any building it crosses, so it
+stops at the building and picks up on the far side:
+
+    THE COLD MILE    interiors demolished  7 -> 0    sealed 14,15,20,21 -> none
+    COLD STORAGE     interiors demolished  1 -> 0    sealed 17          -> none
+
+Entity counts unchanged, and the yard walls survive cut rather than deleted, 62
+pieces becoming 64. Every building on both maps becomes enterable and not one
+holds floor nothing can reach.
+
+**Then the crew-call check went red, deterministically, four runs out of four.**
+Staged the same way on both builds: a pillager looting 300 units from the player,
+his crew 780 out. With the cut off he spots the player, shouts, and two men come.
+With it on **he never reacts at all**: he sees the player and keeps looting,
+walking from 300 units to 140 without ever raising the alarm.
+
+The cause, as far as I got: cutting the wall makes a container reachable that was
+not before, and the check scripts him into the looting state, so on the new map
+he has somewhere to go and goes there instead of spotting. That may be a stage
+that has stopped being valid, or it may be that a busy pillager should still look
+up when a man walks into view, which is exactly what v9.25 and v9.28 exist to
+protect. I do not know which, and finding out is the next build rather than a
+guess at the end of this one.
+
+So the map change is reverted. The finding, the fix and the blocker are all
+written down here.
+
+### WHAT DID SHIP: A CHECK THAT HAD BEEN ASKING A MAN THE IMPOSSIBLE
+
+v9.25 proves a pillager who was not fighting you fights back the moment you shoot
+him. It stands the player on a clear bearing and fires one aimed round. Three
+things were wrong with where it stood him, found one at a time:
+
+1. **Nowhere to stand.** It checked the line was clear and never that the ground
+   was open. A clear line from inside a wall is still a clear line, and rounds
+   fired from inside geometry go nowhere.
+2. **Beyond his eyes.** With that fixed the round landed, he turned hostile, and
+   he never fired. The man it picks carries a Compact SMG and sees 259 units. The
+   check stood the player at 400.
+3. **Beyond his gun.** Inside his sight was still not enough. Driven frame by
+   frame: hostile, chasing, line of sight held, sat at 212 units and never fired,
+   because on that map he carries a **Riot Scattergun**. Sight was never the
+   binding constraint. Reach was.
+
+The stand ladder starts at 110 units now, which is inside every weapon's reach
+and every pillager's sight at once. Verified green on v9.77 as well, so it still
+catches what it was written for.
+
+Not verified: whether the spotter being distracted by a reachable container is a
+stage that has gone stale or a real hole in how a looting pillager notices you. I
+have the reproduction either way, and it is the first thing the next build should
+settle, because the answer decides whether the landmark fix can go in as it
+stands.
+
 ## v9.77 - CONDEMNED BY A GRID TOO COARSE TO SEE THEIR DOORS
 
 The tail of the demolition thread, and it turns out to be the oldest fault in it.
