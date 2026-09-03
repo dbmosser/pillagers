@@ -40024,6 +40024,120 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.79 - EVERY BUILDING ON BOTH MAPS IS ENTERABLE AGAIN
+
+The finding from v9.78, shipped, once the thing that blocked it turned out to be
+what I suspected least.
+
+### THE FIX
+
+Landmark walls are drawn straight through buildings. Building 14 on THE COLD MILE
+is 300 by 220 at 3380,2450 and two of them cross its inside:
+
+    3013,2502   550 x 18   east to west, through the floor
+    3478,2520    18 x 134  north to south, through the floor
+
+That leaves a sealed pocket of 72 by 124 in a house whose own shell has a good 64
+unit door. Building 21 loses 204 by 124, nearly its whole floor. Six houses stand
+inside that walled yard and the yard is laid over the top of them.
+
+The repair pass could never have helped. It sees the sealed floor and its only
+remedy is deleting the building's own partitions, and it removes walls carrying a
+building id, which a landmark wall does not have. It guts the house and the room
+stays shut.
+
+Each landmark wall is now cut against the INSIDE of every building it crosses, so
+a wall running along somebody's outer wall is untouched and one crossing the floor
+stops at the building and picks up on the far side.
+
+    THE COLD MILE   interiors demolished  7 -> 0    sealed 14,15,20,21 -> none
+    COLD STORAGE    interiors demolished  1 -> 0    sealed 17          -> none
+
+Entity counts unchanged at 374 and 85. The yard walls survive cut rather than
+deleted, 62 pieces becoming 64, because cutting one wall makes two.
+
+**That closes the demolition thread across six builds.** v9.72 stopped one
+blocked doorway costing a whole floor plan, v9.73 stopped a locked strongroom
+counting as a fault, v9.77 stopped a doorway being judged on a grid too coarse to
+see it, and this stops the yards being drawn through the houses.
+
+### THE BLOCKER, AND I HAD IT BACKWARDS
+
+Last build I reverted this because the crew-call check failed deterministically:
+with the cut on, the staged spotter saw the player and kept looting. I guessed a
+container had become reachable and distracted him.
+
+**That was wrong.** Driven this time: a looting pillager, with a real container
+goal 3,663 units away, spots the player at 225 units and gives chase inside the
+first 45 frames. Being busy has nothing to do with it.
+
+The actual cause, read off the frame trail: **the spotter's sight is 187 and the
+stage puts him 300 units out.** With the cut off, the man who happens to be first
+in the crew list sees 302 and spots immediately. With it on, a different man is
+first, he sees 187, and he spends most of the window walking in before he ever
+notices. It is the same fault as v9.42 and v9.25, for the third time this week:
+**a stage that stands a man beyond his own eyes and calls the silence a bug.**
+
+The fix moves nothing. The spotter's post goes to the crew member with the best
+eyes, and every distance stays exactly where it was. I tried moving him closer
+first, which pushed the crew outside his shout, and then moving the crew too,
+which scattered them and manufactured the very spread the next check measures.
+
+### AND ONE ASSERTION RESTATED
+
+v9.29 asks that a called crew arrives from different sides rather than in single
+file. It was written as "stations must add at least 40 degrees over stations
+off", which is right wherever stations-off is single file: on the stage it was
+built against, off measured 14 degrees.
+
+On this map off measures 109 and on measures 148. Both are crews arriving from
+different sides, and the check was calling 148 degrees single file because the
+gap was 39 rather than 40.
+
+It now asserts the thing he asked for directly, that the furthest man is at least
+40 degrees off the spotter, and keeps the comparison with every tooth it had, but
+only where the control actually shows single file. On the original stage it
+behaves exactly as before.
+
+
+
+### TWO EARLIER LAYERS NOW HAVE NOTHING TO DO, WHICH IS THE POINT
+
+v9.72's targeted partition peel and v9.73's locked-room exemption both exist to
+soften a pass that condemns buildings. With the cause fixed, that pass condemns
+nothing on either map, so both checks read zero against zero and reported that
+nothing was rescued.
+
+That is the fix working, not the layers failing. Both checks now pin the yard-wall
+cut OFF, which recreates the world their layer exists for. They remain the net
+under any map that does seal a building, and pinning the other dial is the same
+discipline every measurement in this project already follows.
+
+### AND ONE GUARD THAT WAS ASKING THE WRONG QUESTION
+
+v9.77's check ended with "the world did not move", written as: entity counts must
+match with its dial on and off. That was fair when its dial was the only thing
+between that build and the one before it.
+
+It is not fair any more. This build puts a second dial into the same pass, both
+genuinely change which walls survive, and asking two different configurations to
+agree on a spawn count is asking the wrong question. It read 374 against 372 and
+called that the fix moving the world.
+
+The guard it was reaching for is the seed fingerprint, so it says that outright
+now: the shipping configuration spawns the 374 this whole project measures
+against. That is a stronger statement than the two arms agreeing, and it is the
+one the verify chain makes as well.
+
+THE COSTS, and the container one is not small: THE COLD MILE places 483 pieces of outdoor cover where it placed 484, and containers move a good deal more. THE COLD MILE 572 to 552, twenty fewer, and COLD STORAGE 157 to 165, eight more. Both are placed by asking whether a spot is clear of walls, and this build both opens up sealed rooms, which is where COLD STORAGE gains, and leaves the yard walls in more pieces. Entity counts are unchanged at 374 and 85, so the seeded stream itself did not move. Fingerprint is now ents 85 and 374, containers 165 and 552.
+
+Not verified: how a cut yard wall looks. It should read as a wall meeting a
+building, which is ordinary, but a gap in the wrong place would read as a hole in
+a fence, and I have measured this rather than looked at it. Also not verified:
+whether any of these yards was meant to be a sealed block. Buildings and yards
+are both authored, so a wall through a house may have been somebody's intent, and
+if one of them was he should say so.
+
 ## v9.78 - A FINDING I DID NOT SHIP, AND A CHECK THAT WAS ASKING THE IMPOSSIBLE
 
 **Nothing in the game changed this build.** I found the cause of the last four

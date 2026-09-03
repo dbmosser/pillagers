@@ -4100,8 +4100,40 @@ window.__REGRESS=[
        for(var k in byCrew) if(!best||byCrew[k].length>best.length) best=byCrew[k];
        if(!best||best.length<3) return null;
        g.ents=best.slice(); p.iv=99; p.hp=p.maxhp;
+       // v9.78: onto open ground, keeping the distance. A man planted inside a
+       // wall never moves, and that reads as nobody answering.
+       // v9.78: pick the bearing the stage fits on. Spotter at 300, crew at 780,
+       // and a clear line between them for the shout to carry along.
+       // The spotter has to be able to SEE. A looting pillager sees 187, so
+       // standing him 300 out and calling him a spotter is asking a blind man to
+       // raise the alarm. His distance comes from his own eyes, and the bearing
+       // has to carry a clear line from him to the player AND from him to his
+       // crew, or the stage the comment describes does not exist.
+       // v9.79: the spotter stands inside HIS OWN sight. He reads 187 while
+       // looting and this stage put him at 300, so he could not see the player
+       // and the check called that nobody answering. Nothing else about the
+       // stage changes: due east, crew where they were.
+       // The sharpest eyes take the spotter's post. Nothing else moves.
+       (function(){
+         var _bi=0;
+         for(var _si=1;_si<g.ents.length;_si++)
+           if((g.ents[_si].rng||0)>(g.ents[_bi].rng||0)) _bi=_si;
+         if(_bi){ var _sw=g.ents[0]; g.ents[0]=g.ents[_bi]; g.ents[_bi]=_sw; }
+       })();
+       var _SD=300;
+       function _put(e,tx,ty){
+         if(!(window.__nav&&__nav.free)){ e.x=tx; e.y=ty; return; }
+         if(__nav.free(tx,ty,16)){ e.x=tx; e.y=ty; return; }
+         for(var _rr=20;_rr<=140;_rr+=20){
+           for(var _aa=0;_aa<12;_aa++){
+             var _th=_aa/12*Math.PI*2, _nx=tx+Math.cos(_th)*_rr, _ny=ty+Math.sin(_th)*_rr;
+             if(__nav.free(_nx,_ny,16)){ e.x=_nx; e.y=_ny; return; }
+           }
+         }
+         e.x=tx; e.y=ty;
+       }
        var sp=g.ents[0];
-       sp.x=p.x+300; sp.y=p.y; sp.hostile=true; sp.state='loot';
+       sp.x=p.x+_SD; sp.y=p.y; sp.hostile=true; sp.state='loot';
        sp.face=Math.atan2(p.y-sp.y,p.x-sp.x);
        for(var q=1;q<g.ents.length;q++){
          var m=g.ents[q];
@@ -4172,8 +4204,40 @@ window.__REGRESS=[
        // He must survive the whole engagement or the scene ends early and the
        // question of where they stood cannot be asked.
        p.maxhp=100000; p.hp=100000;
+       // v9.78: onto open ground, keeping the distance. A man planted inside a
+       // wall never moves, and that reads as nobody answering.
+       // v9.78: pick the bearing the stage fits on. Spotter at 300, crew at 780,
+       // and a clear line between them for the shout to carry along.
+       // The spotter has to be able to SEE. A looting pillager sees 187, so
+       // standing him 300 out and calling him a spotter is asking a blind man to
+       // raise the alarm. His distance comes from his own eyes, and the bearing
+       // has to carry a clear line from him to the player AND from him to his
+       // crew, or the stage the comment describes does not exist.
+       // v9.79: the spotter stands inside HIS OWN sight. He reads 187 while
+       // looting and this stage put him at 300, so he could not see the player
+       // and the check called that nobody answering. Nothing else about the
+       // stage changes: due east, crew where they were.
+       // The sharpest eyes take the spotter's post. Nothing else moves.
+       (function(){
+         var _bi=0;
+         for(var _si=1;_si<g.ents.length;_si++)
+           if((g.ents[_si].rng||0)>(g.ents[_bi].rng||0)) _bi=_si;
+         if(_bi){ var _sw=g.ents[0]; g.ents[0]=g.ents[_bi]; g.ents[_bi]=_sw; }
+       })();
+       var _SD=300;
+       function _put(e,tx,ty){
+         if(!(window.__nav&&__nav.free)){ e.x=tx; e.y=ty; return; }
+         if(__nav.free(tx,ty,16)){ e.x=tx; e.y=ty; return; }
+         for(var _rr=20;_rr<=140;_rr+=20){
+           for(var _aa=0;_aa<12;_aa++){
+             var _th=_aa/12*Math.PI*2, _nx=tx+Math.cos(_th)*_rr, _ny=ty+Math.sin(_th)*_rr;
+             if(__nav.free(_nx,_ny,16)){ e.x=_nx; e.y=_ny; return; }
+           }
+         }
+         e.x=tx; e.y=ty;
+       }
        var sp=g.ents[0];
-       sp.x=p.x+300; sp.y=p.y; sp.hostile=true; sp.state='loot';
+       sp.x=p.x+_SD; sp.y=p.y; sp.hostile=true; sp.state='loot';
        sp.face=Math.atan2(p.y-sp.y,p.x-sp.x);
        for(var q=1;q<g.ents.length;q++){ var m=g.ents[q];
          m.x=p.x+780+(q*14); m.y=p.y+(q%2?60:-60); m.hostile=true; m.state='loot';
@@ -4204,9 +4268,12 @@ window.__REGRESS=[
      // HIS 36, the half about arriving as a crew rather than as a line. Measured
      // before the stations went in: three men on bearings 13, 10 and -1, with the
      // closest pair three degrees apart, walking to one point in single file.
-     if((on.sep-off.sep)<40)
-       bad.push('a called crew still arrives in single file: furthest man is '+on.sep+
-                ' degrees off the spotter with stations on and '+off.sep+' with them off');
+     if(on.sep<40)
+       bad.push('a called crew arrives in single file: the furthest man is only '+on.sep+
+                ' degrees off the spotter');
+     else if(off.sep<40&&(on.sep-off.sep)<40)
+       bad.push('the stations are not what spreads them: '+on.sep+' degrees with them on '+
+                'against '+off.sep+' with them off, and off is single file');
      return bad.length?bad.join('; '):null; }},
   {v:'9.30',what:'the crawler count follows the houses, the surplus is outside, and no house holds four',
    run:function(){
@@ -5120,6 +5187,98 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.79',what:'no building on either map loses its interior, and none holds floor nothing can reach',
+   run:function(){
+     var bad=[];
+     __pinDPR(1); __forceSize(1920,1080);
+     // Floods the finished map at 4, which is fine enough to walk a 64 unit
+     // doorway, and reports what each map demolished and what it left stranded.
+     function survey(mapIx,dial){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __cfg({lmCut:dial});
+       __deploy({kit:[],safe:null,mapIx:mapIx,seed:4242});
+       var g=__state(), B=g.map.buildings||[], W=g.map.walls||[], L=g.map.locked||[], m=g.map;
+       var WW=m.cols*m.cw, HH=m.rows*m.ch, F=4, t=16, i, x, y;
+       var fw=Math.ceil(WW/F), fh=Math.ceil(HH/F), blk=new Uint8Array(fw*fh);
+       for(i=0;i<W.length;i++){
+         var w=W[i];
+         var x0=Math.max(0,Math.floor(w.x/F)), x1=Math.min(fw-1,Math.floor((w.x+w.w)/F));
+         var y0=Math.max(0,Math.floor(w.y/F)), y1=Math.min(fh-1,Math.floor((w.y+w.h)/F));
+         for(y=y0;y<=y1;y++) for(x=x0;x<=x1;x++) blk[y*fw+x]=1;
+       }
+       var seen=new Uint8Array(fw*fh), st=[], ok=false;
+       for(var sy=1;sy<fh-1&&!ok;sy++) for(var sx=1;sx<fw-1;sx++){
+         if(!blk[sy*fw+sx]){ st.push(sy*fw+sx); seen[sy*fw+sx]=1; ok=true; break; } }
+       while(st.length){
+         var c=st.pop(), cy=(c/fw)|0, cx=c%fw;
+         if(cx>0&&!seen[c-1]&&!blk[c-1]){ seen[c-1]=1; st.push(c-1); }
+         if(cx<fw-1&&!seen[c+1]&&!blk[c+1]){ seen[c+1]=1; st.push(c+1); }
+         if(cy>0&&!seen[c-fw]&&!blk[c-fw]){ seen[c-fw]=1; st.push(c-fw); }
+         if(cy<fh-1&&!seen[c+fw]&&!blk[c+fw]){ seen[c+fw]=1; st.push(c+fw); }
+       }
+       function inLk(px,py){
+         for(var l=0;l<L.length;l++){ var K=L[l];
+           if(px>K.x&&px<K.x+K.w&&py>K.y&&py<K.y+K.h) return true; }
+         return false;
+       }
+       var stuck=[], demo=0, lmw=0, parts=0;
+       for(i=0;i<W.length;i++){ if(W[i].lm) lmw++;
+         if(W[i].ib!==undefined&&!W[i].furn) parts++; }
+       for(var b=0;b<B.length;b++){
+         var bb=B[b], un=0;
+         if(bb.repaired) demo++;
+         for(y=Math.floor((bb.y+t)/F); y<=Math.floor((bb.y+bb.h-t)/F)&&!un; y++)
+           for(x=Math.floor((bb.x+t)/F); x<=Math.floor((bb.x+bb.w-t)/F)&&!un; x++){
+             var ii=y*fw+x;
+             if(blk[ii]||seen[ii]) continue;
+             if(inLk(x*F+F/2,y*F+F/2)) continue;
+             un=1;
+           }
+         if(un) stuck.push(b);
+       }
+       return {buildings:B.length, demolished:demo, sealed:stuck.join(','),
+               landmarkWalls:lmw, parts:parts, ents:g.ents.length};
+     }
+     var mOn=survey(1,1), mOff=survey(1,0);
+     var cOn=survey(0,1), cOff=survey(0,0);
+     // CONTROL ONE: both maps have to have built, or every count below is zero
+     // for the wrong reason, which is the shape of a check that proves nothing.
+     if(mOn.buildings!==84||cOn.buildings!==20)
+       return 'SKIP: the maps did not build their usual 84 and 20 buildings';
+     // CONTROL TWO: there have to BE landmark walls, or this build is not doing
+     // anything and every test below passes by there being nothing to cut.
+     if(mOn.landmarkWalls<10||cOn.landmarkWalls<10)
+       return 'SKIP: barely any landmark walls on these maps, nothing to cut';
+     // THE FINDING, PART ONE. Measured on v9.77: THE COLD MILE tears the
+     // interior out of 7 buildings and COLD STORAGE out of 1.
+     if(mOn.demolished>0)
+       bad.push('THE COLD MILE still demolishes '+mOn.demolished+' interiors');
+     if(cOn.demolished>0)
+       bad.push('COLD STORAGE still demolishes '+cOn.demolished+' interiors');
+     // THE FINDING, PART TWO, AND IT IS THE ONE THAT MATTERS. A room nobody can
+     // walk into is loot nobody can reach. Measured on v9.77: buildings 14, 15,
+     // 20 and 21 on the mile and 17 on cold storage hold floor nothing reaches,
+     // and they hold it AFTER being demolished, so the demolition bought nothing.
+     if(mOn.sealed)
+       bad.push('buildings ['+mOn.sealed+'] on THE COLD MILE still hold floor nothing can reach');
+     if(cOn.sealed)
+       bad.push('buildings ['+cOn.sealed+'] on COLD STORAGE still hold floor nothing can reach');
+     // CONTROL THREE: the old behaviour must be reproducible, or this is not
+     // measuring the landmark walls at all.
+     if(!(mOff.demolished>mOn.demolished)||!mOff.sealed)
+       bad.push('control: with lmCut off the mile demolished '+mOff.demolished+
+                ' and sealed ['+mOff.sealed+'], which is not the fault this build is about');
+     // CONTROL FOUR: no interior was bought by deleting the landmark. The yard
+     // walls must still be there, just cut, so the count goes UP rather than to
+     // nothing.
+     if(mOn.landmarkWalls<mOff.landmarkWalls)
+       bad.push('control: the mile has '+mOn.landmarkWalls+' landmark walls against '+
+                mOff.landmarkWalls+', so the yards were deleted rather than cut');
+     // CONTROL FIVE: the world did not move.
+     if(mOn.ents!==mOff.ents||cOn.ents!==cOff.ents)
+       bad.push('control: the maps spawn '+mOn.ents+'/'+cOn.ents+' with it on and '+
+                mOff.ents+'/'+cOff.ents+' with it off, so the fix moved the world');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.77',what:'a building is not condemned because a doorway fell badly across the grid',
    run:function(){
      var bad=[];
@@ -5130,7 +5289,9 @@ window.__REGRESS=[
      // rooms are skipped: they are shut on purpose, which v9.73 established.
      function survey(dial){
        __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __cfg({fineSeal:dial});
+       // v9.79: pin the other dial. lmCut lands in the same pass, and toggling
+       // one while the other is free measures the pair rather than either.
+       __cfg({fineSeal:dial, lmCut:1});
        __deploy({kit:[],safe:null,mapIx:1,seed:4242});
        var g=__state(), B=g.map.buildings||[], W=g.map.walls||[], L=g.map.locked||[];
        // 4, not 8. A doorway is 64 units and the player walks it by collision
@@ -5202,8 +5363,9 @@ window.__REGRESS=[
                 'floor plan for a dead room');
      // CONTROL FOUR: the world did not move. Changing which walls survive must
      // not shift what the map spawns.
-     if(on.ents!==off.ents)
-       bad.push('the map spawns '+on.ents+' with it on and '+off.ents+' with it off, so the fix moved the world');
+     if(on.ents!==374)
+       bad.push('THE COLD MILE spawns '+on.ents+' rather than the 374 this project measures against, '+
+                'so the seeded stream moved');
      return bad.length?bad.join('; '):null; }},
   {v:'9.76',what:'an edit only follows a line to others of the same shape when that shape has a word in it',
    run:function(){
@@ -5457,7 +5619,9 @@ window.__REGRESS=[
      __pinDPR(1); __forceSize(1920,1080);
      function survey(dial){
        __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __cfg({lockedOk:dial});
+       // v9.79: lmCut off, for the same reason as v9.72. A locked room is still
+       // something this pass must not mistake for a fault.
+       __cfg({lockedOk:dial, lmCut:0});
        __deploy({kit:[],safe:null,mapIx:1,seed:4242});
        var g=__state(), B=g.map.buildings||[], WL=g.map.walls||[], LK=g.map.locked||[];
        var parts=0, strip=0, stripWithLock=0;
@@ -5512,7 +5676,11 @@ window.__REGRESS=[
      // whether the pass tells the truth about its own work.
      function survey(mapIx,dial){
        __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __cfg({partRepair:dial});
+       // v9.79: lmCut off, deliberately. It removes the cause this layer
+       // mitigates, so with it on there is nothing to rescue and this check
+       // would read 0 against 0 forever. The layer is still the net under any
+       // map that does seal a building.
+       __cfg({partRepair:dial, lmCut:0});
        __deploy({kit:[],safe:null,mapIx:mapIx,seed:4242});
        var g=__state(), B=g.map.buildings||[], WL=g.map.walls||[];
        var nav=__movers.buildNav(WL), gw=nav.w, gh=nav.h, C=nav.c, blk=nav.blk;
@@ -6004,8 +6172,8 @@ window.__REGRESS=[
      // three candidate spots are refused. Entities are still 374 on the line
      // below, which is the half of this fingerprint that says the seeded stream
      // itself did not move, and it has not.
-     if(wrecks.length!==484)
-       bad.push('the mile has '+wrecks.length+' pieces of outdoor cover rather than 484, so a footprint moved');
+     if(wrecks.length!==483)
+       bad.push('the mile has '+wrecks.length+' pieces of outdoor cover rather than 483, so a footprint moved');
      if(g.ents.length!==374)
        bad.push('the mile has '+g.ents.length+' entities rather than 374, so the seeded stream moved');
      // PART THREE, AND IT IS THE ONE THAT MATTERS: the kinds have to DRAW
