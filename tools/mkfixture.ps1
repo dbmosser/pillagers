@@ -5221,6 +5221,34 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.12',what:'the numbered loadout saves are gone from the ascent check, and the cosmetic slots still open',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!window.__renderStage) return 'SKIP: this fixture cannot render the ascent check';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(); P2._avSlot=null;
+     var st=document.getElementById('stagemodal'); if(!st) return 'SKIP: no ascent check in the page';
+     try{ __renderStage(); }catch(e1){ return 'the ascent check threw: '+e1; }
+     st.classList.add('on');
+     // THE FINDING. On v10.11 the picker under the figure drew three numbered
+     // rows with SAVE buttons whenever no slot was selected.
+     var pk=document.getElementById('stageavatarpicker');
+     if(!pk) return (function(){ st.classList.remove('on'); return 'SKIP: the ascent check has no picker under the figure'; })();
+     if(pk.querySelector('[data-save],[data-load]')) bad.push('the loadout save rows are still under the operator on the ascent check');
+     if(/LOADOUTS/.test(pk.textContent)) bad.push('the picker still says LOADOUTS');
+     if(typeof loadoutHTML==='function'||typeof wireLoadouts==='function'||typeof loadoutApply==='function') bad.push('the loadout functions are still in the game');
+     // CONTROL: a cosmetic slot still opens its racks in that picker.
+     var slot=st.querySelector('#stageavatar .avslot[data-av="hat"]');
+     if(!slot) bad.push('control: no headgear slot on the figure');
+     else {
+       slot.click();
+       if(!pk.querySelector('.costile')) bad.push('control: clicking the headgear slot drew no tiles in the picker');
+       P2._avSlot=null; try{ __renderStage(); }catch(e2){}
+     }
+     var sp=document.getElementById('stageplan'); if(sp) sp.innerHTML='';
+     st.classList.remove('on');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.11',what:'the stash tabs are his six in his order, with armour plates under CONSUMABLES',
    run:function(){
      var bad=[];

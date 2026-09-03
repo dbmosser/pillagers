@@ -40024,6 +40024,30 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.12 - THE LOADOUT SAVES ARE GONE
+
+His answer 5, 2026-09-03, to the numbered loadout SAVE slots: **"REMOVE IT,
+NOT NEEDED."**
+
+The three numbered saves lived under the operator figure, on the stash screen
+until v9.98 took that column, and on the ascent check still: five functions,
+one profile field, and a picker branch that drew them whenever no cosmetic
+slot was selected. All of it goes, the functions, the rows and the branch.
+The picker under the figure on the ascent check shows its one-line hint and
+nothing else until a slot is clicked. P.loadouts stays in old profiles as a
+dead field, which is harmless and needs no migration.
+
+### Measured
+
+The check renders the ascent check on a clean profile and requires no save
+or load rows under the figure, no LOADOUTS heading, and none of the five
+functions left in the game; the control clicks the headgear slot and
+requires the racks to draw in that picker as before. On v10.11 the three rows
+and the functions are there, which is the finding.
+
+Not verified: an old profile with saves in P.loadouts, which nothing reads
+now; the field is inert and the profile loader does not touch it.
+
 ## v10.11 - THE STASH TABS ARE HIS SIX, IN HIS ORDER
 
 His answer 2, 2026-09-03, to whether the category tabs stay: **"KEEP THEM,
