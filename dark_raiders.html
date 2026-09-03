@@ -1251,7 +1251,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.29';
+var VER='10.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25267,7 +25267,7 @@ acts:{KeyE:['go up',function(){
     // so it is there on localhost and on a local file, and absent from anything
     // served from itch or Netlify. One line to reverse if he wants friends to
     // have it - though a cheat box also makes their run reports worthless to mine.
-    (DEV_LOCAL
+    ((DEV_LOCAL&&P.devBox)   // v10.30, his note: behind a Settings switch that unlocks after a first extraction
       ? {id:'cheat',x:78,y:390,r:42,label:'DEV CHEAT BOX',sub:'',c:'#ff8ab0',labelBelow:1,   // v10.23: its name under it, clear of the Depot's
          acts:{KeyE:['open the box',function(){ renderCheat(); openModal('cheatmodal'); }]}}
       : null),
@@ -26472,7 +26472,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.29: a new character is offered a WELCOME PACK the first time down: a green gun and a blue one, heals, plates and grenades, into the stash, to play with before the first climb.',
+  now:'v10.30: the dev cheat box is off the floor unless a Settings switch puts it there, and the switch is locked until you have extracted once.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30637,8 +30637,21 @@ function renderSettings(){
     '<span class="hint">BKSP</span></div>'+
     // v10.28, his note: the console is a window option here, not a secret key.
     '<div class="row"><div style="flex:1"><b>Tuning console</b><div class="hint">Every dial the rows above set, and the rest of them, as live sliders. A slider you move is yours until you click its row again. SHIFT and the backquote key open it too.</div></div>'+
-    '<button id="set_tune" style="padding:6px 12px">OPEN</button></div>';
+    '<button id="set_tune" style="padding:6px 12px">OPEN</button></div>'+
+    // v10.30, his note: the cheat box is a switch here, locked until one extraction,
+    // and only on a local build; anything served from itch never shows the row.
+    (DEV_LOCAL?('<div class="row"><div style="flex:1"><b>Dev cheat box</b><div class="hint">'+
+      (((P.ext||0)>0)?'Puts the DEV CHEAT BOX on the Undercroft floor. Off, nobody finds it.':'Locked until you have extracted once.')+'</div></div>'+
+      '<button id="set_devbox" style="padding:6px 12px;min-width:92px'+(P.devBox?';color:var(--amber)':'')+'"'+(((P.ext||0)>0)?'':' disabled')+'>'+
+      (((P.ext||0)>0)?(P.devBox?'ON':'OFF'):'LOCKED')+'</button></div>'):'');
   document.getElementById('set_tune').onclick=function(){ toggleTune(true); };
+  (function(){ var _db=document.getElementById('set_devbox'); if(!_db) return;
+    _db.onclick=function(){
+      if((P.ext||0)<1) return;
+      P.devBox=!P.devBox; saveProfile();
+      if(HB) HB=buildHub();   // the floor is rebuilt with or without the box
+      renderSettings();
+    }; })();
   document.getElementById('set_text').onclick=function(){
     var _uc=uiScale(),_ni=-1;
     for(var _ui=0;_ui<UISCALES.length;_ui++){ if(UISCALES[_ui]>_uc+0.001){ _ni=_ui; break; } }

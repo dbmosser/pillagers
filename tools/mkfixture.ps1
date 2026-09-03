@@ -5221,6 +5221,41 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.30',what:'the dev cheat box stands on the floor only when a Settings switch says so, and the switch is locked until one extraction',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(!(window.__hubEnter&&window.__station)) return 'SKIP: this build cannot be driven into the Undercroft';
+     if(typeof DEV_LOCAL==='undefined'||!DEV_LOCAL) return 'SKIP: not a local build, the box is never here';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(); var keep={ext:P2.ext,devBox:P2.devBox,primerSeen:P2.primerSeen,welcomed:P2.welcomed};
+     P2.ext=0; delete P2.devBox; P2.primerSeen=1; P2.welcomed=1;
+     function boxOnFloor(){ HB=null; __hubEnter(); var r=null; try{ r=__station('cheat'); }catch(e){ return false; } var cm=document.getElementById('cheatmodal'); var on=!!(r&&!r.err&&cm&&cm.classList.contains('on')); if(cm) cm.classList.remove('on'); return on; }
+     // THE FINDING. On v10.29 the box stood on every local floor with no switch anywhere.
+     if(boxOnFloor()) return 'a fresh character finds the dev cheat box on the floor';
+     var sm=document.getElementById('settingsmodal'); sm.classList.add('on'); renderSettings();
+     var b=document.getElementById('set_devbox');
+     if(!b) bad.push('Settings has no row for the dev cheat box');
+     else {
+       if(!b.disabled||b.textContent.trim()!=='LOCKED') bad.push('with no extraction the switch reads "'+b.textContent.trim()+'" and is '+(b.disabled?'locked':'live'));
+       b.click(); if(P2.devBox) bad.push('a locked switch turned the box on');
+       // One extraction unlocks it.
+       P2.ext=1; renderSettings(); b=document.getElementById('set_devbox');
+       if(!b||b.disabled||b.textContent.trim()!=='OFF') bad.push('after one extraction the switch reads "'+(b?b.textContent.trim():'none')+'"');
+       if(b){ b.click(); b=document.getElementById('set_devbox'); }
+       if(!P2.devBox) bad.push('the switch did not turn the box on');
+       if(b&&b.textContent.trim()!=='ON') bad.push('the switch turned on but reads "'+b.textContent.trim()+'"');
+       sm.classList.remove('on');
+       if(!boxOnFloor()) bad.push('with the switch on, the box is not on the floor');
+       // CONTROL: off again, and it is gone again.
+       sm.classList.add('on'); renderSettings(); b=document.getElementById('set_devbox'); if(b) b.click(); sm.classList.remove('on');
+       if(P2.devBox) bad.push('control: the switch did not turn the box off');
+       if(boxOnFloor()) bad.push('control: with the switch off the box is still on the floor');
+     }
+     sm.classList.remove('on');
+     for(var k in keep){ if(keep[k]===undefined) delete P2[k]; else P2[k]=keep[k]; }
+     HB=null;
+     return bad.length?bad.join('; '):null; }},
   {v:'10.29',what:'a new character is offered the welcome pack once, a green gun, a blue gun, heals, plates and grenades into the stash',
    run:function(){
      var bad=[];
@@ -5438,6 +5473,7 @@ window.__REGRESS=[
   {v:'10.23',what:'no two station names on the Undercroft floor overlap, and every name is on the screen',
    run:function(){
      var bad=[];
+     var _P0=__P(), _keepDev=_P0.devBox; _P0.devBox=1; HB=null;   // v10.30: the box is behind a switch; put it on the floor for this
      if(!__vpAlive()) return 'SKIP: the pane has no layout';
      if(!(window.__hubEnter&&window.__textTrace&&window.__hubFrame)) return 'SKIP: this build cannot trace the floor';
      __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -5458,6 +5494,7 @@ window.__REGRESS=[
      var md=document.getElementById('appearmodal');
      if(!rr||rr.err||!(md&&md.classList.contains('on'))) bad.push('control: the Depot did not open');
      var cl=document.getElementById('closeappear'); if(cl) cl.click();
+     if(_keepDev===undefined) delete _P0.devBox; else _P0.devBox=_keepDev; HB=null;   // v10.30
      return bad.length?bad.join('; '):null; }},
   {v:'10.22',what:'the menu size never goes below 1.0, on the wheel, the Settings steps or the saved profile, and the wheel says what it did',
    run:function(){

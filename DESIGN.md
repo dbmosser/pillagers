@@ -40024,6 +40024,42 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.30 - THE CHEAT BOX IS BEHIND A SWITCH THAT UNLOCKS AFTER ONE EXTRACTION
+
+His note, 2026-09-03 about 17:40: **"Make it so the dev cheat box has to be
+enabled in settings in order to use the terminal/access it, so maybe players
+don't find it right away.  also make it where you have to successfully
+extract from atleast one game before you can turn on the setting that
+enables the dev cheat box."**
+
+### What it was
+
+On any local build the DEV CHEAT BOX stood on the Undercroft floor, the
+nearest station to where a new player lands, with no switch anywhere. The
+host gate from v8.40 kept it off anything served from itch, and stays.
+
+### Now
+
+- The box stands on the floor only when the Settings switch DEV CHEAT BOX is
+  on. Off, nobody finds it. Flipping the switch rebuilds the floor with or
+  without it.
+- The switch is LOCKED, greyed and inert, until the profile has extracted
+  once; the row says so. After the first extraction it reads OFF and ON.
+- On a build that is not local the row is not there at all.
+
+### Measured
+
+The check makes a fresh local character and requires no box on the floor
+and a LOCKED, disabled switch that does nothing when clicked; sets one
+extraction and requires the switch to read OFF, turn ON on a click, and put
+the box on the floor where the station opens its window; the control is
+turning it off again and the box gone again. On v10.29 a fresh character
+found the box on the floor, which is the finding.
+
+Not verified: his own profile, where the box is now off until he flips the
+switch once; his extraction count is far past one, so the row is live for
+him the moment he opens Settings.
+
 ## v10.29 - THE WELCOME PACK
 
 His note, 2026-09-03 about 17:40: **"when a new character is started, they
