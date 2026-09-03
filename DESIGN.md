@@ -40024,6 +40024,38 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.24 - THE CROWD DRESSES FROM THE RACKS
+
+His note, 2026-09-03 about 17:20: **"Everyone in undercroft has blue eyes"**.
+
+### Measured
+
+The crowd on the Undercroft floor rolled a skin, a hair, a hat and a cut
+from four short lists that predate the racks, and nothing else: no eyes, no
+beard, no face. Every one of them wore the painter's default for all three,
+so the whole floor had the same eyes, and only she had hers. The fixture
+counts no blue iris pixels on a fresh floor at all; what he saw as blue on
+his monitor was the same colour on every face, which is the complaint.
+
+### Now
+
+The crowd dresses from the racks, every rack there is, the way pillagers do
+in the raid since v10.18: eyes, beard and face today, and any rack added
+later joins without another edit, because the roll walks the racks rather
+than a list. The crown stays his. Their looks are handed to the painter
+whole, so what the racks hold is what the floor shows.
+
+### Measured again
+
+The check rolls thirty crowd looks and requires every one to carry eyes, a
+beard and a face from the racks and at least two eye colours among them,
+none wearing the crown; then gives half the floor blue eyes and half green
+and requires both colours drawn; the control is the four old fields still
+rolling. On v10.23 thirty looks had no eyes at all, which is the finding.
+
+Not verified: the six who work the counters keep their fixed looks by
+design, and whether he wants them dressed from the racks too is his call.
+
 ## v10.23 - THE DEPOT AND THE CHEAT BOX NO LONGER SHARE A NAME PLATE
 
 His note, 2026-09-03 about 17:20: **"in the undercroft, 'discount fashion

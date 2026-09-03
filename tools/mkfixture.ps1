@@ -5221,6 +5221,44 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.24',what:'the Undercroft crowd dresses from every rack, eyes, beards and faces included, and the floor draws more than one eye colour',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(typeof hubRollLook!=='function'||typeof COSMETICS==='undefined') return 'SKIP: no crowd or no racks in this build';
+     var kinds={}; COSMETICS.forEach(function(c){ kinds[c.kind]=1; });
+     function valid(id,kind){ var c=cosFind(id); return !!c&&c.kind===kind; }
+     var eyesSeen={}, rolled=[];
+     for(var i=0;i<30;i++) rolled.push(hubRollLook());
+     // THE FINDING. On v10.23 a crowd look had a skin, a hair, a hat and a cut and nothing else.
+     var noEyes=rolled.filter(function(l){ return !l.eyes; }).length;
+     if(noEyes) return noEyes+' of 30 crowd looks have no eyes; everyone wears the painter\'s default';
+     rolled.forEach(function(l,ix){
+       if(!valid(l.eyes,'eyes')) bad.push('look '+ix+' has eyes '+l.eyes+' that are not on the rack');
+       if(kinds.beard&&!valid(l.beard,'beard')) bad.push('look '+ix+' has beard '+l.beard+' that is not on the rack');
+       if(kinds.face&&!valid(l.faceMark,'face')) bad.push('look '+ix+' has face '+l.faceMark+' that is not on the rack');
+       if(!valid(l.hair,'hair')||!valid(l.hat,'hat')||!valid(l.cut,'cut')) bad.push('look '+ix+' hair/hat/cut are not from the racks: '+l.hair+'/'+l.hat+'/'+l.cut);
+       if(l.hat==='crown') bad.push('look '+ix+' wears the crown, which is his');
+       eyesSeen[l.eyes]=1;
+     });
+     if(Object.keys(eyesSeen).length<2) bad.push('thirty crowd looks share one eye colour: '+Object.keys(eyesSeen).join(','));
+     if(bad.length>6) bad.length=6;
+     // On the floor: two members given blue and green eyes, and both colours drawn.
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __hubEnter(); var hb=__hub();
+     if(!hb||!hb.crowd||hb.crowd.length<2) bad.push('the floor has no crowd to dress');
+     else {
+       hb.crowd.forEach(function(c,ix){ if(!c.look) return; c.look.hat='none'; c.look.eyes=(ix%2)?'eyeblue':'eyegreen'; c.fade=1; });
+       for(var f=0;f<20;f++) __hubFrame(0.016);
+       var cv=__canvases(); var c2=cv.hub||cv.world; var d=c2.getContext('2d').getImageData(0,0,c2.width,c2.height).data;
+       var blue=0, green=0, B=[74,122,184], Gc=[74,138,90];
+       for(var q=0;q<d.length;q+=4){ if(d[q+3]<40) continue; if(Math.abs(d[q]-B[0])+Math.abs(d[q+1]-B[1])+Math.abs(d[q+2]-B[2])<30) blue++; if(Math.abs(d[q]-Gc[0])+Math.abs(d[q+1]-Gc[1])+Math.abs(d[q+2]-Gc[2])<30) green++; }
+       if(blue<3) bad.push('blue eyes given to half the crowd draw '+blue+' blue pixels on the floor');
+       if(green<3) bad.push('green eyes given to the other half draw '+green+' green pixels');
+     }
+     // CONTROL: the four old fields still roll, and the face index is still a number.
+     var l0=hubRollLook(); if(typeof l0.faceIx!=='number'||!l0.skin) bad.push('control: the old look fields are gone');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.23',what:'no two station names on the Undercroft floor overlap, and every name is on the screen',
    run:function(){
      var bad=[];
