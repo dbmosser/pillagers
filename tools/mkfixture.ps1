@@ -5570,7 +5570,7 @@ window.__REGRESS=[
      var mz3=(__P().menuZoom||1);
      if(Math.abs(mz3-mz2)<1e-6) bad.push('control: the wheel on the Undercroft floor no longer sizes the menus');
      return restore(bad.length?bad.join('; '):null); }},
-  {v:'9.94',what:'Wirt has two counters, per roll and a five minute Limited Time Offer that says three things',
+  {v:'9.94',what:'Wirt has two counters, per roll and a five minute Limited Time Offer that names its item',
    run:function(){
      var bad=[];
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is measured';
@@ -5592,12 +5592,15 @@ window.__REGRESS=[
      if(!lot) bad.push('no offer card');
      else {
        var lines=[].map.call(lot.querySelectorAll('span[style*="display:block"],span[style*="display: block"]'),function(s){ return s.textContent.trim(); });
-       if(lines.length!==3) bad.push('the offer card has '+lines.length+' lines, ['+lines.join(' | ')+'], not three');
+       // v10.03, his answer 38: four lines, the item's name second.
+       if(lines.length!==4) bad.push('the offer card has '+lines.length+' lines, ['+lines.join(' | ')+'], not four');
        else {
          if(lines[0]!=='Limited Time Offer') bad.push('line one reads ['+lines[0]+']');
-         if(!/^Worth \$[\d,]+$/.test(lines[1])) bad.push('line two reads ['+lines[1]+']');
-         if(!/^New item in \d+ minutes?$/.test(lines[2])) bad.push('line three reads ['+lines[2]+']');
-         var m=/New item in (\d+)/.exec(lines[2]); if(m&&+m[1]>5) bad.push('the card promises a new item in '+m[1]+' minutes, more than five');
+         var headName=(ITEMS[(wirtLotKey()||[])[0]]||{}).name||'';
+         if(!headName||lines[1].indexOf(headName)<0) bad.push('line two does not name the item '+headName+', it reads ['+lines[1]+']');
+         if(!/^Worth \$[\d,]+$/.test(lines[2])) bad.push('line three reads ['+lines[2]+']');
+         if(!/^New item in \d+ minutes?$/.test(lines[3])) bad.push('line four reads ['+lines[3]+']');
+         var m=/New item in (\d+)/.exec(lines[3]); if(m&&+m[1]>5) bad.push('the card promises a new item in '+m[1]+' minutes, more than five');
        }
        if((lot.textContent||'').indexOf(HOUR)>=0) bad.push('the card still says on the counter '+HOUR);
      }

@@ -40024,6 +40024,27 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.03 - WIRT NAMES WHAT IS ON THE COUNTER
+
+His answer 38, 2026-09-03, to "should the offer print the item's name as
+well?": **"YES OF COURSE."**
+
+v9.94 took his "thats the only text we need there" to the letter and hid the
+names on the icon's hover title. The card says four things now: Limited Time
+Offer; the item and what comes with it, in the item's colour; what it is
+worth; when the next one comes. The hover title stays for anyone who hovers.
+
+### Measured
+
+The v9.94 check counts four lines now and requires the second to carry the
+lot's headline item by name, with the other three as they were and the
+five-minute promise still on the last. It fails on the v10.02 control, which
+has three lines and no name.
+
+Not verified: a lot with three extras, whose "with" list is the longest line
+on the card; it wraps inside the card's flex column rather than overflowing,
+by the CSS the card already had, but no check measures that wrap.
+
 ## v10.02 - THE BAR PAYS TWO AND A HALF PERCENT, ON RAIDS ONLY
 
 His answers 41 and 42, 2026-09-03: **"make it 2.5% per dose/liquor shot"** and

@@ -1234,7 +1234,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.02';
+var VER='10.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26258,7 +26258,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.02: the bar pays two and a half percent more raid XP per dose, not five, and a sale in the stash pays its plain price again. His numbers.',
+  now:'v10.03: Wirt names what is on the counter again. The Limited Time Offer card says the item and what comes with it, then what it is worth and when the next one comes.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -26884,6 +26884,8 @@ function renderWirtLot(){
   el.innerHTML='<span title="'+escHtml(names.join(', '))+'" style="display:inline-flex">'+iconImgHTML(k,34)+'</span>'+
     '<span style="flex:1;line-height:1.5">'+
       '<span style="color:'+col+';font-weight:700;font-size:16px;display:block">Limited Time Offer</span>'+
+      // v10.03, his answer 38: the name, "of course".
+      '<span style="color:var(--bone);font-weight:700;display:block">'+escHtml(it.name)+(names.length>1?('<span style="color:var(--ash);font-weight:400"> with '+escHtml(names.slice(1).join(', '))+'</span>'):'')+'</span>'+
       '<span style="color:var(--bone);display:block">Worth $'+worth.toLocaleString()+'</span>'+
       '<span style="color:var(--ash);display:block">New item in '+mins+' minute'+(mins===1?'':'s')+'</span>'+
     '</span>'+
