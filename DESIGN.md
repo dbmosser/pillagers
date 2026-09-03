@@ -40024,6 +40024,51 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.91 - A DOWNED PILLAGER TAKES MORE THAN ONE SCAV PISTOL ROUND
+
+His note, the first of six he sent in ten minutes before leaving for the day:
+"when a pillager is downed, it should take more than 1 scav pistol shot to
+eliminate them."
+
+### REPRODUCED
+From the code first: when a pillager goes down the game wrote e.hp=1, and the
+comment beside it said so on purpose, "a second hit while he is down kills
+outright, no second chance, which is what stops this being a free extra health
+bar." Then driven: a pillager put down by the game's own down path, and one
+Scav Pistol round, 19 damage, placed on him and resolved by the real bullet
+loop. He was gone. One round of the lightest gun in the game finished a downed
+man exactly as a Longshot would.
+
+### THE NUMBER
+The Scav Pistol does 19. A downed pillager now has 40: three pistol rounds, 19,
+38, 57, and two of anything heavier. It is a dial, raiderDownHp, so the old
+one-hit finish is one setting away and he can tune it without a build.
+
+The v3.7x worry about a free extra health bar is answered by the clock, which
+did not change: he cannot act while down and he bleeds out on RAIDER_DOWN_T on
+his own. Forty points is a cost to finishing him, not a second life. The
+comment that said the opposite is rewritten to say what the code now does.
+
+### THE CHECK AND ITS TEETH
+It downs a pillager with the game's own path, fires the pistol's 19 through the
+real bullet loop and requires him to still be there and still down after one
+round, then counts rounds to the finish and requires more than one. Two
+controls: with the dial at 1, one round must finish him, which proves the dial
+is what decides it; and a 60 damage round must finish him at 40, so a heavy gun
+did not become a three-round job too.
+
+Run against a fixture built from v9.90 it fails with "one Scav Pistol round
+finished a downed pillager, he went down with 1 health; it took 1 round to
+finish him, which is not more than one". Against this build it returns null.
+
+### NOT VERIFIED
+Whether forty is the right number. He said more than one and did not say how
+many; three pistol rounds is my reading of a pistol that should not finish a
+man but should not need a magazine either. The dial is there. Not verified
+either: what this does to the extract rate. A pillager who takes three rounds
+to finish is a pillager who is picked back up more often, and the bot fights
+machines only, so the sim cannot measure it.
+
 ## v9.90 - ONE WORD FOR THE BACKPACK, AND THE HOTBAR RENAME FINISHED
 
 v9.89 gave the hotbar one name and its own Not verified line said the compact

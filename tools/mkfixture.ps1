@@ -5214,6 +5214,66 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.91',what:'a downed pillager takes more than one Scav Pistol round to finish',
+   run:function(){
+     var bad=[];
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var p=g.player; p.iv=99; p.hp=100000; p.maxhp=100000;
+     // One hostile pillager, nothing else, on open ground beside the player.
+     var R=null;
+     for(var i=0;i<g.ents.length;i++){ var e=g.ents[i]; if(e.kind==='raider'&&!e.merc){ R=e; break; } }
+     if(!R) return 'SKIP: no pillager on this map and seed';
+     g.ents.length=0; g.ents.push(R);
+     var PD=19;                                  // the Scav Pistol, WEAPONS.pistol.dmg
+     function stage(){
+       R.x=p.x+120; R.y=p.y; R.hostile=true; R.downed=0; R.finished=false; R.roll=0;
+       R.hp=1; R.maxhp=R.maxhp||100; R.state='chase'; R.tx=p.x; R.ty=p.y;
+       if(g.ents.indexOf(R)<0) g.ents.push(R);
+       g.bullets.length=0;
+     }
+     // A round fired by the player, placed on the man and resolved by the game's
+     // own bullet loop, so the damage takes the path a real shot takes, weak
+     // points, armour and all. It is the pistol's 19.
+     function shoot(){
+       g.bullets.push({x:R.x-6,y:R.y,vx:1180,vy:0,dmg:PD,life:0.2,player:true,owner:p,tint:'#ffd48a'});
+       for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
+     }
+     function present(){ return g.ents.indexOf(R)>=0; }
+     // Down him with the game's own down path: one round on a man at one health.
+     stage(); shoot();
+     if(!present()) return 'SKIP: the first round removed him outright, so no down happened to test';
+     if(!R.downed) return 'SKIP: the man was not downed by a round at one health, raiderDown may be off';
+     var hpDown=R.hp;
+     // THE FINDING. On v9.90 a downed pillager had e.hp=1, so the very next round
+     // of anything finished him. His note: more than one Scav Pistol shot.
+     shoot();
+     if(!present())
+       bad.push('one Scav Pistol round finished a downed pillager, he went down with '+hpDown+' health');
+     else if(!R.downed)
+       bad.push('the second round changed his state to ['+R.state+'] rather than leaving him down');
+     // How many it actually takes, counting from the down.
+     var rounds=1, guard=0;
+     while(present()&&guard++<12){ shoot(); rounds++; }
+     if(present()) bad.push('twelve pistol rounds did not finish a downed pillager, he is still there at '+Math.round(R.hp)+' health');
+     if(rounds<2) bad.push('it took '+rounds+' round to finish him, which is not more than one');
+     // CONTROL ONE: the dial is live and the old behaviour is one setting away.
+     // If the finding above passed for some other reason, this arm exposes it.
+     __cfg({raiderDownHp:1});
+     stage(); shoot();
+     if(!present()||!R.downed) bad.push('control: could not stage a downed man with the dial at 1');
+     else { shoot(); if(present()) bad.push('control: with raiderDownHp at 1 a single round did not finish him, so the dial is not what decides this'); }
+     __cfg({raiderDownHp:40});
+     // CONTROL TWO: a Longshot does not now need three rounds. Anything heavier
+     // than a pistol must still drop him in two.
+     stage(); shoot();
+     if(present()&&R.downed){
+       g.bullets.push({x:R.x-6,y:R.y,vx:1180,vy:0,dmg:60,life:0.2,player:true,owner:p,tint:'#ffd48a'});
+       for(var f2=0;f2<4;f2++) __loop(performance.now()+f2*16.7);
+       if(present()) bad.push('control: a 60 damage round did not finish a downed man at 40 health');
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'9.90',what:'the backpack has one name on every surface that names it, and the pad legend says hotbar',
    run:function(){
      var bad=[];

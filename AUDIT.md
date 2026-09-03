@@ -210,6 +210,88 @@ STILL OPEN:
 | ~~ESC should pause in the Undercroft~~ | ALREADY BUILT since v8.70, measured at v9.83 with a real Escape keypress on the floor: the pause box opens |
 | ~~The roll graphic is WRONG in the Undercroft~~ | NOT REPRODUCED at v9.83: it draws a disc, fill 0.78 against a circle 0.785, and travels 43 units |
 
+## HIS NOTES, 2026-09-03, three lines before leaving for six or seven hours
+- "when a pillager is downed, it should take more than 1 scav pistol shot to
+  eliminate them." Taken as the next build. Reproduce: a downed pillager, one
+  Scav Pistol round, does he die.
+- "menus and hud in the raid are still wonky, can you give them an overhaul".
+  Broad. Measured first: every HUD panel rect at 1080p, 1440p and 4K, looking for
+  overlaps between panels, panels off the viewport, and drawn text outside its
+  own panel. What is wonky gets fixed by name; nothing gets redesigned blind.
+- "i am going to be gone all day and give very little or no feedback for the
+  next 6-7 hours". No questions, keep shipping, real notes first.
+
+- "crouch should be default bound key to each of ctrl and c" (sent a few minutes
+  after the other two). Taken as its own build after the downed pillager: crouch
+  reads ControlLeft, ControlRight and KeyC, and the legend says so.
+
+- "on pause screen text --- RMB = 'aim down sights'" (a minute later). The pause
+  screen's controls text should read RMB aim down sights; today the full legend
+  says "steady aim" and the compact one says "aim". Its own build after crouch.
+
+- "during a raid, mouse wheel should zoom, but ctrl and mouse wheel should
+  change the hud size, just like the - and = keys do" (two minutes later). The
+  wheel handler at the canvas already zooms the world; with ctrl held it should
+  step the HUD size through UISCALES exactly as Minus and Equal do. Its own build.
+
+- "when a mouse wheel is used inside a scrollable menu, it should scroll up and
+  down, NOT modify the menu size -- like on this page [screenshot: SHOP, CRAFT,
+  AND HIRE, the HIRE tab, a scrollbar beside the grid], it modifies menu size...
+  but it shouldn't if i'm inside the menu." Then: "inside the scrollable portion, rather". Same build as the wheel note above:
+  in a raid the wheel zooms and ctrl-wheel sizes the HUD; inside a scrollable
+  menu the wheel scrolls and never resizes.
+
+- "Wirt screen '$2500 a go' -- change to '$2500 per roll'. 'You do not have to
+  carry it out of here' -- DELETE this sentence, not helpful" (a few minutes
+  later). Two strings on Wirt the Gambler's screen. Its own build.
+
+- "for buyable item -- call it" (sent incomplete, a minute after the Wirt note).
+  Then, completed: "Limited Time Offer -- Worth X. New item in X minutes" -- "thats the only text we need there". Wirt's 10k lot card keeps exactly those three lines and nothing else. Same build as the other Wirt strings.
+
+- "Wirt screen should draw a more clear delineation between the gamble and the
+  Limited Time Offer item" (right after). Same Wirt build: two sections, THE
+  GAMBLE at $2,500 per roll, and LIMITED TIME OFFER with Worth X and New item in
+  N minutes, visibly separated.
+
+- "wirt's Limited Time Offer item should change every 5 minutes" (right after).
+  It changes hourly today, wirtLotHour on 3,600,000 ms. Same Wirt build: the
+  period becomes five minutes and the card says New item in N minutes off it.
+
+- "using Liquor or Blotter should give a small XP boost per stack while the
+  effect is occurring" (2026-09-03, while v9.91 was in its full run). The bar's
+  two doses today do what their tags say and nothing for progress. Taken as its
+  own build after the Wirt screen: while a buzz is up, XP earned is multiplied by
+  a small amount per stacked dose, shown where XP is shown.
+
+- "the stash screen is way too busy -- SCRAP it entirely -- change it so it just
+  has 1. Stash inventory 2. Player backpack 3. Player hotbar 4. Safe Pocket
+  5. Freebie Kit Selection. Get rid of the stuff marked out in white in the
+  image [screenshot of THE STASH at v9.90: the whole YOUR OPERATOR column on the
+  left, cosmetics and the numbered loadout saves, is struck out in white; so is
+  the bottom row of buttons, RETURN TO THE UNDERCROFT, SHOP, CRAFT, ARTEFACTS,
+  SURFACE: DAY, LAYOUT 6/10, SETTINGS, and the armour line above it]. day vs.
+  night selection should move to map selection screen that occurs upon
+  ascension. Cosmetics should move to their own screen and their place in the
+  Undercroft, maybe call it 'Appearance'. Build out the cosmetics system even
+  more. after you've met ALL my current unfulfilled requests, audit, comb code,
+  clean, audit polish, improve, etc" (2026-09-03, right after the XP note).
+  Taken in order after the XP build, as more than one build: (a) the stash
+  screen cut to his five parts, with the operator column, the loadout saves,
+  the button row and the armour line gone from it; (b) SURFACE day or night
+  moved to the map choice on ascension; (c) an Appearance station in the
+  Undercroft holding the cosmetics; (d) more cosmetics. Then the standing idle
+  policy: audit, comb, clean, polish. Open question I will decide myself: how he
+  gets back to the Undercroft and to the freebie kit once the button row is
+  gone (ESC and a single close, most likely, since the kit stays on the screen).
+
+## THE QUEUES ARE EMPTY, 2026-09-03 after v9.90
+The raid audit queue, the full-file audit's named items, and his fifty answers are
+all shipped, decided, superseded, or not reproduced, with one design item left
+that needs his word (an item is in the backpack or the hotbar, never both). A
+six-region adversarial audit of the Undercroft (input, floor, screens, stash,
+shop, ascent) was launched at v9.90 as workflow wf_8f1dab6c-586, two refuters per
+top finding, reading the live file. Its confirmed findings become the queue.
+
 ## HIS NOTE, 2026-09-03, sent mid-tick right after switching the model
 - "music needs more of a dark and low tone -- it sounds too friendly -- game is
   supposed to be post-apocalyptic". Taken as the next build. The harness cannot
@@ -547,6 +629,7 @@ AND THE SECOND HALF OF THE STRETCH:
 | FINGERPRINT: outdoor cover on the mile, 487 to 484 | v9.77 | deliberate and understood. Cover is placed by asking spotFree against the wall list, and this build keeps three more buildings' interior walls, so three candidate spots are refused. ENTITIES ARE STILL 374, which is the half of the fingerprint that says the seeded stream did not move, and building footprints are identical |
 | STILL OPEN, with names now: the demolition achieves nothing for four buildings | OPEN | 14, 15, 20 and 21 on THE COLD MILE hold unreachable floor at every resolution including 4, so they are not the grid bug, and they are STILL sealed after their interiors are destroyed. The v9.72 finding that the repair does not repair, with four names on it |
 | CLOSED AT v9.79: THE COMPOUND WALLS WERE DRAWN THROUGH THE BUILDINGS | v9.79 | building 14 is 300x220 at 3380,2450 and two landmark walls cross its inside, 3013,2502 550x18 and 3478,2520 18x134, leaving a sealed pocket of 72x124 in a house whose shell has a good door. Building 21 loses 204x124. THE REPAIR PASS COULD NEVER HELP: it only removes walls carrying a building id and a landmark wall carries none, so it guts the house and the room stays shut. Landmark walls are now cut against the INSIDE of any building they cross. MILE 7 demolished to 0 and sealed 14,15,20,21 to NONE; COLD STORAGE 1 to 0 and 17 to NONE; entity counts unchanged; yard walls cut not deleted, 62 pieces to 64. CLOSES THE DEMOLITION THREAD across v9.72, v9.73, v9.77 and v9.79 |
+| A DOWNED PILLAGER TAKES MORE THAN ONE SCAV PISTOL ROUND | v9.91 | his note, the first of the day: "when a pillager is downed, it should take more than 1 scav pistol shot to eliminate them". REPRODUCED from the code and then driven: on going down the game wrote e.hp=1 on purpose ("a second hit while he is down kills outright") so one Scav Pistol round at 19 finished a downed man exactly as a Longshot would. He has 40 now, three pistol rounds and two of anything heavier, as a dial raiderDownHp; the bleed clock is unchanged so it is a cost to finishing him, not a second life. Check downs a man through the game's own path, fires the pistol's 19 through the real bullet loop, requires him still down after one and more than one to finish, and proves the dial with a one-round finish at 1 and a two-round finish at 60 damage. Fails on a v9.90 fixture: "one Scav Pistol round finished a downed pillager, he went down with 1 health" |
 | ONE WORD FOR THE BACKPACK, AND THE HOTBAR RENAME FINISHED | v9.90 | v9.89's own Not verified line said the compact legend still called the backpack a bag. Read off every surface on v9.89 the thing you carry was named FOUR ways: "inventory" (full legend TAB row, controller VIEW row, the HUD hint "TAB  INVENTORY", two refusals), "bag" (compact legend, controller BACK row, "equip gun from bag", the armour rule card, five spoken lines, the Peddler's "SELL BAG", a searched pillager's "'S BAG", two guide cards, a settings hint), "kit" (three refusals "Kit is full"), and "backpack". And both controller legends still called the hotbar a BELT, which v9.89 missed. THE WORD IS BACKPACK, his word and the panel's. Twenty two strings, nothing that reads a profile or draws. Left alone on purpose: BAG OF FRAGS and BIGGER BAG OF FRAGS, which are Progress rewards and a literal bag, and the lore clipboard "Inventory, year one", a document in the world. The armour card line is 29 characters against the 32 it replaces, inside the box v8.4x measured. Check reads the compact legend, the full legend, the HUD hint, the controller table and the panel headings, needles from halves, and fails on a v9.89 fixture on all four surfaces at once. Ten of the 22 strings are proven on screen; the other twelve are spoken lines the harness has no cheap way to raise |
 | ONE WORD FOR THE HOTBAR | v9.89 | his rule, one word per thing, and his open line "I opens the BACKPACK, write the matching list of consistent definitions". On v9.88 the same nine keyed cells were named THREE ways to the player: "hotbar" in the legend, the bag hint, the item detail and his own answers 11 and 22; "Tactical belt" on the raid backpack heading and the Undercroft column heading, "your backpack plus your belt" under the raid backpack title, "off the belt and into the backpack" on the drag-off message, and "hotbar belt and inventory" on the ascent summary; "the bar" in the empty-slot prompt. THE WORD IS HOTBAR: his word, the legend's word, the keys' word. Six strings changed, nothing that reads a profile or draws. Belt stays inside the code, the raider-and-snitch trade. The vocabulary memory gains a section for what you carry. The check reads the surfaces as rendered text with needles assembled from halves, and fails on a v9.88 fixture on five surfaces at once |
 | HIS ANSWER 22: THE HOTBAR IS VISIBLE IN THE UNDERCROFT | v9.88 | four words of his, between two other floor answers, and it had no row in the status table. v8.96 claimed it in its own comment and delivered it only INSIDE the opened backpack. MEASURED on v9.87 through the real loop on the HUD canvas: backpack closed, 0 opaque pixels on the entire HUD canvas; backpack open, 9 belt cells and 100,047 opaque pixels in the bottom band. FIX: drawHubBelt draws the same file-scope drawBelt against a transient hubBagState swapped in as G for one call, only while the backpack is closed, so exactly one belt is ever on screen; hubBagG is deliberately untouched because closing the backpack is the commit. Cells recorded on HUBBELT for the fixture and for a future click. Display only: editing stays in the opened backpack, answer 11. hubBelt 0 is the control. Check fails on a v9.87 fixture with "with the backpack closed the floor records no belt cells at all" |
