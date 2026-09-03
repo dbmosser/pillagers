@@ -40024,6 +40024,67 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.76 - ONE EDIT WAS REWRITING EVERY NUMBER ON THE SCREEN
+
+I ended the v9.75 notes saying I had not gone looking for two lines that share a
+shape and should NOT share an edit. I went looking, and there was one, and it was
+the worst one there could be.
+
+### THE MEASUREMENT
+
+Across both maps, early and late in a raid: **92 distinct lines are drawn, 43 of
+them carry a number, and those 43 reduce to 30 shapes. Only 4 shapes are shared
+by more than one line.** Three of those are the same line at a different value,
+which is exactly what v9.75 exists to unify:
+
+    8:59 and 8:57                        the clock
+    EXTRACT 141m and EXTRACT 187m        the distance to the ring
+    0 out - 7 down and 0 out - 33 down   the pillager board
+
+The fourth is a bare number. Its shape is a single blank, so it matches **every
+number in the game**.
+
+Driven on v9.75: renaming one hotbar slot from "3" to "THIRD" turned **all
+seventeen bare numbers on screen into "THIRD"**. Every slot number and every item
+count, from one edit, and no way back except knowing to type the digit again.
+
+### THE RULE
+
+Drawn from that measurement rather than picked out of the air. A shape is only
+worth remembering if:
+
+- it has a letter in it, **or**
+- it holds at least two blanks with something other than a space between them.
+
+That keeps all 27 shapes carrying a word, and it keeps the clock ("#:#") and the
+ammo counter ("# / #"). It throws out the bare number, and "# #", which is two
+numbers with nothing but a gap between them and is just as blind.
+
+**A refused shape is not a refused edit.** The exact override still applies, so
+renaming that hotbar slot still renames that hotbar slot. It simply does not go
+looking for company.
+
+Profiles are pruned when they are armed, because v9.75 shipped, and a bare-number
+shape saved by it would otherwise go on rewriting his screen for as long as the
+profile lived.
+
+### THE CHECK
+
+Against v9.75 it reports four things: one edit rewrote 17 lines when only 1 of
+them said what he edited; none of the 16 unrelated bare numbers survived; a stale
+shape survived the profile being armed; and that stale shape was still rewriting
+bare numbers afterwards. Against v9.76 it is silent.
+
+Five controls, three of which exist to catch the lazy version of this fix, which
+would be to turn shape matching off and call it narrowed: the line he actually
+edited must still change, a line with a word in it must still travel when its
+number moves, and the clock must still travel.
+
+Not verified: whether "# / #" is too loose in practice. It is the ammo counter
+today, and it would also match a score or a ratio drawn the same way if one is
+ever added. Nothing on either map shares it now, measured, but that is a fact
+about today's text rather than a guarantee about tomorrow's.
+
 ## v9.75 - THE EDITS NOW SURVIVE THE NUMBERS MOVING
 
 A hole in what I shipped yesterday, found by using it.

@@ -993,6 +993,11 @@ try{
   window.__tx={record:txRecord,find:txFind,box:txBox,set:txSet,map:txMap,dom:txDom,
                click:txClick,get:TX,close:txClose,
                hits:function(){ return TXHIT; }};
+  // v9.76: the shape map and the arming pass, so a check can prove that a shape
+  // too blind to keep is refused when written AND pruned when an older profile
+  // brings one back.
+  try{ window.__tx.pmap=txPatMap; }catch(e2){}
+  try{ window.__tx.arm=function(){ return applyGameOpts(); }; }catch(e3){}
 }catch(e){ window.__tx=null; }
 window.__wx={list:function(){ return WEATHER; },cur:wx,VF:VF,AMBR:AMBR,ping:ping,pick:pickWeather};
 window.__music=function(){ tickMusic(); return {mode:musicMode(),wanted:musicWanted(),started:!!MUS.g,step:MUS.step,trkName:(MUS.trk?MUS.trk.name:null),themes:MUS_THEMES.length}; };
@@ -5101,6 +5106,78 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.76',what:'an edit only follows a line to others of the same shape when that shape has a word in it',
+   run:function(){
+     var bad=[];
+     if(!window.__tx) return 'SKIP: this build has no text engine to drive';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     __pinDPR(1); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __forceSize(1920,1080);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player; g.ents.length=0; p.iv=9999;
+     for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
+     function drawn(){ return __tx.record(function(){ __frame(0.016); }).map(function(x){ return x.t; }); }
+     var before=drawn(), i;
+     var bare=[]; for(i=0;i<before.length;i++) if(/^\d+$/.test(before[i])) bare.push(before[i]);
+     // CONTROL ONE: there have to be several bare numbers on screen, or the
+     // finding below is about nothing at all.
+     if(bare.length<6)
+       return 'SKIP: only '+bare.length+' bare numbers are drawn, too few to say anything';
+     var one=bare[0];
+     __tx.set(one,'ZQXWORD');
+     var after=drawn();
+     var hitCount=0, bareLeft=0;
+     for(i=0;i<after.length;i++){
+       if(after[i]==='ZQXWORD') hitCount++;
+       if(/^\d+$/.test(after[i])) bareLeft++;
+     }
+     var sameValue=0; for(i=0;i<bare.length;i++) if(bare[i]===one) sameValue++;
+     // THE FINDING. Measured on v9.75: renaming one hotbar slot from 3 to THIRD
+     // turned all seventeen bare numbers on screen into THIRD.
+     if(hitCount>sameValue)
+       bad.push('renaming one bare number rewrote '+hitCount+' lines when only '+sameValue+
+                ' of them said "'+one+'", so one edit is rewriting every number on screen');
+     if(bareLeft<bare.length-sameValue)
+       bad.push('only '+bareLeft+' bare numbers survived out of '+(bare.length-sameValue)+
+                ' that had nothing to do with the edit');
+     // CONTROL TWO: the exact line he edited must still take the edit. Refusing
+     // the shape must not refuse the edit.
+     if(!hitCount)
+       bad.push('control: the line he actually edited did not change either, so the edit was thrown away');
+     __tx.set(one,'');
+     // CONTROL THREE: a shape with a word in it must still travel, or this has
+     // been fixed by turning v9.75 off.
+     var target=null;
+     for(i=0;i<before.length;i++) if(/^EXTRACT \d+m$/.test(before[i])){ target=before[i]; break; }
+     if(!target) return bad.length?bad.join('; '):'SKIP: no lettered numbered line was drawn to test with';
+     __tx.set(target,'ZQX RING '+target.replace(/^EXTRACT /,''));
+     p.x+=40; p.y+=40;
+     for(var f2=0;f2<3;f2++) __loop(performance.now()+1000+f2*16.7);
+     var trav=null, moved=drawn();
+     for(i=0;i<moved.length;i++) if(/^ZQX RING \d+m$/.test(moved[i])){ trav=moved[i]; break; }
+     __tx.set(target,'');
+     if(!trav)
+       bad.push('control: a line with a word in it stopped travelling, so the shape match is off rather than narrowed');
+     // CONTROL FOUR: two blanks with a real separator between them still count,
+     // which is what keeps the clock and the ammo counter working.
+     __tx.set('8:59','ZQX 8:59 LEFT');
+     var clock=__tx.get('8:57');
+     __tx.set('8:59','');
+     if(clock==='8:57')
+       bad.push('control: the clock shape was refused too, so the rule is wider than a bare number');
+     // CONTROL FIVE: a bad shape saved by v9.75 must be pruned when the profile
+     // is armed, or it goes on rewriting his screen forever.
+     if(__tx.pmap&&__tx.arm){
+       var pm=__tx.pmap();
+       pm['\u0001']='ZQXSTALE';
+       __tx.arm();
+       if(__tx.pmap()['\u0001']!==undefined)
+         bad.push('control: a bare-number shape left over from v9.75 survived the profile being armed');
+       var stale=__tx.get('7');
+       if(stale!=='7')
+         bad.push('control: a stale shape is still rewriting bare numbers, "7" came back as "'+stale+'"');
+     } else bad.push('control: this build cannot be asked whether it prunes a stale shape');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.75',what:'an edit survives the number in the line changing, and carries the number through',
    run:function(){
      var bad=[];

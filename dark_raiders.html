@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.75';
+var VER='9.76';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1777,6 +1777,17 @@ function txSplit(s){
 // Fills a stored shape back in with the numbers from the line being drawn now.
 // A blank with no number left for it disappears rather than printing a control
 // character at him.
+// v9.76: is this shape specific enough to be worth matching by? Measured across
+// 92 drawn lines: a bare number is one blank and matches every number in the
+// game, and renaming one hotbar slot rewrote all seventeen of them.
+function txShapeOk(pat){
+  if(typeof pat!=='string'||!pat) return false;
+  if(/[A-Za-z]/.test(pat)) return true;
+  var blanks=pat.split(TXBLANK).length-1;
+  if(blanks<2) return false;
+  // Two numbers with nothing but a gap between them is as blind as one number.
+  return /[^\u0001\s]/.test(pat);
+}
 function txFill(pat,nums){
   var i=0;
   return pat.replace(/\u0001/g,function(){ var v=nums[i++]; return (v===undefined)?'':v; });
@@ -1810,13 +1821,18 @@ function txSet(orig,next){
     // becomes a blank to be filled in from whatever the line says next time.
     // Anything else he typed is his and is left exactly as typed, including
     // digits, so writing "top 3 hauls" does not turn 3 into a moving number.
-    if(so.nums.length){
+    // v9.76: and only if the shape is specific enough to be worth matching by.
+    // A refused shape is not a refused edit: the exact override above still
+    // applies to that exact line, it just does not go looking for company.
+    if(so.nums.length&&txShapeOk(so.pat)){
       var k=0;
       var np=next.replace(/-?\d+(?:[.,]\d+)*/g,function(mm){
         if(k<so.nums.length&&mm===so.nums[k]){ k++; return TXBLANK; }
         return mm;
       });
       pm[so.pat]=np;
+    } else if(so.nums.length){
+      delete pm[so.pat];
     }
   }
   TXPANY=0; for(var q in pm){ TXPANY=1; break; }
@@ -25936,7 +25952,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.75: your edits now survive the numbers changing. Nearly half the lines on screen carry a number, and rewriting one of those used to last until the number moved and then quietly revert. An edit is remembered by the shape of the line now, and the numbers are carried through it.',
+  now:'v9.76: renaming one hotbar slot number used to rename every number on the screen. An edit only follows a line to others of the same shape when that shape has a word in it, so the clock and the ammo counter still travel and a bare number stays exactly where you put it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29883,7 +29899,13 @@ function applyGameOpts(){
     // lookup, or every edit he made in an earlier session is silently ignored
     // until he happens to make a new one.
     TXPANY=0;
-    if(P&&P.txp) for(var _tq in P.txp){ TXPANY=1; break; }
+    if(P&&P.txp){
+      // v9.76: prune anything v9.75 saved under a shape too blind to keep. Left
+      // alone, a bare-number shape from that build would go on rewriting every
+      // number on his screen for as long as the profile lived.
+      for(var _tp in P.txp) if(!txShapeOk(_tp)) delete P.txp[_tp];
+      for(var _tq in P.txp){ TXPANY=1; break; }
+    }
   }catch(e){}
   try{ txWatch(); }catch(e){}
   try{
