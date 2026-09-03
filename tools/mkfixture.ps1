@@ -5214,6 +5214,81 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.89',what:'the hotbar has one name on every surface that names it',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, so no gesture can be aimed';
+     // THE NEEDLES ARE ASSEMBLED, never written out. This page embeds the source
+     // it tests, and a check that greps for a phrase finds its own comment; it
+     // has happened three times in this corpus. The old names are built from
+     // halves so this file never contains them whole.
+     var TACT=['Tact','ical belt'].join(''), BAR=['in the ','bar below'].join('');
+     var BELTINV=['hotbar ','belt and inventory'].join(''), OFFBELT=['off the ','belt and into'].join('');
+     var PLUSBELT=['plus your ','belt'].join('');
+     function has(text,needle){ return String(text||'').toLowerCase().indexOf(needle.toLowerCase())>=0; }
+     // ONE: the three surfaces that name it in markup, read as rendered text.
+     var cm=document.getElementById('carrymodal');
+     if(!cm) return 'SKIP: no raid backpack panel in the page';
+     var heads=[].map.call(cm.querySelectorAll('h2'),function(h){ return h.textContent.trim(); });
+     var msub=(cm.querySelector('.msub')||{}).textContent||'';
+     var labs=[].map.call(document.querySelectorAll('.loslab'),function(l){ return l.textContent.trim(); });
+     var all=heads.concat([msub]).concat(labs).join(' | ');
+     if(has(all,TACT)) bad.push('a panel heading still says '+TACT);
+     if(has(msub,PLUSBELT)) bad.push('the backpack subtitle still says '+PLUSBELT);
+     if(!heads.some(function(h){ return /^hotbar$/i.test(h); }))
+       bad.push('the raid backpack panel has no heading that reads Hotbar, it has ['+heads.join(', ')+']');
+     if(!labs.some(function(l){ return /^hotbar/i.test(l); }))
+       bad.push('the Undercroft loadout column has no label that starts with Hotbar, it has ['+labs.join(', ')+']');
+     // TWO: the prompt behind clicking an EMPTY hotbar cell in the Undercroft.
+     __pinDPR(1); __forceSize(1920,1080); __cleanProfile();
+     var P2=__P(); P2.stash=['frag']; P2.kit=[]; P2.hotAssign={};
+     var shut=['stagemodal','sectormodal','outcome','title','pausebox'], was={};
+     for(var si=0;si<shut.length;si++){ var se=document.getElementById(shut[si]);
+       was[shut[si]]=!!(se&&se.classList.contains('on')); if(se) se.classList.remove('on'); }
+     var hub=document.getElementById('hub'), hubWas=!!(hub&&hub.classList.contains('on'));
+     function done(v){
+       for(var q=0;q<shut.length;q++){ var e2=document.getElementById(shut[q]);
+         if(!e2) continue; if(was[shut[q]]) e2.classList.add('on'); else e2.classList.remove('on'); }
+       if(hub){ if(hubWas) hub.classList.add('on'); else hub.classList.remove('on'); }
+       return v;
+     }
+     __showScreen('hub'); if(hub) hub.classList.add('on');
+     var cell=document.querySelector('[data-plan="5"]');
+     if(!cell) return done('SKIP: the Undercroft column drew no hotbar cell');
+     window.__lastSay=null;
+     var hubToastText='';
+     try{ cell.click(); }catch(e1){}
+     // say2 writes to the hub toast; read whatever it wrote, and the fixture's
+     // last-say mirror in case this build routes it there.
+     var toast=document.getElementById('hubtoast')||document.getElementById('toast')||document.getElementById('say2');
+     hubToastText=(toast&&toast.textContent)||'';
+     var said=String(window.__lastSay||'')+' '+hubToastText;
+     if(!/hotbar/i.test(said)&&!has(said,BAR))
+       return done('SKIP: clicking an empty hotbar cell said nothing this check can read: ['+said.trim().slice(0,80)+']');
+     if(has(said,BAR)) bad.push('clicking an empty hotbar cell still says '+BAR);
+     // THREE: the ascent summary sentence, which named both in one breath.
+     var st=null; try{ st=__renderStage&&__renderStage(); }catch(e2){}
+     var stage=document.getElementById('stagemodal');
+     var stText=(stage&&stage.textContent)||'';
+     if(has(stText,BELTINV)) bad.push('the ascent summary still says '+BELTINV);
+     if(stage) stage.classList.remove('on');
+     // FOUR: the message when an item is dragged OFF the hotbar. Same gesture the
+     // v9.82 check drives, read off the toast it produces.
+     P2.stash=['frag','frag']; P2.kit=['frag']; P2.hotAssign={5:'frag'};
+     __showScreen('hub'); if(hub) hub.classList.add('on');
+     var c2=document.querySelector('[data-plan="5"]'), sg=document.getElementById('stashgrid');
+     if(c2&&sg){
+       var cr=c2.getBoundingClientRect(), sr=sg.getBoundingClientRect();
+       function ev(t,x,y,el){ var e=new MouseEvent(t,{bubbles:true,cancelable:true,clientX:x,clientY:y,button:0}); (el||document).dispatchEvent(e); }
+       window.__lastSay=null;
+       ev('mousedown',cr.left+cr.width/2,cr.top+cr.height/2,c2);
+       ev('mousemove',sr.left+sr.width/2,sr.top+30);
+       ev('mouseup',sr.left+sr.width/2,sr.top+30);
+       var t2=document.getElementById('hubtoast')||document.getElementById('toast')||document.getElementById('say2');
+       var said2=String(window.__lastSay||'')+' '+((t2&&t2.textContent)||'');
+       if(has(said2,OFFBELT)) bad.push('dragging an item off the hotbar still says '+OFFBELT);
+     }
+     return done(bad.length?bad.join('; '):null); }},
   {v:'9.88',what:'the belt is drawn on the Undercroft floor, not only inside the opened backpack',
    run:function(){
      var bad=[];

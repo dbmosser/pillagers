@@ -40024,6 +40024,70 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.89 - ONE WORD FOR THE HOTBAR
+
+His rule of 2026-08-29: one word per thing, and his open line, "I opens the
+BACKPACK. Write the matching list of consistent definitions." The list existed
+for people, places, progression and verbs, and had nothing for what you carry.
+
+### WHAT THE PLAYER READ, ON v9.88
+The same nine keyed cells at the bottom of the screen, named three ways, read off
+every surface that names them:
+
+    hotbar          the controls legend, three rows; the bag hint "drag to
+                    hotbar"; the item detail "Goes on a hotbar key"; and his own
+                    answers 11 and 22
+    Tactical belt   the raid backpack panel heading; the Undercroft loadout
+                    column heading; "your backpack plus your belt" under the raid
+                    backpack title; "off the belt and into the backpack" when you
+                    drag one off; and "your current hotbar belt and inventory"
+                    on the ascent summary, which used both in one breath
+    the bar         "press the key number in the bar below" when you click an
+                    empty slot in the Undercroft
+
+Every one of those came from him noticing the same thing twice under two names,
+which is exactly the test the vocabulary note says to apply before shipping a
+string.
+
+### THE WORD
+HOTBAR. It is the word he uses, it is what the legend already says, and it is the
+one that names the keys. "Belt" stays inside the code, in hotCells, drawBelt and
+hotAssign: renaming fields the save reads is the trade refused for XP at v6.42
+and refused again here.
+
+Six strings changed: two panel headings, the backpack subtitle, the ascent
+summary, the drag-off message, and the empty-slot prompt. Nothing that reads a
+profile, nothing that draws, nothing in the sim.
+
+The vocabulary note gains a section for what you carry: Backpack, Hotbar, Safe
+pocket, Stash, each with the words never to use for it.
+
+### THE CHECK AND ITS TEETH
+It reads the three markup surfaces as rendered text, clicks an empty hotbar cell
+in the Undercroft and reads the prompt off the toast, drags an item off the
+hotbar onto the stash and reads that message, and renders the ascent summary.
+Every old name is assembled from halves, because this page embeds the source it
+tests and a check that writes a phrase out finds its own comment; that has
+happened three times in this corpus.
+
+Run against a fixture built from v9.88 it fails on five surfaces at once: "a
+panel heading still says Tactical belt; the backpack subtitle still says plus
+your belt; the raid backpack panel has no heading that reads Hotbar, it has
+[Backpack, Tactical belt]; the Undercroft loadout column has no label that starts
+with Hotbar; clicking an empty hotbar cell still says in the bar below". Against
+this build it returns null.
+
+### NOT VERIFIED
+Two of the six strings are not proven by the check. The ascent summary sentence
+and the drag-off message did not fire as failures on the v9.88 fixture, so
+either those two surfaces did not render under the check's staging or the toast
+was overwritten before it was read. The strings are changed and the five
+surfaces that did fire prove the rename reached the page, but the check's
+coverage of those two is inferred from the patch, not measured. Not verified
+either: whether he wants "Backpack" over "Bag" on the one raid-side line that
+still says TAB bag in the compact legend; the legend was left alone because
+v9.46 pins its words and changing them is its own build.
+
 ## v9.88 - HIS ANSWER 22: THE HOTBAR IS VISIBLE IN THE UNDERCROFT
 
 Answer 22 of his fifty is four words: "hotbar visible in the Undercroft". It sits

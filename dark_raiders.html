@@ -879,13 +879,13 @@
      other thing down here is a station you walk to. -->
 <div class="modal" id="carrymodal">
   <h3>BACKPACK</h3>
-  <div class="msub">Your inventory is your backpack plus your belt. An item is in one or the other, never both.</div>
+  <div class="msub">Your inventory is your backpack plus your hotbar. An item is in one or the other, never both.</div>
   <div class="panel" style="margin-top:10px">
     <h2>Backpack <em id="carrybpct"></em></h2>
     <div class="invgrid" id="carrybp" style="min-height:96px"></div>
   </div>
   <div class="panel" style="margin-top:10px">
-    <h2>Tactical belt</h2>
+    <h2>Hotbar</h2>
     <div id="carrybelt" style="display:flex;gap:6px;flex-wrap:wrap;padding:10px"></div>
   </div>
   <div style="display:flex;gap:8px;margin-top:12px">
@@ -1036,7 +1036,7 @@
             <div class="invgrid" id="kitgrid"></div>
           </div>
           <div class="losec">
-            <div class="loslab">Tactical belt<b><span id="quickn">0</span> on keys</b></div>
+            <div class="loslab">Hotbar<b><span id="quickn">0</span> on keys</b></div>
             <div id="hotplanwrap"></div>
           </div>
           <div class="losec">
@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.88';
+var VER='9.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25155,8 +25155,8 @@ function askKit(){
   var qq=document.getElementById('askq'), ss=document.getElementById('asksub');
   if(qq) qq.textContent='What are you taking up?';
   if(ss) ss.innerHTML='<b>Your loadout</b>: '+
-    (kitN?('the '+kitN+' item'+(kitN===1?'':'s')+' you packed, plus your current hotbar belt and inventory.')
-         :'your current hotbar belt and inventory.')+
+    (kitN?('the '+kitN+' item'+(kitN===1?'':'s')+' you packed, plus your current hotbar and backpack.')
+         :'your current hotbar and backpack.')+
     '<br><br><b>The freebie kit</b>: '+escHtml(freeKitText());
   ASKYES=function(){ P.freeKit=0; saveProfile(); ascendNow(); };
   ASKALT=function(){
@@ -26179,7 +26179,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.88: your answer 22, the hotbar is visible in the Undercroft. It was only ever drawn inside the opened backpack; on the floor the screen held nothing at all. The belt sits at the bottom of the floor now, showing what is going up, and you still edit it in the backpack.',
+  now:'v9.89: one word for the hotbar. The same nine keys were called the hotbar in the legend, the tactical belt on two panels, and the bar in one prompt. It is the hotbar everywhere now, which is the word you use and the word the keys already had.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -27058,7 +27058,7 @@ function renderKitCol(){
         P.kit.push(key);
       }
       saveProfile(); try{ sfx('pick'); }catch(e){}
-      say2((ITEMS[key]?ITEMS[key].name:key)+' off the belt and into the backpack.');
+      say2((ITEMS[key]?ITEMS[key].name:key)+' off the hotbar and into the backpack.');
       renderHub();
       return;
     }
@@ -27555,7 +27555,7 @@ try{ renderFreeKit(); }catch(_fk){}
         if((P.hotAssign||{})[ix]!==undefined){
           delete P.hotAssign[ix]; saveProfile(); renderHub();
         } else {
-          say2('Point at an item in the stash, then press the key number in the bar below.');
+          say2('Point at an item in the stash, then press its key number on the hotbar below.');
         }
       };
       // v8.72, HIS REPORT: you can drag an item OFF the belt now. These cells have
