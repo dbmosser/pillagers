@@ -169,6 +169,7 @@
 .avstrap{ position:absolute; left:6px; top:-2px; width:6px; height:26px; border-radius:2px; opacity:.9; }   /* v10.34 */
 .avpatch{ position:absolute; right:7px; top:4px; width:9px; height:9px; border-radius:2px; border:1px solid #14161b; }   /* v10.35 */
 .avlegs{ width:38px; height:20px; border-radius:0 0 5px 5px; border:2px solid #14161b; border-top:0; }
+.avnum{ position:absolute; left:0; right:0; top:11px; text-align:center; font:900 20px/1 Impact,'Arial Black',sans-serif; color:#f4f2ec; letter-spacing:1px; pointer-events:none; }   /* v10.46 */
 .avboots{ width:42px; height:8px; border-radius:0 0 4px 4px; border:2px solid #14161b; border-top:0; margin-top:-1px; }   /* v10.32 */
 .avslot{ display:flex; align-items:center; gap:8px; padding:5px 10px; cursor:pointer;
   border-top:1px solid rgba(42,50,61,.55); }
@@ -1261,7 +1262,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.45';
+var VER='10.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18072,7 +18073,9 @@ var COSMETICS=[
   // v10.00: three more, owned from the start like the rest of the clothing.
   {id:'drab',      name:'Olive Drab',  how:'always', kind:'fit'},   // 'olive' is a skin
   {id:'charcoal',  name:'Charcoal',    how:'always', kind:'fit'},
-  {id:'bone',      name:'Bone',        how:'always', kind:'fit'}
+  {id:'bone',      name:'Bone',        how:'always', kind:'fit'},
+  // v10.46, his notes: a red and black number 23 jersey. Earned.
+  {id:'jersey',    name:'Number 23 Jersey', how:'level:4', kind:'fit'}
 ];
 // dark, lit, highlight. The figure is 15px across, so three tones is the whole
 // range the head has room for.
@@ -18085,7 +18088,8 @@ var SKINCOL={porcelain:'#f7ddc2',fair:'#f2d2a8',olive:'#d8ab7a',tan:'#c08a56',
 var FITCOL={slate:['#3d4450','#59626f'],moss:['#3f5136','#5b7350'],rust:['#5e3326','#875040'],
             oxblood:['#4a2130','#6b3448'],sand:['#6b5a3c','#907c56'],
             ash:['#3a3d42','#565a61'],indigo:['#2f3560','#464f87'],teal:['#1f4a49','#31706c'],
-            drab:['#4a4a2e','#6b6b44'],charcoal:['#24262b','#3a3d44'],bone:['#8c8570','#b5ac93']};
+            drab:['#4a4a2e','#6b6b44'],charcoal:['#24262b','#3a3d44'],bone:['#8c8570','#b5ac93'],
+            jersey:['#7a1414','#c41e1e']};   // v10.46: red; the black panels and the 23 are painted on
 // BUILD changes the silhouette: shoulder width, hip width and how tall the head sits.
 var BODYBUILD={lean:{sh:1.00,hip:1.00,head:1.00},broad:{sh:1.18,hip:0.96,head:1.04},
             curved:{sh:0.94,hip:1.14,head:0.98}};
@@ -18243,6 +18247,16 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   wc.fillStyle=cc; rrF(x-6.5+leanX,ty-22,13,11,3);
   wc.fillStyle=cHi; wc.fillRect(x-5.7+leanX,ty-22,11.4,3);
   wc.fillStyle=cLo; wc.fillRect(x-5.7+leanX,ty-13.4,11.4,2.4);
+  if(st.hero&&iv<=0&&cosWorn('fit')==='jersey'){
+    // v10.46: the number 23 jersey. Black side panels, and a pale 2 and 3 in
+    // one-pixel strokes across the chest, five tall.
+    var _jx=x-6.5+leanX;
+    wc.fillStyle='#14161b'; wc.fillRect(_jx,ty-21.4,2.4,10); wc.fillRect(_jx+10.6,ty-21.4,2.4,10);
+    wc.fillStyle='#f4f2ec';
+    var _jy=ty-20;
+    wc.fillRect(_jx+2.6,_jy,3.4,1.5); wc.fillRect(_jx+4.5,_jy,1.5,2.6); wc.fillRect(_jx+2.6,_jy+1.9,3.4,1.5); wc.fillRect(_jx+2.6,_jy+1.9,1.5,2.6); wc.fillRect(_jx+2.6,_jy+3.8,3.4,1.5);
+    wc.fillRect(_jx+7.2,_jy,3.4,1.5); wc.fillRect(_jx+9.1,_jy,1.5,5.3); wc.fillRect(_jx+7.2,_jy+1.9,3.4,1.5); wc.fillRect(_jx+7.2,_jy+3.8,3.4,1.5);
+  }
   // chest rig, and a hit shimmer when recently hurt
   wc.fillStyle='rgba(16,21,27,.85)';
   wc.fillRect(x-6.5+leanX,ty-18,13,2.4);
@@ -26670,7 +26684,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.45: two more on the headgear rack: a green Spartan helmet with a gold visor, and a white ghost mask. Both cover the face. Earned, like everything on the racks.',
+  now:'v10.46: a red and black number 23 jersey on the clothing rack, earned at level four.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31037,6 +31051,11 @@ function cosSwatch(c){
            'border-radius:8px;background:'+(EYECOL[c.id]||EYECOL.eyebrown)+'"></span><span style="position:absolute;left:13px;top:13px;'+
            'width:8px;height:8px;border-radius:4px;background:#0a0c10"></span></span>';
   }
+  if(c.kind==='fit'&&c.id==='jersey'){   // v10.46: the jersey shows its number
+    return '<span style="display:inline-block;width:34px;height:34px;border-radius:6px;position:relative;'+
+           'background:linear-gradient(180deg,#c41e1e,#7a1414);box-shadow:inset 5px 0 0 #14161b,inset -5px 0 0 #14161b;border:2px solid #14161b">'+
+           '<span style="position:absolute;left:0;right:0;top:8px;text-align:center;font:900 15px/1 Impact,sans-serif;color:#f4f2ec">23</span></span>';
+  }
   if(c.kind==='fit'){
     var fc=FITCOL[c.id]||FITCOL.slate;
     return '<span style="display:inline-block;width:34px;height:34px;border-radius:6px;'+
@@ -31116,8 +31135,10 @@ function avatarHTML(){
       })()+
     '</div>'+
     '<div class="avtorso" style="background:linear-gradient(180deg,'+ft[1]+','+ft[0]+');'+
-      'width:'+Math.round(46*bd.sh)+'px">'+
+      'width:'+Math.round(46*bd.sh)+'px'+
+      (cosWorn('fit')==='jersey'?';box-shadow:inset 7px 0 0 #14161b,inset -7px 0 0 #14161b;position:relative':'')+'">'+   // v10.46
       '<div class="avplate" style="background:rgba(0,0,0,.28)"></div>'+
+      (cosWorn('fit')==='jersey'?'<div class="avnum">23</div>':'')+   // v10.46: the numeral
       '<div class="avstrap" style="background:'+(PACKCOL[cosWorn('pack')]||PACKCOL.packbrown)+'"></div>'+   // v10.34: the pack strap
       (function(){ var _pp=cosWorn('patch'), _pc=PATCHCOL[_pp]; if(!_pc) return ''; return '<div class="avpatch" style="background:'+_pc[0]+';box-shadow:inset 0 0 0 2px '+_pc[1]+'"></div>'; })()+   // v10.35
       '<div class="avhand" style="left:-11px;background:'+handColour({hero:1})+'"></div>'+   // v10.33

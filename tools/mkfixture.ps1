@@ -5221,6 +5221,43 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.46',what:'the number 23 jersey is on the clothing rack, red with black panels and a numeral on the sprite',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(typeof COSMETICS==='undefined'||typeof FITCOL==='undefined') return 'SKIP: no clothing rack in this build';
+     var c=cosFind('jersey');
+     // THE FINDING. On v10.45 the clothing rack had eleven plain colours and no jersey.
+     if(!c||c.kind!=='fit') return 'the clothing rack has no jersey';
+     if(c.how==='always'||String(c.how).indexOf('buy:')===0) bad.push('the jersey is not earned');
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000; p.armor=0; p.plate=0;
+     var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,xpLevel:P2.xpLevel,cosFit:P2.cosFit};
+     P2.runs=999; P2.ext=999; P2.xpLevel=99;
+     var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
+     function torso(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(20,Math.min(cvs.width-20,sx)); sy=Math.max(40,Math.min(cvs.height-4,sy)); return wctx.getImageData(sx-20,sy-40,40,36).data; }
+     function cnt(px,fn){ var n=0; for(var i=0;i<px.length;i+=4) if(px[i+3]>40&&fn(px[i],px[i+1],px[i+2])) n++; return n; }
+     // The raid is lit dark: white lands near 209 on the canvas and black above 30,
+     // so pale and ink are read as bright-and-unsaturated and as dim, against slate.
+     var isRed=function(r,gg,b){ return r>120&&r>gg*2.2&&r>b*2.2; };
+     var isPale=function(r,gg,b){ var L=(r+gg+b)/3, sat=Math.max(r,gg,b)-Math.min(r,gg,b); return sat<28&&L>150; };
+     var isInk=function(r,gg,b){ return (r+gg+b)/3<55; };
+     P2.cosFit='slate'; var sl=torso();
+     P2.cosFit='jersey'; var jr=torso();
+     if(cnt(jr,isRed)-cnt(sl,isRed)<20) bad.push('the jersey is not red on the sprite ('+(cnt(jr,isRed)-cnt(sl,isRed))+' red px more than slate)');
+     if(cnt(jr,isPale)-cnt(sl,isPale)<6) bad.push('the jersey has no pale numeral on the sprite ('+(cnt(jr,isPale)-cnt(sl,isPale))+' px)');
+     if(cnt(jr,isInk)-cnt(sl,isInk)<8) bad.push('the jersey has no black side panels on the sprite');
+     // The figure and the swatch carry the number.
+     if(typeof avatarHTML==='function'){ var h=avatarHTML(); if(h.indexOf('avnum')<0||h.indexOf('>23<')<0) bad.push('the figure does not show the 23'); }
+     var sw=cosSwatch(c); if(sw.indexOf('23')<0) bad.push('the swatch does not show the 23');
+     // CONTROL: slate is still plain, on the sprite and the figure.
+     P2.cosFit='slate'; var sl2=torso();
+     if(cnt(sl2,isPale)>cnt(sl,isPale)+2) bad.push('control: slate grew a numeral');
+     if(typeof avatarHTML==='function'&&avatarHTML().indexOf('avnum')>=0) bad.push('control: the figure shows a number on slate');
+     for(var k in keep) P2[k]=keep[k];
+     return bad.length?bad.join('; '):null; }},
   {v:'10.45',what:'the Spartan helmet and the ghost mask are on the headgear rack, drawn on the sprite, covering the face',
    run:function(){
      var bad=[];
