@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.81';
+var VER='9.82';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26061,7 +26061,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.81: the same fault in a third place, and worse. Squaring a window up against the wall behind it rebuilt that wall from nothing but its shape, so it forgot which building it divided, that it was a building wall at all, and even that it belonged to a locked room.',
+  now:'v9.82: your report, items would not come off the tactical belt into the backpack. The drag started and the release landed in the right place and nothing happened, with no message either, because the backpack was written to accept things from the stash and nothing else.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -26915,6 +26915,35 @@ function renderKitCol(){
   };
   col.ondragleave=function(){ col.style.background=''; };
   dropzone(col,function(key,from){
+    // v9.82, HIS REPORT: THE BACKPACK NOW TAKES WHAT COMES OFF THE BELT. This
+    // handler opened by refusing anything that was not from the stash, so a drag
+    // off a belt cell arrived labelled plan:N and was silently discarded: no
+    // move, no message, no sound. It is the missing half of v8.72, which made
+    // the belt draggable and taught only the stash to catch it.
+    // An item on the belt is already in the kit, because planPut puts it there
+    // when it claims the slot, and the backpack list simply hides one copy per
+    // binding. So this is one thing: let the key go.
+    if(typeof from==='string'&&from.indexOf('plan:')===0){
+      if(!key||!ITEMS[key]) return;
+      var _bs=+from.slice(5);
+      if(!P.hotAssign||P.hotAssign[_bs]!==key){ say2('That is not on that key any more.'); return; }
+      delete P.hotAssign[_bs];
+      // Defensive only: planPut should make a binding without a kit copy
+      // impossible, but if one exists the item must not vanish on the way back.
+      if(P.kit.indexOf(key)<0){
+        if(stageKitLive().length>=DEPLOY_SLOTS){
+          P.hotAssign[_bs]=key;
+          say2('Inventory is full at '+DEPLOY_SLOTS+', so there is no room in the backpack.');
+          try{ sfx('clank'); }catch(e){}
+          return;
+        }
+        P.kit.push(key);
+      }
+      saveProfile(); try{ sfx('pick'); }catch(e){}
+      say2((ITEMS[key]?ITEMS[key].name:key)+' off the belt and into the backpack.');
+      renderHub();
+      return;
+    }
     if(from!=='stash') return;
     if(!key||!ITEMS[key]) return;
     var live=stageKitLive();

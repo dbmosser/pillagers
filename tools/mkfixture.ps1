@@ -1266,7 +1266,14 @@ window.__REGRESS=[
      var b=hold(10,true);
      if(b.flips<2) return 'releasing and pressing sprint again did not give a second sprint';
      return null; }},
-  {v:'8.72',what:'an item can be dragged OFF the Undercroft belt and back into the backpack',
+  // v9.82 CORRECTION, mine: this used to call itself "dragged OFF the belt and
+  // back into the backpack" and its failure line said the same. It drags to
+  // stashgrid and asserts the item is NOT in the kit and IS in the stash, which
+  // is the it-stays-home path and the opposite of going into the backpack. His
+  // report about the backpack sat open for builds with the corpus green because
+  // the check named for it was passing on another gesture. Assertions untouched,
+  // wording corrected. Belt to backpack is v9.82.
+  {v:'8.72',what:'an item dragged off the Undercroft belt onto the stash stays home',
    run:function(){
      // The drop end resolves its target with document.elementFromPoint, which
      // returns null for every point when the pane is collapsed to 0x0. That is
@@ -1307,7 +1314,7 @@ window.__REGRESS=[
      document.dispatchEvent(new MouseEvent('mousemove',{bubbles:true,clientX:gr.left+40,clientY:gr.top+40}));
      document.dispatchEvent(new MouseEvent('mouseup',{bubbles:true,clientX:gr.left+40,clientY:gr.top+40}));
      var P2=__P();
-     if(P2.hotAssign&&P2.hotAssign[0]!==undefined) return 'the belt slot still holds the item after dragging it to the backpack';
+     if(P2.hotAssign&&P2.hotAssign[0]!==undefined) return 'the belt slot still holds the item after dragging it to the stash';
      if((P2.kit||[]).indexOf('servo')>=0) return 'the item is still in the kit going up';
      if((P2.stash||[]).indexOf('servo')<0) return 'the item vanished from the stash entirely';
      return null; }},
@@ -5189,6 +5196,160 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.82',what:'an item drags off the tactical belt into the backpack, and to the stash',
+   run:function(){
+     var bad=[];
+     __pinDPR(1); __forceSize(1920,1080);
+     // A 0x0 pane makes elementFromPoint null everywhere and every drag below
+     // would fail for a reason that has nothing to do with the game.
+     if(!__vpAlive()) return 'SKIP: the pane is not laid out, so no gesture can be aimed';
+     var IT=(typeof __items==='function')?__items():null;
+     // PUT THE PAGE BACK. This check shuts five panels so it can aim at the
+     // Undercroft, and one of them is the title screen, which v9.58 measures a
+     // button on. Closing it made that check read 0x0 and fail. Anything this
+     // check closes is recorded here and restored on every path out, skips
+     // included.
+     var _panels=['stagemodal','sectormodal','outcome','title','pausebox'], _was={};
+     for(var _pi=0;_pi<_panels.length;_pi++){
+       var _pe=document.getElementById(_panels[_pi]);
+       _was[_panels[_pi]]=!!(_pe&&_pe.classList.contains('on'));
+     }
+     function done(v){
+       for(var q=0;q<_panels.length;q++){
+         var e2=document.getElementById(_panels[q]);
+         if(!e2) continue;
+         if(_was[_panels[q]]) e2.classList.add('on'); else e2.classList.remove('on');
+       }
+       return v;
+     }
+     if(!IT||!IT.frag) return done('SKIP: no item catalogue to stage a drag with');
+     function ev(t,x,y,el){
+       var e=new MouseEvent(t,{bubbles:true,cancelable:true,clientX:x,clientY:y,button:0});
+       (el||document).dispatchEvent(e);
+     }
+     function centre(el){ var r=el.getBoundingClientRect(); return [r.left+r.width/2,r.top+r.height/2]; }
+     // THE BELT IS DRAWN TWICE, in the Undercroft column and in the ascent
+     // check, so there are two cells per slot in the page. Take the one that is
+     // actually on screen: a real box whose own centre resolves back to it.
+     // querySelector takes document order, which after other checks have opened
+     // the ascent modal is the wrong one, and this check then skipped in the
+     // full run while passing alone.
+     function onScreen(sel){
+       var all=[].slice.call(document.querySelectorAll(sel));
+       for(var j=0;j<all.length;j++){
+         var r=all[j].getBoundingClientRect();
+         if(!(r.width>0&&r.height>0)) continue;
+         var at=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);
+         if(at===all[j]||(at&&at.closest&&(at.closest(sel)===all[j]||all[j].contains(at)))) return all[j];
+       }
+       return null;
+     }
+     // Stages a Frag Charge on belt slot 5 and drags it to whatever is asked for.
+     // Slot 5 and a Frag Charge deliberately: a distinctive item on an unremarkable
+     // slot, so nothing here can be produced by a default or a first-cell shortcut.
+     function stage(){
+       __cleanProfile();
+       var P2=__P();
+       P2.stash=['frag','frag']; P2.kit=['frag']; P2.hotAssign={5:'frag'};
+       // Close whatever else is on screen first. The ascent check sits ON TOP of
+       // the Undercroft and carries its own copy of the belt, and the outcome
+       // card covers the whole page: measured, it is what was over this cell in
+       // the full run, and showScreen cannot clear it because it only closes
+       // .modal.on and the outcome panel is not a modal.
+       var _shut=['stagemodal','sectormodal','outcome','title','pausebox'];
+       for(var _si=0;_si<_shut.length;_si++){
+         var _se=document.getElementById(_shut[_si]);
+         if(_se) _se.classList.remove('on');
+       }
+       __showScreen('hub');
+       var hb=document.getElementById('hub'); if(hb) hb.classList.add('on');
+       return P2;
+     }
+     function dragBeltTo(targetId){
+       var cell=onScreen('[data-plan="5"]');
+       var tgt=document.getElementById(targetId);
+       if(!cell||!tgt){
+         // NAME WHAT IS IN THE WAY. "no belt cell on screen" is true and useless,
+         // and it cost me two wrong guesses before I ran the corpus and looked.
+         var any=document.querySelector('[data-plan="5"]'), over='nothing';
+         if(any){
+           var ar=any.getBoundingClientRect();
+           if(!(ar.width>0&&ar.height>0)) over='the cell has no box at all';
+           else {
+             var el=document.elementFromPoint(ar.left+ar.width/2,ar.top+ar.height/2);
+             over=el?('covered by ['+(el.id||el.className||el.tagName)+']'):'its centre is off the viewport';
+           }
+         } else over='the belt drew no cell for slot 5';
+         return {err:'cannot aim at the belt: '+over};
+       }
+       var sc=centre(cell), tc=centre(tgt);
+       // THE GESTURE MUST BE AIMED AT WHAT I THINK IT IS. Driving the handler
+       // directly is how v9.74 passed while every string on it was unreachable by
+       // a real click, so both ends are read off the page before the drag runs.
+       var atS=document.elementFromPoint(sc[0],sc[1]);
+       if(!(atS&&atS.closest&&atS.closest('[data-plan]')===cell))
+         return {err:'the belt cell is not what is under the cursor at its own centre'};
+       var atT=document.elementFromPoint(tc[0],tc[1]);
+       var zone=atT&&atT.closest?atT.closest('[data-drop]'):null;
+       if(!zone) return {err:'nothing under the release point is a drop target'};
+       ev('mousedown',sc[0],sc[1],cell);
+       var gh=document.getElementById('grabghost');
+       var started=!!(gh&&gh.style.display!=='none');
+       ev('mousemove',(sc[0]+tc[0])/2,(sc[1]+tc[1])/2);
+       ev('mousemove',tc[0],tc[1]);
+       ev('mouseup',tc[0],tc[1]);
+       return {started:started, zone:(zone.id||zone.className)};
+     }
+     // ---- THE FINDING, HIS REPORT: belt to backpack did nothing at all.
+     var P1=stage();
+     var r1=dragBeltTo('kitgrid');
+     if(r1.err) return done('SKIP: '+r1.err);
+     if(!r1.started)
+       bad.push('the drag never started, so nothing below is about the drop');
+     if(r1.zone!=='kitcol')
+       bad.push('a release over the backpack reaches ['+r1.zone+'] rather than the backpack column');
+     if(P1.hotAssign&&P1.hotAssign[5]!==undefined)
+       bad.push('dragging off the tactical belt onto the backpack leaves the item on key 5, '+
+                'which is his report: the handler refused anything not from the stash');
+     if(P1.kit.indexOf('frag')<0)
+       bad.push('the item left the backpack entirely instead of moving into it');
+     var kg=document.getElementById('kitgrid');
+     if(!kg||!kg.children.length)
+       bad.push('the backpack grid draws no cell after the item was moved into it');
+     var kn=document.getElementById('kitn'), qn=document.getElementById('quickn');
+     if(kn&&kn.textContent!=='1')
+       bad.push('the backpack counter reads '+kn.textContent+' rather than 1 packed');
+     if(qn&&qn.textContent!=='0')
+       bad.push('the belt counter reads '+qn.textContent+' rather than 0 on keys');
+     // ---- CONTROL ONE: the same gesture to the stash still works. This is what
+     // v8.72 shipped, it is the proof the gesture and this harness are sound, and
+     // it would catch a new branch that swallowed every plan drop.
+     var P3=stage();
+     var r2=dragBeltTo('stashgrid');
+     if(r2.err) return done('SKIP: '+r2.err);
+     if(P3.hotAssign&&P3.hotAssign[5]!==undefined)
+       bad.push('control: the belt to stash drag, which v8.72 shipped, has stopped clearing the key');
+     if(P3.kit.indexOf('frag')>=0)
+       bad.push('control: an item dropped on the stash is still in the kit, so it did not stay home');
+     // ---- CONTROL TWO: the original path into the backpack is untouched. The fix
+     // adds a branch ahead of the stash test, so the stash drop is what it could
+     // break, and a backpack that only accepts belt items is not a fix.
+     var P4=stage();
+     P4.hotAssign={};
+     __showScreen('hub');
+     var hb2=document.getElementById('hub'); if(hb2) hb2.classList.add('on');
+     var sCell=onScreen('#stashgrid .cell');
+     var col=document.getElementById('kitcol');
+     if(sCell&&col){
+       var before=P4.kit.length;
+       var sc2=centre(sCell), tc2=centre(document.getElementById('kitgrid'));
+       ev('mousedown',sc2[0],sc2[1],sCell);
+       ev('mousemove',tc2[0],tc2[1]);
+       ev('mouseup',tc2[0],tc2[1]);
+       if(P4.kit.length<=before)
+         bad.push('control: dragging out of the stash into the backpack no longer adds anything');
+     }
+     return done(bad.length?bad.join('; '):null); }},
   {v:'9.81',what:'no wall anywhere inside a building has forgotten what it is',
    run:function(){
      var bad=[];

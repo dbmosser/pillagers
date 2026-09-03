@@ -40023,6 +40023,127 @@ cannot hear it and neither can the harness. Whether 5.5 Hz reads as epic or as a
 wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
+
+## v9.82 - HIS REPORT: NOTHING WOULD COME OFF THE TACTICAL BELT INTO THE BACKPACK
+
+One of his open notes, sitting unreproduced in AUDIT.md. It is real, it is one
+line, and it is the missing half of a fix I shipped at v8.72.
+
+### REPRODUCED FIRST, WITH THE GESTURE AND NOT THE ENGINE
+At 1920x1080 with the Undercroft open and a Frag Charge bound to belt slot 5:
+mouse down on the belt cell, move across, release over the backpack grid.
+
+  the drag ghost appeared                       yes, the drag really started
+  the release landed on the backpack column     yes, kitcol, read off the page
+  the item after                                still on key 5
+  the backpack after                            "Nothing picked. Drag from the stash."
+
+Nothing happened, and nothing was said either: no message, no refusal sound. That
+is the worst way for it to fail, because it reads as a broken drag rather than as
+a refused one, and there is nothing to tell him which.
+
+Both ends of the gesture are read off the page before it runs: the element under
+the source point must BE the belt cell, and the element under the release point
+must resolve to a drop target. That is deliberate. v9.74 passed while every
+string it tested was unreachable by a real click, and the lesson was that a check
+which drives the handler proves the handler runs, not that anyone can reach it.
+
+### THE CAUSE
+The backpack column's drop handler opens with:
+
+    dropzone(col,function(key,from){ if(from!=='stash') return;
+
+A drag off a belt cell arrives labelled plan:5 and is dropped on the floor.
+
+v8.72 was his earlier report about the same belt. That build made the belt cells
+drag SOURCES, which they had never been, and taught the STASH to accept what came
+off them. The backpack was never told. The same gesture to the stash works today,
+which is how I know the gesture and the harness are sound: it clears the key and
+takes the item home.
+
+### WHAT MOVING IT ACTUALLY MEANS
+planPut pushes the item into P.kit when it claims a slot, so an item on the belt
+IS already in the kit and already going up; the backpack list simply hides one
+copy per binding. So belt to backpack is exactly one thing: release the key. The
+item does not move, the count going up does not change, and that is why there is
+no capacity test on this path. There is a defensive push for a binding whose item
+is somehow not in the kit, which planPut should make impossible, and it refuses
+with a reason if the kit is full rather than dropping the item.
+
+After the fix, same gesture, same staging: key 5 clear, item still in the kit,
+the backpack grid drawing the Frag Charge cell, the counters reading 1 packed and
+0 on keys.
+
+### THE CHECK AND ITS TEETH
+Run against a fixture built from v9.81 it fails and names his symptom: the item
+is still on key 5, the backpack counter reads 0 rather than 1, and the belt
+counter reads 1 rather than 0. Against this build it returns null.
+
+Three controls, because the fix adds a branch AHEAD of the stash test and the
+stash paths are what it could break: belt to stash must still clear the key and
+leave the item home, which is v8.72's behaviour; stash to backpack must still
+add; and if the pane is not laid out the check says so instead of condemning the
+build, since elementFromPoint returns null everywhere in a 0x0 pane and every
+drag would fail for a reason that has nothing to do with the game.
+
+### AND THE REASON IT STAYED OPEN, WHICH IS WORSE THAN THE BUG
+There has been a check for this the whole time. It is titled "an item can be
+dragged OFF the Undercroft belt and back into the backpack" and its failure line
+reads "the belt slot still holds the item after dragging it to the backpack".
+
+It drags to stashgrid, which is the stash, and asserts the item is NOT in the kit
+and IS in the stash. That is the it-stays-home path, which is the opposite of
+going into the backpack.
+
+So the one check named for his symptom has been passing, for builds, on a
+different gesture, and the corpus was green while the thing he reported did not
+work. Its assertions are correct for what they actually measure and are
+untouched; the name and the message are corrected so the check says what it does.
+Belt to backpack is the new check.
+
+### MY ERROR: THE CHECK SKIPPED IN THE FULL RUN, AND I GUESSED TWICE
+The first full corpus came back "PASS, 121 checks, 1 could not run", and the one
+that could not run was this build's own check, reporting that the belt cell was
+not what sat under the cursor. A SKIP is not a PASS.
+
+I guessed twice and was wrong twice. First guess: the belt is drawn twice, by
+hotPlanHTML() into the Undercroft column and hotPlanHTML('stage') into the ascent
+check, so querySelector could take the wrong one. TRUE, worth fixing, and not the
+cause. Second guess: a stale menu zoom left by another check. Also not the cause.
+
+Then I ran the 86 checks that precede this one and dumped the page instead of
+running it:
+
+  hub on                true          the Undercroft really is open
+  viewport              1920x1080     alive
+  belt cells in page    1             exactly one, at 1717,301, the right place
+  under its centre      outcome       THE EXTRACTION CARD IS LYING ON TOP OF IT
+
+An earlier check leaves the outcome overlay up, and showScreen cannot clear it
+because it closes elements matching .modal.on and the outcome panel is not a
+modal. The title screen keeps its on class too.
+
+### AND THEN MY FIX POISONED THE NEXT CHECK
+Closing those panels cleared the skip and broke v9.58, which measures the
+fullscreen button on the title screen and read 0x0 because I had just shut it.
+That is the harness poisoning itself, in the one direction I had not thought
+about: I know a check can leave the page dirty, and a check that CLEANS the page
+owes exactly the same duty in reverse.
+
+Every panel this check closes is now recorded before it opens the Undercroft and
+put back on the way out, on every path including the skips. The failure text also
+names what is covering the cell rather than saying it could not aim, because "no
+belt cell on screen" is true, useless, and what sent me guessing to begin with.
+
+### NOT VERIFIED
+Whether this is the whole of what he meant. His note says "cannot move items from
+the tactical belt to the backpack", and the drag is fixed and proven, but if he
+was reaching for it with a right-click, a keypress, or by clicking the cell, that
+is a different gesture and I have not tested those. Clicking a filled belt cell
+clears the binding, which has always worked and which I did not change, and I did
+not touch the safe pocket, which is the third section in that column and accepts
+nothing off the belt either.
+
 ## v9.81 - THE SAME FAULT IN A THIRD PLACE, AND IT KEPT EVEN LESS
 
 v9.80 ended with a rule: anything that REPLACES a wall must carry that wall's
