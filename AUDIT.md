@@ -506,19 +506,36 @@ AND THE SECOND HALF OF THE STRETCH:
 | HIS NOTE: the extraction call should be 3x longer, epic, undulating | v9.68 | it was one square oscillator, 310 milliseconds, for the loudest decision in the raid. Now 0.96s, three voices with an octave underneath, and a 5.5 Hz vibrato on the tone. The fixture had never been able to check a sound at all: it blocks AudioContext and stubs blip, so a recording stand-in was added, and my own memory note about that stub is what unstuck it |
 | HIS NOTE: the low health flash should slow 2x out of combat | v9.69 | it ran on one rate forever, a cycle every 1.05 seconds, as urgent alone in a corridor as with three machines on him. THE GAME HAD NO IDEA WHAT COMBAT WAS: v8.52 records the last two combat stamps were deleted at v5.50 and nothing has read either since. Now hunted within 900, fired within 4s, or hit within 5s. Measured off drawn pixels: one cycle calm against two hunted over 2.08 seconds |
 | HIS NOTE: hold space to surrender when downed and the self-revive is already spent | v9.71 | measured on v9.70 first: SPACE held 2.5 seconds with the revive gone did nothing, and there was no field for it. The only exits were the 17 second bleed and a 30 units per second crawl, which from across a map is a wait with an answer he already knows. Now a 1.5 second hold, gated on the revive being spent so it cannot end a raid while he still holds one, and blocked while he lies inside a landed extraction. My first reproduction set a property on __keys, which is a FUNCTION, and measured nothing |
+| STANDING FINDING: the game demolishes a fifth of its own buildings at load | v9.72 | HALF FIXED. Measured at seed 4242: 16 of 84 on THE COLD MILE and 2 of 20 on COLD STORAGE lost their authored interior because one cell somewhere could not be reached. The furniture layer has removed only what TOUCHES the pocket since v1.94; the partition layer never learned that and was still all-or-nothing. Now peeled up to four times: mile 16 to 12 and 171 to 180 interior walls, cold storage 2 to 1. Entity counts identical in both arms, so the world did not move |
+| NEW, FOUND WHILE PROVING v9.72: the repair does not repair, and never checks | OPEN | flooding the FINAL walls of THE COLD MILE still finds 8 buildings holding interior floor nothing can reach, all 8 flagged repaired, two of them large (110 and 144 unreachable cells). Their interiors were destroyed for nothing. Every wall within 24 units of the four worst is an UNTAGGED SHELL wall, so their one or two 64 unit doors are bricked up by neighbouring geometry they do not own. The pass never re-floods after the blanket strip, so it cannot see this. Fix needs shell segments tagged with their building id before a door can be punched safely |
+| REGRESSION MY OWN v9.72 CAUSED, and the hole it exposed | v9.72 | the v9.30 check caught a house holding 7 crawlers against his cap of 3. Nobody was created, 219 crawlers and 369 entities either way: changing which walls survive shifts where the placement rolls land. I gave three wrong explanations before measuring, each a plausible code path rather than the one the men came from. What ended it was counting exits: 39 of the 40 ways out of that building are open ground, so the mover was fine and the fault was timing. ENCAMPMENTS MAKE CRAWLERS AFTER THE CRAWLER LOOP, at the camp centre plus 120 units of jitter, and that line has never looked at a building. The cap is now checked once with everybody on the map: worst house 3 with the pass on, 7 with it off |
+| FOR HIS RULING, the one cost of v9.72 | OPEN | THE COLD MILE now places 564 containers where it placed 589, a drop of 25 or about 4 percent, because containers go in free interior floor and there are 9 more interior walls. Entities unchanged at 85 and 369. Not a bug, the direct consequence of the fix, and a balance change I did not set out to make. partRepair 0 puts both back. The seed 4242 container fingerprint is now 157 and 564 |
 | HIS NOTE, second time asked: get rid of "first seen" on the KIA/extracted screens | v9.70 | v8.68 took it off the extracted card and left the death card printing two clocks. The v3.08 comment above it argues for ONE figure, how long the fight had been going; first contact was the evidence for printing that, not a second column. Still recorded, still what the duration is measured from |
 | HIS QUESTION: why does it say "still on your feet" under contracts in the raid | v9.70 | because nothing on the panel said what it belonged to. Six of the seven conduct notes name their subject; that one was a compliment, and its BROKEN form already said "you went down", so the rule was invisible only while he was keeping it. Now "no downs yet", the shape of the two rows above it |
 
 STILL OPEN, and this is now the whole list:
-- THE GAME DEMOLISHES A FIFTH OF ITS OWN BUILDINGS. 16 of the 84 on THE COLD MILE
-  and both of the two empty ones on COLD STORAGE are built with an authored
-  interior and then stripped at load by the sealed-room repair pass, which
-  rewrites their plan to 'open' and leaves a bare room. Every building in the game
-  is authored, so a designer's choice is being discarded silently on every load.
-  I tried the fix and REVERTED it: giving a stripped building two stub walls works
-  (empty buildings 31 to 15 on the mile) but broke v9.47 and v9.14
-  deterministically, and my explanation for the v9.47 break was wrong. Full
-  evidence in the DESIGN.md investigation entry
+- THE BUILDING DEMOLITION, HALF CLOSED AT v9.72. The partition strip is no longer
+  all-or-nothing: it peels only the walls next to the unreachable pocket, up to
+  four times. THE COLD MILE 16 demolished interiors down to 12 and 171 interior
+  walls up to 180, COLD STORAGE 2 down to 1, entity counts identical. WHAT IS
+  STILL OPEN is the other half and it is worse: 8 buildings on the mile are still
+  sealed AFTER the whole pass, all 8 flagged repaired, two of them with 110 and
+  144 unreachable interior cells. Their interiors were destroyed for nothing.
+  Every wall within 24 units of the four worst is an UNTAGGED SHELL wall, so
+  their doors are bricked by neighbouring geometry, and the pass never re-floods
+  after the blanket strip so it cannot see this. Needs shell segments tagged with
+  their building id before a doorway can be punched safely. The old stub-wall
+  attempt stays reverted; this is a different fix.
+  ROOT CAUSE FOUND, v9.72, and it changes the whole shape of this item:
+  SOMETHING IS BRICKING UP DOORWAYS. Building 6's south wall is three segments,
+  180 wide 151, 331 wide 68, 399 wide 121, unbroken from 180 to 520. makeBuilding
+  emits a door as TWO segments with a 64 unit gap; the middle one here is exactly
+  68 wide, which is DOOR, the interior doorway constant. It is untagged, not
+  furniture and not a wreck, which is exactly why the repair pass cannot remove
+  it: that pass only ever deletes walls carrying a building id. So the eight
+  sealed buildings are not a repair failure, they are a doorway being filled after
+  the fact. Next build starts from that signature: a 68 wide, 16 tall, untagged
+  segment sitting in a shell doorway. I have not yet found which pass emits it
 - and a correction: v9.48 says 45 of 84 buildings share the same footprint, 54
   percent. Wrong, and mine: I bucketed sizes to the nearest 40 and reported the
   bucket as an exact size. The real commonest footprint is 300x220 at 27 of 84

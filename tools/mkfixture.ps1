@@ -5085,6 +5085,78 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.72',what:'a blocked doorway costs one wall now, not the whole authored floor plan',
+   run:function(){
+     var bad=[];
+     if(!(window.__movers&&__movers.buildNav)) return 'SKIP: no buildNav, the floor cannot be flooded';
+     __pinDPR(1); __forceSize(1920,1080);
+     // Floods from the largest open area, the same seeding rule the repair pass
+     // uses, and reports what it could not reach INSIDE each building. Written
+     // here rather than read off a field because the point of this check is
+     // whether the pass tells the truth about its own work.
+     function survey(mapIx,dial){
+       __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __cfg({partRepair:dial});
+       __deploy({kit:[],safe:null,mapIx:mapIx,seed:4242});
+       var g=__state(), B=g.map.buildings||[], WL=g.map.walls||[];
+       var nav=__movers.buildNav(WL), gw=nav.w, gh=nav.h, C=nav.c, blk=nav.blk;
+       var seen=new Uint8Array(gw*gh), st=[], ok=false;
+       for(var sy=1;sy<gh-1&&!ok;sy++)for(var sx=1;sx<gw-1;sx++){
+         if(!blk[sy*gw+sx]){ st.push(sy*gw+sx); seen[sy*gw+sx]=1; ok=true; break; } }
+       while(st.length){
+         var c=st.pop(), cy=(c/gw)|0, cx=c%gw;
+         if(cx>0&&!seen[c-1]&&!blk[c-1]){ seen[c-1]=1; st.push(c-1); }
+         if(cx<gw-1&&!seen[c+1]&&!blk[c+1]){ seen[c+1]=1; st.push(c+1); }
+         if(cy>0&&!seen[c-gw]&&!blk[c-gw]){ seen[c-gw]=1; st.push(c-gw); }
+         if(cy<gh-1&&!seen[c+gw]&&!blk[c+gw]){ seen[c+gw]=1; st.push(c+gw); } }
+       var t=16, stripped=0, sealed=0, parts=0;
+       for(var i=0;i<WL.length;i++) if(WL[i].ib!==undefined&&!WL[i].furn) parts++;
+       for(var b=0;b<B.length;b++){
+         var bb=B[b];
+         if(bb.repaired) stripped++;
+         var x0=Math.max(0,Math.floor(bb.x/C)), x1=Math.min(gw-1,Math.ceil((bb.x+bb.w)/C));
+         var y0=Math.max(0,Math.floor(bb.y/C)), y1=Math.min(gh-1,Math.ceil((bb.y+bb.h)/C));
+         var un=0;
+         for(var y=y0;y<=y1&&!un;y++)for(var x=x0;x<=x1&&!un;x++){
+           var ii=y*gw+x; if(blk[ii]||seen[ii]) continue;
+           var wx=x*C+C/2, wy=y*C+C/2;
+           if(wx>bb.x+t&&wx<bb.x+bb.w-t&&wy>bb.y+t&&wy<bb.y+bb.h-t) un=1; }
+         if(un) sealed++;
+       }
+       return {buildings:B.length, stripped:stripped, sealed:sealed, parts:parts, ents:g.ents.length};
+     }
+     var on=survey(1,1), off=survey(1,0);
+     // CONTROL ONE: the arms have to be different runs of the same map, or
+     // nothing below is a comparison. A map that failed to build reports zero
+     // buildings and would satisfy every "fewer" test by being empty.
+     if(on.buildings!==84||off.buildings!==84)
+       return 'SKIP: THE COLD MILE did not build its 84 buildings, so there is nothing to compare';
+     // THE FINDING. Measured on v9.71: 16 of the 84 buildings on this map had
+     // their authored interior demolished at load because one cell somewhere in
+     // them could not be reached.
+     if(!(on.stripped<off.stripped))
+       bad.push('the same '+on.stripped+' buildings lose their floor plan with the targeted '+
+                'repair on as with it off, so no building was rescued');
+     // CONTROL TWO: rescued means GEOMETRY SURVIVED, not a flag flipped. If the
+     // partition count did not rise, the buildings kept their label and lost
+     // their walls anyway, which is the failure this check exists to catch.
+     if(!(on.parts>off.parts))
+       bad.push('the map keeps '+on.parts+' interior walls with the repair on against '+
+                off.parts+' with it off, so nothing actually survived');
+     // CONTROL THREE, THE SAFETY NET. The whole reason the old strip was
+     // all-or-nothing is that a sealed room is loot nobody can ever reach. The
+     // targeted version must not leave a single building sealed that the blanket
+     // version would have opened.
+     if(on.sealed>off.sealed)
+       bad.push('the targeted repair leaves '+on.sealed+' buildings holding floor nothing can '+
+                'reach against '+off.sealed+' before, so it has traded a floor plan for a dead room');
+     // CONTROL FOUR: the world did not move. Changing which walls survive must
+     // not shift what the map spawns, or every measurement taken on this seed
+     // since v1.56 is void.
+     if(on.ents!==off.ents)
+       bad.push('the map spawns '+on.ents+' with the repair on and '+off.ents+
+                ' with it off, so the fix moved the world');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.71',what:'holding space surrenders once the self-revive is gone, and only then',
    run:function(){
      var bad=[];
@@ -6907,15 +6979,18 @@ window.__REGRESS=[
        var uPx=pp.x-sx, uPy=pp.y-sy, uLx=tx0-sx, uLy=ty0-sy;
        var nP=Math.hypot(uPx,uPy), nL=Math.hypot(uLx,uLy);
        if(nL<25||nP<25) return {skip:'the two answers are on top of the machine'};
-       var blind=true;
+       var blind=true,_sh=0;
        for(var f2=0;f2<110;f2++){
+         var _b0=(G2.bullets||[]).length;
          __ents(1/60);
+         var _b1=(G2.bullets||[]).length;
+         if(_b1>_b0) _sh+=(_b1-_b0);
          if(__los.clear(src.x,src.y,pp.x,pp.y)) blind=false;
          if(wantBlind&&!blind) break;
          if(src.state!=='chase') break;
        }
        var dx=src.x-sx, dy=src.y-sy, mv=Math.hypot(dx,dy);
-       return {kind:kind, moved:+mv.toFixed(1), blind:blind, state:src.state,
+       return {kind:kind, moved:+mv.toFixed(1), blind:blind, state:src.state, shots:_sh,
                atPlayer: mv>0.5?+((dx*uPx+dy*uPy)/(mv*nP)).toFixed(3):null,
                atLastSeen: mv>0.5?+((dx*uLx+dy*uLy)/(mv*nL)).toFixed(3):null,
                closed:+(nP-Math.hypot(pp.x-src.x,pp.y-src.y)).toFixed(1)};
@@ -6924,12 +6999,19 @@ window.__REGRESS=[
      if(!far||!near) return 'SKIP: this map has no wall with open ground on both sides of it';
      // CONTROL ONE, and the one that matters most: a machine that can SEE you must
      // still come for you. If this fix worked by blinding everything it is worthless.
+     //
+     // v9.72 WIDENED WHAT COUNTS AS COMING FOR YOU, after this went red on a
+     // moved arena and the raider turned out to be engaging rather than stuck: it
+     // stayed in chase, held the player in view for all 110 frames, stopped at
+     // 434 units and SHOT him. Shooting from where it stands is one of the ways a
+     // machine comes for you, and the thing this control guards against, a fix
+     // that works by blinding everything, produces neither closing nor shooting.
      var open=run('raider',far,far.opn);
      if(open.skip) return 'SKIP: '+open.skip;
-     if(!(open.closed>40&&open.atPlayer>0.7))
+     if(!((open.closed>40&&open.atPlayer>0.7)||open.shots>0))
        bad.push('control: a raider standing '+Math.round(far.opn.r)+
                 ' units off with a clear view of the player closed only '+open.closed+
-                ' units at cosine '+open.atPlayer+', so pursuit itself is broken');
+                ' units at cosine '+open.atPlayer+' and never fired, so pursuit itself is broken');
      // CONTROL TWO: close quarters was always right and has to stay right.
      var rn=run('raider',near,near.hid);
      if(rn.skip) return 'SKIP: '+rn.skip;

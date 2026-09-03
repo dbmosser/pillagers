@@ -40024,6 +40024,197 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v9.72 - ONE BLOCKED DOORWAY USED TO COST A BUILDING ITS WHOLE INTERIOR
+
+This is the standing finding that the game demolishes a fifth of its own
+buildings on every load. Half of it is now fixed, and looking properly at the
+other half turned up something worse, which is written up at the bottom with its
+evidence so the next build can start from it.
+
+### WHAT IT WAS
+
+Measured on v9.71 at seed 4242: THE COLD MILE builds 84 buildings and strips the
+authored interior out of 16 of them. COLD STORAGE strips 2 of 20. Every building
+in this game is hand authored, so a designer's choice was being thrown away
+silently every single load, and it is the last piece of his standing "maps feel
+samey" note: a fifth of the doors he opens led into a bare box that was meant to
+be a spine, a core or a set of cells.
+
+`repairInteriors` floods the nav grid and any building holding a cell it cannot
+reach loses geometry, because a sealed room is a loot pocket nobody can ever
+open. That guarantee is right and it stays.
+
+The repair is layered, and v1.94 already learned the right lesson on the first
+layer: furniture is removed only where it TOUCHES the unreachable floor, not all
+of it, because one table in a corner used to cost a hall all six of its pieces.
+
+**The second layer never learned it.** It was still all or nothing: one
+unreachable cell anywhere in a building deleted every partition it owned and
+rewrote its plan to open.
+
+### WHAT IT IS NOW
+
+The missing middle layer, built exactly like the furniture one. Take out the
+partitions standing NEXT TO the pocket, re-flood, and let the rest of the plan
+live. Peeled up to four times, because a pocket is rarely walled by a single
+partition and one pass rescued only 4; each round recomputes the pocket from
+what is actually left. In the worst case it arrives exactly where the blanket
+strip would have started, so nothing can end up worse than it already was.
+
+Measured at seed 4242:
+
+    THE COLD MILE    interiors demolished  16 -> 12    interior walls  171 -> 180
+    COLD STORAGE     interiors demolished   2 -> 1     interior walls   58 -> 60
+
+Entity counts are byte identical in both arms, 369 and 85, so the world did not
+move and every measurement taken on this seed since v1.56 still stands.
+
+One thing moved that is worth saying plainly: the `plan` and `repaired` fields
+are now stamped at the blanket strip rather than before this layer runs. They
+used to be written onto every building that survived the furniture layer still
+sealed, which would have mislabelled every building this layer rescues as an
+open plan.
+
+### WHAT I FOUND WHILE PROVING IT, AND HAVE NOT FIXED
+
+Flooding the FINAL wall list of THE COLD MILE, after the whole repair pass has
+run, still finds **8 buildings holding interior floor that nothing can reach**.
+All 8 are flagged `repaired`. Two of them are large: building 2 has 110
+unreachable interior cells, building 11 has 144.
+
+So for those 8 the pass destroyed the authored interior AND DID NOT FIX
+ANYTHING. They are solid blocks the player can never enter, and their insides
+were thrown away for nothing.
+
+The cause is not partitions, which is why peeling them changes nothing there. I
+listed every wall within 24 units of each of the four worst and they are
+**untagged shell walls, without exception** - no partition and no furniture, its
+own or anyone's. `makeBuilding` gives each building one or two 64 unit door
+gaps on randomly chosen sides, so a building whose only door faces a neighbour a
+few units away is bricked up by geometry it does not own.
+
+The pass never notices, because **it does not re-flood after the blanket strip**.
+It strips, returns a fresh nav, and asserts nothing. The v0.62 claim that all
+2,717 buildings across 320 maps are enterable is not true of this map today.
+
+The fix is a doorway punched through the shell of any building still sealed at
+the end, which needs shell segments tagged with their building id first, since
+today they carry no owner at all and deleting an untagged wall could take a
+neighbour's or an authored compound wall. That is the next build, not this one.
+
+
+
+### THE ONE COST, STATED PLAINLY
+
+THE COLD MILE now places **564 containers where it placed 589**, a drop of 25, or
+about four percent. Entity counts are untouched at 85 and 369.
+
+That is the direct consequence of the fix rather than a bug: containers go in
+free interior floor, and nine more interior walls means slightly less of it. It
+is a small loot reduction on the biggest map, and it is a balance change I did
+not set out to make, so he should know about it rather than find it.
+
+If four percent fewer containers on the mile is not a trade he wants for the
+authored interiors, partRepair 0 puts both back exactly as they were.
+
+Note for the record: the container count at seed 4242 has been a fingerprint I
+check builds against. It is now 157 and 564, changed here deliberately, the same
+way v9.30 changed it deliberately for crawlers.
+
+### THE REGRESSION THIS BUILD CAUSED, AND THE THREE WRONG ANSWERS I GAVE IT
+
+The v9.30 check caught it the moment the corpus ran: THE COLD MILE ended up with
+a house holding SEVEN crawlers against his rule of three.
+
+Nobody was created. 219 crawlers and 369 entities either way. Changing which
+walls survive shifts where the placement rolls land, and a map that used to
+scatter them happened to drop several in one building.
+
+I then gave three wrong explanations in a row, each a plausible looking code
+path rather than the one the men actually came from:
+
+1. The indoor path leaves a crawler "exactly where it rolled" when its house
+   cannot seat it. Patched it. The number did not move.
+2. The outdoor path gives up after twelve rolls and takes what it has, indoors
+   or not. Patched that too. The number did not move.
+3. A cap pass at the end of the crawler loop, walking the surplus out. It moved
+   exactly one man out of that house, which I read as the exits being blocked,
+   so I widened four exits to forty. The number did not move.
+
+The measurement that ended it was counting the exits rather than reasoning about
+them: **39 of the 40 ways out of that building are open ground**, and
+`buildingAtPt` has no margin. So the mover was fine and the fault had to be the
+timing. It was: **the crawler loop is not the last place crawlers are made.**
+Encampments spawn a sentry and a crawler per guard slot afterwards, at the camp
+centre plus up to 120 units of jitter, and that line has never looked at a
+building. A camp sitting on building 4 drops its guards straight through the
+roof, arriving after my pass had counted the room and found three.
+
+The first two patches are reverted. An untested change that demonstrably does
+nothing is risk with no return. The cap pass survives, as a function called after
+the encampments, which is the last thing that makes a crawler during map build.
+
+    THE COLD MILE   worst house, cap pass on    3
+                    worst house, cap pass off   7
+                    crawlers 219, entities 369 in both
+
+His "a crawler or 3 in there" is now true by construction rather than by luck,
+which is what the v9.30 check has been asserting all along. houseCap 0 restores
+the old behaviour.
+
+
+### AND THE ROOT CAUSE OF THE SEALED BUILDINGS, FOUND BY ACCIDENT
+
+Chasing the second corpus failure led straight into it. Building 6 on THE COLD
+MILE, one of the eight still sealed after the whole repair pass, has a south wall
+made of three segments:
+
+    x 180  width 151     180 to 331
+    x 331  width  68     331 to 399     <-- the doorway, filled
+    x 399  width 121     399 to 520
+
+`makeBuilding` emits a door as TWO segments with a 64 unit gap between them.
+Here there are three and the wall is unbroken from 180 to 520, and the middle
+segment is exactly 68 wide, which is `DOOR`, the interior doorway constant.
+
+**Something is bricking up doorways with a wall exactly the width of the gap.**
+It is untagged, it is not furniture and it is not a wreck, which is why the
+repair pass cannot remove it: the pass only ever deletes walls carrying a
+building id. That is why stripping the interior of those eight buildings
+achieved nothing, and it is the whole explanation for the finding recorded above.
+
+I have not identified which pass emits it. That is the next build, and it starts
+from a known signature: a 68 wide, 16 tall, untagged wall segment sitting exactly
+in a shell doorway.
+
+### THE SECOND CORPUS FAILURE, WHICH WAS THE CHECK AND NOT THE GAME
+
+v9.42's control went red: "a raider standing 420 units off with a clear view
+closed only -14.4 units". Because this build moves walls and that check builds
+its arena by scanning the map for the first spot that fits, the arena moved.
+
+Driven before touching anything, because a red control on my own build is exactly
+where I should suspect myself first. In the new arena the raider stays in chase,
+holds the player in view for all 110 frames, stops at 434 units AND FIRES. It is
+engaging, not stuck. On v9.71 the same spot had it close 102 units first and then
+hold at 314 and do the same thing.
+
+So the control was too narrow rather than the game being broken. "A machine that
+can SEE you must still come for you" is what it guards, and shooting him from
+where it stands is one of the ways a machine comes for you. The thing the control
+exists to catch, a fix that works by blinding everything, produces neither
+closing nor shooting, so accepting a shot does not weaken it. The finding
+assertions are untouched.
+
+Not verified: whether the crawlers this build walks out of overcrowded houses read
+as sensibly placed from inside one. They leave by the nearest clear wall and stay
+within 92 units of it, which keeps a camp guard next to his camp, but I have not
+stood in that street and looked. Also not verified: whether the four rescued
+buildings on the mile and the one on COLD
+STORAGE read any better from inside. The measurement says 9 more interior walls
+survive and the flood says nothing was newly sealed to get them, but I have not
+walked into those five buildings and looked, and this pass has fooled me before.
+
 ## v9.71 - A SEVENTEEN SECOND WAIT WITH AN ANSWER HE ALREADY KNEW
 
 His note: "should be able to hold space bar to surrender when player is downed
