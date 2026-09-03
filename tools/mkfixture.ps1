@@ -5221,6 +5221,51 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.27',what:'the mainframe card is NET LIFETIME EARNINGS, the sum over every run of extracted minus carried in, a death losing what it carried',
+   run:function(){
+     var bad=[];
+     if(typeof runEarnings!=='function'||typeof netEarnFromLog!=='function') return 'the profile has no lifetime earnings; the card is still proficiency';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(); var keep={netEarn:P2.netEarn,log:P2.log,runs:P2.runs,ext:P2.ext};
+     P2.netEarn=0; P2.log=[];
+     // Values are read at the moment the raid values them, because a deploy can
+     // move the loot multiplier and a constant read beforehand disagrees.
+     // ONE: in with a medkit and a frag, out with the same: earnings zero, and the record knows both numbers.
+     __deploy({kit:['medkit','frag'],safe:null,mapIx:0,seed:4242}); var g=__state(); if(!g) return 'SKIP: no raid'; g.ents.length=0;
+     // The value is the BAG's, as the haul is: a frag in the kit goes to the tactical
+     // belt at landing and is valued on neither side, so the bag is read as landed.
+     var inV=0; for(var bi=0;bi<g.bag.length;bi++) inV+=ival(g.bag[bi]);
+     if(!(inV>0)) return 'SKIP: the bag landed empty or worthless';
+     if(Math.round(g.carriedIn||0)!==inV) bad.push('the lift landed with '+inV+' of kit and the raid recorded '+g.carriedIn+' carried in');
+     __endRaid('extract'); var ob=document.getElementById('oc_btn'); if(ob) ob.click();
+     var r1=P2.log[P2.log.length-1]||{};
+     if(r1.carriedIn!==inV) bad.push('the record carries '+r1.carriedIn+' in, not '+inV);
+     if(P2.netEarn!==0) bad.push('in and out with the same bag, earnings read '+P2.netEarn+', not 0');
+     // TWO: die holding what landed with a plate in the kit: minus the whole landed bag.
+     // (The lift adds a bandage or two of its own to any kit; the bag is read as landed.)
+     __deploy({kit:['plate'],safe:null,mapIx:0,seed:4242}); g=__state(); g.ents.length=0;
+     var in2=0; for(var b2=0;b2<g.bag.length;b2++) in2+=ival(g.bag[b2]);
+     if(!(in2>0)) bad.push('staging: the second bag landed worthless');
+     __endRaid('dead'); ob=document.getElementById('oc_btn'); if(ob) ob.click();
+     if(P2.netEarn!==-in2) bad.push('dying with a bag worth '+in2+' reads '+P2.netEarn+', not '+(-in2));
+     // THREE: pick up scrap and walk out with the landed bag plus the scrap: plus the scrap.
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state(); g.ents.length=0; g.bag.push('scrap'); var scrap=ival('scrap');
+     __endRaid('extract'); ob=document.getElementById('oc_btn'); if(ob) ob.click();
+     if(P2.netEarn!==-in2+scrap) bad.push('three runs read '+P2.netEarn+', not '+(-in2+scrap));
+     var plate=in2;
+     // FOUR: the card says what it is, with that number.
+     var html=''; if(typeof renderStatCards==='function'){ renderStatCards(); html=(document.getElementById('statgrid')||{}).innerHTML||''; }
+     if(html.indexOf('Net lifetime earnings')<0) bad.push('the card is not called Net lifetime earnings');
+     if(/Net carried out/.test(html)) bad.push('the old card name is still there');
+     if(html.indexOf((-plate+scrap).toLocaleString())<0) bad.push('the card does not show '+(-plate+scrap));
+     if(!/extracted, minus everything you carried in/.test(html)) bad.push('the card does not explain itself');
+     // FIVE: a profile from before the counter sums its log, old records counting their haul alone.
+     P2.log=[{outcome:'extract',haul:500},{outcome:'dead',haul:900},{outcome:'extract',haul:300,carriedIn:120}];
+     if(netEarnFromLog()!==500+300-120) bad.push('an old log sums to '+netEarnFromLog()+', not 680');
+     // CONTROL: the Experience card is still beside it.
+     if(html.indexOf('Experience')<0) bad.push('control: the Experience card is gone');
+     for(var k in keep) P2[k]=keep[k];
+     return bad.length?bad.join('; '):null; }},
   {v:'10.26',what:'the hotbar is the TACTICAL BELT everywhere a player reads it, and the old word is gone from every surface',
    run:function(){
      var bad=[];

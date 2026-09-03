@@ -40024,6 +40024,49 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.27 - NET LIFETIME EARNINGS
+
+His note, 2026-09-03 about 17:35: **"the 'net carried out' explanation makes
+no sense-- should be 'everything you've extracted' -- should be called 'Net
+lifetime earnings' and it should be calculated as the sum of, for all games,
+everything extracted, minus everything carried in (including stuff carried
+in and then lost via KIA or abandoned, e.g not extracted)"**.
+
+### What it was
+
+The card showed proficiency: banked value plus, minus sixty percent of what
+you died holding, floored at zero, in thousands, with the line "what you
+banked, minus most of what you died holding". Nothing else read proficiency.
+
+### Now
+
+The bag is valued when the lift lands, the same way the haul is valued when
+you extract, and the record keeps both. A run's earnings are what it
+extracted minus what it carried in; a death or an abandon extracted nothing
+and lost what it carried. The profile keeps the running sum, negative
+allowed, because that is the truth of it. A profile from before the counter
+sums its log once; its old records have no carried-in value and count their
+haul alone. The card is NET LIFETIME EARNINGS and says: "everything you have
+extracted, minus everything you carried in, over every run. A run that died
+or was abandoned lost what it carried in." The tactical belt is not valued on
+either side; it is consumables, and the haul never counted it either.
+
+### Measured
+
+The check runs a raid in with a medkit and a frag and out with the same and
+requires the record to carry both numbers and the sum to read zero; dies
+with a bag that landed with a plate and requires minus that bag; picks up scrap and walks out
+and requires that loss plus the scrap; requires the card named and
+explained with that number and the old name gone; sums a hand-made old log
+and requires haul-only counting for records without a carried-in value; the
+control is the Experience card still beside it. On v10.26 there was no
+lifetime earnings on the profile at all, which is the finding.
+
+Not verified: an abandon with nothing looted, which records no run and so
+counts nothing either way, by the rule that has stood since v8.17; if he
+wants the kit carried into an abandoned raid counted as lost, that rule is
+the one to change.
+
 ## v10.26 - THE HOTBAR IS THE TACTICAL BELT
 
 His note, 2026-09-03 about 17:20: **"In stash, instead of hotbar, let's

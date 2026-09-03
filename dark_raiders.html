@@ -1241,7 +1241,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.26';
+var VER='10.27';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2149,6 +2149,7 @@ if(!P.packRefund&&P.pack>0){
 // That plan is not a plan he made, so it goes, once. Guns are separately
 // protected in hotbarSlots so nothing like it can bite again.
 if(P.hotAssignAuto){ P.hotAssign={}; delete P.hotAssignAuto; } if(!P.menuZoom)P.menuZoom=1.3; if(P.menuZoom<1)P.menuZoom=1;   /* v10.22: never below the screen */ if(!Array.isArray(P.kit))P.kit=[]; if(!Array.isArray(P.dropKit))P.dropKit=[];
+if(P.netEarn===undefined) P.netEarn=netEarnFromLog();   // v10.27: a profile from before the counter sums its log once
 // BETA v1: one sector is offered, so a profile pointing at any other is moved
 // to the one that is. Not a display filter - the stored destination itself.
 if(typeof FIXED_MAPS!=='undefined'&&typeof mapOffered==='function'){
@@ -9379,6 +9380,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
 }
 function startRaid(){
   G=buildRaid(false);
+  G.carriedIn=bagValue();   // v10.27: what the lift carried in, valued as the haul is
   // THE CORE BURNS, v3.81. One core, one raid: armed intel is consumed the
   // moment the lift moves, and the raid carries the flag plus the live list
   // of which containers hold the locked-room keys, computed here because the
@@ -16860,18 +16862,22 @@ function xpForRun(rec){
 }
 // v10.06, his answer 22: a night run pays more. Dial nightXp, 1.2 by default.
 function nightXpMul(){ return (CFG.nightXp===undefined)?1.2:CFG.nightXp; }
+// v10.27: one run's earnings, and the sum over the log for a profile that
+// predates the counter. Old records carry no carried-in value and count their
+// haul alone, which is the best the log can say about them.
+function runEarnings(rec){ return ((rec.outcome==='extract')?(rec.haul||0):0)-(rec.carriedIn||0); }
+function netEarnFromLog(){ var t=0, L=(P&&P.log)||[]; for(var i=0;i<L.length;i++) t+=runEarnings(L[i]||{}); return t; }
 function addProgress(rec){
   // v9.96: through addXp, so a dose in his blood pays its bonus on the run.
   // v10.06: and a night run pays its multiplier on top.
   var _xb=Math.round((spForRun(rec)+xpForRun(rec))*(rec.night?nightXpMul():1)), _xg=addXp(_xb);
   rec.xpBase=_xb; rec.xpGot=_xg;
   P.xpLevel=1+Math.floor(Math.sqrt((P.xp||0)/220));
-  // Proficiency: banked value counts, value lost on death counts AGAINST.
-  P.profRaw=P.profRaw||0;
-  if(rec.outcome==='extract') P.profRaw+=(rec.haul||0);
-  else if(rec.outcome==='dead') P.profRaw-=Math.round((rec.haul||0)*0.6);
-  if(P.profRaw<0) P.profRaw=0;
-  P.prof=Math.round(P.profRaw/1000);
+  // v10.27, his note: NET LIFETIME EARNINGS. Everything extracted minus
+  // everything carried in, over every run; a run that died or was abandoned
+  // lost what it carried. Negative is allowed, because that is the truth of
+  // it. Proficiency, which this replaces, had no other reader.
+  P.netEarn=(P.netEarn||0)+runEarnings(rec);
 }
 function bankItem(k){
   var it=ITEMS[k];
@@ -17382,6 +17388,7 @@ wallClip:(G.tel&&G.tel.wallClip)||null,
     contractsBanked:(G.tel&&G.tel.contractsBanked)||null,
     ghostIn:(G.tel&&G.tel.ghostIn)?1:0,
     haul:haul,items:G.bag.length,containers:T.containers,
+    carriedIn:G.carriedIn||0,   // v10.27: the bag's value when the lift landed
     shots:T.shots,hits:T.hits,acc:acc,reloads:T.reloads,heals:T.heals,eliteKills:T.eliteKills||0,
     downs:T.downs,revives:T.revives,thr:T.thr,marked:T.marked||0,
     beaconCalls:T.beaconCalls,beaconMissed:T.beaconMissed,regen:T.regen||0,
@@ -26452,7 +26459,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.26: the hotbar is the TACTICAL BELT, everywhere a word names it.',
+  now:'v10.27: the mainframe card is NET LIFETIME EARNINGS: everything you have extracted minus everything you carried in, over every run, a death or an abandon counting what it carried as lost.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -28434,8 +28441,9 @@ function renderStatCards(){
         '<br>across your last '+PR.n+' run'+(PR.n===1?'':'s'));
     }
   })();
-  h+=card('Net carried out', '$'+((P.prof||0)*1000).toLocaleString(),
-          'what you banked, minus most of what you died holding');
+  // v10.27, his note: the card is NET LIFETIME EARNINGS, and it says what it is.
+  h+=card('Net lifetime earnings', '$'+(P.netEarn||0).toLocaleString(),
+          'everything you have extracted, minus everything you carried in, over every run. A run that died or was abandoned lost what it carried in.');
   h+=card('Experience', 'Level '+(P.xpLevel||1),
           (P.xp||0).toLocaleString()+' XP earned');
   // NOTORIETY, v8.26, his order: visible, and in words that mean something.
