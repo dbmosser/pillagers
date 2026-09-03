@@ -591,7 +591,7 @@
   <h3>RUN PAUSED</h3>
   <div style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">
     MOUSE aim &nbsp; LMB fire &nbsp; RMB steady aim &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT sprint &nbsp; CTRL crouch<br>
-    E search / call extraction &nbsp; R reload &nbsp; F heal/revive &nbsp; Q/G throw &nbsp; TAB bag &nbsp; M map &nbsp; ` superhot &nbsp; SHIFT-` tuning &nbsp; P/ESC pause
+    E search / call for extraction &nbsp; R reload &nbsp; F heal/revive &nbsp; Q/G throw &nbsp; TAB bag &nbsp; M map &nbsp; ` superhot &nbsp; SHIFT-` tuning &nbsp; P/ESC pause
   </div>
   <div style="font-size:13.5px;color:var(--ash);margin-top:6px">Note anything that just felt wrong. It goes in the recorder.</div>
   <textarea id="pausenote" rows="3" style="max-width:560px;font-size:13px" placeholder="e.g. the crier marked me through a wall, felt unfair"></textarea>
@@ -835,7 +835,7 @@
       <div style="border:1px solid var(--steel-hi);border-radius:4px;padding:11px 13px;background:rgba(0,0,0,.28)">
         <div style="font-size:10.5px;letter-spacing:.2em;color:var(--amber)">3 &middot; EXTRACT</div>
         <div style="font-size:11.5px;color:var(--ash);margin-top:5px;line-height:1.5">
-          Stand in a ring and hold E to call extraction. Die out there and it is all gone.</div>
+          Stand in a ring and hold E to call for extraction. Die out there and it is all gone.</div>
       </div>
     </div>
 
@@ -1213,7 +1213,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='9.58';
+var VER='9.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11990,7 +11990,7 @@ z.hold=Math.min(30,Math.max(3,G.timeLeft-1)); z.holdMax=z.hold;
       // again" pointed at a ship that is no longer there. Name the real action
       // and its price.
       if(dist(p,z)<1400){ blip('clank');
-        say('Extraction left without you. Hold E to call another, '+fmtMS(CFG.extractWait)+' out.'); }
+        say('Extraction left without you. Hold E to call for another, '+fmtMS(CFG.extractWait)+' out.'); }
     }
   }
   // THE MIRRORS ARE A VIEW, NOT A CACHE, v2.29. G.beaconT, G.shipHold and
@@ -20821,7 +20821,7 @@ else if(nc2.tag) ctx.fillText('['+keyLabel('KeyE','E')+'] SEARCH '+String(nc2.ta
         ctx.fillText('INBOUND '+Math.ceil(padZ.beaconT)+'s',ps.x,ps.y);
       } else {
 ctx.fillStyle='#4de3d0';
-        ctx.fillText('['+keyLabel('KeyE','E')+'] CALL EXTRACTION',ps.x,ps.y);
+        ctx.fillText('['+keyLabel('KeyE','E')+'] CALL FOR EXTRACTION',ps.x,ps.y);
         if(padZ.callT>0) bar(ps.x-30,ps.y+LH(6),60,6,clamp(padZ.callT/1.6,0,1),'#4de3d0');
       }
       ctx.textAlign='left';
@@ -21295,7 +21295,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     ctx.textAlign='left';
   } else if(!G.over&&dist(p,G.active)<G.active.r){
     ctx.font=FS(TYPE.head); ctx.textAlign='center';
-    ctx.fillStyle='#4de3d0'; ctx.fillText('HOLD E TO CALL EXTRACTION',W/2,_exRow);
+    ctx.fillStyle='#4de3d0'; ctx.fillText('HOLD E TO CALL FOR EXTRACTION',W/2,_exRow);
     // The 1.6 second hold is VISIBLE now. It had a tiny bar on the ring marker
     // and nothing where you are actually looking, so letting go at a second
     // read as the button not working.
@@ -21362,7 +21362,7 @@ bar(W/2-110,H/2-18,220,10,p.downT/CFG.downTime,'#c8452f');
     // does not work, and he is right to.
     if(G.beaconT===null&&G.active&&G.active.open&&dist(p,G.active)<G.active.r){
       ctx.fillStyle='#4de3d0';
-      ctx.fillText('HOLD E TO CALL EXTRACTION',W/2,H/2+LH(26));
+      ctx.fillText('HOLD E TO CALL FOR EXTRACTION',W/2,H/2+LH(26));
       if(G.active.callT>0) bar(W/2-70,H/2+LH(33),140,7,clamp(G.active.callT/1.6,0,1),'#4de3d0');
     }
     ctx.textAlign='left';
@@ -21600,7 +21600,7 @@ var LEGEND=[
   ['MOVE',[['WASD','move'],['SHIFT','sprint'],['CTRL','crouch, near silent'],['SPACE','dodge roll']]],
   ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','steady aim'],['R','reload'],['X','swap weapon']]],
   ['GEAR',[['1-9','select hotbar slot'],['FIRE','use selected slot'],['TAB','inventory'],['ENTER','equip gun from bag'],['BKSP','reset cursor']]],
-['WORLD',[['E','search / call extraction'],['M','map'],['H','cycle this list'],['P','pause']]],
+['WORLD',[['E','search / call for extraction'],['M','map'],['H','cycle this list'],['P','pause']]],
   ['ALSO',[['CAPS','walk on, hands free'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom']]]
 ];
 // SPEC 10.3: the colour language has to be learnable, so it is stated.
@@ -21634,7 +21634,7 @@ var LEGEND_PAD=[
   ['MOVE',[['L STICK','move, analog'],['LS CLICK','sprint'],['RS CLICK','crouch'],['B','dodge roll']]],
   ['FIGHT',[['R STICK','aim'],['A','fire'],['LT / RT','reach, analog'],['Y','reload']]],
   ['GEAR',[['LB/RB','change belt slot'],['D-RIGHT','use selected'],['D-LEFT','drop selected'],['D-DOWN','use medical'],['VIEW','inventory']]],
-  ['WORLD',[['X','search / call extraction'],['DPAD UP','map'],['MENU','pause']]]
+  ['WORLD',[['X','search / call for extraction'],['DPAD UP','map'],['MENU','pause']]]
 ];
 // Every line here used to run past the right edge of its own panel, by 83 to 164
 // pixels on a box only 222 wide, so the rules he asked for spilled out of their
@@ -25199,7 +25199,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v9.58: the title screen has told you since v9.50 that the game plays best in fullscreen and gave you no way to get there. There is a button beside that line now, and it says which way it will take you.',
+  now:'v9.59: his wording, in all ten places that had the old one. The ring you stand in, the line under the compass, the callout in the middle of the screen, both controls lists, the title screen, the primer and the Settings row now all say call FOR extraction.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -28971,7 +28971,7 @@ document.getElementById('askalt').onclick=function(){
 // particular has been in since v2.72 and is auto-detecting, so nobody has ever
 // been told it exists.
 var PRIMER=[
-  ['This is a raid, not a level','You ASCEND from the Undercroft, take what you can carry, and call extraction to come back down. Reaching the lift with a full bag is the whole game.'],
+  ['This is a raid, not a level','You ASCEND from the Undercroft, take what you can carry, and call for extraction to come back down. Reaching the lift with a full bag is the whole game.'],
   ['Dying costs you everything you carried','There is no body to go back for and no insurance. Your bag and both guns are gone. Credits, XP and anything already in the stash are safe. That is the whole risk, and it is why walking out early is a real decision.'],
   ['One of them is blind','The Listener. It has no eyes at all, so nothing about light, cover or standing still in a bush means anything to it. It hunts the noise you make. Everything else about it you can work out up there, and the screen will tell you when one is on you.'],
   ['You carry TWO guns and the second slot can be empty','Gun 1 and gun 2, chosen on the figure in your stash or on the ascent check, and X swaps between them out there. Leaving gun 2 empty is a real choice: one gun is lighter and quieter.'],
@@ -29082,7 +29082,7 @@ hint:'Damage taken from everything on the surface. Standard is how the game has 
      {n:'Standard', cfg:{lootMult:1}},
      {n:'Lean',     cfg:{lootMult:0.7}}
    ], def:1},
-  {k:'ext', label:'Heat when you call extraction',
+  {k:'ext', label:'Heat when you call for extraction',
    hint:'How much of the map comes to the extraction ring once the beacon is up.',
    opts:[
      {n:'Heavy',    cfg:{siegeVol:1.4, raiderWaves:1}},

@@ -39374,3 +39374,55 @@ state rather than the click, and that the button is a real 178 by 31 box inside
 the title screen. Whether his browser then goes fullscreen is between him and
 his browser. Not verified: how it looks in the pause menu or mid raid, because
 it is not there. He asked for it on the title screen and that is where it is.
+
+## v9.59 - HIS WORDING: CALL FOR EXTRACTION
+
+His whole message: **"Hold E to call for extraction"**.
+
+Ten player-facing places used the shorter verb phrase. All ten now carry his:
+
+| where | what he sees |
+| --- | --- |
+| the ring, in the world | `[E] CALL FOR EXTRACTION` |
+| under the compass, standing in a ring | `HOLD E TO CALL FOR EXTRACTION` |
+| the callout in the middle of the screen | `HOLD E TO CALL FOR EXTRACTION` |
+| the title screen card | "Stand in a ring and hold E to call for extraction" |
+| the loading page key list | "E search / call for extraction" |
+| the in-game controls list, keyboard | "search / call for extraction" |
+| the in-game controls list, pad | "search / call for extraction" |
+| the line after a window closes without you | "Hold E to call for another" |
+| the primer card | "call for extraction to come back down" |
+| the Settings row | "Heat when you call for extraction" |
+
+**This overrides his own earlier ruling and I have changed the note rather than
+the instruction.** The vocabulary list he gave me says, verbatim, "You *call*
+extraction, you *hold E to extract*." He has now written the longer form himself,
+so the list is what was out of date. Updated, with the date and the reason.
+
+**Casing is untouched at every site.** He wrote it in sentence case, and the big
+HUD callouts are uppercase by a convention they share with HOLD E TO CUT THE SEAL
+and HOLD E TO EXTRACT. Changing one of the three to sentence case would make the
+screen inconsistent to satisfy a reading of his message I am not sure of. The
+wording is what he asked for and the wording is what moved.
+
+### The check reads the ring, not the source
+
+It stands the player in an open extraction ring and reads the text the game
+actually drew, because a grep would have passed on a string nothing reaches. Its
+control requires at least one drawn line to carry the new wording, so an empty
+result cannot read as a pass, and it then sweeps the rest of the build for the
+old phrase.
+
+**A mistake I have now made three times in two builds.** The check greps the
+page, and the page contains the check, so a literal needle matches itself: v9.59
+reported "1 place still uses the old verb phrase" on the build that had just
+removed all ten, and the one place was my own comment. The needle is assembled
+from two pieces and the phrase is written nowhere in the check, comments
+included. I have put that in my notes as a rule rather than an anecdote.
+
+Not verified: the two controls lists and the Settings row by eye. The check reads
+what is drawn at the ring and greps the rest, so the menu strings are proved
+present in the build but not proved to render without wrapping or clipping at
+his text size. Not verified: whether he wanted the casing changed too. I have
+kept the existing convention and said so; if he meant sentence case on the HUD
+callouts that is one line from him.

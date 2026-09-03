@@ -5054,6 +5054,57 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'9.59',what:'the game says call FOR extraction, in the place he actually reads it',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(!window.__textTrace) return 'SKIP: this build cannot report the text it drew';
+     __pinDPR(1); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __forceSize(1920,1080);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); g.ents.length=0; g.player.iv=99;
+     if(!g.zones||!g.zones.length) return 'SKIP: no extraction rings on this map';
+     // STAND HIM IN A RING, which is the only way the prompt is drawn at all. A
+     // grep of the source would have passed on a string nothing reaches.
+     var z=null;
+     for(var i=0;i<g.zones.length;i++) if(g.zones[i].open!==false){ z=g.zones[i]; break; }
+     if(!z) z=g.zones[0];
+     g.player.x=z.x; g.player.y=z.y;
+     for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
+     var draws=__textTrace(function(){ __frame(0.016); });
+     var said=[];
+     for(i=0;i<draws.length;i++){
+       var t=draws[i].t||'';
+       if(/EXTRACTION/i.test(t)&&/\bE\b/.test(t)) said.push(t);
+     }
+     if(!said.length)
+       return 'SKIP: standing in a ring drew no extraction prompt, so there is nothing to read';
+     // THE FINDING. His instruction, the whole message was: Hold E to call for
+     // extraction. Ten player facing places used the old shorter verb phrase.
+     // That phrase is deliberately not written out anywhere in this check, in the
+     // code or in these comments, because the grep below reads the whole page and
+     // the whole page includes this.
+     var wrong=[], right=0;
+     for(i=0;i<said.length;i++){
+       if(/CALL\s+FOR\s+EXTRACTION/i.test(said[i])) right++;
+       else if(/CALL\s+EXTRACTION/i.test(said[i])) wrong.push(said[i]);
+     }
+     if(wrong.length)
+       bad.push('the ring still says "'+wrong.join('" and "')+'" rather than call FOR extraction');
+     // CONTROL: it has to have found the real prompt, or an empty result reads as
+     // a pass. At least one line must carry the new wording.
+     if(!right)
+       bad.push('control: nothing drawn at the ring says call FOR extraction, so this check '+
+                'is not looking at the prompt it thinks it is');
+     // AND THE REST OF THE COPY, which the player reaches from the menus rather
+     // than from the ring. The needle is assembled so this check cannot match its
+     // own text: the page it greps includes this file.
+     var src=(document.documentElement&&document.documentElement.innerHTML)||'';
+     var stale=src.split('call'+' extraction').length-1;
+     var staleUp=src.split('CALL'+' EXTRACTION').length-1;
+     if(stale+staleUp>0)
+       bad.push((stale+staleUp)+' place'+((stale+staleUp)===1?' in the build still uses':'s in the build still use')+' the old verb phrase');
+     return bad.length?bad.join('; '):null; }},
   {v:'9.58',what:'the title screen has a fullscreen button and it actually calls for fullscreen',
    run:function(){
      var bad=[];
