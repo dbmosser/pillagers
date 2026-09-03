@@ -1255,7 +1255,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.35';
+var VER='10.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7732,7 +7732,7 @@ function raiderLook(identId,x,y){
   var hat=pick('hat',['crown']);
   h=Math.imul(h^(h>>>11),2246822507)>>>0;
   if((h%3)===0) hat='none';                   // a third go bareheaded
-  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes'),face:pick('face'),boots:pick('boots'),gloves:pick('gloves'),pack:pick('pack'),patch:pick('patch')};
+  return {hair:pick('hair'),cut:pick('cut'),hat:hat,skin:pick('skin'),beard:pick('beard'),eyes:pick('eyes'),face:pick('face'),boots:pick('boots'),gloves:pick('gloves'),pack:pick('pack'),patch:pick('patch'),tattoo:pick('tattoo')};
 }
 function mkRaider(x,y,forceId,simBuild){
   // v6.53, his note. Nine entries: pistol 3, smg 2, rifle 2, carbine 1, scattergun 1,
@@ -7787,7 +7787,7 @@ function mkRaider(x,y,forceId,simBuild){
     face:rnd(0,6.28),state:'loot',tx:x,ty:y,cd:0,alert:0,spd:122,wep:WEAPONS[wk],dmg:WEAPONS[wk].dmg,
     rng:WEAPONS[wk].rng*.72,cone:.8,bag:[],looted:0,goal:null,skips:[],goalT:0,goalD:0,extracting:0,hitT:0,step:0,
 coat:ident.coat, ident:ident.id, name:ident.tag,
-    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, faceMark:_look.face, boots:_look.boots, gloves:_look.gloves, pack:_look.pack, patch:_look.patch,   // v10.18, his answer 20; v10.21: faceMark, because e.face is the facing angle and a string there stopped every pillager firing
+    hair:_look.hair, cut:_look.cut, hat:_look.hat, skin:_look.skin, beard:_look.beard, eyes:_look.eyes, faceMark:_look.face, boots:_look.boots, gloves:_look.gloves, pack:_look.pack, patch:_look.patch, tattoo:_look.tattoo,   // v10.18, his answer 20; v10.21: faceMark, because e.face is the facing angle and a string there stopped every pillager firing
     rival:(!simBuild&&ident.id===myRival())?1:0,
     // SPEC 8.4: varying hostility. A raider you have killed before is shoot on
     // sight with no negotiation; one you have good standing with is passive
@@ -18000,6 +18000,13 @@ var COSMETICS=[
   {id:'patchstar', name:'Star',           how:'extracts:5',  kind:'patch'},
   {id:'patchchev', name:'Chevron',        how:'extracts:11', kind:'patch'},
   {id:'patchflag', name:'Flag',           how:'warden:1',    kind:'patch'},
+  // v10.36, his answer 14: TATTOO, the fourteenth rack and the last of his eight.
+  {id:'tatnone',   name:'No Ink',         how:'always',      kind:'tattoo'},
+  {id:'tattear',   name:'Teardrop',       how:'runs:5',      kind:'tattoo'},
+  {id:'tatring',   name:'Neck Ring',      how:'runs:11',     kind:'tattoo'},
+  {id:'tattribal', name:'Tribal',         how:'extracts:6',  kind:'tattoo'},
+  {id:'tatanchor', name:'Anchor',         how:'extracts:14', kind:'tattoo'},
+  {id:'tatspider', name:'Spider',         how:'warden:2',    kind:'tattoo'},
   // v5.66, his note. Owned from the start: this is a look, not a trophy. v7.26: and it
   // is a HAIRSTYLE, not headgear; it moved to the cut rack with the seven new ones.
   {id:'long',    name:'Long',          how:'always',      kind:'cut'},
@@ -18106,8 +18113,8 @@ function cosFind(id){
 // wiped profile or an edited save cannot leave her in a hat she has not earned.
 // v6.46: five kinds now, so the worn id and the fallback both come from a table
 // instead of a two-way branch with the answer baked into the return.
-var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves',pack:'cosPack',patch:'cosPatch'};
-var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown',patch:'patchnone'};
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves',pack:'cosPack',patch:'cosPatch',tattoo:'cosTattoo'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown',patch:'patchnone',tattoo:'tatnone'};
 // v10.35: patch colours, the ground and the mark.
 var PATCHCOL={patchcross:['#f2f2f2','#c82828'],patchskull:['#14161b','#e8e2d2'],patchstar:['#1e2a5a','#ffd24a'],patchchev:['#3a3a2a','#e0c060'],patchflag:['#1e3a6a','#d8d8d8']};
 function drawPatch(c,id,x,y,s){
@@ -18405,6 +18412,16 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillStyle=HAIRLIT; rrF(hx2-7.5,ty-37,15,4,4);
       wc.fillStyle=HAIRHI;  wc.fillRect(hx2-6.6,ty-36.6,10.4,1.4);
     }
+    // v10.36: TATTOO, ink on the face and neck, before the beard and headgear.
+    (function(){
+      var _tid=HERO?cosWorn('tattoo'):(st.tattoo||'tatnone'); if(!_tid||_tid==='tatnone') return;
+      wc.fillStyle='rgba(20,28,44,.85)';
+      if(_tid==='tattear'){ wc.fillRect(hx2+2.6,ty-27.2,1.2,1.8); }
+      else if(_tid==='tatring'){ wc.fillRect(hx2-4.2,ty-25.0,8.4,1.1); }
+      else if(_tid==='tattribal'){ wc.fillRect(hx2-6.2,ty-31.6,2.2,0.9); wc.fillRect(hx2-6.6,ty-29.8,2.8,0.9); wc.fillRect(hx2-6.2,ty-28,2.2,0.9); }
+      else if(_tid==='tatanchor'){ wc.fillRect(hx2+2.2,ty-24.6,0.9,3); wc.fillRect(hx2+1,ty-22.4,3.3,0.9); wc.fillRect(hx2+1.4,ty-24.8,2.5,0.8); }
+      else if(_tid==='tatspider'){ wc.fillRect(hx2+4.4,ty-34.6,1.8,1.8); wc.fillRect(hx2+3.2,ty-35.4,4.2,0.7); wc.fillRect(hx2+3.2,ty-33,4.2,0.7); }
+    })();
     // v10.17: BEARD, under the face, drawn before the headgear so a mask covers it.
     if(BEARD&&BEARD!=='clean'){
       var _bc=(HAIRCOL[HERO?cosWorn('hair'):(st.hair||'dark')]||HAIRCOL.dark)[0];
@@ -26550,7 +26567,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.35: a thirteenth rack: PATCH. A red cross, a skull, a star, a chevron or a flag on your chest, earned, on you in the raid and on the figure, and on the pillagers.',
+  now:'v10.36: a fourteenth rack: TATTOO, the last of the eight you listed. A teardrop, a neck ring, tribal bars, an anchor or a spider, earned, inked on your face and neck in the raid and on the figure, and on the pillagers.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30896,7 +30913,8 @@ function cosSwatch(c){
   var f={none:'--',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC\u25AC',visor:'\u25AD',crown:'\u2662',
          beanie:'\u2229',cap:'\u25E2',bandana:'\u25AC',hood:'\u2229',
          clean:'--',stubble:'\u2591',goatee:'\u25BE',fullbeard:'\u25BC',chops:'\u2016',
-         faceplain:'--',facescar:'/',facefreckles:'\u2234',facemud:'\u2591',facepaint:'\u2261',faceshiner:'\u25CF'}[c.id]||'?';
+         faceplain:'--',facescar:'/',facefreckles:'\u2234',facemud:'\u2591',facepaint:'\u2261',faceshiner:'\u25CF',
+         tatnone:'--',tattear:'\u2022',tatring:'\u25CB',tattribal:'\u2630',tatanchor:'\u2693',tatspider:'\u2731'}[c.id]||'?';
   var fbg={beanie:'#4a4f5a',cap:'#5a5a3e',bandana:'#8a2a2a',hood:'#2e3238'}[c.id]||'#1b1f26';
   if(c.kind==='hat'&&fbg!=='#1b1f26')
     return '<span style="display:inline-block;width:34px;height:34px;line-height:34px;text-align:center;'+
@@ -30931,6 +30949,15 @@ function avatarHTML(){
       })()+
       (hat!=='none'?'<div class="avhat" style="background:'+hatBg+'">'+hatGlyph+'</div>':'')+
       '<div class="aveyes"><div class="aveye" style="background:'+(EYECOL[cosWorn('eyes')]||EYECOL.eyebrown)+';box-shadow:inset 0 0 0 1.5px #FFF6DC"></div><div class="aveye" style="background:'+(EYECOL[cosWorn('eyes')]||EYECOL.eyebrown)+';box-shadow:inset 0 0 0 1.5px #FFF6DC"></div></div>'+
+      (function(){ // v10.36: the tattoo on the figure
+        var _t=cosWorn('tattoo'); if(!_t||_t==='tatnone') return '';
+        var _ts={tattear:'right:14px;top:22px;width:3px;height:5px;border-radius:2px',
+                 tatring:'left:10px;right:10px;bottom:1px;height:2px',
+                 tattribal:'left:5px;top:16px;width:9px;height:9px;background:repeating-linear-gradient(0deg,#1c2a44 0 2px,transparent 2px 4px)',
+                 tatanchor:'right:9px;bottom:3px;width:3px;height:9px;box-shadow:-3px 6px 0 -1px #1c2a44,3px 6px 0 -1px #1c2a44',
+                 tatspider:'right:6px;top:4px;width:6px;height:6px;border-radius:3px;box-shadow:-3px -2px 0 -1px #1c2a44,3px -2px 0 -1px #1c2a44,-3px 2px 0 -1px #1c2a44,3px 2px 0 -1px #1c2a44'}[_t]||'';
+        return '<div style="position:absolute;background:#1c2a44;opacity:.85;'+_ts+'"></div>';
+      })()+
       (function(){ // v10.21: the face mark on the figure
         var _f=cosWorn('face'); if(!_f||_f==='faceplain') return '';
         var _fs={facescar:'right:13px;top:8px;width:2px;height:14px;background:#a04a3a',
@@ -30984,6 +31011,7 @@ function avatarHTML(){
   h+=slot('pack','BACKPACK',(cosFind(cosWorn('pack'))||{name:'Canvas Pack'}).name,
           '<span style="width:11px;height:14px;border-radius:3px 3px 4px 4px;display:inline-block;background:'+(PACKCOL[cosWorn('pack')]||PACKCOL.packbrown)+'"></span>');   // v10.34
   h+=slot('patch','PATCH',(cosFind(cosWorn('patch'))||{name:'No Patch'}).name,'\u25A3');   // v10.35
+  h+=slot('tattoo','TATTOO',(cosFind(cosWorn('tattoo'))||{name:'No Ink'}).name,'\u2727');   // v10.36
   h+=slot('fit','CLOTHING',(cosFind(cosWorn('fit'))||{name:'Slate'}).name,
           '<span style="width:14px;height:14px;border-radius:3px;display:inline-block;background:'+ft[1]+'"></span>');
   // v5.83: the BODY ARMOUR slot is gone with rigs. Everyone wears the same
@@ -30996,7 +31024,7 @@ function avatarHTML(){
 }
 // v10.16, his answers 18 and 19. A look is the six cosmetic keys and nothing
 // else. SURPRISE ME picks an owned thing from every rack.
-var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots','gloves','pack','patch'];
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots','gloves','pack','patch','tattoo'];
 function lookSnap(){ var L={}; for(var i=0;i<LOOK_KINDS.length;i++) L[LOOK_KINDS[i]]=cosWorn(LOOK_KINDS[i]); return L; }
 function lookWear(L){
   if(!L) return false;
@@ -31099,7 +31127,7 @@ function renderAvPicker(pickHost,host){
       'Click a slot to change it. Headgear and hair are earned and change nothing about how you play.</div>';
     return;
   }
-  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'||slot==='pack'||slot==='patch'){
+  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'||slot==='pack'||slot==='patch'||slot==='tattoo'){
     renderCosmetics(box,slot,hid,pid); return;
   }
   // v6.43: the wep and wep2 branch is gone with the slots that opened it. Guns are
@@ -31118,7 +31146,7 @@ function renderAvPicker(pickHost,host){
 function renderCosmetics(target,kindOnly,hid,pid){
   var box=target||document.getElementById('cosbody'); if(!box) return;
   var H='';
-  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['patch','PATCH'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]
+  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['tattoo','TATTOO'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['patch','PATCH'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]
     .filter(function(g){ return !kindOnly||g[0]===kindOnly; });
   GROUPS.forEach(function(g){
     H+='<div style="margin:10px 0 4px 0;letter-spacing:2px;opacity:.7;font-size:12px">'+g[1]+'</div>';

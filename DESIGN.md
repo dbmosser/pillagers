@@ -40024,6 +40024,36 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.36 - TATTOO, THE FOURTEENTH RACK, AND THE LAST OF HIS EIGHT
+
+His answer 14, 2026-09-03, eighth and last of his categories: **tattoos**.
+
+A tattoo is ink on skin, and at this size the skin that shows is the face and
+the neck. Six entries: No Ink, owned from the start; a Teardrop under the eye
+at five runs; a Neck Ring at eleven; Tribal bars on the cheek at six extracts;
+an Anchor on the neck at fourteen; a Spider on the temple for two Wardens.
+Earned, never bought. Drawn on the sprite after the face and before the beard
+and the headgear, so a beard grows over a neck ring and a hood hides a
+spider, the way they would; on the figure as a mark on the head; on the racks
+as a glyph. A fourteenth slot, a fourteenth key, part of a look and of
+SURPRISE ME, and the pillagers draw from it.
+
+With this the eight categories he listed on 2026-09-03 are all on the racks:
+beard, eyes, face, boots, gloves, backpack, patch and tattoo, on top of the
+six that were there.
+
+### Measured
+
+The check requires six entries with one owned and none priced, a key and a
+default, reads the sprite's head pixels for each tattoo against No Ink and
+requires every one to draw, requires the TATTOO slot on the figure and a
+swatch for each, and as controls requires the seed fingerprint at 4242
+unmoved, every pillager with a tattoo entry, and fourteen kinds on the racks.
+On v10.35 there was no tattoo kind, which is the finding.
+
+Not verified: a teardrop under a black eye, which the face rack draws at the
+same corner; the two overlap and the bruise wins, which is probably right.
+
 ## v10.35 - PATCH, THE THIRTEENTH RACK
 
 His answer 14, 2026-09-03, seventh of his categories: **patches or badges**.
