@@ -40024,6 +40024,57 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.01 - THE HUD MEASURED, AND THE GEAR PANEL BROUGHT INSIDE THE SCREEN
+
+His note, 2026-09-03: **"menus and hud in the raid are still wonky, can you
+give them an overhaul"**, and his answers 25, 26 and 30 the same morning: the
+controls legend, the conditions panel, the pillager board and the on-screen
+messaging bother him most; keep dragging and resizing, with a clear resize
+cursor at the corners; he plays at 4K and the game must work at 1080p, 1440p
+and 4K.
+
+### Measured first
+
+Every HUD panel box the game reports, at 1920x1080, 2560x1440 and 3840x2160,
+and everything the HUD draws as text, on the v9.98 fixture
+(tools/audits/hud-measure-2026-09-03.md).
+
+| | 1080p | 1440p | 4K |
+| --- | --- | --- | --- |
+| panels overlapping | none | none | none |
+| panels off screen | gear, 6 px below | gear, 8 px below | gear, 11 px below |
+| text drawn with no panel | 23 strings | 23 | 25 |
+
+### The one thing off screen
+
+The gear panel's base rectangle was declared 38 units below the baseline the
+panel draws down to, and the baseline is 34 above the bottom edge, so the box
+claimed four units of screen that do not exist, times the panel's zoom. The
+content ends at the baseline: the items line sits on it. The box ends 30 below
+the baseline now, four inside the edge before zoom, and the hit box and the
+resize corner follow it.
+
+### What has no box
+
+The clock and the extract distance at the top centre, the message line, and
+the hotbar strip along the bottom are drawn with no panel box at all, so they
+cannot be dragged, resized or measured by the panel tools. Two of those, the
+message line and, by his answer 25, the legend, conditions and board, are what
+he named. That is the next HUD build, by name, not this one.
+
+### Measured
+
+The check deploys a raid, and at each of the three sizes reads every panel box
+and requires it inside the screen and clear of every other, and as a control
+requires the gear panel's own right-aligned text to sit inside its box, so a
+box shrunk past its contents would fail. On v10.00 the gear box ends below the
+screen at all three sizes, which is the finding.
+
+Not verified: the three panels and the message line he named, which this build
+measured and did not touch. Not verified: whether the resize cursor at a corner
+is clear enough for him; v9.09 gave it a pointer and his answer 26 says it is
+not clear, so that is a build of its own.
+
 ## v10.00 - NINE MORE THINGS TO WEAR
 
 His note, 2026-09-03: **"Build out the cosmetics system even more"**.

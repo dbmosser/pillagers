@@ -5216,6 +5216,53 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.01',what:'every HUD panel box sits inside the screen at 1080p, 1440p and 4K, and none overlap',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(!(window.__hudBox&&window.__textTrace&&window.__deploy)) return 'SKIP: this fixture cannot read the HUD boxes';
+     __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:['medkit','frag','plate'],safe:null,mapIx:0,seed:4242});
+     var g=__state(); if(!g) return 'SKIP: no raid';
+     var p=g.player; p.hp=100000; p.maxhp=100000;
+     var SIZES=[[1920,1080],[2560,1440],[3840,2160]], sawGear=false;
+     for(var si=0;si<SIZES.length;si++){
+       var W=SIZES[si][0], H=SIZES[si][1];
+       __pinDPR(1); __forceSize(W,H);
+       for(var f=0;f<12;f++) __frame(0.016);
+       var trace=__textTrace(function(){ __frame(0.016); });
+       var boxes=__hudBox()||{}, rects=[];
+       for(var k in boxes){ var b=boxes[k]; if(b&&b.w>0&&b.h>0) rects.push({id:k,x:b.x,y:b.y,w:b.w,h:b.h}); }
+       if(rects.length<4) return 'SKIP: only '+rects.length+' HUD boxes reported at '+W+'x'+H;
+       for(var a=0;a<rects.length;a++){
+         var A=rects[a];
+         if(A.id==='gear') sawGear=true;
+         // THE FINDING. On v10.00 the gear box ended 6, 8 and 11 px below the edge.
+         if(A.x<-0.5||A.y<-0.5||A.x+A.w>W+0.5||A.y+A.h>H+0.5)
+           bad.push(A.id+' leaves the screen at '+W+'x'+H+': bottom '+Math.round(A.y+A.h)+' of '+H+', right '+Math.round(A.x+A.w)+' of '+W);
+         for(var c=a+1;c<rects.length;c++){
+           var B=rects[c];
+           var ox=Math.min(A.x+A.w,B.x+B.w)-Math.max(A.x,B.x), oy=Math.min(A.y+A.h,B.y+B.h)-Math.max(A.y,B.y);
+           if(ox>2&&oy>2) bad.push(A.id+' overlaps '+B.id+' at '+W+'x'+H+' by '+Math.round(ox)+'x'+Math.round(oy));
+         }
+       }
+       // CONTROL: the gear box still holds its own text. A box shrunk past its
+       // contents would pass the edge test and hide the ammo line.
+       var GB=boxes.gear;
+       if(GB){
+         var outside=[];
+         for(var t=0;t<trace.length;t++){
+           var d=trace[t]; if(!d.t) continue;
+           // the gear panel writes right-aligned at the right edge
+           if(d.align!=='right'||d.x<W-40||d.y<H*0.5) continue;   // the lower half: the conditions panel owns the top right
+           if(d.y<GB.y-2||d.y>GB.y+GB.h+2) outside.push(String(d.t).slice(0,16)+' @y'+Math.round(d.y));
+         }
+         if(outside.length) bad.push('control: gear text outside the gear box at '+W+'x'+H+': '+outside.slice(0,4).join(', '));
+       }
+     }
+     __pinDPR(1); __forceSize(1920,1080);
+     if(!sawGear) bad.push('control: no gear box was reported at all');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.00',what:'every headgear in the wardrobe is drawn on the operator, and every hair and clothing colour has a swatch',
    run:function(){
      var bad=[];
