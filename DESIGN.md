@@ -40024,6 +40024,39 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.13 - HIS RULING ON THE CROWD: THE GHOST MASK AND THE SPARTAN HELMET ARE HIS
+
+His note, 2026-09-04: "undercroft crowd looks good but don't let them wear the
+ghost mask or the halo helmet, everything else is fine". That closes note 19,
+which had been waiting on him since the crowd started dressing from the racks at
+v10.24. The halo helmet is the green Spartan Helmet from v10.45; there is no
+other helmet on the rack.
+
+**MEASURED FIRST, on v11.12:** 2,000 crowd rolls. Ghost Mask 182, Spartan Helmet
+172, about one in eleven each, the same share as every other hat because the
+roller picks evenly from whatever is on the rack. With eight people on the floor
+that is a better than even chance one of the two is in the room at any moment,
+which is what he was looking at.
+
+**THE FIX IS ONE WORD ON EACH PIECE.** The two entries carry crowd:0 and the
+roller skips anything so marked, the way it already skips the crown. The pieces
+stay on the rack for him to earn exactly as before, at 20 extracts and 3 warden
+kills; only the crowd changed. A third piece can be kept off the floor later
+with the same word and no new code.
+
+**NEW CHECK v11.13** rolls 600 crowd looks and requires no ghost mask and no
+Spartan helmet among them. Three controls. At least three OTHER hats must appear
+in those rolls, or the crowd has stopped dressing rather than left two pieces
+alone. Both pieces must still be on the rack itself, since they were only ever
+to come off the crowd. And the rule must be the flag and not the two names: the
+sweat band is barred for 300 rolls and must vanish, then unbarred for 300 and
+must come back. On a v11.12 fixture the finding fires for both pieces and the
+flag control fires as well, because that roller reads no flag.
+
+Not verified: his eye. This build changes what the crowd rolls, not how a look
+is drawn, and no picture was taken of the floor. If a masked figure is still
+down there after this it is a look that was rolled before the change and kept,
+or a piece I have not named, and either way the check above will not see it.
 ## v11.12 - A WINDOW IS SEE-THROUGH AND IT IS NOT WALK-THROUGH
 
 This is the other half of "crawlers aren't attacking properly", and it is not

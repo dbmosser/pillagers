@@ -1,0 +1,14 @@
+v11.13: the crowd leaves the ghost mask and the Spartan helmet to him
+
+His ruling of 2026-09-04 on note 19: the Undercroft crowd looks good, but not in
+the ghost mask or the halo helmet. The halo helmet is the Spartan Helmet.
+
+Measured first on v11.12: 2,000 crowd rolls, 182 ghost masks and 172 Spartan
+helmets, one in eleven each. The two entries now carry crowd:0 and the roller
+skips anything so marked, the way it skips the crown. Both stay on his rack at
+the same prices.
+
+Check: 600 rolls with neither piece; three other hats still appear; both pieces
+still on the rack; a third hat barred by the same flag vanishes and comes back.
+
+Not verified: his eye. Nothing about drawing changed.

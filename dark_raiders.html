@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.12';
+var VER='11.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.12';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.12';
+var WHATSNEW_VER='11.13';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE GHOST MASK AND THE SPARTAN HELMET ARE YOURS ALONE. Nobody in the Undercroft crowd wears either any more; everyone downstairs still dresses from the rest of the rack.',
   'MACHINES NO LONGER WALK INTO WINDOWS. One standing inside a building could see you through the glass, decide the way was clear, walk at the window and stay pressed against it for the rest of the raid instead of coming out of the door. On the first map, four of the buildings did this. They route round now.',
   'NOTHING IN THE GAME CHANGED IN THIS BUILD. It records a limit of the robot that tests it: the robot never crouches and never hides, so no number it has ever produced describes playing carefully. The crawler bug fixed two builds ago could only ever have reached a person.',
   'THE NOISE RING IS NEVER YOUR OWN. A ring after your shot is the thing you hit taking a step, which is why a target you kill outright makes none. The sound key in the legend now reads its swatches from the colours the game actually draws, and it had two of them wrong.',
@@ -18738,8 +18739,8 @@ var COSMETICS=[
   {id:'bandana',name:'Bandana',        how:'extracts:15', kind:'hat'},
   {id:'hood',   name:'Hood',           how:'warden:2',    kind:'hat'},
   // v10.45, his notes: a green Spartan helmet, and a white ghost mask.
-  {id:'spartan',   name:'Spartan Helmet', how:'extracts:20', kind:'hat'},
-  {id:'ghostmask', name:'Ghost Mask',     how:'warden:3',    kind:'hat'},
+  {id:'spartan',   name:'Spartan Helmet', how:'extracts:20', kind:'hat', crowd:0},
+  {id:'ghostmask', name:'Ghost Mask',     how:'warden:3',    kind:'hat', crowd:0},
   // v10.17, his answer 14: BEARD, the seventh rack.
   {id:'clean',    name:'Clean Shaven', how:'always',      kind:'beard'},
   {id:'stubble',  name:'Stubble',      how:'runs:3',      kind:'beard'},
@@ -26152,7 +26153,10 @@ function hubRollLook(){
   // without another edit; the crown stays his, and build does not draw.
   if(typeof COSMETICS!=='undefined'){
     var byKind={};
-    for(var i=0;i<COSMETICS.length;i++){ var c=COSMETICS[i]; if(c.id==='crown'||c.kind==='build') continue; (byKind[c.kind]=byKind[c.kind]||[]).push(c.id); }
+    // v11.13, his ruling: a piece marked crowd:0 is his alone, like the crown.
+    // Measured before this line: 182 ghost masks and 172 Spartan helmets in
+    // 2,000 rolls, so on an eight man floor one of the two was usually there.
+    for(var i=0;i<COSMETICS.length;i++){ var c=COSMETICS[i]; if(c.id==='crown'||c.kind==='build'||c.crowd===0) continue; (byKind[c.kind]=byKind[c.kind]||[]).push(c.id); }
     for(var k in byKind){ var ids=byKind[k], id=ids[(Math.random()*ids.length)|0]; if(k==='face') lk.faceMark=id; else lk[k]=id; }
   }
   return lk;
@@ -27788,7 +27792,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.12: a window is see-through and it is not walk-through, and every movement test in the game had been reading the sight geometry, which skips windows. A machine inside a building saw you through the glass, threw its route away, walked into the window and stood there. Measured on COLD STORAGE at seed 4242: four buildings had a route out and none of their crawlers got within 240 units. Bodies now ask whether they can WALK the line, not whether they can SEE it.',
+  now:'v11.13: his ruling on the crowd. The ghost mask and the Spartan helmet come off the Undercroft crowd and stay on his rack; everything else the crowd wears is unchanged. Measured before: 182 masks and 172 helmets in 2,000 rolls, so on an eight man floor one of the two was usually in the room. Next: the furniture that plugs doorways and seals machines inside buildings.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
