@@ -210,6 +210,21 @@ STILL OPEN:
 | ~~ESC should pause in the Undercroft~~ | ALREADY BUILT since v8.70, measured at v9.83 with a real Escape keypress on the floor: the pause box opens |
 | ~~The roll graphic is WRONG in the Undercroft~~ | NOT REPRODUCED at v9.83: it draws a disc, fill 0.78 against a circle 0.785, and travels 43 units |
 
+## HIS NOTES, 2026-09-04 EVENING, THIRD AND FOURTH (with a screenshot)
+
+3. "text collission occcuring in lower right corner". The screenshot shows the
+   gear panel: SUPPORT MG in the big weapon line and the green OPEN CLOUDED
+   condition text drawn straight through it, overlapping by most of a word.
+   Reproduce by measuring the two text rectangles on the gear panel at 1920x1080
+   with a long weapon name and a condition tag showing.
+
+4. "corner drag to size for lower right corner needs to be in lower left side,
+   otherwise there's nowhere to drag to increase size". The resize grip for the
+   lower-right HUD panel sits in its lower-right corner, which is already in the
+   screen corner, so dragging outward has nowhere to go. It belongs on that
+   panel's lower-LEFT corner. Same for any other panel anchored to a screen edge:
+   the grip goes on the corner that faces INTO the screen.
+
 ## HIS NOTES, 2026-09-04 EVENING. BOTH TAKEN NEXT, IN THIS ORDER.
 
 1. "change sprint on shift to something you hold to sprint instead of toggle".
