@@ -210,6 +210,20 @@ STILL OPEN:
 | ~~ESC should pause in the Undercroft~~ | ALREADY BUILT since v8.70, measured at v9.83 with a real Escape keypress on the floor: the pause box opens |
 | ~~The roll graphic is WRONG in the Undercroft~~ | NOT REPRODUCED at v9.83: it draws a disc, fill 0.78 against a circle 0.785, and travels 43 units |
 
+## HIS INSTRUCTION, 2026-09-04: NO MORE IN-RAID BALANCING BEFORE ALPHA
+
+Verbatim: "i feel like you are still wasting time on in-raid balancing and i don't
+need any more of that before alpha ships please". BINDING until he lifts it. No
+build before the alpha may move a balance dial, an entity count, a damage or
+health number, a spawn rate or a map's contents. Bug fixes to his own notes,
+crashes, sound and menus are not balancing and continue.
+
+HIS RULE ON SOUND, same day: "there shouldn't be any oscillators with gain that
+fades less than zero over a reasonably short time". Taken as a standing rule and
+built into v10.85's check, which pins the count of oscillators started and never
+stopped at the 2 the ambient bed accounts for, so a new voice with nothing to
+turn it down is caught the day it is added.
+
 ## FINDING, 2026-09-04, HIS CRAWLER NOTE: REPRODUCED AND DIAGNOSED, FIX WITHHELD
 
 His note reproduced exactly. Stand outside a building with a crawler inside it,
