@@ -1,0 +1,27 @@
+v10.74: the way out of the run report was below the fold
+
+Not his note. Found by measuring the run report the way v10.73 measured the
+title screen.
+
+Reproduced at 1920x1080 with a realistic full bag, ten items packed and
+eight picked up, dying with both welcome pack guns. The card holds 945
+pixels of content in an 826 pixel box, and what is in the 119 that overflow
+is the button row: Log run and return at y1100, and Copy report beside it,
+in a card that ends at 1079.
+
+So a friend who dies with a full bag cannot see the button that leaves the
+card, or the one that sends me the report, without scrolling a panel he has
+no reason to believe scrolls. On the alpha that hides the whole feedback
+path.
+
+Widening does not fix it and I measured that before reaching for it: at
+1,430 and at 1,625 wide the content is still 945 tall, because the ledger is
+one line per item however wide the box gets. The 86vh cap is right. What was
+wrong is which part scrolled away.
+
+The action row is pinned to the foot of the card now, with a fade so the
+ledger passing under it stays readable. A card too short to scroll is
+unchanged.
+
+The check drives a full bag and a one item card, and fails on a v10.73
+fixture.

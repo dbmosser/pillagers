@@ -1,0 +1,60 @@
+## v10.74 - THE WAY OUT OF THE RUN REPORT WAS BELOW THE FOLD
+
+Not one of his notes. Found by measuring the run report the same way v10.73
+measured the title screen, and this one is worse than a layout complaint.
+
+### What it was
+
+Reproduced on v10.73 at 1920x1080 with a realistic full bag: ten items
+packed, eight more picked up, dying with both of the guns the welcome pack
+gives every new character. The card comes out 890 pixels wide, 46 percent of
+the screen, and 1,078 tall, which is all of it. Its content is 945 pixels in
+an 826 pixel box, so 119 pixels sit below the fold.
+
+What is down there is the button row.
+
+    LOG RUN AND RETURN     y 1100 to 1144
+    COPY REPORT            beside it
+    the card ends at       y 1079
+
+So a friend who dies with a full bag cannot see the button that leaves the
+card, or the one that sends me the report, without scrolling a panel he has
+no reason to believe scrolls. On the alpha that is the whole feedback path
+hidden behind a gesture nobody will make.
+
+### What did not fix it
+
+Widening the card, which was my first instinct after v10.73, and I measured
+it before reaching for it. At 1,430 pixels wide the content is still 945
+tall. At 1,625 it is still 945. The ledger is one line per item however wide
+the box gets, so the width buys nothing here. The card is capped at 86vh on
+purpose and it is right to scroll on a long report. What is wrong is WHICH
+PART scrolls away.
+
+### Now
+
+The action row is pinned to the foot of the card, with a fade so the ledger
+passing under it stays readable. Measured with it pinned and the card
+scrolled to the top, the buttons sit at 993 to 1038 inside a card ending at
+1,079, where before they were at 1,100 to 1,144 and off the end.
+
+On a card short enough not to scroll nothing changes: the row sits where it
+always did and the fade ends in the card's own colour.
+
+### Measured
+
+The check drives two real deaths. The first is the case that broke, a full
+bag with two of his own guns, and it requires the card to actually scroll,
+which is a control that the setup still produces the situation, then requires
+both buttons to be inside the card scrolled to the top AND scrolled to the
+bottom, so pinning them cannot have pushed them past the other end. The
+second is a one item card, which must not scroll and must still show both
+buttons, so the short case is not quietly broken by the fix. On a v10.73
+fixture the first arm fails naming the button and how many pixels below the
+card it sits.
+
+Not verified: the same card at 1440p and 4K, where the pane cannot be made
+big enough to measure and 86vh is a taller box, so the fold falls somewhere
+else; his text size setting turned up, which makes the content taller against
+the same 86vh; and the pause box and the ascent check, which are also capped
+panels with buttons at the bottom and were not measured here.

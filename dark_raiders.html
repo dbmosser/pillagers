@@ -477,6 +477,17 @@
     padding:30px 52px 26px; border-radius:6px; max-width:880px; max-height:86vh;
     overflow-y:auto; background:linear-gradient(180deg,var(--win-top),var(--win-bot));
     border:2px solid var(--steel-hi); box-shadow:inset 0 0 0 2px var(--steel); }
+  /* v10.74: the two buttons are how you leave this card and how you send him
+     the report, so they are the one thing on it that must never scroll away.
+     The card is capped at 86vh and a full bag runs past that, which put both
+     of them off the bottom. Pinned to the foot of the card, with a fade so the
+     ledger passing under them stays readable. On a card short enough not to
+     scroll this changes nothing: the row sits where it always did and the fade
+     ends in the card's own colour. */
+  .ocacts{ position:sticky; bottom:0; z-index:2; width:100%;
+    display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; justify-content:center;
+    padding:10px 0 4px;
+    background:linear-gradient(180deg,rgba(0,0,0,0),var(--win-bot) 38%); }
   .outcome.on{ display:flex; }
   .outcome h1{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:30px;
     letter-spacing:.2em; margin:0; text-transform:uppercase; }
@@ -633,7 +644,7 @@
   <div style="font-size:10.5px;color:var(--ash);letter-spacing:.2em;margin-top:16px">HOW DID THAT RUN FEEL</div>
   <div class="tagwrap" id="tagwrap"></div>
   <textarea id="oc_note" rows="2" style="max-width:520px" placeholder="Anything else? (optional)"></textarea>
-  <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;justify-content:center">
+  <div class="ocacts">
     <button style="padding:8px 22px" id="oc_btn">Log run and return</button>
     <button style="padding:8px 22px" id="oc_copy">Copy report</button>
   </div>
@@ -1283,7 +1294,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.73';
+var VER='10.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27172,7 +27183,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.73: the title screen uses the monitor. It was painting a narrow column across the middle of a 1920 screen with 427 pixels of nothing down each side, because the only rule that widened it was written for ultrawides and 16 by 9 missed it.',
+  now:'v10.74: the buttons at the end of a raid stay on screen. Die with a full bag and Log run and return, along with Copy report next to it, were below the bottom of the card, so the way out and the way to send the report were both behind a scroll.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
