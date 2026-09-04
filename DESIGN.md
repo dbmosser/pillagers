@@ -40024,6 +40024,56 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.64 - F STRIKES, AND THE CONTROLS SAY SO
+
+His note, 2026-09-03 about 21:32: **"its not clear to me how to melee or if
+i can at all"**.
+
+### What it was
+
+Measured on v10.63 before writing anything. With a rifle in his hand and a
+crawler at arm's length, ten keys were pressed one at a time, F, T, Y, U, J,
+K, L, N, R and V, and not one of them touched it. The only way to strike
+anything was to put your gun away, equip Bare Hands and pull the trigger.
+And the word MELEE appears on screen in exactly two places, both of them the
+ammunition counter saying your hands are empty. No controls list, short or
+full, named a key for it. So the answer to his question was: barely, and
+nothing tells you.
+
+### Now
+
+F strikes, with whatever you are holding. The swing is the one the game
+already had, the Bare Hands attack, so its reach, its arc, its damage, the
+half again for hitting someone in the back, its noise and its sound are the
+ones that were already written and measured; nothing about melee is a second
+copy that can drift from the first. It has its own cooldown at the Bare
+Hands rate, so it cannot be held down, and it costs no ammunition. The
+controls say so in both places: the short list on screen gets F, melee, and
+the full list behind H gets F, melee strike, whatever you are holding.
+
+### Measured
+
+The check drives the real key handler, not the function behind it. With a
+rifle in hand and a body at arm's length, F must hurt it and must not spend
+a round from the magazine. A body 300 units away must not be touched, so the
+reach is a reach. Two presses in the same breath must land one blow and not
+two, so the cooldown is real. And both controls lists must name melee, with
+the full one naming the F key, or this is the same invisible feature with a
+key attached to it. On v10.63 the first, third and fifth of those fail.
+
+Two mistakes of mine, both caught by the dry run before anything shipped.
+The strike counted itself into the telemetry through a bare name that is
+only ever a local alias inside the functions that use it, so it threw before
+the swing ever ran: the punch animation played and nothing was hit. And the
+check itself put the body back at arm's length between cases without putting
+back the side it had drifted to, so it was measuring a live crawler's wander
+rather than the reach.
+
+Not verified: the controller. There is no melee button on the pad, so a pad
+player still has to empty his hands, and the pad legend is unchanged. Also
+not verified: whether a strike through a wall is possible at very close
+range, since the swing tests distance and angle but not line of sight, which
+is how the Bare Hands attack has always worked.
 ## v10.63 - A HOWLER OUTSIDE CANNOT BOMB YOU INSIDE A HOUSE
 
 His note, 2026-09-03 about 21:32: **"if a howler is outside, he shouldn't be

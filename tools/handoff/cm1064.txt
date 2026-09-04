@@ -1,0 +1,13 @@
+v10.64: F strikes, and the controls say so
+
+His note: it is not clear how to melee or whether you can at all. Measured:
+with a rifle in hand, ten keys pressed one at a time touched a body at
+arm's length; the only strike in the game needed empty hands, and no
+controls list named a key.
+
+F strikes now with whatever you are holding, reusing the Bare Hands swing
+so nothing about it is a second copy, on its own cooldown and costing no
+ammunition. Both controls lists name it.
+
+The check drives the real key handler four ways and reads both lists. It
+fails on a v10.63 fixture.
