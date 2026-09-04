@@ -1,0 +1,16 @@
+v10.87: hold SHIFT to sprint
+
+His note. It reverses half of v10.07, which made crouch and sprint both toggles
+on his own answer of the day before; he named sprint only, so crouch stays a
+toggle.
+
+Reproduced: press and release SHIFT while moving and the operator is still
+sprinting eight frames later, because a keydown flipped a flag and the movement
+code read the flag instead of the key. The keydown handler is gone and
+updatePlayer reads the key. The pad maps its stick click onto the same key, so
+the controller needs no second path.
+
+The v8.73 exhaustion rule is untouched and proven by the check: a held key does
+not saw sprint on and off when you run out, and you must release and press again.
+
+No dial moves. Speed, stamina cost, noise and footstep tempo are unchanged.

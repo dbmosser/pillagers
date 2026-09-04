@@ -1303,7 +1303,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.86';
+var VER='10.87';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1314,7 +1314,7 @@ var VER='10.86';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='10.80';
+var WHATSNEW_VER='10.87';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1356,7 +1356,7 @@ var WHATSNEW=[
   'THE GUNS LOOK LIKE GUNS. Every gun icon is redrawn by family, outlined part by part, so a rifle reads as a rifle and a shotgun as a shotgun at a glance.',
   'CLOSE ON EVERY WINDOW, AND ESC CLOSES THE TOP ONE, anywhere: the stash, the lift, the bar, the Depot, Settings, the primer.',
   'THE STASH TABS ARE GUNS, CONSUMABLES, PARTS, SALVAGE, KEYS AND OTHER. Plates, heals and grenades are consumables. The three loadout saves are gone.',
-  'CROUCH AND SPRINT ARE TOGGLES. Press CTRL or C once to crouch and once to stand; press SHIFT once to run. Aiming down sights is held on RMB.',
+  'HOLD SHIFT TO SPRINT. Let go and you stop running, which is his note of 2026-09-04. CROUCH IS STILL A TOGGLE: press CTRL or C once to crouch and once to stand. Aiming down sights is held on RMB.',
   'A DOWNED PILLAGER HAS FIFTY HEALTH TICKING DOWN over sixteen seconds. Three scav pistol rounds finish him, or two of anything heavier.',
   'THE PILLBOX. The listening machine in the walls has its name: PILLBOX, its slits, its wrecks and its line in the primer.',
   'A DRINK PAYS TWO AND A HALF PERCENT PER DOSE, on raid XP only, while Liquor or Blotter is in your blood. Wirt\u2019s offer names the item.'
@@ -9984,11 +9984,11 @@ function raidKey(code,repeat,ev){
   // v10.07, his answers 33 and 35: crouch and sprint are toggles, and they
   // exclude each other.
   if((code==='ControlLeft'||code==='ControlRight'||code==='KeyC')&&G&&!G.over&&!G.sim&&!repeat){
-    G.crouchTog=!G.crouchTog; if(G.crouchTog) G.sprintTog=false;
+    G.crouchTog=!G.crouchTog;
   }
-  if((code==='ShiftLeft'||code==='ShiftRight')&&G&&!G.over&&!G.sim&&!repeat){
-    G.sprintTog=!G.sprintTog; if(G.sprintTog) G.crouchTog=false;
-  }
+  // v10.87, HIS NOTE: sprint is HELD, not toggled, so there is no keydown
+  // handler for it at all. updatePlayer reads the key itself. Crouch is
+  // untouched and stays a toggle, which is still his answer 33.
   if(code==='KeyV'&&G&&!G.over&&!G.paused&&!G.trade&&!repeat){
     if(ev) ev.preventDefault();
     G.emoteBar=!G.emoteBar;
@@ -13527,10 +13527,14 @@ if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
   // 0.46 seconds of sprinting before it drained back to the floor - a sawtooth
   // that flipped sprint on and off 25 times in 20 seconds and made the footsteps
   // stutter between two tempos and two volumes. Releasing the key clears it.
-  // v10.07, his answer 35: sprint is a toggle. Running out of breath clears
-  // it, so the v8.73 sawtooth cannot happen and he presses again when he can.
-  if(G.sprintTog&&(p.stamLock||p.stam<=2)) G.sprintTog=false;
-  var _shHeld=!!G.sprintTog;
+  // v10.87, HIS NOTE: hold to sprint. This read G.sprintTog, a flag a keydown
+  // flipped, so a press and release left the operator running. It reads the KEY
+  // now. The pad maps its left stick click onto ShiftLeft in this same keys
+  // object, so the controller needs no second path.
+  // The v8.73 exhaustion rule is untouched and still does its job: running
+  // yourself out sets stamRelease, and the line below clears it only when the
+  // key is actually let go, so a held Shift cannot saw sprint on and off.
+  var _shHeld=!!(keys['ShiftLeft']||keys['ShiftRight']);
   if(!_shHeld) p.stamRelease=0;
 var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
   if(sprint&&mg>0){
@@ -27425,7 +27429,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.86: the same hum, the way most people will actually meet it. The whole raid update sits behind a not-paused guard and the ambient bed is turned down inside it, so opening the pause box froze the bed at its last level and it hummed under the menu. Pausing happens many times a raid; dying happens once.',
+  now:'v10.87: hold SHIFT to sprint, your note. It was a toggle since v10.07, so a press and release left you running. The movement code reads the key itself now; crouch stays a toggle, which is still what you asked for. Speed, stamina and noise are all unchanged.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

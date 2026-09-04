@@ -40024,6 +40024,52 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.87 - HIS NOTE: HOLD SHIFT TO SPRINT, NOT A TOGGLE
+
+"change sprint on shift to something you hold to sprint instead of toggle",
+2026-09-04.
+
+This REVERSES half of v10.07, which made crouch and sprint both toggles on his
+own answer 35 of the day before. He named SPRINT only, so crouch is untouched
+and stays a toggle, and I have said so rather than assuming.
+
+REPRODUCED FIRST. With the operator moving, press and release SHIFT and eight
+frames later G.sprinting is still true and G.sprintTog is still set. A keydown
+flipped a flag and the movement code read that flag as though it were the key.
+
+THE FIX. The keydown handler for SHIFT is gone entirely, and updatePlayer reads
+the key itself. The pad already maps its left stick click onto ShiftLeft in the
+same keys object, so the controller keeps working with no second path, and the
+crouch toggle no longer needs to clear a sprint flag that no longer exists.
+
+THE v8.73 EXHAUSTION RULE IS UNTOUCHED, and it is the reason this is more than
+deleting a flag. A held key that ran you out of breath used to flip sprint on
+and off 25 times in 20 seconds and made the footsteps stutter between two tempos
+and two volumes. The cure was stamRelease: run yourself out and you must let go
+and press again. That already keys off the held state, so it works exactly as
+well for a real hold as it did for the toggle, and the check proves it rather
+than assuming it.
+
+NO DIAL MOVES, per his instruction of 2026-09-04. Sprint speed stays at 1.62,
+the stamina cost, the noise radius and the footstep tempo are all untouched.
+What changed is what turns sprinting on.
+
+The WHAT IS NEW line that said "CROUCH AND SPRINT ARE TOGGLES" now says hold
+SHIFT to sprint and that crouch is still a toggle, and WHATSNEW_VER moves from
+10.80 to 10.87 so the card is offered again.
+
+THE CHECK clears every latched key first, because a key left down by an earlier
+check has made a keypress look broken twice before. Then: held SHIFT sprints;
+releasing stops it within eight frames; the right-hand SHIFT behaves the same,
+or half the keyboard would still be a toggle; crouch still toggles, stays
+toggled twenty frames later and toggles back on a second press; an exhausted
+operator does not sprint on a held key, does not resume the moment breath comes
+back without letting go, and does sprint after a release and a fresh press.
+
+Not verified: the gamepad path is reasoned rather than driven. The pad writes
+ShiftLeft into the same keys object this now reads, so it should follow exactly,
+but no pad was attached to prove it. And nothing here was played by a human:
+whether a hold feels better than a toggle over a whole raid is his to judge.
 ## v10.86 - HIS NOTE, THE OTHER HALF: THE HUM ALSO SURVIVES A PAUSE
 
 His note said "random humms that last way too long, like after you die, etc".
