@@ -210,6 +210,37 @@ STILL OPEN:
 | ~~ESC should pause in the Undercroft~~ | ALREADY BUILT since v8.70, measured at v9.83 with a real Escape keypress on the floor: the pause box opens |
 | ~~The roll graphic is WRONG in the Undercroft~~ | NOT REPRODUCED at v9.83: it draws a disc, fill 0.78 against a circle 0.785, and travels 43 units |
 
+## HIS NOTES, 2026-09-04 EVENING, TENTH TO FOURTEENTH
+
+10. "text in the undercroft should be less transparent/more opaque". The station
+    labels and any floor text on the Undercroft. Measure the alpha each is drawn
+    at before changing it, and raise them together rather than one at a time.
+
+11. "change 'Discount Fashion Depot' to 'Fashion' wherever it occurs". Every
+    occurrence, including the station label, the window title, any WHATSNEW or
+    primer text, and the vocabulary note, which currently defines the long name.
+
+12. "anything that can be used to craft or for a contract, etc. should not be
+    classified as salvage". A classification rule, not a balance change: an item
+    that is a crafting input or a contract target must not read as salvage in the
+    bag, the stash, the sell screen or the run report. Reproduce by listing every
+    item that is both a craft or contract input AND currently tagged salvage.
+
+13. "pausing at the undercroft screen should give an option to 'RETURN TO
+    CHARACTER SELECTION' that takes the player back to the title screen", then:
+    "actually 'RETURN TO THE UNDERCROFT' AND 'RETURN TO CHARACTER SELECTION'
+    should be the 2 choices". So the Undercroft pause box offers exactly those
+    two, in that order.
+
+14. "when friends give feedback the game should also log their character info,
+    that way if they lose their character accidentally, we can give them a code
+    to restore it". The run report already carries a profile summary line; this
+    wants enough to RESTORE from, and a code the player can be given back.
+    Design question to decide before building: the whole profile is far too big
+    for a paste, so the restore code is probably a compact encoding of the parts
+    that matter, name, credits, XP, stash, cosmetics, and it needs a matching
+    import path in Settings. Larger than one build.
+
 ## HIS NOTES, 2026-09-04 EVENING, SEVENTH TO NINTH. He is away about 8 hours from
 ## this point and the alpha is about 60 hours out.
 

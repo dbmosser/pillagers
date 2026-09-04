@@ -1302,17 +1302,24 @@ window.__REGRESS=[
        var g=__state(); if(!g) return null;
        var p=g.player; g.ents.length=0; p.iv=99; p.stam=100;
        var K=__keysRef(); for(var k in K) K[k]=false;
-       // v10.07: sprint is a toggle; press SHIFT through the real handler.
-       function pressShift(){
+       // v10.87: sprint is HELD. The key stays down for the whole run, which is
+       // exactly the case the v8.73 rule exists for.
+       function holdShift(){ K['ShiftLeft']=true;
          try{ document.dispatchEvent(new KeyboardEvent('keydown',{code:'ShiftLeft',key:'Shift',bubbles:true,cancelable:true})); }catch(_e1){}
+       }
+       function dropShift(){ delete K['ShiftLeft'];
          try{ document.dispatchEvent(new KeyboardEvent('keyup',{code:'ShiftLeft',key:'Shift',bubbles:true,cancelable:true})); }catch(_e2){}
        }
-       K['KeyD']=true; g.sprintTog=false; pressShift();
+       K['KeyD']=true; holdShift();
        var flips=0, prev=null, everSprinted=false;
        for(var f=0;f<secs*60;f++){
          if(!__state()||__state().over) break;
          // after exhaustion has cleared the toggle, press again for a second sprint
-         if(release&&f===420&&!__state().sprinting) pressShift();
+         // The release arm: let go, leave it up for four frames so the game can
+         // SEE it up, then press again. That is what a player has to do to
+         // sprint after running out under a hold.
+         if(release&&f===420&&!__state().sprinting) dropShift();
+         if(release&&f===424) holdShift();
          __loop(performance.now()+f*16.7);
          var sp=!!__state().sprinting;
          if(sp) everSprinted=true;
