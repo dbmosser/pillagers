@@ -953,6 +953,11 @@
     <div id="slotpanel" style="margin-top:20px;text-align:left">
       <div style="font-size:10.5px;letter-spacing:.2em;color:var(--amber)">SAVES</div>
       <div id="slotlist" style="margin-top:8px;display:grid;gap:6px"></div>
+      <!-- v11.02, HIS NOTE 8: he asked why changing save leaves fullscreen. It
+           reloads the game, and a browser always drops fullscreen on a reload.
+           Said here, where the click is. -->
+      <div style="margin-top:6px;font-size:10.5px;color:var(--ash);letter-spacing:.06em">Changing save reloads the game, which is why it leaves fullscreen.</div>
+      <div id="fsback" style="display:none;margin-top:6px;font-size:11px;color:var(--amber);letter-spacing:.06em">You were in fullscreen. The reload dropped it, as it always does. GO FULLSCREEN is above.</div>
       <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
         <input id="pnamein" maxlength="16" autocomplete="off" spellcheck="false"
           style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--steel-hi);border-radius:3px;color:var(--bone);padding:7px 10px;font-size:12px;letter-spacing:.08em"
@@ -1308,7 +1313,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.01';
+var VER='11.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1319,10 +1324,11 @@ var VER='11.01';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.01';
+var WHATSNEW_VER='11.02';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'CHANGING SAVE RELOADS THE GAME, which is why it drops fullscreen. The saves panel says so now, and if you were in fullscreen when you switched, the title screen tells you on the way back and the button is right above it.',
   'THE BUTTONS AT THE END OF A RAID ARE NEW. They start with SOMETHING CRASHED, SOMETHING LOOKED WRONG and SOUND WAS OFF, because those are the three things you cannot tell us any other way. Press as many as you like; they go into the report with the run.',
   'YOU CHOOSE THE WEATHER NOW, on the same page as the map and the surface. SURPRISE ME leaves it to the roll, which is what it always was. RAIN, FOG, BLACKOUT and STORM pay 1.1x XP because they cut your sight or kill the lamps, and that stacks with the night bonus, so a hard night pays 1.32x.',
   'PILLAGERS WEAR HATS, BEARDS AND TATTOOS NOW, and so does the crowd in the Undercroft. They always rolled them and none of it was ever drawn, because the code that draws them sat behind a branch meant only for your own fringe. Your fringe is still yours alone.',
@@ -27637,7 +27643,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.01: the feedback buttons at the end of a raid, your note. The old twenty-four were the open questions of v5.72, eight of them one-machine questions you have since answered with dozens of runs, and nothing at all from the last thirty builds. The new thirty lead with the three a friend cannot tell you any other way: it crashed, it looked wrong, the sound was off.',
+  now:'v11.02: why changing save leaves fullscreen, your question. Because it reloads the game, and a browser always drops fullscreen on a reload; it cannot be put back without a click, because entering fullscreen needs a gesture and a gesture does not survive a page load. The saves panel says so now, and if you were in fullscreen when you switched, the title screen tells you and GO FULLSCREEN is right there.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30616,6 +30622,22 @@ function fsOn(){
   return !!(document.fullscreenElement||document.webkitFullscreenElement||
             document.mozFullScreenElement||document.msFullscreenElement);
 }
+// v11.02, HIS NOTE 8. Its own key, never the profile: this is about the browser
+// and the tab, not about a character, and it must survive the switch between two
+// saves without belonging to either.
+var FSKEY='salvagerun:fsWanted';
+function fsMark(){
+  try{ if(fsOn()) localStorage.setItem(FSKEY,'1'); }catch(e){}
+}
+// Read once, cleared once, so the line appears on the reload it belongs to and
+// never again.
+function fsBackNote(){
+  var was=null;
+  try{ was=localStorage.getItem(FSKEY); if(was) localStorage.removeItem(FSKEY); }catch(e){}
+  var el=document.getElementById('fsback');
+  if(el) el.style.display=(was&&!fsOn())?'':'none';
+  return !!was;
+}
 function fsCan(){
   var el=document.documentElement;
   return !!(el.requestFullscreen||el.webkitRequestFullscreen||
@@ -30641,6 +30663,8 @@ function fsSync(){
   if(!fsCan()){ b.style.display='none'; return; }
   b.style.display='';
   b.textContent=fsOn()?'LEAVE FULLSCREEN':'GO FULLSCREEN';
+  // v11.02: once he is back in, the line has done its job.
+  if(fsOn()){ var nb=document.getElementById('fsback'); if(nb) nb.style.display='none'; }
 }
 function applyMenuZoom(){
   // v10.22, his note: never below 1.0, so nothing is ever smaller than the
@@ -32517,6 +32541,7 @@ loadProfile().then(function(){
       ['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange']
         .forEach(function(evn){ document.addEventListener(evn,function(){ fsSync(); }); });
       fsSync();
+      try{ fsBackNote(); }catch(_fb){}   // v11.02, his note 8
     })();
     function subSync(){
       var sub=document.getElementById('titlesub');
@@ -32569,6 +32594,7 @@ loadProfile().then(function(){
           if(ev.target&&ev.target.getAttribute&&ev.target.getAttribute('data-del')) return;
           var sn=this.getAttribute('data-slot');
           if(sn===SLOT) return;
+          fsMark();   // v11.02, his note 8
           try{ localStorage.setItem('salvagerun:activeSlot',sn); }catch(e){}
           location.reload();
         };
@@ -32611,6 +32637,7 @@ loadProfile().then(function(){
       for(var sn=1;sn<=8;sn++){
         var key=String(sn);
         if(!slotInfo(key)&&key!==SLOT){
+          fsMark();   // v11.02, his note 8
           try{ localStorage.setItem('salvagerun:activeSlot',key); }catch(e){}
           location.reload(); return;
         }

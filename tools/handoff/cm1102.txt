@@ -1,0 +1,36 @@
+v11.02: why changing save leaves fullscreen, said in the game
+
+His question: "if i click fullscreen and then click to change the save, it kicks
+me out of fullscreen --why??"
+
+Because clicking another save writes the slot pointer and reloads the page. The
+profile key is read once at file scope and the whole game is built from it. Every
+browser drops fullscreen on a page load, and it cannot be re-entered on its own,
+because requestFullscreen needs a user gesture and a gesture does not survive a
+navigation.
+
+Two honest fixes: switch saves without reloading, which means re-reading the
+profile in place and re-initialising every panel built from it, a deep change I
+am not making 55 hours from an alpha; or stop it being a mystery and put the way
+back one click away. This is the second and it says so.
+
+There is now a permanent line under the saves: changing save reloads the game,
+which is why it leaves fullscreen. And if he was in fullscreen when he switched,
+the title screen tells him on the way back in with GO FULLSCREEN directly above
+it. The flag has its own storage key, never the profile, because it belongs to
+the tab and not to a character and has to survive a switch between two saves. It
+is read once and cleared once.
+
+New check v11.02 requires the panel to say both reload and fullscreen; requires
+switching in fullscreen to be remembered and switching outside it not to be;
+requires the line to appear once, clear its own flag, and be gone next boot; and
+controls that it never fires while he is already in fullscreen. Fullscreen cannot
+be entered by a check, so the check makes the game believe it is and puts the
+real answer back afterwards. Fails on a v11.01 fixture on both halves.
+
+A check bug of mine, fixed in the same build: the missing-memory guard used a
+return and threw away the panel finding already recorded, so the old build
+reported half the defect.
+
+Not verified: whether he would rather have the deep fix, switching saves with no
+reload, which is the only thing that answers his question with a no.

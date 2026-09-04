@@ -1,0 +1,47 @@
+## v11.02 - HIS NOTE 8: WHY CHANGING SAVE LEAVES FULLSCREEN
+
+"if i click fullscreen and then click to change the save, it kicks me out of
+fullscreen --why??", 2026-09-04.
+
+**THE ANSWER, AND IT IS NOT A BUG I CAN PATCH AWAY.** Clicking another save writes
+the slot pointer and calls location.reload, because the profile key is read once
+at file scope and the entire game is built from it. Every browser drops
+fullscreen on a page load. It cannot be re-entered afterwards on its own, because
+requestFullscreen requires a user gesture and a gesture does not survive a
+navigation. So there are exactly two honest fixes: switch saves WITHOUT
+reloading, which means re-reading the profile in place and re-initialising every
+panel built from it, a deep change I am not making 55 hours from an alpha; or
+stop it being a mystery and put the way back one click away. This is the second,
+and I am saying plainly that it is the second.
+
+**WHAT HE GETS.** A line under the saves, permanently: changing save reloads the
+game, which is why it leaves fullscreen. And, if he WAS in fullscreen at the
+moment he switched, the title screen tells him so on the way back in, with GO
+FULLSCREEN sitting directly above it. The flag lives in its own storage key,
+never the profile, because it is about the browser and the tab rather than about
+a character, and it has to survive a switch between two saves without belonging
+to either. It is read once and cleared once, so the line appears on the reload it
+belongs to and never again.
+
+**NEW CHECK v11.02** requires the saves panel to say both words, reload and
+fullscreen, where the click is; requires switching while in fullscreen to be
+remembered and switching while NOT in fullscreen to be remembered as nothing;
+requires the line to appear once, to clear its own flag, and to be gone on the
+next boot. One more control: it must not tell him he lost fullscreen while he is
+in fullscreen, which is the one case where the line would be noise. Fullscreen
+itself cannot be entered by a check, since a browser demands a gesture, so the
+check makes the game believe it is in fullscreen and puts the real answer back
+afterwards.
+
+Fails on a v11.01 fixture on both halves: no explanation in the panel, and no
+memory of having been in fullscreen.
+
+**A CHECK BUG OF MINE, FIXED IN THE SAME BUILD.** The guard for the missing
+memory used a return, which threw away the panel finding that had already been
+recorded, so the old build reported half the defect. A guard that returns
+discards what was already found; it pushes and returns the whole list now.
+
+Not verified: whether he would rather have the deep fix, switching saves without
+a reload, which would keep fullscreen and is the only thing that actually answers
+his question with a no. That is a real piece of work and it is his call whether
+it happens before or after the alpha.
