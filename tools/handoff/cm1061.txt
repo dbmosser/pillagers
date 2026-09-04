@@ -1,0 +1,13 @@
+v10.61: the Undercroft is darker and gloomier
+
+His note, the second on this: v9.87 dropped the register and closed the
+filter and it still feels too happy. What was left was the bright square
+wave leading the tune, a shimmer on every eighth, and a walking pace.
+
+The triangle carries the tune with the square under it at a third of its
+level, the room slows from a hundred beats a minute to seventy-six, the
+filter closes from 1500 to 900, the shimmer plays half as often and
+quieter, and the bass is held long enough to hum.
+
+The check reads what the music schedules, never the ear, and its control
+turns the dial off. It fails on a v10.60 fixture.

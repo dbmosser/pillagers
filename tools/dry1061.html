@@ -1274,11 +1274,15 @@ var VER='10.61';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='10.45';
+var WHATSNEW_VER='10.60';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'A NEW CHARACTER GETS A WELCOME PACK: a green gun and a blue one, heals, plates and grenades, offered once, the first time down.',
+  'FULL-BODY OUTFITS. A new rack at the top of the Depot, above everything else: the Skeleton, the Machine, the Trooper, the Android, the Tomb Explorer, the Baller and the Street Poet. An outfit overrules every other rack; Own Clothes puts them back in charge.',
+  'EVERY GUN HAS ITS OWN VOICE. Sixteen guns used to share eleven; the Magnum and the Longshot borrowed the rifle. Each one now has its own crack, its own weight and, if it earns one, the room answering. Reloading, the bolt going home and an empty gun all make a sound.',
+  'FOOTSTEPS ARE HEEL AND SOLE, left and right in your ears, and the ground says what it is: grit on stone, a creaking board, ringing plate, a rustle in leaves, a splash and then a drip. The machines and the pillagers walk on the same five surfaces you do.',
+  'WALLS ARE SOLID. Nothing goes see-through when you stand behind it, and in the Undercroft nobody can stand inside the part of a wall that is painted, so the people down there stop catching on the counters.',
   'THE GAME ASKS ONCE WHETHER YOUR RUN REPORTS MAY BE SENT to the developer. YES sends each one as the raid ends; CLOSE keeps them in your Downloads. Settings changes it either way.',
   'THE MENUS NEVER SHRINK BELOW THE SCREEN. The wheel still sizes them, and now says so, MENU SIZE 130%; the size cannot go below 1.0, so on a 4K monitor nothing is ever smaller than 1.9 times its 1080p size.',
   'THE DISCOUNT FASHION DEPOT HAS FOURTEEN RACKS: build, skin, eyes, face, tattoo, hair, hairstyle, beard, headgear, clothing, patch, gloves, boots and backpack. Every piece is earned by playing, never bought. SURPRISE ME dresses you from every rack and three LOOKS keep an outfit.',
@@ -25405,6 +25409,22 @@ function hubWall(o,x,y,w,h,d){ o.push({x:x,y:y,w:w,h:h,d:d===undefined?0:d}); }
 // by it, which is what "caught on walls" looks like. This is that strip: the
 // collider grown upward by the same lift the wall is drawn with. Bodies down here
 // collide with the picture, so nobody can ever be inside one.
+// v10.60: the only way the crowd is ever built. It places them against the
+// PICTURES and then pushes anyone the room's own box put back inside one.
+function hubCrowdClear(stations,dw){
+  var cr=buildHubCrowd(stations,dw);
+  for(var i=0;i<cr.length;i++){
+    var b=cr[i];
+    if(!(b.r>0)) b.r=13;
+    // The room's box reaches into the south wall's picture, so the clamp goes
+    // first and the push gets the last word.
+    b.x=clamp(b.x,34,HUBW-34); b.y=clamp(b.y,34,HUBH-34);
+    collide(b,dw);
+    // A post holder walks back to where he was put, so his home moves with him.
+    if(b.post){ b.px=b.x; b.py=b.y; }
+  }
+  return cr;
+}
 function hubDrawn(ws){
   var out=[];
   for(var i=0;i<ws.length;i++){
@@ -25825,17 +25845,7 @@ stations.forEach(function(st){
   // v10.60: dwalls is what the walls PAINT; everyone down here collides with that
   // rather than with the smaller rectangle underneath it.
   var dw=hubDrawn(w);
-  var cr=buildHubCrowd(stations,dw);
-  for(var ci2=0;ci2<cr.length;ci2++){
-    var bb=cr[ci2];
-    if(!(bb.r>0)) bb.r=13;
-    // The room's own box reaches into the south wall's picture, so the clamp
-    // goes first and the push gets the last word.
-    bb.x=clamp(bb.x,34,HUBW-34); bb.y=clamp(bb.y,34,HUBH-34);
-    collide(bb,dw);
-    // A post holder walks back to where he was put, so his home moves with him.
-    if(bb.post){ bb.px=bb.x; bb.py=bb.y; }
-  }
+  var cr=hubCrowdClear(stations,dw);
   return {walls:w,dwalls:dw,segs:segs,stations:stations,lights:lights,
     crowd:cr,
     player:{x:590,y:400,r:11,face:-1.5708,bob:0,moving:false},
@@ -26425,7 +26435,7 @@ function showScreen(s){
     // v6.64, his note: the people milling about are different every time you come down.
     // The six who work the stations are rebuilt too and come out the same, because they
     // walk the identity lists in order rather than rolling.
-    else HB.crowd=buildHubCrowd(HB.stations,HB.walls);
+    else HB.crowd=hubCrowdClear(HB.stations,HB.dwalls||hubDrawn(HB.walls));   // v10.60: the pictures, and placed clear of them
     if(!hubGround) hubGround=bakeHubGround();
     // v6.68, his note: always the lower left light circle, whether you extracted, died
     // or walked away. 140,390 is the lamp at that corner, so you arrive standing in it.

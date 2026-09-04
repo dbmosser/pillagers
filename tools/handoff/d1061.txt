@@ -1,0 +1,57 @@
+## v10.61 - THE UNDERCROFT IS DARKER AND GLOOMIER
+
+His note, 2026-09-03 about 21:50: **"undercroft music needs to be darker
+and gloomier, feels too happy"**. This is the second time: v9.87 answered
+"music needs more of a dark and low tone, it sounds too friendly" by taking
+every tune down an octave, closing the filter from 3200 to 1500 and capping
+the room at a hundred beats a minute. He has listened to that and it is
+still too happy, so register was only part of it.
+
+### What it was
+
+Three things were still cheerful after v9.87. The tune was led by a SQUARE
+wave, which is the brightest timbre in the mix and the sound of a toy,
+carried at 0.105 with a soft triangle doubling it at 0.075 underneath. The
+shimmer rolled a note every eighth, and a steady sparkle reads as cheerful
+whatever notes it plays. And a hundred beats a minute is a walking pace.
+
+### Now
+
+The triangle carries the tune at 0.115 and the square sits under it at
+0.035, a third of what it was, so the edge is still in the sound and
+nothing is led by it. The room slows from a hundred beats a minute to
+seventy-six, a sixteenth every 0.197 seconds. The filter closes from 1500
+to 900. The shimmer plays one note a quarter instead of one an eighth, at
+0.04 instead of 0.06, and rings a little longer, so it reads as a drip
+rather than a sparkle. The bass is held 3.4 seconds instead of 1.9, long
+enough to run under the next chord, so the floor of the room hums.
+
+All of it is behind the same dial as before: with the dark setting off, the
+bright square, the open filter and the old pace all come back.
+
+### Measured
+
+Nobody here can hear it, so the check reads what the music SCHEDULES, the
+rule since v2.48. It plays the whole Undercroft piece dry and requires: a
+soft voice in the tune, with the square quieter than it; a sixteenth no
+faster than 0.1875 seconds; a corner at or under 1000; no more than 4.5
+shimmer notes a bar and none louder than 0.05; and a bass note held at
+least 2.5 seconds. Its control turns the dial off and requires the square
+and the open filter to come back, so the check is reading the dial rather
+than a rewritten table. On v10.60 the square leads at 0.105 against 0.075,
+the room runs at 0.15 a sixteenth, the corner is 1500 and the shimmer plays
+eight notes a bar, which is the finding.
+
+One check had to change with it. v9.87 picked the tune out of the recording
+by its timbre, so a build that changed the timbre read as a build that had
+deleted the tune. It picks the tune out by its length now, which is what a
+tune is: the long voice that is not the bass. Its register tests are
+untouched and still pass.
+
+The what-is-new card a friend reads on the way in names the darker room too,
+since that card is the game's introduction and an alpha goes out in three
+days.
+
+Not verified: how it sounds, which is his and needs the play build; and the
+other four themes, which take the same tempo, filter and voice changes but
+were only checked for the register rules they already had.

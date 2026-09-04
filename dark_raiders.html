@@ -1263,7 +1263,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.60';
+var VER='10.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1274,7 +1274,7 @@ var VER='10.60';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='10.60';
+var WHATSNEW_VER='10.61';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1283,6 +1283,7 @@ var WHATSNEW=[
   'EVERY GUN HAS ITS OWN VOICE. Sixteen guns used to share eleven; the Magnum and the Longshot borrowed the rifle. Each one now has its own crack, its own weight and, if it earns one, the room answering. Reloading, the bolt going home and an empty gun all make a sound.',
   'FOOTSTEPS ARE HEEL AND SOLE, left and right in your ears, and the ground says what it is: grit on stone, a creaking board, ringing plate, a rustle in leaves, a splash and then a drip. The machines and the pillagers walk on the same five surfaces you do.',
   'WALLS ARE SOLID. Nothing goes see-through when you stand behind it, and in the Undercroft nobody can stand inside the part of a wall that is painted, so the people down there stop catching on the counters.',
+  'THE UNDERCROFT IS DARKER. No bright square wave leading the tune, seventy-six beats a minute instead of a hundred, a closed filter, half the shimmer and a bass held long enough to hum under the room.',
   'THE GAME ASKS ONCE WHETHER YOUR RUN REPORTS MAY BE SENT to the developer. YES sends each one as the raid ends; CLOSE keeps them in your Downloads. Settings changes it either way.',
   'THE MENUS NEVER SHRINK BELOW THE SCREEN. The wheel still sizes them, and now says so, MENU SIZE 130%; the size cannot go below 1.0, so on a 4K monitor nothing is ever smaller than 1.9 times its 1080p size.',
   'THE DISCOUNT FASHION DEPOT HAS FOURTEEN RACKS: build, skin, eyes, face, tattoo, hair, hairstyle, beard, headgear, clothing, patch, gloves, boots and backpack. Every piece is earned by playing, never bought. SURPRISE ME dresses you from every rack and three LOOKS keep an outfit.',
@@ -3027,10 +3028,12 @@ function tickMusic(){
 // step, unless musDark is 0.
 // v9.87: the lowpass corner, as a function so the fixture can read it without a
 // speaker. 3200 was the old open filter; 1500 is the dark one.
-function musLpHz(){ return (CFG.musDark===0)?3200:1500; }
+function musLpHz(){ return (CFG.musDark===0)?3200:900; }   // v10.61, his note: 1500 was still bright
 function musStepSec(T){
   var s=T.spb;
-  if(CFG.musDark!==0&&s<0.15) s=0.15;
+  // v10.61, his note: 100 a minute is a walking pace and he called it happy.
+  // 76 is the slowest a sixteenth can go here before the tune stops joining up.
+  if(CFG.musDark!==0&&s<0.197) s=0.197;
   return s;
 }
 function musNote(a,t,step){
@@ -3044,19 +3047,24 @@ function musNote(a,t,step){
   var ch=HUB_CHORDS[cn]||HUB_CHORDS.Am;
   // BASS: root on the downbeat, root again on the half, long and soft. Triangle,
   // because a square down here booms and this is meant to sit under everything.
-  if(si===0) musVoice(a,t,bb,'triangle',0.34,1.9,0.02);
-  else if(si===8) musVoice(a,t,bb,'triangle',0.22,1.5,0.02);
+  // v10.61: held long enough to run into the next chord, which is what makes a
+  // room hum rather than tick.
+  if(si===0) musVoice(a,t,bb,'triangle',0.34,dk?3.4:1.9,dk?0.06:0.02);
+  else if(si===8) musVoice(a,t,bb,'triangle',0.22,dk?2.6:1.5,dk?0.06:0.02);
   // ARPEGGIO: the triad of this bar, rolling at eighths. This is the shimmer the
   // whole style rests on, and it is derived from the chord rather than typed, so
   // it can never disagree with the harmony above it.
   // v9.87: an octave down and quieter, and the top of each group is no longer
   // lifted an octave. That lift put a note at 79 into every group of every piece
   // and was the single brightest thing in the mix.
-  if((si&1)===0){
+  // v10.61, his note: a steady shimmer on every eighth is cheerful whatever it
+  // plays. Half as often and two thirds as loud, so it reads as a drip rather
+  // than a sparkle.
+  if(dk?((si&3)===0):((si&1)===0)){
     var an=ch[((si>>1)+bi)%3];
     if(!dk&&((si>>1)&3)===0) an+=12;         // lift the top of each group an octave
     if(dk) an-=12;
-    musVoice(a,t,an,'triangle',dk?0.06:0.085,0.46,0.012);
+    musVoice(a,t,an,'triangle',dk?0.04:0.085,dk?0.62:0.46,dk?0.05:0.012);
   }
   // LEAD: written, held, and doubled a breath late and a hair sharp so it has
   // some width instead of arriving as a single naked beep.
@@ -3066,8 +3074,12 @@ function musNote(a,t,step){
   // 76 on average and peaking at 81 to 84, which is a cheerful register whatever
   // the key says. Bass is untouched; it is already the lowest thing in the room.
   if(dk) m-=12;
-  musVoice(a,t,m,'square',0.105,1.05,0.045);
-  musVoice(a,t+0.022,m,'triangle',0.075,1.05,0.05,1.004);
+  // v10.61, his note: the square was the brightest thing in the room and the
+  // reason it sounded like a toy. The triangle carries the tune now and the
+  // square sits under it at a third of its old level, so the edge is still
+  // there and nothing is leading with it.
+  musVoice(a,t,m,'square',dk?0.035:0.105,1.05,dk?0.09:0.045);
+  musVoice(a,t+0.022,m,'triangle',dk?0.115:0.075,dk?1.5:1.05,dk?0.08:0.05,1.004);
 }
 // atk is the thing that separates a note from a beep. The old voice ramped to
 // full in 14ms on every single voice, which is a click with a pitch. The lead
@@ -27055,7 +27067,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.60: walls are solid again. Nothing goes see-through when you stand behind it, and in the Undercroft nobody can stand inside the part of a wall that is painted, which is what was catching the people down there on the counters and the piers.',
+  now:'v10.61: the Undercroft is darker and gloomier. The tune is no longer led by the bright square wave that made it sound like a toy, the room has slowed from a hundred beats a minute to seventy-six, the filter is closed further, the shimmer plays half as often, and the bass is held long enough to hum.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
