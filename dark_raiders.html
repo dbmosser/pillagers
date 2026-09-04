@@ -1294,7 +1294,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.76';
+var VER='10.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27191,7 +27191,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.76: your ten stash layouts have their picker back, in Settings beside the text size. The button that chose them was removed with the row it lived in, so for the last while nine of the ten were unreachable and the stash showed three items at a time.',
+  now:'v10.77: the title screen fills a 4K monitor too. v10.73 fixed 1080p and left 4K painting 45 percent of the screen, because the css cap cannot know the zoom that multiplies it. It is worked out from that zoom now: 80 percent at 1080p, 1440p and 4K alike.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30219,6 +30219,12 @@ function applyMenuZoom(){
       var _nat=_col.scrollHeight, _room=(window.innerHeight||1080)*0.985;
       if(_nat>0&&_nat*_want>_room) _want=Math.max(0.7,_room/_nat);
     }
+    // v10.77, his note that it has to be playable at 1080p, 1440p and 4K. The
+    // css cap cannot know the zoom, and the zoom is what decides how much of the
+    // monitor a css width paints, so the cap is computed from the zoom this
+    // function has just settled on: 80 percent of the screen, whatever the
+    // screen is. The 820 floor is the same one the stylesheet carries.
+    if(_col) _col.style.maxWidth=Math.max(820,Math.round((window.innerWidth||1920)*0.80/_want))+'px';
     _ti.style.zoom=_want;
   }
 }

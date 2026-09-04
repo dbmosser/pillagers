@@ -40024,6 +40024,86 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.77 - THE TITLE SCREEN FILLS A 4K MONITOR TOO
+
+His note: "game needs to be playable at 1080p, 1440p or 4k". My own v10.73
+only fixed the first of the three, and I said so four builds running in a
+Not verified line rather than going and looking.
+
+### What it was
+
+I had been writing that 1440p and 4K could not be measured because the test
+pane would not go bigger. It will. Resizing the tab really does give a
+2560x1440 and a 3840x2160 viewport, and I should have tried that instead of
+writing the caveat again.
+
+Measured at 3840x2160 on v10.76:
+
+    the title screen paints 45 percent of the monitor
+    1,062 pixels empty down each side
+
+That is barely better than the 56 percent v10.73 set out to fix, and it is
+on the machine he actually tests on. His words from the v9.53 report: "I am
+testing in 4k".
+
+### Why the CSS could not do it
+
+Everything on this screen paints inside a zoom, and the zoom is not the same
+at every resolution, so a fixed vw fraction over-paints at one size and
+under-paints at another. Raising the 1,320 cap fixes 4K and breaks 1440p:
+measured, a 1,587 css pixel cap at 1440p paints 2,745 pixels on a 2,560
+screen, which runs off the side.
+
+The one number that knows the answer is the zoom the game has just worked
+out for itself, so the cap is computed from it: 80 percent of the screen,
+whatever the screen is. The 820 floor still protects a small laptop, and the
+CSS rule stays as the value used before the first layout pass runs.
+
+    1920x1080     81 percent  ->  80 percent
+    2560x1440     67 percent  ->  80 percent
+    3840x2160     45 percent  ->  80 percent
+
+All three fit sideways and downwards.
+
+### And my own check could not run at those sizes
+
+v10.74 asserts the buttons on the run report stay inside the card. Its
+control fires when a full bag fails to make the card scroll, and at 1440p and
+4K the card has room for the whole ledger, so the case cannot be produced
+there. It reported that as a FAILURE. A check that cannot make its case must
+SKIP and say why, and a SKIP is not a PASS, so it stays visible in the run.
+It skips now, naming the screen height.
+
+### Measured
+
+The new check reads the painted rectangle against the real viewport at
+whatever size it is run, and requires between 72 and 92 percent used, both
+edges on screen and no vertical scroll. Then it requires the cap to be
+DERIVED: within four percent of the width that the measured zoom needs to
+paint that share, so a constant that happens to suit one monitor cannot pass.
+Run at 3840x2160 on a v10.76 fixture it fails saying the screen paints 45
+percent and leaves 1,062 pixels empty each side.
+
+### A second check with the same fault, found the same way
+
+Running the corpus at 4K also failed v10.69, which requires the briefing's
+scrollbar to be at least ten pixels wide so a player can see there is more
+below. On a 3840x2160 screen the whole briefing FITS: eighteen cards, none
+under the fold, and the cue correctly stays hidden. There is then no
+scrollbar at all and the one pixel it measures is the border, so the check
+failed a build that was doing exactly the right thing. It only asks about the
+bar when the list actually scrolls now.
+
+Two checks, both mine, both asserting something about a screen too small to
+hold the content and both treating a bigger screen as a fault. Worth naming
+as a class: an assertion about overflow is only meaningful where the content
+overflows.
+
+Not verified: an ultrawide, where the older aspect-gated rule still exists in
+the stylesheet and is now overridden by the computed cap on every layout
+pass, so that rule is dead code I have left standing; and his text size
+turned up, which changes the zoom and therefore the cap, correctly by
+construction but not driven.
 ## v10.76 - HIS TEN STASH LAYOUTS GET THEIR PICKER BACK
 
 v7.66 was his order: "ten layouts and a button". v7.72 he picked 6 as the

@@ -1,0 +1,25 @@
+v10.77: the title screen fills a 4K monitor too
+
+Your note: the game needs to be playable at 1080p, 1440p or 4k. My v10.73
+fixed only the first, and I wrote "1440p and 4K not verified" four builds
+running because I believed the test pane would not go bigger. It will. That
+is my miss.
+
+Measured at 3840x2160: the title screen paints 45 percent of the monitor
+with 1,062 pixels empty down each side, barely better than the 56 percent
+v10.73 set out to fix, on the machine you test on.
+
+The css cap cannot know the zoom that multiplies it, and the zoom is not the
+same at every resolution: raising the cap fixes 4K and runs 1440p off the
+side. The cap is worked out from the zoom now. 1080p 81 to 80 percent, 1440p
+67 to 80, 4K 45 to 80, all fitting both ways.
+
+My v10.74 check also could not run at those sizes: at 1440p and 4K the card
+has room for the whole ledger so its control could not be produced, and it
+called that a failure. It skips now and says which screen height.
+
+The new check fails on a v10.76 fixture at 4K.
+
+Running the corpus at 4K found a second check of mine with the same fault:
+v10.69 required the briefing scrollbar to be wide, and at 4K the whole
+briefing fits so there is no bar. It only asks when the list scrolls now.

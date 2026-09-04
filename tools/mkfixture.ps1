@@ -3535,6 +3535,18 @@ window.__REGRESS=[
      // scroll while that room sat unused. The width was a hard 820px inline, so
      // there was nothing for a wider screen to target.
      if(!col) return 'the title column has no class to target, so no screen wider than 16:9 can be given more room';
+     // v10.77: OPEN IT FIRST. This measured a hidden element and passed only
+     // while some earlier check left the title screen up; the moment one of them
+     // tidied up after itself, offsetWidth read 0 and this failed the build.
+     var _t9was=t.classList.contains('on'), _t9shut=[];
+     Array.prototype.forEach.call(document.querySelectorAll('.modal.on'),function(e){ _t9shut.push(e); e.classList.remove('on'); });
+     t.classList.add('on');
+     try{ if(typeof applyMenuZoom==='function') applyMenuZoom(); }catch(_z9){}
+     function _t9done(msg){
+       if(!_t9was) t.classList.remove('on');
+       for(var _i9=0;_i9<_t9shut.length;_i9++) _t9shut[_i9].classList.add('on');
+       return msg;
+     }
      var cs=getComputedStyle(col), mw=cs.maxWidth;
      // THE LIVE ASPECT DECIDES which rule should be in force, and this asks the
      // browser rather than assuming: matchMedia evaluates the same query the
@@ -3578,7 +3590,7 @@ window.__REGRESS=[
      // ultrawide, which is its own kind of unreadable.
      if(col.offsetWidth>window.innerWidth*0.9)
        bad.push('control: the column is '+Math.round(col.offsetWidth/window.innerWidth*100)+' percent of the screen, lines that wide are unreadable');
-     return bad.length?bad.join('; '):null; }},
+     return _t9done(bad.length?bad.join('; '):null); }},
   {v:'9.18',what:'the title screen never makes you scroll to reach your saves',
    run:function(){
      if(!__vpAlive()) return 'SKIP: the pane has no layout, the title screen cannot be measured';
@@ -5264,6 +5276,45 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.77',what:'the title screen fills the same share of the monitor at 1080p, at 1440p and at 4K, because the cap is worked out from the zoom rather than written in css',
+   run:function(){
+     var bad=[];
+     if(!window.__vpAlive||!__vpAlive()) return 'SKIP: the page is not laid out';
+     var t=document.getElementById('title');
+     if(!t) return 'SKIP: this build has no title screen';
+     var col=t.querySelector('.titlecol');
+     if(!col) return 'SKIP: the title screen has no column to measure';
+     if(typeof applyMenuZoom!=='function') return 'SKIP: no zoom fitter to drive';
+     var W=window.innerWidth||0, H=window.innerHeight||0;
+     if(W<1600) return 'SKIP: the pane is only '+W+' wide, so a monitor cannot be measured';
+     var wasOn=t.classList.contains('on'), shut=[];
+     Array.prototype.forEach.call(document.querySelectorAll('.modal.on'),function(e){ shut.push(e); e.classList.remove('on'); });
+     try{
+       __pinDPR(1);
+       t.classList.add('on');
+       applyMenuZoom();
+       var r=col.getBoundingClientRect();
+       var used=Math.round(100*r.width/W);
+       var zoom=parseFloat(getComputedStyle(t).zoom)||1;
+       // THE POINT OF THIS CHECK: the same share whatever the monitor. v10.73
+       // hit 81 percent at 1080p and 45 at 4K because the cap was a css number
+       // and the zoom that multiplies it is not the same at both.
+       if(used<72) bad.push('the title screen paints '+used+' percent of a '+W+' by '+H+' screen, leaving '+Math.round(r.left)+' pixels empty down each side');
+       if(used>92) bad.push('the title screen paints '+used+' percent of a '+W+' by '+H+' screen, which is wall to wall');
+       if(Math.round(r.right)>W+1) bad.push('the title screen runs '+(Math.round(r.right)-W)+' pixels off the right at '+W+' by '+H);
+       if(Math.round(r.height)>H) bad.push('the title screen is '+Math.round(r.height)+' tall on a '+H+' pixel screen, so it has to be scrolled');
+       // AND THE CAP REALLY IS DERIVED, not a constant that happens to suit this
+       // one screen: it must be the width the zoom needs to paint that share.
+       var cap=parseFloat(getComputedStyle(col).maxWidth);
+       var wantCap=Math.max(820,Math.round(W*0.80/zoom));
+       if(!(cap>0)) bad.push('control: the column has no width cap at all');
+       else if(Math.abs(cap-wantCap)>Math.max(24,wantCap*0.04))
+         bad.push('the cap is '+Math.round(cap)+' css pixels where the zoom of '+zoom+' on a '+W+' pixel screen needs about '+wantCap);
+     } finally {
+       if(!wasOn) t.classList.remove('on');
+       for(var i=0;i<shut.length;i++) shut[i].classList.add('on');
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.76',what:'his ten stash layouts can be reached again, the button cycles and wraps, and the stash grid really changes when it does',
    run:function(){
      var bad=[];
@@ -5424,7 +5475,9 @@ window.__REGRESS=[
        var FULL=['medkit','medkit','plate','plate','servo','scrap','wire','bandage','smoke','frag'];
        seat(FULL,['smg','carbine'],8,'medkit');
        var top=look('a full bag, scrolled to the top');
-       if(!top.scrolls) bad.push('control: a full bag did not make the card scroll, so this check is not testing what it says');
+       // v10.77: a taller screen gives the card room for the whole ledger, so
+       // the case simply does not arise there. That is not the build failing.
+       if(!top.scrolls) return 'SKIP: on a '+(window.innerHeight||0)+' pixel screen a full bag does not fill the card, so the buttons cannot be pushed off it';
        win.scrollTop=0;
        top=look('a full bag, scrolled to the top');
        if(top.off.length) bad.push('with a full bag, '+top.off.join(' and '));
@@ -5727,8 +5780,13 @@ window.__REGRESS=[
        }
        // THE BAR IS WIDE ENOUGH TO SEE. Measured on v10.68 at 7 pixels including
        // its border, which is what made the list read as a full page.
-       var bar=host.offsetWidth-host.clientWidth;
-       if(bar<10) bad.push('the briefing scrollbar is '+bar+' pixels wide, which is not a signal');
+       // v10.77: only when there IS one. At 4K the whole briefing fits, so there
+       // is no bar and the 1 pixel measured is the border; requiring a wide bar
+       // there failed a build that was doing exactly the right thing.
+       if(host.scrollHeight>host.clientHeight+2){
+         var bar=host.offsetWidth-host.clientWidth;
+         if(bar<10) bad.push('the briefing scrolls and its scrollbar is '+bar+' pixels wide, which is not a signal');
+       }
      } finally {
        host.scrollTop=0;
        try{ primerCue(); }catch(_pc){}
