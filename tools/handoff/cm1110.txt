@@ -1,0 +1,37 @@
+v11.10: the bot cannot see the crawler bug at all, measured
+
+At v11.07 I fixed the crawler that could not see a hidden man it was touching and
+said I had not measured the effect on the bot's extract rate. This is that
+measurement.
+
+The paired run is not affordable here: one paired seed takes about thirty five
+seconds, so 320 pairs is several hours and a single pair outlives the window a
+call gets. Seven completed, zero discordant, neither arm extracting once, which
+is saturated and says nothing.
+
+So I measured what decides the answer. The bug only fires when concealment falls
+far enough that a crawler's sight, 100 units times concealment, drops under its
+own 36 unit reach, which needs concealment below about 0.36.
+
+Measured over three seeded bot raids, 1,647 steps: crawlers were inside biting
+distance for 693 frames and zero of them were in the blind band. Over 300 frames
+the bot's concealment ran 0.40 at its lowest, 1.00 at its highest, 0.884 on
+average, and it crouched in not one frame, because simCrouch is 0 and always has
+been.
+
+The bot never gets there. It cannot exhibit the bug. That is why seven pairs
+showed no difference and why three hundred more would have shown none. The bug
+only ever reached a human who hides, which is why he hit it twice and no number I
+have run ever showed it.
+
+Nothing in the game changed in this build.
+
+New check v11.10 is not shaped like the others and does not pretend to be. There
+is no defect, so there is no control that fails on the previous build; it passes
+on both and is written to fail in the future. It reads the crouch dial and fails
+if the bot is ever allowed to crouch. It steps one short raid and fails if the
+bot's concealment ever reaches the band. Where the bot meets no crawler, that is
+recorded as a gap in the sample rather than a fault in the game.
+
+Not verified: the extract rate effect itself, which is unmeasurable by this bot.
+A real number needs either a bot that hides or a person.

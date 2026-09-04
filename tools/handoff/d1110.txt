@@ -1,0 +1,48 @@
+## v11.10 - THE v11.07 QUESTION ANSWERED: THE BOT CANNOT SEE THAT BUG AT ALL
+
+At v11.07 I fixed the crawler that could not see a hidden man it was touching,
+and said plainly that I had not measured what it does to the bot's extract rate.
+This is that measurement, and the answer is about the instrument rather than the
+game.
+
+**THE PAIRED RUN IS NOT AFFORDABLE HERE.** One paired seed takes about thirty five
+seconds in this environment, so the 320 pairs the standard asks for is several
+hours, and a single pair outlives the window I can drive a call in. Seven pairs
+completed before I stopped it: zero discordant, and neither arm extracted once,
+which is a saturated result that says nothing. I am not going to spend more ticks
+on a number I cannot finish.
+
+**SO I MEASURED THE THING THAT DECIDES THE ANSWER.** The bug only fires when
+concealment falls far enough that a crawler's sight, 100 units times concealment,
+drops under its own 36 unit reach. That needs concealment below about **0.36**.
+
+**MEASURED**, three seeded bot raids, 1,647 steps: crawlers were inside biting
+distance of the bot for **693 frames**, and **zero** of those frames were in the
+blind band. Over 300 frames the bot's own concealment ran **0.40 at its lowest**,
+1.00 at its highest, **0.884 on average**, and it crouched in **not one frame**,
+because the simCrouch dial is 0 and has been for its whole life.
+
+**THE BOT NEVER GETS THERE.** It cannot exhibit the bug. That is why the seven
+pairs showed no difference and why three hundred more would have shown none
+either. The bug only ever reached a HUMAN who hides, which is exactly why he hit
+it twice and why no number I have ever run showed it.
+
+**NOTHING IN THE GAME CHANGED IN THIS BUILD.** What it adds is the limit, written
+where it cannot be forgotten, because the mistake it prevents is one I was a
+sentence away from making: quoting a sim number as though it covered how he
+actually plays.
+
+**NEW CHECK v11.10** is not shaped like the others and I am not going to pretend
+it is. There is no defect here, so there is no control that fails on the previous
+build: it passes on v11.09 and on v11.10 alike, and it is written to fail in the
+FUTURE. It reads the crouch dial, which needs no raid at all, and fails if the
+bot is ever allowed to crouch, because every extract rate in this file would then
+describe a different player from the one that produced them. It steps one short
+raid and fails if the bot's concealment ever reaches the band, because that would
+mean the sim CAN see this class of bug and the reasoning above must be replaced
+with a measurement. And where the bot simply meets no crawler, that is recorded
+as a gap in the sample rather than counted as a fault in the game.
+
+Not verified: the extract rate effect itself, which remains unmeasured and, on
+the evidence above, unmeasurable by this bot. If he wants a real number it needs
+either a bot that hides or a person, and the person is him.
