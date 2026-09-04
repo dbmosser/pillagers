@@ -210,6 +210,23 @@ STILL OPEN:
 | ~~ESC should pause in the Undercroft~~ | ALREADY BUILT since v8.70, measured at v9.83 with a real Escape keypress on the floor: the pause box opens |
 | ~~The roll graphic is WRONG in the Undercroft~~ | NOT REPRODUCED at v9.83: it draws a disc, fill 0.78 against a circle 0.785, and travels 43 units |
 
+## HIS NOTES, 2026-09-04 EVENING. BOTH TAKEN NEXT, IN THIS ORDER.
+
+1. "change sprint on shift to something you hold to sprint instead of toggle".
+   This REVERSES half of v10.07, which made crouch and sprint toggles on his
+   own 2026-09-03 answer. He named sprint only, so crouch stays a toggle until
+   he says otherwise. Reproduce: press and release Shift and show the operator
+   is still sprinting; then hold and release and show sprint follows the key.
+   Watch for the two places that read it, the live player and the legend, and
+   for the stamina drain which is written against the sprint state and not the
+   key. Not balancing: the speed and the stamina cost do not change, only what
+   turns it on.
+
+2. "player marker on map should be much larger, hard to see right now".
+   The map screen, the one M opens. Reproduce by measuring the marker in pixels
+   at 1920x1080 against everything else drawn on that screen, then size it so it
+   reads at a glance. Nothing else on that screen changes.
+
 ## HIS INSTRUCTION, 2026-09-04: NO MORE IN-RAID BALANCING BEFORE ALPHA
 
 Verbatim: "i feel like you are still wasting time on in-raid balancing and i don't
