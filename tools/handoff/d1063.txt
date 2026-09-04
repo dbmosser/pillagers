@@ -1,39 +1,45 @@
-## v10.63 - ONE CHIRP DID SEVENTY JOBS
+## v10.63 - A HOWLER OUTSIDE CANNOT BOMB YOU INSIDE A HOUSE
 
-His note, 2026-09-03 about 19:40: **"everything should sound unique and
-crisp like a triple-A game"**. The fourth family: the sounds that were one
-sound.
+His note, 2026-09-03 about 21:32: **"if a howler is outside, he shouldn't be
+able to bomb inside a house"**.
 
 ### What it was
 
-The audit found the pickup chirp, a single sine from 660 to 1180 hertz, at
-about seventy call sites: picking up loot, opening a door, applying a heal,
-swapping a gun, assigning a hotbar slot, reviving yourself, selling at a
-pedestal, and every menu click in the Undercroft. Opening a door and
-clicking a shop button were the same sound. And the Depot's buy tiles had
-asked for a sound named cache since v9.99, which matched no recipe and
-played nothing.
+The Howler lobs a shell at a point and the shell landed there, roof or no
+roof. Nothing about a building stopped it. Measured on v10.62 before
+touching anything, on the first map at seed 4242: standing in the middle of
+a building 460 by 420, a shell fired from a Howler 300 units outside the
+building took 41 health off him in one hit. Walking indoors was not cover
+from a mortar, which is the one thing a roof is for.
 
 ### Now
 
-A door is a latch click and a short low creak of the hinge. A heal is the
-wrapper tearing and a soft rising pair of notes. A menu click is one dry
-tick with a tiny thock under it; every menu site keeps asking for the old
-name and the synth routes it to the tick when there is no raid, so the
-forty hub sites needed no edit and a pickup in a raid keeps its chirp. A
-sale at the Depot rings up: two bright notes and the drawer.
+A shell that lands on a building bursts on the roof. Nobody under that roof
+takes anything from it: not him, and not the pillagers sheltering in there
+with him, because a shell on a roof that still cleared the room of everyone
+under it would be the same bug wearing a different coat. It still booms,
+flashes, shakes the screen and pulls every machine that can hear it, so a
+round landing over your head is something you know about.
+
+The rule is his sentence exactly. It only applies when the thing that fired
+it was NOT under the same roof, so a Howler that has walked into the
+building with you is still a Howler in the room with you, and the shell it
+fires in there still lands.
 
 ### Measured
 
-The check installs a recording audio context, starts a raid at seed 4242,
-and requires the pickup to schedule its chirp and the door, the heal, the
-tick and the sale each to schedule a voice different from the chirp and
-from each other; then clears the raid and requires the pickup name to
-schedule the tick and not the chirp. On v10.62 the door, heal and tick
-names schedule nothing and the sale schedules nothing, which is the
-finding; on this build the check returns null.
+The check drives the shell impact directly, so a roof can be tested without
+waiting two seconds of flight time for a machine to decide to fire. Four
+ways, all on the first map at seed 4242. He stands in the middle of the big
+building and a shell fired from outside must take nothing off him. In the
+open beside the same building, the same shell must still hurt, or the check
+would pass on a build where the Howler had simply stopped working. A shell
+fired from inside the building with him must still hurt. And a pillager
+sheltering under that roof must lose nothing to a shell on it. On v10.62 the
+first of those fails, taking 41 health, which is his complaint.
 
-Not verified: how it sounds, which is his; the gun swap, hotbar assign,
-self-revive and pedestal sale, which still share the chirp in a raid and
-are the next split; and the in-raid pause menu, whose few clicks now chirp
-like a pickup because a raid exists under them.
+Not verified: whether the Howler now wastes shells firing at a roof it
+cannot get through, which is an aiming question rather than a damage one and
+needs his eye on a real raid; and interiors that are not one of the map's
+building rectangles, such as the inside of a ruin, which have no roof in the
+map data and so are still open sky to a mortar.

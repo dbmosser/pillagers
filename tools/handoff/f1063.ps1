@@ -11,52 +11,73 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
+# The shell impact, driven directly, so a roof can be tested without waiting two
+# seconds of flight time for a machine to decide to fire.
 SubRx @'
-  {v:'10.62',what:'each kind schedules its own death, a hit on plate and a hit on a man differ, the Bulwark has a voice, the idle voices never repeat exactly, and a death on the play path asks for the death sound',
+window.__equipBag=function(ix,slot){ return equipFromBag(ix,slot); };
 '@ @'
-  {v:'10.63',what:'a door, a heal, a menu click and a Depot sale each schedule their own voice, none of them the pickup chirp, and a pickup in a raid keeps the chirp',
+window.__equipBag=function(ix,slot){ return equipFromBag(ix,slot); };
+window.__howlerHit=function(SH){ return howlerImpact(SH); };   // v10.63
+window.__buildings=function(){ return (G&&G.map)?(G.map.buildings||[]):[]; };
+'@
+
+SubRx @'
+  {v:'10.62',what:'a found gun takes the empty weapon slot instead of turning out the gun in hand, and with both slots full it still replaces the one asked for',
+'@ @'
+  {v:'10.63',what:'a Howler shell that lands on a building bursts on the roof and hurts nobody under it, while the same shell in the open still hurts and one fired from inside still hurts',
    run:function(){
      var bad=[];
-     if(typeof _realBlip!=='function'||!window.__startRaid) return 'SKIP: this build has no real blip to trace';
-     function param(v,log,name){ var o={_v:v}; Object.defineProperty(o,'value',{get:function(){ return o._v; },set:function(x){ o._v=x; log.push(name+'='+Math.round(x*100)); }}); ['setValueAtTime','exponentialRampToValueAtTime','linearRampToValueAtTime','setTargetAtTime'].forEach(function(m){ o[m]=function(x){ log.push(name+':'+Math.round(x*100)); return o; }; }); return o; }
-     function fake(){
-       var L=[]; var node=function(kind){ var o={kind:kind,connect:function(){ return o; },disconnect:function(){},start:function(){ L.push('start:'+kind); },stop:function(){}}; return o; };
-       return {currentTime:0,sampleRate:48000,state:'running',destination:node('dest'),resume:function(){},log:L,
-         createBuffer:function(ch,len){ L.push('buf:'+len); return {length:len,getChannelData:function(){ return new Float32Array(len); }}; },
-         createBufferSource:function(){ return node('src'); },
-         createOscillator:function(){ var o=node('osc'); o.type='sine'; o.frequency=param(440,L,'osc'); o.detune=param(0,[],'det'); return o; },
-         createBiquadFilter:function(){ var o=node('flt'); o.type='lowpass'; o.frequency=param(350,L,'flt'); o.Q=param(1,[],'q'); return o; },
-         createGain:function(){ var o=node('gain'); o.gain=param(1,[],'g'); return o; },
-         createStereoPanner:function(){ var o=node('pan'); o.pan=param(0,[],'p'); return o; },
-         createDelay:function(){ var o=node('dly'); o.delayTime=param(0,[],'d'); return o; }};
+     if(!(window.__startRaid&&window.__howlerHit&&window.__buildings&&window.__state)) return 'SKIP: this build cannot drive a Howler shell';
+     __resetCfg();
+     __startRaid({seed:4242,mapIx:0});
+     var G2=__state(); if(!G2||!G2.player) return 'no raid';
+     var p=G2.player, B=__buildings();
+     if(!B.length) return 'SKIP: no buildings on this map';
+     // A building with room to stand well inside it and well outside it.
+     var b=null;
+     for(var i=0;i<B.length;i++) if(B[i].w>=140&&B[i].h>=140){ b=B[i]; break; }
+     if(!b) return 'SKIP: no building big enough to stand inside';
+     var inX=b.x+b.w/2, inY=b.y+b.h/2;
+     var keep={x:p.x,y:p.y,hp:p.hp,downed:p.downed,ents:G2.ents.length};
+     function shot(tx,ty,x0,y0){
+       p.hp=100; p.downed=false; p.iv=0; p.hitFlash=0;
+       __howlerHit({tx:tx,ty:ty,x0:x0,y0:y0,dmg:35});
+       return 100-p.hp;
      }
-     var keepAC=AC, keepBUS=BUS, keepG=G;
      try{
-       var a=fake(); AC=a; BUS=a.createGain();
-       function call(type){ a.log.length=0; _realBlip(type); return a.log.slice(); }
-       function sig(lg){ return lg.filter(function(x){ return (/^(buf|start|flt|osc)/).test(x); }).map(function(x){ return x.replace(/[:=](-?\d+)$/,function(m,d){ return ':'+Math.round(+d/1500)*1500; }); }).join('|'); }
-       // In a raid: the pickup keeps its chirp, and the four new voices differ from it and from each other.
-       __startRaid({seed:4242,mapIx:0});
-       if(!G) return 'no raid';
-       G.sim=false;
-       var pick=call('pick'), voices={door:call('door'),heal:call('heal'),ui:call('ui'),cache:call('cache')};
-       if(!pick.length) bad.push('a pickup in a raid schedules nothing');
-       var seen={pick:sig(pick)};
-       for(var k in voices){
-         if(!voices[k].length){ bad.push('a '+k+' schedules nothing'); continue; }
-         var sg=sig(voices[k]);
-         for(var j in seen) if(seen[j]===sg) bad.push('a '+k+' and a '+j+' schedule the same sound');
-         seen[k]=sg;
-       }
-       // In the Undercroft, no raid: the pickup name is routed to the tick.
-       G=null;
-       var menu=call('pick');
-       if(!menu.length) bad.push('a menu click schedules nothing');
-       else if(sig(menu)!==seen.ui) bad.push('a menu click is not the tick');
-       else if(sig(menu)===seen.pick) bad.push('a menu click is still the pickup chirp');
-     } finally { AC=keepAC; BUS=keepBUS; G=keepG; }
+       G2.ents.length=0;   // the shell also hurts bodies; this measures him alone
+       // 1. HIS CASE: he is inside, the Howler is outside, the shell lands on him.
+       p.x=inX; p.y=inY;
+       var inside=shot(inX,inY,b.x-300,b.y-300);
+       if(inside>0) bad.push('standing inside a building, a shell fired from outside still took '+inside.toFixed(1)+' health off him');
+       // 2. CONTROL: the same shell in the open must still hurt, or the check
+       //    would pass on a build where the Howler simply stopped working.
+       // Open ground beside it, tested here against the building list rather than
+       // against the game's own helper, which only exists once the fix is in.
+       function _inRect(r,x,y){ return x>r.x&&x<r.x+r.w&&y>r.y&&y<r.y+r.h; }
+       function _openAt(x,y){ for(var q=0;q<B.length;q++) if(_inRect(B[q],x,y)) return false; return true; }
+       var ox=b.x-260, oy=b.y+b.h/2;
+       if(!_openAt(ox,oy)) ox=b.x-420;
+       if(!_openAt(ox,oy)) return 'SKIP: no open ground found beside this building';
+       p.x=ox; p.y=oy;
+       var open=shot(ox,oy,ox-300,oy-300);
+       if(open<=0) bad.push('control: in the open the same shell did nothing, so the roof test proves nothing');
+       // 3. A Howler that came inside with him is still a Howler.
+       p.x=inX; p.y=inY;
+       var within=shot(inX,inY,inX+20,inY+20);
+       if(within<=0) bad.push('a shell fired from inside the same building did nothing, so the roof now shields him from everything');
+       // 4. The roof covers the others under it too.
+       p.x=b.x-900; p.y=b.y-900;
+       var e={kind:'crawler',x:inX,y:inY,r:10,hp:100,maxhp:100};
+       G2.ents.push(e);
+       __howlerHit({tx:inX,ty:inY,x0:b.x-300,y0:b.y-300,dmg:35});
+       if(e.hp<100) bad.push('a pillager sheltering under the same roof lost '+(100-e.hp).toFixed(1)+' health to a shell on it');
+       G2.ents.length=0;
+     } finally {
+       p.x=keep.x; p.y=keep.y; p.hp=keep.hp; p.downed=keep.downed;
+     }
      return bad.length?bad.join('; '):null; }},
-  {v:'10.62',what:'each kind schedules its own death, a hit on plate and a hit on a man differ, the Bulwark has a voice, the idle voices never repeat exactly, and a death on the play path asks for the death sound',
+  {v:'10.62',what:'a found gun takes the empty weapon slot instead of turning out the gun in hand, and with both slots full it still replaces the one asked for',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

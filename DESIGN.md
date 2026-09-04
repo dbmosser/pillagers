@@ -40024,6 +40024,51 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.63 - A HOWLER OUTSIDE CANNOT BOMB YOU INSIDE A HOUSE
+
+His note, 2026-09-03 about 21:32: **"if a howler is outside, he shouldn't be
+able to bomb inside a house"**.
+
+### What it was
+
+The Howler lobs a shell at a point and the shell landed there, roof or no
+roof. Nothing about a building stopped it. Measured on v10.62 before
+touching anything, on the first map at seed 4242: standing in the middle of
+a building 460 by 420, a shell fired from a Howler 300 units outside the
+building took 41 health off him in one hit. Walking indoors was not cover
+from a mortar, which is the one thing a roof is for.
+
+### Now
+
+A shell that lands on a building bursts on the roof. Nobody under that roof
+takes anything from it: not him, and not the pillagers sheltering in there
+with him, because a shell on a roof that still cleared the room of everyone
+under it would be the same bug wearing a different coat. It still booms,
+flashes, shakes the screen and pulls every machine that can hear it, so a
+round landing over your head is something you know about.
+
+The rule is his sentence exactly. It only applies when the thing that fired
+it was NOT under the same roof, so a Howler that has walked into the
+building with you is still a Howler in the room with you, and the shell it
+fires in there still lands.
+
+### Measured
+
+The check drives the shell impact directly, so a roof can be tested without
+waiting two seconds of flight time for a machine to decide to fire. Four
+ways, all on the first map at seed 4242. He stands in the middle of the big
+building and a shell fired from outside must take nothing off him. In the
+open beside the same building, the same shell must still hurt, or the check
+would pass on a build where the Howler had simply stopped working. A shell
+fired from inside the building with him must still hurt. And a pillager
+sheltering under that roof must lose nothing to a shell on it. On v10.62 the
+first of those fails, taking 41 health, which is his complaint.
+
+Not verified: whether the Howler now wastes shells firing at a roof it
+cannot get through, which is an aiming question rather than a damage one and
+needs his eye on a real raid; and interiors that are not one of the map's
+building rectangles, such as the inside of a ruin, which have no roof in the
+map data and so are still open sky to a mortar.
 ## v10.62 - A FOUND GUN TAKES THE EMPTY SLOT
 
 His note, 2026-09-03 about 21:25: **"when i find a gun it should go to the
