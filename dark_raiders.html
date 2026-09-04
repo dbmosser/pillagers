@@ -1303,7 +1303,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.83';
+var VER='10.84';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1318,6 +1318,7 @@ var WHATSNEW_VER='10.80';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'MACHINES CAN FIND THE DOOR NOW. One inside a building could not work out how to get out to you, so it bumped about indoors while you stood outside untouched. Nineteen buildings across the two maps were traps like that and eleven still are, but if something is in there with you it is far likelier to come.',
   'THE MAP MARKS THE FALLEN BUILDINGS. Press M and the destroyed ones are hatched with a broken outline, so you can plan a route past the ones with no cover instead of finding out when you get there.',
   'A DESTROYED BUILDING NOW LOOKS IT. Burnt floor, rubble across it and dust spilling out past where the wall used to stand, so you can pick one out from across the map instead of only noticing when you are close enough to see the gap.',
   'SOME BUILDINGS ARE DESTROYED NOW. Whole runs of their outer wall are gone, so you can see straight into them and walk in from any side. No cover on that wall, nothing to hold a corner behind, and whatever is inside is visible from a long way off. The rooms inside are still standing.',
@@ -4396,18 +4397,46 @@ function repairInteriors(walls,buildings,locked){
   for(wi=walls.length-1;wi>=0;wi--) if(walls[wi].ib!==undefined&&bad[walls[wi].ib]) walls.splice(wi,1);
   return buildNav(walls);
 }
+// v10.84: every doorway this function cuts, recorded, so the routing grid can be
+// told where the holes are. Reset by the caller before it builds its buildings.
+var BDOORS=[];
+// A COPY of a nav grid with the doorways opened. The original is left alone
+// because navReach reads it to decide what the map can place where, and opening
+// cells there moves the contents of the world.
+function carveDoors(nav,doors,walls){
+  if(!nav||!doors||!doors.length) return nav;
+  var out={w:nav.w,h:nav.h,c:nav.c,blk:new Uint8Array(nav.blk),run:0,opened:0};
+  var b=out.blk,gw=out.w,gh=out.h,cc=out.c,i,j,k;
+  for(i=0;i<doors.length;i++){
+    var D=doors[i];
+    var x0=Math.max(0,Math.floor((D.x-NAVPADD)/cc)), x1=Math.min(gw-1,Math.ceil((D.x+D.w+NAVPADD)/cc));
+    var y0=Math.max(0,Math.floor((D.y-NAVPADD)/cc)), y1=Math.min(gh-1,Math.ceil((D.y+D.h+NAVPADD)/cc));
+    for(j=y0;j<=y1;j++) for(k=x0;k<=x1;k++){
+      var id=j*gw+k;
+      if(!b[id]) continue;
+      var cx=k*cc+cc*0.5, cy=j*cc+cc*0.5, solid=false;
+      for(var q=0;q<walls.length;q++){
+        var W=walls[q];
+        if(cx>W.x&&cx<W.x+W.w&&cy>W.y&&cy<W.y+W.h){ solid=true; break; }
+      }
+      if(!solid){ b[id]=0; out.opened++; }
+    }
+  }
+  return out;
+}
 function makeBuilding(x,y,w,h,out,d,bid,forcePlan){
   var t=16,gap=64;
+  function door(a,b,c,e){ BDOORS.push({x:a,y:b,w:c,h:e}); }
   // Shell walls stay untagged. Interior partitions carry the building id so the
   // repair pass below can strip exactly one building's interior and nothing else.
   var shell=true;
   // degenerate spans (audit: lsplit could emit a negative width) are dropped
   function seg(a,b,c,e){ if(c<3||e<3) return; out.push(shell?{x:a,y:b,w:c,h:e,d:d}:{x:a,y:b,w:c,h:e,d:d,ib:bid}); }
   var doors={}; doors[ri(0,3)]=1; doors[ri(0,3)]=1;
-  if(doors[0]){var a1=x+rnd(30,w-30-gap);seg(x,y,a1-x,t);seg(a1+gap,y,x+w-(a1+gap),t);} else seg(x,y,w,t);
-  if(doors[1]){var a2=x+rnd(30,w-30-gap);seg(x,y+h-t,a2-x,t);seg(a2+gap,y+h-t,x+w-(a2+gap),t);} else seg(x,y+h-t,w,t);
-  if(doors[2]){var a3=y+rnd(30,h-30-gap);seg(x,y,t,a3-y);seg(x,a3+gap,t,y+h-(a3+gap));} else seg(x,y,t,h);
-  if(doors[3]){var a4=y+rnd(30,h-30-gap);seg(x+w-t,y,t,a4-y);seg(x+w-t,a4+gap,t,y+h-(a4+gap));} else seg(x+w-t,y,t,h);
+  if(doors[0]){var a1=x+rnd(30,w-30-gap);seg(x,y,a1-x,t);seg(a1+gap,y,x+w-(a1+gap),t);door(a1,y,gap,t);} else seg(x,y,w,t);
+  if(doors[1]){var a2=x+rnd(30,w-30-gap);seg(x,y+h-t,a2-x,t);seg(a2+gap,y+h-t,x+w-(a2+gap),t);door(a2,y+h-t,gap,t);} else seg(x,y+h-t,w,t);
+  if(doors[2]){var a3=y+rnd(30,h-30-gap);seg(x,y,t,a3-y);seg(x,a3+gap,t,y+h-(a3+gap));door(x,a3,t,gap);} else seg(x,y,t,h);
+  if(doors[3]){var a4=y+rnd(30,h-30-gap);seg(x+w-t,y,t,a4-y);seg(x+w-t,a4+gap,t,y+h-(a4+gap));door(x+w-t,a4,t,gap);} else seg(x+w-t,y,t,h);
   // Real interiors. Every building in the game used to be the same object: a
   // box, plus one central divider if it was wide enough. Landmarks gave the map
   // places to recognise and districts gave it territory, but the ordinary
@@ -5210,6 +5239,7 @@ function buildFixedMap(def){
   walls.push({x:WORLD_W-b,y:0,w:b,h:WORLD_H,d:1,noDes:1});
   for(i=0;i<def.walls.length;i++){ var aw=def.walls[i]; walls.push({x:aw.x,y:aw.y,w:aw.w,h:aw.h,d:aw.d===undefined?1:aw.d}); }
   var buildings=[];
+  BDOORS=[];                                   // v10.84: this map's doorways
   var _wallsBeforeBuildings=walls.length;
   for(i=0;i<def.buildings.length;i++){
     var B=def.buildings[i];
@@ -5860,6 +5890,10 @@ function buildFixedMap(def){
     // The holes are ways through, so the pathing grid has to know about them.
     if(_ruinLog.picked) mapNav=buildNav(walls);
   }
+  // v10.84: the routing grid, doorways opened. map.nav is deliberately NOT this
+  // one: it decides what the map can place where, and opening cells there moves
+  // the contents of the world.
+  var mapNavD=carveDoors(mapNav,BDOORS,walls);
   var segs=[];
   for(var m2=0;m2<walls.length;m2++){ var w2=walls[m2];
     if(w2.win) continue;
@@ -5872,7 +5906,8 @@ function buildFixedMap(def){
     roadRects:roadRects,roadDashes:roadDashes,cullLog:_cullLog,ruinLog:_ruinLog,
     cw:WORLD_W/8,ch:WORLD_H/8,cols:8,rows:8,
     bushes:bushes,landmarks:landmarks,zones:zseeds,districtAt:districtAt,zoneAt:zoneAt,woods:woodsList,bigPairs:[],plats:plats,ramps:ramps,platAt:platAt,liftAt:liftAt,locked:lockedRooms,
-    spawns:def.spawns,extracts:extractsOutside(def.extracts,buildings),nav:mapNav};
+    spawns:def.spawns,extracts:extractsOutside(def.extracts,buildings),nav:mapNav,
+    navD:mapNavD,doors:BDOORS.slice(0)};
 }
 // SPEC 4.1: the procedural map generator that lived here is DELETED, along with
 // its zone seeding, landmark reservation, woods and big building placement and
@@ -11484,6 +11519,7 @@ function rebuildGeometry(){
   G.grid=buildSegGrid(segs,WORLD_W,WORLD_H);
   G.wgrid=buildWallGrid(walls,WORLD_W,WORLD_H);
   G.map.nav=buildNav(walls);
+  G.map.navD=carveDoors(G.map.nav,G.map.doors,walls);
   refreshVseg();
 }
 function damageWall(w,amt,x,y){
@@ -14885,7 +14921,7 @@ function navSeek(e,tx,ty,spd,dt){
     var _fstale=(!e.path&&!(e.pathFail&&CFG.navBackoff!==0))||e.pathT<=0;
     if(_fstale&&G.navBudget>0){
       G.navBudget--;
-      e.path=navPath(G.map.nav,e.x,e.y,tx,ty);
+      e.path=navPath(G.map.navD||G.map.nav,e.x,e.y,tx,ty);
       e.pathFail=!e.path;
       e.pathI=0; e.pathT=10+rr()*4; e.pathGoal={x:tx,y:ty};
     }
@@ -14922,7 +14958,7 @@ function navSeek(e,tx,ty,spd,dt){
   // is the trap here; the timer below makes it wait its turn like everyone else.
   if(stale&&G.navBudget>0){
     G.navBudget--;
-    e.path=navPath(G.map.nav,e.x,e.y,tx,ty);
+    e.path=navPath(G.map.navD||G.map.nav,e.x,e.y,tx,ty);
     // Whether a route exists is now a question with an exact answer, and the
     // give up rules read this instead of guessing from straight line distance.
     e.pathFail=!e.path;
@@ -27353,7 +27389,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.83: the map tells you which buildings have fallen. A destroyed building sat at 64 to 69 brightness against 73 to 82 for the standing ones near it, a gap of 3.6 where the standing buildings vary by 9.4 among themselves, so it was only darker by accident. It is hatched and broken-outlined now.',
+  now:'v10.84: your crawler note, and it was worse than a crawler. A machine inside a building could not find its way out to you: twenty seconds, never closer than 97 units, no damage, while the same crawler in the open kills in ten. The doorways were sealed on the routing grid, not in the world.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

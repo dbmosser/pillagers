@@ -1,20 +1,21 @@
 v10.84: machines could not find the door
 
-His note: a crawler got close and did not hurt him. Reproduced, and it is worse
-than a crawler. A machine inside a building could not route out to a player
-standing outside it: twenty seconds, never closer than 97 units, zero damage,
-while the same crawler in the open kills in ten.
+His note: a crawler got close and did not hurt him. Reproduced, and worse than a
+crawler. A machine inside a building could not route out to a player standing
+outside: twenty seconds, never closer than 97 units, zero damage, while the same
+crawler in the open kills in ten. The router carried pathFail for the whole
+chase.
 
-The router says so itself, carrying pathFail for the whole chase. The pathing
-grid inflates every wall by 12 units on 16 unit cells, so a 64 unit doorway
-keeps 40 units of width, and anything that narrows it further seals the door on
-the grid while leaving it open in the world. Five of the twenty buildings on
-COLD STORAGE were boxes nothing could path out of.
+The routing grid inflates every wall by 12 units on 16 unit cells, so a 64 unit
+doorway keeps 40 units of width and anything narrowing it further seals the door
+on the grid while leaving it open in the world. Counted at seed 4242: 4 of 13
+trapped buildings on COLD STORAGE and 15 of 59 on the mile.
 
-Doorways are now recorded and their cells opened, but only where the cell centre
-is outside every wall rectangle with no padding, so no route can be cut through
-anything solid. 0 of 20 trapped after, and entities, containers and walls are
-identical to v10.83.
+My first cut carved map.nav itself, which is also what decides where the map
+places things, so the world moved with the counts unchanged and a jersey sprite
+check caught it. The doorways now get their own grid: map.nav for placement,
+map.navD for routing.
 
-Still open: the exact building that started this now finds a route and does not
-walk it. Said plainly in DESIGN.md.
+After: 3 of 13 and 8 of 59, nineteen traps down to eleven, with entities,
+containers and walls identical. Still open: eleven traps remain, and the exact
+building that started this finds a route and does not walk it.

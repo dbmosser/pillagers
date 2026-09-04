@@ -13,52 +13,74 @@ crawler inside it, in chase, alert full:
                                                  kills the player in 10s
   both inside the same building                  closes to 9.4, kills him
 
-So the attack, the reach, the cooldown and the states are all working. It
-cannot get out.
+So the attack, the reach, the cooldown and the states all work. It cannot get
+out. The router says so itself: the crawler carries path null and pathFail 1 for
+the entire chase, so it falls through to the local wall hug and bumps around
+indoors while its alert decays.
 
-THE ROUTER SAYS SO ITSELF. Watched frame by frame, the crawler carries
-path null and pathFail 1 for the entire chase, which means the route finder was
-asked and answered that there is no way from where it stands to where you are.
-With no route it falls through to the local wall hug and bumps around indoors
-while its alert decays.
-
-THE CAUSE. The pathing grid is 16 unit cells and every wall is inflated by 12
+THE CAUSE. The routing grid is 16 unit cells and every wall is inflated by 12
 units before its cells are marked blocked. A doorway is a 64 unit gap cut in a
 16 unit wall, so the two runs either side eat 12 each and 40 units of clear
 width remain, two and a half cells. When anything narrows that further, a piece
 of furniture, a landmark wall, a split run, the last free cell disappears and a
-door a body can WALK through becomes a door no body can ROUTE through. Measured
-on COLD STORAGE at seed 4242: FIVE of the twenty buildings were boxes a machine
-could not path out of.
+door a body can WALK through becomes a door no body can ROUTE through.
 
-THE FIX opens the doorways on the grid and nothing else. Each building now
-records the gaps it cuts, and after the grid is built a cell inside one of those
-gaps is unblocked ONLY IF ITS CENTRE IS GENUINELY OUTSIDE EVERY WALL, tested
-against the real rectangles with no padding at all. By construction it cannot
-open a route through anything solid; it can only stop the padding from sealing a
-hole that is really there. 370 cells across 37 doorways on COLD STORAGE, 1,586
-across 151 on the mile.
+MEASURED at seed 4242, buildings a machine cannot route out of, counted only
+where there is verified open ground to stand outside:
 
-MEASURED AFTER: 0 of 20 buildings trapped, by the router's own answer, and the
-world does not move at all: entities 85 and 374, containers 165 and 593, walls
-610 and 2403, every one identical to v10.83.
+  COLD STORAGE    4 of 13
+  THE COLD MILE  15 of 59
 
-STILL OPEN, AND I AM NOT CLAIMING OTHERWISE. The exact case that started this,
-building 3 on COLD STORAGE with the player 52 units off its west wall, now finds
-a route and still does not walk it: thirty seconds, stalling at 73 units,
-oscillating between two points inside the building. The router is fixed and
-something downstream of it is not, so his note is improved and not closed. That
-is the next build.
+AND THE FIRST CUT OF THIS FIX WAS WRONG, CAUGHT BY THE HARNESS. I carved the
+doorways into map.nav itself, and that grid is also what navReach reads to
+decide which container and cache spots anything can reach, so opening cells
+moved what the map places. The entity and container COUNTS stayed identical,
+which is exactly what I checked and why I nearly shipped it. v10.46 went red
+instead: the operator's jersey read 3 pale pixels against 21, because the scene
+around him had moved. A sprite check caught a map bug, and I withheld the build
+for a tick rather than ship something I could not explain.
 
-Three of my own probes were wrong before any of this was true, and each one
-would have shipped a fix for nothing: the first put the crawler outside the map
-boundary, the second called a spot clear when it was 52 units from a building
-whose interior swallowed the crawler's start, and the third teleported the
-player 300 units away, which is past a crawler's 135 unit sight, and read the
-resulting blindness as a bug.
+SO THE DOORS GET THEIR OWN GRID. map.nav is untouched and still decides what the
+map can place where. map.navD is a copy with the doorways opened, and it is what
+bodies ROUTE on: both navPath call sites, and rebuilt again whenever a wall comes
+down mid raid so it cannot go stale. A cell is opened only where its centre is
+outside every wall rectangle with no padding at all, so no route can ever be cut
+through anything solid.
 
-Not verified: whether the same trap exists on the mile. The sweep passes there
-now, but I never counted how many of its 84 buildings were trapped BEFORE the
-fix, so I cannot say how much of that map this changes. Nothing here is measured
-against the bot's extract rate, which is the number a pathing change would move
-if it moves anything; that needs a paired run and this build does not have one.
+MEASURED AFTER, same runner, same seed:
+
+  COLD STORAGE    4 of 13  ->  3 of 13
+  THE COLD MILE  15 of 59  ->  8 of 59
+  entities 85 and 374, containers 165 and 593, walls 610 and 2403, all
+  identical to v10.83, and v10.46 passes again
+  370 cells opened across 37 doorways on COLD STORAGE, and on the mile 151
+  doorways
+
+Nineteen traps down to eleven. REAL AND PARTIAL, and I am not calling it closed.
+
+THE CHECK drives a crawler out of every building on both maps that has open
+ground to stand outside, clearing the route-search cooldown each step so that
+waiting is never mistaken for failing, and holds each map to the count it has
+earned. Two controls: doorways were recorded and cells were really opened; and
+the routing grid is a DIFFERENT OBJECT from the placement grid with different
+contents, so the mistake above cannot come back quietly.
+
+STILL OPEN. Eleven buildings across the two maps are still boxes a machine
+cannot route out of, named by index in the check's own failure text. And the
+exact case that started this, building 3 on COLD STORAGE with the player 52
+units off its west wall, now finds a route and still does not walk it, stalling
+at 73 units for thirty seconds. The router is fixed and something downstream of
+it is not.
+
+Three of my own probes were wrong before any of this was true, and each would
+have shipped a fix for nothing: the first put the crawler outside the map
+boundary, the second called a spot clear when the crawler's start was inside a
+building, and the third teleported the player 300 units away, which is past a
+crawler's 135 unit sight, and read the resulting blindness as a bug.
+
+Not verified: why the remaining eleven are still sealed. The carve opens every
+cell in a doorway whose centre is outside every wall, so a building still
+trapped after it has something else across its door, and I have not looked at
+which. Nothing here is measured against the bot's extract rate, which is the
+number a routing change would move if it moves anything; that needs a paired run
+and this build does not have one.
