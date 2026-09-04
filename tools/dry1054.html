@@ -18168,7 +18168,7 @@ var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'l
 // beard replace the racks; mark names the suit's own paint, done last.
 var OUTFITS={
   outskeleton:{coat:'#0c0d10',trs:'#0c0d10',boots:['#ddd6c2','#ece6d2'],skin:'#ece6d2',hands:'#ece6d2',cut:'none',hat:'none',beard:'clean',mark:'skeleton'},
-  outrobot:   {coat:'#6a7684',trs:'#4a545e',boots:['#2a3038','#3a424c'],skin:'#8a96a4',hands:'#5a646e',cut:'none',hat:'none',beard:'clean',mark:'robot'},
+  outrobot:   {coat:'#6a7684',trs:'#4a545e',boots:['#2a3038','#3a424c'],skin:'#8a96a4',hands:'#485058',cut:'none',hat:'none',beard:'clean',mark:'robot'},
   outtrooper: {coat:'#3f6a3a',trs:'#2e4a2c',boots:['#1e2e1c','#2a4028'],skin:null,hands:'#2a4028',cut:'none',hat:'spartan',beard:'clean',mark:'trooper'},
   outandroid: {coat:'#101216',trs:'#101216',boots:['#0c0d10','#14161b'],skin:'#f7ddc2',hands:'#f7ddc2',cut:'bob',hair:'white',hat:'none',beard:'clean',mark:'android'},
   outexplorer:{coat:'#2f8a86',trs:null,boots:['#5a3a1e','#7a5030'],skin:null,hands:null,cut:'tail',hair:'dark',hat:'none',beard:'clean',mark:'explorer'},
@@ -31780,6 +31780,7 @@ window.__simTrace=function(){
 window.__setWorld=function(w,h){ WORLD_W=w; WORLD_H=h; AREA=(WORLD_W*WORLD_H)/(2600*2000); return {WORLD_W:WORLD_W,WORLD_H:WORLD_H,AREA:AREA}; };
 window.__ctxCanvas=function(){ return ctx.canvas; };
 window.__hud=function(){ drawHUD(); };
+window.__drawHUD=function(){ drawHUD(); };   // v10.52: the HUD alone, for text traces; __hud is redefined below as the box reporter
 window.__conceal={bushAt:inBush,at:concealAt,mapBush:bushAtMap};
   window.__tune2={
     open:function(){ toggleTune(true); },
@@ -36814,11 +36815,20 @@ window.__REGRESS=[
        if(typeof LOOK_KINDS==='undefined'||LOOK_KINDS.indexOf('outfit')<0) bad.push('a look does not carry the outfit');
        // 1. Unowned: a fresh profile wearing a suit it has not earned paints its own clothes.
        P2.cosAll=false; P2.cosFit='slate'; P2.cosOutfit='outnone';
-       var base=paint();
-       if(cosOwned(cosFind('outskeleton'))) return 'SKIP: this profile already owns the Skeleton, so the unowned case cannot be measured';
+       // A fresh profile for this pair of paints: the counters are lent back to
+       // zero so nothing is owned, then both figures are painted under the same
+       // racks and only the outfit differs between them.
+       var lend={runs:P2.runs,ext:P2.ext,lvl:P2.xpLevel,kills:P2.kills};
+       P2.runs=0; P2.ext=0; P2.xpLevel=1; P2.kills={};
+       var fresh=paint();
+       var stillOwned=cosOwned(cosFind('outskeleton'));
        P2.cosOutfit='outskeleton';
        var unowned=paint();
-       if(differ(base,unowned)!==0) bad.push('an unowned suit repainted '+differ(base,unowned)+' pixels');
+       P2.runs=lend.runs; P2.ext=lend.ext; P2.xpLevel=lend.lvl; P2.kills=lend.kills;
+       P2.cosOutfit='outnone';
+       var base=paint();
+       if(stillOwned) bad.push('a fresh profile owns the Skeleton without earning it');
+       else if(differ(fresh,unowned)!==0) bad.push('an unowned suit repainted '+differ(fresh,unowned)+' pixels');
        // 2. Owned: every suit repaints the figure and hides the slate coat.
        P2.cosAll=true;
        var slateN=countCol(base,0x59,0x62,0x6f);
@@ -36925,6 +36935,8 @@ window.__REGRESS=[
      for(var i=0;i<HB.walls.length;i++){ var w=HB.walls[i]; if(w.x===300&&w.y===385&&w.w===100) wall=w; }
      if(!wall) return 'the terminal plinth is not at 300,385 any more; the check needs re-aiming';
      for(var k in keys) keys[k]=false;
+     // In corpus order an earlier check can leave a window open, and the floor does not simulate under one.
+     var _open=[]; Array.prototype.forEach.call(document.querySelectorAll('.modal.on,#hub.on,#pausebox.on,#outcome.on'),function(el){ _open.push(el); el.classList.remove('on'); });
      var keep={x:p.x,y:p.y,face:p.face,roll:p.rollT,mov:p.moving,see:CFG.seeThrough};
      try{
        // 1. Pinned behind the plinth, walking down: he covers no ground, so he must not be walking.
@@ -36956,6 +36968,7 @@ window.__REGRESS=[
        p.x=keep.x; p.y=keep.y; p.face=keep.face; p.rollT=keep.roll; p.moving=keep.mov;
        if(keep.see===undefined) delete CFG.seeThrough; else CFG.seeThrough=keep.see;
        for(var k2 in keys) keys[k2]=false;
+       for(var _o=0;_o<_open.length;_o++) _open[_o].classList.add('on');
      }
      return bad.length?bad.join('; '):null; }},
   {v:'10.50',what:'freckles, scar, mud and every beard sit clear of the eyes on the painted figure, and a boot colour paints the foot and collar, not the leg',

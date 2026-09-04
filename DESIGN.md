@@ -40024,6 +40024,41 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.52 - THE CRATE PROMPT AND THE ITEMS-LEFT COUNT ARE BIGGER
+
+His note, 2026-09-03 about 20:00: **"'Search Crate, 1 Item left -- this text
+is too small"**.
+
+### What it was
+
+The prompt over a container, [E] SEARCH CRATE, was drawn at the label size,
+12 source pixels and 18.7 on the 1080p pane. The count under the search bar,
+1 item left, was drawn at the micro size, 10 source pixels and 15.6 rendered:
+the smallest type in the game, used elsewhere for pips and tags, on the one
+line he reads while deciding whether one more pull is worth the time it
+costs.
+
+### Now
+
+The prompt is a callout, 15 source pixels and 23.4 rendered, the size of the
+alert marks over an enemy's head. The count is a label, 12 and 18.7, and the
+dark pill behind it grew to hold it. The item name under a single-item prompt
+moved down to keep clear of the bigger line above it.
+
+### Measured
+
+The check starts a raid at seed 4242, stands the operator on the first
+unopened crate, and traces every text the HUD paints: once standing at the
+crate, where the SEARCH prompt must be on screen and at least 21 pixels
+tall, and once mid-search, where the items-left count must be on screen and
+at least 17. On v10.51 the prompt traces at 18.7 and the count at 15.6,
+which is the finding; on this build the check returns null.
+
+Not verified: the prompt's fit above a body with a crew colour bar beside
+it, which uses the same line and grew with it but was not traced; and the
+size on the 4K path, where the v9.14 scaling applies the same multiplier to
+both and was not measured here.
+
 ## v10.51 - BEHIND THE TERMINAL YOU ARE SHOWN THROUGH THE WALL, AND YOU NEVER RUN IN PLACE
 
 His notes, 2026-09-03 about 19:30: **"WEIRD COLLISION IN UNDERCROFT, ONLY
