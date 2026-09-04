@@ -1,0 +1,25 @@
+v11.12: a window is see-through and it is not walk-through
+
+Every movement decision in the game asked the SIGHT geometry whether the way was
+clear, and map.segs skips windows on purpose. A machine inside a building saw the
+player through the glass, threw its route away, walked into the window and stood
+there for the rest of the raid.
+
+REPRODUCED on COLD STORAGE at seed 4242: the crawler in building 8 walked west to
+x 2551 and stopped at wall 234, a window, then moved under a unit a frame forever.
+
+Four places asked the wrong question: the navSeek shortcut, the wall hug, the
+choice of which way round, and the string-pull inside navPath, which took a good
+route out of the door and pulled it straight through the glass. The window
+segments are kept now, the raid carries a grid for them, and all four ask whether
+the line can be WALKED.
+
+MEASURED, dial off against on: 1 of 13 routes on COLD STORAGE and 6 of 59 on THE
+COLD MILE were a line through a window and are a real route now. It frees nobody
+on COLD STORAGE by itself: building 8's doorway holds a piece of furniture that
+leaves 10.5 and 17.5 units for a 30 unit body. That is the next build.
+
+My mistake: the first sweep ran on one deploy with the clock restarted per
+building and reported two buildings freed that were not.
+
+Not verified: the extract rate. winWalk 0 restores the old behaviour exactly.

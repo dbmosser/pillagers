@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.11';
+var VER='11.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.11';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.11';
+var WHATSNEW_VER='11.12';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'MACHINES NO LONGER WALK INTO WINDOWS. One standing inside a building could see you through the glass, decide the way was clear, walk at the window and stay pressed against it for the rest of the raid instead of coming out of the door. On the first map, four of the buildings did this. They route round now.',
   'NOTHING IN THE GAME CHANGED IN THIS BUILD. It records a limit of the robot that tests it: the robot never crouches and never hides, so no number it has ever produced describes playing carefully. The crawler bug fixed two builds ago could only ever have reached a person.',
   'THE NOISE RING IS NEVER YOUR OWN. A ring after your shot is the thing you hit taking a step, which is why a target you kill outright makes none. The sound key in the legend now reads its swatches from the colours the game actually draws, and it had two of them wrong.',
   'A CRAWLER CLOSE ENOUGH TO BITE YOU HAS FOUND YOU. Hiding used to shrink its eyes below its own reach, so one could stand against you, unable to see you, and do nothing. Its sight now has a floor equal to how far it can reach. Walls still stop it.',
@@ -1453,7 +1454,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:2.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,wxXp:1.1,raiderCrawl:1,nightDens:1.35,bldgRuin:0.09,touchSees:1};
+  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:2.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,wxXp:1.1,raiderCrawl:1,nightDens:1.35,bldgRuin:0.09,touchSees:1,winWalk:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -6055,9 +6056,18 @@ function buildFixedMap(def){
   // one: it decides what the map can place where, and opening cells there moves
   // the contents of the world.
   var mapNavD=carveDoors(mapNav,BDOORS,walls);
-  var segs=[];
+  // v11.12: the window segments are kept rather than dropped. A window is
+  // see-through and is NOT walk-through, and every movement test in this game
+  // used to read the SIGHT list, which skips them.
+  var segs=[],wsegs=[];
   for(var m2=0;m2<walls.length;m2++){ var w2=walls[m2];
-    if(w2.win) continue;
+    if(w2.win){
+      wsegs.push({x1:w2.x,y1:w2.y,x2:w2.x+w2.w,y2:w2.y});
+      wsegs.push({x1:w2.x+w2.w,y1:w2.y,x2:w2.x+w2.w,y2:w2.y+w2.h});
+      wsegs.push({x1:w2.x+w2.w,y1:w2.y+w2.h,x2:w2.x,y2:w2.y+w2.h});
+      wsegs.push({x1:w2.x,y1:w2.y+w2.h,x2:w2.x,y2:w2.y});
+      continue;
+    }
     segs.push({x1:w2.x,y1:w2.y,x2:w2.x+w2.w,y2:w2.y});
     segs.push({x1:w2.x+w2.w,y1:w2.y,x2:w2.x+w2.w,y2:w2.y+w2.h});
     segs.push({x1:w2.x+w2.w,y1:w2.y+w2.h,x2:w2.x,y2:w2.y+w2.h});
@@ -6068,7 +6078,7 @@ function buildFixedMap(def){
     cw:WORLD_W/8,ch:WORLD_H/8,cols:8,rows:8,
     bushes:bushes,landmarks:landmarks,zones:zseeds,districtAt:districtAt,zoneAt:zoneAt,woods:woodsList,bigPairs:[],plats:plats,ramps:ramps,platAt:platAt,liftAt:liftAt,locked:lockedRooms,
     spawns:def.spawns,extracts:extractsOutside(def.extracts,buildings),nav:mapNav,
-    navD:mapNavD,doors:BDOORS.slice(0)};
+    navD:mapNavD,doors:BDOORS.slice(0),wsegs:wsegs};
 }
 // SPEC 4.1: the procedural map generator that lived here is DELETED, along with
 // its zone seeding, landmark reservation, woods and big building placement and
@@ -7066,6 +7076,48 @@ function losClear(ax,ay,bx,by,segs){
   if(G&&G.grid&&G.grid.segs===segs)
     segs=segsBox(G.grid,(ax<bx?ax:bx),(ay<by?ay:by),(ax<bx?bx:ax),(ay<by?by:ay));
   return rayHit(ax,ay,dx,dy,segs,d-2)>=d-2;
+}
+// A WINDOW IS SEE-THROUGH AND IT IS NOT WALK-THROUGH, v11.12. Every movement
+// decision in this game asked the SIGHT geometry whether the way ahead was
+// clear, and map.segs skips windows on purpose. So a machine standing inside a
+// building with a window facing the player was told the line was clear, threw
+// its route away, walked into the glass and stood there for the rest of the
+// raid: collide() has never skipped a window, so it could not take one more
+// step in that direction as long as it lived.
+// MEASURED on COLD STORAGE at seed 4242, one crawler placed in each building
+// with the player outside it and chase forced, twenty seconds each: buildings
+// 6, 8, 9 and 10 all HAD a route out and not one of them got closer than 240
+// units to a player standing 380 to 500 away. Traced frame by frame, the
+// crawler in building 8 walked straight west to x 2551, which is a window in
+// the west wall, and then moved 0.07 to 0.98 units a frame, forever.
+// Refusing the shortcut is the whole fix: buildNav reads the WALL list and not
+// the segment list, so the routing grid has always treated a window as solid,
+// and a body denied the straight line falls through to the router and walks out
+// of the door. winWalk 0 restores the old behaviour so both can be run in one
+// build, which is what the v11.12 check does.
+function winHit(px,py,dx,dy,maxT){
+  if(CFG.winWalk===0) return maxT;
+  var W=(G&&G.map)?G.map.wsegs:null;
+  if(!W||!W.length) return maxT;
+  var segs=W;
+  if(G.wingrid&&G.wingrid.segs===W){
+    var qx=px+dx*maxT,qy=py+dy*maxT;
+    segs=segsBox(G.wingrid,(px<qx?px:qx),(py<qy?py:qy),(px<qx?qx:px),(py<qy?qy:py));
+  }
+  return rayHit(px,py,dx,dy,segs,maxT);
+}
+// Can a BODY go straight there. The two ray queries run one after the other on
+// purpose: segsBox hands back one shared scratch array, so holding the first
+// answer while asking the second question would corrupt it.
+function walkClear(ax,ay,bx,by){
+  if(!losClear(ax,ay,bx,by,G.map.segs)) return false;
+  var dx=bx-ax,dy=by-ay,d=Math.sqrt(dx*dx+dy*dy);
+  if(d<1) return true;
+  return winHit(ax,ay,dx/d,dy/d,d-2)>=d-2;
+}
+function rayWalkG(px,py,dx,dy,maxT){
+  var t=rayHitG(px,py,dx,dy,maxT),t2=winHit(px,py,dx,dy,maxT);
+  return t2<t?t2:t;
 }
 // Only the segments a ray of this reach could possibly touch. A ray is capped at
 // r, so anything whose bounding box lies wholly outside the box of that reach is
@@ -9782,7 +9834,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   // v8.36: termClock is computed once, up with the closure schedule that also
   // needs it. Declaring it twice would let the raid clock and the ring clock
   // drift apart, which is the exact failure this build is fixing.
-  var g={sim:!!sim,seed:seed,grid:buildSegGrid(map.segs,WORLD_W,WORLD_H),wgrid:buildWallGrid(map.walls,WORLD_W,WORLD_H),seal:(sim?null:{x:G_SEAL_SPOT.x,y:G_SEAL_SPOT.y,gained:0}),
+  var g={sim:!!sim,seed:seed,grid:buildSegGrid(map.segs,WORLD_W,WORLD_H),wingrid:buildSegGrid(map.wsegs||[],WORLD_W,WORLD_H),wgrid:buildWallGrid(map.walls,WORLD_W,WORLD_H),seal:(sim?null:{x:G_SEAL_SPOT.x,y:G_SEAL_SPOT.y,gained:0}),
     nMach:N_SENTRY+N_CRAWLER,map:map,vegPal:mkVegPal(map),ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:Math.round(CFG.raidSec*termClock),raidLen:Math.round(CFG.raidSec*termClock),paused:false,
     spawnDbg:_spDbg,
     player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,
@@ -11694,15 +11746,23 @@ function wallHp(w){
 // and it never rebuilt the ray grid or the wall grid, so bullets kept dying on
 // the ghost of a wall that no longer existed.
 function rebuildGeometry(){
-  var walls=G.map.walls, segs=[];
+  var walls=G.map.walls, segs=[], wsegs=[];
   for(var i=0;i<walls.length;i++){ var w2=walls[i];
-    if(w2.win) continue;
+    if(w2.win){
+      wsegs.push({x1:w2.x,y1:w2.y,x2:w2.x+w2.w,y2:w2.y});
+      wsegs.push({x1:w2.x+w2.w,y1:w2.y,x2:w2.x+w2.w,y2:w2.y+w2.h});
+      wsegs.push({x1:w2.x+w2.w,y1:w2.y+w2.h,x2:w2.x,y2:w2.y+w2.h});
+      wsegs.push({x1:w2.x,y1:w2.y+w2.h,x2:w2.x,y2:w2.y});
+      continue;
+    }
     segs.push({x1:w2.x,y1:w2.y,x2:w2.x+w2.w,y2:w2.y});
     segs.push({x1:w2.x+w2.w,y1:w2.y,x2:w2.x+w2.w,y2:w2.y+w2.h});
     segs.push({x1:w2.x+w2.w,y1:w2.y+w2.h,x2:w2.x,y2:w2.y+w2.h});
     segs.push({x1:w2.x,y1:w2.y+w2.h,x2:w2.x,y2:w2.y});
   }
   G.map.segs=segs;
+  G.map.wsegs=wsegs;
+  G.wingrid=buildSegGrid(wsegs,WORLD_W,WORLD_H);
   G.grid=buildSegGrid(segs,WORLD_W,WORLD_H);
   G.wgrid=buildWallGrid(walls,WORLD_W,WORLD_H);
   G.map.nav=buildNav(walls);
@@ -14920,7 +14980,7 @@ function seekPoint(e,tx,ty,spd,dt){
     // first version hugged until the timer ran out every time and never
     // converged. A clear corridor plus being closer than we were is enough.
     var la=Math.atan2(ty-e.y,tx-e.x),probe=Math.min(d0,170);
-    if(rayHitG(e.x,e.y,Math.cos(la),Math.sin(la),probe)>=probe-1&&d0<(e.slideD||1e9)-4){ e.slideT=0; e.slideFlip=false; }
+    if(rayWalkG(e.x,e.y,Math.cos(la),Math.sin(la),probe)>=probe-1&&d0<(e.slideD||1e9)-4){ e.slideT=0; e.slideFlip=false; }
     else{
       if(e.slideT<=0) e.slideFlip=true;   // timed out, so try the other way round next time
       var sa=Math.atan2(ty-e.y,tx-e.x)+(e.slideDir||1)*1.5708;
@@ -14943,8 +15003,8 @@ function seekPoint(e,tx,ty,spd,dt){
       // Choose the side with more room rather than a coin flip, so the detour
       // is usually the short way round the building instead of the long way.
       var ga=Math.atan2(ty-e.y,tx-e.x);
-      var lft=rayHitG(e.x,e.y,Math.cos(ga-1.5708),Math.sin(ga-1.5708),420);
-      var rgt=rayHitG(e.x,e.y,Math.cos(ga+1.5708),Math.sin(ga+1.5708),420);
+      var lft=rayWalkG(e.x,e.y,Math.cos(ga-1.5708),Math.sin(ga-1.5708),420);
+      var rgt=rayWalkG(e.x,e.y,Math.cos(ga+1.5708),Math.sin(ga+1.5708),420);
       e.slideDir=lft>rgt?-1:1;
       if(e.slideFlip){ e.slideDir=-e.slideDir; e.slideFlip=false; }
     }
@@ -15075,7 +15135,9 @@ function navPath(nav,sx,sy,tx,ty){
     var j=cells.length-1;
     for(;j>i2+1;j--){
       var a=pt(cells[i2]),b2=pt(cells[j]);
-      if(losClear(a.x,a.y,b2.x,b2.y,G.map.segs)) break;
+      // v11.12: walkClear. A corner that only looks skippable because there is
+      // a window in the way is the corner that takes the body out of the door.
+      if(walkClear(a.x,a.y,b2.x,b2.y)) break;
     }
     pts.push(pt(cells[j])); i2=j;
   }
@@ -15126,7 +15188,9 @@ function navSeek(e,tx,ty,spd,dt){
   // away exactly where it was needed most: the last stretch to a container
   // inside a building is short and has a wall across it, so the body arrived at
   // the doorway, dropped back to feeling along the wall, and never got in.
-  if(losClear(e.x,e.y,tx,ty,G.map.segs)){ e.path=null; e.pathFail=false; seekPoint(e,tx,ty,spd,dt); return; }
+  // v11.12: walkClear, not losClear. Seeing the target through a window is not
+  // a reason to drop a route, because the body cannot follow that line.
+  if(walkClear(e.x,e.y,tx,ty)){ e.path=null; e.pathFail=false; seekPoint(e,tx,ty,spd,dt); return; }
   e.pathT=(e.pathT||0)-dt;
   // THE COOLDOWN BELOW DID NOT COVER THE CASE IT WAS WRITTEN FOR, v2.10. A failed
   // search leaves e.path null, so !e.path made this stale again on the very next
@@ -27724,7 +27788,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.11: the fresh profile hour, which the alpha needs and nobody had done. A friend arrives with no runs, no stash, one gun and 600 credits; every station on the floor was walked up to and pressed on exactly that profile. Nothing threw, nothing opened empty, nothing did nothing, and the stash reads right with nothing in it. Three of my own probes cried wolf on the way, and the check that ships is written so nobody repeats them.',
+  now:'v11.12: a window is see-through and it is not walk-through, and every movement test in the game had been reading the sight geometry, which skips windows. A machine inside a building saw you through the glass, threw its route away, walked into the window and stood there. Measured on COLD STORAGE at seed 4242: four buildings had a route out and none of their crawlers got within 240 units. Bodies now ask whether they can WALK the line, not whether they can SEE it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

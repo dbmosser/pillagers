@@ -40024,6 +40024,93 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.12 - A WINDOW IS SEE-THROUGH AND IT IS NOT WALK-THROUGH
+
+This is the other half of "crawlers aren't attacking properly", and it is not
+about crawlers. **Every movement decision in this game asked the SIGHT geometry
+whether the way ahead was clear**, and the sight list skips windows on purpose,
+because you can see through a window. Nothing can WALK through one: collide()
+has never skipped a window and never will.
+
+So a machine standing inside a building with a window facing the player was told
+the line was clear, **threw its route away**, walked at the window, and stood
+there pressed against the glass for the rest of the raid, moving a fraction of a
+unit a frame, while a door stood open twenty feet away.
+
+**REPRODUCED FIRST, on COLD STORAGE at seed 4242**, one crawler placed in the
+middle of each building with the player outside it and the chase held on. The
+crawler in building 8 walked straight west from x 2702 to x 2551 and stopped
+dead: wall 234 at x 2520, 16 by 61, flagged win. It then moved between 0.07 and
+0.98 units a frame, forever, while a route appeared and was thrown away every
+couple of seconds.
+
+**FOUR PLACES ASKED THE WRONG QUESTION, and the fourth was the one that
+mattered.** The shortcut in navSeek that drops the route and walks straight; the
+wall hug leaving the wall because it can see past it; the choice of which way
+round, which counted a window as room; and the string-pull inside navPath
+itself, which took a perfectly good grid route out of the door and pulled it
+tight through the window because it could SEE from the start to the goal. With
+the first three fixed the crawler still walked into the glass, because the route
+it was handed was two points long and the first one was the target.
+
+**THE FIX IS TO ASK THE RIGHT QUESTION.** The map keeps the window segments now
+instead of dropping them, the raid carries a grid for them so the test is a
+cell lookup and not a scan of 488 segments per body per frame, and all four
+tests ask whether the line can be WALKED rather than SEEN. buildNav reads the
+WALL list, not the segment list, so the routing grid has always treated a window
+as solid; a body denied the straight line gets the route it already had.
+
+**MEASURED, the route out of every building with open ground outside it, both
+maps at seed 4242, the dial off against on:** 1 of 13 on COLD STORAGE and 6 of
+59 on THE COLD MILE were a straight line through a window and are a real route
+now. Building 8: two points and a 6 unit corner before, six points and a 186 unit
+corner after. Building 20 on the mile: a 2 unit corner before, 594 after, which
+is a body that was walking into a window from six hundred units off its real
+way out.
+
+**AND IT DOES NOT, BY ITSELF, FREE A SINGLE MACHINE ON COLD STORAGE, which I am
+saying plainly because my first check claimed it would.** Driven for seven
+seconds and then for thirty, buildings 8, 9 and 10 still never reach the
+player; they now walk a real route and end up further away instead of standing
+at the glass. The reason is a SECOND defect: **the door of building 8 is plugged
+by furniture.** Wall 245, a 36 by 26 piece, sits inside the 64 unit doorway at
+x 2655 to 2719 and leaves 10.5 units one side of it and 17.5 the other, for a
+body that needs 30. The route goes through the door; the body cannot. That is
+the v10.40 "niches plugged by furniture" line, and it is not cosmetic, it seals
+machines in. It is the next build. Four buildings reached the player before this
+build and the same four reach it after; none was lost.
+
+**MY MISTAKE, and it cost most of the tick:** my first sweep ran thirteen
+buildings back to back on one deploy with the frame clock restarted for each,
+so the game saw time run backwards and the crawler carried its wall-hug state
+from one building into the next. It reported building 16 going from 183 units
+to 34 and building 10 from 242 to 36. Neither is true; both read the same in
+both arms when each trial gets its own deploy. Every number above is from a
+fresh deploy per trial.
+
+**NEW CHECK v11.12** is in three parts and none of them asks a crawler to do
+something it cannot. Geometry: either side of a window, on at least three
+windows with clear ground both sides, the game must report that you can see
+across and cannot walk across. Route: from the middle of building 8 to the
+player outside, the dial off must give two points and no corner, the dial on at
+least three points and a corner over 60 units; and at least 1 route on COLD
+STORAGE and at least 4 on THE COLD MILE must change shape. Guard: the crawler in
+building 14, which reached the player at 34 units before this build, must still
+reach him inside 60.
+
+Three controls. An open line 120 units long must pass BOTH tests, or the walk
+test is simply refusing everything. With winWalk 0 the walk test must agree with
+the sight test on every window, or the dial does not turn the fix off. And
+building 8 must still be the 2520,900,380,340 rectangle this was traced on, so
+a moved map says so by name instead of quietly testing somewhere else.
+
+Not verified: what this does to the extract rate. Every body on the map steers
+through navSeek and navPath, so the bot and the pillagers route differently now
+as well, and a paired A/B at the 320-seed standard is several hours in this
+environment and was not run. The direction is not in doubt, a machine that used
+to stand at a window now walks its real route, but the size of it is unmeasured,
+and on COLD STORAGE at least it frees nobody until the furniture is moved.
+winWalk 0 restores the old behaviour exactly if it turns out to matter.
 ## v11.11 - THE FRESH PROFILE HOUR, AND IT FOUND NOTHING
 
 His notes are all shipped and the named audit backlog is empty, so this tick went
