@@ -1,0 +1,25 @@
+v11.14: no piece of furniture sits in a doorway
+
+The second half of what v11.12 found. Measured on v11.13 at seed 4242: 11 of 37
+doorways on COLD STORAGE and 35 of 151 on THE COLD MILE held furniture leaving
+under 30 units of clear run for a body that needs 30, so machines inside could
+route out and not walk out.
+
+The furniture pass shoves pieces flush against the nearest wall and had never
+heard of doors. Each doorway now owns a zone and a piece landing in it is not
+placed, drawing no random number. Entities 85 and 374 and containers 165 and 593
+both ways.
+
+My first cut slid the piece along its wall and the corpus caught it sealing two
+rooms on the mile. A piece not placed cannot seal anything.
+
+After: plugged 11 to 0 and 35 to 0. Furniture 169 to 136 and 540 to 440, the
+doorway pieces themselves. The crawler in building 8 now reaches a player
+outside, against never before.
+
+The sky moved: one more lamp fits on COLD STORAGE, and time and weather roll
+after the lamps, so seed 4242 is 6pm clear where it was noon fog. The jersey
+check found it and now pins its light. v9.81, v9.65 re-pinned; v9.79 gains the
+32 by 32 room floor v10.40 already ruled.
+
+Not verified: the extract rate. furnDoor 0 puts every piece back.

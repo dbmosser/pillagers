@@ -1,0 +1,83 @@
+## v11.14 - NO PIECE OF FURNITURE SITS IN A DOORWAY
+
+The second half of the thing v11.12 found. That build stopped machines walking
+into windows and then said plainly that it freed nobody on COLD STORAGE, because
+the doors themselves were blocked. This is the doors.
+
+**MEASURED FIRST, on v11.13 at seed 4242.** A doorway is plugged when the longest
+clear run across its 64 unit gap, counting furniture within 40 units of the wall
+on either side, is under the 30 units a body needs. **11 of 37 doorways on COLD
+STORAGE and 35 of 151 on THE COLD MILE were plugged**, and 2 and 27 more were
+tight, under 44. Building 8 on COLD STORAGE is the case traced at v11.12: a 36 by
+26 piece inside the doorway, 10.5 units one side and 17.5 the other, and the
+crawler inside never came within 240 units of a player standing outside, at seven
+seconds or at thirty. This is the v10.40 "niches plugged by furniture" line, and
+it was never cosmetic; it sealed machines in and it is the last piece of
+"crawlers aren't attacking properly" I can find.
+
+**WHY IT HAPPENED.** The furniture pass shoves every piece after the first flush
+against the nearest wall, on purpose, so that a piece cannot split a room and
+seal it. A wall with a door in it is still the nearest wall, and nothing in that
+pass had ever heard of doors. The doorways are recorded before the furniture is
+placed, in the same function, so the information was there all along.
+
+**THE FIX.** Each doorway owns a zone: the gap grown 40 units through the wall
+both ways and 12 along it. A piece landing in a zone is not placed. Re-rolling
+it would have drawn from the seeded stream and moved every wall, crawler and
+container placed after it, which is the mistake v10.81 made and measured. Not
+placing it draws nothing.
+
+**MY FIRST CUT SLID THE PIECE ALONG ITS WALL INSTEAD, AND THE CORPUS CAUGHT IT
+SEALING TWO ROOMS.** Buildings 26 and 51 on THE COLD MILE held floor nothing
+could reach, because the interior partitions have doorways of their own that the
+door list has never heard of, and a slid piece lands wherever the zone ends. A
+piece that is not placed cannot seal anything, so that is what ships. The cost is
+the doorway pieces themselves: **furniture 169 to 136 on COLD STORAGE and 540 to
+440 on THE COLD MILE**, four fifths kept on both. That is one piece in five, and
+every one of them was standing in a door.
+
+**MEASURED AFTER, both maps, the dial off against on:** plugged doorways 11 to 0
+and 35 to 0, tight doorways 2 to 0 and 27 to 0. Entities 85 and 374 both ways,
+containers 165 and 593 both ways. Walls 610 to 580 and 2403 to 2308, outdoor
+cover on the mile 483 to 488. **The crawler in building 8 now reaches the
+player**, inside 60 units at eleven seconds, against never in thirty before.
+
+**AND THE WORLD DID MOVE, IN ONE PLACE I DID NOT EXPECT, WHICH THE JERSEY CHECK
+FOUND.** v10.46 reads the pale numeral on the 23 jersey at the drop point and it
+went from 20 pixels to 2. Not the jersey: the light. Lamps are placed by asking
+the wall list where one may stand, so with thirty fewer walls one more lamp fits
+on COLD STORAGE, 59 to 60, and each lamp draws four numbers from the seeded
+stream. The time of day and the weather are rolled AFTER the lamps, so seed 4242
+went from noon in fog to six in the evening under a clear sky, and the golden
+light pulled the white numeral under the check's brightness line. Entities and
+containers are placed before the lamps and did not move. So: **for any given
+seed the sky may be different from what it was; nothing on the ground is.** Same
+mechanism as the cover count that v9.77 and this build re-pin, and it is why a
+check that measures colour must pin the light it measures under, which v10.46
+now does.
+
+**THREE OLDER CHECKS MOVED WITH IT, and each says why in its own text.** v9.81
+pins the wall count and v9.65 the cover count, the way v9.77 moved them before;
+both now carry 2308 and 580, and 488, with the entity line beside them as the
+half of the fingerprint that says the seeded stream did not move where it
+matters. v9.79 asked for no unreachable floor anywhere with no size floor at
+all, and had only ever passed because the buildings holding slivers between
+furniture pieces were the same buildings whose plugged doorway got them stripped
+bare. With the doors open those slivers show. v10.40 already ruled a pocket
+narrower than a body cosmetic and its own line, so v9.79 now asks for a room,
+32 by 32 units, and the niche line stays open in AUDIT.md exactly as it was.
+
+**NEW CHECK v11.14** builds both maps twice, dial off and on, and requires zero
+plugged doorways with the dial on. Controls: the dial off must still show at
+least 8 and 25 plugged, or the A/B is two copies of the same map; the entity
+count must be identical either way, or the rule drew a random number; furniture
+must keep at least seven tenths, with the four fifths measured named in the
+message; and the crawler in building 8, by its 2520,900,380,340 fingerprint, must
+reach a player outside inside 60 units within fifteen seconds. On a v11.13 fixture it fails on both
+plugged counts and on the crawler, at 273 units.
+
+Not verified: the extract rate, again. This is the build that actually lets
+machines out of buildings, so it is the one that changes what a raid feels like,
+and every number I have for it is a doorway count and one crawler. The paired
+run at the 320-seed standard is several hours here and was not run. furnDoor 0
+puts every piece back where it was.

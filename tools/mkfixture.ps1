@@ -2113,6 +2113,10 @@ window.__REGRESS=[
      var b=z(1920,1080,2.0);
      if(!(b>a)) bad.push('raising the text size did not change the title screen, '+a+' then '+b);
      // And the monitor has to reach it: 1440p is a third bigger than 1080p.
+     __forceSize(2560,1440);
+     var _vh=window.innerHeight||0;
+     if(_vh<1400){ P.menuZoom=keepZ; __forceSize(keepW||1920,keepH||1080); applyMenuZoom();
+       return 'SKIP: the pane cannot reach 1440p, its viewport stays '+_vh+' tall and the title is fitted to the viewport, so the monitor rule cannot be measured here'; }
      var c=z(2560,1440,1.3);
      if(!(c>a*1.2)) bad.push('the title screen does not follow the screen to 1440p, '+a+' then '+c);
      // CONTROL ONE: floored at 1, so a small window is never shrunk further.
@@ -5371,6 +5375,75 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.14',what:'no piece of furniture sits in a doorway, and a machine inside a building can walk out of the door it routes through',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__loop)) return 'SKIP: this fixture cannot build a map';
+     var bad=[], D=__movers.dist, i, j;
+     // A doorway is PLUGGED when the longest clear run across its gap, with
+     // furniture within 40 units of the wall on either side counted, is under
+     // the 30 units a body needs.
+     function plugged(g){ var W=g.map.walls,Ds=g.map.doors,n=0,furn=0;
+       for(i=0;i<W.length;i++) if(W[i].furn) furn++;
+       for(i=0;i<Ds.length;i++){ var d=Ds[i],h=d.w>=d.h;
+         var ex=h?{x:d.x,y:d.y-40,w:d.w,h:d.h+80}:{x:d.x-40,y:d.y,w:d.w+80,h:d.h}, iv=[];
+         for(j=0;j<W.length;j++){ var w=W[j]; if(!w.furn) continue;
+           if(w.x<ex.x+ex.w&&w.x+w.w>ex.x&&w.y<ex.y+ex.h&&w.y+w.h>ex.y)
+             iv.push(h?[Math.max(d.x,w.x),Math.min(d.x+d.w,w.x+w.w)]:[Math.max(d.y,w.y),Math.min(d.y+d.h,w.y+w.h)]); }
+         if(!iv.length) continue;
+         iv.sort(function(a,b){ return a[0]-b[0]; });
+         var lo=h?d.x:d.y,hi=h?d.x+d.w:d.y+d.h,cur=lo,best=0;
+         for(j=0;j<iv.length;j++){ if(iv[j][0]>cur) best=Math.max(best,iv[j][0]-cur); cur=Math.max(cur,iv[j][1]); }
+         best=Math.max(best,hi-cur);
+         if(best<30) n++; }
+       return {plugged:n,doors:Ds.length,furn:furn,ents:g.ents.length,cont:(g.containers||[]).length}; }
+     var NM=['COLD STORAGE','THE COLD MILE'], on=[], off=[], mi;
+     for(mi=0;mi<2;mi++){
+       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({furnDoor:0});
+       __deploy({kit:[],safe:null,mapIx:mi,seed:4242}); off.push(plugged(__state()));
+       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({furnDoor:1});
+       __deploy({kit:[],safe:null,mapIx:mi,seed:4242}); on.push(plugged(__state()));
+       // THE FINDING. Measured on v11.13: 11 of 37 and 35 of 151.
+       if(on[mi].plugged>0) bad.push(NM[mi]+': '+on[mi].plugged+' of '+on[mi].doors+' doorways still hold furniture leaving under 30 units of clear run');
+       // CONTROL ONE: the old placement must still show the fault, or this A/B
+       // is two copies of the same thing.
+       var floor=(mi===0)?8:25;
+       if(off[mi].plugged<floor) bad.push('control: with furnDoor off '+NM[mi]+' has only '+off[mi].plugged+' plugged doorways against the '+(mi===0?11:35)+' measured, so the dial does not restore the old placement');
+       // CONTROL TWO: the world did not move. The rule draws no random number,
+       // so the entity count is the same either way.
+       if(on[mi].ents!==off[mi].ents) bad.push(NM[mi]+': entities '+off[mi].ents+' to '+on[mi].ents+', so the rule drew a random number and moved the world');
+       // CONTROL THREE: only the doorway pieces go. Measured: 169 to 136 on COLD
+       // STORAGE and 540 to 440 on THE COLD MILE, four fifths kept on both. A
+       // build that loses more than three tenths is dropping pieces that were
+       // never in a doorway.
+       if(on[mi].furn<off[mi].furn*0.7) bad.push(NM[mi]+': furniture fell from '+off[mi].furn+' to '+on[mi].furn+', more than three tenths lost against the fifth measured, so pieces that were never in a doorway are being dropped');
+     }
+     // AND THE DOOR CAN BE WALKED. The crawler in building 8 on COLD STORAGE,
+     // whose doorway held a 36 by 26 piece, must now reach a player outside.
+     __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({furnDoor:1,winWalk:1});
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(),p=g.player,B=g.map.buildings,cw=null;
+     for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='crawler'){ cw=g.ents[i]; break; }
+     if(!cw) return 'SKIP: no crawler on COLD STORAGE to drive';
+     g.ents.length=0; g.ents.push(cw);
+     var bd=B[8];
+     if(!bd||[bd.x,bd.y,bd.w,bd.h].join(',')!=='2520,900,380,340') bad.push('building 8 on COLD STORAGE is not the 2520,900,380,340 this was traced on');
+     else {
+       var tx=bd.x-210, ty=bd.y+bd.h/2;
+       p.x=tx; p.y=ty; p.iv=99; p.hp=100; p.downed=0;
+       cw.x=bd.x+bd.w/2; cw.y=bd.y+bd.h/2; cw.path=null; cw.pathFail=false; cw.pathT=0; cw.pathGoal=null;
+       var t0=performance.now(), best=1e9;
+       // Fifteen seconds. Traced: out of the south door by frame 60, a four
+       // second wall hug south of the building, back north, and on the player
+       // at 34 units at frame 660. Ten seconds read 153 and called the door
+       // blocked, which it is not.
+       for(var f=0;f<900;f++){ cw.state='chase'; cw.alert=3; cw.tx=tx; cw.ty=ty;
+         __loop(t0+f*16.7); p.x=tx; p.y=ty; p.hp=100; p.iv=99;
+         var dd=D(cw,p); if(dd<best) best=dd; }
+       // MEASURED before this build: 241 with the old routing and 273 with
+       // v11.12, never closer, at seven seconds and at thirty.
+       if(best>60) bad.push('the crawler in building 8 got no closer than '+best.toFixed(0)+' units in fifteen seconds, so its doorway is still not walkable');
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'11.13',what:'the Undercroft crowd never wears the ghost mask or the Spartan helmet, and still dresses from the rest of the rack',
    run:function(){
      if(!(window.__crowdLook&&window.__cos&&__cos.list)) return 'SKIP: this fixture cannot roll the crowd';
@@ -9342,6 +9415,15 @@ window.__REGRESS=[
      __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
+     // v11.14: noon in fog, by name, which is the light the three floors below
+     // were read under. This read 20 pale pixels at noon in fog and 2 at 6pm
+     // under a clear sky, both on the same jersey, when the furniture fix let
+     // one more lamp fit and the sky rolled after the lamps. Noon under a CLEAR
+     // sky kept the numeral and lost the side panels, ink minus 3 against 2.
+     if(typeof TODS!=='undefined'&&typeof WEATHER!=='undefined'){
+       for(var _ti2=0;_ti2<TODS.length;_ti2++) if(TODS[_ti2].id==='noon') g.tod=TODS[_ti2];
+       for(var _wi2=0;_wi2<WEATHER.length;_wi2++) if(WEATHER[_wi2].id==='fog') g.wx=WEATHER[_wi2];
+     }
      var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000; p.armor=0; p.plate=0;
      var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,xpLevel:P2.xpLevel,cosFit:P2.cosFit};
      P2.runs=999; P2.ext=999; P2.xpLevel=99;
@@ -12415,9 +12497,13 @@ window.__REGRESS=[
      // in it than nine fixed rectangles.
      // v10.81: seven buildings on the mile and two on COLD STORAGE lose runs of
      // outer wall to the ruin pass. Entities and containers are unmoved.
-     if(mile.walls!==2403||cold.walls!==610)
+     // v11.14: 2403 and 610 became 2308 and 580. Furniture landing in a doorway
+     // zone is not placed any more, so fewer pieces stand. The entity line
+     // below is the half of this fingerprint that says the seeded stream itself
+     // did not move.
+     if(mile.walls!==2308||cold.walls!==580)
        bad.push('control: the maps hold '+mile.walls+' and '+cold.walls+
-                ' walls rather than 2403 and 610, so the split geometry moved');
+                ' walls rather than 2308 and 580, so the split geometry moved');
      if(mile.ents!==374||cold.ents!==85)
        bad.push('control: the maps spawn '+mile.ents+' and '+cold.ents+
                 ' rather than 374 and 85, so the seeded stream moved');
@@ -12538,7 +12624,15 @@ window.__REGRESS=[
              var ii=y*fw+x;
              if(blk[ii]||seen[ii]) continue;
              if(inLk(x*F+F/2,y*F+F/2)) continue;
-             un=1;
+             // v11.14: a ROOM, not a sliver. v10.40 ruled a pocket narrower than
+             // a body cosmetic and its own line; only 32 by 32 units, 8 by 8
+             // cells here, is floor somebody could have stood on. This passed
+             // before only because the buildings holding slivers were the ones
+             // whose plugged doorway got them stripped bare.
+             var _rm=true;
+             for(var _by=y;_by<y+8&&_rm;_by++) for(var _bx=x;_bx<x+8;_bx++){
+               if(_by>=fh||_bx>=fw||blk[_by*fw+_bx]||seen[_by*fw+_bx]){ _rm=false; break; } }
+             if(_rm) un=1;
            }
          if(un) stuck.push(b);
        }
@@ -13535,8 +13629,11 @@ window.__REGRESS=[
      // three candidate spots are refused. Entities are still 374 on the line
      // below, which is the half of this fingerprint that says the seeded stream
      // itself did not move, and it has not.
-     if(wrecks.length!==483)
-       bad.push('the mile has '+wrecks.length+' pieces of outdoor cover rather than 483, so a footprint moved');
+     // v11.14: 483 to 488. Furniture in doorway zones is not placed, so the wall
+     // list spotFree asks against is shorter and five more candidate spots are
+     // accepted. Entities are still 374 on the line below.
+     if(wrecks.length!==488)
+       bad.push('the mile has '+wrecks.length+' pieces of outdoor cover rather than 488, so a footprint moved');
      if(g.ents.length!==374)
        bad.push('the mile has '+g.ents.length+' entities rather than 374, so the seeded stream moved');
      // PART THREE, AND IT IS THE ONE THAT MATTERS: the kinds have to DRAW
