@@ -1,0 +1,32 @@
+v11.07: a crawler close enough to bite you has found you
+
+His note, asked twice: "Once again, crawlers aren't attacking properly?"
+
+Reproduced with a sharp number. One crawler 30 units from a still player, facing
+him, with a bite that reaches 36. Three seconds each, varying only concealment:
+at 1.00, 0.80, 0.60, 0.45 and 0.35 it deals 65 damage. At 0.25, 0.15 and 0.05 it
+deals ZERO and sits in patrol for the whole three seconds.
+
+A crawler's eyes shrink with your concealment and its reach does not. Sight is
+100 units times concealment; the bite reaches 36. Below about 0.3 there is a band
+where it is close enough to bite and cannot see, and the bite lives inside the
+chase branch, so it never enters chase. It stands there touching him, doing
+nothing.
+
+The first report led to the two if/else chains fix, which was a real bug and a
+different one: that wander branch is inside the snitch block and ends in a
+continue, so a crawler cannot reach it. The cooldown is not the problem now.
+
+The crawler's sight now has a floor equal to its own reach plus a margin, applied
+to the corner of the eye as well as the cone. Walls still stop it. This changes
+what crawlers do, so it sits on the dial touchSees.
+
+New check v11.07 puts a crawler at 85 percent of its own reach, taken from the
+entity rather than typed in, in front of a still hidden player, and requires
+damage within three seconds. Controls: at 2.2 times the reach the same hidden man
+must still be safe, a man in plain view must still be bitten, and the dial must
+both remove and restore the bite. Fails on a v11.06 fixture in his own words.
+
+Not verified: what this does to the bot extract rate. Crawlers are the one enemy
+the sim bot actually fights, and I have not run the paired seeds to say by how
+much. The alternative was sitting on a bug reported twice.

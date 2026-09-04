@@ -1,0 +1,59 @@
+## v11.07 - HIS NOTE 22, ASKED TWICE: CRAWLERS ARE NOT ATTACKING PROPERLY
+
+"Once again, crawlers aren't attacking properly?", 2026-09-04, and before that, on
+2026-09-03: "i saw atleast one instance where i was standing still and crawler
+didn't hurt me even though he was close".
+
+**REPRODUCED, AND THE NUMBER IS SHARP.** One crawler stood 30 units from a still
+player and facing him. Its bite reaches 36 (its own body is 15, the player's 11,
+and the reach is 10 on top). Three seconds each time, varying only how well
+hidden he was:
+
+    concealment 1.00   65 damage
+    concealment 0.80   65 damage
+    concealment 0.60   65 damage
+    concealment 0.45   65 damage
+    concealment 0.35   65 damage
+    concealment 0.25   ZERO, in patrol for the whole three seconds
+    concealment 0.15   ZERO
+    concealment 0.05   ZERO
+
+**THE CAUSE: a crawler's eyes shrink with your concealment and its reach does
+not.** Its sight is 100 units multiplied by concealment; its bite reaches 36. Below
+about 0.3 there is a band where it is close enough to bite and cannot see, and the
+bite lives inside the chase branch, so it never enters chase. It stands there
+touching him and does nothing. That is exactly what he described, both times.
+
+**WHY THE FIRST FIX DID NOT CATCH IT.** The 2026-09-03 report led to the two
+if/else chains finding, where a non-raider fell into the idle wander branch mid
+chase and wiped the attack cooldown every frame. That was a real bug and it was
+fixed. It was also a different bug. Checking the same ground again: that wander
+branch is inside the snitch block and ends in a continue, so a crawler cannot
+reach it. The cooldown is not the problem now; being seen is.
+
+**THE FIX: you cannot hide from something that is already touching you.** The
+crawler's sight gets a floor equal to its own reach plus a small margin, applied
+to the corner of the eye as well as to the cone, because you do not hide from
+something you are touching by standing behind it. A wall still stops it: canSee
+runs its own line of sight and the bite tests for one separately.
+
+**THIS CHANGES WHAT CRAWLERS DO, and I am not pretending otherwise.** It sits on
+a dial, touchSees, so the old behaviour stays measurable rather than deleted.
+
+**NEW CHECK v11.07** puts a crawler at 85 percent of its own reach, taken from
+the entity rather than typed in, in front of a still, hidden player, and requires
+damage inside three seconds. Three controls, and they matter more than the
+assertion: at 2.2 times the reach the same hidden man must still be safe, or
+concealment has stopped meaning anything; a man in plain view must still be
+bitten, or the check is measuring the wrong thing; and turning the dial off must
+bring the silence back and turning it on must restore the bite, or the fix is not
+what is being tested.
+
+Fails on a v11.06 fixture with his own case in its own words: "a crawler 31 units
+away, with a reach of 36, did nothing at all in three seconds while he stood
+still and hidden".
+
+Not verified: what this does to the bot's extract rate. Crawlers are the one
+enemy the sim bot actually fights, so a crawler that notices it at touching range
+may move that number, and I have not run the paired seeds to say by how much. The
+alternative was to sit on a bug he has now reported twice, which is worse.
