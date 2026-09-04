@@ -1,0 +1,39 @@
+## v10.63 - ONE CHIRP DID SEVENTY JOBS
+
+His note, 2026-09-03 about 19:40: **"everything should sound unique and
+crisp like a triple-A game"**. The fourth family: the sounds that were one
+sound.
+
+### What it was
+
+The audit found the pickup chirp, a single sine from 660 to 1180 hertz, at
+about seventy call sites: picking up loot, opening a door, applying a heal,
+swapping a gun, assigning a hotbar slot, reviving yourself, selling at a
+pedestal, and every menu click in the Undercroft. Opening a door and
+clicking a shop button were the same sound. And the Depot's buy tiles had
+asked for a sound named cache since v9.99, which matched no recipe and
+played nothing.
+
+### Now
+
+A door is a latch click and a short low creak of the hinge. A heal is the
+wrapper tearing and a soft rising pair of notes. A menu click is one dry
+tick with a tiny thock under it; every menu site keeps asking for the old
+name and the synth routes it to the tick when there is no raid, so the
+forty hub sites needed no edit and a pickup in a raid keeps its chirp. A
+sale at the Depot rings up: two bright notes and the drawer.
+
+### Measured
+
+The check installs a recording audio context, starts a raid at seed 4242,
+and requires the pickup to schedule its chirp and the door, the heal, the
+tick and the sale each to schedule a voice different from the chirp and
+from each other; then clears the raid and requires the pickup name to
+schedule the tick and not the chirp. On v10.62 the door, heal and tick
+names schedule nothing and the sale schedules nothing, which is the
+finding; on this build the check returns null.
+
+Not verified: how it sounds, which is his; the gun swap, hotbar assign,
+self-revive and pedestal sale, which still share the chirp in a raid and
+are the next split; and the in-raid pause menu, whose few clicks now chirp
+like a pickup because a raid exists under them.

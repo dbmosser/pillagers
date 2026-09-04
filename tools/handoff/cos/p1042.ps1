@@ -1,0 +1,120 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+# ============ HIS NOTE, 2026-09-03 about 14:10: "i would love to make the
+# ============ cosmetics screen kinda look like how you equip your character in
+# ============ diablo".
+#
+# The Depot's operator panel was the figure with a list of slots stacked under
+# it, one row each. Now it is a paper doll: the figure in the middle, drawn
+# larger, and a square tile for every slot on either side of it, the things
+# on the head down the left and the things on the body down the right, the
+# way an equipment screen lays a character out. A tile shows the swatch, the
+# rack name and what is worn; clicking it narrows the racks to that slot, as
+# the rows did. No slot line moved; the slot function sorts each into its
+# column and the return assembles the doll, so every rack added since keeps
+# its place.
+
+SubRx @'
+  function slot(id,label,val,ic){
+    return '<div class="avslot'+(P._avSlot===id?' on':'')+'" data-av="'+id+'">'+
+      '<div class="avsic">'+ic+'</div>'+
+      '<div><div class="avslab">'+label+'</div><div class="avsval">'+escHtml(val)+'</div></div></div>';
+  }
+'@ @'
+  // v10.42, his note: laid out like an equipment screen. Each slot is a tile,
+  // and the tiles stand on either side of the figure: head things left, body
+  // things right. slot() files the tile and the return below builds the doll.
+  var _dollL=[], _dollR=[], _DOLL_LEFT={hat:1,hair:1,cut:1,beard:1,eyes:1,face:1,tattoo:1};
+  function slot(id,label,val,ic){
+    var t='<div class="avslot'+(P._avSlot===id?' on':'')+'" data-av="'+id+'" title="'+label+': '+escHtml(val)+'">'+
+      '<div class="avsic">'+ic+'</div>'+
+      '<div class="avslab">'+label+'</div><div class="avsval">'+escHtml(val)+'</div></div>';
+    (_DOLL_LEFT[id]?_dollL:_dollR).push(t);
+    return '';
+  }
+'@
+
+SubRx @'
+  // v6.43, his note: no guns on the figure. "Your operator should be cosmetic only",
+  // and guns are chosen on quick use 1 and 2, which is the row that fires them.
+  return h;
+}
+'@ @'
+  // v6.43, his note: no guns on the figure. "Your operator should be cosmetic only",
+  // and guns are chosen on quick use 1 and 2, which is the row that fires them.
+  // v10.42: the paper doll. The figure in the middle, the tiles down each side.
+  return '<div class="avdoll"><div class="avcol">'+_dollL.join('')+'</div>'+
+         '<div class="avfigwrap">'+h+'</div>'+
+         '<div class="avcol">'+_dollR.join('')+'</div></div>';
+}
+'@
+
+SubRx @'
+.avslot{ display:flex; align-items:center; gap:8px; padding:5px 10px; cursor:pointer;
+  border-top:1px solid rgba(42,50,61,.55); }
+.avslot:hover{ background:rgba(255,192,74,.10); }
+.avslot.on{ background:rgba(255,192,74,.16); }
+.avsic{ width:26px; height:26px; border-radius:3px; border:1px solid var(--steel-hi);
+  display:flex; align-items:center; justify-content:center; font-size:12px;
+  background:rgba(0,0,0,.3); flex:none; }
+.avslab{ font-size:12.5px; letter-spacing:.16em; color:var(--ash); }
+.avsval{ font-size:13px; color:var(--bone); }
+'@ @'
+/* v10.42, his note: the paper doll. Tiles on either side of the figure, the
+   figure drawn larger between them, like an equipment screen. */
+.avdoll{ display:grid; grid-template-columns:78px 1fr 78px; gap:6px; align-items:start; padding:6px 4px; }
+.avcol{ display:flex; flex-direction:column; gap:5px; }
+.avfigwrap{ display:flex; align-items:center; justify-content:center; min-height:300px; align-self:stretch;
+  background:radial-gradient(ellipse at 50% 60%, rgba(255,192,74,.07), rgba(0,0,0,0) 70%); border-radius:6px; }
+.avfigwrap .avfig{ transform:scale(1.7); transform-origin:50% 50%; padding:0; }
+.avfigwrap .avcv{ max-width:100%; height:auto; }   /* the painter's canvas (v10.25) fits between the tiles */
+.avslot{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:4px 2px; cursor:pointer;
+  width:74px; height:72px; box-sizing:border-box; border:1px solid var(--steel-hi); border-radius:4px; background:rgba(0,0,0,.35); }
+.avslot:hover{ background:rgba(255,192,74,.10); border-color:var(--amber); }
+.avslot.on{ background:rgba(255,192,74,.16); border-color:var(--amber); }
+.avsic{ width:30px; height:30px; border-radius:3px; border:1px solid var(--steel-hi);
+  display:flex; align-items:center; justify-content:center; font-size:13px;
+  background:rgba(0,0,0,.3); flex:none; }
+.avslab{ font-size:8.5px; letter-spacing:.12em; color:var(--ash); white-space:nowrap; }
+.avsval{ font-size:9.5px; color:var(--bone); max-width:68px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+'@
+
+SubRx @'
+  <div class="hubgrid" style="grid-template-columns:260px 1fr;margin-top:6px">
+    <div class="panel">
+      <h2>Your operator</h2>
+      <div id="appavatar"></div>
+'@ @'
+  <div class="hubgrid" style="grid-template-columns:420px 1fr;margin-top:6px">
+    <div class="panel">
+      <h2>Your operator</h2>
+      <div id="appavatar"></div>
+'@
+
+SubRx @'
+var VER='10.41';
+'@ @'
+var VER='10.42';
+'@
+SubRx @'
+  now:'v10.41: sneakers on the boots rack: red and white high-tops, black and white low-tops, black and red high-tops. Each has its own sole. Earned.',
+'@ @'
+  now:'v10.42: the Depot is laid out like an equipment screen. Your operator stands in the middle, larger, with a tile for every slot on either side: head things on the left, body things on the right. Click a tile to see its rack.',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"

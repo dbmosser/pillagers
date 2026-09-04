@@ -1,0 +1,27 @@
+## v10.46 - THE FIRST CAPSTONE
+
+His note, 2026-09-03 about 14:10, and the Reach research: the Haunted
+helmet cost one credit and needed the top rank plus every other helmet
+owned. Players remembered it as the thing that made a finished rack mean
+something.
+
+A gate that reads the rack itself. A piece gated on its own rack is earned
+when every other piece of that kind is owned; capstones do not gate each
+other, so a second one on the same rack would not deadlock. The first is
+Platinum on the hair rack, the pale metal that only shows up on a finished
+rack. The requirement text says "every other piece on this rack", and the
+next-piece line counts it in pieces still to collect ("1 MORE PIECE ON ITS
+RACK").
+
+### Measured
+
+The check requires the capstone unowned and with text, colour and swatch on
+a fresh profile, owned once every other hair is earned, still locked with
+Violet locked at level one and one piece away on the distance, and as the
+control Ash still gated on eight raids. On v10.45 no piece read the rack it
+hangs on, which is the finding.
+
+Not verified: a capstone on each of the other thirteen racks; they are one
+line each once he says which piece deserves it, and the headgear one wants a
+drawing.
+

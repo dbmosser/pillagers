@@ -1,0 +1,14 @@
+v10.51: behind the terminal he is shown through the wall, and never runs in place
+
+His notes: weird collision in the Undercroft behind the terminal, and running
+in place. The plinth's collider sits 26 units below its drawn top, the raid's
+lift, and the room never had the raid's see-through pass, so from behind he
+stopped under the drawn top and vanished; and the walk cycle followed the
+keys, not the ground covered.
+
+The room runs the raid's see-through arithmetic against its own walls and
+paints him again at half alpha when a wall top covers him. moving is the
+distance covered this frame, after the wall push.
+
+The check pins him behind the plinth and on the open floor, with S held and
+with the pass off and on. It fails on a v10.50 fixture.

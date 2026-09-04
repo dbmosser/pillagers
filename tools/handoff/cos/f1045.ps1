@@ -1,0 +1,62 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\tools\mkfixture.ps1'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+SubRx @'
+  {v:'10.44',what:'the outcome card names every piece the racks gained during the raid, and nothing when none did',
+'@ @'
+  {v:'10.45',what:'three gates read how he plays: kills, extractions in the dark, extractions in a row; the counters move where the run is banked',
+   run:function(){
+     var bad=[];
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     if(typeof COSMETICS==='undefined') return 'SKIP: no racks in this build';
+     var owl=cosFind('patchowl'), hunt=cosFind('patchhunt'), chain=cosFind('patchchain');
+     // THE FINDING. On v10.44 no piece on the racks read anything but raids, extractions, levels and Wardens.
+     if(!owl||!hunt||!chain) return 'the play-style patches are not on the racks';
+     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,nightExt:P2.nightExt,extStreak:P2.extStreak,bestStreak:P2.bestStreak,cond:P2.cond};
+     // ONE: the gates read the counters.
+     P2.kills={}; P2.nightExt=0; P2.bestStreak=0; P2.extStreak=0;
+     if(cosOwned(owl)||cosOwned(hunt)||cosOwned(chain)) bad.push('a play-style patch is owned on a fresh profile');
+     P2.kills={crawler:30,raider:20}; if(!cosOwned(hunt)) bad.push('fifty kills across kinds do not earn Headhunter');
+     P2.nightExt=3; if(!cosOwned(owl)) bad.push('three extractions in the dark do not earn Night Owl');
+     P2.bestStreak=3; if(!cosOwned(chain)) bad.push('three in a row do not earn Unbroken');
+     [owl,hunt,chain].forEach(function(c){ if(!cosNeed(c)) bad.push(c.id+' has no requirement text'); });
+     // TWO: the counters move where the run is banked. Two extractions in the dark, then an abandon.
+     P2.kills={}; P2.nightExt=0; P2.bestStreak=0; P2.extStreak=0; P2.cond='night';
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242}); var g=__state(); if(!g) return 'SKIP: no raid'; g.ents.length=0;
+     var dark=(typeof isDay==='function')?!isDay():null;
+     __endRaid('extract'); var ob=document.getElementById('oc_btn'); if(ob) ob.click();
+     if(dark===false) bad.push('staging: the raid went up in daylight with the condition set to night');
+     else if((P2.nightExt||0)!==1) bad.push('an extraction in the dark did not count ('+P2.nightExt+')');
+     if((P2.extStreak||0)!==1) bad.push('the streak is '+P2.extStreak+' after one extraction');
+     P2.cond='night';
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state(); if(g) g.ents.length=0;
+     __endRaid('extract'); ob=document.getElementById('oc_btn'); if(ob) ob.click();
+     if((P2.extStreak||0)!==2||(P2.bestStreak||0)!==2) bad.push('two in a row read streak '+P2.extStreak+', best '+P2.bestStreak);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state(); if(g) g.ents.length=0;
+     // A death ends it. (An abandon with nothing looted records no run at all, and touches nothing.)
+     __endRaid('dead'); ob=document.getElementById('oc_btn'); if(ob) ob.click();
+     if((P2.extStreak||0)!==0) bad.push('a death did not end the streak ('+P2.extStreak+')');
+     if((P2.bestStreak||0)!==2) bad.push('the best streak was lost with the death ('+P2.bestStreak+')');
+     // CONTROL: the older gates still read as they did.
+     P2.ext=20; if(!cosOwned(cosFind('spartan')||{how:'extracts:20'})) bad.push('control: twenty extractions no longer earn the Spartan helmet');
+     for(var k in keep) P2[k]=keep[k];
+     return bad.length?bad.join('; '):null; }},
+  {v:'10.44',what:'the outcome card names every piece the racks gained during the raid, and nothing when none did',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"

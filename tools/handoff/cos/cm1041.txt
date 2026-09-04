@@ -1,0 +1,12 @@
+v10.41: sneakers on the boots rack
+
+His note: different shoes as options, Jordan 1, Jordan 11 and so on.
+
+Three pairs on the boots rack, earned: red and white high-tops, black and
+white low-tops, black and red high-tops. Boot colours carry a sole and a
+collar stop now, and the sprite, the figure and the swatch draw the sole.
+
+The check requires the three on the rack and earned, the expected red and
+pale pixels at the sprite's feet, and the sole on the figure and swatches,
+with black boots drawing no sole as the control. It fails on a v10.40
+fixture.

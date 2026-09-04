@@ -1,0 +1,14 @@
+v10.38: the full controls list is on the screen
+
+His answer 25 named the controls legend among what bothers him most; his
+answer 30 says he plays at 4K.
+
+Measured: the full list, the one H cycles to, drew its heading above the
+screen and its rule cards inside the conditions panel at 1080p, and the
+whole list off the right edge at 4K, so on his monitor it showed nothing.
+The centred list was being drawn inside the compact panel's corner zoom. It
+is scaled about the bottom centre now, capped to fit.
+
+The check draws it at 1080p, 1440p and 4K and requires it inside the screen,
+centred and clear of the conditions panel, with the compact legend still
+bottom left as the control. It fails on a v10.37 fixture.

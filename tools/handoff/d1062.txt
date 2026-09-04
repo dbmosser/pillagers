@@ -1,0 +1,49 @@
+## v10.62 - THE MACHINES: EACH KIND DIES IN ITS OWN WAY
+
+His note, 2026-09-03 about 19:40: **"guns, footsteps, robots, etc --
+everything should sound unique and crisp like a triple-A game"**. The third
+family.
+
+### What it was
+
+Nothing on the map died out loud. A kill played a clank, and only when the
+body fell more than 620 units away; up close, the most decisive moment in a
+fight was silent. A round landing on a machine played the same hit as a
+round landing on you, so dealing and taking damage were one sound. The
+Bulwark, the armoured heavy, had no entry in the voice table and was silent
+apart from its footsteps. And every idle voice, the servo sweep, the drone,
+the hydraulics, the dish creak, replayed the same frequencies every time,
+so a room of machines was a loop.
+
+### Now
+
+Each kind dies in its own way: a man grunts hard and falls; a crawler
+squeals, cut short, and its legs crackle out; a sentry's servo winds down
+and it settles with a clank; a snitch drops out of the air in pitch and
+pops; a warden or a bulwark lets its hydraulics go and hits the ground
+heavily; a listener's dish spins down to a stop. A round landing on plate
+ticks bright with a short ping; a round landing on a man is a dull thud
+with nothing bright in it. The Bulwark grinds, plate on plate, slow and low
+with a click when it stops, faster and twice when it is hunting. And every
+machine voice takes six percent of jitter per call, so no two sweeps, drones
+or creaks are the same.
+
+### Measured
+
+The check installs a recording audio context, asks the synth for each of
+the seven deaths and requires each to schedule something and no two alike
+(the warden and the bulwark share one on purpose), requires the plate hit
+and the man hit to differ, the Bulwark to have its voice with the hunting
+form different from the idle, and two servo sweeps and two dish creaks in a
+row to differ. Then, on the play path, it starts a raid at seed 4242, puts
+the first crawler or sentry at zero hit points, runs three frames of the
+live loop, and requires the frame that culls it to ask for the death sound
+of its kind. On v10.57 every death schedules nothing, the two hits are one
+sound, the Bulwark has no voice and the sweeps repeat, which is the
+finding; on this build the check returns null.
+
+Not verified: how any of it sounds, which is his; the raider going down
+rather than dying, which is a separate path with the hit thud and no death
+sound, by design since a downed man is not dead; and the mix when several
+machines die at once, which the voice budget does not cover because deaths
+go through sfx, not the budgeted idle voices.

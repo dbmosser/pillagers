@@ -1,0 +1,12 @@
+v10.43: the next piece
+
+His note: cosmetics as what keeps people coming back, Reach as the model.
+The research found players named seeing what was coming first.
+
+One line names the locked piece closest to being earned, its rack and the
+distance, under the Depot heading and on the outcome card after the run is
+banked. When everything is earned it says the racks are complete.
+
+The check requires the Spartan helmet named one extraction away at nineteen,
+the Depot and an extract's outcome card to show it, and nothing named with
+everything earned as the control. It fails on a v10.42 fixture.

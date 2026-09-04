@@ -1,0 +1,10 @@
+v10.52: the crate prompt and the items-left count are bigger
+
+His note: "Search Crate, 1 Item left" is too small. The prompt was label size
+and the count was micro, the smallest type in the game, on the line he reads
+while deciding whether one more pull is worth the time.
+
+The prompt is a callout now and the count a label, in a pill grown to fit.
+
+The check stands the operator on a crate and traces the HUD's text standing
+and mid-search. It fails on a v10.51 fixture.

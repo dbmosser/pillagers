@@ -1,0 +1,11 @@
+v10.55: footprints follow the ground you cover
+
+His note: the sprint footprint glitch is still happening. Reproduced: the
+print was keyed to time with a key held and stamped before the wall push,
+so sprinting into a wall piled prints under him a step inside the wall.
+
+One print per 56 units of ground actually covered, measured after the push,
+in the direction he moved. Pinned, he stamps nothing.
+
+The check runs the live loop across open ground and into a wall. It fails
+on a v10.54 fixture.

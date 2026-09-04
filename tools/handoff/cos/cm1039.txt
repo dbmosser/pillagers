@@ -1,0 +1,14 @@
+v10.39: the Spartan helmet and the ghost mask
+
+His notes: a Master Chief style green helmet, and Ghostface from Scream as a
+head option.
+
+Two more on the headgear rack: a full green Spartan Helmet with a gold visor,
+earned at twenty extracts, and a pale Ghost Mask with black hollows, earned
+for three Wardens. Both cover the face, so beards and face marks go under
+them. Named for what they are.
+
+The check requires both on the rack and earned, each to change the sprite's
+head, the helmet green and the mask pale by pixel count, a beard hidden
+under each, swatches and the figure, with the visor still drawing as the
+control. It fails on a v10.38 fixture.

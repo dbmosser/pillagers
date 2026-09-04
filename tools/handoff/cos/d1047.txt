@@ -1,0 +1,29 @@
+## v10.47 - THREE MORE CAPSTONES
+
+His note, 2026-09-03 about 14:10, and the Reach research: a finished rack
+should mean something. v10.46 put the first capstone on the hair rack; three
+more racks get theirs.
+
+| rack | capstone | earned by |
+| --- | --- | --- |
+| eyes | Silver | every other eye colour owned |
+| clothing | Gold | every other fit owned, which today means the jersey |
+| boots | Gilded Boots, gold with a pale sole and a dark collar | every other pair owned |
+
+Colours only; the painters already draw every colour the racks hold, so
+each is one entry on its rack and one in its colour table. The requirement
+text and the next-piece line count pieces left, as v10.46 taught them.
+
+### Measured
+
+The check requires each capstone on its rack with a rack gate, unowned on a
+fresh profile, with text, colour and swatch; owned once every other piece on
+the rack is earned; locked again with one piece locked and the distance
+saying so; the control is Platinum still owned with everything earned. On
+v10.46 only the hair rack had a capstone, which is the finding.
+
+Not verified: the ten racks still without one (build, skin, face, tattoo,
+hairstyle, beard, headgear, patch, gloves, backpack); the ones that need a
+drawing wait for a drawing build, and build and skin are owned from the
+start and have nothing to finish.
+

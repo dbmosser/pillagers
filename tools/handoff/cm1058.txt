@@ -1,0 +1,12 @@
+v10.58: the trailing noise after a gun is short
+
+His notes: trailing noise is way overdone, and he can hear it way later.
+The big guns' tail was a third of the crack at 1.6 times its length, and
+the pump clicked nearly half a second after the shot.
+
+Nothing a shot schedules starts past 0.30 s; the tail is shorter than the
+crack at a tenth of its level; the big cracks are shorter; the bolt and
+pump click inside a third of a second.
+
+The check records start times and buffer lengths for every gun. It fails
+on a v10.57 fixture.

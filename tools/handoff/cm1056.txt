@@ -1,0 +1,13 @@
+v10.56: every gun has its own voice
+
+His note: everything should sound unique and crisp. Guns first. Sixteen
+guns shared eleven voices, the Magnum and the Longshot borrowed the Auto
+Rifle, every shot was the identical waveform, and reloads and empty guns
+were silent.
+
+Each gun has its own crack, body and, where earned, a tail and the action
+cycling; six percent of jitter per shot; reloads click, the bolt goes home,
+an empty gun clicks.
+
+The check records what the synth schedules for every gun and requires
+sixteen different voices. It fails on a v10.55 fixture.

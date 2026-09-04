@@ -1,0 +1,11 @@
+v10.40: the number 23 jersey
+
+His note: a red and black 23 jersey as a clothing option.
+
+One more on the clothing rack, earned at level four: red, with black side
+panels and a pale 23 painted across the sprite's chest, the same on the
+figure and the swatch.
+
+The check requires it on the rack and earned, more red, pale and black torso
+pixels than slate, and the number on the figure and the swatch, with slate
+still plain as the control. It fails on a v10.39 fixture.

@@ -1,0 +1,42 @@
+## v10.38 - THE FULL CONTROLS LIST IS ON THE SCREEN
+
+His answer 25, 2026-09-03: the controls legend is one of the four HUD things
+that bother him most. His answer 30: he plays at 4K.
+
+### Measured
+
+With the text trace on v10.14, the full list, the one H cycles to:
+
+| | where it drew |
+| --- | --- |
+| 1920x1080 | the MOVE heading at y -52, above the screen; the rule cards at x 1454 to 1865, y 50 to 152, inside the conditions panel's box, five lines of them |
+| 3840x2160 | the whole list at x 4797 and beyond, on a screen 3840 wide |
+
+On his monitor, pressing H to the full list showed nothing at all. That is
+the controls legend he named.
+
+### The cause is one line
+
+The full list centres itself on W in unscaled space, and it is then drawn
+inside the compact panel's corner zoom, anchored at the left edge and the
+panel's bottom target, so its centre lands at W times the zoom over two and
+its top at the target minus the scaled height. That zoom is right for the
+compact panel it was written for, in the bottom left, and wrong for a
+centred list. The full list is scaled about the bottom centre now, and the
+scale is capped so the whole list is on the screen at any size; the compact
+panel keeps its corner zoom and its drag.
+
+### Measured again
+
+The check draws the full list at 1080p, 1440p and 4K and requires the MOVE
+heading, the hide line and the sound key inside the screen, the list centred
+within twelve percent of the middle, and no rule line inside the conditions
+panel's box; the control is the compact legend still bottom left and inside.
+On v10.37 the MOVE heading is at y -52 at 1080p and x 4797 at 4K, which is
+the finding.
+
+Not verified: the conditions panel and the pillager board, the other two he
+named, which measure as inside their boxes and clear of each other; and
+on-HUD messaging, which v10.37 scaled. If they still look wonky to him it is
+something the numbers do not show.
+

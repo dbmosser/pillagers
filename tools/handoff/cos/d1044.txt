@@ -1,0 +1,27 @@
+## v10.44 - A RAID THAT EARNS A PIECE SAYS SO
+
+His note, 2026-09-03 about 14:10, and the Reach research: "when I ranked up
+new items would pop up". The moment of earning was the moment players
+remembered, and here it passed in silence: a piece became yours somewhere in
+the counters and you found out, if ever, by wandering the racks.
+
+Now the racks are snapshotted when the lift moves, and when the outcome card
+is written, after the run is banked, whatever is owned now and was not then
+is named on the card in the extraction colour: "EARNED THIS RAID: SPARTAN
+HELMET (HEADGEAR). ON YOUR RACK AT THE DEPOT.", above the next piece coming.
+A raid that earned nothing shows nothing. The rack names moved into one
+function shared with the next-piece line.
+
+### Measured
+
+The check sets nineteen extractions, runs a raid to an extraction and
+requires the card to name the Spartan helmet the twentieth earned and none of
+the pieces owned from the start; the control runs a second raid to a
+death and requires the line empty. On v10.43 the card had no earned line,
+which is the finding.
+
+Not verified: a piece earned by the level the run's XP lifts him to, which
+is banked in the same place and should list the same way; the check uses the
+extraction counter. Not verified: the sim, which snapshots nothing and writes
+no card.
+

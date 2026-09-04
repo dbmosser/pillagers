@@ -1,0 +1,33 @@
+## v10.41 - SNEAKERS ON THE BOOTS RACK
+
+His note, 2026-09-03 about 14:00: **"I want different shoes as options --
+jordan 1, jordan 11, etc"**.
+
+Three pairs of sneakers on the boots rack. The boot colours were two stops,
+the far leg and the near leg; sneakers carry a third, the sole, and a fourth,
+a band at the collar, and the sprite draws both under and over each foot
+when they are there. Boots have neither and draw exactly as before.
+
+| | look | earned |
+| --- | --- | --- |
+| Chicago High-Tops | red, black collar, white sole | twenty runs |
+| Concord Low-Tops | black, pale patent collar, white sole | twelve extracts |
+| Bred High-Tops | black, red collar, red sole | level five |
+
+The figure on the Depot screen gets the sole as a bottom border and the
+swatch gets a sole strip. Named for what they look like, the way the
+colourways are known, since the brand names are not ours to print.
+
+### Measured
+
+The check requires the three on the rack, earned, each with a sole colour;
+reads the sprite's feet pixels against black boots and requires the Chicago
+pair red with a pale sole, the Concord pair a pale sole and the Bred pair a
+red sole; requires the figure to draw the sole under the Chicago pair and
+each swatch to carry its sole colour; and as the control requires black
+boots to draw no sole on the sprite or the figure. On v10.40 the boots rack
+had five pairs of boots and no sneakers, which is the finding.
+
+Not verified: whether the collar band reads at his raid zoom; the sole
+does, being pale on a dark ground.
+

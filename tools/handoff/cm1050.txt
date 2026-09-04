@@ -1,0 +1,14 @@
+v10.50: face marks and beards clear of the eyes, and boots are boots
+
+His note on the Depot: freckles, scar and stubble collide with the eyes;
+shoes should be separate from pants. Measured against the eye band, all
+three sat inside it, the goatee and mud clipped it, and the boot colour
+painted the whole lower leg.
+
+The marks and the beards sit under the band on the cheeks and jaw, the scar
+beside the eye, the dust mask, the Spartan helmet and the ghost mask reach the
+chin, and the lower leg is trousers
+cut from the coat with the boot colour on the foot and a collar.
+
+The check paints the figure the Depot's way and reads the eye band off the
+whites. It fails on a v10.49 fixture.

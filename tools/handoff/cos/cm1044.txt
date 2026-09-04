@@ -1,0 +1,12 @@
+v10.44: a raid that earns a piece says so
+
+His note and the Reach research: the moment of earning was the moment
+players remembered, and here it passed in silence.
+
+The racks are snapshotted when the lift moves, and the outcome card names
+whatever is owned now and was not then, above the next piece coming. A raid
+that earned nothing shows nothing.
+
+The check runs a raid to the twentieth extraction and requires the card to
+name the Spartan helmet, then a second raid to a death with the line
+empty as the control. It fails on a v10.43 fixture.

@@ -1,0 +1,36 @@
+## v10.60 - NOBODY IN THE UNDERCROFT WALKS THROUGH A WALL
+
+His note, 2026-09-03 about 21:20: **"pillagers still glitching into walls in
+the undercroft"**.
+
+### What it was
+
+The errand walk (v8.07) already called the wall push every step, and the
+push did nothing: it keeps a body clear of a wall by the body's radius, and
+the loose crowd and the hired man were built without one, so the test was
+never true and every walker went straight through the piers, the counters
+and the lift housing. The counter staff have a radius and drift home
+without any push at all, so a shove from a passer-by could leave one inside
+his own counter until he had walked back out of it; and the separation pass
+and the hired man's follow move bodies with no push either.
+
+### Now
+
+Every body has a radius, and every move that changes a position is followed
+by the same wall push the operator takes: the errand walk, the drift home,
+the separation shove and the follow.
+
+### Measured
+
+The check enters the Undercroft, closes any window an earlier check left
+open, requires every body to have a radius, then steps the room 1,200 times
+at a twentieth of a second, a minute of floor, and after every step tests
+each body against every wall: a body is in a wall when the wall's rectangle
+comes closer than half the body's radius. It requires zero such moments.
+On v10.59 the loose crowd has no radius and the errands carry walkers
+through the piers, which is the finding; on this build the check returns
+null.
+
+Not verified: the counter staff being shoved by the operator himself, who
+takes no part in the separation pass; and bodies that are up top in the
+lift, which the check skips because they are not in the room.

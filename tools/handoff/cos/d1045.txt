@@ -1,0 +1,36 @@
+## v10.45 - THREE GATES THAT READ HOW HE PLAYS
+
+His note, 2026-09-03 about 14:10, and the Reach research: the commendations
+"tracked how you play", pistol kills, headshots, rounds without dying, so
+play style became the collection, and players named that among what kept
+them coming back.
+
+Every gate on the racks was a count of raids, extractions, levels or
+Wardens: how much, never how. Three gates now read how he plays:
+
+| gate | reads | first patch on it |
+| --- | --- | --- |
+| kills | every machine and pillager he has put down, summed from the tally the profile already keeps | Headhunter, fifty |
+| night | extractions made in the dark | Night Owl, three |
+| streak | extractions in a row; a death or a logged abandon ends it, and the best is kept | Unbroken, three |
+
+Two counters join the profile, night extractions and the streak with its
+best, written where the run is banked, beside the runs and extractions that
+were already counted there. The next-piece line and the requirement text
+know the new gates. Three patches hang on them so each is earnable today.
+
+### Measured
+
+The check requires the three patches on the racks and unowned on a fresh
+profile, owned once the counters are set, and with requirement text; then
+runs two extractions in the dark and a death and requires the night count
+at one after the first, the streak at two and the best at two after the
+second, the streak at zero and the best still two after a death; the
+control is twenty extractions still earning the Spartan helmet. On v10.44 no
+piece on the racks read anything but the four old counters, which is the
+finding.
+
+Not verified: kills by weapon, which the tally does not keep; a gate on
+pistol kills needs a per-gun tally first. Not verified: whether the streak
+should survive a death that he could not have avoided; it does not.
+

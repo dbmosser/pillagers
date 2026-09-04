@@ -1,0 +1,37 @@
+## v10.59 - BEHIND A WALL YOU LOOK LIKE YOURSELF, FADED
+
+His note, 2026-09-03 about 21:30: **"wheb ny characterr stands behind a
+wall they change color lol"**.
+
+### What it was
+
+The v9.27 see-through pass, his #45, paints the operator again after the
+sorted pass when a wall's drawn top covers him, so he never vanishes. It
+painted him as one flat light-blue colour, coat #9fd8ff with no hero racks,
+at half alpha. Behind cover he turned blue. The Undercroft's pass (v10.51)
+already draws the real figure, so the two rooms disagreed.
+
+### Now
+
+The raid's pass makes the same call the sorted pass makes for him: his own
+coat, his racks, his outfit if he wears one, his stance, his gun, the roll
+and the reload, at 0.55 alpha and without the hurt shimmer. Behind a wall he
+looks like himself seen through it. Nothing else about the pass changes:
+the same test decides when it fires and the same lift places it.
+
+### Measured
+
+The check starts a raid at seed 4242, finds a wall at least 60 by 60 with
+open ground under its drawn top, stands the operator there, renders a
+frame with the pass off and one with it on, requires at least 80 pixels to
+differ, then samples the chest, 16 units up the figure, in both frames and
+compares blue over red: the ghost may not be bluer than the wall top behind
+it by more than 15. On v10.58 the chest is bluer by 30, which is the
+finding; on this build the check returns null. My first version of this
+check measured the light-blue share of the whole figure and passed the old
+build, because the cutout was blue only on the torso and the rest was
+outline, skin and hair; the control run caught it before anything shipped.
+
+Not verified: the look by eye, which is his; and a downed operator behind
+a wall, which takes the down pose through the same call and was not
+rendered here.

@@ -1,0 +1,44 @@
+## v10.55 - FOOTPRINTS FOLLOW THE GROUND YOU COVER
+
+His note, 2026-09-03 about 20:00: **"sprint footprint glitch is still
+happening"**. Earlier sessions could not reproduce a footprint glitch and
+were waiting on a description. This one was reproduced with the live stepper
+before anything was changed.
+
+### What it was
+
+The boot mark was keyed to time with a movement key held: every 0.34 seconds
+at a walk and 0.22 at a sprint, a print went down at the operator's position.
+Two things were wrong with that. Held into a wall, he covers no ground and
+the clock still runs, so a print landed under him every 0.22 seconds and a
+pile built up where he stood; sprinting is where it shows, because the
+clock is fastest there and a sprint is how you arrive at a wall. And the
+stamp was taken before the wall push of the same frame, so each of those
+prints sat a step inside the wall, at a spot he was never allowed to stand.
+Measured on a v10.52 fixture: a sprint into a wall left prints at one x,
+eight units apart across the two boots, one after another.
+
+### Now
+
+The print is keyed to ground actually covered, measured after the wall
+push: one every 56 units, which is what 0.34 seconds of walking and 0.22
+seconds of sprinting both came to in the open, so the trail in the open
+looks as it did. Pinned, he covers nothing and stamps nothing. The print's
+direction is the direction he actually moved, so sliding along a wall lays
+the trail along the slide. The same disease the Undercroft walk cycle had
+at v10.51, and the same cure.
+
+### Measured
+
+The check runs the live loop on the first map at seed 4242. Across open
+ground, a walk of 70 frames and a sprint of 45 frames must each leave a
+trail with every gap between 48 and 64 units. Pinned against a wall and
+sprinting into it for 120 frames, he must not move and must stamp at most
+one print, and no print anywhere may sit inside a wall. On v10.54 the
+pinned sprint stamps a pile, which is the finding; on this build the check
+returns null.
+
+Not verified: whether this is the glitch he saw, since his note names no
+symptom; the wet trail after water, which takes the same writer and the
+same spacing but was not stepped through water here; and the bot, which
+never stamps prints and is untouched.

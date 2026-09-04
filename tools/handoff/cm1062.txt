@@ -1,0 +1,11 @@
+v10.62: the machines, each kind dies in its own way
+
+His note: everything should sound unique and crisp. Nothing on the map died
+out loud, a hit on a machine was the hit on you, the Bulwark had no voice,
+and every idle voice repeated exactly.
+
+Seven deaths, one per kind; a plate hit ticks and a man hit thuds; the
+Bulwark grinds; six percent of jitter on every machine voice.
+
+The check records what each death schedules and drives a death on the play
+path. It fails on a v10.57 fixture.

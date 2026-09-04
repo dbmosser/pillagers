@@ -1,0 +1,12 @@
+v10.45: three gates that read how he plays
+
+His note and the Reach research: commendations tracked how you play, so
+play style became the collection.
+
+Three gates on the racks read kills across every kind, extractions in the
+dark, and extractions in a row with the best kept; two counters join the
+profile where the run is banked; three patches hang on them.
+
+The check requires the patches unowned fresh and owned once the counters
+are set, the counters moving over two dark extractions and a death, and
+the old gates unchanged as the control. It fails on a v10.44 fixture.

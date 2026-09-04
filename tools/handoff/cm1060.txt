@@ -1,0 +1,11 @@
+v10.60: nobody in the Undercroft walks through a wall
+
+His note: pillagers still glitching into walls in the Undercroft. The errand
+walk called the wall push and it was inert, because the loose crowd and the
+hired man had no radius; the counter staff, the separation shove and the
+follow had no push at all.
+
+Every body has a radius and every position change takes the push.
+
+The check steps the room for a minute and finds nobody inside a wall. It
+fails on a v10.59 fixture.

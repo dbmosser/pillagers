@@ -1,0 +1,16 @@
+v10.42: the Depot is a paper doll
+
+His note: make the cosmetics screen look like equipping a character in
+Diablo.
+
+The operator panel at the Depot is an equipment screen now: the figure in
+the middle, drawn larger, with a square tile for every slot on either side
+of it, head things down the left and body things down the right. A tile
+shows the swatch, the rack and what is worn; click to narrow the racks,
+click again for all. No slot line moved; the slot function files each tile
+into its column.
+
+The check opens the Depot at 1080p and requires the doll, the tiles on the
+correct sides and inside the window, the figure large, and a tile still
+narrowing the racks, with the racks panel on the right as the control. It
+fails on a v10.41 fixture.

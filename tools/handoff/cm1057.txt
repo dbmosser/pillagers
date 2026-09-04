@@ -1,0 +1,12 @@
+v10.57: footsteps, heel and sole, left and right, the ground under everyone
+
+His note: everything should sound unique and crisp. Footsteps were one noise
+burst per surface, centred, on a fixed clock, identical every time; the
+machines and pillagers had no surface at all.
+
+Heel then sole, the surface's own tell, a sprint harder and a crouch softer,
+left and right in the ear, a breathing clock, jitter per step; enemies step
+on the surface under their own feet.
+
+The check records what the step generator schedules on each surface and for
+a pillager in a building. It fails on a v10.56 fixture.

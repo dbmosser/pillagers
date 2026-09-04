@@ -1,0 +1,36 @@
+## v10.37 - THE MESSAGE LINE GROWS WITH THE MONITOR
+
+His answer 25, 2026-09-03, on what bothers him most on the HUD: the controls
+legend, the conditions panel, the pillager board, **and on-HUD messaging**.
+His answer 30: he plays at 4K, and the game must be accessible at 1080p,
+1440p and 4K.
+
+### Measured
+
+With the text trace on v10.09, at 1920x1080 and 3840x2160, every panel scales
+with the monitor through hudRes: the body panel's text runs 22 to 44 pixels at
+1080p and 44 to 87 at 4K, the conditions panel 16 to 23 against 33, the board
+18 against 36 to 47. The message line, the one line the game uses to talk to
+him, was 19 pixels at 1080p and 19 pixels at 4K. It scaled with the HUD size
+dial and not with the monitor, so on his screen it was about a third the
+height of everything around it, at the top centre where the eye is meant to
+land. That is the on-HUD messaging he named.
+
+It is drawn inside the same monitor scale as the panels now, anchored to the
+top centre so it stays centred, and grows with them: about 38 pixels at 4K.
+
+### Measured again
+
+The check deploys a raid, writes a message, and reads its drawn size at
+1080p, 1440p and 4K off the text trace: at 4K it must be at least 1.8 times
+the 1080p size and at 1440p at least 1.2 times; the controls are that it stays
+centred at both sizes and sits where it always sat at 1080p. On v10.36 it was
+the same 19 pixels at every size, which is the finding.
+
+Not verified: the legend, the conditions panel and the pillager board, which
+he also named and which measure as scaling correctly and staying inside their
+boxes; what is wonky about them is something the numbers do not show, and it
+needs his eyes or his words. Not verified: a very long message at 4K, which
+grows with the scale and could reach the panels either side; the longest
+line the game writes fits at 1080p with room.
+

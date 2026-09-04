@@ -1,0 +1,36 @@
+## v10.42 - THE DEPOT IS A PAPER DOLL
+
+His note, 2026-09-03 about 14:10: **"i would love to make the cosmetics
+screen kinda look like how you equip your character in diablo"**.
+
+The Depot's operator panel was the figure with the slots stacked under it in
+a list, one row each, which read as a settings page. It is an equipment
+screen now: the figure stands in the middle, drawn larger on a faint pool of
+light, and every slot is a square tile beside it, the things on the head down
+the left (headgear, hair, hairstyle, beard, eyes, face, tattoo) and the
+things on the body down the right (build, skin, clothing, patch, gloves,
+boots, backpack). A tile shows the swatch, the rack name and what is worn,
+with the full name on hover; clicking it narrows the racks to that slot and
+clicking it again brings every rack back, as the rows did. The operator
+column is wider to hold it.
+
+No slot line moved. The slot function files each tile into its column by
+what it is, and the return assembles the doll, so every rack added since the
+first six keeps its place without touching this again.
+
+### Measured
+
+The check opens the Depot at 1080p and requires the doll with two columns,
+at least three tiles a side, headgear, hair and hairstyle on the left and
+build, skin and clothing on the right, every tile beside the figure and
+inside the panel and the window, the figure at least sixty by a hundred and
+twenty, a tile narrowing the racks and a second click restoring them; the
+control is the racks panel still to the right with its tiles. On v10.41 the
+panel was a list with no doll, which is the finding.
+
+Not verified: what the research pass on Reach's Armory says about which
+slots deserve prominence; the ladder that tells him what the next piece is
+and what earns it is the next build in this line, not this one. Not verified
+at 4K by eye; the tiles and the figure are HTML and scale with the menu
+zoom like the rest of the Undercroft.
+

@@ -1,0 +1,14 @@
+v10.54: OUTFITS, seven full-body suits that overrule every other rack
+
+His notes: full-body outfits that overrule everything else, a skeleton, a
+robot, a spartan, then four named characters and people. Those are licensed
+or real, so the game has its own versions of what they stand for.
+
+A new OUTFIT rack at the top of the Depot: the Skeleton, the Machine, the
+Trooper, the Android, the Tomb Explorer, the Baller and the Street Poet.
+Worn, the painter takes the suit's colours, cut, hat and beard, drops the
+marks, tattoo and patch, and paints the suit's own marks last. Own Clothes
+puts the racks back in charge.
+
+The check paints the figure in each suit and requires it to change the
+figure and hide the coat. It fails on a v10.53 fixture.

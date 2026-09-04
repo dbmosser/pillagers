@@ -1,0 +1,35 @@
+## v10.43 - THE NEXT PIECE
+
+His note, 2026-09-03 about 14:10: cosmetics as what keeps people coming back
+for the long haul, with Halo: Reach's earn system as the model.
+
+The research pass (tools/audits/reach-cosmetics-research-2026-09-03.md)
+found the thing players named first was seeing what was coming: "when I
+ranked up new items would pop up", and the MCC re-do lost them because its
+list was "like they pulled item names from a hat". Every locked piece here
+already prints its gate on the racks, but nothing said which piece was next
+or how far off it was, and the outcome card, the one screen every raid ends
+on, said nothing about the racks at all.
+
+Now one line names THE NEXT PIECE: the locked piece closest to being earned,
+by the share of its gate still to go, with its rack and the distance in the
+counter it waits on ("NEXT ON THE RACKS: SPARTAN HELMET (HEADGEAR), 1 MORE
+EXTRACTION."). It is under the heading at the Depot and under the manifest
+on the outcome card, written after the run is banked so it reads the
+counters this raid moved. When everything is earned it says the racks are
+complete.
+
+### Measured
+
+The check sets nineteen extractions and requires the line to name the
+Spartan helmet one extraction away, requires the Depot to show it, drives an
+extract and requires the outcome card to carry the line and not still name
+the helmet the extraction just earned, and as the control sets everything
+earned and requires no piece named. On v10.42 nothing named the next piece,
+which is the finding.
+
+Not verified: whether one line is enough or he wants the two or three
+closest; the research says one clear next thing beat a list. Not verified:
+the pieces newly earned by a raid are not announced yet; that is the next
+build in this line.
+

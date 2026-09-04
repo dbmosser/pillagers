@@ -1,0 +1,10 @@
+v10.59: behind a wall you look like yourself, faded
+
+His note: behind a wall his character changes colour. The see-through pass
+painted him as a flat light-blue cutout with no racks.
+
+The raid pass makes the sorted pass's own call for him at 0.55 alpha: his
+coat, racks, stance and gun, seen through the wall.
+
+The check renders him under a wall top with the pass off and on and counts
+the light-blue share of what changed. It fails on a v10.58 fixture.

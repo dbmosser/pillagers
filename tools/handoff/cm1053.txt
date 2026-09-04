@@ -1,0 +1,11 @@
+v10.53: the cheat box has an ALL COSMETICS switch
+
+His notes: unlock all cosmetics from the dev cheat menu, and make it a toggle
+so it can be cut back off.
+
+One flag on the profile, read by the ownership rule ahead of every earning
+rule. Nothing earned or bought is touched, so off returns exactly what he
+had. The button reads ALL COSMETICS: OFF or ON.
+
+The check clicks it on and off and counts the racks each way. It fails on a
+v10.52 fixture.

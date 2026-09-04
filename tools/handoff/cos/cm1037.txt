@@ -1,0 +1,12 @@
+v10.37: the message line grows with the monitor
+
+His answer 25 named on-HUD messaging among what bothers him most; his answer
+30 says he plays at 4K.
+
+Measured with the text trace: every panel doubles from 1080p to 4K, and the
+message line stayed 19 pixels at both, a third the height of everything
+around it on his screen. It is drawn inside the same monitor scale as the
+panels now, anchored at the top centre, and grows with them.
+
+The check reads the drawn size at 1080p, 1440p and 4K and requires it to
+grow, centred, from its old place. It fails on a v10.36 fixture.

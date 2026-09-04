@@ -1,0 +1,12 @@
+v10.46: the first capstone
+
+His note and the Reach research: the Haunted helmet needed every other
+helmet owned, and a finished rack meant something.
+
+A gate that reads the rack: a capstone is earned when every other piece of
+its kind is owned. Platinum on the hair rack is the first. The requirement
+text and the next-piece line count the pieces left.
+
+The check requires it unowned fresh, owned once every other hair is earned,
+locked while one is, and one piece away on the distance, with Ash still on
+eight raids as the control. It fails on a v10.45 fixture.

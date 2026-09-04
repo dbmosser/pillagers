@@ -1,0 +1,29 @@
+## v10.40 - THE NUMBER 23 JERSEY
+
+His note, 2026-09-03 about 14:00: **"i want a red and black 23 jersey (MJ) as
+a clothing option"**.
+
+One more on the clothing rack. The clothing colours are two stops each and
+the sprite paints the torso from them, so the jersey is a red pair of stops
+plus what is painted on top when it is the fit worn: black side panels down
+each edge of the torso and a pale 2 and 3 across the chest in one-pixel
+strokes, five tall. The figure on the Depot screen gets the same panels as
+inset shadows and the numeral in a heavy face; the swatch shows the number.
+Earned at level four. Named for what it is, since the initials are not ours
+to print.
+
+### Measured
+
+The check requires the jersey on the rack and earned, reads the sprite's
+torso pixels against slate and requires more red, some pale pixels for the
+numeral and some black for the panels, requires the figure and the swatch to
+carry the number, and as the control requires slate still plain on both. On
+v10.39 the clothing rack had eleven plain colours and no jersey, which is the
+finding.
+
+Not verified: whether a five-pixel numeral reads as 23 at his raid zoom, or
+only as two pale marks; it is the most that fits on a thirteen-pixel torso
+without covering the whole chest. Not verified: pillagers wearing it, since
+pillagers draw their coats from the coat colours and not from the clothing
+rack.
+

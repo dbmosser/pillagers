@@ -1,0 +1,11 @@
+v10.63: one chirp did seventy jobs
+
+His note: everything should sound unique and crisp. The pickup chirp played
+for loot, doors, heals, and every menu click in the Undercroft; the Depot's
+buy tiles asked for a sound that matched nothing.
+
+A door has a latch and a hinge, a heal a wrapper and a soft pair, a menu
+click a dry tick, a Depot sale rings up, and the chirp is for pickups.
+
+The check records what each voice schedules in a raid and out of one. It
+fails on a v10.62 fixture.

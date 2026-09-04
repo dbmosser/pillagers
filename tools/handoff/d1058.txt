@@ -1,0 +1,38 @@
+## v10.58 - THE TRAILING NOISE AFTER A GUN IS SHORT
+
+His notes, 2026-09-03 about 21:25 and 21:27: **"trailing noise is way
+overdone"** and **"trailing noises need to be much shorter, i can hear them
+wayy later"**. Heard on the play build with v10.56's gun voices.
+
+### What it was
+
+v10.56 gave the three big guns a tail, the room answering the crack, at
+0.35 of the crack's level and 1.6 times its length, so the Longshot's tail
+was 12,160 samples, a quarter of a second, and put the action clicks up to
+0.42 seconds after the shot: the pump's second click landed nearly half a
+second late. The louder crack also rang the room reverb longer. Together
+that is what he could hear "wayy later".
+
+### Now
+
+Nothing a shot schedules starts later than 0.30 seconds after it. The tail
+is shorter than the crack, 0.9 of its length with a faster fall, at a tenth
+of its level and darker. The big cracks themselves are shorter: the
+Longshot from 7,600 samples to 5,600, the Lance 6,400 to 5,000, the Magnum
+4,800 to 3,800, the Marksman 5,200 to 4,200, with their bodies falling
+faster. The bolt clicks at 0.16 seconds, the pump at 0.16 and 0.26.
+
+### Measured
+
+The check installs a recording context that writes down when each node
+starts relative to the call and how long each buffer is, fires all sixteen
+guns, and requires no node past 0.30 seconds and no buffer past 6,000
+samples; then fires the Longshot and requires the tail buffer no longer
+than the crack and the quietest layer at most 0.12 of the loudest. On
+v10.57 the Longshot schedules a 12,160 sample tail, the Scattergun and the
+Scuttle click at 420 ms, and the tail sits at 0.35 of the crack, which is
+the finding; on this build the check returns null.
+
+Not verified: how it sounds, which is his; and the room reverb, which is
+untouched and still rings after a loud crack in a vault, by design of
+v2.5x, so a big gun indoors still has a room around it.

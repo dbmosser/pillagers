@@ -1,0 +1,107 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+# ============ HIS NOTES, 2026-09-03 about 14:00: "i want a red and black 23
+# ============ jersey (MJ) as a clothing option".
+#
+# One more on the clothing rack: a red jersey with black side panels and a
+# pale 23 across the chest, on the sprite and on the figure. The clothing
+# colours are two stops each and the sprite paints the torso from them; the
+# jersey adds its panels and numeral on top when it is the fit worn. Earned at
+# level four. Named for what it is.
+
+SubRx @'
+  {id:'bone',      name:'Bone',        how:'always', kind:'fit'}
+];
+'@ @'
+  {id:'bone',      name:'Bone',        how:'always', kind:'fit'},
+  // v10.40, his notes: a red and black number 23 jersey. Earned.
+  {id:'jersey',    name:'Number 23 Jersey', how:'level:4', kind:'fit'}
+];
+'@
+
+SubRx @'
+            drab:['#4a4a2e','#6b6b44'],charcoal:['#24262b','#3a3d44'],bone:['#8c8570','#b5ac93']};
+'@ @'
+            drab:['#4a4a2e','#6b6b44'],charcoal:['#24262b','#3a3d44'],bone:['#8c8570','#b5ac93'],
+            jersey:['#7a1414','#c41e1e']};   // v10.40: red; the black panels and the 23 are painted on
+'@
+
+SubRx @'
+  wc.fillStyle=cc; rrF(x-6.5+leanX,ty-22,13,11,3);
+  wc.fillStyle=cHi; wc.fillRect(x-5.7+leanX,ty-22,11.4,3);
+  wc.fillStyle=cLo; wc.fillRect(x-5.7+leanX,ty-13.4,11.4,2.4);
+'@ @'
+  wc.fillStyle=cc; rrF(x-6.5+leanX,ty-22,13,11,3);
+  wc.fillStyle=cHi; wc.fillRect(x-5.7+leanX,ty-22,11.4,3);
+  wc.fillStyle=cLo; wc.fillRect(x-5.7+leanX,ty-13.4,11.4,2.4);
+  if(st.hero&&iv<=0&&cosWorn('fit')==='jersey'){
+    // v10.40: the number 23 jersey. Black side panels, and a pale 2 and 3 in
+    // one-pixel strokes across the chest, five tall.
+    var _jx=x-6.5+leanX;
+    wc.fillStyle='#14161b'; wc.fillRect(_jx,ty-21.4,2.4,10); wc.fillRect(_jx+10.6,ty-21.4,2.4,10);
+    wc.fillStyle='#f4f2ec';
+    var _jy=ty-20;
+    wc.fillRect(_jx+2.6,_jy,3.4,1.5); wc.fillRect(_jx+4.5,_jy,1.5,2.6); wc.fillRect(_jx+2.6,_jy+1.9,3.4,1.5); wc.fillRect(_jx+2.6,_jy+1.9,1.5,2.6); wc.fillRect(_jx+2.6,_jy+3.8,3.4,1.5);
+    wc.fillRect(_jx+7.2,_jy,3.4,1.5); wc.fillRect(_jx+9.1,_jy,1.5,5.3); wc.fillRect(_jx+7.2,_jy+1.9,3.4,1.5); wc.fillRect(_jx+7.2,_jy+3.8,3.4,1.5);
+  }
+'@
+
+SubRx @'
+    '<div class="avtorso" style="background:linear-gradient(180deg,'+ft[1]+','+ft[0]+');'+
+      'width:'+Math.round(46*bd.sh)+'px">'+
+      '<div class="avplate" style="background:rgba(0,0,0,.28)"></div>'+
+'@ @'
+    '<div class="avtorso" style="background:linear-gradient(180deg,'+ft[1]+','+ft[0]+');'+
+      'width:'+Math.round(46*bd.sh)+'px'+
+      (cosWorn('fit')==='jersey'?';box-shadow:inset 7px 0 0 #14161b,inset -7px 0 0 #14161b;position:relative':'')+'">'+   // v10.40
+      '<div class="avplate" style="background:rgba(0,0,0,.28)"></div>'+
+      (cosWorn('fit')==='jersey'?'<div class="avnum">23</div>':'')+   // v10.40: the numeral
+'@
+
+SubRx @'
+.avlegs{ width:38px; height:20px; border-radius:0 0 5px 5px; border:2px solid #14161b; border-top:0; }
+'@ @'
+.avlegs{ width:38px; height:20px; border-radius:0 0 5px 5px; border:2px solid #14161b; border-top:0; }
+.avnum{ position:absolute; left:0; right:0; top:11px; text-align:center; font:900 20px/1 Impact,'Arial Black',sans-serif; color:#f4f2ec; letter-spacing:1px; pointer-events:none; }   /* v10.40 */
+'@
+
+SubRx @'
+  if(c.kind==='fit'){
+    var fc=FITCOL[c.id]||FITCOL.slate;
+'@ @'
+  if(c.kind==='fit'&&c.id==='jersey'){   // v10.40: the jersey shows its number
+    return '<span style="display:inline-block;width:34px;height:34px;border-radius:6px;position:relative;'+
+           'background:linear-gradient(180deg,#c41e1e,#7a1414);box-shadow:inset 5px 0 0 #14161b,inset -5px 0 0 #14161b;border:2px solid #14161b">'+
+           '<span style="position:absolute;left:0;right:0;top:8px;text-align:center;font:900 15px/1 Impact,sans-serif;color:#f4f2ec">23</span></span>';
+  }
+  if(c.kind==='fit'){
+    var fc=FITCOL[c.id]||FITCOL.slate;
+'@
+
+SubRx @'
+var VER='10.39';
+'@ @'
+var VER='10.40';
+'@
+SubRx @'
+  now:'v10.39: two more on the headgear rack: a green Spartan helmet with a gold visor, and a white ghost mask. Both cover the face. Earned, like everything on the racks.',
+'@ @'
+  now:'v10.40: a red and black number 23 jersey on the clothing rack, earned at level four.',
+'@
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied"

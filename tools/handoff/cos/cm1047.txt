@@ -1,0 +1,11 @@
+v10.47: three more capstones
+
+His note and the Reach research: a finished rack should mean something.
+
+Silver eyes, a Gold fit and Gilded boots, each earned by owning every other
+piece on its rack. Colours only; the painters already draw every colour.
+
+The check requires each on its rack with a rack gate, unowned fresh, owned
+once every other piece is, locked again with one piece locked and the
+distance saying so, with Platinum as the control. It fails on a v10.46
+fixture.
