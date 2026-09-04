@@ -1,0 +1,27 @@
+## FOUND WHILE PROVING AN INSTRUMENT, 2026-09-04: NOTE 17
+
+17. NO PILLAGER HAS EVER WORN A HAT, A BEARD OR A TATTOO. Found at v10.94 while
+    proving the eye instrument, by asking each rack whether it changes a NON-hero
+    figure at all. The same rack, on the same call, changes the hero and changes
+    a pillager by nothing:
+
+        headgear   hero 31978 pixels, pillager 0
+        beard      hero  5221 pixels, pillager 0
+        tattoo     hero   801 pixels, pillager 0
+
+    CAUSE: the block that draws the fringe, the beard, the tattoo and the
+    headgear sits inside a hero-only branch, so everything in it is hero-only.
+    Hair cut is outside it and does reach a pillager, which is why the crowd
+    looks varied enough that this went unnoticed.
+
+    WHAT IT COSTS: the Undercroft crowd rolls a hat, a beard and a tattoo for
+    every member and none of them are drawn. Two lines of the new-in card promise
+    the racks reach the crowd and the pillagers, and v10.24 was built on that
+    claim. So this is a shipped promise that is not true.
+
+    THE BUILD: ungate the headgear, the beard and the tattoo, and leave the
+    FRINGE hero-only, because that is the operator's own hair styling and giving
+    every pillager her fringe would be a different change. Reproduce first with
+    the same instrument, then require a non-zero delta per rack on a pillager and
+    an unchanged hero, and check the raid too, not only the Undercroft, since the
+    same call draws both.

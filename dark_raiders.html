@@ -1291,7 +1291,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.93';
+var VER='10.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1302,10 +1302,11 @@ var VER='10.93';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='10.93';
+var WHATSNEW_VER='10.94';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'FACES DO NOT COLLIDE WITH THEIR OWN EYES. War paint was two bars straight across both eyeballs and the shiner was a purple wash over one of them. Face marks are painted before the eyes now, so paint goes on the skin and the eye sits on top of it, which is where an eye goes.',
   'THE UNDERCROFT READS PROPERLY NOW. The station names were painted into the room before the room went dark, so the darkness went over them as well; they are drawn on top of it now and are no longer see-through. The controls line and the line under each station prompt came up with them. THE STATION WITH THE RACKS IS NOW CALLED FASHION, everywhere.',
   'YOU ARE MUCH EASIER TO FIND ON THE MAP. Your marker was eight pixels across and was the only one that did not grow when the map did. It is about twice the size now, with a halo under it and a longer line showing which way you are facing.',
   'THE RESIZE GRIP MOVES TO THE SIDE THAT HAS ROOM. A panel against the right edge of the screen had its drag corner jammed into that edge with eight pixels of travel, so it could not be made bigger. Those panels grip on their left now.',
@@ -18963,23 +18964,10 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       }
     }
   }
-  // eyes: whites, pupils toward the aim, one specular dot each
-  var pupX=Math.cos(face)*1.4,pupY=Math.sin(face)*0.9;
-  wc.fillStyle='#FFF6DC';
-  wc.beginPath(); wc.ellipse(hx2-3.4,ty-29.5,2.5,3,0,0,6.2832); wc.fill();
-  wc.beginPath(); wc.ellipse(hx2+3.4,ty-29.5,2.5,3,0,0,6.2832); wc.fill();
-  // v10.19: the iris, in the eye colour, under the pupil.
-  var _EYE=EYECOL[HERO?cosWorn('eyes'):(st.eyes||'eyebrown')]||EYECOL.eyebrown;
-  wc.fillStyle=_EYE;
-  wc.beginPath(); wc.arc(hx2-3.4+pupX,ty-29.3+pupY,1.9,0,6.2832); wc.fill();
-  wc.beginPath(); wc.arc(hx2+3.4+pupX,ty-29.3+pupY,1.9,0,6.2832); wc.fill();
-  wc.fillStyle=INK;
-  wc.beginPath(); wc.arc(hx2-3.4+pupX,ty-29.3+pupY,1.0,0,6.2832); wc.fill();
-  wc.beginPath(); wc.arc(hx2+3.4+pupX,ty-29.3+pupY,1.0,0,6.2832); wc.fill();
-  wc.fillStyle='#FFF6DC';
-  wc.fillRect(hx2-4.1+pupX,ty-30.2+pupY,0.8,0.8);
-  wc.fillRect(hx2+2.7+pupX,ty-30.2+pupY,0.8,0.8);
-  // v10.21: the FACE rack. The hero's face comes from the racks; a pillager's
+  // v10.94, HIS NOTE: THE FACE MARKS GO ON FIRST. They used to be painted after
+  // the eyes, so war paint cut both eyeballs in half and a shiner washed one of
+  // them purple. A mark is on the skin; an eye is not skin.
+  // v10.21: the FACE rack. The hero face comes from the racks; a pillager one
   // from his look, or from the old index if he has none.
   {
     var _FACE=OUTF?'faceplain':(HERO?cosWorn('face'):(st.faceMark||null));   // faceMark, never face: e.face is the facing angle; v10.54: none under a suit
@@ -18996,6 +18984,24 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillRect(hx2-5.8,ty-26.0,1,1); wc.fillRect(hx2-3.6,ty-25.4,1,1);
       wc.fillRect(hx2+2.8,ty-26.0,1,1); wc.fillRect(hx2+4.8,ty-25.4,1,1); }
   }
+  // eyes: whites, pupils toward the aim, one specular dot each
+  var pupX=Math.cos(face)*1.4,pupY=Math.sin(face)*0.9;
+  wc.fillStyle='#FFF6DC';
+  wc.beginPath(); wc.ellipse(hx2-3.4,ty-29.5,2.5,3,0,0,6.2832); wc.fill();
+  wc.beginPath(); wc.ellipse(hx2+3.4,ty-29.5,2.5,3,0,0,6.2832); wc.fill();
+  // v10.19: the iris, in the eye colour, under the pupil.
+  var _EYE=EYECOL[HERO?cosWorn('eyes'):(st.eyes||'eyebrown')]||EYECOL.eyebrown;
+  wc.fillStyle=_EYE;
+  wc.beginPath(); wc.arc(hx2-3.4+pupX,ty-29.3+pupY,1.9,0,6.2832); wc.fill();
+  wc.beginPath(); wc.arc(hx2+3.4+pupX,ty-29.3+pupY,1.9,0,6.2832); wc.fill();
+  wc.fillStyle=INK;
+  wc.beginPath(); wc.arc(hx2-3.4+pupX,ty-29.3+pupY,1.0,0,6.2832); wc.fill();
+  wc.beginPath(); wc.arc(hx2+3.4+pupX,ty-29.3+pupY,1.0,0,6.2832); wc.fill();
+  wc.fillStyle='#FFF6DC';
+  wc.fillRect(hx2-4.1+pupX,ty-30.2+pupY,0.8,0.8);
+  wc.fillRect(hx2+2.7+pupX,ty-30.2+pupY,0.8,0.8);
+  // v10.94: the face marks used to be painted here, over the eyes. They are
+  // painted before them now, a dozen lines above.
   if(HERO){
     // FRINGE, swept, over the forehead, and SIDE LOCKS down past the jaw. The
     // hair is the whole silhouette at this size, so it is the only thing she
@@ -27508,7 +27514,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.93: the text in the Undercroft, your note. The station names were painted into the world BEFORE the room darkness went over it, so they kept 60 percent of an already see-through 75 percent. They are drawn on top of the darkness now, opaque, on a firm plate. And the station with the racks is called FASHION everywhere.',
+  now:'v10.94: the eye collisions on Undercroft faces, your note. Enumerated every look the crowd can roll: four of the six face marks are clean, war paint covered 66 percent of the eye area with two bars straight across both eyeballs, and the shiner covered 51 percent, which is one whole eye. A mark is on the skin and an eye is not skin, so the marks are painted before the eyes now.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

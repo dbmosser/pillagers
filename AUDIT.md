@@ -210,6 +210,60 @@ STILL OPEN:
 | ~~ESC should pause in the Undercroft~~ | ALREADY BUILT since v8.70, measured at v9.83 with a real Escape keypress on the floor: the pause box opens |
 | ~~The roll graphic is WRONG in the Undercroft~~ | NOT REPRODUCED at v9.83: it draws a disc, fill 0.78 against a circle 0.785, and travels 43 units |
 
+## HIS NOTE 18, 2026-09-04: ONE FONT, AND THE LOOT POP IS STILL THE WRONG ONE
+
+18. "the loot text that pops on screen upon looting that tells you what item you
+    got is still too bolded -- use the entire font across the entire game".
+    STILL, so this is the second time he has raised it; the first was the note
+    about looted item names being super-bold and hard to read.
+
+    ALREADY FOUND, the cause: the world label function draws with
+    "Titan One", the heavy display face the title screen uses, and not with the
+    TYPE roles that the rest of the game is set in. Every world label goes
+    through it, so PICKED UP, the item name, DOWNED, ELIMINATED and the rest are
+    all in the display face at 10 or 11 px, which at that size reads as a solid
+    black slab rather than as text.
+
+    THE BUILD: the label font becomes a TYPE role like everything else, and then
+    the whole file is swept for any other draw call that names a family directly
+    rather than going through TYPE, because his instruction is not about this one
+    label, it is "the entire font across the entire game". The title screen
+    wordmark is the one place a display face is deliberate and it is in the DOM,
+    not on the canvas.
+
+    REPRODUCE BY COUNTING, not by looking: trace one frame of a raid and one of
+    the Undercroft, record the font on every text draw, and count how many are
+    not one of the five TYPE roles. Then require that count to be zero, with a
+    control that the tracer sees a font it was given on purpose.
+
+## FOUND WHILE PROVING AN INSTRUMENT, 2026-09-04: NOTE 17
+
+17. NO PILLAGER HAS EVER WORN A HAT, A BEARD OR A TATTOO. Found at v10.94 while
+    proving the eye instrument, by asking each rack whether it changes a NON-hero
+    figure at all. The same rack, on the same call, changes the hero and changes
+    a pillager by nothing:
+
+        headgear   hero 31978 pixels, pillager 0
+        beard      hero  5221 pixels, pillager 0
+        tattoo     hero   801 pixels, pillager 0
+
+    CAUSE: the block that draws the fringe, the beard, the tattoo and the
+    headgear sits inside a hero-only branch, so everything in it is hero-only.
+    Hair cut is outside it and does reach a pillager, which is why the crowd
+    looks varied enough that this went unnoticed.
+
+    WHAT IT COSTS: the Undercroft crowd rolls a hat, a beard and a tattoo for
+    every member and none of them are drawn. Two lines of the new-in card promise
+    the racks reach the crowd and the pillagers, and v10.24 was built on that
+    claim. So this is a shipped promise that is not true.
+
+    THE BUILD: ungate the headgear, the beard and the tattoo, and leave the
+    FRINGE hero-only, because that is the operator's own hair styling and giving
+    every pillager her fringe would be a different change. Reproduce first with
+    the same instrument, then require a non-zero delta per rack on a pillager and
+    an unchanged hero, and check the raid too, not only the Undercroft, since the
+    same call draws both.
+
 ## HIS NOTES, 2026-09-04, FIFTEENTH AND SIXTEENTH
 
 15. "pillagers in the undercroft still have weird eye collissions on trhier faces
@@ -235,6 +289,14 @@ STILL OPEN:
     facing control, so it needs a place on that screen, a saved preference, and
     the raid honouring it. Not a balance change: no dial moves, the weather is
     whatever it already was, he just picks it.
+
+    HIS FOLLOW-UP, same day: "choose more difficult weather shouild hive small xp
+    boost like 1.1x". So the toggle is not free. The harder states pay more XP,
+    at about 1.1x, the way night already pays 1.2x XP under his answer 22. That
+    gives the ranking a job: clear pays 1.0, and the states that cut sight or
+    kill the lamps pay the bonus. This is HIS number, not a dial I chose, and it
+    goes in with the toggle rather than after it, because a choice with no cost
+    and no reward is not a choice.
 
 ## HIS NOTES, 2026-09-04 EVENING, TENTH TO FOURTEENTH
 
@@ -1198,6 +1260,7 @@ AND THE SECOND HALF OF THE STRETCH:
 | HIS NOTE: THE RESIZE GRIP HAS NOWHERE TO DRAG TO | v10.91 | "corner drag to size for lower right corner needs to be in lower left side, otherwise there's nowhere to drag to increase size", 2026-09-04. REPRODUCED, every panel measured at 1920x1080: gear sits 8 pixels from the right of the screen and 5 from the bottom, cond 17 from the right, while body has 1374 to its right, legend 1445 and raiders 1529. The grip has always been the panel's bottom-RIGHT corner and the panel is sized by how much further the pointer gets from the OPPOSITE corner, so on the gear panel there were 8 pixels of travel and effectively no way to make it bigger. FIX, in his words: the grip goes on the corner that faces INTO the screen. A panel whose right edge is within a grip-width and ten pixels of the screen edge grips on its LEFT and is sized from its top-right; every panel with room keeps the bottom-right corner. ONE FUNCTION DECIDES and all four readers ask it: the mousedown that starts a resize, the drag that sizes it, the drawing of the diagonals, which are mirrored when the grip is on the left, and the cursor shape. Those four disagreeing is exactly how a grip ends up looking like it is somewhere it is not. NEW CHECK v10.91 walks every resizable panel and requires: a pinned panel grips left and a roomy one grips right, every grip has at least 120 pixels of travel before the pointer leaves the screen, the anchor is the corner the grip is not, a click just inside the grip is accepted and one on the opposite corner is refused. Controls: at least one pinned panel and at least one roomy panel must be present, or it is testing half a rule. Fails on a v10.90 fixture, which has no such function at all. No dial moves |
 | HIS NOTE: THE PLAYER MARKER ON THE MAP IS TOO SMALL | v10.92 | "player marker on map sohuld be much larger, hard to see right now", 2026-09-04. REPRODUCED IN PIXELS at 1920x1080, map 0, seed 4242: the gold dot that is you was 43 gold pixels, 8 wide by 7 tall. TWO CAUSES: the disc radius was a flat 4 with a 5.6 ink ring and an 11 pixel heading line, and it was the ONLY marker on that map not multiplied by the map's own zoom, where the cache ring is (9+2q) times it, the encampment 5 times and the key 3.2 times, so on a bigger screen every other marker grew and his got relatively smaller. Measured on v10.91 at 2880x1620, zoom 1.5: 39 gold pixels became 41, a ratio of 1.05. FIX: disc to 8 and on the same zoom as its neighbours, ink ring to 11, heading line to 24 with a thicker stroke, plus a 15 pixel halo at 18 percent alpha underneath so the marker separates from whatever it stands on instead of relying on contrast it may not have. After: 203 gold pixels, 31 by 15, and 2.2 times the pixels at 2880x1620. NEW CHECK v10.92 counts pixels EXACTLY 255,192,74 at full alpha, which isolates the flat disc because the halo is 18 percent, the ring is near black and the 85 percent line over darker ground blends away from the exact value; it requires 150 pixels and radius 7 at 1920x1080, radius no more than 22 so much larger does not become a blot, and at 2880x1620 at least 1.8 times the pixels and 1.35 times the radius. Controls: the zoom must actually reach 1.4 at the larger size, and the operator is moved 600 units and the count must follow him while the old spot empties, which proves the gold counted is him. Fails on a v10.91 fixture on all four: 39 pixels, radius 4.1, ratio 1.05. No dial moves |
 | HIS NOTE: THE UNDERCROFT TEXT IS TOO SEE-THROUGH, AND THE DEPOT IS NOW FASHION | v10.93 | "text in the undercroft should be less transparent/more opaque -- change 'Discount Fashion Depot' to 'Fashion' wherever it occurs", 2026-09-04. REPRODUCED, and the cause is not the one the note points at: the station names were dimmed TWICE, once by their own 75 percent alpha and again by being painted into the world BEFORE the room's darkness went over it, a full-screen rgba(14,12,36,.40) over the brightness dial with holes at the lamps. INSTRUMENT, because faint is not a number: draw the same frame twice, once with the names not painted, and difference; what is left in each name's rectangle is exactly the ink it contributes to the finished picture. Both draws use the frame call that advances nothing, so the lamps flicker identically. MEASURED on v10.92: average 78 of a possible 152 across eight stations, lift 67, cheat box 64; wind the brightness down so the sheet more than doubles and it falls to 49, a ratio of 0.63. FIX: the names are UI and not scenery, so the block is lifted into hubStationNames and called AFTER the light composite with the same camera handed to it, landing in the same place at the same size; text opaque #cfd8e2 in place of rgba(160,172,184,.75) on a .86 plate rather than .5, since a half transparent plate showed the floor through the letters. Two more see-through lines in the same room fixed: the controls line, rgba(140,152,163,.75), and the sub-line under each station prompt, #8a96a1. AFTER: average 169, worst 151, ratio 1.02 when the room goes dark. HIS SECOND HALF: the station, the racks window title, four new-in lines and the Settings line all say FASHION. NEW CHECK v10.93 requires 130 average ink, no station under 120, ratio at least 0.90, the racks station named FASHION, and no new-in line or window title carrying the old name; controls are that four names were found, that none painted nothing either way, and that the brightness dial actually darkened the picture by 15 percent. Fails on a v10.92 fixture on all of it. MY MISTAKE, caught by the new check on my own build: my announcement line spelled out the old name in order to say it had gone, which is the name still occurring; reworded. No dial moves |
+| HIS NOTE 15: WEIRD EYE COLLISIONS ON UNDERCROFT FACES | v10.94 | "pillagers in the undercroft still have weird eye collissions on trhier faces in some instances", 2026-09-04. SOME INSTANCES cannot be answered by looking at a crowd of eight out of tens of thousands of looks, so it was answered by ENUMERATION: a new fixture hook draws one figure alone at nine times raid size, and the eye is located from the drawing itself, the whites being the one flat colour on a lone figure, so nothing in the check repeats a coordinate from the source. MEASURED on v10.93, percentage of the eye area painted over: faceplain 0, facescar 0, facefreckles 0, facemud 0, facepaint 65.9, faceshiner 51.4. War paint is two thin bars straight across both eyeballs so each eye reads as a sliver above a sliver; the shiner is an ellipse centred on the right eye and slightly larger than it, so the eyeball is washed purple. Twenty-eight rolls of the crowd's own generator, each measured against itself with the mark removed, put the worst at 63.9. FIX IS THE ORDER, NOT THE ARTWORK: a mark is on the skin and an eye is not skin, so the face-mark block moves to just before the eyes; paint still crosses the face, the shiner still bruises the socket, neither is over the eyeball. Nothing moved or was recoloured and no rack lost a look. AFTER: 0.0 on all six and 0.0 across the crowd rolls. NEW CHECK v10.94 enumerates the rack and 28 crowd rolls and allows nothing over 8 percent; controls are a magenta blot painted straight over both eyes which must read at least 80 percent, at least four marks on the rack, and at least three kinds of mark across the rolls. Fails on a v10.93 fixture with the exact numbers above. No dial moves |
 | ~~STILL OPEN, measured at v10.68: two fifths of the briefing is below the fold~~ | CLOSED at v10.69: the card counts what is under the fold, says so in a line that scrolls the list when clicked, and goes quiet at the end; the bar for that list alone is 12 pixels | measured on the REAL game at 1920x1080 from an empty browser, not on a fixture. FIRST TIME OUT holds 18 cards in 1558 pixels inside a 912 pixel box: 11 are on screen and SEVEN ARE NOT. The scrollbar is 5 pixels wide and nothing anywhere says there is more, so a new player has no reason to think the card continues. What is hidden: the Undercroft radio, the Pillbox that never chases you, arranging the HUD, THE BULWARK AND ITS SLAB, contracts that judge how you played, junk building the Mainframe, and Settings being a station. The three the card itself calls the ones that get people killed are all above the fold, and so is calling extraction, so this is not fatal; the Bulwark card is the one that costs a life. Two columns does NOT fix it: halving the width roughly doubles each card's height. The fix is a cue that names how many are below plus a scrollbar wide enough to see. Not built yet |
 | STILL OPEN, from v10.40: niches plugged by furniture | OPEN | on THE COLD MILE a cells or spine plan sometimes leaves a pocket of interior floor behind a piece of furniture, 12x12 to 84x28 units, one per building on 13 of 15 seeds; the coarse repair cannot see anything narrower than 40 units. Cosmetic for a player; a fine detection with a size floor and the furniture layer would clear them. Not the sealed-building fault, which is closed |
 | ONE WORD FOR THE BACKPACK, AND THE HOTBAR RENAME FINISHED | v9.90 | v9.89's own Not verified line said the compact legend still called the backpack a bag. Read off every surface on v9.89 the thing you carry was named FOUR ways: "inventory" (full legend TAB row, controller VIEW row, the HUD hint "TAB  INVENTORY", two refusals), "bag" (compact legend, controller BACK row, "equip gun from bag", the armour rule card, five spoken lines, the Peddler's "SELL BAG", a searched pillager's "'S BAG", two guide cards, a settings hint), "kit" (three refusals "Kit is full"), and "backpack". And both controller legends still called the hotbar a BELT, which v9.89 missed. THE WORD IS BACKPACK, his word and the panel's. Twenty two strings, nothing that reads a profile or draws. Left alone on purpose: BAG OF FRAGS and BIGGER BAG OF FRAGS, which are Progress rewards and a literal bag, and the lore clipboard "Inventory, year one", a document in the world. The armour card line is 29 characters against the 32 it replaces, inside the box v8.4x measured. Check reads the compact legend, the full legend, the HUD hint, the controller table and the panel headings, needles from halves, and fails on a v9.89 fixture on all four surfaces at once. Ten of the 22 strings are proven on screen; the other twelve are spoken lines the harness has no cheap way to raise |

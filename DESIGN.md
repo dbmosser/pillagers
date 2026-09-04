@@ -40024,6 +40024,66 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.94 - HIS NOTE 15: WEIRD EYE COLLISIONS ON UNDERCROFT FACES
+
+"pillagers in the undercroft still have weird eye collissions on trhier faces in
+some instances", his note of 2026-09-04.
+
+**"SOME INSTANCES" CANNOT BE ANSWERED BY LOOKING.** The crowd on the floor is
+eight people out of tens of thousands of possible looks, so looking at it can
+only ever find the ones that happen to be standing there. It was answered by
+enumeration instead: a new fixture hook draws ONE figure, alone, on flat ground,
+nine times raid size, and the eye is then located from the drawing itself. The
+whites are the one flat colour on a lone figure, so their pixels give two
+bounding boxes, and those two ellipses are the eye. Nothing in the check repeats
+a coordinate from the source, which matters, because a check that copies the
+numbers it is testing is a second copy of them.
+
+**MEASURED on v10.93**, every face on the rack, one at a time, as a percentage of
+the eye area painted over:
+
+    faceplain     0.0      facemud       0.0
+    facescar      0.0      facepaint    65.9
+    facefreckles  0.0      faceshiner   51.4
+
+Four of the six are clean. War paint is two thin bars laid straight across both
+eyeballs, so each eye reads as a white sliver above a white sliver. The shiner is
+an ellipse centred exactly on the right eye and slightly larger than it, so the
+eyeball itself is washed purple. Both are collisions in his word: a mark landing
+ON the eye rather than on the face. Twenty-eight rolls of the crowd's own look
+generator, each measured against itself with the mark removed, put the worst at
+63.9 percent.
+
+**THE FIX IS THE ORDER, NOT THE ARTWORK.** A mark is on the SKIN, and an eye is
+not skin. The face-mark block is moved to just before the eyes rather than just
+after them, so paint goes on the face and the eye is drawn on top of it. War
+paint still crosses the face and a shiner still bruises the socket; neither is
+over the eyeball any more. Nothing moved, nothing was recoloured, no rack lost a
+look, and the hero is drawn by the same code so her face gained the same fix.
+
+**MEASURED after: 0.0 percent on all six**, and 0.0 across the crowd rolls.
+
+**NEW CHECK v10.94** enumerates the whole face rack and twenty-eight crowd rolls
+and requires nothing to cover more than 8 percent of the eye. Three controls, and
+the first is the one that matters: it paints a magenta blot straight over both
+eyes and requires the measurement to report at least 80 percent, because a
+measurement that cannot see a covered eye reports a clean face for a covered one.
+Then the rack must have yielded at least four marks, and the crowd rolls at least
+three different kinds, or twenty-eight draws of the same clean face would prove
+nothing. It fails on a v10.93 fixture with the exact numbers above.
+
+**A SEPARATE FINDING, LOGGED AND NOT FIXED HERE.** While proving the instrument I
+asked whether each rack changes a NON-hero figure at all. Headgear, beards and
+tattoos change the hero by 31978, 5221 and 801 pixels and a pillager by exactly
+ZERO, on the same call, because the block that draws them sits inside a hero-only
+branch. So no pillager and nobody in the crowd has ever worn a hat, a beard or a
+tattoo, while the crowd rolls all three and two lines of the new-in card promise
+them. That is its own build and it is in AUDIT.md as note 17.
+
+Not verified: how the two fixed marks read to him at play zoom, which is a
+judgement and not a measurement; and the eyebrow styles, which are only reachable
+through the old face index and which no crowd member or pillager can roll today,
+were measured as clean but are effectively dead code.
 ## v10.93 - HIS NOTE: THE UNDERCROFT TEXT IS TOO SEE-THROUGH, AND THE DEPOT IS NOW FASHION
 
 "text in the undercroft should be less transparent/more opaque -- change

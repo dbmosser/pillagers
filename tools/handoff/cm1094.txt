@@ -1,0 +1,35 @@
+v10.94: face marks are painted before the eyes, not over them
+
+His note: "pillagers in the undercroft still have weird eye collissions on trhier
+faces in some instances".
+
+"Some instances" cannot be answered by looking at a crowd of eight out of tens of
+thousands of possible looks, so it was answered by enumeration. A new fixture
+hook draws one figure alone at nine times raid size, and the eye is located from
+the drawing itself: the whites are the one flat colour on a lone figure, so their
+pixels give two boxes and those are the eyes. Nothing in the check repeats a
+coordinate from the source.
+
+Measured on v10.93, percentage of the eye area painted over: plain 0, scar 0,
+freckles 0, mud 0, war paint 65.9, shiner 51.4. War paint is two thin bars laid
+straight across both eyeballs. The shiner is an ellipse centred on the right eye
+and slightly larger than it. Twenty-eight rolls of the crowd's own generator, each
+measured against itself with the mark removed, put the worst at 63.9.
+
+The fix is the order, not the artwork. A mark is on the skin and an eye is not
+skin, so the face-mark block moves to just before the eyes. Paint still crosses
+the face, the shiner still bruises the socket, neither is over the eyeball.
+Nothing moved, nothing was recoloured, no rack lost a look. After: 0.0 on all six
+and 0.0 across the crowd rolls.
+
+New check v10.94 enumerates the rack and 28 crowd rolls and allows nothing over 8
+percent. Controls: a magenta blot painted straight over both eyes must read at
+least 80 percent, the rack must yield at least four marks, and the rolls at least
+three kinds. Fails on a v10.93 fixture with the numbers above.
+
+Logged and not fixed here, found while proving the instrument: headgear, beards
+and tattoos change the hero by 31978, 5221 and 801 pixels and a pillager by zero,
+because they sit inside a hero-only branch. No pillager has ever worn a hat. That
+is note 17 in AUDIT.md and its own build.
+
+Not verified: how the two fixed marks read at play zoom.
