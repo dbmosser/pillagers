@@ -1,0 +1,25 @@
+## HIS NOTES, 2026-09-04, FIFTEENTH AND SIXTEENTH
+
+15. "pillagers in the undercroft still have weird eye collissions on trhier faces
+    in some instances". STILL, so this is a return of something already looked
+    at once. The crowd in the Undercroft dresses from the same racks as the
+    operator, so an eye is drawn against a head that varies by build, skin,
+    headgear and hair, and "in some instances" says it is a combination and not
+    every figure. REPRODUCE BY ENUMERATION, not by looking: roll every crowd
+    look the game can produce, draw each one large, and measure whether the eye
+    marks land inside the head and clear of the brow, the headgear brim and each
+    other. The instrument has to be a count of bad combinations out of the total
+    tried, or "some instances" can never be shown to be fixed. Note that the
+    field is not called face on an entity, and that v10.16 already has a look
+    roller the check can drive.
+
+16. "add weather conditions as a selection toggle in the 'Where are you going'
+    screen". The sector screen. Weather already exists in the raid world; this
+    asks for it to be a CHOICE at the point of departure, alongside the map and
+    the time of day, rather than something the raid decides. Check first what
+    weather states the raid actually supports and whether the sector screen can
+    already pass one through, because his answer 23 makes the time of day a
+    random roll and weather may be wired the same way. This is a new player
+    facing control, so it needs a place on that screen, a saved preference, and
+    the raid honouring it. Not a balance change: no dial moves, the weather is
+    whatever it already was, he just picks it.

@@ -1,0 +1,36 @@
+v10.93: the Undercroft text is opaque and on top of the darkness, and the racks are FASHION
+
+His note: "text in the undercroft should be less transparent/more opaque --
+change 'Discount Fashion Depot' to 'Fashion' wherever it occurs".
+
+Reproduced, and the cause is not the one the note points at. The station names
+were dimmed twice: by their own 75 percent alpha, and by being painted into the
+world before the room's darkness went over it, a full-screen sheet with holes
+punched at the lamps.
+
+Instrument: draw the same frame twice, once with the names not painted, and
+difference the two. What is left in each name's rectangle is exactly the ink it
+contributes to the finished picture. Both draws use the frame call that advances
+nothing, so the lamps flicker identically.
+
+Measured on v10.92: average 78 of a possible 152 across eight stations, lift 67,
+cheat box 64. Darken the room and it falls to 49, a ratio of 0.63.
+
+The names are UI, not scenery, so they are lifted into hubStationNames and drawn
+after the light composite with the same camera handed to it, landing in the same
+place at the same size. Text opaque on a firm plate. The controls line and the
+sub-line under each station prompt came up with them. After: average 169, worst
+station 151, ratio 1.02 when the room goes dark.
+
+The station, the racks window title, four new-in lines and the Settings line all
+say FASHION now.
+
+New check v10.93 requires 130 average ink, no station under 120, a ratio of at
+least 0.90 when the room is darkened, and the new name everywhere. Controls: four
+names found, none painting nothing either way, and the brightness dial actually
+darkening the picture. Fails on a v10.92 fixture on all of it.
+
+My mistake, caught by the new check on my own build: the line announcing the
+rename spelled out the old name in order to say it had gone. Reworded.
+
+Not verified: how the new weight reads on his own monitor.

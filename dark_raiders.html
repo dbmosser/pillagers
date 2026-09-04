@@ -723,7 +723,7 @@
 <!-- v9.99, HIS NOTE and his answers 11 and 12: Discount Fashion Depot. The
      figure and its slots on the left, the whole of the racks on the right. -->
 <div class="modal" id="appearmodal">
-  <h3>Discount Fashion Depot</h3>
+  <h3>Fashion</h3>
   <div class="msub">Cosmetics do not impact game mechanics.</div>
   <div class="hubgrid" style="grid-template-columns:260px 1fr;margin-top:6px">
     <div class="panel">
@@ -1291,7 +1291,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.92';
+var VER='10.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1302,10 +1302,11 @@ var VER='10.92';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='10.92';
+var WHATSNEW_VER='10.93';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE UNDERCROFT READS PROPERLY NOW. The station names were painted into the room before the room went dark, so the darkness went over them as well; they are drawn on top of it now and are no longer see-through. The controls line and the line under each station prompt came up with them. THE STATION WITH THE RACKS IS NOW CALLED FASHION, everywhere.',
   'YOU ARE MUCH EASIER TO FIND ON THE MAP. Your marker was eight pixels across and was the only one that did not grow when the map did. It is about twice the size now, with a halo under it and a longer line showing which way you are facing.',
   'THE RESIZE GRIP MOVES TO THE SIDE THAT HAS ROOM. A panel against the right edge of the screen had its drag corner jammed into that edge with eight pixels of travel, so it could not be made bigger. Those panels grip on their left now.',
   'X NO LONGER SWAPS WEAPONS. The hotbar does that job, so the key is gone along with its legend lines. Your stowed gun and its ammo are still shown, just without a key in front of them. On a controller, X is still search.',
@@ -1324,16 +1325,16 @@ var WHATSNEW=[
   'THE END OF RAID CARD COUNTS THE GUN YOU LOST, in the number and in the money. A loaner is in neither, because you never owned it. The two buttons at the bottom stay on screen however long the ledger runs.',
   'THE TITLE SCREEN USES THE WHOLE MONITOR, and the ten stash layouts have their picker back, in Settings beside the text size.',
   'A NEW CHARACTER GETS A WELCOME PACK: a green gun and a blue one, heals, plates and grenades, offered once, the first time down.',
-  'FULL-BODY OUTFITS. A new rack at the top of the Depot, above everything else: the Skeleton, the Machine, the Trooper, the Android, the Tomb Explorer, the Baller and the Street Poet. An outfit overrules every other rack; Own Clothes puts them back in charge.',
+  'FULL-BODY OUTFITS. A new rack at the top of FASHION, above everything else: the Skeleton, the Machine, the Trooper, the Android, the Tomb Explorer, the Baller and the Street Poet. An outfit overrules every other rack; Own Clothes puts them back in charge.',
   'EVERY GUN HAS ITS OWN VOICE. Sixteen guns used to share eleven; the Magnum and the Longshot borrowed the rifle. Each one now has its own crack, its own weight and, if it earns one, the room answering. Reloading, the bolt going home and an empty gun all make a sound.',
   'FOOTSTEPS ARE HEEL AND SOLE, left and right in your ears, and the ground says what it is: grit on stone, a creaking board, ringing plate, a rustle in leaves, a splash and then a drip. The machines and the pillagers walk on the same five surfaces you do.',
   'WALLS ARE SOLID. Nothing goes see-through when you stand behind it, and in the Undercroft nobody can stand inside the part of a wall that is painted, so the people down there stop catching on the counters.',
   'THE UNDERCROFT IS DARKER. No bright square wave leading the tune, seventy-six beats a minute instead of a hundred, a closed filter, half the shimmer and a bass held long enough to hum under the room.',
   'THE GAME ASKS ONCE WHETHER YOUR RUN REPORTS MAY BE SENT to the developer. YES sends each one as the raid ends; CLOSE keeps them in your Downloads. Settings changes it either way.',
   'THE MENUS NEVER SHRINK BELOW THE SCREEN. The wheel still sizes them, and now says so, MENU SIZE 130%; the size cannot go below 1.0, so on a 4K monitor nothing is ever smaller than 1.9 times its 1080p size.',
-  'THE DISCOUNT FASHION DEPOT HAS FOURTEEN RACKS: build, skin, eyes, face, tattoo, hair, hairstyle, beard, headgear, clothing, patch, gloves, boots and backpack. Every piece is earned by playing, never bought. SURPRISE ME dresses you from every rack and three LOOKS keep an outfit.',
+  'FASHION HAS FOURTEEN RACKS: build, skin, eyes, face, tattoo, hair, hairstyle, beard, headgear, clothing, patch, gloves, boots and backpack. Every piece is earned by playing, never bought. SURPRISE ME dresses you from every rack and three LOOKS keep an outfit.',
   'A GREEN SPARTAN HELMET AND A WHITE GHOST MASK are on the headgear rack. Both cover the face.',
-  'THE FIGURE AT THE DEPOT IS DRAWN BY THE RAID PAINTER, five times raid size, so what you see there is what you see in the raid; the crowd in the Undercroft dresses from the same racks, eyes and all.',
+  'THE FIGURE AT FASHION IS DRAWN BY THE RAID PAINTER, five times raid size, so what you see there is what you see in the raid; the crowd in the Undercroft dresses from the same racks, eyes and all.',
   'THE PILLAGERS DRESS FROM THE SAME RACKS you do, hair, hats, beards, eyes, faces, tattoos, patches, gloves, boots and packs, so no two look alike.',
   'THE MAINFRAME SHOWS NET LIFETIME EARNINGS: everything extracted minus everything carried in, over every run. A run that died or was abandoned lost what it carried in.',
   'THE TUNING CONSOLE IS A ROW IN SETTINGS, and the Settings rows read the live dials: an option when they match one, CUSTOM when they do not. The dev cheat box is behind a switch that unlocks after your first extraction.',
@@ -1343,9 +1344,9 @@ var WHATSNEW=[
   'THE HOTBAR IS THE TACTICAL BELT, everywhere a word names it: the stash, the raid, the legends and the pause screen.',
   'THE STASH IS FIVE THINGS: the stash, your backpack, your tactical belt, the safe pocket and the freebie kit. Everything else that crowded it is gone. The backpack is a grid of twelve cells there and in the raid, empty cells drawn.',
   'DAY OR NIGHT IS CHOSEN ON THE SECTOR PAGE at the lift, and every ascent starts on day. A night extraction pays twenty percent more XP. The armour warning is on that page too.',
-  'THE DISCOUNT FASHION DEPOT is its own station in the Undercroft. Everything there is how you look, earned by playing and never bought; four new hats, two hair colours and three fits joined the racks.',
+  'FASHION is its own station in the Undercroft. Everything there is how you look, earned by playing and never bought; four new hats, two hair colours and three fits joined the racks.',
   'THE GUNS LOOK LIKE GUNS. Every gun icon is redrawn by family, outlined part by part, so a rifle reads as a rifle and a shotgun as a shotgun at a glance.',
-  'CLOSE ON EVERY WINDOW, AND ESC CLOSES THE TOP ONE, anywhere: the stash, the lift, the bar, the Depot and Settings.',
+  'CLOSE ON EVERY WINDOW, AND ESC CLOSES THE TOP ONE, anywhere: the stash, the lift, the bar, Fashion and Settings.',
   'THE STASH TABS ARE GUNS, CONSUMABLES, PARTS, SALVAGE, KEYS AND OTHER. Plates, heals and grenades are consumables. The three loadout saves are gone.',
   'HOLD SHIFT TO SPRINT. Let go and you stop running, which is his note of 2026-09-04. CROUCH IS STILL A TOGGLE: press CTRL or C once to crouch and once to stand. Aiming down sights is held on RMB.',
   'A DOWNED PILLAGER HAS FIFTY HEALTH TICKING DOWN over sixteen seconds. Three scav pistol rounds finish him, or two of anything heavier.',
@@ -26189,7 +26190,7 @@ acts:{KeyE:['go up',function(){
      acts:{KeyE:['drink',function(){ renderBar(); openModal('barmodal'); }]}},
     // v9.99, HIS NOTE and his answers 11 and 12: cosmetics have a place of
     // their own, and its name is his.
-    {id:'mirror',x:230,y:400,r:42,label:'DISCOUNT FASHION DEPOT',sub:'a cracked mirror and a change of clothes',c:'#f2c9a0',
+    {id:'mirror',x:230,y:400,r:42,label:'FASHION',sub:'a cracked mirror and a change of clothes',c:'#f2c9a0',
      acts:{KeyE:['browse the racks',function(){ P._avSlot=null; renderAvatar('appavatar','appavatarpicker'); openModal('appearmodal'); }]}},
     // v8.40, audit: LOCAL ONLY. This was the one dev surface with no gate at all,
     // and it is the nearest station to where he lands. Not gated on BETA_HIDE_DEV,
@@ -26631,49 +26632,8 @@ function drawHubWorld(dt){
     }
   }
   }catch(_hsE){}
-  // station names float above their posts
-  wc.textAlign='center';
-  for(i=0;i<HB.stations.length;i++){
-    var s3=HB.stations[i],on=HB.near===s3;
-    wc.font=FS(TYPE.label);
-    var tw=wc.measureText(s3.label).width;
-    wc.fillStyle='rgba(6,9,13,'+(on?.8:.5)+')';
-    // v10.23, his note: a station can carry its name under it instead of over
-    // it. The cheat box does, because its name ran into the Depot's.
-    var _lyP=s3.labelBelow?(s3.y+s3.r+4):(s3.y-56), _lyT=_lyP+10;
-    wc.fillRect(s3.x-tw/2-5,_lyP,tw+10,13);
-wc.fillStyle=on?s3.c:'rgba(160,172,184,.75)';
-    // v6.73: keep the name inside the room. Centred text on a station near a wall used
-    // to have its first letters cut off by the edge of the floor.
-    var _lw2=wc.measureText(s3.label).width, _lx2=s3.x;
-    var _lm2=34;                         // the 20 unit shell wall, plus a little air
-    if(_lw2<HUBW-_lm2*2){
-      if(_lx2-_lw2/2<_lm2)       _lx2=_lm2+_lw2/2;
-      if(_lx2+_lw2/2>HUBW-_lm2)  _lx2=HUBW-_lm2-_lw2/2;
-    }
-    wc.fillText(s3.label,_lx2,_lyT);
-    if(s3.id==='bar'){
-      // v7.74, his order, his asterisks.
-      wc.font=FS(TYPE.micro);
-      wc.fillStyle=on?'#d98aff':'rgba(160,172,184,.65)';
-      wc.fillText('***Experimental***',_lx2,s3.y-35);
-      wc.font=FS(TYPE.label);
-    }
-    if(s3.season){
-      var _sr=seasonReady();
-      if(_sr){
-        var _sl=_sr+' REWARD'+(_sr===1?'':'S')+' WAITING';
-        wc.font=FS(TYPE.label);
-        var _sw=wc.measureText(_sl).width;
-        var _sp=.55+.45*Math.sin(HB.t*2.4);
-        wc.fillStyle='rgba(6,9,13,.8)';
-        wc.fillRect(s3.x-_sw/2-5,s3.y-74,_sw+10,13);
-        wc.fillStyle='rgba(255,192,74,'+(0.55+0.45*_sp).toFixed(3)+')';
-        wc.fillText(_sl,s3.x,s3.y-64);
-        wc.font=FS(TYPE.label);
-      }
-    }
-  }
+  // v10.93, HIS NOTE: the station names used to be painted here, under the
+  // room's darkness. They are drawn after it now, in hubStationNames below.
   wc.textAlign='left';
   wc.restore();
   // warm light overlay, no fog: this is home
@@ -26704,7 +26664,66 @@ wc.fillStyle=on?s3.c:'rgba(160,172,184,.75)';
     wc.beginPath(); wc.arc(gx,gy,gr,0,6.2832); wc.fill();
   }
   wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  // v10.93, HIS NOTE: ON TOP OF THE DARKNESS, NOT UNDER IT. The names are how
+  // you find a station, which makes them UI and not scenery, and the room being
+  // dark is no reason for its signage to be. Same place, same size, same
+  // transform; only the moment changed, and the alpha with it.
+  hubStationNames(S,ox,oy);
   drawHubHUD(ox,oy);
+}
+// The station names, lifted out of drawHubWorld at v10.93 so they can be drawn
+// after the light sheet. It takes the camera it is drawn with rather than
+// working it out again, because a second copy of the camera is a second camera.
+function hubStationNames(S,ox,oy){
+  var i;
+  wc.save(); wc.scale(S,S); wc.translate(-ox,-oy);
+  wc.textAlign='center';
+  for(i=0;i<HB.stations.length;i++){
+    var s3=HB.stations[i],on=HB.near===s3;
+    wc.font=FS(TYPE.label);
+    var tw=wc.measureText(s3.label).width;
+    // v10.93: a firm plate. It was half transparent, so the floor showed through
+    // the name as well as dimming it.
+    wc.fillStyle='rgba(6,9,13,'+(on?.92:.86)+')';
+    // v10.23, his note: a station can carry its name under it instead of over
+    // it. The cheat box does, because its name ran into its neighbour.
+    var _lyP=s3.labelBelow?(s3.y+s3.r+4):(s3.y-56), _lyT=_lyP+10;
+    wc.fillRect(s3.x-tw/2-5,_lyP,tw+10,13);
+    // v10.93: opaque. This was rgba(160,172,184,.75).
+    wc.fillStyle=on?s3.c:'#cfd8e2';
+    // v6.73: keep the name inside the room. Centred text on a station near a wall used
+    // to have its first letters cut off by the edge of the floor.
+    var _lw2=wc.measureText(s3.label).width, _lx2=s3.x;
+    var _lm2=34;                         // the 20 unit shell wall, plus a little air
+    if(_lw2<HUBW-_lm2*2){
+      if(_lx2-_lw2/2<_lm2)       _lx2=_lm2+_lw2/2;
+      if(_lx2+_lw2/2>HUBW-_lm2)  _lx2=HUBW-_lm2-_lw2/2;
+    }
+    wc.fillText(s3.label,_lx2,_lyT);
+    if(s3.id==='bar'){
+      // v7.74, his order, his asterisks.
+      wc.font=FS(TYPE.micro);
+      wc.fillStyle=on?'#d98aff':'#c3cdd8';
+      wc.fillText('***Experimental***',_lx2,s3.y-35);
+      wc.font=FS(TYPE.label);
+    }
+    if(s3.season){
+      var _sr=seasonReady();
+      if(_sr){
+        var _sl=_sr+' REWARD'+(_sr===1?'':'S')+' WAITING';
+        wc.font=FS(TYPE.label);
+        var _sw=wc.measureText(_sl).width;
+        var _sp=.55+.45*Math.sin(HB.t*2.4);
+        wc.fillStyle='rgba(6,9,13,.9)';
+        wc.fillRect(s3.x-_sw/2-5,s3.y-74,_sw+10,13);
+        wc.fillStyle='rgba(255,192,74,'+(0.70+0.30*_sp).toFixed(3)+')';
+        wc.fillText(_sl,s3.x,s3.y-64);
+        wc.font=FS(TYPE.label);
+      }
+    }
+  }
+  wc.textAlign='left';
+  wc.restore();
 }
 function drawHubHUD(ox,oy){
   var p=HB.player;
@@ -26731,7 +26750,8 @@ function drawHubHUD(ox,oy){
     ctx.textAlign='center';
     ctx.font=FS(TYPE.head); ctx.fillStyle=s.c;
     ctx.fillText('['+keyLabel('KeyE','E')+']  '+s.label,W/2,H-58);
-    ctx.font=FS(TYPE.label); ctx.fillStyle='#8a96a1';
+    // v10.93, HIS NOTE: this was #8a96a1, which is the dimmest grey in the file.
+    ctx.font=FS(TYPE.label); ctx.fillStyle='#b7c2cd';
     ctx.fillText(typeof s.sub==='function'?s.sub():s.sub,W/2,H-42);
     ctx.textAlign='left';
   }
@@ -26825,7 +26845,8 @@ function drawHubHUD(ox,oy){
     }
     ctx.textAlign='left';
   }
-  ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(140,152,163,.75)';
+  // v10.93, HIS NOTE: this was rgba(140,152,163,.75).
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='#aab6c2';
   ctx.textAlign='center';
   ctx.fillText('WASD WALK  ·  SHIFT JOG  ·  E USE STATION',W/2,H-16);
   ctx.textAlign='left';
@@ -27487,7 +27508,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.92: your marker on the map was 8 pixels across, the smallest thing on a screen it is meant to own, and the only marker that did not grow with the map. It is roughly double now, scaled like its neighbours, with a halo under it and a longer heading line.',
+  now:'v10.93: the text in the Undercroft, your note. The station names were painted into the world BEFORE the room darkness went over it, so they kept 60 percent of an already see-through 75 percent. They are drawn on top of the darkness now, opaque, on a firm plate. And the station with the racks is called FASHION everywhere.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -28057,7 +28078,7 @@ function renderCheat(){
       P.cosAll=!P.cosAll; saveProfile(); renderHub();
       cc.textContent='ALL COSMETICS: '+(P.cosAll?'ON':'OFF');
       var _tk3=document.getElementById('cheattook');
-      if(_tk3) _tk3.textContent=P.cosAll?'Every rack in the Depot is open. Cut it off here to keep only what you earned.':'The racks are back to what you earned.';
+      if(_tk3) _tk3.textContent=P.cosAll?'Every rack in FASHION is open. Cut it off here to keep only what you earned.':'The racks are back to what you earned.';
       say2(P.cosAll?'Every cosmetic unlocked. No judgment.':'Cosmetics back to what you earned.'); blip('pick');
     };
   }

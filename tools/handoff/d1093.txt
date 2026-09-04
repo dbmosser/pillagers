@@ -1,0 +1,65 @@
+## v10.93 - HIS NOTE: THE UNDERCROFT TEXT IS TOO SEE-THROUGH, AND THE DEPOT IS NOW FASHION
+
+"text in the undercroft should be less transparent/more opaque -- change
+'Discount Fashion Depot' to 'Fashion' wherever it occurs", his note of
+2026-09-04.
+
+**REPRODUCED, AND THE CAUSE IS NOT THE ONE THE NOTE POINTS AT.** The station
+names were dimmed twice. They were painted at 75 percent alpha, which is the
+obvious half. They were also painted into the world BEFORE the room's darkness
+went over it, a full-screen sheet of rgba(14,12,36,.40) divided by the
+brightness dial, with holes punched out where the lamps are. So a name away from
+a lamp kept about three quarters of what was left of three quarters.
+
+**THE INSTRUMENT, because "looks faint" is not a number.** Draw the same frame
+twice, once with the station names not painted, and difference the two. What is
+left inside each name's rectangle is exactly the ink that name contributes to
+the FINISHED picture, after every layer that goes over it. Both draws go through
+the frame call that draws and advances nothing, so the lamps flicker identically
+and the only difference on the canvas is the text.
+
+**MEASURED on v10.92**, all eight stations: an average of 78 out of a possible
+152, with the lift at 67 and the cheat box at 64. Wind the brightness dial down
+so the darkness sheet more than doubles and that 78 falls to 49, a ratio of
+**0.63**, which is the sheet eating the names.
+
+**THE FIX.** The names are how you find a station, which makes them UI and not
+scenery, and a dark room is no reason for its signage to be dark. The whole
+block is lifted out of the world pass into hubStationNames, which is called
+after the light sheet is composited, with the same camera handed to it rather
+than worked out a second time, so the names land in exactly the same place at
+exactly the same size. The text goes opaque, #cfd8e2 in place of
+rgba(160,172,184,.75), on a plate at .86 rather than .5, because a half
+transparent plate showed the floor through the letters as well as dimming them.
+The bar's asterisks and the season banner came up with it. Two more see-through
+lines in the same room: the controls line along the bottom, which was
+rgba(140,152,163,.75), and the line under each station prompt, which was
+#8a96a1, the dimmest grey in the file.
+
+**MEASURED after: an average of 169**, worst station 151, and a ratio of **1.02**
+when the room goes dark, meaning the names no longer care how dark the room is.
+
+**HIS SECOND HALF, THE NAME.** Every player-facing place the station was called
+by its old three word name, or "the Depot" for short, which is the same station
+under a second name and his one word per thing rule does not allow it: the
+station on the Undercroft floor, the title of the racks window, four lines of
+the new-in card, and the line in Settings about every rack being open. It is
+FASHION in all of them.
+
+**NEW CHECK v10.93** requires an average of at least 130 ink and no single
+station below 120, a ratio of at least 0.90 when the room is darkened, the racks
+station to be named FASHION and not the old name, no line of the new-in card and
+not the racks window title to carry the old name. Three controls: at least four
+station names must have been found on the drawn frame, no station may have
+painted almost no ink either way, and the brightness dial must actually have
+darkened the whole picture by 15 percent or the darkness test proves nothing. It
+fails on a v10.92 fixture on all of it: 78 ink, every station named, ratio 0.63.
+
+**MY MISTAKE, and the new check caught it on my own build:** the line I wrote for
+the new-in card announced the rename by spelling out the old three word name,
+which is the name still occurring, which is the thing he asked to stop. Reworded
+to announce the change without reprinting what it replaced.
+
+Not verified: how the new weight reads to him on his own monitor, which is a
+judgement and not a measurement; and the two remaining mentions of the old name
+are code comments recording why v9.99 was built, which no player sees.
