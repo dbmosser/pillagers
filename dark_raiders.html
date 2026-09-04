@@ -1303,7 +1303,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.82';
+var VER='10.83';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1318,6 +1318,7 @@ var WHATSNEW_VER='10.80';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE MAP MARKS THE FALLEN BUILDINGS. Press M and the destroyed ones are hatched with a broken outline, so you can plan a route past the ones with no cover instead of finding out when you get there.',
   'A DESTROYED BUILDING NOW LOOKS IT. Burnt floor, rubble across it and dust spilling out past where the wall used to stand, so you can pick one out from across the map instead of only noticing when you are close enough to see the gap.',
   'SOME BUILDINGS ARE DESTROYED NOW. Whole runs of their outer wall are gone, so you can see straight into them and walk in from any side. No cover on that wall, nothing to hold a corner behind, and whatever is inside is visible from a long way off. The rooms inside are still standing.',
   'BOTH MAPS NOW HAVE A CENTRE. A monument with market stalls round the rim and benches beside it: on COLD STORAGE it is on the packing floor, and on THE COLD MILE the old frost yard is now THE FROST MARKET. The mile ran three identical cargo yards and had nowhere that read as a middle.',
@@ -25210,8 +25211,39 @@ function drawMapOverlay(){
   ctx.textAlign='left';
   for(i=0;i<G.map.buildings.length;i++){
     var b=G.map.buildings[i];
-    ctx.fillStyle=hexA(DISTRICTS[b.d].wallTop,.15);
-    ctx.fillRect(ox+b.x*sc,oy+b.y*sc,b.w*sc,b.h*sc);
+    var _bx=ox+b.x*sc, _by=oy+b.y*sc, _bw=b.w*sc, _bh=b.h*sc;
+    // v10.83: a building that has fallen is not drawn like one that is standing.
+    ctx.fillStyle=hexA(DISTRICTS[b.d].wallTop,b.ruined?.06:.15);
+    ctx.fillRect(_bx,_by,_bw,_bh);
+    if(b.ruined){
+      // HATCH. Diagonals at a fixed screen spacing, so the mark is the same
+      // weight on a small building and a large one and at any monitor size.
+      ctx.save();
+      ctx.beginPath(); ctx.rect(_bx,_by,_bw,_bh); ctx.clip();
+      ctx.strokeStyle='rgba(232,176,96,.34)'; ctx.lineWidth=1;
+      ctx.beginPath();
+      for(var _hx=-_bh;_hx<_bw;_hx+=7){
+        ctx.moveTo(_bx+_hx,_by+_bh); ctx.lineTo(_bx+_hx+_bh,_by);
+      }
+      ctx.stroke();
+      ctx.restore();
+      // BROKEN OUTLINE. A continuous box says the walls are there, which is the
+      // one thing this building no longer has.
+      ctx.strokeStyle='rgba(232,176,96,.55)'; ctx.lineWidth=1;
+      var _dash=6, _gap=5, _t;
+      ctx.beginPath();
+      for(_t=0;_t<_bw;_t+=_dash+_gap){
+        var _l=Math.min(_dash,_bw-_t);
+        ctx.moveTo(_bx+_t,_by);       ctx.lineTo(_bx+_t+_l,_by);
+        ctx.moveTo(_bx+_t,_by+_bh);   ctx.lineTo(_bx+_t+_l,_by+_bh);
+      }
+      for(_t=0;_t<_bh;_t+=_dash+_gap){
+        var _m=Math.min(_dash,_bh-_t);
+        ctx.moveTo(_bx,_by+_t);       ctx.lineTo(_bx,_by+_t+_m);
+        ctx.moveTo(_bx+_bw,_by+_t);   ctx.lineTo(_bx+_bw,_by+_t+_m);
+      }
+      ctx.stroke();
+    }
   }
   for(i=0;i<(G.map.water||[]).length;i++){
     var wq3=G.map.water[i];
@@ -27321,7 +27353,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.82: and now a destroyed building LOOKS destroyed. The floor inside one read 124.76 against 124.81 with the wrecking on, four hundredths of one percent, so the only thing saying a building had come down was the missing wall. Burnt floor, rubble, and dust spilling out past where the wall used to be.',
+  now:'v10.83: the map tells you which buildings have fallen. A destroyed building sat at 64 to 69 brightness against 73 to 82 for the standing ones near it, a gap of 3.6 where the standing buildings vary by 9.4 among themselves, so it was only darker by accident. It is hatched and broken-outlined now.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

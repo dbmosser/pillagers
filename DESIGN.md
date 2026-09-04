@@ -40024,6 +40024,61 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.83 - THE MAP COULD NOT TELL YOU WHICH BUILDINGS HAD FALLEN
+
+v10.82's own Not verified line named this. Since v10.81 a destroyed building is
+a tactical fact: no cover on the missing side, open from any direction, and
+visible into from a long way off. The map screen is where you decide which way
+to go, and it painted every building on it with the same rule.
+
+MEASURED on COLD STORAGE at seed 4242 at 1920x1080, the mean brightness of each
+building's square on the map screen:
+
+  the two fallen buildings          69.29 and 64.31
+  the seven standing ones near them 72.86 to 82.22
+
+The gap to the nearest standing building is 3.57, and the standing buildings
+vary among themselves by 9.36. So a ruin was darker only BY ACCIDENT, because
+fewer wall pixels land on it, and a difference smaller than the noise around it
+is not a difference anybody can read.
+
+THE MARK IS THREE SIGNALS, because one of them alone is a shade and a shade is
+exactly what failed here. The fill drops from .15 to .06 alpha so the shape
+reads as not solid. A diagonal hatch is clipped into the square at a fixed seven
+screen pixels of spacing, so the mark has the same weight on a small building
+and a large one and at any monitor size. And the outline is drawn broken rather
+than continuous, because a closed box says the walls are there, which is the one
+thing this building no longer has.
+
+TWO WRONG INSTRUMENTS BEFORE THE RIGHT ONE, and that is the part worth keeping.
+
+  Brightness cannot judge this. On THE COLD MILE the standing buildings vary
+  among themselves by 58 points, because their squares carry walls, roads,
+  zone tints and labels in wildly different amounts. A ruin sitting eight
+  points below its neighbour says nothing at all.
+
+  Counting edges cannot either. A hatch is periodic lines, so it should show as
+  a high edge count, and on COLD STORAGE it separates cleanly, 34 and 42
+  against a standing maximum of 18. On the mile a busy square full of walls and
+  labels reaches 49 while a hatched ruin reads 31, and the two ranges overlap.
+
+  What DOES isolate the mark is redrawing the same map with the ruined flags
+  cleared, because then the only thing that can differ is what this build draws.
+  Measured that way: every fallen building moves between 80.21 and 95.05 percent
+  of its own square, and every standing one moves exactly 0.00.
+
+THE CHECK uses that instrument on both maps: every fallen building must move at
+least 40 percent of its square, which is half the weakest signal, and every
+standing one under 1 percent, which is just above nothing. It carries two
+controls: something must have differed at all, or two identical draws would
+satisfy the standing-building line by drawing nothing; and at least two ruins
+must have been on the map to look at. On a v10.82 fixture, clearing the flags
+changes nothing and it fires.
+
+Not verified: how the hatch reads at 1440p and 4K. The spacing is in screen
+pixels so it should hold, but the map is drawn at a scale derived from the
+window and I have only looked at 1080p. Nothing here changes the raid itself:
+this is the map screen only, and the world drawing was v10.82's build.
 ## v10.82 - A DESTROYED BUILDING DID NOT LOOK DESTROYED
 
 v10.81 shipped the geometry and its own Not verified line named this: the only

@@ -1,0 +1,17 @@
+v10.83: the map marks the buildings that have fallen
+
+A destroyed building has been a tactical fact since v10.81 and the map painted
+it exactly like a standing one. Measured on COLD STORAGE: the two fallen
+buildings read 69.29 and 64.31 mean brightness against 72.86 to 82.22 for the
+standing ones near them, a gap of 3.57 where the standing ones vary by 9.36
+among themselves, so they were only darker by accident.
+
+They are now drawn at less than half the fill alpha, hatched with diagonals at
+a fixed screen spacing, and outlined with a broken line rather than a closed
+box.
+
+Two wrong instruments before the right one: brightness cannot judge it because
+the mile's standing buildings vary by 58 points, and edge counting cannot
+because a busy square reads 49 where a hatched ruin reads 31. Redrawing the
+same map with the ruin flags cleared isolates the mark exactly: every fallen
+building moves 80 to 95 percent of its square, every standing one moves 0.
