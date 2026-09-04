@@ -1,0 +1,36 @@
+v11.05: a daytime blackout is not harder, and my v11.00 paid for it anyway
+
+His question: "is a daytime blsackout meaningfully harder than normal daytime
+play?"
+
+No, and at two times of day it is literally nothing. Lamp brightness is the
+weather times the time of day, and the times of day carry 0.7 at dawn, ZERO at
+8am, ZERO at noon, 0.25 at 6pm and 1 at dusk. Blackout multiplies by 0.18, so at
+8am and noon it is zero times 0.18: the lamps it kills were already off.
+
+Lamp brightness feeds two things in the whole file, the lit percentage in the
+recorder and the glow the lamps draw. Nothing in vision, concealment or machine
+AI reads it. A blackout is what a human can see, which is real difficulty for a
+person and none at all for the bot.
+
+That makes my v11.00 wrong, four builds ago. It classed a weather as hard if it
+cuts sight OR kills the lamps and paid his 1.1x for it, so in daylight it paid a
+bonus for killing lamps that were already dark.
+
+Killing the lamps now counts only when the lamps were on, measured as a real loss
+of at least 0.15 of the scale, so a blackout pays at night, at dusk and at dawn
+and pays nothing at 8am and noon. Cutting sight, which is rain, fog and storm, is
+untouched. The sector page stops promising a bonus it may not deliver and says
+the daylight case depends on the hour.
+
+The v11.00 check is split by what the weather actually does: rain, fog and storm
+hard whatever the hour, blackout hard at night, hard at dusk and NOT hard at
+noon. Controls: the build must have something that asks how much lamp light there
+was before the weather, and the time of day table must actually carry zero at
+noon and full at dusk, asked of the table rather than remembered. Fails on a
+v11.04 fixture.
+
+No dial moved: what a blackout does is unchanged, on his standing order.
+
+Not verified: whether a blackout at night is meaningfully harder for him. The bot
+cannot answer it, because nothing the bot reads changes when the lamps go out.

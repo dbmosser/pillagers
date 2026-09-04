@@ -40024,6 +40024,56 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.05 - HIS QUESTION: IS A DAYTIME BLACKOUT ACTUALLY HARDER? NO, AND MY v11.00 PAID FOR IT ANYWAY
+
+"is a daytime blsackout meaningfully harder than normal daytime play?",
+2026-09-04.
+
+**THE ANSWER IS NO, AND AT TWO TIMES OF DAY IT IS LITERALLY NOTHING.** Lamp
+brightness in this game is
+
+    wx().lights * (isDay() ? tod().lights : 1)
+
+and the times of day carry lamp values of 0.7 at dawn, **ZERO at 8am**, **ZERO at
+noon**, 0.25 at 6pm and 1 at dusk. Blackout multiplies by 0.18. At 8am and noon
+that is zero times 0.18. The lamps a daytime blackout kills were already off.
+
+**AND LAMP BRIGHTNESS FEEDS TWO THINGS IN THE WHOLE FILE:** the "lit" percentage
+in the flight recorder, and the glow the lamps draw. Nothing in vision,
+concealment or machine AI reads it. So a blackout is a change to what a HUMAN can
+see, which is real difficulty for a person and none at all for the bot, and in
+daylight it is not even that.
+
+**WHAT THAT MAKES WRONG IS MINE, FROM FOUR BUILDS AGO.** v11.00 classed a weather
+as hard if it cuts sight OR kills the lamps, and paid his 1.1x for it. In daylight
+that paid a bonus for killing lamps that were already dark. His question found it.
+
+**THE FIX.** Killing the lamps counts only when the lamps were on. The rule asks
+how much light actually goes and wants a real amount of it, at least 0.15 of the
+scale, so a blackout pays at night, at dusk and at dawn and pays nothing at 8am
+and noon. Cutting SIGHT, which is rain, fog and storm, is untouched: that is the
+weather itself and does not care what the hour is. The sector page stops
+promising a bonus it may not deliver: pick a blackout in daylight and it says
+"Only harder if the lamps were on, and in daylight that depends on the hour you
+land at."
+
+**THE CHECK IS THE v11.00 ONE, SPLIT BY WHAT THE WEATHER ACTUALLY DOES**, which
+is what it should have been in the first place. Rain, fog and storm must be hard
+whatever the hour. Blackout must be hard at night, hard at dusk, and NOT hard at
+noon, which is his question stated as an assertion. Two controls, and they guard
+the thing I got wrong: the build must have something that asks how much lamp
+light there was before the weather, and the time-of-day table must actually carry
+zero at noon and full at dusk, asked of the table rather than remembered, because
+this whole rule rests on those two numbers.
+
+Fails on a v11.04 fixture: "nothing asks how much lamp light there was before the
+weather, so a blackout pays whatever the hour".
+
+Not verified, and it is the honest limit of this: whether a blackout at night is
+meaningfully harder for HIM. The bot cannot answer it, because nothing the bot
+reads changes when the lamps go out; only a person playing in the dark can say.
+And I have not touched what a blackout DOES, on his standing order that no dial
+moves before the alpha.
 ## v11.04 - HIS NOTE 14, SECOND HALF: PASTING THE CODE BACK IN
 
 v11.03 put a RESTORE CODE at the end of every report and could read one back. A

@@ -1332,7 +1332,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.04';
+var VER='11.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1343,10 +1343,11 @@ var VER='11.04';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.04';
+var WHATSNEW_VER='11.05';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A DAYTIME BLACKOUT IS NOT HARDER, so it no longer pays as if it were. The lamps are already off at 8am and noon, and a blackout multiplying zero is still zero. It pays at night, at dusk and at dawn, when there is light to lose. Rain, fog and storm cut your sight whatever the hour and are unchanged.',
   'A LOST CHARACTER CAN COME BACK. Settings, the recorder tab: paste the RESTORE CODE from the end of any run report, press READ CODE to see whose it is, then type the word restore. It replaces the save you are playing, so it asks twice. It does not bring back the run log.',
   'YOUR RUN REPORT NOW ENDS WITH A RESTORE CODE. It is one line that carries your character: name, credits, XP, what you are wearing, what is in your stash and what you have unlocked. If a save is ever lost, that line is how it comes back.',
   'CHANGING SAVE RELOADS THE GAME, which is why it drops fullscreen. The saves panel says so now, and if you were in fullscreen when you switched, the title screen tells you on the way back and the button is right above it.',
@@ -5044,9 +5045,29 @@ function pickWeather(){
 // HIS 1.1x. A weather is HARD if it cuts sight or kills the lamps, asked of the
 // weather table rather than kept as a list beside it, so a state added later is
 // priced by what it does.
-function wxHardId(id){
-  for(var i=0;i<WEATHER.length;i++) if(WEATHER[i].id===id)
-    return ((WEATHER[i].view!==undefined&&WEATHER[i].view<1)||(WEATHER[i].lights!==undefined&&WEATHER[i].lights<1))?1:0;
+// v11.05, HIS QUESTION: how much lamp light there is BEFORE the weather touches
+// it. In daylight that is the time of day, which is zero at 8am and noon; at
+// night the lamps are the light.
+function lampBase(day,tdo){
+  var d=(day===undefined)?((typeof isDay==='function')?isDay():true):!!day;
+  if(!d) return 1;
+  var t=tdo||((typeof tod==='function')?tod():null);
+  return (t&&t.lights!==undefined)?t.lights:1;
+}
+// A weather is HARD if it cuts what he can see. Two ways to do that, and they are
+// not the same: the weather itself can cut sight, which is true whatever the
+// hour, or it can kill the lamps, which is only worth anything when the lamps
+// were on. A quarter of the light has to actually go for it to count.
+function wxHardId(id,day,tdo){
+  for(var i=0;i<WEATHER.length;i++) if(WEATHER[i].id===id){
+    var W=WEATHER[i];
+    if(W.view!==undefined&&W.view<1) return 1;
+    if(W.lights!==undefined&&W.lights<1){
+      var base=lampBase(day,tdo);
+      return ((base-base*W.lights)>=0.15)?1:0;
+    }
+    return 0;
+  }
   return 0;
 }
 function wxXpMul(){ return (CFG.wxXp===undefined)?1.1:CFG.wxXp; }
@@ -27664,7 +27685,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.04: the other end of the restore code, your note 14. Settings, the recorder tab, under the report: paste a code, press READ CODE and it tells you whose character it is and what it is worth, then type the word restore and press REPLACE. Nothing is written before the word. It does not bring back the run log, because the log is history and is not in the code.',
+  now:'v11.05: your question about a daytime blackout, and the answer is no. Lamp brightness is the weather times the time of day, and the time of day is ZERO at 8am and noon, so a blackout there kills lamps that were already off. That makes my v11.00 wrong: it paid your 1.1x for killing the lamps whatever the hour. Killing the lamps only counts now when a real amount of light actually goes. Cutting sight, which is rain, fog and storm, is unchanged.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31258,7 +31279,20 @@ function syncSectorWx(){
   var hint=document.getElementById('wxhint'); if(!hint) return;
   if(want==='any'){ hint.textContent='Whatever the surface gives you.'; return; }
   for(i=0;i<WEATHER.length;i++) if(WEATHER[i].id===want){ nm=WEATHER[i].name; hard=wxHardId(want); }
-  hint.textContent=nm+(hard?('. Harder going, so XP pays '+(Math.round(wxXpMul()*100)/100)+'x.'):'. No bonus for an easy sky.');
+  // v11.05, HIS QUESTION: a blackout is only harder if the lamps were on, and in
+  // daylight whether they are depends on an hour that is rolled at the drop. Say
+  // that, rather than promising a bonus that will not arrive.
+  var lampsOnly=(function(){ for(var q=0;q<WEATHER.length;q++) if(WEATHER[q].id===want)
+      return !(WEATHER[q].view!==undefined&&WEATHER[q].view<1)&&(WEATHER[q].lights!==undefined&&WEATHER[q].lights<1);
+    return false; })();
+  var payLine='. Harder going, so XP pays '+(Math.round(wxXpMul()*100)/100)+'x.';
+  if(lampsOnly){
+    hint.textContent=nm+(isDay()
+      ? '. Only harder if the lamps were on, and in daylight that depends on the hour you land at.'
+      : payLine);
+    return;
+  }
+  hint.textContent=nm+(hard?payLine:'. No bonus for an easy sky.');
 }
 (function(){
   var wb=document.querySelectorAll('#sectorwx .wxb');

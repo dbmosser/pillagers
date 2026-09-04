@@ -1,0 +1,17 @@
+## HIS NOTE 20, 2026-09-04: THE BALLER'S JERSEY IS COVERED
+
+20. "micheal jordan character, can't see his jersey bc its blocked by a black
+    block (maybe supposed to be backpack straps?)".
+
+    FOUND, and it is not the backpack. The pack is drawn BEFORE the torso and the
+    torso covers it. It is the jersey's own black side panels, added at v10.46:
+    two bars of #14161b, each 2.4 wide and 10 tall, at the outer edges of a
+    13-wide chest. That is 4.8 of 13, thirty-seven percent of the jersey, in
+    near-black, on a red shirt. At sprite size two black vertical bars on a chest
+    read as straps, which is exactly what he said.
+
+    THE BUILD: the side panels become trim rather than blocks, thin enough that
+    the red reads as a jersey and the 23 has room, and the check measures the
+    pale and red pixels across the chest against the black ones rather than
+    asserting a width. The v10.46 jersey check already counts pale pixels and
+    must be updated in the same build, since its subject is being changed.

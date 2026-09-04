@@ -5738,9 +5738,28 @@ window.__REGRESS=[
        if(typeof wxHardId!=='function'||typeof wxXpMul!=='function')
          bad.push('the build has no idea which weather is hard, so nothing can pay for it');
        else {
-         var HARD=['rain','fog','blackout','storm'], EASY=['clear','partly'];
-         for(i=0;i<HARD.length;i++) if(!wxHardId(HARD[i])) bad.push(HARD[i]+' does not count as hard going and it cuts your sight or your lamps');
+         // CUTTING SIGHT is the weather itself and is true whatever the hour.
+         var HARD=['rain','fog','storm'], EASY=['clear','partly'];
+         for(i=0;i<HARD.length;i++) if(!wxHardId(HARD[i])) bad.push(HARD[i]+' does not count as hard going and it cuts your sight');
          for(i=0;i<EASY.length;i++) if(wxHardId(EASY[i])) bad.push('control: '+EASY[i]+' counts as hard going, so every weather pays and the bonus means nothing');
+         // v11.05, HIS QUESTION: KILLING THE LAMPS only counts when the lamps
+         // were on. At night they are the light; at 8am and noon the time of day
+         // already has them at zero and a blackout multiplies nothing.
+         if(typeof lampBase!=='function') bad.push('nothing asks how much lamp light there was before the weather, so a blackout pays whatever the hour');
+         else {
+           var NIGHT=false, DAYNOON={lights:0}, DAYDUSK={lights:1};
+           if(!wxHardId('blackout',NIGHT)) bad.push('a blackout at night does not count as hard going, and at night the lamps are the light');
+           if(wxHardId('blackout',true,DAYNOON)) bad.push('a blackout at noon counts as hard going, and at noon the lamps are already off, which is his question');
+           if(!wxHardId('blackout',true,DAYDUSK)) bad.push('a blackout at dusk does not count as hard going, and at dusk the lamps are at full');
+           // CONTROL: the times of day this rests on have to be what I think they
+           // are, asked of the table rather than remembered.
+           if(typeof TODS!=='undefined'){
+             var noonL=null, duskL=null, q;
+             for(q=0;q<TODS.length;q++){ if(TODS[q].id==='noon') noonL=TODS[q].lights; if(TODS[q].id==='dusk') duskL=TODS[q].lights; }
+             if(noonL!==0) bad.push('control: noon carries '+noonL+' lamp light and this rule assumes zero');
+             if(!(duskL>=0.9)) bad.push('control: dusk carries '+duskL+' lamp light and this rule assumes full');
+           }
+         }
          if(!(wxXpMul()>1)) bad.push('control: the weather bonus is '+wxXpMul()+', so there is no bonus to test');
          // AND IT REACHES THE PAYOUT, not just the table. Two identical runs, one
          // hard and one not, through the real progress path.
