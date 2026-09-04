@@ -40024,6 +40024,81 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.73 - THE TITLE SCREEN USES THE MONITOR
+
+His note, from the open list: "TITLE SCREEN WASTES THE SCREEN. His shot on a
+wide monitor: the whole thing is a narrow column in the middle with empty
+space either side."
+
+### What it was
+
+Reproduced on v10.72 at 1920x1080. The content runs from x=427 to x=1493.
+That is 1,066 pixels of a 1,920 pixel screen, FIFTY SIX PERCENT, with 427
+pixels of nothing down each side. It is the first screen anybody sees, and
+on Saturday it is the first thing his friends will see.
+
+The cause is one line and it is almost funny. The column is capped at 820
+pixels, and the only rule that ever widened it was gated on
+
+    @media (min-aspect-ratio: 19/10)
+
+which is an ultrawide. A 1920x1080 screen is 16/9, or 1.78. The commonest
+monitor in the world missed the rule by a tenth and got the narrow-laptop
+layout.
+
+### Now
+
+The cap follows the viewport, with a floor. Everything on this screen paints
+inside a zoom, measured at 1.3 by default, so 820 css pixels paint as 1,066;
+62vw is what paints near 80 percent once the zoom has had it. The max(820px)
+floor means every screen narrower than about 1,320 is untouched.
+
+Measured, not guessed:
+
+    1920x1080     56 percent  ->  81 percent, fits both ways
+    1366x768      78 percent  ->  81 percent, fits both ways
+
+The one block of real prose gets its own measure at 760. Without that,
+widening the column turns two sentences into a single 1,496 pixel line,
+which is worse to read than the narrow column was. The three step cards, the
+controls line and the saves list are what actually wanted the width, and
+they take it.
+
+### Measured
+
+The check pins the display, forces 1920x1080, opens the title screen, runs
+the game's own zoom fitter and then measures the painted rectangle against
+the real viewport. It requires at least 72 percent used, both edges on
+screen, the whole thing short enough not to need scrolling, which is v9.53's
+rule and the reason the column was narrow to begin with, and the opening
+sentence to stay under 1,100 pixels with a control that it has not collapsed
+to nothing. The floor of 72 sits well under what this build paints and well
+over the 56 the old one did, so it names the fault rather than pinning the
+layout. On a v10.72 fixture it fails saying the screen paints 56 percent and
+leaves 427 pixels empty down each side.
+
+### The corpus caught this and it was right to
+
+v9.17 pinned 16:9 to the 820 pixel column ON PURPOSE, as the control proving
+its own ultrawide rule was really gated, and the full run failed on it. That
+is the corpus doing its job. His note is newer than that check and says the
+opposite, so the intent has changed and the check had to change with it
+rather than the build quietly stepping over a control.
+
+What that control was FOR is kept. It exists to prove the cap follows the
+screen instead of widening everything everywhere. The gate is the 820 floor
+now, so a NARROW screen is what must still be pinned, and that is what it
+asserts. Its ultrawide half is untouched, its rule that the column may never
+exceed 90 percent of an ultrawide is untouched, and its stylesheet check now
+looks for the 820 wherever it sits in the rule rather than as the whole cap.
+Run against a v10.72 fixture, the updated v9.17 fails too, which is what
+makes it a check rather than a comment.
+
+Not verified: 1440p and 4K, where the pane cannot be made big enough to
+measure and the zoom is larger, so the vw cap will paint a different share
+there; his own text size setting turned up, which multiplies the zoom and so
+the painted width; and whether he wants the space used by widening what is
+there or by putting something new in it, which is a design question and his.
 ## v10.72 - THE DEATH SCREEN COUNTS THE GUN IT SAYS YOU LOST
 
 The KIA ledger lists what you were carrying, one line at a time, each marked

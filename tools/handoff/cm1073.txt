@@ -1,0 +1,20 @@
+v10.73: the title screen uses the monitor
+
+His note: the title screen wastes a wide monitor, a narrow column down the
+middle with empty space either side.
+
+Reproduced at 1920x1080: the content ran from 427 to 1493, so 1,066 pixels
+of a 1,920 pixel screen, fifty six percent, with 427 pixels of nothing down
+each side. It is the first screen anybody sees.
+
+The cause is one line. The column is capped at 820 and the only rule that
+widened it was gated on an ultrawide aspect ratio, so 16 by 9 missed it by a
+tenth and got the narrow-laptop layout.
+
+The cap follows the viewport now, with a floor that leaves every screen
+under about 1,320 wide exactly as it was. Measured: 1920x1080 goes 56 to 81
+percent, 1366x768 goes 78 to 81, both still fitting. The opening sentence
+gets its own measure, because widening the column turned two sentences into
+one 1,496 pixel line.
+
+The check fails on a v10.72 fixture.

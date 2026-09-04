@@ -74,7 +74,13 @@
      so it overflowed into a scroll while the room it needed sat unused beside it.
      820 is the base and stays the base. The override is gated ABOVE 16:9, so
      1080p, 1440p and 4K are all 1.778 and keep the layout he already has. */
-  #title .titlecol{ max-width:820px; }
+  /* v10.73, his note that the title screen wastes a wide monitor. 820 painted
+     56 percent of a 1920 screen because the only widening rule was gated on
+     ultrawide and 16/9 is not one. The cap follows the viewport now. Everything
+     here sits inside a zoom of about 1.3, so 62vw is what paints near 80 percent;
+     the max() floor keeps every screen narrower than about 1320 exactly as it
+     was. Measured: 1920x1080 goes 56 to 81 percent, 1366x768 goes 78 to 81. */
+  #title .titlecol{ max-width:max(820px,min(1320px,62vw)); }
   @media (min-aspect-ratio: 19/10){
     #title .titlecol{ max-width:min(1320px,82vw); }
   }
@@ -871,7 +877,7 @@
       <span>BEST IN FULLSCREEN AT 1080p, 1440p OR 4K</span>
       <button id="titlefs" style="padding:5px 14px;font-size:10.5px;letter-spacing:.18em">GO FULLSCREEN</button></div>
 
-    <div style="margin-top:26px;font-size:13.5px;line-height:1.65;color:var(--bone)">
+    <div style="margin-top:26px;font-size:13.5px;line-height:1.65;color:var(--bone);max-width:760px;margin-left:auto;margin-right:auto">
       The elites left the surface to the machines and went somewhere better.
       You go up, you take what is worth taking, and you come back down.
     </div>
@@ -1277,7 +1283,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.72';
+var VER='10.73';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27166,7 +27172,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.72: the death screen counts the gun it says you lost. It listed your gun as LOST and then left it out of the total underneath, so the number missed the most expensive thing you were carrying. An issued loaner is still in neither, because you never owned it.',
+  now:'v10.73: the title screen uses the monitor. It was painting a narrow column across the middle of a 1920 screen with 427 pixels of nothing down each side, because the only rule that widened it was written for ultrawides and 16 by 9 missed it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

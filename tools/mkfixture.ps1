@@ -3523,7 +3523,7 @@ window.__REGRESS=[
      if(!(z3>z1*2.5)) bad.push('control: turning the dial from 1 to 3 moved the projection from '+z1+' to '+z3);
      if(Math.abs(zmax-__zoom.max())>0.001) bad.push('control: the dial no longer clamps at its maximum, it reached '+zmax);
      return bad.length?bad.join('; '):null; }},
-  {v:'9.17',what:'the title screen uses an ultrawide screen instead of leaving two thirds of it empty',
+  {v:'9.17',what:'the title screen uses the width it is given, on an ultrawide and on an ordinary widescreen, and a narrow screen still keeps the 820 column',
    run:function(){
      if(!__vpAlive()) return 'SKIP: the pane has no layout, the title screen cannot be measured';
      var bad=[];
@@ -3544,11 +3544,19 @@ window.__REGRESS=[
      if(wide){
        if(mw==='820px') bad.push('at aspect '+asp.toFixed(2)+' the column is still capped at 820px, the ultrawide rule is not in force');
        if(col.offsetWidth<=860) bad.push('at aspect '+asp.toFixed(2)+' the column is only '+col.offsetWidth+'px wide');
-     } else {
-       // CONTROL 1: 16:9 must be untouched. 1080p, 1440p and 4K are all exactly
-       // 1.778 and must keep the layout he already has.
-       if(mw!=='820px') bad.push('control: at aspect '+asp.toFixed(2)+', which is not ultrawide, the column cap is '+mw+' rather than 820px');
-       if(col.offsetWidth>860) bad.push('control: at aspect '+asp.toFixed(2)+' the column is '+col.offsetWidth+'px, wider than the 820 base');
+     } else if(window.innerWidth>=1600){
+       // v10.73, HIS NOTE: this used to require 16:9 to stay at 820, which was
+       // the control proving the ultrawide rule was gated. He then reported that
+       // the title screen wastes a wide monitor, and measured at 1920x1080 it was
+       // painting 56 percent of the screen with 427 pixels empty down each side.
+       // An ordinary widescreen gets the width now, so the assertion is inverted.
+       if(mw==='820px') bad.push('at aspect '+asp.toFixed(2)+' on a '+window.innerWidth+' pixel screen the column is still capped at 820px, so the wide monitor is wasted');
+       if(col.offsetWidth<=860) bad.push('at aspect '+asp.toFixed(2)+' on a '+window.innerWidth+' pixel screen the column is only '+col.offsetWidth+'px wide');
+     } else if(window.innerWidth<1320){
+       // CONTROL 1, in its new home: the floor is what stops this from being a
+       // blanket widening, so a screen too narrow to spare the room keeps the
+       // column it has always had.
+       if(mw!=='820px') bad.push('control: on a '+window.innerWidth+' pixel screen the column cap is '+mw+' rather than the 820px floor');
      }
      // CONTROL 2: both halves of the rule must still exist in the stylesheet, so
      // deleting either one fails here rather than silently reverting his screen.
@@ -3559,10 +3567,12 @@ window.__REGRESS=[
          var tx=rules[j].cssText||'';
          if(tx.indexOf('titlecol')<0) continue;
          if(tx.indexOf('@media')===0){ if(/min-aspect-ratio/.test(tx)) gated=true; }
-         else if(/max-width:\s*820px/.test(tx)) base=true;
+         // v10.73: the 820 is a FLOOR inside a max() now rather than the whole
+         // cap, so this looks for the number wherever it sits in the rule.
+         else if(/max-width:[^;]*820px/.test(tx)) base=true;
        }
      }
-     if(!base)  bad.push('the 820px base width is gone, so 16:9 is no longer pinned');
+     if(!base)  bad.push('the 820px floor is gone, so a narrow screen is no longer pinned');
      if(!gated) bad.push('the aspect-gated rule is gone, so an ultrawide gets nothing');
      // CONTROL 3: the column must never be allowed to run the whole width of an
      // ultrawide, which is its own kind of unreadable.
@@ -5254,6 +5264,54 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.73',what:'the title screen uses a wide monitor instead of painting a narrow column down the middle, and its prose keeps a readable measure',
+   run:function(){
+     var bad=[];
+     if(!window.__vpAlive||!__vpAlive()) return 'SKIP: the page is not laid out';
+     var t=document.getElementById('title');
+     if(!t) return 'SKIP: this build has no title screen';
+     var col=t.querySelector('.titlecol');
+     if(!col) return 'SKIP: the title screen has no column to measure';
+     if(typeof __forceSize!=='function'||typeof __pinDPR!=='function') return 'SKIP: cannot pin the viewport';
+     var wasOn=t.classList.contains('on');
+     var shut=[];
+     Array.prototype.forEach.call(document.querySelectorAll('.modal.on'),function(e){ shut.push(e); e.classList.remove('on'); });
+     try{
+       __pinDPR(1); __forceSize(1920,1080);
+       t.classList.add('on');
+       // The screen paints inside a zoom, so the honest measure is the painted
+       // rectangle against the real viewport, not the css width.
+       if(typeof applyMenuZoom==='function') applyMenuZoom();
+       var W=window.innerWidth||1920, H=window.innerHeight||1080;
+       if(W<1600) return 'SKIP: the pane is only '+W+' wide, so a wide monitor cannot be measured';
+       var r=col.getBoundingClientRect();
+       var used=Math.round(100*r.width/W);
+       // v10.72 measured 56 percent here with 427 pixels dead on each side. The
+       // floor is well under what this build paints, 81, and well over what the
+       // old one did, so it names the fault rather than the exact layout.
+       if(used<72) bad.push('the title screen paints '+used+' percent of a '+W+' pixel monitor, leaving '+Math.round(r.left)+' pixels empty down each side');
+       if(Math.round(r.right)>W+1) bad.push('the title screen runs '+(Math.round(r.right)-W)+' pixels off the right of the screen');
+       if(Math.round(r.left)<0) bad.push('the title screen starts '+Math.round(r.left)+' pixels off the left of the screen');
+       // AND IT MUST STILL FIT DOWNWARDS, which is v9.53's rule and the reason
+       // the column was narrow in the first place.
+       if(col.scrollHeight*1>0&&Math.round(r.height)>H) bad.push('the title screen is '+Math.round(r.height)+' tall on a '+H+' screen, so it has to be scrolled');
+       // THE PROSE KEEPS A MEASURE. Widening the column turned two sentences
+       // into one 1,496 pixel line, which is worse to read than the narrow
+       // column was, so the one block of real prose is capped.
+       var intro=null;
+       Array.prototype.forEach.call(col.children,function(d){
+         if(/elites left the surface/.test(d.textContent||'')) intro=d; });
+       if(!intro) bad.push('control: the opening sentence is not on the title screen any more, so its measure cannot be checked');
+       else{
+         var ir=intro.getBoundingClientRect();
+         if(ir.width>1100) bad.push('the opening sentence runs '+Math.round(ir.width)+' pixels wide, which is one long line rather than a readable measure');
+         if(ir.width<400) bad.push('control: the opening sentence measures only '+Math.round(ir.width)+' pixels, so something else has gone wrong');
+       }
+     } finally {
+       if(!wasOn) t.classList.remove('on');
+       for(var i=0;i<shut.length;i++) shut[i].classList.add('on');
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.72',what:'the death screen counts the gun it says you lost, in the number and in the money, and still leaves an issued loaner out of both',
    run:function(){
      var bad=[];
