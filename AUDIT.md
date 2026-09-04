@@ -210,6 +210,28 @@ STILL OPEN:
 | ~~ESC should pause in the Undercroft~~ | ALREADY BUILT since v8.70, measured at v9.83 with a real Escape keypress on the floor: the pause box opens |
 | ~~The roll graphic is WRONG in the Undercroft~~ | NOT REPRODUCED at v9.83: it draws a disc, fill 0.78 against a circle 0.785, and travels 43 units |
 
+## HIS NOTES, 2026-09-04 EVENING, SEVENTH TO NINTH. He is away about 8 hours from
+## this point and the alpha is about 60 hours out.
+
+7. "X to change weapons i don't think is necessary any more given the hotbar, we
+   can remove concept of x to change weapons". Delete the swap-guns key and the
+   concept. Check every place that mentions it: the keydown handler, the legend,
+   the pause controls text, the primer, the pad map, and anything that calls
+   swapGuns from elsewhere. The two-gun carry itself stays; only X goes.
+
+8. "if i click fullscreen and then click to change the save, it kicks me out of
+   fullscreen, why??". A real bug. Likely cause to check first: changing the save
+   reloads the page or rebuilds the canvas, and a browser drops fullscreen on
+   navigation. Reproduce on the real game, not a fixture, because fullscreen
+   needs a user gesture and a real document.
+
+9. "get rid of the 'first time out' menu/screen, delete it entirely, no more
+   references to it, the player has to figure this shit out on their own".
+   Delete the primer card, its opener, its cue line, its scroll handling and
+   every string. Note this retires v10.69 and its check, which measured the cue
+   counting hidden cards; that check must go with the feature rather than be
+   left asserting a screen that no longer exists.
+
 ## HIS NOTES, 2026-09-04 EVENING, FIFTH AND SIXTH
 
 5. "change the feedback buttons at the end of a raid to something more current".
