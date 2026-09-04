@@ -103,6 +103,13 @@
   .brand { font-family:'Titan One','Rubik',sans-serif; font-weight:800; font-size:13px;
     letter-spacing:.42em; color:var(--amber); text-transform:uppercase; }
   .brand span { color:var(--ash); }
+  /* v11.09, HIS NOTE 18: the version is a readout, not the wordmark, so it is in
+     the game font. The name beside it keeps the display face on purpose. */
+  #verlabel { font-family:'Rubik',system-ui,sans-serif; font-weight:700; letter-spacing:.18em; }
+  /* v11.09: AN INPUT DOES NOT INHERIT ITS FONT. Three boxes he types into, his
+     pillager's name among them, were in the browser default. A grep for a wrong
+     family finds nothing when the rule is simply absent. */
+  input, textarea, select, option { font-family:'Rubik',system-ui,sans-serif; }
   .hubgrid { display:grid; grid-template-columns:1fr 1fr; gap:14px; flex:1; min-height:0; margin-top:12px; }
   /* THE EQUIPMENT SLOTS, v3.50. His note: "stuff you buy in requisition, its not
      clear when you are wearing your vest, etc. NEEDS TO BE MORE LIKE
@@ -1332,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.08';
+var VER='11.09';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1343,7 +1350,7 @@ var VER='11.08';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.08';
+var WHATSNEW_VER='11.09';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -27716,7 +27723,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.08: the red ring on a hit, your question. Measured: the ring is NOT your hit. A landed round pings nothing; the ring that follows is the thing you hit taking a step, and a target killed outright never steps, so there is none. The sound key that is meant to teach that was wrong twice over, with a swatch for a ring that cannot exist and the pre-v9.63 orange for pillager fire. It is built from the colour table now.',
+  now:'v11.09: the menus, measured. v10.95 put the canvas on one font and left the DOM as my word for it. Every element in the document is now read for the family it actually computes to, and they all come back the game font. Nothing needed changing, so nothing was: the only two exceptions are the game name itself and the dev text editor, both deliberate. A check holds it there from now on.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

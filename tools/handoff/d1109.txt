@@ -1,0 +1,48 @@
+## v11.09 - HIS NOTE 18, THE HALF I LEFT UNVERIFIED: THE MENUS
+
+v10.95 put the canvas on one font and its own Not verified line said: "the DOM,
+which this check does not trace, is set in the game font by the stylesheet but
+was not measured word by word". His instruction was "use the entire font across
+the entire game", and half of the game is menus.
+
+**I ALMOST REPORTED IT CLEAN.** I grepped the file for a wrong font-family and
+found none: every rule in the stylesheet names the game font, or inherits, and
+the only exceptions are the wordmark and one dev editor. That was going to be the
+finding.
+
+**THEN THE CHECK READ WHAT THE BROWSER ACTUALLY COMPUTES, and found four.**
+
+    pnamein    ARIAL       the box he types his pillager's NAME into
+    delword    ARIAL       the box he types delete into to erase a save
+    resword    ARIAL       the box he types restore into, mine, from v11.04
+    verlabel   TITAN ONE   the version, inheriting the wordmark's face
+
+**A GREP FINDS WHAT IS WRITTEN, NOT WHAT IS MISSING.** An input does not inherit
+its font in any browser; it has to be told, and three of them never were. So the
+very first thing a new player types into, the box that asks for his pillager's
+name, has been in the browser's default face for the whole life of this game, and
+searching for a wrong font could never have found it.
+
+**THE FIX** is two rules: inputs, textareas and selects take the game font, and
+the version readout beside the wordmark stops borrowing the display face, because
+it is a readout and not the name. The name itself keeps it.
+
+**NEW CHECK v11.09** walks every element in the document and reads the family the
+browser resolves, rather than the family the stylesheet asks for, because a rule
+can be overridden, a class can be absent and an inline style beats both. The two
+deliberate exceptions are named rather than pattern matched: the game's own name,
+and the dev text editor, which is monospace because it is a text editor.
+
+Three controls. At least 120 elements must have been read, or the page did not
+build and every clean line above is meaningless. At least 100 of them must be in
+the game font, or the font failed to load and everything is falling back to the
+same default. And an element in a foreign face is planted, caught and removed, so
+a clean sweep is only trusted from a sweep that has just proved it can fail.
+
+Fails on a v11.08 fixture with all four, named.
+
+Not verified: the two hundred or so elements that exist only inside panels that
+were not open when the sweep ran are covered, because getComputedStyle answers
+for a hidden element too, but anything the game builds at runtime and had not
+built yet was not read. The stash grid and the racks are built on open, and the
+sweep runs on a fresh document.

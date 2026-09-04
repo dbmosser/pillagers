@@ -1,0 +1,30 @@
+v11.09: the menus are measured, and four of them were not in the game font
+
+v10.95 put the canvas on one font and left the DOM as my word for it. His
+instruction was the entire font across the entire game, and half the game is
+menus.
+
+I almost reported it clean. A grep of every font-family in the file found nothing
+wrong. Then the check read what the browser actually computes and found four:
+pnamein in Arial, which is the box he types his pillager's name into; delword in
+Arial, the type-delete box; resword in Arial, my own restore box from v11.04; and
+verlabel in Titan One, the version inheriting the wordmark.
+
+A grep finds what is written, not what is missing. An input does not inherit its
+font in any browser. It has to be told, and three of them never were, so the
+first box a new player types into has been in the browser's default face for the
+life of this game.
+
+Two rules fix it: inputs, textareas and selects take the game font, and the
+version readout stops borrowing the display face. The name keeps it.
+
+New check v11.09 walks every element and reads the family the browser resolves
+rather than the one the stylesheet asks for. The two deliberate exceptions are
+named rather than pattern matched. Controls: at least 120 elements read, at least
+100 in the game font, and an element planted in a foreign face must be caught, so
+a clean sweep is only trusted from a sweep that has proved it can fail.
+
+Fails on a v11.08 fixture with all four named.
+
+Not verified: anything the game builds at runtime and had not built when the
+sweep ran, such as the stash grid, which is built on open.
