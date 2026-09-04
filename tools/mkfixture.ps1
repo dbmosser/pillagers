@@ -5328,6 +5328,60 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.90',what:'the bottom-right corner reserves itself and every world label that would land on it is lifted clear, which is his screenshot of EXTRACTION - OPEN drawn through SUPPORT MG',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__hud)) return 'SKIP: this fixture cannot draw a HUD';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     // THE FALLBACK IS THE OLD BUILD ON PURPOSE, not a skip: a build with no
+     // dodge at all is the fault he photographed.
+     if(typeof hudDodge!=='function')
+       return 'nothing keeps world labels out of the corner readout, which is his screenshot: a world label is drawn straight through the gun name';
+     var bad=[];
+     __runPrep(); __resetCfg(); __pinDefaults(0); __forceSize(1920,1080);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player; g.ents.length=0; p.iv=99;
+     var z=g.zones&&g.zones[0];
+     if(!z) return 'SKIP: this map has no extraction ring to label';
+     g.active=z; z.open=true;
+     // BESIDE THE RING, not at the spawn. A ring that projects off screen is
+     // culled before it can ask about anything, and every ring is off screen
+     // from the drop.
+     p.x=z.x-260; p.y=z.y-260;
+     function frame(){ for(var f=0;f<4;f++) __loop(performance.now()+f*16.7); __frame(0); __hud(); }
+     frame();
+     var _zs=(typeof w2s==='function')?w2s(z.x,z.r+18,z.y):null;
+     if(!_zs||_zs.x<-90||_zs.x>(window.innerWidth||1920)+90)
+       return 'SKIP: the ring would not project on screen here, so no label is drawn to test';
+     // 1. THE CORNER MEASURES ITSELF, and it is the corner it claims to be.
+     var B=g.cornerBox;
+     if(!B) return 'the corner readout never recorded the space it takes, so no label can know to avoid it';
+     var Wv=window.innerWidth||1920, Hv=window.innerHeight||1080;
+     if(B.w<120||B.h<40) bad.push('the reserved corner is only '+Math.round(B.w)+' by '+Math.round(B.h)+', which is smaller than the text in it');
+     if(Math.abs((B.x+B.w)-Wv)>40) bad.push('the reserved corner ends '+Math.round(Wv-(B.x+B.w))+' pixels from the right edge, so it is not where the readout is');
+     if(Math.abs((B.y+B.h)-Hv)>90) bad.push('the reserved corner ends '+Math.round(Hv-(B.y+B.h))+' pixels from the bottom, so it is not where the readout is');
+     // 2. A LABEL THAT WOULD LAND ON IT IS LIFTED, and by enough to clear it.
+     var midX=B.x+B.w/2, midY=B.y+B.h/2;
+     var lifted=hudDodge(midX,midY,60,18,0);
+     if(!(lifted<midY)) bad.push('a label dropped in the middle of the corner is not moved at all');
+     else if(lifted+4>B.y) bad.push('a label in the corner is lifted only to '+Math.round(lifted)+', still inside a box that starts at '+Math.round(B.y));
+     // 3. AND A LABEL THAT WOULD NOT IS LEFT ALONE. A dodge that moves
+     //    everything would drag every marker on the screen upward.
+     var freeY=120, freeX=Math.max(40,B.x-500);
+     if(hudDodge(freeX,freeY,60,18,0)!==freeY) bad.push('a label nowhere near the corner was moved anyway');
+     if(hudDodge(midX,120,60,18,0)!==120) bad.push('a label above the corner but in its column was moved anyway');
+     // 4. IT NEVER PUSHES A LABEL OFF THE TOP. A marker shoved off the screen is
+     //    a worse answer than one that overlaps.
+     var tall=hudDodge(midX,midY,60,B.y+40,0);
+     if(tall-(B.y+40)<0) bad.push('a tall label was lifted off the top of the screen, to '+Math.round(tall));
+     // 5. AND THE REAL LABELS ASK IT. Without this the helper could be perfect
+     //    and wired to nothing, which is exactly how his screenshot happened.
+     var realDodge=hudDodge, calls=0;
+     try{
+       hudDodge=function(a,b,c,d,e){ calls++; return realDodge(a,b,c,d,e); };
+       frame();
+     } finally { hudDodge=realDodge; }
+     if(!calls) bad.push('no world label asked about the corner while an extraction ring was open, so the helper is wired to nothing');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.89',what:'X does not swap weapons any more and says so nowhere, while every other way of bringing a gun up still works',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__keysRef&&window.__loop)) return 'SKIP: this fixture cannot drive keys through a raid';

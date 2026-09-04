@@ -40024,6 +40024,61 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.90 - HIS NOTE, WITH A SCREENSHOT: TEXT COLLISION IN THE LOWER RIGHT
+
+His picture is the reproduction: SUPPORT MG, the biggest text on the HUD, with
+the green EXTRACTION - OPEN label drawn straight through it.
+
+THE CAUSE. That label is a WORLD label. It is drawn at the extraction ring's
+projected screen position, so it goes wherever the ring happens to be. The gun
+name, the ammo and the stowed gun are HUD text pinned to the bottom-right corner,
+and they are not a panel, so nothing in the file has ever known they are there.
+Stand with an open ring down and to your right and the two land on the same
+pixels. Four other world labels can reach the same corner: a locked door, the key
+it needs, a downed man and his timer.
+
+THE FIX. The corner readout measures itself as it draws and leaves its rectangle
+on G: 230 by 119 at 1920x1080, with a floor of 180 wide so a short gun name like
+FISTS still reserves the space the ammo line under it needs. Every world label
+then asks one helper whether it would land in that rectangle, and if it would it
+is LIFTED clear, not hidden, because a marker you cannot see is a worse answer
+than a marker an inch higher. The helper refuses to lift a label off the top of
+the screen, which would be the same fault the other way up.
+
+The box is one frame old, because the world is drawn before the HUD. That is
+deliberate and safe: the corner text is pinned to the screen and its width only
+changes when the gun does.
+
+TWO MISTAKES OF MINE, BOTH CAUGHT BY THE CHECK RATHER THAN BY ME.
+
+  I put the helper inside drawHUD, beside the local it reads. It worked, because
+  both call sites are in that function and a declaration hoists within its own
+  scope, and it was invisible to everything else. The check asked whether the
+  game has a dodge at all and correctly answered no.
+
+  Then the wiring spy saw nothing. A ring that projects off screen is culled
+  before it can ask about anything, and at the drop every ring is off screen:
+  zone 0 lands at x -210 against a cull at -90. The operator is stood beside a
+  ring now, which is also the situation his screenshot was taken in.
+
+NO DIAL MOVES, per his instruction of 2026-09-04.
+
+THE CHECK asks five things: the corner measures itself and is where the readout
+actually is, within 40 pixels of the right edge and 90 of the bottom; a label
+dropped in the middle of it is lifted clear above it; a label nowhere near it,
+and one in its column but high up, are left exactly alone, because a dodge that
+moves everything would drag every marker on screen upward; a label taller than
+the screen above it is never pushed off the top; and, by replacing the helper
+with a spy for one frame, the real labels are proven to actually ask. Without
+that last one the helper could be perfect and wired to nothing, which is exactly
+how his screenshot happened.
+
+Not verified: I could not stage the exact overlap in his screenshot
+synthetically. Moving a zone to project into the corner changed no pixels there
+on the old build, so the collision depends on world geometry I did not manage to
+reproduce, and his picture remains the only sighting of it. What is proven is
+that the corner is reserved, that a label landing in it is moved out, and that
+the labels ask. Whether the lifted position looks right in play is not measured.
 ## v10.89 - HIS NOTE: X TO CHANGE WEAPONS IS NOT NEEDED ANY MORE
 
 "X to change weapons i don't think is necessary any more given the hotbar, we

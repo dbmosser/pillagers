@@ -1,0 +1,17 @@
+v10.90: world labels keep out of the corner readout
+
+His screenshot: EXTRACTION - OPEN drawn straight through SUPPORT MG. The label
+is a world label drawn at the ring's projected position; the gun name is HUD
+text pinned to the bottom-right corner and is not a panel, so nothing knew it
+was there.
+
+The corner now measures itself as it draws and leaves its rectangle on G, and
+every world label asks one helper whether it would land there. It lifts rather
+than hides, and never lifts a label off the top.
+
+Two mistakes of mine, both caught by the check: the helper first landed inside
+drawHUD where nothing else could see it, and the wiring spy saw nothing until
+the operator was stood beside a ring, because an off-screen ring is culled
+before it can ask.
+
+No dial moves.
