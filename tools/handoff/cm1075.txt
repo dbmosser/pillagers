@@ -1,0 +1,25 @@
+v10.75: the closing warning names the point the map draws
+
+Your rule, one word per thing, broken on the two messages where the name
+matters most.
+
+Every surface names an extraction point with a letter. The map draws EXTRACT
+A, B and C, the banner says EXTRACT B INCOMING, the marker over the ring says
+the same. Two messages used a number:
+
+    Extraction 3 closes in two minutes.
+    Extraction 3 is closed.
+
+Reproduced at seed 4242 on COLD STORAGE by running the raid clock down to 200
+seconds through the real frame loop. Two points close, the map draws A, B and
+C with two marked CLOSED, and the message beside it says Extraction 3.
+
+It is worse than untidy. The closed-point message says the open one is
+marked on your map, so the game sends you to the map on purpose and then
+names something that is not on it.
+
+Both call extLetter now, which is what the map and the banner already use,
+and it takes the zone rather than an index so it cannot drift.
+
+The check runs the real clock and listens to what the game says. It fails on
+a v10.74 fixture.

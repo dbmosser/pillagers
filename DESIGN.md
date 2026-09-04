@@ -40024,6 +40024,57 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.75 - THE CLOSING WARNING NAMES THE POINT THE MAP DRAWS
+
+His rule, one word per thing, broken on the two messages where the name
+matters most: the ones that make a player change his plan in the middle of
+a raid.
+
+### What it was
+
+Every surface names an extraction point with a LETTER. The map draws EXTRACT
+A, EXTRACT B and EXTRACT C. The banner across the top says EXTRACT B
+INCOMING. The inbound marker over the ring says the same. All of them come
+from one place.
+
+Two messages did not:
+
+    Extraction 3 closes in two minutes.
+    Extraction 3 is closed.
+
+Reproduced on v10.74 at seed 4242 on COLD STORAGE by running the raid clock
+down to 200 seconds through the real frame loop. Two of the three points
+close on schedule. The map draws EXTRACT A, EXTRACT B and EXTRACT C with two
+of them marked CLOSED, and the message beside it says "Extraction 3 is
+closed." A friend hears about a 3, looks at the map he has just been pointed
+at, and there is no 3 on it.
+
+It is worth more than tidiness. The closed-point message says "The open one
+is 326m away, marked on your map", so the game sends him to the map on
+purpose, and then the two announcements that got him moving use a name the
+map has never heard of.
+
+### Now
+
+Both use extLetter, which is the function the map and the banner already
+call. It takes the zone rather than an index, so it cannot drift from what
+is painted on the ring.
+
+### Measured
+
+The check runs the real clock down through the frame loop, listens to what
+the game actually says, and requires every closure announcement to name a
+letter, and that letter to be one the map would paint on a ring. A number
+anywhere in one of those lines fails it and the failure prints the line and
+the letters the map is drawing. It also carries a control that the first
+point really does read as A, so the check cannot pass by agreeing with
+itself about a name neither surface uses. On a v10.74 fixture it fails with
+the line quoted.
+
+Not verified: whether he would rather the points were numbered everywhere
+instead of lettered, which is the same fix in the other direction and his to
+choose; and the fourth and later points on maps with more than three, since
+COLD STORAGE at this seed has three and the letters run out at Z.
 ## v10.74 - THE WAY OUT OF THE RUN REPORT WAS BELOW THE FOLD
 
 Not one of his notes. Found by measuring the run report the same way v10.73
