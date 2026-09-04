@@ -40024,6 +40024,53 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.04 - HIS NOTE 14, SECOND HALF: PASTING THE CODE BACK IN
+
+v11.03 put a RESTORE CODE at the end of every report and could read one back. A
+code nobody can apply is a note in a bottle, so this is the other end of it: paste
+it in Settings, in the recorder tab, directly under the report it came out of.
+
+**IT IS DESTRUCTIVE AND IT SAYS SO.** Applying a code REPLACES the save being
+played. So it is a three step door, the same shape as the save delete he already
+has. **READ CODE** decodes it and says in plain words whose character it is and
+what it is worth: "ZQXLOST, 77 raids, $771,122, 8,899 XP, 3 items in the stash".
+Then a typed word. Then REPLACE. Nothing is written before the word is typed, and
+what the code contains is on screen before he types it, so pasting the wrong one
+is caught by reading rather than by losing a character to it. KEEP MINE backs out.
+
+**WHAT IT DOES NOT DO.** It does not restore the run log. The log is history, it
+is not in the code, and pretending to bring it back would be a lie in the one
+place that has to be trustworthy. An item id that no longer exists in the game is
+dropped rather than resurrected, because a stash key with no row in the item table
+reads undefined in every panel that draws it.
+
+**THE RELOAD IS ARMED, NOT FIRED, and that turned out to matter twice.** The page
+reloads 400 milliseconds after the restore, because everything on the floor was
+built from the profile that has just been replaced. The wait is for the profile
+WRITE: storeSet can go through a promise on a host that provides storage, and a
+page that reloads before the write lands loses the character it just restored,
+which is the one failure this feature cannot have. But a timer is invisible to a
+check, and an invisible timer is one that fires four hundred milliseconds later in
+the middle of the next check and reloads the tab, taking the corpus with it. So
+the arming is recorded where anything can read it and the handle is kept where a
+check can cancel it, which the check now does.
+
+**NEW CHECK v11.04** makes a character out of values the fallback could not
+produce, takes its code, becomes somebody else entirely, and then drives the real
+door. It requires that READING a code writes nothing; that REPLACE does nothing
+with an empty box and nothing with the wrong word; that with the right word every
+one of twenty-two fields comes back, including two of one item and one of another
+in the stash, and that the old stash is gone; that a reload is armed; and that the
+run log is untouched. Four controls: rubbish must not open the confirmation and
+must be called rubbish on screen, the word alone with nothing pasted must do
+nothing, and KEEP MINE must both close the door and disarm it.
+
+Fails on a v11.03 fixture: a restore code cannot be applied at all.
+
+Not verified: what happens when a code from a much older build is pasted into a
+much newer one, since the code carries a version number and nothing yet reads it;
+and whether he wants a restore to be allowed into an occupied save at all, rather
+than only into an empty one.
 ## v11.03 - HIS NOTE 14, FIRST HALF: A CHARACTER YOU CAN GIVE BACK
 
 "when friends give feedback the game should also log their character info -- that

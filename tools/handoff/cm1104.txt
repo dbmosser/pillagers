@@ -1,0 +1,36 @@
+v11.04: a restore code can be pasted back in
+
+The other half of his note 14. v11.03 wrote a restore code into every report and
+could read one back; a code nobody can apply is a note in a bottle.
+
+Settings, recorder tab, under the report it comes out of: paste, READ CODE, type
+a word, REPLACE. It is destructive and it says so. Reading decodes the code and
+says in plain words whose character it is and what it is worth. Nothing is
+written before the word is typed, and the contents are on screen before he types
+it, so pasting the wrong code is caught by reading rather than by losing a
+character. KEEP MINE backs out.
+
+It does not restore the run log: the log is history, it is not in the code, and
+pretending would be a lie in the one place that has to be trustworthy. An item id
+that no longer exists is dropped rather than resurrected.
+
+The reload is armed rather than fired, and that mattered twice. The page reloads
+400ms later because the floor was built from the profile just replaced, and the
+wait is for the profile write, which can be a promise on a host that provides
+storage; reloading first would lose the character just restored. A timer is
+invisible to a check, and would have fired mid corpus and reloaded the tab, so
+the arming is recorded where anything can read it and the handle kept where a
+check can cancel it.
+
+New check v11.04 makes a distinctive character, takes its code, becomes somebody
+else, then drives the real door: reading writes nothing, REPLACE does nothing on
+an empty box and nothing on the wrong word, the right word brings back
+twenty-two fields with the old stash gone, a reload is armed, and the log is
+untouched. Controls: rubbish must not open the door and must be named as rubbish,
+the word alone must do nothing, and KEEP MINE must close and disarm.
+
+Fails on a v11.03 fixture: a restore code cannot be applied at all.
+
+Not verified: what an old code does in a much newer build, since the code carries
+a version number nothing yet reads; and whether he wants a restore allowed into
+an occupied save at all.
