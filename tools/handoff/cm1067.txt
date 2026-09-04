@@ -1,0 +1,13 @@
+v10.67: the welcome pack guns go into his hands
+
+Not his note. Driving a friend's first session in an empty browser: the
+pack promises a green gun and a blue one and puts them in the armoury,
+then the first raid hands him a Scuttle, because the deploy issues a
+starter to anyone who has equipped nothing and a new character has
+equipped nothing.
+
+Taking the pack now fills his two weapon slots as well, and only slots
+that hold nothing, so a player who already chose keeps his choice. This is
+not the found-gun auto-equip he refused; that stays off.
+
+The check drives a fresh save three ways. It fails on a v10.66 fixture.

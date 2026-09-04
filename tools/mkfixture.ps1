@@ -5228,6 +5228,62 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.67',what:'the welcome pack guns go into his hands, so a new character deploys with what he was just given, and a player who already chose keeps his choice',
+   run:function(){
+     var bad=[];
+     if(!(window.__hubEnter&&window.__P&&window.__deploy&&window.__state)) return 'SKIP: this build cannot arrive and deploy';
+     if(typeof WELCOME_PACK==='undefined') return 'SKIP: no welcome pack in this build';
+     var P2=__P();
+     function shut(){ Array.prototype.forEach.call(document.querySelectorAll('.modal.on'),function(e){ e.classList.remove('on'); }); }
+     var keep={welcomed:P2.welcomed,runs:P2.runs,stash:(P2.stash||[]).slice(),weapons:(P2.weapons||[]).slice(),
+               equipped:P2.equipped,equippedSec:P2.equippedSec,primerSeen:P2.primerSeen,credits:P2.credits};
+     function fresh(){
+       shut();
+       P2.welcomed=0; P2.runs=0; P2.stash=[]; P2.weapons=[]; P2.credits=0;
+       P2.equipped='fists'; P2.equippedSec='none'; P2.primerSeen=1; P2.primerOff=true;
+       try{ saveProfile(); }catch(_s){}
+     }
+     var packGuns=(WELCOME_PACK.guns||[]).slice();
+     if(packGuns.length<2) return 'SKIP: the pack no longer carries two guns';
+     try{
+       // 1. TAKING THE PACK puts its guns in his hands, not only in the armoury.
+       fresh();
+       __hubEnter();
+       var take=document.getElementById('welcometake');
+       if(!take) return 'SKIP: this build has no welcome pack button';
+       take.onclick(); shut();
+       if(P2.equipped!==packGuns[0]) bad.push('after taking the pack his first slot holds '+P2.equipped+', not the '+packGuns[0]+' he was given');
+       if(P2.equippedSec!==packGuns[1]) bad.push('after taking the pack his second slot holds '+P2.equippedSec+', not the '+packGuns[1]+' he was given');
+       if((P2.weapons||[]).indexOf(packGuns[0])<0) bad.push('the pack gun is not in the armoury either');
+       // 2. AND HE DEPLOYS WITH IT. The issued starter is rolled fresh per raid,
+       //    so this asks what is in his hands rather than what is not.
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       if(!g||!g.player) bad.push('the raid did not build');
+       else {
+         var W=__weapons(), want=W[packGuns[0]]&&W[packGuns[0]].name;
+         var inHand=g.player.wep&&g.player.wep.name;
+         if(!inHand||inHand.indexOf(want)<0) bad.push('he went up holding '+inHand+' instead of the '+want+' from his welcome pack');
+         if(g.player.wepIssued) bad.push('he went up with an issued loaner even though the pack gave him a gun');
+       }
+       // 3. A PLAYER WHO ALREADY CHOSE KEEPS HIS CHOICE: this fills empty hands,
+       //    it is not the auto-equip he refused.
+       fresh();
+       P2.weapons=['rifle']; P2.equipped='rifle'; P2.equippedSec='none';
+       try{ saveProfile(); }catch(_s2){}
+       __hubEnter();
+       var take2=document.getElementById('welcometake');
+       if(take2){ take2.onclick(); shut(); }
+       if(P2.equipped!=='rifle') bad.push('taking the pack pushed his own rifle out of his hands (it now holds '+P2.equipped+')');
+       if(P2.equippedSec!==packGuns[1]) bad.push('the empty second slot was not filled by the pack (it holds '+P2.equippedSec+')');
+     } finally {
+       shut();
+       P2.welcomed=keep.welcomed; P2.runs=keep.runs; P2.stash=keep.stash; P2.weapons=keep.weapons;
+       P2.equipped=keep.equipped; P2.equippedSec=keep.equippedSec; P2.primerSeen=keep.primerSeen; P2.credits=keep.credits;
+       P2.primerOff=false;
+       try{ saveProfile(); }catch(_s3){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.66',what:'a brand new character meets the welcome pack and then the primer, one at a time, and the primer is still owed after a first raid instead of being stamped away unread',
    run:function(){
      var bad=[];
@@ -11914,10 +11970,29 @@ window.__vpAlive=function(){
   if(!window.innerWidth||!window.innerHeight) return false;
   return !!document.elementFromPoint(2,2);
 };
+// v10.67: the extraction card is not a modal, so showScreen cannot clear it and
+// six checks that end a raid leave it lying on top of the page. Any later check
+// that aims at the DOM then hits the card instead of what it meant to hit, which
+// is how the same corpus on the same build failed three different checks across
+// two runs. Nothing depends on the card being open at entry: the only two checks
+// that read it open it themselves. So every check starts with it shut.
+window.__topClear=function(){
+  var oc=document.getElementById('outcome'), n=0;
+  if(oc&&oc.classList.contains('on')){ oc.classList.remove('on'); n++; }
+  return n;
+};
+// And the ruler is pinned and the saved profile cleaned before the corpus runs,
+// rather than inheriting whatever the last hand probe in this tab left behind.
+window.__runPrep=function(){
+  try{ if(window.__pinDPR) __pinDPR(1); }catch(e){}
+  try{ if(window.__cleanProfile) __cleanProfile(); }catch(e){}
+};
 window.__regress=function(){
-  var res={pass:true,checked:0,fail:[],skipped:[]};
+  var res={pass:true,checked:0,fail:[],skipped:[],cleared:0};
+  __runPrep();
   for(var i=0;i<__REGRESS.length;i++){
     var t=__REGRESS[i], r=null;
+    res.cleared+=__topClear();
     res.checked++;
     try{ r=t.run(); }catch(e){ r='threw: '+e; }
     // A check that cannot run says so instead of condemning the build. Before
@@ -11936,7 +12011,8 @@ window.__regress=function(){
 // survives a hidden tab and can be polled on window.__PROG. Give it its own
 // tab: navigating the tab kills it.
 window.__regressBg=function(){
-  var res={pass:true,checked:0,fail:[],skipped:[]}, i=0;
+  var res={pass:true,checked:0,fail:[],skipped:[],cleared:0}, i=0;
+  __runPrep();
   window.__PROG={done:0,total:__REGRESS.length,cur:'',finished:false,res:null};
   var ch=new MessageChannel();
   ch.port1.onmessage=function(){
@@ -11946,6 +12022,7 @@ window.__regressBg=function(){
       __PROG.res=res; __PROG.finished=true; return;
     }
     var t=__REGRESS[i], r=null;
+    res.cleared+=__topClear();
     __PROG.cur='v'+t.v; res.checked++;
     try{ r=t.run(); }catch(e){ r='threw: '+(e&&e.stack||e); }
     if(r&&String(r).indexOf('SKIP: ')===0) res.skipped.push('v'+t.v+' '+t.what+' -> '+String(r).slice(6));

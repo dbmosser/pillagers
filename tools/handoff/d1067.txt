@@ -1,0 +1,48 @@
+## v10.67 - THE WELCOME PACK GUNS GO INTO HIS HANDS
+
+Not one of his notes. This is the second thing I found by driving a
+friend's first session in a completely empty browser, which is what
+Saturday looks like.
+
+### What it was
+
+The welcome pack says, in its own words, "a green gun and a blue one", and
+puts them in the armoury. Then the first raid hands him something else.
+
+Measured on v10.66 from a cleared browser store, playing it the way a
+person would: press START, take the pack, walk to the lift, ascend, press
+MY LOADOUT. The gun in his hands was a Scuttle, one of the four issued
+starters rolled fresh for that raid, while the armoury held pistol, smg
+and carbine and his equipped slot still held fists. That is the deploy
+working exactly as designed: it issues a starter to anyone who has
+deliberately equipped nothing, and a brand new character has deliberately
+equipped nothing. The result is that the gift is invisible in the raid it
+was given for, and the only way to see it is to find the stash and equip
+it yourself.
+
+### Now
+
+Taking the pack puts its two guns in his hands as well as in his armoury:
+the first into the first slot, the second into the second. Only into slots
+that hold nothing. A player who has already chosen a gun keeps it, and the
+pack fills whatever is still empty beside it.
+
+This is not the automatic equipping he refused on 2026-08-24. That was
+about a gun found in a raid shoving aside the gun you chose, and it stays
+off. This displaces nothing.
+
+### Measured
+
+The check drives a fresh save three ways. Taking the pack must put its two
+guns in the two slots and leave them in the armoury. Deploying must then
+put the first of them in his hands, asked as what the gun IS rather than
+what it is not, because the issued starter is rolled fresh every raid, and
+the raid must not mark it as a loaner. And a character who already owns and
+carries a rifle must still be carrying it afterwards, with only his empty
+second slot filled. On v10.66 the first two fail, with his slot holding
+fists and an issued starter in his hands.
+
+Not verified: whether a green gun and a blue one are the right two to be
+holding on a first raid rather than in reserve, which is a balance question
+and his to judge; and the stash screen's own gun cells, which read the same
+two fields and were not opened here.

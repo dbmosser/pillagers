@@ -40024,6 +40024,85 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.67 - THE WELCOME PACK GUNS GO INTO HIS HANDS
+
+Not one of his notes. This is the second thing I found by driving a
+friend's first session in a completely empty browser, which is what
+Saturday looks like.
+
+### What it was
+
+The welcome pack says, in its own words, "a green gun and a blue one", and
+puts them in the armoury. Then the first raid hands him something else.
+
+Measured on v10.66 from a cleared browser store, playing it the way a
+person would: press START, take the pack, walk to the lift, ascend, press
+MY LOADOUT. The gun in his hands was a Scuttle, one of the four issued
+starters rolled fresh for that raid, while the armoury held pistol, smg
+and carbine and his equipped slot still held fists. That is the deploy
+working exactly as designed: it issues a starter to anyone who has
+deliberately equipped nothing, and a brand new character has deliberately
+equipped nothing. The result is that the gift is invisible in the raid it
+was given for, and the only way to see it is to find the stash and equip
+it yourself.
+
+### Now
+
+Taking the pack puts its two guns in his hands as well as in his armoury:
+the first into the first slot, the second into the second. Only into slots
+that hold nothing. A player who has already chosen a gun keeps it, and the
+pack fills whatever is still empty beside it.
+
+This is not the automatic equipping he refused on 2026-08-24. That was
+about a gun found in a raid shoving aside the gun you chose, and it stays
+off. This displaces nothing.
+
+### Measured
+
+The check drives a fresh save three ways. Taking the pack must put its two
+guns in the two slots and leave them in the armoury. Deploying must then
+put the first of them in his hands, asked as what the gun IS rather than
+what it is not, because the issued starter is rolled fresh every raid, and
+the raid must not mark it as a loaner. And a character who already owns and
+carries a rifle must still be carrying it afterwards, with only his empty
+second slot filled. On v10.66 the first two fail, with his slot holding
+fists and an issued starter in his hands.
+
+### The harness poisoned itself, and it cost me two full runs
+
+The corpus failed twice on this build and named three different checks. Run
+one said v9.25 and v10.50; run two of the same corpus on the same build
+passed both of those and said v8.72 instead. Every one of them passed when
+run on its own. Three red checks and no agreement between runs is the shape
+of a broken ruler, not a broken build, so I stopped and measured the ruler.
+
+Two faults, both mine, both in the harness rather than the game.
+
+The first: the extraction card is not a modal, so showScreen cannot clear
+it, and six checks end a raid without closing it afterwards. It then lies on
+top of the page for every check that follows. v8.72 drags an item off the
+belt into the stash, and with the card up the release lands on the card, so
+the item stays where it was and the check reports his old symptom back to
+me. Proved by hand rather than by reading: v8.72 failed four times running
+with the card up and passed the moment the card was closed, with nothing
+else touched. This is the v9.82 lesson in a second place, and this time the
+answer is not one more check learning to tidy up. Every check now starts
+with the card shut, which is safe because the only two checks that read the
+card open it themselves.
+
+The second: neither runner pinned the ruler or cleaned the saved profile
+before starting, so the corpus inherited whatever the last hand probe in
+that tab had left behind. Run one inherited a deployed raid and a set of
+cosmetics from a probe of mine, which is what "the fullbeard paints nothing"
+was actually reading. Both runners now pin the display and clean the profile
+before the first check.
+
+Not verified: whether a green gun and a blue one are the right two to be
+holding on a first raid rather than in reserve, which is a balance question
+and his to judge; the stash screen's own gun cells, which read the same two
+fields and were not opened here; and whether the six checks that leave the
+extraction card up have other victims besides v8.72, since the runner now
+clears it and I did not go on to audit each of the six.
 ## v10.66 - A NEW CHARACTER ACTUALLY GETS THE BRIEFING
 
 Not one of his notes. This is the alpha: it is the first thing a friend
