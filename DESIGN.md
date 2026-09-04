@@ -40024,6 +40024,41 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.53 - THE CHEAT BOX HAS AN ALL COSMETICS SWITCH
+
+His notes, 2026-09-03 about 19:40: **"add something to the dev cheat menu to
+unlock all cosmetics"** and **"make it toggleable so if someone cuts it on
+they can cut it back off"**.
+
+### What it was
+
+The DEV CHEAT BOX handed out items and money and nothing else. Trying a rack
+he had not earned meant playing until he had, which is the wrong price for
+looking at a hat.
+
+### Now
+
+Under TAKE $100,000 there is a button that reads ALL COSMETICS: OFF or ON.
+One click sets a single flag on the profile; the ownership rule answers yes
+to every rack while it is set and falls through to the earning rules when it
+is not. Nothing earned or bought is written or cleared by the switch, so
+cutting it off returns exactly the racks he had, and a piece he is wearing
+that he no longer owns falls back the way a worn piece always has. The
+message line under the box says which way it went.
+
+### Measured
+
+The check clears the flag, counts the owned racks, renders the box, clicks
+the switch once and requires the flag on, the label ON and every rack
+owned, clicks again and requires the flag off, the label OFF and the owned
+count back to the first number, with the bought list and the earned
+counters byte for byte as they were. On v10.52 the box has no switch,
+which is the finding; on this build the check returns null.
+
+Not verified: the Depot's own tiles while the switch is on, which read the
+same ownership rule and so should show every tile as owned, but were not
+rendered by this check; and the look saves, which store ids and are
+untouched by the flag.
 ## v10.52 - THE CRATE PROMPT AND THE ITEMS-LEFT COUNT ARE BIGGER
 
 His note, 2026-09-03 about 20:00: **"'Search Crate, 1 Item left -- this text
