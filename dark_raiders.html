@@ -1267,7 +1267,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.67';
+var VER='10.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11922,7 +11922,28 @@ function grantLoot(ct,keys,delay0){
       // was load bearing for a long time and the starters still rank through it.
       var tierUp=(WTIER[itm.gk]||0)>(WTIER[p.wep.id]||0);
       var condUp=(WTIER[itm.gk]||0)===(WTIER[p.wep.id]||0)&&found.qRank>(p.wep.qRank===undefined?1:p.wep.qRank);
-      if(autoEquipOn()&&(tierUp||condUp)){
+      // v10.68, HIS NOTE of 2026-09-03: "when i find a gun it should go to the
+      // next open slot, not kick my scav pistol out of slot 1". v10.62 did this
+      // for a gun equipped out of the backpack and could not reach this path,
+      // because a better gun never gets as far as the backpack. Bare Hands is
+      // what an empty gun slot holds, the same test v10.62 uses. Both slots full
+      // is unchanged: the gun in hand is the one replaced, and whether a found
+      // gun should equip itself at all is his call, not mine.
+      var _secFree=(!p.sec||p.sec.id==='fists'||p.sec.mag===0);
+      if(autoEquipOn()&&(tierUp||condUp)&&_secFree){
+        p.sec=found; p.secAmmo=Math.ceil(found.mag/2); p.secIssued=false; p.secFromArmory=false;
+        T.gunsEquipped=(T.gunsEquipped||0)+1;
+        var _qs=(found.qRank===undefined?1:found.qRank);
+        if(_qs>(T.bestQ===undefined?-1:T.bestQ)) T.bestQ=_qs;
+        // The gun in his hands has not moved and neither has the armoury, so
+        // there is nothing to bag and nothing to splice. G.tel.weapon names what
+        // he is HOLDING and that is unchanged, so it is left alone too.
+        if(!G.sim){
+          say(found.name+' to your empty slot. '+p.wep.name+' stays in hand, X swaps.');
+          if(found.qRank>=2) blip('pickGun');
+        }
+      }
+      else if(autoEquipOn()&&(tierUp||condUp)){
         // Audit findings, both breaking. First: this guard used to be "does an
         // item exist for this gun", which is true for the ISSUED sidearm, so an
         // X-swapped loaner pistol got banked as sellable loot and the splice
@@ -27122,7 +27143,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.67: the two guns in the welcome pack go into your hands, not just into your armoury. A new character used to be given a green gun and a blue one and then handed something else entirely on his first raid.',
+  now:'v10.68: a gun you find in a raid goes into your empty second slot instead of shoving the gun out of your hands. With both slots full nothing changes: the gun you are holding is still the one it replaces.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

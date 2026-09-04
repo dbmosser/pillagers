@@ -3888,10 +3888,16 @@ window.__REGRESS=[
      // never woke him at all.
      function shoot(mode){
        __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
+       // v10.68: from zero, so the control below measures the CHARGE for shooting
+       // a peaceful man rather than whatever this profile has banked already. It
+       // read the absolute value, so on an old profile it was green before a
+       // round was fired and on a fresh one it was red for no reason.
+       try{ __P().notoriety=0; }catch(_nz){}
        var g=__state(), p=g.player, tgt=null;
        for(var i=0;i<g.ents.length;i++){ var e=g.ents[i];
          if(e.kind==='raider'&&e.hostile===false&&!e.merc&&!e.friendlyPC&&!e.downed){ tgt=e; break; } }
        if(!tgt) return null;
+       var _stood=false;
        if(mode==='ally') tgt.friendlyPC=true;
        g.ents=[tgt]; p.iv=99; p.hp=p.maxhp;
        var gun=__gun.roll('rifle');
@@ -3907,8 +3913,15 @@ window.__REGRESS=[
          // Inside his sight, with margin. He cannot shoot back at something he
          // cannot see, and reading that as the game failing is how v9.42 spent
          // three builds being wrong.
+         // v10.68: TWO SEATS, because no single one can answer both questions.
+         // CLOSE is inside his reach so he can fire back, and he is already
+         // hostile there from proximity. FAR is outside the 180 unit temper so
+         // he is still peaceful when the round lands and the charge can fire;
+         // he cannot reach back from there and is not asked to.
          var _rmax=Math.max(150,Math.min(400,(tgt.rng||300)-45));
-         var RS=[110, 150, 90, Math.round(_rmax*0.58), _rmax], ok=false;
+         var RS=[], ok=false;
+         if(mode==='far'){ for(var _rr=190;_rr<=280;_rr+=8) RS.push(_rr); }
+         else RS=[110, 150, 90, Math.round(_rmax*0.58), _rmax];
          for(var ri=0;ri<RS.length&&!ok;ri++){
            var R=RS[ri];
            for(var a=0;a<24&&!ok;a++){
@@ -3921,8 +3934,12 @@ window.__REGRESS=[
              p.x=px; p.y=py; ok=true;
            }
          }
-         if(!ok){ p.x=tgt.x+400; p.y=tgt.y; }
+         _stood=ok;
        })();
+       // No fallback stand any more. The old one dropped him at 400 units, which
+       // is outside this pillager's reach, so "he never fired back" would have
+       // been the harness reporting its own bad seat as the game failing.
+       if(!_stood) return {noStand:true,mode:mode,rng:Math.round(tgt.rng||0)};
        var M=__mouse(); M.init=true;
        var K=__keysRef(); for(var k in K) delete K[k];
        // Walk down the ladder until he actually answers. A stand he cannot shoot
@@ -3942,21 +3959,30 @@ window.__REGRESS=[
        return {landed:landed,hitAt:hitAt,hostileAt:hostileAt,backAt:backAt,stopAt:stopAt,
                watched:(stopAt>=0?520-stopAt:0),noto:(__P?(__P().notoriety||0):0),tgt:tgt};
      }
+     // SEAT ONE, CLOSE: he fights back. This is his report and the thing v9.25
+     // fixed, and it is only answerable from inside his reach.
      var a=shoot('peaceful');
      if(!a) return 'no peaceful pillager on this map and seed';
+     if(a.noStand) return 'SKIP: nowhere sighted to stand inside his '+a.rng+' unit reach';
      if(a.landed<1) return 'SKIP: could not land a round on him in 520 frames';
      if(a.hostileAt<0)
-       bad.push('shot once from 400 units and watched '+a.watched+' frames: he never turned on you');
+       bad.push('shot once and watched '+a.watched+' frames: he never turned on you');
      else if(a.backAt<0)
        bad.push('he turned hostile but never fired back in '+a.watched+' frames');
-     // CONTROL 1: the notoriety charge for shooting a man who was not fighting
-     // you must survive. notoAggress only fires while he is still peaceful, so
-     // setting the flag one line too early would delete the penalty in silence.
-     if(a.noto<1) bad.push('control: shooting a peaceful pillager no longer costs notoriety');
+     // SEAT TWO, FAR: the notoriety charge for shooting a man who was not
+     // fighting you. notoAggress only fires while he is still peaceful, so
+     // setting the hostile flag one line too early would delete the penalty in
+     // silence. It has to be read as a RISE FROM ZERO and from outside the 180
+     // unit temper, or a proximity aggro answers the question before the bullet.
+     var far=shoot('far');
+     if(!far) bad.push('control: no peaceful pillager for the notoriety seat');
+     else if(far.noStand) bad.push('control: nowhere sighted to stand outside his 180 unit temper');
+     else if(far.landed<1) bad.push('control: could not land a round on him from outside 180 units');
+     else if(far.noto<1) bad.push('control: shooting a peaceful pillager cost no notoriety, starting from zero');
      // CONTROL 2: a pillager fighting ALONGSIDE you must not be turned by a
      // stray round, or the fix reads as "any hit makes anyone an enemy".
      var b2=shoot('ally');
-     if(b2&&b2.landed>=1&&b2.tgt.hostile)
+     if(b2&&!b2.noStand&&b2.landed>=1&&b2.tgt.hostile)
        bad.push('control: a stray round turned a pillager who was fighting alongside you');
      return bad.length?bad.join('; '):null; }},
   {v:'9.26',what:'a round that goes past a pillager counts as shooting at him',
@@ -5228,6 +5254,84 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.68',what:'a gun found in a raid fills the empty second slot instead of shoving the gun out of his hands, and with both slots full it still replaces the gun in his hands',
+   run:function(){
+     var bad=[];
+     if(!(window.__startRaid&&window.__state&&window.__keysRef&&window.__loop&&window.__P))
+       return 'SKIP: this build cannot drive a raid on the play path';
+     var P2=__P();
+     var keep={eq:P2.equipped,sec:P2.equippedSec,wpn:(P2.weapons||[]).slice()};
+     function keysOff(){ var K=__keysRef(); for(var k in K) K[k]=false; return K; }
+     var floor=(WTIER['pistol']||0);
+     // The container has to hold a gun that BEATS what is in his hands, because
+     // the pickup only equips an upgrade. Nearest such container wins.
+     function findBox(g){
+       var p=g.player, best=null, bd=1e9, want=null;
+       for(var i=0;i<g.containers.length;i++){
+         var c=g.containers[i]; if(!c.loot||!c.loot.length) continue;
+         var gk=null;
+         for(var j=0;j<c.loot.length;j++){
+           var it=c.loot[j];
+           if(it.indexOf('gun_')!==0) continue;
+           var k2=it.slice(4);
+           if((WTIER[k2]||0)>floor) gk=k2;
+         }
+         if(!gk) continue;
+         var d=Math.hypot(c.x-p.x,c.y-p.y);
+         if(d<bd){ bd=d; best=c; want=gk; }
+       }
+       return best?{box:best,want:want}:null;
+     }
+     // One arm: deploy with the pistol in hand and secKey in the second slot,
+     // stand on the container and HOLD E through the real frame loop. This is
+     // the play path on purpose; the bot never runs this code.
+     function drive(secKey){
+       P2.equipped='pistol'; P2.equippedSec=secKey;
+       P2.weapons=(secKey==='none')?['pistol']:['pistol',secKey];
+       try{ saveProfile(); }catch(_s){}
+       __startRaid({mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       var f=findBox(g);
+       if(!f) return {skip:'no container near him holds a gun better than the Scav Pistol'};
+       if(p.wep.id!=='pistol') return {skip:'he did not deploy holding the Scav Pistol, he holds '+p.wep.id};
+       p.x=f.box.x; p.y=f.box.y+4;
+       var K=keysOff(); K['KeyE']=true;
+       var err=null;
+       try{ for(var i=0;i<420;i++) __loop(performance.now()+i*16.7); }catch(e){ err=String(e); }
+       keysOff();
+       var g2=__state(), p2=g2.player;
+       return {err:err, want:f.want, wep:p2.wep.id, sec:p2.sec?p2.sec.id:'(nothing)',
+               bag:g2.bag.slice(), searched:g2.tel.containers};
+     }
+     try{
+       if(window.__cleanProfile) __cleanProfile();
+       // 1. HIS NOTE: the empty slot takes it and his hands are left alone.
+       var a=drive('none');
+       if(a.skip) return 'SKIP: '+a.skip;
+       if(a.err) bad.push('looting threw: '+a.err);
+       else if(!a.searched) bad.push('he held E for 420 frames and searched nothing, so no gun was found to place');
+       else{
+         if(a.wep!=='pistol') bad.push('the '+a.want+' he found pushed the Scav Pistol out of his hands (he now holds '+a.wep+')');
+         if(a.sec!==a.want) bad.push('the '+a.want+' he found did not go to his empty second slot (it holds '+a.sec+')');
+         if(a.bag.indexOf('gun_pistol')>=0) bad.push('his Scav Pistol went in the bag even though the second slot was standing empty');
+       }
+       // 2. BOTH SLOTS FULL is unchanged, and a rifle in the second slot is
+       //    nothing the pickup could have produced by accident.
+       var b=drive('rifle');
+       if(b.skip) bad.push('the both-full arm could not run: '+b.skip);
+       else if(b.err) bad.push('looting threw with both slots full: '+b.err);
+       else if(!b.searched) bad.push('the both-full arm searched nothing');
+       else{
+         if(b.wep!==b.want) bad.push('with both slots full the '+b.want+' did not go into his hands (he holds '+b.wep+')');
+         if(b.sec!=='rifle') bad.push('with both slots full his second slot was disturbed (it holds '+b.sec+' instead of the rifle)');
+         if(b.bag.indexOf('gun_pistol')<0) bad.push('with both slots full the Scav Pistol he was holding did not go to the bag');
+       }
+     } finally {
+       keysOff();
+       P2.equipped=keep.eq; P2.equippedSec=keep.sec; P2.weapons=keep.wpn;
+       try{ saveProfile(); }catch(_s2){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.67',what:'the welcome pack guns go into his hands, so a new character deploys with what he was just given, and a player who already chose keeps his choice',
    run:function(){
      var bad=[];
@@ -6068,7 +6172,12 @@ window.__REGRESS=[
      var bad=[];
      if(typeof drawOp!=='function'||typeof cosWorn!=='function') return 'SKIP: no painter or racks in this build';
      var P2=__P();
-     var keep={face:P2.cosFace,beard:P2.cosBeard,boots:P2.cosBoots,hat:P2.cosHat,eyes:P2.cosEyes,tattoo:P2.cosTattoo};
+     var keep={face:P2.cosFace,beard:P2.cosBeard,boots:P2.cosBoots,hat:P2.cosHat,eyes:P2.cosEyes,tattoo:P2.cosTattoo,all:P2.cosAll};
+     // v10.68: cosmetics are EARNED and cosWorn silently falls back to the
+     // default for any rack the profile does not own, so this check could only
+     // ever see the racks the saved profile happened to have unlocked. The Full
+     // Beard needs ten extractions. His own v10.53 flag unlocks every rack.
+     P2.cosAll=1;
      // The Depot's own way of painting the figure: the raid painter at 5.2 on
      // its own canvas. Face 0 is facing right, the gun arm away from the head.
      function paint(){
@@ -6120,7 +6229,7 @@ window.__REGRESS=[
        // CONTROL: the eyes are where the painter puts them, a band about 6 units tall at 5.2.
        if(ey.y1-ey.y0<20||ey.y1-ey.y0>45) bad.push('control: the eye band is '+(ey.y1-ey.y0)+' rows tall, not the 31 or so the painter draws');
      } finally {
-       P2.cosFace=keep.face; P2.cosBeard=keep.beard; P2.cosBoots=keep.boots; P2.cosHat=keep.hat; P2.cosEyes=keep.eyes; P2.cosTattoo=keep.tattoo;
+       P2.cosFace=keep.face; P2.cosBeard=keep.beard; P2.cosBoots=keep.boots; P2.cosHat=keep.hat; P2.cosEyes=keep.eyes; P2.cosTattoo=keep.tattoo; P2.cosAll=keep.all;
      }
      return bad.length?bad.join('; '):null; }},
   {v:'10.49',what:'the run report carries his in-game text edits as JSON that reads back to the same maps, and nothing when there are none',

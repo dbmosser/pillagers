@@ -40024,6 +40024,108 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.68 - A FOUND GUN TAKES THE EMPTY SLOT, THE OTHER HALF
+
+His note of 2026-09-03 about 21:25: **"when i find a gun it should go to the
+next open slot, not kick my scav pistol out of slot 1"**. v10.62 answered
+this and only reached half of it. This is the half he actually described.
+
+### What it was
+
+v10.62 fixed the gun you EQUIP out of your backpack: ask for a full slot
+with the other one empty and it routes to the empty one. That code cannot
+run on the path his sentence names, because a better gun never reaches the
+backpack. The pickup equips it where it stands.
+
+Reproduced on v10.67 on the real play path, holding E through the game's own
+frame loop, COLD STORAGE at seed 4242. Scav Pistol in his hand, Bare Hands
+in the second slot, the nearest container holding a Compact SMG. After the
+search: the Compact SMG in his hand, BARE HANDS STILL IN THE SECOND SLOT,
+and the Scav Pistol in the bag. His complaint word for word, and the slot
+that should have taken the gun stood empty through the whole thing.
+
+### Now
+
+The found gun goes to the empty slot and his hands are not touched. Bare
+Hands is what an empty gun slot holds, which is the same test v10.62 uses,
+so the two halves agree on what empty means. Nothing is bagged and nothing
+is spliced out of the armoury, because the gun he was holding has not moved.
+The line names both guns and the key that swaps them.
+
+With both slots full nothing changes at all: the gun in his hands is still
+the one replaced. That is deliberate. His note of 2026-08-24 says a found
+gun should not equip itself at all, which would be a third behaviour and a
+real design decision, and that one is his to make rather than mine to slip
+in under a note about slots.
+
+### Measured
+
+The check drives both arms through the real loot path, standing on the
+container and holding E for 420 frames of the game's own loop rather than
+calling the container open. Empty second slot: the gun he found must be in
+that slot, the Scav Pistol must still be in his hands, and it must not be in
+the bag. Both slots full: the found gun must be in his hands, the rifle in
+the second slot must be undisturbed, and the pistol must be in the bag. A
+rifle is used for the full slot because it is nothing the pickup could have
+put there by accident.
+
+### Two checks that had been green for the wrong reason
+
+The corpus went red on this build naming v10.50 and v9.25. Neither is a
+regression: v10.50 fails identically on a v10.67 fixture, run as the first
+check on a freshly loaded page. What changed was not the build, it was the
+PROFILE. Driving a friend''s first session rewrote the saved profile on this
+origin to a young character, and both checks were quietly leaning on an old
+one.
+
+COSMETICS ARE EARNED. cosWorn refuses any rack the profile does not own and
+falls back to the default without a word, so writing P.cosBeard=''fullbeard''
+on a profile with eight extractions paints Clean Shaven, and the check reads
+that as "the fullbeard paints nothing". The Full Beard is earned at ten. The
+Stubble and the Goatee are gated on raids run, which this profile had, which
+is exactly why one of the three beards failed and the other two did not. The
+check now sets his own v10.53 unlock-everything flag and puts it back
+afterwards, which is what it should have done the day the racks were gated.
+
+AND v9.25 WAS WORSE, because it was green for a reason that had nothing to
+do with what it claimed. Its notoriety control read the ABSOLUTE total on the
+profile and passed at 1 or more. On a profile carrying 12 that is true before
+the check fires a round. Starting it from zero turned it red, so I measured
+it rather than believing either side, and found the check had been sitting in
+the wrong seat since it was written: a peaceful pillager turns hostile on
+PROXIMITY ALONE inside 180 units, and the stand ladder started at 110. Driven
+by hand at 110 he turns hostile at frame 4, the round lands later, and the
+charge correctly declines because by then he was already fighting. That is
+the game being right.
+
+Then the fix for that went red too, and the reason is worth writing down: the
+pillager this check picks has a reach of 187 units. He is peaceful only
+beyond 180 and can only shoot back inside 187 less a margin, so THERE IS NO
+DISTANCE THAT ANSWERS BOTH QUESTIONS. The check now takes two seats. Close,
+inside his reach, proves he fights back, which is his report and the thing
+v9.25 fixed. Far, outside his temper, proves the charge, measured as a rise
+from zero, 0 to 1. Neither assertion is asked to stand in for the other any
+more.
+
+### Found while driving a first session, not built here
+
+FIRST TIME OUT, measured on the real game at 1920x1080 from an empty
+browser: 18 cards, 1558 pixels of them, inside a 912 pixel box. Eleven are
+on screen and seven are not, the scrollbar is 5 pixels wide, and nothing in
+the card says there is more. The seven below the fold are the radio, the
+Pillbox, arranging the HUD, the Bulwark and its slab, contracts that judge
+how you played, junk building the Mainframe, and Settings being a station.
+The three it calls the ones that get people killed are all above the fold,
+and so is calling extraction, so a friend can still finish a raid; the
+Bulwark card is the one worth a life. Two columns is not the answer, because
+halving the width roughly doubles each card's height. Written up as an open
+line in AUDIT.md rather than folded into this build.
+
+Not verified: whether a found gun that is WORSE than the one in his hands
+should also fill an empty slot, which it does not today and which he has not
+asked for; whether a found gun should equip itself at all, which is his
+2026-08-24 note and a design call; and the merc and pillager pickup paths,
+which run their own equip code and were not touched here.
 ## v10.67 - THE WELCOME PACK GUNS GO INTO HIS HANDS
 
 Not one of his notes. This is the second thing I found by driving a

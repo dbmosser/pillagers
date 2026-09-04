@@ -1,0 +1,30 @@
+v10.68: a found gun takes the empty slot
+
+His note: "when i find a gun it should go to the next open slot, not kick my
+scav pistol out of slot 1". v10.62 answered the backpack-equip half of that
+and could not reach the half he actually described, because a better gun
+never gets as far as the backpack.
+
+Reproduced on the real play path, holding E through the game's own frame
+loop: Scav Pistol in hand, Bare Hands in the second slot, and the Compact
+SMG he found took his hands while the empty slot sat there.
+
+The found gun now fills the empty slot and his hands are left alone. With
+both slots full nothing changes; whether a found gun should equip itself at
+all is his 2026-08-24 note and his call to make.
+
+The check drives both arms through the real loot path. It fails on a v10.67
+fixture.
+
+Harness only, no game change, both my faults. The corpus went red naming
+v10.50 and v9.25 and neither is a regression; v10.50 fails the same way on a
+v10.67 fixture. What changed was the profile, which driving a friend's first
+session rewrote to a young character. Cosmetics are earned, so setting a
+beard the profile has not unlocked paints nothing. And v9.25 read notoriety
+as a banked total rather than a rise, which hid the fact that it had been
+standing inside the 180 unit proximity temper since it was written.
+
+Also measured and written up as an open line, not built: FIRST TIME OUT
+holds 18 cards in 1558 pixels inside a 912 pixel box at 1080p, so seven of
+them are below the fold behind a 5 pixel scrollbar with nothing saying there
+is more.
