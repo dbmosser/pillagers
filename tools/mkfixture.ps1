@@ -920,7 +920,7 @@ window.__syncReport=function(){ syncAutoEx(); return document.getElementById('re
 // driven rather than read. __load is loadOf(), a loadout helper, and calling it
 // for this proved nothing at all.
 window.__loadProfile=function(){ return loadProfile(); };
-window.__primer={open:function(){ openPrimer(); },maybe:function(){ maybePrimer(); },list:function(){ return PRIMER; }};
+
 window.__status={player:function(){ return playerStatus(); },raider:function(e){ return raiderStatus(e); },col:STATCOL};
 window.__board=function(){ renderSeason(); return ROADMAP; };
 // THE MUSIC, dry. Swaps the voice for a recorder and runs the sequencer over the
@@ -6414,73 +6414,6 @@ window.__REGRESS=[
        try{ saveProfile(); }catch(_s5){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'10.69',what:'the briefing says how many of its cards are still under the fold, the line scrolls to them, and it goes quiet at the end',
-   run:function(){
-     var bad=[];
-     if(typeof renderPrimer!=='function'||typeof openPrimer!=='function') return 'SKIP: no briefing in this build';
-     if(!window.__vpAlive||!__vpAlive()) return 'SKIP: the page is not laid out';
-     var pm=document.getElementById('primermodal');
-     var host=document.getElementById('primerlist');
-     if(!pm||!host) return 'SKIP: this build has no briefing card';
-     var mo=document.getElementById('primermore');
-     if(!mo) return 'the briefing has no line telling him there is more below';
-     var P2=__P(), keepOff=P2.primerOff, keepSeen=P2.primerSeen;
-     var wasOn=pm.classList.contains('on');
-     function hidden(){
-       var box=host.getBoundingClientRect(), k=0;
-       for(var i=0;i<host.children.length;i++){
-         if(host.children[i].getBoundingClientRect().top>=box.bottom-4) k++;
-       }
-       return k;
-     }
-     function shown(){ return mo.classList.contains('show')&&mo.getBoundingClientRect().height>0; }
-     try{
-       P2.primerOff=false; P2.primerSeen=0;
-       openPrimer();
-       if(!pm.classList.contains('on')) return 'SKIP: the briefing would not open';
-       var cards=host.children.length;
-       if(cards<4) return 'SKIP: only '+cards+' cards in the briefing, nothing could be under the fold';
-       var n0=hidden();
-       if(host.scrollHeight<=host.clientHeight+4){
-         // Nothing is hidden at this size, so the only thing to prove is silence.
-         if(shown()) bad.push('the whole briefing fits and it still claims there is more below');
-       } else {
-         if(n0<1) bad.push('control: the list is '+host.scrollHeight+' tall in a '+host.clientHeight+' box and yet no card reads as hidden');
-         if(!shown()) bad.push(n0+' of the '+cards+' briefing cards are under the fold and nothing on the card says so');
-         var said=/(\d+) more below/.exec(mo.textContent||'');
-         if(!said) bad.push('the line does not say how many are below (it reads '+JSON.stringify((mo.textContent||'').slice(0,60))+')');
-         else if(+said[1]!==n0) bad.push('the line says '+said[1]+' more below and '+n0+' cards are actually hidden');
-         // CLICKING IT MOVES THE LIST. A cue he cannot act on is only half of it.
-         var top0=host.scrollTop;
-         if(typeof mo.onclick!=='function') bad.push('the line is not clickable');
-         else{
-           mo.onclick();
-           if(host.scrollTop<=top0) bad.push('clicking the line did not move the list (still at '+host.scrollTop+')');
-           if(hidden()>=n0) bad.push('clicking the line did not bring any new card into view');
-         }
-         // AND IT GOES QUIET AT THE END, or it is a nag rather than a signal.
-         host.scrollTop=host.scrollHeight;
-         primerCue();
-         if(hidden()>0) bad.push('control: scrolled to the bottom and '+hidden()+' cards still read as hidden');
-         else if(shown()) bad.push('at the bottom of the list it still says there is more below');
-       }
-       // THE BAR IS WIDE ENOUGH TO SEE. Measured on v10.68 at 7 pixels including
-       // its border, which is what made the list read as a full page.
-       // v10.77: only when there IS one. At 4K the whole briefing fits, so there
-       // is no bar and the 1 pixel measured is the border; requiring a wide bar
-       // there failed a build that was doing exactly the right thing.
-       if(host.scrollHeight>host.clientHeight+2){
-         var bar=host.offsetWidth-host.clientWidth;
-         if(bar<10) bad.push('the briefing scrolls and its scrollbar is '+bar+' pixels wide, which is not a signal');
-       }
-     } finally {
-       host.scrollTop=0;
-       try{ primerCue(); }catch(_pc){}
-       if(!wasOn) pm.classList.remove('on');
-       P2.primerOff=keepOff; P2.primerSeen=keepSeen;
-       try{ saveProfile(); }catch(_sv){}
-     }
-     return bad.length?bad.join('; '):null; }},
   {v:'10.68',what:'a gun found in a raid fills the empty second slot instead of shoving the gun out of his hands, and with both slots full it still replaces the gun in his hands',
    run:function(){
      var bad=[];
@@ -6615,7 +6548,7 @@ window.__REGRESS=[
        try{ saveProfile(); }catch(_s3){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'10.66',what:'a brand new character meets the welcome pack and then the primer, one at a time, and the primer is still owed after a first raid instead of being stamped away unread',
+  {v:'10.66',what:'a brand new character meets the welcome pack, once, and it does not come back after a raid',
    run:function(){
      var bad=[];
      if(!(window.__hubEnter&&window.__P)) return 'SKIP: this build cannot arrive on the floor';
@@ -6637,13 +6570,16 @@ window.__REGRESS=[
        var first=openIds();
        if(first.indexOf('welcomemodal')<0) bad.push('a new character does not meet the welcome pack on arrival (open: '+first.join(',')+')');
        if(first.length>1) bad.push('a new character meets '+first.length+' windows at once on arrival: '+first.join(','));
-       // 2. TAKING THE PACK hands over to the primer instead of ending it there.
+       // 2. TAKING THE PACK closes it and leaves nothing else in the way.
+       //    v10.88: this used to assert the handover to FIRST TIME OUT, which is
+       //    deleted. What is left is the part that still matters: the pack does
+       //    not linger, and it does not open something else behind itself.
        var take=document.getElementById('welcometake');
        if(!take) return 'SKIP: this build has no welcome pack button';
        take.onclick();
        var second=openIds();
-       if(second.indexOf('primermodal')<0) bad.push('closing the welcome pack does not bring up FIRST TIME OUT (open: '+(second.join(',')||'nothing')+')');
-       if(second.length>1) bad.push('closing the welcome pack opened '+second.length+' windows: '+second.join(','));
+       if(second.indexOf('welcomemodal')>=0) bad.push('taking the welcome pack leaves it on the screen');
+       if(second.length) bad.push('taking the welcome pack opened '+second.length+' more windows: '+second.join(','));
        // 3. The pack still arrived: this is the queue, not a swap.
        if(!(P2.stash||[]).length) bad.push('taking the pack put nothing in the stash');
        if(!(P2.weapons||[]).length) bad.push('taking the pack put no gun in the armoury');
@@ -6653,22 +6589,18 @@ window.__REGRESS=[
        var no=document.getElementById('welcomeno');
        if(no){ no.onclick();
          var third=openIds();
-         if(third.indexOf('primermodal')<0) bad.push('closing the pack with CLOSE does not bring up FIRST TIME OUT (open: '+(third.join(',')||'nothing')+')');
+         if(third.indexOf('welcomemodal')>=0) bad.push('closing the pack with CLOSE leaves it on the screen');
        }
-       // 5. A NEW PLAYER WHO GOES STRAIGHT UP still meets the primer when he
-       //    comes back down. This is the one that was silently lost.
+       // 5. AND A RETURNING PLAYER IS NOT ASKED AGAIN. v10.88: steps 5 and 6
+       //    used to be about the briefing card being owed and then stopping;
+       //    the card is deleted, and what survives is that the pack is a
+       //    one-time thing.
        fresh();
        __hubEnter();          // pack up
        shut();                 // he closes it and walks to the lift
        P2.welcomed=1; P2.runs=1; try{ saveProfile(); }catch(_s2){}
        __hubEnter();          // back from his first raid
-       var fourth=openIds();
-       if(fourth.indexOf('primermodal')<0) bad.push('after one raid the primer is gone unread (open: '+(fourth.join(',')||'nothing')+', seen flag '+P2.primerSeen+')');
-       // 6. And it does stop eventually, or it becomes a nag.
-       shut();
-       P2.runs=9; P2.primerSeen=0; try{ saveProfile(); }catch(_s3){}
-       __hubEnter();
-       if(openIds().indexOf('primermodal')>=0) bad.push('the primer still opens for a player with nine raids behind him');
+       if(openIds().indexOf('welcomemodal')>=0) bad.push('the welcome pack comes back after a raid, so it is not a one-time thing');
      } finally {
        shut();
        P2.welcomed=keep.welcomed; P2.runs=keep.runs; P2.stash=keep.stash; P2.weapons=keep.weapons;
@@ -8426,8 +8358,8 @@ window.__REGRESS=[
      // THREE: the throwable hint and the what-is-new card.
      if(typeof itemUseHint==='function'){ var hint=itemUseHint(ITEMS.frag||{use:'throw'}); if(has(hint,OLDW)) bad.push('the throwable hint still says '+OLDW); }
      if(typeof WHATSNEW!=='undefined'){ var wn=WHATSNEW.join(' '); if(!has(wn,NEWW)) bad.push('the what-is-new card does not name the '+NEWW); }
-     // FOUR: the primer card.
-     var pm=document.getElementById('primermodal'); if(pm&&has(pm.textContent,OLDW)) bad.push('the primer still says '+OLDW);
+     // v10.88: the fourth surface was the FIRST TIME OUT card, which is deleted.
+     // The three above it are the ones a player still reads.
      // CONTROL: the backpack keeps its name beside it.
      if(cm&&!has(cm.textContent,'backpack')) bad.push('control: the raid panel no longer says backpack');
      return bad.length?bad.join('; '):null; }},
@@ -8997,7 +8929,7 @@ window.__REGRESS=[
                 ['barmodal',function(){ if(typeof renderBar==='function') renderBar(); openModal('barmodal'); }],
                 ['sectormodal',function(){ if(typeof renderSector==='function') renderSector(); openModal('sectormodal'); }],
                 ['cheatmodal',function(){ if(typeof renderCheat==='function') renderCheat(); openModal('cheatmodal'); }],
-                ['primermodal',function(){ openModal('primermodal'); }]];
+                ];
      for(var t2=0;t2<tries.length;t2++){
        var mid=tries[t2][0], el=document.getElementById(mid); if(!el) continue;
        try{ tries[t2][1](); }catch(e1){ continue; }
@@ -9071,11 +9003,10 @@ window.__REGRESS=[
      if(!/^PILLBOX/.test(String(e.name))) bad.push('the emplacement is named ['+e.name+']');
      var src=[];
      try{ src.push(JSON.stringify((typeof WEAKPTS!=='undefined')?WEAKPTS:{})); }catch(_e1){}
-     // The guide card and the feeling tags are read as data.
-     var cards=(typeof PRIMER!=='undefined')?JSON.stringify(PRIMER):'';
+     // v10.88: the guide cards were the FIRST TIME OUT card and are deleted. The
+     // feeling tags are still a surface a player reads, and are still read here.
      var tags=(typeof TAGS!=='undefined')?JSON.stringify(TAGS):'';
-     if(!cards||!tags) bad.push('this fixture could not read the guide cards or the feeling tags');
-     if(cards&&isWord(cards,OLDL)) bad.push('a guide card still says '+OLDL);
+     if(!tags) bad.push('this fixture could not read the feeling tags');
      if(tags&&isWord(tags,OLDL)) bad.push('a feeling tag still says '+OLDL);
      // TWO: what the raid says when it sees you. Drive the emplacement's own
      // sighting line through the real loop.
@@ -13269,52 +13200,6 @@ window.__REGRESS=[
                 ' units of walking went at him anyway, cosine '+sf.atPlayer+
                 ' toward where he really was against '+sf.atLastSeen+' toward where it saw him');
      return bad.length?bad.join('; '):null; }},
-  {v:'9.41',what:'the card new players read about XP matches what raids actually pay',
-   run:function(){
-     var bad=[];
-     // MEASURE WHAT A RAID PAYS FIRST, with nothing sold, then read what the card
-     // claims. The other way round grades a sentence against my opinion.
-     __resetCfg(); __pinDefaults(0);
-     var P=__P(); P.xp=0; P.log=[];
-     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-     var g=__state(); g.ents.length=0; g.player.iv=99;
-     __endRaid('extract');
-     var xpNoSelling=(__P().xp||0);
-     __resetCfg(); __pinDefaults(0);
-     __P().xp=0;
-     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-     var g2=__state(); g2.ents.length=0; g2.player.iv=99;
-     __endRaid('dead');
-     var xpDeath=(__P().xp||0);
-     // CONTROL FIRST: if a raid genuinely paid nothing, the old card was right and
-     // this check has nothing to say.
-     if(xpNoSelling<=0)
-       return 'SKIP: a raid with nothing sold paid no XP at all, so the card was right and there is nothing to check';
-     // The fixture ALREADY has a __primer whose list() returns this array. My
-     // duplicate was defined earlier and silently overwritten, which is the fourth
-     // name collision today. Grep before naming a shim.
-     var cards=(window.__primer&&window.__primer.list)?window.__primer.list():null;
-     if(!cards) return 'SKIP: the primer cards are not reachable from this fixture';
-     var text='';
-     for(var i=0;i<cards.length;i++) text+=' '+String(cards[i][0])+' '+String(cards[i][1]);
-     // THE FINDING. Measured: 134 XP from one extract with nothing sold, and 67
-     // from a death, while the card said "Nothing else pays XP."
-     if(/nothing else pays xp/i.test(text))
-       bad.push('a new player is told "Nothing else pays XP" and one raid with nothing sold paid '+
-                xpNoSelling+' of it');
-     if(/exactly one way to earn it/i.test(text))
-       bad.push('a new player is told there is exactly one way to earn XP, and simply finishing a raid is another');
-     // AND THE SHOP GATE IT CLAIMED. Rows carry rep 0, 1 or 2 against xp < rep, so
-     // one finished raid clears the lot before anything is sold.
-     if(/XP is what unlocks the shop/i.test(text)&&xpNoSelling>=2)
-       bad.push('a new player is told XP unlocks the shop, and one raid pays '+xpNoSelling+
-                ' against a highest gate of 2, so it gates nothing they will ever meet');
-     // CONTROL: the death halving is the one number the card still states, so it
-     // has to be true or the replacement is wrong in a new way.
-     if(Math.abs(xpDeath*2-xpNoSelling)>2)
-       bad.push('control: the card says dying pays half and a death paid '+xpDeath+
-                ' against '+xpNoSelling+' for the same raid extracted');
-     return bad.length?bad.join('; '):null; }}
 ];
 // Is the page actually laid out? A collapsed pane reports a 0x0 viewport and
 // document.elementFromPoint then returns null everywhere, which silently breaks

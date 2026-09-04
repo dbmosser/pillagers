@@ -1,0 +1,53 @@
+## v10.88 - HIS NOTE: DELETE FIRST TIME OUT ENTIRELY
+
+"get rid of the 'first time out' menu/screen -- delete it entirely, no more
+references to it -- they player has to figure this shit out on their own",
+2026-09-04.
+
+A REAL DELETION, not a stubbed function left in place. Gone: the window, its
+eighteen cards, the renderer, the under-the-fold cue v10.69 built, the scroll
+wiring, the never-show tick box, the close handler, the css for its list and its
+cue, and every mention of the word, including three shipped WHAT IS NEW lines
+and three code comments that named it in passing.
+
+Thirty-two references to zero, and the patch asserts that itself: it refuses to
+write the file unless the count is nil and the only surviving occurrence of the
+words FIRST TIME OUT is the BUILDING line announcing the removal.
+
+WHAT MUST NOT BREAK, and the reason this is not one big cut. firstRunNext is a
+CHAIN: welcome pack, then the consent question, then the card. Removing the last
+link means removing the call as well as the function, or the chain would end
+pointing at nothing. The first two links are untouched and a new character still
+meets the pack.
+
+THE TWO PROFILE FLAGS, primerOff and primerSeen, are never read or written
+again. They sit harmlessly in old saves and nothing migrates, because nothing
+depends on them any more.
+
+THE CHECKS GO WITH THE FEATURE, IN THE SAME BUILD, and they are not all the same
+case, so they are not all treated the same way:
+
+  v10.69  entirely about the card's under-the-fold cue          RETIRED
+  v9.41   entirely about one of the card's pages, the XP one    RETIRED
+  v10.66  the welcome pack THEN the card. The pack half still
+          matters, so it is kept, and it gains a line that the
+          pack does not come back after a raid                  TRIMMED
+  v10.26  one word on four surfaces, one of them the card.
+          The other three are what a player still reads         TRIMMED
+  v10.10  a window sweep that named the card in its list        TRIMMED
+
+The fixture's own hook into the card is gone too, because it called three
+functions that no longer exist. 224 checks down to 222.
+
+A check left asserting a screen nobody can open is worse than no check. It
+either fails forever, or it passes because everything it was looking for is
+missing, which is the quieter and more dangerous of the two.
+
+NO DIAL MOVES. Nothing in this build changes a balance number, an entity count
+or a map, per his instruction of 2026-09-04.
+
+Not verified: what a brand new player now meets, end to end, on a genuinely
+empty browser. The welcome pack and the consent question are proven by the
+trimmed v10.66, but nobody has walked the whole first session since the card
+was removed, and that is the thing his friends will do first. Whether the game
+teaches enough without it is his call, and he has made it.

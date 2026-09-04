@@ -1,0 +1,15 @@
+v10.88: FIRST TIME OUT is deleted
+
+His note, verbatim: delete it entirely, no more references to it. The window,
+its eighteen cards, the renderer, the under-the-fold cue, the scroll wiring, the
+never-show tick box, the close handler, the css and every mention of the word,
+including three shipped WHAT IS NEW lines and three comments. Thirty-two
+references to zero, asserted by the patch, which will not write unless the count
+is nil.
+
+The first-run chain keeps working: welcome pack, then the consent question. The
+call went with the function rather than being left pointing at nothing.
+
+Five checks touched the card and are handled separately: two retired, three
+trimmed to the parts that still mean something, plus the fixture hook that
+called functions which no longer exist. 224 checks to 222. No dial moves.

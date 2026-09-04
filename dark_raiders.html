@@ -144,9 +144,8 @@
   .plist::-webkit-scrollbar-thumb { background:var(--steel-hi); }
   /* v10.69: the briefing is the one card a new player has to finish reading, so
      its own bar is wide enough to notice and its own colour. */
-  #primerlist::-webkit-scrollbar { width:12px; }
-  #primerlist::-webkit-scrollbar-thumb { background:var(--amber); border-radius:6px; }
-  .pmore { display:none; margin-top:6px; padding:6px 10px; cursor:pointer;
+
+  .pmoreGONE { display:none; margin-top:6px; padding:6px 10px; cursor:pointer;
     font-size:14px; color:var(--amber); border:1px solid var(--steel-hi);
     border-radius:3px; text-align:center; }
   .pmore:hover { background:rgba(255,192,74,.08); }
@@ -607,7 +606,7 @@
     box-shadow:inset 0 1px 3px rgba(0,0,0,.45); padding:10px;
     overflow:auto; flex:1; line-height:1.55; white-space:pre-wrap; margin:0; }
   /* REDO slice five: the lists that never got the family border. */
-  #setlist,#primerlist,#sectorlist,#contracts,#loglist{ border:1px solid var(--steel-hi); }
+  #setlist,#sectorlist,#contracts,#loglist{ border:1px solid var(--steel-hi); }
   /* v6.74: YOUR STATS. A card grid rather than four small rows, because his note was
      that the screen has terribly poor layout, and the fix for that is hierarchy: one
      big number per card, its label above it, its recent form under it. */
@@ -1029,18 +1028,7 @@
     <button id="shareno" data-esc="1" style="padding:8px 22px;margin-left:auto">CLOSE</button>
   </div>
 </div>
-<div class="modal" id="primermodal">
-  <h3>FIRST TIME OUT</h3>
-  <div class="msub">What is worth knowing before you take the lift up. The first three are the ones that get people killed. You can bring this back any time from Settings.</div>
-  <div id="primerlist" class="plist"></div>
-  <div id="primermore" class="pmore"></div>
-  <div style="display:flex;gap:10px;margin-top:10px;align-items:center">
-    <label style="display:flex;gap:6px;align-items:center;font-size:13px;color:var(--ash);cursor:pointer">
-      <input type="checkbox" id="primernever" style="cursor:pointer"> Do not show this again
-    </label>
-    <button id="closeprimer" style="padding:8px 22px;margin-left:auto">CLOSE</button>
-  </div>
-</div>
+
 <div class="modal" id="settingsmodal">
   <h3>SETTINGS</h3>
   <div class="invtabs" id="settabs" style="padding:0 0 10px 0"></div>
@@ -1303,7 +1291,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.87';
+var VER='10.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1314,7 +1302,7 @@ var VER='10.87';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='10.87';
+var WHATSNEW_VER='10.88';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -1328,7 +1316,7 @@ var WHATSNEW=[
   'THE CARD AT THE END OF A RAID HAS A COPY REPORT BUTTON. It puts that raid and every raid before it on your clipboard, ready to paste straight to Daniel. That is the fastest way to get anything fixed.',
   'A GUN YOU FIND GOES INTO YOUR EMPTY SLOT, not over the gun in your hands. You carry two; a find fills the free one and leaves your choice alone. With both slots full the gun you are holding is still the one it replaces.',
   'F IS A MELEE STRIKE, with whatever you are holding, gun or fists. It is in both controls lists.',
-  'FIRST TIME OUT IS A REAL BRIEFING NOW. A new character reads it instead of having it painted over by the welcome pack, and the card says how many of its eighteen pages are still below the fold.',
+
   'THE SAFE POCKET TELLS YOU THE TRUTH. It only saves the item it names if you are actually carrying it, and it says NOT PACKED when you are not, on the stash screen and on the ascent check.',
   'THE END OF RAID CARD COUNTS THE GUN YOU LOST, in the number and in the money. A loaner is in neither, because you never owned it. The two buttons at the bottom stay on screen however long the ledger runs.',
   'THE TITLE SCREEN USES THE WHOLE MONITOR, and the ten stash layouts have their picker back, in Settings beside the text size.',
@@ -1349,16 +1337,16 @@ var WHATSNEW=[
   'THE BLOTTER MELTS. The frame pours down the screen in strips on clocks rolled fresh with every dose, and the pouring comes and goes.',
   'A DOWNED PILLAGER CRAWLS FOR COVER, dragging himself to the nearest spot you cannot see, bleeding all the way.',
   'THE MOUSE SAYS WHAT A PANEL WILL DO: a resize arrow at a corner, a move hand on a grip, a pointer on a button.',
-  'THE HOTBAR IS THE TACTICAL BELT, everywhere a word names it: the stash, the raid, the legends, the pause screen, the primer.',
+  'THE HOTBAR IS THE TACTICAL BELT, everywhere a word names it: the stash, the raid, the legends and the pause screen.',
   'THE STASH IS FIVE THINGS: the stash, your backpack, your tactical belt, the safe pocket and the freebie kit. Everything else that crowded it is gone. The backpack is a grid of twelve cells there and in the raid, empty cells drawn.',
   'DAY OR NIGHT IS CHOSEN ON THE SECTOR PAGE at the lift, and every ascent starts on day. A night extraction pays twenty percent more XP. The armour warning is on that page too.',
   'THE DISCOUNT FASHION DEPOT is its own station in the Undercroft. Everything there is how you look, earned by playing and never bought; four new hats, two hair colours and three fits joined the racks.',
   'THE GUNS LOOK LIKE GUNS. Every gun icon is redrawn by family, outlined part by part, so a rifle reads as a rifle and a shotgun as a shotgun at a glance.',
-  'CLOSE ON EVERY WINDOW, AND ESC CLOSES THE TOP ONE, anywhere: the stash, the lift, the bar, the Depot, Settings, the primer.',
+  'CLOSE ON EVERY WINDOW, AND ESC CLOSES THE TOP ONE, anywhere: the stash, the lift, the bar, the Depot and Settings.',
   'THE STASH TABS ARE GUNS, CONSUMABLES, PARTS, SALVAGE, KEYS AND OTHER. Plates, heals and grenades are consumables. The three loadout saves are gone.',
   'HOLD SHIFT TO SPRINT. Let go and you stop running, which is his note of 2026-09-04. CROUCH IS STILL A TOGGLE: press CTRL or C once to crouch and once to stand. Aiming down sights is held on RMB.',
   'A DOWNED PILLAGER HAS FIFTY HEALTH TICKING DOWN over sixteen seconds. Three scav pistol rounds finish him, or two of anything heavier.',
-  'THE PILLBOX. The listening machine in the walls has its name: PILLBOX, its slits, its wrecks and its line in the primer.',
+  'THE PILLBOX. The listening machine in the walls has its name: PILLBOX, its slits and its wrecks.',
   'A DRINK PAYS TWO AND A HALF PERCENT PER DOSE, on raid XP only, while Liquor or Blotter is in your blood. Wirt\u2019s offer names the item.'
 ];
 // ---------------------------------------------------------------- seeded randomness
@@ -26798,7 +26786,7 @@ function showScreen(s){
     HB.player.x=140; HB.player.y=390; HB.player.face=-0.9;
     HB.near=null; HB.eLock=true; keys={};
     renderHub();
-    // v10.66: one at a time and in order, or the pack paints over the primer
+    // v10.66: one at a time and in order, or one card paints over another
     // and a new player never reads the only card that teaches the game.
     firstRunNext();
   }
@@ -27429,7 +27417,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.87: hold SHIFT to sprint, your note. It was a toggle since v10.07, so a press and release left you running. The movement code reads the key itself now; crouch stays a toggle, which is still what you asked for. Speed, stamina and noise are all unchanged.',
+  now:'v10.88: FIRST TIME OUT is gone, your note. The window, its eighteen cards, the under-the-fold cue, the never-show tick box, the close handler and the css are all deleted, thirty-two references down to none. The welcome pack and the share question still run, in that order.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -30361,7 +30349,7 @@ document.addEventListener('keydown',function(e){
   if(!open.length) return;
   e.preventDefault(); e.stopPropagation();
   // v10.10, his answer 1: EVERY window is closed through its own door. v8.12
-  // (the tuning console's latch) and v8.20 (the primer's tick box) were two
+  // (the tuning console's latch) and v8.20 (a tick box on a card since deleted) were two
   // windows that had to be; the trader, the backpack, the ascent check and the
   // confirm box had ways out of their own that ESC bypassed. escCloseTopModal
   // presses the front window's own CLOSE, and only strips .on when it has none.
@@ -31384,92 +31372,6 @@ document.getElementById('askalt').onclick=function(){
 // right. The dev box already holds the two things that are switches rather than
 // content, so settings is its third key. The buttons in the Operator Terminal
 // still work and still sync; this is a second door onto the same two flags.
-// THE FIRST TIME OUT CARD, v3.37. His note: "lets work up a bunch of useful
-// information for a new player to show them at the beginning, instead of an
-// immediate changelog, like tell them about xbox controller support, and then
-// give them an opportunity to click a box to never see it again."
-// The changelog was already handled: v2.79 made it RETURNING PLAYERS ONLY, on
-// the reasoning that "your FIRE button NOW does..." means nothing without a
-// before. Correct, and it left a hole: a brand new player now saw nothing at
-// all. This fills that hole rather than replacing anything.
-// EVERY LINE IS SOMETHING THE GAME DOES NOT OTHERWISE TELL YOU, and several are
-// things his own notes show he did not know. The controller support in
-// particular has been in since v2.72 and is auto-detecting, so nobody has ever
-// been told it exists.
-var PRIMER=[
-  ['This is a raid, not a level','You ASCEND from the Undercroft, take what you can carry, and call for extraction to come back down. Reaching the lift with a full bag is the whole game.'],
-  ['Dying costs you everything you carried','There is no body to go back for and no insurance. Your bag and both guns are gone. Credits, XP and anything already in the stash are safe. That is the whole risk, and it is why walking out early is a real decision.'],
-  ['One of them is blind','The Listener. It has no eyes at all, so nothing about light, cover or standing still in a bush means anything to it. It hunts the noise you make. Everything else about it you can work out up there, and the screen will tell you when one is on you.'],
-  ['You carry TWO guns and the second slot can be empty','Gun 1 and gun 2, chosen on the figure in your stash or on the ascent check, and X swaps between them out there. Leaving gun 2 empty is a real choice: one gun is lighter and quieter.'],
-  ['You ascend bare','No armour on the way up. Armour Plates put it on out there - put one on a key and use it like a medkit. Each absorbs half of every hit until it is gone, up to a cap of sixty.'],
-  ['E is the verb','E searches a container, opens the Peddler, revives a downed pillager, and calls extraction when you stand in a ring. TAB or I is your backpack, M toggles the map, H cycles the controls legend.'],
-  ['XP is not the same thing as money','Credits buy things. XP is the record of what you have done, and it is what the season rewards read. Every raid pays XP whatever else happens: forty for going at all, four for every container you open, and more the further you walk. Dying pays half of that and backing out pays a quarter. Selling salvage at the terminal pays XP on top, which is why the walk to the terminal is worth making, but it is not the only thing that pays. The Peddler out in the field pays cash and no XP, so what he really sells you is the certainty of getting SOMETHING out.'],
-
-  ['Calling extraction is the loudest thing you do','Hold E in an extraction ring to call it, wait, then hold E again to extract. The heavier your backpack, the more of the map comes to meet you. Going down in the ring is not the end of it: you can extract from the floor, the screen says HOLD E TO EXTRACT, and nobody comes to pick you up, so you have to do it before you bleed out.'],
-  ['The conditions box is telling you something','Top right of the screen. Fog cuts how far you see, rain and storm cut how far you are HEARD, a blackout kills the lamps. It states the actual numbers, not the mood.'],
-  ['A purple ring means elite','About one machine or pillager in twelve is elite: twice the health, harder hits, a purple ring at its feet, and a deeper bag when it falls. The colour is the same purple the loot pips use for elite, on purpose.'],
-  ['A hired merc is a partner now','Hire one at the Bench. B cycles his orders, loot free, follow you, or hold a spot. Stand with him and E searches his bag; drag an item from yours onto him and he will actually use it. Go down and he comes for you.'],
-  ['The Undercroft has a radio','Three 16-bit pieces play down here, one picked at random each time you come back. The surface is deliberately silent, and there is no setting that changes that. The Music row in Settings is UNDERCROFT or OFF.'],
-  ['One thing out there does not chase you','The Pillbox. It is bolted to the ground on top of a cache and it never takes a step, but it fires in every direction for about fifty metres. Stand outside that and it cannot touch you. It is not a fight you have to take; it is a question about whether the cache is worth it.'],
-  ['The HUD is yours to arrange','The pillager list, the conditions box and the key legend all collapse on their corner glyph and drag anywhere. Positions stick between raids.'],
-['The Bulwark carries a wall','The big one with the slab. Shooting the slab is close to useless: it eats almost everything and all the noise you make doing it brings company. Its back is soft and it is marked, a hot orange seam you can see from across a street. It walks at you and never stops, so the fight is a circle, not a duel. Or leave it. It is slower than you are.'],
-  ['Some contracts judge how you played','Most contracts count things: kill six, open five, carry two out. Some instead set a condition on the whole raid. Walk out without a single heal. Leave without killing anything. Be gone inside three minutes. They pay well because they take away the thing you would normally reach for, and they are only banked if you actually extract.'],
-  ['Junk builds the Mainframe','The station in the top-right corner of the Undercroft. Racks are built from scrap, wire, cells and boards, and each pays 200c every time you extract alive. Slot a Data Core there and your next raid deploys with every locked-room key and every elite marked on the map.'],
-  ['Settings are a station in the Undercroft','Walk to SETTINGS and press E for the raid dials and display options. In a raid, H cycles the full controls list; picking up a better gun equips it on its own.']
-];
-function renderPrimer(){
-  var host=document.getElementById('primerlist');
-  if(!host) return;
-  var html='';
-  for(var i=0;i<PRIMER.length;i++){
-    html+='<div class="row"><div style="flex:1"><b>'+PRIMER[i][0]+'</b>'+
-          '<div class="hint">'+PRIMER[i][1]+'</div></div></div>';
-  }
-  host.innerHTML=html;
-  var cb=document.getElementById('primernever');
-  if(cb) cb.checked=!!P.primerOff;
-  // v10.69: the list is taller than the box it sits in and a scrollbar alone is
-  // not a signal, so the card says how many cards are still under the fold and
-  // scrolls to them when the line is clicked.
-  host.onscroll=primerCue;
-  var mo=document.getElementById('primermore');
-  if(mo) mo.onclick=function(){ host.scrollTop+=Math.max(120,host.clientHeight-60); primerCue(); };
-}
-// Counted off the rendered page rather than from the card list, because what is
-// hidden depends on the height of the box and the size of the text, and both
-// change with the window and with his text size dial.
-function primerCue(){
-  var host=document.getElementById('primerlist'), mo=document.getElementById('primermore');
-  if(!host||!mo) return 0;
-  function count(){
-    var box=host.getBoundingClientRect(), k=0;
-    for(var i=0;i<host.children.length;i++){
-      if(host.children[i].getBoundingClientRect().top>=box.bottom-4) k++;
-    }
-    return k;
-  }
-  // TWICE. The line lives in the same column as the list, so showing it shortens
-  // the box by its own height and pushes one more card under the fold. Counting
-  // once printed a number that stopped being true the instant it was printed.
-  // Two passes settle it: if the line is wanted it stays wanted, so this cannot
-  // flip back and forth.
-  var n=0;
-  for(var pass=0;pass<2;pass++){
-    n=count();
-    if(n>0){ mo.textContent=n+' more below. Click here, or scroll the list.'; mo.classList.add('show'); }
-    else { mo.textContent=''; mo.classList.remove('show'); }
-  }
-  return n;
-}
-function openPrimer(){
-  renderPrimer();
-  openModal('primermodal');
-  // After the window is up, or every rectangle is zero and the count is a lie.
-  primerCue();
-}
-// Shown once, to a profile that has never finished a raid, and only if he has not
-// ticked the box. P.primerSeen is stamped on CLOSE rather than on open, so
-// closing the tab mid-read does not burn it.
 // v10.29, his note: the welcome pack. Two guns a tier apart, so the difference
 // between green and blue is there to feel, and the consumables a first raid
 // actually uses.
@@ -31509,8 +31411,9 @@ function maybeShareAsk(){
 function firstRunNext(){
   if(document.querySelector('.modal.on')) return;   // he is reading one already
   if(typeof maybeWelcome==='function'&&!P.welcomed){ maybeWelcome(); if(document.querySelector('.modal.on')) return; }
-  if(typeof maybeShareAsk==='function'){ maybeShareAsk(); if(document.querySelector('.modal.on')) return; }
-  if(typeof maybePrimer==='function') maybePrimer();
+  // v10.88, HIS NOTE: the briefing card used to be the third link in this chain
+  // and is deleted. The welcome pack and the share question are untouched.
+  if(typeof maybeShareAsk==='function') maybeShareAsk();
 }
 function maybeWelcome(){
   if(P.welcomed){ maybeShareAsk(); return; }
@@ -31541,21 +31444,10 @@ function maybeWelcome(){
     md.classList.remove('on');
     try{ if(typeof renderHub==='function') renderHub(); }catch(e){}
     try{ say2('The welcome pack is in your stash.'); }catch(e2){}
-    firstRunNext();   // v10.39: the question follows the pack; v10.66: and the primer follows that
+    firstRunNext();   // v10.39: the consent question follows the pack
   };
   document.getElementById('welcomeno').onclick=function(){ P.welcomed=1; saveProfile(); md.classList.remove('on'); firstRunNext(); };
   openModal('welcomemodal');
-}
-function maybePrimer(){
-  if(P.primerOff||P.primerSeen) return;
-  // v7.88 stamped this away for any profile with a raid behind it, so that a
-  // long-standing save would not meet the onboarding card late. v10.66: that
-  // also silenced it for the player it was written for, because the welcome
-  // pack painted over it on the one arrival where runs was still 0. It is owed
-  // until it has been READ, and three raids is where a new player has stopped
-  // being new.
-  if((P.runs||0)>3){ P.primerSeen=1; saveProfile(); return; }
-  openPrimer();
 }
 // PLAIN WORDS INSTEAD OF DIALS, v3.41. His note: "can we give the player like all
 // kinds of setting toggles that they will actually understand instead of the
@@ -31891,13 +31783,7 @@ document.getElementById('devtoolsbtn').onclick=function(){
 document.getElementById('closedev').onclick=function(){
   document.getElementById('devmodal').classList.remove('on');
 };
-document.getElementById('closeprimer').onclick=function(){
-  var cb=document.getElementById('primernever');
-  P.primerOff=!!(cb&&cb.checked);
-  P.primerSeen=1;
-  saveProfile();
-  document.getElementById('primermodal').classList.remove('on');
-};
+
 document.getElementById('closesettings').onclick=function(){
   document.getElementById('settingsmodal').classList.remove('on');
 };
