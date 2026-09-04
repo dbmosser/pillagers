@@ -40075,6 +40075,16 @@ bottom and requires the line to be gone. It also requires the scrollbar to
 be at least 10 pixels, measured against v10.68's 7. On a v10.68 fixture it
 fails on the first assertion, because the line does not exist at all.
 
+### The count changed the thing it was counting
+
+My first cut was wrong and the new check caught it on its first run: the line
+said 10 more below and 11 cards were actually hidden. The line lives in the
+same column as the list, so showing it shortens the box by its own height and
+pushes one more card under the fold. The number was out of date the instant
+it was printed. It is counted twice now, so what is printed is what is true
+once the line is on the page. It cannot flip back and forth, because a line
+that is wanted stays wanted once it is up.
+
 Not verified: whether the seven cards under the fold are the right seven to
 be there, which is an editing decision and his; the card at text sizes other
 than the default, since the count is computed live but only the default was
