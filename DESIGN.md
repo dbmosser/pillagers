@@ -40024,6 +40024,57 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.70 - THE LOADOUT NUMBER COUNTS WHAT IS ACTUALLY GOING UP
+
+The ascent panel is headed LOADOUT with "Xc going up" beside it. That is the
+number he reads before deciding what to risk, and it was counting the wrong
+thing.
+
+### What it was
+
+It was computed from the BACKPACK GRID, and the grid is deliberately not the
+whole loadout. Since v6.60 a copy claimed by a tactical belt key is taken out
+of the grid, because an item is in the backpack or on the belt and never
+both, which is his own rule and correct. The header borrowed that list and
+so inherited the subtraction.
+
+Reproduced on v10.69 in the Undercroft with a medkit, a plate and a servo
+packed:
+
+    backpack 3 packed, 0 on keys      LOADOUT 860c going up
+    medkit moved to key 3             LOADOUT 650c going up
+
+Nothing left the loadout. The medkit is worth 210 and it goes up either way;
+it just stopped being drawn in the grid. So the one number that says what
+you are carrying fell by a fifth for putting a medkit where it belongs.
+
+The safe pocket was worse: never counted at all. A bandage worth 60 in the
+safe pocket moved the number not at all, and the safe pocket is the one
+thing that survives your death, so it is the last item that should be
+invisible in what you are carrying.
+
+### Now
+
+The header counts the loadout: the whole backpack including the copies that
+live on keys, plus the safe pocket. The three labels under it are untouched
+and still split it up, because "Backpack N packed" is a statement about the
+grid and is right as it stands, and "N on keys" and the safe pocket count
+say the rest.
+
+### Measured
+
+The check packs three items of different values, reads the header, then puts
+one of them on a key and requires the number NOT to move while the backpack
+count does. Then it puts a fourth item worth 60 in the safe pocket and
+requires the number to rise by exactly 60. Then a control that would catch a
+frozen number: actually leaving the first item behind must take its value
+off. On a v10.69 fixture the first assertion fails, naming the item and both
+totals.
+
+Not verified: the value of a gun equipped from the armoury, which goes up
+with you as well and is not in any of these three places, so it is outside
+what this number has ever claimed to cover; and whether he wants the number
+to be sale value or replacement cost, which is a design question and his.
 ## v10.69 - THE BRIEFING SAYS HOW MUCH OF IT YOU HAVE NOT READ
 
 Not one of his notes. Found by driving a friend's first session in an empty

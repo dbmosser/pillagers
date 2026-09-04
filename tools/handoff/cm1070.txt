@@ -1,0 +1,19 @@
+v10.70: the loadout number counts what is actually going up
+
+The ascent panel reads LOADOUT with "Xc going up" beside it, which is the
+number you read before deciding what to risk, and it was counting the
+backpack grid rather than the loadout.
+
+The grid is deliberately not the loadout: an item on a tactical belt key is
+taken out of it, on your own rule that an item is in one place or the other
+and never both. The header borrowed that list and inherited the subtraction.
+
+Reproduced in the Undercroft: a medkit, a plate and a servo read 860c. Move
+the medkit onto key 3, which moves nothing out of the loadout, and it reads
+650c. The safe pocket was never counted at all, and that is the one thing
+that survives your death.
+
+It counts the whole backpack including the copies on keys, plus the safe
+pocket. The labels under it are untouched.
+
+The check fails on a v10.69 fixture.
