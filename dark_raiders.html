@@ -1263,7 +1263,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.54';
+var VER='10.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13138,11 +13138,19 @@ if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam+7.5*
     // which is his litter answer and also free navigation memory.
     if(wading) p.wetT=6;
     if(p.wetT>0) p.wetT-=dt;
-    p.printAcc=(p.printAcc||0)+dt;
-    var pintv=sprint?0.22:0.34;
-    if(p.printAcc>=pintv&&!G.sim){
+    collide(p,G.map.walls);
+    // v10.55, his note: "sprint footprint glitch is still happening". The
+    // stamp was keyed to time with a key held, and taken before the wall push,
+    // so pinned against a wall the boots piled prints under him at a spot he
+    // could not stand. It is keyed to ground actually covered now, after the
+    // push: one print every 56 units, which is what a walk and a sprint both
+    // came to in the open, and none at all when he is going nowhere.
+    var _pdx=p.x-ox,_pdy=p.y-oy,_pdd=Math.sqrt(_pdx*_pdx+_pdy*_pdy);
+    p.printAcc=(p.printAcc||0)+_pdd;
+    var pintv=56;
+    if(p.printAcc>=pintv&&_pdd>0.01&&!G.sim){
       p.printAcc=0; p.printSide=!p.printSide;
-      var pma=Math.atan2(my,mx),poff=p.printSide?1:-1;
+      var pma=Math.atan2(_pdy,_pdx),poff=p.printSide?1:-1;
       var ppx=p.x+Math.cos(pma+1.5708)*4*poff,ppy=p.y+Math.sin(pma+1.5708)*4*poff;
       // DARKER, LARGER, MORE OBVIOUS, v5.31, his words. Wet boots track a real
       // stain; dry boots still scuff the dirt visibly instead of almost not.
@@ -13154,8 +13162,7 @@ if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam+7.5*
           a:p.wetT>0?.62:.34,a0:p.wetT>0?.62:.34,rot:pma,print:1,mine:1,t:0,life:6});
       }
     }
-    collide(p,G.map.walls);
-    T.distance+=dist({x:ox,y:oy},p);
+    T.distance+=_pdd;
   } else { p.noiseAcc=0; p.moving=false; p.bob+=dt*1.2; T.tStill+=dt; collide(p,G.map.walls); }
   if(crouch) T.tCrouch+=dt;
   if(!G.sim) tickBuzz(dt);
@@ -26844,7 +26851,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.54: OUTFITS. A new rack at the top of the Depot with seven full-body suits that overrule every other slot: the Skeleton, the Machine, the Trooper, the Android, the Tomb Explorer, the Baller and the Street Poet. Own Clothes puts the racks back in charge.',
+  now:'v10.55: footprints follow the ground you actually cover, one every 56 units after the wall push, so sprinting into a wall no longer piles prints under you at a spot you could not stand.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

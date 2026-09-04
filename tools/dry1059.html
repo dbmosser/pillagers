@@ -37243,10 +37243,15 @@ window.__REGRESS=[
        if(!G||!G.ents||!G.ents.length) return 'no raid';
        G.sim=false;
        var asked=[]; sfx=function(t2,x,y,k){ asked.push(t2+':'+k); };
-       var victim=null; for(i=0;i<G.ents.length;i++){ var e=G.ents[i]; if(e.kind==='crawler'||e.kind==='sentry'){ victim=e; break; } }
+       // The nearest machine, and the operator moved beside it: a body past the
+       // detail radius is not updated at all, so a far one would never be culled.
+       var victim=null, vd=1e9, pp=G.player;
+       for(i=0;i<G.ents.length;i++){ var e=G.ents[i]; if(e.kind!=='crawler'&&e.kind!=='sentry') continue; var dd=Math.hypot(e.x-pp.x,e.y-pp.y); if(dd<vd){ vd=dd; victim=e; } }
        if(!victim) return 'SKIP: no machine on the map to kill';
+       var keepPx=pp.x, keepPy=pp.y; pp.x=victim.x+60; pp.y=victim.y;
        var vk=victim.kind; victim.hp=0; victim.byPlayer=true;
        var tt=performance.now(); for(i=0;i<3;i++){ tt+=16.7; __loop(tt); }
+       pp.x=keepPx; pp.y=keepPy;
        if(asked.indexOf('die:'+vk)<0) bad.push('a '+vk+' at zero hit points was culled without asking for its death sound (asked: '+asked.join(',')+')');
      } finally { AC=keepAC; BUS=keepBUS; sfx=keepSfx; if(G&&keepSim!==null) G.sim=keepSim; }
      return bad.length?bad.join('; '):null; }},
@@ -37267,8 +37272,9 @@ window.__REGRESS=[
          createStereoPanner:function(){ var o=node('pan'); o.pan=param(0,L,'pan'); return o; },
          createDelay:function(){ var o=node('dly'); o.delayTime=param(0,[],'d'); return o; }};
      }
-     var keepAC=AC, keepBUS=BUS, keepSim=(G?G.sim:null);
+     var keepAC=AC, keepBUS=BUS, keepSim=(G?G.sim:null), keepBlip=blip;
      try{
+       blip=_realBlip;   // the fixture stubs blip to a counter; the real steps and the enemy tick call blip, not _realBlip
        var a=fake(); AC=a; BUS=a.createGain(); a.log.length=0;
        function foot(surf,stance){ a.log.length=0; _realBlip('foot',180,0,surf,stance); return a.log.slice(); }
        function sig(lg){ return lg.filter(function(x){ return /^(buf|start|flt[:=]|osc[:=])/.test(x); }).map(function(x){ return x.replace(/[:=](-?\d+)$/,function(m,d){ return ':'+Math.round(+d/2000)*2000; }); }).join('|'); }
@@ -37311,7 +37317,7 @@ window.__REGRESS=[
        var woodBody=a.log.filter(function(x){ return /^osc:1[4-6]\d{3}$/.test(x); }).length;
        if(!a.log.length) bad.push('an enemy step in a building scheduled nothing');
        else if(!woodBody) bad.push('an enemy step in a building carries no wood body (150 hertz)');
-     } finally { AC=keepAC; BUS=keepBUS; if(G&&keepSim!==null) G.sim=keepSim; }
+     } finally { AC=keepAC; BUS=keepBUS; blip=keepBlip; if(G&&keepSim!==null) G.sim=keepSim; }
      return bad.length?bad.join('; '):null; }},
   {v:'10.56',what:'every gun schedules its own voice, no two alike, each shot a little different from the last, and reload and dry fire schedule sounds of their own',
    run:function(){
