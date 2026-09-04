@@ -1,0 +1,19 @@
+v11.15: the route grid is padded for the body that walks it
+
+Closes the v10.84 line "finds a route and does not walk it". Measured on v11.14
+at seed 4242: 7 of 13 COLD STORAGE buildings delivered a crawler onto a player
+outside; 15 and 18 had a route and never left.
+
+Three places did not know how big the walker is: the route grid was padded 12
+for bodies of 15, door cells were opened with no padding so a waypoint could sit
+on a jamb, and the string pull tested a zero width line and straightened across
+corners the body cannot round. navD is padded 15 now while map.nav stays at 12
+and keeps placing, door cells sit 15 clear of both jambs, the pull tests the
+body's width, and a waypoint is done at 10 or at 30 only when the next one can
+be walked straight to. That last rule came from the building 8 guard failing on
+my first cut.
+
+After: 10 of 13. Route existence unchanged on both maps.
+
+Not verified: the extract rate, and the mile by walking. navBody 0 restores all
+four old rules at once.

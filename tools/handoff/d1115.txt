@@ -1,0 +1,57 @@
+## v11.15 - THE ROUTE GRID IS PADDED FOR THE BODY THAT WALKS IT
+
+The third build in a row on machines getting out of buildings, and the one that
+closes the v10.84 line "finds a route and does not walk it".
+
+**MEASURED FIRST, on v11.14 at seed 4242.** One crawler in the middle of each
+building on COLD STORAGE with open ground outside it, the player on that ground,
+the chase held on, a fresh deploy per trial, fifteen seconds each. **7 of 13
+buildings deliver the crawler onto the player.** Building 5 has no route.
+Buildings 15 and 18 HAVE a route and the crawler never leaves the building.
+
+**TRACED, both of them.** Building 18: the door runs 2695 to 2759 on the east
+wall and the route's waypoint sits at 2728,2696, one unit inside the top jamb. A
+body of radius 15 steering at it walks into the wall beside the door and stands
+there. Building 15: the string pull straightens the route from 3176,1934 to
+3240,1976 with a zero width line that grazes the end of a partition at
+3216,1960; the body catches on that corner at 3226,1949 and stays.
+
+**WHY.** The route grid is padded 12 for bodies of radius 15, so a route cell
+can be a place the body cannot stand; door cells were opened with no padding at
+all, so a waypoint could sit on a jamb; and the pull tested a line with no width,
+so it straightened across corners the body cannot round. Three places that did
+not know how big the walker is.
+
+**THE FIX, and why the world does not move.** The ROUTE grid, map.navD, is now
+built padded 15 while map.nav stays at 12 and keeps deciding what the map places
+where, so entities and containers are untouched. Door cells must sit 15 clear of
+both jambs. The pull tests three lines, the centre and one a body's width either
+side, with the edges asked only when the centre passes so the cost lands on
+accepted corners. And the follower counts a waypoint done at 10 units, or at 30
+only when it can go straight to the next one; at a plain 30 it turned for the
+next waypoint while still inside the door and walked into the jamb, which the
+building 8 guard caught on my first cut.
+
+**MEASURED AFTER, the same sweep on v11.15: 10 of 13.** Buildings 15 and 18 walk
+out and are on the player at 36 and 34 units, building 11 joins them, and every
+building that delivered before still does. Building 19 leaves at four seconds
+and is still 109 units off at fifteen, as before; building 6 leaves and is far
+off, as before; building 5 has no route either way. Route existence is
+unchanged: the same three buildings across both maps have no route with either
+grid, so nothing was closed by the wider pad.
+
+**NEW CHECK v11.15** drives the crawler out of buildings 15 and 18, each by its
+fingerprint, and requires it to leave and be on the player inside 60 units in
+fifteen seconds. Controls: with navBody 0 neither crawler may leave its building
+in ten seconds, or the old grid does not show the fault; the route grid must open
+a different number of door cells with the dial on and off, or the dial builds
+nothing different; and the building 8 crawler must still reach the player, which
+is the guard that failed on the first cut at 255 units. On a v11.14 fixture the
+finding fires for both buildings.
+
+Not verified: the extract rate, for the third build running, and THE COLD MILE by
+walking. Route existence was measured on both maps; the walk sweep was COLD
+STORAGE only, thirteen buildings, and the mile has fifty nine. The paired run at
+the 320-seed standard is several hours here and was not run. navBody 0 restores
+the old grid, the old door cells, the zero width pull and the plain 30, all at
+once.
