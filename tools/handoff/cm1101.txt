@@ -1,0 +1,31 @@
+v11.01: the end of raid buttons ask about this game
+
+His note: "change the feedback buttons at the end of a raid to something more
+current".
+
+Reproduced by reading the list, whose own comment dates it to v5.72. Eight of the
+twenty-four were one-machine questions from that era: Listener beatable and
+unfair, Pillbox worth it and a chore, Bulwark great and unfair, Howler great and
+unfair. All four machines still exist and he has logged dozens of runs against
+them, so those are answered by his own log rather than open. Nothing from the
+last thirty builds had a tag at all, and there was no way to say "it crashed" or
+"it looked wrong", which are the two things a friend cannot tell him any other
+way.
+
+That matters now because his friends are about to play and a tag is the only
+feedback most people ever give.
+
+The new set is thirty tags, every one judgeable in a single raid, opening with
+Something crashed, Something looked wrong and Sound was off, then readability,
+feel, what he carried, who was up there, the newest systems, the place, and
+getting out. Old records keep their strings.
+
+New check v11.01 requires a way to say it crashed, looked wrong, sounded wrong
+and read badly, allows at most two of the eight old questions to survive, forbids
+duplicates and over-long labels, and then drives the real thing: deploy, end the
+raid, press two buttons on the real card, press a third twice, press the real way
+out, and require the two on the logged run and the third absent. Fails on a
+v11.00 fixture with all five findings.
+
+Not verified: whether he agrees with the eight I removed, and how thirty tags
+wrap at 1440p and 4K.

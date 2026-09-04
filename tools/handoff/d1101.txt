@@ -1,0 +1,50 @@
+## v11.01 - HIS NOTE: THE FEEDBACK BUTTONS AT THE END OF A RAID ARE OLD
+
+"change the feedback buttons at the end of a raid to something more current",
+2026-09-04.
+
+**REPRODUCED BY READING THE LIST, and its own comment dates it.** Twenty-four
+tags, with this written above them at v5.72: "the two music tags went where the
+music went. These two are the live unknowns instead: the Listener teaching was
+rewritten at v5.60 and nobody has tested it on a human, and the Choir has never
+been fought at all."
+
+Eight of the twenty-four were one-machine questions from that era: Listener
+beatable, Listener unfair, Pillbox worth it, Pillbox a chore, Bulwark great,
+Bulwark unfair, Howler great, Howler unfair. Every one of those machines still
+exists, and he has logged dozens of runs against them since, so those questions
+are answered by his own log rather than open. Meanwhile **nothing from the last
+thirty builds had a tag at all**: not the grid backpack, not the hotbar, not
+being downed and crawling, not the map screen, not the Undercroft, not the
+weather he now chooses, and above all not "this crashed" or "this looked wrong",
+which are the two things a friend cannot tell him any other way.
+
+**WHY THIS ONE MATTERS MORE THAN IT LOOKS.** His friends are about to play. A tag
+is the only feedback most people will ever give, and the run report is the only
+channel back. A tag row full of questions about a machine somebody has not met
+yet, with no way to say "it broke", wastes the alpha.
+
+**THE NEW SET, thirty tags, every one judgeable in a single raid.** It opens with
+the three he cannot get any other way, Something crashed, Something looked wrong,
+Sound was off, then readability, which is where most of his own notes come from,
+then feel, then what he carried and the room he keeps it in, then who was up
+there, then the three newest systems, then the place and his oldest complaint,
+then getting out. Old records keep their old strings, because a tag is just text
+on a run row.
+
+**NEW CHECK v11.01** requires a way to say it crashed, that something looked
+wrong, that the sound was off and that text was hard to read; requires no more
+than two of the eight v5.72 one-machine questions to survive; requires no
+duplicates, nothing too long for the row, and a count between twelve and forty.
+Then it drives the real thing: deploy, end the raid, press two buttons on the
+real card, press a third twice, press the real way out, and require the two to
+be on the logged run and the third, which was pressed twice, not to be. Controls:
+the card must have drawn a button for every tag in the list, there must be a way
+out of the card, and the run must have reached the log at all.
+
+Fails on a v11.00 fixture with all five findings, including all eight stale
+buttons named.
+
+Not verified: whether he agrees with the eight I removed, which is a judgement
+about what is still open and is his to overrule; and how thirty tags wrap on his
+1440p and 4K screens, since the check counts them and does not measure the row.

@@ -1308,7 +1308,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.00';
+var VER='11.01';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1319,10 +1319,11 @@ var VER='11.00';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.00';
+var WHATSNEW_VER='11.01';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE BUTTONS AT THE END OF A RAID ARE NEW. They start with SOMETHING CRASHED, SOMETHING LOOKED WRONG and SOUND WAS OFF, because those are the three things you cannot tell us any other way. Press as many as you like; they go into the report with the run.',
   'YOU CHOOSE THE WEATHER NOW, on the same page as the map and the surface. SURPRISE ME leaves it to the roll, which is what it always was. RAIN, FOG, BLACKOUT and STORM pay 1.1x XP because they cut your sight or kill the lamps, and that stacks with the night bonus, so a hard night pays 1.32x.',
   'PILLAGERS WEAR HATS, BEARDS AND TATTOOS NOW, and so does the crowd in the Undercroft. They always rolled them and none of it was ever drawn, because the code that draws them sat behind a branch meant only for your own fringe. Your fringe is still yours alone.',
   'RENAMING YOUR PILLAGER NO LONGER THROWS. It saved the name and then crashed before updating the line under the title, four times in the last run report, because the button carried its own copy of that sentence. It calls the one that everything else uses.',
@@ -1788,15 +1789,32 @@ var DISTRICTS=[
 // asks about the systems that are actually live and the questions actually
 // open. Evergreens stay; retired problems go; his old tags on old runs still
 // print because the strings are stored on the run.
-var TAGS=['Felt great','Too easy','Too hard','Too dark',
-  // v5.72: the two music tags went where the music went. These two are the live
-  // unknowns instead: the Listener teaching was rewritten at v5.60 and nobody
-  // has tested it on a human, and the Choir has never been fought at all.
-  'Listener beatable','Listener unfair','Pillbox worth it','Pillbox a chore',
-  'Bulwark great','Bulwark unfair',
-  'Howler great','Howler unfair','Pillagers felt human','Pillagers felt dumb',
-  'Extract too easy','Extract too tense','Loot boring','Loot exciting',
-  'Maps feel samey','This map has character','Ran out of ammo','New machines too rare'];
+// v11.01, HIS NOTE: THE TAGS ARE THE FEEDBACK. Rewritten for the alpha, because
+// his friends are about to play and a tag is the only feedback most people ever
+// give. The v5.72 set asked eight one-machine questions from an era he has since
+// answered with dozens of logged runs, and had nothing at all about the last
+// thirty builds. Every button below is something a person can judge in one raid,
+// and the first three lines are what he most needs to hear from someone who is
+// not him: it broke, it looked wrong, I could not read it.
+var TAGS=[
+  // The two a friend cannot tell him any other way.
+  'Something crashed','Something looked wrong','Sound was off',
+  // Readability, which is where most of his own notes come from.
+  'Text hard to read','Could not find myself on the map','Menus confusing',
+  // The overall feel.
+  'Felt great','Too easy','Too hard','Too dark',
+  // The things carried and the room they live in.
+  'Inventory fiddly','Hotbar worked well','Loot boring','Loot exciting',
+  'Nothing worth carrying','Ran out of ammo','Undercroft confusing',
+  // Who is up there.
+  'Pillagers felt human','Pillagers felt dumb','Machines too tough',
+  'Machines pushovers','Died to something I never saw',
+  // What he changed most recently and cannot judge alone.
+  'Downed and crawling worked','Weather choice worth it','Night not worth it',
+  // The place, and his oldest open complaint.
+  'Maps feel samey','This map has character',
+  // Getting out.
+  'Extract too easy','Extract too tense'];
 // v10.97, HIS NOTE 12: the two parts a gun repair eats, named here so the thing
 // that decides what is salvage can ask rather than carry its own copy.
 var REPAIR_PARTS={light:'comp',heavy:'servo'};
@@ -27619,7 +27637,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.00: weather is a choice on the sector page, your note, and the hard ones pay your 1.1x. SURPRISE ME is the old roll and stays the default. Rain, fog, blackout and storm pay the bonus because they cut sight or kill the lamps, asked of the weather table rather than kept as a list. It stacks with night, so a hard night pays 1.32x. The seeded roll still happens whatever you pick, or the map itself would change.',
+  now:'v11.01: the feedback buttons at the end of a raid, your note. The old twenty-four were the open questions of v5.72, eight of them one-machine questions you have since answered with dozens of runs, and nothing at all from the last thirty builds. The new thirty lead with the three a friend cannot tell you any other way: it crashed, it looked wrong, the sound was off.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
