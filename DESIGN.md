@@ -40024,6 +40024,79 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.76 - HIS TEN STASH LAYOUTS GET THEIR PICKER BACK
+
+v7.66 was his order: "ten layouts and a button". v7.72 he picked 6 as the
+default. v9.98 took the stash screen down to five things, and the LAYOUT
+button went with the row it lived in. Its own comment records the cost:
+"the arrangement stays at the default and the other nine rules in the CSS
+are inert."
+
+Nine of his ten layouts have been unreachable ever since.
+
+### What it was
+
+Measured on the real game at 1920x1080 with a sixty item stash:
+
+    layout 6 asks for columns at least 230 css px holding a 56px icon
+    the stash grid holds 2,322 pixels of content in a 477 pixel box
+    THREE CELLS ARE FULLY VISIBLE AT A TIME
+    the only buttons on the screen are CLOSE, Sell all salvage, and
+    TAKE THE FREEBIE KIT
+    there is no laybtn anywhere in the document
+
+I looked at it as well as measuring it, and the screenshot says the same
+thing: six enormous boxes, each holding one small icon, for a stash of
+sixty.
+
+### Now
+
+The big cells are HIS PICK and they stay exactly as they are. What comes
+back is the choice. The picker sits in Settings beside Text size rather than
+back on the stash screen he deliberately simplified, because it is a display
+option and that is where the other one already lives. It cycles 1 to 10 and
+wraps, the same shape as the text size button above it, and it says which
+one is on.
+
+applyStashLayout stays the only writer of the attribute the CSS reads, so
+the setting and the screen cannot disagree.
+
+### Measured
+
+The check fills a stash, requires the picker to exist and to name the layout
+that is on, clicks it ten times and requires all ten to be reached and the
+tenth click to come back to where it started. Then it opens the stash screen
+and measures the grid itself at layout 6 and at layout 7: the attribute must
+follow the setting, 7 must draw more columns than 6, and the cells must
+actually be smaller. On a v10.75 fixture it fails on the first assertion,
+because there is no picker at all.
+
+### The corpus caught me and it was right
+
+The full run failed on two checks that had nothing to do with the layouts:
+the WHAT IS NEW card was still stamped v10.61 against a build at v10.76, so
+a friend opening the game on Saturday would read news fifteen builds old.
+
+That is my miss, over fifteen builds. I have been updating the DEVNOW line
+every build, which the parse gate enforces, and never the card, which is a
+different field with a deliberately different rule: WHATSNEW_VER moves only
+when the LIST changes, so the card does not nag on every measurement-only
+build. The price of that rule is remembering to move it when the list really
+does change, and I did not. It is exactly the failure v10.60 caught, also at
+fifteen builds stale.
+
+The card now carries the player-facing half of v10.62 to v10.76: the Copy
+report button, a found gun filling the empty slot, F as a melee strike, the
+briefing a new character actually reads, the safe pocket saying when it is
+not protecting anything, the death screen counting the gun, and the title
+screen and stash layouts. Seven lines, straight after the line that says
+this is an alpha.
+
+Not verified: the other eight layouts drawn and looked at, since the check
+measures 6 against 7 and reads the attribute for the rest; whether he wants
+the picker in Settings or back on the stash screen, which is his call and
+easy to move; and whether 6 is still the default he wants now that the other
+nine can be reached again.
 ## v10.75 - THE CLOSING WARNING NAMES THE POINT THE MAP DRAWS
 
 His rule, one word per thing, broken on the two messages where the name

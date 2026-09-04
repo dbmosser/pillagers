@@ -1,0 +1,24 @@
+v10.76: your ten stash layouts get their picker back
+
+v7.66 was your order, ten layouts and a button. v7.72 you picked 6 as the
+default. v9.98 took the stash screen down to five things and the button went
+with the row it lived in, and its own comment says what that cost: the other
+nine rules in the CSS are inert.
+
+Measured on the real game at 1920x1080 with a sixty item stash: the grid
+holds 2,322 pixels of content in a 477 pixel box and three cells are fully
+visible at a time. There is no layout button anywhere in the document. I
+looked at it as well as measuring it and it is six enormous boxes each
+holding one small icon.
+
+The big cells are your pick and they stay. What comes back is the choice. It
+sits in Settings beside the text size rather than back on the screen you
+simplified, cycles one to ten and wraps, and says which one is on.
+
+The check reaches all ten and then measures the grid actually changing. It
+fails on a v10.75 fixture.
+
+The corpus also caught something with nothing to do with layouts, and it was
+right: the WHAT IS NEW card was still stamped v10.61 against a build at
+v10.76, so a friend would have read news fifteen builds old. My miss over
+fifteen builds. It carries the player-facing half of v10.62 to v10.76 now.

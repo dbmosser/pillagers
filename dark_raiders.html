@@ -1294,7 +1294,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.75';
+var VER='10.76';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1305,10 +1305,17 @@ var VER='10.75';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='10.61';
+var WHATSNEW_VER='10.76';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE CARD AT THE END OF A RAID HAS A COPY REPORT BUTTON. It puts that raid and every raid before it on your clipboard, ready to paste straight to Daniel. That is the fastest way to get anything fixed.',
+  'A GUN YOU FIND GOES INTO YOUR EMPTY SLOT, not over the gun in your hands. You carry two; a find fills the free one and leaves your choice alone. With both slots full the gun you are holding is still the one it replaces.',
+  'F IS A MELEE STRIKE, with whatever you are holding, gun or fists. It is in both controls lists.',
+  'FIRST TIME OUT IS A REAL BRIEFING NOW. A new character reads it instead of having it painted over by the welcome pack, and the card says how many of its eighteen pages are still below the fold.',
+  'THE SAFE POCKET TELLS YOU THE TRUTH. It only saves the item it names if you are actually carrying it, and it says NOT PACKED when you are not, on the stash screen and on the ascent check.',
+  'THE END OF RAID CARD COUNTS THE GUN YOU LOST, in the number and in the money. A loaner is in neither, because you never owned it. The two buttons at the bottom stay on screen however long the ledger runs.',
+  'THE TITLE SCREEN USES THE WHOLE MONITOR, and the ten stash layouts have their picker back, in Settings beside the text size.',
   'A NEW CHARACTER GETS A WELCOME PACK: a green gun and a blue one, heals, plates and grenades, offered once, the first time down.',
   'FULL-BODY OUTFITS. A new rack at the top of the Depot, above everything else: the Skeleton, the Machine, the Trooper, the Android, the Tomb Explorer, the Baller and the Street Poet. An outfit overrules every other rack; Own Clothes puts them back in charge.',
   'EVERY GUN HAS ITS OWN VOICE. Sixteen guns used to share eleven; the Magnum and the Longshot borrowed the rifle. Each one now has its own crack, its own weight and, if it earns one, the room answering. Reloading, the bolt going home and an empty gun all make a sound.',
@@ -27184,7 +27191,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.75: the two warnings about an extraction point closing call it by the same letter the map does. They said "Extraction 3" while the map beside them drew EXTRACT A, B and C, so the one message that makes you change your plan named something that was not on the map.',
+  now:'v10.76: your ten stash layouts have their picker back, in Settings beside the text size. The button that chose them was removed with the row it lived in, so for the last while nine of the ten were unreachable and the stash showed three items at a time.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31504,6 +31511,13 @@ function renderSettings(){
     '<div class="row"><div style="flex:1"><b>Text size</b><div class="hint">Scales every string on every canvas and in every panel.</div></div>'+
     '<button id="set_text" style="padding:6px 12px">'+Math.round(uiScale()*100)+'%</button></div>'+
     // v8.77: MUS_THEMES holds FIVE and musPick draws uniformly from all of them.
+    // v10.76: his ten layouts got their picker back. v7.66 was "ten layouts and
+    // a button"; v9.98 took the stash screen down to five things and the button
+    // went with the row it sat in, leaving nine arrangements as dead CSS. This
+    // is a display option, so it sits beside Text size rather than back on the
+    // screen he simplified.
+    '<div class="row"><div style="flex:1"><b>Stash layout</b><div class="hint">Ten arrangements of the stash and backpack grids. Lower numbers are roomier cells and fewer of them; higher numbers pack more items on screen. 6 is the default.</div></div>'+
+    '<button id="set_layout" style="padding:6px 12px;min-width:110px">'+clamp(P.stashLayout||6,1,10)+' of 10</button></div>'+
     '<div class="row"><div style="flex:1"><b>Music</b><div class="hint">A faint 16-bit loop, five pieces, one picked at random each time you come back down. UNDERCROFT plays it, OFF is silence. The surface is deliberately silent either way.</div></div>'+
     '<button id="set_music" style="padding:6px 12px;min-width:110px">'+MUSIC_NAMES[musicMode()]+'</button></div>'+
     // v8.75: it is every SECOND raid, not every raid, and on this machine the
@@ -31545,6 +31559,17 @@ function renderSettings(){
       if(HB) HB=buildHub();   // the floor is rebuilt with or without the box
       renderSettings();
     }; })();
+  // v10.76: cycles 1 to 10 and wraps, the same shape as the text size button
+  // above it. applyStashLayout is the one writer of the attribute, so the stash
+  // screen cannot disagree with what this says.
+  var _sl=document.getElementById('set_layout');
+  if(_sl) _sl.onclick=function(){
+    P.stashLayout=(clamp(P.stashLayout||6,1,10)%10)+1;
+    saveProfile();
+    try{ applyStashLayout(); }catch(_e){}
+    try{ renderHub(); }catch(_e2){}
+    renderSettings();
+  };
   document.getElementById('set_text').onclick=function(){
     var _uc=uiScale(),_ni=-1;
     for(var _ui=0;_ui<UISCALES.length;_ui++){ if(UISCALES[_ui]>_uc+0.001){ _ni=_ui; break; } }
