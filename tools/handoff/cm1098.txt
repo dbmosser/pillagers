@@ -1,0 +1,39 @@
+v10.98: the crash in his run report, and it was mine
+
+From his flight recorder: "v10.96 error on hub x4: Uncaught ReferenceError: sub
+is not defined at psv.onclick". Four times.
+
+I did this at v10.96. Renaming your pillager also updates the name line under the
+title, and it did that with a third hand-written copy of that sentence, reading a
+variable named sub that lived beside it. v10.96 wrapped that sentence in a
+function so the pause box could reuse it when it puts the screen back up, which
+moved sub inside the function and left the rename button pointing at a name that
+no longer existed in its scope. The name still saved, because saveProfile runs
+first, then the handler threw and the line never changed.
+
+The fix is the one v10.96 should have made: the rename button calls the same
+function everything else calls. A crash caused by having two copies of a sentence
+is not fixed by restoring the second one.
+
+New check v10.98 puts the character screen up, types a name the fallback could
+never produce, presses SAVE, and requires no throw, the profile to carry the name
+and the line under the title to show it. Then it presses every other button on
+that screen except the three that leave it, erase a save or need a real gesture.
+Controls: an error inside a DOM handler does not propagate to the caller, so the
+check listens on the window and then proves the listener by clicking a button
+that throws on purpose; and at least one button must have been pressed. Against a
+v10.97 fixture it reports his exact words back.
+
+His two runs are authenticated and consumed. Run 1: COLD STORAGE in fog at dawn,
+59 seconds, EXTRACT with 2,685 credits from a single container, 18 shots at 67
+percent, four crawlers down, revived twice by raiders. Run 2: 13 seconds,
+ABANDON with 460 credits and no shot fired.
+
+Not verified: whether the crash broke anything else on that screen in his
+session, and why run 2 was abandoned at 13 seconds.
+
+And my first version of that check reloaded the tab and moved his save pointer:
+pressing every button includes NEW PILLAGER, which writes a new active slot and
+reloads. It killed a corpus run and left the pointer on slot 4. Skipped by name
+now, the pointer restored in a finally, with a control requiring both dangerous
+buttons to have been found under those names.

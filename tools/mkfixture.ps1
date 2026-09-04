@@ -5361,6 +5361,80 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.98',what:'every control on the character screen can be pressed without throwing, and renaming your pillager updates the line under the title',
+   run:function(){
+     var ti=document.getElementById('title');
+     if(!ti) return 'SKIP: there is no character screen in this document';
+     if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, so no click can land';
+     var bad=[], prof=__P();
+     var keepName=prof.pname, keepRuns=prof.runs, wasOn=ti.classList.contains('on');
+     // THE ONE KEY THAT MAY NOT MOVE. It decides which save boots, and a check
+     // that leaves it pointing somewhere else has changed his character.
+     var keepSlot=null; try{ keepSlot=localStorage.getItem('salvagerun:activeSlot'); }catch(_ls){}
+     // THE CRASH HE REPORTED, FROM HIS OWN LOG: pressing SAVE on the name threw
+     // ReferenceError four times, saved the name, and never updated the line.
+     // Errors inside a DOM handler do not propagate to the caller, so a check
+     // that just clicks and carries on would see nothing. It listens.
+     var caught=[];
+     function onErr(ev){ caught.push(String((ev&&ev.message)||ev)); }
+     window.addEventListener('error',onErr);
+     try{
+       ti.classList.add('on');
+       prof.runs=Math.max(1,prof.runs||0);        // the line only draws with a run logged
+       var pin=document.getElementById('pnamein'), psv=document.getElementById('pnamesave');
+       var sub=document.getElementById('titlesub');
+       if(!pin||!psv) return 'SKIP: this build has no rename control on the character screen';
+       if(!sub) return 'SKIP: this build draws no name line under the title';
+       // Distinctive on purpose: a name the fallback could never produce, so a
+       // line that happens to say PILLAGER cannot pass for a rename.
+       var want='ZQXNAME'+(prof.runs);
+       sub.textContent='';
+       pin.value=want;
+       psv.click();
+       if(caught.length) bad.push('renaming your pillager threw: '+caught.join(' / '));
+       if(prof.pname!==want) bad.push('the rename did not take, the profile says '+prof.pname);
+       if(String(sub.textContent).indexOf(want)<0)
+         bad.push('the line under the title still reads '+(sub.textContent||'nothing')+' after the rename');
+       // CONTROL ONE: the listener has to be able to hear a throw, or the first
+       // assertion above is decoration.
+       var heard=caught.length;
+       var boom=document.createElement('button');
+       boom.onclick=function(){ throw new Error('zqx control throw'); };
+       document.body.appendChild(boom);
+       try{ boom.click(); }catch(_bc){}
+       document.body.removeChild(boom);
+       if(caught.length===heard) bad.push('control: a deliberate throw inside a click was not heard, so this check cannot see his crash');
+       caught.length=0;
+       // CONTROL TWO: and every other button on that screen survives a press.
+       // His crash was one handler out of several and nothing was watching any
+       // of them.
+       // SKIP:  titlestart leaves the screen, titlefs needs a real user gesture,
+       //        DELETE arms an erase, delgo performs it, and NEW PILLAGER writes
+       //        the active slot pointer and RELOADS THE TAB.
+       var SKIP={titlestart:1,titlefs:1,delgo:1,newgame:1};
+       var btns=ti.querySelectorAll('button'), pressed=0, found={};
+       for(var i=0;i<btns.length;i++){
+         var b=btns[i], id=b.id||'';
+         if(SKIP[id]){ found[id]=1; continue; }
+         if(b.getAttribute('data-del')) continue;             // arms a deletion
+         try{ b.click(); pressed++; }catch(e){ bad.push('pressing '+(id||'a button')+' on the character screen threw: '+e.message); }
+       }
+       // CONTROL: the two dangerous ones have to have been on the screen and
+       // skipped. If the ids ever change, this check would start pressing them.
+       if(!found.newgame) bad.push('control: the new pillager button was not found by the name this check skips it under, so it may have been pressed');
+       if(!found.titlestart) bad.push('control: the start button was not found by the name this check skips it under');
+       if(caught.length) bad.push('a button on the character screen threw: '+caught.join(' / '));
+       if(pressed<1) bad.push('control: no button on the character screen was pressable, so nothing was tested');
+     } finally {
+       window.removeEventListener('error',onErr);
+       try{ if(keepSlot===null) localStorage.removeItem('salvagerun:activeSlot');
+            else localStorage.setItem('salvagerun:activeSlot',keepSlot); }catch(_ls2){}
+       prof.pname=keepName; prof.runs=keepRuns;
+       try{ saveProfile(); }catch(_sp){}
+       ti.classList.toggle('on',wasOn);
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.97',what:'nothing the game wants is classified as salvage, and the sell button will not clear it',
    run:function(){
      if(typeof RECIPES==='undefined'||typeof ITEMS==='undefined') return 'SKIP: this build has no item tables';

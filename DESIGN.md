@@ -40024,6 +40024,67 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.98 - HIS RUN REPORT: A CRASH ON THE CHARACTER SCREEN, AND IT WAS MINE
+
+From his flight recorder of 2026-09-04, two real runs and a crash block:
+
+    v10.96 error on hub x4: Uncaught ReferenceError: sub is not defined
+      at psv.onclick (dark_raiders.html:32475)
+
+**I DID THIS AT v10.96, AND HE HIT IT FOUR TIMES.** Renaming your pillager on the
+character screen also updates the name line under the title, and it did that with
+a third hand-written copy of that sentence, reading a variable named `sub` that
+lived beside it. v10.96 wrapped that sentence in a function so the pause box
+could reuse it when it puts the screen back up, which moved `sub` inside the
+function, and left the rename button pointing at a name that no longer existed in
+its scope. The name still saved, because saveProfile runs first, then the handler
+threw and the line under the title never changed.
+
+**THE FIX IS THE ONE v10.96 SHOULD HAVE MADE.** The rename button calls the same
+function everything else calls, so there is one copy of that sentence rather than
+three. A crash caused by having two copies is not fixed by restoring the second
+one.
+
+**NEW CHECK v10.98** puts the character screen up, types a name the fallback
+could never produce, presses SAVE, and requires no throw, the profile to carry
+the new name, and the line under the title to show it. Then it presses every
+other button on that screen except the three that leave it, erase a save or need
+a real user gesture, and requires none of them to throw either, because his crash
+was one handler out of several and nothing was watching any of them.
+
+Two controls, and the first is what makes the rest mean anything: **an error
+inside a DOM handler does not propagate to the caller**, so a check that clicks
+and carries on sees nothing at all. This one listens on the window, and then
+proves the listener works by clicking a button that throws on purpose and
+requiring that to be heard. The second is that at least one button was actually
+pressed.
+
+Run against a v10.97 fixture the check reports his exact words back:
+"renaming your pillager threw: Uncaught ReferenceError: sub is not defined".
+
+**HIS TWO RUNS, authenticated and consumed.** Run #1, COLD STORAGE in fog at
+dawn, 59 seconds, EXTRACT with 2,685 credits from a single container, 18 shots at
+67 percent, four crawlers down, one down of his own and revived twice by raiders,
+two walls broken, one story read. Run #2, 13 seconds, ABANDON with 460 credits
+carried and no shot fired, closest extract 96m. Both real: real durations, real
+distance moved, a named weapon.
+
+**AND THE CHECK I WROTE FOR IT DID SOMETHING WORSE, WHICH I OWN.** Pressing every
+button on that screen includes NEW PILLAGER, which writes a new active slot to
+storage and RELOADS THE TAB. It killed the corpus run mid-flight and left the
+save pointer on slot 4. A check may press a button that ends a raid; it may not
+press one that navigates, and it may not touch the slot pointer at all, because
+that pointer decides which save boots and it is the one key in this game that has
+never been allowed to move. It is skipped by name now, the pointer is read before
+and put back in a finally whatever happens, and a control requires both dangerous
+buttons to have actually been found under the names the skip list uses, so a
+rename of either cannot quietly start pressing them again.
+
+Not verified: whether the crash also broke anything else he did on that screen in
+that session, since the recorder keeps the message and not what he pressed next;
+and his run #2 abandoning at 13 seconds is unexplained, which is a question for
+him rather than a defect I can measure.
+
 ## v10.97 - HIS NOTE 12: A CONTRACT TARGET IS NOT SALVAGE
 
 "anything that can be used to craft or for a contract, etc. should not be
