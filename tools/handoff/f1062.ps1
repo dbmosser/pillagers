@@ -12,67 +12,51 @@ function SubRx([string]$old, [string]$new) {
 }
 
 SubRx @'
-  {v:'10.57',what:'a step schedules heel then sole with the surface tell, no two alike, a sprint louder than a walk, left and right alternate, and an enemy step carries the surface under it',
+  {v:'10.61',what:'the Undercroft plays slower, darker and softer: no bright square leading the tune, seventy-six a minute, a closed filter, half the shimmer and a held bass',
 '@ @'
-  {v:'10.62',what:'each kind schedules its own death, a hit on plate and a hit on a man differ, the Bulwark has a voice, the idle voices never repeat exactly, and a death on the play path asks for the death sound',
+  {v:'10.62',what:'a found gun takes the empty weapon slot instead of turning out the gun in hand, and with both slots full it still replaces the one asked for',
    run:function(){
      var bad=[];
-     if(typeof _realBlip!=='function'||typeof VOICE==='undefined'||!window.__startRaid||!window.__loop) return 'SKIP: this build has no real blip or live loop to trace';
-     function param(v,log,name){ var o={_v:v}; Object.defineProperty(o,'value',{get:function(){ return o._v; },set:function(x){ o._v=x; log.push(name+'='+Math.round(x*100)); }}); ['setValueAtTime','exponentialRampToValueAtTime','linearRampToValueAtTime','setTargetAtTime'].forEach(function(m){ o[m]=function(x){ log.push(name+':'+Math.round(x*100)); return o; }; }); return o; }
-     function fake(){
-       var L=[]; var node=function(kind){ var o={kind:kind,connect:function(){ return o; },disconnect:function(){},start:function(){ L.push('start:'+kind); },stop:function(){}}; return o; };
-       return {currentTime:0,sampleRate:48000,state:'running',destination:node('dest'),resume:function(){},log:L,
-         createBuffer:function(ch,len){ L.push('buf:'+len); return {length:len,getChannelData:function(){ return new Float32Array(len); }}; },
-         createBufferSource:function(){ return node('src'); },
-         createOscillator:function(){ var o=node('osc'); o.type='sine'; o.frequency=param(440,L,'osc'); o.detune=param(0,[],'det'); return o; },
-         createBiquadFilter:function(){ var o=node('flt'); o.type='lowpass'; o.frequency=param(350,L,'flt'); o.Q=param(1,[],'q'); return o; },
-         createGain:function(){ var o=node('gain'); o.gain=param(1,[],'g'); return o; },
-         createStereoPanner:function(){ var o=node('pan'); o.pan=param(0,[],'p'); return o; },
-         createDelay:function(){ var o=node('dly'); o.delayTime=param(0,[],'d'); return o; }};
+     if(!(window.__startRaid&&window.__equipBag&&window.__weapons&&window.__state)) return 'SKIP: this build cannot equip from the bag';
+     __startRaid({seed:4242,mapIx:0});
+     var G=__state(); if(!G||!G.player) return 'no raid';
+     var p=G.player, W=__weapons();
+     function mk(id){ var g={}; for(var k in W[id]) g[k]=W[id][k]; g.q='field'; g.qRank=1; return g; }
+     function set(handId,secId){
+       p.wep=mk(handId); p.ammo=p.wep.mag; p.wepIssued=false; p.wepFromArmory=false; p.reloading=0;
+       p.sec=mk(secId);  p.secAmmo=p.sec.mag; p.secIssued=false; p.secFromArmory=false;
+       G.bag.length=0;
      }
-     var keepAC=AC, keepBUS=BUS, keepSim=(G?G.sim:null), keepSfx=sfx;
-     try{
-       var a=fake(); AC=a; BUS=a.createGain();
-       function call(type,arg){ a.log.length=0; _realBlip(type,0,undefined,arg); return a.log.slice(); }
-       function sig(lg){ return lg.filter(function(x){ return (/^(buf|start|flt|osc)/).test(x); }).map(function(x){ return x.replace(/[:=](-?\d+)$/,function(m,d){ return ':'+Math.round(+d/1500)*1500; }); }).join('|'); }
-       var kinds=['raider','crawler','sentry','snitch','warden','bulwark','listener'], sigs={};
-       for(var i=0;i<kinds.length;i++){
-         var lg=call('die',kinds[i]);
-         if(!lg.length){ bad.push('a '+kinds[i]+' dies silently'); continue; }
-         var sg=sig(lg);
-         for(var j in sigs) if(sigs[j]===sg&&!((j==='warden'&&kinds[i]==='bulwark'))) bad.push('a '+kinds[i]+' and a '+j+' die with the same sound');
-         sigs[kinds[i]]=sg;
-       }
-       var hm=call('hitm','sentry'), hr=call('hitr','raider');
-       if(!hm.length) bad.push('a hit on plate schedules nothing');
-       if(!hr.length) bad.push('a hit on a man schedules nothing');
-       if(hm.length&&hr.length&&sig(hm)===sig(hr)) bad.push('a hit on plate and a hit on a man schedule the same sound');
-       if(!VOICE.bulwark||VOICE.bulwark.v!=='grind') bad.push('the Bulwark has no voice of its own');
-       var g1=call('grind',0), g2=call('grind',1);
-       if(!g1.length) bad.push('the grind schedules nothing');
-       if(g1.length&&sig(g1)===sig(g2)) bad.push('the Bulwark hunting sounds the same as the Bulwark idle');
-       var s1=call('servo',0), s2=call('servo',0);
-       if(s1.join('|')===s2.join('|')) bad.push('two servo sweeps in a row are identical');
-       var d1=call('dish',0), d2=call('dish',0);
-       if(d1.join('|')===d2.join('|')) bad.push('two dish creaks in a row are identical');
-       // The play path: an entity at zero hit points asks for its death sound when the frame culls it.
-       __startRaid({seed:4242,mapIx:0});
-       if(!G||!G.ents||!G.ents.length) return 'no raid';
-       G.sim=false;
-       var asked=[]; sfx=function(t2,x,y,k){ asked.push(t2+':'+k); };
-       // The nearest machine, and the operator moved beside it: a body past the
-       // detail radius is not updated at all, so a far one would never be culled.
-       var victim=null, vd=1e9, pp=G.player;
-       for(i=0;i<G.ents.length;i++){ var e=G.ents[i]; if(e.kind!=='crawler'&&e.kind!=='sentry') continue; var dd=Math.hypot(e.x-pp.x,e.y-pp.y); if(dd<vd){ vd=dd; victim=e; } }
-       if(!victim) return 'SKIP: no machine on the map to kill';
-       var keepPx=pp.x, keepPy=pp.y; pp.x=victim.x+60; pp.y=victim.y;
-       var vk=victim.kind; victim.hp=0; victim.byPlayer=true;
-       var tt=performance.now(); for(i=0;i<3;i++){ tt+=16.7; __loop(tt); }
-       pp.x=keepPx; pp.y=keepPy;
-       if(asked.indexOf('die:'+vk)<0) bad.push('a '+vk+' at zero hit points was culled without asking for its death sound (asked: '+asked.join(',')+')');
-     } finally { AC=keepAC; BUS=keepBUS; sfx=keepSfx; if(G&&keepSim!==null) G.sim=keepSim; }
+     // 1. HIS CASE. A pistol in hand, nothing in the second slot, a rifle found:
+     //    the rifle takes the empty slot and the pistol stays where it is.
+     set('pistol','fists');
+     G.bag.push('gun_rifle');
+     __equipBag(0,1);
+     if(p.wep.id!=='pistol') bad.push('with the second slot empty, equipping a found rifle turned the Scav Pistol out of his hand (hand is now '+p.wep.name+')');
+     if(p.sec.id!=='rifle') bad.push('the found rifle did not go to the empty second slot (it holds '+p.sec.name+')');
+     if(G.bag.length) bad.push('the pistol was bagged anyway: the bag holds '+G.bag.join(','));
+     // 2. The other way round: hands empty, a gun in the second slot, equip to slot 2.
+     set('fists','smg');
+     G.bag.push('gun_rifle');
+     __equipBag(0,2);
+     if(p.sec.id!=='smg') bad.push('with his hands empty, equipping to the second slot turned the SMG out (second is now '+p.sec.name+')');
+     if(p.wep.id!=='rifle') bad.push('the found rifle did not go to the empty hand (it holds '+p.wep.name+')');
+     // 3. BOTH FULL: the slot he asked for is the one that changes, which is the
+     //    only way to choose, and the gun that leaves is bagged as before.
+     set('pistol','smg');
+     G.bag.push('gun_rifle');
+     __equipBag(0,1);
+     if(p.wep.id!=='rifle') bad.push('with both slots full, the gun he asked to equip did not go into his hand (it holds '+p.wep.name+')');
+     if(p.sec.id!=='smg') bad.push('with both slots full, equipping to the hand also changed the second slot (it holds '+p.sec.name+')');
+     if(G.bag.indexOf('gun_pistol')<0) bad.push('the gun he replaced was not bagged: the bag holds '+G.bag.join(','));
+     // 4. Asking for a slot that is already empty still fills that slot.
+     set('fists','smg');
+     G.bag.push('gun_rifle');
+     __equipBag(0,1);
+     if(p.wep.id!=='rifle') bad.push('equipping into an empty hand did not fill it (it holds '+p.wep.name+')');
+     if(p.sec.id!=='smg') bad.push('equipping into an empty hand disturbed the second slot (it holds '+p.sec.name+')');
      return bad.length?bad.join('; '):null; }},
-  {v:'10.57',what:'a step schedules heel then sole with the surface tell, no two alike, a sprint louder than a walk, left and right alternate, and an enemy step carries the surface under it',
+  {v:'10.61',what:'the Undercroft plays slower, darker and softer: no bright square leading the tune, seventy-six a minute, a closed filter, half the shimmer and a held bass',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

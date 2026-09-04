@@ -40024,6 +40024,48 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.62 - A FOUND GUN TAKES THE EMPTY SLOT
+
+His note, 2026-09-03 about 21:25: **"when i find a gun it should go to the
+next open slot, not kick my scav pistol out of slot 1"**.
+
+### What it was
+
+Reproduced on v10.61 before anything was changed. A Scav Pistol in his
+hand, Bare Hands in the second slot, an Auto Rifle found and sitting in the
+bag. Equipping the rifle put it in his hand, threw the pistol into the bag,
+and left the second slot exactly as empty as it was. You carry two guns and
+one of the two was standing free while the game turned out the one you were
+holding.
+
+### Now
+
+The gun goes to the free slot. That happens only when the slot he asked for
+is full and the other one is empty; with both slots full the slot he asked
+for is still the one replaced, because choosing which of the two goes is
+the whole point of having two, and that decision is his by his own note of
+2026-08-24: "you should be able to carry all the guns you want but you only
+have 2 equipped". When it is routed, the line says so and names the gun he
+kept, so it never looks as though the gun went somewhere he did not ask
+for.
+
+### Measured
+
+The check drives the same call the bag makes, four ways. His case: a pistol
+in hand, the second slot empty, a rifle equipped to the hand must end with
+the rifle in the second slot, the pistol still in hand and nothing in the
+bag. The mirror: empty hands, an SMG in the second slot, a rifle equipped
+to the second slot must fill the hand instead and leave the SMG alone.
+Both full: a pistol and an SMG with a rifle equipped to the hand must put
+the rifle in the hand, leave the second slot alone and bag the pistol.
+And asking for a slot that is already empty must simply fill it. On v10.61
+the first of those fails with the rifle in his hand and the pistol in the
+bag, which is his complaint word for word.
+
+Not verified: picking a gun up off the ground with the automatic-equip dial
+turned on, which is a different path and is off by default on his own
+instruction; and how the new line reads on screen, which was checked as
+text and not seen in a raid.
 ## v10.61 - THE UNDERCROFT IS DARKER AND GLOOMIER
 
 His note, 2026-09-03 about 21:50: **"undercroft music needs to be darker

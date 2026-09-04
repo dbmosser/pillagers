@@ -1,11 +1,12 @@
-v10.62: the machines, each kind dies in its own way
+v10.62: a found gun takes the empty slot
 
-His note: everything should sound unique and crisp. Nothing on the map died
-out loud, a hit on a machine was the hit on you, the Bulwark had no voice,
-and every idle voice repeated exactly.
+His note: a gun you find should go to the next open slot, not kick the
+Scav Pistol out of slot 1. Reproduced: with the second slot holding Bare
+Hands, equipping a found rifle put it in his hand and bagged the pistol.
 
-Seven deaths, one per kind; a plate hit ticks and a man hit thuds; the
-Bulwark grinds; six percent of jitter on every machine voice.
+It goes to the free slot now, and only when the slot he asked for is full
+and the other is empty. With both full the asked-for slot is replaced,
+because that is the only way to choose which of the two goes.
 
-The check records what each death schedules and drives a death on the play
-path. It fails on a v10.57 fixture.
+The check drives the bag's own call four ways. It fails on a v10.61
+fixture.

@@ -1,49 +1,42 @@
-## v10.62 - THE MACHINES: EACH KIND DIES IN ITS OWN WAY
+## v10.62 - A FOUND GUN TAKES THE EMPTY SLOT
 
-His note, 2026-09-03 about 19:40: **"guns, footsteps, robots, etc --
-everything should sound unique and crisp like a triple-A game"**. The third
-family.
+His note, 2026-09-03 about 21:25: **"when i find a gun it should go to the
+next open slot, not kick my scav pistol out of slot 1"**.
 
 ### What it was
 
-Nothing on the map died out loud. A kill played a clank, and only when the
-body fell more than 620 units away; up close, the most decisive moment in a
-fight was silent. A round landing on a machine played the same hit as a
-round landing on you, so dealing and taking damage were one sound. The
-Bulwark, the armoured heavy, had no entry in the voice table and was silent
-apart from its footsteps. And every idle voice, the servo sweep, the drone,
-the hydraulics, the dish creak, replayed the same frequencies every time,
-so a room of machines was a loop.
+Reproduced on v10.61 before anything was changed. A Scav Pistol in his
+hand, Bare Hands in the second slot, an Auto Rifle found and sitting in the
+bag. Equipping the rifle put it in his hand, threw the pistol into the bag,
+and left the second slot exactly as empty as it was. You carry two guns and
+one of the two was standing free while the game turned out the one you were
+holding.
 
 ### Now
 
-Each kind dies in its own way: a man grunts hard and falls; a crawler
-squeals, cut short, and its legs crackle out; a sentry's servo winds down
-and it settles with a clank; a snitch drops out of the air in pitch and
-pops; a warden or a bulwark lets its hydraulics go and hits the ground
-heavily; a listener's dish spins down to a stop. A round landing on plate
-ticks bright with a short ping; a round landing on a man is a dull thud
-with nothing bright in it. The Bulwark grinds, plate on plate, slow and low
-with a click when it stops, faster and twice when it is hunting. And every
-machine voice takes six percent of jitter per call, so no two sweeps, drones
-or creaks are the same.
+The gun goes to the free slot. That happens only when the slot he asked for
+is full and the other one is empty; with both slots full the slot he asked
+for is still the one replaced, because choosing which of the two goes is
+the whole point of having two, and that decision is his by his own note of
+2026-08-24: "you should be able to carry all the guns you want but you only
+have 2 equipped". When it is routed, the line says so and names the gun he
+kept, so it never looks as though the gun went somewhere he did not ask
+for.
 
 ### Measured
 
-The check installs a recording audio context, asks the synth for each of
-the seven deaths and requires each to schedule something and no two alike
-(the warden and the bulwark share one on purpose), requires the plate hit
-and the man hit to differ, the Bulwark to have its voice with the hunting
-form different from the idle, and two servo sweeps and two dish creaks in a
-row to differ. Then, on the play path, it starts a raid at seed 4242, puts
-the first crawler or sentry at zero hit points, runs three frames of the
-live loop, and requires the frame that culls it to ask for the death sound
-of its kind. On v10.57 every death schedules nothing, the two hits are one
-sound, the Bulwark has no voice and the sweeps repeat, which is the
-finding; on this build the check returns null.
+The check drives the same call the bag makes, four ways. His case: a pistol
+in hand, the second slot empty, a rifle equipped to the hand must end with
+the rifle in the second slot, the pistol still in hand and nothing in the
+bag. The mirror: empty hands, an SMG in the second slot, a rifle equipped
+to the second slot must fill the hand instead and leave the SMG alone.
+Both full: a pistol and an SMG with a rifle equipped to the hand must put
+the rifle in the hand, leave the second slot alone and bag the pistol.
+And asking for a slot that is already empty must simply fill it. On v10.61
+the first of those fails with the rifle in his hand and the pistol in the
+bag, which is his complaint word for word.
 
-Not verified: how any of it sounds, which is his; the raider going down
-rather than dying, which is a separate path with the hit thud and no death
-sound, by design since a downed man is not dead; and the mix when several
-machines die at once, which the voice budget does not cover because deaths
-go through sfx, not the budgeted idle voices.
+Not verified: picking a gun up off the ground with the automatic-equip dial
+turned on, which is a different path and is off by default on his own
+instruction; and how the new line reads on screen, which was checked as
+text and not seen in a raid.
