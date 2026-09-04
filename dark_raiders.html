@@ -1277,7 +1277,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.71';
+var VER='10.72';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17541,7 +17541,12 @@ var _cdone=contractExtract(G.bag,haul);
         '<span style="color:var(--rust)">  LOST</span>');
     }
     var gone=carriedGuns(G.player);
+    // v10.72: and they go in the count and in the money. Both branches below
+    // print LOST, so both are counted here, once, before the branch.
+    var _gunN=0,_gunVal=0;
     for(j=0;j<gone.length;j++){
+      _gunN++;
+      if(ITEMS['gun_'+gone[j].id]) _gunVal+=ival('gun_'+gone[j].id);
       var wi=P.weapons.indexOf(gone[j].id);
       if(wi>=0){ P.weapons.splice(wi,1);
         lines.push('<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>'); }
@@ -17554,7 +17559,15 @@ var _cdone=contractExtract(G.bag,haul);
       else lines.push('<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>');
     }
     if(lostIdx.length>shown.length) lines.push('<span style="color:var(--ash)">and '+(lostIdx.length-shown.length)+' more, all gone</span>');
-    lines.push(lostIdx.length+' items lost, '+'$'+(haul-savedVal).toLocaleString()+' gone');
+    // v10.72: the guns are in this line now. It listed them as LOST above and
+    // then summed the bag only, so it printed a smaller count than the list it
+    // sat under and a number missing the most expensive thing he was carrying.
+    // An issued loaner is in neither, because carriedGuns leaves it out and you
+    // never owned it.
+    var _lostN=lostIdx.length;
+    var _lostWhat=_lostN+' item'+(_lostN===1?'':'s');
+    if(_gunN) _lostWhat+=' and '+_gunN+' gun'+(_gunN===1?'':'s');
+    lines.push(_lostWhat+' lost, '+'$'+((haul-savedVal)+_gunVal).toLocaleString()+' gone');
     if(saved.length) lines.push('Safe pocket held '+saved.length+' item'+(saved.length>1?'s':'')+' ('+'$'+savedVal.toLocaleString()+')');
     // v6.09: metres, like every other distance in the game. This printed raw world
     // units with an 'm' on the end, so it disagreed with the header above it by a
@@ -27153,7 +27166,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.71: the safe pocket tells you the truth. It read 1/1 even when the item it names is still in the stash, where it protects nothing, and the ascent check never mentioned it at all. This also corrects my own v10.70, which counted the pocket as an extra item being carried.',
+  now:'v10.72: the death screen counts the gun it says you lost. It listed your gun as LOST and then left it out of the total underneath, so the number missed the most expensive thing you were carrying. An issued loaner is still in neither, because you never owned it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

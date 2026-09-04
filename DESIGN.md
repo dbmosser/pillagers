@@ -40024,6 +40024,62 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.72 - THE DEATH SCREEN COUNTS THE GUN IT SAYS YOU LOST
+
+The KIA ledger lists what you were carrying, one line at a time, each marked
+LOST, and then sums it up underneath. The guns were listed and then left out
+of the sum, so the last line contradicted the list directly above it and
+understated what dying cost you.
+
+### What it was
+
+Reproduced on v10.71. Die carrying a Medkit, a Bandage and your own Scav
+Pistol. Three lines say LOST. The line under them says:
+
+    2 items lost, $270 gone
+
+The pistol is worth 300, so the number is missing more than half of what he
+actually lost, and the count is one short of the list he has just read.
+
+It matters more than the arithmetic. A gun is the most valuable thing you
+carry: 300 for the Scav Pistol, 900 for the Compact SMG, 1,100 for the Burst
+Carbine, 1,500 for the Auto Rifle, against items worth 60 to 340. A friend
+who dies with the welcome pack in his hands loses 2,000 credits of guns and
+reads a number with none of it in it. The death screen is where a new player
+learns what dying costs, and it was teaching him it costs less than it does.
+
+### Now
+
+The line counts them, and names them separately because a gun is not an item
+anywhere else in the game:
+
+    2 items and 1 gun lost, $570 gone
+
+The count is taken in the same loop that prints the LOST lines, so the two
+can never disagree again. The value comes from the same ival the bag uses.
+The singular case now says "1 item" rather than "1 items", which was wrong in
+the same line.
+
+An issued loaner stays out of both, which is right and was already right:
+carriedGuns skips issued kit, and measured on v10.71 a death holding an
+issued Sputter lists no gun at all. You never owned it, so losing it costs
+nothing and the screen should not pretend otherwise.
+
+### Measured
+
+The check drives two real deaths through deploy and endRaid. Holding his own
+Scav Pistol: the gun count must be 1, the printed count must equal the number
+of LOST lines on the screen, and the money must equal the bag read out of the
+game plus the gun's own value. Holding an issued loaner: the gun count must
+be 0 and the money must equal the bag alone. Then a control that would catch
+a screen that simply counts nothing: the same bag with and without his own
+gun must differ by exactly what the gun is worth. On a v10.71 fixture the
+first arm fails on all three assertions.
+
+Not verified: a death carrying TWO of his own guns, since the check arms one
+and the second slot stays empty; and whether he wants the money figure to be
+sale value or replacement cost, which is the same open question v10.70 left
+and is his to answer.
 ## v10.71 - THE SAFE POCKET TELLS THE TRUTH, INCLUDING ABOUT MY OWN v10.70
 
 The safe pocket NAMES one item key. One copy of it comes home if you die

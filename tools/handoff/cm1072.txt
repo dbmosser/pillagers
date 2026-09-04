@@ -1,0 +1,20 @@
+v10.72: the death screen counts the gun it says you lost
+
+The KIA ledger lists everything you were carrying, each line marked LOST,
+and then sums it up. The guns were in the list and not in the sum.
+
+Reproduced: die with a Medkit, a Bandage and your own Scav Pistol. Three
+lines say LOST and the line under them says "2 items lost, $270 gone". The
+pistol is worth 300.
+
+A gun is the most valuable thing you carry, 300 for the Scav Pistol up to
+1,500 for the Auto Rifle against items worth 60 to 340, so a friend who dies
+with the welcome pack in his hands loses 2,000 credits of guns and reads a
+number with none of it in. The death screen is where you learn what dying
+costs.
+
+It reads "2 items and 1 gun lost, $570 gone" now, counted in the same loop
+that prints the LOST lines so the two cannot disagree again. An issued
+loaner stays out of both, because you never owned it.
+
+The check drives two real deaths and fails on a v10.71 fixture.
