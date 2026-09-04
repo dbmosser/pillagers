@@ -1313,7 +1313,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.02';
+var VER='11.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1324,10 +1324,11 @@ var VER='11.02';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.02';
+var WHATSNEW_VER='11.03';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'YOUR RUN REPORT NOW ENDS WITH A RESTORE CODE. It is one line that carries your character: name, credits, XP, what you are wearing, what is in your stash and what you have unlocked. If a save is ever lost, that line is how it comes back.',
   'CHANGING SAVE RELOADS THE GAME, which is why it drops fullscreen. The saves panel says so now, and if you were in fullscreen when you switched, the title screen tells you on the way back and the button is right above it.',
   'THE BUTTONS AT THE END OF A RAID ARE NEW. They start with SOMETHING CRASHED, SOMETHING LOOKED WRONG and SOUND WAS OFF, because those are the three things you cannot tell us any other way. Press as many as you like; they go into the report with the run.',
   'YOU CHOOSE THE WEATHER NOW, on the same page as the map and the surface. SURPRISE ME leaves it to the roll, which is what it always was. RAIN, FOG, BLACKOUT and STORM pay 1.1x XP because they cut your sight or kill the lamps, and that stacks with the night bonus, so a hard night pays 1.32x.',
@@ -27643,7 +27644,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.02: why changing save leaves fullscreen, your question. Because it reloads the game, and a browser always drops fullscreen on a reload; it cannot be put back without a click, because entering fullscreen needs a gesture and a gesture does not survive a page load. The saves panel says so now, and if you were in fullscreen when you switched, the title screen tells you and GO FULLSCREEN is right there.',
+  now:'v11.03: every run report now ends with a RESTORE CODE, your note 14. One line that carries the character: name, credits, XP, the counters the racks are unlocked from, what they are wearing, the stash as counts, contracts standing and junk tags. The run log stays out, being history rather than identity. Pasting it back in is the next build, behind a typed confirmation.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29753,6 +29754,43 @@ function fmtRun(r){
   d.appendChild(o); d.appendChild(body);
   return d;
 }
+// v11.03, HIS NOTE 14: THE CHARACTER, SMALL ENOUGH TO PASTE. Short keys on
+// purpose: this ends up in a report a friend sends by hand.
+function restoreMake(){
+  var o={v:1,n:P.pname||'PILLAGER',c:P.credits||0,x:P.xp||0,l:P.xpLevel||1,
+         r:P.runs||0,e:P.ext||0,d:P.died||0,b:P.best||0,no:P.notoriety||0,
+         pk:P.pack||0,ra:P.racks||0,ar:P.arrays||0,cs:P.cstand||0,
+         sc:(P.spClaimed||[]).slice(),ki:P.kills||{},cb:P.cosBought||{},
+         j:P.junk||{},mi:P.mapIx||0,cd:P.cond||'day',wq:P.wxPick||'any',
+         w:{},s:{}};
+  // What they are wearing. The RACKS themselves are derived from the numbers
+  // above by cosOwned, so nothing here has to list what they have unlocked.
+  for(var k in COSKEY) o.w[k]=P[COSKEY[k]]||null;
+  // The stash as counts, which is a third of the size of the list and says the
+  // same thing.
+  var st=P.stash||[];
+  for(var i=0;i<st.length;i++) o.s[st[i]]=(o.s[st[i]]||0)+1;
+  return o;
+}
+function restoreCode(){
+  try{ return 'PIL1'+btoa(JSON.stringify(restoreMake())).replace(/=+$/,''); }
+  catch(e){ return ''; }
+}
+// The other direction, written in the same build as the maker so the two can
+// never drift. Returns null for anything it does not recognise rather than
+// throwing, because this will be fed by hand from a chat window.
+function restoreRead(code){
+  try{
+    if(!code) return null;
+    var b=String(code).replace(/\s+/g,'');
+    if(b.slice(0,4)!=='PIL1') return null;
+    b=b.slice(4);
+    while(b.length%4) b+='=';
+    var o=JSON.parse(atob(b));
+    if(!o||typeof o.c!=='number'||typeof o.n!=='string') return null;
+    return o;
+  }catch(e){ return null; }
+}
 function buildExport(){
   var L=[],i;
   L.push('=== PILLAGERS v'+VER+' FLIGHT RECORDER ===');
@@ -29883,6 +29921,12 @@ if(r.ghostIn) line+=' ghost:1';
     L.push('(run as of profile run count '+P.lastSim.runs+', config: '+P.lastSim.cfg+')');
     L.push(P.lastSim.text);
   }
+  // v11.03, HIS NOTE 14: the character itself, at the end where it is easy to
+  // find, so a friend who loses a save can be handed one line and get it back.
+  L.push('');
+  L.push('--- RESTORE CODE ---');
+  L.push('One line. Paste it into Settings to rebuild this character.');
+  L.push(restoreCode());
   L.push('');
   L.push('=== END RECORDER ===');
   return L.join('\n');

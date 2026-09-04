@@ -1,0 +1,46 @@
+## v11.03 - HIS NOTE 14, FIRST HALF: A CHARACTER YOU CAN GIVE BACK
+
+"when friends give feedback the game should also log their character info -- that
+way if they lose their character accidentally, we can give them a code to restore
+it", 2026-09-04.
+
+**REPRODUCED by reading what a report actually carries.** One summary line:
+"Profile: 2 runs, 1 extracted, 0 died, best haul 2685c, credits 395700, XP 343,
+racks 0, pack T1, notoriety 0, stash 4". That is a description of a character,
+not a character. Nothing in it says what they were wearing, what is in the stash,
+what they have unlocked, or where their contracts standing is, so nothing in a
+report could rebuild anybody.
+
+**WHY THE CODE IS SMALL, and this is the part worth knowing.** Cosmetics are not
+stored as an owned list. cosOwned DERIVES what is unlocked from runs, extracts,
+level, warden kills and the season board, so the code only has to carry those
+numbers and the ids actually worn, plus anything bought outright. The stash goes
+in as counts by key rather than a list of every copy. And the run log stays out
+entirely: it is by far the biggest thing in a profile and it is history, not
+identity.
+
+**WHAT IT CARRIES:** name, credits, XP, level, runs, extracts, deaths, best haul,
+notoriety, pack tier, racks, arrays, contracts standing, season tiers claimed,
+kill tallies, cosmetics bought, junk tags, the chosen map, surface and weather,
+every worn cosmetic, and the stash as counts. It is one line at the end of every
+report, under a heading that says what it is.
+
+**NEW CHECK v11.03** builds a character out of values the fallback could never
+produce, a name of ZQXRESTORE, 918,273 credits, three of one thing and one of
+another in the stash, then requires the code to appear in the real report, to
+name itself so it can be told from any other pasted line, and to read back every
+one of twenty-three fields exactly. Then four controls: an empty string, an
+ordinary sentence and a corrupt code must all be refused rather than accepted as
+a character; and the code must FOLLOW the profile, checked by changing the
+credits and requiring the new number and not the old one, because a reader that
+echoed a fixed object would pass every line above.
+
+Fails on a v11.02 fixture: the report carries no restore code at all.
+
+**APPLYING IT IS THE NEXT BUILD**, behind a typed confirmation, because an import
+that overwrites a save without asking is a worse bug than the one it fixes.
+
+Not verified: how long the code runs for a mature profile, since the check bounds
+it at four thousand characters and the profile it measured is small; and whether
+he wants the run log in it after all, which would make it a backup rather than a
+restore and would be far too big to paste.

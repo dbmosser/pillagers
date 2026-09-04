@@ -1,0 +1,35 @@
+v11.03: every run report ends with a restore code
+
+His note: "when friends give feedback the game should also log their character
+info -- that way if they lose their character accidentally, we can give them a
+code to restore it".
+
+Reproduced by reading what a report carries: one summary line of counts and a
+stash SIZE. That is a description of a character, not a character.
+
+The code is small because cosmetics are not stored as an owned list. cosOwned
+derives what is unlocked from runs, extracts, level, warden kills and the season
+board, so the code carries those numbers and the ids actually worn plus anything
+bought outright. The stash goes in as counts by key, and the run log stays out
+entirely: it is the biggest thing in a profile and it is history, not identity.
+
+It carries name, credits, XP, level, runs, extracts, deaths, best haul,
+notoriety, pack tier, racks, arrays, contracts standing, season tiers claimed,
+kill tallies, cosmetics bought, junk tags, the chosen map, surface and weather,
+every worn cosmetic, and the stash as counts. One line at the end of every
+report.
+
+New check v11.03 builds a character out of values the fallback could never
+produce, requires the code in the real report, requires it to name itself, and
+reads back twenty-three fields exactly. Controls: an empty string, an ordinary
+sentence and a corrupt code must all be refused; and the code must follow the
+profile, checked by changing the credits and requiring the new number, because a
+reader that echoed a fixed object would pass everything else.
+
+Fails on a v11.02 fixture: no restore code at all.
+
+Applying it is the next build, behind a typed confirmation, because an import
+that overwrites a save without asking is a worse bug than the one it fixes.
+
+Not verified: how long the code runs for a mature profile, and whether he wants
+the run log in it, which would make it a backup rather than a restore.
