@@ -1,0 +1,77 @@
+## v10.97 - HIS NOTE 12: A CONTRACT TARGET IS NOT SALVAGE
+
+"anything that can be used to craft or for a contract, etc. should not be
+classified as salvage", his note of 2026-09-04.
+
+**REPRODUCED BY ENUMERATION**, against the tables that do the wanting rather than
+by reading the labels. Three items are wanted by something in this game and were
+shelved as SALVAGE, described to him as "salvage, sell it", and cleared by SELL
+JUNK AND LOOSE SALVAGE:
+
+    Servo Actuator   the contract board asks for it by name
+    Optics Lens      the contract board asks for it by name
+    Data Core        the contract board asks for it by name, and the mainframe
+                     burns one to send you up with intel
+
+The classification was a hard-coded list of five ids. It is correct about recipes
+and racks and knew nothing about the other things in the game that consume an
+item, because the contract board's shopping list was a literal inside the
+contract generator where nothing else could read it. So the obvious button could
+sell the exact item a live contract was asking him to carry out, and the stash
+told him to.
+
+**MY ERROR, CAUGHT BEFORE IT SHIPPED, AND WORTH RECORDING.** My first pass said
+the servo is a live repair part again, on the grounds that his answer makes kills
+wear a gun and addWear runs on every shot. addWear does run, but WEARSTEPS
+carries ONE band, so wearLive() is false and repairCost refuses every gun. The
+repair economy is dormant exactly as v9.43 left it, and labelling a servo "for
+gun repairs" would be the game promising a use it will not honour. The repair
+answer is gated on the wear system actually being alive, which is the switch
+v9.43 built for this: put a second band back in WEARSTEPS and the servo becomes a
+repair part again on its own. The servo is kept today because the CONTRACT BOARD
+wants it, which is true, and is his note.
+
+**THE FIX IS THAT NOTHING KEEPS A LIST.** One function, itemWanted, answers what
+wants an item and why, in words he can read, and it answers by asking the recipe
+table, the rack costs, the repair parts, the mainframe and the contract board.
+Where those were literals inside the code that used them they are named now, so
+the next thing that wants an item cannot be added without this answer changing
+with it. The stash's shelf rule, which lived inside its own renderer where
+nothing could ask it, is one function at file scope. The sell button consults the
+same answer, and a junk tag he sets himself still overrides all of it, so he is
+never stuck holding a part he has decided to be rid of.
+
+**MEASURED, before and after.** Before: servo, optic and core all sell. After:
+all three are kept, shelved under PARTS, and the stash says what wants them. Ten
+items are still loose salvage and still sell, the Titanium Cell, the Induction
+Coil, the Bloom Sample, the Meridian Reactor Core and the Warden Core among
+them, so this taught the sell button rather than switching it off.
+
+**NEW CHECK v10.97** builds the wanted set from the tables themselves, then
+requires that nothing in it is shelved as salvage and that nothing in it is
+cleared by the sell button. Four controls: at least six items must have been
+found to be wanted, or it is not enumerating the game; the contract list must be
+readable at all, which on the old build it is not and which is the whole cause;
+at least three items must remain loose salvage and sellable, or the fix is an off
+switch rather than a rule; and a junk tag must still let him sell. It also
+refuses to let the game claim a repair use while the wear system is switched off.
+
+Fails on a v10.96 fixture: the shelf rule is unreachable, the contract list is
+unreadable, and the Data Core is cleared by the sell button.
+
+
+**AND TWO CHECKS DISAGREED ABOUT THE SERVO, WHICH THE CORPUS CAUGHT.** v9.43
+requires the servo to be sellable, because there is no repair to keep it for.
+v10.97 requires it to be kept, because the contract board asks for it by name.
+Both are right about their own premise. v9.43's real subject is the REASON and
+not the shelf, and it says so in its own message: it was written when a dead
+repair economy was the only thing keeping the servo. It asks about the reason
+now, and fails if the servo's KEEP line ever mentions repairs while the wear
+table has one band. Its sibling assertion, that the servo is not a crafting part,
+is untouched and still passes, as does every control around it.
+
+Not verified: whether he wants the three to sit under PARTS or under a shelf of
+their own, since PARTS reads as crafting material and two of these are contract
+cargo; and the ten items still classed as salvage are wanted by nothing today,
+but four of them are contract REWARDS, which is a different question I have not
+put to him.

@@ -1,0 +1,49 @@
+v10.97: a contract target is not salvage
+
+His note: "anything that can be used to craft or for a contract, etc. should not
+be classified as salvage".
+
+Reproduced by enumeration against the tables that do the wanting. Three items are
+wanted by something and were shelved as salvage, described as "salvage, sell it",
+and cleared by SELL JUNK AND LOOSE SALVAGE: the Servo Actuator and the Optics
+Lens, both asked for by name on the contract board, and the Data Core, asked for
+by the board and burned by the mainframe for intel.
+
+The cause: the classification was a hard-coded list of five ids, correct about
+recipes and racks and blind to everything else, because the contract board's
+shopping list was a literal inside the contract generator where nothing else
+could read it.
+
+My error, caught before shipping: my first pass said the servo is a live repair
+part again because kills wear a gun and addWear runs on every shot. addWear does
+run, but WEARSTEPS carries one band, so wearLive() is false and repairCost
+refuses every gun. The repair economy is dormant as v9.43 left it. The repair
+answer is gated on wearLive now, so the game cannot promise a use it will not
+honour, and restoring a second band brings the servo back on its own.
+
+The fix is that nothing keeps a list. One function answers what wants an item and
+why, by asking the recipe table, the rack costs, the repair parts, the mainframe
+and the contract board. The literals those lived in are named constants now. The
+stash shelf rule, previously trapped inside its own renderer, is a file-scope
+function. The sell button consults the same answer, and a junk tag still
+overrides all of it.
+
+Measured: before, servo, optic and core all sell. After, all three kept and
+shelved under PARTS with the reason shown, while ten items including the Titanium
+Cell, Induction Coil, Bloom Sample, Meridian Reactor Core and Warden Core remain
+loose salvage and still sell.
+
+New check v10.97 builds the wanted set from the tables and requires nothing in it
+is salvage or sellable. Controls: at least six items wanted, the contract list
+readable at all, at least three items still loose salvage and sellable, and a
+junk tag still selling. Fails on a v10.96 fixture.
+
+Not verified: whether he wants those three under PARTS or a shelf of their own,
+and the four contract REWARDS still classed as salvage, which is a different
+question I have not put to him.
+
+The full corpus also caught two checks disagreeing about the servo: v9.43 wants
+it sellable because no repair keeps it, v10.97 wants it kept because a contract
+asks for it. v9.43's subject is the reason and not the shelf, so it asks about
+the reason now and fails if the servo is ever kept for a repair while the wear
+table has one band.

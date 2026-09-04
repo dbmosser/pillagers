@@ -1294,7 +1294,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.96';
+var VER='10.97';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1305,10 +1305,11 @@ var VER='10.96';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='10.96';
+var WHATSNEW_VER='10.97';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE SELL BUTTON WILL NOT SELL WHAT SOMETHING WANTS. Servo Actuators, Optics Lenses and Data Cores were classified as salvage, so SELL JUNK AND LOOSE SALVAGE cleared them, while the contract board was asking for them by name, a worn gun needed a servo to repair, and the mainframe burns a core for intel. All three sit under PARTS now and the stash says what wants them. Tag a thing junk and it still sells.',
   'PAUSING IN THE UNDERCROFT OFFERS TWO CHOICES: RETURN TO THE UNDERCROFT and RETURN TO CHARACTER SELECTION. The second takes you back to the front door without a reload and without losing anything, and the name line and save list there are brought up to date on the way. A raid pause is unchanged.',
   'ONE FONT, EVERYWHERE ON THE SCREEN. The loot pop, PICKED UP and every other world label were set in the title wordmark face, which at that size reads as a slab rather than a word. They are in the game font now, in the same five roles as everything else, and so are the faint district numbers on the ground.',
   'FACES DO NOT COLLIDE WITH THEIR OWN EYES. War paint was two bars straight across both eyeballs and the shiner was a purple wash over one of them. Face marks are painted before the eyes now, so paint goes on the skin and the eye sits on top of it, which is where an eye goes.',
@@ -1575,7 +1576,7 @@ function repairCost(id){
   // whether you want THIS gun rather than a punishment for having used it.
   var cap=Math.round(replaceCost(id)*0.6);
   return {credits:Math.min(raw,cap),
-          part:(w>=950?'servo':'comp'),
+          part:(w>=950?REPAIR_PARTS.heavy:REPAIR_PARTS.light),   // v10.97: named, so itemWanted can ask
           parts:(w>=1600?2:1)};
 }
 function repairGun(id){
@@ -1779,6 +1780,9 @@ var TAGS=['Felt great','Too easy','Too hard','Too dark',
   'Howler great','Howler unfair','Pillagers felt human','Pillagers felt dumb',
   'Extract too easy','Extract too tense','Loot boring','Loot exciting',
   'Maps feel samey','This map has character','Ran out of ammo','New machines too rare'];
+// v10.97, HIS NOTE 12: the two parts a gun repair eats, named here so the thing
+// that decides what is salvage can ask rather than carry its own copy.
+var REPAIR_PARTS={light:'comp',heavy:'servo'};
 function craftPart(k){
   // v9.43: the servo is out. It appears in no recipe and in no rack, and the one
   // thing it was for was repairing guns that have not worn since v9.01. Being a
@@ -1827,6 +1831,30 @@ var RECIPES=[
   {name:'Frag Charge',out:{frag:1},need:{comp:2,cell:2,scrap:2}}
 ];
 var THROWKEYS=['smoke','decoy','frag'];
+// v10.97, HIS NOTE 12: THE CONTRACT BOARD'S SHOPPING LIST. It used to be a
+// literal inside the contract generator, which is how three of these ended up
+// classified as salvage: nothing else in the file could see what the board asks
+// for. Add an item here and it stops being sellable in the same breath.
+var CON_ITEMS=['board','optic','servo','core'];
+// WHAT WANTS THIS ITEM, and why, in words he can read. Answered by asking the
+// tables that do the wanting, never by a second list kept beside them.
+// Returns null for genuine salvage: nothing in the game has any use for it and
+// selling it is the whole point of picking it up.
+function itemWanted(k){
+  var i;
+  if(typeof RECIPES!=='undefined')
+    for(i=0;i<RECIPES.length;i++)
+      if(RECIPES[i].need&&RECIPES[i].need[k]!==undefined) return craftUse(k);
+  if(typeof RACK_COST!=='undefined'&&RACK_COST[k]!==undefined) return 'mainframe racks';
+  // Only while the wear system is actually running. One band in WEARSTEPS means
+  // repairCost refuses every gun, and a use the game will not honour is a lie
+  // told in green text.
+  if(typeof wearLive==='function'&&wearLive()&&(k===REPAIR_PARTS.heavy||k===REPAIR_PARTS.light))
+    return 'gun repairs';
+  if(k==='core') return 'contracts, and the mainframe burns one for intel';
+  for(i=0;i<CON_ITEMS.length;i++) if(CON_ITEMS[i]===k) return 'contracts';
+  return null;
+}
 
 // ================================================================ profile
 // equipped starts at FISTS, not the pistol, v2.80. With 'pistol' a fresh player
@@ -2614,7 +2642,7 @@ function genContract(){
        // v9.06: the ZONE he is told about while walking, not the palette word.
        desc:'Search '+n3+' containers in '+districtPlaceName(d)};
   } else if(roll<.9){
-    var it=pick(['board','optic','servo','core']);
+    var it=pick(CON_ITEMS);
     var n4=up(it==='core'?1:2);
     c={type:'exItem',item:it,n:n4,prog:0,reward:ITEMS[it].val*n4+250,desc:'Extract carrying '+n4+'x '+ITEMS[it].name};
   } else {
@@ -27547,7 +27575,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.96: your two choices on the Undercroft pause screen. It had one button, Back to the Undercroft, and no route back to the character screen at all short of reloading the tab. It now reads RETURN TO THE UNDERCROFT and RETURN TO CHARACTER SELECTION, and the second one puts the character screen back up over the room with the name line and the save list brought up to date.',
+  now:'v10.97: a contract target is not salvage, your note. Three items were wanted by something and called salvage anyway: the servo repairs a worn gun and the board asks for it, the optic the board asks for, and the data core the board asks for AND the mainframe burns for intel. SELL JUNK AND LOOSE SALVAGE was clearing the exact item a live contract wanted. Nothing keeps a list now: one function asks the recipes, the rack costs, the repair parts, the mainframe and the contract board.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -28957,15 +28985,7 @@ try{ renderFreeKit(); }catch(_fk){}
   // Salvage, Keys, Other if needed. ALL first, because it is the whole stash.
   var TABS=[['all','ALL'],['gun','GUNS'],['use','CONSUMABLES'],['part','PARTS'],
             ['salvage','SALVAGE'],['key','KEYS'],['other','OTHER']];
-  function tabOf(k){
-    var t=ITEMS[k]; if(!t) return 'other';
-    if(t.use==='gun') return 'gun';
-    if(t.use==='armor') return 'use';     // v10.11: armour plates are consumables, his answer 2
-    if(t.use==='key') return 'key';                      // v6.39, his note: keys are their own class
-    if(craftPart(k)) return 'part';            // recipes and racks eat these
-    if(t.use) return 'use';
-    return 'salvage';                          // no use, nothing wants it: sell it
-  }
+  function tabOf(k){ return stashTabOf(k); }
   if(!P.stashTab) P.stashTab='all';
   var tb=document.getElementById('stashtabs');
   if(tb){
@@ -29119,10 +29139,16 @@ try{ renderFreeKit(); }catch(_fk){}
     menuable(cell,k,'stash',counts[k]);
     cell.onmouseenter=function(){
       if(!detail) return;
-      var what=craftPart(k)
-        ? '<span style="color:var(--gain)">KEEP &mdash; '+escHtml(craftUse(k))+'</span>'
-        : (it.use ? '<span style="color:var(--coolant)">'+escHtml(String(it.use).toUpperCase())+'</span>'
-                  : '<span style="color:var(--ash)">salvage, sell it</span>');
+      // v10.97, HIS NOTE 12: ask what wants it, rather than asking whether it is
+      // one of the five things a recipe eats. Three items were being told to
+      // sell themselves while a contract was asking for them by name. Its own
+      // USE still comes first, because a bandage is a bandage before it is an
+      // ingredient.
+      var _wnt=itemWanted(k);
+      var what=it.use
+        ? '<span style="color:var(--coolant)">'+escHtml(String(it.use).toUpperCase())+'</span>'
+        : (_wnt ? '<span style="color:var(--gain)">KEEP &mdash; '+escHtml(_wnt)+'</span>'
+                : '<span style="color:var(--ash)">salvage, sell it</span>');
       detail.innerHTML='<b class="r-'+(dispR(k)||'common')+'">'+escHtml(it.name)+'</b>  x'+counts[k]+
         '  &middot;  '+'$'+ival(k).toLocaleString()+' each  &middot;  '+what+
         (isJunk?'  &middot;  <span style="color:var(--rust)">TAGGED JUNK</span>':'')+
@@ -30295,10 +30321,29 @@ applyStashLayout();
 // WHAT THE SELL BUTTON SELLS. The single source of truth for both the label and
 // the click, because when those were two separate expressions they disagreed and
 // the button re-offered a sale it would then refuse to make.
+// v10.97, HIS NOTE 12: WHAT SHELF AN ITEM LIVES ON. This was written inside the
+// stash renderer, where it was the only copy but also unreachable, so nothing
+// else could ask and nothing could check it. It is one function now.
+function stashTabOf(k){
+  var t=ITEMS[k]; if(!t) return 'other';
+  if(t.use==='gun') return 'gun';
+  if(t.use==='armor') return 'use';     // v10.11: armour plates are consumables, his answer 2
+  if(t.use==='key') return 'key';                      // v6.39, his note: keys are their own class
+  if(craftPart(k)) return 'part';            // recipes and racks eat these
+  if(t.use) return 'use';
+  // v10.97, his note: a contract target, a repair part or the mainframe core is
+  // a PART. It was salvage, so the sell button cleared the exact item a live
+  // contract was asking him to carry out.
+  if(itemWanted(k)) return 'part';
+  return 'salvage';                          // nothing in the game wants it: sell it
+}
 function sellable(k){
   var it=ITEMS[k]; if(!it) return true;          // unknown keys are junk
   if((P.junk||{})[k]) return true;               // tagged junk always goes
-  return !(it.use||craftPart(k));                // usable kit and parts are kept
+  // v10.97, HIS NOTE 12: and anything the game wants, which is wider than the
+  // recipe list craftPart knows about. Tagging it junk still overrides this,
+  // above, so he is never stuck holding something he has decided to be rid of.
+  return !(it.use||craftPart(k)||itemWanted(k));
 }
 document.getElementById('sellall').onclick=function(){
   // HIS Q11 and his note about crafting: the obvious button used to sell the

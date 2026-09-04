@@ -367,6 +367,9 @@ window.__seal={rec:sealRec,need:sealNeed,here:sealHere,spot:sealSpot,pay:sealPay
 // live half survives as window.__repair and window.__work; the rest was reachable
 // by nobody. Six name collisions in this file now, so: grep before you name one.
 window.__work=function(){ return renderWork(); };
+window.__shelf=function(){ var o={},k;
+  for(k in ITEMS) o[k]=(typeof stashTabOf==='function'?stashTabOf(k):'?')+'/'+(sellable(k)?'sells':'kept')+'/'+((typeof itemWanted==='function'&&itemWanted(k))||'-');
+  return o; };
 window.__stashRules={sellable:function(k){ return !!sellable(k); },
                      craftPart:function(k){ return !!craftPart(k); },
                      use:function(k){ return craftUse(k); }};
@@ -5358,6 +5361,99 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.97',what:'nothing the game wants is classified as salvage, and the sell button will not clear it',
+   run:function(){
+     if(typeof RECIPES==='undefined'||typeof ITEMS==='undefined') return 'SKIP: this build has no item tables';
+     if(typeof sellable!=='function') return 'SKIP: this build has no sell rule';
+     var bad=[], i, k;
+     // WHAT WANTS AN ITEM, worked out here from the tables that do the wanting.
+     // This is the one place the check is allowed to know the answer
+     // independently, because the whole finding is that the game did not.
+     var wanted={}, why={};
+     for(i=0;i<RECIPES.length;i++){
+       var need=RECIPES[i].need||{};
+       for(k in need){ wanted[k]=1; why[k]='the '+RECIPES[i].name+' recipe'; }
+     }
+     if(typeof RACK_COST!=='undefined') for(k in RACK_COST){ wanted[k]=1; why[k]='a mainframe rack'; }
+     // The repair parts. Ask the cost function rather than repeating its rule:
+     // drive a gun to a light wear and a heavy one and see what it asks for.
+     var wearOn=(typeof wearLive==='function')?!!wearLive():false;
+     if(typeof repairCost==='function'&&typeof WEAPONS!=='undefined'){
+       var prof=__P(), keepW=prof.wear;
+       prof.wear={};
+       var gid=null;
+       for(k in WEAPONS){ if(WEAPONS[k]&&WEAPONS[k].mag!==0){ gid=k; break; } }
+       if(gid){
+         prof.wear[gid]=600;  var rl=repairCost(gid);
+         prof.wear[gid]=1800; var rh=repairCost(gid);
+         if(rl&&rl.part){ wanted[rl.part]=1; why[rl.part]='repairing a worn gun'; }
+         if(rh&&rh.part){ wanted[rh.part]=1; why[rh.part]='repairing a badly worn gun'; }
+         if(rl&&rh&&rl.part===rh.part)
+           bad.push('control: light and heavy wear both ask for '+rl.part+', so only one repair part is being tested');
+         // THE HONEST PART. While WEARSTEPS carries one band the repair economy
+         // is switched off and repairCost refuses every gun, so this arm tests
+         // nothing and must not pretend otherwise. It only fails on the
+         // contradiction: wear alive and still no part named.
+         if(wearOn&&!(rl&&rl.part)&&!(rh&&rh.part))
+           bad.push('the wear system is running and yet a gun at 1,800 rounds cannot name a repair part');
+       } else bad.push('control: no gun was found to wear, so the repair parts are untested');
+       prof.wear=keepW;
+     }
+     // AND THE GAME MUST NOT PROMISE A USE IT WILL NOT HONOUR. With the repair
+     // economy dormant, nothing may be labelled a repair part.
+     if(typeof itemWanted==='function'&&typeof REPAIR_PARTS!=='undefined'&&!wearOn){
+       var _rw=itemWanted(REPAIR_PARTS.heavy);
+       if(_rw&&String(_rw).indexOf('repair')>=0)
+         bad.push('the stash says '+REPAIR_PARTS.heavy+' is for gun repairs while the wear system is switched off, which is a use the game will not honour');
+     }
+     // The contract board. Same rule: ask it, do not repeat it.
+     if(typeof CON_ITEMS!=='undefined')
+       for(i=0;i<CON_ITEMS.length;i++){ wanted[CON_ITEMS[i]]=1; why[CON_ITEMS[i]]='a contract asking for it by name'; }
+     else bad.push('control: this build keeps the contract shopping list where nothing can read it, which is how three items ended up as salvage');
+     // The mainframe burns one of these for intel.
+     if(typeof slotCore==='function'){ wanted.core=1; why.core='the mainframe, which burns one for intel'; }
+     var list=[]; for(k in wanted) list.push(k);
+     if(list.length<6) bad.push('control: only '+list.length+' items were found to be wanted by anything, so this is not enumerating the game');
+     // 1. NOTHING WANTED IS SHELVED AS SALVAGE. Measured on v10.96: servo, optic
+     //    and core all came back salvage while something was asking for them.
+     if(typeof stashTabOf!=='function')
+       bad.push('the stash keeps its shelf rule inside its own renderer, so nothing can ask what shelf an item is on');
+     else for(i=0;i<list.length;i++){
+       if(!ITEMS[list[i]]) continue;
+       var tab=stashTabOf(list[i]);
+       if(tab==='salvage') bad.push(ITEMS[list[i]].name+' is shelved as salvage and '+why[list[i]]+' wants it');
+     }
+     // 2. AND THE SELL BUTTON WILL NOT CLEAR IT. The shelf is a label; this is
+     //    the money. Junk tags are cleared first, because a tag he set himself
+     //    outranks all of this and would make every answer below true.
+     var prof2=__P(), keepJunk=prof2.junk;
+     prof2.junk={};
+     try{
+       for(i=0;i<list.length;i++){
+         if(!ITEMS[list[i]]) continue;
+         if(sellable(list[i])) bad.push(ITEMS[list[i]].name+' is cleared by the sell button and '+why[list[i]]+' wants it');
+       }
+       // 3. CONTROL, AND WITHOUT IT THE TWO ABOVE COULD PASS BY KEEPING
+       //    EVERYTHING. Real salvage must still be salvage and must still sell,
+       //    or the fix is just an off switch on the sell button.
+       var junkN=0, junkEg=null;
+       for(k in ITEMS){
+         if(wanted[k]||ITEMS[k].use) continue;
+         if(typeof stashTabOf==='function'&&stashTabOf(k)!=='salvage') continue;
+         if(sellable(k)){ junkN++; if(!junkEg) junkEg=ITEMS[k].name; }
+       }
+       if(junkN<3) bad.push('control: only '+junkN+' items are still loose salvage, so the sell button has been turned off rather than taught');
+       // 4. CONTROL: and a junk tag still beats all of it, which is his escape
+       //    hatch for a part he has decided to be rid of.
+       var _pk=null;
+       for(i=0;i<list.length;i++) if(ITEMS[list[i]]&&!ITEMS[list[i]].use){ _pk=list[i]; break; }
+       if(_pk){
+         prof2.junk[_pk]=1;
+         if(!sellable(_pk)) bad.push('tagging '+ITEMS[_pk].name+' as junk no longer lets him sell it');
+         prof2.junk={};
+       }
+     } finally { prof2.junk=keepJunk; }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.96',what:'pausing in the Undercroft offers exactly his two choices, and the second one really does go back to the character screen',
    run:function(){
      if(typeof togglePauseBox!=='function') return 'SKIP: this build has no pause box';
@@ -13681,7 +13777,15 @@ window.__REGRESS=[
      // THE SERVO. Its only use was this repair, and being a craft part is what made
      // SELL ALL refuse it and the stash tell him to keep it.
      if(window.__stashRules){
-       if(!__stashRules.sellable('servo'))
+       // v10.97: THE REASON, not the shelf. The servo is kept now because the
+       // contract board asks for it by name, which is his note 12 and nothing to
+       // do with repairs. What this check has always cared about is that a dead
+       // repair economy is not the thing keeping it, so that is what it asks.
+       if(typeof itemWanted==='function'){
+         var _sv=itemWanted('servo');
+         if(_sv&&String(_sv).indexOf('repair')>=0)
+           bad.push('the Servo Actuator is still kept for a repair that no longer exists, its reason reads '+_sv);
+       } else if(!__stashRules.sellable('servo'))
          bad.push('the Servo Actuator is still withheld from SELL ALL for a repair that no longer exists');
        if(__stashRules.craftPart('servo'))
          bad.push('the Servo Actuator is still classed as a crafting part and appears in no recipe');
