@@ -40024,6 +40024,52 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.57 - FOOTSTEPS: HEEL AND SOLE, LEFT AND RIGHT, AND THE GROUND UNDER EVERYONE
+
+His note, 2026-09-03 about 19:40: **"everything should sound unique and
+crisp like a triple-A game"**. The second family after the guns.
+
+### What it was
+
+Your own step was one noise burst per surface, dead centre in the ear, on a
+fixed clock, and it replayed the identical waveform every time except on
+plate steel, where the ring was the only random number in the whole
+footstep system. A sprint and a walk differed in cadence and nothing else.
+The machines and the pillagers had two recipes between them, a scuff and a
+clank, with no surface at all: a pillager on plate steel, one in the woods
+and one wading a pool all stepped identically.
+
+### Now
+
+Every step is two sounds, a soft heel tap and the sole 45 milliseconds
+behind it, and the surface adds its own tell after the sole: grit
+scattering on stone, a creak on one board in three, the ring on plate, a
+rustle in leaf litter, a splash and then a drip in water. A sprint lands
+harder and shorter, a crouch is a touch. Left and right alternate, each a
+little off centre in its own ear, and the clock breathes by up to seven
+percent either way. Eight percent of jitter is rolled per step on
+brightness and level, so no two steps are the same. The nearest moving
+machine or pillager now steps through the same five-surface generator with
+the surface under its own feet, at a sprint when it is chasing; a heavy
+keeps its low clank and takes the surface's tell on top: plate rings, boards
+knock, water and leaves crackle.
+
+### Measured
+
+The check installs a recording audio context and fires the step generator
+on each of the five surfaces, requiring a heel and a sole on every one,
+five different voices, and no surface scheduling the identical step twice;
+requires a sprint step louder and a crouch step softer than a walk; runs the
+real player step twice and requires the two to pan opposite ways; and
+stands a pillager in the middle of the first building on map 0 at seed
+4242, ticks the enemy step audio, and requires the wood body at 150 hertz
+in what it scheduled. On v10.56 a step is one noise burst, every surface
+repeats itself, the pan is always centre and a pillager's step carries no
+surface, which is the finding; on this build the check returns null.
+
+Not verified: how it sounds, which is his to judge; and the mix of a
+crowd of pillagers, since only the nearest moving one is voiced per tick,
+which is the rule since v8.55 and is unchanged.
 ## v10.56 - EVERY GUN HAS ITS OWN VOICE
 
 His note, 2026-09-03 about 19:40: **"also work on improving sound whenever

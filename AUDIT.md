@@ -934,6 +934,7 @@ AND THE SECOND HALF OF THE STRETCH:
 | OUTFITS: SEVEN FULL-BODY SUITS THAT OVERRULE EVERY OTHER RACK | v10.54 | his notes about 19:50 and 19:55. A new OUTFIT rack at the top of the Depot: the Skeleton, the Machine, the Trooper, the Android, the Tomb Explorer, the Baller and the Street Poet, each earned like any rack. Worn, the painter takes the suit's coat, trousers, boots, skin and hands, its own cut, hat and beard, no mark, tattoo or patch, and paints the suit's own marks last; Own Clothes puts the racks back. The four named characters and people are licensed or real, so these are the game's own archetypes. Check: the rack counted, the outfit in the look kinds, the figure painted at 5.2: an unearned suit changes nothing, each earned suit changes at least 300 pixels and hides every slate coat pixel, the Trooper paints helmet green, the Depot lists OUTFIT first with eight tiles. Fails on a v10.53 fixture: "the OUTFIT rack holds 0 suits, not seven; a look does not carry the outfit; the Trooper paints no helmet green; the Depot does not list OUTFIT as its first slot; the Depot racks show 0 outfit tiles, not eight". The full corpus then failed six older sprite checks: the saved :8800 profile carried the Skeleton from a dry run and the cleaner keeps cosmetics; the cleaner now resets the outfit slot, and a random look leaves the outfit rack alone; corpus re-run after both |
 | FOOTPRINTS FOLLOW THE GROUND YOU COVER | v10.55 | his note about 20:00, "sprint footprint glitch is still happening", reproduced with the live stepper: the print was keyed to time with a key held, 0.22 s at a sprint, and stamped before the wall push, so held into a wall he piled prints under himself a step inside the wall. Now one print per 56 units of ground actually covered, measured after the push, in the direction he moved; none while pinned. Check: the live loop on map 0 at seed 4242; a walk and a sprint across open ground with every gap 48 to 64 units; a sprint into a wall for 120 frames with no movement, at most one print, and no print inside any wall. Fails on a v10.54 fixture: "pinned against a wall, sprinting into it for 120 frames, he stamped 8 prints under himself" |
 | EVERY GUN HAS ITS OWN VOICE | v10.56 | his note about 19:40, guns first. The audit found sixteen guns on eleven voices: Magnum and Longshot borrowed the Auto Rifle, three pairs differed by a lowpass corner, every shot was the identical waveform, and reload, bolt and dry pull were silent. Now a crack, a body and where earned a tail and the action cycling, per gun; six percent jitter per shot; reload, reloadin and dry voices at the reload starts, the reload finish and the empty pull. Check: a recording audio context; sixteen different voices, no two shots identical, drift under fifteen percent, and the three new voices scheduling nodes. Fails on a v10.55 fixture: "Scav Pistol fires the identical waveform twice; ... Magnum and Auto Rifle schedule the same voice; ... Longshot and Auto Rifle schedule the same voice; ..." (sixteen guns, every one identical twice, two borrowing the rifle). My first check tripped the parse gate: a regex written straight after return reads as a division to its bracket counter; parenthesised now |
+| FOOTSTEPS: HEEL AND SOLE, LEFT AND RIGHT, THE GROUND UNDER EVERYONE | v10.57 | his note about 19:40, the second sound family. A step was one noise burst per surface, centred, on a fixed clock, the identical waveform every time; machines and pillagers had two recipes and no surface. Now heel then sole, the surface's own tell (grit, a creak, the ring, a rustle, a splash and a drip), a sprint harder and a crouch softer, left and right in the ear, a breathing clock, eight percent jitter; enemies step through the same generator on the surface under their own feet. Check: a recording audio context; five different voices each with a heel and a sole, none repeating, sprint louder and crouch softer than a walk, two real steps panning opposite ways, a pillager in a building scheduling the wood body. Fails on a v10.56 fixture: "stone schedules 5 nodes, not a heel and a sole; stone schedules the identical step twice; ... a sprint step (44) is not louder than a walk (44); a crouch step (44) is not softer than a walk" |
 | STILL OPEN, from v10.40: niches plugged by furniture | OPEN | on THE COLD MILE a cells or spine plan sometimes leaves a pocket of interior floor behind a piece of furniture, 12x12 to 84x28 units, one per building on 13 of 15 seeds; the coarse repair cannot see anything narrower than 40 units. Cosmetic for a player; a fine detection with a size floor and the furniture layer would clear them. Not the sealed-building fault, which is closed |
 | ONE WORD FOR THE BACKPACK, AND THE HOTBAR RENAME FINISHED | v9.90 | v9.89's own Not verified line said the compact legend still called the backpack a bag. Read off every surface on v9.89 the thing you carry was named FOUR ways: "inventory" (full legend TAB row, controller VIEW row, the HUD hint "TAB  INVENTORY", two refusals), "bag" (compact legend, controller BACK row, "equip gun from bag", the armour rule card, five spoken lines, the Peddler's "SELL BAG", a searched pillager's "'S BAG", two guide cards, a settings hint), "kit" (three refusals "Kit is full"), and "backpack". And both controller legends still called the hotbar a BELT, which v9.89 missed. THE WORD IS BACKPACK, his word and the panel's. Twenty two strings, nothing that reads a profile or draws. Left alone on purpose: BAG OF FRAGS and BIGGER BAG OF FRAGS, which are Progress rewards and a literal bag, and the lore clipboard "Inventory, year one", a document in the world. The armour card line is 29 characters against the 32 it replaces, inside the box v8.4x measured. Check reads the compact legend, the full legend, the HUD hint, the controller table and the panel headings, needles from halves, and fails on a v9.89 fixture on all four surfaces at once. Ten of the 22 strings are proven on screen; the other twelve are spoken lines the harness has no cheap way to raise |
 | ONE WORD FOR THE HOTBAR | v9.89 | his rule, one word per thing, and his open line "I opens the BACKPACK, write the matching list of consistent definitions". On v9.88 the same nine keyed cells were named THREE ways to the player: "hotbar" in the legend, the bag hint, the item detail and his own answers 11 and 22; "Tactical belt" on the raid backpack heading and the Undercroft column heading, "your backpack plus your belt" under the raid backpack title, "off the belt and into the backpack" on the drag-off message, and "hotbar belt and inventory" on the ascent summary; "the bar" in the empty-slot prompt. THE WORD IS HOTBAR: his word, the legend's word, the keys' word. Six strings changed, nothing that reads a profile or draws. Belt stays inside the code, the raider-and-snitch trade. The vocabulary memory gains a section for what you carry. The check reads the surfaces as rendered text with needles assembled from halves, and fails on a v9.88 fixture on five surfaces at once |
@@ -1146,3 +1147,47 @@ the twelve: Chatter (owned), 105 s, haul 1100c, 11 items from 7 containers,
 section, no text edits, no feeling tag. His two notes at 20:00 (the crate
 prompt too small; the sprint footprint glitch) come from this run: 7
 containers searched and 19 s of sprinting. Answered by v10.52 and v10.55.
+
+### HIS NOTE, 2026-09-03 about 21:20: "pillagers still glitching into walls in the undercroft"
+
+The Undercroft crowd, not the operator: the errands (v8.07) and the pacing
+walk a body toward its target with no wall push, so a walker clips the
+piers, the counters and the lift housing. His v10.51 note was the operator
+behind the terminal; this is the other bodies. Queue: reproduce by stepping
+the room and counting crowd positions inside any HB.walls rect, then give the
+crowd the same collide against HB.walls the operator has, and a check that
+walks every errand and finds nobody inside a wall. Goes ahead of the
+remaining sound builds; his notes outrank the queue.
+
+### HIS NOTE, 2026-09-03 about 21:25: "trailing noise is way overdone"
+
+Heard on the play port, which serves the working copy with v10.56's gun
+voices: the tail (the room answering the Magnum, the Longshot and the
+Lance) is too loud and too long. Queue, next build: tail gain from 0.35 to
+0.12 of the crack, length from 1.6 to 1.1 of the crack, lowpass 420 to 320;
+measured by the recording context (tail gain and buffer length).
+
+### HIS NOTE, 2026-09-03 about 21:25: "when i find a gun it should go to the next open slot, not kick my scav pistol out of slot 1"
+
+A gun found in a raid is equipped into slot 1, replacing whatever was there.
+It should take the first EMPTY weapon slot (slot 2 when slot 1 holds the
+pistol), and only when both are full go to the bag, or replace the current
+slot. Inventory: full corpus. Queue after the tail and the crowd.
+
+### HIS NOTE, 2026-09-03 about 21:27: "trailing noises need to be much shorter, i can hear them wayy later"
+
+Same complaint, sharper: it is length, not only level. The Longshot's tail
+is 12,160 samples (a quarter second) at 0.35 of the crack, the pump clicks
+land at 0.28 and 0.42 s after the shot, and the louder crack rings the room
+reverb longer. v10.58: tail shorter than the crack and at 0.10 of it, the
+big cracks themselves shorter, every action click inside 0.30 s. The check
+requires no node to start later than 0.30 s after a shot and no buffer
+longer than 6,000 samples.
+
+### HIS NOTE, 2026-09-03 about 21:30: "wheb ny characterr stands behind a wall they change color lol"
+
+The v9.27 see-through pass in a raid paints the operator through a wall as
+a flat light-blue cutout at half alpha, coat #9fd8ff and no hero racks, so
+behind cover he turns blue. The Undercroft pass (v10.51) already uses the
+hero racks. Queue, v10.59: the raid ghost is the real figure, his own coat
+and racks, faded, so behind a wall he looks like himself seen through it.
