@@ -1,0 +1,37 @@
+v10.99: pillagers wear the hats, beards and tattoos they roll
+
+Found at v10.94 while proving the eye instrument. The same rack, on the same call
+at nine times raid size, changed the operator by 31,978 pixels for headgear,
+5,221 for the beard and 801 for the tattoo, and changed a pillager by zero.
+
+The block that draws her fringe also contains the tattoo, the beard and the
+headgear, and the whole block sits behind a hero-only branch. Hair colour and cut
+are outside it, which is why the crowd looked varied enough to hide this for
+months. The Undercroft crowd rolls all three for every member and none were
+drawn, while two lines of the new-in card promise the pillagers dress from the
+same racks he does.
+
+The branch closes after the fringe now, which is the one thing in there that is
+genuinely hers. The other three reach everybody, and each already read a
+pillager's own look through st: code written for this and never once reachable.
+After: headgear 32,557 on a pillager, beard 3,233, tattoo 1,418, operator
+unchanged.
+
+New check v10.99 requires each rack to change a pillager, each to still change
+the operator so it cannot be passed by taking a rack off her, and the operator
+and a pillager in the same things to still differ by thousands, which is her
+fringe. Plus a control that a full-body suit still overrules headgear.
+
+Instrument note: standalone, six consecutive draws of the same pillager are byte
+identical; inside the corpus the first pair differs by 621 pixels and every pair
+after it is exact, and I did not find what settles. Every number is now the
+settled reading, the smaller of two back-to-back pairs. With that the noise floor
+reads 0 and the old build reports all three racks at exactly 0. Before it, the
+drift was larger than the tattoo signal.
+
+Logged for his ruling as note 19: the crowd roller includes the outfit rack, so
+roughly seven of every eight people on the floor wear a full-body suit and a suit
+overrules every other rack. 3 of 16 crowd rolls show a hat.
+
+Not verified: how the crowd reads to him now, and whether any hat sits wrongly on
+a pillager at raid zoom.

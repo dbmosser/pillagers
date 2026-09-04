@@ -1294,7 +1294,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.98';
+var VER='10.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1305,10 +1305,11 @@ var VER='10.98';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='10.98';
+var WHATSNEW_VER='10.99';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'PILLAGERS WEAR HATS, BEARDS AND TATTOOS NOW, and so does the crowd in the Undercroft. They always rolled them and none of it was ever drawn, because the code that draws them sat behind a branch meant only for your own fringe. Your fringe is still yours alone.',
   'RENAMING YOUR PILLAGER NO LONGER THROWS. It saved the name and then crashed before updating the line under the title, four times in the last run report, because the button carried its own copy of that sentence. It calls the one that everything else uses.',
   'THE SELL BUTTON WILL NOT SELL WHAT SOMETHING WANTS. Servo Actuators, Optics Lenses and Data Cores were classified as salvage, so SELL JUNK AND LOOSE SALVAGE cleared them, while the contract board was asking for them by name, a worn gun needed a servo to repair, and the mainframe burns a core for intel. All three sit under PARTS now and the stash says what wants them. Tag a thing junk and it still sells.',
   'PAUSING IN THE UNDERCROFT OFFERS TWO CHOICES: RETURN TO THE UNDERCROFT and RETURN TO CHARACTER SELECTION. The second takes you back to the front door without a reload and without losing anything, and the name line and save list there are brought up to date on the way. A raid pause is unchanged.',
@@ -19070,6 +19071,15 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillStyle=HAIRLIT; rrF(hx2-7.5,ty-37,15,4,4);
       wc.fillStyle=HAIRHI;  wc.fillRect(hx2-6.6,ty-36.6,10.4,1.4);
     }
+  }
+  // v10.99, NOTE 17: EVERYTHING BELOW IS A RACK, AND THE RACKS REACH EVERYBODY.
+  // The fringe above is hers, her own hair styling, and stays hers. The tattoo,
+  // the beard and the headgear were inside that same branch, so no pillager and
+  // nobody in the Undercroft has ever worn any of them, while the crowd rolls all
+  // three for every member and the new-in card promises they dress from the same
+  // racks he does. Each of these already reads a pillager's own look through st;
+  // that code was written for this and has never once been reachable.
+  {
     // v10.36: TATTOO, ink on the face and neck, before the beard and headgear.
     (function(){
       var _tid=OUTF?'tatnone':(HERO?cosWorn('tattoo'):(st.tattoo||'tatnone')); if(!_tid||_tid==='tatnone') return;   // v10.54
@@ -19160,7 +19170,6 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.beginPath(); wc.ellipse(hx2,ty-26.8,2.4,3.4,0,0,6.2832); wc.fill();
       wc.fillStyle='#1a1c22'; rrF(hx2-9.2,ty-40.6,18.4,3.2,2);
     }
-
   }
   // v10.54, his notes: THE SUIT'S OWN PAINT. Last, over everything the racks
   // would have put there, so a suit is a suit and not a coat colour.
@@ -27576,7 +27585,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.98: the crash in your run report, and it was mine. Renaming your pillager threw every time you pressed SAVE, four times in your log, because v10.96 moved the name line into a function and left the rename button reading a variable that had gone with it. The name saved; the line under the title did not change and the handler died. It calls the one function now.',
+  now:'v10.99: no pillager has ever worn a hat, a beard or a tattoo. Measured: the same rack changes your operator by 31,978 pixels and a pillager by zero, because the block that draws them sits inside a hero-only branch along with your fringe. The crowd rolls all three for every member and none were drawn. The branch closes after the fringe now, which is the one thing in there that is actually yours.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

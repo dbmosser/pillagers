@@ -5361,6 +5361,73 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.99',what:'a pillager wears the hat, the beard and the tattoo his look rolled, and the fringe is still hers alone',
+   run:function(){
+     if(!(window.__opShot&&window.__canvases&&window.__P)) return 'SKIP: this fixture cannot draw one figure at a time';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, there are no pixels to read';
+     var bad=[];
+     __runPrep(); __resetCfg(); __pinDefaults(0); __forceSize(1920,1080);
+     var CN=__canvases(), wx=CN.world.getContext('2d'), Wd=CN.world.width, Hd=CN.world.height;
+     function shot(look){ var r=__opShot(look,0,9); return r&&r.thrown?null:wx.getImageData(0,0,Wd,Hd).data; }
+     function diff(a,b){ if(!a||!b) return -1; var k=0;
+       for(var q=0;q<a.length;q+=4)
+         if(Math.abs(a[q]-b[q])+Math.abs(a[q+1]-b[q+1])+Math.abs(a[q+2]-b[q+2])>24) k++;
+       return k; }
+     var BASE={hero:0,faceMark:'faceplain',eyes:'eyeblue',skin:'skinfair',hat:'none',
+               hair:'blonde',cut:'long',beard:'clean',tattoo:'tatnone'};
+     function look(over){ var o={},k; for(k in BASE) o[k]=BASE[k]; if(over) for(k in over) o[k]=over[k]; return o; }
+     shot(look());                      // one warm draw
+     // EVERY MEASUREMENT IS A PAIR, drawn back to back, so nothing that drifts
+     // over the length of this check can leak into a number. The pair is checked
+     // for drift first and the amount is carried into every message.
+     function once(over){ var b0=shot(look()), b1=shot(look(over)); return diff(b0,b1); }
+     // THE SETTLED READING. The first pair after a resize moves; every pair after
+     // it is exact. Two pairs, smallest wins, so nothing that happens once on the
+     // way in can be mistaken for a rack.
+     function pair(over){ var a=once(over), b=once(over); return (a<0||b<0)?-1:Math.min(a,b); }
+     var noise=pair(null);
+     if(!(noise>=0)) return 'drawing one pillager threw';
+     if(noise>40) bad.push('control: two settled draws of the same pillager differ by '+noise+' pixels, so this instrument cannot measure a rack');
+     // 1. THE THREE RACKS REACH A PILLAGER. Measured on v10.98 all three changed
+     //    a pillager by exactly ZERO while changing the hero by thousands.
+     var RACKS=[{k:'hat',v:'spartan',floor:2000,pk:'cosHat',hv:'spartan',h0:'none',name:'headgear'},
+                {k:'beard',v:'fullbeard',floor:800,pk:'cosBeard',hv:'fullbeard',h0:'clean',name:'the beard'},
+                {k:'tattoo',v:'tatspider',floor:300,pk:'cosTattoo',hv:'tatspider',h0:'tatnone',name:'the tattoo'}];
+     var prof=__P(), i;
+     for(i=0;i<RACKS.length;i++){
+       var R=RACKS[i], o={}; o[R.k]=R.v;
+       var d=pair(o);
+       if(d<R.floor) bad.push(R.name+' changes a pillager by '+d+' pixels against a noise floor of '+noise+', so a rack he rolled is not drawn on him');
+       // AND THE HERO STILL HAS IT. Fixing the pillager by breaking her would
+       // pass every line above.
+       var was=prof[R.pk];
+       prof[R.pk]=R.h0; var H1=shot({hero:1});
+       prof[R.pk]=R.hv; var H2=shot({hero:1});
+       prof[R.pk]=was;
+       var dh=diff(H1,H2);
+       if(dh<300) bad.push('control: '+R.name+' now changes the operator by only '+dh+' pixels, so this was fixed by taking it off her');
+     }
+     // 2. AND THE FRINGE IS STILL HERS. It sits in the same branch and is the one
+     //    thing in there that is her own styling rather than something picked up.
+     //    Same look on both: v10.99 measures 30,490 pixels of difference, which is
+     //    her hair. Ungating the whole branch would collapse this.
+     var keep={}, KEYS=['cosHat','cosBeard','cosTattoo','cosHair','cosCut','cosSkin','cosEyes','cosFace','cosOutfit'];
+     for(i=0;i<KEYS.length;i++) keep[KEYS[i]]=prof[KEYS[i]];
+     prof.cosHat='none'; prof.cosBeard='clean'; prof.cosTattoo='tatnone'; prof.cosHair='blonde';
+     prof.cosCut='long'; prof.cosSkin='skinfair'; prof.cosEyes='eyeblue'; prof.cosFace='faceplain';
+     prof.cosOutfit='outnone';
+     var dHP=diff(shot({hero:1}),shot(look()));
+     for(i=0;i<KEYS.length;i++) prof[KEYS[i]]=keep[KEYS[i]];
+     if(dHP<5000) bad.push('the operator and a pillager wearing the same things differ by only '+dHP+' pixels, so her own fringe has been handed out with the racks');
+     // 3. CONTROL: A SUIT STILL OVERRULES THE RACKS, which is the order v10.54
+     //    set and which this change reaches straight through.
+     if(typeof OUTFITS!=='undefined'||typeof cosFind==='function'){
+       var suited=look({outfit:'outskeleton',hat:'spartan'});
+       var suitedNoHat=look({outfit:'outskeleton',hat:'none'});
+       var ds=diff(shot(suited),shot(suitedNoHat));
+       if(ds>400) bad.push('a hat is drawn over a full-body suit, '+ds+' pixels, and a suit is supposed to overrule every rack');
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.98',what:'every control on the character screen can be pressed without throwing, and renaming your pillager updates the line under the title',
    run:function(){
      var ti=document.getElementById('title');

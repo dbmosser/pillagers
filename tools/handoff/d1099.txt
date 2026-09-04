@@ -1,0 +1,59 @@
+## v10.99 - NOTE 17: NO PILLAGER HAS EVER WORN A HAT, A BEARD OR A TATTOO
+
+Found at v10.94 while proving the eye instrument, by asking each rack whether it
+changes a NON-hero figure at all. The same rack, on the same call, at nine times
+raid size:
+
+    headgear   the operator 31,978 pixels changed, a pillager 0
+    beard      the operator  5,221 pixels changed, a pillager 0
+    tattoo     the operator    801 pixels changed, a pillager 0
+
+**CAUSE.** The block that draws the operator's fringe also contains the tattoo,
+the beard and the headgear, and the whole block sits behind a hero-only branch.
+Hair colour and hair cut are outside it, which is why the crowd looks varied
+enough that this went unnoticed for months.
+
+**WHAT IT COST.** The Undercroft crowd rolls a hat, a beard and a tattoo for
+every single member and none of them were drawn, and two lines of the new-in card
+promise that the pillagers dress from the same racks he does. A shipped promise
+that was not true.
+
+**THE FIX.** The branch closes after the FRINGE, which is the one thing in there
+that is genuinely hers, her own hair styling. The tattoo, the beard and the
+headgear fall outside it and reach everybody. Every one of them already reads a
+pillager's own look through st; that code was written for this and had never once
+been reachable.
+
+**MEASURED AFTER:** headgear 32,557 pixels on a pillager, the beard 3,233, the
+tattoo 1,418, and the operator unchanged.
+
+**NEW CHECK v10.99** requires each of the three racks to change a pillager by a
+real amount, requires each to still change the operator, so this cannot be passed
+by taking a rack off her, and requires the operator and a pillager wearing the
+same things to still differ by thousands of pixels, which is her fringe and which
+would collapse if I had ungated the whole branch. One more control: a full-body
+suit must still overrule the headgear, which is the order v10.54 set and which
+this change reaches straight through.
+
+**AN INSTRUMENT NOTE I AM NOT GOING TO DRESS UP.** Run standalone, six
+consecutive draws of the same pillager are byte identical. Run as a check inside
+the corpus, the FIRST pair differs by 621 pixels and every pair after it is
+exact. I did not find what settles on that first pair. Rather than assert on a
+number I cannot explain, every measurement is now the SETTLED reading: the
+smaller of two consecutive pairs, each pair drawn back to back. With that, the
+noise floor reads 0 and the old build reports all three racks at exactly 0, which
+is the defect stated precisely. Before that change the drift was larger than the
+tattoo signal, and the tattoo would have passed on a build that draws no tattoo.
+
+**AND A THING FOR HIM TO DECIDE, MEASURED WHILE TESTING.** The crowd's look
+roller picks one item from every rack including the OUTFIT rack, which holds Own
+Clothes plus seven full-body suits. So roughly seven of every eight people in the
+Undercroft are wearing a Skeleton, a Machine, a Trooper, an Android, a Tomb
+Explorer, a Baller or a Street Poet, and a suit overrules every other rack by
+design. Measured: 3 of 16 crowd rolls show a visible hat. So this fix is real and
+the raid will show it, but the Undercroft floor will still be mostly costumes
+until he says otherwise. That is his call and it is logged as note 19.
+
+Not verified: how the crowd reads to him on the floor now, and whether any hat
+sits wrongly on a pillager's head at raid zoom, since the check measures that the
+hat is drawn and not that it is drawn beautifully.
