@@ -1291,7 +1291,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.94';
+var VER='10.95';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1302,10 +1302,11 @@ var VER='10.94';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='10.94';
+var WHATSNEW_VER='10.95';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'ONE FONT, EVERYWHERE ON THE SCREEN. The loot pop, PICKED UP and every other world label were set in the title wordmark face, which at that size reads as a slab rather than a word. They are in the game font now, in the same five roles as everything else, and so are the faint district numbers on the ground.',
   'FACES DO NOT COLLIDE WITH THEIR OWN EYES. War paint was two bars straight across both eyeballs and the shiner was a purple wash over one of them. Face marks are painted before the eyes now, so paint goes on the skin and the eye sits on top of it, which is where an eye goes.',
   'THE UNDERCROFT READS PROPERLY NOW. The station names were painted into the room before the room went dark, so the darkness went over them as well; they are drawn on top of it now and are no longer see-through. The controls line and the line under each station prompt came up with them. THE STATION WITH THE RACKS IS NOW CALLED FASHION, everywhere.',
   'YOU ARE MUCH EASIER TO FIND ON THE MAP. Your marker was eight pixels across and was the only one that did not grow when the map did. It is about twice the size now, with a halo under it and a longer line showing which way you are facing.',
@@ -6758,7 +6759,7 @@ function bakeGround(map){
     // The number stays on all five: it is how he tells one shed from another on
     // the sector map, and taking it away would trade one kind of samey for another.
     c.save(); c.globalAlpha=(_bf===2?.18:.13); c.fillStyle=D3.wallTop;
-    c.font='700 '+Math.round(Math.min(b3.w,b3.h)*(_bf===2?.52:.42))+'px "Titan One", sans-serif';
+    c.font='700 '+Math.round(Math.min(b3.w,b3.h)*(_bf===2?.52:.42))+'px "Rubik",system-ui,sans-serif';   // v10.95, his note: one family
     c.textAlign='center'; c.textBaseline='middle';
     c.fillText(String(b3.tag),b3.x+b3.w/2,b3.y+b3.h/2);
     c.restore();
@@ -11306,7 +11307,10 @@ function label(x,y,txt,col,delay,big,ik){
   var myW=100;
   try{
     wc.save();
-    wc.font=FS((big?'11px':'10px')+' "Titan One","Rubik",sans-serif');
+    // v10.95, HIS NOTE: was Titan One, the title wordmark face. Roles now, and
+    // the SAME roles the renderer uses, or the plate would be measured in one
+    // font and filled in another.
+    wc.font=FS(big?TYPE.label:TYPE.micro);
     myW=wc.measureText(txt).width+(ik?LH(26):0);
     wc.restore();
   }catch(_lm){}
@@ -21223,7 +21227,9 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     var la=clamp(lb.t<=_hold?1:(1-(lb.t-_hold)/(lb.life-_hold)),0,1);
     var rise=Math.min(lb.t,lb.life)*26;
     wc.globalAlpha=la;
-    wc.font=FS((lb.big?'11px':'10px')+' "Titan One","Rubik",sans-serif');
+    // v10.95, HIS NOTE: the loot pop and every other world label were set in
+    // Titan One, which at fifteen pixels reads as a slab rather than a word.
+    wc.font=FS(lb.big?TYPE.label:TYPE.micro);
     // THE THING YOU FOUND, DRAWN, v2.91. His run #1 note is "looting feels so
     // uninspired, how can we make it more interesting???" and the recorder's own
     // reading of his deaths ends "Fix the looting phase first." The payoff for
@@ -27514,7 +27520,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.94: the eye collisions on Undercroft faces, your note. Enumerated every look the crowd can roll: four of the six face marks are clean, war paint covered 66 percent of the eye area with two bars straight across both eyeballs, and the shiner covered 51 percent, which is one whole eye. A mark is on the skin and an eye is not skin, so the marks are painted before the eyes now.',
+  now:'v10.95: the loot pop font, your note. Traced every text draw in a raid, its HUD and the Undercroft: all of it was already the game font in one of five roles, except the world labels and the faint district numbers on the ground, which were set in Titan One, the title wordmark face. At fifteen pixels that reads as a slab, not a word. It was never the weight, it was a second typeface.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31922,7 +31928,7 @@ function cosSwatch(c){
     var pcv=document.createElement('canvas'); pcv.width=34; pcv.height=34;
     var pcx=pcv.getContext('2d'); pcx.fillStyle='#1b1f26'; pcx.fillRect(0,0,34,34);
     if(PATCHCOL[c.id]) drawPatch(pcx,c.id,7,7,20);
-    else { pcx.fillStyle='#8a96a1'; pcx.font='14px sans-serif'; pcx.textAlign='center'; pcx.fillText('--',17,22); }
+    else { pcx.fillStyle='#8a96a1'; pcx.font='600 14px "Rubik",system-ui,sans-serif'; pcx.textAlign='center'; pcx.fillText('--',17,22); }   // v10.95, his note: one family
     return '<img style="width:34px;height:34px;border-radius:6px;border:2px solid #14161b" src="'+pcv.toDataURL()+'">';
   }
   if(c.kind==='pack'){   // v10.34: a pack, in its colour

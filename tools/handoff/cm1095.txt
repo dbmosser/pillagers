@@ -1,0 +1,38 @@
+v10.95: one family on the canvas, the loot pop included
+
+His note: "the loot text that pops on screen upon looting that tells you what item
+you got is still too bolded -- use the entire font across the entire game". His
+second time asking.
+
+Reproduced by counting. Every text draw in a raid frame, its HUD, the map screen
+and four Undercroft frames was traced and its font recorded. Almost all of it was
+already the game family in one of five roles, at three sizes because the HUD
+scale multiplies them. Three were not: the item name on the loot pop at 17.2px
+Titan One, PICKED UP and every other world label at 15.6px, and the faint
+district numbers baked into the ground between 114 and 244px.
+
+Titan One is the toybox display face the title wordmark is set in. At fifteen
+pixels it does not read as a bold word, it reads as a slab. It was never a
+weight, it was a second typeface.
+
+It survived the August pass because the world label function measures and draws
+with a font string of its own, so it never went through a role and the sweep
+never reached it.
+
+The label now measures and draws in the same roles as everything else. The small
+one lands at exactly the 13 rendered pixels it already had. The large one goes
+from 14.3 at weight 400 in a heavy display face to 15.6 at weight 600 in the game
+face. The ground numbers and the placeholder dash on an item with no portrait
+come across too. The only Titan One left is the game's own name.
+
+New check v10.95 traces every word drawn while the map is built, a raid frame and
+its HUD are drawn, the map is opened and the Undercroft runs, and requires one
+family; it asks about the family and never the size. Controls: the loot pop must
+actually have been drawn, found by a marker string; at least sixty words must
+have been drawn; and the tracer draws one word in a foreign face and must catch
+itself. The map is built inside the trace because the ground is baked once.
+
+Fails on a v10.94 fixture with thirty words in a second typeface.
+
+Not verified: how the lighter loot pop reads in a real raid, and the DOM, which
+this check does not trace.
