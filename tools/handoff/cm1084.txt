@@ -1,0 +1,20 @@
+v10.84: machines could not find the door
+
+His note: a crawler got close and did not hurt him. Reproduced, and it is worse
+than a crawler. A machine inside a building could not route out to a player
+standing outside it: twenty seconds, never closer than 97 units, zero damage,
+while the same crawler in the open kills in ten.
+
+The router says so itself, carrying pathFail for the whole chase. The pathing
+grid inflates every wall by 12 units on 16 unit cells, so a 64 unit doorway
+keeps 40 units of width, and anything that narrows it further seals the door on
+the grid while leaving it open in the world. Five of the twenty buildings on
+COLD STORAGE were boxes nothing could path out of.
+
+Doorways are now recorded and their cells opened, but only where the cell centre
+is outside every wall rectangle with no padding, so no route can be cut through
+anything solid. 0 of 20 trapped after, and entities, containers and walls are
+identical to v10.83.
+
+Still open: the exact building that started this now finds a route and does not
+walk it. Said plainly in DESIGN.md.

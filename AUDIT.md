@@ -210,6 +210,53 @@ STILL OPEN:
 | ~~ESC should pause in the Undercroft~~ | ALREADY BUILT since v8.70, measured at v9.83 with a real Escape keypress on the floor: the pause box opens |
 | ~~The roll graphic is WRONG in the Undercroft~~ | NOT REPRODUCED at v9.83: it draws a disc, fill 0.78 against a circle 0.785, and travels 43 units |
 
+## FINDING, 2026-09-04, HIS CRAWLER NOTE: REPRODUCED AND DIAGNOSED, FIX WITHHELD
+
+His note reproduced exactly. Stand outside a building with a crawler inside it,
+in chase with full alert: TWENTY SECONDS, never closer than 97 units, ZERO
+damage. The same crawler in the open closes to a gap of 9.6 and kills in ten
+seconds; inside the same building as you it closes to 9.4 and kills. So the
+attack, the reach, the cooldown and the states are all fine. It cannot get out.
+
+THE ROUTER SAYS SO: the crawler carries path null and pathFail 1 for the whole
+chase, falls through to the local wall hug, and bumps around indoors while its
+alert decays.
+
+CAUSE: the nav grid is 16 unit cells and every wall is inflated by 12 before
+cells are marked blocked. A doorway is a 64 unit gap in a 16 unit wall, so the
+two runs either side eat 12 each and 40 units remain, two and a half cells. When
+anything narrows that further the last free cell disappears and a door a body
+can WALK through becomes a door no body can ROUTE through.
+
+MEASURED at seed 4242, buildings a machine cannot route out of, counted only
+where there is verified open ground to stand outside:
+  COLD STORAGE    4 of 13
+  THE COLD MILE  15 of 59
+
+THE FIX IS WRITTEN AND WAS NOT SHIPPED. Each building records the gaps it cuts
+and a doorway cell is unblocked only where its centre is outside every wall
+rectangle with no padding, so it can never open a route through anything solid.
+It takes the counts to 3 of 13 and 8 of 59, nineteen traps down to eleven, with
+entities, containers and walls all identical. It is in tools/handoff as p1084
+and f1084 a to d.
+
+WHY IT WAS WITHHELD: with the fix in, v10.46 fails, a check about the number 23
+jersey sprite on the clothing rack, reading -15 pale pixels where it needs 6.
+The player spawn and every container position are byte identical either way and
+I could not explain the connection. Sixty hours before he shows this to his
+friends I am not shipping a change I cannot account for. Next tick: bisect the
+four edits, find it, ship it.
+
+STILL OPEN even with the fix in: the exact case that started it, building 3 on
+COLD STORAGE with the player 52 units off its west wall, finds a route and does
+not walk it, stalling at 73 units for thirty seconds.
+
+THREE OF MY OWN PROBES WERE WRONG before any of the above was true, and each
+would have shipped a fix for nothing: one put the crawler outside the map, one
+called a spot clear when the crawler's start was inside a building, and one
+teleported the player 300 units away, past a crawler's 135 unit sight, and read
+the blindness as a bug.
+
 ## HIS NOTES, 2026-09-04, sent 60 hours before the alpha. BOTH TAKEN NEXT.
 - "sound needs work, there are random humms that last way too long, like after
   you die, etc". A hum that outlives the raid it belongs to. Reproduce first:

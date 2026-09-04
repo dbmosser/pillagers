@@ -1,0 +1,64 @@
+## v10.84 - HIS NOTE: A CRAWLER GOT CLOSE AND DID NOT HURT ME
+
+His note of 2026-09-04: "double check that crawler attacking is working
+properly, i saw at least one instance where i was standing still and crawler
+didn't hurt me even though he was close."
+
+REPRODUCED, and it is worse than a crawler. Stand outside a building with a
+crawler inside it, in chase, alert full:
+
+  crawler inside, player just outside the wall   20s, never closer than 97
+                                                 units, ZERO damage
+  both outside in the open                       closes to a gap of 9.6,
+                                                 kills the player in 10s
+  both inside the same building                  closes to 9.4, kills him
+
+So the attack, the reach, the cooldown and the states are all working. It
+cannot get out.
+
+THE ROUTER SAYS SO ITSELF. Watched frame by frame, the crawler carries
+path null and pathFail 1 for the entire chase, which means the route finder was
+asked and answered that there is no way from where it stands to where you are.
+With no route it falls through to the local wall hug and bumps around indoors
+while its alert decays.
+
+THE CAUSE. The pathing grid is 16 unit cells and every wall is inflated by 12
+units before its cells are marked blocked. A doorway is a 64 unit gap cut in a
+16 unit wall, so the two runs either side eat 12 each and 40 units of clear
+width remain, two and a half cells. When anything narrows that further, a piece
+of furniture, a landmark wall, a split run, the last free cell disappears and a
+door a body can WALK through becomes a door no body can ROUTE through. Measured
+on COLD STORAGE at seed 4242: FIVE of the twenty buildings were boxes a machine
+could not path out of.
+
+THE FIX opens the doorways on the grid and nothing else. Each building now
+records the gaps it cuts, and after the grid is built a cell inside one of those
+gaps is unblocked ONLY IF ITS CENTRE IS GENUINELY OUTSIDE EVERY WALL, tested
+against the real rectangles with no padding at all. By construction it cannot
+open a route through anything solid; it can only stop the padding from sealing a
+hole that is really there. 370 cells across 37 doorways on COLD STORAGE, 1,586
+across 151 on the mile.
+
+MEASURED AFTER: 0 of 20 buildings trapped, by the router's own answer, and the
+world does not move at all: entities 85 and 374, containers 165 and 593, walls
+610 and 2403, every one identical to v10.83.
+
+STILL OPEN, AND I AM NOT CLAIMING OTHERWISE. The exact case that started this,
+building 3 on COLD STORAGE with the player 52 units off its west wall, now finds
+a route and still does not walk it: thirty seconds, stalling at 73 units,
+oscillating between two points inside the building. The router is fixed and
+something downstream of it is not, so his note is improved and not closed. That
+is the next build.
+
+Three of my own probes were wrong before any of this was true, and each one
+would have shipped a fix for nothing: the first put the crawler outside the map
+boundary, the second called a spot clear when it was 52 units from a building
+whose interior swallowed the crawler's start, and the third teleported the
+player 300 units away, which is past a crawler's 135 unit sight, and read the
+resulting blindness as a bug.
+
+Not verified: whether the same trap exists on the mile. The sweep passes there
+now, but I never counted how many of its 84 buildings were trapped BEFORE the
+fix, so I cannot say how much of that map this changes. Nothing here is measured
+against the bot's extract rate, which is the number a pathing change would move
+if it moves anything; that needs a paired run and this build does not have one.
