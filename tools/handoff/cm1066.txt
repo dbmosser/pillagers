@@ -1,0 +1,13 @@
+v10.66: a new character actually gets the briefing
+
+Not his note, this is the alpha. Arriving on a brand new save opened the
+primer and then opened the welcome pack on top of it, and opening a window
+closes every other one, so the card that teaches the game was destroyed the
+instant it appeared. After the first raid it stamped itself seen and never
+came back.
+
+The three first-run cards queue now: the pack, the consent question where
+there is somewhere to send reports, then the primer. The primer stays owed
+for the first three raids instead of being stamped away unread.
+
+The check drives a fresh save five ways. It fails on a v10.65 fixture.

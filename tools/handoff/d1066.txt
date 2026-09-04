@@ -1,0 +1,52 @@
+## v10.66 - A NEW CHARACTER ACTUALLY GETS THE BRIEFING
+
+Not one of his notes. This is the alpha: it is the first thing a friend
+meets on Saturday, and it was broken.
+
+### What it was
+
+Arriving in the Undercroft on a brand new save opens the primer, FIRST TIME
+OUT, "what is worth knowing before you take the lift up; the first three are
+the ones that get people killed". Then, on the very next line, it opens the
+welcome pack. Opening a window in this game closes every other one, so the
+primer was destroyed the instant it appeared and nobody ever read a word of
+it.
+
+Measured on v10.65 with a fresh profile. On arrival only the welcome pack is
+up; the primer is gone and its seen flag is still 0, so the game still
+thinks it owes him the card. It pays that debt only on a SECOND arrival at
+the floor with no raid in between, which is not what anybody does: you take
+the pack, walk to the lift and go up. And the moment that first raid is
+behind him, the primer sees a run on the profile, stamps itself as seen and
+never opens again. The one card that teaches the game was the one card a new
+player could never read.
+
+### Now
+
+The three first-run cards queue instead of painting over each other. The
+welcome pack first, because it is a gift and it is the reason he is standing
+there. Then the consent question, when there is somewhere to send reports at
+all. Then the primer. Closing one brings up the next, and nothing decides
+whether a card is owed except the rule that card already had.
+
+The primer is also owed until it is READ rather than until a raid happens.
+v7.88 stamped it away for any profile with a raid behind it so that an old
+save would not meet the onboarding card late, which was right, but it also
+silenced it for exactly the player it was written for. It now stays owed for
+the first three raids, which is where a new player has stopped being new,
+and then stamps itself quietly as before.
+
+### Measured
+
+The check drives a brand new save five ways. On arrival, the welcome pack
+and exactly one window. Taking the pack brings up FIRST TIME OUT, and only
+that, with the pack's guns and items really in the armoury and the stash, so
+this is a queue and not a swap. Closing the pack with CLOSE does the same. A
+player who takes the pack, goes straight up and comes back from his first
+raid still meets the primer. And a player with nine raids behind him does
+not, or it is a nag. On v10.65 the second, fourth and fifth of those fail.
+
+Not verified: how the two cards feel one after another to a real person,
+which is his to judge; and the consent question's place in the queue, which
+cannot fire at all until the public drop is set, so it was reasoned about
+rather than driven.
