@@ -1,0 +1,49 @@
+## v10.91 - HIS NOTE: THE RESIZE GRIP HAS NOWHERE TO DRAG TO
+
+"corner drag to size for lower right corner needs to be in lower left side,
+otherwise there's nowhere to drag to increase size", 2026-09-04.
+
+REPRODUCED, every panel measured at 1920x1080, distance from the right of the
+screen:
+
+  gear      8      (and 5 from the bottom)
+  cond      17
+  body      1374
+  legend    1445
+  raiders   1529
+
+The grip has always been the panel's bottom-RIGHT corner, and the panel is sized
+by how much further the pointer gets from the corner OPPOSITE it. On the gear
+panel that leaves 8 pixels of travel before the pointer runs off the monitor, so
+there is effectively no way to make it bigger. That is his note exactly, and the
+conditions panel has the same problem with 17.
+
+THE FIX IS HIS RULE: the grip goes on the corner that faces INTO the screen. A
+panel whose right edge is within a grip-width and ten pixels of the screen edge
+grips on its LEFT and is sized from its top-right corner instead. Every panel
+with room keeps the bottom-right corner every window has used for this since
+before he was born, because a grip that moved on panels that were already fine
+would be a change for its own sake.
+
+ONE FUNCTION DECIDES AND FOUR PLACES ASK IT: the mousedown that starts a resize,
+the drag that sizes it, the drawing of the three little diagonals, which are
+mirrored when the grip is on the left so they still point into the panel, and the
+cursor shape. Those four disagreeing is precisely how a grip ends up looking like
+it is somewhere it is not, and they were four separate copies of the same
+arithmetic before this.
+
+NO DIAL MOVES, per his instruction of 2026-09-04.
+
+THE CHECK walks every resizable panel and asks five things: a panel pinned to the
+right edge grips left and one with room grips right; every grip has at least 120
+pixels of travel before the pointer would leave the screen, which is the actual
+complaint; the anchor really is the corner the grip is not, or the panel would
+shrink as he pulls it outward; a click just inside the grip is accepted; and a
+click on the opposite corner is refused. Its two controls are that at least one
+pinned panel and at least one roomy panel are present in the run, or it is
+testing half a rule and does not know it.
+
+Not verified: this is measured at 1920x1080. At 1440p and 4K the panels sit at
+different distances from the edge and a panel that is pinned here may not be
+there, which is correct behaviour but is not proven. And nobody has dragged one
+with a mouse: the check drives the hit test and the geometry, not a real gesture.

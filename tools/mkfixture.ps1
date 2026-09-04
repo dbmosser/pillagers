@@ -3117,7 +3117,11 @@ window.__REGRESS=[
      var body =sig(Math.round(B.x+B.w/2), Math.round(B.y+B.h/2));
      var bar  =sig(Math.round(B.x+50),    Math.round(B.y+8));
      var glyph=sig(Math.round(B.right-12),Math.round(B.y+8));
-     var grip =sig(Math.round(B.x+B.w-8), Math.round(B.y+B.h-8));
+     // v10.91: ASK, do not recompute. The grip moved to the left corner on
+     // panels pinned to the right edge of the screen, and a check that works out
+     // the corner for itself is a second copy of the rule that can disagree.
+     var _gp=(typeof hudGrip==='function')?hudGrip(B):{x:B.x+B.w,y:B.y+B.h,left:false};
+     var grip =sig(Math.round(_gp.left?(_gp.x+8):(_gp.x-8)), Math.round(_gp.y-8));
      if(!world.n) return 'nothing is drawn at the pointer at all, so this cannot be measured';
      // HIS ANSWER 38. Measured before v9.09: bar and glyph drew byte-identical
      // arrows, and the grip drew the aiming reticle.
@@ -3139,7 +3143,7 @@ window.__REGRESS=[
      // agree with what a click there actually does. A resize pointer over a spot
      // that starts a DRAG is a worse lie than the reticle was.
      if(H.hitAt){
-       var pg=H.hitAt(Math.round(B.x+B.w-8), Math.round(B.y+B.h-8));
+       var pg=H.hitAt(Math.round(_gp.left?(_gp.x+8):(_gp.x-8)), Math.round(_gp.y-8));
        if(pg!=='grip') bad.push('control: the corner the resize pointer is drawn on hit-tests as "'+pg+'"');
        var pb=H.hitAt(Math.round(B.x+50), Math.round(B.y+8));
        if(pb!=='bar'&&pb!=='glyph') bad.push('control: the drag bar hit-tests as "'+pb+'"');
@@ -5328,6 +5332,56 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.91',what:'every panel resize grip has somewhere to drag to: a panel pinned to the right edge grips on its left, and the click, the cursor and the drawing all agree where it is',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__hud&&window.__hudBox)) return 'SKIP: this fixture cannot draw and measure the HUD';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     // The fallback is the old build on purpose, not a skip.
+     if(typeof hudGrip!=='function')
+       return 'the grip is always the panel bottom-right corner, so a panel against the right of the screen has nowhere to drag to, which is his note';
+     var bad=[];
+     __runPrep(); __resetCfg(); __pinDefaults(0); __forceSize(1920,1080);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(); g.ents.length=0;
+     for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
+     __frame(0); __hud();
+     var B=__hudBox(); if(!B) return 'SKIP: no HUD panels to measure';
+     var Wv=window.innerWidth||1920, gs=hudGripS(), pinned=0, roomy=0, k;
+     for(k in B){
+       var b=B[k]; if(!b||!b.w) continue;
+       if(HUDZ[k]===undefined) continue;      // not a panel that resizes
+       var G2=hudGrip(b);
+       var rightRoom=Wv-(b.x+b.w);
+       // 1. THE GRIP IS ON THE SIDE THAT HAS ROOM.
+       if(rightRoom<gs+10){
+         pinned++;
+         if(!G2.left) bad.push(k+' is '+Math.round(rightRoom)+' pixels from the right of the screen and still grips on its right, so there is nowhere to drag');
+       } else {
+         roomy++;
+         if(G2.left) bad.push(k+' has '+Math.round(rightRoom)+' pixels of room on its right and grips on its left anyway');
+       }
+       // 2. AND THE GRIP HAS SOMEWHERE TO GO. This is the whole complaint: the
+       //    panel is sized by how far the pointer gets from the anchor, so a
+       //    grip with no travel is a panel that cannot grow.
+       var travel=G2.left?G2.x:(Wv-G2.x);
+       if(travel<120) bad.push(k+' can only be dragged '+Math.round(travel)+' pixels before the pointer leaves the screen');
+       // 3. THE ANCHOR IS THE OTHER CORNER, or the panel would shrink as he
+       //    pulls it outward.
+       if(G2.left&&Math.abs(G2.ax-(b.x+b.w))>1) bad.push(k+' grips left but is sized from '+Math.round(G2.ax)+' rather than its right edge');
+       if(!G2.left&&Math.abs(G2.ax-b.x)>1) bad.push(k+' grips right but is sized from '+Math.round(G2.ax)+' rather than its left edge');
+       // 4. AND THE HIT TEST AGREES WITH THE CORNER. Three places read this; if
+       //    they disagree the grip looks like it is somewhere it is not.
+       var inx=G2.left?(G2.x+2):(G2.x-2);
+       if(!hudOnGrip(b,inx,G2.y-2)) bad.push(k+' draws its grip where the click does not accept it');
+       var farx=G2.left?(b.x+b.w-2):(b.x+2);
+       if(hudOnGrip(b,farx,G2.y-2)) bad.push(k+' accepts a click on the opposite corner as the grip');
+     }
+     // 5. CONTROLS. Both kinds of panel have to be present or this proves half a
+     //    rule, and at 1920x1080 the gear and conditions panels are pinned while
+     //    the body, legend and pillager list are not.
+     if(!pinned) bad.push('control: no panel is pinned to the right edge here, so the case he reported is not being tested');
+     if(!roomy) bad.push('control: every panel is pinned, so the unchanged case is not being tested');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.90',what:'the bottom-right corner reserves itself and every world label that would land on it is lifted clear, which is his screenshot of EXTRACTION - OPEN drawn through SUPPORT MG',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__hud)) return 'SKIP: this fixture cannot draw a HUD';

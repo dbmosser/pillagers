@@ -1,0 +1,14 @@
+v10.91: the resize grip moves to the side that has room
+
+His note. Measured at 1080p: the gear panel sits 8 pixels from the right of the
+screen and its grip was in that corner, with the panel sized by distance from the
+opposite corner, so there were 8 pixels of travel and no way to make it bigger.
+The conditions panel had 17.
+
+A panel pinned to the right edge now grips on its LEFT and is sized from its
+top-right. Panels with room are unchanged. One function decides and all four
+readers ask it: the click, the drag, the drawing and the cursor.
+
+The check requires a pinned panel to grip left, a roomy one to grip right, every
+grip to have at least 120 pixels of travel, and the click to agree with the
+drawing. No dial moves.
