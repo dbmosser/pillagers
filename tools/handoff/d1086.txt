@@ -1,0 +1,43 @@
+## v10.86 - HIS NOTE, THE OTHER HALF: THE HUM ALSO SURVIVES A PAUSE
+
+His note said "random humms that last way too long, like after you die, etc".
+v10.85 took the death. This is the etc, and it is the one most people will
+actually meet.
+
+THE FAULT. The entire raid update sits inside a branch gated on !G.paused, and
+tickAmbience, the only thing in the file that writes the ambient bed's gains,
+lives inside it. Open the pause box and those gains are never written again, so
+the bed holds its last level for as long as the menu is open. Pausing happens
+many times in a raid. Dying happens once.
+
+And it holds at whatever the room was. The level follows the nearest hunting
+body, so pausing while something is on top of you leaves the loudest version of
+the bed running underneath a completely still menu, which is the worst version
+of the effect he described.
+
+THE FIX. Duck on the frame the pause opens, once, not every frame, using the
+same cut v10.85 added. Then let tickAmbience bring it back by itself when play
+resumes: it already ramps toward its live target with a 0.45 time constant, so
+the room returns over about a second rather than snapping back on.
+
+Ducking once rather than every frame matters for two reasons. It avoids
+cancelling and rewriting the same ramp sixty times a second under a menu that is
+not moving, and it keeps v10.85's own assertion true, that the bed is never cut
+during ordinary play.
+
+NO DIAL MOVES. Nothing in this build changes a balance number, an entity count,
+a spawn rate or a map's contents, per his instruction of 2026-09-04.
+
+THE CHECK steps a real raid and asks six things: no duck across twenty frames of
+ordinary play; exactly one duck on the frame the pause opens; no further ducks
+across forty more paused frames; no duck on resume; the duck flag cleared so the
+next pause is armed; and a SECOND pause ducking again, because a build that
+ducked once per raid and never again would pass every other line. Its control is
+that a build with no way to cut the bed reports that fact rather than skipping.
+
+Not verified: this is measured as a fact about the code path, not as a fall in
+volume, because the fixture makes AudioContext throw so probe runs stay silent.
+Nobody has heard it. The death beat, the second or so of slow motion before a
+losing raid ends, still freezes the bed rather than driving it, and endRaid cuts
+it immediately afterwards, so it is under two seconds and was left alone. The
+music is not ducked by a pause and I have not decided whether it should be.

@@ -1,0 +1,14 @@
+v10.86: and the hum stops when you pause
+
+His note said "like after you die, etc". This is the etc, and the way most
+people will meet it. The whole raid update is gated on not-paused and the
+ambient bed's gains are written inside it, so opening the pause box left the bed
+holding its last level under the menu for as long as it was open, at whatever
+volume the room had reached.
+
+It ducks once on the frame the pause opens and tickAmbience ramps it back on
+resume. Once, not every frame, so it does not fight the ramp and does not break
+v10.85's rule that the bed is never cut during play.
+
+No dial moves. The check drives a real raid through play, pause, resume and a
+second pause.

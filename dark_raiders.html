@@ -1303,7 +1303,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.85';
+var VER='10.86';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1318,6 +1318,7 @@ var WHATSNEW_VER='10.80';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'AND THE HUM STOPS WHEN YOU PAUSE. Same fault as the one below, met the common way: the room tone is turned down inside the part of the frame that a pause switches off, so it used to hold its level under the pause menu. It ducks now and comes back when you resume.',
   'THE HUM STOPS WHEN THE RAID DOES. The low bed under a raid is five voices that never stop, turned down rather than switched off, and the only thing turning them down ran inside the raid itself. So it froze at its last level when you died and kept going through the card and the Undercroft, loudest of all if something was on top of you at the end.',
   'MACHINES CAN FIND THE DOOR NOW. One inside a building could not work out how to get out to you, so it bumped about indoors while you stood outside untouched. Nineteen buildings across the two maps were traps like that and eleven still are, but if something is in there with you it is far likelier to come.',
   'THE MAP MARKS THE FALLEN BUILDINGS. Press M and the destroyed ones are hatched with a broken outline, so you can plan a route past the ones with no cover instead of finding out when you get there.',
@@ -26958,6 +26959,12 @@ function loop(ts){
                (_shp.roll>0)||(_shp.reloading>0)||(!!_shp.prep);
     if(!_shAct) dt=0;
   }
+  // v10.86, HIS NOTE: the raid update below is gated on !G.paused and
+  // tickAmbience lives inside it, so a pause froze the ambient bed at its last
+  // level and it hummed through the whole menu. Ducked once on the frame the
+  // pause opens, and tickAmbience ramps it back by itself on resume.
+  if(G.paused&&!G.over){ if(!G._ambDuck){ G._ambDuck=1; try{ ambienceOff(); }catch(_ap){} } }
+  else if(G._ambDuck){ G._ambDuck=0; }
   if(!G.paused&&!G.over&&G.deathBeat!==undefined&&G.deathBeat!==null){
     // the death beat: the world keeps moving underwater-slow, you do not
     G.deathBeat-=dt;
@@ -27418,7 +27425,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.85: your note about hums that last way too long. The ambient bed is five voices that are never stopped on purpose and silenced by turning their gain down instead, and the only thing that turned it down ran inside the raid loop. End a raid and the gain froze where it stood, loudest if something was on top of you when you died.',
+  now:'v10.86: the same hum, the way most people will actually meet it. The whole raid update sits behind a not-paused guard and the ambient bed is turned down inside it, so opening the pause box froze the bed at its last level and it hummed under the menu. Pausing happens many times a raid; dying happens once.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
