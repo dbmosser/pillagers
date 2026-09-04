@@ -1,0 +1,14 @@
+v10.81: destroyed buildings, the other half of his map note
+
+All 104 buildings across the two maps were closed boxes with a door: 20 of 20
+on COLD STORAGE and 84 of 84 on THE COLD MILE. Ruins are solid blocks in open
+ground and the file says so, so nothing you could enter had ever been wrecked.
+
+Some buildings now lose whole runs of outer wall, so they can be seen into and
+entered from any side. Interiors are left standing on purpose, two runs of
+shell always stand, small buildings and any building holding a strongroom are
+skipped.
+
+The pass runs after every roll and picks by a hash of position, so bldgRuin 0
+reproduces the old map exactly, and it only ever removes geometry. The new
+check is an A/B on that dial across both maps.

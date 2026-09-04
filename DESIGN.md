@@ -40024,6 +40024,90 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.81 - HIS NOTE, THE OTHER HALF: DESTROYED BUILDINGS
+
+MEASURED FIRST, because the point of an open item is that nobody has looked.
+All 104 buildings across the two maps have a complete shell: 20 of 20 on COLD
+STORAGE, 84 of 84 on THE COLD MILE, every one of them a closed box with one or
+two doorways cut into it. Not one building on either map has ever been
+destroyed.
+
+RUINS ARE NOT THIS, and the file already says why. The map scatters collapsed
+rubble in open ground and the drawing code carries the reason: "A collapsed
+building draws as a broken silhouette, never as a box with a door, because the
+whole point is that there is no way into it." Those are solid blocks. What his
+note asks for is a real building, one of the 104, that has been destroyed and
+that you can still walk into and loot.
+
+WHAT A WRECKED BUILDING IS HERE. Its shell has lost whole runs of wall, so you
+can see into it and enter it from any side. That is the read from overhead and
+it is also the play: no cover on that side, no corner to hold, and anything
+inside is visible from outside long before you reach a door. It is the first
+thing on either map that makes one building different from the building next to
+it in a way you can act on.
+
+THE INTERIOR IS LEFT STANDING, deliberately, and this is the decision worth
+recording. Interior partitions carry a building id, and the repair pass, the
+sealed-room pass and three separate checks all count them. Tearing them out
+here would move numbers those checks own for reasons that have nothing to do
+with this build, and I would be reading their failures as my own bug for the
+rest of the night. A blast that opens the outside and leaves the rooms up is
+also the truer picture of the thing.
+
+NO RANDOM NUMBERS, which is the whole reason this is safe to ship two days
+before he shows it to anybody. The pass runs at the very end of the map build,
+after every roll and after the sealed-room repair, and picks by a hash of
+position rather than by rnd(). CFG.bldgRuin at 0 reproduces the pre-v10.81 map
+exactly on any seed, which is what the check leans on. And it only ever REMOVES
+geometry: sealing a room, burying a container and blocking a way out all
+require something to be ADDED, so none of them is reachable from here.
+
+TWO RUNS OF SHELL ALWAYS STAND. A building that loses its whole shell is not a
+ruin, it is a hole in the map where a building used to be, and every pass that
+names a building by its rectangle would still believe it was there. A building
+under 140 by 140 is skipped, and so is any building holding an authored
+strongroom: that is the one room on the map you are meant to need a key for, and
+opening it from the side would give it away.
+
+TWO MISTAKES OF MINE, BOTH CAUGHT BY MEASURING RATHER THAN BY READING. First I
+put the pass ahead of the streak, window and lift passes, and all three of those
+roll per wall: removing a run of shell changed how many draws they made and the
+whole seeded stream moved behind it, costing COLD STORAGE seven entities and two
+containers and pushing its wall count UP, 623 to 633, because the window carve
+was splitting a different set of walls. It now runs after the lifts and before
+the sight segments, where nothing downstream rolls anything. Second, a flat
+chance per building gave COLD STORAGE exactly ONE wrecked building at every rate
+from 0.09 to 0.18, because twenty buildings is too few for a coin to land twice,
+while the mile went 5 to 11 over the same range. The rate is a proportion of the
+eligible buildings now, with a floor of two, taken in hash order: COLD STORAGE 2
+of 20 and THE COLD MILE 7 of 84.
+
+MEASURED, dial off against dial on, seed 4242:
+
+  entities    85 and 374, identical either way
+  containers  165 and 593, identical either way
+  walls       623 to 610 on COLD STORAGE, 2440 to 2403 on the mile
+  torn open   2 buildings and 13 runs; 7 buildings and 37 runs
+  skipped     2 buildings on the mile for holding a strongroom
+
+THE CHECK runs both arms itself and asks five things: the dial off ruins nothing
+and moves neither the entity count nor the container count, so the pass is not
+rolling dice; something was actually torn open; every ruined building LOST
+perimeter, kept at least twelve percent of it, and kept every one of its
+interior walls; every building it did not pick is untouched; and no building
+holding a strongroom was opened.
+
+The control is the check's own structure: it is an A/B on the dial, so if the
+pass were absent the two arms would be identical and "has no destroyed building
+on it at all" fires for both maps.
+
+Not verified: what a wrecked building LOOKS like, as opposed to what it is
+made of. It draws with the ordinary wall art and the missing runs are the whole
+signal; rubble on the floor and a lower, more broken parapet would say it
+better and are not in this build. Nothing here changes how a wrecked building
+shelters you from above, which still counts as indoors. And the balance effect
+of removing cover from a handful of buildings per map is not measured, because
+the bot does not fight pillagers and cover is most of what pillagers use.
 ## v10.80 - HIS NOTE "NEEDS TOWN CENTERS" WAS ANSWERED BY CODE NO MAP CALLED
 
 TOWN SQUARE has been in this file since v6.92. Its own comment reads: "His note,
