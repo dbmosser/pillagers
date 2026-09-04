@@ -1,0 +1,20 @@
+## HIS NOTES 21 AND 22, 2026-09-04
+
+21. "sometimes my shots make a red noise circle when they hit something,
+    sometimes they don't --whats up with that?" A rule he can see the effect of
+    and cannot work out. Find what actually gates that ring: damage dealt, the
+    kind of thing hit, distance, the noiseSee dial, or whether the shot killed.
+    Then either make it consistent or make the rule legible. REPRODUCE BY
+    ENUMERATION: fire at each kind of target at several ranges and record when
+    the ring appears, rather than watching for it.
+
+22. "Once again, crawlers aren't attacking properly?" SECOND TIME HE HAS ASKED.
+    The first was 2026-09-03, "i saw atleast one instance where i was standing
+    still and crawler didn't hurt me even though he was close", which led to the
+    two if/else chains finding: a non-raider fell into the idle-wander else in
+    the middle of a chase and that wiped the crawler attack cooldown every frame.
+    If it is back, that fix was incomplete or a second path does the same thing.
+    HIGHEST VALUE ON THE BOARD: combat that does not work makes the alpha
+    pointless. Reproduce by standing a player still inside a crawler's reach and
+    counting damage per second over many frames, at several distances and with
+    several crawler states, rather than by watching one instance.

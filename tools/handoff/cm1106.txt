@@ -1,0 +1,29 @@
+v11.06: the 23 jersey reads as a jersey again
+
+His note: "micheal jordan character, can't see his jersey bc its blocked by a
+black block (maybe supposed to be backpack straps?)".
+
+Not the backpack, which is drawn behind the torso. Measured on one baller at nine
+times raid size, every pixel in a chest box counted by colour: red 3,222, the
+jersey's own black side panels 2,384, white of the 23 1,582, ink 1,506, chest rig
+882. The panels were 2.4 wide each on a chest 13 wide, thirty-seven percent of
+the shirt in near-black, which at sprite size reads as straps. And the chest rig
+is a near-black band the full width of the chest, drawn immediately after the
+jersey, straight across the lower half of the number.
+
+Panels are trim now, 1.4 wide, and the jersey is drawn after the rig instead of
+before it. After: the white of the 23 goes from 1,582 to 2,735, the red from
+3,222 to 3,661, and the black to red ratio from 0.74 to 0.54.
+
+New check v11.06 finds the chest from the drawing, using the jersey red as the
+marker, and requires 2,000 pale pixels of numeral and a black to red ratio no
+worse than 0.62. Controls: a figure with no jersey must produce almost no red and
+few pale pixels. Fails on a v11.05 fixture with both findings.
+
+The v10.46 jersey check wanted 8 ink pixels of panel at raid scale, a floor
+calibrated on the block he complained about. Rather than widen the art back until
+the old number returned, it was measured again: red +58, pale +24, ink +4, and
+the floor is now 2, half the live reading.
+
+Not verified: how it reads at play zoom and on the Fashion figure, and whether
+the chest rig band belongs on a jersey at all.

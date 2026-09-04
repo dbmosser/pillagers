@@ -1332,7 +1332,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.05';
+var VER='11.06';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1343,10 +1343,11 @@ var VER='11.05';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.05';
+var WHATSNEW_VER='11.06';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE 23 JERSEY READS AS A JERSEY AGAIN. Its black side panels were more than a third of the shirt and read as backpack straps, and the chest rig band was drawn straight across the number. The panels are trim now and the number sits on top of the rig.',
   'A DAYTIME BLACKOUT IS NOT HARDER, so it no longer pays as if it were. The lamps are already off at 8am and noon, and a blackout multiplying zero is still zero. It pays at night, at dusk and at dawn, when there is light to lose. Rain, fog and storm cut your sight whatever the hour and are unchanged.',
   'A LOST CHARACTER CAN COME BACK. Settings, the recorder tab: paste the RESTORE CODE from the end of any run report, press READ CODE to see whose it is, then type the word restore. It replaces the save you are playing, so it asks twice. It does not bring back the run log.',
   'YOUR RUN REPORT NOW ENDS WITH A RESTORE CODE. It is one line that carries your character: name, credits, XP, what you are wearing, what is in your stash and what you have unlocked. If a save is ever lost, that line is how it comes back.',
@@ -18967,19 +18968,26 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   wc.fillStyle=cc; rrF(x-6.5+leanX,ty-22,13,11,3);
   wc.fillStyle=cHi; wc.fillRect(x-5.7+leanX,ty-22,11.4,3);
   wc.fillStyle=cLo; wc.fillRect(x-5.7+leanX,ty-13.4,11.4,2.4);
+  // v11.06, HIS NOTE 20: the jersey used to be painted HERE, before the chest
+  // rig, so the rig's near-black band was laid across the lower half of the
+  // numeral. It goes on after the rig now, a dozen lines down.
+  // chest rig, and a hit shimmer when recently hurt
+  wc.fillStyle='rgba(16,21,27,.85)';
+  wc.fillRect(x-6.5+leanX,ty-18,13,2.4);
   if(iv<=0&&(OUTF?!!OUTF.jersey:(st.hero&&cosWorn('fit')==='jersey'))){   // v10.54: the baller wears it
     // v10.46: the number 23 jersey. Black side panels, and a pale 2 and 3 in
     // one-pixel strokes across the chest, five tall.
+    // v11.06, HIS NOTE 20: the panels were 2.4 wide each on a chest 13 wide,
+    // which is thirty-seven percent of the shirt in near-black and measured 2,384
+    // pixels against the red's 3,222. At this size two black bars down a chest
+    // read as backpack straps. They are trim now.
     var _jx=x-6.5+leanX;
-    wc.fillStyle='#14161b'; wc.fillRect(_jx,ty-21.4,2.4,10); wc.fillRect(_jx+10.6,ty-21.4,2.4,10);
+    wc.fillStyle='#14161b'; wc.fillRect(_jx,ty-21.4,1.4,10); wc.fillRect(_jx+11.6,ty-21.4,1.4,10);
     wc.fillStyle='#f4f2ec';
     var _jy=ty-20;
     wc.fillRect(_jx+2.6,_jy,3.4,1.5); wc.fillRect(_jx+4.5,_jy,1.5,2.6); wc.fillRect(_jx+2.6,_jy+1.9,3.4,1.5); wc.fillRect(_jx+2.6,_jy+1.9,1.5,2.6); wc.fillRect(_jx+2.6,_jy+3.8,3.4,1.5);
     wc.fillRect(_jx+7.2,_jy,3.4,1.5); wc.fillRect(_jx+9.1,_jy,1.5,5.3); wc.fillRect(_jx+7.2,_jy+1.9,3.4,1.5); wc.fillRect(_jx+7.2,_jy+3.8,3.4,1.5);
   }
-  // chest rig, and a hit shimmer when recently hurt
-  wc.fillStyle='rgba(16,21,27,.85)';
-  wc.fillRect(x-6.5+leanX,ty-18,13,2.4);
   // SPEC 9.7: the rig has to be READABLE. Armour is drawn in a cool steel ramp
   // rather than in the coat colour, so it reads as armour on all six raider
   // coats and on the operator, and each tier is a different silhouette rather
@@ -27685,7 +27693,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.05: your question about a daytime blackout, and the answer is no. Lamp brightness is the weather times the time of day, and the time of day is ZERO at 8am and noon, so a blackout there kills lamps that were already off. That makes my v11.00 wrong: it paid your 1.1x for killing the lamps whatever the hour. Killing the lamps only counts now when a real amount of light actually goes. Cutting sight, which is rain, fog and storm, is unchanged.',
+  now:'v11.06: the black block over the jersey, your note. Not the backpack, which is drawn behind the body. It was the jersey own black side panels, 2.4 wide each on a chest 13 wide, measured at 2,384 pixels against 3,222 of red, plus the chest rig band laid straight across the lower half of the 23. The panels are trim now and the jersey is drawn after the rig instead of before it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,56 @@
+## v11.06 - HIS NOTE 20: THE BALLER'S JERSEY IS BEHIND A BLACK BLOCK
+
+"micheal jordan character, can't see his jersey bc its blocked by a black block
+(maybe supposed to be backpack straps?)", 2026-09-04.
+
+**IT IS NOT THE BACKPACK.** The pack is drawn before the torso and the torso
+covers it. Two other things are on that chest and I put both of them there.
+
+**MEASURED**, one baller drawn alone at nine times raid size, every painted pixel
+in a 125 by 130 box around the chest counted by colour:
+
+    3,222  the red of the jersey
+    2,384  the jersey's own black side panels
+    1,602  the red in shadow
+    1,582  the white of the 23
+    1,506  the ink outline
+      882  the chest rig band
+
+The black side panels alone were 74 percent of the red. They were 2.4 wide each
+on a chest 13 wide, so 4.8 of 13, **thirty-seven percent of the shirt in
+near-black**. At sprite size two black bars down a chest read as straps, which is
+exactly the word he used. And underneath them, the chest rig is a near-black band
+the FULL width of the chest, drawn immediately after the jersey, straight across
+the lower half of the numeral.
+
+**THE FIX, both of them.** The side panels go from 2.4 to 1.4, which is trim
+rather than a block. And the jersey is drawn AFTER the chest rig instead of
+before it, so the 23 sits on top of the band. The rig still reads, between the
+number and the panels.
+
+**MEASURED AFTER:** the white of the 23 goes from 1,582 to **2,735**, a 73
+percent gain, because nothing is painted across it any more. The red goes from
+3,222 to 3,661. The black falls from 2,384 to 1,994 and its ratio to the red from
+0.74 to 0.54. The black fell less than the panel width did because that exact
+colour appears elsewhere on the figure, which is worth knowing before anybody
+reads too much into that one number.
+
+**NEW CHECK v11.06** finds the chest from the drawing rather than from
+coordinates typed into it, using the jersey red as the marker, then requires at
+least 2,000 pale pixels of numeral and a black-to-red ratio no worse than 0.62.
+Two controls: a figure with no jersey must produce almost no jersey red and few
+pale pixels, which proves the red is the shirt and the pale is the number rather
+than the skin.
+
+Fails on a v11.05 fixture with both findings and their numbers.
+
+**AND THE v10.46 JERSEY CHECK HAD TO MOVE WITH IT.** It required at least 8 ink
+pixels of side panel at raid scale, a floor calibrated on the very block he
+complained about. Widening the art back until the old number returned would be
+fitting the game to the test. Measured again at raid scale with the trim: red
++58, pale +24, ink +4. The floor is 2, half the live reading, which still catches
+the panels being deleted and no longer demands a block.
+
+Not verified: how it reads to him at play zoom and on the Fashion figure, which
+is the judgement he will make; and whether the chest rig band should be there at
+all on a jersey, which is a look decision rather than a defect.
