@@ -36965,9 +36965,17 @@ window.__REGRESS=[
        if(ps.length<2) bad.push('a 45 frame sprint left '+ps.length+' prints');
        for(i=0;i<gs.length;i++) if(gs[i]<48||gs[i]>64){ bad.push('sprinting prints are '+gs[i].toFixed(1)+' apart, not about 56'); break; }
        // 3. Pinned against a wall, sprinting into it: no prints, and none inside the wall.
+       // A wall that actually stops him: tried, not assumed, because a window,
+       // a door or a piece of furniture is in the same list and lets him through.
        var wall=null; var W=G.map.walls;
-       for(i=0;i<W.length;i++){ var w=W[i]; if(w.h>=40&&w.w>=8&&clearOf(w.x-40,w.y+w.h/2,14)&&!inWater(w.x-40,w.y+w.h/2)){ wall=w; break; } }
-       if(!wall) return 'SKIP: no wall with clear ground to its left';
+       for(i=0;i<W.length&&!wall;i++){
+         var w=W[i];
+         if(!(w.h>=40&&w.w>=8&&clearOf(w.x-40,w.y+w.h/2,14)&&!inWater(w.x-40,w.y+w.h/2))) continue;
+         p.x=w.x-p.r-0.5; p.y=w.y+w.h/2; G.sprintTog=false; p.stam=100;
+         var tx=p.x; K['KeyD']=true; run(6); K['KeyD']=false;
+         if(Math.abs(p.x-tx)<1) wall=w;
+       }
+       if(!wall) return 'SKIP: no wall on this map stops him from the left';
        G.decals=[]; p.x=wall.x-p.r-0.5; p.y=wall.y+wall.h/2; p.printAcc=0; p.stam=100; G.sprintTog=true;
        var x0=p.x; K['KeyD']=true; run(120); K['KeyD']=false; G.sprintTog=false;
        var pp=mine();

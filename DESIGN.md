@@ -40024,6 +40024,81 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.54 - OUTFITS: SEVEN FULL-BODY SUITS THAT OVERRULE EVERY OTHER RACK
+
+His notes, 2026-09-03 about 19:50: **"add some fuill-body outfits to the
+cosmetics that overrule everything else -- like a skeleton, a robot, and a
+halo spartan"**, and about 19:55: **"2b from nier automata, lara croft,
+micheal jordan, 2pac"**.
+
+### What it was
+
+Fourteen racks, each dressing one part of the figure, and no way to put on
+a whole thing at once. A skeleton is not a hat and a coat colour.
+
+### Now
+
+A new rack, OUTFIT, at the top of the Depot, above BUILD. When a suit is
+worn the painter takes the suit's colours for the torso, the trousers, the
+two boots, the head and the gun hand, the suit's own hairstyle, headgear
+and beard, no face mark, no tattoo and no patch, and paints the suit's own
+marks last, over everything the racks would have put there. Own Clothes
+puts the racks back in charge. The four names he gave are licensed
+characters and real people, so the game has its own versions of what they
+stand for, in its own words, drawn by its own painter:
+
+- The Skeleton: bone on black, ribs and a spine across the torso, bone
+  shafts down the legs, a skull with black sockets, a nose notch and a row
+  of teeth. Earned at twelve extractions.
+- The Machine: grey plate with seams, a cyan chest light, a red eye bar
+  that tracks the aim, an antenna with a light on top. Earned at three
+  wardens.
+- The Trooper: the green helmet with the gold visor from the headgear rack
+  over a green chest plate and shoulder plates, dark trousers and boots,
+  green hands. Earned at level eight.
+- The Android: a black dress with a flared hem, black legs and boots,
+  porcelain skin, a white bob, a black band across the eyes. Earned at
+  thirty runs.
+- The Tomb Explorer: a teal tank top with bare shoulders, bare legs, brown
+  boots, a belt with a holster on each hip, a dark braid. Earned at twenty
+  extractions.
+- The Baller: the red number 23 jersey from the clothing rack, red shorts
+  with white trim over bare legs, the red sneakers, a shaved head. Earned
+  at twenty-three runs.
+- The Street Poet: a red bandana, a goatee, a black jacket open on a white
+  vest with a gold chain, denim, white sneakers. Earned at eight
+  extractions.
+
+The skin, where a suit names none, is the player's own. A look save carries
+the outfit. The ALL COSMETICS switch (v10.53) opens the rack like any other.
+Pillagers never wear one.
+
+### Measured
+
+The check counts the rack, requires the outfit in the look kinds, then
+paints the figure the Depot's way at 5.2 on its own canvas: with the flag
+off and an unearned suit chosen the figure is byte for byte the one in its
+own clothes; with the flag on, each of the seven suits changes at least 300
+pixels of the figure and leaves no pixel of the slate coat, and the Trooper
+paints helmet green; and the Depot lists OUTFIT as its first slot with
+eight tiles in the rack. On v10.53 there is no rack, which is the finding;
+on this build the check returns null.
+
+The full corpus then failed six older sprite checks that the batch had
+passed: hats, the jersey, the sneakers, patches and tattoos all "drew
+nothing". The saved profile on the fixture's origin carried the Skeleton,
+left there by an earlier run of the outfit check on a dry fixture, which
+shares that origin; the profile cleaner keeps cosmetics on purpose, and a
+suit overrules every rack those checks look at. Two things changed: the
+cleaner resets the outfit slot to Own Clothes, the way it pins day, and a
+random look leaves the outfit rack alone, because seven suits to one Own
+Clothes would have put a suit on seven times in eight over whatever it had
+just rolled. The corpus was run again after both.
+
+Not verified: the look of each suit by eye, which is his call; the suits
+in motion, painted here standing still; and the crowd in the Undercroft,
+which takes the same painter and never has an outfit set.
+
 ## v10.53 - THE CHEAT BOX HAS AN ALL COSMETICS SWITCH
 
 His notes, 2026-09-03 about 19:40: **"add something to the dev cheat menu to
