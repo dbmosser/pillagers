@@ -210,6 +210,25 @@ STILL OPEN:
 | ~~ESC should pause in the Undercroft~~ | ALREADY BUILT since v8.70, measured at v9.83 with a real Escape keypress on the floor: the pause box opens |
 | ~~The roll graphic is WRONG in the Undercroft~~ | NOT REPRODUCED at v9.83: it draws a disc, fill 0.78 against a circle 0.785, and travels 43 units |
 
+## HIS NOTES, 2026-09-04, sent 60 hours before the alpha. BOTH TAKEN NEXT.
+- "sound needs work, there are random humms that last way too long, like after
+  you die, etc". A hum that outlives the raid it belongs to. Reproduce first:
+  drive a raid to each of the three endings and to the pause box, and list every
+  oscillator and every gain node still scheduled or still running afterwards,
+  with how long each has left. The fixture SILENCES sound (memory: the fixture
+  overrides say, sfx and blip), so this has to be measured on the real game on
+  :8802 or on an unstubbed fixture, or it will report silence and prove nothing.
+  Taken as the next build.
+- "double check that crawler attacking is working properly, i saw at least one
+  instance where i was standing still and crawler didn't hurt me even though he
+  was close". Reproduce: stand the player still, put a crawler inside its reach,
+  step the game and count damage over time; then sweep distance and angle to
+  find the band where it closes but never lands a hit. v9.60's two-if-else-chain
+  fault is the obvious suspect (memory: non-raiders fall into the idle-wander
+  else mid-chase and it wiped the crawler attack cooldown every frame), so check
+  that first and check whether crouching or standing still changes the branch.
+  Taken as the build after the sound one, unless the sound work is small.
+
 ## HIS NOTES, 2026-09-03, three lines before leaving for six or seven hours
 - "when a pillager is downed, it should take more than 1 scav pistol shot to
   eliminate them." Taken as the next build. Reproduce: a downed pillager, one
