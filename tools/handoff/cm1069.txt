@@ -1,0 +1,20 @@
+v10.69: the briefing says how much of it you have not read
+
+Not his note. Found driving a friend's first session in an empty browser.
+
+FIRST TIME OUT is the one card that teaches the game and most of it was off
+the bottom of the screen. Measured at 1920x1080: 18 cards, 1558 pixels of
+them, in a 912 pixel box, so seven were hidden behind a five pixel scrollbar
+with nothing anywhere saying the list continues. A new player closes it
+believing he has read it, and never meets the Bulwark, the Pillbox or the
+Mainframe.
+
+The card now counts what is under the fold and says so. Clicking the line
+scrolls a page, and reaching the end takes the line away. The briefing gets
+its own scrollbar at twelve pixels instead of five.
+
+Two columns was rejected on measurement: halving the width doubles each
+card's height. The order of the cards is untouched, because which of them
+belongs above the fold is his call.
+
+The check fails on a v10.68 fixture.

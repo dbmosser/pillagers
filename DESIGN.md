@@ -40024,6 +40024,61 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.69 - THE BRIEFING SAYS HOW MUCH OF IT YOU HAVE NOT READ
+
+Not one of his notes. Found by driving a friend's first session in an empty
+browser, and this is the alpha: FIRST TIME OUT is the one card that teaches
+the game, and most of it was off the bottom of the screen with nothing
+saying so.
+
+### What it was
+
+Measured on the real game at 1920x1080 from empty storage: 18 cards, 1558
+pixels of them, inside a 912 pixel box. Eleven on screen, SEVEN NOT. In the
+test fixture, whose box is shorter at 664, ten are hidden. The scrollbar is
+5 pixels wide against a panel 1874 wide, and no words anywhere say the list
+continues, so a new player has no reason to believe there is anything under
+the last line he can see. He closes the card believing he has read it.
+
+What is down there: the Undercroft radio, the Pillbox that never chases you,
+arranging the HUD, THE BULWARK AND ITS SLAB, contracts that judge how you
+played, junk building the Mainframe, and Settings being a station you walk
+to. The three the card itself calls the ones that get people killed are all
+above the fold, and so is calling extraction, so a friend can still finish a
+raid without scrolling. The Bulwark card is the one down there worth a life:
+shooting its slab is close to useless and the noise brings company.
+
+### Now
+
+The card counts what is under the fold and says so, in a line under the
+list. Clicking that line scrolls a page and the count follows. Reaching the
+end takes the line away, so it is a signal rather than a nag. The briefing
+gets its own scrollbar at 12 pixels in the amber the panel already uses,
+instead of the 5 pixel grey every panel shares.
+
+The count is taken off the rendered page rather than from the card list,
+because what is hidden depends on the height of the box and the size of the
+text, and both move with the window and with his text size dial.
+
+Two columns was tried on paper and rejected: halving the width roughly
+doubles each card's height, so it buys nothing at this length. The order of
+the cards is untouched; which of them deserves to be above the fold is his
+call, not a layout question.
+
+### Measured
+
+The check opens the real briefing, counts the cards whose top sits below the
+bottom of the box, and requires the line to be visible and to name that
+exact number. Then it clicks the line and requires the list to have moved
+and at least one new card to have come into view. Then it scrolls to the
+bottom and requires the line to be gone. It also requires the scrollbar to
+be at least 10 pixels, measured against v10.68's 7. On a v10.68 fixture it
+fails on the first assertion, because the line does not exist at all.
+
+Not verified: whether the seven cards under the fold are the right seven to
+be there, which is an editing decision and his; the card at text sizes other
+than the default, since the count is computed live but only the default was
+driven; and 1440p and 4K, where the box is taller and fewer cards hide.
 ## v10.68 - A FOUND GUN TAKES THE EMPTY SLOT, THE OTHER HALF
 
 His note of 2026-09-03 about 21:25: **"when i find a gun it should go to the

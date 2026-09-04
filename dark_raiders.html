@@ -136,6 +136,15 @@
   .plist { overflow-y:auto; flex:1; padding:3px 0; }
   .plist::-webkit-scrollbar { width:5px; }
   .plist::-webkit-scrollbar-thumb { background:var(--steel-hi); }
+  /* v10.69: the briefing is the one card a new player has to finish reading, so
+     its own bar is wide enough to notice and its own colour. */
+  #primerlist::-webkit-scrollbar { width:12px; }
+  #primerlist::-webkit-scrollbar-thumb { background:var(--amber); border-radius:6px; }
+  .pmore { display:none; margin-top:6px; padding:6px 10px; cursor:pointer;
+    font-size:14px; color:var(--amber); border:1px solid var(--steel-hi);
+    border-radius:3px; text-align:center; }
+  .pmore:hover { background:rgba(255,192,74,.08); }
+  .pmore.show { display:block; }
   .row { display:flex; align-items:center; gap:10px; padding:10px 14px; font-size:16px;
     border-bottom:1px solid rgba(42,50,61,.35); }
   .row:hover { background:rgba(255,192,74,.06); }
@@ -998,6 +1007,7 @@
   <h3>FIRST TIME OUT</h3>
   <div class="msub">What is worth knowing before you take the lift up. The first three are the ones that get people killed. You can bring this back any time from Settings.</div>
   <div id="primerlist" class="plist"></div>
+  <div id="primermore" class="pmore"></div>
   <div style="display:flex;gap:10px;margin-top:10px;align-items:center">
     <label style="display:flex;gap:6px;align-items:center;font-size:13px;color:var(--ash);cursor:pointer">
       <input type="checkbox" id="primernever" style="cursor:pointer"> Do not show this again
@@ -1267,7 +1277,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.68';
+var VER='10.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27143,7 +27153,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.68: a gun you find in a raid goes into your empty second slot instead of shoving the gun out of your hands. With both slots full nothing changes: the gun you are holding is still the one it replaces.',
+  now:'v10.69: FIRST TIME OUT tells you how much of it you have not read. Most of the briefing was under the fold behind a five pixel scrollbar, so a new player finished it without ever seeing the Bulwark, the Pillbox or the Mainframe.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31095,10 +31105,44 @@ function renderPrimer(){
   host.innerHTML=html;
   var cb=document.getElementById('primernever');
   if(cb) cb.checked=!!P.primerOff;
+  // v10.69: the list is taller than the box it sits in and a scrollbar alone is
+  // not a signal, so the card says how many cards are still under the fold and
+  // scrolls to them when the line is clicked.
+  host.onscroll=primerCue;
+  var mo=document.getElementById('primermore');
+  if(mo) mo.onclick=function(){ host.scrollTop+=Math.max(120,host.clientHeight-60); primerCue(); };
+}
+// Counted off the rendered page rather than from the card list, because what is
+// hidden depends on the height of the box and the size of the text, and both
+// change with the window and with his text size dial.
+function primerCue(){
+  var host=document.getElementById('primerlist'), mo=document.getElementById('primermore');
+  if(!host||!mo) return 0;
+  function count(){
+    var box=host.getBoundingClientRect(), k=0;
+    for(var i=0;i<host.children.length;i++){
+      if(host.children[i].getBoundingClientRect().top>=box.bottom-4) k++;
+    }
+    return k;
+  }
+  // TWICE. The line lives in the same column as the list, so showing it shortens
+  // the box by its own height and pushes one more card under the fold. Counting
+  // once printed a number that stopped being true the instant it was printed.
+  // Two passes settle it: if the line is wanted it stays wanted, so this cannot
+  // flip back and forth.
+  var n=0;
+  for(var pass=0;pass<2;pass++){
+    n=count();
+    if(n>0){ mo.textContent=n+' more below. Click here, or scroll the list.'; mo.classList.add('show'); }
+    else { mo.textContent=''; mo.classList.remove('show'); }
+  }
+  return n;
 }
 function openPrimer(){
   renderPrimer();
   openModal('primermodal');
+  // After the window is up, or every rectangle is zero and the count is a lie.
+  primerCue();
 }
 // Shown once, to a profile that has never finished a raid, and only if he has not
 // ticked the box. P.primerSeen is stamped on CLOSE rather than on open, so
