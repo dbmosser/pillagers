@@ -32894,6 +32894,7 @@ try{ say=function(m){
   if(!G&&typeof hubToast==='function') hubToast(m);
 }; }catch(e){}
 try{ tickAmbience=function(){}; }catch(e){}
+try{ window.__enemyAudioReal=tickEnemyAudio; }catch(e){}   // v10.57: the real one, for the step checks
 try{ tickEnemyAudio=function(){}; }catch(e){}
 try{ window.__stepsReal=tickPlayerSteps; }catch(e){}
 // v8.73: and a way to put the real one back, so his "too many footsteps when
@@ -37175,7 +37176,7 @@ window.__REGRESS=[
      try{
        var a=fake(); AC=a; BUS=a.createGain();
        function call(type){ a.log.length=0; _realBlip(type); return a.log.slice(); }
-       function sig(lg){ return lg.filter(function(x){ return /^(buf|start|flt|osc)/.test(x); }).map(function(x){ return x.replace(/[:=](-?\d+)$/,function(m,d){ return ':'+Math.round(+d/1500)*1500; }); }).join('|'); }
+       function sig(lg){ return lg.filter(function(x){ return (/^(buf|start|flt|osc)/).test(x); }).map(function(x){ return x.replace(/[:=](-?\d+)$/,function(m,d){ return ':'+Math.round(+d/1500)*1500; }); }).join('|'); }
        // In a raid: the pickup keeps its chirp, and the four new voices differ from it and from each other.
        __startRaid({seed:4242,mapIx:0});
        if(!G) return 'no raid';
@@ -37217,7 +37218,7 @@ window.__REGRESS=[
      try{
        var a=fake(); AC=a; BUS=a.createGain();
        function call(type,arg){ a.log.length=0; _realBlip(type,0,undefined,arg); return a.log.slice(); }
-       function sig(lg){ return lg.filter(function(x){ return /^(buf|start|flt|osc)/.test(x); }).map(function(x){ return x.replace(/[:=](-?\d+)$/,function(m,d){ return ':'+Math.round(+d/1500)*1500; }); }).join('|'); }
+       function sig(lg){ return lg.filter(function(x){ return (/^(buf|start|flt|osc)/).test(x); }).map(function(x){ return x.replace(/[:=](-?\d+)$/,function(m,d){ return ':'+Math.round(+d/1500)*1500; }); }).join('|'); }
        var kinds=['raider','crawler','sentry','snitch','warden','bulwark','listener'], sigs={};
        for(var i=0;i<kinds.length;i++){
          var lg=call('die',kinds[i]);
@@ -37258,7 +37259,7 @@ window.__REGRESS=[
   {v:'10.57',what:'a step schedules heel then sole with the surface tell, no two alike, a sprint louder than a walk, left and right alternate, and an enemy step carries the surface under it',
    run:function(){
      var bad=[];
-     if(typeof _realBlip!=='function'||typeof tickEnemyAudio!=='function'||!window.__stepsReal) return 'SKIP: this build has no real blip or steps to trace';
+     if(typeof _realBlip!=='function'||!window.__enemyAudioReal||!window.__stepsReal) return 'SKIP: this build has no real blip or steps to trace';
      if(!(window.__startRaid)) return 'SKIP: no raid starter';
      function param(v,log,name){ var o={_v:v}; Object.defineProperty(o,'value',{get:function(){ return o._v; },set:function(x){ o._v=x; log.push(name+'='+Math.round(x*1000)); }}); ['setValueAtTime','exponentialRampToValueAtTime','linearRampToValueAtTime','setTargetAtTime'].forEach(function(m){ o[m]=function(x){ log.push(name+':'+Math.round(x*1000)); return o; }; }); return o; }
      function fake(){
@@ -37277,12 +37278,12 @@ window.__REGRESS=[
        blip=_realBlip;   // the fixture stubs blip to a counter; the real steps and the enemy tick call blip, not _realBlip
        var a=fake(); AC=a; BUS=a.createGain(); a.log.length=0;
        function foot(surf,stance){ a.log.length=0; _realBlip('foot',180,0,surf,stance); return a.log.slice(); }
-       function sig(lg){ return lg.filter(function(x){ return /^(buf|start|flt[:=]|osc[:=])/.test(x); }).map(function(x){ return x.replace(/[:=](-?\d+)$/,function(m,d){ return ':'+Math.round(+d/2000)*2000; }); }).join('|'); }
+       function sig(lg){ return lg.filter(function(x){ return (/^(buf|start|flt[:=]|osc[:=])/).test(x); }).map(function(x){ return x.replace(/[:=](-?\d+)$/,function(m,d){ return ':'+Math.round(+d/2000)*2000; }); }).join('|'); }
        function maxGain(lg){ var m=0; lg.forEach(function(x){ var mm=/^gain[:=](-?\d+)$/.exec(x); if(mm) m=Math.max(m,+mm[1]); }); return m; }
        var S=['stone','wood','metal','leaf','water'], sigs={};
        for(var i=0;i<S.length;i++){
          var l1=foot(S[i],'walk');
-         if(l1.filter(function(x){ return /^start:src/.test(x); }).length<2) bad.push(S[i]+' schedules '+l1.length+' nodes, not a heel and a sole');
+         if(l1.filter(function(x){ return (/^start:src/).test(x); }).length<2) bad.push(S[i]+' schedules '+l1.length+' nodes, not a heel and a sole');
          var sg=sig(l1);
          for(var j in sigs) if(sigs[j]===sg) bad.push(S[i]+' and '+j+' schedule the same step');
          sigs[S[i]]=sg;
@@ -37298,8 +37299,8 @@ window.__REGRESS=[
        if(G) G.sim=false;
        var p=G.player; var keepMov=p.moving, keepDown=p.downed, keepRoll=p.roll;
        p.moving=true; p.downed=false; p.roll=0; PSTEP=0;
-       a.log.length=0; __stepsReal(0.016); var pan1=a.log.filter(function(x){ return /^pan=/.test(x); });
-       PSTEP=0; a.log.length=0; __stepsReal(0.016); var pan2=a.log.filter(function(x){ return /^pan=/.test(x); });
+       a.log.length=0; __stepsReal(0.016); var pan1=a.log.filter(function(x){ return (/^pan=/).test(x); });
+       PSTEP=0; a.log.length=0; __stepsReal(0.016); var pan2=a.log.filter(function(x){ return (/^pan=/).test(x); });
        p.moving=keepMov; p.downed=keepDown; p.roll=keepRoll;
        if(!pan1.length||!pan2.length) bad.push('a real step did not place itself in the ear ('+pan1.length+','+pan2.length+')');
        else if(pan1[0]===pan2[0]) bad.push('two steps in a row pan the same way ('+pan1[0]+')');
@@ -37311,11 +37312,11 @@ window.__REGRESS=[
        var keepPx=p.x,keepPy=p.y; p.x=ex+40; p.y=ey;
        var mv=[]; for(i=0;i<G.ents.length;i++){ mv.push(G.ents[i].moving); G.ents[i].moving=false; }
        G.ents.push(fakeE); STEP_T=0; a.log.length=0;
-       tickEnemyAudio(0.016);
+       __enemyAudioReal(0.016);
        G.ents.pop(); for(i=0;i<mv.length;i++) G.ents[i].moving=mv[i];
        p.x=keepPx; p.y=keepPy;
-       var woodBody=a.log.filter(function(x){ return /^osc:1[4-6]\d{3}$/.test(x); }).length;
-       if(!a.log.length) bad.push('an enemy step in a building scheduled nothing');
+       var woodBody=a.log.filter(function(x){ return (/^osc:1[4-6]\d{3}$/).test(x); }).length;
+       if(!a.log.length) bad.push('an enemy step in a building scheduled nothing (STEP_T '+STEP_T+', ents '+G.ents.length+', operator '+Math.round(p.x)+','+Math.round(p.y)+' vs '+Math.round(ex)+','+Math.round(ey)+', sim '+G.sim+', over '+G.over+')');
        else if(!woodBody) bad.push('an enemy step in a building carries no wood body (150 hertz)');
      } finally { AC=keepAC; BUS=keepBUS; blip=keepBlip; if(G&&keepSim!==null) G.sim=keepSim; }
      return bad.length?bad.join('; '):null; }},
@@ -37326,7 +37327,7 @@ window.__REGRESS=[
      // A recording AudioContext: every node the synth builds is written down
      // with the numbers it was given, so what a shot IS can be compared without
      // anything being audible. The fixture blocks the real one.
-     function param(v,log,name){ var o={value:v}; ['setValueAtTime','exponentialRampToValueAtTime','linearRampToValueAtTime','setTargetAtTime'].forEach(function(m){ o[m]=function(x){ log.push(name+':'+Math.round(x)); return o; }; }); return o; }
+     function param(v,log,name){ var o={value:v}; ['setValueAtTime','exponentialRampToValueAtTime','linearRampToValueAtTime','setTargetAtTime'].forEach(function(m){ o[m]=function(x){ log.push(name+':'+Math.round(x*100)); return o; }; }); return o; }
      function fake(){
        var L=[]; var node=function(kind,extra){ var o={kind:kind,connect:function(){ return o; },disconnect:function(){},start:function(){},stop:function(){}}; for(var k in extra) o[k]=extra[k]; return o; };
        var a={currentTime:0,sampleRate:48000,state:'running',destination:node('dest'),resume:function(){},
@@ -37334,7 +37335,7 @@ window.__REGRESS=[
          createBuffer:function(ch,len){ L.push('buf:'+len); return {length:len,getChannelData:function(){ return new Float32Array(len); }}; },
          createBufferSource:function(){ var o=node('src'); o.buffer=null; return o; },
          createOscillator:function(){ var o=node('osc'); o.type='sine'; o.frequency=param(440,L,'osc'); o.detune=param(0,[],'det'); var st=o.start; o.start=function(){ L.push('osc:'+o.type); }; return o; },
-         createBiquadFilter:function(){ var o=node('flt'); o.type='lowpass'; var fr=param(350,[],'f'); o.frequency={get value(){ return fr.value; }, set value(v){ fr.value=v; L.push('flt:'+o.type+':'+Math.round(v)); }, setValueAtTime:function(v){ L.push('flt:'+o.type+':'+Math.round(v)); }, exponentialRampToValueAtTime:function(v){ L.push('fltr:'+Math.round(v)); }, linearRampToValueAtTime:function(v){ L.push('fltr:'+Math.round(v)); }, setTargetAtTime:function(v){ L.push('fltr:'+Math.round(v)); }}; o.Q=param(1,[],'q'); return o; },
+         createBiquadFilter:function(){ var o=node('flt'); o.type='lowpass'; var fr=param(350,[],'f'); o.frequency={get value(){ return fr.value; }, set value(v){ fr.value=v; L.push('flt:'+o.type+':'+Math.round(v*100)); }, setValueAtTime:function(v){ L.push('flt:'+o.type+':'+Math.round(v*100)); }, exponentialRampToValueAtTime:function(v){ L.push('fltr:'+Math.round(v*100)); }, linearRampToValueAtTime:function(v){ L.push('fltr:'+Math.round(v*100)); }, setTargetAtTime:function(v){ L.push('fltr:'+Math.round(v*100)); }}; o.Q=param(1,[],'q'); return o; },
          createGain:function(){ var o=node('gain'); o.gain=param(1,[],'g'); return o; },
          createStereoPanner:function(){ var o=node('pan'); o.pan=param(0,[],'p'); return o; },
          createDelay:function(){ var o=node('dly'); o.delayTime=param(0,[],'d'); return o; }
@@ -37347,7 +37348,7 @@ window.__REGRESS=[
        if(G) G.sim=false;   // blip is silent in a sim raid, and an earlier check may have left one
        var a=fake(); AC=a; BUS=a.createGain();
        function shot(id){ a.log.length=0; _realBlip('shot',0,undefined,id); return a.log.slice(); }
-       function sig(log){ return log.filter(function(x){ return /^(buf|flt|osc):/.test(x); }).map(function(x){ return x.replace(/:(\d+)$/,function(m,d){ return ':'+Math.round(+d/25)*25; }); }).join('|'); }
+       function sig(log){ return log.filter(function(x){ return (/^(buf|flt|osc):/).test(x); }).map(function(x){ return x.replace(/:(\d+)$/,function(m,d){ return ':'+Math.round(+d/25)*25; }); }).join('|'); }
        var sigs={};
        for(var i=0;i<guns.length;i++){
          var lg=shot(guns[i]);
@@ -37362,7 +37363,7 @@ window.__REGRESS=[
          if(n1.length!==n2.length) bad.push(WEAPONS[guns[i]].name+' schedules a different number of nodes shot to shot');
          else for(var q=0;q<n1.length;q++){ if(n1[q]>50&&Math.abs(n1[q]-n2[q])>n1[q]*0.15){ bad.push(WEAPONS[guns[i]].name+' drifts more than 15% shot to shot ('+lg[q]+' vs '+lg2[q]+')'); break; } }
        }
-       a.log.length=0; _realBlip('reload'); if(a.log.filter(function(x){ return /^(buf|osc):/.test(x); }).length<2) bad.push('a reload schedules '+a.log.length+' nodes');
+       a.log.length=0; _realBlip('reload'); if(a.log.filter(function(x){ return (/^(buf|osc):/).test(x); }).length<2) bad.push('a reload schedules '+a.log.length+' nodes');
        a.log.length=0; _realBlip('reloadin'); if(!a.log.length) bad.push('a finished reload schedules nothing');
        a.log.length=0; _realBlip('dry'); if(!a.log.length) bad.push('a dry pull schedules nothing');
      } finally { AC=keepAC; BUS=keepBUS; if(G&&keepSim!==null) G.sim=keepSim; }
@@ -38002,7 +38003,7 @@ window.__REGRESS=[
      }
      // THE DEPOT AND WIRT. Wirt's line is drawn from a pool by renderGamble, so
      // the pool must hold his sentence and the drawn line must come from the pool.
-     var dep=Array.prototype.filter.call(document.querySelectorAll('.msub'),function(d){ return /Cosmetics do not impact game mechanics\./.test(d.textContent); }).length;
+     var dep=Array.prototype.filter.call(document.querySelectorAll('.msub'),function(d){ return (/Cosmetics do not impact game mechanics\./).test(d.textContent); }).length;
      if(!dep) bad.push('the Depot does not say cosmetics do not impact game mechanics');
      if(typeof VENDOR_LINES==='undefined'||!VENDOR_LINES.gamble||!VENDOR_LINES.gamble.some(function(l){ return l==='Gamble with Wirt. No refunds, no complaints.'; })) bad.push('Wirt\'s pool of lines does not hold "Gamble with Wirt. No refunds, no complaints."');
      try{ if(typeof renderGamble==='function') renderGamble(); }catch(_rg){}
@@ -38170,7 +38171,7 @@ window.__REGRESS=[
          if(!/no upload address/.test(h2)) bad.push('with no address the Settings row claims to send: "'+h2.slice(0,90)+'"');
        }
        // AND THE CARD SAYS THE QUESTION EXISTS, so a friend who closed it knows where to find it.
-       if(window.__words&&typeof __words.whatsnew==='function'){ var wl=__words.whatsnew().lines||[]; if(!wl.some(function(l){ return /RUN REPORTS MAY BE SENT/.test(l); })) bad.push('the WHAT IS NEW card does not say the question exists'); }
+       if(window.__words&&typeof __words.whatsnew==='function'){ var wl=__words.whatsnew().lines||[]; if(!wl.some(function(l){ return (/RUN REPORTS MAY BE SENT/).test(l); })) bad.push('the WHAT IS NEW card does not say the question exists'); }
        // CONTROL: the welcome pack window is still there.
        if(!document.getElementById('welcomemodal')) bad.push('control: the welcome pack window is gone');
      } finally {
@@ -39161,7 +39162,7 @@ window.__REGRESS=[
      if(got.join(',')!==want.join(',')) bad.push('the tabs read ['+tabs.join(', ')+'], not ['+want.join(', ')+']');
      if(tabs.indexOf('ARMOUR')>=0) bad.push('there is still an ARMOUR tab');
      // Armour plates live under CONSUMABLES: click it and require the plate drawn.
-     var cons=[].filter.call(hub.querySelectorAll('#stashtabs .invtab'),function(d){ return /^CONSUMABLES/.test(d.textContent.trim()); })[0];
+     var cons=[].filter.call(hub.querySelectorAll('#stashtabs .invtab'),function(d){ return (/^CONSUMABLES/).test(d.textContent.trim()); })[0];
      if(!cons) bad.push('no CONSUMABLES tab to click');
      else {
        cons.click();
@@ -39174,7 +39175,7 @@ window.__REGRESS=[
      // OTHER shows only when something falls into it: with this stash, nothing.
      if(tabs.indexOf('OTHER')>=0) bad.push('an OTHER tab is drawn with nothing in it');
      // CONTROL: the ALL count is the whole stash.
-     var all=[].filter.call(hub.querySelectorAll('#stashtabs .invtab'),function(d){ return /^ALL/.test(d.textContent.trim()); })[0];
+     var all=[].filter.call(hub.querySelectorAll('#stashtabs .invtab'),function(d){ return (/^ALL/).test(d.textContent.trim()); })[0];
      var m=all?/(\d+)\s*$/.exec(all.textContent.trim()):null;
      var wantAll=P2.stash.length+((P2.weapons||[]).length);   // ALL counts the guns you own too, its rule since the tabs were built
      if(!m||+m[1]!==wantAll) bad.push('control: ALL counts '+(m?m[1]:'nothing')+' against a stash of '+P2.stash.length+' plus '+((P2.weapons||[]).length)+' owned guns');
@@ -40044,7 +40045,7 @@ window.__REGRESS=[
      }
      // ONE: the compact legend. On v9.89 its TAB row read "bag".
      var mini=drawn(1);
-     var miniRows=mini.filter(function(t){ return /^(move|sprint|crouch|roll|fire|aim|reload|swap gun|tactical belt|hotbar|search|map|bag|backpack)$/.test(t); });
+     var miniRows=mini.filter(function(t){ return (/^(move|sprint|crouch|roll|fire|aim|reload|swap gun|tactical belt|hotbar|search|map|bag|backpack)$/).test(t); });
      if(miniRows.length<10) return (function(){ g.legendOn=keepLeg; return 'SKIP: the compact legend drew only '+miniRows.length+' rows'; })();
      if(mini.indexOf(BAG)>=0) bad.push('the compact legend still has a row that reads '+BAG);
      if(mini.indexOf('backpack')<0) bad.push('the compact legend has no row that reads backpack');

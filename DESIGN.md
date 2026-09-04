@@ -40024,6 +40024,60 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.56 - EVERY GUN HAS ITS OWN VOICE
+
+His note, 2026-09-03 about 19:40: **"also work on improving sound whenever
+you get a chance -- guns, footsteps, robots, etc -- everything should sound
+unique and crisp like a triple-A game"**. Guns first, because a gun is the
+sound he hears most.
+
+### What it was
+
+The audit of the whole audio block (AUDIT.md, SOUND AUDIT) found sixteen
+guns sharing eleven voices. The Magnum and the Longshot, the two loudest
+guns in the game, had no entry in the voice table and fell back to the Auto
+Rifle. The Scav Pistol and the Tacker, the Compact SMG and the Sputter, and
+the Riot Scattergun and the Scuttle each differed only by a lowpass corner.
+Every shot of every gun replayed the identical waveform, which is the
+mechanical root of "everything sounds the same". And a reload, the bolt
+going home, and pulling the trigger on an empty gun made no sound at all.
+
+### Now
+
+Every gun has three parts of its own: a crack, a noise burst with its own
+length, highpass, lowpass and decay; a body, a pitched thump with its own
+start pitch, fall and length, so a pistol snaps at 200 hertz falling to 70
+in 90 milliseconds and the Longshot rolls from 80 down to 32 over 220; and,
+where the gun earns it, a tail, the room answering the Magnum, the Longshot
+and the Lance with a longer darker wash, and the action cycling after the
+shot, one click for the bolt of the Marksman Rifle and the Longshot, two for
+the pump of the Scattergun and the Scuttle. The Sputter sputters with a
+second lighter crack a hair behind the first. Six percent of jitter is
+rolled per shot on the brightness and the body, and separately on the
+level, so no two shots are the same and a burst is a burst rather than a
+loop. Reloads click the magazine out and thock it in, the bolt goes home
+when the reload finishes, and an empty gun clicks once, dully, which is the
+point. Pillagers and machines fire through the same table, so a distant
+fight tells you what is firing.
+
+### Measured
+
+The check installs a recording audio context that writes down every node
+the synth builds with the numbers it is given, then fires each of the
+sixteen guns through the real synth and requires sixteen different voices,
+no two shots of one gun identical, and no number drifting more than fifteen
+percent between two shots; then requires a reload, a finished reload and a
+dry pull to schedule nodes. On v10.55 the Magnum and the Longshot schedule
+the rifle's voice, every gun fires the identical waveform twice, and the
+three new voices schedule nothing, which is the finding; on this build the
+check returns null. Nothing was judged by ear: the fixture is silent by
+construction, and the rule since v2.48 is that a sound is verified by what
+the play path schedules.
+
+Not verified: how it sounds, which is his to judge in the play build; the
+balance of levels between guns at distance, which kept the old gains; and
+the reload sound against the reload animation, whose timing it does not
+read.
 ## v10.55 - FOOTPRINTS FOLLOW THE GROUND YOU COVER
 
 His note, 2026-09-03 about 20:00: **"sprint footprint glitch is still

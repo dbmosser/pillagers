@@ -963,6 +963,7 @@ try{ say=function(m){
   if(!G&&typeof hubToast==='function') hubToast(m);
 }; }catch(e){}
 try{ tickAmbience=function(){}; }catch(e){}
+try{ window.__enemyAudioReal=tickEnemyAudio; }catch(e){}   // v10.57: the real one, for the step checks
 try{ tickEnemyAudio=function(){}; }catch(e){}
 try{ window.__stepsReal=tickPlayerSteps; }catch(e){}
 // v8.73: and a way to put the real one back, so his "too many footsteps when
@@ -5224,6 +5225,54 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.56',what:'every gun schedules its own voice, no two alike, each shot a little different from the last, and reload and dry fire schedule sounds of their own',
+   run:function(){
+     var bad=[];
+     if(typeof _realBlip!=='function'||typeof WEAPONS==='undefined') return 'SKIP: this build has no real blip to trace';
+     // A recording AudioContext: every node the synth builds is written down
+     // with the numbers it was given, so what a shot IS can be compared without
+     // anything being audible. The fixture blocks the real one.
+     function param(v,log,name){ var o={value:v}; ['setValueAtTime','exponentialRampToValueAtTime','linearRampToValueAtTime','setTargetAtTime'].forEach(function(m){ o[m]=function(x){ log.push(name+':'+Math.round(x*100)); return o; }; }); return o; }
+     function fake(){
+       var L=[]; var node=function(kind,extra){ var o={kind:kind,connect:function(){ return o; },disconnect:function(){},start:function(){},stop:function(){}}; for(var k in extra) o[k]=extra[k]; return o; };
+       var a={currentTime:0,sampleRate:48000,state:'running',destination:node('dest'),resume:function(){},
+         log:L,
+         createBuffer:function(ch,len){ L.push('buf:'+len); return {length:len,getChannelData:function(){ return new Float32Array(len); }}; },
+         createBufferSource:function(){ var o=node('src'); o.buffer=null; return o; },
+         createOscillator:function(){ var o=node('osc'); o.type='sine'; o.frequency=param(440,L,'osc'); o.detune=param(0,[],'det'); var st=o.start; o.start=function(){ L.push('osc:'+o.type); }; return o; },
+         createBiquadFilter:function(){ var o=node('flt'); o.type='lowpass'; var fr=param(350,[],'f'); o.frequency={get value(){ return fr.value; }, set value(v){ fr.value=v; L.push('flt:'+o.type+':'+Math.round(v*100)); }, setValueAtTime:function(v){ L.push('flt:'+o.type+':'+Math.round(v*100)); }, exponentialRampToValueAtTime:function(v){ L.push('fltr:'+Math.round(v*100)); }, linearRampToValueAtTime:function(v){ L.push('fltr:'+Math.round(v*100)); }, setTargetAtTime:function(v){ L.push('fltr:'+Math.round(v*100)); }}; o.Q=param(1,[],'q'); return o; },
+         createGain:function(){ var o=node('gain'); o.gain=param(1,[],'g'); return o; },
+         createStereoPanner:function(){ var o=node('pan'); o.pan=param(0,[],'p'); return o; },
+         createDelay:function(){ var o=node('dly'); o.delayTime=param(0,[],'d'); return o; }
+       };
+       return a;
+     }
+     var keepAC=AC, keepBUS=BUS, keepSim=(G?G.sim:null);
+     var guns=Object.keys(WEAPONS).filter(function(k){ return WEAPONS[k].mag>0; });
+     try{
+       if(G) G.sim=false;   // blip is silent in a sim raid, and an earlier check may have left one
+       var a=fake(); AC=a; BUS=a.createGain();
+       function shot(id){ a.log.length=0; _realBlip('shot',0,undefined,id); return a.log.slice(); }
+       function sig(log){ return log.filter(function(x){ return (/^(buf|flt|osc):/).test(x); }).map(function(x){ return x.replace(/:(\d+)$/,function(m,d){ return ':'+Math.round(+d/25)*25; }); }).join('|'); }
+       var sigs={};
+       for(var i=0;i<guns.length;i++){
+         var lg=shot(guns[i]);
+         if(!lg.length){ bad.push(WEAPONS[guns[i]].name+' schedules nothing'); continue; }
+         var sg=sig(lg);
+         for(var j in sigs) if(sigs[j]===sg) bad.push(WEAPONS[guns[i]].name+' and '+WEAPONS[j].name+' schedule the same voice');
+         sigs[guns[i]]=sg;
+         // Jitter: two shots of one gun differ somewhere, and stay within reach of each other.
+         var lg2=shot(guns[i]);
+         if(lg.join('|')===lg2.join('|')) bad.push(WEAPONS[guns[i]].name+' fires the identical waveform twice');
+         var n1=lg.map(function(x){ return +(x.split(':').pop()); }), n2=lg2.map(function(x){ return +(x.split(':').pop()); });
+         if(n1.length!==n2.length) bad.push(WEAPONS[guns[i]].name+' schedules a different number of nodes shot to shot');
+         else for(var q=0;q<n1.length;q++){ if(n1[q]>50&&Math.abs(n1[q]-n2[q])>n1[q]*0.15){ bad.push(WEAPONS[guns[i]].name+' drifts more than 15% shot to shot ('+lg[q]+' vs '+lg2[q]+')'); break; } }
+       }
+       a.log.length=0; _realBlip('reload'); if(a.log.filter(function(x){ return (/^(buf|osc):/).test(x); }).length<2) bad.push('a reload schedules '+a.log.length+' nodes');
+       a.log.length=0; _realBlip('reloadin'); if(!a.log.length) bad.push('a finished reload schedules nothing');
+       a.log.length=0; _realBlip('dry'); if(!a.log.length) bad.push('a dry pull schedules nothing');
+     } finally { AC=keepAC; BUS=keepBUS; if(G&&keepSim!==null) G.sim=keepSim; }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.55',what:'footprints follow ground covered: evenly spaced in the open at a walk and a sprint, none while pinned against a wall, none inside a wall',
    run:function(){
      var bad=[];
@@ -5859,7 +5908,7 @@ window.__REGRESS=[
      }
      // THE DEPOT AND WIRT. Wirt's line is drawn from a pool by renderGamble, so
      // the pool must hold his sentence and the drawn line must come from the pool.
-     var dep=Array.prototype.filter.call(document.querySelectorAll('.msub'),function(d){ return /Cosmetics do not impact game mechanics\./.test(d.textContent); }).length;
+     var dep=Array.prototype.filter.call(document.querySelectorAll('.msub'),function(d){ return (/Cosmetics do not impact game mechanics\./).test(d.textContent); }).length;
      if(!dep) bad.push('the Depot does not say cosmetics do not impact game mechanics');
      if(typeof VENDOR_LINES==='undefined'||!VENDOR_LINES.gamble||!VENDOR_LINES.gamble.some(function(l){ return l==='Gamble with Wirt. No refunds, no complaints.'; })) bad.push('Wirt\'s pool of lines does not hold "Gamble with Wirt. No refunds, no complaints."');
      try{ if(typeof renderGamble==='function') renderGamble(); }catch(_rg){}
@@ -6027,7 +6076,7 @@ window.__REGRESS=[
          if(!/no upload address/.test(h2)) bad.push('with no address the Settings row claims to send: "'+h2.slice(0,90)+'"');
        }
        // AND THE CARD SAYS THE QUESTION EXISTS, so a friend who closed it knows where to find it.
-       if(window.__words&&typeof __words.whatsnew==='function'){ var wl=__words.whatsnew().lines||[]; if(!wl.some(function(l){ return /RUN REPORTS MAY BE SENT/.test(l); })) bad.push('the WHAT IS NEW card does not say the question exists'); }
+       if(window.__words&&typeof __words.whatsnew==='function'){ var wl=__words.whatsnew().lines||[]; if(!wl.some(function(l){ return (/RUN REPORTS MAY BE SENT/).test(l); })) bad.push('the WHAT IS NEW card does not say the question exists'); }
        // CONTROL: the welcome pack window is still there.
        if(!document.getElementById('welcomemodal')) bad.push('control: the welcome pack window is gone');
      } finally {
@@ -7018,7 +7067,7 @@ window.__REGRESS=[
      if(got.join(',')!==want.join(',')) bad.push('the tabs read ['+tabs.join(', ')+'], not ['+want.join(', ')+']');
      if(tabs.indexOf('ARMOUR')>=0) bad.push('there is still an ARMOUR tab');
      // Armour plates live under CONSUMABLES: click it and require the plate drawn.
-     var cons=[].filter.call(hub.querySelectorAll('#stashtabs .invtab'),function(d){ return /^CONSUMABLES/.test(d.textContent.trim()); })[0];
+     var cons=[].filter.call(hub.querySelectorAll('#stashtabs .invtab'),function(d){ return (/^CONSUMABLES/).test(d.textContent.trim()); })[0];
      if(!cons) bad.push('no CONSUMABLES tab to click');
      else {
        cons.click();
@@ -7031,7 +7080,7 @@ window.__REGRESS=[
      // OTHER shows only when something falls into it: with this stash, nothing.
      if(tabs.indexOf('OTHER')>=0) bad.push('an OTHER tab is drawn with nothing in it');
      // CONTROL: the ALL count is the whole stash.
-     var all=[].filter.call(hub.querySelectorAll('#stashtabs .invtab'),function(d){ return /^ALL/.test(d.textContent.trim()); })[0];
+     var all=[].filter.call(hub.querySelectorAll('#stashtabs .invtab'),function(d){ return (/^ALL/).test(d.textContent.trim()); })[0];
      var m=all?/(\d+)\s*$/.exec(all.textContent.trim()):null;
      var wantAll=P2.stash.length+((P2.weapons||[]).length);   // ALL counts the guns you own too, its rule since the tabs were built
      if(!m||+m[1]!==wantAll) bad.push('control: ALL counts '+(m?m[1]:'nothing')+' against a stash of '+P2.stash.length+' plus '+((P2.weapons||[]).length)+' owned guns');
@@ -7901,7 +7950,7 @@ window.__REGRESS=[
      }
      // ONE: the compact legend. On v9.89 its TAB row read "bag".
      var mini=drawn(1);
-     var miniRows=mini.filter(function(t){ return /^(move|sprint|crouch|roll|fire|aim|reload|swap gun|tactical belt|hotbar|search|map|bag|backpack)$/.test(t); });
+     var miniRows=mini.filter(function(t){ return (/^(move|sprint|crouch|roll|fire|aim|reload|swap gun|tactical belt|hotbar|search|map|bag|backpack)$/).test(t); });
      if(miniRows.length<10) return (function(){ g.legendOn=keepLeg; return 'SKIP: the compact legend drew only '+miniRows.length+' rows'; })();
      if(mini.indexOf(BAG)>=0) bad.push('the compact legend still has a row that reads '+BAG);
      if(mini.indexOf('backpack')<0) bad.push('the compact legend has no row that reads backpack');
