@@ -1291,7 +1291,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.91';
+var VER='10.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1302,10 +1302,11 @@ var VER='10.91';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='10.91';
+var WHATSNEW_VER='10.92';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'YOU ARE MUCH EASIER TO FIND ON THE MAP. Your marker was eight pixels across and was the only one that did not grow when the map did. It is about twice the size now, with a halo under it and a longer line showing which way you are facing.',
   'THE RESIZE GRIP MOVES TO THE SIDE THAT HAS ROOM. A panel against the right edge of the screen had its drag corner jammed into that edge with eight pixels of travel, so it could not be made bigger. Those panels grip on their left now.',
   'X NO LONGER SWAPS WEAPONS. The hotbar does that job, so the key is gone along with its legend lines. Your stowed gun and its ammo are still shown, just without a key in front of them. On a controller, X is still search.',
   'AND THE HUM STOPS WHEN YOU PAUSE. Same fault as the one below, met the common way: the room tone is turned down inside the part of the frame that a pause switches off, so it used to hold its level under the pause menu. It ducks now and comes back when you resume.',
@@ -25673,14 +25674,23 @@ if(G.trail&&G.trail.length>1){
     }
   })();
   // your own marker, ringed in ink so a gold dot never disappears into a gold
-  // district block
+  // district block.
+  // v10.92, HIS NOTE: it was 8 pixels across at 1920x1080 and did not follow the
+  // map scale, so it was the smallest marker on a screen it is supposed to own.
+  // It is roughly double now and scaled like its neighbours, with a halo under
+  // it so it separates from whatever it is standing on.
+  var _pmz=(typeof _MZ==='number'&&_MZ>0)?_MZ:1;
+  var _pmx=ox+p.x*sc, _pmy=oy+p.y*sc;
+  ctx.fillStyle='rgba(255,192,74,.18)';
+  ctx.beginPath(); ctx.arc(_pmx,_pmy,15*_pmz,0,6.2832); ctx.fill();
   ctx.fillStyle='#120e0c';
-  ctx.beginPath(); ctx.arc(ox+p.x*sc,oy+p.y*sc,5.6,0,6.2832); ctx.fill();
+  ctx.beginPath(); ctx.arc(_pmx,_pmy,11*_pmz,0,6.2832); ctx.fill();
   ctx.fillStyle='#ffc04a';
-  ctx.beginPath(); ctx.arc(ox+p.x*sc,oy+p.y*sc,4,0,6.2832); ctx.fill();
-  ctx.strokeStyle='rgba(255,192,74,.65)'; ctx.lineWidth=1.5;
-  ctx.beginPath(); ctx.moveTo(ox+p.x*sc,oy+p.y*sc);
-  ctx.lineTo(ox+p.x*sc+Math.cos(p.face)*11,oy+p.y*sc+Math.sin(p.face)*11); ctx.stroke();
+  ctx.beginPath(); ctx.arc(_pmx,_pmy,8*_pmz,0,6.2832); ctx.fill();
+  ctx.strokeStyle='rgba(255,192,74,.85)'; ctx.lineWidth=2.5*_pmz;
+  ctx.beginPath(); ctx.moveTo(_pmx,_pmy);
+  ctx.lineTo(_pmx+Math.cos(p.face)*24*_pmz,_pmy+Math.sin(p.face)*24*_pmz); ctx.stroke();
+  ctx.lineWidth=1;
   // SURVEYED. Bottom left of the map, out of the way of every marker on it.
   (function(){
     var f=0; try{ f=fogFrac(); }catch(e){ return; }
@@ -27477,7 +27487,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.91: the resize grip had nowhere to drag to, your note. The gear panel sits 8 pixels from the right of the screen and its grip was in that corner, so there was no room to make it bigger. A panel pinned to the right edge grips on its LEFT now and is sized from its top-right corner.',
+  now:'v10.92: your marker on the map was 8 pixels across, the smallest thing on a screen it is meant to own, and the only marker that did not grow with the map. It is roughly double now, scaled like its neighbours, with a halo under it and a longer heading line.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

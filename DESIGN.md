@@ -40024,6 +40024,51 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.92 - HIS NOTE: THE PLAYER MARKER ON THE MAP IS TOO SMALL
+
+"player marker on map sohuld be much larger, hard to see right now", his note of
+2026-09-04.
+
+**REPRODUCED, IN PIXELS.** The map was drawn at 1920x1080 on map 0, seed 4242,
+and the gold around the operator's projected position counted: **43 gold pixels,
+8 wide by 7 tall**, on a two million pixel screen. That is the thing he has to
+find first on a screen he opens precisely to find it.
+
+**TWO CAUSES, AND THE SECOND IS THE INTERESTING ONE.** The dot's radius was a
+bare 4, with a 5.6 ink ring and an 11 pixel heading line. But it was also the
+only marker on that map NOT multiplied by the map's own zoom: the cache ring is
+drawn at (9+2q) times that zoom, the encampment at 5 times, the key at 3.2
+times, and the operator at a flat 4. So on a larger screen every other marker
+grew and his got relatively smaller. Measured on the old build at 2880x1620,
+where the zoom is 1.5: 39 gold pixels became 41, a ratio of 1.05.
+
+**THE FIX.** The gold disc goes to 8 and joins the same zoom as its neighbours,
+the ink ring around it to 11 so it still reads on a gold district block, the
+heading line to 24 with a thicker stroke so which way he is facing is legible
+without leaning in, and a soft 15 pixel halo at 18 percent alpha goes underneath
+so the marker separates from whatever it is standing on rather than relying on
+contrast it might not have. Measured after: **203 gold pixels, 31 by 15**, and
+at 2880x1620 the disc carries 2.2 times the pixels it does at 1920x1080.
+
+**NEW CHECK v10.92** draws the map and counts pixels that are EXACTLY 255,192,74
+at full alpha, which isolates the flat gold disc and nothing else: the halo is 18
+percent alpha, the ink ring is near black, and the heading line at 85 percent
+alpha over darker ground blends away from the exact value. It requires at least
+150 such pixels and a radius of at least 7 at 1920x1080, a radius no greater than
+22 so "much larger" does not become a blot over the district he is standing in,
+and, at 2880x1620, at least 1.8 times the pixels and 1.35 times the radius, which
+is the half of the defect that is not about the radius at all. Two controls: the
+map zoom must actually have reached 1.4 at the larger size or the growth test
+proves nothing, and the operator is moved 600 units across the map and the count
+has to move with him while the old spot empties, which is what proves the gold
+being counted is HIM and not some other gold thing nearby.
+
+Fails on a v10.91 fixture on every one of those assertions: 39 pixels, radius
+4.1, ratio 1.05.
+
+Not verified: how it reads to him on his own monitor, which is a judgement about
+a size and not a measurement; and whether the halo is the right treatment against
+every district colour, since the check measures the disc and not the separation.
 ## v10.91 - HIS NOTE: THE RESIZE GRIP HAS NOWHERE TO DRAG TO
 
 "corner drag to size for lower right corner needs to be in lower left side,
