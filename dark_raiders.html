@@ -1263,7 +1263,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.57';
+var VER='10.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3487,15 +3487,15 @@ function blip(type,d,pan){
       chatter:{len:1900,lp:2200,hp:250,g:.12,decay:3.8,body:{f0:190,f1:75,d:.08,g:.09,type:'sine'}},
       carbine:{len:2000,lp:2300,hp:220,g:.13,decay:3.6,body:{f0:210,f1:80,d:.08,g:.10,type:'sine'}},
       rifle:  {len:2600,lp:0,hp:180,g:.16,decay:3.2,body:{f0:180,f1:60,d:.10,g:.12,type:'sine'}},
-      dmr:    {len:5200,lp:1400,hp:120,g:.20,decay:2.4,body:{f0:120,f1:45,d:.12,g:.14,type:'sine'},bolt:1},
-      magnum: {len:4800,lp:1100,hp:80,g:.24,decay:2.0,body:{f0:95,f1:38,d:.16,g:.20,type:'sine'},tail:1},
-      sniper: {len:7600,lp:1000,hp:60,g:.26,decay:1.8,body:{f0:80,f1:32,d:.22,g:.22,type:'sine'},tail:1,bolt:1},
+      dmr:    {len:4200,lp:1400,hp:120,g:.20,decay:2.6,body:{f0:120,f1:45,d:.10,g:.14,type:'sine'},bolt:1},
+      magnum: {len:3800,lp:1100,hp:80,g:.24,decay:2.4,body:{f0:95,f1:38,d:.12,g:.20,type:'sine'},tail:1},
+      sniper: {len:5600,lp:1000,hp:60,g:.26,decay:2.2,body:{f0:80,f1:32,d:.14,g:.22,type:'sine'},tail:1,bolt:1},
       shotgun:{len:4200,lp:900,hp:100,g:.22,decay:2.2,body:{f0:120,f1:45,d:.12,g:.14,type:'sine'},pump:1},
       scuttle:{len:3200,lp:1300,hp:200,g:.20,decay:2.6,body:{f0:150,f1:60,d:.09,g:.11,type:'triangle'},pump:1},
       lmg:    {len:2400,lp:1500,hp:160,g:.15,decay:2.9,body:{f0:150,f1:60,d:.09,g:.11,type:'sine'}},
       // The Whisper is a cough, not a crack: short, heavily filtered, quiet.
       whisper:{len:900,lp:900,hp:200,g:.07,decay:4.2,body:{f0:140,f1:90,d:.05,g:.03,type:'sine'}},
-      lance:  {len:6400,lp:1200,hp:60,g:.24,decay:2.0,body:{f0:90,f1:34,d:.20,g:.20,type:'sine'},tail:1}
+      lance:  {len:5000,lp:1200,hp:60,g:.24,decay:2.2,body:{f0:90,f1:34,d:.14,g:.20,type:'sine'},tail:1}
     };
     var V=FV[arguments[3]]||FV.rifle;
     // No two shots alike: six percent of jitter, rolled per shot, on the
@@ -3517,17 +3517,19 @@ function blip(type,d,pan){
       to.connect(tg); tg.connect(OUT); to.start(t); to.stop(t+V.body.d+.06);
     }
     if(V.tail){
-      // the room answering a big gun: a longer, darker wash under the crack
-      var tl=Math.round(V.len*1.6),tb=a.createBuffer(1,tl,a.sampleRate),tc=tb.getChannelData(0);
-      for(var ti=0;ti<tl;ti++) tc[ti]=(Math.random()*2-1)*Math.pow(1-ti/tl,1.4);
+      // the room answering a big gun: a darker wash under the crack. v10.58,
+      // his notes: shorter than the crack and a tenth of its level; at 1.6 times
+      // the crack and 0.35 he could hear it "wayy later".
+      var tl=Math.round(V.len*0.9),tb=a.createBuffer(1,tl,a.sampleRate),tc=tb.getChannelData(0);
+      for(var ti=0;ti<tl;ti++) tc[ti]=(Math.random()*2-1)*Math.pow(1-ti/tl,2.2);
       var ts=a.createBufferSource(); ts.buffer=tb;
-      var tf=a.createBiquadFilter(); tf.type='lowpass'; tf.frequency.value=420*J;
-      var tgn=a.createGain(); tgn.gain.value=V.g*vol*.35;
+      var tf=a.createBiquadFilter(); tf.type='lowpass'; tf.frequency.value=320*J;
+      var tgn=a.createGain(); tgn.gain.value=V.g*vol*.10;
       ts.connect(tf); tf.connect(tgn); tgn.connect(OUT); ts.start(t+.01);
     }
     if(V.bolt||V.pump){
       // the action cycling after the shot: one click for a bolt, two for a pump
-      var ck=V.pump?[.28,.42]:[.25],cfq=V.pump?1400:2400;
+      var ck=V.pump?[.16,.26]:[.16],cfq=V.pump?1400:2400;   // v10.58: inside 0.30 s of the shot
       for(var ci=0;ci<ck.length;ci++){
         var cb=a.createBuffer(1,300,a.sampleRate),cc2=cb.getChannelData(0);
         for(var cj=0;cj<300;cj++) cc2[cj]=(Math.random()*2-1)*Math.pow(1-cj/300,2);
@@ -27008,7 +27010,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.57: footsteps. Heel then sole, left and right in the ear, the ground under you adds its own tell (grit, a creaking board, ringing plate, a rustle, a splash and a drip), a sprint lands harder and a crouch softer, and the machines and the pillagers now walk on the same five surfaces you do.',
+  now:'v10.58: the trailing noise after a big gun is much shorter and a tenth as loud, the big cracks themselves are shorter, and the bolt and pump click inside a third of a second of the shot. Nothing a shot makes lands later than that.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
