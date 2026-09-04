@@ -5358,6 +5358,114 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.96',what:'pausing in the Undercroft offers exactly his two choices, and the second one really does go back to the character screen',
+   run:function(){
+     if(typeof togglePauseBox!=='function') return 'SKIP: this build has no pause box';
+     if(!(window.__hubEnter&&window.__P)) return 'SKIP: this fixture cannot reach the Undercroft';
+     var bad=[], pb=document.getElementById('pausebox'), ti=document.getElementById('title');
+     if(!pb) return 'SKIP: there is no pause box in this document';
+     if(!ti) return 'SKIP: there is no character screen in this document';
+     var prof=__P(), credits0=prof.credits, runs0=prof.runs, name0=prof.pname;
+     var titleWas=ti.classList.contains('on');
+     function shownBtns(){
+       var out=[], all=pb.querySelectorAll('button');
+       for(var i=0;i<all.length;i++){
+         var st=window.getComputedStyle(all[i]);
+         if(st.display==='none'||st.visibility==='hidden') continue;
+         out.push({id:all[i].id,txt:(all[i].textContent||'').trim()});
+       }
+       return out;
+     }
+     try{
+       __runPrep(); __resetCfg(); __pinDefaults(0);
+       // ON THE FLOOR. The raid has to be gone, or the box correctly decides it
+       // is pausing a raid and shows the raid controls, and this would be
+       // testing the wrong half.
+       G=null;
+       __hubEnter();
+       ti.classList.remove('on');
+       togglePauseBox(true);
+       if(!pb.classList.contains('on')) return 'SKIP: the pause box would not open on the floor';
+       var floor=shownBtns();
+       // 1. EXACTLY TWO, AND THEY ARE HIS TWO. His words: "actually RETURN TO
+       //    THE UNDERCROFT and RETURN TO CHARACTER SELECTION should be the 2
+       //    choices".
+       if(floor.length!==2)
+         bad.push('the Undercroft pause box offers '+floor.length+' buttons, not two: '+floor.map(function(b){return b.txt;}).join(' / '));
+       var joined=floor.map(function(b){ return b.txt.toUpperCase(); }).join(' | ');
+       if(joined.indexOf('RETURN TO THE UNDERCROFT')<0)
+         bad.push('nothing on the floor pause box says RETURN TO THE UNDERCROFT, it says '+joined);
+       if(joined.indexOf('RETURN TO CHARACTER SELECTION')<0)
+         bad.push('nothing on the floor pause box says RETURN TO CHARACTER SELECTION, it says '+joined);
+       // 2. AND THE SECOND ONE WORKS. A button with the right words on it that
+       //    does nothing is the same bug wearing a label.
+       var back=null;
+       for(var i=0;i<floor.length;i++) if(floor[i].txt.toUpperCase().indexOf('CHARACTER')>=0) back=document.getElementById(floor[i].id);
+       if(back){
+         if(ti.classList.contains('on')) bad.push('control: the character screen was already up before the button was pressed, so pressing it proves nothing');
+         back.click();
+         if(!ti.classList.contains('on')) bad.push('RETURN TO CHARACTER SELECTION leaves you exactly where you were');
+         if(pb.classList.contains('on')) bad.push('RETURN TO CHARACTER SELECTION leaves the pause box open over the character screen');
+         // AND IT DOES NOT COST HIM THE CHARACTER. Going back to the front door
+         // is not the same as throwing the save away.
+         var pr2=__P();
+         if(pr2.credits!==credits0||pr2.runs!==runs0||pr2.pname!==name0)
+           bad.push('going back to the character screen changed the save: credits '+credits0+' to '+pr2.credits+', runs '+runs0+' to '+pr2.runs);
+         // IT HAS TO BE DRAWN. A screen marked as shown that paints nothing is
+         // the same dead end with the class attribute changed.
+         var col=ti.querySelector('.titlecol');
+         if(col&&col.getBoundingClientRect().height<200)
+           bad.push('the character screen came up but is only '+Math.round(col.getBoundingClientRect().height)+' pixels tall, so it is not drawn');
+         // AND HE HAS TO BE ABLE TO COME BACK. A one-way door is worse than none.
+         var st=document.getElementById('titlestart');
+         if(!st) bad.push('control: there is no way in from the character screen, so the round trip cannot be tested');
+         else {
+           st.click();
+           if(ti.classList.contains('on')) bad.push('pressing the start button on the character screen does not put you back in the game');
+         }
+       }
+       // 3. CONTROL: THE RAID PAUSE IS UNTOUCHED. The same box serves both, so a
+       //    change made for the floor is one edit away from taking Abandon run
+       //    off a live raid.
+       ti.classList.remove('on');
+       togglePauseBox(false);
+       __resetCfg(); __pinDefaults(0);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(); g.ents.length=0; g.player.hp=g.player.maxhp; g.player.downed=false;
+       togglePauseBox(true);
+       if(!pb.classList.contains('on')) bad.push('control: the pause box would not open in a raid, so the raid half is untested');
+       else {
+         var raid=shownBtns(), rj=raid.map(function(b){ return b.txt.toUpperCase(); }).join(' | ');
+         if(rj.indexOf('ABANDON')<0) bad.push('control: the raid pause box no longer offers a way to abandon the run: '+rj);
+         if(rj.indexOf('RESUME')<0) bad.push('control: the raid pause box no longer offers a way to resume: '+rj);
+         if(rj.indexOf('CHARACTER')>=0) bad.push('the raid pause box offers to go back to the character screen mid-raid: '+rj);
+       }
+       // THE PRIMED ABANDON, which this check found on the full corpus rather
+       // than alone: Abandon run does not abandon, it ARMS, and until v10.96 the
+       // only thing that disarmed it was pressing Resume. Close with Escape while
+       // it is armed and the next opening had a live YES, ABANDON THIS RUN
+       // sitting under the pointer, one click from ending the raid.
+       var _ab=document.getElementById('abandonbtn'), _ca=document.getElementById('confirmabandon');
+       if(_ab&&_ca){
+         _ab.click();                                   // arm it, the way he would
+         var armed=(window.getComputedStyle(_ca).display!=='none');
+         if(!armed) bad.push('control: pressing Abandon run did not arm the confirm, so the leak cannot be tested');
+         else {
+           togglePauseBox(false);                       // close it the way Escape does
+           togglePauseBox(true);                        // and come back
+           if(window.getComputedStyle(_ca).display!=='none')
+             bad.push('a primed YES, ABANDON THIS RUN survives the pause box closing, so reopening it puts one click between him and the end of the raid');
+           if((_ab.textContent||'').toUpperCase().indexOf('KEEP PLAYING')>=0)
+             bad.push('the abandon button is still reading NO, KEEP PLAYING on a freshly opened pause box');
+         }
+       }
+       togglePauseBox(false);
+     } finally {
+       try{ togglePauseBox(false); }catch(_e1){}
+       try{ ti.classList.toggle('on',titleWas); }catch(_e2){}
+       try{ __resetCfg(); }catch(_e3){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.95',what:'every word drawn on the canvas is set in one family, the loot pop and the world labels included',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__hud&&window.__hubEnter&&window.__hubStep))

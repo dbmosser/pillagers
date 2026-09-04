@@ -40024,6 +40024,72 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.96 - HIS NOTE 13: THE TWO CHOICES ON THE UNDERCROFT PAUSE SCREEN
+
+"pausing at the undercroft screen should give an option to 'RETURN TO CHARACTER
+SELECTION' that takes the player back to the title screen", and then, correcting
+himself in the next line: "actually 'RETURN TO THE UNDERCROFT' AND 'RETURN TO
+CHARACTER SELECTION' should be the 2 choices". His notes of 2026-09-04.
+
+**REPRODUCED**, with the box open on the floor and every visible button listed:
+**one button, reading "Back to the Undercroft"**. There was no route from a
+running game back to the character screen at all. The only ways to reach it were
+booting the tab and switching save, and switching save reloads the page.
+
+**THE FIX.** The floor gets his two buttons, in his words and in that order. The
+first is the resume button relabelled, because closing the box IS returning to
+the Undercroft and a second button doing the same thing would be two controls for
+one act. The second puts the character screen back up over the room, which is
+exactly what booting does in reverse: no reload, nothing in memory thrown away,
+and the profile written to storage first so what he has just earned is on the
+screen he lands on. It is hidden in a raid and hidden while bleeding out, so a
+death cannot be turned into a walk to the front door.
+
+**AND THE FRONT DOOR IS BROUGHT UP TO DATE ON THE WAY BACK.** That screen is
+written at boot from the profile as it was then, so after a few raids the name
+line and the save list would both have been stale. Rather than a second copy of
+that wording living in the pause handler, the boot code hands its own two
+refreshers out through one file-scope hook and the pause handler calls it.
+
+**NEW CHECK v10.96** opens the box on the floor and requires exactly two visible
+buttons carrying exactly his two phrases; then presses the second one and
+requires the character screen to actually come up, the pause box to close behind
+it, the screen to be DRAWN and not merely marked as shown, measured as at least
+200 pixels of rendered height, and the start button to put him back in the game,
+because a one-way door is worse than no door. It then requires the save to be
+untouched, credits, raids and name, since going back to the front door is not
+the same as throwing the character away. Two controls: the character screen must
+not already have been up before the press, or pressing proves nothing, and the
+raid pause must still offer Resume and Abandon and must NOT offer the character
+screen, because the same box serves both and a change made for the floor is one
+edit away from taking Abandon off a live raid.
+
+Fails on a v10.95 fixture: one button, and neither of his phrases anywhere on it.
+
+
+**AND THE CHECK FOUND A SECOND THING, WHICH IS THE MORE DANGEROUS OF THE TWO.**
+The control that says the raid pause box must still offer a way to abandon passed
+when the check ran alone and FAILED on the full corpus, reporting the buttons as
+RESUME RUN and NO, KEEP PLAYING. That is not a corpus artefact. Abandon run does
+not abandon: it ARMS, turning itself into NO, KEEP PLAYING and revealing a red
+YES, ABANDON THIS RUN beside it, which is the right shape for an irreversible
+act. But the only thing that ever disarmed it was pressing Resume. Close the box
+with Escape while it is armed, which is the fastest way anybody closes anything,
+and the arm is still there the next time it opens: a live YES, ABANDON THIS RUN
+sitting under the pointer, one click from ending a raid he came back to finish.
+A check twenty places earlier in the corpus had armed it and walked away, which
+is exactly what a player does. The leak between checks was the leak in the game.
+
+Fixed in the same build: opening the box disarms it, always, through one function
+that both the open and Resume call, rather than two copies of the same four lines
+that can drift apart. The check now arms the button on purpose, closes the box,
+reopens it and requires the confirm to be gone. That assertion fails on a v10.95
+fixture too, so the bug is his and it predates this build.
+
+Not verified: what a friend expects "RETURN TO CHARACTER SELECTION" to do with an
+unsaved run in progress, since on the floor there is never a run in progress; and
+the fullscreen question in his note 8 is still open, so I do not know yet whether
+coming back to that screen drops fullscreen the way switching save does.
 ## v10.95 - HIS NOTE 18: THE LOOT POP IS STILL THE WRONG FONT
 
 "the loot text that pops on screen upon looting that tells you what item you got

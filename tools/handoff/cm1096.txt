@@ -1,0 +1,44 @@
+v10.96: the Undercroft pause screen offers his two choices
+
+His note: "pausing at the undercroft screen should give an option to RETURN TO
+CHARACTER SELECTION that takes the player back to the title screen", then his own
+correction: "actually RETURN TO THE UNDERCROFT AND RETURN TO CHARACTER SELECTION
+should be the 2 choices".
+
+Reproduced with the box open on the floor and every visible button listed: one
+button, reading Back to the Undercroft. There was no route from a running game
+back to the character screen at all. The only ways there were booting the tab and
+switching save, which reloads the page.
+
+The floor now gets his two buttons in his words. The first is the resume button
+relabelled, because closing the box is returning to the Undercroft and a second
+button doing the same would be two controls for one act. The second puts the
+character screen back up over the room, which is what booting does in reverse: no
+reload, nothing thrown away, and the profile written to storage first so what he
+just earned shows on the screen he lands on. It is hidden in a raid and while
+bleeding out.
+
+The front door is brought up to date on the way back, since it is written at boot
+from the profile as it was then. Rather than a second copy of that wording in the
+pause handler, the boot code hands its own refreshers out through one file-scope
+hook.
+
+New check v10.96 requires exactly two visible buttons carrying exactly his
+phrases, then presses the second and requires the screen to come up, the box to
+close, the screen to be drawn at 200 pixels or more of rendered height rather
+than merely marked as shown, the start button to put him back in, and the save to
+be untouched. Controls: the screen must not already have been up before the
+press, and the raid pause must still offer Resume and Abandon and must not offer
+the character screen.
+
+Fails on a v10.95 fixture: one button, neither phrase.
+
+Not verified: whether coming back to that screen drops fullscreen the way
+switching save does, which is his note 8 and still open.
+
+Second finding, from the same check on the full corpus and fixed here too:
+Abandon run does not abandon, it arms, and only Resume ever disarmed it. Closing
+the box with Escape while armed left a live YES, ABANDON THIS RUN waiting for the
+next opening, one click from ending the raid. Opening the box now disarms it,
+through one function both the open and Resume call. That assertion also fails on
+a v10.95 fixture, so the bug predates this build.
