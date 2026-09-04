@@ -1263,7 +1263,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.59';
+var VER='10.60';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1274,11 +1274,15 @@ var VER='10.59';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='10.45';
+var WHATSNEW_VER='10.60';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
   'A NEW CHARACTER GETS A WELCOME PACK: a green gun and a blue one, heals, plates and grenades, offered once, the first time down.',
+  'FULL-BODY OUTFITS. A new rack at the top of the Depot, above everything else: the Skeleton, the Machine, the Trooper, the Android, the Tomb Explorer, the Baller and the Street Poet. An outfit overrules every other rack; Own Clothes puts them back in charge.',
+  'EVERY GUN HAS ITS OWN VOICE. Sixteen guns used to share eleven; the Magnum and the Longshot borrowed the rifle. Each one now has its own crack, its own weight and, if it earns one, the room answering. Reloading, the bolt going home and an empty gun all make a sound.',
+  'FOOTSTEPS ARE HEEL AND SOLE, left and right in your ears, and the ground says what it is: grit on stone, a creaking board, ringing plate, a rustle in leaves, a splash and then a drip. The machines and the pillagers walk on the same five surfaces you do.',
+  'WALLS ARE SOLID. Nothing goes see-through when you stand behind it, and in the Undercroft nobody can stand inside the part of a wall that is painted, so the people down there stop catching on the counters.',
   'THE GAME ASKS ONCE WHETHER YOUR RUN REPORTS MAY BE SENT to the developer. YES sends each one as the raid ends; CLOSE keeps them in your Downloads. Settings changes it either way.',
   'THE MENUS NEVER SHRINK BELOW THE SCREEN. The wheel still sizes them, and now says so, MENU SIZE 130%; the size cannot go below 1.0, so on a 4K monitor nothing is ever smaller than 1.9 times its 1080p size.',
   'THE DISCOUNT FASHION DEPOT HAS FOURTEEN RACKS: build, skin, eyes, face, tattoo, hair, hairstyle, beard, headgear, clothing, patch, gloves, boots and backpack. Every piece is earned by playing, never bought. SURPRISE ME dresses you from every rack and three LOOKS keep an outfit.',
@@ -1338,7 +1342,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:1,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:2.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,raiderCrawl:1,nightDens:1.35};
+  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:2.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,raiderCrawl:1,nightDens:1.35};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -25390,6 +25394,34 @@ function applyPreset(k){
 // five are on screen at once at default zoom.
 var HUBW=700,HUBH=470,HB=null,hubGround=null;
 function hubWall(o,x,y,w,h,d){ o.push({x:x,y:y,w:w,h:h,d:d===undefined?0:d}); }
+// v10.60, his note: a body standing in the strip a wall PAINTS over is swallowed
+// by it, which is what "caught on walls" looks like. This is that strip: the
+// collider grown upward by the same lift the wall is drawn with. Bodies down here
+// collide with the picture, so nobody can ever be inside one.
+// v10.60: the only way the crowd is ever built. It places them against the
+// PICTURES and then pushes anyone the room's own box put back inside one.
+function hubCrowdClear(stations,dw){
+  var cr=buildHubCrowd(stations,dw);
+  for(var i=0;i<cr.length;i++){
+    var b=cr[i];
+    if(!(b.r>0)) b.r=13;
+    // The room's box reaches into the south wall's picture, so the clamp goes
+    // first and the push gets the last word.
+    b.x=clamp(b.x,34,HUBW-34); b.y=clamp(b.y,34,HUBH-34);
+    collide(b,dw);
+    // A post holder walks back to where he was put, so his home moves with him.
+    if(b.post){ b.px=b.x; b.py=b.y; }
+  }
+  return cr;
+}
+function hubDrawn(ws){
+  var out=[];
+  for(var i=0;i<ws.length;i++){
+    var w=ws[i], L=(w.w<=60&&w.h<=60)?14:26;
+    out.push({x:w.x,y:w.y-L,w:w.w,h:w.h+L,d:w.d,src:w});
+  }
+  return out;
+}
 // WHO IS STANDING WHERE, v6.54. Deterministic from the identity list rather than
 // random, so the Undercroft looks like the same room every time you come down instead
 // of reshuffling its population behind your back. Idle motion is a slow bob and an
@@ -25456,6 +25488,7 @@ function tickHubCrowd(dt){
       if(hd>4){
         var hs=Math.min(hd,46*dt);
         c.x+=hdx/hd*hs; c.y+=hdy/hd*hs;
+        collide(c,HB.dwalls);   // v10.60: the walk home goes round the counter, not through it
         c.walking=hd>12?1:0;
         if(c.walking){ c.step=(c.step||0)+dt*6; c.face=Math.atan2(hdy,hdx); }
       } else c.walking=0;
@@ -25495,7 +25528,7 @@ function tickHubCrowd(dt){
       if(c.fade<1) c.fade=Math.min(1,c.fade+dt*1.8);
       var bx=c.x, by=c.y, sp=(c.state==='leave')?98:78;
       c.x+=dx/dd*sp*dt; c.y+=dy/dd*sp*dt;
-      collide(c,HB.walls);
+      collide(c,HB.dwalls);   // v10.60
       // The posts are furniture too: nobody walks through the counter. The one
       // being walked TO is exempt, or a body could never reach the lift bay.
       for(var si=0;si<HB.stations.length;si++){
@@ -25506,6 +25539,7 @@ function tickHubCrowd(dt){
         if(sd<sr&&sd>0.001){ c.x=S.x+sx/sd*sr; c.y=S.y+sy/sd*sr; }
       }
       c.x=clamp(c.x,34,HUBW-34); c.y=clamp(c.y,34,HUBH-34);
+      collide(c,HB.dwalls);   // v10.60
       var mvx=c.x-bx, mvy=c.y-by, mvd=Math.abs(mvx)+Math.abs(mvy);
       if(mvd>0.01) c.face=Math.atan2(mvy,mvx);
       c.walking=1; c.step=(c.step||0)+dt*6;
@@ -25797,8 +25831,12 @@ stations.forEach(function(st){
   lights.push({x:350,y:240,r:240,c:'#ffc878',i:.30,f:0,fl:false});
   lights.push({x:140,y:390,r:130,c:'#ffc878',i:.20,f:2.2,fl:true});
   lights.push({x:560,y:120,r:130,c:'#ffc878',i:.20,f:4.4,fl:true});
-  return {walls:w,segs:segs,stations:stations,lights:lights,
-    crowd:buildHubCrowd(stations,w),
+  // v10.60: dwalls is what the walls PAINT; everyone down here collides with that
+  // rather than with the smaller rectangle underneath it.
+  var dw=hubDrawn(w);
+  var cr=hubCrowdClear(stations,dw);
+  return {walls:w,dwalls:dw,segs:segs,stations:stations,lights:lights,
+    crowd:cr,
     player:{x:590,y:400,r:11,face:-1.5708,bob:0,moving:false},
     near:null,t:0,eLock:false};
 }
@@ -25880,18 +25918,20 @@ function updateHubWorld(dt){
     var _rl2=430*dt,_rsn=Math.max(1,Math.ceil(_rl2/8));
     for(var _rs2=0;_rs2<_rsn;_rs2++){
       p.x+=_rd.x*_rl2/_rsn; p.y+=_rd.y*_rl2/_rsn;
-      collide(p,HB.walls);
+      collide(p,HB.dwalls);   // v10.60: the picture, not the collider under it
     }
     p.bob+=dt*18;
     p.x=clamp(p.x,26,HUBW-26); p.y=clamp(p.y,26,HUBH-26);
+    collide(p,HB.dwalls);   // v10.60: the clamp can push him into the south wall's picture
     p.moving=true;
   } else if(mg>0){
     var spd=(keys['ShiftLeft']||keys['ShiftRight'])?250:165;
     p.x+=(mx/mg)*spd*dt; p.y+=(my/mg)*spd*dt;
     p.bob+=dt*(spd>200?15:9);
     p.face=Math.atan2(my,mx);
-    collide(p,HB.walls);
+    collide(p,HB.dwalls);   // v10.60
     p.x=clamp(p.x,26,HUBW-26); p.y=clamp(p.y,26,HUBH-26);
+    collide(p,HB.dwalls);   // v10.60
   } else p.bob+=dt*1.2;
   p.moving=Math.hypot(p.x-_pmx0,p.y-_pmy0)>0.02;
   var best=null,bd=1e9;
@@ -26081,6 +26121,7 @@ function drawHubWorld(dt){
             var _pu2=Math.min(84*dt,(26-_sd2)*30*dt);
             _A2.x=clamp(_A2.x-_sx2/_sd2*_pu2,34,HUBW-34); _A2.y=clamp(_A2.y-_sy2/_sd2*_pu2,34,HUBH-34);
             _B2.x=clamp(_B2.x+_sx2/_sd2*_pu2,34,HUBW-34); _B2.y=clamp(_B2.y+_sy2/_sd2*_pu2,34,HUBH-34);
+            collide(_A2,HB.dwalls); collide(_B2,HB.dwalls);   // v10.60: a shove never lands anyone in a wall
           }
         }
       }
@@ -26092,7 +26133,7 @@ function drawHubWorld(dt){
         var _mv=0;
         if(_c.mercTag&&HB.player){
           var _dxm=HB.player.x-_c.x,_dym=HB.player.y-_c.y,_dm=Math.hypot(_dxm,_dym)||1;
-          if(_dm>70){ _c.x+=_dxm/_dm*126*dt; _c.y+=_dym/_dm*126*dt; _mv=1; }
+          if(_dm>70){ _c.x+=_dxm/_dm*126*dt; _c.y+=_dym/_dm*126*dt; _mv=1; collide(_c,HB.dwalls); }   // v10.60
           _c.face=Math.atan2(_dym,_dxm);
         }
         if(_c.away>0) continue;                  // v8.07: he is up top
@@ -26383,7 +26424,7 @@ function showScreen(s){
     // v6.64, his note: the people milling about are different every time you come down.
     // The six who work the stations are rebuilt too and come out the same, because they
     // walk the identity lists in order rather than rolling.
-    else HB.crowd=buildHubCrowd(HB.stations,HB.walls);
+    else HB.crowd=hubCrowdClear(HB.stations,HB.dwalls||hubDrawn(HB.walls));   // v10.60: the pictures, and placed clear of them
     if(!hubGround) hubGround=bakeHubGround();
     // v6.68, his note: always the lower left light circle, whether you extracted, died
     // or walked away. 140,390 is the lamp at that corner, so you arrive standing in it.
@@ -27014,7 +27055,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.59: behind a wall you look like yourself, faded, instead of turning into a light-blue cutout. Your coat, your racks, your stance and your gun, seen through the wall.',
+  now:'v10.60: walls are solid again. Nothing goes see-through when you stand behind it, and in the Undercroft nobody can stand inside the part of a wall that is painted, which is what was catching the people down there on the counters and the piers.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

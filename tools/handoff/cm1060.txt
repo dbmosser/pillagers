@@ -1,11 +1,16 @@
-v10.60: nobody in the Undercroft walks through a wall
+v10.60: walls are solid, and nobody stands inside one
 
-His note: pillagers still glitching into walls in the Undercroft. The errand
-walk called the wall push and it was inert, because the loose crowd and the
-hired man had no radius; the counter staff, the separation shove and the
-follow had no push at all.
+His notes: the transparency looks goofy, and people are still caught on
+walls in the Undercroft. One fault, and mine. Every wall is painted 26
+units above the rectangle it collides with, so the strip just north of a
+wall is floor you can stand on and floor the wall paints over. Since v9.27
+the answer was a faded copy of the player drawn on top.
 
-Every body has a radius and every position change takes the push.
+Measured on v10.59: bodies stood inside a wall picture 1,821 times in
+1,200 steps of the room, eight of fifteen people, one permanently.
 
-The check steps the room for a minute and finds nobody inside a wall. It
-fails on a v10.59 fixture.
+The Undercroft now collides everyone with what the walls paint, so nobody
+can stand where a wall covers them, and the see-through dial is off.
+
+The check steps the room for a minute and finds nobody inside a picture.
+It fails on a v10.59 fixture.
