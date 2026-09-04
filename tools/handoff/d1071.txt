@@ -1,0 +1,63 @@
+## v10.71 - THE SAFE POCKET TELLS THE TRUTH, INCLUDING ABOUT MY OWN v10.70
+
+The safe pocket NAMES one item key. One copy of it comes home if you die
+CARRYING it, which is the spec from v6.01 and is right. It is a name for
+something in your backpack, not a slot that holds anything of its own, and
+the deploy has always been honest about that: it arms only when the named
+key is in the kit going up. Every screen that talks about it was wrong in
+some way, and one of those ways I shipped yesterday.
+
+### My mistake, first
+
+v10.70 fixed the LOADOUT total to count the copies living on tactical belt
+keys, which was right, and in the same line added the safe pocket, which was
+wrong. Measured on v10.70:
+
+    medkit + plate                          550c
+    medkit + plate + bandage                610c     correct, bandage is 60
+    the same three, bandage NAMED as safe   670c     counted twice
+    medkit + plate, bandage named as safe   610c     counted, and it stays home
+
+Wrong in both directions from one line. The pocket is taken back out of the
+total. What v10.70 got right, the belt copies, stands.
+
+### The older fault, and the worse one
+
+The stash screen showed the pocket as 1/1 whether or not the named item was
+going up, because safeKey accepts it sitting in the stash. Measured: a
+bandage in the stash, armed, with a backpack of a medkit and a plate, reads
+"Safe pocket 1/1" and deploys with P.safeUp null. The one promise that
+protects you from losing everything was doing nothing, and the screen said
+it was armed. The two cases were pixel for pixel identical.
+
+The label now reads NOT PACKED instead of 1/1 in that case, the cell says so
+in hazard red, and its tooltip says what will actually happen. A new
+safeUpKey answers the question the player is really asking, which is not "is
+something named" but "will anything come home", using the same test the
+deploy uses.
+
+### And the ascent check never mentioned it at all
+
+The page calls itself the last stop before the lift where everything can
+still be changed, and it did not name the one thing that survives your
+death. Its summary line now ends with the safe pocket in one of three
+states: named and packed, named but not packed in hazard red, or no safe
+pocket at all.
+
+### Measured
+
+The check arms the pocket three ways and reads both screens plus the deploy.
+Named but not packed must not read as 1/1, and the deploy must arm nothing.
+Named and packed must read as armed and the deploy must arm it. The loadout
+total must be identical whether or not a packed item is also named, and must
+not move at all for naming one that stays at home, with a control that
+packing that item really does move it by its own 60. Then the ascent check
+must name the item, must say "not packed" in the second case, and must say
+so when there is no pocket. On a v10.70 fixture it fails on the first
+assertion and on both totals.
+
+Not verified: what the freebie kit does to the safe pocket, because the
+fixture's deploy takes an explicit kit and does not go down the freebie path,
+so the summary line for that branch is untouched and unmeasured; and whether
+NOT PACKED is the wording he wants on a label that has always been a
+fraction.

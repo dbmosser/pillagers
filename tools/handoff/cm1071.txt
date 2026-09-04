@@ -1,0 +1,23 @@
+v10.71: the safe pocket tells the truth
+
+The safe pocket names one item and one copy of it comes home if you die
+carrying it. It is a name for something in your backpack, not a slot of its
+own. Every screen that talked about it was wrong in some way.
+
+Mine first. v10.70 added the pocket to the LOADOUT total. A medkit and a
+plate read 550c, adding a bandage worth 60 reads 610c which is right, naming
+that same packed bandage as the safe pocket read 670c and counted it twice,
+and naming one that was not packed still read 610c and counted something
+that stays at home. Taken back out. The belt half of v10.70 stands.
+
+The older fault is worse. The stash screen read 1/1 whether or not the named
+item was actually going up, so a bandage sitting in the stash showed an
+armed pocket and deployed with nothing protected. It reads NOT PACKED now,
+and the cell says so.
+
+And the ascent check, which calls itself the last stop before the lift where
+everything can still be changed, never named the one thing that survives
+your death. It does now.
+
+The check reads both screens and the deploy in three states. It fails on a
+v10.70 fixture.
