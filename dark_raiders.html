@@ -1291,7 +1291,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.88';
+var VER='10.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1302,10 +1302,11 @@ var VER='10.88';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='10.88';
+var WHATSNEW_VER='10.89';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'X NO LONGER SWAPS WEAPONS. The hotbar does that job, so the key is gone along with its legend lines. Your stowed gun and its ammo are still shown, just without a key in front of them. On a controller, X is still search.',
   'AND THE HUM STOPS WHEN YOU PAUSE. Same fault as the one below, met the common way: the room tone is turned down inside the part of the frame that a pause switches off, so it used to hold its level under the pause menu. It ducks now and comes back when you resume.',
   'THE HUM STOPS WHEN THE RAID DOES. The low bed under a raid is five voices that never stop, turned down rather than switched off, and the only thing turning them down ran inside the raid itself. So it froze at its last level when you died and kept going through the card and the Undercroft, loudest of all if something was on top of you at the end.',
   'MACHINES CAN FIND THE DOOR NOW. One inside a building could not work out how to get out to you, so it bumped about indoors while you stood outside untouched. Nineteen buildings across the two maps were traps like that and eleven still are, but if something is in there with you it is far likelier to come.',
@@ -9996,7 +9997,7 @@ function raidKey(code,repeat,ev){
     }
     if(code==='KeyG'||code==='Space'||code==='KeyQ'||code==='KeyC') return;
   }
-  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyX','KeyV','KeyC','Backspace','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
+  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyV','KeyC','Backspace','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
   if((code==='Escape'||code==='KeyP')&&G&&!G.over)
     togglePauseBox(!document.getElementById('pausebox').classList.contains('on'));
   // H CYCLES, v2.94. His note: "update the key legend, make it smaller if
@@ -10008,7 +10009,7 @@ function raidKey(code,repeat,ev){
   if(code==='KeyH'&&G&&!repeat) G.legendOn=(G.legendOn+1)%3;
   // X swaps primary and secondary. Each keeps its own loaded magazine; the
   // reserve pool is shared, so swapping is not a way to dodge running dry.
-  if(code==='KeyX'&&G&&!G.over&&!G.paused&&!repeat) swapGuns();
+
   if(code==='KeyF'&&G&&!G.over&&!G.paused&&!repeat) meleeStrike();   // v10.64, his note
   // 1 to 9 SELECT A HOTBAR SLOT, ALWAYS, v2.94. His note: "player should be able
   // to switch which item is equipped by using 1-9 keys even if inventory is
@@ -23051,10 +23052,12 @@ ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,by-15);
     ctx.fillStyle=p.ammo===0?'#ff5a4a':'#cdd6dd';
     ctx.fillText(p.ammo+' / '+p.reserve,W-16,by-LH(14));
   }
-  // the sidearm waiting on X, so the second gun is not a secret
+  // v10.89, HIS NOTE: the stowed gun is still shown, because it was never meant
+  // to be a secret, but the bracket in front of it promised a key that no longer
+  // exists. The hotbar is how a gun comes up now.
   if(p.sec){
     ctx.font=FS(TYPE.micro); ctx.fillStyle='#7d8894';
-    ctx.fillText('['+keyLabel('KeyX','X')+'] '+p.sec.name+'  '+p.secAmmo,W-16,by-LH(52));
+    ctx.fillText('STOWED  '+p.sec.name+'  '+p.secAmmo,W-16,by-LH(52));
   }
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
   // A cost you cannot see is not a decision, it is the game feeling wrong for no stated
@@ -23537,8 +23540,8 @@ function safeSet(){
 // of those three have no key at all: they are automatic. A key list alone would
 // have left him hunting, so the panel states the keyless rules as well.
 var LEGEND=[
-  ['MOVE',[['WASD','move'],['SHIFT','sprint on/off'],['CTRL / C','crouch on/off, near silent'],['SPACE','dodge roll']]],
-  ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','aim down sights'],['R','reload'],['X','swap weapon'],['F','melee strike, whatever you are holding']]],
+  ['MOVE',[['WASD','move'],['SHIFT','hold to sprint'],['CTRL / C','crouch on/off, near silent'],['SPACE','dodge roll']]],
+  ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','aim down sights'],['R','reload'],['F','melee strike, whatever you are holding']]],
   ['GEAR',[['1-9','select tactical belt slot'],['FIRE','use selected slot'],['TAB','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],
 ['WORLD',[['E','search / call for extraction'],['M','map'],['H','cycle this list'],['P','pause']]],
   ['ALSO',[['CAPS','walk on, hands free'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom']]]
@@ -23550,7 +23553,7 @@ var LEGEND_MINI=[
   ['WASD','move'],['SHIFT','sprint'],
   ['CTRL / C','crouch'],['SPACE','roll'],
   ['LMB','fire'],['RMB','sights'],
-  ['R','reload'],['X','swap gun'],
+  ['R','reload'],
   ['F','melee'],
   ['1-9','tactical belt'],['TAB','backpack'],
   ['E','search'],['M','map']
@@ -27417,7 +27420,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.88: FIRST TIME OUT is gone, your note. The window, its eighteen cards, the under-the-fold cue, the never-show tick box, the close handler and the css are all deleted, thirty-two references down to none. The welcome pack and the share question still run, in that order.',
+  now:'v10.89: X no longer swaps weapons, your note. The key, its legend lines and the bracket in front of the stowed gun are gone; the hotbar is how a gun comes up. The swap itself is kept, because dragging a gun onto the one in your hands and the bot pulling its sidearm both use it.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

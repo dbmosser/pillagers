@@ -1,0 +1,16 @@
+v10.89: X no longer swaps weapons
+
+His note. Reproduced: one X press swapped an SMG for a stowed carbine. Gone: the
+key, its entry in the swallowed-keys list, the bracketed [X] on the HUD and the
+two keyboard legend lines. Zero occurrences of the key left, asserted by the
+patch.
+
+The swap function stays, because four other callers use it: dragging a gun onto
+the one in your hands, the hotbar, and two in the bot. Deleting it would have
+taken all four.
+
+The controller is untouched: its X is a face button meaning search through a
+different table.
+
+Also fixed, a leftover from v10.87: the legend still said sprint was on/off when
+it is now a hold. No dial moves.

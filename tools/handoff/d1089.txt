@@ -1,0 +1,50 @@
+## v10.89 - HIS NOTE: X TO CHANGE WEAPONS IS NOT NEEDED ANY MORE
+
+"X to change weapons i don't think is necessary any more given the hotbar, we
+can remove concept of x to change weapons", 2026-09-04.
+
+REPRODUCED FIRST: in a raid holding an SMG with a carbine stowed, one X press
+swaps them, smg to carbine and carbine to smg.
+
+WHAT GOES. The keydown handler; KeyX in the list of keys the page swallows so
+the browser cannot act on them; the bracketed [X] in front of the stowed gun on
+the HUD; and the two keyboard legend lines that taught it. The patch asserts
+zero occurrences of the key are left before it will write the file.
+
+WHAT STAYS, and this is the part worth being careful about. The swap FUNCTION
+has four other callers and every one of them is a way he still wants:
+
+  dragging a gun onto the one in your hands
+  the hotbar bringing a stowed gun up
+  the bot pulling its sidearm when the primary runs dry
+  the bot upgrading to a better gun it finds in a raid
+
+Deleting the function along with the key would have silently taken all four,
+and nothing in his note asks for that. Only the key goes.
+
+THE STOWED GUN IS STILL SHOWN. It was never meant to be a secret and his note is
+about the key, not the readout, so the line keeps the name and the ammo and
+loses only the bracket promising a key that no longer exists.
+
+NOT TOUCHED: the controller. Its X is a FACE BUTTON meaning search, mapped
+through a different table, and the pad legends that say X are about that button.
+Removing them would have taken search off the controller, which is why the check
+asserts the pad mapping is still there.
+
+ALSO FIXED, and it is the previous build's own leftover: the legend still read
+"SHIFT sprint on/off" after v10.87 made sprint a hold. His friends would have
+read it. It now says hold to sprint.
+
+NO DIAL MOVES, per his instruction of 2026-09-04.
+
+THE CHECK clears every latched key first, because a key left down by an earlier
+check has made a keypress look broken twice before. Then: X swaps nothing; the
+swap function still swaps when called directly, so this removed a key and not a
+feature; no keyboard legend still teaches swapping with a key, with the needle
+assembled at runtime so the check cannot find its own text in the page; and the
+pad's X still maps to search. Its control is that a run where no legend could be
+read at all is a failure, not a pass.
+
+Not verified: the controller path is reasoned rather than driven, because no pad
+was attached. And nobody has played a raid to feel whether reaching for the
+hotbar instead of X is better in a fight; that is his to judge.

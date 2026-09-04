@@ -5328,6 +5328,62 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.89',what:'X does not swap weapons any more and says so nowhere, while every other way of bringing a gun up still works',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__keysRef&&window.__loop)) return 'SKIP: this fixture cannot drive keys through a raid';
+     var bad=[];
+     __runPrep(); __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player, K=__keysRef();
+     for(var k in K) delete K[k];          // a latched key has faked this twice
+     g.ents.length=0; p.downed=0;
+     if(!p.wep||!p.sec) return 'SKIP: this deploy did not give the operator two guns';
+     var held=p.wep.id, stowed=p.sec.id;
+     if(held===stowed) return 'SKIP: both guns are the same, so a swap cannot be seen';
+     // ONE dispatch. Firing at window and at document reaches the same handler
+     // twice, which turns every press into a press and an unpress.
+     function press(code){
+       try{ window.dispatchEvent(new KeyboardEvent('keydown',{code:code})); }catch(_e1){}
+     }
+     // 0. THE INSTRUMENT FIRST. C is still bound and still a toggle, so the same
+     //    dispatch must move something. Without this, a keypress that never
+     //    lands makes every line below pass by doing nothing.
+     var crouchWas=!!g.crouchTog;
+     press('KeyC');
+     if(!!g.crouchTog===crouchWas)
+       return 'control: a dispatched keypress does nothing in this fixture, so nothing below could be measured';
+     press('KeyC');
+     // 1. THE KEY DOES NOTHING. This is his note.
+     press('KeyX');
+     if(p.wep.id!==held||p.sec.id!==stowed)
+       bad.push('pressing X still swapped the guns, '+held+' to '+p.wep.id);
+     // 2. AND THE SWAP ITSELF STILL WORKS, or this deleted a feature rather than
+     //    a key. Four other callers depend on it: dragging a gun onto the one in
+     //    your hands, the hotbar bringing a stowed gun up, and two in the bot.
+     if(typeof swapGuns!=='function') bad.push('the swap function itself is gone, which takes the hotbar and the bot with it');
+     else {
+       swapGuns();
+       if(p.wep.id!==stowed||p.sec.id!==held)
+         bad.push('calling the swap directly no longer swaps: holding '+p.wep.id+' with '+p.sec.id+' stowed');
+       swapGuns();
+     }
+     // 3. AND NOTHING TELLS A PLAYER TO PRESS IT. A key removed from the handler
+     //    but left in a legend is worse than leaving the key alone.
+     var legends=[];
+     try{ legends.push(JSON.stringify(LEGEND)); }catch(e3){}
+     try{ legends.push(JSON.stringify(LEGEND_MINI)); }catch(e4){}
+     var text=legends.join(' ');
+     if(text){
+       // Assembled, so this check cannot find itself in the page.
+       var swapWord=['swap',' ','weapon'].join(''), swapGun=['swap',' ','gun'].join('');
+       if(text.indexOf(swapWord)>=0||text.indexOf(swapGun)>=0)
+         bad.push('a keyboard legend still teaches swapping a weapon with a key');
+     } else bad.push('control: no legend could be read, so this proved nothing about what a player is told');
+     // 4. THE CONTROLLER IS UNTOUCHED. Its X is a face button meaning search and
+     //    goes through a different table; removing it would take search off the pad.
+     if(typeof PADHOLD==='undefined'||PADHOLD[2]!=='KeyE')
+       bad.push('the controller X no longer maps to search, so the pad lost a button it needs');
+     return bad.length?bad.join('; '):null; }},
   {v:'10.87',what:'sprint follows the SHIFT key: let go and you stop running, while crouch is still a toggle and the out-of-breath rule still needs a fresh press',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__loop&&window.__keysRef)) return 'SKIP: this fixture cannot drive keys through a raid';
