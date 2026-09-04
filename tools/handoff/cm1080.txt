@@ -1,0 +1,16 @@
+v10.80: both maps finally build the town centre he asked for
+
+TOWN SQUARE has been written since v6.92 with a comment saying it was guaranteed
+on every map. The word townsq appeared exactly once in the file, in its own
+definition, so the monument, the market stalls and the benches had never been
+built in the game. FLOODED PLAZA is idle the same way.
+
+COLD STORAGE puts one on the packing floor, the only landmark there that keeps
+its monument. On THE COLD MILE every landmark without an archetype loses its
+monument to the lmCut rule, so the square takes over one of the map's three
+identical cargo yards. My first choice, SUMP YARD, was standing in a pond and
+the new check refused it; THE FROST YARD is 8 of 8 dry and clear and is now
+THE FROST MARKET.
+
+Entities and crawlers do not move: 85 and 374, 52 and 224. Walls 2461 to 2440
+and 616 to 623, containers on the mile 552 to 593. One pin moved.

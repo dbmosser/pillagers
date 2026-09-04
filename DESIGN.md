@@ -40024,6 +40024,86 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.80 - HIS NOTE "NEEDS TOWN CENTERS" WAS ANSWERED BY CODE NO MAP CALLED
+
+TOWN SQUARE has been in this file since v6.92. Its own comment reads: "His note,
+verbatim: needs ... town centers. Guaranteed on every map, not pooled: a town has
+a centre or it reads as a warehouse district." It was guaranteed on NO map. The
+word townsq appears exactly once in the whole file, in its own definition, so the
+monument, the six market stalls round the rim and the two benches beside it had
+never once been built in the game. FLOODED PLAZA is idle in the same way.
+
+That is the MAPCONT fault again: a constant that looks authoritative, reads like
+a decision that was made, and is inert. His note sat on the STILL OPEN list as
+unbuilt while the code to build it was already written and waiting.
+
+WHERE IT COULD GO, measured rather than guessed. The square puts its monument at
+the host landmark's centre, and a landmark wall that falls inside a building is
+cut away by the v6.92 lmCut rule, so a host whose centre is indoors gets a square
+with no middle. Counting how many of the nine pieces survive:
+
+  COLD STORAGE   PACKING FLOOR  7 of 9, monument stands   <- best of the five
+                 the other four 0 to 3, monument cut
+  THE COLD MILE  every landmark WITHOUT an archetype loses its monument
+                 the only hosts that keep 9 of 9 are the three already
+                 carrying CARGO YARD
+
+So the mile's square has to take over one of its three cargo yards, which is the
+same complaint from the other end: that map runs one archetype three times and
+has no centre at all.
+
+MY FIRST CHOICE WAS WRONG AND THE CHECK I WROTE FOR THIS BUILD REFUSED IT. I put
+it on SUMP YARD because it was the squarest of the three at 2000x1700 and kept
+all nine pieces. It is also standing in a pond: its centre is inside the water
+rectangle at 700,5900 900x700 and all eight ways round the monument are water.
+Measured across all twelve mile landmarks, how many of the eight ways round the
+centre are dry and clear: FROST YARD 8, BLAST FREEZER LINE 7, PUMPWORKS 7,
+MANIFEST 6, BREAKER LINE 6, OUTRAIL 6, GANTRY STACKS 3 (its own gantry rows
+cross the middle), COLD BLOCKS 2, COLD NINE 1, SUMP 0.
+
+THE FROST YARD is the only landmark that is open, dry AND one of the three
+repeated yards, so it does both jobs at once. Renamed THE FROST MARKET, because
+a yard with a monument and market stalls in it is not a yard any more.
+
+WHAT IT COSTS, measured both ways and smaller than I expected.
+
+  entities   do not move at all: 85 on COLD STORAGE, 374 on the mile
+  crawlers   do not move: 52 and 224
+  walls      mile 2461 to 2440, cold 616 to 623
+  containers mile 552 to 593, cold 165 unchanged; the mile figure is pinned
+             nowhere in the harness
+
+I had written eleven pin changes for the sump placement, which shifted entities
+to 369 and crawlers to 219. Moving the square to the frost yard put the stream
+back where it was and ONE pin moves, the wall count. The eleven were reverted.
+
+TWO CHECKS CAUGHT MY OWN WORK ON THE WAY THROUGH. v10.38 requires the WHAT IS
+NEW card to open with what an alpha is, and I had put the new line first. And
+v9.77 CONTROL TWO, "spared means GEOMETRY SURVIVED", proved it with a map-wide
+total of interior walls, which read 280 against 285 here: the square moves the
+container count on the mile, so furniture and interior tagging land a few walls
+either way in every building, spared or not, and five walls of drift decide a
+sum over 84 buildings. It now asks the question its own comment names, of the
+SPARED BUILDINGS by their wall ids, and it passes on the v10.79 build too, so it
+is not a control bent to fit this one.
+
+THE NEW CHECK asks the question that would have caught this months ago: is every
+archetype the file defines actually BUILT by some map, or is it a comment
+claiming a feature nobody can reach. plaza is named as the one knowingly idle,
+so the day somebody uses it, or adds a seventh archetype and forgets to, the
+line says so. Then it requires each square to be really on the ground and not
+merely declared: a monument at the centre, at least four pieces round the rim,
+and five of the eight ways round the monument walkable, because a square you
+cannot cross is worse than no square. Control: the two squares must be different
+places, or one map could take both and every line above would still pass.
+
+Fails on a v10.79 fixture with "the archetypes no map builds are [plaza,
+townsq]" and "map 0 has no town centre on it at all".
+
+Not verified: whether a market square is the right fiction for a cold-storage
+depot at all, which is his call and not mine; the effect of forty-one more
+containers on the mile, which was not measured as a balance change; and
+destroyed buildings, the other half of his map note, which is still open.
 ## v10.79 - THREE GUARDS ONLY ASKED WHETHER A THING WAS DRAWN AT ALL
 
 No game change. The version and the BUILDING line move and nothing else in

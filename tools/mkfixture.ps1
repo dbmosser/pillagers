@@ -5301,6 +5301,64 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.80',what:'both maps really build a town centre, monument and all, and no archetype the file defines is left as code no map calls',
+   run:function(){
+     if(!(window.__deploy&&window.__state)) return 'SKIP: this fixture cannot build a map';
+     if(typeof LANDMARKS==='undefined'||typeof FIXED_MAPS==='undefined') return 'SKIP: this build has no archetype table';
+     var bad=[];
+     // 1. EVERY ARCHETYPE THE FILE DEFINES MUST BE BUILT SOMEWHERE. TOWN SQUARE
+     //    carried a comment saying it was guaranteed on every map and was called
+     //    by none, so his note read as answered for four months. FLOODED PLAZA
+     //    is knowingly unused and is named here on purpose: the day somebody
+     //    puts it on a map, or adds a seventh archetype and forgets to use it,
+     //    this line says so.
+     var used={}, mi, li;
+     for(mi=0;mi<FIXED_MAPS.length;mi++){
+       var LMS=FIXED_MAPS[mi].landmarks||[];
+       for(li=0;li<LMS.length;li++) if(LMS[li].arch) used[LMS[li].arch]=1;
+     }
+     var idle=[];
+     for(li=0;li<LANDMARKS.length;li++) if(!used[LANDMARKS[li].id]) idle.push(LANDMARKS[li].id);
+     idle.sort();
+     if(idle.join(',')!=='plaza')
+       bad.push('the archetypes no map builds are ['+idle.join(', ')+'], and the only one meant to be idle is plaza');
+     // 2. AND IT IS REALLY IN THE WORLD, not merely declared. A landmark can
+     //    name an archetype and still get nothing, because a piece that falls
+     //    inside a building is cut away by the lmCut rule; that is exactly why
+     //    the mile's square could not go on any landmark without one.
+     var seen=[];
+     for(mi=0;mi<2;mi++){
+       __runPrep(); __resetCfg(); __pinDefaults(0);
+       __deploy({kit:[],safe:null,mapIx:mi,seed:4242});
+       var g=__state(), M=g.map, sq=null, L;
+       for(li=0;li<(M.landmarks||[]).length;li++){ L=M.landmarks[li]; if(L.arch==='townsq') sq=L; }
+       if(!sq){ bad.push('map '+mi+' ('+(M.name||'?')+') has no town centre on it at all'); continue; }
+       seen.push(sq.name);
+       // THE MONUMENT IS THE CENTRE and it is what makes the place read as a
+       // square rather than a yard with some slabs in it. It is put at the
+       // landmark's own centre, so a wall must exist there.
+       var cx=sq.x+sq.w/2, cy=sq.y+sq.h/2, mon=0, rim=0;
+       for(var wi=0;wi<M.walls.length;wi++){
+         var W=M.walls[wi];
+         if(W.x<cx+40&&W.x+W.w>cx-40&&W.y<cy+34&&W.y+W.h>cy-34) mon++;
+         else if(W.x>=sq.x-4&&W.x+W.w<=sq.x+sq.w+4&&W.y>=sq.y-4&&W.y+W.h<=sq.y+sq.h+4) rim++;
+       }
+       if(!mon) bad.push(sq.name+' has no monument at its centre, so it is a name on the map and nothing on the ground');
+       // The stalls and benches. Without these the monument is a lone block.
+       if(rim<4) bad.push(sq.name+' has only '+rim+' pieces round its rim, which is not a square');
+       // AND IT IS STILL A PLACE YOU CAN CROSS. A square you cannot walk into is
+       // worse than no square: the monument is meant to be circled, not a plug.
+       var open=0, st;
+       for(st=0;st<8;st++){
+         var a=st*Math.PI/4, px=cx+Math.cos(a)*150, py=cy+Math.sin(a)*150;
+         if(spotFree(M,px,py,14)) open++;
+       }
+       if(open<5) bad.push(sq.name+' is walled in: only '+open+' of the eight ways round the monument are clear');
+     }
+     // 3. CONTROL: the two squares must be DIFFERENT places, or one map got two
+     //    and the other got none and every line above would still pass.
+     if(seen.length===2&&seen[0]===seen[1]) bad.push('control: both maps named the same square, '+seen[0]);
+     return bad.length?bad.join('; '):null; }},
   {v:'10.79',what:'the drawing checks refuse a trace of a thing as proof the thing is there: every floor sits under the live reading and above a quarter of it',
    run:function(){
      if(!__vpAlive()) return 'SKIP: the pane has no layout, there are no pixels to read';
@@ -10115,9 +10173,12 @@ window.__REGRESS=[
                 ' windows left, so the carve was disabled rather than fixed');
      // CONTROL FOUR: not one wall moved. This build only restores what a wall
      // already was, so the wall counts and the seeded world must be untouched.
-     if(mile.walls!==2461||cold.walls!==616)
+     // v10.80: the square adds seven pieces to COLD STORAGE where there was no
+     // archetype, and replaces the mile's frost yard, which had more geometry
+     // in it than nine fixed rectangles.
+     if(mile.walls!==2440||cold.walls!==623)
        bad.push('control: the maps hold '+mile.walls+' and '+cold.walls+
-                ' walls rather than 2461 and 616, so the split geometry moved');
+                ' walls rather than 2440 and 623, so the split geometry moved');
      if(mile.ents!==374||cold.ents!==85)
        bad.push('control: the maps spawn '+mile.ents+' and '+cold.ents+
                 ' rather than 374 and 85, so the seeded stream moved');
@@ -10340,11 +10401,14 @@ window.__REGRESS=[
            if(px>K.x&&px<K.x+K.w&&py>K.y&&py<K.y+K.h) return true; }
          return false;
        }
-       var stuck=[], demo=0, parts=0;
-       for(i=0;i<W.length;i++) if(W[i].ib!==undefined&&!W[i].furn) parts++;
+       var stuck=[], demo=0, parts=0, per={}, dset={};
+       for(i=0;i<W.length;i++) if(W[i].ib!==undefined&&!W[i].furn){ parts++;
+         // v10.80: PER BUILDING as well as the total, so the control below can
+         // ask about the buildings that were actually spared.
+         per[W[i].ib]=(per[W[i].ib]||0)+1; }
        for(var b=0;b<B.length;b++){
          var bb=B[b], un=0;
-         if(bb.repaired) demo++;
+         if(bb.repaired){ demo++; dset[b]=1; }
          for(y=Math.floor((bb.y+t)/F); y<=Math.floor((bb.y+bb.h-t)/F)&&!un; y++)
            for(x=Math.floor((bb.x+t)/F); x<=Math.floor((bb.x+bb.w-t)/F)&&!un; x++){
              var ii=y*fw+x;
@@ -10354,7 +10418,7 @@ window.__REGRESS=[
            }
          if(un) stuck.push(b);
        }
-       return {buildings:B.length, demolished:demo, parts:parts, ents:g.ents.length, stuck:stuck.join(',')};
+       return {buildings:B.length, demolished:demo, parts:parts, per:per, dset:dset, ents:g.ents.length, stuck:stuck.join(',')};
      }
      var on=survey(1), off=survey(0);
      // CONTROL ONE: both arms have to be the same map or nothing compares.
@@ -10367,10 +10431,19 @@ window.__REGRESS=[
      if(!(on.demolished<off.demolished))
        bad.push('the same '+on.demolished+' buildings lose their interior with the finer look on '+
                 'as with it off, so no building was spared a rounding error');
-     // CONTROL TWO: spared means GEOMETRY SURVIVED, not a flag flipped.
-     if(!(on.parts>off.parts))
-       bad.push('the map keeps '+on.parts+' interior walls against '+off.parts+
-                ', so nothing actually survived');
+     // CONTROL TWO: spared means GEOMETRY SURVIVED, not a flag flipped. v10.80:
+     // asked of the SPARED BUILDINGS rather than of the whole map. The map-wide
+     // total drifts by a few walls whenever anything moves the stream, which is
+     // how the town square made this read 280 against 285 while every building
+     // it names kept its interior intact.
+     var _sp=[], _spOn=0, _spOff=0, _bk;
+     for(_bk in off.dset) if(!on.dset[_bk]){ _sp.push(_bk);
+       _spOn+=(on.per[_bk]||0); _spOff+=(off.per[_bk]||0); }
+     if(!_sp.length)
+       bad.push('control: no building was spared at all, so there is no geometry to have survived');
+     else if(!(_spOn>_spOff))
+       bad.push('the '+_sp.length+' spared buildings keep '+_spOn+' interior walls with the finer look on '+
+                'against '+_spOff+' with it off, so nothing actually survived');
      // CONTROL THREE, AND IT IS THE ONE THAT MATTERS. A sealed room is loot
      // nobody can ever reach, which is the whole reason this pass exists. Sparing
      // a building must not leave one single piece of floor stranded, so the set
