@@ -1263,7 +1263,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.53';
+var VER='10.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17972,6 +17972,15 @@ function fogFrac(mapIx){
 // WHAT SHE CAN WEAR. Every entry is drawn and nothing else: no stat, no slot
 // cost, no weight. how: what unlocks it, and cosOwned is the only judge.
 var COSMETICS=[
+  // v10.54, his notes: OUTFITS. One rack that overrules every other slot.
+  {id:'outnone',     name:'Own Clothes',       how:'always',       kind:'outfit'},
+  {id:'outskeleton', name:'The Skeleton',      how:'extracts:12',  kind:'outfit'},
+  {id:'outrobot',    name:'The Machine',       how:'warden:3',     kind:'outfit'},
+  {id:'outtrooper',  name:'The Trooper',       how:'level:8',      kind:'outfit'},
+  {id:'outandroid',  name:'The Android',       how:'runs:30',      kind:'outfit'},
+  {id:'outexplorer', name:'The Tomb Explorer', how:'extracts:20',  kind:'outfit'},
+  {id:'outballer',   name:'The Baller',        how:'runs:23',      kind:'outfit'},
+  {id:'outpoet',     name:'The Street Poet',   how:'extracts:8',   kind:'outfit'},
   {id:'none',   name:'Bare',           how:'always',      kind:'hat'},
   {id:'band',   name:'Sweat Band',     how:'runs:5',      kind:'hat'},
   {id:'phones', name:'Ear Defenders',  how:'extracts:5',  kind:'hat'},
@@ -18152,8 +18161,24 @@ function cosFind(id){
 // wiped profile or an edited save cannot leave her in a hat she has not earned.
 // v6.46: five kinds now, so the worn id and the fallback both come from a table
 // instead of a two-way branch with the answer baked into the return.
-var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves',pack:'cosPack',patch:'cosPatch',tattoo:'cosTattoo'};
-var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown',patch:'patchnone',tattoo:'tatnone'};
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves',pack:'cosPack',patch:'cosPatch',tattoo:'cosTattoo',outfit:'cosOutfit'};
+var COSDEF={hair:'blonde',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'long',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown',patch:'patchnone',tattoo:'tatnone',outfit:'outnone'};
+// v10.54: WHAT EACH OUTFIT OVERRULES. coat and trs are the torso and the
+// trousers, boots the two legs, skin the head, hands the gun hand; cut, hat and
+// beard replace the racks; mark names the suit's own paint, done last.
+var OUTFITS={
+  outskeleton:{coat:'#0c0d10',trs:'#0c0d10',boots:['#ddd6c2','#ece6d2'],skin:'#ece6d2',hands:'#ece6d2',cut:'none',hat:'none',beard:'clean',mark:'skeleton'},
+  outrobot:   {coat:'#6a7684',trs:'#4a545e',boots:['#2a3038','#3a424c'],skin:'#8a96a4',hands:'#5a646e',cut:'none',hat:'none',beard:'clean',mark:'robot'},
+  outtrooper: {coat:'#3f6a3a',trs:'#2e4a2c',boots:['#1e2e1c','#2a4028'],skin:null,hands:'#2a4028',cut:'none',hat:'spartan',beard:'clean',mark:'trooper'},
+  outandroid: {coat:'#101216',trs:'#101216',boots:['#0c0d10','#14161b'],skin:'#f7ddc2',hands:'#f7ddc2',cut:'bob',hair:'white',hat:'none',beard:'clean',mark:'android'},
+  outexplorer:{coat:'#2f8a86',trs:null,boots:['#5a3a1e','#7a5030'],skin:null,hands:null,cut:'tail',hair:'dark',hat:'none',beard:'clean',mark:'explorer'},
+  outballer:  {coat:'#c41e1e',trs:null,boots:['#a81a1a','#cc2424','#f2f0ea','#14161b'],skin:null,hands:null,cut:'shaved',hat:'none',beard:'clean',mark:'baller',jersey:1},
+  outpoet:    {coat:'#14161b',trs:'#2a3a5a',boots:['#14161b','#1f2227','#f2f0ea','#e6e3da'],skin:null,hands:null,cut:'shaved',hat:'bandana',beard:'goatee',mark:'poet'}
+};
+function outfitOf(st){
+  var id=st&&st.hero?cosWorn('outfit'):((st&&st.outfit)||'outnone');
+  return OUTFITS[id]||null;
+}
 // v10.35: patch colours, the ground and the mark.
 var PATCHCOL={patchcross:['#f2f2f2','#c82828'],patchskull:['#14161b','#e8e2d2'],patchstar:['#1e2a5a','#ffd24a'],patchchev:['#3a3a2a','#e0c060'],patchflag:['#1e3a6a','#d8d8d8']};
 function drawPatch(c,id,x,y,s){
@@ -18172,6 +18197,7 @@ var PACKCOL={packbrown:'#5c4a34',packolive:'#3a5a2c',packblack:'#1e2228',packrus
 // v10.33: glove colours; bare hands are the skin.
 var GLOVECOL={glovetan:'#8a6438',gloveblack:'#1c2028',glovegrey:'#6a727c',glovered:'#8a2a2a'};
 function handColour(st){
+  var _of=outfitOf(st); if(_of&&_of.hands) return _of.hands;   // v10.54: the suit's hands
   var g=st.hero?cosWorn('gloves'):(st.gloves||'barehands');
   if(GLOVECOL[g]) return GLOVECOL[g];
   return SKINCOL[st.hero?cosWorn('skin'):(st.skin||'fair')]||'#c8b49a';
@@ -18240,7 +18266,8 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // coat parameter, so all six raider coats get a correct three-step shade for
   // free, and computing cc first keeps the invulnerable override working across
   // every band instead of leaving a seam.
-  var cc=iv>0?'#2a6a5e':(st.hero?((FITCOL[cosWorn('fit')]||FITCOL.slate)[1]):coat),cLo=darkHex(cc,.42),cHi=litHex(cc,.20,true);
+  var OUTF=outfitOf(st);   // v10.54: an outfit overrules the racks below
+  var cc=iv>0?'#2a6a5e':(OUTF?OUTF.coat:(st.hero?((FITCOL[cosWorn('fit')]||FITCOL.slate)[1]):coat)),cLo=darkHex(cc,.42),cHi=litHex(cc,.20,true);
   // Each leg gets its own ink plate, and the boots keep a real gap between them.
   // Drawn as one flush block they read as a single slab, which is the one place
   // the contour treatment fell down. Boot soles still land exactly on ty.
@@ -18250,12 +18277,13 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   rrF(x+1.1+swing*.5,ty-11.6,5.8,7.9-liftA*.5,1.5);
   rrF(x+.5+swing,ty-5.1-liftA,6.6,5.1,1.5);
   // v10.32: the boots take their colour from the racks.
-  var _BT=BOOTCOL[st.hero?cosWorn('boots'):(st.boots||'bootblack')]||BOOTCOL.bootblack;
+  var _BT=OUTF?OUTF.boots:(BOOTCOL[st.hero?cosWorn('boots'):(st.boots||'bootblack')]||BOOTCOL.bootblack);   // v10.54
   // v10.50, his note: "shoes should be separate from pants". The lower leg is
   // trousers, a darker cut of the coat, and the boot colour is the foot and a
   // collar two units tall above it, so a red boot is a red boot and not red
   // trousers.
-  var _TRS=darkHex(cc,.50);
+  // v10.54: a suit names its trousers; null means bare legs in the skin colour.
+  var _TRS=OUTF?(OUTF.trs||(OUTF.skin||(st.hero?(SKINCOL[cosWorn('skin')]||SKINCOL.fair):(SKINCOL[st.skin]||'#f2d2a8')))):darkHex(cc,.50);
   wc.fillStyle=_TRS;
   rrF(x-6.3+swing2*.5,ty-11,4.6,7.5-liftB*.5,1);
   rrF(x+1.7+swing*.5,ty-11,4.6,7.5-liftA*.5,1);
@@ -18280,7 +18308,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   wc.fillStyle=cc; rrF(x-6.5+leanX,ty-22,13,11,3);
   wc.fillStyle=cHi; wc.fillRect(x-5.7+leanX,ty-22,11.4,3);
   wc.fillStyle=cLo; wc.fillRect(x-5.7+leanX,ty-13.4,11.4,2.4);
-  if(st.hero&&iv<=0&&cosWorn('fit')==='jersey'){
+  if(iv<=0&&(OUTF?!!OUTF.jersey:(st.hero&&cosWorn('fit')==='jersey'))){   // v10.54: the baller wears it
     // v10.46: the number 23 jersey. Black side panels, and a pale 2 and 3 in
     // one-pixel strokes across the chest, five tall.
     var _jx=x-6.5+leanX;
@@ -18323,7 +18351,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // the armour, because a patch goes on the plate carrier. Measured: the gun
   // arm covers the chest on its own side from the second row down, and a
   // patch there showed one row of itself.
-  (function(){ var _pid=st.hero?cosWorn('patch'):(st.patch||'patchnone'); if(_pid&&_pid!=='patchnone') drawPatch(wc,_pid,x-fl*3.6-1.8+leanX,ty-21.8,3.6); })();
+  (function(){ var _pid=OUTF?'patchnone':(st.hero?cosWorn('patch'):(st.patch||'patchnone')); if(_pid&&_pid!=='patchnone') drawPatch(wc,_pid,x-fl*3.6-1.8+leanX,ty-21.8,3.6); })();
   if(st.hurt>0){
     wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,70,56,'+clamp(st.hurt*2,0,.8)+')';
@@ -18341,11 +18369,11 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var HERO=!!st.hero;
   // WHAT SHE IS WEARING. Cosmetic only: these lines pick three colours and a
   // hat id, and nothing downstream of them touches a number.
-  var _HC=HAIRCOL[HERO?cosWorn('hair'):(st.hair||'blonde')]||HAIRCOL.blonde;
+  var _HC=HAIRCOL[OUTF&&OUTF.hair?OUTF.hair:(HERO?cosWorn('hair'):(st.hair||'blonde'))]||HAIRCOL.blonde;   // v10.54
   var HAIRDARK=_HC[0],HAIRLIT=_HC[1],HAIRHI=_HC[2];
-  var HAT=HERO?cosWorn('hat'):(st.hat||'none');
-  var BEARD=HERO?cosWorn('beard'):(st.beard||'clean');   // v10.17
-  var _HCUT=HERO?cosWorn('cut'):null;
+  var HAT=OUTF?OUTF.hat:(HERO?cosWorn('hat'):(st.hat||'none'));
+  var BEARD=OUTF?OUTF.beard:(HERO?cosWorn('beard'):(st.beard||'clean'));   // v10.17
+  var _HCUT=OUTF?OUTF.cut:(HERO?cosWorn('cut'):null);
   // HER HAIR GOES DOWN FIRST, behind everything, so the head sits into it and the
   // mass reads past the shoulders the way it does in the reference.
   if(HERO&&(_HCUT==='long'||_HCUT==='pigtails')){
@@ -18409,7 +18437,8 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
 
   }
   var _NHC=null,_NCT=null;
-  if(HERO){ _NHC=HAIRCOL[cosWorn('hair')]||HAIRCOL.blonde; _NCT=_HCUT||'long'; }
+  if(OUTF){ _NHC=_HC; _NCT=_HCUT||'none'; }   // v10.54: the suit's own cut, or none
+  else if(HERO){ _NHC=HAIRCOL[cosWorn('hair')]||HAIRCOL.blonde; _NCT=_HCUT||'long'; }
   else { _NHC=HAIRCOL[st.hair]||HAIRCOL.dark; _NCT=st.cut||'crop'; }
   if(!HERO||(_NCT!=='long'&&_NCT!=='pigtails')){
     wc.fillStyle=_NHC[0];
@@ -18420,9 +18449,10 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     else if(_NCT==='tail'){ rrF(hx2-2.4,ty-25,4.8,9.6,2.2); rrF(hx2-9.2,ty-38.6,18.4,6,5); }
   }
   wc.fillStyle=INK; rrF(hx2-8.5,ty-38,17,15,6);
-  wc.fillStyle=(st.hero?(SKINCOL[cosWorn('skin')]||SKINCOL.fair)
-                       :(SKINCOL[st.skin]||'#f2d2a8')); rrF(hx2-7.5,ty-37,15,13,5);
-  if(!HERO||(_NCT!=='long'&&_NCT!=='pigtails')){
+  wc.fillStyle=(OUTF&&OUTF.skin)?OUTF.skin:(st.hero?(SKINCOL[cosWorn('skin')]||SKINCOL.fair)
+                       :(SKINCOL[st.skin]||'#f2d2a8')); rrF(hx2-7.5,ty-37,15,13,5);   // v10.54: a suit's own skin
+  if(_NCT==='none'){ /* v10.54: no hair under a suit that has none */ }
+  else if(!HERO||(_NCT!=='long'&&_NCT!=='pigtails')){
     if(_NCT==='mohawk'){
       wc.fillStyle=_NHC[1]; rrF(hx2-2.1,ty-41.6,4.2,7.2,1.8); rrF(hx2-2.1,ty-37.4,4.2,4.8,1.8);
     } else if(_NCT==='shaved'){
@@ -18455,7 +18485,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // v10.21: the FACE rack. The hero's face comes from the racks; a pillager's
   // from his look, or from the old index if he has none.
   {
-    var _FACE=HERO?cosWorn('face'):(st.faceMark||null);   // faceMark, never face: e.face is the facing angle
+    var _FACE=OUTF?'faceplain':(HERO?cosWorn('face'):(st.faceMark||null));   // faceMark, never face: e.face is the facing angle; v10.54: none under a suit
     var _fx=st.faceIx===undefined?0:st.faceIx;
     if(_FACE){ _fx={faceplain:0,facescar:6,facefreckles:5,facemud:4,facepaint:7,faceshiner:8}[_FACE]||0; }
     if(_fx===6){ wc.fillStyle='#a04a3a'; wc.fillRect(hx2+6.2,ty-32.0,1.1,6.2); wc.fillStyle='#d47a6a'; wc.fillRect(hx2+6.2,ty-29.0,1.1,1); }   // v10.50: outside the eye (hx2+5.9)
@@ -18479,7 +18509,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     }
     // v10.36: TATTOO, ink on the face and neck, before the beard and headgear.
     (function(){
-      var _tid=HERO?cosWorn('tattoo'):(st.tattoo||'tatnone'); if(!_tid||_tid==='tatnone') return;
+      var _tid=OUTF?'tatnone':(HERO?cosWorn('tattoo'):(st.tattoo||'tatnone')); if(!_tid||_tid==='tatnone') return;   // v10.54
       wc.fillStyle='rgba(20,28,44,.85)';
       if(_tid==='tattear'){ wc.fillRect(hx2+2.6,ty-27.2,1.2,1.8); }
       else if(_tid==='tatring'){ wc.fillRect(hx2-4.2,ty-25.0,8.4,1.1); }
@@ -18568,6 +18598,70 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillStyle='#1a1c22'; rrF(hx2-9.2,ty-40.6,18.4,3.2,2);
     }
 
+  }
+  // v10.54, his notes: THE SUIT'S OWN PAINT. Last, over everything the racks
+  // would have put there, so a suit is a suit and not a coat colour.
+  if(OUTF&&OUTF.mark){
+    var _om=OUTF.mark, _ox=x+leanX;
+    if(_om==='skeleton'){
+      // ribs across the torso, a spine, bone shafts down the legs, and a skull:
+      // black sockets over the eyes, a nose notch, a row of teeth.
+      wc.fillStyle='#ddd6c2';
+      wc.fillRect(_ox-5,ty-20.6,10,1.1); wc.fillRect(_ox-5,ty-18.2,10,1.1); wc.fillRect(_ox-4.4,ty-15.8,8.8,1.1);
+      wc.fillRect(_ox-0.6,ty-21.6,1.2,9.2);
+      wc.fillRect(x-4.6+swing2*.5,ty-10.4,1.4,6.4-liftB*.5); wc.fillRect(x+3.4+swing*.5,ty-10.4,1.4,6.4-liftA*.5);
+      wc.fillStyle=INK;
+      wc.beginPath(); wc.ellipse(hx2-3.4,ty-29.8,2.9,3.3,0,0,6.2832); wc.fill();
+      wc.beginPath(); wc.ellipse(hx2+3.4,ty-29.8,2.9,3.3,0,0,6.2832); wc.fill();
+      wc.fillRect(hx2-0.7,ty-27.2,1.4,1.6);
+      wc.fillRect(hx2-4.2,ty-25.4,8.4,1.0);
+      wc.fillRect(hx2-2.6,ty-25.4,0.8,1.8); wc.fillRect(hx2-0.4,ty-25.4,0.8,1.8); wc.fillRect(hx2+1.8,ty-25.4,0.8,1.8);
+    } else if(_om==='robot'){
+      // plate seams, a chest light, a red eye bar across the face, an antenna.
+      wc.fillStyle=INK;
+      wc.fillRect(_ox-0.5,ty-22,1,11); wc.fillRect(_ox-6.5,ty-16.6,13,1);
+      wc.fillStyle='#4de3d0'; wc.fillRect(_ox+fl*2.6-1.2,ty-19.6,2.4,1.6);
+      wc.fillStyle=INK;       rrF(hx2-7.8,ty-32.4,15.6,5.4,1.4);
+      wc.fillStyle='#1a2028'; rrF(hx2-7.2,ty-31.9,14.4,4.4,1.1);
+      wc.fillStyle='#ff3a3a'; wc.fillRect(hx2-5.8,ty-30.6,11.6,1.6);
+      wc.fillStyle='#ffb0a0'; wc.fillRect(hx2-1.2+Math.cos(face)*3.6,ty-30.6,2.4,1.6);
+      wc.fillStyle=INK;       wc.fillRect(hx2-0.6,ty-42.4,1.2,4.6);
+      wc.fillStyle='#ff3a3a'; wc.fillRect(hx2-1.1,ty-43.6,2.2,1.6);
+    } else if(_om==='trooper'){
+      // shoulder plates and a chest plate in the helmet's green, lit on top.
+      wc.fillStyle=INK;     rrF(_ox-9.6,ty-22.6,6,6.4,2.2); rrF(_ox+3.6,ty-22.6,6,6.4,2.2);
+      wc.fillStyle='#55874c'; rrF(_ox-9,ty-22,4.8,5.6,1.8); rrF(_ox+4.2,ty-22,4.8,5.6,1.8);
+      wc.fillStyle='#7aa86e'; wc.fillRect(_ox-8.6,ty-22,4,1.4); wc.fillRect(_ox+4.6,ty-22,4,1.4);
+      wc.fillStyle=INK;     rrF(_ox-5.6,ty-19.4,11.2,7,1.8);
+      wc.fillStyle='#55874c'; rrF(_ox-5,ty-18.9,10,6,1.4);
+      wc.fillStyle='#7aa86e'; wc.fillRect(_ox-4.2,ty-18.9,8.4,1.4);
+    } else if(_om==='android'){
+      // a black dress: a flared hem over the hips, and a black band across the eyes.
+      wc.fillStyle=INK;       rrF(_ox-8.6,ty-13.6,17.2,4.4,1.6);
+      wc.fillStyle='#101216'; rrF(_ox-8,ty-13.2,16,3.6,1.3);
+      wc.fillStyle='#f7ddc2'; wc.fillRect(_ox-5.4,ty-21.4,10.8,1.6);
+      wc.fillStyle=INK;       rrF(hx2-7.8,ty-32.0,15.6,4.6,1.4);
+      wc.fillStyle='#1a1c22'; rrF(hx2-7.2,ty-31.5,14.4,3.6,1.1);
+    } else if(_om==='explorer'){
+      // a teal tank top with bare shoulders, a belt, and a holster on each hip.
+      wc.fillStyle=(SKINCOL[st.hero?cosWorn('skin'):(st.skin||'fair')]||SKINCOL.fair);
+      wc.fillRect(_ox-6.5,ty-22,2.4,3.2); wc.fillRect(_ox+4.1,ty-22,2.4,3.2);
+      wc.fillStyle='#5a3a1e'; wc.fillRect(_ox-6.5,ty-12.6,13,1.6);
+      rrF(_ox-8.2,ty-12.2,3,4.4,0.8); rrF(_ox+5.2,ty-12.2,3,4.4,0.8);
+      wc.fillStyle='#a08a50'; wc.fillRect(_ox-1.2,ty-12.8,2.4,2);
+    } else if(_om==='baller'){
+      // shorts: a red band at the top of each bare leg, white trim on the hem.
+      wc.fillStyle='#c41e1e';
+      wc.fillRect(x-6.3+swing2*.5,ty-11,4.6,3.2); wc.fillRect(x+1.7+swing*.5,ty-11,4.6,3.2);
+      wc.fillStyle='#f4f2ec';
+      wc.fillRect(x-6.3+swing2*.5,ty-8,4.6,0.8); wc.fillRect(x+1.7+swing*.5,ty-8,4.6,0.8);
+    } else if(_om==='poet'){
+      // a gold chain at the collar and a white vest under the black.
+      wc.fillStyle='#f4f2ec'; wc.fillRect(_ox-2.4,ty-21.4,4.8,7.4);
+      wc.fillStyle='#e0b040';
+      wc.fillRect(_ox-4.6,ty-20.4,1.2,1.2); wc.fillRect(_ox-2.6,ty-19.2,1.2,1.2); wc.fillRect(_ox-0.6,ty-18.6,1.2,1.2);
+      wc.fillRect(_ox+1.4,ty-19.2,1.2,1.2); wc.fillRect(_ox+3.4,ty-20.4,1.2,1.2);
+    }
   }
   // HEALING, ABOVE HER HEAD, v5.44, his note. A shrinking arc and the seconds
   // remaining, drawn where he is already looking rather than in the corner.
@@ -26750,7 +26844,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.53: the DEV CHEAT BOX has an ALL COSMETICS switch. On, every rack in the Depot is open; off, you are back to exactly what you earned and bought.',
+  now:'v10.54: OUTFITS. A new rack at the top of the Depot with seven full-body suits that overrule every other slot: the Skeleton, the Machine, the Trooper, the Android, the Tomb Explorer, the Baller and the Street Poet. Own Clothes puts the racks back in charge.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -31087,6 +31181,12 @@ document.getElementById('closesettings').onclick=function(){
 // APPEARANCE. Every cosmetic in the game, owned or not, with the requirement
 // spelled out on the locked ones. Clicking an owned tile wears it immediately.
 function cosSwatch(c){
+  if(c.kind==='outfit'){   // v10.54: the suit's coat, or the plain tile for your own clothes
+    var _oc=OUTFITS[c.id];
+    return '<span style="display:inline-block;width:34px;height:34px;border-radius:6px;'+
+           'background:'+(_oc?_oc.coat:'#3d4450')+';border:2px solid #14161b;position:relative">'+
+           (_oc?'<span style="position:absolute;left:11px;top:4px;width:12px;height:12px;border-radius:6px;background:'+(_oc.skin||'#f2d2a8')+'"></span>':'')+'</span>';
+  }
   if(c.kind==='cut'){
     var hcc=HAIRCOL[cosWorn('hair')]||HAIRCOL.blonde;
     var hts={long:30,bob:22,pigtails:26,bun:16,tail:24,mohawk:20,crop:12,shaved:5};
@@ -31245,6 +31345,7 @@ function avatarHTML(){
       '<div class="avsic">'+ic+'</div>'+
       '<div><div class="avslab">'+label+'</div><div class="avsval">'+escHtml(val)+'</div></div></div>';
   }
+  h+=slot('outfit','OUTFIT',(cosFind(cosWorn('outfit'))||{name:'Own Clothes'}).name,'\u2B21');   // v10.54: overrules every slot below it
   h+=slot('build','BUILD',(cosFind(cosWorn('build'))||{name:'Lean'}).name,'\u25AF');
   h+=slot('skin','SKIN',(cosFind(cosWorn('skin'))||{name:'Fair'}).name,
           '<span style="width:14px;height:14px;border-radius:7px;display:inline-block;background:'+sk+'"></span>');
@@ -31276,7 +31377,7 @@ function avatarHTML(){
 }
 // v10.16, his answers 18 and 19. A look is the six cosmetic keys and nothing
 // else. SURPRISE ME picks an owned thing from every rack.
-var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots','gloves','pack','patch','tattoo'];
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots','gloves','pack','patch','tattoo','outfit'];   // v10.54: the outfit is part of a look
 function lookSnap(){ var L={}; for(var i=0;i<LOOK_KINDS.length;i++) L[LOOK_KINDS[i]]=cosWorn(LOOK_KINDS[i]); return L; }
 function lookWear(L){
   if(!L) return false;
@@ -31379,7 +31480,7 @@ function renderAvPicker(pickHost,host){
       'Click a slot to change it. Headgear and hair are earned and change nothing about how you play.</div>';
     return;
   }
-  if(slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'||slot==='pack'||slot==='patch'||slot==='tattoo'){
+  if(slot==='outfit'||slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'||slot==='pack'||slot==='patch'||slot==='tattoo'){   // v10.54: outfit
     renderCosmetics(box,slot,hid,pid); return;
   }
   // v6.43: the wep and wep2 branch is gone with the slots that opened it. Guns are
@@ -31398,7 +31499,7 @@ function renderAvPicker(pickHost,host){
 function renderCosmetics(target,kindOnly,hid,pid){
   var box=target||document.getElementById('cosbody'); if(!box) return;
   var H='';
-  var GROUPS=[['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['tattoo','TATTOO'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['patch','PATCH'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]
+  var GROUPS=[['outfit','OUTFIT'],['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['tattoo','TATTOO'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['patch','PATCH'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]   // v10.54: the outfit rack first
     .filter(function(g){ return !kindOnly||g[0]===kindOnly; });
   GROUPS.forEach(function(g){
     H+='<div style="margin:10px 0 4px 0;letter-spacing:2px;opacity:.7;font-size:12px">'+g[1]+'</div>';
@@ -36690,6 +36791,60 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'10.54',what:'the OUTFIT rack exists, each suit repaints the whole figure and hides the coat colour, an unowned suit changes nothing, and the Depot lists the slot',
+   run:function(){
+     var bad=[];
+     if(typeof drawOp!=='function'||typeof cosWorn!=='function'||typeof COSMETICS==='undefined') return 'SKIP: no painter or racks in this build';
+     var P2=__P();
+     var keep={all:P2.cosAll,out:P2.cosOutfit,fit:P2.cosFit,slot:P2._avSlot};
+     function paint(){
+       var c=document.createElement('canvas'); c.width=200; c.height=320;
+       var g=c.getContext('2d'); var keepWc=wc; wc=g;
+       try{ g.save(); g.translate(100,304); g.scale(5.2,5.2);
+            drawOp(0,0,0,0,'#242832',0,0,'none',0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}});
+            g.restore(); }
+       finally { wc=keepWc; }
+       return g.getImageData(0,0,200,320).data;
+     }
+     function differ(a,b){ var d=0; for(var j=0;j<a.length;j+=4) if(a[j]!==b[j]||a[j+1]!==b[j+1]||a[j+2]!==b[j+2]) d++; return d; }
+     function countCol(a,r,g,b){ var d=0; for(var j=0;j<a.length;j+=4) if(Math.abs(a[j]-r)<=2&&Math.abs(a[j+1]-g)<=2&&Math.abs(a[j+2]-b)<=2) d++; return d; }
+     try{
+       var suits=COSMETICS.filter(function(c){ return c.kind==='outfit'&&c.id!=='outnone'; });
+       if(suits.length<7) bad.push('the OUTFIT rack holds '+suits.length+' suits, not seven');
+       if(typeof LOOK_KINDS==='undefined'||LOOK_KINDS.indexOf('outfit')<0) bad.push('a look does not carry the outfit');
+       // 1. Unowned: a fresh profile wearing a suit it has not earned paints its own clothes.
+       P2.cosAll=false; P2.cosFit='slate'; P2.cosOutfit='outnone';
+       var base=paint();
+       if(cosOwned(cosFind('outskeleton'))) return 'SKIP: this profile already owns the Skeleton, so the unowned case cannot be measured';
+       P2.cosOutfit='outskeleton';
+       var unowned=paint();
+       if(differ(base,unowned)!==0) bad.push('an unowned suit repainted '+differ(base,unowned)+' pixels');
+       // 2. Owned: every suit repaints the figure and hides the slate coat.
+       P2.cosAll=true;
+       var slateN=countCol(base,0x59,0x62,0x6f);
+       if(slateN<40) bad.push('the control figure shows only '+slateN+' slate coat pixels, so the coat test would prove nothing');
+       for(var i=0;i<suits.length;i++){
+         P2.cosOutfit=suits[i].id;
+         var px=paint(), d=differ(base,px), sl=countCol(px,0x59,0x62,0x6f);
+         if(d<300) bad.push(suits[i].name+' changes only '+d+' pixels of the figure');
+         if(sl>0) bad.push(suits[i].name+' still shows '+sl+' pixels of the slate coat');
+       }
+       P2.cosOutfit='outtrooper';
+       if(countCol(paint(),0x3f,0x6a,0x3a)<30) bad.push('the Trooper paints no helmet green');
+       // 3. The Depot lists the slot, first.
+       P2.cosOutfit='outnone'; P2._avSlot=null;
+       if(typeof renderAvatar==='function'&&document.getElementById('appavatar')){
+         renderAvatar('appavatar','appavatarpicker');
+         var slots=document.querySelectorAll('#appavatar [data-av]');
+         if(!slots.length||slots[0].getAttribute('data-av')!=='outfit') bad.push('the Depot does not list OUTFIT as its first slot');
+         var tiles=document.querySelectorAll('#appavatarpicker .costile[data-kind="outfit"]');
+         if(tiles.length<8) bad.push('the Depot racks show '+tiles.length+' outfit tiles, not eight');
+       } else bad.push('the Depot is not on this page');
+     } finally {
+       P2.cosAll=keep.all; P2.cosOutfit=keep.out; P2.cosFit=keep.fit; P2._avSlot=keep.slot;
+       try{ saveProfile(); }catch(_sv){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'10.53',what:'the cheat box ALL COSMETICS switch opens every rack when on, returns exactly the earned racks when off, and touches nothing earned or bought',
    run:function(){
      var bad=[];

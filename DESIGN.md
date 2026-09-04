@@ -40024,6 +40024,52 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.51 - BEHIND THE TERMINAL YOU ARE SHOWN THROUGH THE WALL, AND YOU NEVER RUN IN PLACE
+
+His notes, 2026-09-03 about 19:30: **"WEIRD COLLISION IN UNDERCROFT, ONLY
+HAPPENS WHEN PLAYER IS BEHIND THE TERMINAL"**, with two screenshots, and
+about 19:45: **"weird collission and running-in-place behaviors are happening
+in the undercroft"**. Two faults, one wall.
+
+### What it was
+
+The terminal plinth is a collider 100 wide and 20 deep at y 385 to 405,
+bottom centre of the room. The Undercroft duplicates the raid wall renderer
+verbatim, so like every raid wall its top face is painted 26 units above the
+collider, from 359 to 385, and its sort key is the collider's bottom edge, so
+it paints after anyone standing above it. The raid got the v9.27 see-through
+pass for exactly this, his #45; the room never did. So walking down from
+behind the terminal, the operator stopped on the collider with his feet at
+374, which is inside the drawn top, and was painted under it: he vanished
+into the terminal against a line he could not see. That is the weird
+collision. And the walk cycle was keyed to the keys: pinned against that
+wall with S held, moving stayed true and he ran in place.
+
+### Now
+
+After the sorted pass the room asks the raid's question against its own wall
+list: a wall paints after him when its sort key is greater than his, and
+covers him when its drawn top, from y minus the lift to y minus the lift
+plus its depth, contains him. If one does, the operator is painted again on
+top in one flat colour at half alpha, the same ghost the raid uses, so he is
+never swallowed. And moving is the ground he actually covered this frame,
+measured after the wall push, so pinned against anything he stands still.
+
+### Measured
+
+The check enters the Undercroft, puts him at 350,374 with his feet on the
+plinth's collider, holds S for twelve frames and requires no movement and no
+walking; then on the open floor at 350,250 holds S and requires both; then
+paints the room twice at each spot, with the see-through pass off and on,
+and requires the frames to differ behind the plinth and to be identical on
+the open floor. On v10.50 he runs in place behind the plinth and the two
+frames there are identical, which is the finding; on this build the check
+returns null.
+
+Not verified: the other three walls whose tops a walker can stand under (the
+two piers and the lift housing), which take the same pass by the same
+arithmetic but were not measured; and the look of the ghost against the
+room's palette, which is the raid's colour and was not judged by eye here.
 ## v10.50 - THE FACE MARKS AND THE BEARDS SIT CLEAR OF THE EYES, AND BOOTS ARE BOOTS
 
 His note, 2026-09-03 about 19:20: **"some of the cosmetics look bad, atleast
