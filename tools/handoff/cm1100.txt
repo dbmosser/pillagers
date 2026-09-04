@@ -1,0 +1,34 @@
+v11.00: he picks the weather, and the hard ones pay his 1.1x
+
+His note: "add weather conditions as a selection toggle in the 'Where are you
+going' screen", then the same day: "choose more difficult weather shouild hive
+small xp boost like 1.1x".
+
+Reproduced: the sector page had SURFACE with DAY and NIGHT from v9.97 and nothing
+at all for weather. The weather was one seeded roll at the drop.
+
+The trap that would have been invisible: pickWeather draws from the seeded
+stream, so an implementation that skips the roll when a weather is pinned moves
+every roll after it, and the map, the loot and the bodies all change without a
+word. The roll always happens now. Pinning replaces the answer, never the draw,
+and three pins on seed 4242 give identical entities, containers and walls.
+
+Which ones pay is derived rather than listed: hard means it cuts sight or kills
+the lamps, asked of the weather table, which is rain, fog, blackout and storm
+today. His 1.1x sits on the dial wxXp beside his nightXp 1.2 and both apply, so a
+hard night pays 1.32x. The record carries wxHard the way it already carried
+night.
+
+The control is a WEATHER row under his SURFACE row in the same shape, with the
+chosen one drawn amber. SURPRISE ME is the default and is the old behaviour
+exactly. Partly Cloudy is reachable only through it, because it is the one state
+that exists to turn into another.
+
+New check v11.00 presses the buttons rather than writing the profile, requires
+the raid to come up in what was asked for every pinnable weather, requires the
+map fingerprint to be identical pinned or not, requires the four hard ones to
+count and clear and partly not to, and drives two identical runs through the real
+progress path requiring the XP ratio to be his number. Fails on a v10.99 fixture.
+
+Not verified: whether 1.1x feels worth a blackout to him, and whether six buttons
+plus the surface row fit his 1440p and 4K layouts.

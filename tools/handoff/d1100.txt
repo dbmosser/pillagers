@@ -1,0 +1,48 @@
+## v11.00 - HIS NOTE 16: WEATHER IS A CHOICE, AND THE HARD ONES PAY MORE
+
+"add weather conditions as a selection toggle in the 'Where are you going'
+screen", and then, the same day: "choose more difficult weather shouild hive
+small xp boost like 1.1x". 2026-09-04.
+
+**REPRODUCED:** the sector page carries SURFACE with DAY and NIGHT, added at v9.97
+on his note, and nothing at all for weather. The weather was one seeded roll at
+the drop and he had never had a say in it.
+
+**THE THING THAT WOULD HAVE BEEN INVISIBLE.** pickWeather draws from the SEEDED
+stream. An implementation that skips the roll when a weather is pinned moves
+every roll after it, so the map, the loot and the bodies all change and nothing
+says so. The roll ALWAYS happens now; pinning replaces the answer, never the
+draw. Measured across three pins on seed 4242, map 0: entities, containers and
+walls identical every time.
+
+**WHICH ONES PAY IS DERIVED, NOT LISTED.** A weather is hard if it cuts sight or
+kills the lamps, which is view below 1 or lights below 1, asked of the weather
+table rather than kept as a second list beside it. That is rain, fog, blackout
+and storm today, and a state added later is priced by what it does rather than by
+whether I remembered it. His 1.1x sits on a dial, wxXp, beside his nightXp 1.2,
+and both apply, so a hard night pays 1.32x. The record carries wxHard the way it
+already carried night, so the flight recorder knows what a run went up in.
+
+**THE CONTROL** is a WEATHER row under his SURFACE row, in the same shape, with
+the chosen one drawn amber like the chosen map: SURPRISE ME, CLEAR, RAIN, FOG,
+BLACKOUT, STORM. SURPRISE ME is the default and is the old behaviour exactly.
+Partly Cloudy is reachable only through it, on purpose, because it is the one
+state that exists in order to TURN into another.
+
+**NEW CHECK v11.00** presses the buttons rather than writing the profile, because
+the button is the thing he presses, then requires the raid to come up in what he
+asked for, and does that for every pinnable weather. It requires the map
+fingerprint to be identical with a weather pinned and with the roll left alone,
+which is the seeded-stream trap. It requires rain, fog, blackout and storm to
+count as hard and clear and partly not to, or the bonus would mean nothing, and
+it drives two identical runs through the real progress path, one hard and one
+clear, and requires the XP ratio to be his number. Controls: there must be a way
+to leave it to the roll, there must be something to pin, the clear run must have
+paid something for the bonus to multiply, and the bonus must be above 1.
+
+Fails on a v10.99 fixture: there is no weather control on the page at all.
+
+Not verified: whether 1.1x feels worth a blackout to him, which is his judgement
+and his dial; and whether the six buttons plus the surface row fit his 1440p and
+4K layouts, since the check reads the DOM and the sector page is one column that
+grows downward.
