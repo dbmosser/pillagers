@@ -1303,7 +1303,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.84';
+var VER='10.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1318,6 +1318,7 @@ var WHATSNEW_VER='10.80';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE HUM STOPS WHEN THE RAID DOES. The low bed under a raid is five voices that never stop, turned down rather than switched off, and the only thing turning them down ran inside the raid itself. So it froze at its last level when you died and kept going through the card and the Undercroft, loudest of all if something was on top of you at the end.',
   'MACHINES CAN FIND THE DOOR NOW. One inside a building could not work out how to get out to you, so it bumped about indoors while you stood outside untouched. Nineteen buildings across the two maps were traps like that and eleven still are, but if something is in there with you it is far likelier to come.',
   'THE MAP MARKS THE FALLEN BUILDINGS. Press M and the destroyed ones are hatched with a broken outline, so you can plan a route past the ones with no cover instead of finding out when you get there.',
   'A DESTROYED BUILDING NOW LOOKS IT. Burnt floor, rubble across it and dust spilling out past where the wall used to stand, so you can pick one out from across the map instead of only noticing when you are close enough to see the gap.',
@@ -3369,6 +3370,29 @@ function tickAmbience(dt,threat,alive,dread){
     }
     if(A.dg) A.dg.gain.setTargetAtTime(alive?(dread||0)*0.22:0,t,0.6);
   }catch(e){}
+}
+// v10.85, HIS NOTE: the bed is the only sound in the game with no stop, by
+// design, and tickAmbience above is the only thing that drives its gain. It runs
+// inside the raid branch of the frame loop and nowhere else, so when a raid ends
+// the gain simply stops being written and those five voices hold their last
+// level for as long as the page is open. This is what cuts them.
+// A COUNTER, not a boolean: a check with no audio context cannot hear the gain
+// go down, but it can prove this was reached once per ending and never during
+// ordinary play.
+var AMBOFF=0;
+function ambienceOff(){
+  AMBOFF++;
+  var A=AMB; if(!A) return false;
+  var a=ac(); if(!a) return false;
+  var t=a.currentTime;
+  try{
+    // cancelScheduledValues first, or the ramp tickAmbience set on the last raid
+    // frame keeps pulling the gain back up after this one is written.
+    A.g.gain.cancelScheduledValues(t);  A.g.gain.setTargetAtTime(0,t,0.12);
+    if(A.wg){ A.wg.gain.cancelScheduledValues(t); A.wg.gain.setTargetAtTime(0,t,0.12); }
+    if(A.dg){ A.dg.gain.cancelScheduledValues(t); A.dg.gain.setTargetAtTime(0,t,0.12); }
+  }catch(e){}
+  return true;
 }
 // Footsteps for things you cannot see. This is the whole point of the pass: a
 // machine crossing a room two walls away should be audible and placed, so the
@@ -17425,6 +17449,11 @@ var DEATH_FEED_HTML='';
 function endRaid(how){
   if(G.over) return;
   G.over=how;
+  // v10.85: the raid loop stops here, and it is the only thing that was driving
+  // the ambient bed down. Cut it now or it hums at its last level for as long as
+  // the page is open. Ahead of everything below because everything below can
+  // throw, and a hum that outlives the raid is what he actually hears.
+  try{ ambienceOff(); }catch(_ao){}
   // Contracts resolve during a raid, so the board is refilled the moment the
   // raid that emptied it is over rather than at the next page load.
   if(!G.sim){ try{ ensureContracts(); }catch(e){} }
@@ -27389,7 +27418,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.84: your crawler note, and it was worse than a crawler. A machine inside a building could not find its way out to you: twenty seconds, never closer than 97 units, no damage, while the same crawler in the open kills in ten. The doorways were sealed on the routing grid, not in the world.',
+  now:'v10.85: your note about hums that last way too long. The ambient bed is five voices that are never stopped on purpose and silenced by turning their gain down instead, and the only thing that turned it down ran inside the raid loop. End a raid and the gain froze where it stood, loudest if something was on top of you when you died.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

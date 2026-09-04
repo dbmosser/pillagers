@@ -1,0 +1,17 @@
+v10.85: the hum stops when the raid does
+
+His note about hums that last way too long after you die. Found by counting: the
+file starts 40 oscillators and stops 38, and the two never stopped are the
+ambient bed's sines, which are meant to be silenced by turning their gain down.
+
+The only thing that turns that gain down is tickAmbience, called from one place
+inside the raid loop. End a raid and it is never written again, so the bed
+freezes at its last level through the card and the Undercroft. It freezes loud,
+because the level follows the nearest hunting body and the last frame of a raid
+you lose is the frame something was on top of you.
+
+ambienceOff cuts all three ambient gains from the top of endRaid, cancelling the
+in-flight ramp first so it cannot pull them back up. No dial is touched.
+
+The check enforces his rule as well as the fix: cut once per ending, never
+during play, and the count of never-stopped oscillators stays at two.

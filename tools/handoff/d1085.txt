@@ -1,0 +1,55 @@
+## v10.85 - HIS NOTE: RANDOM HUMS THAT LAST WAY TOO LONG, LIKE AFTER YOU DIE
+
+FOUND BY COUNTING, before anything was played. The file creates 40 oscillators
+and stops 38. The two that are never stopped are the ambient bed: a 54 Hz sine
+and an 81.5 Hz sine, alongside a looping noise bed, a weather layer and a 36 Hz
+dread sine that rises as the Warden closes.
+
+That is deliberate and correct. A permanent bed is silenced by driving its GAIN
+to zero, not by being stopped, and starting and stopping five voices per raid
+would click.
+
+THE FAULT IS THAT NOBODY DRIVES IT DOWN AT THE END. tickAmbience is the only
+thing in the file that writes those gains, and it is called from exactly one
+place: inside the raid branch of the frame loop. Nothing else in the file
+touches AMB at all. The moment a raid ends that branch stops running, so the
+gain is simply never written again. It freezes at its last value and those five
+voices go on sounding at that level through the outcome card, through the
+Undercroft, and until the next deploy.
+
+AND IT FREEZES LOUD. The target is 0.16 + 0.30 * threat, where threat is the
+nearest hunting body and reaches 1 when something is on top of you. The last
+frame of a raid you LOSE is the frame something was on top of you, so the bed is
+near its maximum at exactly the moment it stops being driven. That is his hum,
+and dying is the way to get the loudest one.
+
+THE FIX. One function, ambienceOff, cutting all three ambient gains. It calls
+cancelScheduledValues first, because the ramp tickAmbience wrote on the last
+raid frame is still in flight and would otherwise pull the gain back up after
+the cut. Then a 0.12 fade rather than a hard stop, because a bed that vanishes
+on a frame boundary clicks; the live bed uses 0.45, so this is gone in under half
+a second instead of never. It is called from the top of endRaid, ahead of
+everything below it that can throw.
+
+NO DIAL IS TOUCHED. Nothing in this build changes a balance number, an entity
+count or a map.
+
+HIS RULE, AND THE CHECK TAKES IT. His words while this was being written:
+there should not be any oscillator whose gain fails to fade to zero over a
+reasonably short time. That is a better statement of the fault than the one
+path I found, so the check enforces both halves. First, the bed is cut exactly
+once on each of the three endings and never during ordinary play, because a cut
+that fired every frame would stop the room ever tightening. Second, the file's
+count of oscillators that are started and never stopped must stay at the 2 the
+bed accounts for: a sixth voice with nothing to turn it down is the next hum,
+and this catches it the day it is added. The needle for that count is assembled
+at runtime rather than written out, or the check would find its own text in the
+page and read it as the game's.
+
+Not verified: this is measured as a fact about the code path, not as a fall in
+volume, because the fixture makes AudioContext throw so probe runs stay silent.
+Nobody has heard it. The same freeze may exist for other sounds that outlive
+their moment, the music tail and anything scheduled ahead of the ending, and
+this build only cuts the bed. And the pause box is untouched: pausing still
+leaves the bed at its last level, which is the right behaviour for a pause and
+has not been tested.
