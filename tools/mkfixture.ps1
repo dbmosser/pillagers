@@ -5361,6 +5361,92 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.11',what:'a friend arriving on a fresh profile can open every station on the floor without anything breaking or coming up blank',
+   run:function(){
+     if(!(window.__hubEnter&&window.__hub&&window.__station&&window.__P))
+       return 'SKIP: this fixture cannot walk the Undercroft';
+     if(!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
+     var bad=[], prof=__P(), keep={}, k, i;
+     // THE WHOLE PROFILE, not a list of the fields I happened to think of. The
+     // first version of this named twenty-four and broke two checks that read a
+     // twenty-fifth.
+     for(k in prof) keep[k]=prof[k];
+     var caught=[];
+     function onErr(ev){ caught.push(String((ev&&ev.message)||ev)); }
+     window.addEventListener('error',onErr);
+     try{
+       __runPrep(); __resetCfg(); __pinDefaults(0);
+       // THE PROFILE A FRIEND ARRIVES WITH. Nothing earned, nothing looted, one
+       // gun, the starting money.
+       prof.runs=0; prof.ext=0; prof.died=0; prof.best=0; prof.credits=600;
+       prof.xp=0; prof.xpLevel=1; prof.stash=[]; prof.kit=[]; prof.log=[];
+       prof.contracts=[]; prof.racks=0; prof.arrays=0; prof.notoriety=0;
+       prof.cstand=0; prof.spClaimed=[]; prof.kills={}; prof.cosBought={};
+       prof.junk={}; prof.weapons=['pistol']; prof.equipped='pistol';
+       prof.pack=0; prof.cosAll=0; prof.stashTab='all';
+       __hubEnter();
+       var HB=__hub();
+       if(!HB||!HB.stations||HB.stations.length<6)
+         return 'SKIP: only '+((HB&&HB.stations)?HB.stations.length:0)+' stations on the floor';
+       var walked=0;
+       for(i=0;i<HB.stations.length;i++){
+         var id=HB.stations[i].id, before=caught.length, threw=null;
+         try{ __station(id); }catch(e){ threw=String(e&&e.message||e); }
+         if(threw) bad.push('walking up to '+id+' threw: '+threw);
+         if(caught.length>before) bad.push(id+' threw when he pressed E: '+caught.slice(before).join(' / '));
+         // SOMETHING HAS TO HAPPEN. A station that opens nothing is a dead end on
+         // the floor, and a panel with nothing in it is worse than a locked door.
+         var open=document.querySelector('.modal.on');
+         var hub=document.getElementById('hub');
+         if(open){
+           var t=(open.textContent||'').replace(/\s+/g,' ').trim();
+           if(t.length<40) bad.push(id+' opens '+open.id+' and it is empty on a fresh profile');
+           open.classList.remove('on');
+         } else if(!(hub&&hub.classList.contains('on'))){
+           bad.push('pressing E at '+id+' does nothing at all');
+         }
+         walked++;
+       }
+       if(walked<6) bad.push('control: only '+walked+' stations were walked');
+       // AND THE STASH READS RIGHT WITH NOTHING IN IT. Counted in CELLS, not in
+       // text: an owned gun draws as an icon and has no words in it, which read
+       // as an empty panel the first time I looked.
+       __station('term');
+       var sl=document.getElementById('stashgrid');
+       if(!sl) bad.push('the stash screen has no grid to draw into');
+       else {
+         var tabs=document.querySelectorAll('#stashtabs .invtab');
+         if(tabs.length<5) bad.push('the stash has only '+tabs.length+' tabs');
+         function clickTab(name){ for(var q=0;q<tabs.length;q++) if((tabs[q].textContent||'').indexOf(name)===0){ tabs[q].click(); return true; } return false; }
+         if(!clickTab('GUNS')) bad.push('there is no GUNS tab to press');
+         else {
+           if(prof.stashTab!=='gun') bad.push('pressing the GUNS tab does not switch to it');
+           if(sl.querySelectorAll('.cell').length<1)
+             bad.push('the GUNS tab counts his one gun and draws nothing, so a new player is told he has a gun and shown an empty shelf');
+         }
+         clickTab('SALVAGE');
+         if(sl.querySelectorAll('.cell').length!==0)
+           bad.push('control: SALVAGE draws cells on a profile that has never looted anything, so the tabs are not filtering');
+         clickTab('ALL');
+       }
+       // CONTROL: the listener must be able to hear a throw, or every clean line
+       // above is decoration. An error inside a handler does not reach the caller.
+       var heard=caught.length;
+       var boom=document.createElement('button');
+       boom.onclick=function(){ throw new Error('zqx station control'); };
+       document.body.appendChild(boom);
+       try{ boom.click(); }catch(_bc){}
+       document.body.removeChild(boom);
+       if(caught.length===heard) bad.push('control: a deliberate throw inside a click was not heard, so this check cannot see a station break');
+     } finally {
+       window.removeEventListener('error',onErr);
+       for(k in prof) if(!(k in keep)) delete prof[k];
+       for(k in keep) prof[k]=keep[k];
+       try{ var op=document.querySelectorAll('.modal.on'); for(i=0;i<op.length;i++) op[i].classList.remove('on'); }catch(_cl){}
+       // AND IT DOES NOT SAVE. Borrowing the profile in memory is fair; writing
+       // the borrowed version to disk is what made this permanent.
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'11.10',what:'the bot never hides, so no number it produces describes careful play, and it cannot show the crawler bug at all',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__rawStep)) return 'SKIP: this fixture cannot step the bot';
@@ -5432,6 +5518,14 @@ window.__REGRESS=[
        if(el.id==='titlefs') return false;
        var c=el.className;
        if(typeof c==='string'&&c.indexOf('brand')>=0) return true;
+       if(typeof c==='string'&&c.indexOf('avnum')>=0) return true;   // the 23 on the shirt
+       // and the same numeral wherever the racks draw it: the figure and the
+       // swatches, both inside the Fashion window.
+       var up=el, g=0;
+       while(up&&g++<10){
+         if(up.id==='appavatar'||up.id==='appavatarpicker') return true;
+         up=up.parentElement;
+       }
        // the wordmark itself carries no class, so it is found by what it says
        var t=(el.textContent||'').trim();
        if(t==='PILLAGERS'&&el.children.length===0) return true;
@@ -6089,10 +6183,12 @@ window.__REGRESS=[
        if(d<R.floor) bad.push(R.name+' changes a pillager by '+d+' pixels against a noise floor of '+noise+', so a rack he rolled is not drawn on him');
        // AND THE HERO STILL HAS IT. Fixing the pillager by breaking her would
        // pass every line above.
-       var was=prof[R.pk];
+       var was=prof[R.pk], wasAll=prof.cosAll;
+       prof.cosAll=1;   // v11.11: own the rack for this arm, or a profile with no
+                        // runs on it hides the hat and this reads as her losing it
        prof[R.pk]=R.h0; var H1=shot({hero:1});
        prof[R.pk]=R.hv; var H2=shot({hero:1});
-       prof[R.pk]=was;
+       prof[R.pk]=was; prof.cosAll=wasAll;
        var dh=diff(H1,H2);
        if(dh<300) bad.push('control: '+R.name+' now changes the operator by only '+dh+' pixels, so this was fixed by taking it off her');
      }

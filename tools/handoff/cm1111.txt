@@ -1,0 +1,44 @@
+v11.11: the fresh profile hour, and it found nothing
+
+His notes are shipped and the named audit backlog is empty, so this tick went to
+what the alpha actually needs: what a friend sees. A profile with no runs, no
+stash, no contracts, no racks, one pistol and 600 credits, and every station on
+the Undercroft floor walked up to and pressed on exactly that.
+
+The sweep found nothing. Nine stations, none threw, none opened an empty panel,
+none did nothing, and the stash reads correctly with nothing in it.
+
+Three times my own probe cried wolf, and those are worth more than the clean
+result. The stash station opens a screen and not a modal, so a modal-only sweep
+called it dead. The tab elements are two levels down, so clicking the container
+read as a tab that does not work. And an owned gun draws as an icon with no text,
+so counting words called a full shelf empty.
+
+New check v11.11 holds the sweep: the fresh profile built in memory, every
+station walked, no throw, a panel with real content or the hub screen, never a
+station that does nothing. Then the stash read in cells rather than words, the
+GUNS tab required to switch and to draw his gun, and SALVAGE required to draw
+nothing on a profile that has never looted. Controls: SALVAGE drawing cells would
+mean the tabs are not filtering, and a deliberate throw inside a click must be
+heard, because an error in a DOM handler never reaches its caller.
+
+There is no control that fails on the previous build, because there is no defect.
+It passes on both and exists to catch the day a station breaks on an empty
+profile.
+
+Not verified: the first hour past the floor. This walks the Undercroft and its
+panels; it does not go up, loot, die and come back.
+
+It also broke two checks the first time it ran in the corpus, which is mine.
+v11.11 rewrote the profile, restored a list of twenty-four fields and then saved.
+v11.09 then reported a third typeface, which is the 23 on a jersey swatch in the
+Fashion window, set in Impact on purpose. v10.99 reported that headgear, beards
+and tattoos had been taken off the operator, when in fact the fresh profile had
+zeroed the runs and extracts that cosOwned derives ownership from.
+
+A check may borrow the profile. It may not persist what it borrowed, and it may
+not restore field by field, because the next check depends on a field this one
+has never heard of. v11.11 snapshots the whole object and no longer saves. v10.99
+unlocks the rack for its own hero arm. The jersey numeral is named as an
+exception by where it lives, and an Impact element planted anywhere else is still
+caught, which is checked.

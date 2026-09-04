@@ -1,0 +1,64 @@
+## v11.11 - THE FRESH PROFILE HOUR, AND IT FOUND NOTHING
+
+His notes are all shipped and the named audit backlog is empty, so this tick went
+to the thing the alpha actually needs and nobody had done: **what a friend sees**.
+A profile with no runs, no extracts, no stash, no contracts, no racks, one pistol
+and 600 credits, and then every station on the Undercroft floor walked up to and
+pressed.
+
+**THE SWEEP FOUND NOTHING.** Nine stations. None threw, in the call or in a
+handler afterwards. None opened a panel with nothing in it. None did nothing. The
+stash reads correctly with nothing in it, saying "Nothing in the stash. Ascend,
+pillage, extract.", and its tabs switch and filter.
+
+**THREE TIMES MY OWN PROBE CRIED WOLF, and those are worth more than the clean
+result**, because each was one sentence away from being reported to him as a bug:
+
+  1. **"The stash station does nothing."** It opens a SCREEN and not a modal, and
+     my sweep only looked for modals.
+  2. **"The GUNS tab does not switch."** The tab elements are two levels down
+     inside their container, so I had clicked the container.
+  3. **"The GUNS tab counts one gun and shows an empty shelf."** An owned gun
+     draws as an ICON with no text in it, and I was counting words. Counted in
+     cells, the shelf has exactly the one gun on it.
+
+**NEW CHECK v11.11** holds that sweep. It builds the fresh profile in memory,
+walks every station, and requires no throw, a panel with real content or the hub
+screen, and never a station that does nothing. Then it reads the stash in CELLS
+rather than in words, requires the GUNS tab to switch and to draw his gun, and
+requires SALVAGE to draw nothing at all on a profile that has never looted.
+
+Two controls. SALVAGE drawing cells would mean the tabs are not filtering, and a
+deliberate throw inside a click must be heard, because an error in a DOM handler
+never reaches its caller and without that the clean result above proves nothing.
+
+**There is no control that fails on the previous build, because there is no
+defect.** This check passes on v11.10 and on v11.11 and exists to catch the day a
+station starts throwing on a profile that has nothing.
+
+Not verified: the first hour past the floor. This walks the Undercroft and its
+panels; it does not go up, loot, die and come back, and the parts of the first
+hour that need a raid behind them are still only covered by the checks that were
+already there.
+
+**AND IT BROKE TWO CHECKS THE FIRST TIME IT RAN IN THE CORPUS, WHICH IS MINE.**
+v11.11 rewrote the profile to a fresh one, restored a LIST of twenty-four fields,
+and then called saveProfile, writing whatever survived that list to disk. Two
+checks downstream read fields the list had never heard of:
+
+  - v11.09 reported a third typeface. Opening the Fashion station drew the
+    clothing rack, and the 23 on a jersey swatch is set in Impact.
+  - v10.99 reported that headgear, beards and tattoos had been taken off the
+    operator, all three at zero pixels. Her hat had not gone anywhere: cosOwned
+    derives what she owns from runs, extracts, level and warden kills, and the
+    fresh profile had zeroed them, so cosWorn returned nothing to draw.
+
+Three fixes, and the first is the rule: **a check may borrow the profile, it may
+not persist what it borrowed, and it may not restore field by field, because the
+next check depends on a field this one has never heard of.** v11.11 snapshots the
+whole object and puts the whole thing back, and no longer saves. v10.99 unlocks
+the rack for its own hero arm rather than trusting whatever progress happens to
+be on the profile. And the jersey numeral is named as an exception by WHERE IT
+LIVES, inside the Fashion figure and its swatches, because the span carries no
+class to name it by; an Impact element planted anywhere else is still caught,
+which is checked.
