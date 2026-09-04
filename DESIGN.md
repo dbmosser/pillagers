@@ -40024,6 +40024,72 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.79 - THREE GUARDS ONLY ASKED WHETHER A THING WAS DRAWN AT ALL
+
+No game change. The version and the BUILDING line move and nothing else in
+dark_raiders.html does. The whole build is in tools/mkfixture.ps1, which is the
+instrument every other build is judged on, and it had four numbers in it that
+nobody had ever measured. That is the last line of the STILL OPEN list that was
+mine to close rather than his to rule on.
+
+WHAT WAS THERE. Three checks assert that a thing is still being drawn, and each
+did it with a constant somebody guessed:
+
+  v8.99  the container search bar must be drawn        barPx <= 0
+  v8.99  a half searched container must show progress  diff  <= 0
+  v9.07  a noise you cannot see must leave a ring      heardPix < 20
+  v9.08  the standing extract prompt must still pulse  up.pct < 3
+
+MEASURED TODAY at 1920x1080, DPR 1, seed 4242, map 0, each on the same path the
+check itself drives:
+
+  the search bar appearing and disappearing      1,319 pixels
+  the same bar filling from empty to half        1,319 pixels
+  one noise ring at the frame it is born           120 pixels
+  the standing prompt breathing                   21.3 percent
+
+Set those side by side and the guards are not floors. A search bar reduced to a
+SINGLE pixel passed. A noise ring reduced to a fifth of itself passed. A prompt
+whose pulse had fallen to a ninth passed its control. Every one of them would
+have gone on reporting a clean run while the feature it names quietly died, and
+that is exactly the fault v9.86 named: green for the wrong reason.
+
+WHY IT MATTERS MORE THAN A HARNESS TIDY. These are the checks that stand between
+a drawing regression and his friends. A build that halves the search bar is a
+build where nobody can tell how far through a container they are, and the run
+would still come back PASS.
+
+THE FIX. One table, window.__FLOORS, carrying both the floor and the reading it
+was derived from, so the next person can see the margin without re-deriving it.
+Each floor is half its live reading: bar 600, prog 600, ring 60, pulse 10. Each
+message now prints the reading AND the floor. The ring floor is deliberately
+taken at the frame the ring is born, which is the smallest it ever is.
+
+v9.15 was on the same list and needed nothing. Its thresholds are ratios, 1.7x
+of growth against a screen that doubled, and it greps the source for the fixed
+radii it replaced. That is a stronger shape than a constant and it stays.
+
+THE NEW CHECK. v10.79 measures all four signals live and then judges the floors
+themselves, which no check has ever done here. Each floor must sit UNDER the
+live reading, or the floor is simply wrong; and it must sit ABOVE a quarter of
+the live reading, or a feature anybody would call broken on sight still clears
+it. It carries a control that the readings are not all zero, so a deploy that
+silently failed cannot satisfy the rest by accident.
+
+The control that proves the fix: with no __FLOORS the check falls back to the
+OLD numbers on purpose rather than skipping, and on a v10.78 fixture all four
+quarter-strength assertions fire and name all four readings.
+
+My own number, corrected before it shipped: I first read the pulse as 25.7 percent,
+off a setup that had put him down and stood him up again. Driven the way v9.08's
+own control drives it, six runs read 21.2 to 21.4, so the figure is 21.3 and the
+floor came down to 10 with it. The bar, the fill and the ring are exact across
+three runs: 1319, 1319 and 120 every time.
+
+Not verified: the four readings are 1080p numbers taken on one seed and one map.
+At 4K the same signals are larger, so the floors hold with more room, but they
+have not been read there; and nothing here says the four features LOOK right,
+only that they still move as many pixels as they did today.
 ## v10.78 - TWO WINDOWS CUT THEIR OWN CONTENTS OFF
 
 Found by sweeping all nineteen windows for the fault v10.74 found on the run

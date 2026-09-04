@@ -1,0 +1,9 @@
+v10.79: three guards only asked whether a thing was drawn at all
+
+Measured at 1920x1080, seed 4242: the container search bar moves 1,319 pixels,
+the same bar filling 1,319, a noise ring 120, the standing extract prompt
+pulses 25.7 percent. Their floors were 0, 0, 20 and 3, so a bar of one pixel
+and a ring at a fifth strength both passed. One shared __FLOORS table now
+carries each floor at half its measured reading, and the new v10.79 check
+judges the floors themselves: under the live reading, above a quarter of it.
+No game change.
