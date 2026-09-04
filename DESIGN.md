@@ -40024,6 +40024,66 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.08 - HIS NOTE 21: WHY A SHOT SOMETIMES MAKES A RED RING AND SOMETIMES NOT
+
+"sometimes my shots make a red noise circle when they hit something, sometimes
+they don't --whats up with that?", 2026-09-04.
+
+**MEASURED.** One pistol round into one sentry at 160 units, thirty frames each,
+with the target's own return fire held off so the only rings are the ones his
+shot caused:
+
+    idle machine that survives    one ring, and it is the machine MOVING
+    awake machine that survives   one ring, and it is the machine MOVING
+    machine killed outright       NO RING AT ALL
+
+**SO THE RING IS NOT HIS HIT.** A landed round pings nothing at all. The ring that
+follows is the thing he hit taking a STEP, drawn in the pale red of a machine
+moving. Kill it outright and it never takes that step, so there is nothing. And
+his own noises have drawn no ring since v5.31, on the grounds that he knows what
+he just did. That is the whole rule, and it is a good rule: no ring after a hit
+means the thing is dead.
+
+**A PROBE THAT LIED, AND I CHECKED IT.** The first trial reported zero damage from
+a shot that hit in the other two, which looked like a machine in patrol ignoring
+a bullet. Re-run with the same setup a third time, an idle machine took the hit
+at frame 5 like the others. It was the first shot after a deploy not landing in
+my window, not a defect in the game. Reported here because it nearly became a
+finding.
+
+**AND THE ONE THING THAT IS SUPPOSED TO TEACH HIM THAT RULE WAS WRONG TWICE.** The
+sound key beside the legend, whose entire job is the colour language, carried:
+
+  - a cream swatch labelled "you", for a ring that CANNOT EXIST, because ping
+    refuses to draw the player's own noises
+  - #e65100 for pillager firing, an ORANGE, when the game has drawn that ring in
+    #ff3b30 since v9.63, changed on his own one-word instruction: RED
+
+So the legend taught him a colour that never appears and showed the wrong swatch
+for one that does. A key that teaches the wrong colour is worse than no key.
+
+**THE FIX:** the key is BUILT FROM the colour table rather than typed out beside
+it, so a swatch can never drift from what is drawn again. The impossible row is
+replaced by the rule that answers his question, "never your own", and the wording
+moves from "robot" to "machine", which is the word the rest of the game uses.
+
+**NEW CHECK v11.08** requires every swatch in the key to be a colour the game
+really draws, cross-referenced against the colour table itself rather than a list
+typed into the check; forbids a row telling him a ring can be him; and requires
+the key to state that a ring is never his own noise. Three controls: the colour
+table must have yielded at least four colours or the check is not looking at the
+game; the key must still explain all four of the things that can hurt him,
+accepting either the old or the new word so the control tests coverage and not my
+choice of vocabulary; and the legend must still draw without throwing at 1920 by
+1080 with the sound key at its new length.
+
+Fails on a v11.07 fixture with all three findings.
+
+Not verified: whether he wants the ring rule changed rather than merely stated. A
+landed hit does play a sound and draws no ring, which is arguably a hole in a
+visualiser that is documented as mirroring what you hear. I have not changed it,
+because that would put a new ring on every landed shot in every firefight, and
+that is his call rather than mine.
 ## v11.07 - HIS NOTE 22, ASKED TWICE: CRAWLERS ARE NOT ATTACKING PROPERLY
 
 "Once again, crawlers aren't attacking properly?", 2026-09-04, and before that, on

@@ -1332,7 +1332,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.07';
+var VER='11.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1343,10 +1343,11 @@ var VER='11.07';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.07';
+var WHATSNEW_VER='11.08';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE NOISE RING IS NEVER YOUR OWN. A ring after your shot is the thing you hit taking a step, which is why a target you kill outright makes none. The sound key in the legend now reads its swatches from the colours the game actually draws, and it had two of them wrong.',
   'A CRAWLER CLOSE ENOUGH TO BITE YOU HAS FOUND YOU. Hiding used to shrink its eyes below its own reach, so one could stand against you, unable to see you, and do nothing. Its sight now has a floor equal to how far it can reach. Walls still stop it.',
   'THE 23 JERSEY READS AS A JERSEY AGAIN. Its black side panels were more than a third of the shirt and read as backpack straps, and the chest rig band was drawn straight across the number. The panels are trim now and the number sits on top of the rig.',
   'A DAYTIME BLACKOUT IS NOT HARDER, so it no longer pays as if it were. The lamps are already off at 8am and noon, and a blackout multiplying zero is still zero. It pays at night, at dusk and at dawn, when there is light to lose. Rain, fog and storm cut your sight whatever the hour and are unchanged.',
@@ -23803,10 +23804,20 @@ var LEGEND_MINI_PAD=[
   ['BACK','backpack'],['D-DOWN','medical'],
   ['D-UP','map'],['START','pause']
 ];
+// v11.08, HIS NOTE 21: BUILT FROM THE COLOUR TABLE, never typed beside it. Two of
+// the six entries here were wrong: a cream swatch labelled "you", for a ring that
+// cannot exist because ping has refused to draw his own noises since v5.31, and
+// an orange for pillager firing, which the game has drawn red since v9.63 on his
+// own word. A key that teaches the wrong colour is worse than no key.
 var SOUNDKEY=[
-  ['#ff8a80','robot moving'],['#c62828','robot firing'],
-  ['#ffb74d','pillager moving'],['#e65100','pillager firing'],
-  ['#FFF6DC','you'],['#ffd54f','environment']
+  [SNDCOL.robot.move, 'machine moving'],
+  [SNDCOL.robot.fire, 'machine firing'],
+  [SNDCOL.raider.move,'pillager moving'],
+  [SNDCOL.raider.fire,'pillager firing'],
+  [SNDCOL.env.move,   'the world'],
+  // His question, answered where it is asked. The ring is never his own noise,
+  // and a thing he kills outright never takes the step that would have made one.
+  [SNDCOL.env.move,   'never your own']
 ];
 // Shown in place of the keyboard list once a pad is actually connected, because
 // a controller player reading key names has to translate every line.
@@ -27705,7 +27716,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.07: crawlers not attacking, your note, asked twice. Reproduced: a crawler 30 units away with a bite that reaches 36, facing you, bites for 65 damage in three seconds at concealment 0.35 and does NOTHING at 0.25 and below. Its eyes shrink with your concealment and its reach does not, so there is a band where it can bite and cannot see, and the bite only exists inside chase. Its sight now has a floor equal to its own reach: you cannot hide from something that is touching you.',
+  now:'v11.08: the red ring on a hit, your question. Measured: the ring is NOT your hit. A landed round pings nothing; the ring that follows is the thing you hit taking a step, and a target killed outright never steps, so there is none. The sound key that is meant to teach that was wrong twice over, with a swatch for a ring that cannot exist and the pre-v9.63 orange for pillager fire. It is built from the colour table now.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

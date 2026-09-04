@@ -1,0 +1,39 @@
+v11.08: the sound key teaches the colours the game actually draws
+
+His question: "sometimes my shots make a red noise circle when they hit
+something, sometimes they don't --whats up with that?"
+
+Measured, one pistol round into one sentry at 160 units with its return fire held
+off: an idle machine that survives gives one ring and it is the machine MOVING;
+an awake machine that survives, the same; a machine killed outright gives NO RING
+AT ALL.
+
+The ring is not his hit. A landed round pings nothing. The ring that follows is
+the thing he hit taking a step, and a target killed outright never takes it. His
+own noises have drawn no ring since v5.31. So no ring after a hit means the thing
+is dead.
+
+A probe of mine nearly became a finding: the first trial showed zero damage,
+which looked like a patrolling machine ignoring a bullet. Run a third time, an
+idle machine took the hit at frame 5 like the others. It was the first shot after
+a deploy not landing inside my window.
+
+The thing meant to teach that rule was wrong twice. The sound key carried a cream
+swatch labelled "you", for a ring that cannot exist because ping refuses to draw
+the player's own noises, and #e65100 for pillager firing, an orange the game
+stopped drawing at v9.63 on his own one-word instruction: RED.
+
+The key is now built from the colour table rather than typed out beside it, so a
+swatch cannot drift from what is drawn again. The impossible row becomes "never
+your own", which answers his question where he would ask it.
+
+New check v11.08 requires every swatch to be a colour the game really draws,
+cross-referenced against the table itself, forbids a row saying a ring can be
+him, and requires the rule to be stated. Controls: at least four colours in the
+table, all four dangerous cases still explained accepting either wording, and the
+legend still drawing without throwing. Fails on a v11.07 fixture.
+
+Not verified: whether he wants the rule changed rather than stated. A landed hit
+plays a sound and draws no ring, which is arguably a hole in a visualiser
+documented as mirroring what you hear, but changing it puts a new ring on every
+landed shot and that is his call.
