@@ -1,0 +1,14 @@
+v10.82: a destroyed building now looks destroyed
+
+Measured on COLD STORAGE at seed 4242: the floor inside the ruined building read
+124.76 with the wrecking off and 124.81 with it on, four hundredths of one
+percent, so only the missing wall said anything had happened.
+
+The ground bake now burns the interior, scatters rubble with shadows under it,
+spills dust past where the wall stood and darkens the middle. Paint only, baked
+once per raid, every position from a hash of its own coordinates so no random
+number is drawn and the seeded world cannot move.
+
+After: the ruined floor moves 99.47 percent of its pixels and its mean falls to
+114.30, while the standing building next door moves 0.08 percent and does not
+change brightness at all.

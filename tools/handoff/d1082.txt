@@ -1,0 +1,55 @@
+## v10.82 - A DESTROYED BUILDING DID NOT LOOK DESTROYED
+
+v10.81 shipped the geometry and its own Not verified line named this: the only
+thing telling you a building had come down was the absence of some wall.
+
+MEASURED on COLD STORAGE at seed 4242, the building at 2980,1330: the mean
+brightness of the floor inside it reads 124.76 with the wrecking dial off and
+124.81 with it on. Four hundredths of one percent. The ground under a destroyed
+building was the same ground, so at any distance it read as a building somebody
+forgot to finish rather than one that fell down, and the feature only existed
+for a player who was already close enough to notice a gap.
+
+THE FIX GOES IN THE BAKE, NOT THE FRAME. The ground is a canvas painted once
+per raid, so this costs nothing per frame and cannot touch collision, sight or
+pathing. It is paint. Four layers, and each one is doing a job:
+
+  the burn      everything inside goes darker and colder, which is the read
+                from across the map before a single piece of rubble is legible
+  the spill     dust past the line the walls used to hold, because a ruin that
+                stops exactly at its own footprint reads as a floor tile
+  the rubble    blocks at a density scaled to the floor, each with a shadow,
+                because one flat grey on a dark floor disappears at distance
+  the scorch    a soft dark centre, so the eye is given a place it came down
+                from rather than an even scatter
+
+Every position and size comes from a hash of its own coordinates. No rr() is
+drawn, so the seeded stream cannot move behind it, and the same building has
+the same rubble every time you walk past it.
+
+MEASURED AFTER, same seed, dial off against dial on:
+
+  the ruined building   99.47 percent of its floor pixels moved
+                        mean brightness 124.76 down to 114.30
+  the standing building 0.08 percent moved, mean unchanged at 101.89
+  entities, containers  85 and 165, identical either way
+
+THE CHECK runs both arms on both maps and asks four things: every destroyed
+building moved at least 45 percent of its floor and lost at least 4 points of
+brightness, which is half of each measured signal; every standing building
+moved under 3 percent, which is far above the 0.08 of existing noise and far
+below the signal; open ground well away from any ruin moved under 3 percent, so
+this is a mark on a building rather than a wash over the map; and the entity and
+container counts are identical, because paint that moves the world is not paint.
+Its control is that at least two ruins were found to look at, or it proved
+nothing. On a v10.81 fixture the ruined floors move a tenth of a percent and it
+fires.
+
+Not verified: what this looks like on the OTHER map's districts. I put the two
+crops side by side and the destroyed one is obviously burnt and littered while
+the standing one is clean, but that was COLD STORAGE at noon, and the night
+palette and the mile's own district colours are only checked by the numbers.
+The map screen still paints a destroyed building with the same flat fill as a
+standing one, so you cannot pick one out when planning a route; that is its own
+build. And nothing here changes the fact that a wrecked building still counts
+as indoors for anything overhead.
