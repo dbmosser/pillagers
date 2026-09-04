@@ -1,0 +1,13 @@
+v10.65: the card that asks how it felt can hand you the answer
+
+Not one of his notes, this is the alpha. The end of a raid is when a player
+has an opinion, and the card there asks for it, then offered no way to send
+it: the only copy button was buried in Settings on the recorder tab, and
+there is no server to send to, so a friend's report stops in Downloads.
+
+The card has Copy report now. It logs the raid with the tags and the note
+through one shared commit, fills the recorder box with the same text,
+copies it and says so, leaves the card open, and cannot log the raid twice.
+
+The check ends a raid, types a note, presses it and reads what came out. It
+fails on a v10.64 fixture.

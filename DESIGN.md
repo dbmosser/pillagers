@@ -40024,6 +40024,58 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v10.65 - THE CARD THAT ASKS HOW IT FELT CAN NOW HAND YOU THE ANSWER
+
+Not one of his notes. This is the alpha: he ships to friends inside three
+days, and this is the one thing standing between a friend having an opinion
+and him ever reading it.
+
+### What it was
+
+The end of a raid is the single moment a player has an opinion, and the card
+there already asks for it: HOW DID THAT RUN FEEL, the feeling tags, the note
+box. Then it offered exactly one button, Log run and return, and nothing
+else. The only way to hand any of it over was a Copy to clipboard button
+buried in Settings, behind the Operator Terminal, on a tab called the
+recorder. No friend is going to find that. And there is nowhere for a report
+to go on its own: the public drop is still unset, so a friend's report is
+written to their own Downloads folder and stops there.
+
+### Now
+
+The card has a second button beside the first: Copy report. It logs the raid
+with the tags and the note attached, exactly as the way out does, fills the
+recorder box in Settings with the same text so the two can never differ,
+puts the whole report on the clipboard and says so on its own face: Copied.
+Paste it to Daniel. A line under the buttons says what it is for. The card
+stays open, so he can still read the manifest and still leave, and leaving
+afterwards cannot log the same raid twice.
+
+Both buttons now share one commit, which is what makes that last part true
+rather than hoped for.
+
+### Measured
+
+The check ends a real raid, types a note on the card, presses Copy report
+and requires: the raid it just played is in the text handed over, along with
+the note; the text is the run report and not something else; the log did not
+gain a second row for a raid already written; the note reached the logged
+row; the card is still open; and pressing the way out afterwards adds
+nothing. On v10.64 the card has no such button at all, so the check stops on
+its first line.
+
+My check was wrong twice before it was right, and both were caught on the
+scratch copy. It assumed the raid is logged when the card's button is
+pressed; the raid is banked before the card is even drawn, since v8.17, and
+the card patches the tags and the note onto that row afterwards.
+
+Not verified: the clipboard itself. A browser will not always hand a page
+the clipboard without a real click, and the fixture drives the button
+directly, so what is proven is that the right text is built, logged and
+handed to the clipboard call, not that the operating system took it. The
+recorder box in Settings holds the same text either way, which is the
+fallback. Also not verified: how the two buttons sit together on a narrow
+window, since the card was measured at 1920 by 1080 only.
 ## v10.64 - F STRIKES, AND THE CONTROLS SAY SO
 
 His note, 2026-09-03 about 21:32: **"its not clear to me how to melee or if
