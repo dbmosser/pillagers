@@ -530,6 +530,15 @@
      itself now, exactly as the v5.31 note above says every list should. */
   #sectormodal #sectorlist{ flex:1 1 auto; min-height:0; overflow-y:auto; }
   #sectormodal #sectorkit{ flex:0 0 auto; }
+  /* v10.78: AND THE LAST TWO PANELS THAT STILL BROKE THE v5.31 RULE. Swept all
+     nineteen windows: the Depot pushed 521 css pixels past its own box and the
+     ascent check 401, both overflow:hidden with nothing to scroll them, so
+     SURPRISE ME, all three LOOKS slots and half the operator's appearance rows
+     were not below a fold, they were gone. The wheel cannot rescue them either:
+     it only scrolls a box whose overflow is auto or scroll. Both are built round
+     the same two column grid, so the grid scrolls inside itself and the footer
+     stays where v5.31 says it must. */
+  #appearmodal .hubgrid, #stagemodal .hubgrid{ min-height:0; overflow-y:auto; }
   /* v6.84: where the controller is pointing. Bright enough to find at a glance on a
      panel that is already busy, and it never changes layout, so nothing reflows as it
      moves. */
@@ -1294,7 +1303,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='10.77';
+var VER='10.78';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27191,7 +27200,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v10.77: the title screen fills a 4K monitor too. v10.73 fixed 1080p and left 4K painting 45 percent of the screen, because the css cap cannot know the zoom that multiplies it. It is worked out from that zoom now: 80 percent at 1080p, 1440p and 4K alike.',
+  now:'v10.78: the Discount Fashion Depot and the ascent check stop cutting their own contents off. SURPRISE ME, all three LOOKS slots and half the appearance rows sat past the bottom of a window that could not be scrolled, so nobody could reach them at all.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

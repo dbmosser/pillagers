@@ -1,0 +1,20 @@
+v10.78: two windows cut their own contents off
+
+Swept all nineteen windows for the fault v10.74 found on the run report. Two
+push content past their own box while that box cannot scroll, so what is past
+it is not below a fold, it is gone.
+
+Measured at 1920x1080: the Discount Fashion Depot pushes 521 css pixels past
+its box and the ascent check 401. In the Depot that is SURPRISE ME and all
+three LOOKS slots with their SAVE buttons, a whole feature nobody can use. On
+the ascent check it is sixteen rows including BEARD, EYES, FACE, BOOTS,
+GLOVES and BACKPACK.
+
+No scrollbar, and the wheel cannot help: it only scrolls a box whose overflow
+is auto or scroll, and these are hidden.
+
+The fix is the rule the file already had, from v5.31 and v8.76: the window
+holds still and the list inside it scrolls. Both panels are built round the
+same two column grid, so the grid scrolls. CLOSE and ASCEND have not moved.
+
+The check sweeps every window and fails on a v10.77 fixture.

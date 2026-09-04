@@ -1,0 +1,55 @@
+## v10.78 - TWO WINDOWS CUT THEIR OWN CONTENTS OFF
+
+Found by sweeping all nineteen windows for the fault v10.74 found on the run
+report. Two of them push content past their own box while that box is
+overflow hidden, so what is past it is not below a fold. It is gone.
+
+### What it was
+
+Measured at 1920x1080, in css pixels:
+
+    the Discount Fashion Depot      521 past its own box
+    the ascent check                401 past its own box
+
+In the Depot that is SURPRISE ME, sitting 412 device pixels below the
+window, and all three LOOKS slots with their SAVE buttons at 499, 571 and
+643. That is a whole feature of his, from v10.16, that nobody can use. On the
+ascent check it is sixteen rows, including BEARD, EYES, FACE, BOOTS, GLOVES
+and BACKPACK, so half the operator cannot be dressed on the page that offers
+to dress him.
+
+A fresh character measures exactly the same, so this is nothing to do with
+how much has been unlocked.
+
+There is no scrollbar, and the wheel cannot rescue it. The wheel handler
+deliberately only scrolls a box whose overflow is auto or scroll, and this
+one is hidden, so the wheel zooms the menus instead and the content stays
+where it is.
+
+### The fix is the house rule, not a new idea
+
+v5.31 already says it: a modal must never push its own footer off the screen,
+so the modal holds still and the LIST scrolls inside itself. v8.76 applied
+exactly that to the map picker when the same thing happened there. Both of
+these panels are built round the same two column grid, and it is the grid
+that overflows, so the grid is what scrolls.
+
+Measured after: the Depot pushes 0 past its box, the grid carries an eleven
+pixel bar, SURPRISE ME is reachable, and CLOSE has not moved. The ascent
+check the same, with ASCEND still in place.
+
+### Measured
+
+The check sweeps every window in the document and fails any that pushes
+content past its own box while that box cannot scroll, naming the window and
+the pixels. Then it takes the Depot in particular: SURPRISE ME must come into
+view when the grid is scrolled to the bottom, the grid's overflow must be
+something the wheel will actually scroll, and CLOSE must still be inside the
+window. It carries a control that SURPRISE ME was NOT already in view at the
+top, so the check cannot pass on a layout where there was never anything
+hidden. On a v10.77 fixture it fails naming both windows and both numbers.
+
+Not verified: the same sweep at 1440p and 4K, where the boxes are taller and
+the overflow may not arise at all, which would make this check skip rather
+than pass there; and whether he would rather the Depot were reorganised so
+nothing needs scrolling, which is a design question and his.
