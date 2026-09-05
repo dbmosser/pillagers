@@ -1,0 +1,8 @@
+v11.22: two STILL OPEN lines measured shut, the sealed eight and the niches
+
+No game change. The v9.72 "eight sealed buildings" line: the v9.79 flood on
+seven seeds of both maps demolishes 0 and seals 0; with the yard-wall cut off
+it still demolishes 5 and seals 3 on the mile. The v10.40 niches behind
+furniture: measured down to 12 by 12 on its five seeds, 0 with the shipping
+rules, 6 back with furnDoor, furnIDoor and furnGap off. New check 11.22 guards
+both. Three stale AUDIT lines struck; nRaider 0 builds a full map.

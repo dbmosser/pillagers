@@ -1,0 +1,62 @@
+## v11.22 - TWO STILL OPEN LINES MEASURED SHUT: THE SEALED EIGHT AND THE NICHES
+
+Nothing in the game changes in this build. With every note of his through 22
+shipped, the live queue is my own STILL OPEN lines in AUDIT.md, and the top two
+were both about buildings: the v9.72 line that eight buildings on THE COLD MILE
+stayed sealed after the repair pass with their interiors destroyed for nothing,
+and the v10.40 line that a cells or spine plan leaves a pocket of floor behind
+a piece of furniture, 12 by 12 to 84 by 28 units, on 13 of 15 seeds. Both were
+written before the door builds of v11.14 to v11.18, and neither had been
+measured since. The rule is reproduce before fixing, so both were measured
+first, and both turned out to be closed already. This build is the proof and
+the guard, not a fix.
+
+**THE SEALED EIGHT, measured with the v9.79 flood** (cell 4 over the finished
+map, a building counted sealed when it holds a 32 by 32 room the flood never
+reaches, locked rooms skipped). Seven seeds, 4242 and 9001 to 9006, both maps,
+the shipping rules: **the repair pass demolishes 0 interiors and seals 0 rooms
+on every one of the fourteen builds**, 84 buildings on the mile and 20 on cold
+storage each time, entity counts unmoved. The instrument still sees: with the
+yard-wall cut (lmCut) off at seed 4242 the pass demolishes 5 and seals 3 on
+the mile (buildings 14, 20 and 21) and 1 and 1 on cold storage (building 17),
+the same buildings v9.77 named. So the line was closed by v9.77 to v9.81 at
+seed 4242, the v9.79 check has guarded it there since, and nobody struck it.
+
+**THE NICHES, measured finer than v10.40 did.** The same flood, then every
+unreached, unlocked interior cell grouped into pockets by a second flood and
+each pocket's box measured, so a 12 by 12 niche counts where v10.40's 32 by 32
+room guard let it through. THE COLD MILE on v10.40's own five seeds, 4242, 4,
+2, 9 and 6, and COLD STORAGE at 4242:
+
+    shipping rules              0 pockets on all six builds
+    furnDoor, furnIDoor,
+    furnGap off                 seed 4: 40x28 in building 72, 16x36 in 0, 12x12 in 12
+                                seed 2: 12x36 in building 63
+                                seed 9: 24x12 in building 66
+                                seed 6: 16x16 in building 58, and a 16x4 sliver
+                                seed 4242, either map: none
+
+The 40 by 28 behind building 72's furniture is the v10.40 niche to the unit.
+The three furniture rules of v11.14 and v11.17 (no furniture in a shell doorway,
+none in an interior doorway, none within 2.5 to 30 units of a wall gap) took
+the niches with the doorways: a niche is a wall gap with a table across its
+mouth, which is exactly what furnGap refuses to place.
+
+**NEW CHECK v11.22** floods THE COLD MILE on the five seeds and requires no
+pocket of unreachable floor 12 by 12 or larger with the shipping rules, and no
+building demolished by the repair pass. Controls: the mile must build 84
+buildings and 374 entities at 4242 or the check skips; with the three furniture
+rules off the five seeds must show at least 3 pockets between them, or the
+flood is blind and the finding means nothing (measured: 6); and each seed must
+spawn the same entity count on both arms, since the furniture rules roll no
+dice. It runs in about 25 seconds.
+
+**BOOKKEEPING.** Three AUDIT.md lines struck: the v10.40 niche row, the v9.72
+"whole list" paragraph, and the v11.12 heading "a doorway plugged by furniture
+seals the machines in", which v11.14 closed without striking. The audit fear
+that nRaider 0 produces an empty map was also tried: it builds a full map, 78
+entities of every machine kind, 165 containers, and simply no pillagers.
+
+Not verified: his own play; the pockets narrower than 12 units, which are grid
+quantisation at corners and not floor; and other seeds than the seven and the
+five measured, which the checks now cover on every build.

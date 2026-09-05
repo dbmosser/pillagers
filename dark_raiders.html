@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.21';
+var VER='11.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.21';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.21';
+var WHATSNEW_VER='11.22';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'NO BUILDING LOSES ITS ROOMS AND NO CORNER IS WALLED OFF BEHIND A TABLE. Measured on seven seeds of both maps: the repair pass that used to tear out interiors now touches nothing, and the little pockets of floor behind furniture are gone with the doorway rules.',
   'THE SECOND MAP MEASURED THE SAME WAY. The test robot ran the same 320 raids on THE COLD MILE with the building rules off and on, so the bigger map has its own number and not the first map borrowed.',
   'A MACHINE ON A LONG FRAME NO LONGER FREEZES ON ITS OWN ROUTE. Two parts of the route follower disagreed about when a waypoint counts as reached, and on a slow frame a body could stand still with a route in hand. Found in the test robot, where it cost raids to the clock; fixed for everything that walks a route.',
   'NOTHING IN THE GAME CHANGED IN THIS BUILD. It measures what the last seven did: with the machines now able to get out of buildings, the test robot was run through the same sixty raids on the old rules and the new, and the difference is written in the notes rather than guessed at.',
@@ -27972,7 +27973,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.21: THE COLD MILE measured the way COLD STORAGE was at v11.19 and v11.20: 320 paired seeds, the seven building rules off and on, the robot at its pinned greed, with the follower fix in both arms. The mile is where most of the doors, partitions and furniture moved, so it gets its own number.',
+  now:'v11.22: two STILL OPEN lines measured and closed. The v9.72 line said eight buildings on the mile stayed sealed after the repair pass; on seven seeds of both maps the pass now demolishes nothing and seals nothing, and with the yard-wall cut off it still does, so the instrument sees. The v10.40 niches behind furniture, 12 by 12 to 84 by 28, are gone on all five of its seeds with the doorway rules on, and back with them off.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
