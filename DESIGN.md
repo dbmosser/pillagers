@@ -40024,6 +40024,57 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.29 - THE FIRST HOUR PAST THE FLOOR: THE SECTOR SCREEN AND THE DEATH CARD
+
+v11.11 walked the Undercroft on a fresh profile and left one line not
+verified: "the first hour past the floor". This build walks it: title, ENTER
+THE UNDERCROFT, the map button, the sector screen, ASCEND, the loadout
+question, the drop, ninety frames of the raid, a death, the card, the return.
+Read as text at every step, since the pane will not screenshot a live raid.
+Two things were wrong. One agent finding was tried on the way and found void
+(the belt is the tactical belt, his word since v10.26; my own vocabulary note
+was stale and is corrected).
+
+**ONE: THE SECTOR SCREEN'S FIGURES WERE THREE HUNDRED BUILDS OLD.** "Where
+are you going?" prints for each map "measured extraction 18%", "first
+contact ~70s", "5.3 containers a raid", "median haul $2,984" (and 23.5% /
+34s / 5.2 / $2,662 for the mile). Those are SECTOR_MEAS, written at v8.01
+from a 200-seed robot run. The robot at v11.20 and v11.21 extracts 40.0 and
+38.4 percent. The comment beside the constant says "real numbers, labelled
+as the bot's"; the label never reached the screen. A friend reads a number
+half the truth with no owner.
+
+**REFRESHED from 120 seeds a map on v11.25, the robot at its pinned greed,
+the shipping rules:**
+
+    map            extract   first contact   containers   median haul (on an extract)
+    COLD STORAGE   39.2%     35 s           5.2          $1865
+    THE COLD MILE  38.3%     37 s           5.5          $1690
+
+and the line now says whose they are: "the test robot extracts N% of its
+raids here". The robot is not him (69 against his 30 percent at v10.x, see
+the bot-calibration note), and the label says so.
+
+**TWO: A FIRST DEATH READ "+67 XP · 67 of 1,200,000".** The card's XP line
+measures lifetime XP against the season's LAST reward, THE LANCE at
+1,200,000, and the sentence that made sense of it ("Next: ..., reward 1 of
+100, N XP away") was taken off the death card at v8.91 by his note. What was
+left is a fraction with a 1.2 million denominator on a friend's first death.
+The death card now prints the total, "67 XP in all"; the extraction card
+keeps its "of" and its "Next:" sentence, which still explain each other.
+
+**NEW CHECK v11.29** builds the fresh friend in memory, opens the sector
+screen from the map button and requires the words "test robot", forbids the
+old "measured extraction", and requires each map's figures on screen to equal
+SECTOR_MEAS (read through a new __sectorMeas hook), with a control that the
+constant no longer carries the v8.01 values; then deploys and ends a raid
+dead and requires the card to say "XP in all" and not "of 1,200,000", and ends
+one extracted and requires "of 1,200,000" and "Next:" to remain. Restores the
+whole profile object afterwards, the v11.11 rule. On the v11.28 fixture the
+old phrase and the old fraction both fire.
+
+Not verified: his own play; and the mile's first-contact and container
+figures are the robot's, whose route into buildings is not his.
 ## v11.28 - THE BACKPACK ARROWS DIVIDED BY ZERO
 
 The third of the bounded agent's findings, half right, and the half that was

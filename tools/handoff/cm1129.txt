@@ -1,0 +1,8 @@
+v11.29: the first hour past the floor, the sector screen and the death card
+
+Walked on a fresh profile. The sector screen showed v8.01 robot figures (18
+and 23.5 percent) as "measured extraction" with no owner while the robot now
+extracts 39 and 38; refreshed from 120 seeds a map and labelled as the test
+robot. A first death read "67 of 1,200,000" against the season's last reward
+with its explaining sentence removed at v8.91; the death card now says the
+total. Check 11.29 holds both and fails on the v11.28 fixture.
