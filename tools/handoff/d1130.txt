@@ -1,0 +1,32 @@
+## v11.30 - A BELT KEY'S HINT WAS OVERWRITTEN BEFORE ANYONE READ IT
+
+The last of the first agent's findings worth a build, and it was deeper than
+the agent said. The agent read setHot and reported that a belt key holding a
+gun still in the backpack says "TAB to equip it", the wrong key (TAB opens the
+backpack; ENTER equips, since v2.94, and the LEGEND row says so). True, and
+the sentence was changed. Then the new check pressed the key and read the
+message line: "Scav Pistol (field)  x1". Not the sentence at all, old or new.
+
+**THE REAL DEFECT.** setHot says the backpack sentence and then, two lines
+later and unconditionally, says the slot label with its count. The message
+line shows the last say. So the sentence was dead: no player ever read "TAB
+to equip it", wrong key or right key, and a friend who pressed the key for a
+gun he could not select saw only its name and "x1" and nothing that told him
+what to do. **REPRODUCED on the v11.29 fixture** by pressing 3 with a backpack
+pistol bound and an SMG in hand: "Scav Pistol (field)  x1".
+
+**THE FIX.** The sentence names ENTER, and the label yields to the sentence
+when there is one, so the line reads "Scav Pistol is in your backpack. TAB,
+then ENTER to equip it."
+
+**NEW CHECK v11.30** binds a backpack pistol to key 3 with another gun in
+hand, presses 3 through the game's own key handler, and requires the message
+line to name ENTER and to be the backpack sentence at all (so key 3 reached
+the pistol), and controls that key 1 for the gun in hand prints no such
+sentence. On the v11.29 fixture it fails with "Scav Pistol (field)  x1".
+
+Owned: my first cut of this build changed the sentence and shipped a check
+that failed at once, which is what the check is for.
+
+Not verified: the pad, whose belt buttons take the same setHot path and were
+not pressed.

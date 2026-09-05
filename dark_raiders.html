@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.29';
+var VER='11.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.29';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.29';
+var WHATSNEW_VER='11.30';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A BELT KEY TELLS YOU THE RIGHT KEY. Pressing a tactical belt key for a gun still in your backpack used to say "TAB to equip it"; TAB only opens the backpack. It now says TAB, then ENTER, which is what equips it.',
   'THE SECTOR SCREEN TELLS THE TRUTH AGAIN. Its "measured extraction" figures were three hundred builds old and half the real number; they are fresh, and they say whose they are: the test robot. And a death card no longer measures your first 67 XP against the last reward of the season.',
   'THE BACKPACK ARROWS BEHAVE WHEN EVERYTHING IS ON THE BELT. With every carried item claimed by a tactical belt key the backpack grid is empty, and an arrow key used to throw the selection away. It now does nothing until there is something to select.',
   'F NO LONGER BURNS A BANDAGE WHEN YOU PUNCH. Since F became the melee strike, a press while hurt also used the smallest heal in your backpack, silently. Heals are used from the tactical belt, and F now only strikes (and still revives you when you are down).',
@@ -12984,18 +12985,22 @@ function setHot(i){
   // assigned slot showing a gun from your bag also has kind 'gun' but no
   // inHand field, so this used to fire swapGuns and trade the pair in your
   // hands instead - the wrong gun came up and the one you chose did not.
-  var _inHands=(s2.k==='gunA'||s2.k==='gunB'||s2.equipped);
+  var _inHands=(s2.k==='gunA'||s2.k==='gunB'||s2.equipped), _hinted=false;
   // v8.67: not into an empty gun slot. The cell is always drawn now, so picking
   // it when you carry one gun must do nothing rather than swap you to nothing.
   if(s2.vacant){ if(!G.sim) say('No second weapon. Drag one here to carry it.'); }
   else if(s2.kind==='gun'&&_inHands&&!s2.inHand) swapGuns();
-  else if(s2.kind==='gun'&&!_inHands&&s2.itemKey)
-    say(s2.name+' is in your backpack. TAB to equip it.');
+  else if(s2.kind==='gun'&&!_inHands&&s2.itemKey){
+    // v11.30: this sentence was overwritten by the slot label two lines down
+    // in the same call, so nobody ever read it; the label yields to it now.
+    say(s2.name+' is in your backpack. TAB, then ENTER to equip it.');
+    _hinted=true;
+  }
   if(s2.kind==='throw'){
     var tk2=s2.k.split(':')[1],ix=THROWKEYS.indexOf(tk2);
     if(ix>=0) G.tsel=ix;
   }
-  say(s2.name+(s2.count!==null&&s2.count!==undefined?'  x'+s2.count:''));
+  if(!_hinted) say(s2.name+(s2.count!==null&&s2.count!==undefined?'  x'+s2.count:''));
   blip('pick');
 }
 // One action key drives whatever is selected, which is the point of the hotbar.
@@ -27994,7 +27999,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.29: the first hour past the floor, walked on a fresh profile: title, sector screen, loadout question, drop, death card, return. Two things were wrong and are fixed: the sector screen showed v8.01 robot figures (18 and 23.5 percent) as "measured extraction" while the robot extracts about 39 now, so they are refreshed from 120 seeds a map and labelled as the robot; and a death card measured a first 67 XP against the 1,200,000 of the season last reward, with the explaining sentence removed at v8.91, so it now says the total and nothing else.',
+  now:'v11.30: a belt key for a gun still in the backpack said "TAB to equip it"; TAB opens the backpack and ENTER equips (v2.94, LEGEND). Reproduced by pressing the key: the message named the key that does nothing. It says TAB, then ENTER now. From the same read-only agent as v11.26 to v11.28; one finding a build, each pressed in the page first.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

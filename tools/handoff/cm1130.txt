@@ -1,0 +1,7 @@
+v11.30: a belt key's hint was overwritten before anyone read it
+
+The belt key for a gun still in the backpack said "TAB to equip it" and was
+then overwritten in the same call by the slot label, so no player ever read
+it. Reproduced: pressing the key shows "Scav Pistol (field)  x1". The
+sentence now names ENTER and the label yields to it. Check 11.30 holds it and
+fails on the v11.29 fixture.
