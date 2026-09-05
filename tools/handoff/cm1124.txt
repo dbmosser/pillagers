@@ -1,0 +1,9 @@
+v11.24: a correction to v11.23, and a seat in the middle of the map
+
+No game change. v11.23 called the feud system dead off a raid with the player
+parked out of the world; feuds fire only within 600 units of the player, by
+design. Parked at the map centre at peace with the machines, rival crews hit
+each other 22 times, 3 downed, 3 dead in 540 s; with raiderFeud 0, 2
+hits. __simRaiders takes park:'centre'; check 11.24 holds the dial to it. The
+v11.23 machine-war numbers stand. The hook now deploys like the surveys and pins
+the map: its raw first cut ran on the mile and read differently, and so had check 11.23.

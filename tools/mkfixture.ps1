@@ -267,20 +267,24 @@ window.__wallIndex=function(pred){
 // to CFG.raidSec, then tallies the roster: out, alive, downed, dead, and when
 // each man who got out did. Arms are set by the caller through __cfg.
 window.__simRaiders=function(o){
-  o=o||{}; pendSeed=(o.seed||9001)>>>0; G=null;
-  G=buildRaid(true);
+  o=o||{};
+  __deploy({kit:[],safe:null,mapIx:(o.mapIx===undefined?0:o.mapIx),seed:(o.seed||9001),sim:true});
+  var live={mach:CFG.machVsRaider, feud:CFG.raiderFeud, greed:CFG.simGreed, sim:!!G.sim};
   var p=G.player, T=0, dt=0.15, horizon=(o.horizon||CFG.raidSec||540), steps=Math.round(horizon/dt), over=null, threw=null, tl=[], next=60;
+  var px=-3000, py=-3000, hits=0, downs=0, lastHp={}, seenDown={};
+  if(o.park==='centre'){ px=(G.map.cols*G.map.cw)/2; py=(G.map.rows*G.map.ch)/2; }
   for(var s=0;s<steps;s++){
-    p.x=-3000; p.y=-3000; p.hp=p.maxhp||100; p.downed=0; p.downT=0;
-    try{ simStep(dt); }catch(e){ threw=String(e); break; }
+    p.x=px; p.y=py; p.hp=p.maxhp||100; p.downed=0; p.downT=0; p.vx=0; p.vy=0;
+    try{ __rawStep(dt); }catch(e){ threw=String(e); break; }
     T+=dt; if(G.over){ over={how:G.over,at:Math.round(T)}; break; }
+    var rosH=G.roster||[]; for(var h=0;h<rosH.length;h++){ var eh=rosH[h].ref, kh=eh.name; if(rosH[h].out) continue; if(lastHp[kh]!==undefined&&eh.hp<lastHp[kh]) hits++; lastHp[kh]=eh.hp; if(eh.downed&&!seenDown[kh]){ seenDown[kh]=1; downs++; } }
     if(T>=next){ next+=60; var ros0=G.roster||[], a0=0,o0=0,d0=0,x0=0; for(var q=0;q<ros0.length;q++){ var e0=ros0[q].ref; if(ros0[q].out) o0++; else if(e0.downed) d0++; else if(e0.hp<=0||e0.finished) x0++; else a0++; } tl.push([Math.round(T),ros0.length,o0,a0,d0,x0]); }
   }
   var ros=G.roster||[], present={}, i, e, out=0, alive=0, downed=0, dead=0, outAt=[];
   for(i=0;i<G.ents.length;i++) present[G.ents[i].name||('#'+i)]=1;
   for(i=0;i<ros.length;i++){ e=ros[i].ref; if(ros[i].out){ out++; outAt.push(Math.round(ros[i].outAt||0)); continue; }
     if(!present[e.name]) dead++; else if(e.downed) downed++; else if(e.hp<=0) dead++; else alive++; }
-  return {seed:o.seed||9001, horizon:horizon, ranTo:Math.round(T), over:over, threw:threw, roster:ros.length, out:out, alive:alive, downed:downed, dead:dead, outAt:outAt, timeline:tl};
+  return {seed:o.seed||9001, mapIx:(o.mapIx===undefined?0:o.mapIx), buildings:(G.map.buildings||[]).length, live:live, park:(o.park==='centre'?'centre':'far'), horizon:horizon, ranTo:Math.round(T), over:over, threw:threw, roster:ros.length, out:out, alive:alive, downed:downed, dead:dead, hits:hits, downs:downs, outAt:outAt, timeline:tl};
 };
 // Samples one sim raid so a stall can be told apart from a decision never made.
 window.__simTraceSeed=function(seed){
@@ -5417,6 +5421,40 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.24',what:'rival crews feud where the player can see them: parked in the middle of COLD STORAGE at peace with the machines, pillagers hit, down and kill each other, and the raiderFeud dial is what decides it',
+   run:function(){
+     if(!(window.__simRaiders&&window.__cfg)) return 'SKIP: this fixture cannot run a parked sim raid';
+     var bad=[];
+     // Seed 9001 is a hot seed (crewsHot is seed mod 10 below 6, and 9001 gives
+     // 1), COLD STORAGE, the machines at peace so every hit on a pillager is a
+     // pillager's, the player deployed as usual and pinned still to the map centre.
+     __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __cfg({machVsRaider:0});
+     var on=__simRaiders({seed:9001, mapIx:0, park:'centre'});
+     if(on.buildings!==20) return 'SKIP: the centre raid built '+on.buildings+' buildings, not the 20 of COLD STORAGE';
+     if(on.threw) bad.push('the centre-parked raid threw: '+on.threw);
+     if(on.over||on.ranTo<on.horizon-1) bad.push('the centre-parked raid ended at '+on.ranTo+' of '+on.horizon+' seconds ('+JSON.stringify(on.over)+'), so a pinned player at the centre still ends the raid');
+     // THE FINDING. Feuds fire in sight of the player: hits between pillagers,
+     // and at least one man downed or dead by the end. Measured on v11.23: 22
+     // hits, 3 downed, 3 dead.
+     if(on.hits<5) bad.push('only '+on.hits+' hits on pillagers in 540 seconds with the player in the middle of the map, so rival crews are not feuding where they should');
+     if(on.downs+on.dead<1) bad.push('no pillager was downed or killed by another in 540 seconds at the centre (hits '+on.hits+')');
+     // CONTROL ONE: the raid was populated.
+     if(on.roster<7) bad.push('control: only '+on.roster+' pillagers on the roster');
+     // CONTROL TWO: raiderFeud 0 turns it off. Same seat, same seed, same peace:
+     // the hits must fall to a small fraction, or the hits above were never
+     // feud hits (the fists player at the centre, say) and the finding is empty.
+     __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __cfg({machVsRaider:0, raiderFeud:0});
+     if(__cfg().raiderFeud!==0) return 'SKIP: raiderFeud cannot be set to 0 here';
+     var off=__simRaiders({seed:9001, mapIx:0, park:'centre'});
+     if(off.threw) bad.push('the feud-off raid threw: '+off.threw);
+     if(!(off.hits*3<on.hits)) bad.push('control: with raiderFeud 0 pillagers still took '+off.hits+' hits against '+on.hits+' with feuds on, so the dial does not decide and the hits are not feud hits');
+     // CONTROL THREE: the far seat of v11.23 sees none of it, which is the blind
+     // spot v11.23 misread; if the far seat ever sees feud hits, the 600 unit
+     // gate has moved and v11.23's numbers need re-reading.
+     __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __cfg({machVsRaider:0});
+     var far=__simRaiders({seed:9001, mapIx:0, park:'far'});
+     if(far.hits>0) bad.push('the far seat saw '+far.hits+' hits on pillagers at peace, so feuds now fire out of sight of the player and the 600 unit gate has moved');
+     return bad.length?bad.join('; '):null; }},
   {v:'11.23',what:'the pillagers own raid can be read to the clock: the parked, unkillable player never ends the raid, the roster tally is complete, and machines at war with pillagers is what decides whether a pillager gets out',
    run:function(){
      if(!(window.__simRaiders&&window.__cfg)) return 'SKIP: this fixture cannot run a parked sim raid';
@@ -5425,8 +5463,9 @@ window.__REGRESS=[
      // the raid clock with the player parked, and every man on the roster is
      // accounted for exactly once.
      __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-     var on=__simRaiders({seed:9001});
+     var on=__simRaiders({seed:9001, mapIx:0});
      if(on.threw) bad.push('the parked raid threw: '+on.threw);
+     if(on.buildings!==20) return 'SKIP: the parked raid built '+on.buildings+' buildings, not the 20 of COLD STORAGE';
      if(on.over||on.ranTo<on.horizon-1) bad.push('the parked raid ended at '+on.ranTo+' of '+on.horizon+' seconds ('+JSON.stringify(on.over)+'), so the player still ends the raid from outside the world');
      if(on.out+on.alive+on.downed+on.dead!==on.roster) bad.push('the tally '+on.out+'+'+on.alive+'+'+on.downed+'+'+on.dead+' does not equal the roster of '+on.roster);
      // CONTROL ONE: the raid was populated, or every count above is zero for the
@@ -5438,7 +5477,7 @@ window.__REGRESS=[
      // a balance number: it fails if the switch stops doing anything.
      __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __cfg({machVsRaider:0});
      if(__cfg().machVsRaider!==0) return 'SKIP: machVsRaider cannot be set to 0 here';
-     var off=__simRaiders({seed:9001});
+     var off=__simRaiders({seed:9001, mapIx:0});
      if(off.threw) bad.push('the peace arm threw: '+off.threw);
      if(off.out<1) bad.push('control: with machVsRaider 0 no pillager got out of COLD STORAGE at seed 9001, so extraction itself is broken for pillagers');
      if(!(off.out>on.out)) bad.push('control: with the war off '+off.out+' pillagers got out against '+on.out+' with it on, so the switch no longer decides anything');

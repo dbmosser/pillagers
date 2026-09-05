@@ -40024,6 +40024,69 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.24 - A CORRECTION TO v11.23, AND A SEAT IN THE MIDDLE OF THE MAP
+
+Nothing in the game changes in this build. It corrects one sentence I shipped
+four hours ago and gives the pillager scorecard a second vantage point, with a
+check that holds the feud dial to what it claims.
+
+**THE MISTAKE, MINE.** v11.23 read zero pillager-on-pillager deaths off the
+parked-player raid and wrote that the feud system "either rarely fires or never
+finishes a downed man". The parked player sits at -3000,-3000, out of every
+sight test. Rival crews feud only within 600 units of the player, by design
+and by a comment that says why: the wall cache that answers line of sight is
+only built near him, and beyond it raiders would trade shots through
+buildings. So the far seat cannot see a feud, ever, and zero was the
+instrument's blind spot and not the game's. The sentence is struck in AUDIT.md
+and in the v11.23 entry above, with the correction beside it.
+
+**MEASURED, the same raid from the middle of the map.** COLD STORAGE at seed
+9001 (a hot seed: crews feud on six seeds in ten, seed mod 10 below 6), the
+machines at peace with pillagers so every hit on a pillager is a pillager's,
+the player deployed as usual and pinned alive and still to the map centre, 540 seconds:
+
+    seat            feuds   hits on pillagers   downed   dead   out   roster
+    far (v11.23)    on      0                   0        0      20   24
+    centre          on      22                  3        3      10    17
+    centre          off     2                  0        0      7    15
+
+Rival crews came within 280 units of each other inside the player's window
+four times in 110 samples, and that was enough. The feud system works where it
+is meant to, and the raiderFeud dial is what decides it.
+
+**THE HOOK** __simRaiders takes park:'centre' now and counts hits and downs on
+the way, so the next question about what pillagers do to each other has an
+instrument that can see it.
+
+**AND A SECOND MISTAKE, CAUGHT BY THE FIRST RUN OF THE NEW CHECK.** The hook
+was not the survey. The surveys deployed through the fixture (__deploy, then
+__rawStep) and read 22 hits against 2; the hook built the raid raw
+(buildRaid(true), simStep) and the first run of check 11.24 read 76 hits
+against 60 with feuds off, and 1 hit at the far seat. Two causes. The hook
+never said which map: buildRaid reads it from the profile, which held THE
+COLD MILE (84 buildings, mapIx 1), so check 11.23 had run on the mile while
+its comments said cold storage; its assertions held there too, which is why
+it passed. Pinning the map did not close the gap, so the raw path itself
+reads differently from the deploy path the surveys and every other check
+trust. The hook now deploys through __deploy, steps through __rawStep,
+takes mapIx, reports the building count and the live dials it ran under,
+and both checks pin COLD STORAGE and skip by name if the count is not 20.
+The v11.23 survey numbers are unaffected: the surveys always deployed by
+map index through the fixture.
+
+**NEW CHECK v11.24**: the centre-parked raid at seed 9001 runs to the clock,
+shows at least five hits on pillagers and at least one man downed or dead;
+controls: with raiderFeud 0 the hits fall to under a third, or the hits were
+not feud hits; the far seat still sees zero, or the 600 unit gate has moved and
+v11.23's numbers need re-reading; the roster holds at least seven. Three
+parked raids, about a minute.
+
+**FOR HIS RULING, unchanged**: the v11.23 numbers on the machine war stand;
+the machines do not need the player in sight to hunt pillagers, so that
+measurement was not affected by the seat.
+
+Not verified: his own play; the mile, where the centre seat was not run; and
+what a feud looks like on screen, which no picture was taken of.
 ## v11.23 - THE PILLAGERS' OWN RAID, READ TO THE CLOCK
 
 Nothing in the game changes in this build. It is a measurement, an instrument,
@@ -40106,10 +40169,10 @@ since the switch rolls no dice. Two full parked raids, about 40 seconds.
 and gun rarity, and his ruling on the mile-vs-cold shape" since the v7 era; it
 now names this ruling.
 
-Not verified: his own play, and what the peace arm's zero pillager-on-pillager
-deaths in nine minutes on the mile means for the feud system, which is noted
-and not chased. Seeds beyond the three and the raid clock beyond 540 seconds
-were not run.
+Not verified: his own play. CORRECTED at v11.24: the peace arm showed zero
+pillager-on-pillager deaths because the player was parked out of the world and
+feuds fire only within 600 units of him, by design; parked in sight they fire.
+Seeds beyond the three and the raid clock beyond 540 seconds were not run.
 ## v11.22 - TWO STILL OPEN LINES MEASURED SHUT: THE SEALED EIGHT AND THE NICHES
 
 Nothing in the game changes in this build. With every note of his through 22
