@@ -1,0 +1,6 @@
+v11.38: your punch hit your own merc
+
+The fists sweep excluded downed and finished entities but not the merc, while
+the bullet path has passed through him since v6.72, so a swing near your merc
+hurt him and billed you. Reproduced. One line, the merc exclusion the round
+uses. Check 11.38 fails on the v11.37 fixture.

@@ -40024,6 +40024,29 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.38 - YOUR PUNCH HIT YOUR OWN MERC
+
+From the combat agent, a clean one-line asymmetry. The fists sweep in
+fireWeapon excludes downed and finished entities from the arc, but not the man
+you hired. The bullet path has passed a round through your merc since v6.72,
+on his note that a hired companion takes no friendly fire from you and cannot
+be used as cover. Melee never got the same rule, so a swing near your merc
+hurt him, and the killing blow set byPlayer and billed you for a mercDead.
+
+**REPRODUCED.** A merc placed a stride in front of the player, one swing on F:
+his health dropped.
+
+**THE FIX** is the merc exclusion the round already uses, one line in the
+melee sweep. Everything else the sweep hits, pillagers and neutrals alike, it
+still hits, exactly as your bullets do.
+
+**NEW CHECK v11.38**: a swing next to your merc leaves his health untouched;
+control, a swing next to a hostile pillager in the same spot still drops his
+health, so the exclusion did not disarm melee. On the v11.37 fixture the
+finding fails, the merc losing health.
+
+Not verified: his own hand; the pad melee button, which routes the same way
+and was not pressed.
 ## v11.37 - A ROBOT'S HIT TURNED A PILLAGER ONTO YOU
 
 From the combat agent, the highest-value of its findings. Two branches decide
