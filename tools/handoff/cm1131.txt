@@ -1,0 +1,6 @@
+v11.31: the stash said it was empty under your gun
+
+On a fresh save the ALL tab drew the one Scav Pistol cell and printed
+"Nothing in the stash" under it, because ALL draws the owned guns like GUNS
+but the empty guard exempted GUNS alone. Reproduced on a fresh profile. The
+guard exempts ALL too. Check 11.31 holds it and fails on the v11.30 fixture.

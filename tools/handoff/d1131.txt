@@ -1,0 +1,28 @@
+## v11.31 - THE STASH SAID IT WAS EMPTY UNDER YOUR GUN
+
+From the second bounded agent, on the Undercroft and the stash, and the
+first thing a friend sees when he opens THE STASH. **REPRODUCED on a fresh
+profile in memory**: the ALL tab reads "ALL 1", draws one cell, the Scav
+Pistol, and under it prints "Nothing in the stash. Ascend, pillage, extract."
+v11.11 walked this same station and passed it, because v11.11 counted cells
+and words separately and never asked whether both were on the same screen.
+
+**THE CAUSE.** The ALL tab draws the owned guns as cells the way GUNS does,
+and the tab count says so, but the empty-grid guard exempted GUNS alone:
+`!(P.stashTab==='gun'&&(P.weapons||[]).length)`. Under ALL, `shown` (stash
+items only) is empty on a fresh profile, so the message was appended straight
+after the gun cell.
+
+**THE FIX** is the guard: ALL is exempt on the same terms as GUNS.
+
+**NEW CHECK v11.31** builds the fresh friend in memory, opens the stash from
+the floor, and requires one cell and no "Nothing in the stash" under ALL;
+controls: with no guns and nothing stashed the message must appear (so the
+guard was fixed, not removed), and GUNS with the pistol back draws the cell
+and no message. Restores the whole profile object afterwards. On the v11.30
+fixture the finding fails with the message under the cell.
+
+Not verified: his own eye on the screen; and the agent's two other Undercroft
+findings, a claimed contract's replacement skipping the no-duplicate rule and
+a save written mid-load before the config block reads it, which are queued and
+not yet reproduced.
