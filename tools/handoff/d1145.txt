@@ -1,0 +1,39 @@
+## v11.45 - THE FLOOR KEYS ANSWERED ON THE TITLE SCREEN
+
+Closes the STILL OPEN line "TITLE-SCREEN KEYS, READ BUT NOT REPRODUCED". Two
+agents had read that state is 'hub' from boot and that the title is raised by
+its HTML class alone, so the hub keydown branch was live over the title: P or
+ESC would raise the pause box over it, and ENTER, the key the title tells you to
+press to start, would stamp WNSEEN and dismiss the NEW IN card before it was
+ever shown. Both were true. The reason I could not reproduce them before was
+the probe, not the game: it staged the title with __showScreen('title'), and
+showScreen sets state to whatever it is handed, so state became 'title' and the
+branch under test was disarmed. The real boot never calls showScreen('title');
+the title is on via <div class="screen on" id="title"> and state stays 'hub'.
+
+REPRODUCED on the boot title, no modal open, no hub panel open: one synthetic
+KeyP dispatched on window and the pause box opened with the title still up;
+Escape toggled it shut again. I also tried a real Browser-pane keypress first,
+as the STILL OPEN line asked for, and found the pane's document reports
+visibility hidden, so no key reaches the page at all through that route; the
+synthetic dispatch on window is the honest instrument here, and what disarmed
+the earlier attempt was the __showScreen call, not the synthetic nature of the
+key. Recorded so nobody chases the "real keypress" route again while the pane
+is hidden.
+
+THE FIX: one flag, _titleUp, read once at the top of the hub branch, and a guard
+on the two places that acted: the ENTER-dismisses-the-card branch and the P/ESC
+pause branch. The title's own start listener is separate and untouched, so ENTER
+and SPACE still start the game.
+
+CHECK 11.45 stages the boot condition correctly (__showScreen('hub') to set
+state hub, then raise the title by its class, never __showScreen('title')),
+dispatches one KeyP and one Escape on window and requires the pause box to stay
+shut, resets WNSEEN through a new __wnseen hook, dispatches ENTER and requires
+WNSEEN to still read 0 synchronously, and controls that ENTER still took the
+title down. Fails on the v11.44 fixture on the P, ESC and ENTER assertions.
+
+Not verified: his own hand on the real title; a true trusted keypress (the pane
+is hidden and delivers none); whether a returning player with runs, for whom the
+NEW IN card actually shows, now sees it after starting with ENTER, which is the
+whole point of the ENTER half and needs a profile with runs to watch.

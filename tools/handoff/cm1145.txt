@@ -1,0 +1,13 @@
+v11.45: the floor keys answered on the title screen
+
+state is 'hub' from boot and the title is raised by its HTML class alone, so
+the hub keydown branch was live over the title: P or ESC opened the pause box
+over it, and ENTER stamped WNSEEN (dismissing the NEW IN card before it was
+shown) in the same press the title listener used to start. The earlier
+not-reproduced verdict came from the probe calling __showScreen('title'), which
+sets state='title' and disarms the branch. Reproduced on the boot title with one
+KeyP on window. A _titleUp guard on both branches; the title keeps its own
+ENTER/SPACE start. New __wnseen hook; check 11.45 fails on v11.44. Closes the
+STILL OPEN title-keys line.
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

@@ -28,8 +28,9 @@ case "$1" in
     grep -n "var VER=" dark_raiders.html
     # DESIGN: insert the new entry before the previous version's heading (newest first)
     awk -v pv="## v$PV - " 'NR==FNR{a[n++]=$0;next} index($0,pv)==1{for(i=0;i<n;i++)print a[i]} {print}' "$SP/d$NEW.txt" DESIGN.md > /tmp/DESIGN.new && mv /tmp/DESIGN.new DESIGN.md
-    # AUDIT: insert the new row after the previous version's row
-    awk -v pv="| v$PV |" 'NR==FNR{a[n++]=$0;next} {print} index($0,"| ")==1 && index($0,pv)>0 {for(i=0;i<n;i++)print a[i]}' "$SP/a$NEW.txt" AUDIT.md > /tmp/AUDIT.new && mv /tmp/AUDIT.new AUDIT.md
+    # AUDIT: insert the new row(s) after the FIRST table row whose version cell (2nd column) is exactly v$PV, then stop.
+    # (A version can carry more than one row - e.g. a fix row plus a harness-repair row - and matching every one duped the insert: v11.40->41->42.)
+    awk -v pvv="v$PV" 'NR==FNR{a[n++]=$0;next} {print} !ins && /^\| / {nc=split($0,c,"|"); vc=c[3]; gsub(/^[ \t]+|[ \t]+$/,"",vc); if(vc==pvv){for(i=0;i<n;i++)print a[i]; ins=1}}' "$SP/a$NEW.txt" AUDIT.md > /tmp/AUDIT.new && mv /tmp/AUDIT.new AUDIT.md
     cp "$SP/cm$NEW.txt" "/tmp/cm$NEW.txt"
     grep -n "^## v$NV \|^## v$PV " DESIGN.md | head -3
     grep -c "| v$NV |" AUDIT.md

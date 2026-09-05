@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.44';
+var VER='11.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.44';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.44';
+var WHATSNEW_VER='11.45';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE TITLE SCREEN NO LONGER ANSWERS THE FLOOR KEYS. Pressing P or ESC on the title screen used to open the pause box over it, and ENTER to start could quietly dismiss the NEW IN card before you saw it. The title keeps its own keys now: ENTER or SPACE starts, nothing else.',
   'YOUR SETTINGS SURVIVE A LOAD AGAIN. A one-time cleanup that runs when the game opens an older save was saving the default settings over yours before your own were read back, so a returning player could find the sliders reset. Your saved settings are kept now.',
   'THE IN-GAME WORDING IS UPDATED. A batch of edits to shop copy, item descriptions, settings and menus is now built into the game.',
   'NO TWO CONTRACTS ON THE BOARD ARE THE SAME JOB. Finishing a contract used to be able to drop a copy of a job you already had back onto the board, wasting a slot. The freed slot now follows the same no-duplicate rule the board fills by.',
@@ -10304,9 +10305,13 @@ window.addEventListener('keydown',function(e){
   if(e.code==='Backspace'&&!e.repeat){ restoreCursor(); e.preventDefault(); return; }
   if(state==='hub'){
     keys[e.code]=true;
+    // v11.45: the title screen sits over the floor with state still 'hub', so the
+    // floor keys below must not answer while it is up. ENTER there belongs to the
+    // title's own start listener; P and ESC must not raise the pause box over it.
+    var _titleUp=!!(document.getElementById('title')&&document.getElementById('title').classList.contains('on'));
     // v6.67, his note: ENTER dismisses the update log. Taken before anything else on
     // the floor, and it returns, so the key cannot also do the thing behind the card.
-    if((e.code==='Enter'||e.code==='NumpadEnter')&&!WNSEEN&&!e.repeat){
+    if((e.code==='Enter'||e.code==='NumpadEnter')&&!WNSEEN&&!e.repeat&&!_titleUp){
       WNSEEN=1; e.preventDefault(); return;
     }
     // v8.16, audit: nothing on the floor answers a key while something is open
@@ -10319,7 +10324,7 @@ window.addEventListener('keydown',function(e){
     // v8.70, HIS REPORT: ESC and P pause on the floor. The raid owns these keys
     // further down and the hub branch returns long before reaching it. Only when
     // no window is open, so ESC still belongs to whatever panel is in front.
-    if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat&&!document.querySelector('.modal.on')&&
+    if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat&&!_titleUp&&!document.querySelector('.modal.on')&&
        !document.querySelector('.imenu')&&!document.getElementById('hub').classList.contains('on')){
       togglePauseBox(!document.getElementById('pausebox').classList.contains('on'));
       e.preventDefault(); return;
@@ -28073,7 +28078,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.44: the v9.45 rig-buyback migration (mig945) ran saveProfile during loadProfile, before the cfgv block had loaded CFG from the saved P.cfg; saveProfile writes P.cfg=CFG and P.cfgv=17, and CFG was still the file-scope default, so a returning saves config was wiped and cfgv stamped 17, skipping every cfgv migration. Reproduced: a pre-mig945 profile with ambient 250 loaded back as 190. It now persists through storeSet, which writes P as it stands with the saved cfg and cfgv intact, and still locks in the buyback. The load body was factored into applyLoadedProfile so a check drives the real loader. From the contract agent.',
+  now:'v11.45: the floor keys answered on the title screen. state is hub from boot and the title is on via its HTML class (showScreen(title) is never called), so the hub keydown branch was live over the title: P or ESC opened the pause box over it, and ENTER stamped WNSEEN in the same press the title listener used to start. The earlier not-reproduced verdict was the probe calling __showScreen(title), which sets state=title and disarms the branch. Reproduced on the boot title with one KeyP on window. A _titleUp guard on both branches; the title keeps its own ENTER/Space start. Closes the STILL OPEN title-keys line.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
