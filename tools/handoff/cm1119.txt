@@ -1,0 +1,16 @@
+v11.19: the measurement the last seven builds owed
+
+No game change. 320 paired seeds on COLD STORAGE at greed 14, each seed raided
+with every building rule since v11.12 off and then on. Old rules extract 34.7
+percent, new rules 35.0; discordant pairs 56 to 57, z minus 0.09. The rate did
+not move.
+
+Where the bot dies did: pillager 20 to 9, clock 5 to 12, warden 4 to 9, bulwark
+5 to 8; mean raid length 124 to 141 seconds. On honest routes it walks further,
+meets the big machines more and the pillagers less, and runs the clock out
+twice as often.
+
+Check: the seven rules ship on by name, and all off builds a different world
+with identical entities and containers.
+
+Not verified: THE COLD MILE, and his own play, which no sim covers.

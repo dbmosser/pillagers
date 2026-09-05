@@ -1,0 +1,50 @@
+## v11.19 - THE MEASUREMENT THE LAST SEVEN BUILDS OWED
+
+Nothing in the game changes in this build. Seven builds in a row, v11.12 to
+v11.18, ended with the same line: the extract rate was not measured, because a
+paired run at the 320-seed standard was several hours in this environment. This
+tick it was not, and it ran.
+
+**THE RUN.** 320 seeds, 9001 to 9320, COLD STORAGE, the bot at its pinned
+greed of 14, each seed raided twice: once with every building rule since v11.12
+switched off (winWalk, furnDoor, navBody, doorClear, furnIDoor, furnGap,
+partDoor, all 0), which is the world of v11.11, and once with all seven on,
+which is the world that ships. Same seed, same map, same drop, same robot; only
+the rules differ. About thirty five minutes in two batches.
+
+**THE RATE DID NOT MOVE.** Old rules extract **34.7 percent**, new rules **35.0
+percent**. Both arms extract on 55 seeds, neither on 152, the old arm alone on
+56 and the new arm alone on 57. That is 113 discordant pairs splitting 56 to
+57, z of minus 0.09, which is as close to no difference as a run of this size
+can read. Machines getting out of buildings, routes that respect windows and
+body width, doors clear of furniture and walls: **none of it changed how often
+the bot comes home.**
+
+**WHAT DID MOVE IS WHERE IT DIES, and by how long it lives.** Killed by a
+pillager: 20 to 9. Ran out the clock: 5 to 12. Warden 4 to 9, Bulwark 5 to 8,
+sentry 70 to 66, crawler 88 to 90. Mean raid length, extract or death, 124
+seconds to 141. Mean haul 2,083 to 2,065. Read together: on honest routes the
+bot walks further to get anywhere, so its raids run seventeen seconds longer, it
+meets the big machines more and the pillagers less, and it runs the clock out
+more than twice as often. The crawlers, which every one of the seven builds was
+about, kill it the same number of times either way; they could not reach it
+before and mostly still do not, because the bot does not go into buildings the
+way he does.
+
+**WHAT THIS DOES AND DOES NOT SAY.** It says the alpha's difficulty for the
+robot is unchanged by seven builds of geometry and routing work, which is the
+thing I could not say before. It does not say what the changes do to HIM: the
+bot never hides and never fights pillagers, so the crawler that could not see a
+hidden man through a window, the one that stood in a doorway plugged by a
+table, and the one that caught on a partition corner were all bugs a person met
+and the bot did not. The measurement is of the machine's world, which is what
+the sim measures.
+
+**NEW CHECK v11.19** pins the seven rules on by name in the shipping defaults,
+and requires that switching all seven off builds a different world for the same
+seed, different walls and furniture and a different route grid, while entities
+and containers stay identical, which is what makes a paired seed a fair
+comparison. Its message names the rule that ships off, if one ever does.
+
+Not verified: THE COLD MILE, which was not run, and his own play, which no sim
+covers. furnIDoor 0 and the other six put the old world back for any seed.

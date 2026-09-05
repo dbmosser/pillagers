@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.18';
+var VER='11.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.18';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.18';
+var WHATSNEW_VER='11.19';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'NOTHING IN THE GAME CHANGED IN THIS BUILD. It measures what the last seven did: with the machines now able to get out of buildings, the test robot was run through the same sixty raids on the old rules and the new, and the difference is written in the notes rather than guessed at.',
   'NO INTERIOR WALL ENDS INSIDE A DOORWAY. A few doors opened straight onto the end of a wall inside, with too little room either side of it to get through. Those walls now stop short of the door.',
   'THE DOORWAYS INSIDE BUILDINGS ARE CLEAR OF FURNITURE TOO. A few buildings had a piece parked in the gap between two rooms, so the back room could be seen and never reached, by you or by anything hunting you. Nothing is parked in those gaps now.',
   'A DOORWAY WITH A WALL RIGHT BEHIND IT NO LONGER CATCHES A MACHINE ON THAT WALL. The route through a door stayed clear of the door frame but not of a partition just inside it, so a machine cutting through a neighbouring building could be sent straight into the partition and stand there. It keeps its distance from every wall now.',
@@ -27964,7 +27965,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.18: no interior wall ends inside a doorway. Measured on v11.17 at seed 4242: 3 doors on COLD STORAGE and 19 on THE COLD MILE opened onto the end of a partition, and 4 of the mile\'s left under 30 units either side of it, so nothing 30 wide could use the door. Every partition reaching into a door\'s zone has that part cut away. No random number is drawn.',
+  now:'v11.19: the measurement the last seven builds owed. Sixty seeded robot raids on COLD STORAGE, each run twice, once with every building rule since v11.12 switched off and once with them on, so the extract rate difference of machines that can get out of buildings is a number and not a direction. Nothing in the game changed.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
