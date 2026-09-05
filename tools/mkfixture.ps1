@@ -943,6 +943,7 @@ window.__simSeedsFull=function(seeds){
   return out;
 };
 window.__world=function(){ return {w:WORLD_W,h:WORLD_H}; };
+window.__legend=function(){ return LEGEND; };
 // v9.00: the WINDFALL PROBE is gone with the thing it measured. It broke
 // windfallOdds into its distance, time and danger terms so the promise could be
 // checked against real geometry. There are no windfalls to measure now.
@@ -5422,6 +5423,28 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.26',what:'the pause screen key line prints no literal entity and names the keys the way the H list does: F strikes, TAB is the backpack, 1 to 9 is the tactical belt',
+   run:function(){
+     var pb=document.getElementById('pausebox');
+     if(!pb) return 'SKIP: no pause box in this document';
+     var bad=[], html=pb.innerHTML||'', text=(pb.textContent||'').replace(/\s+/g,' ');
+     // THE FINDING, assembled so this check cannot match itself.
+     var literal=['&','amp;','nbsp;'].join('');
+     var lit2=['&','nbsp;'].join('');
+     if(html.indexOf(literal)>=0) bad.push('the pause box still carries the double-escaped entity '+(html.split(literal).length-1)+' times');
+     if(text.indexOf(lit2)>=0) bad.push('the pause box prints the six characters "'+lit2+'" to the player');
+     var stale=[['F ','heal/revive'].join(''), ['Q/G ','throw'].join(''), ['TAB ','bag '].join(''), ['sprint ','on/off'].join(''), ['superhot ','mode'].join('')];
+     for(var i=0;i<stale.length;i++) if(text.indexOf(stale[i])>=0) bad.push('the pause box still says "'+stale[i]+'"');
+     // WHAT IT MUST SAY, and it must agree with the H list.
+     var need=[['F ','melee strike'].join(''), ['TAB ','backpack'].join(''), ['tactical ','belt'].join(''), ['hold to ','sprint'].join('')];
+     for(i=0;i<need.length;i++) if(text.indexOf(need[i])<0) bad.push('the pause box does not say "'+need[i]+'"');
+     var L=(window.__legend?__legend():null);
+     if(L&&L.length){ var fRow=null; for(i=0;i<L.length;i++){ var rows=L[i][1]||[]; for(var j=0;j<rows.length;j++) if(rows[j][0]==='F') fRow=rows[j][1]; }
+       if(fRow&&text.indexOf(fRow.split(',')[0])<0) bad.push('the pause box and the LEGEND table disagree about F: LEGEND says "'+fRow+'"'); }
+     // CONTROL: the box is still the pause box, with its heading and its buttons.
+     if(!pb.querySelector('h3')) bad.push('control: the pause box lost its heading');
+     if(!document.getElementById('abandonbtn')||!document.getElementById('resumebtn')) bad.push('control: the pause box lost a button');
+     return bad.length?bad.join('; '):null; }},
   {v:'11.25',what:'a pillager out of the player sight fires back only when engageNear is lifted: at 600 as shipped he fires zero rounds in a whole raid while the machines fire dozens, at 0 he fires, and the dial rolls no dice',
    run:function(){
      if(!(window.__simRaiders&&window.__cfg)) return 'SKIP: this fixture cannot run a parked sim raid';

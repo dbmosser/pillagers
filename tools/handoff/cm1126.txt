@@ -1,0 +1,7 @@
+v11.26: the pause screen printed its own entity fourteen times
+
+The pause box key line wrote every non-breaking space double-escaped, so the
+player read "&nbsp;" fourteen times, and the line still named F as heal,
+Q/G as throw and TAB as bag from before v10.64. Rewritten to the LEGEND
+wording with real entities. Check 11.26 forbids the literal and the stale
+phrases and fails on the v11.25 fixture.

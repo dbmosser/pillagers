@@ -1,0 +1,33 @@
+## v11.26 - THE PAUSE SCREEN PRINTED ITS OWN ENTITY FOURTEEN TIMES
+
+A small one, found the right way. With the swarms stopped, one bounded
+read-only agent was set on the HUD, backpack, tactical belt and raid menu
+code and asked for crash-class defects only. It returned seven; one was void
+under his tactical-belt ruling of v10.26, one was half wrong (the backpack
+arrow key does make the selection NaN, but drawBag clamps it back and never
+throws, so the "every frame" was the agent's guess), and this one was exact.
+
+**REPRODUCED in the page before anything was touched.** The pause box's key
+line at line 643 had every non-breaking space written as the entity of an
+entity, so the box printed the six characters of "&nbsp;" fourteen times
+between the keys. The same line still said "F heal/revive", "Q/G throw",
+"TAB bag" and "SHIFT sprint on/off": F has been the melee strike since
+v10.64, sprint has been a hold since v10.87, the backpack has had its name
+since v9.89, and G uses the selected belt slot. Nothing rewrites that div (the
+pause code only touches the heading and the buttons), so every friend who
+pressed P read it exactly like that.
+
+**THE FIX** is the line: real entities, and the keys the way the LEGEND table
+under H says them. The backtick keys (superhot, the tuning sliders) come off
+the line; they are live in every build but they are a Settings matter, not a
+control a friend needs on the pause screen.
+
+**NEW CHECK v11.26** reads the pause box and forbids the double-escaped
+entity in its markup and the six-character string in its text, forbids the
+five stale phrases, requires "F melee strike", "TAB backpack", "tactical
+belt" and "hold to sprint", requires the F row to agree with the LEGEND table
+(read through a new __legend hook), and controls that the box still has its
+heading and both buttons. On the v11.25 fixture it fails with the fourteen
+literals and the four stale phrases named.
+
+Not verified: his own eye on the pause screen at 4K; only the text was read.

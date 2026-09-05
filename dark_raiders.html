@@ -640,7 +640,7 @@
 
 <div class="pausebox" id="pausebox">
   <h3>RAID PAUSED</h3>
-  <div style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">MOUSE aim &amp;nbsp; LMB fire &amp;nbsp; RMB aim down sights &amp;nbsp; WASD move &amp;nbsp; SPACE dodge roll &amp;nbsp; SHIFT sprint on/off &amp;nbsp; CTRL / C crouch toggle<br>E interact &amp;nbsp; R reload &amp;nbsp; F heal/revive &amp;nbsp; Q/G throw &amp;nbsp; TAB bag &amp;nbsp; M map &amp;nbsp; ` superhot mode &amp;nbsp; SHIFT-` tuning sliders &amp;nbsp; P/ESC pause</div>
+  <div id="pausekeys" style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT hold to sprint &nbsp; CTRL / C crouch on/off<br>E search / call for extraction &nbsp; R reload &nbsp; F melee strike &nbsp; 1-9 tactical belt &nbsp; TAB backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; H controls &nbsp; P / ESC pause</div>
   <div style="font-size:13.5px;color:var(--ash);margin-top:6px">Please provide feedback anything that went or felt wrong.</div>
   <textarea id="pausenote" rows="3" style="max-width:560px;font-size:13px" placeholder="e.g. the crier marked me through a wall, felt unfair"></textarea>
   <div style="display:flex;gap:8px">
@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.25';
+var VER='11.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.25';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.25';
+var WHATSNEW_VER='11.26';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE PAUSE SCREEN KEY LIST IS RIGHT AGAIN. It printed a stray "&nbsp;" between every key and still said F heals, TAB opens the bag and Q throws. It now matches the controls list under H: F is your melee strike, TAB is the backpack, 1 to 9 is the tactical belt.',
   'FOUND: PILLAGERS OUT OF YOUR SIGHT NEVER FIRE BACK. A rule from the earliest builds only lets a pillager fight within 600 units of you, on a reason that stopped being true long ago. Out of your sight the machines shoot them and they never shoot back: zero rounds in a whole raid. Nothing changes yet; the switch and the numbers are on the board for a ruling.',
   'THE SCORECARD CAN WATCH THE CREWS FEUD TOO. Rival crews only pick fights within sight of you, by design, so the scorecard now has a seat in the middle of the map as well as one outside it. Checked: they do shoot each other where you can see it.',
   'THE PILLAGERS GOT THEIR OWN SCORECARD. The test robot can now sit a whole raid out and watch what the other pillagers do to the end: how many get out, how many the machines take. Nothing changed in the raid; the numbers are on the board for a ruling.',
@@ -27980,7 +27981,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.25: the 600 unit gate on pillager fighting is a rotted rule. Every site where a pillager may shoot a machine or a rival is gated to 600 units of the player, on the comment that the wall cache only covers that far; it covers the whole map. Machines hunt pillagers anywhere. Measured: out of the player sight a pillager fires zero rounds in a whole raid while the machines fire 88, and 33 of 40 die. New dial engageNear, 600 as shipped so nothing moves before the beta, 0 lifts it; both arms measured for his ruling.',
+  now:'v11.26: the pause screen key line, found by a read-only audit of the HUD code and confirmed in the page: the non-breaking space entity was double-escaped, so the box printed the literal six characters fourteen times, and the line still said F heal, Q/G throw and TAB bag from before v10.64. It now mirrors the LEGEND table. A check reads the box and forbids the literal and the three stale phrases.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
