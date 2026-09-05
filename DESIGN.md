@@ -40024,6 +40024,35 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.36 - A GRENADE SENT THE PEDDLER CHASING YOU
+
+From the combat agent, and a bug a friend would see the first time a charge
+goes off near a stall. explodeFrag walks every entity in the blast, deals the
+damage, and then, with no filter, sets e.state='chase', e.alert, and
+overwrites e.tx/e.ty. For a fighting machine that is the point. For the
+Peddler and the Stray it is not: they are fixtures, and the Peddler's tx/ty
+ARE his pitch (where he stands and sells), so the charge relocated his stall
+to the blast and left him chasing, with nothing anywhere to reset a peddler's
+state, for the rest of the raid. A downed pillager was stood back up into a
+chase the same way.
+
+**REPRODUCED.** COLD STORAGE at seed 4242, a charge one stride from the
+Peddler's stall: he went from idle to chase.
+
+**THE FIX** guards the stand-up-and-chase against kind 'peddler', kind
+'stray' and any downed entity. The damage still lands and his v8.30 ruling
+still holds: a frag can kill a neutral for a point and the notoriety charge
+above the guard is untouched. Only the chase is withheld.
+
+**NEW CHECK v11.36**: a frag by the Peddler leaves his state unchanged and his
+pitch where it was; a frag by a downed pillager leaves him down; control, a
+frag by a live crawler or sentry still turns it to chase, so the guard did not
+disarm the aggro the grenade is meant to cause. On the v11.35 fixture the
+finding fails, the Peddler going to chase.
+
+Not verified: his own eye; and the seven other combat-agent findings still
+queued, chief among them that a machine's hit flips a peaceful pillager
+hostile with a grudge saved to the profile.
 ## v11.35 - THE STORM STRIKE WARNING RING WAS DRAWN IN THE WRONG PLACE
 
 From the rendering agent, and it undoes his v6.87 lightning telegraph. In a

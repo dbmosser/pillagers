@@ -1,0 +1,7 @@
+v11.36: a grenade sent the Peddler chasing you
+
+explodeFrag set state chase and overwrote tx/ty on every entity in the blast
+with no filter, so a charge near the Peddler moved his stall to the blast and
+left him chasing all raid, and a downed pillager stood into chase. Reproduced.
+The chase now skips the Peddler, the Stray and downed men; the damage and the
+v8.30 notoriety stay. Check 11.36 fails on the v11.35 fixture.

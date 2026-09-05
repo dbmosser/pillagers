@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.35';
+var VER='11.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.35';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.35';
+var WHATSNEW_VER='11.36';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A GRENADE NO LONGER SENDS THE PEDDLER CHASING YOU. A charge that went off near the Peddler used to make him abandon his stall and chase, for the rest of the raid, and move his stall to where you stood. He stays put now, and a downed pillager stays down.',
   'THE LIGHTNING WARNING RING LANDS WHERE THE BOLT WILL. In a storm, the ring that shows where the next strike hits was drawn in the wrong place, off screen almost always, so the strike arrived with no warning. It sits on the ground now, closing as the strike nears.',
   'THE PAUSE SCREEN KEY LINE READS RIGHT. Two phrases I changed by mistake are back: E interact and CTRL / C crouch toggle. No change you would notice beyond those two words.',
   'ONE WORD FOR THE PACK: BACKPACK. The title controls line, the empty-panel hint and the full-pack message called it the "bag"; they say backpack now, and the full-pack message names Z, which drops, not TAB, which opens it.',
@@ -11456,7 +11457,12 @@ function explodeFrag(f){
       if(e.hp<=0) e.byPlayer=!!_fMine;
       // And a blast only turns the survivors onto him if it was his. An enemy
       // grenade used to aggro the dead man's own crew onto the player.
-      if(e.state!=='alarm'){
+      // v11.36: a blast does not stand a bystander or a downed man up into a
+      // chaser. The Peddler and the Stray are fixtures (the Peddler's tx/ty ARE
+      // his pitch, so overwriting them moved his stall to the blast), and a
+      // downed pillager is out until he bleeds or is picked up. They keep the
+      // damage and the notoriety above; they just do not give chase.
+      if(e.state!=='alarm'&&e.kind!=='peddler'&&e.kind!=='stray'&&!e.downed){
         e.state='chase'; e.alert=2.5;
         if(_fMine){ e.tx=p.x; e.ty=p.y; } else { e.tx=f.x; e.ty=f.y; }
       }
@@ -28006,7 +28012,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.35: the storm strike warning ring was drawn in screen space with world coordinates. Its comment claimed world space; the block ran after the screen-space flash and never wrapped itself in the camera transform the pings block uses, so the ring sat at raw screen pixels of a world point up to the map size, off screen almost always, and its radius was not zoom-scaled. His v6.87 telegraph did not appear where the 62-damage bolt lands. Wrapped in scale(Z)/translate now, on the ground like the rings. From the rendering agent; reproduced by tracing the arc transform.',
+  now:'v11.36: explodeFrag set state chase and overwrote tx/ty on every entity in the blast with no guard, so a charge near the Peddler made him abandon his stall and chase for the rest of the raid, moving his pitch (which IS his tx/ty) to the blast, and a downed pillager stood up into a chase. Reproduced: a frag by the stall took the Peddler from idle to chase. The chase now skips the Peddler, the Stray and downed men; the damage and the v8.30 notoriety stay. From the combat agent.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
