@@ -1,0 +1,7 @@
+v11.33: one word for the pack: backpack
+
+Three player-facing strings still said "bag": the title controls line, the
+empty backpack hint, and the full-pack message (which also named TAB to drop
+where Z drops). All say backpack now. Check 11.33 forbids the old strings and
+fails on the v11.32 fixture. Held open, not reproduced: two title-screen key
+findings (ENTER dismissing the new-in card, P/ESC opening the pause box).

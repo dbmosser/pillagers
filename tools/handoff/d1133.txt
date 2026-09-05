@@ -1,0 +1,30 @@
+## v11.33 - ONE WORD FOR THE PACK: BACKPACK
+
+His ruling is BACKPACK on every surface, and three player-facing strings
+still said "bag": the title controls line ("TAB bag"), the empty backpack
+hint ("Bag is empty."), and the full-pack message ("Bag full (N). TAB to
+drop something."). The last also named the wrong key: TAB opens the backpack,
+Z drops the selected stack.
+
+All three now say backpack, and the full-pack message names Z. That message
+is effectively unreachable with the unlimited pack (bag weight never reaches
+the cap), so it is a wording fix for the record rather than something a friend
+will hit; the title line and the empty-panel hint are both on screen in normal
+play.
+
+**NEW CHECK v11.33** reads the title controls line and requires "TAB backpack"
+and not "TAB bag", scans the whole build for the three old strings (needles
+assembled so the check does not match itself) and requires none, and controls
+that "Backpack is empty." is present so the hint was rewritten and not merely
+deleted. On the v11.32 fixture the title line fails with "TAB bag".
+
+**From the pad-and-words agent. Two of its findings did not reproduce and are
+STILL OPEN, not fixed:** that ENTER on the title stamps the NEW IN card seen
+before it shows, and that P or ESC on the title opens the pause box. The code
+reads as the agent says (state is "hub" from boot), but a synthetic P and ESC
+on the title left the pause box closed in the fixture, and WNSEEN is a closure
+the probe cannot read. They need a real title keypress to settle, which the
+fixture cannot send; patching on the code read alone risks breaking the floor
+pause, so nothing was changed.
+
+Not verified: the real title screen under a hardware key; his own eye.
