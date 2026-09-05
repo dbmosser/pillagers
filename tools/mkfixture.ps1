@@ -1015,6 +1015,7 @@ window.__syncReport=function(){ syncAutoEx(); return document.getElementById('re
 // driven rather than read. __load is loadOf(), a loadout helper, and calling it
 // for this proved nothing at all.
 window.__loadProfile=function(){ return loadProfile(); };
+window.__applyLoaded=(typeof applyLoadedProfile==='function')?function(prof){ applyLoadedProfile({key:SKEY,value:JSON.stringify(prof)}); return true; }:undefined;
 
 window.__status={player:function(){ return playerStatus(); },raider:function(e){ return raiderStatus(e); },col:STATCOL};
 window.__board=function(){ renderSeason(); return ROADMAP; };
@@ -5432,6 +5433,32 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.44',what:'loading a pre-mig945 save keeps the player saved dials: the rig-buyback migration persists through storeSet without saving the defaults over the config before the cfgv block reads it, and the buyback still runs',
+   run:function(){
+     if(!(window.__applyLoaded&&window.__P&&window.__cfg)) return 'SKIP: this fixture cannot drive the loader synchronously (older build has no applyLoadedProfile seam)';
+     var KEY='salvagerun:profile', saved;
+     try{ saved=localStorage.getItem(KEY); }catch(e){ return 'SKIP: localStorage is not reachable here'; }
+     var bad=[];
+     try{
+       // A pre-mig945 save with a DISTINCTIVE dial that neither a default nor a
+       // migration produces: ambient 250 (default 190; the cfgv-12 migration only
+       // moves 150 to 190, so 250 must be left alone). A rig in the stash so the
+       // buyback has work. cfgv 12 so migrations WOULD run if reached.
+       var prof={credits:5000, xp:100, cfg:{ambient:250, raidSec:480}, cfgv:12, stash:['rig_medium'], pname:'TESTER'};
+       window.__applyLoaded(prof);
+       var P=window.__P(), CFG=window.__cfg();
+       // THE FIX: the saved dial survives the load, both in the profile and live.
+       if(!(P.cfg&&P.cfg.ambient===250)) bad.push('the saved ambient 250 loaded back as '+(P.cfg?P.cfg.ambient:'(cfg null)')+', so the rig-buyback migration saved defaults over the player config');
+       if(CFG.ambient!==250) bad.push('the live CFG.ambient loaded as '+CFG.ambient+' rather than the saved 250, so the config did not reach the game');
+       if(P.cfgv===17) bad.push('cfgv was stamped to 17 during the load, which is saveProfile running before the cfgv block');
+       // CONTROL: the buyback still ran, or the fix broke the migration.
+       if(!(P.credits>5000)) bad.push('control: the rig buyback did not pay (credits '+P.credits+'), so the migration no longer runs');
+       if(P.stash&&P.stash.indexOf('rig_medium')>=0) bad.push('control: the bought-back rig is still in the stash, so the buyback did not run');
+     } finally {
+       try{ if(saved===null) localStorage.removeItem(KEY); else localStorage.setItem(KEY, saved); }catch(e){}
+       try{ if(window.__cleanProfile) __cleanProfile(); }catch(e){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'11.43',what:'the baked text edits are his latest set (71), including the title-screen and tutorial lines he rewrote after the v11.42 snapshot',
    run:function(){
      if(!(window.__tx&&__tx.get&&__tx.ship)) return 'SKIP: this build cannot read the shipped text map';
@@ -11435,7 +11462,8 @@ window.__REGRESS=[
      if(z<tr*0.92-0.01) bad.push('a saved size of 0.7 draws the Undercroft at '+z.toFixed(2)+', below the screen factor '+(tr*0.92).toFixed(2));
      // The profile itself: loading a size below 1.0 reads as 1.0.
      // The loader is asynchronous (it reads storage and resolves later), so the floor it applies is read from its source rather than awaited.
-     if(String(loadProfile).indexOf(['menuZoom','<1)P.menuZoom=1'].join(''))<0) bad.push('the profile loader has no floor: a saved size below 1.0 would load as it was');
+     var _lpsrc=String(loadProfile)+((typeof applyLoadedProfile==='function')?(' '+String(applyLoadedProfile)):'');
+     if(_lpsrc.indexOf(['menuZoom','<1)P.menuZoom=1'].join(''))<0) bad.push('the profile loader has no floor: a saved size below 1.0 would load as it was');
      // The Settings steps: from the smallest UI step downward the size stays at or above 1.0.
      P2.menuZoom=1.0; P2.uiScale=UISCALES[0];
      if(typeof hudSizeStep==='function'){ try{ hudSizeStep(-1); }catch(e2){} if((P2.menuZoom||0)<1) bad.push('a size step took the size to '+P2.menuZoom); }

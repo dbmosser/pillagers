@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.43';
+var VER='11.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.43';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.43';
+var WHATSNEW_VER='11.44';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'YOUR SETTINGS SURVIVE A LOAD AGAIN. A one-time cleanup that runs when the game opens an older save was saving the default settings over yours before your own were read back, so a returning player could find the sliders reset. Your saved settings are kept now.',
   'THE IN-GAME WORDING IS UPDATED. A batch of edits to shop copy, item descriptions, settings and menus is now built into the game.',
   'NO TWO CONTRACTS ON THE BOARD ARE THE SAME JOB. Finishing a contract used to be able to drop a copy of a job you already had back onto the board, wasting a slot. The freed slot now follows the same no-duplicate rule the board fills by.',
   'A VENTED PILLBOX STAYS STUNNED AS LONG AS IT SHOULD. The stun from a vent shot on a Pillbox was draining almost twice as fast as the setting says, so it came back to life early. It now holds for the full lockout, like every other machine.',
@@ -2308,9 +2309,7 @@ function rigBuyback(pr){
   if(n){ pr.credits=(pr.credits||0)+paid; pr.rigBuyback={n:n,c:paid}; }
   return {n:n,credits:paid};
 }
-function loadProfile(){
-  try{
-    return storeGet().then(function(r){
+function applyLoadedProfile(r){
       if(r&&r.value){ var d=JSON.parse(r.value);
         if(d&&typeof d.credits==='number'){ P=d;
 if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={};
@@ -2327,7 +2326,13 @@ if(P.rigs!==undefined) delete P.rigs;
 // this a saved stash keeps a key with no row in the item table and every panel
 // that draws it reads undefined.
 // rigBuyback is declared above loadProfile, not in it, so anything can call it.
-if(!P.mig945){ rigBuyback(P); P.mig945=1; saveProfile(); }
+if(!P.mig945){ rigBuyback(P); P.mig945=1;
+  // v11.42: persist through storeSet, NOT saveProfile. saveProfile writes
+  // P.cfg=CFG;P.cfgv=17, and here CFG is still the file-scope default because
+  // the cfgv block below has not loaded the saved P.cfg yet, so saveProfile wiped
+  // the player's dials and stamped cfgv 17, skipping every cfgv migration. storeSet
+  // writes P as it stands, saved cfg and cfgv intact, and still locks in the buyback.
+  storeSet(JSON.stringify(P)); }
 // v8.38, audit: STAMPED. This is the v7.39 fold-to-one-map migration and it had
 // no stamp, so it ran on every load rather than once. That was harmless while
 // there was one map. There are two now, both offered, and index 1 is THE COLD
@@ -2529,7 +2534,10 @@ if((P.cfgv>=9&&P.cfgv<=17)&&P.cfg){
             applyCfg(DEF,P.cfg); if(P.cfg.preset)CFG.preset=P.cfg.preset; try{ applyGameOpts(); }catch(e){} }
           else P.cfg=null;
         } }
-    }).catch(function(){});
+}
+function loadProfile(){
+  try{
+    return storeGet().then(applyLoadedProfile).catch(function(){});
   }catch(e){}
   return Promise.resolve();
 }
@@ -28065,7 +28073,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.43: his text edits refreshed to the latest set from his export, 71 now, adding the four title-screen and tutorial lines he rewrote after the v11.42 snapshot (the intro card, the loot/extract/lift lines). Same bake as v11.42: TXSHIP default map plus derived TXPSHIP patterns, consulted by TX under his P.txt, encoding normalized. From his instruction to pick the edits up permanently while he was still editing.',
+  now:'v11.44: the v9.45 rig-buyback migration (mig945) ran saveProfile during loadProfile, before the cfgv block had loaded CFG from the saved P.cfg; saveProfile writes P.cfg=CFG and P.cfgv=17, and CFG was still the file-scope default, so a returning saves config was wiped and cfgv stamped 17, skipping every cfgv migration. Reproduced: a pre-mig945 profile with ambient 250 loaded back as 190. It now persists through storeSet, which writes P as it stands with the saved cfg and cfgv intact, and still locks in the buyback. The load body was factored into applyLoadedProfile so a check drives the real loader. From the contract agent.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

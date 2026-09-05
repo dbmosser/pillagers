@@ -1,0 +1,12 @@
+v11.44: the rig-buyback migration saved defaults over the player's config
+
+loadProfile runs mig945 (the v9.45 rig buyback) before the cfgv block loads CFG
+from the saved P.cfg. mig945 ended with saveProfile, which writes P.cfg=CFG and
+P.cfgv=17; CFG was still the file-scope default there, so it wiped the player's
+saved dials and stamped cfgv 17, skipping every cfgv migration. Reproduced: a
+pre-mig945 profile with ambient 250 loaded back as 190. It now persists through
+storeSet, keeping the saved cfg and cfgv intact while still locking in the
+buyback. The post-load body was factored into applyLoadedProfile so check 11.44
+drives the real loader synchronously; controls confirm the buyback still runs.
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

@@ -1,0 +1,46 @@
+## v11.44 - THE RIG-BUYBACK MIGRATION SAVED DEFAULTS OVER THE PLAYER'S CONFIG
+
+Queued at v11.31 ("a save mid-load writes P.cfg before the cfgv block reads it")
+and now reproduced. loadProfile runs a chain of one-time migrations on the saved
+profile as it loads. One of them, mig945, is the v9.45 rig buyback: rigs left
+the game, so anything the player still owns is bought back once. It ended with a
+call to saveProfile to lock the buyback in. saveProfile does P.cfg=CFG and
+P.cfgv=17. The trouble is WHERE it runs: mig945 sits near the top of loadProfile,
+well before the cfgv block that loads CFG from the saved P.cfg. At that point CFG
+is still the file-scope default (preset B), so saveProfile wrote the DEFAULT dials
+over the player's saved ones and stamped cfgv 17. The cfgv block then saw cfgv 17
+and applied none of its migrations, and loaded the defaults it had just written.
+The net effect: the first time an older save is opened, the player's tuning is
+silently reset and every pending cfgv migration is skipped.
+
+**REPRODUCED.** A pre-mig945 profile carrying a distinctive ambient of 250 (the
+default is 190, and the cfgv-12 migration only moves 150 to 190, so 250 should be
+left alone) with a rig in the stash and cfgv 12. Driven through the real loader:
+ambient came back as 190, cfgv became 17, and the credits rose by the rig payout
+(so the buyback itself ran). The saved dial was gone.
+
+**THE FIX.** mig945 persists through storeSet, the raw writer, instead of
+saveProfile. storeSet writes the profile exactly as it stands, saved cfg and cfgv
+intact, and still locks in the buyback (credits and stash) and the mig945 stamp.
+Nothing downstream changes: the cfgv block now sees the real saved cfgv and cfg
+and migrates them as it always meant to.
+
+**MEASURED after the fix.** The same profile loads with ambient still 250 in the
+profile and live in CFG, cfgv left at 12, and the buyback still paid with the rig
+gone from the stash. Because loadProfile is asynchronous and the corpus runner is
+synchronous, the post-load body was factored into a named applyLoadedProfile (a
+pure extraction, storeGet().then(applyLoadedProfile) runs the identical code), so
+the check drives the REAL loader synchronously rather than a copy of it. The
+check requires the saved dial to survive in both the profile and CFG, cfgv not to
+be stamped 17, and two controls that the buyback still pays and removes the rig.
+
+The control for teeth: the exact same scenario run on the v11.43 build through the
+async loader clobbered ambient to 190 and stamped cfgv 17, and a throwaway v11.44
+build with the saveProfile clobber put back fails the check on the ambient
+assertion. The corpus control fixture from v11.43 has no applyLoadedProfile seam
+and so skips the check, which the check says plainly.
+
+Not verified: his own play; whether his current live save still carries the
+damage from when mig945 first ran under the old code (it would have reset his
+tuning once, back at v9.45, and cannot be undone from here); saves in storage
+slots other than the active one are not exercised by the check.
