@@ -1,0 +1,49 @@
+## v11.18 - NO INTERIOR WALL ENDS INSIDE A DOORWAY
+
+The map generation fault v11.16 found while walking THE COLD MILE, and closed.
+
+**MEASURED FIRST, on v11.17 at seed 4242.** A spine corridor wall runs from
+side wall to side wall, an L split runs from top wall to bottom, and an alcove
+hangs off a wall at a rolled height, and none of the three plans ever knew where
+the shell had put its doors. A door is touched when a partition reaches into its
+opening zone, the gap grown 40 units through the wall, and dead when that
+partition leaves under 30 units on both sides of itself. **COLD STORAGE: 3 of 37
+doors touched, none dead. THE COLD MILE: 19 of 151 touched, 4 dead**, among them
+the door at 2960,3167 that v11.16 traced, 26 units above the wall and 22 below.
+A dead door is a door nothing 30 wide can use, and every route was already
+being planned round it.
+
+**THE FIX.** Every partition that reaches into a door's zone on its own building,
+the gap grown 30 along the wall and 40 through it, has that part cut away, so
+the door opens onto floor. A cut in the middle of a partition splits it in two,
+each half a clone that keeps every tag the wall had, and an end shorter than 3
+units is dropped.
+
+**MY FIRST CUT MOVED THE WORLD, AND THE CHECK SAID SO.** I ran the trim inside
+makeBuilding, before anything was placed, and the mile's 374 entities became
+369: crawlers are counted into the rooms the partitions make, and a corridor
+wall cut back from a door is a corridor joined to a room. The trim now runs at
+the END of the map build, after every roll, where the ruin pass runs, so
+placement sees the walls it always saw and only the finished geometry changes.
+Entities 85 and 374 both ways, containers 165 and 593 both ways, furniture
+identical both ways because it was placed before the cut.
+
+**MEASURED AFTER:** touched 3 to 0 and 19 to 0, dead 0 to 0 and 4 to 0. Walls
+552 to 551 and 2206 to 2205, one segment a map net, and v9.81 re-pins to that
+with the reason in its text. Lamps 59 to 58 and 265 to 262, since the lamp pass
+asks the finished walls where it may stand; the sky for the seed did not roll
+this time.
+
+**NEW CHECK v11.18** surveys every door on both maps with the rule on and
+requires no door touched and none dead. Controls: entities and containers must
+be identical with the rule off, or the cut drew a random number, which is the
+control that caught my first cut; and with the rule off the mile must still
+show at least 3 dead doors and 12 touched, or the dial does not restore the old
+partitions. v11.16's old arm switches this rule off as well as its own, because
+the partition it stood the crawler against is the one this build cuts back. On a
+v11.17 fixture the finding fires for both maps.
+
+Not verified: the extract rate, still. And the cut is judged by geometry and by
+routes, not by eye: a corridor that now opens at its end next to a door reads
+differently from one that met the wall, and no picture was taken. partDoor 0
+restores the old partitions.

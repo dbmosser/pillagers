@@ -1,0 +1,18 @@
+v11.18: no interior wall ends inside a doorway
+
+Measured on v11.17 at seed 4242: 3 doors on COLD STORAGE and 19 on THE COLD
+MILE opened onto the end of a partition, and 4 of the mile's left under 30 units
+either side of it, so nothing 30 wide could use the door. None of the spine, L
+split or alcove plans knew where the shell had put its doors.
+
+Every partition reaching into a door's zone on its own building has that part
+cut away, at the end of the map build after every roll, like the ruin pass. My
+first cut ran inside makeBuilding and turned 374 entities into 369, because
+crawlers are counted into the rooms the partitions make; the check caught it.
+Entities, containers and furniture are identical both ways now.
+
+After: touched 3 and 19 to 0, dead 4 to 0. Walls 552 to 551 and 2206 to 2205,
+v9.81 re-pinned.
+
+Not verified: the extract rate, and the look of a corridor that now opens at
+its end. partDoor 0 restores the old partitions.

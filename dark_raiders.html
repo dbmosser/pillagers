@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.17';
+var VER='11.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.17';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.17';
+var WHATSNEW_VER='11.18';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'NO INTERIOR WALL ENDS INSIDE A DOORWAY. A few doors opened straight onto the end of a wall inside, with too little room either side of it to get through. Those walls now stop short of the door.',
   'THE DOORWAYS INSIDE BUILDINGS ARE CLEAR OF FURNITURE TOO. A few buildings had a piece parked in the gap between two rooms, so the back room could be seen and never reached, by you or by anything hunting you. Nothing is parked in those gaps now.',
   'A DOORWAY WITH A WALL RIGHT BEHIND IT NO LONGER CATCHES A MACHINE ON THAT WALL. The route through a door stayed clear of the door frame but not of a partition just inside it, so a machine cutting through a neighbouring building could be sent straight into the partition and stand there. It keeps its distance from every wall now.',
   'MACHINES WALK THROUGH THE MIDDLE OF DOORS AND ROUND CORNERS. Their route was planned for a body smaller than they are, so some of them steered at a door jamb or a partition end they could see past and not fit past, and stood there. The route is planned for their own size now.',
@@ -1459,7 +1460,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:2.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,wxXp:1.1,raiderCrawl:1,nightDens:1.35,bldgRuin:0.09,touchSees:1,winWalk:1,furnDoor:1,navBody:15,doorClear:1,furnIDoor:1,furnGap:1};
+  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:2.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,wxXp:1.1,raiderCrawl:1,nightDens:1.35,bldgRuin:0.09,touchSees:1,winWalk:1,furnDoor:1,navBody:15,doorClear:1,furnIDoor:1,furnGap:1,partDoor:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -6156,6 +6157,54 @@ function buildFixedMap(def){
   // cell 12 from a wall is a place a 15 unit body cannot stand, and the string
   // pull then handed bodies waypoints on jambs and corners they could see and
   // not reach. Measured: the same three buildings have no route either way.
+  // v11.18: NO PARTITION ENDS INSIDE A DOORWAY. A spine wall runs wall to wall,
+  // an L split runs floor to ceiling and an alcove hangs off a wall at a rolled
+  // height, and none of them knew where the shell had put its doors. Measured
+  // on v11.17 at seed 4242: 3 doors on COLD STORAGE and 19 on THE COLD MILE had
+  // a partition running into the gap, and 4 of the mile's left under 30 units
+  // either side of it, so nothing 30 wide could use the door at all; the door
+  // at 2960,3167 was 26 above and 22 below. Every partition that reaches into
+  // a door's zone on its own building, the gap grown 30 along the wall and 40
+  // through it, has that part cut away, so the door opens onto floor.
+  // AT THE END, AFTER EVERY ROLL, like the ruin pass: my first cut ran inside
+  // makeBuilding and 374 entities on the mile became 369, because crawlers are
+  // counted into the rooms the partitions make. Placement sees the walls it
+  // always saw; only the finished geometry changes. partDoor 0 restores.
+  if((CFG.partDoor===undefined?1:CFG.partDoor)&&BDOORS.length){
+    var _pcut=0,_pend=walls.length;
+    for(var _pi=0;_pi<BDOORS.length;_pi++){
+      var _pd=BDOORS[_pi],_pdh=_pd.w>=_pd.h;
+      var _zx=_pdh?_pd.x-30:_pd.x-40,_zy=_pdh?_pd.y-40:_pd.y-30;
+      var _zw=_pdh?_pd.w+60:_pd.w+80,_zh=_pdh?_pd.h+80:_pd.h+60;
+      for(var _pj=0;_pj<_pend;_pj++){
+        var _pe=walls[_pj];
+        if(!_pe||_pe.ib===undefined||_pe.furn||_pe.lockWall||_pe.w<3||_pe.h<3) continue;
+        if(!(_pe.x<_zx+_zw&&_pe.x+_pe.w>_zx&&_pe.y<_zy+_zh&&_pe.y+_pe.h>_zy)) continue;
+        // its own building's door, or leave it: the door has to lie on that
+        // building's perimeter.
+        var _pb=buildings[_pe.ib];
+        if(!_pb||_pd.x<_pb.x-1||_pd.x+_pd.w>_pb.x+_pb.w+1||_pd.y<_pb.y-1||_pd.y+_pd.h>_pb.y+_pb.h+1) continue;
+        if(_pe.w>=_pe.h){
+          var _a=Math.max(_pe.x,_zx),_b=Math.min(_pe.x+_pe.w,_zx+_zw),_L=_a-_pe.x,_R=(_pe.x+_pe.w)-_b;
+          if(_L>=3&&_R>=3){ var _c2={},_k2; for(_k2 in _pe) if(Object.prototype.hasOwnProperty.call(_pe,_k2)) _c2[_k2]=_pe[_k2]; _c2.x=_b; _c2.w=_R; walls.push(_c2); _pe.w=_L; }
+          else if(_L>=3){ _pe.w=_L; }
+          else if(_R>=3){ _pe.x=_b; _pe.w=_R; }
+          else { _pe.w=0; }
+        } else {
+          var _a2=Math.max(_pe.y,_zy),_b2=Math.min(_pe.y+_pe.h,_zy+_zh),_T=_a2-_pe.y,_D=(_pe.y+_pe.h)-_b2;
+          if(_T>=3&&_D>=3){ var _c3={},_k3; for(_k3 in _pe) if(Object.prototype.hasOwnProperty.call(_pe,_k3)) _c3[_k3]=_pe[_k3]; _c3.y=_b2; _c3.h=_D; walls.push(_c3); _pe.h=_T; }
+          else if(_T>=3){ _pe.h=_T; }
+          else if(_D>=3){ _pe.y=_b2; _pe.h=_D; }
+          else { _pe.h=0; }
+        }
+        _pcut++;
+      }
+    }
+    if(_pcut){
+      for(var _pk=walls.length-1;_pk>=0;_pk--){ var _pq=walls[_pk]; if(_pq&&_pq.ib!==undefined&&!_pq.furn&&(_pq.w<3||_pq.h<3)) walls.splice(_pk,1); }
+      mapNav=buildNav(walls);
+    }
+  }
   var _nb=(CFG.navBody===undefined?15:CFG.navBody);
   var mapNavD=carveDoors(_nb>0?buildNav(walls,_nb):mapNav,BDOORS,walls,_nb);
   // v11.12: the window segments are kept rather than dropped. A window is
@@ -27915,7 +27964,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.17: the doorways inside buildings are recorded and furniture keeps out of them, the way v11.14 did for the front doors. Measured on v11.16: five interiors on THE COLD MILE had no route in from their own door, all five open with the furniture stripped. No random number is drawn, so the seeded world does not move.',
+  now:'v11.18: no interior wall ends inside a doorway. Measured on v11.17 at seed 4242: 3 doors on COLD STORAGE and 19 on THE COLD MILE opened onto the end of a partition, and 4 of the mile\'s left under 30 units either side of it, so nothing 30 wide could use the door. Every partition reaching into a door\'s zone has that part cut away. No random number is drawn.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -5375,6 +5375,41 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.18',what:'no interior wall ends inside a doorway, so every front door opens onto floor a body can stand on',
+   run:function(){
+     if(!(window.__deploy&&window.__state)) return 'SKIP: this fixture cannot build a map';
+     var bad=[], NM=['COLD STORAGE','THE COLD MILE'];
+     // A door is DEAD when a partition reaches into its opening and leaves under
+     // 30 units on both sides of itself; TOUCHED when a partition reaches in at
+     // all. The zone is the gap grown 40 through the wall.
+     function survey(mi,dial){
+       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({partDoor:dial});
+       __deploy({kit:[],safe:null,mapIx:mi,seed:4242});
+       var g=__state(),W=g.map.walls,Ds=g.map.doors,dead=[],touched=0,i,j;
+       for(i=0;i<Ds.length;i++){ var d=Ds[i],h=d.w>=d.h;
+         var zx=h?d.x:d.x-40, zy=h?d.y-40:d.y, zw=h?d.w:d.w+80, zh=h?d.h+80:d.h, worst=null;
+         for(j=0;j<W.length;j++){ var w=W[j]; if(w.furn||w.ib===undefined) continue;
+           if(w.x<zx+zw&&w.x+w.w>zx&&w.y<zy+zh&&w.y+w.h>zy){
+             touched++;
+             var lo=h?d.x:d.y, hi=h?d.x+d.w:d.y+d.h, a=h?w.x:w.y, b=h?w.x+w.w:w.y+w.h;
+             var room=Math.max(a-lo,hi-b);
+             if(worst===null||room<worst) worst=room; } }
+         if(worst!==null&&worst<30) dead.push(i); }
+       return {doors:Ds.length,touched:touched,dead:dead,ents:g.ents.length,cont:(g.containers||[]).length};
+     }
+     var on=[survey(0,1),survey(1,1)], off=[survey(0,0),survey(1,0)], mi;
+     for(mi=0;mi<2;mi++){
+       // THE FINDING. Measured on v11.17: 0 dead of 37 and 4 dead of 151, and
+       // 3 and 19 touched.
+       if(on[mi].dead.length) bad.push(NM[mi]+': '+on[mi].dead.length+' of '+on[mi].doors+' front doors open onto the end of an interior wall with under 30 units either side ['+on[mi].dead.join(',')+']');
+       if(on[mi].touched) bad.push(NM[mi]+': '+on[mi].touched+' partitions still reach into a doorway zone');
+       // CONTROL: the world did not move. The cut draws no random number.
+       if(on[mi].ents!==off[mi].ents||on[mi].cont!==off[mi].cont) bad.push(NM[mi]+': entities or containers moved between the arms, '+off[mi].ents+'/'+off[mi].cont+' to '+on[mi].ents+'/'+on[mi].cont+', so the cut drew a random number');
+     }
+     // CONTROL TWO: the old partitions must still show the fault on the mile.
+     if(off[1].dead.length<3) bad.push('control: with partDoor off THE COLD MILE has only '+off[1].dead.length+' dead doors against the 4 measured, so the dial does not restore the old partitions');
+     if(off[1].touched<12) bad.push('control: with partDoor off only '+off[1].touched+' partitions reach into a doorway zone on the mile against the 19 measured');
+     return bad.length?bad.join('; '):null; }},
   {v:'11.17',what:'the doorways inside buildings are recorded and kept clear of furniture, so every building interior has a route in from its own front door',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__loop)) return 'SKIP: this fixture cannot build a map';
@@ -5450,7 +5485,7 @@ window.__REGRESS=[
      // One crawler in the middle of a building, the player on open ground
      // inside the world outside it, the chase held on, a fresh deploy per trial.
      function drive(mi,bIx,doorClear,frames,rectWant){
-       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({doorClear:doorClear});
+       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({doorClear:doorClear,partDoor:doorClear});
        __deploy({kit:[],safe:null,mapIx:mi,seed:4242});
        var g=__state(),p=g.player,B=g.map.buildings,W=g.map.walls,cw=null,u, WW=g.map.cols*g.map.cw, HH=g.map.rows*g.map.ch;
        for(u=0;u<g.ents.length;u++) if(g.ents[u].kind==='crawler'){ cw=g.ents[u]; break; }
@@ -12683,9 +12718,11 @@ window.__REGRESS=[
      // did not move.
      // v11.17: 2308 and 580 became 2206 and 552. Furniture in interior doorways
      // and furniture wedged in a body-width gap are not placed any more.
-     if(mile.walls!==2206||cold.walls!==552)
+     // v11.18: 2206 and 552 became 2205 and 551. Partitions reaching into a
+     // doorway are cut back at the end of the build; net one segment a map.
+     if(mile.walls!==2205||cold.walls!==551)
        bad.push('control: the maps hold '+mile.walls+' and '+cold.walls+
-                ' walls rather than 2206 and 552, so the split geometry moved');
+                ' walls rather than 2205 and 551, so the split geometry moved');
      if(mile.ents!==374||cold.ents!==85)
        bad.push('control: the maps spawn '+mile.ents+' and '+cold.ents+
                 ' rather than 374 and 85, so the seeded stream moved');
