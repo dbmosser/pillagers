@@ -226,6 +226,62 @@ STILL OPEN:
     floor, or take the outfit rack out of the crowd roll entirely so a suit is
     something only he wears. Say "suits rare", "no suits down there", or nothing.
 
+## FOR HIS RULING, 2026-09-04: THE PILLAGERS DO NOT GET OUT
+
+Found at v11.23 while deep-verifying the v11.12 line "the bot and the pillagers
+route differently now as well". Every pillager number the sim had ever produced
+was cut at the robot's death, about two minutes in, because the sim stops
+moving every entity the moment the player dies or leaves. v11.23 parks the
+player out of the world, keeps him alive, and runs the raid to its clock.
+
+MEASURED, three seeds, both maps, the raid clock (540 s on both maps as the fixture
+pins it), roster tally at the end. "Roster" counts the opening pillagers plus every
+man the floor rule sent in after them.
+
+    map            seed  arm                        roster  out  alive  downed  dead  looted
+    COLD STORAGE   9001  shipping rules                 40    2      4       1    33     3.3
+    COLD STORAGE   9001  war off (machVsRaider 0)       24   20      4       0     0       7
+    COLD STORAGE   9001  seven door dials off           33    1      3       1    28     3.4
+    THE COLD MILE  9001  shipping rules                 48    0      4       0    44     4.3
+    THE COLD MILE  9001  war off (machVsRaider 0)       45   41      4       0     0     6.9
+    THE COLD MILE  9001  seven door dials off           49    0      4       0    45     2.9
+    COLD STORAGE   9002  shipping rules                 44    0      4       1    39     2.3
+    COLD STORAGE   9002  war off (machVsRaider 0)       21   17      4       0     0     6.9
+    COLD STORAGE   9002  seven door dials off           45    0      4       0    41       2
+    THE COLD MILE  9002  shipping rules                 54    1      3       1    49     3.4
+    THE COLD MILE  9002  war off (machVsRaider 0)       44   40      4       0     0     6.8
+    THE COLD MILE  9002  seven door dials off           46    3      4       0    39     4.6
+    COLD STORAGE   9003  shipping rules                 28    0      3       1    24     4.5
+    COLD STORAGE   9003  war off (machVsRaider 0)       25   21      4       0     0     6.4
+    COLD STORAGE   9003  seven door dials off           24    0      3       1    20     2.4
+    THE COLD MILE  9003  shipping rules                 67    0      4       0    63     3.6
+    THE COLD MILE  9003  war off (machVsRaider 0)       43   39      4       0     0     6.6
+    THE COLD MILE  9003  seven door dials off           47    2      3       2    40     4.4
+
+    TOTAL shipping rules             raids 6 roster 281 out 3 (1.1 percent) dead 252 (89.7 percent) alive at the end 22
+    TOTAL war off (machVsRaider 0)   raids 6 roster 202 out 178 (88.1 percent) dead 0 (0.0 percent) alive at the end 24
+    TOTAL seven door dials off       raids 6 roster 244 out 6 (2.5 percent) dead 213 (87.3 percent) alive at the end 21
+
+Two of your own choices make this world. Q31 put the machines at war with the
+pillagers (machVsRaider, on since cfgv 16, measured then as no change to YOUR
+extract rate). Your v6.71 note put a floor under the count: "fewer than four
+alive and more turn up regardless of the budget", one every eight seconds. So
+the machines kill nearly everyone, the floor sends more, and a raid ends with a
+roster of forty names, a handful alive, and almost nobody out. With the war
+switched off, pillagers loot seven containers and leave, most of them inside
+three minutes, and on the mile nobody dies at all.
+
+NOT CHANGED, by your order of 2026-09-04: no in-raid balancing before the
+alpha. The options, for a word from you after the alpha or now if you want it
+in: leave it (it reads as a killing ground and it is yours); "peace" (machines
+ignore pillagers again, pillagers extract at real-player rates, the map is
+quieter); or "fewer waves" (keep the war, drop the floor so the roster stops
+refilling). Say "leave it", "peace", or "fewer waves".
+
+Also seen, not acted on: with the war off, pillager-on-pillager fighting killed
+nobody in nine minutes on the mile, so the feud system either rarely fires or
+never finishes a downed man.
+
 ## HIS NOTES 21 AND 22, 2026-09-04
 
 21. "sometimes my shots make a red noise circle when they hit something,
@@ -1344,6 +1400,7 @@ AND THE SECOND HALF OF THE STRETCH:
 | THE FOLLOWER AND SEEKPOINT DISAGREED ABOUT ARRIVING | v11.20 | found by reading v11.19's timeouts, 5 old and 12 new. Batch outcomes cannot be replayed seed by seed because the profile drifts across a run, so a seeded sim trace hook was added and seed 9071 walked: on the shipping rules the bot stood at 490,1157 inside building 6 from 45 to 120 seconds with a nine point route, its waypoint 24 units away, no stall and no slide. CAUSE, mine from v11.15: the follower counts a waypoint reached at 10 units or at 30 when the next is walkable, while seekPoint calls anything inside ONE STEP reached and returns without moving; at the sim's 0.15 second step a body steps 27, so 10 to 27 units is a deadlock, and a 0.1 second live frame steps 18 and can freeze a machine. FIX: reached at one step, floored at 10, both sites. MEASURED, the same 320 paired seeds with both arms fixed: old rules 32.2 percent, new rules 40.0, discordant 56 to 81, z 2.05, p 0.040; new-rule timeouts 12 to 0, old 5 to 4; mean raid 122 to 87 seconds; crawler 117 to 100, sentry 68 to 49, pillager 10 to 17. The seven building builds were a gain for the robot hidden under this stall. Check: seed 9071 never stands still fifteen seconds with a route and health; controls: the raid runs sixty seconds and moves five hundred units, navBody 0 does not stall either. Fails on a v11.19 fixture at 75 seconds. NOT MEASURED: the mile, and his own play |
 | THE COLD MILE, MEASURED THE SAME WAY | v11.21 | no game change. 320 paired seeds 9001 to 9320 on THE COLD MILE, robot at pinned greed, v11.20 follower fix in both arms, arm A the seven building dials off, arm B the shipping rules: old rules 25.9 percent, new 38.4; both 42, neither 156, old alone 41, new alone 81, z 3.62, p under 0.001. Mean raid 121 to 104 seconds, mean haul on extract 2,117 to 1,852. Killers old to new: crawler 129 to 110, sentry 71 to 60, pillager 20 to 15, listener 6 to 4, choir 6 to 2, bulwark 3 to 6, warden 1 to 0. Timeouts: old rules 1, new rules 0. Check: seeds 9001 to 9003 on the mile never stand still fifteen seconds with a route and health; controls: thirty samples and fifteen hundred units moved, the two arms build the same raid at seed 4242 (374/593) with the walls differing, and the fingerprint holds. On this fixture it passes in 35 seconds, three mile raids traced, the arms at 374 and 593 with the walls differing. NOT MEASURED: his own play; pillager balance is outside the bot |
 | TWO STILL OPEN LINES MEASURED SHUT: THE SEALED EIGHT AND THE NICHES | v11.22 | no game change. Reproduced first, both closed already. THE SEALED EIGHT (v9.72): the v9.79 flood on seven seeds of both maps, shipping rules, demolishes 0 and seals 0 every time, 84 and 20 buildings, entities unmoved; control lmCut off at 4242 still demolishes 5 and seals 3 on the mile (14, 20, 21) and 1 and 1 on cold storage (17). Closed by v9.77 to v9.81, never struck. THE NICHES (v10.40): pockets grouped and measured down to 12 by 12 on the five v10.40 seeds: shipping rules 0 on all, furnDoor, furnIDoor and furnGap off bring back 40x28 in building 72 (the v10.40 niche to the unit), 16x36, 12x12, 12x36, 24x12, 16x16; a niche is a wall gap with a table across its mouth and furnGap refuses exactly that. Check 11.22: no pocket 12 by 12 or larger and nothing demolished on the five seeds; controls: 84 buildings and 374 entities or SKIP, the old rules show at least 3 pockets (measured 6), both arms spawn the same count. Also tried: nRaider 0 builds a full map, 78 entities, no pillagers, so that audit line is refuted. Three stale lines struck. NOT MEASURED: his own play |
+| THE PILLAGERS' OWN RAID, READ TO THE CLOCK | v11.23 | no game change; a measurement and an instrument. FOUND: the sim step returns after the bot when the raid is over, so every pillager number ever read off the sim was cut at the robot's death, about two minutes in. INSTRUMENT: __simRaiders parks the player at -3000,-3000, pins his health, runs the seeded raid to CFG.raidSec and tallies the roster. MEASURED, three seeds, both maps, 540 s: machines at war (shipping) 3 of 281 pillagers out, 252 dead; war off (machVsRaider 0) 178 of 202 out, 0 dead; seven door dials off 6 of 244 out, 213 dead. The door builds are not the cause; his Q31 war plus his v6.71 floor rule (one more man every 8 s while fewer than four live) is a killing ground that refills. NOT CHANGED by his no-balancing order; FOR HIS RULING: leave it, peace, or fewer waves. Check 11.23: the parked raid at seed 9001 runs to the clock, tally equals roster, roster at least 7; controls: war off at least one out (20) and more than with the war on (2), both arms open with the same count. DEVNOW.next refreshed from the v7-era text. NOT MEASURED: his own play; the feud system (zero pillager-on-pillager deaths at peace) |
 | HIS TWO REAL RUNS, 2026-09-04, AUTHENTICATED AND CONSUMED | v10.98 | Run #1 v10.96 COLD STORAGE, fog at dawn, 59s, EXTRACT 2,685c from ONE container, 6 items, 18 shots at 67 percent, 4 crawlers killed, 1 down, revived twice by raiders and three revives total, 2 walls down, 1 story read, contracts haul and kill-crawler, moved 7,594, sprint 14s, crouch 0s, closest extract 1m, ents 105. Run #2 v10.96 COLD STORAGE, clear noon, 13s, ABANDON carrying 460c and 3 items, no shot fired, moved 1,181, closest extract 96m. Both real: real durations, real distance, a named weapon, no fixture signature. Profile after: 2 runs, 1 extracted, 0 died, credits 395,700 which is the cheat box, XP 343, stash 4. HIS 13 SECOND ABANDON IS UNEXPLAINED and is a question for him, not a defect I can measure |
 | TWO CHECKS DISAGREED ABOUT THE SERVO | v10.97 | Caught by the full corpus. v9.43 requires the servo to be SELLABLE because there is no repair to keep it for; v10.97 requires it KEPT because the contract board asks for it by name. Both right about their own premise. v9.43's real subject is the REASON and not the shelf, which its own message says: it was written when a dead repair economy was the only thing keeping the servo. It asks about the reason now and fails if the servo's KEEP line mentions repairs while the wear table has one band. Its sibling assertion, that the servo is not a crafting part, and every control around it, are untouched and still pass. No dial moves |
 | FOUND BY THE v10.96 CHECK: A PRIMED ABANDON SURVIVES THE PAUSE BOX CLOSING | v10.96 | The control asserting the raid pause box still offers a way to abandon PASSED alone and FAILED on the full corpus, reporting RESUME RUN and NO, KEEP PLAYING. Not a corpus artefact: Abandon run does not abandon, it ARMS, becoming NO, KEEP PLAYING and revealing a red YES, ABANDON THIS RUN beside it, which is the right shape for an irreversible act; but the only thing that disarmed it was pressing Resume. Close the box with Escape while armed, the fastest way anyone closes anything, and the arm is still there next time it opens, one click from ending a raid he came back to finish. A check twenty places earlier had armed it and walked away, which is exactly what a player does; the leak between checks was the leak in the game. FIX: opening the box disarms it, always, through one function both the open and Resume call rather than two copies of the same four lines. The v10.96 check now arms the button on purpose, closes the box, reopens it and requires the confirm to be gone; that assertion also fails on a v10.95 fixture, so the bug predates this build. No dial moves |

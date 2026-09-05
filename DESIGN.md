@@ -40024,6 +40024,92 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.23 - THE PILLAGERS' OWN RAID, READ TO THE CLOCK
+
+Nothing in the game changes in this build. It is a measurement, an instrument,
+and a line on his desk.
+
+**WHY.** Deep-verifying the v11.12 line "the bot and the pillagers route
+differently now as well" turned up something older than the route builds:
+every pillager number the sim has ever produced was cut at the robot's death.
+The sim's step runs the bot, then returns if the raid is over, and only then
+moves the entities, so the moment the robot dies or leaves, about two minutes
+in, every pillager freezes where he stands and nothing after that is observed.
+The killer tables, the roster, the "raiders extracted with 6.5 minutes left"
+note of v3.36: all of it was the first two minutes.
+
+**THE INSTRUMENT.** A fixture hook parks the player at -3000,-3000, outside
+every sight test, pins his health each step, and runs the seeded sim raid to
+CFG.raidSec, then tallies the roster: out (extracted), alive, downed, dead, and
+when each man who got out did. The raid runs the full 540 seconds on both maps
+with the player parked (checked: over stays null, and the tally sums to the
+roster). A first attempt kept the robot playing and immortal; it extracted at
+127 to 229 seconds and froze the world the same way, which is why the player is
+parked and not merely unkillable.
+
+**MEASURED, three seeds, both maps, 540 seconds, roster tallied at the end.**
+Roster is the opening pillagers plus every man the floor rule sent in after
+them. Three arms: the shipping rules; the same with the machines at peace with
+pillagers (machVsRaider 0); and the seven door dials of v11.12 to v11.18 off.
+
+    map            seed  arm                        roster  out  alive  downed  dead  looted
+    COLD STORAGE   9001  shipping rules                 40    2      4       1    33     3.3
+    COLD STORAGE   9001  war off (machVsRaider 0)       24   20      4       0     0       7
+    COLD STORAGE   9001  seven door dials off           33    1      3       1    28     3.4
+    THE COLD MILE  9001  shipping rules                 48    0      4       0    44     4.3
+    THE COLD MILE  9001  war off (machVsRaider 0)       45   41      4       0     0     6.9
+    THE COLD MILE  9001  seven door dials off           49    0      4       0    45     2.9
+    COLD STORAGE   9002  shipping rules                 44    0      4       1    39     2.3
+    COLD STORAGE   9002  war off (machVsRaider 0)       21   17      4       0     0     6.9
+    COLD STORAGE   9002  seven door dials off           45    0      4       0    41       2
+    THE COLD MILE  9002  shipping rules                 54    1      3       1    49     3.4
+    THE COLD MILE  9002  war off (machVsRaider 0)       44   40      4       0     0     6.8
+    THE COLD MILE  9002  seven door dials off           46    3      4       0    39     4.6
+    COLD STORAGE   9003  shipping rules                 28    0      3       1    24     4.5
+    COLD STORAGE   9003  war off (machVsRaider 0)       25   21      4       0     0     6.4
+    COLD STORAGE   9003  seven door dials off           24    0      3       1    20     2.4
+    THE COLD MILE  9003  shipping rules                 67    0      4       0    63     3.6
+    THE COLD MILE  9003  war off (machVsRaider 0)       43   39      4       0     0     6.6
+    THE COLD MILE  9003  seven door dials off           47    2      3       2    40     4.4
+
+    TOTAL shipping rules             raids 6 roster 281 out 3 (1.1 percent) dead 252 (89.7 percent) alive at the end 22
+    TOTAL war off (machVsRaider 0)   raids 6 roster 202 out 178 (88.1 percent) dead 0 (0.0 percent) alive at the end 24
+    TOTAL seven door dials off       raids 6 roster 244 out 6 (2.5 percent) dead 213 (87.3 percent) alive at the end 21
+
+**READ PLAINLY.** With the machines at war, 3 of 281 pillagers
+across six raids get out, and 252 die. With the war off, 178 of
+202 get out, most inside three minutes with seven containers looted,
+and on the mile nobody dies at all. The seven door builds are not the cause:
+the old world reads 6 of 244 out, the same killing ground with
+slightly fewer names on it. Two of his choices make this world: Q31 put the
+machines at war with the pillagers (cfgv 16, measured then as no change to
+HIS extract rate, which was true and is still true), and his v6.71 note put a
+floor under the count, "fewer than four alive and more turn up regardless of
+the budget", one every eight seconds. The war kills nearly everyone, the floor
+sends more, and a raid ends with forty to sixty names on the roster, four alive
+and almost nobody out. Q45 says pillagers "should always play like real
+players"; a real player gets out a third of the time.
+
+**NOT CHANGED.** His order of 2026-09-04: no in-raid balancing before the
+alpha. This is exactly that, so it goes to AUDIT.md FOR HIS RULING with three
+words to choose from: leave it, peace, or fewer waves.
+
+**NEW CHECK v11.23** proves the instrument: COLD STORAGE at seed 9001 with the
+player parked runs to the clock with the raid not over, the tally equals the
+roster, and the roster holds at least seven. Controls: with machVsRaider 0 at
+least one pillager gets out (measured 20), and more get out than with the war
+on (2), which is the direction of his own switch and fails the day the switch
+stops deciding anything; and both arms open with the same count of pillagers,
+since the switch rolls no dice. Two full parked raids, about 40 seconds.
+
+**BOOKKEEPING.** DEVNOW.next had said "his grades on the new map looks, menus
+and gun rarity, and his ruling on the mile-vs-cold shape" since the v7 era; it
+now names this ruling.
+
+Not verified: his own play, and what the peace arm's zero pillager-on-pillager
+deaths in nine minutes on the mile means for the feud system, which is noted
+and not chased. Seeds beyond the three and the raid clock beyond 540 seconds
+were not run.
 ## v11.22 - TWO STILL OPEN LINES MEASURED SHUT: THE SEALED EIGHT AND THE NICHES
 
 Nothing in the game changes in this build. With every note of his through 22

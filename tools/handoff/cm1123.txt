@@ -1,0 +1,8 @@
+v11.23: the pillagers' own raid, read to the clock
+
+No game change. The sim froze every pillager at the robot's death, so their
+outcomes had never been read past two minutes. New fixture hook __simRaiders
+parks the player and runs the raid to the clock. Three seeds, both maps: with
+the machines at war 3 of 281 pillagers get out and 252 die; with the war off
+178 of 202 get out and none die; door dials off 6 of 244. For his ruling, by
+his no-balancing order. Check 11.23 proves the instrument. DEVNOW.next refreshed.
