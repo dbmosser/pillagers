@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.36';
+var VER='11.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.36';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.36';
+var WHATSNEW_VER='11.37';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A ROBOT HITTING A PILLAGER NO LONGER TURNS HIM ON YOU. A pillager who was leaving you alone would go hostile the instant a sentry or a crawler hit him, as if you had done it, and a pillager you had won over would hold a grudge for it forever. Only your own shots, charges and strikes provoke now.',
   'A GRENADE NO LONGER SENDS THE PEDDLER CHASING YOU. A charge that went off near the Peddler used to make him abandon his stall and chase, for the rest of the raid, and move his stall to where you stood. He stays put now, and a downed pillager stays down.',
   'THE LIGHTNING WARNING RING LANDS WHERE THE BOLT WILL. In a storm, the ring that shows where the next strike hits was drawn in the wrong place, off screen almost always, so the strike arrived with no warning. It sits on the ground now, closing as the strike nears.',
   'THE PAUSE SCREEN KEY LINE READS RIGHT. Two phrases I changed by mistake are back: E interact and CTRL / C crouch toggle. No change you would notice beyond those two words.',
@@ -1478,7 +1479,7 @@ var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:
 // accident and dropped it to 6 percent extract, so it stays. Raised so the dam
 // carries ten and the smallest sector carries seven.
 nSentry:20,nCrawler:34,nRaider:10,nSnitch:5,eDmg:1,eHp:1,lootMult:1,contDens:1,concealPow:1,packR:620,packMax:4,
-  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,engageNear:600,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:2.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,wxXp:1.1,raiderCrawl:1,nightDens:1.35,bldgRuin:0.09,touchSees:1,winWalk:1,furnDoor:1,navBody:15,doorClear:1,furnIDoor:1,furnGap:1,partDoor:1};
+  eAmbient:100,noiseMult:1,safeSlots:0,downTime:17,regenDelay:10,regenSec:3,bright:1.7,simGreed:52,simRaids:30,machAmmo:1,ammoTell:45,raiderExtract:14,greedFull:20000,simCrouch:0,crouchParts:7,crouchHide:170,crouchBreaksChase:1,waterDefeatsCrouch:0,wadeInset:11,superhot:0,overheatLock:7,strikeFind:0.16,eliteGuns:1,lootNorm:0,pedBuy:0.55,wadeSpd:0.34,furnDens:1.6,furnHug:1,furnRepair:1,crateMin:1,simWade:1,simLootNoise:1,simSidearm:1,simSwapBack:1,listenGain:1.35,nListen:2,autoEquip:0,simSell:0,simPed:0,simSellMin:1500,simSellNear:700,simJam:1,navBackoff:1,cacheReach:1,campNorm:1,rigCap:1,seeStrict:1,siegePerZone:1,beaconMirror:1,hauledAboard:0,simPip:0,simReach:1,simEngage:0,healOverTime:1,raiderFeud:1,raiderCrews:2,engageNear:600,provokeReal:1,windows:1,simRetreatHeal:0,destruct:1,placeCull:1,raiderWear:1,penetrate:1,raiderDown:1,siegePull:0.5,siegeVol:1,siegeEcho:1,decay:1,simRig:'std',smokeR:165,fragR:150,healSolo:1,healSlow:2.4,healPow:0.70,extOutside:1,raiderWaves:1,raiderWaveCap:8,raiderWaveMin:12,raiderWaveGap:60,raiderFloorN:4,raiderFloorGap:8,raiderKit:1,spawnClear:1500,raiderHaul:7,wardenHp:900,wardenDmg:46,wardenRng:620,healPrep:1.5,armorPrep:2,lodR:1100,raiderBeacon:1,musicVol:1,eliteRate:0.08,eliteHp:2.2,eliteDmg:1.6,nHowler:2,howlerDmg:35,howlerAir:2.1,howlerR:90,howlerDeaf:0,simAim:52,simPick:0,simFlee:0,simFleeSpd:1.3,simCover:0,simHoldFire:0,fogLift:1,raiderSmart:1,raiderRoll:1,raiderRollEar:900,raiderSteady:1,raiderCover:1,listenLive:1,bushRoadR:1,machVsRaider:1,nBulwark:1,bulwarkArc:1.15,bulwarkSoak:0.12,conductCon:1,gridJitter:1,condHud:1,ringsOnTop:1,cursorLoud:1,raiderCrouch:1,raiderSprint:1,raiderAim:1,raiderReact:0.34,simDodgeRing:0,raiderDodgeRing:1,dmgNumbers:1,listenFair:1,downResetsPull:1,noiseSee:1,missWake:40,seeThrough:0,crewCall:1,crewR:620,crewMax:2,crewSpread:1,crawlerPerHouse:2.5,houseFill:0.72,chaseGhost:1,crewSearch:1,crewSearchR:130,packSearch:1,crawlerEyes:1,listenTell:1,listenSpd:142,healCaps:1,pilFireRing:1,boardRank:1,calmFlash:1,giveUp:1,partRepair:1,houseCap:3,lockedOk:1,fanFloor:1,fanEpisode:1,textEdit:0,fineSeal:1,lmCut:1,musDark:1,hubBelt:1,raiderDownHp:50,buzzXp:0.025,nightXp:1.2,wxXp:1.1,raiderCrawl:1,nightDens:1.35,bldgRuin:0.09,touchSees:1,winWalk:1,furnDoor:1,navBody:15,doorClear:1,furnIDoor:1,furnGap:1,partDoor:1};
 var PRESETS={
   A:{coneDeg:112,viewFar:540,ambient:125,raidSec:700,nCrawler:13,nSentry:8,lootMult:1.2,noiseMult:1.15},
   B:{},
@@ -11455,6 +11456,7 @@ function explodeFrag(f){
       // already sets byPlayer=false for raider-on-raider fire (14061) and for
       // lightning (3722); this is the same convention.
       if(e.hp<=0) e.byPlayer=!!_fMine;
+      if(_fMine) e.pHitT=.3;   // v11.37: only YOUR charge provokes
       // And a blast only turns the survivors onto him if it was his. An enemy
       // grenade used to aggro the dead man's own crew onto the player.
       // v11.36: a blast does not stand a bystander or a downed man up into a
@@ -12040,7 +12042,7 @@ if(wep.mag===0){
         if(Math.abs(Math.atan2(Math.sin(_ma-base),Math.cos(_ma-base)))>0.9) continue;
         var _mdm=wep.dmg;
         if(Math.abs(Math.atan2(Math.sin(base-_me.face),Math.cos(base-_me.face)))<0.9) _mdm*=1.5;
-        _me.hp-=_mdm; _me.hitT=.16;
+        _me.hp-=_mdm; _me.hitT=.16; _me.pHitT=.3;   // v11.37: your strike provokes
         notoAggress(_me);            // v8.30: same rule, bare hands included
         if(_me.hp<=0) _me.byPlayer=true;
         _swHit=true;
@@ -15596,6 +15598,7 @@ if(_se.kind==='raider'&&_se.sprintPool>0&&_se.moving&&!_se.downed){
     var e=G.ents[i];
     e.moving=false;
     if(e.hitT>0) e.hitT-=dt;
+    if(e.pHitT>0) e.pHitT-=dt;   // v11.37: a hit the PLAYER landed, its own timer
     if(e.muzzle>0) e.muzzle-=dt;
 if(e.state==='possum'){
       if(!p.downed&&dist(e,p)<95){
@@ -16406,7 +16409,7 @@ var _rdS=G.shells[_rdi];
       // entire value of having talked to him in the first place.
       if(e.kind==='raider'&&e.friendlyPC&&!e.hostile){
         e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-3*dt,3*dt);
-        if(e.hitT>0){
+        if(CFG.provokeReal===0?e.hitT>0:e.pHitT>0){
           // Shooting a man who waved at you ends it, permanently.
           // v8.29: no mark here. The bullet site is the one writer for the
           // notoriety charge, and this branch fires on hitT, which splash sets
@@ -16422,7 +16425,7 @@ var _rdS=G.shells[_rdi];
       if(e.kind==='raider'&&!e.hostile){
 
         var pd2=dist(e,p);
-        if(!e.merc&&!e.friendlyPC&&(pd2<180||e.hitT>0)){
+        if(!e.merc&&!e.friendlyPC&&(pd2<180||(CFG.provokeReal===0?e.hitT>0:e.pHitT>0))){
           e.hostile=true;
           if(!G.sim) say(e.name+' does not like that.');
         } else {
@@ -17362,6 +17365,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               // he was not fighting you.
               notoAggress(en);
               en.byPlayer=en.hp<=0;
+              en.pHitT=.3;   // v11.37: YOUR round, so it may provoke and it may earn a grudge
               // v9.25, HIS NOTE: pillagers "just stood there after getting
               // attacked". Being shot now turns a peaceful pillager hostile on
               // the round that hits him, rather than leaving it to whether a
@@ -28012,7 +28016,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.36: explodeFrag set state chase and overwrote tx/ty on every entity in the blast with no guard, so a charge near the Peddler made him abandon his stall and chase for the rest of the raid, moving his pitch (which IS his tx/ty) to the blast, and a downed pillager stood up into a chase. Reproduced: a frag by the stall took the Peddler from idle to chase. The chase now skips the Peddler, the Stray and downed men; the damage and the v8.30 notoriety stay. From the combat agent.',
+  now:'v11.37: the peaceful-flip and the friendlyPC grudge read e.hitT, which every damage source writes (crawler bite, frag, Howler splash, cross-fire), so a machine hitting a peaceful pillager flipped him onto YOU and a man you had revived took a -3 standing saved to disk, from a hit you never landed. A player-attribution timer pHitT is set only at the three player hit sites (your bullet, your charge, your strike) and the two branches read it. Dial provokeReal 1 shipped, 0 restores the old hitT. Bug fix, not a dial move; the paired sim size is in the entry.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

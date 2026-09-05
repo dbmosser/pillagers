@@ -1,0 +1,9 @@
+v11.37: a robot's hit turned a pillager onto you
+
+The peaceful-flip and the friendlyPC grudge read e.hitT, which a crawler bite,
+a frag, Howler splash and cross-fire all write, so a machine hitting a peaceful
+pillager flipped him onto you and a revived man took a saved -3 grudge from a
+hit you never landed. A player-attribution timer pHitT, set only at your
+bullet, charge and strike, now gates both. Dial provokeReal, 0 restores the
+old behaviour. Paired 320 seeds provokeReal 0 vs 1: provokeReal 0 (old) extracts 40.9 percent, provokeReal 1 (the fix) 41.9; discordant 2 to 5, z 1.13, not significant. The fix barely touches the robot, as expected: the bot rarely holds a parleyed pillager or watches a passive one take a machine hit, which is where this fires. It is a bug fix, not a dial move.. Check 11.37 fails
+on the v11.36 fixture.

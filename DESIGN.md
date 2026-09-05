@@ -40024,6 +40024,42 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.37 - A ROBOT'S HIT TURNED A PILLAGER ONTO YOU
+
+From the combat agent, the highest-value of its findings. Two branches decide
+when a pillager turns on you: the peaceful-flip in updateEnts and the grudge a
+man you have won over (friendlyPC) holds if you betray him. Both read e.hitT,
+a 0.16 second hit flash that EVERY damage source writes: a crawler bite
+(8105), a frag (11444), Howler splash (11505), a rival's cross-fire (17458).
+So a sentry or a crawler hitting a peaceful pillager flipped him hostile
+toward YOU, as if you had shot him, and a pillager you had revived took a
+permanent -3 standing written to the profile, from a round you never fired.
+
+**REPRODUCED.** A peaceful pillager given the generic hit flash a machine
+leaves, stepped one frame: hostile. The player-bullet path (v9.25) already
+turns a peaceful man hostile on the round that hits him, correctly, so that
+half was never the bug; the updateEnts flip on any hitT was.
+
+**THE FIX.** A player-attribution timer, pHitT, is set only at the three
+sites where the player lands the hit: your bullet, your charge, your strike.
+The two branches read pHitT, so only your own violence provokes. A machine
+hitting a pillager still hurts him and still, per his Q31 war, is the machines'
+business; it just is not blamed on you. Dial provokeReal, 1 as shipped;
+provokeReal 0 restores the old hitT reading.
+
+**MEASURED, 320 paired seeds on COLD STORAGE, the robot at its pinned greed,
+old hitT (provokeReal 0) against player-attribution (provokeReal 1):** provokeReal 0 (old) extracts 40.9 percent, provokeReal 1 (the fix) 41.9; discordant 2 to 5, z 1.13, not significant. The fix barely touches the robot, as expected: the bot rarely holds a parleyed pillager or watches a passive one take a machine hit, which is where this fires. It is a bug fix, not a dial move.
+
+**NEW CHECK v11.37**: a machine hit (hitT only) on a peaceful pillager does
+not flip him with provokeReal 1; controls: a hit the player landed (pHitT)
+does flip him, so provocation is not disarmed; and with provokeReal 0 the
+machine hit flips him, the old behaviour the dial restores. On the v11.36
+fixture the finding fails, the machine hit flipping him.
+
+Not verified: his own play; and the six other combat-agent findings still
+queued (melee hitting your own merc, machines shooting each other against the
+comment, the Pillbox double-tick, the crier stuck in chase).
+
 ## v11.36 - A GRENADE SENT THE PEDDLER CHASING YOU
 
 From the combat agent, and a bug a friend would see the first time a charge
