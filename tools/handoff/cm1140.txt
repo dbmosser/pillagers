@@ -1,0 +1,7 @@
+v11.40: the Pillbox vent stun drained twice as fast
+
+The general machine update decrements the vent-stun timer for every machine and
+returns while overheating; the Choir branch decremented it again, so once
+overheat ended the Pillbox stun drained at double speed, 5.5s of a 7s lockout.
+Measured against a sentry at 7s. The redundant lines are removed. Check 11.40
+fails on the v11.39 fixture.

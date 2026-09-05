@@ -40024,6 +40024,35 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.40 - THE PILLBOX VENT STUN DRAINED TWICE AS FAST
+
+From the combat agent. A vent shot on a machine's weak point stuns it for a
+lockout, overheatLock, seven seconds by default. The general machine update
+decrements that timer, htImmune, once for every machine, and while the machine
+is overheating it returns before it ever reaches the per-kind branches. The
+Choir, the Pillbox, has its own branch, and it decremented htImmune a second
+time. So during the overheat phase the general block returned and the timer
+dropped once; once overheat ended, the general block stopped returning and both
+decrements ran, draining the rest at double speed.
+
+**REPRODUCED.** A Pillbox and a sentry each given a vent stun, parked away from
+the player and asleep: the Pillbox cleared in 5.55 seconds, the sentry in 7.05.
+The sentry matches the seven-second dial; the Pillbox came back to life a second
+and a half early.
+
+**THE FIX** removes the two redundant lines from the Choir branch. The general
+block already decrements htImmune and overheat for every machine, and the
+overheat line here never ran anyway, because that block returns on overheat
+before reaching this branch.
+
+**NEW CHECK v11.40** vents a Pillbox and a sentry, parks them asleep, and
+requires the Pillbox lockout to reach the full seven seconds and to match the
+sentry within a couple of frames; control, the sentry must itself clear at about
+seven, so the ruler is sound. On the v11.39 fixture the finding fails, the
+Pillbox clearing near 5.5.
+
+Not verified: his own play; the other machine kinds, which have no per-kind
+timer decrement and so were never doubled.
 ## v11.39 - THE "H CONTROLS" HINT SAT ON YOUR HEALTH BAR
 
 From the rendering agent. When the controls list is toggled off (H cycles it

@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.39';
+var VER='11.40';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.39';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.39';
+var WHATSNEW_VER='11.40';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A VENTED PILLBOX STAYS STUNNED AS LONG AS IT SHOULD. The stun from a vent shot on a Pillbox was draining almost twice as fast as the setting says, so it came back to life early. It now holds for the full lockout, like every other machine.',
   'THE "H CONTROLS" HINT NO LONGER SITS ON YOUR HEALTH BAR. With the controls list toggled off, the little "H controls" reminder was printed inside the vitals panel, over the STAMINA or HP readout. It sits just above the panel now.',
   'YOUR PUNCH NO LONGER HITS YOUR OWN MERC. A melee swing near the man you hired used to hurt him and, on the killing blow, bill you for it. Your fists pass through him now, the same as your bullets always have.',
   'A ROBOT HITTING A PILLAGER NO LONGER TURNS HIM ON YOU. A pillager who was leaving you alone would go hostile the instant a sentry or a crawler hit him, as if you had done it, and a pillager you had won over would hold a grudge for it forever. Only your own shots, charges and strikes provoke now.',
@@ -16168,8 +16169,10 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
 
     // ---- the Choir: emplaced, all round, and it never takes a step
     if(e.kind==='choir'){
-      if(e.htImmune>0) e.htImmune-=dt;
-      if(e.overheat>0){ e.overheat-=dt; e.cd=Math.max(e.cd||0,0.35); }
+      // v11.40: htImmune and overheat are decremented once for EVERY machine in
+      // the block above, and that block returns while overheating before it ever
+      // reaches here, so these two lines only ever double-drained the vent stun
+      // (5.5s of a 7s lockout) and never ran during overheat. Removed.
       if(e.cd>0) e.cd-=dt;
       var _cd2=dist(e,p);
       // It sings once when you first come inside its reach: the telegraph his
@@ -28022,7 +28025,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.39: with the controls list toggled off, drawLegend drew the "H controls" hint at 14,H-14, inside HUDBOX.body, so the grey reminder printed across the STAMINA label or the HP number. The compact legend already anchors above the panel; the off hint now does too, HUDBOX.body.y minus a line, and follows the panel when it is dragged. Reproduced by tracing the fillText against the panel box. From the rendering agent.',
+  now:'v11.40: the Pillbox vent stun drained twice as fast. The general machine update decrements htImmune once for every machine and returns while overheating before it reaches the kind branches; the Choir branch decremented htImmune a second time, so once the overheat phase ended the vent lockout drained at double speed, 5.5 seconds of a 7-second stun. Measured against a sentry, which cleared at 7. The redundant lines are removed. From the combat agent.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
