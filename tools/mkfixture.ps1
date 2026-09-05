@@ -271,20 +271,21 @@ window.__simRaiders=function(o){
   __deploy({kit:[],safe:null,mapIx:(o.mapIx===undefined?0:o.mapIx),seed:(o.seed||9001),sim:true});
   var live={mach:CFG.machVsRaider, feud:CFG.raiderFeud, greed:CFG.simGreed, sim:!!G.sim};
   var p=G.player, T=0, dt=0.15, horizon=(o.horizon||CFG.raidSec||540), steps=Math.round(horizon/dt), over=null, threw=null, tl=[], next=60;
-  var px=-3000, py=-3000, hits=0, downs=0, lastHp={}, seenDown={};
+  var px=-3000, py=-3000, hits=0, downs=0, lastHp={}, seenDown={}, raiderShots=0, machShots=0, playerShots=0;
   if(o.park==='centre'){ px=(G.map.cols*G.map.cw)/2; py=(G.map.rows*G.map.ch)/2; }
   for(var s=0;s<steps;s++){
     p.x=px; p.y=py; p.hp=p.maxhp||100; p.downed=0; p.downT=0; p.vx=0; p.vy=0;
     try{ __rawStep(dt); }catch(e){ threw=String(e); break; }
     T+=dt; if(G.over){ over={how:G.over,at:Math.round(T)}; break; }
     var rosH=G.roster||[]; for(var h=0;h<rosH.length;h++){ var eh=rosH[h].ref, kh=eh.name; if(rosH[h].out) continue; if(lastHp[kh]!==undefined&&eh.hp<lastHp[kh]) hits++; lastHp[kh]=eh.hp; if(eh.downed&&!seenDown[kh]){ seenDown[kh]=1; downs++; } }
+    var BL=G.bullets||[]; for(var bq=0;bq<BL.length;bq++){ var bb=BL[bq]; if(bb.__sr) continue; bb.__sr=1; var ok=bb.owner&&bb.owner.kind; if(bb.owner===G.player) playerShots++; else if(ok==='raider') raiderShots++; else machShots++; }
     if(T>=next){ next+=60; var ros0=G.roster||[], a0=0,o0=0,d0=0,x0=0; for(var q=0;q<ros0.length;q++){ var e0=ros0[q].ref; if(ros0[q].out) o0++; else if(e0.downed) d0++; else if(e0.hp<=0||e0.finished) x0++; else a0++; } tl.push([Math.round(T),ros0.length,o0,a0,d0,x0]); }
   }
   var ros=G.roster||[], present={}, i, e, out=0, alive=0, downed=0, dead=0, outAt=[];
   for(i=0;i<G.ents.length;i++) present[G.ents[i].name||('#'+i)]=1;
   for(i=0;i<ros.length;i++){ e=ros[i].ref; if(ros[i].out){ out++; outAt.push(Math.round(ros[i].outAt||0)); continue; }
     if(!present[e.name]) dead++; else if(e.downed) downed++; else if(e.hp<=0) dead++; else alive++; }
-  return {seed:o.seed||9001, mapIx:(o.mapIx===undefined?0:o.mapIx), buildings:(G.map.buildings||[]).length, live:live, park:(o.park==='centre'?'centre':'far'), horizon:horizon, ranTo:Math.round(T), over:over, threw:threw, roster:ros.length, out:out, alive:alive, downed:downed, dead:dead, hits:hits, downs:downs, outAt:outAt, timeline:tl};
+  return {seed:o.seed||9001, mapIx:(o.mapIx===undefined?0:o.mapIx), buildings:(G.map.buildings||[]).length, live:live, park:(o.park==='centre'?'centre':'far'), horizon:horizon, ranTo:Math.round(T), over:over, threw:threw, roster:ros.length, out:out, alive:alive, downed:downed, dead:dead, hits:hits, downs:downs, raiderShots:raiderShots, machShots:machShots, playerShots:playerShots, outAt:outAt, timeline:tl};
 };
 // Samples one sim raid so a stall can be told apart from a decision never made.
 window.__simTraceSeed=function(seed){
@@ -5421,6 +5422,30 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.25',what:'a pillager out of the player sight fires back only when engageNear is lifted: at 600 as shipped he fires zero rounds in a whole raid while the machines fire dozens, at 0 he fires, and the dial rolls no dice',
+   run:function(){
+     if(!(window.__simRaiders&&window.__cfg)) return 'SKIP: this fixture cannot run a parked sim raid';
+     var bad=[];
+     // THE WORLD AS SHIPPED: far seat, machines at war, COLD STORAGE seed 9001.
+     __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     var g6=__simRaiders({seed:9001, mapIx:0, park:'far'});
+     if(g6.threw) bad.push('the far raid threw: '+g6.threw);
+     if(g6.buildings!==20) return 'SKIP: the far raid built '+g6.buildings+' buildings, not the 20 of COLD STORAGE';
+     if(g6.live.mach!==1) return 'SKIP: machVsRaider is not 1 here, so the war this check is about is off';
+     // CONTROL ONE: the machines are firing, or the silence below is nothing.
+     if(g6.machShots<20) bad.push('control: the machines fired only '+g6.machShots+' rounds in a whole far raid, so there is no war to answer');
+     // THE FINDING, as shipped: not one round from a pillager all raid. This is
+     // the rule the dial keeps until he rules; the check pins that it is real.
+     if(g6.raiderShots!==0) bad.push('with engageNear 600 the pillagers fired '+g6.raiderShots+' rounds out of the player sight, so the gate is not where the finding says it is');
+     // THE DIAL: lifted, they answer.
+     __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __cfg({engageNear:0});
+     var g0=__simRaiders({seed:9001, mapIx:0, park:'far'});
+     if(g0.threw) bad.push('the lifted raid threw: '+g0.threw);
+     if(g0.live&&g0.live.mach!==1) bad.push('control: the lifted arm lost the war dial');
+     if(!(g0.raiderShots>0)) bad.push('with engageNear 0 the pillagers still fired '+g0.raiderShots+' rounds out of sight, so the dial does not reach the three sites');
+     // CONTROL TWO: the dial rolls no dice. Both arms open with the same roster.
+     if(g6.timeline.length&&g0.timeline.length&&g6.timeline[0][1]!==g0.timeline[0][1]) bad.push('control: the arms opened with '+g6.timeline[0][1]+' and '+g0.timeline[0][1]+' pillagers, so the seeded stream moved');
+     return bad.length?bad.join('; '):null; }},
   {v:'11.24',what:'rival crews feud where the player can see them: parked in the middle of COLD STORAGE at peace with the machines, pillagers hit, down and kill each other, and the raiderFeud dial is what decides it',
    run:function(){
      if(!(window.__simRaiders&&window.__cfg)) return 'SKIP: this fixture cannot run a parked sim raid';

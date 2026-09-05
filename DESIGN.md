@@ -40024,6 +40024,83 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.25 - THE 600 UNIT GATE ON PILLAGER FIGHTING IS A ROTTED RULE
+
+Nothing moves in the world this build ships: the gate stays exactly where it
+has been since v2.49. What ships is the finding, the switch that lifts it, the
+numbers for both positions of the switch, and a check that pins the finding.
+
+**FOUND** by the feud audit that ran after v11.24, raised independently by two
+of its four lenses and confirmed by three skeptics each. Every place a pillager
+may shoot at a machine or at a rival crew is gated to within 600 units of the
+player: the looting pillager's target picker, the feud engagement, and the
+ordered merc's picker. All three carry the same reason in their comments: "vseg
+only caches walls near the player, so line of sight is only answerable there."
+That has not been true for a long time. refreshVseg sets G.vseg to the WHOLE
+map's wall segments, plus smoke, and losClear is answerable anywhere. The
+machines that hunt pillagers (machVsRaider, his Q31) have no such gate. So out
+of the player's sight, which is most of the map most of the time, a machine
+may hunt a pillager and the pillager may never fire back.
+
+**REPRODUCED before anything was touched**, on v11.24 with the far seat of the
+scorecard (player parked out of the world, kept alive, COLD STORAGE seed 9001,
+the machines at war, 540 seconds): the machines fired 88 rounds and the
+pillagers fired ZERO, all raid; 33 of 40 died, 2 got out. That is the v11.23
+killing ground with its cause on the table: it is not only that the machines
+were set at war, it is that the other side was never allowed to load.
+
+**THE SWITCH.** CFG.engageNear, the radius around the player inside which a
+pillager is allowed to fight, at all three sites. 600 is the world as shipped
+and stays the default under his order of 2026-09-04 (no in-raid balancing
+before the beta); 0 lifts the gate everywhere. The three stale comments now
+say what is true and name the dial.
+
+**MEASURED, the scorecard, far seat, machines at war, three seeds, both maps,
+540 seconds, gate at 600 against gate lifted:**
+
+    map            seed  gate         roster  out  dead pillager rounds machine rounds
+    COLD STORAGE   9001  600 (shipped)     40    2    33              0             88
+    COLD STORAGE   9001  lifted           46    0    41            117             97
+    THE COLD MILE  9001  600 (shipped)     48    0    44              0            143
+    THE COLD MILE  9001  lifted           50    0    46            283            119
+    COLD STORAGE   9002  600 (shipped)     44    0    39              0             89
+    COLD STORAGE   9002  lifted           51    0    47            207             98
+    THE COLD MILE  9002  600 (shipped)     54    1    49              0            145
+    THE COLD MILE  9002  lifted           60    0    57            380            144
+    COLD STORAGE   9003  600 (shipped)     28    0    24              0             61
+    COLD STORAGE   9003  lifted           46    0    42            149             38
+    THE COLD MILE  9003  600 (shipped)     67    0    63              0            197
+    THE COLD MILE  9003  lifted           65    0    61            532            193
+
+    TOTAL gate 600 (shipped)   roster 281  out 3  dead 252  pillager rounds 0  machine rounds 723
+    TOTAL gate lifted          roster 318  out 0  dead 294  pillager rounds 1668  machine rounds 689
+
+**READ PLAINLY.** Lifting the gate gives the pillagers their guns back and
+nothing else: 1,668 rounds instead of none, and still 294 of 318 dead against
+252 of 281, and now nobody out against three. A pillager who may fight stands
+and fights the machine in his face instead of looting seven boxes and leaving,
+and the floor rule sends the next man into the same fight. So the killing
+ground of v11.23 is the war plus the floor, not the gate, and the gate stays at
+600, which is also where his no-balancing order leaves it. The three words of
+the v11.23 ruling are still the whole choice.
+
+**MEASURED, his standard, 320 paired seeds on COLD STORAGE, the robot at its
+pinned greed, gate 600 against gate lifted:** gate 600 extracts 40.0 percent, lifted 43.1; both on 70 seeds, neither on 124, gate alone 58, lifted alone 68, z 0.89, p 0.37, so no change to his own odds; the killers reshuffle, crawler 100 to 74 and sentry 49 to 64, pillager 17 to 18; mean raid 87 to 90 seconds, mean haul 2,079 to 2,089
+
+**NEW CHECK v11.25**: the far raid at COLD STORAGE seed 9001 with the war on
+fires at least 20 machine rounds (or there is no war to answer) and exactly
+zero pillager rounds at engageNear 600; at engageNear 0 the pillagers fire;
+both arms open with the same roster, so the dial rolls no dice; skips by name
+if the map is not COLD STORAGE or the war dial is not 1. Two far raids, about
+30 seconds.
+
+**FOR HIS RULING**: nothing new to choose. The v11.23 line gains the measurement
+above so "lift it" is answered before it is asked; "leave it", "peace" and
+"fewer waves" remain the options.
+
+Not verified: his own play; the mile by the paired standard (COLD STORAGE
+only, as every paired run has been); and what a distant firefight sounds like
+from where the player stands, which no ear has heard.
 ## v11.24 - A CORRECTION TO v11.23, AND A SEAT IN THE MIDDLE OF THE MAP
 
 Nothing in the game changes in this build. It corrects one sentence I shipped
