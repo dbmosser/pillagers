@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.26';
+var VER='11.27';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.26';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.26';
+var WHATSNEW_VER='11.27';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'F NO LONGER BURNS A BANDAGE WHEN YOU PUNCH. Since F became the melee strike, a press while hurt also used the smallest heal in your backpack, silently. Heals are used from the tactical belt, and F now only strikes (and still revives you when you are down).',
   'THE PAUSE SCREEN KEY LIST IS RIGHT AGAIN. It printed a stray "&nbsp;" between every key and still said F heals, TAB opens the bag and Q throws. It now matches the controls list under H: F is your melee strike, TAB is the backpack, 1 to 9 is the tactical belt.',
   'FOUND: PILLAGERS OUT OF YOUR SIGHT NEVER FIRE BACK. A rule from the earliest builds only lets a pillager fight within 600 units of you, on a reason that stopped being true long ago. Out of your sight the machines shoot them and they never shoot back: zero rounds in a whole raid. Nothing changes yet; the switch and the numbers are on the board for a ruling.',
   'THE SCORECARD CAN WATCH THE CREWS FEUD TOO. Rival crews only pick fights within sight of you, by design, so the scorecard now has a seat in the middle of the map as well as one outside it. Checked: they do shoot each other where you can see it.',
@@ -14214,7 +14215,10 @@ if(!p.fired||p.wep.auto){
     p.fired=false;
   }
 
-  if(keys['KeyF']&&!p.healLock){ p.healLock=true; useMedical(); }
+  // v11.27: the held-F heal is gone. F is the melee strike (v10.64) and a
+  // heal is used from the tactical belt; with both bound, one press punched
+  // AND burned the smallest heal in the backpack. healLock is still cleared
+  // here so the downed self-revive on F keeps its edge trigger.
   if(!keys['KeyF']) p.healLock=false;
 
   // SPEC 7.6: spend a key at its door. Single use, and the key names its door
@@ -27981,7 +27985,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.26: the pause screen key line, found by a read-only audit of the HUD code and confirmed in the page: the non-breaking space entity was double-escaped, so the box printed the literal six characters fourteen times, and the line still said F heal, Q/G throw and TAB bag from before v10.64. It now mirrors the LEGEND table. A check reads the box and forbids the literal and the three stale phrases.',
+  now:'v11.27: F did two things. v10.64 bound the melee strike to the F keydown and left the older held-F heal in the player update, so one press while hurt swung a punch and burned the smallest heal in the backpack, with "Applying Bandage..." on screen. Reproduced: melee 1, bandage gone, one press. The held-F heal is removed; heals are used from the tactical belt; the downed self-revive on F stays. Check: F strikes and the backpack keeps its bandage, the belt still spends it, down and F still revives.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

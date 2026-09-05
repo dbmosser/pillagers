@@ -1,0 +1,7 @@
+v11.27: F did two things
+
+Since v10.64 bound the melee strike to F, a press while hurt also ran the
+older held-F heal and burned the smallest heal in the backpack, silently.
+Reproduced: one press, melee 1, bandage gone. The held-F heal is removed;
+heals are used from the tactical belt; the downed self-revive on F stays.
+Check 11.27 holds it and fails on the v11.26 fixture.

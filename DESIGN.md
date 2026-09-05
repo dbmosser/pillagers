@@ -40024,6 +40024,37 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.27 - F DID TWO THINGS
+
+The second of the bounded agent's findings, and the one a friend would feel
+without knowing why. **REPRODUCED in the page before anything was touched**:
+a raid on COLD STORAGE at seed 4242, health 50, one Bandage in the backpack,
+nothing on the belt, one press of F. The melee count went from 0 to 1, the
+backpack went from one Bandage to none, and "Applying Bandage..." came up.
+One key, two acts, the second silent.
+
+**THE CAUSE.** v10.64 bound the melee strike to the F keydown (his note: "its
+not clear to me how to melee"), and the older held-F heal stayed in the player
+update: raidKey sets keys[code] before it dispatches, so the same frame ran
+the swing and useMedical, which splices the smallest heal out of the backpack
+and starts a prep whenever health is under the heal ceiling. The LEGEND under
+H says F is the strike; the pause screen said F heals until v11.26; both were
+true.
+
+**THE FIX.** The held-F heal is removed. A heal is used from the tactical
+belt, where it has lived since v8.72: select the slot and fire, or G. The
+downed self-revive on F is a different state and stays; its edge trigger
+(healLock cleared on release) is kept.
+
+**NEW CHECK v11.27**: hurt, a Bandage in the backpack, F: the strike lands
+and the Bandage stays and no heal starts. Controls: the Bandage on belt key 5,
+selected, G: it is spent or a heal starts, so the belt path is alive and the
+finding is not "heals are broken"; and down, F still gets him up (downed
+false, revived true). On the v11.26 fixture the first assertion fails with
+"F spent the Bandage as well as swinging".
+
+Not verified: the pad, where the strike and the heal are separate buttons and
+were not both pressed; and his own hand on the key.
 ## v11.26 - THE PAUSE SCREEN PRINTED ITS OWN ENTITY FOURTEEN TIMES
 
 A small one, found the right way. With the swarms stopped, one bounded
