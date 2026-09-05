@@ -40024,6 +40024,47 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.32 - COPY REPORT SAID "COPIED" OVER AN EMPTY CLIPBOARD
+
+The outcome-card agent's first finding, and it is the one that matters most,
+because Copy report is how his friends' bugs reach him. **REPRODUCED in the
+page**: at the end of a raid, with the clipboard write forced to reject and
+the fallback copy command forced to fail, the button still said "Copied.
+Paste it to Daniel." and the clipboard held nothing.
+
+**THE CAUSE, two of them.** The rejection handler of navigator.clipboard's
+writeText was the same `done` as the success handler
+(`writeText(txt).then(done,done)`), so a refused write (an itch embed without
+clipboard permission, an unfocused document) reported success. And on a plain
+http page, where navigator.clipboard is undefined, the fallback selected
+#exporttext, a textarea that lives inside the Settings modal at display:none,
+where execCommand copies nothing, and then ran `done()` regardless.
+
+**THE FIX.** A refused write and a failed fallback now say "Could not copy.
+The report is under Settings, Recorder." The fallback copies from a fresh
+off-screen textarea that is actually in the document and visible enough to
+select, and it believes execCommand's own return. The recorder pane in
+Settings is filled either way, so the text is one click from there even when
+the clipboard is locked.
+
+**NEW CHECK v11.32** hides navigator.clipboard to force the synchronous
+fallback, ends a raid, and clicks Copy report twice: with the copy command
+returning false the button must say it could not copy and must not say
+Copied; with it returning true the button may say Copied. It restores the
+clipboard descriptor and execCommand afterward. On the v11.31 fixture the
+first arm fails, because the old handler said Copied either way.
+
+**REVERTED THIS SESSION, held as a STILL OPEN item, owned in one line:** the
+combat beat-to-react floor (would have been v11.32). I reproduced the silence
+(a hostile pillager in extract fires zero rounds while watched, because the
+one-beat line re-applies every frame) but my edge-triggered fix still fired
+zero in the probe, since a raider dropped 200 units from the player at seed
+4242 did not have clean line of sight. It needs a harness that guarantees
+sight before the fix can be proven, and it is written up in AUDIT.md.
+
+Not verified: the real clipboard on his machine, which the check cannot touch
+without his focus and permission; only the refused and fallback paths were
+driven.
 ## v11.31 - THE STASH SAID IT WAS EMPTY UNDER YOUR GUN
 
 From the second bounded agent, on the Undercroft and the stash, and the

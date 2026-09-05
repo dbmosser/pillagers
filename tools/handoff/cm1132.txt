@@ -1,0 +1,9 @@
+v11.32: Copy report said "Copied" over an empty clipboard
+
+Copy report is how friends' bugs reach me, and it reported success even when
+the clipboard refused: the rejection handler was the success handler, and the
+http fallback selected a textarea inside a hidden Settings modal. Reproduced
+in the page. A refused copy now says so and names Settings, Recorder; the
+fallback copies from a visible off-screen textarea. Check 11.32 fails on the
+v11.31 fixture. Reverted and held open: the combat beat-to-react floor, whose
+edge-fix I could not prove fires without a line-of-sight harness.
