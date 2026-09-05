@@ -1,0 +1,70 @@
+## v11.17 - THE DOORWAYS INSIDE BUILDINGS ARE CLEAR OF FURNITURE TOO
+
+The fifth build on machines getting out of buildings, and the first about
+getting INTO them. v11.14 kept furniture out of the shell doorways and nothing
+in the game knew that the plans cut doorways in the partitions as well.
+
+**MEASURED FIRST, on v11.16 at seed 4242.** A building is sealed inside when no
+route on the route grid runs from just inside any of its own front doors to its
+middle. **COLD STORAGE 0 of 20. THE COLD MILE 5 of 84: buildings 32, 33, 37, 38
+and 74**, every one of them open with the furniture stripped from the wall list,
+and two of them shut to the player's own padding as well, so those rooms and
+what was placed in them could be seen and never reached, by him or by anything
+hunting him.
+
+**TWO CAUSES, TRACED.** Four of the five are furniture parked in a partition
+doorway, the gap a spine, a strongroom or an L split cuts in an interior wall,
+which v11.14's rule never saw because only the shell doors were recorded. The
+fifth, building 74, is a free standing piece that landed between the ends of two
+alcove partitions, 8 units below one and 14 beside the other, and split the
+building in two for anything wider than 8. The sealed room repair pass never saw
+either, because it floods a grid with no body in it and an 8 unit sliver reads
+as a corridor there.
+
+**THE FIX, two rules, neither drawing a random number.** The plans now record
+the doorways they cut, the way the shell records its doors, and furniture keeps
+the same zone clear of them. And a piece that would leave a gap between 2.5 and
+30 units to any wall or partition of its building is not placed: flush is fine,
+overlapping is as it was, a body's width or more is fine, and the band between is
+where a room gets sealed. Furniture against other furniture is left alone,
+because a sliver between two pieces is the v10.40 niche, cosmetic, and cannot
+close a room on its own.
+
+**MY TWO WRONG CUTS, both caught by measuring before shipping.** The gap rule
+first read a one unit gap as a gap, and the hug places every piece one unit off
+its wall on purpose: 136 pieces became 9 and 440 became 33. Touching is under
+2.5 now. Then, counting every neighbouring piece as well as every wall, it still
+cost three pieces in ten, 136 to 96 and 440 to 310, and he asked for MORE
+furniture, not less. Walls and partitions only is what ships.
+
+**MEASURED AFTER, both maps, the dials off against on:** sealed interiors 5 to 0
+on the mile and 0 to 0 on COLD STORAGE. Entities 85 and 374 both ways,
+containers 165 and 593 both ways. **Furniture 136 to 108 and 440 to 336**, about
+one piece in four, each of them either in a doorway or wedged where a body could
+not pass it. Walls 580 to 552 and 2308 to 2206, mile lamps 265 to 269, and so the
+sky for seed 4242 rolled again, COLD STORAGE back to noon in fog and the mile to
+morning fog, for the reason v11.14 wrote down. The crawler in the middle of
+building 32 on the mile, whose front room was sealed off, now walks out and
+reaches a player outside inside 60 units; with the rules off it never leaves.
+
+**NEW CHECK v11.17** surveys both maps with the rules on and requires zero
+sealed interiors, the target being the nearest open route cell to each middle
+rather than the exact centre, which can sit inside a table's padding. Controls:
+the map must record interior doorways at all; entities and containers must be
+identical with the rules off; the rules off must still seal at least 4 on the
+mile; and the building 32 crawler must reach a player outside with the rules on
+and never leave with them off. On a v11.16 fixture the finding fires for the
+five and the map records no interior doorways.
+
+**THREE OLDER CHECKS MOVED WITH IT, each saying why in its own text.** v9.81 re-pins
+the wall count to 2206 and 552 and v9.65 the mile cover to 490, the way they
+followed v11.14. And v11.14 itself: its dial-off arm is all three furniture
+rules off now, because the gap rule alone clears a doorway piece, so its plugged
+count control reads the old placement again; and its furniture floor, which
+now spans the three rules together, sits at a half against the 0.64 and 0.62
+measured.
+
+Not verified: the extract rate, still, and what a quarter fewer pieces looks
+like to his eye; every one removed was in a doorway or in a gap a body could not
+pass, and no picture was taken. furnIDoor 0 and furnGap 0 restore the old
+placement piece for piece.

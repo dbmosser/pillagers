@@ -5375,6 +5375,74 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.17',what:'the doorways inside buildings are recorded and kept clear of furniture, so every building interior has a route in from its own front door',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__loop)) return 'SKIP: this fixture cannot build a map';
+     var bad=[], D=__movers.dist, NM=['COLD STORAGE','THE COLD MILE'];
+     // A building is SEALED INSIDE when no route on the route grid runs from
+     // just inside any of its own front doors to its centre.
+     function survey(mi,dial){
+       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({furnIDoor:dial,furnGap:dial});
+       __deploy({kit:[],safe:null,mapIx:mi,seed:4242});
+       var g=__state(),B=g.map.buildings,Ds=g.map.doors,nd=g.map.navD,cc=nd.c,sealed=[],tested=0,q,u;
+       function openCell(x,y){ var gx=Math.floor(x/cc),gy=Math.floor(y/cc); if(gx<0||gy<0||gx>=nd.w||gy>=nd.h) return false; return !nd.blk[gy*nd.w+gx]; }
+       function nearOpen(x,y){ if(openCell(x,y)) return [x,y]; for(var r=16;r<=48;r+=16) for(var a=0;a<8;a++){ var an=a*Math.PI/4, px=x+Math.cos(an)*r, py=y+Math.sin(an)*r; if(openCell(px,py)) return [px,py]; } return null; }
+       for(q=0;q<B.length;q++){ var bd=B[q]; if(bd.w<120||bd.h<120) continue;
+         var doors=[]; for(u=0;u<Ds.length;u++){ var dd=Ds[u]; if(dd.x>=bd.x-1&&dd.x<=bd.x+bd.w+1&&dd.y>=bd.y-1&&dd.y<=bd.y+bd.h+1) doors.push(dd); }
+         if(!doors.length) continue;
+         var tgt=nearOpen(bd.x+bd.w/2,bd.y+bd.h/2), ok=false;
+         if(!tgt){ tested++; sealed.push(q); continue; }
+         for(u=0;u<doors.length&&!ok;u++){ var d=doors[u], h=d.w>=d.h, top=(h?d.y:d.x)<=(h?bd.y:bd.x)+1;
+           var ix=h?d.x+32:(top?d.x+16+30:d.x-30), iy=h?(top?d.y+16+30:d.y-30):d.y+32;
+           if(__navPath(nd,ix,iy,tgt[0],tgt[1],0)) ok=true; }
+         tested++; if(!ok) sealed.push(q); }
+       return {tested:tested,sealed:sealed,idoors:(g.map.idoors?g.map.idoors.length:-1),ents:g.ents.length,cont:(g.containers||[]).length};
+     }
+     var on=[survey(0,1),survey(1,1)], off=[survey(0,0),survey(1,0)], mi;
+     for(mi=0;mi<2;mi++){
+       // THE FINDING. Measured on v11.16: 0 of 20 and 5 of 84, buildings 32, 33, 37, 38 and 74.
+       if(on[mi].sealed.length) bad.push(NM[mi]+': '+on[mi].sealed.length+' of '+on[mi].tested+' building interiors have no route in from their own front door ['+on[mi].sealed.join(',')+']');
+       // CONTROL ONE: the map records its interior doorways at all.
+       if(on[mi].idoors<1) bad.push(NM[mi]+': the map records no interior doorways, so nothing can keep furniture out of them');
+       // CONTROL TWO: the world did not move. No random number is drawn.
+       if(on[mi].ents!==off[mi].ents||on[mi].cont!==off[mi].cont) bad.push(NM[mi]+': entities or containers moved between the arms, '+off[mi].ents+'/'+off[mi].cont+' to '+on[mi].ents+'/'+on[mi].cont+', so the rule drew a random number');
+     }
+     // CONTROL THREE: the old placement must still show the fault on the mile.
+     if(off[1].sealed.length<4) bad.push('control: with furnIDoor off THE COLD MILE has only '+off[1].sealed.length+' sealed interiors against the 5 measured, so the dial does not restore the old placement');
+     // AND A BODY GETS OUT. Building 32 on the mile by its fingerprint: a crawler
+     // in its middle must leave and reach a player on open ground outside.
+     function drive(dial,frames){
+       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({furnIDoor:dial,furnGap:dial});
+       __deploy({kit:[],safe:null,mapIx:1,seed:4242});
+       var g=__state(),p=g.player,B=g.map.buildings,W=g.map.walls,cw=null,u, WW=g.map.cols*g.map.cw, HH=g.map.rows*g.map.ch;
+       for(u=0;u<g.ents.length;u++) if(g.ents[u].kind==='crawler'){ cw=g.ents[u]; break; }
+       if(!cw) return {err:'no crawler on THE COLD MILE to drive'};
+       g.ents.length=0; g.ents.push(cw);
+       var bd=B[32]; if(!bd) return {err:'THE COLD MILE has no building 32'};
+       if([bd.x,bd.y,bd.w,bd.h].join(',')!=='8126,2260,320,250') return {err:'building 32 on THE COLD MILE is ['+[bd.x,bd.y,bd.w,bd.h].join(',')+'] and not the 8126,2260,320,250 this was measured on'};
+       function openAt(x,y){ if(x<120||y<120||x>WW-120||y>HH-120) return false; var q;
+         for(q=0;q<W.length;q++){ var w=W[q]; if(x>w.x-34&&x<w.x+w.w+34&&y>w.y-34&&y<w.y+w.h+34) return false; }
+         for(q=0;q<B.length;q++){ var b=B[q]; if(x>b.x-34&&x<b.x+b.w+34&&y>b.y-34&&y<b.y+b.h+34) return false; }
+         return true; }
+       var cand=[[bd.x-210,bd.y+bd.h/2],[bd.x+bd.w+210,bd.y+bd.h/2],[bd.x+bd.w/2,bd.y-210],[bd.x+bd.w/2,bd.y+bd.h+210]], tx=0,ty=0,ok=false;
+       for(u=0;u<cand.length&&!ok;u++) if(openAt(cand[u][0],cand[u][1])){ tx=cand[u][0]; ty=cand[u][1]; ok=true; }
+       if(!ok) return {err:'building 32 has no open ground outside it'};
+       p.x=tx; p.y=ty; p.iv=99; p.hp=100; p.downed=0;
+       cw.x=bd.x+bd.w/2; cw.y=bd.y+bd.h/2; cw.path=null; cw.pathFail=false; cw.pathT=0; cw.pathGoal=null;
+       var t0=performance.now(), best=1e9, exitF=-1;
+       for(var f=0;f<frames;f++){ cw.state='chase'; cw.alert=3; cw.tx=tx; cw.ty=ty;
+         __loop(t0+f*16.7); p.x=tx; p.y=ty; p.hp=100; p.iv=99;
+         var d=D(cw,p); if(d<best) best=d;
+         if(exitF<0&&!(cw.x>bd.x&&cw.x<bd.x+bd.w&&cw.y>bd.y&&cw.y<bd.y+bd.h)) exitF=f; }
+       return {best:best,exitF:exitF};
+     }
+     var w1=drive(1,900);
+     if(w1.err) return 'SKIP: '+w1.err;
+     if(w1.best>60) bad.push('the crawler in the middle of building 32 got no closer than '+w1.best.toFixed(0)+' units to a player outside in fifteen seconds'+(w1.exitF<0?' and never left the building':''));
+     var w0=drive(0,600);
+     if(w0.err) return 'SKIP: '+w0.err;
+     if(w0.exitF>=0) bad.push('control: with furnIDoor off the crawler in building 32 walks out anyway at frame '+w0.exitF+', so the old placement does not seal it and this build proves nothing');
+     return bad.length?bad.join('; '):null; }},
   {v:'11.16',what:'a route through a doorway keeps clear of the walls behind it, not only the door frame, so a machine cutting through a building next door is not sent into a partition',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__loop)) return 'SKIP: this fixture cannot build a map';
@@ -5508,7 +5576,7 @@ window.__REGRESS=[
        return {plugged:n,doors:Ds.length,furn:furn,ents:g.ents.length,cont:(g.containers||[]).length}; }
      var NM=['COLD STORAGE','THE COLD MILE'], on=[], off=[], mi;
      for(mi=0;mi<2;mi++){
-       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({furnDoor:0});
+       __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({furnDoor:0,furnGap:0,furnIDoor:0});
        __deploy({kit:[],safe:null,mapIx:mi,seed:4242}); off.push(plugged(__state()));
        __runPrep(); __resetCfg(); __pinDefaults(0); __cfg({furnDoor:1});
        __deploy({kit:[],safe:null,mapIx:mi,seed:4242}); on.push(plugged(__state()));
@@ -5525,7 +5593,9 @@ window.__REGRESS=[
        // STORAGE and 540 to 440 on THE COLD MILE, four fifths kept on both. A
        // build that loses more than three tenths is dropping pieces that were
        // never in a doorway.
-       if(on[mi].furn<off[mi].furn*0.7) bad.push(NM[mi]+': furniture fell from '+off[mi].furn+' to '+on[mi].furn+', more than three tenths lost against the fifth measured, so pieces that were never in a doorway are being dropped');
+       // v11.17: the old arm has all three furniture rules off now, so this
+       // reads the three together: 169 to 108 and 540 to 336, 0.64 and 0.62.
+       if(on[mi].furn<off[mi].furn*0.5) bad.push(NM[mi]+': furniture fell from '+off[mi].furn+' to '+on[mi].furn+', more than half lost against the 0.64 and 0.62 measured for the three rules together, so pieces standing in the open are being dropped');
      }
      // AND THE DOOR CAN BE WALKED. The crawler in building 8 on COLD STORAGE,
      // whose doorway held a 36 by 26 piece, must now reach a player outside.
@@ -12611,9 +12681,11 @@ window.__REGRESS=[
      // zone is not placed any more, so fewer pieces stand. The entity line
      // below is the half of this fingerprint that says the seeded stream itself
      // did not move.
-     if(mile.walls!==2308||cold.walls!==580)
+     // v11.17: 2308 and 580 became 2206 and 552. Furniture in interior doorways
+     // and furniture wedged in a body-width gap are not placed any more.
+     if(mile.walls!==2206||cold.walls!==552)
        bad.push('control: the maps hold '+mile.walls+' and '+cold.walls+
-                ' walls rather than 2308 and 580, so the split geometry moved');
+                ' walls rather than 2206 and 552, so the split geometry moved');
      if(mile.ents!==374||cold.ents!==85)
        bad.push('control: the maps spawn '+mile.ents+' and '+cold.ents+
                 ' rather than 374 and 85, so the seeded stream moved');
@@ -13742,8 +13814,10 @@ window.__REGRESS=[
      // v11.14: 483 to 488. Furniture in doorway zones is not placed, so the wall
      // list spotFree asks against is shorter and five more candidate spots are
      // accepted. Entities are still 374 on the line below.
-     if(wrecks.length!==488)
-       bad.push('the mile has '+wrecks.length+' pieces of outdoor cover rather than 488, so a footprint moved');
+     // v11.17: 488 to 490. Fewer furniture walls, two more candidate spots
+     // accepted. Entities are still 374 on the line below.
+     if(wrecks.length!==490)
+       bad.push('the mile has '+wrecks.length+' pieces of outdoor cover rather than 490, so a footprint moved');
      if(g.ents.length!==374)
        bad.push('the mile has '+g.ents.length+' entities rather than 374, so the seeded stream moved');
      // PART THREE, AND IT IS THE ONE THAT MATTERS: the kinds have to DRAW

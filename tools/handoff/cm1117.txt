@@ -1,0 +1,18 @@
+v11.17: the doorways inside buildings are clear of furniture too
+
+Measured on v11.16 at seed 4242: five building interiors on THE COLD MILE had no
+route in from their own front door, all five open with the furniture stripped.
+Four had furniture parked in a partition doorway that v11.14 never recorded; the
+fifth had a free standing piece wedged between two partition ends, 8 and 14
+units off, which the repair pass cannot see.
+
+The plans now record the doorways they cut and furniture keeps clear of them,
+and a piece leaving a gap between 2.5 and 30 units to any wall or partition is
+not placed. No random number is drawn: entities and containers identical.
+
+Two wrong cuts measured before shipping: a one unit gap read as a gap, 136
+pieces to 9; then every neighbouring piece counted, three in ten gone. Walls and
+partitions only ships: furniture 136 to 108 and 440 to 336, sealed 5 to 0.
+
+Not verified: the extract rate and his eye on a quarter fewer pieces. furnIDoor
+0 and furnGap 0 restore the old placement.
