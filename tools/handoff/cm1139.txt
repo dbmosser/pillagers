@@ -1,0 +1,7 @@
+v11.39: the "H controls" hint sat on your health bar
+
+With the controls list toggled off, the "H controls" reminder drew at the
+bottom-left corner, inside the vitals panel, over the STAMINA or HP readout.
+Anchored above the panel now, following its drag. Reproduced by tracing the
+fillText. Check 11.39 holds it at 1080p and 1440p and fails on the v11.38
+fixture.

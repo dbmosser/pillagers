@@ -40024,6 +40024,35 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.39 - THE "H CONTROLS" HINT SAT ON YOUR HEALTH BAR
+
+From the rendering agent. When the controls list is toggled off (H cycles it
+through full, compact, off), drawLegend drew the reminder "H  controls" at
+14, H-14, the very bottom-left corner. That corner is inside HUDBOX.body, the
+vitals panel that holds health, stamina and armour, so the grey hint printed
+across the STAMINA label or the HP number. The compact legend two branches
+down already computes its position ABOVE the panel, with a comment measuring
+the panel height for exactly this reason; the off hint never got the same
+treatment.
+
+**REPRODUCED** by tracing the fillText: at 1080p the hint drew at a y inside
+the vitals panel box.
+
+**THE FIX** anchors the off hint at HUDBOX.body.y minus a line, so it sits
+just above the panel, and because HUDBOX.body carries the panel's drag offset
+the hint follows it when the panel is moved.
+
+**NEW CHECK v11.39** draws a frame with the legend off at 1080p and at 1440p,
+traces the "H  controls" fillText, and requires its baseline above the top of
+the vitals panel at both sizes. The check passes at both sizes on the fixed build
+and encodes the invariant that the hint is out of the bottom strip, so it
+guards against a regression here; it did NOT fail on the v11.38 fixture, whose
+HUD geometry measures the hint elsewhere, so the bug was reproduced by hand
+instead (old hint at y 1066, vitals panel 879 to 1072 at 1080p).
+
+Not verified: 4K, which the pane cannot reach; his own eye; and the collapsed
+"controls [+]" hint, which sits in the same corner but carries a click box for
+expanding the legend and was left where his click expects it.
 ## v11.38 - YOUR PUNCH HIT YOUR OWN MERC
 
 From the combat agent, a clean one-line asymmetry. The fists sweep in
