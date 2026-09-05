@@ -1,0 +1,7 @@
+v11.21: THE COLD MILE, measured the same way
+
+No game change. 320 paired seeds on THE COLD MILE, the seven building rules
+off against on, the v11.20 follower fix in both arms: old rules 25.9 percent,
+new rules 38.4, discordant 41 to 81, z 3.62, p under 0.001. Timeouts: old rules 1, new rules 0.
+New check v11.21: three seeded mile raids never stand still with a route in
+hand; arms build the same raid at 374/593 with the walls differing.

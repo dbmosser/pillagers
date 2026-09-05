@@ -40024,6 +40024,41 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.21 - THE COLD MILE, MEASURED THE SAME WAY
+
+Nothing in the game changes in this build. v11.19 and v11.20 measured the
+seven building builds, v11.12 to v11.18, on COLD STORAGE only, and every one
+of those builds ended with the same debt: THE COLD MILE not measured. The mile
+is where most of the doors, partitions and furniture actually moved (the
+sealed interiors, the dead doors, the partition ends in doorways were all
+found there), so borrowing the first map's number for it would be guessing.
+
+**MEASURED: 320 paired seeds on THE COLD MILE, seeds 9001 to 9320, the robot at
+its pinned greed, the follower fix of v11.20 in both arms.** Arm A is the old
+world, all seven dials off (winWalk, furnDoor, navBody, doorClear, furnIDoor,
+furnGap, partDoor); arm B is the shipping rules. Old rules extract
+**25.9 percent**, new rules **38.4 percent**; both on 42 seeds, neither
+on 156, old alone 41, new alone 81, z 3.62, two sided p under 0.001. The
+mile run is 121 seconds a raid on the old rules and 104 on the new,
+mean haul on an extract 2,117 to 1,852. Killers, old to new: crawler 129 to 110, sentry 71 to 60, pillager 20 to 15, listener 6 to 4, choir 6 to 2, bulwark 3 to 6, warden 1 to 0.
+Timeouts: old rules 1, new rules 0. Read plainly: the gain the follower fix uncovered on
+COLD STORAGE is there on the bigger map too, and it is not a dial, every one
+of the seven rules still has its switch. A paired seed on the mile takes about
+20 seconds against 5 on COLD STORAGE, so this run cost the best part of two
+hours; that is the price of the standard and it was paid, not sampled.
+
+**NEW CHECK v11.21** replays seeds 9001, 9002 and 9003 on THE COLD MILE
+through the seeded trace and requires the bot never to stand still for
+fifteen seconds with a route in hand and health left, the v11.20 rule on the
+second map. Controls: the three raids must run at least thirty samples and
+move at least fifteen hundred units between them, or nothing was measured;
+the two arms must build the same raid at seed 4242, 374 entities and 593
+containers with the rules off and on, with the wall count differing so the
+old arm is really the old world; and the fingerprint must still be 374 and
+593. On this fixture: it passes in 35 seconds, three mile raids traced, the arms at 374 and 593 with the walls differing.
+
+Not verified: his own play on either map; the bot never fights pillagers, so
+the pillager column above is machine combat only.
 ## v11.20 - THE FOLLOWER AND SEEKPOINT DISAGREED ABOUT ARRIVING
 
 Found by reading v11.19's measurement instead of filing it. The robot ran out
