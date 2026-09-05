@@ -1,0 +1,18 @@
+v11.42: his in-game text edits, baked in permanently
+
+67 strings he rewrote via Settings, Edit the words (stored in his profile P.txt,
+written out in every run export) are now shipped as a built-in default map
+TXSHIP that TX consults under the profile, so his wording is the game's default
+for everyone while his own edits still override. Number-shaped lines are derived
+into the shipped pattern map TXPSHIP via the same txSet logic, so they refill
+live numbers at draw time. The export double-encoded non-ASCII (the middot); the
+map was normalized before baking.
+
+This also explains his same-session reports that LMB was dead in raids and the
+stash was broken: those are Edit the words being on, which captures clicks to
+edit text; turning it off restores both. The raid fire path was confirmed intact.
+
+Check 11.42 drives the real TX for sample exact edits, the number-pattern path
+with a changed number, an untouched line, and a baked count; fails on v11.41.
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

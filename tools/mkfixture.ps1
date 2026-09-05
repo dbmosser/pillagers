@@ -1156,6 +1156,7 @@ try{
   // brings one back.
   try{ window.__tx.pmap=txPatMap; }catch(e2){}
   try{ window.__tx.arm=function(){ return applyGameOpts(); }; }catch(e3){}
+  try{ window.__tx.ship=function(){ var o={}; if(typeof TXSHIP!=='undefined'){ for(var k in TXSHIP) o[k]=TXSHIP[k]; } return o; }; }catch(e4){}
 }catch(e){ window.__tx=null; }
 window.__wx={list:function(){ return WEATHER; },cur:wx,VF:VF,AMBR:AMBR,ping:ping,pick:pickWeather};
 window.__music=function(){ tickMusic(); return {mode:musicMode(),wanted:musicWanted(),started:!!MUS.g,step:MUS.step,trkName:(MUS.trk?MUS.trk.name:null),themes:MUS_THEMES.length}; };
@@ -5431,6 +5432,23 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.42',what:'his in-game text edits are baked in: TX rewrites his edited strings to his wording with the editor off, exact and number-pattern lines alike, and leaves unrelated text alone',
+   run:function(){
+     if(!(window.__tx&&__tx.get)) return 'SKIP: this build has no text engine to drive';
+     var bad=[];
+     function chk(oldS,wantS){ var g=__tx.get(oldS); if(g!==wantS) bad.push('"'+oldS.slice(0,32)+'" did not become his wording (got "'+(''+g).slice(0,40)+'")'); }
+     // exact edits, ASCII samples of the baked set
+     chk('Human-shaped rivals looting the same map. They fight each other and the machines as well as you.','Make some friends.');
+     chk('no armour on','no armour equipped');
+     chk('The freebie kit','The Freebie Kit');
+     chk('XP comes from selling salvage in the Undercroft.','Shop before you drop.');
+     // number-pattern edit driven with a DIFFERENT number, to prove the shape not the instance
+     chk('Rainy. Harder going, so XP pays 2.5x.','XP multiplier = 2.5x');
+     // an unedited line must pass through untouched
+     var u='This exact line was never one he edited.'; if(__tx.get(u)!==u) bad.push('an unedited line was rewritten (got "'+(''+__tx.get(u)).slice(0,40)+'")');
+     // the shipped map is present and roughly complete
+     if(__tx.ship){ var _n=0,_o=__tx.ship(); for(var _k in _o) _n++; if(_n<60) bad.push('only '+_n+' edits are baked, expected the full set (~67)'); }
+     return bad.length?bad.join('; '):null; }},
   {v:'11.41',what:'claiming a finished contract refills the freed slot with a job that is NOT already on the board (the no-duplicate rule the board is topped up by), and the refill still happens with the board held at eight',
    run:function(){
      if(!(window.__contracts&&window.__P)) return 'SKIP: this fixture does not expose the contract board';

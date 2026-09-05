@@ -40024,6 +40024,63 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.42 - HIS IN-GAME TEXT EDITS, BAKED IN PERMANENTLY
+
+His instruction, mid-session: "i added a bunch of in-game text changes, make
+sure you pick those up permanently." He had turned on Settings, Edit the words
+(CFG.textEdit) and rewritten 67 strings across the shop, the item panel, the
+settings tooltips, the kit and weather blurbs, the sector screens and the run
+report. Those edits live in his profile as P.txt (exact) and P.txp (the
+number-shaped patterns), and the flight recorder writes P.txt out on every
+export. They were his profile only; they needed to become the game's words.
+
+WHY THE LMB AND STASH "BUGS" WERE THIS. He also reported, in the same stretch,
+that left-click did nothing in raids and the stash was broken. Both are Edit the
+words being on: that mode turns the cursor into a text caret and captures every
+click to edit the string under it, so LMB cannot fire and the stash cells cannot
+be dragged. Turning the setting off restores both. Not a code defect; the editor
+doing exactly what it is for. Reproduced by reading the mousedown gate and the
+txClick handler, and confirmed the raid fire path is intact (a dispatched LMB
+sets mouse.down and __loop fires a bullet on the current build).
+
+HOW THEY ARE BAKED. His 67 exact edits ship as a built-in default map, TXSHIP,
+that the TX door consults right after the profile's own P.txt, so his wording is
+the default for everyone while his profile still overrides. The number-shaped
+lines (the credit counter, the weather multiplier, the abandon payout, the XP
+totals, the sector stats) are run through the same txSplit and shape test txSet
+uses, into a shipped pattern map TXPSHIP, so a line refills its live numbers at
+draw time instead of being pinned to the instance he happened to edit. This
+reuses the exact machinery his own edits already run through, which is why it is
+trusted: it is not a reimplementation.
+
+THE ENCODING. The export double-encoded every non-ASCII character: the middot in
+"$375,700 . $2,500 per roll" arrived as the bytes for a mojibake pair. Left
+as-is it would have shipped that mojibake to every player. The whole map was
+normalized (re-read through Latin-1 and back to UTF-8) before baking, and the
+middot verified as a single correct code point in the output.
+
+MEASURED. Driven through the real TX on a scratch build: all 67 exact edits
+return his wording; the credit line with fresh numbers ($999,999 / $1,000)
+rewrote to his "Current credits ..." with those numbers refilled; a weather line
+at 2.5x rewrote to "XP multiplier = 2.5x"; an unrelated line passed through
+untouched. Check 11.42 guards a sample of the exact edits, the pattern path with
+a changed number, an untouched line, and that at least 60 of the ~67 are baked.
+Control: on the v11.41 fixture, which has no TXSHIP, every one of those returns
+the original, so the check fails.
+
+FOR HIS EYE, edits worth a second look before alpha (baked exactly as written,
+not changed): several reference the dev/cheat surfaces or Claude by name ("Since
+Claude can't seem to figure this out on its own", "This is some shit Claude came
+up with", "Cmon you dirty cheating cheater", the DEV CHEAT BOX line), one has a
+typo ("Clade came up with this"), and a few are terse jokes ("Belt consumables
+ftw.", "We're going streaking!", "Wake up, Crono!"). Most sit on dev-only or
+settings surfaces a friend will not see; a handful (item blurbs, weather) are
+player-facing. Say the word and any of them come back out.
+
+Not verified: his own eye on the baked result in the live game; storage slots
+other than the active one; that every one of the 67 is a string the game still
+paints (a few, like the removed "THE DEAL" and sector tails, he blanked on
+purpose); whether the dev-referencing lines are meant to ship.
 ## v11.41 - A CLAIMED CONTRACT COULD REFILL ITS SLOT WITH A JOB ALREADY ON THE BOARD
 
 From the contract agent, queued at v11.31 and now reproduced. The board holds
