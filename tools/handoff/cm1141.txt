@@ -1,0 +1,18 @@
+v11.41: a claimed contract could refill its slot with a duplicate job
+
+The board dedups on top-up (contractKey, v5.71) but claimContractAt refilled a
+freed slot with a bare genContract, so a claimed job could be replaced by one
+already on the board: 182 of 400 finished-then-claimed boards ended with two
+identical rows. New helper freshContract dedups against every other slot; both
+the claim path and the render-time repair use it. New window.__contracts hook
+drives the real code; check 11.41 requires zero duplicates over 200 seeds with
+two controls that the refill still happens and the board stays at eight.
+
+Also a harness repair that unblocked the corpus: the v11.24 feud check was
+reading the Bulwark's fire and calling it a feud (with nBulwark 0 the centre
+seat shows zero pillager-on-pillager combat, feuds on or off). It failed
+identically on the v11.40 control and on a v11.36 fixture, so not a regression.
+The check now isolates the Bulwark out, passes only on real feud combat, and
+skips honestly otherwise. Whether feuds fire in real play is for his ruling.
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

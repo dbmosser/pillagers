@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.40';
+var VER='11.41';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.40';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.40';
+var WHATSNEW_VER='11.41';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'NO TWO CONTRACTS ON THE BOARD ARE THE SAME JOB. Finishing a contract used to be able to drop a copy of a job you already had back onto the board, wasting a slot. The freed slot now follows the same no-duplicate rule the board fills by.',
   'A VENTED PILLBOX STAYS STUNNED AS LONG AS IT SHOULD. The stun from a vent shot on a Pillbox was draining almost twice as fast as the setting says, so it came back to life early. It now holds for the full lockout, like every other machine.',
   'THE "H CONTROLS" HINT NO LONGER SITS ON YOUR HEALTH BAR. With the controls list toggled off, the little "H controls" reminder was printed inside the vitals panel, over the STAMINA or HP readout. It sits just above the panel now.',
   'YOUR PUNCH NO LONGER HITS YOUR OWN MERC. A melee swing near the man you hired used to hurt him and, on the killing blow, bill you for it. Your fists pass through him now, the same as your bullets always have.',
@@ -2537,6 +2538,23 @@ function contractKey(c){
   if(c.type==='exItem')   return 'exItem:'+c.item;
   if(c.type==='conduct')  return 'conduct:'+c.ck;
   return c.type;
+}
+// v11.41: fill a FREED contract slot the way the board is topped up - no job
+// already on the board, keyed on what it is about (contractKey). claimContractAt
+// and the render-time repair both used a bare genContract, so a claimed job's
+// replacement, or a repaired card, could duplicate a slot the no-duplicate rule
+// (v5.71) keeps clear. Deduped against every OTHER slot; bounded retries then
+// take what comes, exactly like ensureContracts, so a narrow pool cannot spin.
+function freshContract(skipIx){
+  for(var _ft=0;_ft<12;_ft++){
+    var _fc=genContract(), _fk=contractKey(_fc), _fdup=false;
+    for(var _fj=0;_fj<P.contracts.length;_fj++){
+      if(_fj===skipIx) continue;
+      if(contractKey(P.contracts[_fj])===_fk){ _fdup=true; break; }
+    }
+    if(!_fdup) return _fc;
+  }
+  return genContract();
 }
 function ensureContracts(){
   // Drop anything that is not a usable contract before topping up, or junk
@@ -28025,7 +28043,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.40: the Pillbox vent stun drained twice as fast. The general machine update decrements htImmune once for every machine and returns while overheating before it reaches the kind branches; the Choir branch decremented htImmune a second time, so once the overheat phase ended the vent lockout drained at double speed, 5.5 seconds of a 7-second stun. Measured against a sentry, which cleared at 7. The redundant lines are removed. From the combat agent.',
+  now:'v11.41: a claimed contract refilled its slot with a bare genContract, skipping the no-duplicate rule (contractKey) the board is topped up by, so a claimed job could be replaced by one already on the board. Measured 182 of 400 finished-then-claimed boards ended with two identical rows. The render-time repair of a malformed card had the same gap. Both now go through freshContract, which dedups against every other slot the way ensureContracts does. From the contract agent.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -29853,7 +29871,7 @@ P.contracts.forEach(function(c,ci){
     // the whole terminal down with it. Nothing here is player-facing repair: a
     // card with no reward cannot be paid, so it is replaced with a fresh one.
     if(typeof c.reward!=='number'||!isFinite(c.reward)){
-      try{ P.contracts[ci]=genContract(); }catch(_cg){ P.contracts[ci]=null; }
+      try{ P.contracts[ci]=freshContract(ci); }catch(_cg){ P.contracts[ci]=null; }
       c=P.contracts[ci];
       if(!c) return;
     }
@@ -30629,7 +30647,7 @@ function claimContractAt(ci){
   var got=payGear(c.gear);
   var TT2=CTIER[c.tier]||CTIER.std;
   P.cstand=cstand()+TT2.w;
-  P.contracts[ci]=genContract();
+  P.contracts[ci]=freshContract(ci);
   return {pay:c.reward, gear:got};
 }
 // His order: all of them at once. One pass, one total, one line.

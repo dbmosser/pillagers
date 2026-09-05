@@ -40024,6 +40024,66 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.41 - A CLAIMED CONTRACT COULD REFILL ITS SLOT WITH A JOB ALREADY ON THE BOARD
+
+From the contract agent, queued at v11.31 and now reproduced. The board holds
+eight contracts and is topped up by ensureContracts, which since v5.71 refuses
+two rows that are the same job: contractKey is the contract's type plus what it
+is about, which machine, which container, which district, which item, which
+conduct, deliberately NOT the count, so "destroy 6 sentries" and "destroy 14
+sentries" collide and only one reaches the board. That rule runs on the top-up
+loop. It did not run when a slot was FREED. claimContractAt, the single writer
+for a finished contract, paid the reward, banked the standing weight and then
+did P.contracts[ci]=genContract(), a bare draw with no dedup, so the job that
+replaced the one you just finished could be a copy of a job still on the board.
+The render-time repair of a malformed card, the other place a slot is refilled,
+had the same bare draw.
+
+**REPRODUCED.** A new hook, window.__contracts, exposes the real srand,
+genContract, contractKey, ensureContracts and claimContractAt, so the check
+drives the actual code and not a copy of it. Over seeds 1 to 400: fill the board
+to eight distinct contracts, finish slot 0, claim it, then read the new slot's
+key against the other seven. On v11.40, 182 of 400 claims left two identical
+rows on the board, keys like district:2, open:locker and haul. About forty-five
+in a hundred claims wasted a slot.
+
+**THE FIX.** One helper, freshContract(skipIx), placed by contractKey so both
+refill sites can see it. It draws a contract, keys it, and rejects it if it
+matches any OTHER slot, up to twelve tries, then takes what comes, exactly the
+bounded-retry-then-accept shape ensureContracts already uses, so a narrow pool
+can never spin here. claimContractAt and the render repair both call it now. The
+board is unchanged in every other way: the refill still happens, the reward and
+standing are still paid, the slot count stays at eight.
+
+**MEASURED after the fix.** Over the same seeds 1 to 200 the check requires: not
+one claim leaves a duplicate on the board; every claim still refills the freed
+slot, so the dedup did not disarm the refill; and the board never falls below
+eight. Control: the whole check fails on the v11.40 fixture, where the duplicate
+count is in the dozens. Two controls guard against a fix that simply stops
+refilling: a slot left empty, or a board that shrank, both fail the check.
+
+ALSO THIS BUILD, A HARNESS REPAIR THAT UNBLOCKED THE CORPUS. The full corpus
+went red on the v11.24 feud check, which the contract change cannot touch. Run
+down honestly: that check parks pillagers at the map centre at peace with the
+machines, counts hits on pillagers, calls them feud hits, and asserts raiderFeud
+0 drops them to a third. But the roughly 42 hits are the BULWARK'S fire, not a
+feud. With nBulwark 0 the only thing that can hit a pillager is another
+pillager, and measured that way the centre seat shows ZERO pillager-on-pillager
+combat whether feuds are on or off. So the check has always read the Bulwark and
+its greens were contamination; it fails identically on the v11.40 control and on
+a v11.36 fixture built before the v11.37 provoke change, so it is neither a
+regression nor caused by anything shipped this session. The check now isolates
+the Bulwark out, passes only on real isolable feud combat, and otherwise skips
+with the two hit counts in the message, rather than reading the Bulwark as a
+feud. FOR HIS RULING: whether the rival-crew feud fires at all in real play is
+something the sim cannot see, and is his eye to make.
+
+Not verified: his own play; whether he would rather a finished contract's slot
+stay empty until he rerolls it, which is a design choice and not a bug; the
+render-time repair path is fixed by the same helper but is only reached by a
+corrupt saved card and is not separately driven by the check; whether pillager
+feuds fire in real play, which no sim can measure.
+
 ## v11.40 - THE PILLBOX VENT STUN DRAINED TWICE AS FAST
 
 From the combat agent. A vent shot on a machine's weak point stuns it for a
