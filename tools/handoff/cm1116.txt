@@ -1,0 +1,21 @@
+v11.16: a door cell sits clear of every wall, not only the door frame
+
+The first build walked on THE COLD MILE: ten buildings sampled, nine deliver
+their crawler onto a player outside, building 20 leaves and stands at 2985,3178.
+Its route ran through the building next door, whose west door has a partition
+running into the doorway, and the carve that opens route cells through a door
+rejected only cells inside a wall, so a cell one unit above the partition became
+a waypoint.
+
+A door cell must now sit the body's padding clear of every wall not on the
+door's own line, with the old rule as a fallback for a door that would otherwise
+open nothing. My first cut was inert, counting only newly opened cells; fixed by
+counting cells already open. Building 20 now routes round the north and is on
+the player at 35 by twenty five seconds; the old carve stands at 313.
+
+COLD STORAGE re-read with a fair harness is 12 of 13, the thirteenth my target
+choice. Found for next: a partition running into a doorway, and interior
+partition doorways holding furniture on mile 32, 33 and 38.
+
+Not verified: the extract rate and the rest of the mile. doorClear 0 restores
+the old carve.

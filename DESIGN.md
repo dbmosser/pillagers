@@ -40024,6 +40024,76 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.16 - A DOOR CELL SITS CLEAR OF EVERY WALL, NOT ONLY THE DOOR FRAME
+
+Fourth build on machines getting out of buildings, and the first walked on THE
+COLD MILE.
+
+**THE FIRST MAP, RE-READ WITH A FAIR HARNESS.** Two of the three COLD STORAGE
+buildings I called short last build were my harness. Building 19's player was
+placed at x 4250, outside a world that ends at 4200, so the crawler stood at the
+border wall 109 units from a man it could never reach; placed inside the world
+it is on him at 34. Building 5's target is a pocket of open ground on the map's
+east side that nothing can route into from the drop, the player included;
+the building itself is reachable. Building 6 is a 1,900 unit walk round a
+neighbour and simply needs more than fifteen seconds. **So COLD STORAGE is 12 of
+13 buildings delivering their crawler, and the thirteenth is my target choice,
+not a box.** The v10.84 line "building 3 finds a route and does not walk it" is
+closed the same way: building 3 has no open ground outside it at all, which is
+why that check never tested it.
+
+**THE MILE, SAMPLED.** Ten buildings with open ground, fresh deploy each,
+fifteen seconds: **9 deliver the crawler onto the player at 34 to 36 units.**
+Building 20 leaves its own building at one second and then stands at 2985,3178
+for the rest of the trial, 313 units off.
+
+**TRACED.** Its route runs west, through the building next door, in at that
+building's east door and out at its west door at 2960,3167. A partition at
+2976,3193 runs from inside that building straight into the doorway, leaving 26
+units of gap above it and 22 below, neither wide enough for a body. The route
+grid should have said so. It did not, because carveDoors, which opens the cells
+a route needs to pass through a doorway, rejected only cells whose centre was
+INSIDE a wall; a cell one unit above the partition was opened as a waypoint,
+3000,3192 with 2984 and 2968 beside it, and the crawler steering at it stood
+against the partition fourteen units inside its padding.
+
+**THE FIX.** The carve asks every door cell to sit the body's padding clear of
+every wall that is not on the door's own line; the jamb band already handles
+those. If that opens nothing for a door the old rule is used for that door, so
+no door that was open before is closed by it. **MY FIRST CUT WAS INERT AND THE
+CHECK SAID SO**: it counted only the cells it newly opened, and a door whose
+clear cells were already open in the body sized base grid counted as opening
+nothing, so the fallback undid the strict pass every time and both arms read 58
+cells and the same route. A cell already open is a door cell too; counted, the
+strict pass opens 0 extra cells on the mile, because the pad 15 grid of v11.15
+already keeps door gaps 15 clear of their jambs, and the only doors that ever
+needed the carve are the ones with something in the way, which is exactly where
+it must refuse.
+
+**MEASURED AFTER.** With the door next door closed to it, building 20's route
+goes round the north, about 2,200 units, the crawler leaves at frame 63 as
+before and **is on the player at 35 units by twenty five seconds**; with the old
+carve it stands at 2985,3178 at fifteen seconds and at twenty five, 313 off.
+Route existence across both maps is unchanged.
+
+**FOUND ON THE WAY, FOR THE NEXT BUILDS, both written into AUDIT.md.** The
+partition running into a doorway is a map generation fault of its own. And the
+three mile buildings whose interiors no route reaches, 32, 33 and 38, are
+interiors whose PARTITION doorways hold furniture: strip the furniture and all
+three become reachable at the crawler's padding; two of them are shut to the
+player's padding as well. v11.14 cleared the exterior doorways only.
+
+**NEW CHECK v11.16** drives the crawler out of building 20 on the mile by its
+fingerprint and requires it to be on the player inside 60 units in twenty five
+seconds. Controls: with doorClear 0 it must be no closer than 150, or the old
+carve does not show the fault; the strict pass must open fewer cells than the
+old rule; and the building 8 crawler on COLD STORAGE must still reach the
+player. On a v11.15 fixture the finding fires at 313.
+
+Not verified: the extract rate, and the other forty nine buildings on the mile
+by walking. Ten were walked and one was traced. The paired run at the 320-seed
+standard is several hours here and was not run. doorClear 0 restores the old
+carve.
 ## v11.15 - THE ROUTE GRID IS PADDED FOR THE BODY THAT WALKS IT
 
 The third build in a row on machines getting out of buildings, and the one that
