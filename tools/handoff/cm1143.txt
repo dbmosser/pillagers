@@ -1,0 +1,9 @@
+v11.43: baked text edits refreshed to his latest set (71)
+
+He kept editing after the v11.42 snapshot; his export grew from 67 to 71 wording
+changes, the four new ones the title-screen and tutorial copy. TXSHIP is
+regenerated from the newest export and TXPSHIP re-derived, so all 71 render
+through TX under his profile; encoding normalized as before. Check 11.43 requires
+>=71 baked and the new lift line to render; fails on the v11.42 fixture.
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

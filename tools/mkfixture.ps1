@@ -5432,6 +5432,15 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.43',what:'the baked text edits are his latest set (71), including the title-screen and tutorial lines he rewrote after the v11.42 snapshot',
+   run:function(){
+     if(!(window.__tx&&__tx.get&&__tx.ship)) return 'SKIP: this build cannot read the shipped text map';
+     var bad=[], o=__tx.ship(), n=0, liftKey=null;
+     for(var k in o){ n++; if(k.indexOf('Take the lift up with whatever you dare carry')>=0) liftKey=k; }
+     if(n<71) bad.push('only '+n+' edits are baked, expected his latest set of 71');
+     if(!liftKey) bad.push('the new title-screen lift line he rewrote is not in the baked set');
+     else if(__tx.get(liftKey)!==o[liftKey]) bad.push('the new lift line does not render his wording through TX');
+     return bad.length?bad.join('; '):null; }},
   {v:'11.42',what:'his in-game text edits are baked in: TX rewrites his edited strings to his wording with the editor off, exact and number-pattern lines alike, and leaves unrelated text alone',
    run:function(){
      if(!(window.__tx&&__tx.get)) return 'SKIP: this build has no text engine to drive';
@@ -9151,7 +9160,7 @@ window.__REGRESS=[
        // column was, so the one block of real prose is capped.
        var intro=null;
        Array.prototype.forEach.call(col.children,function(d){
-         if(/elites left the surface/.test(d.textContent||'')) intro=d; });
+         if(/elites left you for dead/.test(d.textContent||'')) intro=d; });
        if(!intro) bad.push('control: the opening sentence is not on the title screen any more, so its measure cannot be checked');
        else{
          var ir=intro.getBoundingClientRect();

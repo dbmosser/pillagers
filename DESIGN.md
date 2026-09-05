@@ -40024,6 +40024,27 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.43 - THE BAKED TEXT EDITS, REFRESHED TO HIS LATEST SET
+
+He kept editing after the v11.42 snapshot. His export had grown from 67 wording
+changes to 71 by the time I re-read it, the four new ones being the title-screen
+and tutorial copy: the intro card ("The elites left you for dead..."), the loot
+line, the extract line and the lift line. Same bake as v11.42, just the current
+data: TXSHIP is regenerated from the newest export, and TXPSHIP is re-derived
+from it, so all 71 render through TX under his profile. Encoding normalized the
+same way (the export double-encodes non-ASCII). The four new lines are stored as
+their full multi-line originals, whitespace and all, which is what the title
+screen paints, so they match exactly.
+
+MEASURED: the shipped map holds 71 entries and the new lift line renders his
+wording through the real TX. Check 11.43 reads the shipped map, requires at least
+71 entries and requires the lift line to be present and to render; it fails on
+the v11.42 fixture, which has only 67 and no lift line. The v11.42 check still
+passes, so the earlier set did not regress.
+
+Not verified: his own eye in the live game; whether he is still editing (this is
+a snapshot at his newest export; another refresh is one build away if he adds
+more); non-active save slots.
 ## v11.42 - HIS IN-GAME TEXT EDITS, BAKED IN PERMANENTLY
 
 His instruction, mid-session: "i added a bunch of in-game text changes, make
