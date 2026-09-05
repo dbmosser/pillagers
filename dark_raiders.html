@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.34';
+var VER='11.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.34';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.34';
+var WHATSNEW_VER='11.35';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE LIGHTNING WARNING RING LANDS WHERE THE BOLT WILL. In a storm, the ring that shows where the next strike hits was drawn in the wrong place, off screen almost always, so the strike arrived with no warning. It sits on the ground now, closing as the strike nears.',
   'THE PAUSE SCREEN KEY LINE READS RIGHT. Two phrases I changed by mistake are back: E interact and CTRL / C crouch toggle. No change you would notice beyond those two words.',
   'ONE WORD FOR THE PACK: BACKPACK. The title controls line, the empty-panel hint and the full-pack message called it the "bag"; they say backpack now, and the full-pack message names Z, which drops, not TAB, which opens it.',
   'COPY REPORT TELLS THE TRUTH. If your browser refuses the clipboard, the button says so and points you at Settings, Recorder, instead of saying Copied over an empty clipboard. This is how your bug reports reach me.',
@@ -22168,6 +22169,7 @@ wc.drawImage(fogC,0,0);
   // v6.87: where it is about to land. World space, so it sits on the ground rather than
   // on the screen, and it closes as the strike nears.
   if(G.strikes&&G.strikes.length){
+    wc.save(); wc.scale(Z,Z); wc.translate(-ox,-oy);   // v11.35: on the ground, like the rings
     for(var _si=0;_si<G.strikes.length;_si++){
       var _S=G.strikes[_si];
       var _k=clamp(1-_S.t/STRIKE_WARN,0,1);
@@ -22185,6 +22187,7 @@ wc.drawImage(fogC,0,0);
         wc.globalCompositeOperation='source-over';
       }
     }
+    wc.restore();
   }
   if(WX.lightning){
     G.lightning-=dt;
@@ -28003,7 +28006,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.34: my own regression, caught by the full corpus. Rewriting the pause key line at v11.26 I changed "E interact" to "E search / call for extraction" and "crouch toggle" to "crouch on/off"; check v10.41 reads his words off the pause box and requires those two phrases, and the batched checks from v11.26 on never ran it, so the red shipped eight builds. Both phrases are back. Lesson: a build that edits a player-facing string a shipped check reads must run that check, or the full corpus.',
+  now:'v11.35: the storm strike warning ring was drawn in screen space with world coordinates. Its comment claimed world space; the block ran after the screen-space flash and never wrapped itself in the camera transform the pings block uses, so the ring sat at raw screen pixels of a world point up to the map size, off screen almost always, and its radius was not zoom-scaled. His v6.87 telegraph did not appear where the 62-damage bolt lands. Wrapped in scale(Z)/translate now, on the ground like the rings. From the rendering agent; reproduced by tracing the arc transform.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,7 @@
+v11.35: the storm strike warning ring was drawn in the wrong place
+
+The ring that warns where a lightning bolt will land ran in screen space with
+world coordinates, so it sat off screen almost always and his v6.87 telegraph
+did nothing. Reproduced by tracing the arc. Wrapped in the camera transform
+the rings use, so it sits on the ground. Check 11.35 fails on the v11.34
+fixture.

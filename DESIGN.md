@@ -40024,6 +40024,36 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.35 - THE STORM STRIKE WARNING RING WAS DRAWN IN THE WRONG PLACE
+
+From the rendering agent, and it undoes his v6.87 lightning telegraph. In a
+storm, a bolt is warned by a ring on the ground that closes as the strike
+nears, so you can step out of the 62-damage circle. The block that draws it
+carries the comment "World space, so it sits on the ground rather than on the
+screen", and it does the opposite: it runs right after the screen-space
+flash fillRect and never wraps itself in the camera transform the way the
+noise-ping rings two hundred lines above it do (wc.save(); wc.scale(Z,Z);
+wc.translate(-ox,-oy)). So wc.arc(_S.x,_S.y,...) placed the ring at the raw
+screen pixels of a world coordinate that runs up to the whole map, off the
+screen almost always, and STRIKE_R was not scaled by zoom.
+
+**REPRODUCED by tracing the arc.** A strike placed at the player's own world
+position drew its ring at screen (about the player's world x, y) instead of at
+the centre of the screen where the player stands. Off screen for any world
+position past 1920 by 1080, which is nearly all of both maps.
+
+**THE FIX** wraps the strike block in the same scale(Z)/translate(-ox,-oy)
+the rings use, so the ring sits on the ground and closes in world units.
+
+**NEW CHECK v11.35** pushes a strike at the player's world position, draws a
+frame while tracing wc.arc, and requires the ring of radius STRIKE_R to map
+to the centre of the screen (within 90 px); control: a strike 400 world units
+east maps to the right of centre and still on the screen, which a screen-space
+draw at the world x could not. On the v11.34 fixture the finding fails, the
+ring landing near the player's world x, far off screen.
+
+Not verified: the flash and the colour, which were not changed; his own eye in
+a storm.
 ## v11.34 - MY v11.26 REGRESSION, CAUGHT BY THE FULL CORPUS
 
 Owned in one line: rewriting the pause key line at v11.26 I changed two
