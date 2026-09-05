@@ -40024,6 +40024,56 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.20 - THE FOLLOWER AND SEEKPOINT DISAGREED ABOUT ARRIVING
+
+Found by reading v11.19's measurement instead of filing it. The robot ran out
+the clock 5 times on the old rules and 12 on the new, and a machine that runs
+out the clock is a machine standing somewhere.
+
+**REPRODUCED.** Batch outcomes cannot be replayed one seed at a time, because
+the robot's profile drifts across a run and every raid after the first sees the
+drift; so a seeded sim trace hook was added to the fixture, built the way the
+batch builds, and seed 9071 was walked. On the shipping rules **the bot stood at
+490,1157 inside building 6 from 45 to 120 seconds, moving nothing**, with a nine
+point route in hand, its next waypoint 24 units away, no stall timer running and
+no slide. Seventy five seconds of a raid, gone.
+
+**THE CAUSE IS MINE, from v11.15.** That build made a waypoint count as reached
+at 10 units, or at 30 when the next one can be walked straight to, so a body no
+longer turned inside a door. One call down, seekPoint treats a target inside
+ONE STEP as already reached and returns without moving. At the live frame a
+step is about 3 units and the two never meet. At the sim's 0.15 second step a
+150 unit body steps 27, so a waypoint between 10 and 27 units away is "not
+reached" to the follower and "reached" to seekPoint, and the body does nothing
+until something else changes its mind. A slow live frame of 0.1 seconds steps
+18 and can do the same to a machine on a laggy night.
+
+**THE FIX.** A waypoint counts as reached at one step, whatever the step is,
+floored at the 10. One expression, both follower sites.
+
+**MEASURED, the same 320 paired seeds as v11.19, both arms now carrying the
+fix.** Old rules extract **32.2 percent**, new rules **40.0 percent**; both on
+47 seeds, neither on 136, old alone 56, new alone 81, z 2.05, two sided p
+0.040. Where v11.19 read the seven building builds as no change to the robot's
+odds, they were a gain hidden under this stall: **timeouts on the new rules 12 to
+0**, on the old rules 5 to 4 (those four are the old world's own wall-hug
+stalls, the ones v11.15 fixed). The average raid on the new rules now runs 87
+seconds against 122 on the old, crawler kills 117 to 100, sentry 68 to 49,
+pillager 10 to 17, mean haul 2,017 to 1,960. Read plainly: on honest routes the
+robot gets where it is going faster than the freed machines can punish it.
+This is a bug fix's side effect and not a dial, and every one of the seven
+rules still has its switch.
+
+**NEW CHECK v11.20** replays seed 9071 through the seeded trace and requires the
+bot never to stand still for fifteen seconds with a route in hand and health
+left. Controls: the raid must run at least sixty seconds and move at least five
+hundred units, or nothing was measured; and with the old follower, navBody 0,
+the bot must not stand still either, since its fault was the jamb and not this,
+so a stall there would mean the trace reads something else. On a v11.19 fixture
+the finding fires: seventy five seconds ending at 120.
+
+Not verified: THE COLD MILE by the paired run, and his own play. The seeded
+trace hook and the paired runner stay in the fixture.
 ## v11.19 - THE MEASUREMENT THE LAST SEVEN BUILDS OWED
 
 Nothing in the game changes in this build. Seven builds in a row, v11.12 to

@@ -261,6 +261,26 @@ window.__wallIndex=function(pred){
 // Lets a measurement rebuild the map at the pre-v0.68 world size so before and
 // after are read off the same code path instead of off my arithmetic.
 // Samples one sim raid so a stall can be told apart from a decision never made.
+window.__simTraceSeed=function(seed){
+  pendSeed=seed>>>0; G=null;
+  G=buildRaid(true);
+  var samples=[],guard=0,cap=Math.round(CFG.raidSec/0.15)+200,next=0,B=G.map.buildings,lx=G.player.x,ly=G.player.y;
+  function inB(p){ for(var i=0;i<B.length;i++){ var b=B[i]; if(p.x>b.x&&p.x<b.x+b.w&&p.y>b.y&&p.y<b.y+b.h) return i; } return -1; }
+  while(!G.over&&guard<cap){
+    simStep(.15); guard++;
+    if(G.t>=next){
+      next+=5;
+      var p=G.player;
+      var wp=(p.path&&p.path[p.pathI])?[Math.round(p.path[p.pathI].x),Math.round(p.path[p.pathI].y)]:null;
+      var gk=p.goal?((p.goal.kind||p.goal.type||'goal')+'@'+Math.round(p.goal.x)+','+Math.round(p.goal.y)):'-';
+      samples.push([Math.round(G.t),Math.round(p.x),Math.round(p.y),Math.round(dist(p,{x:lx,y:ly})),inB(p),p.path?p.path.length:0,p.pathFail?1:0,Math.round(p.hp),+bagWeight().toFixed(0),p.pathI|0,wp,+(p.slideT||0).toFixed(1),+(p.stallT||0).toFixed(1),gk,+(p.goalT||0).toFixed(0),+(p.noRouteT||0).toFixed(0)]);
+      lx=p.x; ly=p.y;
+    }
+  }
+  if(!G.over){ G.tel.deathKiller='timer'; endRaid('dead'); }
+  var r=G.simResult; G=null;
+  return {seed:seed,outcome:r.outcome,killer:r.killer,samples:samples};
+};
 window.__simTrace=function(){
   G=buildRaid(true);
   var samples=[],guard=0,cap=Math.round(CFG.raidSec/0.15)+200,next=0;
@@ -5375,6 +5395,32 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.20',what:'a body never stands still on a route: the waypoint it is steering at counts as reached at one step, the same step seekPoint calls arriving, so a coarse step cannot deadlock the two',
+   run:function(){
+     if(!(window.__simTraceSeed&&window.__deploy)) return 'SKIP: this fixture cannot replay a seeded sim raid';
+     var bad=[];
+     // THE FINDING. Seed 9071 on COLD STORAGE with the shipping rules: the bot
+     // stood at 490,1157 inside building 6 from 45 to 120 seconds with a nine
+     // point route in hand and its waypoint 24 units away, moving nothing,
+     // because the follower wanted 10 units and seekPoint called 27 arrived.
+     __runPrep(); __resetCfg(); __pinDefaults(0); __P().mapIx=0;
+     var r=__simTraceSeed(9071), S=r.samples, i, run=0, worst=0, at=null;
+     for(i=1;i<S.length;i++){ var q=S[i]; var still=(q[3]===0&&q[7]>0&&q[5]>0); if(still){ run++; if(run>worst){ worst=run; at=q[0]; } } else run=0; }
+     // Samples are five seconds apart; three in a row standing still with a
+     // route and health is fifteen seconds of nothing.
+     if(worst>=3) bad.push('the bot stood still with a route in hand for '+(worst*5)+' seconds ending at '+at+' seconds into seed 9071');
+     // CONTROL ONE: the raid really ran. It has to reach at least 60 seconds and
+     // move at all, or the stall above is a raid that never started.
+     var moved=0; for(i=1;i<S.length;i++) moved+=S[i][3];
+     if(S.length<12||moved<500) bad.push('control: seed 9071 ran '+S.length+' samples and moved '+moved+' units, so nothing here was measured');
+     // CONTROL TWO: the old follower, navBody 0, must not stand still either;
+     // its fault was the jamb, not this. A stall there would mean the trace is
+     // reading something else.
+     __runPrep(); __resetCfg(); __pinDefaults(0); __P().mapIx=0; __cfg({navBody:0});
+     var r0=__simTraceSeed(9071), S0=r0.samples, run0=0, worst0=0;
+     for(i=1;i<S0.length;i++){ var q0=S0[i]; if(q0[3]===0&&q0[7]>0&&q0[5]>0){ run0++; if(run0>worst0) worst0=run0; } else run0=0; }
+     if(worst0>=3) bad.push('control: with the old follower the bot also stood still for '+(worst0*5)+' seconds, so this trace is not reading the arrival rule');
+     return bad.length?bad.join('; '):null; }},
   {v:'11.19',what:'the seven building rules since v11.12 ship switched on, and switching all seven off builds a different world for the same seed, so the paired measurement has two real arms',
    run:function(){
      if(!(window.__deploy&&window.__state)) return 'SKIP: this fixture cannot build a map';

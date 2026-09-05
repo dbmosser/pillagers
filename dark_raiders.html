@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.19';
+var VER='11.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.19';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.19';
+var WHATSNEW_VER='11.20';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'A MACHINE ON A LONG FRAME NO LONGER FREEZES ON ITS OWN ROUTE. Two parts of the route follower disagreed about when a waypoint counts as reached, and on a slow frame a body could stand still with a route in hand. Found in the test robot, where it cost raids to the clock; fixed for everything that walks a route.',
   'NOTHING IN THE GAME CHANGED IN THIS BUILD. It measures what the last seven did: with the machines now able to get out of buildings, the test robot was run through the same sixty raids on the old rules and the new, and the difference is written in the notes rather than guessed at.',
   'NO INTERIOR WALL ENDS INSIDE A DOORWAY. A few doors opened straight onto the end of a wall inside, with too little room either side of it to get through. Those walls now stop short of the door.',
   'THE DOORWAYS INSIDE BUILDINGS ARE CLEAR OF FURNITURE TOO. A few buildings had a piece parked in the gap between two rooms, so the back room could be seen and never reached, by you or by anything hunting you. Nothing is parked in those gaps now.',
@@ -15349,7 +15350,7 @@ function navSeek(e,tx,ty,spd,dt){
     }
     if(!e.path||!e.path.length){ seekPoint(e,tx,ty,spd,dt); return; }
     while(e.pathI<e.path.length-1){ var _dwf=dist(e,e.path[e.pathI]);
-      if(_dwf<10||(_dwf<30&&(CFG.navBody===0||walkClearR(e.x,e.y,e.path[e.pathI+1].x,e.path[e.pathI+1].y,e.r)))) e.pathI++; else break; }
+      if(_dwf<Math.max(10,spd*dt*1.2+0.5)||(_dwf<30&&(CFG.navBody===0||walkClearR(e.x,e.y,e.path[e.pathI+1].x,e.path[e.pathI+1].y,e.r)))) e.pathI++; else break; }
     var _fwp=e.path[e.pathI];
     seekPoint(e,_fwp.x,_fwp.y,spd,dt); return;
   }
@@ -15396,7 +15397,12 @@ function navSeek(e,tx,ty,spd,dt){
   // waypoint. At 30 alone a body just short of a door turned for the next
   // waypoint with the jamb beside it and walked into the jamb.
   while(e.pathI<e.path.length-1){ var _dw=dist(e,e.path[e.pathI]);
-    if(_dw<10||(_dw<30&&(CFG.navBody===0||walkClearR(e.x,e.y,e.path[e.pathI+1].x,e.path[e.pathI+1].y,e.r)))) e.pathI++; else break; }
+    // v11.20: and never under one step, because seekPoint calls one step
+    // arrived and returns without moving. At the sim's 0.15 second step that
+    // is 27 units for a 150 unit body, and a waypoint 24 away deadlocked the
+    // two: the bot on seed 9071 stood at 490,1157 from 45 to 120 seconds with
+    // a route in hand. A 0.1 second live frame steps 18 and can do the same.
+    if(_dw<Math.max(10,spd*dt*1.2+0.5)||(_dw<30&&(CFG.navBody===0||walkClearR(e.x,e.y,e.path[e.pathI+1].x,e.path[e.pathI+1].y,e.r)))) e.pathI++; else break; }
   var wp=e.path[e.pathI];
   seekPoint(e,wp.x,wp.y,spd,dt);
 }
@@ -27965,7 +27971,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.19: the measurement the last seven builds owed. Sixty seeded robot raids on COLD STORAGE, each run twice, once with every building rule since v11.12 switched off and once with them on, so the extract rate difference of machines that can get out of buildings is a number and not a direction. Nothing in the game changed.',
+  now:'v11.20: the route follower and seekPoint disagreed about arriving. A waypoint between 10 units and one step away was not reached to one and already reached to the other, so a body stood still with a route in hand. At the sim step that is 10 to 27 units and it cost the robot raids to the clock; on a slow live frame it is 10 to 18 and can freeze a machine. Traced on seed 9071. A waypoint counts as reached at one step, floored at 10.',
   next:'His grades on the new map looks, menus and gun rarity, and his ruling on the mile-vs-cold shape the board now shows'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

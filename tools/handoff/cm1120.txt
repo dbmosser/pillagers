@@ -1,0 +1,16 @@
+v11.20: the follower and seekPoint disagreed about arriving
+
+Found by reading v11.19's timeouts. Seed 9071 traced through a new seeded sim
+hook: the bot stood still inside building 6 from 45 to 120 seconds with a route
+in hand and its waypoint 24 units away. My v11.15 follower wanted 10 units;
+seekPoint calls anything inside one step reached and returns without moving; at
+the sim's 0.15 second step that is 27 units and the two deadlock. A slow live
+frame can do the same to a machine.
+
+A waypoint counts as reached at one step, floored at 10.
+
+Re-measured on the same 320 paired seeds with both arms fixed: old rules 32.2
+percent, new rules 40.0, z 2.05, p 0.040; new-rule timeouts 12 to 0; mean raid
+122 to 87 seconds. The building builds were a gain hidden under this stall.
+
+Not verified: the mile by the paired run, and his own play.
