@@ -1339,7 +1339,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.27';
+var VER='11.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1350,10 +1350,11 @@ var VER='11.27';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.27';
+var WHATSNEW_VER='11.28';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE BACKPACK ARROWS BEHAVE WHEN EVERYTHING IS ON THE BELT. With every carried item claimed by a tactical belt key the backpack grid is empty, and an arrow key used to throw the selection away. It now does nothing until there is something to select.',
   'F NO LONGER BURNS A BANDAGE WHEN YOU PUNCH. Since F became the melee strike, a press while hurt also used the smallest heal in your backpack, silently. Heals are used from the tactical belt, and F now only strikes (and still revives you when you are down).',
   'THE PAUSE SCREEN KEY LIST IS RIGHT AGAIN. It printed a stray "&nbsp;" between every key and still said F heals, TAB opens the bag and Q throws. It now matches the controls list under H: F is your melee strike, TAB is the backpack, 1 to 9 is the tactical belt.',
   'FOUND: PILLAGERS OUT OF YOUR SIGHT NEVER FIRE BACK. A rule from the earliest builds only lets a pillager fight within 600 units of you, on a reason that stopped being true long ago. Out of your sight the machines shoot them and they never shoot back: zero rounds in a whole raid. Nothing changes yet; the switch and the numbers are on the board for a ruling.',
@@ -10420,7 +10421,12 @@ function raidKey(code,repeat,ev){
   if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){ G.bagOpen=!G.bagOpen; G.bagSel=0; }
   // Bag browsing. The arrows double as movement keys, so while the bag is open
   // they select instead and WASD still walks: you can sort without being rooted.
-  if(G&&!G.over&&G.bagOpen&&G.bag.length){
+  // v11.28: the guard tests the STACKS, which is what the arithmetic below
+  // divides by. G.bag.length was the guard, and with every copy claimed by a
+  // belt key the stack count is zero while the bag is not, so an arrow key
+  // took the selection to NaN (x % 0). drawBag clamped it back each frame, so
+  // nothing threw, but the selection was lost and Z dropped from index -1.
+  if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length){
     // GRID NAVIGATION, v2.87: the selection is a STACK index now, and the four
     // arrows walk the tile grid. Left/right step one tile, up/down step a row
     // of G.bagCols, which drawBag keeps current.
@@ -27985,7 +27991,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.27: F did two things. v10.64 bound the melee strike to the F keydown and left the older held-F heal in the player update, so one press while hurt swung a punch and burned the smallest heal in the backpack, with "Applying Bandage..." on screen. Reproduced: melee 1, bandage gone, one press. The held-F heal is removed; heals are used from the tactical belt; the downed self-revive on F stays. Check: F strikes and the backpack keeps its bandage, the belt still spends it, down and F still revives.',
+  now:'v11.28: the backpack arrow keys divided by zero. The guard tested the bag length and the arithmetic used the stack count, and bagStacks hides every copy a belt key claims, so with the whole backpack on the belt an arrow made the selection NaN. drawBag clamped it back each frame, so it never threw, which is why nobody saw it; the selection was lost and Z would have dropped from index -1. The guard now tests the stacks. Reproduced with one belted SMG, arrow left, selection NaN.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,30 @@
+## v11.28 - THE BACKPACK ARROWS DIVIDED BY ZERO
+
+The third of the bounded agent's findings, half right, and the half that was
+right is fixed here. The agent said the backpack arrow keys turn the
+selection into NaN when every carried item is claimed by a tactical belt key,
+and that drawBag then throws a TypeError every frame. **REPRODUCED, the first
+half**: one SMG in the backpack, the same SMG on belt key 6, backpack open,
+arrow left: G.bagSel is NaN. **REFUTED, the second half**: drawBag begins
+its grid with clamp(G.bagSel||0, ...), NaN||0 is 0, so it heals the value
+and draws the empty grid; ninety frames drew with no error. The agent had
+read the arithmetic and guessed the consequence, which is the thing three
+skeptics exist to catch and one agent cannot.
+
+**THE CAUSE.** The arrow block is guarded by G.bag.length and divides by
+bagStacks().length. bagStacks hides every copy a belt key claims (v8.78), so
+a backpack whose every item is on the belt has a length and no stacks, and
+x % 0 is NaN. Silent because drawBag clamps; not harmless, because between
+the key and the next frame Z reads bagStacks()[clamp(NaN,0,-1)], index -1,
+and the selection the player had is gone.
+
+**THE FIX** is the guard: it tests the stacks, the number the arithmetic
+divides by. An arrow with nothing to select does nothing.
+
+**NEW CHECK v11.28**: with the whole backpack on the belt, all four arrows
+leave the selection a finite 0; control: with two free stacks arrow right
+goes 0 to 1 and arrow left from 0 wraps to 1, so the arrows still walk the
+grid. On the v11.27 fixture the finding fails with the selection NaN.
+
+Not verified: the pad's D-pad path through the same grid, which routes
+through a different handler and was not pressed.

@@ -1,0 +1,7 @@
+v11.28: the backpack arrows divided by zero
+
+With every carried item claimed by a tactical belt key the backpack grid has
+no stacks, and the arrow keys divided by that zero, leaving the selection
+NaN until drawBag clamped it. Reproduced with one belted SMG. The guard now
+tests the stack count. Check 11.28 holds it and fails on the v11.27 fixture.
+The agent's claim that drawBag throws every frame was refuted.

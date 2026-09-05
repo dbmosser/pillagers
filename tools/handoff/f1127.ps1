@@ -18,8 +18,8 @@ SubRx @'
    run:function(){
      if(!(window.__deploy&&window.__loop&&window.__state)) return 'SKIP: this fixture cannot press keys in a raid';
      var bad=[];
-     function press(code, key){ var d=new KeyboardEvent('keydown',{code:code,key:key,bubbles:true,cancelable:true}); window.dispatchEvent(d); document.dispatchEvent(d); }
-     function release(code, key){ var u=new KeyboardEvent('keyup',{code:code,key:key,bubbles:true,cancelable:true}); window.dispatchEvent(u); document.dispatchEvent(u); }
+     function press(code, key){ var d=new KeyboardEvent('keydown',{code:code,key:key,bubbles:true,cancelable:true}); window.dispatchEvent(d); }
+     function release(code, key){ var u=new KeyboardEvent('keyup',{code:code,key:key,bubbles:true,cancelable:true}); window.dispatchEvent(u); }
      function frames(n){ var t0=performance.now(); for(var i=0;i<n;i++) __loop(t0+i*16.7); }
      // THE FINDING. Hurt, one Bandage in the backpack, nothing on the belt, press F.
      __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);

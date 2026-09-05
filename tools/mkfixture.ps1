@@ -5423,12 +5423,36 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.28',what:'the backpack arrows keep a number: with every carried item claimed by a belt key an arrow leaves the selection at 0, and with two free stacks the arrows still walk the grid',
+   run:function(){
+     if(!(window.__deploy&&window.__loop&&window.__state)) return 'SKIP: this fixture cannot press keys in a raid';
+     var bad=[];
+     function press(code, key){ var d=new KeyboardEvent('keydown',{code:code,key:key,bubbles:true,cancelable:true}); window.dispatchEvent(d); var u=new KeyboardEvent('keyup',{code:code,key:key,bubbles:true}); window.dispatchEvent(u); }
+     // THE FINDING. One gun in the backpack, the same gun claimed by belt key 6: the grid is empty.
+     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     var g=__state(), p=g.player, key='gun_'+(p.wep&&p.wep.id);
+     g.bag=[key]; g.hotAssign={5:key}; g.bagOpen=true; g.bagSel=0;
+     press('ArrowLeft','ArrowLeft');
+     if(typeof g.bagSel!=='number'||!isFinite(g.bagSel)) bad.push('with the whole backpack on the belt, arrow left made the selection '+g.bagSel);
+     else if(g.bagSel!==0) bad.push('with the whole backpack on the belt, arrow left moved the selection to '+g.bagSel+' on an empty grid');
+     press('ArrowRight','ArrowRight'); press('ArrowUp','ArrowUp'); press('ArrowDown','ArrowDown');
+     if(typeof g.bagSel!=='number'||!isFinite(g.bagSel)) bad.push('the other arrows made the selection '+g.bagSel);
+     // CONTROL: two free stacks, the arrows still walk. Right from 0 goes to 1, left from 0 wraps to 1.
+     g.bag=['bandage','frag']; g.hotAssign={}; g.bagOpen=true; g.bagSel=0;
+     press('ArrowRight','ArrowRight');
+     if(g.bagSel!==1) bad.push('control: with two free stacks arrow right took the selection to '+g.bagSel+' rather than 1, so the arrows no longer walk the grid');
+     g.bagSel=0; press('ArrowLeft','ArrowLeft');
+     if(g.bagSel!==1) bad.push('control: with two free stacks arrow left from 0 gave '+g.bagSel+' rather than wrapping to 1');
+     g.bagOpen=false; g.bagSel=0;
+     __topClear();
+     return bad.length?bad.join('; '):null; }},
   {v:'11.27',what:'F is one thing: a press while hurt with a Bandage in the backpack swings the strike and keeps the Bandage; the belt still spends it; down, F still revives',
    run:function(){
      if(!(window.__deploy&&window.__loop&&window.__state)) return 'SKIP: this fixture cannot press keys in a raid';
      var bad=[];
-     function press(code, key){ var d=new KeyboardEvent('keydown',{code:code,key:key,bubbles:true,cancelable:true}); window.dispatchEvent(d); document.dispatchEvent(d); }
-     function release(code, key){ var u=new KeyboardEvent('keyup',{code:code,key:key,bubbles:true,cancelable:true}); window.dispatchEvent(u); document.dispatchEvent(u); }
+     function press(code, key){ var d=new KeyboardEvent('keydown',{code:code,key:key,bubbles:true,cancelable:true}); window.dispatchEvent(d); }
+     function release(code, key){ var u=new KeyboardEvent('keyup',{code:code,key:key,bubbles:true,cancelable:true}); window.dispatchEvent(u); }
      function frames(n){ var t0=performance.now(); for(var i=0;i<n;i++) __loop(t0+i*16.7); }
      // THE FINDING. Hurt, one Bandage in the backpack, nothing on the belt, press F.
      __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
