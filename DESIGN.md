@@ -40024,6 +40024,33 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.34 - MY v11.26 REGRESSION, CAUGHT BY THE FULL CORPUS
+
+Owned in one line: rewriting the pause key line at v11.26 I changed two
+phrases a shipped check reads back, and it went red for eight builds because
+the batched checks never ran that check.
+
+Check v10.41 ("his words, first batch, read back off the screens") requires
+the pause box to say "E interact" and "CTRL / C crouch toggle". v11.26, fixing
+the double-escaped entity and the stale key names, wrote "E search / call for
+extraction" and "CTRL / C crouch on/off" instead, from the LEGEND table. The
+per-build checks from v11.26 to v11.33 verified the v11.26 line against the
+v11.26 rules and never against v10.41, so the full corpus at v11.33 was the
+first to run both together, and it failed.
+
+Both phrases are restored to what v10.41 asks for. The rest of the v11.26
+line stays: no literal entity, F melee strike, TAB backpack, 1-9 tactical
+belt, hold to sprint. Check v11.26 still passes on the new line, and v10.41
+passes again.
+
+The lesson, written into the handoff: a build that edits a player-facing
+string must run every shipped check that reads that string, not only the new
+one and its neighbours; the safe rule is to run the full corpus whenever a
+build changes any on-screen text, the way it already runs for drawing and AI.
+
+Not verified: nothing new; this restores measured behaviour. The full corpus
+is green again at v11.34.
+
 ## v11.33 - ONE WORD FOR THE PACK: BACKPACK
 
 His ruling is BACKPACK on every surface, and three player-facing strings

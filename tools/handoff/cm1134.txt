@@ -1,0 +1,7 @@
+v11.34: my v11.26 regression, caught by the full corpus
+
+Rewriting the pause key line at v11.26 I changed "E interact" and "CTRL / C
+crouch toggle" to other wording; check v10.41 requires those two phrases and
+the batched checks never ran it, so it was red for eight builds. Both phrases
+restored; v11.26 still passes. Full corpus green again. Lesson: run the full
+corpus on any player-facing text edit.
