@@ -11,40 +11,42 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.11 CHECK, inserted before the v12.10 entry. A raid with some base XP
-# is ended by death with two doses in the blood; the XP the card prints must
-# equal the XP the profile was paid.
+# CHECK 11.85's line filter follows the new wording, so the landed-hold line
+# stays under its label-face floor.
 SubRx @'
-  {v:'12.10',what:'the controls card no longer teaches an X (or pad Y) gun swap that has no handler; it names the belt keys instead (2026-09-06 first-ten-minutes audit)',
+       var subs=rec.filter(function(r){ return /^(closes in |STAYS OPEN|CLOSED|CALLED |OPEN TO EXTRACT)/.test(r.t); });
 '@ @'
-  {v:'12.11',what:'a death banks the XP its card printed, dose bonus included, instead of paying the run without the bonus after the drink is cleared (2026-09-06 first-ten-minutes audit)',
+       var subs=rec.filter(function(r){ return /^(closes in |STAYS OPEN|CLOSED|CALLED |EXTRACT NOW)/.test(r.t); });
+'@
+
+# v12.11 CHECK, inserted before the v12.10 entry. A ring is put into the
+# hold state and the map overlay drawn with the canvas text call recorded.
+SubRx @'
+  {v:'12.10',what:'a pillager will not throw a frag from inside his own blast: the throw band starts at the radius plus 52 (242 at 190) and still throws at 260, and the card prints the true centre damage (2026-09-06 review of v11.77)',
+'@ @'
+  {v:'12.11',what:'the sector map says EXTRACT NOW with the seconds left under a landed ring, the banner wording, instead of OPEN TO EXTRACT (2026-09-06 review of v11.74)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy';
-     if(typeof buzzXpMul!=='function') return 'SKIP: no dose bonus in this build';
-     var bad=[], P2=__P(), keepBuzz=(P2.buzz||[]).slice(), keepXp=P2.xp||0;
+     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
+     if(typeof drawMapOverlay!=='function') return 'SKIP: no map overlay in this build';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], rec=[], proto=CanvasRenderingContext2D.prototype, orig=proto.fillText;
+     var oldWords='OPEN TO '+'EXTRACT', newWords='EXTRACT '+'NOW';
+     proto.fillText=function(t){ try{ rec.push(String(t)); }catch(_r){} return orig.apply(this,arguments); };
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player;
-       g.tel.containers=40; g.tel.kills={crawler:12,sentry:4};   // enough base XP for a 5 percent bonus to show
-       P2.buzz=[{id:'liquor',tag:'drunk',t:200,dur:200},{id:'liquor',tag:'drunk',t:200,dur:200}];
-       var mul=buzzXpMul();
-       if(!(mul>1)) return 'SKIP: two doses did not raise the multiplier ('+mul+')';
-       var xp0=P2.xp||0;
-       p.downed=false; __endRaid('dead');
-       var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
-       var m=/\+([\d,]+) XP/.exec(txt);
-       if(!m) bad.push('control: the card printed no XP line ('+txt.slice(0,80)+')');
-       else {
-         var shown=parseInt(m[1].replace(/,/g,''),10), banked=(P2.xp||0)-xp0;
-         if(!(shown>0)) bad.push('control: the card printed no XP gain');
-         if(banked!==shown) bad.push('the card says +'+shown+' XP and the profile was paid '+banked);
-       }
-       if((P2.buzz||[]).length) bad.push('control: the death did not clear the drink');
-     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ P2.buzz=keepBuzz; P2.xp=keepXp; try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }
+       var g=__state(); if(!g.zones||!g.zones.length) return 'SKIP: no extraction ring';
+       var Z=g.zones[0]; Z.open=true; Z.beaconT=0; Z.hold=12; g.active=Z; g.mapOpen=true;
+       drawMapOverlay();
+       var subs=rec.filter(function(t){ return t.indexOf(oldWords)===0||t.indexOf(newWords)===0; });
+       if(!subs.length) bad.push('control: the map drew no boarding line under the landed ring');
+       if(subs.some(function(t){ return t.indexOf(oldWords)===0; })) bad.push('the map still says '+oldWords+' under a landed ring ("'+subs[0]+'")');
+       if(!subs.some(function(t){ return t.indexOf(newWords)===0&&/12S LEFT/.test(t); })) bad.push('the map does not say '+newWords+' with the seconds left (drew: '+subs.join(' | ').slice(0,80)+')');
+       if(!subs.some(function(t){ return t.indexOf(newWords+'!')===0; })) bad.push('the map line lacks the banner mark');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ proto.fillText=orig; try{ var g2=__state(); if(g2){ g2.mapOpen=false; } }catch(_m){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.10',what:'the controls card no longer teaches an X (or pad Y) gun swap that has no handler; it names the belt keys instead (2026-09-06 first-ten-minutes audit)',
+  {v:'12.10',what:'a pillager will not throw a frag from inside his own blast: the throw band starts at the radius plus 52 (242 at 190) and still throws at 260, and the card prints the true centre damage (2026-09-06 review of v11.77)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

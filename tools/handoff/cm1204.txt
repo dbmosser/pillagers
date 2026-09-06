@@ -1,9 +1,8 @@
-v12.04: the station heading stops repeating the balance under the readout
+v12.04: the floor stops taking keys behind the character screen
 
-The enlarged corner readout printed through the credits and XP every
-station window stamps into its heading; the heading balance is hidden,
-as the stash screen's own figure was at v11.52. Check 11.52 is repaired
-(it double-scaled the CONDITIONS box top). Check 12.04 opens the shop and
-measures the heading against the readout; fails on v12.03.
+hubModalOpen did not count #title, so E, R, F and T fired stations behind
+the character screen and R at the lift started a raid under it. One line:
+the character screen counts. Check 12.04 reads the gate with the screen
+on and off; fails on v12.03.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

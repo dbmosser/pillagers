@@ -11,21 +11,37 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: every time he goes down the toast says
-# "DOWN. F to get back up. You get one a raid.", including the second time,
-# when the one self-revive is spent and F answers "Self-revive spent". A
-# second hit to zero downs him just the same (the down branch reads only
-# hp), so a new player on his second down is sent to a key that refuses him.
+# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.75 (the hold-to-craft build):
+# deleting the button's onclick also deleted the only way a controller (the
+# pad presses controls with a synthetic click) or the keyboard (Enter on the
+# focused button) could craft, so with a pad crafting became impossible, not
+# merely un-holdable. A mouse click carries detail 1 or more; a pad's .click()
+# and a keyboard Enter carry detail 0. The click handler comes back and
+# answers only the synthetic kind, so a real click still spends nothing and
+# the hold is still the mouse's way. Also: the hold now dies when the trader
+# window is hidden (it was only checking that the button was still in the
+# page, and the window hides rather than detaches), the tooltip reads the
+# hold length from the constant it claims to, and the card stops describing
+# a SERVICE button the game cannot draw since wear went out at v9.43.
 SubRx @'
-    G.tel.downs++; say('DOWN. F to get back up. You get one a raid.');
+    b.onmousedown=function(e){ if(e&&e.button!==undefined&&e.button!==0) return; craftHoldStart(b,function(){ btn.click(); }); };
+    b.onmouseleave=function(){ craftHoldCancel(); };
+    b.title=((kind==='repair')?'Hold to service':'Hold to craft')+' (1 second)';
 '@ @'
-    G.tel.downs++;
-    // v12.07: THE SECOND DOWN TELLS THE TRUTH. Once the one self-revive is spent
-    // F answers Self-revive spent, so a toast that sent him to F was a lie the
-    // HUD contradicted in the same frame. He can still crawl for an extraction,
-    // or hold SPACE to give up where that is switched on.
-    say(p.revived?('DOWN. Your one self-revive is spent. Crawl for an extraction'+(CFG.giveUp===0?'.':', or hold SPACE to give up.'))
-                 :'DOWN. F to get back up. You get one a raid.');
+    b.onmousedown=function(e){ if(e&&e.button!==undefined&&e.button!==0) return; craftHoldStart(b,function(){ btn.click(); }); };
+    b.onmouseleave=function(){ craftHoldCancel(); };
+    // v12.07: the pad presses a control with a synthetic click and the
+    // keyboard with Enter, both with detail 0; a real mouse click has detail
+    // 1 or more and still spends nothing, the hold is its way.
+    b.onclick=function(e){ if(e&&e.detail) return; btn.click(); };
+    b.title=((kind==='repair')?'Hold to service':'Hold to craft')+' ('+CRAFT_HOLD+' second'+(CRAFT_HOLD===1?'':'s')+')';
+'@
+SubRx @'
+  if(!b||b.disabled||(b.isConnected===false)){ craftHoldCancel(); return; }
+'@ @'
+  // v12.07: and a button whose window has been hidden; the trader hides its
+  // modal rather than detaching it, so isConnected alone let a hold outlive it.
+  if(!b||b.disabled||(b.isConnected===false)||!b.offsetParent){ craftHoldCancel(); return; }
 '@
 
 # STAMPS.
@@ -43,15 +59,19 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE SECOND TIME YOU GO DOWN THE GAME SAYS SO: your one self-revive is spent, so crawl for an extraction or hold SPACE to give up.',
+  'A CONTROLLER CAN CRAFT AGAIN. The hold is the mouse way; a pad press on the button crafts at once.',
 '@
+$cnt=([regex]::Matches($s," The same goes for the service button, which is the same control\.")).Count
+if($cnt -ne 1){ throw "service sentence matched $cnt times" }
+$s=[regex]::Replace($s," The same goes for the service button, which is the same control\.","")
+$n++
 $cnt=([regex]::Matches($s,"now:'v12\.06:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.06 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.06:[^']*'",{ param($m) "now:'v12.07: from the 2026-09-06 first-ten-minutes audit, the going-down toast sent him to F on the second down too, when the one self-revive is spent and F refuses. The second down now says the revive is spent and names the crawl and the give-up hold. Check 12.07 downs him with the revive spent and requires no F in the toast and the word spent, then downs him fresh and requires F; fails on v12.06.'" })
+$s=[regex]::Replace($s,"now:'v12\.06:[^']*'",{ param($m) "now:'v12.07: from the read-only review of the shipped v11.75, the hold-to-craft build deleted the only way a controller (a synthetic click from the pad) could press CRAFT. A click handler that answers only synthetic clicks (detail 0) is back; a real mouse click still spends nothing. The hold also dies when the trader window is hidden, the tooltip reads CRAFT_HOLD, and the card no longer describes a SERVICE button the game cannot draw. Check 12.07 crafts through a synthetic click (the pad press), requires a detail-1 click to spend nothing, and requires a hold to die when the window is hidden; fails on v12.06.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
-$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count + 1
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count + 2
 if ($n -ne $want) { throw "expected $want edits, made $n" }
 [IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
 Write-Output "OK, $n edits applied"

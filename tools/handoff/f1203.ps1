@@ -11,85 +11,38 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# CHECK 11.79 read the price row's r for a gun's rarity and scanned SHOP for a
-# purchase price that three of the four guns do not have; it reads dispR and
-# replaceCost now, and requires at least one of each colour rather than two.
+# v12.03 CHECK, inserted before the v12.02 entry. A raid is deployed with one
+# note logged, a frame drawn with the canvas text call recorded, and the
+# notes line must sit below the corner readout's bottom edge.
 SubRx @'
-       var G2=guns[i], rar=G2.it.r;
+  {v:'12.02',what:'the heal verb says Only bandages left above their reach, says Already at full with a Medkit at full health, and keeps a second Bandage that cannot raise you past what is already inbound, while a Medkit over running Bandages is still taken (2026-09-06 audits)',
 '@ @'
-       var G2=guns[i], rar=((typeof dispR==='function')?dispR(G2.out):null)||G2.it.r;   // v12.03: the rarity every screen shows
-'@
-SubRx @'
-       var shopRow=null; if(typeof SHOP!=='undefined') for(var si=0;si<SHOP.length;si++) if(SHOP[si].kind==='wep'&&SHOP[si].k===G2.it.gk) shopRow=SHOP[si];
-       if(shopRow&&parts>=shopRow.price) bad.push(G2.r.name+' costs '+parts+' in parts against '+shopRow.price+' to buy, which is a trap');
-'@ @'
-       var buy=(typeof replaceCost==='function')?replaceCost(G2.it.gk):null;   // v12.03: the game's own purchase price, which exists for every gun
-       if(!buy) bad.push('control: no purchase price could be found for '+G2.r.name);
-       else if(parts>=buy) bad.push(G2.r.name+' costs '+parts+' in parts against '+buy+' to buy, which is a trap');
-'@
-SubRx @'
-     if(green!==2||blue!==2) bad.push('the bench holds '+green+' green and '+blue+' blue gun recipes, not two of each');
-'@ @'
-     if(green<1||blue<1) bad.push('the bench holds '+green+' green and '+blue+' blue gun recipes, not at least one of each');   // v12.03: the Carbine is blue by dispR
-'@
-SubRx @'
-  {v:'11.79',what:'four guns are on the crafting bench, two green and two blue, each priced in parts between what it sells for and what it costs to buy, and crafting one through the real row puts the gun in the stash and takes the parts (his order of 2026-09-06)',
-'@ @'
-  {v:'11.79',what:'four guns are on the crafting bench, one green and three blue by the rarity every screen shows, each priced in parts between what it sells for and what it costs to buy, and crafting one through the real row puts the gun in the stash and takes the parts (his order of 2026-09-06)',
-'@
-# THE v9.43 CHECK asserted a servo is in no recipe; four recipes eat it now.
-SubRx @'
-       if(__stashRules.craftPart('servo'))
-         bad.push('the Servo Actuator is still classed as a crafting part and appears in no recipe');
-'@ @'
-       // v12.03: four gun recipes eat the servo, so it is a craft part again and
-       // the stash must say so; the repair reason above is still forbidden.
-       if(!__stashRules.craftPart('servo'))
-         bad.push('the Servo Actuator is not classed as a crafting part though four recipes eat it');
-'@
-
-# v12.03 CHECK, inserted before the v12.02 entry.
-SubRx @'
-  {v:'12.02',what:'the bench detail button crafts on a synthetic click (a pad press) and on a hold, spends nothing on a real mouse click, and a hold dies when the trader window is hidden (2026-09-06 review of v11.75)',
-'@ @'
-  {v:'12.03',what:'the crafting bench tells the truth about its guns: one green and three blue by the rarity every other screen shows, the detail panel describes a gun as a gun with its shown rarity, and the stash says servos and optics are kept for guns and contracts (2026-09-06 review of v11.79)',
+  {v:'12.03',what:'the notes-logged line in the raid HUD is drawn below the corner credits and XP readout, not through it (2026-09-06 first-ten-minutes audit)',
    run:function(){
-     if(typeof RECIPES==='undefined'||typeof dispR!=='function'||typeof itemBlurb!=='function'||typeof itemWanted!=='function') return 'SKIP: no bench, rarity or blurb in this build';
-     if(typeof openTrader!=='function'||typeof renderCraftDetail!=='function'||!window.__hubEnter) return 'SKIP: this fixture cannot open the bench';
-     var bad=[], i, k, green=0, blue=0, carbIx=-1;
-     for(i=0;i<RECIPES.length;i++){
-       var out=null; for(k in RECIPES[i].out){ out=k; break; }
-       var it=ITEMS[out]; if(!it||it.use!=='gun') continue;
-       var rar=dispR(out)||it.r;
-       if(rar==='uncommon') green++; else if(rar==='rare') blue++; else bad.push(RECIPES[i].name+' shows as '+rar);
-       if(out==='gun_carbine') carbIx=i;
-     }
-     if(!(green>=1&&blue>=1)) bad.push('by the shown rarity the bench holds '+green+' green and '+blue+' blue');
-     var line=null; if(typeof WHATSNEW!=='undefined') for(i=0;i<WHATSNEW.length;i++) if(WHATSNEW[i].indexOf('FOUR GUNS ON THE CRAFTING BENCH')===0) line=WHATSNEW[i];
-     if(line&&line.indexOf('Compact SMG and Burst Carbine in green')>=0) bad.push('the card still calls the Burst Carbine green');
-     var bl=itemBlurb('gun_smg')||'';
-     if(bl.indexOf('Salvage')===0||bl.toLowerCase().indexOf('gun')<0) bad.push('the blurb for a crafted gun reads: '+bl);
-     var sv=itemWanted('servo')||'', op=itemWanted('optic')||'';
-     if(sv.indexOf('contracts')<0) bad.push('the stash keeps a servo for "'+sv+'", not for guns and contracts');
-     if(op.indexOf('contracts')<0) bad.push('the stash keeps an optic for "'+op+'", not for the rifle and contracts');
+     if(!(window.__deploy&&window.__state&&window.__frame&&window.__forceSize)) return 'SKIP: this fixture cannot deploy and draw';
+     if(typeof topRightBottom!=='function') return 'SKIP: no corner readout helper in this build';
+     var bad=[], rec=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText;
      try{
-       __topClear(); __cleanProfile();
-       G=null; keys={}; __showScreen('hub'); __hubEnter();
-       __P().stash=['comp','comp','comp','comp','servo','servo','board','board'];
-       openTrader('craft'); renderWork();
-       var rows=[].slice.call(document.querySelectorAll('#worklist .row')), ix=-1;
-       for(i=0;i<rows.length;i++) if(rows[i].getAttribute('data-w')==='recipe:'+carbIx) ix=i;
-       if(ix<0||carbIx<0) bad.push('control: the bench drew no Burst Carbine row');
-       else {
-         __P()._craftSel=ix; renderCraftDetail(rows);
-         var pill=document.querySelector('#craftdetail .vpill.r');
-         var txt=pill?pill.textContent.trim().toUpperCase():'';
-         if(txt!=='RARE') bad.push('the detail panel calls the Burst Carbine '+(txt||'nothing')+' where every other screen says RARE');
-       }
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ var ms=document.querySelectorAll('.modal.on'); for(var j=0;j<ms.length;j++) ms[j].classList.remove('on'); }catch(_c){} __topClear(); __cleanProfile(); }
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __forceSize(1920,1080);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state();
+       g.tel.notes=[{t:1,txt:'probe note 4242'}];
+       __frame(0.016);
+       var bottom=topRightBottom();
+       if(!(bottom>26)) return 'SKIP: the corner readout is not on screen here (bottom '+Math.round(bottom)+')';
+       proto.fillText=function(t,x,y){ rec.push({t:String(t),y:y}); return o.apply(this,arguments); };
+       __frame(0.016);
+       proto.fillText=o;
+       var ln=null; for(var i=0;i<rec.length;i++) if(/notes? logged/.test(rec[i].t)){ ln=rec[i]; break; }
+       if(!ln) bad.push('control: the notes line was not drawn');
+       else if(ln.y<=bottom) bad.push('the notes line is drawn at y '+Math.round(ln.y)+', inside the corner readout that ends at '+Math.round(bottom));
+       else if(ln.y>H) bad.push('the notes line is drawn off the canvas at y '+Math.round(ln.y));
+       var C=(typeof HUDBOX!=='undefined')&&HUDBOX.cond;
+       if(ln&&C&&ln.y>C.y&&ln.y<C.y+C.h) bad.push('the notes line is drawn at y '+Math.round(ln.y)+', inside the conditions panel at '+Math.round(C.y)+' to '+Math.round(C.y+C.h));
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ proto.fillText=o; try{ var g2=__state(); if(g2&&!g2.over){ g2.tel.notes=[]; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.02',what:'the bench detail button crafts on a synthetic click (a pad press) and on a hold, spends nothing on a real mouse click, and a hold dies when the trader window is hidden (2026-09-06 review of v11.75)',
+  {v:'12.02',what:'the heal verb says Only bandages left above their reach, says Already at full with a Medkit at full health, and keeps a second Bandage that cannot raise you past what is already inbound, while a Medkit over running Bandages is still taken (2026-09-06 audits)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

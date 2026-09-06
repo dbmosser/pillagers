@@ -1,26 +1,25 @@
-## v12.11 - A DEATH BANKS THE XP ITS CARD PRINTS
+## v12.11 - THE MAP SAYS EXTRACT NOW TOO
 
-From the 2026-09-06 read-only audit of a new player's first ten minutes.
+From the read-only review of this morning's shipped builds, on v11.74.
 
-THE FINDING. Every XP grant goes through one writer, addXp, which applies
-the bar's dose bonus live from the drink in the blood. The outcome card
-prints the run's XP through the same multiplier, and v11.63 made the card
-and the banking read the same base so they could never disagree. They
-still could, on a death or an abandon: the ending function prints the card
-with the bonus, then clears the drink (v7.35, a death sobers you), then
-banks the run at its bottom, where addXp reads the bonus live and finds
-none. The card said +N with the bonus; the profile got N without it.
+WHAT IT WAS. v11.74 replaced EXTRACTION IN PROGRESS with EXTRACT NOW and the
+seconds left, on his note, in the two places the raid HUD draws the boarding
+window: the banner and the off-screen ring label. The sector map keeps a
+third copy of that line under each ring, and it still said OPEN TO EXTRACT,
+the wording he rejected at v8.68 and again at v11.74. Worse, the map paints
+an opaque wash over the whole screen before it draws, so while the map is
+open the map's copy is the only boarding line the player can read. The check
+for v11.74 read only the HUD function's source, so it could not see the map.
 
-THE BUILD. The multiplier is taken at the top of the ending, before the
-drink is cleared, carried on the run record as doseMul, and handed to
-addXp by the banking, so the number the card printed is the number paid.
-Every other XP grant still reads the bonus live.
+THE BUILD. The map's line says EXTRACT NOW with the seconds left, the banner
+words; the ring's letter is already printed on the line above it. The stale
+comment over the ring label, which still credited the wording to v8.68,
+names the owner.
 
-MEASURED. Check 12.11 deploys, gives the run enough containers and kills
-for a base worth multiplying, puts two doses in the blood, ends the raid by
-death, reads the +N XP line off the card and requires the profile paid
-exactly N. On the v12.10 fixture the profile is paid the base alone.
+MEASURED. Check 12.11 deploys, puts a ring into the landed hold with twelve
+seconds left, opens the map and draws it with the canvas text call recorded,
+and requires the line under the ring to say EXTRACT NOW with 12S LEFT and
+not the old words. On the v12.10 fixture it says OPEN TO EXTRACT 12s.
 
-Not verified: an abandon, which takes the same path and is not driven by
-the check; an extraction, where the drink is not cleared and the live
-bonus and the carried one are the same number.
+Not verified: his own eye on the map; the CALLED and CLOSED lines, which
+were not in his note and stay as they were.

@@ -1,31 +1,34 @@
-## v12.01 - TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED
+## v12.01 - FIRST TEN MINUTES: DYING WITH THE FREEBIE KIT KEEPS THE PISTOL YOU OWN
 
-From the 2026-09-06 read-only menu audit, its highest-value open item on
-the alpha path.
+From the 2026-09-06 read-only audit of a new player's first ten minutes.
 
-WHAT IT WAS. TAKE THE FREEBIE KIT emptied the backpack you had packed out
-of the stash and the whole belt plan with it, at once, with no confirmation
-and no way back; pressing USE MY OWN GEAR afterwards gave you an empty bag.
-The emptying itself is his rule and it is right: the kit is a selection out
-of the stash, not a move, so an emptied kit returns everything to the stash
-by itself, and a belt key pointing at something you are not carrying is the
-exact fault v5.72 fixed. What was wrong is that the selection was destroyed
-rather than set aside. A new player packs, sees the free kit, presses it to
-find out what it is, and has lost ten minutes of decisions.
+THE FINDING. The FREEBIE KIT issues a Scav Pistol. By his v6.88 spec an
+extraction keeps it, so the issued pistol is deliberately not flagged as
+issued (issued kit is never banked). On a death the outcome card walks the
+guns in hand and, for each one whose id is in the armoury list, deletes it
+from that list and prints LOST. It went by id alone. A fresh profile owns
+exactly one gun, a Scav Pistol, so a friend who took the freebie kit on his
+first run and died had his own pistol, the one that never left the
+Undercroft, deleted from his armoury and priced into the loss line. The
+pickup path fixed this same fault for field-found guns long ago by keeping
+provenance on the weapon slot; the death path never learned.
 
-THE FIX. When the kit is taken the packing and the belt plan are kept aside
-on the profile; USE MY OWN GEAR puts them back, minus anything no longer in
-the stash, so a sale in between cannot resurrect an item. The button's own
-text says the packing is kept. No confirmation dialog, because the undo is
-one press and a dialog on a reversible act is a nag.
+THE BUILD. The death splice asks the slot whether the gun came out of the
+armoury (the same wepFromArmory and secFromArmory flags the pickup path
+reads, carried through swaps), and only then removes it from the list. A
+field-found gun no longer touches the armoury on a death either. The free
+kit's pistol, not from the armoury and carrying the free kit's gun id in a
+free-kit raid, is out of the ledger entirely, as an issued loaner already
+is: not counted, not priced, no LOST line, so the count and the lines
+agree, which is the v10.72 rule.
 
-MEASURED. Check 12.01 packs a medkit and a plate with the medkit on key 3,
-presses the real button and requires the kit taken and the packing emptied,
-presses it again and requires the packing and the key back; then takes the
-kit again, sells the plate out of the stash, switches back and requires the
-medkit alone restored. On the v12.00 fixture the second press leaves the
-bag empty and the check says so.
+MEASURED. Check 12.01 sets the profile to own one pistol with the free kit
+chosen, starts the raid the way the lift does (commitKit, then startRaid;
+the harness deploy clears the free kit flag before it builds, which the
+review caught), confirms the issued pistol is in hand, ends the raid by
+death, and requires the pistol still owned and the card counting no gun
+lost. On the v12.00 fixture the armoury comes back empty.
 
-Not verified: the related audit line that the Stash panel goes inert, sell
-button included, while the kit is taken, which is a separate path and not
-touched here; the ascent screen's repaint, which is the existing one.
+Not verified: an extraction with the free kit, which still sets the issued
+pistol as the equipped gun (the audit's separate medium finding, queued);
+his own reading of the card.

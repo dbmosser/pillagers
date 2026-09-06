@@ -1,10 +1,11 @@
-v12.02: a controller or the keyboard can craft again
+v12.02: the heal verb tells the truth and does not waste a second bandage
 
-The hold-to-craft build deleted the button's click handler, which was the
-only way a pad or Enter could press it. A click that answers only
-synthetic clicks is back; a mouse click still spends nothing. The hold
-also dies when the trader window is hidden, and the tooltip reads the
-constant. Check 12.02 crafts by synthetic click and by hold and refuses a
-mouse click; fails on v12.01.
+The picker ran before the full-health test and skipped capped items, so
+two Bandages at their ceiling and a Medkit at full health both got No
+medical supplies; the sentence for the Bandage case was dead behind a
+guard that had returned. After v11.82 stacked heals the ceiling tests read
+health alone, so a second Bandage above the first one's reach was spent
+for nothing. Full-health first, the picker counts inbound, the belt slot
+gets the ceiling. Check 12.02 drives four cases; fails on v12.01.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

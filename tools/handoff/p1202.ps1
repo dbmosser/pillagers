@@ -11,37 +11,87 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.75 (the hold-to-craft build):
-# deleting the button's onclick also deleted the only way a controller (the
-# pad presses controls with a synthetic click) or the keyboard (Enter on the
-# focused button) could craft, so with a pad crafting became impossible, not
-# merely un-holdable. A mouse click carries detail 1 or more; a pad's .click()
-# and a keyboard Enter carry detail 0. The click handler comes back and
-# answers only the synthetic kind, so a real click still spends nothing and
-# the hold is still the mouse's way. Also: the hold now dies when the trader
-# window is hidden (it was only checking that the button was still in the
-# page, and the window hides rather than detaches), the tooltip reads the
-# hold length from the constant it claims to, and the card stops describing
-# a SERVICE button the game cannot draw since wear went out at v9.43.
+# TWO AUDITS, 2026-09-06. First ten minutes: with only Bandages and health at
+# their ceiling the heal verb said No medical supplies while the belt cell
+# beside it read Medical x2, because the sentence written for that case sat
+# behind a guard that had already returned. Shipped-builds review: v11.82 let
+# heals stack, and the ceiling tests still read health alone, so a second
+# Bandage above the first one's reach was spent for nothing. And the named
+# belt slot for a heal had no ceiling test at all.
 SubRx @'
-    b.onmousedown=function(e){ if(e&&e.button!==undefined&&e.button!==0) return; craftHoldStart(b,function(){ btn.click(); }); };
-    b.onmouseleave=function(){ craftHoldCancel(); };
-    b.title=((kind==='repair')?'Hold to service':'Hold to craft')+' (1 second)';
+function useMedical(){
+  var p=G.player;
+  var idx=findHeal();
+  if(idx<0){ say('No medical supplies'); return false; }
+  // What is already on its way counts as health you have. v11.82, HIS NOTE: a
+  // heal already running no longer refuses the next one, and the countdown
+  // that refusal printed (which was wrong) is gone with it.
+  if(p.hp+(p.healQ||0)>=p.maxhp){
+    say((p.healQ>0)?'Already healing.':'Already at full');
+    return false;
+  }
+  // v9.62: and the item he is actually about to use. findHeal has already
+  // skipped anything that cannot help, so reaching here with nothing usable
+  // means only capped items are left and he deserves to be told which.
+  if(idx<0||G.player.hp>=healCeil(ITEMS[G.bag[idx]])){
+    var _anyHeal=false;
+    for(var _h=0;_h<G.bag.length;_h++){ var _hi=ITEMS[G.bag[_h]]; if(_hi&&_hi.use==='heal'){ _anyHeal=true; break; } }
+    say(_anyHeal?'Only bandages left, and they will not take you past '+
+                 Math.round(healCeil(ITEMS.bandage))+'. You need a Medkit.'
+               :'No medical supplies');
+    return false;
+  }
 '@ @'
-    b.onmousedown=function(e){ if(e&&e.button!==undefined&&e.button!==0) return; craftHoldStart(b,function(){ btn.click(); }); };
-    b.onmouseleave=function(){ craftHoldCancel(); };
-    // v12.02: the pad presses a control with a synthetic click and the
-    // keyboard with Enter, both with detail 0; a real mouse click has detail
-    // 1 or more and still spends nothing, the hold is its way.
-    b.onclick=function(e){ if(e&&e.detail) return; btn.click(); };
-    b.title=((kind==='repair')?'Hold to service':'Hold to craft')+' ('+CRAFT_HOLD+' second'+(CRAFT_HOLD===1?'':'s')+')';
+function useMedical(){
+  var p=G.player;
+  // v12.02: THE VERB TELLS THE TRUTH. Three faults in one function. The
+  // full-health test came after the picker, so at full health with a Medkit
+  // in the bag the picker found nothing usable and the verb said No medical
+  // supplies. The sentence for "only Bandages, and you are above their reach"
+  // sat behind idx<0 twelve lines down, which the first line had already
+  // returned on, so with two Bandages at 85 health the verb said No medical
+  // supplies while the belt cell beside it read Medical x2. And the ceiling
+  // tests read health alone: v11.82 let heals stack, so a second Bandage
+  // started above the first one's reach was spent for nothing.
+  // What is already on its way counts as health you have (v11.82, HIS NOTE: a
+  // heal already running no longer refuses the next one).
+  // What the queue can DELIVER, not what was poured in: a running heal stops
+  // at its own ceiling (healCap), so a Medkit over two Bandages that end at
+  // 85 is not refused as Already healing.
+  var _reach=Math.min(p.hp+(p.healQ||0),(p.healCap===undefined?p.maxhp:p.healCap));
+  if(_reach>=p.maxhp){
+    say((p.healQ>0)?'Already healing.':'Already at full');
+    return false;
+  }
+  var idx=findHeal();   // skips anything that cannot raise him past what is inbound
+  if(idx<0){
+    var _anyHeal=false;
+    for(var _h=0;_h<G.bag.length;_h++){ var _hi=ITEMS[G.bag[_h]]; if(_hi&&_hi.use==='heal'){ _anyHeal=true; break; } }
+    say(_anyHeal?'Only bandages left, and they will not take you past '+
+                 Math.round(healCeil(ITEMS.bandage))+'. You need a Medkit.'
+               :'No medical supplies');
+    return false;
+  }
 '@
 SubRx @'
-  if(!b||b.disabled||(b.isConnected===false)){ craftHoldCancel(); return; }
+    if(G.player&&G.player.hp>=healCeil(it)) continue;
 '@ @'
-  // v12.02: and a button whose window has been hidden; the trader hides its
-  // modal rather than detaching it, so isConnected alone let a hold outlive it.
-  if(!b||b.disabled||(b.isConnected===false)||!b.offsetParent){ craftHoldCancel(); return; }
+    if(G.player&&Math.min(G.player.hp+(G.player.healQ||0),(G.player.healCap===undefined?G.player.maxhp:G.player.healCap))>=healCeil(it)) continue;   // v12.02: what is inbound counts, up to what the running heal can deliver
+'@
+SubRx @'
+      if(_pp.hp+(_pp.healQ||0)>=_pp.maxhp){
+        say((_pp.healQ>0)?'Already healing.':'Already at full'); return;
+      }
+      if(_pp.prep){ say('Already applying '+(ITEMS[_pp.prep.key]?ITEMS[_pp.prep.key].name:'something')+'.'); return; }
+'@ @'
+      if(_pp.hp+(_pp.healQ||0)>=_pp.maxhp){
+        say((_pp.healQ>0)?'Already healing.':'Already at full'); return;
+      }
+      // v12.02: and the item's own ceiling, counting what is inbound. The
+      // generic verb has had this since v9.62; a named Bandage above 85 was
+      // spent for nothing while the toast said it was healing you.
+      if(Math.min(_pp.hp+(_pp.healQ||0),(_pp.healCap===undefined?_pp.maxhp:_pp.healCap))>=healCeil(ait)){ say(ait.name+' will not take you past '+Math.round(healCeil(ait))+'.'); return; }
+      if(_pp.prep){ say('Already applying '+(ITEMS[_pp.prep.key]?ITEMS[_pp.prep.key].name:'something')+'.'); return; }
 '@
 
 # STAMPS.
@@ -50,28 +100,13 @@ var VER='12.01';
 '@ @'
 var VER='12.02';
 '@
-SubRx @'
-var WHATSNEW_VER='12.01';
-'@ @'
-var WHATSNEW_VER='12.02';
-'@
-SubRx @'
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-'@ @'
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A CONTROLLER CAN CRAFT AGAIN. The hold is the mouse way; a pad press on the button crafts at once.',
-'@
-$cnt=([regex]::Matches($s," The same goes for the service button, which is the same control\.")).Count
-if($cnt -ne 1){ throw "service sentence matched $cnt times" }
-$s=[regex]::Replace($s," The same goes for the service button, which is the same control\.","")
-$n++
 $cnt=([regex]::Matches($s,"now:'v12\.01:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.01 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.01:[^']*'",{ param($m) "now:'v12.02: from the read-only review of the shipped v11.75, the hold-to-craft build deleted the only way a controller (a synthetic click from the pad) could press CRAFT. A click handler that answers only synthetic clicks (detail 0) is back; a real mouse click still spends nothing. The hold also dies when the trader window is hidden, the tooltip reads CRAFT_HOLD, and the card no longer describes a SERVICE button the game cannot draw. Check 12.02 crafts through a synthetic click (the pad press), requires a detail-1 click to spend nothing, and requires a hold to die when the window is hidden; fails on v12.01.'" })
+$s=[regex]::Replace($s,"now:'v12\.01:[^']*'",{ param($m) "now:'v12.02: from the two 2026-09-06 reviews, the heal verb said No medical supplies with two Bandages at their ceiling (the sentence for that case sat behind a guard that had already returned) and at full health with a Medkit; and since v11.82 let heals stack, the ceiling tests read health alone, so a second Bandage above the reach of the first was spent for nothing, and the named belt slot had no ceiling at all. The full-health test comes first, the picker counts what is inbound, and the belt slot has the ceiling. Check 12.02 drives four cases through the real verb; fails on v12.01.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
-$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count + 2
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count + 1
 if ($n -ne $want) { throw "expected $want edits, made $n" }
 [IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
 Write-Output "OK, $n edits applied"

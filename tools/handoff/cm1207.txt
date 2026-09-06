@@ -1,9 +1,10 @@
-v12.07: first ten minutes, the second down no longer sends you to a key that refuses you
+v12.07: a controller or the keyboard can craft again
 
-The going-down toast always said F gets you up, including the second
-down, when the one self-revive is spent and F answers Self-revive spent.
-With the revive spent the toast says so and names the crawl and the SPACE
-give-up hold. Check 12.07 downs him both ways through the real damage path
-and reads the toast; fails on v12.06.
+The hold-to-craft build deleted the button's click handler, which was the
+only way a pad or Enter could press it. A click that answers only
+synthetic clicks is back; a mouse click still spends nothing. The hold
+also dies when the trader window is hidden, and the tooltip reads the
+constant. Check 12.07 crafts by synthetic click and by hold and refuses a
+mouse click; fails on v12.06.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

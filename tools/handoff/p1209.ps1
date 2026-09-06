@@ -11,27 +11,20 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: with the Undercroft backpack open, ESC
-# raised the pause box instead of closing the backpack, because the backpack
-# is not a modal and the pause branch runs before the backpack's own ESC
-# line; a second ESC only closed the pause box. ESC could never close it.
+# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.78 (the corner readout twice
+# the size): every station window stamps the same credits and XP into its
+# own heading (.modcur, pushed to the heading's right edge), and at 44px the
+# corner readout prints through the top of it. The v11.52 precedent for the
+# stash screen's own credits figure was to hide it, since the corner shows
+# the same two numbers at all times; the heading's balance goes the same way.
 SubRx @'
-    if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat&&!_titleUp&&!document.querySelector('.modal.on')&&
-       !document.querySelector('.imenu')&&!document.getElementById('hub').classList.contains('on')){
-      togglePauseBox(!document.getElementById('pausebox').classList.contains('on'));
-      e.preventDefault(); return;
-    }
+  .modal h3{ display:flex; align-items:baseline; gap:12px; }
 '@ @'
-    // v12.09: NOT OVER AN OPEN BACKPACK. The floor backpack is not a modal, so
-    // ESC over it raised the pause box here and the backpack's own ESC line
-    // further down could never run; a second ESC closed the pause box and the
-    // backpack stayed. ESC belongs to whatever is in front, and the backpack is.
-    if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat&&!_titleUp&&!document.querySelector('.modal.on')&&
-       !document.querySelector('.imenu')&&!document.getElementById('hub').classList.contains('on')&&
-       !(e.code==='Escape'&&hubBagOpen)){
-      togglePauseBox(!document.getElementById('pausebox').classList.contains('on'));
-      e.preventDefault(); return;
-    }
+  .modal h3{ display:flex; align-items:baseline; gap:12px; }
+  /* v12.09: the heading's own balance sat under the corner readout once that
+     grew (v11.78); the corner shows the same two figures at all times, so the
+     heading no longer repeats them (the v11.52 rule for the stash screen). */
+  .modal h3 .modcur{ display:none; }
 '@
 
 # STAMPS.
@@ -49,11 +42,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'ESC CLOSES THE OPEN BACKPACK IN THE UNDERCROFT instead of raising the pause box over it.',
+  'THE STATION WINDOWS NO LONGER REPEAT YOUR BALANCE IN THEIR HEADING. The corner readout has it, at all times.',
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.08:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.08 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.08:[^']*'",{ param($m) "now:'v12.09: from the 2026-09-06 first-ten-minutes audit, ESC over the open Undercroft backpack raised the pause box instead of closing the backpack, because the backpack is not a modal and the pause branch ran first; ESC could never close it. The pause branch now steps aside while the backpack is open. Check 12.09 opens the backpack on the floor, presses ESC and requires it closed with no pause box, then presses ESC again and requires the pause box; fails on v12.08.'" })
+$s=[regex]::Replace($s,"now:'v12\.08:[^']*'",{ param($m) "now:'v12.09: from the read-only review of the shipped v11.78, every station window stamped its own credits and XP into its heading and the enlarged corner readout printed through them. The heading balance is hidden; the corner shows the same two figures at all times (the v11.52 rule for the stash screen). The same build repairs check 11.52, which double-scaled the CONDITIONS box top and could not see an overlap. Check 12.09 opens the shop window and requires the heading balance not to be drawn where the readout is; fails on v12.08 where the two boxes intersect.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

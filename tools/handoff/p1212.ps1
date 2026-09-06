@@ -11,30 +11,21 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: with an EMPTY throwable cell selected
-# (cells 3 to 5 on every first raid) the trigger was dead: startCook found
-# nothing, or worse, cycled to a DIFFERENT grenade you happened to carry and
-# cooked that one while the belt and the corner readout still named the cell
-# you chose. v2.92's own rule is that the trigger is never dead: spending the
-# last of a stack selects the gun. An empty cell now does the same on the
-# press, and the next click fires the gun.
+# FIRST TEN MINUTES AUDIT, 2026-09-06: every time he goes down the toast says
+# "DOWN. F to get back up. You get one per raid.", including the second time,
+# when the one self-revive is spent and F answers "Self-revive spent". A
+# second hit to zero downs him just the same (the down branch reads only
+# hp), so a new player on his second down is sent to a key that refuses him.
 SubRx @'
-    if(HSC&&HSC.kind==='throw'){
-      if(!p.cooking){ if(!p.fired){ p.fired=true; startCook(); } }
-      else {
+    G.tel.downs++; say('DOWN. F to get back up. You get one per raid.');
 '@ @'
-    if(HSC&&HSC.kind==='throw'){
-      // v12.12: AN EMPTY THROWABLE CELL DOES NOT OWN THE TRIGGER. Selected empty
-      // (cells 3 to 5 on a first raid), the press started nothing and said
-      // nothing, or cooked a different grenade than the cell named. By v2.92's
-      // own rule the press selects the gun; the next click fires it, never this
-      // one, which is the automatic-weapon safety that rule was written for.
-      if(!p.cooking&&!p.fired&&!((HSC.count|0)>0)){
-        p.fired=true; setHot(0);
-        if(!G.sim) say('Nothing in that cell. '+((p.wep&&p.wep.name)||'Your gun')+' up.');
-      }
-      else if(!p.cooking){ if(!p.fired){ p.fired=true; startCook(); } }
-      else {
+    G.tel.downs++;
+    // v12.12: THE SECOND DOWN TELLS THE TRUTH. Once the one self-revive is spent
+    // F answers Self-revive spent, so a toast that sent him to F was a lie the
+    // HUD contradicted in the same frame. He can still crawl for an extraction,
+    // or hold SPACE to give up where that is switched on.
+    say(p.revived?('DOWN. Your one self-revive is spent. Crawl for an extraction'+(CFG.giveUp===0?'.':', or hold SPACE to give up.'))
+                 :'DOWN. F to get back up. You get one per raid.');
 '@
 
 # STAMPS.
@@ -52,11 +43,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE TRIGGER IS NEVER DEAD ON AN EMPTY GRENADE CELL: the press brings your gun up and says so, and it never throws a grenade the cell did not name.',
+  'THE SECOND TIME YOU GO DOWN THE GAME SAYS SO: your one self-revive is spent, so crawl for an extraction or hold SPACE to give up.',
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.11:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.11 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.11:[^']*'",{ param($m) "now:'v12.12: from the 2026-09-06 first-ten-minutes audit, an empty throwable cell selected on the belt left the trigger dead, or cooked a different grenade than the cell named. The press selects the gun and says so; the next click fires it. Check 12.12 selects an empty Frag cell with Smoke in the pouch, presses the trigger through the real player update, and requires the gun selected, nothing cooking and the Smoke untouched; fails on v12.11.'" })
+$s=[regex]::Replace($s,"now:'v12\.11:[^']*'",{ param($m) "now:'v12.12: from the 2026-09-06 first-ten-minutes audit, the going-down toast sent him to F on the second down too, when the one self-revive is spent and F refuses. The second down now says the revive is spent and names the crawl and the give-up hold. Check 12.12 downs him with the revive spent and requires no F in the toast and the word spent, then downs him fresh and requires F; fails on v12.11.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

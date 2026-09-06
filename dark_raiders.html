@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.92';
+var VER='11.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='11.92';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.92';
+var WHATSNEW_VER='11.93';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'ENTER IN THE NAME BOX SETS YOUR NAME, and so does the start button: what you typed is what you are called.',
   'THIS CARD FITS THE SCREEN NOW, newest first, and a first launch never sees it at all.',
   'A BELT KEY HOLDING A GUN FROM YOUR BACKPACK NOW EQUIPS IT, and every belt cell can be dragged to another key.',
   'A GUN IN YOUR HANDS GOES BACK INTO THE BACKPACK: with the backpack open, drag it off its slot and drop it in.',
@@ -28526,7 +28527,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.92: from the 2026-09-06 first-ten-minutes audit, the NEW IN card had no gate for a fresh profile (the comment above it promised one since v2.79) and drew every one of its entries, past a hundred and forty, a card near five screens tall with its heading and its dismiss line off the canvas. A profile with no runs stamps itself current and never sees it; what does not fit is cut, newest first, between entries. Check 11.92 draws the floor HUD with runs at 0 and requires no card, then with runs and requires the heading and the dismiss line inside the canvas; fails on v11.91.',
+  now:'v11.93: from the 2026-09-06 first-ten-minutes audit, the title name box had no key handler and the start button never read it, so a name typed and not committed with CHANGE NAME was thrown away. ENTER in the box commits the name and leaves the box; the start button commits whatever is typed. Check 11.93 types a name, presses ENTER in the box, and clicks the start button with another name typed, requiring both to reach the profile; fails on v11.92.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -33788,8 +33789,21 @@ loadProfile().then(function(){
       }
       ng.textContent='ALL EIGHT SAVES HAVE PILLAGERS IN THEM';
     };
+    // v11.93: THE NAME HE TYPED IS THE NAME HE GETS. The box had no key handler,
+    // so ENTER in it did nothing, and the start button never read the box, so a
+    // name typed and not committed with CHANGE NAME was thrown away and he was
+    // PILLAGER for the rest of the alpha. ENTER commits and leaves the box, so
+    // a second ENTER starts; the start button commits whatever is typed.
+    if(pin) pin.onkeydown=function(ev){
+      if(ev.code!=='Enter'&&ev.code!=='NumpadEnter'&&ev.key!=='Enter') return;
+      ev.preventDefault(); ev.stopPropagation();
+      if(psv) psv.onclick();
+      try{ pin.blur(); }catch(_b){}
+    };
     var go=function(){
       if(!t.classList.contains('on')) return;
+      var _nv=(pin&&pin.value||'').trim().slice(0,16);
+      if(_nv&&_nv!==P.pname){ P.pname=_nv; saveProfile(); }
       t.classList.remove('on');
       ac(); showScreen('hub');
     };

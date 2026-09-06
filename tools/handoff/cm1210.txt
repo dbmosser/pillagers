@@ -1,7 +1,9 @@
-v12.10: first ten minutes, the controls card stops teaching a dead X key
+v12.10: the bigger blast, three things that did not move with it
 
-The H controls card taught X swaps primary and sidearm (Y on a pad); no
-such handler exists since the belt took the job. The rule names the belt
-keys now. Check 12.10 reads the rule; fails on v12.09.
+A pillager's throw band started inside his own 190 blast, the cover
+warning covered half the radius, and the card printed coefficients as the
+centre damage. All three follow the radius now, and check 11.44's sentinel
+is unpinned from 17. Check 12.10 stages a pillager throw at 200 and 260
+and reads the card; fails on v12.09.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

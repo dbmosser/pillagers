@@ -11,17 +11,47 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: the controls card behind H still
-# teaches "X swaps primary/sidearm" (and Y on a pad). There is no KeyX
-# handler anywhere in the build and no pad swap button: the key was deleted
-# when the belt took over, and this one surface was missed. The swap today
-# is the belt: pressing the key of the stowed gun brings it up.
+# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.77 (the bigger blast): three
+# things were calibrated to the old 150 radius and did not move with it. A
+# pillager throws only in a band whose near edge (180) cleared his own blast
+# at 150 and is inside it at 190, so he stood in his own charge at the near
+# edge of every throw; the near edge follows the dial now. The "It hit cover.
+# MOVE." warning fired only inside 110, half the new radius; it follows the
+# dial too. And the card printed the coefficients as the centre damage, when
+# the centre is coefficient plus floor: 140 and 98, not 115 and 80.
 SubRx @'
-  ['WEAPONS',function(){ return (PAD&&PAD.on)?'Y swaps primary/sidearm.':'X swaps primary/sidearm.'; }],
+  if(fd<180||fd>520) return false;
+  var ix=-1;
+  for(var i=0;i<e.bag.length;i++){ var it=ITEMS[e.bag[i]]; if(it&&it.use==='throw'&&it.tk==='frag'){ ix=i; break; } }
 '@ @'
-  // v12.10: there is no X (or pad Y) swap; the belt is the swap. Pressing the
-  // key of the stowed gun brings it up (setHot, the v8.67 rule).
-  ['WEAPONS','Belt keys 1 and 2 bring up either gun.'],
+  // v12.10: the near edge of the band follows the blast radius (it was 180
+  // against a 150 blast; at 190 he stood in his own charge), plus the scatter
+  // of the aim point below and his own body; and never above his reach, or a
+  // short-ranged pillager could never throw at all.
+  var _fR=(CFG.fragR===undefined?190:CFG.fragR);
+  if(fd<Math.min(_fR+52,(e.rng||520)-1)||fd>520) return false;
+  var ix=-1;
+  for(var i=0;i<e.bag.length;i++){ var it=ITEMS[e.bag[i]]; if(it&&it.use==='throw'&&it.tk==='frag'){ ix=i; break; } }
+'@
+SubRx @'
+  if(blocked&&rngT<110) say(tk==='frag'?'It hit cover. MOVE.':'It hit cover, dropped short.');
+'@ @'
+  if(blocked&&rngT<(tk==='frag'?(CFG.fragR===undefined?190:CFG.fragR):110)) say(tk==='frag'?'It hit cover. MOVE.':'It hit cover, dropped short.');   // v12.10: the warning covers the whole blast
+'@
+SubRx @'
+  'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 115 at the centre, was 85; to you 80 at the centre, was 60. The fuse is still 1.1 seconds.',
+'@ @'
+  'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 140 at the centre, was 100; to you 98 at the centre, was 72. The fuse is still 1.1 seconds.',
+'@
+SubRx @'
+  // P.cfg=CFG;P.cfgv=17, and here CFG is still the file-scope default because
+'@ @'
+  // P.cfg=CFG;P.cfgv=18 (17 when this was written), and here CFG is still the file-scope default because
+'@
+SubRx @'
+  // the player's dials and stamped cfgv 17, skipping every cfgv migration. storeSet
+'@ @'
+  // the player's dials and stamped the current cfgv, skipping every cfgv migration. storeSet
 '@
 
 # STAMPS.
@@ -35,15 +65,9 @@ var WHATSNEW_VER='12.09';
 '@ @'
 var WHATSNEW_VER='12.10';
 '@
-SubRx @'
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-'@ @'
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE CONTROLS CARD NO LONGER PROMISES AN X KEY THAT DOES NOT EXIST: belt keys 1 and 2 bring up either gun.',
-'@
 $cnt=([regex]::Matches($s,"now:'v12\.09:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.09 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.09:[^']*'",{ param($m) "now:'v12.10: from the 2026-09-06 first-ten-minutes audit, the controls card behind H still taught X swaps primary and sidearm (Y on a pad) and no such handler exists; the belt keys are the swap. The card says so now. Check 12.10 reads the WEAPONS rule and requires no X or Y swap claim and the belt keys named; fails on v12.09.'" })
+$s=[regex]::Replace($s,"now:'v12\.09:[^']*'",{ param($m) "now:'v12.10: from the read-only review of the shipped v11.77, three things stayed calibrated to the old 150 blast: the pillager throw band near edge (180, inside a 190 blast) now follows the radius plus 52 (scatter and body), floored at his reach; the It hit cover MOVE warning covered 110, half the blast, and now covers the radius; and the card printed coefficients as centre damage (the centre is 140 and 98, was 100 and 72). The same build repairs check 11.44, whose cfgv sentinel was pinned at 17 and could never fire again. Check 12.10 hands a staged pillager a frag at 200 units and requires no throw, at 260 requires a throw, and reads the card figures; fails on v12.09.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

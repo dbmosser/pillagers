@@ -11,46 +11,44 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-06 MENU AUDIT (P1, raised by two regions): the safe pocket
-# accepted a Frag Charge, a Smoke, a Decoy or an Ammo Box and read 1/1, but
-# those ride in the pouch and the reserve, not the backpack, and the death
-# path banks only the backpack; so naming one spent the only death
-# protection there is on nothing, for the whole raid. Refused now, the way a
-# gun is refused, and a pocket already saved on one is cleared on load.
+# FIRST TEN MINUTES AUDIT, 2026-09-06 (two readers): everything in the
+# profile loader runs only when a save exists. A first launch has none, so
+# the Settings rows were never applied, the wording watcher never armed
+# (every reworded sentence since v11.42 was missing for the whole first
+# session), and the menus drew at zoom 1.0 and grew a third larger on the
+# second launch. Both are set on every load now, save or none.
 SubRx @'
-function setSafe(k){
-  if(k&&!ITEMS[k]) return 'That is not a thing you can carry.';
-  if(k&&ITEMS[k].use==='gun') return 'A gun does not fit in a safe pocket.';
-  P.safe=k||null; saveProfile(); return null;
+          else P.cfg=null;
+        } }
 }
+function loadProfile(){
 '@ @'
-function setSafe(k){
-  if(k&&!ITEMS[k]) return 'That is not a thing you can carry.';
-  if(k&&ITEMS[k].use==='gun') return 'A gun does not fit in a safe pocket.';
-  // v12.00, from the 2026-09-06 menu audit: a grenade rides in the pouch and
-  // ammunition in the reserve, and the death path banks the backpack only,
-  // so a pocket naming either came home with nothing while reading 1/1.
-  if(k&&ITEMS[k].use==='throw') return 'A throwable rides in the pouch, not a pocket. It cannot come home from there.';
-  if(k&&ITEMS[k].use==='ammo') return 'Ammunition rides in the reserve, not a pocket. It cannot come home from there.';
-  P.safe=k||null; saveProfile(); return null;
+          else P.cfg=null;
+        } }
+  // v12.00: THE FIRST SESSION IS SET UP LIKE EVERY LATER ONE. Everything above
+  // runs only when a save exists. A friend on his first launch had none, so
+  // the Settings rows were never applied (the wording watcher of v9.74 stayed
+  // unarmed, so the menus and panels showed none of the reworded sentences
+  // shipped since v11.42 until his second launch; canvas text had them), and
+  // the menus drew at zoom 1.0 and grew a third larger the next day. Both are
+  // set here, on every load, save or none, and the Settings pass runs again at
+  // the end of the boot, where a loader that threw part way cannot skip it.
+  if(!P.menuZoom) P.menuZoom=1.3;
+  try{ applyGameOpts(); }catch(_ag){}
 }
-'@
-SubRx @'
-if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
-'@ @'
-if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
-// v12.00: a pocket saved on a grenade or an ammo box protects nothing; cleared so the ascent screen stops saying 1/1.
-if(P.safe&&ITEMS[P.safe]&&(ITEMS[P.safe].use==='throw'||ITEMS[P.safe].use==='ammo')) P.safe=null;
+function loadProfile(){
 '@
 
-# The right-click menu offered the pocket for the same items; a verb the game
-# cannot perform is the rule that file states twelve lines above the row.
 SubRx @'
-  if(it.use!=='gun'){
-    var _isSafe=(P.safe===key);
+  log:[],pack:0,contracts:[],cfg:null,lastSim:null,autoExport:true,autoDownload:false,
 '@ @'
-  if(it.use!=='gun'&&it.use!=='throw'&&it.use!=='ammo'){   // v12.00: the pocket refuses these, so the menu does not offer it
-    var _isSafe=(P.safe===key);
+  log:[],pack:0,contracts:[],cfg:null,menuZoom:1.3,lastSim:null,autoExport:true,autoDownload:false,
+'@
+SubRx @'
+  try{ applyMenuZoom(); }catch(_am){}
+'@ @'
+  try{ applyGameOpts(); }catch(_ag2){}   // v12.00: once more here, where a loader that threw part way cannot skip it
+  try{ applyMenuZoom(); }catch(_am){}
 '@
 
 # STAMPS.
@@ -59,20 +57,9 @@ var VER='11.99';
 '@ @'
 var VER='12.00';
 '@
-SubRx @'
-var WHATSNEW_VER='11.99';
-'@ @'
-var WHATSNEW_VER='12.00';
-'@
-SubRx @'
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-'@ @'
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE SAFE POCKET REFUSES A THROWABLE OR AN AMMO BOX. Neither rides in the backpack, so neither could ever come home from it; the pocket said 1/1 anyway.',
-'@
 $cnt=([regex]::Matches($s,"now:'v11\.99:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.99 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.99:[^']*'",{ param($m) "now:'v12.00: from the 2026-09-06 menu audit, the safe pocket accepted a grenade or an ammo box and read 1/1, but both ride outside the backpack and the death path banks the backpack only, so the one death protection there is was spent on nothing. setSafe refuses throwables and ammunition the way it refuses a gun, and a saved pocket on either is cleared on load. Check 12.00 drives setSafe with a frag, an ammo box and a medkit and the real loader with a saved frag pocket; fails on v11.99.'" })
+$s=[regex]::Replace($s,"now:'v11\.99:[^']*'",{ param($m) "now:'v12.00: from the 2026-09-06 first-ten-minutes audit, a first launch with no save skipped the whole profile loader, so the Settings rows and the wording watcher (every reworded sentence since v11.42) were dead for the first session and the menus drew at zoom 1.0 and grew a third larger the next day. The menu zoom default and the Settings pass now run on every load, save or none. Check 12.00 loads a null record and requires the zoom at 1.3 and the watcher armed; fails on v11.99.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

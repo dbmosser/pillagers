@@ -11,22 +11,29 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: with the backpack open the arrow keys
-# move the selection AND walk the operator, because raidKey sets keys[code]
-# true for every key before the bag branch and the movement reads the arrows
-# unconditionally. The comment above the bag branch promises the opposite.
-# Browsing the bag walked you off the spot you stopped on.
+# FIRST TEN MINUTES AUDIT, 2026-09-06: the lift's FREEBIE KIT answer did not
+# clear the tactical belt plan, while the identical button on the stash
+# screen does. A friend who took the free kit at the lift landed with keys
+# bound to items left in the stash and, because an assigned heal key
+# replaces the derived Medical cell, two Bandages with no working key.
 SubRx @'
-  if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length){
-    // GRID NAVIGATION, v2.87: the selection is a STACK index now, and the four
+  ASKALT=function(){
+    P.freeKit=1; P.kitBeforeFree=null; saveProfile();
+    try{ renderStage(); }catch(_e){}
+    ascendNow();
+  };
 '@ @'
-  // v12.13: AND THEY DO NOT WALK. keys[code] was set true at the top of this
-  // function for every key, so an arrow both moved the selection and moved the
-  // operator; browsing the bag walked you off the spot you stopped on. Cleared
-  // here for the arrows while the bag is open; WASD still walks, as promised.
-  if(G&&G.bagOpen&&code.indexOf('Arrow')===0) keys[code]=false;
-  if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length){
-    // GRID NAVIGATION, v2.87: the selection is a STACK index now, and the four
+  ASKALT=function(){
+    // v12.13: THE SAME AS THE STASH SCREEN'S FREEBIE BUTTON, which clears the
+    // belt plan (a key pointing at something you are not carrying is the v5.72
+    // fault). This one did not, so a friend who took the free kit here landed
+    // with keys bound to items left in the stash and, because an assigned heal
+    // key replaces the derived Medical cell, two Bandages with no key to use.
+    P.hotAssign={}; P._gunSlot=null;
+    P.freeKit=1; P.kitBeforeFree=null; saveProfile();
+    try{ renderStage(); }catch(_e){}
+    ascendNow();
+  };
 '@
 
 # STAMPS.
@@ -44,11 +51,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE ARROW KEYS BROWSE THE OPEN BACKPACK WITHOUT WALKING YOU; WASD still walks.',
+  'TAKING THE FREEBIE KIT AT THE LIFT CLEARS YOUR TACTICAL BELT PLAN, the same as the stash screen button, so no key points at something you left behind.',
 '@
 $cnt=([regex]::Matches($s,"now:'v12\.12:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.12 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.12:[^']*'",{ param($m) "now:'v12.13: from the 2026-09-06 first-ten-minutes audit, the arrow keys moved the backpack selection and walked the operator at the same time, against the comment that promised otherwise. The arrows are cleared from the movement state while the backpack is open. Check 12.13 opens the backpack, presses an arrow through raidKey and one real player update, and requires the selection moved and the operator still; fails on v12.12.'" })
+$s=[regex]::Replace($s,"now:'v12\.12:[^']*'",{ param($m) "now:'v12.13: from the 2026-09-06 first-ten-minutes audit, the lift FREEBIE KIT answer left the tactical belt plan pointing at items in the stash while the stash screen button cleared it, so a free-kit run landed with dead keys and no Medical cell. The lift answer clears the plan now. Check 12.13 takes the free kit at the lift with a key bound to a stash item and requires the plan empty and a free-kit raid started; fails on v12.12.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

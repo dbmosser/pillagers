@@ -1,8 +1,10 @@
-v12.01: taking the freebie kit no longer throws away what you packed
+v12.01: first ten minutes, dying with the freebie kit keeps the pistol you own
 
-The packing and the belt plan are kept aside when the kit is taken and put
-back by USE MY OWN GEAR, minus anything sold in between. Check 12.01
-presses the real button twice and once more with a sale in between; fails
-on v12.00.
+The death card removed guns from the armoury by id, and the free kit's
+pistol is not flagged issued, so a first-run death deleted the only gun a
+fresh profile owns and billed for it. The splice reads the slot's
+from-armoury flag; the loaner is out of the ledger entirely. Check 12.01
+deploys with the free kit, dies, and requires the pistol kept; fails on
+v12.00.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

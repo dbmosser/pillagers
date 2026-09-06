@@ -1,26 +1,29 @@
-## v11.99 - THE FLOOR STOPS TAKING KEYS BEHIND THE CHARACTER SCREEN
+## v11.99 - FIRST TEN MINUTES: A PAUSE NOTE SURVIVES ESC
 
-From the 2026-09-06 read-only menu audit, the last of its three open items
-on the alpha path.
+From the 2026-09-06 read-only audit of a new player's first ten minutes.
 
-WHAT IT WAS. The Undercroft floor asks one gate, hubModalOpen, before a key
-fires the station you are standing in; v8.12 made that gate ask the page
-for any modal that is on, plus the Stash screen, the pause box and the
-outcome card, which are not modals. The character screen is not a modal
-either, and it was not in the list, so while it was up the floor kept
-running behind it: WASD walked, harmlessly, and E, R, F and T fired whatever
-station you had been standing in. At the lift, R ran the kit commit and
-started a raid, so a player choosing a name could find himself in a live
-raid with the title painted over it and the clock running.
+THE FINDING. The pause box is the alpha's feedback channel: its own text
+asks for anything that went or felt wrong, and the alpha card on the floor
+tells a friend to use it. Its legend names two ways out, P and ESC. The
+resume button banked the typed note into the run record and cleared the
+box; ESC, handled by a capture listener on the window since v7.68, closed
+the box and left the text sitting in it, where the run report never looks.
+A note typed in a raid and closed with ESC, the way most people close a
+box, was gone.
 
-THE FIX. One line: the character screen counts, the same way the pause box
-was added at v8.70.
+THE BUILD. The close itself banks the note. togglePauseBox already banked a
+floor note on close (v11.72); it now banks a raid note the same way, into
+the run's notes, whenever the box closes over a live raid. The resume and
+abandon buttons each carried their own copy of those lines; both are
+deleted so there is one copy. Both buttons close the box before anything
+ends the raid, so the close is what banks.
 
-MEASURED. Check 11.99 walks the floor with nothing open and requires the
-gate closed, turns the character screen on and requires it open, turns it
-off and requires it closed again. On the v11.98 fixture the gate reads
-closed with the screen on and the check says so.
+MEASURED. Check 11.99 deploys, opens the pause box, types a note, and
+presses ESC on the textarea itself, which is the element a real key reaches
+and which the window's capture listener sees first, as in play; requires
+the box closed, the note in the run record and the box empty. On the
+v11.98 fixture the box closes and the record has no note.
 
-Not verified: the raid start itself, which sits behind this gate and is
-not driven here; a station left mid-interaction when the screen opens,
-which the gate now simply pauses.
+Not verified: the P key, which the same audit found cannot close the box
+while its textarea has focus (queued separately); a note typed and then
+the raid ended by death with the box still open, which no path banks.

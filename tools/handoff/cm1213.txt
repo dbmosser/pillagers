@@ -1,9 +1,9 @@
-v12.13: first ten minutes, browsing the backpack no longer walks you
+v12.13: first ten minutes, the freebie kit taken at the lift clears the belt plan
 
-With the backpack open an arrow key moved the selection and walked the
-operator at once, against the comment that promised otherwise. The arrow
-is cleared from the movement state while the bag is open; WASD still
-walks. Check 12.13 drives the real key handler and player update with the
-bag open and closed; fails on v12.12.
+The stash screen's freebie button clears the tactical belt plan and the
+lift's FREEBIE KIT answer did not, so a free-kit run from the lift landed
+with keys bound to items left in the stash and no working Medical cell.
+The lift answer clears the plan now. Check 12.13 takes the free kit at the
+lift through the real handler; fails on v12.12.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

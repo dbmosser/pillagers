@@ -11,57 +11,30 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# CHECK 11.52 double-scaled the CONDITIONS box top (HUDBOX.cond is already in
-# screen pixels after hudZoomRect), so it was too permissive by the zoom and
-# could not see an overlap; the v11.78 check reads the same field the right
-# way and the two disagreed.
+# v12.04 CHECK, inserted before the v12.03 entry. The gate the floor asks
+# before firing a station is read with the character screen on and off.
 SubRx @'
-       // CLEAR OF THE CONDITIONS BOX, in screen space: that box is drawn zoomed
-       // about the top right corner, so its top in pixels is y times its zoom.
-       var HB=(typeof HUDBOX!=='undefined')?HUDBOX.cond:null, r=rect();
-       if(!HB) bad.push('control: the CONDITIONS box was not drawn, so the clearance cannot be measured');
-       else {
-         var cz=1; try{ cz=(HUDZ.cond||1)*hudRes()*hudUserZ('cond'); }catch(_z){ cz=1; }
-         var condTop=HB.y*cz;
+  {v:'12.03',what:'the notes-logged line in the raid HUD is drawn below the corner credits and XP readout, not through it (2026-09-06 first-ten-minutes audit)',
 '@ @'
-       // CLEAR OF THE CONDITIONS BOX, in screen space. v12.04: HUDBOX.cond is
-       // already in screen pixels (drawHUD runs it through hudZoomRect), so it is
-       // read as it is; multiplying by the zoom again made this too permissive.
-       var HB=(typeof HUDBOX!=='undefined')?HUDBOX.cond:null, r=rect();
-       if(!HB) bad.push('control: the CONDITIONS box was not drawn, so the clearance cannot be measured');
-       else {
-         var condTop=HB.y;
-'@
-
-# v12.04 CHECK, inserted before the v12.03 entry. The shop window is opened
-# for real and its heading balance measured against the corner readout.
-SubRx @'
-  {v:'12.03',what:'the crafting bench tells the truth about its guns: one green and three blue by the rarity every other screen shows, the detail panel describes a gun as a gun with its shown rarity, and the stash says servos and optics are kept for guns and contracts (2026-09-06 review of v11.79)',
-'@ @'
-  {v:'12.04',what:'a station window no longer repeats the credits and XP in its heading under the corner readout: the heading balance is hidden or clear of the readout (2026-09-06 review of v11.78)',
+  {v:'12.04',what:'the floor treats the character screen as a modal: hubModalOpen reads open while #title is on, so E, R, F and T no longer reach the stations behind it (2026-09-06 menu audit)',
    run:function(){
-     if(typeof openTrader!=='function'||!window.__hubEnter) return 'SKIP: this fixture cannot open a station window';
-     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
-     var bad=[], tr=document.getElementById('topright');
-     if(!tr) return 'SKIP: no corner readout in this build';
+     if(typeof hubModalOpen!=='function'||!window.__hubEnter||!window.__showScreen) return 'SKIP: this fixture cannot reach the floor gate';
+     var ttl=document.getElementById('title'); if(!ttl) return 'SKIP: no character screen element';
+     var bad=[], wasOn=ttl.classList.contains('on');
      try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       try{ if(window.__forceSize) __forceSize(1920,1080); }catch(_fs){}   // the modal zoom follows the pane; pinned so the control means the same on every run
-       G=null; keys={}; __showScreen('hub'); __hubEnter(); saveProfile();
-       openTrader('buy');
-       var md=document.querySelector('.modal.on'); if(!md) bad.push('control: no station window opened');
-       var mc=md?md.querySelector('h3 .modcur'):null;
-       if(!mc) bad.push('control: the window heading carries no balance to measure');
-       else {
-         var shown=getComputedStyle(mc).display!=='none';
-         var a=mc.getBoundingClientRect(), b=tr.getBoundingClientRect();
-         var hit=shown&&a.width>0&&a.right>b.left&&a.left<b.right&&a.bottom>b.top&&a.top<b.bottom;
-         if(hit) bad.push('the heading balance ('+Math.round(a.left)+'..'+Math.round(a.right)+' x '+Math.round(a.top)+'..'+Math.round(a.bottom)+') sits under the corner readout ('+Math.round(b.left)+'..'+Math.round(b.right)+' x '+Math.round(b.top)+'..'+Math.round(b.bottom)+')');
-       }
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       ttl.classList.remove('on');
+       var pb=document.getElementById('pausebox'); if(pb) pb.classList.remove('on');
+       if(hubModalOpen()) bad.push('control: with nothing open the gate already reads open, so it proves nothing');
+       ttl.classList.add('on');
+       if(!hubModalOpen()) bad.push('with the character screen on, the floor gate reads closed, so the stations behind it still take keys');
+       ttl.classList.remove('on');
+       if(hubModalOpen()) bad.push('control: with the character screen off again the gate still reads open');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ var ms=document.querySelectorAll('.modal.on'); for(var i=0;i<ms.length;i++) ms[i].classList.remove('on'); }catch(_c){} __topClear(); __cleanProfile(); }
+     finally{ try{ if(wasOn) ttl.classList.add('on'); else ttl.classList.remove('on'); }catch(_t){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.03',what:'the crafting bench tells the truth about its guns: one green and three blue by the rarity every other screen shows, the detail panel describes a gun as a gun with its shown rarity, and the stash says servos and optics are kept for guns and contracts (2026-09-06 review of v11.79)',
+  {v:'12.03',what:'the notes-logged line in the raid HUD is drawn below the corner credits and XP readout, not through it (2026-09-06 first-ten-minutes audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

@@ -11,40 +11,37 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# v12.13 CHECK, inserted before the v12.12 entry. The backpack is opened in
-# a raid, an arrow is pressed through raidKey and one real player update is
-# run: the selection must move and the operator must not; with the backpack
-# closed the same arrow must still walk.
+# v12.13 CHECK, inserted before the v12.12 entry. The lift question is asked
+# with a belt key bound to a stash item, the FREEBIE KIT answer is taken, and
+# the plan must be empty with a free-kit raid started.
 SubRx @'
-  {v:'12.12',what:'the trigger on an empty grenade cell selects the gun and says so instead of going dead or cooking a grenade the cell did not name (2026-09-06 first-ten-minutes audit)',
+  {v:'12.12',what:'the going-down toast tells the truth on the second down: it no longer sends you to F once the one self-revive is spent, and still does on the first (2026-09-06 first-ten-minutes audit)',
 '@ @'
-  {v:'12.13',what:'an arrow key with the backpack open moves the selection and does not walk the operator, and still walks with it closed (2026-09-06 first-ten-minutes audit)',
+  {v:'12.13',what:'taking the freebie kit at the lift clears the tactical belt plan the same as the stash screen button does, so no key points at an item left in the stash (2026-09-06 first-ten-minutes audit)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     if(typeof raidKey!=='function'||typeof updatePlayer!=='function') return 'SKIP: no raid keys in this build';
-     var bad=[];
+     if(!(window.__state&&window.__endRaid&&window.__P&&window.__showScreen)) return 'SKIP: this fixture cannot drive the lift';
+     if(typeof askKit!=='function') return 'SKIP: no lift question in this build';
+     var bad=[], P2=__P(), keepKit=(P2.kit||[]).slice(), keepHot=P2.hotAssign, keepGun=P2._gunSlot, keepFree=P2.freeKit, keepKBF=P2.kitBeforeFree, keepStash=(P2.stash||[]).slice(), keepChosen=P2.kitChosen;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(), p=g.player;
-       g.bag=['bandage','medkit','plate']; g.bagOpen=true; g.bagSel=0; keys={}; mouse.down=false; p.downed=false; p.roll=0;
-       var x0=p.x, y0=p.y;
-       raidKey('ArrowRight',false,null);
-       if(g.bagSel!==1) bad.push('control: the arrow did not move the selection (bagSel '+g.bagSel+')');
-       if(keys['ArrowRight']) bad.push('the arrow is still in the movement state with the backpack open');
-       updatePlayer(0.05);
-       var moved=Math.hypot(p.x-x0,p.y-y0);
-       if(moved>0.01) bad.push('browsing the backpack walked the operator '+moved.toFixed(1)+' units');
-       // CONTROL: with the backpack closed the arrow still walks.
-       keys={}; g.bagOpen=false; x0=p.x; y0=p.y;
-       raidKey('ArrowRight',false,null);
-       if(!keys['ArrowRight']) bad.push('control: the arrow is not in the movement state with the backpack closed');
-       updatePlayer(0.05);
-       if(Math.hypot(p.x-x0,p.y-y0)<0.01) bad.push('control: the arrow with the backpack closed did not walk the operator');
+       G=null; keys={}; __showScreen('hub');
+       P2.stash=['medkit','plate']; P2.kit=['medkit']; P2.hotAssign={4:'medkit'}; P2._gunSlot=null; P2.freeKit=0; P2.kitChosen=0; saveProfile();
+       askKit();
+       if(typeof ASKALT!=='function') bad.push('control: the lift question set no freebie answer');
+       else ASKALT();
+       var g=__state();
+       if(!g||!g.freeKit) bad.push('control: the freebie answer did not start a free-kit raid');
+       var ks=Object.keys(P2.hotAssign||{});
+       if(ks.length) bad.push('the belt plan still holds '+ks.length+' key'+(ks.length===1?'':'s')+' ('+ks.map(function(k){ return k+':'+P2.hotAssign[k]; }).join(',')+') after the freebie kit was taken at the lift');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
-     finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.bagOpen=false; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{
+       try{ var m=document.getElementById('askmodal'); if(m) m.classList.remove('on'); }catch(_m){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){}
+       P2.kit=keepKit; P2.hotAssign=keepHot||{}; P2._gunSlot=keepGun; P2.freeKit=keepFree; P2.kitBeforeFree=keepKBF; P2.stash=keepStash; P2.kitChosen=keepChosen;
+       try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile();
+     }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.12',what:'the trigger on an empty grenade cell selects the gun and says so instead of going dead or cooking a grenade the cell did not name (2026-09-06 first-ten-minutes audit)',
+  {v:'12.12',what:'the going-down toast tells the truth on the second down: it no longer sends you to F once the one self-revive is spent, and still does on the first (2026-09-06 first-ten-minutes audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

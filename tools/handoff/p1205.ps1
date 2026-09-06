@@ -11,47 +11,46 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.77 (the bigger blast): three
-# things were calibrated to the old 150 radius and did not move with it. A
-# pillager throws only in a band whose near edge (180) cleared his own blast
-# at 150 and is inside it at 190, so he stood in his own charge at the near
-# edge of every throw; the near edge follows the dial now. The "It hit cover.
-# MOVE." warning fired only inside 110, half the new radius; it follows the
-# dial too. And the card printed the coefficients as the centre damage, when
-# the centre is coefficient plus floor: 140 and 98, not 115 and 80.
+# FROM THE 2026-09-06 MENU AUDIT (P1, raised by two regions): the safe pocket
+# accepted a Frag Charge, a Smoke, a Decoy or an Ammo Box and read 1/1, but
+# those ride in the pouch and the reserve, not the backpack, and the death
+# path banks only the backpack; so naming one spent the only death
+# protection there is on nothing, for the whole raid. Refused now, the way a
+# gun is refused, and a pocket already saved on one is cleared on load.
 SubRx @'
-  if(fd<180||fd>520) return false;
-  var ix=-1;
-  for(var i=0;i<e.bag.length;i++){ var it=ITEMS[e.bag[i]]; if(it&&it.use==='throw'&&it.tk==='frag'){ ix=i; break; } }
+function setSafe(k){
+  if(k&&!ITEMS[k]) return 'That is not a thing you can carry.';
+  if(k&&ITEMS[k].use==='gun') return 'A gun does not fit in a safe pocket.';
+  P.safe=k||null; saveProfile(); return null;
+}
 '@ @'
-  // v12.05: the near edge of the band follows the blast radius (it was 180
-  // against a 150 blast; at 190 he stood in his own charge), plus the scatter
-  // of the aim point below and his own body; and never above his reach, or a
-  // short-ranged pillager could never throw at all.
-  var _fR=(CFG.fragR===undefined?190:CFG.fragR);
-  if(fd<Math.min(_fR+52,(e.rng||520)-1)||fd>520) return false;
-  var ix=-1;
-  for(var i=0;i<e.bag.length;i++){ var it=ITEMS[e.bag[i]]; if(it&&it.use==='throw'&&it.tk==='frag'){ ix=i; break; } }
+function setSafe(k){
+  if(k&&!ITEMS[k]) return 'That is not a thing you can carry.';
+  if(k&&ITEMS[k].use==='gun') return 'A gun does not fit in a safe pocket.';
+  // v12.05, from the 2026-09-06 menu audit: a grenade rides in the pouch and
+  // ammunition in the reserve, and the death path banks the backpack only,
+  // so a pocket naming either came home with nothing while reading 1/1.
+  if(k&&ITEMS[k].use==='throw') return 'A throwable rides in the pouch, not a pocket. It cannot come home from there.';
+  if(k&&ITEMS[k].use==='ammo') return 'Ammunition rides in the reserve, not a pocket. It cannot come home from there.';
+  P.safe=k||null; saveProfile(); return null;
+}
 '@
 SubRx @'
-  if(blocked&&rngT<110) say(tk==='frag'?'It hit cover. MOVE.':'It hit cover, dropped short.');
+if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
 '@ @'
-  if(blocked&&rngT<(tk==='frag'?(CFG.fragR===undefined?190:CFG.fragR):110)) say(tk==='frag'?'It hit cover. MOVE.':'It hit cover, dropped short.');   // v12.05: the warning covers the whole blast
+if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
+// v12.05: a pocket saved on a grenade or an ammo box protects nothing; cleared so the ascent screen stops saying 1/1.
+if(P.safe&&ITEMS[P.safe]&&(ITEMS[P.safe].use==='throw'||ITEMS[P.safe].use==='ammo')) P.safe=null;
 '@
+
+# The right-click menu offered the pocket for the same items; a verb the game
+# cannot perform is the rule that file states twelve lines above the row.
 SubRx @'
-  'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 115 at the centre, was 85; to you 80 at the centre, was 60. The fuse is still 1.1 seconds.',
+  if(it.use!=='gun'){
+    var _isSafe=(P.safe===key);
 '@ @'
-  'FRAG CHARGES REACH FURTHER AND HIT HARDER. Radius 150 to 190; to a machine or a pillager 140 at the centre, was 100; to you 98 at the centre, was 72. The fuse is still 1.1 seconds.',
-'@
-SubRx @'
-  // P.cfg=CFG;P.cfgv=17, and here CFG is still the file-scope default because
-'@ @'
-  // P.cfg=CFG;P.cfgv=18 (17 when this was written), and here CFG is still the file-scope default because
-'@
-SubRx @'
-  // the player's dials and stamped cfgv 17, skipping every cfgv migration. storeSet
-'@ @'
-  // the player's dials and stamped the current cfgv, skipping every cfgv migration. storeSet
+  if(it.use!=='gun'&&it.use!=='throw'&&it.use!=='ammo'){   // v12.05: the pocket refuses these, so the menu does not offer it
+    var _isSafe=(P.safe===key);
 '@
 
 # STAMPS.
@@ -65,9 +64,15 @@ var WHATSNEW_VER='12.04';
 '@ @'
 var WHATSNEW_VER='12.05';
 '@
+SubRx @'
+  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+'@ @'
+  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE SAFE POCKET REFUSES A THROWABLE OR AN AMMO BOX. Neither rides in the backpack, so neither could ever come home from it; the pocket said 1/1 anyway.',
+'@
 $cnt=([regex]::Matches($s,"now:'v12\.04:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.04 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.04:[^']*'",{ param($m) "now:'v12.05: from the read-only review of the shipped v11.77, three things stayed calibrated to the old 150 blast: the pillager throw band near edge (180, inside a 190 blast) now follows the radius plus 52 (scatter and body), floored at his reach; the It hit cover MOVE warning covered 110, half the blast, and now covers the radius; and the card printed coefficients as centre damage (the centre is 140 and 98, was 100 and 72). The same build repairs check 11.44, whose cfgv sentinel was pinned at 17 and could never fire again. Check 12.05 hands a staged pillager a frag at 200 units and requires no throw, at 260 requires a throw, and reads the card figures; fails on v12.04.'" })
+$s=[regex]::Replace($s,"now:'v12\.04:[^']*'",{ param($m) "now:'v12.05: from the 2026-09-06 menu audit, the safe pocket accepted a grenade or an ammo box and read 1/1, but both ride outside the backpack and the death path banks the backpack only, so the one death protection there is was spent on nothing. setSafe refuses throwables and ammunition the way it refuses a gun, and a saved pocket on either is cleared on load. Check 12.05 drives setSafe with a frag, an ammo box and a medkit and the real loader with a saved frag pocket; fails on v12.04.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

@@ -1,29 +1,34 @@
-## v11.94 - FIRST TEN MINUTES: A PAUSE NOTE SURVIVES ESC
+## v11.94 - HIS FOUR WORDING NOTES: LINES THAT SAY WHAT THEY MEAN
 
-From the 2026-09-06 read-only audit of a new player's first ten minutes.
+His notes of 2026-09-06, about 13:20 to 13:30, in chat, all four about a
+line on the screen that did not say what it was about.
 
-THE FINDING. The pause box is the alpha's feedback channel: its own text
-asks for anything that went or felt wrong, and the alpha card on the floor
-tells a friend to use it. Its legend names two ways out, P and ESC. The
-resume button banked the typed note into the run record and cleared the
-box; ESC, handled by a capture listener on the window since v7.68, closed
-the box and left the text sitting in it, where the run report never looks.
-A note typed in a raid and closed with ESC, the way most people close a
-box, was gone.
+ONE. '"Alarm went out. It..." It needs to say Crier or player wont know
+what it is.' The line is the Crier finishing its alarm windup. It now
+reads "The Crier raised the alarm. It kept eyes on you: they know exactly
+where you are." or "... They are coming to where it LAST saw you."
 
-THE BUILD. The close itself banks the note. togglePauseBox already banked a
-floor note on close (v11.72); it now banks a raid note the same way, into
-the run's notes, whenever the box closes over a live raid. The resume and
-abandon buttons each carried their own copy of those lines; both are
-deleted so there is one copy. Both buttons close the box before anything
-ends the raid, so the close is what banks.
+TWO. "Listener has stopped listening -- why?" The line is the Pillbox's
+death message: it prints when the listening machine is destroyed and drops
+its cache, and nothing in it said so. It now reads "PILLBOX-K destroyed.
+It has stopped listening, and it dropped a cache."
 
-MEASURED. Check 11.94 deploys, opens the pause box, types a note, and
-presses ESC on the textarea itself, which is the element a real key reaches
-and which the window's capture listener sees first, as in play; requires
-the box closed, the note in the run record and the box empty. On the
-v11.93 fixture the box closes and the record has no note.
+THREE. '"One a raid" -> "One per raid"'. Both self-revive lines, the one
+when he goes down and the one when F is pressed with the revive spent.
 
-Not verified: the P key, which the same audit found cannot close the box
-while its textarea has focus (queued separately); a note typed and then
-the raid ended by death with the box still open, which no path banks.
+FOUR. '"Resuming 6% done" -- wtf does this mean -- resuming what? randomly
+said this at the beginning of my game.' Search progress lives on the
+container (SPEC 7.4), so pressing E again on a container he had started
+picks up where he left off, and the line said only Resuming. It now reads
+"Search resumed, 6% done."
+
+MEASURED. Check 11.94 drives all four through the real code with the say
+calls recorded: a Crier set to the last instant of its windup and stepped;
+a Pillbox with no health stepped; the revive spent and F pressed; a
+container with six percent of its search done and E held. It requires the
+new words and none of the old. On the v11.93 fixture all four old lines
+print.
+
+Not verified: his own reading of the four lines; whether "Search resumed"
+should also name the container, which the container object does not carry
+a plain name for.

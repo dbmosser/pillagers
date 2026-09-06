@@ -40024,6 +40024,35 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.93 - FIRST TEN MINUTES: THE NAME HE TYPES IS THE NAME HE GETS
+
+From the 2026-09-06 read-only audit of a new player's first ten minutes.
+
+THE FINDING. The title's name box is the only place a pillager is ever
+named, and it had no key handler at all: ENTER in it reached nothing,
+because the title's own start listener steps aside while the box has
+focus, and the global key handler returns on any input. The start button
+never read the box either. So a friend who typed a name and pressed ENTER,
+or typed a name and clicked the big start button, was called PILLAGER for
+the rest of the alpha, and the placeholder that says NAME YOUR PILLAGER
+never even showed, because the default profile pre-fills the box with the
+word PILLAGER and the only affordance is a button labelled CHANGE NAME.
+
+THE BUILD. ENTER in the box commits the name the same way CHANGE NAME does
+and leaves the box, so a second ENTER starts the game. The start button
+commits whatever is typed before it starts. The CHANGE NAME button is
+unchanged.
+
+MEASURED. Check 11.93 raises the title, types one name and presses ENTER on
+the box itself, requires it on the profile, the title still up and the box
+left (when the pane could focus it at all), then a second ENTER to start; then
+types another name and clicks the start button, requires that name on the
+profile and the title down. On the v11.92 fixture the first name never
+reaches the profile.
+
+Not verified: a pad, which has no text entry here; the placeholder, which
+still never shows on a fresh profile because the default name is filled
+in; his own reading of the box.
 ## v11.92 - FIRST TEN MINUTES: THE NEW IN CARD FITS, AND A FIRST LAUNCH NEVER SEES IT
 
 From the read-only audit of a brand-new player's first ten minutes

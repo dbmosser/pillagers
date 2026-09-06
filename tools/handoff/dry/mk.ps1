@@ -188,7 +188,6 @@ window.__canvases=function(){ return {world:cv,overlay:hcv}; };
 window.__movers={seekPoint:seekPoint,navSeek:navSeek,mkSentry:mkSentry,mkRaider:mkRaider,dist:dist,buildNav:buildNav};
 window.__newRaid=function(){ G=buildRaid(true); return G; };
 window.__hub=function(){ return HB; };
-window.__tpbCount=0; window.__tpbLast=null; try{ var _tpbReal=togglePauseBox; togglePauseBox=function(on){ window.__tpbCount++; window.__tpbLast=on; try{ return _tpbReal.apply(this,arguments); }catch(_te){ window.__tpbErr=String(_te&&_te.message||_te); throw _te; } }; }catch(_tw){ window.__tpbErr='wrap: '+_tw; }
 window.__P=function(){ return P; };
 window.__buzzFx=function(){ drawBuzzFx(); };
 window.__buzzT=function(dt){ tickBuzz(dt===undefined?0.033:dt); };
@@ -5733,6 +5732,57 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.13',what:'an arrow key with the backpack open moves the selection and does not walk the operator, and still walks with it closed (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof raidKey!=='function'||typeof updatePlayer!=='function') return 'SKIP: no raid keys in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       g.bag=['bandage','medkit','plate']; g.bagOpen=true; g.bagSel=0; keys={}; mouse.down=false; p.downed=false; p.roll=0;
+       var x0=p.x, y0=p.y;
+       raidKey('ArrowRight',false,null);
+       if(g.bagSel!==1) bad.push('control: the arrow did not move the selection (bagSel '+g.bagSel+')');
+       if(keys['ArrowRight']) bad.push('the arrow is still in the movement state with the backpack open');
+       updatePlayer(0.05);
+       var moved=Math.hypot(p.x-x0,p.y-y0);
+       if(moved>0.01) bad.push('browsing the backpack walked the operator '+moved.toFixed(1)+' units');
+       // CONTROL: with the backpack closed the arrow still walks.
+       keys={}; g.bagOpen=false; x0=p.x; y0=p.y;
+       raidKey('ArrowRight',false,null);
+       if(!keys['ArrowRight']) bad.push('control: the arrow is not in the movement state with the backpack closed');
+       updatePlayer(0.05);
+       if(Math.hypot(p.x-x0,p.y-y0)<0.01) bad.push('control: the arrow with the backpack closed did not walk the operator');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.bagOpen=false; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'12.12',what:'the trigger on an empty grenade cell selects the gun and says so instead of going dead or cooking a grenade the cell did not name (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof updatePlayer!=='function'||typeof hotbarSlots!=='function'||typeof setHot!=='function') return 'SKIP: no belt or player update in this build';
+     var bad=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player;
+       g.pouch.frag=0; g.pouch.smoke=2; g.pouch.decoy=0;
+       var sl=hotbarSlots(), fi=-1;
+       for(var i=0;i<sl.length;i++) if(sl[i]&&sl[i].kind==='throw'&&/frag/i.test(String(sl[i].k||sl[i].itemKey||sl[i].icon||''))){ fi=i; break; }
+       if(fi<0) return 'SKIP: no Frag cell on the belt ('+sl.map(function(c){ return c&&(c.k||c.kind); }).join(',')+')';
+       setHot(fi);
+       if(hotSel()!==fi) return 'SKIP: the empty Frag cell could not be selected (selected '+hotSel()+')';
+       p.downed=false; p.cooking=0; p.fired=false; mouse.down=true; window.__lastSay=null;
+       updatePlayer(0.016);
+       mouse.down=false;
+       if(hotSel()!==0) bad.push('the press on the empty Frag cell left cell '+hotSel()+' selected instead of the gun');
+       if(p.cooking) bad.push('the press cooked a '+p.cookKind+' the cell did not name');
+       if(g.pouch.smoke!==2) bad.push('the press spent a Smoke from an empty Frag cell (smoke now '+g.pouch.smoke+')');
+       if(!/Nothing in that cell/.test(String(window.__lastSay||''))) bad.push('the press did not say the cell is empty (said "'+String(window.__lastSay||'')+'")');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ try{ mouse.down=false; var g2=__state(); if(g2&&!g2.over){ g2.player.cooking=0; g2.player.fired=false; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.11',what:'a death banks the XP its card printed, dose bonus included, instead of paying the run without the bonus after the drink is cleared (2026-09-06 first-ten-minutes audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy';
@@ -5789,7 +5839,7 @@ window.__REGRESS=[
        if(hubBagOpen) hubBagOpenSet(false);
        if(pb&&pb.classList.contains('on')) togglePauseBox(false);
        document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));   // on the body, the real path: capture at window first, then the floor handler
-       if(!(pb&&pb.classList.contains('on'))) bad.push('control: ESC with the backpack closed did not raise the pause box (G='+(!!G)+' over='+((G&&G.over)||'-')+' state='+state+' bag='+hubBagOpen+' pauseOpen='+pauseOpen+' titleUp='+document.getElementById('title').classList.contains('on')+' modal='+(document.querySelector('.modal.on')?document.querySelector('.modal.on').id:'-')+' hubOn='+document.getElementById('hub').classList.contains('on')+' active='+(document.activeElement&&document.activeElement.id)+' keysN='+Object.keys(keys).length+' tpb='+window.__tpbCount+'/'+window.__tpbLast+' err='+window.__tpbErr+')');
+       if(!(pb&&pb.classList.contains('on'))) bad.push('control: ESC with the backpack closed did not raise the pause box');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ try{ if(pb&&pb.classList.contains('on')) togglePauseBox(false); }catch(_p){} try{ if(hubBagOpen) hubBagOpenSet(false); }catch(_b){} keys={}; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},

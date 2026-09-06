@@ -1,34 +1,39 @@
-## v12.02 - A CONTROLLER OR THE KEYBOARD CAN CRAFT AGAIN
+## v12.02 - THE HEAL VERB TELLS THE TRUTH
 
-From the read-only review of this morning's shipped builds, on v11.75.
+From the two 2026-09-06 read-only reviews: the first-ten-minutes audit
+found the wrong sentence, and the review of the shipped v11.82 found the
+wasted Bandage.
 
-WHAT IT WAS. v11.75 made the craft button a one-second hold on his order,
-and did it by deleting the button's click handler and wiring the hold to
-the mouse. That deleted the only way a controller presses anything in a
-panel (the pad focuses a control and sends it a synthetic click) and the
-only way the keyboard does (Enter on the focused button), so with a pad or
-by keyboard crafting and servicing were not merely un-holdable, they were
-impossible. Two smaller faults in the same build: the hold's only guard
-was that the button was still in the page, but the trader hides its window
-rather than removing it, so a hold could outlive the window being shut and
-still spend the materials; and the tooltip and the NEW IN card wrote the
-hold length out by hand, and the card described a SERVICE button the game
-cannot draw since wear went out at v9.43.
+THE FINDINGS, three in one function. The heal verb asked the picker first
+and the picker skips anything whose ceiling is at or under your health, so
+with two Bandages in the bag and health at 85 (their ceiling) it returned
+nothing and the verb said No medical supplies, while the belt cell beside
+it read Medical x2. The sentence written for exactly that case, "Only
+bandages left, and they will not take you past 85", sat twelve lines lower
+behind a guard the first line had already returned on: dead code since
+v9.62. The same order made a Medkit at full health say No medical supplies
+instead of Already at full. And since v11.82 let heals stack, the ceiling
+tests still read health alone, so a second Bandage pressed while the first
+was still landing was spent even when the first already reached the
+ceiling; the surplus was silently discarded. The named belt slot for a heal
+had no ceiling test at all.
 
-THE BUILD. The click handler comes back and answers only synthetic clicks:
-a real mouse click carries a detail count of one or more and still spends
-nothing, the hold is still the mouse's way; a pad press and a keyboard
-Enter carry zero and craft at once. The hold dies when the button's window
-is hidden. The tooltip reads the hold length from the one constant. The
-card drops the sentence about the service button.
+THE BUILD. The full-health test comes first. The picker counts what is
+already inbound when it decides whether an item can raise you, so it
+reaches past a useless Bandage to a Medkit and returns nothing when nothing
+can help. Nothing usable then means either no medical at all or only
+Bandages beneath you, and the verb says which. The named belt slot gets the
+item's ceiling, counting inbound, with its own sentence. No dial moves.
 
-MEASURED. Check 12.02 opens the bench with the parts for a Component Kit in
-the stash, selects that recipe, and presses the cream detail button three
-ways: a synthetic click, which must craft; a click with a detail count of
-one, which must craft nothing; and a real hold stepped past one second,
-which must craft. Then it starts a hold, hides the window, steps the hold
-and requires it cancelled with nothing spent. On the v12.01 fixture the
-synthetic click crafts nothing and the hold survives the hidden window.
+MEASURED. Check 12.02 deploys and drives the real verb through four cases:
+two Bandages at their ceiling (kept, and the Only bandages sentence); a
+Medkit at full health (kept, Already at full); one Bandage with another
+already inbound to the ceiling (kept); and, as the control, one Bandage
+thirty under the ceiling with nothing inbound (spent). On the v12.01
+fixture the first two say No medical supplies and the third Bandage is
+spent.
 
-Not verified: a real pad in his hands; Enter from a focused button, which
-this check sends as the same detail-zero click the pad sends.
+Not verified: the belt slot arm, which needs a key assignment the check
+does not stage; the bot, which shares the picker and now also counts
+inbound; his own feel of the change, which is fewer refusals of nothing and
+one fewer wasted Bandage.

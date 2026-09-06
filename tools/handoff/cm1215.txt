@@ -1,0 +1,7 @@
+v12.15: first ten minutes, the controls card stops teaching a dead X key
+
+The H controls card taught X swaps primary and sidearm (Y on a pad); no
+such handler exists since the belt took the job. The rule names the belt
+keys now. Check 12.15 reads the rule; fails on v12.14.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

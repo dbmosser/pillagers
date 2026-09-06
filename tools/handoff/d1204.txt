@@ -1,29 +1,26 @@
-## v12.04 - THE STATION HEADING STOPS REPEATING THE BALANCE UNDER THE READOUT
+## v12.04 - THE FLOOR STOPS TAKING KEYS BEHIND THE CHARACTER SCREEN
 
-From the read-only review of this morning's shipped builds, on v11.78.
+From the 2026-09-06 read-only menu audit, the last of its three open items
+on the alpha path.
 
-WHAT IT WAS. Every station window (the shop, the bench, the armoury, the
-contracts) stamps the credits and XP into its own heading, pushed to the
-heading's right edge. v11.78 made the corner readout, which shows the same
-two figures at all times, forty-four pixels tall, and it now printed
-through the top of that heading balance. The only clearance v11.78 added
-was for the stash screen's top row. v11.52 had already set the rule for
-this case: the stash screen's own credits figure was hidden, because the
-corner shows it.
+WHAT IT WAS. The Undercroft floor asks one gate, hubModalOpen, before a key
+fires the station you are standing in; v8.12 made that gate ask the page
+for any modal that is on, plus the Stash screen, the pause box and the
+outcome card, which are not modals. The character screen is not a modal
+either, and it was not in the list, so while it was up the floor kept
+running behind it: WASD walked, harmlessly, and E, R, F and T fired whatever
+station you had been standing in. At the lift, R ran the kit commit and
+started a raid, so a player choosing a name could find himself in a live
+raid with the title painted over it and the clock running.
 
-THE BUILD. The heading balance follows the same rule and is hidden; the
-corner readout is the one place the two figures live. The same build
-repairs check 11.52, which measured the readout's clearance from the
-CONDITIONS box by multiplying a box top that is already in screen pixels
-by the zoom again, so it was too permissive by the zoom and could never
-have seen the overlap it stands guard over; the v11.78 check read the same
-field the right way, and the two disagreed.
+THE FIX. One line: the character screen counts, the same way the pause box
+was added at v8.70.
 
-MEASURED. Check 12.04 walks the floor, opens the shop window for real,
-finds the heading balance, and requires it hidden or, if shown, its box
-clear of the corner readout's box. On the v12.03 fixture the two boxes
-intersect and the check prints both.
+MEASURED. Check 12.04 walks the floor with nothing open and requires the
+gate closed, turns the character screen on and requires it open, turns it
+off and requires it closed again. On the v12.03 fixture the gate reads
+closed with the screen on and the check says so.
 
-Not verified: his own eye, and whether he wants the balance in the heading
-at all (it is one line to bring back); the other windows, which share the
-heading rule and are not opened one by one here.
+Not verified: the raid start itself, which sits behind this gate and is
+not driven here; a station left mid-interaction when the screen opens,
+which the gate now simply pauses.

@@ -1,8 +1,9 @@
-v12.09: first ten minutes, ESC closes the open backpack on the floor
+v12.09: the station heading stops repeating the balance under the readout
 
-The floor's pause branch did not count the open backpack, which is not a
-modal, so ESC raised the pause box over it and the backpack's own ESC line
-could never run. The pause branch steps aside for ESC while the backpack
-is open. Check 12.09 drives both keys on the window; fails on v12.08.
+The enlarged corner readout printed through the credits and XP every
+station window stamps into its heading; the heading balance is hidden,
+as the stash screen's own figure was at v11.52. Check 11.52 is repaired
+(it double-scaled the CONDITIONS box top). Check 12.09 opens the shop and
+measures the heading against the readout; fails on v12.08.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

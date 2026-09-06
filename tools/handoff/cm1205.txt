@@ -1,9 +1,9 @@
-v12.05: the bigger blast, three things that did not move with it
+v12.05: the safe pocket refuses a grenade or an ammo box
 
-A pillager's throw band started inside his own 190 blast, the cover
-warning covered half the radius, and the card printed coefficients as the
-centre damage. All three follow the radius now, and check 11.44's sentinel
-is unpinned from 17. Check 12.05 stages a pillager throw at 200 and 260
-and reads the card; fails on v12.04.
+Neither rides in the backpack, so neither could come home from the pocket,
+which said 1/1 anyway and spent the only death protection on nothing. The
+pocket refuses both with a sentence and a saved pocket on either is cleared
+on load. Check 12.05 drives the real pocket and the real loader; fails on
+v12.04.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

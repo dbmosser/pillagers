@@ -11,43 +11,22 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FIRST TEN MINUTES AUDIT, 2026-09-06: on a death or an abandon the outcome
-# card prints the run's XP with the drink's dose bonus, then the same
-# function clears the drink, then it banks the run through addXp, which
-# reads the bonus live and finds none. The card said more than the profile
-# got, the exact disagreement v11.63 was written to end.
+# FROM THE 2026-09-06 READ-ONLY REVIEW OF v11.74 (EXTRACT NOW): the sector
+# map keeps a third copy of the boarding-window line, and while the map is
+# open it is the only copy the player can read, because the map paints over
+# the banner and the ring label. It still said OPEN TO EXTRACT, the wording
+# he rejected at v8.68 and again at v11.74. It reads the same words now (the
+# letter is already on the line above it, so the helper's letter is left
+# out), and the stale comment over the ring label names the owner.
 SubRx @'
-function endRaid(how){
-  if(G.over) return;
-  G.over=how;
+      else if(_zHold) _zSub='OPEN TO EXTRACT  '+Math.max(0,Math.ceil(Z.hold))+'s';
 '@ @'
-function endRaid(how){
-  if(G.over) return;
-  G.over=how;
-  // v12.11: THE BONUS THE CARD PRINTS IS THE BONUS THE RUN BANKS. Taken here,
-  // before the death branch below clears the drink; the banking at the bottom
-  // of this function ran after that clear and paid the run without it.
-  if(G.tel) G.tel.doseMul=buzzXpMul();
+      else if(_zHold) _zSub='EXTRACT NOW!  '+Math.max(0,Math.ceil(Z.hold))+'S LEFT';   // v12.11: the banner's words (v11.74); the letter is the line above
 '@
 SubRx @'
-    dur:Math.round(elapsed()),
+    // v8.68, his wording, same as the banner.
 '@ @'
-    doseMul:(T.doseMul>0)?T.doseMul:1,   // v12.11: the dose bonus the card printed, banked below
-    dur:Math.round(elapsed()),
-'@
-SubRx @'
-  var _xb=xpBaseFor(rec), _xg=addXp(_xb);
-'@ @'
-  var _xb=xpBaseFor(rec), _xg=addXp(_xb,(rec.doseMul>0)?rec.doseMul:undefined);   // v12.11: the multiplier the card printed
-'@
-SubRx @'
-function addXp(n){
-  n=Math.round(n||0); if(n<=0) return 0;
-  var g=Math.round(n*buzzXpMul());
-'@ @'
-function addXp(n,mul){
-  n=Math.round(n||0); if(n<=0) return 0;
-  var g=Math.round(n*((mul!==undefined)?mul:buzzXpMul()));   // v12.11: a run banks the bonus its card printed
+    // v11.74: extractNowLine, the same line as the banner (v8.68 named the window; v11.74 reworded it).
 '@
 
 # STAMPS.
@@ -61,15 +40,9 @@ var WHATSNEW_VER='12.10';
 '@ @'
 var WHATSNEW_VER='12.11';
 '@
-SubRx @'
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-'@ @'
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'A DEATH BANKS THE XP ITS CARD PRINTS, drink bonus included; it used to pay the run without the bonus after the drink was cleared.',
-'@
 $cnt=([regex]::Matches($s,"now:'v12\.10:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v12.10 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v12\.10:[^']*'",{ param($m) "now:'v12.11: from the 2026-09-06 first-ten-minutes audit, a death or an abandon printed the run XP with the drink bonus on the card, cleared the drink, and then banked the run through addXp with no bonus, so the profile got less than the card said. The bonus is taken at the top of the ending and carried on the record into the banking. Check 12.11 dies with two doses in the blood and requires the profile paid exactly what the card printed; fails on v12.10.'" })
+$s=[regex]::Replace($s,"now:'v12\.10:[^']*'",{ param($m) "now:'v12.11: from the read-only review of the shipped v11.74, the sector map still said OPEN TO EXTRACT under a landed ring, and with the map open that is the only boarding line the player can read. It says EXTRACT NOW with the seconds left, the banner wording. Check 12.11 records what the map draws under a ring in the hold and requires the new words and not the old; fails on v12.10.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

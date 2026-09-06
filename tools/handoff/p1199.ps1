@@ -11,42 +11,47 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# FROM THE 2026-09-06 MENU AUDIT (P2): the floor kept taking E, R, F and T
-# behind the character screen, because #title is a .screen and not a .modal
-# and hubModalOpen asks only for modals, the Stash screen, the pause box and
-# the outcome card. At the lift, R ran commitKit and startRaid under the
-# title. One line: the character screen counts.
+# FIRST TEN MINUTES AUDIT, 2026-09-06: a note typed into the pause box during
+# a raid and closed with ESC was thrown away. ESC is the way out the box's own
+# legend names; the resume button banked the note and ESC did not. The alpha
+# card asks him to leave notes; the channel dropped them.
 SubRx @'
-  if(document.getElementById('outcome').classList.contains('on')) return true;
-  return !!document.querySelector('.modal.on');
-}
-function updateHubWorld(dt){
+  if(!on&&!G){
+    var _fn=document.getElementById('pausenote'), _ft=_fn?_fn.value.trim():'';
 '@ @'
-  if(document.getElementById('outcome').classList.contains('on')) return true;
-  // v11.99, from the 2026-09-06 menu audit: and the character screen, which is
-  // a .screen and not a .modal. Without this the floor took E, R, F and T
-  // behind it, and R at the lift started a raid under the title.
-  var _ttl=document.getElementById('title');
-  if(_ttl&&_ttl.classList.contains('on')) return true;
-  return !!document.querySelector('.modal.on');
-}
-function updateHubWorld(dt){
+  // v11.99: A RAID NOTE SURVIVES ESC. The resume button banked the note and
+  // ESC, the way out the box's own legend names, did not: it closed the box
+  // with the text still sitting in it, unseen by the run report. Every close
+  // of the box over a live raid banks it now, and the two copies of these
+  // lines the resume and abandon buttons carried are gone: both close the box
+  // before anything ends the raid, so this is the one place that banks.
+  if(!on&&G&&!G.over){
+    var _rn=document.getElementById('pausenote'), _rt=_rn?_rn.value.trim():'';
+    if(_rt){ G.tel.notes.push({t:Math.round(elapsed()),txt:_rt}); _rn.value=''; }
+  }
+  if(!on&&!G){
+    var _fn=document.getElementById('pausenote'), _ft=_fn?_fn.value.trim():'';
+'@
+SubRx @'
+  disarmAbandon();   // v10.96: the same four lines this used to carry itself
+  var note=document.getElementById('pausenote').value.trim();
+  if(note&&G){ G.tel.notes.push({t:Math.round(elapsed()),txt:note}); document.getElementById('pausenote').value=''; }
+  togglePauseBox(false);
+};
+'@ @'
+  disarmAbandon();   // v10.96: the same four lines this used to carry itself
+  togglePauseBox(false);   // v11.99: the close banks the note, for this button and for ESC alike
+};
 '@
 
-# The keydown branch keeps its own hand-written copy of the same gate; the
-# already-computed flag folds into it, so SPACE, H, TAB and I stop too.
 SubRx @'
-    var _hubBusy=!!(document.querySelector('.modal.on')||document.querySelector('.imenu')||
+  var note=document.getElementById('pausenote').value.trim();
+  if(note&&G){ G.tel.notes.push({t:Math.round(elapsed()),txt:note}); document.getElementById('pausenote').value=''; }
+  togglePauseBox(false);
+this.style.display='none';
 '@ @'
-    var _hubBusy=!!(_titleUp||document.querySelector('.modal.on')||document.querySelector('.imenu')||   // v11.99: the character screen counts here too
-'@
-SubRx @'
-      if(document.querySelector('.imenu')) _anyModal=true;
-      if(!_anyModal){
-'@ @'
-      if(document.querySelector('.imenu')) _anyModal=true;
-      if(_titleUp) _anyModal=true;   // v11.99
-      if(!_anyModal){
+  togglePauseBox(false);   // v11.99: the close banks the note
+this.style.display='none';
 '@
 
 # STAMPS.
@@ -56,7 +61,7 @@ var VER='11.98';
 var VER='11.99';
 '@
 SubRx @'
-var WHATSNEW_VER='11.96';
+var WHATSNEW_VER='11.98';
 '@ @'
 var WHATSNEW_VER='11.99';
 '@
@@ -64,11 +69,11 @@ SubRx @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
 '@ @'
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'THE CHARACTER SCREEN NO LONGER LETS KEYS THROUGH TO THE FLOOR BEHIND IT. E, R, F and T reached the stations under it, and R at the lift started a raid.',
+  'A NOTE TYPED IN THE PAUSE BOX IS KEPT WHEN ESC CLOSES IT, the same as the resume button; it goes out with your run report.',
 '@
 $cnt=([regex]::Matches($s,"now:'v11\.98:[^']*'")).Count
 if($cnt -ne 1){ throw "DEVNOW v11.98 matched $cnt times" }
-$s=[regex]::Replace($s,"now:'v11\.98:[^']*'",{ param($m) "now:'v11.99: from the 2026-09-06 menu audit, the floor kept taking station keys behind the character screen because hubModalOpen did not count #title (a .screen, not a .modal); at the lift R started a raid under the title. One line: the character screen counts as a modal. Check 11.99 turns the character screen on over the floor and requires the gate to read open, then off and requires it closed; fails on v11.98.'" })
+$s=[regex]::Replace($s,"now:'v11\.98:[^']*'",{ param($m) "now:'v11.99: from the 2026-09-06 first-ten-minutes audit, a note typed into the pause box during a raid and closed with ESC was thrown away; only the resume button banked it. Every close of the box over a live raid banks the note now, and the resume and abandon buttons lost their own copies of the lines. Check 11.99 pauses a raid, types a note, presses ESC on the box and requires the note in the run record; fails on v11.98.'" })
 $n++
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

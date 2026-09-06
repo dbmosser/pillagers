@@ -1,9 +1,8 @@
-v12.11: a death banks the XP its card prints, drink bonus included
+v12.11: the map says EXTRACT NOW too
 
-The ending printed the card with the dose bonus, cleared the drink, then
-banked the run through addXp with the bonus read live as none. The
-multiplier is taken at the top of the ending, carried on the record, and
-handed to addXp. Check 12.11 dies with two doses in the blood and requires
-the profile paid what the card printed; fails on v12.10.
+The sector map kept a third copy of the boarding line that still said
+OPEN TO EXTRACT, and with the map open it was the only copy readable. It
+says EXTRACT NOW with the seconds left. Check 12.11 draws the map with a
+landed ring and reads the line; fails on v12.10.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
