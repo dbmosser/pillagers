@@ -5440,6 +5440,18 @@ window.__REGRESS=[
      // worth asserting is that the variety is reachable at all, which is a
      // property of the hash and not of my opinion.
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
+  {v:'11.57',what:'the storm warning ring says LIGHTNING INCOMING with the seconds left, and the world draw puts it at the circle (his note of 2026-09-05)',
+   run:function(){
+     if(typeof strikeLabel!=='function') return 'the strike warning ring says nothing; there is no label to read';
+     if(typeof render2D!=='function') return 'SKIP: no world draw in this build';
+     var bad=[];
+     var a=String(strikeLabel({t:1.6})), b=String(strikeLabel({t:0.3}));
+     if(a.indexOf('LIGHTNING INCOMING')<0) bad.push('at 1.6 s the label reads "'+a+'"');
+     if(a.indexOf('2S')<0) bad.push('at 1.6 s the label does not round to 2S: "'+a+'"');
+     if(b.indexOf('LIGHTNING INCOMING')<0||b.indexOf('1S')<0) bad.push('at 0.3 s the label reads "'+b+'" and not LIGHTNING INCOMING 1S');
+     var src=''; try{ src=render2D.toString(); }catch(_s){}
+     if(src.indexOf('strikeLabel(')<0) bad.push('control: the world draw does not read strikeLabel, so the words are never at the circle');
+     return bad.length?bad.join('; '):null; }},
   {v:'11.56',what:'no storm strike point lands inside a building (his note of 2026-09-05); the storm still strikes',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';

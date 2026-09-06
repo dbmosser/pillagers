@@ -40024,6 +40024,28 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.57 - HIS NOTE: THE STORM WARNING RING SAYS LIGHTNING INCOMING
+
+His in-run note of 2026-09-05, 130 seconds into his first run: "when
+lightning is about to hit, it should say like 'lightning incoming' at the
+circle." The warning ring (v6.87, drawn on the ground since v11.35) closes as
+the strike nears and its gap is the time you have left, but it says nothing,
+and a closing circle of pale blue on wet ground is not a sentence.
+
+THE BUILD. The ring carries his words above it, LIGHTNING INCOMING with the
+seconds left rounded up (2S, then 1S over the 1.6 second warning), drawn in
+world space with the ring so it stays at the circle whatever the camera does.
+One function, strikeLabel, owns the line so the draw and the check agree.
+
+MEASURED. Check 11.57 reads the label at 1.6 s and at 0.3 s and requires his
+words and the rounded seconds; a control reads the world draw and requires
+it to read strikeLabel. On the v11.56 fixture there is no label function and
+the check fails on its first line.
+
+Not verified: his own eye in a storm; how the label reads at his zoom, since
+it scales with the world like the ring; the second half of the same note,
+red circles for every heard noise out of view, which is his note F and a
+build of its own.
 ## v11.56 - HIS NOTE: LIGHTNING DOES NOT STRIKE INSIDE A BUILDING
 
 His in-run note of 2026-09-05, 71 seconds into his first run: "lightning

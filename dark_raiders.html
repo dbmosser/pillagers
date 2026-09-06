@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.56';
+var VER='11.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,11 @@ var VER='11.56';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.56';
+var WHATSNEW_VER='11.57';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'THE STORM WARNING RING SAYS LIGHTNING INCOMING, with the seconds left, right at the circle.',
   'LIGHTNING NO LONGER STRIKES INSIDE A BUILDING. A strike that would have landed under a roof lands just outside its nearest wall instead.',
   'A COOKED GRENADE SHOUTS FOR ITS LAST SECOND: COOKED GRENADE! THROW GRENADE NOW, above the countdown. The fuse is still 1.1 seconds, so that is most of the cook; say the number you want and it changes.',
   'EXTRACTION POINTS SAY WHICH STATE THEY ARE IN. Sound the alarm to begin the countdown; N seconds until extraction begins; extract now, N seconds until it ends; closed for the remainder of this raid. Your four lines, with the live clock.',
@@ -5096,6 +5097,11 @@ function wxTick(dt){
 // His four parts: a flash you can see, a flash that shows you the map even indoors, a
 // telegraphed strike that can hit you, and something worth having where it lands.
 var STRIKE_WARN=1.6, STRIKE_R=118, STRIKE_DMG=62;
+// v11.57, HIS NOTE: what the warning ring says, in his words, with the
+// seconds left. One place, so the draw and the check read the same line.
+function strikeLabel(S){
+  return 'LIGHTNING INCOMING '+Math.max(1,Math.ceil((S&&S.t)||0))+'S';
+}
 function strikeTick(dt){
   if(!G||G.over||G.paused) return;
   var W2=wx();
@@ -22314,6 +22320,15 @@ wc.drawImage(fogC,0,0);
       wc.strokeStyle='rgba(255,255,255,'+(0.45+0.45*_k).toFixed(3)+')';
       wc.lineWidth=2.4;
       wc.beginPath(); wc.arc(_S.x,_S.y,STRIKE_R*(1-_k*0.86),0,6.2832); wc.stroke();
+      // v11.57, HIS NOTE: "it should say like 'lightning incoming' at the circle".
+      var _slt=strikeLabel(_S);
+      wc.font=FS(TYPE.label); wc.textAlign='center';
+      var _slw=wc.measureText(_slt).width;
+      wc.fillStyle='rgba(6,9,13,.72)';
+      wc.fillRect(_S.x-_slw/2-6,_S.y-STRIKE_R-LH(26),_slw+12,LH(15));
+      wc.fillStyle='rgba(190,210,255,'+(0.55+0.45*_k).toFixed(3)+')';
+      wc.fillText(_slt,_S.x,_S.y-STRIKE_R-LH(15));
+      wc.textAlign='left';
       if(_k>0.55){
         wc.globalCompositeOperation='lighter';
         wc.fillStyle='rgba(150,190,255,'+(0.05+0.12*_k).toFixed(3)+')';
@@ -28185,7 +28200,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.56: HIS NOTE of 2026-09-05, lightning should not strike inside buildings. The storm rolled a point 180 to 800 units from the player with no roof test. A point inside a building is walked out through its nearest wall by outOfBuilding (deterministic, no new random draw), up to three times. Check 11.56 stands the player in a building under a forced storm, spawns sixty strike points, requires none inside a building and at least twenty spawned; fails on the v11.55 fixture where some land indoors. Not moved: the blast radius, which still reaches through a wall.',
+  now:'v11.57: HIS NOTE of 2026-09-05, the strike warning should say lightning incoming at the circle. strikeLabel(S) owns his line with the seconds left and render2D draws it above the closing ring in world space. Check 11.57 reads the label at 1.6 s and at 0.3 s and requires his words and the rounded seconds, and controls that render2D reads strikeLabel.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
