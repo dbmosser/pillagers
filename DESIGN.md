@@ -40024,6 +40024,33 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.11 - FIRST TEN MINUTES: ESC CLOSES THE OPEN BACKPACK ON THE FLOOR
+
+From the 2026-09-06 read-only audit of a new player's first ten minutes.
+
+THE FINDING. On the Undercroft floor, ESC and P raise the pause box when
+nothing is open over the floor (v8.70). That test counts modals, right
+click menus and the terminal, and the floor backpack is none of those, so
+with the backpack open ESC raised the pause box over it. The backpack's
+own ESC line, written at v8.95 to take ESC before the terminal, sits
+further down the same handler and could never run, because the pause
+branch returns first. A second ESC closed the pause box and the backpack
+stayed open. The one key everyone reaches for to close a thing could not
+close this one.
+
+THE BUILD. The pause branch steps aside for ESC while the floor backpack
+is open, so the key falls through to the backpack's own line and closes
+it. P still pauses over the open backpack, as before; ESC with the
+backpack closed still pauses.
+
+MEASURED. Check 12.11 enters the floor, opens the backpack, presses ESC on
+the page body and requires the backpack closed and no pause box; then, with
+the backpack closed, presses ESC again and requires the pause box. On the
+v12.10 fixture the first ESC raises the pause box and leaves the backpack
+open.
+
+Not verified: a pad, which has no way into or out of the floor backpack at all; his own hand on
+the key.
 ## v12.10 - FIRST TEN MINUTES: THE SECOND DOWN TELLS THE TRUTH
 
 From the 2026-09-06 read-only audit of a new player's first ten minutes.

@@ -5732,6 +5732,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'12.11',what:'ESC over the open Undercroft backpack closes the backpack instead of raising the pause box, and ESC with it closed still pauses (2026-09-06 first-ten-minutes audit)',
+   run:function(){
+     if(!(window.__showScreen&&window.__hubEnter)) return 'SKIP: this fixture cannot enter the floor';
+     if(typeof hubBagOpenSet!=='function'||typeof togglePauseBox!=='function') return 'SKIP: no floor backpack or pause box in this build';
+     var bad=[], pb=document.getElementById('pausebox');
+     try{
+       __topClear(); __runPrep(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       var t=document.getElementById('title'); if(t) t.classList.remove('on');
+       if(pb&&pb.classList.contains('on')) togglePauseBox(false);
+       hubBagOpenSet(true);
+       if(!hubBagOpen) bad.push('control: the backpack did not open');
+       document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));   // on the body, the real path: capture at window first, then the floor handler
+       if(hubBagOpen) bad.push('ESC left the backpack open');
+       if(pb&&pb.classList.contains('on')) bad.push('ESC raised the pause box over the open backpack');
+       // CONTROL: with the backpack closed, ESC still pauses.
+       if(hubBagOpen) hubBagOpenSet(false);
+       if(pb&&pb.classList.contains('on')) togglePauseBox(false);
+       document.body.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));   // on the body, the real path: capture at window first, then the floor handler
+       if(!(pb&&pb.classList.contains('on'))) bad.push('control: ESC with the backpack closed did not raise the pause box');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ try{ if(pb&&pb.classList.contains('on')) togglePauseBox(false); }catch(_p){} try{ if(hubBagOpen) hubBagOpenSet(false); }catch(_b){} keys={}; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'12.10',what:'the going-down toast tells the truth on the second down: it no longer sends you to F once the one self-revive is spent, and still does on the first (2026-09-06 first-ten-minutes audit)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
