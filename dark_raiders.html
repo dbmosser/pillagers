@@ -1350,7 +1350,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='11.58';
+var VER='11.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1361,10 +1361,11 @@ var VER='11.58';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='11.58';
+var WHATSNEW_VER='11.59';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING. Four never did: the storm telegraph and the extraction pulse, touchdown and last call. They do now.',
   'THE UNDERCROFT HAS ITS SCREEN BACK. The floor was painting its heading, its [E] STATION prompt, the key list, the H controls panel and the line that teaches the controls, and then erasing all of it in the same frame. It has been invisible for a long time, and H did nothing. It is all there now.',
   'THE STORM WARNING RING SAYS LIGHTNING INCOMING, with the seconds left, right at the circle.',
   'LIGHTNING NO LONGER STRIKES INSIDE A BUILDING. A strike that would have landed under a roof lands just outside its nearest wall instead.',
@@ -3473,7 +3474,11 @@ var NOISEMARK={
   clank: {r:56, hear:900},
   hit:   {r:44, hear:620},
   step:  {r:26, hear:420},
-  board: {r:34, hear:520}
+  board: {r:34, hear:520},
+  // v11.59, HIS NOTE: the extraction's own sounds mark themselves too.
+  inbound:  {r:30, hear:1400},
+  touchdown:{r:88, hear:1500},
+  lastcall: {r:44, hear:1400}
 };
 var NOISEMARK_MAX=22;
 // The ring itself. Called for every world sound, and it keeps only the ones you
@@ -5127,7 +5132,7 @@ function strikeTick(dt){
       sx=clamp(_so.x,80,WORLD_W-80); sy=clamp(_so.y,80,WORLD_H-80);
     }
     G.strikes.push({x:sx,y:sy,t:STRIKE_WARN,hit:0});
-    if(!G.sim) blip('charge',dist(p,{x:sx,y:sy}));
+    if(!G.sim) sfx('charge',sx,sy);   // v11.59, HIS NOTE: a positioned sound marks itself
   }
   for(var i=G.strikes.length-1;i>=0;i--){
     var S=G.strikes[i];
@@ -13621,7 +13626,7 @@ function tickExtractPoints(dt){
       var _fr=clamp(1-z.beaconT/Math.max(1,CFG.extractWait),0,1);
       var _iv=2.2-1.65*_fr;
       z.pingT=(z.pingT||0)+dt;
-      if(z.pingT>=_iv){ z.pingT=0; blip('inbound',dist(p,z)); }
+      if(z.pingT>=_iv){ z.pingT=0; sfx('inbound',z.x,z.y); }   // v11.59: marks itself
     }
     z.beaconT-=dt;
     if(z===G.active) G.beaconT=z.beaconT;
@@ -13809,7 +13814,7 @@ z.hold=Math.min(30,Math.max(3,G.timeLeft-1)); z.holdMax=z.hold;
         }
         G.tel.ringCrowd={mapBorn:_rcm,siegeBorn:_rcs};
       }
-      if(dist(p,z)<1400){ blip('touchdown',dist(p,z)); blip('alarm',dist(p,z));
+      if(dist(p,z)<1400){ sfx('touchdown',z.x,z.y); sfx('alarm',z.x,z.y);   // v11.59: mark themselves
         say('EXTRACTION IS OPEN. Hold E to extract, '+Math.round(z.hold)+'s.'); }
     }
     // THE WINDOW CLOSING, once a second for the last eight. This is the only
@@ -13818,7 +13823,7 @@ z.hold=Math.min(30,Math.max(3,G.timeLeft-1)); z.holdMax=z.hold;
     var _hPrev=z.hold;
     z.hold-=dt;
     if(!G.sim&&z===G.active&&z.hold<=8&&z.hold>0&&Math.ceil(z.hold)!==Math.ceil(_hPrev)){
-      blip('lastcall',dist(p,z));
+      sfx('lastcall',z.x,z.y);   // v11.59: marks itself
     }
     if(z===G.active){ G.shipHold=z.hold; G.shipHoldMax=z.holdMax; }
     if(z.hold<=0){
@@ -28207,7 +28212,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v11.58: the whole Undercroft HUD was painted and then erased in the same frame. From the 2026-09-06 read-only menu audit. v8.95 cleared the HUD canvas BELOW the world draw to wipe the last raid leftovers, but drawHubWorld ends by calling drawHubHUD, which paints the floor heading, the E STATION prompt and its key list, the H controls panel, the NEW IN card and the WASD teaching line onto that same canvas; the clear erased all of it every frame and repainted only the belt, so the floor had no HUD and H was a dead key. The clear moved above the world draw. Check 11.58 drives the real loop in the hub and counts opaque pixels in the top strip of the HUD canvas, with a control that the belt still draws.',
+  now:'v11.59: HIS NOTE of 2026-09-05, all noises outside vision but within earshot should draw a ring like lightning does. noiseMark (v9.07) already does that for every sound routed through sfx(type,x,y); four sounds bypassed it by playing by distance with no position: the strike telegraph and the extraction inbound pulse, touchdown and last call. They go through sfx now with ring sizes of their own. Check 11.59 requires the three new ring sizes, a ring for an unseen inbound behind the player and none for a seen one in front, and that strikeTick and tickExtractPoints route those four sounds through sfx.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,41 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.59 - HIS NOTE: EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING
+
+His in-run note of 2026-09-05, 130 seconds into his first run: "how lightning
+shows red noise, I want ALL noises to do that when they are outside the
+player's vision but within earshot, eg visualize noises with red circles!"
+
+WHAT IS TRUE. That ring is noiseMark, built at v9.07: every world sound that
+is played at a position goes through sfx, and sfx asks noiseMark, which draws
+a ring sized for the sound when you could hear it and could not see it, with
+the cone counting so something behind you is unseen even in the open, and
+nothing at all when you can see the source. Gunfire, steps, hits, clanks and
+the strike's alarm all do this already; the ring he saw was the strike
+landing. Four sounds never did, because they were played by distance alone
+with no position to ring at: the storm's strike telegraph (the charge before
+the bolt), and the extraction's inbound pulse, its touchdown and its last
+call.
+
+THE BUILD. Those four are played at their positions through sfx now, so they
+mark themselves like every other sound, and the three that had no ring size
+get one: a small pulse for inbound, a large one for touchdown, a middling
+one for last call. Nothing about the rule changes, and the seen-source case
+still draws nothing.
+
+MEASURED. Check 11.59 requires the three ring sizes, drives noiseMark with an
+inbound pulse 400 units behind the player and requires a ring, and with one
+60 units ahead in the open and requires none; then reads strikeTick and
+tickExtractPoints and requires the four sounds to be positioned calls. On
+the v11.58 fixture the ring sizes are missing and all four sites play by
+distance, and the check fails naming each.
+
+Not verified: his own eye; whether the inbound pulse's repeated ring (every
+half second to two seconds while the extraction is inbound) reads as
+information or as clutter, which is his to say and one number to change; the
+noise ring's colour, which is unchanged and not red for every source (his
+word was "red circles"; the table at NOISECOL has the colours by source).
 ## v11.58 - THE UNDERCROFT HUD WAS PAINTED AND THEN ERASED IN THE SAME FRAME
 
 From the read-only menu audit of 2026-09-06, and it is the largest thing found
