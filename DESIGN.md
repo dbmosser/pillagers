@@ -40024,6 +40024,37 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v12.16 - TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED
+
+From the 2026-09-06 read-only menu audit, its highest-value open item on
+the alpha path.
+
+WHAT IT WAS. TAKE THE FREEBIE KIT emptied the backpack you had packed out
+of the stash and the whole belt plan with it, at once, with no confirmation
+and no way back; pressing USE MY OWN GEAR afterwards gave you an empty bag.
+The emptying itself is his rule and it is right: the kit is a selection out
+of the stash, not a move, so an emptied kit returns everything to the stash
+by itself, and a belt key pointing at something you are not carrying is the
+exact fault v5.72 fixed. What was wrong is that the selection was destroyed
+rather than set aside. A new player packs, sees the free kit, presses it to
+find out what it is, and has lost ten minutes of decisions.
+
+THE FIX. When the kit is taken the packing and the belt plan are kept aside
+on the profile; USE MY OWN GEAR puts them back, minus anything no longer in
+the stash, so a sale in between cannot resurrect an item. The button's own
+text says the packing is kept. No confirmation dialog, because the undo is
+one press and a dialog on a reversible act is a nag.
+
+MEASURED. Check 12.16 packs a medkit and a plate with the medkit on key 3,
+presses the real button and requires the kit taken and the packing emptied,
+presses it again and requires the packing and the key back; then takes the
+kit again, sells the plate out of the stash, switches back and requires the
+medkit alone restored. On the v12.15 fixture the second press leaves the
+bag empty and the check says so.
+
+Not verified: the related audit line that the Stash panel goes inert, sell
+button included, while the kit is taken, which is a separate path and not
+touched here; the ascent screen's repaint, which is the existing one.
 ## v12.15 - THE SAFE POCKET REFUSES WHAT IT CANNOT BRING HOME
 
 From the 2026-09-06 read-only menu audit, raised independently by two of

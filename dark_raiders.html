@@ -1354,7 +1354,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='12.15';
+var VER='12.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1365,10 +1365,11 @@ var VER='12.15';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='12.15';
+var WHATSNEW_VER='12.16';
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'TAKING THE FREEBIE KIT NO LONGER THROWS AWAY WHAT YOU PACKED. Switch back to your own gear, at the counter or at the lift, and it is all still there.',
   'THE SAFE POCKET REFUSES A THROWABLE OR AN AMMO BOX. Neither rides in the backpack, so neither could ever come home from it; the pocket said 1/1 anyway.',
   'THE CONTROLS CARD NO LONGER PROMISES AN X KEY THAT DOES NOT EXIST: belt keys 1 and 2 bring up either gun.',
   'TAKING THE FREEBIE KIT AT THE LIFT CLEARS YOUR TACTICAL BELT PLAN, the same as the stash screen button, so no key points at something you left behind.',
@@ -27498,7 +27499,7 @@ function askKit(){
     (kitN?('the '+kitN+' item'+(kitN===1?'':'s')+' you packed, plus your current tactical belt and backpack.')
          :'your current tactical belt and backpack.')+
     '<br><br><b>The freebie kit</b>: '+escHtml(freeKitText());
-  ASKYES=function(){ P.freeKit=0; saveProfile(); ascendNow(); };
+  ASKYES=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; saveProfile(); ascendNow(); };   // v12.16: MY LOADOUT gets his packing back too
   ASKALT=function(){
     // v12.13: THE SAME AS THE STASH SCREEN'S FREEBIE BUTTON, which clears the
     // belt plan (a key pointing at something you are not carrying is the v5.72
@@ -28682,7 +28683,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v12.15: from the 2026-09-06 menu audit, the safe pocket accepted a grenade or an ammo box and read 1/1, but both ride outside the backpack and the death path banks the backpack only, so the one death protection there is was spent on nothing. setSafe refuses throwables and ammunition the way it refuses a gun, and a saved pocket on either is cleared on load. Check 12.15 drives setSafe with a frag, an ammo box and a medkit and the real loader with a saved frag pocket; fails on v12.14.',
+  now:'v12.16: from the 2026-09-06 menu audit, TAKE THE FREEBIE KIT wiped the packed backpack and the whole belt plan with no undo. The selection is kept aside on the profile (kitSaved) when the kit is taken and put back by freeKitRestore, called by USE MY OWN GEAR and by MY LOADOUT at the lift, minus anything no longer in the stash and with dead keys pruned; a raid taken with the free kit hands the saved list to the v6.88 death restore. Check 12.16 packs two items and a key, presses the real button twice, and requires the packing and the key back, then sells one item between presses and requires only the other back; fails on v12.15.',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -32883,7 +32884,7 @@ function renderFreeKit(){
   // fixes: getElementById only ever reached the copy on a screen that no longer opens.
   var html='<div class="fkbox">'+
     '<b>FREEBIE KIT</b>'+
-    '<span>'+(on?'Taking the freebie kit. '+escHtml(freeKitText()):
+    '<span>'+(on?'Taking the freebie kit. '+escHtml(freeKitText())+(P.kitSaved?' Your own packing is kept for when you switch back.':''):
       'Go up with issued gear instead of your own. '+escHtml(freeKitText()))+'</span>'+
     '<button class="deploy ghost fkbtn">'+(on?'USE MY OWN GEAR':'TAKE THE FREEBIE KIT')+'</button>'+
     '</div>';
@@ -32898,11 +32899,17 @@ function renderFreeKit(){
   // EVERY copy gets the handler, so whichever screen you are on can turn it off.
   var btns=document.querySelectorAll('.fkbtn');
   for(var bi=0;bi<btns.length;bi++) btns[bi].onclick=function(){
-    if(P.freeKit){ P.freeKit=0; saveProfile(); renderStage(); return; }
+    if(P.freeKit){
+      P.freeKit=0;
+      freeKitRestore();   // v12.16: what he had packed comes back
+      saveProfile(); try{ renderHub(); }catch(_fh0){} renderStage(); return;
+    }
     // HIS NOTE: anything already picked goes BACK. P.kit is a selection out of the
     // stash rather than a move, so emptying it returns those items by itself; the
     // hotbar plan is cleared for the same reason, since a key pointing at something
     // you are not carrying is the exact fault v5.72 fixed.
+    // v12.16: kept aside first, so switching back to his own gear is not a wipe.
+    P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};
     P.kit=[]; P.hotAssign={}; P._gunSlot=null;
     P.freeKit=1;
     saveProfile();
@@ -32915,13 +32922,27 @@ function renderFreeKit(){
     renderStage();
   };
 }
+// v12.16, from the 2026-09-06 menu audit: the packing and the belt plan he had
+// before taking the free kit come back, minus anything no longer in the stash,
+// with any key left pointing at nothing pruned. Called by USE MY OWN GEAR and by
+// MY LOADOUT at the lift; commitKit hands the same list to the death restore.
+function freeKitRestore(){
+  var _ks=P.kitSaved; P.kitSaved=null;
+  if(!_ks) return false;
+  var _pool=(P.stash||[]).slice(), _kit=[];
+  for(var _ki=0;_ki<(_ks.kit||[]).length;_ki++){ var _kx=_pool.indexOf(_ks.kit[_ki]); if(_kx>=0){ _pool.splice(_kx,1); _kit.push(_ks.kit[_ki]); } }
+  P.kit=_kit; P.hotAssign=_ks.hot||{}; P._gunSlot=_ks.gun||null;
+  try{ dropDeadKeys(); }catch(_dk){}
+  return true;
+}
 function commitKit(){
   // The freebie kit takes nothing out of the stash, so there is nothing to commit.
   // kitChosen is still stamped so the raid does not fall back to the standard kit.
   if(P.freeKit){
     // v6.88, his spec: remember what he had packed before the free gear replaced it, so
     // a death puts his own loadout back rather than making him rebuild it.
-    P.kitBeforeFree=(P.kit||[]).slice();
+    // v12.16: the button already emptied P.kit and kept it aside; that is the list.
+    P.kitBeforeFree=((P.kitSaved&&P.kitSaved.kit)||P.kit||[]).slice(); P.kitSaved=null;
     P.dropKit=[]; P.kit=[]; P.kitChosen=1; saveProfile(); return true;   // v8.40: safeUp is armed in buildRaid
   }
   var kit=stageKitLive();
