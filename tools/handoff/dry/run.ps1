@@ -11,42 +11,39 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# CHECK 11.85's line filter follows the new wording, so the landed-hold line
-# stays under its label-face floor.
+# v12.07 CHECK, inserted before the v12.06 entry. A raid is deployed and the
+# player is hit to zero twice through the real damage path: first with the
+# self-revive already spent, then fresh. The toast is read through the
+# fixture's say capture.
 SubRx @'
-       var subs=rec.filter(function(r){ return /^(closes in |STAYS OPEN|CLOSED|CALLED |OPEN TO EXTRACT)/.test(r.t); });
-'@ @'
-       var subs=rec.filter(function(r){ return /^(closes in |STAYS OPEN|CLOSED|CALLED |EXTRACT NOW)/.test(r.t); });
-'@
-
-# v12.06 CHECK, inserted before the v12.05 entry. A ring is put into the
-# hold state and the map overlay drawn with the canvas text call recorded.
-SubRx @'
-  {v:'12.05',what:'a pillager will not throw a frag from inside his own blast: the throw band starts at the radius plus 52 (242 at 190) and still throws at 260, and the card prints the true centre damage (2026-09-06 review of v11.77)',
-'@ @'
   {v:'12.06',what:'the sector map says EXTRACT NOW with the seconds left under a landed ring, the banner wording, instead of OPEN TO EXTRACT (2026-09-06 review of v11.74)',
+'@ @'
+  {v:'12.07',what:'the going-down toast tells the truth on the second down: it no longer sends you to F once the one self-revive is spent, and still does on the first (2026-09-06 first-ten-minutes audit)',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
-     if(typeof drawMapOverlay!=='function') return 'SKIP: no map overlay in this build';
-     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
-     var bad=[], rec=[], proto=CanvasRenderingContext2D.prototype, orig=proto.fillText;
-     var oldWords='OPEN TO '+'EXTRACT', newWords='EXTRACT '+'NOW';
-     proto.fillText=function(t){ try{ rec.push(String(t)); }catch(_r){} return orig.apply(this,arguments); };
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof damagePlayer!=='function') return 'SKIP: no damagePlayer in this build';
+     var bad=[];
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       var g=__state(); if(!g.zones||!g.zones.length) return 'SKIP: no extraction ring';
-       var Z=g.zones[0]; Z.open=true; Z.beaconT=0; Z.hold=12; g.active=Z; g.mapOpen=true;
-       drawMapOverlay();
-       var subs=rec.filter(function(t){ return t.indexOf(oldWords)===0||t.indexOf(newWords)===0; });
-       if(!subs.length) bad.push('control: the map drew no boarding line under the landed ring');
-       if(subs.some(function(t){ return t.indexOf(oldWords)===0; })) bad.push('the map still says '+oldWords+' under a landed ring ("'+subs[0]+'")');
-       if(!subs.some(function(t){ return t.indexOf(newWords)===0&&/12S LEFT/.test(t); })) bad.push('the map does not say '+newWords+' with the seconds left (drew: '+subs.join(' | ').slice(0,80)+')');
-       if(!subs.some(function(t){ return t.indexOf(newWords+'!')===0; })) bad.push('the map line lacks the banner mark');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ proto.fillText=orig; try{ var g2=__state(); if(g2){ g2.mapOpen=false; } }catch(_m){} __topClear(); __cleanProfile(); }
+       var g=__state(), p=g.player, en=null;
+       for(var i=0;i<g.ents.length&&!en;i++) if(g.ents[i].kind==='crawler'&&!g.ents[i].downed) en=g.ents[i];
+       // ARM ONE: the second down, the revive already spent.
+       p.downed=false; p.revived=true; p.hp=5; p.armor=0; p.iv=0; window.__lastSay=null;
+       damagePlayer(40,en,en?en.kind:'crawler',p.x+20,p.y);
+       var s1=String(window.__lastSay||'');
+       if(!p.downed) bad.push('control: the hit did not put him down (hp '+p.hp+')');
+       if(/F to get back up/.test(s1)) bad.push('the second down still says F gets him up: "'+s1+'"');
+       if(!/spent/.test(s1)) bad.push('the second down does not say the revive is spent: "'+s1+'"');
+       // ARM TWO: the first down still points at F.
+       p.downed=false; p.revived=false; p.hp=5; p.armor=0; p.iv=0; window.__lastSay=null;
+       damagePlayer(40,en,en?en.kind:'crawler',p.x+20,p.y);
+       var s2=String(window.__lastSay||'');
+       if(!/F to get back up/.test(s2)) bad.push('control: the first down no longer says F gets him up: "'+s2+'"');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; g2.player.hp=100; g2.player.revived=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.05',what:'a pillager will not throw a frag from inside his own blast: the throw band starts at the radius plus 52 (242 at 190) and still throws at 260, and the card prints the true centre damage (2026-09-06 review of v11.77)',
+  {v:'12.06',what:'the sector map says EXTRACT NOW with the seconds left under a landed ring, the banner wording, instead of OPEN TO EXTRACT (2026-09-06 review of v11.74)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

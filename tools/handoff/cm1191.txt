@@ -6,4 +6,8 @@ key equips it now and the highlight follows. The derived cells carried no
 item key and could not be dragged; they drag by the item they show. Check
 11.91 drives the real selector and the real canvas press; fails on v11.90.
 
+Check 11.30, which asserted the TAB-then-ENTER message this build removes,
+is rewritten to the new contract (the key brings the backpack gun up) and
+fails on v11.90; the corpus was green on the other 322 checks.
+
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

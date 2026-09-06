@@ -1,0 +1,8 @@
+v12.09: first ten minutes, ESC closes the open backpack on the floor
+
+The floor's pause branch did not count the open backpack, which is not a
+modal, so ESC raised the pause box over it and the backpack's own ESC line
+could never run. The pause branch steps aside for ESC while the backpack
+is open. Check 12.09 drives both keys on the window; fails on v12.08.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

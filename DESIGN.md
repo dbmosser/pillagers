@@ -40024,6 +40024,42 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v11.91 - HIS NOTE: THE BELT KEY EQUIPS THE GUN IT SHOWS, AND EVERY CELL DRAGS
+
+His note of 2026-09-06, from his fifth run this morning: "it says i have
+support mg but it is firing like a pistol -- hotbar is wonky, why can't i
+drag items to diff keys??"
+
+TWO FAULTS, ONE NOTE. First: a belt key with a gun from the backpack pinned
+to it drew the gun's name and icon, and pressing it said "is in your
+backpack. TAB, then ENTER to equip it" (a v11.30 sentence) and did nothing
+else, so the trigger fired the pistol in his hands under a cell that said
+Support MG. That is exactly what he saw. Second: the belt is derived, rebuilt
+every frame from what you carry, and the derived cells (Medical, Armour
+Plate, the grenades) carried no item key of their own, so a press on them
+selected and never dragged; only a cell he had already assigned by dragging
+from the bag could be moved. He could not move what the game had placed.
+
+THE BUILD. Pressing a belt key that holds a gun from the backpack EQUIPS it,
+through the same path ENTER uses; if that path routes it to the free hand
+slot the guns are swapped so the one he pressed for is the one that fires,
+the displaced gun goes to the bag, and the highlight follows the gun to the
+hand cell it now lives in. And a derived cell drags by the item it shows,
+so any cell can be picked up and dropped on another key, which is the same
+drag he already had for assigned cells.
+
+MEASURED. Check 11.91 deploys with a pistol in hand and an SMG in the bag
+pinned to key 4, presses key 4 through the real selector, and requires the
+SMG in hand and gone from the bag; then, with a bandage in the bag and the
+backpack open, finds the derived Medical cell, points the mouse at it and
+sends a real mousedown to the canvas, and requires a drag carrying the
+bandage. On the v11.90 fixture the key leaves the pistol in hand and the
+press starts no drag.
+
+Not verified: his own hand at it; the two Medical cells that can exist for a
+moment when a derived item is also assigned elsewhere, which the derived
+list's dedupe handles as before; keys held for a gun that is not in the bag
+any more, which now say so.
 ## v11.90 - HIS NOTE: A GUN IN YOUR HANDS GOES BACK INTO THE BACKPACK
 
 His note of 2026-09-06, from his fifth run this morning: "not letting me put

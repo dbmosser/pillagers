@@ -5732,6 +5732,39 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'11.91',what:'a belt key holding a gun from the backpack equips it into your hands, and a derived belt cell (Medical, plate, grenade) can be dragged to another key (his note of 2026-09-06)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__frame&&window.__runPrep)) return 'SKIP: this fixture cannot deploy and draw';
+     if(typeof setHot!=='function'||typeof hotbarSlots!=='function'||typeof cv==='undefined'||typeof mouse==='undefined') return 'SKIP: no belt in this build';
+     if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
+     var bad=[], g=null, k, i;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); var p=g.player;
+       // ONE: the key equips the bagged gun.
+       var pistol={}; for(k in WEAPONS.pistol) pistol[k]=WEAPONS.pistol[k]; pistol.q='field'; pistol.qRank=1;
+       p.wep=pistol; p.ammo=8; p.wepIssued=false; p.wepFromArmory=false;
+       p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false; p.swapped=false; p.downed=false; p.roll=0;
+       g.bag=['gun_smg']; g.hotAssign={3:'gun_smg'}; g.hot=0; g.paused=false;
+       setHot(3);
+       if(!p.wep||p.wep.id!=='smg') bad.push('key 4 showed the SMG but left '+(p.wep&&p.wep.id)+' in hand');
+       if(g.bag.indexOf('gun_smg')>=0) bad.push('the SMG is still in the backpack after the key');
+       // TWO: a derived cell drags.
+       g.bag=['bandage']; g.hotAssign={}; g.bagOpen=true; g.drag=null; g.mapOpen=false;
+       __frame(0.016); __frame(0.016);
+       var sl=hotbarSlots(), hi=-1;
+       for(i=0;i<sl.length;i++) if(sl[i]&&sl[i].kind==='heal'&&!sl[i].assigned){ hi=i; break; }
+       var cell=(hi>=0&&g.hotCells)?g.hotCells[hi]:null;
+       if(!cell) bad.push('control: the belt drew no Medical cell to press');
+       else {
+         mouse.x=cell.x+cell.w/2; mouse.y=cell.y+cell.h/2;
+         cv.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true}));
+         if(!g.drag||g.drag.key!=='bandage') bad.push('pressing on the derived Medical cell started no drag'+(g.drag?' (drag: '+JSON.stringify(g.drag).slice(0,60)+')':''));
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(g){ g.bagOpen=false; g.drag=null; } mouse.down=false; }catch(_c){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'11.90',what:'with the backpack open, the gun in your hands can be dragged off its belt cell and dropped into the bag; bare hands come up (his note of 2026-09-06)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__runPrep)) return 'SKIP: this fixture cannot deploy and draw';
@@ -7204,7 +7237,7 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ for(k in keep) prof[k]=keep[k]; for(k in prof) if(!(k in keep)) delete prof[k]; var sc=document.getElementById('stashscreen')||document.querySelector('.screen.on'); if(window.__topClear) __topClear(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'11.30',what:'a belt key for a gun still in the backpack names the key that equips it, ENTER, and not TAB alone; a belt key for the gun in hand says nothing of the sort',
+  {v:'11.30',what:'a belt key for a gun still in the backpack brings it up (v11.91) with no TAB-then-ENTER message, and a belt key for the gun in hand says nothing of the sort',
    run:function(){
      if(!(window.__deploy&&window.__loop&&window.__state)) return 'SKIP: this fixture cannot press keys in a raid';
      var bad=[];
@@ -7219,9 +7252,12 @@ window.__REGRESS=[
      press('Digit3','3'); frames(2);
      var m=String(g.msg||'');
      var wrong=['TAB to ','equip it'].join('');
+     // v11.91, HIS ORDER: the key EQUIPS the gun it shows; the v11.30 message
+     // that named ENTER is gone with the detour it described.
      if(m.indexOf(wrong)>=0) bad.push('the belt key still says "'+m+'"');
-     if(m.indexOf('ENTER')<0) bad.push('the belt key does not name ENTER: "'+m+'"');
-     if(m.indexOf('backpack')<0) bad.push('control: the belt key did not produce the backpack message at all: "'+m+'", so key 3 did not reach the pistol');
+     if(m.indexOf('ENTER')>=0) bad.push('the belt key still names ENTER: "'+m+'"');
+     if(!(p.wep&&p.wep.id==='pistol')) bad.push('key 3 did not bring the backpack pistol up (in hand: '+(p.wep&&p.wep.id)+', said "'+m+'")');
+     if(g.bag.indexOf('gun_pistol')>=0) bad.push('the pistol is still in the backpack after key 3');
      // CONTROL: a belt key for the gun in hand prints no such message.
      g.bag=[]; g.hotAssign={}; g.msg=''; frames(1);
      press('Digit1','1'); frames(2);
