@@ -24,9 +24,19 @@ SubRx @'
   // function for every key, so an arrow both moved the selection and moved the
   // operator; browsing the bag walked you off the spot you stopped on. Cleared
   // here for the arrows while the bag is open; WASD still walks, as promised.
-  if(G&&G.bagOpen&&code.indexOf('Arrow')===0) keys[code]=false;
+  if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length&&code.indexOf('Arrow')===0) keys[code]=false;
   if(G&&!G.over&&G.bagOpen&&G.bag.length&&bagStacks().length){
     // GRID NAVIGATION, v2.87: the selection is a STACK index now, and the four
+'@
+
+SubRx @'
+  if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){ G.bagOpen=!G.bagOpen; G.bagSel=0; }
+'@ @'
+  if((code==='Tab'||code==='KeyI')&&G&&!G.over&&!repeat){
+    G.bagOpen=!G.bagOpen; G.bagSel=0;
+    // v12.18: an arrow still held when the bag opens stops walking too.
+    if(G.bagOpen){ keys['ArrowUp']=false; keys['ArrowDown']=false; keys['ArrowLeft']=false; keys['ArrowRight']=false; }
+  }
 '@
 
 # STAMPS.

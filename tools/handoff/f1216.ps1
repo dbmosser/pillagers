@@ -39,6 +39,9 @@ SubRx @'
          var shown=parseInt(m[1].replace(/,/g,''),10), banked=(P2.xp||0)-xp0;
          if(!(shown>0)) bad.push('control: the card printed no XP gain');
          if(banked!==shown) bad.push('the card says +'+shown+' XP and the profile was paid '+banked);
+         var rec=(P2.log||[]).slice(-1)[0];
+         if(!(rec&&rec.doseMul>1)) bad.push('control: the banked record carries no dose multiplier, so nothing was multiplied');
+         else if(shown!==Math.round(rec.xpBase*rec.doseMul)) bad.push('the card printed +'+shown+' against a base of '+rec.xpBase+' times '+rec.doseMul);
        }
        if((P2.buzz||[]).length) bad.push('control: the death did not clear the drink');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }

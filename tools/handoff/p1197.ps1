@@ -63,11 +63,11 @@ SubRx @'
 '@ @'
     ctx.fillText(sl[sel].name+'   [FIRE] use    [V] signal',W/2,hy-LH(6));
     ctx.textAlign='left';
+    // v11.97, HIS NOTE: THE GHOST. A drag drew nothing but a highlight on the cell
+    // under the cursor, so with the backpack closed it looked like nothing had
+    // happened. The item rides the cursor now, open or closed.
+    if(G&&G.drag&&G.drag.key&&ITEMS[G.drag.key]){ ctx.globalAlpha=.85; drawItemIcon(ctx,G.drag.key,mouse.x+LH(10),mouse.y+LH(10),LH(26)); ctx.globalAlpha=1; }
   }
-  // v11.97, HIS NOTE: THE GHOST. A drag drew nothing but a highlight on the cell
-  // under the cursor, so with the backpack closed it looked like nothing had
-  // happened. The item rides the cursor now, open or closed.
-  if(G.drag&&G.drag.key&&ITEMS[G.drag.key]){ ctx.globalAlpha=.85; drawItemIcon(ctx,G.drag.key,mouse.x+LH(10),mouse.y+LH(10),LH(26)); ctx.globalAlpha=1; }
 '@
 
 # STAMPS.

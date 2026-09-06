@@ -16,7 +16,7 @@ function SubRx([string]$old, [string]$new) {
 # run: the selection must move and the operator must not; with the backpack
 # closed the same arrow must still walk.
 SubRx @'
-  {v:'12.17',what:'the trigger on an empty grenade cell selects the gun and says so instead of going dead or cooking a grenade the cell did not name (2026-09-06 first-ten-minutes audit)',
+  {v:'12.17',what:'the trigger on an empty grenade cell selects the gun and says so, fires nothing on that same hold, and a loaded cell still cooks (2026-09-06 first-ten-minutes audit)',
 '@ @'
   {v:'12.18',what:'an arrow key with the backpack open moves the selection and does not walk the operator, and still walks with it closed (2026-09-06 first-ten-minutes audit)',
    run:function(){
@@ -44,7 +44,7 @@ SubRx @'
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.bagOpen=false; g2.player.downed=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.17',what:'the trigger on an empty grenade cell selects the gun and says so instead of going dead or cooking a grenade the cell did not name (2026-09-06 first-ten-minutes audit)',
+  {v:'12.17',what:'the trigger on an empty grenade cell selects the gun and says so, fires nothing on that same hold, and a loaded cell still cooks (2026-09-06 first-ten-minutes audit)',
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

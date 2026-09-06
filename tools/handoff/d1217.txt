@@ -24,5 +24,7 @@ cell, holds the trigger through one real player update, and requires the
 gun selected, nothing cooking, both Smoke still in the pouch and the toast.
 On the v12.16 fixture the Frag cell stays selected and a Smoke is cooking.
 
-Not verified: a pad, whose trigger reaches the same branch; his own thumb
+Not verified: the G key and the pad, which reach the throw through useHot
+and doThrow and can still cycle to another grenade; a pad, whose trigger
+reaches the same branch; his own thumb
 on 3 in a first raid.

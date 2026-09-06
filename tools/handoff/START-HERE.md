@@ -2,13 +2,13 @@
 
 ## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
 
-**STATE (kept current by fixstate.ps1):** HEAD is v11.93 (a72e87f). The tree has **v11.94 APPLIED** and
+**STATE (kept current by fixstate.ps1):** HEAD is v11.94 (4266d3d). The tree has **v11.95 APPLIED** and
 verified on all four gates; its FULL CORPUS is running on the Browser pane tab "tab-2" (the tab named seed hung on 2026-09-06 12:40 and was closed).
 When `window.__PROG` is finished, pass true, fail [] and only the two known skips
 (v8.88, v11.24):
-    bash tools/handoff/ship.sh commit 1194 cm1194.txt
+    bash tools/handoff/ship.sh commit 1195 cm1195.txt
 then bump the HEAD line in memory dark-raiders-handoff-state.md, then
-    bash tools/handoff/ship.sh start 1194 1195
+    bash tools/handoff/ship.sh start 1195 1196
 and carry on down the list. Cron 35be6fe2 is armed every minute; re-arm if
 CronList shows nothing. Resize the pane to 1920x1080 after any restart. Leave the
 pane and the CPU alone while a corpus runs (a second-tab resize and heavy builds
@@ -28,7 +28,7 @@ usual cause (see memory dark-raiders-loader-replaces-the-profile).
 - **1202 THE HEAL VERB, 1203 THE NOTES LINE** (were 1198 and 1199 earlier; check 12.02 was 11.97).
 - **1204 to 1211 POLISH** (were 1199 to 1206 this morning; labels 12.04 to 12.11).
 - **1212 to 1218 MORE FIRST-RAID FIXES** (were 1207 to 1213: second down toast, lift freebie clears the belt plan, ESC closes the floor backpack, controls card X key, death banks card XP, empty grenade cell trigger, arrows do not walk with the bag open). The read-only review wf_282ab182-3ea of these seven (as 1207 to 1213) is in its journal and NOT yet folded in: its first finding is that the second-down toast should name the pad button through keyLabel.
-- **NOT DRAFTED, his notes of 14:00 to 14:30:** the stash right-click menu gets no menu zoom at 4K (.imenu is appended to body; give it the same zoom applyMenuZoom gives modals and divide its clientX/Y by the zoom); the Howler should not bomb from outside a building into it.
+- **1219 THE RIGHT-CLICK MENU TAKES THE MENU ZOOM (4K)** and **1220 THE HOWLER DOES NOT SHELL THROUGH A ROOF** (his notes of 14:05 and 14:30). Drafted 15:10; the dry chain applies them; checks 12.19 and 12.20 pass on the dry copy. The dry range is now 1196 to 1220.
 - **DRY RUN:** after the v11.94 commit, `dry.ps1 1195 1218` from the tree at v11.94, then dry/mk.ps1, then checks 11.95 to 12.18 on :8801 between corpora. The pane is hidden all afternoon, so a corpus takes about 45 minutes.
 
 

@@ -21,6 +21,6 @@ bound to it, asks the lift question, takes the FREEBIE KIT answer through
 the real handler, and requires a free-kit raid started with the belt plan
 empty. On the v12.12 fixture the plan still holds the Medkit key.
 
-Not verified: the plan is not restored after a free run, which is also
-true of the stash button today and is the subject of the queued kit
-restore build; his own reading of the belt after a free run.
+Not verified: the plan after a free run, which neither path restores yet
+because commitKit clears the kept-aside copy when it takes kitBeforeFree;
+his own reading of the belt after a free run.

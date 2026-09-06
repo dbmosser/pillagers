@@ -12,8 +12,9 @@ function SubRx([string]$old, [string]$new) {
 }
 
 # v12.14 CHECK, inserted before the v12.13 entry. The floor backpack is
-# opened, ESC is pressed on the window (the only place a real key lands on
-# the floor), and the backpack must be closed with no pause box; a second
+# opened, ESC is pressed on the page body (so the pause box's window capture
+# listener runs first, as a real key does), and the backpack must be closed
+# with no pause box; a second
 # ESC with the backpack closed must still pause.
 SubRx @'
   {v:'12.13',what:'taking the freebie kit at the lift clears the tactical belt plan the same as the stash screen button does, so no key points at an item left in the stash (2026-09-06 first-ten-minutes audit)',

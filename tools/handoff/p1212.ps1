@@ -24,8 +24,8 @@ SubRx @'
     // F answers Self-revive spent, so a toast that sent him to F was a lie the
     // HUD contradicted in the same frame. He can still crawl for an extraction,
     // or hold SPACE to give up where that is switched on.
-    say(p.revived?('DOWN. Your one self-revive is spent. Crawl for an extraction'+(CFG.giveUp===0?'.':', or hold SPACE to give up.'))
-                 :'DOWN. F to get back up. You get one per raid.');
+    say(p.revived?('DOWN. Your one self-revive is spent. Crawl for an extraction'+(CFG.giveUp===0?'.':', or hold '+keyLabel('Space','SPACE')+' to give up.'))
+                 :'DOWN. '+keyLabel('KeyF','F')+' to get back up. You get one per raid.');
 '@
 
 # STAMPS.

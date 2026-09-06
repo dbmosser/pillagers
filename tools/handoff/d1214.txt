@@ -18,10 +18,10 @@ it. P still pauses over the open backpack, as before; ESC with the
 backpack closed still pauses.
 
 MEASURED. Check 12.14 enters the floor, opens the backpack, presses ESC on
-the window and requires the backpack closed and no pause box; then, with
+the page body and requires the backpack closed and no pause box; then, with
 the backpack closed, presses ESC again and requires the pause box. On the
 v12.13 fixture the first ESC raises the pause box and leaves the backpack
 open.
 
-Not verified: a pad, which has its own back button path; his own hand on
+Not verified: a pad, which has no way into or out of the floor backpack at all; his own hand on
 the key.

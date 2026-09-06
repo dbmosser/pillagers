@@ -29,6 +29,7 @@ SubRx @'
     // fault). This one did not, so a friend who took the free kit here landed
     // with keys bound to items left in the stash and, because an assigned heal
     // key replaces the derived Medical cell, two Bandages with no key to use.
+    P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{})),gun:P._gunSlot||null};   // kept aside for the restore, as the stash button does (v12.06)
     P.hotAssign={}; P._gunSlot=null;
     P.freeKit=1; P.kitBeforeFree=null; saveProfile();
     try{ renderStage(); }catch(_e){}

@@ -21,7 +21,8 @@ SubRx @'
 '@ @'
   // v12.15: there is no X (or pad Y) swap; the belt is the swap. Pressing the
   // key of the stowed gun brings it up (setHot, the v8.67 rule).
-  ['WEAPONS','Belt keys 1 and 2 bring up either gun.'],
+  ['WEAPONS','Keys 1 and 2 bring up'],
+  ['','either gun.'],
 '@
 
 # STAMPS.

@@ -30,11 +30,25 @@ SubRx @'
       // own rule the press selects the gun; the next click fires it, never this
       // one, which is the automatic-weapon safety that rule was written for.
       if(!p.cooking&&!p.fired&&!((HSC.count|0)>0)){
-        p.fired=true; setHot(0);
+        p.fired=true; setHot(0); p.trigYield=1;   // the gun fires on the NEXT click, never on the hold that yielded
         if(!G.sim) say('Nothing in that cell. '+((p.wep&&p.wep.name)||'Your gun')+' up.');
       }
       else if(!p.cooking){ if(!p.fired){ p.fired=true; startCook(); } }
       else {
+'@
+
+SubRx @'
+  else if(mouse.down&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){
+'@ @'
+  else if(mouse.down&&!p.trigYield&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){   // v12.17: not on the hold that yielded to the gun
+'@
+SubRx @'
+  if(!mouse.down){
+    // Let go of a cooked grenade and it goes. Done before p.fired clears so a
+'@ @'
+  if(!mouse.down){
+    p.trigYield=0;   // v12.17: the latch lives for one hold
+    // Let go of a cooked grenade and it goes. Done before p.fired clears so a
 '@
 
 # STAMPS.
